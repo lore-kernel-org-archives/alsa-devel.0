@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD5E7C433B4
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:38:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB06CC433B4
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:38:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3FD4C6145E
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:38:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3FD4C6145E
+	by mail.kernel.org (Postfix) with ESMTPS id EC7E361995
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:38:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC7E361995
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A6B4816E5;
-	Wed,  5 May 2021 18:37:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6B4816E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6B5531702;
+	Wed,  5 May 2021 18:37:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B5531702
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620232689;
-	bh=IT+5WeIpLY9wMHs/s4Kw3Wm0X2t8cPHtpBTEP+qGz78=;
+	s=default; t=1620232725;
+	bh=vgaLfULb+ZpcBqs/sfcsqHJT2jKL0I8vOFjfBTuoZig=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FkXp5bKBmz9iz2OgzehhB2fShX+/HrtC4SczcAnOB1FFpsv0wwzBCXl7tCznqcTQW
-	 TyXtJ3X246nc3adKPhG/wYcZk+R5F2NR2MDuQ0BzDMmB/RUjUL/sFLljDEdCJK4kkY
-	 3KwavDWJcRRFovkG27E2J8e4PnB/pPQHh2eM1UDM=
+	b=HZEscGfKeicYy3xyiBbUcp23Spu4n1jCaIkkQdnnkebM1QPxgSrW0aWsofz2Sa447
+	 Q/HzGuB+lIcGd5+xtFqbLTJ0RGMAmpKkk6Ft94HQv+xuJWbhSMXAywAq2gcYsQz9AL
+	 KL53vOSwX02qfo/llsmLIPR681qA+dxtPaRKc9RQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2833F80508;
-	Wed,  5 May 2021 18:33:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F18C1F8051A;
+	Wed,  5 May 2021 18:33:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E3B6FF8025F; Wed,  5 May 2021 18:33:27 +0200 (CEST)
+ id 4046BF8051B; Wed,  5 May 2021 18:33:37 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8C11AF8026D
- for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 18:33:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C11AF8026D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7C515F80519
+ for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 18:33:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C515F80519
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="YxO/UBAH"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE46361453;
- Wed,  5 May 2021 16:33:18 +0000 (UTC)
+ header.b="WuwFt7qz"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C30BD6143E;
+ Wed,  5 May 2021 16:33:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1620232400;
- bh=IT+5WeIpLY9wMHs/s4Kw3Wm0X2t8cPHtpBTEP+qGz78=;
+ s=k20201202; t=1620232412;
+ bh=vgaLfULb+ZpcBqs/sfcsqHJT2jKL0I8vOFjfBTuoZig=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=YxO/UBAHQpUiWt4LQqkVHMmt6sZ11j3l+jPWN9yrjv2Jv4xcHMM0t3DWPTqAiuO0C
- mhceTM5Aq1KCWgYVCma7zn8xQZ8B1XZcYVjb4jzmq/WO/zRr9awW/z4m6Fd9rhXkTr
- 9seVSjPRugfhUEs1U38fPDsMkLjJ2XkqxwAKrUKdUStO7XFt8EHlZvGCvKrsjvfEiT
- li8JwxGOEPpkZ5HuOQ0ZpY1epWZFTivKpVwKNG+SeQoT4l/doXlkClHXjdfpvZ2aYI
- wREehq5da4bTGLfFoJ8RwpIpBiWZ0AuHx1snlG1OsBrMlg4FqORrZlRd+4ggN5LMno
- QhXxtZzKKz/cw==
+ b=WuwFt7qzGaFkjJlMXLxygjdSEwNfhyJZ96Zk7LYlVq+7alaf68GsNRb6KCZpRFLmj
+ ynKFGAfeQwdSKbaf5m7a0JrvOwuf6XZLm/S6YFPRpeKmXvIwdYSWhawrjniQQ+nIbf
+ Hohuej/ISQdbrzaxOcQ0GmB+tRt11RL5uoJr9znhXHNeeeoprtp06dBKRO9MEl/NMD
+ SGaR34pfzi0LBnHleIy2dqji4U07z2UPizaakHnE7qu+yn+RGXqfJ6vxWF6aDp7ddC
+ AXaY7NaAKZAwPJCgjzblwP6K0elr3WAoGDsFFnhD9POVnJjjP0hztxWnc0RYS9agt6
+ LWZlUS1emltRg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.12 081/116] ASoC: Intel: sof_sdw: add quirk for new
- ADL-P Rvp
-Date: Wed,  5 May 2021 12:30:49 -0400
-Message-Id: <20210505163125.3460440-81-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.12 090/116] ASoC: rt286: Generalize support for
+ ALC3263 codec
+Date: Wed,  5 May 2021 12:30:58 -0400
+Message-Id: <20210505163125.3460440-90-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210505163125.3460440-1-sashal@kernel.org>
 References: <20210505163125.3460440-1-sashal@kernel.org>
@@ -73,11 +73,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Mark Brown <broonie@kernel.org>,
- Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
- Bard Liao <bard.liao@intel.com>
+ Mark Brown <broonie@kernel.org>, David Ward <david.ward@gatech.edu>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,45 +90,97 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>
+From: David Ward <david.ward@gatech.edu>
 
-[ Upstream commit d25bbe80485f8bcbbeb91a2a6cd8798c124b27b7 ]
+[ Upstream commit aa2f9c12821e6a4ba1df4fb34a3dbc6a2a1ee7fe ]
 
-Add quirks for jack detection, rt711 DAI and DMIC
+The ALC3263 codec on the XPS 13 9343 is also found on the Latitude 13 7350
+and Venue 11 Pro 7140. They require the same handling for the combo jack to
+work with a headset: GPIO pin 6 must be set.
 
-Reviewed-by: Bard Liao <bard.liao@intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210415175013.192862-6-pierre-louis.bossart@linux.intel.com
+The HDA driver always sets this pin on the ALC3263, which it distinguishes
+by the codec vendor/device ID 0x10ec0288 and PCI subsystem vendor ID 0x1028
+(Dell). The ASoC driver does not use PCI, so adapt this check to use DMI to
+determine if Dell is the system vendor.
+
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=150601
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=205961
+Signed-off-by: David Ward <david.ward@gatech.edu>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20210418134658.4333-6-david.ward@gatech.edu
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_sdw.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/soc/codecs/rt286.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 8adce6417b02..ecd3f90f4bbe 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -187,6 +187,17 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
- 					SOF_RT715_DAI_ID_FIX |
- 					SOF_SDW_FOUR_SPK),
- 	},
-+	/* AlderLake devices */
-+	{
-+		.callback = sof_sdw_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Intel Corporation"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Alder Lake Client Platform"),
-+		},
-+		.driver_data = (void *)(SOF_RT711_JD_SRC_JD1 |
-+					SOF_SDW_TGL_HDMI |
-+					SOF_SDW_PCH_DMIC),
-+	},
- 	{}
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index 8abe232ca4a4..2f18f5114f7e 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -1117,12 +1117,11 @@ static const struct dmi_system_id force_combo_jack_table[] = {
+ 	{ }
  };
  
+-static const struct dmi_system_id dmi_dell_dino[] = {
++static const struct dmi_system_id dmi_dell[] = {
+ 	{
+-		.ident = "Dell Dino",
++		.ident = "Dell",
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "XPS 13 9343")
+ 		}
+ 	},
+ 	{ }
+@@ -1133,7 +1132,7 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+ {
+ 	struct rt286_platform_data *pdata = dev_get_platdata(&i2c->dev);
+ 	struct rt286_priv *rt286;
+-	int i, ret, val;
++	int i, ret, vendor_id;
+ 
+ 	rt286 = devm_kzalloc(&i2c->dev,	sizeof(*rt286),
+ 				GFP_KERNEL);
+@@ -1149,14 +1148,15 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+ 	}
+ 
+ 	ret = regmap_read(rt286->regmap,
+-		RT286_GET_PARAM(AC_NODE_ROOT, AC_PAR_VENDOR_ID), &val);
++		RT286_GET_PARAM(AC_NODE_ROOT, AC_PAR_VENDOR_ID), &vendor_id);
+ 	if (ret != 0) {
+ 		dev_err(&i2c->dev, "I2C error %d\n", ret);
+ 		return ret;
+ 	}
+-	if (val != RT286_VENDOR_ID && val != RT288_VENDOR_ID) {
++	if (vendor_id != RT286_VENDOR_ID && vendor_id != RT288_VENDOR_ID) {
+ 		dev_err(&i2c->dev,
+-			"Device with ID register %#x is not rt286\n", val);
++			"Device with ID register %#x is not rt286\n",
++			vendor_id);
+ 		return -ENODEV;
+ 	}
+ 
+@@ -1180,8 +1180,8 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+ 	if (pdata)
+ 		rt286->pdata = *pdata;
+ 
+-	if (dmi_check_system(force_combo_jack_table) ||
+-		dmi_check_system(dmi_dell_dino))
++	if ((vendor_id == RT288_VENDOR_ID && dmi_check_system(dmi_dell)) ||
++		dmi_check_system(force_combo_jack_table))
+ 		rt286->pdata.cbj_en = true;
+ 
+ 	regmap_write(rt286->regmap, RT286_SET_AUDIO_POWER, AC_PWRST_D3);
+@@ -1220,7 +1220,7 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+ 	regmap_update_bits(rt286->regmap, RT286_DEPOP_CTRL3, 0xf777, 0x4737);
+ 	regmap_update_bits(rt286->regmap, RT286_DEPOP_CTRL4, 0x00ff, 0x003f);
+ 
+-	if (dmi_check_system(dmi_dell_dino)) {
++	if (vendor_id == RT288_VENDOR_ID && dmi_check_system(dmi_dell)) {
+ 		regmap_update_bits(rt286->regmap,
+ 			RT286_SET_GPIO_MASK, 0x40, 0x40);
+ 		regmap_update_bits(rt286->regmap,
 -- 
 2.30.2
 
