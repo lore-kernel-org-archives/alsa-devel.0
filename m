@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D24CC43603
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:52:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30A0FC433ED
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:53:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BD6B96140E
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:52:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BD6B96140E
+	by mail.kernel.org (Postfix) with ESMTPS id 8F3BE613B4
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:53:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F3BE613B4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 48D5E1710;
-	Wed,  5 May 2021 18:52:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48D5E1710
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0DDA51713;
+	Wed,  5 May 2021 18:52:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DDA51713
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620233577;
-	bh=crQZifefxFB5zTrNmQ8E/W5S9724KgP2XqK90+Y+VD0=;
+	s=default; t=1620233600;
+	bh=HGFtvC083Ni1nBN15WSuKPbVwjoqOSHiN4Am6r8cCdM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=M9fGiLemtxXotWCY2xYsfW+90TYSp4cxqI/0ggWdsqL55fhwvbLtsln9VzFBEga9X
-	 AnlEEYz47MkJNqbZT5rb9MoZzR9EYmvk1cNIw74Si0p6pejHNFuFf3JNG1iA585W0D
-	 lgWSAQFJ0pfQLJtxPWfGa/YYtW5dtZPmeCFxlm1E=
+	b=SG+zR3QES5S4Ov8VaCR6OvL2/E2la/+/88YRz6j8vsXu6tbqroeNFFZao+yJg2eKT
+	 9H8esG6AFR+ZvkPZ0IjPuX7dthmn6ctWpfj7h5jFl/6UsDNi1GPbnv2Qk8PMvkIqOU
+	 JQF7CshmmzjI82fQVEmkl0oStmlkzIVXPeFzgWN0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7820EF805FF;
-	Wed,  5 May 2021 18:38:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3D291F80508;
+	Wed,  5 May 2021 18:38:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 31C4DF80601; Wed,  5 May 2021 18:38:08 +0200 (CEST)
+ id C7B3AF8060D; Wed,  5 May 2021 18:38:15 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9516CF80515
- for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 18:38:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9516CF80515
+ by alsa1.perex.cz (Postfix) with ESMTPS id 038B0F80508
+ for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 18:38:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 038B0F80508
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Sj2qswlc"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C4B7613C9;
- Wed,  5 May 2021 16:37:59 +0000 (UTC)
+ header.b="G6rSkGGH"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77FC761447;
+ Wed,  5 May 2021 16:38:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1620232680;
- bh=crQZifefxFB5zTrNmQ8E/W5S9724KgP2XqK90+Y+VD0=;
+ s=k20201202; t=1620232691;
+ bh=HGFtvC083Ni1nBN15WSuKPbVwjoqOSHiN4Am6r8cCdM=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Sj2qswlclpUEK/KpH74ZcEpWP+4JPU/V71NjjLt0v9r5kkPseuUyexOahtkZE4gZl
- u5Y5Z2uoyziM0x7kWsIlTDhtU9tG03Zu5mHCO+P2Ca5jHko4b8TzTx4MhLbtqiaJwL
- sgMk7tfQBBxwOSLpxpS16Cg9Sm/D+LemRj33iqwtbXHdXXNAx2AlSEnSiJbqRmPRLU
- h1my9XTWu6PZqplPsI22FRhHZkfHaXyD+GExaRbhr/OuoeXfrHjgTHiaPjnrPlvgb3
- Jr32yMn61p7ovo3BDsmB0h26L0a+Umlwcm5Opy3HhU6Vp657S195KaoqsiSAt37PW1
- okpEkhZSLzNnA==
+ b=G6rSkGGHCNBfbvlhL5h8auL4j//ccbYqOHVYGDXSD4h72g4RTAYuxXsFdOPD+cCHx
+ ffSoX4tRrNGou0PF5JuYSS3zZ401LjGTRVutJV9l/0ypEw0nT8yztcDqFsFl3iqb5l
+ kCCH+yxIBs5ZZnGph8IV2JTtllCMUgRS3cszlsPXfi/XQN2B9TEp0A4hwggNxqv4/G
+ YG/X71ORitRhpitQKxvMZC2fvQeA7+zdUuwH4QWAQMuGGGY/kP4DM3h+4dqNkZF5xI
+ TjMF6ZXGWhFd7awgZCsy/vobytepgLZG5CgO0XV6gYde6DGZC3nulzyJDrrV3VsL0y
+ elByEPPRiAGNw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 49/85] ASoC: rsnd: call
- rsnd_ssi_master_clk_start() from rsnd_ssi_init()
-Date: Wed,  5 May 2021 12:36:12 -0400
-Message-Id: <20210505163648.3462507-49-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 56/85] ASoC: Intel: sof_sdw: add quirk for new
+ ADL-P Rvp
+Date: Wed,  5 May 2021 12:36:19 -0400
+Message-Id: <20210505163648.3462507-56-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210505163648.3462507-1-sashal@kernel.org>
 References: <20210505163648.3462507-1-sashal@kernel.org>
@@ -72,10 +72,12 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>,
- "Linh Phung T . Y ." <linh.phung.jy@renesas.com>, alsa-devel@alsa-project.org,
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Mark Brown <broonie@kernel.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+ Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
+ Bard Liao <bard.liao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,112 +93,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+From: Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>
 
-[ Upstream commit a122a116fc6d8fcf2f202dcd185173a54268f239 ]
+[ Upstream commit d25bbe80485f8bcbbeb91a2a6cd8798c124b27b7 ]
 
-Current rsnd needs to call .prepare (P) for clock settings,
-.trigger for playback start (S) and stop (E).
-It should be called as below from SSI point of view.
+Add quirks for jack detection, rt711 DAI and DMIC
 
-	P -> S -> E -> P -> S -> E -> ...
-
-But, if you used MIXer, below case might happen
-
-	              (2)
-	1: P -> S ---> E -> ...
-	2:         P ----> S -> ...
-	          (1)     (3)
-
-P(1) setups clock, but E(2) resets it. and starts playback (3).
-In such case, it will reports "SSI parent/child should use same rate".
-
-rsnd_ssi_master_clk_start() which is the main function at (P)
-was called from rsnd_ssi_init() (= S) before,
-but was moved by below patch to rsnd_soc_dai_prepare() (= P) to avoid
-using clk_get_rate() which shouldn't be used under atomic context.
-
-	commit 4d230d1271064 ("ASoC: rsnd: fixup not to call clk_get/set
-				under non-atomic")
-
-Because of above patch, rsnd_ssi_master_clk_start() is now called at (P)
-which is for non atomic context. But (P) is assuming that spin lock is
-*not* used.
-One issue now is rsnd_ssi_master_clk_start() is checking ssi->xxx
-which should be protected by spin lock.
-
-After above patch, adg.c had below patch for other reasons.
-
-	commit 06e8f5c842f2d ("ASoC: rsnd: don't call clk_get_rate()
-				under atomic context")
-
-clk_get_rate() is used at probe() timing by this patch.
-In other words, rsnd_ssi_master_clk_start() is no longer using
-clk_get_rate() any more.
-
-This means we can call it from rsnd_ssi_init() (= S) again which is
-protected by spin lock.
-This patch re-move it to under spin lock, and solves
-1. checking ssi->xxx without spin lock issue.
-2. clk setting / device start / device stop race condition.
-
-Reported-by: Linh Phung T. Y. <linh.phung.jy@renesas.com>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/875z0x1jt5.wl-kuninori.morimoto.gx@renesas.com
+Reviewed-by: Bard Liao <bard.liao@intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20210415175013.192862-6-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sh/rcar/ssi.c | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
+ sound/soc/intel/boards/sof_sdw.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index d0ded427a836..a2f8138d40c7 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -507,10 +507,15 @@ static int rsnd_ssi_init(struct rsnd_mod *mod,
- 			 struct rsnd_priv *priv)
- {
- 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
-+	int ret;
- 
- 	if (!rsnd_ssi_is_run_mods(mod, io))
- 		return 0;
- 
-+	ret = rsnd_ssi_master_clk_start(mod, io);
-+	if (ret < 0)
-+		return ret;
-+
- 	ssi->usrcnt++;
- 
- 	rsnd_mod_power_on(mod);
-@@ -1060,13 +1065,6 @@ static int rsnd_ssi_pio_pointer(struct rsnd_mod *mod,
- 	return 0;
- }
- 
--static int rsnd_ssi_prepare(struct rsnd_mod *mod,
--			    struct rsnd_dai_stream *io,
--			    struct rsnd_priv *priv)
--{
--	return rsnd_ssi_master_clk_start(mod, io);
--}
--
- static struct rsnd_mod_ops rsnd_ssi_pio_ops = {
- 	.name		= SSI_NAME,
- 	.probe		= rsnd_ssi_common_probe,
-@@ -1079,7 +1077,6 @@ static struct rsnd_mod_ops rsnd_ssi_pio_ops = {
- 	.pointer	= rsnd_ssi_pio_pointer,
- 	.pcm_new	= rsnd_ssi_pcm_new,
- 	.hw_params	= rsnd_ssi_hw_params,
--	.prepare	= rsnd_ssi_prepare,
- 	.get_status	= rsnd_ssi_get_status,
- };
- 
-@@ -1166,7 +1163,6 @@ static struct rsnd_mod_ops rsnd_ssi_dma_ops = {
- 	.pcm_new	= rsnd_ssi_pcm_new,
- 	.fallback	= rsnd_ssi_fallback,
- 	.hw_params	= rsnd_ssi_hw_params,
--	.prepare	= rsnd_ssi_prepare,
- 	.get_status	= rsnd_ssi_get_status,
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index 1d7677376e74..9dc982c2c776 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -187,6 +187,17 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 					SOF_RT715_DAI_ID_FIX |
+ 					SOF_SDW_FOUR_SPK),
+ 	},
++	/* AlderLake devices */
++	{
++		.callback = sof_sdw_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Intel Corporation"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Alder Lake Client Platform"),
++		},
++		.driver_data = (void *)(SOF_RT711_JD_SRC_JD1 |
++					SOF_SDW_TGL_HDMI |
++					SOF_SDW_PCH_DMIC),
++	},
+ 	{}
  };
  
 -- 
