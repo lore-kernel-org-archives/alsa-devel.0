@@ -2,79 +2,78 @@ Return-Path: <SRS0=SRJ/=KA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-22.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB06CC433B4
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:38:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53D35C433B4
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:39:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC7E361995
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:38:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC7E361995
+	by mail.kernel.org (Postfix) with ESMTPS id A5CA361444
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:38:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5CA361444
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6B5531702;
-	Wed,  5 May 2021 18:37:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B5531702
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3381F16FD;
+	Wed,  5 May 2021 18:38:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3381F16FD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620232725;
-	bh=vgaLfULb+ZpcBqs/sfcsqHJT2jKL0I8vOFjfBTuoZig=;
+	s=default; t=1620232738;
+	bh=ao/O+HGnhxyGgjd2MiUDJb/o4Y21qQRTpFo5rO609IY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HZEscGfKeicYy3xyiBbUcp23Spu4n1jCaIkkQdnnkebM1QPxgSrW0aWsofz2Sa447
-	 Q/HzGuB+lIcGd5+xtFqbLTJ0RGMAmpKkk6Ft94HQv+xuJWbhSMXAywAq2gcYsQz9AL
-	 KL53vOSwX02qfo/llsmLIPR681qA+dxtPaRKc9RQ=
+	b=YV7fCBMgADchQfOOb1moLRWFdZ8lNITYS5VZi9lSHOocymjelRYSBtJLOS84rfmxh
+	 wVetZNFVvaEAlO8SXj3UJIAh4UPLfQtxPwYbgoUxwo3AUwatbwCjUF7sV+U3A3EHaa
+	 z8jVUNmKK3hIYN5zKiH3UnyrvrHx1mm+MbPuk7LU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F18C1F8051A;
-	Wed,  5 May 2021 18:33:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 937E6F8042F;
+	Wed,  5 May 2021 18:34:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4046BF8051B; Wed,  5 May 2021 18:33:37 +0200 (CEST)
+ id 52C7EF80430; Wed,  5 May 2021 18:34:22 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7C515F80519
- for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 18:33:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C515F80519
+ by alsa1.perex.cz (Postfix) with ESMTPS id 85ABCF80425
+ for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 18:34:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85ABCF80425
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="WuwFt7qz"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C30BD6143E;
- Wed,  5 May 2021 16:33:31 +0000 (UTC)
+ header.b="qXgzJbCL"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE8776157E;
+ Wed,  5 May 2021 16:34:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1620232412;
- bh=vgaLfULb+ZpcBqs/sfcsqHJT2jKL0I8vOFjfBTuoZig=;
+ s=k20201202; t=1620232457;
+ bh=ao/O+HGnhxyGgjd2MiUDJb/o4Y21qQRTpFo5rO609IY=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=WuwFt7qzGaFkjJlMXLxygjdSEwNfhyJZ96Zk7LYlVq+7alaf68GsNRb6KCZpRFLmj
- ynKFGAfeQwdSKbaf5m7a0JrvOwuf6XZLm/S6YFPRpeKmXvIwdYSWhawrjniQQ+nIbf
- Hohuej/ISQdbrzaxOcQ0GmB+tRt11RL5uoJr9znhXHNeeeoprtp06dBKRO9MEl/NMD
- SGaR34pfzi0LBnHleIy2dqji4U07z2UPizaakHnE7qu+yn+RGXqfJ6vxWF6aDp7ddC
- AXaY7NaAKZAwPJCgjzblwP6K0elr3WAoGDsFFnhD9POVnJjjP0hztxWnc0RYS9agt6
- LWZlUS1emltRg==
+ b=qXgzJbCLEI4+vrHo7bebtHX6pgqWP+hFwT47pgPSsh2+AKWZd/pv7RCTajwtDba2F
+ I8UxpGdjDtED1GW7/f2MjO7PMMYfm8BOFzFKY++IMAuj8LTWYOnBQi2bMdZjNTpgnm
+ 7gCc2rIbJyij9LsloH1c5V17Til2yq1tyaZUCP9rqUzs2mV4pfb6vKstiBlC+er6iW
+ z3Usv/i4idLQ8CYCm/ca60HlXrvaqjreqDmuxhx7Dfg8T+9WXbc+Q5LDuXW5IvEU0m
+ Xg9sh6ptxEfAQzaG1X4xHqQAUokDeEWwVWjRZKJwIlVySxkAiAKVbMI0jglYAlbgW6
+ 6kuxMYaAWRjCg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.12 090/116] ASoC: rt286: Generalize support for
- ALC3263 codec
-Date: Wed,  5 May 2021 12:30:58 -0400
-Message-Id: <20210505163125.3460440-90-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.11 002/104] ALSA: usb-audio: Add Pioneer DJM-850 to
+ quirks-table
+Date: Wed,  5 May 2021 12:32:31 -0400
+Message-Id: <20210505163413.3461611-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210505163125.3460440-1-sashal@kernel.org>
-References: <20210505163125.3460440-1-sashal@kernel.org>
+In-Reply-To: <20210505163413.3461611-1-sashal@kernel.org>
+References: <20210505163413.3461611-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, David Ward <david.ward@gatech.edu>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org, Nicolas MURE <nicolas.mure2019@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,97 +89,97 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: David Ward <david.ward@gatech.edu>
+From: Nicolas MURE <nicolas.mure2019@gmail.com>
 
-[ Upstream commit aa2f9c12821e6a4ba1df4fb34a3dbc6a2a1ee7fe ]
+[ Upstream commit a3c30b0cb6d05f5bf66d1a5d42e876f31753a447 ]
 
-The ALC3263 codec on the XPS 13 9343 is also found on the Latitude 13 7350
-and Venue 11 Pro 7140. They require the same handling for the combo jack to
-work with a headset: GPIO pin 6 must be set.
+Declare the Pioneer DJM-850 interfaces for capture and playback.
 
-The HDA driver always sets this pin on the ALC3263, which it distinguishes
-by the codec vendor/device ID 0x10ec0288 and PCI subsystem vendor ID 0x1028
-(Dell). The ASoC driver does not use PCI, so adapt this check to use DMI to
-determine if Dell is the system vendor.
+See https://github.com/nm2107/Pioneer-DJM-850-driver-reverse-engineering/blob/172fb9a61055960c88c67b7c416fe5bf3609807b/doc/usb-device-specifications.md
+for the complete device spec.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=150601
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=205961
-Signed-off-by: David Ward <david.ward@gatech.edu>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210418134658.4333-6-david.ward@gatech.edu
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Nicolas MURE <nicolas.mure2019@gmail.com>
+Link: https://lore.kernel.org/r/20210301152729.18094-2-nicolas.mure2019@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt286.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ sound/usb/quirks-table.h | 63 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 63 insertions(+)
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index 8abe232ca4a4..2f18f5114f7e 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -1117,12 +1117,11 @@ static const struct dmi_system_id force_combo_jack_table[] = {
- 	{ }
- };
- 
--static const struct dmi_system_id dmi_dell_dino[] = {
-+static const struct dmi_system_id dmi_dell[] = {
- 	{
--		.ident = "Dell Dino",
-+		.ident = "Dell",
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
--			DMI_MATCH(DMI_PRODUCT_NAME, "XPS 13 9343")
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 1165a5ac60f2..9716a9f7c095 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -3817,6 +3817,69 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
  		}
- 	},
- 	{ }
-@@ -1133,7 +1132,7 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+ 	}
+ },
++{
++	/*
++	 * Pioneer DJ DJM-850
++	 * 8 channels playback and 8 channels capture @ 44.1/48/96kHz S24LE
++	 * Playback on EP 0x05
++	 * Capture on EP 0x86
++	 */
++	USB_DEVICE_VENDOR_SPEC(0x08e4, 0x0163),
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = (const struct snd_usb_audio_quirk[]) {
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 8,
++					.iface = 0,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.endpoint = 0x05,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC|
++					    USB_ENDPOINT_SYNC_ASYNC|
++						USB_ENDPOINT_USAGE_DATA,
++					.rates = SNDRV_PCM_RATE_44100|
++						SNDRV_PCM_RATE_48000|
++						SNDRV_PCM_RATE_96000,
++					.rate_min = 44100,
++					.rate_max = 96000,
++					.nr_rates = 3,
++					.rate_table = (unsigned int[]) { 44100, 48000, 96000 }
++				}
++			},
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 8,
++					.iface = 0,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.endpoint = 0x86,
++					.ep_idx = 1,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC|
++						USB_ENDPOINT_SYNC_ASYNC|
++						USB_ENDPOINT_USAGE_DATA,
++					.rates = SNDRV_PCM_RATE_44100|
++						SNDRV_PCM_RATE_48000|
++						SNDRV_PCM_RATE_96000,
++					.rate_min = 44100,
++					.rate_max = 96000,
++					.nr_rates = 3,
++					.rate_table = (unsigned int[]) { 44100, 48000, 96000 }
++				}
++			},
++			{
++				.ifnum = -1
++			}
++		}
++	}
++},
  {
- 	struct rt286_platform_data *pdata = dev_get_platdata(&i2c->dev);
- 	struct rt286_priv *rt286;
--	int i, ret, val;
-+	int i, ret, vendor_id;
- 
- 	rt286 = devm_kzalloc(&i2c->dev,	sizeof(*rt286),
- 				GFP_KERNEL);
-@@ -1149,14 +1148,15 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
- 	}
- 
- 	ret = regmap_read(rt286->regmap,
--		RT286_GET_PARAM(AC_NODE_ROOT, AC_PAR_VENDOR_ID), &val);
-+		RT286_GET_PARAM(AC_NODE_ROOT, AC_PAR_VENDOR_ID), &vendor_id);
- 	if (ret != 0) {
- 		dev_err(&i2c->dev, "I2C error %d\n", ret);
- 		return ret;
- 	}
--	if (val != RT286_VENDOR_ID && val != RT288_VENDOR_ID) {
-+	if (vendor_id != RT286_VENDOR_ID && vendor_id != RT288_VENDOR_ID) {
- 		dev_err(&i2c->dev,
--			"Device with ID register %#x is not rt286\n", val);
-+			"Device with ID register %#x is not rt286\n",
-+			vendor_id);
- 		return -ENODEV;
- 	}
- 
-@@ -1180,8 +1180,8 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
- 	if (pdata)
- 		rt286->pdata = *pdata;
- 
--	if (dmi_check_system(force_combo_jack_table) ||
--		dmi_check_system(dmi_dell_dino))
-+	if ((vendor_id == RT288_VENDOR_ID && dmi_check_system(dmi_dell)) ||
-+		dmi_check_system(force_combo_jack_table))
- 		rt286->pdata.cbj_en = true;
- 
- 	regmap_write(rt286->regmap, RT286_SET_AUDIO_POWER, AC_PWRST_D3);
-@@ -1220,7 +1220,7 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
- 	regmap_update_bits(rt286->regmap, RT286_DEPOP_CTRL3, 0xf777, 0x4737);
- 	regmap_update_bits(rt286->regmap, RT286_DEPOP_CTRL4, 0x00ff, 0x003f);
- 
--	if (dmi_check_system(dmi_dell_dino)) {
-+	if (vendor_id == RT288_VENDOR_ID && dmi_check_system(dmi_dell)) {
- 		regmap_update_bits(rt286->regmap,
- 			RT286_SET_GPIO_MASK, 0x40, 0x40);
- 		regmap_update_bits(rt286->regmap,
+ 	/*
+ 	 * Pioneer DJ DJM-450
 -- 
 2.30.2
 
