@@ -7,63 +7,64 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8335BC433ED
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:45:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DE61C433ED
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:45:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F0993613F1
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:45:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F0993613F1
+	by mail.kernel.org (Postfix) with ESMTPS id D9883613C3
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:45:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D9883613C3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 784FC16DC;
-	Wed,  5 May 2021 18:44:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 784FC16DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6BFCB174A;
+	Wed,  5 May 2021 18:44:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6BFCB174A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620233121;
-	bh=osxeUbBdYlxAMFzDHWxn+ZyfynLoHDigqa0Nh2hjomc=;
+	s=default; t=1620233142;
+	bh=F+pne/Hjxiv7x9JXuhGkN38R9E5g7VxohpNgBfzPr/A=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HZfvLyLC7zFXmuWm5ZwQeeJkx60da81j8DxCPxMNju8tFSROPrM/TzdFzxQrHSDva
-	 HTa8MDGm5YZfKP6WWDv/DSb+tDxGEfT15dWRxLOdUgtr/YBfbI9A/yd3g+kI/sTt4C
-	 DW+/9fguAUE4mmOjW8apG5oz8lx10M6ARVVwddLo=
+	b=UdElGfTNXs7aCT7TQrysCHbuyJmD2BZayGv6zsevvbgyw+S8vWFjSp3Ue4VOJWZnq
+	 6BXwHLpPmMFxbHkC3KyGH5c9WjG6jIZDbitXYwxYtfHm7Lsox5HfRTsPf0Dg10H9gO
+	 fhMb7dvfxV6w4MOkNZmty91fWKYqRXzfVM9vkFoE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6B7FEF80279;
+	by alsa1.perex.cz (Postfix) with ESMTP id F1322F804F2;
 	Wed,  5 May 2021 18:37:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8B028F804FC; Wed,  5 May 2021 18:37:18 +0200 (CEST)
+ id F31EAF804FA; Wed,  5 May 2021 18:37:18 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 23EEEF8026D
- for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 18:37:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23EEEF8026D
+ by alsa1.perex.cz (Postfix) with ESMTPS id A856AF804F2
+ for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 18:37:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A856AF804F2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BydM3jT3"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D459761958;
- Wed,  5 May 2021 16:37:09 +0000 (UTC)
+ header.b="cVBpXRPO"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 676EE61956;
+ Wed,  5 May 2021 16:37:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1620232630;
- bh=osxeUbBdYlxAMFzDHWxn+ZyfynLoHDigqa0Nh2hjomc=;
+ s=k20201202; t=1620232633;
+ bh=F+pne/Hjxiv7x9JXuhGkN38R9E5g7VxohpNgBfzPr/A=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=BydM3jT3LEtLHzIlGOcbHZGrpRf82U82e/AwU/lDSTrVBEtiqFpmuPscV3/OqVHfr
- 7V9VdZBS4OJckANIevzIrVYlWaT1hJDM8eDmTh6eL2sXJXFesqVut/VyN/1b4JcH5p
- 6yvwZxKtl074KPQA2xnIRAS0uOOzDSx/FIgw1csHs+oEaBjm23G04iUuLYPYl3WvUE
- YUNaZT3IsI2BYSC3WgUbUs0gx1uo4GAZGg7lHWeMbC752TaJTzpeqyFGdrppln2Zcu
- 3qlYd+GWh3Usu/Fal6E3Yx9f0qlUI09okjbaT8mbW0SrT3axkbKg8U0RE+Oyam0y5x
- QYKRfWjk3gWdQ==
+ b=cVBpXRPOcOfFzdkZYIt3SwN5mcc70nIbU2/NSlvya7Pv7KrIesgMMk0TPb2FcnFOO
+ /bC9+hzrFQFmy0UPE4F4bOzeqRXMPV8bR1Rv/1l/6b/ivBJ8oluPMZZryjc/UYMPsx
+ d9mO6/tMfr+4s/bgCZVkY1p9wYIWoYyJd4uwY41mz4jTwjlrgmXy2aXsHo6k18H8X6
+ LtcTPIuAbvS5Msib2R5+1ZI3KRRrCf9NlsTAilsbxOv5wdFh18W28grMhzMwY/061e
+ y17hQQ7ddyqjG1hGE9mQ7uNZ00AdrejHDps4mledGkIZr+6JNZgm2GVBb+gEBkScN4
+ +TAKjiudN9xVQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 15/85] ALSA: hdspm: don't disable if not enabled
-Date: Wed,  5 May 2021 12:35:38 -0400
-Message-Id: <20210505163648.3462507-15-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 17/85] ALSA: bebob: enable to deliver MIDI
+ messages for multiple ports
+Date: Wed,  5 May 2021 12:35:40 -0400
+Message-Id: <20210505163648.3462507-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210505163648.3462507-1-sashal@kernel.org>
 References: <20210505163648.3462507-1-sashal@kernel.org>
@@ -71,8 +72,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, Tong Zhang <ztong0001@gmail.com>,
- alsa-devel@alsa-project.org, Sasha Levin <sashal@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,46 +89,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Tong Zhang <ztong0001@gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-[ Upstream commit 790f5719b85e12e10c41753b864e74249585ed08 ]
+[ Upstream commit d2b6f15bc18ac8fbce25398290774c21f5b2cd44 ]
 
-hdspm wants to disable a not enabled pci device, which makes kernel
-throw a warning. Make sure the device is enabled before calling disable.
+Current implementation of bebob driver doesn't correctly handle the case
+that the device has multiple MIDI ports. The cause is the number of MIDI
+conformant data channels is passed to AM824 data block processing layer.
 
-[    1.786391] snd_hdspm 0000:00:03.0: disabling already-disabled device
-[    1.786400] WARNING: CPU: 0 PID: 182 at drivers/pci/pci.c:2146 pci_disable_device+0x91/0xb0
-[    1.795181] Call Trace:
-[    1.795320]  snd_hdspm_card_free+0x58/0xa0 [snd_hdspm]
-[    1.795595]  release_card_device+0x4b/0x80 [snd]
-[    1.795860]  device_release+0x3b/0xa0
-[    1.796072]  kobject_put+0x94/0x1b0
-[    1.796260]  put_device+0x13/0x20
-[    1.796438]  snd_card_free+0x61/0x90 [snd]
-[    1.796659]  snd_hdspm_probe+0x97b/0x1440 [snd_hdspm]
+This commit fixes the bug.
 
-Suggested-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-Link: https://lore.kernel.org/r/20210321153840.378226-3-ztong0001@gmail.com
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20210321032831.340278-4-o-takashi@sakamocchi.jp
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/rme9652/hdspm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/firewire/bebob/bebob_stream.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 4a1f576dd9cf..51c3c6a08a1c 100644
---- a/sound/pci/rme9652/hdspm.c
-+++ b/sound/pci/rme9652/hdspm.c
-@@ -6891,7 +6891,8 @@ static int snd_hdspm_free(struct hdspm * hdspm)
- 	if (hdspm->port)
- 		pci_release_regions(hdspm->pci);
+diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
+index bbae04793c50..c18017e0a3d9 100644
+--- a/sound/firewire/bebob/bebob_stream.c
++++ b/sound/firewire/bebob/bebob_stream.c
+@@ -517,20 +517,22 @@ int snd_bebob_stream_init_duplex(struct snd_bebob *bebob)
+ static int keep_resources(struct snd_bebob *bebob, struct amdtp_stream *stream,
+ 			  unsigned int rate, unsigned int index)
+ {
+-	struct snd_bebob_stream_formation *formation;
++	unsigned int pcm_channels;
++	unsigned int midi_ports;
+ 	struct cmp_connection *conn;
+ 	int err;
  
--	pci_disable_device(hdspm->pci);
-+	if (pci_is_enabled(hdspm->pci))
-+		pci_disable_device(hdspm->pci);
- 	return 0;
- }
+ 	if (stream == &bebob->tx_stream) {
+-		formation = bebob->tx_stream_formations + index;
++		pcm_channels = bebob->tx_stream_formations[index].pcm;
++		midi_ports = bebob->midi_input_ports;
+ 		conn = &bebob->out_conn;
+ 	} else {
+-		formation = bebob->rx_stream_formations + index;
++		pcm_channels = bebob->rx_stream_formations[index].pcm;
++		midi_ports = bebob->midi_output_ports;
+ 		conn = &bebob->in_conn;
+ 	}
+ 
+-	err = amdtp_am824_set_parameters(stream, rate, formation->pcm,
+-					 formation->midi, false);
++	err = amdtp_am824_set_parameters(stream, rate, pcm_channels, midi_ports, false);
+ 	if (err < 0)
+ 		return err;
  
 -- 
 2.30.2
