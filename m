@@ -4,96 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07D9CC433B4
-	for <alsa-devel@archiver.kernel.org>; Sat,  8 May 2021 07:55:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B478CC433ED
+	for <alsa-devel@archiver.kernel.org>; Sat,  8 May 2021 11:03:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CB55C61458
-	for <alsa-devel@archiver.kernel.org>; Sat,  8 May 2021 07:55:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB55C61458
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	by mail.kernel.org (Postfix) with ESMTPS id 57AEC61426
+	for <alsa-devel@archiver.kernel.org>; Sat,  8 May 2021 11:03:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 57AEC61426
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B35D11691;
-	Sat,  8 May 2021 09:54:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B35D11691
+	by alsa0.perex.cz (Postfix) with ESMTPS id 15CE0167E;
+	Sat,  8 May 2021 13:03:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15CE0167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620460500;
-	bh=L5ouNKImbRubViMUFjNN3cbungapXsd0pRdZBO03o1s=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=fnq7poeYFE3PI25EOPp0pZuNoVVVFGDKwcIRCHXzvcNI2gsRRZfaP/SlazX0Kw3mR
-	 1nGEwSerzBveNW48PfNfqGRq8Pggr4FYBvvlAkcJNDO1mqe5ys3m8gd8FEdvjf2/nf
-	 pGF5bepevS58Qyv3JrKb9Ndu0pE4CSbKs99bOBn4=
-Received: from vmi242170.contaboserver.net (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8785F8025A;
-	Sat,  8 May 2021 09:52:25 +0200 (CEST)
+	s=default; t=1620471836;
+	bh=EZo66Cg5nJkqcFSej6qwjtUKgPs4fRTdbswWmDJdGaU=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=nM/swYLUxgLJE/GFtgUKppmsfiI8CAymciL0bUi4XTKpK74Ol2kJjKues7qT5IEEo
+	 H5kmsfTF1S5HKzJ+6hGkSuws9OCTSwm8aCBH5uSC0db2KKT7t2y2r5jWT+yX9zwE0l
+	 gH7xrJ6CoGrg96mwZpw2D+OCGZkTS5Hkw5kxOA18=
+Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
+	by alsa1.perex.cz (Postfix) with ESMTP id 9EDA5F801F7;
+	Sat,  8 May 2021 13:03:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 20501F8021C; Sat,  8 May 2021 09:52:14 +0200 (CEST)
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com
- [IPv6:2607:f8b0:4864:20::102c])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 38435F8021C; Sat,  8 May 2021 13:03:04 +0200 (CEST)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9320DF8010B
- for <alsa-devel@alsa-project.org>; Sat,  8 May 2021 09:51:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9320DF8010B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="XzbrTyXs"
-Received: by mail-pj1-x102c.google.com with SMTP id
- h14-20020a17090aea8eb02901553e1cc649so6707778pjz.0
- for <alsa-devel@alsa-project.org>; Sat, 08 May 2021 00:51:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=7+LUtwfRs66K7/usQVNOuvgUZ6bVUtHjhJJe+YZ0tm4=;
- b=XzbrTyXsIlZx9V9LAzHOxJrO+jh9aLJKwppP2Nt9laYQ+LNhzh6wrB57Cj+dGr7deP
- XHxqWIA8tICdBbMisUzEyQiWjL1X5ClxrOJk49vSLdo3Bbsh10Ly36w56q+cWMdXMWa0
- wM5WTHq1uoDYuKILe1IFvWycmLPNy314FE8QQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=7+LUtwfRs66K7/usQVNOuvgUZ6bVUtHjhJJe+YZ0tm4=;
- b=sIRLrOrVK2wyV9Sg3jD/mhrRaxQtFfkeZwntYU5032sP0l177xBMO9+L009hIMbpFU
- 9fIB465UXHpRC1S1L4+hLhbw6UhuNUBLwLImfVvu92b/W1m2fK/R24wIgz913YvSi7Nr
- 5tvBJ4voK9TmMdlbYGzeKmAGAXyzuml+WR/VNOWrIxUy51HifMIIV9RFc3y3JfqD1Aad
- F18ASNFo1lk3Htt+PRYVKPr8pQRYEBl9kjmv6Ae36XVLAM3RGz410EjISm7v5Rlvt8QM
- mdmN5FzlYSIuQNPmix9WJ2rvXqOBX/cMJvrdvXfqL3byf3/+I3bSwVuJ750rbhpsateF
- +Bew==
-X-Gm-Message-State: AOAM5310HoJ/gKUF1Eby39oioWiI/yYJ9o7dOUS1k5lDGLe01H24/VOO
- GexztNLG5rYTKBChF41KkVrq2w==
-X-Google-Smtp-Source: ABdhPJw1M68FCMCBHQWrUE9x47jK+e4cOkD+yJZlFNG2fSj5vu+SjSzR2lLT81gpnUIqLeunnKxQUw==
-X-Received: by 2002:a17:90a:b78d:: with SMTP id
- m13mr29138284pjr.47.1620460314132; 
- Sat, 08 May 2021 00:51:54 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:201:ab8b:4a3d:46ab:361c])
- by smtp.gmail.com with ESMTPSA id b65sm6345091pga.83.2021.05.08.00.51.53
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 08 May 2021 00:51:53 -0700 (PDT)
-From: Stephen Boyd <swboyd@chromium.org>
-To: Mark Brown <broonie@kernel.org>
-Subject: [RFC/PATCH 2/2] ASoC: rt5682: Implement remove callback
-Date: Sat,  8 May 2021 00:51:51 -0700
-Message-Id: <20210508075151.1626903-2-swboyd@chromium.org>
-X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
-In-Reply-To: <20210508075151.1626903-1-swboyd@chromium.org>
-References: <20210508075151.1626903-1-swboyd@chromium.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Jairaj Arava <jairaj.arava@intel.com>,
- linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
- Shuming Fan <shumingf@realtek.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 09FBEF8010B
+ for <alsa-devel@alsa-project.org>; Sat,  8 May 2021 13:02:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09FBEF8010B
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 86A80201F1A;
+ Sat,  8 May 2021 13:02:55 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id DE47D201F1E;
+ Sat,  8 May 2021 13:02:52 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 9F90B4030B;
+ Sat,  8 May 2021 13:02:49 +0200 (CEST)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: ak5558: Correct the dai name for ak5552
+Date: Sat,  8 May 2021 18:46:47 +0800
+Message-Id: <1620470807-12056-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,52 +76,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Let's implement a remove callback for this driver that's similar to the
-shutdown hook, but also disables the regulators before they're put by
-devm code.
+Correct the dai name for ak5552. The name should be "ak5552-aif".
 
-Cc: Jairaj Arava <jairaj.arava@intel.com>
-Cc: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
-Cc: Shuming Fan <shumingf@realtek.com>
-Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+Fixes: d8c5c82e4e5b ("ASoC: ak5558: Add support for ak5552")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
+ sound/soc/codecs/ak5558.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This is totally untested, but sending it in case anyone is interested.
-
- sound/soc/codecs/rt5682-i2c.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/sound/soc/codecs/rt5682-i2c.c b/sound/soc/codecs/rt5682-i2c.c
-index 8265b537ff4f..52a6fc56a232 100644
---- a/sound/soc/codecs/rt5682-i2c.c
-+++ b/sound/soc/codecs/rt5682-i2c.c
-@@ -280,6 +280,16 @@ static void rt5682_i2c_shutdown(struct i2c_client *client)
- 	rt5682_reset(rt5682);
- }
- 
-+static int rt5682_i2c_remove(struct i2c_client *client)
-+{
-+	struct rt5682_priv *rt5682 = i2c_get_clientdata(client);
-+
-+	rt5682_i2c_shutdown(client);
-+	regulator_bulk_disable(ARRAY_SIZE(rt5682->supplies), rt5682->supplies);
-+
-+	return 0;
-+}
-+
- static const struct of_device_id rt5682_of_match[] = {
- 	{.compatible = "realtek,rt5682i"},
- 	{},
-@@ -306,6 +316,7 @@ static struct i2c_driver rt5682_i2c_driver = {
- 		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
- 	},
- 	.probe = rt5682_i2c_probe,
-+	.remove = rt5682_i2c_remove,
- 	.shutdown = rt5682_i2c_shutdown,
- 	.id_table = rt5682_i2c_id,
+diff --git a/sound/soc/codecs/ak5558.c b/sound/soc/codecs/ak5558.c
+index 34aed80db0eb..37d4600b6f2c 100644
+--- a/sound/soc/codecs/ak5558.c
++++ b/sound/soc/codecs/ak5558.c
+@@ -307,7 +307,7 @@ static struct snd_soc_dai_driver ak5558_dai = {
  };
+ 
+ static struct snd_soc_dai_driver ak5552_dai = {
+-	.name = "ak5558-aif",
++	.name = "ak5552-aif",
+ 	.capture = {
+ 		.stream_name = "Capture",
+ 		.channels_min = 1,
 -- 
-https://chromeos.dev
+2.27.0
 
