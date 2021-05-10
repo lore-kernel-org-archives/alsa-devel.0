@@ -2,57 +2,61 @@ Return-Path: <SRS0=6VrY=KF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D448C433ED
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 01:52:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A11F2C433B4
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 01:53:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8755E613C2
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 01:52:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8755E613C2
+	by mail.kernel.org (Postfix) with ESMTPS id 47CB8613C5
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 01:53:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 47CB8613C5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 59BC116A3;
-	Mon, 10 May 2021 03:51:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59BC116A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 240BF16B4;
+	Mon, 10 May 2021 03:52:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 240BF16B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620611554;
-	bh=GddV/lJFJa1QYfLO8u9RbSBsRSCvA8Jp+54qtUyh/Wc=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Ijj7V0JaospDOitk+1pgUwj4fPQIVbDksnFuohSMVXrfi9t/SVYlfcisb9C89XEvQ
-	 TSREg9nM33VdNgCmuUnONncJTHx3M5hRsR6W8k+L80dMAQJe5C0kBl4JZmA4h2+LjP
-	 5RDtG1rXUEj3hDk6XrFJ05Q0nD5c5kjbCBMQyGbU=
+	s=default; t=1620611605;
+	bh=JY5ermeKoONnp9YM4LwPxlbikJbsCUyR46lTi94RtO8=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=AttiXoGczOi58R7kqoP3r4Ni1zKBaTYkE+ZRTK4zhz0TdDePBGI7vcJLM+0tqakek
+	 eh3d5dvDPce/EZXqpGNUYr/tlO/IcEY+ODtDVBRk+I4bGC1vJCWHX83VIvJJ0n3XVh
+	 MVjrVLVrRpeS+skWjn71cPwbmJUzkb9L9TshrHYo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD3DBF8020C;
-	Mon, 10 May 2021 03:51:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2DFD2F80272;
+	Mon, 10 May 2021 03:52:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 942EFF80240; Mon, 10 May 2021 03:51:42 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 0C949F800EA
- for <alsa-devel@alsa-project.org>; Mon, 10 May 2021 03:51:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C949F800EA
-Date: 10 May 2021 10:51:33 +0900
-X-IronPort-AV: E=Sophos;i="5.82,286,1613401200"; d="scan'208";a="80553225"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 10 May 2021 10:51:33 +0900
+ id 214EFF80272; Mon, 10 May 2021 03:52:13 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 0F646F8026B
+ for <alsa-devel@alsa-project.org>; Mon, 10 May 2021 03:52:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F646F8026B
+Date: 10 May 2021 10:52:03 +0900
+X-IronPort-AV: E=Sophos;i="5.82,286,1613401200"; d="scan'208";a="80754848"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 10 May 2021 10:52:03 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 4314E415CA8B;
- Mon, 10 May 2021 10:51:33 +0900 (JST)
-Message-ID: <87cztzcq56.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 649EE401324E;
+ Mon, 10 May 2021 10:52:03 +0900 (JST)
+Message-ID: <87bl9jcq4c.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 0/4] ASoC: simple-card / audio-graph re-cleanup
+Subject: [PATCH 1/4] ASoC: simple-card: add simple_parse_node()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>, Michael Walle <michael@walle.cc>,
  Guillaume Tucker <guillaume.tucker@collabora.com>
+In-Reply-To: <87cztzcq56.wl-kuninori.morimoto.gx@renesas.com>
+References: <87cztzcq56.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -72,35 +76,292 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark, Guillaume
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-KernelCI had reported that my previous cleanup patches for simple-card / audio-graph
-broke kontron-sl28-var3-ads2 sound card probing.
-It reported that it is using same name for dailink->name.
+Parse dai/tdm/clk are common for both CPU/Codec node.
+This patch creates simple_parse_node() for it and share the code.
 
-At first I thought that the issue was fsl,vf610-sai doesn't have .name on driver.
-But real issue was that cpu->dai_name removed on simple_parse_node(),
-and dailink->name was based on it.
-We need to set/get dailink->name first, and call simple_parse_node().
-This patches are do it.
-audio-graph has same issue. [4/4] patch is for it.
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/generic/simple-card.c | 145 ++++++++++++++++----------------
+ 1 file changed, 74 insertions(+), 71 deletions(-)
 
-I hope these patches has no issues on kontron-sl28-var3-ads2.
-
-Link: https://lore.kernel.org/r/87h7k0i437.wl-kuninori.morimoto.gx@renesas.com
-Link: https://lore.kernel.org/r/20210423175318.13990-1-broonie@kernel.org
-Link: https://lore.kernel.org/r/3ca62063-41b4-c25b-a7bc-8a8160e7b684@collabora.com
-
-Kuninori Morimoto (4):
-  ASoC: simple-card: add simple_parse_node()
-  ASoC: simple-card: add simple_link_init()
-  ASoC: audio-graph: tidyup graph_dai_link_of_dpcm()
-  ASoC: audio-graph: tidyup dai_name seting timing
-
- sound/soc/generic/audio-graph-card.c |  48 +++----
- sound/soc/generic/simple-card.c      | 187 ++++++++++++++-------------
- 2 files changed, 122 insertions(+), 113 deletions(-)
-
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index a1373be4558f..5288aacfc628 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -93,12 +93,11 @@ static void simple_parse_convert(struct device *dev,
+ }
+ 
+ static void simple_parse_mclk_fs(struct device_node *top,
+-				 struct device_node *cpu,
+-				 struct device_node *codec,
++				 struct device_node *np,
+ 				 struct simple_dai_props *props,
+ 				 char *prefix)
+ {
+-	struct device_node *node = of_get_parent(cpu);
++	struct device_node *node = of_get_parent(np);
+ 	char prop[128];
+ 
+ 	snprintf(prop, sizeof(prop), "%smclk-fs", PREFIX);
+@@ -106,12 +105,57 @@ static void simple_parse_mclk_fs(struct device_node *top,
+ 
+ 	snprintf(prop, sizeof(prop), "%smclk-fs", prefix);
+ 	of_property_read_u32(node,	prop, &props->mclk_fs);
+-	of_property_read_u32(cpu,	prop, &props->mclk_fs);
+-	of_property_read_u32(codec,	prop, &props->mclk_fs);
++	of_property_read_u32(np,	prop, &props->mclk_fs);
+ 
+ 	of_node_put(node);
+ }
+ 
++static int simple_parse_node(struct asoc_simple_priv *priv,
++			     struct device_node *np,
++			     struct link_info *li,
++			     char *prefix,
++			     int is_cpu)
++{
++	struct device *dev = simple_priv_to_dev(priv);
++	struct device_node *top = dev->of_node;
++	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, li->link);
++	struct simple_dai_props *dai_props = simple_priv_to_props(priv, li->link);
++	struct snd_soc_dai_link_component *dlc;
++	struct asoc_simple_dai *dai;
++	int ret, single = 0;
++
++	if (is_cpu) {
++		dlc = asoc_link_to_cpu(dai_link, 0);
++		dai = simple_props_to_dai_cpu(dai_props, 0);
++	} else {
++		dlc = asoc_link_to_codec(dai_link, 0);
++		dai = simple_props_to_dai_codec(dai_props, 0);
++	}
++
++	simple_parse_mclk_fs(top, np, dai_props, prefix);
++
++	ret = asoc_simple_parse_dai(np, dlc, &single);
++	if (ret)
++		return ret;
++
++	ret = asoc_simple_parse_clk(dev, np, dai, dlc);
++	if (ret)
++		return ret;
++
++	ret = asoc_simple_parse_tdm(np, dai);
++	if (ret)
++		return ret;
++
++	if (is_cpu) {
++		struct snd_soc_dai_link_component *platforms = asoc_link_to_platform(dai_link, 0);
++
++		asoc_simple_canonicalize_cpu(dlc, single);
++		asoc_simple_canonicalize_platform(platforms, dlc);
++	}
++
++	return 0;
++}
++
+ static int simple_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 				   struct device_node *np,
+ 				   struct device_node *codec,
+@@ -121,10 +165,8 @@ static int simple_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 	struct device *dev = simple_priv_to_dev(priv);
+ 	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, li->link);
+ 	struct simple_dai_props *dai_props = simple_priv_to_props(priv, li->link);
+-	struct asoc_simple_dai *dai;
+ 	struct snd_soc_dai_link_component *cpus = asoc_link_to_cpu(dai_link, 0);
+ 	struct snd_soc_dai_link_component *codecs = asoc_link_to_codec(dai_link, 0);
+-	struct snd_soc_dai_link_component *platforms = asoc_link_to_platform(dai_link, 0);
+ 	struct device_node *top = dev->of_node;
+ 	struct device_node *node = of_get_parent(np);
+ 	char *prefix = "";
+@@ -132,39 +174,30 @@ static int simple_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 
+ 	dev_dbg(dev, "link_of DPCM (%pOF)\n", np);
+ 
+-	li->link++;
+-
+ 	/* For single DAI link & old style of DT node */
+ 	if (is_top)
+ 		prefix = PREFIX;
+ 
+ 	if (li->cpu) {
+-		int is_single_links = 0;
+-
+ 		/* Codec is dummy */
+ 
+ 		/* FE settings */
+ 		dai_link->dynamic		= 1;
+ 		dai_link->dpcm_merged_format	= 1;
+ 
+-		dai = simple_props_to_dai_cpu(dai_props, 0);
+-
+-		ret = asoc_simple_parse_dai(np, cpus, &is_single_links);
+-		if (ret)
+-			goto out_put_node;
+-
+-		ret = asoc_simple_parse_clk(dev, np, dai, cpus);
+-		if (ret < 0)
+-			goto out_put_node;
+-
++		/*
++		 * next simple_parse_node() might remove cpus->dai_name.
++		 * set dailink_name before it.
++		 */
+ 		ret = asoc_simple_set_dailink_name(dev, dai_link,
+ 						   "fe.%s",
+ 						   cpus->dai_name);
+ 		if (ret < 0)
+ 			goto out_put_node;
+ 
+-		asoc_simple_canonicalize_cpu(cpus, is_single_links);
+-		asoc_simple_canonicalize_platform(platforms, cpus);
++		ret = simple_parse_node(priv, np, li, prefix, 1);
++		if (ret < 0)
++			goto out_put_node;
+ 	} else {
+ 		struct snd_soc_codec_conf *cconf;
+ 
+@@ -174,23 +207,18 @@ static int simple_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 		dai_link->no_pcm		= 1;
+ 		dai_link->be_hw_params_fixup	= asoc_simple_be_hw_params_fixup;
+ 
+-		dai	= simple_props_to_dai_codec(dai_props, 0);
+ 		cconf	= simple_props_to_codec_conf(dai_props, 0);
+ 
+-		ret = asoc_simple_parse_dai(np, codecs, NULL);
+-		if (ret < 0)
+-			goto out_put_node;
+-
+-		ret = asoc_simple_parse_clk(dev, np, dai, codecs);
+-		if (ret < 0)
+-			goto out_put_node;
+-
+ 		ret = asoc_simple_set_dailink_name(dev, dai_link,
+ 						   "be.%s",
+ 						   codecs->dai_name);
+ 		if (ret < 0)
+ 			goto out_put_node;
+ 
++		ret = simple_parse_node(priv, np, li, prefix, 0);
++		if (ret < 0)
++			goto out_put_node;
++
+ 		/* check "prefix" from top node */
+ 		snd_soc_of_parse_node_prefix(top, cconf, codecs->of_node,
+ 					      PREFIX "prefix");
+@@ -201,11 +229,6 @@ static int simple_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 	}
+ 
+ 	simple_parse_convert(dev, np, &dai_props->adata);
+-	simple_parse_mclk_fs(top, np, codec, dai_props, prefix);
+-
+-	ret = asoc_simple_parse_tdm(np, dai);
+-	if (ret)
+-		goto out_put_node;
+ 
+ 	ret = asoc_simple_parse_daifmt(dev, node, codec,
+ 				       prefix, &dai_link->dai_fmt);
+@@ -218,6 +241,8 @@ static int simple_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 	dai_link->init			= asoc_simple_dai_init;
+ 
+ out_put_node:
++	li->link++;
++
+ 	of_node_put(node);
+ 	return ret;
+ }
+@@ -230,23 +255,18 @@ static int simple_dai_link_of(struct asoc_simple_priv *priv,
+ {
+ 	struct device *dev = simple_priv_to_dev(priv);
+ 	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, li->link);
+-	struct simple_dai_props *dai_props = simple_priv_to_props(priv, li->link);
+-	struct asoc_simple_dai *cpu_dai	= simple_props_to_dai_cpu(dai_props, 0);
+-	struct asoc_simple_dai *codec_dai = simple_props_to_dai_codec(dai_props, 0);
+ 	struct snd_soc_dai_link_component *cpus = asoc_link_to_cpu(dai_link, 0);
+ 	struct snd_soc_dai_link_component *codecs = asoc_link_to_codec(dai_link, 0);
+ 	struct snd_soc_dai_link_component *platforms = asoc_link_to_platform(dai_link, 0);
+-	struct device_node *top = dev->of_node;
+ 	struct device_node *cpu = NULL;
+ 	struct device_node *node = NULL;
+ 	struct device_node *plat = NULL;
+ 	char prop[128];
+ 	char *prefix = "";
+-	int ret, single_cpu = 0;
++	int ret;
+ 
+ 	cpu  = np;
+ 	node = of_get_parent(np);
+-	li->link++;
+ 
+ 	dev_dbg(dev, "link_of (%pOF)\n", node);
+ 
+@@ -262,53 +282,36 @@ static int simple_dai_link_of(struct asoc_simple_priv *priv,
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
+ 
+-	simple_parse_mclk_fs(top, cpu, codec, dai_props, prefix);
+-
+-	ret = asoc_simple_parse_dai(cpu, cpus, &single_cpu);
+-	if (ret < 0)
+-		goto dai_link_of_err;
+-
+-	ret = asoc_simple_parse_dai(codec, codecs, NULL);
+-	if (ret < 0)
+-		goto dai_link_of_err;
+-
+-	ret = asoc_simple_parse_dai(plat, platforms, NULL);
+-	if (ret < 0)
+-		goto dai_link_of_err;
+-
+-	ret = asoc_simple_parse_tdm(cpu, cpu_dai);
+-	if (ret < 0)
+-		goto dai_link_of_err;
+-
+-	ret = asoc_simple_parse_tdm(codec, codec_dai);
++	/*
++	 * next simple_parse_node() might remove cpus->dai_name.
++	 * set dailink_name before it.
++	 */
++	ret = asoc_simple_set_dailink_name(dev, dai_link, "%s-%s",
++					   cpus->dai_name, codecs->dai_name);
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
+ 
+-	ret = asoc_simple_parse_clk(dev, cpu, cpu_dai, cpus);
++	ret = simple_parse_node(priv, cpu, li, prefix, 1);
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
+ 
+-	ret = asoc_simple_parse_clk(dev, codec, codec_dai, codecs);
++	ret = simple_parse_node(priv, codec, li, prefix, 0);
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
+ 
+-	ret = asoc_simple_set_dailink_name(dev, dai_link,
+-					   "%s-%s",
+-					   cpus->dai_name,
+-					   codecs->dai_name);
++	ret = asoc_simple_parse_dai(plat, platforms, NULL);
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
+ 
+ 	dai_link->ops = &simple_ops;
+ 	dai_link->init = asoc_simple_dai_init;
+ 
+-	asoc_simple_canonicalize_cpu(cpus, single_cpu);
+-	asoc_simple_canonicalize_platform(platforms, cpus);
+-
+ dai_link_of_err:
+ 	of_node_put(plat);
+ 	of_node_put(node);
+ 
++	li->link++;
++
+ 	return ret;
+ }
+ 
 -- 
 2.25.1
 
