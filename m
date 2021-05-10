@@ -6,76 +6,92 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C011C4361B
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 11:47:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A974C433B4
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 11:53:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC3F861108
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 11:47:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC3F861108
+	by mail.kernel.org (Postfix) with ESMTPS id 528C360E09
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 11:53:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 528C360E09
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6E89816A3;
-	Mon, 10 May 2021 13:46:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E89816A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id CF49916A4;
+	Mon, 10 May 2021 13:52:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF49916A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620647256;
-	bh=AwD5xpGIOv2r9QjjWeUpZHs7e3Zp8HYciPYaqrsqDP8=;
+	s=default; t=1620647597;
+	bh=OGnNYM5nsoTkN/9Vy/5lWlNGUdYVVDyGMH4Q4kFLpFE=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UHwUfT8bIJ4clBIo7YG0Ca8wCsDwm/C0kYVnZTJCy54e5NBmVNLgYNXwSB5ZzMVHa
-	 yTK6Dkdef5w1LqSZG6+0RV4mXx0CwO8FrFCqJfgtQW6hV1Eex4JVv/SWd92KRVv+Pa
-	 DT7pBTaj7EQYAVXVDG7bSDVOZpYsdec0j7wLVeXI=
+	b=D1l6xqSFsUspvplrR+sgkT63RjEdDDTUNSr3ipgLlkJYx3zEkiFU80Up1tQ/cD9fi
+	 +Xzbef4ut9oPQ8B2jeilHTQL1SZ5CdVwDkMi7vTp0ltnzw5iPOFa5+cunq3nPgNF9I
+	 mwhZY/8pliSTecxHzdqyJa1kvlcbAsk7TUGkMYOo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EE0B4F800E9;
-	Mon, 10 May 2021 13:46:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 52C60F8020C;
+	Mon, 10 May 2021 13:52:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 02194F80240; Mon, 10 May 2021 13:46:44 +0200 (CEST)
-Received: from ssl.serverraum.org (ssl.serverraum.org
- [IPv6:2a01:4f8:151:8464::1:2])
+ id 62C8BF80240; Mon, 10 May 2021 13:52:26 +0200 (CEST)
+Received: from ssl.serverraum.org (ssl.serverraum.org [176.9.125.105])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B588CF800E9
- for <alsa-devel@alsa-project.org>; Mon, 10 May 2021 13:46:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B588CF800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 10474F800E9
+ for <alsa-devel@alsa-project.org>; Mon, 10 May 2021 13:52:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10474F800E9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=walle.cc header.i=@walle.cc
- header.b="AC1vrzDd"
+ header.b="aJ87l8l+"
 Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id DA6F322239;
- Mon, 10 May 2021 13:46:33 +0200 (CEST)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 5675322239;
+ Mon, 10 May 2021 13:52:22 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1620647194;
+ s=mail2016061301; t=1620647543;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=LZvd67eHWiLIPcaZfLbd68mFAY8bVIVw1ax34oSsY3c=;
- b=AC1vrzDdavkbxBlz6IZv87xwmm4jk3GEGVKRVfo1eBKWo8Zw8/mfbOYOYvNJr7bkjDik/F
- NiV6lzAgH49+Ci0d/edrSRIxojqiR9o34xxUFtCxVSEiesATrQX8v+D36m+cxLNelDWwbP
- CfiLGCN1pPAdlxIf4KgKCCkW0Nh+AJc=
+ bh=yO4AK8WNlzpOysSwYhMdNTxh6p0zS+xaRzCx4D02VTA=;
+ b=aJ87l8l+za7++bQhHM8uOwBLK2wipB1v1+sZx34XkEkmjZHOv75oGC1IDaKjYhbCW71sEx
+ pumTU78vNkCc0/3mJpbDWKIuAN9pKWtEZKYHgp+s552bdDH5W9F4pN9yl3O7xwd2dNhHPZ
+ Xt/zqwgvO0o4O2tu8faj/8U4oUrSDKI=
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII;
  format=flowed
 Content-Transfer-Encoding: 7bit
-Date: Mon, 10 May 2021 13:46:33 +0200
+Date: Mon, 10 May 2021 13:52:22 +0200
 From: Michael Walle <michael@walle.cc>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH 0/4] ASoC: simple-card / audio-graph re-cleanup
-In-Reply-To: <87cztzcq56.wl-kuninori.morimoto.gx@renesas.com>
-References: <87cztzcq56.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: broonie-sound/for-next bisection:
+ baseline.bootrr.asoc-simple-card-probed on kontron-sl28-var3-ads2
+In-Reply-To: <87o8djcxas.wl-kuninori.morimoto.gx@renesas.com>
+References: <6080e82c.1c69fb81.cd60c.2a13@mx.google.com>
+ <3ca62063-41b4-c25b-a7bc-8a8160e7b684@collabora.com>
+ <877dkp5141.wl-kuninori.morimoto.gx@renesas.com>
+ <20210426144242.GF4590@sirena.org.uk>
+ <8735vc4r59.wl-kuninori.morimoto.gx@renesas.com>
+ <20210427101926.GA4605@sirena.org.uk>
+ <ea2b6dae-3087-67d3-8473-410255a51e23@collabora.com>
+ <e20b9c8a2715b5d091a8d1f37ba890b4@walle.cc>
+ <20210427135703.GH4605@sirena.org.uk>
+ <cc9a39f977c3765d1060ab1b0038bc79@walle.cc>
+ <a1ec388def4febd9af6ef477245ef2d3@walle.cc>
+ <1aa3a8716d2416f0cc127737dcff092a@walle.cc>
+ <87o8djcxas.wl-kuninori.morimoto.gx@renesas.com>
 User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <9328a6fe8fde309ca46dd34df13ff811@walle.cc>
+Message-ID: <99b3cd8db134d9682c16784f75f40bae@walle.cc>
 X-Sender: michael@walle.cc
-Cc: Guillaume Tucker <guillaume.tucker@collabora.com>,
- Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: Jon Hunter <jonathanh@nvidia.com>, alsa-devel@alsa-project.org,
+ Stephan Gerhold <stephan@gerhold.net>, kernelci-results@groups.io,
+ Guillaume Tucker <guillaume.tucker@collabora.com>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Heiko Thiery <heiko.thiery@gmail.com>,
+ Thierry Reding <treding@nvidia.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,67 +109,32 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi,
 
-Am 2021-05-10 03:51, schrieb Kuninori Morimoto:
-> Hi Mark, Guillaume
+Am 2021-05-10 01:16, schrieb Kuninori Morimoto:
+> I'm sorry for my late response. Japan was holiday
 > 
-> KernelCI had reported that my previous cleanup patches for simple-card
-> / audio-graph
-> broke kontron-sl28-var3-ads2 sound card probing.
-> It reported that it is using same name for dailink->name.
+>>  _But_ later
+>> asoc_simple_canonicalize_cpu() will reset the dai_name pointer to
+>> NULL in simple_parse_node() if "single" is 1 and then we end up
+>> having two links with the same name.
 > 
-> At first I thought that the issue was fsl,vf610-sai doesn't have .name
-> on driver.
-> But real issue was that cpu->dai_name removed on simple_parse_node(),
-> and dailink->name was based on it.
-> We need to set/get dailink->name first, and call simple_parse_node().
-> This patches are do it.
-> audio-graph has same issue. [4/4] patch is for it.
+> Ahh, OK thanks.
+> I think understand that why my posted patch
+> (= 59c35c44a9cf89a83a9 "ASoC: simple-card: add simple_parse_node()")
+> breaks your board.
 > 
-> I hope these patches has no issues on kontron-sl28-var3-ads2.
+> I will try to fixup the issue.
+> 
+> Thank you for your help !!
 
-I've just tested this on kontron-sl28-var3-ads2 (based on the latest
-next). Now I'm getting even less useful names ;)
+I've just tested your new patches. Unfortunately, it was very
+successful. I've also traced the is_single_links and it is still
+1 for this board. Is this correct?
 
-[    6.769932] sysfs: cannot create duplicate filename 
-'/devices/platform/sound/(null)-(null)'
-[    6.778529] CPU: 1 PID: 65 Comm: kworker/u4:1 Not tainted 
-5.12.0-next-20210506+ #527
-[    6.786397] Hardware name: Kontron SMARC-sAL28 (Single PHY) on SMARC 
-Eval 2.0 carrier (DT)
-[    6.794789] Workqueue: events_unbound deferred_probe_work_func
-[    6.800727] Call trace:
-[    6.803209]  dump_backtrace+0x0/0x1b8
-[    6.806933]  show_stack+0x20/0x30
-[    6.810301]  dump_stack+0x100/0x170
-[    6.813846]  sysfs_warn_dup+0x6c/0x88
-[    6.817565]  sysfs_create_dir_ns+0xe8/0x100
-[    6.821813]  kobject_add_internal+0x9c/0x290
-[    6.826150]  kobject_add+0xa0/0x108
-[    6.829693]  device_add+0xfc/0x840
-[    6.833147]  device_register+0x28/0x38
-[    6.836954]  snd_soc_add_pcm_runtime+0x274/0x760
-[    6.841647]  snd_soc_bind_card+0x330/0x9b8
-[    6.842884] hid-generic 0003:064F:2AF9.0001: device has no listeners, 
-quitting
-[    6.845811]  snd_soc_register_card+0x10c/0x128
-[    6.845823]  devm_snd_soc_register_card+0x4c/0xa8
-[    6.845830]  asoc_simple_probe+0x1e8/0x3c8
-[    6.845838]  platform_probe+0x70/0xe0
-[    6.845846]  really_probe+0xec/0x3c0
-[    6.845853]  driver_probe_device+0x6c/0xd0
-[    6.845861]  __device_attach_driver+0x98/0xe0
-[    6.845869]  bus_for_each_drv+0x84/0xd8
-[    6.886424]  __device_attach+0xf0/0x150
-[    6.890322]  device_initial_probe+0x1c/0x28
-[    6.894572]  bus_probe_device+0xa4/0xb0
-[    6.898468]  deferred_probe_work_func+0x90/0xd0
-[    6.903069]  process_one_work+0x2b8/0x720
-[    6.907141]  worker_thread+0x4c/0x488
-[    6.910860]  kthread+0x164/0x168
-[    6.914141]  ret_from_fork+0x10/0x30
-[    6.917924] kobject_add_internal failed for (null)-(null) with 
--EEXIST, don't try to register things with the same name in the same 
-directory.
-[    6.931455] asoc-simple-card: probe of sound failed with error -12
+Still these two questions are open:
+>> Which begs the two questions:
+>> (1) What is "single" actually and when should it be 1?
+>> (2) If single is 1, then the sysfs file will be named 
+>> "(null)-codec-name".
+>>     Do we want that?
 
 -michael
