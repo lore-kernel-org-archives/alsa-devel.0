@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 20EEBC433ED
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 12:45:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4F10C433B4
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 12:45:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0E06961075
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 12:45:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E06961075
+	by mail.kernel.org (Postfix) with ESMTPS id C65E361184
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 12:45:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C65E361184
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 70F0D16BA;
-	Mon, 10 May 2021 14:44:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70F0D16BA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 490FF16C7;
+	Mon, 10 May 2021 14:44:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 490FF16C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620650720;
-	bh=Eow7T4182eUiR0GIBEOlqKwtSncKX3IE56AMTup06VU=;
+	s=default; t=1620650733;
+	bh=QTyNMggU3h2YT7Pbjzukoj3jT+es/jl2/wJVaIwp6jE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aQtu2r9ZBZ3AisInEEuggYkhyZDn247HfiGdagKXD8KCupL+UMBLavAZYFG2da6v7
-	 rj9HKEc2Xws3Cxj1ROnH0TzO1E2ZCQmx6qL5KlJUo888HKVXLte3ZK98w8vgNxaJLS
-	 CkKWip+TaGlPNG2RobYhSumi3n8RSEASKJtOTehA=
+	b=V2wBlSaO+DFxNEE2dHetD2Oia+037W9pQ5+Wx7dctSvEUU4cTfuraJ0fAQ4BtvvIa
+	 iJZz9dWgz9AtNNTryJGWLnlJHrPBio91DWwGIK7TfZsMakfAiDf7Pes9daoN3xcm6e
+	 G8WjM2dIpidosMAAs2atuTRqzyrSYDmvNaCyTREE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 84815F804A9;
-	Mon, 10 May 2021 14:41:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40EADF804BD;
+	Mon, 10 May 2021 14:41:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E33B8F80272; Mon, 10 May 2021 14:41:34 +0200 (CEST)
+ id DFAD2F804B1; Mon, 10 May 2021 14:41:36 +0200 (CEST)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 49D92F80272
- for <alsa-devel@alsa-project.org>; Mon, 10 May 2021 14:41:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49D92F80272
-IronPort-SDR: YWHAYJObq2yhVqNP90jq4l9e49fafhlYaRexiBqkGwEz8sOPW/X0LZzKo2iRdPOgfZz/nBMPrP
- a/ZZpGl1Poew==
-X-IronPort-AV: E=McAfee;i="6200,9189,9979"; a="284668268"
-X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; d="scan'208";a="284668268"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5B1BCF8020C
+ for <alsa-devel@alsa-project.org>; Mon, 10 May 2021 14:41:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B1BCF8020C
+IronPort-SDR: CBPXUlUFu0ZgVUN9hSeP99f79553APeXJPvIKtr9xgxEXXFk0nDosamnU1ml/nYGWqsBDqiCtA
+ f5r67mMApi+w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9979"; a="284668272"
+X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; d="scan'208";a="284668272"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  10 May 2021 05:41:23 -0700
-IronPort-SDR: qxtEAUyUL8Rq2EkFNaJFKm1ws9a0ghx+MIVDB7HyOtsZQfq8UXDaBAjWk7k2jEp7vHTmqUv9k5
- ejsakoIDQOnA==
+IronPort-SDR: /0znRu/24/xeY2QBPXGnNX/s6dguWsZNBkIj5ieunZsf3hzEpwal5+519Yrqx1JM44z/BpUaed
+ rZG1q5K+unyg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; d="scan'208";a="433796216"
+X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; d="scan'208";a="433796222"
 Received: from black.fi.intel.com ([10.237.72.28])
  by fmsmga008.fm.intel.com with ESMTP; 10 May 2021 05:41:20 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
- id 857BD202; Mon, 10 May 2021 15:41:37 +0300 (EEST)
+ id D0F7A588; Mon, 10 May 2021 15:41:37 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org,
  linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: [PATCH v3 05/14] spi: pxa2xx: Unify ifdeffery used in the headers
-Date: Mon, 10 May 2021 15:41:25 +0300
-Message-Id: <20210510124134.24638-6-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v3 11/14] spi: pxa2xx: Extract clear_SSCR1_bits() helper
+Date: Mon, 10 May 2021 15:41:31 +0300
+Message-Id: <20210510124134.24638-12-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210510124134.24638-1-andriy.shevchenko@linux.intel.com>
 References: <20210510124134.24638-1-andriy.shevchenko@linux.intel.com>
@@ -88,58 +88,72 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The two headers have quite different ifdeffery to prevent multiple inclusion.
-Unify them with the pattern that in particular reflects their location.
+There are few places that repeat the logic of "clear some bits in SSCR1".
+Extract clear_SSCR1_bits() helper to deduplicate that.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- include/linux/pxa2xx_ssp.h     | 6 +++---
- include/linux/spi/pxa2xx_spi.h | 7 ++++---
- 2 files changed, 7 insertions(+), 6 deletions(-)
+ drivers/spi/spi-pxa2xx-dma.c | 4 +---
+ drivers/spi/spi-pxa2xx.c     | 7 ++-----
+ drivers/spi/spi-pxa2xx.h     | 5 +++++
+ 3 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/pxa2xx_ssp.h b/include/linux/pxa2xx_ssp.h
-index 7f73b26ed22e..14b049840faf 100644
---- a/include/linux/pxa2xx_ssp.h
-+++ b/include/linux/pxa2xx_ssp.h
-@@ -11,8 +11,8 @@
-  *       PXA3xx     SSP1, SSP2, SSP3, SSP4
-  */
+diff --git a/drivers/spi/spi-pxa2xx-dma.c b/drivers/spi/spi-pxa2xx-dma.c
+index 5ca01ad7f460..e581027e99f9 100644
+--- a/drivers/spi/spi-pxa2xx-dma.c
++++ b/drivers/spi/spi-pxa2xx-dma.c
+@@ -41,9 +41,7 @@ static void pxa2xx_spi_dma_transfer_complete(struct driver_data *drv_data,
+ 		}
  
--#ifndef __LINUX_SSP_H
--#define __LINUX_SSP_H
-+#ifndef __LINUX_PXA2XX_SSP_H
-+#define __LINUX_PXA2XX_SSP_H
+ 		/* Clear status & disable interrupts */
+-		pxa2xx_spi_write(drv_data, SSCR1,
+-				 pxa2xx_spi_read(drv_data, SSCR1)
+-				 & ~drv_data->dma_cr1);
++		clear_SSCR1_bits(drv_data, drv_data->dma_cr1);
+ 		write_SSSR_CS(drv_data, drv_data->clear_sr);
+ 		if (!pxa25x_ssp_comp(drv_data))
+ 			pxa2xx_spi_write(drv_data, SSTO, 0);
+diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
+index 54eaa048651f..3a4ad16614f7 100644
+--- a/drivers/spi/spi-pxa2xx.c
++++ b/drivers/spi/spi-pxa2xx.c
+@@ -733,8 +733,7 @@ static irqreturn_t interrupt_transfer(struct driver_data *drv_data)
+ static void handle_bad_msg(struct driver_data *drv_data)
+ {
+ 	pxa2xx_spi_off(drv_data);
+-	pxa2xx_spi_write(drv_data, SSCR1,
+-			 pxa2xx_spi_read(drv_data, SSCR1) & ~drv_data->int_cr1);
++	clear_SSCR1_bits(drv_data, drv_data->int_cr1);
+ 	if (!pxa25x_ssp_comp(drv_data))
+ 		pxa2xx_spi_write(drv_data, SSTO, 0);
+ 	write_SSSR_CS(drv_data, drv_data->clear_sr);
+@@ -1161,9 +1160,7 @@ static void pxa2xx_spi_handle_err(struct spi_controller *controller,
+ 	pxa2xx_spi_off(drv_data);
+ 	/* Clear and disable interrupts and service requests */
+ 	write_SSSR_CS(drv_data, drv_data->clear_sr);
+-	pxa2xx_spi_write(drv_data, SSCR1,
+-			 pxa2xx_spi_read(drv_data, SSCR1)
+-			 & ~(drv_data->int_cr1 | drv_data->dma_cr1));
++	clear_SSCR1_bits(drv_data, drv_data->int_cr1 | drv_data->dma_cr1);
+ 	if (!pxa25x_ssp_comp(drv_data))
+ 		pxa2xx_spi_write(drv_data, SSTO, 0);
  
- #include <linux/bits.h>
- #include <linux/compiler_types.h>
-@@ -270,4 +270,4 @@ static inline struct ssp_device *pxa_ssp_request_of(const struct device_node *n,
- static inline void pxa_ssp_free(struct ssp_device *ssp) {}
- #endif
+diff --git a/drivers/spi/spi-pxa2xx.h b/drivers/spi/spi-pxa2xx.h
+index 739e264feaa6..ed63f7165cd8 100644
+--- a/drivers/spi/spi-pxa2xx.h
++++ b/drivers/spi/spi-pxa2xx.h
+@@ -105,6 +105,11 @@ static inline int pxa25x_ssp_comp(struct driver_data *drv_data)
+ 	}
+ }
  
--#endif
-+#endif	/* __LINUX_PXA2XX_SSP_H */
-diff --git a/include/linux/spi/pxa2xx_spi.h b/include/linux/spi/pxa2xx_spi.h
-index 1e0e2f136319..12ef04d0896d 100644
---- a/include/linux/spi/pxa2xx_spi.h
-+++ b/include/linux/spi/pxa2xx_spi.h
-@@ -2,8 +2,8 @@
- /*
-  * Copyright (C) 2005 Stephen Street / StreetFire Sound Labs
-  */
--#ifndef __linux_pxa2xx_spi_h
--#define __linux_pxa2xx_spi_h
-+#ifndef __LINUX_SPI_PXA2XX_SPI_H
-+#define __LINUX_SPI_PXA2XX_SPI_H
- 
- #include <linux/types.h>
- 
-@@ -51,4 +51,5 @@ struct pxa2xx_spi_chip {
- extern void pxa2xx_set_spi_info(unsigned id, struct pxa2xx_spi_controller *info);
- 
- #endif
--#endif
++static inline void clear_SSCR1_bits(const struct driver_data *drv_data, u32 bits)
++{
++	pxa2xx_spi_write(drv_data, SSCR1, pxa2xx_spi_read(drv_data, SSCR1) & ~bits);
++}
 +
-+#endif	/* __LINUX_SPI_PXA2XX_SPI_H */
+ static inline void write_SSSR_CS(struct driver_data *drv_data, u32 val)
+ {
+ 	if (drv_data->ssp_type == CE4100_SSP ||
 -- 
 2.30.2
 
