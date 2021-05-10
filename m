@@ -7,90 +7,89 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B374FC433B4
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 13:16:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 814F0C433ED
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 13:16:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 874C16121E
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 13:16:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 874C16121E
+	by mail.kernel.org (Postfix) with ESMTPS id D84D9611C2
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 13:16:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D84D9611C2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BA50516D5;
-	Mon, 10 May 2021 15:15:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA50516D5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 51FF216E9;
+	Mon, 10 May 2021 15:15:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51FF216E9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620652592;
-	bh=bkdAd+cRbTXglInEvNYnZOiNLvY5q780gBpuM+rFjcc=;
+	s=default; t=1620652605;
+	bh=5RdqgsBZH1/baxkumnfA3ybcQwPpO80ssMJzaTbFYGQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=A6VRDke21Bgw3b5OnSXBzkYZfv+krIYS6BS7As18/tEo6M2kFSrgiKuhEvjS7Ii5z
-	 HKByN4XSFFWLQmzJU5c/RUc4kzXGBW9451aI+OS9nF7Ve2J8DjttnItatj89K/Ozqa
-	 hU01VIu5k30dAixSIzkf6OjoNMhQE5LSxQsnIMd4=
+	b=G5LUf/deP1Am/ixgaj2VFhuR56FkmDlW1TulYpElrPiPpjZl4ic+yxiog4aRF7Whz
+	 kvzkpghFGPySFm/Opvc8TlkrukEWGF0jp3KzrxEhSJEXEzimHzw/6VfpEY0qMWvZ1K
+	 +2ow6ujqXqMEVNxL318wDx8mgMwUftbxZnXQAG5g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49C1EF8026B;
-	Mon, 10 May 2021 15:14:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 279B1F80431;
+	Mon, 10 May 2021 15:14:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D2162F804A9; Mon, 10 May 2021 15:14:14 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 5CF47F804AB; Mon, 10 May 2021 15:14:17 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 717F9F80240
- for <alsa-devel@alsa-project.org>; Mon, 10 May 2021 15:14:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 717F9F80240
+ by alsa1.perex.cz (Postfix) with ESMTPS id B40DBF80272
+ for <alsa-devel@alsa-project.org>; Mon, 10 May 2021 15:14:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B40DBF80272
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="ccqQehHx"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 14ADDl49002119; Mon, 10 May 2021 08:14:02 -0500
+ header.b="KzxLf3o4"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
+ 14ADD5ck017163; Mon, 10 May 2021 08:14:00 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=PODMain02222019;
- bh=tQ2oR7hqoATBSzTidVbnDzFBTAtg7iw2LpmB6WOJXJk=;
- b=ccqQehHxXypmv2/UuZZXYw2NORhyjw4nEE3pstCzPPe1cqLBj3oIlJuaGXNvQv9IKrYl
- TM50N32vMgc3AjeECIHnWX0sYqUnlG+OofgMEoyjNBNxwzqMErOwnOgKmycXv2v+MW0V
- HooSDElWFHoeJKcfUs7Hb8W/5SRbMwcddG/wHVnLh1HYIYiUBGjBhxbxzBFWwhqWXlBy
- n7bjMO/+fRDroX5zuJ1ELwHHQ/pzQxPxRS0Fg4hXHuK8/M2NJjgB2rz0jLTBRncQQ+ke
- W6LqH27xoFO4Pg+hCK0u+BIrna0RE3mB98+N5zOMEV/98229Iw5DeGUUWpOZtdaLqZ4W vw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 38f2d4r60v-3
+ bh=8cL2nfKK7y3xbXO8zHyfzojzhEMs0Q9EfFInsEAVUPw=;
+ b=KzxLf3o4/1Xr/imX3ioYU7vjC3DQ/2aKV/8zrOgqneUHD2RJC9MSNzEZDDDlz1/AvwFZ
+ 8NHl0qLLfKLGc7Rj6zJY6TzKbQDf9jjayVZ4h0Trx7T7KHjs2U6L+PwJsDTFuL4Lq0aU
+ FM3lUxMphdncIz49fZHTUtLLnbbhZgoSHlRt4rUQsg6hT+yFSFZWAjJRmehySIcRKVp0
+ D2KwjE71aRzsI8I6+2G/CzhXg8qhwolBl8fgWW/DoJ+IrqdZC2zSgnq16Fd029KnxnWD
+ TJ+cjVQK6m+eSn3XZ4btp/Q1Bt/nAXeIeF873jkP6455dTMOBhtZzgB/TGx0uYYsnmoz rA== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 38f4x181h2-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Mon, 10 May 2021 08:14:01 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ Mon, 10 May 2021 08:14:00 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 10 May
  2021 14:13:57 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
  Transport; Mon, 10 May 2021 14:13:57 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B4B5F11D7;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B8C2E11CF;
  Mon, 10 May 2021 13:13:57 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 01/10] ASoC: cirrus: Add helper function for reading the
- device ID
-Date: Mon, 10 May 2021 14:13:48 +0100
-Message-ID: <20210510131357.17170-2-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 02/10] ASoC: cs35l32: Minor error paths fixups
+Date: Mon, 10 May 2021 14:13:49 +0100
+Message-ID: <20210510131357.17170-3-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20210510131357.17170-1-ckeepax@opensource.cirrus.com>
 References: <20210510131357.17170-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Proofpoint-GUID: CsZQVDbzha1DrAYF5kNFtx7p18nrQXPX
-X-Proofpoint-ORIG-GUID: CsZQVDbzha1DrAYF5kNFtx7p18nrQXPX
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015
- spamscore=0
- lowpriorityscore=0 suspectscore=0 bulkscore=0 adultscore=0 impostorscore=0
- malwarescore=0 mlxscore=0 phishscore=0 priorityscore=1501 mlxlogscore=999
+X-Proofpoint-GUID: orlbzvhQYxlD4xOIprftaW1HTQixjebw
+X-Proofpoint-ORIG-GUID: orlbzvhQYxlD4xOIprftaW1HTQixjebw
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 adultscore=0
+ spamscore=0 suspectscore=0 mlxlogscore=999 clxscore=1015 bulkscore=0
+ mlxscore=0 phishscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
  definitions=main-2105100092
 Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
@@ -111,51 +110,110 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Many of the older Cirrus devices share very similar code for reading the
-device ID, and frequently this code is generating cppcheck warnings such
-as:
-
-sound/soc/codecs/cs42l42.c:1886:6: style: Variable 'ret' is reassigned
-a value before the old one has been used. [redundantAssignment]
- ret = regmap_read(cs42l42->regmap, CS42L42_DEVID_CD, &reg);
-
-Add a small helper function that older Cirrus devices can use to read
-the device ID, which should help correct these issues.
+Correct some unchecked re-allocations of ret whilst reading the device
+ID and ensure the hardware state is returned to off on the error
+paths.
 
 Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/codecs/cirrus_legacy.h | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
- create mode 100644 sound/soc/codecs/cirrus_legacy.h
+ sound/soc/codecs/cs35l32.c | 34 ++++++++++++++++++----------------
+ 1 file changed, 18 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/codecs/cirrus_legacy.h b/sound/soc/codecs/cirrus_legacy.h
-new file mode 100644
-index 0000000000000..87c6fd79290d4
---- /dev/null
-+++ b/sound/soc/codecs/cirrus_legacy.h
-@@ -0,0 +1,21 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Some small helpers for older Cirrus Logic parts.
-+ *
-+ * Copyright (C) 2021 Cirrus Logic, Inc. and
-+ *                    Cirrus Logic International Semiconductor Ltd.
-+ */
-+
-+static inline int cirrus_read_device_id(struct regmap *regmap, unsigned int reg)
-+{
-+	u8 devid[3];
-+	int ret;
-+
-+	ret = regmap_bulk_read(regmap, reg, devid, ARRAY_SIZE(devid));
-+	if (ret < 0)
-+		return ret;
-+
-+	return ((devid[0] & 0xFF) << 12) |
-+	       ((devid[1] & 0xFF) <<  4) |
-+	       ((devid[2] & 0xF0) >>  4);
-+}
+diff --git a/sound/soc/codecs/cs35l32.c b/sound/soc/codecs/cs35l32.c
+index f4067230ac425..7e1047362a901 100644
+--- a/sound/soc/codecs/cs35l32.c
++++ b/sound/soc/codecs/cs35l32.c
+@@ -30,6 +30,7 @@
+ #include <dt-bindings/sound/cs35l32.h>
+ 
+ #include "cs35l32.h"
++#include "cirrus_legacy.h"
+ 
+ #define CS35L32_NUM_SUPPLIES 2
+ static const char *const cs35l32_supply_names[CS35L32_NUM_SUPPLIES] = {
+@@ -348,8 +349,7 @@ static int cs35l32_i2c_probe(struct i2c_client *i2c_client,
+ 	struct cs35l32_private *cs35l32;
+ 	struct cs35l32_platform_data *pdata =
+ 		dev_get_platdata(&i2c_client->dev);
+-	int ret, i;
+-	unsigned int devid = 0;
++	int ret, i, devid;
+ 	unsigned int reg;
+ 
+ 	cs35l32 = devm_kzalloc(&i2c_client->dev, sizeof(*cs35l32), GFP_KERNEL);
+@@ -404,40 +404,40 @@ static int cs35l32_i2c_probe(struct i2c_client *i2c_client,
+ 	/* Reset the Device */
+ 	cs35l32->reset_gpio = devm_gpiod_get_optional(&i2c_client->dev,
+ 		"reset", GPIOD_OUT_LOW);
+-	if (IS_ERR(cs35l32->reset_gpio))
+-		return PTR_ERR(cs35l32->reset_gpio);
++	if (IS_ERR(cs35l32->reset_gpio)) {
++		ret = PTR_ERR(cs35l32->reset_gpio);
++		goto err_supplies;
++	}
+ 
+ 	gpiod_set_value_cansleep(cs35l32->reset_gpio, 1);
+ 
+ 	/* initialize codec */
+-	ret = regmap_read(cs35l32->regmap, CS35L32_DEVID_AB, &reg);
+-	devid = (reg & 0xFF) << 12;
+-
+-	ret = regmap_read(cs35l32->regmap, CS35L32_DEVID_CD, &reg);
+-	devid |= (reg & 0xFF) << 4;
+-
+-	ret = regmap_read(cs35l32->regmap, CS35L32_DEVID_E, &reg);
+-	devid |= (reg & 0xF0) >> 4;
++	devid = cirrus_read_device_id(cs35l32->regmap, CS35L32_DEVID_AB);
++	if (devid < 0) {
++		ret = devid;
++		dev_err(&i2c_client->dev, "Failed to read device ID: %d\n", ret);
++		goto err_disable;
++	}
+ 
+ 	if (devid != CS35L32_CHIP_ID) {
+ 		ret = -ENODEV;
+ 		dev_err(&i2c_client->dev,
+ 			"CS35L32 Device ID (%X). Expected %X\n",
+ 			devid, CS35L32_CHIP_ID);
+-		return ret;
++		goto err_disable;
+ 	}
+ 
+ 	ret = regmap_read(cs35l32->regmap, CS35L32_REV_ID, &reg);
+ 	if (ret < 0) {
+ 		dev_err(&i2c_client->dev, "Get Revision ID failed\n");
+-		return ret;
++		goto err_disable;
+ 	}
+ 
+ 	ret = regmap_register_patch(cs35l32->regmap, cs35l32_monitor_patch,
+ 				    ARRAY_SIZE(cs35l32_monitor_patch));
+ 	if (ret < 0) {
+ 		dev_err(&i2c_client->dev, "Failed to apply errata patch\n");
+-		return ret;
++		goto err_disable;
+ 	}
+ 
+ 	dev_info(&i2c_client->dev,
+@@ -478,7 +478,7 @@ static int cs35l32_i2c_probe(struct i2c_client *i2c_client,
+ 			    CS35L32_PDN_AMP);
+ 
+ 	/* Clear MCLK Error Bit since we don't have the clock yet */
+-	ret = regmap_read(cs35l32->regmap, CS35L32_INT_STATUS_1, &reg);
++	regmap_read(cs35l32->regmap, CS35L32_INT_STATUS_1, &reg);
+ 
+ 	ret = devm_snd_soc_register_component(&i2c_client->dev,
+ 			&soc_component_dev_cs35l32, cs35l32_dai,
+@@ -489,6 +489,8 @@ static int cs35l32_i2c_probe(struct i2c_client *i2c_client,
+ 	return 0;
+ 
+ err_disable:
++	gpiod_set_value_cansleep(cs35l32->reset_gpio, 0);
++err_supplies:
+ 	regulator_bulk_disable(ARRAY_SIZE(cs35l32->supplies),
+ 			       cs35l32->supplies);
+ 	return ret;
 -- 
 2.11.0
 
