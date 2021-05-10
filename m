@@ -2,56 +2,56 @@ Return-Path: <SRS0=6VrY=KF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25A4AC433B4
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 01:53:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 600D5C433ED
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 01:54:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 96C3D61132
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 01:53:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 96C3D61132
+	by mail.kernel.org (Postfix) with ESMTPS id C8A1661132
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 01:54:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C8A1661132
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2AA3316BB;
-	Mon, 10 May 2021 03:52:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2AA3316BB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5C0AD16BC;
+	Mon, 10 May 2021 03:53:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C0AD16BC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620611610;
-	bh=17yAvm+1t8W88LRy+h6SevuLKbVKJjd1UQXZeV5HhQ8=;
+	s=default; t=1620611645;
+	bh=z9Xdg49yUFXrtRIoKbTmiM4xHMeoDcBNQ1gWHVAPBMA=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZP9Wy8QIcW95+fWyq+2xovQ+zMieMznN190PpHXHa68oQG2g7XzZHXpuV3PbABWnR
-	 sCRea4C8vwLP7tO2Wg/+r8uYkTa8zPSxUneMWNxnpCyEsZ4/KN3opMy5FwzrrDNm5w
-	 sJQk9/pbDSFpfCJe4xy16CGoI1TqoCFPb3ihNYA0=
+	b=SzApFW9azhdiyjuAhbNEwsc+o/2RgUnWNtQMFfsuADsAXuJ4gEV6GHSQTIwHA+TIG
+	 5PiBUTFTnr2/FSqpDCWIP9noOl5XVdlT7iYYhgQtAmWdJT9PD6tM/S8W6RvFQLfl4B
+	 R0ULh5jIUAp9wFJ+NFG5Fu4oyhWUxebO46Defk6U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3773AF8026B;
-	Mon, 10 May 2021 03:52:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9458F8042F;
+	Mon, 10 May 2021 03:52:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 92634F8026F; Mon, 10 May 2021 03:52:15 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 3BBFDF8026B
- for <alsa-devel@alsa-project.org>; Mon, 10 May 2021 03:52:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BBFDF8026B
-Date: 10 May 2021 10:52:11 +0900
-X-IronPort-AV: E=Sophos;i="5.82,286,1613401200"; d="scan'208";a="80754874"
+ id D7650F80431; Mon, 10 May 2021 03:52:21 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 0539FF8042F
+ for <alsa-devel@alsa-project.org>; Mon, 10 May 2021 03:52:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0539FF8042F
+Date: 10 May 2021 10:52:17 +0900
+X-IronPort-AV: E=Sophos;i="5.82,286,1613401200"; d="scan'208";a="80553353"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 10 May 2021 10:52:11 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 10 May 2021 10:52:17 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id B88E0401324E;
- Mon, 10 May 2021 10:52:11 +0900 (JST)
-Message-ID: <87a6p3cq44.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id EC8224013245;
+ Mon, 10 May 2021 10:52:16 +0900 (JST)
+Message-ID: <878s4ncq3y.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 2/4] ASoC: simple-card: add simple_link_init()
+Subject: [PATCH 3/4] ASoC: audio-graph: tidyup graph_dai_link_of_dpcm()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>, Michael Walle <michael@walle.cc>,
  Guillaume Tucker <guillaume.tucker@collabora.com>
@@ -78,141 +78,107 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-This patch adds simple_link_init() and share dai_link setting code.
+Use local variable at local area only.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/generic/simple-card.c | 62 +++++++++++++++++----------------
- 1 file changed, 32 insertions(+), 30 deletions(-)
+ sound/soc/generic/audio-graph-card.c | 30 +++++++++++++---------------
+ 1 file changed, 14 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 5288aacfc628..c9edde04a4a9 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -156,6 +156,28 @@ static int simple_parse_node(struct asoc_simple_priv *priv,
- 	return 0;
+diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+index 2c8a2fcb7922..0159a4576e9c 100644
+--- a/sound/soc/generic/audio-graph-card.c
++++ b/sound/soc/generic/audio-graph-card.c
+@@ -276,24 +276,19 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 				  struct link_info *li)
+ {
+ 	struct device *dev = simple_priv_to_dev(priv);
+-	struct snd_soc_card *card = simple_priv_to_card(priv);
+ 	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, li->link);
+ 	struct simple_dai_props *dai_props = simple_priv_to_props(priv, li->link);
+ 	struct device_node *top = dev->of_node;
+ 	struct device_node *ep = li->cpu ? cpu_ep : codec_ep;
+-	struct device_node *port;
+-	struct device_node *ports;
+-	struct snd_soc_dai_link_component *cpus = asoc_link_to_cpu(dai_link, 0);
+-	struct snd_soc_dai_link_component *codecs = asoc_link_to_codec(dai_link, 0);
+ 	char dai_name[64];
+ 	int ret;
+ 
+-	port	= of_get_parent(ep);
+-	ports	= of_get_parent(port);
+-
+ 	dev_dbg(dev, "link_of DPCM (%pOF)\n", ep);
+ 
+ 	if (li->cpu) {
++		struct snd_soc_card *card = simple_priv_to_card(priv);
++		struct snd_soc_dai_link_component *cpus = asoc_link_to_cpu(dai_link, 0);
++
+ 		/* Codec is dummy */
+ 
+ 		/* FE settings */
+@@ -302,7 +297,7 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 
+ 		ret = graph_parse_node(priv, cpu_ep, li, 1);
+ 		if (ret)
+-			goto out_put_node;
++			return ret;
+ 
+ 		snprintf(dai_name, sizeof(dai_name),
+ 			 "fe.%pOFP.%s", cpus->of_node, cpus->dai_name);
+@@ -319,7 +314,10 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 		if (card->component_chaining && !soc_component_is_pcm(cpus))
+ 			dai_link->no_pcm = 1;
+ 	} else {
+-		struct snd_soc_codec_conf *cconf;
++		struct snd_soc_codec_conf *cconf = simple_props_to_codec_conf(dai_props, 0);
++		struct snd_soc_dai_link_component *codecs = asoc_link_to_codec(dai_link, 0);
++		struct device_node *port;
++		struct device_node *ports;
+ 
+ 		/* CPU is dummy */
+ 
+@@ -327,22 +325,25 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 		dai_link->no_pcm		= 1;
+ 		dai_link->be_hw_params_fixup	= asoc_simple_be_hw_params_fixup;
+ 
+-		cconf	= simple_props_to_codec_conf(dai_props, 0);
+-
+ 		ret = graph_parse_node(priv, codec_ep, li, 0);
+ 		if (ret < 0)
+-			goto out_put_node;
++			return ret;
+ 
+ 		snprintf(dai_name, sizeof(dai_name),
+ 			 "be.%pOFP.%s", codecs->of_node, codecs->dai_name);
+ 
+ 		/* check "prefix" from top node */
++		port = of_get_parent(ep);
++		ports = of_get_parent(port);
+ 		snd_soc_of_parse_node_prefix(top, cconf, codecs->of_node,
+ 					      "prefix");
+ 		if (of_node_name_eq(ports, "ports"))
+ 			snd_soc_of_parse_node_prefix(ports, cconf, codecs->of_node, "prefix");
+ 		snd_soc_of_parse_node_prefix(port, cconf, codecs->of_node,
+ 					     "prefix");
++
++		of_node_put(ports);
++		of_node_put(port);
+ 	}
+ 
+ 	graph_parse_convert(dev, ep, &dai_props->adata);
+@@ -351,11 +352,8 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 
+ 	ret = graph_link_init(priv, cpu_ep, codec_ep, li, dai_name);
+ 
+-out_put_node:
+ 	li->link++;
+ 
+-	of_node_put(ports);
+-	of_node_put(port);
+ 	return ret;
  }
  
-+static int simple_link_init(struct asoc_simple_priv *priv,
-+			    struct device_node *node,
-+			    struct device_node *codec,
-+			    struct link_info *li,
-+			    char *prefix,
-+			    char *name)
-+{
-+	struct device *dev = simple_priv_to_dev(priv);
-+	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, li->link);
-+	int ret;
-+
-+	ret = asoc_simple_parse_daifmt(dev, node, codec,
-+				       prefix, &dai_link->dai_fmt);
-+	if (ret < 0)
-+		return 0;
-+
-+	dai_link->init			= asoc_simple_dai_init;
-+	dai_link->ops			= &simple_ops;
-+
-+	return asoc_simple_set_dailink_name(dev, dai_link, name);
-+}
-+
- static int simple_dai_link_of_dpcm(struct asoc_simple_priv *priv,
- 				   struct device_node *np,
- 				   struct device_node *codec,
-@@ -170,6 +192,7 @@ static int simple_dai_link_of_dpcm(struct asoc_simple_priv *priv,
- 	struct device_node *top = dev->of_node;
- 	struct device_node *node = of_get_parent(np);
- 	char *prefix = "";
-+	char dai_name[64];
- 	int ret;
- 
- 	dev_dbg(dev, "link_of DPCM (%pOF)\n", np);
-@@ -187,13 +210,9 @@ static int simple_dai_link_of_dpcm(struct asoc_simple_priv *priv,
- 
- 		/*
- 		 * next simple_parse_node() might remove cpus->dai_name.
--		 * set dailink_name before it.
-+		 * get dai_name before it.
- 		 */
--		ret = asoc_simple_set_dailink_name(dev, dai_link,
--						   "fe.%s",
--						   cpus->dai_name);
--		if (ret < 0)
--			goto out_put_node;
-+		snprintf(dai_name, sizeof(dai_name), "fe.%s", cpus->dai_name);
- 
- 		ret = simple_parse_node(priv, np, li, prefix, 1);
- 		if (ret < 0)
-@@ -209,11 +228,7 @@ static int simple_dai_link_of_dpcm(struct asoc_simple_priv *priv,
- 
- 		cconf	= simple_props_to_codec_conf(dai_props, 0);
- 
--		ret = asoc_simple_set_dailink_name(dev, dai_link,
--						   "be.%s",
--						   codecs->dai_name);
--		if (ret < 0)
--			goto out_put_node;
-+		snprintf(dai_name, sizeof(dai_name), "be.%s", codecs->dai_name);
- 
- 		ret = simple_parse_node(priv, np, li, prefix, 0);
- 		if (ret < 0)
-@@ -230,15 +245,9 @@ static int simple_dai_link_of_dpcm(struct asoc_simple_priv *priv,
- 
- 	simple_parse_convert(dev, np, &dai_props->adata);
- 
--	ret = asoc_simple_parse_daifmt(dev, node, codec,
--				       prefix, &dai_link->dai_fmt);
--	if (ret < 0)
--		goto out_put_node;
--
- 	snd_soc_dai_link_set_capabilities(dai_link);
- 
--	dai_link->ops			= &simple_ops;
--	dai_link->init			= asoc_simple_dai_init;
-+	ret = simple_link_init(priv, node, codec, li, prefix, dai_name);
- 
- out_put_node:
- 	li->link++;
-@@ -261,6 +270,7 @@ static int simple_dai_link_of(struct asoc_simple_priv *priv,
- 	struct device_node *cpu = NULL;
- 	struct device_node *node = NULL;
- 	struct device_node *plat = NULL;
-+	char dai_name[64];
- 	char prop[128];
- 	char *prefix = "";
- 	int ret;
-@@ -277,19 +287,12 @@ static int simple_dai_link_of(struct asoc_simple_priv *priv,
- 	snprintf(prop, sizeof(prop), "%splat", prefix);
- 	plat = of_get_child_by_name(node, prop);
- 
--	ret = asoc_simple_parse_daifmt(dev, node, codec,
--				       prefix, &dai_link->dai_fmt);
--	if (ret < 0)
--		goto dai_link_of_err;
--
- 	/*
- 	 * next simple_parse_node() might remove cpus->dai_name.
--	 * set dailink_name before it.
-+	 * get dai_name before it.
- 	 */
--	ret = asoc_simple_set_dailink_name(dev, dai_link, "%s-%s",
--					   cpus->dai_name, codecs->dai_name);
--	if (ret < 0)
--		goto dai_link_of_err;
-+	snprintf(dai_name, sizeof(dai_name),
-+		 "%s-%s", cpus->dai_name, codecs->dai_name);
- 
- 	ret = simple_parse_node(priv, cpu, li, prefix, 1);
- 	if (ret < 0)
-@@ -303,8 +306,7 @@ static int simple_dai_link_of(struct asoc_simple_priv *priv,
- 	if (ret < 0)
- 		goto dai_link_of_err;
- 
--	dai_link->ops = &simple_ops;
--	dai_link->init = asoc_simple_dai_init;
-+	ret = simple_link_init(priv, node, codec, li, prefix, dai_name);
- 
- dai_link_of_err:
- 	of_node_put(plat);
 -- 
 2.25.1
 
