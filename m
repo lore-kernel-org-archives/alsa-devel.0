@@ -2,90 +2,94 @@ Return-Path: <SRS0=6VrY=KF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7A33C433ED
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 13:15:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 866FFC433ED
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 13:15:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 151F4611CE
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 13:15:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 151F4611CE
+	by mail.kernel.org (Postfix) with ESMTPS id 8882561621
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 13:15:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8882561621
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D6CC516A3;
-	Mon, 10 May 2021 15:14:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6CC516A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9246416B4;
+	Mon, 10 May 2021 15:15:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9246416B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620652501;
-	bh=gKRTuZO8XmJ8ETg79hroja1WDSpT6hffInZHTKpKefM=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=DtniyevDpOaOywx+/al1lDEU8EA9DXbJK5mAxOjfzBIQsogqzYVU9iqXrrdRcYXnI
-	 W4A3ll4dyNXA/KbUiP8lhZM3Y9TPykSbzTKs437ZqM8D60RXQfQhdK1M4qqt6nd8nF
-	 roznH98Q1l3f//QtzCAYi6l9e/5ClzLP2TnE1rVM=
+	s=default; t=1620652552;
+	bh=bZVqf6KJxapLYDDWMfMVTHsX1t3w55m+dxknESl9oiI=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=kX6lViBOsXYngQsshXWujbFTKWU1gyii9z/Y5Ur1su8Hv8QEg9vFeuxR1kivuAiY6
+	 knSEsTrtCb2ZoncYfRD+/FDG1Bwjx1P4Xj29AKVFdiaMuipw8pUYzYkA1fba3ey6La
+	 BgErugitPNhhRkFOL3okkCxH5og4AZHopUrIhdVo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6EDD5F80425;
-	Mon, 10 May 2021 15:14:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E8EECF800B4;
+	Mon, 10 May 2021 15:14:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CC331F800EA; Mon, 10 May 2021 15:14:09 +0200 (CEST)
+ id 06207F80475; Mon, 10 May 2021 15:14:11 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 27002F800EA
- for <alsa-devel@alsa-project.org>; Mon, 10 May 2021 15:14:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27002F800EA
+ by alsa1.perex.cz (Postfix) with ESMTPS id EF7DFF8020C
+ for <alsa-devel@alsa-project.org>; Mon, 10 May 2021 15:14:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF7DFF8020C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="QtIJ2gYH"
+ header.b="TNVYFByF"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
  by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 14ADDl47002119; Mon, 10 May 2021 08:13:59 -0500
+ 14ADDl4C002119; Mon, 10 May 2021 08:14:05 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-type;
- s=PODMain02222019; bh=Q1WWjlg60EVIHsGfyuxVnwsXx7KAzUuVl1vvPc/IAM4=;
- b=QtIJ2gYHuUuKPq/fSMPmoxi9HKieftC5eHASjn9HdtbxIXLtlrbGCLWZOHpbcvgPaKOT
- NaB39ZUA9TObJ+Wp3yEEXTHm27hfs52LvUvQUJK0NXvQH77puDlRwxX9Zk6Vr4yhQPgE
- gc1dNk4Ule+s7XCMvlLLzpJmpExGAWDW+HsJ8C8a1qfHoWxwd+mc7xBGiQOMrjW6Z2au
- kI91qe/RF79KCG9V2JFwMuHLSHIWUDndqfbDDfCE+Nou4S0wFgEog9p6hXGEgB+LXynw
- FAZ7W9czh8lz/lauag51zut5FZygUUzJ8qz0tM4dbpe+yid44GNApmJ7XTKXoBbfv/wc pw== 
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=PODMain02222019;
+ bh=nyRsAm7uMV9MOsc49IfNltwL8dOdSD1dAHlHoMl4I68=;
+ b=TNVYFByFbjWx2JRb6OC6e23XlPMDkkZUNHC2SxjwWfUaeUWePaKVaBFwC2CcJQZ1exbw
+ 0WZwAh+zwj0xJMqsyTeolvcXHHEoQ2MgOse99hOMRtSCMyWgiW577wDuTcZMTumxzHlx
+ EO9aNP5ZbahjlpQGom4h5Rk3id3jzoOuRw+NQvK8zAJA/Wv+8YW00A0Cd9RRtOLlcqZe
+ c2aViWLLPZ1ToOnOIlETyLqQDgeBnpSD9zdjFK2ZO/cjIE7hIyMtYF+OWX91HpZcm+FZ
+ ZOelJPyBlczg5zJ5KU1iXCBmOHkyQSRYF69ZVVwip4gaKeGluq6Q6Y00Q21r/khj4Ihf PA== 
 Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 38f2d4r60v-1
+ by mx0b-001ae601.pphosted.com with ESMTP id 38f2d4r60v-6
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Mon, 10 May 2021 08:13:59 -0500
+ Mon, 10 May 2021 08:14:04 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 10 May
- 2021 14:13:57 +0100
+ 2021 14:13:58 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Mon, 10 May 2021 14:13:57 +0100
+ Transport; Mon, 10 May 2021 14:13:58 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id AED0E11D1;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id EC65C11D1;
  Mon, 10 May 2021 13:13:57 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 00/10]  Tidy up device ID reading on legacy Cirrus parts
-Date: Mon, 10 May 2021 14:13:47 +0100
-Message-ID: <20210510131357.17170-1-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 08/10] ASoC: cs42l73:  Minor error paths fixups
+Date: Mon, 10 May 2021 14:13:55 +0100
+Message-ID: <20210510131357.17170-9-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20210510131357.17170-1-ckeepax@opensource.cirrus.com>
+References: <20210510131357.17170-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Proofpoint-GUID: gNPdrohVgkKfKRHypA8kTfTs4JuGOOaI
-X-Proofpoint-ORIG-GUID: gNPdrohVgkKfKRHypA8kTfTs4JuGOOaI
+X-Proofpoint-GUID: pBhn6rQQRbo7zmIX2dIo2I7yiXMdH92A
+X-Proofpoint-ORIG-GUID: pBhn6rQQRbo7zmIX2dIo2I7yiXMdH92A
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015
  spamscore=0
  lowpriorityscore=0 suspectscore=0 bulkscore=0 adultscore=0 impostorscore=0
- malwarescore=0 mlxscore=0 phishscore=0 priorityscore=1501 mlxlogscore=812
+ malwarescore=0 mlxscore=0 phishscore=0 priorityscore=1501 mlxlogscore=999
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
  definitions=main-2105100092
 Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
@@ -106,41 +110,90 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Pierre requested I have a look at some cppcheck warnings in the cs42l42
-driver, since it is reassigning the ret variable without ever checking
-the result.  Looking a bit more broadly this happens in quite a few
-legacy Cirrus parts, as they all use the same process to read the ID,
-factor out a small helper so they can all share the same code. Whilst
-in there fix up a couple of other trivial error path issues as well.
+Correct some unchecked re-allocations of ret whilst reading the device
+ID and ensure the hardware state is returned to off on the error
+paths.
 
-Thanks,
-Charles
+Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs42l73.c | 30 +++++++++++++++++-------------
+ 1 file changed, 17 insertions(+), 13 deletions(-)
 
-Charles Keepax (10):
-  ASoC: cirrus: Add helper function for reading the device ID
-  ASoC: cs35l32: Minor error paths fixups
-  ASoC: cs35l33: Minor error paths fixups
-  ASoC: cs35l34:  Minor error paths fixups
-  ASoC: cs35l35:  Minor error paths fixups
-  ASoC: cs35l35: Correct errata handling
-  ASoC: cs42l42:  Minor error paths fixups
-  ASoC: cs42l73:  Minor error paths fixups
-  ASoC: cs43130:  Minor error paths fixups
-  ASoC: cs53l30:  Minor error paths fixups
-
- sound/soc/codecs/cirrus_legacy.h | 21 +++++++++++++++++++++
- sound/soc/codecs/cs35l32.c       | 34 ++++++++++++++++++----------------
- sound/soc/codecs/cs35l33.c       | 15 +++++++++------
- sound/soc/codecs/cs35l34.c       | 39 ++++++++++++++++++++++-----------------
- sound/soc/codecs/cs35l35.c       | 21 ++++++++++-----------
- sound/soc/codecs/cs35l35.h       |  1 +
- sound/soc/codecs/cs42l42.c       | 18 ++++++++----------
- sound/soc/codecs/cs42l73.c       | 30 +++++++++++++++++-------------
- sound/soc/codecs/cs43130.c       | 31 +++++++++++++++++++------------
- sound/soc/codecs/cs53l30.c       | 22 +++++++++++-----------
- 10 files changed, 136 insertions(+), 96 deletions(-)
- create mode 100644 sound/soc/codecs/cirrus_legacy.h
-
+diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
+index c3f974ec78e58..da5d77a5f55bb 100644
+--- a/sound/soc/codecs/cs42l73.c
++++ b/sound/soc/codecs/cs42l73.c
+@@ -27,6 +27,7 @@
+ #include <sound/tlv.h>
+ #include <sound/cs42l73.h>
+ #include "cs42l73.h"
++#include "cirrus_legacy.h"
+ 
+ struct sp_config {
+ 	u8 spc, mmcc, spfs;
+@@ -1275,8 +1276,7 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
+ {
+ 	struct cs42l73_private *cs42l73;
+ 	struct cs42l73_platform_data *pdata = dev_get_platdata(&i2c_client->dev);
+-	int ret;
+-	unsigned int devid = 0;
++	int ret, devid;
+ 	unsigned int reg;
+ 	u32 val32;
+ 
+@@ -1326,27 +1326,25 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
+ 	}
+ 
+ 	/* initialize codec */
+-	ret = regmap_read(cs42l73->regmap, CS42L73_DEVID_AB, &reg);
+-	devid = (reg & 0xFF) << 12;
+-
+-	ret = regmap_read(cs42l73->regmap, CS42L73_DEVID_CD, &reg);
+-	devid |= (reg & 0xFF) << 4;
+-
+-	ret = regmap_read(cs42l73->regmap, CS42L73_DEVID_E, &reg);
+-	devid |= (reg & 0xF0) >> 4;
++	devid = cirrus_read_device_id(cs42l73->regmap, CS42L73_DEVID_AB);
++	if (devid < 0) {
++		ret = devid;
++		dev_err(&i2c_client->dev, "Failed to read device ID: %d\n", ret);
++		goto err_reset;
++	}
+ 
+ 	if (devid != CS42L73_DEVID) {
+ 		ret = -ENODEV;
+ 		dev_err(&i2c_client->dev,
+ 			"CS42L73 Device ID (%X). Expected %X\n",
+ 			devid, CS42L73_DEVID);
+-		return ret;
++		goto err_reset;
+ 	}
+ 
+ 	ret = regmap_read(cs42l73->regmap, CS42L73_REVID, &reg);
+ 	if (ret < 0) {
+ 		dev_err(&i2c_client->dev, "Get Revision ID failed\n");
+-		return ret;
++		goto err_reset;
+ 	}
+ 
+ 	dev_info(&i2c_client->dev,
+@@ -1356,8 +1354,14 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
+ 			&soc_component_dev_cs42l73, cs42l73_dai,
+ 			ARRAY_SIZE(cs42l73_dai));
+ 	if (ret < 0)
+-		return ret;
++		goto err_reset;
++
+ 	return 0;
++
++err_reset:
++	gpio_set_value_cansleep(cs42l73->pdata.reset_gpio, 0);
++
++	return ret;
+ }
+ 
+ static const struct of_device_id cs42l73_of_match[] = {
 -- 
 2.11.0
 
