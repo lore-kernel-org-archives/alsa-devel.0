@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CA0DC43460
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 12:44:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20EEBC433ED
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 12:45:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B906961184
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 12:44:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B906961184
+	by mail.kernel.org (Postfix) with ESMTPS id 0E06961075
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 12:45:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E06961075
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4135916B9;
-	Mon, 10 May 2021 14:44:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4135916B9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 70F0D16BA;
+	Mon, 10 May 2021 14:44:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70F0D16BA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620650695;
-	bh=3Dn5x6qFhBwPQt/PjR52fl9Z0+OFcwVAroezu4VJSig=;
+	s=default; t=1620650720;
+	bh=Eow7T4182eUiR0GIBEOlqKwtSncKX3IE56AMTup06VU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oesXBnawVN8twuaapWkXRQpcF9j90hwVNhgkc5RRYgYItWv67ww0fAOmFvAyS1PD2
-	 3j312Zc+x68vjbn/rhkXRI4EYCfQcbGL6Wn9zgqZcnt/9KteKe8WcYYYT+ztyTfq5/
-	 9DadtqgD7D2pu0bAi1TSIzXoJCMEDMNigJaeglOw=
+	b=aQtu2r9ZBZ3AisInEEuggYkhyZDn247HfiGdagKXD8KCupL+UMBLavAZYFG2da6v7
+	 rj9HKEc2Xws3Cxj1ROnH0TzO1E2ZCQmx6qL5KlJUo888HKVXLte3ZK98w8vgNxaJLS
+	 CkKWip+TaGlPNG2RobYhSumi3n8RSEASKJtOTehA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 13CA7F800B4;
-	Mon, 10 May 2021 14:41:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84815F804A9;
+	Mon, 10 May 2021 14:41:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DB744F804AD; Mon, 10 May 2021 14:41:34 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id E33B8F80272; Mon, 10 May 2021 14:41:34 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E681EF8026F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 49D92F80272
  for <alsa-devel@alsa-project.org>; Mon, 10 May 2021 14:41:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E681EF8026F
-IronPort-SDR: W1XeyHnM2fKcxGUAoUFbM1YtTeInzkB4+g3yhiR8MWuj40V86upP2s0cCDMYiwOv2TtlXkF6Bg
- DS4jYqoWVZiA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9979"; a="220130233"
-X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; d="scan'208";a="220130233"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49D92F80272
+IronPort-SDR: YWHAYJObq2yhVqNP90jq4l9e49fafhlYaRexiBqkGwEz8sOPW/X0LZzKo2iRdPOgfZz/nBMPrP
+ a/ZZpGl1Poew==
+X-IronPort-AV: E=McAfee;i="6200,9189,9979"; a="284668268"
+X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; d="scan'208";a="284668268"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  10 May 2021 05:41:23 -0700
-IronPort-SDR: Phfeuo6XYiUizxOp3MkKZ0WCHLSS+7svpwaRHf+CR8L8RfBK8thLQd21dGZqfq3wZXtSODCEsf
- R6Sl/SGsTuYQ==
+IronPort-SDR: qxtEAUyUL8Rq2EkFNaJFKm1ws9a0ghx+MIVDB7HyOtsZQfq8UXDaBAjWk7k2jEp7vHTmqUv9k5
+ ejsakoIDQOnA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; d="scan'208";a="609085438"
+X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; d="scan'208";a="433796216"
 Received: from black.fi.intel.com ([10.237.72.28])
- by orsmga005.jf.intel.com with ESMTP; 10 May 2021 05:41:20 -0700
+ by fmsmga008.fm.intel.com with ESMTP; 10 May 2021 05:41:20 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
- id 947FE501; Mon, 10 May 2021 15:41:37 +0300 (EEST)
+ id 857BD202; Mon, 10 May 2021 15:41:37 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org,
  linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: [PATCH v3 06/14] spi: pxa2xx: Group Intel Quark specific definitions
-Date: Mon, 10 May 2021 15:41:26 +0300
-Message-Id: <20210510124134.24638-7-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v3 05/14] spi: pxa2xx: Unify ifdeffery used in the headers
+Date: Mon, 10 May 2021 15:41:25 +0300
+Message-Id: <20210510124134.24638-6-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210510124134.24638-1-andriy.shevchenko@linux.intel.com>
 References: <20210510124134.24638-1-andriy.shevchenko@linux.intel.com>
@@ -88,36 +88,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-DDS_RATE is Intel Quark specific definition. Move it to the rest
-Intel Quark related.
+The two headers have quite different ifdeffery to prevent multiple inclusion.
+Unify them with the pattern that in particular reflects their location.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- include/linux/pxa2xx_ssp.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ include/linux/pxa2xx_ssp.h     | 6 +++---
+ include/linux/spi/pxa2xx_spi.h | 7 ++++---
+ 2 files changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/include/linux/pxa2xx_ssp.h b/include/linux/pxa2xx_ssp.h
-index 14b049840faf..1b6c1a0922bd 100644
+index 7f73b26ed22e..14b049840faf 100644
 --- a/include/linux/pxa2xx_ssp.h
 +++ b/include/linux/pxa2xx_ssp.h
-@@ -38,7 +38,6 @@ struct device_node;
- #define SSDR		(0x10)  /* SSP Data Write/Data Read Register */
+@@ -11,8 +11,8 @@
+  *       PXA3xx     SSP1, SSP2, SSP3, SSP4
+  */
  
- #define SSTO		(0x28)  /* SSP Time Out Register */
--#define DDS_RATE	(0x28)  /* SSP DDS Clock Rate Register (Intel Quark) */
- #define SSPSP		(0x2C)  /* SSP Programmable Serial Protocol */
- #define SSTSA		(0x30)  /* SSP Tx Timeslot Active */
- #define SSRSA		(0x34)  /* SSP Rx Timeslot Active */
-@@ -105,6 +104,9 @@ struct device_node;
- #define CE4100_SSCR1_RFT	GENMASK(11, 10)	/* Receive FIFO Threshold (mask) */
- #define CE4100_SSCR1_RxTresh(x) (((x) - 1) << 10)	/* level [1..4] */
+-#ifndef __LINUX_SSP_H
+-#define __LINUX_SSP_H
++#ifndef __LINUX_PXA2XX_SSP_H
++#define __LINUX_PXA2XX_SSP_H
  
-+/* Intel Quark X1000 */
-+#define DDS_RATE		0x28		 /* SSP DDS Clock Rate Register */
+ #include <linux/bits.h>
+ #include <linux/compiler_types.h>
+@@ -270,4 +270,4 @@ static inline struct ssp_device *pxa_ssp_request_of(const struct device_node *n,
+ static inline void pxa_ssp_free(struct ssp_device *ssp) {}
+ #endif
+ 
+-#endif
++#endif	/* __LINUX_PXA2XX_SSP_H */
+diff --git a/include/linux/spi/pxa2xx_spi.h b/include/linux/spi/pxa2xx_spi.h
+index 1e0e2f136319..12ef04d0896d 100644
+--- a/include/linux/spi/pxa2xx_spi.h
++++ b/include/linux/spi/pxa2xx_spi.h
+@@ -2,8 +2,8 @@
+ /*
+  * Copyright (C) 2005 Stephen Street / StreetFire Sound Labs
+  */
+-#ifndef __linux_pxa2xx_spi_h
+-#define __linux_pxa2xx_spi_h
++#ifndef __LINUX_SPI_PXA2XX_SPI_H
++#define __LINUX_SPI_PXA2XX_SPI_H
+ 
+ #include <linux/types.h>
+ 
+@@ -51,4 +51,5 @@ struct pxa2xx_spi_chip {
+ extern void pxa2xx_set_spi_info(unsigned id, struct pxa2xx_spi_controller *info);
+ 
+ #endif
+-#endif
 +
- /* QUARK_X1000 SSCR0 bit definition */
- #define QUARK_X1000_SSCR0_DSS		GENMASK(4, 0)	/* Data Size Select (mask) */
- #define QUARK_X1000_SSCR0_DataSize(x)	((x) - 1)	/* Data Size Select [4..32] */
++#endif	/* __LINUX_SPI_PXA2XX_SPI_H */
 -- 
 2.30.2
 
