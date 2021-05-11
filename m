@@ -6,72 +6,70 @@ X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41DF5C433B4
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 12:00:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF0B4C433B4
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 12:05:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C15716143C
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 12:00:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C15716143C
+	by mail.kernel.org (Postfix) with ESMTPS id 3320B6186A
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 12:05:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3320B6186A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 53E3E17B3;
-	Tue, 11 May 2021 13:59:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53E3E17B3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9BF7017B5;
+	Tue, 11 May 2021 14:04:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BF7017B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620734404;
-	bh=bCfMYBm9bj3DpdDPiHHkxHjc9hQjxEEHrRs4ALJlbKg=;
+	s=default; t=1620734722;
+	bh=5VqG2NjZhzFLUHnKqRatAHTnKgyK5qeMuCtK5FhB5h4=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YWQ12lO4bPBbsAjpCl/rX84xIdJ5Y50zj0qYBIyzO0k3wiPHpvObo5QP3gEXBWGUy
-	 YlmZVJb1+Kf4thJNetzW6wxJACEW09umsqxo3sUim+CFjn2w/Rycqf/QcHshZCNSAV
-	 BCbVroFvpH2A+rrmfcoQujneXb00xaFs2jOR6k0w=
+	b=ur6dAfhFaVruDpCAwqXNKhpGJKRmS9UsP8jDInOES6ymIP4LjF71hT2ODI7UQYiQS
+	 6iTc2tDpMM70aVxDVVbUCYv4f5VsSCBEdO4/kU7VeLfYgWMZl4/f4ZBqDzBbiKMqOL
+	 FiIMwergS96wfK9d5Zp4kJlL8YNAsVEw0xjv8IZM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9688F80156;
-	Tue, 11 May 2021 13:59:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1EBDBF80156;
+	Tue, 11 May 2021 14:04:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3DDF1F800E9; Tue, 11 May 2021 13:59:13 +0200 (CEST)
+ id 14DD8F80163; Tue, 11 May 2021 14:04:29 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C74D1F800E9
- for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 13:59:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C74D1F800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 50C08F80129
+ for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 14:04:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50C08F80129
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ZskWK1iq"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15E56613BC;
- Tue, 11 May 2021 11:58:59 +0000 (UTC)
+ header.b="Z6YD/ET3"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5492D6186A;
+ Tue, 11 May 2021 12:04:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1620734341;
- bh=bCfMYBm9bj3DpdDPiHHkxHjc9hQjxEEHrRs4ALJlbKg=;
+ s=k20201202; t=1620734659;
+ bh=5VqG2NjZhzFLUHnKqRatAHTnKgyK5qeMuCtK5FhB5h4=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=ZskWK1iqCqh5h8yKujom1ymUXz8dJo6WA/XekhZx897r7VzrgMXFRxkKXqesa9Qfu
- PyHiFFZeShCr/Djy3F4fkOwX41cfwdWYXnZNdJ3aqqoGS6Ig61M4EL1ySOn5JHlEMr
- f24DpvoM8edviOojmGpf6Gbb+wwbz0Zfz33B2q2fY19/vsFE4KsBk6J9bdDnw3BqB1
- QzL9znyThLMCLO83W1SD6ESQlsdDLsyM3S6B6oU2gaIEox9yCC2Rr7wBYxp9OO1USd
- IB1fXLngFMZuWF3YsiVVEHkEFANOH5NfMrzDtCQaXdhVKnPArrfwQIcItesxWy4XE1
- ztBQeqbXsK33A==
-Date: Tue, 11 May 2021 17:28:56 +0530
+ b=Z6YD/ET3KxC1cidjKKC7eHu9ZjHtSaEYOHhoQa79URJoWyK+6Ui/lzKkiwNXhnGvJ
+ UmKtvGLLWYjLzxQTAA1dxJEXyEHF3bh9wvExenIqT+NPtuGY1yN7snbjfRnxnzA5dB
+ Y0xITMkq038cio8J+QXcjTH/n9h4K/iWeo0hvxlmP801kIidYt0i1bqNfMyXOwUWDe
+ iTeDNSicMGOXchk/28ZAO9JhTfrTWdYFIK+FMgG+Ig9s9ulfu7kQwpwikOc8/bY5Ic
+ MmiCTvIFbX7xxy1fRYt1+2Vsn0G9UttqjmaB3j8PTzfW25ZMwLsHdwdXqYxH3M3X6z
+ FP7tlMNWNwe2Q==
+Date: Tue, 11 May 2021 17:34:15 +0530
 From: Vinod Koul <vkoul@kernel.org>
 To: Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH] soundwire/ASoC: add leading zeroes in peripheral device
- name
-Message-ID: <YJpxgAYQDJLQg+yV@vkoul-mobl.Dlink>
-References: <20210511060137.29856-1-yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH] soundwire: bandwidth allocation: improve error messages
+Message-ID: <YJpyv2rSIcg4ZeCM@vkoul-mobl.Dlink>
+References: <20210511054945.29558-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210511060137.29856-1-yung-chuan.liao@linux.intel.com>
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- ranjani.sridharan@linux.intel.com, hui.wang@canonical.com, broonie@kernel.org,
- jank@cadence.com, sanyog.r.kale@intel.com, rander.wang@linux.intel.com,
+In-Reply-To: <20210511054945.29558-1-yung-chuan.liao@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
+ hui.wang@canonical.com, sanyog.r.kale@intel.com, rander.wang@linux.intel.com,
  bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -88,29 +86,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 11-05-21, 14:01, Bard Liao wrote:
+On 11-05-21, 13:49, Bard Liao wrote:
 > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > 
-> We recently added leading zeroes in dev_dbg() messages but forgot to
-> do the same for the peripheral device name. Adding leading zeroes
-> makes it easier to read manufacturer ID and part ID, e.g.:
+> In rare corner cases, we see an error with the log:
 > 
-> sdw:0:025d:0700:00
-> sdw:0:025d:0711:00
-> sdw:1:025d:0700:00
-> sdw:1:025d:1308:00
-> sdw:2:025d:0700:00
-> sdw:2:025d:0701:00
-> sdw:3:025d:0700:00
-> sdw:3:025d:0715:00
+> [  838.297840] soundwire sdw-master-1: Compute bus params failed: -22
 > 
-> The use of '01x' for link_id and unique_id is intentional to show the
-> value range in the code, it's understood it does not actually change
-> the format.
+> That's not very useful, there can be two different error conditions
+> with the same -EINVAL code provided to the caller.
 > 
-> To avoid problems with git bisect, the same change needs to be applied
-> to the Intel SoundWire machine driver, otherwise the components can't
-> be found and the card registration fails.
+> Let's add better dev_err() messages to figure out what went wrong.
 
 Applied, thanks
 
