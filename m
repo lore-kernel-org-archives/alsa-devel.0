@@ -7,88 +7,88 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3991C433B4
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 17:59:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09D21C433B4
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 18:00:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AC74061628
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 17:59:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC74061628
+	by mail.kernel.org (Postfix) with ESMTPS id 95667617ED
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 18:00:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 95667617ED
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A5673187D;
-	Tue, 11 May 2021 19:58:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5673187D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0CB74183E;
+	Tue, 11 May 2021 19:59:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CB74183E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620755980;
-	bh=c+owpSUgtsS7TUQEHh93LvDZHq6eAPSGfFNh9QAt5X0=;
+	s=default; t=1620756007;
+	bh=7kGm6bPdwLYT9JkiKYbzQPCV5OWkXMk0KW5F2hv5zQo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Duf5bKL1LJSik0j9q8B5vXaAlCZSM6lU3KbAHXOp5AwPtuHORx+b+NbjHWgTaXSm8
-	 A4f5fr/GmRmUpoTqJtu2ueTKhNxu/DDXAIL6FdrRb4jUZWwbzGMyZRKuGiM5D207EX
-	 i/zcUSVO8zD/XgUod6sn5+V/STKYv7fdUAQEqqDQ=
+	b=OAiVRzmdTvOuJigHiqUQW/jqC2UzvcGAzP+j9RKI02QPnjn0fmsRAY4nqNSLJHr24
+	 OqlCKEqJHyY3gB83O1R+IW0YqOgXJDBU34UMn91PrQ4RNutQ5dVFdV7pUJHL9VSaI3
+	 lAhYqiCVesTRHMuWScGCxdOIhpZk6W+RYWjOXBjs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4C602F8013A;
+	by alsa1.perex.cz (Postfix) with ESMTP id D0050F804AB;
 	Tue, 11 May 2021 19:57:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B1C98F804AA; Tue, 11 May 2021 19:57:34 +0200 (CEST)
+ id DDE98F804A9; Tue, 11 May 2021 19:57:34 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 42A27F801D5
- for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 19:57:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42A27F801D5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 429FFF80163
+ for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 19:57:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 429FFF80163
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="h0BU7Bj8"
+ header.b="Ekb7Du9l"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
  by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 14BHuh50032740; Tue, 11 May 2021 12:57:21 -0500
+ 14BHuh4x032740; Tue, 11 May 2021 12:57:21 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=PODMain02222019;
- bh=h5ChFWuc4FfHKm+s5OwJSsGROOx+RdQi+K0QOb8taik=;
- b=h0BU7Bj8y0rUzvDsDM2Nvx/N0JbXtB08W5WvPgkrE8QXnqL7JkLumLbj/yRB6egKAAiz
- anSs6l+AnCvjRK4VQHEuSsdfuaQV8vXlJumLN32oxPWsSQw4zPcLYnU9P8N54YeMDPjd
- lFh/XKRBcitlyfxBFqYcfQRB1uaLTNgyA3oB/i5hqLeTYADbzTZ/yOZeW+jc7raZUDJA
- 2Be6UdzdjMEzlna175VET18RgPJYboFJNa84V57JPjNXmvdiUPeu9T2BNnMy4rMglsf+
- Gz+iK823pNG2saCbWKYT03KMBLP540NMVCX8fic4Dl2nlPnwjwe3bpHb7ROPirQMg6Dj mQ== 
+ bh=23wyHMvDSdhhS7KGwhveKjb11ZbmbTSXQmTCvSbjnu0=;
+ b=Ekb7Du9lLeSdQWD/1v+WF/oJJc3sNUvRpgj89M9V4II5tQ5fL2ctfvY04ZNNyIJ3oUl8
+ hqwmZTw+z71oKM2dQ6dMhiyqU7dFmAcOHmw2jWmuZmRqsy7j97+syezQpQBr2jOpK23D
+ +YDOayEen3RtE4GggG4CDcqCseEm0rEBp7EMzyQ/d5A+TZjCSNCTuqJceUtjzwdcZVNq
+ ttg4kEGZwrdsL/lwXNl4fH2Jlkxg6BuH+scGc82oldfj1OS4PDXxK7luoyoRcJBWJRIz
+ CouOqTh3Wru7lEvF7sdFrgGXPjRtFO7dz8EcVHLV9aoY72XR64HEHoE0ld17WE1fgi0u RA== 
 Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 38f4x19vvq-2
+ by mx0a-001ae601.pphosted.com with ESMTP id 38f4x19vvq-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
  Tue, 11 May 2021 12:57:21 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 11 May
- 2021 18:57:19 +0100
+ 2021 18:57:18 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Tue, 11 May 2021 18:57:19 +0100
+ Transport; Tue, 11 May 2021 18:57:18 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id F0F5C11D1;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D296611CD;
  Tue, 11 May 2021 17:57:18 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 4/5] ASoC: cs35l32: Add missing regmap use_single config
-Date: Tue, 11 May 2021 18:57:17 +0100
-Message-ID: <20210511175718.15416-4-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 2/5] ASoC: cs42l73: Add missing regmap use_single config
+Date: Tue, 11 May 2021 18:57:15 +0100
+Message-ID: <20210511175718.15416-2-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20210511175718.15416-1-ckeepax@opensource.cirrus.com>
 References: <20210511175718.15416-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Proofpoint-GUID: 9DhYudHbKM3ZkhLJ1OZ1pZ2l5zOfUZS_
-X-Proofpoint-ORIG-GUID: 9DhYudHbKM3ZkhLJ1OZ1pZ2l5zOfUZS_
+X-Proofpoint-GUID: b_XwuywhKJ_2ic_UD7QSKvoX8X185VqD
+X-Proofpoint-ORIG-GUID: b_XwuywhKJ_2ic_UD7QSKvoX8X185VqD
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
  priorityscore=1501 adultscore=0
- spamscore=0 suspectscore=0 mlxlogscore=850 clxscore=1015 bulkscore=0
+ spamscore=0 suspectscore=0 mlxlogscore=878 clxscore=1015 bulkscore=0
  mlxscore=0 phishscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
  definitions=main-2105110121
@@ -115,26 +115,26 @@ definely cause problems with the new device ID parsing which uses
 regmap_bulk_read but might also show up in the cache sync sometimes.
 Add the missing flags to the regmap_config.
 
-Fixes: 283160f1419d ("ASoC: cs35l32: Minor error paths fixups")
+Fixes: 26495252fe0d ("ASoC: cs42l73: Minor error paths fixups")
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs35l32.c | 3 +++
+ sound/soc/codecs/cs42l73.c | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/codecs/cs35l32.c b/sound/soc/codecs/cs35l32.c
-index 7e1047362a901..933e3d627e5f8 100644
---- a/sound/soc/codecs/cs35l32.c
-+++ b/sound/soc/codecs/cs35l32.c
-@@ -262,6 +262,9 @@ static const struct regmap_config cs35l32_regmap = {
- 	.readable_reg = cs35l32_readable_register,
- 	.precious_reg = cs35l32_precious_register,
+diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
+index da5d77a5f55bb..018463f34e127 100644
+--- a/sound/soc/codecs/cs42l73.c
++++ b/sound/soc/codecs/cs42l73.c
+@@ -1269,6 +1269,9 @@ static const struct regmap_config cs42l73_regmap = {
+ 	.volatile_reg = cs42l73_volatile_register,
+ 	.readable_reg = cs42l73_readable_register,
  	.cache_type = REGCACHE_RBTREE,
 +
 +	.use_single_read = true,
 +	.use_single_write = true,
  };
  
- static int cs35l32_handle_of_data(struct i2c_client *i2c_client,
+ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
 -- 
 2.11.0
 
