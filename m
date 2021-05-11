@@ -2,94 +2,67 @@ Return-Path: <SRS0=Cjbi=KG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8B9FC433B4
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 09:12:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 388F2C433ED
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 09:13:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EA08561923
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 09:12:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EA08561923
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 8DEF061923
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 09:13:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8DEF061923
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1EFD21755;
-	Tue, 11 May 2021 11:11:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EFD21755
+	by alsa0.perex.cz (Postfix) with ESMTPS id A76B21792;
+	Tue, 11 May 2021 11:12:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A76B21792
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620724347;
-	bh=ETvFtPpZWz6DN3iWb3G2WAPhojmYo6ps7EuchaChQ+E=;
+	s=default; t=1620724392;
+	bh=lQevgcijG6o2ed86sd/3iJs/5mfVIYIMIn3p4QmE8UM=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AHvYOQUbN1WAbxKhQfg2pzbqXpGy+mHWFcqR2eQEgM+2HCqR+eNkBvkHA1if7eRYx
-	 J840/Alve3v4QwC4xJ6k1jgDIyIoWq5bW9mP+hFxnG52HdG1ApIUeON+NaT9sNb0sF
-	 BjbDFLQrata0o97bgdc40s4DG1hRAiekRn/ISKTk=
+	b=B59IHLj8eWluGaN5RkaM7GaN0SeqSLTgX20EbG4Y/mRQGobtdJZ8kcEyTCqP/vVx7
+	 eASR7UZEnnaBa6tyk/0TtlWTv3npBB7/xQ6+Fj+7lO8SyWZQiI4+5sR94RWktrm+8i
+	 rWL2SjfL9h5hJf7hOUGwHpIDmWw9Mh+2hcUiKEu0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99DA8F804C1;
-	Tue, 11 May 2021 11:08:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9E710F80163;
+	Tue, 11 May 2021 11:10:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C273FF80163; Tue, 11 May 2021 11:00:31 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 98605F8016B; Tue, 11 May 2021 11:10:18 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 89419F80129
- for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 11:00:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89419F80129
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="PLGy/1LS"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E709E611F1;
- Tue, 11 May 2021 09:00:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1620723613;
- bh=ETvFtPpZWz6DN3iWb3G2WAPhojmYo6ps7EuchaChQ+E=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=PLGy/1LSbmraLJz9I+ZFpgkDxkCfvpVNiHxpQ06jZIl8i8GhyxDYM7Gy1/DkHiCt5
- klo7h/HCiZCdE58jLyhFWvaAVP5oc9x+G/BoSRcOX7C3Tl/sTRBZmSPn8j1vcyPJNt
- mRJS0yxqm/yCxF+CPVj6SxA/ae6jVWIEkJrXhN8oiyzJkjvRZFRVAZch9kSHP1iP93
- oW7IG29Utyoqz+QwiX4h4Rg5Qegv470eEj7pH0f2MN9paDsUyx4y03dGzSMfb4uf2a
- FDLqKCDGwM78HAqr/sdfeYExPB7ah8JOeYwd9qD22mRbJt8d7NaYnvORLTCVIJ25K4
- 6sDaroZmf8XGQ==
-Date: Tue, 11 May 2021 11:00:02 +0200
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To: Edward Cree <ecree.xilinx@gmail.com>
-Subject: Re: [PATCH 00/53] Get rid of UTF-8 chars that can be mapped as ASCII
-Message-ID: <20210511110002.2f187f01@coco.lan>
-In-Reply-To: <ed65025c-1087-9672-7451-6d28e7ab8f92@gmail.com>
-References: <cover.1620641727.git.mchehab+huawei@kernel.org>
- <2ae366fdff4bd5910a2270823e8da70521c859af.camel@infradead.org>
- <20210510135518.305cc03d@coco.lan>
- <df6b4567-030c-a480-c5a6-fe579830e8c0@gmail.com>
- <YJk8LMFViV7Z3Uu7@casper.infradead.org>
- <ed65025c-1087-9672-7451-6d28e7ab8f92@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Mailman-Approved-At: Tue, 11 May 2021 11:08:22 +0200
-Cc: alsa-devel@alsa-project.org, kvm@vger.kernel.org,
- Linux Doc Mailing List <linux-doc@vger.kernel.org>, linux-iio@vger.kernel.org,
- linux-pci@vger.kernel.org, linux-fpga@vger.kernel.org,
- dri-devel@lists.freedesktop.org, keyrings@vger.kernel.org,
- linux-riscv@lists.infradead.org, Jonathan Corbet <corbet@lwn.net>,
- linux-rdma@vger.kernel.org, x86@kernel.org,
- Matthew Wilcox <willy@infradead.org>, linux-acpi@vger.kernel.org,
- intel-wired-lan@lists.osuosl.org, linux-input@vger.kernel.org,
- linux-ext4@vger.kernel.org, intel-gfx@lists.freedesktop.org,
- linux-media@vger.kernel.org, linux-pm@vger.kernel.org,
- linux-sgx@vger.kernel.org, coresight@lists.linaro.org, rcu@vger.kernel.org,
- mjpeg-users@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org,
- linux-edac@vger.kernel.org, linux-hwmon@vger.kernel.org,
- netdev@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-integrity@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id EE706F80129
+ for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 11:10:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE706F80129
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id C1067B16B;
+ Tue, 11 May 2021 09:10:08 +0000 (UTC)
+Date: Tue, 11 May 2021 11:10:08 +0200
+Message-ID: <s5ho8dhd4b3.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Elia Devito <eliadevito@gmail.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: Add fixup for HP Spectre x360 15-df0xxx
+In-Reply-To: <20210510171332.8313-1-eliadevito@gmail.com>
+References: <20210510171332.8313-1-eliadevito@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Chris Chiu <chris.chiu@canonical.com>, alsa-devel@alsa-project.org,
+ Kailang Yang <kailang@realtek.com>, linux-kernel@vger.kernel.org,
+ Huacai Chen <chenhuacai@kernel.org>, Jian-Hong Pan <jhp@endlessos.org>,
+ Takashi Iwai <tiwai@suse.com>, Hui Wang <hui.wang@canonical.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,120 +78,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Em Mon, 10 May 2021 15:33:47 +0100
-Edward Cree <ecree.xilinx@gmail.com> escreveu:
+On Mon, 10 May 2021 19:13:33 +0200,
+Elia Devito wrote:
+> 
+> Fixup to enable all 4 speaker on HP Spectre x360 15-df0xxx and probably
+> on similar models.
+> 
+> 0x14 pin config override is required to enable all speakers and
+> alc285-speaker2-to-dac1 fixup to enable volume adjustment.
+> 
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=189331
+> Signed-off-by: Elia Devito <eliadevito@gmail.com>
 
-> On 10/05/2021 14:59, Matthew Wilcox wrote:
-> > Most of these
-> > UTF-8 characters come from latex conversions and really aren't
-> > necessary (and are being used incorrectly). =20
-> I fully agree with fixing those.
-> The cover-letter, however, gave the impression that that was not the
->  main purpose of this series; just, perhaps, a happy side-effect.
+Could you try to put the quirk entry in the PCI SSID order?
 
-Sorry for the mess. The main reason why I wrote this series is because
-there are lots of UTF-8 left-over chars from the ReST conversion.
-See:
-  - https://lore.kernel.org/linux-doc/20210507100435.3095f924@coco.lan/
 
-A large set of the UTF-8 letf-over chars were due to my conversion work,
-so I feel personally responsible to fix those ;-)
+thanks,
 
-Yet, this series has two positive side effects:
+Takashi
 
- - it helps people needing to touch the documents using non-utf8 locales[1];
- - it makes easier to grep for a text;
-
-[1] There are still some widely used distros nowadays (LTS ones?) that
-    don't set UTF-8 as default. Last time I installed a Debian machine
-    I had to explicitly set UTF-8 charset after install as the default
-    were using ASCII encoding (can't remember if it was Debian 10 or an
-    older version).
-
-Unintentionally, I ended by giving emphasis to the non-utf8 instead of
-giving emphasis to the conversion left-overs.
-
-FYI, this patch series originated from a discussion at linux-doc,
-reporting that Sphinx breaks when LANG is not set to utf-8[2]. That's
-why I probably ended giving the wrong emphasis at the cover letter.
-
-[2] See https://lore.kernel.org/linux-doc/20210506103913.GE6564@kitsune.sus=
-e.cz/
-    for the original report. I strongly suspect that the VM set by Michal=20
-    to build the docs was using a distro that doesn't set UTF-8 as default.
-
-    PS.:=20
-      I intend to prepare afterwards a separate fix to avoid Sphinx
-      logger to crash during Kernel doc builds when the locale charset
-      is not UTF-8, but I'm not too fluent in python. So, I need some
-      time to check if are there a way to just avoid python log crashes
-      without touching Sphinx code and without needing to trick it to=20
-      think that the machine's locale is UTF-8.
-
-See: while there was just a single document originally stored at the
-Kernel tree as a LaTeX document during the time we did the conversion
-(cdrom-standard.tex), there are several other documents stored as=20
-text that seemed to be generated by some tool like LaTeX, whose the
-original version were not preserved.=20
-
-Also, there were other documents using different markdown dialects=20
-that were converted via pandoc (and/or other similar tools). That's=20
-not to mention the ones that were converted from DocBook. Such
-tools tend to use some logic to use "neat" versions of some ASCII
-characters, like what this tool does:
-
-	https://daringfireball.net/projects/smartypants/
-
-(Sphinx itself seemed to use this tool on its early versions)
-
-All tool-converted documents can carry UTF-8 on unexpected places. See,
-on this series, a large amount of patches deal with U+A0 (NO-BREAK SPACE)
-chars. I can't see why someone writing a plain text document (or a ReST
-one) would type a NO-BREAK SPACE instead of a normal white space.
-
-The same applies, up to some sort, to curly commas: usually people just=20
-write ASCII "commas" on their documents, and use some tool like LaTeX
-or a text editor like libreoffice in order to convert them into
- =E2=80=9Cutf-8 curly commas=E2=80=9D[3].
-
-[3] Sphinx will do such things at the produced output, doing something=20
-    similar to what smartypants does, nowadays using this:
-
-	https://docutils.sourceforge.io/docs/user/smartquotes.html
-
-    E. g.:
-      - Straight quotes (" and ') turned into "curly" quote characters;
-      - dashes (-- and ---) turned into en- and em-dash entities;
-      - three consecutive dots (... or . . .) turned into an ellipsis char.
-
-> > You seem quite knowedgeable about the various differences.  Perhaps
-> > you'd be willing to write a document for Documentation/doc-guide/
-> > that provides guidance for when to use which kinds of horizontal
-> > line?
-> I have Opinions about the proper usage of punctuation, but I also know =20
->  that other people have differing opinions.  For instance, I place
->  spaces around an em dash, which is nonstandard according to most
->  style guides.  Really this is an individual enough thing that I'm not
->  sure we could have a "kernel style guide" that would be more useful
->  than general-purpose guidance like the page you linked.
-
-> Moreover, such a guide could make non-native speakers needlessly self-
->  conscious about their writing and discourage them from contributing
->  documentation at all.
-
-I don't think so. In a matter of fact, as a non-native speaker, I guess
-this can actually help people willing to write documents.
-
->  I'm not advocating here for trying to push
->  kernel developers towards an eats-shoots-and-leaves level of
->  linguistic pedantry; rather, I merely think that existing correct
->  usages should be left intact (and therefore, excising incorrect usage
->  should only be attempted by someone with both the expertise and time
->  to check each case).
->=20
-> But if you really want such a doc I wouldn't mind contributing to it.
-
-IMO, a document like that can be helpful. I can help reviewing it.
-
-Thanks,
-Mauro
+> ---
+>  sound/pci/hda/patch_realtek.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index b4b71609dff1..be2a5cd2875d 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -6542,6 +6542,7 @@ enum {
+>  	ALC285_FIXUP_HP_LIMIT_INT_MIC_BOOST,
+>  	ALC295_FIXUP_ASUS_DACS,
+>  	ALC295_FIXUP_HP_OMEN,
+> +	ALC285_FIXUP_HP_SPECTRE_X360,
+>  };
+>  
+>  static const struct hda_fixup alc269_fixups[] = {
+> @@ -8099,6 +8100,15 @@ static const struct hda_fixup alc269_fixups[] = {
+>  		.chained = true,
+>  		.chain_id = ALC269_FIXUP_HP_LINE1_MIC1_LED,
+>  	},
+> +	[ALC285_FIXUP_HP_SPECTRE_X360] = {
+> +		.type = HDA_FIXUP_PINS,
+> +		.v.pins = (const struct hda_pintbl[]) {
+> +			{ 0x14, 0x90170110 }, /* enable top speaker */
+> +			{}
+> +		},
+> +		.chained = true,
+> +		.chain_id = ALC285_FIXUP_SPEAKER2_TO_DAC1,
+> +	},
+>  };
+>  
+>  static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+> @@ -8278,6 +8288,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+>  	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
+>  	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
+>  	SND_PCI_QUIRK(0x103c, 0x87f7, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
+> +	SND_PCI_QUIRK(0x103c, 0x8519, "HP Spectre x360 15-df0xxx", ALC285_FIXUP_HP_SPECTRE_X360),
+>  	SND_PCI_QUIRK(0x103c, 0x8846, "HP EliteBook 850 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+>  	SND_PCI_QUIRK(0x103c, 0x884c, "HP EliteBook 840 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+>  	SND_PCI_QUIRK(0x103c, 0x8898, "HP EliteBook 845 G8 Notebook PC", ALC285_FIXUP_HP_LIMIT_INT_MIC_BOOST),
+> @@ -8665,6 +8676,7 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
+>  	{.id = ALC274_FIXUP_HP_MIC, .name = "alc274-hp-mic-detect"},
+>  	{.id = ALC245_FIXUP_HP_X360_AMP, .name = "alc245-hp-x360-amp"},
+>  	{.id = ALC295_FIXUP_HP_OMEN, .name = "alc295-hp-omen"},
+> +	{.id = ALC285_FIXUP_HP_SPECTRE_X360, .name = "alc285-hp-spectre-x360"},
+>  	{}
+>  };
+>  #define ALC225_STANDARD_PINS \
+> -- 
+> 2.31.1
+> 
