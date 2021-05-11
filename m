@@ -6,74 +6,73 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08076C433B4
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 08:29:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44C7EC433ED
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 08:30:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2F9F061184
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 08:29:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F9F061184
+	by mail.kernel.org (Postfix) with ESMTPS id 3837C61107
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 08:30:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3837C61107
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ACE151789;
-	Tue, 11 May 2021 10:28:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACE151789
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9B3AC1776;
+	Tue, 11 May 2021 10:29:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B3AC1776
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620721787;
-	bh=WPcOH1hz8LFi2fMAUx1mSnzJWiTl0dEjkzO5Nqmct2w=;
+	s=default; t=1620721821;
+	bh=uzIUXmmWVharUwwMxFDeaL2AN14Lz0cJsHF6MbAcCGM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bF8txVFJ5lGBWuuIy94PgXuoG9KHnvappoIq1PvFfMElPJlprfeOqd6J2HLBpFd5P
-	 fcR2BWaBPHXs+D0rtk3auTsdegtoXd6TMEMyAVfG/DEfzxGEOouM5lhfUwBw878z9y
-	 BKsWiY0cDrZZog3LVEWCNB/2h8oMctf5yiDwqCQ0=
+	b=YRouxnaUYgISsOpJzNwFXXpgxDWxNkNxITLPSqZi4eVZfwNt598nD/UFK0jP3yYEr
+	 Zf0LDoQjg1HJQpc/XcMeUGTmwgsnWgg+T3joMDJfBNfpp3JY4U8sr1kM3OBgD3rS8F
+	 19QpNadrv+dKM9+7Nw+37+JyLSssU3b/VA3jENRg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8057F804AB;
-	Tue, 11 May 2021 10:27:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 094E1F80279;
+	Tue, 11 May 2021 10:27:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CC256F804AB; Tue, 11 May 2021 10:27:42 +0200 (CEST)
+ id C281CF804AE; Tue, 11 May 2021 10:27:46 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 26E32F80279
- for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 10:27:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26E32F80279
+ by alsa1.perex.cz (Postfix) with ESMTPS id 593B8F80431
+ for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 10:27:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 593B8F80431
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="UtNcltOD"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0049613CF;
- Tue, 11 May 2021 08:27:25 +0000 (UTC)
+ header.b="R8dzV1Hk"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 967FD61432;
+ Tue, 11 May 2021 08:27:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1620721646;
- bh=WPcOH1hz8LFi2fMAUx1mSnzJWiTl0dEjkzO5Nqmct2w=;
+ s=k20201202; t=1620721655;
+ bh=uzIUXmmWVharUwwMxFDeaL2AN14Lz0cJsHF6MbAcCGM=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=UtNcltODfvT7w2yRGDCOauN3wcPhkqW6S5c6S+BIXkfF+0b8wTkho934NFdtCbdSr
- VXkPHW0fNRYTrshywUbENRUtSJZrekQaiQrDtv+P/WdF0KO/vjnY9n44qLXEax65H2
- hqo+9HiddSaRwze51yz7jpousDFkJQPDjzj7HpzIE1vo/0pUuFLdiQ5J0wJY8CD5S5
- 33Y/fx6+RfAegayvTjdE9in0uNbnZnWeRf8o9Ur2BCYIb4Fgb2LfKAzPlbKYSxAGms
- DT4ondEC8RWnpFJFZe8vxp4uWrVk1fRMxrJWn/gqr1nSst2sBgrETgl8Wq1DYWB3z5
- JZi9iudcSyl9Q==
+ b=R8dzV1HkYNv/mNUWY1V8C/GJk6Ff4RhJJ09ZbfacGWQEtvO3jsw1GLCV1d8wjP6BS
+ SOjvJF3HimxxJ85iopOFWzLvFOimplB1rSY5qje7QdoQpo7Zc1Ts865C4smxdBct72
+ BSTY56mPFuvpzBu/WaRzwby6YVU91SD8Zib0/QViDhqgeuGdCFcwmvsYgS9ARQg5kM
+ X4UJs9Fo12iUetqtgfF0RPbGFtXca4Bi9mhBqcv7s42XtXaA5MWf1X+SKVhsVIoMl4
+ +UjTkOtPfV1Pg/7nzKQvqRVMKdnuObDRrLYMxyUO2rQVIoZxFupC69kVCljTJjeS8N
+ 9TVMtTKmetd1w==
 From: Mark Brown <broonie@kernel.org>
-To: David Rhodes <david.rhodes@cirrus.com>,
- James Schulman <james.schulman@cirrus.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Jaroslav Kysela <perex@perex.cz>,
- Lucas Tanure <tanureal@opensource.cirrus.com>
-Subject: Re: [PATCH 1/3] ASoC: cs42l42: Add support for set_jack calls
-Date: Tue, 11 May 2021 09:25:44 +0100
-Message-Id: <162072058166.33157.1893164114712321283.b4-ty@kernel.org>
+To: Paul Cercueil <paul@crapouillou.net>, Liam Girdwood <lgirdwood@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>, "H. Nikolaus Schaller" <hns@goldelico.com>,
+ Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ASoC: jz4740-i2s: fix function name
+Date: Tue, 11 May 2021 09:25:47 +0100
+Message-Id: <162072058168.33157.14483051619888083091.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210426155303.853236-1-tanureal@opensource.cirrus.com>
-References: <20210426155303.853236-1-tanureal@opensource.cirrus.com>
+In-Reply-To: <56f9c8518870263698b00d10de4821d2dc8932be.1619960935.git.hns@goldelico.com>
+References: <56f9c8518870263698b00d10de4821d2dc8932be.1619960935.git.hns@goldelico.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+Cc: letux-kernel@openphoenux.org, Mark Brown <broonie@kernel.org>,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-mips@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,10 +88,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 26 Apr 2021 16:53:01 +0100, Lucas Tanure wrote:
-> Replace the internal jack creation by set_jack call, so users can map
-> buttons in their machine driver
-> Also only enable jack detection IRQ after set_jack call
+On Sun, 2 May 2021 15:08:55 +0200, H. Nikolaus Schaller wrote:
+> This driver is not related to I2C protocol.
+> 
+> s/_i2c_/_i2s_/
 
 Applied to
 
@@ -100,12 +99,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: cs42l42: Add support for set_jack calls
-      commit: c26a5289e86597e8826ad3093ad71ca0d5d9510a
-[2/3] ASoC: cs42l42: Use device_property API instead of of_property
-      commit: ab78322a0dc8e5e472ff66ac7e18c94acc17587f
-[3/3] ASoC: cs42l42: Add support for ACPI table match entry
-      commit: 66df9477bd35dd851e9803e5fdbbf40ee4598af5
+[1/1] ASoC: jz4740-i2s: fix function name
+      commit: 16f2a3cdaacaa7c077e238df45e4d38d6bc0a6c5
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
