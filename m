@@ -1,82 +1,61 @@
-Return-Path: <SRS0=6VrY=KF=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=Cjbi=KG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A0FE5C433ED
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 22:18:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D53EC433B4
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 01:17:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6F943614A5
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 May 2021 22:18:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F943614A5
+	by mail.kernel.org (Postfix) with ESMTPS id BE64B6162D
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 01:17:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE64B6162D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A5221693;
-	Tue, 11 May 2021 00:17:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A5221693
+	by alsa0.perex.cz (Postfix) with ESMTPS id 66B651775;
+	Tue, 11 May 2021 03:16:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66B651775
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620685081;
-	bh=d/b54dvO4iciGVfAuIk3WDgBUA8Vj6sHgM7C5Mxtge8=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=axXOVa+6nTjwiPHhAFJBn731jyW2BI77+xlip+T8sfpSOkA4U4jGTAXI/27aQckpV
-	 O37LB7c1pIdWkOj3Z4TvUltpHQCK+3tNz+WGqpKc+alz9rYBau4A55gay0UuHfO6oV
-	 cQ+DmJlcG8Gf+oIHKmtrUk5IActkFR6D+AmE/bA4=
+	s=default; t=1620695820;
+	bh=7kO7Rs+Zm3cz3QrhNx95V2Bn3TvLUsxOM0NxgceSGhc=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=BM8y5kRsDYqy8Lpn5Oxye9WrsZitMev1zmDqiTSEoWu7aH9+iuCOzdQVDl3vKyXDv
+	 qtOlu1d9HC//yhcgNw8qIgG/nvejc6eTpARLbCQLsg3I0saIlX1fOCrFfgI5stRC1C
+	 7B4vvKNoYjVGiSVcjTPicMPI7D1MSJ3qfNoRs96U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0373BF8020C;
-	Tue, 11 May 2021 00:17:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1056F8020C;
+	Tue, 11 May 2021 03:16:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DDEDFF80240; Tue, 11 May 2021 00:17:09 +0200 (CEST)
+ id 0E70DF80240; Tue, 11 May 2021 03:16:09 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 459FFF800E9
- for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 00:17:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 459FFF800E9
-Date: 11 May 2021 07:16:56 +0900
-X-IronPort-AV: E=Sophos;i="5.82,288,1613401200"; d="scan'208";a="80657554"
+ by alsa1.perex.cz (Postfix) with ESMTP id D453AF800EA
+ for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 03:16:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D453AF800EA
+Date: 11 May 2021 10:15:56 +0900
+X-IronPort-AV: E=Sophos;i="5.82,290,1613401200"; d="scan'208";a="80674571"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 11 May 2021 07:16:56 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 11 May 2021 10:15:56 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id EAE2A4104832;
- Tue, 11 May 2021 07:16:55 +0900 (JST)
-Message-ID: <87k0o6b5ew.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id A82A4414C0D1;
+ Tue, 11 May 2021 10:15:56 +0900 (JST)
+Message-ID: <87im3qax4j.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Michael Walle <michael@walle.cc>
-Subject: Re: broonie-sound/for-next bisection:
- baseline.bootrr.asoc-simple-card-probed on kontron-sl28-var3-ads2
-In-Reply-To: <99b3cd8db134d9682c16784f75f40bae@walle.cc>
-References: <6080e82c.1c69fb81.cd60c.2a13@mx.google.com>
- <3ca62063-41b4-c25b-a7bc-8a8160e7b684@collabora.com>
- <877dkp5141.wl-kuninori.morimoto.gx@renesas.com>
- <20210426144242.GF4590@sirena.org.uk>
- <8735vc4r59.wl-kuninori.morimoto.gx@renesas.com>
- <20210427101926.GA4605@sirena.org.uk>
- <ea2b6dae-3087-67d3-8473-410255a51e23@collabora.com>
- <e20b9c8a2715b5d091a8d1f37ba890b4@walle.cc>
- <20210427135703.GH4605@sirena.org.uk>
- <cc9a39f977c3765d1060ab1b0038bc79@walle.cc>
- <a1ec388def4febd9af6ef477245ef2d3@walle.cc>
- <1aa3a8716d2416f0cc127737dcff092a@walle.cc>
- <87o8djcxas.wl-kuninori.morimoto.gx@renesas.com>
- <99b3cd8db134d9682c16784f75f40bae@walle.cc>
+To: Mark Brown <broonie@kernel.org>, Michael Walle <michael@walle.cc>,
+ Guillaume Tucker <guillaume.tucker@collabora.com>
+Subject: [PATCH v2 0/4] ASoC: simple-card / audio-graph re-cleanup
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Jon Hunter <jonathanh@nvidia.com>, alsa-devel@alsa-project.org,
- Stephan Gerhold <stephan@gerhold.net>, kernelci-results@groups.io,
- Guillaume Tucker <guillaume.tucker@collabora.com>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Heiko Thiery <heiko.thiery@gmail.com>,
- Thierry Reding <treding@nvidia.com>, linux-kernel@vger.kernel.org
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,20 +72,48 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Michael
+Hi Mark, Guillaume
 
-> I've just tested your new patches. Unfortunately, it was very
-> successful. I've also traced the is_single_links and it is still
-> 1 for this board. Is this correct?
+I'm so sorry to bother you again and again.
+These are v2 of simple-card / audio-graph re-cleanup.
 
-Grr, thank you for your test.
-is_single_links itself is no problem.
-This is name creating timing issue, and indeed posted
-patch was still not good.
-I'm so sorry to bother you.
+KernelCI had reported that below patches broke kontron-sl28-var3-ads2
+sound card probing.
 
-Thank you for your help !!
+	434392271afcff350fe "ASoC: simple-card: add simple_link_init()"
+	59c35c44a9cf89a83a9 "ASoC: simple-card: add simple_parse_node()"
 
-Best regards
----
-Kuninori Morimoto
+Main issue I'm understanding is name create timing.
+We want to create dailink->name via dlc->dai_name.
+But in CPU case, this dai_name might be removed by asoc_simple_canonicalize_cpu()
+if it CPU was single DAI.
+
+Thus, we need to
+	A) get dlc->dai_name
+	B) create dailink->name via dlc->dai_name
+	C) call asoc_simple_canonicalize_cpu()
+
+Above reverted patch did A->C->B.
+My previous v1 patch did B->A->C.
+
+I'm so sorry that I didn't deep test on v1.
+I hope v2 patches has no issues on kontron-sl28-var3-ads2.
+
+Link: https://lore.kernel.org/r/87cztzcq56.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87h7k0i437.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/20210423175318.13990-1-broonie@kernel.org
+Link: https://lore.kernel.org/r/3ca62063-41b4-c25b-a7bc-8a8160e7b684@collabora.com
+
+Kuninori Morimoto (4):
+  ASoC: simple-card: add simple_parse_node()
+  ASoC: simple-card: add simple_link_init()
+  ASoC: audio-graph: tidyup graph_dai_link_of_dpcm()
+  ASoC: audio-graph: tidyup graph_parse_node()
+
+ sound/soc/generic/audio-graph-card.c |  57 ++++-----
+ sound/soc/generic/simple-card.c      | 168 +++++++++++++--------------
+ 2 files changed, 112 insertions(+), 113 deletions(-)
+
+-- 
+2.25.1
+
