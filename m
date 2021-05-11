@@ -7,61 +7,60 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40C6CC433B4
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 05:37:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F86FC433B4
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 06:02:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AFBCB61924
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 05:37:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AFBCB61924
+	by mail.kernel.org (Postfix) with ESMTPS id 9EEAB61926
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 06:02:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9EEAB61926
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 76962176D;
-	Tue, 11 May 2021 07:37:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76962176D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 338F61771;
+	Tue, 11 May 2021 07:50:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 338F61771
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620711475;
-	bh=MbfE/QHGPak3hNof3QTE3IItBx2XoFbf/I6uuUloYVQ=;
+	s=default; t=1620712299;
+	bh=WC+CE2sZjpnX9YSQaGpUf0AKVlLe3q+0qnDQoR2Jc4I=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=ImRCEPAavnkXsuzFQu8ZipavSyUg0q4owCIrtlFQZ4HMMYXdAL0xxWZssNAX+BZPo
-	 zQV3b1WbICePw3/QIofEr8JlxLbBjiw9GSfpnSbenPi/e4B1dnXtYcs/CW4pRD0FiH
-	 4nvtGEu/3mBSvg3eVnjiU/bIs8m3oz/BpdRDo+iw=
+	b=LYYMhUC1oX6KstZglM77xnTku8UDeprRTuU0dfiinLmr+ED6vFLoEFxmS3VxMS5eF
+	 dEGrj4+LKeN+zNyFN5TA3WEq5g+76+uHhFfulntlf3TXklKhZCcvDynQc9MmmR8mFO
+	 uSUrxRNp/jBmGoWja5Ll1i1Uqj65wU+ozz7KKtdE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 10C51F80156;
-	Tue, 11 May 2021 07:37:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B695EF80129;
+	Tue, 11 May 2021 07:50:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7685CF80163; Tue, 11 May 2021 07:37:03 +0200 (CEST)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id E8BD9F80163; Tue, 11 May 2021 07:50:47 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 42258F800E9
- for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 07:36:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42258F800E9
-IronPort-SDR: AhRXDPDqMOIaMuBFHsDJyA7HHfipZNWf5HuXRxm9QZRXr+jgcAknEkubPfE3PVOq8+ag69dE16
- uQ56xR7u2z1Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="197378054"
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; d="scan'208";a="197378054"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 May 2021 22:36:50 -0700
-IronPort-SDR: SYbQKa5drIbm+oE86mUS4EN3+RL+C3rShrYShk3Yri4qNpU4ttMYi2pEn/Q4OM6otH0bOplS8m
- IFH2tVh984+g==
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; d="scan'208";a="536823754"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 18708F80129
+ for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 07:50:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18708F80129
+IronPort-SDR: kpw7RIog8cSxp7CHVJMjWP7LmpAEq/AHP4u7M3aayV8GISwLFmgZl0G1do2c/GY5PWvVOw/+Hf
+ FjJ+3oTk/QLw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="284849664"
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; d="scan'208";a="284849664"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 May 2021 22:50:34 -0700
+IronPort-SDR: JwxCby8GjlLqq08831+dJxFqvOpq93xdcW725vcuaLR5Ksvy/7B7iN6SFcCMpMqd0YfIFpC0Hm
+ +ZZ7MRHWE4LA==
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; d="scan'208";a="471020665"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
- by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 May 2021 22:36:47 -0700
+ by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 May 2021 22:49:57 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [RESEND PATCH] soundwire: add slave device to linked list after
- device_register()
-Date: Tue, 11 May 2021 13:36:39 +0800
-Message-Id: <20210511053639.28550-1-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH] soundwire: bandwidth allocation: improve error messages
+Date: Tue, 11 May 2021 13:49:45 +0800
+Message-Id: <20210511054945.29558-1-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 Cc: vinod.koul@linaro.org, gregkh@linuxfoundation.org,
  linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
@@ -84,53 +83,59 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-We currently add the slave device to a linked list before
-device_register(), and then remove it if device_register() fails.
+In rare corner cases, we see an error with the log:
 
-It's not clear why this sequence was necessary, this patch moves the
-linked list management to after the device_register().
+[  838.297840] soundwire sdw-master-1: Compute bus params failed: -22
 
-Suggested-by: Keyon Jie <yang.jie@linux.intel.com>
+That's not very useful, there can be two different error conditions
+with the same -EINVAL code provided to the caller.
+
+Let's add better dev_err() messages to figure out what went wrong.
+
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/slave.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ drivers/soundwire/generic_bandwidth_allocation.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
-index 0eed38a79c6d..ff01b96c6e56 100644
---- a/drivers/soundwire/slave.c
-+++ b/drivers/soundwire/slave.c
-@@ -65,9 +65,6 @@ int sdw_slave_add(struct sdw_bus *bus,
- 	for (i = 0; i < SDW_MAX_PORTS; i++)
- 		init_completion(&slave->port_ready[i]);
- 
--	mutex_lock(&bus->bus_lock);
--	list_add_tail(&slave->node, &bus->slaves);
--	mutex_unlock(&bus->bus_lock);
- 
- 	ret = device_register(&slave->dev);
- 	if (ret) {
-@@ -77,13 +74,15 @@ int sdw_slave_add(struct sdw_bus *bus,
- 		 * On err, don't free but drop ref as this will be freed
- 		 * when release method is invoked.
+diff --git a/drivers/soundwire/generic_bandwidth_allocation.c b/drivers/soundwire/generic_bandwidth_allocation.c
+index 84d129587084..f7c66083a4dd 100644
+--- a/drivers/soundwire/generic_bandwidth_allocation.c
++++ b/drivers/soundwire/generic_bandwidth_allocation.c
+@@ -382,12 +382,18 @@ static int sdw_compute_bus_params(struct sdw_bus *bus)
  		 */
--		mutex_lock(&bus->bus_lock);
--		list_del(&slave->node);
--		mutex_unlock(&bus->bus_lock);
- 		put_device(&slave->dev);
- 
- 		return ret;
  	}
-+
-+	mutex_lock(&bus->bus_lock);
-+	list_add_tail(&slave->node, &bus->slaves);
-+	mutex_unlock(&bus->bus_lock);
-+
- 	sdw_slave_debugfs_init(slave);
  
- 	return ret;
+-	if (i == clk_values)
++	if (i == clk_values) {
++		dev_err(bus->dev, "%s: could not find clock value for bandwidth %d\n",
++			__func__, bus->params.bandwidth);
+ 		return -EINVAL;
++	}
+ 
+ 	ret = sdw_select_row_col(bus, curr_dr_freq);
+-	if (ret < 0)
++	if (ret < 0) {
++		dev_err(bus->dev, "%s: could not find frame configuration for bus dr_freq %d\n",
++			__func__, curr_dr_freq);
+ 		return -EINVAL;
++	}
+ 
+ 	bus->params.curr_dr_freq = curr_dr_freq;
+ 	return 0;
+@@ -404,10 +410,8 @@ int sdw_compute_params(struct sdw_bus *bus)
+ 
+ 	/* Computes clock frequency, frame shape and frame frequency */
+ 	ret = sdw_compute_bus_params(bus);
+-	if (ret < 0) {
+-		dev_err(bus->dev, "Compute bus params failed: %d\n", ret);
++	if (ret < 0)
+ 		return ret;
+-	}
+ 
+ 	/* Compute transport and port params */
+ 	ret = sdw_compute_port_params(bus);
 -- 
 2.17.1
 
