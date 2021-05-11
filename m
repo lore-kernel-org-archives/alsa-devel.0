@@ -4,76 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A91A0C433B4
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 08:33:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5791BC433ED
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 08:33:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0B5526134F
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 08:33:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B5526134F
+	by mail.kernel.org (Postfix) with ESMTPS id 94AEE61184
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 08:33:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94AEE61184
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 64DBA178D;
-	Tue, 11 May 2021 10:32:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64DBA178D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 08AAB1794;
+	Tue, 11 May 2021 10:32:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08AAB1794
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620722003;
-	bh=plCtlHCNIpWfe9eWJChLXDfOcpe8n0jaIChsmOCFPr8=;
+	s=default; t=1620722023;
+	bh=8QV1prZgcnGVckULuPrsf8ultZnzYbadIC/1Rfk5wjo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hzeNTQZZyKH/Dk6UmxDqaKqGkzWH25AW3bNmKPIBC4GRsFC3qgmv+DyA0NGZ7VIiE
-	 nRscHPQ2Rh2/hjFe7C4lMsqyyv3ERzT+Q56IgyinIAfV2ExBIeYg+J1MsioV6eyjvq
-	 lw1wblf3FVE2iurjcjkmg1bzhix67AgO78L2kSYs=
+	b=KtubV5jU/yH/kgSFK8JSe8eTqKAmwo1dCOlKvmor32Y2138nooNjDppVtFaYmzw15
+	 O9H/Boi59r2i6fyYAYMT+PhBH9UfeTDDmVSnQ6Qyt8db/cnBiFNJVrRyd07Ud34IBt
+	 x46dfkA0FiytwrAlakUmSEvALKtVAp8XjK9c3rN8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7EF88F804FC;
-	Tue, 11 May 2021 10:28:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8D158F80506;
+	Tue, 11 May 2021 10:28:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 298C4F804D8; Tue, 11 May 2021 10:28:10 +0200 (CEST)
+ id 7C3F9F8028D; Tue, 11 May 2021 10:28:08 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CE03EF8013A
- for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 10:28:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE03EF8013A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5C1B6F804B1
+ for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 10:28:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C1B6F804B1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="svusHPzi"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E74AC616E8;
- Tue, 11 May 2021 08:28:04 +0000 (UTC)
+ header.b="fi6WJ+I+"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05B9D613CF;
+ Tue, 11 May 2021 08:28:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1620721685;
- bh=plCtlHCNIpWfe9eWJChLXDfOcpe8n0jaIChsmOCFPr8=;
+ s=k20201202; t=1620721682;
+ bh=8QV1prZgcnGVckULuPrsf8ultZnzYbadIC/1Rfk5wjo=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=svusHPziplt7rimI6RlxLuA17HZhb4QM6tlmQM4Y00uOwNA+HMzglt8+jySCjUUi0
- jMQs39+xUOFthkam2OtVEeso/qNtT/XAmQWbxRzHR7NsoT24MTXq56KH2rUdVIHs9R
- 7TRK9/tDjVyno3b9V35Ca4komeoizrOCvc9f1CEOdd8l7jdYdQ1EyO6psWcf7AKhj2
- EkIWI4wCbacnztnFShH6rsFjJPH76jBmdrBHOmiNpHGM+d6VEBBHqK4xOn8yqQUoJW
- sS7GYE3dfQL4A9K4MFqe5QANtkSkzZS47Kf60G5oKeoDxUMRf5UziKhgiSjugXj+LS
- n2/ASFw8jtg7g==
+ b=fi6WJ+I+vNOQWCgTURDw2P7tcol8qlTEN/y52elLb8qbZ6h+r9f3J1yqlvYz9L/W5
+ /UtipGYVPOTygS2M6h2oftXMh+aOl1jot8k5uRvGDbdYzRpM80kDLD+xNc8PeJfQBU
+ RKb80KB3wDma6yLylO8nixrWG1VZcfgy/D6lUk4Q3Aznp06aPTiCC5RZ1dBL+ELE/e
+ Rq184qzKxAI4nEIelF80jTzqiLa7Cw1PWKP6BgskmuZCVPgthDx9VHJkgY4+jeWqC2
+ aGcuCyDg7efqR91MX37ic2baOEB9hj8TrzDULItlpuNL2DzmOqxPQjdQ3JICc+vSNk
+ 8jS9iLEerOrvg==
 From: Mark Brown <broonie@kernel.org>
-To: perex@perex.cz,
-	Yang Li <yang.lee@linux.alibaba.com>
-Subject: Re: [PATCH] ASoC: q6dsp: q6afe: remove unneeded dead-store
- initialization
-Date: Tue, 11 May 2021 09:25:57 +0100
-Message-Id: <162072058167.33157.15111322550243125545.b4-ty@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
+Subject: Re: [PATCH 0/2] ASoC: SOF: Intel: split Baytrail and Merrifield
+Date: Tue, 11 May 2021 09:25:56 +0100
+Message-Id: <162072058169.33157.264989229865467686.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1619345553-29781-1-git-send-email-yang.lee@linux.alibaba.com>
-References: <1619345553-29781-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <20210505170235.306797-1-pierre-louis.bossart@linux.intel.com>
+References: <20210505170235.306797-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org, tiwai@suse.com,
- ndesaulniers@google.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
- nathan@kernel.org, clang-built-linux@googlegroups.com,
- Mark Brown <broonie@kernel.org>
+Cc: tiwai@suse.de, vkoul@kernel.org, Mark Brown <broonie@kernel.org>,
+ arnd@arndb.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,16 +86,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 25 Apr 2021 18:12:33 +0800, Yang Li wrote:
-> Variables 'wait' and 'port_id' are being initialized, however the
-> values are never read and updated later on, hence the redundant
-> initializations can be removed.
+On Wed, 5 May 2021 12:02:33 -0500, Pierre-Louis Bossart wrote:
+> We've had recurring randconfig issues with the two platforms relying
+> on ACPI and PCI. I think it's time to split the two and introduce a
+> common 'atom' module, so that dependencies are better handled.
 > 
-> Cleans up clang warnings:
-> sound/soc/qcom/qdsp6/q6afe.c:933:21: warning: Value stored to 'wait'
-> during its initialization is never read
-> sound/soc/qcom/qdsp6/q6afe.c:1186:6: warning: Value stored to 'port_id'
-> during its initialization is never read
+> I chose not to add a Fixes tag since the changes are rather invasive,
+> and the randconfig issues only happen in non-functional cases.
+> 
+> [...]
 
 Applied to
 
@@ -106,8 +102,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: q6dsp: q6afe: remove unneeded dead-store initialization
-      commit: 5f1b95d08de712327e452d082a50fded435ec884
+[1/2] ASoC: SOF: Intel: byt: prepare split between Baytrail and Merrifield
+      commit: 1c5ab2dc752fcd02264e8dca8bde55ca479aa684
+[2/2] ASoC: SOF: Intel: move common ATOM stuff to module
+      commit: 47fad2393b0446229883f95e373067441794e22f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
