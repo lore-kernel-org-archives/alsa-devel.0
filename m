@@ -6,73 +6,70 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B980C433B4
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 18:23:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F89CC433B4
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 18:24:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E3A366186A
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 18:23:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E3A366186A
+	by mail.kernel.org (Postfix) with ESMTPS id A296B61207
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 18:24:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A296B61207
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BE94C18C1;
-	Tue, 11 May 2021 20:22:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE94C18C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 640C418C0;
+	Tue, 11 May 2021 20:23:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 640C418C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620757409;
-	bh=Uw8hsDGMWdFoqrkXWoAq4pDRF5iQaFJRHfiWp/r+0k0=;
+	s=default; t=1620757460;
+	bh=tzQI48qc4TkUQ9zo4+5oAMZas2lYgB+Myx5nBcxQpTs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vt9ZKzQjjQQdQHOhMxJEbFP555O0PUcfeOFlWJI3miTk4DHCYx6wxRYFOTxjCSytF
-	 F746Bhk0z8moZSpENmgEMEBXOGzIdl/T6sNAjPSYAccKMK+XwHOCLXjyI5K9FmgXkS
-	 JlUxUHzTmlsGDJ0fmZ9UUBk9IkrdzmMQisaG1eKM=
+	b=YFCUZ1Kwq3ih3CihbCVhm1V5uzejikcmQGOWFkUGQEiygxvrmsA4xInNozJkCQQmP
+	 9u7C4mOpVvvjI9GDUn7AnNVGJTTwS7I9tJm456ev8cYj5TwMnGvYU8JBIiUr7YxAYc
+	 Ote026A+MGuy43HPphnfxK0zWu6XtWS/R2YXXqdM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3365F80156;
-	Tue, 11 May 2021 20:22:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C251F80279;
+	Tue, 11 May 2021 20:22:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 600A5F80163; Tue, 11 May 2021 20:22:36 +0200 (CEST)
+ id 97E2CF8028D; Tue, 11 May 2021 20:22:39 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DEDF4F8013A
- for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 20:22:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DEDF4F8013A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 39FF8F80129
+ for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 20:22:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39FF8F80129
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="I5z0TeK8"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B81861207;
- Tue, 11 May 2021 18:22:23 +0000 (UTC)
+ header.b="httCx7EG"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D6E76186A;
+ Tue, 11 May 2021 18:22:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1620757344;
- bh=Uw8hsDGMWdFoqrkXWoAq4pDRF5iQaFJRHfiWp/r+0k0=;
+ s=k20201202; t=1620757350;
+ bh=tzQI48qc4TkUQ9zo4+5oAMZas2lYgB+Myx5nBcxQpTs=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=I5z0TeK8lfntTLwn1hiDzHZpXxCl+p6hcLXN1u3FqVync0FV7/wBxQJDPhLf2AXxw
- 6BtlB4oCmNBndxdGupB2u5FpMK07kbCHpd34amI+Z8uwcLP3dTpAv3Wbpg8Ql2GYWV
- hH5bypkYxa+DFWq/FP2WQqG3J/2AK9NZG0N8cPRNHxY8P9088z3VmZp7vnftcGEhSM
- KXIssY5BbtGuTIpc4Qztmoxzva2coOp6jmS/r+LABv/H0Vz5mBTvTAwZZRAv+RpJhc
- 7NVygrPS69p3itqpAAWhH2xL7FFzzJCuM5kNaXt0n3ewtb6BtQW4BK42nAcH3g+El0
- AYXTOBoiADz0Q==
+ b=httCx7EG90o9MOPSzN/WR939X0OGMA8jnVChiuZ9cPRtXtAsRDtbhQu42Cv7icpz3
+ IQgLaigUM87hzAXUVHsXY98IWez+N47v+KAFFMbJjWiFZp79yx61+WvPbV0hJziWtG
+ ouRFyLItoAgvRzDc5ncY5BRSQlhIST4zgcnzd2BTmNpLwWkLLMDLi4PbDH8CFSKekf
+ LgLukSN+bb4R7XEoiCEJEp91DagsGI1cD7ddV5op4IwJByDqVRvCAAyFR+W6K1YGGd
+ 9+rEORLV0xiy+JGbXGKvqI5vhJzpdBl+cOFLZp6vV3X28gRjd/nqTP3TLop9UDGTB/
+ /RIqA+AXpYJIQ==
 From: Mark Brown <broonie@kernel.org>
-To: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
-Subject: Re: (subset) [PATCH v3 00/14] spi: pxa2xx: Set of cleanups
-Date: Tue, 11 May 2021 19:21:27 +0100
-Message-Id: <162075727215.18180.8620014243960066654.b4-ty@kernel.org>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: cs42l42: Regmap must use_single_read/write
+Date: Tue, 11 May 2021 19:21:29 +0100
+Message-Id: <162075713910.17925.13540340521558879999.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210510124134.24638-1-andriy.shevchenko@linux.intel.com>
-References: <20210510124134.24638-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210511132855.27159-1-rf@opensource.cirrus.com>
+References: <20210511132855.27159-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.com>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,41 +85,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 10 May 2021 15:41:20 +0300, Andy Shevchenko wrote:
-> Set of cleanups here and there related to the SPI PXA2xx driver.
-> On top of them, adding the special type for Intel Merrifield.
+On Tue, 11 May 2021 14:28:55 +0100, Richard Fitzgerald wrote:
+> cs42l42 does not support standard burst transfers so the use_single_read
+> and use_single_write flags must be set in the regmap config.
 > 
-> In v3:
-> - rebased on top of v5.13-rc1 and/or spi/for-5,14
+> Because of this bug, the patch:
 > 
-> In v2:
-> - cover letter (Mark)
-> - drop moving the header in patch 5 (Mark)
+> commit 0a0eb567e1d4 ("ASoC: cs42l42: Minor error paths fixups")
 > 
 > [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[07/14] spi: pxa2xx: Introduce int_stop_and_reset() helper
-        commit: ab77fe8935c57d1339d3df64957f32e87f0d5ef3
-[08/14] spi: pxa2xx: Reuse int_error_stop() in pxa2xx_spi_slave_abort()
-        commit: 4761d2e7e51cfbe6fdb4e95903d407927f519f50
-[09/14] spi: pxa2xx: Use pxa_ssp_enable()/pxa_ssp_disable() in the driver
-        commit: 0c8ccd8b267fc735e4621774ce62728f27d42863
-[10/14] spi: pxa2xx: Extract pxa2xx_spi_update() helper
-        commit: 1bed378c6b9116c51ae59b970cf3d9b4e9e62ced
-[11/14] spi: pxa2xx: Extract clear_SSCR1_bits() helper
-        commit: 42c80cd439a938569a86f6ae135d38c1cda5569b
-[12/14] spi: pxa2xx: Extract read_SSSR_bits() helper
-        commit: 6d380132eaea536bef641f21847c8a7987e96ad8
-[13/14] spi: pxa2xx: Constify struct driver_data parameter
-        commit: eca32c3974c0664f88fed90b327f473bd18a4809
-[14/14] spi: pxa2xx: Introduce special type for Merrifield SPIs
-        commit: 3fdb59cf10b020b32b9f1dfc78611320623dcb3e
+[1/1] ASoC: cs42l42: Regmap must use_single_read/write
+      commit: 0fad605fb0bdc00d8ad78696300ff2fbdee6e048
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
