@@ -6,74 +6,74 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E51DAC433ED
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 08:32:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8265DC433B4
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 08:32:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 51B4661184
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 08:32:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51B4661184
+	by mail.kernel.org (Postfix) with ESMTPS id 7F08F613AF
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 08:32:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7F08F613AF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C6A681753;
-	Tue, 11 May 2021 10:31:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6A681753
+	by alsa0.perex.cz (Postfix) with ESMTPS id DF603175B;
+	Tue, 11 May 2021 10:31:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF603175B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620721938;
-	bh=rVZx4H7SLhEfY9uZaZksv7D3ECMJkUkfL2J6l5EyOKc=;
+	s=default; t=1620721964;
+	bh=eBWDJluRsgCeGLDxW3y4rXxNqKj35vzOmjiWuK+aSzk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rcP+nZTox1iR2LtxXiD7alPUmYEKI4jCemUTmKcj04aJOW9bTopm8Glx4YBl3S/qz
-	 wf+z/ClQkHxkK7TPrtv7KPO2yrjnjMP39kZo5GCmoqs90qrhgs0uKDjQsy7XMKDeIx
-	 +04R+NichaYb+xuE5kFTGalW1bKdR5WVtan/WUVQ=
+	b=DqDs4Jir51AnYj7Ofb/cubhMvu78peF9R1ITJMgsZSuCp5rN8o/0xayobyjbK9j4+
+	 6ZoArFxMv9FpDEZrG0yoVKEefC+efRkBCcCp8N+/fPXbw+EOH7zLNXA0hnaP0pqnQt
+	 t/aZssROgBhxQfkRqPKPvsy1TLwb3kM3V8cEsOlQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B2952F804E5;
-	Tue, 11 May 2021 10:28:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BCE83F804EB;
+	Tue, 11 May 2021 10:28:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B1AE8F804B1; Tue, 11 May 2021 10:27:58 +0200 (CEST)
+ id D8FFDF804D9; Tue, 11 May 2021 10:28:04 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 67B72F804B1
- for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 10:27:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67B72F804B1
+ by alsa1.perex.cz (Postfix) with ESMTPS id C48ECF804D1
+ for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 10:27:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C48ECF804D1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="a7L85Q6o"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40BA061942;
- Tue, 11 May 2021 08:27:53 +0000 (UTC)
+ header.b="JpIaOKhC"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25F4B61622;
+ Tue, 11 May 2021 08:27:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1620721673;
- bh=rVZx4H7SLhEfY9uZaZksv7D3ECMJkUkfL2J6l5EyOKc=;
+ s=k20201202; t=1620721676;
+ bh=eBWDJluRsgCeGLDxW3y4rXxNqKj35vzOmjiWuK+aSzk=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=a7L85Q6oK67wz+PpJvPdesYqBNI6/Ua6fNPiZBQIUfRO/xM0SxJTmgmeuILQ8lwt4
- 6Y8x7tvptZvOHTmWNddPVDaJkOExChnXAcVauKTZcr5PK8YgAe7V+5gEM8SsFxatH9
- 37MIeoMu9OM7RP/SFiNyDulq6z7gCdXTarmTvcrxqLe+CAHdHbEOy6si9KMNCCDmzt
- eA8puvHhI/SmkyauOq2SeQOFptIngcejZV5qhm8mLhXLj9O3CliK+QpveQkbAruTRo
- 40W6cM9DHtK++5M+do4uIUHJ1Ej7qs7lbPCQfEmgx9A6ZycvEsQhDP3RkOeNNf8/RP
- zoMctCAu65VrQ==
+ b=JpIaOKhCczlAl6rHb4epjZIWhn5KIZPAnA6vaFt2vznxIlKgA48nC7lQG7dqj3KHV
+ AMU/bqvwla4tIXNYRMc81eCdYICHZ0pLVxRtYnHIIPuJA9O3Gwa0lWSpYFGaJWvy75
+ C53CPUVnntNbEpfc6WUVBo47L3CbM1W9OlQXYlBDnS05LNQBZrRJAUvqqGg0xv6jyo
+ aT21nOJUG7BUyEDzGeTGx6pQiOmyxgrvRqXUJJUAogSE69rIiQYHNmfIw05YXyazGy
+ wmKt+pnmCIV1nkva3eI6YpO6ogqTQc70p0ml5PaHfrwu1Q6JC8NQpo6chRY4EqQ6Y8
+ 48H00vcwKOqbg==
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Yang Li <yang.lee@linux.alibaba.com>,
- Takashi Iwai <tiwai@suse.com>, Colin Ian King <colin.king@canonical.com>,
- Wan Jiabing <wanjiabing@vivo.com>, Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ASoC: codecs: lpass-rx-macro: Remove unneeded semicolon
-Date: Tue, 11 May 2021 09:25:53 +0100
-Message-Id: <162072058169.33157.72791432961188955.b4-ty@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Ye Bin <yebin10@huawei.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Bixuan Cui <cuibixuan@huawei.com>, Takashi Iwai <tiwai@suse.com>,
+ Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH -next] ASoC: codecs: lpass-tx-macro: add missing
+ MODULE_DEVICE_TABLE
+Date: Tue, 11 May 2021 09:25:54 +0100
+Message-Id: <162072058170.33157.14915696599003634030.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210506021005.4897-1-wanjiabing@vivo.com>
-References: <20210506021005.4897-1-wanjiabing@vivo.com>
+In-Reply-To: <20210508031512.53783-1-cuibixuan@huawei.com>
+References: <20210508031512.53783-1-cuibixuan@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: kael_w@yeah.net, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,10 +89,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 6 May 2021 10:09:49 +0800, Wan Jiabing wrote:
-> Fix the following coccicheck warning:
-> 
-> ./sound/soc/codecs/lpass-rx-macro.c:2631:2-3: Unneeded semicolon
+On Sat, 8 May 2021 11:15:12 +0800, Bixuan Cui wrote:
+> This patch adds missing MODULE_DEVICE_TABLE definition which generates
+> correct modalias for automatic loading of this driver when it is built
+> as an external module.
 
 Applied to
 
@@ -100,8 +100,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: lpass-rx-macro: Remove unneeded semicolon
-      commit: f758b9ef9a1abeea37086b8da0073c27eebf74aa
+[1/1] ASoC: codecs: lpass-tx-macro: add missing MODULE_DEVICE_TABLE
+      commit: 14c0c423746fe7232a093a68809a4bc6233eed60
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
