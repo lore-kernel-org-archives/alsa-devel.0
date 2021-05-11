@@ -2,85 +2,78 @@ Return-Path: <SRS0=Cjbi=KG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23F43C433ED
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 14:14:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EED8C433B4
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 14:18:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 51C1A61155
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 14:14:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51C1A61155
+	by mail.kernel.org (Postfix) with ESMTPS id 9173E61155
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 14:18:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9173E61155
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 14C0317CC;
-	Tue, 11 May 2021 16:13:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14C0317CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 59D1917CE;
+	Tue, 11 May 2021 16:17:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59D1917CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620742473;
-	bh=arV8oOgE3x2O+5GW/C7uzPCMCn4lOK01+scSUmzZcpA=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1620742693;
+	bh=YFAfliP+6wWfYGghmf01s1XhjChEk3kgnk6qqBCQySc=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DDbO+h2H9iCGmNZfIhIAzGqLkCWQe6q+klwXeFb+kN3vM7bhfUejqSeDbfXLOHbeh
-	 nVfwcU/iaU2h6qHNQkQHjl6UnDASLtDButxc9KVq65MyvTLF3QMfGNP880RsyG3qzW
-	 qMtUOgnpKyo84kuczML9n5f+LDlstpx1Pte9sb0Q=
+	b=HLsiZzSi9Y8jp9GuIxpKYhVhhl0z33bUV0AvcrhFlzeLVM+jR59RN7pFsPat5DjU7
+	 tr2cKm6sQbAfUmzRKEQhHEaP2ctaHHNeHQXM15J1e+TW1mLOpaDK1H2YAyWzkEDncb
+	 2/UY9dW9XvQFbRvqI9R+uMVe68GgEJLPDbkirEE4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9668FF80129;
-	Tue, 11 May 2021 16:13:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C30EAF8016B;
+	Tue, 11 May 2021 16:17:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B6DB7F80163; Tue, 11 May 2021 16:13:40 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id 2AA48F802E0; Tue, 11 May 2021 16:17:21 +0200 (CEST)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DAC92F80129
- for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 16:13:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DAC92F80129
-IronPort-SDR: 2hVBHEI24PTPaWftEmEctfs3nWS0uPyi20gXwuswQDi1SOq2Xs6oVww7UKW5l05PQOptB2DGkr
- J5dt3utx0WbA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="220411361"
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; d="scan'208";a="220411361"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 May 2021 07:13:30 -0700
-IronPort-SDR: XWeliyNGUr1fBJgpmzQTk+wnAEIVoQ1NpxHUGgP7CmAWCiSgGYYn/E7tC/qPno4JAxIXTlmLzj
- GElIT6wMfHhw==
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; d="scan'208";a="541660559"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
- by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 May 2021 07:13:27 -0700
-Received: from andy by smile with local (Exim 4.94)
- (envelope-from <andriy.shevchenko@linux.intel.com>)
- id 1lgT8W-00BSqe-Oy; Tue, 11 May 2021 17:13:24 +0300
-Date: Tue, 11 May 2021 17:13:24 +0300
+ by alsa1.perex.cz (Postfix) with ESMTPS id 23B1FF80129
+ for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 16:17:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23B1FF80129
+IronPort-SDR: YM9siHrrhJR9URsKz2/DFUVe4nRm0D2OVkM3qxmiFtZ2HAsdUaeExUlNbHrf6bIBtR9iJAU9dZ
+ JFKdveZ4Bfug==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="186892221"
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; d="scan'208";a="186892221"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 May 2021 07:17:10 -0700
+IronPort-SDR: rltezOshwPEL1HjTshwq+B93Ge7Bess4eDVheq5rUKGaIAbuOgua2MiQt2glJdWstG+h6yjB87
+ djWCiM2n+g6Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; d="scan'208";a="399331159"
+Received: from black.fi.intel.com ([10.237.72.28])
+ by fmsmga007.fm.intel.com with ESMTP; 11 May 2021 07:17:06 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+ id 6D00A3C0; Tue, 11 May 2021 17:17:27 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 00/14] spi: pxa2xx: Set of cleanups
-Message-ID: <YJqRBIdTlvnsCYsn@smile.fi.intel.com>
-References: <20210423182441.50272-1-andriy.shevchenko@linux.intel.com>
- <162072071980.33404.13031284441613044277.b4-ty@kernel.org>
- <CAHp75Vck5izDB4mTRV5hTaknpx5Bm+OA4rNLVznQxVaEwigBZg@mail.gmail.com>
- <20210511134706.GI4496@sirena.org.uk>
- <CAHp75VdPHYEq+Xn5yQ+TyQn5uerc+afcVaHj22OmVzsBW2jcaQ@mail.gmail.com>
- <CAHp75Vca2KT4kd9zw3ECqym1rRDSg2NNbwRRVVA1L7vyD3VCJQ@mail.gmail.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+ alsa-devel@alsa-project.org
+Subject: [PATCH v3 3/8] spi: pxa2xx: Extract pxa2xx_spi_update() helper
+Date: Tue, 11 May 2021 17:17:20 +0300
+Message-Id: <20210511141725.32097-4-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210511141725.32097-1-andriy.shevchenko@linux.intel.com>
+References: <20210511141725.32097-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vca2KT4kd9zw3ECqym1rRDSg2NNbwRRVVA1L7vyD3VCJQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+Content-Transfer-Encoding: 8bit
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
  Haojian Zhuang <haojian.zhuang@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
- linux-spi <linux-spi@vger.kernel.org>, Robert Jarzmik <robert.jarzmik@free.fr>,
- Daniel Mack <daniel@zonque.org>
+ Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,48 +89,75 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, May 11, 2021 at 04:56:05PM +0300, Andy Shevchenko wrote:
-> On Tue, May 11, 2021 at 4:52 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Tue, May 11, 2021 at 4:47 PM Mark Brown <broonie@kernel.org> wrote:
-> > >
-> > > On Tue, May 11, 2021 at 03:28:18PM +0300, Andy Shevchenko wrote:
-> > > > On Tue, May 11, 2021 at 11:27 AM Mark Brown <broonie@kernel.org> wrote:
-> > >
-> > > > > On Fri, 23 Apr 2021 21:24:27 +0300, Andy Shevchenko wrote:
-> > > > > > Set of cleanups here and there related to the SPI PXA2xx driver.
-> > > > > > On top of them, adding the special type for Intel Merrifield.
-> > >
-> > > > > [07/14] spi: pxa2xx: Introduce int_stop_and_reset() helper
-> > > > >         (no commit info)
-> > >
-> > > > The above patches are effectively missed.
-> > > > Anything to fix in your scripts / my patches?
-> > >
-> > > Like I said, patch 7 didn't apply so you should check and resend.
-> >
-> > I didn't get it. I have effectively rebased the entire series and resend as v2.
-> 
-> v2 --> v3
-> 
-> v3
-> https://lore.kernel.org/linux-spi/20210510124134.24638-1-andriy.shevchenko@linux.intel.com/T/#t
-> 
-> 
-> > I can speculate that your scripts have a bug since they might try v1
-> 
-> v1 --> v1 and / or v2
-> 
-> > as well (as far as I can see they usually send a confirmation of
-> > application for all versions of the series in question).
-> >
-> > Sorry, but I do not see an issue.
+There are few places that repeat the logic of "update if changed".
+Extract pxa2xx_spi_update() helper to deduplicate that.
 
-Just in case I'll send a v4 with only patches that missed.
-Otherwise it will be the same as in v3 (see above).
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/spi/spi-pxa2xx.c | 33 ++++++++++++++-------------------
+ 1 file changed, 14 insertions(+), 19 deletions(-)
 
+diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
+index a27f51f5db65..54eaa048651f 100644
+--- a/drivers/spi/spi-pxa2xx.c
++++ b/drivers/spi/spi-pxa2xx.c
+@@ -200,6 +200,12 @@ static bool is_mmp2_ssp(const struct driver_data *drv_data)
+ 	return drv_data->ssp_type == MMP2_SSP;
+ }
+ 
++static void pxa2xx_spi_update(const struct driver_data *drv_data, u32 reg, u32 mask, u32 value)
++{
++	if ((pxa2xx_spi_read(drv_data, reg) & mask) != value)
++		pxa2xx_spi_write(drv_data, reg, value & mask);
++}
++
+ static u32 pxa2xx_spi_get_ssrc1_change_mask(const struct driver_data *drv_data)
+ {
+ 	switch (drv_data->ssp_type) {
+@@ -1081,19 +1087,12 @@ static int pxa2xx_spi_transfer_one(struct spi_controller *controller,
+ 			dma_mapped ? "DMA" : "PIO");
+ 
+ 	if (is_lpss_ssp(drv_data)) {
+-		if ((pxa2xx_spi_read(drv_data, SSIRF) & 0xff)
+-		    != chip->lpss_rx_threshold)
+-			pxa2xx_spi_write(drv_data, SSIRF,
+-					 chip->lpss_rx_threshold);
+-		if ((pxa2xx_spi_read(drv_data, SSITF) & 0xffff)
+-		    != chip->lpss_tx_threshold)
+-			pxa2xx_spi_write(drv_data, SSITF,
+-					 chip->lpss_tx_threshold);
++		pxa2xx_spi_update(drv_data, SSIRF, GENMASK(7, 0), chip->lpss_rx_threshold);
++		pxa2xx_spi_update(drv_data, SSITF, GENMASK(15, 0), chip->lpss_tx_threshold);
+ 	}
+ 
+-	if (is_quark_x1000_ssp(drv_data) &&
+-	    (pxa2xx_spi_read(drv_data, DDS_RATE) != chip->dds_rate))
+-		pxa2xx_spi_write(drv_data, DDS_RATE, chip->dds_rate);
++	if (is_quark_x1000_ssp(drv_data))
++		pxa2xx_spi_update(drv_data, DDS_RATE, GENMASK(23, 0), chip->dds_rate);
+ 
+ 	/* Stop the SSP */
+ 	if (!is_mmp2_ssp(drv_data))
+@@ -1102,15 +1101,11 @@ static int pxa2xx_spi_transfer_one(struct spi_controller *controller,
+ 	if (!pxa25x_ssp_comp(drv_data))
+ 		pxa2xx_spi_write(drv_data, SSTO, chip->timeout);
+ 
++	/* first set CR1 without interrupt and service enables */
++	pxa2xx_spi_update(drv_data, SSCR1, change_mask, cr1);
++
+ 	/* see if we need to reload the config registers */
+-	if ((pxa2xx_spi_read(drv_data, SSCR0) != cr0)
+-	    || (pxa2xx_spi_read(drv_data, SSCR1) & change_mask)
+-	    != (cr1 & change_mask)) {
+-		/* first set CR1 without interrupt and service enables */
+-		pxa2xx_spi_write(drv_data, SSCR1, cr1 & change_mask);
+-		/* Update the other bits */
+-		pxa2xx_spi_write(drv_data, SSCR0, cr0);
+-	}
++	pxa2xx_spi_update(drv_data, SSCR0, GENMASK(31, 0), cr0);
+ 
+ 	/* Restart the SSP */
+ 	pxa_ssp_enable(drv_data->ssp);
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.30.2
 
