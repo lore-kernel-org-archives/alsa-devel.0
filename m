@@ -7,65 +7,66 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51D18C433ED
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 14:20:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10A00C43460
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 14:20:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9B23F613BF
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 14:20:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B23F613BF
+	by mail.kernel.org (Postfix) with ESMTPS id 2CC84613C0
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 14:20:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2CC84613C0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2A5BC17D9;
-	Tue, 11 May 2021 16:19:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A5BC17D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 89C4817F2;
+	Tue, 11 May 2021 16:19:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89C4817F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620742799;
-	bh=X/521WVoVX/AVAu9wYUR1iQmS47JSF+INK4Ltr9nKKM=;
+	s=default; t=1620742824;
+	bh=oWVrVC/HN+OqrsnMF3sTBubPFhVqrcICWUaVkmRG4gA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=E7NyYfAviqxcLi1kB8SREYYGVH0rqx8FcEw5RSE+2VH82x2UpITiYiiE00BSBpcho
-	 UTHONm9Gbdutjm5oSPkCOW+/M00MmMub0yNzBiRYN4k4HaAK2I5vC70B0o1u72c14o
-	 1lcVRizAB+E6TLFVPMXkfPJFi9dYuM55VmZWeBUE=
+	b=LxiX8etJZilzj7rMn73ue2+cLzxpKlj8mufFZhn49Ln9rjZDxmirtva3pAbGGfFWj
+	 obxaiUS3WBJq1B1PynOWZxCO4E5HAj7P+eJFGnmiD8BK0BDhOFOMRkqQg0jMkPXyAX
+	 /JTU3+ZXsK8n6Nif4O0vEQLieUUeH4umn/2/4YC8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F347F804AE;
-	Tue, 11 May 2021 16:17:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3195DF804B2;
+	Tue, 11 May 2021 16:17:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3DDC4F800E9; Tue, 11 May 2021 16:17:28 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ id B49BFF804AA; Tue, 11 May 2021 16:17:28 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1DD36F80163
- for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 16:17:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DD36F80163
-IronPort-SDR: WvCTg3Z8rECc/32nK38PtdO9bX35954+ClRUiB8qkucfp/tUSyUAUNCBctJQDejYorjsLf6jD6
- 2w9bYyN0qdxQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="186892249"
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; d="scan'208";a="186892249"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 May 2021 07:17:14 -0700
-IronPort-SDR: VyT/2y6qXkkJZi0XmfugZaBYQh1RuvWOKYyLo2yIbq4v7qYat3PQxf6f2epjveWEOfaQpmFbuf
- pmOsVCIKIjfQ==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 52D5AF801D5
+ for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 16:17:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52D5AF801D5
+IronPort-SDR: +5RAcNS0SulxWkX6XVc62XoBKc6NU7dF8GnAjqt+DpZXqcPLFlrofoHvhZ6nTw5dr0l8vtfOwc
+ QNRVpXvk9axg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="196357517"
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; d="scan'208";a="196357517"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 May 2021 07:17:10 -0700
+IronPort-SDR: uvFXafhaw0WRoH46aZGCCdW7NGMorzpXPP/JV+4TespEr+mPtDjyYC2T100SoCLEh6nEn6bE02
+ o1IairPYtxKA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; d="scan'208";a="541661836"
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; d="scan'208";a="621829408"
 Received: from black.fi.intel.com ([10.237.72.28])
- by orsmga004.jf.intel.com with ESMTP; 11 May 2021 07:17:10 -0700
+ by fmsmga006.fm.intel.com with ESMTP; 11 May 2021 07:17:06 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
- id 9F61450E; Tue, 11 May 2021 17:17:27 +0300 (EEST)
+ id 6413C338; Tue, 11 May 2021 17:17:27 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
  linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
  alsa-devel@alsa-project.org
-Subject: [PATCH v3 8/8] spi: Convert to use predefined time multipliers
-Date: Tue, 11 May 2021 17:17:25 +0300
-Message-Id: <20210511141725.32097-9-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v3 2/8] spi: pxa2xx: Use pxa_ssp_enable()/pxa_ssp_disable() in
+ the driver
+Date: Tue, 11 May 2021 17:17:19 +0300
+Message-Id: <20210511141725.32097-3-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210511141725.32097-1-andriy.shevchenko@linux.intel.com>
 References: <20210511141725.32097-1-andriy.shevchenko@linux.intel.com>
@@ -89,116 +90,182 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We have a lot of hard coded values in nanoseconds or other units.
-Use predefined constants to make it more clear.
-
-While at it, add or amend comments in the corresponding functions.
+There are few places that repeat the logic of pxa_ssp_enable() and
+pxa_ssp_disable(). Use them instead of open coded variants.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/spi/spi.c | 41 ++++++++++++++++++++++++++++-------------
- 1 file changed, 28 insertions(+), 13 deletions(-)
+ drivers/spi/spi-pxa2xx-dma.c |  4 +---
+ drivers/spi/spi-pxa2xx.c     | 36 ++++++++++++++++++------------------
+ include/linux/pxa2xx_ssp.h   | 16 ++++++++++++++++
+ sound/soc/pxa/pxa-ssp.c      | 16 ----------------
+ 4 files changed, 35 insertions(+), 37 deletions(-)
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 2350d131871b..9160e9e52aae 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -1118,10 +1118,20 @@ static int spi_transfer_wait(struct spi_controller *ctlr,
- 		if (!speed_hz)
- 			speed_hz = 100000;
+diff --git a/drivers/spi/spi-pxa2xx-dma.c b/drivers/spi/spi-pxa2xx-dma.c
+index e00dbadd39ec..5ca01ad7f460 100644
+--- a/drivers/spi/spi-pxa2xx-dma.c
++++ b/drivers/spi/spi-pxa2xx-dma.c
+@@ -50,9 +50,7 @@ static void pxa2xx_spi_dma_transfer_complete(struct driver_data *drv_data,
  
--		ms = 8LL * 1000LL * xfer->len;
-+		/*
-+		 * For each byte we wait for 8 cycles of the SPI clock.
-+		 * Since speed is defined in Hz and we want milliseconds,
-+		 * use respective multiplier, but before the division,
-+		 * otherwise we may get 0 for short transfers.
-+		 */
-+		ms = 8LL * MSEC_PER_SEC * xfer->len;
- 		do_div(ms, speed_hz);
--		ms += ms + 200; /* some tolerance */
+ 		if (error) {
+ 			/* In case we got an error we disable the SSP now */
+-			pxa2xx_spi_write(drv_data, SSCR0,
+-					 pxa2xx_spi_read(drv_data, SSCR0)
+-					 & ~SSCR0_SSE);
++			pxa_ssp_disable(drv_data->ssp);
+ 			msg->status = -EIO;
+ 		}
  
-+		/*
-+		 * Increase it twice and add 200 ms tolerance, use
-+		 * predefined maximum in case of overflow.
-+		 */
-+		ms += ms + 200;
- 		if (ms > UINT_MAX)
- 			ms = UINT_MAX;
- 
-@@ -1144,10 +1154,10 @@ static void _spi_transfer_delay_ns(u32 ns)
- {
- 	if (!ns)
- 		return;
--	if (ns <= 1000) {
-+	if (ns <= NSEC_PER_USEC) {
- 		ndelay(ns);
- 	} else {
--		u32 us = DIV_ROUND_UP(ns, 1000);
-+		u32 us = DIV_ROUND_UP(ns, NSEC_PER_USEC);
- 
- 		if (us <= 10)
- 			udelay(us);
-@@ -1167,21 +1177,25 @@ int spi_delay_to_ns(struct spi_delay *_delay, struct spi_transfer *xfer)
- 
- 	switch (unit) {
- 	case SPI_DELAY_UNIT_USECS:
--		delay *= 1000;
-+		delay *= NSEC_PER_USEC;
- 		break;
--	case SPI_DELAY_UNIT_NSECS: /* nothing to do here */
-+	case SPI_DELAY_UNIT_NSECS:
-+		/* Nothing to do here */
- 		break;
- 	case SPI_DELAY_UNIT_SCK:
- 		/* clock cycles need to be obtained from spi_transfer */
- 		if (!xfer)
- 			return -EINVAL;
--		/* if there is no effective speed know, then approximate
--		 * by underestimating with half the requested hz
-+		/*
-+		 * If there is unknown effective speed, approximate it
-+		 * by underestimating with half of the requested hz.
- 		 */
- 		hz = xfer->effective_speed_hz ?: xfer->speed_hz / 2;
- 		if (!hz)
- 			return -EINVAL;
--		delay *= DIV_ROUND_UP(1000000000, hz);
-+
-+		/* Convert delay to nanoseconds */
-+		delay *= DIV_ROUND_UP(NSEC_PER_SEC, hz);
- 		break;
+diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
+index 087c84e605b9..a27f51f5db65 100644
+--- a/drivers/spi/spi-pxa2xx.c
++++ b/drivers/spi/spi-pxa2xx.c
+@@ -286,13 +286,11 @@ static u32 pxa2xx_configure_sscr0(const struct driver_data *drv_data,
+ 	case QUARK_X1000_SSP:
+ 		return clk_div
+ 			| QUARK_X1000_SSCR0_Motorola
+-			| QUARK_X1000_SSCR0_DataSize(bits > 32 ? 8 : bits)
+-			| SSCR0_SSE;
++			| QUARK_X1000_SSCR0_DataSize(bits > 32 ? 8 : bits);
  	default:
- 		return -EINVAL;
-@@ -1213,6 +1227,7 @@ EXPORT_SYMBOL_GPL(spi_delay_exec);
- static void _spi_transfer_cs_change_delay(struct spi_message *msg,
- 					  struct spi_transfer *xfer)
- {
-+	u32 default_delay_ns = 10 * NSEC_PER_USEC;
- 	u32 delay = xfer->cs_change_delay.value;
- 	u32 unit = xfer->cs_change_delay.unit;
- 	int ret;
-@@ -1220,16 +1235,16 @@ static void _spi_transfer_cs_change_delay(struct spi_message *msg,
- 	/* return early on "fast" mode - for everything but USECS */
- 	if (!delay) {
- 		if (unit == SPI_DELAY_UNIT_USECS)
--			_spi_transfer_delay_ns(10000);
-+			_spi_transfer_delay_ns(default_delay_ns);
- 		return;
- 	}
- 
- 	ret = spi_delay_exec(&xfer->cs_change_delay, xfer);
- 	if (ret) {
- 		dev_err_once(&msg->spi->dev,
--			     "Use of unsupported delay unit %i, using default of 10us\n",
--			     unit);
--		_spi_transfer_delay_ns(10000);
-+			     "Use of unsupported delay unit %i, using default of %luus\n",
-+			     unit, default_delay_ns / NSEC_PER_USEC);
-+		_spi_transfer_delay_ns(default_delay_ns);
+ 		return clk_div
+ 			| SSCR0_Motorola
+ 			| SSCR0_DataSize(bits > 16 ? bits - 16 : bits)
+-			| SSCR0_SSE
+ 			| (bits > 16 ? SSCR0_EDSS : 0);
  	}
  }
+@@ -498,8 +496,7 @@ static void pxa2xx_spi_off(struct driver_data *drv_data)
+ 	if (is_mmp2_ssp(drv_data))
+ 		return;
  
+-	pxa2xx_spi_write(drv_data, SSCR0,
+-			 pxa2xx_spi_read(drv_data, SSCR0) & ~SSCR0_SSE);
++	pxa_ssp_disable(drv_data->ssp);
+ }
+ 
+ static int null_writer(struct driver_data *drv_data)
+@@ -1098,25 +1095,26 @@ static int pxa2xx_spi_transfer_one(struct spi_controller *controller,
+ 	    (pxa2xx_spi_read(drv_data, DDS_RATE) != chip->dds_rate))
+ 		pxa2xx_spi_write(drv_data, DDS_RATE, chip->dds_rate);
+ 
++	/* Stop the SSP */
++	if (!is_mmp2_ssp(drv_data))
++		pxa_ssp_disable(drv_data->ssp);
++
++	if (!pxa25x_ssp_comp(drv_data))
++		pxa2xx_spi_write(drv_data, SSTO, chip->timeout);
++
+ 	/* see if we need to reload the config registers */
+ 	if ((pxa2xx_spi_read(drv_data, SSCR0) != cr0)
+ 	    || (pxa2xx_spi_read(drv_data, SSCR1) & change_mask)
+ 	    != (cr1 & change_mask)) {
+-		/* stop the SSP, and update the other bits */
+-		if (!is_mmp2_ssp(drv_data))
+-			pxa2xx_spi_write(drv_data, SSCR0, cr0 & ~SSCR0_SSE);
+-		if (!pxa25x_ssp_comp(drv_data))
+-			pxa2xx_spi_write(drv_data, SSTO, chip->timeout);
+ 		/* first set CR1 without interrupt and service enables */
+ 		pxa2xx_spi_write(drv_data, SSCR1, cr1 & change_mask);
+-		/* restart the SSP */
++		/* Update the other bits */
+ 		pxa2xx_spi_write(drv_data, SSCR0, cr0);
+-
+-	} else {
+-		if (!pxa25x_ssp_comp(drv_data))
+-			pxa2xx_spi_write(drv_data, SSTO, chip->timeout);
+ 	}
+ 
++	/* Restart the SSP */
++	pxa_ssp_enable(drv_data->ssp);
++
+ 	if (is_mmp2_ssp(drv_data)) {
+ 		u8 tx_level = (pxa2xx_spi_read(drv_data, SSSR)
+ 					& SSSR_TFL_MASK) >> 8;
+@@ -1786,8 +1784,9 @@ static int pxa2xx_spi_probe(struct platform_device *pdev)
+ 		controller->min_speed_hz =
+ 			DIV_ROUND_UP(controller->max_speed_hz, 512);
+ 
++	pxa_ssp_disable(ssp);
++
+ 	/* Load default SSP configuration */
+-	pxa2xx_spi_write(drv_data, SSCR0, 0);
+ 	switch (drv_data->ssp_type) {
+ 	case QUARK_X1000_SSP:
+ 		tmp = QUARK_X1000_SSCR1_RxTresh(RX_THRESH_QUARK_X1000_DFLT) |
+@@ -1928,7 +1927,7 @@ static int pxa2xx_spi_remove(struct platform_device *pdev)
+ 	spi_unregister_controller(drv_data->controller);
+ 
+ 	/* Disable the SSP at the peripheral and SOC level */
+-	pxa2xx_spi_write(drv_data, SSCR0, 0);
++	pxa_ssp_disable(ssp);
+ 	clk_disable_unprepare(ssp->clk);
+ 
+ 	/* Release DMA */
+@@ -1957,7 +1956,8 @@ static int pxa2xx_spi_suspend(struct device *dev)
+ 	status = spi_controller_suspend(drv_data->controller);
+ 	if (status != 0)
+ 		return status;
+-	pxa2xx_spi_write(drv_data, SSCR0, 0);
++
++	pxa_ssp_disable(ssp);
+ 
+ 	if (!pm_runtime_suspended(dev))
+ 		clk_disable_unprepare(ssp->clk);
+diff --git a/include/linux/pxa2xx_ssp.h b/include/linux/pxa2xx_ssp.h
+index 1b6c1a0922bd..fdfbe17e15f4 100644
+--- a/include/linux/pxa2xx_ssp.h
++++ b/include/linux/pxa2xx_ssp.h
+@@ -254,6 +254,22 @@ static inline u32 pxa_ssp_read_reg(struct ssp_device *dev, u32 reg)
+ 	return __raw_readl(dev->mmio_base + reg);
+ }
+ 
++static inline void pxa_ssp_enable(struct ssp_device *ssp)
++{
++	u32 sscr0;
++
++	sscr0 = pxa_ssp_read_reg(ssp, SSCR0) | SSCR0_SSE;
++	pxa_ssp_write_reg(ssp, SSCR0, sscr0);
++}
++
++static inline void pxa_ssp_disable(struct ssp_device *ssp)
++{
++	u32 sscr0;
++
++	sscr0 = pxa_ssp_read_reg(ssp, SSCR0) & ~SSCR0_SSE;
++	pxa_ssp_write_reg(ssp, SSCR0, sscr0);
++}
++
+ #if IS_ENABLED(CONFIG_PXA_SSP)
+ struct ssp_device *pxa_ssp_request(int port, const char *label);
+ void pxa_ssp_free(struct ssp_device *);
+diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+index b941adcbb8f9..939e7e28486a 100644
+--- a/sound/soc/pxa/pxa-ssp.c
++++ b/sound/soc/pxa/pxa-ssp.c
+@@ -61,22 +61,6 @@ static void dump_registers(struct ssp_device *ssp)
+ 		 pxa_ssp_read_reg(ssp, SSACD));
+ }
+ 
+-static void pxa_ssp_enable(struct ssp_device *ssp)
+-{
+-	uint32_t sscr0;
+-
+-	sscr0 = __raw_readl(ssp->mmio_base + SSCR0) | SSCR0_SSE;
+-	__raw_writel(sscr0, ssp->mmio_base + SSCR0);
+-}
+-
+-static void pxa_ssp_disable(struct ssp_device *ssp)
+-{
+-	uint32_t sscr0;
+-
+-	sscr0 = __raw_readl(ssp->mmio_base + SSCR0) & ~SSCR0_SSE;
+-	__raw_writel(sscr0, ssp->mmio_base + SSCR0);
+-}
+-
+ static void pxa_ssp_set_dma_params(struct ssp_device *ssp, int width4,
+ 			int out, struct snd_dmaengine_dai_dma_data *dma)
+ {
 -- 
 2.30.2
 
