@@ -2,87 +2,78 @@ Return-Path: <SRS0=Cjbi=KG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 425F9C433B4
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 14:26:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B25BDC433ED
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 14:27:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 887A8613CB
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 14:26:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 887A8613CB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id C936E61376
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 14:27:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C936E61376
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 060EF17E5;
-	Tue, 11 May 2021 16:25:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 060EF17E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 348DC17DF;
+	Tue, 11 May 2021 16:27:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 348DC17DF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620743169;
-	bh=cYKm6HVUSnlFpYItm/yTuj98lPr3iKAOjcgTiF6rZq4=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1620743276;
+	bh=YFAfliP+6wWfYGghmf01s1XhjChEk3kgnk6qqBCQySc=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ducQnYHfcC56NQT+Q/8h+hIXZE5s3CJiTmoBZWItlbrnVMedW4BR3ziTBBTC8Oco7
-	 95S7SLlyL8jSlBD7tbY4lvQdp/kGK0bYst43HzFkZRSnPQkiajRpsbIBiQw288vKVA
-	 siXYQ+iCDG0mTkS6za/CvKixnWYakDVFBg1vBjkY=
+	b=CbydOTVBomhw5eW1JFehcQLixD0tfO4NifqB/U2/2IYiJHACMc7sqeeGpPKJNSuUQ
+	 u39NuSHtJ5E0LQs/6MJfzYF+xtMaOAblPefv8L3HUfElHo0ku8SafpTtIFiSwpZq3q
+	 EmbD85keSy8AQvFF8AMv4anpQTbAPx33+dHEszl8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81EFDF80245;
-	Tue, 11 May 2021 16:25:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ADD90F801D5;
+	Tue, 11 May 2021 16:27:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 24A2BF80279; Tue, 11 May 2021 16:25:18 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 1FCCBF80245; Tue, 11 May 2021 16:27:05 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E68B5F80163
- for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 16:25:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E68B5F80163
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="PsG2FuIq"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2336B61376;
- Tue, 11 May 2021 14:25:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1620743113;
- bh=cYKm6HVUSnlFpYItm/yTuj98lPr3iKAOjcgTiF6rZq4=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=PsG2FuIq3Ck8y3US1ag35agxE88VEuQwZehX6D0TlMq1JASIKEiF9vUNCUO8uw3Px
- Sur8BGfFnnBYgsFCgR6PNaf45yhze1jrDBunl1J/KkoFefP3Tbpp0dJg8vAvfGct96
- 6z8rvZVXNcd7Xb7gan2AOYSdOyvuSBzi1XsJ+dSgXm9UghLMSIUwZ+WjuhKoGP6T50
- C43SR9bxDMeSIcryWTuNyKhzHtsMKpyy6ZHUyQFGneP+D59gMaPgFvFOwvmvAuoWs/
- EHJZbHp8114QfSw7g/EP0uuFf+KmwjT7CBzN9sofGC6py/feYBr63nXnlRSMwZtZe1
- HTEA2eG/MNyCQ==
-Date: Tue, 11 May 2021 15:24:33 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v2 00/14] spi: pxa2xx: Set of cleanups
-Message-ID: <20210511142433.GK4496@sirena.org.uk>
-References: <20210423182441.50272-1-andriy.shevchenko@linux.intel.com>
- <162072071980.33404.13031284441613044277.b4-ty@kernel.org>
- <CAHp75Vck5izDB4mTRV5hTaknpx5Bm+OA4rNLVznQxVaEwigBZg@mail.gmail.com>
- <20210511134706.GI4496@sirena.org.uk>
- <CAHp75VdPHYEq+Xn5yQ+TyQn5uerc+afcVaHj22OmVzsBW2jcaQ@mail.gmail.com>
- <CAHp75Vca2KT4kd9zw3ECqym1rRDSg2NNbwRRVVA1L7vyD3VCJQ@mail.gmail.com>
- <YJqRBIdTlvnsCYsn@smile.fi.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5B829F800E9
+ for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 16:26:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B829F800E9
+IronPort-SDR: ZcNS1tW2y254ZRXkFpt2uCnOzh90gSFdN+szKf9XB6pFU7hISkuUhtrcU9BdLMJZQ2V5NkzERT
+ lea/jZ/o9ouA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="196359691"
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; d="scan'208";a="196359691"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 May 2021 07:26:56 -0700
+IronPort-SDR: OBVLbaJGgXRM1spis1hN5YxPpQBpmgi/terH8GJrgklrPKZyMhJsk27FYNrq/meGJBo6Sbej6U
+ lQl9CYLF/lBw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; d="scan'208";a="541664535"
+Received: from black.fi.intel.com ([10.237.72.28])
+ by orsmga004.jf.intel.com with ESMTP; 11 May 2021 07:26:52 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+ id 15CA442E; Tue, 11 May 2021 17:27:13 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+ alsa-devel@alsa-project.org
+Subject: [PATCH v4 4/8] spi: pxa2xx: Extract pxa2xx_spi_update() helper
+Date: Tue, 11 May 2021 17:27:07 +0300
+Message-Id: <20210511142711.23244-5-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210511142711.23244-1-andriy.shevchenko@linux.intel.com>
+References: <20210511142711.23244-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="IA03tywDYuoVKXrw"
-Content-Disposition: inline
-In-Reply-To: <YJqRBIdTlvnsCYsn@smile.fi.intel.com>
-X-Cookie: Beam me up, Scotty!
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+Content-Transfer-Encoding: 8bit
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
  Haojian Zhuang <haojian.zhuang@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
- linux-spi <linux-spi@vger.kernel.org>, Robert Jarzmik <robert.jarzmik@free.fr>,
- Daniel Mack <daniel@zonque.org>
+ Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,31 +89,75 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+There are few places that repeat the logic of "update if changed".
+Extract pxa2xx_spi_update() helper to deduplicate that.
 
---IA03tywDYuoVKXrw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/spi/spi-pxa2xx.c | 33 ++++++++++++++-------------------
+ 1 file changed, 14 insertions(+), 19 deletions(-)
 
-On Tue, May 11, 2021 at 05:13:24PM +0300, Andy Shevchenko wrote:
+diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
+index a27f51f5db65..54eaa048651f 100644
+--- a/drivers/spi/spi-pxa2xx.c
++++ b/drivers/spi/spi-pxa2xx.c
+@@ -200,6 +200,12 @@ static bool is_mmp2_ssp(const struct driver_data *drv_data)
+ 	return drv_data->ssp_type == MMP2_SSP;
+ }
+ 
++static void pxa2xx_spi_update(const struct driver_data *drv_data, u32 reg, u32 mask, u32 value)
++{
++	if ((pxa2xx_spi_read(drv_data, reg) & mask) != value)
++		pxa2xx_spi_write(drv_data, reg, value & mask);
++}
++
+ static u32 pxa2xx_spi_get_ssrc1_change_mask(const struct driver_data *drv_data)
+ {
+ 	switch (drv_data->ssp_type) {
+@@ -1081,19 +1087,12 @@ static int pxa2xx_spi_transfer_one(struct spi_controller *controller,
+ 			dma_mapped ? "DMA" : "PIO");
+ 
+ 	if (is_lpss_ssp(drv_data)) {
+-		if ((pxa2xx_spi_read(drv_data, SSIRF) & 0xff)
+-		    != chip->lpss_rx_threshold)
+-			pxa2xx_spi_write(drv_data, SSIRF,
+-					 chip->lpss_rx_threshold);
+-		if ((pxa2xx_spi_read(drv_data, SSITF) & 0xffff)
+-		    != chip->lpss_tx_threshold)
+-			pxa2xx_spi_write(drv_data, SSITF,
+-					 chip->lpss_tx_threshold);
++		pxa2xx_spi_update(drv_data, SSIRF, GENMASK(7, 0), chip->lpss_rx_threshold);
++		pxa2xx_spi_update(drv_data, SSITF, GENMASK(15, 0), chip->lpss_tx_threshold);
+ 	}
+ 
+-	if (is_quark_x1000_ssp(drv_data) &&
+-	    (pxa2xx_spi_read(drv_data, DDS_RATE) != chip->dds_rate))
+-		pxa2xx_spi_write(drv_data, DDS_RATE, chip->dds_rate);
++	if (is_quark_x1000_ssp(drv_data))
++		pxa2xx_spi_update(drv_data, DDS_RATE, GENMASK(23, 0), chip->dds_rate);
+ 
+ 	/* Stop the SSP */
+ 	if (!is_mmp2_ssp(drv_data))
+@@ -1102,15 +1101,11 @@ static int pxa2xx_spi_transfer_one(struct spi_controller *controller,
+ 	if (!pxa25x_ssp_comp(drv_data))
+ 		pxa2xx_spi_write(drv_data, SSTO, chip->timeout);
+ 
++	/* first set CR1 without interrupt and service enables */
++	pxa2xx_spi_update(drv_data, SSCR1, change_mask, cr1);
++
+ 	/* see if we need to reload the config registers */
+-	if ((pxa2xx_spi_read(drv_data, SSCR0) != cr0)
+-	    || (pxa2xx_spi_read(drv_data, SSCR1) & change_mask)
+-	    != (cr1 & change_mask)) {
+-		/* first set CR1 without interrupt and service enables */
+-		pxa2xx_spi_write(drv_data, SSCR1, cr1 & change_mask);
+-		/* Update the other bits */
+-		pxa2xx_spi_write(drv_data, SSCR0, cr0);
+-	}
++	pxa2xx_spi_update(drv_data, SSCR0, GENMASK(31, 0), cr0);
+ 
+ 	/* Restart the SSP */
+ 	pxa_ssp_enable(drv_data->ssp);
+-- 
+2.30.2
 
-> Just in case I'll send a v4 with only patches that missed.
-> Otherwise it will be the same as in v3 (see above).
-
-Please stop.
-
---IA03tywDYuoVKXrw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCak6EACgkQJNaLcl1U
-h9BzfAf+JkN8G2rlBgCENlamTmALPdNW3irdn7hPyTC4DM9BFCiQ9erqn4QE+bnA
-tysguWfrDHJbYsdP69f9edgfJNDbsICh1x0lDWqh5nWrpUXVFoyxe+gwqH+2BsnS
-32yNepXNDijBa4thZTEfGO5IRNt6xGRfNZCh3osEOyJUDpvSt6WRaK1HQSJ++f6o
-nt2m9dhUM3fvScGGrnGjT95aPynrtHW76YoY48nUTv3dXtJJn8v7DHCGFIKvFmI7
-DW4m2xsqQLW5SvuSMe/ikwVkso9MDNOqD1iAy5A/eElH4pCbRAiK7wy+w4Sz5NrM
-V39IAC49EXHnhcAUE0wbZoS/M0bz7A==
-=69fW
------END PGP SIGNATURE-----
-
---IA03tywDYuoVKXrw--
