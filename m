@@ -2,97 +2,69 @@ Return-Path: <SRS0=Cjbi=KG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAD5AC433B4
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 13:30:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71661C433B4
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 13:46:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C8FC16191C
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 13:30:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C8FC16191C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id D63E861363
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 13:46:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D63E861363
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5BCC617B0;
-	Tue, 11 May 2021 15:29:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5BCC617B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6DD1C17B7;
+	Tue, 11 May 2021 15:46:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DD1C17B7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620739845;
-	bh=WxjLtmXJSU7M3ucuta+uwMYydNkbzG1ZJ2R3mbIM1QA=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=qofJjUHG944cSSkIEXn4wlG23SY0Fs3TdlZjmX76z9dbMIP2uHBMXYkFIUYvTvxCs
-	 UyizACsSC9nrtpQpPrOJFhlHznWx0faT01hYWyun9jTaAgwjTLYcnSjNCwpdTwsc/A
-	 nvBhSJ0oiN6fU0FmEXuDJzyBBeKuO97uzRXakhNE=
+	s=default; t=1620740813;
+	bh=HomGe9+ncWMLT44Goh2pgwdkNhESkhdw7zSl4NbJlTQ=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=NWV9yd12N4Nklqbp6N7c+ZB0Ko/b0u7jjqo8KCHEFnWlp4yj+RGqAt6y3y914jKYm
+	 VSY/caFB00oPAoGX/qAEr1uJnrYLRXjVgwPXPEy4mk+HVTSbwDBVRYtpmmdEmw439O
+	 LWjMvzbc6Nzg4WptwSMeD1AV4Rby3BaLtimwhMKw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BD376F80156;
-	Tue, 11 May 2021 15:29:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 15221F80156;
+	Tue, 11 May 2021 15:46:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 23914F80163; Tue, 11 May 2021 15:29:22 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id D2E0AF80129; Tue, 11 May 2021 15:46:01 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0DF8BF80129
- for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 15:29:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0DF8BF80129
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="Nqy5mVmT"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 14BDQoux022683; Tue, 11 May 2021 08:29:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=bzqrVrM9xmJqVMzON06i42Dfv5kRx48381tnaoZJZNo=;
- b=Nqy5mVmT1iXyXnG1c/w3i0CMrqgBVypsQl0w4kkXvr0nOuKDWqNQ+t3bpplGHsio64BC
- ZXZ4Dj2WWIj13/AVmyuScXoXCLapQM2X+D+I7Oa2IoeBqolaTrENdf8ncP3l5ZsBYWkK
- q0pNyl/61sBK4tO5ZzLHBM2t51UjtYHHW6LAbEksnEzLTOR25+YfYtjjPyfC8v+kG/oR
- A9zrdGnECIuzAR2fkMV9rSxTkX+WANDUu057aOsL8j4jGhvLCIWbDSJF+OtF0MqyV40f
- st0uK9nPIEJErLWYWN+0Wkh2ZlWLAwC+N8gSNHQP/7a58IUaSmKuhz/cVJqLdvuQ9N8/ yA== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 38f2d4sjyd-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 11 May 2021 08:29:01 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 11 May
- 2021 14:29:00 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Tue, 11 May 2021 14:29:00 +0100
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
- [198.61.65.125])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0ACD311CF;
- Tue, 11 May 2021 13:29:00 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>
-Subject: [PATCH] ASoC: cs42l42: Regmap must use_single_read/write
-Date: Tue, 11 May 2021 14:28:55 +0100
-Message-ID: <20210511132855.27159-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: XcBi5beSO0DhnWP_9TGAh6jYrGzhXj7f
-X-Proofpoint-ORIG-GUID: XcBi5beSO0DhnWP_9TGAh6jYrGzhXj7f
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011
- spamscore=0
- lowpriorityscore=0 suspectscore=0 bulkscore=0 adultscore=0 impostorscore=0
- malwarescore=0 mlxscore=0 phishscore=0 priorityscore=1501 mlxlogscore=575
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105110103
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id AA076F80129
+ for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 15:45:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA076F80129
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 12C00ADD7;
+ Tue, 11 May 2021 13:45:43 +0000 (UTC)
+Date: Tue, 11 May 2021 15:45:42 +0200
+Message-ID: <s5h1radcrjt.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Elia Devito <eliadevito@gmail.com>
+Subject: Re: [PATCH v2] ALSA: hda/realtek: Add fixup for HP Spectre x360
+ 15-df0xxx
+In-Reply-To: <20210511124651.4802-1-eliadevito@gmail.com>
+References: <s5ho8dhd4b3.wl-tiwai@suse.de>
+ <20210511124651.4802-1-eliadevito@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Chris Chiu <chris.chiu@canonical.com>, alsa-devel@alsa-project.org,
+ Kailang Yang <kailang@realtek.com>, linux-kernel@vger.kernel.org,
+ Huacai Chen <chenhuacai@kernel.org>, Jian-Hong Pan <jhp@endlessos.org>,
+ Takashi Iwai <tiwai@suse.com>, Hui Wang <hui.wang@canonical.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,39 +80,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-cs42l42 does not support standard burst transfers so the use_single_read
-and use_single_write flags must be set in the regmap config.
+On Tue, 11 May 2021 14:46:49 +0200,
+Elia Devito wrote:
+> 
+> Fixup to enable all 4 speaker on HP Spectre x360 15-df0xxx and probably
+> on similar models.
+> 
+> 0x14 pin config override is required to enable all speakers and
+> alc285-speaker2-to-dac1 fixup to enable volume adjustment.
+> 
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=189331
+> Signed-off-by: Elia Devito <eliadevito@gmail.com>
+> ---
+> v2: Put the quirk entry in the PCI SSID order
 
-Because of this bug, the patch:
+Thanks, applied now.
 
-commit 0a0eb567e1d4 ("ASoC: cs42l42: Minor error paths fixups")
 
-broke cs42l42 probe() because without the use_single_* flags it causes
-regmap to issue a burst read.
-
-However, the missing use_single_* could cause problems anyway because the
-regmap cache can attempt burst transfers if these flags are not set.
-
-Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/soc/codecs/cs42l42.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index d7fb6b38fd7c..e4b058a1d6af 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -400,6 +400,9 @@ static const struct regmap_config cs42l42_regmap = {
- 	.reg_defaults = cs42l42_reg_defaults,
- 	.num_reg_defaults = ARRAY_SIZE(cs42l42_reg_defaults),
- 	.cache_type = REGCACHE_RBTREE,
-+
-+	.use_single_read = true,
-+	.use_single_write = true,
- };
- 
- static DECLARE_TLV_DB_SCALE(adc_tlv, -9600, 100, false);
--- 
-2.20.1
-
+Takashi
