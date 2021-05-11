@@ -6,72 +6,70 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2669EC433B4
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 08:31:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F848C43619
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 08:31:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5DB04613CF
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 08:31:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5DB04613CF
+	by mail.kernel.org (Postfix) with ESMTPS id 6509D611C2
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 08:31:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6509D611C2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B8AF11783;
-	Tue, 11 May 2021 10:30:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8AF11783
+	by alsa0.perex.cz (Postfix) with ESMTPS id B85511786;
+	Tue, 11 May 2021 10:30:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B85511786
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620721875;
-	bh=aIbKrZTp+E6EVIDHCNWvzoJpW7zVJeecbnlZyRKFuck=;
+	s=default; t=1620721899;
+	bh=l8Z/OzCfeWsNmqmpOZGd1liyMDpNo7gr8CIy6SCuWuI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=h3UKDsCQ4AZjj/ZhHoFCwPWX7OqVtiCdUswKt6S4dvSdEcsMFVYgdmTt7ixQezynm
-	 3HvWjSFjIjzfQz66/nYhRmZedI3dUtdBF2GZKe3bF0l9R66YBEUN92Em4aApzAdQb6
-	 RSKCWDFd+eeahUn1bszwHluC2xtI9Om8LY0NoJZo=
+	b=WP8bFPieOEaNNzVUhYDPip7PEWW0OhIu5KhZJyOnDtrpJeWzvOvytFayVeIql+wd4
+	 ur5mms1Olp3Wol6d0ru3TUI60J2npBvQv8prSvM1T4iFlor0SvKfg7o1zp4ybW+mxr
+	 UstUx/APlEk912j7AiSNh7GpIRW9r2qMOaP/25oo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16BE3F80163;
-	Tue, 11 May 2021 10:28:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E9943F804D9;
+	Tue, 11 May 2021 10:28:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2721BF804AF; Tue, 11 May 2021 10:27:50 +0200 (CEST)
+ id E18A0F804D9; Tue, 11 May 2021 10:27:52 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 86CD5F804AC
- for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 10:27:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86CD5F804AC
+ by alsa1.perex.cz (Postfix) with ESMTPS id C65D3F804B1
+ for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 10:27:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C65D3F804B1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Jk/YdMVZ"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91A6E61107;
- Tue, 11 May 2021 08:27:43 +0000 (UTC)
+ header.b="GggvETJ4"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31A296147E;
+ Tue, 11 May 2021 08:27:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1620721664;
- bh=aIbKrZTp+E6EVIDHCNWvzoJpW7zVJeecbnlZyRKFuck=;
+ s=k20201202; t=1620721667;
+ bh=l8Z/OzCfeWsNmqmpOZGd1liyMDpNo7gr8CIy6SCuWuI=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Jk/YdMVZ7Q5F4MdPuwZwTMDGhDedzAF3Uo4XIes00YTrJwb0XrjDrHlpKmk84n/aR
- xegkHek9ygsElz5tUP5BuVytq09QhG5kx249XL7QsPoGO6e653eQu/cgyS0jTX/MRh
- /wSPtlVWPG679y8pa8Bv4ES8Suo3UKobYQxGov3Km70EXsQ3rIzshR+IiTQk0g5yjs
- tbQml0CbcfEj7FowDU4KCz2ff31xi+YZAKnXGKWiFmpMTh9Pu0xFrVlGdGj4xktsOV
- wZBim14CTApR5Apquoih+LyUIfTdD8VoFG569CWfG2siHzt40OHYQ+JVxyHsrsHtbE
- ZtrhJNEu0hmvA==
+ b=GggvETJ49ghxR3jGggzJ6p0bycd1w39dMmZ8r0464V/YAjOVjLugxBEg0pbx3NErg
+ xgXpyHzFVlxdtoUmkYJIUt625ivDU8vxPgj49BZJkhxEHgtvTF+AgAqmWi9UOKTb3S
+ SNTXlGD0RK5UeKscWvKKaYLBZZoZQWx6mGp2srF6uqpZdssFeNUN06VfQLHh0g7BKW
+ Er2hyoNNPzF6i6L08ICk8J0Xp07+l2OH5x+Kb/SiHES3bj8aeYZAg1sSC0bayHi7bq
+ kdjnbYpQzAZy1tml+3e2hmcRhEnNEjOfdIo4L7w9RsvLtvOl5C8clIlXCQC6fIj8jo
+ uEPyQwLeLwRLg==
 From: Mark Brown <broonie@kernel.org>
-To: festevam@gmail.com, alsa-devel@alsa-project.org,
- Shengjiu Wang <shengjiu.wang@nxp.com>, perex@perex.cz,
- nicoleotsuka@gmail.com, timur@kernel.org, Xiubo.Lee@gmail.com,
- tiwai@suse.com
-Subject: Re: [PATCH] ASoC: fsl_spdif: add support for enabling raw capture mode
-Date: Tue, 11 May 2021 09:25:50 +0100
-Message-Id: <162072058167.33157.3402941285699720192.b4-ty@kernel.org>
+To: lgirdwood@gmail.com, srinivas.kandagatla@linaro.org, perex@perex.cz,
+ bgoswami@codeaurora.org, trix@redhat.com, tiwai@suse.com
+Subject: Re: [PATCH v2] ASoC: codecs: lpass-wsa-macro: handle unexpected input
+Date: Tue, 11 May 2021 09:25:51 +0100
+Message-Id: <162072058168.33157.3176018576144440940.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1619425444-8666-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1619425444-8666-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <20210430142117.3272772-1-trix@redhat.com>
+References: <20210430142117.3272772-1-trix@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org,
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -88,9 +86,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 26 Apr 2021 16:24:04 +0800, Shengjiu Wang wrote:
-> Since i.MX8MM SPDIF interface is able to capture raw data.
-> Add support in SPDIF driver for this functionality.
+On Fri, 30 Apr 2021 07:21:17 -0700, trix@redhat.com wrote:
+> Static analysis reports this problem
+> 
+> lpass-wsa-macro.c:1732:6: warning: Array subscript is undefined
+>         if (wsa->ec_hq[ec_tx]) {
+>             ^~~~~~~~~~~~~~~~~
+> 
+> The happens because 'ec_tx' is never initialized and there is
+> no default in switch statement that sets ec_tx.  Add a default
+> case that returns an error before the array is accessed.
 
 Applied to
 
@@ -98,8 +103,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl_spdif: add support for enabling raw capture mode
-      commit: 604e5178444ea1d8053cf073e2c68fbc73a4e142
+[1/1] ASoC: codecs: lpass-wsa-macro: handle unexpected input
+      commit: 58f01c7fc81baced84f237554d56847e17b5d730
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
