@@ -4,73 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9506DC433ED
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 08:28:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A0A3C433ED
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 08:29:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B34F661622
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 08:28:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B34F661622
+	by mail.kernel.org (Postfix) with ESMTPS id 5ACAB61107
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 08:29:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5ACAB61107
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B51CD1777;
-	Tue, 11 May 2021 10:28:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B51CD1777
+	by alsa0.perex.cz (Postfix) with ESMTPS id B8380177E;
+	Tue, 11 May 2021 10:28:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8380177E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620721733;
-	bh=yX814QtGmlEUeWuzc2cmSHioA1C9NjdHxkqLmgy5cKU=;
+	s=default; t=1620721738;
+	bh=L30a1+4Tbl/TeaJh6vWKaiZWOzmpIRsaaA0ATQLX8Fw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=C7loDkcVI5wh/mnYsBqIu/rtVT7Xbosk2YXQum+CEs9CE8vOHK56cqk4l67ldppsW
-	 XCQJalp+9464UMdsp2uU5EegOnWfECPHvjAOzWeypUhlyp2vMIynFxXOTVGufIe2+E
-	 rHIK2uui6d5hgLpoOLiqLlBgt8eJ//3NPhuJYoek=
+	b=jBG+cqEZ1nvDi4vhYeA4abzoBAAtHLXS7uZfygtoIYhpxdAMuz1uBxQ3wTyG/mkwF
+	 Xa8BLpzq30vi5+c0jrwy0dbhec7OKe5Md3Qsd9fLWOAb/RxFVBlfpDVWbCYWvu943/
+	 Wn/8eo7n7rZ1kfMlGGw4x3W/1REumJZynnQR3OCM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 36E37F801D5;
-	Tue, 11 May 2021 10:27:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 002FAF802E0;
+	Tue, 11 May 2021 10:27:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 17D8DF80245; Tue, 11 May 2021 10:27:29 +0200 (CEST)
+ id 0D9F6F80425; Tue, 11 May 2021 10:27:37 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7E112F80129
- for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 10:27:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E112F80129
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8778AF80279
+ for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 10:27:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8778AF80279
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="U5xIm9DM"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2C1B613C3;
- Tue, 11 May 2021 08:27:22 +0000 (UTC)
+ header.b="hYOqVl3Y"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD29B61107;
+ Tue, 11 May 2021 08:27:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1620721643;
- bh=yX814QtGmlEUeWuzc2cmSHioA1C9NjdHxkqLmgy5cKU=;
+ s=k20201202; t=1620721652;
+ bh=L30a1+4Tbl/TeaJh6vWKaiZWOzmpIRsaaA0ATQLX8Fw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=U5xIm9DM+030Fdr83Joy1qxFGvwXpAS2hTP40CQ1fNfYNNJGMxOAtyonkC1a3Iw/v
- eiTD0DIoy+H35+TeCSwENki8WroQChFQxRHnlVsnjZW3SQGbZoQr4+Z5K64LuYyPGM
- ndKgFUA7Pzahh3UJRC8dIcbtE3d2Eu2ZuIEHu26TsAHBgXG12XhvRZrwV9HY+nsVyP
- MlcgjnIlKf72qGar8T2bn9e+OaCEVQxn/Dr7LmaX+j+0HUzzx+VQZhoehfAmHY/gKA
- 0PVxt8chNbeds9nGtU4By/c10hv5tSHq9EzwvqDIg5IKByjqyS2y8f4bVNVauXL4lx
- N7yXjfvtlBJAw==
+ b=hYOqVl3Y5hv0W0JZNBCv8IU5kRSZusxLVqsYh6s8j8WVTrIjgplw8db0CMcnga7y1
+ JTH63nQA73gD9L9XjuIS2GKSGR2gkOQMnN08f8xvWpFpqj7WZIgpDUL0hJshCR/cDG
+ fO8Roq9I7kVz2eMn7s+c/38+05F6heGXyZpDU305krCvZnL3FnH2pIiMC+FANCrlIP
+ xPKpSgyc3QRa0wt+LgYESAaXRDwR6YIKPjvcwPQwsEHWqu79QoE7SEMrfUc3URLwl+
+ Jr7bNVvQ62af/ziZlQVMZyGXhIH7Vp0z8AYaXk0JqXFZOtd0iXdziPRUM2UTGwA5fR
+ ekTUWCmFT7JkA==
 From: Mark Brown <broonie@kernel.org>
-To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-	oder_chiou@realtek.com
-Subject: Re: [PATCH] ASoC: rt286: Remove redundant assignment to d_len_code
-Date: Tue, 11 May 2021 09:25:43 +0100
-Message-Id: <162072058170.33157.14418303282464363989.b4-ty@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
+Subject: Re: [PATCH 0/4] ASoC: cppcheck fixes of the week
+Date: Tue, 11 May 2021 09:25:46 +0100
+Message-Id: <162072058167.33157.12131676069474491177.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1620298735-31708-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-References: <1620298735-31708-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <20210426214701.235106-1-pierre-louis.bossart@linux.intel.com>
+References: <20210426214701.235106-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
+Cc: tiwai@suse.de, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,15 +85,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 6 May 2021 18:58:55 +0800, Jiapeng Chong wrote:
-> Variable d_len_code is set to zero, but this value is never read as
-> it is overwritten or not used later on, hence it is a redundant
-> assignment and can be removed.
+On Mon, 26 Apr 2021 16:46:57 -0500, Pierre-Louis Bossart wrote:
+> While running some checks on a rebased branch, I realized I missed a
+> couple of trivial cases on newer code.
 > 
-> Clean up the following clang-analyzer warning:
+> Pierre-Louis Bossart (4):
+>   ASoC: codecs: mt6359-accdet: remove useless initialization
+>   ASoc: codecs: mt6359: remove useless initializations
+>   ASoC: codecs: rt1019: clarify expression
+>   ASoC: fsl: imx-pcm-rpmsg: remove useless initialization
 > 
-> sound/soc/codecs/rt286.c:728:2: warning: Value stored to 'd_len_code' is
-> never read [clang-analyzer-deadcode.DeadStores].
+> [...]
 
 Applied to
 
@@ -102,8 +103,14 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rt286: Remove redundant assignment to d_len_code
-      commit: 1d122dd3b168f55e2e29982cff80f1c15f66ef26
+[1/4] ASoC: codecs: mt6359-accdet: remove useless initialization
+      commit: b76d1d86a456fa495f8f74c967b5d646f20915c3
+[2/4] ASoc: codecs: mt6359: remove useless initializations
+      commit: d51f6dfb9c9843f82825187baa78f0f4c1ec6ac7
+[3/4] ASoC: codecs: rt1019: clarify expression
+      commit: 16255d4155da9ec8fcafcd7460a334e2e52f934e
+[4/4] ASoC: fsl: imx-pcm-rpmsg: remove useless initialization
+      commit: cccc16dc175eafa2dec98002dde35d19ace0a696
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
