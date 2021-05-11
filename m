@@ -2,99 +2,76 @@ Return-Path: <SRS0=Cjbi=KG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 147BDC433ED
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 14:57:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84077C433ED
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 16:32:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C8172613C3
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 14:57:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C8172613C3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id 016666190A
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 16:32:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 016666190A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3792A17D9;
-	Tue, 11 May 2021 16:57:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3792A17D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 57E3E17D5;
+	Tue, 11 May 2021 18:32:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57E3E17D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620745071;
-	bh=vrxFhJ64CkfjgbGx2wBTHOz7xK2WqSHaxbNG+9D/Ov8=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1620750775;
+	bh=EO1IZfDalGC3qZ+lhO1JESCbC0ZvO+bNicZISTYV+5o=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AVxkDWNXuKXKlNaU9L8/nfslf+FigR0gfiHzZglVEDizEp435qJZ6au72metL/S+P
-	 /0ZomK53pwLhAW2BEM7DL8B+ZAw9Gc2zhTTr3gM8uzMILs/2vaQpblGcHkhvZAix4Q
-	 qeR5EasG0afT6Z/WoaGLScOnh5ASxv7AZ8LhJZxg=
+	b=NIJ+rPVkwVKh30e8t6P0SSOQgvBxiNEALKX3gZCEeHXVvL3N4/3p8nMYPUeLg/CZc
+	 uYRKSILLU8aXnsaLbVPyD+AVxbQB/WrTRkbTvfPcfWlRSy5hXdDBYuVYyV/Zrl1H5k
+	 MKE97MmsYwzp/evEfExu9ZO+ej0p7MLvgvWAEC7E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BEEA4F80129;
-	Tue, 11 May 2021 16:57:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D09FBF800E9;
+	Tue, 11 May 2021 18:32:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2F27FF80163; Tue, 11 May 2021 16:56:59 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 31FDEF80163; Tue, 11 May 2021 18:31:57 +0200 (CEST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0212BF80129
- for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 16:56:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0212BF80129
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="mVjrQoup"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 14BEupep010329; Tue, 11 May 2021 09:56:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=GUmiTsZa2D857EWY992Tdk6Pb79y3HyBhwjXfDZvVG0=;
- b=mVjrQoup1CR3wWN0VXqRXFsbE/WsqDDN+pqmWNKjSIalCwnPY1R65/yO53EHMzq819zX
- u2rMmKPfRbMnrZ8vrIMMCFh0CiqNA6kFmlAkoObnsext5Pa8T/eAmKECos0ou18kxa9F
- KadiC3PLlNNhwoA+BqpfKTlrTkSGdRQ5jA/DdMdTm3DjrNDhiBAqi0id+zI4ab/CIsYr
- LAoemqOeAyfdnUqjxps2U/MS2aPCNbmBf3R/XTV4JGAMmnJVpB+lrBtx1h6X//d0vmvy
- L6ZH2x56DkK01xQuNCZgWS6P6vN8mhoDcAyZL6DhT8ZQrV0WQGU0w+Zs3GPtD2T2FXWI Aw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 38f2d4sq7v-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 11 May 2021 09:56:51 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 11 May
- 2021 15:56:43 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Tue, 11 May 2021 15:56:43 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9CDEC11D1;
- Tue, 11 May 2021 14:56:43 +0000 (UTC)
-Date: Tue, 11 May 2021 14:56:43 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: cs42l42: Regmap must use_single_read/write
-Message-ID: <20210511145643.GE64205@ediswmail.ad.cirrus.com>
-References: <20210511132855.27159-1-rf@opensource.cirrus.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 28340F800E9
+ for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 18:31:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28340F800E9
+IronPort-SDR: WxYTr8VatUzDkGsD1idqCDufwSM5OW1Z/mNkQo2fA3NfSttnDJu6lwKMCKMaV5GGfFpbWGFf9V
+ kIdBhjlOFrDA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="179080593"
+X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; d="scan'208";a="179080593"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 May 2021 09:31:43 -0700
+IronPort-SDR: KRxtLJn+R4q5VYaBdknj+YzPZ2VUeVy2jmNZyAZlZdMtEsxNCrbicBe8A3kCuDt5QjNxVzIy5w
+ 9vAvDjVMeZgA==
+X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; d="scan'208";a="537094135"
+Received: from imascare-mobl.amr.corp.intel.com (HELO [10.212.18.238])
+ ([10.212.18.238])
+ by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 May 2021 09:31:41 -0700
+Subject: Re: [PATCH 1/3] ASoC: cs35l36: Remove unneeded variable initialisation
+To: Charles Keepax <ckeepax@opensource.cirrus.com>, broonie@kernel.org
+References: <20210511101051.17726-1-ckeepax@opensource.cirrus.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <ae16c465-18c2-5f05-e77d-cd8d0a6dea81@linux.intel.com>
+Date: Tue, 11 May 2021 11:31:39 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210511132855.27159-1-rf@opensource.cirrus.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: fLHwtQWyn3_S9k3ZbLHWEMkDvaDOfPUH
-X-Proofpoint-ORIG-GUID: fLHwtQWyn3_S9k3ZbLHWEMkDvaDOfPUH
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015
- spamscore=0
- lowpriorityscore=0 suspectscore=0 bulkscore=0 adultscore=0 impostorscore=0
- malwarescore=0 mlxscore=0 phishscore=0 priorityscore=1501 mlxlogscore=757
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105110111
+In-Reply-To: <20210511101051.17726-1-ckeepax@opensource.cirrus.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- broonie@kernel.org, linux-kernel@vger.kernel.org
+ david.rhodes@cirrus.com, lgirdwood@gmail.com, james.schulman@cirrus.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,30 +87,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, May 11, 2021 at 02:28:55PM +0100, Richard Fitzgerald wrote:
-> cs42l42 does not support standard burst transfers so the use_single_read
-> and use_single_write flags must be set in the regmap config.
-> 
-> Because of this bug, the patch:
-> 
-> commit 0a0eb567e1d4 ("ASoC: cs42l42: Minor error paths fixups")
-> 
-> broke cs42l42 probe() because without the use_single_* flags it causes
-> regmap to issue a burst read.
-> 
-> However, the missing use_single_* could cause problems anyway because the
-> regmap cache can attempt burst transfers if these flags are not set.
-> 
-> Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+
+
+On 5/11/21 5:10 AM, Charles Keepax wrote:
+> Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+
+Thanks, I rechecked with this patchset applied on top of the previous 
+one, there's only one warning left:
+
+sound/soc/codecs/cs42l56.c:1308:6: style: Variable 'ret' is reassigned a 
+value before the old one has been used. [redundantAssignment]
+  ret =  devm_snd_soc_register_component(&i2c_client->dev,
+      ^
+sound/soc/codecs/cs42l56.c:1247:6: note: ret is assigned
+  ret = regmap_read(cs42l56->regmap, CS42L56_CHIP_ID_1, &reg);
+      ^
+sound/soc/codecs/cs42l56.c:1308:6: note: ret is overwritten
+  ret =  devm_snd_soc_register_component(&i2c_client->dev,
+      ^
+
+
 > ---
-
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-
-Thanks Richard, I guess I better check the other devices I fixed
-up for the same issue, as I am guessing that could probably
-affect a few more. The few I have hardware to test already have
-the single stuff set.
-
-Thanks,
-Charles
+>   sound/soc/codecs/cs35l36.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/codecs/cs35l36.c b/sound/soc/codecs/cs35l36.c
+> index a038bcec2d17c..db5472b10465b 100644
+> --- a/sound/soc/codecs/cs35l36.c
+> +++ b/sound/soc/codecs/cs35l36.c
+> @@ -1156,7 +1156,7 @@ static int cs35l36_component_probe(struct snd_soc_component *component)
+>   {
+>   	struct cs35l36_private *cs35l36 =
+>   			snd_soc_component_get_drvdata(component);
+> -	int ret = 0;
+> +	int ret;
+>   
+>   	if ((cs35l36->rev_id == CS35L36_REV_A0) && cs35l36->pdata.dcm_mode) {
+>   		regmap_update_bits(cs35l36->regmap, CS35L36_BSTCVRT_DCM_CTRL,
+> 
