@@ -2,70 +2,72 @@ Return-Path: <SRS0=Cjbi=KG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F1EEC433B4
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 14:29:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E24DC433ED
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 14:30:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 03F4661376
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 14:29:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03F4661376
+	by mail.kernel.org (Postfix) with ESMTPS id DB515611BE
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 May 2021 14:30:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB515611BE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 11DB517F2;
-	Tue, 11 May 2021 16:29:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11DB517F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 496461832;
+	Tue, 11 May 2021 16:29:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 496461832
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620743390;
-	bh=ohc8cboGqVkjbGl0AeQePqh/S6Qv5BQqUh3MUn92rJ0=;
+	s=default; t=1620743415;
+	bh=dIDB/SxoNJuLi21uZhvIvfviMOdE+PTg+ElYL4iInOI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=X1leakEhGyxj7uIc/piWqaf3KFljapvIOCHqVochEsqY1RQ5EgGKqJqkaGJMs3Af2
-	 nQ8maUi6AUMaopm4/Jc90g/KxGKnLh+nat+w/lELt7gVW+jgr19pZs+dKh6YfWsg1O
-	 Pj+6CuMxCRhsasS/crSPKLpWwpHWK3dFMd9ZZPEA=
+	b=KHtSfACjGEVbSZbNvY97IG00xZP2DyJgkrVF1gv3KZioo7FXSFvvrjueyPoES9LXd
+	 w+BVUvi106x5Gn4f/OP2RO8WGRcrsVFBfyp7tU038EtnVSVPnUDAOLV4IQKPkzZF2x
+	 SjaIPbrJDg0d08eWU7Wif8GzOU2egV4dfVTGDX/I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D55C1F8016B;
-	Tue, 11 May 2021 16:27:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F86BF804B2;
+	Tue, 11 May 2021 16:27:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DC0C7F80475; Tue, 11 May 2021 16:27:09 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id EF569F8049C; Tue, 11 May 2021 16:27:10 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 81531F80279
- for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 16:27:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81531F80279
-IronPort-SDR: Khu8ko3QZXd/CDzFtf3+Vmjb/RAS46OA6XmAsLCcZcpBBp6lcs3J8W4Y3alTQDq9xn/pb3X/oM
- WL5cmDgSII2w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="220414699"
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; d="scan'208";a="220414699"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 May 2021 07:26:59 -0700
-IronPort-SDR: ImYXYNLzB6X5YiJDYYK2F4tubeNJXhm3632OCbX4A3/dKYBWlm0M/Tx+k3qALVWAFFGpAPdOWm
- Qp4JM3gdqdHg==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1A7AFF80156
+ for <alsa-devel@alsa-project.org>; Tue, 11 May 2021 16:26:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A7AFF80156
+IronPort-SDR: 6PGZZ8WHezE45W2aVkv7WZgxBd9b1ZrYUFvU5+hE8ieH2NYZmwYebpLwufcCMsVgxSon5lgoQe
+ xdFxtXQ0huAg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="199506761"
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; d="scan'208";a="199506761"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 May 2021 07:26:55 -0700
+IronPort-SDR: VtRMk9mb/eLdHUBpstMBpeTTdy6MWP3kHaZZM10wqx52X4yB4fdQYKAP3dXyReOzKpidIzsYJa
+ 8OZVrXI8XJjw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; d="scan'208";a="399334109"
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; d="scan'208";a="609507425"
 Received: from black.fi.intel.com ([10.237.72.28])
- by fmsmga007.fm.intel.com with ESMTP; 11 May 2021 07:26:56 -0700
+ by orsmga005.jf.intel.com with ESMTP; 11 May 2021 07:26:52 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
- id 370C450E; Tue, 11 May 2021 17:27:13 +0300 (EEST)
+ id E9A08338; Tue, 11 May 2021 17:27:12 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
  linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
  alsa-devel@alsa-project.org
-Subject: [PATCH v4 7/8] spi: pxa2xx: Constify struct driver_data parameter
-Date: Tue, 11 May 2021 17:27:10 +0300
-Message-Id: <20210511142711.23244-8-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v4 2/8] spi: pxa2xx: Reuse int_error_stop() in
+ pxa2xx_spi_slave_abort()
+Date: Tue, 11 May 2021 17:27:05 +0300
+Message-Id: <20210511142711.23244-3-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210511142711.23244-1-andriy.shevchenko@linux.intel.com>
 References: <20210511142711.23244-1-andriy.shevchenko@linux.intel.com>
@@ -89,36 +91,67 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In a couple of functions the contents of struct driver_data are not altered,
-hence we may constify the respective function parameter.
+It appears that pxa2xx_spi_slave_abort()almost  repeats the functionality
+of the int_error_stop(). Reuse int_error_stop() in pxa2xx_spi_slave_abort().
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/spi/spi-pxa2xx.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/spi/spi-pxa2xx.c | 17 +++++------------
+ 1 file changed, 5 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/spi/spi-pxa2xx.h b/drivers/spi/spi-pxa2xx.h
-index d2cb40f97c4b..5c6a5e0f249e 100644
---- a/drivers/spi/spi-pxa2xx.h
-+++ b/drivers/spi/spi-pxa2xx.h
-@@ -93,7 +93,7 @@ static inline void pxa2xx_spi_write(const struct driver_data *drv_data, u32 reg,
- 
- #define DMA_ALIGNMENT		8
- 
--static inline int pxa25x_ssp_comp(struct driver_data *drv_data)
-+static inline int pxa25x_ssp_comp(const struct driver_data *drv_data)
- {
- 	switch (drv_data->ssp_type) {
- 	case PXA25x_SSP:
-@@ -115,7 +115,7 @@ static inline u32 read_SSSR_bits(const struct driver_data *drv_data, u32 bits)
- 	return pxa2xx_spi_read(drv_data, SSSR) & bits;
+diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
+index 5572eec68381..087c84e605b9 100644
+--- a/drivers/spi/spi-pxa2xx.c
++++ b/drivers/spi/spi-pxa2xx.c
+@@ -631,7 +631,7 @@ static void int_stop_and_reset(struct driver_data *drv_data)
+ 	pxa2xx_spi_write(drv_data, SSTO, 0);
  }
  
--static inline void write_SSSR_CS(struct driver_data *drv_data, u32 val)
-+static inline void write_SSSR_CS(const struct driver_data *drv_data, u32 val)
+-static void int_error_stop(struct driver_data *drv_data, const char *msg)
++static void int_error_stop(struct driver_data *drv_data, const char *msg, int err)
  {
- 	if (drv_data->ssp_type == CE4100_SSP ||
- 	    drv_data->ssp_type == QUARK_X1000_SSP)
+ 	int_stop_and_reset(drv_data);
+ 	pxa2xx_spi_flush(drv_data);
+@@ -639,7 +639,7 @@ static void int_error_stop(struct driver_data *drv_data, const char *msg)
+ 
+ 	dev_err(drv_data->ssp->dev, "%s\n", msg);
+ 
+-	drv_data->controller->cur_msg->status = -EIO;
++	drv_data->controller->cur_msg->status = err;
+ 	spi_finalize_current_transfer(drv_data->controller);
+ }
+ 
+@@ -658,12 +658,12 @@ static irqreturn_t interrupt_transfer(struct driver_data *drv_data)
+ 	u32 irq_status = pxa2xx_spi_read(drv_data, SSSR) & irq_mask;
+ 
+ 	if (irq_status & SSSR_ROR) {
+-		int_error_stop(drv_data, "interrupt_transfer: fifo overrun");
++		int_error_stop(drv_data, "interrupt_transfer: fifo overrun", -EIO);
+ 		return IRQ_HANDLED;
+ 	}
+ 
+ 	if (irq_status & SSSR_TUR) {
+-		int_error_stop(drv_data, "interrupt_transfer: fifo underrun");
++		int_error_stop(drv_data, "interrupt_transfer: fifo underrun", -EIO);
+ 		return IRQ_HANDLED;
+ 	}
+ 
+@@ -1154,14 +1154,7 @@ static int pxa2xx_spi_slave_abort(struct spi_controller *controller)
+ {
+ 	struct driver_data *drv_data = spi_controller_get_devdata(controller);
+ 
+-	int_stop_and_reset(drv_data);
+-	pxa2xx_spi_flush(drv_data);
+-	pxa2xx_spi_off(drv_data);
+-
+-	dev_dbg(drv_data->ssp->dev, "transfer aborted\n");
+-
+-	drv_data->controller->cur_msg->status = -EINTR;
+-	spi_finalize_current_transfer(drv_data->controller);
++	int_error_stop(drv_data, "transfer aborted", -EINTR);
+ 
+ 	return 0;
+ }
 -- 
 2.30.2
 
