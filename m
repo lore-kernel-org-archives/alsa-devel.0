@@ -2,67 +2,100 @@ Return-Path: <SRS0=rxKz=KH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09EC9C433ED
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 07:09:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92A6BC433B4
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 08:25:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7BDA161260
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 07:09:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7BDA161260
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id B4453613C1
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 08:25:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B4453613C1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EED7A185A;
-	Wed, 12 May 2021 09:08:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EED7A185A
+	by alsa0.perex.cz (Postfix) with ESMTPS id D613B182D;
+	Wed, 12 May 2021 10:24:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D613B182D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620803364;
-	bh=YAqEkIu2Ts6oANXrZ+EKXBuCjW6U7nGFHngwyndivbw=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1620807908;
+	bh=KMZqIEr8YTWtWXmI7lwrcBlIqPYxtUpzgkZI3AbbugI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NOK1BL+s1jSarkCs31oiuJZBhmFHOVAXuL/x4QbUvM8v4nnEDAB2NburWXTNmIB9H
-	 1i3ORNGEJ89C9bcvaYcYqyxnONo7B6mQXg3h2L17YmSPr6iq0HTxe9lVblSIWwDmXL
-	 JV3ztFpa15Tt31fovdI1WcAWqY/WgSjqnIaQ9ph8=
+	b=nWOI8rrMyLzBoc/UQ0sPkEV7HLjuPaNP8bgj50tH6/9KmNUbIz/BML/rS1lPItBC8
+	 7bwkIrlpUIyWoZVQNBIUgOuOdt3rKW8FPjEOipsnNd3GkG9/ha3k7KpVuxTa0epNMy
+	 8bQx76cmxwNyWtqMz0A4VqB9Uu2RVedFAp+Pc9sw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B7CCF800E9;
-	Wed, 12 May 2021 09:08:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 71738F8020C;
+	Wed, 12 May 2021 10:24:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 36BBDF8012E; Wed, 12 May 2021 09:08:32 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 8E31AF80240; Wed, 12 May 2021 10:24:16 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 15ACDF8012E
- for <alsa-devel@alsa-project.org>; Wed, 12 May 2021 09:08:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15ACDF8012E
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id D2BD8AEF8;
- Wed, 12 May 2021 07:08:18 +0000 (UTC)
-Date: Wed, 12 May 2021 09:08:18 +0200
-Message-ID: <s5htun8bfa5.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Chanho Park <chanho61.park@samsung.com>
-Subject: Re: [PATCH] ALSA: pcm: Need to check whether runtime is valid or not
-In-Reply-To: <20210512044323.106673-1-chanho61.park@samsung.com>
-References: <CGME20210512044441epcas2p4ad7c01a1dc9048bd96a9973760017d8c@epcas2p4.samsung.com>
- <20210512044323.106673-1-chanho61.park@samsung.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>, eunwoo kim <ew.kim@samsung.com>,
- Vinod Koul <vkoul@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 49DF7F8013A
+ for <alsa-devel@alsa-project.org>; Wed, 12 May 2021 10:24:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49DF7F8013A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="beETCuRY"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
+ 14C8GxTo019727; Wed, 12 May 2021 03:24:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=wG06jQsuxXmpyimFW25Di30SFAygGPupxoCDyLNhcwM=;
+ b=beETCuRYrXrA3GVdgcPhpdwYtmDsB405/VaNYvJghaNT2P3Q95bJkx3mT10yjxhsvd3E
+ 70ERBtS+K8OyZb25wUrCa6int9YAnhBfgIuLGbP8Z+27JEaPJv3WRj1yETCiUpTF8GOm
+ 68iJ8itrDANQun4xMba9i2Djj7BF/xv0fN5yXnuLCmT+4N+gJiif7tcv841Spk0BYDWr
+ fT2C9dR2q3PHR23aIGCoitjnShND1CwxNZ1PNG1v7Zw9upH3hmH2CvoCm5VTt4S3jlcS
+ 9ltcAZ4vQBisvIhE3+LAktOe03yG3jkAWhiJaQ4Sk6TttfvJiTyEcVYVuRodE3/+fALw kg== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 38f4x1ata5-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Wed, 12 May 2021 03:24:06 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 12 May
+ 2021 09:24:04 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Wed, 12 May 2021 09:24:04 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6757611CD;
+ Wed, 12 May 2021 08:24:04 +0000 (UTC)
+Date: Wed, 12 May 2021 08:24:04 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Simon Trimmer <simont@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: wm_adsp: mark more data structures with the const
+ qualifier
+Message-ID: <20210512082404.GF64205@ediswmail.ad.cirrus.com>
+References: <20210511171459.270169-1-simont@opensource.cirrus.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210511171459.270169-1-simont@opensource.cirrus.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: wn-E5DoFsPPEs0soT1eJRsZdpd7wZ-aW
+X-Proofpoint-ORIG-GUID: wn-E5DoFsPPEs0soT1eJRsZdpd7wZ-aW
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 adultscore=0
+ spamscore=0 suspectscore=0 mlxlogscore=999 clxscore=1011 bulkscore=0
+ mlxscore=0 phishscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105120060
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ broonie@kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,18 +111,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 12 May 2021 06:43:23 +0200,
-Chanho Park wrote:
+On Tue, May 11, 2021 at 06:14:59PM +0100, Simon Trimmer wrote:
+> The callback structures and memory region type table can be marked as
+> const as they will not change during use.
 > 
-> From: eunwoo kim <ew.kim@samsung.com>
+> Fix checkpatch warning against wm_adsp_find_region function by moving
+> const keyword to form the 'static const struct' pattern.
 > 
-> Since snd_pcm_ioctl_sw_params_compat has no runtime variable check,
-> if application call the ioctl after close, it can make kernel crash.
-> So, snd_pcm_ioctl_sw_params_compat needs to check the runtime variable
-> at the beginning of the function.
+> Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+> ---
 
-In principle, you cannot call ioctl for an already closed file.
-Or do you mean other code path?
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-
-Takashi
+Thanks,
+Charles
