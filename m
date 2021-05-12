@@ -7,67 +7,67 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5B24C2B9FC
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 18:06:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3ABF2C43461
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 18:06:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ECDD861183
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 18:06:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ECDD861183
+	by mail.kernel.org (Postfix) with ESMTPS id 8A9E561278
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 18:06:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8A9E561278
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A2F91828;
-	Wed, 12 May 2021 20:05:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A2F91828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0BEDB1865;
+	Wed, 12 May 2021 20:06:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BEDB1865
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620842799;
-	bh=v+o9R/WRLaLDBMpf2DCdFw1HJwrUNglZKj5Rq94Tmf0=;
+	s=default; t=1620842814;
+	bh=/NnEqLW81GmW6Y6kO6A9bBO78unID4AASUPq+dfkJxw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=S1E+1WHcceabIraKJ81vq1jjo7j6HdYbnjZMyaCl59AFL38ovDcEVAymd8NGQ6gOl
-	 5IDtfpid5BstrIGxBDUqE1Hvqapsd17lnaafllwQDBQVT4nk0GeHkZ+ZkEnl1YTZOs
-	 dbuX2UVJWQsJMUh8f7Z2yWPHQwpJRWeWZcJiPG4g=
+	b=iiszI/5/HiqqQi6rLP6H+B+qIJYZGRQDi9KDmBkwpJs4G9/zEwVV+2IIJ0uun5Khc
+	 n/8OEWl5XHF277ad6ehfOrSmEnI9dKNGLcv6JXBjzXlN+oURWinkmD9bWeL6ShrKUM
+	 D+kuZcv1cjrGWTSq/zWfZzJCV0BKYW9fUVlLMNyI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2F55F8020C;
-	Wed, 12 May 2021 20:05:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2A8BF8013A;
+	Wed, 12 May 2021 20:06:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1CC3DF8012E; Wed, 12 May 2021 20:05:48 +0200 (CEST)
+ id 05FDFF8026B; Wed, 12 May 2021 20:06:01 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 51A0DF8020C
- for <alsa-devel@alsa-project.org>; Wed, 12 May 2021 20:05:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51A0DF8020C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 62B94F8012E
+ for <alsa-devel@alsa-project.org>; Wed, 12 May 2021 20:05:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62B94F8012E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ibu2wIFX"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F03D6193F;
- Wed, 12 May 2021 18:05:39 +0000 (UTC)
+ header.b="HzThZrxN"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B0B5661945;
+ Wed, 12 May 2021 18:05:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1620842740;
- bh=v+o9R/WRLaLDBMpf2DCdFw1HJwrUNglZKj5Rq94Tmf0=;
+ s=k20201202; t=1620842757;
+ bh=/NnEqLW81GmW6Y6kO6A9bBO78unID4AASUPq+dfkJxw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ibu2wIFX2G/lJSYR5r6bIljCfcD8/xuifRVQuq60Uk9G1Im+TXE9vJY7RyKMeHuQb
- uh5LOinQEH0kv/0reFI2VUOj6vzPY2+bPqmvjyWNKngvYt2OYzPSqhUzBkzTY7tJU3
- CPujUxxuFTCSUFalcGrxap73ufebslPrYr+4W6N3LboqUKW5V5PGb/o78dhldojyvL
- CIHlMLSjJ1gdNf7uXqIDzsVT8o6i8Zh1hqxlUl28JfezGLRplmuZYcoT1pWnjNoHqL
- MU+g/TukzmLfSSJVcKFLf7wvLnNkEmcnSQafM2xhvW+gyS5/sLpsgk0YPEbUBKE+ZL
- 5VK9U6NDqk51Q==
+ b=HzThZrxNYnrTDUedAbD8ogOHp3hMXxDCfs80tAmrYyl0rD+OPSLTxbQY5Q4e10FaS
+ F5sq9mqhE0iWJNnP26XhdgZSiozVyuvUIq3s383ENnhNVpc78B6aPO/8RiLyKWWtUr
+ LY2hTlszxc9scefHNVrSyAPb+xZQcnnDNWOryMoAr3bCAZz4SrD0IkPhTxBKHxizYk
+ egi2RczkXrGInqn5kd9Tw3+2No2HQ4ZaPx0tcvS7j/IXjhUu05D/cVgRFt5X3Kjb7C
+ /OfWm14v+WcT2vb5FPuG/Nsr0WUEXdv0COoyzdP+IzV4RZOE4bfO/QSfG0E1ycHse4
+ yyum4HOesmV9w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 10/12] ALSA: hda: generic: change the DAC ctl
- name for LO+SPK or LO+HP
-Date: Wed, 12 May 2021 14:05:20 -0400
-Message-Id: <20210512180522.665788-10-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 6/7] ALSA: hda: generic: change the DAC ctl name
+ for LO+SPK or LO+HP
+Date: Wed, 12 May 2021 14:05:43 -0400
+Message-Id: <20210512180545.665946-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210512180522.665788-1-sashal@kernel.org>
-References: <20210512180522.665788-1-sashal@kernel.org>
+In-Reply-To: <20210512180545.665946-1-sashal@kernel.org>
+References: <20210512180545.665946-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -119,10 +119,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 11 insertions(+), 5 deletions(-)
 
 diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 14881fe80a21..1833deefe1af 100644
+index 6089ed6efc8d..8d99ac931ff6 100644
 --- a/sound/pci/hda/hda_generic.c
 +++ b/sound/pci/hda/hda_generic.c
-@@ -1212,11 +1212,17 @@ static const char *get_line_out_pfx(struct hda_codec *codec, int ch,
+@@ -1165,11 +1165,17 @@ static const char *get_line_out_pfx(struct hda_codec *codec, int ch,
  		*index = ch;
  		return "Headphone";
  	case AUTO_PIN_LINE_OUT:
