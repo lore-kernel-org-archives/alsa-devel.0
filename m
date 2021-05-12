@@ -6,78 +6,80 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52A71C433ED
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 15:41:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37B81C433B4
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 15:42:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 47D89613DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 15:41:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 47D89613DF
+	by mail.kernel.org (Postfix) with ESMTPS id 14D7E61029
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 15:42:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14D7E61029
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD8851786;
-	Fri, 14 May 2021 17:40:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD8851786
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9FABE1777;
+	Fri, 14 May 2021 17:41:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FABE1777
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621006896;
-	bh=TnVkz2yTSYVx5kNn13P9x/7V1P9jGHTKTfUUocRQ9EI=;
+	s=default; t=1621006931;
+	bh=UqEWHjeRNncamb1nc2UYRGW7kBnKiAd9E+TspgUJ1Lw=;
 	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=s/PwvKjNWa0Tt4zfNnR2EN2V6koAIxl79hXdI4R01MKb/cCOj3P7TKTmZrc3my12B
-	 KJyxJqi4PekRu23BUAmS0Xj5ZHuocl4tKCYYW3CK3gmfqCfOc8XfZj+LMCHB3godq4
-	 r+nM7TrdcDnHiy2kK/9TcyPT431v5wSnUu9n3EF0=
+	b=kKciePnrDrmexKP5v7DfUo1mhgjPQ+Rl9URSPGH0ZYOcGvn4mwKSkphKIT4RhV22n
+	 pNHglvXXQ6yxEqlfKIuqsRkGb0sfXIPvujXFVrr+pgCqII95AX4gyiFrfvEtDTgUYW
+	 xgZaGOl/567qiZ8iPOq/yyG0o4jds0rYzxI6h8Y0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4541EF8027B;
-	Fri, 14 May 2021 17:39:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1BDF9F80431;
+	Fri, 14 May 2021 17:39:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6A006F80240; Wed, 12 May 2021 19:07:31 +0200 (CEST)
+ id 9DA1EF8020C; Wed, 12 May 2021 19:12:45 +0200 (CEST)
 Received: from bombadil.infradead.org (bombadil.infradead.org
  [IPv6:2607:7c80:54:e::133])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE249F8020C
- for <alsa-devel@alsa-project.org>; Wed, 12 May 2021 19:07:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE249F8020C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 951A3F800E9
+ for <alsa-devel@alsa-project.org>; Wed, 12 May 2021 19:12:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 951A3F800E9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="4i55lXob"
+ header.b="GMyx8yNb"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Mime-Version:Content-Type:References:
  In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
  Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=CGAim91g54du1h6JaU0Xbf2gPO4So65H4Ue8vHSi7L4=; b=4i55lXobtCkItqSLIXSNM1KdvS
- D2h7l9pabkZpuJmEYHHSArPzaLESyqMTrsXZvx1pJB6QmhgVRHcQwyFSRVsmtSW/54sfR3dVLrQVe
- aPalSZxx0LhVdnoX6jaUcYsm4ag50Xgys+KwncC8wH0oqG5NXdpUtaHgRPbPh797IL4MYp4pncU0A
- C+hTboFmMq9+W13++P+k4J7XyhskOt2AxIIPo8aMyo1DWlOC7Fv3RLdqIZrfhzm4Y25v26SZkkyOq
- 98ArH+Ndhg+U+YIqKcVFbS9VO5Kubn1uaeOk0h+8F6Av1nOvq9jJjDTMCTcpoJOPh06yPpkDXZY6B
- LtaqwHaQ==;
+ bh=Bbe/giLRixNHZfVxrsBWK3QD/DvA2E8vNtncCgEH6tY=; b=GMyx8yNb1WU+k0lf4hnLOgZHBr
+ 6DFDVEZXTOLWMsR8c+DFSqytTjIYYEdjxaixq5vRe3+3JWR59MOXd/W8EDHvUxuOfMniJtjC7qemY
+ xjWsT8/erX8vmk23Ssat6lHd6OnEvhlJOV+WAGGL+AqjSi5Z1HY6veeTfwqvgf2BCwXLFjuBqRLmy
+ eChY1b3iu2fMKuB2WLM6NbgnMZ0AfKtp9a670pjykiwtv49KoHHXLZ9qKXnB8cceJrdyUmpGpk0vm
+ FOwCw9zzsVV5nAOzGYvVHRudpwMhKlH1f9Y9YLfhCUnOYbYtyvlEGDEZRwcjLejXp+2r18iytiQ9m
+ ICcU8TEw==;
 Received: from 54-240-197-236.amazon.com ([54.240.197.236]
  helo=u3832b3a9db3152.ant.amazon.com)
  by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
- id 1lgsKF-00Ad4i-7g; Wed, 12 May 2021 17:07:11 +0000
-Message-ID: <d2fed242fbe200706b8d23a53512f0311d900297.camel@infradead.org>
+ id 1lgsPT-00AdJd-Be; Wed, 12 May 2021 17:12:35 +0000
+Message-ID: <cca519da5a3af70297bf1b75b9dbcb0c98ed3eaf.camel@infradead.org>
 Subject: Re: [PATCH v2 00/40] Use ASCII subset instead of UTF-8 alternate
  symbols
 From: David Woodhouse <dwmw2@infradead.org>
-To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>, Linux Doc Mailing
- List <linux-doc@vger.kernel.org>
-Date: Wed, 12 May 2021 18:07:04 +0100
-In-Reply-To: <cover.1620823573.git.mchehab+huawei@kernel.org>
+To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>, Theodore Ts'o
+ <tytso@mit.edu>
+Date: Wed, 12 May 2021 18:12:27 +0100
+In-Reply-To: <20210512171741.2870bcbc@coco.lan>
 References: <cover.1620823573.git.mchehab+huawei@kernel.org>
+ <YJvi1L2ss5Tfi+My@mit.edu> <20210512171741.2870bcbc@coco.lan>
 Content-Type: multipart/signed; micalg="sha-256";
  protocol="application/x-pkcs7-signature";
- boundary="=-/FPptejB83YswlzTVxow"
+ boundary="=-hWc+xAn5S+EFrraSjweQ"
 X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 Mime-Version: 1.0
 X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by
  bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Mailman-Approved-At: Fri, 14 May 2021 17:39:48 +0200
-Cc: alsa-devel@alsa-project.org, kvm@vger.kernel.org, linux-iio@vger.kernel.org,
+Cc: alsa-devel@alsa-project.org, kvm@vger.kernel.org,
+ Linux Doc Mailing List <linux-doc@vger.kernel.org>, linux-iio@vger.kernel.org,
  linux-pci@vger.kernel.org, dri-devel@lists.freedesktop.org,
  keyrings@vger.kernel.org, linux-sgx@vger.kernel.org,
  Jonathan Corbet <corbet@lwn.net>, linux-rdma@vger.kernel.org,
@@ -107,48 +109,58 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---=-/FPptejB83YswlzTVxow
+--=-hWc+xAn5S+EFrraSjweQ
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Your title 'Use ASCII subset' is now at least a bit *closer* to
-describing what the patches are actually doing, but it's still a bit
-misleading because you're only doing it for *some* characters.
-
-And the wording is still indicative of a fundamentally *misguided*
-motivation for doing any of this. Your commit comments should be about
-fixing a specific thing, nothing to do with "use ASCII subset", which
-is pointless in itself.
-
-On Wed, 2021-05-12 at 14:50 +0200, Mauro Carvalho Chehab wrote:
-> Such conversion tools - plus some text editor like LibreOffice  or simila=
-r  - have
-> a set of rules that turns some typed ASCII characters into UTF-8 alternat=
-ives,
-> for instance converting commas into curly commas and adding non-breakable
-> spaces. All of those are meant to produce better results when the text is
-> displayed in HTML or PDF formats.
-
-And don't we render our documentation into HTML or PDF formats? Are
-some of those non-breaking spaces not actually *useful* for their
-intended purpose?
-
-> While it is perfectly fine to use UTF-8 characters in Linux, and speciall=
-y at
-> the documentation,  it is better to  stick to the ASCII subset  on such
-> particular case,  due to a couple of reasons:
+On Wed, 2021-05-12 at 17:17 +0200, Mauro Carvalho Chehab wrote:
+> Em Wed, 12 May 2021 10:14:44 -0400
+> "Theodore Ts'o" <tytso@mit.edu> escreveu:
 >=20
-> 1. it makes life easier for tools like grep;
+> > On Wed, May 12, 2021 at 02:50:04PM +0200, Mauro Carvalho Chehab wrote:
+> > > v2:
+> > > - removed EM/EN DASH conversion from this patchset; =20
+> >=20
+> > Are you still thinking about doing the
+> >=20
+> > EN DASH --> "--"
+> > EM DASH --> "---"
+> >=20
+> > conversion? =20
+>=20
+> Yes, but I intend to submit it on a separate patch series, probably after
+> having this one merged. Let's first cleanup the large part of the=20
+> conversion-generated UTF-8 char noise ;-)
+>=20
+> > That's not going to change what the documentation will
+> > look like in the HTML and PDF output forms, and I think it would make
+> > life easier for people are reading and editing the Documentation/*
+> > files in text form.
+>=20
+> Agreed. I'm also considering to add a couple of cases of this char:
+>=20
+> 	- U+2026 ('=E2=80=A6'): HORIZONTAL ELLIPSIS
+>=20
+> As Sphinx also replaces "..." into HORIZONTAL ELLIPSIS.
 
-Barely, as noted, because of things like line feeds.
+Er, what?
 
-> 2. they easier to edit with the some commonly used text/source
->    code editors.
+The *only* part of this whole enterprise that actually seemed to make
+even a tiny bit of sense =E2=80=94 rather than seeming like a thinly veiled
+retrospective excuse for dragging us back in time by 30 years =E2=80=94 was=
+ the
+bit about making it easier to grep.
 
-That is nonsense. Any but the most broken and/or anachronistic
-environments and editors will be just fine.
+But if I understand you correctly, you're talking about using something
+like C trigraphs to represent the perfectly reasonable text emdash
+character ("=E2=80=94") as two hyphen-minuses ("--") in the source code of =
+the
+documentation? Isn't that going to achieve precisely the *opposite*? If
+I select some text in the HTML output of the docs and then search for
+it in the source code, that's going to *stop* it matching my search?
 
---=-/FPptejB83YswlzTVxow
+
+--=-hWc+xAn5S+EFrraSjweQ
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -231,20 +243,20 @@ BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
 BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
 ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
 ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEw
-NTEyMTcwNzA0WjAvBgkqhkiG9w0BCQQxIgQgrbbFRoqK/Il2tfAAOjreV59AGIBtL1DK//rjr81v
-3I8wgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
+NTEyMTcxMjI3WjAvBgkqhkiG9w0BCQQxIgQg3XpAgHXtlhpeOzv/dEVijB6FV2B1P1ORW7ixkdff
+lPowgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
 TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
 PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
 aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
 BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
 A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
 bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
-DQEBAQUABIIBAKX4AuZ2PO116yKAaN0onYdGfrl/MlcME1r6njraDJQrEFr4nrLYQPfpiXbp1oTB
-S676SpFIK+i3I5Dm7sPcwrMj4GwwY6N1TZAwaSLIbPiSSeVvfWCk6EKrUPiRtKJiffVAU9H3+1n4
-lWF6s9mq3Oopw2UBBKgi3Mbfe4nsYUYn3ZwcKLSvGZPPtQ64gNGfNttskpSjxcvleeVCI6vE7mdy
-aR5mQgudud0ou19a+EBzRxr9hEnbOKKc333vHLKCOZH3S5JbqD/6Tfoe1ffeLQR37ul1+cB2ndrJ
-+6nEeHNGmAXUgV+sbdglQd3UwExYPXWySsvI92XKWqXkRuUwIxAAAAAAAAA=
+DQEBAQUABIIBAF05KQACeazolZqXWhE2RG343uRTkhj6gM65QVXqz6/sGDDgTvqLiikBTTMAeiUZ
+EpaD3Gbwmez7WY6axWZ3pR3lnqhyBH+tr5O1DSTEWA0WyUJJ4jtz5ait1Im4CexPphbaiJB+KveN
+61GcukywzZhUNMJL/rN0hUglCtGjGJHeTIJ0bSU6WI2KOGYEmR/yH1sEwbZhEjbIwduWC6SL+r6H
+jPI99OwT+Q3uxRwTqA4ljPDZhihqihDFDwX0GNYMl3vGQAhG/XSQjPEzKaoPf03i8dfF/I4u2aWW
+rWNeVL4q2Zvu+0N4+t6bkchYY+agiEPi5RrkSAmkYVfVuiYBwHUAAAAAAAA=
 
 
---=-/FPptejB83YswlzTVxow--
+--=-hWc+xAn5S+EFrraSjweQ--
 
