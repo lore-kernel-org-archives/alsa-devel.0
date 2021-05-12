@@ -2,56 +2,56 @@ Return-Path: <SRS0=rxKz=KH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 623CAC433B4
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 00:47:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDB9BC433B4
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 00:47:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7632E6162B
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 00:47:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7632E6162B
+	by mail.kernel.org (Postfix) with ESMTPS id 43AA66192B
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 00:47:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 43AA66192B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E05F618BE;
-	Wed, 12 May 2021 02:46:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E05F618BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6B00418AE;
+	Wed, 12 May 2021 02:46:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B00418AE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620780423;
-	bh=Ld+pUBG9g8XVJGBlyTkSfdPXONb5I97rrVAswYdoSj0=;
+	s=default; t=1620780463;
+	bh=QPO+M/5oPDIzoZpNiUC9YivVm0kRix/O7hcH8feHztQ=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QRNAW7uDbYwNHknPoKhAkPA4HtNBfokEFP/QHpaTfiac8hW3VAWR6r/cUBqSoj1D0
-	 zAd4+t8IOK/gOClb+NtfVg/pYf5zb4V6TYtBIMd/aLWMSxOMxyiwyOJmCXhz6M6NRW
-	 hOEXvc2Xk9DHH9JS9cCFpwi7aitwr3u4jP17yuVU=
+	b=pL6nyMZloTWcoCojf5oJ614IyEW0ixVRxgIUwReKUVrqSRZKGF3ySvLjBfIn9OxYB
+	 YqaKvXXc7Kgi6eK2UBq+FdLMEAllvSBEXcRS0fjXqOirsWCyYnpt6wOPrMEbI22LMn
+	 3Qduu0G8bHqiPglyXE+GAYbvPoFihBZMQtopiZxc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0A2ACF80424;
-	Wed, 12 May 2021 02:45:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6B086F804AA;
+	Wed, 12 May 2021 02:45:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5927EF80424; Wed, 12 May 2021 02:45:41 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 1E9DBF80129
- for <alsa-devel@alsa-project.org>; Wed, 12 May 2021 02:45:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E9DBF80129
-Date: 12 May 2021 09:45:33 +0900
-X-IronPort-AV: E=Sophos;i="5.82,291,1613401200"; d="scan'208";a="80799335"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 12 May 2021 09:45:33 +0900
+ id 2778AF804AC; Wed, 12 May 2021 02:45:48 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 7FE2CF804AA
+ for <alsa-devel@alsa-project.org>; Wed, 12 May 2021 02:45:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FE2CF804AA
+Date: 12 May 2021 09:45:45 +0900
+X-IronPort-AV: E=Sophos;i="5.82,292,1613401200"; d="scan'208";a="80999171"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 12 May 2021 09:45:45 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id A18194016D44;
- Wed, 12 May 2021 09:45:33 +0900 (JST)
-Message-ID: <87y2ckaifm.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 1392141491F4;
+ Wed, 12 May 2021 09:45:45 +0900 (JST)
+Message-ID: <87v97oaifa.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v2 2/7] ASoC: soc-core: add snd_soc_runtime_get_dai_fmt()
+Subject: [PATCH v2 4/7] ASoC: pcm3168a: add .get_fmt support
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 To: Mark Brown <broonie@kernel.org>
@@ -77,343 +77,55 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-ASoC is using dai_link which specify DAI format (= dai_link->dai_fmt),
-and it is selected by "Sound Card" driver in corrent implementation.
-In other words, Sound Card *needs* to setup it.
-But, it should be possible to automatically selected from CPU and
-Codec driver settings.
-
-This patch adds new snd_soc_runtime_get_dai_fmt()
-callback to help it.
-
-By this patch, dai_fmt can be automatically selected from each
-driver if both CPU / Codec driver had .get_dai_fmt callback.
-Automatically selectable *field* is depends on each drivers.
-
-For example, some driver want to select format "automatically",
-but want to select other fields "manually", because of complex limitation.
-Or other example, in case of both CPU and Codec are possible to be
-clock provider, but the quality was different.
-In these case, user need/want to *manually* select each fields
-from Sound Card driver.
-
-It uses Sound Card specified fields preferentially, and try to select
-non-specific fields from CPU and Codec driver settings if driver had
-callbacks.
-In other words, we can select all dai_fmt via Sound Card driver
-same as before.
+pcm3168a supports .get_fmt by this patch
 
 Link: https://lore.kernel.org/r/871rb3hypy.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
 v1 -> v2
-	- add more detail explanation on git-log, comment
-	- don't specify dummy clock/frame settings.
+	- possible to be clock/frame master is depends on board,
+	  and has picky limitation. don't select it here.
 
- include/sound/soc-dai.h |  45 ++++++++++++++++
- sound/soc/soc-core.c    | 110 ++++++++++++++++++++++++++++++++++++++++
- sound/soc/soc-dai.c     |  18 +++++++
- sound/soc/soc-utils.c   |  32 ++++++++++++
- 4 files changed, 205 insertions(+)
+ sound/soc/codecs/pcm3168a.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 0bc29c4516e7..13ea51df283a 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -36,6 +36,22 @@ struct snd_compr_stream;
- #define SND_SOC_DAIFMT_MSB		SND_SOC_DAIFMT_LEFT_J
- #define SND_SOC_DAIFMT_LSB		SND_SOC_DAIFMT_RIGHT_J
- 
-+/* Describes the possible PCM format */
-+/*
-+ * use SND_SOC_DAI_FORMAT_xx as eash shift.
-+ * see
-+ *	snd_soc_runtime_get_dai_fmt()
-+ */
-+#define SND_SOC_POSSIBLE_DAIFMT_FORMAT_SHIFT	0
-+#define SND_SOC_POSSIBLE_DAIFMT_FORMAT_MASK	(0xFFFF << SND_SOC_POSSIBLE_DAIFMT_FORMAT_SHIFT)
-+#define SND_SOC_POSSIBLE_DAIFMT_I2S		(1 << SND_SOC_DAI_FORMAT_I2S)
-+#define SND_SOC_POSSIBLE_DAIFMT_RIGHT_J		(1 << SND_SOC_DAI_FORMAT_RIGHT_J)
-+#define SND_SOC_POSSIBLE_DAIFMT_LEFT_J		(1 << SND_SOC_DAI_FORMAT_LEFT_J)
-+#define SND_SOC_POSSIBLE_DAIFMT_DSP_A		(1 << SND_SOC_DAI_FORMAT_DSP_A)
-+#define SND_SOC_POSSIBLE_DAIFMT_DSP_B		(1 << SND_SOC_DAI_FORMAT_DSP_B)
-+#define SND_SOC_POSSIBLE_DAIFMT_AC97		(1 << SND_SOC_DAI_FORMAT_AC97)
-+#define SND_SOC_POSSIBLE_DAIFMT_PDM		(1 << SND_SOC_DAI_FORMAT_PDM)
-+
- /*
-  * DAI Clock gating.
-  *
-@@ -45,6 +61,17 @@ struct snd_compr_stream;
- #define SND_SOC_DAIFMT_CONT		(1 << 4) /* continuous clock */
- #define SND_SOC_DAIFMT_GATED		(0 << 4) /* clock is gated */
- 
-+/* Describes the possible PCM format */
-+/*
-+ * define GATED -> CONT. GATED will be selected if both are selected.
-+ * see
-+ *	snd_soc_runtime_get_dai_fmt()
-+ */
-+#define SND_SOC_POSSIBLE_DAIFMT_CLOCK_SHIFT	16
-+#define SND_SOC_POSSIBLE_DAIFMT_CLOCK_MASK	(0xFFFF	<< SND_SOC_POSSIBLE_DAIFMT_CLOCK_SHIFT)
-+#define SND_SOC_POSSIBLE_DAIFMT_GATED		(0x1ULL	<< SND_SOC_POSSIBLE_DAIFMT_CLOCK_SHIFT)
-+#define SND_SOC_POSSIBLE_DAIFMT_CONT		(0x2ULL	<< SND_SOC_POSSIBLE_DAIFMT_CLOCK_SHIFT)
-+
- /*
-  * DAI hardware signal polarity.
-  *
-@@ -71,6 +98,14 @@ struct snd_compr_stream;
- #define SND_SOC_DAIFMT_IB_NF		(3 << 8) /* invert BCLK + nor FRM */
- #define SND_SOC_DAIFMT_IB_IF		(4 << 8) /* invert BCLK + FRM */
- 
-+/* Describes the possible PCM format */
-+#define SND_SOC_POSSIBLE_DAIFMT_INV_SHIFT	32
-+#define SND_SOC_POSSIBLE_DAIFMT_INV_MASK	(0xFFFFULL << SND_SOC_POSSIBLE_DAIFMT_INV_SHIFT)
-+#define SND_SOC_POSSIBLE_DAIFMT_NB_NF		(0x1ULL    << SND_SOC_POSSIBLE_DAIFMT_INV_SHIFT)
-+#define SND_SOC_POSSIBLE_DAIFMT_NB_IF		(0x2ULL    << SND_SOC_POSSIBLE_DAIFMT_INV_SHIFT)
-+#define SND_SOC_POSSIBLE_DAIFMT_IB_NF		(0x4ULL    << SND_SOC_POSSIBLE_DAIFMT_INV_SHIFT)
-+#define SND_SOC_POSSIBLE_DAIFMT_IB_IF		(0x8ULL    << SND_SOC_POSSIBLE_DAIFMT_INV_SHIFT)
-+
- /*
-  * DAI hardware clock providers/consumers
-  *
-@@ -89,6 +124,14 @@ struct snd_compr_stream;
- #define SND_SOC_DAIFMT_CBM_CFS		SND_SOC_DAIFMT_CBP_CFC
- #define SND_SOC_DAIFMT_CBS_CFS		SND_SOC_DAIFMT_CBC_CFC
- 
-+/* Describes the possible PCM format */
-+#define SND_SOC_POSSIBLE_DAIFMT_CLOCK_PROVIDER_SHIFT	48
-+#define SND_SOC_POSSIBLE_DAIFMT_CLOCK_PROVIDER_MASK	(0xFFFFULL << SND_SOC_POSSIBLE_DAIFMT_CLOCK_PROVIDER_SHIFT)
-+#define SND_SOC_POSSIBLE_DAIFMT_CBP_CFP			(0x1ULL    << SND_SOC_POSSIBLE_DAIFMT_CLOCK_PROVIDER_SHIFT)
-+#define SND_SOC_POSSIBLE_DAIFMT_CBC_CFP			(0x2ULL    << SND_SOC_POSSIBLE_DAIFMT_CLOCK_PROVIDER_SHIFT)
-+#define SND_SOC_POSSIBLE_DAIFMT_CBP_CFC			(0x4ULL    << SND_SOC_POSSIBLE_DAIFMT_CLOCK_PROVIDER_SHIFT)
-+#define SND_SOC_POSSIBLE_DAIFMT_CBC_CFC			(0x8ULL    << SND_SOC_POSSIBLE_DAIFMT_CLOCK_PROVIDER_SHIFT)
-+
- #define SND_SOC_DAIFMT_FORMAT_MASK		0x000f
- #define SND_SOC_DAIFMT_CLOCK_MASK		0x00f0
- #define SND_SOC_DAIFMT_INV_MASK			0x0f00
-@@ -131,6 +174,7 @@ int snd_soc_dai_set_pll(struct snd_soc_dai *dai,
- int snd_soc_dai_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio);
- 
- /* Digital Audio interface formatting */
-+u64 snd_soc_dai_get_fmt(struct snd_soc_dai *dai);
- int snd_soc_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt);
- 
- int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
-@@ -236,6 +280,7 @@ struct snd_soc_dai_ops {
- 	 * DAI format configuration
- 	 * Called by soc_card drivers, normally in their hw_params.
- 	 */
-+	u64 (*get_fmt)(struct snd_soc_dai *dai);
- 	int (*set_fmt)(struct snd_soc_dai *dai, unsigned int fmt);
- 	int (*xlate_tdm_slot_mask)(unsigned int slots,
- 		unsigned int *tx_mask, unsigned int *rx_mask);
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index e241c35fb63a..194bf576b44d 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1054,6 +1054,115 @@ int snd_soc_add_pcm_runtime(struct snd_soc_card *card,
+diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
+index 821e7395f90f..c6c327241e26 100644
+--- a/sound/soc/codecs/pcm3168a.c
++++ b/sound/soc/codecs/pcm3168a.c
+@@ -353,6 +353,24 @@ static void pcm3168a_update_fixup_pcm_stream(struct snd_soc_dai *dai)
+ 	}
  }
- EXPORT_SYMBOL_GPL(snd_soc_add_pcm_runtime);
  
-+static void snd_soc_runtime_get_dai_fmt(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_dai_link *dai_link = rtd->dai_link;
-+	struct snd_soc_dai *dai;
-+	u64 pos, possible_fmt = ULLONG_MAX;
-+	unsigned int mask = 0, dai_fmt = 0;
-+	int i;
-+
-+	for_each_rtd_dais(rtd, i, dai)
-+		possible_fmt &= snd_soc_dai_get_fmt(dai);
-+
-+	if (!possible_fmt)
-+		return;
-+
-+	/*
-+	 * convert POSSIBLE_DAIFMT to DAIFMT
-+	 *
-+	 * Some basic/default settings on each is defined as 0.
-+	 * see
-+	 *	SND_SOC_DAIFMT_NB_NF
-+	 *	SND_SOC_DAIFMT_GATED
-+	 *
-+	 * SND_SOC_DAIFMT_xxx_MASK can't notice it if Sound Card specify
-+	 * these value, and will be overwrite to auto selected value.
-+	 *
-+	 * To avoid such issue, loop from 63 to 0 here.
-+	 * Small number of SND_SOC_POSSIBLE_xxx will be Hi priority.
-+	 * Basic/Default settings of each part and aboves are defined
-+	 * as Hi priority (= small number) of SND_SOC_POSSIBLE_xxx.
-+	 */
-+	for (i = 63; i >= 0; i--) {
-+		pos = 1ULL << i;
-+		switch (possible_fmt & pos) {
-+		/*
-+		 * for format
-+		 */
-+		case SND_SOC_POSSIBLE_DAIFMT_I2S:
-+		case SND_SOC_POSSIBLE_DAIFMT_RIGHT_J:
-+		case SND_SOC_POSSIBLE_DAIFMT_LEFT_J:
-+		case SND_SOC_POSSIBLE_DAIFMT_DSP_A:
-+		case SND_SOC_POSSIBLE_DAIFMT_DSP_B:
-+		case SND_SOC_POSSIBLE_DAIFMT_AC97:
-+		case SND_SOC_POSSIBLE_DAIFMT_PDM:
-+			dai_fmt = (dai_fmt & ~SND_SOC_DAIFMT_FORMAT_MASK) | i;
-+			break;
-+		/*
-+		 * for clock
-+		 */
-+		case SND_SOC_POSSIBLE_DAIFMT_CONT:
-+			dai_fmt = (dai_fmt & ~SND_SOC_DAIFMT_CLOCK_MASK) | SND_SOC_DAIFMT_CONT;
-+			break;
-+		case SND_SOC_POSSIBLE_DAIFMT_GATED:
-+			dai_fmt = (dai_fmt & ~SND_SOC_DAIFMT_CLOCK_MASK) | SND_SOC_DAIFMT_GATED;
-+			break;
-+		/*
-+		 * for clock invert
-+		 */
-+		case SND_SOC_POSSIBLE_DAIFMT_NB_NF:
-+			dai_fmt = (dai_fmt & ~SND_SOC_DAIFMT_INV_MASK) | SND_SOC_DAIFMT_NB_NF;
-+			break;
-+		case SND_SOC_POSSIBLE_DAIFMT_NB_IF:
-+			dai_fmt = (dai_fmt & ~SND_SOC_DAIFMT_INV_MASK) | SND_SOC_DAIFMT_NB_IF;
-+			break;
-+		case SND_SOC_POSSIBLE_DAIFMT_IB_NF:
-+			dai_fmt = (dai_fmt & ~SND_SOC_DAIFMT_INV_MASK) | SND_SOC_DAIFMT_IB_NF;
-+			break;
-+		case SND_SOC_POSSIBLE_DAIFMT_IB_IF:
-+			dai_fmt = (dai_fmt & ~SND_SOC_DAIFMT_INV_MASK) | SND_SOC_DAIFMT_IB_IF;
-+			break;
-+		/*
-+		 * for clock provider / consumer
-+		 */
-+		case SND_SOC_POSSIBLE_DAIFMT_CBP_CFP:
-+			dai_fmt = (dai_fmt & ~SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) | SND_SOC_DAIFMT_CBP_CFP;
-+			break;
-+		case SND_SOC_POSSIBLE_DAIFMT_CBC_CFP:
-+			dai_fmt = (dai_fmt & ~SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) | SND_SOC_DAIFMT_CBC_CFP;
-+			break;
-+		case SND_SOC_POSSIBLE_DAIFMT_CBP_CFC:
-+			dai_fmt = (dai_fmt & ~SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) | SND_SOC_DAIFMT_CBP_CFC;
-+			break;
-+		case SND_SOC_POSSIBLE_DAIFMT_CBC_CFC:
-+			dai_fmt = (dai_fmt & ~SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) | SND_SOC_DAIFMT_CBC_CFC;
-+			break;
-+		}
-+	}
-+
-+	/*
-+	 * Some driver might have very complex limitation.
-+	 * In such case, user want to auto-select non-limitation part,
-+	 * and want to manually specify complex part.
-+	 *
-+	 * Or for example, if both CPU and Codec can be clock provider,
-+	 * but because of its quality, user want to specify it manually.
-+	 *
-+	 * Use manually specified settings if sound card did.
-+	 */
-+	if (!(dai_link->dai_fmt & SND_SOC_DAIFMT_FORMAT_MASK))
-+		mask |= SND_SOC_DAIFMT_FORMAT_MASK;
-+	if (!(dai_link->dai_fmt & SND_SOC_DAIFMT_CLOCK_MASK))
-+		mask |= SND_SOC_DAIFMT_CLOCK_MASK;
-+	if (!(dai_link->dai_fmt & SND_SOC_DAIFMT_INV_MASK))
-+		mask |= SND_SOC_DAIFMT_INV_MASK;
-+	if (!(dai_link->dai_fmt & SND_SOC_DAIFMT_MASTER_MASK))
-+		mask |= SND_SOC_DAIFMT_MASTER_MASK;
-+
-+	dai_link->dai_fmt |= (dai_fmt & mask);
-+}
-+
- /**
-  * snd_soc_runtime_set_dai_fmt() - Change DAI link format for a ASoC runtime
-  * @rtd: The runtime for which the DAI link format should be changed
-@@ -1132,6 +1241,7 @@ static int soc_init_pcm_runtime(struct snd_soc_card *card,
- 	if (ret < 0)
- 		return ret;
- 
-+	snd_soc_runtime_get_dai_fmt(rtd);
- 	if (dai_link->dai_fmt) {
- 		ret = snd_soc_runtime_set_dai_fmt(rtd, dai_link->dai_fmt);
- 		if (ret)
-diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
-index 080fbe053fc5..762ae5251244 100644
---- a/sound/soc/soc-dai.c
-+++ b/sound/soc/soc-dai.c
-@@ -134,6 +134,24 @@ int snd_soc_dai_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
- }
- EXPORT_SYMBOL_GPL(snd_soc_dai_set_bclk_ratio);
- 
-+/**
-+ * snd_soc_dai_get_fmt - get enable DAI hardware audio format.
-+ * @dai: DAI
-+ * @fmt: SND_SOC_POSSIBLE_DAIFMT_* format value.
-+ *
-+ * Configures the DAI hardware format and clocking.
-+ */
-+u64 snd_soc_dai_get_fmt(struct snd_soc_dai *dai)
-+{
-+	u64 fmt = 0;
-+
-+	if (dai->driver->ops &&
-+	    dai->driver->ops->get_fmt)
-+		fmt = dai->driver->ops->get_fmt(dai);
-+
-+	return fmt;
-+}
-+
- /**
-  * snd_soc_dai_set_fmt - configure DAI hardware audio format.
-  * @dai: DAI
-diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
-index 98383fd76224..ac53dc8c9a4c 100644
---- a/sound/soc/soc-utils.c
-+++ b/sound/soc/soc-utils.c
-@@ -97,6 +97,37 @@ static const struct snd_soc_component_driver dummy_codec = {
- 			SNDRV_PCM_FMTBIT_S32_LE | \
- 			SNDRV_PCM_FMTBIT_U32_LE | \
- 			SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE)
-+
-+static u64 dummy_dai_get_fmt(struct snd_soc_dai *dai)
++static u64 pcm3168a_get_dai_fmt(struct snd_soc_dai *dai)
 +{
 +	/*
-+	 * dummy can be both CPU and Codec.
-+	 * Thus, it can't specify Clock/Frame provider/consumer here.
-+	 * (= SND_SOC_POSSIBLE_DAIFMT_CBP_CFP
-+	 *    SND_SOC_POSSIBLE_DAIFMT_CBP_CFC
-+	 *    SND_SOC_POSSIBLE_DAIFMT_CBC_CFP
-+	 *    SND_SOC_POSSIBLE_DAIFMT_CBC_CFC)
++	 * It can be clock/frame provider,
++	 * (= SND_SOC_POSSIBLE_DAIFMT_CBP_CFP)
++	 * but has picky limitation.
++	 * Select it manually if you want, not automatically.
 +	 */
 +
-+	return	SND_SOC_POSSIBLE_DAIFMT_I2S	|
-+		SND_SOC_POSSIBLE_DAIFMT_RIGHT_J	|
++	return  SND_SOC_POSSIBLE_DAIFMT_I2S	|
 +		SND_SOC_POSSIBLE_DAIFMT_LEFT_J	|
++		SND_SOC_POSSIBLE_DAIFMT_RIGHT_J	|
 +		SND_SOC_POSSIBLE_DAIFMT_DSP_A	|
 +		SND_SOC_POSSIBLE_DAIFMT_DSP_B	|
-+		SND_SOC_POSSIBLE_DAIFMT_AC97	|
-+		SND_SOC_POSSIBLE_DAIFMT_PDM	|
-+		SND_SOC_POSSIBLE_DAIFMT_GATED	|
-+		SND_SOC_POSSIBLE_DAIFMT_CONT	|
-+		SND_SOC_POSSIBLE_DAIFMT_NB_NF	|
-+		SND_SOC_POSSIBLE_DAIFMT_NB_IF	|
-+		SND_SOC_POSSIBLE_DAIFMT_IB_NF	|
-+		SND_SOC_POSSIBLE_DAIFMT_IB_IF;
++		SND_SOC_POSSIBLE_DAIFMT_CBC_CFC	|
++		SND_SOC_POSSIBLE_DAIFMT_NB_NF;
 +}
 +
-+static const struct snd_soc_dai_ops dummy_dai_ops = {
-+	.get_fmt	= dummy_dai_get_fmt,
-+};
-+
- /*
-  * The dummy CODEC is only meant to be used in situations where there is no
-  * actual hardware.
-@@ -122,6 +153,7 @@ static struct snd_soc_dai_driver dummy_dai = {
- 		.rates = STUB_RATES,
- 		.formats = STUB_FORMATS,
- 	 },
-+	.ops = &dummy_dai_ops,
- };
+ static int pcm3168a_set_dai_fmt(struct snd_soc_dai *dai, unsigned int format)
+ {
+ 	struct snd_soc_component *component = dai->component;
+@@ -574,6 +592,7 @@ static int pcm3168a_hw_params(struct snd_pcm_substream *substream,
+ }
  
- int snd_soc_dai_is_dummy(struct snd_soc_dai *dai)
+ static const struct snd_soc_dai_ops pcm3168a_dai_ops = {
++	.get_fmt	= pcm3168a_get_dai_fmt,
+ 	.set_fmt	= pcm3168a_set_dai_fmt,
+ 	.set_sysclk	= pcm3168a_set_dai_sysclk,
+ 	.hw_params	= pcm3168a_hw_params,
 -- 
 2.25.1
 
