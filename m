@@ -7,67 +7,67 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EFF5C433B4
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 18:05:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 531C9C433ED
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 18:05:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B8258616EA
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 18:05:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B8258616EA
+	by mail.kernel.org (Postfix) with ESMTPS id 96CD561945
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 18:05:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 96CD561945
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EAA121816;
-	Wed, 12 May 2021 20:04:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EAA121816
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9AE3A185A;
+	Wed, 12 May 2021 20:05:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9AE3A185A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620842701;
-	bh=9Ra2Pkb/2R8SV4fQGjODW9snAVZNS3gJLqWj2jY/YKQ=;
+	s=default; t=1620842751;
+	bh=JIOOGo8j8PPtHVZMGr2X5RJlghlYZpPBoZ2yatFWF4g=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KawkT5ebaR/N7lttVE534CyPuPIrJbabFZG9LjeHtOgK6+wN8BWQpp2iS1n2Mfsdk
-	 /Uzu5mY0E1WMqNC7Fh+16Z9ZaYVhmQj4Fuepe0BC/nBZU+sQeXagOV2qKCVLXfxn8n
-	 mk9YdLifvSBLkXC4oKuH1wTfnsTPvd7RzPMcwMU0=
+	b=eUHP/vW5Iy+sFZHvjgGi76qnvLTU9aQtJGzdd3TYkLEZsZD7fDAHszXForGIxwzoO
+	 g0OfWKlTbQihG2mmk3AANCGrR377K4s2znpaYFgeDoBU5I/giu/TxTfxUWCSUQEeqX
+	 XevS8GntyiErPIljmmqAPlTXFmh/GFYtpsDDgs0M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91467F800E9;
-	Wed, 12 May 2021 20:04:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 345CDF8026B;
+	Wed, 12 May 2021 20:04:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 84203F8012E; Wed, 12 May 2021 20:04:09 +0200 (CEST)
+ id C1793F80272; Wed, 12 May 2021 20:04:50 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1706BF8012E
- for <alsa-devel@alsa-project.org>; Wed, 12 May 2021 20:04:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1706BF8012E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0949EF8013A
+ for <alsa-devel@alsa-project.org>; Wed, 12 May 2021 20:04:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0949EF8013A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="UI/t7hg5"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED47461454;
- Wed, 12 May 2021 18:03:59 +0000 (UTC)
+ header.b="bQADbuoL"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D500061442;
+ Wed, 12 May 2021 18:04:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1620842640;
- bh=9Ra2Pkb/2R8SV4fQGjODW9snAVZNS3gJLqWj2jY/YKQ=;
+ s=k20201202; t=1620842682;
+ bh=JIOOGo8j8PPtHVZMGr2X5RJlghlYZpPBoZ2yatFWF4g=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=UI/t7hg5bpVknbbmdXLfulexMqNESDUue7Dq26GJwHtgyW58RaU5rA1vB4Y2GZHnR
- bnG2oNacPENf2e16v/VOTX67RLJ9UMSSnZV2RFq6omHnWOY6XHW4+84iQ/V8RUT+b6
- ryqa2W2AE62/nLLM5D1O/OyrY4Q1w8Mfbt/sWoTsQ/0R27P1b8JYVs4VFpD6iR3Z06
- Cjv8UssvjHkxM8V1EVeOV4zxYYnfq+yXssyH8Kz4whKrX+ENOpraj1z17994mtiz+f
- MsiyHckoSdsYIRyunR8noAI6WyN0cUX8lISZ49CF3OpXbouJB7GKG+h8hpSiPT38cm
- I5twXgSuhhILA==
+ b=bQADbuoL8a9M0jpebCo48HahW+mdUmDWYwO523OZmpeY1n/uAufRCwAsmVklNXZIB
+ XDacEF6ZdHjN/myDzCTxdZ6ljRfBzlanqHt4p4eUgX5+Rhxrcoqn0lU37FMGLz3S/U
+ V0Rs96Aeh6f5IxXcYs7GwHSxVVOwNOyWaMQwkJDvXnOx9ycrPSVtMWIYOebRPkBDNo
+ m6zkVQS5nKAQwnsJGHng3coVebVRPM69EwVYmExQAYqm2QO53HyLY51nLmEuekIDba
+ oNiONa8i8Mr3Jtp2nIKZnXIpc/U5aezJ6dkyw4UaMcd+9W8zwWCAtmO4zzn5uiY1lz
+ 1p0aQ3SB+zijg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 31/34] ALSA: hda: generic: change the DAC ctl
- name for LO+SPK or LO+HP
-Date: Wed, 12 May 2021 14:03:02 -0400
-Message-Id: <20210512180306.664925-31-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 20/23] ALSA: hda: generic: change the DAC ctl name
+ for LO+SPK or LO+HP
+Date: Wed, 12 May 2021 14:04:04 -0400
+Message-Id: <20210512180408.665338-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210512180306.664925-1-sashal@kernel.org>
-References: <20210512180306.664925-1-sashal@kernel.org>
+In-Reply-To: <20210512180408.665338-1-sashal@kernel.org>
+References: <20210512180408.665338-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -119,7 +119,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 11 insertions(+), 5 deletions(-)
 
 diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 96903295a967..7c49a7e92dd2 100644
+index efceeae09045..7ac3f04ca8c0 100644
 --- a/sound/pci/hda/hda_generic.c
 +++ b/sound/pci/hda/hda_generic.c
 @@ -1202,11 +1202,17 @@ static const char *get_line_out_pfx(struct hda_codec *codec, int ch,
