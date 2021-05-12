@@ -2,99 +2,88 @@ Return-Path: <SRS0=rxKz=KH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7BE8C433ED
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 08:26:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6E94C433B4
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 08:48:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5BA80613C1
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 08:26:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5BA80613C1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id D0CDB613EE
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 08:48:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D0CDB613EE
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ivitera.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0CC15189E;
-	Wed, 12 May 2021 10:25:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CC15189E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 70CAA18BD;
+	Wed, 12 May 2021 10:48:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70CAA18BD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620807964;
-	bh=t5kjKQqEXmiasJpM/MN/TeLQABXdhEYxlO03Hie0f6I=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Cb+Mex1lfREKglbGu5gFBo68w5ANMED2SmEl522PO4iQvCwOhfrEcr/8bpwexUI5z
-	 Svax/rLnp6oqTqx4/noJGjvys5lzychMUrrOp9e1eWD57fvS/GEJwsTS4gA+XXD+B9
-	 EE4UqW7/IIX5a/hiqqJat+4a5T8NcCGQci+AQLmM=
+	s=default; t=1620809331;
+	bh=6h2npLciMxeN199iRQ0nPTwPm2GkCbRM/UYxrMX+j5A=;
+	h=To:From:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=aRcNeBjbX9hojqePSb9eVdvopgmKLIl5eZzL1518bKH69hJJ0qaWe+xvXUj5m5bEa
+	 5+H+K7czeoRMHbn6JoBtxsuuIZbgLUDwrld8BtdjOw53ziMKJ5FDU4H7O/wwayFqoj
+	 BpccmQsneCYCjx37MDlOaxcYp/pqK81uXUycoKw4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 310E2F8026F;
-	Wed, 12 May 2021 10:24:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3964F8020C;
+	Wed, 12 May 2021 10:48:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B6B07F80272; Wed, 12 May 2021 10:24:23 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id AFBF9F80240; Wed, 12 May 2021 10:47:58 +0200 (CEST)
+Received: from cable.insite.cz (cable.insite.cz [84.242.75.189])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 25B20F8013A
- for <alsa-devel@alsa-project.org>; Wed, 12 May 2021 10:24:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25B20F8013A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9DF40F8012E
+ for <alsa-devel@alsa-project.org>; Wed, 12 May 2021 10:47:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DF40F8012E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="dCnnKmcC"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 14C8IT55003150; Wed, 12 May 2021 03:24:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=cuMhQe9yq154UjGxdpGpoxEWlFJU1yPPM7Nluq0FAQM=;
- b=dCnnKmcCzaXJr9I+WG5DwrftCatf232NQFx1CMRCPhXzzKU3hoas03Q7eUMRH8W+Q0t/
- LMhtbFCsFz485dLqr31A6eRAl8TtuJJeXve/hUKkzjj1Ab1EsOA4+IF/MdYNMcwl2ouu
- iRMWcfqcpnCOPZ+BbbD48YqGjZQYSIAeCN3BvA04Pj0v/H92LAII9iSWNvMOScWU6MKU
- C6AE4g9T2k6bjpFHm4lrIC1o/FAFSI96cvo0wGmGdvPmtBhMk3ZXeZ4DAurbFnGPiKJA
- OT2v4kVwiWJlMmXa7DRuVlY1ejWngT0Efd5oCyOoek06VDZ+Ap6HYLtvYUwuKxn0uOTO 4w== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 38gay8g11y-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 12 May 2021 03:24:17 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 12 May
- 2021 09:24:16 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Wed, 12 May 2021 09:24:16 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id F054511CD;
- Wed, 12 May 2021 08:24:15 +0000 (UTC)
-Date: Wed, 12 May 2021 08:24:15 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Simon Trimmer <simont@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: wm2200: remove include of wmfw.h
-Message-ID: <20210512082415.GG64205@ediswmail.ad.cirrus.com>
-References: <20210511171514.270219-1-simont@opensource.cirrus.com>
+ dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com
+ header.b="jsQUN3QB"; 
+ dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com
+ header.b="C6FwwEzK"
+Received: from localhost (localhost [127.0.0.1])
+ by cable.insite.cz (Postfix) with ESMTP id CC1C7A1A3D402;
+ Wed, 12 May 2021 10:47:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
+ t=1620809272; bh=6h2npLciMxeN199iRQ0nPTwPm2GkCbRM/UYxrMX+j5A=;
+ h=To:From:Subject:Date:From;
+ b=jsQUN3QBLnha1keNL5QsMe49OyCsw5W/BINSgsy4OBGXpm4qRKRBE+92W1NAjbSD7
+ /quElhfciDDAc5WmqR6MzXSs3WQ/e18BtNGYmGmH76mb6XenTRmD3FEgQWrfLaM/DI
+ Tztk9/tuyyxX9HaEzP7Vm+WsR/Yn2aByY6FtqKhk=
+Received: from cable.insite.cz ([84.242.75.189])
+ by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id I6KtQR4bdsnL; Wed, 12 May 2021 10:47:47 +0200 (CEST)
+Received: from [192.168.105.22] (ip28.insite.cz [81.0.237.28])
+ (Authenticated sender: pavel)
+ by cable.insite.cz (Postfix) with ESMTPSA id EDADAA1A3D401;
+ Wed, 12 May 2021 10:47:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
+ t=1620809267; bh=6h2npLciMxeN199iRQ0nPTwPm2GkCbRM/UYxrMX+j5A=;
+ h=To:From:Subject:Date:From;
+ b=C6FwwEzKuR1D+YrlW8WsAOsakE6SzzpV+hFJwjEjc60XSGBLaHmLG2iQR/Jeqoc4i
+ GYwCqG4GRjWXtKdFv/3Cs732+13bxdWdvlr35RDbGRQ7PmVZTGdxHzs2YqBv2mRfDA
+ CjbU+tdWrmDi018sbqKRjyk5HBqWjZnIwX7lqDC8=
+To: "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Takashi Iwai <tiwai@suse.de>, Ruslan Bilovol <ruslan.bilovol@gmail.com>,
+ Jerome Brunet <jbrunet@baylibre.com>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: usb: u_audio: Notifying gadget audio device about starting/stopping
+ capture/playback on the host
+Message-ID: <da466290-249c-d3d9-7b81-bed6a964a361@ivitera.com>
+Date: Wed, 12 May 2021 10:47:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210511171514.270219-1-simont@opensource.cirrus.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: 4zk9NxgHR7ySqQrIit--I1alLSUZNvZ4
-X-Proofpoint-ORIG-GUID: 4zk9NxgHR7ySqQrIit--I1alLSUZNvZ4
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0
- bulkscore=0 spamscore=0
- clxscore=1015 adultscore=0 suspectscore=0 priorityscore=1501 mlxscore=0
- phishscore=0 malwarescore=0 mlxlogscore=868 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105120060
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- broonie@kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=iso-8859-2
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,14 +99,103 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, May 11, 2021 at 06:15:14PM +0100, Simon Trimmer wrote:
-> We want all wm_adsp clients to use the wm_adsp.h header as they
-> shouldn't need to include internal sub-headers.
-> 
-> Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
-> ---
+Hi,
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+I am trying to notify the user-space code running on USB audio gadget
+that the USB host has started/stopped capture/playback.
 
-Thanks,
-Charles
+For stopping action, I am enclosing a patch snippet. I used snd_pcm_stop
+code when alsa SPDIF receivers detect a change in the stream
+https://github.com/torvalds/linux/blob/master/sound/i2c/other/ak4117.c#L505
+When testing the code, aplay/arecord ends, sox just reports alsa device
+warning and does not stop. IMO that is the desired outcome - the
+snd_pcm_read/write methods returned errors when capture/playback on the
+host side stopped.
+
+For starting the capture/playback on the host, perhaps some
+snd_ctl_notify on some dedicated alsa control could be used, notifying
+the user space application that it can open the gadget audio device?
+
+The patch below does not compile on upstream kernel as it uses changes
+not included in upstream yet (explicit feedback EP, samplerate
+switching), but I am just discussing principles and options now.
+
+Thank you very much for your opinion and recommendations.
+
+With regards,
+
+Pavel.
+
+
+
+
+diff --git a/drivers/usb/gadget/function/u_audio.c
+b/drivers/usb/gadget/function/u_audio.c
+index 45367d650c5a..c6cdb844fec1 100644
+--- a/drivers/usb/gadget/function/u_audio.c
++++ b/drivers/usb/gadget/function/u_audio.c
+@@ -565,6 +565,7 @@ int u_audio_start_capture(struct g_audio *audio_dev)
+ 	struct uac_params *params = &audio_dev->params;
+ 	int req_len, i;
+
++  dev_dbg(dev, "starting capture with rate %d\n", params->c_srate_active);
+ 	ep = audio_dev->out_ep;
+ 	prm = &uac->c_prm;
+ 	config_ep_by_speed(gadget, &audio_dev->func, ep);
+@@ -635,6 +636,23 @@ EXPORT_SYMBOL_GPL(u_audio_start_capture);
+ void u_audio_stop_capture(struct g_audio *audio_dev)
+ {
+ 	struct snd_uac_chip *uac = audio_dev->uac;
++	unsigned long _flags;
++	struct snd_pcm_substream *substream;
++	struct uac_rtd_params *prm;
++
++  dev_dbg(uac->card->dev, "stopping capture\n");
++  prm = &uac->c_prm;
++  if (prm) {
++    substream = prm->ss;
++    if (substream) {
++      dev_dbg(uac->card->dev, "stopping capture substream\n");
++      snd_pcm_stream_lock_irqsave(substream, _flags);
++      if (snd_pcm_running(substream)) {
++        snd_pcm_stop(substream, SNDRV_PCM_STATE_DRAINING);
++      }
++      snd_pcm_stream_unlock_irqrestore(substream, _flags);
++    }
++  }
+
+ 	if (audio_dev->in_ep_fback)
+ 		free_ep_fback(&uac->c_prm, audio_dev->in_ep_fback);
+@@ -655,7 +673,7 @@ int u_audio_start_playback(struct g_audio *audio_dev)
+ 	const struct usb_endpoint_descriptor *ep_desc;
+ 	int req_len, i;
+
+-  dev_dbg(dev, "start playback with rate %d\n", params->p_srate_active);
++  dev_dbg(dev, "starting playback with rate %d\n", params->p_srate_active);
+ 	ep = audio_dev->in_ep;
+ 	prm = &uac->p_prm;
+ 	config_ep_by_speed(gadget, &audio_dev->func, ep);
+@@ -715,6 +733,23 @@ EXPORT_SYMBOL_GPL(u_audio_start_playback);
+ void u_audio_stop_playback(struct g_audio *audio_dev)
+ {
+ 	struct snd_uac_chip *uac = audio_dev->uac;
++  unsigned long _flags;
++  struct snd_pcm_substream *substream;
++  struct uac_rtd_params *prm;
++
++  dev_dbg(uac->card->dev, "stopping playback\n");
++  prm = &uac->p_prm;
++  if (prm) {
++    substream = prm->ss;
++    if (substream) {
++      dev_dbg(uac->card->dev, "stopping playback substream\n");
++      snd_pcm_stream_lock_irqsave(substream, _flags);
++      if (snd_pcm_running(substream)) {
++        snd_pcm_stop(substream, SNDRV_PCM_STATE_DRAINING);
++      }
++      snd_pcm_stream_unlock_irqrestore(substream, _flags);
++    }
++  }
+
+ 	free_ep(&uac->p_prm, audio_dev->in_ep);
+ }
