@@ -2,57 +2,62 @@ Return-Path: <SRS0=rxKz=KH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 902C7C433B4
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 00:46:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F82FC433ED
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 00:46:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1ABB46192A
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 00:46:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1ABB46192A
+	by mail.kernel.org (Postfix) with ESMTPS id 77D17611AE
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 00:46:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 77D17611AE
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BB36E18A0;
-	Wed, 12 May 2021 02:45:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB36E18A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7E78C18BD;
+	Wed, 12 May 2021 02:46:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E78C18BD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620780364;
-	bh=W27HvmA2Q53zVCl07oU0zZOciHepid5k1Clqm/33Hbw=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=vMj50yAtvyioVr02pOfVjRFl0iarlsWWRkJldqIkAnSmaW0o9IHYE4UkKsMhnSK0K
-	 Uu6jS0PH2yDVBnxzoTmeoUiYbMEvSEfhnZnSDq+57nTHYUlIcQdy/urLEnLCuODI2x
-	 h6JvUgw6FK305guMDIrRGGrulApo38vf/DTsLYrY=
+	s=default; t=1620780415;
+	bh=5BX8ouXSLbgnUjypsMKGvV70hpfCK1PpBG7WYHLDI3k=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ZY8u8rmeJxpzZhlnv+780qtQGIpQbTA5nSQnmFHZnZ9QiXVTAOt5lI+/kc9ncIlxC
+	 Orh+r2ZCh5QlIviCZ78kQ1k7/oq47sOGjMVSYCVxJzDRq2p8ze98fQwGyRSSoc7NVD
+	 aLq072MA9omd+WA+ida9gbPLdXRn4LYxt11sq/HE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 36DEBF800E9;
-	Wed, 12 May 2021 02:45:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 52638F80245;
+	Wed, 12 May 2021 02:45:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D3C88F80163; Wed, 12 May 2021 02:45:11 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 1D9F0F800E9
- for <alsa-devel@alsa-project.org>; Wed, 12 May 2021 02:45:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D9F0F800E9
-Date: 12 May 2021 09:45:03 +0900
-X-IronPort-AV: E=Sophos;i="5.82,292,1613401200"; d="scan'208";a="80999121"
+ id 84E30F80279; Wed, 12 May 2021 02:45:38 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 7C737F80156
+ for <alsa-devel@alsa-project.org>; Wed, 12 May 2021 02:45:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C737F80156
+Date: 12 May 2021 09:45:27 +0900
+X-IronPort-AV: E=Sophos;i="5.82,291,1613401200"; d="scan'208";a="80799331"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 12 May 2021 09:45:03 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 12 May 2021 09:45:27 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id D539441491F4;
- Wed, 12 May 2021 09:45:03 +0900 (JST)
-Message-ID: <871racbx0w.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id B2EEA4148E8A;
+ Wed, 12 May 2021 09:45:27 +0900 (JST)
+Message-ID: <87zgx0aifs.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v2 0/7] ASoC: adds new .get_fmt support
+Subject: [PATCH v2 1/7] ASoC: soc-core: move snd_soc_runtime_set_dai_fmt() to
+ upside
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
-To: Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <871racbx0w.wl-kuninori.morimoto.gx@renesas.com>
+References: <871racbx0w.wl-kuninori.morimoto.gx@renesas.com>
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -70,73 +75,161 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Hi Mark
+This patch moves snd_soc_runtime_set_dai_fmt() to upside.
+This is prepare to support snd_soc_runtime_get_dai_fmt().
 
-These are v2 of .get_fmt support.
-This is a little bit challenging patch-set.
-The idea/code is almost same as v1.
-
-We need to set dai_link->dai_fmt to select CPU/Codec settings,
-and it is selected by Sound Card Driver, today.
-
-Because of it, Sound Card user need to know both CPU / Codec
-available dai_fmt, and needs to select it.
-For example simple-card / audio-graph case, it is selected by
-"format" and "bitclock/frame-master/inversion" on DT.
-
-But, it can be automatically selected if both CPU and Codec drivers
-indicate it to ALSA SoC Framework, somehow.
-
-By this patch, dai_fmt can be automatically selected from each
-driver if both CPU / Codec driver had .get_dai_fmt callback.
-Automatically selectable *field* is depends on each drivers.
-
-For example, some driver want to select format "automatically",
-but want to select other fields "manually", because of complex limitation.
-Or other example, in case of both CPU and Codec are possible to be
-clock provider, but the quality was different.
-In these case, user need/want to *manually* select each fields
-from Sound Card driver.
-
-It uses Sound Card specified fields preferentially, and try to select
-non-specific fields from CPU and Codec driver settings if driver had
-callbacks.
-In other words, we can select all dai_fmt via Sound Card driver
-same as before.
-
-Select dai_fmt 100% automatically is very difficult and will be very complex,
-but select automatically some fields only is very easy, I guess.
-This patch-set is based on such assumption.
-
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
 v1 -> v2
-	- Add more detail explanation on git-log, code, comment.
-	- Possible to be Clock/Frame provider is depends on driver's situation.
+	- no change
 
-Link: https://lore.kernel.org/r/871rb3hypy.wl-kuninori.morimoto.gx@renesas.com
+ sound/soc/soc-core.c | 124 +++++++++++++++++++++----------------------
+ 1 file changed, 62 insertions(+), 62 deletions(-)
 
-Kuninori Morimoto (7):
-  ASoC: soc-core: move snd_soc_runtime_set_dai_fmt() to upside
-  ASoC: soc-core: add snd_soc_runtime_get_dai_fmt()
-  ASoC: ak4613: add .get_fmt support
-  ASoC: pcm3168a: add .get_fmt support
-  ASoC: rsnd: add .get_fmt support
-  ASoC: fsi: add .get_fmt support
-  ASoC: hdmi-codec: add .get_fmt support
-
- include/sound/soc-dai.h       |  45 +++++++
- sound/soc/codecs/ak4613.c     |  14 ++
- sound/soc/codecs/hdmi-codec.c |  22 ++++
- sound/soc/codecs/pcm3168a.c   |  19 +++
- sound/soc/sh/fsi.c            |  19 +++
- sound/soc/sh/rcar/adg.c       |   8 ++
- sound/soc/sh/rcar/core.c      |  24 +++-
- sound/soc/sh/rcar/rsnd.h      |   1 +
- sound/soc/soc-core.c          | 234 +++++++++++++++++++++++++---------
- sound/soc/soc-dai.c           |  18 +++
- sound/soc/soc-utils.c         |  32 +++++
- 11 files changed, 372 insertions(+), 64 deletions(-)
-
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 1c0904acb935..e241c35fb63a 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1054,6 +1054,68 @@ int snd_soc_add_pcm_runtime(struct snd_soc_card *card,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_add_pcm_runtime);
+ 
++/**
++ * snd_soc_runtime_set_dai_fmt() - Change DAI link format for a ASoC runtime
++ * @rtd: The runtime for which the DAI link format should be changed
++ * @dai_fmt: The new DAI link format
++ *
++ * This function updates the DAI link format for all DAIs connected to the DAI
++ * link for the specified runtime.
++ *
++ * Note: For setups with a static format set the dai_fmt field in the
++ * corresponding snd_dai_link struct instead of using this function.
++ *
++ * Returns 0 on success, otherwise a negative error code.
++ */
++int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
++				unsigned int dai_fmt)
++{
++	struct snd_soc_dai *cpu_dai;
++	struct snd_soc_dai *codec_dai;
++	unsigned int inv_dai_fmt;
++	unsigned int i;
++	int ret;
++
++	for_each_rtd_codec_dais(rtd, i, codec_dai) {
++		ret = snd_soc_dai_set_fmt(codec_dai, dai_fmt);
++		if (ret != 0 && ret != -ENOTSUPP)
++			return ret;
++	}
++
++	/*
++	 * Flip the polarity for the "CPU" end of a CODEC<->CODEC link
++	 * the component which has non_legacy_dai_naming is Codec
++	 */
++	inv_dai_fmt = dai_fmt & ~SND_SOC_DAIFMT_MASTER_MASK;
++	switch (dai_fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBM_CFM:
++		inv_dai_fmt |= SND_SOC_DAIFMT_CBS_CFS;
++		break;
++	case SND_SOC_DAIFMT_CBM_CFS:
++		inv_dai_fmt |= SND_SOC_DAIFMT_CBS_CFM;
++		break;
++	case SND_SOC_DAIFMT_CBS_CFM:
++		inv_dai_fmt |= SND_SOC_DAIFMT_CBM_CFS;
++		break;
++	case SND_SOC_DAIFMT_CBS_CFS:
++		inv_dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
++		break;
++	}
++	for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
++		unsigned int fmt = dai_fmt;
++
++		if (cpu_dai->component->driver->non_legacy_dai_naming)
++			fmt = inv_dai_fmt;
++
++		ret = snd_soc_dai_set_fmt(cpu_dai, fmt);
++		if (ret != 0 && ret != -ENOTSUPP)
++			return ret;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_soc_runtime_set_dai_fmt);
++
+ static int soc_init_pcm_runtime(struct snd_soc_card *card,
+ 				struct snd_soc_pcm_runtime *rtd)
+ {
+@@ -1402,68 +1464,6 @@ static void soc_remove_aux_devices(struct snd_soc_card *card)
+ 	}
+ }
+ 
+-/**
+- * snd_soc_runtime_set_dai_fmt() - Change DAI link format for a ASoC runtime
+- * @rtd: The runtime for which the DAI link format should be changed
+- * @dai_fmt: The new DAI link format
+- *
+- * This function updates the DAI link format for all DAIs connected to the DAI
+- * link for the specified runtime.
+- *
+- * Note: For setups with a static format set the dai_fmt field in the
+- * corresponding snd_dai_link struct instead of using this function.
+- *
+- * Returns 0 on success, otherwise a negative error code.
+- */
+-int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
+-	unsigned int dai_fmt)
+-{
+-	struct snd_soc_dai *cpu_dai;
+-	struct snd_soc_dai *codec_dai;
+-	unsigned int inv_dai_fmt;
+-	unsigned int i;
+-	int ret;
+-
+-	for_each_rtd_codec_dais(rtd, i, codec_dai) {
+-		ret = snd_soc_dai_set_fmt(codec_dai, dai_fmt);
+-		if (ret != 0 && ret != -ENOTSUPP)
+-			return ret;
+-	}
+-
+-	/*
+-	 * Flip the polarity for the "CPU" end of a CODEC<->CODEC link
+-	 * the component which has non_legacy_dai_naming is Codec
+-	 */
+-	inv_dai_fmt = dai_fmt & ~SND_SOC_DAIFMT_MASTER_MASK;
+-	switch (dai_fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBM_CFM:
+-		inv_dai_fmt |= SND_SOC_DAIFMT_CBS_CFS;
+-		break;
+-	case SND_SOC_DAIFMT_CBM_CFS:
+-		inv_dai_fmt |= SND_SOC_DAIFMT_CBS_CFM;
+-		break;
+-	case SND_SOC_DAIFMT_CBS_CFM:
+-		inv_dai_fmt |= SND_SOC_DAIFMT_CBM_CFS;
+-		break;
+-	case SND_SOC_DAIFMT_CBS_CFS:
+-		inv_dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
+-		break;
+-	}
+-	for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
+-		unsigned int fmt = dai_fmt;
+-
+-		if (cpu_dai->component->driver->non_legacy_dai_naming)
+-			fmt = inv_dai_fmt;
+-
+-		ret = snd_soc_dai_set_fmt(cpu_dai, fmt);
+-		if (ret != 0 && ret != -ENOTSUPP)
+-			return ret;
+-	}
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(snd_soc_runtime_set_dai_fmt);
+-
+ #ifdef CONFIG_DMI
+ /*
+  * If a DMI filed contain strings in this blacklist (e.g.
 -- 
 2.25.1
 
