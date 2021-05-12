@@ -6,70 +6,70 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B350C433B4
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 17:07:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB228C43616
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 17:07:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5680A61421
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 17:07:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5680A61421
+	by mail.kernel.org (Postfix) with ESMTPS id 742EA61352
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 17:07:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 742EA61352
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20BD117AD;
-	Wed, 12 May 2021 19:06:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20BD117AD
+	by alsa0.perex.cz (Postfix) with ESMTPS id C5EDE182B;
+	Wed, 12 May 2021 19:06:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5EDE182B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620839250;
-	bh=8N5j+xcwpdd1FAn4F9NFsokj6l+Jn2U46GKPUTsKebI=;
+	s=default; t=1620839254;
+	bh=YaoevDFjIY17vi4buq0/qeIINbcaxR8hvpNDDt/Y8Dc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=S322d5F0FGLTFSX2lovvkKziyHC1hXqeNbbTfsygiyJYFCaQw7vCRSAAOCLC+BoVa
-	 0KVnDotD1aZR416XlDs8+WGbNTHeVAX+l4q97IpG0Lc9oFhO27xk/wr3t5rtagm6yu
-	 Sch9lQ779YGwA6K1ZZgOeRF8+EL3M0/L1jZGGeto=
+	b=HTpVjJ7dkrkRr4sh0EK6yeBkxg89TQVIBkcEANzyZFDuApp/9SrDp7M6TGV7LcLuB
+	 pHbRnviakxA8egCCd6agEd+kyZG1f5Lpffek6qr5nZVCz7g3y5Oa7IcznEAu/zROhD
+	 e6SfZ4Z8SzCLtTCPjFp0k66TI+XZbTk467COmMgg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CEE36F8012E;
-	Wed, 12 May 2021 19:05:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ED790F8027D;
+	Wed, 12 May 2021 19:05:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B92CBF8012E; Wed, 12 May 2021 19:05:48 +0200 (CEST)
+ id CCF23F8013A; Wed, 12 May 2021 19:05:48 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 31EB1F8012E
- for <alsa-devel@alsa-project.org>; Wed, 12 May 2021 19:05:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31EB1F8012E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3DF03F8013A
+ for <alsa-devel@alsa-project.org>; Wed, 12 May 2021 19:05:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3DF03F8013A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="NDNFB3Mw"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C77D661363;
- Wed, 12 May 2021 17:05:43 +0000 (UTC)
+ header.b="cbz+PqaB"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28001613AA;
+ Wed, 12 May 2021 17:05:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1620839144;
- bh=8N5j+xcwpdd1FAn4F9NFsokj6l+Jn2U46GKPUTsKebI=;
+ s=k20201202; t=1620839138;
+ bh=YaoevDFjIY17vi4buq0/qeIINbcaxR8hvpNDDt/Y8Dc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=NDNFB3MwyJPiKxBsJ1tj6cyqc7tgARFhxf6nrJlRJirx7Syo/NsZ5G5nRKJyeqVQf
- LP25w3m3auluVPTvgTmij4yWKZq8H5NdNeSYxEK/UQa0gYY1WQSe2wyGjqQ5UYVBjY
- 3b9CBXAVojADLj77sCv0gGS3RcsP6PpBSV64uZ6K/jkGmECxih81LFETgr6AefjZ8n
- ArW382aoDInDig0mJff8nNPZFIkJf5k7kqXCydadcm1nzI5qypXSi40HvpDFOZIus7
- TjaRMxkmoBOPKJV1knnJ/Yf2O8NPBrAl0s0FYZqnQcfFB2fyUyllJE2WWdVosRttG3
- 5qX3W6uIIFQkw==
+ b=cbz+PqaBWaFpLm9myFUoqe64Z8wyRkdgRvG8sHMKSrz/ZLna0a70Ve83f7iWuI9Rp
+ yr4sVbDJG8RpVv9MzWvsVAul3Ibf1DMA3HbkURzgnPfUa5HBg4VdZ1TYlFXuIDzWA7
+ EfLjl6IENXZ2cF+aQ2TzonAPJM8QQkxYVsFvfHHxVvtBKLQrGArNBi+mi4bzT7kpPP
+ Dvyw9kiQa6GDVhQ0YVLUZaUFzfm7lAz3fCbRO6q3oPK9euDIuXCshqMDGhcrZnzLJR
+ r4q35SIrOd+0p7whlE6wHo4lMb3NNhDEeuRiUIMHrcffmLDFdSBnCoSI6dLrBbg/uI
+ NZxkRePE6tsBQ==
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH] ASoC: soc-dai.h: Align the word of comment for
- SND_SOC_DAIFMT_CBC_CFC
-Date: Wed, 12 May 2021 18:04:43 +0100
-Message-Id: <162083892846.44734.2101445931216615242.b4-ty@kernel.org>
+To: Simon Trimmer <simont@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: wm2200: remove include of wmfw.h
+Date: Wed, 12 May 2021 18:04:41 +0100
+Message-Id: <162083892846.44734.12299613001191386332.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <8735usc1gr.wl-kuninori.morimoto.gx@renesas.com>
-References: <8735usc1gr.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <20210511171514.270219-1-simont@opensource.cirrus.com>
+References: <20210511171514.270219-1-simont@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,8 +85,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 12 May 2021 08:09:08 +0900, Kuninori Morimoto wrote:
-> Let's use "consumer" instead of "follower".
+On Tue, 11 May 2021 18:15:14 +0100, Simon Trimmer wrote:
+> We want all wm_adsp clients to use the wm_adsp.h header as they
+> shouldn't need to include internal sub-headers.
 
 Applied to
 
@@ -94,8 +95,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: soc-dai.h: Align the word of comment for SND_SOC_DAIFMT_CBC_CFC
-      commit: 47c1131633ef6210add63b8b5704497023a3462a
+[1/1] ASoC: wm2200: remove include of wmfw.h
+      commit: 7fe0b0981a1764d665877fa5febc5e8e0e64d2ea
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
