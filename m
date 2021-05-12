@@ -2,56 +2,56 @@ Return-Path: <SRS0=rxKz=KH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDB9BC433B4
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 00:47:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95AF4C433B4
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 00:48:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 43AA66192B
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 00:47:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 43AA66192B
+	by mail.kernel.org (Postfix) with ESMTPS id 05F2E6188B
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 00:48:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 05F2E6188B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6B00418AE;
-	Wed, 12 May 2021 02:46:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B00418AE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4C39318C5;
+	Wed, 12 May 2021 02:47:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C39318C5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620780463;
-	bh=QPO+M/5oPDIzoZpNiUC9YivVm0kRix/O7hcH8feHztQ=;
+	s=default; t=1620780479;
+	bh=G7nhKqgStsbVBpBIQCe+CkGQ+ZCKZ6Oiv0tu+zXyn18=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pL6nyMZloTWcoCojf5oJ614IyEW0ixVRxgIUwReKUVrqSRZKGF3ySvLjBfIn9OxYB
-	 YqaKvXXc7Kgi6eK2UBq+FdLMEAllvSBEXcRS0fjXqOirsWCyYnpt6wOPrMEbI22LMn
-	 3Qduu0G8bHqiPglyXE+GAYbvPoFihBZMQtopiZxc=
+	b=UFGpDynsKWyeF0g1BKg+3OUKDMQldyPZ9/6+/Otjic6u99GVGJvkG/RArpNbdNiH0
+	 fb84bMFDkUWH0J6OQ75P7ksrRDe37hDRPTeHSZc22LZO8rFE9mSdQzX+Ur+AIxjr2H
+	 veu5Fg4pFSQpqa8R/Pc1YHl3iJG0dSXxtj71M+MM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6B086F804AA;
-	Wed, 12 May 2021 02:45:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B8859F804AE;
+	Wed, 12 May 2021 02:45:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2778AF804AC; Wed, 12 May 2021 02:45:48 +0200 (CEST)
+ id 3B6ABF804AB; Wed, 12 May 2021 02:45:48 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 7FE2CF804AA
- for <alsa-devel@alsa-project.org>; Wed, 12 May 2021 02:45:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FE2CF804AA
-Date: 12 May 2021 09:45:45 +0900
-X-IronPort-AV: E=Sophos;i="5.82,292,1613401200"; d="scan'208";a="80999171"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 12 May 2021 09:45:45 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 18C19F8028D
+ for <alsa-devel@alsa-project.org>; Wed, 12 May 2021 02:45:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18C19F8028D
+Date: 12 May 2021 09:45:39 +0900
+X-IronPort-AV: E=Sophos;i="5.82,292,1613401200"; d="scan'208";a="80999164"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 12 May 2021 09:45:39 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 1392141491F4;
- Wed, 12 May 2021 09:45:45 +0900 (JST)
-Message-ID: <87v97oaifa.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 9761D4016D44;
+ Wed, 12 May 2021 09:45:39 +0900 (JST)
+Message-ID: <87wns4aifg.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v2 4/7] ASoC: pcm3168a: add .get_fmt support
+Subject: [PATCH v2 3/7] ASoC: ak4613: add .get_fmt support
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 To: Mark Brown <broonie@kernel.org>
@@ -77,55 +77,49 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-pcm3168a supports .get_fmt by this patch
+ak4613 supports .get_fmt by this patch
 
 Link: https://lore.kernel.org/r/871rb3hypy.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
 v1 -> v2
-	- possible to be clock/frame master is depends on board,
-	  and has picky limitation. don't select it here.
+	- possible to be clock/frame master is depends on board
 
- sound/soc/codecs/pcm3168a.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ sound/soc/codecs/ak4613.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
-index 821e7395f90f..c6c327241e26 100644
---- a/sound/soc/codecs/pcm3168a.c
-+++ b/sound/soc/codecs/pcm3168a.c
-@@ -353,6 +353,24 @@ static void pcm3168a_update_fixup_pcm_stream(struct snd_soc_dai *dai)
- 	}
+diff --git a/sound/soc/codecs/ak4613.c b/sound/soc/codecs/ak4613.c
+index fe208cfdd3ba..6f2b285b864b 100644
+--- a/sound/soc/codecs/ak4613.c
++++ b/sound/soc/codecs/ak4613.c
+@@ -322,6 +322,19 @@ static int ak4613_dai_set_sysclk(struct snd_soc_dai *codec_dai,
+ 	return 0;
  }
  
-+static u64 pcm3168a_get_dai_fmt(struct snd_soc_dai *dai)
++static u64 ak4613_dai_get_fmt(struct snd_soc_dai *dai)
 +{
-+	/*
-+	 * It can be clock/frame provider,
-+	 * (= SND_SOC_POSSIBLE_DAIFMT_CBP_CFP)
-+	 * but has picky limitation.
-+	 * Select it manually if you want, not automatically.
-+	 */
++	struct snd_soc_component *component = dai->component;
++	struct ak4613_priv *priv = snd_soc_component_get_drvdata(component);
++	u64 cbp_bfp = (priv->sysclk) ? SND_SOC_POSSIBLE_DAIFMT_CBP_CFP : 0;
 +
-+	return  SND_SOC_POSSIBLE_DAIFMT_I2S	|
++	return	SND_SOC_POSSIBLE_DAIFMT_I2S	|
 +		SND_SOC_POSSIBLE_DAIFMT_LEFT_J	|
-+		SND_SOC_POSSIBLE_DAIFMT_RIGHT_J	|
-+		SND_SOC_POSSIBLE_DAIFMT_DSP_A	|
-+		SND_SOC_POSSIBLE_DAIFMT_DSP_B	|
 +		SND_SOC_POSSIBLE_DAIFMT_CBC_CFC	|
-+		SND_SOC_POSSIBLE_DAIFMT_NB_NF;
++		SND_SOC_POSSIBLE_DAIFMT_NB_NF	|
++		cbp_bfp;
 +}
 +
- static int pcm3168a_set_dai_fmt(struct snd_soc_dai *dai, unsigned int format)
+ static int ak4613_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
  {
  	struct snd_soc_component *component = dai->component;
-@@ -574,6 +592,7 @@ static int pcm3168a_hw_params(struct snd_pcm_substream *substream,
- }
- 
- static const struct snd_soc_dai_ops pcm3168a_dai_ops = {
-+	.get_fmt	= pcm3168a_get_dai_fmt,
- 	.set_fmt	= pcm3168a_set_dai_fmt,
- 	.set_sysclk	= pcm3168a_set_dai_sysclk,
- 	.hw_params	= pcm3168a_hw_params,
+@@ -543,6 +556,7 @@ static const struct snd_soc_dai_ops ak4613_dai_ops = {
+ 	.startup	= ak4613_dai_startup,
+ 	.shutdown	= ak4613_dai_shutdown,
+ 	.set_sysclk	= ak4613_dai_set_sysclk,
++	.get_fmt	= ak4613_dai_get_fmt,
+ 	.set_fmt	= ak4613_dai_set_fmt,
+ 	.trigger	= ak4613_dai_trigger,
+ 	.hw_params	= ak4613_dai_hw_params,
 -- 
 2.25.1
 
