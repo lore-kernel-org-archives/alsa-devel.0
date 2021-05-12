@@ -2,81 +2,82 @@ Return-Path: <SRS0=rxKz=KH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB402C43470
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 14:53:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F960C433ED
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 15:55:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C21C96143B
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 14:53:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C21C96143B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 0CE6361E02
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 15:55:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0CE6361E02
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0099D17D2;
-	Wed, 12 May 2021 16:52:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0099D17D2
+	by alsa0.perex.cz (Postfix) with ESMTPS id B185A1833;
+	Wed, 12 May 2021 17:54:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B185A1833
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620831230;
-	bh=iqtC6rXZba9iPm73W/s0kRJWYkXso90HKQ4qnz04t5c=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1620834901;
+	bh=N016NWgkukjszQxuR/Ofv+KdWercgaEVuGtmzHviWyo=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F5plg8Q0wMBMf7EJUbVr9r67SWAMMIscduDQ0UcSKkrwB0HYmXFH5A5m9YmbBj+bt
-	 7S1wOG53k1dfXol2zPkEReCv9cRdTrL1e7CLwqudnOYCSa5gmLx465hsUHZh7Fgh1l
-	 6I4NX42fhozLctSQkuxB8c7mnfPXRHBweZKs4hqc=
+	b=U6wonkxxDyMVjSAlOHAImqW9vEe9S/gB+57t6XXQ5XJsmIkwscNuS+2IXSI6LvhXS
+	 3s6+KgRLjD2FVSl1/k7zR9rAuBqp0m+49G9IHKJ34KRcWQqDc7nGgiz6VW/dHCV7mx
+	 qRaYchO/Wr4mVu1V065ZN+HFcVUmuQPjf89jOWyM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 89DF1F8020C;
-	Wed, 12 May 2021 16:52:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19591F8020C;
+	Wed, 12 May 2021 17:54:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ECCCFF80240; Wed, 12 May 2021 16:52:57 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 04F95F80240; Wed, 12 May 2021 17:54:08 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7B565F8012E
- for <alsa-devel@alsa-project.org>; Wed, 12 May 2021 16:52:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B565F8012E
-IronPort-SDR: uG22VTPri/ZRTt0nC4VgjfgAiqVnXo4yqg+3jh1S/mRfLsbPNLFJ3LboNPsFoHxMJn0XUkJ4P+
- gZduKg9RPc0w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="186855391"
-X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; d="scan'208";a="186855391"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 May 2021 07:52:46 -0700
-IronPort-SDR: cA6Zs510rHgQ6GkS8D4I8JMdHFHQypk/xImYgpETYmwZqd5kFXM15Z5wxzVPeZQ9aidlivSjlH
- DTsE4qIgJrvA==
-X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; d="scan'208";a="437236918"
-Received: from cwitkows-mobl.amr.corp.intel.com (HELO [10.212.100.147])
- ([10.212.100.147])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 May 2021 07:52:44 -0700
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2F794F800E9
+ for <alsa-devel@alsa-project.org>; Wed, 12 May 2021 17:54:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F794F800E9
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="X5Cdg4r8"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BF0E61A14;
+ Wed, 12 May 2021 15:53:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1620834838;
+ bh=N016NWgkukjszQxuR/Ofv+KdWercgaEVuGtmzHviWyo=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=X5Cdg4r8O9CTyFW0SZFaL9lRd52w/VAOm0W3w/7gomx1x4zSjmFLNuzS0E38Jlu3J
+ WlfuucToIrQZqnZjO0y19g+ZpkE7oUZd4xpaE1d2RtY/oIzqZ56PFaLhCPPabKlXr/
+ JldbdFvCB2K22Ts1uWzkH0uhmY5x9M2nmQQJk46JPa/XHd/nNoyifhVUp/csJEfLo4
+ Vo0Xzjyb0CjdiWc9TjxZ8gB0KZXorXV5278qf7x0QnTc15exOoEjFKd61jVLNyx49M
+ vKzG0dtFp491CtiKZMq8it5xQaw+9YRc5OQsTB6zmZsFFMEkpQ5q70rdJXkhxbHHC0
+ MJJ673GPmnxhg==
+Date: Wed, 12 May 2021 16:53:18 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [PATCH -next] ASoC: intel/boards: add missing MODULE_DEVICE_TABLE
-To: Zou Wei <zou_wei@huawei.com>, cezary.rojewski@intel.com,
- liam.r.girdwood@linux.intel.com, yang.jie@linux.intel.com,
- broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- kuninori.morimoto.gx@renesas.com, kai.vehmanen@linux.intel.com,
- brent.lu@intel.com, ranjani.sridharan@linux.intel.com, yong.zhi@intel.com,
- dharageswari.r@intel.com, sathyanarayana.nujella@intel.com,
- fred.oh@linux.intel.com, tzungbi@google.com
+Message-ID: <20210512155318.GA54562@sirena.org.uk>
 References: <1620791647-16024-1-git-send-email-zou_wei@huawei.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <50fa973b-aa9f-ccb4-8020-9d38a63e2c30@linux.intel.com>
-Date: Wed, 12 May 2021 08:41:43 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ <50fa973b-aa9f-ccb4-8020-9d38a63e2c30@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1620791647-16024-1-git-send-email-zou_wei@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="/04w6evG8XlLl3ft"
+Content-Disposition: inline
+In-Reply-To: <50fa973b-aa9f-ccb4-8020-9d38a63e2c30@linux.intel.com>
+X-Cookie: They just buzzed and buzzed...buzzed.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: sathyanarayana.nujella@intel.com, fred.oh@linux.intel.com,
+ cezary.rojewski@intel.com, dharageswari.r@intel.com,
+ kai.vehmanen@linux.intel.com, kuninori.morimoto.gx@renesas.com,
+ linux-kernel@vger.kernel.org, yang.jie@linux.intel.com, tiwai@suse.com,
+ liam.r.girdwood@linux.intel.com, tzungbi@google.com,
+ ranjani.sridharan@linux.intel.com, Zou Wei <zou_wei@huawei.com>,
+ alsa-devel@alsa-project.org, brent.lu@intel.com, yong.zhi@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,64 +94,32 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--/04w6evG8XlLl3ft
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 5/11/21 10:54 PM, Zou Wei wrote:
-> This patch adds missing MODULE_DEVICE_TABLE definition which generates
-> correct modalias for automatic loading of this driver when it is built
-> as an external module.
+On Wed, May 12, 2021 at 08:41:43AM -0500, Pierre-Louis Bossart wrote:
 
-I have a limited understanding of all this, but we already support the 
-machine drivers as modules and things work fine.
+> I wonder if this MODULE_DEVICE_TABLE generates the alias automatically,
+> which would make the existing ones added manually at the end of the files
+> unnecessary? If that was the case, then we should remove those MODULE_ALIAS
+> as well, no?
 
-I wonder if this MODULE_DEVICE_TABLE generates the alias automatically, 
-which would make the existing ones added manually at the end of the 
-files unnecessary? If that was the case, then we should remove those 
-MODULE_ALIAS as well, no?
+Yes, you shouldn't need the MODULE_ALIAS stuff there.
 
-MODULE_DESCRIPTION("SOF Audio Machine driver");
-MODULE_AUTHOR("Bard Liao <bard.liao@intel.com>");
-MODULE_AUTHOR("Sathya Prakash M R <sathya.prakash.m.r@intel.com>");
-MODULE_AUTHOR("Brent Lu <brent.lu@intel.com>");
-MODULE_LICENSE("GPL v2");
-MODULE_ALIAS("platform:sof_rt5682");
-MODULE_ALIAS("platform:tgl_max98357a_rt5682");
-MODULE_ALIAS("platform:jsl_rt5682_rt1015");
-MODULE_ALIAS("platform:tgl_max98373_rt5682");
-MODULE_ALIAS("platform:jsl_rt5682_max98360a");
-MODULE_ALIAS("platform:cml_rt1015_rt5682");
-MODULE_ALIAS("platform:tgl_rt1011_rt5682");
-MODULE_ALIAS("platform:jsl_rt5682_rt1015p");
+--/04w6evG8XlLl3ft
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
-> ---
->   sound/soc/intel/boards/sof_da7219_max98373.c | 1 +
->   sound/soc/intel/boards/sof_rt5682.c          | 1 +
->   2 files changed, 2 insertions(+)
-> 
-> diff --git a/sound/soc/intel/boards/sof_da7219_max98373.c b/sound/soc/intel/boards/sof_da7219_max98373.c
-> index f3cb077..8d1ad89 100644
-> --- a/sound/soc/intel/boards/sof_da7219_max98373.c
-> +++ b/sound/soc/intel/boards/sof_da7219_max98373.c
-> @@ -440,6 +440,7 @@ static const struct platform_device_id board_ids[] = {
->   	},
->   	{ }
->   };
-> +MODULE_DEVICE_TABLE(platform, board_ids);
->   
->   static struct platform_driver audio = {
->   	.probe = audio_probe,
-> diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-> index 58548ea..cf1d053 100644
-> --- a/sound/soc/intel/boards/sof_rt5682.c
-> +++ b/sound/soc/intel/boards/sof_rt5682.c
-> @@ -968,6 +968,7 @@ static const struct platform_device_id board_ids[] = {
->   	},
->   	{ }
->   };
-> +MODULE_DEVICE_TABLE(platform, board_ids);
->   
->   static struct platform_driver sof_audio = {
->   	.probe = sof_audio_probe,
-> 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCb+e0ACgkQJNaLcl1U
+h9C94Qf/R8x4USWufxkjE/vfZi6GbULEc2gbk+fdtzu/4PUfiZ/ZLBWQalz/259s
+VFG4tL+IaGU0dgVPODTSMazVCHHXdd3hxXGK5JYtzRv1NGPfi7IHLZmKkzw9yQv+
+bAELKl0QB7JXnYXWp8xeKQPZXoUBng5TNESh4qL/vBbEzHNgEA9mvmYP/Uh1cXFc
+oosiFoCLmhxxHGFhQwE5mDapqqF4RhRzDaq6paFvGzuGYIrhd6I4YHccJ1cOaRhP
+QbikYG9KjKDZUqz8iPfTvVKV+uRuhvXaEfwLPkXPrLs1oQ8syyn/eEAgTw8/kzNL
+Izn00HcKd3k0Pdq19CJGrDDzdhIJjg==
+=WJu8
+-----END PGP SIGNATURE-----
+
+--/04w6evG8XlLl3ft--
