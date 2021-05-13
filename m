@@ -1,80 +1,56 @@
-Return-Path: <SRS0=rxKz=KH=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=EA+P=KI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0217AC433ED
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 21:16:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 970CDC433B4
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 May 2021 01:48:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7721861184
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 May 2021 21:16:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7721861184
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id C7380613EE
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 May 2021 01:48:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C7380613EE
+Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8702417EB;
-	Wed, 12 May 2021 23:15:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8702417EB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7085B17D1;
+	Thu, 13 May 2021 03:47:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7085B17D1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620854189;
-	bh=YmwR9dj99X6orHyH6BslNwI9ZnlbhRgMO4gQzqXM/MY=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1620870507;
+	bh=2jGXoJMd4VfxNYtbxEopTJcmXUBP+SSTklXeAkRTwN8=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IWnrbZEBZycRvN4ZtMt4G5uq43Ig5OZMUx4taGFYjFNpX99h3bjyMTlZlXHVgDaVb
-	 7pm0iPlpL7YVhOKvATkgqccjxwL9HZzJB3dPXg0FZuZgrkTaCwADpEU1j9b3DDp7aj
-	 DdZfNCPN9VT6/f6Y1ySXWtBsncpZv8JObdD44M/A=
+	b=kMXyAG7z7FVz6JEz5LYXeDrB6WKK51NG0hwPqXB+X35pwbph/le0szMuNq6qhY1pu
+	 FzZu2uLB9ukxRiR8cAbffc7TpvKbzKOL0QSWlKjn3vxLpq4LWebCXee/jhVxJ3Rg8h
+	 0thc0eDp+GII9Ikxt+qNHVu9AEHOeMsFFrQEklfA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26BBBF8013A;
-	Wed, 12 May 2021 23:15:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EF54CF800E3;
+	Thu, 13 May 2021 03:47:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 156F1F80240; Wed, 12 May 2021 23:15:37 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 65DE7F8013A
- for <alsa-devel@alsa-project.org>; Wed, 12 May 2021 23:15:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65DE7F8013A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="XU6cC/w7"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28FA6610A5;
- Wed, 12 May 2021 21:15:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1620854131;
- bh=YmwR9dj99X6orHyH6BslNwI9ZnlbhRgMO4gQzqXM/MY=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=XU6cC/w7uK3f5nudXlv7ecXxvTigHv7NILf0xIIAIT7En584cy2JkXdR8Qg8mL4dh
- Ysq/4WYBS+3MmyHKU48gHmtw+4xVY8J3DF6IiIKbL8vqBOb7dKGsaaQ5FQN7oShbUe
- b3Z9yQZLL8VevSbe0AIbVC8iboq1YeWKqvfmlC6RA0o0m2PiADU3VPf0JCiVYAUg3z
- ILb2qxeEq1g85W0mWqoTQjBEHdS1m7xDNVT5Rnp/T46iKI8rQQnyOJz6TODYWMxRAn
- BLixc1Z9NO0wMcW8/zu9NIY12dvaFdDoyPoBmJbKdOFSuHizmgfXuHZZUGen4+VRWn
- JdD9vDfzSVGFA==
-Subject: Re: ASoC: q6dsp: q6afe: remove unneeded dead-store initialization
-To: Colin Ian King <colin.king@canonical.com>
-References: <5935b287-5b74-84ac-3470-3b71fd69c88c@canonical.com>
-From: Nathan Chancellor <nathan@kernel.org>
-Message-ID: <7b2d1562-3629-8cd3-d9a7-926c93d20e08@kernel.org>
-Date: Wed, 12 May 2021 14:15:28 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ id 5D8E6F80163; Thu, 13 May 2021 03:47:35 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 67476F800E3
+ for <alsa-devel@alsa-project.org>; Thu, 13 May 2021 03:47:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67476F800E3
 MIME-Version: 1.0
-In-Reply-To: <5935b287-5b74-84ac-3470-3b71fd69c88c@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "Banajit Goswami <bgoswami"@codeaurora.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Yang Li <yang.lee@linux.alibaba.com>
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1620870451312767029-webhooks-bot@alsa-project.org>
+References: <1620870451312767029-webhooks-bot@alsa-project.org>
+Subject: pulse.conf overrides ~/.asoundrc for default
+Message-Id: <20210513014735.5D8E6F80163@alsa1.perex.cz>
+Date: Thu, 13 May 2021 03:47:35 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,83 +66,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 5/12/2021 1:12 PM, Colin Ian King wrote:
-> Hi,
-> 
-> Static analysis with Coverity on linux-next has detected an issue with
-> the following commit:
-> 
-> commit 5f1b95d08de712327e452d082a50fded435ec884
-> Author: Yang Li <yang.lee@linux.alibaba.com>
-> Date:   Sun Apr 25 18:12:33 2021 +0800
-> 
->      ASoC: q6dsp: q6afe: remove unneeded dead-store initialization
-> 
-> the analysis is as follows:
-> 
-> 1181 int q6afe_port_stop(struct q6afe_port *port)
-> 1182 {
-> 1183        struct afe_port_cmd_device_stop *stop;
-> 1184        struct q6afe *afe = port->afe;
-> 1185        struct apr_pkt *pkt;
-> 
->      1. var_decl: Declaring variable port_id without initializer.
-> 
-> 1186        int port_id;
-> 1187        int ret = 0;
-> 1188        int index, pkt_size;
-> 1189        void *p;
-> 1190
-> 1191        index = port->token;
-> 
->      2. Condition index < 0, taking false branch.
->      3. Condition index >= 127, taking false branch.
-> 
-> 1192        if (index < 0 || index >= AFE_PORT_MAX) {
-> 1193                dev_err(afe->dev, "AFE port index[%d] invalid!\n",
-> index);
-> 1194                return -EINVAL;
-> 1195        }
-> 1196
-> 1197        pkt_size = APR_HDR_SIZE + sizeof(*stop);
-> 1198        p = kzalloc(pkt_size, GFP_KERNEL);
-> 
->      4. Condition !p, taking false branch.
-> 
-> 1199        if (!p)
-> 1200                return -ENOMEM;
-> 1201
-> 1202        pkt = p;
-> 1203        stop = p + APR_HDR_SIZE;
-> 1204
-> 1205        pkt->hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
-> 1206                                           APR_HDR_LEN(APR_HDR_SIZE),
-> 1207                                           APR_PKT_VER);
-> 1208        pkt->hdr.pkt_size = pkt_size;
-> 1209        pkt->hdr.src_port = 0;
-> 1210        pkt->hdr.dest_port = 0;
-> 1211        pkt->hdr.token = index;
-> 1212        pkt->hdr.opcode = AFE_PORT_CMD_DEVICE_STOP;
-> 
->      Uninitialized scalar variable (UNINIT)
->      5. uninit_use: Using uninitialized value port_id.
-> 
-> 1213        stop->port_id = port_id;
-> 1214        stop->reserved = 0;
-> 
-> the commit removed the initialization of port_id = port->id, and now we
-> have a regression where stop->port_id is being assigned with a garbage
-> uninitialized value in port_id.  Perhaps the fix needs reverting. As it
-> stands, I don't know why clang was reporting this as an error.
-> 
-> Colin
-> 
+alsa-project/alsa-lib issue #134 was opened from flatmax:
 
-I suspect this patch was not made against a current tree. I sent a patch 
-that resolved this and Mark picked it up so it should be in the next 
--next version:
+On many systems pulse audio sets the default device to pulse. This overrides the settings in ~/.asoundrc.
 
-https://lore.kernel.org/r/20210511190306.2418917-1-nathan@kernel.org/
+This is further complicated by using a tool like pasuspender and finding that pulse's default device is still set and overriding ~/.asoundrc
 
-Cheers,
-Nathan
+It would seem more empowering to let the user override the default device in ~/.asoundrc and have that take effect over pulse.conf which resides in /usr/share/alsa/alsa.conf.d
+
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/134
+Repository URL: https://github.com/alsa-project/alsa-lib
