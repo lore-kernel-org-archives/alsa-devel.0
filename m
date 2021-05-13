@@ -2,91 +2,80 @@ Return-Path: <SRS0=EA+P=KI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E77FAC433ED
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 May 2021 14:07:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E14AC433B4
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 May 2021 14:08:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4152B61420
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 May 2021 14:07:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4152B61420
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 41B72613C3
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 May 2021 14:08:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 41B72613C3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7E05B17C5;
-	Thu, 13 May 2021 16:06:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E05B17C5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9B26717E3;
+	Thu, 13 May 2021 16:07:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B26717E3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620914859;
-	bh=4rN+VVlc8ibw3oXGCckMjpVShm3yI4NuuKf5/cjLR7U=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1620914912;
+	bh=Ro6Bi02vIeUjBdOwn5NLFSzQb8eYW0cHHCNWe6dCxG4=;
+	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=keNEL2pjx15inHw2ZqF4HNUD2NiEm9LUOSWOUxS5mfLuC6xYJD6W0atqMo7gyggCv
-	 4NleTZNKhg5D0JTmopC1R1rCu+BaFnVU5EqV3hQ4jBUKENjhzSNBbAGc/FyioY1rom
-	 bupv9y5tTe14sdh9DP2bGwRDDK+nLxpNbyCFapY4=
+	b=IiB6bYlu4fyf36/ncGREGIHcnVYggTpfL0No6jCHda67KTFg6lQ5OnvTY6MvQ4Ijz
+	 ORSfmU0OT2LLNO8E/SYXk9z8bAQ+nz/MIzkdCHPn9TxCora9d08wV27T+Hl8pJujJN
+	 hkjhkpVRkoF94/7OwQnzTPZFJOZVOqfUwjMshxnQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 09EDBF800E3;
-	Thu, 13 May 2021 16:06:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 445E6F80425;
+	Thu, 13 May 2021 16:07:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 429E8F80163; Thu, 13 May 2021 16:06:47 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id CC443F8042F; Thu, 13 May 2021 16:07:12 +0200 (CEST)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DAEBDF8013A
- for <alsa-devel@alsa-project.org>; Thu, 13 May 2021 16:06:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DAEBDF8013A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="peVuKaSP"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A496F60FE3;
- Thu, 13 May 2021 14:06:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1620914798;
- bh=4rN+VVlc8ibw3oXGCckMjpVShm3yI4NuuKf5/cjLR7U=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=peVuKaSPy1xii6lSFRq++WcAMLUe07WXffeuebnVowAyjX4FQyHPg00L7khinSz+j
- kTINuPDLIAqe3fFT6vVYpP/OoNXWP72iooecMWNyhYXY5AJ8NtywC4OLQhFaMhTqWf
- NgQyjT9YTYcN9ukf9+uIUGV5ZXb5k2BVMLdpm6vxIOFJEN5GBSfjJYNvGD7S0Y7RG3
- gRPCItwiNNLIa5kaBjfTjTYc+T6u6d4oCbp+bTQW3chVQ5RSPcjzUSsErN9Qr7v2n8
- cL7T/vcX1lBMvohiNwQ+TN1BHn/OqReTs4/9IhXcUHvZMCFq1AZS41MHnovtg+GqQA
- r1pakCjLk70lg==
-Date: Thu, 13 May 2021 15:05:56 +0100
-From: Mark Brown <broonie@kernel.org>
-To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Subject: Re: [PATCH 1/2] ASoC: dwc: add a quirk DW_I2S_QUIRK_STOP_ON_SHUTDOWN
- to dwc driver
-Message-ID: <20210513140556.GD5813@sirena.org.uk>
-References: <1619195089-29710-1-git-send-email-Vijendar.Mukunda@amd.com>
- <20210423164617.GG5507@sirena.org.uk>
- <e1268120-7a91-da49-0bb6-89d5cb4e2cce@gmail.com>
- <b32fcc42-d67e-bfbd-ed83-7f7274fb2f79@amd.com>
- <ac5244d1-643d-6577-80cd-bf6867e75ca2@gmail.com>
- <b86ad586-9513-8fa9-54e3-a0b4a3a7fd92@amd.com>
- <070b4e5b-b7bd-b8a6-beea-593a94ec3078@gmail.com>
- <26c79eec-5e74-38bc-465b-0ca2b2d9a6f5@amd.com>
- <9b689495-e956-6242-0784-af3ccf7c3238@amd.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id EB6E1F8013A
+ for <alsa-devel@alsa-project.org>; Thu, 13 May 2021 16:07:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB6E1F8013A
+IronPort-SDR: xdAgq4cZq94pCl6vLqDYuAPekk2AHUAnRMbS+eZPrJxpYGTsgVhwQpZnEJgIdBX0OmnK2zobv1
+ W9O/yK+j9+2w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="187369199"
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; d="scan'208";a="187369199"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 May 2021 07:06:57 -0700
+IronPort-SDR: spygRTR7hTD0K6n6pYEZgU0jOp4tBMlZsK3yKsffsPKl+a2+BTgwU7i/OMk9/726iovkmkn/yq
+ N/M8dnh4FWNA==
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; d="scan'208";a="623646691"
+Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.237.180.115])
+ ([10.237.180.115])
+ by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 May 2021 07:06:56 -0700
+Subject: Re: no_period_wakeup, axfer and --sched-model=timer
+To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Cezary Rojewski <cezary.rojewski@intel.com>
+References: <687f9871-7484-1370-04d1-9c968e86f72b@linux.intel.com>
+ <20210513132520.GA109626@workstation>
+ <954a2bc9-f6aa-6c5f-c3f1-62400f22cb3f@linux.intel.com>
+ <20210513135955.GA124922@workstation>
+From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+Message-ID: <3fb3270e-3deb-3ee3-a95b-b777b89e7d30@linux.intel.com>
+Date: Thu, 13 May 2021 16:06:53 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="XvKFcGCOAo53UbWW"
-Content-Disposition: inline
-In-Reply-To: <9b689495-e956-6242-0784-af3ccf7c3238@amd.com>
-X-Cookie: snafu = Situation Normal All F%$*ed up
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, Sunil-kumar.Dommati@amd.com,
- amistry@google.com, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>,
- Basavaraj.Hiregoudar@amd.com, Takashi Iwai <tiwai@suse.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Alexander.Deucher@amd.com,
- =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@gmail.com>,
- nartemiev@google.com
+In-Reply-To: <20210513135955.GA124922@workstation>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,34 +91,80 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 5/13/2021 3:59 PM, Takashi Sakamoto wrote:
+> On Thu, May 13, 2021 at 03:37:02PM +0200, Amadeusz Sławiński wrote:
+>> On 5/13/2021 3:25 PM, Takashi Sakamoto wrote:
+>>> Hi,
+>>>
+>>> On Thu, May 13, 2021 at 01:34:25PM +0200, Amadeusz Sławiński wrote:
+>>>> I was checking some stuff relater to NO_PERIOD_WAKEUP and noticed that axfer
+>>>> has support for using either --sched-model=irq or --sched-model=timer.
+>>>> However from few quick tests it seems like it doesn't work?
+>>>>
+>>>> $ aplay -l
+>>>> **** List of PLAYBACK Hardware Devices ****
+>>>> card 0: PCH [HDA Intel PCH], device 0: ALC283 Analog [ALC283 Analog]
+>>>>     Subdevices: 1/1
+>>>>     Subdevice #0: subdevice #0
+>>>>
+>>>>
+>>>> When using  --sched-model=irq  it transfers data until I press Ctrl+C
+>>>>
+>>>> $ axfer transfer playback --sched-model=irq -D hw:0,0 -r 48000 -c2 -f S16_LE
+>>>> /dev/urandom
+>>>> PLAYBACK: Format 'Signed 16 bit Little Endian', Rate 48000 Hz, Channels
+>>>> 'Stereo'
+>>>> ^CPLAYBACK: Expected 4611686018427387903frames, Actual 163960frames
+>>>> Aborted by signal: Interrupt
+>>>>
+>>>>
+>>>> However with  --sched-model=timer  it time outs by itself:
+>>>>
+>>>> $ axfer transfer playback --sched-model=timer -D hw:0,0 -r 48000 -c2 -f
+>>>> S16_LE /dev/urandom
+>>>> PLAYBACK: Format 'Signed 16 bit Little Endian', Rate 48000 Hz, Channels
+>>>> 'Stereo'
+>>>> Fail to process frames: Connection timed out
+>>>> PLAYBACK: Expected 4611686018427387903frames, Actual 16304frames
+>>>>
+>>>>
+>>>> How well is NO_PERIOD_WAKEUP tested/supported? Is it a bug in axfer or
+>>>> perhaps some issue in kernel code?
+>>>>
+>>>>   From some debugging I did, I have my suspicions that it gets stuck on poll
+>>>> in:
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sound/core/pcm_native.c?id=c06a2ba62fc401b7aaefd23f5d0bc06d2457ccc1#n3489
+>>>> waiting for runtime->sleep to wake it, but seems like it never happens.
+>>>>
+>>>> What do you think?
+>>>
+>>> It's a regression added by a commit e5e6a7838b06 ("axfer: return ETIMEDOUT
+>>> when no event occurs after waiter expiration"), and the -ETIMEDOUT come
+>>> neither from ALSA PCM core nor alsa-lib. Thanks for your reporting!
+>>>
+>>>    * https://github.com/alsa-project/alsa-utils/commit/e5e6a7838b06
+>>>
+>>> As a quick fix, please revert the commit. I'll post better fixes later.
+>>>
+>>> After the revert, it looks work well under my hardware:
+>>>
+>>
+>> Yes, I can confirm, that it fixes the problem. Thanks for quick workaround!
+> 
+> That's good. I just filed the better fix. Please apply it with your local
+> repository instead of the revert patch.
+> 
+>   * alsa-utils: axfer: fix regression of timeout in timer-based scheduling model #88
+>    * https://github.com/alsa-project/alsa-utils/pull/88
+> 
+> Anyway, thank you for reporting the bug. In recent years I've been
+> working for devices in which no-period-wakeup is unavailable, so I
+> overlooked the bug so long...
+> 
+> 
+> Thanks
+> 
+> Takashi Sakamoto
+> 
 
---XvKFcGCOAo53UbWW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, May 10, 2021 at 10:57:25PM +0530, Mukunda,Vijendar wrote:
-
-> How about declaring a flag in sound card structure and this flag will be set
-> in stoneyridge machine driver.
-
-> Based on flag check trigger stop sequence will be re-ordered.
-
-A couple of people suggested that already, making sure the core knows
-what's going on is probably the best way forwards here.
-
---XvKFcGCOAo53UbWW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCdMkMACgkQJNaLcl1U
-h9CnIQf8CZTlwmEvhbx0XYcSv9tj7ITIo7+jFMz6cTd6x5LQfqk08xg0xOrij+im
-FW5gReU/GxTEgE7K483MSbITxxRjPgLqURXSBrmub5Dp+2vCvNiXu3bX4X4vF4MG
-pt9LnM0wibEgBg431MlbaPLiL9SbOCCzQJ2o0zn8kJQ3gK7ttgtDarXjjAXvJkaZ
-Tcnfx9yY+zFrmfoC1wjphihSG2Gr+6y/2h+TYl1FWyw2lzJjsZh7U4w8vzE94+N3
-FJz5Rm9c7Y/mMCumRHlJPED1ZIeWo+vchwf2dz7nOgtcId5yBkeSGvZewauMnSOB
-onDJfyVf7Kc/qA4NYupS1QeJ8Dzwkw==
-=lt08
------END PGP SIGNATURE-----
-
---XvKFcGCOAo53UbWW--
+And provided fix also works, thanks!
