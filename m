@@ -2,104 +2,72 @@ Return-Path: <SRS0=EA+P=KI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D104DC433ED
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 May 2021 15:02:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 122EBC433ED
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 May 2021 17:10:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 566DD6143C
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 May 2021 15:02:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 566DD6143C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 89E816141B
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 May 2021 17:10:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 89E816141B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20F2417C6;
-	Thu, 13 May 2021 17:01:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20F2417C6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45F1F17C6;
+	Thu, 13 May 2021 19:09:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45F1F17C6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620918146;
-	bh=smM0CV2lmQ6gr9AGZ4HtIbHUFlSE576fvpVgCrU0WMU=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=XJJexTAyPdWoxkpPyjIq9MUxIhNtg+vXQC/chwieFnKUbDE9UcQa8/Bt6nYmoAWYm
-	 RSH6mSkYI+lrnA02p/6NL2fJN4ygq9B5WWvFigmXyqi2LoB/HjhJ96EbF7aFS0Qu95
-	 tX2hJ1v8LRcpf24Qq5s9S3tSCEB0aqMbFG8Uebb8=
+	s=default; t=1620925814;
+	bh=/LJMrs4AEcpCtSOM9Raemz/RYh/TtTekUkjRXItzDsM=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Styz+C1Nst4BVUHTd+kDRue4x0HM08RggafRvq93bCv5dOkSkrofJ4p8LXszPwfO6
+	 PqvQXxLfJci+/lf7I2cBJzLA/mgkqqtE1Lc7beHZ+J5GaCyGQifKGLpgG97QZ2I0Sm
+	 JJ3P0F2OIy77XrjsL8Fl8VUG3WBF0y87HCvoVXok=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AC42BF80156;
-	Thu, 13 May 2021 17:01:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB1AFF80156;
+	Thu, 13 May 2021 19:09:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DDD4EF80163; Thu, 13 May 2021 17:01:33 +0200 (CEST)
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com
- [IPv6:2607:f8b0:4864:20::22a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id CA766F80163; Thu, 13 May 2021 19:09:22 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 17D35F8012E
- for <alsa-devel@alsa-project.org>; Thu, 13 May 2021 17:01:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17D35F8012E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="uYchrcCS"
-Received: by mail-oi1-x22a.google.com with SMTP id u16so25594565oiu.7
- for <alsa-devel@alsa-project.org>; Thu, 13 May 2021 08:01:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:content-transfer-encoding:in-reply-to;
- bh=ldgM2NO/Seow+Q56F+YNVD+hDuAL7t+LwPBtglqZh1k=;
- b=uYchrcCSs746S+q+9gMFDs6pbFLse8WQ2iy43FWr0fZToAUlq/4rnF1ltQEKoNweE9
- CkkEYo4Eya6PfW2wAroDNcr1tL3SML6J2unwF5momMpunX923eAMlEMk6qYGR8bC1NCR
- ctx9nHfoAzpWkueL6j7Jt+6M9qpgkLEI+r5AK6+eMlGJPSWogR271QQ49emat4oZYOWO
- zG6lhb42WpTw5HEs6ClOhIXmRNItwJqkEH3th/EzSx3UUD0+J8bFW3uCRNtMJn893i8T
- xpjIBeAiFz2e8FgOGIDjfBF5bFM0W7wAPYKIaBi/+Cr+ub2CZDlf5vhQwBKjVreDzSEA
- 9eCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to;
- bh=ldgM2NO/Seow+Q56F+YNVD+hDuAL7t+LwPBtglqZh1k=;
- b=TQZlyi8M2y1c6vmgfMKZUoCLbtivO1I5jg9879kxR2i9vJMQdDLflSRRM86BV/A2k8
- 1FPyGUumo4tb2Bznabr2MmtP9szJTgTqQh2kH98p7yPUYFSXHGQTWi47q0hl9EdXI53T
- t8Kpv8qphnB4rKbYYsdMMoqKkIEBvm2+gtTJvcjDUXzOK0QpkuFtPPCOtZWLRSHq9SDT
- XTynohotQ4eNrFrwLWWJznxngN7tF9wp3iPzsD0O9zWgJs8J/gQ87kzHvLtVfpkPWyEx
- nQJWFFezxpudGO5uqgZGZJ104xw5+kA++HO7YCC0UOLfPCVqVBJqDxRuS/vyGKNbitLA
- YVCw==
-X-Gm-Message-State: AOAM531K9apUrC4O8Pr/0LPPVsYcBrZgLzaUoQZlM0005wRbmDhG6/w+
- LJV3QXWz5f/NQkvLoqVyD1U=
-X-Google-Smtp-Source: ABdhPJyt5yDteKzelnGnRuRCn9CZhQKv5LRroEA1l8WsVRyhotR5+3i5X3VeFHbmGyO221CzU290OQ==
-X-Received: by 2002:aca:5d08:: with SMTP id r8mr735254oib.51.1620918084722;
- Thu, 13 May 2021 08:01:24 -0700 (PDT)
-Received: from wintermute.localdomain (cpe-76-183-134-35.tx.res.rr.com.
- [76.183.134.35])
- by smtp.gmail.com with ESMTPSA id x30sm694721ott.41.2021.05.13.08.01.23
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 13 May 2021 08:01:24 -0700 (PDT)
-Date: Thu, 13 May 2021 10:01:22 -0500
-From: Chris Morgan <macroalpha82@gmail.com>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v9 1/4] mfd: Add Rockchip rk817 audio CODEC support
-Message-ID: <20210513150122.GA8450@wintermute.localdomain>
-References: <20210505140854.15929-1-macroalpha82@gmail.com>
- <20210505140854.15929-2-macroalpha82@gmail.com>
- <20210510162329.GD751702@dell>
+ by alsa1.perex.cz (Postfix) with ESMTPS id DD9A9F8012E
+ for <alsa-devel@alsa-project.org>; Thu, 13 May 2021 19:09:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD9A9F8012E
+IronPort-SDR: BOj9bzOtJA+NjypVUy59ktefS0lOgEBwoXepiy24qewac4vhwczmuzxnxZEmktqDC7nVNPZpcv
+ N8rrudZVrRDw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9983"; a="285503907"
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; d="scan'208";a="285503907"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 May 2021 10:06:19 -0700
+IronPort-SDR: wc9BUsTBU9jxrNcowe9TY+kQI9pi0S851rZ/WFg2lpXFrzmEAG2rAKvFniaLY6kdA4XOQi1e9E
+ cWpHk74wjaCQ==
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; d="scan'208";a="623979024"
+Received: from skitaji-mobl2.amr.corp.intel.com (HELO
+ rsridh-mobl1.localdomain) ([10.212.29.159])
+ by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 May 2021 10:06:18 -0700
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: SOF: Intel: hda: don't send DAI_CONFIG IPC for older
+ firmware
+Date: Thu, 13 May 2021 10:06:11 -0700
+Message-Id: <20210513170611.348776-1-ranjani.sridharan@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210510162329.GD751702@dell>
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- heiko@sntech.de, devicetree@vger.kernel.org, tiwai@suse.com,
- robh+dt@kernel.org, lgirdwood@gmail.com, linux-rockchip@lists.infradead.org,
- broonie@kernel.org, Chris Morgan <macromorgan@hotmail.com>, jbx6244@gmail.com,
- maccraft123mc@gmail.com
+Cc: tiwai@suse.de, =broonie@kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Yong Zhi <yong.zhi@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -115,110 +83,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, May 10, 2021 at 05:23:29PM +0100, Lee Jones wrote:
-> On Wed, 05 May 2021, Chris Morgan wrote:
-> 
-> > From: Chris Morgan <macromorgan@hotmail.com>
-> > 
-> > Add rk817 codec support cell to rk808 mfd driver.
-> > 
-> > Tested-by: Maciej Matuszczyk <maccraft123mc@gmail.com>
-> > Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
-> 
-> Nit: These should be chronological.
+BE hw_params op was recently added for SSP type DAIs.
+But sending the DAI_CONFIG IPC during hw_params
+is not supported with older firmware. So add an ABI check
+to avoid sending the IPC if the firmware ABI is older than
+3.18.
 
-Acknowledged. I will make sure to do this if a v10 is necessary.
+Fixes: e12be9fbfb91 ('ASoC: SOF: Intel: HDA: add hw params callback for SSP DAIs')
+Tested-by: Yong Zhi <yong.zhi@intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+---
+ sound/soc/sof/intel/hda-dai.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-> 
-> > ---
-> > Changes in v9:
-> >  - Add cover letter.
-> >  - Remove documentation for interrupt parent per Rob Herring's request.
-> >  - Remove unused MODULE_DEVICE_TABLE to fix a bug identified by kernel test
-> >    robot.
-> > Changes in v8:
-> >  - Added additional documentation for missing properties of #sound-dai-cells,
-> >    interrupt-parent, and wakeup-source for mfd documentation.
-> >  - Corrected order of elements descriptions in device tree documentation.
-> >  - Changed name of "mic-in-differential" to "rockchip,mic-in-differential".
-> >  - Changed name of sound card from "rockchip,rk817-codec" to "Analog".
-> >  - Removed unused resets and reset-names from the i2s1_2ch node.
-> > Changes in v7:
-> >  - Removed ifdef around register definitions for MFD.
-> >  - Replaced codec documentation with updates to MFD documentation.
-> >  - Reordered elements in example to comply with upstream rules.
-> >  - Added binding update back for Odroid Go Advance as requested.
-> >  - Submitting patches from gmail now.
-> > Changes in v6:
-> >  - Included additional project maintainers for correct subsystems.
-> >  - Removed unneeded compatible from DT documentation.
-> >  - Removed binding update for Odroid Go Advance (will do in seperate series).
-> > Changes in v5:
-> >  - Move register definitions from rk817_codec.h to main rk808.h register
-> >    definitions.
-> >  - Add volatile register for codec bits.
-> >  - Add default values for codec bits.
-> >  - Removed of_compatible from mtd driver (not necessary).
-> >  - Switched to using parent regmap instead of private regmap for codec.
-> > Changes in v4:
-> >  - Created set_pll() call.
-> >  - Created user visible gain control in mic.
-> >  - Check for return value of clk_prepare_enable().
-> >  - Removed duplicate clk_prepare_enable().
-> >  - Split DT documentation to separate commit.
-> > Changes in v3:
-> >  - Use DAPM macros to set audio path.
-> >  - Updated devicetree binding (as every rk817 has this codec chip).
-> >  - Changed documentation to yaml format.
-> >  - Split MFD changes to separate commit.
-> > Changes in v2:
-> >  - Fixed audio path registers to solve some bugs.
-> > 
-> >  drivers/mfd/rk808.c       | 85 +++++++++++++++++++++++++++++++++++++++
-> >  include/linux/mfd/rk808.h | 81 +++++++++++++++++++++++++++++++++++++
-> >  2 files changed, 166 insertions(+)
-> > 
-> > diff --git a/drivers/mfd/rk808.c b/drivers/mfd/rk808.c
-> > index ad923dd4e007..9231209184e0 100644
-> > --- a/drivers/mfd/rk808.c
-> > +++ b/drivers/mfd/rk808.c
-> > @@ -65,6 +65,7 @@ static bool rk817_is_volatile_reg(struct device *dev, unsigned int reg)
-> >  	switch (reg) {
-> >  	case RK817_SECONDS_REG ... RK817_WEEKS_REG:
-> >  	case RK817_RTC_STATUS_REG:
-> > +	case RK817_CODEC_DTOP_LPT_SRST:
-> >  	case RK817_INT_STS_REG0:
-> >  	case RK817_INT_STS_REG1:
-> >  	case RK817_INT_STS_REG2:
-> > @@ -163,6 +164,11 @@ static const struct mfd_cell rk817s[] = {
-> >  		.num_resources = ARRAY_SIZE(rk817_rtc_resources),
-> >  		.resources = &rk817_rtc_resources[0],
-> >  	},
-> > +#ifdef CONFIG_SND_SOC_RK817
-> > +	{
-> > +		.name = "rk817-codec",
-> > +	},
-> > +#endif
-> 
-> No #ifery please.
-> 
-> Just replace it with a comment.
-> 
-> If no associated driver exists, it just won't match/bind.
+diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
+index 8d7bab433fb3..c1f9f0f58464 100644
+--- a/sound/soc/sof/intel/hda-dai.c
++++ b/sound/soc/sof/intel/hda-dai.c
+@@ -421,11 +421,16 @@ static int ssp_dai_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, SOF_AUDIO_PCM_DRV_NAME);
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
++	struct sof_ipc_fw_version *v = &sdev->fw_ready.version;
+ 	struct sof_ipc_dai_config *config;
+ 	struct snd_sof_dai *sof_dai;
+ 	struct sof_ipc_reply reply;
+ 	int ret;
+ 
++	/* DAI_CONFIG IPC during hw_params is not supported in older firmware */
++	if (v->abi_version < SOF_ABI_VER(3, 18, 0))
++		return 0;
++
+ 	list_for_each_entry(sof_dai, &sdev->dai_list, list) {
+ 		if (!sof_dai->cpu_dai_name || !sof_dai->dai_config)
+ 			continue;
+-- 
+2.25.1
 
-I did the "if" here because I noticed that if I have a rk817 and do not
-utilize the codec I receive a dmesg warning. I put the if here to silence
-it in the event that someone was using this PMIC but didn't want to use
-the audio codec. I will make the change if you say so though, but I just
-want to confirm that it's acceptable to have a warning for all rk817s
-that do not use the codec about a missing codec.  The hardware is always
-present, I just can't say for certain it will always be used.
-
-Thank you.
-
-> 
-> -- 
-> Lee Jones [李琼斯]
-> Senior Technical Lead - Developer Services
-> Linaro.org │ Open source software for Arm SoCs
-> Follow Linaro: Facebook | Twitter | Blog
