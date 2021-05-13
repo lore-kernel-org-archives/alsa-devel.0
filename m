@@ -2,81 +2,82 @@ Return-Path: <SRS0=EA+P=KI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2512C433B4
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 May 2021 12:59:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CB44C433ED
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 May 2021 13:00:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 06DF561421
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 May 2021 12:59:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 06DF561421
+	by mail.kernel.org (Postfix) with ESMTPS id 42AA761421
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 May 2021 13:00:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 42AA761421
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7489917F1;
-	Thu, 13 May 2021 14:58:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7489917F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id B6BC317E2;
+	Thu, 13 May 2021 14:59:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6BC317E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620910768;
-	bh=Qi+7qitwrGA0eF+Q7b0ugban0JcWnAjG6SVxQu4gRuw=;
+	s=default; t=1620910801;
+	bh=wFoPWSaRPlqfNvtu8+Yh3oULr7n8QmHD61UJukBU4b8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fjmoXa+zumOoIvvePB4pJRQTeNAAR5yRb86P6+laONSY5iAi0ydhQdMGmhnjUXIw3
-	 Sc5jY4vc/InBNuttEXaTI4fybVcwOS4YtJoEUXuF/nlnI7UHfEIQICf5yuSltVSfBO
-	 SUm+Tj8HUZctEHdlxHSs+3pB4oPxvyazX69YS9pQ=
+	b=VB8MutnsQG5kpeYEPwZ0XndQAuDORvApv1ruMKKbwO7btCJ4/C/b2VqcZ2BnNHdUE
+	 d+kjnWbgRFxd7kPrt6nommFAWqi19vmlVCevHovqglVngzVjnMzJoyhPG9IZk1l3ah
+	 SHwNULHHKIA/ZE3We8cubGhEahbBoTbvfJ1C15ig=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 10B04F80475;
-	Thu, 13 May 2021 14:57:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93FF9F804AE;
+	Thu, 13 May 2021 14:57:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F2CA1F80425; Thu, 13 May 2021 14:57:10 +0200 (CEST)
+ id C7825F80279; Thu, 13 May 2021 14:57:15 +0200 (CEST)
 Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
  [66.111.4.28])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 83A97F801D5
- for <alsa-devel@alsa-project.org>; Thu, 13 May 2021 14:57:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83A97F801D5
+ by alsa1.perex.cz (Postfix) with ESMTPS id A3FCCF80279
+ for <alsa-devel@alsa-project.org>; Thu, 13 May 2021 14:57:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3FCCF80279
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="VUzEvmq3"; 
+ header.b="NSAHLN/i"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="j+kyhSXt"
+ header.i=@messagingengine.com header.b="l364LjYt"
 Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by mailout.nyi.internal (Postfix) with ESMTP id B2B305C0131;
- Thu, 13 May 2021 08:57:02 -0400 (EDT)
+ by mailout.nyi.internal (Postfix) with ESMTP id D4F965C0197;
+ Thu, 13 May 2021 08:57:05 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute1.internal (MEProxy); Thu, 13 May 2021 08:57:02 -0400
+ by compute1.internal (MEProxy); Thu, 13 May 2021 08:57:05 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=1bWNkO+xtTgO+
- nBeqiO1bNG/Jcme/8RK9i++sOTt6cs=; b=VUzEvmq3TtL8Ys91DYbAWrSJdDayl
- unGtLnDmZSFviMcI490XEL+lGUzpBZLiP3gjJZsf6j1xjXFPwObErv7dRkkPe0Q9
- y4YvJT/AoAcytQq8fkyRgySlYRZQSez3/GCoX6XUZGSUJ8fbhru/ULpR5NKi//m8
- jJwSf5Kxe5dspO6XzhKHUCO4CDUiP2m08q82wMUIzTGUdfhl41y+aV0l1e1HmrXn
- JTSZKAFA65nmoqzk6WmUHq+sawf2KFXkGPGebqYf3pBtz1c5jdSuH5ZmY4hZDYqL
- BWktOzcIusHcpUJ+SOBWu1NV1ShpLbhzk//SVtKaMXb7XW0BLwffv/3cA==
+ :mime-version:content-transfer-encoding; s=fm1; bh=yIOUXRrhJlj24
+ pXsLaNjfbJbZgrWDk96Ed9u/NT2zKQ=; b=NSAHLN/iEwK5ZaQJHTsYgYrgE5ii6
+ vZDwg567atDIAt5P6NAxZBVYp1DVoYp2Q8wm5/CWimolSaahkextERow4A3h9sR7
+ VQkTbPtNn+TwKF07FP0ucvc3UQjmU1U43pGQrOanOYVrB/+mjZIWLQHZb2DuJO4C
+ hMgBqwJyRFoa/INLrSNLT7YjEGoVApG2RpKlgJFp6kKmwOy1P+S9KYgQoIGfIKYy
+ yLbLrhoeHQGHlccxQ/ias0Xzrbac+PXNpHJ36mhYMV54s1L84yFbPI0aPhz2zd8f
+ fab4kFLX8Xz7gfLCcfS4plw+ZpbOGc6QD9aV8jWjhPfnsH9KBN0gNzH4g==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=1bWNkO+xtTgO+nBeqiO1bNG/Jcme/8RK9i++sOTt6cs=; b=j+kyhSXt
- SpgjyhFJSJ0FDXhqAOd/1Aw++6hJeouzqeNFzmqTIK7HxqXjN3btx2BmJb84WzgC
- cUlwgj6JQ6z/cIK07csOaX9++TOk+SOv2AI1r2wrcDTaOhqSj1lDtd1vrVpja3Yn
- 3IDgm8EwSW7h6jey5sJc1nKBSxbzrNguJJOMpHV6PA6by40WR24WiNZf2UWMGmhy
- FTuppwGaYYSinX/trTg+5tPJDhlqDJYBXea7y8u3Stn7JJBDg+iTDpc17uf6fbXL
- b6G1dzD/CDifsFanroMsmVlsoEhrohY8ktsipKLZsSK04j0Cap7gfbSnyfeXu1w0
- nHZKTxwbqchXog==
-X-ME-Sender: <xms:HiKdYDpgi0WkbMlf8-TMYUgQ65VWeH-kzO_4nAGUxl6Fd9_tn0SEjw>
- <xme:HiKdYNowOh6UFNhIoxM0og75Dkki_eAyaEr_fRsq0t08ME64iK0Uyrs9RhizTziD0
- LSeyEgyCVBeIa0e_Vg>
+ fm2; bh=yIOUXRrhJlj24pXsLaNjfbJbZgrWDk96Ed9u/NT2zKQ=; b=l364LjYt
+ E7KAODSaFcL/I6YLji+wss9zBTia79zMgKbbr6DvA0ujPJwYim1QPBIO092qUUH/
+ or2qOioSn11ceLy6UOz78RJCrDv63D3jUf+QQk0DfInYhcwhrdgjvIwGH0zxMl8S
+ NG2i5WSTPQWcGHes5eppkIy+IFq86KX6Zxbbm0VSslR1GqJJe+67bD3DVvk6NuMz
+ Qj2EF2gIE5OZtSoXTOtTUhU+Hc184KdrDajatdm5SxpEVj11m1JAUioUVcr0ULp6
+ uCRPpd2l4OTiGuWWq1CWRdcwpsiwUVf9rzHyiClIgjQUgaO/MyTjBQTZPlizngd7
+ sJblZb2uWTo5hQ==
+X-ME-Sender: <xms:ISKdYPRkBMZakflg4HAwlWo2RRIAPmcRc_wU3n5wdHJXQHYOaVvW7w>
+ <xme:ISKdYAxQeDM8ZHIzAlOEb4zgLnxr6BIzwfdUrbmJKc7lOGSSk9Ano2ykxWOyKRvLz
+ HNY0_nfKn87UPRCg0Q>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehgedgheelucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
@@ -85,19 +86,19 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehgedgheelucetufdoteggod
  etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecukfhppedugedr
  fedrieehrddujeehnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilh
  hfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:HiKdYAMBAzNQujBEN1Q0IW13IyWW_eUg8Q56v7cIqBsPJPvUIc_W6w>
- <xmx:HiKdYG6M1zidkUxj8syyiGcufpzSrIg8ZxLjTJ-eHxFfNLyNX_e0KA>
- <xmx:HiKdYC5jnfGOb0hOyUBXRJ49BcsQwdgC22QbLmJcp313QE5RaFArlQ>
- <xmx:HiKdYIR3Pu2r7kR47Z9F7VPR3ltJp-BvY4i8FJVo3JgpzQ5cWnVEpg>
+X-ME-Proxy: <xmx:ISKdYE01lSyihdQzyOdB2jz5OyQXcqrPF8p2SoJhR3cpGfo2iFtROg>
+ <xmx:ISKdYPBLSjf3JMZUWjufK8mOhpjFGMOjw3qrYVMzfSIxNBI0BwiwNg>
+ <xmx:ISKdYIi5X6jDzs0u2t5evg_O9nOnOSq0H2roCjuEa5SpBCT70y3tsA>
+ <xmx:ISKdYEblxGrT40K9Lq1Ie2udDkpeMt_vGCpASs8dtE53ElYKDmXDkA>
 Received: from workstation.flets-east.jp (ae065175.dynamic.ppp.asahi-net.or.jp
  [14.3.65.175]) by mail.messagingengine.com (Postfix) with ESMTPA;
- Thu, 13 May 2021 08:57:01 -0400 (EDT)
+ Thu, 13 May 2021 08:57:04 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Subject: [PATCH 3/5] ALSA: firewire-lib: fix check for the size of isochronous
- packet payload
-Date: Thu, 13 May 2021 21:56:50 +0900
-Message-Id: <20210513125652.110249-4-o-takashi@sakamocchi.jp>
+Subject: [PATCH 5/5] ALSA: firewire-lib: fix amdtp_packet tracepoints event
+ for packet_index field
+Date: Thu, 13 May 2021 21:56:52 +0900
+Message-Id: <20210513125652.110249-6-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210513125652.110249-1-o-takashi@sakamocchi.jp>
 References: <20210513125652.110249-1-o-takashi@sakamocchi.jp>
@@ -119,49 +120,114 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The check for size of isochronous packet payload just cares of the size of
-IR context payload without the size of CIP header.
+The snd_firewire_lib:amdtp_packet tracepoints event includes index of
+packet processed in a context handling. However in IR context, it is not
+calculated as expected.
 
 Cc: <stable@vger.kernel.org>
-Fixes: f11453c7cc01 ("ALSA: firewire-lib: use 16 bytes IR context header to separate CIP header")
+Fixes: 753e717986c2 ("ALSA: firewire-lib: use packet descriptor for IR context")
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp-stream.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ sound/firewire/amdtp-stream-trace.h |  6 +++---
+ sound/firewire/amdtp-stream.c       | 15 +++++++++------
+ 2 files changed, 12 insertions(+), 9 deletions(-)
 
+diff --git a/sound/firewire/amdtp-stream-trace.h b/sound/firewire/amdtp-stream-trace.h
+index 26e7cb555d3c..aa53c13b89d3 100644
+--- a/sound/firewire/amdtp-stream-trace.h
++++ b/sound/firewire/amdtp-stream-trace.h
+@@ -14,8 +14,8 @@
+ #include <linux/tracepoint.h>
+ 
+ TRACE_EVENT(amdtp_packet,
+-	TP_PROTO(const struct amdtp_stream *s, u32 cycles, const __be32 *cip_header, unsigned int payload_length, unsigned int data_blocks, unsigned int data_block_counter, unsigned int index),
+-	TP_ARGS(s, cycles, cip_header, payload_length, data_blocks, data_block_counter, index),
++	TP_PROTO(const struct amdtp_stream *s, u32 cycles, const __be32 *cip_header, unsigned int payload_length, unsigned int data_blocks, unsigned int data_block_counter, unsigned int packet_index, unsigned int index),
++	TP_ARGS(s, cycles, cip_header, payload_length, data_blocks, data_block_counter, packet_index, index),
+ 	TP_STRUCT__entry(
+ 		__field(unsigned int, second)
+ 		__field(unsigned int, cycle)
+@@ -48,7 +48,7 @@ TRACE_EVENT(amdtp_packet,
+ 		__entry->payload_quadlets = payload_length / sizeof(__be32);
+ 		__entry->data_blocks = data_blocks;
+ 		__entry->data_block_counter = data_block_counter,
+-		__entry->packet_index = s->packet_index;
++		__entry->packet_index = packet_index;
+ 		__entry->irq = !!in_interrupt();
+ 		__entry->index = index;
+ 	),
 diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 4e2f2bb7879f..b53971bf4b90 100644
+index 73aff017dc9a..e0faa6601966 100644
 --- a/sound/firewire/amdtp-stream.c
 +++ b/sound/firewire/amdtp-stream.c
-@@ -633,18 +633,24 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
- 			       unsigned int *syt, unsigned int index)
- {
- 	const __be32 *cip_header;
-+	unsigned int cip_header_size;
- 	int err;
- 
- 	*payload_length = be32_to_cpu(ctx_header[0]) >> ISO_DATA_LENGTH_SHIFT;
--	if (*payload_length > s->ctx_data.tx.ctx_header_size +
--					s->ctx_data.tx.max_ctx_payload_length) {
-+
-+	if (!(s->flags & CIP_NO_HEADER))
-+		cip_header_size = 8;
-+	else
-+		cip_header_size = 0;
-+
-+	if (*payload_length > cip_header_size + s->ctx_data.tx.max_ctx_payload_length) {
- 		dev_err(&s->unit->device,
- 			"Detect jumbo payload: %04x %04x\n",
--			*payload_length, s->ctx_data.tx.max_ctx_payload_length);
-+			*payload_length, cip_header_size + s->ctx_data.tx.max_ctx_payload_length);
- 		return -EIO;
+@@ -526,7 +526,7 @@ static void build_it_pkt_header(struct amdtp_stream *s, unsigned int cycle,
  	}
  
--	if (!(s->flags & CIP_NO_HEADER)) {
-+	if (cip_header_size > 0) {
- 		cip_header = ctx_header + 2;
- 		err = check_cip_header(s, cip_header, *payload_length,
- 				       data_blocks, data_block_counter, syt);
+ 	trace_amdtp_packet(s, cycle, cip_header, payload_length, data_blocks,
+-			   data_block_counter, index);
++			   data_block_counter, s->packet_index, index);
+ }
+ 
+ static int check_cip_header(struct amdtp_stream *s, const __be32 *buf,
+@@ -630,7 +630,7 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+ 			       unsigned int *payload_length,
+ 			       unsigned int *data_blocks,
+ 			       unsigned int *data_block_counter,
+-			       unsigned int *syt, unsigned int index)
++			       unsigned int *syt, unsigned int packet_index, unsigned int index)
+ {
+ 	const __be32 *cip_header;
+ 	unsigned int cip_header_size;
+@@ -668,7 +668,7 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+ 	}
+ 
+ 	trace_amdtp_packet(s, cycle, cip_header, *payload_length, *data_blocks,
+-			   *data_block_counter, index);
++			   *data_block_counter, packet_index, index);
+ 
+ 	return err;
+ }
+@@ -707,12 +707,13 @@ static int generate_device_pkt_descs(struct amdtp_stream *s,
+ 				     unsigned int packets)
+ {
+ 	unsigned int dbc = s->data_block_counter;
++	unsigned int packet_index = s->packet_index;
++	unsigned int queue_size = s->queue_size;
+ 	int i;
+ 	int err;
+ 
+ 	for (i = 0; i < packets; ++i) {
+ 		struct pkt_desc *desc = descs + i;
+-		unsigned int index = (s->packet_index + i) % s->queue_size;
+ 		unsigned int cycle;
+ 		unsigned int payload_length;
+ 		unsigned int data_blocks;
+@@ -721,7 +722,7 @@ static int generate_device_pkt_descs(struct amdtp_stream *s,
+ 		cycle = compute_cycle_count(ctx_header[1]);
+ 
+ 		err = parse_ir_ctx_header(s, cycle, ctx_header, &payload_length,
+-					  &data_blocks, &dbc, &syt, i);
++					  &data_blocks, &dbc, &syt, packet_index, i);
+ 		if (err < 0)
+ 			return err;
+ 
+@@ -729,13 +730,15 @@ static int generate_device_pkt_descs(struct amdtp_stream *s,
+ 		desc->syt = syt;
+ 		desc->data_blocks = data_blocks;
+ 		desc->data_block_counter = dbc;
+-		desc->ctx_payload = s->buffer.packets[index].buffer;
++		desc->ctx_payload = s->buffer.packets[packet_index].buffer;
+ 
+ 		if (!(s->flags & CIP_DBC_IS_END_EVENT))
+ 			dbc = (dbc + desc->data_blocks) & 0xff;
+ 
+ 		ctx_header +=
+ 			s->ctx_data.tx.ctx_header_size / sizeof(*ctx_header);
++
++		packet_index = (packet_index + 1) % queue_size;
+ 	}
+ 
+ 	s->data_block_counter = dbc;
 -- 
 2.27.0
 
