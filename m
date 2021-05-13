@@ -4,101 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D58FCC433B4
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 May 2021 10:45:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F502C433ED
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 May 2021 11:12:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D772F61444
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 May 2021 10:45:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D772F61444
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
+	by mail.kernel.org (Postfix) with ESMTPS id EADA561443
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 May 2021 11:12:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EADA561443
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0CE3317E2;
-	Thu, 13 May 2021 12:44:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CE3317E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 65F3317CC;
+	Thu, 13 May 2021 13:11:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65F3317CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620902722;
-	bh=bqlshS0S2XCdLHNDJbncerW+nqpUCEUAtMiuiwFPvJw=;
+	s=default; t=1620904342;
+	bh=jFaMfUvmAI3lS9+6yL203abz7s0+BgwOmwD9LdktRxY=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=F7k3Z51EhCW4e4nGkaq+42P4ao8LbthKlqkQ+MdSdr30oOLef5vkFXkpjpLecOsQm
-	 cw4zkne2VJWrlW1wqb/2bl7UG3AEKsuPWp+dlZaVeAoMusn0FqoJLss6l/CX44u5Jh
-	 OiPfR6KDAySaxSjWCp4PiYDyeU6vVgHMYsZ1/28E=
+	b=RKja3rECjM2pjod4kOGbsMEpWhY9LKFESOJGPwWasPhtLO42zd40VgYKw56FEusyj
+	 2Wl304xm4E0CudXlwzCimDqXIs/GQea7xB6u+LWM9Tymdsh/VLnx5qA1kmowFgvo2M
+	 jPMVMD9/XxmPb/A8+uetc9do7pG6SAlHomzTVaeg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8C08EF80245;
-	Thu, 13 May 2021 12:43:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DB0C1F80156;
+	Thu, 13 May 2021 13:11:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AF1ECF8012E; Thu, 13 May 2021 12:43:38 +0200 (CEST)
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de
- [81.169.146.166])
+ id 94B50F80163; Thu, 13 May 2021 13:11:29 +0200 (CEST)
+Received: from out30-132.freemail.mail.aliyun.com
+ (out30-132.freemail.mail.aliyun.com [115.124.30.132])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 36DCFF8012E
- for <alsa-devel@alsa-project.org>; Thu, 13 May 2021 12:43:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36DCFF8012E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
- header.b="ocwmxCcg"
-ARC-Seal: i=1; a=rsa-sha256; t=1620902603; cv=none;
- d=strato.com; s=strato-dkim-0002;
- b=EGNaYPHQlC5lU8PXw+0QOkJ4hDBr7oBSDswKwXD9IBH6F//YyUFB4+fxgq1T0bVRmr
- Az16hyk2XBr3LXWUi6qypoyPB0aNAZLTXC2n03jNy3Mjy+f4HeLN2ukqVvkhXvteMeiq
- P7gl51PTA26mX+gm92BSuxBnQmsPfmdmx2ATAQ00AI+VU5L4bFev5rAlMFanW2mxtzdE
- 0nkCA5CwI9UmXHyZCaXTS8Y9e5YLELhj4DOKm4dpRPfaiTRx4pkceDiHQlyW8rt/8MlE
- FmnoxCDvaGPF8RoldQp5sSa9sRIiIjREkv+1FiMe9iQPSo2DK9XhSeUtbwnH1ojiCLEF
- aJlQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1620902603;
- s=strato-dkim-0002; d=strato.com;
- h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
- bh=n1wCL+fq1gwX1B/7sXKYovHlJD7nUV7ac25vUwP6dCc=;
- b=poqgbDGewXJY/QkYvTcX7YDGL/znb08isg5oMziRZ7XWxrneDbGQRPdUSV61LbMv3N
- XToFBAl9FhR9x+w9HwyTkBWDTZ7uwsfeFlEUfDHUKJtXtFIyeSbPWaVNlNN7WW1lQf+m
- smOPdXFFG5n1+L2KyHaZ4iG9ayx5mmB5rohy9SvSNvxkmbH0AyIh6NZSOyF2FfFypW+i
- 5T1xa8c0HlzMaO1BBkIPAqohGeGuOt6mrKKdCyCa4KnxtlQlkFHj3sPAZWmzd2ydAIjM
- m2aOvPjK+uVnVS3cXDieJ0KUQXOFi9JKsHKnYBDDSCTiYa2D7HuVisyhNKxlk9Nuen3n
- nneA==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1620902603;
- s=strato-dkim-0002; d=gerhold.net;
- h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
- bh=n1wCL+fq1gwX1B/7sXKYovHlJD7nUV7ac25vUwP6dCc=;
- b=ocwmxCcgnSmnlKSoPT3ig/B4+VTQC6O1CN701poWxWHjeU0GrtlmmPChm0lQTP+v8J
- C9BgmfS8HAFFpzqNx4Hhz3my9EUPTh2vcLX8m59cRByvu02oUnGW/N0Licw6YRDggzvT
- mvyn+9NWoYbg21/RTeTjSxd1kms6AMq8Tk0wSSKHazn+eOIrcpIXOrxFkVKa6mLrvBWr
- 7xRe9FwQFzBdpR1IxYmrIvM0nwkjMXFMfRN8T3XKNBxY1AK8cvlw+VfggkC5ljLlFvf1
- pyiiylKYlTBuQgOgSPBfR1rX/0XkWMYW1LTEp1eFYgb1bvCdwWOmZCWY7z90bAkLHsiW
- h+dg==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXS7IYBkLahKxB4G6OJCs="
-X-RZG-CLASS-ID: mo00
-Received: from droid.. by smtp.strato.de (RZmta 47.25.7 DYNA|AUTH)
- with ESMTPSA id j06c13x4DAhMA9H
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
- (Client did not present a certificate);
- Thu, 13 May 2021 12:43:22 +0200 (CEST)
-From: Stephan Gerhold <stephan@gerhold.net>
-To: Mark Brown <broonie@kernel.org>
-Subject: [RFC PATCH 1/2] ASoC: dt-bindings: codecs: Add bindings for nxp,
- tfa989x
-Date: Thu, 13 May 2021 12:41:28 +0200
-Message-Id: <20210513104129.36583-1-stephan@gerhold.net>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Stephan Gerhold <stephan@gerhold.net>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
- Vincent Knecht <vincent.knecht@mailoo.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 390F3F8012E
+ for <alsa-devel@alsa-project.org>; Thu, 13 May 2021 13:11:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 390F3F8012E
+X-Alimail-AntiSpam: AC=PASS; BC=-1|-1; BR=01201311R361e4; CH=green; DM=||false|;
+ DS=||; FP=0|-1|-1|-1|0|-1|-1|-1; HT=e01e04395;
+ MF=jiapeng.chong@linux.alibaba.com; NM=1; PH=DS; RN=5; SR=0;
+ TI=SMTPD_---0UYkXXym_1620904272; 
+Received: from
+ j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com
+ fp:SMTPD_---0UYkXXym_1620904272) by smtp.aliyun-inc.com(127.0.0.1);
+ Thu, 13 May 2021 19:11:17 +0800
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To: perex@perex.cz
+Subject: [PATCH v2] ALSA: hda: generic: Remove redundant assignment to dac
+Date: Thu, 13 May 2021 19:11:11 +0800
+Message-Id: <1620904271-76027-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+Cc: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+ alsa-devel@alsa-project.org, tiwai@suse.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,79 +74,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-NXP/Goodix TFA989X (TFA1) amplifiers are controlled via an I2C bus.
-Add simple device tree bindings that describe how to set them up
-in the device tree.
+Variable dac is set to zero, but this value is never read as it is
+overwritten or not used later on, hence it is a redundant assignment
+and can be removed.
 
-Right now only nxp,tfa9895 is supported but this will be extended
-to at least nxp,tfa9897 in the near future.
+Clean up the following clang-analyzer warning:
 
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+sound/pci/hda/hda_generic.c:1436:4: warning: Value stored to 'dac' is
+never read [clang-analyzer-deadcode.DeadStores].
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- .../bindings/sound/nxp,tfa989x.yaml           | 54 +++++++++++++++++++
- 1 file changed, 54 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
+Changes in v2:
+  -For the follow advice: https://lore.kernel.org/patchwork/patch/1423536/
 
-diff --git a/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml b/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
-new file mode 100644
-index 000000000000..45db5776550c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
-@@ -0,0 +1,54 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/nxp,tfa989x.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NXP/Goodix TFA989X (TFA1) Audio Amplifiers
-+
-+maintainers:
-+  - Stephan Gerhold <stephan@gerhold.net>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - nxp,tfa9895
-+
-+  reg:
-+    maxItems: 1
-+
-+  '#sound-dai-cells':
-+    const: 0
-+
-+  sound-name-prefix:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description:
-+      Used as prefix for sink/source names of the component. Must be a
-+      unique string among multiple instances of the same component.
-+
-+required:
-+  - compatible
-+  - reg
-+  - '#sound-dai-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      audio-codec@34 {
-+        compatible = "nxp,tfa9895";
-+        reg = <0x34>;
-+        sound-name-prefix = "Speaker Left";
-+        #sound-dai-cells = <0>;
-+      };
-+      audio-codec@36 {
-+        compatible = "nxp,tfa9895";
-+        reg = <0x36>;
-+        sound-name-prefix = "Speaker Right";
-+        #sound-dai-cells = <0>;
-+      };
-+    };
+ sound/pci/hda/hda_generic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index b638fc2..fc02957 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -1433,7 +1433,7 @@ static int try_assign_dacs(struct hda_codec *codec, int num_outs,
+ 			path = snd_hda_add_new_path(codec, dac, pin, 0);
+ 		}
+ 		if (!path) {
+-			dac = dacs[i] = 0;
++			dacs[i] = 0;
+ 			badness += bad->no_dac;
+ 		} else {
+ 			/* print_nid_path(codec, "output", path); */
 -- 
-2.31.1
+1.8.3.1
 
