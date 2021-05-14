@@ -2,64 +2,65 @@ Return-Path: <SRS0=jeAA=KJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E96F0C433B4
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 07:46:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BFA6C433ED
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 07:48:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D1723613DE
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 07:46:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D1723613DE
+	by mail.kernel.org (Postfix) with ESMTPS id 0E04E6141E
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 07:48:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E04E6141E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C2380177E;
-	Fri, 14 May 2021 09:46:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2380177E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 74926178D;
+	Fri, 14 May 2021 09:47:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74926178D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620978416;
-	bh=PpFVAzFhFgBgz26VYDovGg9m2oYeTjC9ZIjnneE8tRo=;
+	s=default; t=1620978487;
+	bh=SPwE1vH3sLfDC8v3Er05x8ge00fZRPiCMPw4C5ALB+A=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nEIOZpRse0wSFCwvtk2H8YwIllwb5JgMDhGzUOhrqoinE132tc8kb4c29hdL7fC4d
-	 zeShX8WI52Y3jrKJgYUtcB1c/0Sc3mM7I0TWPEtEhu9bTAIUcLX8yes7e6ouMxElrG
-	 /zX/HrzZ1Ynsj/M6wQCxgj4h6vtpJ5BKsHhro/jU=
+	b=GhbAbIPjO7McD2M3uN6vLBrEsB+NKt6Q5WWfKcenUQBilVf4Ao2XswAi9GtBXC8IP
+	 AK6Sq0uogpHtJsbJaTU4zCfOftQCYWvjn+qGm7tJ48bueof+467wMBpXqAR3iOHNRI
+	 KizCWOoTr04Bw7ya9H7bC51qyfTFcNRpqO1JrFko=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60C4CF8013A;
-	Fri, 14 May 2021 09:46:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 165E1F8020C;
+	Fri, 14 May 2021 09:47:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0A0E0F80240; Fri, 14 May 2021 09:46:05 +0200 (CEST)
+ id 23AC5F8026F; Fri, 14 May 2021 09:47:16 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5A9BF8013A
- for <alsa-devel@alsa-project.org>; Fri, 14 May 2021 09:46:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5A9BF8013A
+ by alsa1.perex.cz (Postfix) with ESMTPS id D75B3F8013A
+ for <alsa-devel@alsa-project.org>; Fri, 14 May 2021 09:47:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D75B3F8013A
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 603A3B01E;
- Fri, 14 May 2021 07:46:02 +0000 (UTC)
-Date: Fri, 14 May 2021 09:46:02 +0200
-Message-ID: <s5hwns192rp.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 9ABC9B14A;
+ Fri, 14 May 2021 07:47:09 +0000 (UTC)
+Date: Fri, 14 May 2021 09:47:09 +0200
+Message-ID: <s5hv97l92pu.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Pshou <pshou@realtek.com>
-Subject: Re: Add some CLOVE SSIDs of ALC293
-In-Reply-To: <0071b59925304565915258cb88cf070f@realtek.com>
-References: <0071b59925304565915258cb88cf070f@realtek.com>
+To: YueHaibing <yuehaibing@huawei.com>
+Subject: Re: [PATCH -next] ALSA: gus: Replace unsafe strcpy() with strscpy()
+In-Reply-To: <20210514070507.16600-1-yuehaibing@huawei.com>
+References: <20210514070507.16600-1-yuehaibing@huawei.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Kailang <kailang@realtek.com>, Steve Wang <chirowang@realtek.com>
+Cc: gregkh@linuxfoundation.org, alsa-devel@alsa-project.org, tiwai@suse.com,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,19 +76,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 14 May 2021 07:23:10 +0200,
-Pshou wrote:
+On Fri, 14 May 2021 09:05:07 +0200,
+YueHaibing wrote:
 > 
-> Hi Alsa-devel ML:
+> Fix smatch warning:
+> sound/isa/gus/gus_main.c:396 snd_gus_check_version() error:
+>  strcpy() 'card->longname' too large for 'card->shortname' (80 vs 32)
 > 
-> Can you help me add some source code to patch_realtek.c?
+> Even if this is not a real bug since the longest length of card->longname
+> now is 31, replace strcpy() with strscpy() in order to avoid possible
+> future mistake.
 > 
-> Add some CLEVO SSID of alc293.
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-The code change looks OK, but you've added a spurious From and
-Signed-off-by line.  Could you correct it and resubmit?
+Applied, thanks.
 
-
-thanks,
 
 Takashi
