@@ -2,79 +2,82 @@ Return-Path: <SRS0=jeAA=KJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9DA1C433ED
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 15:24:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5E60C433ED
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 15:31:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8611361458
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 15:24:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8611361458
+	by mail.kernel.org (Postfix) with ESMTPS id 5995260C3D
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 15:31:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5995260C3D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 34C04175F;
-	Fri, 14 May 2021 17:23:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34C04175F
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB9D71763;
+	Fri, 14 May 2021 17:31:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB9D71763
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621005856;
-	bh=p5zqoz8w803888+pXGNwIAiyWxv42TTRebNBM9Rqzro=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1621006312;
+	bh=Jw5WbrKaK58stPthP0QwAZkov+5hEKRXAOBHxLndh7c=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=L/Nz3bBTdk19AD1Fe6bort4tTA9ieFPYrOR6wZlgEReoYXsO4eBWD8ZklxDxkwRKI
-	 MRsKIA0xxrXfbxfsHuOEXKcM/bzM6ECx5G7ON9FLYsojA3OJVFi/2D8pay2MHOQsT7
-	 vBDFT5L+0fs+B6hueLee/NItacQiZ32Nrx1/+w74=
+	b=iD6tLvyeSTmFGnacpAP4Qm30tei0yA9EtQtxmvzESygqoOdIv6HHjK49epWGcaz0P
+	 U1ZiLMmDmiMJiH8CfxYhdl9muybwsWF3YC5H72H2bkIBnQhQH+8R65Riwa13OaDrim
+	 6zqtX79NOM53icehfsGBQcVVqeS1MScDJkCmHwnQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1FABF8020C;
-	Fri, 14 May 2021 17:23:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5E6C2F800BF;
+	Fri, 14 May 2021 17:31:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2812EF80240; Fri, 14 May 2021 17:23:24 +0200 (CEST)
+ id A0350F80240; Fri, 14 May 2021 17:31:00 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B60E1F8013A
- for <alsa-devel@alsa-project.org>; Fri, 14 May 2021 17:23:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B60E1F8013A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 21BEEF8013A
+ for <alsa-devel@alsa-project.org>; Fri, 14 May 2021 17:30:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21BEEF8013A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="GBpDf/v5"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 269AF61458;
- Fri, 14 May 2021 15:23:16 +0000 (UTC)
+ header.b="QB3622Kh"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F26DD61454;
+ Fri, 14 May 2021 15:30:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1621005796;
- bh=p5zqoz8w803888+pXGNwIAiyWxv42TTRebNBM9Rqzro=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=GBpDf/v5P9uU3MczNBadXP4klM6TBViTSsSzGF64zJ0sEVEg8hWI5//04vYv/4Z9t
- D1rwFrAvCfnQ9xCbs+hcPkY60/TJBGYFBFSeNPTRZCIwiLA4J+peE9wTz5tIt4SvIa
- 0wuHlw8ZWk9VrUORGXmiMYdADjIpo93/Pl2HmT5FyxOLM/i5psTODAMT7SACbZc1VO
- 9qAyjSR891GXQW6qwAj0i+cEJiody0A8cjhiOS2xCk1oOKxRX1eiq/SyPlVO03Xe8v
- 7LZPUW5uai6/1pqrVXRl1S1cV4LfNYQxsPjqCAoGY2QN+98B2mp9NB646LHLvKMnXn
- v/rmm8RyagNyQ==
+ s=k20201202; t=1621006255;
+ bh=Jw5WbrKaK58stPthP0QwAZkov+5hEKRXAOBHxLndh7c=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=QB3622KhuCsNng+oVdaxcDzh2R5t96nGI19NPmYMGLLKmTBXRWP2a6P7euJGePKGd
+ 1Zv3f5aHzzLvuNRi8vi6fsEMjA8ivVQaVxJ8sXgkeeG9EZnNPcs5O7akVYOy7qGRKb
+ CHbTDyD7n13upd0sz1lSzdcTyzYs+yQs6OU0vPMX0koyVZzc46MPa1S8rV7487ypzz
+ SsSEfZwWtB9MFGAzpJH7h6zuIUW02jeYToRGRMxnlguDuW2jnNTWcgK+TW7lJo1OsY
+ nF5fRj64C8U56hURXnmrX7/66KUqNTpLIgnFUJrgzGgCvTYLJOjMDSGC+l61g3MAD7
+ OIQx1x4LE66qg==
+Date: Fri, 14 May 2021 16:30:14 +0100
 From: Mark Brown <broonie@kernel.org>
-To: sathyanarayana.nujella@intel.com, brent.lu@intel.com, tiwai@suse.com,
- Zou Wei <zou_wei@huawei.com>, liam.r.girdwood@linux.intel.com,
- ranjani.sridharan@linux.intel.com, yang.jie@linux.intel.com,
- dharageswari.r@intel.com, kuninori.morimoto.gx@renesas.com,
- kai.vehmanen@linux.intel.com, perex@perex.cz, tzungbi@google.com,
- yong.zhi@intel.com, cezary.rojewski@intel.com, fred.oh@linux.intel.com
-Subject: Re: [PATCH -next] ASoC: intel/boards: add missing MODULE_DEVICE_TABLE
-Date: Fri, 14 May 2021 16:22:29 +0100
-Message-Id: <162100559150.50429.5814132881880654217.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1620791647-16024-1-git-send-email-zou_wei@huawei.com>
-References: <1620791647-16024-1-git-send-email-zou_wei@huawei.com>
+To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: Re: [PATCH] ASoC: qcom: lpass-cpu: Fix pop noise during audio
+ capture begin
+Message-ID: <20210514153014.GB6516@sirena.org.uk>
+References: <20210513114539.4813-1-srivasam@codeaurora.org>
+ <20210513133132.GC5813@sirena.org.uk>
+ <a6649fad-c2ca-1808-4227-8bcb373f66bd@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="Bn2rw/3z4jIqBvZU"
+Content-Disposition: inline
+In-Reply-To: <a6649fad-c2ca-1808-4227-8bcb373f66bd@codeaurora.org>
+X-Cookie: Necessity is a mother.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ bgoswami@codeaurora.org, linux-arm-msm@vger.kernel.org, plai@codeaurora.org,
+ tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org,
+ bjorn.andersson@linaro.org, agross@kernel.org, rohitkr@codeaurora.org,
+ swboyd@chromium.org, judyhsiao@chromium.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,35 +93,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 12 May 2021 11:54:07 +0800, Zou Wei wrote:
-> This patch adds missing MODULE_DEVICE_TABLE definition which generates
-> correct modalias for automatic loading of this driver when it is built
-> as an external module.
 
-Applied to
+--Bn2rw/3z4jIqBvZU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Fri, May 14, 2021 at 12:20:46PM +0530, Srinivasa Rao Mandadapu wrote:
+> On 5/13/2021 7:01 PM, Mark Brown wrote:
 
-Thanks!
+> > This commit doesn't remove the matching update in triger() so we'd have
+> > two redundant updates.  I guess it's unlikely to be harmful but it looks
+> > wrong/confusing.
 
-[1/1] ASoC: intel/boards: add missing MODULE_DEVICE_TABLE
-      commit: a75e5cdf4dd1307bb1541edbb0c008f40896644c
+> Yes, It's not harmful, as clk_prepare_enable is enabling clock only once but
+> maintaining count.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+> As Some times in Suspend/resume Sequence not hitting startup/shutdown, but
+> Trigger, so for maintaining
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> consistency not removed in trigger.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+This at least needs some commenting so that it's clear, it looks buggy
+at the minute.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--Bn2rw/3z4jIqBvZU
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCel4UACgkQJNaLcl1U
+h9AtTAf+LYcPOf6JSMImI2cuYbGIbm6pkW/Gx2rR/b2MwTYRacf5Y69rz++r39VM
+W1M2i1v9UGvb4CoYMeGn4NMA1m0r94UDo6vRC0xqx+WIbXglUiFmrT/h76K+1uEr
+e8jabqpQT3dcdeY938IJ7TFdGCyRafKd/1Dr5nazc7xRb8yc2i5SPV0RRsiFpYO2
+otRmdXuyqgNyIV7t77179ZiZUGZvH7/l/Fod8mZXLM9GkpEJkzAe7xIxZicP+EHg
+piX4zMQJg2agEhKhFDo9aRTl9erYxOAoMTXIcrBAuxG4JJLnF0sEOhhqCAcILPqm
+r+qkC06Hv8IgT0CVDC4yDXiM3b7dMQ==
+=D5DP
+-----END PGP SIGNATURE-----
+
+--Bn2rw/3z4jIqBvZU--
