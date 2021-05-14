@@ -6,97 +6,91 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0121C433ED
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 08:45:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BDF0C433ED
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 08:48:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4E0BC61358
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 08:45:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4E0BC61358
+	by mail.kernel.org (Postfix) with ESMTPS id C4B04613DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 08:48:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C4B04613DF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E4A261777;
-	Fri, 14 May 2021 10:44:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4A261777
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1EABC1779;
+	Fri, 14 May 2021 10:47:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EABC1779
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620981906;
-	bh=0YCT23mTaAlg7Uo3gmvgSeEZBYB9bE7xodnB0bpoS/c=;
-	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=jVZV8mv9p2H6qx6pq6J81uEsU6+8VBRWpMvSurJ9z+9Pwvrp5iGfdzXm1hKhajbvw
-	 avwY0UuSXPC+lpnhnJkLS/1rC6Yc4RTRMj6adctw8PQPnjL6scvZNciKDFvcPiXTSX
-	 7CsCKV7Sj52FagRExxZHqmpKR8Dwo80zEuCEtR7g=
+	s=default; t=1620982107;
+	bh=1y4wPA7ZP57WAj/XMZFmMtfogr4IUEPS1OLybOVksDs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Jdejbts5ZH5CYSDnZJJ3brWbksbGBRJnUfj3qiun3iSDcePutVyga5iMJE4np4OJo
+	 HlOErcRXjYAN2tEwnLQOcuBdouTf2xUppudKEsf+VwuE5vLYX6Tz2mP1OiMJsKsIp4
+	 Ybj5zaY/s5sbk7ycjm5lDJ+rRjoBSE/06Hu7aEBU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 72A25F800BF;
-	Fri, 14 May 2021 10:44:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ABC81F8020C;
+	Fri, 14 May 2021 10:47:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BE76EF80240; Fri, 14 May 2021 10:44:13 +0200 (CEST)
+ id 6851EF80240; Fri, 14 May 2021 10:47:35 +0200 (CEST)
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 605AAF8012A
- for <alsa-devel@alsa-project.org>; Fri, 14 May 2021 10:44:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 605AAF8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id F1D4CF8012A
+ for <alsa-devel@alsa-project.org>; Fri, 14 May 2021 10:47:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1D4CF8012A
 Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 14E8i0gI5012039,
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 14E8lOKJ1014027,
  This message is accepted by code: ctloc85258
 Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
- by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 14E8i0gI5012039
+ by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 14E8lOKJ1014027
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 14 May 2021 16:44:00 +0800
-Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
+ Fri, 14 May 2021 16:47:24 +0800
+Received: from RTEXMBS05.realtek.com.tw (172.21.6.98) by
  RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 14 May 2021 16:43:59 +0800
+ 15.1.2106.2; Fri, 14 May 2021 16:47:23 +0800
 Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
+ RTEXMBS05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 14 May 2021 16:43:58 +0800
+ 15.1.2106.2; Fri, 14 May 2021 16:47:22 +0800
 Received: from RTEXMBS01.realtek.com.tw ([fe80::3132:fefa:293c:f022]) by
  RTEXMBS01.realtek.com.tw ([fe80::3132:fefa:293c:f022%13]) with mapi id
- 15.01.2106.013; Fri, 14 May 2021 16:43:58 +0800
+ 15.01.2106.013; Fri, 14 May 2021 16:47:22 +0800
 From: Pshou <pshou@realtek.com>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: RE: Add some CLOVE SSIDs of ALC293
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Subject: Add some CLOVE SSIDs of ALC293
 Thread-Topic: Add some CLOVE SSIDs of ALC293
-Thread-Index: AddIgIhg2R7xbEAWSeW+zZ996OarMP//ozIA//9r4lA=
-Date: Fri, 14 May 2021 08:43:58 +0000
-Message-ID: <d0746eaf29f248a5acc30313e3ba4f99@realtek.com>
-References: <0071b59925304565915258cb88cf070f@realtek.com>
- <s5hwns192rp.wl-tiwai@suse.de>
-In-Reply-To: <s5hwns192rp.wl-tiwai@suse.de>
+Thread-Index: AddIna1jdp39yg0SQx+ey7VhdONXlQ==
+Date: Fri, 14 May 2021 08:47:22 +0000
+Message-ID: <5814caa848754d58815c49cdff04893c@realtek.com>
 Accept-Language: zh-TW, en-US
 Content-Language: zh-TW
 X-MS-Has-Attach: yes
 X-MS-TNEF-Correlator: 
 x-originating-ip: [172.22.102.210]
-x-kse-serverinfo: RTEXDAG01.realtek.com.tw, 9
+x-kse-serverinfo: RTEXMBS05.realtek.com.tw, 9
 x-kse-antivirus-interceptor-info: scan successful
 x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/5/14_=3F=3F_06:00:00?=
 x-kse-attachment-filter-triggered-rules: Clean
 x-kse-attachment-filter-triggered-filters: Clean
 x-kse-bulkmessagesfiltering-scan-result: protection disabled
 Content-Type: multipart/mixed;
- boundary="_002_d0746eaf29f248a5acc30313e3ba4f99realtekcom_"
+ boundary="_004_5814caa848754d58815c49cdff04893crealtekcom_"
 MIME-Version: 1.0
 X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/14/2021 07:59:43
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/14/2021 08:31:58
 X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
 X-KSE-AntiSpam-Method: none
 X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 163650 [May 14 2021]
+X-KSE-AntiSpam-Info: Lua profiles 163651 [May 14 2021]
 X-KSE-AntiSpam-Info: Version: 5.9.20.0
 X-KSE-AntiSpam-Info: Envelope from: pshou@realtek.com
 X-KSE-AntiSpam-Info: LuaCore: 445 445 d5f7ae5578b0f01c45f955a2a751ac25953290c9
 X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
 X-KSE-AntiSpam-Info: {Tracking_susp_attach_format}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;
- 127.0.0.199:7.1.2; realtek.com:7.1.1
 X-KSE-AntiSpam-Info: Rate: 0
 X-KSE-AntiSpam-Info: Status: not_detected
 X-KSE-AntiSpam-Info: Method: none
@@ -104,24 +98,24 @@ X-KSE-AntiSpam-Info: Auth:dkim=none
 X-KSE-Antiphishing-Info: Clean
 X-KSE-Antiphishing-ScanningType: Heuristic
 X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 05/14/2021 08:01:00
+X-KSE-Antiphishing-Bases: 05/14/2021 08:35:00
 X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
 X-KSE-Attachment-Filter-Triggered-Rules: Clean
 X-KSE-Attachment-Filter-Triggered-Filters: Clean
 X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
 X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/14/2021 08:21:55
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/14/2021 08:31:58
 X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
 X-KSE-AntiSpam-Method: none
 X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 163650 [May 14 2021]
+X-KSE-AntiSpam-Info: Lua profiles 163651 [May 14 2021]
 X-KSE-AntiSpam-Info: Version: 5.9.20.0
 X-KSE-AntiSpam-Info: Envelope from: pshou@realtek.com
 X-KSE-AntiSpam-Info: LuaCore: 445 445 d5f7ae5578b0f01c45f955a2a751ac25953290c9
 X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
 X-KSE-AntiSpam-Info: {Tracking_susp_attach_format}
-X-KSE-AntiSpam-Info: realtek.com:7.1.1;
- d41d8cd98f00b204e9800998ecf8427e.com:7.1.1; 127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: realtek.com:7.1.1; 127.0.0.199:7.1.2;
+ d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
 X-KSE-AntiSpam-Info: Rate: 0
 X-KSE-AntiSpam-Info: Status: not_detected
 X-KSE-AntiSpam-Info: Method: none
@@ -129,9 +123,10 @@ X-KSE-AntiSpam-Info: Auth:dkim=none
 X-KSE-Antiphishing-Info: Clean
 X-KSE-Antiphishing-ScanningType: Heuristic
 X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 05/14/2021 08:24:00
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Kailang <kailang@realtek.com>, Steve Wang <chirowang@realtek.com>
+X-KSE-Antiphishing-Bases: 05/14/2021 08:35:00
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: Takashi Iwai <tiwai@suse.de>, Kailang <kailang@realtek.com>,
+ Steve Wang <chirowang@realtek.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -147,45 +142,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
---_002_d0746eaf29f248a5acc30313e3ba4f99realtekcom_
+--_004_5814caa848754d58815c49cdff04893crealtekcom_
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Takashi:
 
-This is my mistake.
-This is the correct.
+From: Pshou
+Sent: Friday, May 14, 2021 1:23 PM
+To: 'alsa-devel@alsa-project.org' <alsa-devel@alsa-project.org>
+Cc: Kailang <kailang@realtek.com>; 'Takashi Iwai' <tiwai@suse.de>; Steve Wa=
+ng <chirowang@realtek.com>
+Subject: Add some CLOVE SSIDs of ALC293
+
+
+Hi Alsa-devel ML:
+
+
+
+Can you help me add some source code to patch_realtek.c?
+
+
+
+Add some CLEVO SSID of alc293.
+
+
 
 Best regards
-pshou=20
 
------Original Message-----
-From: Takashi Iwai <tiwai@suse.de>=20
-Sent: Friday, May 14, 2021 3:46 PM
-To: Pshou <pshou@realtek.com>
-Cc: alsa-devel@alsa-project.org; Kailang <kailang@realtek.com>; Steve Wang =
-<chirowang@realtek.com>
-Subject: Re: Add some CLOVE SSIDs of ALC293
-
-On Fri, 14 May 2021 07:23:10 +0200,
-Pshou wrote:
->=20
-> Hi Alsa-devel ML:
->=20
-> Can you help me add some source code to patch_realtek.c?
->=20
-> Add some CLEVO SSID of alc293.
-
-The code change looks OK, but you've added a spurious From and Signed-off-b=
-y line.  Could you correct it and resubmit?
+Pshou
 
 
-thanks,
-
-Takashi
-------Please consider the environment before printing this e-mail.
-
---_002_d0746eaf29f248a5acc30313e3ba4f99realtekcom_
+--_004_5814caa848754d58815c49cdff04893crealtekcom_
 Content-Type: application/octet-stream;
 	name="0001-Add-some-Clove-SSIDs-of-ALC293.patch"
 Content-Description: 0001-Add-some-Clove-SSIDs-of-ALC293.patch
@@ -263,4 +250,4 @@ a0NlbnRyZSBTdGF0aW9uIiwgQUxDMjgzX0ZJWFVQX0hFQURTRVRfTUlDKSwKIAlTTkRfUENJX1FV
 SVJLKDB4MTdhYSwgMHgyMGYyLCAiVGhpbmtwYWQgU0w0MTAvNTEwIiwgQUxDMjY5X0ZJWFVQX1NL
 VV9JR05PUkUpLAo=
 
---_002_d0746eaf29f248a5acc30313e3ba4f99realtekcom_--
+--_004_5814caa848754d58815c49cdff04893crealtekcom_--
