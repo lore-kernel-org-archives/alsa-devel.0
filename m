@@ -2,64 +2,63 @@ Return-Path: <SRS0=jeAA=KJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BFE4C433B4
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 07:40:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B46F1C43460
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 07:43:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 92B4C61446
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 07:40:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 92B4C61446
+	by mail.kernel.org (Postfix) with ESMTPS id 52302611CE
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 07:43:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 52302611CE
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4D5E11782;
-	Fri, 14 May 2021 09:39:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D5E11782
+	by alsa0.perex.cz (Postfix) with ESMTPS id BA224177E;
+	Fri, 14 May 2021 09:42:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA224177E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620978011;
-	bh=71aCZf8xOP08RpAanlEgKFofCuuyr6z1J7uSxRrnaPU=;
+	s=default; t=1620978202;
+	bh=nxCZqQyivfV5rYx6nZymJrNM7w9xsPHAHegZFO9lhHQ=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VspvIPJck/ri7DYsPiVg+e1ed6Olo4HpxxC494QRR/ueLYmNNs23brvJ8BqcFhz8Q
-	 2gukgIiQzf/ORhN9OTld1eT4LQTIyEhwNu+f0JLpo7gyayl3hRmefN2+4zBlNakZKE
-	 Rnjqk5uMdSHcbWt7cjLRWWcNeb3fKWdJ0pcbtvHY=
+	b=WlkXEzE5mNLXXnjY24Bh7Z5X/ybsdEBOyWJQNl/dOBJKJBorrx4tHo0W6K4KXeDYI
+	 hCTM+BOncLRh6T+k1m6pE84mMQdxwf9YLaKTRTxR3HYJM5+2S3imoN05iSzfxi8D5e
+	 2nA2TYSaYRNelEHtMSLjgm08EcQMqUlcJKxuvrXw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A7B7AF8020C;
-	Fri, 14 May 2021 09:39:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59311F8012A;
+	Fri, 14 May 2021 09:42:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C269FF80240; Fri, 14 May 2021 09:39:18 +0200 (CEST)
+ id BB980F80240; Fri, 14 May 2021 09:42:31 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 47D6FF8012A
- for <alsa-devel@alsa-project.org>; Fri, 14 May 2021 09:39:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47D6FF8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7E931F8012A
+ for <alsa-devel@alsa-project.org>; Fri, 14 May 2021 09:42:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E931F8012A
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 594B4B01E;
- Fri, 14 May 2021 07:39:12 +0000 (UTC)
-Date: Fri, 14 May 2021 09:39:12 +0200
-Message-ID: <s5h1ra9ahnj.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 7507DB01E;
+ Fri, 14 May 2021 07:42:28 +0000 (UTC)
+Date: Fri, 14 May 2021 09:42:27 +0200
+Message-ID: <s5hy2ch92xo.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: Re: [PATCH v2] ALSA: hda: generic: Remove redundant assignment to dac
-In-Reply-To: <1620904271-76027-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-References: <1620904271-76027-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 0/5] ALSA: firewire: misc fixes
+In-Reply-To: <20210513125652.110249-1-o-takashi@sakamocchi.jp>
+References: <20210513125652.110249-1-o-takashi@sakamocchi.jp>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,25 +74,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 13 May 2021 13:11:11 +0200,
-Jiapeng Chong wrote:
+On Thu, 13 May 2021 14:56:47 +0200,
+Takashi Sakamoto wrote:
 > 
-> Variable dac is set to zero, but this value is never read as it is
-> overwritten or not used later on, hence it is a redundant assignment
-> and can be removed.
+> Hi,
 > 
-> Clean up the following clang-analyzer warning:
+> This patchset includes misc fixes for bebob, oxfw, dice, and
+> firewire-lib modules. The most significant bug to be fixed was
+> introduced by my work for AMDTP domain during 2019-2020.
 > 
-> sound/pci/hda/hda_generic.c:1436:4: warning: Value stored to 'dac' is
-> never read [clang-analyzer-deadcode.DeadStores].
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
-> Changes in v2:
->   -For the follow advice: https://lore.kernel.org/patchwork/patch/1423536/
+> Takashi Sakamoto (5):
+>   ALSA: dice: fix stream format at middle sampling rate for Alesis iO 26
+>   ALSA: bebob/oxfw: fix Kconfig entry for Mackie d.2 Pro
+>   ALSA: firewire-lib: fix check of jumbo payload
+>   ALSA: firewire-lib: fix calculation for size of IR context payload
+>   ALSA: firewire-lib: fix amdtp_packet tracepoints event in terms of
+>     packet_index
 
-Thanks, applied.
+Applied all five patches now.  Thanks.
 
 
 Takashi
