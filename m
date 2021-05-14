@@ -4,87 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC09DC43462
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 10:36:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2D1AC43460
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 10:36:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 73BD461457
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 10:36:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73BD461457
+	by mail.kernel.org (Postfix) with ESMTPS id CE6BF613B5
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 10:36:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE6BF613B5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5FAA01787;
-	Fri, 14 May 2021 12:35:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FAA01787
+	by alsa0.perex.cz (Postfix) with ESMTPS id 55EFC1782;
+	Fri, 14 May 2021 12:35:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55EFC1782
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620988576;
-	bh=DDoVwHJswjCHMxYrjMgN+/453iYHewyRWAS+fkUXFHc=;
+	s=default; t=1620988581;
+	bh=8OVSZ9+HYuBdjFg2psovZtRw+l+wLDvHVPpsmlyOpbs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cIm/y8c8WCunirmrb6IhZPBa3L7Wi472pbW8O4Fokpns5IEcMB7U2iXgEnMz699U+
-	 1OrVACNtAucHonSJDrKimQbgrImT1EdpPE/ZFhjjO7ylysnh1QCRfetvf6+75F+eU4
-	 L39k1tRDIH4U9CGkO3D54jMpr69Pjkd/GzeGqSCA=
+	b=nBxP9vbCjdwGf8oF6WrWkw9E4McdJ4ZEOjtXR/f4mg6z1smtOE3cffFY9u4jj2eN1
+	 XtrMZGmqfws2ISZSwkMTI5yAWH4dNeTTh8EJzzObyYGyujoFVePRElyeNNYUsyWzrz
+	 ZyOI/WqK0WMJiKn7uuLEaFI3sCWFsoMklcCi9WwM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E4368F802CA;
-	Fri, 14 May 2021 12:34:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 378EEF80475;
+	Fri, 14 May 2021 12:34:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1C42DF802CA; Fri, 14 May 2021 12:34:37 +0200 (CEST)
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com
- [IPv6:2a00:1450:4864:20::431])
+ id 85D3EF80482; Fri, 14 May 2021 12:34:40 +0200 (CEST)
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
+ [IPv6:2a00:1450:4864:20::32c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2F569F800BF
- for <alsa-devel@alsa-project.org>; Fri, 14 May 2021 12:34:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F569F800BF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9B5A5F8027B
+ for <alsa-devel@alsa-project.org>; Fri, 14 May 2021 12:34:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B5A5F8027B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="v8Qa6dnj"
-Received: by mail-wr1-x431.google.com with SMTP id a4so29600358wrr.2
- for <alsa-devel@alsa-project.org>; Fri, 14 May 2021 03:34:30 -0700 (PDT)
+ header.b="p7rfnDdF"
+Received: by mail-wm1-x32c.google.com with SMTP id
+ s5-20020a7bc0c50000b0290147d0c21c51so1216111wmh.4
+ for <alsa-devel@alsa-project.org>; Fri, 14 May 2021 03:34:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=r6IVmdNErSbJCcWPJI67FAC2+nK9/b0e6sFSeGCLR6M=;
- b=v8Qa6dnjq9wMEWz+442c0OQVXsnPNHAxBHFxyyCcYfQhFjpY/c0+hJkqRY/I0KXxa+
- izOjIc4eH2DNbruP6LE7htolLLU27jcZFCXuT2bnBPDnaNttxq0fnOq91JbC3HP1U89t
- uj0ZT6vVqwn6z5jY/jmHt9W4VV27SrCyp7AlbbH6an6rDxY63+dyvWtGX8bap5cuHUIy
- PqbhWsUto1/Q4ZuUG8htxUauIk+qyGaxWHsAGO02HqXNgYeSZ6nUHHzBtUcwDXImVfWC
- 0QYaLyV0lTsG0QOrlrUkFbyllIoe9zvVgsGrc6e7mx3AUCeJvNMppnLOU3R6w4nedYxE
- woUg==
+ bh=wD5Koc4+Y8WGCkqYQ0J6ZM9ix1nXZLNkx7wv0f/ctNc=;
+ b=p7rfnDdFplz7oQZhmZvU5pGbbefgRQBfPVgMgKRSsnp1eDEr2TQOerze2J4ouFU1PX
+ NRTaowGsZqal4+mdn1QBNcAtDzPwcTnqJ1PaSQZ/2wxHZZUTEJQ4gTMitFDYaKNGjozV
+ sNSjDCempf3Oxchd7Ge6rNu5tPR3M5ejVQ1SdqSpRhcdwtKmAdTt0+vJWeHh4QOic7GE
+ 8GyBoWcB/DWQlslLoctND0ecn9I9Y6NJMVqElsx2Dh+NICea01d+w5wS6oou+HUbUH4z
+ NgBFQ8iZMxiNq0TKDb1rCrq8n8ocEB4E0RCoH4dIzm2UmBLkOGYC40E8srGUcSuCM+nh
+ BBgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=r6IVmdNErSbJCcWPJI67FAC2+nK9/b0e6sFSeGCLR6M=;
- b=E+rCEdHvj7qcfqamrD+xeA/Q/+K5IOpVD8OAvRl6E1WM3vzPenJT3L6v2CPyisXyYe
- GzqkGuv/R6lf3WvVvqwNEhcjM4eWrAWWLQzuP0yMeAZqxUuCjq4JV7d9qJAgcQfahmMj
- adociX8MX5o7YfErr3zzX7vD3CVpFJJiJ/6ueEwNY77PIVvMVo0KCwiHJ+FLR3ULywLO
- L6GDX9xbY1zYetNalQvCbl+4h7MMzHEXpVQi5oyR0BUtbh7R9xSsdysseOJ2DXPTLoLA
- o1gNuy0FQBvCXYe7tx/olWsU/edMMWIoPYlkkT9dhFetmenfTWeUL19VQJanzc0LrCnM
- 5zEw==
-X-Gm-Message-State: AOAM531poKiUzUv/3UsZy22N7Y7aER/DoYHMMh9uanE0Imb0n72Y93i+
- OSG6pOBXb1SA2QzcC/8zi+PZxQ==
-X-Google-Smtp-Source: ABdhPJyGmsyH267lT761uXW0aAKfR+k8LUXdJU2rItvkhxcZy2MUXzqL/A3o1mU+ZJA+9eeU4D9HIg==
-X-Received: by 2002:adf:f212:: with SMTP id p18mr20455322wro.318.1620988470155; 
- Fri, 14 May 2021 03:34:30 -0700 (PDT)
+ bh=wD5Koc4+Y8WGCkqYQ0J6ZM9ix1nXZLNkx7wv0f/ctNc=;
+ b=f3VxX3u5I6nF2I9G0ANrDFUEfPMWRbR/C/3r4Kgb7XmtGX7XPnp8e/O4/KFpwUMP0r
+ 4FcZymo4rTOYGF4gMkeaRnxahTY7i1VTq5NMlNlgOVf7lIVympXNyfkfxo7V+FBvT8Bi
+ 9GjWaTe3Jfs//JHi/IU8IB53tjG8SSbsJk09FzBIw9GVnPpZvTLsZLXpGkk0uCJzoP7I
+ EvF2PSsgxc8Cvw+YqYVtud6TvzzJAJS+6mXfks/QUjKGti7rVgGeVqQRp9BxpctjDZuB
+ +WYSAptOzvLiOyyNyqCUWq4tOPwtUoAbSndxuMWt66RPukow5/VpF1HsyEom+Zu35kd7
+ 4yeA==
+X-Gm-Message-State: AOAM532x83M4nvVf6lrNvtFKz/ANag9kT7rfKeRXpqw30Tj5ML3Yv3jH
+ ID2KX6Hn2zFYGkvcTfZsUsOLdQ==
+X-Google-Smtp-Source: ABdhPJydrg8yHoYnTefCkO3f9aDWw6ujj2A14QG5kCaRd5qk8mo49wNEOeTFpEGq8EFjJ/pqzC/0rg==
+X-Received: by 2002:a1c:2685:: with SMTP id m127mr8850674wmm.135.1620988473696; 
+ Fri, 14 May 2021 03:34:33 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id k16sm5015498wmi.44.2021.05.14.03.34.29
+ by smtp.gmail.com with ESMTPSA id k16sm5015498wmi.44.2021.05.14.03.34.32
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 14 May 2021 03:34:29 -0700 (PDT)
+ Fri, 14 May 2021 03:34:33 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH v5 1/9] ASoC: dt-bindings: wcd938x: add bindings for wcd938x
-Date: Fri, 14 May 2021 11:33:57 +0100
-Message-Id: <20210514103405.29927-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v5 4/9] ASoC: dt-bindings: wcd938x-sdw: add bindings for
+ wcd938x-sdw
+Date: Fri, 14 May 2021 11:34:00 +0100
+Message-Id: <20210514103405.29927-5-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210514103405.29927-1-srinivas.kandagatla@linaro.org>
 References: <20210514103405.29927-1-srinivas.kandagatla@linaro.org>
@@ -108,148 +110,68 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Qualcomm WCD9380/WCD9385 Codec is a standalone Hi-Fi audio codec IC
-connected over SoundWire. This device has two SoundWire device RX and
-TX respectively, supporting 4 x ADCs, ClassH, Ear, Aux PA, 2xHPH,
-7 x TX diff inputs, 8 DMICs, MBHC.
+connected over SoundWire. This device has two SoundWire devices RX and
+TX respectively. This bindings is for those slave devices on WCD9380/WCD9385.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- .../bindings/sound/qcom,wcd938x.yaml          | 149 ++++++++++++++++++
- 1 file changed, 149 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
+ .../bindings/sound/qcom,wcd938x-sdw.yaml      | 70 +++++++++++++++++++
+ 1 file changed, 70 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,wcd938x-sdw.yaml
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml b/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
+diff --git a/Documentation/devicetree/bindings/sound/qcom,wcd938x-sdw.yaml b/Documentation/devicetree/bindings/sound/qcom,wcd938x-sdw.yaml
 new file mode 100644
-index 000000000000..d62d99981ea8
+index 000000000000..49a267b306f6
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
-@@ -0,0 +1,149 @@
++++ b/Documentation/devicetree/bindings/sound/qcom,wcd938x-sdw.yaml
+@@ -0,0 +1,70 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/sound/qcom,wcd938x.yaml#
++$id: http://devicetree.org/schemas/sound/qcom,wcd938x-sdw.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Bindings for Qualcomm WCD9380/WCD9385 Audio Codec
++title: Bindings for Qualcomm SoundWire Slave devices on WCD9380/WCD9385
 +
 +maintainers:
 +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 +
 +description: |
 +  Qualcomm WCD9380/WCD9385 Codec is a standalone Hi-Fi audio codec IC.
-+  It has RX and TX Soundwire slave devices.
++  It has RX and TX Soundwire slave devices. This bindings is for the
++  slave devices.
 +
 +properties:
 +  compatible:
-+    enum:
-+      - qcom,wcd9380-codec
-+      - qcom,wcd9385-codec
++    const: sdw20217010d00
 +
-+  reset-gpios:
-+    description: GPIO spec for reset line to use
++  reg:
 +    maxItems: 1
 +
-+  vdd-buck-supply:
-+    description: A reference to the 1.8V buck supply
-+
-+  vdd-rxtx-supply:
-+    description: A reference to the 1.8V rx supply
-+
-+  vdd-io-supply:
-+    description: A reference to the 1.8V I/O supply
-+
-+  qcom,tx-device:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    maxItems: 1
-+    description: A reference to Soundwire tx device phandle
-+
-+  qcom,rx-device:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    maxItems: 1
-+    description: A reference to Soundwire rx device phandle
-+
-+  qcom,micbias1-microvolt:
-+    description: micbias1 voltage
-+    minimum: 1800000
-+    maximum: 2850000
-+
-+  qcom,micbias2-microvolt:
-+    description: micbias2 voltage
-+    minimum: 1800000
-+    maximum: 2850000
-+
-+  qcom,micbias3-microvolt:
-+    description: micbias3 voltage
-+    minimum: 1800000
-+    maximum: 2850000
-+
-+  qcom,micbias4-microvolt:
-+    description: micbias4 voltage
-+    minimum: 1800000
-+    maximum: 2850000
-+
-+  qcom,hphl-jack-type-normally-closed:
-+    description: Indicates that HPHL jack switch type is normally closed
-+    type: boolean
-+
-+  qcom,ground-jack-type-normally-closed:
-+    description: Indicates that Headset Ground switch type is normally closed
-+    type: boolean
-+
-+  qcom,mbhc-headset-vthreshold-microvolt:
-+    description: Voltage threshold value for headset detection
-+    minimum: 0
-+    maximum: 2850000
-+
-+  qcom,mbhc-headphone-vthreshold-microvolt:
-+    description: Voltage threshold value for headphone detection
-+    minimum: 0
-+    maximum: 2850000
-+
-+  qcom,mbhc-buttons-vthreshold-microvolt:
-+    description:
-+      Array of 8 Voltage threshold values corresponding to headset
-+      button0 - button7
++  qcom,tx-port-mapping:
++    description: |
++      Specifies static port mapping between slave and master tx ports.
++      In the order of slave port index.
 +    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    minItems: 8
-+    maxItems: 8
++    minItems: 4
++    maxItems: 4
 +
-+  '#sound-dai-cells':
-+    const: 1
++  qcom,rx-port-mapping:
++    description: |
++      Specifies static port mapping between slave and master rx ports.
++      In the order of slave port index.
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    minItems: 5
++    maxItems: 5
 +
 +required:
 +  - compatible
-+  - reset-gpios
-+  - qcom,tx-device
-+  - qcom,rx-device
-+  - qcom,micbias1-microvolt
-+  - qcom,micbias2-microvolt
-+  - qcom,micbias3-microvolt
-+  - qcom,micbias4-microvolt
-+  - "#sound-dai-cells"
++  - reg
 +
 +additionalProperties: false
 +
 +examples:
 +  - |
-+    codec {
-+        compatible = "qcom,wcd9380-codec";
-+        reset-gpios = <&tlmm 32 0>;
-+        #sound-dai-cells = <1>;
-+        qcom,tx-device = <&wcd938x_tx>;
-+        qcom,rx-device = <&wcd938x_rx>;
-+        qcom,micbias1-microvolt = <1800000>;
-+        qcom,micbias2-microvolt = <1800000>;
-+        qcom,micbias3-microvolt = <1800000>;
-+        qcom,micbias4-microvolt = <1800000>;
-+        qcom,hphl-jack-type-normally-closed;
-+        qcom,ground-jack-type-normally-closed;
-+        qcom,mbhc-buttons-vthreshold-microvolt = <75000 150000 237000 500000 500000 500000 500000 500000>;
-+        qcom,mbhc-headphone-vthreshold-microvolt = <50000>;
-+    };
-+
-+    /* ... */
-+
 +    soundwire@3210000 {
 +        #address-cells = <2>;
 +        #size-cells = <0>;
