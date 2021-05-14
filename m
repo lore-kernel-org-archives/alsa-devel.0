@@ -2,84 +2,79 @@ Return-Path: <SRS0=jeAA=KJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CEB77C433ED
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 13:08:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9DA1C433ED
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 15:24:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E747061451
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 13:08:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E747061451
+	by mail.kernel.org (Postfix) with ESMTPS id 8611361458
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 15:24:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8611361458
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0165B176C;
-	Fri, 14 May 2021 15:07:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0165B176C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 34C04175F;
+	Fri, 14 May 2021 17:23:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34C04175F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620997685;
-	bh=S0BbTK/mQHJgtqU/+EcRYAuw61mt17Dc0nZEz2PHMq8=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1621005856;
+	bh=p5zqoz8w803888+pXGNwIAiyWxv42TTRebNBM9Rqzro=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=j5qqDCEWaucg2WW9+Dg3IcoGwdSmiC8ujUzFcdpFBKNQkozWYxy7Klo2qdF9uXGST
-	 1m48/5c77sUifuNjEP81c4UhV8Ya0jV8zNIOxFEwc6mAK6HzpVznNwBSqPUDmrWjgE
-	 E2+/sckjGN3cTDnj+gAwTnkkm1Fjzuc4dQJ7Lxfw=
+	b=L/Nz3bBTdk19AD1Fe6bort4tTA9ieFPYrOR6wZlgEReoYXsO4eBWD8ZklxDxkwRKI
+	 MRsKIA0xxrXfbxfsHuOEXKcM/bzM6ECx5G7ON9FLYsojA3OJVFi/2D8pay2MHOQsT7
+	 vBDFT5L+0fs+B6hueLee/NItacQiZ32Nrx1/+w74=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A71FF8020C;
-	Fri, 14 May 2021 15:07:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B1FABF8020C;
+	Fri, 14 May 2021 17:23:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A892CF80240; Fri, 14 May 2021 15:07:12 +0200 (CEST)
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com
- [209.85.210.53])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 2812EF80240; Fri, 14 May 2021 17:23:24 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8B794F8013A
- for <alsa-devel@alsa-project.org>; Fri, 14 May 2021 15:07:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B794F8013A
-Received: by mail-ot1-f53.google.com with SMTP id
- r26-20020a056830121ab02902a5ff1c9b81so26395803otp.11
- for <alsa-devel@alsa-project.org>; Fri, 14 May 2021 06:07:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
- :message-id;
- bh=xGVTJIe3IpvtYlWDXjmgrXNvgrVnvtut7WrcSggOBcA=;
- b=fAqnCFrH/vkkD3wuQuw7pGJxq+mDRMxn501gtInuFAPGWegx35/4nJoqR0gDvgMWe4
- tacVAbs799tFItD6gJKE3E7xFa4ucndfTHkQ3pAJkYGWS97wyQOmZVpyFEcCXa06x6FV
- N6UAaHtJ7RMgpptjeq2/ESXy0/8x4rilPoCS43cDRRs/R+rGg3DBIIZ+Z7eWXoTNn+Uv
- MiwH/nAQGpQhHNNAkd1PQcYl5zyfW5rsjURPQTbMA6/NtMhTjRdmaEX6qxPxco1B3jvP
- 0Lde68S+1JhvdlMycmjUoHjkKIdfI8e2i6IZmX76TKo0yZbni3Mq8eycKlZYIBJVz4s+
- yoFQ==
-X-Gm-Message-State: AOAM533DX/vf4LXLCCnDVLC9ZNUo85sQDkX3r/AedjqJJuq5sEKJ9XbJ
- uWudCTQ06A4xHlx1njArow==
-X-Google-Smtp-Source: ABdhPJwqX2eYj0l12uVBWQ1hPm0AcmqocVEheIW3yuo8nFdY+rUt4unWcqrsga7ds2xsj4uzighyzA==
-X-Received: by 2002:a9d:4911:: with SMTP id e17mr39944015otf.38.1620997622254; 
- Fri, 14 May 2021 06:07:02 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id d207sm1262089oob.7.2021.05.14.06.07.00
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 14 May 2021 06:07:01 -0700 (PDT)
-Received: (nullmailer pid 3936696 invoked by uid 1000);
- Fri, 14 May 2021 13:06:56 -0000
-From: Rob Herring <robh@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20210514103405.29927-2-srinivas.kandagatla@linaro.org>
-References: <20210514103405.29927-1-srinivas.kandagatla@linaro.org>
- <20210514103405.29927-2-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v5 1/9] ASoC: dt-bindings: wcd938x: add bindings for
- wcd938x
-Date: Fri, 14 May 2021 08:06:56 -0500
-Message-Id: <1620997616.615521.3936695.nullmailer@robh.at.kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org,
- linux-kernel@vger.kernel.org, lgirdwood@gmail.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id B60E1F8013A
+ for <alsa-devel@alsa-project.org>; Fri, 14 May 2021 17:23:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B60E1F8013A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="GBpDf/v5"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 269AF61458;
+ Fri, 14 May 2021 15:23:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1621005796;
+ bh=p5zqoz8w803888+pXGNwIAiyWxv42TTRebNBM9Rqzro=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=GBpDf/v5P9uU3MczNBadXP4klM6TBViTSsSzGF64zJ0sEVEg8hWI5//04vYv/4Z9t
+ D1rwFrAvCfnQ9xCbs+hcPkY60/TJBGYFBFSeNPTRZCIwiLA4J+peE9wTz5tIt4SvIa
+ 0wuHlw8ZWk9VrUORGXmiMYdADjIpo93/Pl2HmT5FyxOLM/i5psTODAMT7SACbZc1VO
+ 9qAyjSR891GXQW6qwAj0i+cEJiody0A8cjhiOS2xCk1oOKxRX1eiq/SyPlVO03Xe8v
+ 7LZPUW5uai6/1pqrVXRl1S1cV4LfNYQxsPjqCAoGY2QN+98B2mp9NB646LHLvKMnXn
+ v/rmm8RyagNyQ==
+From: Mark Brown <broonie@kernel.org>
+To: sathyanarayana.nujella@intel.com, brent.lu@intel.com, tiwai@suse.com,
+ Zou Wei <zou_wei@huawei.com>, liam.r.girdwood@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, yang.jie@linux.intel.com,
+ dharageswari.r@intel.com, kuninori.morimoto.gx@renesas.com,
+ kai.vehmanen@linux.intel.com, perex@perex.cz, tzungbi@google.com,
+ yong.zhi@intel.com, cezary.rojewski@intel.com, fred.oh@linux.intel.com
+Subject: Re: [PATCH -next] ASoC: intel/boards: add missing MODULE_DEVICE_TABLE
+Date: Fri, 14 May 2021 16:22:29 +0100
+Message-Id: <162100559150.50429.5814132881880654217.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <1620791647-16024-1-git-send-email-zou_wei@huawei.com>
+References: <1620791647-16024-1-git-send-email-zou_wei@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,52 +90,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 14 May 2021 11:33:57 +0100, Srinivas Kandagatla wrote:
-> Qualcomm WCD9380/WCD9385 Codec is a standalone Hi-Fi audio codec IC
-> connected over SoundWire. This device has two SoundWire device RX and
-> TX respectively, supporting 4 x ADCs, ClassH, Ear, Aux PA, 2xHPH,
-> 7 x TX diff inputs, 8 DMICs, MBHC.
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  .../bindings/sound/qcom,wcd938x.yaml          | 149 ++++++++++++++++++
->  1 file changed, 149 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
-> 
+On Wed, 12 May 2021 11:54:07 +0800, Zou Wei wrote:
+> This patch adds missing MODULE_DEVICE_TABLE definition which generates
+> correct modalias for automatic loading of this driver when it is built
+> as an external module.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Applied to
 
-yamllint warnings/errors:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml: properties:qcom,mbhc-buttons-vthreshold-microvolt: 'anyOf' conditional failed, one must be fixed:
-	'$ref' is not one of ['maxItems', 'description', 'deprecated']
-		hint: Only "maxItems" is required for a single entry if there are no constraints defined for the values.
-	'minItems' is not one of ['maxItems', 'description', 'deprecated']
-		hint: Only "maxItems" is required for a single entry if there are no constraints defined for the values.
-	Additional properties are not allowed ('$ref' was unexpected)
-		hint: Arrays must be described with a combination of minItems/maxItems/items
-	'minItems' is not one of ['description', 'deprecated', 'const', 'enum', 'minimum', 'maximum', 'multipleOf', 'default', '$ref']
-	'maxItems' is not one of ['description', 'deprecated', 'const', 'enum', 'minimum', 'maximum', 'multipleOf', 'default', '$ref']
-	1 was expected
-		hint: Only "maxItems" is required for a single entry if there are no constraints defined for the values.
-	hint: cell array properties must define how many entries and what the entries are when there is more than one entry.
-	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml: ignoring, error in schema: properties: qcom,mbhc-buttons-vthreshold-microvolt
-warning: no schema found in file: ./Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
-Documentation/devicetree/bindings/sound/qcom,wcd938x.example.dt.yaml:0:0: /example-0/codec: failed to match any schema with compatible: ['qcom,wcd9380-codec']
+Thanks!
 
-See https://patchwork.ozlabs.org/patch/1478395
+[1/1] ASoC: intel/boards: add missing MODULE_DEVICE_TABLE
+      commit: a75e5cdf4dd1307bb1541edbb0c008f40896644c
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-pip3 install dtschema --upgrade
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Please check and re-submit.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
+Thanks,
+Mark
