@@ -2,66 +2,65 @@ Return-Path: <SRS0=jeAA=KJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 600F6C433ED
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 10:53:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9040CC433ED
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 11:06:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C04C16143D
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 10:53:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C04C16143D
+	by mail.kernel.org (Postfix) with ESMTPS id E339261260
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 11:06:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E339261260
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC430176D;
-	Fri, 14 May 2021 12:52:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC430176D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 47682176D;
+	Fri, 14 May 2021 13:05:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47682176D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620989618;
-	bh=SBYGkiLs83dY5C3NrbRU80MFrGQWx725gBA5K4LGpYI=;
+	s=default; t=1620990408;
+	bh=+uQmRTUFVdnC6OnY1HhAZdwiE/5ss/AB742OwimfZqE=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=m5LsrB7sjoN4rBZQUZTEG25X8uJxvZBcO1PHbcDYTQ2oK3anejwdwQ6c0uOB1ixyg
-	 j9iry91Nvwbji9moXSWDNtO//9pwszSXVuBgR1kb3Rc3ih+9CAtsI+saTLmEvmkM4/
-	 dYy/7AQUEWCIIJnl9hVmjClEENBwcsI9M+dpv9i4=
+	b=ej4FuVHzLPSTnSULCF3dYgmjvnFYqYU8sXTiKbJ3QEUrk+DosVm9odzRxO+bU/V85
+	 /1Z/t3wC7LykPppZSpHSkZ+33vlA0RPgOKY999kZUHT6/oxA5sW9WqKnFAyk3B8Cip
+	 we5XtAGARyTDznpHEvqnwI8ydAb9iX8iPwmKYCkM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3ED30F8020C;
-	Fri, 14 May 2021 12:52:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99BC9F8020C;
+	Fri, 14 May 2021 13:05:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BD77CF800BF; Fri, 14 May 2021 12:52:46 +0200 (CEST)
+ id 014C1F80240; Fri, 14 May 2021 13:05:55 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 21832F800BF
- for <alsa-devel@alsa-project.org>; Fri, 14 May 2021 12:52:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21832F800BF
+ by alsa1.perex.cz (Postfix) with ESMTPS id C53ABF800BF
+ for <alsa-devel@alsa-project.org>; Fri, 14 May 2021 13:05:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C53ABF800BF
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 1ECA2AF2C;
- Fri, 14 May 2021 10:52:38 +0000 (UTC)
-Date: Fri, 14 May 2021 12:52:38 +0200
-Message-ID: <s5hmtsx8u4p.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id F2799AF21;
+ Fri, 14 May 2021 11:05:51 +0000 (UTC)
+Date: Fri, 14 May 2021 13:05:51 +0200
+Message-ID: <s5hk0o18tio.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Pshou <pshou@realtek.com>
-Subject: Re: Add some CLOVE SSIDs of ALC293
-In-Reply-To: <d0746eaf29f248a5acc30313e3ba4f99@realtek.com>
-References: <0071b59925304565915258cb88cf070f@realtek.com>
- <s5hwns192rp.wl-tiwai@suse.de>
- <d0746eaf29f248a5acc30313e3ba4f99@realtek.com>
+To: Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: Re: ALSA: intel8x0: div by zero in snd_intel8x0_update()
+In-Reply-To: <YJ4yBmIV6RJCo42U@google.com>
+References: <YJ4yBmIV6RJCo42U@google.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Kailang <kailang@realtek.com>, Steve Wang <chirowang@realtek.com>
+Cc: alsa-devel@alsa-project.org, Leon Romanovsky <leon@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,45 +76,85 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 14 May 2021 10:43:58 +0200,
-Pshou wrote:
+On Fri, 14 May 2021 10:17:10 +0200,
+Sergey Senozhatsky wrote:
 > 
-> Hi Takashi:
+> Hi,
 > 
-> This is my mistake.
-> This is the correct.
+> I'm running (sometimes) into the following problem during resume
+> 
+>  divide error: 0000 [#1] PREEMPT SMP NOPTI
+>  RIP: 0010:snd_intel8x0_interrupt+0x121/0x279
+>  Code: 42 8b 44 35 34 41 0f af c5 42 03 44 35 38 42 89 44 35 38 48 8b 0c 24 80 b9 60 03 00 00 00 78 0f 49 8d 0c 2e 48 83 c1 38 31 d2 <f7> 71 f4 89 11 42 8b 7c 35 48 44 01 ef 83 e7 1f 42 89 7c 35 48 48
+>  RSP: 0000:ffff9a0a80108eb0 EFLAGS: 00010046
+>  RAX: 0000000000000000 RBX: 0000000000000019 RCX: ffff90d8c5efc198
+>  RDX: 0000000000000000 RSI: ffff9a0a80549016 RDI: ffff9a0a80549024
+>  RBP: ffff90d8c5efc060 R08: 000000000000197a R09: 00000f604ed00191
+>  R10: 00000000000001e0 R11: ffffffff9468e1d8 R12: 0000000000000020
+>  R13: 0000000000000040 R14: 0000000000000100 R15: 0000000000000002
+>  FS:  00007a75c397aff8(0000) GS:ffff90d912d80000(0000) knlGS:0000000000000000                                                               
+>  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>  CR2: 00007a77945d1000 CR3: 000000015bf46002 CR4: 0000000000360ea0
+>  Call Trace:
+>   <IRQ>
+>   __handle_irq_event_percpu+0xa0/0x1c0
+>   handle_irq_event_percpu+0x2d/0x70
+>   handle_irq_event+0x2c/0x48
+>   handle_fasteoi_irq+0xa1/0x161
+>   do_IRQ+0x51/0xd6
+>   common_interrupt+0xf/0xf
+>   </IRQ>
+>  RIP: 0033:0x7a7856462c59
+>  Code: 89 ca 48 2b 57 20 48 83 c2 10 31 c0 48 3b 57 28 48 0f 46 c1 c3 cc cc cc cc cc cc cc cc cc cc cc cc 64 48 8b 0c 25 00 00 00 00 <b8> f8 02 00 00 48 03 41 08 c3 cc cc cc cc cc cc cc cc cc cc cc cc
+>  RSP: 002b:00007a75c39794e8 EFLAGS: 00000246 ORIG_RAX: ffffffffffffffde
+>  RAX: 02fa413b24209c6c RBX: 0000017f19e1cf9e RCX: 00007a75c397aff8
+>  RDX: 00007a7855792472 RSI: 00007a7855790aa0 RDI: 0000000000000005
+>  RBP: 0000000000000005 R08: 0000000000000012 R09: 000000000000000d
+>  R10: 00000000009f86d2 R11: 000000000000197a R12: 0000017f19e40e7d
+>  R13: 000005ee937ae557 R14: 00007a7855790aa0 R15: 00007a7855792472
+>  Modules linked in:
+>  ---[ end trace 2ef6d63d0e3d757c ]---
+>  RIP: 0010:snd_intel8x0_interrupt+0x121/0x279
+>  Code: 42 8b 44 35 34 41 0f af c5 42 03 44 35 38 42 89 44 35 38 48 8b 0c 24 80 b9 60 03 00 00 00 78 0f 49 8d 0c 2e 48 83 c1 38 31 d2 <f7> 71 f4 89 11 42 8b 7c 35 48 44 01 ef 83 e7 1f 42 89 7c 35 48 48
+>  RSP: 0000:ffff9a0a80108eb0 EFLAGS: 00010046
+>  RAX: 0000000000000000 RBX: 0000000000000019 RCX: ffff90d8c5efc198
+>  RDX: 0000000000000000 RSI: ffff9a0a80549016 RDI: ffff9a0a80549024
+>  RBP: ffff90d8c5efc060 R08: 000000000000197a R09: 00000f604ed00191
+>  R10: 00000000000001e0 R11: ffffffff9468e1d8 R12: 0000000000000020
+>  R13: 0000000000000040 R14: 0000000000000100 R15: 0000000000000002
+>  FS:  00007a75c397aff8(0000) GS:ffff90d912d80000(0000) knlGS:0000000000000000                                                               
+>  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>  CR2: 00007a77945d1000 CR3: 000000015bf46002 CR4: 0000000000360ea0
+> 
+> This corresponds to
+> 
+> 	ichdev->position %= ichdev->size;
+> 
+> in snd_intel8x0_update().
+> 
+> A print out of that ichdev looks as follows
+> 
+> snd_intel8x0 0000:00:18.0: lvi_frag = 0, frags = 0, size = 0, period_size = 0x0, period_size1 = 0x0
 
-Thanks, applied now.
+This sounds like some spurious IRQ that casually hits during the
+resume.  It's strange that, even if it's a spurious IRQ, it contains
+the proper update bits for the stream.  Is that on a real hardware or
+on a VM?
+
+In anyway, the patch like below might cover enough.
 
 
 Takashi
 
-> 
-> Best regards
-> pshou 
-> 
-> -----Original Message-----
-> From: Takashi Iwai <tiwai@suse.de> 
-> Sent: Friday, May 14, 2021 3:46 PM
-> To: Pshou <pshou@realtek.com>
-> Cc: alsa-devel@alsa-project.org; Kailang <kailang@realtek.com>; Steve Wang <chirowang@realtek.com>
-> Subject: Re: Add some CLOVE SSIDs of ALC293
-> 
-> On Fri, 14 May 2021 07:23:10 +0200,
-> Pshou wrote:
-> > 
-> > Hi Alsa-devel ML:
-> > 
-> > Can you help me add some source code to patch_realtek.c?
-> > 
-> > Add some CLEVO SSID of alc293.
-> 
-> The code change looks OK, but you've added a spurious From and Signed-off-by line.  Could you correct it and resubmit?
-> 
-> 
-> thanks,
-> 
-> Takashi
-> ------Please consider the environment before printing this e-mail.
-> [2 0001-Add-some-Clove-SSIDs-of-ALC293.patch <application/octet-stream (base64)>]
-> 
+--- a/sound/pci/intel8x0.c
++++ b/sound/pci/intel8x0.c
+@@ -691,6 +691,9 @@ static inline void snd_intel8x0_update(struct intel8x0 *chip, struct ichdev *ich
+ 	int status, civ, i, step;
+ 	int ack = 0;
+ 
++	if (!ichdev->substream || ichdev->suspended)
++		return;
++
+ 	spin_lock_irqsave(&chip->reg_lock, flags);
+ 	status = igetbyte(chip, port + ichdev->roff_sr);
+ 	civ = igetbyte(chip, port + ICH_REG_OFF_CIV);
