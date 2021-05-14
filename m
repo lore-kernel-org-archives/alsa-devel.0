@@ -2,131 +2,103 @@ Return-Path: <SRS0=jeAA=KJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BDF0C433ED
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 08:48:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72FDCC433ED
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 08:55:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C4B04613DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 08:48:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C4B04613DF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+	by mail.kernel.org (Postfix) with ESMTPS id 545AD613E9
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 08:55:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 545AD613E9
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1EABC1779;
-	Fri, 14 May 2021 10:47:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EABC1779
+	by alsa0.perex.cz (Postfix) with ESMTPS id 846F4175E;
+	Fri, 14 May 2021 10:54:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 846F4175E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620982107;
-	bh=1y4wPA7ZP57WAj/XMZFmMtfogr4IUEPS1OLybOVksDs=;
+	s=default; t=1620982542;
+	bh=90DU4y+Im7B/yLbfwxO/FXWGAgAK/gQIQFIFhy6/KY8=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=Jdejbts5ZH5CYSDnZJJ3brWbksbGBRJnUfj3qiun3iSDcePutVyga5iMJE4np4OJo
-	 HlOErcRXjYAN2tEwnLQOcuBdouTf2xUppudKEsf+VwuE5vLYX6Tz2mP1OiMJsKsIp4
-	 Ybj5zaY/s5sbk7ycjm5lDJ+rRjoBSE/06Hu7aEBU=
+	b=eOH0oVB4TTXiOR1ZtIT4p3iS0PmJqkkBYHzYR/OtIWa5VSImc1EI+p0GoYOcTltjM
+	 Ha67S7LbdAg6KuWTKQu8X5KJl5NJyHCnhZGe0x2BXLoCJyrKFRWH7rA7Gd3+aTZPLr
+	 B8dvJ0Dc7l3qbrj3vC8H2/l19xq37B1OkR535+bo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ABC81F8020C;
-	Fri, 14 May 2021 10:47:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F2DF5F8027B;
+	Fri, 14 May 2021 10:54:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6851EF80240; Fri, 14 May 2021 10:47:35 +0200 (CEST)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id BCC93F8026F; Fri, 14 May 2021 10:54:49 +0200 (CEST)
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
+ [66.111.4.29])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F1D4CF8012A
- for <alsa-devel@alsa-project.org>; Fri, 14 May 2021 10:47:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1D4CF8012A
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 14E8lOKJ1014027,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
- by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 14E8lOKJ1014027
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 14 May 2021 16:47:24 +0800
-Received: from RTEXMBS05.realtek.com.tw (172.21.6.98) by
- RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 14 May 2021 16:47:23 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXMBS05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 14 May 2021 16:47:22 +0800
-Received: from RTEXMBS01.realtek.com.tw ([fe80::3132:fefa:293c:f022]) by
- RTEXMBS01.realtek.com.tw ([fe80::3132:fefa:293c:f022%13]) with mapi id
- 15.01.2106.013; Fri, 14 May 2021 16:47:22 +0800
-From: Pshou <pshou@realtek.com>
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Subject: Add some CLOVE SSIDs of ALC293
-Thread-Topic: Add some CLOVE SSIDs of ALC293
-Thread-Index: AddIna1jdp39yg0SQx+ey7VhdONXlQ==
-Date: Fri, 14 May 2021 08:47:22 +0000
-Message-ID: <5814caa848754d58815c49cdff04893c@realtek.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: yes
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.22.102.210]
-x-kse-serverinfo: RTEXMBS05.realtek.com.tw, 9
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/5/14_=3F=3F_06:00:00?=
-x-kse-attachment-filter-triggered-rules: Clean
-x-kse-attachment-filter-triggered-filters: Clean
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
-Content-Type: multipart/mixed;
- boundary="_004_5814caa848754d58815c49cdff04893crealtekcom_"
+ by alsa1.perex.cz (Postfix) with ESMTPS id B6AE5F800BF
+ for <alsa-devel@alsa-project.org>; Fri, 14 May 2021 10:54:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6AE5F800BF
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
+ header.b="Rf/GgCwz"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="GT1V+Yc7"
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+ by mailout.nyi.internal (Postfix) with ESMTP id 257C45C00EB;
+ Fri, 14 May 2021 04:54:40 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute3.internal (MEProxy); Fri, 14 May 2021 04:54:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding; s=fm1; bh=lnb+6q2h0W5MGkFA9FGhGi78eP
+ uLzCbDzT2uQIUp/gA=; b=Rf/GgCwz8GUVoJfwo1JqdJD5WsGaw/SrYBoBbBqLxD
+ GR9Rv6TZ51mVbUt/rtQcRTlHmn1E0Xmaux5WyM0tkaN5U1ce+2Qwgra65kSWAeT8
+ LnWi0xPosaPPclHdxrpo1lN4WjuOuaxs6ghDGduAaQVKtuCZMAQhuMH3ZVTE05IO
+ XljsgioIRx5X8xYf073zqPpm9F++YFBmocuQN+wSkqnybBzgQ7E14oMOyx5XEuhf
+ gWY3MSKmlrYo+wBZQqxg3/pdoPEmC96gOvQwFbV4khTcelqMWrxer0MZeycBO10p
+ cWIkQ9cpNgsq8WV+rgHkQT1u/Crm17gy6YA6X1ALUd0A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-transfer-encoding:date:from
+ :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+ :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=lnb+6q2h0W5MGkFA9
+ FGhGi78ePuLzCbDzT2uQIUp/gA=; b=GT1V+Yc7pMk8fakWyVPJtGZWKnIMI5ghY
+ z+MXUN7D5/43qd9+vjV9qr2OLzJhlC1JdJe0QhEf+Z779SWfl7VSPtsw0QertMsO
+ iAu3rCxEWZAfx2we7nzki+Ys4S5Chbtkvx9kizWiGdTNHf5ICBxZ0H41hQyLuXK4
+ 7aMqC7ZUdIBbIx+cUlLBGlt6B7JZpGPzM4nuVKIwAROoiX/ejeT6YWRz0PKLoJ9X
+ 9W6kyPj6V3BQRUlaNAxbkSFqJICdOi42XTGt3NOMkjjCj7fHbLbKmFGplrPnb+YR
+ d7Ki7AHggQhbaFaEioCxK2t1W7UQuelb0fyRYgXGAwh9mnjA/kl4Q==
+X-ME-Sender: <xms:zzqeYM6LbVJLsL9UVOa9RM_u-yh7UUrak5kPVjusbNqOxvWxO7qnRg>
+ <xme:zzqeYN62HVITVRFfhjc6qGQcGeSarfPIzIRtU8a-FXUGqpiEam9a3dmg_Y2giqpAx
+ _H_VvtARxkXckkUVrA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehhedgudefjecutefuodetggdotefrod
+ ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+ necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertd
+ ertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghs
+ hhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpedujeetlefhtd
+ dtkefgtdeuieelhffgteejjeehkeegveduvdevgeeiheeuueekjeenucfkphepudegrdef
+ rdeihedrudejheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+ hrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:zzqeYLeo-rin543nWctWDY9wL2mlADk-yqdAOPzC0UzB-nV0enVZJw>
+ <xmx:zzqeYBKs5XUIfyomGSPlUHzOKPbcqNgU61Wbn0f_sdJcE_WVGb1T7Q>
+ <xmx:zzqeYAI0PgSCS6ycEKRRx5Be3ORjGBPZpSoHWoGog4bjLuQMS9Jhdw>
+ <xmx:0DqeYKyF2boZdbrrDLOx2rig-JN9b_SbUdqDzFIunTpQLf-ykF7Fhg>
+Received: from workstation.flets-east.jp (ae065175.dynamic.ppp.asahi-net.or.jp
+ [14.3.65.175]) by mail.messagingengine.com (Postfix) with ESMTPA;
+ Fri, 14 May 2021 04:54:38 -0400 (EDT)
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: tiwai@suse.de
+Subject: [PATCH 0/7] ALSA: oxfw: code refactoring for quirks specific to ASICs
+Date: Fri, 14 May 2021 17:54:28 +0900
+Message-Id: <20210514085435.92807-1-o-takashi@sakamocchi.jp>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/14/2021 08:31:58
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 163651 [May 14 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: pshou@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 445 445 d5f7ae5578b0f01c45f955a2a751ac25953290c9
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {Tracking_susp_attach_format}
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 05/14/2021 08:35:00
-X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/14/2021 08:31:58
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 163651 [May 14 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: pshou@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 445 445 d5f7ae5578b0f01c45f955a2a751ac25953290c9
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {Tracking_susp_attach_format}
-X-KSE-AntiSpam-Info: realtek.com:7.1.1; 127.0.0.199:7.1.2;
- d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 05/14/2021 08:35:00
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: Takashi Iwai <tiwai@suse.de>, Kailang <kailang@realtek.com>,
- Steve Wang <chirowang@realtek.com>
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -142,112 +114,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
---_004_5814caa848754d58815c49cdff04893crealtekcom_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Hi,
+
+This patchset is for code refactoring to ALSA OXFW driver, mainly
+regarding to ASIC types and quirks.
 
 
-From: Pshou
-Sent: Friday, May 14, 2021 1:23 PM
-To: 'alsa-devel@alsa-project.org' <alsa-devel@alsa-project.org>
-Cc: Kailang <kailang@realtek.com>; 'Takashi Iwai' <tiwai@suse.de>; Steve Wa=
-ng <chirowang@realtek.com>
-Subject: Add some CLOVE SSIDs of ALC293
+Takashi Sakamoto (7):
+  ALSA: oxfw: code refactoring for existent device entry with
+    specifier_id and version
+  ALSA: oxfw: add device entry for Loud Technologies Tapco Link.FireWire
+    4x6
+  ALSA: oxfw: add explicit device entry for Loud Technologies Mackie
+    Onyx Sattelite
+  ALSA: oxfw: add comment for the type of ASICs
+  ALSA: oxfw: code refactoring for jumbo-payload quirk in OXFW970
+  ALSA: firewire-lib: code refactoring for jumbo payload quirk
+  ALSA: oxfw; code refactoring for wrong_dbs quirk
 
+ sound/firewire/amdtp-stream.c     |   7 +-
+ sound/firewire/oxfw/oxfw-stream.c |  20 ++---
+ sound/firewire/oxfw/oxfw.c        | 123 +++++++++++++-----------------
+ sound/firewire/oxfw/oxfw.h        |  10 ++-
+ 4 files changed, 76 insertions(+), 84 deletions(-)
 
-Hi Alsa-devel ML:
+-- 
+2.27.0
 
-
-
-Can you help me add some source code to patch_realtek.c?
-
-
-
-Add some CLEVO SSID of alc293.
-
-
-
-Best regards
-
-Pshou
-
-
---_004_5814caa848754d58815c49cdff04893crealtekcom_
-Content-Type: application/octet-stream;
-	name="0001-Add-some-Clove-SSIDs-of-ALC293.patch"
-Content-Description: 0001-Add-some-Clove-SSIDs-of-ALC293.patch
-Content-Disposition: attachment;
-	filename="0001-Add-some-Clove-SSIDs-of-ALC293.patch"; size=3773;
-	creation-date="Thu, 13 May 2021 16:46:29 GMT";
-	modification-date="Fri, 14 May 2021 08:35:00 GMT"
-Content-Transfer-Encoding: base64
-
-RnJvbTogUGVpU2VuIEhvdSA8cHNob3VAcmVhbHRlay5jb20+DQpTdWJqZWN0OiBBTFNBOiBoZGEv
-cmVhbHRlazogQWRkIHNvbWUgQ0xPVkUgU1NJRHMgb2YgQUxDMjkzDQoNCkZpeCAidXNlIGFzIGhl
-YWRzZXQgbWljLCB3aXRob3V0IGl0cyBvd24gamFjayBkZXRlY3QiIHByb2JsZW4uDQoNClNpZ25l
-ZC1vZmYtYnk6IFBlaVNlbiBIb3UgPHBzaG91QHJlYWx0ZWsuY29tPgpkaWZmIC0tZ2l0IGEvc291
-bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsu
-YwppbmRleCAzZTI2OWRlLi41NTJlMmNiIDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNo
-X3JlYWx0ZWsuYworKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYwpAQCAtODM4NSwx
-MiArODM4NSwxOSBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9wY2lfcXVpcmsgYWxjMjY5X2Zp
-eHVwX3RibFtdID0gewogCVNORF9QQ0lfUVVJUksoMHgxNTU4LCAweDUwYjgsICJDbGV2byBOSzUw
-U1oiLCBBTEMyOTNfRklYVVBfU1lTVEVNNzZfTUlDX05PX1BSRVNFTkNFKSwKIAlTTkRfUENJX1FV
-SVJLKDB4MTU1OCwgMHg1MGQ1LCAiQ2xldm8gTlA1MEQ1IiwgQUxDMjkzX0ZJWFVQX1NZU1RFTTc2
-X01JQ19OT19QUkVTRU5DRSksCiAJU05EX1BDSV9RVUlSSygweDE1NTgsIDB4NTBmMCwgIkNsZXZv
-IE5INTBBW0NERl0iLCBBTEMyOTNfRklYVVBfU1lTVEVNNzZfTUlDX05PX1BSRVNFTkNFKSwKKwlT
-TkRfUENJX1FVSVJLKDB4MTU1OCwgMHg1MGYyLCAiQ2xldm8gTkg1MEVbUFJdIiwgQUxDMjkzX0ZJ
-WFVQX1NZU1RFTTc2X01JQ19OT19QUkVTRU5DRSksCiAJU05EX1BDSV9RVUlSSygweDE1NTgsIDB4
-NTBmMywgIkNsZXZvIE5INThEUFEiLCBBTEMyOTNfRklYVVBfU1lTVEVNNzZfTUlDX05PX1BSRVNF
-TkNFKSwKKwlTTkRfUENJX1FVSVJLKDB4MTU1OCwgMHg1MGY1LCAiQ2xldm8gTkg1NUVQWSIsIEFM
-QzI5M19GSVhVUF9TWVNURU03Nl9NSUNfTk9fUFJFU0VOQ0UpLAorCVNORF9QQ0lfUVVJUksoMHgx
-NTU4LCAweDUwZjYsICJDbGV2byBOSDU1RFBRIiwgQUxDMjkzX0ZJWFVQX1NZU1RFTTc2X01JQ19O
-T19QUkVTRU5DRSksCiAJU05EX1BDSV9RVUlSSygweDE1NTgsIDB4NTEwMSwgIkNsZXZvIFM1MTBX
-VSIsIEFMQzI5M19GSVhVUF9TWVNURU03Nl9NSUNfTk9fUFJFU0VOQ0UpLAogCVNORF9QQ0lfUVVJ
-UksoMHgxNTU4LCAweDUxNTcsICJDbGV2byBXNTE3R1UxIiwgQUxDMjkzX0ZJWFVQX1NZU1RFTTc2
-X01JQ19OT19QUkVTRU5DRSksCiAJU05EX1BDSV9RVUlSSygweDE1NTgsIDB4NTFhMSwgIkNsZXZv
-IE5TNTBNVSIsIEFMQzI5M19GSVhVUF9TWVNURU03Nl9NSUNfTk9fUFJFU0VOQ0UpLAogCVNORF9Q
-Q0lfUVVJUksoMHgxNTU4LCAweDcwYTEsICJDbGV2byBOQjcwVFtISktdIiwgQUxDMjkzX0ZJWFVQ
-X1NZU1RFTTc2X01JQ19OT19QUkVTRU5DRSksCiAJU05EX1BDSV9RVUlSSygweDE1NTgsIDB4NzBi
-MywgIkNsZXZvIE5LNzBTQiIsIEFMQzI5M19GSVhVUF9TWVNURU03Nl9NSUNfTk9fUFJFU0VOQ0Up
-LAorCVNORF9QQ0lfUVVJUksoMHgxNTU4LCAweDcwZjIsICJDbGV2byBOSDc5RVBZIiwgQUxDMjkz
-X0ZJWFVQX1NZU1RFTTc2X01JQ19OT19QUkVTRU5DRSksCisJU05EX1BDSV9RVUlSSygweDE1NTgs
-IDB4NzBmMywgIkNsZXZvIE5INzdEUFEiLCBBTEMyOTNfRklYVVBfU1lTVEVNNzZfTUlDX05PX1BS
-RVNFTkNFKSwKKwlTTkRfUENJX1FVSVJLKDB4MTU1OCwgMHg3MGY0LCAiQ2xldm8gTkg3N0VQWSIs
-IEFMQzI5M19GSVhVUF9TWVNURU03Nl9NSUNfTk9fUFJFU0VOQ0UpLAorCVNORF9QQ0lfUVVJUkso
-MHgxNTU4LCAweDcwZjYsICJDbGV2byBOSDc3RFBRLVkiLCBBTEMyOTNfRklYVVBfU1lTVEVNNzZf
-TUlDX05PX1BSRVNFTkNFKSwKIAlTTkRfUENJX1FVSVJLKDB4MTU1OCwgMHg4MjI4LCAiQ2xldm8g
-TlI0MEJVIiwgQUxDMjkzX0ZJWFVQX1NZU1RFTTc2X01JQ19OT19QUkVTRU5DRSksCiAJU05EX1BD
-SV9RVUlSSygweDE1NTgsIDB4ODUyMCwgIkNsZXZvIE5INTBEW0NEXSIsIEFMQzI5M19GSVhVUF9T
-WVNURU03Nl9NSUNfTk9fUFJFU0VOQ0UpLAogCVNORF9QQ0lfUVVJUksoMHgxNTU4LCAweDg1MjEs
-ICJDbGV2byBOSDc3RFtDRF0iLCBBTEMyOTNfRklYVVBfU1lTVEVNNzZfTUlDX05PX1BSRVNFTkNF
-KSwKQEAgLTg0MDgsOSArODQxNSwxNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9wY2lfcXVp
-cmsgYWxjMjY5X2ZpeHVwX3RibFtdID0gewogCVNORF9QQ0lfUVVJUksoMHgxNTU4LCAweDhhNTEs
-ICJDbGV2byBOSDcwUkNRLVkiLCBBTEMyOTNfRklYVVBfU1lTVEVNNzZfTUlDX05PX1BSRVNFTkNF
-KSwKIAlTTkRfUENJX1FVSVJLKDB4MTU1OCwgMHg4ZDUwLCAiQ2xldm8gTkg1NVJDUS1NIiwgQUxD
-MjkzX0ZJWFVQX1NZU1RFTTc2X01JQ19OT19QUkVTRU5DRSksCiAJU05EX1BDSV9RVUlSSygweDE1
-NTgsIDB4OTUxZCwgIkNsZXZvIE45NTBUW0NERl0iLCBBTEMyOTNfRklYVVBfU1lTVEVNNzZfTUlD
-X05PX1BSRVNFTkNFKSwKKwlTTkRfUENJX1FVSVJLKDB4MTU1OCwgMHg5NjAwLCAiQ2xldm8gTjk2
-MEtbUFJdIiwgQUxDMjkzX0ZJWFVQX1NZU1RFTTc2X01JQ19OT19QUkVTRU5DRSksCiAJU05EX1BD
-SV9RVUlSSygweDE1NTgsIDB4OTYxZCwgIkNsZXZvIE45NjBTW0NERl0iLCBBTEMyOTNfRklYVVBf
-U1lTVEVNNzZfTUlDX05PX1BSRVNFTkNFKSwKIAlTTkRfUENJX1FVSVJLKDB4MTU1OCwgMHg5NzFk
-LCAiQ2xldm8gTjk3MFRbQ0RGXSIsIEFMQzI5M19GSVhVUF9TWVNURU03Nl9NSUNfTk9fUFJFU0VO
-Q0UpLAogCVNORF9QQ0lfUVVJUksoMHgxNTU4LCAweGE1MDAsICJDbGV2byBOTDUzUlUiLCBBTEMy
-OTNfRklYVVBfU1lTVEVNNzZfTUlDX05PX1BSRVNFTkNFKSwKKwlTTkRfUENJX1FVSVJLKDB4MTU1
-OCwgMHhhNjAwLCAiQ2xldm8gTkw1WE5VIiwgQUxDMjkzX0ZJWFVQX1NZU1RFTTc2X01JQ19OT19Q
-UkVTRU5DRSksCisJU05EX1BDSV9RVUlSSygweDE1NTgsIDB4YjAxOCwgIkNsZXZvIE5QNTBEW0JF
-XSIsIEFMQzI5M19GSVhVUF9TWVNURU03Nl9NSUNfTk9fUFJFU0VOQ0UpLAorCVNORF9QQ0lfUVVJ
-UksoMHgxNTU4LCAweGIwMTksICJDbGV2byBOSDc3RFtCRV1RIiwgQUxDMjkzX0ZJWFVQX1NZU1RF
-TTc2X01JQ19OT19QUkVTRU5DRSksCisJU05EX1BDSV9RVUlSSygweDE1NTgsIDB4YjAyMiwgIkNs
-ZXZvIE5INzdEW0RDXVtRV10iLCBBTEMyOTNfRklYVVBfU1lTVEVNNzZfTUlDX05PX1BSRVNFTkNF
-KSwKKwlTTkRfUENJX1FVSVJLKDB4MTU1OCwgMHhjMDE4LCAiQ2xldm8gTlA1MERbQkVdIiwgQUxD
-MjkzX0ZJWFVQX1NZU1RFTTc2X01JQ19OT19QUkVTRU5DRSksCisJU05EX1BDSV9RVUlSSygweDE1
-NTgsIDB4YzAxOSwgIkNsZXZvIE5INzdEW0JFXVEiLCBBTEMyOTNfRklYVVBfU1lTVEVNNzZfTUlD
-X05PX1BSRVNFTkNFKSwKKwlTTkRfUENJX1FVSVJLKDB4MTU1OCwgMHhjMDIyLCAiQ2xldm8gTkg3
-N1tEQ11bUVddIiwgQUxDMjkzX0ZJWFVQX1NZU1RFTTc2X01JQ19OT19QUkVTRU5DRSksCiAJU05E
-X1BDSV9RVUlSSygweDE3YWEsIDB4MTAzNiwgIkxlbm92byBQNTIwIiwgQUxDMjMzX0ZJWFVQX0xF
-Tk9WT19NVUxUSV9DT0RFQ1MpLAogCVNORF9QQ0lfUVVJUksoMHgxN2FhLCAweDEwNDgsICJUaGlu
-a0NlbnRyZSBTdGF0aW9uIiwgQUxDMjgzX0ZJWFVQX0hFQURTRVRfTUlDKSwKIAlTTkRfUENJX1FV
-SVJLKDB4MTdhYSwgMHgyMGYyLCAiVGhpbmtwYWQgU0w0MTAvNTEwIiwgQUxDMjY5X0ZJWFVQX1NL
-VV9JR05PUkUpLAo=
-
---_004_5814caa848754d58815c49cdff04893crealtekcom_--
