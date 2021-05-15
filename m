@@ -7,96 +7,97 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16A0AC433ED
-	for <alsa-devel@archiver.kernel.org>; Sat, 15 May 2021 07:13:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4257C433B4
+	for <alsa-devel@archiver.kernel.org>; Sat, 15 May 2021 07:14:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 383BB613CA
-	for <alsa-devel@archiver.kernel.org>; Sat, 15 May 2021 07:13:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 383BB613CA
+	by mail.kernel.org (Postfix) with ESMTPS id E52ED613BE
+	for <alsa-devel@archiver.kernel.org>; Sat, 15 May 2021 07:14:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E52ED613BE
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C88481738;
-	Sat, 15 May 2021 09:13:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C88481738
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7CDAA1691;
+	Sat, 15 May 2021 09:13:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CDAA1691
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621062830;
-	bh=8ayjLbVWf3C8BGPZC60BiLFPymypO7X5DbaciqOP0y4=;
+	s=default; t=1621062842;
+	bh=KLzOh5mkhUBfN+RzD99d17MfQxGzHdmxNaHuPOR3PzY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dYrNMLcf85+GbF8ps9vhbSAXAfeGVbkXQx3J9BRtXJA1HcLGFnbs1qTRWQ+LDszuR
-	 xa8Sa/Uq3sfGX7Xe5lHiQ08kRMP8JfX8zwSf2MW5qttK18GqiFF5AeT2FSTEkk1yXG
-	 /qtbY+gsLNljvk9FOLGvT5UFxZ/Epsr3qqf8h2As=
+	b=vSjPe/zMnZ5OpPds/k8tRxLPmh3K9uZJO2Dlj0QgEHjS9/0GldbCaVTSupNpTQUVG
+	 iPZamXGstW/Rs9xUaV5xeCXm3ZTH6HN6XUJnTQo0oZ/AXBQCEYHFgWjCh398dphtV6
+	 2H1ovsgRTpTivV7Gu7se0qjRGz/4Rx65nMd93Gr0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 746D7F804AB;
-	Sat, 15 May 2021 09:11:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 312EAF804AE;
+	Sat, 15 May 2021 09:11:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 38760F8016B; Sat, 15 May 2021 09:11:30 +0200 (CEST)
+ id 748F3F8028D; Sat, 15 May 2021 09:11:30 +0200 (CEST)
 Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
  [66.111.4.27])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4183DF8016B
- for <alsa-devel@alsa-project.org>; Sat, 15 May 2021 09:11:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4183DF8016B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9A5FBF80114
+ for <alsa-devel@alsa-project.org>; Sat, 15 May 2021 09:11:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A5FBF80114
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="FmXCYPmi"; 
+ header.b="0g7d7S4s"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="DCiRWra2"
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
- by mailout.nyi.internal (Postfix) with ESMTP id 719615C011D;
- Sat, 15 May 2021 03:11:21 -0400 (EDT)
+ header.i=@messagingengine.com header.b="IqE/3tpH"
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+ by mailout.nyi.internal (Postfix) with ESMTP id D908B5C012A;
+ Sat, 15 May 2021 03:11:22 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute4.internal (MEProxy); Sat, 15 May 2021 03:11:21 -0400
+ by compute5.internal (MEProxy); Sat, 15 May 2021 03:11:22 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=yy4KErEXtjHja
- I46tRlfO8xAp9Q7omE53IZRt+oG4NI=; b=FmXCYPmi6xDq+436qnOWP7Jlm95nY
- I+GAYUTdrU7RQbmdyrv+Zd/oQudbZG9fY72cVD5bQzdiOoTonQWGhWgB7z8GL21O
- 6ujEJPn7EDV+48OZbV4xqy0i2zPaeZIPVcm4G9uBg2auS47B7gj1NuLOP9pXwqZ6
- nrWnJ2ZXnlwLg00tNA9v/V8W6Cy7SNTPHrEexEvld4X5lZ38QVGlggzyoye8ladO
- 4klGVR4s2/4b7dlF33fbJCWCdMLbzlhuRafAhRZ+MD2M7ZXUzPfa7KyiaBR6O6UD
- 0/zNvUwzlqCRdTAhobeg1N9K/g6paqM3B5j3bEUBbPV+W5bAuHcmJomCQ==
+ :mime-version:content-transfer-encoding; s=fm1; bh=snVjiQ+JiUZKn
+ 0f6kKcYcN35k6cxRPHFAY/KaCgQYsY=; b=0g7d7S4sSdJ/8mOgDK7oTxJyH32jV
+ GzYjIM3XLIPTuYvlOD/u4FzwMH1utRpDqESyc8yv8WU7lh83466TsT/t+/DbPFXp
+ eeWBhxJFZi49mEkWsTsmef+1fHXiIVrleu1USoKnpu+GJ/waHNT91OkQnq7lrALy
+ f8+F1XJkB+/aAyd5FGy0bfvoZoLYdzYOmGX6QmOfF054WRjbcC0tvwqGNkzUyRFn
+ +2cbSfzhAy61RPN21uUsm3mT08bvAIR3KD9twHGzjC49yub3rZZD5CnqZa65NZuV
+ a3u1UMVxrmfrnO/th6tMujBKrsIE3At1TVGyKfgLvWCP0qO+4SaeouQdg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=yy4KErEXtjHjaI46tRlfO8xAp9Q7omE53IZRt+oG4NI=; b=DCiRWra2
- Hedx/Dc/6vLhBSBJIlBD4EI2HoiJhHY0wTdzQokFVRD6WUARfRNR64tNvyIZffIO
- aQAbXHOnfeFhY8rAmQv7G+M8ijxhjNjP0NF3aZxz4XYl5uqFPIHSZq3ZcT25NfL3
- 5njU6rta2VNWF9JQQGDZKOa04PZFxPN1sjSYEuq/l9qXntib+VyCXkeFm9NaZDq6
- Ze6vXGzqYoOz7TE6CG0k6orqBu0bKlJj9CYvtXqa7worlCViXh1hGAYXbobj8BD7
- y5bx+TlJYXSuHn4wiRfyaK5/tmGihBu4cTCg4v2h1JqvJhlNE7B0d8hbKyXqLz7k
- j3/Szr8Sx9Wj/Q==
-X-ME-Sender: <xms:GXSfYBcJjCkecVxROv9piJmR0dYJJHNjZjeUN-2KPRqyIx4XGUl1UA>
- <xme:GXSfYPOk9Bu1F7Nr2uNtn0QuqNhnY8Mz-RbWIprJJFMN3p4aQpyaY_ibpMAcm3hoC
- DL61StQ0e3TA3_c3dQ>
+ fm2; bh=snVjiQ+JiUZKn0f6kKcYcN35k6cxRPHFAY/KaCgQYsY=; b=IqE/3tpH
+ ADpF+j28m5gom9GDykLN1s/VhPv2681/4LWpftegD7AoC5npeewZkXns1pdgDIXU
+ YzdwbcdOl8gJjz/oiu9bo8+EikoQQLrSxJdR1vJgW8Eh71PZtZUUMsQQuiTnlMUE
+ xsJoq4L7gQcP2UifD3YBWZZ9F2Rt/Bf5kLK8L3l09uQgDKOlJzaonQ1XYIvi5epS
+ WbsmSjXDvklWRu/AGsi+FiupjX4auIt1QEesetr4ryBvOllKaSH1Kbavq+0PpJdK
+ 9RuuflKqURRou32yNiw6wnUbPEFLEu0CvSY3IIgGZKP/y/AdDsAcgFJxghkwE7ze
+ gKCqTKtR5rzeWQ==
+X-ME-Sender: <xms:GnSfYA_cKNybZsqP4aGEhnYEEA1rdN0hPpkWLX6TN7VHK9d3XRVM7Q>
+ <xme:GnSfYItI5ZpayIvbZW-VGpxQJDtJ2b31HGlKdhpnhpVpAKdh_6a7PmKYNsF98KFCL
+ VE7dB-aZGCvCUwk0a0>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehledguddtucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
  dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
  shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepveefffefke
  etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecukfhppedugedr
- fedrieehrddujeehnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilh
+ fedrieehrddujeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
  hfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:GXSfYKjlwHQEBe7ew7gpS90cZNL1ske4BoK5X8SCLNcbdp0JlDX2rg>
- <xmx:GXSfYK8kOrAHDf7MJfRi7NA3bLoEZ4jvVZ1ZPq5IfOPVFhQIAqXvVw>
- <xmx:GXSfYNucThXQ73DakHwMoB76rchCNNZJT1BFQUHBTqbvqgpQTionhA>
- <xmx:GXSfYL0PFo0ym7Bo8nGDEUpP_QCi328Hk9OIW5GVWgjMY-7F2N-tOg>
+X-ME-Proxy: <xmx:GnSfYGAdUVQd__r1maWiklTt_i_3g4EX9cNRhqw8J_dkOR5Cy0fjWQ>
+ <xmx:GnSfYAcuUWBLEHPIb0R9aUoCu3GdaeqFrCBjnibFuNawfHQdP_fnWg>
+ <xmx:GnSfYFOnoq5WWKcRqUBCPuqL2ZJNsY1YXeqLW5tljydRV8zpkRxPiA>
+ <xmx:GnSfYHWG4EbVFhXQUExdhdsGjoUE_wPupQfmKPGpz4sHVzvBrVi78A>
 Received: from workstation.flets-east.jp (ae065175.dynamic.ppp.asahi-net.or.jp
  [14.3.65.175]) by mail.messagingengine.com (Postfix) with ESMTPA;
- Sat, 15 May 2021 03:11:20 -0400 (EDT)
+ Sat, 15 May 2021 03:11:21 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Subject: [PATCH v2 03/10] ALSA: oxfw: code refactoring to detect mackie models
-Date: Sat, 15 May 2021 16:11:05 +0900
-Message-Id: <20210515071112.101535-4-o-takashi@sakamocchi.jp>
+Subject: [PATCH v2 04/10] ALSA: oxfw: add explicit device entry for Loud
+ Technologies Tapco Link.FireWire 4x6
+Date: Sat, 15 May 2021 16:11:06 +0900
+Message-Id: <20210515071112.101535-5-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210515071112.101535-1-o-takashi@sakamocchi.jp>
 References: <20210515071112.101535-1-o-takashi@sakamocchi.jp>
@@ -118,43 +119,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This commit changes condition statement to call mackie models detection
-just for the device entry. Additionally, comment is added for Onyx 1640i.
+Loud Technologies Tapco Link.FireWire 4x6 is identified as the model
+with OXFW970 ASIC.
+
+This commit adds explicit entry for the model.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/oxfw.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/firewire/oxfw/oxfw.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index 7be999c61730..2af72951ebf8 100644
+index 2af72951ebf8..998f0da6fd5b 100644
 --- a/sound/firewire/oxfw/oxfw.c
 +++ b/sound/firewire/oxfw/oxfw.c
-@@ -245,7 +245,7 @@ static int oxfw_probe(struct fw_unit *unit,
- {
- 	struct snd_oxfw *oxfw;
- 
--	if (entry->vendor_id == VENDOR_LOUD && !detect_loud_models(unit))
-+	if (entry->vendor_id == VENDOR_LOUD && entry->model_id == 0 && !detect_loud_models(unit))
- 		return -ENODEV;
- 
- 	/* Allocate this independent of sound card instance. */
-@@ -341,6 +341,7 @@ static const struct ieee1394_device_id oxfw_id_table[] = {
+@@ -47,7 +47,6 @@ static bool detect_loud_models(struct fw_unit *unit)
+ 		"Onyx 1640i",
+ 		"d.Pro",
+ 		"Mackie Onyx Satellite",
+-		"Tapco LINK.firewire 4x6",
+ 		"U.420"};
+ 	char model[32];
+ 	int err;
+@@ -338,12 +337,13 @@ static const struct ieee1394_device_id oxfw_id_table[] = {
+ 	OXFW_DEV_ENTRY(VENDOR_LACIE, 0x00f970, &lacie_speakers),
+ 	// Behringer,F-Control Audio 202.
+ 	OXFW_DEV_ENTRY(VENDOR_BEHRINGER, 0x00fc22, NULL),
++	// Loud Technologies, Tapco Link.FireWire 4x6.
++	OXFW_DEV_ENTRY(VENDOR_LOUD, 0x000460, NULL),
  	/*
  	 * Any Mackie(Loud) models (name string/model id):
  	 *  Onyx-i series (former models):	0x081216
-+	 *  Onyx 1640i:				0x001640
+ 	 *  Onyx 1640i:				0x001640
  	 *  Mackie Onyx Satellite:		0x00200f
- 	 *  Tapco LINK.firewire 4x6:		0x000460
+-	 *  Tapco LINK.firewire 4x6:		0x000460
  	 *  d.2 pro/d.4 pro (built-in card):	Unknown
-@@ -352,6 +353,7 @@ static const struct ieee1394_device_id oxfw_id_table[] = {
- 				  IEEE1394_MATCH_SPECIFIER_ID |
- 				  IEEE1394_MATCH_VERSION,
- 		.vendor_id	= VENDOR_LOUD,
-+		.model_id	= 0,
- 		.specifier_id	= SPECIFIER_1394TA,
- 		.version	= VERSION_AVC,
- 	},
+ 	 *  U.420:				Unknown
+ 	 *  U.420d:				Unknown
 -- 
 2.27.0
 
