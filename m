@@ -1,76 +1,111 @@
-Return-Path: <SRS0=jeAA=KJ=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=bp7U=KK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2026EC43461
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 21:33:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1BECC433ED
+	for <alsa-devel@archiver.kernel.org>; Sat, 15 May 2021 02:20:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 631F46145A
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 May 2021 21:33:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 631F46145A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 0D2A761457
+	for <alsa-devel@archiver.kernel.org>; Sat, 15 May 2021 02:20:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D2A761457
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 359D9172E;
-	Fri, 14 May 2021 23:32:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 359D9172E
+	by alsa0.perex.cz (Postfix) with ESMTPS id A36871726;
+	Sat, 15 May 2021 04:19:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A36871726
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621027991;
-	bh=4L4mcKVn3lkbqXEEkhEsQV92HBC1CPOXzYICTb92p2Y=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=U3H0lU3e2K094MeldUnyol5Ih7LQBG2kVp16iLQfFA66F6sYADpBKOE2VEeCnq4Dn
-	 ENBSlGTv7IOQFb9ItifIAM24TqspotvDupuGtMWJJAjzx1mdESZ1MjeYPvA+IAfQ7s
-	 xkpdtiQ+DFjoVfFGfMIjyw8xVAlkIdvgFOL+VY8g=
+	s=default; t=1621045228;
+	bh=u1JXOyzI83RkW4wh/WVv+mOty9+5FJTKtq/BkzpKw6M=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=f/AgI3I7U7eISI0RaKNxGY6NEYn6zKor3lD9jwKO9XhlYAjM34AfT4Y17ERQPQk99
+	 nBYUM3rQ4tslJG8VsaQQhmpB0tCChzBzkLQW5DJuc5S/QcA+PxkuhqGry1yLwx+YMR
+	 eDz7rTje1CEjqEKQaqkDIAMDZHrEJmTtE6wnZyGI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BED65F8020C;
-	Fri, 14 May 2021 23:32:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3A299F80156;
+	Sat, 15 May 2021 04:19:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9A075F80240; Fri, 14 May 2021 23:32:19 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 2BFDDF80163; Sat, 15 May 2021 04:19:36 +0200 (CEST)
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com
+ [64.147.123.21])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3260DF800BF
- for <alsa-devel@alsa-project.org>; Fri, 14 May 2021 23:32:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3260DF800BF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 15559F8013A
+ for <alsa-devel@alsa-project.org>; Sat, 15 May 2021 04:19:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15559F8013A
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="JpuFugNG"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 905B66143F;
- Fri, 14 May 2021 21:32:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1621027929;
- bh=4L4mcKVn3lkbqXEEkhEsQV92HBC1CPOXzYICTb92p2Y=;
- h=From:To:Cc:Subject:Date:From;
- b=JpuFugNGtCnfLnbuSbD6CYvS9tqG7bcN2jo/Rzbn/NVrHpOOWL7eV0QAY28Wxe03K
- 12BtzI6hEX+yVdfs7SDSFprIQ4WsWbty/nHjnLJP5jrSWHWeIux++zfG4EC1yV+XO1
- q+xp/qqE1d/sp622ccn1qu/941nWsAIaPjp8itRWGUOkr9WAuah0cIRllwQTbQCnZp
- ozBSoCKp+ZVx6e+ASRN7jsYuZL1I5N18jsrQ4RdzRvfnpJ27qo0639AKPl76HuOT3q
- ZiA1LF4H3iOkY3dPOCd7TmEXgnMfiyvnXk9a7pBFkUEJxRU34qT05AfFNeDm556Bph
- kD+ZQlgrBsncQ==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH] ASoC: fsl: fix SND_SOC_IMX_RPMSG dependency
-Date: Fri, 14 May 2021 23:31:14 +0200
-Message-Id: <20210514213118.630427-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+ dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
+ header.b="pNThhLql"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="czvOhI1t"
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.west.internal (Postfix) with ESMTP id 634C81BD3;
+ Fri, 14 May 2021 22:19:20 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute1.internal (MEProxy); Fri, 14 May 2021 22:19:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-type:in-reply-to; s=fm1; bh=AvBAJFX+d4hfuVND6j2upWr/c+S
+ k8F1wBdvfPFlh4UE=; b=pNThhLqlZlQ4ICOgjyd69tHEdOayVdsIxeYIckuu1sC
+ /xabq6oo1wwliTxynhS/SQwq5bLeGV8tkyJecfweaXhV4Yn+13Y25lr1YxLdY5Br
+ rUOJvtyFmBnT/8uwFJO5jys3ZWaoykt6QVWmuy/8jLwIudiazVpEiMxSSCri4UKk
+ 36Ku6ClMkSUb9BpsZyFUgm3dfygTHrd71Bh51kfId4/D/EfnUuX+USTAVokQXtLY
+ 0eW/w0npborHWb4kBP5TLp6extF6MAeB83NKZ+OLOk7uL9bzXjEtAfO2A549guVQ
+ czxA8kicbY1A2E3F0ONmE/oTsC4C4soLc5Ldqp1UTGQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=AvBAJF
+ X+d4hfuVND6j2upWr/c+Sk8F1wBdvfPFlh4UE=; b=czvOhI1t27IuchQV13ovc9
+ n4ZRFeyB0nP1m6xi+wbNCpwTqdC4yA8nIlo7HbUkkPzitIyOOafPSgl7VOpR9DZO
+ bbpjV3OAvLMRB9IgiWav+MllzrIZRX1ttOge2expMPVVbk0Ib52rmkDxwjoUbA37
+ ub9fjLvDavgBywNtpg/Wvvjdqq7GsTG1LT4GA5J+Hcpx7CqLk5ow/sirBKzXj2hk
+ qpPdcbse4RCEWDbpoM3KnV+nHcFeykY7gJK3jtdxLvxIhQOgik6Q7jh5J9+/zWMY
+ ALVCuyHaEzQbyiasquLhPg3qIkDlyEVmtC8EV2fg8Au0FkzTtYLN7hnnG+XO1rdA
+ ==
+X-ME-Sender: <xms:py-fYBMFDs9_OVe_i-2tnez4MKlWukwbbFZfb88a7s1BpdNAigSTxg>
+ <xme:py-fYD9XATEICgANf99NrTd0_ZBNDFHOhaHk0xyvMyOaTsYbETbXubdmuu_lTKBU8
+ Gk9SBxC_-CCxcDPH7g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehkedguddvkecutefuodetggdotefrod
+ ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+ necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttd
+ ertddttddvnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghk
+ rghshhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeelhfeuge
+ dvjefgjefgudekfedutedvtddutdeuieevtddtgeetjeekvdefgeefhfenucfkphepudeg
+ rdefrdeihedrudejheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+ hlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:py-fYAQYaRkfzOZG3loFDUMDuWKN4IzLBiL3KD9MH09PRbj4N26SwA>
+ <xmx:py-fYNs95h2sMV989-ZVG23AarENZOxLAOo8hFvpe8DFICbAtq30Yw>
+ <xmx:py-fYJfcwsLkGHqnXJ0sm8-2W2fYHJxbkxuTMByqYr-7sUBxaAwAAg>
+ <xmx:qC-fYJmxV6lZJLHPOJcyTDFK7wx6LcZ5dAG-eyX4UN7KGeDJ2wUvtg>
+Received: from workstation (ae065175.dynamic.ppp.asahi-net.or.jp [14.3.65.175])
+ by mail.messagingengine.com (Postfix) with ESMTPA;
+ Fri, 14 May 2021 22:19:18 -0400 (EDT)
+Date: Sat, 15 May 2021 11:19:15 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: tiwai@suse.de
+Subject: Re: [PATCH 0/7] ALSA: oxfw: code refactoring for quirks specific to
+ ASICs
+Message-ID: <20210515021915.GA27439@workstation>
+Mail-Followup-To: tiwai@suse.de, alsa-devel@alsa-project.org,
+ clemens@ladisch.de
+References: <20210514085435.92807-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org,
- Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
- Arnd Bergmann <arnd@arndb.de>, Shengjiu Wang <shengjiu.wang@nxp.com>,
- linux-kernel@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>,
- Viorel Suman <viorel.suman@nxp.com>, Fabio Estevam <festevam@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210514085435.92807-1-o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,34 +121,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hi,
 
-Kconfig produces a warning with SND_SOC_FSL_RPMSG=y and SND_IMX_SOC=m:
+On Fri, May 14, 2021 at 05:54:28PM +0900, Takashi Sakamoto wrote:
+> Hi,
+> 
+> This patchset is for code refactoring to ALSA OXFW driver, mainly
+> regarding to ASIC types and quirks.
+> 
+> 
+> Takashi Sakamoto (7):
+>   ALSA: oxfw: code refactoring for existent device entry with
+>     specifier_id and version
+>   ALSA: oxfw: add device entry for Loud Technologies Tapco Link.FireWire
+>     4x6
+>   ALSA: oxfw: add explicit device entry for Loud Technologies Mackie
+>     Onyx Sattelite
+>   ALSA: oxfw: add comment for the type of ASICs
+>   ALSA: oxfw: code refactoring for jumbo-payload quirk in OXFW970
+>   ALSA: firewire-lib: code refactoring for jumbo payload quirk
+>   ALSA: oxfw; code refactoring for wrong_dbs quirk
+> 
+>  sound/firewire/amdtp-stream.c     |   7 +-
+>  sound/firewire/oxfw/oxfw-stream.c |  20 ++---
+>  sound/firewire/oxfw/oxfw.c        | 123 +++++++++++++-----------------
+>  sound/firewire/oxfw/oxfw.h        |  10 ++-
+>  4 files changed, 76 insertions(+), 84 deletions(-)
 
-WARNING: unmet direct dependencies detected for SND_SOC_IMX_RPMSG
-  Depends on [m]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_IMX_SOC [=m] && RPMSG [=y]
-  Selected by [y]:
-  - SND_SOC_FSL_RPMSG [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && COMMON_CLK [=y] && RPMSG [=y] && SND_IMX_SOC [=m]!=n
+I readlized that the 2nd and 3rd patch include bug that the target
+device is not identified. I'll post take 2 patchset later and please
+abandon issued patchset.
 
-Add a dependency to prevent this configuration.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- sound/soc/fsl/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Regards
 
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 0917d65d6921..556c284f49dd 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -119,6 +119,7 @@ config SND_SOC_FSL_RPMSG
- 	tristate "NXP Audio Base On RPMSG support"
- 	depends on COMMON_CLK
- 	depends on RPMSG
-+	depends on SND_IMX_SOC || SND_IMX_SOC = n
- 	select SND_SOC_IMX_RPMSG if SND_IMX_SOC != n
- 	help
- 	  Say Y if you want to add rpmsg audio support for the Freescale CPUs.
--- 
-2.29.2
-
+Takashi Sakamoto
