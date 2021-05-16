@@ -2,83 +2,96 @@ Return-Path: <SRS0=JNK0=KL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52391C433ED
-	for <alsa-devel@archiver.kernel.org>; Sun, 16 May 2021 10:19:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 389FFC433B4
+	for <alsa-devel@archiver.kernel.org>; Sun, 16 May 2021 11:00:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C869E61184
-	for <alsa-devel@archiver.kernel.org>; Sun, 16 May 2021 10:19:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C869E61184
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 7726561164
+	for <alsa-devel@archiver.kernel.org>; Sun, 16 May 2021 11:00:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7726561164
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9901416A9;
-	Sun, 16 May 2021 12:18:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9901416A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0238D1699;
+	Sun, 16 May 2021 12:59:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0238D1699
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621160375;
-	bh=lGbf/j42/4jnjE/bobLO5RJWrALBdbYzO9Tzev+J9G4=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1621162840;
+	bh=NaKCo3cvEd2Vzbel/pGGkJh5gcqTEUZ0t8adAJDQ6Ec=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=L6n9Z9PEodvjytZcXmy3dHGxy5uq4av+U5qL8NUZouUgphkm+m3A0TfGXZoDYEEQe
-	 LnZABLDVXkGY+9LlipFgcIMYMitbA9XwjST9nhmT+gdZGtJHNr6l2wyKcEX7LAEYF7
-	 /DXqftYwG06dje1TjS/E0CmTEeu3MF/Dq2cpRleE=
+	b=Yy5j6doIJZdi6wBRfrDhtXSYgjZR7PhwZw+kIxQ3YlQVEpwta6FFxM0jV90o5Svrw
+	 2LzNgDHcAerXQl5Fx074iUPAZho7ESaJG//iJ156eVvhqudt6oo9nRk2uejI3OL9w1
+	 o1AOhnXYRuXt/HWiL2+/PLl7rp4csr32vgqvdY3E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 337F3F801DB;
-	Sun, 16 May 2021 12:18:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 763B0F801DB;
+	Sun, 16 May 2021 12:59:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 25566F80217; Sun, 16 May 2021 12:18:44 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 511FCF80217; Sun, 16 May 2021 12:59:47 +0200 (CEST)
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com
+ [IPv6:2607:f8b0:4864:20::434])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3FD0AF801DB
- for <alsa-devel@alsa-project.org>; Sun, 16 May 2021 12:18:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FD0AF801DB
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0C0EF8016E
+ for <alsa-devel@alsa-project.org>; Sun, 16 May 2021 12:59:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0C0EF8016E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mzfs12ng"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7958461205;
- Sun, 16 May 2021 10:18:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1621160317;
- bh=lGbf/j42/4jnjE/bobLO5RJWrALBdbYzO9Tzev+J9G4=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=mzfs12ngjC+3vZuyy2szlHovtA8pYQbgvBwC+XLWoeu9hrE5gd7AMkQ1n7U7WJbM2
- EFUcZjglqjjnFSsG6cFV5y8ddTxiHpHYaqToMo5GyQyS60yTToJ31TgGrNeyLSWxtc
- G38GabMM73vtBHnN8qLfzLXEJIdcT7g1sDtDUsxE5EBjSQ8iceIu0q60eiyqvXzO/O
- fkL4gLXBx2w12TBfIPI0glB0knIFqGEFlytiFIMzctPU165kkO/FFrtNtxasArWzJw
- vUJTTzZRx3u8Mx2E7OPMAZgMPw/2Pcj40YkrSdX8IQ5sHxvDaG15E96pWYkGgNB0Ul
- 0uz0CLeyyzs5w==
-Received: by mail.kernel.org with local (Exim 4.94.2)
- (envelope-from <mchehab@kernel.org>)
- id 1liDr1-003o8y-MB; Sun, 16 May 2021 12:18:35 +0200
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Subject: [PATCH v3 13/16] docs: sound: kernel-api: writing-an-alsa-driver.rst:
- replace some characters
-Date: Sun, 16 May 2021 12:18:30 +0200
-Message-Id: <f560414dfc677712126ae8b28e755e610d142c42.1621159997.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1621159997.git.mchehab+huawei@kernel.org>
-References: <cover.1621159997.git.mchehab+huawei@kernel.org>
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="Cpy1ZhzN"
+Received: by mail-pf1-x434.google.com with SMTP id h127so3040502pfe.9
+ for <alsa-devel@alsa-project.org>; Sun, 16 May 2021 03:59:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=4GxSFPpWStKHjj7EXT1jNvKcDZSOJF70aqfxoCB02kY=;
+ b=Cpy1ZhzNx1aXXw3LdrNWLhQV74sEFSo4yuPbZKep5yiUfJ7jFrzsL2A7fwWfhE6lWS
+ /KSnKu0QTHLxD3kyOFX9a2EalkBpWDdhslf7K6x7qt3tcIXgOqFK4uChKM+J4xhZrLnS
+ bYcuqmCK/DTMUUwmoOFvd80zHMnPJlCBJp5jw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=4GxSFPpWStKHjj7EXT1jNvKcDZSOJF70aqfxoCB02kY=;
+ b=CmvInCTHUgjM1F0/bry4VpLy7eOpirojDJ290xOR8vRk8BJZ8FcC4A/OO+EpWgm0zL
+ 2ipiRK4V/O07QVK3qUQxcWM5fxi7jFwCF+BWORMqxPQc2RiK1h8C/IRsJjnLNmX0cEcC
+ Idd6kRsNnCzj6KXE8nhBiHw+PGB9kbLdUbtxj0uySfhBm/H+OX/pMS8AO/RcR9nq4AOq
+ FnHBgROIjkeyWsSfR8piopVLsIECbb7Ds9IpsT1WRb0StCD7KZ2n/YgtKeCoeVtKH0/R
+ TvfX0PdqMBgT8PvqsrAuNrNRv2z9VByjxVQuzPjSuAW7Yv8PI+Ay7yZvd07gN5Hg/00H
+ lvaQ==
+X-Gm-Message-State: AOAM532vCX+JN9JZaC7l/sudcuWxey+yzwwKrq7Ja1pm5fHaUNRP5TmG
+ JR8tDOZtOEKtjTuUXQlWRJR10A==
+X-Google-Smtp-Source: ABdhPJzQJp5Q3my2xZ7H1eLd22WRM8iYd4u+a0Zh7oLI6yZH3geaz4ojkhR6TlZ63R3BXwn99le9yA==
+X-Received: by 2002:aa7:88c9:0:b029:2ab:aea7:e761 with SMTP id
+ k9-20020aa788c90000b02902abaea7e761mr45338082pff.71.1621162776789; 
+ Sun, 16 May 2021 03:59:36 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:4596:acad:c782:2f52])
+ by smtp.gmail.com with ESMTPSA id z5sm5077648pfa.172.2021.05.16.03.59.34
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 16 May 2021 03:59:36 -0700 (PDT)
+Date: Sun, 16 May 2021 19:59:31 +0900
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: ALSA: intel8x0: div by zero in snd_intel8x0_update()
+Message-ID: <YKD7E/VEwE7Dmx3s@google.com>
+References: <YJ4yBmIV6RJCo42U@google.com> <s5hk0o18tio.wl-tiwai@suse.de>
+ <YJ5cHdv6MVmAKD3b@google.com> <YKDYQfDf7GiMfGCN@google.com>
+ <YKDYbaprE3K2QpCe@google.com> <s5hbl9b6mah.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Jonathan Corbet <corbet@lwn.net>,
- Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Julia Lawall <Julia.Lawall@inria.fr>,
- =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?=
- <nfraprado@protonmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5hbl9b6mah.wl-tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Leon Romanovsky <leon@kernel.org>,
+ linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Sergey Senozhatsky <senozhatsky@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,34 +107,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The conversion tools used during DocBook/LaTeX/html/Markdown->ReST
-conversion and some cut-and-pasted text contain some characters that
-aren't easily reachable on standard keyboards and/or could cause
-troubles when parsed by the documentation build system.
+On (21/05/16 11:49), Takashi Iwai wrote:
+> Subject: [PATCH] ALSA: intel8x0: Don't update period unless prepared
+> 
+> The interrupt handler of intel8x0 calls snd_intel8x0_update() whenever
+> the hardware sets the corresponding status bit for each stream.  This
+> works fine for most cases as long as the hardware behaves properly.
+> But when the hardware gives a wrong bit set, this leads to a NULL
+> dereference Oops, and reportedly, this seems what happened on a VM.
+> 
+> For fixing the crash, this patch adds a internal flag indicating that
+> the stream is ready to be updated, and check it (as well as the flag
+> being in suspended) to ignore such spurious update.
+> 
+> Cc: <stable@vger.kernel.org>
+> Reported-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
-Replace the occurences of the following characters:
-
-	- U+00a0 (' '): NO-BREAK SPACE
-	  as it can cause lines being truncated on PDF output
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- Documentation/sound/kernel-api/writing-an-alsa-driver.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-index e6365836fa8b..90a58da36569 100644
---- a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-+++ b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-@@ -3368,7 +3368,7 @@ This ensures that the device can be closed and the driver unloaded
- without losing data.
- 
- This callback is optional. If you do not set ``drain`` in the struct
--snd_rawmidi_ops structure, ALSA will simply wait for 50 milliseconds
-+snd_rawmidi_ops structure, ALSA will simply wait for 50 milliseconds
- instead.
- 
- Miscellaneous Devices
--- 
-2.31.1
-
+I kicked the tests. Will let you know.
