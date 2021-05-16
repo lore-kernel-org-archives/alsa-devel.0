@@ -2,96 +2,69 @@ Return-Path: <SRS0=JNK0=KL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17BCFC433B4
-	for <alsa-devel@archiver.kernel.org>; Sun, 16 May 2021 11:24:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C73C0C433B4
+	for <alsa-devel@archiver.kernel.org>; Sun, 16 May 2021 12:08:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A6FFE61166
-	for <alsa-devel@archiver.kernel.org>; Sun, 16 May 2021 11:24:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A6FFE61166
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	by mail.kernel.org (Postfix) with ESMTPS id 1635E61007
+	for <alsa-devel@archiver.kernel.org>; Sun, 16 May 2021 12:08:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1635E61007
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D025168D;
-	Sun, 16 May 2021 13:23:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D025168D
+	by alsa0.perex.cz (Postfix) with ESMTPS id EA1AB169D;
+	Sun, 16 May 2021 14:07:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA1AB169D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621164267;
-	bh=NsPuNqiIpFn+lUD7/3ywYIC/1HKhx1a5pdpTi0pb6EQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1621166905;
+	bh=pvjt6o/pwaUyc9cpcwp0pLADi1ILSHGMccUBKeg43pc=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=o4AoGTRJaLMnB3rA3icDR/zxM6sMElcUfnmfXqy7ma4zmvK6rM+U3JB5RCDDI4p8E
-	 6MM+0ILoiKLzZ8YrSjY7h7uDEvNb15qmjdpIwqt0yARRB3PSAN4Zr87zv/nLNA+2aj
-	 ZkcQGenuAOUSjmMdU7kpD6vufPNF8/l+UBXM6U6A=
+	b=E6tAvk1x7lq7fTXiB+AEONgEeI0AFPNocb1jLPMF7+66tqxtA1h18V/9Kbs6intqT
+	 1rU2TfL5SlfYivgm2e3ctvuWYmNu93hpeGtW8EMvi/ZKAA8ToW/jo3CtWh0hrNpH3+
+	 gGlZPxXAJg472C9nSHtxdZRjKBJtP8QwpiSenZEY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 094CEF801DB;
-	Sun, 16 May 2021 13:23:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75CD5F801DB;
+	Sun, 16 May 2021 14:07:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8A2ABF80217; Sun, 16 May 2021 13:23:35 +0200 (CEST)
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com
- [IPv6:2607:f8b0:4864:20::433])
+ id ABE1DF80217; Sun, 16 May 2021 14:07:32 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 58E2AF8016E
- for <alsa-devel@alsa-project.org>; Sun, 16 May 2021 13:23:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58E2AF8016E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="DXnVL0pk"
-Received: by mail-pf1-x433.google.com with SMTP id g18so1412962pfr.2
- for <alsa-devel@alsa-project.org>; Sun, 16 May 2021 04:23:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=lJG0zQvDeXMVv53Ck1aIxdEZ/keO24SJzKO0xIhMZeE=;
- b=DXnVL0pkjr1uBBJuNdlGYAMQdS05d4l6kYyV8u5Hx0ooeevWDgkeiKeQt3pSAGIvdt
- UIO2PQF4t4LhFGgyH/tW+sHN5I1iJv1VKtbw5wSOz8WjF1nDAzW0mkGCE6iBZBB2U11O
- YklXXQMHpnh+vcEhmmG8fLKpV6gy4EA9xxFHc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=lJG0zQvDeXMVv53Ck1aIxdEZ/keO24SJzKO0xIhMZeE=;
- b=cxNfE9N8Rrq8w8feZPArZHn0fFjp5y6/ocuy5FH1PTBx2fn/5FieRZAwhHP8XBo2h/
- yXkcP6fbTrb4YxJMd2ss2JWNSxQQizvChDi43M3wIPs39VvrmjDiPE5Bk7TObW1mco6k
- u2An8jcYkjWkgXvH6lT0Y2mHcxq0tLSRUWb+7Cf3kLiCqdmL8e5CjgXFyf4UDzT8LCIE
- cEJHfu0tVyvQTuO9k0rzmdD4mAisLv/xfcXOHJHZnhlBB99v3Iy5+WpJcJLibHBZ9TzC
- 32Qx593Ydw5UrjV6Ce4Q5w8ZRKtjd7PXONbWPLqFJViPJ3Nu/q6n96I41RHM5nAYCB4v
- HWxg==
-X-Gm-Message-State: AOAM5303M8ipkQawqB0yHUpuGQtdIy7X6HlUJt8uCYD/uyVeVrVLvIap
- GYojNutZSYrhltqhlEb1jixF3w==
-X-Google-Smtp-Source: ABdhPJwxNb8d5ZlbARnU54AQKtx2pJJ/iterhcqiCFNnfTaHDGAeBoL/sepmaDiofgcZLc5RmD6tAA==
-X-Received: by 2002:a62:4c3:0:b029:27c:892f:8e22 with SMTP id
- 186-20020a6204c30000b029027c892f8e22mr54576846pfe.6.1621164207073; 
- Sun, 16 May 2021 04:23:27 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:4596:acad:c782:2f52])
- by smtp.gmail.com with ESMTPSA id x20sm8137652pjp.12.2021.05.16.04.23.24
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 16 May 2021 04:23:26 -0700 (PDT)
-Date: Sun, 16 May 2021 20:23:21 +0900
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
-To: Takashi Iwai <tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 42CF5F8013A
+ for <alsa-devel@alsa-project.org>; Sun, 16 May 2021 14:07:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42CF5F8013A
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 23CC0AF45;
+ Sun, 16 May 2021 12:07:24 +0000 (UTC)
+Date: Sun, 16 May 2021 14:07:23 +0200
+Message-ID: <s5h5yzi7uh0.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Sergey Senozhatsky <senozhatsky@chromium.org>
 Subject: Re: ALSA: intel8x0: div by zero in snd_intel8x0_update()
-Message-ID: <YKEAqdIAZ5K5FS+1@google.com>
+In-Reply-To: <YKEAqdIAZ5K5FS+1@google.com>
 References: <YJ4yBmIV6RJCo42U@google.com> <s5hk0o18tio.wl-tiwai@suse.de>
  <YJ5cHdv6MVmAKD3b@google.com> <YKDYQfDf7GiMfGCN@google.com>
  <YKDYbaprE3K2QpCe@google.com> <s5hbl9b6mah.wl-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <s5hbl9b6mah.wl-tiwai@suse.de>
+ <YKEAqdIAZ5K5FS+1@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Cc: alsa-devel@alsa-project.org, Leon Romanovsky <leon@kernel.org>,
- linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Sergey Senozhatsky <senozhatsky@chromium.org>
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,29 +80,115 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On (21/05/16 11:49), Takashi Iwai wrote:
-> Subject: [PATCH] ALSA: intel8x0: Don't update period unless prepared
+On Sun, 16 May 2021 13:23:21 +0200,
+Sergey Senozhatsky wrote:
 > 
-> The interrupt handler of intel8x0 calls snd_intel8x0_update() whenever
-> the hardware sets the corresponding status bit for each stream.  This
-> works fine for most cases as long as the hardware behaves properly.
-> But when the hardware gives a wrong bit set, this leads to a NULL
-> dereference Oops, and reportedly, this seems what happened on a VM.
+> On (21/05/16 11:49), Takashi Iwai wrote:
+> > Subject: [PATCH] ALSA: intel8x0: Don't update period unless prepared
+> > 
+> > The interrupt handler of intel8x0 calls snd_intel8x0_update() whenever
+> > the hardware sets the corresponding status bit for each stream.  This
+> > works fine for most cases as long as the hardware behaves properly.
+> > But when the hardware gives a wrong bit set, this leads to a NULL
+> > dereference Oops, and reportedly, this seems what happened on a VM.
+> 
+> VM, yes. I didn't see NULL derefs, my VMs crash because of div by
+> zero in `% size`.
 
-VM, yes. I didn't see NULL derefs, my VMs crash because of div by
-zero in `% size`.
+Ah, right, I'll fix the description.
 
-> For fixing the crash, this patch adds a internal flag indicating that
-> the stream is ready to be updated, and check it (as well as the flag
-> being in suspended) to ignore such spurious update.
+> > For fixing the crash, this patch adds a internal flag indicating that
+> > the stream is ready to be updated, and check it (as well as the flag
+> > being in suspended) to ignore such spurious update.
+> 
+> I reproduced the "spurious IRQ" case, and the patch handled it correctly
+> (VM did not crash).
+> 
+> > Cc: <stable@vger.kernel.org>
+> > Reported-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> 
+> I'll keep running test, but seems that it works as intended
+> 
+> Tested-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 
-I reproduced the "spurious IRQ" case, and the patch handled it correctly
-(VM did not crash).
+OK, below is the revised patch I'm going to apply.
 
-> Cc: <stable@vger.kernel.org>
-> Reported-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
-I'll keep running test, but seems that it works as intended
+Thanks!
 
-Tested-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Takashi
+
+-- 8< --
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH v2] ALSA: intel8x0: Don't update period unless prepared
+
+The interrupt handler of intel8x0 calls snd_intel8x0_update() whenever
+the hardware sets the corresponding status bit for each stream.  This
+works fine for most cases as long as the hardware behaves properly.
+But when the hardware gives a wrong bit set, this leads to a zero-
+division Oops, and reportedly, this seems what happened on a VM.
+
+For fixing the crash, this patch adds a internal flag indicating that
+the stream is ready to be updated, and check it (as well as the flag
+being in suspended) to ignore such spurious update.
+
+Cc: <stable@vger.kernel.org>
+Reported-and-tested-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+v1->v2: fixed description, updated tested-by tag
+
+ sound/pci/intel8x0.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/sound/pci/intel8x0.c b/sound/pci/intel8x0.c
+index 35903d1a1cbd..5b124c4ad572 100644
+--- a/sound/pci/intel8x0.c
++++ b/sound/pci/intel8x0.c
+@@ -331,6 +331,7 @@ struct ichdev {
+ 	unsigned int ali_slot;			/* ALI DMA slot */
+ 	struct ac97_pcm *pcm;
+ 	int pcm_open_flag;
++	unsigned int prepared:1;
+ 	unsigned int suspended: 1;
+ };
+ 
+@@ -691,6 +692,9 @@ static inline void snd_intel8x0_update(struct intel8x0 *chip, struct ichdev *ich
+ 	int status, civ, i, step;
+ 	int ack = 0;
+ 
++	if (!ichdev->prepared || ichdev->suspended)
++		return;
++
+ 	spin_lock_irqsave(&chip->reg_lock, flags);
+ 	status = igetbyte(chip, port + ichdev->roff_sr);
+ 	civ = igetbyte(chip, port + ICH_REG_OFF_CIV);
+@@ -881,6 +885,7 @@ static int snd_intel8x0_hw_params(struct snd_pcm_substream *substream,
+ 	if (ichdev->pcm_open_flag) {
+ 		snd_ac97_pcm_close(ichdev->pcm);
+ 		ichdev->pcm_open_flag = 0;
++		ichdev->prepared = 0;
+ 	}
+ 	err = snd_ac97_pcm_open(ichdev->pcm, params_rate(hw_params),
+ 				params_channels(hw_params),
+@@ -902,6 +907,7 @@ static int snd_intel8x0_hw_free(struct snd_pcm_substream *substream)
+ 	if (ichdev->pcm_open_flag) {
+ 		snd_ac97_pcm_close(ichdev->pcm);
+ 		ichdev->pcm_open_flag = 0;
++		ichdev->prepared = 0;
+ 	}
+ 	return 0;
+ }
+@@ -976,6 +982,7 @@ static int snd_intel8x0_pcm_prepare(struct snd_pcm_substream *substream)
+ 			ichdev->pos_shift = (runtime->sample_bits > 16) ? 2 : 1;
+ 	}
+ 	snd_intel8x0_setup_periods(chip, ichdev);
++	ichdev->prepared = 1;
+ 	return 0;
+ }
+ 
+-- 
+2.26.2
+
+
