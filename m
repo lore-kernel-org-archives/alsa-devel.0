@@ -2,103 +2,86 @@ Return-Path: <SRS0=ObP5=KM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76C74C433B4
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 May 2021 10:41:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1A42C433B4
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 May 2021 10:49:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 22C01611BF
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 May 2021 10:40:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 22C01611BF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id B598660FE6
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 May 2021 10:49:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B598660FE6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CA0DD820;
-	Mon, 17 May 2021 12:40:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA0DD820
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E25A836;
+	Mon, 17 May 2021 12:48:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E25A836
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621248057;
-	bh=z3IIby9tvZVZe4Gj2QDiU+q5c/pYvimCVIrb+xiXpyA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=aC5hsyCyvJKBjds5UDhUIdizwHl38yg/a81rwrgqWXXyUvpIszl551GolaIZDttA/
-	 TPCc3QjNOXTQnY5xMU/QNoXPWSChvxzo4YyYW+Io1C/ETsf/NJZFtCBj+cHY4xqGyo
-	 VGIXSCaUIh9G9ETkELU9H59QDlpQmuTUHn9aX6tQ=
+	s=default; t=1621248562;
+	bh=hl+KztOi8bojUeA0tTyxaNcaxmDxVewcUFKB7xDZ/M4=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=nLN36ID+E8BmnUowkS0MPLbixpTpv+7YVhBApmPkQqcSw+mM4eAEAdcoIBC6UZ7RW
+	 0ueqYGvEDV/ItOPeyS/p/lirDE8QbXdbP6lZmzwj2EfNt1+Ddz0VEfr/MGeW5vW6vz
+	 H7bmJigSL9FgDuW3sP56XJa6RXtGc23B2d1bDnNk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2EBCDF8016E;
-	Mon, 17 May 2021 12:40:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AC4B9F80169;
+	Mon, 17 May 2021 12:48:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7B36F8020B; Mon, 17 May 2021 12:40:02 +0200 (CEST)
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com
- [IPv6:2607:f8b0:4864:20::82e])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 3BE14F80246; Mon, 17 May 2021 12:48:25 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 43015F80169
- for <alsa-devel@alsa-project.org>; Mon, 17 May 2021 12:39:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43015F80169
+ by alsa1.perex.cz (Postfix) with ESMTPS id 18197F80082
+ for <alsa-devel@alsa-project.org>; Mon, 17 May 2021 12:48:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18197F80082
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="lJIewHJ5"
-Received: by mail-qt1-x82e.google.com with SMTP id t7so4462579qtn.3
- for <alsa-devel@alsa-project.org>; Mon, 17 May 2021 03:39:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=K9t98eUjKj6gDcKcxxVBCrgjV/xSgE7bQnCfYmjhVhU=;
- b=lJIewHJ5kTyrY82X8MK8oal0zVdmDeiJCgaEtxhPmMYOhq7KtcgyCz4etI5570uBmn
- y44cJr/tus37yOQpjgmi3O/XyNHHsWlA6JcQqZAC4oFATVuPrfTIp4NR6sqwImtLxpmD
- aD8JLo7IEjsNxQ1e6gDJA5uTeb6U8nDB1nEv21anaoh4vEMT2QVjmuCNVooxFsqhbpkh
- XXkL9Y5c4Nzc0i9F4mfXfQHtYmi6IxbV+9hKTFDEd7pgFAqGjoOW/5VluHEneOeIN3Fz
- /1daKx1wOzHg2rdXO682JxGj/vREANmVqxEYQqUuX2j3i/pnCVxKwif/gHNszzh9P6Jx
- py7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=K9t98eUjKj6gDcKcxxVBCrgjV/xSgE7bQnCfYmjhVhU=;
- b=RcinRYGRX8Fihvo/ftuGzJoLLFxlhh+Ze1bPQEIuaMrUaS7pw6JzjWlmYMOw/RGlAS
- WUhZaF3vb5BpslMdm/ONp6eh4BTUWoKQnUmJS2PyO0EhmpUB+b4gbHWh9ah2jbnlJaFr
- BIVQrFKEvEyMj0/V4i2Z8cSBVE09EHZ2SikbtEIIOzpc6Cufz73zNvfCu9py5L6OvKO0
- 20zolbgnR9ER06gqv01MyLpgiiXaH3cGdrFOPl5vZc05/j5vQiMGEenL45xPm1Mw/g3r
- +0vbkPsyKjaVmaKecjPw9nXchRb6cKT+Du21bJC1ZO/i4RrKZEbnn11meAVHziaxitbW
- AQ8A==
-X-Gm-Message-State: AOAM530GlaI4m3wQusIqkQiNZL0EKbhKV/wC1OXdFVF4qx3VNTyDfCV4
- 3m39xXGpFGEfTtu92MqRQyUUQYi7Ol4oeVgInvU=
-X-Google-Smtp-Source: ABdhPJxP2yInzaLOWHJ5yaYXJgH9PtDXyh5iBmZ7BS7Et2hKC0KXRWFB5kV1XtbtFyN7JRNeEd4rI0s5qieH76fQIF4=
-X-Received: by 2002:ac8:4cda:: with SMTP id l26mr50675557qtv.54.1621247992548; 
- Mon, 17 May 2021 03:39:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <1620630441-14358-1-git-send-email-shengjiu.wang@nxp.com>
- <1620630441-14358-2-git-send-email-shengjiu.wang@nxp.com>
- <20210511190057.GA2416585@robh.at.kernel.org>
-In-Reply-To: <20210511190057.GA2416585@robh.at.kernel.org>
-From: Shengjiu Wang <shengjiu.wang@gmail.com>
-Date: Mon, 17 May 2021 18:39:41 +0800
-Message-ID: <CAA+D8APEdrK0rVz_Mcad6k0ZGS2k9wkXJ6-NOykQ-NdDzFXhrg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] ASoC: dt-bindings: imx-akcodec: Add binding doc
- for akcodec machine driver
-To: Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org,
- Fabio Estevam <festevam@gmail.com>,
- linux-kernel <linux-kernel@vger.kernel.org>, Timur Tabi <timur@kernel.org>,
- Xiubo Li <Xiubo.Lee@gmail.com>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
- Shengjiu Wang <shengjiu.wang@nxp.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
- Mark Brown <broonie@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,
- Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE"
- <linux-arm-kernel@lists.infradead.org>
+ dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com
+ header.b="ZSgOk8cr"
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 15EBC1A0A12;
+ Mon, 17 May 2021 12:48:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 inva020.eu-rdc02.nxp.com 15EBC1A0A12
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com;
+ s=nselector3; t=1621248499;
+ bh=Im5JodYbpOO68PyPNbm9SHNQGqEZEAD/9V5qHFtCRc0=;
+ h=From:To:Subject:Date:From;
+ b=ZSgOk8crfOlyKbfm1KA1QIohQUU4aafWPnznyk4kNOIcaIgYGI6pCpKAMuOLJbqWP
+ t9g9xcaVba2Ld7dvYP8zR0lwfbD2u9LNJytQZ7KLGgcMRQGiiz7BitBf3s3MvhlcyJ
+ 6vkZWaW+6Uhsg3lGloKlKH3Q5KXfv+wiiLfd18C4bKDRo1y9UgS2EWM0zqGx/X4DN+
+ d6sUP33JhHSWYrPRD2ayD8ZdX7ULBLTK2qCoCMEldY+hyYG9xMRFduyeEtHq+kw/gO
+ rLVQROZPdWpEQbPYFo8gsddCqyDBaDA58KdaCeVKYlUJQcfOi1egXFE77QU8estoug
+ PN0L7oecv/nHg==
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 0C2E21A0A01;
+ Mon, 17 May 2021 12:48:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 inva020.eu-rdc02.nxp.com 0C2E21A0A01
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id A1987402D9;
+ Mon, 17 May 2021 18:48:02 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
+ kernel@pengutronix.de, linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+ alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+ linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
+ devicetree@vger.kernel.org
+Subject: [PATCH v3 1/2] ASoC: dt-bindings: imx-card: Add binding doc for imx
+ sound card
+Date: Mon, 17 May 2021 18:31:27 +0800
+Message-Id: <1621247488-21412-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,51 +97,153 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, May 13, 2021 at 4:07 AM Rob Herring <robh@kernel.org> wrote:
->
-> On Mon, May 10, 2021 at 03:07:21PM +0800, Shengjiu Wang wrote:
-> > Imx-akcodec is a new added machine driver for supporting
-> > ak4458/ak5558/ak5552/ak4497 codec on i.MX platforms.
-> >
-> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> > ---
-> > changes in v2:
-> > - update doc accoring to Rob's comment, use the common porperties.
-> >
-> >  .../bindings/sound/imx-audio-akcodec.yaml     | 107 ++++++++++++++++++
-> >  1 file changed, 107 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-akcodec.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/sound/imx-audio-akcodec.yaml b/Documentation/devicetree/bindings/sound/imx-audio-akcodec.yaml
-> > new file mode 100644
-> > index 000000000000..0812c4779b59
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/sound/imx-audio-akcodec.yaml
-> > @@ -0,0 +1,107 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/sound/imx-audio-akcodec.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: NXP i.MX audio complex with AK4458/AK5558/AK5552/AK4497 codec
-> > +
-> > +maintainers:
-> > +  - Shengjiu Wang <shengjiu.wang@nxp.com>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - fsl,imx8mq-audio-akcodec
-> > +      - fsl,imx-audio-akcodec
->
-> We gone from individual codecs to a family of codecs. Is there something
-> specific for the machine driver about this set of codecs? Why can't it
-> be *any* codec?
+Imx-card is a new added machine driver for supporting
+ak4458/ak5558/ak5552/ak4497 codec on i.MX platforms. But these
+DAC/ADCs are not only supported codecs. This machine driver is
+designed to be a more common machine driver for i.MX platform,
+it can support widely cpu dai interface and codec dai interface.
 
-Yes, there is something specific. but let me do further updates for this in the
-next version, then the document name needs to be changed to
-"imx-audio-card".
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+changes in v3:
+- use a generic compatible string as Rob's comments.
+- change the file name
 
-best regards
-wang shengjiu
+changes in v2:
+- update doc accoring to Rob's comment, use the common porperties.
+
+ .../bindings/sound/imx-audio-card.yaml        | 122 ++++++++++++++++++
+ 1 file changed, 122 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-card.yaml
+
+diff --git a/Documentation/devicetree/bindings/sound/imx-audio-card.yaml b/Documentation/devicetree/bindings/sound/imx-audio-card.yaml
+new file mode 100644
+index 000000000000..d1816dd061cf
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/imx-audio-card.yaml
+@@ -0,0 +1,122 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/imx-audio-card.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NXP i.MX audio sound card.
++
++maintainers:
++  - Shengjiu Wang <shengjiu.wang@nxp.com>
++
++properties:
++  compatible:
++    enum:
++      - fsl,imx-audio-card
++
++  model:
++    $ref: /schemas/types.yaml#/definitions/string
++    description: User specified audio sound card name
++
++  audio-routing:
++    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
++    description:
++      A list of the connections between audio components. Each entry is a
++      pair of strings, the first being the connection's sink, the second
++      being the connection's source. Valid names could be power supplies,
++      MicBias of codec and the jacks on the board.
++
++patternProperties:
++  ".*-dai-link$":
++    description:
++      Each subnode represents a dai link. Subnodes of each dai links would be
++      cpu/codec dais.
++
++    type: object
++
++    properties:
++      link-name:
++        description: Indicates dai-link name and PCM stream name.
++        $ref: /schemas/types.yaml#/definitions/string
++        maxItems: 1
++
++      format:
++        description: audio format.
++        items:
++          enum:
++            - i2s
++            - dsp_b
++
++      dai-tdm-slot-num:
++        description: see tdm-slot.txt.
++        $ref: /schemas/types.yaml#/definitions/uint32
++
++      dai-tdm-slot-width:
++        description: see tdm-slot.txt.
++        $ref: /schemas/types.yaml#/definitions/uint32
++
++      cpu:
++        description: Holds subnode which indicates cpu dai.
++        type: object
++        properties:
++          sound-dai: true
++
++      codec:
++        description: Holds subnode which indicates codec dai.
++        type: object
++        properties:
++          sound-dai: true
++
++      fsl,mclk-equal-bclk:
++        description: Indicates mclk can be equal to bclk, especially for sai interface
++        $ref: /schemas/types.yaml#/definitions/flag
++
++    required:
++      - link-name
++      - cpu
++
++    additionalProperties: false
++
++required:
++  - compatible
++  - model
++
++additionalProperties: false
++
++examples:
++  - |
++    sound-ak4458 {
++        compatible = "fsl,imx-audio-card";
++        model = "ak4458-audio";
++        pri-dai-link {
++            link-name = "akcodec";
++            format = "i2s";
++            fsl,mclk-equal-bclk;
++            cpu {
++                 sound-dai = <&sai1>;
++            };
++            codec {
++                 sound-dai = <&ak4458_1>, <&ak4458_2>;
++            };
++        };
++        fe-dai-link {
++            link-name = "HiFi-ASRC-FE";
++            format = "i2s";
++            cpu {
++                sound-dai = <&easrc>;
++            };
++        };
++        be-dai-link {
++            link-name = "HiFi-ASRC-BE";
++            format = "dsp_b";
++            dai-tdm-slot-num = <8>;
++            dai-tdm-slot-width = <32>;
++            fsl,mclk-equal-bclk;
++            cpu {
++                sound-dai = <&sai1>;
++            };
++            codec {
++                sound-dai = <&ak4458_1>, <&ak4458_2>;
++            };
++        };
++    };
+-- 
+2.27.0
+
