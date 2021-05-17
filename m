@@ -2,65 +2,103 @@ Return-Path: <SRS0=ObP5=KM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 546A7C433B4
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 May 2021 09:13:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76C74C433B4
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 May 2021 10:41:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 93AD56108B
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 May 2021 09:13:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 93AD56108B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 22C01611BF
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 May 2021 10:40:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 22C01611BF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6AB3D1662;
-	Mon, 17 May 2021 11:12:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6AB3D1662
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA0DD820;
+	Mon, 17 May 2021 12:40:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA0DD820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621242790;
-	bh=t9rgjcoPm8xjtD+wJ7BR1ns0bTzpMxYTaS0lDdy76aQ=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1621248057;
+	bh=z3IIby9tvZVZe4Gj2QDiU+q5c/pYvimCVIrb+xiXpyA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RyfHrIqJbx3HpkbAdKCApiUgaWrAyqq75v/bf7AaM3oRcmeeJ3fxh9aW5Z4y+TECw
-	 FHSRtAu1nJ5PoLwoLAfY8oXjdsU7cmsibpTOrjaG3Gd8MM/SMdc/kFdDBMnibkEu9A
-	 Vzv/cZ9PGH0vOswEXb47fMK/NzWTXMFi38k0kBy4=
+	b=aC5hsyCyvJKBjds5UDhUIdizwHl38yg/a81rwrgqWXXyUvpIszl551GolaIZDttA/
+	 TPCc3QjNOXTQnY5xMU/QNoXPWSChvxzo4YyYW+Io1C/ETsf/NJZFtCBj+cHY4xqGyo
+	 VGIXSCaUIh9G9ETkELU9H59QDlpQmuTUHn9aX6tQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DDA8DF80249;
-	Mon, 17 May 2021 11:12:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2EBCDF8016E;
+	Mon, 17 May 2021 12:40:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A791FF80258; Mon, 17 May 2021 11:11:56 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id E7B36F8020B; Mon, 17 May 2021 12:40:02 +0200 (CEST)
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com
+ [IPv6:2607:f8b0:4864:20::82e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7DEB1F8020B
- for <alsa-devel@alsa-project.org>; Mon, 17 May 2021 11:11:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DEB1F8020B
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 495A2B146;
- Mon, 17 May 2021 09:11:50 +0000 (UTC)
-Date: Mon, 17 May 2021 11:11:50 +0200
-Message-ID: <s5hr1i567xl.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v2 09/10] ALSA: oxfw; code refactoring for wrong_dbs quirk
-In-Reply-To: <20210515071112.101535-10-o-takashi@sakamocchi.jp>
-References: <20210515071112.101535-1-o-takashi@sakamocchi.jp>
- <20210515071112.101535-10-o-takashi@sakamocchi.jp>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
+ by alsa1.perex.cz (Postfix) with ESMTPS id 43015F80169
+ for <alsa-devel@alsa-project.org>; Mon, 17 May 2021 12:39:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43015F80169
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="lJIewHJ5"
+Received: by mail-qt1-x82e.google.com with SMTP id t7so4462579qtn.3
+ for <alsa-devel@alsa-project.org>; Mon, 17 May 2021 03:39:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=K9t98eUjKj6gDcKcxxVBCrgjV/xSgE7bQnCfYmjhVhU=;
+ b=lJIewHJ5kTyrY82X8MK8oal0zVdmDeiJCgaEtxhPmMYOhq7KtcgyCz4etI5570uBmn
+ y44cJr/tus37yOQpjgmi3O/XyNHHsWlA6JcQqZAC4oFATVuPrfTIp4NR6sqwImtLxpmD
+ aD8JLo7IEjsNxQ1e6gDJA5uTeb6U8nDB1nEv21anaoh4vEMT2QVjmuCNVooxFsqhbpkh
+ XXkL9Y5c4Nzc0i9F4mfXfQHtYmi6IxbV+9hKTFDEd7pgFAqGjoOW/5VluHEneOeIN3Fz
+ /1daKx1wOzHg2rdXO682JxGj/vREANmVqxEYQqUuX2j3i/pnCVxKwif/gHNszzh9P6Jx
+ py7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=K9t98eUjKj6gDcKcxxVBCrgjV/xSgE7bQnCfYmjhVhU=;
+ b=RcinRYGRX8Fihvo/ftuGzJoLLFxlhh+Ze1bPQEIuaMrUaS7pw6JzjWlmYMOw/RGlAS
+ WUhZaF3vb5BpslMdm/ONp6eh4BTUWoKQnUmJS2PyO0EhmpUB+b4gbHWh9ah2jbnlJaFr
+ BIVQrFKEvEyMj0/V4i2Z8cSBVE09EHZ2SikbtEIIOzpc6Cufz73zNvfCu9py5L6OvKO0
+ 20zolbgnR9ER06gqv01MyLpgiiXaH3cGdrFOPl5vZc05/j5vQiMGEenL45xPm1Mw/g3r
+ +0vbkPsyKjaVmaKecjPw9nXchRb6cKT+Du21bJC1ZO/i4RrKZEbnn11meAVHziaxitbW
+ AQ8A==
+X-Gm-Message-State: AOAM530GlaI4m3wQusIqkQiNZL0EKbhKV/wC1OXdFVF4qx3VNTyDfCV4
+ 3m39xXGpFGEfTtu92MqRQyUUQYi7Ol4oeVgInvU=
+X-Google-Smtp-Source: ABdhPJxP2yInzaLOWHJ5yaYXJgH9PtDXyh5iBmZ7BS7Et2hKC0KXRWFB5kV1XtbtFyN7JRNeEd4rI0s5qieH76fQIF4=
+X-Received: by 2002:ac8:4cda:: with SMTP id l26mr50675557qtv.54.1621247992548; 
+ Mon, 17 May 2021 03:39:52 -0700 (PDT)
+MIME-Version: 1.0
+References: <1620630441-14358-1-git-send-email-shengjiu.wang@nxp.com>
+ <1620630441-14358-2-git-send-email-shengjiu.wang@nxp.com>
+ <20210511190057.GA2416585@robh.at.kernel.org>
+In-Reply-To: <20210511190057.GA2416585@robh.at.kernel.org>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Mon, 17 May 2021 18:39:41 +0800
+Message-ID: <CAA+D8APEdrK0rVz_Mcad6k0ZGS2k9wkXJ6-NOykQ-NdDzFXhrg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] ASoC: dt-bindings: imx-akcodec: Add binding doc
+ for akcodec machine driver
+To: Rob Herring <robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org,
+ Fabio Estevam <festevam@gmail.com>,
+ linux-kernel <linux-kernel@vger.kernel.org>, Timur Tabi <timur@kernel.org>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
+ Mark Brown <broonie@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,
+ Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE"
+ <linux-arm-kernel@lists.infradead.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,18 +114,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 15 May 2021 09:11:11 +0200,
-Takashi Sakamoto wrote:
-> 
-> A new entry is added to the quirk enumeration for wrong_dbs quirk to
-> obsolete structure member.
-> 
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+On Thu, May 13, 2021 at 4:07 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Mon, May 10, 2021 at 03:07:21PM +0800, Shengjiu Wang wrote:
+> > Imx-akcodec is a new added machine driver for supporting
+> > ak4458/ak5558/ak5552/ak4497 codec on i.MX platforms.
+> >
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > ---
+> > changes in v2:
+> > - update doc accoring to Rob's comment, use the common porperties.
+> >
+> >  .../bindings/sound/imx-audio-akcodec.yaml     | 107 ++++++++++++++++++
+> >  1 file changed, 107 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-akcodec.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/sound/imx-audio-akcodec.yaml b/Documentation/devicetree/bindings/sound/imx-audio-akcodec.yaml
+> > new file mode 100644
+> > index 000000000000..0812c4779b59
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/sound/imx-audio-akcodec.yaml
+> > @@ -0,0 +1,107 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/sound/imx-audio-akcodec.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: NXP i.MX audio complex with AK4458/AK5558/AK5552/AK4497 codec
+> > +
+> > +maintainers:
+> > +  - Shengjiu Wang <shengjiu.wang@nxp.com>
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - fsl,imx8mq-audio-akcodec
+> > +      - fsl,imx-audio-akcodec
+>
+> We gone from individual codecs to a family of codecs. Is there something
+> specific for the machine driver about this set of codecs? Why can't it
+> be *any* codec?
 
-Just a nitpick: the subject is wrongly with a semicolon instead of a
-colon.
+Yes, there is something specific. but let me do further updates for this in the
+next version, then the document name needs to be changed to
+"imx-audio-card".
 
-
-thanks,
-
-Takashi
+best regards
+wang shengjiu
