@@ -2,61 +2,67 @@ Return-Path: <SRS0=ObP5=KM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 511BAC433B4
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 May 2021 13:21:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C7D6C433B4
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 May 2021 13:44:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C82DA611BE
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 May 2021 13:21:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C82DA611BE
+	by mail.kernel.org (Postfix) with ESMTPS id C1F5460FD8
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 May 2021 13:44:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C1F5460FD8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 51CE61694;
-	Mon, 17 May 2021 15:20:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51CE61694
+	by alsa0.perex.cz (Postfix) with ESMTPS id 68374828;
+	Mon, 17 May 2021 15:43:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68374828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621257670;
-	bh=FJaMe3qxdU6NulZwKfMQjs642Nx/ESW3BZljpfBKu9U=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1621259064;
+	bh=myKNTs9Ugs27CP+ZPgv65J1ZGlYsa2qYnoP68N6mafU=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sX98MR1ukSZvjteMBPaNtENOkPWJTBCaZJfhAUc2iF7KgDGTtXRQYW8HvMmFv3j5q
-	 R8VNPMwEIuFgGXnM2LkAphgcqk75XWpv7kcddDCsEtKbo0VZe1UM5jL4Ou08T2EbGS
-	 CxFttuZ/iYPbJcrUsEuxZ0UDQE/bEdPHKXc9TY/w=
+	b=IeESvhn7B/GlDBI09lxEB3DLkZCMQIhJJRgxUzEbP8ot8hAasRLgMPR7k4TknylkK
+	 b+CMTBddbTvNpUK9QKj2FNMoGVpaEd6d4q6nleUMotLVVk/XAP/n+l+/X88ixjWxge
+	 ileUiNRrtelWluDtKgcTVho9SATy3OrUKAOUG98A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3D61AF804FD;
-	Mon, 17 May 2021 15:16:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E26DDF8016E;
+	Mon, 17 May 2021 15:43:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47997F80430; Mon, 17 May 2021 15:16:14 +0200 (CEST)
+ id 5D183F8020B; Mon, 17 May 2021 15:43:32 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6FFF2F80431
- for <alsa-devel@alsa-project.org>; Mon, 17 May 2021 15:15:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FFF2F80431
+ by alsa1.perex.cz (Postfix) with ESMTPS id 737E2F8012C
+ for <alsa-devel@alsa-project.org>; Mon, 17 May 2021 15:43:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 737E2F8012C
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id BF6A4B226
- for <alsa-devel@alsa-project.org>; Mon, 17 May 2021 13:15:52 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id A9A76AEB6;
+ Mon, 17 May 2021 13:43:24 +0000 (UTC)
+Date: Mon, 17 May 2021 15:43:24 +0200
+Message-ID: <s5hk0nxo4qr.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 10/11] ALSA: usx2y: Cleanup probe and disconnect callbacks
-Date: Mon, 17 May 2021 15:15:44 +0200
-Message-Id: <20210517131545.27252-11-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210517131545.27252-1-tiwai@suse.de>
-References: <20210517131545.27252-1-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+To: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Subject: Re: [RFC PATCH] sound: line6: Fix race condition in line6_probe
+In-Reply-To: <20210517132725.GA50495@hyeyoo>
+References: <20210517132725.GA50495@hyeyoo>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Oliver Neukum <oneukum@suse.com>, Takashi Iwai <tiwai@suse.com>,
+ Vasily Khoruzhick <anarsoul@gmail.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,158 +78,83 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Minor code refactoring by merging the superfluous function calls.
-The functions were split in the past for covering pre-history USB
-driver code, but this is utterly useless.
+On Mon, 17 May 2021 15:27:25 +0200,
+Hyeonggon Yoo wrote:
+> 
+> syzbot reported general protection fault in midibuf_is_full.
+> the cause is linemidi pointer in struct usb_line6 isn't properly
+> initialized.
+> 
+> the pointer isn't initialized because there is race condition
+> in line6_probe. it calls line6_init_cap_control first, which submits urb.
+> and then it initializes it's data using private_init function.
+> 
+> so it's possible line6_data_received is called before it's
+> data isn't initialized.
+> 
+> Link: https://lkml.org/lkml/2021/5/17/543
+> Reported-by: syzbot+0d2b3feb0a2887862e06@syzkallerlkml..appspotmail.com
+> Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Thanks for the patch!  It's an issue I'm tracking now, too, and you
+submitted quicker.  But, unfortunately, this swap does seem yet
+another potential race between the private_init call and
+line6_init_cap_control().  The actually needed initialization is
+line6_init_mid() call, and this can be fixed by moving to the
+appropriate place instead of inside each private_init callback.
+
+So my current fix is like below.
+
+
+thanks,
+
+Takashi
+
 ---
- sound/usb/usx2y/usbusx2y.c | 107 ++++++++++++++-----------------------
- 1 file changed, 40 insertions(+), 67 deletions(-)
-
-diff --git a/sound/usb/usx2y/usbusx2y.c b/sound/usb/usx2y/usbusx2y.c
-index 09ead00e395e..099bee662af6 100644
---- a/sound/usb/usx2y/usbusx2y.c
-+++ b/sound/usb/usx2y/usbusx2y.c
-@@ -148,7 +148,6 @@ MODULE_PARM_DESC(enable, "Enable "NAME_ALLCAPS".");
+diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
+index a030dd65eb28..9602929b7de9 100644
+--- a/sound/usb/line6/driver.c
++++ b/sound/usb/line6/driver.c
+@@ -699,6 +699,10 @@ static int line6_init_cap_control(struct usb_line6 *line6)
+ 		line6->buffer_message = kmalloc(LINE6_MIDI_MESSAGE_MAXLEN, GFP_KERNEL);
+ 		if (!line6->buffer_message)
+ 			return -ENOMEM;
++
++		ret = line6_init_midi(line6);
++		if (ret < 0)
++			return ret;
+ 	} else {
+ 		ret = line6_hwdep_init(line6);
+ 		if (ret < 0)
+diff --git a/sound/usb/line6/pod.c b/sound/usb/line6/pod.c
+index cd44cb5f1310..16e644330c4d 100644
+--- a/sound/usb/line6/pod.c
++++ b/sound/usb/line6/pod.c
+@@ -376,11 +376,6 @@ static int pod_init(struct usb_line6 *line6,
+ 	if (err < 0)
+ 		return err;
  
- static int snd_usx2y_card_used[SNDRV_CARDS];
- 
--static void usx2y_usb_disconnect(struct usb_device *usb_device, void *ptr);
- static void snd_usx2y_card_private_free(struct snd_card *card);
- static void usx2y_unlinkseq(struct snd_usx2y_async_seq *s);
- 
-@@ -390,66 +389,6 @@ static int usx2y_create_card(struct usb_device *device,
- 	return 0;
- }
- 
--static int usx2y_usb_probe(struct usb_device *device,
--			   struct usb_interface *intf,
--			   const struct usb_device_id *device_id,
--			   struct snd_card **cardp)
--{
--	int		err;
--	struct snd_card *card;
--
--	*cardp = NULL;
--	if (le16_to_cpu(device->descriptor.idVendor) != 0x1604 ||
--	    (le16_to_cpu(device->descriptor.idProduct) != USB_ID_US122 &&
--	     le16_to_cpu(device->descriptor.idProduct) != USB_ID_US224 &&
--	     le16_to_cpu(device->descriptor.idProduct) != USB_ID_US428))
--		return -EINVAL;
--
--	err = usx2y_create_card(device, intf, &card);
+-	/* initialize MIDI subsystem: */
+-	err = line6_init_midi(line6);
 -	if (err < 0)
 -		return err;
--	err = usx2y_hwdep_new(card, device);
--	if (err < 0)
--		goto error;
--	err = snd_card_register(card);
--	if (err < 0)
--		goto error;
--	*cardp = card;
--	return 0;
 -
-- error:
--	snd_card_free(card);
--	return err;
--}
--
--/*
-- * new 2.5 USB kernel API
-- */
--static int snd_usx2y_probe(struct usb_interface *intf, const struct usb_device_id *id)
--{
--	struct snd_card *card;
--	int err;
--
--	err = usx2y_usb_probe(interface_to_usbdev(intf), intf, id, &card);
+ 	/* initialize PCM subsystem: */
+ 	err = line6_init_pcm(line6, &pod_pcm_properties);
+ 	if (err < 0)
+diff --git a/sound/usb/line6/variax.c b/sound/usb/line6/variax.c
+index ed158f04de80..1376fc405c7f 100644
+--- a/sound/usb/line6/variax.c
++++ b/sound/usb/line6/variax.c
+@@ -172,11 +172,6 @@ static int variax_init(struct usb_line6 *line6,
+ 	if (variax->buffer_activate == NULL)
+ 		return -ENOMEM;
+ 
+-	/* initialize MIDI subsystem: */
+-	err = line6_init_midi(&variax->line6);
 -	if (err < 0)
 -		return err;
--	dev_set_drvdata(&intf->dev, card);
--	return 0;
--}
 -
--static void snd_usx2y_disconnect(struct usb_interface *intf)
--{
--	usx2y_usb_disconnect(interface_to_usbdev(intf),
--			     usb_get_intfdata(intf));
--}
--
--static struct usb_driver snd_usx2y_usb_driver = {
--	.name =		"snd-usb-usx2y",
--	.probe =	snd_usx2y_probe,
--	.disconnect =	snd_usx2y_disconnect,
--	.id_table =	snd_usx2y_usb_id_table,
--};
--
- static void snd_usx2y_card_private_free(struct snd_card *card)
- {
- 	struct usx2ydev *usx2y = usx2y(card);
-@@ -463,18 +402,15 @@ static void snd_usx2y_card_private_free(struct snd_card *card)
- 		snd_usx2y_card_used[usx2y->card_index] = 0;
- }
- 
--/*
-- * Frees the device.
-- */
--static void usx2y_usb_disconnect(struct usb_device *device, void *ptr)
-+static void snd_usx2y_disconnect(struct usb_interface *intf)
- {
- 	struct snd_card *card;
- 	struct usx2ydev *usx2y;
- 	struct list_head *p;
- 
--	if (!ptr)
-+	card = usb_get_intfdata(intf);
-+	if (!card)
- 		return;
--	card = ptr;
- 	usx2y = usx2y(card);
- 	usx2y->chip_status = USX2Y_STAT_CHIP_HUP;
- 	usx2y_unlinkseq(&usx2y->as04);
-@@ -490,4 +426,41 @@ static void usx2y_usb_disconnect(struct usb_device *device, void *ptr)
- 	snd_card_free(card);
- }
- 
-+static int snd_usx2y_probe(struct usb_interface *intf,
-+			   const struct usb_device_id *id)
-+{
-+	struct usb_device *device = interface_to_usbdev(intf);
-+	struct snd_card *card;
-+	int err;
-+
-+	if (le16_to_cpu(device->descriptor.idVendor) != 0x1604 ||
-+	    (le16_to_cpu(device->descriptor.idProduct) != USB_ID_US122 &&
-+	     le16_to_cpu(device->descriptor.idProduct) != USB_ID_US224 &&
-+	     le16_to_cpu(device->descriptor.idProduct) != USB_ID_US428))
-+		return -EINVAL;
-+
-+	err = usx2y_create_card(device, intf, &card);
-+	if (err < 0)
-+		return err;
-+	err = usx2y_hwdep_new(card, device);
-+	if (err < 0)
-+		goto error;
-+	err = snd_card_register(card);
-+	if (err < 0)
-+		goto error;
-+
-+	dev_set_drvdata(&intf->dev, card);
-+	return 0;
-+
-+ error:
-+	snd_card_free(card);
-+	return err;
-+}
-+
-+static struct usb_driver snd_usx2y_usb_driver = {
-+	.name =		"snd-usb-usx2y",
-+	.probe =	snd_usx2y_probe,
-+	.disconnect =	snd_usx2y_disconnect,
-+	.id_table =	snd_usx2y_usb_id_table,
-+};
- module_usb_driver(snd_usx2y_usb_driver);
--- 
-2.26.2
-
+ 	/* initiate startup procedure: */
+ 	schedule_delayed_work(&line6->startup_work,
+ 			      msecs_to_jiffies(VARIAX_STARTUP_DELAY1));
