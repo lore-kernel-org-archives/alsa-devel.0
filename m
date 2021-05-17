@@ -7,50 +7,50 @@ X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 559C4C433B4
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 May 2021 02:42:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 716C0C433B4
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 May 2021 02:43:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1C6F5611BD
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 May 2021 02:42:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C6F5611BD
+	by mail.kernel.org (Postfix) with ESMTPS id 31E8761005
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 May 2021 02:43:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 31E8761005
 Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CCC7B1660;
-	Mon, 17 May 2021 04:41:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCC7B1660
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E7E51664;
+	Mon, 17 May 2021 04:42:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E7E51664
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621219344;
-	bh=t9cuxctlH8RB2lJGq6Ib7Pu+tiQtRkbzyGar5vEo5HE=;
+	s=default; t=1621219395;
+	bh=Uq4JBc0jJw4ahYJ2L2s29uX0VcTKaS/wAQ7ihW+nlcE=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IO5UqN3LJs03ssyV6ZEBlPcPihJIF8Lg3rcm8f8lmYfQcjFByHvwOYHbqFIrFyrqi
-	 nePyDgtQuD2K2nDWdCNkhSzUp31VXY7/yHandzvXEEArQhm4H6ysgXrEd2V/wZWddW
-	 XdOVfy46RZ7KLL9dWe3FZeeW/c1/ExMOUYERJ0Ws=
+	b=MPJZRaHdQbroDlGaDQU70ok5pTBI3psvADSSvn+4TkHhFCKTtnl2CxGb9aRM0FKiF
+	 iPWDl0FEXlzI+l1AFFjJ912D6ABLhhVtW+RVIeRGat413RgGeO2xRxGFDPU7kUrR35
+	 IZcRjdvBc9rb8vABxi2LDpfRDgnZnYs4e1RXR+w8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 42CF3F8016E;
-	Mon, 17 May 2021 04:41:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 01784F80249;
+	Mon, 17 May 2021 04:42:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 19816F8020B; Mon, 17 May 2021 04:41:32 +0200 (CEST)
+ id 106F3F8012C; Mon, 17 May 2021 04:42:20 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id C055EF80169
- for <alsa-devel@alsa-project.org>; Mon, 17 May 2021 04:41:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C055EF80169
+ by alsa1.perex.cz (Postfix) with ESMTP id A4643F8012C
+ for <alsa-devel@alsa-project.org>; Mon, 17 May 2021 04:42:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4643F8012C
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1621219286014741898-webhooks-bot@alsa-project.org>
-References: <1621219286014741898-webhooks-bot@alsa-project.org>
+In-Reply-To: <1621219337408587933-webhooks-bot@alsa-project.org>
+References: <1621219337408587933-webhooks-bot@alsa-project.org>
 Subject: [Question] Different routing + sample formats for input and output
-Message-Id: <20210517024132.19816F8020B@alsa1.perex.cz>
-Date: Mon, 17 May 2021 04:41:32 +0200 (CEST)
+Message-Id: <20210517024220.106F3F8012C@alsa1.perex.cz>
+Date: Mon, 17 May 2021 04:42:20 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,7 +66,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #135 was opened from flatmax:
+alsa-project/alsa-lib issue #135 was edited from flatmax:
 
 One soundcard I use has different output and input sample formats. The input format is S32_LE. The output format is S24_3LE.
 There is also a routing change I like to do.
@@ -95,7 +95,7 @@ Is there any way to setup the one soundcard with routing and format changes with
 pcm.!default {
 	type asym
 	playback.pcm "UMC1820_12ch_play"
-	capture.pcm "UMM6_capt"
+	capture.pcm "UMC1820_10ch_capt"
 }
 
 ctl.!default {
@@ -122,10 +122,21 @@ pcm.UMC1820_12ch_play {
   ttable.11.1 1
 }
 
-pcm.UMM6_capt {
-	type linear
-	slave.pcm "hw:UMM6"
-	slave.format S16_LE;
+pcm.UMC1820_10ch_capt {
+  type route;
+  slave.pcm "hw:UMC1820";
+  slave.format S32_LE;
+  slave.channels 10;
+	ttable.0.0 1
+  ttable.1.1 1
+  ttable.2.2 1
+  ttable.3.3 1
+  ttable.4.4 1
+  ttable.5.5 1
+  ttable.6.6 1
+  ttable.7.7 1
+  ttable.8.8 1
+  ttable.9.9 1
 }
 ########## END ~/.asoundrc ###################
 
