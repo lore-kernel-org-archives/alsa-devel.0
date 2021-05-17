@@ -2,58 +2,58 @@ Return-Path: <SRS0=ObP5=KM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C7D6C433B4
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 May 2021 13:44:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D974EC433ED
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 May 2021 14:58:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C1F5460FD8
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 May 2021 13:44:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C1F5460FD8
+	by mail.kernel.org (Postfix) with ESMTPS id 14BE560E0C
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 May 2021 14:58:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14BE560E0C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 68374828;
-	Mon, 17 May 2021 15:43:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68374828
+	by alsa0.perex.cz (Postfix) with ESMTPS id A51123E;
+	Mon, 17 May 2021 16:57:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A51123E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621259064;
-	bh=myKNTs9Ugs27CP+ZPgv65J1ZGlYsa2qYnoP68N6mafU=;
+	s=default; t=1621263504;
+	bh=leR3YUPsVjfLm39M8TtM3wZOcRkYL6dCWMGP3Zzd6OQ=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IeESvhn7B/GlDBI09lxEB3DLkZCMQIhJJRgxUzEbP8ot8hAasRLgMPR7k4TknylkK
-	 b+CMTBddbTvNpUK9QKj2FNMoGVpaEd6d4q6nleUMotLVVk/XAP/n+l+/X88ixjWxge
-	 ileUiNRrtelWluDtKgcTVho9SATy3OrUKAOUG98A=
+	b=E+tlIoiXSrQz+1s7ForKcXVFIDU5J/28Ehqc4echluxJrRjVhX/TGpVPabKJJqPrD
+	 VgB1StcD/xL989V+H2NrfSItDIu65ZGAbRl3jLtZLrVQmak+sb/m91r2aK8OnAS+Yg
+	 q03AQ5yMDSe9ghCscmf87xTFhDmukigKJCM+JAUk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E26DDF8016E;
-	Mon, 17 May 2021 15:43:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2E566F8016E;
+	Mon, 17 May 2021 16:57:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5D183F8020B; Mon, 17 May 2021 15:43:32 +0200 (CEST)
+ id 48C34F8020B; Mon, 17 May 2021 16:57:32 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 737E2F8012C
- for <alsa-devel@alsa-project.org>; Mon, 17 May 2021 15:43:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 737E2F8012C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 03B98F80169
+ for <alsa-devel@alsa-project.org>; Mon, 17 May 2021 16:57:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03B98F80169
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id A9A76AEB6;
- Mon, 17 May 2021 13:43:24 +0000 (UTC)
-Date: Mon, 17 May 2021 15:43:24 +0200
-Message-ID: <s5hk0nxo4qr.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id C7A49AC46;
+ Mon, 17 May 2021 14:57:28 +0000 (UTC)
+Date: Mon, 17 May 2021 16:57:28 +0200
+Message-ID: <s5ha6oto1bb.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 Subject: Re: [RFC PATCH] sound: line6: Fix race condition in line6_probe
-In-Reply-To: <20210517132725.GA50495@hyeyoo>
-References: <20210517132725.GA50495@hyeyoo>
+In-Reply-To: <20210517144811.GA54892@hyeyoo>
+References: <20210517132725.GA50495@hyeyoo> <s5hk0nxo4qr.wl-tiwai@suse.de>
+ <20210517144811.GA54892@hyeyoo>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -78,83 +78,79 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 17 May 2021 15:27:25 +0200,
+On Mon, 17 May 2021 16:48:11 +0200,
 Hyeonggon Yoo wrote:
 > 
-> syzbot reported general protection fault in midibuf_is_full.
-> the cause is linemidi pointer in struct usb_line6 isn't properly
-> initialized.
+> On Mon, May 17, 2021 at 03:43:24PM +0200, Takashi Iwai wrote:
+> > The actually needed initialization is
+> > line6_init_mid() call, and this can be fixed by moving to the
+> > appropriate place instead of inside each private_init callback.
 > 
-> the pointer isn't initialized because there is race condition
-> in line6_probe. it calls line6_init_cap_control first, which submits urb.
-> and then it initializes it's data using private_init function.
+> Oh, I missed it! there was another caller of line6_init_midi.
+> your fix seems promising to me. it's putting line6_init_midi
+> to the right place.
 > 
-> so it's possible line6_data_received is called before it's
-> data isn't initialized.
-> 
-> Link: https://lkml.org/lkml/2021/5/17/543
-> Reported-by: syzbot+0d2b3feb0a2887862e06@syzkallerlkml..appspotmail.com
-> Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+> by the way looking at code, I think this driver needs some
+> refactoring... it doesn't handle exceptions well.
 
-Thanks for the patch!  It's an issue I'm tracking now, too, and you
-submitted quicker.  But, unfortunately, this swap does seem yet
-another potential race between the private_init call and
-line6_init_cap_control().  The actually needed initialization is
-line6_init_mid() call, and this can be fixed by moving to the
-appropriate place instead of inside each private_init callback.
+Yes, there can be likely a few other holes in this driver, but for
+fixing them, we'd need an actual test device.  The initialization
+procedure of this device seems complex (multi-staged) and very
+sensitive.
 
-So my current fix is like below.
-
-
-thanks,
 
 Takashi
 
----
-diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index a030dd65eb28..9602929b7de9 100644
---- a/sound/usb/line6/driver.c
-+++ b/sound/usb/line6/driver.c
-@@ -699,6 +699,10 @@ static int line6_init_cap_control(struct usb_line6 *line6)
- 		line6->buffer_message = kmalloc(LINE6_MIDI_MESSAGE_MAXLEN, GFP_KERNEL);
- 		if (!line6->buffer_message)
- 			return -ENOMEM;
-+
-+		ret = line6_init_midi(line6);
-+		if (ret < 0)
-+			return ret;
- 	} else {
- 		ret = line6_hwdep_init(line6);
- 		if (ret < 0)
-diff --git a/sound/usb/line6/pod.c b/sound/usb/line6/pod.c
-index cd44cb5f1310..16e644330c4d 100644
---- a/sound/usb/line6/pod.c
-+++ b/sound/usb/line6/pod.c
-@@ -376,11 +376,6 @@ static int pod_init(struct usb_line6 *line6,
- 	if (err < 0)
- 		return err;
- 
--	/* initialize MIDI subsystem: */
--	err = line6_init_midi(line6);
--	if (err < 0)
--		return err;
--
- 	/* initialize PCM subsystem: */
- 	err = line6_init_pcm(line6, &pod_pcm_properties);
- 	if (err < 0)
-diff --git a/sound/usb/line6/variax.c b/sound/usb/line6/variax.c
-index ed158f04de80..1376fc405c7f 100644
---- a/sound/usb/line6/variax.c
-+++ b/sound/usb/line6/variax.c
-@@ -172,11 +172,6 @@ static int variax_init(struct usb_line6 *line6,
- 	if (variax->buffer_activate == NULL)
- 		return -ENOMEM;
- 
--	/* initialize MIDI subsystem: */
--	err = line6_init_midi(&variax->line6);
--	if (err < 0)
--		return err;
--
- 	/* initiate startup procedure: */
- 	schedule_delayed_work(&line6->startup_work,
- 			      msecs_to_jiffies(VARIAX_STARTUP_DELAY1));
+> 
+> Thanks,
+> 
+> Hyeonggon
+> > ---
+> > diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
+> > index a030dd65eb28..9602929b7de9 100644
+> > --- a/sound/usb/line6/driver.c
+> > +++ b/sound/usb/line6/driver.c
+> > @@ -699,6 +699,10 @@ static int line6_init_cap_control(struct usb_line6 *line6)
+> >  		line6->buffer_message = kmalloc(LINE6_MIDI_MESSAGE_MAXLEN, GFP_KERNEL);
+> >  		if (!line6->buffer_message)
+> >  			return -ENOMEM;
+> > +
+> > +		ret = line6_init_midi(line6);
+> > +		if (ret < 0)
+> > +			return ret;
+> >  	} else {
+> >  		ret = line6_hwdep_init(line6);
+> >  		if (ret < 0)
+> > diff --git a/sound/usb/line6/pod.c b/sound/usb/line6/pod.c
+> > index cd44cb5f1310..16e644330c4d 100644
+> > --- a/sound/usb/line6/pod.c
+> > +++ b/sound/usb/line6/pod.c
+> > @@ -376,11 +376,6 @@ static int pod_init(struct usb_line6 *line6,
+> >  	if (err < 0)
+> >  		return err;
+> >  
+> > -	/* initialize MIDI subsystem: */
+> > -	err = line6_init_midi(line6);
+> > -	if (err < 0)
+> > -		return err;
+> > -
+> >  	/* initialize PCM subsystem: */
+> >  	err = line6_init_pcm(line6, &pod_pcm_properties);
+> >  	if (err < 0)
+> > diff --git a/sound/usb/line6/variax.c b/sound/usb/line6/variax.c
+> > index ed158f04de80..1376fc405c7f 100644
+> > --- a/sound/usb/line6/variax.c
+> > +++ b/sound/usb/line6/variax.c
+> > @@ -172,11 +172,6 @@ static int variax_init(struct usb_line6 *line6,
+> >  	if (variax->buffer_activate == NULL)
+> >  		return -ENOMEM;
+> >  
+> > -	/* initialize MIDI subsystem: */
+> > -	err = line6_init_midi(&variax->line6);
+> > -	if (err < 0)
+> > -		return err;
+> > -
+> >  	/* initiate startup procedure: */
+> >  	schedule_delayed_work(&line6->startup_work,
+> >  			      msecs_to_jiffies(VARIAX_STARTUP_DELAY1));
+> 
