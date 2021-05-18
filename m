@@ -2,90 +2,109 @@ Return-Path: <SRS0=y7O6=KN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C6F2C433B4
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 21:48:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CF5DC433B4
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 22:32:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2BEA261353
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 21:48:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2BEA261353
+	by mail.kernel.org (Postfix) with ESMTPS id 03F61611B0
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 22:32:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03F61611B0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D6F71705;
-	Tue, 18 May 2021 23:47:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D6F71705
+	by alsa0.perex.cz (Postfix) with ESMTPS id C3DA44E;
+	Wed, 19 May 2021 00:31:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3DA44E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621374501;
-	bh=2EBaJaXpcT6LvUNXy7Ct+13z2jrQswSvKWXYB4/n2bk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1621377146;
+	bh=WCzm0MCb7Qs7iKkIQbEnYB+kgruqLE6rZkUXKueBNd8=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qrg7kutPFDhL22kMykUPywxttI6bmaJ7pmgdd42XiaTGGRqxEdpQU1ezWsGCFRQN7
-	 cU7kabwIgexqFVzxeu2j0E+/eRfTm2Er7iI9QLP0k+glztzhLT9ORPIzKciaxMfq9A
-	 vWPjUdZmTHUdlamxJjmUGQCwIGr/AkEhC0Xec15A=
+	b=QQdiJIKGftzNYqeTedpSAF+A8/mZoZ/R8XQGPT7zspJjsbs7uUz5VVXPvh8Fh/21i
+	 FZcAWxupGLwoGhWsh4saLhqz+KrOGZCw5ilnaj2kGq0wUxm+FD+ifwJV87vXh85ejf
+	 +uV+KEFRWIU7DUcjZgMJk78f0ESLyMRwNEEEbWjo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 14A9EF801DB;
-	Tue, 18 May 2021 23:47:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56509F801DB;
+	Wed, 19 May 2021 00:31:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 056FAF80257; Tue, 18 May 2021 23:47:29 +0200 (CEST)
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com
- [IPv6:2607:f8b0:4864:20::82e])
+ id 44DE4F80217; Wed, 19 May 2021 00:31:35 +0200 (CEST)
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com
+ [IPv6:2a00:1450:4864:20::133])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7D1D0F80139
- for <alsa-devel@alsa-project.org>; Tue, 18 May 2021 23:47:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D1D0F80139
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5661FF8014C
+ for <alsa-devel@alsa-project.org>; Wed, 19 May 2021 00:31:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5661FF8014C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="TGdTRojh"
-Received: by mail-qt1-x82e.google.com with SMTP id g8so1193892qtp.4
- for <alsa-devel@alsa-project.org>; Tue, 18 May 2021 14:47:19 -0700 (PDT)
+ header.b="EZ1892QS"
+Received: by mail-lf1-x133.google.com with SMTP id i22so16016698lfl.10
+ for <alsa-devel@alsa-project.org>; Tue, 18 May 2021 15:31:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=6xLeJk+UVQtV0WtME4/l4uqyc3OFYAUamtiA1yA/ZP4=;
- b=TGdTRojhF0CckjwjmUew1fGuASEU38gRUJXQw/Wu7CJqoRekkTnB7gTAsLBpp7jVFE
- WQfAjJrlP1ot3bi+cBlUTwavGQsUvBpPoFe/q0kh62z86JyAivo+NXl80ddnx83YZ5Ze
- wt6PUx5tO2j/dZikYwQUPJL8CE/6r694gD3OqJUtjmI9vexYouXXiuC8DDCAOv3tRUFH
- 8ugcgIBx/8Oy3c/ISWHGH8D7lu6nm62bBNKHlJiPcORo7yuvFsWyRGfS9qXuk1THyzok
- fafa3HJqPHWdNB1kbpbk5YNPRPn4QetAFvHfY64a+Bf2u6pvHSZcR6h4xbpbgGGYPl2G
- iJCw==
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=6ljTRHwDIGzKo93ro0EyJFj979FSc4cfbPsSrjnxUwY=;
+ b=EZ1892QSAlcdInwXoIsMLGfBxydo1KcRAPSMXGWFBtVz33HsOcLCnYuXraX+CikYq4
+ MXk/yi+C6QME/uL9aalttKXxoKix8sL2suoO/6QP2322m4DLH4p3GWCPMULIumAk5Lfk
+ 3hpwqiEIOLOKEeSXwUI4Vpsry4X1eQOjE5kTns+E01m4ssxuXe0n5u1xjBQw0wFrSl6U
+ ZLcF3ehyVwO4z2qWjoCfKfn9ej4x65SZ2Vex3P9E+OsEDzm94CWjj0JxOUZxAKfklGY6
+ JR76fvBSQw8qjEKE2CGcEvuBVjFThmoVeDlA5WFQxFs8CIPKsi4mumcG2vsAKlt697iH
+ JXNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=6xLeJk+UVQtV0WtME4/l4uqyc3OFYAUamtiA1yA/ZP4=;
- b=VJxKrh24goKNrlxDE4ZSBmKWCkgb/GUgwJJ1SawBFreh/wcJrgl9zjTVfs+QLlgQhN
- jvuJzqi2YtaXoq09A9y6qXeonXxahgazGs6NB9ddTwFNDTyOQyv2mWszya+hp/x5rDQJ
- +fHcfD9pdnoXJ7RLopsFCTF/yEiH5N33/AzZDjt5AzO5YMvRefnfxl+BTu5A3DA5aOpy
- 2uoHh0vvBD8XswQc7X/qxylK2nWRpMBMHZPMYovr6TdV3a+xgtqSJ1ZSmGVVVKmCUbun
- aEU01hzCsL8Lc/M4c3GGuABjPxSWeT+tQGhHWitDF8C81DRenk2TBTy4LPVu78dzi+3t
- 14Bg==
-X-Gm-Message-State: AOAM531pwaLDJvuxOK12qdpP8nTU6sglP2BwWMBwJuFNTpnE0oWscY+k
- /UFzZO9YLFcj9fx1+ZneXJnjfwlbKvYYQ0O/ZLVOSd9xPzE=
-X-Google-Smtp-Source: ABdhPJzLo+8NgBh0EvQf/Ags5ccYpzSKitrG3n+VHumI6tF2bJ4tpM0vxrhDF+rjm/JuIT0Q5GzxRSDdF/FcRUJHkDM=
-X-Received: by 2002:ac8:502:: with SMTP id u2mr7191128qtg.218.1621374435943;
- Tue, 18 May 2021 14:47:15 -0700 (PDT)
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=6ljTRHwDIGzKo93ro0EyJFj979FSc4cfbPsSrjnxUwY=;
+ b=js6X8Pxxa/B0u0tysXUQaUQpTLI0Fx6Q9LDqGj0S9FVc2GinEtC6ml/xAU7olVW9MS
+ OW5FGGAVIr9DBNGhosb+QJZjL03DlvSJYCy2bI8/JUernnCie7QTRvx/a2mNfEOA9j6F
+ wXCcMMRMUsT0/fJX6nl87fJx0txuVSSuIy77AP/EF16ko0h28K/1X9l/b/8acwOnDxh/
+ Y/fQ8HkOCsKg0hAUL7QKXN9yJl7L7p+IhUE6yd2+m2b/5nT1Cyt+npv6QtWRL/g4eDML
+ PBUtHZPOTutHxv5QRkHxP6jX8BQMpD7aBIQtwg1+bp3/1SJD8UsxPxme6m1+sRL4lAL4
+ 4hsA==
+X-Gm-Message-State: AOAM531tdIsCcRAjRUfY9X61JGipAEu2zH8Zi0gn62A/EmHwyBgIaJny
+ D657RqSUpr0F7zK1zHtpIKY=
+X-Google-Smtp-Source: ABdhPJybbVaMiPw92JX0U2shg8oyjsaIK95UmJ6HxuvOu18l6A+ecA9rZrx3Yn/FqFTI23c+Zl+7EA==
+X-Received: by 2002:a19:431b:: with SMTP id q27mr5484708lfa.226.1621377089928; 
+ Tue, 18 May 2021 15:31:29 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru.
+ [109.252.193.91])
+ by smtp.googlemail.com with ESMTPSA id m22sm2392071lfu.219.2021.05.18.15.31.29
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 18 May 2021 15:31:29 -0700 (PDT)
+Subject: Question about Tegra UCMs
+To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>
+References: <20210518001356.19227-1-digetx@gmail.com>
+ <20210518001356.19227-3-digetx@gmail.com>
+ <20210518180949.GA949047@robh.at.kernel.org>
+ <20210518183455.GE4358@sirena.org.uk>
+From: Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <92cef674-c454-e08c-b44d-d8c08b1e8ccf@gmail.com>
+Date: Wed, 19 May 2021 01:31:28 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210517172553.GA85102@m.b4.vu>
- <CAEsQvcuMK5n4F++bXCD4ML5FoRQ+KCp5soXAY8mjUpf6yqYXBQ@mail.gmail.com>
- <20210518183420.GA89090@m.b4.vu>
-In-Reply-To: <20210518183420.GA89090@m.b4.vu>
-From: Geraldo Nascimento <geraldogabriel@gmail.com>
-Date: Tue, 18 May 2021 18:41:45 -0300
-Message-ID: <CAEsQvcs13mJF2+hDdSPhg_-VBpqFCZhjHb6xDScDD7u3LEfmog@mail.gmail.com>
-Subject: Re: [BUG] ALSA: usb-audio: Scarlett 2 mixer driver fails on ehci-pci
-To: "Geoffrey D. Bennett" <g@b4.vu>
-Content-Type: text/plain; charset="UTF-8"
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <20210518183455.GE4358@sirena.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Svyatoslav Ryhel <clamor95@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Thierry Reding <thierry.reding@gmail.com>, Ion Agorria <ion@agorria.com>,
+ linux-tegra@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>,
+ Rob Herring <robh@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,125 +120,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, May 18, 2021 at 3:34 PM Geoffrey D. Bennett <g@b4.vu> wrote:
->
-> Hi Geraldo,
->
-> Thanks for your suggestion. I found:
->
-> echo module ehci_hcd +p > /sys/kernel/debug/dynamic_debug/control
->
-> which I guess is the same thing.
+Mark, could you please help me to understand the UCM naming scheme that ALSA uses..
 
-Cool, if you always connect the hardware after issuing that sysfs
-change I guess you won't run into any problems with missing debugging
-info.
+About a year ago I tried to complain to Jaroslav Kysela in a comment to the UCM change [1] that it should be breaking the naming scheme of Tegra UCMs, but haven't got a meaningful reply and moved on to other things.
 
->
-> I can't see any difference between the sent USB packet working and not
-> working with the additional debug:
->
-> kernel: ehci-pci 0000:00:1d.0: submit_async 1.2 urb 000000004f9d8dbb ep0out len 24, qtd 0000000055a1f6c8 [qh 00000000312c985a]
-> kernel: ehci-pci 0000:00:1d.0: ehci_urb_done 1.2 urb 000000004f9d8dbb ep0out status -115 len 0/24
->
-> kernel: ehci-pci 0000:00:1d.0: submit_async 1.2 urb 00000000de165beb ep0out len 24, qtd 0000000056de0c60 [qh 00000000d43a72d3]
-> kernel: ehci-pci 0000:00:1d.0: ehci_urb_done 1.2 urb 00000000de165beb ep0in status 0 len 24/24
->
-> I agree that the issue seems more related to USB kernel development; I
-> will subscribe to linux-usb and ask there.
+[1] https://github.com/alsa-project/alsa-ucm-conf/commit/8ff2d50745efbb6959324f672460e413f0b618b8
 
-Myself I'd hook printk()'s to both ehci_hcd and xhci_hcd to print
-every possible variable involved and see if there's any relevant
-mismatches. Oh and watch with the printk()'s what libusb seems to be
-doing, too.
+Today I noticed that the naming scheme changed again and I still don't understand what to do about it.
 
-When you subscribe to linux-usb you *may* want to Cc: Greg
-Kroah-Hartman with your discoveries so far, he's the USB Subsystem
-Maintainer and the best one to help you track this down.
+I have two devices:
 
-Regards,
-Geraldo Nascimento
+ 1. Acer Picasso tablet that uses "Acer Iconia Tab A500 WM8903" for the card model name.
 
->
-> Thanks,
-> Geoffrey.
->
-> On Mon, May 17, 2021 at 07:13:27PM -0300, Geraldo Nascimento wrote:
-> > Hi, Geoffrey, have you tried adding "ehci_hcd.dyndbg=+p" to your
-> > kernel boot options?
-> >
-> > It will give you additional debugging information, and if you need
-> > more debugging information you can always use printk() and recompile
-> > your modules.
-> >
-> > Note that your issue seems more related to USB kernel development than
-> > ALSA development, still, impossible to say where the fix will land
-> > without tracing the problem first.
-> >
-> > Best of luck,
-> > Geraldo Nascimento
-> >
-> > On Mon, May 17, 2021 at 2:27 PM Geoffrey D. Bennett <g@b4.vu> wrote:
-> > >
-> > > Hi there,
-> > >
-> > > I'm trying to track down an issue with my Scarlett Gen 2 mixer driver
-> > > that has been reported by a few people, and I can now reliably
-> > > reproduce the issue, but I need some help in figuring out where
-> > > exactly the issue is and how to fix it please.
-> > >
-> > > The issue only occurs when attempting to use the interface on a USB
-> > > port using ehci-pci. xhci_hcd USB ports work fine.
-> > >
-> > > The issue occurs when sending the first vendor-specific USB command,
-> > > but only when sending from the kernel driver. Sending the same USB
-> > > packets from user-space works fine(!).
-> > >
-> > > I did initially think that the fault could have been due to earlier
-> > > USB messages putting the device into a state where it would reject the
-> > > vendor-specific USB commands, but I have carefully ruled that out &
-> > > have gotten identical usbmon traces from device power-on up until the
-> > > device responds differently, the only difference beforehand being
-> > > whether the USB packet was sent from the kernel driver or user-space.
-> > >
-> > > The messages look like this in "usbmon -s 10000 -fu" when sent from
-> > > user-space (or when sent from the kernel driver when the interface is
-> > > plugged in to an xhci_hcd port):
-> > >
-> > > ffff888125855200 1006026497 S Ci:2:040:0 s a1 00 0000 0005 0018 24 <
-> > > ffff888125855200 1006026680 C Ci:2:040:0 0 24 = 66191018 73190604 01000000 01000000 00040000 00000000
-> > >
-> > > And like this when sent from the kernel driver when the interface is
-> > > plugged in to an ehci-pci port:
-> > >
-> > > ffff88810487a300 3686673995 S Ci:2:036:0 s a1 00 0000 0005 0018 24 <
-> > > ffff88810487a300 3692178724 C Ci:2:036:0 -2 0
-> > >
-> > > Identical messages sent according to usbmon, but they must be
-> > > different somehow!
-> > >
-> > > The kernel code to send that message looks like this:
-> > >
-> > >   return snd_usb_ctl_msg(
-> > >     dev, usb_sndctrlpipe(dev, 0),
-> > >     usb_req,
-> > >     USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
-> > >     0, interface, buf, size);
-> > >
-> > > and helper.c snd_usb_ctl_msg() then calls usb_control_msg().
-> > >
-> > > For sending arbitrary USB packets from user-space for testing, I'm
-> > > using libusb and:
-> > >
-> > >   int ret = usb_control_msg(
-> > >     devh, reqtype, request, value, index, buf, size, 1000
-> > >   );
-> > >
-> > > So, I presume usbmon isn't giving me the full story? How can I
-> > > determine the difference between the kernel and the user-space
-> > > usb_control_msg() functions? I see that I can #define EHCI_URB_TRACE
-> > > in ehci-hcd.c. Can anyone with more experience than me let me know if
-> > > I'm going in the right direction to track this down?
-> > >
-> > > Thanks,
-> > > Geoffrey.
+ 2. Google Nexus 7 that uses "ASUS Google Nexus 7 ALC5642".
+
+Previously UCMs were picked up by pulseaudio from these paths:
+
+ 1. /usr/share/alsa/ucm2/Acer Iconia Tab A500 WM8903/
+ 2. /usr/share/alsa/ucm2/ASUS Google Nexus 7 ALC5642/
+
+Now the lookup paths are changed to:
+
+ 1. /usr/share/alsa/ucm2/Acer_Iconia_Tab/
+ 2. /usr/share/alsa/ucm2/ASUS_Google_Nex/
+
+Strace shows that pulseaudio searches UCMs only at these paths.
+
+The output of /proc/asound/cards:
+
+ 0 [WM8903         ]: Acer_Iconia_Tab - Acer Iconia Tab A500 WM8903
+                      Acer Iconia Tab A500 WM8903
+
+ 0 [ALC5642        ]: ASUS_Google_Nex - ASUS Google Nexus 7 ALC5642
+                      ASUS Google Nexus 7 ALC5642
+
+IIUC, the "ucm2/Tegra/codec_name" scheme [2] that the current ALSA UCM uses simply doesn't work at all. Is there anything on the kernel side that I could change to get a working naming scheme? If yes, I may try to do something about it in the v2, thanks in advance.
+
+[2] https://github.com/alsa-project/alsa-ucm-conf/tree/master/ucm2/Tegra
