@@ -2,59 +2,59 @@ Return-Path: <SRS0=y7O6=KN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AC36C433B4
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 07:04:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18AF9C433ED
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 07:05:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A18B061261
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 07:03:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A18B061261
+	by mail.kernel.org (Postfix) with ESMTPS id F1F3F61261
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 07:05:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F1F3F61261
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5F63E1698;
-	Tue, 18 May 2021 09:03:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F63E1698
+	by alsa0.perex.cz (Postfix) with ESMTPS id 378FE169B;
+	Tue, 18 May 2021 09:04:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 378FE169B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621321436;
-	bh=5JJlccwnz5DCLzxyuTnwa+ut8mQmD2rlkDW72/KCUbg=;
+	s=default; t=1621321503;
+	bh=acc4Zx+caEBzjQzRrLCE5Te+gVaO35TY1d/KFlMAJz8=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rVzVEalWqD7tP7cW3g+ynTRbnvPUd/6xGcqEMgPOWIxfl99eOl6/ls/se0p6JuHXb
-	 SYQ1vHE4whn+Wn/TZqap+5cst6/6Oxmvc7ETuuclcT6FPCor8vsC38zgJnhuimAuSe
-	 HtWqq5ZfafgDGArT4R5Hv7Kddsr9c6o4zMuFXrfM=
+	b=s/TK725yZjvI9zyTNUK1A1yUg5uDCF0NsZms/THYpsZxakjbHGYbkZSjCZk3kaGhI
+	 JLa3q5Ftjk0kMjOE8W7aUUI0tlEcRyaK+prLgYBgI7tB4m61IuS+UdWjE5GpSRthbW
+	 FpJnIlkpg9aoOJT/g6HI5ZAI86Xe1E6HxpyP6JA8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DC681F8014C;
-	Tue, 18 May 2021 09:03:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C5274F80257;
+	Tue, 18 May 2021 09:04:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 55B89F80217; Tue, 18 May 2021 09:03:04 +0200 (CEST)
+ id 0DC20F80272; Tue, 18 May 2021 09:04:12 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BC987F8014C
- for <alsa-devel@alsa-project.org>; Tue, 18 May 2021 09:03:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC987F8014C
+ by alsa1.perex.cz (Postfix) with ESMTPS id EAFEEF80139
+ for <alsa-devel@alsa-project.org>; Tue, 18 May 2021 09:04:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAFEEF80139
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id F336CAD12;
- Tue, 18 May 2021 07:02:55 +0000 (UTC)
-Date: Tue, 18 May 2021 09:02:54 +0200
-Message-ID: <s5hsg2kmsm9.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id A9D2EAF0C;
+ Tue, 18 May 2021 07:04:00 +0000 (UTC)
+Date: Tue, 18 May 2021 09:04:00 +0200
+Message-ID: <s5hr1i4mskf.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v3 02/11] ALSA: firewire-lib/motu: use int type for the
- value of bitwise OR with enumerator-constant
-In-Reply-To: <20210518024326.67576-3-o-takashi@sakamocchi.jp>
-References: <20210518024326.67576-1-o-takashi@sakamocchi.jp>
- <20210518024326.67576-3-o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: dice: disable double_pcm_frames mode for M-Audio
+ Profire 610, 2626 and Avid M-Box 3 Pro
+In-Reply-To: <20210518012510.37126-1-o-takashi@sakamocchi.jp>
+References: <20210518012510.37126-1-o-takashi@sakamocchi.jp>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -76,18 +76,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 18 May 2021 04:43:17 +0200,
+On Tue, 18 May 2021 03:25:10 +0200,
 Takashi Sakamoto wrote:
 > 
-> It brings some inconvenience in practice to use enumerated type for
-> variable to which bitwise OR with enumerator constant is assigned.
+> ALSA dice driver detects jumbo payload at high sampling transfer frequency
+> for below models:
 > 
-> This commit replaces declarations of enumerated type with int type.
+>  * Avid M-Box 3 Pro
+>  * M-Audio Profire 610
+>  * M-Audio Profire 2626
+> 
+> Although many DICE-based devices have a quirk at high sampling transfer
+> frequency to multiplex double number of PCM frames into data block than
+> the number in IEC 61883-1/6, the above devices are just compliant to
+> IEC 61883-1/6.
+> 
+> This commit disables the mode of double_pcm_frames for the models.
+> 
+> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-Better to use unsigned int for bit flags.  Otherwise the highest bit
-becomes harder to use.
+Thanks, applied.
 
-
-thanks,
 
 Takashi
