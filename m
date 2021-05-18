@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9E6EC433B4
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 08:47:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 454D1C433ED
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 08:48:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1A57861166
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 08:47:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1A57861166
+	by mail.kernel.org (Postfix) with ESMTPS id C14976100A
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 08:48:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C14976100A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B228316B8;
-	Tue, 18 May 2021 10:47:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B228316B8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5701816DD;
+	Tue, 18 May 2021 10:47:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5701816DD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621327674;
-	bh=99duklAdcsAU/2/owCmFV5SIqcq6KJ9N4EHRbLWJM5Y=;
+	s=default; t=1621327710;
+	bh=8ayjLbVWf3C8BGPZC60BiLFPymypO7X5DbaciqOP0y4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IyObf0Dzp9cV7SgeqvDguZY5AtkoXJPsbIbTsNHLkS2y2gKqyOKsDxPzvWD7LlyJe
-	 loCurNyUYBDfATLGQ8Olx2HNJJ5qaaniPx7PjBRRJsvA/JppguWYganMKz6W13qc91
-	 2CYRK5K8OfzasE5QkpQc2tbjIJs/L5BgJlvTnTiE=
+	b=cgdQ7M5f551x2dN6g/e/RmFGv3if2GPsSfoVNSqbkzzxtLVM9MEedB7zK3ZgR0stA
+	 RHH0Uzhn6VRveaBDZwcmGE70QcW8FW4aD70IV2LIMJJkfv958ouJIF3xM/WIPiHTW/
+	 xLynea+0NCZwfnlqbdkycH/UvMWixcEmxIWm6x24=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C289F80431;
-	Tue, 18 May 2021 10:46:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1EB42F80475;
+	Tue, 18 May 2021 10:46:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EDDA9F802E3; Tue, 18 May 2021 10:46:11 +0200 (CEST)
+ id 6C0F6F80272; Tue, 18 May 2021 10:46:13 +0200 (CEST)
 Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
  [66.111.4.29])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EAC60F801DB
- for <alsa-devel@alsa-project.org>; Tue, 18 May 2021 10:46:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAC60F801DB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 71E1AF80272
+ for <alsa-devel@alsa-project.org>; Tue, 18 May 2021 10:46:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71E1AF80272
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="0dp1aiYc"; 
+ header.b="yMvkX64I"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="twOvfSuI"
+ header.i=@messagingengine.com header.b="H45e/KsZ"
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
- by mailout.nyi.internal (Postfix) with ESMTP id 0A8955C0131;
- Tue, 18 May 2021 04:46:05 -0400 (EDT)
+ by mailout.nyi.internal (Postfix) with ESMTP id A8F625C00A4;
+ Tue, 18 May 2021 04:46:07 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute2.internal (MEProxy); Tue, 18 May 2021 04:46:05 -0400
+ by compute2.internal (MEProxy); Tue, 18 May 2021 04:46:07 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=+YqyiIh+nY8Tf
- tXVmh+T+Vhx4m6t9HLbjBJPP/pdmFQ=; b=0dp1aiYc0intuPnidulUQkLNszkkH
- X4w/2wfkJikz58JLIGgHIVnmsc0SLd0eZeH2T6rgirfEAf5ILinXJ6FMJYPn/JAD
- 22imC0iyve0YQCFFMe3Xqr2B1aYymSY3t07mZi60o2WuqWqvVzh2qnmgpFUtpoiJ
- NfXf79vvv77kLSBzFuXp7uutf7GC4bFXmRzn4k0jP8q1zoBpGB5Sn41nsvBPdszr
- Egv/B6HUOHAS+keoO6tnm0jDcHtSDk8nJl1mOli+beQZ4QQbIlt1nl3Ml/nDY6Iz
- Flhun3k1hg3WPyJLZFXt4ghPnGGAAofghcmBawi4HuXzVz5eQlU0A4qyA==
+ :mime-version:content-transfer-encoding; s=fm1; bh=yy4KErEXtjHja
+ I46tRlfO8xAp9Q7omE53IZRt+oG4NI=; b=yMvkX64I/5qqw131lUsutIuYNmb57
+ ZHWu6tmq0jfdHHOIc43HkZeBE3qLV9wmUlMThaOwVCcuxsblER/Kg5auyKmZBCvb
+ 8cOZi8lq77Re/bITEQe/TpzL0h5T4yYjgy8jKj2Y33IJu5oJWDS5SbeH+HyI9siD
+ HVdMBYwTgp+MJzXgyXt4W0UG1uCcbQGrOgwNyhP9JazH74XbMkM1vGH+3NzHbupR
+ HFLonQsUAYqcTR1oOJS6moNvDyVo7iTewkhkS2Idqo8qhT56xmhFaWIWG+uhQFSq
+ 4wt4PGeqZ540AJsD8IrHoRrY2XdnBSFUXc9xT9sPa+c/p2in5Bsi278ow==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=+YqyiIh+nY8TftXVmh+T+Vhx4m6t9HLbjBJPP/pdmFQ=; b=twOvfSuI
- OMDgTzT2QUp0Rc6bUb9cvlwxIG+eNfiGWDKcQ5tZ9k0zfDqoLNmKzhkmUV26U8Y3
- SCskD+Cw5+jPonY8KouVVLF+9l5WOO3+7BMJ8XeZ8VeCrUU7rtTUsP6QwV7JII3g
- CWDpDSDaJJXwfBcKgItPCiB+bIgyDLfk626pKCQscp9fDgdKxj7Ca4DN3ZRfLZus
- cFn6Kc5c/quyzOdcUeUaH5bFxrI3liFy28/eIMDZX64Wo8MCLVvJYKBpeBXz0OW5
- Bj/ywtvU5hMgcUIiH18Rxqb0jzTkgSFOMuGPjg3DjFnMEEAe9vc5hxmylNYPps9T
- 0CSFTQ+Jh00LTA==
-X-ME-Sender: <xms:zH6jYLCYA11WtxwVDJKP6-nBuiRcxBOGT_oeCME23mDj_htMVxs7wQ>
- <xme:zH6jYBg_7H_oBJ2KPbrSxCnuPka6RvVBcgpFpyE3aUCWlGspT5SoH-Fk-RktQQLyf
- SKQNt1sHUV7cpRRCYU>
+ fm2; bh=yy4KErEXtjHjaI46tRlfO8xAp9Q7omE53IZRt+oG4NI=; b=H45e/KsZ
+ MW3l57CrSCyDRITbGFZ7YDH8EqjoKWcDQE9DQl6OzuRx0zI9iFRp8HYHL65Q6D66
+ NcN3bYMDpvKaNSSArMpujBdrCHmYZ5WMQ5dDbcIX/1a+jWBHWQGKjIYdREoWg8ot
+ 4u1FYvboMns5zeIpcIPeWO2zxPJu51CZ5yYTHMBuCdF/Z+bb4b2nEfR3fhIj826h
+ snQT2ELhQ2wA0nDFhza34iloHdc9AkWV6MPg4VSeRsDHjmE660PFmL+ti2Mu2OdV
+ kp4QBWTmwJ2A0+eHdQaPdHZDU1h5XUY4LqH9SHkQEHEyi0+8fb9hoqqykwXxBhgj
+ +JhEs2qk0bZKDg==
+X-ME-Sender: <xms:z36jYFs_5ZKbRtykYthzFncEncrHpISsTU8eAUO_lgDIVMEqVp7ddQ>
+ <xme:z36jYOfXYRxl717LYf1KVV3YbC6i_qifa2tHFRxttcpeqQpmLjgsdb8PlKW3138JW
+ xrV9i9GOFwrwG7d7cA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeijedgtdekucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
@@ -85,19 +85,18 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeijedgtdekucetufdoteggod
  etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecukfhppedugedr
  fedrieehrddujeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
  hfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:zH6jYGnFxqnwvpv2gCxiorzcvrSZiG2YtX611JfChVAXGqrp14-C8A>
- <xmx:zH6jYNzPrS7rlUuE0jC9mMSh0_Kg1OBA-gLCojv4TLIqel504komSw>
- <xmx:zH6jYATt1KvzoEypZ-nAhsRwU9EXOtFBVn02jWq64_JCOfy7scpQAg>
- <xmx:zX6jYJ7GtT5RDdO76mcLAMgHVG1ZEaxZm0BwEQzxkX4cRictNX1wnQ>
+X-ME-Proxy: <xmx:z36jYIzP9k_VvZLwEzegx0LzWsRyIJsX0_W91UPnOX56Tz8bYFuBQA>
+ <xmx:z36jYMOSgczhA6Ey8pPz_sdFI8ANw6R5yVUDBa2MENlYyC6Ukq8z9A>
+ <xmx:z36jYF9zDh9w_9s5lQJC1at03fCbp-cYNCOJOFW9ygdT0XUPDanktg>
+ <xmx:z36jYCHSQbU2QGIug5fY5qXO3AoTC204GRK2LFfZ0kEKbhoHojKFHw>
 Received: from workstation.flets-east.jp (ae065175.dynamic.ppp.asahi-net.or.jp
  [14.3.65.175]) by mail.messagingengine.com (Postfix) with ESMTPA;
- Tue, 18 May 2021 04:46:03 -0400 (EDT)
+ Tue, 18 May 2021 04:46:06 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Subject: [PATCH v4 02/11] ALSA: firewire-lib/motu: use int type for the value
- of bitwise OR with enumerator-constant
-Date: Tue, 18 May 2021 17:45:48 +0900
-Message-Id: <20210518084557.102681-3-o-takashi@sakamocchi.jp>
+Subject: [PATCH v4 04/11] ALSA: oxfw: code refactoring to detect mackie models
+Date: Tue, 18 May 2021 17:45:50 +0900
+Message-Id: <20210518084557.102681-5-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210518084557.102681-1-o-takashi@sakamocchi.jp>
 References: <20210518084557.102681-1-o-takashi@sakamocchi.jp>
@@ -119,120 +118,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-It brings some inconvenience in practice to use enumerated type for
-variable to which bitwise OR with enumerator constant is assigned.
+This commit changes condition statement to call mackie models detection
+just for the device entry. Additionally, comment is added for Onyx 1640i.
 
-This commit replaces declarations of enumerated type with int type.
-
-Suggested-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp-am824.c       | 4 ++--
- sound/firewire/amdtp-am824.h       | 2 +-
- sound/firewire/amdtp-stream.c      | 4 ++--
- sound/firewire/amdtp-stream.h      | 5 +++--
- sound/firewire/digi00x/amdtp-dot.c | 2 +-
- sound/firewire/motu/motu.h         | 3 ++-
- 6 files changed, 11 insertions(+), 9 deletions(-)
+ sound/firewire/oxfw/oxfw.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/firewire/amdtp-am824.c b/sound/firewire/amdtp-am824.c
-index fea92e148790..d9c700f652bb 100644
---- a/sound/firewire/amdtp-am824.c
-+++ b/sound/firewire/amdtp-am824.c
-@@ -410,10 +410,10 @@ static unsigned int process_ir_ctx_payloads(struct amdtp_stream *s,
-  * @s: the AMDTP stream to initialize
-  * @unit: the target of the stream
-  * @dir: the direction of stream
-- * @flags: the packet transmission method to use
-+ * @flags: the details of the streaming protocol consist of cip_flags enumeration-constants.
-  */
- int amdtp_am824_init(struct amdtp_stream *s, struct fw_unit *unit,
--		     enum amdtp_stream_direction dir, enum cip_flags flags)
-+		     enum amdtp_stream_direction dir, unsigned int flags)
+diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
+index 7be999c61730..2af72951ebf8 100644
+--- a/sound/firewire/oxfw/oxfw.c
++++ b/sound/firewire/oxfw/oxfw.c
+@@ -245,7 +245,7 @@ static int oxfw_probe(struct fw_unit *unit,
  {
- 	amdtp_stream_process_ctx_payloads_t process_ctx_payloads;
+ 	struct snd_oxfw *oxfw;
  
-diff --git a/sound/firewire/amdtp-am824.h b/sound/firewire/amdtp-am824.h
-index 06d280783581..2b092b1061ba 100644
---- a/sound/firewire/amdtp-am824.h
-+++ b/sound/firewire/amdtp-am824.h
-@@ -45,5 +45,5 @@ void amdtp_am824_midi_trigger(struct amdtp_stream *s, unsigned int port,
- 			      struct snd_rawmidi_substream *midi);
+-	if (entry->vendor_id == VENDOR_LOUD && !detect_loud_models(unit))
++	if (entry->vendor_id == VENDOR_LOUD && entry->model_id == 0 && !detect_loud_models(unit))
+ 		return -ENODEV;
  
- int amdtp_am824_init(struct amdtp_stream *s, struct fw_unit *unit,
--		     enum amdtp_stream_direction dir, enum cip_flags flags);
-+		     enum amdtp_stream_direction dir, unsigned int flags);
- #endif
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index e0faa6601966..b14c3922efb2 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -71,13 +71,13 @@ static void pcm_period_work(struct work_struct *work);
-  * @s: the AMDTP stream to initialize
-  * @unit: the target of the stream
-  * @dir: the direction of stream
-- * @flags: the packet transmission method to use
-+ * @flags: the details of the streaming protocol consist of cip_flags enumeration-constants.
-  * @fmt: the value of fmt field in CIP header
-  * @process_ctx_payloads: callback handler to process payloads of isoc context
-  * @protocol_size: the size to allocate newly for protocol
-  */
- int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
--		      enum amdtp_stream_direction dir, enum cip_flags flags,
-+		      enum amdtp_stream_direction dir, unsigned int flags,
- 		      unsigned int fmt,
- 		      amdtp_stream_process_ctx_payloads_t process_ctx_payloads,
- 		      unsigned int protocol_size)
-diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
-index a3daa1f2c1c4..0628b6e52fc1 100644
---- a/sound/firewire/amdtp-stream.h
-+++ b/sound/firewire/amdtp-stream.h
-@@ -112,7 +112,8 @@ typedef unsigned int (*amdtp_stream_process_ctx_payloads_t)(
- struct amdtp_domain;
- struct amdtp_stream {
- 	struct fw_unit *unit;
--	enum cip_flags flags;
-+	// The combination of cip_flags enumeration-constants.
-+	unsigned int flags;
- 	enum amdtp_stream_direction direction;
- 	struct mutex mutex;
- 
-@@ -184,7 +185,7 @@ struct amdtp_stream {
- };
- 
- int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
--		      enum amdtp_stream_direction dir, enum cip_flags flags,
-+		      enum amdtp_stream_direction dir, unsigned int flags,
- 		      unsigned int fmt,
- 		      amdtp_stream_process_ctx_payloads_t process_ctx_payloads,
- 		      unsigned int protocol_size);
-diff --git a/sound/firewire/digi00x/amdtp-dot.c b/sound/firewire/digi00x/amdtp-dot.c
-index d613642a2ce3..398c57a6fb43 100644
---- a/sound/firewire/digi00x/amdtp-dot.c
-+++ b/sound/firewire/digi00x/amdtp-dot.c
-@@ -396,7 +396,7 @@ int amdtp_dot_init(struct amdtp_stream *s, struct fw_unit *unit,
- 		 enum amdtp_stream_direction dir)
- {
- 	amdtp_stream_process_ctx_payloads_t process_ctx_payloads;
--	enum cip_flags flags;
-+	unsigned int flags;
- 
- 	// Use different mode between incoming/outgoing.
- 	if (dir == AMDTP_IN_STREAM) {
-diff --git a/sound/firewire/motu/motu.h b/sound/firewire/motu/motu.h
-index 3d0236ee6716..92effb6e6c96 100644
---- a/sound/firewire/motu/motu.h
-+++ b/sound/firewire/motu/motu.h
-@@ -106,7 +106,8 @@ enum snd_motu_protocol_version {
- struct snd_motu_spec {
- 	const char *const name;
- 	enum snd_motu_protocol_version protocol_version;
--	enum snd_motu_spec_flags flags;
-+	// The combination of snd_motu_spec_flags enumeration-constants.
-+	unsigned int flags;
- 
- 	unsigned char tx_fixed_pcm_chunks[3];
- 	unsigned char rx_fixed_pcm_chunks[3];
+ 	/* Allocate this independent of sound card instance. */
+@@ -341,6 +341,7 @@ static const struct ieee1394_device_id oxfw_id_table[] = {
+ 	/*
+ 	 * Any Mackie(Loud) models (name string/model id):
+ 	 *  Onyx-i series (former models):	0x081216
++	 *  Onyx 1640i:				0x001640
+ 	 *  Mackie Onyx Satellite:		0x00200f
+ 	 *  Tapco LINK.firewire 4x6:		0x000460
+ 	 *  d.2 pro/d.4 pro (built-in card):	Unknown
+@@ -352,6 +353,7 @@ static const struct ieee1394_device_id oxfw_id_table[] = {
+ 				  IEEE1394_MATCH_SPECIFIER_ID |
+ 				  IEEE1394_MATCH_VERSION,
+ 		.vendor_id	= VENDOR_LOUD,
++		.model_id	= 0,
+ 		.specifier_id	= SPECIFIER_1394TA,
+ 		.version	= VERSION_AVC,
+ 	},
 -- 
 2.27.0
 
