@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 138FBC433B4
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 08:03:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68372C433B4
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 08:04:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 797F6610A2
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 08:03:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 797F6610A2
+	by mail.kernel.org (Postfix) with ESMTPS id 7FC36610A2
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 08:04:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7FC36610A2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1045316C2;
-	Tue, 18 May 2021 10:02:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1045316C2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 04BEF16C5;
+	Tue, 18 May 2021 10:03:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04BEF16C5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621325012;
-	bh=sbl6KepxrzR2xVnSxcqXJMr3XarDaKcbcsqysh9moXA=;
+	s=default; t=1621325045;
+	bh=s7e6QAf6A6v247pyw3Ub5IpuYvB27r3UCSHg3lKMMHo=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=fDV712wOLcIFyqS74bTjcsMs3oD2Kf2C2xPHUKbpAGRrtSCGZdz4zjwgxn5t9UY6d
-	 py/rAuI/gKadKhJU/kkgmF540PROjL+TAOMWFSZiBJotpDrFRzYuXB6Lo3p/elSbHl
-	 NPtHA6+gI+z8Dtd2sX39426oMZVqeAFvsf9x7vvs=
+	b=FcvFAM3x+1Ql6rU/j8cb89KoFcAzeTGfQMDW8UJpzWaxHhRkGZ3NfGB43rikAEwZ8
+	 Q0qPb0JBYXL6yvGTzgAJY0kGl/iOAcNgxSOo3ua6qYPr7KK33LDzqJdMxXNak+nzGr
+	 NE/bPayeKsgASgWLMYCRQ7zj//K2ZaNdWPiWT9e0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 06BC4F804B0;
+	by alsa1.perex.cz (Postfix) with ESMTP id DC584F804BD;
 	Tue, 18 May 2021 10:00:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D0B6CF80217; Tue, 18 May 2021 06:43:13 +0200 (CEST)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+ id 91C71F80217; Tue, 18 May 2021 09:56:43 +0200 (CEST)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 91877F80139
- for <alsa-devel@alsa-project.org>; Tue, 18 May 2021 06:43:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91877F80139
-Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.60])
- by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fkjvj2rp3zQpH8;
- Tue, 18 May 2021 12:39:29 +0800 (CST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DE2D6F80139
+ for <alsa-devel@alsa-project.org>; Tue, 18 May 2021 09:56:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE2D6F80139
+Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.58])
+ by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FkpCs1rLnzCtQT;
+ Tue, 18 May 2021 15:53:45 +0800 (CST)
 Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
+ dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 18 May 2021 12:42:58 +0800
+ 15.1.2176.2; Tue, 18 May 2021 15:56:30 +0800
 Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
  (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 18 May
- 2021 12:42:57 +0800
+ 2021 15:56:30 +0800
 From: Yang Yingliang <yangyingliang@huawei.com>
 To: <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>
-Subject: [PATCH -next] ASoC: hisilicon: fix missing clk_disable_unprepare() on
- error in hi6210_i2s_startup()
-Date: Tue, 18 May 2021 12:45:14 +0800
-Message-ID: <20210518044514.607010-1-yangyingliang@huawei.com>
+Subject: [PATCH -next] ASoC: rk3328: fix missing clk_disable_unprepare() on
+ error in rk3328_platform_probe()
+Date: Tue, 18 May 2021 15:58:47 +0800
+Message-ID: <20210518075847.1116983-1-yangyingliang@huawei.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  dggpeml500017.china.huawei.com (7.185.36.243)
 X-CFilter-Loop: Reflected
 X-Mailman-Approved-At: Tue, 18 May 2021 10:00:15 +0200
@@ -84,54 +84,70 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-After calling clk_prepare_enable(), clk_disable_unprepare() need
-be called when calling clk_set_rate() failed.
+Fix the missing clk_disable_unprepare() before return
+from rk3328_platform_probe() in the error handling case.
 
-Fixes: 0bf750f4cbe1 ("ASoC: hisilicon: Add hi6210 i2s audio driver")
+Fixes: c32759035ad2 ("ASoC: rockchip: support ACODEC for rk3328")
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- sound/soc/hisilicon/hi6210-i2s.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ sound/soc/codecs/rk3328_codec.c | 28 ++++++++++++++++++++++------
+ 1 file changed, 22 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/hisilicon/hi6210-i2s.c b/sound/soc/hisilicon/hi6210-i2s.c
-index 907f5f1f7b44..ff05b9779e4b 100644
---- a/sound/soc/hisilicon/hi6210-i2s.c
-+++ b/sound/soc/hisilicon/hi6210-i2s.c
-@@ -102,18 +102,15 @@ static int hi6210_i2s_startup(struct snd_pcm_substream *substream,
- 
- 	for (n = 0; n < i2s->clocks; n++) {
- 		ret = clk_prepare_enable(i2s->clk[n]);
--		if (ret) {
--			while (n--)
--				clk_disable_unprepare(i2s->clk[n]);
--			return ret;
--		}
-+		if (ret)
-+			goto err_unprepare_clk;
+diff --git a/sound/soc/codecs/rk3328_codec.c b/sound/soc/codecs/rk3328_codec.c
+index bfefefcc76d8..758d439e8c7a 100644
+--- a/sound/soc/codecs/rk3328_codec.c
++++ b/sound/soc/codecs/rk3328_codec.c
+@@ -474,7 +474,8 @@ static int rk3328_platform_probe(struct platform_device *pdev)
+ 	rk3328->pclk = devm_clk_get(&pdev->dev, "pclk");
+ 	if (IS_ERR(rk3328->pclk)) {
+ 		dev_err(&pdev->dev, "can't get acodec pclk\n");
+-		return PTR_ERR(rk3328->pclk);
++		ret = PTR_ERR(rk3328->pclk);
++		goto err_unprepare_mclk;
  	}
  
- 	ret = clk_set_rate(i2s->clk[CLK_I2S_BASE], 49152000);
- 	if (ret) {
- 		dev_err(i2s->dev, "%s: setting 49.152MHz base rate failed %d\n",
- 			__func__, ret);
--		return ret;
-+		goto err_unprepare_clk;
+ 	ret = clk_prepare_enable(rk3328->pclk);
+@@ -484,19 +485,34 @@ static int rk3328_platform_probe(struct platform_device *pdev)
  	}
  
- 	/* enable clock before frequency division */
-@@ -165,6 +162,11 @@ static int hi6210_i2s_startup(struct snd_pcm_substream *substream,
- 	hi6210_write_reg(i2s, HII2S_SW_RST_N, val);
+ 	base = devm_platform_ioremap_resource(pdev, 0);
+-	if (IS_ERR(base))
+-		return PTR_ERR(base);
++	if (IS_ERR(base)) {
++		ret = PTR_ERR(base);
++		goto err_unprepare_pclk;
++	}
  
- 	return 0;
+ 	rk3328->regmap = devm_regmap_init_mmio(&pdev->dev, base,
+ 					       &rk3328_codec_regmap_config);
+-	if (IS_ERR(rk3328->regmap))
+-		return PTR_ERR(rk3328->regmap);
++	if (IS_ERR(rk3328->regmap)) {
++		ret = PTR_ERR(rk3328->regmap);
++		goto err_unprepare_pclk;
++	}
+ 
+ 	platform_set_drvdata(pdev, rk3328);
+ 
+-	return devm_snd_soc_register_component(&pdev->dev, &soc_codec_rk3328,
++	ret = devm_snd_soc_register_component(&pdev->dev, &soc_codec_rk3328,
+ 					       rk3328_dai,
+ 					       ARRAY_SIZE(rk3328_dai));
++	if (ret)
++		goto err_unprepare_pclk;
 +
-+err_unprepare_clk:
-+	while (n--)
-+		clk_disable_unprepare(i2s->clk[n]);
++	return 0;
++
++err_unprepare_pclk:
++	clk_disable_unprepare(rk3328->pclk);
++
++err_unprepare_mclk:
++	clk_disable_unprepare(rk3328->mclk);
 +	return ret;
  }
  
- static void hi6210_i2s_shutdown(struct snd_pcm_substream *substream,
+ static const struct of_device_id rk3328_codec_of_match[] __maybe_unused = {
 -- 
 2.25.1
 
