@@ -7,52 +7,51 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05089C433B4
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 16:53:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42EEAC433ED
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 16:54:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 23C6F610CC
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 16:53:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 23C6F610CC
+	by mail.kernel.org (Postfix) with ESMTPS id A19006109E
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 16:54:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A19006109E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3E60D1744;
-	Tue, 18 May 2021 18:53:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E60D1744
+	by alsa0.perex.cz (Postfix) with ESMTPS id 34DA3176B;
+	Tue, 18 May 2021 18:53:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34DA3176B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621356834;
-	bh=WlekRqsbcbo2BUjkWmxAuW3bKmtLBKPvgcTfxLOeArY=;
+	s=default; t=1621356870;
+	bh=f1a5Y0NhI/zdy+tg/2vxDkVtP+D8PfDXmS2vQQfdFOU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EakpGalACQUT2dqNt7oj5j3ZT3XtPHaWsv8Hzue1PL8KAz5DFe3iBpJiKb9IqRGoj
-	 SjA6ccx3wHLUTV7dA2dQdMg7WGijttybLyDDFU5Xlr27JdIs0WnheEOBMH7h1C0Boo
-	 cZVv+ZEHdFa3A7CD3msCzAOeIV0ij2mz7L55jU0U=
+	b=FXwGoy5+N2BHFbTEGe8bbs3ighMlfoBGzwO9eyzzSYBz1CuJXkCka8mmHfdI5+puo
+	 j9Jj+D6oMlln0qgwR2eRGmXa7cxVQLKccGfLpOyiuRYuiutmKw3b9hPV3NCRJMK1N0
+	 XFCWB17esxPImQRqwOkIwp2xaHyKKrlHrFRPNs0g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99208F80257;
-	Tue, 18 May 2021 18:52:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 82F6AF80475;
+	Tue, 18 May 2021 18:52:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C52A4F80475; Tue, 18 May 2021 18:52:12 +0200 (CEST)
+ id 1156BF80431; Tue, 18 May 2021 18:52:13 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DD548F8012C
- for <alsa-devel@alsa-project.org>; Tue, 18 May 2021 18:52:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD548F8012C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 224E3F80257
+ for <alsa-devel@alsa-project.org>; Tue, 18 May 2021 18:52:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 224E3F80257
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 4B2D9B1AE;
+ by mx2.suse.de (Postfix) with ESMTP id 8757FB1E2;
  Tue, 18 May 2021 16:52:03 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/7] ALSA: control: Add power state check commonly for ioctl
- handlers
-Date: Tue, 18 May 2021 18:51:56 +0200
-Message-Id: <20210518165201.24376-3-tiwai@suse.de>
+Subject: [PATCH 7/7] ALSA: Drop superfluous argument from snd_power_wait()
+Date: Tue, 18 May 2021 18:52:01 +0200
+Message-Id: <20210518165201.24376-8-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210518165201.24376-1-tiwai@suse.de>
 References: <20210518165201.24376-1-tiwai@suse.de>
@@ -74,52 +73,140 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The card power state check can be better put in the common ioctl
-handler, as basically we want to prevent ioctls during the power off
-state.  Although this situation won't happen normally any longer (*),
-it'll be helpful for catching this for the future implementation like
-the faked suspend that is needed for PCI rescan.
-
-(*) Long long time ago, before the proper PM framework was introduced,
-it was still possible to reach SNDRV_CTL_IOCTL_POWER ioctl during the
-power off state.  This ioctl existed as a main control for the suspend
-resume state in the past, but the feature was already dropped along
-with the standard PM framework.
+The power_state argument of snd_power_wait() is superfluous, receiving
+only SNDRV_POWER_STATE_D0.  Let's drop it in all callers for
+simplicity.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/control.c        | 3 +++
- sound/core/control_compat.c | 3 +++
- 2 files changed, 6 insertions(+)
+ include/sound/core.h        | 4 ++--
+ sound/core/control.c        | 2 +-
+ sound/core/control_compat.c | 2 +-
+ sound/core/init.c           | 6 +-----
+ sound/core/pcm_native.c     | 4 ++--
+ sound/soc/soc-core.c        | 2 +-
+ sound/usb/usx2y/us122l.c    | 2 +-
+ 7 files changed, 9 insertions(+), 13 deletions(-)
 
+diff --git a/include/sound/core.h b/include/sound/core.h
+index 430d775b3c0e..e1192a337582 100644
+--- a/include/sound/core.h
++++ b/include/sound/core.h
+@@ -177,13 +177,13 @@ static inline void snd_power_unref(struct snd_card *card)
+ }
+ 
+ /* init.c */
+-int snd_power_wait(struct snd_card *card, unsigned int power_state);
++int snd_power_wait(struct snd_card *card);
+ int snd_power_ref_and_wait(struct snd_card *card);
+ void snd_power_sync_ref(struct snd_card *card);
+ 
+ #else /* ! CONFIG_PM */
+ 
+-static inline int snd_power_wait(struct snd_card *card, unsigned int state) { return 0; }
++static inline int snd_power_wait(struct snd_card *card) { return 0; }
+ static inline void snd_power_ref(struct snd_card *card) {}
+ static inline void snd_power_unref(struct snd_card *card) {}
+ static inline int snd_power_ref_and_wait(struct snd_card *card) { return 0; }
 diff --git a/sound/core/control.c b/sound/core/control.c
-index 498e3701514a..c22c3fad0c64 100644
+index 37f6f2ca0543..c145c6011878 100644
 --- a/sound/core/control.c
 +++ b/sound/core/control.c
-@@ -1772,6 +1772,9 @@ static long snd_ctl_ioctl(struct file *file, unsigned int cmd, unsigned long arg
+@@ -1774,7 +1774,7 @@ static long snd_ctl_ioctl(struct file *file, unsigned int cmd, unsigned long arg
  	card = ctl->card;
  	if (snd_BUG_ON(!card))
  		return -ENXIO;
-+	err = snd_power_wait(card, SNDRV_CTL_POWER_D0);
-+	if (err < 0)
-+		return err;
+-	err = snd_power_wait(card, SNDRV_CTL_POWER_D0);
++	err = snd_power_wait(card);
+ 	if (err < 0)
+ 		return err;
  	switch (cmd) {
- 	case SNDRV_CTL_IOCTL_PVERSION:
- 		return put_user(SNDRV_CTL_VERSION, ip) ? -EFAULT : 0;
 diff --git a/sound/core/control_compat.c b/sound/core/control_compat.c
-index 1d708aab9c98..d5b562ff237b 100644
+index b9fe1ead435b..b4554ae21e33 100644
 --- a/sound/core/control_compat.c
 +++ b/sound/core/control_compat.c
-@@ -438,6 +438,9 @@ static inline long snd_ctl_ioctl_compat(struct file *file, unsigned int cmd, uns
+@@ -432,7 +432,7 @@ static inline long snd_ctl_ioctl_compat(struct file *file, unsigned int cmd, uns
  	if (snd_BUG_ON(!ctl || !ctl->card))
  		return -ENXIO;
  
-+	err = snd_power_wait(ctl->card, SNDRV_CTL_POWER_D0);
-+	if (err < 0)
-+		return err;
+-	err = snd_power_wait(ctl->card, SNDRV_CTL_POWER_D0);
++	err = snd_power_wait(ctl->card);
+ 	if (err < 0)
+ 		return err;
  	switch (cmd) {
- 	case SNDRV_CTL_IOCTL_PVERSION:
- 	case SNDRV_CTL_IOCTL_CARD_INFO:
+diff --git a/sound/core/init.c b/sound/core/init.c
+index d11636fac608..7942da1085d2 100644
+--- a/sound/core/init.c
++++ b/sound/core/init.c
+@@ -1050,19 +1050,15 @@ EXPORT_SYMBOL_GPL(snd_power_ref_and_wait);
+ /**
+  * snd_power_wait - wait until the card gets powered up (old form)
+  * @card: soundcard structure
+- * @power_state: expected power state
+  *
+  * Wait until the card gets powered up to SNDRV_CTL_POWER_D0 state.
+- * @power_state must be SNDRV_CTL_POWER_D0.
+  *
+  * Return: Zero if successful, or a negative error code.
+  */
+-int snd_power_wait(struct snd_card *card, unsigned int power_state)
++int snd_power_wait(struct snd_card *card)
+ {
+ 	int ret;
+ 
+-	if (WARN_ON(power_state != SNDRV_CTL_POWER_D0))
+-		return 0;
+ 	ret = snd_power_ref_and_wait(card);
+ 	snd_power_unref(card);
+ 	return ret;
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 3c6ba0dc2970..11acea02bc74 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -2801,7 +2801,7 @@ static int snd_pcm_release(struct inode *inode, struct file *file)
+ 	pcm = substream->pcm;
+ 
+ 	/* block until the device gets woken up as it may touch the hardware */
+-	snd_power_wait(pcm->card, SNDRV_CTL_POWER_D0);
++	snd_power_wait(pcm->card);
+ 
+ 	mutex_lock(&pcm->open_mutex);
+ 	snd_pcm_release_substream(substream);
+@@ -3197,7 +3197,7 @@ static int snd_pcm_common_ioctl(struct file *file,
+ 	if (PCM_RUNTIME_CHECK(substream))
+ 		return -ENXIO;
+ 
+-	res = snd_power_wait(substream->pcm->card, SNDRV_CTL_POWER_D0);
++	res = snd_power_wait(substream->pcm->card);
+ 	if (res < 0)
+ 		return res;
+ 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 1c0904acb935..ddc65c12f6f4 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -580,7 +580,7 @@ int snd_soc_suspend(struct device *dev)
+ 	 * Due to the resume being scheduled into a workqueue we could
+ 	 * suspend before that's finished - wait for it to complete.
+ 	 */
+-	snd_power_wait(card->snd_card, SNDRV_CTL_POWER_D0);
++	snd_power_wait(card->snd_card);
+ 
+ 	/* we're going to block userspace touching us until resume completes */
+ 	snd_power_change_state(card->snd_card, SNDRV_CTL_POWER_D3hot);
+diff --git a/sound/usb/usx2y/us122l.c b/sound/usb/usx2y/us122l.c
+index 6e1bfe894dd5..596a1a1fea49 100644
+--- a/sound/usb/usx2y/us122l.c
++++ b/sound/usb/usx2y/us122l.c
+@@ -379,7 +379,7 @@ static int usb_stream_hwdep_ioctl(struct snd_hwdep *hw, struct file *file,
+ 	if (cfg.period_frames < min_period_frames)
+ 		return -EINVAL;
+ 
+-	snd_power_wait(hw->card, SNDRV_CTL_POWER_D0);
++	snd_power_wait(hw->card);
+ 
+ 	mutex_lock(&us122l->mutex);
+ 	s = us122l->sk.s;
 -- 
 2.26.2
 
