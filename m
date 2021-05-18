@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 975AAC433B4
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 13:04:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1E87C433B4
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 13:05:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 14A3C61040
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 13:04:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14A3C61040
+	by mail.kernel.org (Postfix) with ESMTPS id 30CEF60FF0
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 13:05:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 30CEF60FF0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9E0BD1700;
-	Tue, 18 May 2021 15:04:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E0BD1700
+	by alsa0.perex.cz (Postfix) with ESMTPS id B4FF8170D;
+	Tue, 18 May 2021 15:04:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4FF8170D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621343095;
-	bh=aP6QAdoO9B5f2IVmNueno5MfG30V3TDARb5yXc2Q8Zw=;
+	s=default; t=1621343110;
+	bh=EZGwLAA5iXiYEHxfYtBjACPnABuAXlHX1DvsbI7UDcE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cTOcgMSaKZhHBrqzIrDVrItowfV8y7nvpOiiXAXEkK4X2fQ6tKITB7/nkQnhDYOFE
-	 hruu48cmZSH4th9YWiHbXHeHnh5sT2bVmVlHqbaSkYyBiK6HvqklwgJCVaB01hReo1
-	 7PKk/1vl/4WQS0VD8CK9sQQjNj/rA4dSMwOIADbk=
+	b=u5s3YkxlwqrU0Ntc42ljonGpcZXN0mFW2Lynf3SHXqqFv9SXytq/L7+CIM2Cy3KZy
+	 9UTALLsJhUd5E9qZrJ2zukgETD0mS25d5IGMri+8UxAtUOnsA8oCIiVRUUgd6h+Cm5
+	 htOlzH4EOJvpdZUPQ4fTsci+MOzVUkX/j0pjhvKI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 684B2F804BD;
-	Tue, 18 May 2021 15:01:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 43F5DF804D8;
+	Tue, 18 May 2021 15:01:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C7E72F80475; Tue, 18 May 2021 15:01:13 +0200 (CEST)
+ id 3AB9AF804A9; Tue, 18 May 2021 15:01:15 +0200 (CEST)
 Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
  [66.111.4.25])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9609CF80272
- for <alsa-devel@alsa-project.org>; Tue, 18 May 2021 15:01:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9609CF80272
+ by alsa1.perex.cz (Postfix) with ESMTPS id BE35AF80217
+ for <alsa-devel@alsa-project.org>; Tue, 18 May 2021 15:01:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE35AF80217
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="4A4ZO7NP"; 
+ header.b="zfE/kiYe"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="ejvnBjTh"
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
- by mailout.nyi.internal (Postfix) with ESMTP id EB50C5C0219;
- Tue, 18 May 2021 09:01:01 -0400 (EDT)
+ header.i=@messagingengine.com header.b="c9eUP4dY"
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.nyi.internal (Postfix) with ESMTP id F28B45C021E;
+ Tue, 18 May 2021 09:01:06 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
- by compute7.internal (MEProxy); Tue, 18 May 2021 09:01:01 -0400
+ by compute1.internal (MEProxy); Tue, 18 May 2021 09:01:06 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=EO05u6KqPf/q1
- 3T7LEYaijNw5JMQxVVIZOU0w5sSPf8=; b=4A4ZO7NP4m01gCAuAED7SlpislFBe
- LMLuT1IloohlkAYdhbTM/Uf9ASC1Ed+rsLff4qC23wlGcsEzuYLs1ZczP/CH9A7X
- xlhuv1f0qUVkJ0ZL6lf6s4fUffWk/8y/4evL5ccYKtm1yATDD3Ols5S7nMYrkSD8
- 1d6KOcpKT+hAaEh/UfdlG9P7qyAKuyaVFjYZUS8PHEfyAYAjDTvhOUJ7f8heuoQf
- etyXNJMEpjI83fM/JBIG0+pPcoPQXiYybQ7eVqsXc1u1zWa48hFp0hFlAHCNeEWu
- hAkDxf0m2fLL5b8onaTccNNo2CYMf6Zl9FIdy5a+eXUUdQGiMFlL6CM7w==
+ :mime-version:content-transfer-encoding; s=fm1; bh=mF3hpUrwrtAk1
+ Ie3OFRMN8X5OiZd7cmNLrl7DpxqZbY=; b=zfE/kiYeN0GOqc92d93hViatYptIV
+ 6JDYF6j8BoimWvvZAQtllvldmLX8QSKHOc9DVLwSvEl5ALIGnn52nVHJM7OB5EgC
+ m2KO74NXhO7u7e8gnLCLiSvTkLYWvMEVpQLrbMUI0XTQ6mBBJEVWUWoqajwR+leK
+ qK8I3HmmYnenF/tO0SiaCFumSTbk2oyOhzBnGo9z4aSrYb1nwOsy52JlQNFRart3
+ z4rw7bFtExxS8ZnW81WWcHrccL0ECbVc+N6hT8ry1+ZRQWt81afEOC58pZpEtYRB
+ 4xImFxDgy1pGi9zNQbFdtrH+UZDk4jX/azSQG7ndEk3JFbbgX36nCt8sQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=EO05u6KqPf/q13T7LEYaijNw5JMQxVVIZOU0w5sSPf8=; b=ejvnBjTh
- JcTtbnDgqpURvlaS3IhkKEGDL9o/uJm9RoVX6GZE62xg9UVrmgmkmQOzEQBDmxFF
- 54RT6u6kRSYxrQsRYO8yGJ6i8MXGEvueC032wv8JlhUuzjppPg3vu+6VzHXjKZk9
- FnEO//Ubcz1K7g+HBK2bWMc1Ob8F4mbGzc0VhaNOcY3jaD/G5vyW7Qu1pvN83xGt
- Oc9kb1JxbmTNYsPSI0PXtnJFzOXTo5HpLLOWxoeihUlFRpR/mAmuLYMVe+TpZBdQ
- 0kqRj9hFh+SaGiJehx9pSRSDYP+RJ3Rk5TQt7fzs0v5kXpkM1AFw3CYra2FcxM38
- iGOQyylsSCtVHA==
-X-ME-Sender: <xms:jLqjYOzpWHp7Gn1kaFCPgElETIh9Spgo9v8GjNqq72xIFnCclUjd0A>
- <xme:jLqjYKS9i49HFALtieTJJPHoK5UFiUvVRagGiJyVq9SujSBikXjl5lL7WTJ-TLhlW
- mAgV-DKjXyH14ggVts>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeijedgheejucetufdoteggodetrfdotf
+ fm2; bh=mF3hpUrwrtAk1Ie3OFRMN8X5OiZd7cmNLrl7DpxqZbY=; b=c9eUP4dY
+ paX2NtDE5VPYchI8DuniKz+g2p+VXqrhSQHoDhcLidJBg4l6YrTHrKXMPQyoP4R8
+ u1A/x6qgOKHxMCsK5GyQSoQ3U9EhjsukJxmFyexGGWuPz47xpEp+2RrNvTCyKqvY
+ S7jPRXzjf1PXlUKFES2BvdjyOBIdDykRa1c11P9K7K84DUtpJNly8fEVj+y9v05p
+ z1tWDde5/lncMpeWFd+w7J10uKSNsYKIWXeXfgiXrN95LERvhdcHPn0o9JtyApTJ
+ XXdQZxGBEnbJHHPDjSROCof2PCLwWd/bDcxFoqUnqTO2TEQ9OSbXC+h2iNJKDe9p
+ OQ2exiBtoeDikg==
+X-ME-Sender: <xms:krqjYLyl9BZUxTZNdwBVFRe1FPLsNQY5x07pyoElW9gbbtR6T9wgnw>
+ <xme:krqjYDSVV6xZ0xhe6YrpboSm1p9iqnFa52E18hWf1jiXiCKK8sT2-1B-NO0b6OuD1
+ r3xHr_k22Di-YIxEys>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeijedgheekucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
  dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
@@ -85,19 +85,18 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeijedgheejucetufdoteggod
  etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecukfhppedugedr
  fedrieehrddujeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
  hfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:jLqjYAVvca1krO0M4aoUoJz6I6G1Ifxd7SjqHUTqtlw16Al0gNA1qQ>
- <xmx:jLqjYEgvirYKYhEUByiVIEVorRqJ0jMnqlUp12VNP7w8FqSfagIykg>
- <xmx:jLqjYACW9CEyNZM4iruLYRqHqtIqC1TBOYiQXr6F5G6NjoVVkrFT1g>
- <xmx:jbqjYLqHmR7ejuhxVjkotU8mRm4n-XFa8r8xzenO4PeX3-wVLkPBow>
+X-ME-Proxy: <xmx:krqjYFWXp6x-2479297Bd7xQfxDKjHB5jmejT-2ZamuQMJhsztD-1A>
+ <xmx:krqjYFg5kZKPyFKRN60kE-EDUxSIBMdsCw0usq7jSrDeFsz_Mabd0g>
+ <xmx:krqjYNA-vkoFBWCAMCwV3i3_f60EHyAaP6Ql6B7LSTLrvp3D82QW7Q>
+ <xmx:krqjYApqLitkb6CRnR6Vgn8C8ar9qh5ei1MhHVNMFXxgZlRVEdzxWA>
 Received: from workstation.flets-east.jp (ae065175.dynamic.ppp.asahi-net.or.jp
  [14.3.65.175]) by mail.messagingengine.com (Postfix) with ESMTPA;
- Tue, 18 May 2021 09:00:59 -0400 (EDT)
+ Tue, 18 May 2021 09:01:05 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Subject: [PATCH 5/8] ALSA: firewire-lib: code refactoring for parser of IR
- context header
-Date: Tue, 18 May 2021 22:00:44 +0900
-Message-Id: <20210518130048.146596-6-o-takashi@sakamocchi.jp>
+Subject: [PATCH 8/8] ALSA: firewire-lib: insert descriptor for skipped cycle
+Date: Tue, 18 May 2021 22:00:47 +0900
+Message-Id: <20210518130048.146596-9-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210518130048.146596-1-o-takashi@sakamocchi.jp>
 References: <20210518130048.146596-1-o-takashi@sakamocchi.jp>
@@ -119,93 +118,100 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This commit refactors regarding to function argument for the length of
-isochronous packet payload.
+This commit fulfils sequence descriptors for skipped cycle when
+it's one cycle. This is preparation for future integration.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp-stream.c | 22 ++++++++++------------
- 1 file changed, 10 insertions(+), 12 deletions(-)
+ sound/firewire/amdtp-stream.c | 29 ++++++++++++++++++++++++-----
+ 1 file changed, 24 insertions(+), 5 deletions(-)
 
 diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index ed8aea3cb1a1..1c530678e56a 100644
+index 78b62a452d56..af5c3629f1ac 100644
 --- a/sound/firewire/amdtp-stream.c
 +++ b/sound/firewire/amdtp-stream.c
-@@ -632,33 +632,33 @@ static int check_cip_header(struct amdtp_stream *s, const __be32 *buf,
- 
- static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
- 			       const __be32 *ctx_header,
--			       unsigned int *payload_length,
- 			       unsigned int *data_blocks,
- 			       unsigned int *data_block_counter,
- 			       unsigned int *syt, unsigned int packet_index, unsigned int index)
+@@ -723,7 +723,8 @@ static inline u32 compute_ohci_it_cycle(const __be32 ctx_header_tstamp,
+ static int generate_device_pkt_descs(struct amdtp_stream *s,
+ 				     struct pkt_desc *descs,
+ 				     const __be32 *ctx_header,
+-				     unsigned int packets)
++				     unsigned int packets,
++				     unsigned int *desc_count)
  {
-+	unsigned int payload_length;
- 	const __be32 *cip_header;
- 	unsigned int cip_header_size;
+ 	unsigned int next_cycle = s->next_cycle;
+ 	unsigned int dbc = s->data_block_counter;
+@@ -732,8 +733,9 @@ static int generate_device_pkt_descs(struct amdtp_stream *s,
+ 	int i;
  	int err;
  
--	*payload_length = be32_to_cpu(ctx_header[0]) >> ISO_DATA_LENGTH_SHIFT;
-+	payload_length = be32_to_cpu(ctx_header[0]) >> ISO_DATA_LENGTH_SHIFT;
- 
- 	if (!(s->flags & CIP_NO_HEADER))
- 		cip_header_size = 8;
- 	else
- 		cip_header_size = 0;
- 
--	if (*payload_length > cip_header_size + s->ctx_data.tx.max_ctx_payload_length) {
-+	if (payload_length > cip_header_size + s->ctx_data.tx.max_ctx_payload_length) {
- 		dev_err(&s->unit->device,
- 			"Detect jumbo payload: %04x %04x\n",
--			*payload_length, cip_header_size + s->ctx_data.tx.max_ctx_payload_length);
-+			payload_length, cip_header_size + s->ctx_data.tx.max_ctx_payload_length);
- 		return -EIO;
- 	}
- 
- 	if (cip_header_size > 0) {
--		if (*payload_length >= cip_header_size) {
-+		if (payload_length >= cip_header_size) {
- 			cip_header = ctx_header + 2;
--			err = check_cip_header(s, cip_header, *payload_length, data_blocks,
-+			err = check_cip_header(s, cip_header, payload_length, data_blocks,
- 					       data_block_counter, syt);
- 			if (err < 0)
- 				return err;
-@@ -671,15 +671,14 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
- 	} else {
- 		cip_header = NULL;
- 		err = 0;
--		*data_blocks = *payload_length / sizeof(__be32) /
--			       s->data_block_quadlets;
-+		*data_blocks = payload_length / sizeof(__be32) / s->data_block_quadlets;
- 		*syt = 0;
- 
- 		if (*data_block_counter == UINT_MAX)
- 			*data_block_counter = 0;
- 	}
- 
--	trace_amdtp_packet(s, cycle, cip_header, *payload_length, *data_blocks,
-+	trace_amdtp_packet(s, cycle, cip_header, payload_length, *data_blocks,
- 			   *data_block_counter, packet_index, index);
- 
- 	return err;
-@@ -727,14 +726,13 @@ static int generate_device_pkt_descs(struct amdtp_stream *s,
++	*desc_count = 0;
  	for (i = 0; i < packets; ++i) {
- 		struct pkt_desc *desc = descs + i;
+-		struct pkt_desc *desc = descs + i;
++		struct pkt_desc *desc = descs + *desc_count;
  		unsigned int cycle;
--		unsigned int payload_length;
+ 		bool lost;
  		unsigned int data_blocks;
- 		unsigned int syt;
+@@ -745,11 +747,25 @@ static int generate_device_pkt_descs(struct amdtp_stream *s,
+ 			if (s->flags & CIP_NO_HEADER) {
+ 				// Fireface skips transmission just for an isoc cycle corresponding
+ 				// to empty packet.
++				unsigned int prev_cycle = next_cycle;
++
+ 				next_cycle = increment_ohci_cycle_count(next_cycle, 1);
+ 				lost = (next_cycle != cycle);
++				if (!lost) {
++					// Prepare a description for the skipped cycle for
++					// sequence replay.
++					desc->cycle = prev_cycle;
++					desc->syt = 0;
++					desc->data_blocks = 0;
++					desc->data_block_counter = dbc;
++					desc->ctx_payload = NULL;
++					++desc;
++					++(*desc_count);
++				}
+ 			} else if (s->flags & CIP_JUMBO_PAYLOAD) {
+ 				// OXFW970 skips transmission for several isoc cycles during
+-				// asynchronous transaction.
++				// asynchronous transaction. The sequence replay is impossible due
++				// to the reason.
+ 				unsigned int safe_cycle = increment_ohci_cycle_count(next_cycle,
+ 								IR_JUMBO_PAYLOAD_MAX_SKIP_CYCLES);
+ 				lost = (compare_ohci_cycle_count(safe_cycle, cycle) > 0);
+@@ -776,6 +792,7 @@ static int generate_device_pkt_descs(struct amdtp_stream *s,
+ 			dbc = (dbc + desc->data_blocks) & 0xff;
  
- 		cycle = compute_ohci_cycle_count(ctx_header[1]);
+ 		next_cycle = increment_ohci_cycle_count(next_cycle, 1);
++		++(*desc_count);
+ 		ctx_header += s->ctx_data.tx.ctx_header_size / sizeof(*ctx_header);
+ 		packet_index = (packet_index + 1) % queue_size;
+ 	}
+@@ -927,6 +944,7 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 	struct amdtp_stream *s = private_data;
+ 	__be32 *ctx_header = header;
+ 	unsigned int packets;
++	unsigned int desc_count;
+ 	int i;
+ 	int err;
  
--		err = parse_ir_ctx_header(s, cycle, ctx_header, &payload_length,
--					  &data_blocks, &dbc, &syt, packet_index, i);
-+		err = parse_ir_ctx_header(s, cycle, ctx_header, &data_blocks, &dbc, &syt,
-+					  packet_index, i);
- 		if (err < 0)
- 			return err;
+@@ -936,14 +954,15 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 	// Calculate the number of packets in buffer and check XRUN.
+ 	packets = header_length / s->ctx_data.tx.ctx_header_size;
  
+-	err = generate_device_pkt_descs(s, s->pkt_descs, ctx_header, packets);
++	desc_count = 0;
++	err = generate_device_pkt_descs(s, s->pkt_descs, ctx_header, packets, &desc_count);
+ 	if (err < 0) {
+ 		if (err != -EAGAIN) {
+ 			cancel_stream(s);
+ 			return;
+ 		}
+ 	} else {
+-		process_ctx_payloads(s, s->pkt_descs, packets);
++		process_ctx_payloads(s, s->pkt_descs, desc_count);
+ 	}
+ 
+ 	for (i = 0; i < packets; ++i) {
 -- 
 2.27.0
 
