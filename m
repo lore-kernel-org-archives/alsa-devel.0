@@ -2,102 +2,73 @@ Return-Path: <SRS0=y7O6=KN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72188C433B4
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 08:03:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 138FBC433B4
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 08:03:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BF11C610A2
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 08:03:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BF11C610A2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 797F6610A2
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 08:03:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 797F6610A2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4FB1D16A3;
-	Tue, 18 May 2021 10:02:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4FB1D16A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1045316C2;
+	Tue, 18 May 2021 10:02:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1045316C2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621325006;
-	bh=ea43IMXtPXzBWWlh+J3o8CXUPDCS+MnpV3Pi6gCEQ4s=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ggN3GkX21DzXIfP4XTu6AtbvuaBD4qZzAdqUwCDHz/X+kTcqf7UuzDl+xssVcrPuu
-	 bYJRICDUySQtATOhOZpvW8U+TIiOb2tl1PG1leUQ4X3PsTLlcnD+n2kuqXaU2/PfUQ
-	 rUnP4gQ1fkwu6eO3R3K0/W28jA1UydOJ2nrk2CK4=
+	s=default; t=1621325012;
+	bh=sbl6KepxrzR2xVnSxcqXJMr3XarDaKcbcsqysh9moXA=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=fDV712wOLcIFyqS74bTjcsMs3oD2Kf2C2xPHUKbpAGRrtSCGZdz4zjwgxn5t9UY6d
+	 py/rAuI/gKadKhJU/kkgmF540PROjL+TAOMWFSZiBJotpDrFRzYuXB6Lo3p/elSbHl
+	 NPtHA6+gI+z8Dtd2sX39426oMZVqeAFvsf9x7vvs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4BAADF804AC;
-	Tue, 18 May 2021 10:00:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06BC4F804B0;
+	Tue, 18 May 2021 10:00:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7AB7FF8020B; Mon, 17 May 2021 23:20:53 +0200 (CEST)
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com
- [209.85.210.46])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id D0B6CF80217; Tue, 18 May 2021 06:43:13 +0200 (CEST)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ADDF5F80169
- for <alsa-devel@alsa-project.org>; Mon, 17 May 2021 23:20:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADDF5F80169
-Received: by mail-ot1-f46.google.com with SMTP id
- 36-20020a9d0ba70000b02902e0a0a8fe36so6803245oth.8
- for <alsa-devel@alsa-project.org>; Mon, 17 May 2021 14:20:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=YcPVqnyxUoQRqLqrcd+xwOvSykAyUXn6XXyXXfewed8=;
- b=qqSyCg0RqiqLpA6bhtEJbOWUHWavaUgZ45KdEDJ7h0aIMhBTappvEUUY9ECV8OqPGP
- qBD9B0/73czl4gLmeyWvdYp/pDvGQE22lEQGdbwg+1GQb+AoTt0qnPTz8BClYDpvWD/p
- e6D5w6kGueasiGWbEmDhj92xiCSZG9US3t/dyZQl/lhJBVHp6bt+GiHiikjS2LlQa6RJ
- iK3ulMUu/R+6nxpHecStEMj0tKUK62SOBRUUd920woqHGs6W7o4OLqe83/GfWo9VQ0ej
- 6KruwPfzSkjiIoRKAIvl9aUupEzvG1QkWOFZDDQ1PHbDeqYg57sJyzrGVthP2jmu8d3K
- u8Tw==
-X-Gm-Message-State: AOAM530gsK8F4Y1t+lWaHiUIVDFMxvsKqGy99Pd9wHYaOYhTf3pSaqaE
- qBm3NgSZiQcCll0tQi4VIw==
-X-Google-Smtp-Source: ABdhPJyETxg9k9XJAKSPDZnyLWwwIHaYxzn+ovOlDY4J+ItNb3j1tMU05rQr9vzb7eu8lf00QgA4Rw==
-X-Received: by 2002:a9d:5a1a:: with SMTP id v26mr1334412oth.50.1621286444548; 
- Mon, 17 May 2021 14:20:44 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id y191sm2998370oia.50.2021.05.17.14.19.23
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 17 May 2021 14:19:33 -0700 (PDT)
-Received: (nullmailer pid 3215069 invoked by uid 1000);
- Mon, 17 May 2021 21:18:28 -0000
-Date: Mon, 17 May 2021 16:18:28 -0500
-From: Rob Herring <robh@kernel.org>
-To: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: More removals of type references on common
- properties
-Message-ID: <20210517211828.GA3214995@robh.at.kernel.org>
-References: <20210510204524.617390-1-robh@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91877F80139
+ for <alsa-devel@alsa-project.org>; Tue, 18 May 2021 06:43:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91877F80139
+Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.60])
+ by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fkjvj2rp3zQpH8;
+ Tue, 18 May 2021 12:39:29 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 18 May 2021 12:42:58 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 18 May
+ 2021 12:42:57 +0800
+From: Yang Yingliang <yangyingliang@huawei.com>
+To: <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>
+Subject: [PATCH -next] ASoC: hisilicon: fix missing clk_disable_unprepare() on
+ error in hi6210_i2s_startup()
+Date: Tue, 18 May 2021 12:45:14 +0800
+Message-ID: <20210518044514.607010-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210510204524.617390-1-robh@kernel.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 X-Mailman-Approved-At: Tue, 18 May 2021 10:00:15 +0200
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- linux-iio@vger.kernel.org, Sebastian Reichel <sre@kernel.org>,
- linux-clk@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
- Chunyan Zhang <zhang.lyra@gmail.com>,
- Olivier Moysan <olivier.moysan@foss.st.com>, linux-input@vger.kernel.org,
- Jakub Kicinski <kuba@kernel.org>,
- Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>, devicetree@vger.kernel.org,
- Odelu Kukatla <okukatla@codeaurora.org>, linux-pm@vger.kernel.org,
- Baolin Wang <baolin.wang7@gmail.com>, Mark Brown <broonie@kernel.org>,
- Orson Zhai <orsonzhai@gmail.com>, Fabrice Gasnier <fabrice.gasnier@st.com>,
- linux-arm-kernel@lists.infradead.org, Alex Elder <elder@kernel.org>,
- Stephen Boyd <sboyd@kernel.org>, netdev@vger.kernel.org,
- Shengjiu Wang <shengjiu.wang@nxp.com>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-kernel@vger.kernel.org,
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- Luca Ceresoli <luca@lucaceresoli.net>, Georgi Djakov <djakov@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Jonathan Cameron <jic23@kernel.org>
+Cc: broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,52 +84,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 10 May 2021 15:45:24 -0500, Rob Herring wrote:
-> Users of common properties shouldn't have a type definition as the
-> common schemas already have one. A few new ones slipped in and
-> *-names was missed in the last clean-up pass. Drop all the unnecessary
-> type references in the tree.
-> 
-> A meta-schema update to catch these is pending.
-> 
-> Cc: Luca Ceresoli <luca@lucaceresoli.net>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Olivier Moysan <olivier.moysan@foss.st.com>
-> Cc: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: Lars-Peter Clausen <lars@metafoo.de>
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Georgi Djakov <djakov@kernel.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Sebastian Reichel <sre@kernel.org>
-> Cc: Orson Zhai <orsonzhai@gmail.com>
-> Cc: Baolin Wang <baolin.wang7@gmail.com>
-> Cc: Chunyan Zhang <zhang.lyra@gmail.com>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
-> Cc: Odelu Kukatla <okukatla@codeaurora.org>
-> Cc: Alex Elder <elder@kernel.org>
-> Cc: Shengjiu Wang <shengjiu.wang@nxp.com>
-> Cc: linux-clk@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-iio@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-input@vger.kernel.org
-> Cc: linux-pm@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  Documentation/devicetree/bindings/clock/idt,versaclock5.yaml    | 2 --
->  .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml         | 1 -
->  Documentation/devicetree/bindings/input/input.yaml              | 1 -
->  Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml   | 1 -
->  Documentation/devicetree/bindings/net/qcom,ipa.yaml             | 1 -
->  .../devicetree/bindings/power/supply/sc2731-charger.yaml        | 2 +-
->  Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml          | 2 +-
->  7 files changed, 2 insertions(+), 8 deletions(-)
-> 
+After calling clk_prepare_enable(), clk_disable_unprepare() need
+be called when calling clk_set_rate() failed.
 
-Applied, thanks!
+Fixes: 0bf750f4cbe1 ("ASoC: hisilicon: Add hi6210 i2s audio driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ sound/soc/hisilicon/hi6210-i2s.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/hisilicon/hi6210-i2s.c b/sound/soc/hisilicon/hi6210-i2s.c
+index 907f5f1f7b44..ff05b9779e4b 100644
+--- a/sound/soc/hisilicon/hi6210-i2s.c
++++ b/sound/soc/hisilicon/hi6210-i2s.c
+@@ -102,18 +102,15 @@ static int hi6210_i2s_startup(struct snd_pcm_substream *substream,
+ 
+ 	for (n = 0; n < i2s->clocks; n++) {
+ 		ret = clk_prepare_enable(i2s->clk[n]);
+-		if (ret) {
+-			while (n--)
+-				clk_disable_unprepare(i2s->clk[n]);
+-			return ret;
+-		}
++		if (ret)
++			goto err_unprepare_clk;
+ 	}
+ 
+ 	ret = clk_set_rate(i2s->clk[CLK_I2S_BASE], 49152000);
+ 	if (ret) {
+ 		dev_err(i2s->dev, "%s: setting 49.152MHz base rate failed %d\n",
+ 			__func__, ret);
+-		return ret;
++		goto err_unprepare_clk;
+ 	}
+ 
+ 	/* enable clock before frequency division */
+@@ -165,6 +162,11 @@ static int hi6210_i2s_startup(struct snd_pcm_substream *substream,
+ 	hi6210_write_reg(i2s, HII2S_SW_RST_N, val);
+ 
+ 	return 0;
++
++err_unprepare_clk:
++	while (n--)
++		clk_disable_unprepare(i2s->clk[n]);
++	return ret;
+ }
+ 
+ static void hi6210_i2s_shutdown(struct snd_pcm_substream *substream,
+-- 
+2.25.1
+
