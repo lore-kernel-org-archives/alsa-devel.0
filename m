@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0CD0C433ED
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 16:55:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F61FC433ED
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 16:55:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 27A476109E
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 16:55:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 27A476109E
+	by mail.kernel.org (Postfix) with ESMTPS id BA8256109E
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 16:55:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA8256109E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BAE841781;
-	Tue, 18 May 2021 18:54:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAE841781
+	by alsa0.perex.cz (Postfix) with ESMTPS id 515D01763;
+	Tue, 18 May 2021 18:54:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 515D01763
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621356920;
-	bh=IXuYW6K5GXRtYhY46/rVNlPK/BD2lkyO6zebNp7u76A=;
+	s=default; t=1621356935;
+	bh=J8pjQAVRwZxyu9BdXFDj0UFkVs7YDnXupWVWFQV9p/g=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DyjFz+aopJbYKdC/UTrn8JooS6uyfBUcMmm1UnaZfbdO1qnpvTAhobsRC77eNILhv
-	 6O3X5w20Cc+RL0nk3xNtLaTEzOksMC6C3hCisKfPuARJUHD07LDS/K+b3/1p21hNeZ
-	 SPJSlKxXRhyDK3cMXx7oWb85wsra1ubU1ika04mg=
+	b=geBBQjQV0qti6q7WbkMvfRiPEHRyX4sCLtZKGmE6dvBN1evWLa0LCbEYMVackpboF
+	 O9gXxF0xgApHuSga98DZiKlFBwmBLD0XujZzOfcB/+tdl4BMfXMjHN1RJTj7eO+pgi
+	 nCoKehIFtnTue7bCUb9D0sS0jPx0UDJXwEP5lfJk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D06E1F804B2;
-	Tue, 18 May 2021 18:52:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F12CF804CF;
+	Tue, 18 May 2021 18:52:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BD0B5F80475; Tue, 18 May 2021 18:52:13 +0200 (CEST)
+ id A7CD9F8049C; Tue, 18 May 2021 18:52:14 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E3287F80217
- for <alsa-devel@alsa-project.org>; Tue, 18 May 2021 18:52:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3287F80217
+ by alsa1.perex.cz (Postfix) with ESMTPS id 284A8F802C8
+ for <alsa-devel@alsa-project.org>; Tue, 18 May 2021 18:52:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 284A8F802C8
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 668ADB1B6;
+ by mx2.suse.de (Postfix) with ESMTP id 79AFEB1C8;
  Tue, 18 May 2021 16:52:03 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 4/7] ALSA: control: Minor optimization for
- SNDRV_CTL_IOCTL_POWER_STATE
-Date: Tue, 18 May 2021 18:51:58 +0200
-Message-Id: <20210518165201.24376-5-tiwai@suse.de>
+Subject: [PATCH 6/7] ALSA: pcm: Block the release until the system resume
+ finishes
+Date: Tue, 18 May 2021 18:52:00 +0200
+Message-Id: <20210518165201.24376-7-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210518165201.24376-1-tiwai@suse.de>
 References: <20210518165201.24376-1-tiwai@suse.de>
@@ -74,30 +74,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The SNDRV_CTL_IOCTL_POWER_STATE is an obsoleted ioctl and now
-practically it returns always D0.  Do some minor optimization.
+The normal PCM operations are already blocked during the card power
+off state in the PCM common ioctl handler, but the release isn't
+covered.  As the PCM stream release may also access the hardware,
+let's block the release until the card power turns on.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/control.c | 4 ----
- 1 file changed, 4 deletions(-)
+ sound/core/pcm_native.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/core/control.c b/sound/core/control.c
-index 799d91ddccb0..5e8b77855e5d 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -1807,11 +1807,7 @@ static long snd_ctl_ioctl(struct file *file, unsigned int cmd, unsigned long arg
- 	case SNDRV_CTL_IOCTL_POWER:
- 		return -ENOPROTOOPT;
- 	case SNDRV_CTL_IOCTL_POWER_STATE:
--#ifdef CONFIG_PM
--		return put_user(card->power_state, ip) ? -EFAULT : 0;
--#else
- 		return put_user(SNDRV_CTL_POWER_D0, ip) ? -EFAULT : 0;
--#endif
- 	}
- 	down_read(&snd_ioctl_rwsem);
- 	list_for_each_entry(p, &snd_control_ioctls, list) {
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 8dbe86cf2e4f..3c6ba0dc2970 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -2799,6 +2799,10 @@ static int snd_pcm_release(struct inode *inode, struct file *file)
+ 	if (snd_BUG_ON(!substream))
+ 		return -ENXIO;
+ 	pcm = substream->pcm;
++
++	/* block until the device gets woken up as it may touch the hardware */
++	snd_power_wait(pcm->card, SNDRV_CTL_POWER_D0);
++
+ 	mutex_lock(&pcm->open_mutex);
+ 	snd_pcm_release_substream(substream);
+ 	kfree(pcm_file);
 -- 
 2.26.2
 
