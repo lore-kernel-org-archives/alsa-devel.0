@@ -6,61 +6,108 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9701BC433B4
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 08:24:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24255C433B4
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 08:36:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 72DD9610A8
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 08:24:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72DD9610A8
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 8597A610CB
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 08:36:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8597A610CB
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3FDDC169A;
-	Tue, 18 May 2021 10:23:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3FDDC169A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8948E16B6;
+	Tue, 18 May 2021 10:35:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8948E16B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621326266;
-	bh=y2erKtdMTYf6GAkBPz1fxRj1eobmol+kFwFW+TwdV8k=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1621327000;
+	bh=z+/ubAYRBrzl9LRhEGTt7kuggw1/r11Q1vJsbYTV7bs=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KhbVh/dK30z3CjAtAskiQpYuP1bWBT7o28zkZMT2gFdMCw3a0fbkArm6nX9UApENy
-	 si9FVhT18vEOyrshO+3VwaGJXNBXr+LFIMwgWSolshhTo3ShzPDik1B7qYo6FkFmsY
-	 zoHCAPC/X8PTHlfiPZ6wPfkf4opikDx+y14y1owg=
+	b=m3a4w8ej9Mal473E7d008Hy3w7eat4HJ+2u5STVnKV9m2gYnt8bC2BvGM7RUdHES5
+	 kN/UpYBjgkAs5mFkRBybti0etPqZZjwY/S/HsGipTObyBo39LYki713hSrf+Nz7N+I
+	 AuOTjmoPO7aOqOWpTbJTvnolnTk9pwpa4w0cqRHQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ADF0EF801DB;
-	Tue, 18 May 2021 10:23:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1618F8012C;
+	Tue, 18 May 2021 10:35:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CF580F80217; Tue, 18 May 2021 10:23:33 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id BD885F80217; Tue, 18 May 2021 10:35:47 +0200 (CEST)
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
+ [66.111.4.29])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5A307F80139
- for <alsa-devel@alsa-project.org>; Tue, 18 May 2021 10:23:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A307F80139
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 6A8FAAC5B;
- Tue, 18 May 2021 08:23:30 +0000 (UTC)
-Date: Tue, 18 May 2021 10:23:30 +0200
-Message-ID: <s5him3gmovx.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8AE5AF8012C
+ for <alsa-devel@alsa-project.org>; Tue, 18 May 2021 10:35:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8AE5AF8012C
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
+ header.b="bDOs2iWW"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="ULXt8Jox"
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+ by mailout.nyi.internal (Postfix) with ESMTP id 0F4335C0163;
+ Tue, 18 May 2021 04:35:41 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute2.internal (MEProxy); Tue, 18 May 2021 04:35:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-type:in-reply-to; s=fm1; bh=kdHtUfCL7maaorkxWyZAAJIo0vY
+ Hk/wGG8S4TtBfyF8=; b=bDOs2iWWhw/Q/eXpwVhB5s40wh5bnOdxxIDw1+ZYJFz
+ kdVkrKDP47cROiDfk0VlUPzHaDBe8RpUh1195xINXlqL19B85+BibIJdW3s5D7ni
+ u628RexmCi+NHNQElM9ESQ7vUdTsNciyU5/DUWEh4bloHXZfVxcFRy6jEhgpN4Th
+ gUZF137SUZ3o5p4pQADTdc/g+bI3bv2WwazEgBSRpuDvUwvN2E3PG6K0y0qVRxPp
+ ZCv140C5uNSgIMWfASvNmxgg7hs1Ep0dEk13rV7ULhWx0j450+fehq+mJVy3Od9i
+ U9FCW+KxdydALA6Y8Qy+/IW/wAgLthhwBEgtBAJAN5w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=kdHtUf
+ CL7maaorkxWyZAAJIo0vYHk/wGG8S4TtBfyF8=; b=ULXt8Jox3uyzWA2lt6tWSi
+ V5ZylPrKgZAAO3XwNxQK0+4muK+AUOTraYvjbSzuOloE//EBu+ENltqxuQNQQJM0
+ bdJKNL7YrAUE3QHC17RCCTB94kvQnv97hqyif4GTnjEb4O+iR/cmFIIwD8v5HpiI
+ kAe/8tWW7eREYxYGJM3ghlhl4Ou7Ra9m4InhJjQ1WYsEL2Emfes/DQgcYCVx1qRN
+ qcZ4MrBta6ki3ADDcu5jCNLkryTX0Cd30GLusIVyWji8qjdTB1IOabMtt/i5O31z
+ ixCsPcR+cDSNrIl1xMJzjgBTwo/de7RS2jvvU+uJR2RxXRt6szJAcO3AhgXtFGOQ
+ ==
+X-ME-Sender: <xms:XHyjYLnlgeGwTUeP1shBO9f3zFcXC2uoykicXHrxipGhTF245Fw-Kg>
+ <xme:XHyjYO0hNTU1K_YqmSd5db-cHDoA85UdgVq28ch9gOs-4e_AGc6mkhHKhsqruEtAE
+ jMjx46fMmTUT-jt8Wg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeijedgtdeiucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvrghkrghs
+ hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
+ hpqeenucggtffrrghtthgvrhhnpeelhfeugedvjefgjefgudekfedutedvtddutdeuieev
+ tddtgeetjeekvdefgeefhfenucfkphepudegrdefrdeihedrudejheenucevlhhushhtvg
+ hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehs
+ rghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:XHyjYBq49idpmWsiXP8YMoui_sb6YDTO1cjwcgqJ7nCKYIILcOfXEA>
+ <xmx:XHyjYDkrTzZvrr7cypjatMddq4A5H7ik4lFol2VG0uroJ2gV54IP2A>
+ <xmx:XHyjYJ1hWsPhJpMcNMwg0F-m3-73h2zxqOk80ZjwU-Etlneonvax8w>
+ <xmx:XXyjYG_-NE3jpFjnxXtMQlP0kwxk7KcM2u4yTcQp5Wy92bV6-kkcPA>
+Received: from workstation (ae065175.dynamic.ppp.asahi-net.or.jp [14.3.65.175])
+ by mail.messagingengine.com (Postfix) with ESMTPA;
+ Tue, 18 May 2021 04:35:39 -0400 (EDT)
+Date: Tue, 18 May 2021 17:35:36 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Takashi Iwai <tiwai@suse.de>
 Subject: Re: [PATCH v3 02/11] ALSA: firewire-lib/motu: use int type for the
  value of bitwise OR with enumerator-constant
-In-Reply-To: <20210518081334.GA84841@workstation>
+Message-ID: <20210518083536.GA86229@workstation>
+Mail-Followup-To: Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de,
+ alsa-devel@alsa-project.org
 References: <20210518024326.67576-1-o-takashi@sakamocchi.jp>
  <20210518024326.67576-3-o-takashi@sakamocchi.jp>
  <s5hsg2kmsm9.wl-tiwai@suse.de> <20210518081334.GA84841@workstation>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
+ <s5him3gmovx.wl-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5him3gmovx.wl-tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -77,33 +124,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 18 May 2021 10:13:34 +0200,
-Takashi Sakamoto wrote:
-> 
-> On Tue, May 18, 2021 at 09:02:54AM +0200, Takashi Iwai wrote:
-> > On Tue, 18 May 2021 04:43:17 +0200,
-> > Takashi Sakamoto wrote:
-> > > 
-> > > It brings some inconvenience in practice to use enumerated type for
-> > > variable to which bitwise OR with enumerator constant is assigned.
-> > > 
-> > > This commit replaces declarations of enumerated type with int type.
+On Tue, May 18, 2021 at 10:23:30AM +0200, Takashi Iwai wrote:
+> On Tue, 18 May 2021 10:13:34 +0200,
+> Takashi Sakamoto wrote:
 > > 
-> > Better to use unsigned int for bit flags.  Otherwise the highest bit
-> > becomes harder to use.
+> > On Tue, May 18, 2021 at 09:02:54AM +0200, Takashi Iwai wrote:
+> > > On Tue, 18 May 2021 04:43:17 +0200,
+> > > Takashi Sakamoto wrote:
+> > > > 
+> > > > It brings some inconvenience in practice to use enumerated type for
+> > > > variable to which bitwise OR with enumerator constant is assigned.
+> > > > 
+> > > > This commit replaces declarations of enumerated type with int type.
+> > > 
+> > > Better to use unsigned int for bit flags.  Otherwise the highest bit
+> > > becomes harder to use.
+> > 
+> > I can't imagine such situation that the signed value causes issue. Would
+> > I request actual example with such issue? At least, the highest bit is
+> > still available as bit even if the value is negative by assigning
+> > 0x80000000...
 > 
-> I can't imagine such situation that the signed value causes issue. Would
-> I request actual example with such issue? At least, the highest bit is
-> still available as bit even if the value is negative by assigning
-> 0x80000000...
+> It's available in signed int, but this is inconvenient, e.g. if you
+> shift the bit.  Maybe I forgot something else, too.
+> 
+> You may still use signed int if you are sure that you'll never reach
+> to the highest number, but other than that, using unsigned for bit
+> flags is a *VERY* common practice in the kernel programming, so there
+> is no reason to ignore it.
 
-It's available in signed int, but this is inconvenient, e.g. if you
-shift the bit.  Maybe I forgot something else, too.
-
-You may still use signed int if you are sure that you'll never reach
-to the highest number, but other than that, using unsigned for bit
-flags is a *VERY* common practice in the kernel programming, so there
-is no reason to ignore it.
+Ok. I just follow to the convention under the Linux kernel development.
 
 
-Takashi
+Thanks
+
+Takashi Sakamoto
