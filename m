@@ -2,105 +2,102 @@ Return-Path: <SRS0=y7O6=KN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 214FBC433B4
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 02:45:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29E09C433ED
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 02:45:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C48376135C
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 02:45:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C48376135C
+	by mail.kernel.org (Postfix) with ESMTPS id 8DAB86135C
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 02:45:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8DAB86135C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 31AC41687;
-	Tue, 18 May 2021 04:44:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31AC41687
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2B21D41;
+	Tue, 18 May 2021 04:44:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B21D41
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621305928;
-	bh=Rvw79c+3uRUqh9JgZiIevSZ31b05xqIVhAvEQWjnRPI=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=jsa3AIvXvxbQEw2I3BHwetyN8nz7GfNZwPqpjeRHxknHkPmBW3ASjj+wz5ba5+K9X
-	 5+Z2NS4Ez1WOKwtIZ6wUhNLR1To55p7uh6QkDBD8zaBhJOwoxKL7L720PZHtXvIs/q
-	 2KADw5zFHkiOUK4lp0+ZII3hJiBfnNCy8XY4Ha5A=
+	s=default; t=1621305933;
+	bh=PGSEdCzrFWp1KCLY15CSFVG2AH/qJ+H5+cYY7uEKOow=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Pgm41b4adGq7XOGGDoYpm21OJn0mxArd5qi/49AHhSPmYLlqlBbl+AD/oIjTaj99H
+	 vhV//wHs/GV7ZkApCCIdNgxRMsCs4rE0O16dt2Sp5y9T/1ojJVZxn2Bz5Ev5TFl8Dp
+	 CnOd6u+Ca1x0WtQtz0Y73z3rxJEZjOm3yk51r0qQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A14E9F80482;
-	Tue, 18 May 2021 04:43:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 57FFCF804A9;
+	Tue, 18 May 2021 04:43:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 06F50F80424; Tue, 18 May 2021 04:43:43 +0200 (CEST)
+ id 1C05FF804AA; Tue, 18 May 2021 04:43:50 +0200 (CEST)
 Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
  [66.111.4.28])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A5E1EF80139
- for <alsa-devel@alsa-project.org>; Tue, 18 May 2021 04:43:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5E1EF80139
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3070BF8014C
+ for <alsa-devel@alsa-project.org>; Tue, 18 May 2021 04:43:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3070BF8014C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="RohhWrTb"; 
+ header.b="Vwv7jx2n"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="uGuTP5Yv"
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
- by mailout.nyi.internal (Postfix) with ESMTP id B71EF5C0197;
- Mon, 17 May 2021 22:43:34 -0400 (EDT)
+ header.i=@messagingengine.com header.b="cNUnywXD"
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+ by mailout.nyi.internal (Postfix) with ESMTP id 177755C00A2;
+ Mon, 17 May 2021 22:43:31 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
- by compute7.internal (MEProxy); Mon, 17 May 2021 22:43:34 -0400
+ by compute3.internal (MEProxy); Mon, 17 May 2021 22:43:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=EEtsj6jSdUH/r
- jv6W41MN6qniflbI2Tsd09skg9wR/s=; b=RohhWrTb8L54JspVLHn2wchi3XcFN
- gVYl8fqpronvxoiwAgEhxBMHRBpxHII9zZHodZQ4u9dyo61fp8jOsi+5QW2qFs+P
- qPrB9G1vtTQdn/dkG4RPGDZwhrNmCNtUN2ETn2G4ExtlNxupGE1v7vLhaogXk2Gg
- gb8f0r4KvGDQOtBxg8I/SRmprB0C+Q4ZIA0JAgSiZvFwvgU/7iXYKwSK/T4744S4
- 3fSFgK78YYI2ktA7Un9D88ngI4/ZHSOKNP7ACUUd/4A5cRq52GckfD6k00zcWwcK
- 2P5+zYOHPSTPeTDESnfQ1HhCEoqukJVViqfrYrTWLVl67HEsuxqX1T2Dg==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding; s=fm1; bh=F5TOFtaX/YLVfuwZBcAPAUonGk
+ 2YrBwSH6FptZEBpX4=; b=Vwv7jx2nApjAp+H+vE8bCVuMWOBS3FsOE7ENelEQtF
+ 9C/RzH1uFpaTdW85IoNTCun8I5ZPbtdVsXeDd9pq5PKRm0pBVCEztluCSA0oSRg2
+ qyNisLUSlQe1mK/dII//Wjx0jpCx+2iuJW09VyRGeVFosWafwh98345z/j8A9IaR
+ a3pJFLIdqQoS7sYY6g2RI6tbIWeHQJ6BRJixrpMPYQF3K7ZYQ8Pr0hDoi4TbLWSo
+ IdbRSF8m5quqlFDguRBzosn10Qvw11c7RDHZgnzOFMWN4jEOEU8BHvWLTMs1+ILv
+ axd6Vj/UEAuMd+w4JUJoxNWxpthhrDAiV2WF+RjC3EGw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
- :in-reply-to:message-id:mime-version:references:subject:to
- :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=EEtsj6jSdUH/rjv6W41MN6qniflbI2Tsd09skg9wR/s=; b=uGuTP5Yv
- Tkng5Sjabh8QmUMd3EaUdEFzs8RvvLmWWzXdrWk9mhbjPuhcHCUw1dwEH773/LFm
- 87Ffb4viuo3PAzIcXzNrXJ9BwEnNq+76yQQ9w0n6pilUQ7VY/GNoMI2ckIBK2OVI
- 4NEnXg37u24lq+cOgXFbzM7Nk0MF/qtOMUuQbZje3/QI71TCOW/XZOl4XIw0I8rl
- 5R4hYVEbjPLCbXir9pR9TwNKGq8IL9ObMaWAW8t7KbAztI4XuNGHHLn+0C5RJAeK
- HvG2kKnB5RmN08+Gh25+gmRZrWtsrN74XVIpHfG247VfAqmVwwMkdNPwqlcZ0FiM
- nQ9z/4wJ0GlVTQ==
-X-ME-Sender: <xms:1imjYEdLFHBPbWqiXvjkgEI-li1pLVgEZZsj9HddxIgMhQA6k5Uh1w>
- <xme:1imjYGPzrzMhjIBnzdeyAaCiYMOMsxfcW-YFyXqHGgkffDv1rcBbScsUK6l2gYzgz
- jgJsfOoFZeGu6jqjxw>
+ :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+ :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=F5TOFtaX/YLVfuwZB
+ cAPAUonGk2YrBwSH6FptZEBpX4=; b=cNUnywXDHFxW3thx1c4CZhSnIYYTMCBa+
+ bfCDh1miK3UkTiiC2wi6OVMDley/Cgb5hTBAoTvXEZVFJxv5SYUsIEmLXSnBEHwf
+ MT4Vkk40ptFH7X5O8dLQRwrSKZvjrHQi5PL5ZUxbRJsMCst3quUODDgjpFIh4u2b
+ 868olrQn2D3D2bhtTehkCYEHFxuSpFx5ITpWQ4nEM56jhrJFUtNBBkP0/5G7TNa9
+ aX8ThkGEnZvxHIN1d9qwfWqgD/D6CLknZm5l9joNNY37uC2rlJy4Q1b+rmua34uU
+ QASu6myY7BWcZscCtwjZsEBGHsDDWJAbUXin/+Konl5xwBEkmnHyA==
+X-ME-Sender: <xms:0imjYKMS6cJsWc9z4qMphI1Y-XutQzRTf8yURRLgj2epQVdyudHLvQ>
+ <xme:0imjYI99NTTri2kWzJBqUEcGB7p1EyouyYUCqfEviUgIfqajLe0rinGzRNLu0OyWk
+ hStu3XjU2JDR5qSBIc>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeiiedgheejucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
- dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
- shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepveefffefke
- etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecukfhppedugedr
- fedrieehrddujeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
- hfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:1imjYFjrOUeAvzxQdC-TNLJi9DX5R6_pYTtEfIwFxVW7X0B7AqnnDg>
- <xmx:1imjYJ-wHefy6w6bkWB_eelCMStACUZGu5YZtmk8n-a8twlRsTGc1A>
- <xmx:1imjYAvSKgVjzoM3UrSj2cZkUVqbZ3ISGHhERGPjCvzEOuXxR7T2Jg>
- <xmx:1imjYG0bqPtsMJ_xRNaGWVxwRzPy3VG468R3ryltxU_hM_fSgtST1w>
+ uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+ dttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhh
+ ihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepteeiuefhjeekke
+ efheetieekvdegfefhgffgvdeiheehhfehiedvhffgjeejuddunecuffhomhgrihhnpehk
+ vghrnhgvlhdrohhrghenucfkphepudegrdefrdeihedrudejheenucevlhhushhtvghruf
+ hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghk
+ rghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:0imjYBRIyQIyCFgFOsXHtzaMTPx4eu3zMvMzMc07Pdn5b5GD0rkJdg>
+ <xmx:0imjYKsUyRWRmDzfV-_t8SEo4QcY4Hv9gHH7W8_6xMLLtsRCYy4b3A>
+ <xmx:0imjYCczF4PbW6rEB08Ql0NuYspQC2ZYi39M9COBH3HDaNOvOeKz0w>
+ <xmx:0ymjYKnT517im92x9nSsaaovYjCeG-683hYI8cfB0iOuv1pDeyA_2g>
 Received: from workstation.flets-east.jp (ae065175.dynamic.ppp.asahi-net.or.jp
  [14.3.65.175]) by mail.messagingengine.com (Postfix) with ESMTPA;
- Mon, 17 May 2021 22:43:33 -0400 (EDT)
+ Mon, 17 May 2021 22:43:29 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Subject: [PATCH v3 02/11] ALSA: firewire-lib/motu: use int type for the value
- of bitwise OR with enumerator-constant
-Date: Tue, 18 May 2021 11:43:17 +0900
-Message-Id: <20210518024326.67576-3-o-takashi@sakamocchi.jp>
+Subject: [PATCH v3 00/11] ALSA: oxfw: code refactoring for quirks specific to
+ ASICs
+Date: Tue, 18 May 2021 11:43:15 +0900
+Message-Id: <20210518024326.67576-1-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210518024326.67576-1-o-takashi@sakamocchi.jp>
-References: <20210518024326.67576-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
@@ -119,120 +116,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-It brings some inconvenience in practice to use enumerated type for
-variable to which bitwise OR with enumerator constant is assigned.
+Hi,
 
-This commit replaces declarations of enumerated type with int type.
+This patchset is revised version of my take 2:
+ * https://lore.kernel.org/alsa-devel/20210515071112.101535-1-o-takashi@sakamocchi.jp/
 
-Suggested-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/amdtp-am824.c       | 4 ++--
- sound/firewire/amdtp-am824.h       | 2 +-
- sound/firewire/amdtp-stream.c      | 4 ++--
- sound/firewire/amdtp-stream.h      | 5 +++--
- sound/firewire/digi00x/amdtp-dot.c | 2 +-
- sound/firewire/motu/motu.h         | 3 ++-
- 6 files changed, 11 insertions(+), 9 deletions(-)
+Changes from v2:
+ * use int type instead of enumerated type for combination of
+   enumeration-constants
+ * fix semi-colon typo in subject line of 10th patch
 
-diff --git a/sound/firewire/amdtp-am824.c b/sound/firewire/amdtp-am824.c
-index fea92e148790..9662a3ba9139 100644
---- a/sound/firewire/amdtp-am824.c
-+++ b/sound/firewire/amdtp-am824.c
-@@ -410,10 +410,10 @@ static unsigned int process_ir_ctx_payloads(struct amdtp_stream *s,
-  * @s: the AMDTP stream to initialize
-  * @unit: the target of the stream
-  * @dir: the direction of stream
-- * @flags: the packet transmission method to use
-+ * @flags: the details of the streaming protocol consist of cip_flags enumeration-constants.
-  */
- int amdtp_am824_init(struct amdtp_stream *s, struct fw_unit *unit,
--		     enum amdtp_stream_direction dir, enum cip_flags flags)
-+		     enum amdtp_stream_direction dir, int flags)
- {
- 	amdtp_stream_process_ctx_payloads_t process_ctx_payloads;
- 
-diff --git a/sound/firewire/amdtp-am824.h b/sound/firewire/amdtp-am824.h
-index 06d280783581..fe6652bde4a5 100644
---- a/sound/firewire/amdtp-am824.h
-+++ b/sound/firewire/amdtp-am824.h
-@@ -45,5 +45,5 @@ void amdtp_am824_midi_trigger(struct amdtp_stream *s, unsigned int port,
- 			      struct snd_rawmidi_substream *midi);
- 
- int amdtp_am824_init(struct amdtp_stream *s, struct fw_unit *unit,
--		     enum amdtp_stream_direction dir, enum cip_flags flags);
-+		     enum amdtp_stream_direction dir, int flags);
- #endif
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index e0faa6601966..094c9b2d772f 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -71,13 +71,13 @@ static void pcm_period_work(struct work_struct *work);
-  * @s: the AMDTP stream to initialize
-  * @unit: the target of the stream
-  * @dir: the direction of stream
-- * @flags: the packet transmission method to use
-+ * @flags: the details of the streaming protocol consist of cip_flags enumeration-constants.
-  * @fmt: the value of fmt field in CIP header
-  * @process_ctx_payloads: callback handler to process payloads of isoc context
-  * @protocol_size: the size to allocate newly for protocol
-  */
- int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
--		      enum amdtp_stream_direction dir, enum cip_flags flags,
-+		      enum amdtp_stream_direction dir, int flags,
- 		      unsigned int fmt,
- 		      amdtp_stream_process_ctx_payloads_t process_ctx_payloads,
- 		      unsigned int protocol_size)
-diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
-index a3daa1f2c1c4..1f294df1d64f 100644
---- a/sound/firewire/amdtp-stream.h
-+++ b/sound/firewire/amdtp-stream.h
-@@ -112,7 +112,8 @@ typedef unsigned int (*amdtp_stream_process_ctx_payloads_t)(
- struct amdtp_domain;
- struct amdtp_stream {
- 	struct fw_unit *unit;
--	enum cip_flags flags;
-+	// The combination of cip_flags enumeration-constants.
-+	int flags;
- 	enum amdtp_stream_direction direction;
- 	struct mutex mutex;
- 
-@@ -184,7 +185,7 @@ struct amdtp_stream {
- };
- 
- int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
--		      enum amdtp_stream_direction dir, enum cip_flags flags,
-+		      enum amdtp_stream_direction dir, int flags,
- 		      unsigned int fmt,
- 		      amdtp_stream_process_ctx_payloads_t process_ctx_payloads,
- 		      unsigned int protocol_size);
-diff --git a/sound/firewire/digi00x/amdtp-dot.c b/sound/firewire/digi00x/amdtp-dot.c
-index d613642a2ce3..a47d9800e0d6 100644
---- a/sound/firewire/digi00x/amdtp-dot.c
-+++ b/sound/firewire/digi00x/amdtp-dot.c
-@@ -396,7 +396,7 @@ int amdtp_dot_init(struct amdtp_stream *s, struct fw_unit *unit,
- 		 enum amdtp_stream_direction dir)
- {
- 	amdtp_stream_process_ctx_payloads_t process_ctx_payloads;
--	enum cip_flags flags;
-+	int flags;
- 
- 	// Use different mode between incoming/outgoing.
- 	if (dir == AMDTP_IN_STREAM) {
-diff --git a/sound/firewire/motu/motu.h b/sound/firewire/motu/motu.h
-index 3d0236ee6716..c0de2720aeac 100644
---- a/sound/firewire/motu/motu.h
-+++ b/sound/firewire/motu/motu.h
-@@ -106,7 +106,8 @@ enum snd_motu_protocol_version {
- struct snd_motu_spec {
- 	const char *const name;
- 	enum snd_motu_protocol_version protocol_version;
--	enum snd_motu_spec_flags flags;
-+	// The combination of snd_motu_spec_flags enumeration-constants.
-+	int flags;
- 
- 	unsigned char tx_fixed_pcm_chunks[3];
- 	unsigned char rx_fixed_pcm_chunks[3];
+Regards
+
+Takashi Sakamoto (11):
+  Revert "ALSA: bebob/oxfw: fix Kconfig entry for Mackie d.2 Pro"
+  ALSA: firewire-lib/motu: use int type for the value of bitwise OR with
+    enumerator-constant
+  ALSA: oxfw: code refactoring for existent device entry with
+    specifier_id and version
+  ALSA: oxfw: code refactoring to detect mackie models
+  ALSA: oxfw: add explicit device entry for Loud Technologies Tapco
+    Link.FireWire 4x6
+  ALSA: oxfw: add explicit device entry for Loud Technologies Mackie
+    Onyx Sattelite
+  ALSA: oxfw: add comment for the type of ASICs
+  ALSA: oxfw: code refactoring for jumbo-payload quirk in OXFW970
+  ALSA: firewire-lib: code refactoring for jumbo payload quirk
+  ALSA: oxfw: code refactoring for wrong_dbs quirk
+  ALSA: oxfw: add quirk flag for blocking transmission method
+
+ sound/firewire/Kconfig             |   4 +-
+ sound/firewire/amdtp-am824.c       |   4 +-
+ sound/firewire/amdtp-am824.h       |   2 +-
+ sound/firewire/amdtp-stream.c      |  11 ++-
+ sound/firewire/amdtp-stream.h      |   5 +-
+ sound/firewire/bebob/bebob.c       |   2 +-
+ sound/firewire/digi00x/amdtp-dot.c |   2 +-
+ sound/firewire/motu/motu.h         |   3 +-
+ sound/firewire/oxfw/oxfw-stream.c  |  25 +++---
+ sound/firewire/oxfw/oxfw.c         | 137 ++++++++++++++---------------
+ sound/firewire/oxfw/oxfw.h         |  13 ++-
+ 11 files changed, 110 insertions(+), 98 deletions(-)
+
 -- 
 2.27.0
 
