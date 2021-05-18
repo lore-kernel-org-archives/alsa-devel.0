@@ -2,76 +2,59 @@ Return-Path: <SRS0=y7O6=KN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17E55C433ED
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 16:35:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8367DC433ED
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 16:53:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 77F40611AD
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 16:35:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 77F40611AD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 2045361184
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 16:53:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2045361184
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0AAA4174C;
-	Tue, 18 May 2021 18:34:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0AAA4174C
+	by alsa0.perex.cz (Postfix) with ESMTPS id F275C1741;
+	Tue, 18 May 2021 18:52:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F275C1741
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621355713;
-	bh=yYE3C83ZCcen1JqtN6SbUMBER9tKZM+sb+rFDEm69H0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=nOwWtI4hUQHtuuZHkhsr3GY03zDbYzkHM97YlXKGVvIHX5jQuMIiwnH95BquQCFqz
-	 syHq339kcOFe0DTUTSxGTb4GDC8ia4yU6FtTsj7sDfjJ/jU7rWtOatExxPmfmSBSn8
-	 R62sJzwLW9gcOaj+bJ4ZT1z6F5bIenUa1qe9tRRQ=
+	s=default; t=1621356779;
+	bh=P+WxpDnl2/W7jdrcvy2TJgre9v+IWkj2Rw9PEEBBC8w=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=mc/lWhRWkSkQRSXP+t4oAr2QnI1Z0jcvJxPgEWyeZ5QlGMHiVfG87/NpWkNwqcm8M
+	 ag5OCZy+aFlkAt8OInZvUL/cyjp+eE5SPqkP7t7SLg5SQTSlqUxy2kBXeOBJ8JRzp+
+	 yVWE1bLufpYB0WV78D9S+9b8QHc/ERUy0HzU29Yg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 58600F80425;
-	Tue, 18 May 2021 18:32:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 66976F802E3;
+	Tue, 18 May 2021 18:52:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D396EF8014C; Tue, 18 May 2021 18:32:51 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 3DCDFF80424; Tue, 18 May 2021 18:52:06 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 576CFF8014C
- for <alsa-devel@alsa-project.org>; Tue, 18 May 2021 18:32:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 576CFF8014C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mkVP+fRp"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C85B561209;
- Tue, 18 May 2021 16:32:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1621355567;
- bh=yYE3C83ZCcen1JqtN6SbUMBER9tKZM+sb+rFDEm69H0=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=mkVP+fRpjaBmmd34MdGpnv4vm3hnQRlibsdJCq6/jxAEqdFanLOI3Hi3rjjTgM8Ug
- yeGvtT8EGjrX9GbS7T/7U1gVYnwP9ry9T8LFxH1CaOm6fMURT5tuC7/YkGbEhzdOEE
- +wQY1AzmmIis8LFhHlTnLeYH7yF+trO81WnrdbPYxeQcx4XbTd/RgkmPVHmaYFyFub
- 8+zus0zqjNjstug/1Z0WLujmXwwAcaZRNC533TE3PmhGmk0/QETmaRq4+MW9UYE2dS
- TGAYCYBhYJ3We+pqdL16dCsnYNnkeQ5+MHBqBaUg9/IY80592ZrF4Hb2YhPWeGPkzk
- 3Ko0FL8v3tDEg==
-From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Yang Yingliang <yangyingliang@huawei.com>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: hisilicon: fix missing clk_disable_unprepare() on
- error in hi6210_i2s_startup()
-Date: Tue, 18 May 2021 17:31:34 +0100
-Message-Id: <162135531446.37831.10556462554575862274.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210518044514.607010-1-yangyingliang@huawei.com>
-References: <20210518044514.607010-1-yangyingliang@huawei.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D78ABF8014C
+ for <alsa-devel@alsa-project.org>; Tue, 18 May 2021 18:52:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D78ABF8014C
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 3A38DAFF4;
+ Tue, 18 May 2021 16:52:03 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 0/7] ALSA: Prep work for PCI rescan support
+Date: Tue, 18 May 2021 18:51:54 +0200
+Message-Id: <20210518165201.24376-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Mark Brown <broonie@kernel.org>
+Cc: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,34 +70,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 18 May 2021 12:45:14 +0800, Yang Yingliang wrote:
-> After calling clk_prepare_enable(), clk_disable_unprepare() need
-> be called when calling clk_set_rate() failed.
+Hi,
 
-Applied to
+this is a patch set as a prep work for the future-planned PCI rescan
+support(*).  The essential part is the patch to track in-flight tasks,
+and the rest are cleanups and fixes in the core code.  With those
+changes, the driver can perform a sort of software suspend on the
+device without the hardware intervention, which is required during the
+PCI BAR movement, for example.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Thanks!
+Takashi
 
-[1/1] ASoC: hisilicon: fix missing clk_disable_unprepare() on error in hi6210_i2s_startup()
-      commit: 375904e3931955fcf0a847f029b2492a117efc43
+(*) https://lore.kernel.org/alsa-devel/e25017c6-e5e4-7a24-e793-14a2e70a434e@amd.com/
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+===
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Takashi Iwai (7):
+  ALSA: core: Use READ_ONCE() / WRITE_ONCE() for power state change
+  ALSA: control: Add power state check commonly for ioctl handlers
+  ALSA: control: Drop superfluous snd_power_wait() calls
+  ALSA: control: Minor optimization for SNDRV_CTL_IOCTL_POWER_STATE
+  ALSA: control: Track in-flight control read/write/tlv accesses
+  ALSA: pcm: Block the release until the system resume finishes
+  ALSA: Drop superfluous argument from snd_power_wait()
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+ include/sound/core.h        | 39 +++++++++++++++++++++---
+ sound/core/control.c        | 41 +++++++++++++-------------
+ sound/core/control_compat.c | 17 +++++------
+ sound/core/init.c           | 59 ++++++++++++++++++++++++++++++++-----
+ sound/core/pcm_native.c     |  6 +++-
+ sound/soc/soc-core.c        |  2 +-
+ sound/usb/usx2y/us122l.c    |  2 +-
+ 7 files changed, 121 insertions(+), 45 deletions(-)
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-- 
+2.26.2
 
-Thanks,
-Mark
