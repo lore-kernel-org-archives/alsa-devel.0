@@ -7,97 +7,96 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9D7BC433ED
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 08:49:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB17AC433B4
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 08:49:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4B3FE610FA
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 08:49:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B3FE610FA
+	by mail.kernel.org (Postfix) with ESMTPS id 28D73610FA
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 May 2021 08:49:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 28D73610FA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D5FDD16DE;
-	Tue, 18 May 2021 10:48:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5FDD16DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id B0AB316DA;
+	Tue, 18 May 2021 10:48:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0AB316DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621327760;
-	bh=KLzOh5mkhUBfN+RzD99d17MfQxGzHdmxNaHuPOR3PzY=;
+	s=default; t=1621327775;
+	bh=dExvVoTGLf7U1Y9k+Y0xTSfVZ05c68Ggl5QdIFAnYRc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Gg+dxrMIp3Qzdg251QVjuqSdAet74QpcANodMd6WMIr14Qe8MTgHFdIXpsCB24+zU
-	 ZKz9cY/Q/juVTrC7ABrTK5gbvejuukwhNIuT3BaPZU7iRemfs1nU+FO8VCdD6aRCpo
-	 S6kI7gMiq/0kX8UwiTNDSyqTT8yN4G0yN++iU/xo=
+	b=rYMki9dpyJJwP3PK3dTryV2DO/72YndS1eV3+SKUvsj8hJER0ejZjPQD+vfjtnUKn
+	 WTfmZzmgLGDuu6j1PTWn8o3qs+v2hjzKLzYPeSbtIynYJJ9m8rdUV8VDLBT87NQ//J
+	 f2nTkgvjV8Ga8khuR/ByPlFqEKmO3Ez4ClmCaNUE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 43B82F804B2;
-	Tue, 18 May 2021 10:46:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 03417F804BD;
+	Tue, 18 May 2021 10:46:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 59EB7F802C8; Tue, 18 May 2021 10:46:16 +0200 (CEST)
+ id 65567F801DB; Tue, 18 May 2021 10:46:16 +0200 (CEST)
 Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
  [66.111.4.29])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE5D3F802C8
- for <alsa-devel@alsa-project.org>; Tue, 18 May 2021 10:46:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE5D3F802C8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4F3AAF801DB
+ for <alsa-devel@alsa-project.org>; Tue, 18 May 2021 10:46:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F3AAF801DB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="TjdVr4bo"; 
+ header.b="qOA/AIfO"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="tFXD/U8O"
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailout.nyi.internal (Postfix) with ESMTP id 0547D5C0121;
- Tue, 18 May 2021 04:46:09 -0400 (EDT)
+ header.i=@messagingengine.com header.b="HZKdR5XR"
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+ by mailout.nyi.internal (Postfix) with ESMTP id 844EE5C0127;
+ Tue, 18 May 2021 04:46:11 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute3.internal (MEProxy); Tue, 18 May 2021 04:46:09 -0400
+ by compute2.internal (MEProxy); Tue, 18 May 2021 04:46:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=snVjiQ+JiUZKn
- 0f6kKcYcN35k6cxRPHFAY/KaCgQYsY=; b=TjdVr4boYVKz7NXzzzqCKaMDta8jX
- 0PxQPfFy1wB+qLufh0wI65t9r6okD++i+L7Msqnf2wqEYDIThYSvHrsoZcJ4UvLc
- nj8e4dXmSl8FnpUu9NIJFy7AamHEUrukWmT1rrrKJM8uczDM1K0yvWY41wwympm7
- b3e8PgB0uqJw7dkFBmLAn+m2NOLBv2ahZlsJd0lIVlssIrzTZtzg9xwFoifGGk8Q
- 5Mr75yN+dP4Z3KpVJpWmoG/VCBPasvm7AwMgwqB0wrmsHZEbYsuBgps+mIJ3FgUl
- Hp2guE0IXFMK1EzWw75HOqp+mk/EPWeib13AYH5W/iMILLQnvQ6dKLItQ==
+ :mime-version:content-transfer-encoding; s=fm1; bh=Y7Op8L2qKUKtq
+ pgpfwBcp5vvU/wt/qoca6pUELYbLoY=; b=qOA/AIfOSpmnGGzjp98OqmHNnuUSq
+ +Bio3/gASrAp3eKausNg4QZVD+pzE27fKOBQ3dizGyD4Higm5EpiAmhj5VBzG6Eq
+ s5QQAmBwxj14XKdnW3Qz0TQPFqjjZZaqlnOh0/Zk1Cnypww+qK2md3DlYedu/5pG
+ fl7babag05sWs6WYORhbt4STBqd3J2YRzRlUnAAY3UsfJPkRAmI0DUp/Q0jJRObx
+ GabNMFFb8xLoNhCj5eGdWZ6EhTHaocRi5mCBAANoIsakjcx4i/qzIhZHyZVxRrve
+ TxDGxgtp8eZNTxR3ttfKR9hO/tFE96yZWbb81asuWZlf6M9XKUCZuZrMw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=snVjiQ+JiUZKn0f6kKcYcN35k6cxRPHFAY/KaCgQYsY=; b=tFXD/U8O
- +TK84JmsoBUJ5flhaV4ssavL82XRr781JOIMxd5bX9AZwcG27LTqbVOmDEjPallc
- 9jiP7i47i7jfhYzvQ7dcpx57XQ5PFUxux4E5UFfWk6Cj3irocQPq8CycbYEHdRFm
- 3SsScOH4vxyCGhIyric3Yi0AZP11oxvN2V3Dkq0uPgeOlJTNVibHQIZ45GQPC6ma
- 1nK3g5eMYgfL0qlEd8YXTTAHz4qgt/Wtn+paOs4+d60DWcu2tnLVw03H0nAsZq3V
- lt/OQN8B4o8Vx3iKCDlqXuGY84Jwf2eC88M+QxMZhu7GEspGklicVZ4Isu2KB7T3
- ONK+yqiEAwimpA==
-X-ME-Sender: <xms:0H6jYO0BLqL4QGtCGHDzBCyuRkJRjLWkX6C4TXKqKSCF31pUXVGDAg>
- <xme:0H6jYBHcw_dVTK7dI4e6JKMi8VL-xUlxd8-z8ylmXb5RKih5EFt7i8i-bpU3VpjM6
- 9bMN6MTmSBaPIOHtvM>
+ fm2; bh=Y7Op8L2qKUKtqpgpfwBcp5vvU/wt/qoca6pUELYbLoY=; b=HZKdR5XR
+ 2lEKiAaLjrnCaeaADU2Lf+/qOyTNPU2AWzlMnpTR28GNt7nmhdye6yLEsnJP6cNa
+ oF+4LkZIVjy4RwUO3ElhgYREX6wU/uZs/a1JsiUL5BunFdf6b3E1vcdAIP2PL565
+ m2sb6v/Ws4K9KIzHyv+QwMOtViyBEzwo4sEguEzLigRkPpzDFFzQLMdvCqS15Uzs
+ rAZFXShkbIP+LB8Zoj8PSZgU0IEOM8Rk+SnqkHdAImwhc6fdC4LR/4tdYiVUoW4o
+ apNvL/2OkoJcRLI/+ZWjMC5rgf8xOaiVSgU5m4JxXZnzSFk8lVOfjHFBxcDsvw4v
+ DLVsWztPlNGQGg==
+X-ME-Sender: <xms:036jYGAt4kCLcVtrTBJ2pzH59W26wvLovIIdp9uOc8v0ZEJCukOQDg>
+ <xme:036jYAiuhzGRoVJwt3yhGLCXt2eUG3UNeIxTICXTYRRBnu03nsGIpCkL0vKb5l05X
+ ykIAnalJzGeiPnDNjI>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeijedgtdekucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
  dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
  shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepveefffefke
  etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecukfhppedugedr
- fedrieehrddujeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+ fedrieehrddujeehnecuvehluhhsthgvrhfuihiivgepvdenucfrrghrrghmpehmrghilh
  hfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:0H6jYG5RKAv8yXtvrKKOurIN5GpS_AXjVpzntm0GQ5nB-KAKfjxUqw>
- <xmx:0H6jYP3rnrNgjOcW4JJvyr9mKyyVFeeFLBh-J-MErKPcdzsQ1nyKRA>
- <xmx:0H6jYBGNL3IZ7KPvq76CVAluspzv4ZqUG3tPW8Y2ro5K3-AvF_-vog>
- <xmx:0X6jYEPu-LmiC6TLjaGIs9H5Oj0-fHdR29ahNKjW1Ap4GxuCvpu4ng>
+X-ME-Proxy: <xmx:036jYJmh4FMl-CZ1_jrHiE--6ArlUaK5XeMZuif5fKAPr54YPV7PEg>
+ <xmx:036jYEyww3M7jxsWu3FzGJsABp5MDi3YIu1VZnHjqBq1lw563Wg4cQ>
+ <xmx:036jYLQcCsWq2PXD6JBVz5Ph2tRou1ooasnqsWOaQf_jepTbAAhwUQ>
+ <xmx:036jYM74vN5u6hiMZMzrq2n39QjgC4ZNi_9XfebFTGfVduM0DVtd1g>
 Received: from workstation.flets-east.jp (ae065175.dynamic.ppp.asahi-net.or.jp
  [14.3.65.175]) by mail.messagingengine.com (Postfix) with ESMTPA;
- Tue, 18 May 2021 04:46:07 -0400 (EDT)
+ Tue, 18 May 2021 04:46:10 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Subject: [PATCH v4 05/11] ALSA: oxfw: add explicit device entry for Loud
- Technologies Tapco Link.FireWire 4x6
-Date: Tue, 18 May 2021 17:45:51 +0900
-Message-Id: <20210518084557.102681-6-o-takashi@sakamocchi.jp>
+Subject: [PATCH v4 07/11] ALSA: oxfw: add comment for the type of ASICs
+Date: Tue, 18 May 2021 17:45:53 +0900
+Message-Id: <20210518084557.102681-8-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210518084557.102681-1-o-takashi@sakamocchi.jp>
 References: <20210518084557.102681-1-o-takashi@sakamocchi.jp>
@@ -119,43 +118,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Loud Technologies Tapco Link.FireWire 4x6 is identified as the model
-with OXFW970 ASIC.
+ALSA OXFW supports two types of ASICS; OXFW970 and OXFW971. The former
+is known to have a quirk we call 'jumbo payload' that some isochronous
+cycles are skipped to transfer isochronous packets during handling
+asynchronous transaction. The quirk seems to correspond to firmware
+initially delivered by Oxford Semiconductor since the quirk is not
+confirmed for Mackie Onyx Satellite in which the revised firmware is
+available. The quirk is not confirmed in the latter.
 
-This commit adds explicit entry for the model.
+This commit adds code comment to describe the quirk.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/oxfw.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/firewire/oxfw/oxfw.c | 22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
 
 diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index 2af72951ebf8..998f0da6fd5b 100644
+index e851149c5280..9a9c84bc811a 100644
 --- a/sound/firewire/oxfw/oxfw.c
 +++ b/sound/firewire/oxfw/oxfw.c
-@@ -47,7 +47,6 @@ static bool detect_loud_models(struct fw_unit *unit)
- 		"Onyx 1640i",
- 		"d.Pro",
- 		"Mackie Onyx Satellite",
--		"Tapco LINK.firewire 4x6",
- 		"U.420"};
- 	char model[32];
- 	int err;
-@@ -338,12 +337,13 @@ static const struct ieee1394_device_id oxfw_id_table[] = {
+@@ -332,14 +332,30 @@ static const struct compat_info lacie_speakers = {
+ }
+ 
+ static const struct ieee1394_device_id oxfw_id_table[] = {
++	//
++	// OXFW970 devices:
++	// Initial firmware has a quirk to postpone isoc packet transmission during finishing async
++	// transaction. As a result, several isochronous cycles are skipped to transfer the packets
++	// and the audio data frames which should have been transferred during the cycles are put
++	// into packet at the first isoc cycle after the postpone. Furthermore, the value of SYT
++	// field in CIP header is not reliable as synchronization timing,
++	//
+ 	OXFW_DEV_ENTRY(VENDOR_GRIFFIN, 0x00f970, &griffin_firewave),
  	OXFW_DEV_ENTRY(VENDOR_LACIE, 0x00f970, &lacie_speakers),
- 	// Behringer,F-Control Audio 202.
+-	// Behringer,F-Control Audio 202.
++	// Behringer,F-Control Audio 202. The value of SYT field is not reliable at all.
  	OXFW_DEV_ENTRY(VENDOR_BEHRINGER, 0x00fc22, NULL),
-+	// Loud Technologies, Tapco Link.FireWire 4x6.
-+	OXFW_DEV_ENTRY(VENDOR_LOUD, 0x000460, NULL),
- 	/*
- 	 * Any Mackie(Loud) models (name string/model id):
- 	 *  Onyx-i series (former models):	0x081216
- 	 *  Onyx 1640i:				0x001640
- 	 *  Mackie Onyx Satellite:		0x00200f
--	 *  Tapco LINK.firewire 4x6:		0x000460
- 	 *  d.2 pro/d.4 pro (built-in card):	Unknown
- 	 *  U.420:				Unknown
- 	 *  U.420d:				Unknown
+-	// Loud Technologies, Tapco Link.FireWire 4x6.
++	// Loud Technologies, Tapco Link.FireWire 4x6. The value of SYT field is always 0xffff.
+ 	OXFW_DEV_ENTRY(VENDOR_LOUD, 0x000460, NULL),
+-	// Loud Technologies, Mackie Onyx Satellite.
++	// Loud Technologies, Mackie Onyx Satellite. Although revised version of firmware is
++	// installed to avoid the postpone, the value of SYT field is always 0xffff.
+ 	OXFW_DEV_ENTRY(VENDOR_LOUD, MODEL_SATELLITE, NULL),
++	// Miglia HarmonyAudio. Not yet identified.
++
++	//
++	// OXFW971 devices:
++	// The value of SYT field in CIP header is enough reliable. Both of blocking and non-blocking
++	// transmission methods are available.
++	//
+ 	// Any Mackie(Loud) models (name string/model id):
+ 	//  Onyx-i series (former models):	0x081216
+ 	//  Onyx 1640i:				0x001640
 -- 
 2.27.0
 
