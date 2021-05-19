@@ -2,67 +2,67 @@ Return-Path: <SRS0=AXUI=KO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D696DC433ED
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 14:16:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1401FC433ED
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 14:21:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6FC7C611AE
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 14:16:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6FC7C611AE
+	by mail.kernel.org (Postfix) with ESMTPS id CFD7261184
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 14:21:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFD7261184
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A207166F;
-	Wed, 19 May 2021 16:15:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A207166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95C08166F;
+	Wed, 19 May 2021 16:20:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95C08166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621433774;
-	bh=2+AvSeV/i5ozImJC7XtoFg0l7+8C6pMW8CzvPoAUV0k=;
+	s=default; t=1621434109;
+	bh=R1dmoBDp08tstRXswnXPTvAeMXv4Z/8II6BPZtqetD4=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IbNDHvHgebuFrpAvO/shgvGBYSfxyTTBUd15gxnTJwNmx+fMGK7F7nNBToBZXb4/G
-	 t1xV7t8bTVOmT4AUQSuVR4u0DSlkN7Z+cOyzKcGeD9bELqXlxKAE5Srl9SIWdysdWS
-	 cPzWopcKGxxC40z4qHk2KPsV8kDcihzdd/BlxBBg=
+	b=OVqFX9GFoXxKohlui0LPUMx+yz3Gv+G4H+CVQgN0qxN1KKmgPYabHK60nRL1PwQQ7
+	 KemKclooxx4D6dTtPJi07Fyuq6xClpxHBVVt9a2AhKqslw2/mISM2ELj6Q6aLrR4v9
+	 AFiHuvAwsW70BYNLIM3gj8etIYWoUlx6KOdCNc0o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A24A6F80153;
-	Wed, 19 May 2021 16:15:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A1DAF80153;
+	Wed, 19 May 2021 16:20:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 11296F8014C; Wed, 19 May 2021 16:15:22 +0200 (CEST)
+ id 93452F8016E; Wed, 19 May 2021 16:20:57 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DA45FF80153
- for <alsa-devel@alsa-project.org>; Wed, 19 May 2021 16:15:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA45FF80153
+ by alsa1.perex.cz (Postfix) with ESMTPS id 78892F80127
+ for <alsa-devel@alsa-project.org>; Wed, 19 May 2021 16:20:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78892F80127
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 9FC31AB7C;
- Wed, 19 May 2021 14:15:09 +0000 (UTC)
-Date: Wed, 19 May 2021 16:15:08 +0200
-Message-ID: <s5him3eizdf.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 1002BAFB1;
+ Wed, 19 May 2021 14:20:45 +0000 (UTC)
+Date: Wed, 19 May 2021 16:20:44 +0200
+Message-ID: <s5hfsyiiz43.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Subject: Re: [RFC PATCH 0/6] soc-pcm: Add separate snd_pcm_runtime for BEs
-In-Reply-To: <20210519104842.977895-1-codrin.ciubotariu@microchip.com>
-References: <20210519104842.977895-1-codrin.ciubotariu@microchip.com>
+To: Colin King <colin.king@canonical.com>
+Subject: Re: [PATCH][next] ALSA: rawmidi: fix incorrect array bounds check on
+ clock_names
+In-Reply-To: <20210519105424.55221-1-colin.king@canonical.com>
+References: <20210519105424.55221-1-colin.king@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de,
- kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, nicolas.ferre@microchip.com,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com, broonie@kernel.org,
- joe@perches.com, Cristian.Birsan@microchip.com
+Cc: alsa-devel@alsa-project.org, David Henningsson <coding@diwic.se>,
+ kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,51 +78,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 19 May 2021 12:48:36 +0200,
-Codrin Ciubotariu wrote:
+On Wed, 19 May 2021 12:54:24 +0200,
+Colin King wrote:
 > 
-> This patchset adds a different snd_pcm_runtime in the BE's substream,
-> replacing the FE's snd_pcm_runtime. With a different structure, the BE
-> HW capabilities and constraints will no longer merge with the FE ones.
-> This allows for error detection if the be_hw_params_fixup() applies HW
-> parameters not supported by the BE DAIs. Also, it calculates values
-> needed for mem-to-dev/dev-to-mem DMA transfers, such as buffer size and
-> period size, if needed.
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> The first 4 patches are preparatory patches, that just group and export
-> functions used to allocate and initialize the snd_pcm_runtime. Also, the
-> functions that set and apply the HW constraints are exported.
-> The 5th patch does (almost) everything need to create the new snd_pcm_runtime
-> for BEs, which includes allocation, initializing the HW capabilities,
-> HW constraints and HW parameters. The BE HW parameters are no longer
-> copied from the FE. They are recalculated, based on HW capabilities,
-> constraints and the be_hw_params_fixup() callback.
-> The 6th and last patch basically adds support for the PCM generic
-> dmaengine to be used as a platform driver for BE DAI links. It allocates
-> a buffer, needed by the DMA transfers that do not support dev-to-dev
-> transfers between FE and BE DAIs.
+> The array bounds check on clock_names is currently checking the size
+> of the entire array rather than the number of elements in the array
+> leading to a potential array bounds read error. Fix this by using
+> the ARRAY_SIZE macro instead of sizeof.
 > 
-> This is a superset of
-> https://mailman.alsa-project.org/pipermail/alsa-devel/2021-March/182630.html
-> which only handles the BE HW constraints. This patchset aims to be more
-> complete, defining a a snd_pcm_runtime between each FE and BE and can
-> be used between any DAI link connection. I am sure I am not handling all
-> the needed members of snd_pcm_runtime (such as handling
-> struct snd_pcm_mmap_status *status), but I would like to have your
-> feedback regarding this idea.
+> Addresses-Coverity: ("Out-of-bounds read")
+> Fixes: 08fdced60ca0 ("ALSA: rawmidi: Add framing mode")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-I'm also concerned about the handling of other fields in runtime
-object, maybe allocating a complete runtime object for each BE is an
-overkill and fragile.  Could it be rather only hw_constraints to be
-unique for each BE, instead?
+Thanks, applied.
 
-Also, the last patch allows only IRAM type, which sounds already
-doubtful.  The dmaengine code should be generic.
-
-Last but not least, one minor nitpick: please use EXPORT_SYMBOL_GPL()
-for the newly introduced symbols.
-
-
-thanks,
 
 Takashi
