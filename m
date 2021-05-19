@@ -2,111 +2,67 @@ Return-Path: <SRS0=AXUI=KO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C915C433ED
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 13:21:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D696DC433ED
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 14:16:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 47517610CC
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 13:21:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 47517610CC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 6FC7C611AE
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 14:16:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6FC7C611AE
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A0FD5167D;
-	Wed, 19 May 2021 15:20:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0FD5167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3A207166F;
+	Wed, 19 May 2021 16:15:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A207166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621430457;
-	bh=Oe+uI+4LSggJKMBLqaso5Y9xo2SAyhJDiofajUHj9mM=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1621433774;
+	bh=2+AvSeV/i5ozImJC7XtoFg0l7+8C6pMW8CzvPoAUV0k=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FY5X3/udDfIwWEuJq59Az1WvEECRn3EPHBFyBAmfuGQcJMcAAo87hnc9PZoxXGOz/
-	 bZ8DkusaDwv1wps0FeapiHcNZppMDHd+lsKsBWqaghgCWXtb2v0n6F+1Ds5Jzcvj+u
-	 MBLNgLchT1Woc7k8dPbyPM9GiKji/f+Mf5ygaWG8=
+	b=IbNDHvHgebuFrpAvO/shgvGBYSfxyTTBUd15gxnTJwNmx+fMGK7F7nNBToBZXb4/G
+	 t1xV7t8bTVOmT4AUQSuVR4u0DSlkN7Z+cOyzKcGeD9bELqXlxKAE5Srl9SIWdysdWS
+	 cPzWopcKGxxC40z4qHk2KPsV8kDcihzdd/BlxBBg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3A398F80153;
-	Wed, 19 May 2021 15:20:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A24A6F80153;
+	Wed, 19 May 2021 16:15:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 70573F8016E; Wed, 19 May 2021 15:20:05 +0200 (CEST)
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com
- [IPv6:2a00:1450:4864:20::131])
+ id 11296F8014C; Wed, 19 May 2021 16:15:22 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1CA57F80127
- for <alsa-devel@alsa-project.org>; Wed, 19 May 2021 15:20:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CA57F80127
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="mqWWHjRZ"
-Received: by mail-lf1-x131.google.com with SMTP id i22so18905792lfl.10
- for <alsa-devel@alsa-project.org>; Wed, 19 May 2021 06:20:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=K0tyFpLNzaxBLTrHlN/nxnuC6O2P+PiZwClq7ZqWBaM=;
- b=mqWWHjRZOghl8Z76kF+UyaEuEdY9mINqCmF9GBzGn4E5R1ojPV/v1mUhYAHOuv0qNc
- vpOp59VpbwxswUFAeO3r0hzEC6ScaBwSlbD0LoSUMx0vDP1bViiAumgeBjDfPM5apLWi
- n5HdU09HXaaB8y1QtfLllNeOcWVMpb5DLm/tfDAfzT3lFkrTFhECBq5Yw5bYlylfRP+Z
- Ji/pgEAnO3YKsPFR3WdBEw0fkGSoIXERvmbhZdwUnpR31dLW+f29qMSBDpy1V4CfPDsy
- F54rTpLeA44phJL3SIemAOeKLjJbVTsQ85xgmMJYlBENkgwfs4AzjWIfbqbde2YP2Ywo
- bwCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=K0tyFpLNzaxBLTrHlN/nxnuC6O2P+PiZwClq7ZqWBaM=;
- b=AsUGm0OJ6JIDBSVDEO2ZTKPVwd17A6kQW9DUQtVUj/3Z4kY0Y++TowgCytxlt781pI
- ZF6EY+lWUE2WmgFfVuFwKe5u5RlxDgYzOBv7kHTeQvXkNGXlQHAS7A1AgPxWdE6T+PQS
- K9ldHZuqRSV4B0oLhWW6sQKDfdZqlC0PbKTQq+FbzGreH6bpOUzOSkEdxkoeWBGMWCeW
- saoR5QYEAj3fe3d+ZtDD+vdE+cWFoT6kTtsvqPcubRrQHbdXnq6FxSto6mWy8sLUWJzF
- EttvgDZ1glYS/IT+OkthPzhiH+y/ajeOseEsy6fo92RTuj/jOxrAcGdcG1h8tABN4ngn
- vW5g==
-X-Gm-Message-State: AOAM532y3/YHpwGJO9/Mjiy8eCN+LVNt9Pu3yFHbdKolOPPw7zi5R6z/
- tCV6MHMUrYRbdY15HhceITU=
-X-Google-Smtp-Source: ABdhPJyHl3qOihv/iXmc4cZoDNOJr2jrkCw3AxpksFtYZPExomt097pp4S/ac07ioJGNxmW5qvVP2g==
-X-Received: by 2002:a05:6512:b98:: with SMTP id
- b24mr8475964lfv.216.1621430400378; 
- Wed, 19 May 2021 06:20:00 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-55.dynamic.spd-mgts.ru.
- [109.252.193.55])
- by smtp.googlemail.com with ESMTPSA id t15sm3773514ljk.99.2021.05.19.06.19.59
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 19 May 2021 06:20:00 -0700 (PDT)
-Subject: Re: Question about Tegra UCMs
-To: Mark Brown <broonie@kernel.org>
-References: <20210518001356.19227-1-digetx@gmail.com>
- <20210518001356.19227-3-digetx@gmail.com>
- <20210518180949.GA949047@robh.at.kernel.org>
- <20210518183455.GE4358@sirena.org.uk>
- <92cef674-c454-e08c-b44d-d8c08b1e8ccf@gmail.com>
- <20210519113805.GA4224@sirena.org.uk>
-From: Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <2da02135-2173-fb63-474f-aa63ad6f4a90@gmail.com>
-Date: Wed, 19 May 2021 16:19:59 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210519113805.GA4224@sirena.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Svyatoslav Ryhel <clamor95@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Jonathan Hunter <jonathanh@nvidia.com>,
- Thierry Reding <thierry.reding@gmail.com>, Ion Agorria <ion@agorria.com>,
- linux-tegra@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>,
- Rob Herring <robh@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id DA45FF80153
+ for <alsa-devel@alsa-project.org>; Wed, 19 May 2021 16:15:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA45FF80153
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 9FC31AB7C;
+ Wed, 19 May 2021 14:15:09 +0000 (UTC)
+Date: Wed, 19 May 2021 16:15:08 +0200
+Message-ID: <s5him3eizdf.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Subject: Re: [RFC PATCH 0/6] soc-pcm: Add separate snd_pcm_runtime for BEs
+In-Reply-To: <20210519104842.977895-1-codrin.ciubotariu@microchip.com>
+References: <20210519104842.977895-1-codrin.ciubotariu@microchip.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de,
+ kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, nicolas.ferre@microchip.com,
+ pierre-louis.bossart@linux.intel.com, tiwai@suse.com, broonie@kernel.org,
+ joe@perches.com, Cristian.Birsan@microchip.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -122,32 +78,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-19.05.2021 14:38, Mark Brown пишет:
-> On Wed, May 19, 2021 at 01:31:28AM +0300, Dmitry Osipenko wrote:
+On Wed, 19 May 2021 12:48:36 +0200,
+Codrin Ciubotariu wrote:
 > 
->> Mark, could you please help me to understand the UCM naming scheme that ALSA uses..
+> This patchset adds a different snd_pcm_runtime in the BE's substream,
+> replacing the FE's snd_pcm_runtime. With a different structure, the BE
+> HW capabilities and constraints will no longer merge with the FE ones.
+> This allows for error detection if the be_hw_params_fixup() applies HW
+> parameters not supported by the BE DAIs. Also, it calculates values
+> needed for mem-to-dev/dev-to-mem DMA transfers, such as buffer size and
+> period size, if needed.
 > 
-> I have no real idea, sorry.  Most of my userspace work has been with
-> Android which doesn't use UCM.
+> The first 4 patches are preparatory patches, that just group and export
+> functions used to allocate and initialize the snd_pcm_runtime. Also, the
+> functions that set and apply the HW constraints are exported.
+> The 5th patch does (almost) everything need to create the new snd_pcm_runtime
+> for BEs, which includes allocation, initializing the HW capabilities,
+> HW constraints and HW parameters. The BE HW parameters are no longer
+> copied from the FE. They are recalculated, based on HW capabilities,
+> constraints and the be_hw_params_fixup() callback.
+> The 6th and last patch basically adds support for the PCM generic
+> dmaengine to be used as a platform driver for BE DAI links. It allocates
+> a buffer, needed by the DMA transfers that do not support dev-to-dev
+> transfers between FE and BE DAIs.
 > 
->> IIUC, the "ucm2/Tegra/codec_name" scheme [2] that the current ALSA UCM
->> uses simply doesn't work at all. Is there anything on the kernel side
->> that I could change to get a working naming scheme? If yes, I may try
->> to do something about it in the v2, thanks in advance.
-> 
-> Could you elaborate on the way in which it simply doesn't work at all?
-> I'd expect there to be something in there that first tries to match on
-> something to do with the specific hardware platform to take account of
-> plastics differences but that'd be a userspace change.
+> This is a superset of
+> https://mailman.alsa-project.org/pipermail/alsa-devel/2021-March/182630.html
+> which only handles the BE HW constraints. This patchset aims to be more
+> complete, defining a a snd_pcm_runtime between each FE and BE and can
+> be used between any DAI link connection. I am sure I am not handling all
+> the needed members of snd_pcm_runtime (such as handling
+> struct snd_pcm_mmap_status *status), but I would like to have your
+> feedback regarding this idea.
 
-I also expect that there should be some kind of fall back matching, but
-I don't see it happening. I will work with Jaroslav on this trouble.
+I'm also concerned about the handling of other fields in runtime
+object, maybe allocating a complete runtime object for each BE is an
+overkill and fragile.  Could it be rather only hw_constraints to be
+unique for each BE, instead?
 
-> Please fix your mail client to word wrap within paragraphs at something
-> substantially less than 80 columns.  Doing this makes your messages much
-> easier to read and reply to.
-> 
+Also, the last patch allows only IRAM type, which sounds already
+doubtful.  The dmaengine code should be generic.
 
-I turned off the word wrapping for that email to make it more readable
-in a generic email clients since it contained long lines which shouldn't
-be wrapped.
+Last but not least, one minor nitpick: please use EXPORT_SYMBOL_GPL()
+for the newly introduced symbols.
+
+
+thanks,
+
+Takashi
