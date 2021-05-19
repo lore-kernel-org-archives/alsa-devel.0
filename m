@@ -7,90 +7,59 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98FB9C433B4
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 10:53:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2C12C433B4
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 10:55:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1BFA16135C
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 10:53:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1BFA16135C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
+	by mail.kernel.org (Postfix) with ESMTPS id DB2836135C
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 10:55:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB2836135C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A1EB61693;
-	Wed, 19 May 2021 12:52:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1EB61693
+	by alsa0.perex.cz (Postfix) with ESMTPS id 77B33166F;
+	Wed, 19 May 2021 12:54:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77B33166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621421599;
-	bh=PjkM+cZ/rv8qW8Nuka2fZ+EwLgMDKLLm6kzp8U5W9ak=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=bHyVDs4UZ7aO2voo7cWTBPvhJKQ9aPpDCifKN9V55dUcoNb+MpQi7XSPiXjWhuOGW
-	 vRWskugQ91ZYLwAcetFbU2ufN4kR/5sTHY7iXeAuUxZFOiRwS669/pcV1mPOptXRRp
-	 EWwE+nIl3h68zmd7rcdU+aP7dBaMb8vyopgWOxUI=
+	s=default; t=1621421728;
+	bh=1kLAa4tfpQ5ZqWfgfvQwF+yNTK3+CRddf4+wfGouv40=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=p73yJeJQ9HBSVlVguBSbHG4MVEy24SCNLYyjhHODpIq0BOsTDYI2+6DhFfaeObwBs
+	 b3CwxZ8VgNpMgHEnFn/+g+70jQF6ddRo+YWR9DI4QA2NRjHIdEt/0Fd6FEPeSXlhaa
+	 x3nhGS1lCfkeGZSbJgpC7YjfoymhMnIHHHNFc0E0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27FC1F804C1;
-	Wed, 19 May 2021 12:50:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1E3BFF80148;
+	Wed, 19 May 2021 12:54:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9174CF804D1; Wed, 19 May 2021 12:50:27 +0200 (CEST)
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
- [68.232.153.233])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 55CE1F8016E; Wed, 19 May 2021 12:54:37 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1D20AF804C1
- for <alsa-devel@alsa-project.org>; Wed, 19 May 2021 12:50:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D20AF804C1
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com
- header.b="PeCXEXh5"
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1621421422; x=1652957422;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=PjkM+cZ/rv8qW8Nuka2fZ+EwLgMDKLLm6kzp8U5W9ak=;
- b=PeCXEXh5uA8bQawKi1O6jul8GJUR/LMXUyWxJ72+g3v/7ivoBCVMrfjX
- oLqLD2m8jjLmvx+/FasljnQjzzL0vXJOnb2x4t7bq7BEb4i/QXU54ciTF
- WAtZY5Hep9SMXiRr1uFDmimF1BvN+WdvT/A5RU7UXLd/fPGktOT1R2tEo
- fg9kEQnR0O+2u9E59baGdwCLoGBQfuQyOkpfnHnPKF9B969ETl7cT6vaZ
- R2ONges0ClWhUPVNT7YTmKgRBClGrfdypyYgT2hWE6r7eml3g5TlTqfgB
- srWMnj7mdxYsdKDnylpbaFfT5AJxE0HDgg8SDFeq/1i0k6sFHe4bKCsa9 w==;
-IronPort-SDR: NuJdV+EzIlfX9fQY425aL8VwN0OzpnrZ/UXxXvFaJmu3LqrXiHCk5bAMr7YRqmR1bEB47YlF3M
- JHv6AC2NpeDtro379jk1OFiXYPxdnqNmYcN+hWArURW46QfnRDq84prNr9yPBAP4P6CtAsgaZP
- 5mV1m6l0daItZqwFccUhjHr/g5g9hsKBLNKI/JzEpqs7EgzflRVldawu3Vi2Rz6kLKO34Zvwym
- n4xUvAiLHP+AgAvTQGSL1B3BBeN5sTHMMEyfk89Q0N62qmYwa1a1z1gm6HgNz/ZWNyRwGtHKfw
- 07I=
-X-IronPort-AV: E=Sophos;i="5.82,312,1613458800"; d="scan'208";a="121616328"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 19 May 2021 03:50:19 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 19 May 2021 03:49:57 -0700
-Received: from rob-ult-m19940.amer.actel.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Wed, 19 May 2021 03:49:53 -0700
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-To: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH 5/6] ASoC: soc-pcm: Create new snd_pcm_runtime for BE DAIs
-Date: Wed, 19 May 2021 13:48:41 +0300
-Message-ID: <20210519104842.977895-6-codrin.ciubotariu@microchip.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210519104842.977895-1-codrin.ciubotariu@microchip.com>
-References: <20210519104842.977895-1-codrin.ciubotariu@microchip.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 18F75F80148
+ for <alsa-devel@alsa-project.org>; Wed, 19 May 2021 12:54:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18F75F80148
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+ by youngberry.canonical.com with esmtpsa (TLS1.2) tls
+ TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.93)
+ (envelope-from <colin.king@canonical.com>)
+ id 1ljJqL-0000Tq-4b; Wed, 19 May 2021 10:54:25 +0000
+From: Colin King <colin.king@canonical.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ David Henningsson <coding@diwic.se>, alsa-devel@alsa-project.org
+Subject: [PATCH][next] ALSA: rawmidi: fix incorrect array bounds check on
+ clock_names
+Date: Wed, 19 May 2021 11:54:24 +0100
+Message-Id: <20210519105424.55221-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-Cc: lars@metafoo.de, kuninori.morimoto.gx@renesas.com, tiwai@suse.com,
- pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com, broonie@kernel.org,
- joe@perches.com, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
- Cristian.Birsan@microchip.com, nicolas.ferre@microchip.com
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,231 +75,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The BE DAIs are different than the FE DAIs. They have different HW
-capabilities, different HW constraints and different HW parameters. Also,
-the buffer used to read/write data from/to user-space to/from FE DAIs has
-nothing to do with the BE DAIs. For this reason, this patch creates a new
-snd_pcm_runtime for the BE DAIs. The new structure can be used to better
-represent the HW capabilities, so the HW parameters are no longer copied
-from the FE, but created separately. For BE DAIs that need a buffer to move
-the data to/from the FE DAIs (no dev-to-dev DMA capability), the new
-snd_pcm_runtime can store the needed parameters to allocate the buffer and
-set the DMA transfers.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+The array bounds check on clock_names is currently checking the size
+of the entire array rather than the number of elements in the array
+leading to a potential array bounds read error. Fix this by using
+the ARRAY_SIZE macro instead of sizeof.
+
+Addresses-Coverity: ("Out-of-bounds read")
+Fixes: 08fdced60ca0 ("ALSA: rawmidi: Add framing mode")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- sound/soc/soc-pcm.c | 126 +++++++++++++++++++++++++++++++-------------
- 1 file changed, 90 insertions(+), 36 deletions(-)
+ sound/core/rawmidi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 8659089a87a0..7d95df20541e 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1134,7 +1134,6 @@ static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
- 
- 	dpcm->be = be;
- 	dpcm->fe = fe;
--	be->dpcm[stream].runtime = fe->dpcm[stream].runtime;
- 	dpcm->state = SND_SOC_DPCM_LINK_STATE_NEW;
- 	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
- 	list_add(&dpcm->list_be, &fe->dpcm[stream].be_clients);
-@@ -1150,34 +1149,6 @@ static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
- 	return 1;
- }
- 
--/* reparent a BE onto another FE */
--static void dpcm_be_reparent(struct snd_soc_pcm_runtime *fe,
--			struct snd_soc_pcm_runtime *be, int stream)
--{
--	struct snd_soc_dpcm *dpcm;
--	struct snd_pcm_substream *fe_substream, *be_substream;
--
--	/* reparent if BE is connected to other FEs */
--	if (!be->dpcm[stream].users)
--		return;
--
--	be_substream = snd_soc_dpcm_get_substream(be, stream);
--
--	for_each_dpcm_fe(be, stream, dpcm) {
--		if (dpcm->fe == fe)
--			continue;
--
--		dev_dbg(fe->dev, "reparent %s path %s %s %s\n",
--			stream ? "capture" : "playback",
--			dpcm->fe->dai_link->name,
--			stream ? "<-" : "->", dpcm->be->dai_link->name);
--
--		fe_substream = snd_soc_dpcm_get_substream(dpcm->fe, stream);
--		be_substream->runtime = fe_substream->runtime;
--		break;
--	}
--}
--
- /* disconnect a BE and FE */
- void dpcm_be_disconnect(struct snd_soc_pcm_runtime *fe, int stream)
- {
-@@ -1196,9 +1167,6 @@ void dpcm_be_disconnect(struct snd_soc_pcm_runtime *fe, int stream)
- 			stream ? "capture" : "playback", fe->dai_link->name,
- 			stream ? "<-" : "->", dpcm->be->dai_link->name);
- 
--		/* BEs still alive need new FE */
--		dpcm_be_reparent(fe, dpcm->be, stream);
--
- 		dpcm_remove_debugfs_state(dpcm);
- 
- 		spin_lock_irqsave(&fe->card->dpcm_lock, flags);
-@@ -1468,7 +1436,12 @@ void dpcm_be_dai_stop(struct snd_soc_pcm_runtime *fe, int stream,
- 		}
- 
- 		soc_pcm_close(be_substream);
--		be_substream->runtime = NULL;
-+
-+		if (be_substream->runtime) {
-+			snd_pcm_runtime_free(be_substream->runtime);
-+			be_substream->runtime = NULL;
-+		}
-+
- 		be->dpcm[stream].state = SND_SOC_DPCM_STATE_CLOSE;
- 	}
- }
-@@ -1482,6 +1455,7 @@ int dpcm_be_dai_startup(struct snd_soc_pcm_runtime *fe, int stream)
- 	/* only startup BE DAIs that are either sinks or sources to this FE DAI */
- 	for_each_dpcm_be(fe, stream, dpcm) {
- 		struct snd_pcm_substream *be_substream;
-+		struct snd_pcm_runtime *runtime;
- 
- 		be = dpcm->be;
- 		be_substream = snd_soc_dpcm_get_substream(be, stream);
-@@ -1514,7 +1488,23 @@ int dpcm_be_dai_startup(struct snd_soc_pcm_runtime *fe, int stream)
- 		dev_dbg(be->dev, "ASoC: open %s BE %s\n",
- 			stream ? "capture" : "playback", be->dai_link->name);
- 
--		be_substream->runtime = be->dpcm[stream].runtime;
-+		runtime = snd_pcm_runtime_alloc();
-+		if (!runtime) {
-+			err = -ENOMEM;
-+			goto unwind;
-+		}
-+
-+		be_substream->runtime = runtime;
-+
-+		/* initialize the BE constraints */
-+		err = snd_pcm_hw_constraints_init(be_substream);
-+		if (err < 0) {
-+			dev_err(be->dev,
-+				"dpcm_be_hw_constraints_init failed: %d\n",
-+				err);
-+			goto unwind;
-+		}
-+
- 		err = soc_pcm_open(be_substream);
- 		if (err < 0) {
- 			be->dpcm[stream].users--;
-@@ -1527,6 +1517,14 @@ int dpcm_be_dai_startup(struct snd_soc_pcm_runtime *fe, int stream)
- 			goto unwind;
- 		}
- 
-+		err = snd_pcm_hw_constraints_complete(be_substream);
-+		if (err < 0) {
-+			dev_err(fe->dev,
-+				"snd_pcm_hw_constraints_complete failed: %d\n",
-+				err);
-+			goto unwind;
-+		}
-+
- 		be->dpcm[stream].state = SND_SOC_DPCM_STATE_OPEN;
- 		count++;
- 	}
-@@ -1897,6 +1895,14 @@ int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
- 		if (ret < 0)
- 			goto unwind;
- 
-+		/* apply constrains */
-+		dpcm->hw_params.rmask = ~0U;
-+		ret = snd_pcm_hw_refine(be_substream, &dpcm->hw_params);
-+		if (ret < 0) {
-+			dev_err(fe->dev, "failed to refine hw parameters: %d\n", ret);
-+			goto unwind;
-+		}
-+
- 		/* copy the fixed-up hw params for BE dai */
- 		memcpy(&be->dpcm[stream].hw_params, &dpcm->hw_params,
- 		       sizeof(struct snd_pcm_hw_params));
-@@ -1918,6 +1924,7 @@ int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
- 			goto unwind;
- 
- 		be->dpcm[stream].state = SND_SOC_DPCM_STATE_HW_PARAMS;
-+		snd_pcm_runtime_set(be_substream, &dpcm->hw_params);
- 	}
- 	return 0;
- 
-@@ -1949,17 +1956,64 @@ int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
- 	return ret;
- }
- 
-+static int dpcm_be_dai_hw_params_init(struct snd_soc_pcm_runtime *fe, int stream)
-+{
-+	struct snd_pcm_hw_params *params = &fe->dpcm[stream].hw_params;
-+	int k;
-+
-+	for (k = SNDRV_PCM_HW_PARAM_FIRST_MASK;
-+	     k <= SNDRV_PCM_HW_PARAM_LAST_MASK; k++)
-+		snd_mask_any(hw_param_mask(params, k));
-+
-+	for (k = SNDRV_PCM_HW_PARAM_FIRST_INTERVAL;
-+	     k <= SNDRV_PCM_HW_PARAM_LAST_INTERVAL; k++)
-+		snd_interval_any(hw_param_interval(params, k));
-+
-+	return 0;
-+}
-+
- static int dpcm_fe_dai_hw_params(struct snd_pcm_substream *substream,
- 				 struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *fe = asoc_substream_to_rtd(substream);
- 	int ret, stream = substream->stream;
-+	struct snd_interval *t, *dpcm_t;
- 
- 	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
- 	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_FE);
- 
--	memcpy(&fe->dpcm[stream].hw_params, params,
--			sizeof(struct snd_pcm_hw_params));
-+	/* initialize the BE HW params */
-+	dpcm_be_dai_hw_params_init(fe, stream);
-+
-+	/* FIXME: a very low period time will make the CPU take too many
-+	 * interrupts, which might end up not having enough time to actually
-+	 * fill the buffer(s); for now, the BE min period time will be half of
-+	 * the FE min period time
-+	 */
-+	t = hw_param_interval(params, SNDRV_PCM_HW_PARAM_PERIOD_TIME);
-+	dpcm_t = hw_param_interval(&fe->dpcm[stream].hw_params,
-+				   SNDRV_PCM_HW_PARAM_PERIOD_TIME);
-+	dpcm_t->min = t->min / 2;
-+
-+	if (fe->dai_link->dpcm_merged_format) {
-+		memcpy(hw_param_interval(&fe->dpcm[stream].hw_params,
-+					 SNDRV_PCM_HW_PARAM_FORMAT),
-+		       hw_param_interval(params, SNDRV_PCM_HW_PARAM_FORMAT),
-+		       sizeof(struct snd_interval));
-+	}
-+	if (fe->dai_link->dpcm_merged_chan) {
-+		memcpy(hw_param_interval(&fe->dpcm[stream].hw_params,
-+					 SNDRV_PCM_HW_PARAM_CHANNELS),
-+		       hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS),
-+		       sizeof(struct snd_interval));
-+	}
-+	if (fe->dai_link->dpcm_merged_rate) {
-+		memcpy(hw_param_interval(&fe->dpcm[stream].hw_params,
-+					 SNDRV_PCM_HW_PARAM_RATE),
-+		       hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE),
-+		       sizeof(struct snd_interval));
-+	}
-+
- 	ret = dpcm_be_dai_hw_params(fe, stream);
- 	if (ret < 0)
- 		goto out;
+diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
+index 4a6534db77d6..6c0a4a67ad2e 100644
+--- a/sound/core/rawmidi.c
++++ b/sound/core/rawmidi.c
+@@ -1679,7 +1679,7 @@ static void snd_rawmidi_proc_info_read(struct snd_info_entry *entry,
+ 					    buffer_size, avail, xruns);
+ 				if (substream->framing == SNDRV_RAWMIDI_MODE_FRAMING_TSTAMP) {
+ 					clock_type = substream->clock_type >> SNDRV_RAWMIDI_MODE_CLOCK_SHIFT;
+-					if (!snd_BUG_ON(clock_type >= sizeof(clock_names)))
++					if (!snd_BUG_ON(clock_type >= ARRAY_SIZE(clock_names)))
+ 						snd_iprintf(buffer,
+ 							    "  Framing      : tstamp\n"
+ 							    "  Clock type   : %s\n",
 -- 
-2.27.0
+2.31.1
 
