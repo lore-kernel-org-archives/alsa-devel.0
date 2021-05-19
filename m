@@ -4,74 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D151C433B4
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 16:13:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 146F2C433ED
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 16:14:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2B63F6135C
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 16:13:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B63F6135C
+	by mail.kernel.org (Postfix) with ESMTPS id 8105D6135C
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 16:14:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8105D6135C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BB168169A;
-	Wed, 19 May 2021 18:12:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB168169A
+	by alsa0.perex.cz (Postfix) with ESMTPS id A3ACC16A0;
+	Wed, 19 May 2021 18:13:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3ACC16A0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621440826;
-	bh=Pr6JLn/3y1HPQM3VlxColhh6Ox2yJoLwxCL4AlIJjI4=;
+	s=default; t=1621440838;
+	bh=na6FALQoNuy8u03ZG29zB+aTDGjiYRhmATrXpQWBCAw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JGgeZB04Mwrg9GtiVrJmHJJIIj/plPpWd1mmO65M7IhTExy1XJsUadrB4kV830f00
-	 Lu53PbPdhZWazjtdBTdRDgNpeC7qR4mzFOk7743DykrfUlgc2eN/cGonHChrLH1As2
-	 SnDfgDYaXDESv1UrUbpjFyZb5C0913bX0EKf0rQc=
+	b=UqBu66xcp1m6jL25o4YJq239fbOfie9zSgCPPJXqBi6FOo+o3jTBxbZpO1OIg7UI4
+	 +aOWOssEU8KwCpkfrDaN8zMloADNxMR8XheiWgi45HGcrCbK+F4JymFhNRARuYSiHI
+	 gKnXi0tM0iG7ZQB1niVafvmP2rZl2+Z24JicrLAg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7A0F9F80430;
-	Wed, 19 May 2021 18:11:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 062CDF80475;
+	Wed, 19 May 2021 18:11:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 38DBEF80259; Wed, 19 May 2021 18:11:28 +0200 (CEST)
+ id 3FDD8F80127; Wed, 19 May 2021 18:11:28 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4BF26F802A0
- for <alsa-devel@alsa-project.org>; Wed, 19 May 2021 18:11:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4BF26F802A0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 98227F80258
+ for <alsa-devel@alsa-project.org>; Wed, 19 May 2021 18:11:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98227F80258
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Whn5QgLD"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 885E1611C2;
- Wed, 19 May 2021 16:11:18 +0000 (UTC)
+ header.b="M8qK9qlv"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B06DB6124C;
+ Wed, 19 May 2021 16:11:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1621440679;
- bh=Pr6JLn/3y1HPQM3VlxColhh6Ox2yJoLwxCL4AlIJjI4=;
+ s=k20201202; t=1621440684;
+ bh=na6FALQoNuy8u03ZG29zB+aTDGjiYRhmATrXpQWBCAw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Whn5QgLDKn6iNsqW3uUIDwzc4zzHvXNk+2jsOq3ZMckjCl26ZKzfHCXUrVxjckDb3
- cfAXf/dYXXBTToFOUSS6ne+VMAT2mIT4UT98OSA0Pb7epplqu+h9m3ITVUaFdYC2lj
- P4pRswMm2Gmout+C/Pyd5+6YtgGF6WPjZ2hXF+cRnud3znb8hBc0p4NY0jlKtFrbbY
- EjxAC9H/fRoWrC2B9wuU3Q+z1F1GtQTeu2wo8qj900/dLNUZYrai4ds5cz/qRM2w9/
- JhbBZ+jgSL52Kl4BkP/RhaE5m8UZnvKkvZ4JMJ+xUrVPZWcwNIHcR4ZgxOauY4YgWi
- 4Td0HyPtTDyow==
+ b=M8qK9qlv1xTdKbAIltgvg+rJeQrfD6rWZ3qGsvDwCpkySLGOY7w0PLI5svRkIbHoh
+ RLhl5ybGt7z1ZSI3GzedvHOtWdotKfkJQV9AmmLoRdX+1Foun3bUCvhBsDCKcqx6L3
+ Z+MpvafZ95wCw35PONHCbVpL2f2+TYLMLlhjVbMRPEL5fuKcNzCOhIhmDpWi++i3vG
+ y+IY7va2TV4EMoRbuTBPDt0Gk/4A70DiSyitS2AAkLjdolxeNiQRKLgqcQIVCuaH6m
+ 9VQIHm10JySYHd/RpBCkdu8ukCjHg1KWBKgW06XPO8lbggU8qLK+2GL5P0rVLStKyc
+ OMF/RJXyoy0Rg==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: Intel: hda: don't send DAI_CONFIG IPC for
- older firmware
-Date: Wed, 19 May 2021 17:10:16 +0100
-Message-Id: <162144027323.37060.5998146040074058715.b4-ty@kernel.org>
+To: jbrunet@baylibre.com,
+	Neil Armstrong <narmstrong@baylibre.com>
+Subject: Re: [PATCH v3 0/2] ASoC: meson: g12a-toacodec: add support for SM1
+Date: Wed, 19 May 2021 17:10:18 +0100
+Message-Id: <162144027324.37060.1996054206902696511.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210518174121.151601-1-ranjani.sridharan@linux.intel.com>
-References: <20210518174121.151601-1-ranjani.sridharan@linux.intel.com>
+In-Reply-To: <20210511074829.4110036-1-narmstrong@baylibre.com>
+References: <20210511074829.4110036-1-narmstrong@baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Mark Brown <broonie@kernel.org>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Yong Zhi <yong.zhi@intel.com>
+Cc: linux-amlogic@lists.infradead.org, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,12 +87,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 18 May 2021 10:41:21 -0700, Ranjani Sridharan wrote:
-> BE hw_params op was recently added for SSP type DAIs.
-> But sending the DAI_CONFIG IPC during hw_params
-> is not supported with older firmware. So add an ABI check
-> to avoid sending the IPC if the firmware ABI is older than
-> 3.18.
+On Tue, 11 May 2021 09:48:27 +0200, Neil Armstrong wrote:
+> This patchset adds Amlogic SM1 support on the TOACODEC driver, first by switching
+> to regmap fields for some bit fields to avoid code duplication, and then by adding
+> the corresponding bits & struct for the SM1 changed bits.
+> 
+> Changes since v2 at [2]:
+> - use raw values instead of defines in REG_FIELD() for g12a_toacodec_match_data
+> 
+> [...]
 
 Applied to
 
@@ -100,8 +103,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: Intel: hda: don't send DAI_CONFIG IPC for older firmware
-      commit: 8c08652614cb7468620a6328b37ca2965cd48283
+[1/2] ASoC: meson: g12a-toacodec: use regmap fields to prepare SM1 support
+      commit: 172dd9216d2b8a3fa162039d89c4361ef35c85ae
+[2/2] ASoC: meson: g12a-toacodec: add support for SM1 TOACODEC
+      commit: 7487238c5f530b418745ce134d1b0a7fba3a0d8d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
