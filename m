@@ -2,88 +2,110 @@ Return-Path: <SRS0=AXUI=KO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 107CFC43460
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 08:53:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3690CC433ED
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 10:21:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BAE3E60C3F
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 08:53:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BAE3E60C3F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id DCE2661244
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 10:21:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DCE2661244
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 17484165D;
-	Wed, 19 May 2021 10:52:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17484165D
+	by alsa0.perex.cz (Postfix) with ESMTPS id A2D3483A;
+	Wed, 19 May 2021 12:20:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2D3483A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621414423;
-	bh=w2H34Ul+rMw0fI1d8Sc4VX5Vfwor0KfoWMGu1OVxZis=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1621419699;
+	bh=5Peg9LqWHWZ+j9hqsjNIqD5Q2L7KUA2Sc5JVD18zKHk=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=K5XhkD+LTl2oHZCh4iBBikmOhS3/KKBAzViaKN03t0Hfyf/6ogCWyw8y1BCxzhH7U
-	 Ff4NxeJkmPESG8WUYxK5bCYRhhnr1kTBZyTgcMnucFOU0tb4Chi9Qf22uCDAGYCmGh
-	 s9qfAZHyQN8QfKWDG3NRDDZpJTlHust0xggzzxM4=
+	b=nwxLLjKTdeXxv70HmkIhRF3G6jcCmK7wSzyCh0c36/xQ8g+GdLZfHhp6f6lAiwTaw
+	 GxM6zZ0qxQe2wQBm+RHntVLZNYXZVmaHSwSNSnqMJ2DSIViIKApjwlrMy4CXsVnI/U
+	 R3dfKDHgEo4jeH+eAMGOXw1fTpsIKQkt1wGxb+kw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9803DF80258;
-	Wed, 19 May 2021 10:52:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35A41F80153;
+	Wed, 19 May 2021 12:20:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3CC0EF8016E; Wed, 19 May 2021 10:52:00 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 09D94F80246; Wed, 19 May 2021 12:20:47 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4264BF8014C
- for <alsa-devel@alsa-project.org>; Wed, 19 May 2021 10:51:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4264BF8014C
+ by alsa1.perex.cz (Postfix) with ESMTPS id DAADEF8014C
+ for <alsa-devel@alsa-project.org>; Wed, 19 May 2021 12:20:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DAADEF8014C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bVb+kYmy"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64E686139A;
- Wed, 19 May 2021 08:51:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1621414311;
- bh=w2H34Ul+rMw0fI1d8Sc4VX5Vfwor0KfoWMGu1OVxZis=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=bVb+kYmy+lqucHGGSZ+qaOMYW2zBZ73zrAkh+ChtHiZjeSJj4mULIaGR5pPNrU2Uw
- g6/Oog4h7qMRAs/2/zXYEYOWl9S9n2RWJP+7Ve54Gf5gTKj3yX3aTQ6TPOqz+Y5d3N
- QCgb1DZJdBdQ6KjjsAsIuCJe+9kpdWvExcrSRidi0EqGidMPWZ8JH8hDvWgo24dg1J
- BVnfjsDMUnaO+CqE3pA2TF8v6NyfMsSglAjInO3sIYVZZKR94DWrWhptdhAq221UZ0
- K2M/5FaZ7Osdi1mGVTvSx8Ms9skOtXI37q8oIu/lNnP6RRVvNfMgVaHLesBzeKQah9
- ISzHMrHeLiIBg==
-Received: by mail.kernel.org with local (Exim 4.94.2)
- (envelope-from <mchehab@kernel.org>)
- id 1ljHvh-007gYE-I4; Wed, 19 May 2021 10:51:49 +0200
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To: Linux Doc Mailing List <linux-doc@vger.kernel.org>,
- Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH 05/10] docs: update pin-control.rst references
-Date: Wed, 19 May 2021 10:51:42 +0200
-Message-Id: <46ac2e918c7c4a4b701d54870f167b78466ec578.1621413933.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1621413933.git.mchehab+huawei@kernel.org>
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="JKEEZqp/"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
+ 14JAGCk9022302; Wed, 19 May 2021 05:20:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=372dr6SwmwYwOUb7PJzGd6F0k/qxZb2QrHZ6Tt9d8Pw=;
+ b=JKEEZqp/2QnfOrdyWkoJuCJkz1dZSQbn39px/nohG2OiEhtxpfqpO/LssvU54LoNwwcu
+ Sh8ASGHCfov1Ni6Z/JfyL7YHjtMe9BScgJKkJRp76jbTyUr2i6xOOrs/fxfdFlsJFRA0
+ ouhL2ZDAPH71QMsGu9tLTEoEpXqYCX6Pwwr5M3OHTumWEKV2cokSVu3p4jLNlc3cvRe4
+ 3SrsUXYegMl1pXBKVdCdQuwFpIjOkHxP6I311jBrVIsb7e/4O/31uWFLX0IagxbU3f4a
+ l6CHnGOH6VHrqHwuyT/VhctOxz3+KcdygELttWHOhB6PdxcPpEoN/N2GEbcpk5Z21rIH eA== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 38kqtwjp1r-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Wed, 19 May 2021 05:20:38 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 19 May
+ 2021 11:20:36 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Wed, 19 May 2021 11:20:36 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 718C911CD;
+ Wed, 19 May 2021 10:20:35 +0000 (UTC)
+Date: Wed, 19 May 2021 10:20:35 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: Re: [PATCH 05/10] docs: update pin-control.rst references
+Message-ID: <20210519102035.GH64205@ediswmail.ad.cirrus.com>
 References: <cover.1621413933.git.mchehab+huawei@kernel.org>
+ <46ac2e918c7c4a4b701d54870f167b78466ec578.1621413933.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Drew Fustini <drew@beagleboard.org>, alsa-devel@alsa-project.org,
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <46ac2e918c7c4a4b701d54870f167b78466ec578.1621413933.git.mchehab+huawei@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: kjVnaIbt4ji1tbhMzTpF3hssfkrUUfoU
+X-Proofpoint-ORIG-GUID: kjVnaIbt4ji1tbhMzTpF3hssfkrUUfoU
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011
+ mlxlogscore=999
+ bulkscore=0 lowpriorityscore=0 malwarescore=0 suspectscore=0 phishscore=0
+ adultscore=0 impostorscore=0 mlxscore=0 spamscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105190071
+Cc: alsa-devel@alsa-project.org,
  Heikki Krogerus <heikki.krogerus@linux.intel.com>,
- Charles Keepax <ckeepax@opensource.cirrus.com>,
- Saravana Kannan <saravanak@google.com>, linux-gpio@vger.kernel.org,
- Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+ Saravana Kannan <saravanak@google.com>, Jonathan Corbet <corbet@lwn.net>,
+ Drew Fustini <drew@beagleboard.org>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Linus Walleij <linus.walleij@linaro.org>,
- "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, linux-kernel@vger.kernel.org,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+ "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+ Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+ linux-kernel@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>,
  Richard Fitzgerald <rf@opensource.cirrus.com>,
- Randy Dunlap <rdunlap@infradead.org>, patches@opensource.cirrus.com,
- Dan Williams <dan.j.williams@intel.com>,
+ Randy Dunlap <rdunlap@infradead.org>, linux-gpio@vger.kernel.org,
+ patches@opensource.cirrus.com, Dan Williams <dan.j.williams@intel.com>,
  Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  Lee Jones <lee.jones@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -101,59 +123,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Changeset 5513b411ea5b ("Documentation: rename pinctl to pin-control")
-renamed: Documentation/driver-api/pinctl.rst
-to: Documentation/driver-api/pin-control.rst.
+On Wed, May 19, 2021 at 10:51:42AM +0200, Mauro Carvalho Chehab wrote:
+> Changeset 5513b411ea5b ("Documentation: rename pinctl to pin-control")
+> renamed: Documentation/driver-api/pinctl.rst
+> to: Documentation/driver-api/pin-control.rst.
+> 
+> Update the cross-references accordingly.
+> 
+> Fixes: 5513b411ea5b ("Documentation: rename pinctl to pin-control")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
 
-Update the cross-references accordingly.
+For the Madera change:
 
-Fixes: 5513b411ea5b ("Documentation: rename pinctl to pin-control")
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- include/linux/device.h                  | 2 +-
- include/linux/mfd/madera/pdata.h        | 2 +-
- include/linux/pinctrl/pinconf-generic.h | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-diff --git a/include/linux/device.h b/include/linux/device.h
-index 38a2071cf776..d1183cfdc8fb 100644
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -399,7 +399,7 @@ struct dev_links_info {
-  * 		along with subsystem-level and driver-level callbacks.
-  * @em_pd:	device's energy model performance domain
-  * @pins:	For device pin management.
-- *		See Documentation/driver-api/pinctl.rst for details.
-+ *		See Documentation/driver-api/pin-control.rst for details.
-  * @msi_list:	Hosts MSI descriptors
-  * @msi_domain: The generic MSI domain this device is using.
-  * @numa_node:	NUMA node this device is close to.
-diff --git a/include/linux/mfd/madera/pdata.h b/include/linux/mfd/madera/pdata.h
-index 601cbbc10370..32e3470708ed 100644
---- a/include/linux/mfd/madera/pdata.h
-+++ b/include/linux/mfd/madera/pdata.h
-@@ -31,7 +31,7 @@ struct pinctrl_map;
-  * @irq_flags:	    Mode for primary IRQ (defaults to active low)
-  * @gpio_base:	    Base GPIO number
-  * @gpio_configs:   Array of GPIO configurations (See
-- *		    Documentation/driver-api/pinctl.rst)
-+ *		    Documentation/driver-api/pin-control.rst)
-  * @n_gpio_configs: Number of entries in gpio_configs
-  * @gpsw:	    General purpose switch mode setting. Depends on the external
-  *		    hardware connected to the switch. (See the SW1_MODE field
-diff --git a/include/linux/pinctrl/pinconf-generic.h b/include/linux/pinctrl/pinconf-generic.h
-index e18ab3d5908f..5a96602a3316 100644
---- a/include/linux/pinctrl/pinconf-generic.h
-+++ b/include/linux/pinctrl/pinconf-generic.h
-@@ -89,7 +89,7 @@ struct pinctrl_map;
-  * 	it.
-  * @PIN_CONFIG_OUTPUT: this will configure the pin as an output and drive a
-  * 	value on the line. Use argument 1 to indicate high level, argument 0 to
-- *	indicate low level. (Please see Documentation/driver-api/pinctl.rst,
-+ *	indicate low level. (Please see Documentation/driver-api/pin-control.rst,
-  *	section "GPIO mode pitfalls" for a discussion around this parameter.)
-  * @PIN_CONFIG_PERSIST_STATE: retain pin state across sleep or controller reset
-  * @PIN_CONFIG_POWER_SOURCE: if the pin can select between different power
--- 
-2.31.1
-
+Thanks,
+Charles
