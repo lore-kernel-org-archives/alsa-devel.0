@@ -2,64 +2,69 @@ Return-Path: <SRS0=AXUI=KO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CBA1C433B4
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 16:33:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7454C433B4
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 17:05:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 93A4A611BF
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 16:33:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 93A4A611BF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 201F16139A
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 17:05:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 201F16139A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 92AEE166E;
-	Wed, 19 May 2021 18:32:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92AEE166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id D1AFC166F;
+	Wed, 19 May 2021 19:04:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1AFC166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621441992;
-	bh=sDsElK7p5Obl/Ju53Lqf4oNje1G4QwvggmyggUSJbuw=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1621443944;
+	bh=gpYlq4IwvVKYFy8eIqFYQPEdYX8F/9PhIPTVGPR3u7I=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=J5+oWqgxF5lQ6cX8GIoKbOTVl3eAu3nPpe2vLSyoHcfsVGqUEQF1tVkO9cMLGDMLd
-	 /kPhLMd2DEkua4dPhFWZJVJH6Y3EUk47LJrwTRvAgsn37gtnyJqB/sq6Ll+ADw2T0v
-	 bA8+LU4FuOR6+osH7lFDNCUms4wqF0PC34ch8q8w=
+	b=qWwBZ3+dqMbIGGRk63PepX6kHH7Lo70P3Mfl0k7GIzj7GFMo0eJb331gX7k0Fhx6V
+	 8ft7i0du0gRmsbT6AexOJX2VNUNDswLJkKAfbMoCzI1cINJ8nZ3AsSPgasEK/BdjaC
+	 gEzFHhMSg7EnzScITthzGGxYXfOLXDvy96lWGa2A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D848F80153;
-	Wed, 19 May 2021 18:32:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6727EF8014C;
+	Wed, 19 May 2021 19:04:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CE552F8016E; Wed, 19 May 2021 18:32:20 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 73FA8F8014C; Wed, 19 May 2021 19:04:52 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 30FD5F8014C
- for <alsa-devel@alsa-project.org>; Wed, 19 May 2021 18:32:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30FD5F8014C
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 14B0DB20F;
- Wed, 19 May 2021 16:32:15 +0000 (UTC)
-Date: Wed, 19 May 2021 18:32:15 +0200
-Message-ID: <s5hy2cahegg.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: "re.mcclue" <re.mcclue@protonmail.com>
-Subject: Re: Intel HDA Driver Issue With PCM RW Interleaved
-In-Reply-To: <3GXvg2z0sYlmlwylckstDNNXwCFBbCbPmclFAPK-zN6DMEdtpCMZFcNRVpCSGt9IccFbdl8ci5_hRe92wTsFpbwCEpLMAr3Yg4D60LjEbyU=@protonmail.com>
-References: <3GXvg2z0sYlmlwylckstDNNXwCFBbCbPmclFAPK-zN6DMEdtpCMZFcNRVpCSGt9IccFbdl8ci5_hRe92wTsFpbwCEpLMAr3Yg4D60LjEbyU=@protonmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 54D57F8014C
+ for <alsa-devel@alsa-project.org>; Wed, 19 May 2021 19:04:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54D57F8014C
+Received: from 61-220-137-34.hinet-ip.hinet.net ([61.220.137.34]
+ helo=localhost) by youngberry.canonical.com with esmtpsa (TLS1.2) tls
+ TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.93)
+ (envelope-from <jeremy.szu@canonical.com>)
+ id 1ljPca-0004J4-3A; Wed, 19 May 2021 17:04:36 +0000
+From: Jeremy Szu <jeremy.szu@canonical.com>
+To: tiwai@suse.com
+Subject: [PATCH 2/4] ALSA: hda/realtek: fix mute/micmute LEDs and speaker for
+ HP Zbook G8
+Date: Thu, 20 May 2021 01:03:54 +0800
+Message-Id: <20210519170357.58410-2-jeremy.szu@canonical.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210519170357.58410-1-jeremy.szu@canonical.com>
+References: <20210519170357.58410-1-jeremy.szu@canonical.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ Kailang Yang <kailang@realtek.com>, Jeremy Szu <jeremy.szu@canonical.com>,
+ open list <linux-kernel@vger.kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+ Jian-Hong Pan <jhp@endlessos.org>, Hui Wang <hui.wang@canonical.com>,
+ PeiSen Hou <pshou@realtek.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,22 +80,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 19 May 2021 07:48:52 +0200,
-re.mcclue wrote:
-> 
-> I'm trying to play PCM buffer single threaded without buffer underrun.
-> Program source: https://gist.github.com/takaswie/d8a9553c230971d974a3dfc759b2ff67
-> (struct snd_pcm_sw_params).start_threshold is altered so as to allow specifying the start of audio frame transmission and prevent underrun issues.
-> In my application, on ioctl(fd, SNDRV_PCM_IOCTL_STATUS, &status), I receive: File descriptor in bad state
-> Output of $(dmesg) is: [ 69.013084] snd_hda_intel 0000:00:1f.3: Too big adjustment 128
-> What is causing this issue and how can I solve it?
+The HP ZBook Studio 15.6 Inch G8 is using ALC285 codec which is
+using 0x04 to control mute LED and 0x01 to control micmute LED.
+In the other hand, there is no output from right channel of speaker.
+Therefore, add a quirk to make it works.
 
-The warning message is likely a red herring and it's irrelevant from
-your bug itself.  The driver has some small number of periods to be
-put at the beginning of the buffer for correcting the reported
-position.  Judging from the message, you seem to have set a quite high
-rate and a very shot number, and that's possibly too tight to operate
-properly.
+Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 9d68f591c6bf..8d1c18843758 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8291,6 +8291,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x87f7, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
+ 	SND_PCI_QUIRK(0x103c, 0x8846, "HP EliteBook 850 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x884c, "HP EliteBook 840 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
++	SND_PCI_QUIRK(0x103c, 0x8873, "HP ZBook Studio 15.6 Inch G8 Mobile Workstation PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x8896, "HP EliteBook 855 G8 Notebook PC", ALC285_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8898, "HP EliteBook 845 G8 Notebook PC", ALC285_FIXUP_HP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
+-- 
+2.31.1
 
-Takashi
