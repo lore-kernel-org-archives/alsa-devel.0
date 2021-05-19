@@ -2,85 +2,89 @@ Return-Path: <SRS0=AXUI=KO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5855BC433B4
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 10:52:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01E61C433B4
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 10:52:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BB7436135B
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 10:52:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB7436135B
+	by mail.kernel.org (Postfix) with ESMTPS id 73AAA6135B
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 10:52:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73AAA6135B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2E8D81695;
-	Wed, 19 May 2021 12:51:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E8D81695
+	by alsa0.perex.cz (Postfix) with ESMTPS id E9206168D;
+	Wed, 19 May 2021 12:51:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E9206168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621421534;
-	bh=JFFkX404BkwfG05MFFIzO0jx0zElPnJrPWEORZ4DJVg=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=M4Wqq8uiOZTWinOi40oxnmxOmIMgOBMncleVsBLpsElp0sqTGLRGMoXwhjJ8/HoOQ
-	 l68zD2DBB1WMnzEwFTySn1bQ6ZaRLwjsBmLN9KABXf3Kh0oi3JdP+5k5JXRrXbA6ZD
-	 Bs1TvZK+rgkd/Oly5tDHj9bZzidq0BxRnTza9em4=
+	s=default; t=1621421570;
+	bh=bHk0TRGCIe8ah9IbWKNOCz5WNUTu7v3xCZwfWNzTb/w=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=l59AmdljMKLajuBDJGLoIjXyfxsFRCAieruy4GeehxaCTCaxi32B654+aPcQPPyz5
+	 4VKP3iNhzBRNKunEH0lhNvg5LDC4tgLVRqYVBJREABHBiBCYeOIyrrm9ptIjSwDhmz
+	 p6XD4w2SCwWrxaMf2bbtQbT4PQONYCVkgtvuLBVc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16824F80430;
-	Wed, 19 May 2021 12:50:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9C0C2F804AC;
+	Wed, 19 May 2021 12:50:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4D658F80425; Wed, 19 May 2021 12:49:57 +0200 (CEST)
+ id 464C5F8042F; Wed, 19 May 2021 12:49:59 +0200 (CEST)
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
  [68.232.153.233])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE11BF80148
- for <alsa-devel@alsa-project.org>; Wed, 19 May 2021 12:49:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE11BF80148
+ by alsa1.perex.cz (Postfix) with ESMTPS id DE8C4F80153
+ for <alsa-devel@alsa-project.org>; Wed, 19 May 2021 12:49:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE8C4F80153
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com
- header.b="p3uEAGJA"
+ header.b="Tvd1e2g+"
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1621421392; x=1652957392;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=JFFkX404BkwfG05MFFIzO0jx0zElPnJrPWEORZ4DJVg=;
- b=p3uEAGJAG7IVai/EZw6YR2VUb+QTlMkbSsHF3IkVNAlH70+Ss0cS2dLz
- RVY4L2ibK8Mgq6BopC1T2gIkv46Rnz1yPv1ZoS1XEHKajsXztQKjBROb/
- u2pDFksZED42figBT9jDX9fTQTO7I89VxQR3TtPDn6eETqJU3ZwayCg+1
- quQAinJqQXb6bKap6ebRNVAkdyV5/BEn1jfP6ytJD6mDQSDvrSGWhxgrM
- QrLtNJ98rEMkLTqIU88h2yR0I4CXVvJiHOpCOkTnUFnBEFwJYrur7JO5u
- Q35wKOdbcJzfnxdRsMg4LlexVk9cUtB90eeZEAO8a8mVnyySv6VhZ6UTs Q==;
-IronPort-SDR: A/6enPl3sXMuDKOC3o/+zfU14TticU+tncYhfLbTamWSpR5eMnWc3wtu5mZB3VjjhXi/mVxdNL
- 1km9NLBeIHuYy0QDtdGk9NTlYd6S+yE3NHWFfSdOwYj6EA2wrkx5e4e5wFRtDXoyMDqdJ9PhN0
- us2V+/I6F6tNJVldJ3Qit8hLeBo/P0KrmHpSBw05mrhNzgwWI+fHzYAi2RO5XUmS1V6MkvAhQ9
- 4jfJ9MtVjje/THdvakFvFA6WLfRadchGBJFSHXcU95PVBcRk5MhoRqN5Zuz69yT6lEbA594gfa
- BsQ=
-X-IronPort-AV: E=Sophos;i="5.82,312,1613458800"; d="scan'208";a="128651226"
+ t=1621421397; x=1652957397;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=bHk0TRGCIe8ah9IbWKNOCz5WNUTu7v3xCZwfWNzTb/w=;
+ b=Tvd1e2g+p0WMf1fNagu+XiTZl2ycMrzVD6vHbhxXwbIGtkZ2QkRVN4+p
+ ofVpOav1USJjEySliHzEaspWfuvhebJFRyP4jHbCI9jS1FEYwWPrfSLBB
+ 3PMpRBMlep0YGWxQQkjl9yl6b2dfTjFyzWSH8tPrO5qwY3ILAFnxr5OEr
+ Y87dJ1PYzAFNyNyQmx26CtrxEAD5sk5G8ni2UApTopa68NPz8/TW2r5uj
+ wkfYfuXeQzlkTBtodxvpoz+D32vTuDKG8P5korXiiOSN9mDrYCmiTCQUD
+ uBAE9mMxuKYjcT9uZPE4Nz49V1xa//IeroyrqdMaC5G4Egi5pvxcMtmBX A==;
+IronPort-SDR: cljuQcxyhS5vwA61XVnvbHMXU8VmFpRkdEknuqUwJ3cH8c/IsPYCiRB8o1Lz9DL2UsnoEzQaMT
+ i/+j1+nBmI/UVRuqtBpWROZu5hGXt0nPXIG3GaD82IYk6doSMosskjSrU7Jv3IT520xm2f/0OL
+ +JHYAtfslAKvzB1LPuGx3mds5o3vLIMv8C1lJ1K5mNDHZbdbZI4uS3/Bz8XKQlBTyrFpamWvNC
+ EGSzky41De+g2YrQikYvCoJvGDEaLg9fj2c5h+ZUYJ2cMUBRYsBeOfMNw70fzMWgJ3dEQ3U3/H
+ FVQ=
+X-IronPort-AV: E=Sophos;i="5.82,312,1613458800"; d="scan'208";a="128651266"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 19 May 2021 03:49:48 -0700
+ 19 May 2021 03:49:55 -0700
 Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 19 May 2021 03:49:34 -0700
+ 15.1.2176.2; Wed, 19 May 2021 03:49:52 -0700
 Received: from rob-ult-m19940.amer.actel.com (10.10.115.15) by
  chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Wed, 19 May 2021 03:49:29 -0700
+ 15.1.2176.2 via Frontend Transport; Wed, 19 May 2021 03:49:48 -0700
 From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 To: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH 0/6] soc-pcm: Add separate snd_pcm_runtime for BEs
-Date: Wed, 19 May 2021 13:48:36 +0300
-Message-ID: <20210519104842.977895-1-codrin.ciubotariu@microchip.com>
+Subject: [RFC PATCH 4/6] ALSA: pcm: Create function for snd_pcm_runtime
+ initialization
+Date: Wed, 19 May 2021 13:48:40 +0300
+Message-ID: <20210519104842.977895-5-codrin.ciubotariu@microchip.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210519104842.977895-1-codrin.ciubotariu@microchip.com>
+References: <20210519104842.977895-1-codrin.ciubotariu@microchip.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -103,52 +107,160 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patchset adds a different snd_pcm_runtime in the BE's substream,
-replacing the FE's snd_pcm_runtime. With a different structure, the BE
-HW capabilities and constraints will no longer merge with the FE ones.
-This allows for error detection if the be_hw_params_fixup() applies HW
-parameters not supported by the BE DAIs. Also, it calculates values
-needed for mem-to-dev/dev-to-mem DMA transfers, such as buffer size and
-period size, if needed.
+Group the setting of snd_pcm_runtime members in a separate function. This
+allows for code reutilization. Also, check for substream->ops before
+substream->ops->copy_user .
 
-The first 4 patches are preparatory patches, that just group and export
-functions used to allocate and initialize the snd_pcm_runtime. Also, the
-functions that set and apply the HW constraints are exported.
-The 5th patch does (almost) everything need to create the new snd_pcm_runtime
-for BEs, which includes allocation, initializing the HW capabilities,
-HW constraints and HW parameters. The BE HW parameters are no longer
-copied from the FE. They are recalculated, based on HW capabilities,
-constraints and the be_hw_params_fixup() callback.
-The 6th and last patch basically adds support for the PCM generic
-dmaengine to be used as a platform driver for BE DAI links. It allocates
-a buffer, needed by the DMA transfers that do not support dev-to-dev
-transfers between FE and BE DAIs.
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+---
+ include/sound/pcm.h     |   2 +
+ sound/core/pcm_native.c | 108 ++++++++++++++++++++++------------------
+ 2 files changed, 61 insertions(+), 49 deletions(-)
 
-This is a superset of
-https://mailman.alsa-project.org/pipermail/alsa-devel/2021-March/182630.html
-which only handles the BE HW constraints. This patchset aims to be more
-complete, defining a a snd_pcm_runtime between each FE and BE and can
-be used between any DAI link connection. I am sure I am not handling all
-the needed members of snd_pcm_runtime (such as handling
-struct snd_pcm_mmap_status *status), but I would like to have your
-feedback regarding this idea.
-
-Codrin Ciubotariu (6):
-  ALSA: core: pcm: Create helpers to allocate/free struct
-    snd_pcm_runtime
-  ALSA: pcm: Export constraints initialization functions
-  ALSA: pcm: Check for substream->ops before substream->ops->mmap
-  ALSA: pcm: Create function for snd_pcm_runtime initialization
-  ASoC: soc-pcm: Create new snd_pcm_runtime for BE DAIs
-  ASoC: dmaengine: Allocate buffer if substream is unmanaged
-
- include/sound/pcm.h                   |   7 ++
- sound/core/pcm.c                      |  82 ++++++++++-------
- sound/core/pcm_native.c               | 116 +++++++++++++-----------
- sound/soc/soc-generic-dmaengine-pcm.c |  18 ++++
- sound/soc/soc-pcm.c                   | 126 ++++++++++++++++++--------
- 5 files changed, 229 insertions(+), 120 deletions(-)
-
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 2907ed2b937f..8e6bd4525c02 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -576,6 +576,8 @@ static inline int snd_pcm_suspend_all(struct snd_pcm *pcm)
+ int snd_pcm_kernel_ioctl(struct snd_pcm_substream *substream, unsigned int cmd, void *arg);
+ struct snd_pcm_runtime *snd_pcm_runtime_alloc(void);
+ void snd_pcm_runtime_free(struct snd_pcm_runtime *runtime);
++void snd_pcm_runtime_set(struct snd_pcm_substream *substream,
++			 struct snd_pcm_hw_params *params);
+ int snd_pcm_open_substream(struct snd_pcm *pcm, int stream, struct file *file,
+ 			   struct snd_pcm_substream **rsubstream);
+ void snd_pcm_release_substream(struct snd_pcm_substream *substream);
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index cb0164d55593..5b0e7ae2b1e7 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -658,13 +658,69 @@ static int snd_pcm_hw_params_choose(struct snd_pcm_substream *pcm,
+ 	return 0;
+ }
+ 
++void snd_pcm_runtime_set(struct snd_pcm_substream *substream,
++			 struct snd_pcm_hw_params *params)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	unsigned int bits;
++	snd_pcm_uframes_t frames;
++
++	runtime->access = params_access(params);
++	runtime->format = params_format(params);
++	runtime->subformat = params_subformat(params);
++	runtime->channels = params_channels(params);
++	runtime->rate = params_rate(params);
++	runtime->period_size = params_period_size(params);
++	runtime->periods = params_periods(params);
++	runtime->buffer_size = params_buffer_size(params);
++	runtime->info = params->info;
++	runtime->rate_num = params->rate_num;
++	runtime->rate_den = params->rate_den;
++	runtime->no_period_wakeup =
++			(params->info & SNDRV_PCM_INFO_NO_PERIOD_WAKEUP) &&
++			(params->flags & SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP);
++
++	bits = snd_pcm_format_physical_width(runtime->format);
++	runtime->sample_bits = bits;
++	bits *= runtime->channels;
++	runtime->frame_bits = bits;
++	frames = 1;
++	while (bits % 8 != 0) {
++		bits *= 2;
++		frames *= 2;
++	}
++	runtime->byte_align = bits / 8;
++	runtime->min_align = frames;
++
++	/* Default sw params */
++	runtime->tstamp_mode = SNDRV_PCM_TSTAMP_NONE;
++	runtime->period_step = 1;
++	runtime->control->avail_min = runtime->period_size;
++	runtime->start_threshold = 1;
++	runtime->stop_threshold = runtime->buffer_size;
++	runtime->silence_threshold = 0;
++	runtime->silence_size = 0;
++	runtime->boundary = runtime->buffer_size;
++	while (runtime->boundary * 2 <= LONG_MAX - runtime->buffer_size)
++		runtime->boundary *= 2;
++
++	/* clear the buffer for avoiding possible kernel info leaks */
++	if (runtime->dma_area &&
++	    !(substream->ops && substream->ops->copy_user)) {
++		size_t size = runtime->dma_bytes;
++
++		if (runtime->info & SNDRV_PCM_INFO_MMAP)
++			size = PAGE_ALIGN(size);
++		memset(runtime->dma_area, 0, size);
++	}
++}
++EXPORT_SYMBOL(snd_pcm_runtime_set);
++
+ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_pcm_runtime *runtime;
+ 	int err, usecs;
+-	unsigned int bits;
+-	snd_pcm_uframes_t frames;
+ 
+ 	if (PCM_RUNTIME_CHECK(substream))
+ 		return -ENXIO;
+@@ -715,53 +771,7 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
+ 			goto _error;
+ 	}
+ 
+-	runtime->access = params_access(params);
+-	runtime->format = params_format(params);
+-	runtime->subformat = params_subformat(params);
+-	runtime->channels = params_channels(params);
+-	runtime->rate = params_rate(params);
+-	runtime->period_size = params_period_size(params);
+-	runtime->periods = params_periods(params);
+-	runtime->buffer_size = params_buffer_size(params);
+-	runtime->info = params->info;
+-	runtime->rate_num = params->rate_num;
+-	runtime->rate_den = params->rate_den;
+-	runtime->no_period_wakeup =
+-			(params->info & SNDRV_PCM_INFO_NO_PERIOD_WAKEUP) &&
+-			(params->flags & SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP);
+-
+-	bits = snd_pcm_format_physical_width(runtime->format);
+-	runtime->sample_bits = bits;
+-	bits *= runtime->channels;
+-	runtime->frame_bits = bits;
+-	frames = 1;
+-	while (bits % 8 != 0) {
+-		bits *= 2;
+-		frames *= 2;
+-	}
+-	runtime->byte_align = bits / 8;
+-	runtime->min_align = frames;
+-
+-	/* Default sw params */
+-	runtime->tstamp_mode = SNDRV_PCM_TSTAMP_NONE;
+-	runtime->period_step = 1;
+-	runtime->control->avail_min = runtime->period_size;
+-	runtime->start_threshold = 1;
+-	runtime->stop_threshold = runtime->buffer_size;
+-	runtime->silence_threshold = 0;
+-	runtime->silence_size = 0;
+-	runtime->boundary = runtime->buffer_size;
+-	while (runtime->boundary * 2 <= LONG_MAX - runtime->buffer_size)
+-		runtime->boundary *= 2;
+-
+-	/* clear the buffer for avoiding possible kernel info leaks */
+-	if (runtime->dma_area && !substream->ops->copy_user) {
+-		size_t size = runtime->dma_bytes;
+-
+-		if (runtime->info & SNDRV_PCM_INFO_MMAP)
+-			size = PAGE_ALIGN(size);
+-		memset(runtime->dma_area, 0, size);
+-	}
++	snd_pcm_runtime_set(substream, params);
+ 
+ 	snd_pcm_timer_resolution_change(substream);
+ 	snd_pcm_set_state(substream, SNDRV_PCM_STATE_SETUP);
 -- 
 2.27.0
 
