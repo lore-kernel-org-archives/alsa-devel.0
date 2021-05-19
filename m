@@ -2,67 +2,63 @@ Return-Path: <SRS0=AXUI=KO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1401FC433ED
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 14:21:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FCF5C433B4
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 14:26:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CFD7261184
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 14:21:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFD7261184
+	by mail.kernel.org (Postfix) with ESMTPS id 1FBFE61184
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 14:26:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1FBFE61184
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 95C08166F;
-	Wed, 19 May 2021 16:20:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95C08166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id B3D53166F;
+	Wed, 19 May 2021 16:25:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3D53166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621434109;
-	bh=R1dmoBDp08tstRXswnXPTvAeMXv4Z/8II6BPZtqetD4=;
+	s=default; t=1621434388;
+	bh=cUJ2RVhDqKsL4ZjmWUg9uTZmK0pQvKTwWGih/nvzeFo=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OVqFX9GFoXxKohlui0LPUMx+yz3Gv+G4H+CVQgN0qxN1KKmgPYabHK60nRL1PwQQ7
-	 KemKclooxx4D6dTtPJi07Fyuq6xClpxHBVVt9a2AhKqslw2/mISM2ELj6Q6aLrR4v9
-	 AFiHuvAwsW70BYNLIM3gj8etIYWoUlx6KOdCNc0o=
+	b=OLPV9ckbzrTxZtz4/OU82BsFaiy2X3gD6MEJFjEIaiLmc07GkDQcwKOubdLyu4RBo
+	 8iqV59QxxUB7nD7S50uQbPzAA3MNQdT49pJcG3lEsZ/Y7jx2lEyM3bNxe/mJ2YpKPo
+	 SsHIjLD8Y2cvLJViwj9AsOfB8pLqpIaj5Mv9rqzo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2A1DAF80153;
-	Wed, 19 May 2021 16:20:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4B541F80153;
+	Wed, 19 May 2021 16:25:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93452F8016E; Wed, 19 May 2021 16:20:57 +0200 (CEST)
+ id BF84BF8016E; Wed, 19 May 2021 16:25:37 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 78892F80127
- for <alsa-devel@alsa-project.org>; Wed, 19 May 2021 16:20:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78892F80127
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4CC91F8014C
+ for <alsa-devel@alsa-project.org>; Wed, 19 May 2021 16:25:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CC91F8014C
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 1002BAFB1;
- Wed, 19 May 2021 14:20:45 +0000 (UTC)
-Date: Wed, 19 May 2021 16:20:44 +0200
-Message-ID: <s5hfsyiiz43.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id E6E7DAF4E;
+ Wed, 19 May 2021 14:25:34 +0000 (UTC)
+Date: Wed, 19 May 2021 16:25:34 +0200
+Message-ID: <s5hcztmiyw1.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Colin King <colin.king@canonical.com>
-Subject: Re: [PATCH][next] ALSA: rawmidi: fix incorrect array bounds check on
- clock_names
-In-Reply-To: <20210519105424.55221-1-colin.king@canonical.com>
-References: <20210519105424.55221-1-colin.king@canonical.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 0/8] ALSA: firewire-lib: check cycle continuity
+In-Reply-To: <20210518130048.146596-1-o-takashi@sakamocchi.jp>
+References: <20210518130048.146596-1-o-takashi@sakamocchi.jp>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, David Henningsson <coding@diwic.se>,
- kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,21 +74,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 19 May 2021 12:54:24 +0200,
-Colin King wrote:
+On Tue, 18 May 2021 15:00:39 +0200,
+Takashi Sakamoto wrote:
 > 
-> From: Colin Ian King <colin.king@canonical.com>
+> Hi,
 > 
-> The array bounds check on clock_names is currently checking the size
-> of the entire array rather than the number of elements in the array
-> leading to a potential array bounds read error. Fix this by using
-> the ARRAY_SIZE macro instead of sizeof.
+> Current implementation of ALSA IEC 61883-1/6 packet streaming engine
+> doesn't check whether received packets are exactly per isochronous
+> cycle. This is required to process packets transferred from
+> OXFW970-based devices and devices in RME Fireface series. However, the
+> packet sequence with skipped cycle is inconvenient for media clock
+> recovery.
 > 
-> Addresses-Coverity: ("Out-of-bounds read")
-> Fixes: 08fdced60ca0 ("ALSA: rawmidi: Add framing mode")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> This patchset takes the engine to check cycle continuity at processing
+> packets, including code refactoring. For RME Fireface series, the skipped
+> cycle is handled as receiving an empty packet. For OXFW970-based devices,
+> the skipped cycles are acceptable but media clock recovery is hard.
+> 
+> Takashi Sakamoto (8):
+>   ALSA: firewire-lib: code refactoring to refer the same frame count per
+>     period in domain structure
+>   ALSA: firewire-lib: handle the case that empty isochronous packet
+>     payload for CIP
+>   ALSA: firewire-lib: code refactoring for sequence descriptor'
+>   ALSA: firewire-lib: code refactoring for helper function to compute
+>     OHCI 1394 cycle
+>   ALSA: firewire-lib: code refactoring for parser of IR context header
+>   ALSA: firewire-lib: code refactoring for check of CIP header about
+>     payload size
+>   ALSA: firewire-lib: check cycle continuity
+>   ALSA: firewire-lib: insert descriptor for skipped cycle
 
-Thanks, applied.
+Applied all eight patches now.  Thanks.
 
 
 Takashi
