@@ -2,112 +2,68 @@ Return-Path: <SRS0=AXUI=KO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3690CC433ED
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 10:21:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C96A3C433B4
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 10:26:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DCE2661244
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 10:21:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DCE2661244
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id E0F3D60C40
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 10:26:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0F3D60C40
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A2D3483A;
-	Wed, 19 May 2021 12:20:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2D3483A
+	by alsa0.perex.cz (Postfix) with ESMTPS id B89001661;
+	Wed, 19 May 2021 12:25:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B89001661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621419699;
-	bh=5Peg9LqWHWZ+j9hqsjNIqD5Q2L7KUA2Sc5JVD18zKHk=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=nwxLLjKTdeXxv70HmkIhRF3G6jcCmK7wSzyCh0c36/xQ8g+GdLZfHhp6f6lAiwTaw
-	 GxM6zZ0qxQe2wQBm+RHntVLZNYXZVmaHSwSNSnqMJ2DSIViIKApjwlrMy4CXsVnI/U
-	 R3dfKDHgEo4jeH+eAMGOXw1fTpsIKQkt1wGxb+kw=
+	s=default; t=1621419992;
+	bh=jzVhF2ZeGV51cFxOvkO27cyAjOGqOeVt9V66MBoXsyI=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=U3GM+RLMYlde4B3uLvHbkMMBVyrTmslT40pnxrByjRC4u985AYrViGYUTaxWD8eLA
+	 6PN3AeIOWmMSIGwMw9O24CKCUHQ8WSzaxKczbxwPBmDO6S5MR0kdJ/ROMNBKFd3wGl
+	 RaquWVXmGhLK7nzJGNCnIStp5iBayXOk8hhEVuPY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 35A41F80153;
-	Wed, 19 May 2021 12:20:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50530F80153;
+	Wed, 19 May 2021 12:25:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 09D94F80246; Wed, 19 May 2021 12:20:47 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 67C48F8016E; Wed, 19 May 2021 12:25:40 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DAADEF8014C
- for <alsa-devel@alsa-project.org>; Wed, 19 May 2021 12:20:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DAADEF8014C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="JKEEZqp/"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 14JAGCk9022302; Wed, 19 May 2021 05:20:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=372dr6SwmwYwOUb7PJzGd6F0k/qxZb2QrHZ6Tt9d8Pw=;
- b=JKEEZqp/2QnfOrdyWkoJuCJkz1dZSQbn39px/nohG2OiEhtxpfqpO/LssvU54LoNwwcu
- Sh8ASGHCfov1Ni6Z/JfyL7YHjtMe9BScgJKkJRp76jbTyUr2i6xOOrs/fxfdFlsJFRA0
- ouhL2ZDAPH71QMsGu9tLTEoEpXqYCX6Pwwr5M3OHTumWEKV2cokSVu3p4jLNlc3cvRe4
- 3SrsUXYegMl1pXBKVdCdQuwFpIjOkHxP6I311jBrVIsb7e/4O/31uWFLX0IagxbU3f4a
- l6CHnGOH6VHrqHwuyT/VhctOxz3+KcdygELttWHOhB6PdxcPpEoN/N2GEbcpk5Z21rIH eA== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 38kqtwjp1r-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 19 May 2021 05:20:38 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 19 May
- 2021 11:20:36 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Wed, 19 May 2021 11:20:36 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 718C911CD;
- Wed, 19 May 2021 10:20:35 +0000 (UTC)
-Date: Wed, 19 May 2021 10:20:35 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: Re: [PATCH 05/10] docs: update pin-control.rst references
-Message-ID: <20210519102035.GH64205@ediswmail.ad.cirrus.com>
-References: <cover.1621413933.git.mchehab+huawei@kernel.org>
- <46ac2e918c7c4a4b701d54870f167b78466ec578.1621413933.git.mchehab+huawei@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 98148F80148
+ for <alsa-devel@alsa-project.org>; Wed, 19 May 2021 12:25:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98148F80148
+IronPort-SDR: D8H5kEW6XWN1e1xgwlHvzA82K0GuavDYkt1VMfodX6wzsfhozN9qUdcJ2bPdvc9vTmh8NeNGbd
+ eG8BBQ6wxYIg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="200992459"
+X-IronPort-AV: E=Sophos;i="5.82,312,1613462400"; d="scan'208";a="200992459"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 May 2021 03:25:22 -0700
+IronPort-SDR: ITzkztDDC63PUaqJxyfrOmOUaH+lfdNOrPjfioaI6txqA6diZAMJTvYYRfjzfu/miMmHxePc3S
+ kyAyAiQdZFOQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,312,1613462400"; d="scan'208";a="439650270"
+Received: from kekkonen.fi.intel.com ([10.237.72.68])
+ by fmsmga008.fm.intel.com with ESMTP; 19 May 2021 03:25:20 -0700
+From: Jaska Uimonen <jaska.uimonen@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: topology: Fix using uninitialized pointer
+Date: Wed, 19 May 2021 13:07:13 +0300
+Message-Id: <20210519100713.879958-1-jaska.uimonen@linux.intel.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <46ac2e918c7c4a4b701d54870f167b78466ec578.1621413933.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: kjVnaIbt4ji1tbhMzTpF3hssfkrUUfoU
-X-Proofpoint-ORIG-GUID: kjVnaIbt4ji1tbhMzTpF3hssfkrUUfoU
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011
- mlxlogscore=999
- bulkscore=0 lowpriorityscore=0 malwarescore=0 suspectscore=0 phishscore=0
- adultscore=0 impostorscore=0 mlxscore=0 spamscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105190071
-Cc: alsa-devel@alsa-project.org,
- Heikki Krogerus <heikki.krogerus@linux.intel.com>,
- Saravana Kannan <saravanak@google.com>, Jonathan Corbet <corbet@lwn.net>,
- Drew Fustini <drew@beagleboard.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
- Linux Doc Mailing List <linux-doc@vger.kernel.org>,
- linux-kernel@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- Randy Dunlap <rdunlap@infradead.org>, linux-gpio@vger.kernel.org,
- patches@opensource.cirrus.com, Dan Williams <dan.j.williams@intel.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Lee Jones <lee.jones@linaro.org>
+Content-Transfer-Encoding: 8bit
+Cc: Mark Brown <broonie@kernel.org>, Dan Carpenter <dan.carpenter@oracle.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -123,20 +79,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, May 19, 2021 at 10:51:42AM +0200, Mauro Carvalho Chehab wrote:
-> Changeset 5513b411ea5b ("Documentation: rename pinctl to pin-control")
-> renamed: Documentation/driver-api/pinctl.rst
-> to: Documentation/driver-api/pin-control.rst.
-> 
-> Update the cross-references accordingly.
-> 
-> Fixes: 5513b411ea5b ("Documentation: rename pinctl to pin-control")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
+The original patch changed kcontrol_type to a pointer. In some goto
+cases the pointer is assigned into a struct member as uninitialized and
+this will cause a runtime error with UBSan even if it isn't a real bug.
+So initialize the pointer to NULL.
 
-For the Madera change:
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fixes: d29d41e28eea ("ASoC: topology: Add support for multiple kcontrol types to a widget")
+Signed-off-by: Jaska Uimonen <jaska.uimonen@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+---
+ sound/soc/soc-topology.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index e71d98d7b116..5e65b72910e9 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1422,7 +1422,7 @@ static int soc_tplg_dapm_widget_create(struct soc_tplg *tplg,
+ 	struct snd_soc_dapm_widget template, *widget;
+ 	struct snd_soc_tplg_ctl_hdr *control_hdr;
+ 	struct snd_soc_card *card = tplg->comp->card;
+-	unsigned int *kcontrol_type;
++	unsigned int *kcontrol_type = NULL;
+ 	struct snd_kcontrol_new *kc;
+ 	int mixer_count = 0;
+ 	int bytes_count = 0;
+-- 
+2.24.1
 
-Thanks,
-Charles
