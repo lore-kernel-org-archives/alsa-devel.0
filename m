@@ -7,57 +7,53 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7454C433B4
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 17:05:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BEBDC433B4
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 17:06:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 201F16139A
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 17:05:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 201F16139A
+	by mail.kernel.org (Postfix) with ESMTPS id 6513560FF1
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 17:06:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6513560FF1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D1AFC166F;
-	Wed, 19 May 2021 19:04:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1AFC166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0DB061682;
+	Wed, 19 May 2021 19:05:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DB061682
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621443944;
-	bh=gpYlq4IwvVKYFy8eIqFYQPEdYX8F/9PhIPTVGPR3u7I=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=qWwBZ3+dqMbIGGRk63PepX6kHH7Lo70P3Mfl0k7GIzj7GFMo0eJb331gX7k0Fhx6V
-	 8ft7i0du0gRmsbT6AexOJX2VNUNDswLJkKAfbMoCzI1cINJ8nZ3AsSPgasEK/BdjaC
-	 gEzFHhMSg7EnzScITthzGGxYXfOLXDvy96lWGa2A=
+	s=default; t=1621443996;
+	bh=mUcUUmm6IzCz95ki6owvMJOcLwJ8Txw2J0K9Qoi9cAg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=EfMc4eXjTOnwtmSZyH1Gr/cRQzyUh5v7LZfyV4fnBBqCFboznnXImSKTMou9qG3gA
+	 o+xmyOIphuyoA2g5MBBWPCnuMqBuRjyODsOjUMkGWMdeG16drcBoV1U3uFBB7PcgIM
+	 GZLiFqJlnjuJpC3T6ORORTdjZz86QFMtRlvkGKPk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6727EF8014C;
-	Wed, 19 May 2021 19:04:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1D53BF8025D;
+	Wed, 19 May 2021 19:04:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 73FA8F8014C; Wed, 19 May 2021 19:04:52 +0200 (CEST)
+ id 96B62F80246; Wed, 19 May 2021 19:04:52 +0200 (CEST)
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 54D57F8014C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 570BAF80153
  for <alsa-devel@alsa-project.org>; Wed, 19 May 2021 19:04:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54D57F8014C
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 570BAF80153
 Received: from 61-220-137-34.hinet-ip.hinet.net ([61.220.137.34]
  helo=localhost) by youngberry.canonical.com with esmtpsa (TLS1.2) tls
  TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.93)
  (envelope-from <jeremy.szu@canonical.com>)
- id 1ljPca-0004J4-3A; Wed, 19 May 2021 17:04:36 +0000
+ id 1ljPcV-0004HE-AE; Wed, 19 May 2021 17:04:32 +0000
 From: Jeremy Szu <jeremy.szu@canonical.com>
 To: tiwai@suse.com
-Subject: [PATCH 2/4] ALSA: hda/realtek: fix mute/micmute LEDs and speaker for
- HP Zbook G8
-Date: Thu, 20 May 2021 01:03:54 +0800
-Message-Id: <20210519170357.58410-2-jeremy.szu@canonical.com>
+Subject: [PATCH 1/4] ALSA: hda/realtek: fix mute/micmute LEDs for HP 855 G8
+Date: Thu, 20 May 2021 01:03:53 +0800
+Message-Id: <20210519170357.58410-1-jeremy.szu@canonical.com>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210519170357.58410-1-jeremy.szu@canonical.com>
-References: <20210519170357.58410-1-jeremy.szu@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
@@ -80,10 +76,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The HP ZBook Studio 15.6 Inch G8 is using ALC285 codec which is
-using 0x04 to control mute LED and 0x01 to control micmute LED.
-In the other hand, there is no output from right channel of speaker.
-Therefore, add a quirk to make it works.
+The HP EliteBook 855 G8 Notebook PC is using ALC285 codec which needs
+ALC285_FIXUP_HP_MUTE_LED fixup to make it works. After applying the
+fixup, the mute/micmute LEDs work good.
 
 Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
 ---
@@ -91,17 +86,17 @@ Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
  1 file changed, 1 insertion(+)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 9d68f591c6bf..8d1c18843758 100644
+index 552e2cb73291..9d68f591c6bf 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
 @@ -8291,6 +8291,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
  	SND_PCI_QUIRK(0x103c, 0x87f7, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
  	SND_PCI_QUIRK(0x103c, 0x8846, "HP EliteBook 850 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
  	SND_PCI_QUIRK(0x103c, 0x884c, "HP EliteBook 840 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8873, "HP ZBook Studio 15.6 Inch G8 Mobile Workstation PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
- 	SND_PCI_QUIRK(0x103c, 0x8896, "HP EliteBook 855 G8 Notebook PC", ALC285_FIXUP_HP_MUTE_LED),
++	SND_PCI_QUIRK(0x103c, 0x8896, "HP EliteBook 855 G8 Notebook PC", ALC285_FIXUP_HP_MUTE_LED),
  	SND_PCI_QUIRK(0x103c, 0x8898, "HP EliteBook 845 G8 Notebook PC", ALC285_FIXUP_HP_LIMIT_INT_MIC_BOOST),
  	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
 -- 
 2.31.1
 
