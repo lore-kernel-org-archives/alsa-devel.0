@@ -5,65 +5,93 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C96A3C433B4
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 10:26:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFBD7C433B4
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 10:50:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E0F3D60C40
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 10:26:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0F3D60C40
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 911706135C
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 May 2021 10:50:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 911706135C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B89001661;
-	Wed, 19 May 2021 12:25:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B89001661
+	by alsa0.perex.cz (Postfix) with ESMTPS id 34AD01672;
+	Wed, 19 May 2021 12:49:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34AD01672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621419992;
-	bh=jzVhF2ZeGV51cFxOvkO27cyAjOGqOeVt9V66MBoXsyI=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=U3GM+RLMYlde4B3uLvHbkMMBVyrTmslT40pnxrByjRC4u985AYrViGYUTaxWD8eLA
-	 6PN3AeIOWmMSIGwMw9O24CKCUHQ8WSzaxKczbxwPBmDO6S5MR0kdJ/ROMNBKFd3wGl
-	 RaquWVXmGhLK7nzJGNCnIStp5iBayXOk8hhEVuPY=
+	s=default; t=1621421443;
+	bh=kFvbkt+QgKqh1RR/T8GvsLtgxKyaio8KFYLcVIRZ/9s=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=OOPUN1A8a/rU2+WjMW8ALMe/AI5RujQlySJXYe7aqs9v98YGUNTFMiIE/c9J0lkMq
+	 lAwnzze3kqC45WBOF5vAN5iIhctP4eLdL1hTurmBDfUSgaAaIQRnSzNiMnj1m8/xDu
+	 iRHbN24v48HrqPttksEkplSeFTOJZRxX1sKKef7E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50530F80153;
-	Wed, 19 May 2021 12:25:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9BC13F8016E;
+	Wed, 19 May 2021 12:49:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 67C48F8016E; Wed, 19 May 2021 12:25:40 +0200 (CEST)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ id 28502F80246; Wed, 19 May 2021 12:49:50 +0200 (CEST)
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
+ [68.232.154.123])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 98148F80148
- for <alsa-devel@alsa-project.org>; Wed, 19 May 2021 12:25:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98148F80148
-IronPort-SDR: D8H5kEW6XWN1e1xgwlHvzA82K0GuavDYkt1VMfodX6wzsfhozN9qUdcJ2bPdvc9vTmh8NeNGbd
- eG8BBQ6wxYIg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9988"; a="200992459"
-X-IronPort-AV: E=Sophos;i="5.82,312,1613462400"; d="scan'208";a="200992459"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 May 2021 03:25:22 -0700
-IronPort-SDR: ITzkztDDC63PUaqJxyfrOmOUaH+lfdNOrPjfioaI6txqA6diZAMJTvYYRfjzfu/miMmHxePc3S
- kyAyAiQdZFOQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,312,1613462400"; d="scan'208";a="439650270"
-Received: from kekkonen.fi.intel.com ([10.237.72.68])
- by fmsmga008.fm.intel.com with ESMTP; 19 May 2021 03:25:20 -0700
-From: Jaska Uimonen <jaska.uimonen@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: topology: Fix using uninitialized pointer
-Date: Wed, 19 May 2021 13:07:13 +0300
-Message-Id: <20210519100713.879958-1-jaska.uimonen@linux.intel.com>
-X-Mailer: git-send-email 2.24.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 06C03F80148
+ for <alsa-devel@alsa-project.org>; Wed, 19 May 2021 12:49:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06C03F80148
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com
+ header.b="AQghzPVz"
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1621421384; x=1652957384;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=kFvbkt+QgKqh1RR/T8GvsLtgxKyaio8KFYLcVIRZ/9s=;
+ b=AQghzPVzIFIQTkHV4R4e+k/BG/cvlKkE5PmXpWmf2DHbWGk8+yEjRnA2
+ 2kQYI5Ll8EHlD0tHtGtRhK3kOzML8hgtmCJyL2kRVRnDpWm3UdiOvLR33
+ jBqvMEOduepTCrARWqqtY1Ie6eGVVNEipj8fVVlejRtUwE/B7xPrU9ZzO
+ yzwhtwiLUEvDwSzJyGoQnsUoXVWeX9VqveofWxnj8A5HtPZlOQIX86p61
+ w1AU86zPqIZvd5OxQd0240RAEsa8JjZnbsIeAZGye/ZAGZNCaNnTilRww
+ s2ajchVoaydlmBMxV8IJj0GQC3tPBsO2Cq1SSkn84ELoka1m+rfRukMfY A==;
+IronPort-SDR: RSbC8ILc3hFXkjAJorW2jJyxxKJEdarEEa7D2fyBRufLeadke1cTeP3zQcddcdlA5IUBkZt8bq
+ oNqznPgk5IHSNfPTLpzEz35S57wP+X3l7EyuMESD8Okma33vAWC/DB/NaO3LP+ubeAds4Ka3y3
+ vrEJ0vM1SpdglEZDf33GjUPMwiJxC0KnljZRqAKUOW4QPFk7M6bq8bcXMVC9ZHcMx5WGFz4y6L
+ 1HpUTQNe9x4I6nsTOovFi5H1+KhliYenQ7HyFXmW4Iw5hGztZP+M7NEtbetJUBMpvtJHuWkyBw
+ cDw=
+X-IronPort-AV: E=Sophos;i="5.82,312,1613458800"; d="scan'208";a="118456735"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 19 May 2021 03:49:39 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 19 May 2021 03:49:38 -0700
+Received: from rob-ult-m19940.amer.actel.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Wed, 19 May 2021 03:49:34 -0700
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+To: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
+Subject: [RFC PATCH 1/6] ALSA: core: pcm: Create helpers to allocate/free
+ struct snd_pcm_runtime
+Date: Wed, 19 May 2021 13:48:37 +0300
+Message-ID: <20210519104842.977895-2-codrin.ciubotariu@microchip.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210519104842.977895-1-codrin.ciubotariu@microchip.com>
+References: <20210519104842.977895-1-codrin.ciubotariu@microchip.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Mark Brown <broonie@kernel.org>, Dan Carpenter <dan.carpenter@oracle.com>
+Content-Type: text/plain
+Cc: lars@metafoo.de, kuninori.morimoto.gx@renesas.com, tiwai@suse.com,
+ pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com, broonie@kernel.org,
+ joe@perches.com, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ Cristian.Birsan@microchip.com, nicolas.ferre@microchip.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,32 +107,151 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The original patch changed kcontrol_type to a pointer. In some goto
-cases the pointer is assigned into a struct member as uninitialized and
-this will cause a runtime error with UBSan even if it isn't a real bug.
-So initialize the pointer to NULL.
+Create helpers to be able to reuse code for allocation and freeing of
+struct snd_pcm_runtime.
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Fixes: d29d41e28eea ("ASoC: topology: Add support for multiple kcontrol types to a widget")
-Signed-off-by: Jaska Uimonen <jaska.uimonen@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 ---
- sound/soc/soc-topology.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/sound/pcm.h |  2 ++
+ sound/core/pcm.c    | 82 +++++++++++++++++++++++++++------------------
+ 2 files changed, 52 insertions(+), 32 deletions(-)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index e71d98d7b116..5e65b72910e9 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1422,7 +1422,7 @@ static int soc_tplg_dapm_widget_create(struct soc_tplg *tplg,
- 	struct snd_soc_dapm_widget template, *widget;
- 	struct snd_soc_tplg_ctl_hdr *control_hdr;
- 	struct snd_soc_card *card = tplg->comp->card;
--	unsigned int *kcontrol_type;
-+	unsigned int *kcontrol_type = NULL;
- 	struct snd_kcontrol_new *kc;
- 	int mixer_count = 0;
- 	int bytes_count = 0;
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 2e1200d17d0c..025b4d2ba0fe 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -574,6 +574,8 @@ static inline int snd_pcm_suspend_all(struct snd_pcm *pcm)
+ }
+ #endif
+ int snd_pcm_kernel_ioctl(struct snd_pcm_substream *substream, unsigned int cmd, void *arg);
++struct snd_pcm_runtime *snd_pcm_runtime_alloc(void);
++void snd_pcm_runtime_free(struct snd_pcm_runtime *runtime);
+ int snd_pcm_open_substream(struct snd_pcm *pcm, int stream, struct file *file,
+ 			   struct snd_pcm_substream **rsubstream);
+ void snd_pcm_release_substream(struct snd_pcm_substream *substream);
+diff --git a/sound/core/pcm.c b/sound/core/pcm.c
+index b163164a83ec..8ecb14b27460 100644
+--- a/sound/core/pcm.c
++++ b/sound/core/pcm.c
+@@ -876,6 +876,53 @@ static int snd_pcm_dev_free(struct snd_device *device)
+ 	return snd_pcm_free(pcm);
+ }
+ 
++struct snd_pcm_runtime *snd_pcm_runtime_alloc(void)
++{
++	struct snd_pcm_runtime *runtime;
++	size_t size;
++
++	runtime = kzalloc(sizeof(*runtime), GFP_KERNEL);
++	if (!runtime)
++		return NULL;
++
++	size = PAGE_ALIGN(sizeof(struct snd_pcm_mmap_status));
++	runtime->status = alloc_pages_exact(size, GFP_KERNEL);
++	if (!runtime->status) {
++		kfree(runtime);
++		return NULL;
++	}
++	memset(runtime->status, 0, size);
++
++	size = PAGE_ALIGN(sizeof(struct snd_pcm_mmap_control));
++	runtime->control = alloc_pages_exact(size, GFP_KERNEL);
++	if (!runtime->control) {
++		free_pages_exact(runtime->status,
++				 PAGE_ALIGN(sizeof(struct snd_pcm_mmap_status)));
++		kfree(runtime);
++		return NULL;
++	}
++	memset(runtime->control, 0, size);
++
++	init_waitqueue_head(&runtime->sleep);
++	init_waitqueue_head(&runtime->tsleep);
++
++	runtime->status->state = SNDRV_PCM_STATE_OPEN;
++
++	return runtime;
++}
++EXPORT_SYMBOL_GPL(snd_pcm_runtime_alloc);
++
++void snd_pcm_runtime_free(struct snd_pcm_runtime *runtime)
++{
++	free_pages_exact(runtime->status,
++			 PAGE_ALIGN(sizeof(struct snd_pcm_mmap_status)));
++	free_pages_exact(runtime->control,
++			 PAGE_ALIGN(sizeof(struct snd_pcm_mmap_control)));
++	kfree(runtime->hw_constraints.rules);
++	kfree(runtime);
++}
++EXPORT_SYMBOL_GPL(snd_pcm_runtime_free);
++
+ int snd_pcm_attach_substream(struct snd_pcm *pcm, int stream,
+ 			     struct file *file,
+ 			     struct snd_pcm_substream **rsubstream)
+@@ -885,7 +932,6 @@ int snd_pcm_attach_substream(struct snd_pcm *pcm, int stream,
+ 	struct snd_pcm_runtime *runtime;
+ 	struct snd_card *card;
+ 	int prefer_subdevice;
+-	size_t size;
+ 
+ 	if (snd_BUG_ON(!pcm || !rsubstream))
+ 		return -ENXIO;
+@@ -939,33 +985,10 @@ int snd_pcm_attach_substream(struct snd_pcm *pcm, int stream,
+ 	if (substream == NULL)
+ 		return -EAGAIN;
+ 
+-	runtime = kzalloc(sizeof(*runtime), GFP_KERNEL);
+-	if (runtime == NULL)
++	runtime = snd_pcm_runtime_alloc();
++	if (!runtime)
+ 		return -ENOMEM;
+ 
+-	size = PAGE_ALIGN(sizeof(struct snd_pcm_mmap_status));
+-	runtime->status = alloc_pages_exact(size, GFP_KERNEL);
+-	if (runtime->status == NULL) {
+-		kfree(runtime);
+-		return -ENOMEM;
+-	}
+-	memset(runtime->status, 0, size);
+-
+-	size = PAGE_ALIGN(sizeof(struct snd_pcm_mmap_control));
+-	runtime->control = alloc_pages_exact(size, GFP_KERNEL);
+-	if (runtime->control == NULL) {
+-		free_pages_exact(runtime->status,
+-			       PAGE_ALIGN(sizeof(struct snd_pcm_mmap_status)));
+-		kfree(runtime);
+-		return -ENOMEM;
+-	}
+-	memset(runtime->control, 0, size);
+-
+-	init_waitqueue_head(&runtime->sleep);
+-	init_waitqueue_head(&runtime->tsleep);
+-
+-	runtime->status->state = SNDRV_PCM_STATE_OPEN;
+-
+ 	substream->runtime = runtime;
+ 	substream->private_data = pcm->private_data;
+ 	substream->ref_count = 1;
+@@ -985,11 +1008,6 @@ void snd_pcm_detach_substream(struct snd_pcm_substream *substream)
+ 	runtime = substream->runtime;
+ 	if (runtime->private_free != NULL)
+ 		runtime->private_free(runtime);
+-	free_pages_exact(runtime->status,
+-		       PAGE_ALIGN(sizeof(struct snd_pcm_mmap_status)));
+-	free_pages_exact(runtime->control,
+-		       PAGE_ALIGN(sizeof(struct snd_pcm_mmap_control)));
+-	kfree(runtime->hw_constraints.rules);
+ 	/* Avoid concurrent access to runtime via PCM timer interface */
+ 	if (substream->timer) {
+ 		spin_lock_irq(&substream->timer->lock);
+@@ -998,7 +1016,7 @@ void snd_pcm_detach_substream(struct snd_pcm_substream *substream)
+ 	} else {
+ 		substream->runtime = NULL;
+ 	}
+-	kfree(runtime);
++	snd_pcm_runtime_free(runtime);
+ 	put_pid(substream->pid);
+ 	substream->pid = NULL;
+ 	substream->pstr->substream_opened--;
 -- 
-2.24.1
+2.27.0
 
