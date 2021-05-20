@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AB00C433B4
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 May 2021 04:04:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BA6CC433ED
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 May 2021 04:04:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CA1E260FE6
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 May 2021 04:04:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA1E260FE6
+	by mail.kernel.org (Postfix) with ESMTPS id E2CC860FE6
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 May 2021 04:04:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E2CC860FE6
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5E4691690;
-	Thu, 20 May 2021 06:03:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E4691690
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6A5161687;
+	Thu, 20 May 2021 06:03:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A5161687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621483444;
-	bh=HocBdUxJy2GCDD6P/4lUERgXb7gZS1yASIduDCi1NBU=;
+	s=default; t=1621483478;
+	bh=MBheSRMfo1iJqiyjCWmXGHsatnZ1aYpeETK38XE8kHM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IkPzv7Jzz3H4W9YlT2KhZfVeQZeXGIXzgjx30nbye/zz5MxKJPVtY0ELGEbB9MH0i
-	 0yl81ayE8akx4ZkEav6+kYR/bz7QhTSy58L7ya/0Lr5DqXTFCjsNiZ4ex/hFJGCaJB
-	 LjpzP8mFzvIYRjige+k0XPX+SZZ79+9/LUo0TZV8=
+	b=lMlPVUPzbI/ZkWTIXKK44fAn7nbWF+MLrx9+GS1r7hK6Fq/9Vnt+SO3NmPQJFiK2F
+	 sVkjDbsWzOLg4SMHQw+1NdSMqY21Qj/d1IIwBz+kM9RucFuO+u5ukwB9v24KDOF5TU
+	 i1a+FWkmNwo19lMHC93lNX5b+ZVZP3+RJU9l/acI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BDF35F8027D;
-	Thu, 20 May 2021 06:02:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 445EDF804AC;
+	Thu, 20 May 2021 06:02:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6E8D7F80475; Thu, 20 May 2021 06:02:21 +0200 (CEST)
+ id B5746F804A9; Thu, 20 May 2021 06:02:24 +0200 (CEST)
 Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
  [66.111.4.26])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A5302F80217
- for <alsa-devel@alsa-project.org>; Thu, 20 May 2021 06:02:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5302F80217
+ by alsa1.perex.cz (Postfix) with ESMTPS id EEA7DF8027D
+ for <alsa-devel@alsa-project.org>; Thu, 20 May 2021 06:02:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEA7DF8027D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="sle6foJA"; 
+ header.b="KXNW3P9z"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="XJ0T/ljA"
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailout.nyi.internal (Postfix) with ESMTP id A5DCA5C0103;
- Thu, 20 May 2021 00:02:01 -0400 (EDT)
+ header.i=@messagingengine.com header.b="kjautImZ"
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
+ by mailout.nyi.internal (Postfix) with ESMTP id 31DF65C00A2;
+ Thu, 20 May 2021 00:02:07 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute3.internal (MEProxy); Thu, 20 May 2021 00:02:01 -0400
+ by compute7.internal (MEProxy); Thu, 20 May 2021 00:02:07 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=zmwM190SEAe4M
- b8bvrU0gl7jNG1ypEhRd46vPJqq2fM=; b=sle6foJAxW68NgSpQZL7tdbxkLHRf
- cJUo6lnda0ca1PCDV3q3WBcZxSByViz7CQY0Zk4AlU11PnBaZXQA/2n975e/NY1D
- e+pwXLA9Iy2iCN1YBYhJOfDHtkCJxU3yFG/kDgRRviuzS0+6vbQlmc/THeLMzJfY
- TEaQln8IcpSAdqxtmJ/IGpKaUNFp+p5U02HTFl5u4rEYTpmOuSYpRRarCF6ufJmC
- KrDo4S0uIV78qoQ16MMpAqi15qBXfqEjAmUDLDEpc88xKnHZKNxSyq1nIfwaM4Bh
- zWfAWtS8q8W/gJgHHCHqTIISjOwnokwI6NrvlkGdVHEFQBgOAE5aCmtNA==
+ :mime-version:content-transfer-encoding; s=fm1; bh=zFnH9HBMkAybB
+ 6G22c/7nyW4VIm1oQyZWi5rDfOEv/I=; b=KXNW3P9zA8cjH1AOhDb0cO9TJ1FWA
+ +/7TVxm5X00h80FDU6P2ZIeixSR5WegTOcMEv4viT9N6YUzQeTwjayFJXImLcPmp
+ EzxveFwd6RjXaI8J3d/9dZ3oj93/w1DqtjjXNBMFld8Do7gGKtva0vKdJRVKzffI
+ xksG6eEXIcB7vLbGeqCydn5QpHPHyoMxLoSEhYDqZZxmZ2Lz5xS95WG83scMfB75
+ mZlbncxKEHjT1G0oEjkGO1dWeHDdlBdtEhaD1o2+GIxR6iADfR4jgwjrHNtr/rdc
+ Ppi3FPK2dcBObXAhbn+VMUHfYXK7bRs4HC59cxuOcFM8O3bRfavsm2BdA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=zmwM190SEAe4Mb8bvrU0gl7jNG1ypEhRd46vPJqq2fM=; b=XJ0T/ljA
- ExirfIEo6643a26forj27hqLDuT50uVTMp9zZE7lug1yYBb6QvDcFxNiuSlYulHK
- UWBxWQqyoA0g9PifcIEepkxwK6cOEYOv2U/H74F3kspV8SqhOU2vAr9yuGjFEXBj
- 3zpSP2xKZBUgcx/DndzsTkAVOu9qt7bhyXBS1pKKXRibixyTt2Y0lIv35oWxIeqb
- 8+iap/u28tt7ip6CV73SZ4llkpcS9tHO8P5+IOu4UrZODhciBVxJRm5Q1RKOrrHr
- I76lyWPCyfR95dq7D49qoMcO3Tp0ShK1+4CGPOT8iHHwP0rt+uk8KhwjN9c61uYo
- ngbvRmKUeGEONg==
-X-ME-Sender: <xms:Od-lYKYUeoh5oeNF1TFO7JjzV1u1-FZ5rpYUSTbKWiUmFONHnDcEHA>
- <xme:Od-lYNYKhg_sQPcwx4eZVSTmPYXOplXH-qOaX83MC-n9KV26OavKCQ8jiI7NDIkKk
- Zb3WcDTCFaIwk00p5c>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejtddgjeekucetufdoteggodetrfdotf
+ fm2; bh=zFnH9HBMkAybB6G22c/7nyW4VIm1oQyZWi5rDfOEv/I=; b=kjautImZ
+ Jt3Om0xQpTpb7MtQNJF6zuyptqBzBp32zi2JdpZdcS0HuLmr3Peod4ei0HPWKNLY
+ SZa6UE6nv0JyFDFp+eGKbfTxe4pCkCoF7jHf0bc5gU9DBrnUWCazYYOaWS5FR1hC
+ +HBvdiUt3uI5Cqfw3GIames8kcLOb+rNTZxwsJdr6yKbe4m5pcQxzk2SMwa0+znU
+ uTWrAQMl9DoP21B4EgJ/Xa76fdo/TEpaSb4E5bP1M/9arLQ5+ld1YoufIf7QySS3
+ GldiZCUe/Rsd2Xa9reJf+kSqnSnjP532N4JFGeBwExS25lgxg4+htDAuznl9+XQZ
+ QIx4IXloigmoUA==
+X-ME-Sender: <xms:P9-lYDzY_YrlAFBURzr_6x1OR17wvaZANxJspjNwrWb6vDIin_2qzw>
+ <xme:P9-lYLQVoeXaHr4tNRP__3pAWcVuElt26KalFNRjVbNzyxJ6azLYlXDObnzcitO0B
+ PCqS3R8fPWpfjw9OM8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejtddgjeejucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
  dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
@@ -85,19 +85,19 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejtddgjeekucetufdoteggod
  etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecukfhppedugedr
  fedrieehrddujeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
  hfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:Od-lYE85d5KUPwGpWMgo3o7DwbGq_SnAnlvi_iVtTpHzrC2nFsDnJQ>
- <xmx:Od-lYMrM9xVLNzd_IJaCEsvw5x5fNqrdX7Ard9HvCVnQDuj9EJXL-A>
- <xmx:Od-lYFpy-y5_M7nGI10SEgyiyfy-JS-jmL8_hDbshC03ZPfCsBseOg>
- <xmx:Od-lYESRrm_AlOzZT-8Yb6hMqdqKLrBoAq6wmsbJw1PZFn5gcO_f9g>
+X-ME-Proxy: <xmx:P9-lYNVNZpBZRsYNsO58Mh3zO25dxC0netjfkupZuoK96fdRLsk8fw>
+ <xmx:P9-lYNjtuyAFH9e2yOvCarXJx5dDn_yxOf_liO26v3OBlzil_xn-rw>
+ <xmx:P9-lYFAZGJep50bGApH9zIfXu29LzU7Q8L4opsdjQLa1kHDKzfzMFQ>
+ <xmx:P9-lYIpwndpyyonbKYx-Zwlzert9YtZahQvYfQFqNVShOlimI2UunQ>
 Received: from workstation.flets-east.jp (ae065175.dynamic.ppp.asahi-net.or.jp
  [14.3.65.175]) by mail.messagingengine.com (Postfix) with ESMTPA;
- Thu, 20 May 2021 00:02:00 -0400 (EDT)
+ Thu, 20 May 2021 00:02:06 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Subject: [PATCH 2/8] ALSA: firewire-lib: code refactoring for calculation of
- context payload
-Date: Thu, 20 May 2021 13:01:48 +0900
-Message-Id: <20210520040154.80450-3-o-takashi@sakamocchi.jp>
+Subject: [PATCH 6/8] ALSA: firewire-lib: code refactoring to start several
+ IT/IR contexts
+Date: Thu, 20 May 2021 13:01:52 +0900
+Message-Id: <20210520040154.80450-7-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210520040154.80450-1-o-takashi@sakamocchi.jp>
 References: <20210520040154.80450-1-o-takashi@sakamocchi.jp>
@@ -119,93 +119,103 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-It's convenient to calculate the size of context payload apart from
-the size of isochronous packet payload.
+It's several hundred cycles from starting isochronous contexts and the
+actual cycle to start processing content of packet. It's useless to
+start the context for IRQ target apart from the other contexts.
 
-This commit adds a helper function for it.
+This commit refactors helper function to start AMDTP domain in the point.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp-stream.c | 37 ++++++++++++++++++++---------------
- 1 file changed, 21 insertions(+), 16 deletions(-)
+ sound/firewire/amdtp-stream.c | 37 +++++++++++++----------------------
+ 1 file changed, 14 insertions(+), 23 deletions(-)
 
 diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index f178cb5f2df3..36135296c144 100644
+index 48ed9612407f..b244fd863ca9 100644
 --- a/sound/firewire/amdtp-stream.c
 +++ b/sound/firewire/amdtp-stream.c
-@@ -313,6 +313,19 @@ int amdtp_stream_set_parameters(struct amdtp_stream *s, unsigned int rate,
- }
- EXPORT_SYMBOL(amdtp_stream_set_parameters);
- 
-+// The CIP header is processed in context header apart from context payload.
-+static int amdtp_stream_get_max_ctx_payload_size(struct amdtp_stream *s)
-+{
-+	unsigned int multiplier;
-+
-+	if (s->flags & CIP_JUMBO_PAYLOAD)
-+		multiplier = IR_JUMBO_PAYLOAD_MAX_SKIP_CYCLES;
-+	else
-+		multiplier = 1;
-+
-+	return s->syt_interval * s->data_block_quadlets * sizeof(__be32) * multiplier;
-+}
-+
- /**
-  * amdtp_stream_get_max_payload - get the stream's packet size
-  * @s: the AMDTP stream
-@@ -322,16 +335,14 @@ EXPORT_SYMBOL(amdtp_stream_set_parameters);
+@@ -1223,8 +1223,6 @@ static void amdtp_stream_first_callback(struct fw_iso_context *context,
+  * @s: the AMDTP stream to start
+  * @channel: the isochronous channel on the bus
+  * @speed: firewire speed code
+- * @start_cycle: the isochronous cycle to start the context. Start immediately
+- *		 if negative value is given.
+  * @queue_size: The number of packets in the queue.
+  * @idle_irq_interval: the interval to queue packet during initial state.
+  *
+@@ -1233,8 +1231,7 @@ static void amdtp_stream_first_callback(struct fw_iso_context *context,
+  * device can be started.
   */
- unsigned int amdtp_stream_get_max_payload(struct amdtp_stream *s)
+ static int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed,
+-			      int start_cycle, unsigned int queue_size,
+-			      unsigned int idle_irq_interval)
++			      unsigned int queue_size, unsigned int idle_irq_interval)
  {
--	unsigned int multiplier = 1;
--	unsigned int cip_header_size = 0;
-+	unsigned int cip_header_size;
- 
--	if (s->flags & CIP_JUMBO_PAYLOAD)
--		multiplier = IR_JUMBO_PAYLOAD_MAX_SKIP_CYCLES;
- 	if (!(s->flags & CIP_NO_HEADER))
- 		cip_header_size = CIP_HEADER_SIZE;
-+	else
-+		cip_header_size = 0;
- 
--	return cip_header_size +
--		s->syt_interval * s->data_block_quadlets * sizeof(__be32) * multiplier;
-+	return cip_header_size + amdtp_stream_get_max_ctx_payload_size(s);
- }
- EXPORT_SYMBOL(amdtp_stream_get_max_payload);
- 
-@@ -1140,27 +1151,21 @@ static int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed,
- 	}
- 
- 	// initialize packet buffer.
--	max_ctx_payload_size = amdtp_stream_get_max_payload(s);
+ 	bool is_irq_target = (s == s->domain->irq_target);
+ 	unsigned int ctx_header_size;
+@@ -1298,6 +1295,9 @@ static int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed,
  	if (s->direction == AMDTP_IN_STREAM) {
- 		dir = DMA_FROM_DEVICE;
- 		type = FW_ISO_CONTEXT_RECEIVE;
--		if (!(s->flags & CIP_NO_HEADER)) {
--			max_ctx_payload_size -= CIP_HEADER_SIZE;
-+		if (!(s->flags & CIP_NO_HEADER))
- 			ctx_header_size = IR_CTX_HEADER_SIZE_CIP;
--		} else {
-+		else
- 			ctx_header_size = IR_CTX_HEADER_SIZE_NO_CIP;
--		}
- 	} else {
- 		dir = DMA_TO_DEVICE;
- 		type = FW_ISO_CONTEXT_TRANSMIT;
- 		ctx_header_size = 0;	// No effect for IT context.
--
--		if (!(s->flags & CIP_NO_HEADER))
--			max_ctx_payload_size -= IT_PKT_HEADER_SIZE_CIP;
+ 		s->ctx_data.tx.max_ctx_payload_length = max_ctx_payload_size;
+ 		s->ctx_data.tx.ctx_header_size = ctx_header_size;
++	} else {
++		s->ctx_data.rx.seq_index = 0;
++		s->ctx_data.rx.event_count = 0;
  	}
-+	max_ctx_payload_size = amdtp_stream_get_max_ctx_payload_size(s);
  
--	err = iso_packets_buffer_init(&s->buffer, s->unit, queue_size,
--				      max_ctx_payload_size, dir);
-+	err = iso_packets_buffer_init(&s->buffer, s->unit, queue_size, max_ctx_payload_size, dir);
+ 	if (s->flags & CIP_NO_HEADER)
+@@ -1341,7 +1341,7 @@ static int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed,
+ 		tag |= FW_ISO_CONTEXT_MATCH_TAG0;
+ 
+ 	s->callbacked = false;
+-	err = fw_iso_context_start(s->context, start_cycle, 0, tag);
++	err = fw_iso_context_start(s->context, -1, 0, tag);
  	if (err < 0)
- 		goto err_unlock;
- 	s->queue_size = queue_size;
+ 		goto err_pkt_descs;
+ 
+@@ -1559,7 +1559,6 @@ int amdtp_domain_start(struct amdtp_domain *d, unsigned int tx_init_skip_cycles)
+ 	};
+ 	unsigned int events_per_buffer = d->events_per_buffer;
+ 	unsigned int events_per_period = d->events_per_period;
+-	unsigned int idle_irq_interval;
+ 	unsigned int queue_size;
+ 	struct amdtp_stream *s;
+ 	int err;
+@@ -1598,26 +1597,18 @@ int amdtp_domain_start(struct amdtp_domain *d, unsigned int tx_init_skip_cycles)
+ 	d->last_syt_offset = TICKS_PER_CYCLE;
+ 
+ 	list_for_each_entry(s, &d->streams, list) {
+-		if (s->direction == AMDTP_OUT_STREAM)
+-			s->ctx_data.rx.seq_index = 0;
++		unsigned int idle_irq_interval = 0;
+ 
+-		if (s != d->irq_target) {
+-			err = amdtp_stream_start(s, s->channel, s->speed, -1, queue_size, 0);
+-			if (err < 0)
+-				goto error;
++		if (s->direction == AMDTP_OUT_STREAM && s == d->irq_target) {
++			idle_irq_interval = DIV_ROUND_UP(CYCLES_PER_SECOND * events_per_period,
++							 amdtp_rate_table[d->irq_target->sfc]);
+ 		}
+-	}
+ 
+-	s = d->irq_target;
+-	s->ctx_data.rx.event_count = 0;
+-	s->ctx_data.rx.seq_index = 0;
+-
+-	idle_irq_interval = DIV_ROUND_UP(CYCLES_PER_SECOND * events_per_period,
+-					 amdtp_rate_table[d->irq_target->sfc]);
+-	err = amdtp_stream_start(s, s->channel, s->speed, -1, queue_size,
+-				 idle_irq_interval);
+-	if (err < 0)
+-		goto error;
++		// Starts immediately but actually DMA context starts several hundred cycles later.
++		err = amdtp_stream_start(s, s->channel, s->speed, queue_size, idle_irq_interval);
++		if (err < 0)
++			goto error;
++	}
+ 
+ 	return 0;
+ error:
 -- 
 2.27.0
 
