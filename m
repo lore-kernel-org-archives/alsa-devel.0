@@ -2,101 +2,81 @@ Return-Path: <SRS0=8dQ6=KP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6686FC433ED
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 May 2021 05:09:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7D46C43461
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 May 2021 07:56:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8895460FDA
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 May 2021 05:09:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8895460FDA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	by mail.kernel.org (Postfix) with ESMTPS id 336EE61244
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 May 2021 07:55:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 336EE61244
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F24051679;
-	Thu, 20 May 2021 07:08:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F24051679
+	by alsa0.perex.cz (Postfix) with ESMTPS id E603B166E;
+	Thu, 20 May 2021 09:55:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E603B166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621487374;
-	bh=i441hm9kzvpTyhYaZ9stbt7UxxTq8/ORKmP4OzjEyvk=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=LU7RMUvAmH9rSITukDvJDhUiK37hFmjJyxudQikgXUNfBUtHy1PoJIewGWPlPzupu
-	 yBC4hxgopWIQf6WPkoLE8Uma+82U4yJLa3XfPsG32GG5Ut8An6o326gWdVPHeUI09n
-	 4hZ5oS7BqAbtJUPB080ECogWOhmhkFDVxSCSFtgI=
+	s=default; t=1621497357;
+	bh=EznMvwiF3ryTdviLXDEIdaBf4ML3SfjpHc3T8CiUJrg=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=JRZ5V6FR3L5BJ0nJmbThKxMIuGjCNqQxpefyh2k8ebQjlQZfx5AtJ6cZr3ukBlUhH
+	 3iIcrRBBfAbbI+Xz7RHH29zSKmrHedaOUhMXoIWuQnufoO7B2Mr3UmGSbUIHjsBN8F
+	 bt11Z7RtJFfbvIHThKAKIH9jJkSmXONULMlE0waw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F63AF80257;
-	Thu, 20 May 2021 07:08:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7F048F800C1;
+	Thu, 20 May 2021 09:55:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 00DA5F802C8; Thu, 20 May 2021 07:08:39 +0200 (CEST)
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com
- [205.220.165.32])
+ id 6A5D9F80217; Thu, 20 May 2021 09:55:04 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 26460F8020B
- for <alsa-devel@alsa-project.org>; Thu, 20 May 2021 07:08:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26460F8020B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
- header.b="zTP0SEml"
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
- by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 14K58HhZ029793; Thu, 20 May 2021 05:08:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=3LKNlWa84mNtlc0IzsZuszOG3F3MflC9kl6rzzQfwaw=;
- b=zTP0SEmlB1Kz/rWlk+Gu03/Az2jePnS5icE7VOxbbmii0lK2AqbxPe4riIeU4GEPqGWA
- yPH3Mcn2z7ArpQ2/vMuyQN+SFn2MZi83amGLZcLB//ckl7zQP3dYOK8fn2whU7/WHj3z
- 5d7HbO41+KFpLNqjNIoly1WZnUtp2JxRp36ZfhuEVL2QeaOEB9MGn50NNuGbd9b8We2H
- Q53UcjPzxVlDUhEPldqxvNjPPDXS6opFFRx/zYhMuzpD1PtMaetg1wU7V80uSq0XaHWz
- tDFcUhCkfzMRiKBw86314L4SdFgXQzVPxIcyyC0Nm+o2ydeptd3hbBuk9v5MQ5rY0MKP 6w== 
-Received: from oracle.com (userp3030.oracle.com [156.151.31.80])
- by mx0b-00069f02.pphosted.com with ESMTP id 38n4utr9wg-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 20 May 2021 05:08:35 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
- by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14K58Y1x031103;
- Thu, 20 May 2021 05:08:34 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
- by userp3030.oracle.com with ESMTP id 38megm3kha-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 20 May 2021 05:08:34 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
- by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14K57KqD029097;
- Thu, 20 May 2021 05:08:33 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
- by userp3030.oracle.com with ESMTP id 38megm3kh3-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 20 May 2021 05:08:33 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
- by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14K58WCi014142;
- Thu, 20 May 2021 05:08:32 GMT
-Received: from mwanda (/10.175.161.110)
- by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Wed, 19 May 2021 22:08:31 -0700
-Date: Thu, 20 May 2021 08:08:24 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: James Schulman <james.schulman@cirrus.com>
-Subject: [PATCH] ASoC: cs35l33: fix an error code in probe()
-Message-ID: <YKXuyGEzhPT35R3G@mwanda>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 65B8FF800C1
+ for <alsa-devel@alsa-project.org>; Thu, 20 May 2021 09:54:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65B8FF800C1
+IronPort-SDR: ZwVDuOKEXruOkytDLff1MfrmmjMgyv/1NqL4PP2GbBsWh1HZ67jwXDK0Gk+hTxVNOoQ7oc0Zni
+ G2/GDFwhICPQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="286700488"
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; d="scan'208";a="286700488"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 May 2021 00:54:50 -0700
+IronPort-SDR: ups5F9VQr9xbsXWpKlRCLzsiRI1OJ8s3Sve52o0l1OEKSKyrjaNHKeNLIdKBd8b8Nq6qTEuLbM
+ Ejwyn/BnFHBQ==
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; d="scan'208";a="473886845"
+Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.237.180.88])
+ ([10.237.180.88])
+ by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 May 2021 00:54:46 -0700
+Subject: Re: [PATCH 2/2] ASoC: topology: Fix a small leak in
+ soc_tplg_dapm_graph_elems_load()
+To: Dan Carpenter <dan.carpenter@oracle.com>,
+ Liam Girdwood <lgirdwood@gmail.com>
+References: <YKXunAOB1DJ4dT5p@mwanda>
+From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+Message-ID: <fe3d1825-aaae-0426-ad18-0e543f3fea1f@linux.intel.com>
+Date: Thu, 20 May 2021 09:54:42 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-GUID: yKP14-Zssevux8KcCheFgEk2dAdWjhbC
-X-Proofpoint-ORIG-GUID: yKP14-Zssevux8KcCheFgEk2dAdWjhbC
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- patches@opensource.cirrus.com, kernel-janitors@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>,
- Mark Brown <broonie@kernel.org>, David Rhodes <david.rhodes@cirrus.com>
+In-Reply-To: <YKXunAOB1DJ4dT5p@mwanda>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>, kernel-janitors@vger.kernel.org,
+ alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,26 +92,157 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This error path returns zero (success) but it should return -EINVAL.
+On 5/20/2021 7:07 AM, Dan Carpenter wrote:
+> We have to kfree(routes) on this error path.
+> 
+> Fixes: ff9226224437 ("ASoC: topology: Change allocations to resource managed")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>   sound/soc/soc-topology.c | 7 +++++--
+>   1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+> index 6b7a813bc264..5730fcaa7bc6 100644
+> --- a/sound/soc/soc-topology.c
+> +++ b/sound/soc/soc-topology.c
+> @@ -1135,8 +1135,10 @@ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
+>   	 */
+>   	for (i = 0; i < count; i++) {
+>   		routes[i] = devm_kzalloc(tplg->dev, sizeof(*routes[i]), GFP_KERNEL);
+> -		if (!routes[i])
+> -			return -ENOMEM;
+> +		if (!routes[i]) {
+> +			ret = -ENOMEM;
+> +			goto free_routes;
+> +		}
+>   	}
+>   
+>   	for (i = 0; i < count; i++) {
+> @@ -1198,6 +1200,7 @@ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
+>   	 * The memory allocated for each dapm route will be freed
+>   	 * when it is removed in remove_route().
+>   	 */
+> +free_routes:
+>   	kfree(routes);
+>   
+>   	return ret;
+> 
 
-Fixes: 3333cb7187b9 ("ASoC: cs35l33: Initial commit of the cs35l33 CODEC driver.")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- sound/soc/codecs/cs35l33.c | 1 +
- 1 file changed, 1 insertion(+)
+Yes, that's right, however looking at this function again, I wonder if 
+instead we can just get rid of the routes array and kcalloc call?
 
-diff --git a/sound/soc/codecs/cs35l33.c b/sound/soc/codecs/cs35l33.c
-index 6f6b3c0c88b7..2a6f5e46d031 100644
---- a/sound/soc/codecs/cs35l33.c
-+++ b/sound/soc/codecs/cs35l33.c
-@@ -1202,6 +1202,7 @@ static int cs35l33_i2c_probe(struct i2c_client *i2c_client,
- 		dev_err(&i2c_client->dev,
- 			"CS35L33 Device ID (%X). Expected ID %X\n",
- 			devid, CS35L33_CHIP_ID);
-+		ret = -EINVAL;
- 		goto err_enable;
- 	}
- 
--- 
-2.30.2
+Something along those lines (hope that copy paste won't mess it up):
+
+
+
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 73076d425efb..13db9cfe223f 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1104,7 +1104,7 @@ static int soc_tplg_dapm_graph_elems_load(struct 
+soc_tplg *tplg,
+  {
+         struct snd_soc_dapm_context *dapm = &tplg->comp->dapm;
+         struct snd_soc_tplg_dapm_graph_elem *elem;
+-       struct snd_soc_dapm_route **routes;
++       struct snd_soc_dapm_route *route;
+         int count, i;
+         int ret = 0;
+
+@@ -1122,28 +1122,15 @@ static int soc_tplg_dapm_graph_elems_load(struct 
+soc_tplg *tplg,
+         dev_dbg(tplg->dev, "ASoC: adding %d DAPM routes for index 
+%d\n", count,
+                 hdr->index);
+
+-       /* allocate memory for pointer to array of dapm routes */
+-       routes = kcalloc(count, sizeof(struct snd_soc_dapm_route *),
+-                        GFP_KERNEL);
+-       if (!routes)
+-               return -ENOMEM;
+-
+-       /*
+-        * allocate memory for each dapm route in the array.
+-        * This needs to be done individually so that
+-        * each route can be freed when it is removed in remove_route().
+-        */
+         for (i = 0; i < count; i++) {
+-               routes[i] = devm_kzalloc(tplg->dev, sizeof(*routes[i]), 
+GFP_KERNEL);
+-               if (!routes[i])
++               route = devm_kzalloc(tplg->dev, sizeof(*route), GFP_KERNEL);
++               if (!route)
+                         return -ENOMEM;
+-       }
+
+-       for (i = 0; i < count; i++) {
+                 elem = (struct snd_soc_tplg_dapm_graph_elem *)tplg->pos;
+                 tplg->pos += sizeof(struct snd_soc_tplg_dapm_graph_elem);
+
+-               /* validate routes */
++               /* validate route */
+                 if (strnlen(elem->source, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) ==
+                             SNDRV_CTL_ELEM_ID_NAME_MAXLEN) {
+                         ret = -EINVAL;
+@@ -1160,46 +1147,32 @@ static int soc_tplg_dapm_graph_elems_load(struct 
+soc_tplg *tplg,
+                         break;
+                 }
+
+-               routes[i]->source = elem->source;
+-               routes[i]->sink = elem->sink;
++               route->source = elem->source;
++               route->sink = elem->sink;
+
+                 /* set to NULL atm for tplg users */
+-               routes[i]->connected = NULL;
++               route->connected = NULL;
+                 if (strnlen(elem->control, 
+SNDRV_CTL_ELEM_ID_NAME_MAXLEN) == 0)
+-                       routes[i]->control = NULL;
++                       route->control = NULL;
+                 else
+-                       routes[i]->control = elem->control;
++                       route->control = elem->control;
+
+                 /* add route dobj to dobj_list */
+-               routes[i]->dobj.type = SND_SOC_DOBJ_GRAPH;
+-               routes[i]->dobj.ops = tplg->ops;
+-               routes[i]->dobj.index = tplg->index;
+-               list_add(&routes[i]->dobj.list, &tplg->comp->dobj_list);
++               route->dobj.type = SND_SOC_DOBJ_GRAPH;
++               route->dobj.ops = tplg->ops;
++               route->dobj.index = tplg->index;
++               list_add(&route->dobj.list, &tplg->comp->dobj_list);
+
+-               ret = soc_tplg_add_route(tplg, routes[i]);
++               ret = soc_tplg_add_route(tplg, route);
+                 if (ret < 0) {
+                         dev_err(tplg->dev, "ASoC: topology: add_route 
+failed: %d\n", ret);
+-                       /*
+-                        * this route was added to the list, it will
+-                        * be freed in remove_route() so increment the
+-                        * counter to skip it in the error handling
+-                        * below.
+-                        */
+-                       i++;
+                         break;
+                 }
+
+                 /* add route, but keep going if some fail */
+-               snd_soc_dapm_add_routes(dapm, routes[i], 1);
++               snd_soc_dapm_add_routes(dapm, route, 1);
+         }
+
+-       /*
+-        * free pointer to array of dapm routes as this is no longer needed.
+-        * The memory allocated for each dapm route will be freed
+-        * when it is removed in remove_route().
+-        */
+-       kfree(routes);
+-
+         return ret;
+  }
+
 
