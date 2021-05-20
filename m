@@ -4,88 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62CC2C433B4
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 May 2021 01:49:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56481C433B4
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 May 2021 04:03:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ABBB3611BD
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 May 2021 01:49:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ABBB3611BD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	by mail.kernel.org (Postfix) with ESMTPS id 8C46460FE6
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 May 2021 04:03:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C46460FE6
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4E415166E;
-	Thu, 20 May 2021 03:48:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E415166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 48897166E;
+	Thu, 20 May 2021 06:02:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48897166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621475351;
-	bh=mVi6bGZnrWhJ49mCtvV1u+jc/4QHTNQwTHGJR9i+eNU=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ZrnBSL1IjzJXjsRfwGWhO5vWiVIjxDMjFZSfaF/MLN/MMw9Rf3EarmOUhECLiRZ4k
-	 LTwaS6l7IiWY1Lds6z7OnrimYy06tpjPzhdORpGd03/Ci+Pv5fl7gv8/aQUl4FX8TW
-	 REcMQmGH3q57dHA4bMQMzCrPtFHE8KYEvvPat1CQ=
+	s=default; t=1621483388;
+	bh=kVTLKKPhEpPQ2jVMHSULc0bF0gLHZr+UtSvVLwA0rFc=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=BVAGE1b5NuRp4Or9AUVsZiesVzXdSAr/edX2Uv9DAWoaSzFYdmeeSEOVV9nCr6Dt5
+	 ShDh7W/PM450bNo+ljjIlzK5xFhOMHLyr9d2Ozmls9k0ItApYPjyBb38QgGVkZUVq9
+	 eAnlICPzKL8YwleGFvgnvi+q4KmVDwJ8GnWk7uUY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE742F8020B;
-	Thu, 20 May 2021 03:48:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7211EF802E2;
+	Thu, 20 May 2021 06:02:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B8070F80217; Thu, 20 May 2021 03:48:18 +0200 (CEST)
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com
- [IPv6:2607:f8b0:4864:20::62b])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id E0E7BF80424; Thu, 20 May 2021 06:02:10 +0200 (CEST)
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
+ [66.111.4.26])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3ED10F800C1
- for <alsa-devel@alsa-project.org>; Thu, 20 May 2021 03:48:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3ED10F800C1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9DBCEF800C8
+ for <alsa-devel@alsa-project.org>; Thu, 20 May 2021 06:02:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DBCEF800C8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="PtufKgnm"
-Received: by mail-pl1-x62b.google.com with SMTP id v12so8088207plo.10
- for <alsa-devel@alsa-project.org>; Wed, 19 May 2021 18:48:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=ir1Dpg3bgUq0v/H9js0abZRsZHQ5PmTY8mx+eB1aHs0=;
- b=PtufKgnmd6DXX0n+Vuz+quN0FhXP/QXYDqTuIbfCCrI+RpSi1wz08zBNGC8LZKvZfr
- 6Rarw7f4CMCfDB3Z2FRqJgd7rRYjBj34A/6TGR/0TmJOlrfC53kLnN2c1X4JGAAPqSTW
- l5i/oyLhU1BOH2qUsvcGKVwx7q62nSJljlteI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=ir1Dpg3bgUq0v/H9js0abZRsZHQ5PmTY8mx+eB1aHs0=;
- b=NBlYDOu+FjzgM/0mHCwCGM4tKDQVMbsJ7E+nJwkrxJgcMetr1rpLBTS2Qr4Q+Paiaw
- MrYshJvNyyMe0oiZFWWgHqs3dbKBqOeRkZv3tFMckr5tbBdUTTXiI/sEYOAx3sywrRZv
- gtGbG3X//e1CXfHEQaz09a3Ygh0aXRJ2MGcdjZJ8uGb2g20sgztphGeQ6SnujXqxXyzB
- 185QFhzXOj8duJe1OM2ZknoxbLKjf/ETaqU+/6URkaloN0WWgq4xP0dDKdmK3tI3XCvK
- E+SrTvx9lgeln5RI61t+EMM0nyc79IZpm8bbcKavUbkn1Dt0rHtmAXszYRI6nsymI7mV
- 8Q3g==
-X-Gm-Message-State: AOAM530kjko5FzBguzSbZXDWI5fKdvvvhVcQBLjbjQdPznppcTTb62St
- 42ImP63/elkvIYkCuIKy9WdOJw==
-X-Google-Smtp-Source: ABdhPJz7N0VmwvOgwy+qH0pZAbQ7t9pnPLjhIpOgCLFaidWogYGP3K6a/k6jHeTHfiDGcnQs+GOsQg==
-X-Received: by 2002:a17:902:f291:b029:f0:ba5b:5c47 with SMTP id
- k17-20020a170902f291b02900f0ba5b5c47mr2963239plc.41.1621475288909; 
- Wed, 19 May 2021 18:48:08 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:201:200b:db75:4e6c:8b96])
- by smtp.gmail.com with ESMTPSA id v14sm490668pfi.25.2021.05.19.18.48.07
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 19 May 2021 18:48:08 -0700 (PDT)
-From: Stephen Boyd <swboyd@chromium.org>
-To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: qcom: lpass-cpu: Use optional clk APIs
-Date: Wed, 19 May 2021 18:48:07 -0700
-Message-Id: <20210520014807.3749797-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
+ dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
+ header.b="LbF4huTH"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="FNv4/Bg7"
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+ by mailout.nyi.internal (Postfix) with ESMTP id 6310E5C00FF;
+ Thu, 20 May 2021 00:02:00 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute3.internal (MEProxy); Thu, 20 May 2021 00:02:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding; s=fm1; bh=S6Ff3OHA3awAv
+ rJn4vaAKtDrHHN7gtM7gFcL1aiZiDs=; b=LbF4huTHM251OFX9zGXrQuH5AfKc4
+ iMg3zRzPgE7Vjq/3iE74eOx6vnjIVyOgvAAdBFlwuFzVMqOX/SDU5vylwc6FKUgf
+ LdM1FUeO1cWBrmOIgD7H/PtIcdXaZut2AVzrjDxci503lEPZgtSo4ML/kn7rd9zq
+ xISTNfvlRTmNGoSypMhecuAjObQDTfutqp3uwr6krIrOw5kLq24hs5l6HrVZuPVC
+ 0VgIHtNTXHl0/eW+73YQFElPe0A4M9Uju8pU4xoUqwIuRdsqHCvtgyiR7465fX+z
+ 8mTPV6IMaReiqAMsCfUKs8ED0/8a8rz3w/WKA+jsTD6WX2UidE9aWx+Rg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-transfer-encoding:date:from
+ :in-reply-to:message-id:mime-version:references:subject:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm2; bh=S6Ff3OHA3awAvrJn4vaAKtDrHHN7gtM7gFcL1aiZiDs=; b=FNv4/Bg7
+ zeXxB0pXVJ7qp9kb4vH1hBWycGkd8DXPOXNLgi9sA5f0PuWKA8F6u2EQXn62lL2p
+ oI8kZAN5GwZVflkrgp1qxWoTLyVt2qW7Rh2HC8KlUdb1lmM/r5p7N954gWl3hxPO
+ UupY48TcU0mchjn/vOixp5Q6R6OkfNU9F1gPZ+n9n4Vbtym7H+AosQ/YGNsB41mO
+ p/KZWW7LYazQaU6GKaWYYmAkB1QEGV9vTguLbuZjMkMKUNcweyq+/2+iqdU0SmHM
+ Mye+4jjpJiWiq/RCjhvmpPwr2C5ZtgjKxzZ/DqAsg6m9e1MJHY9xmRNg6GaxAZGL
+ PVF5oTR5w2/mlQ==
+X-ME-Sender: <xms:ON-lYB0KJQ5N28GtD8dK2QtwhBOSRxXycK5KCEYKi_nKTAeZ_-DHFA>
+ <xme:ON-lYIF4jQ3qIvDaIxO5Lpy31egnhvUy4F3RIsD0bcrxFYYmOkkqwvmYD3EhP3y_E
+ KYbJyEqx7iPHiYwB1o>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejtddgjeekucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
+ dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
+ shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepveefffefke
+ etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecukfhppedugedr
+ fedrieehrddujeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+ hfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:ON-lYB6NzMuUfA96iuL29jPQ3wdGC-pHRkohuoe8eQjiT8USYcUxbw>
+ <xmx:ON-lYO11bO3KJ8qg1AfXREOHc_qmTDDx9Q_skc9yhsVn2amepve8JQ>
+ <xmx:ON-lYEHo4AE0lhKKvSyhSEBL6OGCpiV4g7569_OXMfYIdribrDNtAw>
+ <xmx:ON-lYPPvpoBiD4fw20S4kHldjk6-4pZlHYvUxRKel52If7jdLOv7SQ>
+Received: from workstation.flets-east.jp (ae065175.dynamic.ppp.asahi-net.or.jp
+ [14.3.65.175]) by mail.messagingengine.com (Postfix) with ESMTPA;
+ Thu, 20 May 2021 00:01:59 -0400 (EDT)
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: tiwai@suse.de
+Subject: [PATCH 1/8] ALSA: firewire-lib: code refactoring for size of CIP
+ header
+Date: Thu, 20 May 2021 13:01:47 +0900
+Message-Id: <20210520040154.80450-2-o-takashi@sakamocchi.jp>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210520040154.80450-1-o-takashi@sakamocchi.jp>
+References: <20210520040154.80450-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- Banajit Goswami <bgoswami@codeaurora.org>, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,47 +119,98 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This driver spits out a warning for me at boot:
+Some macros are added to refactor codes related to CIP header.
 
- sc7180-lpass-cpu 62f00000.lpass: asoc_qcom_lpass_cpu_platform_probe() error getting optional null: -2
-
-but it looks like it is all an optional clk. Use the optional clk APIs
-here so that we don't see this message and everything else is the same.
-
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Banajit Goswami <bgoswami@codeaurora.org>
-Fixes: 3e53ac8230c1 ("ASoC: qcom: make osr clock optional")
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/soc/qcom/lpass-cpu.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+ sound/firewire/amdtp-stream.c | 25 +++++++++++++++----------
+ 1 file changed, 15 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index c62d2612e8f5..28c7497344e3 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -835,18 +835,8 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
- 		if (dai_id == LPASS_DP_RX)
- 			continue;
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index af5c3629f1ac..f178cb5f2df3 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -33,7 +33,8 @@
+ #define TAG_NO_CIP_HEADER	0
+ #define TAG_CIP			1
  
--		drvdata->mi2s_osr_clk[dai_id] = devm_clk_get(dev,
-+		drvdata->mi2s_osr_clk[dai_id] = devm_clk_get_optional(dev,
- 					     variant->dai_osr_clk_names[i]);
--		if (IS_ERR(drvdata->mi2s_osr_clk[dai_id])) {
--			dev_warn(dev,
--				"%s() error getting optional %s: %ld\n",
--				__func__,
--				variant->dai_osr_clk_names[i],
--				PTR_ERR(drvdata->mi2s_osr_clk[dai_id]));
--
--			drvdata->mi2s_osr_clk[dai_id] = NULL;
--		}
--
- 		drvdata->mi2s_bit_clk[dai_id] = devm_clk_get(dev,
- 						variant->dai_bit_clk_names[i]);
- 		if (IS_ERR(drvdata->mi2s_bit_clk[dai_id])) {
-
-base-commit: 6efb943b8616ec53a5e444193dccf1af9ad627b5
+-/* common isochronous packet header parameters */
++// Common Isochronous Packet (CIP) header parameters. Use two quadlets CIP header when supported.
++#define CIP_HEADER_QUADLETS	2
+ #define CIP_EOH_SHIFT		31
+ #define CIP_EOH			(1u << CIP_EOH_SHIFT)
+ #define CIP_EOH_MASK		0x80000000
+@@ -51,17 +52,21 @@
+ #define CIP_SYT_MASK		0x0000ffff
+ #define CIP_SYT_NO_INFO		0xffff
+ 
++#define CIP_HEADER_SIZE		(sizeof(__be32) * CIP_HEADER_QUADLETS)
++
+ /* Audio and Music transfer protocol specific parameters */
+ #define CIP_FMT_AM		0x10
+ #define AMDTP_FDF_NO_DATA	0xff
+ 
+-// For iso header, tstamp and 2 CIP header.
+-#define IR_CTX_HEADER_SIZE_CIP		16
+ // For iso header and tstamp.
+-#define IR_CTX_HEADER_SIZE_NO_CIP	8
++#define IR_CTX_HEADER_DEFAULT_QUADLETS	2
++// Add nothing.
++#define IR_CTX_HEADER_SIZE_NO_CIP	(sizeof(__be32) * IR_CTX_HEADER_DEFAULT_QUADLETS)
++// Add two quadlets CIP header.
++#define IR_CTX_HEADER_SIZE_CIP		(IR_CTX_HEADER_SIZE_NO_CIP + CIP_HEADER_SIZE)
+ #define HEADER_TSTAMP_MASK	0x0000ffff
+ 
+-#define IT_PKT_HEADER_SIZE_CIP		8 // For 2 CIP header.
++#define IT_PKT_HEADER_SIZE_CIP		CIP_HEADER_SIZE
+ #define IT_PKT_HEADER_SIZE_NO_CIP	0 // Nothing.
+ 
+ // The initial firmware of OXFW970 can postpone transmission of packet during finishing
+@@ -323,7 +328,7 @@ unsigned int amdtp_stream_get_max_payload(struct amdtp_stream *s)
+ 	if (s->flags & CIP_JUMBO_PAYLOAD)
+ 		multiplier = IR_JUMBO_PAYLOAD_MAX_SKIP_CYCLES;
+ 	if (!(s->flags & CIP_NO_HEADER))
+-		cip_header_size = sizeof(__be32) * 2;
++		cip_header_size = CIP_HEADER_SIZE;
+ 
+ 	return cip_header_size +
+ 		s->syt_interval * s->data_block_quadlets * sizeof(__be32) * multiplier;
+@@ -642,7 +647,7 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+ 	payload_length = be32_to_cpu(ctx_header[0]) >> ISO_DATA_LENGTH_SHIFT;
+ 
+ 	if (!(s->flags & CIP_NO_HEADER))
+-		cip_header_size = 8;
++		cip_header_size = CIP_HEADER_SIZE;
+ 	else
+ 		cip_header_size = 0;
+ 
+@@ -655,7 +660,7 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+ 
+ 	if (cip_header_size > 0) {
+ 		if (payload_length >= cip_header_size) {
+-			cip_header = ctx_header + 2;
++			cip_header = ctx_header + IR_CTX_HEADER_DEFAULT_QUADLETS;
+ 			err = check_cip_header(s, cip_header, payload_length - cip_header_size,
+ 					       data_blocks, data_block_counter, syt);
+ 			if (err < 0)
+@@ -907,7 +912,7 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 		unsigned int syt;
+ 		struct {
+ 			struct fw_iso_packet params;
+-			__be32 header[IT_PKT_HEADER_SIZE_CIP / sizeof(__be32)];
++			__be32 header[CIP_HEADER_QUADLETS];
+ 		} template = { {0}, {0} };
+ 		bool sched_irq = false;
+ 
+@@ -1140,7 +1145,7 @@ static int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed,
+ 		dir = DMA_FROM_DEVICE;
+ 		type = FW_ISO_CONTEXT_RECEIVE;
+ 		if (!(s->flags & CIP_NO_HEADER)) {
+-			max_ctx_payload_size -= 8;
++			max_ctx_payload_size -= CIP_HEADER_SIZE;
+ 			ctx_header_size = IR_CTX_HEADER_SIZE_CIP;
+ 		} else {
+ 			ctx_header_size = IR_CTX_HEADER_SIZE_NO_CIP;
 -- 
-https://chromeos.dev
+2.27.0
 
