@@ -4,73 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2279C47076
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 15:09:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A9ABC47078
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 15:10:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8432D613CB
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 15:09:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8432D613CB
+	by mail.kernel.org (Postfix) with ESMTPS id CE040613CC
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 15:10:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE040613CC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6EA50169E;
-	Fri, 21 May 2021 17:08:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EA50169E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2F2B216AA;
+	Fri, 21 May 2021 17:09:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F2B216AA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621609753;
-	bh=+s3tbWsUsJ09qhWtcfTtaWKIFSjqWd/CEMzp6/HYzbY=;
+	s=default; t=1621609804;
+	bh=pjMNYTsflgDHf41geuHYbgIi78V2ZG2YzPQdHoxswm8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iz0OgHQWtcQe7dufLmn7enMYR9X0pDywbSEZ0fX4RlpWvEkr7Tjs6Htz8SCsurCY+
-	 rkse8kx79P3Y2RC/W2RaCF7IVa3kR2tSnfXlFJkFIYCyqxFbWCpqh3zKP89cyKdYdH
-	 QiP1FT50XvIVHHKImntnPz1PAIAYe15BbI1UnSTA=
+	b=tj5tFltWKUTHbt0mavwDNrQwlVSk1JQw5DGRW6jJ7YwmVZPWMu/04Hbc15QyDO1Om
+	 /7RgZt48+l8D6rdMJcfv93LPZrYj97OKiT0zn0yvfiBLI2SCJGbq4QtGWi+4Oi48Eg
+	 L9tuQTHaBfZcbnXrk5YyFfFG29kSL+yiixeGX7eQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1AA6F8016E;
-	Fri, 21 May 2021 17:08:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CC4EDF80258;
+	Fri, 21 May 2021 17:08:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B9BE8F800E5; Fri, 21 May 2021 17:08:21 +0200 (CEST)
+ id A4763F80249; Fri, 21 May 2021 17:08:21 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B406DF8016E
- for <alsa-devel@alsa-project.org>; Fri, 21 May 2021 17:08:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B406DF8016E
+ by alsa1.perex.cz (Postfix) with ESMTPS id B0FEBF800E5
+ for <alsa-devel@alsa-project.org>; Fri, 21 May 2021 17:08:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0FEBF800E5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ogm/5ZQl"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F0F7613CB;
- Fri, 21 May 2021 15:08:10 +0000 (UTC)
+ header.b="AwANhlT8"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28D01613CC;
+ Fri, 21 May 2021 15:08:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1621609691;
- bh=+s3tbWsUsJ09qhWtcfTtaWKIFSjqWd/CEMzp6/HYzbY=;
+ s=k20201202; t=1621609693;
+ bh=pjMNYTsflgDHf41geuHYbgIi78V2ZG2YzPQdHoxswm8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ogm/5ZQld7rsZ/9TfQAff2RHEDW8OVM39rnphBcnTamJind06DP1tBjVo5zNHBGy4
- KIeeQdnHzwt/a1czwHEiM4jywDNn6gkVVB8ii5Zvou9dxNtN4vemj1gYmjk86uwWpB
- 03J/fxJ3eKGYNiNUnbr75jgAlr8H6oos14jcUhE4y9EIbTFLDFax8LjG8oXiCQ4Hnq
- bnhi70IkNbh4yGczKoq136z6SZrA2nrB2hVAnuXvFIlIMz8NZrmFa1UbZAHNwC5fEM
- ON4RTHp6H4sYL9PfDc9q9Qfw6xo4W9KtdeaJdUXIlm/Gyqvltc5GOG060H15PiwPDW
- jCPf+SBmG15Iw==
+ b=AwANhlT8ADpYKR312WsK0fm8zI7KIv1GUoIALdyyy4yPSwQDPSYJcnJRCK486Gqa3
+ z8cYk5vo00GDSFKZeKgA00V8QNrHQ6rC/UdKLIwYc7El2d/19FB6SHkg8owxjxXXYD
+ jwNqHJTQukfBivrigrUnO9EQ9ShaZm3zcsZJy4BVgnKci7s1mq7ylcl1dkrfh/CEqU
+ srRuCq2Y3OhVebR+ZC8yQ4sbUzDeiFtkgbKx60MBCvDDztuZ+O/G5e++8QqyTBWYRH
+ +H4xCwdi1/PcCpQEDPt7xPS8J+i86TY29DwBriRyDQy5W8yVZZvpIZzMTZZ9nB3fuo
+ s50j2cbmWeq/Q==
 From: Mark Brown <broonie@kernel.org>
-To: Stephen Boyd <swboyd@chromium.org>
-Subject: Re: [PATCH] ASoC: qcom: lpass-cpu: Use optional clk APIs
-Date: Fri, 21 May 2021 16:08:01 +0100
-Message-Id: <162160953475.10636.11463749705483843535.b4-ty@kernel.org>
+To: alsa-devel@alsa-project.org,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH 0/7] ASoC: SOF: code cleanups for 5.14
+Date: Fri, 21 May 2021 16:08:02 +0100
+Message-Id: <162160953476.10636.14317063420021438612.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210520014807.3749797-1-swboyd@chromium.org>
-References: <20210520014807.3749797-1-swboyd@chromium.org>
+In-Reply-To: <20210521092804.3721324-1-kai.vehmanen@linux.intel.com>
+References: <20210521092804.3721324-1-kai.vehmanen@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Banajit Goswami <bgoswami@codeaurora.org>, linux-arm-msm@vger.kernel.org,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- linux-kernel@vger.kernel.org
+Cc: daniel.baluta@nxp.com, pierre-louis.bossart@linux.intel.com,
+ lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
+ ranjani.sridharan@linux.intel.com, yung-chuan.liao@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,13 +87,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 19 May 2021 18:48:07 -0700, Stephen Boyd wrote:
-> This driver spits out a warning for me at boot:
+On Fri, 21 May 2021 12:27:57 +0300, Kai Vehmanen wrote:
+> Set of code cleanups for issues found in code review.
 > 
->  sc7180-lpass-cpu 62f00000.lpass: asoc_qcom_lpass_cpu_platform_probe() error getting optional null: -2
+> Jaska Uimonen (1):
+>   ASoC: SOF: topology: fix assignment to use le32_to_cpu
 > 
-> but it looks like it is all an optional clk. Use the optional clk APIs
-> here so that we don't see this message and everything else is the same.
+> Keyon Jie (1):
+>   ASoC: SOF: ops: print out the polling register
+> 
+> [...]
 
 Applied to
 
@@ -100,8 +104,20 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: qcom: lpass-cpu: Use optional clk APIs
-      commit: af2702549d68519ac78228e915d9b2c199056787
+[1/7] ASoC: SOF: Check desc->ops directly in acpi/pci/of probe functions
+      commit: fd979ec12eebcfb718f2c7c28b336d891d439f85
+[2/7] ASoC: SOF: pci: No need to cast second time to save the desc
+      commit: e5eaa4e66f538b8ba4928785a62edf8ffcf7c053
+[3/7] ASoC: SOF: ops: print out the polling register
+      commit: 3b2e93ed12381fa1c33169202f2cdffbb18157c4
+[4/7] ASoC: SOF: loader: Use snd_sof_dsp_block_read() instead sof_block_read()
+      commit: c03459415c5120fe03dd7d9824880acc8b7f2693
+[5/7] ASoC: SOF: topology: fix assignment to use le32_to_cpu
+      commit: ccaea61a8d1b8180cc3c470e383381884e4bc1f2
+[6/7] ASoC: SOF: ops: don't return void value
+      commit: 4f50f16e9414ea41d5c142fd880faab060472a6b
+[7/7] ASoC: SOF: Intel: hda: Remove conditions against CONFIG_PCI
+      commit: 9d5536e0e1ca8409665bdd80d951941d5ce19b8a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
