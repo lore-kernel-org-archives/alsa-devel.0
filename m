@@ -2,64 +2,71 @@ Return-Path: <SRS0=n5wC=KQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8504C433B4
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 14:24:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09CC8C47078
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 14:27:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 126F060FE3
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 14:24:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 126F060FE3
+	by mail.kernel.org (Postfix) with ESMTPS id ACD81613DD
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 14:27:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ACD81613DD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 448A0169D;
-	Fri, 21 May 2021 16:23:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 448A0169D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 234881699;
+	Fri, 21 May 2021 16:26:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 234881699
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621607072;
-	bh=W7oPrzz9BDM+uHkCD/cVy9caoy8MomZFQ98ykURWn3Q=;
+	s=default; t=1621607219;
+	bh=Ct5m97ifMQ8kpHFuJCVUGJ510IhH3cN0/jcGL6vD+Bs=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MxpgwUm0MDK5P+48UeEow8qpIGMHrNHSxtWgS/Z7ohbh3smSCseY8E4hv6Lv+PPbV
-	 bgpSHVRS1sBoFlnYnSWRFlaOTHBpeiKqdmr+EBclzz4ERY83giF3SaLuz5+fv5OSMe
-	 CxQFyl3kw8K4sxQNKJpUHTdOUWUFWTD21MiKO/1Q=
+	b=h+2DyDSTMEYe4/LlObKjcDK97eOP7smhJU90MzR8KcCybC6pQIGOJzZaDXv/E3IVK
+	 Jugcsm0RPJMVCp6cdwojXDP+SdfWM/vV0CESR7uOz4DyrvuDGUKW2pMDOdYbbDMj9Z
+	 lssBeBRX4Cfehdz+o9dhEyo2Gk3pSjLMnNhOj3No=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B84A8F800E5;
-	Fri, 21 May 2021 16:23:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BEDBCF8016E;
+	Fri, 21 May 2021 16:26:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 03765F801DB; Fri, 21 May 2021 16:23:39 +0200 (CEST)
+ id 46EABF801DB; Fri, 21 May 2021 16:26:07 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E5BCF80153
- for <alsa-devel@alsa-project.org>; Fri, 21 May 2021 16:23:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E5BCF80153
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0B33BF800E5
+ for <alsa-devel@alsa-project.org>; Fri, 21 May 2021 16:26:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B33BF800E5
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 66C0FAC7A;
- Fri, 21 May 2021 14:23:33 +0000 (UTC)
-Date: Fri, 21 May 2021 16:23:33 +0200
-Message-ID: <s5htumwf9ne.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id BA476AAA6;
+ Fri, 21 May 2021 14:26:00 +0000 (UTC)
+Date: Fri, 21 May 2021 16:26:00 +0200
+Message-ID: <s5hr1i0f9jb.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: "Geoffrey D. Bennett" <g@b4.vu>
-Subject: Re: [PATCH 0/2] ALSA: usb-audio: scarlett2: Fix device hang with
- ehci-pci
-In-Reply-To: <cover.1621584566.git.g@b4.vu>
-References: <cover.1621584566.git.g@b4.vu>
+To: <Codrin.Ciubotariu@microchip.com>
+Subject: Re: [RFC PATCH 0/6] soc-pcm: Add separate snd_pcm_runtime for BEs
+In-Reply-To: <2c2661d3-78a8-de55-e976-b87f3658a093@microchip.com>
+References: <20210519104842.977895-1-codrin.ciubotariu@microchip.com>
+ <s5him3eizdf.wl-tiwai@suse.de>
+ <056e560e-d06d-23bc-b041-60890fa51e63@microchip.com>
+ <s5h4keyivdh.wl-tiwai@suse.de>
+ <2c2661d3-78a8-de55-e976-b87f3658a093@microchip.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de,
+ kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, Nicolas.Ferre@microchip.com,
+ pierre-louis.bossart@linux.intel.com, tiwai@suse.com, broonie@kernel.org,
+ joe@perches.com, Cristian.Birsan@microchip.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,33 +82,77 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 21 May 2021 10:20:11 +0200,
-Geoffrey D. Bennett wrote:
+On Thu, 20 May 2021 15:59:02 +0200,
+<Codrin.Ciubotariu@microchip.com> wrote:
 > 
-> This patchset fixes a show-stopper bug with the Scarlett Gen 2 mixer
-> driver not working with the ehci-pci host driver, and improves the
-> user experience with better driver startup messages.
+> On 19.05.2021 18:41, Takashi Iwai wrote:
+> > On Wed, 19 May 2021 17:08:10 +0200,
+> > <Codrin.Ciubotariu@microchip.com> wrote:
+> >>
+> >> On 19.05.2021 17:15, Takashi Iwai wrote:
+> >>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> >>>
+> >>> On Wed, 19 May 2021 12:48:36 +0200,
+> >>> Codrin Ciubotariu wrote:
+> >>>>
+> >>>> This patchset adds a different snd_pcm_runtime in the BE's substream,
+> >>>> replacing the FE's snd_pcm_runtime. With a different structure, the BE
+> >>>> HW capabilities and constraints will no longer merge with the FE ones.
+> >>>> This allows for error detection if the be_hw_params_fixup() applies HW
+> >>>> parameters not supported by the BE DAIs. Also, it calculates values
+> >>>> needed for mem-to-dev/dev-to-mem DMA transfers, such as buffer size and
+> >>>> period size, if needed.
+> >>>>
+> >>>> The first 4 patches are preparatory patches, that just group and export
+> >>>> functions used to allocate and initialize the snd_pcm_runtime. Also, the
+> >>>> functions that set and apply the HW constraints are exported.
+> >>>> The 5th patch does (almost) everything need to create the new snd_pcm_runtime
+> >>>> for BEs, which includes allocation, initializing the HW capabilities,
+> >>>> HW constraints and HW parameters. The BE HW parameters are no longer
+> >>>> copied from the FE. They are recalculated, based on HW capabilities,
+> >>>> constraints and the be_hw_params_fixup() callback.
+> >>>> The 6th and last patch basically adds support for the PCM generic
+> >>>> dmaengine to be used as a platform driver for BE DAI links. It allocates
+> >>>> a buffer, needed by the DMA transfers that do not support dev-to-dev
+> >>>> transfers between FE and BE DAIs.
+> >>>>
+> >>>> This is a superset of
+> >>>> https://mailman.alsa-project.org/pipermail/alsa-devel/2021-March/182630.html
+> >>>> which only handles the BE HW constraints. This patchset aims to be more
+> >>>> complete, defining a a snd_pcm_runtime between each FE and BE and can
+> >>>> be used between any DAI link connection. I am sure I am not handling all
+> >>>> the needed members of snd_pcm_runtime (such as handling
+> >>>> struct snd_pcm_mmap_status *status), but I would like to have your
+> >>>> feedback regarding this idea.
+> >>>
+> >>> I'm also concerned about the handling of other fields in runtime
+> >>> object, maybe allocating a complete runtime object for each BE is an
+> >>> overkill and fragile.  Could it be rather only hw_constraints to be
+> >>> unique for each BE, instead?
+> >>
+> >> I tried with only the hw constraints in the previous patchset and it's
+> >> difficult to handle the snd_pcm_hw_rule_add() calls, without changing
+> >> the function's declaration. This solution requires no changes to
+> >> constraints API, nor to their 'clients'. I agree that handling all the
+> >> runtime fields might be over-complicated. From what I see, the scary
+> >> ones are used to describe the buffer and the status of the transfers. I
+> >> do not think there are BEs that use these values at this moment (the FE
+> >> ones). I think that the HW params, private section, hardware description
+> >> and maybe DMA members (at least in my case) are mostly needed by BEs.
+> > 
+> > OK, I'll check your previous series again, but my gut feeling is for
+> > pursuit to the hw_constraints hacks.  e.g. we may split
+> > snd_pcm_hw_constraints and snd_pcm_hw_rule, too, if that matters.
 > 
-> Patch 1: Fixes the driver hanging the device by using the correct
-> direction pipe now.
-> 
-> Patch 2: Improves the user experience with more specific enabling
-> instructions, positive feedback when it is enabled or if
-> initialisation fails. The previous instructions were incomplete and
-> didn't confirm that the driver was enabled.
-> 
-> #Cc: stable@vger.kernel.org please (sorry, not sure if I should be
-> sending this there myself or if it gets added by Takashi after
-> review?)
+> Something like adding snd_pcm_hw_rule directly under
+> snd_pcm_runtime, to store the BE constraints? It could work, but I think 
+> we should also be able to remove rules, if one BE gets disconnected. 
+> This means that we will need a way to identify or separate them, for 
+> each BE, right?
 
-No problem, I added manually at applying.
-
-> 
-> Geoffrey D. Bennett (2):
->   ALSA: usb-audio: scarlett2: Fix device hang with ehci-pci
->   ALSA: usb-audio: scarlett2: Improve driver startup messages
-
-Applied both patches now.  Thanks.
+Well, if each BE needs a different set of hw constraint rules, it
+needs its own unique copies instead of sharing the rules.  Is it your
+requirement?
 
 
 Takashi
