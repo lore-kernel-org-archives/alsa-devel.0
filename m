@@ -2,64 +2,66 @@ Return-Path: <SRS0=n5wC=KQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F18FC433B4
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 14:19:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3B0CC433ED
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 14:20:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 782F3613E2
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 14:19:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 782F3613E2
+	by mail.kernel.org (Postfix) with ESMTPS id CB4C8613E2
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 14:20:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB4C8613E2
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2AE85169D;
-	Fri, 21 May 2021 16:18:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2AE85169D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 18ACA16A5;
+	Fri, 21 May 2021 16:20:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18ACA16A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621606786;
-	bh=akQ4sS1I+glwXpOeHLwosp4Cy0RYEw+3rdwBW9kjM9I=;
+	s=default; t=1621606856;
+	bh=NY7uswuerxrk9O1SUY3jjDFKfUvzUNXh8eVG0fDPLPE=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RUW4NYNf44GQ16DURi/cs9lNkUzXm9Vdxm8iY2yC7EAJ4+2SxnuJm6gkle1rOHWpA
-	 JmPjU5EhcTh5Vnd8WLbWImVHyAPI811sv4swTVoLRYhJ2UugBjLxzVyNDPJxERGEoz
-	 TayCPZcBFPtnIVWTbUawCItd7m5DAkjgS4yrEHiQ=
+	b=soMztPVcvZVaJx3MuoPRgcC5DwH6lxvUwtPXN8YJuso7YvQB6+KvTqPJBXpvx47Hm
+	 KR+PeLyRx5FcREIu753G5YxGNcGYjiZ5OeT2Ip13qiru+E67uUsb4u7+g0ceR9cj5l
+	 4GLAvx599StFw5JcCzZZPiGKk7Wp8lge97YGt4oI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 22FE7F80153;
-	Fri, 21 May 2021 16:18:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9E4F9F80246;
+	Fri, 21 May 2021 16:20:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 881A4F801DB; Fri, 21 May 2021 16:18:52 +0200 (CEST)
+ id 3E850F80249; Fri, 21 May 2021 16:20:04 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 806D2F80153
- for <alsa-devel@alsa-project.org>; Fri, 21 May 2021 16:18:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 806D2F80153
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5227FF80153
+ for <alsa-devel@alsa-project.org>; Fri, 21 May 2021 16:20:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5227FF80153
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 7D8B1AAA6;
- Fri, 21 May 2021 14:18:42 +0000 (UTC)
-Date: Fri, 21 May 2021 16:18:42 +0200
-Message-ID: <s5hwnrsf9vh.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 3FE0DAC11;
+ Fri, 21 May 2021 14:19:59 +0000 (UTC)
+Date: Fri, 21 May 2021 16:19:59 +0200
+Message-ID: <s5hv97cf9tc.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [bug report] ALSA: usb-audio: Handle error for the current
- selector gracefully
-In-Reply-To: <YKeltyIlWG//CfYi@mwanda>
-References: <YKeltyIlWG//CfYi@mwanda>
+To: Johan Hovold <johan@kernel.org>
+Subject: Re: [PATCH] ALSA: usb-audio: fix control-request direction
+In-Reply-To: <20210521133742.18098-1-johan@kernel.org>
+References: <20210521133742.18098-1-johan@kernel.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, "Geoffrey D. Bennett" <g@b4.vu>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,21 +77,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 21 May 2021 14:21:11 +0200,
-Dan Carpenter wrote:
+On Fri, 21 May 2021 15:37:42 +0200,
+Johan Hovold wrote:
 > 
-> Hello Takashi Iwai,
+> The direction of the pipe argument must match the request-type direction
+> bit or control requests may fail depending on the host-controller-driver
+> implementation.
 > 
-> The patch 481f17c41803: "ALSA: usb-audio: Handle error for the
-> current selector gracefully" from May 18, 2021, leads to the
-> following static checker warning:
+> Fix the UAC2_CS_CUR request which erroneously used usb_sndctrlpipe().
 > 
-> 	sound/usb/clock.c:338 __uac_clock_find_source()
-> 	error: uninitialized symbol 'cur'.
+> Fixes: 93db51d06b32 ("ALSA: usb-audio: Check valid altsetting at parsing rates for UAC2/3")
+> Cc: stable@vger.kernel.org      # 5.10
+> Signed-off-by: Johan Hovold <johan@kernel.org>
 
-Thanks, this has been already reported by Colin, and the fix is on its
-way:
- https://lore.kernel.org/r/s5hfsyhh97t.wl-tiwai@suse.de
+Thanks, applied now.
+
+> ---
+> 
+> There's a related bug in sound/usb/mixer_scarlett_gen2.c, which
+> Geoffrey reported and said he was preparing a patch for here:
+> 
+> 	https://lore.kernel.org/r/20210520180819.GA95348@m.b4.vu
+
+Yes, I'm going to apply them now, too.
 
 
 Takashi
