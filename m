@@ -2,88 +2,120 @@ Return-Path: <SRS0=n5wC=KQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-20.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D760C04FF3
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 20:19:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E50CC04FF3
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 22:22:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CEC06613EA
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 20:18:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CEC06613EA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 40CE8613AF
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 22:22:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 40CE8613AF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 841DA16BF;
-	Fri, 21 May 2021 22:18:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 841DA16BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 077AF169C;
+	Sat, 22 May 2021 00:22:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 077AF169C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621628336;
-	bh=lhMpSXxA7fPCFl6g7e1aOrOLDPd6KFq4agHf5hdY5u8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1621635776;
+	bh=h9UKH7WJK8PH6MNlm+WUB1wHzLFT9LPT7y0vzDo85OQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XQkKz43qbNLBiYnFTHYcmvuPbKXkoNKdkqLVzWGAY7qVNhmvTi+IWfdJc/N+oxgmT
-	 DtUwaN5/+lCOnAMBlSY0ZOlcUe7u7HkRAcwF6XBgNiYK/EivoVjycRgMTAEtQZSBKY
-	 RV/pKcHORimiObUikcvw7OjccHDyikLM/Wno2sIU=
+	b=KOW5a6IfVXE2gvwx+/3zYnHWHQzd9X4y/22sacDWUQxERLKLVgqn/sJeQehfhRPvi
+	 UI53GgTLzisi7ys7KXQjnwX+stY52nHKsqd0zryQfW+49iXrOq8cwqpjItzUU2gRcR
+	 NoGWKNZ9+LtDOqNKUShInB9N5ggKgAAh5VdTli3A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 120E0F8016E;
-	Fri, 21 May 2021 22:18:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 86BC9F8016E;
+	Sat, 22 May 2021 00:22:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EAA19F801DB; Fri, 21 May 2021 22:18:04 +0200 (CEST)
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com
- [IPv6:2607:f8b0:4864:20::835])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id EF389F801DB; Sat, 22 May 2021 00:22:03 +0200 (CEST)
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C15C4F800E5
- for <alsa-devel@alsa-project.org>; Fri, 21 May 2021 22:17:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C15C4F800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id B911FF800E5
+ for <alsa-devel@alsa-project.org>; Sat, 22 May 2021 00:21:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B911FF800E5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="NtYDl6wk"
-Received: by mail-qt1-x835.google.com with SMTP id c10so16212953qtx.10
- for <alsa-devel@alsa-project.org>; Fri, 21 May 2021 13:17:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=lALXTrtuzBL6U47ezWjlHPry6M4Q3hJ0ZXqmWa/oTS8=;
- b=NtYDl6wkQWqCxxPTvR6Ar4CNJg4wGlszLkksjpntX1YPWp3rn0bLJKuunSTYFaF6ro
- Eu6mZ8ZkOSGy6WHXgzRyxtz7ZsUH8/9Ec2mWziPzsERq2VIuounde86uUG+7AvKKlqbi
- 0j91jXUvR8QdA01AJflXw7kE+PkKkmvPZLOxqY9naGAsmweS6e7qZO9MwAa3YpHWy103
- T4APckTZAPE72lOE0BhcUww5jAxADZTpWlv5kI3O+B3JryPUu0gufCHgov6lypCOw4TI
- X3iReAISl0VNqwrr63Xuyn3YwJhs5NPVMxnwPS2y2VbD68DhEsFWw+3jJYJxpTCkWBJC
- BWXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=lALXTrtuzBL6U47ezWjlHPry6M4Q3hJ0ZXqmWa/oTS8=;
- b=h9uZsafTaJxuzBlGJqTUEAU63vkjjRaesB8FwUePs3lN05+rkqX6VPM+OGQNZZSAY6
- Xk8OvAqEb+9JYEjNb0qDSS62jRuPdYHHcZNiqyhA+rswHImOm4dRi9NAfhVt36g+DyL7
- Jr07vwrn5GnSw/Mu8/dqUR9IzkC6dJG1Inz4M4ePNOXgheLnDqgqZ9/G4ATFg3x01IYt
- /iUeSOrO/TaEgffKLbbDTMalPZnZJp7QlPd5J29qhs9S1uxbogtOfa1Cn7TIgeFwMOxz
- bIEuJoCZsrRoE+jm6r/Y4Sc6+/Fq7iyJnGZXII/zNiODzXH1IwWxCtQY7IzwaRjLRXdn
- NOuw==
-X-Gm-Message-State: AOAM533j5KDQqAfDFM3TSiQF57nJdjVEHnzNaDTixZp2kQuZaVoYCPxB
- aRUEFC8NmIZawp1+M0WthEA8NRG0rgG6QvpEeEM=
-X-Google-Smtp-Source: ABdhPJztn+XA/IWmE58o0jYP3iRXwrbk85mgCL8IwMmabO9Yn6nW+ARk2JCwbKdkj02DwG0CpEc1/CDF261r6OxD+Jo=
-X-Received: by 2002:ac8:4b42:: with SMTP id e2mr13251421qts.210.1621628274416; 
- Fri, 21 May 2021 13:17:54 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
+ header.b="LkI3WILX"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="ud4jTohy"
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+ by mailout.nyi.internal (Postfix) with ESMTP id 9EE545C0255;
+ Fri, 21 May 2021 18:21:53 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute3.internal (MEProxy); Fri, 21 May 2021 18:21:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+ h=date:from:to:subject:message-id:references:mime-version
+ :content-type:in-reply-to; s=fm1; bh=HprtPpMhZPJmDlJYV2vvwIuW3Xh
+ ypTk3HvX2jemPm8I=; b=LkI3WILXtfFuMxzWvJNef0Sr8gYyo2saSzIvJBVzQ+d
+ yd8G5BXzvpHlBuFDAIdAeU9myE0+jcRwLMdljEcSZLb2EOnNTHnixMa+q7mIvU/h
+ 7IFOv2DW9WD0NAf1zKqOoJDU1QRBGFmnLH2i2Ys8sqd4n2ASOI3gd//JTn0RxeTl
+ xLmHuMbr/+yDDXkuGfw+m5Int4pbaD32NCiI1OJu/WrjSxcEZ09RJIqF3Np9ZYVY
+ DkZwsY4k512Y81zIrojP7MKlF6o9XZUqE/KoPC7GGvPxt2q2h8dTpZGsCgSZPrme
+ /oc/mPO8SKmHgi05RNskhXMBl8boC3WpLZfDvoXDKTQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=HprtPp
+ MhZPJmDlJYV2vvwIuW3XhypTk3HvX2jemPm8I=; b=ud4jTohy2a+Da9jXGiwC8s
+ g/ikCoNIGxf51EKQdW6u7B8WhUezjBzXIwqDGQw5XI3YLmUpVexNPYHJfK0RkeRu
+ QqvJyQUj19DGjwDvpxFFbUl0FgPCEcEFxO2NoEbY2ygE7/gX2hBuq3udpmJcsZaZ
+ CMttXnVP0sWRC8ehgNsktACtMpQon4Smn2K2BlBJZfdffr9i0PgkSqm43SvisWgA
+ cw/6LhVYDUMwn87kMsLYd67luqW+Zp/2jtozu+1cx9lEfcfN4XU2sQ7PJlXzQk1C
+ MKrX0xC71LQLLRWWTxUYrYD2wIJ52PTdrIboNZ5AQHK0m/LAF3of8dLksqRYMkcQ
+ ==
+X-ME-Sender: <xms:fzKoYKw9skYHzzqLy70dR3A-hPrCS_iIhoNV5D-vl4YdFKbjCFg3UQ>
+ <xme:fzKoYGTm0oem5gu7_-QAThgCV98AUoNjrAfEAUFWgQN5U9rxNYYTDhD00DaYSF6Va
+ CMri12lEV_7uI9Nz_o>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejgedgtdekucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvrghkrghs
+ hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
+ hpqeenucggtffrrghtthgvrhhnpeejgeeifeeuveeufeeigeegjeelvdfgjeegffejgfdv
+ keelhefgtdefteejleekjeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppe
+ dugedrfedrieehrddujeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
+ rghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:fzKoYMVIWmMTgrXq0M1CGZ382_iMkSVs5ngIxBWtduSRWcqW9KjUiQ>
+ <xmx:fzKoYAhmUZua3gr1RVgd2v2ZsGdT4OS5Ki5BpEw32Kg6XoNj6Fr7HA>
+ <xmx:fzKoYMBl934ir2pPZSzH6rF9DaO3XpFB5FR1rNA-c8hanz6_2nMYXQ>
+ <xmx:gTKoYL540uhhHNo7o6zuVA9kb-BHj1a5ckL0dULXUCHjVNuGgr30hQ>
+Received: from workstation (ae065175.dynamic.ppp.asahi-net.or.jp [14.3.65.175])
+ by mail.messagingengine.com (Postfix) with ESMTPA;
+ Fri, 21 May 2021 18:21:49 -0400 (EDT)
+Date: Sat, 22 May 2021 07:21:46 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Takashi Iwai <tiwai@suse.de>, Colin King <colin.king@canonical.com>,
+ Clemens Ladisch <clemens@ladisch.de>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] ALSA: firewire-lib: Fix uninitialized variable err
+ issue
+Message-ID: <20210521222146.GA10202@workstation>
+Mail-Followup-To: Takashi Iwai <tiwai@suse.de>,
+ Colin King <colin.king@canonical.com>,
+ Clemens Ladisch <clemens@ladisch.de>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20210520083424.6685-1-colin.king@canonical.com>
+ <s5hh7ixh9qn.wl-tiwai@suse.de>
+ <20210520130409.GA170303@workstation>
 MIME-Version: 1.0
-References: <S90HTQ.U7YWJKIETGYG2@gmail.com>
-In-Reply-To: <S90HTQ.U7YWJKIETGYG2@gmail.com>
-From: Geraldo Nascimento <geraldogabriel@gmail.com>
-Date: Fri, 21 May 2021 17:12:18 -0300
-Message-ID: <CAEsQvct-zfxAFCO_rGJTh+eeNyq1MELekxoYKh51EM-wYKWqEQ@mail.gmail.com>
-Subject: Re: Motu M4 - where to report this issue?
-To: Georges Basile Stavracas Neto <georges.stavracas@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210520130409.GA170303@workstation>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,70 +131,120 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, May 21, 2021 at 3:50 PM Georges Basile Stavracas Neto
-<georges.stavracas@gmail.com> wrote:
->
-> Greetings ALSA community,
+Hi,
 
-Hey, Georges!
+On Thu, May 20, 2021 at 10:04:09PM +0900, Takashi Sakamoto wrote:
+> Hi,
+> 
+> On Thu, May 20, 2021 at 02:26:24PM +0200, Takashi Iwai wrote:
+> > On Thu, 20 May 2021 10:34:24 +0200,
+> > Colin King wrote:
+> > > 
+> > > From: Colin Ian King <colin.king@canonical.com>
+> > > 
+> > > Currently in the case where the payload_length is less than the
+> > > cip_header_size the error return variable err is not being set
+> > > and function parse_ir_ctx_header can return an uninitialized
+> > > error return value. Fix this by setting err to zero.
+> > > 
+> > > Addresses-Coverity: ("Uninitialized scalar variable")
+> > > Fixes: c09010eeb373 ("ALSA: firewire-lib: handle the case that empty isochronous packet payload for CIP")
+> > > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> > 
+> > Just a bikeshed, IMO, it'd be more proper to initialize err at the
+> > beginning than setting 0 at every branch, e.g.
+> > 
+> > --- a/sound/firewire/amdtp-stream.c
+> > +++ b/sound/firewire/amdtp-stream.c
+> > @@ -652,7 +652,7 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+> >  	unsigned int payload_length;
+> >  	const __be32 *cip_header;
+> >  	unsigned int cip_header_size;
+> > -	int err;
+> > +	int err = 0;
+> >  
+> >  	payload_length = be32_to_cpu(ctx_header[0]) >> ISO_DATA_LENGTH_SHIFT;
+> >  
+> > @@ -683,7 +683,6 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+> >  		}
+> >  	} else {
+> >  		cip_header = NULL;
+> > -		err = 0;
+> >  		*data_blocks = payload_length / sizeof(__be32) / s->data_block_quadlets;
+> >  		*syt = 0;
+> 
+> Thanks for the patches.
+> 
+> The error check is just done for the case to process CIP header, thus we
+> can put the auto variable into the branch.
+> 
+> ======== 8< --------
+> From 3fcca0062297e937c665f1c8e3a117e1187f4115 Mon Sep 17 00:00:00 2001
+> From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> Date: Thu, 20 May 2021 21:59:50 +0900
+> Subject: [PATCH] ALSA: firewire-lib: Fix uninitialized variable err issue
+> 
+> The check of error is just done for the case that CIP header is available.
+> 
+> This commit moves auto variable into the branch to process CIP header.
+> 
+> Addresses-Coverity: ("Uninitialized scalar variable")
+> Fixes: c09010eeb373 ("ALSA: firewire-lib: handle the case that empty isochronous packet payload for CIP")
+> Suggested-by: Colin Ian King <colin.king@canonical.com>
+> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> ---
+>  sound/firewire/amdtp-stream.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+> index 37c8de8a..11ae4e88 100644
+> --- a/sound/firewire/amdtp-stream.c
+> +++ b/sound/firewire/amdtp-stream.c
+> @@ -748,7 +748,6 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+>  	unsigned int payload_length;
+>  	const __be32 *cip_header;
+>  	unsigned int cip_header_size;
+> -	int err;
+>  
+>  	payload_length = be32_to_cpu(ctx_header[0]) >> ISO_DATA_LENGTH_SHIFT;
+>  
+> @@ -766,6 +765,8 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+>  
+>  	if (cip_header_size > 0) {
+>  		if (payload_length >= cip_header_size) {
+> +			int err;
+> +
+>  			cip_header = ctx_header + IR_CTX_HEADER_DEFAULT_QUADLETS;
+>  			err = check_cip_header(s, cip_header, payload_length - cip_header_size,
+>  					       data_blocks, data_block_counter, syt);
+> @@ -779,7 +780,6 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+>  		}
+>  	} else {
+>  		cip_header = NULL;
+> -		err = 0;
+>  		*data_blocks = payload_length / sizeof(__be32) / s->data_block_quadlets;
+>  		*syt = 0;
+>  
+> @@ -790,7 +790,7 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+>  	trace_amdtp_packet(s, cycle, cip_header, payload_length, *data_blocks,
+>  			   *data_block_counter, packet_index, index);
+>  
+> -	return err;
+> +	return 0;
+>  }
+>  
+>  // In CYCLE_TIMER register of IEEE 1394, 7 bits are used to represent second. On
+> -- 
+> 2.27.0
+> ======== 8< --------
 
->
-> I recently acquired a Motu M4 interface, and seems to be working
-> well so far. Everyday usage is completely functional.
->
-> However, I noticed an odd sound artifact that happens from time
-> to time when using DAWs like Ardour and Waveform11. It's a windy,
-> ghostly sound that happens whenever I open any DAWs (the simple
-> act of opening them triggers this). Interestingly, audio apps that
-> use PulseAudio do not suffer from this issue. It's hard to describe
-> it, so I recorded a video reproducing this problem:
->
-> https://youtu.be/bM8x-YuXLVI
->
-> A few things I've discovered while trying to understand what's
-> going on:
->
-> * It only happens with apps that use JACK or ALSA APIs. Using
->   PulseAudio (through PipeWire) does not trigger it.
+Thanks for applying the patch but the commit in your tree includes
+duplicated From/Data/Subject lines and causes failure of git-am for the
+patch simply generated by git-am. Is it possible for you to modify
+history of your for-next branch with enough correction?
 
-I assume you are using PipeWire for JACK support and using "pw-jack
-ardour" for example to start Ardour.
+ * https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/commit/?id=b493305483cb609abcf24c56f7415746c7e6939a
 
-Could you stop PipeWire with "systemctl --user stop pipewire.service
-pipewire.socket pipewire-media-session.service pipewire-pulse.service
-pipewire-pulse.socket" and try to reproduce your issue using the
-aplay/arecord commands?
+Regards
 
-Does the dmesg show anything unusual? Perhaps you should enable the
-kernel boot option "snd_usb_audio.dyndbg=+p"
-
->
-> * Seems like this sound is not an artifact of the interface; it
->   appears that this odd sound is sent to the interface through
->   USB. (You can see this in the video.)
->
-> * It's triggered per track; in the video, for example, the drums
->   and keyboard tracks are affected independetly.
->
-> I was oriented in #alsa at Freenode that the output of 'alsa-info'
-> might be helpful, so here it is:
->
-> http://alsa-project.org/db/?f=62f686710cc6c9344a8986707bf3d09248c514d1
->
-> (I'm running this on top of a 5.12.5 kernel, which should include
-> this fix: https://bugzilla.kernel.org/show_bug.cgi?id=207023)
->
-> I'd like to know where should I report this bug (kernel bugzilla?),
-> and if there's any other information I can provide to help fixing
-> it.
-
-Bugzilla definitely is the way to go.
-
-You may need to recompile your kernel with suggested patch changes
-over and over again.
-
->
-> With respect,
-> Georges
->
->
+Takashi Sakamoto
