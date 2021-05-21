@@ -2,104 +2,87 @@ Return-Path: <SRS0=n5wC=KQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18DADC433ED
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 12:22:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB489C433ED
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 13:13:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B1F84613C8
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 12:22:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B1F84613C8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	by mail.kernel.org (Postfix) with ESMTPS id B352C613D8
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 13:13:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B352C613D8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9BDE9169D;
-	Fri, 21 May 2021 14:21:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BDE9169D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 92906169C;
+	Fri, 21 May 2021 15:12:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92906169C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621599749;
-	bh=t6T4tINt2eUlgoGoQbVyrv/GWwyKX2KIjM2MzkTppi0=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=m0oxQq30oLoU9FTZQmkQ5tIdbYKkOZBzLSxlhx0bZ9zhrE0VQkVSgSP8qWzRJxgch
-	 7q59JwpWV/lFr7o+tQD0c9kr9ucrizRb+tvl3y09VGUwm7FIs5hu6qid69z5wqcRl+
-	 Ie/+m8I5nzIAWDvp9kIVye9xoEC8wPFLPSBjuSpo=
+	s=default; t=1621602814;
+	bh=WV93ac5ZhlCwFgf6IyKsZeNswhyFdcaTvlclJSnC6jY=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=MBQCx5Ci0KS9wnrqkGaZZA119SjKh95ykXdRBLtrK7wEAQDtdvTKiK5/2qjy2/1ka
+	 X9LUCIVAEqfxy+bmDV6bxb9+UTCVUTAwSNIQhYCSrP8+YhvuaOfB2jyETgjLcTw7Uc
+	 odSPYNhgsYwp87CUS5FlnI+x1DfmCh8ijUY9t2ig=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 240D3F8016E;
-	Fri, 21 May 2021 14:21:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13398F801DB;
+	Fri, 21 May 2021 15:12:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6ECA2F801DB; Fri, 21 May 2021 14:21:37 +0200 (CEST)
-Received: from userp2120.oracle.com (userp2120.oracle.com [156.151.31.85])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 06F91F80246; Fri, 21 May 2021 15:12:42 +0200 (CEST)
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com
+ [209.85.167.173])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7EA66F800C1
- for <alsa-devel@alsa-project.org>; Fri, 21 May 2021 14:21:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7EA66F800C1
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
- header.b="ovPvmuyv"
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
- by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14LC9mik191435;
- Fri, 21 May 2021 12:21:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=J6Z7C57gx3aY9ETcNeaXejiQ/8jacXIO7vDiLhEG72o=;
- b=ovPvmuyvam/G6Ts2UdZ6jg4pcYNVQnEuNTWAsZQLLGBLIfkyZumosPs5S/xQBwkqIyb1
- OBWTfhpdXANEv0BdgUYiphOO2mOrxWWZFsUauwRPNZ7F1xyu/AeiHxuqM8zvPw34de8S
- XPSH89slQfucOUcnLu7flB3XxVWAsvaT+F+kd3a0VQuUWMC2iYUjmGMJ7+qV8r0KEAer
- hXYNCtuFzBiVfw3zswpwSQvzj4+EKRJWSxdJP/i4wQG1PgopuRcudPCo+RK/BiyHBLBl
- eBEwa2geD27L4+oo2mgh2k8Mj4v3hV+thllltQ6YbqPfmiYumjvQTctcI7+sCG9wD88w DA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
- by userp2120.oracle.com with ESMTP id 38j6xnqf27-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 21 May 2021 12:21:21 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
- by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14LCBcbN177464;
- Fri, 21 May 2021 12:21:20 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
- by aserp3030.oracle.com with ESMTP id 38meehr1wf-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 21 May 2021 12:21:20 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
- by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14LCLKK6001973;
- Fri, 21 May 2021 12:21:20 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
- by aserp3030.oracle.com with ESMTP id 38meehr1w5-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 21 May 2021 12:21:20 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
- by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14LCLG19013757;
- Fri, 21 May 2021 12:21:19 GMT
-Received: from mwanda (/41.212.42.34) by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Fri, 21 May 2021 05:21:16 -0700
-Date: Fri, 21 May 2021 15:21:11 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: tiwai@suse.de
-Subject: [bug report] ALSA: usb-audio: Handle error for the current selector
- gracefully
-Message-ID: <YKeltyIlWG//CfYi@mwanda>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Proofpoint-GUID: WgKLYeQe8TcXUj_REdRxryN6ljzokHF1
-X-Proofpoint-ORIG-GUID: WgKLYeQe8TcXUj_REdRxryN6ljzokHF1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9990
- signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0
- mlxscore=0
- mlxlogscore=999 adultscore=0 malwarescore=0 priorityscore=1501
- phishscore=0 suspectscore=0 lowpriorityscore=0 bulkscore=0 clxscore=1011
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105210074
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6E923F80153
+ for <alsa-devel@alsa-project.org>; Fri, 21 May 2021 15:12:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E923F80153
+Received: by mail-oi1-f173.google.com with SMTP id x15so19554490oic.13
+ for <alsa-devel@alsa-project.org>; Fri, 21 May 2021 06:12:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+ :message-id;
+ bh=F5/FDLp99kYvDUFQHD2N7h0ExV2sVgHTRXMIb5zlU0A=;
+ b=VrSN/CxBkgq+pmUj4ih4NCKGJ4enxCK8qVYQ9WhNji+k9e/95c5xZQFZQq6xDu4SWW
+ cLkK5JJrHd2PN1K2/xsJDU52f5+o5IDNCmclYzPVJLIYgKcCiviub6+aHli3YrR0i5oR
+ mqr80hTvuV/vhXv47PvxpDTKTu5RKZBozI/7fousOWTCXzSLZaZLza2jDcazbumI50tb
+ UP8+uUyNb0VvLOlnqgeiLt05f0acagc3lP2fbLKkpwRONWZOx9aIQWY3Gd/fqqvrwE91
+ CAOsOAII7903ReHrR2KXEzOriRo3toxtXOWrUxGE7W2X5R66RwODQpBGVLAn4GKRfceq
+ Xfkw==
+X-Gm-Message-State: AOAM533HspSSWRqGHxb7QTHE+64USdYovv1lkjzQ2sDXHbtgU62TvtwB
+ LXSQcxEwhs7djvAhvkauxA==
+X-Google-Smtp-Source: ABdhPJy6cVgU2la1V7JAKJtCsrt8M8thmK+xhj1dCw7mcPs57IkquhQXoo9A6yq0bJujKlFT+Zp4Hg==
+X-Received: by 2002:aca:4fc2:: with SMTP id d185mr2073811oib.123.1621602754559; 
+ Fri, 21 May 2021 06:12:34 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net.
+ [24.155.109.49])
+ by smtp.gmail.com with ESMTPSA id q22sm1235945otl.11.2021.05.21.06.12.32
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 21 May 2021 06:12:33 -0700 (PDT)
+Received: (nullmailer pid 3780504 invoked by uid 1000);
+ Fri, 21 May 2021 13:12:32 -0000
+From: Rob Herring <robh@kernel.org>
+To: Oleksij Rempel <o.rempel@pengutronix.de>
+In-Reply-To: <20210521122129.1371-1-o.rempel@pengutronix.de>
+References: <20210521122129.1371-1-o.rempel@pengutronix.de>
+Subject: Re: [PATCH v1] ASoC: dt-bindings: Convert imx-audmux binding to json
+ schema
+Date: Fri, 21 May 2021 08:12:32 -0500
+Message-Id: <1621602752.149998.3780503.nullmailer@robh.at.kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Fabio Estevam <festevam@gmail.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+ linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
+ NXP Linux Team <linux-imx@nxp.com>, kernel@pengutronix.de,
+ Shawn Guo <shawnguo@kernel.org>, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -115,115 +98,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello Takashi Iwai,
+On Fri, 21 May 2021 14:21:29 +0200, Oleksij Rempel wrote:
+> Convert the imx-audmux binding to DT schema format using json-schema
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  .../devicetree/bindings/sound/imx-audmux.txt  |  28 -----
+>  .../devicetree/bindings/sound/imx-audmux.yaml | 119 ++++++++++++++++++
+>  2 files changed, 119 insertions(+), 28 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/imx-audmux.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/imx-audmux.yaml
+> 
 
-The patch 481f17c41803: "ALSA: usb-audio: Handle error for the
-current selector gracefully" from May 18, 2021, leads to the
-following static checker warning:
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-	sound/usb/clock.c:338 __uac_clock_find_source()
-	error: uninitialized symbol 'cur'.
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/sound/imx-audmux.yaml:16:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+./Documentation/devicetree/bindings/sound/imx-audmux.yaml:17:11: [warning] wrong indentation: expected 12 but found 10 (indentation)
+./Documentation/devicetree/bindings/sound/imx-audmux.yaml:20:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+./Documentation/devicetree/bindings/sound/imx-audmux.yaml:21:11: [warning] wrong indentation: expected 12 but found 10 (indentation)
 
-sound/usb/clock.c
-   254  static int __uac_clock_find_source(struct snd_usb_audio *chip,
-   255                                     const struct audioformat *fmt, int entity_id,
-   256                                     unsigned long *visited, bool validate)
-   257  {
-   258          union uac23_clock_source_desc *source;
-   259          union uac23_clock_selector_desc *selector;
-   260          union uac23_clock_multiplier_desc *multiplier;
-   261          int ret, i, cur, err, pins, clock_id;
-                            ^^^
+dtschema/dtc warnings/errors:
 
-   262          const u8 *sources;
-   263          int proto = fmt->protocol;
-   264  
-   265          entity_id &= 0xff;
-   266  
-   267          if (test_and_set_bit(entity_id, visited)) {
-   268                  usb_audio_warn(chip,
-   269                           "%s(): recursive clock topology detected, id %d.\n",
-   270                           __func__, entity_id);
-   271                  return -EINVAL;
-   272          }
-   273  
-   274          /* first, see if the ID we're looking for is a clock source already */
-   275          source = snd_usb_find_clock_source(chip, entity_id, proto);
-   276          if (source) {
-   277                  entity_id = GET_VAL(source, proto, bClockID);
-   278                  if (validate && !uac_clock_source_is_valid(chip, fmt,
-   279                                                                  entity_id)) {
-   280                          usb_audio_err(chip,
-   281                                  "clock source %d is not valid, cannot use\n",
-   282                                  entity_id);
-   283                          return -ENXIO;
-   284                  }
-   285                  return entity_id;
-   286          }
-   287  
-   288          selector = snd_usb_find_clock_selector(chip, entity_id, proto);
-   289          if (selector) {
-   290                  pins = GET_VAL(selector, proto, bNrInPins);
-   291                  clock_id = GET_VAL(selector, proto, bClockID);
-   292                  sources = GET_VAL(selector, proto, baCSourceID);
-   293  
-   294                  if (pins == 1) {
-   295                          ret = 1;
-   296                          goto find_source;
-   297                  }
-   298  
-   299                  /* the entity ID we are looking for is a selector.
-   300                   * find out what it currently selects */
-   301                  ret = uac_clock_selector_get_val(chip, clock_id);
-   302                  if (ret < 0) {
-   303                          if (!chip->autoclock)
-   304                                  return ret;
-   305                          goto find_others;
-                                ^^^^^^^^^^^^^^^^^
-Assume we hit one of these gotos
+See https://patchwork.ozlabs.org/patch/1482202
 
-   306                  }
-   307  
-   308                  /* Selector values are one-based */
-   309  
-   310                  if (ret > pins || ret < 1) {
-   311                          usb_audio_err(chip,
-   312                                  "%s(): selector reported illegal value, id %d, ret %d\n",
-   313                                  __func__, clock_id, ret);
-   314  
-   315                          if (!chip->autoclock)
-   316                                  return -EINVAL;
-   317                          ret = 0;
-   318                          goto find_others;
-                                ^^^^^^^^^^^^^^^^^
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
 
-   319                  }
-   320  
-   321          find_source:
-   322                  cur = ret;
-   323                  ret = __uac_clock_find_source(chip, fmt,
-   324                                                sources[ret - 1],
-   325                                                visited, validate);
-   326                  if (ret > 0) {
-   327                          err = uac_clock_selector_set_val(chip, entity_id, cur);
-   328                          if (err < 0)
-   329                                  return err;
-   330                  }
-   331  
-   332                  if (!validate || ret > 0 || !chip->autoclock)
-   333                          return ret;
-   334  
-   335          find_others:
-   336                  /* The current clock source is invalid, try others. */
-   337                  for (i = 1; i <= pins; i++) {
-   338                          if (i == cur)
-                                    ^^^^^^^^
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-   339                                  continue;
-   340  
-   341                          ret = __uac_clock_find_source(chip, fmt,
-   342                                                        sources[i - 1],
-   343 
+pip3 install dtschema --upgrade
 
-regards,
-dan carpenter
+Please check and re-submit.
+
