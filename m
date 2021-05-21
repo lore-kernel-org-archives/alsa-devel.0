@@ -7,73 +7,69 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FAFDC47078
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 16:02:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ADC96C47078
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 16:03:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6469C613E3
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 16:02:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6469C613E3
+	by mail.kernel.org (Postfix) with ESMTPS id 25DC3613DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 16:03:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25DC3613DB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EB7A916B8;
-	Fri, 21 May 2021 18:01:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB7A916B8
+	by alsa0.perex.cz (Postfix) with ESMTPS id A7B9F16C8;
+	Fri, 21 May 2021 18:02:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7B9F16C8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621612965;
-	bh=uPr4t8BTIAG0Cxk+ER6BIjSABqBvHG4M6YVWtkhoFGY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=gPOlFOyBL2BMaYJhtGgsT7L1mtybmz+JuzTVKPNUJQI9NSAsa+lMOdyG8qq9aTLp5
-	 S4Ogzhus+c/Qrrf0NtU35eyZ30/aDwZeP9MFMp3prxdwg9Sp/VqNb73TWBYhlr08VA
-	 b+NhN5OY7lhv6+0RGmGea8TZFS/O1TIzAFxlPNDE=
+	s=default; t=1621613017;
+	bh=HNRRmYnaIxK3RXvhVtRukWmQRs1d3CBVriDT5nwayjk=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=LRexbF7qupWtzo0uCnuMSTFBbEKpnvWG+mbtHEaexyzq30TF8DdOwdSEwRQcGat/8
+	 VlSZZsTzQWMyScLrICwbbXdRcYhFxndsSTUBa0Fuyb0mKApRtrf7wCcJiPHo1CWB0N
+	 AH7SVc5bWMYkKTFNADo0GTp/rMXlNZKg6hDR9H8s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87D6CF8016E;
-	Fri, 21 May 2021 18:01:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22602F80249;
+	Fri, 21 May 2021 18:02:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16BB4F801DB; Fri, 21 May 2021 18:01:53 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id 3E5F3F80258; Fri, 21 May 2021 18:02:28 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E4771F800C1
- for <alsa-devel@alsa-project.org>; Fri, 21 May 2021 18:01:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4771F800C1
-IronPort-SDR: lgE2tLFBJesF5eTBdGncnNbnG9HwTbTTjJrmlPQkq8Gl+HLzxcgmKXGGtQ5W2mf/Aadp5sOwOR
- PxNlNA7eUAEg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="265421339"
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; d="scan'208";a="265421339"
+ by alsa1.perex.cz (Postfix) with ESMTPS id AB39CF800E5
+ for <alsa-devel@alsa-project.org>; Fri, 21 May 2021 18:02:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB39CF800E5
+IronPort-SDR: 0hp8etg4aTq0sonx8G5ui71K7UaF4k02NWLj7/R721HTjDy5syUqAd4HUNf6fNZ7YxakNaPymd
+ h+NjKbavOzgg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="198430680"
+X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; d="scan'208";a="198430680"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 May 2021 09:01:37 -0700
-IronPort-SDR: L5tRtrVpija+easmnX7N8Z/SkEpGjypWJ48bgnBZIT6Hj818/jBOKWMTLFLInRvM7MjcXEqOFM
- r2hCvzp8gQow==
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 May 2021 09:01:31 -0700
+IronPort-SDR: 0WdU+Dux96kJoPPoXVYevJObJJLECdhO0hsbfrQHswnokXja/jW5W1ZGW7N8xUiwjcHxdvpRcL
+ oOHEfDg/8EdQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; d="scan'208";a="468543254"
+X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; d="scan'208";a="468543223"
 Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by FMSMGA003.fm.intel.com with ESMTP; 21 May 2021 09:01:33 -0700
+ by FMSMGA003.fm.intel.com with ESMTP; 21 May 2021 09:01:23 -0700
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 2/2] ASoC: Intel: sof_sdw: add quirk support for Brya and
- BT-offload
-Date: Fri, 21 May 2021 18:56:32 +0300
-Message-Id: <20210521155632.3736393-2-kai.vehmanen@linux.intel.com>
+Subject: [PATCH 1/2] ASoC: Intel: common: Add entries for sdw codecs in ADL
+ match table
+Date: Fri, 21 May 2021 18:56:31 +0300
+Message-Id: <20210521155632.3736393-1-kai.vehmanen@linux.intel.com>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210521155632.3736393-1-kai.vehmanen@linux.intel.com>
-References: <20210521155632.3736393-1-kai.vehmanen@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: cezary.rojewski@intel.com, kai.vehmanen@linux.intel.com,
  Jie Yang <yang.jie@linux.intel.com>, pierre-louis.bossart@linux.intel.com,
  ranjani.sridharan@linux.intel.com, Bard Liao <bard.liao@intel.com>,
  yung-chuan.liao@linux.intel.com,
- Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
- Yong Zhi <yong.zhi@intel.com>
+ Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,47 +87,88 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>
 
-Brya is another ADL-P product.
-
-AlderLake has support for Bluetooth audio offload capability.
-Enable the BT-offload quirk for ADL-P Brya and the Intel RVP.
+RT5682 and Max98373 are added with SDW0,SDW2 links respectively.
 
 Signed-off-by: Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>
-Signed-off-by: Yong Zhi <yong.zhi@intel.com>
 Reviewed-by: Bard Liao <bard.liao@intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ .../intel/common/soc-acpi-intel-adl-match.c   | 45 +++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 0f1ad9e0a53b..dd5d8e6af626 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -199,7 +199,21 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
- 		.driver_data = (void *)(SOF_RT711_JD_SRC_JD1 |
- 					SOF_SDW_TGL_HDMI |
- 					SOF_RT715_DAI_ID_FIX |
--					SOF_SDW_PCH_DMIC),
-+					SOF_SDW_PCH_DMIC |
-+					SOF_BT_OFFLOAD_SSP(2) |
-+					SOF_SSP_BT_OFFLOAD_PRESENT),
-+	},
-+	{
-+		.callback = sof_sdw_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Google"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Brya"),
-+		},
-+		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
-+					SOF_SDW_PCH_DMIC |
-+					SOF_SDW_FOUR_SPK |
-+					SOF_BT_OFFLOAD_SSP(2) |
-+					SOF_SSP_BT_OFFLOAD_PRESENT),
- 	},
+diff --git a/sound/soc/intel/common/soc-acpi-intel-adl-match.c b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
+index 39ac6d52106f..22c465f1d5d8 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-adl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
+@@ -223,6 +223,30 @@ static const struct snd_soc_acpi_link_adr adl_sdw_rt1316_link2_rt714_link0[] = {
  	{}
  };
+ 
++static const struct snd_soc_acpi_adr_device mx8373_2_adr[] = {
++	{
++		.adr = 0x000223019F837300ull,
++		.num_endpoints = 1,
++		.endpoints = &spk_l_endpoint,
++		.name_prefix = "Left"
++	},
++	{
++		.adr = 0x000227019F837300ull,
++		.num_endpoints = 1,
++		.endpoints = &spk_r_endpoint,
++		.name_prefix = "Right"
++	}
++};
++
++static const struct snd_soc_acpi_adr_device rt5682_0_adr[] = {
++	{
++		.adr = 0x000021025D568200ull,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
++		.name_prefix = "rt5682"
++	}
++};
++
+ static const struct snd_soc_acpi_link_adr adl_rvp[] = {
+ 	{
+ 		.mask = BIT(0),
+@@ -232,6 +256,20 @@ static const struct snd_soc_acpi_link_adr adl_rvp[] = {
+ 	{}
+ };
+ 
++static const struct snd_soc_acpi_link_adr adl_chromebook_base[] = {
++	{
++		.mask = BIT(0),
++		.num_adr = ARRAY_SIZE(rt5682_0_adr),
++		.adr_d = rt5682_0_adr,
++	},
++	{
++		.mask = BIT(2),
++		.num_adr = ARRAY_SIZE(mx8373_2_adr),
++		.adr_d = mx8373_2_adr,
++	},
++	{}
++};
++
+ static const struct snd_soc_acpi_codecs adl_max98373_amp = {
+ 	.num_codecs = 1,
+ 	.codecs = {"MX98373"}
+@@ -295,6 +333,13 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_sdw_machines[] = {
+ 		.drv_name = "sof_sdw",
+ 		.sof_tplg_filename = "sof-adl-rt711.tplg",
+ 	},
++	{
++		.link_mask = 0x5, /* rt5682 on link0 & 2xmax98373 on link 2 */
++		.links = adl_chromebook_base,
++		.drv_name = "sof_sdw",
++		.sof_fw_filename = "sof-adl.ri",
++		.sof_tplg_filename = "sof-adl-sdw-max98373-rt5682.tplg",
++	},
+ 	{},
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_adl_sdw_machines);
+
+base-commit: aa736700f42fa0813e286ca2f9274ffaa25163b9
 -- 
 2.31.0
 
