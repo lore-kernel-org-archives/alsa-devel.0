@@ -2,76 +2,100 @@ Return-Path: <SRS0=n5wC=KQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A9ABC47078
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 15:10:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92E5CC47076
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 15:10:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CE040613CC
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 15:10:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE040613CC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id ABB60613AF
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 15:10:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ABB60613AF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2F2B216AA;
-	Fri, 21 May 2021 17:09:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F2B216AA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 27BF516A4;
+	Fri, 21 May 2021 17:09:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27BF516A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621609804;
-	bh=pjMNYTsflgDHf41geuHYbgIi78V2ZG2YzPQdHoxswm8=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1621609845;
+	bh=+qpNKPuf1MWir2tO2va8MczRqlGc+UktUTCjogI5j10=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tj5tFltWKUTHbt0mavwDNrQwlVSk1JQw5DGRW6jJ7YwmVZPWMu/04Hbc15QyDO1Om
-	 /7RgZt48+l8D6rdMJcfv93LPZrYj97OKiT0zn0yvfiBLI2SCJGbq4QtGWi+4Oi48Eg
-	 L9tuQTHaBfZcbnXrk5YyFfFG29kSL+yiixeGX7eQ=
+	b=oFbi5EbXFidIht7tuyiDK5Jd2W/CSVtJ2FPyzemcSmQ/gNopvPxVrvK50ZpGzHf47
+	 JOoCET0yPgqjfmnohEWx6xmRPwprL70ksCFFdoDThZwgGJ+yYEGldUBwxK9ygtLUdR
+	 oE5utoy3gEjbwI6btM2vdSQI7hP2f+YtwcPbxUtI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC4EDF80258;
-	Fri, 21 May 2021 17:08:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8F53F8016E;
+	Fri, 21 May 2021 17:09:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A4763F80249; Fri, 21 May 2021 17:08:21 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id B3F4BF80246; Fri, 21 May 2021 17:09:52 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B0FEBF800E5
- for <alsa-devel@alsa-project.org>; Fri, 21 May 2021 17:08:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0FEBF800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id E3CFDF800E5
+ for <alsa-devel@alsa-project.org>; Fri, 21 May 2021 17:09:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3CFDF800E5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="AwANhlT8"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28D01613CC;
- Fri, 21 May 2021 15:08:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1621609693;
- bh=pjMNYTsflgDHf41geuHYbgIi78V2ZG2YzPQdHoxswm8=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=AwANhlT8ADpYKR312WsK0fm8zI7KIv1GUoIALdyyy4yPSwQDPSYJcnJRCK486Gqa3
- z8cYk5vo00GDSFKZeKgA00V8QNrHQ6rC/UdKLIwYc7El2d/19FB6SHkg8owxjxXXYD
- jwNqHJTQukfBivrigrUnO9EQ9ShaZm3zcsZJy4BVgnKci7s1mq7ylcl1dkrfh/CEqU
- srRuCq2Y3OhVebR+ZC8yQ4sbUzDeiFtkgbKx60MBCvDDztuZ+O/G5e++8QqyTBWYRH
- +H4xCwdi1/PcCpQEDPt7xPS8J+i86TY29DwBriRyDQy5W8yVZZvpIZzMTZZ9nB3fuo
- s50j2cbmWeq/Q==
-From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH 0/7] ASoC: SOF: code cleanups for 5.14
-Date: Fri, 21 May 2021 16:08:02 +0100
-Message-Id: <162160953476.10636.14317063420021438612.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210521092804.3721324-1-kai.vehmanen@linux.intel.com>
-References: <20210521092804.3721324-1-kai.vehmanen@linux.intel.com>
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="NACigRTX"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
+ 14LF6weW004704; Fri, 21 May 2021 10:09:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=vb3caAt/tKr79nkmDUGEd2unVM3Vh/hFlp4bXuoFTXo=;
+ b=NACigRTXcoFNMy5gvvel/FK2kHfv2VsCyXohh12TaHxXFtC8z2LLCL4IwIEmlG5dLykv
+ +NrwgP6QjmAtPPDlW5is0TIrdj6DcJjZ5eqYxeYiqvaWqYW5x2MFAP466dF71j7T84zC
+ UEUonuQdEDxOJGqqCEyxiKzcy+l3eXA36JOYk+zcv761HYam2sfvmixbkYVu0/W3WS5D
+ ippFR0SZItfCITc5GeRuSgkKOWI4wKiZQ7J8Bzde0wmykumx7rC9XqdP8IBOS1wjG0lp
+ lrZaL03Fsw/srHyMGBcLm3mybiMO+fIAdexA5w2c4Ruy1/gTwVMtuTq7STWAy6JoKBYG BA== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+ by mx0b-001ae601.pphosted.com with ESMTP id 38p6errkag-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Fri, 21 May 2021 10:09:37 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 21 May
+ 2021 16:09:35 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Fri, 21 May 2021 16:09:35 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9A1BB11D6;
+ Fri, 21 May 2021 15:09:35 +0000 (UTC)
+Date: Fri, 21 May 2021 15:09:35 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH] mfd: arizona: Allow building arizona MFD-core as module
+Message-ID: <20210521150935.GL64205@ediswmail.ad.cirrus.com>
+References: <20210521135023.192688-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: daniel.baluta@nxp.com, pierre-louis.bossart@linux.intel.com,
- lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
- ranjani.sridharan@linux.intel.com, yung-chuan.liao@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210521135023.192688-1-hdegoede@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: _ZjdkWqRT1n5vZnloVNu9f9e3IUvFRPt
+X-Proofpoint-ORIG-GUID: _ZjdkWqRT1n5vZnloVNu9f9e3IUvFRPt
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0
+ priorityscore=1501
+ spamscore=0 mlxscore=0 phishscore=0 mlxlogscore=874 clxscore=1015
+ bulkscore=0 suspectscore=0 malwarescore=0 lowpriorityscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105210083
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,53 +111,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 21 May 2021 12:27:57 +0300, Kai Vehmanen wrote:
-> Set of code cleanups for issues found in code review.
+On Fri, May 21, 2021 at 03:50:23PM +0200, Hans de Goede wrote:
+> There is no reason why the arizona core,irq and codec model specific
+> regmap bits cannot be build as a module. All they do is export symbols
+> which are used by the arizona-spi/i2c and arizona-codec modules, which
+> themselves can be built as module.
 > 
-> Jaska Uimonen (1):
->   ASoC: SOF: topology: fix assignment to use le32_to_cpu
+> Change the Kconfig and Makefile arizona bits so that the arizona MFD-core
+> can be built as a module.
 > 
-> Keyon Jie (1):
->   ASoC: SOF: ops: print out the polling register
+> This is especially useful on x86 platforms with a WM5102 codec, this
+> allows the arizona MFD driver necessary for the WM5102 codec to be
+> enabled in generic distro-kernels without growing the base kernel-image
+> size.
 > 
-> [...]
+> Note this also adds an explicit "depends on MFD_ARIZONA" to all the
+> arizona codec Kconfig options. The codec drivers use functions from mfd
+> arizona-core. These new depends are necessary to disallow the codec
+> drivers being builtin when the arizona-core is build as a module,
+> otherwise we end up with missing symbol errors when building vmlinuz.
+> 
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/7] ASoC: SOF: Check desc->ops directly in acpi/pci/of probe functions
-      commit: fd979ec12eebcfb718f2c7c28b336d891d439f85
-[2/7] ASoC: SOF: pci: No need to cast second time to save the desc
-      commit: e5eaa4e66f538b8ba4928785a62edf8ffcf7c053
-[3/7] ASoC: SOF: ops: print out the polling register
-      commit: 3b2e93ed12381fa1c33169202f2cdffbb18157c4
-[4/7] ASoC: SOF: loader: Use snd_sof_dsp_block_read() instead sof_block_read()
-      commit: c03459415c5120fe03dd7d9824880acc8b7f2693
-[5/7] ASoC: SOF: topology: fix assignment to use le32_to_cpu
-      commit: ccaea61a8d1b8180cc3c470e383381884e4bc1f2
-[6/7] ASoC: SOF: ops: don't return void value
-      commit: 4f50f16e9414ea41d5c142fd880faab060472a6b
-[7/7] ASoC: SOF: Intel: hda: Remove conditions against CONFIG_PCI
-      commit: 9d5536e0e1ca8409665bdd80d951941d5ce19b8a
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
 Thanks,
-Mark
+Charles
