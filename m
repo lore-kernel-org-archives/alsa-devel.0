@@ -2,78 +2,83 @@ Return-Path: <SRS0=n5wC=KQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29624C47076
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 17:15:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92A2AC47076
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 17:16:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 99759613E3
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 17:15:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 99759613E3
+	by mail.kernel.org (Postfix) with ESMTPS id B5F62613E1
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 17:16:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5F62613E1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C66516A3;
-	Fri, 21 May 2021 19:14:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C66516A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 411BD16C6;
+	Fri, 21 May 2021 19:15:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 411BD16C6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621617325;
-	bh=AX5MkElynMa5o7CIUbFQPiVs8T41pfsF4eR1FO4WuUU=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=uKinpMRE+9K4RYMFgEI7Tl+pyDx6blMKvZtTroXBlvpdepwWtIIyzrwKDOZWjTsOd
-	 gs13OIMH1/0yEAe6Q6kO0s1UJrcnIzY+GwJ2eFrspoVkGHn/gKw+oXCSKWbR9QogZd
-	 SNPnjrnXXj2QwXgaavkYoyrztIdgmNNN0NiOouYw=
+	s=default; t=1621617377;
+	bh=0SxI2/tGOB+vwwMwMvfv4Vy49Ddj3yT3wjCItYt5bkw=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=kn3FYVgvId17jx31YS5HNSugw+7c2zfS8ThDk+VPFerzqeEIkO0wdrCd/6QINSVpj
+	 2KVA0MjDG0eASQvqenOX8Q4sUa/HDOzr8o2u0El1j4figVFmtyzU2bZ7xEdT1JjHfH
+	 xXZ0wi0Nl3/vDskjqAf+fCCv9sU0FP8g0cBIO/VM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9BBFBF801DB;
-	Fri, 21 May 2021 19:14:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E4C5F80249;
+	Fri, 21 May 2021 19:14:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AD94AF80246; Fri, 21 May 2021 19:14:32 +0200 (CEST)
+ id 91A23F800C1; Fri, 21 May 2021 19:14:35 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C8F86F80153
- for <alsa-devel@alsa-project.org>; Fri, 21 May 2021 19:14:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8F86F80153
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6D7E7F800C1
+ for <alsa-devel@alsa-project.org>; Fri, 21 May 2021 19:14:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D7E7F800C1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="UDQW3U7S"
+ header.b="PDZzW6Jj"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1621617265;
+ s=mimecast20190719; t=1621617266;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding;
- bh=pCgaqDw5Xoc3eJxJfY7O89kRCc0yBN0WDqkGQNlmEqk=;
- b=UDQW3U7SGYJorKTjB88Df5l1NjFMbN8DYBZyTKh56WhEO2zAy6vGgbnor7H1ixNnwNm6wd
- lcRPbQuxDlk58yfp2pN11rY1O/aUI0Skw47SUpMKRkCQ/JevaP3m/KTwcPNxLaLO9Cnymy
- AJ0fP5ZT0sRGlnfX0A4IrAp8oAFFamg=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=yCRp+M6BmquOFM43iImL6UjJTcvuKJRir6amhOD9dvE=;
+ b=PDZzW6Jj2Ekzpy8WkrpoLu2AwtnQT0zD6NCSYcUNQAiyrRbEhfWXxW9jrXhTG5bHtlic29
+ Ty4dK3CBVp1WhSOF9IAE14AyKSlHNZ7g6V4K1QhNrXkznsfEMeCSR3UpzfZgJz7ty1UHVv
+ 5CRQJy3tHAEFZVjCKjwob0Qa0JyK8Z4=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-143-oof1jAQOO12a2qpiSgeZyw-1; Fri, 21 May 2021 13:14:23 -0400
-X-MC-Unique: oof1jAQOO12a2qpiSgeZyw-1
+ us-mta-594-fNc60ldnPXanf4FEnSTnNA-1; Fri, 21 May 2021 13:14:24 -0400
+X-MC-Unique: fNc60ldnPXanf4FEnSTnNA-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com
  [10.5.11.22])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5D3F9104FB62;
- Fri, 21 May 2021 17:14:21 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8DD20107ACC7;
+ Fri, 21 May 2021 17:14:23 +0000 (UTC)
 Received: from x1.localdomain (ovpn-114-187.ams2.redhat.com [10.36.114.187])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 057B810013D6;
- Fri, 21 May 2021 17:14:18 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id A1AC41001B2C;
+ Fri, 21 May 2021 17:14:21 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Jonathan Cameron <jic23@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
  Mark Brown <broonie@kernel.org>
-Subject: [PATCH 0/8] iio: accel: bmc150: Add support for yoga's with dual
- accelerometers with an ACPI HID of DUAL250E
-Date: Fri, 21 May 2021 19:14:10 +0200
-Message-Id: <20210521171418.393871-1-hdegoede@redhat.com>
+Subject: [PATCH 1/8] iio: accel: bmc150: Fix dereferencing the wrong pointer
+ in bmc150_get/set_second_device
+Date: Fri, 21 May 2021 19:14:11 +0200
+Message-Id: <20210521171418.393871-2-hdegoede@redhat.com>
+In-Reply-To: <20210521171418.393871-1-hdegoede@redhat.com>
+References: <20210521171418.393871-1-hdegoede@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
@@ -96,71 +101,72 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi All,
+The drvdata for iio-parent devices points to the struct iio_dev for
+the iio-device. So by directly casting the return from i2c_get_clientdata()
+to struct bmc150_accel_data * the code was ending up storing the second_dev
+pointer in (and retrieving it from) some semi-random offset inside
+struct iio_dev, rather then storing it in the second_dev member of the
+bmc150_accel_data struct.
 
-Some 360 degree hinges (yoga) style 2-in-1 devices use 2 bmc150 accels
-to allow the OS to determine the angle between the display and the base
-of the device, so that the OS can determine if the 2-in-1 is in laptop
-or in tablet-mode.
+Fix the code to get the struct bmc150_accel_data * pointer to call
+iio_priv() on the struct iio_dev * returned by i2c_get_clientdata(),
+so that the correct pointer gets dereferenced.
 
-We already support this setup on devices using a single ACPI node
-with a HID of "BOSC0200" to describe both accelerometers. This patch
-set extends this support to also support the same setup but then
-using a HID of "DUAL250E".
+This fixes the following oops on rmmod, caused by trying to
+dereference the wrong return of bmc150_get_second_device():
 
-While testing this I found some crashes on rmmod, patches 1-2
-fix those patches, patch 3 does some refactoring and patch 4
-adds support for the "DUAL250E" HID.
+[  238.980737] BUG: unable to handle page fault for address: 0000000000004710
+[  238.980755] #PF: supervisor read access in kernel mode
+[  238.980760] #PF: error_code(0x0000) - not-present page
+...
+[  238.980841]  i2c_unregister_device.part.0+0x19/0x60
+[  238.980856]  0xffffffffc0815016
+[  238.980863]  i2c_device_remove+0x25/0xb0
+[  238.980869]  __device_release_driver+0x180/0x240
+[  238.980876]  driver_detach+0xd4/0x120
+[  238.980882]  bus_remove_driver+0x5b/0xd0
+[  238.980888]  i2c_del_driver+0x44/0x70
 
-Unfortunately we need some more special handling though, which the
-rest of the patches are for.
+While at it also remove the now no longer sensible checks for data
+being NULL, iio_priv never returns NULL for an iio_dev with non 0
+sized private-data.
 
-On Windows both accelerometers are read (polled) by a special service
-and this service calls a DSM (Device Specific Method), which in turn
-translates the angles to one of laptop/tablet/tent/stand mode and then
-notifies the EC about the new mode and the EC then enables or disables
-the builtin keyboard and touchpad based in the mode.
+Fixes: 5bfb3a4bd8f6 ("iio: accel: bmc150: Check for a second ACPI device for BOSC0200")
+Cc: Jeremy Cline <jeremy@jcline.org>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ drivers/iio/accel/bmc150-accel-core.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-When the 2-in-1 is powered-on or resumed folded in tablet mode the
-EC senses this independent of the DSM by using a HALL effect sensor
-which senses that the keyboard has been folded away behind the display.
-
-At power-on or resume the EC disables the keyboard based on this and
-the only way to get the keyboard to work after this is to call the
-DSM to re-enable it (similar to how we also need to call a special
-DSM in the kxcjk-1013.c accel driver to re-enable the keyboard).
-
-Patches 5-7 deal with the DSM mess and patch 8 adds labels to the
-2 accelerometers specifying which one is which.
-
-Regards,
-
-Hans
-
-
-Hans de Goede (8):
-  iio: accel: bmc150: Fix dereferencing the wrong pointer in
-    bmc150_get/set_second_device
-  iio: accel: bmc150: Don't make the remove function of the second
-    accelerometer unregister itself
-  iio: accel: bmc150: Move check for second ACPI device into a separate
-    function
-  iio: accel: bmc150: Add support for dual-accelerometers with a
-    DUAL250E HID
-  iio: accel: bmc150: Move struct bmc150_accel_data definition to
-    bmc150-accel.h
-  iio: accel: bmc150: Remove bmc150_set/get_second_device() accessor
-    functions
-  iio: accel: bmc150: Add support for DUAL250E ACPI DSM for setting the
-    hinge angle
-  iio: accel: bmc150: Set label based on accel-location for ACPI
-    DUAL250E fwnodes
-
- drivers/iio/accel/bmc150-accel-core.c |  87 ++----------
- drivers/iio/accel/bmc150-accel-i2c.c  | 192 +++++++++++++++++++++-----
- drivers/iio/accel/bmc150-accel.h      |  66 ++++++++-
- 3 files changed, 239 insertions(+), 106 deletions(-)
-
+diff --git a/drivers/iio/accel/bmc150-accel-core.c b/drivers/iio/accel/bmc150-accel-core.c
+index 04d85ce34e9f..3a3f67930165 100644
+--- a/drivers/iio/accel/bmc150-accel-core.c
++++ b/drivers/iio/accel/bmc150-accel-core.c
+@@ -1809,10 +1809,7 @@ EXPORT_SYMBOL_GPL(bmc150_accel_core_probe);
+ 
+ struct i2c_client *bmc150_get_second_device(struct i2c_client *client)
+ {
+-	struct bmc150_accel_data *data = i2c_get_clientdata(client);
+-
+-	if (!data)
+-		return NULL;
++	struct bmc150_accel_data *data = iio_priv(i2c_get_clientdata(client));
+ 
+ 	return data->second_device;
+ }
+@@ -1820,10 +1817,9 @@ EXPORT_SYMBOL_GPL(bmc150_get_second_device);
+ 
+ void bmc150_set_second_device(struct i2c_client *client)
+ {
+-	struct bmc150_accel_data *data = i2c_get_clientdata(client);
++	struct bmc150_accel_data *data = iio_priv(i2c_get_clientdata(client));
+ 
+-	if (data)
+-		data->second_device = client;
++	data->second_device = client;
+ }
+ EXPORT_SYMBOL_GPL(bmc150_set_second_device);
+ 
 -- 
 2.31.1
 
