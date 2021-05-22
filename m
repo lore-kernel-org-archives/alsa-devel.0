@@ -2,86 +2,85 @@ Return-Path: <SRS0=REud=KR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83367C2B9F2
-	for <alsa-devel@archiver.kernel.org>; Sat, 22 May 2021 06:51:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B161C2B9F2
+	for <alsa-devel@archiver.kernel.org>; Sat, 22 May 2021 06:51:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E0E25611F0
-	for <alsa-devel@archiver.kernel.org>; Sat, 22 May 2021 06:51:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0E25611F0
+	by mail.kernel.org (Postfix) with ESMTPS id AB3FF611AB
+	for <alsa-devel@archiver.kernel.org>; Sat, 22 May 2021 06:51:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AB3FF611AB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7E15516BD;
-	Sat, 22 May 2021 08:50:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E15516BD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3DC8B169A;
+	Sat, 22 May 2021 08:50:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DC8B169A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621666289;
-	bh=g/wQh0ETHeVcW7gBilajU225Z4/bxrNB4nZXrgDikes=;
+	s=default; t=1621666294;
+	bh=yzKyvPFZZvA7jVHItHMkbssnKpcq+tf5EK8mnj691Wg=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F/7lv3Wko8mPrwURv0t5feoqBsZx5HGfPEIo0PJayye919Mg7mLHzSl/L0TPy8x4k
-	 DhsbmJFXw7SCc/vpVb4ibqgZVhDHuerLNLSkw61Z5XPPa2uoadSuoabNDudYPkLVNj
-	 qFR1d13hOhgl20/TlDZsTant2DjBjHqg4+OdINVI=
+	b=ZUxwmU5Ab3Ke0odcqFNQ747q7/YZwyQwUlQ8abaCvUNCzxnYS0O3HDOMLSiFkBXRT
+	 QYnenOuPI+Ypk6pbAVaFsaMdR5Jmgu1AS20F0blYyOEEA+oHzZmEgQZlOR6qQtmjM2
+	 OwVQ+YjPATnqNgQFYrdxm1PzHnzSRJYMKtjPs5sI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 10BB1F80257;
-	Sat, 22 May 2021 08:49:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B59AFF802E0;
+	Sat, 22 May 2021 08:50:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5150DF80272; Sat, 22 May 2021 08:49:58 +0200 (CEST)
+ id 91E13F80424; Sat, 22 May 2021 08:50:32 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E378F800DF
- for <alsa-devel@alsa-project.org>; Sat, 22 May 2021 08:49:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E378F800DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 39BA9F80272
+ for <alsa-devel@alsa-project.org>; Sat, 22 May 2021 08:50:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39BA9F80272
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="lFiXvRvX"; 
+ header.b="K3dY6MeT"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="Kt5gbyLB"
+ header.b="oBTp7zG9"
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1621666192; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1621666230; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=rW5c7tR0WoVw8xDVQP5gpbGNEblnB+1+gkbDXsKayZs=;
- b=lFiXvRvXkwsH6AACoeJN/HRQtwpKhMexN3UoPtv8RFsdAYXBTiAykIbNuPdIHHAnQTebNr
- ANA7sd0RpPx+kSYpS+u+HDbiV8G0rHzqUnQqm+NfuAlu28WZa47yRM86Ih6KKuItRP8vyh
- JQtacOgLzn4bx4qdU5OWrlESXUJnN44=
+ bh=p4sThqsKh9up3+h5MzLtLwdDiMWwpIa+bgN/aYwAGNY=;
+ b=K3dY6MeTRE8mwUGjpgeUxCLER3Om7168EvwDY4hR+rS20IzsXD/ZmkXVwuZe5Q88zhHiHm
+ oiB4qaI1yDCET4n+iySnRDRyy2BSXT3uZIFbIFRpDEspmoYdscTxrGlgOmgzECiFep25RK
+ cIgohD0JAz1jN/7+90cE0D07FBTNDLI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1621666192;
+ s=susede2_ed25519; t=1621666230;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=rW5c7tR0WoVw8xDVQP5gpbGNEblnB+1+gkbDXsKayZs=;
- b=Kt5gbyLBkjeAtBwHoL5GbrIrFkcI2TXbM2HvNUuOOrwjb4k8+4Hf0avFeVUQrZ/1ALCmFs
- 9weMEHjlvMjFiNCg==
+ bh=p4sThqsKh9up3+h5MzLtLwdDiMWwpIa+bgN/aYwAGNY=;
+ b=oBTp7zG9evBXuH783jwZoqEOe20A+jadyID+8byJ22EY7A44qfBR+ywC0ZeVBivHb+ovyL
+ cldj1Ok3fI3WuSBw==
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 69CC6ABC2;
- Sat, 22 May 2021 06:49:52 +0000 (UTC)
-Date: Sat, 22 May 2021 08:49:52 +0200
-Message-ID: <s5heedzfejz.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 038EFABC1;
+ Sat, 22 May 2021 06:50:30 +0000 (UTC)
+Date: Sat, 22 May 2021 08:50:29 +0200
+Message-ID: <s5hcztjfeiy.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: the bass speaker can't output sound on
- Yoga 9i
-In-Reply-To: <20210522042645.14221-1-hui.wang@canonical.com>
-References: <20210522042645.14221-1-hui.wang@canonical.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 0/6] ALSA: firewire-lib: code refactoring for processing
+ rx packets
+In-Reply-To: <20210522013303.49596-1-o-takashi@sakamocchi.jp>
+References: <20210522013303.49596-1-o-takashi@sakamocchi.jp>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,20 +96,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 22 May 2021 06:26:45 +0200,
-Hui Wang wrote:
+On Sat, 22 May 2021 03:32:57 +0200,
+Takashi Sakamoto wrote:
 > 
-> The Lenovo Yoga 9i has bass speaker, but the bass speaker can't work,
-> that is because there is an i2s amplifier on that speaker, need to
-> run ideapad_s740_coef() to initialize the amplifier.
+> Hi,
 > 
-> And also needs to apply ALC285_FIXUP_THINKPAD_HEADSET_JACK to rename
-> the speaker's mixer control name, otherwise the PA can't handle them.
+> This patchset refactors mainly for processing rx packets.
 > 
-> BugLink: http://bugs.launchpad.net/bugs/1926165
-> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+> Except for devices handled by ALSA bebob and dice drivers, the devices
+> doesn't take care of the value of syt field of CIP header for playback
+> timing. To code it explicitly, the new flag is added in 1st patch.
+> 
+> Some of devices based on DICE ASICs supports two pairs of packet
+> streams. In the case, the sequence of rx packet in the streams should
+> be different independently so that each of them deliver timing
+> information from each peer. On the other hand, current implementation
+> pools the sequence in AMDTP domain, then the rx packets are processed
+> with the same pool. It is inconvenient and in 2nd patch the pool is
+> prepared per streams.
+> 
+> The other patches are for my future work.
+> 
+> 
+> Regards
+> 
+> Takashi Sakamoto (6):
+>   ALSA: firewire-lib: add flag to unaware of syt in CIP header
+>   ALSA: firewire-lib: pool sequence of packet in IT context
+>     independently
+>   ALSA: firewire-lib: code refactoring for generation of packet
+>     descriptors
+>   ALSA: firewire-lib: code refactoring for generation of syt sequence
+>   ALSA: firewire-lib: code refactoring for generation of data block
+>     sequence
+>   ALSA: firewire-lib: code refactoring for transfer delay
 
-Thanks, applied.
+Thanks, applied all six patches now.
 
 
 Takashi
