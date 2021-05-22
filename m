@@ -2,86 +2,86 @@ Return-Path: <SRS0=REud=KR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 404E8C2B9F2
-	for <alsa-devel@archiver.kernel.org>; Sat, 22 May 2021 06:47:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4732C2B9F2
+	for <alsa-devel@archiver.kernel.org>; Sat, 22 May 2021 06:50:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3B529611F0
-	for <alsa-devel@archiver.kernel.org>; Sat, 22 May 2021 06:47:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B529611F0
+	by mail.kernel.org (Postfix) with ESMTPS id 78E95611F0
+	for <alsa-devel@archiver.kernel.org>; Sat, 22 May 2021 06:50:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 78E95611F0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9488816C8;
-	Sat, 22 May 2021 08:46:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9488816C8
+	by alsa0.perex.cz (Postfix) with ESMTPS id C66F116A0;
+	Sat, 22 May 2021 08:49:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C66F116A0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621666048;
-	bh=HBirJZlqqMIT62XjWgpODF8RMhg4gZCjp/v6EHZtd6M=;
+	s=default; t=1621666238;
+	bh=Az9LjMcEdQO6Xgj3n1Kri1ikpUAZZu0IQnoLZkti8/4=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=n/IyWEXjNcH6x4rAOXFx0r+IyaquJZGhtADt3nFkmyMbPyPEynaccWIqEGITL02L3
-	 mhlPNRESFfssT3q3FVJsb+2PWJdAfuimOymThrBhaQPXr/7dbgl1MLxbHerRYMAz1F
-	 xuvKD6uQQIY2smckgb5JDDAWJGNiQyZScvDbZnoY=
+	b=g6Va4y/mYFm6nci82yA7p/6bpj85BlG51uvpgz2IzOVIFkSIjvJ3olVq8bXxrnQ9D
+	 SET3aq4+GS5eaUAbpUC6LYG7rmguBubUhRNNZAF28V1Q5+wjCxv2oOpImzc34lsI56
+	 Nv/KAe3O+Pc61Zk/VpKa2RRUnv2U7TKEUAOP3lHE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5FFE8F80425;
-	Sat, 22 May 2021 08:46:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 657E3F80153;
+	Sat, 22 May 2021 08:49:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E1F8BF8042F; Sat, 22 May 2021 08:46:13 +0200 (CEST)
+ id 448A5F80217; Sat, 22 May 2021 08:49:47 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8536DF80424
- for <alsa-devel@alsa-project.org>; Sat, 22 May 2021 08:46:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8536DF80424
+ by alsa1.perex.cz (Postfix) with ESMTPS id 319E6F80153
+ for <alsa-devel@alsa-project.org>; Sat, 22 May 2021 08:49:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 319E6F80153
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="0cxQXuvg"; 
+ header.b="s3tLIJqx"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="pdeqCAi/"
+ header.b="BdVCsG8V"
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1621665970; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1621666181; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=FULl3P8JCyjhywEm+0IlA2mLO7qIH/qoOOWGx3cEAxI=;
- b=0cxQXuvgIphEUCeYdrUSi0+ighlyaQmryPCwseIjl7fEoFHYACODxXUJ45VAqsfjZEM1V6
- Zae9zqxXXiQjbmhAoe/XVM/6tLwjqvHTzrcijkmC0bWyyTuYjUrg3TBESuhvHU39PsQFru
- 9Qr+FC3J9A4tYMy9TXDGt0oZ5pnhscA=
+ bh=1L5NGdgH2UmNlaL1lIAcC57nPs+AXEzuZ33c+nTOIsA=;
+ b=s3tLIJqxft+KWLvZCexUJz3zT5JcrovLqFoQ2LuHoKln6Fa+e5fkxuvbVx1k0/txasiXId
+ SchxFBsGqmmznIuZ7D/rXUQZCPbXenpkoILkGFO7PEzmTSjFMGznxP++juB/Aj4OIOn08Z
+ xnzv05m8zr7pZ8KgX9rK/MZsVAX4/kI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1621665970;
+ s=susede2_ed25519; t=1621666181;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=FULl3P8JCyjhywEm+0IlA2mLO7qIH/qoOOWGx3cEAxI=;
- b=pdeqCAi/SrJ99WNcb2cDqasmESDhuwX3wIGtsNA+2Dmig2ORlZg5cbTkwCqe0d9FGHDP49
- pjXkaJh+aKz7bbAQ==
+ bh=1L5NGdgH2UmNlaL1lIAcC57nPs+AXEzuZ33c+nTOIsA=;
+ b=BdVCsG8VeNmK65fC5BE1fhfpol58H5dAwNX6r0XJBUUUPpoXzdObzqGZWS/zgpb0MiwaXp
+ YC77h+PbV1RIEsDg==
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 75C55AB6D;
- Sat, 22 May 2021 06:46:10 +0000 (UTC)
-Date: Sat, 22 May 2021 08:46:10 +0200
-Message-ID: <s5hh7ivfeq5.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id EC86DAB5F;
+ Sat, 22 May 2021 06:49:40 +0000 (UTC)
+Date: Sat, 22 May 2021 08:49:40 +0200
+Message-ID: <s5hfsyffekb.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: trix@redhat.com
-Subject: Re: [PATCH] ALSA: usb-audio: initialize the cur variable
-In-Reply-To: <20210521194603.2077623-1-trix@redhat.com>
-References: <20210521194603.2077623-1-trix@redhat.com>
+To: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: Headphone volume is controlled by
+ Front mixer
+In-Reply-To: <20210522034741.13415-1-hui.wang@canonical.com>
+References: <20210522034741.13415-1-hui.wang@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- gustavoars@kernel.org, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,25 +97,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 21 May 2021 21:46:03 +0200,
-trix@redhat.com wrote:
+On Sat, 22 May 2021 05:47:41 +0200,
+Hui Wang wrote:
 > 
-> From: Tom Rix <trix@redhat.com>
+> On some ASUS and MSI machines, the audio codec is alc1220 and the
+> Headphone is connected to audio mixer 0xf and DAC 0x5, in theory
+> the Headphone volume is controlled by DAC 0x5 (Heapdhone Playback
+> Volume), but somehow it is controlled by DAC 0x2 (Front Playback
+> Volume), maybe this is a defect on the codec alc1220.
 > 
-> Static analysis reports this problem
-> clock.c:338:10: warning: The right operand of '=='
->   is a garbage value
->     if (i == cur)
->           ^  ~~~
+> Because of this issue, the PA couldn't switch the headphone and
+> Lineout correctly, If we apply the quirk CLEVO_P950 to those machines,
+> the Lineout and Headphone will share the audio mixer 0xc and DAC 0x2,
+> and generate Headphone+LO mixer, then PA could handle them when
+> switching between them.
 > 
-> In __uac_clock_find_source() the goto find_others skips over
-> setting of the 'cur' variable.  Since the pin loop variable
-> starts with 1, it is safe to initialize cur to 0.
-> 
-> Signed-off-by: Tom Rix <trix@redhat.com>
+> BugLink: https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/1206
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Hui Wang <hui.wang@canonical.com>
 
-Thanks for the patch, but this has been already fixed in for-next
-branch.
+Thanks, applied.
 
 
 Takashi
