@@ -1,121 +1,110 @@
-Return-Path: <SRS0=n5wC=KQ=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=REud=KR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E50CC04FF3
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 22:22:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3474C04FF3
+	for <alsa-devel@archiver.kernel.org>; Sat, 22 May 2021 01:34:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 40CE8613AF
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 May 2021 22:22:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 40CE8613AF
+	by mail.kernel.org (Postfix) with ESMTPS id 1ADB1613F5
+	for <alsa-devel@archiver.kernel.org>; Sat, 22 May 2021 01:34:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1ADB1613F5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 077AF169C;
-	Sat, 22 May 2021 00:22:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 077AF169C
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF3D01616;
+	Sat, 22 May 2021 03:33:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF3D01616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621635776;
-	bh=h9UKH7WJK8PH6MNlm+WUB1wHzLFT9LPT7y0vzDo85OQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1621647258;
+	bh=Fnj7Qf+JIbqGyTJWf9Z1340dYKWJUxsSCjcnPS8tQTY=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KOW5a6IfVXE2gvwx+/3zYnHWHQzd9X4y/22sacDWUQxERLKLVgqn/sJeQehfhRPvi
-	 UI53GgTLzisi7ys7KXQjnwX+stY52nHKsqd0zryQfW+49iXrOq8cwqpjItzUU2gRcR
-	 NoGWKNZ9+LtDOqNKUShInB9N5ggKgAAh5VdTli3A=
+	b=ocLM9ta/21OQAb8AdebQU9bpdA21yEnOvZruIq674jpRsivMarDvCPmISK+J5aAv9
+	 4GFLbEZiEDTI4B6MaivXFRo4WTQg8S/vn47cljem7Wf21eFwn8ffIrnlbi3LQuFRX2
+	 tXc1Et7WKFQGuNlIxyMSy+3kBj7GepqaeieX9tBQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86BC9F8016E;
-	Sat, 22 May 2021 00:22:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5AB74F80153;
+	Sat, 22 May 2021 03:33:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF389F801DB; Sat, 22 May 2021 00:22:03 +0200 (CEST)
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28])
+ id E6C0AF80217; Sat, 22 May 2021 03:33:23 +0200 (CEST)
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
+ [66.111.4.26])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B911FF800E5
- for <alsa-devel@alsa-project.org>; Sat, 22 May 2021 00:21:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B911FF800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6CB87F80217
+ for <alsa-devel@alsa-project.org>; Sat, 22 May 2021 03:33:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6CB87F80217
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="LkI3WILX"; 
+ header.b="hqFwxRwG"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="ud4jTohy"
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailout.nyi.internal (Postfix) with ESMTP id 9EE545C0255;
- Fri, 21 May 2021 18:21:53 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute3.internal (MEProxy); Fri, 21 May 2021 18:21:53 -0400
+ header.i=@messagingengine.com header.b="g07jMXaz"
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+ by mailout.nyi.internal (Postfix) with ESMTP id C519F5C024A;
+ Fri, 21 May 2021 21:33:10 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute6.internal (MEProxy); Fri, 21 May 2021 21:33:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=date:from:to:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm1; bh=HprtPpMhZPJmDlJYV2vvwIuW3Xh
- ypTk3HvX2jemPm8I=; b=LkI3WILXtfFuMxzWvJNef0Sr8gYyo2saSzIvJBVzQ+d
- yd8G5BXzvpHlBuFDAIdAeU9myE0+jcRwLMdljEcSZLb2EOnNTHnixMa+q7mIvU/h
- 7IFOv2DW9WD0NAf1zKqOoJDU1QRBGFmnLH2i2Ys8sqd4n2ASOI3gd//JTn0RxeTl
- xLmHuMbr/+yDDXkuGfw+m5Int4pbaD32NCiI1OJu/WrjSxcEZ09RJIqF3Np9ZYVY
- DkZwsY4k512Y81zIrojP7MKlF6o9XZUqE/KoPC7GGvPxt2q2h8dTpZGsCgSZPrme
- /oc/mPO8SKmHgi05RNskhXMBl8boC3WpLZfDvoXDKTQ==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding; s=fm1; bh=1PnkI9x3FpNx3
+ pObvJwkKgeAegiijK8QkociNPtQ0RI=; b=hqFwxRwGJxbpMX92ADh7Gkiw+ik+t
+ 4HleQV0LeBvSLBlSMDsR3GlsXgeggGCG4MDhSNkyJvu6XwHFUb5fZiZgwwIO+rPw
+ Hm9C8K4sqzX9W5FCRRLugRC8Jc60LBaXNaZzudajWGnkLwGZhWS5SLRSXUZVJwnq
+ AL7z8bmXrMYNMcMtlCYnuRnKWy/XUTCfbxATMgpB3gn1Dl+0F1tT9aXXx7xruCLE
+ GM/EG3TNuyBOdWk3eh9yj7sgoT/aOLBlZZXKE15cSCMs4sKWHJmESYb2wQ/a7ehR
+ oCoqtmd1qQl0ILdXPnHwC2UD2Vou3p/ymR6Q3Nyr9uqf+QVf9bW/gFCjA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=HprtPp
- MhZPJmDlJYV2vvwIuW3XhypTk3HvX2jemPm8I=; b=ud4jTohy2a+Da9jXGiwC8s
- g/ikCoNIGxf51EKQdW6u7B8WhUezjBzXIwqDGQw5XI3YLmUpVexNPYHJfK0RkeRu
- QqvJyQUj19DGjwDvpxFFbUl0FgPCEcEFxO2NoEbY2ygE7/gX2hBuq3udpmJcsZaZ
- CMttXnVP0sWRC8ehgNsktACtMpQon4Smn2K2BlBJZfdffr9i0PgkSqm43SvisWgA
- cw/6LhVYDUMwn87kMsLYd67luqW+Zp/2jtozu+1cx9lEfcfN4XU2sQ7PJlXzQk1C
- MKrX0xC71LQLLRWWTxUYrYD2wIJ52PTdrIboNZ5AQHK0m/LAF3of8dLksqRYMkcQ
- ==
-X-ME-Sender: <xms:fzKoYKw9skYHzzqLy70dR3A-hPrCS_iIhoNV5D-vl4YdFKbjCFg3UQ>
- <xme:fzKoYGTm0oem5gu7_-QAThgCV98AUoNjrAfEAUFWgQN5U9rxNYYTDhD00DaYSF6Va
- CMri12lEV_7uI9Nz_o>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejgedgtdekucetufdoteggodetrfdotf
+ messagingengine.com; h=cc:content-transfer-encoding:date:from
+ :in-reply-to:message-id:mime-version:references:subject:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm2; bh=1PnkI9x3FpNx3pObvJwkKgeAegiijK8QkociNPtQ0RI=; b=g07jMXaz
+ hq+Hwp1X3en1fdp/0Qo9/48FcWJc8S0w8pqHVbmbbczgE7C4RDOlCfIuY4Z/HBn4
+ 0sQxihMa/AtqxzK7xOQhQkxNuV+b5QY8FW/p5TNnGQWPWFNJYiYZndPS05CgR9Mb
+ nf6X3xHuB3YnEN2zi99PzlXCxcoRylffX/TVHM5x7g+ujQDs4/sHGa8Y3QkIT2Jy
+ GiSD3uwib3oi+EZWOktvLu1UY83Knxg72VsV+vh7xY/WTnRtsuQPNithU3Nw27/S
+ M6XhyYICWczwzyZ+qNGhsMBEbrtZ4wwOqw2E2o7IPqVd+Pu2INie7kKT6OZYewqO
+ hr2ArzZa9ZbvCA==
+X-ME-Sender: <xms:Vl-oYL0gbR9T2QlIe47Fy56f8iloxGETi4WUiXYH19lNtmRTt9SKpQ>
+ <xme:Vl-oYKHaEsnbz895Xs6pwgQDkmF-Mz_t74l81_4z3qFZDb9bpnFYlU0wx2-QO_HFu
+ 7vCfC5pTvX7cdobM9Y>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejgedggeekucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
- cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvrghkrghs
- hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
- hpqeenucggtffrrghtthgvrhhnpeejgeeifeeuveeufeeigeegjeelvdfgjeegffejgfdv
- keelhefgtdefteejleekjeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppe
- dugedrfedrieehrddujeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
- rghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:fzKoYMVIWmMTgrXq0M1CGZ382_iMkSVs5ngIxBWtduSRWcqW9KjUiQ>
- <xmx:fzKoYAhmUZua3gr1RVgd2v2ZsGdT4OS5Ki5BpEw32Kg6XoNj6Fr7HA>
- <xmx:fzKoYMBl934ir2pPZSzH6rF9DaO3XpFB5FR1rNA-c8hanz6_2nMYXQ>
- <xmx:gTKoYL540uhhHNo7o6zuVA9kb-BHj1a5ckL0dULXUCHjVNuGgr30hQ>
-Received: from workstation (ae065175.dynamic.ppp.asahi-net.or.jp [14.3.65.175])
- by mail.messagingengine.com (Postfix) with ESMTPA;
- Fri, 21 May 2021 18:21:49 -0400 (EDT)
-Date: Sat, 22 May 2021 07:21:46 +0900
+ uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
+ dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
+ shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepieetueeuvd
+ elfedvteejteeiheeugeelvedvkeeffeffuedutdeifeeukeeutefgnecuffhomhgrihhn
+ pehrgidruggrthgrnecukfhppedugedrfedrieehrddujeehnecuvehluhhsthgvrhfuih
+ iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgr
+ mhhotggthhhirdhjph
+X-ME-Proxy: <xmx:Vl-oYL4UQK-XPSx3_tukLT6B_Ry75yoeWRpnRUiZhllheDSsq3oeGA>
+ <xmx:Vl-oYA319ljEgAl1puaGWUM7Fbl_WiY__SDJ-ziJkw5og9wCMW04rA>
+ <xmx:Vl-oYOHIjyv19bF7gpxOXunFPlFAEOvd7Jr1QTN0rf4dXlhJSYEoUg>
+ <xmx:Vl-oYJPL540zZ0MMyux-gTcazummLn92vt9M9ElyKJrDRUJya83deQ>
+Received: from workstation.flets-east.jp (ae065175.dynamic.ppp.asahi-net.or.jp
+ [14.3.65.175]) by mail.messagingengine.com (Postfix) with ESMTPA;
+ Fri, 21 May 2021 21:33:09 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Takashi Iwai <tiwai@suse.de>, Colin King <colin.king@canonical.com>,
- Clemens Ladisch <clemens@ladisch.de>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] ALSA: firewire-lib: Fix uninitialized variable err
- issue
-Message-ID: <20210521222146.GA10202@workstation>
-Mail-Followup-To: Takashi Iwai <tiwai@suse.de>,
- Colin King <colin.king@canonical.com>,
- Clemens Ladisch <clemens@ladisch.de>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20210520083424.6685-1-colin.king@canonical.com>
- <s5hh7ixh9qn.wl-tiwai@suse.de>
- <20210520130409.GA170303@workstation>
+To: tiwai@suse.de
+Subject: [PATCH 2/6] ALSA: firewire-lib: pool sequence of packet in IT context
+ independently
+Date: Sat, 22 May 2021 10:32:59 +0900
+Message-Id: <20210522013303.49596-3-o-takashi@sakamocchi.jp>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210522013303.49596-1-o-takashi@sakamocchi.jp>
+References: <20210522013303.49596-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210520130409.GA170303@workstation>
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -131,120 +120,334 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+Current implementation pools the sequence in AMDTP domain. This is convenient
+regarding to memory usage and computation time, however inconvenient for the
+devices such that several rx streams are expected to transfer timing
+information independently.
 
-On Thu, May 20, 2021 at 10:04:09PM +0900, Takashi Sakamoto wrote:
-> Hi,
-> 
-> On Thu, May 20, 2021 at 02:26:24PM +0200, Takashi Iwai wrote:
-> > On Thu, 20 May 2021 10:34:24 +0200,
-> > Colin King wrote:
-> > > 
-> > > From: Colin Ian King <colin.king@canonical.com>
-> > > 
-> > > Currently in the case where the payload_length is less than the
-> > > cip_header_size the error return variable err is not being set
-> > > and function parse_ir_ctx_header can return an uninitialized
-> > > error return value. Fix this by setting err to zero.
-> > > 
-> > > Addresses-Coverity: ("Uninitialized scalar variable")
-> > > Fixes: c09010eeb373 ("ALSA: firewire-lib: handle the case that empty isochronous packet payload for CIP")
-> > > Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> > 
-> > Just a bikeshed, IMO, it'd be more proper to initialize err at the
-> > beginning than setting 0 at every branch, e.g.
-> > 
-> > --- a/sound/firewire/amdtp-stream.c
-> > +++ b/sound/firewire/amdtp-stream.c
-> > @@ -652,7 +652,7 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
-> >  	unsigned int payload_length;
-> >  	const __be32 *cip_header;
-> >  	unsigned int cip_header_size;
-> > -	int err;
-> > +	int err = 0;
-> >  
-> >  	payload_length = be32_to_cpu(ctx_header[0]) >> ISO_DATA_LENGTH_SHIFT;
-> >  
-> > @@ -683,7 +683,6 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
-> >  		}
-> >  	} else {
-> >  		cip_header = NULL;
-> > -		err = 0;
-> >  		*data_blocks = payload_length / sizeof(__be32) / s->data_block_quadlets;
-> >  		*syt = 0;
-> 
-> Thanks for the patches.
-> 
-> The error check is just done for the case to process CIP header, thus we
-> can put the auto variable into the branch.
-> 
-> ======== 8< --------
-> From 3fcca0062297e937c665f1c8e3a117e1187f4115 Mon Sep 17 00:00:00 2001
-> From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> Date: Thu, 20 May 2021 21:59:50 +0900
-> Subject: [PATCH] ALSA: firewire-lib: Fix uninitialized variable err issue
-> 
-> The check of error is just done for the case that CIP header is available.
-> 
-> This commit moves auto variable into the branch to process CIP header.
-> 
-> Addresses-Coverity: ("Uninitialized scalar variable")
-> Fixes: c09010eeb373 ("ALSA: firewire-lib: handle the case that empty isochronous packet payload for CIP")
-> Suggested-by: Colin Ian King <colin.king@canonical.com>
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> ---
->  sound/firewire/amdtp-stream.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-> index 37c8de8a..11ae4e88 100644
-> --- a/sound/firewire/amdtp-stream.c
-> +++ b/sound/firewire/amdtp-stream.c
-> @@ -748,7 +748,6 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
->  	unsigned int payload_length;
->  	const __be32 *cip_header;
->  	unsigned int cip_header_size;
-> -	int err;
->  
->  	payload_length = be32_to_cpu(ctx_header[0]) >> ISO_DATA_LENGTH_SHIFT;
->  
-> @@ -766,6 +765,8 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
->  
->  	if (cip_header_size > 0) {
->  		if (payload_length >= cip_header_size) {
-> +			int err;
-> +
->  			cip_header = ctx_header + IR_CTX_HEADER_DEFAULT_QUADLETS;
->  			err = check_cip_header(s, cip_header, payload_length - cip_header_size,
->  					       data_blocks, data_block_counter, syt);
-> @@ -779,7 +780,6 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
->  		}
->  	} else {
->  		cip_header = NULL;
-> -		err = 0;
->  		*data_blocks = payload_length / sizeof(__be32) / s->data_block_quadlets;
->  		*syt = 0;
->  
-> @@ -790,7 +790,7 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
->  	trace_amdtp_packet(s, cycle, cip_header, payload_length, *data_blocks,
->  			   *data_block_counter, packet_index, index);
->  
-> -	return err;
-> +	return 0;
->  }
->  
->  // In CYCLE_TIMER register of IEEE 1394, 7 bits are used to represent second. On
-> -- 
-> 2.27.0
-> ======== 8< --------
+This commit refactors to pool the sequence per rx packet stream.
 
-Thanks for applying the patch but the commit in your tree includes
-duplicated From/Data/Subject lines and causes failure of git-am for the
-patch simply generated by git-am. Is it possible for you to modify
-history of your for-next branch with enough correction?
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/amdtp-stream.c | 150 ++++++++++++++--------------------
+ sound/firewire/amdtp-stream.h |  22 ++---
+ 2 files changed, 72 insertions(+), 100 deletions(-)
 
- * https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/commit/?id=b493305483cb609abcf24c56f7415746c7e6939a
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index 7e763f46e5a4..cf4fbbd18756 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -441,6 +441,30 @@ static unsigned int calculate_syt_offset(unsigned int *last_syt_offset,
+ 	return syt_offset;
+ }
+ 
++static void pool_ideal_seq_descs(struct amdtp_stream *s, unsigned int count)
++{
++	unsigned int seq_tail = s->ctx_data.rx.seq.tail;
++	const unsigned int seq_size = s->ctx_data.rx.seq.size;
++	const unsigned int syt_interval = s->syt_interval;
++	const enum cip_sfc sfc = s->sfc;
++	const bool is_blocking = !!(s->flags & CIP_BLOCKING);
++	int i;
++
++	for (i = 0; i < count; ++i) {
++		struct seq_desc *desc = s->ctx_data.rx.seq.descs + seq_tail;
++
++		desc->syt_offset = calculate_syt_offset(&s->ctx_data.rx.last_syt_offset,
++					&s->ctx_data.rx.syt_offset_state, sfc);
++		desc->data_blocks = calculate_data_blocks(&s->ctx_data.rx.data_block_state,
++				is_blocking, desc->syt_offset == CIP_SYT_NO_INFO,
++				syt_interval, sfc);
++
++		seq_tail = (seq_tail + 1) % seq_size;
++	}
++
++	s->ctx_data.rx.seq.tail = seq_tail;
++}
++
+ static void update_pcm_pointers(struct amdtp_stream *s,
+ 				struct snd_pcm_substream *pcm,
+ 				unsigned int frames)
+@@ -833,14 +857,14 @@ static void generate_pkt_descs(struct amdtp_stream *s, struct pkt_desc *descs,
+ 			       unsigned int seq_size)
+ {
+ 	unsigned int dbc = s->data_block_counter;
+-	unsigned int seq_index = s->ctx_data.rx.seq_index;
++	unsigned int seq_head = s->ctx_data.rx.seq.head;
+ 	bool aware_syt = !(s->flags & CIP_UNAWARE_SYT);
+ 	int i;
+ 
+ 	for (i = 0; i < packets; ++i) {
+ 		struct pkt_desc *desc = descs + i;
+ 		unsigned int index = (s->packet_index + i) % s->queue_size;
+-		const struct seq_desc *seq = seq_descs + seq_index;
++		const struct seq_desc *seq = seq_descs + seq_head;
+ 
+ 		desc->cycle = compute_ohci_it_cycle(*ctx_header, s->queue_size);
+ 
+@@ -863,13 +887,13 @@ static void generate_pkt_descs(struct amdtp_stream *s, struct pkt_desc *descs,
+ 
+ 		desc->ctx_payload = s->buffer.packets[index].buffer;
+ 
+-		seq_index = (seq_index + 1) % seq_size;
++		seq_head = (seq_head + 1) % seq_size;
+ 
+ 		++ctx_header;
+ 	}
+ 
+ 	s->data_block_counter = dbc;
+-	s->ctx_data.rx.seq_index = seq_index;
++	s->ctx_data.rx.seq.head = seq_head;
+ }
+ 
+ static inline void cancel_stream(struct amdtp_stream *s)
+@@ -911,8 +935,10 @@ static void process_rx_packets(struct fw_iso_context *context, u32 tstamp, size_
+ 	// Calculate the number of packets in buffer and check XRUN.
+ 	packets = header_length / sizeof(*ctx_header);
+ 
+-	generate_pkt_descs(s, s->pkt_descs, ctx_header, packets, d->seq.descs,
+-			   d->seq.size);
++	pool_ideal_seq_descs(s, packets);
++
++	generate_pkt_descs(s, s->pkt_descs, ctx_header, packets, s->ctx_data.rx.seq.descs,
++			   s->ctx_data.rx.seq.size);
+ 
+ 	process_ctx_payloads(s, s->pkt_descs, packets);
+ 
+@@ -1152,51 +1178,6 @@ static void process_tx_packets_intermediately(struct fw_iso_context *context, u3
+ 	}
+ }
+ 
+-static void pool_ideal_seq_descs(struct amdtp_domain *d, unsigned int packets)
+-{
+-	struct amdtp_stream *irq_target = d->irq_target;
+-	unsigned int seq_tail = d->seq.tail;
+-	unsigned int seq_size = d->seq.size;
+-	unsigned int min_avail;
+-	struct amdtp_stream *s;
+-
+-	min_avail = d->seq.size;
+-	list_for_each_entry(s, &d->streams, list) {
+-		unsigned int seq_index;
+-		unsigned int avail;
+-
+-		if (s->direction == AMDTP_IN_STREAM)
+-			continue;
+-
+-		seq_index = s->ctx_data.rx.seq_index;
+-		avail = d->seq.tail;
+-		if (seq_index > avail)
+-			avail += d->seq.size;
+-		avail -= seq_index;
+-
+-		if (avail < min_avail)
+-			min_avail = avail;
+-	}
+-
+-	while (min_avail < packets) {
+-		struct seq_desc *desc = d->seq.descs + seq_tail;
+-
+-		desc->syt_offset = calculate_syt_offset(&d->last_syt_offset,
+-					&d->syt_offset_state, irq_target->sfc);
+-		desc->data_blocks = calculate_data_blocks(&d->data_block_state,
+-				!!(irq_target->flags & CIP_BLOCKING),
+-				desc->syt_offset == CIP_SYT_NO_INFO,
+-				irq_target->syt_interval, irq_target->sfc);
+-
+-		++seq_tail;
+-		seq_tail %= seq_size;
+-
+-		++min_avail;
+-	}
+-
+-	d->seq.tail = seq_tail;
+-}
+-
+ static void process_ctxs_in_domain(struct amdtp_domain *d)
+ {
+ 	struct amdtp_stream *s;
+@@ -1225,9 +1206,6 @@ static void irq_target_callback(struct fw_iso_context *context, u32 tstamp, size
+ {
+ 	struct amdtp_stream *s = private_data;
+ 	struct amdtp_domain *d = s->domain;
+-	unsigned int packets = header_length / sizeof(__be32);
+-
+-	pool_ideal_seq_descs(d, packets);
+ 
+ 	process_rx_packets(context, tstamp, header_length, header, private_data);
+ 	process_ctxs_in_domain(d);
+@@ -1238,9 +1216,6 @@ static void irq_target_callback_intermediately(struct fw_iso_context *context, u
+ {
+ 	struct amdtp_stream *s = private_data;
+ 	struct amdtp_domain *d = s->domain;
+-	unsigned int packets = header_length / sizeof(__be32);
+-
+-	pool_ideal_seq_descs(d, packets);
+ 
+ 	process_rx_packets_intermediately(context, tstamp, header_length, header, private_data);
+ 	process_ctxs_in_domain(d);
+@@ -1415,7 +1390,31 @@ static int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed,
+ 		s->ctx_data.tx.max_ctx_payload_length = max_ctx_payload_size;
+ 		s->ctx_data.tx.ctx_header_size = ctx_header_size;
+ 	} else {
+-		s->ctx_data.rx.seq_index = 0;
++		static const struct {
++			unsigned int data_block;
++			unsigned int syt_offset;
++		} *entry, initial_state[] = {
++			[CIP_SFC_32000]  = {  4, 3072 },
++			[CIP_SFC_48000]  = {  6, 1024 },
++			[CIP_SFC_96000]  = { 12, 1024 },
++			[CIP_SFC_192000] = { 24, 1024 },
++			[CIP_SFC_44100]  = {  0,   67 },
++			[CIP_SFC_88200]  = {  0,   67 },
++			[CIP_SFC_176400] = {  0,   67 },
++		};
++
++		s->ctx_data.rx.seq.descs = kcalloc(queue_size, sizeof(*s->ctx_data.rx.seq.descs), GFP_KERNEL);
++		if (!s->ctx_data.rx.seq.descs)
++			goto err_context;
++		s->ctx_data.rx.seq.size = queue_size;
++		s->ctx_data.rx.seq.tail = 0;
++		s->ctx_data.rx.seq.head = 0;
++
++		entry = &initial_state[s->sfc];
++		s->ctx_data.rx.data_block_state = entry->data_block;
++		s->ctx_data.rx.syt_offset_state = entry->syt_offset;
++		s->ctx_data.rx.last_syt_offset = TICKS_PER_CYCLE;
++
+ 		s->ctx_data.rx.event_count = 0;
+ 	}
+ 
+@@ -1471,6 +1470,8 @@ static int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed,
+ err_pkt_descs:
+ 	kfree(s->pkt_descs);
+ err_context:
++	if (s->direction == AMDTP_OUT_STREAM)
++		kfree(s->ctx_data.rx.seq.descs);
+ 	fw_iso_context_destroy(s->context);
+ 	s->context = ERR_PTR(-1);
+ err_buffer:
+@@ -1581,7 +1582,8 @@ static void amdtp_stream_stop(struct amdtp_stream *s)
+ 	iso_packets_buffer_destroy(&s->buffer, s->unit);
+ 	kfree(s->pkt_descs);
+ 
+-	s->callbacked = false;
++	if (s->direction == AMDTP_OUT_STREAM)
++		kfree(s->ctx_data.rx.seq.descs);
+ 
+ 	mutex_unlock(&s->mutex);
+ }
+@@ -1613,8 +1615,6 @@ int amdtp_domain_init(struct amdtp_domain *d)
+ 
+ 	d->events_per_period = 0;
+ 
+-	d->seq.descs = NULL;
+-
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(amdtp_domain_init);
+@@ -1665,18 +1665,6 @@ EXPORT_SYMBOL_GPL(amdtp_domain_add_stream);
+  */
+ int amdtp_domain_start(struct amdtp_domain *d, unsigned int tx_init_skip_cycles)
+ {
+-	static const struct {
+-		unsigned int data_block;
+-		unsigned int syt_offset;
+-	} *entry, initial_state[] = {
+-		[CIP_SFC_32000]  = {  4, 3072 },
+-		[CIP_SFC_48000]  = {  6, 1024 },
+-		[CIP_SFC_96000]  = { 12, 1024 },
+-		[CIP_SFC_192000] = { 24, 1024 },
+-		[CIP_SFC_44100]  = {  0,   67 },
+-		[CIP_SFC_88200]  = {  0,   67 },
+-		[CIP_SFC_176400] = {  0,   67 },
+-	};
+ 	unsigned int events_per_buffer = d->events_per_buffer;
+ 	unsigned int events_per_period = d->events_per_period;
+ 	unsigned int queue_size;
+@@ -1705,17 +1693,6 @@ int amdtp_domain_start(struct amdtp_domain *d, unsigned int tx_init_skip_cycles)
+ 	queue_size = DIV_ROUND_UP(CYCLES_PER_SECOND * events_per_buffer,
+ 				  amdtp_rate_table[d->irq_target->sfc]);
+ 
+-	d->seq.descs = kcalloc(queue_size, sizeof(*d->seq.descs), GFP_KERNEL);
+-	if (!d->seq.descs)
+-		return -ENOMEM;
+-	d->seq.size = queue_size;
+-	d->seq.tail = 0;
+-
+-	entry = &initial_state[s->sfc];
+-	d->data_block_state = entry->data_block;
+-	d->syt_offset_state = entry->syt_offset;
+-	d->last_syt_offset = TICKS_PER_CYCLE;
+-
+ 	list_for_each_entry(s, &d->streams, list) {
+ 		unsigned int idle_irq_interval = 0;
+ 
+@@ -1734,8 +1711,6 @@ int amdtp_domain_start(struct amdtp_domain *d, unsigned int tx_init_skip_cycles)
+ error:
+ 	list_for_each_entry(s, &d->streams, list)
+ 		amdtp_stream_stop(s);
+-	kfree(d->seq.descs);
+-	d->seq.descs = NULL;
+ 	return err;
+ }
+ EXPORT_SYMBOL_GPL(amdtp_domain_start);
+@@ -1760,8 +1735,5 @@ void amdtp_domain_stop(struct amdtp_domain *d)
+ 
+ 	d->events_per_period = 0;
+ 	d->irq_target = NULL;
+-
+-	kfree(d->seq.descs);
+-	d->seq.descs = NULL;
+ }
+ EXPORT_SYMBOL_GPL(amdtp_domain_stop);
+diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
+index 6c4d277dc0dd..fc653fe95405 100644
+--- a/sound/firewire/amdtp-stream.h
++++ b/sound/firewire/amdtp-stream.h
+@@ -142,13 +142,23 @@ struct amdtp_stream {
+ 		struct {
+ 			// To calculate CIP data blocks and tstamp.
+ 			unsigned int transfer_delay;
+-			unsigned int seq_index;
+ 
+ 			// To generate CIP header.
+ 			unsigned int fdf;
+ 
+ 			// To generate constant hardware IRQ.
+ 			unsigned int event_count;
++
++			struct {
++				struct seq_desc *descs;
++				unsigned int size;
++				unsigned int tail;
++				unsigned int head;
++			} seq;
++
++			unsigned int data_block_state;
++			unsigned int syt_offset_state;
++			unsigned int last_syt_offset;
+ 		} rx;
+ 	} ctx_data;
+ 
+@@ -281,16 +291,6 @@ struct amdtp_domain {
+ 		unsigned int tx_start;
+ 		unsigned int rx_start;
+ 	} processing_cycle;
+-
+-	struct {
+-		struct seq_desc *descs;
+-		unsigned int size;
+-		unsigned int tail;
+-	} seq;
+-
+-	unsigned int data_block_state;
+-	unsigned int syt_offset_state;
+-	unsigned int last_syt_offset;
+ };
+ 
+ int amdtp_domain_init(struct amdtp_domain *d);
+-- 
+2.27.0
 
-Regards
-
-Takashi Sakamoto
