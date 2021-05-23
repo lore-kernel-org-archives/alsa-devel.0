@@ -2,85 +2,88 @@ Return-Path: <SRS0=nB+M=KS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31B95C47080
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 May 2021 09:13:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECAE8C4707A
+	for <alsa-devel@archiver.kernel.org>; Sun, 23 May 2021 09:13:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A780861074
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 May 2021 09:13:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A780861074
+	by mail.kernel.org (Postfix) with ESMTPS id 53BB261074
+	for <alsa-devel@archiver.kernel.org>; Sun, 23 May 2021 09:13:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 53BB261074
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F3C6A16A9;
-	Sun, 23 May 2021 11:12:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3C6A16A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7E3B916B8;
+	Sun, 23 May 2021 11:12:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E3B916B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621761179;
-	bh=pM5hVFLlsN3ZAXKcOd7YBDcFQZUPSaSoIpdHFr2jwjo=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1621761205;
+	bh=NEtm7v9sxbGlW/An/nZUM/Ns6Za1WVRy6KQJfBKrYaU=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GFiQpdXIkPZwrrcsWSrEx3PEa601Cf/x4rTSGaZzekcE14uKO2ixA4lo+8S5XHm8f
-	 bUG8FLDjxHHBSpq9ECxhj8NmeFeZSj6nGGlBYOwtV0Cya4aKjNdvs0qjk9tpoLPIL9
-	 9Fq8a0JILEgzPNe9MmW9H9TZ7OCvityguA8NBA0A=
+	b=XWTVbAbxrvXJ9xKILYUm5YyKLzbxJROaUS/EZtPS8q6WBrGX1xQuTA6mty2ydaaoW
+	 dpyoWf5Y3C5kZ2j7ylHNXMJBNqQ4tl47XvkzGlqIAFqeO8jL8QbH31LxZUkEgFTBk8
+	 vryinms5VrkI5JaGtA+CskI0mv+rTtOdhvxta0zg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 478EEF804CF;
-	Sun, 23 May 2021 11:09:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05793F804D1;
+	Sun, 23 May 2021 11:10:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8A813F804B4; Sun, 23 May 2021 11:09:39 +0200 (CEST)
+ id 590F9F804D9; Sun, 23 May 2021 11:10:28 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4FAEDF80212
- for <alsa-devel@alsa-project.org>; Sun, 23 May 2021 11:09:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FAEDF80212
+ by alsa1.perex.cz (Postfix) with ESMTPS id 90FB1F804D1
+ for <alsa-devel@alsa-project.org>; Sun, 23 May 2021 11:10:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90FB1F804D1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="xlZMA4jg"; 
+ header.b="u47BRC3l"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="zliJL7pu"
+ header.b="mqmuc8bV"
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1621760963; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ t=1621761022; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ml52YfugawCu2dD114l7MalQqFsrwMvYDk4h6cmgPFc=;
- b=xlZMA4jgNuXn/039R3XrrEnZsAdOMS8PkP2oj6TzB5qeB0L/sgMhLIJwQHZMIjvWdDhal8
- koMR/hvsNahcT6e2/E78oFlDkwVlgQ7i1MhyJvNbRhYwaNQpPKPbAnz0pIhGKjaOf6wbZr
- /Mmhif+yq7HqbHVkM1QpAKDcnjE5cx8=
+ bh=Ma3TePPD3C6PIzvQPy11xoD26L6g26LJoFyp7EVJAVw=;
+ b=u47BRC3lYrJ7Gic7bbnR+oD/pbkdDwJZz27mLzR75mX5h4En+DhUi3ChqrQ+Cl8yc4OEq2
+ nzEhJH2Y0Ep+xNoRUpiIHCXcHrAFeCxvNwCtdaHeiLYm+/ve0tkITuDNAirH6ozriahufg
+ Qv98p5ma7a3NF8rYPhqV/A8qATCdJqo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1621760963;
+ s=susede2_ed25519; t=1621761022;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ml52YfugawCu2dD114l7MalQqFsrwMvYDk4h6cmgPFc=;
- b=zliJL7puoPpg8n+E/JJABytfDO1SXl3cBlAxTv/Mgz2VNR/yvyP2ZvLWCETDeGgA89SVlW
- lJP30E5Ebu4BUsCg==
+ bh=Ma3TePPD3C6PIzvQPy11xoD26L6g26LJoFyp7EVJAVw=;
+ b=mqmuc8bVsLwZedWMPzG6ZputDmUWUXaNHlogkzj2Y4jbk8lZerBybD4cL4AAkDQVPl1PRi
+ aJLJrXTMHWQFz8BA==
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 22D9BAC87;
- Sun, 23 May 2021 09:09:23 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id 57FEAAAFD;
+ Sun, 23 May 2021 09:10:22 +0000 (UTC)
+Date: Sun, 23 May 2021 11:10:22 +0200
+Message-ID: <s5hv979ery9.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 5/6] ALSA: Drop superfluous argument from snd_power_wait()
-Date: Sun, 23 May 2021 11:09:19 +0200
-Message-Id: <20210523090920.15345-6-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210523090920.15345-1-tiwai@suse.de>
-References: <20210523090920.15345-1-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+To: "Geoffrey D. Bennett" <g@b4.vu>
+Subject: Re: [RFC PATCH sound] ALSA: usb-audio: scarlett2:
+ snd_scarlett_gen2_controls_create() can be static
+In-Reply-To: <20210523090326.GA121080@m.b4.vu>
+References: <202105230212.9rlkrDHb-lkp@intel.com>
+ <20210522180900.GA83915@f59a3af2f1d9>
+ <20210523090326.GA121080@m.b4.vu>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,103 +99,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The power_state argument of snd_power_wait() is superfluous, receiving
-only SNDRV_POWER_STATE_D0.  Let's drop it in all callers for
-simplicity.
+On Sun, 23 May 2021 11:03:26 +0200,
+Geoffrey D. Bennett wrote:
+> 
+> Hi Takashi,
+> 
+> This patch seems legitimate to me (although I would adjust whitespace
+> so the second line doesn't go over 80 chars). Do you want to just
+> apply it as-is, or do you want me to send a second version of my patch
+> without this problem or send a new patch similar to this one?
 
-Cc: Mark Brown <broonie@kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- include/sound/core.h     | 4 ++--
- sound/core/init.c        | 6 +-----
- sound/core/pcm_native.c  | 2 +-
- sound/soc/soc-core.c     | 2 +-
- sound/usb/usx2y/us122l.c | 2 +-
- 5 files changed, 6 insertions(+), 10 deletions(-)
+As it's an obviously correct patch, I already applied as is.
 
-diff --git a/include/sound/core.h b/include/sound/core.h
-index 3acb754108b1..c4ade121727d 100644
---- a/include/sound/core.h
-+++ b/include/sound/core.h
-@@ -189,12 +189,12 @@ static inline void snd_power_sync_ref(struct snd_card *card)
- }
- 
- /* init.c */
--int snd_power_wait(struct snd_card *card, unsigned int power_state);
-+int snd_power_wait(struct snd_card *card);
- int snd_power_ref_and_wait(struct snd_card *card);
- 
- #else /* ! CONFIG_PM */
- 
--static inline int snd_power_wait(struct snd_card *card, unsigned int state) { return 0; }
-+static inline int snd_power_wait(struct snd_card *card) { return 0; }
- static inline void snd_power_ref(struct snd_card *card) {}
- static inline void snd_power_unref(struct snd_card *card) {}
- static inline int snd_power_ref_and_wait(struct snd_card *card) { return 0; }
-diff --git a/sound/core/init.c b/sound/core/init.c
-index 2c62e035bc62..70114fd26956 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -1050,19 +1050,15 @@ EXPORT_SYMBOL_GPL(snd_power_ref_and_wait);
- /**
-  * snd_power_wait - wait until the card gets powered up (old form)
-  * @card: soundcard structure
-- * @power_state: expected power state
-  *
-  * Wait until the card gets powered up to SNDRV_CTL_POWER_D0 state.
-- * @power_state must be SNDRV_CTL_POWER_D0.
-  *
-  * Return: Zero if successful, or a negative error code.
-  */
--int snd_power_wait(struct snd_card *card, unsigned int power_state)
-+int snd_power_wait(struct snd_card *card)
- {
- 	int ret;
- 
--	if (WARN_ON(power_state != SNDRV_CTL_POWER_D0))
--		return 0;
- 	ret = snd_power_ref_and_wait(card);
- 	snd_power_unref(card);
- 	return ret;
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 8dbe86cf2e4f..82f80d0c068b 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -3193,7 +3193,7 @@ static int snd_pcm_common_ioctl(struct file *file,
- 	if (PCM_RUNTIME_CHECK(substream))
- 		return -ENXIO;
- 
--	res = snd_power_wait(substream->pcm->card, SNDRV_CTL_POWER_D0);
-+	res = snd_power_wait(substream->pcm->card);
- 	if (res < 0)
- 		return res;
- 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 1c0904acb935..ddc65c12f6f4 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -580,7 +580,7 @@ int snd_soc_suspend(struct device *dev)
- 	 * Due to the resume being scheduled into a workqueue we could
- 	 * suspend before that's finished - wait for it to complete.
- 	 */
--	snd_power_wait(card->snd_card, SNDRV_CTL_POWER_D0);
-+	snd_power_wait(card->snd_card);
- 
- 	/* we're going to block userspace touching us until resume completes */
- 	snd_power_change_state(card->snd_card, SNDRV_CTL_POWER_D3hot);
-diff --git a/sound/usb/usx2y/us122l.c b/sound/usb/usx2y/us122l.c
-index 6e1bfe894dd5..596a1a1fea49 100644
---- a/sound/usb/usx2y/us122l.c
-+++ b/sound/usb/usx2y/us122l.c
-@@ -379,7 +379,7 @@ static int usb_stream_hwdep_ioctl(struct snd_hwdep *hw, struct file *file,
- 	if (cfg.period_frames < min_period_frames)
- 		return -EINVAL;
- 
--	snd_power_wait(hw->card, SNDRV_CTL_POWER_D0);
-+	snd_power_wait(hw->card);
- 
- 	mutex_lock(&us122l->mutex);
- 	s = us122l->sk.s;
--- 
-2.26.2
 
+thanks,
+
+Takashi
+
+> 
+> Also sorry I don't know what the etiquette is in cc's for this message
+> :(. The message from kernel test robot was sent to a lot of people who
+> I don't think would be interested in this, so I trimmed the cc list
+> down.
+> 
+> Thanks,
+> Geoffrey.
+> 
+> On Sun, May 23, 2021 at 02:09:00AM +0800, kernel test robot wrote:
+> > sound/usb/mixer_scarlett_gen2.c:2000:5: warning: symbol 'snd_scarlett_gen2_controls_create' was not declared. Should it be static?
+> > 
+> > Fixes: 265d1a90e4fb ("ALSA: usb-audio: scarlett2: Improve driver startup messages")
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: kernel test robot <lkp@intel.com>
+> > ---
+> >  mixer_scarlett_gen2.c |    4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
+> > index 3ad8f61a2095f..4caf379d5b991 100644
+> > --- a/sound/usb/mixer_scarlett_gen2.c
+> > +++ b/sound/usb/mixer_scarlett_gen2.c
+> > @@ -1997,8 +1997,8 @@ static int scarlett2_mixer_status_create(struct usb_mixer_interface *mixer)
+> >  	return usb_submit_urb(mixer->urb, GFP_KERNEL);
+> >  }
+> >  
+> > -int snd_scarlett_gen2_controls_create(struct usb_mixer_interface *mixer,
+> > -				      const struct scarlett2_device_info *info)
+> > +static int snd_scarlett_gen2_controls_create(struct usb_mixer_interface *mixer,
+> > +					     const struct scarlett2_device_info *info)
+> >  {
+> >  	int err;
+> >  
+> 
