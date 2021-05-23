@@ -2,71 +2,91 @@ Return-Path: <SRS0=nB+M=KS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E346C47080
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 May 2021 07:12:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50E6AC4707A
+	for <alsa-devel@archiver.kernel.org>; Sun, 23 May 2021 08:33:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8E84B61155
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 May 2021 07:12:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8E84B61155
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
+	by mail.kernel.org (Postfix) with ESMTPS id D474661263
+	for <alsa-devel@archiver.kernel.org>; Sun, 23 May 2021 08:33:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D474661263
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4AB9C1666;
-	Sun, 23 May 2021 09:11:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4AB9C1666
+	by alsa0.perex.cz (Postfix) with ESMTPS id 926E5836;
+	Sun, 23 May 2021 10:32:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 926E5836
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621753948;
-	bh=D7ZO/YzC0oumnqsNljm0ozwO1jCsbYTjd2TtUqOV8t0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=PlUsz7W4I3PqTJ9E6jly6wEG7gQXURWH0oJUZa0B7fRqISH2guJBI1/zbI8Z/5bkY
-	 34SrQEVzn4Hri6T28lXOgOaTvPdbwCVM+JEQTMYtkQ7AkzqrNSZaVzWnonbFpk5xpD
-	 Scey6qe9nGlGoW9fl1sYWl0zpMeo/ZHFysmN8Nkk=
+	s=default; t=1621758813;
+	bh=bh6/l/0Mu1qg0nReaUSdCNaagsF9K56R/ONhvLP2h6I=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=SXJvGDzhpyHe7+X2VXYNDm9glL93d0g8aA4zzFT5t17/Pp0ivTNTQPUhSjrjkd2K9
+	 wtPBoLkTOCF+1Q95QDJEHlVm1VNtxUJ8iWetmje4KRlkf37wFA3DE/8ILtpitYlujB
+	 oz5I9lCCmED0QxjKfciyc8sbjtZwHKTMkRyqoTXs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D7ADBF8019D;
-	Sun, 23 May 2021 09:11:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22BF9F8019D;
+	Sun, 23 May 2021 10:32:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7ED6EF801EB; Sun, 23 May 2021 09:11:36 +0200 (CEST)
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 29998F801EB; Sun, 23 May 2021 10:32:42 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 50C00F8016D
- for <alsa-devel@alsa-project.org>; Sun, 23 May 2021 09:11:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50C00F8016D
-Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.59])
- by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fns014hV2zmXf4;
- Sun, 23 May 2021 15:09:05 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sun, 23 May 2021 15:11:24 +0800
-Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
- (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sun, 23
- May 2021 15:11:23 +0800
-From: YueHaibing <yuehaibing@huawei.com>
-To: <perex@perex.cz>, <tiwai@suse.com>
-Subject: [PATCH -next] ALSA: control_led - use DEVICE_ATTR_*() macro
-Date: Sun, 23 May 2021 15:11:09 +0800
-Message-ID: <20210523071109.28940-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
-Cc: alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>,
- linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id D5AD3F80137
+ for <alsa-devel@alsa-project.org>; Sun, 23 May 2021 10:32:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5AD3F80137
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="h51il5Ia"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="8TlffLWw"
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1621758750; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=U59H/l6kOzXNcwBFT4+SCj3zz1deOAwXFfaCSRs3PV8=;
+ b=h51il5IaqS612ve+aHInTVXqwdzBSOXrZy5IhOiVjtE+9jhbMkgHeLsUSlPMc5Hwx1/5am
+ CSMor9Kq3ZQkFhK/NyxywBa0MZkWJ7tYtpkZEqef4tBRE1MMd0SHZxjPN7SQTO5Tt174PS
+ PXbeVoRnz6w68PQ5N2RqOf21DXOZS4M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1621758750;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=U59H/l6kOzXNcwBFT4+SCj3zz1deOAwXFfaCSRs3PV8=;
+ b=8TlffLWw82CiUzFWs8jwldiRyaZIto2Pt5GUpHGuztNWX4+1H5R3zL/NSpUFeKhJhd/GAz
+ wKTSd8iJHy8p2OAg==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 375B6AC3A;
+ Sun, 23 May 2021 08:32:30 +0000 (UTC)
+Date: Sun, 23 May 2021 10:32:28 +0200
+Message-ID: <s5hzgwletpf.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: kernel test robot <lkp@intel.com>
+Subject: Re: [RFC PATCH sound] ALSA: usb-audio: scarlett2:
+ snd_scarlett_gen2_controls_create() can be static
+In-Reply-To: <20210522180900.GA83915@f59a3af2f1d9>
+References: <202105230212.9rlkrDHb-lkp@intel.com>
+ <20210522180900.GA83915@f59a3af2f1d9>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, kbuild-all@lists.01.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Alexander Tsoy <alexander@tsoy.me>, Joe Perches <joe@perches.com>,
+ "Geoffrey D. Bennett" <g@b4.vu>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,113 +102,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Use DEVICE_ATTR_*() helper instead of plain DEVICE_ATTR,
-which makes the code a bit shorter and easier to read.
+On Sat, 22 May 2021 20:09:00 +0200,
+kernel test robot wrote:
+> 
+> sound/usb/mixer_scarlett_gen2.c:2000:5: warning: symbol 'snd_scarlett_gen2_controls_create' was not declared. Should it be static?
+> 
+> Fixes: 265d1a90e4fb ("ALSA: usb-audio: scarlett2: Improve driver startup messages")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: kernel test robot <lkp@intel.com>
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- sound/core/control_led.c | 34 +++++++++++++++++++---------------
- 1 file changed, 19 insertions(+), 15 deletions(-)
+Applied now.  Thanks.
 
-diff --git a/sound/core/control_led.c b/sound/core/control_led.c
-index 25f57c14f294..a5e751f26d46 100644
---- a/sound/core/control_led.c
-+++ b/sound/core/control_led.c
-@@ -375,7 +375,7 @@ static void snd_ctl_led_disconnect(struct snd_card *card)
-  * sysfs
-  */
- 
--static ssize_t show_mode(struct device *dev,
-+static ssize_t mode_show(struct device *dev,
- 			 struct device_attribute *attr, char *buf)
- {
- 	struct snd_ctl_led *led = container_of(dev, struct snd_ctl_led, dev);
-@@ -390,7 +390,8 @@ static ssize_t show_mode(struct device *dev,
- 	return sprintf(buf, "%s\n", str);
- }
- 
--static ssize_t store_mode(struct device *dev, struct device_attribute *attr,
-+static ssize_t mode_store(struct device *dev,
-+			  struct device_attribute *attr,
- 			  const char *buf, size_t count)
- {
- 	struct snd_ctl_led *led = container_of(dev, struct snd_ctl_led, dev);
-@@ -419,7 +420,7 @@ static ssize_t store_mode(struct device *dev, struct device_attribute *attr,
- 	return count;
- }
- 
--static ssize_t show_brightness(struct device *dev,
-+static ssize_t brightness_show(struct device *dev,
- 			       struct device_attribute *attr, char *buf)
- {
- 	struct snd_ctl_led *led = container_of(dev, struct snd_ctl_led, dev);
-@@ -427,8 +428,8 @@ static ssize_t show_brightness(struct device *dev,
- 	return sprintf(buf, "%u\n", ledtrig_audio_get(led->trigger_type));
- }
- 
--static DEVICE_ATTR(mode, 0644, show_mode, store_mode);
--static DEVICE_ATTR(brightness, 0444, show_brightness, NULL);
-+static DEVICE_ATTR_RW(mode);
-+static DEVICE_ATTR_RO(brightness);
- 
- static struct attribute *snd_ctl_led_dev_attrs[] = {
- 	&dev_attr_mode.attr,
-@@ -562,22 +563,25 @@ static ssize_t set_led_id(struct snd_ctl_led_card *led_card, const char *buf, si
- 	return count;
- }
- 
--static ssize_t parse_attach(struct device *dev, struct device_attribute *attr,
-+static ssize_t attach_store(struct device *dev,
-+			    struct device_attribute *attr,
- 			    const char *buf, size_t count)
- {
- 	struct snd_ctl_led_card *led_card = container_of(dev, struct snd_ctl_led_card, dev);
- 	return set_led_id(led_card, buf, count, true);
- }
- 
--static ssize_t parse_detach(struct device *dev, struct device_attribute *attr,
-+static ssize_t detach_store(struct device *dev,
-+			    struct device_attribute *attr,
- 			    const char *buf, size_t count)
- {
- 	struct snd_ctl_led_card *led_card = container_of(dev, struct snd_ctl_led_card, dev);
- 	return set_led_id(led_card, buf, count, false);
- }
- 
--static ssize_t ctl_reset(struct device *dev, struct device_attribute *attr,
--			 const char *buf, size_t count)
-+static ssize_t reset_store(struct device *dev,
-+			   struct device_attribute *attr,
-+			   const char *buf, size_t count)
- {
- 	struct snd_ctl_led_card *led_card = container_of(dev, struct snd_ctl_led_card, dev);
- 	int err;
-@@ -590,8 +594,8 @@ static ssize_t ctl_reset(struct device *dev, struct device_attribute *attr,
- 	return count;
- }
- 
--static ssize_t ctl_list(struct device *dev,
--			struct device_attribute *attr, char *buf)
-+static ssize_t list_show(struct device *dev,
-+			 struct device_attribute *attr, char *buf)
- {
- 	struct snd_ctl_led_card *led_card = container_of(dev, struct snd_ctl_led_card, dev);
- 	struct snd_card *card;
-@@ -624,10 +628,10 @@ static ssize_t ctl_list(struct device *dev,
- 	return buf2 - buf;
- }
- 
--static DEVICE_ATTR(attach, 0200, NULL, parse_attach);
--static DEVICE_ATTR(detach, 0200, NULL, parse_detach);
--static DEVICE_ATTR(reset, 0200, NULL, ctl_reset);
--static DEVICE_ATTR(list, 0444, ctl_list, NULL);
-+static DEVICE_ATTR_WO(attach);
-+static DEVICE_ATTR_WO(detach);
-+static DEVICE_ATTR_WO(reset);
-+static DEVICE_ATTR_RO(list);
- 
- static struct attribute *snd_ctl_led_card_attrs[] = {
- 	&dev_attr_attach.attr,
--- 
-2.17.1
 
+Takashi
