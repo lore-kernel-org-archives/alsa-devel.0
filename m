@@ -4,92 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60620C47082
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 May 2021 23:46:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF1F8C47082
+	for <alsa-devel@archiver.kernel.org>; Sun, 23 May 2021 23:46:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A75926101E
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 May 2021 23:46:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A75926101E
+	by mail.kernel.org (Postfix) with ESMTPS id 702A660C41
+	for <alsa-devel@archiver.kernel.org>; Sun, 23 May 2021 23:46:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 702A660C41
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 198571687;
-	Mon, 24 May 2021 01:45:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 198571687
+	by alsa0.perex.cz (Postfix) with ESMTPS id D98121664;
+	Mon, 24 May 2021 01:46:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D98121664
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621813608;
-	bh=kM6xvGNzZwoj5SNvSba2ePmrwZ+Az2Az2Vp1qJfKxy8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=E1PSDeVnEwQTxsDx44sWfh1Cc8jJsgDjPf+3cTjk7GZCKUhrnQA1lJ/7qhCu/vFKr
-	 dXRfZp0djTyZkKe0SeQTyqYKfxz2DLWlSWQ8bb0sFvca1Ie4AB2LliQO/IMKL+ZMFs
-	 glIQU5v3YgBc2TkoHf3ljTDtwjTttUdaDohtZPYE=
+	s=default; t=1621813612;
+	bh=JrnYCZL0eEryRCaOYHbj17ORxK3gCCBNOm28PhsUG+w=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ZMhM95N60WRAARwnqgGms78oN/HJ0B27LYxlOXEhCti291NzLwDsIwz2hBazcrhko
+	 Ub0Gy/apKv3Zlm2TRP19rJzBrGS0K65hc8kM6rPt+mHLruk9Jq8jPUgxHHLVHJ4k94
+	 wHACAJnIuNBMKjaH5F9Y3QZJpI9sXbpv+1yT1StM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8D5F2F8026F;
-	Mon, 24 May 2021 01:45:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB5FAF80425;
+	Mon, 24 May 2021 01:45:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 43737F8026B; Mon, 24 May 2021 01:45:05 +0200 (CEST)
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com
- [IPv6:2a00:1450:4864:20::229])
+ id 13A00F80425; Mon, 24 May 2021 01:45:10 +0200 (CEST)
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
+ [IPv6:2a00:1450:4864:20::130])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 805BFF800DF
- for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 01:45:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 805BFF800DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id ACB74F801F5
+ for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 01:45:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ACB74F801F5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="fkGG6opg"
-Received: by mail-lj1-x229.google.com with SMTP id o8so31259178ljp.0
- for <alsa-devel@alsa-project.org>; Sun, 23 May 2021 16:45:00 -0700 (PDT)
+ header.b="AogWYbp2"
+Received: by mail-lf1-x130.google.com with SMTP id a2so38026352lfc.9
+ for <alsa-devel@alsa-project.org>; Sun, 23 May 2021 16:45:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=odIUAzVpSvIL7IIcBvAsTMdmbOsZaWug4GlMmmm0+sI=;
- b=fkGG6opg4zBrpQJQyrI6xpQMXkeqAD12j2ubkEyWxo5Ai/p6UaH1OUtD/thK1AjfPh
- Of39n9ioUdZ9f7gwPRTPm1fCD8frSaVYb8KhZE64AH5GGaWhYl/RarYfAmbiM0FvuMxB
- Ez6aT6wanG9uYm6170p34R38fn7GiuQ+CXn30ESlx7+LYTJKok4yI+muKBLzicqcFIjG
- Cu/p5BWvbaq/aalwfR4Ahs6HKMHmKpory6VAhP7xvngU/nnF+xq4KX5sXe+7Pq791Th/
- ZoAeKSftIii96aNMYalr77qABpmguSW7ku21nofIWYp0rzRsvxJKVF0x8TV8vqKJWGAC
- PoOA==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=C/YzaFVHHjWNgRf6nbKhMfyavNiyvMnhUpV/Qwaqx/s=;
+ b=AogWYbp2571hXKwtIuF4bCZiBf3P0LLL8n/tk5gItLQkDYA1OMnqjybNK/f/UA/XmM
+ V8BPFNu6wC6r545xqZ42lVU+1Ch7Y+AkeOterZrhXk053Xg0hHQzULJO5W5skYhJYGh9
+ iEczqLo0ZyyGOw1V5QLoUUeTvNuVLM7h/vcUjbiW7VxAbPkfsfzGuJtAjryX+uYkZ8gS
+ wShFf5vu/DzsxLazK2HF3y/hdEVKyh7UW51exsl30jDxghWfLAszc72H7lVxr6Bdolpx
+ r2VwGo+mfehQmr01jWrffSV5ush0yDsZIi8V1fAs2ymDllggPFXozNua+VxcxEbCH6tf
+ hmaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=odIUAzVpSvIL7IIcBvAsTMdmbOsZaWug4GlMmmm0+sI=;
- b=acqMPsRwIx5qI1yA5tIalTyc8sWjDQq632tTvzcLzBhT8GmDQ4PFV0NCiQgXjdMhCS
- xmj9gauvQap0CDMOzrxc2jYEQ3sbfSkuhm7Umcxp5qARqD+eX2f9AewfFswyLy1Jc5iv
- 9/t96iY+lLx931ManC5BURAn4NuOO+IhSyVvt7fv7CVSyX5ozzKvzliA29QgD39ctnyx
- xJysEXF/+A41C2p9ZO4RXxHElGUJNEY1nIhM36FKFd7HMB+YZgU1Yg40BXsKnj8reXYt
- esdYHoZf5TEHD3e10wy/e2CkhYGX/nhC156wOCghOKLa8K7Jg8vTVicp4J/9yMIlKF3L
- behw==
-X-Gm-Message-State: AOAM531U92eMH3WnhURWYQM22MfotlfdBM8sdjphR2chYxpjXfp/xuzP
- 0WcFGVHqqUsaO/mltqCoU5M=
-X-Google-Smtp-Source: ABdhPJwVceG0+0umOv9SNyyBo1gvXhoraPQ9T1uXF38hPuanB5j+SHkkhqXxJyRuyMe4M2teqzkd/A==
-X-Received: by 2002:a2e:a585:: with SMTP id m5mr15119059ljp.51.1621813499361; 
- Sun, 23 May 2021 16:44:59 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=C/YzaFVHHjWNgRf6nbKhMfyavNiyvMnhUpV/Qwaqx/s=;
+ b=BQtiStQClCMMXF//4WOFzOFL4Qwdx6whihx9deQRKJrekkWUJ1S5ItJXmNZX0+ivVG
+ YPz9mFdHgHmP9hce/qsVsoE18PzlwSagsqc1GnnFpIWE+g6fsKI3w7dKd8140ljcu2zE
+ c1brCBpUk8pR5ZDabkm26asVVTpxKHoqvEbtgpQOOlMCy1lB9T+EGB8rPKv1J/y9ufD5
+ RNobBjRzbUnXqRm5Fbspl6nNzJsIk160hqV2AZssbUcB+Y9Wp2b7J0q+gyXIglBgSjlQ
+ lO9mNHEqh6C+IJQeMzVikUL3WqRCfZQmL7ayRhZG5obrsI/jmnXrVchTllw45heq3AQe
+ /3RQ==
+X-Gm-Message-State: AOAM532Zx6z4Ni8sA9dXb49gWjG10lPnaGcBDZaxSkebPsf1i4EW4MVs
+ iwVUMdiX4eCBLrUrA0kIY2o=
+X-Google-Smtp-Source: ABdhPJwYX7c2QidUiFvbyA6SfWUONiARQmi6QnR3vrM84BTIdW1DjUk+HWswv9Nf11lrcyqtTGrP6g==
+X-Received: by 2002:a05:6512:3f28:: with SMTP id
+ y40mr8881209lfa.136.1621813501584; 
+ Sun, 23 May 2021 16:45:01 -0700 (PDT)
 Received: from localhost.localdomain (109-252-193-110.dynamic.spd-mgts.ru.
  [109.252.193.110])
- by smtp.gmail.com with ESMTPSA id u11sm1269054lfg.243.2021.05.23.16.44.58
+ by smtp.gmail.com with ESMTPSA id u11sm1269054lfg.243.2021.05.23.16.45.01
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 23 May 2021 16:44:59 -0700 (PDT)
+ Sun, 23 May 2021 16:45:01 -0700 (PDT)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
  Ion Agorria <ion@agorria.com>, Svyatoslav Ryhel <clamor95@gmail.com>,
  Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH v3 0/4] Unify NVIDIA Tegra ASoC machine drivers
-Date: Mon, 24 May 2021 02:44:33 +0300
-Message-Id: <20210523234437.25077-1-digetx@gmail.com>
+Subject: [PATCH v3 3/4] ASoC: tegra: Specify components string for each card
+Date: Mon, 24 May 2021 02:44:36 +0300
+Message-Id: <20210523234437.25077-4-digetx@gmail.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210523234437.25077-1-digetx@gmail.com>
+References: <20210523234437.25077-1-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
@@ -109,65 +113,115 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-During review of the RT5631 machine driver, Jon Hunter suggested that
-it will be better to squash all the current ASoC machine drivers into
-a single one. This suggestion is implemented by this patchset. The
-RT5631 support will come later with the ASUS Transformer changes.
+Specify components string for each card of each supported device. It's
+a free form string that describes audio hardware configuration. This
+information is useful for ALSA UCM rules. It allows to generalize UCM
+rules, potentially removing a need to add new UCM rule for each device.
 
-This series needs to be approved by Jaroslav Kysela before it can be
-merged.
+This patch also adds asoc->components hook that allows to specify
+components description per device.
 
-Changelog:
+Suggested-by: Jaroslav Kysela <perex@perex.cz>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ sound/soc/tegra/tegra_asoc_machine.c | 9 +++++++++
+ sound/soc/tegra/tegra_asoc_machine.h | 1 +
+ sound/soc/tegra/tegra_wm8903.c       | 1 +
+ 3 files changed, 11 insertions(+)
 
-v3: - Added components string as was suggested by Jaroslav Kysela to v2.
-
-    - Renamed MCLK rate function that is used by max98090 and other codecs
-      to make it look more generic. Added option for specifying CLK ID per
-      device. This all was suggested by Jon Hunter to v2.
-
-v2: - Dropped use of of_device_compatible_match(), like it was suggested
-      by Rob Herring in a review comment to v1.
-
-    - Added patch that sets card's driver_name of as Tegra ASoC drivers.
-      In a comment to v1 Jaroslav Kysela suggested that the Tegra drivers
-      don't set the card name properly and he was right.
-
-      I opened pull request with the new Tegra UCMs and updated lookup paths
-      for older UCMs [1].
-
-      [1] https://github.com/alsa-project/alsa-ucm-conf/pull/92
-
-Dmitry Osipenko (4):
-  ASoC: tegra: Set driver_name=tegra for all machine drivers
-  ASoC: tegra: Unify ASoC machine drivers
-  ASoC: tegra: Specify components string for each card
-  ASoC: tegra: Specify components string for Nexus 7
-
- sound/soc/tegra/Kconfig              |  12 +
- sound/soc/tegra/Makefile             |  18 +-
- sound/soc/tegra/tegra_alc5632.c      | 259 ---------
- sound/soc/tegra/tegra_asoc_machine.c | 761 +++++++++++++++++++++++++++
- sound/soc/tegra/tegra_asoc_machine.h |  47 ++
- sound/soc/tegra/tegra_max98090.c     | 276 ----------
- sound/soc/tegra/tegra_rt5640.c       | 222 --------
- sound/soc/tegra/tegra_rt5677.c       | 324 ------------
- sound/soc/tegra/tegra_sgtl5000.c     | 211 --------
- sound/soc/tegra/tegra_wm8753.c       | 185 -------
- sound/soc/tegra/tegra_wm8903.c       | 358 +++----------
- sound/soc/tegra/tegra_wm9712.c       | 166 ------
- sound/soc/tegra/trimslice.c          | 172 ------
- 13 files changed, 894 insertions(+), 2117 deletions(-)
- delete mode 100644 sound/soc/tegra/tegra_alc5632.c
- create mode 100644 sound/soc/tegra/tegra_asoc_machine.c
- create mode 100644 sound/soc/tegra/tegra_asoc_machine.h
- delete mode 100644 sound/soc/tegra/tegra_max98090.c
- delete mode 100644 sound/soc/tegra/tegra_rt5640.c
- delete mode 100644 sound/soc/tegra/tegra_rt5677.c
- delete mode 100644 sound/soc/tegra/tegra_sgtl5000.c
- delete mode 100644 sound/soc/tegra/tegra_wm8753.c
- delete mode 100644 sound/soc/tegra/tegra_wm9712.c
- delete mode 100644 sound/soc/tegra/trimslice.c
-
+diff --git a/sound/soc/tegra/tegra_asoc_machine.c b/sound/soc/tegra/tegra_asoc_machine.c
+index 17579decceda..a81f2ebfc00c 100644
+--- a/sound/soc/tegra/tegra_asoc_machine.c
++++ b/sound/soc/tegra/tegra_asoc_machine.c
+@@ -399,6 +399,8 @@ int tegra_asoc_machine_probe(struct platform_device *pdev)
+ 
+ 	if (asoc->add_common_snd_ops)
+ 		card->dai_link->ops = &tegra_machine_snd_ops;
++	if (asoc->components)
++		card->components = asoc->components;
+ 
+ 	if (!card->owner)
+ 		card->owner = THIS_MODULE;
+@@ -434,6 +436,7 @@ static struct snd_soc_dai_link tegra_wm8753_dai = {
+ };
+ 
+ static struct snd_soc_card snd_soc_tegra_wm8753 = {
++	.components = "codec:wm8753",
+ 	.dai_link = &tegra_wm8753_dai,
+ 	.num_links = 1,
+ 	.fully_routed = true,
+@@ -466,6 +469,7 @@ static struct snd_soc_dai_link tegra_wm9712_dai = {
+ };
+ 
+ static struct snd_soc_card snd_soc_tegra_wm9712 = {
++	.components = "codec:wm9712",
+ 	.dai_link = &tegra_wm9712_dai,
+ 	.num_links = 1,
+ 	.fully_routed = true,
+@@ -527,6 +531,7 @@ static struct snd_soc_dai_link tegra_sgtl5000_dai = {
+ };
+ 
+ static struct snd_soc_card snd_soc_tegra_sgtl5000 = {
++	.components = "codec:sgtl5000",
+ 	.dai_link = &tegra_sgtl5000_dai,
+ 	.num_links = 1,
+ 	.fully_routed = true,
+@@ -569,6 +574,7 @@ static struct snd_soc_dai_link tegra_tlv320aic23_dai = {
+ };
+ 
+ static struct snd_soc_card snd_soc_tegra_trimslice = {
++	.components = "codec:tlv320aic23",
+ 	.dai_link = &tegra_tlv320aic23_dai,
+ 	.num_links = 1,
+ 	.dapm_widgets = trimslice_dapm_widgets,
+@@ -616,6 +622,7 @@ static struct snd_soc_dai_link tegra_rt5677_dai = {
+ };
+ 
+ static struct snd_soc_card snd_soc_tegra_rt5677 = {
++	.components = "codec:rt5677",
+ 	.dai_link = &tegra_rt5677_dai,
+ 	.num_links = 1,
+ 	.fully_routed = true,
+@@ -649,6 +656,7 @@ static struct snd_soc_dai_link tegra_rt5640_dai = {
+ };
+ 
+ static struct snd_soc_card snd_soc_tegra_rt5640 = {
++	.components = "codec:rt5640",
+ 	.dai_link = &tegra_rt5640_dai,
+ 	.num_links = 1,
+ 	.fully_routed = true,
+@@ -681,6 +689,7 @@ static struct snd_soc_dai_link tegra_rt5632_dai = {
+ };
+ 
+ static struct snd_soc_card snd_soc_tegra_rt5632 = {
++	.components = "codec:rt5632",
+ 	.dai_link = &tegra_rt5632_dai,
+ 	.num_links = 1,
+ 	.fully_routed = true,
+diff --git a/sound/soc/tegra/tegra_asoc_machine.h b/sound/soc/tegra/tegra_asoc_machine.h
+index 080c1a26073a..fa325bfb2c8a 100644
+--- a/sound/soc/tegra/tegra_asoc_machine.h
++++ b/sound/soc/tegra/tegra_asoc_machine.h
+@@ -15,6 +15,7 @@ struct snd_soc_pcm_runtime;
+ struct tegra_asoc_data {
+ 	unsigned int (*mclk_rate)(unsigned int srate);
+ 	struct snd_soc_card *card;
++	const char *components;
+ 	unsigned int mclk_id;
+ 	bool hp_jack_gpio_active_low;
+ 	bool add_common_dapm_widgets;
+diff --git a/sound/soc/tegra/tegra_wm8903.c b/sound/soc/tegra/tegra_wm8903.c
+index a3ec1f50bcb8..3f4f582fb02f 100644
+--- a/sound/soc/tegra/tegra_wm8903.c
++++ b/sound/soc/tegra/tegra_wm8903.c
+@@ -108,6 +108,7 @@ static struct snd_soc_dai_link tegra_wm8903_dai = {
+ };
+ 
+ static struct snd_soc_card snd_soc_tegra_wm8903 = {
++	.components = "codec:wm8903",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_wm8903_dai,
+ 	.num_links = 1,
 -- 
 2.30.2
 
