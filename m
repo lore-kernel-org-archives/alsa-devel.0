@@ -2,91 +2,63 @@ Return-Path: <SRS0=nB+M=KS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 463B3C4707A
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 May 2021 08:38:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1DE2C4707A
+	for <alsa-devel@archiver.kernel.org>; Sun, 23 May 2021 09:04:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6C7BD6100C
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 May 2021 08:38:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C7BD6100C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id C37776128A
+	for <alsa-devel@archiver.kernel.org>; Sun, 23 May 2021 09:04:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C37776128A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=b4.vu
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0AC9B1695;
-	Sun, 23 May 2021 10:38:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0AC9B1695
+	by alsa0.perex.cz (Postfix) with ESMTPS id 86C561663;
+	Sun, 23 May 2021 11:03:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86C561663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621759131;
-	bh=QZsIkFYr8HPIQxMacYshzhwC1fh1RUN0vnuVmqgXwRY=;
-	h=Date:From:Subject:To:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=RtMPMug6XLR/oY1VomBTTI1AKLKH80uCwpU3jUPzkh8eFv4+Vj9xa03O3qy6/Nv4X
-	 wnCVHpHgWzdf549nyUrp7yhfdQENzw59tZAVEuvYHV4aTOAav0FHGgMJBna8WUuv+g
-	 opSykZEVHARZDZlCkjug10jS7QkaMnX0x5Ma5YZ0=
+	s=default; t=1621760677;
+	bh=j3WPODAFqyi8LrgqZPViTbAy3ezRdqr3hhR6BS2r9Uc=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=XZxoqsGqwGFVYoyMJ5MPTsoGYwRJOJCtf9af9jHO9vEqbMtzgLglAhfUW08XnF17j
+	 vjakpCUtg0RWhKeRDTvdk1RDbJRy8nZj3oXzA7iepxDjee45TDXzfllmQXevlVz7zM
+	 lMgiTz1oYCb/fDpyKve+tGQjn5sIGL0uRnE8DIig=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E099F80424;
-	Sun, 23 May 2021 10:37:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 014CAF8019D;
+	Sun, 23 May 2021 11:03:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A82AAF801DB; Fri, 21 May 2021 20:46:32 +0200 (CEST)
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com
- [IPv6:2607:f8b0:4864:20::831])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id D9538F801EB; Sun, 23 May 2021 11:03:45 +0200 (CEST)
+Received: from m.b4.vu (m.b4.vu [203.16.231.148])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8CBE0F80153
- for <alsa-devel@alsa-project.org>; Fri, 21 May 2021 20:46:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CBE0F80153
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="eD+EWt6P"
-Received: by mail-qt1-x831.google.com with SMTP id 1so16054201qtb.0
- for <alsa-devel@alsa-project.org>; Fri, 21 May 2021 11:46:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:subject:to:message-id:mime-version;
- bh=2BbLsNCBgtzCNCTDjZEZMfSu1q09KhN22M1FQtPTZfA=;
- b=eD+EWt6PRC9BM35XNxcwM3Nq0x903rjciTbPBEbTz4FpSmmZFPiLDvo8eUdPG/qqZm
- 3AvFrcTE0qBLrfnuZdNCNNlI4Rdeyojk/OX706cPG4DVUo+JcaIitrBq+jv9lOnwjc2/
- ETequYWQy0ENDc4HGzKYl//T41BiJLaJHXtySCYEvziIQ5mr0ULLU7+MR69rm3xEcRAm
- 6Ji2rmzr5OCX/Z8akqC7x5HJ4bH82DMDlYauMcFBQeaBC13w8wyCOPEAI/TtbFXZvQ6S
- oA/e2CM4IcTrxClWD26tQWUFNGyUq3i0LnaccX/ZR1k/eWbaLUIgCH62bHODSumcyLdD
- 45lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:subject:to:message-id:mime-version;
- bh=2BbLsNCBgtzCNCTDjZEZMfSu1q09KhN22M1FQtPTZfA=;
- b=CrRzTg1lFJrPRNzesiHmnXpUUdf7bw3aZTHndbhLm3bxIiKG1O/C3IbWHpkQ1BBf7/
- P3pUg8Lh62e+ZmzYKdv+C9FIw0Fm3t1vdvJroAZg9ktPqB7GVq5lJ61Oyh9nkkebjOFw
- dTM/RsoqjORZUscxe3YbiwuHktiqoN9C/qysxjF9HHAV3GIhL5UUwAgLFwwBbqx5/KR1
- 7rdB6y+2Jha/iHfk0+L6tS/bq8xnnuvgxa1qBZFGN4SzcrCWO6DG747d1rWgar+mnYVH
- MI8IejfmNeJUre9gjBbRWDU+cNdDv30AQYKeuONbw+zU2sULVQo40IvhtCM4yXRhl9v4
- vN/A==
-X-Gm-Message-State: AOAM531pNFe9JbI2dTWoW7yUHyS/mY/AYy8IyMeMHeWvrlO2729D0KMM
- xruk/lcIBBqFbD1cm8Ebcn58kH8w6wd/5w==
-X-Google-Smtp-Source: ABdhPJyN0JK3uxcLOERZ352Fr7uZ5JSDa7S3ybOWH3cdYP6sUsrzjzaOlZ3CXD2ag34kLkMK506PIQ==
-X-Received: by 2002:a05:622a:130b:: with SMTP id
- v11mr13214016qtk.362.1621622783790; 
- Fri, 21 May 2021 11:46:23 -0700 (PDT)
-Received: from [192.168.0.3] ([189.62.150.233])
- by smtp.gmail.com with ESMTPSA id h23sm5419807qka.22.2021.05.21.11.46.22
- for <alsa-devel@alsa-project.org>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 21 May 2021 11:46:23 -0700 (PDT)
-Date: Fri, 21 May 2021 15:46:14 -0300
-From: Georges Basile Stavracas Neto <georges.stavracas@gmail.com>
-Subject: Motu M4 - where to report this issue?
-To: alsa-devel@alsa-project.org
-Message-Id: <250HTQ.CIMY4AIX2X883@gmail.com>
-X-Mailer: geary/40.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id EB451F8016D
+ for <alsa-devel@alsa-project.org>; Sun, 23 May 2021 11:03:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB451F8016D
+Received: by m.b4.vu (Postfix, from userid 1000)
+ id AC316612FB20; Sun, 23 May 2021 18:33:26 +0930 (ACST)
+Date: Sun, 23 May 2021 18:33:26 +0930
+From: "Geoffrey D. Bennett" <g@b4.vu>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [RFC PATCH sound] ALSA: usb-audio: scarlett2:
+ snd_scarlett_gen2_controls_create() can be static
+Message-ID: <20210523090326.GA121080@m.b4.vu>
+References: <202105230212.9rlkrDHb-lkp@intel.com>
+ <20210522180900.GA83915@f59a3af2f1d9>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-X-Mailman-Approved-At: Sun, 23 May 2021 10:37:03 +0200
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210522180900.GA83915@f59a3af2f1d9>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,46 +74,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Greetings ALSA community,
+Hi Takashi,
 
-I recently acquired a Motu M4 interface, and seems to be working
-well so far. Everyday usage is completely functional.
+This patch seems legitimate to me (although I would adjust whitespace
+so the second line doesn't go over 80 chars). Do you want to just
+apply it as-is, or do you want me to send a second version of my patch
+without this problem or send a new patch similar to this one?
 
-However, I noticed an odd sound artifact that happens from time
-to time when using DAWs like Ardour and Waveform11. It's a windy,
-ghostly sound that happens whenever I open any DAWs (the simple
-act of opening them triggers this). Interestingly, audio apps that
-use PulseAudio do not suffer from this issue. It's hard to describe
-it, so I recorded a video reproducing this problem:
+Also sorry I don't know what the etiquette is in cc's for this message
+:(. The message from kernel test robot was sent to a lot of people who
+I don't think would be interested in this, so I trimmed the cc list
+down.
 
-https://youtu.be/bM8x-YuXLVI
+Thanks,
+Geoffrey.
 
-A few things I've discovered while trying to understand what's
-going on:
-
- * It only happens with apps that use JACK or ALSA APIs. Using
-   PulseAudio (through PipeWire) does not trigger it.
-
- * Seems like this sound is not an artifact of the interface; it
-   appears that this odd sound is sent to the interface through
-   USB. (You can see this in the video.)
-
- * It's triggered per track; in the video, for example, the drums
-   and keyboard tracks are affected independetly.
-
-I was oriented in #alsa at Freenode that the output of 'alsa-info'
-might be helpful, so here it is:
-
-http://alsa-project.org/db/?f=62f686710cc6c9344a8986707bf3d09248c514d1
-
-(I'm running this on top of a 5.12.5 kernel, which should include
- this fix: https://bugzilla.kernel.org/show_bug.cgi?id=207023)
-
-I'd like to know where should I report this bug (kernel bugzilla?),
-and if there's any other information I can provide to help fixing
-it.
-
-With respect,
-Georges
-
-
+On Sun, May 23, 2021 at 02:09:00AM +0800, kernel test robot wrote:
+> sound/usb/mixer_scarlett_gen2.c:2000:5: warning: symbol 'snd_scarlett_gen2_controls_create' was not declared. Should it be static?
+> 
+> Fixes: 265d1a90e4fb ("ALSA: usb-audio: scarlett2: Improve driver startup messages")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: kernel test robot <lkp@intel.com>
+> ---
+>  mixer_scarlett_gen2.c |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
+> index 3ad8f61a2095f..4caf379d5b991 100644
+> --- a/sound/usb/mixer_scarlett_gen2.c
+> +++ b/sound/usb/mixer_scarlett_gen2.c
+> @@ -1997,8 +1997,8 @@ static int scarlett2_mixer_status_create(struct usb_mixer_interface *mixer)
+>  	return usb_submit_urb(mixer->urb, GFP_KERNEL);
+>  }
+>  
+> -int snd_scarlett_gen2_controls_create(struct usb_mixer_interface *mixer,
+> -				      const struct scarlett2_device_info *info)
+> +static int snd_scarlett_gen2_controls_create(struct usb_mixer_interface *mixer,
+> +					     const struct scarlett2_device_info *info)
+>  {
+>  	int err;
+>  
