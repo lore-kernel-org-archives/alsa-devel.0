@@ -2,97 +2,103 @@ Return-Path: <SRS0=nB+M=KS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60B7AC47080
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 May 2021 22:55:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E680C47082
+	for <alsa-devel@archiver.kernel.org>; Sun, 23 May 2021 23:46:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BBCE46117A
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 May 2021 22:55:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BBCE46117A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	by mail.kernel.org (Postfix) with ESMTPS id A4C9861185
+	for <alsa-devel@archiver.kernel.org>; Sun, 23 May 2021 23:45:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A4C9861185
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5BC411661;
-	Mon, 24 May 2021 00:54:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5BC411661
+	by alsa0.perex.cz (Postfix) with ESMTPS id 485241661;
+	Mon, 24 May 2021 01:45:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 485241661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621810522;
-	bh=1VhFToDlm0PYCMUgRKrMsTnLcbkh0jrIOXxl2YyHuPc=;
-	h=In-Reply-To:References:From:Date:Subject:To:List-Id:
+	s=default; t=1621813557;
+	bh=B4GjxRrA4q22aGVA/Kbe0k8HucpOg9DAVXr1sGESfOI=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=k55JBRux11ReG37WrHEifK0dpCvivcci9p0ozJEY094IGpdYBsRPSEx6ZiHOWjuIT
-	 K3KU2xI1JoM+O9ykHaWY56tNyxfYJsQx0XD4SZGPZsN9xh9tasyf+EIEgkOV3Irfq+
-	 uVZpC7ODTYXtWu5BuSBOJjjszrvxylWYoNRRhnu0=
+	b=Ai/UAU+SeT2ciea+jvcJZ2frjiPOZcwS7yt+N8zsa0YJDYZmdjlGQ/SEiP6hQ48X1
+	 1QBvBljvd7yUwWYv2aCWbyaPY8SVleVAuZlX0X4c3ltW6KmcYO2dV35zOPotwKZ394
+	 RGKVniZPI77yw531JwU5fv5krU55KhiJNkCSj0JQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DC43EF8019D;
-	Mon, 24 May 2021 00:54:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C60EFF8019D;
+	Mon, 24 May 2021 01:45:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AF759F801EB; Mon, 24 May 2021 00:54:29 +0200 (CEST)
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com
- [IPv6:2607:f8b0:4864:20::334])
+ id BB1FDF80212; Mon, 24 May 2021 01:45:05 +0200 (CEST)
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com
+ [IPv6:2a00:1450:4864:20::12e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A9CA7F80137
- for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 00:54:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9CA7F80137
+ by alsa1.perex.cz (Postfix) with ESMTPS id A36D3F8016D
+ for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 01:45:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A36D3F8016D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="bYyk8FSf"
-Received: by mail-ot1-x334.google.com with SMTP id
- n32-20020a9d1ea30000b02902a53d6ad4bdso23488798otn.3
- for <alsa-devel@alsa-project.org>; Sun, 23 May 2021 15:54:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=mime-version:in-reply-to:references:from:user-agent:date:message-id
- :subject:to; bh=1K/Zf6qVFEuzf3LeeUWAQu7y8CgaCqs3dPr1inenPpI=;
- b=bYyk8FSfT1TV7UPs81TdtN0954QCJeCRzD7K0EVI+uGfyiPaYKGqlEg9VcNPFobDZT
- K7yUNwmnlXYrwbHLyx7KXSi0kufc2cCzDekTyd3wgQMi6NT4/zuHNPGL/5EumWXT2Lnr
- qtVK+3VcB4PdJWIvq5vjekqXuQzzkAXFQaoxQ=
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="FiNhKb7C"
+Received: by mail-lf1-x12e.google.com with SMTP id a2so38026306lfc.9
+ for <alsa-devel@alsa-project.org>; Sun, 23 May 2021 16:45:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=xVuavUbxhP/h5ufdXkl/W8pz1JR/yQ3WYtl07Hx+SBA=;
+ b=FiNhKb7C+Fzp2BKv9q4Z0Sl16sEuxUtVhjivKNgx6P9coFik56+NT902uOn9jGxskH
+ WSQ4Jpmf7NWawnXxnDzaTqhrqinmobYRzq+2kVx0yXaEBaUfUlhuYUtewNS9fHNywjLI
+ MX47rSSSnNBVed2ne9hIaHm4CEj9tP79W5nwGKb9bkKNreT/JEstC+xXcFdziHOKhY0v
+ jAyaWrFMG2KSWTDxmube7n2emqe6xOfY9z7mo2I3rBFGOJ1Jbtte0tlr4W/Zci6+VFKf
+ lpJcoP0NRTKwRgl3DdSTyuK4i9LHYPq1msPwwtAd7J9sMHuXy1KSttzdHztKQAlM18ou
+ EhMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:in-reply-to:references:from
- :user-agent:date:message-id:subject:to;
- bh=1K/Zf6qVFEuzf3LeeUWAQu7y8CgaCqs3dPr1inenPpI=;
- b=kyZ/OJhwVX8eQq1F4v6mnYzTXPof3dOBN6HEGm4+hgJV1hjRYEmMLj1fZBuc9n0ltF
- x9aSvlo1dxFA5QAOWusIDEg2zYMcNat/hkvb1T94UgarAHegkQeTPCdM6f8K5A58V0GL
- VlbeHDKTNcqeUVt9WfUkigRhsMfHl7qC6LBk+OWs0rNbE75PFsXU1MdweDHPhgB7ABka
- mYFdNhyMopQ3DGQ0Y65H5ilsm33/QZpn/Uh3MvGv2RRjABa+P5BFQdXS8WUR7/rEC+6e
- h5d4U/LZ00YcTSZgkzTQUHAVbQMzU53rMmTuB7zyo/AIq8Ik0XT46RzRc0GJgudj2yBP
- KrUw==
-X-Gm-Message-State: AOAM532iDUy5UR48wwp9m/J+ljDG+52QMMAExw1tN9kb07gOZE7ueE7S
- PXJJxBg1H3KFaU32XrbfLkRz7cF8YLNytqYSqfqgDw==
-X-Google-Smtp-Source: ABdhPJwoYoaR/C8nMh9n9rgeiaHd67jqnTMUKs8Z677FXDRZSbmeYGkUrXidIn9y95tLonGCJVOJSVXEF+TuV6VuoiA=
-X-Received: by 2002:a05:6830:1f51:: with SMTP id
- u17mr3389243oth.25.1621810455819; 
- Sun, 23 May 2021 15:54:15 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Sun, 23 May 2021 15:54:15 -0700
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=xVuavUbxhP/h5ufdXkl/W8pz1JR/yQ3WYtl07Hx+SBA=;
+ b=bsOGLrRlANZTY48cyheLp3kkSiLGwiszEEKYBZrIWJ3fSqRCn0NfuvFM8SdsA+IhiN
+ kFQkmdWNZd5UEZf9ebTBktT2HT0Ol+sfDMEI8vMAVnQti75KdxDdGIsdEJHczxYeH7vj
+ vwqGk908FMapnG/PyAGgj+UQ0lx7EpTV7ApR29FQQFOGjcqvrTl1PhbM7dMkbUssL62G
+ f1rlaHgYRbbG9qmrP8TI9tcFSfGNSAyrGcYyVtfSvbdtUzwRqSSzi2enRY0z7bV07hoY
+ NWZ00gDbtubjW2hf21udAmB7/R6FrNXQhLzwqITKPOVfbkb9QeDgPGHCX5uDjCUOo8T6
+ Exiw==
+X-Gm-Message-State: AOAM531/bLoI6uVKibFqoYBL9VaBnMQPyaHm2xSyCTIylqoS28QtkF9x
+ IFvVHHC8PykNmueVO10sCxc=
+X-Google-Smtp-Source: ABdhPJw27HQEsg5vivuUmrrHXm3FHoxSkRVzLf+016MTENSQbYaozAFMm7C64o3oBpHTdQBYPTl5Fw==
+X-Received: by 2002:a05:6512:10cc:: with SMTP id
+ k12mr2326606lfg.621.1621813500051; 
+ Sun, 23 May 2021 16:45:00 -0700 (PDT)
+Received: from localhost.localdomain (109-252-193-110.dynamic.spd-mgts.ru.
+ [109.252.193.110])
+ by smtp.gmail.com with ESMTPSA id u11sm1269054lfg.243.2021.05.23.16.44.59
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 23 May 2021 16:44:59 -0700 (PDT)
+From: Dmitry Osipenko <digetx@gmail.com>
+To: Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+ Ion Agorria <ion@agorria.com>, Svyatoslav Ryhel <clamor95@gmail.com>,
+ Liam Girdwood <lgirdwood@gmail.com>
+Subject: [PATCH v3 1/4] ASoC: tegra: Set driver_name=tegra for all machine
+ drivers
+Date: Mon, 24 May 2021 02:44:34 +0300
+Message-Id: <20210523234437.25077-2-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210523234437.25077-1-digetx@gmail.com>
+References: <20210523234437.25077-1-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210520142432.29869-1-srivasam@codeaurora.org>
-References: <20210520142432.29869-1-srivasam@codeaurora.org>
-From: Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date: Sun, 23 May 2021 15:54:15 -0700
-Message-ID: <CAE-0n50A18vru2bXQuQTq==J5bGQEzw4uUYv9qG7rNB5uk19jw@mail.gmail.com>
-Subject: Re: [PATCH v2] ASoC: qcom: lpass-cpu: Fix pop noise during audio
- capture begin
-To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>, agross@kernel.org,
- alsa-devel@alsa-project.org, 
- bgoswami@codeaurora.org, bjorn.andersson@linaro.org, broonie@kernel.org, 
- devicetree@vger.kernel.org, judyhsiao@chromium.org, lgirdwood@gmail.com, 
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, perex@perex.cz, 
- plai@codeaurora.org, robh+dt@kernel.org, rohitkr@codeaurora.org, 
- srinivas.kandagatla@linaro.org, tiwai@suse.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,147 +114,142 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Quoting Srinivasa Rao Mandadapu (2021-05-20 07:24:32)
-> This patch fixes PoP noise of around 15ms observed during audio capture begin.
-> Enables BCLK and LRCLK in snd_soc_dai_ops prepare call for introducing some delay
-> before capture start and clock enable.
->
-> Signed-off-by: Judy Hsiao <judyhsiao@chromium.org>
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+The driver_name="tegra" is now required by the newer ALSA UCMs, otherwise
+Tegra UCMs don't match by the path/name.
 
-The SoB chain is weird. If Judy is first then Judy should show up with a
+All Tegra machine drivers are specifying the card's name, but it has no
+effect if model name is specified in the device-tree since it overrides
+the card's name. We need to set the driver_name to "tegra" in order to
+get a usable lookup path for the updated ALSA UCMs. The new UCM lookup
+path has a form of driver_name/card_name.
 
-From: Judy Hsiao <judyhsiao@chromium.org>
+The old lookup paths that are based on driver module name continue to
+work as before. Note that UCM matching never worked for Tegra ASoC drivers
+if they were compiled as built-in, this is fixed by supporting the new
+naming scheme.
 
-initially. Otherwise, it's a Co-developed-by: tag that should be after
-the SoB line.
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ sound/soc/tegra/tegra_alc5632.c  | 1 +
+ sound/soc/tegra/tegra_max98090.c | 1 +
+ sound/soc/tegra/tegra_rt5640.c   | 1 +
+ sound/soc/tegra/tegra_rt5677.c   | 1 +
+ sound/soc/tegra/tegra_sgtl5000.c | 1 +
+ sound/soc/tegra/tegra_wm8753.c   | 1 +
+ sound/soc/tegra/tegra_wm8903.c   | 1 +
+ sound/soc/tegra/tegra_wm9712.c   | 1 +
+ sound/soc/tegra/trimslice.c      | 1 +
+ 9 files changed, 9 insertions(+)
 
-> ---
-> Changes Since V1:
->         -- Enableed BCLK and LRCLK in dai ops prepare API instead of startup API
->         -- Added comments
->
->  sound/soc/qcom/lpass-cpu.c | 48 ++++++++++++++++++++++++++++++++++++--
->  1 file changed, 46 insertions(+), 2 deletions(-)
->
-> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-> index c62d2612e8f5..c5bb3f16d25f 100644
-> --- a/sound/soc/qcom/lpass-cpu.c
-> +++ b/sound/soc/qcom/lpass-cpu.c
-> @@ -93,9 +93,18 @@ static void lpass_cpu_daiops_shutdown(struct snd_pcm_substream *substream,
->                 struct snd_soc_dai *dai)
->  {
->         struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-> +       struct lpaif_i2sctl *i2sctl = drvdata->i2sctl;
-> +       unsigned int id = dai->driver->id;
->
->         clk_disable_unprepare(drvdata->mi2s_osr_clk[dai->driver->id]);
-> -       clk_unprepare(drvdata->mi2s_bit_clk[dai->driver->id]);
-> +       /* To ensure BCLK/LRCLK disabled even in device node validation.
-> +         Will not impact if disabled in trigger suspend */
+diff --git a/sound/soc/tegra/tegra_alc5632.c b/sound/soc/tegra/tegra_alc5632.c
+index 0a0efd24e4b0..81ea6ceba689 100644
+--- a/sound/soc/tegra/tegra_alc5632.c
++++ b/sound/soc/tegra/tegra_alc5632.c
+@@ -139,6 +139,7 @@ static struct snd_soc_dai_link tegra_alc5632_dai = {
+ 
+ static struct snd_soc_card snd_soc_tegra_alc5632 = {
+ 	.name = "tegra-alc5632",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_alc5632_dai,
+ 	.num_links = 1,
+diff --git a/sound/soc/tegra/tegra_max98090.c b/sound/soc/tegra/tegra_max98090.c
+index 00c19704057b..5a649810c0c8 100644
+--- a/sound/soc/tegra/tegra_max98090.c
++++ b/sound/soc/tegra/tegra_max98090.c
+@@ -182,6 +182,7 @@ static struct snd_soc_dai_link tegra_max98090_dai = {
+ 
+ static struct snd_soc_card snd_soc_tegra_max98090 = {
+ 	.name = "tegra-max98090",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_max98090_dai,
+ 	.num_links = 1,
+diff --git a/sound/soc/tegra/tegra_rt5640.c b/sound/soc/tegra/tegra_rt5640.c
+index 9afba37a3b08..3344f16258be 100644
+--- a/sound/soc/tegra/tegra_rt5640.c
++++ b/sound/soc/tegra/tegra_rt5640.c
+@@ -132,6 +132,7 @@ static struct snd_soc_dai_link tegra_rt5640_dai = {
+ 
+ static struct snd_soc_card snd_soc_tegra_rt5640 = {
+ 	.name = "tegra-rt5640",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_rt5640_dai,
+ 	.num_links = 1,
+diff --git a/sound/soc/tegra/tegra_rt5677.c b/sound/soc/tegra/tegra_rt5677.c
+index d30f8b6deda4..0f03e97d9355 100644
+--- a/sound/soc/tegra/tegra_rt5677.c
++++ b/sound/soc/tegra/tegra_rt5677.c
+@@ -175,6 +175,7 @@ static struct snd_soc_dai_link tegra_rt5677_dai = {
+ 
+ static struct snd_soc_card snd_soc_tegra_rt5677 = {
+ 	.name = "tegra-rt5677",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_rt5677_dai,
+ 	.num_links = 1,
+diff --git a/sound/soc/tegra/tegra_sgtl5000.c b/sound/soc/tegra/tegra_sgtl5000.c
+index 885332170c77..ef6a553e0b7d 100644
+--- a/sound/soc/tegra/tegra_sgtl5000.c
++++ b/sound/soc/tegra/tegra_sgtl5000.c
+@@ -97,6 +97,7 @@ static struct snd_soc_dai_link tegra_sgtl5000_dai = {
+ 
+ static struct snd_soc_card snd_soc_tegra_sgtl5000 = {
+ 	.name = "tegra-sgtl5000",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_sgtl5000_dai,
+ 	.num_links = 1,
+diff --git a/sound/soc/tegra/tegra_wm8753.c b/sound/soc/tegra/tegra_wm8753.c
+index efd793886689..27089077f2ea 100644
+--- a/sound/soc/tegra/tegra_wm8753.c
++++ b/sound/soc/tegra/tegra_wm8753.c
+@@ -101,6 +101,7 @@ static struct snd_soc_dai_link tegra_wm8753_dai = {
+ 
+ static struct snd_soc_card snd_soc_tegra_wm8753 = {
+ 	.name = "tegra-wm8753",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_wm8753_dai,
+ 	.num_links = 1,
+diff --git a/sound/soc/tegra/tegra_wm8903.c b/sound/soc/tegra/tegra_wm8903.c
+index e4863fa37b0c..f219c26d66a3 100644
+--- a/sound/soc/tegra/tegra_wm8903.c
++++ b/sound/soc/tegra/tegra_wm8903.c
+@@ -235,6 +235,7 @@ static struct snd_soc_dai_link tegra_wm8903_dai = {
+ 
+ static struct snd_soc_card snd_soc_tegra_wm8903 = {
+ 	.name = "tegra-wm8903",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_wm8903_dai,
+ 	.num_links = 1,
+diff --git a/sound/soc/tegra/tegra_wm9712.c b/sound/soc/tegra/tegra_wm9712.c
+index 4f09a178049d..c66da161c85a 100644
+--- a/sound/soc/tegra/tegra_wm9712.c
++++ b/sound/soc/tegra/tegra_wm9712.c
+@@ -54,6 +54,7 @@ static struct snd_soc_dai_link tegra_wm9712_dai = {
+ 
+ static struct snd_soc_card snd_soc_tegra_wm9712 = {
+ 	.name = "tegra-wm9712",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_wm9712_dai,
+ 	.num_links = 1,
+diff --git a/sound/soc/tegra/trimslice.c b/sound/soc/tegra/trimslice.c
+index 6c1cc3d0ac33..cb4c8f72e4e6 100644
+--- a/sound/soc/tegra/trimslice.c
++++ b/sound/soc/tegra/trimslice.c
+@@ -94,6 +94,7 @@ static struct snd_soc_dai_link trimslice_tlv320aic23_dai = {
+ 
+ static struct snd_soc_card snd_soc_trimslice = {
+ 	.name = "tegra-trimslice",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &trimslice_tlv320aic23_dai,
+ 	.num_links = 1,
+-- 
+2.30.2
 
-/*
- * Can you use proper kernel doc multi-line notation please?
- */
-
-And also, can we point to the function that is not impacted by "trigger
-suspend"? Is that lpass_cpu_daiops_trigger()?
-
-> +       if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> +               regmap_fields_write(i2sctl->spken, id, LPAIF_I2SCTL_SPKEN_DISABLE);
-> +       else
-> +               regmap_fields_write(i2sctl->micen, id, LPAIF_I2SCTL_MICEN_DISABLE);
-> +
-> +       clk_disable_unprepare(drvdata->mi2s_bit_clk[dai->driver->id]);
->  }
->
->  static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
-> @@ -275,6 +284,8 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
->         case SNDRV_PCM_TRIGGER_START:
->         case SNDRV_PCM_TRIGGER_RESUME:
->         case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-> +               /* To ensure lpass BCLK/LRCLK is enabled during
-> +                       device resume. Will not impact if enabled in prepare */
->                 if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
->                         ret = regmap_fields_write(i2sctl->spken, id,
->                                                  LPAIF_I2SCTL_SPKEN_ENABLE);
-> @@ -296,6 +307,8 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
->         case SNDRV_PCM_TRIGGER_STOP:
->         case SNDRV_PCM_TRIGGER_SUSPEND:
->         case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-> +               /* To ensure lpass BCLK/LRCLK is disabled during
-> +                       device suspend */
->                 if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
->                         ret = regmap_fields_write(i2sctl->spken, id,
->                                                  LPAIF_I2SCTL_SPKEN_DISABLE);
-> @@ -308,19 +321,50 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
->                                 ret);
->
->                 clk_disable(drvdata->mi2s_bit_clk[dai->driver->id]);
-> -
-> +               break;
-> +       default:
-
-It confuses me that we're adding 'default' now. Why? Is some define not
-handled already? Why not use that define instead of 'default' so it is
-explicit what is being handled? How is it even related to this patch?
-
->                 break;
->         }
->
->         return ret;
->  }
->
-> +static int lpass_cpu_daiops_prepare(struct snd_pcm_substream *substream,
-> +               struct snd_soc_dai *dai)
-> +{
-> +       struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-> +       struct lpaif_i2sctl *i2sctl = drvdata->i2sctl;
-> +       unsigned int id = dai->driver->id;
-> +       int ret = -EINVAL;
-
-ret will be assigned in the else though? Why assign it and then reassign
-it?
-
-> +       /* To ensure lpass BCLK/LRCLK is enabled bit before
-> +          playback/capture data flow starts */
-> +       if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> +               ret = regmap_fields_write(i2sctl->spken, id, LPAIF_I2SCTL_SPKEN_ENABLE);
-> +       else
-> +               ret = regmap_fields_write(i2sctl->micen, id, LPAIF_I2SCTL_MICEN_ENABLE);
-> +
-> +       if (ret)
-> +               dev_err(dai->dev, "error writing to i2sctl reg: %d\n",
-> +              ret);
-
-Why do we keep trying here instead of returning an error?
-
-> +
-> +       ret = clk_enable(drvdata->mi2s_bit_clk[id]);
-> +
-> +       if (ret) {
-> +               dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
-> +               clk_disable(drvdata->mi2s_osr_clk[id]);
-> +               return ret;
-> +       }
-> +       return 0;
-
-Could be
-
-	return ret;
-
-
-> +}
-> +
-> +
-
-Nitpick: Why two newlines?
-
->  const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops = {
->         .set_sysclk     = lpass_cpu_daiops_set_sysclk,
->         .startup        = lpass_cpu_daiops_startup,
->         .shutdown       = lpass_cpu_daiops_shutdown,
->         .hw_params      = lpass_cpu_daiops_hw_params,
->         .trigger        = lpass_cpu_daiops_trigger,
-> +       .prepare        = lpass_cpu_daiops_prepare,
->  };
