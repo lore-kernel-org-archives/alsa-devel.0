@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1A86C47085
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 14:50:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73C80C2B9F8
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 14:50:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0E3F061481
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 14:50:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E3F061481
+	by mail.kernel.org (Postfix) with ESMTPS id EAF4C61623
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 14:50:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EAF4C61623
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9ABBC1657;
-	Mon, 24 May 2021 16:49:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9ABBC1657
+	by alsa0.perex.cz (Postfix) with ESMTPS id 954CC1695;
+	Mon, 24 May 2021 16:50:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 954CC1695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621867828;
-	bh=Myo0OzaoMPDK2v0dbEFHWTxeSMSFdgX4JF++vJTCP0M=;
+	s=default; t=1621867854;
+	bh=J/bY1BDA2WepYFUzY74lWoOzigSPgpgyi+ZouIRDfug=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ptrnuh6BQ1xoO32owleWRHT+ZIwIrvlrlE+pGAhxw1bQpI6uADuaYiV8yWubLRA/0
-	 0B7FMNAxNmJk0TX+UoUYEbXQFsyZVEbduqm1Vei5TVCHWKpCNacPVewFpngz7yTgCE
-	 y2vNLWpQXN+XapqWSyMMltIGAcXCZtXUfHFxleLo=
+	b=jFHO/fO/8YYbb5vQ/8hoismPM0p5DFiWuwVFsIuKXaTzxodne0aEznvwAy9Ne7+E7
+	 2Zh4BYyaqPPBFR+LeWn3JrxxDPjP9bo9hqf7D+pX/SKoZdVcBbMHVFlo/xUHHoz7lP
+	 p4DCDSZ0ANQc9VrxPPh7IS1HmaLvZf/EYJfqbjRQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3E682F804B1;
-	Mon, 24 May 2021 16:47:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F5A2F8023A;
+	Mon, 24 May 2021 16:47:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 056C0F804AD; Mon, 24 May 2021 16:47:08 +0200 (CEST)
+ id 61583F8023A; Mon, 24 May 2021 16:47:35 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CFEDCF80475
- for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 16:47:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFEDCF80475
+ by alsa1.perex.cz (Postfix) with ESMTPS id 89A91F804DF
+ for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 16:47:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89A91F804DF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="lcBdUsYl"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A1D2613B6;
- Mon, 24 May 2021 14:46:59 +0000 (UTC)
+ header.b="JSS/RU1q"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 97D48613FE;
+ Mon, 24 May 2021 14:47:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1621867620;
- bh=Myo0OzaoMPDK2v0dbEFHWTxeSMSFdgX4JF++vJTCP0M=;
+ s=k20201202; t=1621867647;
+ bh=J/bY1BDA2WepYFUzY74lWoOzigSPgpgyi+ZouIRDfug=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=lcBdUsYlpqEP4F1UCP/CJh5u81oHkkzSLJTozXMWJ/pv9gJrE7LKiPl1pwDjK2cDf
- BKyvVmHzz/qZEwKWXopNf3LecnSGxcCzvU+1PPCHlA7Py4cke4ohsWU7FMNKiJ0Dxb
- Dyz2uWL/N3+FWm6OJw9eVLn5hdKgI97puy3nupKHuIElj0cKhNnLGxlozV/R2KcG/2
- wPYx1eswgD3mps+iXdfWrUFVl1xaN9J3YH8vAeY0YGMOgFoNKkMMNsYVHz+PYx3gWE
- DqW9zinIj7OFTrQ1oqMaHD9htthZEQqm0VgVcW+FmZkXC4/Eyr6UbkWw0nU+/Idf+L
- BYqS/fgLPAB9A==
+ b=JSS/RU1qiAGhUo7Ex4Emsy/YlPtrndyipXQ1yRQzPmo6XogKavME9bUKSHnqPghQR
+ NYNIWvJnEa0Ldj0nOMuBtAzY2SMnBknZud0QO0RV+UJtmtFqLr2XWQwrSzpPaZxMEq
+ 9l+1VR3b5zsNDka1GHVzcNzQBJWduZJw+zhO0y6Cp646jz4/h+VNSNB7M2VlhsjzUW
+ GgZFnF/Ps2VId/EzrDIy2ToPviM/ebv8yW4crt92M5uiMa2n2GGGRcZf0KOzCaEsep
+ 6d4X1i1EwDUmSI/M2UYM8R+3VjqTItHR4IEU75qystJa+6gryTj+j8e8mqAtaZNWpK
+ IdP9iM/JO0Ihw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.12 30/63] ASoC: rt5645: add error checking to
- rt5645_probe function
-Date: Mon, 24 May 2021 10:45:47 -0400
-Message-Id: <20210524144620.2497249-30-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.12 51/63] ALSA: dice: disable double_pcm_frames mode
+ for M-Audio Profire 610, 2626 and Avid M-Box 3 Pro
+Date: Mon, 24 May 2021 10:46:08 -0400
+Message-Id: <20210524144620.2497249-51-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210524144620.2497249-1-sashal@kernel.org>
 References: <20210524144620.2497249-1-sashal@kernel.org>
@@ -72,9 +72,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, Phillip Potter <phil@philpotter.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,118 +89,134 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Phillip Potter <phil@philpotter.co.uk>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-[ Upstream commit 5e70b8e22b64eed13d5bbebcb5911dae65bf8c6b ]
+[ Upstream commit 9f079c1bdc9087842dc5ac9d81b1d7f2578e81ce ]
 
-Check for return value from various snd_soc_dapm_* calls, as many of
-them can return errors and this should be handled. Also, reintroduce
-the allocation failure check for rt5645->eq_param as well. Make all
-areas where return values are checked lead to the end of the function
-in the case of an error. Finally, introduce a comment explaining how
-resources here are actually eventually cleaned up by the caller.
+ALSA dice driver detects jumbo payload at high sampling transfer frequency
+for below models:
 
-Cc: Mark Brown <broonie@kernel.org>
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-Link: https://lore.kernel.org/r/20210503115736.2104747-56-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+ * Avid M-Box 3 Pro
+ * M-Audio Profire 610
+ * M-Audio Profire 2626
+
+Although many DICE-based devices have a quirk at high sampling transfer
+frequency to multiplex double number of PCM frames into data block than
+the number in IEC 61883-1/6, the above devices are just compliant to
+IEC 61883-1/6.
+
+This commit disables the mode of double_pcm_frames for the models.
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20210518012510.37126-1-o-takashi@sakamocchi.jp
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 48 +++++++++++++++++++++++++++++++--------
- 1 file changed, 39 insertions(+), 9 deletions(-)
+ sound/firewire/dice/dice-pcm.c    |  4 ++--
+ sound/firewire/dice/dice-stream.c |  2 +-
+ sound/firewire/dice/dice.c        | 24 ++++++++++++++++++++++++
+ sound/firewire/dice/dice.h        |  3 ++-
+ 4 files changed, 29 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index ab06133a85da..85ab33bdcdec 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3364,30 +3364,44 @@ static int rt5645_probe(struct snd_soc_component *component)
- {
- 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
- 	struct rt5645_priv *rt5645 = snd_soc_component_get_drvdata(component);
-+	int ret = 0;
+diff --git a/sound/firewire/dice/dice-pcm.c b/sound/firewire/dice/dice-pcm.c
+index af8a90ee40f3..a69ca1111b03 100644
+--- a/sound/firewire/dice/dice-pcm.c
++++ b/sound/firewire/dice/dice-pcm.c
+@@ -218,7 +218,7 @@ static int pcm_open(struct snd_pcm_substream *substream)
  
- 	rt5645->component = component;
+ 		if (frames_per_period > 0) {
+ 			// For double_pcm_frame quirk.
+-			if (rate > 96000) {
++			if (rate > 96000 && !dice->disable_double_pcm_frames) {
+ 				frames_per_period *= 2;
+ 				frames_per_buffer *= 2;
+ 			}
+@@ -273,7 +273,7 @@ static int pcm_hw_params(struct snd_pcm_substream *substream,
  
- 	switch (rt5645->codec_type) {
- 	case CODEC_TYPE_RT5645:
--		snd_soc_dapm_new_controls(dapm,
-+		ret = snd_soc_dapm_new_controls(dapm,
- 			rt5645_specific_dapm_widgets,
- 			ARRAY_SIZE(rt5645_specific_dapm_widgets));
--		snd_soc_dapm_add_routes(dapm,
-+		if (ret < 0)
-+			goto exit;
-+
-+		ret = snd_soc_dapm_add_routes(dapm,
- 			rt5645_specific_dapm_routes,
- 			ARRAY_SIZE(rt5645_specific_dapm_routes));
-+		if (ret < 0)
-+			goto exit;
-+
- 		if (rt5645->v_id < 3) {
--			snd_soc_dapm_add_routes(dapm,
-+			ret = snd_soc_dapm_add_routes(dapm,
- 				rt5645_old_dapm_routes,
- 				ARRAY_SIZE(rt5645_old_dapm_routes));
-+			if (ret < 0)
-+				goto exit;
+ 		mutex_lock(&dice->mutex);
+ 		// For double_pcm_frame quirk.
+-		if (rate > 96000) {
++		if (rate > 96000 && !dice->disable_double_pcm_frames) {
+ 			events_per_period /= 2;
+ 			events_per_buffer /= 2;
  		}
- 		break;
- 	case CODEC_TYPE_RT5650:
--		snd_soc_dapm_new_controls(dapm,
-+		ret = snd_soc_dapm_new_controls(dapm,
- 			rt5650_specific_dapm_widgets,
- 			ARRAY_SIZE(rt5650_specific_dapm_widgets));
--		snd_soc_dapm_add_routes(dapm,
-+		if (ret < 0)
-+			goto exit;
-+
-+		ret = snd_soc_dapm_add_routes(dapm,
- 			rt5650_specific_dapm_routes,
- 			ARRAY_SIZE(rt5650_specific_dapm_routes));
-+		if (ret < 0)
-+			goto exit;
- 		break;
+diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
+index 1a14c083e8ce..c4dfe76500c2 100644
+--- a/sound/firewire/dice/dice-stream.c
++++ b/sound/firewire/dice/dice-stream.c
+@@ -181,7 +181,7 @@ static int keep_resources(struct snd_dice *dice, struct amdtp_stream *stream,
+ 	// as 'Dual Wire'.
+ 	// For this quirk, blocking mode is required and PCM buffer size should
+ 	// be aligned to SYT_INTERVAL.
+-	double_pcm_frames = rate > 96000;
++	double_pcm_frames = (rate > 96000 && !dice->disable_double_pcm_frames);
+ 	if (double_pcm_frames) {
+ 		rate /= 2;
+ 		pcm_chs *= 2;
+diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
+index 107a81691f0e..239d164b0eea 100644
+--- a/sound/firewire/dice/dice.c
++++ b/sound/firewire/dice/dice.c
+@@ -21,6 +21,7 @@ MODULE_LICENSE("GPL v2");
+ #define OUI_SSL			0x0050c2	// Actually ID reserved by IEEE.
+ #define OUI_PRESONUS		0x000a92
+ #define OUI_HARMAN		0x000fd7
++#define OUI_AVID		0x00a07e
+ 
+ #define DICE_CATEGORY_ID	0x04
+ #define WEISS_CATEGORY_ID	0x00
+@@ -222,6 +223,14 @@ static int dice_probe(struct fw_unit *unit,
+ 				(snd_dice_detect_formats_t)entry->driver_data;
  	}
  
-@@ -3395,9 +3409,17 @@ static int rt5645_probe(struct snd_soc_component *component)
- 
- 	/* for JD function */
- 	if (rt5645->pdata.jd_mode) {
--		snd_soc_dapm_force_enable_pin(dapm, "JD Power");
--		snd_soc_dapm_force_enable_pin(dapm, "LDO2");
--		snd_soc_dapm_sync(dapm);
-+		ret = snd_soc_dapm_force_enable_pin(dapm, "JD Power");
-+		if (ret < 0)
-+			goto exit;
++	// Below models are compliant to IEC 61883-1/6 and have no quirk at high sampling transfer
++	// frequency.
++	// * Avid M-Box 3 Pro
++	// * M-Audio Profire 610
++	// * M-Audio Profire 2626
++	if (entry->vendor_id == OUI_MAUDIO || entry->vendor_id == OUI_AVID)
++		dice->disable_double_pcm_frames = true;
 +
-+		ret = snd_soc_dapm_force_enable_pin(dapm, "LDO2");
-+		if (ret < 0)
-+			goto exit;
+ 	spin_lock_init(&dice->lock);
+ 	mutex_init(&dice->mutex);
+ 	init_completion(&dice->clock_accepted);
+@@ -278,7 +287,22 @@ static void dice_bus_reset(struct fw_unit *unit)
+ 
+ #define DICE_INTERFACE	0x000001
+ 
++#define DICE_DEV_ENTRY_TYPICAL(vendor, model, data) \
++	{ \
++		.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
++				  IEEE1394_MATCH_MODEL_ID | \
++				  IEEE1394_MATCH_SPECIFIER_ID | \
++				  IEEE1394_MATCH_VERSION, \
++		.vendor_id	= (vendor), \
++		.model_id	= (model), \
++		.specifier_id	= (vendor), \
++		.version	= DICE_INTERFACE, \
++		.driver_data = (kernel_ulong_t)(data), \
++	}
 +
-+		ret = snd_soc_dapm_sync(dapm);
-+		if (ret < 0)
-+			goto exit;
- 	}
+ static const struct ieee1394_device_id dice_id_table[] = {
++	// Avid M-Box 3 Pro. To match in probe function.
++	DICE_DEV_ENTRY_TYPICAL(OUI_AVID, 0x000004, snd_dice_detect_extension_formats),
+ 	/* M-Audio Profire 2626 has a different value in version field. */
+ 	{
+ 		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
+diff --git a/sound/firewire/dice/dice.h b/sound/firewire/dice/dice.h
+index adc6f7c84460..3c967d1b3605 100644
+--- a/sound/firewire/dice/dice.h
++++ b/sound/firewire/dice/dice.h
+@@ -109,7 +109,8 @@ struct snd_dice {
+ 	struct fw_iso_resources rx_resources[MAX_STREAMS];
+ 	struct amdtp_stream tx_stream[MAX_STREAMS];
+ 	struct amdtp_stream rx_stream[MAX_STREAMS];
+-	bool global_enabled;
++	bool global_enabled:1;
++	bool disable_double_pcm_frames:1;
+ 	struct completion clock_accepted;
+ 	unsigned int substreams_counter;
  
- 	if (rt5645->pdata.long_name)
-@@ -3407,7 +3429,15 @@ static int rt5645_probe(struct snd_soc_component *component)
- 		RT5645_HWEQ_NUM, sizeof(struct rt5645_eq_param_s),
- 		GFP_KERNEL);
- 
--	return 0;
-+	if (!rt5645->eq_param)
-+		ret = -ENOMEM;
-+exit:
-+	/*
-+	 * If there was an error above, everything will be cleaned up by the
-+	 * caller if we return an error here.  This will be done with a later
-+	 * call to rt5645_remove().
-+	 */
-+	return ret;
- }
- 
- static void rt5645_remove(struct snd_soc_component *component)
 -- 
 2.30.2
 
