@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C16CC04FF3
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 14:55:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92536C04FF3
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 14:56:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0C14560FE8
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 14:55:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C14560FE8
+	by mail.kernel.org (Postfix) with ESMTPS id 1886460FE8
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 14:56:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1886460FE8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB7F216AA;
-	Mon, 24 May 2021 16:54:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB7F216AA
+	by alsa0.perex.cz (Postfix) with ESMTPS id A8B4A16D5;
+	Mon, 24 May 2021 16:55:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8B4A16D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621868148;
-	bh=xREFaCMaLWM/2YnYtITeZ1ZRzmhMIEUflE2ubsuIT8U=;
+	s=default; t=1621868169;
+	bh=RQhlUaPK0txnvTpB8EbPl0THdMYPjTwx7mfDkn3q924=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ezl6xzu+VkoCdbvPRH3flYHQP3xm2zeeUjjpPZgJNHD8xB4xV0CinXSut78I+pUfU
-	 uA6r3VZelQYBy2NsQTP09BslSiA282GWBN2PQgeXN/V00cDMKngBPnVh94eOwh6bgI
-	 VuzcFn1hEkFF+tuRdVnncz7qw9ZzW0F8EnyPahgc=
+	b=CU6s6n6cm/cKMBHTy3DkIXm9iqQ8hh80Nz23R7kqVyaV6s1GXUzC92F3MC9cRqZiX
+	 HPT2UJx6rc4pVstmhJ6rMiel//VXwpLmDr5t4dfM2v7dzOEWxW3LCtKMuEoYfKGYu6
+	 LkKK/SHRowYinW8cEe8/4RW2wLOhHfe+XuFIkHuo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 25482F8052F;
-	Mon, 24 May 2021 16:49:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 87B17F80537;
+	Mon, 24 May 2021 16:49:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D5F7FF80534; Mon, 24 May 2021 16:49:39 +0200 (CEST)
+ id DA831F80537; Mon, 24 May 2021 16:49:41 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 64DF6F8052D
- for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 16:49:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64DF6F8052D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 48244F804AA
+ for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 16:49:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48244F804AA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="cqRxSmSr"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B66846145B;
- Mon, 24 May 2021 14:49:34 +0000 (UTC)
+ header.b="B8vVX0nX"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E7F46145E;
+ Mon, 24 May 2021 14:49:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1621867775;
- bh=xREFaCMaLWM/2YnYtITeZ1ZRzmhMIEUflE2ubsuIT8U=;
+ s=k20201202; t=1621867777;
+ bh=RQhlUaPK0txnvTpB8EbPl0THdMYPjTwx7mfDkn3q924=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=cqRxSmSrMTGrTnFyC3cAagOP5RVTMchylx1slY8v04UZm8w+ujQn7OysT3Tye40g/
- 4G944hcZPaLVFyEBKHOcMT76sct6RP/qnFuA58uRTdSUd4b/969qtMpEifRQP9ZuYs
- xRGYz+IaG6DQsqc1SFaNveWdCAK4cisPKLG/CbIvspFxjkzPRWkDuXbWlx0tsq+j3y
- dfAZjUWmDouCCkdDA7bVZqtPUd5JFeRXIOorRepevY+AjPnHpzfHdx+32N+2OYU6Vo
- kHsLeucX9gASbIk9+Zo0ijH7DsG9Xiymug36+I4TGR9UU2KcMCGAJ/upB/kjzmUbzD
- T1GEJChbQqn7g==
+ b=B8vVX0nXsFr6Lwm7VizLNCvihk2KNlsXAirz9ogvheYEkPy/TyjVVN4LUHBeZgtCv
+ YmAGIJn+bYOqV1ECVTaLQC0qvRsqdH7Z88WUixnT37wq9eEfT5AFAzQ08JBGVHWZh+
+ PXT0QFl4ZXiCgIp9KtI9uDTlBzmhHV9C81jeBIAVK/1VzXgBt8qgBWEqvjZjXZRIKn
+ 3F8F+X9+ZNBNcQtglRwR8O5VXmbhDVNemzpfx9fijFYu9VhVXMhQb1MpiIem3R1jL0
+ iuSaansrq3HcitJBl+vJ/G2M/l+dlr5EXpUGFrRNEHrYODrgwjX0qeBLdGjsgSTRzK
+ fBrLPw+s7JjSQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 26/52] Revert "ASoC: rt5645: fix a NULL pointer
+Subject: [PATCH AUTOSEL 5.4 28/52] Revert "ASoC: cs43130: fix a NULL pointer
  dereference"
-Date: Mon, 24 May 2021 10:48:36 -0400
-Message-Id: <20210524144903.2498518-26-sashal@kernel.org>
+Date: Mon, 24 May 2021 10:48:38 -0400
+Message-Id: <20210524144903.2498518-28-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210524144903.2498518-1-sashal@kernel.org>
 References: <20210524144903.2498518-1-sashal@kernel.org>
@@ -72,9 +72,9 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, Kangjie Lu <kjlu@umn.edu>
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Kangjie Lu <kjlu@umn.edu>,
+ Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,9 +92,9 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit 1e0ce84215dbfd6065872e5d3755352da34f198b ]
+[ Upstream commit fdda0dd2686ecd1f2e616c9e0366ea71b40c485d ]
 
-This reverts commit 51dd97d1df5fb9ac58b9b358e63e67b530f6ae21.
+This reverts commit a2be42f18d409213bb7e7a736e3ef6ba005115bb.
 
 Because of recent interactions with developers from @umn.edu, all
 commits from them have been recently re-reviewed to ensure if they were
@@ -104,31 +104,30 @@ Upon review, this commit was found to be incorrect for the reasons
 below, so it must be reverted.  It will be fixed up "correctly" in a
 later kernel change.
 
-Lots of things seem to be still allocated here and must be properly
-cleaned up if an error happens here.
+The original patch here is not correct, sysfs files that were created
+are not unwound.
 
 Cc: Kangjie Lu <kjlu@umn.edu>
 Cc: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-55-gregkh@linuxfoundation.org
+Link: https://lore.kernel.org/r/20210503115736.2104747-57-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 3 ---
- 1 file changed, 3 deletions(-)
+ sound/soc/codecs/cs43130.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index c83f7f5da96b..44e88d0dbb7a 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3419,9 +3419,6 @@ static int rt5645_probe(struct snd_soc_component *component)
- 		RT5645_HWEQ_NUM, sizeof(struct rt5645_eq_param_s),
- 		GFP_KERNEL);
+diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
+index 7fb34422a2a4..bb46e993c353 100644
+--- a/sound/soc/codecs/cs43130.c
++++ b/sound/soc/codecs/cs43130.c
+@@ -2319,8 +2319,6 @@ static int cs43130_probe(struct snd_soc_component *component)
+ 			return ret;
  
--	if (!rt5645->eq_param)
--		return -ENOMEM;
--
- 	return 0;
- }
+ 		cs43130->wq = create_singlethread_workqueue("cs43130_hp");
+-		if (!cs43130->wq)
+-			return -ENOMEM;
+ 		INIT_WORK(&cs43130->work, cs43130_imp_meas);
+ 	}
  
 -- 
 2.30.2
