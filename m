@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4896C47087
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 14:54:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41C58C04FF3
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 14:55:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 38C2D61209
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 14:54:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 38C2D61209
+	by mail.kernel.org (Postfix) with ESMTPS id B51DF60FE8
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 14:55:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B51DF60FE8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CB9141673;
-	Mon, 24 May 2021 16:54:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB9141673
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2B4BD16C0;
+	Mon, 24 May 2021 16:54:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B4BD16C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621868096;
-	bh=Rscp51ovqLmDUNfUFa2XZ7mpfE6USMATUbLjCF+mfnE=;
+	s=default; t=1621868127;
+	bh=YMUIRBqPsKnP1v3cJ/Dw9pNi02k97cYZ5bin7a9UhRc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JZc18CVBdnKxZvcNonsfdLeW7QIrx1Z2WOdRn2k2PpRTYq9pjC6TEoNmktOco8p7d
-	 ngLOzYj7DBc6G0w1aBOTk2LqscvcX+NUfsOehanuiL3TipXtt3yezy22OQq8UGlkNp
-	 kXro3wQipUvUVEZlw3u7qZigKkuZBtocDWVdgebw=
+	b=uKh5nYXIdMVVoGTZJWk/uRBvaqc4OjRKZSdhLFt2W9vSul1DqC0imN5oSgLivSoo8
+	 vDnAqwpbUCL9NIlVwPgu55MYlLfjkfGVVCxX5qQWKNGGr+sDh+0flYZLxKM7e24YaQ
+	 1s9MvdUl8WTr2df/ywzMbuusawYRfyBmFPKCjU0g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5CD28F8051D;
-	Mon, 24 May 2021 16:49:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 69F0FF80529;
+	Mon, 24 May 2021 16:49:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8A8B3F80425; Mon, 24 May 2021 16:49:25 +0200 (CEST)
+ id 5731FF8052D; Mon, 24 May 2021 16:49:29 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F39D2F80482
- for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 16:49:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F39D2F80482
+ by alsa1.perex.cz (Postfix) with ESMTPS id B029AF804A9
+ for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 16:49:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B029AF804A9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="b29O+V7b"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 533C16144F;
- Mon, 24 May 2021 14:49:18 +0000 (UTC)
+ header.b="l950xGGA"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD1A461454;
+ Mon, 24 May 2021 14:49:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1621867759;
- bh=Rscp51ovqLmDUNfUFa2XZ7mpfE6USMATUbLjCF+mfnE=;
+ s=k20201202; t=1621867761;
+ bh=YMUIRBqPsKnP1v3cJ/Dw9pNi02k97cYZ5bin7a9UhRc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=b29O+V7brJ30NXRCJPBCK0cAuUKyFtBZBYWGSjlVVwuqrCRTt2UpuRjJr+QZhMH3F
- dt2fYIy6/I5U3m29v3gCgTTzvsRiCY3frOiuRmfmpFf2K5fi2Glj3ngh8cyfz4VUWF
- 3baHJrGGmEpiSO6uIOdISC/UapFgUpWeCd2G6BgsvXCpJHnKGXJrMFvO5oe2dtFadR
- XDyNBpzd5VW4nyXsO6fA//UIeFzFH4t4pSwGeJ8kyZ/7X3hxovDb1jalvCoqP5FaCq
- dROD9FZuihkD1V0XXQZhHpyNUw3mLRVcL04MvDouJkVg8Z+CP9eFTURNtOGlKhmET9
- BzJFZeARH7uDw==
+ b=l950xGGA2GpFye5Jxh/0mDLOISZsits3vZ/FAarrSAC5h4wEap+cfOxWweUbpW2ur
+ Vg/jPPMSozb5sTffvgeUtqmoUew7ZGTyiJ8ORkBuURKDhZYzoBq35tgXuK/4b0RRK9
+ P3Y0JaxmOwcJISpEEr57GZz0ZuBrsTDRGSqGaCYLxJ4HkpUn/vlI0+4hrcLFupjAjB
+ qCxrIvxE0jnAjrMO9h6NglaFJRAOOxhsaIAPvjfFynUJ8DfLIIjAHQZHPiFN/MdA1+
+ HyUdsNH4cH26/OfuEodTFOeZCQFOJV2o6e51uxZBd8so93Uayy37ejO36kZJD77N13
+ WK6/FpURdpQ2g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 13/52] Revert "ALSA: gus: add a check of the
- status of snd_ctl_add"
-Date: Mon, 24 May 2021 10:48:23 -0400
-Message-Id: <20210524144903.2498518-13-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 15/52] Revert "ALSA: usx2y: Fix potential NULL
+ pointer dereference"
+Date: Mon, 24 May 2021 10:48:25 -0400
+Message-Id: <20210524144903.2498518-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210524144903.2498518-1-sashal@kernel.org>
 References: <20210524144903.2498518-1-sashal@kernel.org>
@@ -74,7 +74,7 @@ X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Takashi Iwai <tiwai@suse.de>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org,
- Kangjie Lu <kjlu@umn.edu>, Sasha Levin <sashal@kernel.org>
+ Sasha Levin <sashal@kernel.org>, Aditya Pakki <pakki001@umn.edu>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,9 +92,9 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit 1dacca7fa1ebea47d38d20cd2df37094805d2649 ]
+[ Upstream commit 4667a6fc1777ce071504bab570d3599107f4790f ]
 
-This reverts commit 0f25e000cb4398081748e54f62a902098aa79ec1.
+This reverts commit a2c6433ee5a35a8de6d563f6512a26f87835ea0f.
 
 Because of recent interactions with developers from @umn.edu, all
 commits from them have been recently re-reviewed to ensure if they were
@@ -104,43 +104,35 @@ Upon review, this commit was found to be incorrect for the reasons
 below, so it must be reverted.  It will be fixed up "correctly" in a
 later kernel change.
 
-The original commit did nothing if there was an error, except to print
-out a message, which is pointless.  So remove the commit as it gives a
-"false sense of doing something".
+The original patch was incorrect, and would leak memory if the error
+path the patch added was hit.
 
-Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: Aditya Pakki <pakki001@umn.edu>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20210503115736.2104747-33-gregkh@linuxfoundation.org
+Link: https://lore.kernel.org/r/20210503115736.2104747-37-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/isa/gus/gus_main.c | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ sound/usb/usx2y/usb_stream.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/sound/isa/gus/gus_main.c b/sound/isa/gus/gus_main.c
-index af6b4d89d695..39911a637e80 100644
---- a/sound/isa/gus/gus_main.c
-+++ b/sound/isa/gus/gus_main.c
-@@ -77,17 +77,8 @@ static const struct snd_kcontrol_new snd_gus_joystick_control = {
+diff --git a/sound/usb/usx2y/usb_stream.c b/sound/usb/usx2y/usb_stream.c
+index 091c071b270a..6bba17bf689a 100644
+--- a/sound/usb/usx2y/usb_stream.c
++++ b/sound/usb/usx2y/usb_stream.c
+@@ -91,12 +91,7 @@ static int init_urbs(struct usb_stream_kernel *sk, unsigned use_packsize,
  
- static void snd_gus_init_control(struct snd_gus_card *gus)
- {
--	int ret;
+ 	for (u = 0; u < USB_STREAM_NURBS; ++u) {
+ 		sk->inurb[u] = usb_alloc_urb(sk->n_o_ps, GFP_KERNEL);
+-		if (!sk->inurb[u])
+-			return -ENOMEM;
 -
--	if (!gus->ace_flag) {
--		ret =
--			snd_ctl_add(gus->card,
--					snd_ctl_new1(&snd_gus_joystick_control,
--						gus));
--		if (ret)
--			snd_printk(KERN_ERR "gus: snd_ctl_add failed: %d\n",
--					ret);
--	}
-+	if (!gus->ace_flag)
-+		snd_ctl_add(gus->card, snd_ctl_new1(&snd_gus_joystick_control, gus));
- }
+ 		sk->outurb[u] = usb_alloc_urb(sk->n_o_ps, GFP_KERNEL);
+-		if (!sk->outurb[u])
+-			return -ENOMEM;
+ 	}
  
- /*
+ 	if (init_pipe_urbs(sk, use_packsize, sk->inurb, indata, dev, in_pipe) ||
 -- 
 2.30.2
 
