@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41C58C04FF3
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 14:55:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C16CC04FF3
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 14:55:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B51DF60FE8
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 14:55:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B51DF60FE8
+	by mail.kernel.org (Postfix) with ESMTPS id 0C14560FE8
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 14:55:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C14560FE8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2B4BD16C0;
-	Mon, 24 May 2021 16:54:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B4BD16C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id AB7F216AA;
+	Mon, 24 May 2021 16:54:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB7F216AA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621868127;
-	bh=YMUIRBqPsKnP1v3cJ/Dw9pNi02k97cYZ5bin7a9UhRc=;
+	s=default; t=1621868148;
+	bh=xREFaCMaLWM/2YnYtITeZ1ZRzmhMIEUflE2ubsuIT8U=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uKh5nYXIdMVVoGTZJWk/uRBvaqc4OjRKZSdhLFt2W9vSul1DqC0imN5oSgLivSoo8
-	 vDnAqwpbUCL9NIlVwPgu55MYlLfjkfGVVCxX5qQWKNGGr+sDh+0flYZLxKM7e24YaQ
-	 1s9MvdUl8WTr2df/ywzMbuusawYRfyBmFPKCjU0g=
+	b=Ezl6xzu+VkoCdbvPRH3flYHQP3xm2zeeUjjpPZgJNHD8xB4xV0CinXSut78I+pUfU
+	 uA6r3VZelQYBy2NsQTP09BslSiA282GWBN2PQgeXN/V00cDMKngBPnVh94eOwh6bgI
+	 VuzcFn1hEkFF+tuRdVnncz7qw9ZzW0F8EnyPahgc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 69F0FF80529;
-	Mon, 24 May 2021 16:49:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 25482F8052F;
+	Mon, 24 May 2021 16:49:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5731FF8052D; Mon, 24 May 2021 16:49:29 +0200 (CEST)
+ id D5F7FF80534; Mon, 24 May 2021 16:49:39 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B029AF804A9
- for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 16:49:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B029AF804A9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 64DF6F8052D
+ for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 16:49:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64DF6F8052D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="l950xGGA"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD1A461454;
- Mon, 24 May 2021 14:49:20 +0000 (UTC)
+ header.b="cqRxSmSr"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B66846145B;
+ Mon, 24 May 2021 14:49:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1621867761;
- bh=YMUIRBqPsKnP1v3cJ/Dw9pNi02k97cYZ5bin7a9UhRc=;
+ s=k20201202; t=1621867775;
+ bh=xREFaCMaLWM/2YnYtITeZ1ZRzmhMIEUflE2ubsuIT8U=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=l950xGGA2GpFye5Jxh/0mDLOISZsits3vZ/FAarrSAC5h4wEap+cfOxWweUbpW2ur
- Vg/jPPMSozb5sTffvgeUtqmoUew7ZGTyiJ8ORkBuURKDhZYzoBq35tgXuK/4b0RRK9
- P3Y0JaxmOwcJISpEEr57GZz0ZuBrsTDRGSqGaCYLxJ4HkpUn/vlI0+4hrcLFupjAjB
- qCxrIvxE0jnAjrMO9h6NglaFJRAOOxhsaIAPvjfFynUJ8DfLIIjAHQZHPiFN/MdA1+
- HyUdsNH4cH26/OfuEodTFOeZCQFOJV2o6e51uxZBd8so93Uayy37ejO36kZJD77N13
- WK6/FpURdpQ2g==
+ b=cqRxSmSrMTGrTnFyC3cAagOP5RVTMchylx1slY8v04UZm8w+ujQn7OysT3Tye40g/
+ 4G944hcZPaLVFyEBKHOcMT76sct6RP/qnFuA58uRTdSUd4b/969qtMpEifRQP9ZuYs
+ xRGYz+IaG6DQsqc1SFaNveWdCAK4cisPKLG/CbIvspFxjkzPRWkDuXbWlx0tsq+j3y
+ dfAZjUWmDouCCkdDA7bVZqtPUd5JFeRXIOorRepevY+AjPnHpzfHdx+32N+2OYU6Vo
+ kHsLeucX9gASbIk9+Zo0ijH7DsG9Xiymug36+I4TGR9UU2KcMCGAJ/upB/kjzmUbzD
+ T1GEJChbQqn7g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 15/52] Revert "ALSA: usx2y: Fix potential NULL
- pointer dereference"
-Date: Mon, 24 May 2021 10:48:25 -0400
-Message-Id: <20210524144903.2498518-15-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 26/52] Revert "ASoC: rt5645: fix a NULL pointer
+ dereference"
+Date: Mon, 24 May 2021 10:48:36 -0400
+Message-Id: <20210524144903.2498518-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210524144903.2498518-1-sashal@kernel.org>
 References: <20210524144903.2498518-1-sashal@kernel.org>
@@ -72,9 +72,9 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>,
+Cc: Sasha Levin <sashal@kernel.org>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org,
- Sasha Levin <sashal@kernel.org>, Aditya Pakki <pakki001@umn.edu>
+ Mark Brown <broonie@kernel.org>, Kangjie Lu <kjlu@umn.edu>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,9 +92,9 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit 4667a6fc1777ce071504bab570d3599107f4790f ]
+[ Upstream commit 1e0ce84215dbfd6065872e5d3755352da34f198b ]
 
-This reverts commit a2c6433ee5a35a8de6d563f6512a26f87835ea0f.
+This reverts commit 51dd97d1df5fb9ac58b9b358e63e67b530f6ae21.
 
 Because of recent interactions with developers from @umn.edu, all
 commits from them have been recently re-reviewed to ensure if they were
@@ -104,35 +104,32 @@ Upon review, this commit was found to be incorrect for the reasons
 below, so it must be reverted.  It will be fixed up "correctly" in a
 later kernel change.
 
-The original patch was incorrect, and would leak memory if the error
-path the patch added was hit.
+Lots of things seem to be still allocated here and must be properly
+cleaned up if an error happens here.
 
-Cc: Aditya Pakki <pakki001@umn.edu>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20210503115736.2104747-37-gregkh@linuxfoundation.org
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-55-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/usx2y/usb_stream.c | 5 -----
- 1 file changed, 5 deletions(-)
+ sound/soc/codecs/rt5645.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/sound/usb/usx2y/usb_stream.c b/sound/usb/usx2y/usb_stream.c
-index 091c071b270a..6bba17bf689a 100644
---- a/sound/usb/usx2y/usb_stream.c
-+++ b/sound/usb/usx2y/usb_stream.c
-@@ -91,12 +91,7 @@ static int init_urbs(struct usb_stream_kernel *sk, unsigned use_packsize,
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index c83f7f5da96b..44e88d0dbb7a 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3419,9 +3419,6 @@ static int rt5645_probe(struct snd_soc_component *component)
+ 		RT5645_HWEQ_NUM, sizeof(struct rt5645_eq_param_s),
+ 		GFP_KERNEL);
  
- 	for (u = 0; u < USB_STREAM_NURBS; ++u) {
- 		sk->inurb[u] = usb_alloc_urb(sk->n_o_ps, GFP_KERNEL);
--		if (!sk->inurb[u])
--			return -ENOMEM;
+-	if (!rt5645->eq_param)
+-		return -ENOMEM;
 -
- 		sk->outurb[u] = usb_alloc_urb(sk->n_o_ps, GFP_KERNEL);
--		if (!sk->outurb[u])
--			return -ENOMEM;
- 	}
+ 	return 0;
+ }
  
- 	if (init_pipe_urbs(sk, use_packsize, sk->inurb, indata, dev, in_pipe) ||
 -- 
 2.30.2
 
