@@ -7,59 +7,58 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6DF8C04FF3
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 11:46:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB61AC47084
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 11:49:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DDFC461289
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 11:46:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DDFC461289
+	by mail.kernel.org (Postfix) with ESMTPS id D82B861261
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 11:49:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D82B861261
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3938D1696;
-	Mon, 24 May 2021 13:45:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3938D1696
+	by alsa0.perex.cz (Postfix) with ESMTPS id 764361695;
+	Mon, 24 May 2021 13:48:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 764361695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621856789;
-	bh=0d5nyPGd+YW/fOkTXbp7kP66r6WJzYGifkb/PJsbstk=;
+	s=default; t=1621856950;
+	bh=PSODVGUEvhKSSUfamJLetVx1e1uxBaOsx12xqXbuCs8=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=Pd9F4KjMqtiGAnZrccPytm1BoafZ/vGZoCgZfA1hbCUqEwpKzy8qj3bM7oqk+0U3m
-	 8PfFUIUx0IfRfK8ZC137dgzbay+Woo4h7rCcPr0kBBQb/GTsuh3L2AVea/1D3VOK80
-	 KRbvGHXHeGR656KN2k1PxTQ+r5kw+lpDEGHSN/9E=
+	b=kTheCrooBZTiP5KOWzaigqfo9TxSRU7z2ceYF08IrxCbUtcDCZBtgcJPUY8SaCN7H
+	 5LpFmcLUuh57Y/tKfMw7eBhOAG/PxKFeyK65HECvZ1vP270pDPgEN28k3H7q6RQRXw
+	 M0EZmfc6XW8f+vp3JhyFindm86bERorFTkVCCAFQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C0D74F8021D;
-	Mon, 24 May 2021 13:45:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 10C50F8021D;
+	Mon, 24 May 2021 13:48:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5C45AF8025C; Mon, 24 May 2021 13:45:34 +0200 (CEST)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+ id B064EF8022B; Mon, 24 May 2021 13:48:18 +0200 (CEST)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 53A49F80137
- for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 13:45:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53A49F80137
-Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.60])
- by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fpb122v74z1BR46;
- Mon, 24 May 2021 19:42:30 +0800 (CST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id CFE87F80137
+ for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 13:48:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFE87F80137
+Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.60])
+ by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fpb4573dczBvm6;
+ Mon, 24 May 2021 19:45:09 +0800 (CST)
 Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
+ dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 24 May 2021 19:45:20 +0800
+ 15.1.2176.2; Mon, 24 May 2021 19:48:00 +0800
 Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
  (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 24
- May 2021 19:45:20 +0800
+ May 2021 19:48:00 +0800
 From: YueHaibing <yuehaibing@huawei.com>
-To: <james.schulman@cirrus.com>, <david.rhodes@cirrus.com>,
- <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
  <tiwai@suse.com>
-Subject: [PATCH -next] ASoC: cs42l56: use DEVICE_ATTR_WO macro
-Date: Mon, 24 May 2021 19:45:03 +0800
-Message-ID: <20210524114503.26460-1-yuehaibing@huawei.com>
+Subject: [PATCH -next] ASoC: wm8962: Use DEVICE_ATTR_WO macro
+Date: Mon, 24 May 2021 19:47:53 +0800
+Message-ID: <20210524114753.39544-1-yuehaibing@huawei.com>
 X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -89,33 +88,33 @@ which makes the code a bit shorter and easier to read.
 
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- sound/soc/codecs/cs42l56.c | 7 +++----
+ sound/soc/codecs/wm8962.c | 7 +++----
  1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
-index 7cdffdf6b8cf..3cf8a0b4478c 100644
---- a/sound/soc/codecs/cs42l56.c
-+++ b/sound/soc/codecs/cs42l56.c
-@@ -1021,9 +1021,8 @@ static int cs42l56_beep_event(struct input_dev *dev, unsigned int type,
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 34080f497584..ba16bdf9e478 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -3219,9 +3219,8 @@ static int wm8962_beep_event(struct input_dev *dev, unsigned int type,
  	return 0;
  }
  
--static ssize_t cs42l56_beep_set(struct device *dev,
+-static ssize_t wm8962_beep_set(struct device *dev,
 -			       struct device_attribute *attr,
 -			       const char *buf, size_t count)
 +static ssize_t beep_store(struct device *dev, struct device_attribute *attr,
 +			  const char *buf, size_t count)
  {
- 	struct cs42l56_private *cs42l56 = dev_get_drvdata(dev);
+ 	struct wm8962_priv *wm8962 = dev_get_drvdata(dev);
  	long int time;
-@@ -1038,7 +1037,7 @@ static ssize_t cs42l56_beep_set(struct device *dev,
+@@ -3236,7 +3235,7 @@ static ssize_t wm8962_beep_set(struct device *dev,
  	return count;
  }
  
--static DEVICE_ATTR(beep, 0200, NULL, cs42l56_beep_set);
+-static DEVICE_ATTR(beep, 0200, NULL, wm8962_beep_set);
 +static DEVICE_ATTR_WO(beep);
  
- static void cs42l56_init_beep(struct snd_soc_component *component)
+ static void wm8962_init_beep(struct snd_soc_component *component)
  {
 -- 
 2.17.1
