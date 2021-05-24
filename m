@@ -7,67 +7,67 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE29CC04FF3
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 14:58:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E30A9C2B9F7
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 14:59:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 66D5261209
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 14:58:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 66D5261209
+	by mail.kernel.org (Postfix) with ESMTPS id 6B6C16128B
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 14:59:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B6C16128B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0350816D5;
-	Mon, 24 May 2021 16:57:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0350816D5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C4BE16E8;
+	Mon, 24 May 2021 16:58:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C4BE16E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621868326;
-	bh=Pr8LPc8GJmqXxJj0K724yClCixYI47VZAgKxceyl6lc=;
+	s=default; t=1621868343;
+	bh=hZJelB3zNRFZOwPJ8SOfGMyVUjlCrO4IOxyziMILlIw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Uq/pl0FIA8QS0XSE5DGNjwUVxBmztj47fdScx/DCr4INCyTBqdBS9/tcgvlrkxCiw
-	 rZHu1TIQg1UCDmCcGxV5t48w4yYbxGkaeudmO7Kk3sbW+vtWyStvkOtdPPRac7Gvvi
-	 GZ3pXGq2LdA64dhypf71G/nSHs0tmtH7Un/GYWlA=
+	b=cp5fAx/C2iostyIpIjqY5RG7PRyinvAt/eOzzEAuxV8T2aFAga7/62elV+Jycygmq
+	 5FLy1MujqcN1nA8QCqdqbQUQSHN1yhwJfJKJAGDjLxEhs2JgABW6C6PdBl2qsntAAB
+	 NKMCsN8IZAjYLGhPRwaGC2pxTTi8tJsju3gqRcZw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A4FC5F8042F;
-	Mon, 24 May 2021 16:51:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5F111F804CF;
+	Mon, 24 May 2021 16:51:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E8D20F804D9; Mon, 24 May 2021 16:51:21 +0200 (CEST)
+ id E37A8F804E3; Mon, 24 May 2021 16:51:41 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 423F4F8042F
- for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 16:51:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 423F4F8042F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 89A71F804CF
+ for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 16:51:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89A71F804CF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="OzzA6bSX"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8721561621;
- Mon, 24 May 2021 14:51:13 +0000 (UTC)
+ header.b="N3jkwjzY"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 745606191C;
+ Mon, 24 May 2021 14:51:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1621867874;
- bh=Pr8LPc8GJmqXxJj0K724yClCixYI47VZAgKxceyl6lc=;
+ s=k20201202; t=1621867897;
+ bh=hZJelB3zNRFZOwPJ8SOfGMyVUjlCrO4IOxyziMILlIw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=OzzA6bSX3PWvORom4zFipozKPm9ZrqZDwCu6D21d4cMILj9T1qD0dQJytzSwq0goh
- RtSGxaSVUzDQxi7QyMgp0iuZZsbRrMsqU/f0i0g6un3yQox3lu1VuXd1L5TTFZR4or
- iKibTAxr2LyOJS2jTg7bD/atOskaBdnDLzlDcc3ryTBo8RbpIgnTUndtM8x0tV+QPi
- 9054LNdYCm4nTNiHxoe8SUUvaN0V6+Aq+zT8BWN+HCcNIVaiHnUecdsdcLtX3tun9c
- jnHkSAU3mYoxvAXafNQ23YXzZ4d/zR/wX01upyjFz6T0W3d8fRvoXf4pXWNZiaSboQ
- pLKd9AcgityGw==
+ b=N3jkwjzYasl9NLraNGFlGbl4HPFmIbM+lBd/Vb4BlUMtjzWaMEm5QLUnNQfoZA3tm
+ vTOJVFKHV4h67mBAaDh/8BKlywysy5lOfsZO3ueRIpt9QNUMJmGvKLsnUcXVRftFcx
+ O1wEf19/cSP/ZJ3qPBsbtJqAVdBA2lNBFYxgSFLs5CsP+QRKsEaz/MmHD91Xo1lBF/
+ YTHErM2qxdPLkAZJVmlLjdnBDu744uk3KCKn3BJb66aWgwBmjtZ0SzJAIkVjoG7Hya
+ 39E1c5TS+X9ir9wf4Tk/kxIsee8hUV6QeQSnKKc655WI9aK3AbIMdNHzbvEEAe+Xpz
+ O3RwM5kQtIogw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 06/19] ALSA: sb8: Add a comment note regarding an
+Subject: [PATCH AUTOSEL 4.4 05/16] ALSA: sb8: Add a comment note regarding an
  unused pointer
-Date: Mon, 24 May 2021 10:50:53 -0400
-Message-Id: <20210524145106.2499571-6-sashal@kernel.org>
+Date: Mon, 24 May 2021 10:51:19 -0400
+Message-Id: <20210524145130.2499829-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210524145106.2499571-1-sashal@kernel.org>
-References: <20210524145106.2499571-1-sashal@kernel.org>
+In-Reply-To: <20210524145130.2499829-1-sashal@kernel.org>
+References: <20210524145130.2499829-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -112,7 +112,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/sound/isa/sb/sb8.c b/sound/isa/sb/sb8.c
-index e75bfc511e3e..f7a7995588f2 100644
+index 0c7fe1418447..815639c04c52 100644
 --- a/sound/isa/sb/sb8.c
 +++ b/sound/isa/sb/sb8.c
 @@ -109,7 +109,11 @@ static int snd_sb8_probe(struct device *pdev, unsigned int dev)
