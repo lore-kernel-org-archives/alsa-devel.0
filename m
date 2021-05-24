@@ -2,57 +2,61 @@ Return-Path: <SRS0=TLt2=KT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 951B6C47080
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 06:12:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2295C04FF3
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 06:13:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3B31F610C7
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 06:12:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B31F610C7
+	by mail.kernel.org (Postfix) with ESMTPS id A493A60241
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 06:13:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A493A60241
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D991415F9;
-	Mon, 24 May 2021 08:11:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D991415F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9EC181687;
+	Mon, 24 May 2021 08:12:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EC181687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621836755;
-	bh=X6OAveC283zUn3cNPxZv448xREiTJ9YXvDv35D2XYdg=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=MBFCthCdg2DSa/QjWOAmIxHQOozO6SmsJ4SRMpjdhhsVY6+8ngaSz/cb5dzoR2RMH
-	 4OMacnRxa02rYfGUJCLh3iNQ46Y6HaXnPC0TO1/1N3Ej20OxGUOYGwxdau5bFUmbvb
-	 CDZOkH9BMJ3LMvfesWFWJKXiVc4kGFsXXJuuIK3k=
+	s=default; t=1621836806;
+	bh=jbz/CfGBVjLGBQk4fMyMMz9BWqUuBBX7LDznwD1/Rn0=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=W66YzYD5RRuHdAlJ4QvbIt6WVxJeAP1j/EsnhOH2s57yE5TtuKwRgXIF7N0HqALgN
+	 Qk57ecVXtfoBIuj+Ml8EZfFrwY+xlWT7mgfcK/B7jeMvv7EuBbkcaC6tbWLr9deCR7
+	 o42KnzstzQEQb6hzyWb0i8OZV/pOxD+sSmVnyvpg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 728B0F8021D;
-	Mon, 24 May 2021 08:11:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F34DF80264;
+	Mon, 24 May 2021 08:12:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 03E55F8022B; Mon, 24 May 2021 08:11:42 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id C529FF800B8
- for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 08:11:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C529FF800B8
-Date: 24 May 2021 15:11:29 +0900
-X-IronPort-AV: E=Sophos;i="5.82,319,1613401200"; d="scan'208";a="82217398"
+ id A1385F8022D; Mon, 24 May 2021 08:12:19 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id E9F5BF8022D
+ for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 08:12:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9F5BF8022D
+Date: 24 May 2021 15:12:04 +0900
+X-IronPort-AV: E=Sophos;i="5.82,319,1613401200"; d="scan'208";a="82038446"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 24 May 2021 15:11:29 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 24 May 2021 15:12:04 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 19D9D400D0D4;
- Mon, 24 May 2021 15:11:29 +0900 (JST)
-Message-ID: <87y2c4oe3y.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id A63DD400D0C2;
+ Mon, 24 May 2021 15:12:04 +0900 (JST)
+Message-ID: <87wnrooe2z.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 0/3] ASoC: rsnd: add D3 support
+Subject: [PATCH 1/3] ASoC: dt-bindings: renesas: rsnd: tidyup properties
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Rob Herring <robh+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <87y2c4oe3y.wl-kuninori.morimoto.gx@renesas.com>
+References: <87y2c4oe3y.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org
@@ -72,21 +76,57 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark, Rob
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-These adds R-Car D3 support for rsnd driver.
-[1/3] is tidyup patch for dt-bindings (not only for D3).
-[2/3], [3/3] are for R-Car D3.
+1) resets/reset-names needs minItems
+2) It can use ports, not only port
+3) It is not using audio-graph properties
 
-Kuninori Morimoto (3):
-  ASoC: dt-bindings: renesas: rsnd: tidyup properties
-  ASoC: rsnd: tidyup loop on rsnd_adg_clk_query()
-  ASoC: rsnd: add null CLOCKIN support
+Without this patch, we will get warnings
 
- .../bindings/sound/renesas,rsnd.yaml          | 10 ++++-
- sound/soc/sh/rcar/adg.c                       | 37 ++++++++++++++++---
- 2 files changed, 41 insertions(+), 6 deletions(-)
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ .../devicetree/bindings/sound/renesas,rsnd.yaml        | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
+index 605de3a5847f..ee936d1aa724 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
++++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
+@@ -86,9 +86,11 @@ properties:
+   power-domains: true
+ 
+   resets:
++    minItems: 1
+     maxItems: 11
+ 
+   reset-names:
++    minItems: 1
+     maxItems: 11
+ 
+   clocks:
+@@ -110,6 +112,13 @@ properties:
+         - pattern: '^dvc\.[0-1]$'
+         - pattern: '^clk_(a|b|c|i)$'
+ 
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++    properties:
++      port(@[0-9a-f]+)?:
++        $ref: audio-graph-port.yaml#
++        unevaluatedProperties: false
++
+   port:
+     $ref: audio-graph-port.yaml#
+     unevaluatedProperties: false
+@@ -257,7 +266,6 @@ required:
+   - "#sound-dai-cells"
+ 
+ allOf:
+-  - $ref: audio-graph.yaml#
+   - if:
+       properties:
+         compatible:
 -- 
 2.25.1
 
