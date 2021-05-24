@@ -2,90 +2,72 @@ Return-Path: <SRS0=iQjD=KU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DATE_IN_PAST_12_24,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6261AC2B9F8
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 11:10:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 333AEC47084
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 12:04:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4EDAC6140A
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 11:10:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4EDAC6140A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 00B346141B
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 12:04:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 00B346141B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8AFFC172E;
-	Tue, 25 May 2021 13:09:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8AFFC172E
+	by alsa0.perex.cz (Postfix) with ESMTPS id B81BD172C;
+	Tue, 25 May 2021 14:03:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B81BD172C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621941042;
-	bh=MrhnvxlXtSEksCT/unngrqgWOa7vlxTpcrx9kttehIw=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ihj2HfyzL6w3YLNQ9paHGkkhMhMR7YV54b74/IySR+Gj5UDCHrcIa9hOa4OoJi+bE
-	 XgMfvRZNLx+fxC46NVSoPO4+y9kiWw0YWRGOTi1kFsCN6r9LxNzDzIQlbuEj5y+axq
-	 vo3HwrV5WNNm9X0zYv8a3DW76K4tLWqBLus38tsk=
+	s=default; t=1621944245;
+	bh=hOHaeb7zaT8n5sj5HwtMCGxbezkzBaol30xrHpX7/oc=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=PY/mN1M2FEu6l0yaVaAv+8Q4Adycic08Axkeq2JbPd7vxjKhJW2+4ZRtNpp+9JR5t
+	 AUsGtmWQq7/6kCP0jRyc44TZizqtGx+ICRQ+NJYtE2U4Y9udgdVsI3/6zGsSWxBGes
+	 Rm6tXt90Up8x4UdS0QYWQq9gfcMcY2k/Rf295smA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26D71F80113;
-	Tue, 25 May 2021 13:09:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42B12F8019D;
+	Tue, 25 May 2021 14:03:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F10F9F801EB; Tue, 25 May 2021 13:09:50 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 3EDA9F801EB; Tue, 25 May 2021 14:03:13 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 777C0F80113
- for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 13:09:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 777C0F80113
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="g5h/FfO4"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="JbIap8LM"
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1621940978; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=072L65wMLl5q3zYLmOvPyKwJHjix5ndWKZVJUEbUgio=;
- b=g5h/FfO42JeIFuvV40/upHzpe80+PDOlSriTvDzv2ELb9y0pqlOj0tZSMdfxcPLpDJOLbq
- TNkbOKh4VKL1n76BjB+1Uw4mtrjaTG01CMY+BnMj0ZwVoY0BD/JeVKaNdCuWMOvk9/eaXk
- TWh7MH/sgAFchbetgfdoqLZRmIfnAi4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1621940978;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=072L65wMLl5q3zYLmOvPyKwJHjix5ndWKZVJUEbUgio=;
- b=JbIap8LM309E/fFcudNiI8G8bJr9fO8FJEnlDFdM+mFUTtFWzRPCQ64uI3LyjmY0NSnynJ
- 17ZB0qxVgc64amDw==
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 81DD5AE1F;
- Tue, 25 May 2021 11:09:38 +0000 (UTC)
-Date: Tue, 25 May 2021 13:09:38 +0200
-Message-ID: <s5him37cbnx.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH v2] ALSA: hda/realtek: Chain in pop reduction fixup for
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2A10DF8011B
+ for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 14:03:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A10DF8011B
+IronPort-SDR: hWkX/BCnT4BB/H7yfHLrXJYUrh0cs/2QjVU1bgik8aL/vMmklI74ZpwCgmvS1Jw7gAhi53bxaK
+ wrCuvUN4l7ow==
+X-IronPort-AV: E=McAfee;i="6200,9189,9994"; a="202193148"
+X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; d="scan'208";a="202193148"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 May 2021 05:02:18 -0700
+IronPort-SDR: N16azn8n/JWm/bJvi6Mb36i28WIa9DDjCRa4doRIDdz21vXkDsrGA9IH9evQgNcp1X+Py/V8v6
+ u8LQLfQYziug==
+X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; d="scan'208";a="476390184"
+Received: from pujfalus-mobl.ger.corp.intel.com (HELO
+ peter-virtualbox.ger.corp.intel.com) ([10.252.39.140])
+ by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 May 2021 05:02:09 -0700
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To: tiwai@suse.com,
+	hui.wang@canonical.com
+Subject: [PATCH v3] ALSA: hda/realtek: Chain in pop reduction fixup for
  ThinkStation P340
-In-Reply-To: <20210524192437.27838-1-peter.ujfalusi@linux.intel.com>
-References: <20210524192437.27838-1-peter.ujfalusi@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Date: Mon, 24 May 2021 23:37:26 +0300
+Message-Id: <20210524203726.2278-1-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: hui.wang@canonical.com, alsa-devel@alsa-project.org, tiwai@suse.com,
- kai.vehmanen@linux.intel.com
+Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,110 +83,99 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 24 May 2021 21:24:37 +0200,
-Peter Ujfalusi wrote:
-> 
-> Lenovo ThinkStation P340 uses ALC623 codec (SSID 17aa:1048) and it produces
-> bug plock/pop noise over line out (green jack on the back) which can be
-> fixed by applying ALC269_FIXUP_NO_SHUTUP tot he machine.
-> 
-> Convert the existing entry for the same SSID to chain to apply this fixup
-> as well.
-> 
-> Suggested-by: Takashi Iwai <tiwai@suse.de>
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Lenovo ThinkStation P340 uses ALC623 codec (SSID 17aa:1048) and it produces
+bug plock/pop noise over line out (green jack on the back) which can be
+fixed by applying ALC269_FIXUP_NO_SHUTUP tot he machine.
 
-The patch looks good, but it doesn't seem applied cleanly on top of
-the latest Linus or sound.git for-linus branch.  Could you rebase and
-resubmit?
+Convert the existing entry for the same SSID to chain to apply this fixup
+as well.
 
+Suggested-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+---
+Hi Takashi,
 
-thanks,
+Changes since v2:
+- rebased on sound.git for-linus branch
 
-Takashi
+Changes since v1
+- instead of deny_list use chained fixup to fix the plock/pop noise
 
+Changes since RFC:
+- Fixed up the PCI ID
 
-> ---
-> Hi Takashi,
-> 
-> Changes since v1
-> - instead of deny_list use chained fixup to fix the plock/pop noise
-> 
-> Changes since RFC:
-> - Fixed up the PCI ID
-> 
-> ever since I have this workstation (three weeks) the plock/pop noise on playback
-> start bugged me. So far the only solution I have found is to disable the
-> power_save which I find acceptable on a desktop compared to the pops.
-> 
-> The alsa-info.sh output is can be found here:
-> http://alsa-project.org/db/?f=414b1b236fc73db386ad4f938bc3b304f6b30b05
-> 
-> Missing details from alsa-info output:
-> # lspci -nnk | grep -A2 Audio
-> 00:1f.3 Audio device [0403]: Intel Corporation Comet Lake PCH cAVS [8086:06c8]
->         DeviceName: Onboard - Sound
->         Subsystem: Lenovo Device [17aa:1048]
-> 
-> CPU: i9-10900k
-> 
-> The machine have ALC623 codec and the jacks are correctly discovered and they
-> do what they supposed to be.
-> When I have the headset connected to the front and audio is routed there the
-> line out (green jack) from the back still prodices the plock/pop.
-> 
-> Is there a known quirk for similar issue or a better way to handle it?
-> 
-> [1] https://lore.kernel.org/alsa-devel/20210524152533.7479-1-peter.ujfalusi@linux.intel.com/
-> 
-> Thanks you,
-> Peter Ujfalusi
-> 
->  sound/pci/hda/patch_realtek.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index 3e269de84079..e2e0ee7b137d 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -6543,6 +6543,7 @@ enum {
->  	ALC295_FIXUP_ASUS_DACS,
->  	ALC295_FIXUP_HP_OMEN,
->  	ALC285_FIXUP_HP_SPECTRE_X360,
-> +	ALC623_FIXUP_LENOVO_THINKSTATION_P340,
->  };
->  
->  static const struct hda_fixup alc269_fixups[] = {
-> @@ -8109,6 +8110,12 @@ static const struct hda_fixup alc269_fixups[] = {
->  		.chained = true,
->  		.chain_id = ALC285_FIXUP_SPEAKER2_TO_DAC1,
->  	},
-> +	[ALC623_FIXUP_LENOVO_THINKSTATION_P340] = {
-> +		.type = HDA_FIXUP_FUNC,
-> +		.v.func = alc_fixup_no_shutup,
-> +		.chained = true,
-> +		.chain_id = ALC283_FIXUP_HEADSET_MIC,
-> +	},
->  };
->  
->  static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-> @@ -8412,7 +8419,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
->  	SND_PCI_QUIRK(0x1558, 0x971d, "Clevo N970T[CDF]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
->  	SND_PCI_QUIRK(0x1558, 0xa500, "Clevo NL53RU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
->  	SND_PCI_QUIRK(0x17aa, 0x1036, "Lenovo P520", ALC233_FIXUP_LENOVO_MULTI_CODECS),
-> -	SND_PCI_QUIRK(0x17aa, 0x1048, "ThinkCentre Station", ALC283_FIXUP_HEADSET_MIC),
-> +	SND_PCI_QUIRK(0x17aa, 0x1048, "ThinkCentre Station", ALC623_FIXUP_LENOVO_THINKSTATION_P340),
->  	SND_PCI_QUIRK(0x17aa, 0x20f2, "Thinkpad SL410/510", ALC269_FIXUP_SKU_IGNORE),
->  	SND_PCI_QUIRK(0x17aa, 0x215e, "Thinkpad L512", ALC269_FIXUP_SKU_IGNORE),
->  	SND_PCI_QUIRK(0x17aa, 0x21b8, "Thinkpad Edge 14", ALC269_FIXUP_SKU_IGNORE),
-> @@ -8677,6 +8684,7 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
->  	{.id = ALC245_FIXUP_HP_X360_AMP, .name = "alc245-hp-x360-amp"},
->  	{.id = ALC295_FIXUP_HP_OMEN, .name = "alc295-hp-omen"},
->  	{.id = ALC285_FIXUP_HP_SPECTRE_X360, .name = "alc285-hp-spectre-x360"},
-> +	{.id = ALC623_FIXUP_LENOVO_THINKSTATION_P340, .name = "alc623-lenovo-thinkstation-p340"},
->  	{}
->  };
->  #define ALC225_STANDARD_PINS \
-> -- 
-> 2.31.1
-> 
+ever since I have this workstation (three weeks) the plock/pop noise on playback
+start bugged me. So far the only solution I have found is to disable the
+power_save which I find acceptable on a desktop compared to the pops.
+
+The alsa-info.sh output is can be found here:
+http://alsa-project.org/db/?f=414b1b236fc73db386ad4f938bc3b304f6b30b05
+
+Missing details from alsa-info output:
+# lspci -nnk | grep -A2 Audio
+00:1f.3 Audio device [0403]: Intel Corporation Comet Lake PCH cAVS [8086:06c8]
+        DeviceName: Onboard - Sound
+        Subsystem: Lenovo Device [17aa:1048]
+
+CPU: i9-10900k
+
+The machine have ALC623 codec and the jacks are correctly discovered and they
+do what they supposed to be.
+When I have the headset connected to the front and audio is routed there the
+line out (green jack) from the back still prodices the plock/pop.
+
+Is there a known quirk for similar issue or a better way to handle it?
+
+[1] https://lore.kernel.org/alsa-devel/20210524152533.7479-1-peter.ujfalusi@linux.intel.com/
+
+Thanks you,
+Peter Ujfalusi
+
+ sound/pci/hda/patch_realtek.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 6571c3713732..90bf0d3a830a 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6567,6 +6567,7 @@ enum {
+ 	ALC295_FIXUP_HP_OMEN,
+ 	ALC285_FIXUP_HP_SPECTRE_X360,
+ 	ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP,
++	ALC623_FIXUP_LENOVO_THINKSTATION_P340,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -8139,6 +8140,12 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC285_FIXUP_THINKPAD_HEADSET_JACK,
+ 	},
++	[ALC623_FIXUP_LENOVO_THINKSTATION_P340] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_no_shutup,
++		.chained = true,
++		.chain_id = ALC283_FIXUP_HEADSET_MIC,
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -8457,7 +8464,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1558, 0xc019, "Clevo NH77D[BE]Q", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0xc022, "Clevo NH77[DC][QW]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x17aa, 0x1036, "Lenovo P520", ALC233_FIXUP_LENOVO_MULTI_CODECS),
+-	SND_PCI_QUIRK(0x17aa, 0x1048, "ThinkCentre Station", ALC283_FIXUP_HEADSET_MIC),
++	SND_PCI_QUIRK(0x17aa, 0x1048, "ThinkCentre Station", ALC623_FIXUP_LENOVO_THINKSTATION_P340),
+ 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Thinkpad SL410/510", ALC269_FIXUP_SKU_IGNORE),
+ 	SND_PCI_QUIRK(0x17aa, 0x215e, "Thinkpad L512", ALC269_FIXUP_SKU_IGNORE),
+ 	SND_PCI_QUIRK(0x17aa, 0x21b8, "Thinkpad Edge 14", ALC269_FIXUP_SKU_IGNORE),
+@@ -8724,6 +8731,7 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
+ 	{.id = ALC295_FIXUP_HP_OMEN, .name = "alc295-hp-omen"},
+ 	{.id = ALC285_FIXUP_HP_SPECTRE_X360, .name = "alc285-hp-spectre-x360"},
+ 	{.id = ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP, .name = "alc287-ideapad-bass-spk-amp"},
++	{.id = ALC623_FIXUP_LENOVO_THINKSTATION_P340, .name = "alc623-lenovo-thinkstation-p340"},
+ 	{}
+ };
+ #define ALC225_STANDARD_PINS \
+-- 
+2.31.1
+
