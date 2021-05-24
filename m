@@ -2,97 +2,75 @@ Return-Path: <SRS0=iQjD=KU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 778FCC2B9F8
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 07:34:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B38CC2B9F8
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 07:36:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1D76A613F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 07:34:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D76A613F5
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id AEEE86108D
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 07:36:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AEEE86108D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B8C9383B;
-	Tue, 25 May 2021 09:33:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8C9383B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7CB8983A;
+	Tue, 25 May 2021 09:35:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CB8983A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621928089;
-	bh=e/Up4lkvEf6VUvZ6eQ95HwrS8vjTr7VPts2SVFflQzg=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=WGPIQVhrcjAwZ+LqR20fPJJ2Dja+ZvrUxhMf88j8JdIbfLZIhy6HOcTaFbFlIrpzm
-	 BS0ROqTQehkKAdMvj/KPOAtBP4OVZ+sb9zmIYcDzlhvGTuc5T8kc+e5F0rpS3w0E10
-	 UbhK61z+QK2cuhYZBL9reeEZ0J9wsQDvTw8aXTh0=
+	s=default; t=1621928199;
+	bh=QRfTlf3kFwJ2NXgW+r16gIHc+Qoetx7Zd+MTRjCxUso=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=bF9gIgo+RCAvcKLhw7J2J7vfQPF5xazCkOy205q3jcR66n5jKBbn8agpiLwzA7ydw
+	 xkRJ+W4cF2JK7WAofcdCRHZKtrsQ+mcOvqGy8pqp11GfwT+b7PbY5KqdjDnR1325hI
+	 s55wk4Lc66lSaNrG0RIpT5y/Eg7vc5CQv6WRND7A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4701FF8019D;
-	Tue, 25 May 2021 09:33:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 216F4F801EB;
+	Tue, 25 May 2021 09:35:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33390F801EB; Tue, 25 May 2021 09:33:57 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id D5765F8022B; Mon, 24 May 2021 04:40:19 +0200 (CEST)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CD05BF80113
- for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 09:33:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD05BF80113
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="aA36FE8u"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="8jPAbDdn"
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1621928030; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=OSIQxcQ4DxKPYddBBvfmnpx/Es7DwLuq2BPnu3Gg/E4=;
- b=aA36FE8uDZUvxjkIJCgoBtp/2Rq8PJ/rjdTGFMew++lhXR6kZQ41tjO5UHEglTE/U2KvAx
- mc9MbSVYDpqS4KxwpfEQ45nG0Z9xZvlX4jnVWKl5+c3owB1SjomrT7YRG6OUigEIGrsDUz
- tLkgjHUccaEqUEiep1shXr0hcpWbXfQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1621928030;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=OSIQxcQ4DxKPYddBBvfmnpx/Es7DwLuq2BPnu3Gg/E4=;
- b=8jPAbDdnUDDLPYpCppRPVdHiPW2IvRUQQeIOZdhSLZfuPoDEwMqWewg2RmNXnYR9WpaeUB
- OFwRukKjis56UqBQ==
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 55427AE92;
- Tue, 25 May 2021 07:33:50 +0000 (UTC)
-Date: Tue, 25 May 2021 09:33:49 +0200
-Message-ID: <s5hbl8ze082.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Maxime Ripard <maxime@cerno.tech>
-Subject: Re: [PATCH 01/11] snd: iec958: split status creation and fill
-In-Reply-To: <20210507140334.204865-2-maxime@cerno.tech>
-References: <20210507140334.204865-1-maxime@cerno.tech>
- <20210507140334.204865-2-maxime@cerno.tech>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Tim Gover <tim.gover@raspberrypi.com>,
- David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, Eric Anholt <eric@anholt.net>,
- Daniel Vetter <daniel.vetter@intel.com>, Phil Elwell <phil@raspberrypi.com>,
- Dave Stevenson <dave.stevenson@raspberrypi.com>, Takashi Iwai <tiwai@suse.com>,
- bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
- nsaenz@kernel.org, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- Dom Cobley <dom@raspberrypi.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id ADD5DF80149
+ for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 04:40:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADD5DF80149
+Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.60])
+ by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FpLwX4x76zmZNT;
+ Mon, 24 May 2021 10:37:48 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 24 May 2021 10:40:06 +0800
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 24 May 2021 10:40:05 +0800
+From: Kefeng Wang <wangkefeng.wang@huawei.com>
+To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ "Takashi Iwai" <tiwai@suse.com>
+Subject: [PATCH] ASoC: core: Fix Null-point-dereference in fmt_single_name()
+Date: Mon, 24 May 2021 10:49:41 +0800
+Message-ID: <20210524024941.159952-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.25]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
+X-Mailman-Approved-At: Tue, 25 May 2021 09:35:47 +0200
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Hulk Robot <hulkci@huawei.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Kefeng Wang <wangkefeng.wang@huawei.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,233 +86,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 07 May 2021 16:03:24 +0200,
-Maxime Ripard wrote:
-> 
-> In some situations, like a codec probe, we need to provide an IEC status
-> default but don't have access to the sampling rate and width yet since
-> no stream has been configured yet.
-> 
-> Each and every driver has its own default, whereas the core iec958 code
-> also has some buried in the snd_pcm_create_iec958_consumer functions.
-> 
-> Let's split these functions in two to provide a default that doesn't
-> rely on the sampling rate and width, and another function to fill them
-> when available.
-> 
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Check the return value of devm_kstrdup() in case of
+Null-point-dereference.
 
-The changes look almost good, but please use EXPORT_SYMBOL_GPL() for
-newly introduced symbols.  Also, it'd be worth to mention that some
-bits update are done only for the default values; if a rate value has
-been already set, it won't be overridden by this *_fill_*() call,
-that's the intentional behavior, right?
+Fixes: 45dd9943fce0 ("ASoC: core: remove artificial component and DAI name constraint")
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+---
+ sound/soc/soc-core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Last but not least, the subject prefix should be "ALSA:" in general :)
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 1c0904acb935..a76974ccfce1 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2225,6 +2225,8 @@ static char *fmt_single_name(struct device *dev, int *id)
+ 		return NULL;
+ 
+ 	name = devm_kstrdup(dev, devname, GFP_KERNEL);
++	if (!name)
++		return NULL;
+ 
+ 	/* are we a "%s.%d" name (platform and SPI components) */
+ 	found = strstr(name, dev->driver->name);
+-- 
+2.26.2
 
-
-thanks,
-
-Takashi
-
-> ---
->  include/sound/pcm_iec958.h |   8 +++
->  sound/core/pcm_iec958.c    | 131 +++++++++++++++++++++++++------------
->  2 files changed, 96 insertions(+), 43 deletions(-)
-> 
-> diff --git a/include/sound/pcm_iec958.h b/include/sound/pcm_iec958.h
-> index 0939aa45e2fe..64e84441cde1 100644
-> --- a/include/sound/pcm_iec958.h
-> +++ b/include/sound/pcm_iec958.h
-> @@ -4,6 +4,14 @@
->  
->  #include <linux/types.h>
->  
-> +int snd_pcm_create_iec958_consumer_default(u8 *cs, size_t len);
-> +
-> +int snd_pcm_fill_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
-> +				 size_t len);
-> +
-> +int snd_pcm_fill_iec958_consumer_hw_params(struct snd_pcm_hw_params *params,
-> +					   u8 *cs, size_t len);
-> +
->  int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
->  	size_t len);
->  
-> diff --git a/sound/core/pcm_iec958.c b/sound/core/pcm_iec958.c
-> index f9a211cc1f2c..a60908efe159 100644
-> --- a/sound/core/pcm_iec958.c
-> +++ b/sound/core/pcm_iec958.c
-> @@ -9,41 +9,68 @@
->  #include <sound/pcm_params.h>
->  #include <sound/pcm_iec958.h>
->  
-> -static int create_iec958_consumer(uint rate, uint sample_width,
-> -				  u8 *cs, size_t len)
-> +int snd_pcm_create_iec958_consumer_default(u8 *cs, size_t len)
->  {
-> -	unsigned int fs, ws;
-> -
->  	if (len < 4)
->  		return -EINVAL;
->  
-> -	switch (rate) {
-> -	case 32000:
-> -		fs = IEC958_AES3_CON_FS_32000;
-> -		break;
-> -	case 44100:
-> -		fs = IEC958_AES3_CON_FS_44100;
-> -		break;
-> -	case 48000:
-> -		fs = IEC958_AES3_CON_FS_48000;
-> -		break;
-> -	case 88200:
-> -		fs = IEC958_AES3_CON_FS_88200;
-> -		break;
-> -	case 96000:
-> -		fs = IEC958_AES3_CON_FS_96000;
-> -		break;
-> -	case 176400:
-> -		fs = IEC958_AES3_CON_FS_176400;
-> -		break;
-> -	case 192000:
-> -		fs = IEC958_AES3_CON_FS_192000;
-> -		break;
-> -	default:
-> +	memset(cs, 0, len);
-> +
-> +	cs[0] = IEC958_AES0_CON_NOT_COPYRIGHT | IEC958_AES0_CON_EMPHASIS_NONE;
-> +	cs[1] = IEC958_AES1_CON_GENERAL;
-> +	cs[2] = IEC958_AES2_CON_SOURCE_UNSPEC | IEC958_AES2_CON_CHANNEL_UNSPEC;
-> +	cs[3] = IEC958_AES3_CON_CLOCK_1000PPM | IEC958_AES3_CON_FS_NOTID;
-> +
-> +	if (len > 4)
-> +		cs[4] = IEC958_AES4_CON_WORDLEN_NOTID;
-> +
-> +	return len;
-> +}
-> +EXPORT_SYMBOL(snd_pcm_create_iec958_consumer_default);
-> +
-> +static int fill_iec958_consumer(uint rate, uint sample_width,
-> +				u8 *cs, size_t len)
-> +{
-> +	if (len < 4)
->  		return -EINVAL;
-> +
-> +	if ((cs[3] & IEC958_AES3_CON_FS) == IEC958_AES3_CON_FS_NOTID) {
-> +		unsigned int fs;
-> +
-> +		switch (rate) {
-> +			case 32000:
-> +				fs = IEC958_AES3_CON_FS_32000;
-> +				break;
-> +			case 44100:
-> +				fs = IEC958_AES3_CON_FS_44100;
-> +				break;
-> +			case 48000:
-> +				fs = IEC958_AES3_CON_FS_48000;
-> +				break;
-> +			case 88200:
-> +				fs = IEC958_AES3_CON_FS_88200;
-> +				break;
-> +			case 96000:
-> +				fs = IEC958_AES3_CON_FS_96000;
-> +				break;
-> +			case 176400:
-> +				fs = IEC958_AES3_CON_FS_176400;
-> +				break;
-> +			case 192000:
-> +				fs = IEC958_AES3_CON_FS_192000;
-> +				break;
-> +			default:
-> +				return -EINVAL;
-> +		}
-> +
-> +		cs[3] &= ~IEC958_AES3_CON_FS;
-> +		cs[3] |= fs;
->  	}
->  
-> -	if (len > 4) {
-> +	if (len > 4 &&
-> +	    (cs[4] & IEC958_AES4_CON_WORDLEN) == IEC958_AES4_CON_WORDLEN_NOTID) {
-> +		unsigned int ws;
-> +
->  		switch (sample_width) {
->  		case 16:
->  			ws = IEC958_AES4_CON_WORDLEN_20_16;
-> @@ -64,21 +91,30 @@ static int create_iec958_consumer(uint rate, uint sample_width,
->  		default:
->  			return -EINVAL;
->  		}
-> +
-> +		cs[4] &= ~IEC958_AES4_CON_WORDLEN;
-> +		cs[4] |= ws;
->  	}
->  
-> -	memset(cs, 0, len);
-> -
-> -	cs[0] = IEC958_AES0_CON_NOT_COPYRIGHT | IEC958_AES0_CON_EMPHASIS_NONE;
-> -	cs[1] = IEC958_AES1_CON_GENERAL;
-> -	cs[2] = IEC958_AES2_CON_SOURCE_UNSPEC | IEC958_AES2_CON_CHANNEL_UNSPEC;
-> -	cs[3] = IEC958_AES3_CON_CLOCK_1000PPM | fs;
-> -
-> -	if (len > 4)
-> -		cs[4] = ws;
-> -
->  	return len;
->  }
->  
-> +int snd_pcm_fill_iec958_consumer_hw_params(struct snd_pcm_hw_params *params,
-> +					   u8 *cs, size_t len)
-> +{
-> +	return fill_iec958_consumer(params_rate(params), params_width(params), cs, len);
-> +}
-> +EXPORT_SYMBOL(snd_pcm_fill_iec958_consumer_hw_params);
-> +
-> +int snd_pcm_fill_iec958_consumer(struct snd_pcm_runtime *runtime,
-> +				 u8 *cs, size_t len)
-> +{
-> +	return fill_iec958_consumer(runtime->rate,
-> +				    snd_pcm_format_width(runtime->format),
-> +				    cs, len);
-> +}
-> +EXPORT_SYMBOL(snd_pcm_fill_iec958_consumer);
-> +
->  /**
->   * snd_pcm_create_iec958_consumer - create consumer format IEC958 channel status
->   * @runtime: pcm runtime structure with ->rate filled in
-> @@ -95,9 +131,13 @@ static int create_iec958_consumer(uint rate, uint sample_width,
->  int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
->  	size_t len)
->  {
-> -	return create_iec958_consumer(runtime->rate,
-> -				      snd_pcm_format_width(runtime->format),
-> -				      cs, len);
-> +	int ret;
-> +
-> +	ret = snd_pcm_create_iec958_consumer_default(cs, len);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return snd_pcm_fill_iec958_consumer(runtime, cs, len);
->  }
->  EXPORT_SYMBOL(snd_pcm_create_iec958_consumer);
->  
-> @@ -117,7 +157,12 @@ EXPORT_SYMBOL(snd_pcm_create_iec958_consumer);
->  int snd_pcm_create_iec958_consumer_hw_params(struct snd_pcm_hw_params *params,
->  					     u8 *cs, size_t len)
->  {
-> -	return create_iec958_consumer(params_rate(params), params_width(params),
-> -				      cs, len);
-> +	int ret;
-> +
-> +	ret = snd_pcm_create_iec958_consumer_default(cs, len);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return fill_iec958_consumer(params_rate(params), params_width(params), cs, len);
->  }
->  EXPORT_SYMBOL(snd_pcm_create_iec958_consumer_hw_params);
-> -- 
-> 2.31.1
-> 
