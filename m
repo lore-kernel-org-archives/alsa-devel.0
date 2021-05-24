@@ -2,99 +2,79 @@ Return-Path: <SRS0=TLt2=KT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,HK_RANDOM_FROM,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CFBAC04FF3
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 17:41:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE9D9C04FF3
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 17:42:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D645C613F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 17:41:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D645C613F5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id D2554613EA
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 17:42:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D2554613EA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DE3BD847;
-	Mon, 24 May 2021 19:40:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE3BD847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 724091657;
+	Mon, 24 May 2021 19:41:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 724091657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621878068;
-	bh=sTMdfl7490EUvFpi8+cM20l+2QkFa8OjDn3LY3LnB8g=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1621878119;
+	bh=MVeoK2xHI7txDZ3+ukBpmQO3t/38okqJ2C6RLrYxuAw=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mGOAFbYnYdUJmPdfxxhBV5a2vNMolxj9nzRz7L+l47SNE1evmGJaXNHfrVNCvFTy1
-	 hzSLmJum0E2AUNfobehED2b1hR4o4O8wdsKVxMcR83shK7p4La0Jz1DHlyAMRB5/ZH
-	 r8PBa1pu+70/KaI1MBnRYYNLuMmVrasEUXdcgwKQ=
+	b=EsCrrtt+kDKK3Wg2/JtJSzReT5oGeEukiBsATWRlOBgUPtLlZtTbwSDtnrLfw8S9O
+	 jG+8ZpjzT4+Nfvimi7TCE4vtX6q4jG0NL67hv1jBY+UDvjnm1cmheXdZu6oNcm305h
+	 ygpjwcIDCUUOQPkxijlNIZp3IbZOV7ybxK2ysbbQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3E288F8022B;
-	Mon, 24 May 2021 19:40:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DD495F8021D;
+	Mon, 24 May 2021 19:40:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5D73DF8022D; Mon, 24 May 2021 19:40:17 +0200 (CEST)
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com
- [IPv6:2607:f8b0:4864:20::1035])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id E66B2F8025C; Mon, 24 May 2021 19:40:20 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8C23EF80137
- for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 19:40:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C23EF80137
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="n8fH/VMb"
-Received: by mail-pj1-x1035.google.com with SMTP id
- h20-20020a17090aa894b029015db8f3969eso10939041pjq.3
- for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 10:40:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=sTMdfl7490EUvFpi8+cM20l+2QkFa8OjDn3LY3LnB8g=;
- b=n8fH/VMbgfd6cRp/TQjx3U196IeCN0qxIEAi6w1Ejs/HL3HtQn8A4RC+PkbAaJ7YXx
- v2DYyU6k6hdak4BbLALW0lx0Tpf3yWbHUeoCnJhdtcnFVicNtqGCbErlV0W80aibgVLo
- qcq7Kx3+j8rl6PWfSyH9cYgLp4BLtao7OZ96GjGyG3Xwuh4IygxcgZk4TJHUOM3tMe72
- jrlBH5ugkQvAvRSHx4zN54AWLITw8/UCnoTZFv+pwuBnPrX5Q+/XgabEUZf6Mw+mibNE
- nOe3pHgoUHfkkH5OAClqOiO0MZpeQtS4tQ/Dy7ZuIpCZkZRp/KzZPuEOqtc+NVlQ6lbr
- p1wQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=sTMdfl7490EUvFpi8+cM20l+2QkFa8OjDn3LY3LnB8g=;
- b=Sex1aOhDHJ1wQ1At7fHYmbG9+i2et3EWi6cy13JuURhxVOpdhvk9H0j3IRULtYRSnJ
- oec50loayXoFxKHr42/Lfa1fcDjPKgBZg7vVa34jX6UMA24oncARkVNu8jMj3mhTw5ol
- PFgeCx1gAdK/3965VZMJWA9kTt/G5798WQC4NqC6UmoDF5W2jN/ogR1sS1nurbTYJ6wV
- P2BhfsoK4nD5dEle2A+ZrMq7xTpN6AxS3hVLQEw6i0wuPVRRsqjekhqck2nzh+jAdguM
- WUb0/P26vkZCV/vWVXSbfXLu8l8ubBDzCeddenRU7zH7iDkbCke4OkBdCF78pzUjhNMG
- /BCw==
-X-Gm-Message-State: AOAM530aw/fbsvl83NyrVOQRISdrIVqzekwosPRjJu9vm/CTblZcq71T
- jYAzMZJps1+hWphJWziirVA=
-X-Google-Smtp-Source: ABdhPJxfF9PCeKa3cCzxFrqVmh9I5Uyn2fwwsnMG8kDEetRGWiF1peoAFvUuRdAj+8civkPVDk3VWw==
-X-Received: by 2002:a17:90a:f518:: with SMTP id
- cs24mr292344pjb.182.1621878005779; 
- Mon, 24 May 2021 10:40:05 -0700 (PDT)
-Received: from hyeyoo ([183.99.11.150])
- by smtp.gmail.com with ESMTPSA id n28sm5193454pfq.139.2021.05.24.10.40.03
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 24 May 2021 10:40:05 -0700 (PDT)
-Date: Tue, 25 May 2021 02:39:59 +0900
-From: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Oliver Neukum <oneukum@suse.com>, Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: Re: [PATCH] ALSA: line6: Improve poor error handling in
- line6_init_cap_control
-Message-ID: <20210524173959.GA116743@hyeyoo>
-References: <20210524173644.GA116662@hyeyoo>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8CD01F800B8
+ for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 19:40:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CD01F800B8
+IronPort-SDR: B1XKWlry3cuztdjVsz1FSgfYZgtG62ZQ8oLUhFtjmTVWApvhLMggjSq7db0zT31tMX2+YBg27E
+ UjGFFocYdAtg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9993"; a="202012728"
+X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; d="scan'208";a="202012728"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 May 2021 10:40:09 -0700
+IronPort-SDR: OlsffDRvw6Ck3jliqwWLI7pWWUS5/npJ8ygggjY68fmIX9s4ZMbLsUimSKdr2EGbtrN0r0dRIR
+ zyiRPgKH5g0w==
+X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; d="scan'208";a="632710287"
+Received: from cagalind-mobl2.amr.corp.intel.com (HELO [10.213.163.143])
+ ([10.213.163.143])
+ by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 May 2021 10:40:08 -0700
+Subject: Re: [PATCH] ASoC: Intel: boards: Select SND_SOC_HDAC_HDMI for
+ Soundwire machine driver
+To: Richard Fitzgerald <rf@opensource.cirrus.com>, broonie@kernel.org,
+ cezary.rojewski@intel.com, liam.r.girdwood@linux.intel.com,
+ yang.jie@linux.intel.com, Kai Vehmanen <kai.vehmanen@linux.intel.com>
+References: <20210520163324.19046-1-rf@opensource.cirrus.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <9ed54875-fe77-f70f-9085-0f3b4c9d576e@linux.intel.com>
+Date: Mon, 24 May 2021 11:32:06 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210524173644.GA116662@hyeyoo>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210520163324.19046-1-rf@opensource.cirrus.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,11 +90,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-added an error handling code. It builds well,
-but I don't have the device. So please review it (and test if you have one)
 
-if you think I can improve something, please tell me.
-I'll send v2.
 
-Thanks,
-Hyeonggon
+On 5/20/21 11:33 AM, Richard Fitzgerald wrote:
+> Add select of SND_SOC_HDAC_HDMI for SND_SOC_INTEL_SOUNDWIRE_SOF_MACH.
+> Without this the build results in missing references to
+> hdac_hdmi_jack_port_init and hdac_hdmi_jack_init.
+
+Kai, can you comment on this one? There is nothing specific to HDMI in 
+this driver.
+
+all the machine driver entries are now protected with a
+	depends on SND_HDA_CODEC_HDMI && SND_SOC_SOF_HDA_AUDIO_CODEC
+
+but some entries have the select SND_SOC_HDAC_HDMI, others don't.
+
+Something's inconsistent here, it's not limited to SoundWire I am afraid
+
+
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> ---
+>   sound/soc/intel/boards/Kconfig | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+> index eef5f4ac87c5..6a1639b14b67 100644
+> --- a/sound/soc/intel/boards/Kconfig
+> +++ b/sound/soc/intel/boards/Kconfig
+> @@ -601,6 +601,7 @@ config SND_SOC_INTEL_SOUNDWIRE_SOF_MACH
+>   	select SND_SOC_DMIC
+>   	select SND_SOC_INTEL_HDA_DSP_COMMON
+>   	select SND_SOC_INTEL_SOF_MAXIM_COMMON
+> +	select SND_SOC_HDAC_HDMI
+>   	help
+>   	  Add support for Intel SoundWire-based platforms connected to
+>   	  MAX98373, RT700, RT711, RT1308 and RT715
+> 
