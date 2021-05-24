@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D9CFC04FF3
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 14:53:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17BA3C04FF3
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 14:54:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BDC5D60FE8
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 14:53:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDC5D60FE8
+	by mail.kernel.org (Postfix) with ESMTPS id 8F74D6128D
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 May 2021 14:54:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F74D6128D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4BC3416A3;
-	Mon, 24 May 2021 16:53:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BC3416A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2388382A;
+	Mon, 24 May 2021 16:53:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2388382A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621868030;
-	bh=ZqLak8BtxpSBoSac6F+jFOun1e3iSVOTf+B9UAhpitk=;
+	s=default; t=1621868053;
+	bh=1IYDyVXakbWlqPPxz3zhjImOYU2dRk9Db7ijwLOxpIU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lufuzKQanXCEySH2EriHyeHATtNBquUuG8lGYEJaMJSj6xaRX+5tvDAUdXYN+G+Jp
-	 ELHY7TPt781rJgrmyxzUdtTwLsmzu0jBVe4cES2S+whafROdhy41v6AHMj1Bq4Yp5T
-	 D1lYkXkh+/PxG3rtAdSwnT2k3Ue3TiPYxY4jzQwc=
+	b=YencdhPqlWH9UxrQDd6Brb4uoI5Xgg1uHC8lf4hrq9kJ3q82F5OxD92kFEU85UaGC
+	 9er+uDEr2m1FD1k80NBhO7TKZklzFNB3DL8pKxu6aIZ6KH0ZQVZ0MBN9opy+hBBAfR
+	 fPc5/K1jie7ZTy/PmXnvjuGjXjl6iSMo4zv7AxQI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6D5F7F80518;
-	Mon, 24 May 2021 16:48:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 26853F80149;
+	Mon, 24 May 2021 16:49:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E8CFCF80516; Mon, 24 May 2021 16:48:33 +0200 (CEST)
+ id 08682F80431; Mon, 24 May 2021 16:49:13 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4BD83F804FF
- for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 16:48:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4BD83F804FF
+ by alsa1.perex.cz (Postfix) with ESMTPS id A0C85F80424
+ for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 16:49:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0C85F80424
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="d8540NV+"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F28A6142A;
- Mon, 24 May 2021 14:48:23 +0000 (UTC)
+ header.b="YDXBsoJH"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C967461439;
+ Mon, 24 May 2021 14:49:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1621867703;
- bh=ZqLak8BtxpSBoSac6F+jFOun1e3iSVOTf+B9UAhpitk=;
+ s=k20201202; t=1621867748;
+ bh=1IYDyVXakbWlqPPxz3zhjImOYU2dRk9Db7ijwLOxpIU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=d8540NV+4lyBm7Z4sf07Mv+WA7x9CAkHGz9tAT+GKk8ifqBd0SKFyp9UzLDQRr+pE
- XNsIbasn6kzrOJE9L+w63UcfpfnAL2KIKund3x1OZ2LubTH00SArGxOF6GXzXflwM4
- wFSlQbv7BHc5gyJegXe6ICUKb7MGwb0kzJO4+CB7cJlM2C5tZuB2vRMDswaNb2srjL
- CLcDtQ8cXa8VcxDjsZUAbsXmYcHvWaisJzLHkWEGw1wAvFtbb8C4y/45m49rgLc9Qa
- DvafM0qwDjaS8V2+ZYJvTYX4qomjAU19/wyEAkNuK9xVIPjU/AtBPVdrcyRlJ75o45
- zX5TUGhkAEUHA==
+ b=YDXBsoJHMJcyBhEykInfWS+6zyvp49VYt8MnMuM9+qa3bT3OXFrfhgB4wn8DPEnG+
+ 38JPF4m/CW/5BHOTGuQbd6ULs14gH3n6jR0+X3ZDQZ0tz5bKogXNPkkfBrKfg9FVCj
+ lOcnHKClWDVoASCsDDNtn9lp/uyBtwiLH0LFUNVKV/I/1anjP4Yup3+9eLQLY5Fdfn
+ O3esX3LUon3pwEkWzEvh1wmJ4yYwOAVwTRfZ0NBAOF/ut/cwOvIkdOmDWW5kuONYDq
+ sQeVxVCqQKJc1Mi0tp1foEjllyWHrT8JAMDDbMtfeOE3fHyUVbp2gn1uhcjybvU4Fa
+ ChLyLFDec4l7A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 32/62] ASoC: cs43130: handle errors in
- cs43130_probe() properly
-Date: Mon, 24 May 2021 10:47:13 -0400
-Message-Id: <20210524144744.2497894-32-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 04/52] Revert "ALSA: sb: fix a missing check of
+ snd_ctl_add"
+Date: Mon, 24 May 2021 10:48:14 -0400
+Message-Id: <20210524144903.2498518-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210524144744.2497894-1-sashal@kernel.org>
-References: <20210524144744.2497894-1-sashal@kernel.org>
+In-Reply-To: <20210524144903.2498518-1-sashal@kernel.org>
+References: <20210524144903.2498518-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>,
+Cc: Takashi Iwai <tiwai@suse.de>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com
+ Sasha Levin <sashal@kernel.org>, Aditya Pakki <pakki001@umn.edu>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,74 +92,49 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit 2da441a6491d93eff8ffff523837fd621dc80389 ]
+[ Upstream commit 4b059ce1f4b368208c2310925f49be77f15e527b ]
 
-cs43130_probe() does not do any valid error checking of things it
-initializes, OR what it does, it does not unwind properly if there are
-errors.
+This reverts commit beae77170c60aa786f3e4599c18ead2854d8694d.
 
-Fix this up by moving the sysfs files to an attribute group so the
-driver core will correctly add/remove them all at once and handle errors
-with them, and correctly check for creating a new workqueue and
-unwinding if that fails.
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-Cc: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-58-gregkh@linuxfoundation.org
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It is safe to ignore this error as the
+mixer element is optional, and the driver is very legacy.
+
+Cc: Aditya Pakki <pakki001@umn.edu>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20210503115736.2104747-8-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs43130.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ sound/isa/sb/sb16_main.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
-index bb46e993c353..8f70dee95878 100644
---- a/sound/soc/codecs/cs43130.c
-+++ b/sound/soc/codecs/cs43130.c
-@@ -1735,6 +1735,14 @@ static DEVICE_ATTR(hpload_dc_r, 0444, cs43130_show_dc_r, NULL);
- static DEVICE_ATTR(hpload_ac_l, 0444, cs43130_show_ac_l, NULL);
- static DEVICE_ATTR(hpload_ac_r, 0444, cs43130_show_ac_r, NULL);
+diff --git a/sound/isa/sb/sb16_main.c b/sound/isa/sb/sb16_main.c
+index 0768bbf8fd71..679f9f48370f 100644
+--- a/sound/isa/sb/sb16_main.c
++++ b/sound/isa/sb/sb16_main.c
+@@ -864,14 +864,10 @@ int snd_sb16dsp_pcm(struct snd_sb *chip, int device)
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_sb16_playback_ops);
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_sb16_capture_ops);
  
-+static struct attribute *hpload_attrs[] = {
-+	&dev_attr_hpload_dc_l.attr,
-+	&dev_attr_hpload_dc_r.attr,
-+	&dev_attr_hpload_ac_l.attr,
-+	&dev_attr_hpload_ac_r.attr,
-+};
-+ATTRIBUTE_GROUPS(hpload);
-+
- static struct reg_sequence hp_en_cal_seq[] = {
- 	{CS43130_INT_MASK_4, CS43130_INT_MASK_ALL},
- 	{CS43130_HP_MEAS_LOAD_1, 0},
-@@ -2302,23 +2310,15 @@ static int cs43130_probe(struct snd_soc_component *component)
+-	if (chip->dma16 >= 0 && chip->dma8 != chip->dma16) {
+-		err = snd_ctl_add(card, snd_ctl_new1(
+-					&snd_sb16_dma_control, chip));
+-		if (err)
+-			return err;
+-	} else {
++	if (chip->dma16 >= 0 && chip->dma8 != chip->dma16)
++		snd_ctl_add(card, snd_ctl_new1(&snd_sb16_dma_control, chip));
++	else
+ 		pcm->info_flags = SNDRV_PCM_INFO_HALF_DUPLEX;
+-	}
  
- 	cs43130->hpload_done = false;
- 	if (cs43130->dc_meas) {
--		ret = device_create_file(component->dev, &dev_attr_hpload_dc_l);
--		if (ret < 0)
--			return ret;
--
--		ret = device_create_file(component->dev, &dev_attr_hpload_dc_r);
--		if (ret < 0)
--			return ret;
--
--		ret = device_create_file(component->dev, &dev_attr_hpload_ac_l);
--		if (ret < 0)
--			return ret;
--
--		ret = device_create_file(component->dev, &dev_attr_hpload_ac_r);
--		if (ret < 0)
-+		ret = sysfs_create_groups(&component->dev->kobj, hpload_groups);
-+		if (ret)
- 			return ret;
- 
- 		cs43130->wq = create_singlethread_workqueue("cs43130_hp");
-+		if (!cs43130->wq) {
-+			sysfs_remove_groups(&component->dev->kobj, hpload_groups);
-+			return -ENOMEM;
-+		}
- 		INIT_WORK(&cs43130->work, cs43130_imp_meas);
- 	}
- 
+ 	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+ 					      card->dev,
 -- 
 2.30.2
 
