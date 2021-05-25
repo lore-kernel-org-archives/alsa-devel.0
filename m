@@ -2,100 +2,78 @@ Return-Path: <SRS0=iQjD=KU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92D36C4707F
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 09:28:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF211C2B9F8
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 09:34:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BD15D61417
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 09:28:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BD15D61417
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 7151761413
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 09:34:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7151761413
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 118D61729;
-	Tue, 25 May 2021 11:27:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 118D61729
+	by alsa0.perex.cz (Postfix) with ESMTPS id 02294171B;
+	Tue, 25 May 2021 11:33:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02294171B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621934915;
-	bh=2dconjSSYW3+zJuQduUoaIpK4mSNiPGKfwOwwXz7yss=;
+	s=default; t=1621935256;
+	bh=FePyl+1EzWWc5/TpSIdc9+U35vn/lPqIkS7Vf+sUKOI=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Tf8EGZPWSfwk/ke3ajyUI6qLtzBww0JOA57QetNO+B9GzeukbIWReqcUE9mVx+Fxz
-	 pbkW6UxqXbT4lVf/V3omJIIyZRyvs7zDF78Negn/OhBycMOxyciFaY08KhrUSPfthJ
-	 SYVmpizJAqjn5eadVPHjOYr4Xsu4D0ZRsC95SiiY=
+	b=epgFCau4kKcNAEyPW39DPyiwXbxa/mTQuJo5vPqR0dFJQ87ftI756UYXj/l4gTvNL
+	 RUpR8RNLE77Ninz+CAj7YXp2rX1zQdobqrtOB1H3SVMQfsEkRDIKE5++bgtyTxQnm/
+	 0iAlLNdgxHO7zJrjz+h568qatCETC7TPunxj3iZ4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8187EF80137;
-	Tue, 25 May 2021 11:27:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 942CEF8011B;
+	Tue, 25 May 2021 11:33:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 72DA4F801EB; Tue, 25 May 2021 11:27:42 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 31BDBF801EB; Tue, 25 May 2021 11:33:24 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 73446F80137
- for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 11:27:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73446F80137
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="Z5IFxkkq"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="w5nx12E3"
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1621934855; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=fQlYaaBAybmBVUAGlRLhcaeBlT3WUi4ttbQdnsQvkkc=;
- b=Z5IFxkkqBLurgeYrmix32ALtnLT8lESgjZwzcw8pSHjE1t+wVxLtaTAnEY84Yd8srphYjb
- DXNkN7/1wWh/OZndYtoGp7JzrnNS1qEB+GU+VdSDfY2HXaraGUWGpzKArrrq7N0sgT1kWp
- smaoRynoJTMxNcR8pCYrm/mLTnIusIg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1621934855;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=fQlYaaBAybmBVUAGlRLhcaeBlT3WUi4ttbQdnsQvkkc=;
- b=w5nx12E3s3jTBrzYYio/pTtjlRrpP2if1P01HcjOBFvnQvkKvT9WoFa60nHBjeZKOVFGfl
- MfRFxF961C/czXCg==
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id CF558AECB;
- Tue, 25 May 2021 09:27:34 +0000 (UTC)
-Date: Tue, 25 May 2021 11:27:34 +0200
-Message-ID: <s5hpmxfcge1.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Maxime Ripard <maxime@cerno.tech>
-Subject: Re: [PATCH 00/11] drm/vc4: hdmi: Enable Channel Mapping, IEC958,
- HBR Passthrough using hdmi-codec
-In-Reply-To: <20210525092353.mvqdv4bi4i4rkqsu@gilmour>
-References: <20210507140334.204865-1-maxime@cerno.tech>
- <20210524133904.kgkh6xd3m5c2j3xa@gilmour>
- <s5hzgwjcit9.wl-tiwai@suse.de>
- <20210525092353.mvqdv4bi4i4rkqsu@gilmour>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0F026F80137
+ for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 11:33:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F026F80137
+IronPort-SDR: uJ0+XgjAQ/cR1bK0rUTxhjv+7okCIhO6P041Oz98o7TDEjla5keiYiAZtJdAE8Bpibpo1UQwSo
+ GpskmaeapjWw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9994"; a="182473309"
+X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; d="scan'208";a="182473309"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 May 2021 02:33:17 -0700
+IronPort-SDR: 03bxMCJnHjkapOYeBavX3PK6rCBaqzbrD754BtcWIUXQm6MdhrnVdDmwdedAwlJQ1BK16JcpW0
+ X6QlnuI5o7FQ==
+X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; d="scan'208";a="546702087"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 May 2021 02:33:14 -0700
+Date: Tue, 25 May 2021 12:28:17 +0300 (EEST)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, 
+ Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: Intel: boards: Select SND_SOC_HDAC_HDMI for
+ Soundwire machine driver
+In-Reply-To: <9ed54875-fe77-f70f-9085-0f3b4c9d576e@linux.intel.com>
+Message-ID: <alpine.DEB.2.22.394.2105251158580.3922722@eliteleevi.tm.intel.com>
+References: <20210520163324.19046-1-rf@opensource.cirrus.com>
+ <9ed54875-fe77-f70f-9085-0f3b4c9d576e@linux.intel.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Tim Gover <tim.gover@raspberrypi.com>,
- David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, Eric Anholt <eric@anholt.net>,
- Daniel Vetter <daniel.vetter@intel.com>, Phil Elwell <phil@raspberrypi.com>,
- Dave Stevenson <dave.stevenson@raspberrypi.com>, Takashi Iwai <tiwai@suse.com>,
- bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
- Nicolas Saenz Julienne <nsaenzjulienne@kernel.org>,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, linux-rpi-kernel@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, Dom Cobley <dom@raspberrypi.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>
+Cc: cezary.rojewski@intel.com, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ patches@opensource.cirrus.com, yang.jie@linux.intel.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ liam.r.girdwood@linux.intel.com, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,50 +89,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 25 May 2021 11:23:53 +0200,
-Maxime Ripard wrote:
-> 
-> Hi Takashi,
-> 
-> On Tue, May 25, 2021 at 10:35:14AM +0200, Takashi Iwai wrote:
-> > On Mon, 24 May 2021 15:39:04 +0200,
-> > Maxime Ripard wrote:
-> > > 
-> > > Hi,
-> > > 
-> > > On Fri, May 07, 2021 at 04:03:23PM +0200, Maxime Ripard wrote:
-> > > > Hi,
-> > > > 
-> > > > hdmi-codec allows to have a lot of HDMI-audio related infrastructure in place,
-> > > > it's missing a few controls to be able to provide HBR passthrough. This series
-> > > > adds more infrastructure for the drivers, and leverages it in the vc4 HDMI
-> > > > controller driver.
-> > > > 
-> > > > One thing that felt a bit weird is that even though
-> > > > https://www.kernel.org/doc/html/latest/sound/kernel-api/writing-an-alsa-driver.html#iec958-s-pdif
-> > > > mentions that the iec958 mask control should be a mixer control and the
-> > > > default control should be a PCM one, it feels a bit weird to have two different
-> > > > control type for two controls so similar, and other drivers are pretty
-> > > > inconsistent with this. Should we update the documentation?
-> > > 
-> > > Any comments on this series?
-> > 
-> > A patch for updating the documentation is welcome.
-> > Currently, as de facto standard, we allow both MIXER and PCM ifaces
-> > for all IEC958-related controls, and it's unlikely that we would
-> > change that in future.
-> 
-> Ok, I'll write a patch for the documentation make it clearer then :)
-> 
-> Do we want to make sure that all the iec958 controls are on the same
-> iface, or is it also left to the driver (or should we just leave the
-> existing drivers as is but encourage a consistent use in the future)?
+Hi,
 
-I'd leave the existing drivers as-is.  Changing the iface is basically
-an incompatible change, and although most of applications and alsa-lib
-should look at both ifaces, there can be any surprise by that change.
+On Mon, 24 May 2021, Pierre-Louis Bossart wrote:
 
+> On 5/20/21 11:33 AM, Richard Fitzgerald wrote:
+> > Add select of SND_SOC_HDAC_HDMI for SND_SOC_INTEL_SOUNDWIRE_SOF_MACH.
+> > Without this the build results in missing references to
+> > hdac_hdmi_jack_port_init and hdac_hdmi_jack_init.
+> Kai, can you comment on this one? There is nothing specific to HDMI in this
+> driver.
 
-thanks,
+usage of hdac-hdmi is removed in newer mach drivers (like 
+sof_da7219_max98373, sof-pcm512 and ehl_rt5660 -> and there's no select 
+for SND_SOC_HDAC_HDMI for these). For older ones, we've kept hdac-hdmi in 
+to keep compatibility.
 
-Takashi
+For sof_sdw, there are still calls to hdac_hdmi_jack_init() and friends
+in sof_sdw_hdmi.c, so this is a real problem.
+
+I'd say a better fix is that we remove the hdac-hdmi support from sof_sdw.
+I can do a patch for that.
+
+> Something's inconsistent here, it's not limited to SoundWire I am afraid
+
+I checked all the related mach drivers and the Kconfig definitions are 
+correct for others. So select is done to HDAC_HDMI whenever the mach 
+driver uses hdac_hdmi_jack_*().
+
+Br, Kai
