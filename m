@@ -7,89 +7,90 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 208AFC2B9F8
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 09:10:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 562DEC2B9F8
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 09:11:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 46BED613F7
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 09:10:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 46BED613F7
+	by mail.kernel.org (Postfix) with ESMTPS id C0D63610CE
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 09:11:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C0D63610CE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CEF2F16A9;
-	Tue, 25 May 2021 11:09:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CEF2F16A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6A27216C2;
+	Tue, 25 May 2021 11:10:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A27216C2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621933825;
-	bh=dw+ughsl1RkRrxv74UoSUGnQatCfxP+Ny5VT+F3Mt38=;
+	s=default; t=1621933860;
+	bh=ttG0c5+FcepOW8tSv1zboYtQYDZBzhrCYC2SWN1dpbQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XPE78X3Zt4qytiGiPy1Gkk3yORRnY6R92k1nd76ssZP8IMcW8WFujCAHl5d4OvnuF
-	 h99hotVWfTeV+3vRR0Ow3cm+GWll8pzU/r/sYASe9NQbel0rdJKCBsRUgwydCquU/q
-	 nQCPFJFePjp2x7r17MdTJhAUp2WHcZ+T6wLPZrWE=
+	b=I+Y2VUynojTXuQpBomd4yTgenwQM9oF5/+F02y0ebxcEa39JaWzzeR5JjtOrxE4r0
+	 7JmjQb88UoFVsi8sBfSCaTfItMmhuipPYQpq92mdxLvgzREj1rNXyPAEL9m76zkOw9
+	 zNt8FpByOto0ujuw2LoP65IYc9sfnlmpo8yEMWxU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 36D30F8042F;
+	by alsa1.perex.cz (Postfix) with ESMTP id D0D59F804AA;
 	Tue, 25 May 2021 11:08:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2F75FF80274; Tue, 25 May 2021 11:08:35 +0200 (CEST)
+ id 96FD3F802CA; Tue, 25 May 2021 11:08:35 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 16C7BF8011B
- for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 11:08:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16C7BF8011B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9ED16F801F5
+ for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 11:08:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9ED16F801F5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="qqJI3L+Q"
+ header.b="I1ZDJXrk"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
  by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 14P97Uaa008722; Tue, 25 May 2021 04:08:26 -0500
+ 14P97IsG008620; Tue, 25 May 2021 04:08:27 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=d7UhS+W2FOwndxvIAkxfbMukXOAC9IY6MJrDQH8KHJg=;
- b=qqJI3L+QLRAkoDp3A06eki9kyouKaSqGQbuC2EvIbxE7AvBDIRZSGCz3i3KIYY69pmIz
- bGGF02gdYedb73zCF3K3QqvdIuArLTUwTdM7pH5Jw6tnABMVVuiCIZ8KBc3XrfIpSW2K
- MyLx46QK/386toNdP8kG5gIWSC84JJrCpwQKMevSGlJC7/YctRNBn8yvvC/nQfZTWJVh
- VSOwTMqSh4x+Nbxk6yvk34uVC228k2uh3lFv4L81CxF8RpfR5E7rQK0jtSEVmhdNsIjY
- Rck5jK5ZmETaWkug7b72/n72vvH8tyICpVOTnlNGAQ8b0llTx2Za9kP8hZisshYM7zr3 tw== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 38r28v1khv-2
+ bh=CuPkBOU+Sw4zKXqljYp7hETUN1j+lmbdzK/X2BMYo7Q=;
+ b=I1ZDJXrkXRuV0HwyIHJF1BYwt7pnvovBuswgABGmuO7wjulzks/kXZbP+lbEb7rNJ/HG
+ htvoz6Vpw1/jaSc3oiceJoTYbwL/YJA/oSlzAi7CLBBYQicWYIAgQuuxddexUMWPhu+/
+ f2ZceUPq3Pvfz9eN1WGpOkXuj2yzhymmF/c9iHzhnX3B5HXnbw41dUW+EtTAOgTGyNGC
+ tv8/fyISXHEj+EEI5jb9NnBV4pcx1Db8K8b77KUuEbju/v/D3eVoO8LOSXlstXivM9Os
+ /bJnycuKsrB+YyvGOvOeMksI5eUzfgsYYWfXDB291BiqweqeK8o2AhlzAovPNhfguCNe nA== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0b-001ae601.pphosted.com with ESMTP id 38r28v1khx-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 25 May 2021 04:08:26 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Tue, 25 May 2021 04:08:27 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 25 May
  2021 10:08:25 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
  Transport; Tue, 25 May 2021 10:08:25 +0100
 Received: from aryzen.ad.cirrus.com (unknown [198.61.64.177])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B044711D6;
- Tue, 25 May 2021 09:08:24 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 62E7E11CD;
+ Tue, 25 May 2021 09:08:25 +0000 (UTC)
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 To: James Schulman <james.schulman@cirrus.com>, David Rhodes
  <david.rhodes@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
  <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
  <tiwai@suse.com>
-Subject: [PATCH 2/4] ASoC: cs42l42: Add support for 2304000 Bit clock
-Date: Tue, 25 May 2021 10:08:20 +0100
-Message-ID: <20210525090822.64577-2-tanureal@opensource.cirrus.com>
+Subject: [PATCH 4/4] ASoC: cs42l42: Check jack status before reporting button
+ events
+Date: Tue, 25 May 2021 10:08:22 +0100
+Message-ID: <20210525090822.64577-4-tanureal@opensource.cirrus.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210525090822.64577-1-tanureal@opensource.cirrus.com>
 References: <20210525090822.64577-1-tanureal@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: P-lrBFySrlD0Nq47y6Oneh72fiFUVmsw
-X-Proofpoint-GUID: P-lrBFySrlD0Nq47y6Oneh72fiFUVmsw
+X-Proofpoint-ORIG-GUID: -5_N_XhPBkuNFOW2NNfTXC4lHYpQ4LRP
+X-Proofpoint-GUID: -5_N_XhPBkuNFOW2NNfTXC4lHYpQ4LRP
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015
  suspectscore=0
  priorityscore=1501 malwarescore=0 spamscore=0 mlxscore=0
@@ -113,25 +114,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support for 24bits, 2 channels, 48k Sample rate bit clock
+Jack must be connected before reporting button events and
+if the jack is disconnected button release must be reported
 
 Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs42l42.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/cs42l42.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 94788a55fa3b..07223b5fb2d6 100644
+index 8260de81b56c..eff013f295be 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -598,6 +598,7 @@ struct cs42l42_pll_params {
-  */
- static const struct cs42l42_pll_params pll_ratio_table[] = {
- 	{ 1536000, 0, 1, 0x00, 0x7D, 0x000000, 0x03, 0x10, 12000000, 125, 2},
-+	{ 2304000, 0, 1, 0x00, 0x55, 0xC00000, 0x02, 0x10, 12288000,  85, 2},
- 	{ 2822400, 0, 1, 0x00, 0x40, 0x000000, 0x03, 0x10, 11289600, 128, 1},
- 	{ 3000000, 0, 1, 0x00, 0x40, 0x000000, 0x03, 0x10, 12000000, 128, 1},
- 	{ 3072000, 0, 1, 0x00, 0x3E, 0x800000, 0x03, 0x10, 12000000, 125, 1},
+@@ -1478,6 +1478,10 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
+ 				default:
+ 					break;
+ 				}
++				snd_soc_jack_report(cs42l42->jack, 0,
++						    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++						    SND_JACK_BTN_2 | SND_JACK_BTN_3);
++
+ 				dev_dbg(component->dev, "Unplug event\n");
+ 			}
+ 			break;
+@@ -1489,7 +1493,7 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
+ 	}
+ 
+ 	/* Check button detect status */
+-	if ((~masks[7]) & irq_params_table[7].mask) {
++	if (cs42l42->plug_state == CS42L42_TS_PLUG && ((~masks[7]) & irq_params_table[7].mask)) {
+ 		if (!(current_button_status &
+ 			CS42L42_M_HSBIAS_HIZ_MASK)) {
+ 
 -- 
 2.31.1
 
