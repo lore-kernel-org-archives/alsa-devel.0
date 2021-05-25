@@ -2,85 +2,98 @@ Return-Path: <SRS0=iQjD=KU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ADEE9C2B9F8
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 08:33:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73B49C4707F
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 08:36:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 409B161419
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 08:33:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 409B161419
+	by mail.kernel.org (Postfix) with ESMTPS id 6BD9C61400
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 08:36:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6BD9C61400
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1EB7D82A;
-	Tue, 25 May 2021 10:32:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EB7D82A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 08CE01612;
+	Tue, 25 May 2021 10:35:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08CE01612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621931595;
-	bh=kw1bEo/tItxLlxbEJQeRXCY56c6EVp4H0PBpZF36Wwo=;
+	s=default; t=1621931769;
+	bh=nmeatVCV6b4kFGUiccWwfPuUtRagbBSRaDx2LzsHouE=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cFIXk9m3SC5OsTfS/J8xcTnuwGfoMEjqN5VMkjsOZchakUpqO4roNje3vLOzr1Tiv
-	 XeGyzm+8poLcdbx7PRM15idDCxt4O+tVQBEA8d+z2H3Uk6cKd4qoBzUlB4pb3ivA3q
-	 s9CVfVy2extrBouwg74148dDoCnGIQ0w0/Yf6PcE=
+	b=BB9kvxVrrsT34WQ4X3BBqJIEs/OjNm804fzStWjrOryBeKYk3gIIo0I0Z/rdQGQcE
+	 MBadQKWvQlp752WaJi4RoMyym4mXtoZN1T41x/9Ee9BbqgYYkGGUDPZR1hkg4RP6h5
+	 D7zarj/un150naWp5n8eves8f659cjRfPbSZUfL4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A543AF80113;
-	Tue, 25 May 2021 10:32:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A40BFF8019D;
+	Tue, 25 May 2021 10:35:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4EAC8F801EB; Tue, 25 May 2021 10:32:23 +0200 (CEST)
+ id D3191F80137; Tue, 25 May 2021 10:35:17 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 97BD3F80113
- for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 10:32:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97BD3F80113
+ by alsa1.perex.cz (Postfix) with ESMTPS id B2307F80137
+ for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 10:35:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2307F80137
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="ORzyud8b"; 
+ header.b="rIxtavIs"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="FpG/Wc54"
+ header.b="1TEssWfK"
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1621931537; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1621931714; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=7TNbkmWFVcom4Q6YhQmqya7/iF7FAwpkDNXj9tZibnc=;
- b=ORzyud8bH2xbY1gMiSYmu4v1QIi2ksQPnkGRdv7nMqkYkEOaqBL5zuHOpP6xQcScu1DWbo
- mgABy+QcsYsk+ZJPhcisgQDD/jxcGb+zKshw+Xdhi/jAU+iygqFUeruSU4JwIFzcKzlrtn
- wmhE5H0OZEOK5zI+FOlD/ptV0xtSRM4=
+ bh=/8Tj70cnh3z488JIeA9Dqfr+VizsEJXzWnqypGpv3Kg=;
+ b=rIxtavIsMX8VaZtrpgtmz+W9NJE1HyUiTsp/kfxLCuVznHH8PYBZ/32Ecm2zT4W7cJP2Vh
+ 9Yqgii8ks9JIuVX6klmZgAc2VGPN6UvNRpekNmIlkpDi6l/qT623ZiwkIC0SUTZ0jpd28j
+ hsmm05h/Yuv9e79CH7icWt8v3dtSuhI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1621931537;
+ s=susede2_ed25519; t=1621931714;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=7TNbkmWFVcom4Q6YhQmqya7/iF7FAwpkDNXj9tZibnc=;
- b=FpG/Wc54vZ56YZ2E1t3JjEW2lIEVWK/JeV6vi2P+0fWdLxNniKGvVT+3P6XJQvUl0PQMnb
- hLWblbVt/g9pJxDg==
+ bh=/8Tj70cnh3z488JIeA9Dqfr+VizsEJXzWnqypGpv3Kg=;
+ b=1TEssWfK11ZnzAISIyhB1tJfLxPJ3IwYrn6gQsEq3aT+izjyOjVV2rDV7k4IxBbLkQdRXo
+ w9ZOjPGvUBHLz1DQ==
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 1D9EDAE1F;
- Tue, 25 May 2021 08:32:17 +0000 (UTC)
-Date: Tue, 25 May 2021 10:32:16 +0200
-Message-ID: <s5h35ubdxin.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 63C34AEA8;
+ Tue, 25 May 2021 08:35:14 +0000 (UTC)
+Date: Tue, 25 May 2021 10:35:14 +0200
+Message-ID: <s5hzgwjcit9.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: YueHaibing <yuehaibing@huawei.com>
-Subject: Re: [PATCH -next] ALSA: control_led - use DEVICE_ATTR_*() macro
-In-Reply-To: <20210523071109.28940-1-yuehaibing@huawei.com>
-References: <20210523071109.28940-1-yuehaibing@huawei.com>
+To: Maxime Ripard <maxime@cerno.tech>
+Subject: Re: [PATCH 00/11] drm/vc4: hdmi: Enable Channel Mapping, IEC958,
+ HBR Passthrough using hdmi-codec
+In-Reply-To: <20210524133904.kgkh6xd3m5c2j3xa@gilmour>
+References: <20210507140334.204865-1-maxime@cerno.tech>
+ <20210524133904.kgkh6xd3m5c2j3xa@gilmour>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, Tim Gover <tim.gover@raspberrypi.com>,
+ David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, Eric Anholt <eric@anholt.net>,
+ Daniel Vetter <daniel.vetter@intel.com>, Phil Elwell <phil@raspberrypi.com>,
+ Dave Stevenson <dave.stevenson@raspberrypi.com>, Takashi Iwai <tiwai@suse.com>,
+ bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
+ Nicolas Saenz Julienne <nsaenzjulienne@kernel.org>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, linux-rpi-kernel@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, Dom Cobley <dom@raspberrypi.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,15 +109,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 23 May 2021 09:11:09 +0200,
-YueHaibing wrote:
+On Mon, 24 May 2021 15:39:04 +0200,
+Maxime Ripard wrote:
 > 
-> Use DEVICE_ATTR_*() helper instead of plain DEVICE_ATTR,
-> which makes the code a bit shorter and easier to read.
+> Hi,
 > 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> On Fri, May 07, 2021 at 04:03:23PM +0200, Maxime Ripard wrote:
+> > Hi,
+> > 
+> > hdmi-codec allows to have a lot of HDMI-audio related infrastructure in place,
+> > it's missing a few controls to be able to provide HBR passthrough. This series
+> > adds more infrastructure for the drivers, and leverages it in the vc4 HDMI
+> > controller driver.
+> > 
+> > One thing that felt a bit weird is that even though
+> > https://www.kernel.org/doc/html/latest/sound/kernel-api/writing-an-alsa-driver.html#iec958-s-pdif
+> > mentions that the iec958 mask control should be a mixer control and the
+> > default control should be a PCM one, it feels a bit weird to have two different
+> > control type for two controls so similar, and other drivers are pretty
+> > inconsistent with this. Should we update the documentation?
+> 
+> Any comments on this series?
 
-Thanks, applied.
+A patch for updating the documentation is welcome.
+Currently, as de facto standard, we allow both MIXER and PCM ifaces
+for all IEC958-related controls, and it's unlikely that we would
+change that in future.
 
+
+thanks,
 
 Takashi
