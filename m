@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5784C2B9F8
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 07:00:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C82B7C2B9F8
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 07:01:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CFD066141C
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 07:00:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFD066141C
+	by mail.kernel.org (Postfix) with ESMTPS id 9AA0561157
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 07:01:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9AA0561157
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3788515E2;
-	Tue, 25 May 2021 08:59:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3788515E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1D7BA1660;
+	Tue, 25 May 2021 09:00:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D7BA1660
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621926017;
-	bh=tSFEyNZEfLvAaJK8P6LgUvquB+ipp6Wxh1yNTIfLRDY=;
+	s=default; t=1621926109;
+	bh=TynboglabtcccluG3K/51ZHibV9qKp/Sm7Xyy8MWYEQ=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eP54tWHCWDlMoj4sH2KJMhrKgies9pv/zM6nOUwAV9uQEEVKOBGg8wf15VmIZHRdj
-	 wYXGZPyNVDnmhxE3TbQMuUXqVlHyleGySwvmveFqf2R6vZlZlq3INwpYaRXVxy+YLn
-	 MWDx/ujEyTrqqKtX7XveHgODuBCiqxUAYvzC3gos=
+	b=i76D/2ILmKLlKxNHl9JAhEWPZRCoDrflQo3gcS0BnQlSr8pVRfyy8H3I1wX6XdHBE
+	 5Ik2xbYdlDVm7PeBuRm9/Mb3OIlluGIz4DwwjiodRAkf/qxmPSWar2Tc8X0aUGbcYW
+	 gzOnlD/9XUjWX1Z4tI9h9conUTkD8uzVFxXtHbvM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2966F8019D;
-	Tue, 25 May 2021 08:59:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B7375F8019D;
+	Tue, 25 May 2021 09:00:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 59FB1F801EB; Tue, 25 May 2021 08:59:25 +0200 (CEST)
+ id 225E9F80212; Tue, 25 May 2021 09:00:57 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 24A7EF80113
- for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 08:59:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24A7EF80113
+ by alsa1.perex.cz (Postfix) with ESMTPS id 18B44F8019D
+ for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 09:00:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18B44F8019D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="hR7cYuZf"; 
+ header.b="nKOBSYQC"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="8ux3eVOv"
+ header.b="+mL6F5Z/"
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1621925960; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1621926050; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=fP5c3AfocXokm9urafgJHnDb6Vv+NuQAY4/vjkg30oc=;
- b=hR7cYuZfK0zaF8Y1qjh+I0lMK9mBeUd+yVAvMaaJo5+vK1kizckH8iYTKA+De340iBuRW0
- yckoxMglygpPtdJKnG2uC4G40i6sGUVnGJq+SGt4ClWzULA7qGyQo/xAwIDsvVP/I3YN9W
- Q5YEb9dGIntGymH6clep/SK1LcHi4lo=
+ bh=/vYhgyzFyI7rCmhoXDX7ahW/FiU/hLkSLElpL/BxZu4=;
+ b=nKOBSYQCHPz7kD/VVWTm5GgiEAR3celLJazS0ohCh9c9oW63ICa6C9hVNAghXi7rUKkO2R
+ wnyebt1ne+Q42Sb4m/TPdxvuufRrpAWHCZJQSj2Z9RAI49cZjQ8jps6gPUBE0E5EqcVNKa
+ uMU+AgQoJ5UIBcgOJTgd87SAuWbmkOk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1621925960;
+ s=susede2_ed25519; t=1621926050;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=fP5c3AfocXokm9urafgJHnDb6Vv+NuQAY4/vjkg30oc=;
- b=8ux3eVOvt/hTEWd8vgq6nCOUmtnjsU3ou31433AjKtRqQOtIxQrRLEWXcpGA5GTBLWcHc7
- q493wZ5EgRtvi9Ag==
+ bh=/vYhgyzFyI7rCmhoXDX7ahW/FiU/hLkSLElpL/BxZu4=;
+ b=+mL6F5Z/bxO6gbMQumGr67aRY/xcbUrtQjAaZkj1wT8tphymjE3aim4FXLfzCguIElxzca
+ 2pTZlGmd/l5BwdAw==
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id BD641AE99;
- Tue, 25 May 2021 06:59:20 +0000 (UTC)
-Date: Tue, 25 May 2021 08:59:20 +0200
-Message-ID: <s5hk0nne1tj.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id BF33CAEA3;
+ Tue, 25 May 2021 07:00:50 +0000 (UTC)
+Date: Tue, 25 May 2021 09:00:50 +0200
+Message-ID: <s5him37e1r1.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Yufen Yu <yuyufen@huawei.com>
-Subject: Re: [PATCH] ALSA: ac97: fix PM reference leak in ac97_bus_remove()
-In-Reply-To: <20210524093811.612302-1-yuyufen@huawei.com>
-References: <20210524093811.612302-1-yuyufen@huawei.com>
+To: YueHaibing <yuehaibing@huawei.com>
+Subject: Re: [PATCH -next] ALSA: pcm: use DEVICE_ATTR_RO macro
+In-Reply-To: <20210524120007.39728-1-yuehaibing@huawei.com>
+References: <20210524120007.39728-1-yuehaibing@huawei.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: yukuai3@huawei.com, alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,16 +96,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 24 May 2021 11:38:11 +0200,
-Yufen Yu wrote:
+On Mon, 24 May 2021 14:00:07 +0200,
+YueHaibing wrote:
 > 
-> pm_runtime_get_sync will increment pm usage counter even it failed.
-> Forgetting to putting operation will result in reference leak here.
-> Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-> counter balanced.
+> Use DEVICE_ATTR_RO() helper instead of plain DEVICE_ATTR(),
+> which makes the code a bit shorter and easier to read.
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yufen Yu <yuyufen@huawei.com>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
 Thanks, applied.
 
