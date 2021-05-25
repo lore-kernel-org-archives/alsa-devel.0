@@ -2,56 +2,61 @@ Return-Path: <SRS0=iQjD=KU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FBD4C2B9F7
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 00:03:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10792C2B9F7
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 00:04:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E56B26141B
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 00:03:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E56B26141B
+	by mail.kernel.org (Postfix) with ESMTPS id 1DEA461057
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 00:04:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1DEA461057
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3FD91612;
-	Tue, 25 May 2021 02:02:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3FD91612
+	by alsa0.perex.cz (Postfix) with ESMTPS id AE51D1688;
+	Tue, 25 May 2021 02:03:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE51D1688
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621900993;
-	bh=Nzt1/irpolkxkOdGH7IB9HEprKEj5ciVXOSO+GxPW1A=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Llybf/LxBZv1qxKGXdznbevqRjZ9nRAAYQxvIiY4uSoUOg+Ok46HzfSgRuMC2SmY4
-	 xxuNATfAO1cKUR7zLf/GfhmeLdvytnNlPa3fu91gG62FWG5Bjkko2tzwrrlGR92WBM
-	 HWkYLEzUxdjSYwUaNEL9xS580QPQ9sDKZeYWmuAI=
+	s=default; t=1621901044;
+	bh=SZgq96aF06mte+UB1AX79F9MTydE/ppsKYAtw37PoJA=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=SdOwwE/8Vi19yXmwnqazNg7ziYebW2Z3P92wy2XEG0p7pPwdDCWKhnV+UhQCUo8rh
+	 W7ifyopnF5Y+7oUgUVt6KXVNbmAjSF7w5yOPMlgv7Pl4pPmskvyrrDO5iuBKmBRm7q
+	 kpshKsoaM0GbiyV6aiznhIvmjdYCHIy2fODHRB38=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2A6D6F800B8;
-	Tue, 25 May 2021 02:02:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 572D9F80137;
+	Tue, 25 May 2021 02:02:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9D3CCF800B8; Tue, 25 May 2021 02:02:21 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id E7F98F800B8
- for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 02:02:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7F98F800B8
-Date: 25 May 2021 09:02:11 +0900
-X-IronPort-AV: E=Sophos;i="5.82,327,1613401200"; d="scan'208";a="82109573"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 25 May 2021 09:02:11 +0900
+ id 03C96F80260; Tue, 25 May 2021 02:02:52 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 69A02F80137
+ for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 02:02:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69A02F80137
+Date: 25 May 2021 09:02:41 +0900
+X-IronPort-AV: E=Sophos;i="5.82,327,1613401200"; d="scan'208";a="82287741"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 25 May 2021 09:02:41 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id BE0A24007554;
- Tue, 25 May 2021 09:02:11 +0900 (JST)
-Message-ID: <87mtsjof3w.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 6EE534112201;
+ Tue, 25 May 2021 09:02:41 +0900 (JST)
+Message-ID: <87lf83of37.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 00/10] ASoC: rsnd: tidyup and fixup rare MIXer issue
+Subject: [PATCH 01/10] ASoC: rsnd: ignore runtime NULL case at
+ rsnd_runtime_channel_original_with_params()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87mtsjof3w.wl-kuninori.morimoto.gx@renesas.com>
+References: <87mtsjof3w.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -70,46 +75,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Hi Mark
+runtime might be NULL. Let's ignore such case.
 
-These are tidyup patch, and rare MIXer issue fixup patch for
-Renesas Sound driver.
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/sh/rcar/core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-1 - 5 : tidyup for rsnd driver
-6     : add debugfs support
-7     : fixup rare MIXer issue
-8 - 10: tidyup for rsnd driver
-
-Kuninori Morimoto (10):
-   1) ASoC: rsnd: ignore runtime NULL case at rsnd_runtime_channel_original_with_params()
-   2) ASoC: rsnd: attach SSIU when SSI was DMA mode
-   3) ASoC: rsnd: check BUIF error everytime
-   4) ASoC: rsnd: indicate unknown error at rsnd_dai_call()
-   5) ASoC: rsnd: incidate irq error message
-   6) ASoC: rsnd: add debugfs support
-   7) ASoC: rsnd: protect mod->status
-   8) ASoC: rsnd: implement BUSIF related code in ssiu.c
-   9) ASoC: rsnd: tidyup rsnd_ssiu_busif_err_status_clear()
-  10) ASoC: rsnd: tidyup rsnd_ssiu_busif_err_irq_ctrl()
-
- sound/soc/sh/rcar/Makefile  |   2 +-
- sound/soc/sh/rcar/adg.c     |  35 ++++++---
- sound/soc/sh/rcar/cmd.c     |  14 ++++
- sound/soc/sh/rcar/core.c    |  65 +++++++++-------
- sound/soc/sh/rcar/ctu.c     |  14 ++++
- sound/soc/sh/rcar/debugfs.c |  96 ++++++++++++++++++++++++
- sound/soc/sh/rcar/dma.c     |  31 ++++++--
- sound/soc/sh/rcar/dvc.c     |  14 ++++
- sound/soc/sh/rcar/gen.c     |   9 +++
- sound/soc/sh/rcar/mix.c     |  14 ++++
- sound/soc/sh/rcar/rsnd.h    |  39 ++++++++--
- sound/soc/sh/rcar/src.c     |  26 ++++++-
- sound/soc/sh/rcar/ssi.c     | 146 ++++++++----------------------------
- sound/soc/sh/rcar/ssiu.c    | 134 +++++++++++++++++++++++++++++----
- 14 files changed, 457 insertions(+), 182 deletions(-)
- create mode 100644 sound/soc/sh/rcar/debugfs.c
-
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 11b1e6f3ae40..684eab6ef126 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -267,8 +267,9 @@ int rsnd_runtime_channel_original_with_params(struct rsnd_dai_stream *io,
+ 	 */
+ 	if (params)
+ 		return params_channels(params);
+-	else
++	else if (runtime)
+ 		return runtime->channels;
++	return 0;
+ }
+ 
+ int rsnd_runtime_channel_after_ctu_with_params(struct rsnd_dai_stream *io,
 -- 
 2.25.1
 
