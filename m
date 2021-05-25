@@ -2,84 +2,85 @@ Return-Path: <SRS0=iQjD=KU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F548C2B9F8
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 06:57:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5784C2B9F8
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 07:00:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9F3A3613A9
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 06:57:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9F3A3613A9
+	by mail.kernel.org (Postfix) with ESMTPS id CFD066141C
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 07:00:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFD066141C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 38CDE166D;
-	Tue, 25 May 2021 08:56:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38CDE166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3788515E2;
+	Tue, 25 May 2021 08:59:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3788515E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621925837;
-	bh=yWqlsUV2AelCY2WydzVMxI/Y7GAbwuSSb1wSzIzzftY=;
+	s=default; t=1621926017;
+	bh=tSFEyNZEfLvAaJK8P6LgUvquB+ipp6Wxh1yNTIfLRDY=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aDzfjjgdH9+37IWXkBhqm2x5BeWcjN2P5YC8Cko3TydMZ9syoErFkxL7MPfzRKpLY
-	 spfiyNkcX007Kk5UjoUwCpVkpTmGZeySzAsjeMVikXycgOYlPVKZinXNLKjuQkvKIO
-	 FXZpbhI7lBuWkbSLzjJt4rfwcyCFHqlRpnVbMQBM=
+	b=eP54tWHCWDlMoj4sH2KJMhrKgies9pv/zM6nOUwAV9uQEEVKOBGg8wf15VmIZHRdj
+	 wYXGZPyNVDnmhxE3TbQMuUXqVlHyleGySwvmveFqf2R6vZlZlq3INwpYaRXVxy+YLn
+	 MWDx/ujEyTrqqKtX7XveHgODuBCiqxUAYvzC3gos=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CFF93F8011B;
-	Tue, 25 May 2021 08:56:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2966F8019D;
+	Tue, 25 May 2021 08:59:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ED174F80113; Tue, 25 May 2021 08:56:25 +0200 (CEST)
+ id 59FB1F801EB; Tue, 25 May 2021 08:59:25 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6D7E2F80113
- for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 08:56:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D7E2F80113
+ by alsa1.perex.cz (Postfix) with ESMTPS id 24A7EF80113
+ for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 08:59:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24A7EF80113
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="POEi5o4u"; 
+ header.b="hR7cYuZf"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="jA0CZElS"
+ header.b="8ux3eVOv"
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1621925783; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1621925960; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=tmY2eQwNoPgwPmlKaJY6fQQ7VNuSy9VN5xkXa0NYvHM=;
- b=POEi5o4uXmVTx6aoYKeq/6L2xlndf8nCPVNHYYmgtwh1ySd/JjD8B1ws3bR8uMX9G88bzi
- t1FNsn4VYuxPPwSa8zYEeItyl+RCOyMN+iBBAZqEWYzOSxmkQPF5S5BINt4UgzAYrbTYn5
- aOd17CnPCQFbNrX0hMz5wv5Y1868ni8=
+ bh=fP5c3AfocXokm9urafgJHnDb6Vv+NuQAY4/vjkg30oc=;
+ b=hR7cYuZfK0zaF8Y1qjh+I0lMK9mBeUd+yVAvMaaJo5+vK1kizckH8iYTKA+De340iBuRW0
+ yckoxMglygpPtdJKnG2uC4G40i6sGUVnGJq+SGt4ClWzULA7qGyQo/xAwIDsvVP/I3YN9W
+ Q5YEb9dGIntGymH6clep/SK1LcHi4lo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1621925783;
+ s=susede2_ed25519; t=1621925960;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=tmY2eQwNoPgwPmlKaJY6fQQ7VNuSy9VN5xkXa0NYvHM=;
- b=jA0CZElSAWBunkORDj6/Fc3lzOxLmQ6/LwzOTHfv2WRv4kBQ8tBoZ0YscV9J/u7DB7oWr1
- krs9C2SF4X/k0ADQ==
+ bh=fP5c3AfocXokm9urafgJHnDb6Vv+NuQAY4/vjkg30oc=;
+ b=8ux3eVOvt/hTEWd8vgq6nCOUmtnjsU3ou31433AjKtRqQOtIxQrRLEWXcpGA5GTBLWcHc7
+ q493wZ5EgRtvi9Ag==
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 2DB9FAE92;
- Tue, 25 May 2021 06:56:23 +0000 (UTC)
-Date: Tue, 25 May 2021 08:56:23 +0200
-Message-ID: <s5hmtsje1yg.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id BD641AE99;
+ Tue, 25 May 2021 06:59:20 +0000 (UTC)
+Date: Tue, 25 May 2021 08:59:20 +0200
+Message-ID: <s5hk0nne1tj.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: Re: [PATCH v2 0/6] ALSA: Prep work for PCI rescan support
-In-Reply-To: <20210523090920.15345-1-tiwai@suse.de>
-References: <20210523090920.15345-1-tiwai@suse.de>
+To: Yufen Yu <yuyufen@huawei.com>
+Subject: Re: [PATCH] ALSA: ac97: fix PM reference leak in ac97_bus_remove()
+In-Reply-To: <20210524093811.612302-1-yuyufen@huawei.com>
+References: <20210524093811.612302-1-yuyufen@huawei.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Mark Brown <broonie@kernel.org>
+Cc: yukuai3@huawei.com, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,40 +96,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 23 May 2021 11:09:14 +0200,
-Takashi Iwai wrote:
+On Mon, 24 May 2021 11:38:11 +0200,
+Yufen Yu wrote:
 > 
-> Hi,
+> pm_runtime_get_sync will increment pm usage counter even it failed.
+> Forgetting to putting operation will result in reference leak here.
+> Fix it by replacing it with pm_runtime_resume_and_get to keep usage
+> counter balanced.
 > 
-> this is a revised patch set as a prep work for the future-planned PCI
-> rescan support(*).  The essential part is the patch to track in-flight
-> tasks, and the rest are cleanups and fixes in the core code.  With
-> those changes, the driver can perform a sort of software suspend on
-> the device without the hardware intervention, which is required during
-> the PCI BAR movement, for example.
-> 
-> v1->v2:
-> * Move / drop unnecessary snd_power_wait() calls
-> * Rephrase changelogs and comments, reorder patches
-> 
-> 
-> Takashi
-> 
-> (*) https://lore.kernel.org/alsa-devel/e25017c6-e5e4-7a24-e793-14a2e70a434e@amd.com/
-> 
-> ===
-> 
-> Takashi Iwai (6):
->   ALSA: core: Use READ_ONCE() / WRITE_ONCE() for power state change
->   ALSA: control: Track in-flight control read/write/tlv accesses
->   ALSA: control: Drop superfluous snd_power_wait() calls
->   ALSA: control: Minor optimization for SNDRV_CTL_IOCTL_POWER_STATE
->   ALSA: Drop superfluous argument from snd_power_wait()
->   ALSA: pcm: Block the release until the system resume finishes
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yufen Yu <yuyufen@huawei.com>
 
-Now all patches merged to topic/pci-rescan-v2 branch, and into
-for-next branch.  The former is a branch freshly based on 5.13-rc1, so
-that other trees may pull cleanly.
+Thanks, applied.
 
 
 Takashi
