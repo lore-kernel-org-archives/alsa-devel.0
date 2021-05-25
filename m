@@ -2,89 +2,89 @@ Return-Path: <SRS0=iQjD=KU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BA7EC2B9F8
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 07:06:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E9B4C2B9F8
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 07:20:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 94D03613A9
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 07:06:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94D03613A9
+	by mail.kernel.org (Postfix) with ESMTPS id 0A2216141C
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 07:20:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A2216141C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1DD71165D;
-	Tue, 25 May 2021 09:05:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DD71165D
+	by alsa0.perex.cz (Postfix) with ESMTPS id C28E415E2;
+	Tue, 25 May 2021 09:19:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C28E415E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621926367;
-	bh=UKeCcNYHSimggYIGD/3oBZYlZz+wnLX/OudZ5HooXZE=;
+	s=default; t=1621927240;
+	bh=ekyAgz2vMZEX83v35HQFaSwJcNoNFbxzbpAEdc8Hp3I=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KKb053H8LPcdKFx0WfoSjBuR+Zzi3ae1uYBcg61UWjri6XdB6OpY94kksmKPb0hUN
-	 HXZPqyGw8nMT9JUH3QBwEfDL0JA5CNTGD7mXkB0mt2VLvWR2FDmaJrMwY20E+LVuLl
-	 3AMyW0ETueftU0n0CPH/LknHXH9OuYCix0Rc8hYc=
+	b=j2f7zmM1tYK8IKUlR8bIOf32z48pwUfqSH6DGxDgme7SedBPBwRtgjzPJ5t8tvvZd
+	 l9SO+6/gIbYvjMRx6OsGic+Mie2jMYKeOZEaZChiNUfIh7S/ScRxhuZWsMm8hL77hM
+	 1NkBqMfAjLjEzE/3oIQf/Q5Gl5fUs2WfhjY3Bv+c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ABF1CF8019D;
-	Tue, 25 May 2021 09:05:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5E805F8019D;
+	Tue, 25 May 2021 09:19:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DF7A4F801EB; Tue, 25 May 2021 09:05:15 +0200 (CEST)
+ id 58FB4F801EB; Tue, 25 May 2021 09:19:48 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9C6D7F8011B
- for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 09:05:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C6D7F8011B
+ by alsa1.perex.cz (Postfix) with ESMTPS id BE8FAF80113
+ for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 09:19:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE8FAF80113
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="0BGiOZM0"; 
+ header.b="WJ0h1zdp"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="KQGI6Va6"
+ header.b="b8vVnQ5D"
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1621926313; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1621927179; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=9un4IKganlZMcLCm9ZMn/Qibi54b+/iSeKlbK6QKBKY=;
- b=0BGiOZM0wNdlDFfuUhoJQv6bo+JJbg62d1e/gDvGQtgMudhGyPg8Rf6kPW9VMi/WNOusgk
- ZYolP6kQwU74FyCI5igZlOPv9EBOKtfF2VsImR/vG6ADM0iaVgfhBRd1XIoBB8CRDqC/Sp
- LWEvb0aRZLqwaOPeGIv6KI+SGNXEtFw=
+ bh=cVoKjAY3jH8rmYc8Rd7l7OYBErdAvn5UszLrouhHoUE=;
+ b=WJ0h1zdp+hzFcGNFDt5Q7BayX2aKtZhzYT0WghSYW04pdmdj0HvSq9xxe0kBXAFdWFe2hE
+ r6CdcVGTMwQnPutcDi2kV6VvDK7vr56/TFSmSiyxWUwpIMC/KDTTRpH5ZNHLfQb5P+Xhzp
+ Enb9j902GPgcv5+ckDaq+vHRQrSFpg0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1621926313;
+ s=susede2_ed25519; t=1621927179;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=9un4IKganlZMcLCm9ZMn/Qibi54b+/iSeKlbK6QKBKY=;
- b=KQGI6Va6d6YerX9zikjPqYHTuNn4hcLqyoOR/lfEpezjAERihaT7N3Zq6d6D7tN0Q8VPbh
- 1rBb/n8wsqbSILAQ==
+ bh=cVoKjAY3jH8rmYc8Rd7l7OYBErdAvn5UszLrouhHoUE=;
+ b=b8vVnQ5DJh5mEHubT3CYlSJfVHMp9AbEXJvilSyXqSixtad2pF5o10mMiq5BhxH4pdt1HA
+ Moe04BCvo/Hu8ZDQ==
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 5E34FAE92;
- Tue, 25 May 2021 07:05:13 +0000 (UTC)
-Date: Tue, 25 May 2021 09:05:13 +0200
-Message-ID: <s5hh7ire1jq.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id A65C1AEAB;
+ Tue, 25 May 2021 07:19:39 +0000 (UTC)
+Date: Tue, 25 May 2021 09:19:39 +0200
+Message-ID: <s5hfsybe0vo.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Subject: Re: [PATCH] ALSA: line6: Improve poor error handling in
- line6_init_cap_control
-In-Reply-To: <20210524173644.GA116662@hyeyoo>
-References: <20210524173644.GA116662@hyeyoo>
+To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] ALSA: hda: Add Lenovo ThinkStation P340 to
+ power_save_denylist
+In-Reply-To: <20210524152533.7479-1-peter.ujfalusi@linux.intel.com>
+References: <20210524152533.7479-1-peter.ujfalusi@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Oliver Neukum <oneukum@suse.com>, Takashi Iwai <tiwai@suse.com>,
- Vasily Khoruzhick <anarsoul@gmail.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,92 +100,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 24 May 2021 19:36:44 +0200,
-Hyeonggon Yoo wrote:
+On Mon, 24 May 2021 17:25:33 +0200,
+Peter Ujfalusi wrote:
 > 
-> line6_init_cap_control doesn't free resources properly when allocations
-> like kmalloc, usb_alloc_urb fails. It can cause memory leak when some
-> allocations succeed, and then an error occurs.
+> On playback start there is a huge plock/pop noise via the green jack used
+> in Line out mode.
 > 
-> This patch makes line6_init_cap_control to properly free the resources,
-> freeing previously allocated resources when there's an error.
+> The only way I was able to fix it to set the power_save to 0 for the
+> snd_hda_intel.
 > 
-> Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 > ---
->  sound/usb/line6/driver.c | 36 +++++++++++++++++++++++++++---------
->  1 file changed, 27 insertions(+), 9 deletions(-)
+> Hi Takashi,
 > 
-> diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-> index 9602929b7de9..6991cb855023 100644
-> --- a/sound/usb/line6/driver.c
-> +++ b/sound/usb/line6/driver.c
-> @@ -688,34 +688,52 @@ static int line6_init_cap_control(struct usb_line6 *line6)
->  
->  	/* initialize USB buffers: */
->  	line6->buffer_listen = kmalloc(LINE6_BUFSIZE_LISTEN, GFP_KERNEL);
-> -	if (!line6->buffer_listen)
-> -		return -ENOMEM;
-> +	if (!line6->buffer_listen) {
-> +		ret = -ENOMEM;
-> +		goto fail_ret;
-> +	}
->  
->  	line6->urb_listen = usb_alloc_urb(0, GFP_KERNEL);
-> -	if (!line6->urb_listen)
-> -		return -ENOMEM;
-> +	if (!line6->urb_listen) {
-> +		ret = -ENOMEM;
-> +		goto fail1;
-> +	}
->  
->  	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
->  		line6->buffer_message = kmalloc(LINE6_MIDI_MESSAGE_MAXLEN, GFP_KERNEL);
-> -		if (!line6->buffer_message)
-> -			return -ENOMEM;
-> +		if (!line6->buffer_message) {
-> +			ret = -ENOMEM;
-> +			goto fail2;
-> +		}
->  
->  		ret = line6_init_midi(line6);
->  		if (ret < 0)
-> -			return ret;
-> +			goto fail3;
->  	} else {
->  		ret = line6_hwdep_init(line6);
->  		if (ret < 0)
-> -			return ret;
-> +			goto fail2;
->  	}
->  
->  	ret = line6_start_listen(line6);
->  	if (ret < 0) {
->  		dev_err(line6->ifcdev, "cannot start listening: %d\n", ret);
-> -		return ret;
-> +		if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI)
-> +			goto fail3;
-> +		else
-> +			goto fail2;
->  	}
->  
->  	return 0;
-> +
-> +fail3:
-> +	kfree(line6->buffer_message);
-> +fail2:
-> +	usb_free_urb(line6->urb_listen);
-> +fail1:
-> +	kfree(line6->buffer_listen);
-> +fail_ret:
-> +	return ret;
->  }
+> Changes since RFC:
+> - Fixed up the PCI ID
+> 
+> ever since I have this workstation (three weeks) the plock/pop noise on playback
+> start bugged me. So far the only solution I have found is to disable the
+> power_save which I find acceptable on a desktop compared to the pops.
+> 
+> The alsa-info.sh output is can be found here:
+> http://alsa-project.org/db/?f=414b1b236fc73db386ad4f938bc3b304f6b30b05
+> 
+> Missing details from alsa-info output:
+> # lspci -nnk | grep -A2 Audio
+> 00:1f.3 Audio device [0403]: Intel Corporation Comet Lake PCH cAVS [8086:06c8]
+>         DeviceName: Onboard - Sound
+>         Subsystem: Lenovo Device [17aa:1048]
+> 
+> CPU: i9-10900k
+> 
+> The machine have ALC623 codec and the jacks are correctly discovered and they
+> do what they supposed to be.
+> When I have the headset connected to the front and audio is routed there the
+> line out (green jack) from the back still prodices the plock/pop.
+> 
+> Is there a known quirk for similar issue or a better way to handle it?
 
-Those resources are freed in the common destructor of the card
-instance, line6_destruct(), at disconnect callback, so it's redundant
-to release them here; even worse, since you haven't re-initialize with
-NULL, this change would lead to double-free.
+In general, this deny list is the last resort when we couldn't find
+any other way to fix the click noise.  Let's check other possibilities
+at first, e.g. setting auto_mute_via_amp flag.  This can be achieved
+even via hints in an early patching specified via "patch" option of
+snd-hda-intel module (see Documentation/sound/hda/notes.rst for some
+information).
 
-
-thanks,
 
 Takashi
