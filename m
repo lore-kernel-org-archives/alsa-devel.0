@@ -2,96 +2,109 @@ Return-Path: <SRS0=iQjD=KU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA8C2C4707F
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 19:48:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2CEDC4707F
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 21:10:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A89B461401
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 19:48:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A89B461401
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id 0D0E361417
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 21:10:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D0E361417
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C1468176E;
-	Tue, 25 May 2021 21:47:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1468176E
+	by alsa0.perex.cz (Postfix) with ESMTPS id A89FD1770;
+	Tue, 25 May 2021 23:09:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A89FD1770
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621972101;
-	bh=FEEH7q/0Y+OnpmYJCkg33TTClVre4K2GOF/spTIRxDY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=WSIr0qSncAxf9pfGMyI2AiVSFOVVy83L7y3DEUw/1qMNv9cGC5vEalRPMpLWEmwwU
-	 7k0bfNm+8rU1nwYS1DS9cDnOMyfCuNXQgebV9ebM0F7vk2LkC3XQ4BHV6c4NftbHtZ
-	 yPuCvC9Irf+MmO+lg4a3ZQ5M+E34XvjsBobbMAWM=
+	s=default; t=1621977004;
+	bh=L0nq71KKQE3H7/B84Rcld+E6zz/GjpXpLGeFD0HQmuw=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=sQWqpW2cD0KYphanAVhe4XO/SEWf26CABx/UrXe9uQnzz5M3stbD/K3of2e7oihKv
+	 6IF+62IOpIKWB5wGshw9+v1Gh80YVrJdkJEP7emUoZQXhFALIScJfjClNE1nV9hFv1
+	 abotMc6LD9zwyEyJ8zQMMXMCnWvKW1Llj7uYjTeY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 173C2F800C9;
-	Tue, 25 May 2021 21:47:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1F8F3F800C9;
+	Tue, 25 May 2021 23:09:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2F496F800CB; Tue, 25 May 2021 21:47:29 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id B0785F800CB; Tue, 25 May 2021 23:09:12 +0200 (CEST)
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com
+ [IPv6:2a00:1450:4864:20::22a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 59304F80032
- for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 21:47:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59304F80032
+ by alsa1.perex.cz (Postfix) with ESMTPS id 35E56F800AC
+ for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 23:09:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35E56F800AC
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="GvOdVDLI"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 14PJhrjX004519; Tue, 25 May 2021 14:47:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=X9wKfI+BjCifG0ejYaamknVRkJZk+u6uBliDOXD1u1w=;
- b=GvOdVDLIc1fZ5Z4pOHz8c3X87FTQ7yHfT/g5dyeuRQkwhjNSWEQg8j02Iwba+1DcYtS5
- TJ+PnsVQaHnVg9kB0G7t8R0pGfotG9v+NxM6C4rL+swNNz00PeEa3qvxGpdBLNbVPpeH
- Ouj3KhstkXDhwIhL4NSdR8vdRGoP7CYPj2fIQBY2v/Ym/RVXijfx4Ov+NbVA9xgz9bm9
- lZcMDceS79RWHsyio+qaqt5E5tgsK488D+qmaGS/XYuUSc4wwEByGSrTGSrbyCAPlLu5
- b4N/A7nnVJc7F2aah8gMUInDtGPqP5DoERD1YGBz+OJn6v6N0JxrCT9gnZMWIsonJoHt Lw== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 38r28v2dw6-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 25 May 2021 14:47:20 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 25 May
- 2021 20:47:19 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Tue, 25 May 2021 20:47:19 +0100
-Received: from localhost.localdomain (unknown [141.131.77.13])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6F33E11CD;
- Tue, 25 May 2021 19:47:17 +0000 (UTC)
-From: David Rhodes <drhodes@opensource.cirrus.com>
-To: <alsa-devel@alsa-project.org>, <broonie@kernel.org>,
- <patches@opensource.cirrus.com>
-Subject: [PATCH] ASoC: cs35l3x: Use neutral language in amp drivers
-Date: Tue, 25 May 2021 14:44:39 -0500
-Message-ID: <20210525194439.2232908-1-drhodes@opensource.cirrus.com>
-X-Mailer: git-send-email 2.25.1
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="EDoW110K"
+Received: by mail-lj1-x22a.google.com with SMTP id 131so40011741ljj.3
+ for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 14:09:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=ZD+vlbnCmCd0+YdhT3Kf05pgMEL8yn/TGh5XC3e9yC4=;
+ b=EDoW110KV9wcfQ30kqQ1ZybqTTE/mSj56bdcleLHZ9K1K65hsPrg9IrsZJ6lqu84SD
+ RuaswPbLyuqVCWQ0oyQgm36Uwfqs9e5USUOw4l22hAuVIBSi0CxekIhx1On8J1Hu+9gv
+ ZF/G3WukVhsQGoQEbSwWKl3XJU0aQWLmoFLDB9+NMilvdBo/Qey7m+ScBsh60Vs9X/G7
+ tfb5FLBY2sQ88qOQom7PT3Kg3cN7B+TXWhT2uw9rcBT1brIlb6UFMfndAakABXqJf3k7
+ tLK3gwnMhy1IclNyskN3N65WqXKwIJcrHn7YXSf4BCWEbttcrpt+SDK+SbYFSu7o0Doj
+ XGvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=ZD+vlbnCmCd0+YdhT3Kf05pgMEL8yn/TGh5XC3e9yC4=;
+ b=MTsvQFVwn8FYyEgGLvpI/2yLtaQPva8pfIKG2pmhumKuOmRt8i9kQ9xxKGuYYEeODV
+ +14iEGX+Ytqz5AK0xNIMIviNR4O6Tgu5QLGihE3YVSUpmnOAKilWoVF5+h1mvaFj43Ov
+ C+gGvOIK5gjM5BaxPu9hMl7tTwuuVv5Ho8WkZSYPcvesrEU0CcdjvV35fmWZ1HBAs4Ut
+ a8yVxk8im6WXezdS7mKfeFKmZ+yuAFOMnV/3mIt0OMI9dxYJxhppRhvDGBTzj3qaoOkX
+ BEJQJv2D9ZSqyyR0fRZewG9NsJ3XrBLf1+GbrOoPJzfMkVhy53nMaHW8Q14oIfPupyVU
+ KfZg==
+X-Gm-Message-State: AOAM531NuBmmusNv5DRxrY2JMqzngKhaBzpx0UgJXx3EggsRP3w6C13x
+ 06PQ/sgdUuI5yg6/fdlowJjo7+9qNMQ=
+X-Google-Smtp-Source: ABdhPJw6PtppkMwP73a5yk5EfcfAd6aWAG1Me5VORks/eZaK+4hqHBA3sKD4WyW5pJwPIO0LUKzKEA==
+X-Received: by 2002:a2e:5045:: with SMTP id v5mr22264105ljd.270.1621976948326; 
+ Tue, 25 May 2021 14:09:08 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-180-236.dynamic.spd-mgts.ru.
+ [46.138.180.236])
+ by smtp.googlemail.com with ESMTPSA id w3sm2207406lji.25.2021.05.25.14.09.07
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 25 May 2021 14:09:07 -0700 (PDT)
+Subject: Re: [PATCH v3 4/4] ASoC: tegra: Specify components string for Nexus 7
+To: Jaroslav Kysela <perex@perex.cz>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Ion Agorria <ion@agorria.com>,
+ Svyatoslav Ryhel <clamor95@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>
+References: <20210523234437.25077-1-digetx@gmail.com>
+ <20210523234437.25077-5-digetx@gmail.com>
+ <ec2098e0-7918-8488-cf7c-a07e5aa6908c@perex.cz>
+ <99ef3d77-c626-c632-bbd2-92eb15acad20@gmail.com>
+ <bc99da2b-1eb2-8f73-9e92-184cf172ef6f@perex.cz>
+From: Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <ea7730f6-9ca0-ae06-b610-703f9715ffa2@gmail.com>
+Date: Wed, 26 May 2021 00:09:07 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <bc99da2b-1eb2-8f73-9e92-184cf172ef6f@perex.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: FhLbV-SBjyFeJwTafyn-Id5Q3U5e_2Ny
-X-Proofpoint-GUID: FhLbV-SBjyFeJwTafyn-Id5Q3U5e_2Ny
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011
- suspectscore=0
- priorityscore=1501 malwarescore=0 spamscore=0 mlxscore=0
- lowpriorityscore=0 mlxlogscore=999 bulkscore=0 impostorscore=0
- adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105250120
-Cc: David Rhodes <drhodes@opensource.cirrus.com>
+Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,113 +120,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Revise variable names and comments in
-cs35l35 and cs35l36 amp drivers.
+25.05.2021 19:24, Jaroslav Kysela пишет:
+> On 24. 05. 21 16:00, Dmitry Osipenko wrote:
+>> 24.05.2021 13:54, Jaroslav Kysela пишет:
+>>> Dne 24. 05. 21 v 1:44 Dmitry Osipenko napsal(a):
+>>>> Specify components string for Nexus 7 using the Intel BayTrail components
+>>>> format. This may allow us to create a more generic UCM for RT5640 codec.
+>>>>
+>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>>> ---
+>>>>  sound/soc/tegra/tegra_asoc_machine.c | 19 +++++++++++++++++++
+>>>>  1 file changed, 19 insertions(+)
+>>>>
+>>>> diff --git a/sound/soc/tegra/tegra_asoc_machine.c b/sound/soc/tegra/tegra_asoc_machine.c
+>>>> index a81f2ebfc00c..87e0a47040a5 100644
+>>>> --- a/sound/soc/tegra/tegra_asoc_machine.c
+>>>> +++ b/sound/soc/tegra/tegra_asoc_machine.c
+>>>> @@ -671,6 +671,24 @@ static const struct tegra_asoc_data tegra_rt5640_data = {
+>>>>  	.add_hp_jack = true,
+>>>>  };
+>>>>  
+>>>> +/*
+>>>> + * Speaker: Connected to SPO L/R P/N pins, stereo.
+>>>> + * Internal Microphone: Digital, connected to DMIC1_DAT IN2P/N pins.
+>>>> + * Headphones: Connected to HPOL/R pins.
+>>>> + * Headset Microphone: Unconnected.
+>>>> + *
+>>>> + * IF2_DAC/ADC are unpopulated.
+>>>> + */
+>>>> +static const struct tegra_asoc_data tegra_rt5640_grouper_data = {
+>>>> +	.components = "codec:rt5640 cfg-spk:2 cfg-mic:dmic1 aif:1",
+>>>
+>>> Perhaps, it may be better to handle this string via the DT config (create new
+>>> function like snd_soc_of_parse_card_name()).
+>>>
+>>> The "codec:rt5640" should be set in the driver (it's fixed), but the
+>>> "cfg-spk:2 cfg-mic:dmic1 aif:1" part is suitable for the DT config.
+>>
+>> Not sure that this is possible. The DT is an ABI, while components
+>> string has no specification. Any changes to the components string will
+>> require DT update.
+>>
+>> I think it's much more feasible to have a database of components within
+>> kernel driver, like Intel sound driver does it for ACPI devices.
+> 
+> There is no other possibility for ACPI. And while the components string is
+> part of the ALSA ABI, it should not be changed in an incompatible way. Only
+> new information should be added. The DT solution seems more flexible to me.
+> For example the stereo/mono speaker or the AIF number can be set without the
+> driver modification for rt5640.
 
-Signed-off-by: David Rhodes <drhodes@opensource.cirrus.com>
----
- sound/soc/codecs/cs35l35.c | 16 ++++++++--------
- sound/soc/codecs/cs35l35.h |  2 +-
- sound/soc/codecs/cs35l36.c | 16 ++++++++--------
- 3 files changed, 17 insertions(+), 17 deletions(-)
+Everything that goes into device-tree needs a firm specification. We
+can't add it into device-tree since there is no specification for the
+components string other than something that Intel driver made up for its
+own needs. So either we could add the components string to the kernel
+driver right now or not add it.
 
-diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
-index f20ed838b958..f4e2dc0ed5cc 100644
---- a/sound/soc/codecs/cs35l35.c
-+++ b/sound/soc/codecs/cs35l35.c
-@@ -367,16 +367,16 @@ static int cs35l35_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 	struct snd_soc_component *component = codec_dai->component;
- 	struct cs35l35_private *cs35l35 = snd_soc_component_get_drvdata(component);
- 
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBM_CFM:
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_CBP_CFP:
- 		regmap_update_bits(cs35l35->regmap, CS35L35_CLK_CTL1,
- 				    CS35L35_MS_MASK, 1 << CS35L35_MS_SHIFT);
--		cs35l35->slave_mode = false;
-+		cs35l35->clock_consumer = false;
- 		break;
--	case SND_SOC_DAIFMT_CBS_CFS:
-+	case SND_SOC_DAIFMT_CBC_CFC:
- 		regmap_update_bits(cs35l35->regmap, CS35L35_CLK_CTL1,
- 				    CS35L35_MS_MASK, 0 << CS35L35_MS_SHIFT);
--		cs35l35->slave_mode = true;
-+		cs35l35->clock_consumer = true;
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -555,8 +555,8 @@ static int cs35l35_hw_params(struct snd_pcm_substream *substream,
- 		}
- 		sp_sclks = ((cs35l35->sclk / srate) / 4) - 1;
- 
--		/* Only certain ratios are supported in I2S Slave Mode */
--		if (cs35l35->slave_mode) {
-+		/* Only certain ratios supported when device is a clock consumer */
-+		if (cs35l35->clock_consumer) {
- 			switch (sp_sclks) {
- 			case CS35L35_SP_SCLKS_32FS:
- 			case CS35L35_SP_SCLKS_48FS:
-@@ -567,7 +567,7 @@ static int cs35l35_hw_params(struct snd_pcm_substream *substream,
- 				return -EINVAL;
- 			}
- 		} else {
--			/* Only certain ratios supported in I2S MASTER Mode */
-+			/* Only certain ratios supported when device is a clock provider */
- 			switch (sp_sclks) {
- 			case CS35L35_SP_SCLKS_32FS:
- 			case CS35L35_SP_SCLKS_64FS:
-diff --git a/sound/soc/codecs/cs35l35.h b/sound/soc/codecs/cs35l35.h
-index ffb154cd962c..2e69fef318e3 100644
---- a/sound/soc/codecs/cs35l35.h
-+++ b/sound/soc/codecs/cs35l35.h
-@@ -282,7 +282,7 @@ struct  cs35l35_private {
- 	int sclk;
- 	bool pdm_mode;
- 	bool i2s_mode;
--	bool slave_mode;
-+	bool clock_consumer;
- 	/* GPIO for /RST */
- 	struct gpio_desc *reset_gpio;
- 	struct completion pdn_done;
-diff --git a/sound/soc/codecs/cs35l36.c b/sound/soc/codecs/cs35l36.c
-index a038bcec2d17..895ceed12cd9 100644
---- a/sound/soc/codecs/cs35l36.c
-+++ b/sound/soc/codecs/cs35l36.c
-@@ -756,14 +756,14 @@ static int cs35l36_set_dai_fmt(struct snd_soc_dai *component_dai,
- {
- 	struct cs35l36_private *cs35l36 =
- 			snd_soc_component_get_drvdata(component_dai->component);
--	unsigned int asp_fmt, lrclk_fmt, sclk_fmt, slave_mode, clk_frc;
-+	unsigned int asp_fmt, lrclk_fmt, sclk_fmt, clock_provider, clk_frc;
- 
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBM_CFM:
--		slave_mode = 1;
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_CBP_CFP:
-+		clock_provider = 1;
- 		break;
--	case SND_SOC_DAIFMT_CBS_CFS:
--		slave_mode = 0;
-+	case SND_SOC_DAIFMT_CBC_CFC:
-+		clock_provider = 0;
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -771,10 +771,10 @@ static int cs35l36_set_dai_fmt(struct snd_soc_dai *component_dai,
- 
- 	regmap_update_bits(cs35l36->regmap, CS35L36_ASP_TX_PIN_CTRL,
- 				CS35L36_SCLK_MSTR_MASK,
--				slave_mode << CS35L36_SCLK_MSTR_SHIFT);
-+				clock_provider << CS35L36_SCLK_MSTR_SHIFT);
- 	regmap_update_bits(cs35l36->regmap, CS35L36_ASP_RATE_CTRL,
- 				CS35L36_LRCLK_MSTR_MASK,
--				slave_mode << CS35L36_LRCLK_MSTR_SHIFT);
-+				clock_provider << CS35L36_LRCLK_MSTR_SHIFT);
- 
- 	switch (fmt & SND_SOC_DAIFMT_CLOCK_MASK) {
- 	case SND_SOC_DAIFMT_CONT:
--- 
-2.25.1
-
+I think the best option would be to drop this patch for now.
