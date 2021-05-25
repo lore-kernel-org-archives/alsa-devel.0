@@ -2,85 +2,89 @@ Return-Path: <SRS0=iQjD=KU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C82B7C2B9F8
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 07:01:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BA7EC2B9F8
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 07:06:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9AA0561157
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 07:01:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9AA0561157
+	by mail.kernel.org (Postfix) with ESMTPS id 94D03613A9
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 07:06:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94D03613A9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D7BA1660;
-	Tue, 25 May 2021 09:00:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D7BA1660
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1DD71165D;
+	Tue, 25 May 2021 09:05:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DD71165D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621926109;
-	bh=TynboglabtcccluG3K/51ZHibV9qKp/Sm7Xyy8MWYEQ=;
+	s=default; t=1621926367;
+	bh=UKeCcNYHSimggYIGD/3oBZYlZz+wnLX/OudZ5HooXZE=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=i76D/2ILmKLlKxNHl9JAhEWPZRCoDrflQo3gcS0BnQlSr8pVRfyy8H3I1wX6XdHBE
-	 5Ik2xbYdlDVm7PeBuRm9/Mb3OIlluGIz4DwwjiodRAkf/qxmPSWar2Tc8X0aUGbcYW
-	 gzOnlD/9XUjWX1Z4tI9h9conUTkD8uzVFxXtHbvM=
+	b=KKb053H8LPcdKFx0WfoSjBuR+Zzi3ae1uYBcg61UWjri6XdB6OpY94kksmKPb0hUN
+	 HXZPqyGw8nMT9JUH3QBwEfDL0JA5CNTGD7mXkB0mt2VLvWR2FDmaJrMwY20E+LVuLl
+	 3AMyW0ETueftU0n0CPH/LknHXH9OuYCix0Rc8hYc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7375F8019D;
-	Tue, 25 May 2021 09:00:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ABF1CF8019D;
+	Tue, 25 May 2021 09:05:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 225E9F80212; Tue, 25 May 2021 09:00:57 +0200 (CEST)
+ id DF7A4F801EB; Tue, 25 May 2021 09:05:15 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 18B44F8019D
- for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 09:00:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18B44F8019D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9C6D7F8011B
+ for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 09:05:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C6D7F8011B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="nKOBSYQC"; 
+ header.b="0BGiOZM0"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="+mL6F5Z/"
+ header.b="KQGI6Va6"
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1621926050; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1621926313; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/vYhgyzFyI7rCmhoXDX7ahW/FiU/hLkSLElpL/BxZu4=;
- b=nKOBSYQCHPz7kD/VVWTm5GgiEAR3celLJazS0ohCh9c9oW63ICa6C9hVNAghXi7rUKkO2R
- wnyebt1ne+Q42Sb4m/TPdxvuufRrpAWHCZJQSj2Z9RAI49cZjQ8jps6gPUBE0E5EqcVNKa
- uMU+AgQoJ5UIBcgOJTgd87SAuWbmkOk=
+ bh=9un4IKganlZMcLCm9ZMn/Qibi54b+/iSeKlbK6QKBKY=;
+ b=0BGiOZM0wNdlDFfuUhoJQv6bo+JJbg62d1e/gDvGQtgMudhGyPg8Rf6kPW9VMi/WNOusgk
+ ZYolP6kQwU74FyCI5igZlOPv9EBOKtfF2VsImR/vG6ADM0iaVgfhBRd1XIoBB8CRDqC/Sp
+ LWEvb0aRZLqwaOPeGIv6KI+SGNXEtFw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1621926050;
+ s=susede2_ed25519; t=1621926313;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/vYhgyzFyI7rCmhoXDX7ahW/FiU/hLkSLElpL/BxZu4=;
- b=+mL6F5Z/bxO6gbMQumGr67aRY/xcbUrtQjAaZkj1wT8tphymjE3aim4FXLfzCguIElxzca
- 2pTZlGmd/l5BwdAw==
+ bh=9un4IKganlZMcLCm9ZMn/Qibi54b+/iSeKlbK6QKBKY=;
+ b=KQGI6Va6d6YerX9zikjPqYHTuNn4hcLqyoOR/lfEpezjAERihaT7N3Zq6d6D7tN0Q8VPbh
+ 1rBb/n8wsqbSILAQ==
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id BF33CAEA3;
- Tue, 25 May 2021 07:00:50 +0000 (UTC)
-Date: Tue, 25 May 2021 09:00:50 +0200
-Message-ID: <s5him37e1r1.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 5E34FAE92;
+ Tue, 25 May 2021 07:05:13 +0000 (UTC)
+Date: Tue, 25 May 2021 09:05:13 +0200
+Message-ID: <s5hh7ire1jq.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: YueHaibing <yuehaibing@huawei.com>
-Subject: Re: [PATCH -next] ALSA: pcm: use DEVICE_ATTR_RO macro
-In-Reply-To: <20210524120007.39728-1-yuehaibing@huawei.com>
-References: <20210524120007.39728-1-yuehaibing@huawei.com>
+To: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Subject: Re: [PATCH] ALSA: line6: Improve poor error handling in
+ line6_init_cap_control
+In-Reply-To: <20210524173644.GA116662@hyeyoo>
+References: <20210524173644.GA116662@hyeyoo>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Oliver Neukum <oneukum@suse.com>, Takashi Iwai <tiwai@suse.com>,
+ Vasily Khoruzhick <anarsoul@gmail.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,15 +100,92 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 24 May 2021 14:00:07 +0200,
-YueHaibing wrote:
+On Mon, 24 May 2021 19:36:44 +0200,
+Hyeonggon Yoo wrote:
 > 
-> Use DEVICE_ATTR_RO() helper instead of plain DEVICE_ATTR(),
-> which makes the code a bit shorter and easier to read.
+> line6_init_cap_control doesn't free resources properly when allocations
+> like kmalloc, usb_alloc_urb fails. It can cause memory leak when some
+> allocations succeed, and then an error occurs.
 > 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> This patch makes line6_init_cap_control to properly free the resources,
+> freeing previously allocated resources when there's an error.
+> 
+> Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+> ---
+>  sound/usb/line6/driver.c | 36 +++++++++++++++++++++++++++---------
+>  1 file changed, 27 insertions(+), 9 deletions(-)
+> 
+> diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
+> index 9602929b7de9..6991cb855023 100644
+> --- a/sound/usb/line6/driver.c
+> +++ b/sound/usb/line6/driver.c
+> @@ -688,34 +688,52 @@ static int line6_init_cap_control(struct usb_line6 *line6)
+>  
+>  	/* initialize USB buffers: */
+>  	line6->buffer_listen = kmalloc(LINE6_BUFSIZE_LISTEN, GFP_KERNEL);
+> -	if (!line6->buffer_listen)
+> -		return -ENOMEM;
+> +	if (!line6->buffer_listen) {
+> +		ret = -ENOMEM;
+> +		goto fail_ret;
+> +	}
+>  
+>  	line6->urb_listen = usb_alloc_urb(0, GFP_KERNEL);
+> -	if (!line6->urb_listen)
+> -		return -ENOMEM;
+> +	if (!line6->urb_listen) {
+> +		ret = -ENOMEM;
+> +		goto fail1;
+> +	}
+>  
+>  	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
+>  		line6->buffer_message = kmalloc(LINE6_MIDI_MESSAGE_MAXLEN, GFP_KERNEL);
+> -		if (!line6->buffer_message)
+> -			return -ENOMEM;
+> +		if (!line6->buffer_message) {
+> +			ret = -ENOMEM;
+> +			goto fail2;
+> +		}
+>  
+>  		ret = line6_init_midi(line6);
+>  		if (ret < 0)
+> -			return ret;
+> +			goto fail3;
+>  	} else {
+>  		ret = line6_hwdep_init(line6);
+>  		if (ret < 0)
+> -			return ret;
+> +			goto fail2;
+>  	}
+>  
+>  	ret = line6_start_listen(line6);
+>  	if (ret < 0) {
+>  		dev_err(line6->ifcdev, "cannot start listening: %d\n", ret);
+> -		return ret;
+> +		if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI)
+> +			goto fail3;
+> +		else
+> +			goto fail2;
+>  	}
+>  
+>  	return 0;
+> +
+> +fail3:
+> +	kfree(line6->buffer_message);
+> +fail2:
+> +	usb_free_urb(line6->urb_listen);
+> +fail1:
+> +	kfree(line6->buffer_listen);
+> +fail_ret:
+> +	return ret;
+>  }
 
-Thanks, applied.
+Those resources are freed in the common destructor of the card
+instance, line6_destruct(), at disconnect callback, so it's redundant
+to release them here; even worse, since you haven't re-initialize with
+NULL, this change would lead to double-free.
 
+
+thanks,
 
 Takashi
