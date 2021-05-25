@@ -7,91 +7,92 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1448EC47086
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 13:25:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83537C2B9F8
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 13:25:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DE4A16142D
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 13:25:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE4A16142D
+	by mail.kernel.org (Postfix) with ESMTPS id 069F2610CB
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 13:25:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 069F2610CB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cerno.tech
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41BA31737;
-	Tue, 25 May 2021 15:25:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41BA31737
+	by alsa0.perex.cz (Postfix) with ESMTPS id A84EC1734;
+	Tue, 25 May 2021 15:25:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A84EC1734
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621949150;
-	bh=+UUEvhyk6o7vTg7k60rLF/OvSxYr8IArH1lLlxlRcpA=;
+	s=default; t=1621949154;
+	bh=3/H3e3WqzAkcRlxZaJXmUj6HqydpVE5BYfXW8USMKVU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=d8jpr0fV3TjhrMjNV2+epg48SvfnosOCTvvZr99sIdrMujdrsvJCJdeu96Gsumy7S
-	 FUY4vlC1ibkGA1uZOsb33bvQTWI31GEtTytbT05NtKMKR+Jb8Mb7Ir8u0AEgC2fVNO
-	 Vjs3DmfLJvkUPFvi5csEwV+5OwKP4zNmPeSq7Mzc=
+	b=ukJ13uTpWjYQcA6KKiYLTL6s/5yadPVSxHuT49yu+RO7Of395vnsFWKKNjyEOgDVj
+	 ULG2akkmMYmTKtSSBT0A2VZAq+eLgvw6FxuuhQnH2yjgzuWSPqjrFquzNzeqwLN1Ia
+	 GEukEfhe6mt8Qjsf/Nurtr7bsTx6Yo+Adggcb0OU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1B53F801EB;
-	Tue, 25 May 2021 15:24:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AFB11F80425;
+	Tue, 25 May 2021 15:24:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 74C18F802CA; Tue, 25 May 2021 15:24:11 +0200 (CEST)
+ id 7F70BF80113; Tue, 25 May 2021 15:24:11 +0200 (CEST)
 Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com
  [66.111.4.224])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8E661F8026B
- for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 15:24:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E661F8026B
+ by alsa1.perex.cz (Postfix) with ESMTPS id BF8F1F801EB
+ for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 15:24:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF8F1F801EB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
- header.b="qwievrlU"; 
+ header.b="Cd7vRdfj"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="r/M5ZpxE"
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by mailnew.nyi.internal (Postfix) with ESMTP id C54BF580706;
- Tue, 25 May 2021 09:24:06 -0400 (EDT)
+ header.i=@messagingengine.com header.b="YSLAyLB4"
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+ by mailnew.nyi.internal (Postfix) with ESMTP id 9BFCB5806F6;
+ Tue, 25 May 2021 09:24:02 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
- by compute1.internal (MEProxy); Tue, 25 May 2021 09:24:06 -0400
+ by compute5.internal (MEProxy); Tue, 25 May 2021 09:24:02 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
  from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm2; bh=wbZxITDCe0XGb
- MeBmFn7GYofbIW9DMDPBBXtnyxF65U=; b=qwievrlUa22NexRwqfDPQvwWjif1D
- XXbHHObmkvADyL04L807xvftlaFsHb0DGJWudwXb4c3MpidZgd1rbA+f+zWOdqZq
- wjhfqyBi2+SKujXCg2ATJQWAIlH6Rn/FaAde8gotMrFBg7/bPO6Dp/dYUj+437VQ
- UbmuSoclCzKJrCbvgnBY98T4eZZWojE4EX0G9dtjw+n6T/2PPziPZ5gpl3yLHRoh
- ycx9mbW0Edv0KPSfSuK4C7+5ewIPLsI1HHrMVVJu/Wb0Vik/R0XihpOZqy+cVMzq
- D/niTSbXCXeTzoN+AzX9BVgcX9rrPgnlLOaIVVa8+qC56wRrFXarrsicw==
+ :mime-version:content-type:content-transfer-encoding; s=fm2; bh=
+ mwr+loUju+nUboAV2hMRTjqnQueA+4RdS0j/M9fNa9A=; b=Cd7vRdfjoGi7Fcng
+ TBvMum69m3QhfF2HwMCkBw4WExrniuycMSYXJbOhcQ7WRcnw6o59e7/MoLnUYdtn
+ 53ZMZf/9DsATvjJn8pKSyQBzSi8BpCV2pHi7V4tzhmpAewvO8cZISLIei2xamEOP
+ tIEY7XTAFk8enHBO2NRKJ9N9bUvVWZn7yfgJ1RcWWOJBV0GnxyWad44XqqnLtXRx
+ RtS89ID6qkz/yzWVe0WpFyvpTSM+F+yrbOKlwwloj0zXvPs++tL3NBlWd2h25bNz
+ a72N5kMRfpe1Bt3TdWkt6QGtxRfFl7uapvuJTvaVNsN9XSDLzcGmWX1G7QLv0LrA
+ m0f0hw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-transfer-encoding:date:from
- :in-reply-to:message-id:mime-version:references:subject:to
- :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=wbZxITDCe0XGbMeBmFn7GYofbIW9DMDPBBXtnyxF65U=; b=r/M5ZpxE
- ojJdIBpVZiU7xsU7taCs0BcXl/dHDU7xx92mn0mXKg1RzjAwXLzLkYG91bUJGBM/
- ++bBbJ+HUbDpwWftgErJ3i8Q1kO/ke2irvMnSdthoUGPNrQAcRRSaPRWscOMqUJh
- 1DaAVWwHfJc4w4OUafv1c+uStKnbRjal2knRv5wGI6N0TaBRJEn9n6LR1RstDBvL
- BKJ08hpI3d9l3w9I6ddDYKgIKCYMWHubyYsS+hIXNt9AQSNl7JFsKoXvTol1T8kt
- lqvMEL4W2vGqrdvOUF33N0WRueIGwdaRgwE9g4XaI2WFDwK6sPYVGBvzZKUgefJB
- evLnoi9gZ0I4Yw==
-X-ME-Sender: <xms:dvqsYBZK0TIcZQWjghhf5N_kyAbop78bcaKb0VjxOmH9UQjoSzmbjw>
- <xme:dvqsYIZr6lMelO-2LYKdfvK1smpDyBUI8pJxnmTYtCgHh39rG0uzd-9P6y4bFVLZy
- BoY2wIjdSR62cbjKFY>
+ messagingengine.com; h=cc:content-transfer-encoding:content-type
+ :date:from:in-reply-to:message-id:mime-version:references
+ :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+ :x-sasl-enc; s=fm2; bh=mwr+loUju+nUboAV2hMRTjqnQueA+4RdS0j/M9fNa
+ 9A=; b=YSLAyLB42uKhVp45iIM4+Ybxqns+f0UyMNmLKTEfvPr2O+dLENGDOtTrT
+ VyF618Eac1x3iDQxR8a9CFrED5y6JUVV3rWoUhHAkHGUGVqUAdJSakT3Io6gpd+G
+ UYBE+6TYyRsGDCBfd+EV3+ooP9zHEWRXkvwe8dPEHmLrrukeagFon7cyqbOZF4lR
+ oE4ND4GjwGda9QSkjq/v7crYeoOOazhWj/lh0peg3v2hJKTujJOdCcSE8+3VMCex
+ GTgiZOUCn/3009oB6z2ypo5Fn2b8YGoVJwzbuNUzPDZqHHIo8O0JWrKRzE9mgKQX
+ qrmC96kif67KVs9ySlCiRgBQeDHBQ==
+X-ME-Sender: <xms:cvqsYO4bcFRyVIqa7MJQFTbF6emxBNij3qh7Esys7n5K8nj3N6LNFw>
+ <xme:cvqsYH7UMRi2GyIRgc_BZDCbzLEX0f6JqogFLxHsybLUMCgjg5nqdY-tAAfPsDXlh
+ 0tc46ry6UHgQtdkTHw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdekuddgieeiucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
- cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
- vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
- htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
- hedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
- frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:dvqsYD-EUqIMJ_yOvtZ1_JAeU2f8P4pLnTAFANuuGwsJPombUpieOw>
- <xmx:dvqsYPpU6hBA9AOfkTniVRUAmBxmTWgD8Aj9kavkRjUB09QfR2_fgw>
- <xmx:dvqsYMqO2hoF6IO4n02KBKOof6Hgu8Dr1ONrdtnrmyaQYS1sNF08nQ>
- <xmx:dvqsYOjfifIucF1ia8Oh0F6I9C2MTnDHuez7l_tcIzoPxG0kDWXyhw>
+ cujfgurhephffvufffkffojghfgggtgfesthekredtredtjeenucfhrhhomhepofgrgihi
+ mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+ htthgvrhhnpeejuefggeekfffgueevtddvudffhfejffejjedvvdduudethefhfefhfeeg
+ ieekkeenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtne
+ curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:cvqsYNcFqTG-QKcQALPkSUYwJ0xo3WU1yyQoSWHxp5uFvbck5d9yFQ>
+ <xmx:cvqsYLISThlYdIbC2JuXoH1P_2PsiRUxK7q6uCBci4gmAUabEA_gWw>
+ <xmx:cvqsYCKmZb8_hpcy9I8PENiKakw4Rm3RAa98PXbptoy_qaM4Mg7_qA>
+ <xmx:cvqsYKDZ9sotwubZ5Sfqs3X9ZHmMXpx6kA06mhKJ36xvo7tej0IixQ>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr
  [90.89.68.76]) by mail.messagingengine.com (Postfix) with ESMTPA;
- Tue, 25 May 2021 09:24:06 -0400 (EDT)
+ Tue, 25 May 2021 09:24:01 -0400 (EDT)
 From: Maxime Ripard <maxime@cerno.tech>
 To: Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>,
  dri-devel@lists.freedesktop.org, Daniel Vetter <daniel.vetter@intel.com>,
@@ -99,13 +100,14 @@ To: Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>,
  Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
  Thomas Zimmermann <tzimmermann@suse.de>, Maxime Ripard <maxime@cerno.tech>,
  Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v2 03/12] ASoC: hdmi-codec: Rework to support more controls
-Date: Tue, 25 May 2021 15:23:45 +0200
-Message-Id: <20210525132354.297468-4-maxime@cerno.tech>
+Subject: [PATCH v2 01/12] ALSA: doc: Clarify IEC958 controls iface
+Date: Tue, 25 May 2021 15:23:43 +0200
+Message-Id: <20210525132354.297468-2-maxime@cerno.tech>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210525132354.297468-1-maxime@cerno.tech>
 References: <20210525132354.297468-1-maxime@cerno.tech>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  Nicolas Saenz Julienne <nsaenz@kernel.org>, Dom Cobley <dom@raspberrypi.com>,
@@ -132,80 +134,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We're going to add more controls to support the IEC958 output, so let's
-rework the control registration a bit to support more of them.
+The doc currently mentions that the IEC958 Playback Default should be
+exposed on the PCM iface, and the Playback Mask on the mixer iface.
+
+It's a bit confusing to advise to have two related controls on two
+separate ifaces, and it looks like the drivers that currently expose
+those controls use any combination of the mixer and PCM ifaces.
+
+Let's try to clarify the situation a bit, and encourage to at least have
+the controls on the same iface.
 
 Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- sound/soc/codecs/hdmi-codec.c | 43 ++++++++++++++++++++++-------------
- 1 file changed, 27 insertions(+), 16 deletions(-)
+ .../sound/kernel-api/writing-an-alsa-driver.rst     | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 1567ba196ab9..65bde6f0ea1c 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -620,21 +620,23 @@ static const struct snd_soc_dai_ops hdmi_codec_spdif_dai_ops = {
- 			 SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S32_BE |\
- 			 SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE)
+diff --git a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+index e6365836fa8b..01d59b8aea92 100644
+--- a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
++++ b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+@@ -3508,14 +3508,15 @@ field must be set, though).
  
--static int hdmi_codec_pcm_new(struct snd_soc_pcm_runtime *rtd,
--			      struct snd_soc_dai *dai)
--{
--	struct snd_soc_dai_driver *drv = dai->driver;
--	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
--	struct snd_kcontrol *kctl;
--	struct snd_kcontrol_new hdmi_eld_ctl = {
--		.access	= SNDRV_CTL_ELEM_ACCESS_READ |
--			  SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+struct snd_kcontrol_new hdmi_codec_controls[] = {
-+	{
-+		.access	= (SNDRV_CTL_ELEM_ACCESS_READ |
-+			   SNDRV_CTL_ELEM_ACCESS_VOLATILE),
- 		.iface	= SNDRV_CTL_ELEM_IFACE_PCM,
- 		.name	= "ELD",
- 		.info	= hdmi_eld_ctl_info,
- 		.get	= hdmi_eld_ctl_get,
--		.device	= rtd->pcm->device,
--	};
-+	},
-+};
+ “IEC958 Playback Con Mask” is used to return the bit-mask for the IEC958
+ status bits of consumer mode. Similarly, “IEC958 Playback Pro Mask”
+-returns the bitmask for professional mode. They are read-only controls,
+-and are defined as MIXER controls (iface =
+-``SNDRV_CTL_ELEM_IFACE_MIXER``).
++returns the bitmask for professional mode. They are read-only controls.
+ 
+ Meanwhile, “IEC958 Playback Default” control is defined for getting and
+-setting the current default IEC958 bits. Note that this one is usually
+-defined as a PCM control (iface = ``SNDRV_CTL_ELEM_IFACE_PCM``),
+-although in some places it's defined as a MIXER control.
++setting the current default IEC958 bits.
 +
-+static int hdmi_codec_pcm_new(struct snd_soc_pcm_runtime *rtd,
-+			      struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_dai_driver *drv = dai->driver;
-+	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
-+	unsigned int i;
- 	int ret;
++Due to historical reasons, both variants of the Playback Mask and the
++Playback Default controls can be implemented on either a
++``SNDRV_CTL_ELEM_IFACE_PCM`` or a ``SNDRV_CTL_ELEM_IFACE_MIXER`` iface.
++Drivers should expose the mask and default on the same iface though.
  
- 	ret =  snd_pcm_add_chmap_ctls(rtd->pcm, SNDRV_PCM_STREAM_PLAYBACK,
-@@ -651,12 +653,21 @@ static int hdmi_codec_pcm_new(struct snd_soc_pcm_runtime *rtd,
- 	hcp->chmap_info->chmap = hdmi_codec_stereo_chmaps;
- 	hcp->chmap_idx = HDMI_CODEC_CHMAP_IDX_UNKNOWN;
- 
--	/* add ELD ctl with the device number corresponding to the PCM stream */
--	kctl = snd_ctl_new1(&hdmi_eld_ctl, dai->component);
--	if (!kctl)
--		return -ENOMEM;
-+	for (i = 0; i < ARRAY_SIZE(hdmi_codec_controls); i++) {
-+		struct snd_kcontrol *kctl;
- 
--	return snd_ctl_add(rtd->card->snd_card, kctl);
-+		/* add ELD ctl with the device number corresponding to the PCM stream */
-+		kctl = snd_ctl_new1(&hdmi_codec_controls[i], dai->component);
-+		if (!kctl)
-+			return -ENOMEM;
-+
-+		kctl->id.device = rtd->pcm->device;
-+		ret = snd_ctl_add(rtd->card->snd_card, kctl);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	return 0;
- }
- 
- static int hdmi_dai_probe(struct snd_soc_dai *dai)
+ In addition, you can define the control switches to enable/disable or to
+ set the raw bit mode. The implementation will depend on the chip, but
 -- 
 2.31.1
 
