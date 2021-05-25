@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5C36C2B9F7
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 00:04:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 60670C2B9F7
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 00:05:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DB113613E6
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 00:04:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB113613E6
+	by mail.kernel.org (Postfix) with ESMTPS id DA14C613E6
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 00:05:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA14C613E6
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 74E7C165D;
-	Tue, 25 May 2021 02:04:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74E7C165D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 631141612;
+	Tue, 25 May 2021 02:04:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 631141612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621901092;
-	bh=sWHzOkCHpND5AcSnlX7LQSwlpQm88FYycA+Vz49yT0c=;
+	s=default; t=1621901102;
+	bh=1WqAsI8t4ajflOQkgbhLRDZjt+dYMUiXAzmHA4mwagU=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pbM3uEpJ3Y6w6b12VuF89Kuy1p9A6C9X7WZozzg0lM5JPaLmhwjo+zSyZbNbNBjKW
-	 pA9lFJNXO5mCfeV96eAdATFJZojGRjpz+Tqcst6Gi0dK7qM40YNWGjQvsS5LVNx3RJ
-	 m1NaOc8Cny1BgYBkA95QnwLk3+tyxiOpeLynxwSc=
+	b=t+KEG1SwWHcrPKAX3wINqrUUX1yIZ5GG50ZW1cUvlltI7GCqHmQMjJ/BTbiBk+s5Q
+	 HhwgCZgaTWgI65vvmMyycF92YCVQj52OcuXzeOaix3+0NZWWjHqYCynEVe5oPG0LYz
+	 gQpny4ceBYksZgI4UYXC70ikVlTr9yO4IqWd2n6s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0EA14F804AA;
-	Tue, 25 May 2021 02:03:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9A9BF804AE;
+	Tue, 25 May 2021 02:03:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F073DF804AC; Tue, 25 May 2021 02:03:05 +0200 (CEST)
+ id B202DF804AB; Tue, 25 May 2021 02:03:06 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 47840F804A9
- for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 02:03:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47840F804A9
-Date: 25 May 2021 09:02:56 +0900
-X-IronPort-AV: E=Sophos;i="5.82,327,1613401200"; d="scan'208";a="82109676"
+ by alsa1.perex.cz (Postfix) with ESMTP id F3960F80475
+ for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 02:03:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3960F80475
+Date: 25 May 2021 09:03:02 +0900
+X-IronPort-AV: E=Sophos;i="5.82,327,1613401200"; d="scan'208";a="82109689"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 25 May 2021 09:02:56 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 25 May 2021 09:03:02 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id A7DF04112201;
- Tue, 25 May 2021 09:02:56 +0900 (JST)
-Message-ID: <87im37of2n.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id C3C3B4112201;
+ Tue, 25 May 2021 09:03:02 +0900 (JST)
+Message-ID: <87h7irof2h.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 03/10] ASoC: rsnd: check BUIF error everytime
+Subject: [PATCH 04/10] ASoC: rsnd: indicate unknown error at rsnd_dai_call()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87mtsjof3w.wl-kuninori.morimoto.gx@renesas.com>
@@ -77,71 +77,46 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Current ssi.c checks BUSIF when TDM mode, but it should be checked
-everytime.
-This patch do it.
+Current rsnd_dai_call() doesn't indicate error message,
+thus it is very difficult to know the issue
+when strange things happen.
+This patch indicates error for it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/sh/rcar/ssi.c | 17 +++--------------
- 1 file changed, 3 insertions(+), 14 deletions(-)
+ sound/soc/sh/rcar/core.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index bd479714b22e..2dceac994b37 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -535,8 +535,7 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
- 	}
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 684eab6ef126..ed507eb6414e 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -543,7 +543,7 @@ static int rsnd_status_update(u32 *status,
+ 	int func_call	= (val == timing);
  
- 	/* enable busif buffer over/under run interrupt. */
--	if (is_tdm || is_tdm_split)
--		rsnd_ssi_busif_err_irq_enable(mod);
-+	rsnd_ssi_busif_err_irq_enable(mod);
+ 	if (next_val == 0xF) /* underflow case */
+-		func_call = 0;
++		func_call = -1;
+ 	else
+ 		*status = (*status & ~mask) + (next_val << shift);
  
- init_end:
- 	ssi->cr_own	= cr_own;
-@@ -592,10 +591,6 @@ static int rsnd_ssi_quit(struct rsnd_mod *mod,
- {
- 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
- 	struct device *dev = rsnd_priv_to_dev(priv);
--	int is_tdm, is_tdm_split;
--
--	is_tdm		= rsnd_runtime_is_tdm(io);
--	is_tdm_split	= rsnd_runtime_is_tdm_split(io);
- 
- 	if (!rsnd_ssi_is_run_mods(mod, io))
- 		return 0;
-@@ -618,8 +613,7 @@ static int rsnd_ssi_quit(struct rsnd_mod *mod,
- 	}
- 
- 	/* disable busif buffer over/under run interrupt. */
--	if (is_tdm || is_tdm_split)
--		rsnd_ssi_busif_err_irq_disable(mod);
-+	rsnd_ssi_busif_err_irq_disable(mod);
- 
- 	return 0;
- }
-@@ -773,10 +767,6 @@ static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
- 	u32 status;
- 	bool elapsed = false;
- 	bool stop = false;
--	int is_tdm, is_tdm_split;
--
--	is_tdm		= rsnd_runtime_is_tdm(io);
--	is_tdm_split	= rsnd_runtime_is_tdm_split(io);
- 
- 	spin_lock(&priv->lock);
- 
-@@ -798,8 +788,7 @@ static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
- 		stop = true;
- 	}
- 
--	if (is_tdm || is_tdm_split)
--		stop |= rsnd_ssi_busif_err_status_clear(mod);
-+	stop |= rsnd_ssi_busif_err_status_clear(mod);
- 
- 	rsnd_ssi_status_clear(mod);
- rsnd_ssi_interrupt_out:
+@@ -567,11 +567,12 @@ static int rsnd_status_update(u32 *status,
+ 		rsnd_dbg_dai_call(dev, "%s\t0x%08x %s\n",		\
+ 			rsnd_mod_name(mod), *status,	\
+ 			(func_call && (mod)->ops->fn) ? #fn : "");	\
+-		if (func_call && (mod)->ops->fn)			\
++		if (func_call > 0 && (mod)->ops->fn)			\
+ 			tmp = (mod)->ops->fn(mod, io, param);		\
+-		if (tmp && (tmp != -EPROBE_DEFER))			\
+-			dev_err(dev, "%s : %s error %d\n",		\
+-				rsnd_mod_name(mod), #fn, tmp);		\
++		if (unlikely(func_call < 0) ||				\
++		    unlikely(tmp && (tmp != -EPROBE_DEFER)))		\
++			dev_err(dev, "%s : %s error (%d, %d)\n",	\
++				rsnd_mod_name(mod), #fn, tmp, func_call);\
+ 		ret |= tmp;						\
+ 	}								\
+ 	ret;								\
 -- 
 2.25.1
 
