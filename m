@@ -2,72 +2,85 @@ Return-Path: <SRS0=iQjD=KU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4655C2B9F8
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 07:37:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ABB58C2B9F8
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 07:40:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 38E556128B
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 07:37:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 38E556128B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7BBD961419
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 May 2021 07:40:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7BBD961419
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D282E15E2;
-	Tue, 25 May 2021 09:36:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D282E15E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id D81FB83B;
+	Tue, 25 May 2021 09:39:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D81FB83B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621928259;
-	bh=9Jtri+SXCagXbHm812GGck6yfskILZaBktmWMGqfQo4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=AmoDeVm1VAFSOxRfzlD1SkpnOO2tA6KsOzFvk9Y1xVE3qZeB4T6B6DvhGS0nWNZLT
-	 YVEu9saSmCvg/bPFd4AOzB9dpAWTsZfF/OgeInM+B9w4F2XMGKAN17r8PnWwUtzC3D
-	 VfSRCWvA2oJd1zrrsSDsdXBuwQSgof9W/gzW6k4s=
+	s=default; t=1621928445;
+	bh=k691lYYj9416XOczvUylmzpBwlTklA0OcKEUiXU6Tbk=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=SvJzsv11V1gZqMsGfkjdUIPwTSViIL339tyKeI6AsdrnTlMZBP28CnYehG2KT7iU3
+	 HzbkZ3GUHH8YuGk/54z+KK1ksp2hc9/oS1vcBQQbJCoyo/vCh+L73Te5RVhKDlvrJu
+	 re78cX9HJRXowc3ZfOhgn2m99DsJvbnKe7i16SR0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 389D9F80424;
-	Tue, 25 May 2021 09:35:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6DE36F80137;
+	Tue, 25 May 2021 09:39:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9E96EF8022B; Mon, 24 May 2021 11:32:07 +0200 (CEST)
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 1F419F801EB; Tue, 25 May 2021 09:39:53 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D254EF80137
- for <alsa-devel@alsa-project.org>; Mon, 24 May 2021 11:32:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D254EF80137
-Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.59])
- by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FpX354VWCzCwG5;
- Mon, 24 May 2021 17:29:05 +0800 (CST)
-Received: from dggpeml500009.china.huawei.com (7.185.36.209) by
- dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 24 May 2021 17:31:56 +0800
-Received: from huawei.com (10.175.101.6) by dggpeml500009.china.huawei.com
- (7.185.36.209) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 24 May
- 2021 17:31:55 +0800
-From: Yufen Yu <yuyufen@huawei.com>
-To: <alsa-devel@alsa-project.org>
-Subject: [PATCH] ALSA: ac97: fix PM reference leak in ac97_bus_remove()
-Date: Mon, 24 May 2021 05:38:11 -0400
-Message-ID: <20210524093811.612302-1-yuyufen@huawei.com>
-X-Mailer: git-send-email 2.25.4
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500009.china.huawei.com (7.185.36.209)
-X-CFilter-Loop: Reflected
-X-Mailman-Approved-At: Tue, 25 May 2021 09:35:47 +0200
-Cc: yukuai3@huawei.com, tiwai@suse.com, yuyufen@huawei.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id B1271F80137
+ for <alsa-devel@alsa-project.org>; Tue, 25 May 2021 09:39:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1271F80137
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="qpOJZY7b"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="J5u6oH4r"
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1621928390; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ctn8QpgZHnB4mUM8w2CHgUf+JhW/0F9bpuHJuxFREW0=;
+ b=qpOJZY7byqh4ni+bjgDBW9cuLt5FhdjsvqeCTlKbL+OcMyiKSzE8HuvvNuwrsBTcIWhcLc
+ px4cX+aVIZ+CfbtQljHYblblqtHI0ylqE3IZiAqHKpg6JfLrGPf8IRRYyOWv9BQ3wSEHAU
+ H1Y0nFwoSDUWjPWgRc6ZWa6K4qOLIyY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1621928390;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ctn8QpgZHnB4mUM8w2CHgUf+JhW/0F9bpuHJuxFREW0=;
+ b=J5u6oH4rLInFwODOipZnPsrL7ea3JhWfcAKUzrOg4/3lw+HkoowPYUqRsxYqAkgItvRZQ1
+ Jal0GqgyrcdpghCw==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 11360AE99;
+ Tue, 25 May 2021 07:39:50 +0000 (UTC)
+Date: Tue, 25 May 2021 09:39:50 +0200
+Message-ID: <s5ha6ojdzy1.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [GIT PULL] ASoC fixes for v5.13-rc3
+In-Reply-To: <20210524090307.61BAA60698@mail.kernel.org>
+References: <20210524090307.61BAA60698@mail.kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,30 +96,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-pm_runtime_get_sync will increment pm usage counter even it failed.
-Forgetting to putting operation will result in reference leak here.
-Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-counter balanced.
+On Mon, 24 May 2021 11:02:51 +0200,
+Mark Brown wrote:
+> 
+> The following changes since commit 25c4a9b614f101bb9f3e687960815db7dc439c0f:
+> 
+>   ASoC: simple-card: Fix breakage on kontron-sl28-var3-ads2 (2021-04-23 18:13:32 +0100)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.13-rc3
+> 
+> for you to fetch changes up to af2702549d68519ac78228e915d9b2c199056787:
+> 
+>   ASoC: qcom: lpass-cpu: Use optional clk APIs (2021-05-21 13:12:29 +0100)
+> 
+> ----------------------------------------------------------------
+> ASoC: Fixes for v5.13
+> 
+> A collection of fixes that have come in since the merge window, mainly
+> device specific things.  The fixes to the generic cards from
+> Morimoto-san are handling regressions that were introduced in the merge
+> window on at least the Kontron sl28-var3-ads2.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yufen Yu <yuyufen@huawei.com>
----
- sound/ac97/bus.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks, pulled now.
 
-diff --git a/sound/ac97/bus.c b/sound/ac97/bus.c
-index d9077e91382b..6ddf646cda65 100644
---- a/sound/ac97/bus.c
-+++ b/sound/ac97/bus.c
-@@ -520,7 +520,7 @@ static int ac97_bus_remove(struct device *dev)
- 	struct ac97_codec_driver *adrv = to_ac97_driver(dev->driver);
- 	int ret;
- 
--	ret = pm_runtime_get_sync(dev);
-+	ret = pm_runtime_resume_and_get(dev);
- 	if (ret < 0)
- 		return ret;
- 
--- 
-2.25.4
 
+Takashi
