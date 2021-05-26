@@ -6,55 +6,56 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7D27C4707F
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 May 2021 02:00:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96385C47087
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 May 2021 02:47:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 170956141C
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 May 2021 02:00:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 170956141C
+	by mail.kernel.org (Postfix) with ESMTPS id CEE646142D
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 May 2021 02:47:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CEE646142D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A92861744;
-	Wed, 26 May 2021 03:59:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A92861744
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9D5B81748;
+	Wed, 26 May 2021 04:46:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D5B81748
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1621994416;
-	bh=gGXlRiW3P6B7olkF1pWieYDSGZ2FK5nyn34SS0sj96o=;
+	s=default; t=1621997235;
+	bh=Av+xPGndkQ2trmh/xk3liZhZbqz9ESY72MgXDsP+YV8=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SJSWyPVK+DE2I1eloztMesQknPeX1AM8+0YQ2FI+Y8KC6WIfAYyYjQMbRZ2ndi6mt
-	 5zMUls0n4JUom2GWhnF+sx/z9VJLoxrgXtWkluBZjc5Ii0qH5j5CDf5ofVqppJC7mE
-	 kUrntLqTGrT/Lh33fQUKMZTSRDG7sMKMC7VYNDAo=
+	b=ctB/NsGSQacAOOZDf1FGcT7Ce33gzjwhdY/CvvwbOxayjFH+pXf2MPZCMzz9lVJbY
+	 XMXJKxxaS0gYyfb/U6PHexertoK5yoZHMeI2FYRvDPlYDbAwLg4gdorDkcpnP9zA53
+	 LRNtb0CIXYJzlTO3opAfjprQ3wRBwcGf247nyEew=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 31216F8014C;
-	Wed, 26 May 2021 03:59:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EFF2BF8014C;
+	Wed, 26 May 2021 04:46:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6638BF80157; Wed, 26 May 2021 03:59:24 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 50B21F8011B
- for <alsa-devel@alsa-project.org>; Wed, 26 May 2021 03:59:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50B21F8011B
-Date: 26 May 2021 10:59:14 +0900
-X-IronPort-AV: E=Sophos;i="5.82,330,1613401200"; d="scan'208";a="82246592"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 26 May 2021 10:59:14 +0900
+ id 555BFF80157; Wed, 26 May 2021 04:46:21 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 7D287F8011B
+ for <alsa-devel@alsa-project.org>; Wed, 26 May 2021 04:46:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D287F8011B
+Date: 26 May 2021 11:46:02 +0900
+X-IronPort-AV: E=Sophos;i="5.82,330,1613401200"; d="scan'208";a="82429214"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 26 May 2021 11:46:02 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 4B09D40158EE;
- Wed, 26 May 2021 10:59:14 +0900 (JST)
-Message-ID: <87v976mf0t.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 78C884158054;
+ Wed, 26 May 2021 11:46:02 +0900 (JST)
+Message-ID: <87tumqmcut.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 06/10] ASoC: rsnd: add debugfs support
-In-Reply-To: <87eedvof1z.wl-kuninori.morimoto.gx@renesas.com>
-References: <87mtsjof3w.wl-kuninori.morimoto.gx@renesas.com>
- <87eedvof1z.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH v2 2/7] ASoC: soc-core: add snd_soc_runtime_get_dai_fmt()
+In-Reply-To: <YK2GOSIgiz2EmpUe@sirena.org.uk>
+References: <871racbx0w.wl-kuninori.morimoto.gx@renesas.com>
+ <87y2ckaifm.wl-kuninori.morimoto.gx@renesas.com>
+ <YK2GOSIgiz2EmpUe@sirena.org.uk>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -77,17 +78,68 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Mark
 
-> +void rsnd_adg_clk_dbg_info(struct rsnd_priv *priv, struct seq_file *m)
-(snip)
-> -#define rsnd_adg_clk_dbg_info(priv, adg)
-> +#define rsnd_adg_clk_dbg_info(priv)
-(snip)
-> +	rsnd_adg_clk_dbg_info(priv, NULL);
+> First up sorry it's taken me a while to respond to this - I
+> wanted to get it clear in my head what I thought the best
+> approach is here.  I think your code here is good with a couple
+> of documentation tweaks:
 
-kernel test robot reported that this patch will compile error
-if there was no CONFIG_DEBUG_FS.
+Thank you for your feedback / review,
+and no worry about taken times.
+This is very challeng patch, and I know you are always busy :)
 
-I will fixup and re-post it.
+> > For example, some driver want to select format "automatically",
+> > but want to select other fields "manually", because of complex limitation.
+> > Or other example, in case of both CPU and Codec are possible to be
+> > clock provider, but the quality was different.
+> > In these case, user need/want to *manually* select each fields
+> > from Sound Card driver.
+> > 
+> > It uses Sound Card specified fields preferentially, and try to select
+> > non-specific fields from CPU and Codec driver settings if driver had
+> > callbacks.
+> > In other words, we can select all dai_fmt via Sound Card driver
+> > same as before.
+> 
+> I mentioned last time around the idea of having first and second
+> preferences for the DAIs, for things like "this will work but
+> only if you get the configuration exactly right".  These patches
+> don't support that, they just treat everything the DAI reports as
+> being equally valid.  I've actually come round to thinking that
+> might be OK for now but...
+(snip)
+> so that instead of worrying about formats that aren't quite
+> supported properly we just tell drivers not to list them for now
+> so if the system is relying on the framework to pick the DAI
+> format then we know it's one that's robust, we're not going to
+> choose one that the hardware in one of the devices isn't very
+> good at.  Does that make sense to you?
+> 
+> If we did do first and second choices we'd get an algorithm like:
+> 
+>   1. Try to match both DAI's 1st choice, if match use that.
+>   2. Pick one DAI A, try it's 2nd choice with the other DAI B's 1st
+>      choice.
+>   3. Swap and try 1st choice of A and 2nd choice of B.
+>   4. Try 2nd choices of both DAIs.
+> 
+> but I think that might get too complicated and we'd end up stuck
+> if we ever wanted to change the algorithm since DTs that don't
+> specify a format may break if a different format is picked.  If
+> we go with ranking every format individually it gets even more
+> complicated for both driver authors and the core.
+> 
+> I think with the documentation tweak above your idea is a better
+> one for now, we can always go back later with more experience.
+
+Yes, we want to have robust code,
+and indeed it might be issue in the future if
+something happen around algorithm.
+
+To avoid such case, indeed having "priority" is nice idea,
+and indicating such things is indeed nesessary.
+
+OK, thank you for your feedback,
+I will update code, and repost it.
 
 Thank you for your help !!
 
