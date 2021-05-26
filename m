@@ -8,96 +8,95 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 161F0C47082
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 May 2021 23:13:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2414EC47088
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 May 2021 23:13:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 57D59613C3
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 May 2021 23:13:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 57D59613C3
+	by mail.kernel.org (Postfix) with ESMTPS id 34133613CC
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 May 2021 23:13:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 34133613CC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E81861714;
-	Thu, 27 May 2021 01:12:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E81861714
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD91F173F;
+	Thu, 27 May 2021 01:12:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD91F173F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622070782;
-	bh=kUDqrDfSw2Wiy4wmESWkHEGUdbUnarENncp++OVXoec=;
+	s=default; t=1622070820;
+	bh=Gi6jdcyOmlfiW0F48mVfAwD23JaGU1abAUimqzG6f/U=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=E3cW9mvDYpj4NM5TgMpQFKgAVG341ofr0n9bkEIV0d/nmsQeI4aicYQOeExYU7B6I
-	 29mlUNqzJNCFFrQqqOASi5Yf7V9hdiGumCWZcWr/WYD8jYRvdV/8mHfbddh+QB4jW7
-	 njJ8xE+oGgNIhbz6EK4iJGFJrkK6UaqaPWXs8/g8=
+	b=hTGY9OkRKzAXQEJ1eCpPW7K+f2NqCed5wa5mLG9+h5zEyp2wDOfcQBdXyV5rIm3/4
+	 6CGEpYia/C9HCAO0xABDapdXSVhA07Mei92shop8TX22og41Gn0mPgs56SkjX+tlwy
+	 iBmiFe/deQ99T9qEWMwzKllSMwsBYcmHfoUIrmvs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A1412F8049C;
-	Thu, 27 May 2021 01:10:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E4281F804B2;
+	Thu, 27 May 2021 01:10:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6AA16F80274; Thu, 27 May 2021 01:10:32 +0200 (CEST)
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com
- [IPv6:2a00:1450:4864:20::12e])
+ id 952DFF80430; Thu, 27 May 2021 01:10:34 +0200 (CEST)
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com
+ [IPv6:2a00:1450:4864:20::133])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4F3F9F80212;
- Thu, 27 May 2021 01:10:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F3F9F80212
+ by alsa1.perex.cz (Postfix) with ESMTPS id DBFC9F802CA
+ for <alsa-devel@alsa-project.org>; Thu, 27 May 2021 01:10:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBFC9F802CA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="E+voA5DP"
-Received: by mail-lf1-x12e.google.com with SMTP id f30so5066283lfj.1;
- Wed, 26 May 2021 16:10:27 -0700 (PDT)
+ header.b="Owjd8HWL"
+Received: by mail-lf1-x133.google.com with SMTP id q1so5047046lfo.3
+ for <alsa-devel@alsa-project.org>; Wed, 26 May 2021 16:10:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=6cqfoBUBIBZBnXHCZDwrElhf2ir+Bt3tbcHnECyy/1M=;
- b=E+voA5DP9ip8MLWp4XLYG2OuwruYbMDCfDQ7oqaYWWtBxhM1nVixvjfaZarsFImE8L
- jZSs9N5GHZAcZgPk02QqXnPp+DbpQYO6La58ZSvPQLgef3kUGJRZbg7tPAzdq85zandR
- TpLI073zWBA1AMn8+au6kN2xpDK9d5IjhoHaC4W0cFuJbuRTY1bqBLPYcdXxDEbX90Gl
- bJUFosbC9IZcA2z0sRIpbTOzgElAlwHIeIEPhcxVOql1FpnGoRwler0SuQXSUo2gdvF+
- kEODqbiFdu3NtYNw7222pT73eCeBif2xgzuFr5kLnHyI5IHShJ4la9kgECaWQD+4JRsp
- hRPw==
+ bh=rafWoYI/41oLLgH0zc0m9Aor5D1w1XH8dZGtN18a1Oo=;
+ b=Owjd8HWLgAG1uF9eUcz4l+ojxm0RUTnNZxefGCvnrtLD7VD2G/cJfHxt8j2MsdgeCw
+ lIIMx+FS5QWxozDGhHh+kLRt2PRo8HA9dXQ2kDt0kO2et3Cwe3RVCNd2wVSYvsrF98O1
+ 6YJ7PZQKyz6T9CsiTBsVhiQuBJGrrRb4DVIqBqOZ95324yQzPH/o9WKMUHp0wOv7w/gI
+ dDMcsJSBcGG0IWxRybhx9DRlB9ZTSX/m70Hqv0SLchNUMrIIOPoGuXMPLa4TvYqRbPVv
+ j8WsvmXygkf0u40PjKoRGFZe+PxGi37msbolBb0W+h1QNk9GvO+2XCbdkgfDg+8XialD
+ 6RNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=6cqfoBUBIBZBnXHCZDwrElhf2ir+Bt3tbcHnECyy/1M=;
- b=b+kVjlLTY9UmuyN9E11xu34HVBTykn0mPgGFQNUz13J5FZyCFzTYFwfeGE2gmyfiMF
- cMI6Mdo8W1mMA3ZQql2+inrbPoAWVJfvlsQF143N6EL5vJ5yMJHNAUoaKh0lDmDlUm4T
- Nvgm5dHcOgvnOa74OY3IRVdxtwrlj9GQlcyhpHBmt3QXqnTdSYhTconCE29LlMSH3I9L
- L2votRoXej/n8/s7VUwMQssnGer84d4bPXSPqpGxiaim9X30Py2DQxQ53AfaFIyA+U6j
- GgQzFiazzQwFTMDfI73RbOvdhP46xQ9QIlNBE9LCcyo2F7MKkR81Xx1VNJ/LUSTZC7yd
- rvIw==
-X-Gm-Message-State: AOAM532kwuGbyKkvRYkMG2WT6qbaZtzLxR5Vi5yOMjnk75wjlf1HHLui
- xWQcWuZwo6TyjreEHHeK6oQ=
-X-Google-Smtp-Source: ABdhPJx80KNIisL1p6ZVTMU6a/aB8NzELevSRe5WFSORcB66wyOizl7X18sXKzNGPD0naO6eoIuKQg==
-X-Received: by 2002:a19:4085:: with SMTP id n127mr308460lfa.415.1622070626866; 
- Wed, 26 May 2021 16:10:26 -0700 (PDT)
+ bh=rafWoYI/41oLLgH0zc0m9Aor5D1w1XH8dZGtN18a1Oo=;
+ b=IIYwZmGb3gHhOS3T1mcOPA2AS7Jy97McC4i85dJTvLAnXmxcZQzo54d6t+QMRjgZEX
+ FJ3UgOTdwQkTzPcJBfDxIVR1A7/K5Rtl+NHwqZwkr2qEHbmDQfST1mTqvXwldX+SVu1V
+ dgjeQBD24ojd0uNyqdWpKfgykAI6kvYD6sZ8GU8L2EM/KWgACx2ViUj5Rzz2DAHZ31MN
+ LgbRCSiSjtGGt6oUkjJBQFoaBNsfW24QswoLCJQ2qEElPCZnkXUUtUdOgeOg2ANmJuSg
+ 0No7Cusc/R75PHHHI1c35GpxrmIjUzD0eEH9yr9leozCmCtO9zlq2nHJTVxvMybs7Kod
+ yUMQ==
+X-Gm-Message-State: AOAM531tyYaYmWBJ42u9lUQY+Orlx80hmI7JGUog6G07WgGx42znOBFe
+ g+BFUP6s8uP2te7TX07Xitc=
+X-Google-Smtp-Source: ABdhPJyitHNPPsdsydEW2Ko0uLs6O40Fb+AnkAS84YPdbkTVGgy3LG8qxDVCn86Lx9O0HZfndd8IrQ==
+X-Received: by 2002:a05:6512:21a:: with SMTP id
+ a26mr321020lfo.468.1622070625906; 
+ Wed, 26 May 2021 16:10:25 -0700 (PDT)
 Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se.
  [98.128.228.193])
  by smtp.gmail.com with ESMTPSA id d5sm35802lfi.144.2021.05.26.16.10.25
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 26 May 2021 16:10:26 -0700 (PDT)
+ Wed, 26 May 2021 16:10:25 -0700 (PDT)
 From: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5/5] ASoC: SOF: Intel: Constify sof_probe_compressed_ops
-Date: Thu, 27 May 2021 01:10:13 +0200
-Message-Id: <20210526231013.46530-6-rikard.falkeborn@gmail.com>
+Subject: [PATCH 4/5] ASoC: qcom: q6asm-dai: Constify static struct
+ snd_compress_ops
+Date: Thu, 27 May 2021 01:10:12 +0200
+Message-Id: <20210526231013.46530-5-rikard.falkeborn@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210526231013.46530-1-rikard.falkeborn@gmail.com>
 References: <20210526231013.46530-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- Rikard Falkeborn <rikard.falkeborn@gmail.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, sound-open-firmware@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ linux-kernel@vger.kernel.org, Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,43 +112,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The only usage of sof_probe_compressed_ops is to assign its address to
-the compress_ops field in the snd_soc_component_driver struct, which is
-a pointer to const. The assignment is done in sound/soc/sof/pcm.c. Make
-it const to allow the compiler to put it in read-only memory.
+The snd_compress_ops structs are only stored in the compress_ops field
+of a snd_soc_component_driver struct, so make it const to allow the
+compiler to put it in read-only memory.
 
 Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 ---
- sound/soc/sof/compress.c | 2 +-
- sound/soc/sof/compress.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/qcom/qdsp6/q6asm-dai.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/compress.c b/sound/soc/sof/compress.c
-index 2d4969c705a4..57d5bf0a171e 100644
---- a/sound/soc/sof/compress.c
-+++ b/sound/soc/sof/compress.c
-@@ -13,7 +13,7 @@
- #include "ops.h"
- #include "probe.h"
+diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
+index 9766725c2916..5ff56a735419 100644
+--- a/sound/soc/qcom/qdsp6/q6asm-dai.c
++++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
+@@ -1169,7 +1169,7 @@ static int q6asm_dai_compr_get_codec_caps(struct snd_soc_component *component,
+ 	return 0;
+ }
  
--struct snd_compress_ops sof_probe_compressed_ops = {
-+const struct snd_compress_ops sof_probe_compressed_ops = {
- 	.copy		= sof_probe_compr_copy,
- };
- EXPORT_SYMBOL(sof_probe_compressed_ops);
-diff --git a/sound/soc/sof/compress.h b/sound/soc/sof/compress.h
-index ca8790bd4b13..4448c799e14b 100644
---- a/sound/soc/sof/compress.h
-+++ b/sound/soc/sof/compress.h
-@@ -13,7 +13,7 @@
- 
- #include <sound/compress_driver.h>
- 
--extern struct snd_compress_ops sof_probe_compressed_ops;
-+extern const struct snd_compress_ops sof_probe_compressed_ops;
- 
- int sof_probe_compr_open(struct snd_compr_stream *cstream,
- 		struct snd_soc_dai *dai);
+-static struct snd_compress_ops q6asm_dai_compress_ops = {
++static const struct snd_compress_ops q6asm_dai_compress_ops = {
+ 	.open		= q6asm_dai_compr_open,
+ 	.free		= q6asm_dai_compr_free,
+ 	.set_params	= q6asm_dai_compr_set_params,
 -- 
 2.31.1
 
