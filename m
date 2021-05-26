@@ -2,75 +2,85 @@ Return-Path: <SRS0=tEYa=KV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2847C47089
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 May 2021 15:13:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5F6DC47082
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 May 2021 15:23:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9536B6101E
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 May 2021 15:13:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9536B6101E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id B8D78613EC
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 May 2021 15:23:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B8D78613EC
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C5E71737;
-	Wed, 26 May 2021 17:12:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C5E71737
+	by alsa0.perex.cz (Postfix) with ESMTPS id D71A81739;
+	Wed, 26 May 2021 17:22:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D71A81739
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622042003;
-	bh=lMNsY65BW7EhgYWs2guDgDSuBZxaUdBRSjf/KPcmA9I=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1622042578;
+	bh=mjujcDKapi92/1uko+Zmt45p9R2JcRlM5uRMk5ZXlow=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JdDuXlZQ7Hs6o++qB2oSkg5fDKW71QQCkxmfy31wXs+8pekqZPYSqPbCPEwYvKMgB
-	 dYm+VnZQVj1gmVquAGkb1ez10qCWgd5haPAFInBwx3kls3V6M30ZO5ScEFrYrH9n58
-	 KmKoybXKyM8jTFYqKsDX5Aod2JqUPe/MPZBSsEO0=
+	b=DRVDmVD910eHWqTlFOrNa2hEY+NGqYRfDVaMdMa9hERoxlJzsKKcqUuGLKWkWQEh9
+	 q5ySjxaRauYRxSiqmJ9uKWks9mM0mHC0mvz3wT4DYqe8pB7KYrkdKhPkQpuXo3JqeA
+	 4e6IgSxWJikbBi+d9dKbOBniBPxa55XIuRLWa25k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E1DEDF8011B;
-	Wed, 26 May 2021 17:12:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74C00F8024E;
+	Wed, 26 May 2021 17:22:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6A940F8025C; Wed, 26 May 2021 17:12:31 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id F3C9AF8025C; Wed, 26 May 2021 17:22:06 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3E3B1F8011B
- for <alsa-devel@alsa-project.org>; Wed, 26 May 2021 17:12:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E3B1F8011B
-IronPort-SDR: 4Vs0MD5OeaKgHCMf2E4cssTpbpQesoDw/RLhtlyEPa5cS7nHjb1iwanfWHPbKxX7n8NWYcbvty
- MRBqexSVLSSA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="223675288"
-X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; d="scan'208";a="223675288"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 May 2021 08:12:20 -0700
-IronPort-SDR: p8RSury1/u7Qkr2YDVO/S/8sJRUipHiMLslqo0W2NNr8zF3G39VefdMoyaqDXJ8wOz56ibQJ6s
- afc/tkIQHDzg==
-X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; d="scan'208";a="464840848"
-Received: from dlpatter-mobl1.amr.corp.intel.com (HELO [10.254.179.123])
- ([10.254.179.123])
- by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 May 2021 08:12:19 -0700
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91ADAF8011B
+ for <alsa-devel@alsa-project.org>; Wed, 26 May 2021 17:22:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91ADAF8011B
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="h1wALFb5"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="AqJ1u9nl"
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1622042517; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=qHPI/SBU9egMaXs5Nx6gofmCMs4+Q9WeUYFfTrzVzNA=;
+ b=h1wALFb51lXewXo0fkwAnHxqR4jl4xLOZhm8JFHgpz7pElmdCkjhxU60gYs+0mXjn/MDiB
+ 66/UdG1L7CpcdfrkkVzO7XBKTrWiSFR713qNGkl7evXHWV943h41fxp6JjPCyH9pL/kb36
+ 92ee5726t5HCNS/1EFeSlw6TNpSy1Kk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1622042517;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=qHPI/SBU9egMaXs5Nx6gofmCMs4+Q9WeUYFfTrzVzNA=;
+ b=AqJ1u9nl7IVqh733Gb3c5iu7FqsjMYE0UI37gfmlXJZS72gMBDAp12hPHIW+6khcsRL+uB
+ +NxxmfYDcloVqmBg==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 1A161B273;
+ Wed, 26 May 2021 15:21:57 +0000 (UTC)
+Date: Wed, 26 May 2021 17:21:56 +0200
+Message-ID: <s5h1r9ta5bf.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: Sparse errors
-To: Takashi Iwai <tiwai@suse.de>
+In-Reply-To: <afaf87c4-7ad9-626c-efb0-2b1c254950da@linux.intel.com>
 References: <6b86f44e-82e0-3530-b579-1b054f459880@linux.intel.com>
  <s5ha6oiaqo6.wl-tiwai@suse.de>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <afaf87c4-7ad9-626c-efb0-2b1c254950da@linux.intel.com>
-Date: Wed, 26 May 2021 09:17:18 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <s5ha6oiaqo6.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+ <afaf87c4-7ad9-626c-efb0-2b1c254950da@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Cc: Colin Ian King <colin.king@canonical.com>, alsa-devel@alsa-project.org,
  Dan Carpenter <dan.carpenter@oracle.com>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -88,78 +98,81 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 5/26/21 2:40 AM, Takashi Iwai wrote:
-> On Tue, 25 May 2021 21:32:27 +0200,
-> Pierre-Louis Bossart wrote:
->>
->> Hi Takashi,
->> Sparse reports a lot of new issues in our last checks with more options:
->>
->> export ARCH=x86_64 CF="-Wsparse-error -Wsparse-all
->> -Wno-bitwise-pointer -Wno-pointer-arith -Wno-typesign -Wnoshadow
->> -Wno-sizeof-bool"
->> make -k sound/ C=2
->>
->> most are linked to the __user and pcm_format_t restricted types, but I
->> found the simpler ones below which are useless comparisons. I can send
->> a patch for the last but not sure how to address the first two.
->>
->> Thanks for your feedback
->> -Pierre
->>
->> sound/core/info.c:95:38: error: self-comparison always evaluates to false
->>
->> 	if (pos < 0 || (long) pos != pos || (ssize_t) count < 0)
->> 		return false;
->>
->> not sure what the second comparison is meant to check?
+On Wed, 26 May 2021 16:17:18 +0200,
+Pierre-Louis Bossart wrote:
 > 
-> As Dan suggested, it's a check only for 32bit architecture for a 64bit
-> value.
-
-Isn't there a better way to check this?
-
->> sound/drivers/opl3/opl3_midi.c:183:60: error: self-comparison always
->> evaluates to false
->>
->> This indeed makes no sense. the voice_time and vp->time are not
->> changed in the loop, the test is either redundant or something else is
->> missing.
 > 
-> The code doesn't look right, indeed.  It's likely meant to be vp2
-> instead of vp.
 > 
-> --- a/sound/drivers/opl3/opl3_midi.c
-> +++ b/sound/drivers/opl3/opl3_midi.c
-> @@ -180,8 +180,7 @@ static int opl3_get_voice(struct snd_opl3 *opl3, int instr_4op,
->   			if (vp2->state == SNDRV_OPL3_ST_ON_2OP) {
->   				/* kill two voices, EXPENSIVE */
->   				bp++;
-> -				voice_time = (voice_time > vp->time) ?
-> -					voice_time : vp->time;
-> +				voice_time = max(voice_time, vp2->time);
->   			}
->   		} else {
->   			/* allocate 2op voice */
-
-It's really old code, unchanged since the first git commit in 2005... 
-Are you comfortable changing this code? One of those cases where if 
-people didn't notice an issue in 16+ years maybe no one cares or even 
-uses this driver...
-
->> sound/pci/lx6464es/lx_core.c:677:34: error: self-comparison always
->> evaluates to false
->>
->> That seems like dead code indeed:
->>
->> 	u32 channels = runtime->channels;
->>
->> 	if (runtime->channels != channels)
->> 		dev_err(chip->card->dev, "channel count mismatch: %d vs %d",
->> 			   runtime->channels, channels);
+> On 5/26/21 2:40 AM, Takashi Iwai wrote:
+> > On Tue, 25 May 2021 21:32:27 +0200,
+> > Pierre-Louis Bossart wrote:
+> >>
+> >> Hi Takashi,
+> >> Sparse reports a lot of new issues in our last checks with more options:
+> >>
+> >> export ARCH=x86_64 CF="-Wsparse-error -Wsparse-all
+> >> -Wno-bitwise-pointer -Wno-pointer-arith -Wno-typesign -Wnoshadow
+> >> -Wno-sizeof-bool"
+> >> make -k sound/ C=2
+> >>
+> >> most are linked to the __user and pcm_format_t restricted types, but I
+> >> found the simpler ones below which are useless comparisons. I can send
+> >> a patch for the last but not sure how to address the first two.
+> >>
+> >> Thanks for your feedback
+> >> -Pierre
+> >>
+> >> sound/core/info.c:95:38: error: self-comparison always evaluates to false
+> >>
+> >> 	if (pos < 0 || (long) pos != pos || (ssize_t) count < 0)
+> >> 		return false;
+> >>
+> >> not sure what the second comparison is meant to check?
+> >
+> > As Dan suggested, it's a check only for 32bit architecture for a 64bit
+> > value.
 > 
-> Yes, this can be deleted.
+> Isn't there a better way to check this?
 
-I'll send a patch for this, thanks for the feedback.
+Sure, there are hundreds other ways, but they might be longer :)
+If any, a comment would be deserved.
+
+> >> sound/drivers/opl3/opl3_midi.c:183:60: error: self-comparison always
+> >> evaluates to false
+> >>
+> >> This indeed makes no sense. the voice_time and vp->time are not
+> >> changed in the loop, the test is either redundant or something else is
+> >> missing.
+> >
+> > The code doesn't look right, indeed.  It's likely meant to be vp2
+> > instead of vp.
+> >
+> > --- a/sound/drivers/opl3/opl3_midi.c
+> > +++ b/sound/drivers/opl3/opl3_midi.c
+> > @@ -180,8 +180,7 @@ static int opl3_get_voice(struct snd_opl3 *opl3, int instr_4op,
+> >   			if (vp2->state == SNDRV_OPL3_ST_ON_2OP) {
+> >   				/* kill two voices, EXPENSIVE */
+> >   				bp++;
+> > -				voice_time = (voice_time > vp->time) ?
+> > -					voice_time : vp->time;
+> > +				voice_time = max(voice_time, vp2->time);
+> >   			}
+> >   		} else {
+> >   			/* allocate 2op voice */
+> 
+> It's really old code, unchanged since the first git commit in
+> 2005... Are you comfortable changing this code? One of those cases
+> where if people didn't notice an issue in 16+ years maybe no one cares
+> or even uses this driver...
+
+It'll be a safe change, so I'd apply the fix.
+
+It's about the choice of an OPL3 voice, and the function tries to find
+the best one.  The code seems to want to align with the timestamp of
+the coupled voice, and even if it's not right, the impact is very
+limited.
+
+
+thanks,
+
+Takashi
