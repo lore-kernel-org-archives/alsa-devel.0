@@ -6,66 +6,61 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BA81C47088
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 May 2021 22:07:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 983BAC47082
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 May 2021 22:55:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 64D5F600D3
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 May 2021 22:07:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 64D5F600D3
+	by mail.kernel.org (Postfix) with ESMTPS id 4F942613D2
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 May 2021 22:55:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4F942613D2
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2E7221707;
-	Thu, 27 May 2021 00:06:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E7221707
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E4B71707;
+	Thu, 27 May 2021 00:54:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E4B71707
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622066846;
-	bh=nzMyW5YnMXhUB/hSL2qY3DWv0mOC82VKX7WYfElzaK8=;
+	s=default; t=1622069705;
+	bh=VpXYYJj1Zb4QS36ysekejDVbpPB/wG9uCRo8v5a85m4=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hTHq20QyMNqItl+/XNI4j3CMi851aEZeWRLM3liSgTqVsdANOymwA416634aM3eYC
-	 pRvXgMT+uAIE5f2RZAvLzgsAnuTN5Hdg/hCePRduqoTtNptSYEYge39WGe4bavrTk/
-	 ccEet2w9g7eBJqe4Jlf35E/L2jqwGzYyiRaju6gE=
+	b=RkmnD8zwWCstSLYVzs35ok2Rrk/+C5AfD8EoNfJN1hNnZwdex4KsR4FXDbXFe7toC
+	 jh5lvAgi16iLRsFWV83JAbxjrtExKgi1C14GALU20IN4Qd7ug/cF46ZAhudm8TM17c
+	 U0Up7UHOwjaaZzhYyGTPDRmdUXj0LaX5Oh5cblp4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C1754F80260;
-	Thu, 27 May 2021 00:06:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9BE1DF80260;
+	Thu, 27 May 2021 00:54:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E8ACDF80264; Thu, 27 May 2021 00:06:34 +0200 (CEST)
+ id 2847FF80264; Thu, 27 May 2021 00:54:13 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id B5820F8025C
- for <alsa-devel@alsa-project.org>; Thu, 27 May 2021 00:06:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5820F8025C
-Date: 27 May 2021 07:06:19 +0900
-X-IronPort-AV: E=Sophos;i="5.82,331,1613401200"; d="scan'208";a="82346102"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 27 May 2021 07:06:19 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 35C60F80212
+ for <alsa-devel@alsa-project.org>; Thu, 27 May 2021 00:54:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35C60F80212
+Date: 27 May 2021 07:54:04 +0900
+X-IronPort-AV: E=Sophos;i="5.82,333,1613401200"; d="scan'208";a="82348482"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 27 May 2021 07:54:04 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 837214015553;
- Thu, 27 May 2021 07:06:19 +0900 (JST)
-Message-ID: <87o8cxm9pg.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 9C1874122747;
+ Thu, 27 May 2021 07:54:04 +0900 (JST)
+Message-ID: <87mtshm7hv.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 3/3] ASoC: rsnd: add null CLOCKIN support
-In-Reply-To: <CAMuHMdVhnKeztftOJEZhSg8bXArzUDXAmHSMPVfbMamV3ihw+g@mail.gmail.com>
-References: <87y2c4oe3y.wl-kuninori.morimoto.gx@renesas.com>
- <87tumsoe2p.wl-kuninori.morimoto.gx@renesas.com>
- <CAMuHMdXLYvEBE0bVk=8D+GkuaHRUvdTayCQPqTYAkPJEaW8MDQ@mail.gmail.com>
- <87zgwimnuu.wl-kuninori.morimoto.gx@renesas.com>
- <CAMuHMdVhnKeztftOJEZhSg8bXArzUDXAmHSMPVfbMamV3ihw+g@mail.gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 2/7] ASoC: soc-core: add snd_soc_runtime_get_dai_fmt()
+In-Reply-To: <87tumqmcut.wl-kuninori.morimoto.gx@renesas.com>
+References: <871racbx0w.wl-kuninori.morimoto.gx@renesas.com>
+ <87y2ckaifm.wl-kuninori.morimoto.gx@renesas.com>
+ <YK2GOSIgiz2EmpUe@sirena.org.uk>
+ <87tumqmcut.wl-kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Mark Brown <broonie@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,29 +77,17 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Geert
+Hi Mark again
 
-> Oh right, I missed the static clk_hw pointer.
-> What if you unload the snd-soc-rcar.ko module?
+> >   1. Try to match both DAI's 1st choice, if match use that.
+> >   2. Pick one DAI A, try it's 2nd choice with the other DAI B's 1st
+> >      choice.
+> >   3. Swap and try 1st choice of A and 2nd choice of B.
+> >   4. Try 2nd choices of both DAIs.
 
-Hmm.. indeed.
-It needs something..
-Thank you for poining it.
-
->     #define for_each_rsnd_clk(pos, adg, i)          \
->             for (i = 0; (pos) = adg->clk[i], i < CLKMAX; i++)            \
->                     if (pos) {                      \
->                             continue;               \
->                     } else
-
-Wow!! I didn't know this technique.
-Indeed it can use NULL pointer.
-
-But, I want to avoid "if (pos) else" code as much as possible,
-and keep simple code.
-It can handle all clk case without thinking it if it has null_clk.
-
-Why you don't want null_clk ??
+About this, Because we might use Multi-CPU/Codec,
+step 3 is difficult.
+Except it I can implement.
 
 Thank you for your help !!
 
