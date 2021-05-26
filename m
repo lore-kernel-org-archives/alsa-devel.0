@@ -2,101 +2,84 @@ Return-Path: <SRS0=tEYa=KV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2414EC47088
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 May 2021 23:13:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 319C9C47082
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 May 2021 23:20:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 34133613CC
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 May 2021 23:13:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 34133613CC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 573D0613C5
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 May 2021 23:20:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 573D0613C5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD91F173F;
-	Thu, 27 May 2021 01:12:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD91F173F
+	by alsa0.perex.cz (Postfix) with ESMTPS id CBD1E1707;
+	Thu, 27 May 2021 01:19:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBD1E1707
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622070820;
-	bh=Gi6jdcyOmlfiW0F48mVfAwD23JaGU1abAUimqzG6f/U=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1622071243;
+	bh=ciZ5AzQ3UeZYvNdtuH0evLsZQ+TmtURSB14Bq6rutBM=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hTGY9OkRKzAXQEJ1eCpPW7K+f2NqCed5wa5mLG9+h5zEyp2wDOfcQBdXyV5rIm3/4
-	 6CGEpYia/C9HCAO0xABDapdXSVhA07Mei92shop8TX22og41Gn0mPgs56SkjX+tlwy
-	 iBmiFe/deQ99T9qEWMwzKllSMwsBYcmHfoUIrmvs=
+	b=BFu4/RU9apFl94nrE/bOWbtosi6kXwRBXTd9mHXHYkzmEurBLpbHn3MWtV4mkZbI9
+	 pVJ7H9J+8dGbOpIqPL2HUars3HHtUbvgS9JarwLMN8RmJiwB30OySda6MHHY1jEepQ
+	 GZCXv5INFLjmfmdqYKKIIfDMgM0+VZbih4uGEf+o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E4281F804B2;
-	Thu, 27 May 2021 01:10:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5BC8AF80260;
+	Thu, 27 May 2021 01:19:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 952DFF80430; Thu, 27 May 2021 01:10:34 +0200 (CEST)
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com
- [IPv6:2a00:1450:4864:20::133])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 0C649F80264; Thu, 27 May 2021 01:19:52 +0200 (CEST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DBFC9F802CA
- for <alsa-devel@alsa-project.org>; Thu, 27 May 2021 01:10:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBFC9F802CA
+ by alsa1.perex.cz (Postfix) with ESMTPS id B4139F80212
+ for <alsa-devel@alsa-project.org>; Thu, 27 May 2021 01:19:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4139F80212
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Owjd8HWL"
-Received: by mail-lf1-x133.google.com with SMTP id q1so5047046lfo.3
- for <alsa-devel@alsa-project.org>; Wed, 26 May 2021 16:10:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=rafWoYI/41oLLgH0zc0m9Aor5D1w1XH8dZGtN18a1Oo=;
- b=Owjd8HWLgAG1uF9eUcz4l+ojxm0RUTnNZxefGCvnrtLD7VD2G/cJfHxt8j2MsdgeCw
- lIIMx+FS5QWxozDGhHh+kLRt2PRo8HA9dXQ2kDt0kO2et3Cwe3RVCNd2wVSYvsrF98O1
- 6YJ7PZQKyz6T9CsiTBsVhiQuBJGrrRb4DVIqBqOZ95324yQzPH/o9WKMUHp0wOv7w/gI
- dDMcsJSBcGG0IWxRybhx9DRlB9ZTSX/m70Hqv0SLchNUMrIIOPoGuXMPLa4TvYqRbPVv
- j8WsvmXygkf0u40PjKoRGFZe+PxGi37msbolBb0W+h1QNk9GvO+2XCbdkgfDg+8XialD
- 6RNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=rafWoYI/41oLLgH0zc0m9Aor5D1w1XH8dZGtN18a1Oo=;
- b=IIYwZmGb3gHhOS3T1mcOPA2AS7Jy97McC4i85dJTvLAnXmxcZQzo54d6t+QMRjgZEX
- FJ3UgOTdwQkTzPcJBfDxIVR1A7/K5Rtl+NHwqZwkr2qEHbmDQfST1mTqvXwldX+SVu1V
- dgjeQBD24ojd0uNyqdWpKfgykAI6kvYD6sZ8GU8L2EM/KWgACx2ViUj5Rzz2DAHZ31MN
- LgbRCSiSjtGGt6oUkjJBQFoaBNsfW24QswoLCJQ2qEElPCZnkXUUtUdOgeOg2ANmJuSg
- 0No7Cusc/R75PHHHI1c35GpxrmIjUzD0eEH9yr9leozCmCtO9zlq2nHJTVxvMybs7Kod
- yUMQ==
-X-Gm-Message-State: AOAM531tyYaYmWBJ42u9lUQY+Orlx80hmI7JGUog6G07WgGx42znOBFe
- g+BFUP6s8uP2te7TX07Xitc=
-X-Google-Smtp-Source: ABdhPJyitHNPPsdsydEW2Ko0uLs6O40Fb+AnkAS84YPdbkTVGgy3LG8qxDVCn86Lx9O0HZfndd8IrQ==
-X-Received: by 2002:a05:6512:21a:: with SMTP id
- a26mr321020lfo.468.1622070625906; 
- Wed, 26 May 2021 16:10:25 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se.
- [98.128.228.193])
- by smtp.gmail.com with ESMTPSA id d5sm35802lfi.144.2021.05.26.16.10.25
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 26 May 2021 16:10:25 -0700 (PDT)
-From: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4/5] ASoC: qcom: q6asm-dai: Constify static struct
- snd_compress_ops
-Date: Thu, 27 May 2021 01:10:12 +0200
-Message-Id: <20210526231013.46530-5-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210526231013.46530-1-rikard.falkeborn@gmail.com>
-References: <20210526231013.46530-1-rikard.falkeborn@gmail.com>
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="OF6bzLxg"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
+ MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=ZqNavKRWEoT6x1NcJ+AMgYD2IfBpXmQ926CizGXKJ0A=; b=OF6bzLxgXsJEHAc66hEAsXuzk/
+ oZqNQRbDfTKzWpykUZHnh+kLh/hexx1miCZ1e4aZyOMYnB605vpGzZQTYRp4GUicBIVioDVYuzC6T
+ H5OpPbQtHDxGXIAI8UsCk68QhAxPWP0Oryjxq8/CRB2CNvNWbtTJuXw9Ovhn6vl87C4w=;
+Received: from 94.196.90.140.threembb.co.uk ([94.196.90.140]
+ helo=fitzroy.sirena.org.uk)
+ by heliosphere.sirena.org.uk with esmtpsa (TLS1.3) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.94.2)
+ (envelope-from <broonie@sirena.org.uk>)
+ id 1lm2oW-006AWs-9Q; Wed, 26 May 2021 23:19:48 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+ id 885A3D0E9DC; Thu, 27 May 2021 00:19:46 +0100 (BST)
+Date: Thu, 27 May 2021 00:19:46 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH v2 2/7] ASoC: soc-core: add snd_soc_runtime_get_dai_fmt()
+Message-ID: <YK7Xkp6eEGIFmdeK@sirena.org.uk>
+References: <871racbx0w.wl-kuninori.morimoto.gx@renesas.com>
+ <87y2ckaifm.wl-kuninori.morimoto.gx@renesas.com>
+ <YK2GOSIgiz2EmpUe@sirena.org.uk>
+ <87tumqmcut.wl-kuninori.morimoto.gx@renesas.com>
+ <87mtshm7hv.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
- linux-kernel@vger.kernel.org, Rikard Falkeborn <rikard.falkeborn@gmail.com>,
- Takashi Iwai <tiwai@suse.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="2HjWWqATZji6/yFb"
+Content-Disposition: inline
+In-Reply-To: <87mtshm7hv.wl-kuninori.morimoto.gx@renesas.com>
+X-Cookie: A penny saved has not been spent.
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,28 +95,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The snd_compress_ops structs are only stored in the compress_ops field
-of a snd_soc_component_driver struct, so make it const to allow the
-compiler to put it in read-only memory.
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- sound/soc/qcom/qdsp6/q6asm-dai.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--2HjWWqATZji6/yFb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-index 9766725c2916..5ff56a735419 100644
---- a/sound/soc/qcom/qdsp6/q6asm-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-@@ -1169,7 +1169,7 @@ static int q6asm_dai_compr_get_codec_caps(struct snd_soc_component *component,
- 	return 0;
- }
- 
--static struct snd_compress_ops q6asm_dai_compress_ops = {
-+static const struct snd_compress_ops q6asm_dai_compress_ops = {
- 	.open		= q6asm_dai_compr_open,
- 	.free		= q6asm_dai_compr_free,
- 	.set_params	= q6asm_dai_compr_set_params,
--- 
-2.31.1
+On Thu, May 27, 2021 at 07:54:04AM +0900, Kuninori Morimoto wrote:
 
+> > >   1. Try to match both DAI's 1st choice, if match use that.
+> > >   2. Pick one DAI A, try it's 2nd choice with the other DAI B's 1st
+> > >      choice.
+> > >   3. Swap and try 1st choice of A and 2nd choice of B.
+> > >   4. Try 2nd choices of both DAIs.
+
+> About this, Because we might use Multi-CPU/Codec,
+> step 3 is difficult.
+> Except it I can implement.
+
+Yeah, I think it's probably too hard to implement the whole thing
+and may be safer to simply go with what you've implemented
+already (with the documentation changes) as a first step.  Like I
+said I'm a little worried about what happens if we change the
+algorithm later.
+
+--2HjWWqATZji6/yFb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCu15EACgkQJNaLcl1U
+h9Cf6Af9FMcHVVbSmVMin9ldd/bWObOcK8G1trapcD1qH//kX99QD4MmaNjWl0S+
+JwFiLKrxiJYiSebhwYlv6f7A6/+BYhPTzi9qvL3HvoYwlOKFC30Sapokae/PYrNS
+kDyS6w2xmaMnE4P/cvWrDLCtAapyWSkCi6DLjZKJ1vx35i50Yq8QL1bNoMfN7h+7
+WjPWzGV+On2uq00A/Id3149mOvBFHFQV6+GOCCO1E7/I8k8nxiRJQXCsPfgkD1VT
+myVaxIsFtzdJGbysEsypW7ejuXsPeytJwXkIrWUFrhhPk/p9PiKaMb5aHLgzM/Vs
+qT9NL90aDZUfjPa7w3FVH7tcgll31A==
+=ru3V
+-----END PGP SIGNATURE-----
+
+--2HjWWqATZji6/yFb--
