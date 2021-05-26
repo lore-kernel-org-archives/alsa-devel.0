@@ -2,73 +2,80 @@ Return-Path: <SRS0=tEYa=KV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21148C47082
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 May 2021 19:32:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8D63C47082
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 May 2021 20:22:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 11F2F613D3
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 May 2021 19:32:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11F2F613D3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 999A4613D7
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 May 2021 20:22:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 999A4613D7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 040FB1720;
-	Wed, 26 May 2021 21:31:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 040FB1720
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5CBCA170D;
+	Wed, 26 May 2021 22:21:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CBCA170D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622057525;
-	bh=L8vGh0zuRYiuxgJNAi39v0Q+g888U666eeUGM/K/vTI=;
+	s=default; t=1622060568;
+	bh=WXI12XNTHuBRM2fjrdB692zNZy/mjj9CXfE0Y7mSC0g=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UnSk3fKHt8D8+4xv//Um1hCg1YaEtPeEvDKoMaov5boarCeaDrEos9TCdMe+OsM+2
-	 h4wlzEoBItlBQPQuaQw1TW/fe3DYEevAUrta8sAaK4yYyldc7LZ6WQUVEXh/THTrD3
-	 lZQpvF7ivwxTw2h6jG8Pmv+UhkpSdpcZk5jgcs14=
+	b=T12qMdCvzV6qT4IbDKiGey1ANsrFL/EudBWgpt02eKWWubg/LdcekDOt+I6D5FCC/
+	 ry8oeOMJp0r2uL4i9fv9BKvKNa8civvIMxbDAhqev/4nnMDJu1woHpinth+kTmoU8s
+	 IXViY85RUD3QEZOqqnRLodJmgzdNO/XJCQWWSe1k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 734ACF8026F;
-	Wed, 26 May 2021 21:30:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D4577F8026F;
+	Wed, 26 May 2021 22:21:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8B8F4F80264; Wed, 26 May 2021 21:30:23 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id 3503DF80212; Wed, 26 May 2021 22:21:56 +0200 (CEST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03F21F800B1
- for <alsa-devel@alsa-project.org>; Wed, 26 May 2021 21:30:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03F21F800B1
-IronPort-SDR: tHAEL/TSNsEAtfE4ggm1JHKVjYaUnEedC2fci+6TAVYd6fhHjjtT72M/r75sy7SBeHRUeKqXLd
- KgFpwrTlh9sA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="266447561"
-X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; d="scan'208";a="266447561"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 May 2021 12:30:08 -0700
-IronPort-SDR: fy/ecthK3LrWzv4+FMfO1NnpVm/KScDKwmEPyk7BaEYXsywrWh1DOKurVk1is2ccAz3YVL52uv
- 1BI6htnDjgrA==
-X-IronPort-AV: E=Sophos;i="5.82,331,1613462400"; d="scan'208";a="414587779"
-Received: from pmundle-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
- ([10.254.181.158])
- by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 May 2021 12:30:07 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/2] ALSA: pci: lx6464es: remove useless self-comparison
-Date: Wed, 26 May 2021 14:29:57 -0500
-Message-Id: <20210526192957.449515-2-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210526192957.449515-1-pierre-louis.bossart@linux.intel.com>
-References: <20210526192957.449515-1-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5FC76F80212
+ for <alsa-devel@alsa-project.org>; Wed, 26 May 2021 22:21:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FC76F80212
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="smIneEiv"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=Content-Transfer-Encoding:
+ Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
+ To:From:Sender:Reply-To:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=uy1QePjrgCC4wOqAsmEnrUitp3M4B+SpgbQrQac7CNU=; b=smIneEiv8KZsx2ZktnTi9iL43Q
+ qzEPEoA3MgeACgnLSPRNsYNZ84ifEpLHhvZhkqkKxHPQtl1I2IZw7Jbg8PcX+Mod/6yD70IvO948F
+ 62xlRMrVudsSRotQmdyunka8seHnAiafnwsspQkq4wSvofIQO+iur9yhOR4zelK6+bJE=;
+Received: from 94.196.90.140.threembb.co.uk ([94.196.90.140]
+ helo=fitzroy.sirena.org.uk)
+ by heliosphere.sirena.org.uk with esmtpsa (TLS1.3) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.94.2)
+ (envelope-from <broonie@sirena.org.uk>)
+ id 1lm02H-0067nd-KX; Wed, 26 May 2021 20:21:49 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+ id 4064AD0E9E2; Wed, 26 May 2021 21:21:48 +0100 (BST)
+From: Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ David Rhodes <drhodes@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: cs35l3x: Use neutral language in amp drivers
+Date: Wed, 26 May 2021 21:21:43 +0100
+Message-Id: <162206049350.1916760.9320739424807049871.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210525194439.2232908-1-drhodes@opensource.cirrus.com>
+References: <20210525194439.2232908-1-drhodes@opensource.cirrus.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: broonie@kernel.org, Mark@sirena.org.uk, Brown@sirena.org.uk
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,33 +91,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Sparse throws the following warning:
+From: Mark Brown,,, <broonie@kernel.org>
 
-sound/pci/lx6464es/lx_core.c:677:34: error: self-comparison always
-evaluates to false
+On Tue, 25 May 2021 14:44:39 -0500, David Rhodes wrote:
+> Revise variable names and comments in
+> cs35l35 and cs35l36 amp drivers.
 
-This comparison and error message make no sense, let's remove them.
+Applied, thanks!
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/pci/lx6464es/lx_core.c | 4 ----
- 1 file changed, 4 deletions(-)
+[1/1] ASoC: cs35l3x: Use neutral language in amp drivers
+      commit: 4e7f0ea0e2e73851cd988f7c334c01d131048abf
 
-diff --git a/sound/pci/lx6464es/lx_core.c b/sound/pci/lx6464es/lx_core.c
-index f884f5a6a61c..d3f58a3d17fb 100644
---- a/sound/pci/lx6464es/lx_core.c
-+++ b/sound/pci/lx6464es/lx_core.c
-@@ -674,10 +674,6 @@ int lx_stream_set_format(struct lx6464es *chip, struct snd_pcm_runtime *runtime,
- 	u32 pipe_cmd = PIPE_INFO_TO_CMD(is_capture, pipe);
- 	u32 channels = runtime->channels;
- 
--	if (runtime->channels != channels)
--		dev_err(chip->card->dev, "channel count mismatch: %d vs %d",
--			   runtime->channels, channels);
--
- 	mutex_lock(&chip->msg_lock);
- 	lx_message_init(&chip->rmh, CMD_0C_DEF_STREAM);
- 
+Best regards,
 -- 
-2.25.1
-
+Mark Brown,,, <broonie@kernel.org>
