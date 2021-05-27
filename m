@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6323CC47089
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 May 2021 02:43:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DF62C47089
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 May 2021 02:43:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 650D6613C9
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 May 2021 02:42:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 650D6613C9
+	by mail.kernel.org (Postfix) with ESMTPS id 6B4A5613CC
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 May 2021 02:43:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B4A5613CC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0206D1742;
-	Thu, 27 May 2021 04:42:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0206D1742
+	by alsa0.perex.cz (Postfix) with ESMTPS id B7C9C1707;
+	Thu, 27 May 2021 04:42:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7C9C1707
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622083378;
-	bh=3MLfDxhlX6Qhpk3d3byld6N70aSE5sJLEiLvIbMKnV4=;
+	s=default; t=1622083393;
+	bh=q8XXD6Zl3vsHEBf7lRofWmCwNRwT8+HgZFySMMqy+jc=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vOJrWagCiJAglw0joeyQ4XR/4kFo+AroEEJhqx4f1K5u2G6J1spp87dmGilxy2fmg
-	 8Klj4g7dv9vrnRECXQ2Vdx+l/Q94DFRmD2sWX2rAaMo1aJkiLhzzJCNREoOVDsI3+X
-	 k+36ABjaJsVLsHxlwQYQNxdWwysz40YnuzBAHql8=
+	b=grPAcCYFLqs9e29po5D35wYlrQg5GF8yGdM1KCnQwFZCp+MxKlYweACVWpaS/I6XQ
+	 LVmwldhgOXfQdixGZmMIn+J1kk8Sk5lejuvgMEh4UO6hUBWSJX7ENmbXmUXciHVmU7
+	 UP9yxXwfwCW0N0r0d5yVh1Ql5A5xHF12mVcNWaQg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E8DEF804AE;
-	Thu, 27 May 2021 04:41:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19D6DF8014B;
+	Thu, 27 May 2021 04:41:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 10A05F804AF; Thu, 27 May 2021 04:41:25 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 40A0AF80301
- for <alsa-devel@alsa-project.org>; Thu, 27 May 2021 04:41:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40A0AF80301
-Date: 27 May 2021 11:41:21 +0900
-X-IronPort-AV: E=Sophos;i="5.82,333,1613401200"; d="scan'208";a="82374347"
+ id C48CDF80424; Thu, 27 May 2021 04:41:33 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 07787F8010C
+ for <alsa-devel@alsa-project.org>; Thu, 27 May 2021 04:41:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07787F8010C
+Date: 27 May 2021 11:41:28 +0900
+X-IronPort-AV: E=Sophos;i="5.82,333,1613401200"; d="scan'208";a="82549074"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 27 May 2021 11:41:21 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 27 May 2021 11:41:28 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 1CF214173EEC;
- Thu, 27 May 2021 11:41:21 +0900 (JST)
-Message-ID: <871r9snbji.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id D5BB3417404D;
+ Thu, 27 May 2021 11:41:28 +0900 (JST)
+Message-ID: <87zgwglwyv.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v2 05/11] ASoC: rsnd: indicate unknown error at rsnd_dai_call()
+Subject: [PATCH v2 06/11] ASoC: rsnd: incidate irq error message
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <878s40nbmc.wl-kuninori.morimoto.gx@renesas.com>
@@ -77,46 +77,104 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Current rsnd_dai_call() doesn't indicate error message,
-thus it is very difficult to know the issue
-when strange things happen.
-This patch indicates error for it.
+Current rsnd is using dev_dbg() if irq error happen,
+but it makes debug very difficult if some strange things happen.
+This patch uses dev_info() for it, and rename the macro name.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/sh/rcar/core.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ sound/soc/sh/rcar/rsnd.h |  5 +++--
+ sound/soc/sh/rcar/src.c  |  6 +++---
+ sound/soc/sh/rcar/ssi.c  | 14 +++++++-------
+ 3 files changed, 13 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 0d54c09c3c96..3de04a25e357 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -543,7 +543,7 @@ static int rsnd_status_update(u32 *status,
- 	int func_call	= (val == timing);
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index aec54552474d..9736a94b9c39 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -881,9 +881,10 @@ void rsnd_mod_make_sure(struct rsnd_mod *mod, enum rsnd_mod_type type);
+  *
+  * #define RSND_DEBUG_NO_IRQ_STATUS 1
+  */
+-#define rsnd_dbg_irq_status(dev, param...)		\
++#define rsnd_print_irq_status(dev, param...) do {	\
+ 	if (!IS_BUILTIN(RSND_DEBUG_NO_IRQ_STATUS))	\
+-		dev_dbg(dev, param)
++		dev_info(dev, param);			\
++} while (0)
  
- 	if (next_val == 0xF) /* underflow case */
--		func_call = 0;
-+		func_call = -1;
- 	else
- 		*status = (*status & ~mask) + (next_val << shift);
+ /*
+  * If you don't need rsnd_dai_call debug message,
+diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
+index 628af8f3920d..7a7d6dc335a4 100644
+--- a/sound/soc/sh/rcar/src.c
++++ b/sound/soc/sh/rcar/src.c
+@@ -17,7 +17,7 @@
+ /*
+  * you can enable below define if you don't need
+  * SSI interrupt status debug message when debugging
+- * see rsnd_dbg_irq_status()
++ * see rsnd_print_irq_status()
+  *
+  * #define RSND_DEBUG_NO_IRQ_STATUS 1
+  */
+@@ -421,8 +421,8 @@ static bool rsnd_src_error_occurred(struct rsnd_mod *mod)
+ 	status0 = rsnd_mod_read(mod, SCU_SYS_STATUS0);
+ 	status1 = rsnd_mod_read(mod, SCU_SYS_STATUS1);
+ 	if ((status0 & val0) || (status1 & val1)) {
+-		rsnd_dbg_irq_status(dev, "%s err status : 0x%08x, 0x%08x\n",
+-			rsnd_mod_name(mod), status0, status1);
++		rsnd_print_irq_status(dev, "%s err status : 0x%08x, 0x%08x\n",
++				      rsnd_mod_name(mod), status0, status1);
  
-@@ -567,11 +567,12 @@ static int rsnd_status_update(u32 *status,
- 		rsnd_dbg_dai_call(dev, "%s\t0x%08x %s\n",		\
- 			rsnd_mod_name(mod), *status,	\
- 			(func_call && (mod)->ops->fn) ? #fn : "");	\
--		if (func_call && (mod)->ops->fn)			\
-+		if (func_call > 0 && (mod)->ops->fn)			\
- 			tmp = (mod)->ops->fn(mod, io, param);		\
--		if (tmp && (tmp != -EPROBE_DEFER))			\
--			dev_err(dev, "%s : %s error %d\n",		\
--				rsnd_mod_name(mod), #fn, tmp);		\
-+		if (unlikely(func_call < 0) ||				\
-+		    unlikely(tmp && (tmp != -EPROBE_DEFER)))		\
-+			dev_err(dev, "%s : %s error (%d, %d)\n",	\
-+				rsnd_mod_name(mod), #fn, tmp, func_call);\
- 		ret |= tmp;						\
- 	}								\
- 	ret;								\
+ 		ret = true;
+ 	}
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 2dceac994b37..ac920800af37 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -11,7 +11,7 @@
+ /*
+  * you can enable below define if you don't need
+  * SSI interrupt status debug message when debugging
+- * see rsnd_dbg_irq_status()
++ * see rsnd_print_irq_status()
+  *
+  * #define RSND_DEBUG_NO_IRQ_STATUS 1
+  */
+@@ -418,8 +418,8 @@ static bool rsnd_ssi_busif_err_status_clear(struct rsnd_mod *mod)
+ 			status &= 0xf << (id * 4);
+ 
+ 			if (status) {
+-				rsnd_dbg_irq_status(dev, "%s err status : 0x%08x\n",
+-						    rsnd_mod_name(mod), status);
++				rsnd_print_irq_status(dev, "%s err status : 0x%08x\n",
++						      rsnd_mod_name(mod), status);
+ 				rsnd_mod_write(mod,
+ 					       SSI_SYS_STATUS(i * 2),
+ 					       0xf << (id * 4));
+@@ -433,8 +433,8 @@ static bool rsnd_ssi_busif_err_status_clear(struct rsnd_mod *mod)
+ 			status &= 0xf << 4;
+ 
+ 			if (status) {
+-				rsnd_dbg_irq_status(dev, "%s err status : 0x%08x\n",
+-						    rsnd_mod_name(mod), status);
++				rsnd_print_irq_status(dev, "%s err status : 0x%08x\n",
++						      rsnd_mod_name(mod), status);
+ 				rsnd_mod_write(mod,
+ 					       SSI_SYS_STATUS((i * 2) + 1),
+ 					       0xf << 4);
+@@ -782,8 +782,8 @@ static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
+ 
+ 	/* DMA only */
+ 	if (is_dma && (status & (UIRQ | OIRQ))) {
+-		rsnd_dbg_irq_status(dev, "%s err status : 0x%08x\n",
+-			rsnd_mod_name(mod), status);
++		rsnd_print_irq_status(dev, "%s err status : 0x%08x\n",
++				      rsnd_mod_name(mod), status);
+ 
+ 		stop = true;
+ 	}
 -- 
 2.25.1
 
