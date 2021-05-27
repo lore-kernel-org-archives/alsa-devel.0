@@ -2,75 +2,77 @@ Return-Path: <SRS0=FEtg=KW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,TRACKER_ID,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B995C47089
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 May 2021 09:58:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC0B1C4707F
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 May 2021 10:39:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B46386101B
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 May 2021 09:58:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B46386101B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	by mail.kernel.org (Postfix) with ESMTPS id 12153613CC
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 May 2021 10:39:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12153613CC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=ungleich.ch
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 16F5816FA;
-	Thu, 27 May 2021 11:57:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16F5816FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id CE64A1704;
+	Thu, 27 May 2021 12:38:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE64A1704
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622109510;
-	bh=HZhvLY/gI1Im/TenbWb6ybkbEX5T6VkkxE/K0GOc+GU=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1622111974;
+	bh=Ng2FWtCJdsgi8XPj25rMR6i6SrEH9TWLKrT07sylsMM=;
+	h=References:From:To:Subject:In-reply-to:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Tq/xEsOONv3kjataJvw5dt6XlSJQHRHJp36MBVlCigAjW3QgpWiYdciNoxZ0ehVC1
-	 9gyiICVPyfmkmkxF6tUQ5ReMNva8ONAdx7Jj1/ye4A9eaT+inXxSspyIBeR5F4Eoxd
-	 fNFve+iUo3pWSe+SgihyPB4+sOGDvCYztQL4Et4E=
+	b=JSUoiSDkCluF1U9f516YZFP70qbSIszuXsQKFY0r7wHd3MQ96IdOJE3mN9ditDfvP
+	 qktGjrS/RiZrTS7VhxYhsSOUpzXIeRXeaFfQU+BaxTRHRxQfBi8hd2mPJh15UjRrdZ
+	 GbHjAPd3BVQL//C3atPdWvcvQVWI+KR4yodpTR5A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81B75F80116;
-	Thu, 27 May 2021 11:57:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D86DF800EA;
+	Thu, 27 May 2021 12:38:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3C895F8012E; Thu, 27 May 2021 11:57:38 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 881B1F8012E; Thu, 27 May 2021 12:38:42 +0200 (CEST)
+Received: from smtp.ungleich.ch (mx.ungleich.ch [185.203.112.16])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 59E85F800F9
- for <alsa-devel@alsa-project.org>; Thu, 27 May 2021 11:57:30 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id DA6FFA0040;
- Thu, 27 May 2021 11:57:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz DA6FFA0040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1622109449; bh=8/Vo/ExtAjJzJndQOLCZHTYXFAjg5nRJEFBMuP8RCI8=;
- h=Subject:To:References:Cc:From:Date:In-Reply-To:From;
- b=M51o+u3GJ4ZEOMDGY9EdvG2HeX5tJPo+KuzYuU5ZP39WeWBlhm0scQJTTb+QdeECt
- gJGL/uiL7HwRHr71pPHmBKjyeDRv512v23RXKi8gYN9D/ezg1og4vgrRDnEx7cOoXB
- +0qll7uOG9pwG16sCnyqH/Skq9sIom4DwNmdTELU=
-Received: from p1gen2.localdomain (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Thu, 27 May 2021 11:57:27 +0200 (CEST)
-Subject: Re: Internal microphone does not work with 5.12 (Tiger Lake, X1 Nano)
-To: Nico Schottelius <nico.schottelius@ungleich.ch>
+ by alsa1.perex.cz (Postfix) with ESMTPS id BBF64F800EA
+ for <alsa-devel@alsa-project.org>; Thu, 27 May 2021 12:38:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBF64F800EA
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=ungleich.ch header.i=@ungleich.ch
+ header.b="Kjz3OT/z"
+Received: from nb3.localdomain (localhost [IPv6:::1])
+ by smtp.ungleich.ch (Postfix) with ESMTP id B38181FE6A;
+ Thu, 27 May 2021 12:38:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ungleich.ch; s=mail;
+ t=1622111913; bh=Ng2FWtCJdsgi8XPj25rMR6i6SrEH9TWLKrT07sylsMM=;
+ h=References:From:To:Cc:Subject:In-reply-to:Date:From;
+ b=Kjz3OT/za7qu2JcPhMACGi6oFktEOho9dQatilAU5+fK8EiGua49PeBeBKizH9KQV
+ WSJiKph+PV0b50tiZbQ5DVDZ0VqJCVC5NkNWqtZA4s+TCtSkTqExkBHDhHzQgpZIHq
+ GCsc/pcuGLYGUkq7Q2kDNoGDHTy1T9UEu07Ge1hhVvh4BRq9yx1kyo7C+RWdfsmGG9
+ qkKvR2zGSfEuHBUybnOyS3GK+gtcas7Fs6S4nD9y5ScYLwCng1oJE88BXzr80YHQLN
+ 6pgBpyTIpRUhszpDAoAsCiH9vUymIcBk2MAYR5xB8WdQqLcSn/K+kw5YafOPDLui1y
+ wd4cDefaJBqjg==
+Received: by nb3.localdomain (Postfix, from userid 1000)
+ id 846C314C01E2; Thu, 27 May 2021 12:39:01 +0200 (CEST)
 References: <874keoijzh.fsf@ungleich.ch>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <f2e7c889-cc99-63b3-3bd3-302faf1745fa@perex.cz>
-Date: Thu, 27 May 2021 11:57:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ <f2e7c889-cc99-63b3-3bd3-302faf1745fa@perex.cz>
+User-agent: mu4e 1.4.15; emacs 27.2
+From: Nico Schottelius <nico.schottelius@ungleich.ch>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Internal microphone does not work with 5.12 (Tiger Lake, X1 Nano)
+In-reply-to: <f2e7c889-cc99-63b3-3bd3-302faf1745fa@perex.cz>
+Date: Thu, 27 May 2021 12:39:01 +0200
+Message-ID: <87r1hs31h6.fsf@ungleich.ch>
 MIME-Version: 1.0
-In-Reply-To: <874keoijzh.fsf@ungleich.ch>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: ALSA development <alsa-devel@alsa-project.org>
+Content-Type: text/plain
+Cc: Nico Schottelius <nico.schottelius@ungleich.ch>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,29 +88,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 27. 05. 21 11:50, Nico Schottelius wrote:
-> 
-> Hello,
-> 
-> it seems that the internal microphone does not work anymore with
-> 5.12.6/5.12.7. I am somewhat sure it used to work within the 5.11.x
-> series and that sound did not work at all on 5.10.
-> 
-> I have uploaded the hardware information on
-> 
-> http://alsa-project.org/db/?f=f1a2b32db122695b2cf736db27cb6ed2fa8a9042
-> 
-> The microphone of a plugged in headset however *does* work.
-> 
-> Is this a known bug/regression and is there anything I can do to debug
-> it?
 
-Could you check, if the Intel SOF driver is enabled in your kernel?
 
-CONFIG_SND_SOC_SOF_TIGERLAKE
+Jaroslav Kysela <perex@perex.cz> writes:
 
-					Jaroslav
+> On 27. 05. 21 11:50, Nico Schottelius wrote:
+> Could you check, if the Intel SOF driver is enabled in your kernel?
+>
+> CONFIG_SND_SOC_SOF_TIGERLAKE
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Just checked, it was disabled. I rebuilt 5.12.6, rebooted, but now the
+sound card is gone (no device files in /dev/snd anymore), proably
+failing due to:
+
+[   55.713668] snd_hda_intel 0000:00:1f.3: DSP detected with PCI class/subclass/prog-if info 0x040380
+[   55.713679] snd_hda_intel 0000:00:1f.3: Digital mics found on Skylake+ platform, using SOF driver
+[   55.745863] sof-audio-pci-intel-tgl 0000:00:1f.3: DSP detected with PCI class/subclass/prog-if info 0x040380
+[   55.745872] sof-audio-pci-intel-tgl 0000:00:1f.3: Digital mics found on Skylake+ platform, using SOF driver
+[   55.746033] sof-audio-pci-intel-tgl 0000:00:1f.3: DSP detected with PCI class/subclass/prog-if 0x040380
+[   55.748315] sof-audio-pci-intel-tgl 0000:00:1f.3: use msi interrupt mode
+[   55.752671] sof-audio-pci-intel-tgl 0000:00:1f.3: warning: No matching ASoC machine driver found
+[   55.752673] sof-audio-pci-intel-tgl 0000:00:1f.3: error: no matching ASoC machine driver found - aborting probe
+[   55.752673] sof-audio-pci-intel-tgl 0000:00:1f.3: error: failed to get machine info -19
+[   55.752764] sof-audio-pci-intel-tgl 0000:00:1f.3: error: failed to probe DSP hardware!
+
+I have uploaded the full report on http://alsa-project.org/db/?f=d3c7ba9611b3c823709d7bce0df0f592b3471735
+
+Nico
+
+--
+Sustainable and modern Infrastructures by ungleich.ch
