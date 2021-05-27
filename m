@@ -2,60 +2,56 @@ Return-Path: <SRS0=FEtg=KW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6CBAC47082
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 May 2021 02:29:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D607DC47089
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 May 2021 02:40:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1D888613C7
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 May 2021 02:29:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D888613C7
+	by mail.kernel.org (Postfix) with ESMTPS id ECC37613CC
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 May 2021 02:40:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ECC37613CC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ABA06172E;
-	Thu, 27 May 2021 04:28:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABA06172E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7072C1705;
+	Thu, 27 May 2021 04:39:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7072C1705
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622082547;
-	bh=cIS5MAzx7mLiXIOmqA7E4uFRvpcy4ZUhaLf/Na5gC2I=;
-	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=InTFRBeaB+IJBZ/80/9Njx60t8ItfTgd6kttNY4kkT9OqPgHIi8oSj7Sx/UcVCWs9
-	 0oY1S6XGElCA7dU6YIslPgO2TEU2s3PuUY4Zzox8YdDpJlSMZ3nHCRTCHTeRWzz57c
-	 ujzNXaM6tHpJXjaE2P/+utlClDWaot4TupWz9t84=
+	s=default; t=1622083236;
+	bh=srjWQF83BfVDpv29W0Q+fyvsTLNy0ZfFpsqBScFpETA=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=k0ylJHKQ9RY/oKm+2jrk2dJy5fUKG9ehR611aR0L/cvKK0GWFwt3YF76n5MwA6EY8
+	 CFY4XzkPm1cxDUiVYzHyNuzgbhjHRUWs8341tgzdFmFuc62ktqtd3JqA1LxMqplnjV
+	 PCLS3uDFPoNzvsPuoAEhVvW+2XP/C+pKK9H2Ii0s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3784DF8012E;
-	Thu, 27 May 2021 04:28:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F2160F800EA;
+	Thu, 27 May 2021 04:39:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BD993F8010C; Thu, 27 May 2021 04:28:13 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 7F20DF80149
- for <alsa-devel@alsa-project.org>; Thu, 27 May 2021 04:28:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F20DF80149
-Date: 27 May 2021 11:28:09 +0900
-X-IronPort-AV: E=Sophos;i="5.82,333,1613401200"; d="scan'208";a="82371906"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 27 May 2021 11:28:09 +0900
+ id 5E1F8F8012E; Thu, 27 May 2021 04:39:44 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 7DC9EF800EA
+ for <alsa-devel@alsa-project.org>; Thu, 27 May 2021 04:39:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DC9EF800EA
+Date: 27 May 2021 11:39:39 +0900
+X-IronPort-AV: E=Sophos;i="5.82,333,1613401200"; d="scan'208";a="82548797"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 27 May 2021 11:39:39 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 636FF401474A;
- Thu, 27 May 2021 11:28:09 +0900 (JST)
-Message-ID: <87a6ognc5i.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id DAB074173817;
+ Thu, 27 May 2021 11:39:39 +0900 (JST)
+Message-ID: <878s40nbmc.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v3 7/7] ASoC: hdmi-codec: add .auto_selectable_formats support
-User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
-In-Reply-To: <87k0nkncaw.wl-kuninori.morimoto.gx@renesas.com>
-References: <87k0nkncaw.wl-kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH v2 00/11] ASoC: rsnd: tidyup and fixup rare MIXer issue
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -75,59 +71,52 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Hi Mark
 
-By this patch, DAI format might be automatically selected
-(Depends on paired DAI).
+These are v2 of tidyup patch, and rare MIXer issue fixup patch for
+Renesas Sound driver.
 
-Link: https://lore.kernel.org/r/871rb3hypy.wl-kuninori.morimoto.gx@renesas.com
-Link: https://lore.kernel.org/r/871racbx0w.wl-kuninori.morimoto.gx@renesas.com
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
----
-v2 -> v3
-	- don't try to have SND_SOC_DAIFMT_CBx_CFx
+1 - 6 : tidyup for rsnd driver
+7     : add debugfs support
+8     : fixup rare MIXer issue
+9 - 11: tidyup for rsnd driver
 
- sound/soc/codecs/hdmi-codec.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+v1 -> v2
+	- add adg.c fixup patch (= [01/11])
+	- tidyup compile error when CONFIG_DEBUG_FS was not selected (= [07/11])
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 1567ba196ab9..02d2614f9eee 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -580,12 +580,33 @@ static int hdmi_codec_mute(struct snd_soc_dai *dai, int mute, int direction)
- 	return -ENOTSUPP;
- }
- 
-+/*
-+ * This driver can select all SND_SOC_DAIFMT_CBx_CFx,
-+ * but need to be selected from Sound Card, not be auto selected.
-+ * Because it might be used from other driver.
-+ * For example,
-+ *	${LINUX}/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.c
-+ */
-+static u64 hdmi_codec_formats =
-+	SND_SOC_POSSIBLE_DAIFMT_NB_NF	|
-+	SND_SOC_POSSIBLE_DAIFMT_NB_IF	|
-+	SND_SOC_POSSIBLE_DAIFMT_IB_NF	|
-+	SND_SOC_POSSIBLE_DAIFMT_IB_IF	|
-+	SND_SOC_POSSIBLE_DAIFMT_I2S	|
-+	SND_SOC_POSSIBLE_DAIFMT_DSP_A	|
-+	SND_SOC_POSSIBLE_DAIFMT_DSP_B	|
-+	SND_SOC_POSSIBLE_DAIFMT_RIGHT_J	|
-+	SND_SOC_POSSIBLE_DAIFMT_LEFT_J	|
-+	SND_SOC_POSSIBLE_DAIFMT_AC97;
-+
- static const struct snd_soc_dai_ops hdmi_codec_i2s_dai_ops = {
- 	.startup	= hdmi_codec_startup,
- 	.shutdown	= hdmi_codec_shutdown,
- 	.hw_params	= hdmi_codec_hw_params,
- 	.set_fmt	= hdmi_codec_i2s_set_fmt,
- 	.mute_stream	= hdmi_codec_mute,
-+	.auto_selectable_formats	= &hdmi_codec_formats,
-+	.num_auto_selectable_formats	= 1,
- };
- 
- static const struct snd_soc_dai_ops hdmi_codec_spdif_dai_ops = {
+Link: https://lore.kernel.org/r/87mtsjof3w.wl-kuninori.morimoto.gx@renesas.com
+
+Kuninori Morimoto (11):
+   1 ASoC: rsnd: call unregister for null_hw when removed
+   2 ASoC: rsnd: ignore runtime NULL case at rsnd_runtime_channel_original_with_params()
+   3 ASoC: rsnd: attach SSIU when SSI was DMA mode
+   4 ASoC: rsnd: check BUIF error everytime
+   5 ASoC: rsnd: indicate unknown error at rsnd_dai_call()
+   6 ASoC: rsnd: incidate irq error message
+   7 ASoC: rsnd: add debugfs support
+   8 ASoC: rsnd: protect mod->status
+   9 ASoC: rsnd: implement BUSIF related code in ssiu.c
+  10 ASoC: rsnd: tidyup rsnd_ssiu_busif_err_status_clear()
+  11 ASoC: rsnd: tidyup rsnd_ssiu_busif_err_irq_ctrl()
+
+ sound/soc/sh/rcar/Makefile  |   2 +-
+ sound/soc/sh/rcar/adg.c     |  44 +++++++----
+ sound/soc/sh/rcar/cmd.c     |  14 ++++
+ sound/soc/sh/rcar/core.c    |  65 +++++++++-------
+ sound/soc/sh/rcar/ctu.c     |  14 ++++
+ sound/soc/sh/rcar/debugfs.c |  96 +++++++++++++++++++++++
+ sound/soc/sh/rcar/dma.c     |  31 ++++++--
+ sound/soc/sh/rcar/dvc.c     |  14 ++++
+ sound/soc/sh/rcar/gen.c     |   9 +++
+ sound/soc/sh/rcar/mix.c     |  14 ++++
+ sound/soc/sh/rcar/rsnd.h    |  40 ++++++++--
+ sound/soc/sh/rcar/src.c     |  26 ++++++-
+ sound/soc/sh/rcar/ssi.c     | 148 +++++++++---------------------------
+ sound/soc/sh/rcar/ssiu.c    | 134 ++++++++++++++++++++++++++++----
+ 14 files changed, 465 insertions(+), 186 deletions(-)
+ create mode 100644 sound/soc/sh/rcar/debugfs.c
+
 -- 
 2.25.1
 
