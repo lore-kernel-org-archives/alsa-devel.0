@@ -2,77 +2,74 @@ Return-Path: <SRS0=FEtg=KW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC0B1C4707F
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 May 2021 10:39:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49754C47089
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 May 2021 11:02:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 12153613CC
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 May 2021 10:39:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12153613CC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=ungleich.ch
+	by mail.kernel.org (Postfix) with ESMTPS id 1DE49613D1
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 May 2021 11:02:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1DE49613D1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CE64A1704;
-	Thu, 27 May 2021 12:38:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE64A1704
+	by alsa0.perex.cz (Postfix) with ESMTPS id D76771705;
+	Thu, 27 May 2021 13:01:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D76771705
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622111974;
-	bh=Ng2FWtCJdsgi8XPj25rMR6i6SrEH9TWLKrT07sylsMM=;
-	h=References:From:To:Subject:In-reply-to:Date:Cc:List-Id:
+	s=default; t=1622113340;
+	bh=lHLRA/ygty2iAQPlx7CfLPlWs/Jih86Q7QS69P13H+8=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JSUoiSDkCluF1U9f516YZFP70qbSIszuXsQKFY0r7wHd3MQ96IdOJE3mN9ditDfvP
-	 qktGjrS/RiZrTS7VhxYhsSOUpzXIeRXeaFfQU+BaxTRHRxQfBi8hd2mPJh15UjRrdZ
-	 GbHjAPd3BVQL//C3atPdWvcvQVWI+KR4yodpTR5A=
+	b=MkwA9KHIK3XWA8Yq4CJ13NQGOar8sotJHYcynhgE7Hp6rUGWgxDbfV7n5yMawTpXP
+	 0aavLSOXLSksDd6VFDwy6zIbmHDcVkDy7h6r5MDzJJaa/yQSYWG+++0LsWXYgiacyJ
+	 mMx2vwuYw0t7HvmiVa7wrkV3YeW0oKLnIMiVeG/w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D86DF800EA;
-	Thu, 27 May 2021 12:38:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 77108F8012E;
+	Thu, 27 May 2021 13:01:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 881B1F8012E; Thu, 27 May 2021 12:38:42 +0200 (CEST)
-Received: from smtp.ungleich.ch (mx.ungleich.ch [185.203.112.16])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 7D260F80147; Thu, 27 May 2021 13:01:27 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BBF64F800EA
- for <alsa-devel@alsa-project.org>; Thu, 27 May 2021 12:38:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBF64F800EA
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=ungleich.ch header.i=@ungleich.ch
- header.b="Kjz3OT/z"
-Received: from nb3.localdomain (localhost [IPv6:::1])
- by smtp.ungleich.ch (Postfix) with ESMTP id B38181FE6A;
- Thu, 27 May 2021 12:38:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ungleich.ch; s=mail;
- t=1622111913; bh=Ng2FWtCJdsgi8XPj25rMR6i6SrEH9TWLKrT07sylsMM=;
- h=References:From:To:Cc:Subject:In-reply-to:Date:From;
- b=Kjz3OT/za7qu2JcPhMACGi6oFktEOho9dQatilAU5+fK8EiGua49PeBeBKizH9KQV
- WSJiKph+PV0b50tiZbQ5DVDZ0VqJCVC5NkNWqtZA4s+TCtSkTqExkBHDhHzQgpZIHq
- GCsc/pcuGLYGUkq7Q2kDNoGDHTy1T9UEu07Ge1hhVvh4BRq9yx1kyo7C+RWdfsmGG9
- qkKvR2zGSfEuHBUybnOyS3GK+gtcas7Fs6S4nD9y5ScYLwCng1oJE88BXzr80YHQLN
- 6pgBpyTIpRUhszpDAoAsCiH9vUymIcBk2MAYR5xB8WdQqLcSn/K+kw5YafOPDLui1y
- wd4cDefaJBqjg==
-Received: by nb3.localdomain (Postfix, from userid 1000)
- id 846C314C01E2; Thu, 27 May 2021 12:39:01 +0200 (CEST)
-References: <874keoijzh.fsf@ungleich.ch>
- <f2e7c889-cc99-63b3-3bd3-302faf1745fa@perex.cz>
-User-agent: mu4e 1.4.15; emacs 27.2
-From: Nico Schottelius <nico.schottelius@ungleich.ch>
-To: Jaroslav Kysela <perex@perex.cz>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 23259F800F9
+ for <alsa-devel@alsa-project.org>; Thu, 27 May 2021 13:01:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23259F800F9
+IronPort-SDR: sYejQoZ9iYxK92PXsNhit9ep8Zf5XiCk6FNJFnhiLh48r1uqmyIb4uJ3PsrJTEsFQO7Ckp9ia6
+ ZtcRouzExxJw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="189824730"
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; d="scan'208";a="189824730"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 May 2021 04:01:14 -0700
+IronPort-SDR: 3sKgMIQoSND41JU7+P6Aq2jt4cImaQ4NXBEXjucBooaOU53tLy3SkzoTIos/+K0CrDoKP5bqxT
+ ainGgXD52/Iw==
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; d="scan'208";a="397696652"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 May 2021 04:01:13 -0700
+Date: Thu, 27 May 2021 13:56:18 +0300 (EEST)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To: Nico Schottelius <nico.schottelius@ungleich.ch>
 Subject: Re: Internal microphone does not work with 5.12 (Tiger Lake, X1 Nano)
-In-reply-to: <f2e7c889-cc99-63b3-3bd3-302faf1745fa@perex.cz>
-Date: Thu, 27 May 2021 12:39:01 +0200
-Message-ID: <87r1hs31h6.fsf@ungleich.ch>
+In-Reply-To: <87r1hs31h6.fsf@ungleich.ch>
+Message-ID: <alpine.DEB.2.22.394.2105271343540.3922722@eliteleevi.tm.intel.com>
+References: <874keoijzh.fsf@ungleich.ch>
+ <f2e7c889-cc99-63b3-3bd3-302faf1745fa@perex.cz> <87r1hs31h6.fsf@ungleich.ch>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Nico Schottelius <nico.schottelius@ungleich.ch>,
- alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,33 +85,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Nico,
 
+On Thu, 27 May 2021, Nico Schottelius wrote:
 
-Jaroslav Kysela <perex@perex.cz> writes:
+> Just checked, it was disabled. I rebuilt 5.12.6, rebooted, but now the
+> sound card is gone (no device files in /dev/snd anymore), proably
+> failing due to:
+> 
+> [   55.713668] snd_hda_intel 0000:00:1f.3: DSP detected with PCI class/subclass/prog-if info 0x040380
+> [   55.713679] snd_hda_intel 0000:00:1f.3: Digital mics found on Skylake+ platform, using SOF driver
+> [   55.745863] sof-audio-pci-intel-tgl 0000:00:1f.3: DSP detected with PCI class/subclass/prog-if info 0x040380
+> [   55.745872] sof-audio-pci-intel-tgl 0000:00:1f.3: Digital mics found on Skylake+ platform, using SOF driver
+> [   55.746033] sof-audio-pci-intel-tgl 0000:00:1f.3: DSP detected with PCI class/subclass/prog-if 0x040380
+> [   55.748315] sof-audio-pci-intel-tgl 0000:00:1f.3: use msi interrupt mode
+> [   55.752671] sof-audio-pci-intel-tgl 0000:00:1f.3: warning: No matching ASoC machine driver found
+> [   55.752673] sof-audio-pci-intel-tgl 0000:00:1f.3: error: no matching ASoC machine driver found - aborting probe
+> [   55.752673] sof-audio-pci-intel-tgl 0000:00:1f.3: error: failed to get machine info -19
+> [   55.752764] sof-audio-pci-intel-tgl 0000:00:1f.3: error: failed to probe DSP hardware!
 
-> On 27. 05. 21 11:50, Nico Schottelius wrote:
-> Could you check, if the Intel SOF driver is enabled in your kernel?
->
-> CONFIG_SND_SOC_SOF_TIGERLAKE
+it seems more kernel config options are missing. Distribution kernels 
+typically enable all the machine drivers, but you are specifically missing
+CONFIG_SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH=m
 
-Just checked, it was disabled. I rebuilt 5.12.6, rebooted, but now the
-sound card is gone (no device files in /dev/snd anymore), proably
-failing due to:
+Distribution kernels are a good reference when building on your own, and 
+we in SOF also maintain example kconfig settings for typical systems. 
+Here's the bit for systems with DSP and HDA codecs:
+https://github.com/thesofproject/kconfig/blob/master/hdaudio-codecs-defconfig
 
-[   55.713668] snd_hda_intel 0000:00:1f.3: DSP detected with PCI class/subclass/prog-if info 0x040380
-[   55.713679] snd_hda_intel 0000:00:1f.3: Digital mics found on Skylake+ platform, using SOF driver
-[   55.745863] sof-audio-pci-intel-tgl 0000:00:1f.3: DSP detected with PCI class/subclass/prog-if info 0x040380
-[   55.745872] sof-audio-pci-intel-tgl 0000:00:1f.3: Digital mics found on Skylake+ platform, using SOF driver
-[   55.746033] sof-audio-pci-intel-tgl 0000:00:1f.3: DSP detected with PCI class/subclass/prog-if 0x040380
-[   55.748315] sof-audio-pci-intel-tgl 0000:00:1f.3: use msi interrupt mode
-[   55.752671] sof-audio-pci-intel-tgl 0000:00:1f.3: warning: No matching ASoC machine driver found
-[   55.752673] sof-audio-pci-intel-tgl 0000:00:1f.3: error: no matching ASoC machine driver found - aborting probe
-[   55.752673] sof-audio-pci-intel-tgl 0000:00:1f.3: error: failed to get machine info -19
-[   55.752764] sof-audio-pci-intel-tgl 0000:00:1f.3: error: failed to probe DSP hardware!
+More info at:
+https://github.com/thesofproject/kconfig/
 
-I have uploaded the full report on http://alsa-project.org/db/?f=d3c7ba9611b3c823709d7bce0df0f592b3471735
+Br, Kai
 
-Nico
-
---
-Sustainable and modern Infrastructures by ungleich.ch
