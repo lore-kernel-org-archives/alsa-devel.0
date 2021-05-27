@@ -2,78 +2,80 @@ Return-Path: <SRS0=FEtg=KW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D35AC47082
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 May 2021 03:06:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84AA4C47089
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 May 2021 04:19:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AFA4660C41
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 May 2021 03:06:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AFA4660C41
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=163.com
+	by mail.kernel.org (Postfix) with ESMTPS id 2732A613D1
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 May 2021 04:18:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2732A613D1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7DC6D1704;
-	Thu, 27 May 2021 05:06:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7DC6D1704
+	by alsa0.perex.cz (Postfix) with ESMTPS id B13A51705;
+	Thu, 27 May 2021 06:18:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B13A51705
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622084812;
-	bh=7DjVwUTWO0iS9v53A6zAzFnCLxpWvB/W65FF3LAEu6Y=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1622089136;
+	bh=ZfaP2A7wx1EOrYLZmIIjhyj9IxSJ1zLSX3guc+Ew6TQ=;
+	h=From:Date:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=eroZL123UV50GCQ8sJ1r8ADFcuKXq2EGv6fZcG8ivjWlhQi0aeCzajjj5FIZ9hkzM
-	 8GFTxmrtEYzsGXCc4KwwjH1XJhQ4xRpjIz8znDlBaGKJ4B2W4SdPRt1bfu5c8uYKaz
-	 uloHaST12wmtk64PY9m8AElEMBLIXDCJQbziKSuU=
+	b=O2JVnJs8qMxrMT6nXQRQImPQj7ArPZKgJjWZwcvszk6RlfiZ7csOeqUVxvZ/0cXlb
+	 JSlulGHToOGZXUH3Y/bNvLmrdmFdKDKQ7Nvkn4DAjhaGp9DtDY9BpmmsUpetRAgEQo
+	 QpmCv4hetga3wZTovGW2BJ/8fyFsqeqZQ4qF9jl8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 12C54F80116;
-	Thu, 27 May 2021 05:06:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1D85DF8010C;
+	Thu, 27 May 2021 06:18:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BCB62F8012E; Thu, 27 May 2021 05:06:00 +0200 (CEST)
-Received: from proxy25215.mail.163.com (proxy25215.mail.163.com
- [103.129.252.15])
- by alsa1.perex.cz (Postfix) with ESMTP id 74CC5F800EA
- for <alsa-devel@alsa-project.org>; Thu, 27 May 2021 05:05:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74CC5F800EA
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=163.com header.i=@163.com
- header.b="YPjz89JD"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
- s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=70Oom
- WJ3zwC7Ux4Cyuscx9W74Lf/fdGM/9aFa7xNXOw=; b=YPjz89JDYUNFXKZ8wozMj
- F2/GjaVmqfeGW15EBVVwd2n/4GGUypet5kP1K2An0CE0ojqLChtvx1glTV2u9Gj3
- HFndIWphdfyF103qWXkrZ/lzwMwGiR/Yb7E4zp0p7x9SRYCXaIIS360LJnMWbu9y
- 8l9CcNvgXF7ievQZWhYTQE=
-Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
- by smtp14 (Coremail) with SMTP id EsCowACHieFPDK9gAU9Clw--.31488S2;
- Thu, 27 May 2021 11:04:50 +0800 (CST)
-From: zuoqilin1@163.com
-To: perex@perex.cz,
-	tiwai@suse.com,
-	joe@perches.com,
-	gustavoars@kernel.org
-Subject: [PATCH] sound/oss/dmasound: Remove superfluous "break"
-Date: Thu, 27 May 2021 11:04:45 +0800
-Message-Id: <20210527030445.1201-1-zuoqilin1@163.com>
-X-Mailer: git-send-email 2.28.0.windows.1
+ id BBD2AF8012E; Thu, 27 May 2021 06:18:04 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 371E3F8010C
+ for <alsa-devel@alsa-project.org>; Thu, 27 May 2021 06:17:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 371E3F8010C
+Received: from mail-lf1-f70.google.com ([209.85.167.70])
+ by youngberry.canonical.com with esmtps (TLS1.2) tls
+ TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.93)
+ (envelope-from <kai.heng.feng@canonical.com>) id 1lm7Sz-0007sl-U8
+ for alsa-devel@alsa-project.org; Thu, 27 May 2021 04:17:53 +0000
+Received: by mail-lf1-f70.google.com with SMTP id
+ u23-20020a1979170000b02901d2e8dd801dso1528758lfc.6
+ for <alsa-devel@alsa-project.org>; Wed, 26 May 2021 21:17:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+ bh=ZfaP2A7wx1EOrYLZmIIjhyj9IxSJ1zLSX3guc+Ew6TQ=;
+ b=UYxQ55glRX4++xBjzPxxa8hyqe6V09MAlOQARjeuj7TS2c4djab1jrxYrfMq/v06CZ
+ /+u942vdRO+oJjsYg4rethadki05LBWNrFoB+hNjLVWmPdlNzu/myryrVPkl6o1Tn8uf
+ ALto/dzcT9BF8hI2Dr6Xf3jfKWO4pTsleJtqZOoA+z/w0j63ECsBnI9ISGFVfD6uNAYr
+ BZTNZzD9s7U57rnlkHOiZnSqFckICFHW9cUZAoJzeP/E3LB0MESkf35Crr1+eMOXDNbi
+ qn1tto47BsBtEqOC+YH/rOeloGZP6oNyxlD1utPX9E2Evv1+GGCkRMJHWNEXNinSl/2u
+ 8E7w==
+X-Gm-Message-State: AOAM530dVlFsEkqmvCYLJ0sE1AarMGqzem46yfJRnttInTEJcAT5Nm5k
+ meRhwsJyR9SB4g8l3WS2vRGZCu8q0A5F/49rbhEbMMw5K9LIQJ4UFHTHaPpxPIMa9+4ZCX/K3o+
+ otR8q1iExNe7bSWIRoTpqSZHpW/lPW6cKNlmK+yx9Ti/QXlc8RLsu5YvP
+X-Received: by 2002:ac2:5f6f:: with SMTP id c15mr1017125lfc.194.1622089073385; 
+ Wed, 26 May 2021 21:17:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy2lCtb6HuMNx/AUOTzRsLeUaHnM1DTBpKtL5+qj5czkVdlXXuvi8xi9wpXmxdFJGyxNde/XAFMobwy64KboBY=
+X-Received: by 2002:ac2:5f6f:: with SMTP id c15mr1017110lfc.194.1622089073079; 
+ Wed, 26 May 2021 21:17:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EsCowACHieFPDK9gAU9Clw--.31488S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKFW8ArWfGF18uFWUXryfXrb_yoWDCrc_X3
- yIgr1xWa4kZrn7A347XasrGrZrK3W7Aw1fW34UKa17Wr48GrWftw1DGrsxWrn5X34Fyw4x
- u3y2k3yIk3yFqjkaLaAFLSUrUUUU1b8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
- 9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0mXd5UUUUU==
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/1tbiZQ+fiV8ZOwgNGgABsf
-Cc: zuoqilin <zuoqilin@yulong.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date: Thu, 27 May 2021 12:17:41 +0800
+Message-ID: <CAAd53p70CJWM1DrMumq8tgoE4o5pPBDv=OAdOCOOJd=B98z2Og@mail.gmail.com>
+Subject: Soft jack injection for USB audio?
+To: "moderated list:SOUND" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Takashi Iwai <tiwai@suse.de>, Hui Wang <hui.wang@canonical.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,52 +91,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: zuoqilin <zuoqilin@yulong.com>
+I have the need to use soft jack injection to debug userpsace, but
+currently USB audio doesn't have that ability.
 
-Remove superfluous "break", as there is a "return" before them.
+The problem I am facing is that the USB audio doesn't use snd_jack_*
+to control the jack, so we can add the support for USB audio
+separately.
 
-Signed-off-by: zuoqilin <zuoqilin@yulong.com>
----
- sound/oss/dmasound/dmasound_core.c | 9 ---------
- 1 file changed, 9 deletions(-)
+It's not hard to add the support if we open code soft injection in USB
+audio's build_connector_control(), but would it be possible to use
+snd_jack_* in USB audio?
 
-diff --git a/sound/oss/dmasound/dmasound_core.c b/sound/oss/dmasound/dmasound_core.c
-index 22cef0c..0c95828 100644
---- a/sound/oss/dmasound/dmasound_core.c
-+++ b/sound/oss/dmasound/dmasound_core.c
-@@ -1229,31 +1229,22 @@ static char *get_afmt_string(int afmt)
-         switch(afmt) {
-             case AFMT_MU_LAW:
-                 return "mu-law";
--                break;
-             case AFMT_A_LAW:
-                 return "A-law";
--                break;
-             case AFMT_U8:
-                 return "unsigned 8 bit";
--                break;
-             case AFMT_S8:
-                 return "signed 8 bit";
--                break;
-             case AFMT_S16_BE:
-                 return "signed 16 bit BE";
--                break;
-             case AFMT_U16_BE:
-                 return "unsigned 16 bit BE";
--                break;
-             case AFMT_S16_LE:
-                 return "signed 16 bit LE";
--                break;
-             case AFMT_U16_LE:
-                 return "unsigned 16 bit LE";
--                break;
- 	    case 0:
- 		return "format not set" ;
--		break ;
-             default:
-                 break ;
-         }
--- 
-1.9.1
-
-
+Kai-Heng
