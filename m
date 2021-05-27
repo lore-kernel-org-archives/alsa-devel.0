@@ -2,105 +2,76 @@ Return-Path: <SRS0=FEtg=KW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41DEDC4707F
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 May 2021 12:34:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1ADEC4707F
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 May 2021 13:52:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DC1B7613C3
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 May 2021 12:34:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DC1B7613C3
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
+	by mail.kernel.org (Postfix) with ESMTPS id 9E5AE613C5
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 May 2021 13:52:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E5AE613C5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1583D1705;
-	Thu, 27 May 2021 14:33:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1583D1705
+	by alsa0.perex.cz (Postfix) with ESMTPS id 411DE16FB;
+	Thu, 27 May 2021 15:51:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 411DE16FB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622118842;
-	bh=R7MMLXIjfT/68BW2TxlBHirKNmf2GR1zJxHgDtJcOk8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=U366CF7Uvwy1v63EXJrbvJsK69Dy9kFl4CiRFO7z0AFtX5TeRzZt/zFaq+JUCvU4g
-	 sPuNPAPSK8cjUzxBTLAu7SRcKAt2OE2aQXIutKWqrwH3/3d9XVXVxb0qJlr7l/eKVA
-	 GUAvSqGEKniYGatA/ykFDSPX1bSqfO7lxR190dao=
+	s=default; t=1622123520;
+	bh=J/HM11gqKst6Dcqt5dJX5+dMTl6Cr6Ivb5RmsAs+pXM=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=qJAmzrYykZHlSP+ik0UexqEB/+hFW/wzqlgA+G+6SAT85e+ZclYG277dHCQSLkRYJ
+	 XLhDBVsKP+bFCFWrKGxGcZJkuebe87UFPo1as2BA13mLqx3yskyoNDbCR1upQ3kd86
+	 hbDZVzebjxja07t+LOtRdIbU2hMPG2hgqG0vgdJA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9BE4EF8012E;
-	Thu, 27 May 2021 14:33:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB6A0F800EA;
+	Thu, 27 May 2021 15:51:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9D161F80147; Thu, 27 May 2021 14:33:08 +0200 (CEST)
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com
- [64.147.123.25])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 9A96AF80147; Thu, 27 May 2021 15:51:07 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 554FEF800EA
- for <alsa-devel@alsa-project.org>; Thu, 27 May 2021 14:33:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 554FEF800EA
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="zqSiWJOl"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="KEGpA4IL"
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
- by mailout.west.internal (Postfix) with ESMTP id 9E4EF6DC;
- Thu, 27 May 2021 08:32:59 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute4.internal (MEProxy); Thu, 27 May 2021 08:32:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding; s=fm1; bh=9FGNKz+Vm9myUhmzb3m2hJebRJ
- ti/oPenAX8rqUTJbc=; b=zqSiWJOlvdHQaqO12HE1QvZwhYuHVvkqGB+mkdDpgF
- Sq04sxRCNEGnzvhO+n/UMz+S0HMSLXyjDlg7OFMxWPExOK2eJ5n+f2biPD9iRYor
- NZB8ZP33qM0rMMYw7iHMiU2Q6dbz1oW+W2/KLXY/NlyT+YY1+9MuhKiR5ZMnXIZC
- lWmLfIHw9Ixbu69MuKODmyocx5uo08V5IWn+dafzJ8z7xWfXfd8KGQ8YuypnCtb2
- 6X38FgLFzp9yqf8s2Ie1J3QUG71jK+kYfnAF5Gp4QoLgfb1c5nxKa2tUslt+F6jh
- M5cQCDkyDdvi4Nj+99Q/Cs8OmADHu+61g15aH3S6+fTw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-transfer-encoding:date:from
- :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
- :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=9FGNKz+Vm9myUhmzb
- 3m2hJebRJti/oPenAX8rqUTJbc=; b=KEGpA4ILTdTPqNfWJONwiJb+sPc1RppCc
- D/T4mYhVCPBCOXyByUjitfkYJM4J22EzIPBucpe8OR2Vo4zkiiT1OHTKe9hjDe3i
- UJqaEmxEIVvA86kT9pPh480mkqP86PJZHKyOrZbEvAFe6rS9flz2vFo6HqXFK9yA
- usks3b748EkXjAKF3jRYoCwGzjzkcUJd/BCbeTUg4mlpY5blvUftBgbqg4q53XyR
- 2V5e4DGHs30uitg73SDvYZPqXV8/0G9Q3OLOS/zsB00NgBhkYYPSEMbw1SrYTftY
- V9tm4uUMXbkApb31aLvfgcz4F/6/723ATnXoIIK6c4WGb4gTNSkpg==
-X-ME-Sender: <xms:epGvYNIwPuTJxge36FnsSc79eNrMIcqvH0hRNlkNWuo8jdEXCnwgDw>
- <xme:epGvYJKR5XNaDTV8gK1na_COpFlPSc7Ab5ive9cOSvV_tyERQtkYl6WQsTGkZu4G7
- pmHNJHU53YXQE-1w_E>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdekhedgheegucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
- dttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhh
- ihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepteeiuefhjeekke
- efheetieekvdegfefhgffgvdeiheehhfehiedvhffgjeejuddunecuffhomhgrihhnpehk
- vghrnhgvlhdrohhrghenucfkphepudegrdefrdeihedrudejheenucevlhhushhtvghruf
- hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghk
- rghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:epGvYFt_gF9MeDTPSEEPWC-WfhHUnO7Q_Aif3rTwzenaciGmwGyNaQ>
- <xmx:epGvYOZn6bJX7-gd7xeDnGs6xq8M361XNG5b94ZU5N_WC6wbtLhohw>
- <xmx:epGvYEalBVk_CkHdwxnY205nZvBMpStMVj44qlviuio97aSCZhgZNg>
- <xmx:e5GvYNAMHjTkDfUIvkB5GzI096NFJJPJ429IVqqsPe9tmUor2mWl7Q>
-Received: from workstation.flets-east.jp (ae065175.dynamic.ppp.asahi-net.or.jp
- [14.3.65.175]) by mail.messagingengine.com (Postfix) with ESMTPA;
- Thu, 27 May 2021 08:32:57 -0400 (EDT)
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: tiwai@suse.de
-Subject: [PATCH] ALSA: firewire-lib: support NO_PERIOD_WAKEUP in ALSA PCM
- runtime
-Date: Thu, 27 May 2021 21:32:53 +0900
-Message-Id: <20210527123253.174315-1-o-takashi@sakamocchi.jp>
-X-Mailer: git-send-email 2.27.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4600FF800EA
+ for <alsa-devel@alsa-project.org>; Thu, 27 May 2021 15:50:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4600FF800EA
+IronPort-SDR: jkYHKzJdrCoz7DRS03v1oli1TcXFKm+ljugA+uSIKkz7xENE25OEZ5o1m9oozlCDwy8e9bAuPN
+ lMaDc5OtS9oQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="202741833"
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; d="scan'208";a="202741833"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 May 2021 06:50:40 -0700
+IronPort-SDR: bX53wWvhg6Is+pIFWQsb0qsEl8Lafc9pNNpTUCxKN80uptaCVkwqmwBslX1xgo5/IHZlXX0Og4
+ FnTBuS4LRm7g==
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; d="scan'208";a="477493323"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 May 2021 06:50:39 -0700
+Date: Thu, 27 May 2021 16:43:04 +0300 (EEST)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To: Nico Schottelius <nico.schottelius@ungleich.ch>
+Subject: Re: Internal microphone does not work with 5.12 (Tiger Lake, X1 Nano)
+In-Reply-To: <877djk8jw2.fsf@ungleich.ch>
+Message-ID: <alpine.DEB.2.22.394.2105271551100.3922722@eliteleevi.tm.intel.com>
+References: <874keoijzh.fsf@ungleich.ch>
+ <f2e7c889-cc99-63b3-3bd3-302faf1745fa@perex.cz> <87r1hs31h6.fsf@ungleich.ch>
+ <alpine.DEB.2.22.394.2105271343540.3922722@eliteleevi.tm.intel.com>
+ <877djk8jw2.fsf@ungleich.ch>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -116,113 +87,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Drivers of ALSA firewire stack can process packets for IT/IR context in
-process context when the process operates ALSA PCM character device by
-calling ioctl(2) with some requests. The ioctl requests are:
+Hi Nico,
 
- * SNDRV_PCM_IOCTL_HWSYNC
- * SNDRV_PCM_IOCTL_SYNC_PTR
- * SNDRV_PCM_IOCTL_REWIND
- * SNDRV_PCM_IOCTL_FORWARD
- * SNDRV_PCM_IOCTL_WRITEI_FRAMES
- * SNDRV_PCM_IOCTL_READI_FRAMES
- * SNDRV_PCM_IOCTL_WRITEN_FRAMES
- * SNDRV_PCM_IOCTL_READN_FRAMES
+On Thu, 27 May 2021, Nico Schottelius wrote:
 
-This means that general application can process PCM frames apart from
-hardware IRQ invocation, even if they are programmed by either IRQ-based
-scheduling model or Timer-based scheduling model.
+> > it seems more kernel config options are missing. Distribution kernels
+> > typically enable all the machine drivers, but you are specifically missing
+> > CONFIG_SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH=m
+> 
+> I've enabled this one and all machine types and indeed the card is being
+> recognised (report at
+> http://alsa-project.org/db/?f=5cbe7c293cbb80ab548b892cfc8b991476b0b2aa).
+> I checked permissions on /dev/snd, which looks good.
+> 
+> However, obs does not list the microphone at all and
+> chromium / jitsi shows the snd-hda-dsp mic, however does not let me
+> select it.
 
-This commit add support for Timer-based scheduling model by allowing
-PCM runtime to suppress both process wakeup per period and scheduling
-hardware IRQ.
+ok, that's great so the driver appears to work now. You could try
+to do simple arecord test in terminal:
 
-SNDRV_PCM_INFO_BATCH is obsoleted since ALSA IEC 61883-1/6 packet streaming
-engine can report the number of transferred PCM frames within PCM period
-boundary. The granularity equals to SYT_INTERVAL in blocking transmission.
-In non-blocking transmission, it doesn't equal to SYT_INTERVAL but doesn't
-exceed.
+arecord -fdat -vv -Dplugw:0,6 -c4 /dev/null
 
-This patch is tested with PulseAudio, and --sched-model option of axfer
-with fix against the issue reported at:
+You should see vumeter activity from the built-in microphone.
 
- * https://lore.kernel.org/alsa-devel/687f9871-7484-1370-04d1-9c968e86f72b@linux.intel.com/#r
+If that works, this starts to go a bit outside the scope of this list, but 
+it sounds something in Alpine's user-space integration is missing. In e.g. 
+Fedora and Ubuntu, ALSA UCM file is provided for these platforms and the 
+shipped versions of Pipewire/Pulseaudio can expose the devices correctly 
+to apps. You can do a sanity test (of your hardware) by booting a recent 
+live image of either distro.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/amdtp-stream.c | 27 +++++++++++++++++++++------
- 1 file changed, 21 insertions(+), 6 deletions(-)
-
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 68ffbc33f692..8e72e7f4c082 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -191,14 +191,13 @@ int amdtp_stream_add_pcm_hw_constraints(struct amdtp_stream *s,
- 	unsigned int maximum_usec_per_period;
- 	int err;
- 
--	hw->info = SNDRV_PCM_INFO_BATCH |
--		   SNDRV_PCM_INFO_BLOCK_TRANSFER |
-+	hw->info = SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		   SNDRV_PCM_INFO_INTERLEAVED |
- 		   SNDRV_PCM_INFO_JOINT_DUPLEX |
- 		   SNDRV_PCM_INFO_MMAP |
--		   SNDRV_PCM_INFO_MMAP_VALID;
-+		   SNDRV_PCM_INFO_MMAP_VALID |
-+		   SNDRV_PCM_INFO_NO_PERIOD_WAKEUP;
- 
--	/* SNDRV_PCM_INFO_BATCH */
- 	hw->periods_min = 2;
- 	hw->periods_max = UINT_MAX;
- 
-@@ -503,7 +502,12 @@ static void update_pcm_pointers(struct amdtp_stream *s,
- 	s->pcm_period_pointer += frames;
- 	if (s->pcm_period_pointer >= pcm->runtime->period_size) {
- 		s->pcm_period_pointer -= pcm->runtime->period_size;
--		queue_work(system_highpri_wq, &s->period_work);
-+
-+		// The program in user process should periodically check the status of intermediate
-+		// buffer associated to PCM substream to process PCM frames in the buffer, instead
-+		// of receiving notification of period elapsed by poll wait.
-+		if (!pcm->runtime->no_period_wakeup)
-+			queue_work(system_highpri_wq, &s->period_work);
- 	}
- }
- 
-@@ -949,6 +953,7 @@ static void process_rx_packets(struct fw_iso_context *context, u32 tstamp, size_
- 	unsigned int event_count = s->ctx_data.rx.event_count;
- 	unsigned int pkt_header_length;
- 	unsigned int packets;
-+	bool need_hw_irq;
- 	int i;
- 
- 	if (s->packet_index < 0)
-@@ -968,6 +973,16 @@ static void process_rx_packets(struct fw_iso_context *context, u32 tstamp, size_
- 	else
- 		pkt_header_length = 0;
- 
-+	if (s == d->irq_target) {
-+		// At NO_PERIOD_WAKEUP mode, the packets for all IT/IR contexts are processed by
-+		// the tasks of user process operating ALSA PCM character device by calling ioctl(2)
-+		// with some requests, instead of scheduled hardware IRQ of an IT context.
-+		struct snd_pcm_substream *pcm = READ_ONCE(s->pcm);
-+		need_hw_irq = !pcm || !pcm->runtime->no_period_wakeup;
-+	} else {
-+		need_hw_irq = false;
-+	}
-+
- 	for (i = 0; i < packets; ++i) {
- 		const struct pkt_desc *desc = s->pkt_descs + i;
- 		struct {
-@@ -984,7 +999,7 @@ static void process_rx_packets(struct fw_iso_context *context, u32 tstamp, size_
- 			event_count += desc->data_blocks;
- 			if (event_count >= events_per_period) {
- 				event_count -= events_per_period;
--				sched_irq = true;
-+				sched_irq = need_hw_irq;
- 			}
- 		}
- 
--- 
-2.27.0
-
+Br, Kai
