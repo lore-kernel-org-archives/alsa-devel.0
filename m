@@ -2,68 +2,102 @@ Return-Path: <SRS0=FleP=KX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D181C4708C
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 May 2021 12:56:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 664E4C2B9F7
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 May 2021 13:34:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 35BAB61248
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 May 2021 12:56:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 35BAB61248
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bitmer.com
+	by mail.kernel.org (Postfix) with ESMTPS id 070C7613E5
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 May 2021 13:34:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 070C7613E5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F3D4F16CF;
-	Fri, 28 May 2021 14:55:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3D4F16CF
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD3B316D0;
+	Fri, 28 May 2021 15:33:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD3B316D0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622206592;
-	bh=wGJF/2btJJ4l36Oy70ZiWT0lX3fopOARIIgoe4CQJmk=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1622208872;
+	bh=ne09AXJxXv6RDuMDY54C00VKJoVg/7qd/pX7LSqoKG0=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dBoz8c2PfluevPzs9d8f9uq2WeL25fN1ISqhbuDaFGDYFmhixeHsxKuFSW9pQdjRI
-	 o9YoCf3rJeR2t9N2X6q+DzDTiTvwIfGjOuDDq4Ny/vyyiqWNVTIbeUNNuom/8Flskt
-	 J0Xs42kvw3uUlSHOkqaYe73LR/UfXlEJWydbWi/0=
+	b=emBxiiM+r4tWyzEHxqUSo6h1oYlSY46TTFfyRAxw6L/vc8xvNl4AuiuW6t2o/mBh/
+	 Cn6MV7kHMJrcrkI3WA5IZ5mvtxe9aZgWfPQqgtZ2duTy8ftoOuLDvfeXBDz7y9BXmV
+	 ZJ7lzUK22Rol0SGvH0NHj0Hi0ZqrCTs9s1Udxt8k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 793D1F804AB;
-	Fri, 28 May 2021 14:55:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51136F802BE;
+	Fri, 28 May 2021 15:33:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9398EF804AC; Fri, 28 May 2021 14:55:39 +0200 (CEST)
-Received: from bitmer.com (49-237-179-185.static.tentacle.fi [185.179.237.49])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6BE21F8013A
- for <alsa-devel@alsa-project.org>; Fri, 28 May 2021 14:55:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6BE21F8013A
-Received: from 88-114-184-142.elisa-laajakaista.fi ([88.114.184.142]
- helo=[192.168.1.42])
- by bitmer.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
- (Exim 4.89) (envelope-from <jarkko.nikula@bitmer.com>)
- id 1lmc1R-000691-6Y; Fri, 28 May 2021 15:55:29 +0300
-Subject: Re: [PATCH -next] ASoC: ti: omap-mcbsp: use DEVICE_ATTR_RW macro
-To: YueHaibing <yuehaibing@huawei.com>, peter.ujfalusi@gmail.com,
- lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
-References: <20210528063033.19904-1-yuehaibing@huawei.com>
-From: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Message-ID: <4e8da5c2-9a9e-c0a9-f944-8e0e9f30f47e@bitmer.com>
-Date: Fri, 28 May 2021 15:55:25 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+ id 8A4BBF804AC; Fri, 28 May 2021 15:33:40 +0200 (CEST)
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com
+ [205.220.177.32])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6A78DF802BE
+ for <alsa-devel@alsa-project.org>; Fri, 28 May 2021 15:33:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A78DF802BE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
+ header.b="MGZhgWhg"
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+ by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
+ 14SDKU0Q001860; Fri, 28 May 2021 13:33:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=HLUSfFNsvepNfOshN0c8ooQ73thlVw/e2Bq6VxGepJc=;
+ b=MGZhgWhg95roXsJDEqHHYCO9dXvFbeEACtvc4AUZmGaH/OSA0LptpxmiGBe9HiKzfOuB
+ YeqeRyzqFi25xsZT5aQ3FOhnWGlLt5uF5NloiM9oXt+ULCe8FAdpqzrntKJgscO9QCOH
+ YDl9a1v08Bv1PpLyUKvafDTaM4Vov8lOuuHrbMftKkgASkEFVfs4aT6U02D2CDAFhC3o
+ kdKM8/mz3eYEV16T+dEpVDrW3rKwyopsI86aaD4ra84Pv1UVUv2ELT77xelkgdmdI5cb
+ CsQdHYjjXtv1cEkjK1TWIANUF2JFS73YioYCpsa/1SXfwRMYXPKfRqLmSsjTWisDGZq7 PA== 
+Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
+ by mx0b-00069f02.pphosted.com with ESMTP id 38sn3yrwmj-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Fri, 28 May 2021 13:33:27 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+ by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14SDLxuX117567;
+ Fri, 28 May 2021 13:33:26 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+ by aserp3020.oracle.com with ESMTP id 38rehkyxhp-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Fri, 28 May 2021 13:33:26 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+ by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14SDXPtD194449;
+ Fri, 28 May 2021 13:33:25 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+ by aserp3020.oracle.com with ESMTP id 38rehkyxh4-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Fri, 28 May 2021 13:33:25 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+ by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14SDXISv026221;
+ Fri, 28 May 2021 13:33:23 GMT
+Received: from kadam (/41.212.42.34) by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Fri, 28 May 2021 06:33:17 -0700
+Date: Fri, 28 May 2021 16:33:09 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Dongliang Mu <mudongliangabcd@gmail.com>
+Subject: Re: [PATCH] ALSA: control led: fix memory leak in snd_ctl_led_register
+Message-ID: <20210528133309.GR24442@kadam>
+References: <20210528131757.2269989-1-mudongliangabcd@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210528063033.19904-1-yuehaibing@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210528131757.2269989-1-mudongliangabcd@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: UVSJdCaZHlkVip_h0yaymPkF8ZNnex7o
+X-Proofpoint-ORIG-GUID: UVSJdCaZHlkVip_h0yaymPkF8ZNnex7o
+Cc: syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,13 +113,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 5/28/21 9:30 AM, YueHaibing wrote:
-> Use DEVICE_ATTR_RW() helper instead of plain DEVICE_ATTR(),
-> which makes the code a bit shorter and easier to read.
+On Fri, May 28, 2021 at 09:17:57PM +0800, Dongliang Mu wrote:
+> The snd_ctl_led_sysfs_add and snd_ctl_led_sysfs_remove should contain
+> the refcount operations in pair. However, snd_ctl_led_sysfs_remove fails
+> to decrease the refcount to zero, which causes device_release never to
+> be invoked. This leads to memory leak to some resources, like struct
+> device_private.
 > 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> Fix this by calling put_device at the end of snd_ctl_led_sysfs_remove
+> 
+> Reported-by: syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
+> Fixes: a135dfb5de1 ("ALSA: led control - add sysfs kcontrol LED marking layer")
+> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
 > ---
->  sound/soc/ti/omap-mcbsp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  sound/core/control_led.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+> diff --git a/sound/core/control_led.c b/sound/core/control_led.c
+> index 25f57c14f294..fff2688b5019 100644
+> --- a/sound/core/control_led.c
+> +++ b/sound/core/control_led.c
+> @@ -371,6 +371,10 @@ static void snd_ctl_led_disconnect(struct snd_card *card)
+>  	snd_ctl_led_refresh();
+>  }
+>  
+> +static void snd_ctl_led_release(struct device *dev)
+> +{
+> +}
+
+Whatever you're trying to do, adding a dummy function is never the
+answer.
+
+regards,
+dan carpenter
+
