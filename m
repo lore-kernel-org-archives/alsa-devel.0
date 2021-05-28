@@ -2,78 +2,97 @@ Return-Path: <SRS0=FleP=KX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B3DFC2B9F7
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 May 2021 14:18:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 927C3C47087
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 May 2021 14:18:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A2763610A6
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 May 2021 14:18:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A2763610A6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mailoo.org
+	by mail.kernel.org (Postfix) with ESMTPS id 155BA6124B
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 May 2021 14:18:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 155BA6124B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2F5F116F2;
-	Fri, 28 May 2021 16:17:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F5F116F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id B0F7D16FA;
+	Fri, 28 May 2021 16:17:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0F7D16FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622211496;
-	bh=etQv4148XiNjFlFCkrHITfinHD/7B2v2acgKy9+MWrU=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=CiXFvPdzuXryx+8VwyV4PMCL8ObndKiBkg7iVKDcE00L5PDHXKRbhYQVac1G01+Nm
-	 01ybv5f/tXasa2eZlHxLOOG2KhSxo6oAInKMwJ4Yb+/edqT4af+VyKoKcFroo04FMA
-	 pBRRQkdWdPniHJzCnbPqWWEzh3xBYf7vZNV+My0g=
+	s=default; t=1622211512;
+	bh=wW7nAlmO/n0txnTRtfe1oTgX0cWLqvkJ6SwGKCZXMAg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Mk8yonZBhiWsL4cxNblpvmuCgNn6osIopMhZATGQn/p2dkW6jSP08hF7IOFhEZTV+
+	 wjyqMFadrYTNsWM4gRxChcwxHV7lV3dDfpzqxb3SPjblNapLkPuQWDlJvMMo55j4CE
+	 C+/R6rRUulEyvNqOtI4/EHvaeQrwVgiwktuQSo0s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C6D27F804D8;
-	Fri, 28 May 2021 16:14:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 65896F804E3;
+	Fri, 28 May 2021 16:14:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 32DB8F800F9; Fri, 28 May 2021 12:51:52 +0200 (CEST)
-Received: from msg-1.mailo.com (msg-1.mailo.com [213.182.54.11])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 8FBB6F804AC; Fri, 28 May 2021 15:18:24 +0200 (CEST)
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com
+ [IPv6:2607:f8b0:4864:20::102f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 55E33F80260
- for <alsa-devel@alsa-project.org>; Fri, 28 May 2021 12:51:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55E33F80260
+ by alsa1.perex.cz (Postfix) with ESMTPS id AB3B9F802BE
+ for <alsa-devel@alsa-project.org>; Fri, 28 May 2021 15:18:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB3B9F802BE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mailoo.org header.i=@mailoo.org
- header.b="lpZkfxey"
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
- t=1622199081; bh=etQv4148XiNjFlFCkrHITfinHD/7B2v2acgKy9+MWrU=;
- h=X-EA-Auth:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:
- References:MIME-Version:Content-Transfer-Encoding;
- b=lpZkfxeyJ8p+JHJHogUWEhQVPFdv4A7yOmPfBLK/AXpjbGGBVin+qXJ1gtj+VkbP+
- Nmyme5Y+qXca/cmmmN8LyGg2IBZYXexfP/vj9x+VA4YP0V3t5W4nGAh1fFH+nT009j
- zBFLJu/VzJyil3zWNowUkgYZE4u3mcqf5JZy+Ym8=
-Received: by 192.168.90.15 [192.168.90.15] with ESMTP
- via proxy.mailoo.org [213.182.55.207]
- Fri, 28 May 2021 12:51:21 +0200 (CEST)
-X-EA-Auth: bZWbzNMKnaVnjmJ2JWIbsTfsgap0MJP1+XsFBIJF2qthYKxGEPDAuxPbQeIE6hwUSnRHZx8rrrqqnnMDVkcimd5rcYdH9yuYln+A7KOuCX0=
-From: Vincent Knecht <vincent.knecht@mailoo.org>
-To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH v1 4/4] ASoC: codecs: tfa989x: Add support for optional
- vddd-supply
-Date: Fri, 28 May 2021 12:51:01 +0200
-Message-Id: <20210528105101.508254-4-vincent.knecht@mailoo.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210528105101.508254-1-vincent.knecht@mailoo.org>
-References: <20210528105101.508254-1-vincent.knecht@mailoo.org>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="Lbqovj2F"
+Received: by mail-pj1-x102f.google.com with SMTP id
+ g6-20020a17090adac6b029015d1a9a6f1aso7229229pjx.1
+ for <alsa-devel@alsa-project.org>; Fri, 28 May 2021 06:18:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=RekKeBRuPvOLorDIGSFgCHT4XDxldmZcH/AplJmkZg4=;
+ b=Lbqovj2FNhk/oTCo9MepudU1cGkrJPNCJaqnlYyVZnuL/txKOIBaRi1vI8Egu32pvb
+ OY6Qv6nGOuvXBdL6Xfe7BuPCEqDahinPHS7yzXuBOBF6ZsrgGGW9OfOpLJaRalJlZCD3
+ Wt8rlAYcbY9MhRBL2a8CJtmI8w/HcoTW2XGJWlVGsVJAI7B7moh9ji3ebEi7HGGF7lR3
+ Q0IYFc8YPdrwKdLwymCPAguav9spxQ/NQIITTsDLNQZZolBitHOBhFTnQpnGhBc84NNJ
+ jnKAO72mn/zGI9L1MCg+StdVbk7DauGnBkDkhPHUO5BLEh8SBP8B04idJ2E8lwV280uu
+ lxvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=RekKeBRuPvOLorDIGSFgCHT4XDxldmZcH/AplJmkZg4=;
+ b=obnv7OaQhXeTJOku8q7Dv1A90SU4Ij5o179dnYJy4bnksN2u/vyYRQQMR2aRghMo+p
+ khWvh4FOsH34rT114leWzQPTMmRwOo7wTMulZhG2RRrqO5b/8RhR6Ee5qWuNvhXsFdIA
+ gDT1Lc71866qkLC1Os5SEsGXjl22ga/s+FzOXEYzrhGsDk68IilanVUUOVm8kg1zeEUx
+ gmSIktSMChcVr7s855L14QO2FRd6KsGpPg7tu3ALyP1HhzrSKS1DIVnKx57gAfbdDvPx
+ pSSVPe5i1wv66pSrprzPt8F4cj0/tw502vfpogj7hfsT7CCZsMKgLxtJKeAzTRCf1EVh
+ 2cIQ==
+X-Gm-Message-State: AOAM53294nxpwGfkeuhRYlDtSaMWCP33UPcee3iBvrkWuKSdoNjPN3c9
+ f/U4MLTWQqOILyFUDHmzV5M=
+X-Google-Smtp-Source: ABdhPJzryubmTPDP2z1b/tbJbHKXZ2rBe/YITBtt9HuUVeIwQ3mYeeGMwEngIKawI/ISHIrHdgoO1A==
+X-Received: by 2002:a17:902:70c2:b029:ee:b4e5:64d5 with SMTP id
+ l2-20020a17090270c2b02900eeb4e564d5mr7957845plt.77.1622207890484; 
+ Fri, 28 May 2021 06:18:10 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.113])
+ by smtp.gmail.com with ESMTPSA id cu2sm4246045pjb.43.2021.05.28.06.18.07
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 28 May 2021 06:18:09 -0700 (PDT)
+From: Dongliang Mu <mudongliangabcd@gmail.com>
+To: perex@perex.cz, tiwai@suse.com, dan.carpenter@oracle.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: control led: fix memory leak in snd_ctl_led_register
+Date: Fri, 28 May 2021 21:17:57 +0800
+Message-Id: <20210528131757.2269989-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Fri, 28 May 2021 16:14:27 +0200
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Stephan Gerhold <stephan@gerhold.net>, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, ~postmarketos/upstreaming@lists.sr.ht,
- phone-devel@vger.kernel.org, Vincent Knecht <vincent.knecht@mailoo.org>
+X-Mailman-Approved-At: Fri, 28 May 2021 16:14:26 +0200
+Cc: Dongliang Mu <mudongliangabcd@gmail.com>,
+ syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,89 +108,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Allow specifying Vddd regulator/supply to be enabled on I2C probing.
+The snd_ctl_led_sysfs_add and snd_ctl_led_sysfs_remove should contain
+the refcount operations in pair. However, snd_ctl_led_sysfs_remove fails
+to decrease the refcount to zero, which causes device_release never to
+be invoked. This leads to memory leak to some resources, like struct
+device_private.
 
-Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
+Fix this by calling put_device at the end of snd_ctl_led_sysfs_remove
+
+Reported-by: syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
+Fixes: a135dfb5de1 ("ALSA: led control - add sysfs kcontrol LED marking layer")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
 ---
- sound/soc/codecs/tfa989x.c | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+ sound/core/control_led.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/codecs/tfa989x.c b/sound/soc/codecs/tfa989x.c
-index 6d94865c534b..643b45188b6f 100644
---- a/sound/soc/codecs/tfa989x.c
-+++ b/sound/soc/codecs/tfa989x.c
-@@ -10,6 +10,7 @@
- #include <linux/i2c.h>
- #include <linux/module.h>
- #include <linux/regmap.h>
-+#include <linux/regulator/consumer.h>
- #include <sound/soc.h>
- 
- #define TFA989X_STATUSREG		0x00
-@@ -51,6 +52,10 @@ struct tfa989x_rev {
- 	int (*init)(struct regmap *regmap);
- };
- 
-+struct tfa989x {
-+	struct regulator *vddd_supply;
-+};
-+
- static bool tfa989x_writeable_reg(struct device *dev, unsigned int reg)
- {
- 	return reg > TFA989X_REVISIONNUMBER;
-@@ -242,10 +247,18 @@ static int tfa989x_dsp_bypass(struct regmap *regmap)
- 				 BIT(TFA989X_SYS_CTRL_AMPC));
+diff --git a/sound/core/control_led.c b/sound/core/control_led.c
+index 25f57c14f294..fff2688b5019 100644
+--- a/sound/core/control_led.c
++++ b/sound/core/control_led.c
+@@ -371,6 +371,10 @@ static void snd_ctl_led_disconnect(struct snd_card *card)
+ 	snd_ctl_led_refresh();
  }
  
-+static void tfa989x_regulator_disable(void *data)
++static void snd_ctl_led_release(struct device *dev)
 +{
-+	struct tfa989x *tfa989x = data;
-+
-+	regulator_disable(tfa989x->vddd_supply);
 +}
 +
- static int tfa989x_i2c_probe(struct i2c_client *i2c)
- {
- 	struct device *dev = &i2c->dev;
- 	const struct tfa989x_rev *rev;
-+	struct tfa989x *tfa989x;
- 	struct regmap *regmap;
- 	unsigned int val;
- 	int ret;
-@@ -256,10 +269,31 @@ static int tfa989x_i2c_probe(struct i2c_client *i2c)
- 		return -ENODEV;
+ /*
+  * sysfs
+  */
+@@ -663,6 +667,7 @@ static void snd_ctl_led_sysfs_add(struct snd_card *card)
+ 		led_card->number = card->number;
+ 		led_card->led = led;
+ 		device_initialize(&led_card->dev);
++		led_card->dev.release = snd_ctl_led_release;
+ 		if (dev_set_name(&led_card->dev, "card%d", card->number) < 0)
+ 			goto cerr;
+ 		led_card->dev.parent = &led->dev;
+@@ -701,6 +706,7 @@ static void snd_ctl_led_sysfs_remove(struct snd_card *card)
+ 		sysfs_remove_link(&card->ctl_dev.kobj, link_name);
+ 		sysfs_remove_link(&led_card->dev.kobj, "card");
+ 		device_del(&led_card->dev);
++		put_device(&led_card->dev);
+ 		kfree(led_card);
+ 		led->cards[card->number] = NULL;
  	}
- 
-+	tfa989x = devm_kzalloc(dev, sizeof(*tfa989x), GFP_KERNEL);
-+	if (!tfa989x)
-+		return -ENOMEM;
-+
-+	i2c_set_clientdata(i2c, tfa989x);
-+
-+	tfa989x->vddd_supply = devm_regulator_get(dev, "vddd");
-+	if (IS_ERR(tfa989x->vddd_supply))
-+		return dev_err_probe(dev, PTR_ERR(tfa989x->vddd_supply),
-+				     "Failed to get vddd regulator\n");
-+
- 	regmap = devm_regmap_init_i2c(i2c, &tfa989x_regmap);
- 	if (IS_ERR(regmap))
- 		return PTR_ERR(regmap);
- 
-+	ret = regulator_enable(tfa989x->vddd_supply);
-+	if (ret) {
-+		dev_err(dev, "Failed to enable vddd regulator: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = devm_add_action_or_reset(dev, tfa989x_regulator_disable, tfa989x);
-+	if (ret)
-+		return ret;
-+
- 	/* Bypass regcache for reset and init sequence */
- 	regcache_cache_bypass(regmap, true);
- 
 -- 
-2.31.1
-
-
+2.25.1
 
