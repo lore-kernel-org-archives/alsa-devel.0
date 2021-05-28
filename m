@@ -2,71 +2,84 @@ Return-Path: <SRS0=FleP=KX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F397C2B9F7
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 May 2021 14:49:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BDFEC47087
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 May 2021 16:05:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8059A613DD
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 May 2021 14:49:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8059A613DD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id CBDD5613E3
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 May 2021 16:05:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CBDD5613E3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA9FB16C2;
-	Fri, 28 May 2021 16:48:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA9FB16C2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 80DB016CD;
+	Fri, 28 May 2021 18:04:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 80DB016CD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622213377;
-	bh=MaKmSClpVc19kyZ540PyAhe+bVMzTCR/sPP+MzMeGBA=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=p6z5hGCoZR4wFLyxltbTXm2teKXuEeyuuvolqt44zW5YZglcobp9+jEU1iMR95EAk
-	 ffQlNqM2ACVxJM8P0We3nPRjm97BJS37mzeiGhQFSBkz0qLjj8fcHbOrp+KfcSy/we
-	 xz8RRVqoIr1DU8zzSHflc8wO3bdf/i1u+P1CdKW4=
+	s=default; t=1622217920;
+	bh=bs2mBR66uVvWvx/Ef0gflX8oSZvQLdierWWtSLOHTYo=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=pDrxG0z9OvOzyhUbATpDPcGQiBOHxOSu1M5Xekl9fW/TUp/Q8yhcycPPpdzpYeYye
+	 kjuD2kU8sjLKmh3bU2RdOB5KOigAfMN0Wk+Tkfg3pWoykhb9/PqDwaKVMpm4tLMlpK
+	 1EV8DgyP+fApLLoQRDrYI1rGIkReBP84FisrFjxE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3DC94F804AB;
-	Fri, 28 May 2021 16:48:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC030F802BE;
+	Fri, 28 May 2021 18:04:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7406EF804AC; Fri, 28 May 2021 16:48:45 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id BB3F5F804B0; Fri, 28 May 2021 18:04:27 +0200 (CEST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 133EFF804A9
- for <alsa-devel@alsa-project.org>; Fri, 28 May 2021 16:48:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 133EFF804A9
-IronPort-SDR: +ksTakcWsOIlV48xY6TELI6HIWHwiEMyrlwy8E99E61T1swTd7JNGC1vwx5IgQj61IFdzc/5u7
- WKdQJuNQuR2g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9998"; a="266852823"
-X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; d="scan'208";a="266852823"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 May 2021 07:48:30 -0700
-IronPort-SDR: 7lGGprA4F4EPPv4zpfrB7xj5WgcwZiSf0gqLn/yHkqSiMcdOk3OzNU3jI0lb/pFPsIx4jHXs+g
- OsOOIN1DEvQA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; d="scan'208";a="548001427"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga004.jf.intel.com with ESMTP; 28 May 2021 07:48:27 -0700
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: [PATCH] ASoC: SOF: reset enabled_cores state at suspend
-Date: Fri, 28 May 2021 17:43:30 +0300
-Message-Id: <20210528144330.2551-1-kai.vehmanen@linux.intel.com>
-X-Mailer: git-send-email 2.31.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6AB29F804AB
+ for <alsa-devel@alsa-project.org>; Fri, 28 May 2021 18:04:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AB29F804AB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="Yb1mbA3F"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=Content-Transfer-Encoding:
+ Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
+ To:From:Sender:Reply-To:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=giTOQvmYrM5t4JeSPs9O4ZMevYgrHFOv5wej4uvXIjI=; b=Yb1mbA3FhKG7hQCRGy0vNSP3B/
+ wTf/VSK+Su+gvMJZNGII8t7X8vu3n74aeOL9XO0ed8m2zQ9372FmHk6ScY2j8KVKQBDH7xxgXID3C
+ qfJYZl6BIu8gKxsNxveNAsStWkk9PgHLbiUReQkq2/SATRKRopCaTl2qzkeCe4A0dd9A=;
+Received: from cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net
+ ([92.233.91.117] helo=fitzroy.sirena.org.uk)
+ by heliosphere.sirena.org.uk with esmtpsa (TLS1.3) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.94.2)
+ (envelope-from <broonie@sirena.org.uk>)
+ id 1lmeyE-006czY-0e; Fri, 28 May 2021 16:04:22 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+ id 520ECD078FE; Fri, 28 May 2021 17:04:21 +0100 (BST)
+From: Mark Brown <broonie@kernel.org>
+To: lgirdwood@gmail.com,
+	Jack Yu <jack.yu@realtek.com>
+Subject: Re: [PATCH v2] ASoC: rt5659: Fix the lost powers for the HDA header
+Date: Fri, 28 May 2021 17:04:17 +0100
+Message-Id: <162221783192.3504698.9775759615007728247.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <15fced51977b458798ca4eebf03dafb9@realtek.com>
+References: <15fced51977b458798ca4eebf03dafb9@realtek.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: kai.vehmanen@linux.intel.com, yung-chuan.liao@linux.intel.com,
- lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com, daniel.baluta@nxp.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
+ lars@metafoo.de, Brown@sirena.org.uk, broonie@kernel.org,
+ =?UTF-8?q?Derek=20=5B=E6=96=B9=E5=BE=B7=E7=BE=A9=5D?= <derek.fang@realtek.com>,
+ =?UTF-8?q?Shuming=20=5B=E8=8C=83=E6=9B=B8=E9=8A=98=5D?= <shumingf@realtek.com>,
+ Mark@sirena.org.uk, mkumard@nvidia.com, "Flove\(HsinFu\)" <flove@realtek.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,35 +95,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The recent changes to use common code to power up/down DSP cores also
-removed the reset of the core state at suspend. It turns out this is
-still needed. When the firmware state is reset to
-SOF_FW_BOOT_NOT_STARTED, also enabled_cores should be reset, and
-existing DSP drivers depend on this.
+From: Mark Brown,,, <broonie@kernel.org>
 
-BugLink: https://github.com/thesofproject/linux/issues/2824
-Fixes: 42077f08b3 ("ASoC: SOF: update dsp core power status in common APIs")
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
----
- sound/soc/sof/pm.c | 1 +
- 1 file changed, 1 insertion(+)
+On Thu, 27 May 2021 01:06:51 +0000, Jack Yu wrote:
+> The power of "LDO2", "MICBIAS1" and "Mic Det Power" were powered off after
+> the DAPM widgets were added, and these powers were set by the JD settings
+> "RT5659_JD_HDA_HEADER" in the probe function. In the codec probe function,
+> these powers were ignored to prevent them controlled by DAPM.
 
-diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
-index fd265803f7bc..c83fb6255961 100644
---- a/sound/soc/sof/pm.c
-+++ b/sound/soc/sof/pm.c
-@@ -256,6 +256,7 @@ static int sof_suspend(struct device *dev, bool runtime_suspend)
- 
- 	/* reset FW state */
- 	sdev->fw_state = SOF_FW_BOOT_NOT_STARTED;
-+	sdev->enabled_cores_mask = 0;
- 
- 	return ret;
- }
+Applied, thanks!
 
-base-commit: 058efb40641845432c52777443b3372dbc97c032
+[1/1] ASoC: rt5659: Fix the lost powers for the HDA header
+      commit: 6308c44ed6eeadf65c0a7ba68d609773ed860fbb
+
+Best regards,
 -- 
-2.31.1
-
+Mark Brown,,, <broonie@kernel.org>
