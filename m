@@ -7,73 +7,73 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE241C2B9F7
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 May 2021 14:16:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4F73C2B9F7
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 May 2021 14:17:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 287A8610A6
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 May 2021 14:16:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 287A8610A6
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=green-communications.fr
+	by mail.kernel.org (Postfix) with ESMTPS id D32AE610A6
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 May 2021 14:17:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D32AE610A6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mailoo.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BD94216D0;
-	Fri, 28 May 2021 16:16:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD94216D0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 626BD16CD;
+	Fri, 28 May 2021 16:16:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 626BD16CD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622211410;
-	bh=ccirT3gfVkmi1HXQ2sLn0J6QwVjyXbjrtw2sELpz75Q=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=W4+11vhNRaZW6EJs5E/dRnId8tEWBAkUS80r39CVpiKZZjbf0a0rkUmncMqCVlltu
-	 wAfGngOZmZrIZhZOthmGeDQw8EmGZM9/iaKT/ECE6J7HvY1jJ3uq5/9ZX3lnIkEpw5
-	 mG9ls1vFJ5NqqUtGdyv3vqViEp6wQskM2OcXSJ04=
+	s=default; t=1622211422;
+	bh=OKYKG4Td/pA0tworGfD316KejA0heP4GSr6nhVKZgcs=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=N1vKk2Dd3C5fMFJ08doIv9fmd7BPADHow1GFcSP6Hk/s2YBn4/XF6QTEZvUQj1XKd
+	 uNk6bJYyMU9mJ6jXXw+C+zAf6WW56vl8Ul85qh1MB5hqcmO8dqrQ0EqfCcR39G5mvN
+	 fd8AmJON9N3LvpEZDKLqJ5GAedfs7P0mWwPvwcDM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 57F17F804BD;
+	by alsa1.perex.cz (Postfix) with ESMTP id E775FF804A9;
 	Fri, 28 May 2021 16:14:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CEEA6F80149; Thu, 27 May 2021 18:35:21 +0200 (CEST)
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.75])
+ id 4ABB9F80274; Fri, 28 May 2021 12:51:47 +0200 (CEST)
+Received: from msg-4.mailo.com (ip-15.mailobj.net [213.182.54.15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BBC5AF8012E
- for <alsa-devel@alsa-project.org>; Thu, 27 May 2021 18:35:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBC5AF8012E
-Received: from evilbit.green-communications.fr ([92.154.77.116]) by
- mrelayeu.kundenserver.de (mreue109 [213.165.67.119]) with ESMTPSA (Nemesis)
- id 1MxDgs-1lWi1Y41ay-00xb4U; Thu, 27 May 2021 18:35:05 +0200
-From: Nicolas Cavallari <nicolas.cavallari@green-communications.fr>
-To: Timur Tabi <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>,
- Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
- Shengjiu Wang <shengjiu.wang@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH] ASoC: fsl-asoc-card: Set .owner attribute when registering
- card.
-Date: Thu, 27 May 2021 18:34:09 +0200
-Message-Id: <20210527163409.22049-1-nicolas.cavallari@green-communications.fr>
-X-Mailer: git-send-email 2.32.0.rc0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3C6ACF800B7
+ for <alsa-devel@alsa-project.org>; Fri, 28 May 2021 12:51:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C6ACF800B7
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=mailoo.org header.i=@mailoo.org
+ header.b="UYvqC49Z"
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
+ t=1622199080; bh=OKYKG4Td/pA0tworGfD316KejA0heP4GSr6nhVKZgcs=;
+ h=X-EA-Auth:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:
+ References:MIME-Version:Content-Transfer-Encoding;
+ b=UYvqC49ZWz4nm0Y1EtH5rHaV1xRpaQ+VN8UVELAzhxID/VTaAGtPAiKqABHdXGuK2
+ or/Jx0RaAdcMskZToqzytonRjSdqbD0lZDbJWqMieI4fydfaigwT3Lv1O/jwnppc2O
+ qaW5YdolLlLO7v4gWfv/+LOKvXLUYvEPNY4DXf0g=
+Received: by 192.168.90.15 [192.168.90.15] with ESMTP
+ via proxy.mailoo.org [213.182.55.207]
+ Fri, 28 May 2021 12:51:20 +0200 (CEST)
+X-EA-Auth: RDFPup0CGiESeT4DRztaa5d7F5htMiWQg095Z1QC++mxU6PK1lhKWwIAhJjRsHxp1a4svIiKucHduZJ0mIH4rDg0SdWoDPTbey18SIlWnPU=
+From: Vincent Knecht <vincent.knecht@mailoo.org>
+To: Mark Brown <broonie@kernel.org>
+Subject: [PATCH v1 3/4] ASoC: dt-bindings: nxp,
+ tfa989x: Add vddd-supply property
+Date: Fri, 28 May 2021 12:51:00 +0200
+Message-Id: <20210528105101.508254-3-vincent.knecht@mailoo.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210528105101.508254-1-vincent.knecht@mailoo.org>
+References: <20210528105101.508254-1-vincent.knecht@mailoo.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:2Xcz2Picz7QfmT/3RZBi3M8YNs4IfW4bK0TwJV+1zVrQF9+vlSl
- SpyEYVbT+4phkVcPD0ZG9bn4CAhEsIknv5lWwzPzDyXjwUVbUyGnIcI/zSyao3qv97Uyo4i
- 8I+4g8168s60kXemjwIW7S501zxCz+aUwNwwO7y+Pb2ZprPbNdy7M8pHZeG2EZATaEWW/9y
- 6O8qBSxcDQtKbzu8xhHQw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:bzReOWb16ek=:V0+42pMgaYxIojg4mvWBbg
- pEcUglREpACdHscuIlYtm7rEF3ODNcM1E0WQzBzhTFSs7DhVRluMSngL55mjhF42QxYVfR6yN
- Y65WkxbZGGMseBbZaK3721OpVPaZT3j2d3whJBH8Ep+YS3iBF2L2spCuH5Auajt641GTL42GW
- kZof8yQyY9aoOgnyJac80gSxutgWZfgb4Ak7fxwPfzQESJbWM+oeXTICXrW5GCrCKvCz3bhat
- 2o9CPY6I3ZwHe5auyuKNq9RcQ7TdfEFm5KMHsn8mAXeUdPiGv68RVfSTL1M6WJG/6oHGiYyQR
- HaZkmeFqcTTe7HE2p0nVlYu5a/pBdX/bhesH0c8R/h8aIokRObk+EJDP8PICJNXBQOjZtpZXJ
- YjmDi/YZ3cxgRpEEEJOP/vNHx5P6984xxPB7G6loLa7hFlOWvrT7mggU/pHi2T2HMSGaaZ9LX
- I5+TKzR4hj5c+LinK2iGQJA6VuoWGUcp2B9Xhhb5O2b1stq40h5gqLrsyKkryYU2ZogkQFvtD
- kkykOYd/i9PhIrXzooyIfBz6g9K+osu7eGuFTYF6CFTnYg9QWm7CUZ6cn3PK6CoMw==
 X-Mailman-Approved-At: Fri, 28 May 2021 16:14:26 +0200
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Stephan Gerhold <stephan@gerhold.net>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, ~postmarketos/upstreaming@lists.sr.ht,
+ phone-devel@vger.kernel.org, Vincent Knecht <vincent.knecht@mailoo.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,41 +89,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Otherwise, when compiled as module, a WARN_ON is triggered:
+Add optional vddd-supply property to allow regulator control.
 
-WARNING: CPU: 0 PID: 5 at sound/core/init.c:208 snd_card_new+0x310/0x39c [snd]
-[...]
-CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.10.39 #1
-Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-Workqueue: events deferred_probe_work_func
-[<c0111988>] (unwind_backtrace) from [<c010c8ac>] (show_stack+0x10/0x14)
-[<c010c8ac>] (show_stack) from [<c092784c>] (dump_stack+0xdc/0x104)
-[<c092784c>] (dump_stack) from [<c0129710>] (__warn+0xd8/0x114)
-[<c0129710>] (__warn) from [<c0922a48>] (warn_slowpath_fmt+0x5c/0xc4)
-[<c0922a48>] (warn_slowpath_fmt) from [<bf0496f8>] (snd_card_new+0x310/0x39c [snd])
-[<bf0496f8>] (snd_card_new [snd]) from [<bf1d7df8>] (snd_soc_bind_card+0x334/0x9c4 [snd_soc_core])
-[<bf1d7df8>] (snd_soc_bind_card [snd_soc_core]) from [<bf1e9cd8>] (devm_snd_soc_register_card+0x30/0x6c [snd_soc_core])
-[<bf1e9cd8>] (devm_snd_soc_register_card [snd_soc_core]) from [<bf22d964>] (fsl_asoc_card_probe+0x550/0xcc8 [snd_soc_fsl_asoc_card])
-[<bf22d964>] (fsl_asoc_card_probe [snd_soc_fsl_asoc_card]) from [<c060c930>] (platform_drv_probe+0x48/0x98)
-[...]
-
-Signed-off-by: Nicolas Cavallari <nicolas.cavallari@green-communications.fr>
+Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
 ---
- sound/soc/fsl/fsl-asoc-card.c | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index c62bfd1c3ac7..4f55b316cf0f 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -744,6 +744,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 	/* Initialize sound card */
- 	priv->pdev = pdev;
- 	priv->card.dev = &pdev->dev;
-+	priv->card.owner = THIS_MODULE;
- 	ret = snd_soc_of_parse_card_name(&priv->card, "model");
- 	if (ret) {
- 		snprintf(priv->name, sizeof(priv->name), "%s-audio",
+diff --git a/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml b/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
+index 46ddc1f3fc0c..ffb8fcfeb629 100644
+--- a/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
++++ b/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
+@@ -27,6 +27,9 @@ properties:
+       Used as prefix for sink/source names of the component. Must be a
+       unique string among multiple instances of the same component.
+ 
++  vddd-supply:
++    description: regulator phandle for the VDDD power supply.
++
+ required:
+   - compatible
+   - reg
 -- 
-2.32.0.rc0
+2.31.1
+
+
 
