@@ -4,93 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B8FBC4708E
-	for <alsa-devel@archiver.kernel.org>; Sat, 29 May 2021 15:48:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64F53C4708E
+	for <alsa-devel@archiver.kernel.org>; Sat, 29 May 2021 15:48:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DA65661184
-	for <alsa-devel@archiver.kernel.org>; Sat, 29 May 2021 15:48:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA65661184
+	by mail.kernel.org (Postfix) with ESMTPS id AF24061185
+	for <alsa-devel@archiver.kernel.org>; Sat, 29 May 2021 15:48:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AF24061185
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7FE3616BF;
-	Sat, 29 May 2021 17:48:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FE3616BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A679169A;
+	Sat, 29 May 2021 17:48:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A679169A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622303332;
-	bh=kBt9sEFep1KdM0pYjv6VSkw32Pl+VAqj7OldA3eD2WU=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=qNqU2ZMQVPbwesm3WVlGjFvxNA/RUeAr+c9PY/kn5WmSRRrNA5KLnfWo+XsPDdy6b
-	 BpACdZoee5wTOH/ZtHOEtv4pRmGFuvrbH456wksz69w9i2jaEaOLktUiq+OEBwyf5Q
-	 6LPV3Bu41HOgNnHjQ8ZoiY7VbjIIRL1UTXKY2ppM=
+	s=default; t=1622303337;
+	bh=3aWBa4suO8hhUwEmNP+jfFQOH+ngvOGr9P8Gq+IzMOw=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=V0DxlUkroKoSl5T1pj7VsidSg+ichQ+V+pX8FcUMaU2a4p0x3cK+nkNK/cz0MxVO8
+	 23FJyFWwWk951Xo4tlvcmXwj+tbXhEjJdhlSBVKSMVA9LfkljP9Y3JUAAQBmAKui+X
+	 VOrRYXzSK/q+bhrzBwp0X/evg7OM07GBTJH3wrcU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 300BDF80301;
-	Sat, 29 May 2021 17:47:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F21CF80132;
+	Sat, 29 May 2021 17:47:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8D65BF8010A; Sat, 29 May 2021 17:47:08 +0200 (CEST)
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com
- [IPv6:2a00:1450:4864:20::136])
+ id B37D5F804BB; Sat, 29 May 2021 17:47:15 +0200 (CEST)
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com
+ [IPv6:2a00:1450:4864:20::12a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E98FEF80132
- for <alsa-devel@alsa-project.org>; Sat, 29 May 2021 17:47:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E98FEF80132
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1E7A8F80132
+ for <alsa-devel@alsa-project.org>; Sat, 29 May 2021 17:47:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E7A8F80132
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="mRcFb2P0"
-Received: by mail-lf1-x136.google.com with SMTP id w33so9856774lfu.7
- for <alsa-devel@alsa-project.org>; Sat, 29 May 2021 08:47:03 -0700 (PDT)
+ header.b="TbMiJGGJ"
+Received: by mail-lf1-x12a.google.com with SMTP id x38so9836102lfa.10
+ for <alsa-devel@alsa-project.org>; Sat, 29 May 2021 08:47:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=69jY18dEEmfg/ZmZabTRCrIvuDBUDZXyA3JOYkZkeGw=;
- b=mRcFb2P0k5/vGofL5Z6ifIaPh1MLPeh+A8QKTudtugZOONYgG0jOYoQk/KzxhvhLfu
- KQDDGsTNC3s8khsw5BXO5qgZGwIO5JOhSVNbW+6P2t+EueqiaQ52nNAuZMtaBBi0qNI/
- e4/gvZtyvEjG3GDM0M5mJdhsqdRtzwFCojSM1uige15JzQLkmP5hhQkBQ5rYNglfZI2G
- 4BB56E95lEbYFkYDkzscfLeGKPT6axij8yPU4iub9LtKNwWi8th/kROMJ9eaVnOwxHd2
- FcdezkdjweOLL4fvYsq2EVkXlzbUtMdJGumNsWVfsxucbJZd0QDvpO/M2fHbcC0JHyzL
- lk5Q==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=pO0H22zQy0hWIbbfN3xY68+CLeo+OMFw2Vv0SCa5Ock=;
+ b=TbMiJGGJdUoD4wWHlHvpEMJfkd0uRPxiNnK8R36XKzc0nbvhvvDCjxLuU5cxCs6Uia
+ n1AG+l7zs06PfVVP4CLo1LWcJ3iJxB7N4YGUNn4yXEReEl6bEKR6449o06kplP9cJ/CK
+ fhybG9gjgz/96HEC700HnPmEymd1YDacObdcP5G+K83aCto+KFIhRL8Ht0/Zf4gk3vCx
+ mMxo1o0NHhyL4txNulQnPnRBD8VJ5FgOZF6p7cGPggds/x20mKWkuAB1b5TMPepq94e8
+ 06YrlxoEgPrZZA8g/vK3R6I3smh15GnGnSPBoL6v2fVUUMtFOGmlPuTo2rv1D/wnqGuv
+ X8Rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=69jY18dEEmfg/ZmZabTRCrIvuDBUDZXyA3JOYkZkeGw=;
- b=DOIkQR+EYoyg/sVG7ilQ+H3uE+4OwQdvAcztzhjLYg0oOfUT8/zWTJi606JkGq8buI
- 6EFetIV4X70NGudYn8eMD2phNl4vCAUsGQIzC/cBD2nQ5InEQH7cOO56rYnhd/Xj7Jn1
- hh2ixoZtBjfKUBdgSr4EeXtn07IDTYpwMxoyeA1ycedMB+eKAqThJKPTmafBYBhtPaWS
- PQjX7fgix7Tp3CnKH5183UcLqj96i6+1tJncDw4f4rmI62ZIWdG+wdMMxxDoKbmUEcjl
- wR4wTOjixqgmu2V/YQZBJyPsfEoDZJeeHyNniwGpDpH1aKwRBh+1UuP5uhbCHHSQ8SUV
- M2wA==
-X-Gm-Message-State: AOAM533J359DVWVncLNYLqG8sEMKtPycjCv2rTxCSrLbZuv6Pi2kPyoG
- 8NXBSyL34KDQUjFYMCPmilU=
-X-Google-Smtp-Source: ABdhPJxub4O4ti3YHUpNH7X94BqtbHhnVYCK73BCXVrvgQWeio/I30cjJEEadISmn+0wxgOW1GLbgQ==
-X-Received: by 2002:a05:6512:a95:: with SMTP id
- m21mr9319762lfu.272.1622303223164; 
- Sat, 29 May 2021 08:47:03 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=pO0H22zQy0hWIbbfN3xY68+CLeo+OMFw2Vv0SCa5Ock=;
+ b=r/C7W0S3iQ3cHHFWLwBvbXxP5ZtMunVdDFhNF8jySWOvSMHl4Z7Tr9bGlBKw01QnUc
+ 1/QNtnrqWfT4KzRMjNFj4fdLt+RlPGfgheQo0QMuclaxZI5LycCOQ9sAytxLqXIXyKPa
+ jRxE2TyFPUR5R6w1W2GCnwaf6qb6RH2lsx1edV4rkBtXPME57aAQ1I5LSehSDjsjIJ7b
+ VVjsRMS4N+5cMPqLyltQBSjZF2sKKgQTNu3Gqxw8r2/8vxJiU7JcAwhb0anvX1PFuyxC
+ tPpTOgfSxxD3jbgXerAT6FGBRiyBnJ2QGDyJvPQZPUR1eAxH5iPhkVhI1Vc2ttulcS9G
+ sVvg==
+X-Gm-Message-State: AOAM533hJ6pHfBFdIYyHCJ6pKycSLjSYES/54bPCMKvR3+MC/YFXMUzO
+ Mbe6pnOP/mpXPP2fH9XTUihbRa4s/Mw=
+X-Google-Smtp-Source: ABdhPJwfwM/LM+N/S1m75/J+UQnkSTQu0lCIAuWVboWCQXLrtMCWZzgAO2d3w5EitblXV4rr25BcsQ==
+X-Received: by 2002:a19:5e0d:: with SMTP id s13mr9381160lfb.229.1622303226526; 
+ Sat, 29 May 2021 08:47:06 -0700 (PDT)
 Received: from localhost.localdomain (46-138-84-89.dynamic.spd-mgts.ru.
  [46.138.84.89])
- by smtp.gmail.com with ESMTPSA id y24sm764005lfg.232.2021.05.29.08.47.02
+ by smtp.gmail.com with ESMTPSA id y24sm764005lfg.232.2021.05.29.08.47.05
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 29 May 2021 08:47:02 -0700 (PDT)
+ Sat, 29 May 2021 08:47:06 -0700 (PDT)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
  Ion Agorria <ion@agorria.com>, Svyatoslav Ryhel <clamor95@gmail.com>,
  Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH v6 0/4] Unify NVIDIA Tegra ASoC machine drivers
-Date: Sat, 29 May 2021 18:46:45 +0300
-Message-Id: <20210529154649.25936-1-digetx@gmail.com>
+Subject: [PATCH v6 4/4] ASoC: tegra: Squash utils into common machine driver
+Date: Sat, 29 May 2021 18:46:49 +0300
+Message-Id: <20210529154649.25936-5-digetx@gmail.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210529154649.25936-1-digetx@gmail.com>
+References: <20210529154649.25936-1-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
@@ -110,100 +112,517 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series squashes all the ASoC machine drivers into a single one,
-this change was suggested by Jon Hunter. It also sets driver_name and
-components string of each card, allowing userspace alsa-lib to find
-UCMs at predictable path.
+There no users left of the utils other than the new common machine driver.
+Squash the utils into the common machine driver in order to simplify code.
 
-Changelog:
-
-v6: - Fixed missed configuration of AC97 clock rate for the WM9712 codec
-      in the unified driver.
-
-    - Added new patch that removes now obsolete "utils" helpers and moves
-      code into the unified driver.
-
-        ASoC: tegra: Squash utils into common machine driver
-
-v5: - The v4 removed the customization of components string for Nexus 7,
-      but I missed to remove the "components" hook which is unused now,
-      it's removed in v5 for consistency.
-
-    - Slightly improved naming of the common 12MHz MCLK rate function
-      to make it more consistent with the rest of the driver functions.
-
-v4: - Moved out mclk_rate callback that is currently used only by WM8903
-      machine driver from the common driver. This was suggested by Jon Hunter.
-
-    - Dropped patch which was setting custom components string for Nexus 7.
-      Jaroslav Kysela wants it to be specified in a device-tree, but the
-      components string doesn't have a firm specification for today. It's
-      better to drop this change for now since it's optional anyways.
-
-    - Fixed compilation error that was reported by kernel robot for v3.
-
-    - Jaroslav Kysela merged alsa-ucm-conf PR [1] which added UCMs for
-      Nexus 7 and Acer A500. The UCMs are fully working using a combination
-      of updated kernel + alsa-ucm-conf master + alsa-lib master, meaning
-      that they will work with the next releases of kernel and ALSA userspace
-      upstream packages.
-
-    - Added ack from Jaroslav Kysela to the "Specify components string for
-      each card" patch that he gave to v3.
-
-v3: - Added components string as was suggested by Jaroslav Kysela to v2.
-
-    - Renamed MCLK rate function that is used by max98090 and other codecs
-      to make it look more generic. Added option for specifying CLK ID per
-      device. This all was suggested by Jon Hunter to v2.
-
-v2: - Dropped use of of_device_compatible_match(), like it was suggested
-      by Rob Herring in a review comment to v1.
-
-    - Added patch that sets card's driver_name of as Tegra ASoC drivers.
-      In a comment to v1 Jaroslav Kysela suggested that the Tegra drivers
-      don't set the card name properly and he was right.
-
-      I opened pull request with the new Tegra UCMs and updated lookup paths
-      for older UCMs [1].
-
-      [1] https://github.com/alsa-project/alsa-ucm-conf/pull/92
-
-Dmitry Osipenko (4):
-  ASoC: tegra: Set driver_name=tegra for all machine drivers
-  ASoC: tegra: Unify ASoC machine drivers
-  ASoC: tegra: Specify components string for each card
-  ASoC: tegra: Squash utils into common machine driver
-
- sound/soc/tegra/Kconfig              |  12 +
- sound/soc/tegra/Makefile             |  19 +-
- sound/soc/tegra/tegra_alc5632.c      | 259 --------
- sound/soc/tegra/tegra_asoc_machine.c | 854 +++++++++++++++++++++++++++
- sound/soc/tegra/tegra_asoc_machine.h |  49 ++
- sound/soc/tegra/tegra_asoc_utils.c   | 225 -------
- sound/soc/tegra/tegra_asoc_utils.h   |  38 --
- sound/soc/tegra/tegra_max98090.c     | 276 ---------
- sound/soc/tegra/tegra_rt5640.c       | 222 -------
- sound/soc/tegra/tegra_rt5677.c       | 324 ----------
- sound/soc/tegra/tegra_sgtl5000.c     | 211 -------
- sound/soc/tegra/tegra_wm8753.c       | 185 ------
- sound/soc/tegra/tegra_wm8903.c       | 351 +++--------
- sound/soc/tegra/tegra_wm9712.c       | 166 ------
- sound/soc/tegra/trimslice.c          | 172 ------
- 15 files changed, 996 insertions(+), 2367 deletions(-)
- delete mode 100644 sound/soc/tegra/tegra_alc5632.c
- create mode 100644 sound/soc/tegra/tegra_asoc_machine.c
- create mode 100644 sound/soc/tegra/tegra_asoc_machine.h
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ sound/soc/tegra/Makefile             |   1 -
+ sound/soc/tegra/tegra_asoc_machine.c | 153 ++++++++++++++++--
+ sound/soc/tegra/tegra_asoc_machine.h |   9 +-
+ sound/soc/tegra/tegra_asoc_utils.c   | 225 ---------------------------
+ sound/soc/tegra/tegra_asoc_utils.h   |  38 -----
+ 5 files changed, 150 insertions(+), 276 deletions(-)
  delete mode 100644 sound/soc/tegra/tegra_asoc_utils.c
  delete mode 100644 sound/soc/tegra/tegra_asoc_utils.h
- delete mode 100644 sound/soc/tegra/tegra_max98090.c
- delete mode 100644 sound/soc/tegra/tegra_rt5640.c
- delete mode 100644 sound/soc/tegra/tegra_rt5677.c
- delete mode 100644 sound/soc/tegra/tegra_sgtl5000.c
- delete mode 100644 sound/soc/tegra/tegra_wm8753.c
- delete mode 100644 sound/soc/tegra/tegra_wm9712.c
- delete mode 100644 sound/soc/tegra/trimslice.c
 
+diff --git a/sound/soc/tegra/Makefile b/sound/soc/tegra/Makefile
+index b930ea7c75f1..e2cec9ae31c9 100644
+--- a/sound/soc/tegra/Makefile
++++ b/sound/soc/tegra/Makefile
+@@ -15,7 +15,6 @@ snd-soc-tegra186-dspk-objs := tegra186_dspk.o
+ snd-soc-tegra210-admaif-objs := tegra210_admaif.o
+ 
+ obj-$(CONFIG_SND_SOC_TEGRA) += snd-soc-tegra-pcm.o
+-obj-$(CONFIG_SND_SOC_TEGRA) += snd-soc-tegra-utils.o
+ obj-$(CONFIG_SND_SOC_TEGRA20_AC97) += snd-soc-tegra20-ac97.o
+ obj-$(CONFIG_SND_SOC_TEGRA20_DAS) += snd-soc-tegra20-das.o
+ obj-$(CONFIG_SND_SOC_TEGRA20_I2S) += snd-soc-tegra20-i2s.o
+diff --git a/sound/soc/tegra/tegra_asoc_machine.c b/sound/soc/tegra/tegra_asoc_machine.c
+index 31ab7123945b..a53aec361a77 100644
+--- a/sound/soc/tegra/tegra_asoc_machine.c
++++ b/sound/soc/tegra/tegra_asoc_machine.c
+@@ -3,6 +3,7 @@
+  * tegra_asoc_machine.c - Universal ASoC machine driver for NVIDIA Tegra boards.
+  */
+ 
++#include <linux/clk.h>
+ #include <linux/export.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/module.h>
+@@ -239,12 +240,68 @@ static int tegra_machine_hw_params(struct snd_pcm_substream *substream,
+ 	unsigned int srate = params_rate(params);
+ 	unsigned int mclk = machine->asoc->mclk_rate(srate);
+ 	unsigned int clk_id = machine->asoc->mclk_id;
++	unsigned int new_baseclock;
+ 	int err;
+ 
+-	err = tegra_asoc_utils_set_rate(&machine->util_data, srate, mclk);
+-	if (err < 0) {
+-		dev_err(card->dev, "Can't configure clocks: %d\n", err);
+-		return err;
++	switch (srate) {
++	case 11025:
++	case 22050:
++	case 44100:
++	case 88200:
++		if (of_machine_is_compatible("nvidia,tegra20"))
++			new_baseclock = 56448000;
++		else if (of_machine_is_compatible("nvidia,tegra30"))
++			new_baseclock = 564480000;
++		else
++			new_baseclock = 282240000;
++		break;
++	case 8000:
++	case 16000:
++	case 32000:
++	case 48000:
++	case 64000:
++	case 96000:
++		if (of_machine_is_compatible("nvidia,tegra20"))
++			new_baseclock = 73728000;
++		else if (of_machine_is_compatible("nvidia,tegra30"))
++			new_baseclock = 552960000;
++		else
++			new_baseclock = 368640000;
++		break;
++	default:
++		dev_err(card->dev, "Invalid sound rate: %u\n", srate);
++		return -EINVAL;
++	}
++
++	if (new_baseclock != machine->set_baseclock ||
++	    mclk != machine->set_mclk) {
++		machine->set_baseclock = 0;
++		machine->set_mclk = 0;
++
++		clk_disable_unprepare(machine->clk_cdev1);
++
++		err = clk_set_rate(machine->clk_pll_a, new_baseclock);
++		if (err) {
++			dev_err(card->dev, "Can't set pll_a rate: %d\n", err);
++			return err;
++		}
++
++		err = clk_set_rate(machine->clk_pll_a_out0, mclk);
++		if (err) {
++			dev_err(card->dev, "Can't set pll_a_out0 rate: %d\n", err);
++			return err;
++		}
++
++		/* Don't set cdev1/extern1 rate; it's locked to pll_a_out0 */
++
++		err = clk_prepare_enable(machine->clk_cdev1);
++		if (err) {
++			dev_err(card->dev, "Can't enable cdev1: %d\n", err);
++			return err;
++		}
++
++		machine->set_baseclock = new_baseclock;
++		machine->set_mclk = mclk;
+ 	}
+ 
+ 	err = snd_soc_dai_set_sysclk(codec_dai, clk_id, mclk, SND_SOC_CLOCK_IN);
+@@ -377,14 +434,92 @@ int tegra_asoc_machine_probe(struct platform_device *pdev)
+ 	if (!card->driver_name)
+ 		card->driver_name = "tegra";
+ 
+-	err = tegra_asoc_utils_init(&machine->util_data, &pdev->dev);
+-	if (err)
+-		return err;
++	machine->clk_pll_a = devm_clk_get(dev, "pll_a");
++	if (IS_ERR(machine->clk_pll_a)) {
++		dev_err(dev, "Can't retrieve clk pll_a\n");
++		return PTR_ERR(machine->clk_pll_a);
++	}
++
++	machine->clk_pll_a_out0 = devm_clk_get(dev, "pll_a_out0");
++	if (IS_ERR(machine->clk_pll_a_out0)) {
++		dev_err(dev, "Can't retrieve clk pll_a_out0\n");
++		return PTR_ERR(machine->clk_pll_a_out0);
++	}
++
++	machine->clk_cdev1 = devm_clk_get(dev, "mclk");
++	if (IS_ERR(machine->clk_cdev1)) {
++		dev_err(dev, "Can't retrieve clk cdev1\n");
++		return PTR_ERR(machine->clk_cdev1);
++	}
++
++	/*
++	 * If clock parents are not set in DT, configure here to use clk_out_1
++	 * as mclk and extern1 as parent for Tegra30 and higher.
++	 */
++	if (!of_find_property(dev->of_node, "assigned-clock-parents", NULL) &&
++	    !of_machine_is_compatible("nvidia,tegra20")) {
++		struct clk *clk_out_1, *clk_extern1;
++
++		dev_warn(dev, "Configuring clocks for a legacy device-tree\n");
++		dev_warn(dev, "Please update DT to use assigned-clock-parents\n");
++
++		clk_extern1 = devm_clk_get(dev, "extern1");
++		if (IS_ERR(clk_extern1)) {
++			dev_err(dev, "Can't retrieve clk extern1\n");
++			return PTR_ERR(clk_extern1);
++		}
++
++		err = clk_set_parent(clk_extern1, machine->clk_pll_a_out0);
++		if (err < 0) {
++			dev_err(dev, "Set parent failed for clk extern1\n");
++			return err;
++		}
++
++		clk_out_1 = devm_clk_get(dev, "pmc_clk_out_1");
++		if (IS_ERR(clk_out_1)) {
++			dev_err(dev, "Can't retrieve pmc_clk_out_1\n");
++			return PTR_ERR(clk_out_1);
++		}
++
++		err = clk_set_parent(clk_out_1, clk_extern1);
++		if (err < 0) {
++			dev_err(dev, "Set parent failed for pmc_clk_out_1\n");
++			return err;
++		}
++
++		machine->clk_cdev1 = clk_out_1;
++	}
+ 
+ 	if (asoc->set_ac97) {
+-		err = tegra_asoc_utils_set_ac97_rate(&machine->util_data);
+-		if (err)
++		/*
++		 * AC97 rate is fixed at 24.576MHz and is used for both the
++		 * host controller and the external codec
++		 */
++		err = clk_set_rate(machine->clk_pll_a, 73728000);
++		if (err) {
++			dev_err(dev, "Can't set pll_a rate: %d\n", err);
+ 			return err;
++		}
++
++		err = clk_set_rate(machine->clk_pll_a_out0, 24576000);
++		if (err) {
++			dev_err(dev, "Can't set pll_a_out0 rate: %d\n", err);
++			return err;
++		}
++
++		machine->set_baseclock = 73728000;
++		machine->set_mclk = 24576000;
++	}
++
++	/*
++	 * FIXME: There is some unknown dependency between audio MCLK disable
++	 * and suspend-resume functionality on Tegra30, although audio MCLK is
++	 * only needed for audio.
++	 */
++	err = clk_prepare_enable(machine->clk_cdev1);
++	if (err) {
++		dev_err(dev, "Can't enable cdev1: %d\n", err);
++		return err;
+ 	}
+ 
+ 	err = devm_snd_soc_register_card(dev, card);
+diff --git a/sound/soc/tegra/tegra_asoc_machine.h b/sound/soc/tegra/tegra_asoc_machine.h
+index f3a087a7548b..8ee0ec814f67 100644
+--- a/sound/soc/tegra/tegra_asoc_machine.h
++++ b/sound/soc/tegra/tegra_asoc_machine.h
+@@ -3,8 +3,7 @@
+ #ifndef __TEGRA_ASOC_MACHINE_H__
+ #define __TEGRA_ASOC_MACHINE_H__
+ 
+-#include "tegra_asoc_utils.h"
+-
++struct clk;
+ struct gpio_desc;
+ struct snd_soc_card;
+ struct snd_soc_jack;
+@@ -27,7 +26,11 @@ struct tegra_asoc_data {
+ };
+ 
+ struct tegra_machine {
+-	struct tegra_asoc_utils_data util_data;
++	struct clk *clk_pll_a_out0;
++	struct clk *clk_pll_a;
++	struct clk *clk_cdev1;
++	unsigned int set_baseclock;
++	unsigned int set_mclk;
+ 	const struct tegra_asoc_data *asoc;
+ 	struct gpio_desc *gpiod_ext_mic_en;
+ 	struct gpio_desc *gpiod_int_mic_en;
+diff --git a/sound/soc/tegra/tegra_asoc_utils.c b/sound/soc/tegra/tegra_asoc_utils.c
+deleted file mode 100644
+index 587f62a288d1..000000000000
+--- a/sound/soc/tegra/tegra_asoc_utils.c
++++ /dev/null
+@@ -1,225 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- * tegra_asoc_utils.c - Harmony machine ASoC driver
+- *
+- * Author: Stephen Warren <swarren@nvidia.com>
+- * Copyright (C) 2010,2012 - NVIDIA, Inc.
+- */
+-
+-#include <linux/clk.h>
+-#include <linux/device.h>
+-#include <linux/err.h>
+-#include <linux/kernel.h>
+-#include <linux/module.h>
+-#include <linux/of.h>
+-
+-#include "tegra_asoc_utils.h"
+-
+-int tegra_asoc_utils_set_rate(struct tegra_asoc_utils_data *data, int srate,
+-			      int mclk)
+-{
+-	int new_baseclock;
+-	bool clk_change;
+-	int err;
+-
+-	switch (srate) {
+-	case 11025:
+-	case 22050:
+-	case 44100:
+-	case 88200:
+-		if (data->soc == TEGRA_ASOC_UTILS_SOC_TEGRA20)
+-			new_baseclock = 56448000;
+-		else if (data->soc == TEGRA_ASOC_UTILS_SOC_TEGRA30)
+-			new_baseclock = 564480000;
+-		else
+-			new_baseclock = 282240000;
+-		break;
+-	case 8000:
+-	case 16000:
+-	case 32000:
+-	case 48000:
+-	case 64000:
+-	case 96000:
+-		if (data->soc == TEGRA_ASOC_UTILS_SOC_TEGRA20)
+-			new_baseclock = 73728000;
+-		else if (data->soc == TEGRA_ASOC_UTILS_SOC_TEGRA30)
+-			new_baseclock = 552960000;
+-		else
+-			new_baseclock = 368640000;
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	clk_change = ((new_baseclock != data->set_baseclock) ||
+-			(mclk != data->set_mclk));
+-	if (!clk_change)
+-		return 0;
+-
+-	data->set_baseclock = 0;
+-	data->set_mclk = 0;
+-
+-	clk_disable_unprepare(data->clk_cdev1);
+-
+-	err = clk_set_rate(data->clk_pll_a, new_baseclock);
+-	if (err) {
+-		dev_err(data->dev, "Can't set pll_a rate: %d\n", err);
+-		return err;
+-	}
+-
+-	err = clk_set_rate(data->clk_pll_a_out0, mclk);
+-	if (err) {
+-		dev_err(data->dev, "Can't set pll_a_out0 rate: %d\n", err);
+-		return err;
+-	}
+-
+-	/* Don't set cdev1/extern1 rate; it's locked to pll_a_out0 */
+-
+-	err = clk_prepare_enable(data->clk_cdev1);
+-	if (err) {
+-		dev_err(data->dev, "Can't enable cdev1: %d\n", err);
+-		return err;
+-	}
+-
+-	data->set_baseclock = new_baseclock;
+-	data->set_mclk = mclk;
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(tegra_asoc_utils_set_rate);
+-
+-int tegra_asoc_utils_set_ac97_rate(struct tegra_asoc_utils_data *data)
+-{
+-	const int pll_rate = 73728000;
+-	const int ac97_rate = 24576000;
+-	int err;
+-
+-	clk_disable_unprepare(data->clk_cdev1);
+-
+-	/*
+-	 * AC97 rate is fixed at 24.576MHz and is used for both the host
+-	 * controller and the external codec
+-	 */
+-	err = clk_set_rate(data->clk_pll_a, pll_rate);
+-	if (err) {
+-		dev_err(data->dev, "Can't set pll_a rate: %d\n", err);
+-		return err;
+-	}
+-
+-	err = clk_set_rate(data->clk_pll_a_out0, ac97_rate);
+-	if (err) {
+-		dev_err(data->dev, "Can't set pll_a_out0 rate: %d\n", err);
+-		return err;
+-	}
+-
+-	/* Don't set cdev1/extern1 rate; it's locked to pll_a_out0 */
+-
+-	err = clk_prepare_enable(data->clk_cdev1);
+-	if (err) {
+-		dev_err(data->dev, "Can't enable cdev1: %d\n", err);
+-		return err;
+-	}
+-
+-	data->set_baseclock = pll_rate;
+-	data->set_mclk = ac97_rate;
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(tegra_asoc_utils_set_ac97_rate);
+-
+-int tegra_asoc_utils_init(struct tegra_asoc_utils_data *data,
+-			  struct device *dev)
+-{
+-	struct clk *clk_out_1, *clk_extern1;
+-	int ret;
+-
+-	data->dev = dev;
+-
+-	if (of_machine_is_compatible("nvidia,tegra20"))
+-		data->soc = TEGRA_ASOC_UTILS_SOC_TEGRA20;
+-	else if (of_machine_is_compatible("nvidia,tegra30"))
+-		data->soc = TEGRA_ASOC_UTILS_SOC_TEGRA30;
+-	else if (of_machine_is_compatible("nvidia,tegra114"))
+-		data->soc = TEGRA_ASOC_UTILS_SOC_TEGRA114;
+-	else if (of_machine_is_compatible("nvidia,tegra124"))
+-		data->soc = TEGRA_ASOC_UTILS_SOC_TEGRA124;
+-	else {
+-		dev_err(data->dev, "SoC unknown to Tegra ASoC utils\n");
+-		return -EINVAL;
+-	}
+-
+-	data->clk_pll_a = devm_clk_get(dev, "pll_a");
+-	if (IS_ERR(data->clk_pll_a)) {
+-		dev_err(data->dev, "Can't retrieve clk pll_a\n");
+-		return PTR_ERR(data->clk_pll_a);
+-	}
+-
+-	data->clk_pll_a_out0 = devm_clk_get(dev, "pll_a_out0");
+-	if (IS_ERR(data->clk_pll_a_out0)) {
+-		dev_err(data->dev, "Can't retrieve clk pll_a_out0\n");
+-		return PTR_ERR(data->clk_pll_a_out0);
+-	}
+-
+-	data->clk_cdev1 = devm_clk_get(dev, "mclk");
+-	if (IS_ERR(data->clk_cdev1)) {
+-		dev_err(data->dev, "Can't retrieve clk cdev1\n");
+-		return PTR_ERR(data->clk_cdev1);
+-	}
+-
+-	/*
+-	 * If clock parents are not set in DT, configure here to use clk_out_1
+-	 * as mclk and extern1 as parent for Tegra30 and higher.
+-	 */
+-	if (!of_find_property(dev->of_node, "assigned-clock-parents", NULL) &&
+-	    data->soc > TEGRA_ASOC_UTILS_SOC_TEGRA20) {
+-		dev_warn(data->dev,
+-			 "Configuring clocks for a legacy device-tree\n");
+-		dev_warn(data->dev,
+-			 "Please update DT to use assigned-clock-parents\n");
+-		clk_extern1 = devm_clk_get(dev, "extern1");
+-		if (IS_ERR(clk_extern1)) {
+-			dev_err(data->dev, "Can't retrieve clk extern1\n");
+-			return PTR_ERR(clk_extern1);
+-		}
+-
+-		ret = clk_set_parent(clk_extern1, data->clk_pll_a_out0);
+-		if (ret < 0) {
+-			dev_err(data->dev,
+-				"Set parent failed for clk extern1\n");
+-			return ret;
+-		}
+-
+-		clk_out_1 = devm_clk_get(dev, "pmc_clk_out_1");
+-		if (IS_ERR(clk_out_1)) {
+-			dev_err(data->dev, "Can't retrieve pmc_clk_out_1\n");
+-			return PTR_ERR(clk_out_1);
+-		}
+-
+-		ret = clk_set_parent(clk_out_1, clk_extern1);
+-		if (ret < 0) {
+-			dev_err(data->dev,
+-				"Set parent failed for pmc_clk_out_1\n");
+-			return ret;
+-		}
+-
+-		data->clk_cdev1 = clk_out_1;
+-	}
+-
+-	/*
+-	 * FIXME: There is some unknown dependency between audio mclk disable
+-	 * and suspend-resume functionality on Tegra30, although audio mclk is
+-	 * only needed for audio.
+-	 */
+-	ret = clk_prepare_enable(data->clk_cdev1);
+-	if (ret) {
+-		dev_err(data->dev, "Can't enable cdev1: %d\n", ret);
+-		return ret;
+-	}
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(tegra_asoc_utils_init);
+-
+-MODULE_AUTHOR("Stephen Warren <swarren@nvidia.com>");
+-MODULE_DESCRIPTION("Tegra ASoC utility code");
+-MODULE_LICENSE("GPL");
+diff --git a/sound/soc/tegra/tegra_asoc_utils.h b/sound/soc/tegra/tegra_asoc_utils.h
+deleted file mode 100644
+index a34439587d59..000000000000
+--- a/sound/soc/tegra/tegra_asoc_utils.h
++++ /dev/null
+@@ -1,38 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- * tegra_asoc_utils.h - Definitions for Tegra DAS driver
+- *
+- * Author: Stephen Warren <swarren@nvidia.com>
+- * Copyright (C) 2010,2012 - NVIDIA, Inc.
+- */
+-
+-#ifndef __TEGRA_ASOC_UTILS_H__
+-#define __TEGRA_ASOC_UTILS_H__
+-
+-struct clk;
+-struct device;
+-
+-enum tegra_asoc_utils_soc {
+-	TEGRA_ASOC_UTILS_SOC_TEGRA20,
+-	TEGRA_ASOC_UTILS_SOC_TEGRA30,
+-	TEGRA_ASOC_UTILS_SOC_TEGRA114,
+-	TEGRA_ASOC_UTILS_SOC_TEGRA124,
+-};
+-
+-struct tegra_asoc_utils_data {
+-	struct device *dev;
+-	enum tegra_asoc_utils_soc soc;
+-	struct clk *clk_pll_a;
+-	struct clk *clk_pll_a_out0;
+-	struct clk *clk_cdev1;
+-	int set_baseclock;
+-	int set_mclk;
+-};
+-
+-int tegra_asoc_utils_set_rate(struct tegra_asoc_utils_data *data, int srate,
+-			      int mclk);
+-int tegra_asoc_utils_set_ac97_rate(struct tegra_asoc_utils_data *data);
+-int tegra_asoc_utils_init(struct tegra_asoc_utils_data *data,
+-			  struct device *dev);
+-
+-#endif
 -- 
 2.30.2
 
