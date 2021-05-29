@@ -2,102 +2,55 @@ Return-Path: <SRS0=AoxM=KY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B65DC47082
-	for <alsa-devel@archiver.kernel.org>; Sat, 29 May 2021 15:50:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 312DFC47082
+	for <alsa-devel@archiver.kernel.org>; Sat, 29 May 2021 17:59:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E0DF061184
-	for <alsa-devel@archiver.kernel.org>; Sat, 29 May 2021 15:50:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0DF061184
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 3161261153
+	for <alsa-devel@archiver.kernel.org>; Sat, 29 May 2021 17:59:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3161261153
+Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7DCBA16C6;
-	Sat, 29 May 2021 17:49:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7DCBA16C6
+	by alsa0.perex.cz (Postfix) with ESMTPS id EA9CB16AC;
+	Sat, 29 May 2021 19:58:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA9CB16AC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622303414;
-	bh=1Ao+ei/ct3HyZfi3AGr3yIJ/vrpFkK+E4Qd0w9mlOrQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1622311186;
+	bh=RFr3YLZ6UFVRhea4GBd89bUQB/zqq/s0R+WBVmqYSts=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=W01hNTDAV0rtpFYZvFaCa8iAAgLxMI+kQhwvy8r4s24uxFhZQiYjGIyj4n13BKnro
-	 PnlEn0WRl+pa7m6EaSifYCKM6xv1Wm82oGvcycqt9etPcSS08ysS18Vc4mTk/u4aZY
-	 2lg0BZ8DHuUHsmpmL49wT9pUgeyCKszV/A6Db9hg=
+	b=NP0qcz225A+W1sDMv5dRJCUzpq5nCh6iXa01yfdGFM0EdMIo2zTdGBCcEqPQrQCk9
+	 iANiUWK2kBHFmzNXo5GFq+VBGHHgvhGhBiXtfA65jdP3eCXhXeBRDBRcjCXthxE63p
+	 Slw88Fgoc8rYvCQS56OWwQhGL4QX6m0IGINKU6Qc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F2B07F80302;
-	Sat, 29 May 2021 17:48:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7F2F2F8014B;
+	Sat, 29 May 2021 19:58:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 26B0BF804DA; Sat, 29 May 2021 17:48:06 +0200 (CEST)
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com
- [IPv6:2a00:1450:4864:20::12b])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AF067F8014B
- for <alsa-devel@alsa-project.org>; Sat, 29 May 2021 17:47:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF067F8014B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="UcO71gX0"
-Received: by mail-lf1-x12b.google.com with SMTP id q1so9888774lfo.3
- for <alsa-devel@alsa-project.org>; Sat, 29 May 2021 08:47:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=Z2iUcTqe2R2Sbv5vYWTS2UijlDb+a9ygeGihNURh4Cg=;
- b=UcO71gX0qrG7TirsQESyzzd4kfv7uI1nIe6d6Hlb6ZPNofFQOQE2ltyr6HJpRXopyF
- AQJSFB368vAxyhBnGzbvLiXdRQbQckG8kZIcJ6V4VZGFX/C4B62Cj5RCPKHYEoGDRBk4
- MQB7NMInoyxVrbQ/QjwIBESNOOZdm1MsH6EES9v6mCYabCepX7aZQGPxe3KlezyMuOU2
- gAUvU0GDZ6cGalDjUNwmq8f97WGx09rK/iI0FaG4fD150NhqLzNS63uUqBux6+wCCqY5
- TbSxOinnxboK+ilSmdHqhs+X9K9/HWvUqluxv3zFlkd4Gtzn48K+Y1CMqbr248o7+Fvb
- /PLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=Z2iUcTqe2R2Sbv5vYWTS2UijlDb+a9ygeGihNURh4Cg=;
- b=eMYfYiyv3YA3hXn6pldMLqf6AxkK5OtLhGHabM2Wd/uNzJPnnfNuhArw7doe85qVEW
- FmqY6eIk0JBWwVlSNBbctgjHPQC3WyqWWmIQC/5+PPlO0jKD9D4pG+L2CPJo63KT1iox
- hkrk4eNY22WtM2Yo1NkBOcXFgwbeBGPnJCM1BIKysrQ5PCamFsV1GEJoeMhmC7kM/pDU
- adzT7Wi6e5zGTrlt7aQ1U/czt7tCfNMldImtiWRO/RcFmbl9bHwgT6KLTjm7tQj9ASfZ
- 8kBGjYlnRzv+Ja+904if8puLE0D89WOh+ZAek5fjOPp7VI68NIIlFQeOxe9L6VhdC9MI
- d8Ww==
-X-Gm-Message-State: AOAM5334/qdihpY8qkcW4N1BmysIQjnBBWH+PKQJuY//CkePEgSNy+Rh
- WD584vMP9eQPjgeZIu3nxKw=
-X-Google-Smtp-Source: ABdhPJwBdY5IFjd6EWyKbO9bMfvDkr5gIBgUdSAkD0C8yx+E6VWo3GwlPn2PKw9ocP2f2e4begJXGQ==
-X-Received: by 2002:a05:6512:3045:: with SMTP id
- b5mr9038966lfb.273.1622303225746; 
- Sat, 29 May 2021 08:47:05 -0700 (PDT)
-Received: from localhost.localdomain (46-138-84-89.dynamic.spd-mgts.ru.
- [46.138.84.89])
- by smtp.gmail.com with ESMTPSA id y24sm764005lfg.232.2021.05.29.08.47.05
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 29 May 2021 08:47:05 -0700 (PDT)
-From: Dmitry Osipenko <digetx@gmail.com>
-To: Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
- Ion Agorria <ion@agorria.com>, Svyatoslav Ryhel <clamor95@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH v6 3/4] ASoC: tegra: Specify components string for each card
-Date: Sat, 29 May 2021 18:46:48 +0300
-Message-Id: <20210529154649.25936-4-digetx@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210529154649.25936-1-digetx@gmail.com>
-References: <20210529154649.25936-1-digetx@gmail.com>
+ id B4070F80169; Sat, 29 May 2021 19:58:53 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 5ED18F80132
+ for <alsa-devel@alsa-project.org>; Sat, 29 May 2021 19:58:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5ED18F80132
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1622311129133899927-webhooks-bot@alsa-project.org>
+References: <1622311129133899927-webhooks-bot@alsa-project.org>
+Subject: snd_pcm_avail() returned a value that is exceptionally large "ALC293"
+Message-Id: <20210529175853.B4070F80169@alsa1.perex.cz>
+Date: Sat, 29 May 2021 19:58:53 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,91 +66,126 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Specify components string for each card of each supported device. It's
-a free form string that describes audio hardware configuration. This
-information is useful for ALSA UCM rules. It allows to generalize UCM
-rules, potentially removing a need to add new UCM rule for each device.
+alsa-project/alsa-lib issue #141 was opened from Jeronimo17:
 
-Acked-by: Jaroslav Kysela <perex@perex.cz>
-Suggested-by: Jaroslav Kysela <perex@perex.cz>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- sound/soc/tegra/tegra_asoc_machine.c | 7 +++++++
- sound/soc/tegra/tegra_wm8903.c       | 1 +
- 2 files changed, 8 insertions(+)
+HDA Intel PCH
+Realtek ALC293
 
-diff --git a/sound/soc/tegra/tegra_asoc_machine.c b/sound/soc/tegra/tegra_asoc_machine.c
-index f052ad2a1f38..31ab7123945b 100644
---- a/sound/soc/tegra/tegra_asoc_machine.c
-+++ b/sound/soc/tegra/tegra_asoc_machine.c
-@@ -412,6 +412,7 @@ static struct snd_soc_dai_link tegra_wm8753_dai = {
- };
- 
- static struct snd_soc_card snd_soc_tegra_wm8753 = {
-+	.components = "codec:wm8753",
- 	.dai_link = &tegra_wm8753_dai,
- 	.num_links = 1,
- 	.fully_routed = true,
-@@ -444,6 +445,7 @@ static struct snd_soc_dai_link tegra_wm9712_dai = {
- };
- 
- static struct snd_soc_card snd_soc_tegra_wm9712 = {
-+	.components = "codec:wm9712",
- 	.dai_link = &tegra_wm9712_dai,
- 	.num_links = 1,
- 	.fully_routed = true,
-@@ -506,6 +508,7 @@ static struct snd_soc_dai_link tegra_sgtl5000_dai = {
- };
- 
- static struct snd_soc_card snd_soc_tegra_sgtl5000 = {
-+	.components = "codec:sgtl5000",
- 	.dai_link = &tegra_sgtl5000_dai,
- 	.num_links = 1,
- 	.fully_routed = true,
-@@ -548,6 +551,7 @@ static struct snd_soc_dai_link tegra_tlv320aic23_dai = {
- };
- 
- static struct snd_soc_card snd_soc_tegra_trimslice = {
-+	.components = "codec:tlv320aic23",
- 	.dai_link = &tegra_tlv320aic23_dai,
- 	.num_links = 1,
- 	.dapm_widgets = trimslice_dapm_widgets,
-@@ -595,6 +599,7 @@ static struct snd_soc_dai_link tegra_rt5677_dai = {
- };
- 
- static struct snd_soc_card snd_soc_tegra_rt5677 = {
-+	.components = "codec:rt5677",
- 	.dai_link = &tegra_rt5677_dai,
- 	.num_links = 1,
- 	.fully_routed = true,
-@@ -628,6 +633,7 @@ static struct snd_soc_dai_link tegra_rt5640_dai = {
- };
- 
- static struct snd_soc_card snd_soc_tegra_rt5640 = {
-+	.components = "codec:rt5640",
- 	.dai_link = &tegra_rt5640_dai,
- 	.num_links = 1,
- 	.fully_routed = true,
-@@ -660,6 +666,7 @@ static struct snd_soc_dai_link tegra_rt5632_dai = {
- };
- 
- static struct snd_soc_card snd_soc_tegra_rt5632 = {
-+	.components = "codec:rt5632",
- 	.dai_link = &tegra_rt5632_dai,
- 	.num_links = 1,
- 	.fully_routed = true,
-diff --git a/sound/soc/tegra/tegra_wm8903.c b/sound/soc/tegra/tegra_wm8903.c
-index 74101d2c7785..5751fb398c1a 100644
---- a/sound/soc/tegra/tegra_wm8903.c
-+++ b/sound/soc/tegra/tegra_wm8903.c
-@@ -129,6 +129,7 @@ static struct snd_soc_dai_link tegra_wm8903_dai = {
- };
- 
- static struct snd_soc_card snd_soc_tegra_wm8903 = {
-+	.components = "codec:wm8903",
- 	.owner = THIS_MODULE,
- 	.dai_link = &tegra_wm8903_dai,
- 	.num_links = 1,
--- 
-2.30.2
 
+
+It is rare that it occurs, it has only happened to me playing, after this the internal keyboard stops responding and I have to put one for USB, and the shutdown of the laptop is impossible without removing power forced 
+
+`may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: snd_pcm_avail() returned a value that is exceptionally large: 440960 bytes (2499 ms).
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: Most likely this is a bug in the ALSA driver 'snd_hda_intel'. Please report this issue to the ALSA developers.
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: snd_pcm_dump():
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: Soft volume PCM
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: Control: PCM Playback Volume
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: min_dB: -51
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: max_dB: 0
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: resolution: 256
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: Its setup is:
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   stream       : PLAYBACK
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   access       : MMAP_INTERLEAVED
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   format       : S16_LE
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   subformat    : STD
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   channels     : 2
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   rate         : 44100
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   exact rate   : 44100 (44100/1)
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   msbits       : 16
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   buffer_size  : 4408
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   period_size  : 1102
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   period_time  : 24988
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   tstamp_mode  : ENABLE
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   tstamp_type  : MONOTONIC
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   period_step  : 1
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   avail_min    : 1102
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   period_event : 1
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   start_threshold  : -1
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   stop_threshold   : 4962966789362286592
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   silence_threshold: 0
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   silence_size : 0
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   boundary     : 4962966789362286592
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: Slave: Hardware PCM card 0 'HDA Intel PCH' device 0 subdevice 0
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: Its setup is:
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   stream       : PLAYBACK
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   access       : MMAP_INTERLEAVED
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   format       : S16_LE
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   subformat    : STD
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   channels     : 2
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   rate         : 44100
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   exact rate   : 44100 (44100/1)
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   msbits       : 16
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   buffer_size  : 4408
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   period_size  : 1102
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   period_time  : 24988
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   tstamp_mode  : ENABLE
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   tstamp_type  : MONOTONIC
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   period_step  : 1
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   avail_min    : 1102
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   period_event : 1
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   start_threshold  : -1
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   stop_threshold   : 4962966789362286592
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   silence_threshold: 0
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   silence_size : 0
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   boundary     : 4962966789362286592
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   appl_ptr     : 47704880
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   hw_ptr       : 47810712
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: snd_pcm_delay() returned a value that is exceptionally large: -247148 bytes (-1401 ms).
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: Most likely this is a bug in the ALSA driver 'snd_hda_intel'. Please report this issue to the ALSA developers.
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: snd_pcm_dump():
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: Soft volume PCM
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: Control: PCM Playback Volume
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: min_dB: -51
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: max_dB: 0
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: resolution: 256
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: Its setup is:
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   stream       : PLAYBACK
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   access       : MMAP_INTERLEAVED
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   format       : S16_LE
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   subformat    : STD
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   channels     : 2
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   rate         : 44100
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   exact rate   : 44100 (44100/1)
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   msbits       : 16
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   buffer_size  : 4408
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   period_size  : 1102
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   period_time  : 24988
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   tstamp_mode  : ENABLE
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   tstamp_type  : MONOTONIC
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   period_step  : 1
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   avail_min    : 1102
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   period_event : 1
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   start_threshold  : -1
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   stop_threshold   : 4962966789362286592
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   silence_threshold: 0
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   silence_size : 0
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   boundary     : 4962966789362286592
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: Slave: Hardware PCM card 0 'HDA Intel PCH' device 0 subdevice 0
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: Its setup is:
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   stream       : PLAYBACK
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   access       : MMAP_INTERLEAVED
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   format       : S16_LE
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   subformat    : STD
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   channels     : 2
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   rate         : 44100
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   exact rate   : 44100 (44100/1)
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   msbits       : 16
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   buffer_size  : 4408
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   period_size  : 1102
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   period_time  : 24988
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   tstamp_mode  : ENABLE
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   tstamp_type  : MONOTONIC
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   period_step  : 1
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   avail_min    : 1102
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   period_event : 1
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   start_threshold  : -1
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   stop_threshold   : 4962966789362286592
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   silence_threshold: 0
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   silence_size : 0
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   boundary     : 4962966789362286592
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   appl_ptr     : 47748960
+may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   hw_ptr       : 47810784
+`
+
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/141
+Repository URL: https://github.com/alsa-project/alsa-lib
