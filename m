@@ -2,70 +2,102 @@ Return-Path: <SRS0=AoxM=KY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EDA1C4708E
-	for <alsa-devel@archiver.kernel.org>; Sat, 29 May 2021 09:16:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18363C4708E
+	for <alsa-devel@archiver.kernel.org>; Sat, 29 May 2021 15:48:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DFC7D611ED
-	for <alsa-devel@archiver.kernel.org>; Sat, 29 May 2021 09:16:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFC7D611ED
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=hisilicon.com
+	by mail.kernel.org (Postfix) with ESMTPS id C1855611CE
+	for <alsa-devel@archiver.kernel.org>; Sat, 29 May 2021 15:48:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C1855611CE
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 44EFD16BF;
-	Sat, 29 May 2021 11:15:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44EFD16BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E03916AD;
+	Sat, 29 May 2021 17:47:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E03916AD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622279771;
-	bh=Q68c7+7KHRrQs2nkWN9aopb1jMaIkk0KREt0dDohBgw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=YmodnmEK6hH+Dm+sd7KDnQ/KNiy6EPpOS3QXtfmWgnI6cmjsu121B8OihG6hqyPtE
-	 efKwYN9Ai6mqcjIAvkcbLcdgqnL5xKxRfSwk7C++OxDfzw/8DsYqHNQ+gwZMTsNgEU
-	 tnWAPcl8CvJvBTs5TRq5bIJXo2Te3oUkkYaSHLwA=
+	s=default; t=1622303281;
+	bh=B4GjxRrA4q22aGVA/Kbe0k8HucpOg9DAVXr1sGESfOI=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=kUfKiTs99zZ4j8PdjzHN/7bInLNWuXREybGRO2p33SErHNdfGwCV2fLRgmCZg57Z1
+	 /MKhW/h0Cn9G4iYJkikhbfdS1Ab9GmNgfxkRH5gyvAUwg16q8rL/bJbHDPTA62XBfC
+	 G0QYcW/anlIx7wHBSa77IYzXMvHeYk6zQRoBM/J8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1158F8014B;
-	Sat, 29 May 2021 11:15:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F0534F8025C;
+	Sat, 29 May 2021 17:47:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D857AF80169; Sat, 29 May 2021 11:15:18 +0200 (CEST)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 73ADDF80300; Sat, 29 May 2021 17:47:08 +0200 (CEST)
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com
+ [IPv6:2a00:1450:4864:20::133])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 432D3F8013A
- for <alsa-devel@alsa-project.org>; Sat, 29 May 2021 11:15:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 432D3F8013A
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FsbRQ29TdzYqPl;
- Sat, 29 May 2021 17:12:18 +0800 (CST)
-Received: from dggpeml500023.china.huawei.com (7.185.36.114) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 29 May 2021 17:14:59 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 29 May 2021 17:14:59 +0800
-From: Shaokun Zhang <zhangshaokun@hisilicon.com>
-To: <alsa-devel@alsa-project.org>
-Subject: [PATCH] ASoC: sigmadsp: Remove the repeated declaration
-Date: Sat, 29 May 2021 17:14:50 +0800
-Message-ID: <1622279690-3740-1-git-send-email-zhangshaokun@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 03C7BF8010A
+ for <alsa-devel@alsa-project.org>; Sat, 29 May 2021 17:47:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03C7BF8010A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="LqxvfzvC"
+Received: by mail-lf1-x133.google.com with SMTP id r5so9879349lfr.5
+ for <alsa-devel@alsa-project.org>; Sat, 29 May 2021 08:47:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=xVuavUbxhP/h5ufdXkl/W8pz1JR/yQ3WYtl07Hx+SBA=;
+ b=LqxvfzvC8BvULFPDoEloqDBAsoeZAYrBWXMqRtVCB1N6biaNGDKrJgEh0bmdY+xSi/
+ dW6SxTeLYvT/ZfLRovtGjZ5wRwoIsgy7vSEnP378ZeE9FM7zuRvG0pSO/XyhHIFYsfjd
+ fkL2hi7+wlwGJ8jj3m7r29cK4TRipyBm0hYcKTk0KGT5i7/WBT8XSynZpg7ey/fmWGJ3
+ ooOKacD5DWseN9Qi81XK8VGW1Qlhcz+T1sDAJTbTjdBX8PzPXD/8JTGBc0OaL6X3wTNR
+ 5YkHjk9NWYycwinOtDyOjClLatCcplfh93Rufct0BOpmuYSbD+SYVdegC5NsE9D18JIF
+ oIEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=xVuavUbxhP/h5ufdXkl/W8pz1JR/yQ3WYtl07Hx+SBA=;
+ b=dixGxfzNZ9qdDU2AdpRz5lh0P6btH9WSDFCmO/A83J83VYoMozZhhxgkC1Mx+tU6Mq
+ 9Pbb2Gy0IU/mx/vcUBV1gJFUfTSYZTCWz7msgwAK93828v4kz4a3hQyqwDEAKe37tXEU
+ hDKOo/mHLdygKIfbbDzXv+G3XFHvIC19m7MwDfAOiRu6NHc6PaKKmKpb04lQtXN26BR4
+ lHPn+DkYmKvawKVBEsuxOb4/vQxW/HmSqffMptflpwlG3r2Nke00ZEiQohMYJqrzIP/s
+ ilS/FrF5maHsjD3fM/Zydz6AlvrT/u6ZlhgAmfQsoZnSNkVBWr7WjFa6/I/dezELJX3b
+ mFUg==
+X-Gm-Message-State: AOAM531yHpBTQAnW+6Gq9QpQDHrEh5wSWyZvhZukY8n5yO9NWsMTuXIB
+ BQWDkEBZTvKWkdxZ9pGzptY=
+X-Google-Smtp-Source: ABdhPJz1SUqbUr2gsUCRAaH5J/4htGtcLNBX7GzP9P4BUzUPZfre9/aK7EbkDJCKljSEQPRm+LTgAg==
+X-Received: by 2002:ac2:5977:: with SMTP id h23mr9017091lfp.596.1622303224039; 
+ Sat, 29 May 2021 08:47:04 -0700 (PDT)
+Received: from localhost.localdomain (46-138-84-89.dynamic.spd-mgts.ru.
+ [46.138.84.89])
+ by smtp.gmail.com with ESMTPSA id y24sm764005lfg.232.2021.05.29.08.47.03
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 29 May 2021 08:47:03 -0700 (PDT)
+From: Dmitry Osipenko <digetx@gmail.com>
+To: Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+ Ion Agorria <ion@agorria.com>, Svyatoslav Ryhel <clamor95@gmail.com>,
+ Liam Girdwood <lgirdwood@gmail.com>
+Subject: [PATCH v6 1/4] ASoC: tegra: Set driver_name=tegra for all machine
+ drivers
+Date: Sat, 29 May 2021 18:46:46 +0300
+Message-Id: <20210529154649.25936-2-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210529154649.25936-1-digetx@gmail.com>
+References: <20210529154649.25936-1-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500023.china.huawei.com (7.185.36.114)
-X-CFilter-Loop: Reflected
-Cc: Shaokun Zhang <zhangshaokun@hisilicon.com>, Mark Brown <broonie@kernel.org>
+Content-Transfer-Encoding: 8bit
+Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,27 +113,142 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Function 'sigmadsp_reset' is declared twice, so remove the repeated
-declaration.
+The driver_name="tegra" is now required by the newer ALSA UCMs, otherwise
+Tegra UCMs don't match by the path/name.
 
-Cc: Mark Brown <broonie@kernel.org>
-Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
+All Tegra machine drivers are specifying the card's name, but it has no
+effect if model name is specified in the device-tree since it overrides
+the card's name. We need to set the driver_name to "tegra" in order to
+get a usable lookup path for the updated ALSA UCMs. The new UCM lookup
+path has a form of driver_name/card_name.
+
+The old lookup paths that are based on driver module name continue to
+work as before. Note that UCM matching never worked for Tegra ASoC drivers
+if they were compiled as built-in, this is fixed by supporting the new
+naming scheme.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- sound/soc/codecs/sigmadsp.h | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/tegra/tegra_alc5632.c  | 1 +
+ sound/soc/tegra/tegra_max98090.c | 1 +
+ sound/soc/tegra/tegra_rt5640.c   | 1 +
+ sound/soc/tegra/tegra_rt5677.c   | 1 +
+ sound/soc/tegra/tegra_sgtl5000.c | 1 +
+ sound/soc/tegra/tegra_wm8753.c   | 1 +
+ sound/soc/tegra/tegra_wm8903.c   | 1 +
+ sound/soc/tegra/tegra_wm9712.c   | 1 +
+ sound/soc/tegra/trimslice.c      | 1 +
+ 9 files changed, 9 insertions(+)
 
-diff --git a/sound/soc/codecs/sigmadsp.h b/sound/soc/codecs/sigmadsp.h
-index d63b8c366efb..2783eff633a1 100644
---- a/sound/soc/codecs/sigmadsp.h
-+++ b/sound/soc/codecs/sigmadsp.h
-@@ -44,7 +44,6 @@ struct sigmadsp {
+diff --git a/sound/soc/tegra/tegra_alc5632.c b/sound/soc/tegra/tegra_alc5632.c
+index 0a0efd24e4b0..81ea6ceba689 100644
+--- a/sound/soc/tegra/tegra_alc5632.c
++++ b/sound/soc/tegra/tegra_alc5632.c
+@@ -139,6 +139,7 @@ static struct snd_soc_dai_link tegra_alc5632_dai = {
  
- struct sigmadsp *devm_sigmadsp_init(struct device *dev,
- 	const struct sigmadsp_ops *ops, const char *firmware_name);
--void sigmadsp_reset(struct sigmadsp *sigmadsp);
+ static struct snd_soc_card snd_soc_tegra_alc5632 = {
+ 	.name = "tegra-alc5632",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_alc5632_dai,
+ 	.num_links = 1,
+diff --git a/sound/soc/tegra/tegra_max98090.c b/sound/soc/tegra/tegra_max98090.c
+index 00c19704057b..5a649810c0c8 100644
+--- a/sound/soc/tegra/tegra_max98090.c
++++ b/sound/soc/tegra/tegra_max98090.c
+@@ -182,6 +182,7 @@ static struct snd_soc_dai_link tegra_max98090_dai = {
  
- int sigmadsp_restrict_params(struct sigmadsp *sigmadsp,
- 	struct snd_pcm_substream *substream);
+ static struct snd_soc_card snd_soc_tegra_max98090 = {
+ 	.name = "tegra-max98090",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_max98090_dai,
+ 	.num_links = 1,
+diff --git a/sound/soc/tegra/tegra_rt5640.c b/sound/soc/tegra/tegra_rt5640.c
+index 9afba37a3b08..3344f16258be 100644
+--- a/sound/soc/tegra/tegra_rt5640.c
++++ b/sound/soc/tegra/tegra_rt5640.c
+@@ -132,6 +132,7 @@ static struct snd_soc_dai_link tegra_rt5640_dai = {
+ 
+ static struct snd_soc_card snd_soc_tegra_rt5640 = {
+ 	.name = "tegra-rt5640",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_rt5640_dai,
+ 	.num_links = 1,
+diff --git a/sound/soc/tegra/tegra_rt5677.c b/sound/soc/tegra/tegra_rt5677.c
+index d30f8b6deda4..0f03e97d9355 100644
+--- a/sound/soc/tegra/tegra_rt5677.c
++++ b/sound/soc/tegra/tegra_rt5677.c
+@@ -175,6 +175,7 @@ static struct snd_soc_dai_link tegra_rt5677_dai = {
+ 
+ static struct snd_soc_card snd_soc_tegra_rt5677 = {
+ 	.name = "tegra-rt5677",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_rt5677_dai,
+ 	.num_links = 1,
+diff --git a/sound/soc/tegra/tegra_sgtl5000.c b/sound/soc/tegra/tegra_sgtl5000.c
+index 885332170c77..ef6a553e0b7d 100644
+--- a/sound/soc/tegra/tegra_sgtl5000.c
++++ b/sound/soc/tegra/tegra_sgtl5000.c
+@@ -97,6 +97,7 @@ static struct snd_soc_dai_link tegra_sgtl5000_dai = {
+ 
+ static struct snd_soc_card snd_soc_tegra_sgtl5000 = {
+ 	.name = "tegra-sgtl5000",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_sgtl5000_dai,
+ 	.num_links = 1,
+diff --git a/sound/soc/tegra/tegra_wm8753.c b/sound/soc/tegra/tegra_wm8753.c
+index efd793886689..27089077f2ea 100644
+--- a/sound/soc/tegra/tegra_wm8753.c
++++ b/sound/soc/tegra/tegra_wm8753.c
+@@ -101,6 +101,7 @@ static struct snd_soc_dai_link tegra_wm8753_dai = {
+ 
+ static struct snd_soc_card snd_soc_tegra_wm8753 = {
+ 	.name = "tegra-wm8753",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_wm8753_dai,
+ 	.num_links = 1,
+diff --git a/sound/soc/tegra/tegra_wm8903.c b/sound/soc/tegra/tegra_wm8903.c
+index e4863fa37b0c..f219c26d66a3 100644
+--- a/sound/soc/tegra/tegra_wm8903.c
++++ b/sound/soc/tegra/tegra_wm8903.c
+@@ -235,6 +235,7 @@ static struct snd_soc_dai_link tegra_wm8903_dai = {
+ 
+ static struct snd_soc_card snd_soc_tegra_wm8903 = {
+ 	.name = "tegra-wm8903",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_wm8903_dai,
+ 	.num_links = 1,
+diff --git a/sound/soc/tegra/tegra_wm9712.c b/sound/soc/tegra/tegra_wm9712.c
+index 4f09a178049d..c66da161c85a 100644
+--- a/sound/soc/tegra/tegra_wm9712.c
++++ b/sound/soc/tegra/tegra_wm9712.c
+@@ -54,6 +54,7 @@ static struct snd_soc_dai_link tegra_wm9712_dai = {
+ 
+ static struct snd_soc_card snd_soc_tegra_wm9712 = {
+ 	.name = "tegra-wm9712",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &tegra_wm9712_dai,
+ 	.num_links = 1,
+diff --git a/sound/soc/tegra/trimslice.c b/sound/soc/tegra/trimslice.c
+index 6c1cc3d0ac33..cb4c8f72e4e6 100644
+--- a/sound/soc/tegra/trimslice.c
++++ b/sound/soc/tegra/trimslice.c
+@@ -94,6 +94,7 @@ static struct snd_soc_dai_link trimslice_tlv320aic23_dai = {
+ 
+ static struct snd_soc_card snd_soc_trimslice = {
+ 	.name = "tegra-trimslice",
++	.driver_name = "tegra",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = &trimslice_tlv320aic23_dai,
+ 	.num_links = 1,
 -- 
-2.7.4
+2.30.2
 
