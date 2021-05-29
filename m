@@ -7,50 +7,50 @@ X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 745FCC4708E
-	for <alsa-devel@archiver.kernel.org>; Sat, 29 May 2021 18:00:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 904D5C47082
+	for <alsa-devel@archiver.kernel.org>; Sat, 29 May 2021 18:00:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 361F661153
-	for <alsa-devel@archiver.kernel.org>; Sat, 29 May 2021 18:00:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 361F661153
+	by mail.kernel.org (Postfix) with ESMTPS id 66C18610A8
+	for <alsa-devel@archiver.kernel.org>; Sat, 29 May 2021 18:00:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 66C18610A8
 Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CBD2B16BF;
-	Sat, 29 May 2021 19:59:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBD2B16BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id F135916CC;
+	Sat, 29 May 2021 20:00:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F135916CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622311236;
-	bh=A+laY8+5J9JdQr52ytsaaslCMpIG6VYZ97GHEXmyOCk=;
+	s=default; t=1622311252;
+	bh=jPI6eyMA56Y7rcjy+ArehEtt4WPd1TkMQTrDKCX+OfA=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VnY1ktNsxC6nd90658zo9vJ4vPmNeP8tq4F6EYV8rrwwgfXq2nlD7u4LZwDiGCg4a
-	 fVamF0QK7j9Sp59X6GMP/HRCMpyLsu33zJ1dW7ZTz6Xz7Uih9I6abSwSjKe4pesiPl
-	 LQe9XB+5GFjZTP+uPbT2qq/xW7hhLfrUTJPNU2ZQ=
+	b=XZ+XUPCXfcgeG+Y6/hDfrkwiEeYWiWx8UETnZ6fq40OqScOoHYTZ8PVHPzVJ6uRvI
+	 BnR0Ddy1s16rfN8CPM9z2wGH00UxOzpB5Z0/gx5ueOvYdpLvo3GBQuSNYnrMP3IFRC
+	 9xSNN9WSXb2UWExsOodwDmRSaQP1kCNod7qTsmjs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AC6BDF8025C;
-	Sat, 29 May 2021 19:59:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 10212F802E3;
+	Sat, 29 May 2021 19:59:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DAA9EF80300; Sat, 29 May 2021 19:59:19 +0200 (CEST)
+ id C1010F804BD; Sat, 29 May 2021 19:59:49 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id E0F98F8025C
- for <alsa-devel@alsa-project.org>; Sat, 29 May 2021 19:59:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0F98F8025C
+ by alsa1.perex.cz (Postfix) with ESMTP id F1986F804BC
+ for <alsa-devel@alsa-project.org>; Sat, 29 May 2021 19:59:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1986F804BC
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1622311156702790976-webhooks-bot@alsa-project.org>
-References: <1622311156702790976-webhooks-bot@alsa-project.org>
+In-Reply-To: <1622311186789011002-webhooks-bot@alsa-project.org>
+References: <1622311186789011002-webhooks-bot@alsa-project.org>
 Subject: snd_pcm_avail() returned a value that is exceptionally large "ALC293"
-Message-Id: <20210529175919.DAA9EF80300@alsa1.perex.cz>
-Date: Sat, 29 May 2021 19:59:19 +0200 (CEST)
+Message-Id: <20210529175949.C1010F804BD@alsa1.perex.cz>
+Date: Sat, 29 May 2021 19:59:49 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,7 +75,7 @@ Realtek ALC293
 
 It is rare that it occurs, it has only happened to me playing, after this the internal keyboard stops responding and I have to put one for USB, and the shutdown of the laptop is impossible without removing power forced 
 
-``
+`
 may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: snd_pcm_avail() returned a value that is exceptionally large: 440960 bytes (2499 ms).
 may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: Most likely this is a bug in the ALSA driver 'snd_hda_intel'. Please report this issue to the ALSA developers.
 may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]: snd_pcm_dump():
@@ -186,7 +186,8 @@ may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   silence_size 
 may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   boundary     : 4962966789362286592
 may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   appl_ptr     : 47748960
 may 29 18:44:35 jeronimo17-GIGABYTE-AORUS-7-KB pulseaudio[1370]:   hw_ptr       : 47810784
-``
+
+`
 
 Issue URL     : https://github.com/alsa-project/alsa-lib/issues/141
 Repository URL: https://github.com/alsa-project/alsa-lib
