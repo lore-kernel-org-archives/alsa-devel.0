@@ -2,85 +2,61 @@ Return-Path: <SRS0=jKKe=K3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46D2EC47080
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 06:24:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2422EC4708F
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 07:02:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 62D5E61375
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 06:24:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 62D5E61375
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 04E2C61370
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 07:02:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 04E2C61370
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=jacquin.bzh
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CFDF81691;
-	Tue,  1 Jun 2021 08:23:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFDF81691
+	by alsa0.perex.cz (Postfix) with ESMTPS id E92A91690;
+	Tue,  1 Jun 2021 09:01:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E92A91690
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622528647;
-	bh=SqWG3qAXnEFTDODCMFZv7I+r0Bo4Ec+HIrDRLK+OW84=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=QV/sSOT4FFWvCLXK5UUw2GiIIdYdpVpYF/mZi3WaJvdXMyshZ1gWNrjqGy6Kb6y59
-	 OBGyCRflOT8AqvTdu37JGvoVlv0CXnzV/jM4xm2lHdI3twnqd076F9c3UNm9PNH2ta
-	 aHzhBrKx75v5O7hGnwr5ntU4cm0HadD/Ewv4sH8Y=
+	s=default; t=1622530944;
+	bh=Tqxsu9Vh460p022HOR0t9dgwtouNeW+PMQjt3/XgdL8=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=AKSRRsV7uVBgtjj1oMoh4aO3lWXg7yi7sjsP1eSwEa1hZeVSwu+nF1LRYVGq8uVLa
+	 LZVLsvsSWcbwJzRdZi8ukI/yEUhqYus5bwySpZ9Eo55OHotwi0Bw0r0G5HW5vrg6kh
+	 MYPYwBb9nlSuf/MKt8GT2bkJvEY3tAqMOazlVDOI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6898FF80253;
-	Tue,  1 Jun 2021 08:23:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E1AFF80253;
+	Tue,  1 Jun 2021 09:01:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1CE11F80269; Tue,  1 Jun 2021 08:23:15 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6C7F0F801DB
- for <alsa-devel@alsa-project.org>; Tue,  1 Jun 2021 08:23:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C7F0F801DB
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="yywdxP9y"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="62yC6xf9"
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1622528591; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=hN4J4ZflNBhy/7KCR5P9d/GPL/3oOtLBLMIQBLcvwMQ=;
- b=yywdxP9y441plRKkv6JiLmzs1ebYdAc72ofwG4i88Jmeb9zrrmfOXI/NjzCsrk6kphktg1
- tQA4djbMhucEQ1pbcRbTEnoaTV7jTz7iwd1bftlch87RY8t0thMGW47Q/HGmkmdT4eJbNG
- tFHS+QpveVq7g0dWiFWMDplXtR20DFU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1622528591;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=hN4J4ZflNBhy/7KCR5P9d/GPL/3oOtLBLMIQBLcvwMQ=;
- b=62yC6xf9g3k7UT8sHjX9/0c7nKAfrjQUTOli8ND4naHym6LpxyIpN4CqD6tMO8OzX6dfCN
- Fb2oaTiRYZdTHwBA==
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id A65D6ACB1;
- Tue,  1 Jun 2021 06:23:11 +0000 (UTC)
-Date: Tue, 01 Jun 2021 08:23:11 +0200
-Message-ID: <s5heedmyugg.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Carlos M <carlos.marr.pz@gmail.com>
-Subject: Re: [PATCH] ALSA: hda: Fix for mute key LED for HP Pavilion 15-CK0xx
-In-Reply-To: <20210531202026.35427-1-carlos.marr.pz@gmail.com>
-References: <20210531202026.35427-1-carlos.marr.pz@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
+ id 6EE7AF80169; Sat, 29 May 2021 20:50:39 +0200 (CEST)
+Received: from toothrot.meleeweb.net (toothrot.meleeweb.net [62.210.131.231])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id CE56AF8013A
+ for <alsa-devel@alsa-project.org>; Sat, 29 May 2021 20:50:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE56AF8013A
+Received: from [80.111.226.61] (port=55984 helo=lady-voodoo.local)
+ by toothrot.meleeweb.net with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+ id 1ln42R-000bkg-C6; Sat, 29 May 2021 20:50:23 +0200
+From: Bertrand Jacquin <bertrand@jacquin.bzh>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ pierre-louis.bossart@linux.intel.com, srinivas.kandagatla@linaro.org,
+ alexandre.belloni@bootlin.com
+Subject: [PATCH] ASoC: snd-soc-lpass requires REGMAP_MMIO
+Date: Sat, 29 May 2021 19:49:57 +0100
+Message-Id: <20210529184957.373232-1-bertrand@jacquin.bzh>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Tue, 01 Jun 2021 09:01:32 +0200
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,16 +72,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 31 May 2021 22:20:26 +0200,
-Carlos M wrote:
-> 
-> For the HP Pavilion 15-CK0xx, with audio subsystem ID 0x103c:0x841c,
-> adding a line in patch_realtek.c to apply the ALC269_FIXUP_HP_MUTE_LED_MIC3
-> fix activates the mute key LED.
-> 
-> Signed-off-by: Carlos M <carlos.marr.pz@gmail.com>
+With CONFIG_SND_SOC_LPASS_RX_MACRO=m and CONFIG_REGMAP_MMIO undefined,
+build fails with the following error
 
-Thanks, applied.
+  make -f /var/tmp/portage/sys-kernel/stable-sources-5.12.8/work/linux-5.12.8-stable/scripts/Makefile.modpost
+    sed 's/\.ko$/\.o/' modules.order | scripts/mod/modpost   -E  -o modules-only.symvers -i vmlinux.symvers   -T -
+  ERROR: modpost: "__devm_regmap_init_mmio_clk" [sound/soc/codecs/snd-soc-lpass-rx-macro.ko] undefined!
 
+This does also apply to other Qualcomm Macro LPASS all making call to
+devm_regmap_init_mmio()
+---
+ sound/soc/codecs/Kconfig | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Takashi
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 1c87b42606c9..f5614f47f44d 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1824,18 +1824,22 @@ config SND_SOC_TPA6130A2
+ 
+ config SND_SOC_LPASS_WSA_MACRO
+ 	depends on COMMON_CLK
++	select REGMAP_MMIO
+ 	tristate "Qualcomm WSA Macro in LPASS(Low Power Audio SubSystem)"
+ 
+ config SND_SOC_LPASS_VA_MACRO
+ 	depends on COMMON_CLK
++	select REGMAP_MMIO
+ 	tristate "Qualcomm VA Macro in LPASS(Low Power Audio SubSystem)"
+ 
+ config SND_SOC_LPASS_RX_MACRO
+ 	depends on COMMON_CLK
++	select REGMAP_MMIO
+ 	tristate "Qualcomm RX Macro in LPASS(Low Power Audio SubSystem)"
+ 
+ config SND_SOC_LPASS_TX_MACRO
+ 	depends on COMMON_CLK
++	select REGMAP_MMIO
+ 	tristate "Qualcomm TX Macro in LPASS(Low Power Audio SubSystem)"
+ 
+ endmenu
