@@ -2,61 +2,90 @@ Return-Path: <SRS0=jKKe=K3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2422EC4708F
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 07:02:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD317C4708F
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 07:03:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 04E2C61370
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 07:02:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 04E2C61370
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=jacquin.bzh
+	by mail.kernel.org (Postfix) with ESMTPS id A57D661370
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 07:03:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A57D661370
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=nosuchhost.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E92A91690;
-	Tue,  1 Jun 2021 09:01:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E92A91690
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB484169F;
+	Tue,  1 Jun 2021 09:02:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB484169F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622530944;
-	bh=Tqxsu9Vh460p022HOR0t9dgwtouNeW+PMQjt3/XgdL8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1622530994;
+	bh=B21agY1d+P+oqE1VfUzc2n6gu/4ArASpb8CVrOPJcak=;
+	h=Subject:From:To:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=AKSRRsV7uVBgtjj1oMoh4aO3lWXg7yi7sjsP1eSwEa1hZeVSwu+nF1LRYVGq8uVLa
-	 LZVLsvsSWcbwJzRdZi8ukI/yEUhqYus5bwySpZ9Eo55OHotwi0Bw0r0G5HW5vrg6kh
-	 MYPYwBb9nlSuf/MKt8GT2bkJvEY3tAqMOazlVDOI=
+	b=iefdxj2d8tHPSHoSS5ZVxENgVg/9AlVLmGMw1qTNiOy9vR+GBuGoQTN9Ys+03hTqm
+	 O8BHxZYyE1e4lTFBngFJAgPlZZclirggAHU2D7qheY10F/UYUUMhuHI8rbLTSd2XhO
+	 Q1NxBc+uHnAYfQMTDxC9xnDfFwbv+24vfLTew3/s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7E1AFF80253;
-	Tue,  1 Jun 2021 09:01:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53C27F802E7;
+	Tue,  1 Jun 2021 09:01:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6EE7AF80169; Sat, 29 May 2021 20:50:39 +0200 (CEST)
-Received: from toothrot.meleeweb.net (toothrot.meleeweb.net [62.210.131.231])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CE56AF8013A
- for <alsa-devel@alsa-project.org>; Sat, 29 May 2021 20:50:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE56AF8013A
-Received: from [80.111.226.61] (port=55984 helo=lady-voodoo.local)
- by toothrot.meleeweb.net with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
- id 1ln42R-000bkg-C6; Sat, 29 May 2021 20:50:23 +0200
-From: Bertrand Jacquin <bertrand@jacquin.bzh>
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- pierre-louis.bossart@linux.intel.com, srinivas.kandagatla@linaro.org,
- alexandre.belloni@bootlin.com
-Subject: [PATCH] ASoC: snd-soc-lpass requires REGMAP_MMIO
-Date: Sat, 29 May 2021 19:49:57 +0100
-Message-Id: <20210529184957.373232-1-bertrand@jacquin.bzh>
-X-Mailer: git-send-email 2.31.1
+ id C6E78F80254; Sun, 30 May 2021 21:24:39 +0200 (CEST)
+Received: from mail.nosuchhost.net (mail.nosuchhost.net [78.46.40.125])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2F37CF80161
+ for <alsa-devel@alsa-project.org>; Sun, 30 May 2021 21:24:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F37CF80161
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=nosuchhost.net header.i=@nosuchhost.net
+ header.b="IBIqcQGQ"; 
+ dkim=pass (1024-bit key) header.d=nosuchhost.net header.i=@nosuchhost.net
+ header.b="pAmCuKIh"
+Received: from localhost (localhost [127.0.0.1])
+ by mail.nosuchhost.net (Postfix) with ESMTP id D629B4011A;
+ Sun, 30 May 2021 21:24:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.nosuchhost.net D629B4011A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nosuchhost.net;
+ s=default; t=1622402668;
+ bh=LdLM+vZyc843rt/vBE+syBmJRiEuxuhu9+qJovgTVlY=;
+ h=Subject:From:To:Cc:Date:From;
+ b=IBIqcQGQvaKCkoLFxGG0X8dGAiuK3JO5rgNYySosxWfa+95MZ/TQunnc5b9pLxAeb
+ pw6QemMMmvtzkRHivVlvtIEORf1rlMIvlqojkiok60GFp/NDklGdLIuGAnPLV4bSXR
+ jWIj8lyD8lqbpZ71YNMCc5cnsuKykqvd4unpG7AQ=
+X-Virus-Scanned: amavisd-new at nosuchhost.net
+Received: from mail.nosuchhost.net ([78.46.40.125])
+ by localhost (ns3.nosuchhost.net [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id B6Zk6O3Mm823; Sun, 30 May 2021 21:24:27 +0200 (CEST)
+Received: from [192.168.88.42] (91-119-16-248.dsl.dynamic.surfer.at
+ [91.119.16.248])
+ (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.nosuchhost.net (Postfix) with ESMTPSA id A5219400E9;
+ Sun, 30 May 2021 21:24:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.nosuchhost.net A5219400E9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nosuchhost.net;
+ s=default; t=1622402667;
+ bh=LdLM+vZyc843rt/vBE+syBmJRiEuxuhu9+qJovgTVlY=;
+ h=Subject:From:To:Cc:Date:From;
+ b=pAmCuKIh7rUb1Bxn2CP8k9iOtaaUFWa/uh4n3MFNvn4yZyzbYstLbcVpkUz/v3fXW
+ Kti+FqDM5wlj4jaRo7liUHXLJWRG1SvaLWUIZZXF+ABI9jAm10u/dEhhJqiELYMamB
+ gIU1ek9OIX8EV6RKqi1akyf4k3HQasdereoSE0CI=
+Message-ID: <05170bbaeea7eb6d5a4439e4884665a29bb2a144.camel@nosuchhost.net>
+Subject: trivial patch
+From: josef radinger <cheese@nosuchhost.net>
+To: perex@perex.cz, tiwai@suse.com
+Date: Sun, 30 May 2021 21:24:24 +0200
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Tue, 01 Jun 2021 09:01:32 +0200
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, trivial@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,43 +101,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-With CONFIG_SND_SOC_LPASS_RX_MACRO=m and CONFIG_REGMAP_MMIO undefined,
-build fails with the following error
+just fix some trivial typo in comments, sorry for the second try. 
+i should have read more carefully the rule about NOT sending attachments.
 
-  make -f /var/tmp/portage/sys-kernel/stable-sources-5.12.8/work/linux-5.12.8-stable/scripts/Makefile.modpost
-    sed 's/\.ko$/\.o/' modules.order | scripts/mod/modpost   -E  -o modules-only.symvers -i vmlinux.symvers   -T -
-  ERROR: modpost: "__devm_regmap_init_mmio_clk" [sound/soc/codecs/snd-soc-lpass-rx-macro.ko] undefined!
+diff --git a/sound/soc/qcom/qdsp6/q6adm.c
+b/sound/soc/qcom/qdsp6/q6adm.c
+index 3c68df82c95c..1855b805eba2 100644
+--- a/sound/soc/qcom/qdsp6/q6adm.c
++++ b/sound/soc/qcom/qdsp6/q6adm.c
+@@ -373,7 +373,7 @@ static int q6adm_device_open(struct q6adm *adm,
+struct q6copp *copp,
+  * @rate: rate at which copp is required.
+  * @channel_mode: channel mode
+  * @topology: adm topology id
+- * @perf_mode: performance mode.
++ * @perf_mode: performace mode.
+  * @bit_width: audio sample bit width
+  * @app_type: Application type.
+  * @acdb_id: ACDB id
+@@ -452,7 +452,7 @@ EXPORT_SYMBOL_GPL(q6adm_get_copp_id);
+  * @dev: Pointer to adm child device.
+  * @path: playback or capture path.
+  * @payload_map: map between session id and afe ports.
+- * @perf_mode: Performance mode.
++ * @perf_mode: Performace mode.
+  *
+  * Return: Will be an negative on error or a zero on success.
+  */
 
-This does also apply to other Qualcomm Macro LPASS all making call to
-devm_regmap_init_mmio()
----
- sound/soc/codecs/Kconfig | 4 ++++
- 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 1c87b42606c9..f5614f47f44d 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -1824,18 +1824,22 @@ config SND_SOC_TPA6130A2
- 
- config SND_SOC_LPASS_WSA_MACRO
- 	depends on COMMON_CLK
-+	select REGMAP_MMIO
- 	tristate "Qualcomm WSA Macro in LPASS(Low Power Audio SubSystem)"
- 
- config SND_SOC_LPASS_VA_MACRO
- 	depends on COMMON_CLK
-+	select REGMAP_MMIO
- 	tristate "Qualcomm VA Macro in LPASS(Low Power Audio SubSystem)"
- 
- config SND_SOC_LPASS_RX_MACRO
- 	depends on COMMON_CLK
-+	select REGMAP_MMIO
- 	tristate "Qualcomm RX Macro in LPASS(Low Power Audio SubSystem)"
- 
- config SND_SOC_LPASS_TX_MACRO
- 	depends on COMMON_CLK
-+	select REGMAP_MMIO
- 	tristate "Qualcomm TX Macro in LPASS(Low Power Audio SubSystem)"
- 
- endmenu
+
+yours
+josef
+
+
