@@ -2,86 +2,91 @@ Return-Path: <SRS0=W/rr=KZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EE3DC47089
-	for <alsa-devel@archiver.kernel.org>; Sun, 30 May 2021 07:33:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D46B1C47089
+	for <alsa-devel@archiver.kernel.org>; Sun, 30 May 2021 07:35:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2D56161108
-	for <alsa-devel@archiver.kernel.org>; Sun, 30 May 2021 07:33:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D56161108
+	by mail.kernel.org (Postfix) with ESMTPS id DB4F961108
+	for <alsa-devel@archiver.kernel.org>; Sun, 30 May 2021 07:35:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB4F961108
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 699E116AA;
-	Sun, 30 May 2021 09:32:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 699E116AA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2F925169E;
+	Sun, 30 May 2021 09:34:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F925169E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622360011;
-	bh=Kh+a/HZqA2mPfESdkgNUDOX+ISgLBcLfpDRu6Bdl1lk=;
+	s=default; t=1622360112;
+	bh=fnYSkCp7ei303DcqkkUu7tevC3euXhXomWj8W+5yh3o=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FlHHNFQAAOV4S137dhRZN+q9ePEtmddWofYQWcwudpbP+Xe3KTheAKQw00OCCr1uo
-	 MOmdKi7bLpSaDLGXJNGwmMuW/Rr5yOQm/LPs4xHP6bWbqG1HwwH86jHZjE2gM9JjiE
-	 bJEzXcFUU8aMAdz21KRfij8JYxAAjnYN0w9/tj4M=
+	b=dpsRQweBnUlasW9YBwSqYscz7+ah160i7zE7e4UqvIZJQnNp2WkmA6BiaVuBbbb6O
+	 6g1vC/kQ32cchCAiEc+0EU03Pa87ABiaoQfnWE7puSg2MaGQXuW3NBffqOPaEHlinO
+	 O9dwc2OTGR9dhjpRO8KtIR/hJc9VpdVlNvDVPono=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 13659F8025B;
-	Sun, 30 May 2021 09:32:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CAF41F801DB;
+	Sun, 30 May 2021 09:34:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 95D86F80269; Sun, 30 May 2021 09:32:37 +0200 (CEST)
+ id A8572F80254; Sun, 30 May 2021 09:34:20 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 88D88F80109
- for <alsa-devel@alsa-project.org>; Sun, 30 May 2021 09:32:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88D88F80109
+ by alsa1.perex.cz (Postfix) with ESMTPS id DD92BF80109
+ for <alsa-devel@alsa-project.org>; Sun, 30 May 2021 09:34:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD92BF80109
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="rnKvKoUS"; 
+ header.b="zYIK3IjM"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="nN3XlOos"
+ header.b="fhC+pkM8"
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1622359950; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1622360054; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5/2b6fq5fT3YdDXha8+cbdJP5OhWthdgw2+XvU/gq5U=;
- b=rnKvKoUSGxQVmiGOdDd0IExOcOoRom5ijILFvsyvB2c6X7xmxi5YUu9+LE/76Wu+vVh1JF
- a/UAYI0dTmqfW+KDYgGDAEiHJFt/S/i7WNZwzHnEL2paRbUWFZfkvSvZ6oi1ecVRHBcJyT
- hW8ah7gaW+uQL8uqV+rjbRI9mRprtBU=
+ bh=gUnYW/raVzLF1lpJyiAjnwQgCrb0MWn7M61IZkp6c+I=;
+ b=zYIK3IjMfUZBhBRLu6yRyQ9soV8zKgkVs/pu+RGfH4wjbo330UKRvYOfFDy/vmK4Dtm6XM
+ 7h0hd9+9q0ESpbwLrWUsD/WFbwd/tZNy4EH8ygPTwthR+7s9MsThe1epidiGDXkhL25q2e
+ +l5vtcNkQ9zjRuV47IcEBdxcEZcAV90=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1622359950;
+ s=susede2_ed25519; t=1622360054;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5/2b6fq5fT3YdDXha8+cbdJP5OhWthdgw2+XvU/gq5U=;
- b=nN3XlOosHmS8JK+V6xi0gt9WI3GZTjNrkYkxr0XWDoYIcxIMWRZ1SwlcZDpPh8mvwD6Ngn
- MPGBae0N6MIunHBA==
+ bh=gUnYW/raVzLF1lpJyiAjnwQgCrb0MWn7M61IZkp6c+I=;
+ b=fhC+pkM8/fYtITjUXjZ0ZDc7/zC1jvruSXq/MzzSsAJN4uewX2nrpBZNkLnf6lhSjauxE4
+ HZMpEMNfgbD4TEBQ==
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id C61A7ACF6;
- Sun, 30 May 2021 07:32:30 +0000 (UTC)
-Date: Sun, 30 May 2021 09:32:29 +0200
-Message-ID: <s5heedo3cdu.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id A7614AC47;
+ Sun, 30 May 2021 07:34:14 +0000 (UTC)
+Date: Sun, 30 May 2021 09:34:14 +0200
+Message-ID: <s5hczt83cax.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ALSA: pcm: comment about relation between msbits hw
- parameter and [S|U32] formats
-In-Reply-To: <20210529033353.21641-1-o-takashi@sakamocchi.jp>
-References: <20210529033353.21641-1-o-takashi@sakamocchi.jp>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH] ALSA: hda: Add AlderLake-M PCI ID
+In-Reply-To: <20210528185123.48332-1-kai.vehmanen@linux.intel.com>
+References: <20210528185123.48332-1-kai.vehmanen@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ =?UTF-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,45 +102,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 29 May 2021 05:33:53 +0200,
-Takashi Sakamoto wrote:
+On Fri, 28 May 2021 20:51:23 +0200,
+Kai Vehmanen wrote:
 > 
-> Regarding to handling [U|S][32|24] PCM formats, many userspace
-> application developers and driver developers have confusion, since they
-> require them to understand justification or padding. It easily
-> loses consistency and soundness to operate with many type of devices. In
-> this commit, I attempt to solve the situation by adding comment about
-> relation between [S|U]32 formats and 'msbits' hardware parameter.
+> Add HD Audio PCI ID for Intel AlderLake-M. Add rules to
+> snd_intel_dsp_find_config() to choose SOF driver for ADL-M systems with
+> PCH-DMIC or Soundwire codecs, and legacy driver for the rest.
 > 
-> The formats are used for 'left-justified' sample format, and the available
-> bit count in most significant bit is delivered to userspace in msbits
-> hardware parameter (struct snd_pcm_hw_params.msbits), which is decided by
-> msbits constraint added by pcm drivers (snd_pcm_hw_constraint_msbits()).
-> 
-> In driver side, the msbits constraint includes two elements; the physical
-> width of format and the available width of the format in most significant
-> bit. The former is used to match SAMPLE_BITS of format. (For my
-> convenience, I ignore wildcard in the usage of the constraint.)
-> 
-> As a result of interaction between ALSA pcm core and ALSA pcm application,
-> when the format in which SAMPLE_BITS equals to physical width of the
-> msbits constaint, the msbits parameter is set by referring to the
-> available width of the constraint. When the msbits parameter is not
-> changed in the above process, ALSA pcm core set it alternatively with
-> SAMPLE_BIT of chosen format.
-> 
-> In userspace application side, the msbits is only available after calling
-> ioctl(2) with SNDRV_PCM_IOCTL_HW_PARAMS request. Even if the hardware
-> parameter structure includes somewhat value of SAMPLE_BITS interval
-> parameter as width of format, all of the width is not always available
-> since msbits can be less than the width.
-> 
-> I note that [S|U24] formats are used for 'right-justified' 24 bit sample
-> formats within 32 bit frame. The first byte in most significant bit
-> should be invalidated. Although the msbits exposed to userspace should be
-> zero as invalid value, actually it is 32 from physical width of format.
-> 
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+> Reviewed-by: Péter Ujfalusi <peter.ujfalusi@intel.com>
+> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
 Thanks, applied.
 
