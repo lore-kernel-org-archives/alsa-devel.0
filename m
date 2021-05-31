@@ -2,92 +2,100 @@ Return-Path: <SRS0=0Rat=K2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C9C2C47080
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 11:14:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D980C47080
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 14:37:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 18ADB6135B
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 11:14:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 18ADB6135B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4C19F611CB
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 14:37:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C19F611CB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 39B8586E;
-	Mon, 31 May 2021 13:13:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39B8586E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 08796847;
+	Mon, 31 May 2021 16:36:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08796847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622459651;
-	bh=vqZ7f7YOA+n/zqKPqOAk4zWwLfVC6ktsbnkSXgski+s=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=UaNxenas2BkPBdCzaLnClNR+HALEVwZVVi65EwPFKEvRUARHBLxLAWx2plnKFJ7Rz
-	 pByssLhs9ZrLoveZDbf1KzyZ46JSACNqXH0Ck3sOyoinC4dH2nltrjKEUqFqnlwjFz
-	 ZhRZ7syhTep8C6CJDZqP1rIi/Wa7yVCxMaM6kk6Q=
+	s=default; t=1622471838;
+	bh=7pP0uNIs+qAt9GWoFndY1JcwooSb663giI0fGIhcrnc=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=vYFq6RrKBMCqqiV5OvqfOH4CabbcNODf1vIkxnH1uvZo5a/BM2TaizFfkr3wVinCu
+	 Wi3C0UKitrURTj/eTuxrDNjTf5yooJGnn3uEYVJCJz0bdlLgzgMAoqEaElLMI6HG//
+	 616h17g2Ia/zYuB9+U3DRcQ+chP4scMyMiFEhfaw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BED79F80425;
-	Mon, 31 May 2021 13:12:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 79072F80273;
+	Mon, 31 May 2021 16:36:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C3D72F80430; Mon, 31 May 2021 13:12:57 +0200 (CEST)
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com
- [IPv6:2a00:1450:4864:20::62d])
+ id 90F60F802E2; Mon, 31 May 2021 16:36:24 +0200 (CEST)
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com
+ [IPv6:2607:f8b0:4864:20::102e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 15A2FF80273
- for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 13:11:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15A2FF80273
+ by alsa1.perex.cz (Postfix) with ESMTPS id 60759F80088
+ for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 16:36:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60759F80088
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="H+I960k7"
-Received: by mail-ej1-x62d.google.com with SMTP id g8so7692374ejx.1
- for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 04:11:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=6CRaLvLXh68H09Zfp4seCpIdzZFvvlshqCqJckzDqmc=;
- b=H+I960k746ql73un5xNsHeDl+HqmrhExRw8VJA0AnvSaliaY8kQcw/DKPsZoYwCNC5
- cQ1hsBRTEgfTlEO9qwbYYPon3jDiJULGt9JFjOHWiNYa8EXnodRprTOZS5SkXihHdCRF
- 18fyKaf9VBGdqZZEjZkodq0/nmy+Wl3a42rLaBs9WJEXvjYHM1kbxdmgoNZCk1lEr+B8
- hsmoqFUFZOg3XC4M+2uWpb6ll63GUO5Kb6iuTjd8iOub+YmdM5ueaz23xEa1nraK/F0b
- Y5Y8wZZxGVuyzvUgvenjsuj4p5ccNZt0/7w2hOBU4eSdnduFTMj3ESD89VDSH65T4d+Z
- hvuA==
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="GDoDjavg"
+Received: by mail-pj1-x102e.google.com with SMTP id ot16so6710072pjb.3
+ for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 07:36:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=TvjojEYkUcciFGjoK9PExTv10PVSKxQplxp1sRiaIpI=;
+ b=GDoDjavg9WSUFrStI/x6zQaKFfLe1Uvdwa5cASUXP4s7OJeyQZr2HQ6GFpvCGHSoFm
+ 2sy14JP+rK8li50dKlW78CtrFVFRhsKjOJjbkP/kfSFnFe0P+Kjukg1PyFriTmiECNaw
+ 90wQ6HotjoUquPiLEr5bHy+mJQx0juqP0kbD0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=6CRaLvLXh68H09Zfp4seCpIdzZFvvlshqCqJckzDqmc=;
- b=mXifRFl8nk8lFC2WBs5KiKJz6oAJFm9IFWas0nA1Ll2BlpamKHjnVkuPazb/fvZ+dh
- Il6Gzg8MIAuDjatWX2yfDddZ2i9ZK8u8zhJfOgyKEZfSNbgXWTO1Ah2J4ZkxK2fq8Rkf
- dvFNHNjzL4pur7X5e2fxGBh2KTS3XhceIMpkHvEkfsqu8/ZXnaRO706dh43KG6v3UAYH
- YpNS2Hoshyio6dpQNEoNru5lCpLbsl/o1oyASOdNP0i+C+p79/9Ei5ihsYb69lAvaNkE
- 9oMiQJOErV/bgmlIhDhAdW3iRLfEiq28jFADyYpI9+BdvoxvN42tQRyNFnrhFcGditBB
- bn0A==
-X-Gm-Message-State: AOAM530Plm13RLiY56/b7BgKXTpQrZJeCo9wdWjcqKOti6i4jntgVoQB
- xxad0iH8EKuJDHc8qZTd7Mz/Hr70TtuYlFN9AV0=
-X-Google-Smtp-Source: ABdhPJxPMYA4RvOOpmuxpdIkn9OTBgTkBiOKjJDd58HQSAarNrG5xrH0C/ICHXC/R3X0Hydy9/XkI8XUGDZ6+Uu73n4=
-X-Received: by 2002:a17:906:6d17:: with SMTP id
- m23mr22979526ejr.73.1622459503577; 
- Mon, 31 May 2021 04:11:43 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=TvjojEYkUcciFGjoK9PExTv10PVSKxQplxp1sRiaIpI=;
+ b=SQx6GTq0kOX/vVf148KW7dZGbFAakjJRAecxWyK96uvZmImmuchtnOy0Gxtt2Wlwcl
+ WMNqVMyCEue82Aou/jslrr3kyTiajLytKIUsqR8Q5AwqYHOpdqdmFk9gvkn5EZyG8B1i
+ ZwqdUlSB374vfaGQzkjb7Stsw+ltHNuYK8IIdkkp9SOjGOeej1AowWnCpHLkO0B1XAdq
+ R179yJ6WrNP1ZBDAdrLgZhTLBSXRMTrAK7OAxTTvOyuB4cfjOGk9eHApotJulJL9Lwu4
+ plVSlxAYn6uNaJuxUraWIAlHGmQUX0Ed6byIeZlwz05E8SpVP6qBUQJZV1h4hQrr0zzN
+ 4Gsw==
+X-Gm-Message-State: AOAM532VbETr6xAxHZPCfd2IikXAUW8fZm55w7ymvo9sCUh2lHEeCEH2
+ 915ThXOCaEM3tjUFnfTmLT+mlQ==
+X-Google-Smtp-Source: ABdhPJynM/jfg1vpJVL0xht4RCkyvJQ0dUIDAdwAvZEuU2SZChGp5iLKAsrha1qhoK4RQMdFt2WprA==
+X-Received: by 2002:a17:90a:8e82:: with SMTP id
+ f2mr20123792pjo.157.1622471768974; 
+ Mon, 31 May 2021 07:36:08 -0700 (PDT)
+Received: from judyhsiao-p920.tpe.corp.google.com
+ ([2401:fa00:1:10:ee09:a901:df78:da19])
+ by smtp.gmail.com with ESMTPSA id w123sm11072498pfb.109.2021.05.31.07.36.05
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 31 May 2021 07:36:08 -0700 (PDT)
+From: Judy Hsiao <judyhsiao@chromium.org>
+To: broonie@kernel.org
+Subject: [PATCH] arm64: dts: qcom: sc7180: add lable for secondary mi2s
+Date: Mon, 31 May 2021 22:35:57 +0800
+Message-Id: <20210531143557.3975917-1-judyhsiao@chromium.org>
+X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
 MIME-Version: 1.0
-References: <20210528131757.2269989-1-mudongliangabcd@gmail.com>
- <20210531110144.GA24442@kadam> <20210531110742.GB24442@kadam>
-In-Reply-To: <20210531110742.GB24442@kadam>
-From: Dongliang Mu <mudongliangabcd@gmail.com>
-Date: Mon, 31 May 2021 19:11:16 +0800
-Message-ID: <CAD-N9QU8uLE=0r3x7dvoSctMnOapr9OyFbCjb=ytO=qC6GCe4g@mail.gmail.com>
-Subject: Re: [PATCH] ALSA: control led: fix memory leak in snd_ctl_led_register
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com,
- linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org,
- tiwai@suse.com
+Content-Transfer-Encoding: 8bit
+Cc: Taniya Das <tdas@codeaurora.org>, alsa-devel@alsa-project.org,
+ Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Rohit kumar <rohitkr@codeaurora.org>, Patrick Lai <plai@codeaurora.org>,
+ Andy Gross <agross@kernel.org>, dgreid@chromium.org,
+ devicetree@vger.kernel.org, judyhsiao@google.com, tzungbi@chromium.org,
+ Stephan Gerhold <stephan@gerhold.net>, linux-arm-msm@vger.kernel.org,
+ swboyd@chromium.org, Rob Herring <robh+dt@kernel.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ linux-arm-kernel@lists.infradead.org, dianders@chromium.org,
+ cychiang@google.com, Takashi Iwai <tiwai@suse.com>,
+ Judy Hsiao <judyhsiao@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,68 +111,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, May 31, 2021 at 7:07 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> I've also created a Smatch check for missing ->release() functions.  It
-> find one bug in that file.  There are other bugs, but the static checker
-> is not clever enough to find them.  I expect Smatch will get smarter
-> about this in the coming year.
->
-> sound/core/control_led.c:685 snd_ctl_led_sysfs_add() warn: calling put_device() with no ->release() function
->
-> So, yeay, I feel like this thread has been useful and I now understand
-> put_device() a little better.  Please review the email thread again and
-> send a v2 patch.  :)
+Adds lable for secondary mi2s to allow overriding.
 
-Sure. No problem. I will send a v2 patch after reading the whole thread again.
+Signed-off-by: Judy Hsiao <judyhsiao@chromium.org>
+---
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->
-> regards,
-> dan carpenter
->
-> /*
->  * Copyright (C) 2021 Oracle.
->  *
->  * This program is free software; you can redistribute it and/or
->  * modify it under the terms of the GNU General Public License
->  * as published by the Free Software Foundation; either version 2
->  * of the License, or (at your option) any later version.
->  *
->  * This program is distributed in the hope that it will be useful,
->  * but WITHOUT ANY WARRANTY; without even the implied warranty of
->  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->  * GNU General Public License for more details.
->  *
->  * You should have received a copy of the GNU General Public License
->  * along with this program; if not, see http://www.gnu.org/copyleft/gpl.txt
->  */
->
-> #include "smatch.h"
-> #include "smatch_extra.h"
->
-> static int my_id;
->
-> static void match_put_device(struct expression *expr, const char *name, struct symbol *sym, void *data)
-> {
->         struct smatch_state *state;
->
->         state = get_state(SMATCH_EXTRA, name, sym);
->         if (!state ||
->             estate_min(state).value != 0 ||
->             estate_max(state).value != 0)
->                 return;
->
->         sm_warning("calling put_device() with no ->release() function");
-> }
->
-> void check_no_release(int id)
-> {
->         my_id = id;
->
->         if (option_project != PROJ_KERNEL)
->                 return;
->
->         add_function_param_key_hook("put_device", &match_put_device, 0, "$->release", NULL);
->         add_function_param_key_hook("device_unregister", &match_put_device, 0, "$->release", NULL);
-> }
->
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+index 24d293ef56d7..2027914a0bed 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+@@ -772,7 +772,7 @@ mi2s@0 {
+ 		qcom,capture-sd-lines = <0>;
+ 	};
+ 
+-	mi2s@1 {
++	secondary_mi2s: mi2s@1 {
+ 		reg = <MI2S_SECONDARY>;
+ 		qcom,playback-sd-lines = <0>;
+ 	};
+-- 
+2.32.0.rc0.204.g9fa02ecfa5-goog
+
