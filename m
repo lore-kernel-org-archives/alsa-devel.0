@@ -2,108 +2,97 @@ Return-Path: <SRS0=0Rat=K2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4502AC47093
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 02:54:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8219CC47093
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 03:05:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BB78E61220
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 02:54:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB78E61220
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
+	by mail.kernel.org (Postfix) with ESMTPS id A128061220
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 03:05:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A128061220
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5E6671673;
-	Mon, 31 May 2021 04:53:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E6671673
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD4A3846;
+	Mon, 31 May 2021 05:04:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD4A3846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622429679;
-	bh=boBH9WsI7hmc1+ijKStD5zQ5z0QKHPZFea9bdxIzy7A=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1622430302;
+	bh=I+LJWrku53jZ86tJLWIV/2mn+wyqpk+Jlp77ya0fZEg=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ds6lqQ/0gMIYpumCuGiq0ml/AX6SSxRo2cLh030f2xZgEHBSaSMrqUIS818FWfCx6
-	 p5kKAa7q4QElpdrgaK1kXNw+CjinCps5sStb80vtkajD/DALTRHCFRjJ4nptpPWiXQ
-	 r3WleEN5Ouxbn2AjV6QfBmvawAKTi74lD3xJgmsw=
+	b=ioehQFrYU4GM+1KXfCflWw08wd9aKgTKqqjv9ABI/RR8fAqT9FdPaEkfP5dgRx7+a
+	 z0k2g1lOQ5wStnj2q3xRyCT0OQgnIXtXS7a9RuArbYGwU6RqG2+iiMXg+gQ3fUKK1k
+	 HK6/AVlUzpPHxyYF4bxxq0kdxCF7ySFPkQJAXYsE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F826F804D2;
-	Mon, 31 May 2021 04:51:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E7F3F80168;
+	Mon, 31 May 2021 05:04:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B4CD8F80277; Mon, 31 May 2021 04:51:26 +0200 (CEST)
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
- [66.111.4.26])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id CB4D8F80253; Mon, 31 May 2021 05:04:10 +0200 (CEST)
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com
+ [IPv6:2a00:1450:4864:20::629])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 30D66F80273
- for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 04:51:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30D66F80273
+ by alsa1.perex.cz (Postfix) with ESMTPS id 62842F80088
+ for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 05:04:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62842F80088
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="d82qMPAs"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="iJIB08Bp"
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailout.nyi.internal (Postfix) with ESMTP id 5AA445C00B6;
- Sun, 30 May 2021 22:51:12 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute3.internal (MEProxy); Sun, 30 May 2021 22:51:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=2hzF/R1alxRrT
- h49h6vI6VQSzdV9SXjC5f999BrxEWU=; b=d82qMPAsUV93r5B9g4AMMuBpeSmao
- sHlRovuI0ppiJmf52YQ55EcPDh/RsFj5Gh3koB3dNo/OYff24iQVWc3s4a+B4P7F
- ksbamRbVOkRl0HPxpcEMkQGbJcI1bINFJKyAw1bJ1q4eP53ElA1Jm+NvZMNbo67o
- c5HkWcKatdUrG6D/BSi1crXk4VmAU2E7RhkSHy8J8xNK+BRQr2IHAUpx+qN15ouo
- PXtVCAXo385dZUV3yTe8r+fAqJBwy2WmsPQJDkxJWMNH/UhhaVVd9jUe41MWVG6X
- dMif0mdAPzTehjLrIz85LqU5YU+wzINkJX4HurKhdx4cH02gw+XDNMpNA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-transfer-encoding:date:from
- :in-reply-to:message-id:mime-version:references:subject:to
- :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=2hzF/R1alxRrTh49h6vI6VQSzdV9SXjC5f999BrxEWU=; b=iJIB08Bp
- y+UMbrPENsW9rM/HuBx5FbqAmk1FLtBuGHFptq13MFAAbnMdgK0St6Sl9LGEHR+s
- /W0ydq/O3vmSZ0ROqay/Fivia1DLAkQyhGtGsu3Xkv8BtOhoh9uhHQobBFjKfaIe
- 5Hifs6qu6JG4MUuiJrecvG8jnLNSf9NnCmaJLq0xi6Lk+Wfc0T2pG7N5mRCjvkb8
- Qha5wkpWr9FTBqBQ682v5T8/6GnCeLXeCldKaVn9fTaGSKUdZwZi4bjlSWnzd+T1
- 2HbUfExxvvD7+4TGFZDB8d/dkTXS37foNFrPAESZWzBqAikEUKA+oFU+CHCUgQFh
- raVe/Hd8V5TbWQ==
-X-ME-Sender: <xms:IE-0YNzqq6ZoH1mesEtVfoAUHXb8sGTPEXycpX9BtFerXishWocYFw>
- <xme:IE-0YNTD-v7F5yLxzjvCeVf37Lm48KO8kKEEUKyqc2SxdhChdUsue6gPDzduUTort
- BY6XDwJqiPJwbaUdCI>
-X-ME-Received: <xmr:IE-0YHUxhjPko7ydBZZWWexurnKXDKQOn0lzapXWfgJmpoqRwzvt1n_n2InrjbYxkQ2BGk-44-3mZxaiKOF-Fu_lK4-fO9mlIXNLbpW4JGfAFNziQjTf>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdelvddgieefucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
- dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
- shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepveefffefke
- etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecuvehluhhsthgv
- rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihessh
- grkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:IE-0YPiYUdPFY7YfPjv1sdGd-l9wBQ5tUgOiqHOJVEUASbI09mffqg>
- <xmx:IE-0YPC1EJrXWKW-xUI6QHn3G52Z1LA4xJfRcRLQu-iYQvZ6j1gQYQ>
- <xmx:IE-0YIKzufZzU2K8LvwNAPXGc7hF4NhytRjPKi4G1DxL0fMdwg5-ZA>
- <xmx:IE-0YE7LtSpYRU7H_7oOZ9xl-7O5FY2t2EdEfrGph0QBsu9mrU1Brw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 30 May 2021 22:51:11 -0400 (EDT)
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: tiwai@suse.de
-Subject: [PATCH 3/6] ALSA: oxfw: perform sequence replay for media clock
- recovery
-Date: Mon, 31 May 2021 11:51:00 +0900
-Message-Id: <20210531025103.17880-4-o-takashi@sakamocchi.jp>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210531025103.17880-1-o-takashi@sakamocchi.jp>
-References: <20210531025103.17880-1-o-takashi@sakamocchi.jp>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="ZpqMb5pL"
+Received: by mail-ej1-x629.google.com with SMTP id ss26so14415403ejb.5
+ for <alsa-devel@alsa-project.org>; Sun, 30 May 2021 20:04:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=9zncGjWI/Ti8X4PcYn2LTWv6/sQeOvT3E+T4zzv3al4=;
+ b=ZpqMb5pLMC57T5ge9mI5wiScA0lilfWuOW/WzS/iOL/Pobi10ictGNHq7So1K580xE
+ t6evHt86l5Sp49kkm6XqGBAzK8M8H47X62rQ6zJ1QVuZid/NhxgwKV7hnYtqNHE8SH7n
+ 3dpFSHiJzHhVc1wyl3Vf8unKF1Nc9uWTTDeX6sHDzNqI0Q0r4dvv8BhVZpBUIUP/+7pP
+ LwmVv+cfs0pcO6mG5VPZFkPjGyzhwCtX86UgN2r718AxHZydoQOy8U5NdHrRAf3H7lOP
+ HtDmRlKaY7lD9jlScOo0NWYWo+kcuTeLR0IafCzd59/Y46A+rR6ShPlGHHLcj0mVODKm
+ JphA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=9zncGjWI/Ti8X4PcYn2LTWv6/sQeOvT3E+T4zzv3al4=;
+ b=Tz5wArcD7/ePDzvb3xYxNf0XOzfrAOuBq7QqnQJPrm9O7Ziz2CV9eYGNEsvU+Q8gTE
+ r2qlMtOJydkbkh9pdhsq3MsHkY+4ZGknEbsyBGpwqKd5sOq6rkBHhtH1lLFRWDoG2+m5
+ +i45RjIktLuyd2sEtokcMadj+jyYv8HA+Vv5lw7QJdk1ShY2zIQAyv0DFe8iM08nBD7e
+ 4YFXzTJfitoGVm2kbR10N3jgh3SYkgYCdHMRr470aGunCAp74u6ZDT8EkYKC27eM1QUG
+ 5e7TUG6KTENsi16gvL8GxxkMt3r088F6AshMuiDRqqyVFgP0szV3Jpi28b89iAksft2P
+ pglw==
+X-Gm-Message-State: AOAM532uQUW2iC/WKRLCk2+KSlcUwLhl8QBBIa3OQ2wMk34IrxZUqZnk
+ UP93eAWg/7nrQX2pbbK4f5Vn8JnRUBYe+M0pz1c=
+X-Google-Smtp-Source: ABdhPJxDEPa3T5UAc0cyhX2pJM3u681kMN50f7+D2IiLhhsuHCNZDsnnuQO0O7X+CyydTBL9Se8gyDjJEZsWpjQ1m5o=
+X-Received: by 2002:a17:906:6d17:: with SMTP id
+ m23mr21254158ejr.73.1622430242956; 
+ Sun, 30 May 2021 20:04:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
+References: <20210528131757.2269989-1-mudongliangabcd@gmail.com>
+ <20210528133309.GR24442@kadam>
+ <CAD-N9QVWcEJjoziA6HVoQiUueVaKqAJS5Et60zvCvuUE7e6=gg@mail.gmail.com>
+ <20210528140500.GS24442@kadam>
+ <A622EB84-DC4A-47A4-A828-CE6D25DC92EB@gmail.com>
+In-Reply-To: <A622EB84-DC4A-47A4-A828-CE6D25DC92EB@gmail.com>
+From: Dongliang Mu <mudongliangabcd@gmail.com>
+Date: Mon, 31 May 2021 11:03:36 +0800
+Message-ID: <CAD-N9QVjhDDJxRnNrDzwt05BNijr1o11nE8xjvq8GrakEJ8EuQ@mail.gmail.com>
+Subject: Re: [PATCH] ALSA: control led: fix memory leak in snd_ctl_led_register
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Cc: syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com,
+ linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org,
+ tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -119,83 +108,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This commit takes ALSA oxfw driver to perform sequence replay for media
-clock recovery. Unfortunately, OXFW970 ASIC and its firmware has a quirk
-called jumbo payload which skips several isochronous cycles for packet
-transmission, thus the sequence replay is just adopted to OXFW971 ASIC.
-As well as Fireworks, OXFW ASICs also ignores presentation time against
-the way in IEC 61883-1/6.
+On Sat, May 29, 2021 at 5:35 AM =E6=85=95=E5=86=AC=E4=BA=AE <mudongliangabc=
+d@gmail.com> wrote:
+>
+>
+>
+> > On May 28, 2021, at 10:05 PM, Dan Carpenter <dan.carpenter@oracle.com> =
+wrote:
+> >
+> > On Fri, May 28, 2021 at 09:50:49PM +0800, Dongliang Mu wrote:
+> >>
+> >> Can you please give some advise on how to fix this WARN issue?
+> >
+> > But it feels like it spoils the fun if I write the commit...  Anyway:
+>
+> It=E2=80=99s fine. I am still in the learning process. It=E2=80=99s also =
+good to learn experience by comparing your patch and my patch.
+>
+> >
+> > regards,
+> > dan carpenter
+> >
+> > diff --git a/sound/core/control_led.c b/sound/core/control_led.c
+> > index 25f57c14f294..dd357abc1b58 100644
+> > --- a/sound/core/control_led.c
+> > +++ b/sound/core/control_led.c
+> > @@ -740,6 +740,7 @@ static int __init snd_ctl_led_init(void)
+> >                       for (; group > 0; group--) {
+> >                               led =3D &snd_ctl_leds[group - 1];
+> >                               device_del(&led->dev);
+> > +                             device_put(&led->dev);
+> >                       }
+> >                       device_del(&snd_ctl_led_dev);
+> >                       return -ENOMEM;
+> > @@ -768,6 +769,7 @@ static void __exit snd_ctl_led_exit(void)
+> >       for (group =3D 0; group < MAX_LED; group++) {
+> >               led =3D &snd_ctl_leds[group];
+> >               device_del(&led->dev);
+> > +             device_put(&led->dev);
+> >       }
+> >       device_del(&snd_ctl_led_dev);
+> >       snd_ctl_led_clean(NULL);
 
-The sequence replay is tested with below models:
- * Tascam FireOne
- * Stanton Magnetics SCS.1m
- * Apogee Duet FireWire
+Hi Dan,
 
-For below models, the sequence replay is tested to be disabled:
+I tried this patch, and it still triggers the memleak. My
+understanding is that the device object is already freed in the
+snd_ctl_led_sysfs_remove.
 
- * Griffin FireWave
- * Behringer F-Control Audio 202
- * Loud Technology Tapco Link.FireWire 4x6
- * Loud Technology Mackie Onyx Satellite
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/oxfw/oxfw-stream.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
-
-diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
-index 9792d4b4373c..0ef242fdd3bc 100644
---- a/sound/firewire/oxfw/oxfw-stream.c
-+++ b/sound/firewire/oxfw/oxfw-stream.c
-@@ -153,13 +153,13 @@ static int init_stream(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
- 	struct cmp_connection *conn;
- 	enum cmp_direction c_dir;
- 	enum amdtp_stream_direction s_dir;
--	unsigned int flags;
-+	unsigned int flags = CIP_UNAWARE_SYT;
- 	int err;
- 
- 	if (!(oxfw->quirks & SND_OXFW_QUIRK_BLOCKING_TRANSMISSION))
--		flags = CIP_NONBLOCKING;
-+		flags |= CIP_NONBLOCKING;
- 	else
--		flags = CIP_BLOCKING;
-+		flags |= CIP_BLOCKING;
- 
- 	if (stream == &oxfw->tx_stream) {
- 		conn = &oxfw->out_conn;
-@@ -337,6 +337,9 @@ int snd_oxfw_stream_start_duplex(struct snd_oxfw *oxfw)
- 	}
- 
- 	if (!amdtp_stream_running(&oxfw->rx_stream)) {
-+		unsigned int tx_init_skip_cycles = 0;
-+		bool replay_seq = false;
-+
- 		err = start_stream(oxfw, &oxfw->rx_stream);
- 		if (err < 0) {
- 			dev_err(&oxfw->unit->device,
-@@ -352,9 +355,20 @@ int snd_oxfw_stream_start_duplex(struct snd_oxfw *oxfw)
- 					"fail to prepare tx stream: %d\n", err);
- 				goto error;
- 			}
-+
-+			if (oxfw->quirks & SND_OXFW_QUIRK_JUMBO_PAYLOAD) {
-+				// Just after changing sampling transfer frequency, many cycles are
-+				// skipped for packet transmission.
-+				tx_init_skip_cycles = 400;
-+			} else {
-+				replay_seq = true;
-+			}
- 		}
- 
--		err = amdtp_domain_start(&oxfw->domain, 0, false, false);
-+		// NOTE: The device ignores presentation time expressed by the value of syt field
-+		// of CIP header in received packets. The sequence of the number of data blocks per
-+		// packet is important for media clock recovery.
-+		err = amdtp_domain_start(&oxfw->domain, tx_init_skip_cycles, replay_seq, false);
- 		if (err < 0)
- 			goto error;
- 
--- 
-2.27.0
-
+>
+> Does this patch mean I should add device_put in the init and exit functio=
+n other than snd_ctl_led_sysfs_remove? This will cause device_release bypas=
+s the release method checking?
+>
