@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C774C47092
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 02:54:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4502AC47093
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 02:54:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 78A7B61220
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 02:54:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 78A7B61220
+	by mail.kernel.org (Postfix) with ESMTPS id BB78E61220
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 02:54:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB78E61220
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0668F84D;
-	Mon, 31 May 2021 04:53:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0668F84D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5E6671673;
+	Mon, 31 May 2021 04:53:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E6671673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622429673;
-	bh=4gRZ4qRqPkHvvZRFWJDfXPgUMUt0tzz8L8Pdb+OPI8o=;
+	s=default; t=1622429679;
+	bh=boBH9WsI7hmc1+ijKStD5zQ5z0QKHPZFea9bdxIzy7A=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=itTDy2FJBic9YHtZ49rbVsr/YVNREpnXoXbtINjqybzBnQOG51KlbQEnRD2+k9kJq
-	 Ie7ySd9VMf/HCikrX0Sn2Cw1nC3Mm+dpkeRNMDYI3qRXVWL8TX6iS73k7HeXC2Y0yx
-	 M6d6n+7z1zWNEF2WwQ8w/2a7kQhm+ObwiPLfbe80=
+	b=ds6lqQ/0gMIYpumCuGiq0ml/AX6SSxRo2cLh030f2xZgEHBSaSMrqUIS818FWfCx6
+	 p5kKAa7q4QElpdrgaK1kXNw+CjinCps5sStb80vtkajD/DALTRHCFRjJ4nptpPWiXQ
+	 r3WleEN5Ouxbn2AjV6QfBmvawAKTi74lD3xJgmsw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EBF8AF804CF;
-	Mon, 31 May 2021 04:51:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F826F804D2;
+	Mon, 31 May 2021 04:51:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0C706F80161; Mon, 31 May 2021 04:51:25 +0200 (CEST)
+ id B4CD8F80277; Mon, 31 May 2021 04:51:26 +0200 (CEST)
 Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
  [66.111.4.26])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 87A61F80161
- for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 04:51:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87A61F80161
+ by alsa1.perex.cz (Postfix) with ESMTPS id 30D66F80273
+ for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 04:51:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30D66F80273
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="yFiB8Jhp"; 
+ header.b="d82qMPAs"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="Xh917GLK"
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
- by mailout.nyi.internal (Postfix) with ESMTP id B2DB85C007A;
- Sun, 30 May 2021 22:51:13 -0400 (EDT)
+ header.i=@messagingengine.com header.b="iJIB08Bp"
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+ by mailout.nyi.internal (Postfix) with ESMTP id 5AA445C00B6;
+ Sun, 30 May 2021 22:51:12 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
- by compute4.internal (MEProxy); Sun, 30 May 2021 22:51:13 -0400
+ by compute3.internal (MEProxy); Sun, 30 May 2021 22:51:12 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=qHbSruROp/+oa
- 9Tcoi0XwY2p7XRXm6YocMyxo7fIxqY=; b=yFiB8Jhpnd/sDh8QieDWDrljBxeL0
- teg6APT2nrWi8bp9Wml38MxBfmDuM26lqfvxjsUf7kCXZ2FUhKpjVut09pLXzGJa
- eEnsDrw+bW+HZkLaunm7BpadVCiMeQ9SSS/6VinDSlNEqpuB7+4r/bZq2HGW+5Qu
- JJ+bqItHGqd/EqlHdcwvIuu3SZSOWzmV93FALrTd0Z1UyrJFTqtZ1J8OL5cKKD3a
- BJHBGwRQmH3AY5eRgR6YX0k++dGLDK72ZnyU2nxx/3pKmzPE6jjVfjkqF+CgaJQq
- FqPj5ZZgqQRAd7LDLvPTfc4rCp4JgoO1mFcKsIpIIJ45k//Q9IBs0j0AA==
+ :mime-version:content-transfer-encoding; s=fm1; bh=2hzF/R1alxRrT
+ h49h6vI6VQSzdV9SXjC5f999BrxEWU=; b=d82qMPAsUV93r5B9g4AMMuBpeSmao
+ sHlRovuI0ppiJmf52YQ55EcPDh/RsFj5Gh3koB3dNo/OYff24iQVWc3s4a+B4P7F
+ ksbamRbVOkRl0HPxpcEMkQGbJcI1bINFJKyAw1bJ1q4eP53ElA1Jm+NvZMNbo67o
+ c5HkWcKatdUrG6D/BSi1crXk4VmAU2E7RhkSHy8J8xNK+BRQr2IHAUpx+qN15ouo
+ PXtVCAXo385dZUV3yTe8r+fAqJBwy2WmsPQJDkxJWMNH/UhhaVVd9jUe41MWVG6X
+ dMif0mdAPzTehjLrIz85LqU5YU+wzINkJX4HurKhdx4cH02gw+XDNMpNA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=qHbSruROp/+oa9Tcoi0XwY2p7XRXm6YocMyxo7fIxqY=; b=Xh917GLK
- EnEhXjrmmrg4aXEuSdfQd02ji4+xvmuyigt6YqneYAx0gTl9MlibdBh58TJklwpm
- sicm/6CkTVaqmB9uvTTuvPPZw8kjqetSqu62aR5+IrDXkFwuSBsh2v1pBPxMEFfS
- euhOBFEyK1Hsp77D5Qm13pGMQA6U3yrnkREzKHL+gTw4o6NDgcoXYHXaP5gHuzu7
- ms46CyExCQQ+UC6HO5Oemdl4/22qQUXD2XU6rrC8nvBS8MqGCzmY7noWW5AxtkJ/
- iHtT0D7VuFTuYQNB/t65zd9hpZdwv97B+2eudADAi80AX+cVD3rECFB9Bhc8FSZq
- TIFYbSSCs0G2Zg==
-X-ME-Sender: <xms:IU-0YGjREvnxjv3GKxgp3dgvVhzm4FdCHmDXV0xCfVeHASt-jHTm1w>
- <xme:IU-0YHC1_HhmjpjK-w_xQ-1BX3nqLN0WzUOZGf5mDP3Kqt7nhHIVd0iSlldP1YEb_
- beZqt9ndt8JVoD6BsY>
-X-ME-Received: <xmr:IU-0YOE4POnleg7EIOURDs6yCvsq1bRvqzX-6iy9l9So6EwkNUFhbyqqCMR7DT_EjMdJ-ooFGZD3NtMGqlhPyJ8Y-gnf9wsPYh1p6S4hKSK7hPeDD8XB>
+ fm2; bh=2hzF/R1alxRrTh49h6vI6VQSzdV9SXjC5f999BrxEWU=; b=iJIB08Bp
+ y+UMbrPENsW9rM/HuBx5FbqAmk1FLtBuGHFptq13MFAAbnMdgK0St6Sl9LGEHR+s
+ /W0ydq/O3vmSZ0ROqay/Fivia1DLAkQyhGtGsu3Xkv8BtOhoh9uhHQobBFjKfaIe
+ 5Hifs6qu6JG4MUuiJrecvG8jnLNSf9NnCmaJLq0xi6Lk+Wfc0T2pG7N5mRCjvkb8
+ Qha5wkpWr9FTBqBQ682v5T8/6GnCeLXeCldKaVn9fTaGSKUdZwZi4bjlSWnzd+T1
+ 2HbUfExxvvD7+4TGFZDB8d/dkTXS37foNFrPAESZWzBqAikEUKA+oFU+CHCUgQFh
+ raVe/Hd8V5TbWQ==
+X-ME-Sender: <xms:IE-0YNzqq6ZoH1mesEtVfoAUHXb8sGTPEXycpX9BtFerXishWocYFw>
+ <xme:IE-0YNTD-v7F5yLxzjvCeVf37Lm48KO8kKEEUKyqc2SxdhChdUsue6gPDzduUTort
+ BY6XDwJqiPJwbaUdCI>
+X-ME-Received: <xmr:IE-0YHUxhjPko7ydBZZWWexurnKXDKQOn0lzapXWfgJmpoqRwzvt1n_n2InrjbYxkQ2BGk-44-3mZxaiKOF-Fu_lK4-fO9mlIXNLbpW4JGfAFNziQjTf>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdelvddgieefucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
@@ -86,18 +86,18 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdelvddgieefucetufdoteggod
  etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecuvehluhhsthgv
  rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihessh
  grkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:IU-0YPTJDTyN5DFhZIjM9X5FJtWZKnkot_Z0ozr9tzB-jsc3IAR2fQ>
- <xmx:IU-0YDz5g_bcowUI0RN8QFq6wmRkWmxlNunydOOCmJhS1ndZ1cpwJA>
- <xmx:IU-0YN6iU9T81CCG-U72_J4UwFSsiPS_2mjLW2pa5M_3Tr2YTAQTNQ>
- <xmx:IU-0YMqf0CXWaaptEfkRJtGl87eiW9uFOr2XMQ3fHnUHby2HJ6e9rA>
+X-ME-Proxy: <xmx:IE-0YPiYUdPFY7YfPjv1sdGd-l9wBQ5tUgOiqHOJVEUASbI09mffqg>
+ <xmx:IE-0YPC1EJrXWKW-xUI6QHn3G52Z1LA4xJfRcRLQu-iYQvZ6j1gQYQ>
+ <xmx:IE-0YIKzufZzU2K8LvwNAPXGc7hF4NhytRjPKi4G1DxL0fMdwg5-ZA>
+ <xmx:IE-0YE7LtSpYRU7H_7oOZ9xl-7O5FY2t2EdEfrGph0QBsu9mrU1Brw>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 30 May 2021 22:51:12 -0400 (EDT)
+ 30 May 2021 22:51:11 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Subject: [PATCH 4/6] ALSA: firewire-digi00x: perform sequence replay for media
- clock recovery
-Date: Mon, 31 May 2021 11:51:01 +0900
-Message-Id: <20210531025103.17880-5-o-takashi@sakamocchi.jp>
+Subject: [PATCH 3/6] ALSA: oxfw: perform sequence replay for media clock
+ recovery
+Date: Mon, 31 May 2021 11:51:00 +0900
+Message-Id: <20210531025103.17880-4-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210531025103.17880-1-o-takashi@sakamocchi.jp>
 References: <20210531025103.17880-1-o-takashi@sakamocchi.jp>
@@ -119,75 +119,80 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This commit takes ALSA firewire-digi00x driver to perform sequence replay
-for media clock recovery.
-
-All of models in Digidesign digi00x family don't transfer isochronous
-packets till receiving isochronous packets. The on-the-fly mode is used
-for the purpose. They don't interpret presentation time expressed in syt
-field of received CIP, therefore the sequence of the number of data blocks
-per packet is important for media clock recovery.
+This commit takes ALSA oxfw driver to perform sequence replay for media
+clock recovery. Unfortunately, OXFW970 ASIC and its firmware has a quirk
+called jumbo payload which skips several isochronous cycles for packet
+transmission, thus the sequence replay is just adopted to OXFW971 ASIC.
+As well as Fireworks, OXFW ASICs also ignores presentation time against
+the way in IEC 61883-1/6.
 
 The sequence replay is tested with below models:
+ * Tascam FireOne
+ * Stanton Magnetics SCS.1m
+ * Apogee Duet FireWire
 
-* Digidesign Digi 002
-* Digidesign Digi 002 Rack
-* Digidesign Digi 003
-* Digidesign Digi 003 Rack
+For below models, the sequence replay is tested to be disabled:
+
+ * Griffin FireWave
+ * Behringer F-Control Audio 202
+ * Loud Technology Tapco Link.FireWire 4x6
+ * Loud Technology Mackie Onyx Satellite
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/digi00x/amdtp-dot.c      | 9 +++------
- sound/firewire/digi00x/digi00x-stream.c | 8 ++++++--
- 2 files changed, 9 insertions(+), 8 deletions(-)
+ sound/firewire/oxfw/oxfw-stream.c | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
 
-diff --git a/sound/firewire/digi00x/amdtp-dot.c b/sound/firewire/digi00x/amdtp-dot.c
-index 398c57a6fb43..59b86c8d89e1 100644
---- a/sound/firewire/digi00x/amdtp-dot.c
-+++ b/sound/firewire/digi00x/amdtp-dot.c
-@@ -396,16 +396,13 @@ int amdtp_dot_init(struct amdtp_stream *s, struct fw_unit *unit,
- 		 enum amdtp_stream_direction dir)
- {
- 	amdtp_stream_process_ctx_payloads_t process_ctx_payloads;
+diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
+index 9792d4b4373c..0ef242fdd3bc 100644
+--- a/sound/firewire/oxfw/oxfw-stream.c
++++ b/sound/firewire/oxfw/oxfw-stream.c
+@@ -153,13 +153,13 @@ static int init_stream(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
+ 	struct cmp_connection *conn;
+ 	enum cmp_direction c_dir;
+ 	enum amdtp_stream_direction s_dir;
 -	unsigned int flags;
-+	unsigned int flags = CIP_NONBLOCKING | CIP_UNAWARE_SYT;
++	unsigned int flags = CIP_UNAWARE_SYT;
+ 	int err;
  
- 	// Use different mode between incoming/outgoing.
--	if (dir == AMDTP_IN_STREAM) {
+ 	if (!(oxfw->quirks & SND_OXFW_QUIRK_BLOCKING_TRANSMISSION))
 -		flags = CIP_NONBLOCKING;
-+	if (dir == AMDTP_IN_STREAM)
- 		process_ctx_payloads = process_ir_ctx_payloads;
--	} else {
++		flags |= CIP_NONBLOCKING;
+ 	else
 -		flags = CIP_BLOCKING;
-+	else
- 		process_ctx_payloads = process_it_ctx_payloads;
--	}
++		flags |= CIP_BLOCKING;
  
- 	return amdtp_stream_init(s, unit, dir, flags, CIP_FMT_AM,
- 				process_ctx_payloads, sizeof(struct amdtp_dot));
-diff --git a/sound/firewire/digi00x/digi00x-stream.c b/sound/firewire/digi00x/digi00x-stream.c
-index 2019f6533477..a15f55b0dce3 100644
---- a/sound/firewire/digi00x/digi00x-stream.c
-+++ b/sound/firewire/digi00x/digi00x-stream.c
-@@ -7,7 +7,7 @@
+ 	if (stream == &oxfw->tx_stream) {
+ 		conn = &oxfw->out_conn;
+@@ -337,6 +337,9 @@ int snd_oxfw_stream_start_duplex(struct snd_oxfw *oxfw)
+ 	}
  
- #include "digi00x.h"
+ 	if (!amdtp_stream_running(&oxfw->rx_stream)) {
++		unsigned int tx_init_skip_cycles = 0;
++		bool replay_seq = false;
++
+ 		err = start_stream(oxfw, &oxfw->rx_stream);
+ 		if (err < 0) {
+ 			dev_err(&oxfw->unit->device,
+@@ -352,9 +355,20 @@ int snd_oxfw_stream_start_duplex(struct snd_oxfw *oxfw)
+ 					"fail to prepare tx stream: %d\n", err);
+ 				goto error;
+ 			}
++
++			if (oxfw->quirks & SND_OXFW_QUIRK_JUMBO_PAYLOAD) {
++				// Just after changing sampling transfer frequency, many cycles are
++				// skipped for packet transmission.
++				tx_init_skip_cycles = 400;
++			} else {
++				replay_seq = true;
++			}
+ 		}
  
--#define READY_TIMEOUT_MS	500
-+#define READY_TIMEOUT_MS	200
- 
- const unsigned int snd_dg00x_stream_rates[SND_DG00X_RATE_COUNT] = {
- 	[SND_DG00X_RATE_44100] = 44100,
-@@ -375,7 +375,11 @@ int snd_dg00x_stream_start_duplex(struct snd_dg00x *dg00x)
- 		if (err < 0)
- 			goto error;
- 
--		err = amdtp_domain_start(&dg00x->domain, 0, false, false);
-+		// NOTE: The device doesn't start packet transmission till receiving any packet.
-+		// It ignores presentation time expressed by the value of syt field of CIP header
-+		// in received packets. The sequence of the number of data blocks per packet is
-+		// important for media clock recovery.
-+		err = amdtp_domain_start(&dg00x->domain, 0, true, true);
+-		err = amdtp_domain_start(&oxfw->domain, 0, false, false);
++		// NOTE: The device ignores presentation time expressed by the value of syt field
++		// of CIP header in received packets. The sequence of the number of data blocks per
++		// packet is important for media clock recovery.
++		err = amdtp_domain_start(&oxfw->domain, tx_init_skip_cycles, replay_seq, false);
  		if (err < 0)
  			goto error;
  
