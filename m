@@ -1,80 +1,109 @@
-Return-Path: <SRS0=W/rr=KZ=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=0Rat=K2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0905DC47092
-	for <alsa-devel@archiver.kernel.org>; Sun, 30 May 2021 20:50:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D46EAC47093
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 02:52:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2AD80608FE
-	for <alsa-devel@archiver.kernel.org>; Sun, 30 May 2021 20:50:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2AD80608FE
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	by mail.kernel.org (Postfix) with ESMTPS id 221F561220
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 02:52:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 221F561220
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 66C80822;
-	Sun, 30 May 2021 22:49:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66C80822
+	by alsa0.perex.cz (Postfix) with ESMTPS id E0079846;
+	Mon, 31 May 2021 04:51:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0079846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622407806;
-	bh=3A+YBdSpx1f5mp4JPvOk3nVJxBR5Jsm1Y29RxizWuXE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=L9dxHh2T0/5UV2olQWXymjfdAktdgLBv1dpWvpKy/EBsCXRvB1eSf4pGFTGmNtMDR
-	 nrn5tMtxU79CSo40n7rII0xvbM50HsLhR3X3NGQdnLJBM36s0wD9w6xt8QOsS5qI3c
-	 SlMHIi/A3mEOSS3UzfdQqxvCgWq5v/CpVqx0sV7E=
+	s=default; t=1622429535;
+	bh=sH7VjiFJnt7frLhmqb6rRJ0sFJj7UrZ+z7sRe8E70AU=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=CnNcWq1OpiPozD57qGZO2EpA3ntFXge874ATcN/VnCuL/3bsdx9gnmLz6/FfyMxnI
+	 qZkG5LNzNvLKt1T0glpzUqODJylviyZF2qZMmfjXQnZtCHbBfP+rTTOAVeECsh7pku
+	 4WfbEXbIsLdj9AsY35v7EtNhhrrC3/j79DPZ57jU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EFD39F80161;
-	Sun, 30 May 2021 22:49:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 43A58F80088;
+	Mon, 31 May 2021 04:51:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4571FF80254; Sun, 30 May 2021 22:49:14 +0200 (CEST)
-Received: from bombadil.infradead.org (bombadil.infradead.org
- [IPv6:2607:7c80:54:e::133])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A0822F804B4; Mon, 31 May 2021 04:51:19 +0200 (CEST)
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
+ [66.111.4.26])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C57ACF80161
- for <alsa-devel@alsa-project.org>; Sun, 30 May 2021 22:49:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C57ACF80161
+ by alsa1.perex.cz (Postfix) with ESMTPS id DCF5FF80253
+ for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 04:51:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCF5FF80253
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="4+YH8qHU"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
- Content-ID:Content-Description:In-Reply-To:References;
- bh=5HHRa0zEZqqmLkORk3pUfwOKZE7CeQ0q3WK0b0EZ6LY=; b=4+YH8qHUQWojV8Qrjou/2kNj3H
- Ak+QtYK7uEKnesngzzN1/xdEh4c9hMoXhBeGddjsAzOBkYNdXqSiWRKFCDT878uDjwvlXayy/KmU5
- dY9TYiWYlwM7XtsOfcdW3e4add+vAg3IyAsOTpCCTG9TtmkN5ANk41Het45ZLT+u+HdF79JdgZbMo
- rXVlTnd85+x/NExEvu2cVGxdq/10huXhnRytQrf2c+A86p5U3dQGlVOZVKooqsC0U0D36IecBhig/
- Z+w4umpaPgBoNR5jBOb/eYVWHG9+D37w33MZSYq7U2cFjTu+Z1V/dX4Abe4sFYCB746OH2oLme9TI
- gMauu7PA==;
-Received: from [2601:1c0:6280:3f0::ce7d] (helo=bombadil.infradead.org)
- by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1lnSMf-00A7Tt-6m; Sun, 30 May 2021 20:48:53 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: 
-Subject: [PATCH] ASoC: atmel: ATMEL drivers depend on HAS_DMA
-Date: Sun, 30 May 2021 13:48:51 -0700
-Message-Id: <20210530204851.3372-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+ dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
+ header.b="QYmD1LFV"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="eHeFrYMq"
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+ by mailout.nyi.internal (Postfix) with ESMTP id F148A5C00AC;
+ Sun, 30 May 2021 22:51:10 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute3.internal (MEProxy); Sun, 30 May 2021 22:51:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding; s=fm1; bh=df0b7zxwdgFOC
+ KtZ66ix4yddB6k6qyFrdEtH3PB4J0U=; b=QYmD1LFVpB9e/HP4LmsWQLyPZN277
+ L/7x9nsnrTmbTapAqgLWYh0g+KwMyRClI/DfMFoDxky6JDMQDlOQyUui8LUTONtY
+ 6QrYt5clMqmtcx4aTmeJiva2g04Z/nwNPQCX9YjLUSxr9T5lkh2mfmq+GjFJmPsl
+ 211tINCn5b7z+zAh3CuMbfUTwPNcZ/DDL1azYqYR3Hj18EV7AsYxc6xLZY9U97ng
+ lGsgr0S3VBPVLm6wDQW34/KIjWO16v9CFnSZlGFNkvpaLlQhcneMjqXdCQdUrTNS
+ ylM67XONz0CsdvWPgq5UcVlNb0ke4PWFC8TEHBqXa+FIkFMBeUDnVd17w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-transfer-encoding:date:from
+ :in-reply-to:message-id:mime-version:references:subject:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm2; bh=df0b7zxwdgFOCKtZ66ix4yddB6k6qyFrdEtH3PB4J0U=; b=eHeFrYMq
+ N5nR1T0lhyYkdip/xDPyMFPcUh1JvbUwj3O9Kg+o9H+huql0BZQ00bp5C7PGlHy9
+ xva5/8dxkhMRBYvy3jAhGQ5+DXDLcyEOvLA5toFW771rNgD47fg4HyCpIieGkHsl
+ j68jZ3xD6Ou7/sEEvaRqLxeaK9cPCZEFhmv6v7iEaGjbbN03P9e1/wZDZ0VeDOoo
+ 5o6eFs4mA/AtjpQ8pObk3YJpMbYpAc1lfVrtbE2YfzK3m2uUG8okS1cpocoZgd4W
+ OvL2KIvyAdpHPmOc/x8mrmfhwClJOIhSlJEhTTZxSd4t/6ifSkOM7bpVDn5GTAzj
+ oOhanRjmZti4kw==
+X-ME-Sender: <xms:Hk-0YBlt7yt3C8MXhoPwegV2L-MCMwBkG_M7zR1juJUuYvIO_FuzbQ>
+ <xme:Hk-0YM0F-FlGWPnACFLBd0slJPaQZua1clrmeMDLmKqBDaSzU51snnBPtg_RgVg6i
+ lXqeEmvDrSu1CXaYt8>
+X-ME-Received: <xmr:Hk-0YHr-LDp-P-eLrNActoseGBNFa6xNEd1eYES14nHY9AN6w8f3sysXafyX8Fx0cvd0EefD1DNQXCG2Ab4qtSX3xuZ_-7xHG7w4g_g9hsEm0vpx5nPX>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdelvddgieefucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
+ dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
+ shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepveefffefke
+ etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecuvehluhhsthgv
+ rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihessh
+ grkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:Hk-0YBliJdtnX4Ln5GJRdA3y6F3CuPOSqC7qbLQniajGGpUW_vyKfg>
+ <xmx:Hk-0YP3-XD7pL4IpUUXKCWHQcAE5CPDQhP2lHVWe5aScPkwt92GYfw>
+ <xmx:Hk-0YAt80hIgbSJDOfQR99UkouR715YNKX4OosScoFOFLGgbb2Tb3w>
+ <xmx:Hk-0YI83s0damCH39ZgH6XCeKsAutr4sGdO65Z0dsGo7OJFHjktDQw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 30 May 2021 22:51:09 -0400 (EDT)
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: tiwai@suse.de
+Subject: [PATCH 2/6] ALSA: fireworks: perform sequence replay for media clock
+ recovery
+Date: Mon, 31 May 2021 11:50:59 +0900
+Message-Id: <20210531025103.17880-3-o-takashi@sakamocchi.jp>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210531025103.17880-1-o-takashi@sakamocchi.jp>
+References: <20210531025103.17880-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Randy Dunlap <rdunlap@infradead.org>,
- Liam Girdwood <lgirdwood@gmail.com>,
- =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
- Mark Brown <broonie@kernel.org>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Bo Shen <voice.shen@atmel.com>,
- Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,97 +119,86 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On a config (such as arch/sh/) which does not set HAS_DMA when MMU
-is not set, several ATMEL ASoC drivers select symbols that cause
-kconfig warnings. There is one "depends on HAS_DMA" here but several
-more are needed to prevent kconfig warnings since 'select' does not
-recognize any dependencies.
+Echo Digital Audio Corporation had US patent US7599388B2 titled as
+'System and method for high-bandwidth serial bus data transfer'. In the
+patent, dual-banked shared memory is used to deliver data between
+serial bus transmission and processor in FIFO way. The patent seems to be
+used for Fireworks board module. The mechanism is not compliant to
+synchronization based on presentation time expressed in syt field
+of CIP header. Fireworks board module takes care of the sequence of
+the number of data blocks per packet and just ignores the value of syt
+field.
 
-Fix the following kconfig warnings:
+This commit takes fireworks driver to performs sequence replay for media
+clock recovery. As long as I tested, Audiofire 2 and 4 have a quirk to
+skip an isochronous cycle several thousands after starting packet
+transmission.
 
-WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_PDC
-  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
-  Selected by [m]:
-  - SND_ATMEL_SOC_SSC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m]
-  - SND_ATMEL_SOC_SSC_PDC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
+The sequence replay is tested with below models:
+ * Loud Technology Mackie 400f
+ * Echo Audio Audiofire 12 (DSP model)
+ * Echo Audio Audiofire 12 (FPGA model)
+ * Echo Audio Audiofire 8 (DSP model)
+ * Echo Audio Audiofire 8 (FPGA model)
+ * Echo Audio Audiofire Pre8
+ * Echo Audio Audiofire 4
+ * Echo Audio Audiofire 2
 
-WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_PDC
-  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
-  Selected by [m]:
-  - SND_AT91_SOC_SAM9G20_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
-
-WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC
-  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
-  Selected by [m]:
-  - SND_ATMEL_SOC_SSC_DMA [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
-
-WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_DMA
-  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
-  Selected by [m]:
-  - SND_ATMEL_SOC_WM8904 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && I2C [=m]
-  - SND_AT91_SOC_SAM9X5_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
-
-Fixes: 3951e4aae2ce ("ASoC: atmel-pcm: dma support based on pcm dmaengine")
-Fixes: 18291410557f ("ASoC: atmel: enable SOC_SSC_PDC and SOC_SSC_DMA in Kconfig")
-Fixes: 061981ff8cc8 ("ASoC: atmel: properly select dma driver state")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Cc: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Bo Shen <voice.shen@atmel.com>
-Cc: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/soc/atmel/Kconfig |    6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/firewire/fireworks/fireworks_stream.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
---- linux-next-20210528.orig/sound/soc/atmel/Kconfig
-+++ linux-next-20210528/sound/soc/atmel/Kconfig
-@@ -19,12 +19,14 @@ config SND_ATMEL_SOC_DMA
+diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
+index 6fc117c3a068..ac66f08acd6b 100644
+--- a/sound/firewire/fireworks/fireworks_stream.c
++++ b/sound/firewire/fireworks/fireworks_stream.c
+@@ -6,7 +6,7 @@
+  */
+ #include "./fireworks.h"
  
- config SND_ATMEL_SOC_SSC
- 	tristate
-+	depends on HAS_DMA
- 	select SND_ATMEL_SOC_DMA
- 	select SND_ATMEL_SOC_PDC
+-#define READY_TIMEOUT_MS	100
++#define READY_TIMEOUT_MS	1000
  
- config SND_ATMEL_SOC_SSC_PDC
- 	tristate "SoC PCM DAI support for AT91 SSC controller using PDC"
- 	depends on ATMEL_SSC
-+	depends on HAS_DMA
- 	select SND_ATMEL_SOC_PDC
- 	select SND_ATMEL_SOC_SSC
- 	help
-@@ -34,6 +36,7 @@ config SND_ATMEL_SOC_SSC_PDC
- config SND_ATMEL_SOC_SSC_DMA
- 	tristate "SoC PCM DAI support for AT91 SSC controller using DMA"
- 	depends on ATMEL_SSC
-+	depends on HAS_DMA
- 	select SND_ATMEL_SOC_DMA
- 	select SND_ATMEL_SOC_SSC
- 	help
-@@ -44,6 +47,7 @@ config SND_AT91_SOC_SAM9G20_WM8731
- 	tristate "SoC Audio support for WM8731-based At91sam9g20 evaluation board"
- 	depends on ARCH_AT91 || COMPILE_TEST
- 	depends on ATMEL_SSC && SND_SOC_I2C_AND_SPI
-+	depends on HAS_DMA
- 	select SND_ATMEL_SOC_SSC_PDC
- 	select SND_SOC_WM8731
- 	help
-@@ -54,6 +58,7 @@ config SND_ATMEL_SOC_WM8904
- 	tristate "Atmel ASoC driver for boards using WM8904 codec"
- 	depends on ARCH_AT91 || COMPILE_TEST
- 	depends on ATMEL_SSC && I2C
-+	depends on HAS_DMA
- 	select SND_ATMEL_SOC_SSC_DMA
- 	select SND_SOC_WM8904
- 	help
-@@ -64,6 +69,7 @@ config SND_AT91_SOC_SAM9X5_WM8731
- 	tristate "SoC Audio support for WM8731-based at91sam9x5 board"
- 	depends on ARCH_AT91 || COMPILE_TEST
- 	depends on ATMEL_SSC && SND_SOC_I2C_AND_SPI
-+	depends on HAS_DMA
- 	select SND_ATMEL_SOC_SSC_DMA
- 	select SND_SOC_WM8731
- 	help
+ static int init_stream(struct snd_efw *efw, struct amdtp_stream *stream)
+ {
+@@ -29,7 +29,7 @@ static int init_stream(struct snd_efw *efw, struct amdtp_stream *stream)
+ 	if (err < 0)
+ 		return err;
+ 
+-	err = amdtp_am824_init(stream, efw->unit, s_dir, CIP_BLOCKING);
++	err = amdtp_am824_init(stream, efw->unit, s_dir, CIP_BLOCKING | CIP_UNAWARE_SYT);
+ 	if (err < 0) {
+ 		amdtp_stream_destroy(stream);
+ 		cmp_connection_destroy(conn);
+@@ -264,6 +264,15 @@ int snd_efw_stream_start_duplex(struct snd_efw *efw)
+ 		return err;
+ 
+ 	if (!amdtp_stream_running(&efw->rx_stream)) {
++		unsigned int tx_init_skip_cycles;
++
++		// Audiofire 2/4 skip an isochronous cycle several thousands after starting
++		// packet transmission.
++		if (efw->is_fireworks3 && !efw->is_af9)
++			tx_init_skip_cycles = 6000;
++		else
++			tx_init_skip_cycles = 0;
++
+ 		err = start_stream(efw, &efw->rx_stream, rate);
+ 		if (err < 0)
+ 			goto error;
+@@ -272,7 +281,10 @@ int snd_efw_stream_start_duplex(struct snd_efw *efw)
+ 		if (err < 0)
+ 			goto error;
+ 
+-		err = amdtp_domain_start(&efw->domain, 0, false, false);
++		// NOTE: The device ignores presentation time expressed by the value of syt field
++		// of CIP header in received packets. The sequence of the number of data blocks per
++		// packet is important for media clock recovery.
++		err = amdtp_domain_start(&efw->domain, tx_init_skip_cycles, true, false);
+ 		if (err < 0)
+ 			goto error;
+ 
+-- 
+2.27.0
+
