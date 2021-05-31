@@ -2,74 +2,75 @@ Return-Path: <SRS0=0Rat=K2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D1C4C47080
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 10:05:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3C66C47082
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 10:19:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B59E66124B
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 10:05:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B59E66124B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 07B32611CA
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 10:19:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07B32611CA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C49E1846;
-	Mon, 31 May 2021 12:04:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C49E1846
+	by alsa0.perex.cz (Postfix) with ESMTPS id CF2D3846;
+	Mon, 31 May 2021 12:18:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF2D3846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622455523;
-	bh=ZCo+s3aTIIc6/cUBCjW0Tqs592gHMaAwNUZ3OdQwAiA=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1622456350;
+	bh=qVy7jE1KsDpd2VVkiogKDeDjeEBgmPBojpscyMeRFP8=;
+	h=Subject:References:To:From:Date:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cwfva0g5ZwH+qIOny9Q+fqvqZnIJe+06Uyqsjaf/gLLLBRRKxSmaw1ug2zi5Op+MC
-	 KNEQo8fYLKvLFw2XUYwcFPl4B4sXvT5VoLaXUpL31QjllJCcWeUvUUwvN3lyBx0ZgT
-	 W7aBzVlu0k7wamoFd1IOB32sqztpgHqRfAxXvziQ=
+	b=tRuHUqffy1HkGcvEeOYstr3Nfsvn47gw2JBn99tP00eQIc4TBglVVSVP33D8N+ZZz
+	 HTL2WzlSdZNerROsFnsuk2Shf+x4dDUTWL98agFTFjZwB4mZW/7KsmRfd8gmY66BAm
+	 ocq4FBZGhHc8YstoT95Pm4RKRjz68cHU1ypKu6Bk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47D21F80161;
-	Mon, 31 May 2021 12:04:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F310F80273;
+	Mon, 31 May 2021 12:18:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3D204F802E2; Mon, 31 May 2021 12:04:32 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id EFF67F802E2; Mon, 31 May 2021 12:18:18 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8F389F80253
- for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 12:04:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F389F80253
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="XoiS6AKi"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E43EE610E7;
- Mon, 31 May 2021 10:04:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1622455461;
- bh=ZCo+s3aTIIc6/cUBCjW0Tqs592gHMaAwNUZ3OdQwAiA=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=XoiS6AKit4yIGzet+D90TgYZs8av1Ou53vwSbj+PZCf8NxFdn6G1c1MmbZxyLzem9
- 6iDJmUVYADpSlZF6uGIFjX/WcQR2iphO7WTxSY+7Tty/XlLGYXS7+7rz5SlBPoV1Z/
- aUvBkQKVeI08G7k/XtRlaOyP5WtwNc+RVZLvkJrru6FI+4kGfWMtU1pqgMqUQMRmTB
- OoZda0CAbVDL2yYOqeuXSG0evP4FbT+vnTqZNx3OtoqPGcFd1jOMW0pNWKfL1bPr3x
- a3GlLS4iV1fkHJlyQZFu+RXOXheVx3KEv8VZj2El7gP6l6OU3451fBNNm+cNGA4+G/
- +tD17caWLclpA==
-Date: Mon, 31 May 2021 15:34:17 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Shaokun Zhang <zhangshaokun@hisilicon.com>
-Subject: Re: [PATCH] soundwire: cadence: remove the repeated declaration
-Message-ID: <YLS0oUdnjI8sYm6o@vkoul-mobl.Dlink>
-References: <1622114698-7943-1-git-send-email-zhangshaokun@hisilicon.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 30BCAF80161
+ for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 12:18:11 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 66669A0040
+ for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 12:18:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 66669A0040
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1622456290; bh=9Dn6MpwDZEqlOHWxUB0w++crwXDVAN2V5kjUj4gQ0DA=;
+ h=Subject:References:To:From:Date:In-Reply-To:From;
+ b=sc6cOtIZEgXGJSgkSlTBegxfLzNPDg3BpB8WS0B6SouOFm0tIns+jjdfhQv+7IpVk
+ 1SID5W9NdxPXnMYyqV34ANP0JrA189eekLK+0rPcxnJZAaqy/8UfCDq/tBMeN2xQVU
+ sMRiH0aJcJOW8X3QN4QbxJSnujKi7wkfRP6eNsPQ=
+Received: from p1gen2.localdomain (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA
+ for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 12:18:09 +0200 (CEST)
+Subject: ALSA 1.2.5 release
+References: <c2860da9-d21f-52bb-e15e-fda214e6890a@perex.cz>
+To: ALSA development <alsa-devel@alsa-project.org>
+From: Jaroslav Kysela <perex@perex.cz>
+X-Forwarded-Message-Id: <c2860da9-d21f-52bb-e15e-fda214e6890a@perex.cz>
+Message-ID: <2c410cdc-bde3-1b37-d517-e2d6a27128e5@perex.cz>
+Date: Mon, 31 May 2021 12:18:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1622114698-7943-1-git-send-email-zhangshaokun@hisilicon.com>
-Cc: Sanyog Kale <sanyog.r.kale@intel.com>, alsa-devel@alsa-project.org,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <c2860da9-d21f-52bb-e15e-fda214e6890a@perex.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,11 +86,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 27-05-21, 19:24, Shaokun Zhang wrote:
-> Function 'cdns_reset_page_addr' is declared twice, so remove the
-> repeated declaration.
+Hello all,
 
-Applied, thanks
+     new ALSA userspace packages were released. You may download them from
+the ALSA website http://www.alsa-project.org or directly:
+
+     HTTP: https://www.alsa-project.org/files/pub
+     FTP:  ftp://ftp.alsa-project.org/pub
+
+Full list of changes:
+
+     https://www.alsa-project.org/wiki/Changes_v1.2.4_v1.2.5
+
+All files on the primary ALSA site have also GPG signature now.
+The fingerprint of the public signing key is:
+
+     F04D F507 37AC 1A88 4C4B 3D71 8380 596D A6E5 9C91
+
+				Have fun,
+					Jaroslav
 
 -- 
-~Vinod
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
