@@ -2,57 +2,61 @@ Return-Path: <SRS0=0Rat=K2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82C6FC4708F
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 04:19:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89F8DC47082
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 04:20:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B78036120E
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 04:19:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B78036120E
+	by mail.kernel.org (Postfix) with ESMTPS id B328F6120E
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 04:20:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B328F6120E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 726C0844;
-	Mon, 31 May 2021 06:18:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 726C0844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2B22684C;
+	Mon, 31 May 2021 06:19:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B22684C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622434780;
-	bh=YV37z7g7ny46CV2unNOACJDIXuNk/WO5/hUAyp0qwuA=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=gGUDICGlFSk55D11YZANliUIvYSHr5Awjri1fWnQYoDs4lqk+6R8K3mOiVigHC+MU
-	 XryWvPUC7oS+QfReCKRWh/w+v1yvAkGhGAamcFBmQ048+8R5SM1Q0QRBHO5A5QxXBx
-	 6sZvLRFuLYfQgS2PVT14NKFnHkQ1gI6y/IdOqIvM=
+	s=default; t=1622434831;
+	bh=59E7ng48qRfwwa+8iu2yHExjB3pjJOV+0A+E80ZHunE=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Uud+ji4qHyaMqJumOpPaec28KUL2LT2T2ic73Q5AiEQfPFhaHJg8QxqfHCvK/SPFr
+	 O/dsiCVWpG958YrucZF5d6P0yDYIin1Cab1c1PpG0f65TA7HErx0zzpLBCZgzH+w4d
+	 VOZly35oE4G3wrzeLZUof7w7Nx/PmisRc1kGUvAI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BA047F80168;
-	Mon, 31 May 2021 06:18:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BD996F80277;
+	Mon, 31 May 2021 06:19:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CBEE7F80253; Mon, 31 May 2021 06:18:47 +0200 (CEST)
+ id 7998BF80278; Mon, 31 May 2021 06:19:18 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id C5610F80096
- for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 06:18:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5610F80096
-Date: 31 May 2021 13:18:37 +0900
-X-IronPort-AV: E=Sophos;i="5.83,236,1616425200"; d="scan'208";a="82938828"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 31 May 2021 13:18:37 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id EAC93F80161
+ for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 06:19:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAC93F80161
+Date: 31 May 2021 13:19:09 +0900
+X-IronPort-AV: E=Sophos;i="5.83,236,1616425200"; d="scan'208";a="82938877"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 31 May 2021 13:19:09 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 9FBE7400755B;
- Mon, 31 May 2021 13:18:37 +0900 (JST)
-Message-ID: <87bl8rk02q.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 071534180DEC;
+ Mon, 31 May 2021 13:19:09 +0900 (JST)
+Message-ID: <87a6obk01v.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 1/4] ASoC: rsnd: tidyup rsnd_parse_connect_common()
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>,
  Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 0/4] ASoC: rsnd: adjust disabled module for R-Car D3
-User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+In-Reply-To: <87bl8rk02q.wl-kuninori.morimoto.gx@renesas.com>
+References: <87bl8rk02q.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -72,72 +76,80 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark, Geert
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Renesas Sound driver is assuming that all SSI/SRC
-are connected.
-But some SSI/SRC are not connected on Some Renesas SoC.
-ex)
-	H2	E2
+This patch adds "char *name" to rsnd_parse_connect_common().
+It is not yet used so far, but is preparation for
+next "ASoC: rsnd: adjust disabled module" patch
 
-	SRC0	      <=
-	SRC1	SRC1
-	SRC2	SRC2
-	...	...
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/sh/rcar/core.c |  2 +-
+ sound/soc/sh/rcar/rsnd.h | 10 +++++-----
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-We accepted it by using "status = disabled" on DT before.
-
-ex)
-	rcar_sound,src {
-		src-0 {
-=>			status = "disabled";
-		};
-		src1: src-1 {
-			...
-		};
-		...
-
-But R-Car D3 have many disabled modules (It has SSI3/SSI4, SRC5/SRC6),
-and Renesas SoC maintainer don't want above style on DT.
-
-ex)
-	rcar_sound,src {
-=>		src0: src-0 { status = "disabled"; };
-=>		src1: src-1 { status = "disabled"; };
-=>		src2: src-2 { status = "disabled"; };
-=>		src3: src-3 { status = "disabled"; };
-=>		src4: src-4 { status = "disabled"; };
-		src5: src-5 {
-			...
-		};
-		...
-
-This patch-set adjust to this situation, and enables to intuitive DT settings.
-
-	rcar_sound,src {
-		src5: src-5 {
-			...
-		};
-		src6: src-6 {
-			...
-		};
-	};
-
-Kuninori Morimoto (4):
-  ASoC: rsnd: tidyup rsnd_parse_connect_common()
-  ASoC: rsnd: tidyup rsnd_dma_request_channel()
-  ASoC: rsnd: tidyup rsnd_parse_connect_xxx()
-  ASoC: rsnd: adjust disabled module
-
- sound/soc/sh/rcar/core.c | 58 ++++++++++++++++++++++++++++++++++++++--
- sound/soc/sh/rcar/dma.c  |  8 +++---
- sound/soc/sh/rcar/dvc.c  |  2 +-
- sound/soc/sh/rcar/rsnd.h | 16 ++++++-----
- sound/soc/sh/rcar/src.c  |  6 +++--
- sound/soc/sh/rcar/ssi.c  | 12 ++++++---
- sound/soc/sh/rcar/ssiu.c | 10 ++++---
- 7 files changed, 91 insertions(+), 21 deletions(-)
-
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 2dc8aee4ac12..c85f1310a8fa 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1125,7 +1125,7 @@ static void rsnd_parse_connect_graph(struct rsnd_priv *priv,
+ 	of_node_put(remote_node);
+ }
+ 
+-void rsnd_parse_connect_common(struct rsnd_dai *rdai,
++void rsnd_parse_connect_common(struct rsnd_dai *rdai, char *name,
+ 		struct rsnd_mod* (*mod_get)(struct rsnd_priv *priv, int id),
+ 		struct device_node *node,
+ 		struct device_node *playback,
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index d712615c9c9f..9269ab83967c 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -460,7 +460,7 @@ struct rsnd_mod *rsnd_mod_next(int *iterator,
+ #define for_each_rsnd_mod_array(iterator, pos, io, array)		\
+ 	for_each_rsnd_mod_arrays(iterator, pos, io, array, ARRAY_SIZE(array))
+ 
+-void rsnd_parse_connect_common(struct rsnd_dai *rdai,
++void rsnd_parse_connect_common(struct rsnd_dai *rdai, char *name,
+ 		struct rsnd_mod* (*mod_get)(struct rsnd_priv *priv, int id),
+ 		struct device_node *node,
+ 		struct device_node *playback,
+@@ -827,7 +827,7 @@ unsigned int rsnd_src_get_rate(struct rsnd_priv *priv,
+ 
+ #define rsnd_src_of_node(priv) rsnd_parse_of_node(priv, RSND_NODE_SRC)
+ #define rsnd_parse_connect_src(rdai, playback, capture)			\
+-	rsnd_parse_connect_common(rdai, rsnd_src_mod_get,		\
++	rsnd_parse_connect_common(rdai, "src", rsnd_src_mod_get,	\
+ 				  rsnd_src_of_node(rsnd_rdai_to_priv(rdai)), \
+ 						   playback, capture)
+ 
+@@ -839,7 +839,7 @@ void rsnd_ctu_remove(struct rsnd_priv *priv);
+ struct rsnd_mod *rsnd_ctu_mod_get(struct rsnd_priv *priv, int id);
+ #define rsnd_ctu_of_node(priv) rsnd_parse_of_node(priv, RSND_NODE_CTU)
+ #define rsnd_parse_connect_ctu(rdai, playback, capture)			\
+-	rsnd_parse_connect_common(rdai, rsnd_ctu_mod_get,		\
++	rsnd_parse_connect_common(rdai, "ctu", rsnd_ctu_mod_get,	\
+ 				  rsnd_ctu_of_node(rsnd_rdai_to_priv(rdai)), \
+ 						   playback, capture)
+ 
+@@ -851,7 +851,7 @@ void rsnd_mix_remove(struct rsnd_priv *priv);
+ struct rsnd_mod *rsnd_mix_mod_get(struct rsnd_priv *priv, int id);
+ #define rsnd_mix_of_node(priv) rsnd_parse_of_node(priv, RSND_NODE_MIX)
+ #define rsnd_parse_connect_mix(rdai, playback, capture)			\
+-	rsnd_parse_connect_common(rdai, rsnd_mix_mod_get,		\
++	rsnd_parse_connect_common(rdai, "mix", rsnd_mix_mod_get,	\
+ 				  rsnd_mix_of_node(rsnd_rdai_to_priv(rdai)), \
+ 						   playback, capture)
+ 
+@@ -863,7 +863,7 @@ void rsnd_dvc_remove(struct rsnd_priv *priv);
+ struct rsnd_mod *rsnd_dvc_mod_get(struct rsnd_priv *priv, int id);
+ #define rsnd_dvc_of_node(priv) rsnd_parse_of_node(priv, RSND_NODE_DVC)
+ #define rsnd_parse_connect_dvc(rdai, playback, capture)			\
+-	rsnd_parse_connect_common(rdai, rsnd_dvc_mod_get,		\
++	rsnd_parse_connect_common(rdai, "dvc", rsnd_dvc_mod_get,	\
+ 				  rsnd_dvc_of_node(rsnd_rdai_to_priv(rdai)), \
+ 						   playback, capture)
+ 
 -- 
 2.25.1
 
