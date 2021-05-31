@@ -2,123 +2,74 @@ Return-Path: <SRS0=0Rat=K2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EEA82C4708F
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 09:43:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D1C4C47080
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 10:05:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 94492610C8
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 09:43:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94492610C8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cerno.tech
+	by mail.kernel.org (Postfix) with ESMTPS id B59E66124B
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 10:05:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B59E66124B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D4387846;
-	Mon, 31 May 2021 11:42:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4387846
+	by alsa0.perex.cz (Postfix) with ESMTPS id C49E1846;
+	Mon, 31 May 2021 12:04:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C49E1846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622454201;
-	bh=WnQrnLtWZNnyNpO3acQJhJ/bTb/zVNlgSLckx9ud/3k=;
+	s=default; t=1622455523;
+	bh=ZCo+s3aTIIc6/cUBCjW0Tqs592gHMaAwNUZ3OdQwAiA=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cbqQZvSg4R3AUu0FncrIVwRrroL5uYRmRbOm/K/cB5vCgSdBJ6DwwPTtTswExBTgF
-	 9WdHtJb4SrSFFi+b3W6aC1E57AUy/h8cYQa9GUD8VLENu57LvzwwxdadZhiQ9Y+1uk
-	 aXBwI8xg9RtmLD7Ct8pm1iav3pkJNWVc0/JCTIW8=
+	b=cwfva0g5ZwH+qIOny9Q+fqvqZnIJe+06Uyqsjaf/gLLLBRRKxSmaw1ug2zi5Op+MC
+	 KNEQo8fYLKvLFw2XUYwcFPl4B4sXvT5VoLaXUpL31QjllJCcWeUvUUwvN3lyBx0ZgT
+	 W7aBzVlu0k7wamoFd1IOB32sqztpgHqRfAxXvziQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C06AF80253;
-	Mon, 31 May 2021 11:42:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 47D21F80161;
+	Mon, 31 May 2021 12:04:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 299C6F802E2; Mon, 31 May 2021 11:42:29 +0200 (CEST)
-Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com
- [66.111.4.221])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 3D204F802E2; Mon, 31 May 2021 12:04:32 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BD8F8F80253
- for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 11:42:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD8F8F80253
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8F389F80253
+ for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 12:04:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F389F80253
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
- header.b="IiNPuoSF"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="EP97E+O8"
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailnew.nyi.internal (Postfix) with ESMTP id 7AFD3580487;
- Mon, 31 May 2021 05:42:18 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute3.internal (MEProxy); Mon, 31 May 2021 05:42:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
- date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm3; bh=WnQrnLtWZNnyNpO3acQJhJ/bTb/
- zVNlgSLckx9ud/3k=; b=IiNPuoSFaFJ+FLfnMfuu0aEao+0+SQJzPnBdOtZHIwx
- OI5D+UwzLtd7hRao0VOX+54M25thB09hjMV3+TBAFXsF6VqvVBnfc8JbwLsA88uX
- wptoS5MESiCC0w0oyKK43dHB2JMlOgHiCHLqarkclDNVfkGv6Q70Yxuft6uYFDh+
- Xu6WsFskOaVtqg3tYsUAABsHnt0YqgcH10pu/NZvyrPFS0vchctcJ0Ljv9UPJfVL
- Xn/t1MFPoKG3M2qcBJtnjFf0yuOS8HJAa2y2Vf8cv7xPGdXS+6VOhtbCdLtE2Dyz
- Ve1q0L1SMNkMKWpbuFF9FY9yM0Ppq5a8OS8XAoAeR6Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=WnQrnL
- tWZNnyNpO3acQJhJ/bTb/zVNlgSLckx9ud/3k=; b=EP97E+O8VhXdqGz4Fz+hhl
- kSawOnEOwyehJuxeeevB9mTvHubWVIbysLBVCUsn+Z//mZWJccffGjitbW2fAu1w
- zyJDGQsGivdz0IJ5c51wzy/6HXReypofgir1cYHIDE2vwm9kBSM+QQZg6ZUJ4wgt
- cUWt8Zd7p8TUXgVJn8RbMPWtS4Us9vAuSdpg5VzgP2RyHoVV0iaG4KFMW1kwJkAZ
- dR3N+qurzBW3MLGKVhS9KjbBlifyX0Pyw22aLvfSlWLdsalKyf4gRc8Oru/+ncL0
- e+oGa8P8gnM33JpZHSzWU0wE0mayEBnwdzEoBDdufwn8wU3a4cdwCQoR7amFJNMQ
- ==
-X-ME-Sender: <xms:eK-0YENy5kYVKheJHzJSf9GxHJTXE5_iJwRRVu8JQYMU8nJSegoGhQ>
- <xme:eK-0YK_0gPKAdMHAyo2IF2xWG7LSYjPKBmEkbJFNj4VXdSmHgtOL3N3QOyqPYP7eD
- DZVXEB52P2xN21uCtw>
-X-ME-Received: <xmr:eK-0YLTAcWdlQVlkfRq_UXtw6KguUqAJj5-prtf6314yvxhpcYnnWEzEa89_h32ikJjWloqg8-xv3DrOLTYgWT_JuO3JpNykUl7e>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdelfedgudelucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
- cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
- vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
- htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
- gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
- grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:eK-0YMswZEFbzrn78ajFD2lv6xQMq_J9bLnQk8FCdRIU8cC9oqBKyQ>
- <xmx:eK-0YMfs5hyrB_cMPTjQY60dtY89rf2NN3SVtCL0WL3yHjOoj6GXfA>
- <xmx:eK-0YA03aCFobWxbDcheaY-7ptLK8O9UVrDASHW6Yz_Cju3YwXBIlA>
- <xmx:eq-0YNsM67k5Toi9bS0UE-ngDjUqfh6lXn_l9q-x15hBffqEAGEMLA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 31 May 2021 05:42:15 -0400 (EDT)
-Date: Mon, 31 May 2021 11:42:13 +0200
-From: Maxime Ripard <maxime@cerno.tech>
-To: Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 05/12] ASoC: hdmi-codec: Add a prepare hook
-Message-ID: <20210531094213.kuuunk7ytu3q6sq6@gilmour>
-References: <20210525132354.297468-1-maxime@cerno.tech>
- <20210525132354.297468-6-maxime@cerno.tech>
- <YK4lWaB6Lx+SPjpF@sirena.org.uk>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="XoiS6AKi"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E43EE610E7;
+ Mon, 31 May 2021 10:04:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1622455461;
+ bh=ZCo+s3aTIIc6/cUBCjW0Tqs592gHMaAwNUZ3OdQwAiA=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=XoiS6AKit4yIGzet+D90TgYZs8av1Ou53vwSbj+PZCf8NxFdn6G1c1MmbZxyLzem9
+ 6iDJmUVYADpSlZF6uGIFjX/WcQR2iphO7WTxSY+7Tty/XlLGYXS7+7rz5SlBPoV1Z/
+ aUvBkQKVeI08G7k/XtRlaOyP5WtwNc+RVZLvkJrru6FI+4kGfWMtU1pqgMqUQMRmTB
+ OoZda0CAbVDL2yYOqeuXSG0evP4FbT+vnTqZNx3OtoqPGcFd1jOMW0pNWKfL1bPr3x
+ a3GlLS4iV1fkHJlyQZFu+RXOXheVx3KEv8VZj2El7gP6l6OU3451fBNNm+cNGA4+G/
+ +tD17caWLclpA==
+Date: Mon, 31 May 2021 15:34:17 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Shaokun Zhang <zhangshaokun@hisilicon.com>
+Subject: Re: [PATCH] soundwire: cadence: remove the repeated declaration
+Message-ID: <YLS0oUdnjI8sYm6o@vkoul-mobl.Dlink>
+References: <1622114698-7943-1-git-send-email-zhangshaokun@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="epjegrbj6kpv446q"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YK4lWaB6Lx+SPjpF@sirena.org.uk>
-Cc: alsa-devel@alsa-project.org, Tim Gover <tim.gover@raspberrypi.com>,
- linux-doc@vger.kernel.org, David Airlie <airlied@linux.ie>,
- dri-devel@lists.freedesktop.org, Liam Girdwood <lgirdwood@gmail.com>,
- Eric Anholt <eric@anholt.net>, Daniel Vetter <daniel.vetter@intel.com>,
- Phil Elwell <phil@raspberrypi.com>,
- Dave Stevenson <dave.stevenson@raspberrypi.com>,
- bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
- Nicolas Saenz Julienne <nsaenz@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Rob Herring <robh+dt@kernel.org>, linux-rpi-kernel@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, Dom Cobley <dom@raspberrypi.com>,
- Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
- Thomas Zimmermann <tzimmermann@suse.de>,
- Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+In-Reply-To: <1622114698-7943-1-git-send-email-zhangshaokun@hisilicon.com>
+Cc: Sanyog Kale <sanyog.r.kale@intel.com>, alsa-devel@alsa-project.org,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -134,41 +85,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 27-05-21, 19:24, Shaokun Zhang wrote:
+> Function 'cdns_reset_page_addr' is declared twice, so remove the
+> repeated declaration.
 
---epjegrbj6kpv446q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied, thanks
 
-Hi Mark, Takashi,
-
-On Wed, May 26, 2021 at 11:39:21AM +0100, Mark Brown wrote:
-> On Tue, May 25, 2021 at 03:23:47PM +0200, Maxime Ripard wrote:
-> > The IEC958 status bit is usually set by the userspace after hw_params
-> > has been called, so in order to use whatever is set by the userspace, we
-> > need to implement the prepare hook. Let's add it to the hdmi_codec_ops,
-> > and mandate that either prepare or hw_params is implemented.
->=20
-> Acked-by: Mark Brown <broonie@kernel.org>
-
-It looks like you're both happy with the ALSA/ASoC side, how do you want
-to get this merged?
-
-There's a build dependency between the DRM bits and the new hook
-introduced in hdmi-codec, would you be ok with merging it through the
-drm tree?
-
-Maxime
-
---epjegrbj6kpv446q
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYLSvdQAKCRDj7w1vZxhR
-xWXFAQDysUxOnMmdBoxWo7OqzkjGIwVcF9ekclQWjJWOn1GNgwD/ZCJRk/ix3+v+
-3HrGEoP5DWXcawng2o1uOjuTho/i5wE=
-=7cDo
------END PGP SIGNATURE-----
-
---epjegrbj6kpv446q--
+-- 
+~Vinod
