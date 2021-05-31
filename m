@@ -2,103 +2,101 @@ Return-Path: <SRS0=0Rat=K2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FC39C47082
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 11:08:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4215AC47082
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 11:13:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 345B86135A
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 11:08:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 345B86135A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	by mail.kernel.org (Postfix) with ESMTPS id 56A096135B
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 11:13:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 56A096135B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5BEA8846;
-	Mon, 31 May 2021 13:08:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5BEA8846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7CAB5846;
+	Mon, 31 May 2021 13:12:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CAB5846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622459334;
-	bh=bZN2cSlL4RGqmzCuwNO1fFsc91La7kAicvxjSPHnGPM=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1622459600;
+	bh=zbtFKkX34Hjw/4X058ywiJvp1pB4TYmx4wzFxF34RUQ=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UiedLLN0KBU6t+V7NF3Fjm8KAyN3EkmkCvySG/ick6fVOJz3ixqrX3bry5cJ8rMp2
-	 4b3rd8PrEp+Qx2vxCYPQT8ckxZv9X3imsmL0zkoaw+iPWRrWIfOfYnVEVR4AF1+Let
-	 9k++H+sIOKjJnHv/lBErSNCt+VHvGPQky4aeanXw=
+	b=OUXwtg6++amFGtq7z3QWvUYqcG5uabpF4lXrwqol+KVKhjvol0gZGSM1HUUMlYA6P
+	 tbgkEjlO2TsiNOQw2FBiQAxIHDZb2yRPGu2aPC54HVnfkNSD4YPRiLHejVFnNUjNi7
+	 V23lCGEZgrHgEX7MtUBdmzdUBDxktVBaOcGPcPBM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EBE70F80273;
-	Mon, 31 May 2021 13:08:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 12C60F802E2;
+	Mon, 31 May 2021 13:12:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7B02BF802E2; Mon, 31 May 2021 13:08:02 +0200 (CEST)
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com
- [205.220.165.32])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 4D572F80424; Mon, 31 May 2021 13:12:24 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6CCDEF80088
- for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 13:07:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6CCDEF80088
+ by alsa1.perex.cz (Postfix) with ESMTPS id F23EAF80161
+ for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 13:12:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F23EAF80161
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
- header.b="oVdQZePn"
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
- by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 14VB7sTS032461; Mon, 31 May 2021 11:07:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=lUuGq/C7sXzvXw1vUvzsTI9HcozZmqWeXik1xKmQ/Vw=;
- b=oVdQZePnwKr8RWTFBZNq2Tl1U3mtiJYKxISkSPrrwk22gEhpg5VJ5kxzrLZFUd3v5Ov0
- pi3mLRcBm/AX23q16Lu/jnM/tXi8IaQoRkpmckzcepB4HyM/XDHKgfgCGJ4OQbNyxfgD
- bXot10nFB7VGAPlSs9PmyML3tWwZeggkEley8G/fzIpEgMuk05ANCVzSQX6fhYGVF1YM
- oW8KgjNxf9J7pjAvlatX8KtGId7s3FkbZtMGjPfaLT4Rea11IlbJMY3XKsECQWxjfEph
- zQdCOtW206HLs85D8Y0mnNgpAz1nvz45ROtEiyNRrifv0JVOBU4Nf31kASqkOq0rbRS3 HQ== 
-Received: from oracle.com (userp3030.oracle.com [156.151.31.80])
- by mx0b-00069f02.pphosted.com with ESMTP id 38vng405mp-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 31 May 2021 11:07:53 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
- by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14VB7qPg066668;
- Mon, 31 May 2021 11:07:52 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
- by userp3030.oracle.com with ESMTP id 38uaqvaw53-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 31 May 2021 11:07:52 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
- by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14VB7pK4066659;
- Mon, 31 May 2021 11:07:52 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
- by userp3030.oracle.com with ESMTP id 38uaqvaw4w-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 31 May 2021 11:07:51 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
- by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14VB7ovt026451;
- Mon, 31 May 2021 11:07:50 GMT
-Received: from kadam (/41.212.42.34) by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Mon, 31 May 2021 04:07:49 -0700
-Date: Mon, 31 May 2021 14:07:42 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Dongliang Mu <mudongliangabcd@gmail.com>
-Subject: Re: [PATCH] ALSA: control led: fix memory leak in snd_ctl_led_register
-Message-ID: <20210531110742.GB24442@kadam>
-References: <20210528131757.2269989-1-mudongliangabcd@gmail.com>
- <20210531110144.GA24442@kadam>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210531110144.GA24442@kadam>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: a2BHVzqa7nGO7H_95w5TKUDFIxE2UFM2
-X-Proofpoint-GUID: a2BHVzqa7nGO7H_95w5TKUDFIxE2UFM2
-Cc: syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="Jg8TkqpJ"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="ehBUeAVy"
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1622459537; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=wQUgSY4rz3LNiUb//EzzPEIDd2bYGy4SsdKMO2yKhCk=;
+ b=Jg8TkqpJmPxnzwU9nLy5k2ZkyDxpxUcbnHV3oQ3GYLXGL6DACgAA6bILLxAVOpQGDI2e0Z
+ /wd1RSFT0hMbwO1lxOiYCd1XV3p0Jyj+K5LTeHtzBQ/nlHEw6qEi3gUDGwlIGld2F6hcts
+ jB6gp9Z5xMDDTv6EomWEsU3zLd22LUo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1622459537;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=wQUgSY4rz3LNiUb//EzzPEIDd2bYGy4SsdKMO2yKhCk=;
+ b=ehBUeAVypuyQEwZ6y+FElGFCj0XnqTwHWEcfY+UrDlPQYSHfNXMAvWpHPih5M8GaQKQc4k
+ VGqKY71C72V3u3DQ==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 99925AFC4;
+ Mon, 31 May 2021 11:12:17 +0000 (UTC)
+Date: Mon, 31 May 2021 13:12:17 +0200
+Message-ID: <s5hzgwb17ji.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Maxime Ripard <maxime@cerno.tech>
+Subject: Re: [PATCH v2 05/12] ASoC: hdmi-codec: Add a prepare hook
+In-Reply-To: <20210531094213.kuuunk7ytu3q6sq6@gilmour>
+References: <20210525132354.297468-1-maxime@cerno.tech>
+ <20210525132354.297468-6-maxime@cerno.tech>
+ <YK4lWaB6Lx+SPjpF@sirena.org.uk>
+ <20210531094213.kuuunk7ytu3q6sq6@gilmour>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Tim Gover <tim.gover@raspberrypi.com>,
+ linux-doc@vger.kernel.org, David Airlie <airlied@linux.ie>,
+ dri-devel@lists.freedesktop.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Eric Anholt <eric@anholt.net>, Nicolas Saenz Julienne <nsaenz@kernel.org>,
+ Daniel Vetter <daniel.vetter@intel.com>, Phil Elwell <phil@raspberrypi.com>,
+ Dave Stevenson <dave.stevenson@raspberrypi.com>,
+ bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
+ Nicolas Saenz Julienne <nsaenzjulienne@kernel.org>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, linux-rpi-kernel@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, Dom Cobley <dom@raspberrypi.com>,
+ Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,63 +112,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-I've also created a Smatch check for missing ->release() functions.  It
-find one bug in that file.  There are other bugs, but the static checker
-is not clever enough to find them.  I expect Smatch will get smarter
-about this in the coming year.
+On Mon, 31 May 2021 11:42:13 +0200,
+Maxime Ripard wrote:
+> 
+> Hi Mark, Takashi,
+> 
+> On Wed, May 26, 2021 at 11:39:21AM +0100, Mark Brown wrote:
+> > On Tue, May 25, 2021 at 03:23:47PM +0200, Maxime Ripard wrote:
+> > > The IEC958 status bit is usually set by the userspace after hw_params
+> > > has been called, so in order to use whatever is set by the userspace, we
+> > > need to implement the prepare hook. Let's add it to the hdmi_codec_ops,
+> > > and mandate that either prepare or hw_params is implemented.
+> > 
+> > Acked-by: Mark Brown <broonie@kernel.org>
+> 
+> It looks like you're both happy with the ALSA/ASoC side, how do you want
+> to get this merged?
+> 
+> There's a build dependency between the DRM bits and the new hook
+> introduced in hdmi-codec, would you be ok with merging it through the
+> drm tree?
 
-sound/core/control_led.c:685 snd_ctl_led_sysfs_add() warn: calling put_device() with no ->release() function
+Speaking of ALSA core changes, I'm fine with that.
 
-So, yeay, I feel like this thread has been useful and I now understand
-put_device() a little better.  Please review the email thread again and
-send a v2 patch.  :)
 
-regards,
-dan carpenter
+thanks,
 
-/*
- * Copyright (C) 2021 Oracle.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see http://www.gnu.org/copyleft/gpl.txt
- */
-
-#include "smatch.h"
-#include "smatch_extra.h"
-
-static int my_id;
-
-static void match_put_device(struct expression *expr, const char *name, struct symbol *sym, void *data)
-{
-	struct smatch_state *state;
-
-	state = get_state(SMATCH_EXTRA, name, sym);
-	if (!state ||
-	    estate_min(state).value != 0 ||
-	    estate_max(state).value != 0)
-		return;
-
-	sm_warning("calling put_device() with no ->release() function");
-}
-
-void check_no_release(int id)
-{
-	my_id = id;
-
-	if (option_project != PROJ_KERNEL)
-		return;
-
-	add_function_param_key_hook("put_device", &match_put_device, 0, "$->release", NULL);
-	add_function_param_key_hook("device_unregister", &match_put_device, 0, "$->release", NULL);
-}
-
+Takashi
