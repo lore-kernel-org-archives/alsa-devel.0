@@ -2,75 +2,78 @@ Return-Path: <SRS0=0Rat=K2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3C66C47082
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 10:19:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 184C0C47080
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 10:28:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 07B32611CA
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 10:19:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07B32611CA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	by mail.kernel.org (Postfix) with ESMTPS id 7411C60FDA
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 10:28:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7411C60FDA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CF2D3846;
-	Mon, 31 May 2021 12:18:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF2D3846
+	by alsa0.perex.cz (Postfix) with ESMTPS id D5C62847;
+	Mon, 31 May 2021 12:19:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5C62847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622456350;
-	bh=qVy7jE1KsDpd2VVkiogKDeDjeEBgmPBojpscyMeRFP8=;
-	h=Subject:References:To:From:Date:In-Reply-To:List-Id:
+	s=default; t=1622456441;
+	bh=2E17MlRyF9jgcHRKGxx+DAw+cGznl+dPMZItWR6H9cU=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tRuHUqffy1HkGcvEeOYstr3Nfsvn47gw2JBn99tP00eQIc4TBglVVSVP33D8N+ZZz
-	 HTL2WzlSdZNerROsFnsuk2Shf+x4dDUTWL98agFTFjZwB4mZW/7KsmRfd8gmY66BAm
-	 ocq4FBZGhHc8YstoT95Pm4RKRjz68cHU1ypKu6Bk=
+	b=pxiFcB16UtWCzVqRCVbVvtdzu8dNUNJvH9DU5JNaXUPKENuglUk8mSr7j1Ugq1Qzm
+	 FPcXrqFasa23tbuoBaGcIDqYFchlRSRKZXfvfs15bvwRk68U7B3DUIia3zfhna7jhw
+	 iv9AK23MldQ22RGvkeM6uJere2wHNgZWqkCKqNRk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4F310F80273;
-	Mon, 31 May 2021 12:18:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F5A8F802E2;
+	Mon, 31 May 2021 12:19:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EFF67F802E2; Mon, 31 May 2021 12:18:18 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ id BD725F80424; Mon, 31 May 2021 12:19:49 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 30BCAF80161
- for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 12:18:11 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 66669A0040
- for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 12:18:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 66669A0040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1622456290; bh=9Dn6MpwDZEqlOHWxUB0w++crwXDVAN2V5kjUj4gQ0DA=;
- h=Subject:References:To:From:Date:In-Reply-To:From;
- b=sc6cOtIZEgXGJSgkSlTBegxfLzNPDg3BpB8WS0B6SouOFm0tIns+jjdfhQv+7IpVk
- 1SID5W9NdxPXnMYyqV34ANP0JrA189eekLK+0rPcxnJZAaqy/8UfCDq/tBMeN2xQVU
- sMRiH0aJcJOW8X3QN4QbxJSnujKi7wkfRP6eNsPQ=
-Received: from p1gen2.localdomain (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA
- for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 12:18:09 +0200 (CEST)
-Subject: ALSA 1.2.5 release
-References: <c2860da9-d21f-52bb-e15e-fda214e6890a@perex.cz>
-To: ALSA development <alsa-devel@alsa-project.org>
-From: Jaroslav Kysela <perex@perex.cz>
-X-Forwarded-Message-Id: <c2860da9-d21f-52bb-e15e-fda214e6890a@perex.cz>
-Message-ID: <2c410cdc-bde3-1b37-d517-e2d6a27128e5@perex.cz>
-Date: Mon, 31 May 2021 12:18:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3F203F80253
+ for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 12:19:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F203F80253
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Hi18iMai"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 315AB610E7;
+ Mon, 31 May 2021 10:19:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1622456379;
+ bh=2E17MlRyF9jgcHRKGxx+DAw+cGznl+dPMZItWR6H9cU=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=Hi18iMaiTtmfV15fMTFLamQcUewXekVls0ezWCip0YAjTJLadV9l4dkfuresXmB3m
+ kXdPZRi4PXEl5DYSIb2JhuPUic5GnjMhxqyrWQoB/sYartinPy0JzkWsiv2P89LBl6
+ jdxZNQBdunxmhxtZxVQZW/dNumGt7FHLQCEWgsEtzoFhHUTg8xzPBlmajJhxKaIvMu
+ EIcUcBhxSj0LtU8PpXxKN3gyvctXo8bw5RbdMnG5c1Q1PWByBqYo/b2PzIVEm/0E0v
+ mzrTfMFs6bZWA4gqxoaTycQ58ahtZDX4cZS6BzG2fbCjtFGwYXBrPaDap0yak6Jjmf
+ t9wIvXfF8+dHA==
+Date: Mon, 31 May 2021 15:49:35 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v4] soundwire: intel: move to auxiliary bus
+Message-ID: <YLS4N2KgzfsMBD1c@vkoul-mobl.Dlink>
+References: <20210511052132.28150-1-yung-chuan.liao@linux.intel.com>
+ <21002781-0b78-3b36-952f-683482a925d7@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <c2860da9-d21f-52bb-e15e-fda214e6890a@perex.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <21002781-0b78-3b36-952f-683482a925d7@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Leon Romanovsky <leon@kernel.org>,
+ gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, hui.wang@canonical.com,
+ Jason Gunthorpe <jgg@nvidia.com>, Dave Ertman <david.m.ertman@intel.com>,
+ sanyog.r.kale@intel.com, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ rander.wang@linux.intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,26 +89,94 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello all,
+On 25-05-21, 13:30, Pierre-Louis Bossart wrote:
+> On 5/11/21 12:21 AM, Bard Liao wrote:
+> > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > 
+> > Now that the auxiliary_bus exists, there's no reason to use platform
+> > devices as children of a PCI device any longer.
+> > 
+> > This patch refactors the code by extending a basic auxiliary device
+> > with Intel link-specific structures that need to be passed between
+> > controller and link levels. This refactoring is much cleaner with no
+> > need for cross-pointers between device and link structures.
+> > 
+> > Note that the auxiliary bus API has separate init and add steps, which
+> > requires more attention in the error unwinding paths. The main loop
+> > needs to deal with kfree() and auxiliary_device_uninit() for the
+> > current iteration before jumping to the common label which releases
+> > everything allocated in prior iterations.
+> > 
+> > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+> > Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> > Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> > ---
+> > v2:
+> >   - add link_dev_register for all kzalloc, device_init, and device_add.
+> > v3:
+> >   - Modify the function description of sdw_intel_probe() which was
+> >     missing in previous version.
+> > v4:
+> >   - Move intel_link_dev_unregister(ldev) before pm_runtime_put_noidle(
+> >     ldev->link_res.dev) to fix use-after-free reported by KASAN.
+> 
+> Two years ago, GregKH stated in
+> https://lore.kernel.org/lkml/20190509181812.GA10776@kroah.com/
+> 
+> "So soundwire is creating platform devices?  Ick, no!  Don't do that"
+> 
+> Fast forward two years, this patch provides a solution to remove the use of
+> the platform devices with the auxiliary bus. This move does not add any new
+> functionality, it's just a replacement of one type of device by another.
+> 
+> The reviews have been rather limited since the first version shared on March
+> 22.
+> 
+> a) I updated the code to follow the model of the Mellanox driver in
+> 
+> https://elixir.bootlin.com/linux/latest/source/include/linux/mlx5/driver.h#L545
+> 
+> I hope this addresses GregKH's feedback on the need for a 'register'
+> function to combined the two init and add steps. I didn't see a path to add
+> a generic register function in the auxiliary bus code since between init and
+> add there is a need to setup domain-specific structures. Other contributors
+> to the auxiliary bus (CC:ed) also didn't have a burning desire to add this
+> capability.
+> 
+> b) Vinod commented:
+> 
+> "What I would like to see the end result is that sdw driver for Intel
+> controller here is a simple auxdev device and no additional custom setup
+> layer required... which implies that this handling should be moved into
+> auxdev or Intel code setting up auxdev..."
+> 
+> I was unable to figure out what this comment hinted at: the auxbus is
+> already handled in the intel_init.c and intel.c files and the auxbus is used
+> to model a set of links/managers below the PCI device, not the controller
+> itself. There is also no such thing as a simple auxdev device used in the
+> kernel today, the base layer is meant to be extended with domain-specific
+> structures. There is really no point in creating a simple auxbus device
+> without extensions.
 
-     new ALSA userspace packages were released. You may download them from
-the ALSA website http://www.alsa-project.org or directly:
+<back from vacations>
 
-     HTTP: https://www.alsa-project.org/files/pub
-     FTP:  ftp://ftp.alsa-project.org/pub
+I would like to see that the init_init.c removed completely, that is my
+ask here
 
-Full list of changes:
+This layer was created by me to aid in creating the platform devices.
+Also the mistake was not to use platform resources and instead pass a
+custom structure for resources (device iomem address, irq etc)
 
-     https://www.alsa-project.org/wiki/Changes_v1.2.4_v1.2.5
+I would like to see is the PCI/SOF parent driver create the sdw aux
+device and that should be all needed to be done. The aux device would be
+probed by sdw driver. No custom resource structs for resources please.
 
-All files on the primary ALSA site have also GPG signature now.
-The fingerprint of the public signing key is:
+If that is not possible, I would like to understand technical details of
+why that would be that case. If required necessary changes should be
+made to aux bus to handle and not have sequencing issue which you had
+trouble with platform approach.
 
-     F04D F507 37AC 1A88 4C4B 3D71 8380 596D A6E5 9C91
-
-				Have fun,
-					Jaroslav
-
+Thanks
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+~Vinod
