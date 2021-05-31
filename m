@@ -2,97 +2,60 @@ Return-Path: <SRS0=0Rat=K2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8219CC47093
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 03:05:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82C6FC4708F
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 04:19:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A128061220
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 03:05:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A128061220
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id B78036120E
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 May 2021 04:19:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B78036120E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD4A3846;
-	Mon, 31 May 2021 05:04:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD4A3846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 726C0844;
+	Mon, 31 May 2021 06:18:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 726C0844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622430302;
-	bh=I+LJWrku53jZ86tJLWIV/2mn+wyqpk+Jlp77ya0fZEg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ioehQFrYU4GM+1KXfCflWw08wd9aKgTKqqjv9ABI/RR8fAqT9FdPaEkfP5dgRx7+a
-	 z0k2g1lOQ5wStnj2q3xRyCT0OQgnIXtXS7a9RuArbYGwU6RqG2+iiMXg+gQ3fUKK1k
-	 HK6/AVlUzpPHxyYF4bxxq0kdxCF7ySFPkQJAXYsE=
+	s=default; t=1622434780;
+	bh=YV37z7g7ny46CV2unNOACJDIXuNk/WO5/hUAyp0qwuA=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=gGUDICGlFSk55D11YZANliUIvYSHr5Awjri1fWnQYoDs4lqk+6R8K3mOiVigHC+MU
+	 XryWvPUC7oS+QfReCKRWh/w+v1yvAkGhGAamcFBmQ048+8R5SM1Q0QRBHO5A5QxXBx
+	 6sZvLRFuLYfQgS2PVT14NKFnHkQ1gI6y/IdOqIvM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4E7F3F80168;
-	Mon, 31 May 2021 05:04:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BA047F80168;
+	Mon, 31 May 2021 06:18:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB4D8F80253; Mon, 31 May 2021 05:04:10 +0200 (CEST)
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com
- [IPv6:2a00:1450:4864:20::629])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 62842F80088
- for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 05:04:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62842F80088
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="ZpqMb5pL"
-Received: by mail-ej1-x629.google.com with SMTP id ss26so14415403ejb.5
- for <alsa-devel@alsa-project.org>; Sun, 30 May 2021 20:04:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=9zncGjWI/Ti8X4PcYn2LTWv6/sQeOvT3E+T4zzv3al4=;
- b=ZpqMb5pLMC57T5ge9mI5wiScA0lilfWuOW/WzS/iOL/Pobi10ictGNHq7So1K580xE
- t6evHt86l5Sp49kkm6XqGBAzK8M8H47X62rQ6zJ1QVuZid/NhxgwKV7hnYtqNHE8SH7n
- 3dpFSHiJzHhVc1wyl3Vf8unKF1Nc9uWTTDeX6sHDzNqI0Q0r4dvv8BhVZpBUIUP/+7pP
- LwmVv+cfs0pcO6mG5VPZFkPjGyzhwCtX86UgN2r718AxHZydoQOy8U5NdHrRAf3H7lOP
- HtDmRlKaY7lD9jlScOo0NWYWo+kcuTeLR0IafCzd59/Y46A+rR6ShPlGHHLcj0mVODKm
- JphA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=9zncGjWI/Ti8X4PcYn2LTWv6/sQeOvT3E+T4zzv3al4=;
- b=Tz5wArcD7/ePDzvb3xYxNf0XOzfrAOuBq7QqnQJPrm9O7Ziz2CV9eYGNEsvU+Q8gTE
- r2qlMtOJydkbkh9pdhsq3MsHkY+4ZGknEbsyBGpwqKd5sOq6rkBHhtH1lLFRWDoG2+m5
- +i45RjIktLuyd2sEtokcMadj+jyYv8HA+Vv5lw7QJdk1ShY2zIQAyv0DFe8iM08nBD7e
- 4YFXzTJfitoGVm2kbR10N3jgh3SYkgYCdHMRr470aGunCAp74u6ZDT8EkYKC27eM1QUG
- 5e7TUG6KTENsi16gvL8GxxkMt3r088F6AshMuiDRqqyVFgP0szV3Jpi28b89iAksft2P
- pglw==
-X-Gm-Message-State: AOAM532uQUW2iC/WKRLCk2+KSlcUwLhl8QBBIa3OQ2wMk34IrxZUqZnk
- UP93eAWg/7nrQX2pbbK4f5Vn8JnRUBYe+M0pz1c=
-X-Google-Smtp-Source: ABdhPJxDEPa3T5UAc0cyhX2pJM3u681kMN50f7+D2IiLhhsuHCNZDsnnuQO0O7X+CyydTBL9Se8gyDjJEZsWpjQ1m5o=
-X-Received: by 2002:a17:906:6d17:: with SMTP id
- m23mr21254158ejr.73.1622430242956; 
- Sun, 30 May 2021 20:04:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210528131757.2269989-1-mudongliangabcd@gmail.com>
- <20210528133309.GR24442@kadam>
- <CAD-N9QVWcEJjoziA6HVoQiUueVaKqAJS5Et60zvCvuUE7e6=gg@mail.gmail.com>
- <20210528140500.GS24442@kadam>
- <A622EB84-DC4A-47A4-A828-CE6D25DC92EB@gmail.com>
-In-Reply-To: <A622EB84-DC4A-47A4-A828-CE6D25DC92EB@gmail.com>
-From: Dongliang Mu <mudongliangabcd@gmail.com>
-Date: Mon, 31 May 2021 11:03:36 +0800
-Message-ID: <CAD-N9QVjhDDJxRnNrDzwt05BNijr1o11nE8xjvq8GrakEJ8EuQ@mail.gmail.com>
-Subject: Re: [PATCH] ALSA: control led: fix memory leak in snd_ctl_led_register
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Cc: syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com,
- linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org,
- tiwai@suse.com
+ id CBEE7F80253; Mon, 31 May 2021 06:18:47 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id C5610F80096
+ for <alsa-devel@alsa-project.org>; Mon, 31 May 2021 06:18:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5610F80096
+Date: 31 May 2021 13:18:37 +0900
+X-IronPort-AV: E=Sophos;i="5.83,236,1616425200"; d="scan'208";a="82938828"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 31 May 2021 13:18:37 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 9FBE7400755B;
+ Mon, 31 May 2021 13:18:37 +0900 (JST)
+Message-ID: <87bl8rk02q.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Mark Brown <broonie@kernel.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH 0/4] ASoC: rsnd: adjust disabled module for R-Car D3
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,56 +71,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, May 29, 2021 at 5:35 AM =E6=85=95=E5=86=AC=E4=BA=AE <mudongliangabc=
-d@gmail.com> wrote:
->
->
->
-> > On May 28, 2021, at 10:05 PM, Dan Carpenter <dan.carpenter@oracle.com> =
-wrote:
-> >
-> > On Fri, May 28, 2021 at 09:50:49PM +0800, Dongliang Mu wrote:
-> >>
-> >> Can you please give some advise on how to fix this WARN issue?
-> >
-> > But it feels like it spoils the fun if I write the commit...  Anyway:
->
-> It=E2=80=99s fine. I am still in the learning process. It=E2=80=99s also =
-good to learn experience by comparing your patch and my patch.
->
-> >
-> > regards,
-> > dan carpenter
-> >
-> > diff --git a/sound/core/control_led.c b/sound/core/control_led.c
-> > index 25f57c14f294..dd357abc1b58 100644
-> > --- a/sound/core/control_led.c
-> > +++ b/sound/core/control_led.c
-> > @@ -740,6 +740,7 @@ static int __init snd_ctl_led_init(void)
-> >                       for (; group > 0; group--) {
-> >                               led =3D &snd_ctl_leds[group - 1];
-> >                               device_del(&led->dev);
-> > +                             device_put(&led->dev);
-> >                       }
-> >                       device_del(&snd_ctl_led_dev);
-> >                       return -ENOMEM;
-> > @@ -768,6 +769,7 @@ static void __exit snd_ctl_led_exit(void)
-> >       for (group =3D 0; group < MAX_LED; group++) {
-> >               led =3D &snd_ctl_leds[group];
-> >               device_del(&led->dev);
-> > +             device_put(&led->dev);
-> >       }
-> >       device_del(&snd_ctl_led_dev);
-> >       snd_ctl_led_clean(NULL);
 
-Hi Dan,
+Hi Mark, Geert
 
-I tried this patch, and it still triggers the memleak. My
-understanding is that the device object is already freed in the
-snd_ctl_led_sysfs_remove.
+Renesas Sound driver is assuming that all SSI/SRC
+are connected.
+But some SSI/SRC are not connected on Some Renesas SoC.
+ex)
+	H2	E2
 
->
-> Does this patch mean I should add device_put in the init and exit functio=
-n other than snd_ctl_led_sysfs_remove? This will cause device_release bypas=
-s the release method checking?
->
+	SRC0	      <=
+	SRC1	SRC1
+	SRC2	SRC2
+	...	...
+
+We accepted it by using "status = disabled" on DT before.
+
+ex)
+	rcar_sound,src {
+		src-0 {
+=>			status = "disabled";
+		};
+		src1: src-1 {
+			...
+		};
+		...
+
+But R-Car D3 have many disabled modules (It has SSI3/SSI4, SRC5/SRC6),
+and Renesas SoC maintainer don't want above style on DT.
+
+ex)
+	rcar_sound,src {
+=>		src0: src-0 { status = "disabled"; };
+=>		src1: src-1 { status = "disabled"; };
+=>		src2: src-2 { status = "disabled"; };
+=>		src3: src-3 { status = "disabled"; };
+=>		src4: src-4 { status = "disabled"; };
+		src5: src-5 {
+			...
+		};
+		...
+
+This patch-set adjust to this situation, and enables to intuitive DT settings.
+
+	rcar_sound,src {
+		src5: src-5 {
+			...
+		};
+		src6: src-6 {
+			...
+		};
+	};
+
+Kuninori Morimoto (4):
+  ASoC: rsnd: tidyup rsnd_parse_connect_common()
+  ASoC: rsnd: tidyup rsnd_dma_request_channel()
+  ASoC: rsnd: tidyup rsnd_parse_connect_xxx()
+  ASoC: rsnd: adjust disabled module
+
+ sound/soc/sh/rcar/core.c | 58 ++++++++++++++++++++++++++++++++++++++--
+ sound/soc/sh/rcar/dma.c  |  8 +++---
+ sound/soc/sh/rcar/dvc.c  |  2 +-
+ sound/soc/sh/rcar/rsnd.h | 16 ++++++-----
+ sound/soc/sh/rcar/src.c  |  6 +++--
+ sound/soc/sh/rcar/ssi.c  | 12 ++++++---
+ sound/soc/sh/rcar/ssiu.c | 10 ++++---
+ 7 files changed, 91 insertions(+), 21 deletions(-)
+
+-- 
+2.25.1
+
