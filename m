@@ -2,84 +2,78 @@ Return-Path: <SRS0=jKKe=K3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43267C4708F
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 16:26:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 083CFC4708F
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 16:26:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 15896613AD
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 16:26:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 15896613AD
+	by mail.kernel.org (Postfix) with ESMTPS id 464726023F
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 16:26:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 464726023F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2B32A16D8;
-	Tue,  1 Jun 2021 18:26:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B32A16D8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 795CD16D5;
+	Tue,  1 Jun 2021 18:26:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 795CD16D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622564811;
-	bh=5ySjhuuk4SkenMYPGm0I2Nz0DZ4p68O8FD07sAdYH4A=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=XpM7jJMJyQ1fkY9k1oA40poCM369xjCkisTREeQfJ64p/9GCTbV7FIX+2LBpsjUVH
-	 FpxA7BQImxKV71XT1XoXH60xmai48OAPt8Tc+1fxLAumcqlr1u+P11SRO8r9DlFEKB
-	 5ArTF+Hq8fhe9OOyz1Ew0loX530KDG6A7YOAy3tw=
+	s=default; t=1622564815;
+	bh=g+oSq2jB+0GHRH20JrZdpppUBub7eGrrxXZzOU0ggfM=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=k+KqLDpV1y76t8LfECA+LXIj553NjlQjtvmL11AyJMI0c+Cl/gyiOVSW1JJ/w9m06
+	 ovlUOWt/n68laEk2hNmrBpu/BjupgGZyykjDz9z7MvvwR9XZ2oRrm7n65w1ZyuOcPF
+	 SNOVBCMo0oS1vUuGEMj5vjststS5La7q7QZ9kKfg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BBB5EF804BB;
-	Tue,  1 Jun 2021 18:25:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7145DF804BC;
+	Tue,  1 Jun 2021 18:25:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A232EF804AF; Tue,  1 Jun 2021 18:25:07 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id CC334F804C2; Tue,  1 Jun 2021 18:25:11 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DCCEAF80254
+ by alsa1.perex.cz (Postfix) with ESMTPS id DFDF4F80141
  for <alsa-devel@alsa-project.org>; Tue,  1 Jun 2021 18:24:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCCEAF80254
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFDF4F80141
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="NDWheX7r"; 
+ header.b="hMhgd+MW"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="91ZPWIEN"
+ header.b="BitIRvqO"
 Received: from relay2.suse.de (unknown [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id CC57821963
+ by smtp-out2.suse.de (Postfix) with ESMTP id 8D2BB1FD3F
  for <alsa-devel@alsa-project.org>; Tue,  1 Jun 2021 16:24:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1622564698; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=WYCquLZWAUtwsKRsm1Vk986BlBN+cqLHdeQkKaeSawE=;
- b=NDWheX7rytan3cGq6omD9EYFE7dfgzB959upl6RUgaBT7K6cSqIVLmc5OcPgydfrzviBLp
- jEafTGwjP3n8K+uL1CvXz/fD+/2Nlv6atLN2SAZ2960F9DpKMw2teygsFOXdTI8erfcF/1
- gA39FUvAQUyIryMXvyALfRYebJWY3k8=
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=eKpr0G/ycR9AQLuUDiCOGxtLZKGpk+iBP4tmWdOWJ2g=;
+ b=hMhgd+MWdYvQSqDgNmJBAqM2KQRWseYiCiTmmflXVMF3by14cLR5IzwVLlhJmGcrCqTzTz
+ ok6typZyEQLMRZ3u1uY8PVz15zYyL08Dg3PFvv9i2MO0NtPEC/pAi3LLVdsEcC6TTzYzML
+ Cg13l856aCT0uI9ZvRzwSHvl3yKN/vc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1622564698;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=WYCquLZWAUtwsKRsm1Vk986BlBN+cqLHdeQkKaeSawE=;
- b=91ZPWIENg2Oeu3Og0VbJy+01CIAYm7YJfoB7JNqYh9VGtczeavswoIEild0wipatVP/56G
- 74Yug7BpSmqiGDBQ==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=eKpr0G/ycR9AQLuUDiCOGxtLZKGpk+iBP4tmWdOWJ2g=;
+ b=BitIRvqOQVh0UUjrMnUARBv0K8mTtyXRPk0u2J1sOiS+i0qOJN069+dA9e48roxgCME1Ro
+ rUjBkkpQ4K0mZHDg==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id BCE21A3B87;
+ by relay2.suse.de (Postfix) with ESMTP id 7DFF7A3B83;
  Tue,  1 Jun 2021 16:24:58 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 5/5] ALSA: usb-audio: Reduce latency at playback start
-Date: Tue,  1 Jun 2021 18:24:57 +0200
-Message-Id: <20210601162457.4877-6-tiwai@suse.de>
+Subject: [PATCH 0/5] ALSA: usb-audio: Delay account cleanup and latency
+ reduction
+Date: Tue,  1 Jun 2021 18:24:52 +0200
+Message-Id: <20210601162457.4877-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210601162457.4877-1-tiwai@suse.de>
-References: <20210601162457.4877-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -97,71 +91,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-USB-audio driver behaves a bit strangely for the playback stream --
-namely, it starts sending silent packets at PCM prepare state while
-the actual data is submitted at first when the trigger START is kicked
-off.  This is a workaround for the behavior where URBs are processed
-too quickly at the beginning.  That is, if we start submitting URBs at
-trigger START, the first few URBs will be immediately completed, and
-this would result in the immediate period-elapsed calls right after
-the start, which may confuse applications.
+Hi,
 
-OTOH, submitting the data after silent URBs would, of course, result
-in a certain delay of the actual data processing, and this is rather
-more serious problem on modern systems, in practice.
+this is a patch set for USB-audio driver for the code refactoring of
+PCM delay account as well as the reduction of the playback latency.
+The last change is a bit intrusive (despite of the smallness), and
+hopefully it won't break things.  My initial tests through various
+backends were OK, but if anyone finds a problem, please let me know.
 
-This patch tries to revert the workaround and lets the URB submission
-starting at PCM trigger for the playback again.  As far as I've tested
-with various backends (native ALSA, PA, JACK, PW), I haven't seen any
-problems (famous last words :)
 
-Note that the capture stream handling needs no such workaround, since
-the capture is driven per received URB.
+Takashi
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/pcm.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+===
 
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index e26d37365f02..c66831ee15f9 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -613,11 +613,6 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
- 	subs->last_frame_number = 0;
- 	runtime->delay = 0;
- 
--	/* for playback, submit the URBs now; otherwise, the first hwptr_done
--	 * updates for all URBs would happen at the same time when starting */
--	if (subs->direction == SNDRV_PCM_STREAM_PLAYBACK)
--		ret = start_endpoints(subs);
--
-  unlock:
- 	snd_usb_unlock_shutdown(chip);
- 	return ret;
-@@ -1430,6 +1425,7 @@ static int snd_usb_substream_playback_trigger(struct snd_pcm_substream *substrea
- 					      int cmd)
- {
- 	struct snd_usb_substream *subs = substream->runtime->private_data;
-+	int err;
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
-@@ -1440,6 +1436,14 @@ static int snd_usb_substream_playback_trigger(struct snd_pcm_substream *substrea
- 					      prepare_playback_urb,
- 					      retire_playback_urb,
- 					      subs);
-+		if (cmd == SNDRV_PCM_TRIGGER_START) {
-+			err = start_endpoints(subs);
-+			if (err < 0) {
-+				snd_usb_endpoint_set_callback(subs->data_endpoint,
-+							      NULL, NULL, NULL);
-+				return err;
-+			}
-+		}
- 		subs->running = 1;
- 		dev_dbg(&subs->dev->dev, "%d:%d Start Playback PCM\n",
- 			subs->cur_audiofmt->iface,
+Takashi Iwai (5):
+  ALSA: usb-audio: Make snd_usb_pcm_delay() static
+  ALSA: usb-audio: Pre-calculate buffer byte size
+  ALSA: usb-audio: Refactoring delay account code
+  ALSA: usb-audio: Factor out DSD bitrev copy function
+  ALSA: usb-audio: Reduce latency at playback start
+
+ sound/usb/card.h     |   8 +-
+ sound/usb/endpoint.c |   1 +
+ sound/usb/pcm.c      | 202 ++++++++++++++++++++-----------------------
+ sound/usb/pcm.h      |   3 -
+ 4 files changed, 101 insertions(+), 113 deletions(-)
+
 -- 
 2.26.2
 
