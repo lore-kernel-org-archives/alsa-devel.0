@@ -2,56 +2,61 @@ Return-Path: <SRS0=jKKe=K3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39F5AC47092
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 23:44:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3316C47080
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 23:44:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0AECF613DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 23:44:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0AECF613DB
+	by mail.kernel.org (Postfix) with ESMTPS id 8F3FB613F3
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 23:44:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F3FB613F3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 906F716D3;
-	Wed,  2 Jun 2021 01:43:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 906F716D3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5329016E8;
+	Wed,  2 Jun 2021 01:44:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5329016E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622591045;
-	bh=DhCz4TVWE3f79ZhfI3Gx3q6eW1CJnCZHu3lzUa6/zE8=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=FY3u3elhDvaAr0Gi246084IoDkQ5PL/IJeuaphMvZU6q7Lml0w350Zw4OPy9Amq2X
-	 I75w99uBjh3h8UNsD3XfqtN6qkRxZvdhcQ75rGNkG0U+7VnQ1DWxSwjDf91oFIDDxv
-	 s4dHeIzEFDeleRBOXlGElLRKa2l7W1i5CrK/XS50=
+	s=default; t=1622591096;
+	bh=mHjlaDleesr2ATp6yH2VXjT6g34RJK6P2j5BQF4pdFA=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=LWiUzb/RMQBER4ovix9ri5t6oQoKjAXJ+w8wtB5DzXNFR8GyexlcAxN+l6ca9GBdg
+	 sY6NW4J/rviIAXNF4Xn5nUQJL8juOT7N+u+cTqH35YqXNDGRXg4luqOb01S73fBpUm
+	 7MpCXlPnC14KdR/zunzkKIV9d0KroUKu2yM/reQM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23FCBF80253;
-	Wed,  2 Jun 2021 01:43:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EC573F802E7;
+	Wed,  2 Jun 2021 01:43:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B0CD5F80254; Wed,  2 Jun 2021 01:43:13 +0200 (CEST)
+ id 84F6BF802E7; Wed,  2 Jun 2021 01:43:37 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 6D03AF801DB
- for <alsa-devel@alsa-project.org>; Wed,  2 Jun 2021 01:43:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D03AF801DB
-Date: 02 Jun 2021 08:43:01 +0900
-X-IronPort-AV: E=Sophos;i="5.83,241,1616425200"; d="scan'208";a="82966417"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 02 Jun 2021 08:43:01 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id C60E0F80141
+ for <alsa-devel@alsa-project.org>; Wed,  2 Jun 2021 01:43:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C60E0F80141
+Date: 02 Jun 2021 08:43:28 +0900
+X-IronPort-AV: E=Sophos;i="5.83,241,1616425200"; d="scan'208";a="82966448"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 02 Jun 2021 08:43:28 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 366E04121BB7;
- Wed,  2 Jun 2021 08:43:01 +0900 (JST)
-Message-ID: <87v96xi22i.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 84B6D40134FA;
+ Wed,  2 Jun 2021 08:43:28 +0900 (JST)
+Message-ID: <87tumhi21r.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 0/5] ASoC: rsnd: tidyup adg and header
+Subject: [PATCH 1/5] ASoC: rsnd: adg: supply __printf(x,
+ y) formatting for dbg_msg()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87v96xi22i.wl-kuninori.morimoto.gx@renesas.com>
+References: <87v96xi22i.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -70,26 +75,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Hi Mark
+Fixes the following W=1 kernel build warning(s):
 
-I noticed that adg can be more clean code.
-And rsnd.h header comment was not so good
-because patch has been randomly added.
+sound/soc/sh/rcar/adg.c: In function 'dbg_msg':
+sound/soc/sh/rcar/adg.c:594:2: warning: function 'dbg_msg' might \
+ be a candidate for 'gnu_printf' format attribute\
+ [-Wsuggest-attribute=format]
 
-This patch tidyup these.
+Fixes: 1f9c82b5ab83 ("ASoC: rsnd: add debugfs support")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/sh/rcar/adg.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Kuninori Morimoto (5):
-  ASoC: rsnd: adg: supply __printf(x, y) formatting for dbg_msg()
-  ASoC: rsnd: adg: tidyup rsnd_adg_get_clkin/out() parameter
-  ASoC: rsnd: adg: use more simple method for null_clk
-  ASoC: rsnd: adg: check return value for rsnd_adg_get_clkin/out()
-  ASoC: rsnd: tidyup __rsnd_mod_xxx macro comments
-
- sound/soc/sh/rcar/adg.c  | 139 +++++++++++++++++++++++++--------------
- sound/soc/sh/rcar/rsnd.h |  21 ++----
- 2 files changed, 97 insertions(+), 63 deletions(-)
-
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index 78916332c22f..390d5e22fbb8 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -584,6 +584,7 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
+ }
+ 
+ #if defined(DEBUG) || defined(CONFIG_DEBUG_FS)
++__printf(3, 4)
+ static void dbg_msg(struct device *dev, struct seq_file *m,
+ 				   const char *fmt, ...)
+ {
 -- 
 2.25.1
 
