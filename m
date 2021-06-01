@@ -2,78 +2,90 @@ Return-Path: <SRS0=h1r5=K4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10740C47083
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 14:20:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BA98C4708F
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 14:24:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7860B613BA
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 14:20:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7860B613BA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	by mail.kernel.org (Postfix) with ESMTPS id 7ED9D610CB
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 14:23:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7ED9D610CB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8FE6A16DF;
-	Wed,  2 Jun 2021 16:19:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FE6A16DF
+	by alsa0.perex.cz (Postfix) with ESMTPS id AED9116E5;
+	Wed,  2 Jun 2021 16:23:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AED9116E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622643629;
-	bh=Et8+3SmkB9mo2muFLruoiM69XWsfzWMOXz5Tg+eHKmk=;
-	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
+	s=default; t=1622643836;
+	bh=iRLwwh/jf6neXOQQgfnhI6BrCzqxxsNJFTOUKbWjbxU=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qA3QpCw825psUYrfyJj8kSVQGKP89fRHspZHEFTQzBlY3cO0X1fyjIVoNVmKGsuJ6
-	 r5MCPLKJ6nGqI/ahhuz9ae15IuEjGg6usMAgVL2RC7Ft0wAFWwjTHr7Cr28OOTKMme
-	 x5nyyt7IpuFv2DEL21mjfMIWV2+IkGzSZW1YFCNo=
+	b=cIL9DWRBjCfX0oBrtmwZHs/EXixfZcqNCAPIIkhSUZ7v4RkNok3oBzONrBQYXBajX
+	 qylRv3LsgQYpSO57e8aDUqttMv212pS8DkBsnnFDnr65eRGWMXE1x961a3heZ7Ikq3
+	 eC2GKHaCERdrH76OiR+a3zbynNf4lhcdBGuC4uNs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2A70EF802A9;
-	Wed,  2 Jun 2021 16:19:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 25A87F802A9;
+	Wed,  2 Jun 2021 16:23:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CDBB6F80424; Wed,  2 Jun 2021 16:19:37 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ id C5B73F80254; Tue,  1 Jun 2021 10:46:11 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A74A2F80103
- for <alsa-devel@alsa-project.org>; Wed,  2 Jun 2021 16:19:24 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id C304AA0042;
- Wed,  2 Jun 2021 16:19:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz C304AA0042
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1622643562; bh=t6iwHzWxaZURGvRkNNG6PD03fsxL4O2Nu2eQKG2T8Tc=;
- h=Subject:To:References:From:Date:In-Reply-To:From;
- b=n1Cn3L0XrZwFTsCJyIEPXafWyWLVRQuFfem59YOdeD51dXu8Z0CY8Vqbuuwvd3YT8
- pN7SQdm0Mof50fxryJwyRS2xPn0/gxhxCokpw/Q+NQXr1mz7krNXX94cBV6+wAOA3j
- 2HUO/1g1Wqvem/g9DlafVtAYnHMvqJ1kkzp2kJHk=
-Received: from p1gen2.localdomain (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Wed,  2 Jun 2021 16:19:13 +0200 (CEST)
-Subject: Re: [syzbot] UBSAN: shift-out-of-bounds in snd_timer_user_ccallback
-To: Dongliang Mu <mudongliangabcd@gmail.com>, allen.lkml@gmail.com,
- alsa-devel@alsa-project.org, Joe Perches <joe@perches.com>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- pierre-louis.bossart@linux.intel.com, romain.perier@gmail.com,
- syzkaller-bugs <syzkaller-bugs@googlegroups.com>, tiwai@suse.com
-References: <CAD-N9QUDYbzkZXnDzf2P4b4Qk_kBQ_9ZVL3B4jhe9Xf2rgtpGA@mail.gmail.com>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <5c3fbdf8-bfa3-a50e-edb9-81fbce84d9cb@perex.cz>
-Date: Wed, 2 Jun 2021 16:19:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8089EF801DB
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jun 2021 10:46:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8089EF801DB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="sIrl/fVj"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60BC061370;
+ Tue,  1 Jun 2021 08:45:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1622537158;
+ bh=iRLwwh/jf6neXOQQgfnhI6BrCzqxxsNJFTOUKbWjbxU=;
+ h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+ b=sIrl/fVjSuZJc/8yYTG/dJgXF2S6Ulce6iDkG+5AKFvWM2npcdzHGjvr/bhghCsZF
+ gpJE2khsRcmBOfZpvtpHnKPnhJQHPS2ueehX2SI7BCGwJn5gNg09TOyvmk6VwPasQl
+ hGz0UQs7t1mG2u7JfCBEfI4j+86J1KWkdEbM9wydpaBKZ1jeprBZzT+74L3/Y/jb2O
+ jQalFjmxg6vOnopGnjuRLf6MOjheSfjBdCke3btHg+vBqi+MHF4SVyhI5S8Ijoj8kx
+ EcGYGkt1N+lSF8t2cp9YYGCDZOIMGva80GMffTImgfkezk7SLoDtdDjkDKonezD74D
+ d9pZAvCCOVmCg==
+Message-ID: <4552aaf531b0619a2d7a7cc4bcf2d049c44b4b74.camel@kernel.org>
+Subject: Re: [PATCH v2 06/12] drm/vc4: hdmi: Set HD_CTL_WHOLSMP and
+ HD_CTL_CHALIGN_SET
+From: nicolas saenz julienne <nsaenz@kernel.org>
+To: Maxime Ripard <maxime@cerno.tech>, Jaroslav Kysela <perex@perex.cz>, 
+ Mark Brown <broonie@kernel.org>, dri-devel@lists.freedesktop.org, Daniel
+ Vetter <daniel.vetter@intel.com>,  David Airlie <airlied@linux.ie>, Maarten
+ Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann
+ <tzimmermann@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai
+ <tiwai@suse.com>
+Date: Tue, 01 Jun 2021 10:45:49 +0200
+In-Reply-To: <20210525132354.297468-7-maxime@cerno.tech>
+References: <20210525132354.297468-1-maxime@cerno.tech>
+ <20210525132354.297468-7-maxime@cerno.tech>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.0 (3.40.0-1.fc34) 
 MIME-Version: 1.0
-In-Reply-To: <CAD-N9QUDYbzkZXnDzf2P4b4Qk_kBQ_9ZVL3B4jhe9Xf2rgtpGA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Mailman-Approved-At: Wed, 02 Jun 2021 16:23:04 +0200
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Dom Cobley <dom@raspberrypi.com>, Tim Gover <tim.gover@raspberrypi.com>,
+ linux-doc@vger.kernel.org, Dave Stevenson <dave.stevenson@raspberrypi.com>,
+ linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+ Eric Anholt <eric@anholt.net>, Rob Herring <robh+dt@kernel.org>,
+ bcm-kernel-feedback-list@broadcom.com, linux-arm-kernel@lists.infradead.org,
+ Daniel Vetter <daniel@ffwll.ch>, Dom Cobley <popcornmix@gmail.com>,
+ Jonathan Corbet <corbet@lwn.net>, Phil Elwell <phil@raspberrypi.com>,
+ Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+ linux-rpi-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,68 +101,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 02. 06. 21 15:18, Dongliang Mu wrote:
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit: 5ff2756a Merge tag 'nfs-for-5.13-2' of git://git.linux-nfs..
->> git tree: upstream
->> console output: https://syzkaller.appspot.com/x/log.txt?x=17872d5bd00000
->> kernel config: https://syzkaller.appspot.com/x/.config?x=770708ea7cfd4916
->> dashboard link: https://syzkaller.appspot.com/bug?extid=d102fa5b35335a7e544e
->>
->> Unfortunately, I don't have any reproducer for this issue yet.
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+d102fa...@syzkaller.appspotmail.com
->>
->> ================================================================================
->> UBSAN: shift-out-of-bounds in sound/core/timer.c:1376:23
->> shift exponent 105 is too large for 32-bit type 'int'
->> CPU: 1 PID: 10368 Comm: syz-executor.1 Not tainted 5.13.0-rc3-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> Call Trace:
->> __dump_stack lib/dump_stack.c:79 [inline]
->> dump_stack+0x141/0x1d7 lib/dump_stack.c:120
->> ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
->> __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:327
->> snd_timer_user_ccallback.cold+0x19/0x1e sound/core/timer.c:1376
->>
->> snd_timer_notify1+0x243/0x3b0 sound/core/timer.c:525
+On Tue, 2021-05-25 at 15:23 +0200, Maxime Ripard wrote:
+> From: Dom Cobley <popcornmix@gmail.com>
 > 
-> The root cause of this bug is in the snd_timer_notify1 [1]. At the end
-> of this function, it calls "ts->ccallback(ts, event + 100, &tstamp,
-> resolution)".
+> Symptom is random switching of speakers when using multichannel.
 > 
-> Here the variable event is 5. It adds 100 and is passed as 2nd
-> argument of snd_timer_user_ccallback.
+> Repeatedly running speakertest -c8 occasionally starts with
+> channels jumbled. This is fixed with HD_CTL_WHOLSMP.
 > 
->>From the variable naming, the 2nd argument should an event, and in the
-> range of event enumeration. In fact, 105 (event + 100) is out of this
-> range. I don't quite understand the meaning of adding 100. Any thought
-> here?
-
-It seems that the original intent was to move the event to the M... events:
-
-     SNDRV_TIMER_EVENT_MSTART = SNDRV_TIMER_EVENT_START + 10,
-
-So the added value should be 10 which should not break the shift range (8
-/resume/ + 10 = 18).
-
-					Jaroslav
-
+> The other bit looks beneficial and apears harmless in testing so
+> I'd suggest adding it too.
 > 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sound/core/timer.c?id=5ff2756afde08b266fbb673849899fec694f39f1#n497
+> Documentation says: HD_CTL_WHILSMP_SET
+> Wait for whole sample. When this bit is set MAI transmit will start
+> only when there is at least one whole sample available in the fifo.
 > 
-> --
-> My best regards to you.
+> Documentation says: HD_CTL_CHALIGN_SET
+> Channel Align When Overflow. This bit is used to realign the audio
+> channels in case of an overflow.
+> If this bit is set, after the detection of an overflow, equal
+> amount of dummy words to the missing words will be written to fifo,
+> filling up the broken sample and maintaining alignment.
 > 
->      No System Is Safe!
->      Dongliang Mu
-> 
+> Signed-off-by: Dom Cobley <popcornmix@gmail.com>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> ---
 
+Reviewed-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Regards,
+Nicolas
+
