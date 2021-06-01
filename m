@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52B7EC4708F
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 16:27:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2AD1C47080
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 16:28:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C0615613C8
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 16:27:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C0615613C8
+	by mail.kernel.org (Postfix) with ESMTPS id 78EF461375
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 16:28:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 78EF461375
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5D47B16E5;
-	Tue,  1 Jun 2021 18:26:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D47B16E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id C64FC16E0;
+	Tue,  1 Jun 2021 18:27:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C64FC16E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622564863;
-	bh=wYBBhNXpK4iiSD2Ep5PdIX+jSL5eyKHUsOIup0Qr7rA=;
+	s=default; t=1622564897;
+	bh=H7O8ZrpSIMZCHAO7xg+mjTrB/WExa5vGbRhdS1i7do4=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TDK0Qb6OeCyTNMTWzv2g0o17nSY6g3Z2wmUhqBCwR6uWYO+ktHn8vuY346emxtMGW
-	 ffpVG460D31KZLrdNFBNMZKuwuSWg1VRVGiEc3SfZa2EufzjxFLJmlffDilzBjhO9N
-	 /aiAAmvl2DAaUp0RQX82rJvDLuek1Wc6oACdipE8=
+	b=TWQu3I64oR9CQoabrGHyv2k5epUqF2caFPTZZ9H8vfsKh7Q3pzAO3H24u57K92t31
+	 aGEpIQRKSG3pGJDK+qKrV0vIwhJegho5C6PuMs9DnWZb59x+cWArcDA7B9LFOMijCZ
+	 GM3S7hnFcZ285sdD01wiPd7iwODnxfrNcIOZArOo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DC77EF804CB;
-	Tue,  1 Jun 2021 18:25:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A3BFF804CC;
+	Tue,  1 Jun 2021 18:25:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 99ED5F8025B; Tue,  1 Jun 2021 18:25:14 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id D2228F804C3; Tue,  1 Jun 2021 18:25:14 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E89D0F802E7
+ by alsa1.perex.cz (Postfix) with ESMTPS id D904CF80253
  for <alsa-devel@alsa-project.org>; Tue,  1 Jun 2021 18:24:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E89D0F802E7
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D904CF80253
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="QuUYmSRz"; 
+ header.b="pdNlqkSP"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="sOmtYLYk"
+ header.b="mr02ufPg"
 Received: from relay2.suse.de (unknown [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id BD5891FD58
+ by smtp-out1.suse.de (Postfix) with ESMTP id 9A76121961
  for <alsa-devel@alsa-project.org>; Tue,  1 Jun 2021 16:24:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1622564698; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=sZD8j97SubT2o6prBLaEK8syMxFxCRQzWFe7mWPOoNE=;
- b=QuUYmSRzbiIKx8g+TTnxfCQ4GQMYaMuVAWwpVWruFmEGEV1BX9y+i/5Ty4iT/VRCOdmUcJ
- ed73x7penNedXEOfc10BwAt3Gu8WAY8fE2OKPYYcTUW5rTQC3NFPY8sQxEkQpz4aqHQGSc
- fjK2rNI/BGfpwe3U13emqTuADGK25N4=
+ bh=pvViDmprfGU02rol3x9WrN2xdF73SjXD0su7HbsJeks=;
+ b=pdNlqkSPm5EaB+hwy+TyNPdW7473zPQhWzxsaR1rajnPBH0wsONULQVUhlpAuqKZp/VK5Z
+ 4qlRrNJCmO8jh63KlLnKRVhMsMqmxs5+RgPBC2zNLKtMd6gRvet/yr7Ji8sSK31XkybBeA
+ fZyTHJHnkgvmvt8RwWFAczpOnTUuFrc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1622564698;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=sZD8j97SubT2o6prBLaEK8syMxFxCRQzWFe7mWPOoNE=;
- b=sOmtYLYkY4BO/e4JtlsJi91RQiwQyZdKbP0afkrA0PcEJwdqpaV9O5vDgY3y44JRUizQp/
- +9JWk/7ivLC9zdCg==
+ bh=pvViDmprfGU02rol3x9WrN2xdF73SjXD0su7HbsJeks=;
+ b=mr02ufPg4PYJehBXTM0f7OVF2mkOf1yCnkRNG2nSTTTWeNFGaInQlO1eEuPG1uysvGVOEE
+ bzRjO/jXfwgBMaCw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id AED57A3B88;
+ by relay2.suse.de (Postfix) with ESMTP id 8B273A3B87;
  Tue,  1 Jun 2021 16:24:58 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 4/5] ALSA: usb-audio: Factor out DSD bitrev copy function
-Date: Tue,  1 Jun 2021 18:24:56 +0200
-Message-Id: <20210601162457.4877-5-tiwai@suse.de>
+Subject: [PATCH 1/5] ALSA: usb-audio: Make snd_usb_pcm_delay() static
+Date: Tue,  1 Jun 2021 18:24:53 +0200
+Message-Id: <20210601162457.4877-2-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210601162457.4877-1-tiwai@suse.de>
 References: <20210601162457.4877-1-tiwai@suse.de>
@@ -97,60 +97,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Just minor code refactoring.  Like DOP DSD code, it can be better in a
-separate function for code readability.
+It's a local function, let's make it static.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/pcm.c | 28 +++++++++++++++++++---------
- 1 file changed, 19 insertions(+), 9 deletions(-)
+ sound/usb/pcm.c | 4 ++--
+ sound/usb/pcm.h | 3 ---
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 8ee45f2e8dce..e26d37365f02 100644
+index e5311b6bb3f6..359c759a7023 100644
 --- a/sound/usb/pcm.c
 +++ b/sound/usb/pcm.c
-@@ -1250,6 +1250,24 @@ static inline void fill_playback_urb_dsd_dop(struct snd_usb_substream *subs,
- 	urb_ctx_queue_advance(subs, urb, queued);
- }
+@@ -29,8 +29,8 @@
+ #define SUBSTREAM_FLAG_SYNC_EP_STARTED	1
  
-+/* copy bit-reversed bytes onto transfer buffer */
-+static void fill_playback_urb_dsd_bitrev(struct snd_usb_substream *subs,
-+					 struct urb *urb, unsigned int bytes)
-+{
-+	struct snd_pcm_runtime *runtime = subs->pcm_substream->runtime;
-+	const u8 *src = runtime->dma_area;
-+	u8 *buf = urb->transfer_buffer;
-+	int i, ofs = subs->hwptr_done;
-+
-+	for (i = 0; i < bytes; i++) {
-+		*buf++ = bitrev8(src[ofs]);
-+		if (++ofs >= subs->buffer_bytes)
-+			ofs = 0;
-+	}
-+
-+	urb_ctx_queue_advance(subs, urb, bytes);
-+}
-+
- static void copy_to_urb(struct snd_usb_substream *subs, struct urb *urb,
- 			int offset, int stride, unsigned int bytes)
+ /* return the estimated delay based on USB frame counters */
+-snd_pcm_uframes_t snd_usb_pcm_delay(struct snd_usb_substream *subs,
+-				    unsigned int rate)
++static snd_pcm_uframes_t snd_usb_pcm_delay(struct snd_usb_substream *subs,
++					   unsigned int rate)
  {
-@@ -1360,15 +1378,7 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
- 		fill_playback_urb_dsd_dop(subs, urb, bytes);
- 	} else if (unlikely(ep->cur_format == SNDRV_PCM_FORMAT_DSD_U8 &&
- 			   subs->cur_audiofmt->dsd_bitrev)) {
--		/* bit-reverse the bytes */
--		u8 *buf = urb->transfer_buffer;
--		for (i = 0; i < bytes; i++) {
--			int idx = (subs->hwptr_done + i) % subs->buffer_bytes;
+ 	int current_frame_number;
+ 	int frame_diff;
+diff --git a/sound/usb/pcm.h b/sound/usb/pcm.h
+index 06c586467d3f..493a4e34d78d 100644
+--- a/sound/usb/pcm.h
++++ b/sound/usb/pcm.h
+@@ -2,9 +2,6 @@
+ #ifndef __USBAUDIO_PCM_H
+ #define __USBAUDIO_PCM_H
+ 
+-snd_pcm_uframes_t snd_usb_pcm_delay(struct snd_usb_substream *subs,
+-				    unsigned int rate);
 -
--			buf[i] = bitrev8(runtime->dma_area[idx]);
--		}
--
--		urb_ctx_queue_advance(subs, urb, bytes);
-+		fill_playback_urb_dsd_bitrev(subs, urb, bytes);
- 	} else {
- 		/* usual PCM */
- 		if (!subs->tx_length_quirk)
+ void snd_usb_set_pcm_ops(struct snd_pcm *pcm, int stream);
+ int snd_usb_pcm_suspend(struct snd_usb_stream *as);
+ int snd_usb_pcm_resume(struct snd_usb_stream *as);
 -- 
 2.26.2
 
