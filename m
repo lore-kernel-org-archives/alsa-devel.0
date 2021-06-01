@@ -7,85 +7,84 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3372C4708F
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 11:37:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09DF8C47080
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 11:37:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C88E860E09
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 11:37:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C88E860E09
+	by mail.kernel.org (Postfix) with ESMTPS id 7879D60E09
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 11:37:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7879D60E09
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2A84616DF;
-	Tue,  1 Jun 2021 13:36:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A84616DF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 08CD716DD;
+	Tue,  1 Jun 2021 13:36:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08CD716DD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622547435;
-	bh=sA0XYXMkYYK4sOD2udlRWeO+d7WTe8qkEMth79q+xVo=;
+	s=default; t=1622547448;
+	bh=gxKBiqfR6ueYjP4+lksOEC/lC81teMM3puWQhAXyDCE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gaAxS8FiNjDIc4O6M4B1YRXmPayMNTv6oam8xvyy7o7aBKuvYwU8cs7uRdXHg/eDT
-	 m5JONxRSxUSd6QPJ6MniD1kuMiRxszDyG+f4JFRQVGOfgvlsqlC1OktX50LUDQWhoj
-	 BBG68DWM+V9nAwlV2oYMO0KPEVcvOFX2dQncQhSU=
+	b=H1SyS8lo+tpSKfdvc2/W1ivzqY86rfy0B5yN51SY+le4HJTIxg0rxrhWNNlGwUDw/
+	 RxzpyS3R6b4I/qmvlc6LNfPXCnRlDIhOgbYSCFrFuz3rM/jflrM/3SCZWVujx3V4D5
+	 DQY1sktpXahUc/6jHkjhNsZc5aGs5RVvaa0T7rnI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F874F804D8;
-	Tue,  1 Jun 2021 13:34:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BD983F804E0;
+	Tue,  1 Jun 2021 13:34:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3A944F804D1; Tue,  1 Jun 2021 13:34:54 +0200 (CEST)
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com
- [IPv6:2a00:1450:4864:20::52e])
+ id 3E06CF804DA; Tue,  1 Jun 2021 13:34:57 +0200 (CEST)
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com
+ [IPv6:2a00:1450:4864:20::52f])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 44B0FF80253
- for <alsa-devel@alsa-project.org>; Tue,  1 Jun 2021 13:34:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44B0FF80253
+ by alsa1.perex.cz (Postfix) with ESMTPS id 539BEF80269
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jun 2021 13:34:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 539BEF80269
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="PNosrBCQ"
-Received: by mail-ed1-x52e.google.com with SMTP id t3so16858321edc.7
- for <alsa-devel@alsa-project.org>; Tue, 01 Jun 2021 04:34:38 -0700 (PDT)
+ header.b="pCz/EjJ2"
+Received: by mail-ed1-x52f.google.com with SMTP id r11so16823214edt.13
+ for <alsa-devel@alsa-project.org>; Tue, 01 Jun 2021 04:34:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=D5XYnGgjQLfXAwzBqnvDeEJmpGJf7QdaLcq5EkqtCqY=;
- b=PNosrBCQRLUo6dKn9nGasmaMwqSwbeslJCsM39xm4BNCWB15AIYbT2A7Y5bebL1XeM
- XHRzHrYVmsHJ6ipFZ8WPiYxhPifCc8FECOxKBRrvqQnvQ40HZmaMtwCjCHUNwJABkvtV
- 2T9hfZfsgyuO+o1K6cZgPb6sPSkki8EPrA5TK2rDeIanCFhDhXoeBMvPIW7hoh6A2rcY
- GQkih+41BLRMWnPAAenywZVTIXO8rxOdNh7yyA/Vc03+nNl+zn1Jt/qBRKKSNaMow2LE
- qFtZlT8oVffayJN4mpagNvXCox6VFjrZo8GbVPSA8qPVaSe5vIwNXfzgCrE2z69LmR06
- GeAw==
+ bh=xuf1wr6iI6h7hkMR7dOm32UN9c3mMQu4RPGUBoXG9zI=;
+ b=pCz/EjJ28n1hDSmgVOI4Mp8r27en94S6yMxTqwmXu4iF3N/44NZ3dzaO/blfi7SOXL
+ mSvUe2YL8333RkkyvrPb4ZoBHqOhWQ5o/9LF+wYuBOUYQexQV9QTQjzVO+9ATH3jybkc
+ 5iZCV48vIJ5IeB+ESvsMOc9nJNYHRP3pGcOGagg2NtW6ZC/pvBS98z6foqqW3RjghLtr
+ nONfWZPZmzQ2lM69zCYeX++ntPxOPqyGx5iwF+jge4rMBhQzFlz7ALlob+xEsaD8EPzF
+ xcO12EyytZyoGWC2pg7zy/FE9cBCBxJ3tCUcAx6IcpFMscpwOc/iil77kWqLczvQbBL4
+ aivQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=D5XYnGgjQLfXAwzBqnvDeEJmpGJf7QdaLcq5EkqtCqY=;
- b=Ta+uOiYiPuhZArIxcUrHTB3xc84JM+XIPY6zmPIqn/xu/+RyNTKWcG9POt4JTaceQ8
- bDk2C2nq3boyxsymTq3bS0L5i7QVRI36zUpKnv7gpyjeJH3Uz7BFAXPzGq83JCh+MA+s
- p5wsZHKYJOcKECC4k9Xq/iypunvnsBaBQWu+HU/01gCyzRAc8mobmvL/9pewfy2HQMgN
- FlLytOpjYOxxassoHnVTspMbWyNLHNxwslINZHlU0ocuUd/IKvX2fyL4J4VKmH7h9Lxa
- Q2NVzDeFxT9B9H1jYEC2UhZwtR0Iudcw/BZV/lIkUL2ItTAt4/enmuXNORH2YjCoDXpM
- ilGw==
-X-Gm-Message-State: AOAM531EoWReAnK+55qrWYbrdvcMfimI+DOTjdvaUxbXrx2DneeZaDIZ
- fKmp/OQbDlPqymPZZ9By8JrhwQ==
-X-Google-Smtp-Source: ABdhPJwtkXMJnzAXNepSfv3dtKLc0ULE8AhiTr6wkxP02xyZwo/ou96NMRb1j27rCPvuz8DVPJl7OA==
-X-Received: by 2002:a05:6402:268f:: with SMTP id
- w15mr31271283edd.321.1622547277627; 
- Tue, 01 Jun 2021 04:34:37 -0700 (PDT)
+ bh=xuf1wr6iI6h7hkMR7dOm32UN9c3mMQu4RPGUBoXG9zI=;
+ b=SeR0SatItdLET8hzXC8wAdEeUqaoIWqrRhmmoDyWz5bxnxaK6WBoeRkQLXhsUvwrKJ
+ yzbgcBScp+jF7Fv2XyAOGGmzMJJTKIlSqAcZJxX3v18t81MNraDYZ1zVMXxPrAQ7Tzkx
+ 8KcBj8vwZZTFeZJMr4JqkDraOyYqE3KrJ5Ps//WmM+Pn2P3N1OabI6rh1jAMAW/hCAC0
+ ucjIax3O3oq2Mf8qhDtYLtlPzS+DeCtTwKP2vJB6TUMb1bqb/xh9GBkwT+ZSpTuvz5Os
+ XoNxWwqcu76kwsczzP6h7RDRGnPxuz4wqoqaiX/sKTFnDih9x8T6bN14D9U3n5I9s9wz
+ 6YHQ==
+X-Gm-Message-State: AOAM5302GaFixtwb3mqHeGzxBB1w20wYvRCb+cwpv6/ClYgBX4NfV4ue
+ MEALmau/vLUHKSffEUccnTPJ5g==
+X-Google-Smtp-Source: ABdhPJzrT+L4z84S2ILOsFM//uq8y+XMJodzGIk/qiq63x0Iq9k1ty8p9DvQJxX5JcTu+CJ24e+WEQ==
+X-Received: by 2002:a50:d589:: with SMTP id v9mr32720250edi.126.1622547281323; 
+ Tue, 01 Jun 2021 04:34:41 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id f10sm4729487edx.60.2021.06.01.04.34.36
+ by smtp.gmail.com with ESMTPSA id f10sm4729487edx.60.2021.06.01.04.34.40
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 01 Jun 2021 04:34:37 -0700 (PDT)
+ Tue, 01 Jun 2021 04:34:40 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH v8 2/9] ASoC: codecs: wcd-clsh: add new version support
-Date: Tue,  1 Jun 2021 12:31:51 +0100
-Message-Id: <20210601113158.16085-3-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v8 5/9] ASoC: codecs: wcd938x-sdw: add SoundWire driver
+Date: Tue,  1 Jun 2021 12:31:54 +0100
+Message-Id: <20210601113158.16085-6-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210601113158.16085-1-srinivas.kandagatla@linaro.org>
 References: <20210601113158.16085-1-srinivas.kandagatla@linaro.org>
@@ -108,520 +107,545 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From WCD937X Class H controller has changed significantly, so add support
-to this new version for WCD937X and WCD938X Codecs.
+This patch adds support to SoundWire devices on WCD9380/WCD9385 Codec
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/codecs/wcd-clsh-v2.c | 348 ++++++++++++++++++++++++++++++++-
- sound/soc/codecs/wcd-clsh-v2.h |  16 ++
- 2 files changed, 354 insertions(+), 10 deletions(-)
+ sound/soc/codecs/Kconfig       |   9 +
+ sound/soc/codecs/Makefile      |   2 +
+ sound/soc/codecs/wcd938x-sdw.c | 315 +++++++++++++++++++++++++++++++++
+ sound/soc/codecs/wcd938x.c     |  82 +++++++++
+ sound/soc/codecs/wcd938x.h     |  49 +++++
+ 5 files changed, 457 insertions(+)
+ create mode 100644 sound/soc/codecs/wcd938x-sdw.c
 
-diff --git a/sound/soc/codecs/wcd-clsh-v2.c b/sound/soc/codecs/wcd-clsh-v2.c
-index 817d8259758c..485d1932391a 100644
---- a/sound/soc/codecs/wcd-clsh-v2.c
-+++ b/sound/soc/codecs/wcd-clsh-v2.c
-@@ -88,6 +88,19 @@ struct wcd_clsh_ctrl {
- #define WCD9XXX_CLASSH_CTRL_CCL_1_DELTA_IPEAK_50MA	0x50
- #define WCD9XXX_CLASSH_CTRL_CCL_1_DELTA_IPEAK_30MA	0x30
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index f6ca59624e76..ab806a6057e0 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1548,6 +1548,15 @@ config SND_SOC_WCD934X
+ config SND_SOC_WCD938X
+ 	tristate
  
-+#define WCD9XXX_BASE_ADDRESS				0x3000
-+#define WCD9XXX_ANA_RX_SUPPLIES				(WCD9XXX_BASE_ADDRESS+0x008)
-+#define WCD9XXX_ANA_HPH					(WCD9XXX_BASE_ADDRESS+0x009)
-+#define WCD9XXX_CLASSH_MODE_2				(WCD9XXX_BASE_ADDRESS+0x098)
-+#define WCD9XXX_CLASSH_MODE_3				(WCD9XXX_BASE_ADDRESS+0x099)
-+#define WCD9XXX_FLYBACK_VNEG_CTRL_1			(WCD9XXX_BASE_ADDRESS+0x0A5)
-+#define WCD9XXX_FLYBACK_VNEG_CTRL_4			(WCD9XXX_BASE_ADDRESS+0x0A8)
-+#define WCD9XXX_FLYBACK_VNEGDAC_CTRL_2			(WCD9XXX_BASE_ADDRESS+0x0AF)
-+#define WCD9XXX_RX_BIAS_HPH_LOWPOWER			(WCD9XXX_BASE_ADDRESS+0x0BF)
-+#define WCD9XXX_V3_RX_BIAS_FLYB_BUFF			(WCD9XXX_BASE_ADDRESS+0x0C7)
-+#define WCD9XXX_HPH_PA_CTL1				(WCD9XXX_BASE_ADDRESS+0x0D1)
-+#define WCD9XXX_HPH_NEW_INT_PA_MISC2			(WCD9XXX_BASE_ADDRESS+0x138)
++config SND_SOC_WCD938X_SDW
++	tristate "WCD9380/WCD9385 Codec - SDW"
++	select SND_SOC_WCD938X
++	depends on SOUNDWIRE
++	select REGMAP_SOUNDWIRE
++	help
++	  The WCD9380/9385 is a audio codec IC Integrated in
++	  Qualcomm SoCs like SM8250.
 +
- #define CLSH_REQ_ENABLE		true
- #define CLSH_REQ_DISABLE	false
- #define WCD_USLEEP_RANGE	50
-@@ -137,6 +150,20 @@ static inline void wcd_clsh_set_buck_mode(struct snd_soc_component *comp,
- 					WCD9XXX_A_ANA_RX_VPOS_PWR_LVL_DEFAULT);
- }
+ config SND_SOC_WL1273
+ 	tristate
  
-+static void wcd_clsh_v3_set_buck_mode(struct snd_soc_component *component,
-+					  int mode)
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 444f60269b80..549f98f796ac 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -254,6 +254,7 @@ snd-soc-uda1380-objs := uda1380.o
+ snd-soc-wcd9335-objs := wcd-clsh-v2.o wcd9335.o
+ snd-soc-wcd934x-objs := wcd-clsh-v2.o wcd934x.o
+ snd-soc-wcd938x-objs := wcd938x.o wcd-clsh-v2.o
++snd-soc-wcd938x-sdw-objs := wcd938x-sdw.o
+ snd-soc-wl1273-objs := wl1273.o
+ snd-soc-wm-adsp-objs := wm_adsp.o
+ snd-soc-wm0010-objs := wm0010.o
+@@ -578,6 +579,7 @@ obj-$(CONFIG_SND_SOC_UDA1380)	+= snd-soc-uda1380.o
+ obj-$(CONFIG_SND_SOC_WCD9335)	+= snd-soc-wcd9335.o
+ obj-$(CONFIG_SND_SOC_WCD934X)	+= snd-soc-wcd934x.o
+ obj-$(CONFIG_SND_SOC_WCD938X)	+= snd-soc-wcd938x.o
++obj-$(CONFIG_SND_SOC_WCD938X_SDW) += snd-soc-wcd938x-sdw.o
+ obj-$(CONFIG_SND_SOC_WL1273)	+= snd-soc-wl1273.o
+ obj-$(CONFIG_SND_SOC_WM0010)	+= snd-soc-wm0010.o
+ obj-$(CONFIG_SND_SOC_WM1250_EV1) += snd-soc-wm1250-ev1.o
+diff --git a/sound/soc/codecs/wcd938x-sdw.c b/sound/soc/codecs/wcd938x-sdw.c
+new file mode 100644
+index 000000000000..d82c40ec6898
+--- /dev/null
++++ b/sound/soc/codecs/wcd938x-sdw.c
+@@ -0,0 +1,315 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2021, Linaro Limited
++
++#include <linux/module.h>
++#include <linux/slab.h>
++#include <linux/platform_device.h>
++#include <linux/device.h>
++#include <linux/kernel.h>
++#include <linux/component.h>
++#include <sound/soc.h>
++#include <linux/pm_runtime.h>
++#include <linux/irqdomain.h>
++#include <linux/of.h>
++#include <linux/soundwire/sdw.h>
++#include <linux/soundwire/sdw_type.h>
++#include <linux/soundwire/sdw_registers.h>
++#include <linux/regmap.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include "wcd938x.h"
++
++#define SWRS_SCP_HOST_CLK_DIV2_CTL_BANK(m) (0xE0 + 0x10 * (m))
++
++static struct wcd938x_sdw_ch_info wcd938x_sdw_rx_ch_info[] = {
++	WCD_SDW_CH(WCD938X_HPH_L, WCD938X_HPH_PORT, BIT(0)),
++	WCD_SDW_CH(WCD938X_HPH_R, WCD938X_HPH_PORT, BIT(1)),
++	WCD_SDW_CH(WCD938X_CLSH, WCD938X_CLSH_PORT, BIT(0)),
++	WCD_SDW_CH(WCD938X_COMP_L, WCD938X_COMP_PORT, BIT(0)),
++	WCD_SDW_CH(WCD938X_COMP_R, WCD938X_COMP_PORT, BIT(1)),
++	WCD_SDW_CH(WCD938X_LO, WCD938X_LO_PORT, BIT(0)),
++	WCD_SDW_CH(WCD938X_DSD_L, WCD938X_DSD_PORT, BIT(0)),
++	WCD_SDW_CH(WCD938X_DSD_R, WCD938X_DSD_PORT, BIT(1)),
++};
++
++static struct wcd938x_sdw_ch_info wcd938x_sdw_tx_ch_info[] = {
++	WCD_SDW_CH(WCD938X_ADC1, WCD938X_ADC_1_2_PORT, BIT(0)),
++	WCD_SDW_CH(WCD938X_ADC2, WCD938X_ADC_1_2_PORT, BIT(1)),
++	WCD_SDW_CH(WCD938X_ADC3, WCD938X_ADC_3_4_PORT, BIT(0)),
++	WCD_SDW_CH(WCD938X_ADC4, WCD938X_ADC_3_4_PORT, BIT(1)),
++	WCD_SDW_CH(WCD938X_DMIC0, WCD938X_DMIC_0_3_MBHC_PORT, BIT(0)),
++	WCD_SDW_CH(WCD938X_DMIC1, WCD938X_DMIC_0_3_MBHC_PORT, BIT(1)),
++	WCD_SDW_CH(WCD938X_MBHC, WCD938X_DMIC_0_3_MBHC_PORT, BIT(2)),
++	WCD_SDW_CH(WCD938X_DMIC2, WCD938X_DMIC_0_3_MBHC_PORT, BIT(2)),
++	WCD_SDW_CH(WCD938X_DMIC3, WCD938X_DMIC_0_3_MBHC_PORT, BIT(3)),
++	WCD_SDW_CH(WCD938X_DMIC4, WCD938X_DMIC_4_7_PORT, BIT(0)),
++	WCD_SDW_CH(WCD938X_DMIC5, WCD938X_DMIC_4_7_PORT, BIT(1)),
++	WCD_SDW_CH(WCD938X_DMIC6, WCD938X_DMIC_4_7_PORT, BIT(2)),
++	WCD_SDW_CH(WCD938X_DMIC7, WCD938X_DMIC_4_7_PORT, BIT(3)),
++};
++
++static struct sdw_dpn_prop wcd938x_dpn_prop[WCD938X_MAX_SWR_PORTS] = {
++	{
++		.num = 1,
++		.type = SDW_DPN_SIMPLE,
++		.min_ch = 1,
++		.max_ch = 8,
++		.simple_ch_prep_sm = true,
++	}, {
++		.num = 2,
++		.type = SDW_DPN_SIMPLE,
++		.min_ch = 1,
++		.max_ch = 4,
++		.simple_ch_prep_sm = true,
++	}, {
++		.num = 3,
++		.type = SDW_DPN_SIMPLE,
++		.min_ch = 1,
++		.max_ch = 4,
++		.simple_ch_prep_sm = true,
++	}, {
++		.num = 4,
++		.type = SDW_DPN_SIMPLE,
++		.min_ch = 1,
++		.max_ch = 4,
++		.simple_ch_prep_sm = true,
++	}, {
++		.num = 5,
++		.type = SDW_DPN_SIMPLE,
++		.min_ch = 1,
++		.max_ch = 4,
++		.simple_ch_prep_sm = true,
++	}
++};
++
++struct device *wcd938x_sdw_device_get(struct device_node *np)
 +{
-+	if (mode == CLS_H_HIFI || mode == CLS_H_LOHIFI ||
-+	    mode == CLS_AB_HIFI || mode == CLS_AB_LOHIFI)
-+		snd_soc_component_update_bits(component,
-+				WCD9XXX_ANA_RX_SUPPLIES,
-+				0x08, 0x08); /* set to HIFI */
++	return bus_find_device_by_of_node(&sdw_bus_type, np);
++
++}
++EXPORT_SYMBOL_GPL(wcd938x_sdw_device_get);
++
++int wcd938x_swr_get_current_bank(struct sdw_slave *sdev)
++{
++	int bank;
++
++	bank  = sdw_read(sdev, SDW_SCP_CTRL);
++
++	return ((bank & 0x40) ? 1 : 0);
++}
++EXPORT_SYMBOL_GPL(wcd938x_swr_get_current_bank);
++
++int wcd938x_sdw_hw_params(struct wcd938x_sdw_priv *wcd,
++			  struct snd_pcm_substream *substream,
++			  struct snd_pcm_hw_params *params,
++			  struct snd_soc_dai *dai)
++{
++	struct sdw_port_config port_config[WCD938X_MAX_SWR_PORTS];
++	unsigned long ch_mask;
++	int i, j;
++
++	wcd->sconfig.ch_count = 1;
++	wcd->active_ports = 0;
++	for (i = 0; i < WCD938X_MAX_SWR_PORTS; i++) {
++		ch_mask = wcd->port_config[i].ch_mask;
++
++		if (!ch_mask)
++			continue;
++
++		for_each_set_bit(j, &ch_mask, 4)
++			wcd->sconfig.ch_count++;
++
++		port_config[wcd->active_ports] = wcd->port_config[i];
++		wcd->active_ports++;
++	}
++
++	wcd->sconfig.bps = 1;
++	wcd->sconfig.frame_rate =  params_rate(params);
++	if (wcd->is_tx)
++		wcd->sconfig.direction = SDW_DATA_DIR_TX;
 +	else
-+		snd_soc_component_update_bits(component,
-+				WCD9XXX_ANA_RX_SUPPLIES,
-+				0x08, 0x00); /* set to default */
++		wcd->sconfig.direction = SDW_DATA_DIR_RX;
++
++	wcd->sconfig.type = SDW_STREAM_PCM;
++
++	return sdw_stream_add_slave(wcd->sdev, &wcd->sconfig,
++				    &port_config[0], wcd->active_ports,
++				    wcd->sruntime);
++}
++EXPORT_SYMBOL_GPL(wcd938x_sdw_hw_params);
++
++int wcd938x_sdw_free(struct wcd938x_sdw_priv *wcd,
++		     struct snd_pcm_substream *substream,
++		     struct snd_soc_dai *dai)
++{
++	sdw_stream_remove_slave(wcd->sdev, wcd->sruntime);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(wcd938x_sdw_free);
++
++int wcd938x_sdw_set_sdw_stream(struct wcd938x_sdw_priv *wcd,
++			       struct snd_soc_dai *dai,
++			       void *stream, int direction)
++{
++	wcd->sruntime = stream;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(wcd938x_sdw_set_sdw_stream);
++
++static int wcd9380_update_status(struct sdw_slave *slave,
++				 enum sdw_slave_status status)
++{
++	return 0;
 +}
 +
- static inline void wcd_clsh_set_flyback_mode(struct snd_soc_component *comp,
- 					     int mode)
- {
-@@ -170,6 +197,36 @@ static void wcd_clsh_buck_ctrl(struct wcd_clsh_ctrl *ctrl,
- 	usleep_range(500, 500 + WCD_USLEEP_RANGE);
- }
- 
-+static void wcd_clsh_v3_buck_ctrl(struct snd_soc_component *component,
-+			       struct wcd_clsh_ctrl *ctrl,
-+			       int mode,
-+			       bool enable)
++static int wcd9380_bus_config(struct sdw_slave *slave,
++			      struct sdw_bus_params *params)
 +{
-+	/* enable/disable buck */
-+	if ((enable && (++ctrl->buck_users == 1)) ||
-+	   (!enable && (--ctrl->buck_users == 0))) {
-+		snd_soc_component_update_bits(component,
-+				WCD9XXX_ANA_RX_SUPPLIES,
-+				(1 << 7), (enable << 7));
-+		/*
-+		 * 500us sleep is required after buck enable/disable
-+		 * as per HW requirement
-+		 */
-+		usleep_range(500, 510);
-+		if (mode == CLS_H_LOHIFI || mode == CLS_H_ULP ||
-+			mode == CLS_H_HIFI || mode == CLS_H_LP)
-+			snd_soc_component_update_bits(component,
-+					WCD9XXX_CLASSH_MODE_3,
-+					0x02, 0x00);
++	sdw_write(slave, SWRS_SCP_HOST_CLK_DIV2_CTL_BANK(params->next_bank),  0x01);
 +
-+		snd_soc_component_update_bits(component,
-+					WCD9XXX_CLASSH_MODE_2,
-+					0xFF, 0x3A);
-+		/* 500usec delay is needed as per HW requirement */
-+		usleep_range(500, 500 + WCD_USLEEP_RANGE);
-+	}
++	return 0;
 +}
 +
- static void wcd_clsh_flyback_ctrl(struct wcd_clsh_ctrl *ctrl,
- 				  int mode,
- 				  bool enable)
-@@ -219,8 +276,7 @@ static void wcd_clsh_set_gain_path(struct wcd_clsh_ctrl *ctrl, int mode)
- 					val);
- }
- 
--static void wcd_clsh_set_hph_mode(struct snd_soc_component *comp,
--				  int mode)
-+static void wcd_clsh_v2_set_hph_mode(struct snd_soc_component *comp, int mode)
- {
- 	int val = 0, gain = 0, res_val;
- 	int ipeak = WCD9XXX_CLASSH_CTRL_CCL_1_DELTA_IPEAK_50MA;
-@@ -264,6 +320,48 @@ static void wcd_clsh_set_hph_mode(struct snd_soc_component *comp,
- 				ipeak);
- }
- 
-+static void wcd_clsh_v3_set_hph_mode(struct snd_soc_component *component,
-+				  int mode)
++static int wcd9380_interrupt_callback(struct sdw_slave *slave,
++				      struct sdw_slave_intr_status *status)
 +{
-+	u8 val;
++	struct wcd938x_sdw_priv *wcd = dev_get_drvdata(&slave->dev);
 +
-+	switch (mode) {
-+	case CLS_H_NORMAL:
-+		val = 0x00;
-+		break;
-+	case CLS_AB:
-+	case CLS_H_ULP:
-+		val = 0x0C;
-+		break;
-+	case CLS_AB_HIFI:
-+	case CLS_H_HIFI:
-+		val = 0x08;
-+		break;
-+	case CLS_H_LP:
-+	case CLS_H_LOHIFI:
-+	case CLS_AB_LP:
-+	case CLS_AB_LOHIFI:
-+		val = 0x04;
-+		break;
-+	default:
-+		dev_err(component->dev, "%s:Invalid mode %d\n", __func__, mode);
-+		return;
-+	};
-+
-+	snd_soc_component_update_bits(component, WCD9XXX_ANA_HPH, 0x0C, val);
++	return wcd938x_handle_sdw_irq(wcd);
 +}
 +
-+void wcd_clsh_set_hph_mode(struct wcd_clsh_ctrl *ctrl, int mode)
++static struct sdw_slave_ops wcd9380_slave_ops = {
++	.update_status = wcd9380_update_status,
++	.interrupt_callback = wcd9380_interrupt_callback,
++	.bus_config = wcd9380_bus_config,
++};
++
++static int wcd938x_sdw_component_bind(struct device *dev,
++				      struct device *master, void *data)
 +{
-+	struct snd_soc_component *comp = ctrl->comp;
-+
-+	if (ctrl->codec_version >= WCD937X)
-+		wcd_clsh_v3_set_hph_mode(comp, mode);
-+	else
-+		wcd_clsh_v2_set_hph_mode(comp, mode);
-+
++	return 0;
 +}
 +
- static void wcd_clsh_set_flyback_current(struct snd_soc_component *comp,
- 					 int mode)
- {
-@@ -289,6 +387,130 @@ static void wcd_clsh_set_buck_regulator_mode(struct snd_soc_component *comp,
- 					WCD9XXX_A_ANA_RX_REGULATOR_MODE_CLS_H);
- }
- 
-+static void wcd_clsh_v3_set_buck_regulator_mode(struct snd_soc_component *component,
-+						int mode)
++static void wcd938x_sdw_component_unbind(struct device *dev,
++					 struct device *master, void *data)
 +{
-+	snd_soc_component_update_bits(component, WCD9XXX_ANA_RX_SUPPLIES,
-+			    0x02, 0x00);
 +}
 +
-+static void wcd_clsh_v3_set_flyback_mode(struct snd_soc_component *component,
-+						int mode)
++static const struct component_ops wcd938x_sdw_component_ops = {
++	.bind   = wcd938x_sdw_component_bind,
++	.unbind = wcd938x_sdw_component_unbind,
++};
++
++static int wcd9380_probe(struct sdw_slave *pdev,
++			 const struct sdw_device_id *id)
 +{
-+	if (mode == CLS_H_HIFI || mode == CLS_H_LOHIFI ||
-+	    mode == CLS_AB_HIFI || mode == CLS_AB_LOHIFI) {
-+		snd_soc_component_update_bits(component,
-+				WCD9XXX_ANA_RX_SUPPLIES,
-+				0x04, 0x04);
-+		snd_soc_component_update_bits(component,
-+				WCD9XXX_FLYBACK_VNEG_CTRL_4,
-+				0xF0, 0x80);
++	struct device *dev = &pdev->dev;
++	struct wcd938x_sdw_priv *wcd;
++	int ret;
++
++	wcd = devm_kzalloc(dev, sizeof(*wcd), GFP_KERNEL);
++	if (!wcd)
++		return -ENOMEM;
++
++	/**
++	 * Port map index starts with 0, however the data port for this codec
++	 * are from index 1
++	 */
++	if (of_property_read_bool(dev->of_node, "qcom,tx-port-mapping")) {
++		wcd->is_tx = true;
++		ret = of_property_read_u32_array(dev->of_node, "qcom,tx-port-mapping",
++						 &pdev->m_port_map[1],
++						 WCD938X_MAX_TX_SWR_PORTS);
 +	} else {
-+		snd_soc_component_update_bits(component,
-+				WCD9XXX_ANA_RX_SUPPLIES,
-+				0x04, 0x00); /* set to Default */
-+		snd_soc_component_update_bits(component,
-+				WCD9XXX_FLYBACK_VNEG_CTRL_4,
-+				0xF0, 0x70);
++		ret = of_property_read_u32_array(dev->of_node, "qcom,rx-port-mapping",
++						 &pdev->m_port_map[1],
++						 WCD938X_MAX_SWR_PORTS);
 +	}
-+}
 +
-+static void wcd_clsh_v3_force_iq_ctl(struct snd_soc_component *component,
-+					 int mode, bool enable)
-+{
-+	if (enable) {
-+		snd_soc_component_update_bits(component,
-+				WCD9XXX_FLYBACK_VNEGDAC_CTRL_2,
-+				0xE0, 0xA0);
-+		/* 100usec delay is needed as per HW requirement */
-+		usleep_range(100, 110);
-+		snd_soc_component_update_bits(component,
-+				WCD9XXX_CLASSH_MODE_3,
-+				0x02, 0x02);
-+		snd_soc_component_update_bits(component,
-+				WCD9XXX_CLASSH_MODE_2,
-+				0xFF, 0x1C);
-+		if (mode == CLS_H_LOHIFI || mode == CLS_AB_LOHIFI) {
-+			snd_soc_component_update_bits(component,
-+					WCD9XXX_HPH_NEW_INT_PA_MISC2,
-+					0x20, 0x20);
-+			snd_soc_component_update_bits(component,
-+					WCD9XXX_RX_BIAS_HPH_LOWPOWER,
-+					0xF0, 0xC0);
-+			snd_soc_component_update_bits(component,
-+					WCD9XXX_HPH_PA_CTL1,
-+					0x0E, 0x02);
-+		}
++	if (ret < 0)
++		dev_info(dev, "Static Port mapping not specified\n");
++
++	wcd->sdev = pdev;
++	dev_set_drvdata(dev, wcd);
++
++	pdev->prop.scp_int1_mask = SDW_SCP_INT1_IMPL_DEF |
++					SDW_SCP_INT1_BUS_CLASH |
++					SDW_SCP_INT1_PARITY;
++	pdev->prop.lane_control_support = true;
++	if (wcd->is_tx) {
++		struct regmap *rm;
++
++		pdev->prop.source_ports = GENMASK(WCD938X_MAX_SWR_PORTS, 0);
++		pdev->prop.src_dpn_prop = wcd938x_dpn_prop;
++		wcd->ch_info = &wcd938x_sdw_tx_ch_info[0];
++		pdev->prop.wake_capable = true;
++
++		rm = devm_regmap_init_sdw(pdev, &wcd938x_regmap_config);
++		if (IS_ERR(rm))
++			return PTR_ERR(rm);
 +	} else {
-+		snd_soc_component_update_bits(component,
-+				WCD9XXX_HPH_NEW_INT_PA_MISC2,
-+				0x20, 0x00);
-+		snd_soc_component_update_bits(component,
-+				WCD9XXX_RX_BIAS_HPH_LOWPOWER,
-+				0xF0, 0x80);
-+		snd_soc_component_update_bits(component,
-+				WCD9XXX_HPH_PA_CTL1,
-+				0x0E, 0x06);
++		pdev->prop.sink_ports = GENMASK(WCD938X_MAX_SWR_PORTS, 0);
++		pdev->prop.sink_dpn_prop = wcd938x_dpn_prop;
++		wcd->ch_info = &wcd938x_sdw_rx_ch_info[0];
 +	}
++
++	pm_runtime_set_autosuspend_delay(dev, 3000);
++	pm_runtime_use_autosuspend(dev);
++	pm_runtime_mark_last_busy(dev);
++	pm_runtime_set_active(dev);
++	pm_runtime_enable(dev);
++
++	return component_add(dev, &wcd938x_sdw_component_ops);
 +}
 +
-+static void wcd_clsh_v3_flyback_ctrl(struct snd_soc_component *component,
-+				  struct wcd_clsh_ctrl *ctrl,
-+				  int mode,
-+				  bool enable)
++static const struct sdw_device_id wcd9380_slave_id[] = {
++	SDW_SLAVE_ENTRY(0x0217, 0x10d, 0),
++	{},
++};
++MODULE_DEVICE_TABLE(sdw, wcd9380_slave_id);
++
++static int __maybe_unused wcd938x_sdw_runtime_suspend(struct device *dev)
 +{
-+	/* enable/disable flyback */
-+	if ((enable && (++ctrl->flyback_users == 1)) ||
-+	   (!enable && (--ctrl->flyback_users == 0))) {
-+		snd_soc_component_update_bits(component,
-+				WCD9XXX_FLYBACK_VNEG_CTRL_1,
-+				0xE0, 0xE0);
-+		snd_soc_component_update_bits(component,
-+				WCD9XXX_ANA_RX_SUPPLIES,
-+				(1 << 6), (enable << 6));
-+		/*
-+		 * 100us sleep is required after flyback enable/disable
-+		 * as per HW requirement
-+		 */
-+		usleep_range(100, 110);
-+		snd_soc_component_update_bits(component,
-+				WCD9XXX_FLYBACK_VNEGDAC_CTRL_2,
-+				0xE0, 0xE0);
-+		/* 500usec delay is needed as per HW requirement */
-+		usleep_range(500, 500 + WCD_USLEEP_RANGE);
++	struct regmap *regmap = dev_get_regmap(dev, NULL);
++
++	if (regmap) {
++		regcache_cache_only(regmap, true);
++		regcache_mark_dirty(regmap);
 +	}
++	return 0;
 +}
 +
-+static void wcd_clsh_v3_set_flyback_current(struct snd_soc_component *component,
-+				int mode)
++static int __maybe_unused wcd938x_sdw_runtime_resume(struct device *dev)
 +{
-+	snd_soc_component_update_bits(component, WCD9XXX_V3_RX_BIAS_FLYB_BUFF,
-+				0x0F, 0x0A);
-+	snd_soc_component_update_bits(component, WCD9XXX_V3_RX_BIAS_FLYB_BUFF,
-+				0xF0, 0xA0);
-+	/* Sleep needed to avoid click and pop as per HW requirement */
-+	usleep_range(100, 110);
-+}
++	struct regmap *regmap = dev_get_regmap(dev, NULL);
 +
-+static void wcd_clsh_v3_state_aux(struct wcd_clsh_ctrl *ctrl, int req_state,
-+			      bool is_enable, int mode)
-+{
-+	struct snd_soc_component *component = ctrl->comp;
-+
-+	if (is_enable) {
-+		wcd_clsh_v3_set_buck_mode(component, mode);
-+		wcd_clsh_v3_set_flyback_mode(component, mode);
-+		wcd_clsh_v3_flyback_ctrl(component, ctrl, mode, true);
-+		wcd_clsh_v3_set_flyback_current(component, mode);
-+		wcd_clsh_v3_buck_ctrl(component, ctrl, mode, true);
-+	} else {
-+		wcd_clsh_v3_buck_ctrl(component, ctrl, mode, false);
-+		wcd_clsh_v3_flyback_ctrl(component, ctrl, mode, false);
-+		wcd_clsh_v3_set_flyback_mode(component, CLS_H_NORMAL);
-+		wcd_clsh_v3_set_buck_mode(component, CLS_H_NORMAL);
++	if (regmap) {
++		regcache_cache_only(regmap, false);
++		regcache_sync(regmap);
 +	}
++
++	pm_runtime_mark_last_busy(dev);
++
++	return 0;
 +}
 +
- static void wcd_clsh_state_lo(struct wcd_clsh_ctrl *ctrl, int req_state,
- 			      bool is_enable, int mode)
- {
-@@ -316,6 +538,38 @@ static void wcd_clsh_state_lo(struct wcd_clsh_ctrl *ctrl, int req_state,
- 	}
++static const struct dev_pm_ops wcd938x_sdw_pm_ops = {
++	SET_RUNTIME_PM_OPS(wcd938x_sdw_runtime_suspend, wcd938x_sdw_runtime_resume, NULL)
++};
++
++
++static struct sdw_driver wcd9380_codec_driver = {
++	.probe	= wcd9380_probe,
++	.ops = &wcd9380_slave_ops,
++	.id_table = wcd9380_slave_id,
++	.driver = {
++		.name	= "wcd9380-codec",
++		.pm = &wcd938x_sdw_pm_ops,
++	}
++};
++module_sdw_driver(wcd9380_codec_driver);
++
++MODULE_DESCRIPTION("WCD938X SDW codec driver");
++MODULE_LICENSE("GPL");
+diff --git a/sound/soc/codecs/wcd938x.c b/sound/soc/codecs/wcd938x.c
+index 6b8ee9971945..6400ff7347d4 100644
+--- a/sound/soc/codecs/wcd938x.c
++++ b/sound/soc/codecs/wcd938x.c
+@@ -1514,7 +1514,39 @@ int wcd938x_handle_sdw_irq(struct wcd938x_sdw_priv *wcd)
  }
+ EXPORT_SYMBOL_GPL(wcd938x_handle_sdw_irq);
  
-+static void wcd_clsh_v3_state_hph_r(struct wcd_clsh_ctrl *ctrl, int req_state,
-+				 bool is_enable, int mode)
++static int wcd938x_codec_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params,
++				struct snd_soc_dai *dai)
 +{
-+	struct snd_soc_component *component = ctrl->comp;
++	struct wcd938x_priv *wcd938x = dev_get_drvdata(dai->dev);
++	struct wcd938x_sdw_priv *wcd = wcd938x->sdw_priv[dai->id];
 +
-+	if (mode == CLS_H_NORMAL) {
-+		dev_dbg(component->dev, "%s: Normal mode not applicable for hph_r\n",
-+			__func__);
-+		return;
-+	}
-+
-+	if (is_enable) {
-+		wcd_clsh_v3_set_buck_regulator_mode(component, mode);
-+		wcd_clsh_v3_set_flyback_mode(component, mode);
-+		wcd_clsh_v3_force_iq_ctl(component, mode, true);
-+		wcd_clsh_v3_flyback_ctrl(component, ctrl, mode, true);
-+		wcd_clsh_v3_set_flyback_current(component, mode);
-+		wcd_clsh_v3_set_buck_mode(component, mode);
-+		wcd_clsh_v3_buck_ctrl(component, ctrl, mode, true);
-+		wcd_clsh_v3_set_hph_mode(component, mode);
-+	} else {
-+		wcd_clsh_v3_set_hph_mode(component, CLS_H_NORMAL);
-+
-+		/* buck and flyback set to default mode and disable */
-+		wcd_clsh_v3_flyback_ctrl(component, ctrl, CLS_H_NORMAL, false);
-+		wcd_clsh_v3_buck_ctrl(component, ctrl, CLS_H_NORMAL, false);
-+		wcd_clsh_v3_force_iq_ctl(component, CLS_H_NORMAL, false);
-+		wcd_clsh_v3_set_flyback_mode(component, CLS_H_NORMAL);
-+		wcd_clsh_v3_set_buck_mode(component, CLS_H_NORMAL);
-+	}
++	return wcd938x_sdw_hw_params(wcd, substream, params, dai);
 +}
 +
- static void wcd_clsh_state_hph_r(struct wcd_clsh_ctrl *ctrl, int req_state,
- 				 bool is_enable, int mode)
- {
-@@ -353,10 +607,10 @@ static void wcd_clsh_state_hph_r(struct wcd_clsh_ctrl *ctrl, int req_state,
- 		wcd_clsh_set_flyback_current(comp, mode);
- 		wcd_clsh_set_buck_mode(comp, mode);
- 		wcd_clsh_buck_ctrl(ctrl, mode, true);
--		wcd_clsh_set_hph_mode(comp, mode);
-+		wcd_clsh_v2_set_hph_mode(comp, mode);
- 		wcd_clsh_set_gain_path(ctrl, mode);
- 	} else {
--		wcd_clsh_set_hph_mode(comp, CLS_H_NORMAL);
-+		wcd_clsh_v2_set_hph_mode(comp, CLS_H_NORMAL);
- 
- 		if (mode != CLS_AB) {
- 			snd_soc_component_update_bits(comp,
-@@ -374,6 +628,38 @@ static void wcd_clsh_state_hph_r(struct wcd_clsh_ctrl *ctrl, int req_state,
- 	}
- }
- 
-+static void wcd_clsh_v3_state_hph_l(struct wcd_clsh_ctrl *ctrl, int req_state,
-+				 bool is_enable, int mode)
++static int wcd938x_codec_free(struct snd_pcm_substream *substream,
++			      struct snd_soc_dai *dai)
 +{
-+	struct snd_soc_component *component = ctrl->comp;
++	struct wcd938x_priv *wcd938x = dev_get_drvdata(dai->dev);
++	struct wcd938x_sdw_priv *wcd = wcd938x->sdw_priv[dai->id];
 +
-+	if (mode == CLS_H_NORMAL) {
-+		dev_dbg(component->dev, "%s: Normal mode not applicable for hph_l\n",
-+			__func__);
-+		return;
-+	}
-+
-+	if (is_enable) {
-+		wcd_clsh_v3_set_buck_regulator_mode(component, mode);
-+		wcd_clsh_v3_set_flyback_mode(component, mode);
-+		wcd_clsh_v3_force_iq_ctl(component, mode, true);
-+		wcd_clsh_v3_flyback_ctrl(component, ctrl, mode, true);
-+		wcd_clsh_v3_set_flyback_current(component, mode);
-+		wcd_clsh_v3_set_buck_mode(component, mode);
-+		wcd_clsh_v3_buck_ctrl(component, ctrl, mode, true);
-+		wcd_clsh_v3_set_hph_mode(component, mode);
-+	} else {
-+		wcd_clsh_v3_set_hph_mode(component, CLS_H_NORMAL);
-+
-+		/* set buck and flyback to Default Mode */
-+		wcd_clsh_v3_flyback_ctrl(component, ctrl, CLS_H_NORMAL, false);
-+		wcd_clsh_v3_buck_ctrl(component, ctrl, CLS_H_NORMAL, false);
-+		wcd_clsh_v3_force_iq_ctl(component, CLS_H_NORMAL, false);
-+		wcd_clsh_v3_set_flyback_mode(component, CLS_H_NORMAL);
-+		wcd_clsh_v3_set_buck_mode(component, CLS_H_NORMAL);
-+	}
++	return wcd938x_sdw_free(wcd, substream, dai);
 +}
 +
- static void wcd_clsh_state_hph_l(struct wcd_clsh_ctrl *ctrl, int req_state,
- 				 bool is_enable, int mode)
- {
-@@ -411,10 +697,10 @@ static void wcd_clsh_state_hph_l(struct wcd_clsh_ctrl *ctrl, int req_state,
- 		wcd_clsh_set_flyback_current(comp, mode);
- 		wcd_clsh_set_buck_mode(comp, mode);
- 		wcd_clsh_buck_ctrl(ctrl, mode, true);
--		wcd_clsh_set_hph_mode(comp, mode);
-+		wcd_clsh_v2_set_hph_mode(comp, mode);
- 		wcd_clsh_set_gain_path(ctrl, mode);
- 	} else {
--		wcd_clsh_set_hph_mode(comp, CLS_H_NORMAL);
-+		wcd_clsh_v2_set_hph_mode(comp, CLS_H_NORMAL);
- 
- 		if (mode != CLS_AB) {
- 			snd_soc_component_update_bits(comp,
-@@ -432,6 +718,32 @@ static void wcd_clsh_state_hph_l(struct wcd_clsh_ctrl *ctrl, int req_state,
- 	}
- }
- 
-+static void wcd_clsh_v3_state_ear(struct wcd_clsh_ctrl *ctrl, int req_state,
-+			       bool is_enable, int mode)
++static int wcd938x_codec_set_sdw_stream(struct snd_soc_dai *dai,
++				  void *stream, int direction)
 +{
-+	struct snd_soc_component *component = ctrl->comp;
++	struct wcd938x_priv *wcd938x = dev_get_drvdata(dai->dev);
++	struct wcd938x_sdw_priv *wcd = wcd938x->sdw_priv[dai->id];
 +
-+	if (is_enable) {
-+		wcd_clsh_v3_set_buck_regulator_mode(component, mode);
-+		wcd_clsh_v3_set_flyback_mode(component, mode);
-+		wcd_clsh_v3_force_iq_ctl(component, mode, true);
-+		wcd_clsh_v3_flyback_ctrl(component, ctrl, mode, true);
-+		wcd_clsh_v3_set_flyback_current(component, mode);
-+		wcd_clsh_v3_set_buck_mode(component, mode);
-+		wcd_clsh_v3_buck_ctrl(component, ctrl, mode, true);
-+		wcd_clsh_v3_set_hph_mode(component, mode);
-+	} else {
-+		wcd_clsh_v3_set_hph_mode(component, CLS_H_NORMAL);
++	return wcd938x_sdw_set_sdw_stream(wcd, dai, stream, direction);
 +
-+		/* set buck and flyback to Default Mode */
-+		wcd_clsh_v3_flyback_ctrl(component, ctrl, CLS_H_NORMAL, false);
-+		wcd_clsh_v3_buck_ctrl(component, ctrl, CLS_H_NORMAL, false);
-+		wcd_clsh_v3_force_iq_ctl(component, CLS_H_NORMAL, false);
-+		wcd_clsh_v3_set_flyback_mode(component, CLS_H_NORMAL);
-+		wcd_clsh_v3_set_buck_mode(component, CLS_H_NORMAL);
-+	}
 +}
 +
- static void wcd_clsh_state_ear(struct wcd_clsh_ctrl *ctrl, int req_state,
- 			       bool is_enable, int mode)
- {
-@@ -472,16 +784,30 @@ static int _wcd_clsh_ctrl_set_state(struct wcd_clsh_ctrl *ctrl, int req_state,
- {
- 	switch (req_state) {
- 	case WCD_CLSH_STATE_EAR:
--		wcd_clsh_state_ear(ctrl, req_state, is_enable, mode);
-+		if (ctrl->codec_version >= WCD937X)
-+			wcd_clsh_v3_state_ear(ctrl, req_state, is_enable, mode);
-+		else
-+			wcd_clsh_state_ear(ctrl, req_state, is_enable, mode);
- 		break;
- 	case WCD_CLSH_STATE_HPHL:
--		wcd_clsh_state_hph_l(ctrl, req_state, is_enable, mode);
-+		if (ctrl->codec_version >= WCD937X)
-+			wcd_clsh_v3_state_hph_l(ctrl, req_state, is_enable, mode);
-+		else
-+			wcd_clsh_state_hph_l(ctrl, req_state, is_enable, mode);
- 		break;
- 	case WCD_CLSH_STATE_HPHR:
--		wcd_clsh_state_hph_r(ctrl, req_state, is_enable, mode);
-+		if (ctrl->codec_version >= WCD937X)
-+			wcd_clsh_v3_state_hph_r(ctrl, req_state, is_enable, mode);
-+		else
-+			wcd_clsh_state_hph_r(ctrl, req_state, is_enable, mode);
- 		break;
- 	case WCD_CLSH_STATE_LO:
--		wcd_clsh_state_lo(ctrl, req_state, is_enable, mode);
-+		if (ctrl->codec_version < WCD937X)
-+			wcd_clsh_state_lo(ctrl, req_state, is_enable, mode);
-+		break;
-+	case WCD_CLSH_STATE_AUX:
-+		if (ctrl->codec_version >= WCD937X)
-+			wcd_clsh_v3_state_aux(ctrl, req_state, is_enable, mode);
- 		break;
- 	default:
- 		break;
-@@ -504,6 +830,7 @@ static bool wcd_clsh_is_state_valid(int state)
- 	case WCD_CLSH_STATE_HPHL:
- 	case WCD_CLSH_STATE_HPHR:
- 	case WCD_CLSH_STATE_LO:
-+	case WCD_CLSH_STATE_AUX:
- 		return true;
- 	default:
- 		return false;
-@@ -565,6 +892,7 @@ struct wcd_clsh_ctrl *wcd_clsh_ctrl_alloc(struct snd_soc_component *comp,
- 
- 	ctrl->state = WCD_CLSH_STATE_IDLE;
- 	ctrl->comp = comp;
-+	ctrl->codec_version = version;
- 
- 	return ctrl;
- }
-diff --git a/sound/soc/codecs/wcd-clsh-v2.h b/sound/soc/codecs/wcd-clsh-v2.h
-index a6d0f2d0e9e3..4e3653058275 100644
---- a/sound/soc/codecs/wcd-clsh-v2.h
-+++ b/sound/soc/codecs/wcd-clsh-v2.h
-@@ -22,8 +22,11 @@ enum wcd_clsh_event {
- #define	WCD_CLSH_STATE_HPHL	BIT(1)
- #define	WCD_CLSH_STATE_HPHR	BIT(2)
- #define	WCD_CLSH_STATE_LO	BIT(3)
-+#define	WCD_CLSH_STATE_AUX	BIT(4)
- #define WCD_CLSH_STATE_MAX	4
-+#define WCD_CLSH_V3_STATE_MAX	5
- #define NUM_CLSH_STATES_V2	BIT(WCD_CLSH_STATE_MAX)
-+#define NUM_CLSH_STATES_V3	BIT(WCD_CLSH_V3_STATE_MAX)
- 
- enum wcd_clsh_mode {
- 	CLS_H_NORMAL = 0, /* Class-H Default */
-@@ -31,9 +34,20 @@ enum wcd_clsh_mode {
- 	CLS_H_LP, /* Class-H Low Power */
- 	CLS_AB, /* Class-AB */
- 	CLS_H_LOHIFI, /* LoHIFI */
-+	CLS_H_ULP, /* Ultra Low power */
-+	CLS_AB_HIFI, /* Class-AB */
-+	CLS_AB_LP, /* Class-AB Low Power */
-+	CLS_AB_LOHIFI, /* Class-AB Low HIFI */
- 	CLS_NONE, /* None of the above modes */
+ static struct snd_soc_dai_ops wcd938x_sdw_dai_ops = {
++	.hw_params = wcd938x_codec_hw_params,
++	.hw_free = wcd938x_codec_free,
++	.set_sdw_stream = wcd938x_codec_set_sdw_stream,
  };
  
-+enum wcd_codec_version {
-+	WCD9335  = 0,
-+	WCD934X  = 1,
-+	/* New CLSH after this */
-+	WCD937X  = 2,
-+	WCD938X  = 3,
-+};
- struct wcd_clsh_ctrl;
+ static struct snd_soc_dai_driver wcd938x_dais[] = {
+@@ -1558,6 +1590,53 @@ static int wcd938x_bind(struct device *dev)
+ 		return ret;
+ 	}
  
- extern struct wcd_clsh_ctrl *wcd_clsh_ctrl_alloc(
-@@ -45,5 +59,7 @@ extern int wcd_clsh_ctrl_set_state(struct wcd_clsh_ctrl *ctrl,
- 				   enum wcd_clsh_event clsh_event,
- 				   int nstate,
- 				   enum wcd_clsh_mode mode);
-+extern void wcd_clsh_set_hph_mode(struct wcd_clsh_ctrl *ctrl,
-+				  int mode);
++	wcd938x->rxdev = wcd938x_sdw_device_get(wcd938x->rxnode);
++	if (!wcd938x->rxdev) {
++		dev_err(dev, "could not find slave with matching of node\n");
++		return -EINVAL;
++	}
++	wcd938x->sdw_priv[AIF1_PB] = dev_get_drvdata(wcd938x->rxdev);
++	wcd938x->sdw_priv[AIF1_PB]->wcd938x = wcd938x;
++
++	wcd938x->txdev = wcd938x_sdw_device_get(wcd938x->txnode);
++	if (!wcd938x->txdev) {
++		dev_err(dev, "could not find txslave with matching of node\n");
++		return -EINVAL;
++	}
++	wcd938x->sdw_priv[AIF1_CAP] = dev_get_drvdata(wcd938x->txdev);
++	wcd938x->sdw_priv[AIF1_CAP]->wcd938x = wcd938x;
++	wcd938x->tx_sdw_dev = dev_to_sdw_dev(wcd938x->txdev);
++	if (!wcd938x->tx_sdw_dev) {
++		dev_err(dev, "could not get txslave with matching of dev\n");
++		return -EINVAL;
++	}
++
++	/* As TX is main CSR reg interface, which should not be suspended first.
++	 * expicilty add the dependency link */
++	if (!device_link_add(wcd938x->rxdev, wcd938x->txdev, DL_FLAG_STATELESS |
++			    DL_FLAG_PM_RUNTIME)) {
++		dev_err(dev, "could not devlink tx and rx\n");
++		return -EINVAL;
++	}
++
++	if (!device_link_add(dev, wcd938x->txdev, DL_FLAG_STATELESS |
++					DL_FLAG_PM_RUNTIME)) {
++		dev_err(dev, "could not devlink wcd and tx\n");
++		return -EINVAL;
++	}
++
++	if (!device_link_add(dev, wcd938x->rxdev, DL_FLAG_STATELESS |
++					DL_FLAG_PM_RUNTIME)) {
++		dev_err(dev, "could not devlink wcd and rx\n");
++		return -EINVAL;
++	}
++
++	wcd938x->regmap = dev_get_regmap(wcd938x->txdev, NULL);
++	if (!wcd938x->regmap) {
++		dev_err(dev, "%s: tx csr regmap not found\n", __func__);
++		return PTR_ERR(wcd938x->regmap);
++	}
++
+ 	ret = wcd938x_set_micbias_data(wcd938x);
+ 	if (ret < 0) {
+ 		dev_err(dev, "%s: bad micbias pdata\n", __func__);
+@@ -1578,6 +1657,9 @@ static void wcd938x_unbind(struct device *dev)
+ {
+ 	struct wcd938x_priv *wcd938x = dev_get_drvdata(dev);
  
- #endif /* _WCD_CLSH_V2_H_ */
++	device_link_remove(dev, wcd938x->txdev);
++	device_link_remove(dev, wcd938x->rxdev);
++	device_link_remove(wcd938x->rxdev, wcd938x->txdev);
+ 	snd_soc_unregister_component(dev);
+ 	component_unbind_all(dev, wcd938x);
+ }
+diff --git a/sound/soc/codecs/wcd938x.h b/sound/soc/codecs/wcd938x.h
+index efaa4dfc752a..9db3ab6e47a6 100644
+--- a/sound/soc/codecs/wcd938x.h
++++ b/sound/soc/codecs/wcd938x.h
+@@ -668,4 +668,53 @@ struct wcd938x_sdw_priv {
+ extern struct regmap_config wcd938x_regmap_config;
+ int wcd938x_handle_sdw_irq(struct wcd938x_sdw_priv *priv);
+ 
++#if IS_ENABLED(CONFIG_SND_SOC_WCD938X_SDW)
++int wcd938x_sdw_free(struct wcd938x_sdw_priv *wcd,
++		     struct snd_pcm_substream *substream,
++		     struct snd_soc_dai *dai);
++int wcd938x_sdw_set_sdw_stream(struct wcd938x_sdw_priv *wcd,
++			       struct snd_soc_dai *dai,
++			       void *stream, int direction);
++int wcd938x_sdw_hw_params(struct wcd938x_sdw_priv *wcd,
++			  struct snd_pcm_substream *substream,
++			  struct snd_pcm_hw_params *params,
++			  struct snd_soc_dai *dai);
++
++struct device *wcd938x_sdw_device_get(struct device_node *np);
++int wcd938x_swr_get_current_bank(struct sdw_slave *sdev);
++
++#else
++
++static inline int wcd938x_sdw_free(struct wcd938x_sdw_priv *wcd,
++		     struct snd_pcm_substream *substream,
++		     struct snd_soc_dai *dai)
++{
++	return -EOPNOTSUPP;
++}
++
++static inline int wcd938x_sdw_set_sdw_stream(struct wcd938x_sdw_priv *wcd,
++			       struct snd_soc_dai *dai,
++			       void *stream, int direction)
++{
++	return -EOPNOTSUPP;
++}
++
++static inline int wcd938x_sdw_hw_params(struct wcd938x_sdw_priv *wcd,
++			  struct snd_pcm_substream *substream,
++			  struct snd_pcm_hw_params *params,
++			  struct snd_soc_dai *dai)
++{
++	return -EOPNOTSUPP;
++}
++
++static inline struct device *wcd938x_sdw_device_get(struct device_node *np)
++{
++	return NULL;
++}
++
++static inline int wcd938x_swr_get_current_bank(struct sdw_slave *sdev)
++{
++	return 0;
++}
++#endif /* CONFIG_SND_SOC_WCD938X_SDW */
+ #endif /* __WCD938X_H__ */
 -- 
 2.21.0
 
