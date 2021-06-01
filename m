@@ -2,103 +2,86 @@ Return-Path: <SRS0=jKKe=K3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27D6BC4708F
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 16:08:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AEE2C4708F
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 16:26:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6C0FE611CB
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 16:08:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C0FE611CB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 5CE76613AD
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 16:26:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5CE76613AD
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 74CC11670;
-	Tue,  1 Jun 2021 18:01:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74CC11670
+	by alsa0.perex.cz (Postfix) with ESMTPS id 12EDC16BC;
+	Tue,  1 Jun 2021 18:25:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12EDC16BC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622563352;
-	bh=RexKHh+1zqFTGVFyskSePguoSr/2ht2pIW4Xfa/3vaY=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1622564760;
+	bh=VrseM5FpkCAFR4lkbDaSP+JIGI0Ijvnf++JHBEdvkxs=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JxmAPiXgZelupDgazTdzWMshrcvOYeDMM8EwO8i0mwY+D8OFSptOMucRLOZ1RcSie
-	 g2hXvvh7CEozG2lMY0XCW9GpjZ+OOgmxR82hG0wuCoUOzaef1jbkvZTxqN7p9tUX7U
-	 EP7NGQQtAhrgHGsrzYPhy963y/mrfhRV8BzJ/ysY=
+	b=TfkP2E07HoddLN2RuG1q+l8mLnKkX6HQP47hvEPus5+dQV2yDc3yFuWEORQwzziJz
+	 MpfebEGYGPtzU4/UwilDnHHH/bGB+/v+JU0PCEzuq49Irfsiopx5eQhCULXNAk+u9K
+	 CQmOtpyJqitQ7U/RczB6SpHES2vtyj/ILwLT+mTU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1090CF80253;
-	Tue,  1 Jun 2021 18:01:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4B062F800B2;
+	Tue,  1 Jun 2021 18:25:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CD326F80254; Tue,  1 Jun 2021 18:01:40 +0200 (CEST)
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com
- [IPv6:2607:f8b0:4864:20::22a])
+ id 402E1F804B0; Tue,  1 Jun 2021 18:25:07 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B9701F800B2
- for <alsa-devel@alsa-project.org>; Tue,  1 Jun 2021 18:01:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9701F800B2
+ by alsa1.perex.cz (Postfix) with ESMTPS id D40F1F800B2
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jun 2021 18:24:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D40F1F800B2
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="mMMV4R4H"
-Received: by mail-oi1-x22a.google.com with SMTP id u11so15957145oiv.1
- for <alsa-devel@alsa-project.org>; Tue, 01 Jun 2021 09:01:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=ivRylvAoXWYGi0EX7Wjf2GRwNOYBh6koZn9LtD0Oi0o=;
- b=mMMV4R4HRszVvRwUR34BU3fHfE9s3UWX21Hr5qVyKvNQkEPMtyvT+NnetgjSbY7nzN
- z9z7J+Vgy2hXQy3pEZ5TPVNrTP3R2YOSlXVdWVejfQydgwr6/DFIfNddtZocX+UCMM3w
- DgXEydpN+gflCCpGcM5ZuRmbvpOQM631lPM+8FzhXy83Gw5WyZtXFP7L9B96a/2i1b7U
- 40P6xYNMb1GOmbW2abbTVEkaZX7C4+dBaPOrMt1DsbxSnqqzqhoenH3qNmzLBymB+Sbe
- AV7rL1NTA1GUTLzqVMIj+uqYfx1xX0NwigiJBSBrPt0q2QdnHWHir/omT1KGV0wktkFF
- Onvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=ivRylvAoXWYGi0EX7Wjf2GRwNOYBh6koZn9LtD0Oi0o=;
- b=a9iClBXalcYrZUIjEXWiQccfcMZjL0Lpe/6BuvULVOkITuidTcJ34mE7NbTrigwkMk
- VcAgmvrRdv+v9KtIYg7omKBLiRti/QTL7u6EBU8qCuTiy07hwjNHKxDYnQyQnyk9eerc
- xAsW8EKbewbGnKj7M93ClxQLXk3uJ7d4ml+LE5dWPra6xhGhlFg6GRWlIzAI/8K4PqXf
- yuj4yzs6t2HAgn28NF4Tukxwip5c8lDxPAqh66bP98ljd2TgEUtwGyPhLTMVuLRT0dO5
- ZmeFbw0x+vOKWRF5t/RcFSoYaCA8DB5OgPKQ2rC7LjiLzJZup1OqV+O2BbN9GanTFved
- IP2A==
-X-Gm-Message-State: AOAM531jbNbJgFjTH22bSwmeaWo0HftV4lGvuCgkHFrsRMJkQzHZ/bhI
- hM8Sni/D8ALPE2KAy0G32ztKtg==
-X-Google-Smtp-Source: ABdhPJyiEYPb4B5zl9mHjhnZ9gz3r5vQbpvCP9o6iAbqLjQr9URkhGGUDiwBJYlNnBWlsssskP8PoA==
-X-Received: by 2002:a54:4e87:: with SMTP id c7mr464614oiy.82.1622563289363;
- Tue, 01 Jun 2021 09:01:29 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net.
- [104.57.184.186])
- by smtp.gmail.com with ESMTPSA id l20sm3417058oop.3.2021.06.01.09.01.28
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 01 Jun 2021 09:01:28 -0700 (PDT)
-Date: Tue, 1 Jun 2021 11:01:26 -0500
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
-To: Judy Hsiao <judyhsiao@chromium.org>
-Subject: Re: [PATCH] arm64: dts: qcom: sc7180: add label for secondary mi2s
-Message-ID: <YLZZ1iEGwkpcQUo7@builder.lan>
-References: <20210601022117.4071117-1-judyhsiao@chromium.org>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="dOPIUvbJ"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="8RDhxjbC"
+Received: from relay2.suse.de (unknown [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id AADF721962
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jun 2021 16:24:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1622564698; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=/0YFotyzjNX0LaaqZyHwENV/YIVPfrs9t3MrkdeGork=;
+ b=dOPIUvbJqYxn6z6eISze4DlQIWDgkMdgK/yZTLmAcGaN5O6zKi85vOAduth38/qUxw3Uo4
+ xgdZrBgvviNb9B4ct1MICqpKPunUWolHUjVvN+fXbVSvwEPC13UdR4mnA11vilcZOPa98P
+ I4njE7UUThOrnSLKXbrTtcfeQiZM/Rk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1622564698;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=/0YFotyzjNX0LaaqZyHwENV/YIVPfrs9t3MrkdeGork=;
+ b=8RDhxjbCM9UJz0HhDaQ4mNfZeWC9Lf+1rDVk9G+/APTxuzgRwy3ehHHjgwXc1fLU3YxvOC
+ O0zdQ0M91iHl3rDA==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 99177A3B84;
+ Tue,  1 Jun 2021 16:24:58 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 2/5] ALSA: usb-audio: Pre-calculate buffer byte size
+Date: Tue,  1 Jun 2021 18:24:54 +0200
+Message-Id: <20210601162457.4877-3-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210601162457.4877-1-tiwai@suse.de>
+References: <20210601162457.4877-1-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210601022117.4071117-1-judyhsiao@chromium.org>
-Cc: Taniya Das <tdas@codeaurora.org>, alsa-devel@alsa-project.org,
- Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Rohit kumar <rohitkr@codeaurora.org>, Patrick Lai <plai@codeaurora.org>,
- Andy Gross <agross@kernel.org>, dgreid@chromium.org,
- devicetree@vger.kernel.org, judyhsiao@google.com, tzungbi@chromium.org,
- Stephan Gerhold <stephan@gerhold.net>, linux-arm-msm@vger.kernel.org,
- swboyd@chromium.org, Rob Herring <robh+dt@kernel.org>,
- linux-arm-kernel@lists.infradead.org, dianders@chromium.org,
- cychiang@google.com, Takashi Iwai <tiwai@suse.com>, broonie@kernel.org
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,35 +97,177 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon 31 May 21:21 CDT 2021, Judy Hsiao wrote:
+There are a bunch of lines calculating the buffer size in bytes at
+each time.  Keep the value in subs->buffer_bytes and use it
+consistently for the code simplicity.
 
-> Adds label for MI2S secondary block to allow follower projects to override
-> for the four speaker support which uses I2S SD1 line on gpio52 pin.
-> 
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/card.h |  1 +
+ sound/usb/pcm.c  | 48 ++++++++++++++++++++++++------------------------
+ 2 files changed, 25 insertions(+), 24 deletions(-)
 
-That's much better, thank you!
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index a741e7da83a2..b346653d4b76 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -158,6 +158,7 @@ struct snd_usb_substream {
+ 
+ 	unsigned int running: 1;	/* running status */
+ 
++	unsigned int buffer_bytes;	/* buffer size in bytes */
+ 	unsigned int hwptr_done;	/* processed byte position in the buffer */
+ 	unsigned int transfer_done;		/* processed frames since last period update */
+ 	unsigned int frame_limit;	/* limits number of packets in URB */
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 359c759a7023..e8121af8e1d5 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -600,6 +600,7 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
+ 		goto unlock;
+ 
+ 	/* reset the pointer */
++	subs->buffer_bytes = frames_to_bytes(runtime, runtime->buffer_size);
+ 	subs->hwptr_done = 0;
+ 	subs->transfer_done = 0;
+ 	subs->last_delay = 0;
+@@ -1147,8 +1148,8 @@ static void retire_capture_urb(struct snd_usb_substream *subs,
+ 		spin_lock_irqsave(&subs->lock, flags);
+ 		oldptr = subs->hwptr_done;
+ 		subs->hwptr_done += bytes;
+-		if (subs->hwptr_done >= runtime->buffer_size * stride)
+-			subs->hwptr_done -= runtime->buffer_size * stride;
++		if (subs->hwptr_done >= subs->buffer_bytes)
++			subs->hwptr_done -= subs->buffer_bytes;
+ 		frames = (bytes + (oldptr % stride)) / stride;
+ 		subs->transfer_done += frames;
+ 		if (subs->transfer_done >= runtime->period_size) {
+@@ -1166,9 +1167,9 @@ static void retire_capture_urb(struct snd_usb_substream *subs,
+ 
+ 		spin_unlock_irqrestore(&subs->lock, flags);
+ 		/* copy a data chunk */
+-		if (oldptr + bytes > runtime->buffer_size * stride) {
+-			unsigned int bytes1 =
+-					runtime->buffer_size * stride - oldptr;
++		if (oldptr + bytes > subs->buffer_bytes) {
++			unsigned int bytes1 = subs->buffer_bytes - oldptr;
++
+ 			memcpy(runtime->dma_area + oldptr, cp, bytes1);
+ 			memcpy(runtime->dma_area, cp + bytes1, bytes - bytes1);
+ 		} else {
+@@ -1184,10 +1185,9 @@ static inline void fill_playback_urb_dsd_dop(struct snd_usb_substream *subs,
+ 					     struct urb *urb, unsigned int bytes)
+ {
+ 	struct snd_pcm_runtime *runtime = subs->pcm_substream->runtime;
+-	unsigned int stride = runtime->frame_bits >> 3;
+ 	unsigned int dst_idx = 0;
+ 	unsigned int src_idx = subs->hwptr_done;
+-	unsigned int wrap = runtime->buffer_size * stride;
++	unsigned int wrap = subs->buffer_bytes;
+ 	u8 *dst = urb->transfer_buffer;
+ 	u8 *src = runtime->dma_area;
+ 	u8 marker[] = { 0x05, 0xfa };
+@@ -1233,8 +1233,8 @@ static inline void fill_playback_urb_dsd_dop(struct snd_usb_substream *subs,
+ 			subs->hwptr_done++;
+ 		}
+ 	}
+-	if (subs->hwptr_done >= runtime->buffer_size * stride)
+-		subs->hwptr_done -= runtime->buffer_size * stride;
++	if (subs->hwptr_done >= subs->buffer_bytes)
++		subs->hwptr_done -= subs->buffer_bytes;
+ }
+ 
+ static void copy_to_urb(struct snd_usb_substream *subs, struct urb *urb,
+@@ -1242,10 +1242,10 @@ static void copy_to_urb(struct snd_usb_substream *subs, struct urb *urb,
+ {
+ 	struct snd_pcm_runtime *runtime = subs->pcm_substream->runtime;
+ 
+-	if (subs->hwptr_done + bytes > runtime->buffer_size * stride) {
++	if (subs->hwptr_done + bytes > subs->buffer_bytes) {
+ 		/* err, the transferred area goes over buffer boundary. */
+-		unsigned int bytes1 =
+-			runtime->buffer_size * stride - subs->hwptr_done;
++		unsigned int bytes1 = subs->buffer_bytes - subs->hwptr_done;
++
+ 		memcpy(urb->transfer_buffer + offset,
+ 		       runtime->dma_area + subs->hwptr_done, bytes1);
+ 		memcpy(urb->transfer_buffer + offset + bytes1,
+@@ -1255,8 +1255,8 @@ static void copy_to_urb(struct snd_usb_substream *subs, struct urb *urb,
+ 		       runtime->dma_area + subs->hwptr_done, bytes);
+ 	}
+ 	subs->hwptr_done += bytes;
+-	if (subs->hwptr_done >= runtime->buffer_size * stride)
+-		subs->hwptr_done -= runtime->buffer_size * stride;
++	if (subs->hwptr_done >= subs->buffer_bytes)
++		subs->hwptr_done -= subs->buffer_bytes;
+ }
+ 
+ static unsigned int copy_to_urb_quirk(struct snd_usb_substream *subs,
+@@ -1295,7 +1295,7 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
+ 	int i, stride, period_elapsed = 0;
+ 	unsigned long flags;
+ 
+-	stride = runtime->frame_bits >> 3;
++	stride = ep->stride;
+ 
+ 	frames = 0;
+ 	urb->number_of_packets = 0;
+@@ -1304,8 +1304,8 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
+ 	for (i = 0; i < ctx->packets; i++) {
+ 		counts = snd_usb_endpoint_next_packet_size(ep, ctx, i);
+ 		/* set up descriptor */
+-		urb->iso_frame_desc[i].offset = frames * ep->stride;
+-		urb->iso_frame_desc[i].length = counts * ep->stride;
++		urb->iso_frame_desc[i].offset = frames * stride;
++		urb->iso_frame_desc[i].length = counts * stride;
+ 		frames += counts;
+ 		urb->number_of_packets++;
+ 		subs->transfer_done += counts;
+@@ -1320,14 +1320,14 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
+ 					frames -= subs->transfer_done;
+ 					counts -= subs->transfer_done;
+ 					urb->iso_frame_desc[i].length =
+-						counts * ep->stride;
++						counts * stride;
+ 					subs->transfer_done = 0;
+ 				}
+ 				i++;
+ 				if (i < ctx->packets) {
+ 					/* add a transfer delimiter */
+ 					urb->iso_frame_desc[i].offset =
+-						frames * ep->stride;
++						frames * stride;
+ 					urb->iso_frame_desc[i].length = 0;
+ 					urb->number_of_packets++;
+ 				}
+@@ -1340,7 +1340,7 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
+ 		    !snd_usb_endpoint_implicit_feedback_sink(ep))
+ 			break;
+ 	}
+-	bytes = frames * ep->stride;
++	bytes = frames * stride;
+ 
+ 	if (unlikely(ep->cur_format == SNDRV_PCM_FORMAT_DSD_U16_LE &&
+ 		     subs->cur_audiofmt->dsd_dop)) {
+@@ -1350,14 +1350,14 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
+ 		/* bit-reverse the bytes */
+ 		u8 *buf = urb->transfer_buffer;
+ 		for (i = 0; i < bytes; i++) {
+-			int idx = (subs->hwptr_done + i)
+-				% (runtime->buffer_size * stride);
++			int idx = (subs->hwptr_done + i) % subs->buffer_bytes;
++
+ 			buf[i] = bitrev8(runtime->dma_area[idx]);
+ 		}
+ 
+ 		subs->hwptr_done += bytes;
+-		if (subs->hwptr_done >= runtime->buffer_size * stride)
+-			subs->hwptr_done -= runtime->buffer_size * stride;
++		if (subs->hwptr_done >= subs->buffer_bytes)
++			subs->hwptr_done -= subs->buffer_bytes;
+ 	} else {
+ 		/* usual PCM */
+ 		if (!subs->tx_length_quirk)
+-- 
+2.26.2
 
-Regards,
-Bjorn
-
-> Signed-off-by: Judy Hsiao <judyhsiao@chromium.org>
-> ---
->  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> index 24d293ef56d7..2027914a0bed 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> @@ -772,7 +772,7 @@ mi2s@0 {
->  		qcom,capture-sd-lines = <0>;
->  	};
->  
-> -	mi2s@1 {
-> +	secondary_mi2s: mi2s@1 {
->  		reg = <MI2S_SECONDARY>;
->  		qcom,playback-sd-lines = <0>;
->  	};
-> -- 
-> 2.32.0.rc0.204.g9fa02ecfa5-goog
-> 
