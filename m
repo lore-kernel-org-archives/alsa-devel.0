@@ -2,95 +2,70 @@ Return-Path: <SRS0=jKKe=K3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79985C47080
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 19:22:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E1E7C4708F
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 20:46:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D929D6135D
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 19:22:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D929D6135D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	by mail.kernel.org (Postfix) with ESMTPS id 99956613C0
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jun 2021 20:46:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 99956613C0
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sntech.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6737816CF;
-	Tue,  1 Jun 2021 21:21:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6737816CF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5328A16D0;
+	Tue,  1 Jun 2021 22:45:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5328A16D0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622575320;
-	bh=+0GH9UNN80fFIz4cc3O39h1Um6r5aHzg2DXcrjJ2gts=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1622580367;
+	bh=xVtpWEmr8Qmxmrehm9NkHkBJMFT+2FCdYuwhRWXN5hg=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qL3EqAKgXgHHGR8d6uoqUsLY1TctThrC7OfEfF73hXv3iuwYgl/U7oV1tIpnvF8t/
-	 eiFP/BDRYKoIO/bIgGXoVVN9uq3e7DD+AYEh4SKDNCIXG/aVZ0q196Y42OZjlb6lnf
-	 O3tN1Z/PYvNwgpdBS5G8ClTINhIiT81viGZQWdc4=
+	b=ub1lQG0dtul5z2ajGMLTYwhvdcasUmn2jDQy7fFmxyoSHVGVrJAkoGbW958flsQaO
+	 mpyfLIaf6FSGHLGt48N4QieNQtZip9xbuv2T4D9tnAhbRd8Y6wZ/dTNBBUUoeA+dZA
+	 ZVv3HEiq9pEpbvcT77h7zxHpRfhBCuOq0Gz1JA2Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 04099F800B2;
-	Tue,  1 Jun 2021 21:21:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F023F80253;
+	Tue,  1 Jun 2021 22:45:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3C9D8F80254; Tue,  1 Jun 2021 21:21:08 +0200 (CEST)
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com
- [IPv6:2607:f8b0:4864:20::42a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 55399F80254; Tue,  1 Jun 2021 22:45:14 +0200 (CEST)
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F04C7F800B2
- for <alsa-devel@alsa-project.org>; Tue,  1 Jun 2021 21:20:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F04C7F800B2
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="MOHL6Rg4"
-Received: by mail-pf1-x42a.google.com with SMTP id f22so324492pfn.0
- for <alsa-devel@alsa-project.org>; Tue, 01 Jun 2021 12:20:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=m15CB+ejyy1cEkOR8H2bWbxrq91PVD9VpCzkcmHk69k=;
- b=MOHL6Rg4BBPH5wiP7w1yra4HQYcxXWk5JaXhb8kOdJlrkaBNrVv7mmwsmtvCStcM1A
- OhKOQmGxSkEQcMAOjxfYcUHNTyz+O+AwoIjUhtVBIWwrbKhgzUiaGszsQnOPvxlZMj9S
- 029lEjbq00R7EtmOTsV6VUMYldCmtYhQvZud8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=m15CB+ejyy1cEkOR8H2bWbxrq91PVD9VpCzkcmHk69k=;
- b=unlBl7KhqfYe+D7re04Nsou5TdbbL49uXfTRkRnqVgY4WBbhKyHoNBsGrWC84lGRLD
- i+9JjdY0cDBusisKfYyj3EbzsuGHTFL7JOkrBOfDOhJKdMR99fd81LMAmkpFuHwr3/ZB
- VWSuTdJH/2fiT+0BoTdLyZudMcd2UCEply07v2JyDpw68T9evo5zOIoL94JiHtI/B+OI
- qZ0OFMv1q1nd/mEYvKXYKoa9NYII1vhDs61k2EQd00Ry67+oP5aImvMtbhwmb6QRTHHk
- 3eL8K4yuyCUShGMRD+7ndrpMwMNIVwPqBUqp7ezCH4LU6FR3Xp11eFF3uoYaWo/IEU6o
- N7Eg==
-X-Gm-Message-State: AOAM533YIGEWx8Qau67aipTBSA5MhCPV+2isK1zi3smFMehACJ3LLyOL
- VKdIXTOXDAIj6ClsCAzP2pQr5vaZ5DD2Jg==
-X-Google-Smtp-Source: ABdhPJynQ1oAhjuOu6Yt5pPtGgDrZIwV5A6brhRT0bSHWLsB1ZGgvxq1cMuCHenAxXt3FQZ4B20oLg==
-X-Received: by 2002:a65:4d03:: with SMTP id i3mr29670528pgt.422.1622575257623; 
- Tue, 01 Jun 2021 12:20:57 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
- by smtp.gmail.com with ESMTPSA id p26sm2507483pfw.178.2021.06.01.12.20.56
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 01 Jun 2021 12:20:56 -0700 (PDT)
-Date: Tue, 1 Jun 2021 12:20:55 -0700
-From: Kees Cook <keescook@chromium.org>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: Re: [PATCH][next] ASoC: ti: davinci-mcasp: Fix fall-through warning
- for Clang
-Message-ID: <202106011220.82270074FC@keescook>
-References: <20210528202047.GA39602@embeddedor>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8722BF801DB
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jun 2021 22:45:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8722BF801DB
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74]
+ helo=diego.localnet)
+ by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+ (Exim 4.92) (envelope-from <heiko@sntech.de>)
+ id 1loBG5-0003ST-OY; Tue, 01 Jun 2021 22:45:05 +0200
+From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To: Lee Jones <lee.jones@linaro.org>, Chris Morgan <macroalpha82@gmail.com>
+Subject: Re: [GIT PULL] Immutable branch between MFD and ASoC due for the
+ v5.14 merge window
+Date: Tue, 01 Jun 2021 22:45:04 +0200
+Message-ID: <8906844.gsGJI6kyIV@diego>
+In-Reply-To: <20210601183351.GA31227@wintermute.localdomain>
+References: <20210519203754.27184-1-macroalpha82@gmail.com>
+ <20210601173944.GA2173308@dell>
+ <20210601183351.GA31227@wintermute.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210528202047.GA39602@embeddedor>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, linux-hardening@vger.kernel.org,
- Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, tiwai@suse.com, robh+dt@kernel.org,
+ lgirdwood@gmail.com, linux-rockchip@lists.infradead.org, broonie@kernel.org,
+ Chris Morgan <macromorgan@hotmail.com>, jbx6244@gmail.com,
+ maccraft123mc@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,15 +81,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, May 28, 2021 at 03:20:47PM -0500, Gustavo A. R. Silva wrote:
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-> by explicitly adding a goto statement instead of letting the code fall
-> through to the next case.
+Am Dienstag, 1. Juni 2021, 20:33:51 CEST schrieb Chris Morgan:
+> On Tue, Jun 01, 2021 at 06:39:44PM +0100, Lee Jones wrote:
+> > On Tue, 01 Jun 2021, Chris Morgan wrote:
+> > 
+> > > On Tue, Jun 01, 2021 at 04:58:32PM +0100, Lee Jones wrote:
+> > > > On Tue, 01 Jun 2021, Lee Jones wrote:
+> > > > 
+> > > > > I've applied the non-Arm patches.
+> > > > > 
+> > > > > The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+> > > > > 
+> > > > >   Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+> > > > > 
+> > > > > are available in the Git repository at:
+> > > > > 
+> > > > >   git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git tb-mfd-asoc-v5.14
+> > > > > 
+> > > > > for you to fetch changes up to 437faaa6cebadf8ff4c2c28d7cb26ed4e34aeb14:
+> > > > > 
+> > > > >   dt-bindings: Add Rockchip rk817 audio CODEC support (2021-06-01 13:40:41 +0100)
+> > > > > 
+> > > > > ----------------------------------------------------------------
+> > > > > Immutable branch between MFD and ASoC due for the v5.14 merge window
+> > > > > 
+> > > > > ----------------------------------------------------------------
+> > > > > Chris Morgan (3):
+> > > > >       mfd: Add Rockchip rk817 audio CODEC support
+> > > > >       ASoC: Add Rockchip rk817 audio CODEC support
+> > > > >       dt-bindings: Add Rockchip rk817 audio CODEC support
+> > > > > 
+> > > > >  Documentation/devicetree/bindings/mfd/rk808.txt | 188 +++++++++
+> > > > >  drivers/mfd/rk808.c                             |  81 ++++
+> > > > >  include/linux/mfd/rk808.h                       |  81 ++++
+> > > > >  sound/soc/codecs/Kconfig                        |   6 +
+> > > > >  sound/soc/codecs/Makefile                       |   2 +
+> > > > >  sound/soc/codecs/rk817_codec.c                  | 539 ++++++++++++++++++++++++
+> > > > >  6 files changed, 897 insertions(+)
+> > > > >  create mode 100644 sound/soc/codecs/rk817_codec.c
+> > > > 
+> > > > Looks like the builders reported a W=1 warning introduced by the set.
+> > > > 
+> > > > Would you like me to fix it and submit a patch?
+> > > 
+> > > I can't seem to reproduce the warning, are there more details as to
+> > > what is causing it?
+> > 
+> > Yes, it's a W=1 warning.  Put that on your command line.
 > 
-> Link: https://github.com/KSPP/linux/issues/115
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Got it. Want me to resubmit the patch? Looks like I was requesting a
+> return value from a function and not doing anything with it.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+from Lee's earlier mail I guess he prefers a followup patch to fix the issue.
 
--- 
-Kees Cook
+
+
