@@ -6,60 +6,59 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BA98C4708F
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 14:24:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63179C4708F
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 14:24:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7ED9D610CB
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 14:23:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7ED9D610CB
+	by mail.kernel.org (Postfix) with ESMTPS id A2A5161359
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 14:24:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A2A5161359
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AED9116E5;
-	Wed,  2 Jun 2021 16:23:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AED9116E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id DAB9D16F5;
+	Wed,  2 Jun 2021 16:23:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DAB9D16F5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622643836;
-	bh=iRLwwh/jf6neXOQQgfnhI6BrCzqxxsNJFTOUKbWjbxU=;
+	s=default; t=1622643887;
+	bh=cEZUezywMgX5vR/D3t0QvKikngNRDFHs2Ki3SJ0Xpuk=;
 	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cIL9DWRBjCfX0oBrtmwZHs/EXixfZcqNCAPIIkhSUZ7v4RkNok3oBzONrBQYXBajX
-	 qylRv3LsgQYpSO57e8aDUqttMv212pS8DkBsnnFDnr65eRGWMXE1x961a3heZ7Ikq3
-	 eC2GKHaCERdrH76OiR+a3zbynNf4lhcdBGuC4uNs=
+	b=ZH41x+0Hr7HNRtqqa6Ti3swaYNOmTOVO8QoosoKi2avgAlc8v/QSb7MvM5WoEQAsQ
+	 SMdSDeMnwGXNDToQZwaogLpSEHPlVYd/n/M9gHsjMv/iL7bKCRxp8VkZYbLCy3/K1e
+	 n5+7SGYZ2Xpju794eSXLej9d5KeDVK2sD9+XR24U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 25A87F802A9;
-	Wed,  2 Jun 2021 16:23:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F68FF80431;
+	Wed,  2 Jun 2021 16:23:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C5B73F80254; Tue,  1 Jun 2021 10:46:11 +0200 (CEST)
+ id AAA37F80254; Tue,  1 Jun 2021 10:48:01 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8089EF801DB
- for <alsa-devel@alsa-project.org>; Tue,  1 Jun 2021 10:46:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8089EF801DB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 66A50F80141
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jun 2021 10:47:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66A50F80141
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="sIrl/fVj"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60BC061370;
- Tue,  1 Jun 2021 08:45:53 +0000 (UTC)
+ header.b="MBOgPX8Z"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 886C661370;
+ Tue,  1 Jun 2021 08:47:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1622537158;
- bh=iRLwwh/jf6neXOQQgfnhI6BrCzqxxsNJFTOUKbWjbxU=;
+ s=k20201202; t=1622537267;
+ bh=cEZUezywMgX5vR/D3t0QvKikngNRDFHs2Ki3SJ0Xpuk=;
  h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
- b=sIrl/fVjSuZJc/8yYTG/dJgXF2S6Ulce6iDkG+5AKFvWM2npcdzHGjvr/bhghCsZF
- gpJE2khsRcmBOfZpvtpHnKPnhJQHPS2ueehX2SI7BCGwJn5gNg09TOyvmk6VwPasQl
- hGz0UQs7t1mG2u7JfCBEfI4j+86J1KWkdEbM9wydpaBKZ1jeprBZzT+74L3/Y/jb2O
- jQalFjmxg6vOnopGnjuRLf6MOjheSfjBdCke3btHg+vBqi+MHF4SVyhI5S8Ijoj8kx
- EcGYGkt1N+lSF8t2cp9YYGCDZOIMGva80GMffTImgfkezk7SLoDtdDjkDKonezD74D
- d9pZAvCCOVmCg==
-Message-ID: <4552aaf531b0619a2d7a7cc4bcf2d049c44b4b74.camel@kernel.org>
-Subject: Re: [PATCH v2 06/12] drm/vc4: hdmi: Set HD_CTL_WHOLSMP and
- HD_CTL_CHALIGN_SET
+ b=MBOgPX8ZH57ze1iAkkC/l2BOuVL3FOn20aZDjoZSw1jg9q+l7xb2rZTF6NtRhrI8F
+ OMtiubpyveaCTSnBhhLgfCDTeNs4BW9DbwOnvwNm/qzCWXbnRvE6cR2EFj8VNIEttD
+ LXimyUmi3rNBsKfJV7lFug9FZuv3n/7mqsdA46ciLhsiZoBy0swgETx4LKicZ4e2+/
+ aR+pq+AdK5JgDR9QcPkuWcms3+pfN/5CSTl8/Ch63eTUq2BCHKhgsRaCqVPbLACXCi
+ yeTOjXIClj7UB87btlifu4y4bpNOg30tSIwVFt4Iu6GhzLaHHiO6AyQngiTrzTxIII
+ UAoHWdQ6LBsOw==
+Message-ID: <a2e780be6b81443630aa72eb9c5c919061e309b8.camel@kernel.org>
+Subject: Re: [PATCH v2 07/12] drm/vc4: hdmi: Set HDMI_MAI_FMT
 From: nicolas saenz julienne <nsaenz@kernel.org>
 To: Maxime Ripard <maxime@cerno.tech>, Jaroslav Kysela <perex@perex.cz>, 
  Mark Brown <broonie@kernel.org>, dri-devel@lists.freedesktop.org, Daniel
@@ -67,10 +66,10 @@ To: Maxime Ripard <maxime@cerno.tech>, Jaroslav Kysela <perex@perex.cz>,
  Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann
  <tzimmermann@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai
  <tiwai@suse.com>
-Date: Tue, 01 Jun 2021 10:45:49 +0200
-In-Reply-To: <20210525132354.297468-7-maxime@cerno.tech>
+Date: Tue, 01 Jun 2021 10:47:40 +0200
+In-Reply-To: <20210525132354.297468-8-maxime@cerno.tech>
 References: <20210525132354.297468-1-maxime@cerno.tech>
- <20210525132354.297468-7-maxime@cerno.tech>
+ <20210525132354.297468-8-maxime@cerno.tech>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.40.0 (3.40.0-1.fc34) 
 MIME-Version: 1.0
@@ -104,24 +103,8 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 On Tue, 2021-05-25 at 15:23 +0200, Maxime Ripard wrote:
 > From: Dom Cobley <popcornmix@gmail.com>
 > 
-> Symptom is random switching of speakers when using multichannel.
-> 
-> Repeatedly running speakertest -c8 occasionally starts with
-> channels jumbled. This is fixed with HD_CTL_WHOLSMP.
-> 
-> The other bit looks beneficial and apears harmless in testing so
-> I'd suggest adding it too.
-> 
-> Documentation says: HD_CTL_WHILSMP_SET
-> Wait for whole sample. When this bit is set MAI transmit will start
-> only when there is at least one whole sample available in the fifo.
-> 
-> Documentation says: HD_CTL_CHALIGN_SET
-> Channel Align When Overflow. This bit is used to realign the audio
-> channels in case of an overflow.
-> If this bit is set, after the detection of an overflow, equal
-> amount of dummy words to the missing words will be written to fifo,
-> filling up the broken sample and maintaining alignment.
+> The hardware uses this for generating the right audio
+> data island packets when using formats other than PCM
 > 
 > Signed-off-by: Dom Cobley <popcornmix@gmail.com>
 > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
