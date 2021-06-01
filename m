@@ -2,64 +2,64 @@ Return-Path: <SRS0=h1r5=K4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FB90C4708F
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 14:24:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3694EC4708F
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 14:25:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8D5A1610A1
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 14:24:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D5A1610A1
+	by mail.kernel.org (Postfix) with ESMTPS id 55D19610A1
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 14:25:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 55D19610A1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 42C8A16F4;
-	Wed,  2 Jun 2021 16:24:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42C8A16F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id D0F2B1705;
+	Wed,  2 Jun 2021 16:24:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0F2B1705
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622643892;
-	bh=BWq5NprmRBFQsgZo2g232l4nfkJzik5TZeKrg2RP7A4=;
+	s=default; t=1622643927;
+	bh=8a14SexF0VfpNwXP+zIc3awUdTFy5l9yf6WZSfXTd4I=;
 	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VYYMY5RTbrwS/X5ttRYKsL1VFkhUYAOhZMdItNoluoEqIE66NbHQtlxqKYqk6pv1N
-	 VXMLp9wUW3itzbXja+dtX7ytCodWeuQWqZFku0qYbbvcYwwBHh7nUjueLyHyEvvomj
-	 RE49OoDxuVxhURj2gt+fpukbWwef9QuRWAIg/gt4=
+	b=VWyfFD6X3MnCk0S+BIfijpboN6Mq0468ug6qlEA+aZcn9DdqdDGUCsVF4MwqeGWQg
+	 rBH2w2T1GSyLfvHEompRMik3SkgtR03NFmYNojPQmUQ/d4xhH2J5MP8MI39sa2ah0v
+	 ItC5BwdNy6H7FpbUOWrVnevreD8BxPNX37cQuh8Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27473F8049E;
-	Wed,  2 Jun 2021 16:23:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16041F804C2;
+	Wed,  2 Jun 2021 16:23:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93DB2F80254; Tue,  1 Jun 2021 10:50:00 +0200 (CEST)
+ id 7CE22F80254; Tue,  1 Jun 2021 10:52:44 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 64059F80141
- for <alsa-devel@alsa-project.org>; Tue,  1 Jun 2021 10:49:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64059F80141
+ by alsa1.perex.cz (Postfix) with ESMTPS id 16A4EF801DB
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jun 2021 10:52:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16A4EF801DB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="iGXAAQHT"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E53F61375;
- Tue,  1 Jun 2021 08:49:46 +0000 (UTC)
+ header.b="SeAPSMEr"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F1E6F610A0;
+ Tue,  1 Jun 2021 08:52:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1622537392;
- bh=BWq5NprmRBFQsgZo2g232l4nfkJzik5TZeKrg2RP7A4=;
+ s=k20201202; t=1622537559;
+ bh=8a14SexF0VfpNwXP+zIc3awUdTFy5l9yf6WZSfXTd4I=;
  h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
- b=iGXAAQHTjaMW5jK32eeGWC/RMFFgzjIrcMr7psbh+zR6Q2/OwOLt/jUrgAkIts5eI
- YE9mqsBPPxfXMllInKg/lzlcvQL9pBDGUUKDpK3bANr+hzYeKuYwQsRZ1azVlrjV60
- L9ZRjWo97oGa5w+Gja4vghuhWY7d/iByP3bkn3Ok4Cx/gH+j+MtNRmuAoN/QBTXTcj
- joE5KshjA13w2AZoHznmYqMMMcOIdld5uK/Xt6IbKrb/I130zBtSJw0uDaqj54TMVk
- mvFA3LqaeVz+EXflPqjPNu5e6bQuYjhGykfyPXILyn5ZZKnlaqDmODJtrzmviALaKp
- 9mYgKvZ8Yr/vg==
-Message-ID: <90338d5fbc55f80a8cd28ead24791f3edc247ba4.camel@kernel.org>
-Subject: Re: [PATCH v2 08/12] drm/vc4: hdmi: Set
- VC4_HDMI_MAI_CONFIG_FORMAT_REVERSE
+ b=SeAPSMEr+/bCDKDRlUBdS2SixGDGFDoxzjMGL257ErWVAa6CU94zH6YlMgBwVP6fD
+ SpbeV3ZC0hIEOxiUjQFDRqnrVF/VcgVSlZU6hHeTH9PVJRgo53rY6JoDbo42y+AP2D
+ sUKDU2UUXeeJFvA5FQpGAjHdKxI8daTDoXP4uFFMVhK+AzBwmruEcgr+gd89tJ4nQu
+ qpAVfGrH4z/qYfZ/Sn+kmTREboFJLQiJzCJw9/aAQrTyXBmbQ6afiEbsGm2y/0v79A
+ 38UkEHYcvRADeqz7r6fyPJQhC6jtzLKJQNIIuGlarAT6pw+iVTHSYnVpo+zC6mzJag
+ myVcGfquSdlIw==
+Message-ID: <813942f4864d87ef0b9c5dff98c23c919bdd88a9.camel@kernel.org>
+Subject: Re: [PATCH v2 09/12] drm/vc4: hdmi: Remove firmware logic for MAI
+ threshold setting
 From: nicolas saenz julienne <nsaenz@kernel.org>
 To: Maxime Ripard <maxime@cerno.tech>, Jaroslav Kysela <perex@perex.cz>, 
  Mark Brown <broonie@kernel.org>, dri-devel@lists.freedesktop.org, Daniel
@@ -67,10 +67,10 @@ To: Maxime Ripard <maxime@cerno.tech>, Jaroslav Kysela <perex@perex.cz>,
  Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann
  <tzimmermann@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai
  <tiwai@suse.com>
-Date: Tue, 01 Jun 2021 10:49:44 +0200
-In-Reply-To: <20210525132354.297468-9-maxime@cerno.tech>
+Date: Tue, 01 Jun 2021 10:52:31 +0200
+In-Reply-To: <20210525132354.297468-10-maxime@cerno.tech>
 References: <20210525132354.297468-1-maxime@cerno.tech>
- <20210525132354.297468-9-maxime@cerno.tech>
+ <20210525132354.297468-10-maxime@cerno.tech>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.40.0 (3.40.0-1.fc34) 
 MIME-Version: 1.0
@@ -104,15 +104,10 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 On Tue, 2021-05-25 at 15:23 +0200, Maxime Ripard wrote:
 > From: Dom Cobley <popcornmix@gmail.com>
 > 
-> Without this bit set, HDMI_MAI_FORMAT doesn't pick up
-> the format and samplerate from DVP_CFG_MAI0_FMT and you
-> can't get HDMI_HDMI_13_AUDIO_STATUS_1 to indicate HBR mode
-> 
-> Signed-off-by: Dom Cobley <popcornmix@gmail.com>
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> ---
+> This was a workaround for bugs in hardware on earlier Pi models
+> and wasn't totally successful.
 
-Reviewed-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
+What's to expect sound wise on older RPis?
 
 Regards,
 Nicolas
