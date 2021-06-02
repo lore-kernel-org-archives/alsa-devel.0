@@ -2,95 +2,82 @@ Return-Path: <SRS0=h1r5=K4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3211C47083
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 03:42:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24A97C4708F
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 06:21:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 93D25613CA
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 03:42:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 93D25613CA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id D34F661027
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 06:21:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D34F661027
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4F42416D6;
-	Wed,  2 Jun 2021 05:42:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F42416D6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E4D616D6;
+	Wed,  2 Jun 2021 08:20:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E4D616D6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622605371;
-	bh=2Mz4CL+hcmZfP6hnTper68o0ITZ3eyyHnnwv7B3fgaM=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1622614883;
+	bh=jplEBxDd8R/Ahstr6hCMu67LDfVJZuf3OLfQ1OxV04M=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=jYVKNWR3VfV9Ah5rDYSYAFj/DQHYvFtbfeCsZhNalU0uilufdFG4kSX2PmHqiNMOS
-	 W4PGWc/EACXp4SdJVbvQ9hkWSDhVPhd6woCdYdzMuFk6RWahyRL9xpTjRs/BwDC2fZ
-	 jHzKHKOfg5WpbQKblS2eC6i2rha9jTkuWATQzj0w=
+	b=nYVNCalOrnKdkld/jYOQWTrgTb1JTdFkGod+XvRiIQlYh4r5TIbyJ+2pnb5FZIxxP
+	 n8msWY2uzXaR2klxEAGU6AbWV0eIFQ5s2cMpmwgwq0GB0YTGdsbFZl4jxDUOycs+Nf
+	 XQeB2gwYEgkaFC9QzBpO9g5HpoKi4RiC3ffiit+4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1305F802A9;
-	Wed,  2 Jun 2021 05:42:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06193F80273;
+	Wed,  2 Jun 2021 08:20:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8A146F80424; Wed,  2 Jun 2021 05:41:58 +0200 (CEST)
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com
- [IPv6:2607:f8b0:4864:20::430])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 83D57F80273; Wed,  2 Jun 2021 08:20:31 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 012DEF80273
- for <alsa-devel@alsa-project.org>; Wed,  2 Jun 2021 05:41:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 012DEF80273
+ by alsa1.perex.cz (Postfix) with ESMTPS id 16347F80273
+ for <alsa-devel@alsa-project.org>; Wed,  2 Jun 2021 08:20:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16347F80273
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="PyV8FeSK"
-Received: by mail-pf1-x430.google.com with SMTP id z26so1128084pfj.5
- for <alsa-devel@alsa-project.org>; Tue, 01 Jun 2021 20:41:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=zLdktgE0a9sEXZ0/b+s3AebnOjlZIpwVaCTKFoWaY6o=;
- b=PyV8FeSKyEIVaDpLD1OQklsC0+U/xDfysW1/zZXRwfV+KdD6NggGTMgx0BhlkyFcVW
- SuRX+ExKpACmEe4VXNzThsolvdMl99oWRC4cLxxUJxJlxkG0WEAH1BeLWZGowj3e2+g6
- FJO0au3vJfJ7e2KFHuA73+gMVKDUzYq2QluuHh17e5HzHEMzFAru7FLzovFHeQfaJo9T
- vCQqxmaUsbR50lSrCAYy3QdXiuzV+sGsjOpaavnZMj/xQtrfLs+PJJ7/WqjISF4F35zF
- N2NNaZShZivIOJpEWbo8EQErq/+YBkkSsgADbfH0ePpBC4RyEdspM4G+RqHvPec+CQgF
- o7zA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=zLdktgE0a9sEXZ0/b+s3AebnOjlZIpwVaCTKFoWaY6o=;
- b=NOquQx7g0bjYfcYwrT5F6kfcbYgcv+iqo8Lx8WxZKEgRGRrna0TpzZalWN1IAl0KAe
- Bun1ZojGzykfIyVSVxFTHiZtCaabhFVxgr8KGZNhua9JHsFIWVpW7X11/tp97/60hDDH
- Z+ohqpC6sp3Hm43hZFlWaHA9M3ugi3PulvR1xFa3hGXmp4vRU25z4EewGVh2QxILpoQM
- rS4tGI8yC6WLxN1G/T3C01HCYCpi7nWZZwrAb8rnLAXqMIu64LZ0IFCuAd2u9edWL2RM
- byZ4eZyX8G5gvTnzHFNClAnU9K/PSMno1hQAt9VseMReuoMBC30T8Cv+qpG3FbY0jpqF
- dYHA==
-X-Gm-Message-State: AOAM5324RYOswE3PLYpLZyaGvWUUyHUMn38zJeArRMQaTnHNg81yyJaW
- PHBHR9M73jsFQAggFDB9SAY=
-X-Google-Smtp-Source: ABdhPJzPeLvDeBppfezgwtWuGF9uxgIOTAtzej3GgkpTc/DSKL2YdMFF0UIb8N/mqAv4ufvrNDH0ew==
-X-Received: by 2002:aa7:80d3:0:b029:28e:f117:4961 with SMTP id
- a19-20020aa780d30000b029028ef1174961mr25291555pfn.37.1622605308627; 
- Tue, 01 Jun 2021 20:41:48 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.140])
- by smtp.gmail.com with ESMTPSA id 141sm10746460pgf.20.2021.06.01.20.41.46
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 01 Jun 2021 20:41:48 -0700 (PDT)
-From: Dongliang Mu <mudongliangabcd@gmail.com>
-To: perex@perex.cz, tiwai@suse.com, dan.carpenter@oracle.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ALSA: control led: fix memory leak in snd_ctl_led_register
-Date: Wed,  2 Jun 2021 11:41:36 +0800
-Message-Id: <20210602034136.2762497-1-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Dongliang Mu <mudongliangabcd@gmail.com>,
- syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
+ dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com
+ header.b="osPWG7HF"
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A4AD61A35AA;
+ Wed,  2 Jun 2021 08:20:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 inva020.eu-rdc02.nxp.com A4AD61A35AA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com;
+ s=nselector3; t=1622614822;
+ bh=916qkDrbfLsKea6v3J9EiWiH16tJt1dJtsGTn8zGZMM=;
+ h=From:To:Subject:Date:From;
+ b=osPWG7HF4wbDUh6UkQpDFSqdLTOzxNN0k9Ej83Unbhh9ktSyxgehINw8ZDR1nnAFG
+ FMX+E5a7dNtNMrcV6EhBg7K7XrZkfisvwH0lg2/nKqJhwVT+B0bySseDmq8dFDU/W6
+ 3+OrgsnwqhgjnmJbRiQ2mHQH9sSMgdFF3ZtKdQlTq9EMZbsxGUacHpEU3Ss/jiXyt/
+ yAAb6A4GUGvk9Sv0YxDwBL8+eVU8uF9B28l+pczF8b5OOsyOnb/uY5quq9fStxvNf/
+ IW1DTgnbXttRdNzN+9XcGnlvJDg7KOubIYqnPyLP5ODub+d+Mi+QmxNVbNt1BeNS0F
+ 8jyadsRh7WXFA==
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id EDCA81A1E65;
+ Wed,  2 Jun 2021 08:20:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 inva020.eu-rdc02.nxp.com EDCA81A1E65
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id AE51F4028B;
+ Wed,  2 Jun 2021 14:20:16 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: dt-bindings: fsl-sai: Add compatible string for
+ imx8mm/8mn/8mp/8ulp
+Date: Wed,  2 Jun 2021 14:02:50 +0800
+Message-Id: <1622613770-10220-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,130 +93,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The snd_ctl_led_sysfs_add and snd_ctl_led_sysfs_remove should contain
-the refcount operations in pair. However, snd_ctl_led_sysfs_remove fails
-to decrease the refcount to zero, which causes device_release never to
-be invoked. This leads to memory leak to some resources, like struct
-device_private. In addition, we also free some other similar memory
-leaks in snd_ctl_led_init/snd_ctl_led_exit.
+Add compatible string for imx8mm/8mn/8mp/8ulp, these platforms all
+support SAI IP.
 
-Fix this by replacing device_del to device_unregister
-in snd_ctl_led_sysfs_remove/snd_ctl_led_init/snd_ctl_led_exit.
-
-Note that, when CONFIG_DEBUG_KOBJECT_RELEASE is enabled, put_device will
-call kobject_release and delay the release of kobject, which will cause
-use-after-free when the memory backing the kobject is freed at once.
-
-Reported-by: syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
-Fixes: a135dfb5de1 ("ALSA: led control - add sysfs kcontrol LED marking layer")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
-v1->v2: fix other similar memory leaks; move kfree(led_card) to a
-release function.
- sound/core/control_led.c | 33 ++++++++++++++++++++++++++-------
- 1 file changed, 26 insertions(+), 7 deletions(-)
+ Documentation/devicetree/bindings/sound/fsl-sai.txt | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/core/control_led.c b/sound/core/control_led.c
-index 25f57c14f294..a90e31dbde61 100644
---- a/sound/core/control_led.c
-+++ b/sound/core/control_led.c
-@@ -17,6 +17,9 @@ MODULE_LICENSE("GPL");
- #define MAX_LED (((SNDRV_CTL_ELEM_ACCESS_MIC_LED - SNDRV_CTL_ELEM_ACCESS_SPK_LED) \
- 			>> SNDRV_CTL_ELEM_ACCESS_LED_SHIFT) + 1)
+diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
+index 0dc83cc4a236..c71c5861d787 100644
+--- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
++++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
+@@ -9,8 +9,10 @@ Required properties:
  
-+#define to_led_card_dev(_dev) \
-+	container_of(_dev, struct snd_ctl_led_card, dev)
-+
- enum snd_ctl_led_mode {
- 	 MODE_FOLLOW_MUTE = 0,
- 	 MODE_FOLLOW_ROUTE,
-@@ -371,6 +374,21 @@ static void snd_ctl_led_disconnect(struct snd_card *card)
- 	snd_ctl_led_refresh();
- }
+   - compatible		: Compatible list, contains "fsl,vf610-sai",
+ 			  "fsl,imx6sx-sai", "fsl,imx6ul-sai",
+-			  "fsl,imx7ulp-sai", "fsl,imx8mq-sai" or
+-			  "fsl,imx8qm-sai".
++			  "fsl,imx7ulp-sai", "fsl,imx8mq-sai",
++			  "fsl,imx8qm-sai", "fsl,imx8mm-sai",
++			  "fsl,imx8mn-sai", "fsl,imx8mp-sai", or
++			  "fsl,imx8ulp-sai".
  
-+static void snd_ctl_led_card_release(struct device *dev)
-+{
-+	struct snd_ctl_led_card *led_card = to_led_card_dev(dev);
-+
-+	kfree(led_card);
-+}
-+
-+static void snd_ctl_led_release(struct device *dev)
-+{
-+}
-+
-+static void snd_ctl_led_dev_release(struct device *dev)
-+{
-+}
-+
- /*
-  * sysfs
-  */
-@@ -663,6 +681,7 @@ static void snd_ctl_led_sysfs_add(struct snd_card *card)
- 		led_card->number = card->number;
- 		led_card->led = led;
- 		device_initialize(&led_card->dev);
-+		led_card->dev.release = snd_ctl_led_card_release;
- 		if (dev_set_name(&led_card->dev, "card%d", card->number) < 0)
- 			goto cerr;
- 		led_card->dev.parent = &led->dev;
-@@ -681,7 +700,6 @@ static void snd_ctl_led_sysfs_add(struct snd_card *card)
- 		put_device(&led_card->dev);
- cerr2:
- 		printk(KERN_ERR "snd_ctl_led: unable to add card%d", card->number);
--		kfree(led_card);
- 	}
- }
- 
-@@ -700,8 +718,7 @@ static void snd_ctl_led_sysfs_remove(struct snd_card *card)
- 		snprintf(link_name, sizeof(link_name), "led-%s", led->name);
- 		sysfs_remove_link(&card->ctl_dev.kobj, link_name);
- 		sysfs_remove_link(&led_card->dev.kobj, "card");
--		device_del(&led_card->dev);
--		kfree(led_card);
-+		device_unregister(&led_card->dev);
- 		led->cards[card->number] = NULL;
- 	}
- }
-@@ -723,6 +740,7 @@ static int __init snd_ctl_led_init(void)
- 
- 	device_initialize(&snd_ctl_led_dev);
- 	snd_ctl_led_dev.class = sound_class;
-+	snd_ctl_led_dev.release = snd_ctl_led_dev_release;
- 	dev_set_name(&snd_ctl_led_dev, "ctl-led");
- 	if (device_add(&snd_ctl_led_dev)) {
- 		put_device(&snd_ctl_led_dev);
-@@ -733,15 +751,16 @@ static int __init snd_ctl_led_init(void)
- 		INIT_LIST_HEAD(&led->controls);
- 		device_initialize(&led->dev);
- 		led->dev.parent = &snd_ctl_led_dev;
-+		led->dev.release = snd_ctl_led_release;
- 		led->dev.groups = snd_ctl_led_dev_attr_groups;
- 		dev_set_name(&led->dev, led->name);
- 		if (device_add(&led->dev)) {
- 			put_device(&led->dev);
- 			for (; group > 0; group--) {
- 				led = &snd_ctl_leds[group - 1];
--				device_del(&led->dev);
-+				device_unregister(&led->dev);
- 			}
--			device_del(&snd_ctl_led_dev);
-+			device_unregister(&snd_ctl_led_dev);
- 			return -ENOMEM;
- 		}
- 	}
-@@ -767,9 +786,9 @@ static void __exit snd_ctl_led_exit(void)
- 	}
- 	for (group = 0; group < MAX_LED; group++) {
- 		led = &snd_ctl_leds[group];
--		device_del(&led->dev);
-+		device_unregister(&led->dev);
- 	}
--	device_del(&snd_ctl_led_dev);
-+	device_unregister(&snd_ctl_led_dev);
- 	snd_ctl_led_clean(NULL);
- }
+   - reg			: Offset and length of the register set for the device.
  
 -- 
-2.25.1
+2.27.0
 
