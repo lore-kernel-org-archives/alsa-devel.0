@@ -2,105 +2,105 @@ Return-Path: <SRS0=h1r5=K4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9424C47083
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 11:22:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D26F5C47092
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 11:25:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A9F860FE5
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 11:22:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A9F860FE5
+	by mail.kernel.org (Postfix) with ESMTPS id 083DD613D3
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 11:25:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 083DD613D3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5370416DF;
-	Wed,  2 Jun 2021 13:22:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5370416DF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6176F16DF;
+	Wed,  2 Jun 2021 13:24:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6176F16DF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622632972;
-	bh=MqXDtf6du2G6tahZhHvuFjEECf6FhWiidhj778CGFfw=;
+	s=default; t=1622633131;
+	bh=IKMSQd+IHx+F4+RLYiPYJ0ZrIt+HHmAdoe8rOAvteSA=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MD43O70uPnfQ1u+2ESYkVH7outn0uqV0t1W7/ir4rLPmoE9250Ql96Idab+PDHy6E
-	 6M0QmMGA5Mc5BY80dzM2hhZrEpa/DUx/L7uLIv3WhrAgHdN0nXloXHxfzubMYYaqtF
-	 qRmO49GDQIDabH8HMdrt+OI9ZIBaBaPdR2Sm63g8=
+	b=J/I17tMunLy2ZKAoIAOo7mrxdwesT7uUoja0zl7ZFP1VbPc/6mNhC57cwXeE0X8AM
+	 NxZiggOeURSPV585iK7f9pEXuq+VYz/Im0cPFkgEDkCEsZebm/Zu1etDYZj+ovckXd
+	 H8yFTE5+O9NNCue+4nSAzwSlPqwoDKSerJZYXiOw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DC854F802A9;
-	Wed,  2 Jun 2021 13:22:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 00A96F802A9;
+	Wed,  2 Jun 2021 13:24:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A18F4F80424; Wed,  2 Jun 2021 13:22:00 +0200 (CEST)
+ id 4BE1EF80424; Wed,  2 Jun 2021 13:24:40 +0200 (CEST)
 Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com
  [205.220.177.32])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8D3FDF80141
- for <alsa-devel@alsa-project.org>; Wed,  2 Jun 2021 13:21:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D3FDF80141
+ by alsa1.perex.cz (Postfix) with ESMTPS id D1D34F80103
+ for <alsa-devel@alsa-project.org>; Wed,  2 Jun 2021 13:24:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1D34F80103
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
- header.b="Oc7ikm7L"
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+ header.b="LQWlcG9V"
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
  by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 152BD04M009111; Wed, 2 Jun 2021 11:21:50 GMT
+ 152BCMWE000946; Wed, 2 Jun 2021 11:24:32 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
  h=date : from : to : cc
  : subject : message-id : references : mime-version : content-type :
  in-reply-to; s=corp-2020-01-29;
- bh=4WZOMte/qqiicAT17+QJ/9Dyj4tQM7CDtLX7HNMwc4Y=;
- b=Oc7ikm7LnPMHxB6gRvHktaqW1OJ9L+Yc/s5GG52vWB+IbhZDudEbuE7fSXzEL9NYFDUC
- AWtZh4sNJwwxuwsSpXT1ZNpubdgnkMmEK+4JnA2E2Y/6ieEQMTBLQeaH8FqNKecBCCSK
- X2S5kJaEpC9NrKjMaXgEm2yj3kJ9voHvK0XbH/NZ3YJLxyOkIe6+9TvfP+WMBvfI/H+p
- gZqy81kQjk8X9abqoYJKeFRqS2GaRxWHADJZMRCY8A+3eNgHzaciqPqX0x/cH+J00QDs
- EYeUcmn1LGzwR72lWjvAFIYQNmVBXOfO+aGq1T+LWK5wzWrKHxn9ajE45CDwMNOWBeSB dA== 
-Received: from oracle.com (aserp3030.oracle.com [141.146.126.71])
- by mx0b-00069f02.pphosted.com with ESMTP id 38wu57r8md-1
+ bh=boB/nKh+qAxdwe2vTp/6XFb++1c2+Zuxo/FZb24bAlo=;
+ b=LQWlcG9VMFyUiywqjQcY/S0NBRjC+Ewy8jp2QfZ2qR9rIe/GtWztjycbjroQ5UstOktV
+ WfuVSbDTjJIpZduvMLFM7W9M9vTZ6APHuUAulygv2Z+PVUt0lcTsmWj2rFf9gfpppBiT
+ wc65BQ2ICIKvK3ZQDGouZGYT05505MHHEr2d/e33iy7M1ijLvWnY/18dZKjYRxGZ8eO9
+ ykTTMHn+WDFGxeRj+HjsvDRUluqQl0BrwSu8CWLFtQCTDBqKcUvgXdz456uTXu/g9+aq
+ gEhItMZT1Ethlzg/2kfVf9AMaG7kdChWbZ1r0oAjRSSDueK1CfpATI3IP6mQXDBPG1ys uA== 
+Received: from oracle.com (userp3020.oracle.com [156.151.31.79])
+ by mx0b-00069f02.pphosted.com with ESMTP id 38wr508b0q-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 02 Jun 2021 11:21:50 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
- by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 152BGCVL002916;
- Wed, 2 Jun 2021 11:21:50 GMT
+ Wed, 02 Jun 2021 11:24:32 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+ by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 152BKCm5114181;
+ Wed, 2 Jun 2021 11:24:31 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
- by aserp3030.oracle.com with ESMTP id 38ubndx52t-1
+ by userp3020.oracle.com with ESMTP id 38x1bcuk35-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 02 Jun 2021 11:21:50 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
- by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 152BLnD4010736;
- Wed, 2 Jun 2021 11:21:49 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
- by aserp3030.oracle.com with ESMTP id 38ubndx52k-1
+ Wed, 02 Jun 2021 11:24:31 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+ by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 152BOV0R120478;
+ Wed, 2 Jun 2021 11:24:31 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+ by userp3020.oracle.com with ESMTP id 38x1bcuk22-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 02 Jun 2021 11:21:49 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
- by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 152BLiKI021204;
- Wed, 2 Jun 2021 11:21:45 GMT
+ Wed, 02 Jun 2021 11:24:31 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+ by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 152BORDh008252;
+ Wed, 2 Jun 2021 11:24:27 GMT
 Received: from kadam (/41.212.42.34) by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Wed, 02 Jun 2021 11:21:44 +0000
-Date: Wed, 2 Jun 2021 14:21:35 +0300
+ with ESMTP ; Wed, 02 Jun 2021 11:24:26 +0000
+Date: Wed, 2 Jun 2021 14:24:16 +0300
 From: Dan Carpenter <dan.carpenter@oracle.com>
 To: Colin King <colin.king@canonical.com>
-Subject: Re: [PATCH][next] ASoC: rsnd: check for zero node count
-Message-ID: <20210602112135.GF1955@kadam>
-References: <20210602103722.12128-1-colin.king@canonical.com>
+Subject: Re: [PATCH][next] ASoC: rk817: remove redundant assignment to
+ pointer node
+Message-ID: <20210602112416.GG1955@kadam>
+References: <20210602102746.11793-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210602103722.12128-1-colin.king@canonical.com>
+In-Reply-To: <20210602102746.11793-1-colin.king@canonical.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: A29s0bsNRcWZ5loyWTZ8SHAlo2qIGlhL
-X-Proofpoint-ORIG-GUID: A29s0bsNRcWZ5loyWTZ8SHAlo2qIGlhL
-Cc: alsa-devel@alsa-project.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>
+X-Proofpoint-ORIG-GUID: Omvj3_IJRJvZEPF87IJzLnvGmWx-Uk1T
+X-Proofpoint-GUID: Omvj3_IJRJvZEPF87IJzLnvGmWx-Uk1T
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Chris Morgan <macromorgan@hotmail.com>, Lee Jones <lee.jones@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -116,22 +116,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Jun 02, 2021 at 11:37:22AM +0100, Colin King wrote:
+On Wed, Jun 02, 2021 at 11:27:46AM +0100, Colin King wrote:
 > From: Colin Ian King <colin.king@canonical.com>
 > 
-> The call to rsnd_node_count can potentially return a zero node count
-> so add a check for this corner case. (Note that the two other calls
-> to rsnd_node_count in the kernel perform this check, so I think it
-> justifies adding this). This avoids using a zero nr in a devm_kcalloc
-> call.
+> The pointer node is being initialized with a value that is never read and
+> it is being updated later with a new value.  The initialization is
+> redundant and can be removed.
+> 
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  sound/soc/codecs/rk817_codec.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/codecs/rk817_codec.c b/sound/soc/codecs/rk817_codec.c
+> index 17e672b85ee5..0d7cc26ded57 100644
+> --- a/sound/soc/codecs/rk817_codec.c
+> +++ b/sound/soc/codecs/rk817_codec.c
+> @@ -457,7 +457,7 @@ static const struct snd_soc_component_driver soc_codec_dev_rk817 = {
+>  static void rk817_codec_parse_dt_property(struct device *dev,
+>  					 struct rk817_codec_priv *rk817)
+>  {
+> -	struct device_node *node = dev->parent->of_node;
+> +	struct device_node *node;
+>  
+>  	node = of_get_child_by_name(dev->parent->of_node, "codec");
+>  	if (!node) {
 
-I don't have a problem with the patch, but really the code works fine
-as is.  A better commit message is:
-
-  Most callers of_get_child_count() check that "nr" is non-zero so it
-  causes a static checker warning when we don't do that here.  This
-  doesn't cause a problem or a crash, but having zero SSUIes (What's
-  plural of ssui?) doesn't make sense either so let's add a check.
+This function needs an of_node_put().
 
 regards,
 dan carpenter
