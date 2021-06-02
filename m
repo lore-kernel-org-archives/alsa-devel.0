@@ -2,94 +2,61 @@ Return-Path: <SRS0=h1r5=K4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64CACC47092
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 14:44:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8027FC4708F
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 14:55:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1877F613E4
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 14:44:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1877F613E4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 760E4613BF
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 14:55:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 760E4613BF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD84F16F2;
-	Wed,  2 Jun 2021 16:43:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD84F16F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9A4C016CD;
+	Wed,  2 Jun 2021 16:54:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A4C016CD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622645048;
-	bh=X5auVTS94vBfB1clkIIudubRgJ6nlTwf8s+YDqaanLc=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=nlwpC/rwOyrgfUeQNrb9Oj8Njcfe+/osuWEihcBJIo4bDaP6M37iR16bYfzOIzHBv
-	 kV4VWNAOu/7nSmqMcPlI5MvQ5dLDcuRTP5XLj2k1hvP5XFBn/npFxeBdsUk3bso/0u
-	 N/v0/tBy5WEvo0nwST5PJI3TBwtlM5dddz/FdFyo=
+	s=default; t=1622645747;
+	bh=M51G1tQ6cmW/v1KCl2gie+Z71me4DwBKMxhSFmohlGY=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=U6roRwexWPh/vhALU/nPsYvtcaweGegL+J462FlHw/xQNGRgjhjTIszkY2TQdHiNE
+	 JnzNt+RswxCjP/QpL/L2tdHBsdv5KMJFQYXR3zcYxr0iWaqh3Vjdx+YkDWMoDjsFKF
+	 O+nQCmpDQ+tPnpzpsx73Qv4fxrKqCcLPpXPLsdBg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0CFC0F802A9;
-	Wed,  2 Jun 2021 16:43:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1E4BBF802A9;
+	Wed,  2 Jun 2021 16:54:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 58696F80424; Wed,  2 Jun 2021 16:43:16 +0200 (CEST)
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com
- [IPv6:2a00:1450:4864:20::62d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 3CA42F80424; Wed,  2 Jun 2021 16:54:55 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ED8BAF80273
- for <alsa-devel@alsa-project.org>; Wed,  2 Jun 2021 16:43:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED8BAF80273
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="HlWzmkBv"
-Received: by mail-ej1-x62d.google.com with SMTP id g20so4333189ejt.0
- for <alsa-devel@alsa-project.org>; Wed, 02 Jun 2021 07:43:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=asmhKT8Xu8vvlH7hmjEtXyIqg+xK/DCROaP6WgVKpIE=;
- b=HlWzmkBvNTpIJ/E0bwSNmoRzaZ4JpQE53kJHVe2dw2SzExR/f4wHbtPQEWjtca1/Sh
- OnJ6B1FL+/iN0Hmh+kQa9x8iGGxYeLqIan/2hAzD8i9V9EpMtjuSUnN7NAwaOuxmlpA7
- V4H+aGoBGbmw1O3ajPUDuglVqoY3LPZ1PJJSpU1mZK8P6CKfN7B3NSupo1ID0i89OC2z
- Fv08NM0nDAT03osPC/pfSOKJnMYxV3TInye321avjb31qjrEWK/mYEbDvIQc3HeaNBb8
- aHEsS4gGEM8shnWfqjjnSoYuXGQZ1vrGPjpY/wTgsS1lLkc/Insei9J0tk61h4p1DUcK
- b9sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=asmhKT8Xu8vvlH7hmjEtXyIqg+xK/DCROaP6WgVKpIE=;
- b=E552APSN70R5jyup+WxDCRRqGlJPSUdHNUwnCy7Lce0vMzJZR3rYcsjCToMDEm7VlS
- 03h0K3Z1ft/rKjYwi3UENM+8t5YB1ZpA+YCkpEtL0o0mb4Gx/nsV0vGgE2dZ08pEVokU
- kblEj1sBUlD8ZWjZhaqWKOnBgSI7omWmDiyBdQAatXu5zEkFN1L+QBW3JJjwVN/JhMQc
- rJ1jrCBEKqC8SRXdVFV1sKsHrEZpwp3fXnn4XSIomJZhJO6gKtYqlmvb51RZewkV/b21
- RWOJz6R/RKHFGUv27L0dHsQwa2VZ0EXfrLrpdsiH/PEk8esZV+wntQhtBgk6lAzX9z4S
- Mk2g==
-X-Gm-Message-State: AOAM533foOH7zn9OW0bBeeF6im3XBe3R/irGXzsdoy44QnpoVRbwDjeh
- kGnPCQaM0xAQYzgWeTkXoig1llYmWeztWVNlGHQ=
-X-Google-Smtp-Source: ABdhPJx5CM+Gpez16wZqwedSTYQ2NSEG7h7QE4YR6YTYLeJx9k2NA5IHHabZAYskx25lp+LPCZ4ZHKZ2Yt9MFtQtmlk=
-X-Received: by 2002:a17:906:35ca:: with SMTP id
- p10mr411541ejb.535.1622644981795; 
- Wed, 02 Jun 2021 07:43:01 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 79E0CF80141
+ for <alsa-devel@alsa-project.org>; Wed,  2 Jun 2021 16:54:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79E0CF80141
+Received: from [123.112.64.4] (helo=localhost.localdomain)
+ by youngberry.canonical.com with esmtpsa (TLS1.2) tls
+ TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.93)
+ (envelope-from <hui.wang@canonical.com>)
+ id 1loSGb-0005h5-P9; Wed, 02 Jun 2021 14:54:46 +0000
+From: Hui Wang <hui.wang@canonical.com>
+To: alsa-devel@alsa-project.org, tiwai@suse.de, kai.heng.feng@canonical.com,
+ kailang@realtek.com
+Subject: [PATCH] ALSA: hda: update the power_state during the direct-complete
+Date: Wed,  2 Jun 2021 22:54:24 +0800
+Message-Id: <20210602145424.3132-1-hui.wang@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CAD-N9QUDYbzkZXnDzf2P4b4Qk_kBQ_9ZVL3B4jhe9Xf2rgtpGA@mail.gmail.com>
- <5c3fbdf8-bfa3-a50e-edb9-81fbce84d9cb@perex.cz>
-In-Reply-To: <5c3fbdf8-bfa3-a50e-edb9-81fbce84d9cb@perex.cz>
-From: Dongliang Mu <mudongliangabcd@gmail.com>
-Date: Wed, 2 Jun 2021 22:42:35 +0800
-Message-ID: <CAD-N9QVRgzbWUc+SM2-XX5-vwCiZrOE9MgAEKCO8Czo-15P_yA@mail.gmail.com>
-Subject: Re: [syzbot] UBSAN: shift-out-of-bounds in snd_timer_user_ccallback
-To: Jaroslav Kysela <perex@perex.cz>
-Content-Type: text/plain; charset="UTF-8"
-Cc: alsa-devel@alsa-project.org, linux-kernel <linux-kernel@vger.kernel.org>,
- tiwai@suse.com, syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
- pierre-louis.bossart@linux.intel.com, allen.lkml@gmail.com,
- Joe Perches <joe@perches.com>, romain.perier@gmail.com
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,96 +72,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Jun 2, 2021 at 10:19 PM Jaroslav Kysela <perex@perex.cz> wrote:
->
-> On 02. 06. 21 15:18, Dongliang Mu wrote:
-> >> Hello,
-> >>
-> >> syzbot found the following issue on:
-> >>
-> >> HEAD commit: 5ff2756a Merge tag 'nfs-for-5.13-2' of git://git.linux-nfs..
-> >> git tree: upstream
-> >> console output: https://syzkaller.appspot.com/x/log.txt?x=17872d5bd00000
-> >> kernel config: https://syzkaller.appspot.com/x/.config?x=770708ea7cfd4916
-> >> dashboard link: https://syzkaller.appspot.com/bug?extid=d102fa5b35335a7e544e
-> >>
-> >> Unfortunately, I don't have any reproducer for this issue yet.
-> >>
-> >> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> >> Reported-by: syzbot+d102fa...@syzkaller.appspotmail.com
-> >>
-> >> ================================================================================
-> >> UBSAN: shift-out-of-bounds in sound/core/timer.c:1376:23
-> >> shift exponent 105 is too large for 32-bit type 'int'
-> >> CPU: 1 PID: 10368 Comm: syz-executor.1 Not tainted 5.13.0-rc3-syzkaller #0
-> >> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> >> Call Trace:
-> >> __dump_stack lib/dump_stack.c:79 [inline]
-> >> dump_stack+0x141/0x1d7 lib/dump_stack.c:120
-> >> ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
-> >> __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:327
-> >> snd_timer_user_ccallback.cold+0x19/0x1e sound/core/timer.c:1376
-> >>
-> >> snd_timer_notify1+0x243/0x3b0 sound/core/timer.c:525
-> >
-> > The root cause of this bug is in the snd_timer_notify1 [1]. At the end
-> > of this function, it calls "ts->ccallback(ts, event + 100, &tstamp,
-> > resolution)".
-> >
-> > Here the variable event is 5. It adds 100 and is passed as 2nd
-> > argument of snd_timer_user_ccallback.
-> >
-> >>From the variable naming, the 2nd argument should an event, and in the
-> > range of event enumeration. In fact, 105 (event + 100) is out of this
-> > range. I don't quite understand the meaning of adding 100. Any thought
-> > here?
->
-> It seems that the original intent was to move the event to the M... events:
->
->      SNDRV_TIMER_EVENT_MSTART = SNDRV_TIMER_EVENT_START + 10,
->
-> So the added value should be 10 which should not break the shift range (8
-> /resume/ + 10 = 18).
+The patch_realtek.c needs to check if the power_state.event equals
+PM_EVENT_SUSPEND, after using the direct-complete, the suspend() and
+resume() will be skipped if the codec is already rt_suspended, in this
+case, the patch_realtek.c will always get PM_EVENT_ON even the system
+is really resumed from S3.
 
-It seems you are right. Then event should be between
-SNDRV_TIMER_EVENT_MSTART and SNDRV_TIMER_EVENT_MPAUSE.
+We could set power_state to PMSG_SUSPEND in the prepare(), if other
+PM functions are called before complete(), those functions will
+override power_state; if no other PM functions are called before
+complete(), we could know the suspend() and resume() are skipped since
+only S3 pm functions could be skipped by direct-complete, in this case
+set power_state to PMSG_RESUME in the complete(). This could guarantee
+the first time of calling hda_codec_runtime_resume() after complete()
+has the correct power_state.
 
-I double check all the ccallback site, only snd_timer_notify1 invokes
-ccallback with event + 100, others seem ok.
+Fixes: 215a22ed31a1 ("ALSA: hda: Refactor codec PM to use direct-complete optimization")
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/hda_codec.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-1 timer.c snd_timer_notify1        515 if (ti->ccallback)
-2 timer.c snd_timer_notify1        516 ti->ccallback(ti, event,
-&tstamp, resolution);
-3 timer.c snd_timer_notify1        524 if (ts->ccallback)
-4 timer.c snd_timer_notify1        525 ts->ccallback(ts, event + 100,
-&tstamp, resolution);
-5 timer.c snd_timer_notify        1092 if (ti->ccallback)
-6 timer.c snd_timer_notify        1093 ti->ccallback(ti, event,
-tstamp, resolution);
-7 timer.c snd_timer_notify        1095 if (ts->ccallback)
-8 timer.c snd_timer_notify        1096 ts->ccallback(ts, event,
-tstamp, resolution);
-9 timer.c snd_timer_user_tselect  1782 tu->timeri->ccallback =
-snd_timer_user_ccallback;
-a aloop.c loopback_snd_timer_open 1137 timeri->ccallback =
-loopback_snd_timer_event;
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index a31009afc025..5462f771c2f9 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -2917,6 +2917,7 @@ static int hda_codec_runtime_resume(struct device *dev)
+ #ifdef CONFIG_PM_SLEEP
+ static int hda_codec_pm_prepare(struct device *dev)
+ {
++	dev->power.power_state = PMSG_SUSPEND;
+ 	return pm_runtime_suspended(dev);
+ }
+ 
+@@ -2924,6 +2925,10 @@ static void hda_codec_pm_complete(struct device *dev)
+ {
+ 	struct hda_codec *codec = dev_to_hda_codec(dev);
+ 
++	/* If no other pm-functions are called between prepare() and complete() */
++	if (dev->power.power_state.event == PM_EVENT_SUSPEND)
++		dev->power.power_state = PMSG_RESUME;
++
+ 	if (pm_runtime_suspended(dev) && (codec->jackpoll_interval ||
+ 	    hda_codec_need_resume(codec) || codec->forced_resume))
+ 		pm_request_resume(dev);
+-- 
+2.25.1
 
-
-
->
->                                         Jaroslav
->
-> >
-> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sound/core/timer.c?id=5ff2756afde08b266fbb673849899fec694f39f1#n497
-> >
-> > --
-> > My best regards to you.
-> >
-> >      No System Is Safe!
-> >      Dongliang Mu
-> >
->
->
-> --
-> Jaroslav Kysela <perex@perex.cz>
-> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
