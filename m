@@ -2,90 +2,82 @@ Return-Path: <SRS0=h1r5=K4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 221C3C4708F
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 07:00:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21961C47083
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 07:01:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8BC6C61376
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 07:00:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8BC6C61376
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 285C161242
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 07:01:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 285C161242
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7382E16D6;
-	Wed,  2 Jun 2021 08:59:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7382E16D6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8F5E616F1;
+	Wed,  2 Jun 2021 09:00:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F5E616F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622617202;
-	bh=RBZuoxhxIqwVI8/TevLZUad+iGUkrHxje6tEDsICPFc=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=cviM4oWtf3hfR+yMHmafktB4wGtO87NszoE2uIHG8XlmOCNYShLo+N5w9G4K8T1UK
-	 V4iCgwtupzDNCyKUCqthyvQXU+tCmZqj7m38Vj12XNN6FNSgneOFlB+8ta/n0pDko4
-	 piPHhdsXm8XEnEnKqHULsMnEjCXpCHm2hVqTh2dI=
+	s=default; t=1622617259;
+	bh=9gNQoQmOYEGKa/gMGQRoI94/nlSpApYUj/tGYR4UqL8=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=BjmJU0LrzFUgyBpGW22BoheSZWJQ12IvqgVWh6wLsGiPn771gWEPrnVXXchXV+Y2C
+	 j4YrrlkO+trawNrJWxLPfg0WHOFKLZg7d31XEeAt1msyHiYIhehuDFW3jNXyVhk1yb
+	 H2cZyWiyZGJVNFfr0cRYzrJ0zU3cBviNOo/t9oZw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0CA30F80103;
-	Wed,  2 Jun 2021 08:59:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 31065F80430;
+	Wed,  2 Jun 2021 09:00:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D572CF80424; Wed,  2 Jun 2021 08:59:10 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id E13BBF80430; Wed,  2 Jun 2021 09:00:07 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E64B2F80141
- for <alsa-devel@alsa-project.org>; Wed,  2 Jun 2021 08:59:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E64B2F80141
+ by alsa1.perex.cz (Postfix) with ESMTPS id AC2A1F804BC
+ for <alsa-devel@alsa-project.org>; Wed,  2 Jun 2021 08:59:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC2A1F804BC
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="ovoOoIHk"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="ixB+6fxu"
-Received: from relay2.suse.de (unknown [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 2E02B21935;
- Wed,  2 Jun 2021 06:59:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1622617143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=vIrt8EnS10/pgZWAbdX1lqTwmvdy1dlnxZHsnjNKsOs=;
- b=ovoOoIHkju2CWKL9OqBZl15e4wjGMdCwum1lU4+NbV8EFI1O2WsF9aBVi6N2BYaCroRuz0
- O7Uvo7dCYFIe3UAKnCD1jj+gXHSiIHimZiLJo7k03ZgXgII1aMrOe+4L/iy9cV+hfGyF/K
- oZfJ6vyb7YdkHDFE/bKn3YmHZYsDSnw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1622617143;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=vIrt8EnS10/pgZWAbdX1lqTwmvdy1dlnxZHsnjNKsOs=;
- b=ixB+6fxum+HeRIbC+nW0TnV4RY1bI+2M1J1tO4McMqyFdi0lU7JNw3JuCEnLKDOVNDbmXS
- IOBxdPGkASGLdzCw==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 17DEFA3B91;
- Wed,  2 Jun 2021 06:59:03 +0000 (UTC)
-Date: Wed, 02 Jun 2021 08:59:03 +0200
-Message-ID: <s5hh7igycp4.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Dongliang Mu <mudongliangabcd@gmail.com>
-Subject: Re: [PATCH v2] ALSA: control led: fix memory leak in
- snd_ctl_led_register
-In-Reply-To: <20210602034136.2762497-1-mudongliangabcd@gmail.com>
-References: <20210602034136.2762497-1-mudongliangabcd@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com,
- syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com,
- linux-kernel@vger.kernel.org, dan.carpenter@oracle.com
+ dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com
+ header.b="jDC9TnR4"
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 746AE1A1E9D;
+ Wed,  2 Jun 2021 08:59:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 inva020.eu-rdc02.nxp.com 746AE1A1E9D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com;
+ s=nselector3; t=1622617197;
+ bh=SWgLA9X2K6gN6TIyMw7jN/rBkJDvoZSmZ7cEH5X1U7M=;
+ h=From:To:Subject:Date:From;
+ b=jDC9TnR4i6xgH8zwaCPLpZl13UR9d0C4rmME9PtLbcPebgyN2/Z16g8lXrWgSZBVr
+ QmTMG8LZ2Txqub8jwsN8LKB5Bn9BMi6psMj5ujnW2eVCJ4QZTIdk9GXYcnUHJiwrwf
+ sKQp7FuPWdo7Ow2NzZ1jN+5SGQ3yZuxfjZkEdLFJx8ERmDV+QA7x/4lFge6td/Gl90
+ Dh53wioGhYD1xeq1o/WyZSmwfm49NqKtCGtsQF62fTNa4MezD6XYbqJGvdlhBANjtc
+ X1nFMI2IQ7/fKFv3O0Dj6ai5C1cYTFYS9mKqTHaVCLJ6F2eQg6xiQL0mHpzN8hRDyL
+ Ow7GAcXDkaxBw==
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 1050D1A1E8A;
+ Wed,  2 Jun 2021 08:59:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 inva020.eu-rdc02.nxp.com 1050D1A1E8A
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 7933B4031D;
+ Wed,  2 Jun 2021 14:59:47 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+ perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl-asoc-card: change dev_err to dev_dbg for defer probe
+Date: Wed,  2 Jun 2021 14:42:12 +0800
+Message-Id: <1622616132-10391-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,28 +93,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 02 Jun 2021 05:41:36 +0200,
-Dongliang Mu wrote:
-> 
-> The snd_ctl_led_sysfs_add and snd_ctl_led_sysfs_remove should contain
-> the refcount operations in pair. However, snd_ctl_led_sysfs_remove fails
-> to decrease the refcount to zero, which causes device_release never to
-> be invoked. This leads to memory leak to some resources, like struct
-> device_private. In addition, we also free some other similar memory
-> leaks in snd_ctl_led_init/snd_ctl_led_exit.
-> 
-> Fix this by replacing device_del to device_unregister
-> in snd_ctl_led_sysfs_remove/snd_ctl_led_init/snd_ctl_led_exit.
-> 
-> Note that, when CONFIG_DEBUG_KOBJECT_RELEASE is enabled, put_device will
-> call kobject_release and delay the release of kobject, which will cause
-> use-after-free when the memory backing the kobject is freed at once.
-> 
-> Reported-by: syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
-> Fixes: a135dfb5de1 ("ALSA: led control - add sysfs kcontrol LED marking layer")
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Don't need to print error message for defer probe
 
-Applied now.  Thanks.
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl-asoc-card.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index 4f55b316cf0f..b40ba910ae9d 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -709,7 +709,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 	of_node_put(framemaster);
+ 
+ 	if (!fsl_asoc_card_is_ac97(priv) && !codec_dev) {
+-		dev_err(&pdev->dev, "failed to find codec device\n");
++		dev_dbg(&pdev->dev, "failed to find codec device\n");
+ 		ret = -EPROBE_DEFER;
+ 		goto asrc_fail;
+ 	}
+-- 
+2.27.0
 
-Takashi
