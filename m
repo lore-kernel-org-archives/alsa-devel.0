@@ -2,103 +2,78 @@ Return-Path: <SRS0=h1r5=K4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,
+X-Spam-Status: No, score=-12.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 352DDC4708F
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 06:37:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54B93C4708F
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 06:48:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1705B60C40
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 06:37:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1705B60C40
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	by mail.kernel.org (Postfix) with ESMTPS id AA71961359
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 06:48:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA71961359
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E2FA616A1;
-	Wed,  2 Jun 2021 08:36:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E2FA616A1
+	by alsa0.perex.cz (Postfix) with ESMTPS id B2F7216D6;
+	Wed,  2 Jun 2021 08:47:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2F7216D6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622615826;
-	bh=BECvzOeEYR3yDzN5WLUWqq59aYHxNLZOBFeN8REEvo0=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1622616490;
+	bh=V/oNkW3f8YHAz3B4v/uDbJtSRYfEsCW47+erbMG1rts=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=b8bOInwS5BuSgN12lvJZBORvqo42bgJkDTadLUcQ7TF+ZNOFLYhrMJnCBXiSu7OB3
-	 9N5ZyMlftuX0trMx3sHRGavXn7igGptlLnwIfRdmWYCDLx0WBmtbyx1d5yGP8R6m/u
-	 CYx/XLy27ts3tggKnZnvIps5NBi4ZhZi7EGNr5Po=
+	b=gN36gFuEBGqLuiUYA+Nhq1HiIopBlQI49iZ96WAS72QTqJfS0uYFlvDURTspHk+D/
+	 l1TemWSkYvieH/SRo/AhXT2yr4heCs1tn8/AGB5JQlkgSn2nyPe9ovAJjabL874LS3
+	 g9NCpybkzw/Np8cVzTL/4MYte2SF9Ups26WmGj1M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6B041F802A9;
-	Wed,  2 Jun 2021 08:36:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40B7FF802A9;
+	Wed,  2 Jun 2021 08:47:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0E4E6F80424; Wed,  2 Jun 2021 08:36:13 +0200 (CEST)
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com
- [205.220.165.32])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 0211BF80424; Wed,  2 Jun 2021 08:47:19 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 70DE2F80103
- for <alsa-devel@alsa-project.org>; Wed,  2 Jun 2021 08:36:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70DE2F80103
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
- header.b="Gezj5ThD"
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
- by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 1526YhjH014970; Wed, 2 Jun 2021 06:36:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=+gOexGANZZS/oRgP/lTbcgKz1yPXMtQU2iZfikPHFaM=;
- b=Gezj5ThDljD/iCcK+OwqhPtV9mwHPE1NNSD1g4TyGeFKHDHSR7mTKZRR3HnARmaOG9zB
- AD17ZQ6hbpV9plez57LQxwtZySLKRbR+EYVasm62cBud1IxPaVPUlUSKh8gn3ihr+koR
- 1rGp6AALyBEK/eOuA+4jEkW77Lu1t6Y9wtOdntdVQ3b24WnE1X0pMeM7Tw0WFHKOCv0U
- yMYopfZNzktSvM0HzdEkyrVt10BH+DA4ncJNQyfPJ9+65vaXgO6V4HpMRQMXaWQJ70GC
- /w56rymUKBMX0Sq1tk/bS9Yi8PLqnZZzKxj88zfnuQ3+aXwWFVDlW/dQBJHe3xGcF1On 1g== 
-Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
- by mx0b-00069f02.pphosted.com with ESMTP id 38wx9fr3q5-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 02 Jun 2021 06:36:01 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
- by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 1526a0B3168714;
- Wed, 2 Jun 2021 06:36:00 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
- by aserp3020.oracle.com with ESMTP id 38udeayrnh-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 02 Jun 2021 06:36:00 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
- by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1526Zxo6168609;
- Wed, 2 Jun 2021 06:35:59 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
- by aserp3020.oracle.com with ESMTP id 38udeayrkj-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 02 Jun 2021 06:35:59 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
- by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 1526Zo7V020192;
- Wed, 2 Jun 2021 06:35:55 GMT
-Received: from kadam (/41.212.42.34) by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Tue, 01 Jun 2021 23:35:50 -0700
-Date: Wed, 2 Jun 2021 09:35:43 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Dongliang Mu <mudongliangabcd@gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9B6FAF80141
+ for <alsa-devel@alsa-project.org>; Wed,  2 Jun 2021 08:47:12 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 9B59FA003F;
+ Wed,  2 Jun 2021 08:47:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 9B59FA003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1622616430; bh=9oZydlE7ZvsDH6T9qh0iMZKszEstZjjcoeV/i59z/mE=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=M2C6beweJKaC2OtGnhH8ZlHfEitgurkfioMrWGLO3yHZrVOeHi0nDavbWPLAIzGaF
+ kdMhKP9KO5i1XnOua7KzrGJpqA0cS2i5AozuSx59u1uu/+rPfZJWztqlKKzVhouRQT
+ vr23yqiL0CihyZawpR6EH90q0w/AAiov7hiBiNsY=
+Received: from p1gen2.localdomain (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Wed,  2 Jun 2021 08:47:04 +0200 (CEST)
 Subject: Re: [PATCH v2] ALSA: control led: fix memory leak in
  snd_ctl_led_register
-Message-ID: <20210602063543.GB10983@kadam>
+To: Dongliang Mu <mudongliangabcd@gmail.com>, tiwai@suse.com,
+ dan.carpenter@oracle.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 References: <20210602034136.2762497-1-mudongliangabcd@gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <1032c823-90aa-0144-eb7a-ff1a019c3094@perex.cz>
+Date: Wed, 2 Jun 2021 08:47:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 In-Reply-To: <20210602034136.2762497-1-mudongliangabcd@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: lZx4N9uLYLfLPXlB1XU0SPq9KH3jp0Eq
-X-Proofpoint-ORIG-GUID: lZx4N9uLYLfLPXlB1XU0SPq9KH3jp0Eq
-Cc: syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,7 +89,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Jun 02, 2021 at 11:41:36AM +0800, Dongliang Mu wrote:
+On 02. 06. 21 5:41, Dongliang Mu wrote:
 > The snd_ctl_led_sysfs_add and snd_ctl_led_sysfs_remove should contain
 > the refcount operations in pair. However, snd_ctl_led_sysfs_remove fails
 > to decrease the refcount to zero, which causes device_release never to
@@ -128,20 +103,15 @@ On Wed, Jun 02, 2021 at 11:41:36AM +0800, Dongliang Mu wrote:
 > Note that, when CONFIG_DEBUG_KOBJECT_RELEASE is enabled, put_device will
 > call kobject_release and delay the release of kobject, which will cause
 > use-after-free when the memory backing the kobject is freed at once.
-
-(Hopefully it's clear to everyone that this is in the original code and
-fixed in your patch).
-
 > 
 > Reported-by: syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
 > Fixes: a135dfb5de1 ("ALSA: led control - add sysfs kcontrol LED marking layer")
 > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> ---
 
-Looks perfect to me!
+Many thanks to you and Dan to cover this.
 
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Revieved-by: Jaroslav Kysela <perex@perex.cz>
 
-regards,
-dan carpenter
-
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
