@@ -2,114 +2,77 @@ Return-Path: <SRS0=h1r5=K4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 592DBC4708F
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 16:08:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DA7BC47083
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 16:18:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 38ADD61623
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 16:08:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 38ADD61623
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	by mail.kernel.org (Postfix) with ESMTPS id BA06961952
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 16:18:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA06961952
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2BFD716EE;
-	Wed,  2 Jun 2021 18:07:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BFD716EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id C756916F1;
+	Wed,  2 Jun 2021 18:17:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C756916F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622650101;
-	bh=qffgA95KvaNd1nKG4sOz+Kltytud/7UblM+zoMhqZfU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1622650699;
+	bh=fryZbV1WG4/wnitfveidkv/aHaYOjUvgIZf3uaJiM3o=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MUIylxRr7ui7ynls4m0MDPTrv95scbWmmP7s8DE7eMBKOEmq8jTZyFE+CWJgyOzFb
-	 blc6eb868sq9E3MyH2V3lTg/8NYskw1jHxhaamc4XS9SLomc5V1tuP37p40tnprUbp
-	 divOKYF96XZ8qwaLmNLQ9FUDU7SiXZ/VpaIIRZQw=
+	b=skkN75qG7/X/vjZ3VaNbI0cBfSqMXrg1lMjkFnoEaYkDVDAkLJfXUTftfOyMkefNz
+	 MOFV+PWPSGAwaJgxwXzQRembRiZxPdjLtp314rFhWw5GLMg6bAiO29hz9/gyXViX5y
+	 K9i05UtIC0rpfrr1oozZwcyVyTY1Z2jXL+buy5DI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AE747F802A9;
-	Wed,  2 Jun 2021 18:07:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32D9EF80424;
+	Wed,  2 Jun 2021 18:17:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 01548F80424; Wed,  2 Jun 2021 18:07:28 +0200 (CEST)
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com
- [IPv6:2607:f8b0:4864:20::229])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id D9D51F80424; Wed,  2 Jun 2021 18:17:27 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1C8CEF80141
- for <alsa-devel@alsa-project.org>; Wed,  2 Jun 2021 18:07:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C8CEF80141
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4EF37F80141
+ for <alsa-devel@alsa-project.org>; Wed,  2 Jun 2021 18:17:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4EF37F80141
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="j/5O522W"
-Received: by mail-oi1-x229.google.com with SMTP id f30so1850997oij.7
- for <alsa-devel@alsa-project.org>; Wed, 02 Jun 2021 09:07:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=YAZ7ZSfiugbOhQydoUaMJhIYB+bVGqv38BgoX6VqAHE=;
- b=j/5O522W9LSYYrKW9y59tk17EqPiEy6B3Mu6d/DngVNcdt76RphieNTFg+qkPe4exg
- iBRQnfM8P80qgcNaqPaWwfvPVjh6MlmlBCULycBD0OeICSAKNTxsgOiQ55CjE11/Cl+F
- qhHg+o4kbAQ2kNsd1RWdyTiprF2aXGBdBysLs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=YAZ7ZSfiugbOhQydoUaMJhIYB+bVGqv38BgoX6VqAHE=;
- b=jlpiOHGXp9w51olygcG26vCznxU2KCaQ5ePmX+DlW7iQqXOI7siwTWMHKLPCEeo5Q7
- unsYgQKkr4o3Gye6lA5RMvoyUwRM1ATAn8xrULVh63e7hClBbOrhYNjEWsnl5+eJqgFw
- txQkS0dAp9ktfep+hMQl1le1KEgZ3kSSzV7vjkl1EMno1xr9eTa70u/jKKCVF4GfjZF+
- G5rNILsBWFuefpdfcpbp4M1Ig8hhqVXTzVRmeTeHB+lpXRPA+OvoM3So36s3W6GdJpbn
- DI0fH6mDTnj5msXjuJkdSxJis/+RKq29doFcsY+wFh7H6E5grEUU2ZMRAVZwmhDlmk6m
- WT/A==
-X-Gm-Message-State: AOAM533tuoWohVo8R/1tApRjTzT3Tq1kIbIchjcs6c2IaUYpvlHhPruc
- 3OPvCjHScgfsgnUSeXxrf7KnRZDisuSXdA==
-X-Google-Smtp-Source: ABdhPJwWWIALnltD+LAkPQs0Gd3UghkG0ATB3SJs3UVuPuQ6IO3mUW89ZeuGhjHDTaLIAuHPXXS5uw==
-X-Received: by 2002:a05:6808:190:: with SMTP id
- w16mr4328970oic.92.1622650037254; 
- Wed, 02 Jun 2021 09:07:17 -0700 (PDT)
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com.
- [209.85.210.48])
- by smtp.gmail.com with ESMTPSA id t4sm46355ool.41.2021.06.02.09.07.17
- for <alsa-devel@alsa-project.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 02 Jun 2021 09:07:17 -0700 (PDT)
-Received: by mail-ot1-f48.google.com with SMTP id
- r26-20020a056830121ab02902a5ff1c9b81so2863041otp.11
- for <alsa-devel@alsa-project.org>; Wed, 02 Jun 2021 09:07:17 -0700 (PDT)
-X-Received: by 2002:ab0:c07:: with SMTP id a7mr21690857uak.120.1622650025634; 
- Wed, 02 Jun 2021 09:07:05 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="SOmayTI+"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 436826161E;
+ Wed,  2 Jun 2021 16:17:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1622650642;
+ bh=fryZbV1WG4/wnitfveidkv/aHaYOjUvgIZf3uaJiM3o=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=SOmayTI+r7KWzNhNiQ4aT9RO2AIDsWzg5lxqXvOuWcI0HmC4Yxp0KgqzibkA3f1cs
+ +jbAgJW31flOiymggoiiWsj7gHbtG9E4VCWCbZDqJM2y9jDBRWJsbiJfOrieqKQtkM
+ Agpk3wd7BaWhKR841LAai/VtYRTgaOHQMlUCP1dOM+onjj2KJ6PZqX/tatrID2Qijp
+ FrJHEd6ks6njghmJIJyGIQr/MH+UzTw1KQF5MiMmUUP1Ev02KgzRhEu3bTTqs+164i
+ 0Ck4+WzjmG/N5KT8YBKbgTBYt1/Yz5XBT5/UfKD9oV1+p5Oa2eXYMbXkLclWKY+QwV
+ NKx2QVqyTa6XQ==
+From: Mark Brown <broonie@kernel.org>
+To: Mark Pearson <markpearson@lenovo.com>
+Subject: Re: [PATCH] ASoC: AMD Renoir - add DMI entry for Lenovo 2020 AMD
+ platforms
+Date: Wed,  2 Jun 2021 17:16:52 +0100
+Message-Id: <162265045454.22459.12647691279142134758.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210531145502.6079-1-markpearson@lenovo.com>
+References: <markpearson@lenovo.com>
+ <20210531145502.6079-1-markpearson@lenovo.com>
 MIME-Version: 1.0
-References: <20210602155312.207401-1-judyhsiao@chromium.org>
-In-Reply-To: <20210602155312.207401-1-judyhsiao@chromium.org>
-From: Doug Anderson <dianders@chromium.org>
-Date: Wed, 2 Jun 2021 09:06:53 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=V_-oV7A_YPOFnCqUk5o=LBvf6KP1tNyVXTp=eeRkPaYQ@mail.gmail.com>
-Message-ID: <CAD=FV=V_-oV7A_YPOFnCqUk5o=LBvf6KP1tNyVXTp=eeRkPaYQ@mail.gmail.com>
-Subject: Re: [v4] ASoC: qcom: lpass-cpu: Fix pop noise during audio capture
- begin
-To: Judy Hsiao <judyhsiao@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Cc: Taniya Das <tdas@codeaurora.org>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Rohit kumar <rohitkr@codeaurora.org>, Patrick Lai <plai@codeaurora.org>,
- Andy Gross <agross@kernel.org>, Dylan Reid <dgreid@chromium.org>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, Judy Hsiao <judyhsiao@google.com>,
- Tzung-Bi Shih <tzungbi@chromium.org>,
- Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
- Stephan Gerhold <stephan@gerhold.net>,
- linux-arm-msm <linux-arm-msm@vger.kernel.org>,
- Stephen Boyd <swboyd@chromium.org>, Rob Herring <robh+dt@kernel.org>,
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- Jimmy Cheng-Yi Chiang <cychiang@google.com>, Takashi Iwai <tiwai@suse.com>,
- Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Gabriel Craciunescu <nix.or.die@gmail.com>,
+ lgirdwood@gmail.com, tiwai@suse.com, Mark Brown <broonie@kernel.org>,
+ stable@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -125,115 +88,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+On Mon, 31 May 2021 10:55:02 -0400, Mark Pearson wrote:
+> More laptops identified where the AMD ACP bridge needs to be blocked
+> or the microphone will not work when connected to HDMI.
+> 
+> Use DMI to block the microphone PCM device for these platforms.
 
-On Wed, Jun 2, 2021 at 8:54 AM Judy Hsiao <judyhsiao@chromium.org> wrote:
->
-> From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
->
-> This patch fixes PoP noise of around 15ms observed during audio
-> capture begin.
-> Enables BCLK and LRCLK in snd_soc_dai_ops prepare call for
-> introducing some delay before capture start and clock enable.
->
-> Co-developed-by: Judy Hsiao <judyhsiao@chromium.org>
-> Signed-off-by: Judy Hsiao <judyhsiao@chromium.org>
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> (am from https://patchwork.kernel.org/patch/12276369/)
-> (also found at https://lore.kernel.org/r/20210524142114.18676-1-srivasam@codeaurora.org)
->
-> ---
-> Chages Since V3:
->         -- Check BCLK is off before enabling it in lpass_cpu_daiops_prepare as
->            lpass_cpu_daiops_prepare can be called multiple times.
->         -- Check BCLK is on before disabling it in lpass_cpu_daiops_shutdown to
->            fix the WARN. It is because BCLK may not be enabled if
->            lpass_cpu_daiops_prepare is not called before lpass_cpu_daiops_shutdown.
->         -- Adds more comments.
-> Changes Since V2:
->         -- Updated comments as per linux style
->         -- Removed unrelated changes.
-> Changes Since V1:
->         -- Enableed BCLK and LRCLK in dai ops prepare API instead of startup API
->         -- Added comments
->
->  sound/soc/qcom/lpass-cpu.c | 83 +++++++++++++++++++++++++++++++++++++-
->  1 file changed, 82 insertions(+), 1 deletion(-)
->
-> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-> index af8cb64924a0..b572d7874554 100644
-> --- a/sound/soc/qcom/lpass-cpu.c
-> +++ b/sound/soc/qcom/lpass-cpu.c
-> @@ -6,6 +6,7 @@
->   */
->
->  #include <linux/clk.h>
-> +#include <linux/clk-provider.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
->  #include <linux/of.h>
-> @@ -93,8 +94,28 @@ static void lpass_cpu_daiops_shutdown(struct snd_pcm_substream *substream,
->                 struct snd_soc_dai *dai)
->  {
->         struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-> +       struct lpaif_i2sctl *i2sctl = drvdata->i2sctl;
-> +       unsigned int id = dai->driver->id;
->
->         clk_disable_unprepare(drvdata->mi2s_osr_clk[dai->driver->id]);
-> +       /*
-> +        * To ensure LRCLK disabled even in device node validation
-> +        * Will not impact if disabled in lpass_cpu_daiops_trigger()
-> +        * suspend.
-> +        */
-> +       if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> +               regmap_fields_write(i2sctl->spken, id, LPAIF_I2SCTL_SPKEN_DISABLE);
-> +       else
-> +               regmap_fields_write(i2sctl->micen, id, LPAIF_I2SCTL_MICEN_DISABLE);
-> +
-> +       /*
-> +        * BCLK may not be enabled if lpass_cpu_daiops_prepare is called before
-> +        * lpass_cpu_daiops_shutdown. It's paired with the clk_enable in
-> +        * lpass_cpu_daiops_prepare.
-> +        */
-> +       if (__clk_is_enabled(drvdata->mi2s_bit_clk[dai->driver->id]))
-> +               clk_disable(drvdata->mi2s_bit_clk[dai->driver->id]);
+Applied to
 
-Not a full review of this patch, but the above pattern is almost never
-correct. There's a reason that the __clk_is_enabled() is only in
-"clk-provider.h"--it's not intended to be called by clients.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Possibly a good solution (this is not code I've ever looked at) is to
-just have a boolean in your structure like "was_prepared". Then if
-"was_prepared" you can disable the clock. Also in the
-lpass_cpu_daiops_prepare() function you should only enable the clock
-if "!was_prepared" already.
+Thanks!
 
+[1/1] ASoC: AMD Renoir - add DMI entry for Lenovo 2020 AMD platforms
+      commit: 19a0aa9b04c5ab9a063b6ceaf7211ee7d9a9d24d
 
-> @@ -288,7 +321,8 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
->
->                 ret = clk_enable(drvdata->mi2s_bit_clk[id]);
->                 if (ret) {
-> -                       dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
-> +                       dev_err(dai->dev,
-> +                               "error in enabling mi2s bit clk: %d\n", ret);
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Why is there an unrelated change to wrapping here? Seems like you
-could drop this part of the change. If you really need to make this
-change (you probably don't since the 80 column rule has been relaxed
-and it's also existing code) then you could change it in a separate
-patch.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> +       /*
-> +        * Check BCLK is off before enabling it as lpass_cpu_daiops_prepare can
-> +        * be called multiple times. It's paired with the clk_disable in
-> +        * lpass_cpu_daiops_shutdown.
-> +        */
-> +       if (!__clk_is_enabled(drvdata->mi2s_bit_clk[dai->driver->id])) {
-> +               ret = clk_enable(drvdata->mi2s_bit_clk[id]);
-> +               if (ret) {
-> +                       dev_err(dai->dev,
-> +                               "error in enabling mi2s bit clk: %d\n", ret);
-> +                       clk_disable(drvdata->mi2s_osr_clk[id]);
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-If the clk_enable() failed then you shouldn't call clk_disable().
+Thanks,
+Mark
