@@ -6,72 +6,74 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79E86C4708F
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 16:19:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B2EEC4708F
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 16:19:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5395561950
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 16:19:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5395561950
+	by mail.kernel.org (Postfix) with ESMTPS id 43D7061948
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 16:19:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 43D7061948
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E58BC170C;
-	Wed,  2 Jun 2021 18:18:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E58BC170C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 98667170E;
+	Wed,  2 Jun 2021 18:19:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98667170E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622650768;
-	bh=H32PM2qecRNYvcKFMj5jWRXRrg43aAUqm+2D/jxKv9U=;
+	s=default; t=1622650793;
+	bh=8NTOtVAUlWpijIjD+K59+VsdlOTTwWVBZEPEICpdQiU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=j5CU+/GhCAExd0zQwp3xQdhrBJP5l1sj/Ye4nyFVNGhCZRH6dpcg/rAwd9H6eBP/r
-	 1xmL9VMR8hydYTzSO1AlUYEZtIimaRwKZ4frkJ9mRGzJHn3ZUvv3vWMISOt3DVV0Hr
-	 MfmfOkh7KDcDHzQKGvE2HqFfjLAe4lBLg2fY71P4=
+	b=YnSvNkwFtGDOwpt61dP9WDVL2bBtQmysdFMXRsCSGDPgZFcBGaKxQlDEg4SMIG6hL
+	 eScx2Sn4uh19z2LEuWHFzJGX6GejMQ/wLZCrCNMSfv16z+/w38COLpQo7aMhh/5tA9
+	 gXLjBG3OFlB00T080mj1QaehhuaVsSuF1PHVBWdE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 957F5F804CC;
-	Wed,  2 Jun 2021 18:17:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9E5A1F804D1;
+	Wed,  2 Jun 2021 18:17:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 41058F804BD; Wed,  2 Jun 2021 18:17:32 +0200 (CEST)
+ id D1803F804D2; Wed,  2 Jun 2021 18:17:34 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 65E6CF80431
- for <alsa-devel@alsa-project.org>; Wed,  2 Jun 2021 18:17:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65E6CF80431
+ by alsa1.perex.cz (Postfix) with ESMTPS id 50BAAF804C3
+ for <alsa-devel@alsa-project.org>; Wed,  2 Jun 2021 18:17:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50BAAF804C3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="WcfPF7Mc"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FDB86161E;
- Wed,  2 Jun 2021 16:17:27 +0000 (UTC)
+ header.b="gBjTIE9L"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DF1861943;
+ Wed,  2 Jun 2021 16:17:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1622650648;
- bh=H32PM2qecRNYvcKFMj5jWRXRrg43aAUqm+2D/jxKv9U=;
+ s=k20201202; t=1622650650;
+ bh=8NTOtVAUlWpijIjD+K59+VsdlOTTwWVBZEPEICpdQiU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=WcfPF7McSmUw1KIX/TI/lOH34wZWRcEz25+xcSu1iQJVGcIxs+Pjt55PF9UCdWrAK
- j+C2Au7Fov+X2vw74KTFYZ1RuVs0RchIHVkHogmQWWuLgN7MpJiPAHmtOFW+k4lpjs
- miUDN1tcCKruXMQ2Br3RAupY6MB5Nr7m7FA9RRUoSUdVQ8eJ+WqdL4gZpuX2nirUSY
- vT5Q4Jst3KJ6H1VvcIjo9rjrAWWRYLyuuw/7s6+Lt1PoK+hc8kddNkkD9L/8zx7YtF
- EgTeuu+260d6RuImszYStJW/px+77eI3eo7HSxt7JPA4m+Hp+94Haa6UdU3iNnZ2uN
- VsXdha6ieN1/A==
+ b=gBjTIE9LH9twgKWQYnj4/GAKhRzPCNCrdnNFa9Xr6aOEZ1AFkPtayHjNw+AmqO/mi
+ aBP+qQ2zlR4jaUg/g+wy4DyDTyc+C6XfdQ6rssF2nBHx3Gau5320aMLbTVENlwHDm+
+ W2Hr0xmGUweNXSgS+Fq6WwC125ZIKFs20umhwNctDX7/jOW0TiklK+QVwW85BodTMq
+ ZfjgTix5aLIYIwPzz/bmVwUKnZFmi/gt2UkJc3vQjJCD/d4Mgf0JAfiwU9nZCP7HmL
+ YudRKOfIfyXq01Vd7yUfE+LpPEnknjtRkSGJP8obPh74rrJs2Un9Nc5k3xmkXZoBsx
+ qm0Aafr3SW07w==
 From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.com, yang.jie@linux.intel.com, perex@perex.cz,
- liam.r.girdwood@linux.intel.com, YueHaibing <yuehaibing@huawei.com>,
- cezary.rojewski@intel.com, pierre-louis.bossart@linux.intel.com
-Subject: Re: [PATCH -next] ASoC: Intel: Skylake: use DEVICE_ATTR_RO macro
-Date: Wed,  2 Jun 2021 17:16:54 +0100
-Message-Id: <162265045454.22459.4494001129448611734.b4-ty@kernel.org>
+To: Vincent Knecht <vincent.knecht@mailoo.org>
+Subject: Re: [PATCH v1 1/4] ASoC: dt-bindings: nxp,
+ tfa989x: Add tfa9897 support
+Date: Wed,  2 Jun 2021 17:16:55 +0100
+Message-Id: <162265045454.22459.11419124227044779135.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210524115506.35724-1-yuehaibing@huawei.com>
-References: <20210524115506.35724-1-yuehaibing@huawei.com>
+In-Reply-To: <20210528105101.508254-1-vincent.knecht@mailoo.org>
+References: <20210528105101.508254-1-vincent.knecht@mailoo.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- linux-kernel@vger.kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Stephan Gerhold <stephan@gerhold.net>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,9 +89,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 24 May 2021 19:55:06 +0800, YueHaibing wrote:
-> Use DEVICE_ATTR_RO() helper instead of plain DEVICE_ATTR(),
-> which makes the code a bit shorter and easier to read.
+On Fri, 28 May 2021 12:50:58 +0200, Vincent Knecht wrote:
+> Document TFA9897 bindings.
 
 Applied to
 
@@ -97,8 +98,14 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: Skylake: use DEVICE_ATTR_RO macro
-      commit: ae624a38be37e1a3127d5fa32c996e09974bb88d
+[1/4] ASoC: dt-bindings: nxp,tfa989x: Add tfa9897 support
+      commit: 513df99993857863e42bf3d7d65d87c191ce9493
+[2/4] ASoC: codecs: tfa989x: Add support for tfa9897
+      commit: 1ba1d69d8aa938f64cb07604b320a5074c3bb107
+[3/4] ASoC: dt-bindings: nxp, tfa989x: Add vddd-supply property
+      commit: 9cf1a98e2b0171e2586a13197a9a1ad605336166
+[4/4] ASoC: codecs: tfa989x: Add support for optional vddd-supply
+      commit: 8e5607e9941ce915187785bd09805bf7df9f7349
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
