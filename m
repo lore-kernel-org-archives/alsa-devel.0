@@ -2,80 +2,75 @@ Return-Path: <SRS0=h1r5=K4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DC01C4708F
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 16:24:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 817D1C4708F
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 16:59:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BD45E6195D
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 16:24:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BD45E6195D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id C64EB61C87
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Jun 2021 16:59:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C64EB61C87
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E582716F5;
-	Wed,  2 Jun 2021 18:23:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E582716F5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 876CB16FF;
+	Wed,  2 Jun 2021 18:58:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 876CB16FF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622651058;
-	bh=UCoY7WAQxdmxFwmXEbFK0I50CsM6OmgTJPzu0d26h3U=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1622653160;
+	bh=jrTfj4sC+GPM8Ryk5hwn0dFPMHBL1Cdfvz7t6I7XSH8=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WfXOyHaW3htJom2vaNQLguIG/VZsiDKw8Av2B6AeW8P+gLa3QEqsVLkwm+BcOJAF5
-	 3qBPeNGgtascqK1Podb12qKKFF3n6LQtJJx4KvXWYCQzcNjSisXAZ5tYFnK+tIc1KM
-	 fzvUgufK1fjp/YGFv5o0JUsMC4VNbA1mEv4HqViQ=
+	b=gvKPmJfkAXHD3PY9i02nUzq6RNs7jIZMt7PbQ2i2kuofFv0liTSC6v7fMSfJIhza/
+	 I8EislISKoW0+2FCVFDG+ZDUExiJrn8S0Jb0kZPAY9fiU2skjQ5cKOnxFEnk5xWlhI
+	 Cm/MpRHn7fD105vxbmZtQpWOIYk1oU9H7Qd4JFUU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7804FF802A9;
-	Wed,  2 Jun 2021 18:23:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21D0AF802A9;
+	Wed,  2 Jun 2021 18:58:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BD6D8F80424; Wed,  2 Jun 2021 18:23:26 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id E6BF9F80424; Wed,  2 Jun 2021 18:58:28 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4101BF80273
- for <alsa-devel@alsa-project.org>; Wed,  2 Jun 2021 18:23:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4101BF80273
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="fvjJyCIk"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA92A61621;
- Wed,  2 Jun 2021 16:23:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1622651002;
- bh=UCoY7WAQxdmxFwmXEbFK0I50CsM6OmgTJPzu0d26h3U=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=fvjJyCIks2sXfONtl5DXws6HSpqJ+p1K7nQGQkakuLocp90OPO2Mc2fCYObOLxU+Y
- cQd4xjecyKwA7dskXObml2Jed6QYrkaJzbWVsMA69EdRPF1Vr2clXbyAuf7zbawj9U
- WgpIN2zlyy4J7tGeTkooYge2hZIQ+lZTiOHMu0QwghHRQ2ru0rF5DsvR0gS3MzM3d1
- IgbQC79ncR8/y95710Tqothm9BW3JqiGhEn9DE9fwfRQhUmHIV8+w613CIfL6fZ1VR
- rweDYnYWq8083p4g4ZwrNA3lMkqrcnQgxQKTL49aCJEfdVBGv64lUeSHG9NcymiM/c
- PvG6YbjnyKlGA==
-Date: Wed, 2 Jun 2021 17:23:11 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Mark Pearson <markpearson@lenovo.com>
-Subject: Re: [External] Re: [PATCH] ASoC: AMD Renoir - add DMI entry for
- Lenovo 2020 AMD platforms
-Message-ID: <20210602162311.GB4914@sirena.org.uk>
-References: <markpearson@lenovo.com>
- <20210531145502.6079-1-markpearson@lenovo.com>
- <162265045454.22459.12647691279142134758.b4-ty@kernel.org>
- <8d6916ed-af82-e9ff-7728-411a5e2a48eb@lenovo.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2DC58F80103
+ for <alsa-devel@alsa-project.org>; Wed,  2 Jun 2021 18:58:16 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id A8577A0042;
+ Wed,  2 Jun 2021 18:58:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz A8577A0042
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1622653095; bh=sT4RPi+meQb9+r/aEG+lNDSsof33NXU66YQc/AJrJuc=;
+ h=Subject:To:References:Cc:From:Date:In-Reply-To:From;
+ b=EDxP/DFGEm8Ectgw2QDYhfIdSOOTmXVLGT3qWdbYXVIG7Xkc7jhLQwKPGAWO/zQ3k
+ zoWdiu+zvtIZ4/pDzh2+60fleVHOsfySK3ebUv+5TnqdTXUhVniCe1fSXTU4H6ZO/I
+ hgm3G4KtQ3ruYhj08hu4yVN0A3NQGfkH/VI/crVg=
+Received: from p1gen2.localdomain (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Wed,  2 Jun 2021 18:58:11 +0200 (CEST)
+Subject: Re: [PATCH] ALSA: timer: Fix master timer notification
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+References: <20210602113823.23777-1-tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <179e8e18-006d-f32b-ace9-3dd60ab7332b@perex.cz>
+Date: Wed, 2 Jun 2021 18:58:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="SkvwRMAIpAhPCcCJ"
-Content-Disposition: inline
-In-Reply-To: <8d6916ed-af82-e9ff-7728-411a5e2a48eb@lenovo.com>
-X-Cookie: I have a TINY BOWL in my HEAD
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: stable@kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- Gabriel Craciunescu <nix.or.die@gmail.com>, tiwai@suse.com
+In-Reply-To: <20210602113823.23777-1-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,36 +86,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 02. 06. 21 13:38, Takashi Iwai wrote:
+> snd_timer_notify1() calls the notification to each slave for a master
+> event, but it passes a wrong event number.  It should be +10 offset,
+> corresponding to SNDRV_TIMER_EVENT_MXXX, but it's incorrectly with
+> +100 offset.  Casually this was spotted by UBSAN check via syzkaller.
+> 
+> Reported-by: syzbot+d102fa5b35335a7e544e@syzkaller.appspotmail.com
+> Cc: <stable@vger.kernel.org>
+> Link: https://lore.kernel.org/r/000000000000e5560e05c3bd1d63@google.com
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
---SkvwRMAIpAhPCcCJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Reviewed-by: Jaroslav Kysela <perex@perex.cz>
 
-On Wed, Jun 02, 2021 at 12:19:25PM -0400, Mark Pearson wrote:
-> On 2021-06-02 12:16 p.m., Mark Brown wrote:
+> ---
+>  sound/core/timer.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/core/timer.c b/sound/core/timer.c
+> index 6898b1ac0d7f..92b7008fcdb8 100644
+> --- a/sound/core/timer.c
+> +++ b/sound/core/timer.c
+> @@ -520,9 +520,10 @@ static void snd_timer_notify1(struct snd_timer_instance *ti, int event)
+>  		return;
+>  	if (timer->hw.flags & SNDRV_TIMER_HW_SLAVE)
+>  		return;
+> +	event += 10; /* convert to SNDRV_TIMER_EVENT_MXXX */
+>  	list_for_each_entry(ts, &ti->slave_active_head, active_list)
+>  		if (ts->ccallback)
+> -			ts->ccallback(ts, event + 100, &tstamp, resolution);
+> +			ts->ccallback(ts, event, &tstamp, resolution);
+>  }
+>  
+>  /* start/continue a master timer */
+> 
 
-> My apologies - I found out just now that this patch causes problems for
-> the microphone that I'd missed so need to revert it. I was writing the
-> email to pull the patch when I got your update :(
 
-> Sorry for the confusion and churn - I need to go and work with the
-> firmware team to solve this one.
-
-OK, please send a patch doing the revert, explaining why it's required.
-
---SkvwRMAIpAhPCcCJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmC3sG4ACgkQJNaLcl1U
-h9CU0gf+KpUyNkhlRC55JdtpkQPk8L5LJt6imVAUOtjeeRWVr50H2QRM6Xyiqonu
-7ouM/XwVTSkzyKn650R1T7bVkwon6hRoprWWfnTn60txgaxQxFb+hqNR0OlyFu6m
-VZUZAbveXs5npvM8Lf8fPuxilbW22OryDCnTEXdPrJYCGeKkjITMIKBl1vWHfQG4
-Pk+0luleD3WEvNXThJoMe/IpFFSpiApeJnfDDxoleElsESVocUgkhBQ7srV69CJJ
-6dPm36gayeUvZCbOefAjadqXSkglbgRCKT5AbbsTFcefriF7PQ9R4r7xEPfe9qLU
-axWJhcGKdys7uslEuc9IjdlW0FQ0Gg==
-=JwRH
------END PGP SIGNATURE-----
-
---SkvwRMAIpAhPCcCJ--
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
