@@ -2,68 +2,72 @@ Return-Path: <SRS0=JknX=K5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83D9AC47096
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 09:57:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80DD9C47082
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 10:45:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F1364613E6
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 09:57:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F1364613E6
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sntech.de
+	by mail.kernel.org (Postfix) with ESMTPS id 29E7E613BF
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 10:45:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 29E7E613BF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 89A9716DF;
-	Thu,  3 Jun 2021 11:56:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89A9716DF
+	by alsa0.perex.cz (Postfix) with ESMTPS id CF27416E7;
+	Thu,  3 Jun 2021 12:45:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF27416E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622714240;
-	bh=4TVdLqCYVtS2itMf7J25AxarDd3UIUhTCdM3TjsKi3s=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1622717150;
+	bh=Q9GzYyO3MLOEF+16xEo7OOBPtskk5ro9mDed/HyHwWM=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DhSXY8077uvFNGmD5cOPBwnboZLRdfpQTFJklczMpmSIi7qDAAKgdf9h0lNzefEWj
-	 /asro9NvzBu1tYE82Jfbl2yxMM4QI6cO/eQier101R0rseLVDmSPDx65pXcyvnM28s
-	 zUZZN0BXQw95DkLQOJqBlw/XC24NFxGQ57FeQHsM=
+	b=tivRGt66WGF+JIcMBQ5xlE/9PamDzW05PV1u6s2bjJXGChd++dE0Ey4UGWIMixx28
+	 QzAoXQ4hLDAovidcXaeisOp0mDYAStQn9ijn3FXCpHHWQ0bE7ZojxEW66r0DkKhJVP
+	 prAY03N6aYKsZqX4cVtNvwJX+4xHBEmSDLcdMgkM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23741F80253;
-	Thu,  3 Jun 2021 11:56:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 588C1F80253;
+	Thu,  3 Jun 2021 12:45:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 393D6F80254; Thu,  3 Jun 2021 11:56:28 +0200 (CEST)
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 0FBA3F80254; Thu,  3 Jun 2021 12:44:59 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 412ECF80100
- for <alsa-devel@alsa-project.org>; Thu,  3 Jun 2021 11:56:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 412ECF80100
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74]
- helo=phil.lan)
- by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
- (Exim 4.92) (envelope-from <heiko@sntech.de>)
- id 1lok5L-0004PQ-Ne; Thu, 03 Jun 2021 11:56:19 +0200
-From: Heiko Stuebner <heiko@sntech.de>
-To: alsa-devel@alsa-project.org,
-	Chris Morgan <macroalpha82@gmail.com>
-Subject: Re: (subset) [PATCH v12 0/4] ASoC: codecs: add rk817 support
-Date: Thu,  3 Jun 2021 11:56:17 +0200
-Message-Id: <162271417225.3165003.1198477663030831596.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210519203754.27184-1-macroalpha82@gmail.com>
-References: <20210519203754.27184-1-macroalpha82@gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0C86AF80103
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jun 2021 12:44:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C86AF80103
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+ by youngberry.canonical.com with esmtpsa (TLS1.2) tls
+ TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.93)
+ (envelope-from <colin.king@canonical.com>)
+ id 1lokqD-0000F1-Fr; Thu, 03 Jun 2021 10:44:45 +0000
+Subject: Re: [PATCH][next] ASoC: rsnd: check for zero node count
+To: Dan Carpenter <dan.carpenter@oracle.com>
+References: <20210602103722.12128-1-colin.king@canonical.com>
+ <20210602112135.GF1955@kadam>
+From: Colin Ian King <colin.king@canonical.com>
+Message-ID: <569dcd35-8bd5-91eb-1d6a-e0ac6506586d@canonical.com>
+Date: Thu, 3 Jun 2021 11:44:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
- lgirdwood@gmail.com, broonie@kernel.org, tiwai@suse.com,
- pierre-louis.bossart@linux.intel.com, linux-rockchip@lists.infradead.org,
- robh+dt@kernel.org, Chris Morgan <macromorgan@hotmail.com>, jbx6244@gmail.com,
- lee.jones@linaro.org, maccraft123mc@gmail.com
+In-Reply-To: <20210602112135.GF1955@kadam>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,88 +83,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 19 May 2021 15:37:50 -0500, Chris Morgan wrote:
-> This series is to add support for the Rockchip rk817 audio codec which
-> is present in all Rockchip rk817 MFD chips.
+On 02/06/2021 12:21, Dan Carpenter wrote:
+> On Wed, Jun 02, 2021 at 11:37:22AM +0100, Colin King wrote:
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> The call to rsnd_node_count can potentially return a zero node count
+>> so add a check for this corner case. (Note that the two other calls
+>> to rsnd_node_count in the kernel perform this check, so I think it
+>> justifies adding this). This avoids using a zero nr in a devm_kcalloc
+>> call.
 > 
-> Changes in v12:
->  - Updated codec cell in MFD driver to a single line.
-> Changes in v11:
->  - Stopped checking for presence of parent node in codec driver, as
->    driver should never be called if parent device doesn't exist to call
->    it.
->  - Made codec subnode optional and stopped returning errors if it is
->    missing.
->  - Downgraded missing codec clock message from dev_err to dev_dbg.
->    Users who choose to use the rk817 PMIC but do not choose to use the
->    codec will not get an error message unless they have debugging
->    enabled, whereas users who wish to use the codec but don't have the
->    clock defined will not get an error message unless they have
->    debug messages enabled. This seems like a fair compromise between
->    mututally exclusive users. Note that errors with the clock or codec
->    will still result in a dev_err.
->  - Updated DT documentation to note that codec subnode is optional if
->    no properties are to exist beneath it.
-> Changes in v10:
->  - Correct order of test/ack/signed-off to chronological order.
->  - Removed ifdef from mfd driver keep cell from being added when the
->    codec was not to be built.
->  - Changed codec DT parsing messages from error to debug to prevent
->    errors in dmesg log in the rare but valid case a user has the rk817
->    PMIC but does not use the codec.
-> Changes in v9:
->  - Add cover letter.
->  - Remove documentation for interrupt parent per Rob Herring's request.
->  - Remove unused MODULE_DEVICE_TABLE to fix a bug identified by kernel test
->    robot.
-> Changes in v8:
->  - Added additional documentation for missing properties of
->    #sound-dai-cells, interrupt-parent, and wakeup-source for mfd
->    documentation.
->  - Corrected order of elements descriptions in device tree documentation.
->  - Changed name of "mic-in-differential" to
->    "rockchip,mic-in-differential".
->  - Changed name of sound card from "rockchip,rk817-codec" to "Analog".
->  - Removed unused resets and reset-names from the i2s1_2ch node.
-> Changes in v7:
->  - Removed ifdef around register definitions for MFD.
->  - Replaced codec documentation with updates to MFD documentation.
->  - Reordered elements in example to comply with upstream rules.
->  - Added binding update back for Odroid Go Advance as requested.
->  - Submitting patches from gmail now.
-> Changes in v6:
->  - Included additional project maintainers for correct subsystems.
->  - Removed unneeded compatible from DT documentation.
->  - Removed binding update for Odroid Go Advance (will do in separate
->    series).
-> Changes in v5:
->  - Move register definitions from rk817_codec.h to main rk808.h register
->    definitions.
->  - Add volatile register for codec bits.
->  - Add default values for codec bits.
->  - Removed of_compatible from mtd driver (not necessary).
->  - Switched to using parent regmap instead of private regmap for codec.
-> Changes in v4:
->  - Created set_pll() call.
->  - Created user visible gain control in mic.
->  - Check for return value of clk_prepare_enable().
->  - Removed duplicate clk_prepare_enable().
->  - Split DT documentation to separate commit.
-> Changes in v3:
->  - Use DAPM macros to set audio path.
->  - Updated devicetree binding (as every rk817 has this codec chip).
->  - Changed documentation to yaml format.
->  - Split MFD changes to separate commit.
-> Changes in v2:
->  - Fixed audio path registers to solve some bugs.
+> I don't have a problem with the patch, but really the code works fine
+> as is.  A better commit message is:
 > 
-> [...]
+>   Most callers of_get_child_count() check that "nr" is non-zero so it
+>   causes a static checker warning when we don't do that here.  This
+>   doesn't cause a problem or a crash, but having zero SSUIes (What's
+>   plural of ssui?) doesn't make sense either so let's add a check.
 
-Applied, thanks!
+Good idea. I'll send a V2. Thanks Dan.
 
-[4/4] arm64: dts: rockchip: add rk817 codec to Odroid Go
-      commit: 18d5c7bf50c6d820c366c2a23d71d468b14c87d6
+> 
+> regards,
+> dan carpenter
+> 
 
-Best regards,
--- 
-Heiko Stuebner <heiko@sntech.de>
