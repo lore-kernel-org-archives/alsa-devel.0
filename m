@@ -7,50 +7,50 @@ X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 942D6C47096
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 09:50:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EC38C47082
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 09:52:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D0EB6613EE
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 09:50:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D0EB6613EE
+	by mail.kernel.org (Postfix) with ESMTPS id 2401C613DA
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 09:52:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2401C613DA
 Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 93A3B16E7;
-	Thu,  3 Jun 2021 11:49:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93A3B16E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7BB7E16EE;
+	Thu,  3 Jun 2021 11:51:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7BB7E16EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622713823;
-	bh=i38MWEdSonrIsNVLuinOsurUcc4+02iBTM2VFrlVytM=;
+	s=default; t=1622713939;
+	bh=jymY0UU5csv7Cc3Qsm33nZ3EVW4y8i6rASl5KWFr1Bw=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FlYQwlhN+rLJxzp/I0qKNfiuIqhpl0uj7dtpfTnPtNIimPIrj2UERRMfcXGu/Lae8
-	 HizOjv+nGJWOoDcgSrJhxK6OONtksE077EPQ5j4Ubjsf/AuUs0eS8vqWUZE9HhmyrE
-	 Wek7AnJblHwgj1SxQAVgVtRNYf6x4AgsLPKrvLNg=
-Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 21E9EF80100;
-	Thu,  3 Jun 2021 11:49:33 +0200 (CEST)
+	b=uE9WN+ziTC1j12SltotO4Ne2mbK1KqZ8GuYLzdEYISsS2yPRoqK/nHhMCJrbE8Z/P
+	 I1FrmJAQLD2NwfNv1ixxBZIFvHLIzhVIZWR5sxDvFl6sIuJXeB6P6q7lPB3Cv8diAt
+	 oZy/CE3CDKpm+is9eDmIsCj6cCwst72Bo0d+clHk=
+Received: from vmi242170.contaboserver.net (localhost.localdomain [127.0.0.1])
+	by alsa1.perex.cz (Postfix) with ESMTP id 1BABCF80100;
+	Thu,  3 Jun 2021 11:51:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3F6F9F80254; Thu,  3 Jun 2021 11:49:31 +0200 (CEST)
+ id AB3DCF80254; Thu,  3 Jun 2021 11:51:22 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 08939F80100
- for <alsa-devel@alsa-project.org>; Thu,  3 Jun 2021 11:49:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08939F80100
+ by alsa1.perex.cz (Postfix) with ESMTP id 9B968F80100
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jun 2021 11:51:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B968F80100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1622713761312242985-webhooks-bot@alsa-project.org>
-References: <1622713761312242985-webhooks-bot@alsa-project.org>
+In-Reply-To: <1622713875455584049-webhooks-bot@alsa-project.org>
+References: <1622713875455584049-webhooks-bot@alsa-project.org>
 Subject: Speakers + Microphone Volume Reset
-Message-Id: <20210603094931.3F6F9F80254@alsa1.perex.cz>
-Date: Thu,  3 Jun 2021 11:49:31 +0200 (CEST)
+Message-Id: <20210603095122.AB3DCF80254@alsa1.perex.cz>
+Date: Thu,  3 Jun 2021 11:51:22 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,7 +66,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #144 was opened from rosenbergd:
+alsa-project/alsa-lib issue #144 was edited from rosenbergd:
 
 Every time I start up, connect or disconnect headphones, my volume resets to 74%, I've also noticed the microphone is doing the same thing.
 
@@ -143,6 +143,9 @@ D: [alsa-sink-ALC892 Analog] alsa-sink.c: Read hardware volume: front-left: 4858
 I: [pulseaudio] module-device-restore.c: Storing volume/mute for device+port sink:alsa_output.pci-0000_00_1f.3.analog-stereo:analog-output-headphones.
 I: [pulseaudio] module-device-restore.c: Synced.
 ```
+
+I'm using Linux Mint 20.1 Cinnamon v4.8.6
+Kernel `v5.4.0-74` (but this was happening on `-73` as well)
 
 Issue URL     : https://github.com/alsa-project/alsa-lib/issues/144
 Repository URL: https://github.com/alsa-project/alsa-lib
