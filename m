@@ -7,70 +7,72 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02B60C47097
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 17:08:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13ED4C47098
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 17:09:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1272C6141B
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 17:08:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1272C6141B
+	by mail.kernel.org (Postfix) with ESMTPS id 0983E613F6
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 17:09:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0983E613F6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 43C6E16FB;
-	Thu,  3 Jun 2021 19:07:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43C6E16FB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 78E931703;
+	Thu,  3 Jun 2021 19:08:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78E931703
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622740121;
-	bh=se+aOlbWApVvK3k0JF45tpjgMrRLW7650QOY6f5iKO4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ls+Mwn8TwEQjvQ6bK4UAEfrLeu6qB3hi0kgoamkAdoi2kDR/9/Mzjs1t1jvKQsHKU
-	 KvJ2r/jTsOI2RbXlM6tVdFDebyovXq2aplTQ/VlecHFYt+FllHdl7tKB/b5enPp13Y
-	 0uQM3vZKBI8NCotQImKF37LZVs6M7gw2phno/v+8=
+	s=default; t=1622740172;
+	bh=BBKDhLvfHfDQKntbuT6ln9K7x/C71GDfo+Ci54AwVFk=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=BmW8gtk0SfaJo5Qm4ISTh/c5AfJaZZt4ZnQKzVCc/8LCMrlZ+cmGsqVxbyPL/kCEe
+	 lE/D0pz8EbIFzP1mcyHx6omgQMPDOfss9U63D+iZKBXb29a97pP8lKop5uytZy8Len
+	 DTGDGEnf2FCsh3jxmWsLZ555Rl9zqbvgrgwP7TMk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AC95DF80253;
-	Thu,  3 Jun 2021 19:07:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E921F804BC;
+	Thu,  3 Jun 2021 19:07:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C2F3EF8025B; Thu,  3 Jun 2021 19:07:48 +0200 (CEST)
+ id 9C13AF80269; Thu,  3 Jun 2021 19:07:48 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 634E8F800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 658A7F80253
  for <alsa-devel@alsa-project.org>; Thu,  3 Jun 2021 19:07:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 634E8F800E5
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 658A7F80253
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="nqwGfm4u"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D634613BA;
- Thu,  3 Jun 2021 17:07:35 +0000 (UTC)
+ header.b="WOHNvscv"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7ED5613C9;
+ Thu,  3 Jun 2021 17:07:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1622740056;
- bh=se+aOlbWApVvK3k0JF45tpjgMrRLW7650QOY6f5iKO4=;
- h=From:To:Cc:Subject:Date:From;
- b=nqwGfm4u5tTS6urKHYq3Nnl2cJMZxBjcyC7izdfHt6weeoTeHsrx+aw7wnihf0W0z
- CKUrqMPCkKKIXkLcDzaoraTK9PNxvZ1v9k3TyFSVivPV8WnvWrewX6XOWD6gI5aFG2
- XqcJIsMULcjOXK26mrTyIKof7L7tgDUh3+t3nOYox1p9BYg57SjApMZhDUFDescwoe
- gRCnK+0fFpsQH2qlvCuWWYW0ZV4yxJPrTOcO5buyhA3nb6pj5o9ZfIb5AEB6Qp/MRT
- BArM/0ZgLZwST78GBI2GFtjSguL8H7bD364sVR5Rv+qmYq26qzHIYPfDrXYUU+Tc4A
- 7ZZu8cZ1tQ38Q==
+ s=k20201202; t=1622740057;
+ bh=BBKDhLvfHfDQKntbuT6ln9K7x/C71GDfo+Ci54AwVFk=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=WOHNvscvzPrRH0yqDmRJ1IPRMGvjcvWKxRk0Y9JTos1n70tPEXsg+z+rDuNVefO1u
+ 6xWJ6SkyHhnTSo6Kojz5f02tUdY2oArrVBabPzam8HhsH64DmsVNd/SnaBE01ndsV4
+ sByuGOTCPsZb0XTmX4MGm/HGVVPw+kT351vSdAHHL/b4JJnULclEnI5n8CKi1pXP7J
+ 4ftKygscvFRh+T5nXtbyJXqrArQvsmbe4nkRlbmQ18PgDVSML8EWA2d8D1zpwGgg0u
+ 9O2UxunMR/kjQYgJhaMVv0e7rgzae/MIhPdr/wr+ZFa6qgY/a8NdpdqQqix4bZu8N6
+ ak3F1p6UZw0xA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.12 01/43] ASoC: max98088: fix ni clock divider
- calculation
-Date: Thu,  3 Jun 2021 13:06:51 -0400
-Message-Id: <20210603170734.3168284-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.12 02/43] ASoC: amd: fix for pcm_read() error
+Date: Thu,  3 Jun 2021 13:06:52 -0400
+Message-Id: <20210603170734.3168284-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210603170734.3168284-1-sashal@kernel.org>
+References: <20210603170734.3168284-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, Marco Felsch <m.felsch@pengutronix.de>
+ Mark Brown <broonie@kernel.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,86 +88,115 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Marco Felsch <m.felsch@pengutronix.de>
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 
-[ Upstream commit 6c9762a78c325107dc37d20ee21002b841679209 ]
+[ Upstream commit 6879e8e759bf9e05eaee85e32ca1a936e6b46da1 ]
 
-The ni1/ni2 ratio formula [1] uses the pclk which is the prescaled mclk.
-The max98088 datasheet [2] has no such formula but table-12 equals so
-we can assume that it is the same for both devices.
+Below phython script throwing pcm_read() error.
 
-While on it make use of DIV_ROUND_CLOSEST_ULL().
+import subprocess
 
-[1] https://datasheets.maximintegrated.com/en/ds/MAX98089.pdf; page 86
-[2] https://datasheets.maximintegrated.com/en/ds/MAX98088.pdf; page 82
+p = subprocess.Popen(["aplay -t raw -D plughw:1,0 /dev/zero"], shell=True)
+subprocess.call(["arecord -Dhw:1,0 --dump-hw-params"], shell=True)
+subprocess.call(["arecord -Dhw:1,0 -fdat -d1 /dev/null"], shell=True)
+p.kill()
 
-Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
-Link: https://lore.kernel.org/r/20210423135402.32105-1-m.felsch@pengutronix.de
+Handling ACP global external interrupt enable register
+causing this issue.
+This register got updated wrongly when there is active
+stream causing interrupts disabled for active stream.
+Refactored code to handle enabling and disabling external interrupts.
+
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Link: https://lore.kernel.org/r/1619555017-29858-1-git-send-email-Vijendar.Mukunda@amd.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/max98088.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ sound/soc/amd/raven/acp3x-pcm-dma.c | 10 ----------
+ sound/soc/amd/raven/acp3x.h         |  1 +
+ sound/soc/amd/raven/pci-acp3x.c     | 15 +++++++++++++++
+ 3 files changed, 16 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
-index 4be24e7f51c8..f8e49e45ce33 100644
---- a/sound/soc/codecs/max98088.c
-+++ b/sound/soc/codecs/max98088.c
-@@ -41,6 +41,7 @@ struct max98088_priv {
- 	enum max98088_type devtype;
- 	struct max98088_pdata *pdata;
- 	struct clk *mclk;
-+	unsigned char mclk_prescaler;
- 	unsigned int sysclk;
- 	struct max98088_cdata dai[2];
- 	int eq_textcnt;
-@@ -998,13 +999,16 @@ static int max98088_dai1_hw_params(struct snd_pcm_substream *substream,
-        /* Configure NI when operating as master */
-        if (snd_soc_component_read(component, M98088_REG_14_DAI1_FORMAT)
-                & M98088_DAI_MAS) {
-+               unsigned long pclk;
+diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
+index 417cda24030c..2447a1e6e913 100644
+--- a/sound/soc/amd/raven/acp3x-pcm-dma.c
++++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
+@@ -237,10 +237,6 @@ static int acp3x_dma_open(struct snd_soc_component *component,
+ 		return ret;
+ 	}
+ 
+-	if (!adata->play_stream && !adata->capture_stream &&
+-	    !adata->i2ssp_play_stream && !adata->i2ssp_capture_stream)
+-		rv_writel(1, adata->acp3x_base + mmACP_EXTERNAL_INTR_ENB);
+-
+ 	i2s_data->acp3x_base = adata->acp3x_base;
+ 	runtime->private_data = i2s_data;
+ 	return ret;
+@@ -367,12 +363,6 @@ static int acp3x_dma_close(struct snd_soc_component *component,
+ 		}
+ 	}
+ 
+-	/* Disable ACP irq, when the current stream is being closed and
+-	 * another stream is also not active.
+-	 */
+-	if (!adata->play_stream && !adata->capture_stream &&
+-		!adata->i2ssp_play_stream && !adata->i2ssp_capture_stream)
+-		rv_writel(0, adata->acp3x_base + mmACP_EXTERNAL_INTR_ENB);
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/amd/raven/acp3x.h b/sound/soc/amd/raven/acp3x.h
+index 03fe93913e12..c3f0c8b7545d 100644
+--- a/sound/soc/amd/raven/acp3x.h
++++ b/sound/soc/amd/raven/acp3x.h
+@@ -77,6 +77,7 @@
+ #define ACP_POWER_OFF_IN_PROGRESS	0x03
+ 
+ #define ACP3x_ITER_IRER_SAMP_LEN_MASK	0x38
++#define ACP_EXT_INTR_STAT_CLEAR_MASK 0xFFFFFFFF
+ 
+ struct acp3x_platform_info {
+ 	u16 play_i2s_instance;
+diff --git a/sound/soc/amd/raven/pci-acp3x.c b/sound/soc/amd/raven/pci-acp3x.c
+index d3536fd6a124..a013a607b3d4 100644
+--- a/sound/soc/amd/raven/pci-acp3x.c
++++ b/sound/soc/amd/raven/pci-acp3x.c
+@@ -76,6 +76,19 @@ static int acp3x_reset(void __iomem *acp3x_base)
+ 	return -ETIMEDOUT;
+ }
+ 
++static void acp3x_enable_interrupts(void __iomem *acp_base)
++{
++	rv_writel(0x01, acp_base + mmACP_EXTERNAL_INTR_ENB);
++}
 +
-                if (max98088->sysclk == 0) {
-                        dev_err(component->dev, "Invalid system clock frequency\n");
-                        return -EINVAL;
-                }
-                ni = 65536ULL * (rate < 50000 ? 96ULL : 48ULL)
-                                * (unsigned long long int)rate;
--               do_div(ni, (unsigned long long int)max98088->sysclk);
-+               pclk = DIV_ROUND_CLOSEST(max98088->sysclk, max98088->mclk_prescaler);
-+               ni = DIV_ROUND_CLOSEST_ULL(ni, pclk);
-                snd_soc_component_write(component, M98088_REG_12_DAI1_CLKCFG_HI,
-                        (ni >> 8) & 0x7F);
-                snd_soc_component_write(component, M98088_REG_13_DAI1_CLKCFG_LO,
-@@ -1065,13 +1069,16 @@ static int max98088_dai2_hw_params(struct snd_pcm_substream *substream,
-        /* Configure NI when operating as master */
-        if (snd_soc_component_read(component, M98088_REG_1C_DAI2_FORMAT)
-                & M98088_DAI_MAS) {
-+               unsigned long pclk;
++static void acp3x_disable_interrupts(void __iomem *acp_base)
++{
++	rv_writel(ACP_EXT_INTR_STAT_CLEAR_MASK, acp_base +
++		  mmACP_EXTERNAL_INTR_STAT);
++	rv_writel(0x00, acp_base + mmACP_EXTERNAL_INTR_CNTL);
++	rv_writel(0x00, acp_base + mmACP_EXTERNAL_INTR_ENB);
++}
 +
-                if (max98088->sysclk == 0) {
-                        dev_err(component->dev, "Invalid system clock frequency\n");
-                        return -EINVAL;
-                }
-                ni = 65536ULL * (rate < 50000 ? 96ULL : 48ULL)
-                                * (unsigned long long int)rate;
--               do_div(ni, (unsigned long long int)max98088->sysclk);
-+               pclk = DIV_ROUND_CLOSEST(max98088->sysclk, max98088->mclk_prescaler);
-+               ni = DIV_ROUND_CLOSEST_ULL(ni, pclk);
-                snd_soc_component_write(component, M98088_REG_1A_DAI2_CLKCFG_HI,
-                        (ni >> 8) & 0x7F);
-                snd_soc_component_write(component, M98088_REG_1B_DAI2_CLKCFG_LO,
-@@ -1113,8 +1120,10 @@ static int max98088_dai_set_sysclk(struct snd_soc_dai *dai,
-         */
-        if ((freq >= 10000000) && (freq < 20000000)) {
-                snd_soc_component_write(component, M98088_REG_10_SYS_CLK, 0x10);
-+               max98088->mclk_prescaler = 1;
-        } else if ((freq >= 20000000) && (freq < 30000000)) {
-                snd_soc_component_write(component, M98088_REG_10_SYS_CLK, 0x20);
-+               max98088->mclk_prescaler = 2;
-        } else {
-                dev_err(component->dev, "Invalid master clock frequency\n");
-                return -EINVAL;
+ static int acp3x_init(struct acp3x_dev_data *adata)
+ {
+ 	void __iomem *acp3x_base = adata->acp3x_base;
+@@ -93,6 +106,7 @@ static int acp3x_init(struct acp3x_dev_data *adata)
+ 		pr_err("ACP3x reset failed\n");
+ 		return ret;
+ 	}
++	acp3x_enable_interrupts(acp3x_base);
+ 	return 0;
+ }
+ 
+@@ -100,6 +114,7 @@ static int acp3x_deinit(void __iomem *acp3x_base)
+ {
+ 	int ret;
+ 
++	acp3x_disable_interrupts(acp3x_base);
+ 	/* Reset */
+ 	ret = acp3x_reset(acp3x_base);
+ 	if (ret) {
 -- 
 2.30.2
 
