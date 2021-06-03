@@ -6,75 +6,72 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE17FC47082
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 18:44:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DAF3C47096
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 18:44:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 048D3613F1
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 18:44:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 048D3613F1
+	by mail.kernel.org (Postfix) with ESMTPS id 7660B613EE
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 18:44:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7660B613EE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6C0AD16E3;
-	Thu,  3 Jun 2021 20:43:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C0AD16E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE813172B;
+	Thu,  3 Jun 2021 20:43:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE813172B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622745882;
-	bh=aKL4P90UklmZRmziqJ/4jcRmInWRC0xeazGe6Lr2jnI=;
+	s=default; t=1622745887;
+	bh=14roOXPcs5DCgt6AKrjuC09a0UVpqCCBpqmcJOOjjOo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OqYwuZ6IpAGdCfbaRVQHW1x+ATHK+WOjBgcrx53FCcg/67Ft5fahHwf+HlF/llD4A
-	 ooD5jL/axFVETsGNRcy2qTV7OjaOYMz+k8f6wi93XbbI0cCdBjKZ4+AT2cd2cZvmGP
-	 FwU+R8ysT00ibwhQbTG7UFf9uCiLB8thWz1Fz7fY=
+	b=QqMd9bQ2tT+X8ibjb9hCVLipOW6mS0lcMP2xqrzrUd7SRosdn1rhef9+AYDQikzvv
+	 CC6VY1ScOnqxGja4I2dVs8E/wz441CwVr6G9tA558h5kI1nu8o20FIYNpUWkcnhvU/
+	 wHTu6F0+p2VSovfwq3ssTOLu2h5QY8UjjqvPvHXw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3BECBF804AF;
-	Thu,  3 Jun 2021 20:43:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56EF5F804B0;
+	Thu,  3 Jun 2021 20:43:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 404D0F804AF; Thu,  3 Jun 2021 20:43:01 +0200 (CEST)
+ id 7EC50F802E7; Thu,  3 Jun 2021 20:42:59 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CA396F80100
- for <alsa-devel@alsa-project.org>; Thu,  3 Jun 2021 20:42:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA396F80100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 42986F80103
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jun 2021 20:42:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42986F80103
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="gCFuQkJ8"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80F45613F8;
- Thu,  3 Jun 2021 18:42:55 +0000 (UTC)
+ header.b="t8wUNjTc"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3CC0613EE;
+ Thu,  3 Jun 2021 18:42:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1622745776;
- bh=aKL4P90UklmZRmziqJ/4jcRmInWRC0xeazGe6Lr2jnI=;
+ s=k20201202; t=1622745773;
+ bh=14roOXPcs5DCgt6AKrjuC09a0UVpqCCBpqmcJOOjjOo=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=gCFuQkJ81vzUEtnrRDrzXadZrf0q7YjMasCaVD30QD5waYSlkzz7Gp9XqlCf4WW1p
- 53ZYMO5SzDVoqBQy0Pvvi2xBWpSyvfXp75MCEy4MNPCKGdd1qKfTnAwm6m/2PksaA2
- /9OCyjB1D/sHKE/BIPQkFGClsam8tVih6netE2WQ+qNl5QTq8MrYRvOaUsQSuFx1dL
- zOIwKWFDYim+LkEZhWgIgQ4R4vBPbm+Xl69Uu5SA2kdlRKhtboVFS9/aG0qoq4entZ
- lkJ1NhUMy01y5grIdP+xi7O/phdyev9u2lnOmPLaoou1jduKopebM/uQCj/bbbMnn2
- hK8n4N5fTDM9A==
+ b=t8wUNjTcGcWkZ5DfqA0kY0P2Izzr820EMwg6e3LAOS6MPs/RLZX6KNbxgAPK5ZMU9
+ /NT8Ca669gPagahF46HoK+HiRs3swYgS1UkOhfdQP1BFDAc/K2T+HlsTQZ6pkYzumU
+ UXYOh6qs9dj+Y7+qY2xUFPzjGIcIvIHuB+ejKkzdGzzy0Sp5cC5DQt0lyBzm0gvmtR
+ Meo1sEhEO4cuKnv6wBFjyugWnYKHf66WegNc8oPaAwK0dK6gGu8IsIfkQj9y629ldR
+ lp4gIU6HV+9zlmyCwUwYkWvhw+gtfa4Uod9w9PaBjnIIcPY4otK6xkO2yjgK9V+XWg
+ uLyAW46gf6tNg==
 From: Mark Brown <broonie@kernel.org>
-To: Sascha Hauer <s.hauer@pengutronix.de>, Rob Herring <robh+dt@kernel.org>,
- Oleksij Rempel <o.rempel@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [PATCH v2] ASoC: dt-bindings: Convert imx-audmux binding to json
- schema
-Date: Thu,  3 Jun 2021 19:41:59 +0100
-Message-Id: <162274557552.14795.1322019660591642626.b4-ty@kernel.org>
+To: alsa-devel@alsa-project.org,
+	Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH] ASoC: tas2562: Fix TDM_CFG0_SAMPRATE values
+Date: Thu,  3 Jun 2021 19:41:58 +0100
+Message-Id: <162274557550.14795.17431456709023435037.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210531064752.8809-1-o.rempel@pengutronix.de>
-References: <20210531064752.8809-1-o.rempel@pengutronix.de>
+In-Reply-To: <20210530203446.19022-1-richard@nod.at>
+References: <20210530203446.19022-1-richard@nod.at>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- NXP Linux Team <linux-imx@nxp.com>, kernel@pengutronix.de,
- Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
+Cc: robh@kernel.org, tiwai@suse.com, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, dmurphy@ti.com,
+ grandmaster@al2klimov.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,8 +87,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 31 May 2021 08:47:52 +0200, Oleksij Rempel wrote:
-> Convert the imx-audmux binding to DT schema format using json-schema
+On Sun, 30 May 2021 22:34:46 +0200, Richard Weinberger wrote:
+> TAS2562_TDM_CFG0_SAMPRATE_MASK starts at bit 1, not 0.
+> So all values need to be left shifted by 1.
 
 Applied to
 
@@ -99,8 +97,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: dt-bindings: Convert imx-audmux binding to json schema
-      commit: 14aa731dbf464f7272bcc2f0c4f32f6de28cbe8c
+[1/1] ASoC: tas2562: Fix TDM_CFG0_SAMPRATE values
+      commit: 8bef925e37bdc9b6554b85eda16ced9a8e3c135f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
