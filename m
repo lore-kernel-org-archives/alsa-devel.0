@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A070DC47099
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 17:10:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D337C47097
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 17:10:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 23A6961408
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 17:10:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 23A6961408
+	by mail.kernel.org (Postfix) with ESMTPS id 8A02761420
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 17:10:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8A02761420
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7E3931713;
-	Thu,  3 Jun 2021 19:09:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E3931713
+	by alsa0.perex.cz (Postfix) with ESMTPS id 23B0D1714;
+	Thu,  3 Jun 2021 19:09:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23B0D1714
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622740212;
-	bh=32aGDjf/ggu6KGnPHa/nyJsoyREiVd0JXqFVsWpBbBU=;
+	s=default; t=1622740225;
+	bh=Dksp/bCgj6burLYfea58pNgbY4OU8wSkl1Iduw4ho3k=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lh07cYRwrMHD1a7PZzuOKISItzY0UMldNrxusf5DjSzLzTCZnqsWfj267RKPAH4nM
-	 DMdw4nhaM2EGQibf2j2U9Kx7b4yjX4AAi6tBkW8w81j8iMR2LFwgZWMlB6sa1alVge
-	 RiYPpI3RMIKnLgmDaSnu3wa+q3PNHysNlGi/b/6Q=
+	b=R99BIBY12QT4uCdC+KKwj8FaTBmIVZ2iDt7s1OeecyRbHAqfoPylDZPvFBV5Y3vz7
+	 25gLMVBXex11yZpn2DqPw62JPF2JPsPgB4fozJCnU9m8C+lZa86P4cnIoKPNzUuZVl
+	 l/xY+J7fBbXa9wWhCq0LDkyY1PC2UaFb25e4wlLA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C13A8F804BD;
-	Thu,  3 Jun 2021 19:07:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 683CCF804CF;
+	Thu,  3 Jun 2021 19:07:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AAB21F804BD; Thu,  3 Jun 2021 19:07:53 +0200 (CEST)
+ id BB75EF80269; Thu,  3 Jun 2021 19:07:53 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 75B3CF80254
- for <alsa-devel@alsa-project.org>; Thu,  3 Jun 2021 19:07:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75B3CF80254
+ by alsa1.perex.cz (Postfix) with ESMTPS id B0B88F80103
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jun 2021 19:07:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0B88F80103
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="FglUumLo"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E089F613F4;
- Thu,  3 Jun 2021 17:07:42 +0000 (UTC)
+ header.b="lJrvBo/E"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2585613F1;
+ Thu,  3 Jun 2021 17:07:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1622740063;
- bh=32aGDjf/ggu6KGnPHa/nyJsoyREiVd0JXqFVsWpBbBU=;
+ s=k20201202; t=1622740062;
+ bh=Dksp/bCgj6burLYfea58pNgbY4OU8wSkl1Iduw4ho3k=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=FglUumLocQoGZRXANeN7xCXvHKUpJniuK8E7XX3rYLRKW4uGtWetArI9SkFwpvdaq
- wYhO0Z95KnjZg5Th/k/gq7VBcNdyRsI204qQSAS8D1fVOTNmTM+kHDRtM8fcglIcKh
- KMP4tT+xva9JZYC5E6izm+lc/4dgyAw99Nec3suqHa2zN2NGdSROCFtHNfOHyXDPXq
- Pyu89N91vYSHAvXSB6PvzomuiOm6CDKW1yNXYX4pStnNdkg72PLB0WRSth/7XsdAVZ
- uDqNZY+zmlCDzAEwrV8fj4hag6et+7roDs1OJxtYXtk0i7zeSDs4eSf17PpP8PliiX
- rotPori05su4g==
+ b=lJrvBo/Eu8Hp54nYWWirsxYKqXBKam9ZPJc5Hj3keEsaQA/p+GF/TJjiiuUq/xMdD
+ 12qnyD+Qd9NL2EOpo0+NxonXlEY9AYpggo85Fqgw65FEwxRiU/vjDTWmTnw9I2luNx
+ Z0ehd+UvjcgKDBS6BitEnnYn3leyzU0K3I4aGZf/rY72bImKkGbBKwbHe2VkgaIpek
+ iY+PdPONAaIw2d531wUJ1OG9aR8aQYGSM92ZjGBcJUGW3ZMSWpxHcnsHYIvG2woAU7
+ gqWdbf5Np6DPDHLw6Lrm6Xi0c8b8XazWn9eovmlvnisRDhDlA3OAZqxSghq4/zglZW
+ 35JQzMXXQezgQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.12 07/43] ASoC: codecs: lpass-tx-macro: add missing
+Subject: [PATCH AUTOSEL 5.12 06/43] ASoC: codecs: lpass-rx-macro: add missing
  MODULE_DEVICE_TABLE
-Date: Thu,  3 Jun 2021 13:06:57 -0400
-Message-Id: <20210603170734.3168284-7-sashal@kernel.org>
+Date: Thu,  3 Jun 2021 13:06:56 -0400
+Message-Id: <20210603170734.3168284-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210603170734.3168284-1-sashal@kernel.org>
 References: <20210603170734.3168284-1-sashal@kernel.org>
@@ -73,8 +73,7 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Hulk Robot <hulkci@huawei.com>, Mark Brown <broonie@kernel.org>,
- Bixuan Cui <cuibixuan@huawei.com>
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,36 +89,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Bixuan Cui <cuibixuan@huawei.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-[ Upstream commit 14c0c423746fe7232a093a68809a4bc6233eed60 ]
+[ Upstream commit d4335d058f8430a0ce2b43dab9531f3a3cf9fe2c ]
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+Fix module loading by adding missing MODULE_DEVICE_TABLE.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20210508031512.53783-1-cuibixuan@huawei.com
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20210510103844.1532-1-srinivas.kandagatla@linaro.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/lpass-tx-macro.c | 1 +
+ sound/soc/codecs/lpass-rx-macro.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/lpass-tx-macro.c b/sound/soc/codecs/lpass-tx-macro.c
-index e8c6c738bbaa..5341ca02951c 100644
---- a/sound/soc/codecs/lpass-tx-macro.c
-+++ b/sound/soc/codecs/lpass-tx-macro.c
-@@ -1846,6 +1846,7 @@ static const struct of_device_id tx_macro_dt_match[] = {
- 	{ .compatible = "qcom,sm8250-lpass-tx-macro" },
+diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
+index 7878da89d8e0..b7b9c891e2f0 100644
+--- a/sound/soc/codecs/lpass-rx-macro.c
++++ b/sound/soc/codecs/lpass-rx-macro.c
+@@ -3581,6 +3581,7 @@ static const struct of_device_id rx_macro_dt_match[] = {
+ 	{ .compatible = "qcom,sm8250-lpass-rx-macro" },
  	{ }
  };
-+MODULE_DEVICE_TABLE(of, tx_macro_dt_match);
- static struct platform_driver tx_macro_driver = {
++MODULE_DEVICE_TABLE(of, rx_macro_dt_match);
+ 
+ static struct platform_driver rx_macro_driver = {
  	.driver = {
- 		.name = "tx_macro",
 -- 
 2.30.2
 
