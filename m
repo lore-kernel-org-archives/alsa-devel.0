@@ -7,74 +7,74 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4635C47098
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 17:15:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F49CC47097
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 17:16:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 751CA613DC
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 17:15:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 751CA613DC
+	by mail.kernel.org (Postfix) with ESMTPS id DE900613DE
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 17:16:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE900613DE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0BA8D1743;
-	Thu,  3 Jun 2021 19:14:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BA8D1743
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7196E1750;
+	Thu,  3 Jun 2021 19:15:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7196E1750
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622740541;
-	bh=yzoWExcW1c5i7/lzVcVXYieuT2+fWopdCVviHmOuSOw=;
+	s=default; t=1622740576;
+	bh=bRkAKAIZhLYRbGLx3J1Wz1awKJJkJSUqxHoldhWUFiM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LmaEH2nl58v7p+jtHmtghQnbwdp1kF3EulfTvO1xqKyr+0C98APM+aSRGG2H2+D8B
-	 usn7SjvHaQz52Jvh3Hcio+rtOI7no6TTKW+jFV8Ouz9tNtcsT42om0pB3MPe766qO2
-	 rROQ8KY50TshszewikLM4yc2oXP0bKQgf8uZfw98=
+	b=lzqPPtlMceIm4wnLi8u631MwDywzgR5q0IZw0DRGgbXgcArCBahUmaXbhswExYYom
+	 NrimL7HOLH1eWO/sHqSvonf4uCcdZ0nZRz4+9z4z9fv59+oKksbUcbeeyw4zW5ngGh
+	 kfKEGccnFPI6nu6CoDTXqm0eCUSOJ5ADOi6SKCyA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF646F8052D;
-	Thu,  3 Jun 2021 19:10:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D9D07F804D2;
+	Thu,  3 Jun 2021 19:10:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E716FF80529; Thu,  3 Jun 2021 19:10:11 +0200 (CEST)
+ id 10414F804D9; Thu,  3 Jun 2021 19:10:38 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C6CA1F8051F
- for <alsa-devel@alsa-project.org>; Thu,  3 Jun 2021 19:10:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6CA1F8051F
+ by alsa1.perex.cz (Postfix) with ESMTPS id B13D9F800E5
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jun 2021 19:10:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B13D9F800E5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="XJ06qnTa"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED0D861418;
- Thu,  3 Jun 2021 17:10:02 +0000 (UTC)
+ header.b="QdStoqVR"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E4C261420;
+ Thu,  3 Jun 2021 17:10:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1622740203;
- bh=yzoWExcW1c5i7/lzVcVXYieuT2+fWopdCVviHmOuSOw=;
+ s=k20201202; t=1622740234;
+ bh=bRkAKAIZhLYRbGLx3J1Wz1awKJJkJSUqxHoldhWUFiM=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=XJ06qnTa/e+bMkY027Fy6XdaETmFkGB5hJ3PasxfwDTH/heQLQbu8bmiX2fco9N6R
- d/059gZM/oABIPUAda6oxR6ta+moNdwpmZUPlSVQJKSUv7T0f6WFAsNgW/N32zlVLm
- garFcXMGaKY9djWlg5qBBTUJxAmIym1U2XVNui3NUUH5lWnWbyw+9KUC3cC+laBJKs
- 24JCqj7DZe32NPNx4Dv+B7UxSAlQTnINL6xRVjuyz3oAkeV8Me57bA3/yqd3y5zlCy
- 4VKpt2tx54gkA9KGYIbo98ZwvF/UvdlGe87JB62ytvUaNdlFIdQoG7RUK5rlpm1mh5
- MqeY77/vpoPUQ==
+ b=QdStoqVRiFkOaPQklydz0FTY+SARdQKe6XiWs9DxGlqLybhQszOwQMIFwjVfVa+uQ
+ GsiFnyGoqR8D90x10QhT4Zb9+FP8y7XU6upmaT0S7uzuU13DvR8iQ3zMvZUsMKls0R
+ AnrozRDtFqJ2AEm4QvtPvsB0kvz1J6t2xAu0d6LFci1VpLY84HNwGrPVzU4CFDPGGY
+ RS6RWjk+7u0VDaBoDAsUmZgvWIgQX2c+3oGTjmAigzNY2jA59TXjTwekBnj13paSZ6
+ Ktbd72Q7TS8xw98hZ33j6EjChzSd16nSPOXWtwlogfd9ph5dsP2dQL9AO5cj7IWHIl
+ 5HHbImVVqE22A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 03/23] ASoC: Intel: bytcr_rt5640: Add quirk for
- the Glavey TM800A550L tablet
-Date: Thu,  3 Jun 2021 13:09:39 -0400
-Message-Id: <20210603170959.3169420-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 03/18] ASoC: sti-sas: add missing
+ MODULE_DEVICE_TABLE
+Date: Thu,  3 Jun 2021 13:10:14 -0400
+Message-Id: <20210603171029.3169669-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210603170959.3169420-1-sashal@kernel.org>
-References: <20210603170959.3169420-1-sashal@kernel.org>
+In-Reply-To: <20210603171029.3169669-1-sashal@kernel.org>
+References: <20210603171029.3169669-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Sasha Levin <sashal@kernel.org>, Hulk Robot <hulkci@huawei.com>,
+ Zou Wei <zou_wei@huawei.com>, Mark Brown <broonie@kernel.org>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,45 +90,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit 28c268d3acdd4cbcd2ac320b85609e77f84e74a7 ]
+[ Upstream commit e072b2671606c77538d6a4dd5dda80b508cb4816 ]
 
-Add a quirk for the Glavey TM800A550L tablet, this BYTCR tablet has no CHAN
-package in its ACPI tables and uses SSP0-AIF1 rather then SSP0-AIF2 which
-is the default for BYTCR devices.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210508150146.28403-1-hdegoede@redhat.com
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Link: https://lore.kernel.org/r/1620789145-14936-1-git-send-email-zou_wei@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/soc/codecs/sti-sas.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 4ebc023f1507..077529113ee7 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -565,6 +565,17 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 					BYT_RT5640_SSP0_AIF1 |
- 					BYT_RT5640_MCLK_EN),
+diff --git a/sound/soc/codecs/sti-sas.c b/sound/soc/codecs/sti-sas.c
+index 62c618765224..730dd453a744 100644
+--- a/sound/soc/codecs/sti-sas.c
++++ b/sound/soc/codecs/sti-sas.c
+@@ -407,6 +407,7 @@ static const struct of_device_id sti_sas_dev_match[] = {
  	},
-+	{	/* Glavey TM800A550L */
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
-+			DMI_MATCH(DMI_BOARD_NAME, "Aptio CRB"),
-+			/* Above strings are too generic, also match on BIOS version */
-+			DMI_MATCH(DMI_BIOS_VERSION, "ZY-8-BI-PX4S70VTR400-X423B-005-D"),
-+		},
-+		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
-+					BYT_RT5640_SSP0_AIF1 |
-+					BYT_RT5640_MCLK_EN),
-+	},
- 	{
- 		.matches = {
- 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
+ 	{},
+ };
++MODULE_DEVICE_TABLE(of, sti_sas_dev_match);
+ 
+ static int sti_sas_driver_probe(struct platform_device *pdev)
+ {
 -- 
 2.30.2
 
