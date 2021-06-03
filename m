@@ -2,73 +2,83 @@ Return-Path: <SRS0=JknX=K5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 633D5C4708F
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 03:01:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E178C4708F
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 03:02:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 30091613EE
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 03:01:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 30091613EE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=vivo.com
+	by mail.kernel.org (Postfix) with ESMTPS id B32A4613E9
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 03:02:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B32A4613E9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6DDE016F2;
-	Thu,  3 Jun 2021 05:00:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DDE016F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 539AB1703;
+	Thu,  3 Jun 2021 05:01:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 539AB1703
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622689284;
-	bh=gAWk63rqoq0tQKjp4MhTEN2iu6kCBOqCrg1yiXtIDZo=;
+	s=default; t=1622689335;
+	bh=7cMOauGy87MFphH8spiqDmPD7QW/0YZmJ6+6YUbbXYM=;
 	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=fQKkU57fU8YAGK9P4joEnr/Aue2dK0xDK9UQ0KDZGyzf4sz/UDGofXSly1cc1E3m3
-	 XfDGouM9XvYphMEsPW+1DlMamuZc+xaH0Z+tDoQdAOHVgdYV9yLthowIydgLv8kZ8p
-	 uSC9PmfF330f1A26k8jOsddXTddBVHUUXmEaCC8g=
+	b=rqfgrztZ/SCCfajw3rNRvQbrvq//MC72m4AZD4vQWZecnpprauuZX1RrddPGAvX8t
+	 UR0GoVGqNT6Pqrt+kG8zhvhbrRA9F7sd7ccG4Tr4VsqplsFuDZeAsd+bNNd1C+d4Ak
+	 HdgCyMI8BEcK5ABFqLGJcHXTh0HTW9AO9mzitsOc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0AA68F800E5;
-	Thu,  3 Jun 2021 05:00:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70DFAF802DB;
+	Thu,  3 Jun 2021 05:01:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E2ACBF80254; Thu,  3 Jun 2021 05:00:32 +0200 (CEST)
-Received: from mail-m121144.qiye.163.com (mail-m121144.qiye.163.com
- [115.236.121.144])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id CB4A9F80100; Thu,  3 Jun 2021 05:01:09 +0200 (CEST)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A975CF80100;
- Thu,  3 Jun 2021 05:00:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A975CF80100
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown
- [58.250.176.229])
- by mail-m121144.qiye.163.com (Hmail) with ESMTPA id 7AB3FAC038E;
- Thu,  3 Jun 2021 11:00:19 +0800 (CST)
-From: Wan Jiabing <wanjiabing@vivo.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Bard Liao <bard.liao@intel.com>, Wan Jiabing <wanjiabing@vivo.com>,
- sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: SOF: Intel: Remove duplicate include of shim.h
-Date: Thu,  3 Jun 2021 10:59:50 +0800
-Message-Id: <1622689193-29884-1-git-send-email-wanjiabing@vivo.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E3B27F80100
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jun 2021 05:01:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3B27F80100
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com
+ header.b="qq0QLshf"
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 16D6B20384C;
+ Thu,  3 Jun 2021 05:01:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 inva021.eu-rdc02.nxp.com 16D6B20384C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com;
+ s=nselector4; t=1622689263;
+ bh=ROQTgs3jR6KqtGsQiGNvFAQlNnnJRWQm4j8P6+1iQ+c=;
+ h=From:To:Subject:Date:From;
+ b=qq0QLshfSFtIiBI2Sd0Vs3tF3tBX1/TJXogfzUCFt/DVp+meQPpzA+R40+OCUt8mN
+ mnE3Icn7TJmp5HOi1qCjuw81PVhSuRNL1sBKRUe8kKwbWl3pzhB8ouMA8ffFPz9O5q
+ xM3pLNbLY2dUuirWnP6CdCVb7Sgu4BceMm4vHdORrnnNnynp5L82VMfkHNKiZOLXpt
+ AFOMqL4SA0OkMO2S45gt5gxIIva+bpo8Ri3dG57roy2HHtJT4fuQ2Fqm2i3V6M4nmK
+ CBEruqvUCd5EtvSwcnVOIpO06ArYhUxW+JH3JrEurFThRQG+p9nal8t+BhS4+9az3c
+ UcCaS9MuChK6Q==
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A4C31203850;
+ Thu,  3 Jun 2021 05:00:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 inva021.eu-rdc02.nxp.com A4C31203850
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id B84C1402DF;
+ Thu,  3 Jun 2021 11:00:52 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+ perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] ASoC: fsl-asoc-card: change dev_err to dev_err_probe for
+ defer probe
+Date: Thu,  3 Jun 2021 10:43:23 +0800
+Message-Id: <1622688203-12244-1-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
- oVCBIfWUFZGUhPSlZDHU5JTx0dTUhLSExVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
- 9ISFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mhg6Dgw4FD8SDRUyNTkvTh0z
- Cx4aFCpVSlVKTUlJTUNCSUlLT0JLVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlO
- Q1VJTktVSkxNVUlJQllXWQgBWUFJSUlDNwY+
-X-HM-Tid: 0a79cfd0859eb039kuuu7ab3fac038e
+X-Virus-Scanned: ClamAV using ClamSMTP
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,27 +94,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-shim.h is included twice.
-As shim.h is not related to later header file,
-keep one which has comment and remove the former one.
+Don't need to print error message for defer probe
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- sound/soc/sof/intel/pci-tng.c | 1 -
- 1 file changed, 1 deletion(-)
+changes in v2:
+- use dev_err_probe instead of dev_dbg
 
-diff --git a/sound/soc/sof/intel/pci-tng.c b/sound/soc/sof/intel/pci-tng.c
-index 4ee1da3..4bded66 100644
---- a/sound/soc/sof/intel/pci-tng.c
-+++ b/sound/soc/sof/intel/pci-tng.c
-@@ -15,7 +15,6 @@
- #include <sound/sof.h>
- #include "../ops.h"
- #include "atom.h"
--#include "shim.h"
- #include "../sof-pci-dev.h"
- #include "../sof-audio.h"
+ sound/soc/fsl/fsl-asoc-card.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index 4f55b316cf0f..2fa371ec6b1c 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -709,8 +709,8 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 	of_node_put(framemaster);
+ 
+ 	if (!fsl_asoc_card_is_ac97(priv) && !codec_dev) {
+-		dev_err(&pdev->dev, "failed to find codec device\n");
+ 		ret = -EPROBE_DEFER;
++		dev_err_probe(&pdev->dev, ret, "failed to find codec device\n");
+ 		goto asrc_fail;
+ 	}
  
 -- 
-2.7.4
+2.27.0
 
