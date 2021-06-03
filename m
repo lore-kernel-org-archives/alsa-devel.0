@@ -6,72 +6,71 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DAF3C47096
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 18:44:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EC41C47096
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 18:45:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7660B613EE
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 18:44:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7660B613EE
+	by mail.kernel.org (Postfix) with ESMTPS id 52708613EE
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Jun 2021 18:45:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 52708613EE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DE813172B;
-	Thu,  3 Jun 2021 20:43:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE813172B
+	by alsa0.perex.cz (Postfix) with ESMTPS id A43961732;
+	Thu,  3 Jun 2021 20:44:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A43961732
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622745887;
-	bh=14roOXPcs5DCgt6AKrjuC09a0UVpqCCBpqmcJOOjjOo=;
+	s=default; t=1622745922;
+	bh=QX2fUiCiUmkxlGVHfxkr10DT8U2SkzWtLEr1gPbhSJI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QqMd9bQ2tT+X8ibjb9hCVLipOW6mS0lcMP2xqrzrUd7SRosdn1rhef9+AYDQikzvv
-	 CC6VY1ScOnqxGja4I2dVs8E/wz441CwVr6G9tA558h5kI1nu8o20FIYNpUWkcnhvU/
-	 wHTu6F0+p2VSovfwq3ssTOLu2h5QY8UjjqvPvHXw=
+	b=J0zkLro81Kg1B/6LYXmXoGruZxOCr5iSWguecaw1PFl5gTYcYHtYuC363k05x0Xxm
+	 EmpikVD3HaFvl5wjcX2qUSQkcCleajdSfObI2LI6gwZgiXmVkw/eSU29ZGa/taRaKJ
+	 THhIdf9kCnNov4Gvji+vGSpJ9wq35S6XSS/UE/mA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56EF5F804B0;
-	Thu,  3 Jun 2021 20:43:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56071F804C3;
+	Thu,  3 Jun 2021 20:43:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7EC50F802E7; Thu,  3 Jun 2021 20:42:59 +0200 (CEST)
+ id 44F6AF804BD; Thu,  3 Jun 2021 20:43:05 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 42986F80103
- for <alsa-devel@alsa-project.org>; Thu,  3 Jun 2021 20:42:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42986F80103
+ by alsa1.perex.cz (Postfix) with ESMTPS id 463FDF80253
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jun 2021 20:42:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 463FDF80253
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="t8wUNjTc"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3CC0613EE;
- Thu,  3 Jun 2021 18:42:52 +0000 (UTC)
+ header.b="P/yoLykb"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53EEB613F6;
+ Thu,  3 Jun 2021 18:42:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1622745773;
- bh=14roOXPcs5DCgt6AKrjuC09a0UVpqCCBpqmcJOOjjOo=;
+ s=k20201202; t=1622745770;
+ bh=QX2fUiCiUmkxlGVHfxkr10DT8U2SkzWtLEr1gPbhSJI=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=t8wUNjTcGcWkZ5DfqA0kY0P2Izzr820EMwg6e3LAOS6MPs/RLZX6KNbxgAPK5ZMU9
- /NT8Ca669gPagahF46HoK+HiRs3swYgS1UkOhfdQP1BFDAc/K2T+HlsTQZ6pkYzumU
- UXYOh6qs9dj+Y7+qY2xUFPzjGIcIvIHuB+ejKkzdGzzy0Sp5cC5DQt0lyBzm0gvmtR
- Meo1sEhEO4cuKnv6wBFjyugWnYKHf66WegNc8oPaAwK0dK6gGu8IsIfkQj9y629ldR
- lp4gIU6HV+9zlmyCwUwYkWvhw+gtfa4Uod9w9PaBjnIIcPY4otK6xkO2yjgK9V+XWg
- uLyAW46gf6tNg==
+ b=P/yoLykbA2nbCiCPzNXK5wuNLtsWUWwzswOFPDtigEoGBh919yhCp5x/Fxn86U0KU
+ C2Om9LQzx6vdrWoHWCcVcxLKIjfuOhrscbhTrwKJIILodx9mLI4x7ZR41lMjrlmGAo
+ xGwur70iBcThRy4us3by+zZ7UkI0tWISZq6ivvVYnCvYBsSZeUCuDkIk99VS3FKXiI
+ E3DoWJYF2dLclCqPv+A6qGo3v5+jt0yvuXEl7TJeOLwW1+5/aqBIYCyayajqTP8f/W
+ OAqdC+w9OnUmge4auSIjBj66YZjpMuB/qhWovoHfSA5kDRfxAPQk7UQWVftM/Lxnxm
+ tzhICfRiwbsig==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
-	Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH] ASoC: tas2562: Fix TDM_CFG0_SAMPRATE values
-Date: Thu,  3 Jun 2021 19:41:58 +0100
-Message-Id: <162274557550.14795.17431456709023435037.b4-ty@kernel.org>
+To: Jerome Brunet <jbrunet@baylibre.com>
+Subject: Re: [PATCH] ASoC: meson: gx-card: fix sound-dai dt schema
+Date: Thu,  3 Jun 2021 19:41:57 +0100
+Message-Id: <162274557551.14795.13902548000738010349.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210530203446.19022-1-richard@nod.at>
-References: <20210530203446.19022-1-richard@nod.at>
+In-Reply-To: <20210524093448.357140-1-jbrunet@baylibre.com>
+References: <20210524093448.357140-1-jbrunet@baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: robh@kernel.org, tiwai@suse.com, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, dmurphy@ti.com,
- grandmaster@al2klimov.de
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-amlogic@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,9 +86,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 30 May 2021 22:34:46 +0200, Richard Weinberger wrote:
-> TAS2562_TDM_CFG0_SAMPRATE_MASK starts at bit 1, not 0.
-> So all values need to be left shifted by 1.
+On Mon, 24 May 2021 11:34:48 +0200, Jerome Brunet wrote:
+> There is a fair amount of warnings when running 'make dtbs_check' with
+> amlogic,gx-sound-card.yaml.
+> 
+> Ex:
+> arch/arm64/boot/dts/amlogic/meson-gxm-q200.dt.yaml: sound: dai-link-0:sound-dai:0:1: missing phandle tag in 0
+> arch/arm64/boot/dts/amlogic/meson-gxm-q200.dt.yaml: sound: dai-link-0:sound-dai:0:2: missing phandle tag in 0
+> arch/arm64/boot/dts/amlogic/meson-gxm-q200.dt.yaml: sound: dai-link-0:sound-dai:0: [66, 0, 0] is too long
+> 
+> [...]
 
 Applied to
 
@@ -97,8 +103,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: tas2562: Fix TDM_CFG0_SAMPRATE values
-      commit: 8bef925e37bdc9b6554b85eda16ced9a8e3c135f
+[1/1] ASoC: meson: gx-card: fix sound-dai dt schema
+      commit: d031d99b02eaf7363c33f5b27b38086cc8104082
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
