@@ -4,73 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B3F5C47425
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jun 2021 16:33:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11B62C47425
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jun 2021 16:34:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C18F7613F4
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jun 2021 16:33:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C18F7613F4
+	by mail.kernel.org (Postfix) with ESMTPS id 6358E610E7
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jun 2021 16:34:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6358E610E7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 82F451730;
-	Fri,  4 Jun 2021 18:32:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82F451730
+	by alsa0.perex.cz (Postfix) with ESMTPS id 696A6173A;
+	Fri,  4 Jun 2021 18:33:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 696A6173A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622824428;
-	bh=VVDwBOYJlwtQ+NvG+nh6ewV59zoduApWF+wXmmPHwX4=;
+	s=default; t=1622824479;
+	bh=9yhUSzn3yYDa5TaKiRajPiCZuGQ4F9eE3poqB/Isyu0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=X5cpC5nAA4KcbUwP4aLCEq/mG0R49Lp++dUXST3jB7Ui7+JWZ63MB+VsjN68acpmZ
-	 DoZtAB58/Ml3+rpfbP5S2If8FKjlPx5Nv72ZZQK8uZPo1RDLElFMc9hBLa4yNPjhVT
-	 Rx4woBBMRPzB/VUWC3DGbj+Es6olQruB6DSqyafo=
+	b=sZCWiVyT/tEM4WCXvp/C3dsXV4ebWHZBhWH2DDHBwCebXvHXT1HB25KWENvmRI33i
+	 VJIdaCy01xDj1Xw0fQ/k5sKg4enD1YdRrSAO8gvWw+CpmkRdUD8DH4Oi5ZD1ai+laj
+	 0q4urBolZngn3bzZZjHdhUXPZQtUe2SjDq4eRIK0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 07F01F80424;
-	Fri,  4 Jun 2021 18:32:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23E9CF802A9;
+	Fri,  4 Jun 2021 18:33:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 83912F80424; Fri,  4 Jun 2021 18:32:56 +0200 (CEST)
+ id E6050F80103; Fri,  4 Jun 2021 18:32:58 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8E50EF8016D
- for <alsa-devel@alsa-project.org>; Fri,  4 Jun 2021 18:32:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E50EF8016D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 50B9CF80103
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jun 2021 18:32:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50B9CF80103
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="s0oIRGE6"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6782F61153;
- Fri,  4 Jun 2021 16:32:49 +0000 (UTC)
+ header.b="kcZnBfg6"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 13A5E610E7;
+ Fri,  4 Jun 2021 16:32:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1622824369;
- bh=VVDwBOYJlwtQ+NvG+nh6ewV59zoduApWF+wXmmPHwX4=;
+ s=k20201202; t=1622824372;
+ bh=9yhUSzn3yYDa5TaKiRajPiCZuGQ4F9eE3poqB/Isyu0=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=s0oIRGE6/X4aG2o5pEbogpEBFp5m+ztFKFdbZPKQ5vhn55nUarK87MJoOH2UY7Tqj
- sUnQ9quZsatXGL5Dt2pwMYWVnpXIOLU2Y6MRsSDaLr7jdJS/vwmLSHkV6MedXtj8rZ
- zdcRfL7tJ8iSOEENJVaQFllTnhqIWH8nE2kr7Hib1hke/EnL/rFdDlisQ2or5pvhEI
- UIwXiIKGoHvV2uPupDhgjk9vxwIc7BO6EBtPLxPVi8UHuLD+AwjIFGYtX2gEGMuBlO
- Z0IBlGppsCTgvFjYhzgzNETH5cTu6uWcZOsRoVjGyFgQ2P/ECBnBSsv1aRQs95ld7O
- MiMD0SvkAG+oQ==
+ b=kcZnBfg6g5iLCndwauVfPagd4enk4nBl6ra1I7SCuggUVsSJN1s1kX/Spo2t9bgib
+ d5Gy3VmAYmZwZM2mO2m2r+ZVvk2kgmDVwz7dX9guaSe5RcvNJWfgXLoNq1bAv9KPvI
+ J8q8ZmqEt/Uf02JaBCY3Wq/2isASiVq2LM+DMBmJKR2y2gWWqEkmdZEVuIVfW0Df9P
+ tgP4giBNrPI8YuzQG77qMrHpTqvkBmV7Wr696auQB2N0BIPdti4y3nng/sVK9pmtst
+ 32wTDETwHy76ByAyAxr2YDJJkkdw76EcuXZdOhqEQlencOENWi7BvU/W/Z6ba/uqlY
+ p/QfkGmN9iOrQ==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, alexandre.belloni@bootlin.com, perex@perex.cz,
- Bertrand Jacquin <bertrand@jacquin.bzh>, srinivas.kandagatla@linaro.org,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com
-Subject: Re: [PATCH] ASoC: snd-soc-lpass requires REGMAP_MMIO
-Date: Fri,  4 Jun 2021 17:32:27 +0100
-Message-Id: <162282419357.38836.17547225118877457445.b4-ty@kernel.org>
+To: Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH v2][next] ASoC: ti: davinci-mcasp: Fix fall-through
+ warning for Clang
+Date: Fri,  4 Jun 2021 17:32:28 +0100
+Message-Id: <162282419357.38836.16514328061509733520.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210603221816.2642402-1-bertrand@jacquin.bzh>
-References: <20210603221816.2642402-1-bertrand@jacquin.bzh>
+In-Reply-To: <20210604072714.GA244640@embeddedor>
+References: <20210604072714.GA244640@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,15 +89,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 3 Jun 2021 23:18:16 +0100, Bertrand Jacquin wrote:
-> With CONFIG_SND_SOC_LPASS_RX_MACRO=m and CONFIG_REGMAP_MMIO undefined,
-> build fails with the following error
-> 
->   make -f /var/tmp/portage/sys-kernel/stable-sources-5.12.8/work/linux-5.12.8-stable/scripts/Makefile.modpost
->     sed 's/\.ko$/\.o/' modules.order | scripts/mod/modpost   -E  -o modules-only.symvers -i vmlinux.symvers   -T -
->   ERROR: modpost: "__devm_regmap_init_mmio_clk" [sound/soc/codecs/snd-soc-lpass-rx-macro.ko] undefined!
-> 
-> [...]
+On Fri, 4 Jun 2021 02:27:14 -0500, Gustavo A. R. Silva wrote:
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+> by explicitly adding a fallthrough; statement.
 
 Applied to
 
@@ -102,8 +99,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: snd-soc-lpass requires REGMAP_MMIO
-      commit: e78f36bc13591e8d23948996ab6d195f1efa8f40
+[1/1] ASoC: ti: davinci-mcasp: Fix fall-through warning for Clang
+      commit: 50d790012a48f0f2f1dc8e4c214054283e529ae9
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
