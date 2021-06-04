@@ -4,76 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11B62C47425
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jun 2021 16:34:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63E8EC47425
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jun 2021 16:34:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6358E610E7
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jun 2021 16:34:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6358E610E7
+	by mail.kernel.org (Postfix) with ESMTPS id B72CE61153
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jun 2021 16:34:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B72CE61153
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 696A6173A;
-	Fri,  4 Jun 2021 18:33:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 696A6173A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A64A1739;
+	Fri,  4 Jun 2021 18:33:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A64A1739
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622824479;
-	bh=9yhUSzn3yYDa5TaKiRajPiCZuGQ4F9eE3poqB/Isyu0=;
+	s=default; t=1622824484;
+	bh=2ujz3UvSOClvdWQEVr3TmeBifJcWX51ORDVUCP5zweI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sZCWiVyT/tEM4WCXvp/C3dsXV4ebWHZBhWH2DDHBwCebXvHXT1HB25KWENvmRI33i
-	 VJIdaCy01xDj1Xw0fQ/k5sKg4enD1YdRrSAO8gvWw+CpmkRdUD8DH4Oi5ZD1ai+laj
-	 0q4urBolZngn3bzZZjHdhUXPZQtUe2SjDq4eRIK0=
+	b=ar0teZSPcYkXmdBGBcDXZPVfZ/JWzQhPq42a0r7mV7jOXPijwWW2ssOfAQ8alAZPh
+	 3kO/6Tsz1Ualf+LdUrLYfLlstewxTrAuMnmfgp4J3w58KYb31+ySwZ3NetqKaZVHH8
+	 fnbfd/RMwpHmGC9YFqnGq7uhyO2+C9Bhb6SY7kMs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23E9CF802A9;
+	by alsa1.perex.cz (Postfix) with ESMTP id B4E63F80430;
 	Fri,  4 Jun 2021 18:33:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E6050F80103; Fri,  4 Jun 2021 18:32:58 +0200 (CEST)
+ id 734D3F8016D; Fri,  4 Jun 2021 18:32:59 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 50B9CF80103
- for <alsa-devel@alsa-project.org>; Fri,  4 Jun 2021 18:32:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50B9CF80103
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7BF31F8016D
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jun 2021 18:32:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7BF31F8016D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="kcZnBfg6"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 13A5E610E7;
- Fri,  4 Jun 2021 16:32:51 +0000 (UTC)
+ header.b="hQpYO5ou"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98E5C613C9;
+ Fri,  4 Jun 2021 16:32:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1622824372;
- bh=9yhUSzn3yYDa5TaKiRajPiCZuGQ4F9eE3poqB/Isyu0=;
+ s=k20201202; t=1622824375;
+ bh=2ujz3UvSOClvdWQEVr3TmeBifJcWX51ORDVUCP5zweI=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=kcZnBfg6g5iLCndwauVfPagd4enk4nBl6ra1I7SCuggUVsSJN1s1kX/Spo2t9bgib
- d5Gy3VmAYmZwZM2mO2m2r+ZVvk2kgmDVwz7dX9guaSe5RcvNJWfgXLoNq1bAv9KPvI
- J8q8ZmqEt/Uf02JaBCY3Wq/2isASiVq2LM+DMBmJKR2y2gWWqEkmdZEVuIVfW0Df9P
- tgP4giBNrPI8YuzQG77qMrHpTqvkBmV7Wr696auQB2N0BIPdti4y3nng/sVK9pmtst
- 32wTDETwHy76ByAyAxr2YDJJkkdw76EcuXZdOhqEQlencOENWi7BvU/W/Z6ba/uqlY
- p/QfkGmN9iOrQ==
+ b=hQpYO5ou66/+WQLmmx2VPuyXS5TCoDsf57I/V8ibov/UvTXMbMczUr3BDonLfcgsY
+ 5ev12xode8sEGvvkafYe1fMKiGM33FVsQeNpW7MIoS0xpwj45CXDm54rsyiopDZII0
+ ST9KRfcDKYuoRWrUmQpwR6d7B5XJhdFNyuPF0ksRe4urYb4WruTv70mJNuAZoehBAy
+ /na0YSQBNYWpr6gaUhsDS90M3lJ6TTUdhMpMExQFAucugGVmTlzW/399nmq5YylNZf
+ vg1xqndqTaWhg0uFQDXXrJpySaRN5QfwD5zd4EGVN/7v5dBbSub8nsLTlvod5wNEoD
+ Gop1tO+fL4Rlg==
 From: Mark Brown <broonie@kernel.org>
-To: Peter Ujfalusi <peter.ujfalusi@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH v2][next] ASoC: ti: davinci-mcasp: Fix fall-through
- warning for Clang
-Date: Fri,  4 Jun 2021 17:32:28 +0100
-Message-Id: <162282419357.38836.16514328061509733520.b4-ty@kernel.org>
+To: lgirdwood@gmail.com,
+	Oder Chiou <oder_chiou@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5682: Fix the fast discharge for headset
+ unplugging in soundwire mode
+Date: Fri,  4 Jun 2021 17:32:29 +0100
+Message-Id: <162282419357.38836.3417945749384407435.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210604072714.GA244640@embeddedor>
-References: <20210604072714.GA244640@embeddedor>
+In-Reply-To: <20210604063150.29925-1-oder_chiou@realtek.com>
+References: <20210604063150.29925-1-oder_chiou@realtek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Cc: libin.yang@intel.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ shumingf@realtek.com, Mark Brown <broonie@kernel.org>, derek.fang@realtek.com,
+ flove@realtek.com, sathya.prakash.m.r@intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,9 +88,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 4 Jun 2021 02:27:14 -0500, Gustavo A. R. Silva wrote:
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-> by explicitly adding a fallthrough; statement.
+On Fri, 4 Jun 2021 14:31:50 +0800, Oder Chiou wrote:
+> Based on ("5a15cd7fce20b1fd4aece6a0240e2b58cd6a225d"), the setting also
+> should be set in soundwire mode.
 
 Applied to
 
@@ -99,8 +98,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: ti: davinci-mcasp: Fix fall-through warning for Clang
-      commit: 50d790012a48f0f2f1dc8e4c214054283e529ae9
+[1/1] ASoC: rt5682: Fix the fast discharge for headset unplugging in soundwire mode
+      commit: 49783c6f4a4f49836b5a109ae0daf2f90b0d7713
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
