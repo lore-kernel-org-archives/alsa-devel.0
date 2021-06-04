@@ -2,88 +2,101 @@ Return-Path: <SRS0=evnw=K6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FC14C4708F
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jun 2021 06:49:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 972C1C07E94
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jun 2021 07:12:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 06C3A6140C
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jun 2021 06:49:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 06C3A6140C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 460C561417
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jun 2021 07:12:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 460C561417
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E4C4116F7;
-	Fri,  4 Jun 2021 08:48:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4C4116F7
+	by alsa0.perex.cz (Postfix) with ESMTPS id EFB6116FF;
+	Fri,  4 Jun 2021 09:11:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EFB6116FF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622789349;
-	bh=zD7mWILfc22pJ+mekOcBD4vLj2UcxRVIEsSjIeccQFw=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=j8dZRNV2N136fP/xHaTBhH9zz1k2v7MjdNurxSTlvKTaexbKpImGCb3f6scXg7bjE
-	 EfYNPYzaIfgK/F8zxGWCqsleOZjdyKVm9E4qPpduwOaQoURedQEFhneVG6lArbeSBX
-	 V9mj0njDeI6Mo3C/EnWMiXqzl1Htq0o9E64aENcA=
+	s=default; t=1622790750;
+	bh=lZGUtBcUpT2traMED1+8rQNiYCOLPYZ5D+S3tSesQg4=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=HukttwFJUqNoavxnYAXlNDjxt/FF1SA+XBeuszKnW9vf5ErpuJSRjMnNbhB8y+OSY
+	 avp5a1aXE3+sBykByzWiYSu+FvcCUUraX5MjgPhd7fQ4uDUZ0w4E8TBdqgKIBBCoCD
+	 5idz+R7l3CJpAXOFjxnB0DKS8R4oJMMOxT1PPffE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C336F802A9;
-	Fri,  4 Jun 2021 08:48:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81AB9F802A9;
+	Fri,  4 Jun 2021 09:11:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 14274F802C4; Fri,  4 Jun 2021 08:48:17 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 1FCF2F802C4; Fri,  4 Jun 2021 09:11:38 +0200 (CEST)
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com
+ [IPv6:2607:f8b0:4864:20::633])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CCDFBF800CC
- for <alsa-devel@alsa-project.org>; Fri,  4 Jun 2021 08:48:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCDFBF800CC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1BBDCF800CC
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jun 2021 09:11:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1BBDCF800CC
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="EbCIiyQn"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="0uu6EZVp"
-Received: from relay2.suse.de (unknown [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 9E7B91FD3F;
- Fri,  4 Jun 2021 06:48:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1622789293; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=RVgA+JyHH94j5jLIMVMlQHypvDoshhfyCvrl87CnRZk=;
- b=EbCIiyQnKCi1aomrASugqyfErUTs6svE9I5VBD/mbmoBzScuqmMbP50JvGJFPtazU6Ic69
- 8lyWqFQAhuZLXGigDTtAGDnmBy17/QMHWLAddBAMCPmgJxiTzNYH0/+9wCYO86mKljNC2H
- BNMnYOQBNE87IOCukysibCcYqTVwVT4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1622789293;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=RVgA+JyHH94j5jLIMVMlQHypvDoshhfyCvrl87CnRZk=;
- b=0uu6EZVpIF+ehx1CgzVyBT/7nc3m7P/OaYlpFlK9scq2SQCsFTD06DZHvOgzCcGLgdHdcx
- j3zhYxwKzCtS7NCw==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id AD795A3B88;
- Fri,  4 Jun 2021 06:48:12 +0000 (UTC)
-Date: Fri, 04 Jun 2021 08:48:12 +0200
-Message-ID: <s5hfsxygm6r.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Yang Yingliang <yangyingliang@huawei.com>
-Subject: Re: [PATCH -next] ALSA: firewire-motu: fix error return code in
- snd_motu_stream_reserve_duplex()
-In-Reply-To: <20210603143203.582017-1-yangyingliang@huawei.com>
-References: <20210603143203.582017-1-yangyingliang@huawei.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="UYq57R8/"
+Received: by mail-pl1-x633.google.com with SMTP id q16so4180002pls.6
+ for <alsa-devel@alsa-project.org>; Fri, 04 Jun 2021 00:11:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=04miD2l332N5JEOBvQKSIIZVsCHeGohPyIgj2Bs7M2g=;
+ b=UYq57R8/DgylVe7bQQT1K0kVoUZAKg78p7JLt3nj5Xvwwbo26bubgQ5Rw0p56VKVKI
+ amHFHnpXmNB3vNWQrTxGHHUWu72QjRLuyauxAguYYAP2L1gb+GKB426oPeZvXsFu720D
+ B+4BkzEKNPf/O01NI2pRsfoqR1YjT6nOmi3EI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=04miD2l332N5JEOBvQKSIIZVsCHeGohPyIgj2Bs7M2g=;
+ b=pn+/BAaxhtVGtiA6Q2Rfsq/4l40chDGfiUX1UjAn6rfvqO3ehRyUZKafkplZE+h5r+
+ icJA0ywfF35nwYwoPZzcONphQOTIShBMC16uRBTxfU3TIcl4FFowAg/30Yl7blVFOMWu
+ NGmuGt1VJ3vG0grhnf95Gi8yFdtrBcOe/zibi4aT1Ie0eW8YqbOYybNxGTYoQaEV/UGl
+ YyYigxc6YLEIoZmDoY6j7UI/sZ11wvHcY0AjPbUJu4c/+pcWC/jGsyEMoSnr90CCTcEQ
+ HupP5rEaEUmayjWF5AtYprogAEsCY+Rc24h4wO7+tL/MzyCcvwQrHmgyDXv8SfGvRZys
+ 4j3w==
+X-Gm-Message-State: AOAM532o52ZmniQcBAvaeRG7gnPpQ8GBO7BRYZjdLGXfNA7o8FzD8Gp0
+ FZyxjCT9qVyhcmLaNs/rensPXA==
+X-Google-Smtp-Source: ABdhPJzzf3MffrJf8cu1pAFiWopX0p1aSBAccKzEw4KlJf+njbnIDbY3jrRzxGG+7xsb8wZZsYufGg==
+X-Received: by 2002:a17:902:a3c3:b029:f0:b297:7778 with SMTP id
+ q3-20020a170902a3c3b02900f0b2977778mr2996346plb.16.1622790686744; 
+ Fri, 04 Jun 2021 00:11:26 -0700 (PDT)
+Received: from judyhsiao-p920.tpe.corp.google.com
+ ([2401:fa00:1:10:a8e1:b46e:86b1:84fb])
+ by smtp.gmail.com with ESMTPSA id g8sm971625pfo.85.2021.06.04.00.11.22
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 04 Jun 2021 00:11:26 -0700 (PDT)
+From: Judy Hsiao <judyhsiao@chromium.org>
+To: broonie@kernel.org
+Subject: [v6] ASoC: qcom: lpass-cpu: Fix pop noise during audio capture begin
+Date: Fri,  4 Jun 2021 15:11:12 +0800
+Message-Id: <20210604071112.1055911-1-judyhsiao@chromium.org>
+X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Taniya Das <tdas@codeaurora.org>, alsa-devel@alsa-project.org,
+ Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Rohit kumar <rohitkr@codeaurora.org>, Patrick Lai <plai@codeaurora.org>,
+ Andy Gross <agross@kernel.org>, dgreid@chromium.org,
+ devicetree@vger.kernel.org, judyhsiao@google.com, tzungbi@chromium.org,
+ Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+ Stephan Gerhold <stephan@gerhold.net>, linux-arm-msm@vger.kernel.org,
+ swboyd@chromium.org, Rob Herring <robh+dt@kernel.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ linux-arm-kernel@lists.infradead.org, dianders@chromium.org,
+ cychiang@google.com, Takashi Iwai <tiwai@suse.com>,
+ Judy Hsiao <judyhsiao@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,17 +112,181 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 03 Jun 2021 16:32:03 +0200,
-Yang Yingliang wrote:
-> 
-> Fix to return a negative error code from the error handling
-> case instead of 0, as done elsewhere in this function.
-> 
-> Fixes: e50dfac81f73 ("ALSA: firewire-motu: cache event ticks in source packet header per data block")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 
-Thanks, applied.
+This patch fixes PoP noise of around 15ms observed during audio
+capture begin.
+Enables BCLK and LRCLK in snd_soc_dai_ops prepare call for
+introducing some delay before capture start.
 
+Co-developed-by: Judy Hsiao <judyhsiao@chromium.org>
+Signed-off-by: Judy Hsiao <judyhsiao@chromium.org>
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+(am from https://patchwork.kernel.org/patch/12276369/)
+(also found at https://lore.kernel.org/r/20210524142114.18676-1-srivasam@codeaurora.org)
 
-Takashi
+---
+Changes Since V5:
+	-- Fixed nit.
+        -- Updated `mi2s_was_prepared[dai->driver->id] = true;` after checking for errors.
+Changes Since V4:
+        -- Replaced the __clk_is_enabled(BCLK) check by the self maintained.
+           mi2s_was_prepared bool state.
+        -- Removed unrelated changes.
+        -- Refined comments.
+Changes Since V3:
+        -- Checked BCLK is off before enabling it in lpass_cpu_daiops_prepare as
+           lpass_cpu_daiops_prepare can be called multiple times
+        -- Checked BCLK is on before disabling it in lpass_cpu_daiops_shutdown to
+           fix the WARN. It is because BCLK may not be enabled if
+           lpass_cpu_daiops_prepare is not called before lpass_cpu_daiops_shutdown
+        -- Added more comments
+Changes Since V2:
+        -- Updated comments as per linux style
+        -- Removed unrelated changes
+Changes Since V1:
+        -- Enabled BCLK and LRCLK in dai ops prepare API instead of startup API
+        -- Added comments
+
+ sound/soc/qcom/lpass-cpu.c | 80 ++++++++++++++++++++++++++++++++++++++
+ sound/soc/qcom/lpass.h     |  4 ++
+ 2 files changed, 84 insertions(+)
+
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index af8cb64924a0..0430cc797391 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -93,8 +93,30 @@ static void lpass_cpu_daiops_shutdown(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
+ 	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	struct lpaif_i2sctl *i2sctl = drvdata->i2sctl;
++	unsigned int id = dai->driver->id;
+ 
+ 	clk_disable_unprepare(drvdata->mi2s_osr_clk[dai->driver->id]);
++	/*
++	 * Ensure LRCLK is disabled even in device node validation.
++	 * Will not impact if disabled in lpass_cpu_daiops_trigger()
++	 * suspend.
++	 */
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		regmap_fields_write(i2sctl->spken, id, LPAIF_I2SCTL_SPKEN_DISABLE);
++	else
++		regmap_fields_write(i2sctl->micen, id, LPAIF_I2SCTL_MICEN_DISABLE);
++
++	/*
++	 * BCLK may not be enabled if lpass_cpu_daiops_prepare is called before
++	 * lpass_cpu_daiops_shutdown. It's paired with the clk_enable in
++	 * lpass_cpu_daiops_prepare.
++	 */
++	if (drvdata->mi2s_was_prepared[dai->driver->id]) {
++		drvdata->mi2s_was_prepared[dai->driver->id] = false;
++		clk_disable(drvdata->mi2s_bit_clk[dai->driver->id]);
++	}
++
+ 	clk_unprepare(drvdata->mi2s_bit_clk[dai->driver->id]);
+ }
+ 
+@@ -275,6 +297,18 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		/*
++		 * Ensure lpass BCLK/LRCLK is enabled during
++		 * device resume as lpass_cpu_daiops_prepare() is not called
++		 * after the device resumes. We don't check mi2s_was_prepared before
++		 * enable/disable BCLK in trigger events because:
++		 *  1. These trigger events are paired, so the BCLK
++		 *     enable_count is balanced.
++		 *  2. the BCLK can be shared (ex: headset and headset mic),
++		 *     we need to increase the enable_count so that we don't
++		 *     turn off the shared BCLK while other devices are using
++		 *     it.
++		 */
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 			ret = regmap_fields_write(i2sctl->spken, id,
+ 						 LPAIF_I2SCTL_SPKEN_ENABLE);
+@@ -296,6 +330,10 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		/*
++		 * To ensure lpass BCLK/LRCLK is disabled during
++		 * device suspend.
++		 */
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 			ret = regmap_fields_write(i2sctl->spken, id,
+ 						 LPAIF_I2SCTL_SPKEN_DISABLE);
+@@ -315,12 +353,54 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
+ 
++static int lpass_cpu_daiops_prepare(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
++{
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	struct lpaif_i2sctl *i2sctl = drvdata->i2sctl;
++	unsigned int id = dai->driver->id;
++	int ret;
++
++	/*
++	 * Ensure lpass BCLK/LRCLK is enabled bit before playback/capture
++	 * data flow starts. This allows other codec to have some delay before
++	 * the data flow.
++	 * (ex: to drop start up pop noise before capture starts).
++	 */
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		ret = regmap_fields_write(i2sctl->spken, id, LPAIF_I2SCTL_SPKEN_ENABLE);
++	else
++		ret = regmap_fields_write(i2sctl->micen, id, LPAIF_I2SCTL_MICEN_ENABLE);
++
++	if (ret) {
++		dev_err(dai->dev, "error writing to i2sctl reg: %d\n", ret);
++		return ret;
++	}
++
++	/*
++	 * Check mi2s_was_prepared before enabling BCLK as lpass_cpu_daiops_prepare can
++	 * be called multiple times. It's paired with the clk_disable in
++	 * lpass_cpu_daiops_shutdown.
++	 */
++	if (!drvdata->mi2s_was_prepared[dai->driver->id]) {
++		ret = clk_enable(drvdata->mi2s_bit_clk[id]);
++		if (ret) {
++			dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
++			clk_disable(drvdata->mi2s_osr_clk[id]);
++			return ret;
++		}
++		drvdata->mi2s_was_prepared[dai->driver->id] = true;
++	}
++	return 0;
++}
++
+ const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops = {
+ 	.set_sysclk	= lpass_cpu_daiops_set_sysclk,
+ 	.startup	= lpass_cpu_daiops_startup,
+ 	.shutdown	= lpass_cpu_daiops_shutdown,
+ 	.hw_params	= lpass_cpu_daiops_hw_params,
+ 	.trigger	= lpass_cpu_daiops_trigger,
++	.prepare	= lpass_cpu_daiops_prepare,
+ };
+ EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cpu_dai_ops);
+ 
+diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
+index 83b2e08ade06..7f72214404ba 100644
+--- a/sound/soc/qcom/lpass.h
++++ b/sound/soc/qcom/lpass.h
+@@ -67,6 +67,10 @@ struct lpass_data {
+ 	/* MI2S SD lines to use for playback/capture */
+ 	unsigned int mi2s_playback_sd_mode[LPASS_MAX_MI2S_PORTS];
+ 	unsigned int mi2s_capture_sd_mode[LPASS_MAX_MI2S_PORTS];
++
++	/* The state of MI2S prepare dai_ops was called */
++	bool mi2s_was_prepared[LPASS_MAX_MI2S_PORTS];
++
+ 	int hdmi_port_enable;
+ 
+ 	/* low-power audio interface (LPAIF) registers */
+-- 
+2.32.0.rc1.229.g3e70b5a671-goog
+
