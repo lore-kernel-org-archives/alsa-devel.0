@@ -2,113 +2,88 @@ Return-Path: <SRS0=evnw=K6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8103AC4708F
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jun 2021 06:33:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FC14C4708F
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jun 2021 06:49:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7736B613D2
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jun 2021 06:33:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7736B613D2
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+	by mail.kernel.org (Postfix) with ESMTPS id 06C3A6140C
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jun 2021 06:49:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 06C3A6140C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA4B016FA;
-	Fri,  4 Jun 2021 08:32:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA4B016FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id E4C4116F7;
+	Fri,  4 Jun 2021 08:48:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4C4116F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622788401;
-	bh=jaCyfyadGkcPRO8Vrv3KN69oZHeIAOYYrOnthVfMpNE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Z33c5J+rzpZr+aOa/V4t1EO2NqcrptOpho2EMB3cy8euykU/d40NI6E5ZN4m+j8bY
-	 SdqbdzDDTe1wRVJ26OUwteP3sZf1cf5OgFJEqLcYy3Gk4LsvlGVjilJnaM3XtDUNjm
-	 UoBbmk44Ix7xGXwMZ8V6SkDkIvGTVVBOpmAb3m+Y=
+	s=default; t=1622789349;
+	bh=zD7mWILfc22pJ+mekOcBD4vLj2UcxRVIEsSjIeccQFw=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=j8dZRNV2N136fP/xHaTBhH9zz1k2v7MjdNurxSTlvKTaexbKpImGCb3f6scXg7bjE
+	 EfYNPYzaIfgK/F8zxGWCqsleOZjdyKVm9E4qPpduwOaQoURedQEFhneVG6lArbeSBX
+	 V9mj0njDeI6Mo3C/EnWMiXqzl1Htq0o9E64aENcA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 527F4F802A9;
-	Fri,  4 Jun 2021 08:32:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7C336F802A9;
+	Fri,  4 Jun 2021 08:48:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 55EB5F802C4; Fri,  4 Jun 2021 08:32:25 +0200 (CEST)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 14274F802C4; Fri,  4 Jun 2021 08:48:17 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B7B23F800CC
- for <alsa-devel@alsa-project.org>; Fri,  4 Jun 2021 08:32:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7B23F800CC
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 1546WDo54008839,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
- by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 1546WDo54008839
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 4 Jun 2021 14:32:13 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 4 Jun 2021 14:32:12 +0800
-Received: from localhost.localdomain (172.22.102.1) by
- RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 4 Jun 2021 14:32:12 +0800
-From: Oder Chiou <oder_chiou@realtek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH] ASoC: rt5682: Fix the fast discharge for headset unplugging
- in soundwire mode
-Date: Fri, 4 Jun 2021 14:31:50 +0800
-Message-ID: <20210604063150.29925-1-oder_chiou@realtek.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.22.102.1]
-X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
- RTEXMBS01.realtek.com.tw (172.21.6.94)
-X-KSE-ServerInfo: RTEXMBS01.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: trusted connection
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 06/04/2021 06:12:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzYvNCCkV6TIIDAxOjMyOjAw?=
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 06/04/2021 06:19:41
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 164097 [Jun 03 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: oder_chiou@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 448 448 71fb1b37213ce9a885768d4012c46ac449c77b17
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;
- realtek.com:7.1.1; 127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 06/04/2021 06:22:00
-Cc: libin.yang@intel.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- Oder Chiou <oder_chiou@realtek.com>, sathya.prakash.m.r@intel.com,
- derek.fang@realtek.com, bard.liao@intel.com, shumingf@realtek.com,
- flove@realtek.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id CCDFBF800CC
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jun 2021 08:48:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCDFBF800CC
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="EbCIiyQn"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="0uu6EZVp"
+Received: from relay2.suse.de (unknown [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 9E7B91FD3F;
+ Fri,  4 Jun 2021 06:48:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1622789293; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=RVgA+JyHH94j5jLIMVMlQHypvDoshhfyCvrl87CnRZk=;
+ b=EbCIiyQnKCi1aomrASugqyfErUTs6svE9I5VBD/mbmoBzScuqmMbP50JvGJFPtazU6Ic69
+ 8lyWqFQAhuZLXGigDTtAGDnmBy17/QMHWLAddBAMCPmgJxiTzNYH0/+9wCYO86mKljNC2H
+ BNMnYOQBNE87IOCukysibCcYqTVwVT4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1622789293;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=RVgA+JyHH94j5jLIMVMlQHypvDoshhfyCvrl87CnRZk=;
+ b=0uu6EZVpIF+ehx1CgzVyBT/7nc3m7P/OaYlpFlK9scq2SQCsFTD06DZHvOgzCcGLgdHdcx
+ j3zhYxwKzCtS7NCw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id AD795A3B88;
+ Fri,  4 Jun 2021 06:48:12 +0000 (UTC)
+Date: Fri, 04 Jun 2021 08:48:12 +0200
+Message-ID: <s5hfsxygm6r.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Yang Yingliang <yangyingliang@huawei.com>
+Subject: Re: [PATCH -next] ALSA: firewire-motu: fix error return code in
+ snd_motu_stream_reserve_duplex()
+In-Reply-To: <20210603143203.582017-1-yangyingliang@huawei.com>
+References: <20210603143203.582017-1-yangyingliang@huawei.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -124,28 +99,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Based on ("5a15cd7fce20b1fd4aece6a0240e2b58cd6a225d"), the setting also
-should be set in soundwire mode.
+On Thu, 03 Jun 2021 16:32:03 +0200,
+Yang Yingliang wrote:
+> 
+> Fix to return a negative error code from the error handling
+> case instead of 0, as done elsewhere in this function.
+> 
+> Fixes: e50dfac81f73 ("ALSA: firewire-motu: cache event ticks in source packet header per data block")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- sound/soc/codecs/rt5682-sdw.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Thanks, applied.
 
-diff --git a/sound/soc/codecs/rt5682-sdw.c b/sound/soc/codecs/rt5682-sdw.c
-index fed80c8f994f..e78ba3b064c4 100644
---- a/sound/soc/codecs/rt5682-sdw.c
-+++ b/sound/soc/codecs/rt5682-sdw.c
-@@ -462,7 +462,8 @@ static int rt5682_io_init(struct device *dev, struct sdw_slave *slave)
- 
- 	regmap_update_bits(rt5682->regmap, RT5682_CBJ_CTRL_2,
- 		RT5682_EXT_JD_SRC, RT5682_EXT_JD_SRC_MANUAL);
--	regmap_write(rt5682->regmap, RT5682_CBJ_CTRL_1, 0xd042);
-+	regmap_write(rt5682->regmap, RT5682_CBJ_CTRL_1, 0xd142);
-+	regmap_update_bits(rt5682->regmap, RT5682_CBJ_CTRL_5, 0x0700, 0x0600);
- 	regmap_update_bits(rt5682->regmap, RT5682_CBJ_CTRL_3,
- 		RT5682_CBJ_IN_BUF_EN, RT5682_CBJ_IN_BUF_EN);
- 	regmap_update_bits(rt5682->regmap, RT5682_SAR_IL_CMD_1,
--- 
-2.31.1
 
+Takashi
