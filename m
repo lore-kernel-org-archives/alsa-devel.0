@@ -2,106 +2,111 @@ Return-Path: <SRS0=evnw=K6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AB4BC07E94
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jun 2021 08:45:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A81C7C07E94
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jun 2021 09:03:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E34C96140F
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jun 2021 08:45:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E34C96140F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id B0D7A613EA
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jun 2021 09:03:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B0D7A613EA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cerno.tech
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9BD1B1708;
-	Fri,  4 Jun 2021 10:44:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BD1B1708
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9572B16CF;
+	Fri,  4 Jun 2021 11:02:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9572B16CF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622796317;
-	bh=X1T2yzMeI3vS7XDGFP9iiEhGe70CT9UWoBKOTqd+5Gc=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1622797400;
+	bh=1jc38/kMYOUNay+MdgNpZ95kVojaHlQ7YITnlCiwzew=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=T7cWO1xoGA7dW/37YFCXx2CKbDEwK8uoymvC5SKN0/Fn/YgIzLLJL7smzvoRJhCFg
-	 gLsis4Zz7zjAx7uEywCSuVqo6xT8KySJCFPiFgT4q1XXpokqYMWAnTUQKQYklG/lXE
-	 pTNo+IlOB7oQ3N4zs9xi52eqY9hdqRYW8YGI6x0o=
+	b=b5AtH0Ip0NRahM4Eq6Kwp5Tmzt2iH/t4QroHTlKEub7fhlvcOlRnT1Wlt64ILeTbE
+	 EASGVLEVpoQ/pwQVIjYGxCS+OI7BLdMitVLUSx2V40spbm5aUL8/uJ836SRgFv8GrO
+	 jxqDplNY3ghRd+ziLTdcR9R5lLt4N4tDLvM/3p9c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27359F80103;
-	Fri,  4 Jun 2021 10:44:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27020F800CC;
+	Fri,  4 Jun 2021 11:02:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5A2D7F802C4; Fri,  4 Jun 2021 10:44:25 +0200 (CEST)
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com
- [IPv6:2a00:1450:4864:20::235])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 90893F802C4; Fri,  4 Jun 2021 11:02:28 +0200 (CEST)
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2858DF80103
- for <alsa-devel@alsa-project.org>; Fri,  4 Jun 2021 10:44:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2858DF80103
+ by alsa1.perex.cz (Postfix) with ESMTPS id EC232F80103
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jun 2021 11:02:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC232F80103
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="KOXWEob0"
-Received: by mail-lj1-x235.google.com with SMTP id m3so10539137lji.12
- for <alsa-devel@alsa-project.org>; Fri, 04 Jun 2021 01:44:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=8qje2jMT9k/yWcqfBZuQl0YlsfGCuFmFF0ZAae2cfIA=;
- b=KOXWEob0hERH0Y0+StGplaqUt60wSGg+aqansgO/OyDXDzsC0XFHoEXfxKfj7uzmpc
- 7u4l5kDjjfVj0NIoW/TM64rCid5hMr4EzA4QMQ+hjlgwXaamzzl+iQnB284hethUcyJz
- KxHKDrI7yJxJjd9VklowlZMky6JUjwimfB8kxKt/kuHPZ8uZfTj9JxReDkrLxWAxqWld
- y0M7rZqfg/ftFfPkoRFHOSa/LdTFyYzBxPhCeTIuBE+rkqQDoyDs/weXTkeyVh92u9s0
- 1TqqvckhMoFwe3/2H0vWUjJSZpoANH8NhpGs+lPizHTVjfQXpNPTckbuXNdZFv3J26Ft
- sRsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=8qje2jMT9k/yWcqfBZuQl0YlsfGCuFmFF0ZAae2cfIA=;
- b=KB9pUYBnkHfAKot7ZWGa1OI4vC9pQ4nKoOiJhk2IBzinb9PgOc5iwuGz1WtGgzLuQl
- HSHcn5h/vQyfMoUjATY2gHLQSvmNcP33kj9yj53h4b8iF2qYiSY64WK5O/eDlzEGr6V8
- ouKj6kp2YxrxvQnDX8qwx+V0fEIpO3vSI+wkn7o5iZGy0DhMDhg0NW7unKDdU0uOu2Ad
- J2foPVBVhwOTaKiO97IqWHV2n2QPlZ9FJJh2P0rOfP3U5r7fMv85NiIJcQs9+sVLOEqw
- p8hu8jfUtL6zt9T7Legyj88gDvpgGcS9EnHMeeZOUPbnuPDek38sETNaC1kD0DfD8A06
- sMaw==
-X-Gm-Message-State: AOAM533JSd2kv392i0k3lPj4BqCy8x4DmGbXuI2nxOtnOLxmiLRSlEuQ
- 1RZv//OOFmmucD5+t4CBf1U=
-X-Google-Smtp-Source: ABdhPJy+1611WuPZMiE8gnObgiAWxRMGON1e8gtOn+PqjM9SDqSc3QyxqFiQ9cR4G4V4w3QmvAEGOA==
-X-Received: by 2002:a2e:9f4c:: with SMTP id v12mr2596710ljk.176.1622796260789; 
- Fri, 04 Jun 2021 01:44:20 -0700 (PDT)
-Received: from [10.0.0.40] (91-155-111-71.elisa-laajakaista.fi.
- [91.155.111.71])
- by smtp.gmail.com with ESMTPSA id 26sm550657lfr.184.2021.06.04.01.44.19
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 04 Jun 2021 01:44:20 -0700 (PDT)
-Subject: Re: [PATCH v2][next] ASoC: ti: davinci-mcasp: Fix fall-through
- warning for Clang
-To: Joe Perches <joe@perches.com>, "Gustavo A. R. Silva"
- <gustavoars@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-References: <20210604072714.GA244640@embeddedor>
- <a0452dc7da2c46e3e764bdd5fd9b94dc96d96912.camel@perches.com>
-From: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-Message-ID: <4c217782-21e5-b408-0fb9-f0a2c5b31591@gmail.com>
-Date: Fri, 4 Jun 2021 11:44:19 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+ dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
+ header.b="D0FMWIwK"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="Lantx2gb"
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+ by mailout.nyi.internal (Postfix) with ESMTP id 805EB5C0099;
+ Fri,  4 Jun 2021 05:02:18 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute6.internal (MEProxy); Fri, 04 Jun 2021 05:02:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+ date:from:to:cc:subject:message-id:references:mime-version
+ :content-type:in-reply-to; s=fm3; bh=1jc38/kMYOUNay+MdgNpZ95kVoj
+ aHlQ7YITnlCiwzew=; b=D0FMWIwKAeylm7rcRHJo0h3cuGEqbKFymISkCyZfOQE
+ k7UhYcq0Rvgyq7k1nz+2WBUuyTxmqtrUvLrLBWjpIZEidRgQTwsXw8ge47Uv+Pkt
+ j/GCf4/7Uy3kzrDXimcBKeA54jNHMPQFz2GNyCbZVOnQuYcpciQUDZNwFS9TKCrD
+ faj0khlrsYilddvQnv9YfZzHdB+Wt7JrErhVpu6oZ70OlWbYI3pHLrfk7WAiNmrK
+ NrQy142IbdADl4FdMxwGTy8WnAulyB/N+EjGm3umGXexXIYYmI4qfoBIKqSfcASO
+ U+bjvI7udOCVCMSuTdL10ec8t8U6N1t5BKctItAIQlA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=1jc38/
+ kMYOUNay+MdgNpZ95kVojaHlQ7YITnlCiwzew=; b=Lantx2gbJF7PJ8Iog9V/4O
+ 0Mv4JmyHGPlHknfeH4hsCD7a6b1E5McZKlmje+HCh1GIec22VKh9lZAvzfpmDzIm
+ aK75jqvLIdUxNQVek2QI8hl6S1Z+mnL/WLCN19SG1DGZk6l2ZVMFT+OaOMMNrt2R
+ 55X21s6WLQ6JA4sGemt3El+2Dp+pbhAKjaPryhYSgA4dlH4AbIc5+wp9VQKSSlZR
+ 5/nO3hLdTjtgRX5IIo1patgBUvbJ6k+T/3Uz9eZKFL/SODh4hnVWOx+Ef228DEfi
+ Hv/6ObxmX0DZWrQ9ip73Ejp5rQ/rymf/3fCraoQhy4/UINliHeIK+Kerhzdpnbrw
+ ==
+X-ME-Sender: <xms:Gey5YHD6CwLEnqnk2nx5wzXpkIzUBZjcy3QLmH_hBCJFNAutB8SFEQ>
+ <xme:Gey5YNhdUOmUC-ipW9sqdjyGCVpO-5E7oQPEcH8cGe8GOa1B1GW2vuPagS_0jOEhg
+ wl89F8l0QIawPAbEh4>
+X-ME-Received: <xmr:Gey5YCldCFZ1tRrv5n6addj9qTEGJvPInYRUgznE1VfeTXusb4FlpE5MzVrIlcv6RQKNXmHkG44GU5HSK5cHB29HJRl6czeeMgEv>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtuddguddtucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddunecuhfhrohhmpeforgigihhm
+ vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+ htvghrnhepjeekkefftdffhffhvedvudetgfdtleejveffvedvvdetgeeltdfggefhhedv
+ ieffnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+ dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:Gey5YJzs8dnLppNnzKTxnpq8iy3DdalWp7YeUev7RACqHVSVFKCtNA>
+ <xmx:Gey5YMSqqcrcpucnhdw5U6bZPiN1SgACK1QHQWej75kC5ILknmv1Mw>
+ <xmx:Gey5YMZpQJ8NbBseRceAqZacZJcM43RzG2NC8o2qdRZaHwjEnMWpag>
+ <xmx:Guy5YHfMDaj-4QgxYCssv7sUgEXx3iOmRGHussqllP33CKHBAXustg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 4 Jun 2021 05:02:17 -0400 (EDT)
+Date: Fri, 4 Jun 2021 11:02:15 +0200
+From: Maxime Ripard <maxime@cerno.tech>
+To: Stefan Wahren <stefan.wahren@i2se.com>
+Subject: Re: vc4: hdmi: audio: ASoC: error at snd_soc_dai_startup on
+ fef00700.hdmi
+Message-ID: <20210604090215.cpvoryvwrfzj5ikx@gilmour>
+References: <612b134c-d356-f027-46d7-322bdaff37a4@i2se.com>
 MIME-Version: 1.0
-In-Reply-To: <a0452dc7da2c46e3e764bdd5fd9b94dc96d96912.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="cowixb2ckvc6iema"
+Content-Disposition: inline
+In-Reply-To: <612b134c-d356-f027-46d7-322bdaff37a4@i2se.com>
+Cc: alsa-devel@alsa-project.org,
+ DRI Development <dri-devel@lists.freedesktop.org>,
+ Emma Anholt <emma@anholt.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -118,65 +123,69 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--cowixb2ckvc6iema
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 04/06/2021 10:53, Joe Perches wrote:
-> On Fri, 2021-06-04 at 02:27 -0500, Gustavo A. R. Silva wrote:
->> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
->> by explicitly adding a fallthrough; statement.
->>
->> Link: https://github.com/KSPP/linux/issues/115
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->> ---
->> Changes in v2:
->>  - Use fallthrough; instead of break;
->>  - Update changelog text.
->>  Link: https://lore.kernel.org/linux-hardening/25941c37-6e38-88ae-3afe-4f5af44380d3@gmail.com/
-> []
->> diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-> []
->> @@ -2317,6 +2317,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
->>  		break;
->>  	default:
->>  		dev_err(&pdev->dev, "No DMA controller found (%d)\n", ret);
->> +		fallthrough;
->>  	case -EPROBE_DEFER:
->>  		goto err;
->>  	}
-> 
-> While this is OK, perhaps the below would be clearer and a more common style
-> as it doesn't intermix default: with logging output and a case label.
+Hi Stefan,
 
-True, this looks even better.
+On Wed, May 26, 2021 at 12:47:29PM +0200, Stefan Wahren wrote:
+> Hi,
+>=20
+> yesterday i was testing with Linux 5.13-rc3 on my Raspberry Pi 4 B
+> (multi_v7_defconfig) and i'm getting the following errors during boot:
+>=20
+> [=A0=A0 25.947494] vc4_hdmi fef00700.hdmi: ASoC: error at
+> snd_soc_dai_startup on fef00700.hdmi: -19
+> [=A0=A0 25.947512]=A0 MAI: soc_pcm_open() failed (-19)
+> [=A0=A0 25.947883] vc4_hdmi fef00700.hdmi: ASoC: error at
+> snd_soc_dai_startup on fef00700.hdmi: -19
+> [=A0=A0 25.947891]=A0 MAI: soc_pcm_open() failed (-19)
+> [=A0=A0 25.948566] vc4_hdmi fef00700.hdmi: ASoC: error at
+> snd_soc_dai_startup on fef00700.hdmi: -19
+> [=A0=A0 25.948577]=A0 MAI: soc_pcm_open() failed (-19)
+> [=A0=A0 26.500049] vc4_hdmi fef00700.hdmi: ASoC: error at
+> snd_soc_dai_startup on fef00700.hdmi: -19
+> [=A0=A0 26.500065]=A0 MAI: soc_pcm_open() failed (-19)
+> [=A0=A0 26.500608] vc4_hdmi fef00700.hdmi: ASoC: error at
+> snd_soc_dai_startup on fef00700.hdmi: -19
+> [=A0=A0 26.500617]=A0 MAI: soc_pcm_open() failed (-19)
+> [=A0=A0 26.502339] vc4_hdmi fef00700.hdmi: ASoC: error at
+> snd_soc_dai_startup on fef00700.hdmi: -19
+> [=A0=A0 26.502353]=A0 MAI: soc_pcm_open() failed (-19)
+> [=A0=A0 26.502569] vc4_hdmi fef00700.hdmi: ASoC: error at
+> snd_soc_dai_startup on fef00700.hdmi: -19
+> [=A0=A0 26.502578]=A0 MAI: soc_pcm_open() failed (-19)
+>=20
+> Rootfs: Raspberry Pi OS 32 bit (April 2021)
+>=20
+> But according to aplay -l both hdmi devices have been registered. Does
+> anyone have seen this, too?
 
-Acked-by: Peter Ujfalusi <peter.ujflausi@gmail.com>
+I would assume it's due to this:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/dri=
+vers/gpu/drm/vc4/vc4_hdmi.c#n1083
 
-> ---
->  sound/soc/ti/davinci-mcasp.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-> index b94220306d1a8..1059a696ff90e 100644
-> --- a/sound/soc/ti/davinci-mcasp.c
-> +++ b/sound/soc/ti/davinci-mcasp.c
-> @@ -2305,6 +2305,9 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
->  		goto err;
->  
->  	ret = davinci_mcasp_get_dma_type(mcasp);
-> +	if (ret == -EPROBE_DEFER)
-> +		goto err;
-> +
->  	switch (ret) {
->  	case PCM_EDMA:
->  		ret = edma_pcm_platform_register(&pdev->dev);
-> @@ -2317,7 +2320,6 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
->  		break;
->  	default:
->  		dev_err(&pdev->dev, "No DMA controller found (%d)\n", ret);
-> -	case -EPROBE_DEFER:
->  		goto err;
->  	}
->  
-> 
+It pre-dates my time working on the vc4 driver so I'm not really sure
+what this is supposed to prevent, but my guess is that it's there to
+avoid someone using the audio card before we have a display detected and
+connected, and its capabilities known (the first and more obvious one
+being does it support audio in the first place).
 
--- 
-Péter
+It's nothing new though, maybe it's the error printing itself that is?
+
+Maxime
+
+--cowixb2ckvc6iema
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYLnsFgAKCRDj7w1vZxhR
+xYo7AP4gasQXZNwx0uZo+1T1j85hsw4A2gK7D9fEPvnksbfYdwD+O6sJPi2spLyf
+6udavnhBnHFmt2Enn3q5NJD39iNJDQA=
+=Rxgh
+-----END PGP SIGNATURE-----
+
+--cowixb2ckvc6iema--
