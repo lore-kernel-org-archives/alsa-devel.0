@@ -2,112 +2,75 @@ Return-Path: <SRS0=evnw=K6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	UNPARSEABLE_RELAY autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42E30C07E94
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jun 2021 07:29:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5C42C07E94
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jun 2021 07:54:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DEC7461415
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jun 2021 07:29:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DEC7461415
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+	by mail.kernel.org (Postfix) with ESMTPS id EE7FA61417
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jun 2021 07:54:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE7FA61417
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 73A9B1700;
-	Fri,  4 Jun 2021 09:28:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73A9B1700
+	by alsa0.perex.cz (Postfix) with ESMTPS id A6BEC1708;
+	Fri,  4 Jun 2021 09:53:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6BEC1708
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622791766;
-	bh=AHZkVo0A1wp+HJGMRGTYAfreTZXqD0HuzwFTS1KbngM=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1622793247;
+	bh=BjAHNIGu2zVeNWRWcUdWJs2polwxs8hyyVaVHOeaV9s=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hEwUJQC3niZ1AB4VTgGE/whwuz3mzOpj32q2i953jySKr9KYUwH5N7x+zgRWMH4Iq
-	 /8V1yLfH26Pew4yUBv8T+cfuuvvrPf6eFJmo0eR0kh8Kt4tzrJy5uvfqI0x+syfrCQ
-	 cYrqowZyJt7KnXsZh8f3dq51LvL7cUo559p6lTDU=
+	b=uKB+kERUFTtgDqx3uP70RKSORKQlNTQIj0DDHb3doXQg8et5YT5wYd6tiL6l9C8Kk
+	 mtAFYg+wu6oRgz2JM1KRFg14WzK8FSsbAtP5jgs4HMYyFMoRMLMEhv2eqyL721D4bl
+	 01ehg9qyixcKHbHyM2+qL/jZdQ7sWihnirFzQ/jc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5DE1F802A9;
-	Fri,  4 Jun 2021 09:28:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 46D96F80103;
+	Fri,  4 Jun 2021 09:53:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7166BF802C4; Fri,  4 Jun 2021 09:28:22 +0200 (CEST)
-Received: from gateway34.websitewelcome.com (gateway34.websitewelcome.com
- [192.185.148.104])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id F0724F802C4; Fri,  4 Jun 2021 09:53:15 +0200 (CEST)
+Received: from smtprelay.hostedemail.com (smtprelay0048.hostedemail.com
+ [216.40.44.48])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A2FB6F8016D
- for <alsa-devel@alsa-project.org>; Fri,  4 Jun 2021 09:28:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2FB6F8016D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com
- header.b="ifpshzET"
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
- by gateway34.websitewelcome.com (Postfix) with ESMTP id 7F31FFD085
- for <alsa-devel@alsa-project.org>; Fri,  4 Jun 2021 02:28:15 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22]) by cmsmtp with SMTP
- id p4FblI1P1nrr4p4Fbl6A5f; Fri, 04 Jun 2021 02:28:15 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
- In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
- :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
- Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
- List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=aQ/n0tyE7dMetP5aE/5p8GF8KyW8q+XkKwtHdmpiX0Q=; b=ifpshzETtcBhc+8FEzm3P3Nu5J
- N9VdujNRGiArU31Glgfa8L+L3f0kRfvjSXZXLm7T5CbOpTjvQ4S5iiZDPZHPEhEEI+zugoi3/fs8s
- bdPWDgl9khdWDu+do/1zgTDFJScMEnu/gTxCcviAHTi1kZuQ4bXChJttUAk+jyfhWjPQopwgvkbX5
- XSNGfsapr4+kUS9kH05a6f86W/DXFaF1B/iK67/qmDHjpU4bHjSO7u2tvwUfnOz7rB55rIuJTZ8p+
- xcf5omWp5VlbOmpXVaHAdjZL3wqJVh1x4xDvUyxHtbPIujmNxbc4sSInS3/Uzp3+vfsmNiMI20TeB
- iKshgkwQ==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:35128
- helo=[192.168.15.8])
- by gator4166.hostgator.com with esmtpsa (TLS1.2) tls
- TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.94.2)
- (envelope-from <gustavo@embeddedor.com>)
- id 1lp4FX-000WMr-G5; Fri, 04 Jun 2021 02:28:11 -0500
-Subject: Re: [PATCH][next] ASoC: ti: davinci-mcasp: Fix fall-through warning
- for Clang
-To: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-References: <20210528202047.GA39602@embeddedor>
- <25941c37-6e38-88ae-3afe-4f5af44380d3@gmail.com>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <94eadd21-a64f-9b83-595b-1401d7ec2194@embeddedor.com>
-Date: Fri, 4 Jun 2021 02:29:13 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id E2130F80103
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jun 2021 09:53:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2130F80103
+Received: from omf03.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+ by smtprelay01.hostedemail.com (Postfix) with ESMTP id 50185100E7B45;
+ Fri,  4 Jun 2021 07:53:07 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by
+ omf03.hostedemail.com (Postfix) with ESMTPA id E7B5F13D95; 
+ Fri,  4 Jun 2021 07:53:05 +0000 (UTC)
+Message-ID: <a0452dc7da2c46e3e764bdd5fd9b94dc96d96912.camel@perches.com>
+Subject: Re: [PATCH v2][next] ASoC: ti: davinci-mcasp: Fix fall-through
+ warning for Clang
+From: Joe Perches <joe@perches.com>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>, Peter Ujfalusi
+ <peter.ujfalusi@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
+ <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
+ <tiwai@suse.com>
+Date: Fri, 04 Jun 2021 00:53:04 -0700
+In-Reply-To: <20210604072714.GA244640@embeddedor>
+References: <20210604072714.GA244640@embeddedor>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <25941c37-6e38-88ae-3afe-4f5af44380d3@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse,
- please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - alsa-project.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lp4FX-000WMr-G5
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8])
- [187.162.31.110]:35128
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 7
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+X-Stat-Signature: wnokseunpwwmwmz5szxdzhpi4q1ds8kd
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: E7B5F13D95
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19tZSFvwatUPABPDfgJt6R0uDBPN0xZpRo=
+X-HE-Tag: 1622793185-488135
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
  linux-hardening@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
@@ -125,45 +88,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 6/4/21 02:14, PÃ©ter Ujfalusi wrote:
+On Fri, 2021-06-04 at 02:27 -0500, Gustavo A. R. Silva wrote:
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+> by explicitly adding a fallthrough; statement.
 > 
-> 
-> On 28/05/2021 23:20, Gustavo A. R. Silva wrote:
->> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
->> by explicitly adding a goto statement instead of letting the code fall
->> through to the next case.
->>
->> Link: https://github.com/KSPP/linux/issues/115
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->> ---
->> JFYI: We had thousands of these sorts of warnings and now we are down
->>       to just 25 in linux-next. This is one of those last remaining
->>       warnings.
->>
->>  sound/soc/ti/davinci-mcasp.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
->> index b94220306d1a..587967720135 100644
->> --- a/sound/soc/ti/davinci-mcasp.c
->> +++ b/sound/soc/ti/davinci-mcasp.c
->> @@ -2317,6 +2317,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
->>  		break;
->>  	default:
->>  		dev_err(&pdev->dev, "No DMA controller found (%d)\n", ret);
->> +		goto err;
-> 
-> Would:
-> 	fallthrough;
-> 
-> be enough to silence the warning? If so, then I would prefer this version.
+> Link: https://github.com/KSPP/linux/issues/115
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+> Changes in v2:
+>  - Use fallthrough; instead of break;
+>  - Update changelog text.
+>  Link: https://lore.kernel.org/linux-hardening/25941c37-6e38-88ae-3afe-4f5af44380d3@gmail.com/
+[]
+> diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
+[]
+> @@ -2317,6 +2317,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+>  		break;
+>  	default:
+>  		dev_err(&pdev->dev, "No DMA controller found (%d)\n", ret);
+> +		fallthrough;
+>  	case -EPROBE_DEFER:
+>  		goto err;
+>  	}
 
-Yep.:) Done:
+While this is OK, perhaps the below would be clearer and a more common style
+as it doesn't intermix default: with logging output and a case label.
+---
+ sound/soc/ti/davinci-mcasp.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-	https://lore.kernel.org/linux-hardening/20210604072714.GA244640@embeddedor/
+diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
+index b94220306d1a8..1059a696ff90e 100644
+--- a/sound/soc/ti/davinci-mcasp.c
++++ b/sound/soc/ti/davinci-mcasp.c
+@@ -2305,6 +2305,9 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 		goto err;
+ 
+ 	ret = davinci_mcasp_get_dma_type(mcasp);
++	if (ret == -EPROBE_DEFER)
++		goto err;
++
+ 	switch (ret) {
+ 	case PCM_EDMA:
+ 		ret = edma_pcm_platform_register(&pdev->dev);
+@@ -2317,7 +2320,6 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 		break;
+ 	default:
+ 		dev_err(&pdev->dev, "No DMA controller found (%d)\n", ret);
+-	case -EPROBE_DEFER:
+ 		goto err;
+ 	}
+ 
 
-Thanks
---
-Gustavo
