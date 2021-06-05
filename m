@@ -2,88 +2,55 @@ Return-Path: <SRS0=3aMq=K7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF975C47082
-	for <alsa-devel@archiver.kernel.org>; Sat,  5 Jun 2021 12:55:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CB9BC47082
+	for <alsa-devel@archiver.kernel.org>; Sat,  5 Jun 2021 22:59:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3B56E613AA
-	for <alsa-devel@archiver.kernel.org>; Sat,  5 Jun 2021 12:55:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B56E613AA
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 6364B61415
+	for <alsa-devel@archiver.kernel.org>; Sat,  5 Jun 2021 22:59:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6364B61415
+Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AAC0D1729;
-	Sat,  5 Jun 2021 14:54:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAC0D1729
+	by alsa0.perex.cz (Postfix) with ESMTPS id 05BD816BD;
+	Sun,  6 Jun 2021 00:58:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05BD816BD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622897709;
-	bh=7HbBmDouirfug8FiqvOELhnIfH/cv5IeMnu6emJ30WA=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1622933954;
+	bh=kGtEiEQOW49zXcv6ikqKgWbsZzdPOgmrSCWmLrHgDsU=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tZicYyKjlc/xLc282NshhGlVfYGrip6DL1N6LRtVx3uIddkPRVInkkiR/iUdjg5az
-	 3DcmCZdgTVKPL/2hefLvYtCIO6owfz0x8mLglBtgSeyA7umQ6ggeaaq0SWoq6tUOvU
-	 sGxmJxx4V3Cw1kTe5K7vCVxqr35ZYYdTM35pG324=
+	b=aE1dkQg0s0XM2H7fTIBmeyKIVCW6YRnizW35HHPBw+lJNBMXE84xvF3jgV+AYEqTa
+	 7GDcNM+SAuopaTwjuDkymQZOYWJWk+ucxjMIrJ1jnj59qU4XDe7Zwh+b45EluS4Qmm
+	 FBuWYijUQIbsJM2bYkzI0wvN4G9GV+EPjdGZQvhk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F946F8016D;
-	Sat,  5 Jun 2021 14:54:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7AC0DF8016D;
+	Sun,  6 Jun 2021 00:58:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8546EF80253; Sat,  5 Jun 2021 14:54:17 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3BC65F80155
- for <alsa-devel@alsa-project.org>; Sat,  5 Jun 2021 14:54:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BC65F80155
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="I9lmD3mp"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="SjfPj41X"
-Received: from relay2.suse.de (unknown [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 1313421A17;
- Sat,  5 Jun 2021 12:54:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1622897646; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=PsHbLz/PK98ZInYmthMcELics8BGr09drEgRty8FcZo=;
- b=I9lmD3mpwU2l8nMFtThPM/wDyvj6aMDvXLF6GSSCjEMoQKdeOoC7GY4BcHm0y5VPDYwktd
- /OO4DH0oFYM9HU/VR8sFLDCmod7mIihCciZKSxEs0KbCLEuFrBPAr08tN5a6HiH3U8m6/V
- Xlf3BMajj/Dy8+kTbCzZxIQerG5nW9E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1622897646;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=PsHbLz/PK98ZInYmthMcELics8BGr09drEgRty8FcZo=;
- b=SjfPj41XrWjfu2lKDHWJds7v0MGP8QpRPB/9t2ghNjdCSmaucJPqyHVwyKa4J7PGCcvNYD
- iZ7zN4oLodxJ8CDw==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id F2E54A3B81;
- Sat,  5 Jun 2021 12:54:05 +0000 (UTC)
-Date: Sat, 05 Jun 2021 14:54:05 +0200
-Message-ID: <s5hmts4fp5e.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ALSA: firewire-lib: fix the context to call
- snd_pcm_stop_xrun()
-In-Reply-To: <20210605091054.68866-1-o-takashi@sakamocchi.jp>
-References: <20210605091054.68866-1-o-takashi@sakamocchi.jp>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, stable@vger.kernel.org
+ id BDE70F80253; Sun,  6 Jun 2021 00:58:14 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id D1D81F80155
+ for <alsa-devel@alsa-project.org>; Sun,  6 Jun 2021 00:58:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1D81F80155
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1622933884811094999-webhooks-bot@alsa-project.org>
+References: <1622933884811094999-webhooks-bot@alsa-project.org>
+Subject: alsa-ucm-conf 1.2.5 broke front headphone output on pipewire-pulse
+Message-Id: <20210605225814.BDE70F80253@alsa1.perex.cz>
+Date: Sun,  6 Jun 2021 00:58:14 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,22 +66,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 05 Jun 2021 11:10:54 +0200,
-Takashi Sakamoto wrote:
-> 
-> In the workqueue to queue wake-up event, isochronous context is not
-> processed, thus it's useless to check context for the workqueue to switch
-> status of runtime for PCM substream to XRUN. On the other hand, in
-> software IRQ context of 1394 OHCI, it's needed.
-> 
-> This commit fixes the bug introduced when tasklet was replaced with
-> workqueue.
-> 
-> Cc: <stable@vger.kernel.org>
-> Fixes: 2b3d2987d800 ("ALSA: firewire: Replace tasklet with work")
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+alsa-project/alsa-ucm-conf issue #98 was opened from amezin:
 
-Applied, thanks.
+After upgrade to 1.2.5, front headphone output isn't working.
+In GNOME Settings, when I select front headphone output and click "Test", it shows a dialog with text "Click a speaker to test", but there are no buttons to click.
 
+`systemctl --user status pipewire` shows this:
 
-Takashi
+    Jun 06 04:40:30 trx40 systemd[2732]: Started Multimedia Service.
+    Jun 06 04:40:41 trx40 pipewire[44766]: '_ucm0005.hw:ALC1220VBDT,2': playback open failed: No such device
+    Jun 06 04:40:41 trx40 pipewire[44766]: adapter 0x559741478670: can't get format: No such device
+    Jun 06 04:40:41 trx40 pipewire[44766]: usage: node.name=<string>
+    Jun 06 04:40:41 trx40 pipewire[44766]: '_ucm0005.hw:ALC1220VBDT,1': playback open failed: No such device
+    Jun 06 04:40:41 trx40 pipewire[44766]: adapter 0x559741530560: can't get format: No such device
+    Jun 06 04:40:41 trx40 pipewire[44766]: usage: node.name=<string>
+
+Downgrading alsa-ucm-conf to 1.2.4 fixes the issue
+
+Tried pipewire 0.3.29 and pipewire git master
+Though with pulseaudio 14.2 the output works
+Motherboard: ASUS ROG Strix TRX40-E
+
+With alsa-ucm-conf 1.2.4 - output working:
+alsa-info.sh output: [alsa-info-good.txt](https://github.com/alsa-project/alsa-ucm-conf/files/6603363/alsa-info-good.txt)
+pw-dump output: [pw-dump-good.txt](https://github.com/alsa-project/alsa-ucm-conf/files/6603365/pw-dump-good.txt)
+
+With alsa-ucm-conf 1.2.5 - output not working:
+alsa-info.sh output: [alsa-info-bad.txt](https://github.com/alsa-project/alsa-ucm-conf/files/6603362/alsa-info-bad.txt)
+pw-dump output: [pw-dump-bad.txt](https://github.com/alsa-project/alsa-ucm-conf/files/6603364/pw-dump-bad.txt)
+
+Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/98
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
