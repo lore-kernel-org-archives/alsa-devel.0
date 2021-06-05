@@ -7,83 +7,85 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4112C47082
-	for <alsa-devel@archiver.kernel.org>; Sat,  5 Jun 2021 12:53:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1E66C47082
+	for <alsa-devel@archiver.kernel.org>; Sat,  5 Jun 2021 12:54:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A0345613AA
-	for <alsa-devel@archiver.kernel.org>; Sat,  5 Jun 2021 12:53:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A0345613AA
+	by mail.kernel.org (Postfix) with ESMTPS id 430D4613AA
+	for <alsa-devel@archiver.kernel.org>; Sat,  5 Jun 2021 12:54:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 430D4613AA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A3231712;
-	Sat,  5 Jun 2021 14:52:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A3231712
+	by alsa0.perex.cz (Postfix) with ESMTPS id CE5CE1717;
+	Sat,  5 Jun 2021 14:53:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE5CE1717
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622897589;
-	bh=tSjvJuvH/yaVUKKWcyBg2M2yJ1wEG6Ttn5/fGEd2ng0=;
+	s=default; t=1622897639;
+	bh=SRU9MuDB99rbRJm5za3MaaH6/ruYEUgM6rc2xpzruW8=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RnoL+WmJI6NiudhwyAMhWGUkitSVlwi0KZUFGSNldYak9yoW0S2KVmD8kmMZbTb5X
-	 tg7v7r3yx6ifiH0XTPDXw1AJ4EQDcIDcsJW/OpGyc+opOSbPZ2P7xy57DWMCJ5KoHy
-	 eiAdtgBwhwbH2WsExDpQ0tphTwOa+txbZFrT6A+Q=
+	b=Bcmw4YKJZXbHYCnAmxlDbpT5ZxhIqVTZpba1voW4Xiv4QwBVZM1G5/hl3Zs7wW3HC
+	 smqzjzwkrdfyZyyoXvTRrPBwanejZLJksspUYPr+fLLIgUm9A61jewqdcyjEJqZocw
+	 tQd/z8fFcHsWGVfd/OlyY3foPcl1qn2vxTMwCtUY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97689F8016D;
-	Sat,  5 Jun 2021 14:52:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 79C3DF8025B;
+	Sat,  5 Jun 2021 14:52:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 02B97F80253; Sat,  5 Jun 2021 14:52:17 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id DC7BDF80269; Sat,  5 Jun 2021 14:52:27 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C81A7F80155
- for <alsa-devel@alsa-project.org>; Sat,  5 Jun 2021 14:52:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C81A7F80155
+ by alsa1.perex.cz (Postfix) with ESMTPS id F2FDCF80253
+ for <alsa-devel@alsa-project.org>; Sat,  5 Jun 2021 14:52:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2FDCF80253
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="SZDoBmqu"; 
+ header.b="CkKQ1VNb"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="SWqYCyCf"
+ header.b="OJqBVY0E"
 Received: from relay2.suse.de (unknown [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id CE2E71FD2F;
- Sat,  5 Jun 2021 12:52:10 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id A4F8321A17;
+ Sat,  5 Jun 2021 12:52:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1622897530; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1622897540; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=dvwejg5im3V/I/BftLDkcgd+l0MkzOl0o+pK9Osuwu0=;
- b=SZDoBmqubKVEd9aN8yUT0d172+/vbw1vp4H4AUlId2E9WsHP3YkAn8wAx7ucTC1QRXceM9
- T4vRsvQEDvaJxf1sa1KIqg3FO5w7T6IK7G3QGhsElOnGbQ/DcPqDsDlbPTs05/EEuptsxT
- uxmEhTUaXnIwujRERdAMVcDF81GE3g0=
+ bh=LGPbiqAqKqqbKrLpUpTYs/aXqBN0DC+Xf/wnxIMgY+Y=;
+ b=CkKQ1VNbHDedVTulWcxgBRaULWv746UfrrioXe17KGZV9H8StPKWAghMKU7NPuzuN7DkPh
+ zUQfr6WvNKafLMWKgRQiKpZdd4CGt7VwVor7JPBg3vnoXte3jQxTf/INq1B0gpMhoEVMed
+ yEQVdEVwB/ZadFZCPb+5EoGEWx1/oBg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1622897530;
+ s=susede2_ed25519; t=1622897540;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=dvwejg5im3V/I/BftLDkcgd+l0MkzOl0o+pK9Osuwu0=;
- b=SWqYCyCfIj+Gl70YlmTNjRscqwe+HrVupncXpwZPVmT4SfYxujvjvb3SrLk8R35b5JP6VU
- I5SWUwg/2fVLitCA==
+ bh=LGPbiqAqKqqbKrLpUpTYs/aXqBN0DC+Xf/wnxIMgY+Y=;
+ b=OJqBVY0EGhX6UAIRbnz6i5wVNNeZLh/g9JtqYV8cW9YegLpfT0s27pC+taV/duPPaa1Sub
+ 61FU8JxX3BQ4lNCQ==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 72012A3B81;
- Sat,  5 Jun 2021 12:52:10 +0000 (UTC)
-Date: Sat, 05 Jun 2021 14:52:10 +0200
-Message-ID: <s5hr1hgfp8l.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 8E691A3B81;
+ Sat,  5 Jun 2021 12:52:20 +0000 (UTC)
+Date: Sat, 05 Jun 2021 14:52:20 +0200
+Message-ID: <s5hpmx0fp8b.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Jeremy Szu <jeremy.szu@canonical.com>
-Subject: Re: [PATCH 1/3] ALSA: hda/realtek: fix mute/micmute LEDs and speaker
- for HP Elite Dragonfly G2
-In-Reply-To: <20210605082539.41797-1-jeremy.szu@canonical.com>
+Subject: Re: [PATCH 2/3] ALSA: hda/realtek: fix mute/micmute LEDs and speaker
+ for HP EliteBook x360 1040 G8
+In-Reply-To: <20210605082539.41797-2-jeremy.szu@canonical.com>
 References: <20210605082539.41797-1-jeremy.szu@canonical.com>
+ <20210605082539.41797-2-jeremy.szu@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+Cc: Chris Chiu <chris.chiu@canonical.com>,
+ "moderated list:SOUND" <alsa-devel@alsa-project.org>,
  Kailang Yang <kailang@realtek.com>, open list <linux-kernel@vger.kernel.org>,
  Huacai Chen <chenhuacai@kernel.org>, Jian-Hong Pan <jhp@endlessos.org>,
  tiwai@suse.com, Hui Wang <hui.wang@canonical.com>
@@ -102,10 +104,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 05 Jun 2021 10:25:36 +0200,
+On Sat, 05 Jun 2021 10:25:37 +0200,
 Jeremy Szu wrote:
 > 
-> The HP Elite Dragonfly G2 using ALC285 codec which using 0x04 to control
+> The HP EliteBook x360 1040 G8 using ALC285 codec which using 0x04 to control
 > mute LED and 0x01 to control micmute LED.
 > In the other hand, there is no output from right channel of speaker.
 > Therefore, add a quirk to make it works.
