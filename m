@@ -7,78 +7,78 @@ X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6ABF3C47096
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Jun 2021 09:20:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0705BC47096
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Jun 2021 09:21:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7FBE26135A
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Jun 2021 09:20:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7FBE26135A
+	by mail.kernel.org (Postfix) with ESMTPS id 2C2E6613F3
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Jun 2021 09:21:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C2E6613F3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 22D9516CB;
-	Sun,  6 Jun 2021 11:19:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22D9516CB
+	by alsa0.perex.cz (Postfix) with ESMTPS id C5ECF16EE;
+	Sun,  6 Jun 2021 11:20:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5ECF16EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622971241;
-	bh=yBsPCfgXFVIAbtxHN5ME7XC3PSyuPcKV3PBsl45Ht+A=;
+	s=default; t=1622971276;
+	bh=TXFh93KM8BIjnzQ3YP92bA9BGe/4PKC1Uz5OF4s/zK8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aTU+rvX+6axKntOZ7Dm2RqMiT5quSZ+Scs/4T/CnygEvZAD5I25VweKxNIpJW/eK9
-	 X73uyKGOUlzCwuDrz8r5/ZSdJRmfVf97EJnYDzZeQKM6so/B/eBuxkGCmk9dbvedKI
-	 uj87uF0ibtJMJTvPLT60Z91uxaFMdiguTE2qBcjI=
+	b=slECcQw4ELCStSYYUf0XV91dmKxR8we6n3urylWwrXEV/FsWJWSEEuvGlk4nj5uuN
+	 TA68Fvvuj4OYzPyjzcWeeAUjioS5NPG/CyrO2FWSJ9ZlpntzSLowEYF+PSFLjytCLq
+	 1ayGPvq179Yxco4SjAlHGAWo8jtNii3Jh3sWliW0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4F2BAF804BD;
-	Sun,  6 Jun 2021 11:18:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 24D79F804C3;
+	Sun,  6 Jun 2021 11:19:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1D343F804AD; Sun,  6 Jun 2021 11:18:56 +0200 (CEST)
+ id 1664CF804CA; Sun,  6 Jun 2021 11:18:59 +0200 (CEST)
 Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
  [66.111.4.28])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4DF07F80218
- for <alsa-devel@alsa-project.org>; Sun,  6 Jun 2021 11:18:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DF07F80218
+ by alsa1.perex.cz (Postfix) with ESMTPS id 66F61F8019B
+ for <alsa-devel@alsa-project.org>; Sun,  6 Jun 2021 11:18:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66F61F8019B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="l4e2THQV"; 
+ header.b="n+Msfr1w"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="Gfr/WZNM"
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailout.nyi.internal (Postfix) with ESMTP id 78C4A5C01B4;
- Sun,  6 Jun 2021 05:18:49 -0400 (EDT)
+ header.i=@messagingengine.com header.b="esYZjDMS"
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+ by mailout.nyi.internal (Postfix) with ESMTP id C0BD95C01AC;
+ Sun,  6 Jun 2021 05:18:46 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute3.internal (MEProxy); Sun, 06 Jun 2021 05:18:49 -0400
+ by compute5.internal (MEProxy); Sun, 06 Jun 2021 05:18:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=eeUQAUXZsE+Q4
- Yv0jnFg7asD5FuC06naD0KIaBOaTdQ=; b=l4e2THQVTX5hQGIkPa78BGRHmv6ib
- k5HhUcQaMc92FL2/4fVgvIGal6m0gykX+cGA1cFCZt//MmrtTFQ1MgP4h8Uu9Df4
- VnonaV64GfIkHq5FVzEnAtiQd4w1MAQJvwOPKqVCTJYbJ3SUCKHrvkEoePpDd17/
- KIn8ouluxyrrh+L0lyQKKvJJGkRxQAxUblvn5Isx/obQTV5H1XQHr1OQCtCYKMo0
- F9LORnqlDCvw9XRK1rDQZ3nhpjgxuoRRF9rqYtWs64DGbF6nPEHYS2drhEuZM50m
- UjiTbnM5rcv9yO8CB6bdFVbLqv5hCc81Mb4g6m8MuIHE9FU1XkFOqH6HA==
+ :mime-version:content-transfer-encoding; s=fm1; bh=HygvQ/JDpRWBo
+ 3NYkfmt7Lt2hI1kyT5Aqf9aT3VLIiA=; b=n+Msfr1w1ZOATj0OM4ttVLW5fsgrI
+ D5tcFVoBpOq9OTOkRKJNqbspuI0Fb25gZEg3Bx3VoftsHpwEDNYW5bqiBnPTgjAj
+ Jj2YTTxvVI/bSwg0ENekdUMLwru4ch+XdBtFvWyhOQOOD2o92SvKtcsT+jJwJ3SD
+ Ym78q5odU0JpjyVDUbzcJ9s8c1jnpVZN/vrJSdT4kx0BsMVFivBozogRhgb/6oV6
+ NGmTE+/0+OQofJehyxkF7TMBN4ly2UZuqPgwreVTfh9R7Q2eWZo2u94tMNARq/Qs
+ akpJk3AaOzdi+gOryXKj9iKC7NKoNQj1ZtzYGaIDmP5bZtTxQMG40IFCQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm3; bh=eeUQAUXZsE+Q4Yv0jnFg7asD5FuC06naD0KIaBOaTdQ=; b=Gfr/WZNM
- 40/H86eOV2dCA2F1YPRLKVwKkcAKxmzur1/FcMKUW9SpSqJjO6OJxitbY2vsy/Oq
- Fi89dOzQ9FAoCnbz5KaHx1UraRnXKZ9/jPb8Hy85Ixb99VV0AHKsfWLwL072GH9R
- JvaXTnalYaqlGfOST8mkqU9B+bDAWuz3QFOrzaV30jXxSp0Qul6DHQgyzU+zGnmP
- G7wcMoksqlSTpD9zujMgYqcXfv84ZFZJVmhac/sD9in6ntdsv9VyS8KIbMHlu7jn
- Fg/6KrNBTAX6hYH872O4rlxa9t+eMmvBtHCAZV44mRExxxhCHexsuq50VW83qMz0
- qGaa2JvrkihFew==
-X-ME-Sender: <xms:-ZK8YMpa-Lm0WCfNcDvExRFkw9asmkykzr_eD6jIpnjW-r6gLAxQsA>
- <xme:-ZK8YCpAfnYZ1cZeucrQ5ak2zPASoTnlzAUjnkVCTizKByJ-mUvV71mwU5tnLwfQN
- OQJWkSmymvyfFWx6yg>
-X-ME-Received: <xmr:-ZK8YBNmf2sfcDaY3jvCGScUpoLZPODBypO6YDZUXidcZ2AnA_27Jb3tstPCrJE-g4agHZp_t5G8YAUhy1pK1XIzeDSq_4bNHrmLZ8jnQxTzGEtq7mkM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedthedgudehucetufdoteggodetrfdotf
+ fm3; bh=HygvQ/JDpRWBo3NYkfmt7Lt2hI1kyT5Aqf9aT3VLIiA=; b=esYZjDMS
+ BfFGVyKZQSGyCZsm1zpttgz2GrDN0Ts49aEFN5PFb5B65oz6oCLqvJUBsBxAMbMl
+ hgJg0o4YSokV1ZC7UfIPIU4BceGBSXRFwYiJT4dBxuppokjN1OMk+ZgkjHRt0vq3
+ 5O3HJHB3n4eLGhSM3cyMWPTt6KFBdH50+uCa+imIChPk94vhf+nTMBfHCLmOp3qL
+ 4WZpuZ/H5G5RnzZ9kfZbyXVz8VPxIMHKI19qfx/rcUxGn0WxCkIg55jmwijAZEaT
+ Li9H9kbhKk9aC58hGLVSzR0HQl45lb/dmKmsdyMOyelKZvTN/21do4b2EFcho6g9
+ J7D91KKPWhoX7Q==
+X-ME-Sender: <xms:9pK8YDKFsu7Mijp1ubc2wYzY0hQ8USK5q0C3GcPjWSnJuSTuvgB7rQ>
+ <xme:9pK8YHK-u3OsUpncP4dEOdL9BVbrmUW1IEhUBXJ8qfH3bGBbeppz1aJLM23wrrwSO
+ uT_K-QRfvwPrYXq0x0>
+X-ME-Received: <xmr:9pK8YLvaglizr578lxRzRTWziTT7-Fkbdiwz0cxzohgeygq7oTsUvFqU0f1PR6X7RAY4aPQ6_gkysDWZDSsl5RGsUsYpPUp6Gu4INd62SuLI6qwoNUva>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedthedgudegucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
  dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
@@ -86,18 +86,18 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedthedgudehucetufdoteggod
  etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecuvehluhhsthgv
  rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihessh
  grkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:-ZK8YD70WhMskcuA2MJbilrMhSO-_VkDxdqOc32nFCaZunvxZL4hZw>
- <xmx:-ZK8YL52lR6XNdTSuPR4EczxQpcPpwjDFCXj5oTz2VHiw-qmk2Y3YA>
- <xmx:-ZK8YDjfYAogmgieAqSFSPJXcx9lIWJ7SH2JtOJWH__j-NJ7ANFA7w>
- <xmx:-ZK8YFQJueZGQibJslj_RChWWbHp_SBz4aO3a852sp4PHXnhsaLc-g>
+X-ME-Proxy: <xmx:9pK8YMaPglNf4ZaPhHbvG7wNdSO4jcEambrmCxCSh1SBgysavuD0Jg>
+ <xmx:9pK8YKbfjlbm-xp9T89ncDhdAOCXP3teRou4S-ObUiuumyTXLoc4tQ>
+ <xmx:9pK8YAD6stkDPMcCnv3eC0cfykgXhE4SKyEtzid_9k2EdLBdHU_2Bg>
+ <xmx:9pK8YNyNFbhsWL4dgwsiFbDXin6D9mgvi3eEXGrrzLb7b4gbwNNIsw>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 6 Jun 2021 05:18:48 -0400 (EDT)
+ 6 Jun 2021 05:18:45 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Subject: [RFC][PATCH 3/3] ALSA: firewire-lib: obsolete workqueue for period
- update
-Date: Sun,  6 Jun 2021 18:18:38 +0900
-Message-Id: <20210606091838.80812-4-o-takashi@sakamocchi.jp>
+Subject: [RFC][PATCH 1/3] ALSA: pcm: add snd_pcm_period_elapsed() variant
+ without acquiring lock of PCM substream
+Date: Sun,  6 Jun 2021 18:18:36 +0900
+Message-Id: <20210606091838.80812-2-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210606091838.80812-1-o-takashi@sakamocchi.jp>
 References: <20210606091838.80812-1-o-takashi@sakamocchi.jp>
@@ -119,78 +119,144 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The workqueue to notify PCM period elapse is not used anymore.
----
- sound/firewire/amdtp-stream.c | 15 ---------------
- sound/firewire/amdtp-stream.h |  1 -
- 2 files changed, 16 deletions(-)
+Current implementation of ALSA PCM core has a kernel API,
+snd_pcm_period_elapsed(), for drivers to queue event to awaken processes
+from waiting for available frames. The function voluntarily acquires lock
+of PCM substream, therefore it is not called in process context for any
+PCM operation since the lock is already acquired.
 
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index b39328eab67e..7946d5e800c1 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -77,8 +77,6 @@
- // overrun. Actual device can skip more, then this module stops the packet streaming.
- #define IR_JUMBO_PAYLOAD_MAX_SKIP_CYCLES	5
- 
--static void pcm_period_work(struct work_struct *work);
--
- /**
-  * amdtp_stream_init - initialize an AMDTP stream structure
-  * @s: the AMDTP stream to initialize
-@@ -107,7 +105,6 @@ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
- 	s->flags = flags;
- 	s->context = ERR_PTR(-1);
- 	mutex_init(&s->mutex);
--	INIT_WORK(&s->period_work, pcm_period_work);
- 	s->packet_index = 0;
- 
- 	init_waitqueue_head(&s->ready_wait);
-@@ -346,7 +343,6 @@ EXPORT_SYMBOL(amdtp_stream_get_max_payload);
-  */
- void amdtp_stream_pcm_prepare(struct amdtp_stream *s)
- {
--	cancel_work_sync(&s->period_work);
- 	s->pcm_buffer_pointer = 0;
- 	s->pcm_period_pointer = 0;
+It is convenient for packet-oriented driver, at least for drivers to audio
+and music unit in IEEE 1394 bus. The drivers are allowed by Linux
+FireWire subsystem to process isochronous packets queued till recent
+isochronous cycle in process context in any time.
+
+This commit adds snd_pcm_period_elapsed() variant,
+snd_pcm_period_elapsed_without_lock(), for drivers to queue the event in
+the process context.
+---
+ include/sound/pcm.h  | 53 +++++++++++++++++++++++++++++++++++++++++++-
+ sound/core/pcm_lib.c | 25 ++++-----------------
+ 2 files changed, 56 insertions(+), 22 deletions(-)
+
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 2e1200d17d0c..a4eaa48584da 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -11,6 +11,7 @@
+ #include <sound/asound.h>
+ #include <sound/memalloc.h>
+ #include <sound/minors.h>
++#include <sound/core.h>
+ #include <linux/poll.h>
+ #include <linux/mm.h>
+ #include <linux/bitops.h>
+@@ -1066,7 +1067,57 @@ void snd_pcm_set_ops(struct snd_pcm * pcm, int direction,
+ void snd_pcm_set_sync(struct snd_pcm_substream *substream);
+ int snd_pcm_lib_ioctl(struct snd_pcm_substream *substream,
+ 		      unsigned int cmd, void *arg);                      
+-void snd_pcm_period_elapsed(struct snd_pcm_substream *substream);
++
++void __snd_pcm_period_elapsed(struct snd_pcm_substream *substream);
++
++/**
++ * snd_pcm_period_elapsed - update the pcm status for the next period
++ * @substream: the pcm substream instance
++ *
++ * This function is called when the batch of PCM frames as the same as period of PCM buffer are
++ * processed in audio data transmission. It's typically called by any type of IRQ handler when
++ * hardware IRQ occurs to notify the event. It acquires lock of PCM substream, then will update the
++ * current pointer, wake up sleepers, etc.
++ *
++ * Developer should pay enough attention that some callbacks in &snd_pcm_ops are done by the call of
++ * function:
++ *
++ * - .pointer - to retrieve current position of audio data transmission by frame count or XRUN state.
++ * - .trigger - with SNDRV_PCM_TRIGGER_STOP at XRUN or DRAINING state.
++ * - .get_time_info - to retrieve audio time stamp.
++ *
++ * Even if more than one periods have elapsed since the last call, you have to call this only once.
++ */
++static inline void snd_pcm_period_elapsed(struct snd_pcm_substream *substream)
++{
++	unsigned long flags;
++
++	if (snd_BUG_ON(!substream))
++		return;
++
++	snd_pcm_stream_lock_irqsave(substream, flags);
++	__snd_pcm_period_elapsed(substream);
++	snd_pcm_stream_unlock_irqrestore(substream, flags);
++}
++
++/**
++ * snd_pcm_period_elapsed_without_lock() - update the pcm status for the next period without
++ *					   acquiring lock of PCM substream.
++ * @substream: the pcm substream instance
++ *
++ * This function is variant of ``snd_pcm_period_elapsed()`` without voluntarily acquiring lock of
++ * PCM substream. It's intended to use for the case that PCM driver operates PCM frames under
++ * acquiring lock of PCM substream; e.g. in callback of any operation of &snd_pcm_ops in process
++ * context, then queueing period wakeup event.
++ */
++static inline void snd_pcm_period_elapsed_without_lock(struct snd_pcm_substream *substream)
++{
++	if (snd_BUG_ON(!substream))
++		return;
++
++	__snd_pcm_period_elapsed(substream);
++}
++
+ snd_pcm_sframes_t __snd_pcm_lib_xfer(struct snd_pcm_substream *substream,
+ 				     void *buf, bool interleaved,
+ 				     snd_pcm_uframes_t frames, bool in_kernel);
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index b7e3d8f44511..33ad4ab0ec3a 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -1777,28 +1777,13 @@ int snd_pcm_lib_ioctl(struct snd_pcm_substream *substream,
  }
-@@ -626,16 +622,6 @@ static void update_pcm_pointers(struct amdtp_stream *s,
- 	}
- }
+ EXPORT_SYMBOL(snd_pcm_lib_ioctl);
  
--static void pcm_period_work(struct work_struct *work)
--{
--	struct amdtp_stream *s = container_of(work, struct amdtp_stream,
--					      period_work);
--	struct snd_pcm_substream *pcm = READ_ONCE(s->pcm);
--
--	if (pcm)
--		snd_pcm_period_elapsed(pcm);
--}
--
- static int queue_packet(struct amdtp_stream *s, struct fw_iso_packet *params,
- 			bool sched_irq)
+-/**
+- * snd_pcm_period_elapsed - update the pcm status for the next period
+- * @substream: the pcm substream instance
+- *
+- * This function is called from the interrupt handler when the
+- * PCM has processed the period size.  It will update the current
+- * pointer, wake up sleepers, etc.
+- *
+- * Even if more than one periods have elapsed since the last call, you
+- * have to call this only once.
+- */
+-void snd_pcm_period_elapsed(struct snd_pcm_substream *substream)
++// The pointer to PCM substream should not be NULL as precondition.
++void __snd_pcm_period_elapsed(struct snd_pcm_substream *substream)
  {
-@@ -1808,7 +1794,6 @@ static void amdtp_stream_stop(struct amdtp_stream *s)
- 		return;
- 	}
+ 	struct snd_pcm_runtime *runtime;
+-	unsigned long flags;
  
--	cancel_work_sync(&s->period_work);
- 	fw_iso_context_stop(s->context);
- 	fw_iso_context_destroy(s->context);
- 	s->context = ERR_PTR(-1);
-diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
-index b25592d5f6af..1f957c946c95 100644
---- a/sound/firewire/amdtp-stream.h
-+++ b/sound/firewire/amdtp-stream.h
-@@ -186,7 +186,6 @@ struct amdtp_stream {
+-	if (snd_BUG_ON(!substream))
+-		return;
+-
+-	snd_pcm_stream_lock_irqsave(substream, flags);
+ 	if (PCM_RUNTIME_CHECK(substream))
+-		goto _unlock;
++		return;
+ 	runtime = substream->runtime;
  
- 	/* For a PCM substream processing. */
- 	struct snd_pcm_substream *pcm;
--	struct work_struct period_work;
- 	snd_pcm_uframes_t pcm_buffer_pointer;
- 	unsigned int pcm_period_pointer;
+ 	if (!snd_pcm_running(substream) ||
+@@ -1811,10 +1796,8 @@ void snd_pcm_period_elapsed(struct snd_pcm_substream *substream)
+ #endif
+  _end:
+ 	kill_fasync(&runtime->fasync, SIGIO, POLL_IN);
+- _unlock:
+-	snd_pcm_stream_unlock_irqrestore(substream, flags);
+ }
+-EXPORT_SYMBOL(snd_pcm_period_elapsed);
++EXPORT_SYMBOL(__snd_pcm_period_elapsed);
  
+ /*
+  * Wait until avail_min data becomes available
 -- 
 2.27.0
 
