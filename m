@@ -2,84 +2,104 @@ Return-Path: <SRS0=TNia=LA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91D4EC47082
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Jun 2021 01:04:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9732CC47082
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Jun 2021 02:58:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 17C116139A
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Jun 2021 01:04:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 17C116139A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id C9380613F7
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Jun 2021 02:58:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9380613F7
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3260173C;
-	Sun,  6 Jun 2021 03:03:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3260173C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 793E01715;
+	Sun,  6 Jun 2021 04:57:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 793E01715
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622941463;
-	bh=pyxbFuGx/wkyTwJ8SI/LXxWpiFWIBqManlYFvuJy8m0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=J+WDYtI1M4DgxOLUy3BNoP+5mqMF0vmzIAouOORWR7v1VvWIDL9UxVrHd2g7/vfPr
-	 qFV/m9qlCULEnK2YCo9OoJ9MPfp6a2j69tk1TSrYDnlcZDmkRS5/CodOEcv8OsXis7
-	 de6CqceOglhIlUj+77RM97/D9p4Vo7kOomXnAooU=
+	s=default; t=1622948286;
+	bh=J0JVC8IrNFhvCSeNwrD98/SSkhP6t+CoTG4Dp2zAyMk=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=RNNT7rkhF6GeSDWLJ2shMvrSVIGqNz4JoHO2RGdSCNp8sYRL3daHCFfseIi66cH+T
+	 +1k3lOWV7KqIFSzh2MsTIEGCMAZL3j2V3WbVyR1k7VBCsfYHZWTB4MySASOTWjBPW3
+	 rHbsXnseS6ZuKnGfdT9m8Jr51BTMZAc1saM2vW+U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E1903F8025B;
-	Sun,  6 Jun 2021 03:02:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0737DF80103;
+	Sun,  6 Jun 2021 04:57:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D5189F804BC; Sun,  6 Jun 2021 03:02:37 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id DEC78F80218; Sun,  6 Jun 2021 04:57:13 +0200 (CEST)
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com
+ [64.147.123.25])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 129DEF8025B
- for <alsa-devel@alsa-project.org>; Sun,  6 Jun 2021 03:01:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 129DEF8025B
-IronPort-SDR: ZjfocpQHavRb1XNzi9niuuP6MbRpIKPPTsQikUcojY+MCO3hfMHSjGbGZ2R1QHOXroBkBkRZWm
- 17kzz+hFG7Jw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10006"; a="268330994"
-X-IronPort-AV: E=Sophos;i="5.83,252,1616482800"; d="scan'208";a="268330994"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Jun 2021 18:01:28 -0700
-IronPort-SDR: qCxbjzj00kvKamMklQ45s+KiN4Rps4R1WK9Exhuo/fMfLZ620izV+ASq4ynv9HqIFsyav+xrZD
- tA7fg5vqgztg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,252,1616482800"; d="scan'208";a="412724649"
-Received: from brentlu-desk0.itwn.intel.com ([10.5.253.32])
- by fmsmga007.fm.intel.com with ESMTP; 05 Jun 2021 18:01:23 -0700
-From: Brent Lu <brent.lu@intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/4] ASoC: Intel: maxim-common: support max98360a
-Date: Sun,  6 Jun 2021 08:41:00 +0800
-Message-Id: <20210606004102.26190-3-brent.lu@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210606004102.26190-1-brent.lu@intel.com>
-References: <20210606004102.26190-1-brent.lu@intel.com>
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Rander Wang <rander.wang@intel.com>, Jie Yang <yang.jie@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Fred Oh <fred.oh@linux.intel.com>, Tzung-Bi Shih <tzungbi@google.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Yong Zhi <yong.zhi@intel.com>, Dharageswari R <dharageswari.r@intel.com>,
- Mark Brown <broonie@kernel.org>,
- Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
- Naveen Manohar <naveen.m@intel.com>, Brent Lu <brent.lu@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9CA61F80103
+ for <alsa-devel@alsa-project.org>; Sun,  6 Jun 2021 04:57:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CA61F80103
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
+ header.b="GP93Xprs"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="HyZiwDDP"
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+ by mailout.west.internal (Postfix) with ESMTP id 478BA1ADE;
+ Sat,  5 Jun 2021 22:56:57 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute6.internal (MEProxy); Sat, 05 Jun 2021 22:56:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding; s=fm1; bh=UhIxHU70sGBKj4UvNzYu+U5RD1
+ I5cMjzJs+YyMzavL0=; b=GP93Xprsk6Zi3X3jdR4vZiF5QKTIuonc4OJf9w8DVC
+ dFPeuzdQ+LSZKpKZA4GTxux95PfdwYN+Xg7su9No9yusEADIlfMC3NVhnN2iH836
+ o6qeuuF36HQLCKL4zvAG57rD+/GS1y3WYVjQfW1MBqa2gr8mPekhfoEq3TLc6F4z
+ no+2yOE8dVOD18maNjS8wIBiFOff7I8kJqDzswQ5D48oLpdZ21IurJSJrR8GHmIW
+ itFUs/GMVXF84SHv1vugLfV7IAG8euSkU1Lh1wl14A/e7cL397PpObkrDjO597oO
+ oqXpFqSnfh7eR66nEGRRkNA654N2QPXwjNgKxYGUlNlg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-transfer-encoding:date:from
+ :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+ :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=UhIxHU70sGBKj4UvN
+ zYu+U5RD1I5cMjzJs+YyMzavL0=; b=HyZiwDDPgD/E3Qjuht+eGeIRgrc7qmdUS
+ QPkMiUoHMJyjYUGuQzS+Bz3Crvtg634U7c7gJFUxvZ5yr9Vzg0tp3wX6kCU+41Yq
+ Y9m8tXYGQ56aoI5ujFyyCMEldXUFtIP7Nm2iOCFaMsAa6v4Kn/nX0YbvV4UFCI9W
+ lhLFcpaWEgzfIK6YCrf21lyhF4AQIQWM+D+vAnY3sJ+J0hwZuHDvw2HwghEkgG4D
+ UvPLQUIbi5isnW890crzZfH3pOIYu+7ZxEY1wXvDDYJKbPNRpnythbZX0ddAhR1s
+ UVrrS60qMbxloxBDKEvSQ4eoApeasDpT0LgvW9jTi1pbAKFKgirYA==
+X-ME-Sender: <xms:dzm8YLar3Pb_GkJeDSH-o7SNDjiwGdTHZng7MIuTE9MswWXRhV0bBQ>
+ <xme:dzm8YKa8-MUrbpQsq8T8-kQqBM6995roA-hUHf5KbLWTfTkKV3hga6ccksFdLqt5q
+ Z0S8NRFnMCDAqZJt9w>
+X-ME-Received: <xmr:dzm8YN_OzZjNy4fhfawdbYBYJAijCQV8P3JSlMNNp_XxewRRYhUlH_rwr2Mob21cwb_QYWnxvjThOSq48S9nXlIG6TuPazaMLnMVe45Iz_KDG5P40EC2>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtgedgieeiucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+ dttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhh
+ ihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepudejteelhfdttd
+ ekgfdtueeilefhgfetjeejheekgeevuddvveegieehueeukeejnecuvehluhhsthgvrhfu
+ ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkh
+ grmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:eDm8YBrb9FOxG6xbmsECvH6PRdW8jJciqT4fxYBwInPV-wzTvZGoTQ>
+ <xmx:eDm8YGpqVoD8lwFtMRG27i6mVRb7gTcakoJSGAxNh4T-hWdzdly-DQ>
+ <xmx:eDm8YHQnBc-nUCT6-1eFpog2SA4L-TMwF-uCQ3Huz99vdnhE_sQcKA>
+ <xmx:eDm8YLBvvtJba6YHa-G0wzbfvyXfIfSHjkzF80MwZ5L08si3GGAAXQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 5 Jun 2021 22:56:54 -0400 (EDT)
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: tiwai@suse.de
+Subject: [PATCH] ALSA: firewire-lib: remove useless operations for kernel
+ preemption
+Date: Sun,  6 Jun 2021 11:56:51 +0900
+Message-Id: <20210606025651.29970-1-o-takashi@sakamocchi.jp>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,77 +115,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Move max98360a code to this common module so it could be shared
-between multiple SOF machine drivers. MAX98357A and MAX98360A are
-sharing same codec driver so here we also share some function and
-structures.
+In all of drivers of ALSA firewire stack, the callback of .pointer and
+.ack in snd_pcm_ops structure is done in acquired spin_lock of PCM
+substream, therefore already under disabled kernel preemption.
 
-Signed-off-by: Brent Lu <brent.lu@intel.com>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/soc/intel/boards/sof_maxim_common.c | 17 ++++++++++++++++-
- sound/soc/intel/boards/sof_maxim_common.h |  4 +++-
- 2 files changed, 19 insertions(+), 2 deletions(-)
+ sound/firewire/amdtp-stream.c | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_maxim_common.c b/sound/soc/intel/boards/sof_maxim_common.c
-index e9c52f8b6428..e66dfe666915 100644
---- a/sound/soc/intel/boards/sof_maxim_common.c
-+++ b/sound/soc/intel/boards/sof_maxim_common.c
-@@ -134,7 +134,7 @@ void max_98373_set_codec_conf(struct snd_soc_card *card)
- EXPORT_SYMBOL_NS(max_98373_set_codec_conf, SND_SOC_INTEL_SOF_MAXIM_COMMON);
- 
- /*
-- * Maxim MAX98357A
-+ * Maxim MAX98357A/MAX98360A
-  */
- static const struct snd_kcontrol_new max_98357a_kcontrols[] = {
- 	SOC_DAPM_PIN_SWITCH("Spk"),
-@@ -156,6 +156,13 @@ static struct snd_soc_dai_link_component max_98357a_components[] = {
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index 945597ffacc2..1c566ddf0776 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -1751,13 +1751,8 @@ unsigned long amdtp_domain_stream_pcm_pointer(struct amdtp_domain *d,
+ 		// Later, the process context will sometimes schedules software
+ 		// IRQ context of the period_work. Then, no need to flush the
+ 		// queue by the same reason as described in the above
+-		if (current_work() != &s->period_work) {
+-			// Queued packet should be processed without any kernel
+-			// preemption to keep latency against bus cycle.
+-			preempt_disable();
++		if (current_work() != &s->period_work)
+ 			fw_iso_context_flush_completions(irq_target->context);
+-			preempt_enable();
+-		}
  	}
- };
  
-+static struct snd_soc_dai_link_component max_98360a_components[] = {
-+	{
-+		.name = MAX_98360A_DEV0_NAME,
-+		.dai_name = MAX_98357A_CODEC_DAI,
-+	}
-+};
-+
- static int max_98357a_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_card *card = rtd->card;
-@@ -193,5 +200,13 @@ void max_98357a_dai_link(struct snd_soc_dai_link *link)
+ 	return READ_ONCE(s->pcm_buffer_pointer);
+@@ -1777,13 +1772,8 @@ int amdtp_domain_stream_pcm_ack(struct amdtp_domain *d, struct amdtp_stream *s)
+ 
+ 	// Process isochronous packets for recent isochronous cycle to handle
+ 	// queued PCM frames.
+-	if (irq_target && amdtp_stream_running(irq_target)) {
+-		// Queued packet should be processed without any kernel
+-		// preemption to keep latency against bus cycle.
+-		preempt_disable();
++	if (irq_target && amdtp_stream_running(irq_target))
+ 		fw_iso_context_flush_completions(irq_target->context);
+-		preempt_enable();
+-	}
+ 
+ 	return 0;
  }
- EXPORT_SYMBOL_NS(max_98357a_dai_link, SND_SOC_INTEL_SOF_MAXIM_COMMON);
- 
-+void max_98360a_dai_link(struct snd_soc_dai_link *link)
-+{
-+	link->codecs = max_98360a_components;
-+	link->num_codecs = ARRAY_SIZE(max_98360a_components);
-+	link->init = max_98357a_init;
-+}
-+EXPORT_SYMBOL_NS(max_98360a_dai_link, SND_SOC_INTEL_SOF_MAXIM_COMMON);
-+
- MODULE_DESCRIPTION("ASoC Intel SOF Maxim helpers");
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/intel/boards/sof_maxim_common.h b/sound/soc/intel/boards/sof_maxim_common.h
-index 2674f1e373ef..3ff5e8fec4de 100644
---- a/sound/soc/intel/boards/sof_maxim_common.h
-+++ b/sound/soc/intel/boards/sof_maxim_common.h
-@@ -25,11 +25,13 @@ void max_98373_set_codec_conf(struct snd_soc_card *card);
- int max_98373_trigger(struct snd_pcm_substream *substream, int cmd);
- 
- /*
-- * Maxim MAX98357A
-+ * Maxim MAX98357A/MAX98360A
-  */
- #define MAX_98357A_CODEC_DAI	"HiFi"
- #define MAX_98357A_DEV0_NAME	"MX98357A:00"
-+#define MAX_98360A_DEV0_NAME	"MX98360A:00"
- 
- void max_98357a_dai_link(struct snd_soc_dai_link *link);
-+void max_98360a_dai_link(struct snd_soc_dai_link *link);
- 
- #endif /* __SOF_MAXIM_COMMON_H */
 -- 
-2.17.1
+2.27.0
 
