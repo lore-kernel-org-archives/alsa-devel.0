@@ -2,61 +2,55 @@ Return-Path: <SRS0=TNia=LA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4446C47096
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Jun 2021 17:49:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B294EC4743E
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Jun 2021 18:24:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2E4B561380
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Jun 2021 17:49:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E4B561380
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=b4.vu
+	by mail.kernel.org (Postfix) with ESMTPS id 3A111613AD
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Jun 2021 18:23:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A111613AD
+Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C38F6175B;
-	Sun,  6 Jun 2021 19:48:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C38F6175B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4389416E0;
+	Sun,  6 Jun 2021 20:23:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4389416E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623001742;
-	bh=fi178R9ffMna3eVs1cJODLRngk94dUkVwexDTMjNtu8=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1623003837;
+	bh=ffusQGk2SzjXErnNSdS1A8gI9cIYvstXsbc/UJAXNGo=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SgGaFMfEc1BsshWqZpIqJ7yKfkFwhzrZSuu9YC4B5ULBkcYhUzT9xpNXhe0JNn7H+
-	 stEUJKtKhjWwQAj0aTeSKhBsHXm37ZT5vXeEPnYkQ6orwti2lSuV3O1qpA/NCBHJJ5
-	 2gWHCUgayaIxkxvwQWcTHnwamMPu8f/qMv9YE1fE=
+	b=eEZuHUbJcNcY6fPghkYwD71hrLbB2WUUbgun50J4uVLsg5gi3BtUsnWsAdx1aomyz
+	 5O9b5TNDnxbioyKfJifWgjq+Jo5+AYo1Mnz2JIEjmrQ4TxwSJITN6vkaHH9hpqZWE3
+	 cy9LZaWlL48x0vAzitcHDTc+a1qlKY9jgn06rmaQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73ADCF800D0;
-	Sun,  6 Jun 2021 19:47:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C4382F800C8;
+	Sun,  6 Jun 2021 20:23:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2B22FF804C3; Sun,  6 Jun 2021 19:47:15 +0200 (CEST)
-Received: from m.b4.vu (m.b4.vu [203.16.231.148])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8589EF8019B
- for <alsa-devel@alsa-project.org>; Sun,  6 Jun 2021 19:47:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8589EF8019B
-Received: by m.b4.vu (Postfix, from userid 1000)
- id 1618E61956CD; Mon,  7 Jun 2021 03:17:10 +0930 (ACST)
-Date: Mon, 7 Jun 2021 03:17:10 +0930
-From: "Geoffrey D. Bennett" <g@b4.vu>
-To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 8/8] ALSA: usb-audio: scarlett2: Fix data_mutex lock
-Message-ID: <4d7ad2f3eea76a09c400c4f04d02d31da9cd7cea.1622999147.git.g@b4.vu>
-References: <cover.1622999147.git.g@b4.vu>
+ id 79230F80218; Sun,  6 Jun 2021 20:23:05 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id E77E2F800D0
+ for <alsa-devel@alsa-project.org>; Sun,  6 Jun 2021 20:23:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E77E2F800D0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1622999147.git.g@b4.vu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Vladimir Sadovnikov <sadko4u@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1623003775469352007-webhooks-bot@alsa-project.org>
+References: <1623003775469352007-webhooks-bot@alsa-project.org>
+Subject: New lavc api
+Message-Id: <20210606182305.79230F80218@alsa1.perex.cz>
+Date: Sun,  6 Jun 2021 20:23:05 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,68 +66,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The private->vol_updated flag was being checked outside of the
-mutex_lock/unlock() of private->data_mutex leading to the volume data
-being fetched twice from the device unnecessarily or old volume data
-being returned.
+alsa-project/alsa-plugins pull request #23 was opened from jamrial:
 
-Update scarlett2_*_ctl_get() and include the private->vol_updated flag
-check inside the critical region.
+This is untested (I don't have access to a system with alsa, but the change was straightforward enough that i could write it).
 
-Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
----
- sound/usb/mixer_scarlett_gen2.c | 21 +++++++++------------
- 1 file changed, 9 insertions(+), 12 deletions(-)
+It is unlikely that it will fix the silence issue described in #22, but it nonetheless is a change required in order to support future versions of ffmpeg.
+The silence is, as far as i could tell, related to the fact that starting with ffmpeg 4.4, the ac3_fixed encoder takes S32 planar as input, versus the S16 planar it used to. This plugin should look at the AVCodec sample_fmts[0] value and feed the encoder the appropriate data.
 
-diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
-index 8a4aa16cc364..9ea6abded26e 100644
---- a/sound/usb/mixer_scarlett_gen2.c
-+++ b/sound/usb/mixer_scarlett_gen2.c
-@@ -1155,11 +1155,10 @@ static int scarlett2_master_volume_ctl_get(struct snd_kcontrol *kctl,
- 	struct usb_mixer_interface *mixer = elem->head.mixer;
- 	struct scarlett2_data *private = mixer->private_data;
- 
--	if (private->vol_updated) {
--		mutex_lock(&private->data_mutex);
-+	mutex_lock(&private->data_mutex);
-+	if (private->vol_updated)
- 		scarlett2_update_volumes(mixer);
--		mutex_unlock(&private->data_mutex);
--	}
-+	mutex_unlock(&private->data_mutex);
- 
- 	ucontrol->value.integer.value[0] = private->master_vol;
- 	return 0;
-@@ -1173,11 +1172,10 @@ static int scarlett2_volume_ctl_get(struct snd_kcontrol *kctl,
- 	struct scarlett2_data *private = mixer->private_data;
- 	int index = elem->control;
- 
--	if (private->vol_updated) {
--		mutex_lock(&private->data_mutex);
-+	mutex_lock(&private->data_mutex);
-+	if (private->vol_updated)
- 		scarlett2_update_volumes(mixer);
--		mutex_unlock(&private->data_mutex);
--	}
-+	mutex_unlock(&private->data_mutex);
- 
- 	ucontrol->value.integer.value[0] = private->vol[index];
- 	return 0;
-@@ -1441,11 +1439,10 @@ static int scarlett2_button_ctl_get(struct snd_kcontrol *kctl,
- 	struct usb_mixer_interface *mixer = elem->head.mixer;
- 	struct scarlett2_data *private = mixer->private_data;
- 
--	if (private->vol_updated) {
--		mutex_lock(&private->data_mutex);
-+	mutex_lock(&private->data_mutex);
-+	if (private->vol_updated)
- 		scarlett2_update_volumes(mixer);
--		mutex_unlock(&private->data_mutex);
--	}
-+	mutex_unlock(&private->data_mutex);
- 
- 	ucontrol->value.enumerated.item[0] = private->buttons[elem->control];
- 	return 0;
--- 
-2.31.1
-
+Request URL   : https://github.com/alsa-project/alsa-plugins/pull/23
+Patch URL     : https://github.com/alsa-project/alsa-plugins/pull/23.patch
+Repository URL: https://github.com/alsa-project/alsa-plugins
