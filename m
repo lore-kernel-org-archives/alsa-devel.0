@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEEB8C47096
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Jun 2021 08:07:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 104B4C47096
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Jun 2021 08:07:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D43F961108
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Jun 2021 08:07:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D43F961108
+	by mail.kernel.org (Postfix) with ESMTPS id 839E161108
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Jun 2021 08:07:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 839E161108
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F288F86E;
-	Sun,  6 Jun 2021 10:06:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F288F86E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1BC6116CB;
+	Sun,  6 Jun 2021 10:06:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BC6116CB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622966820;
-	bh=0yvoTdYxoSVngwJDY/93thWhJFjte3eRCJtBNw2Oh1Q=;
+	s=default; t=1622966832;
+	bh=c5vbUlvXJc/4FiMoVClKrdACKeLSXSWn+7y4GjXwgsE=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UhV3vskdqxUYuM0y/wDRkuKO2M9fRxDDXz1NOOm3QhkuEvm7lJqoyU+sBFxB3LWDz
-	 Q7hBfvnKC5DlqmdESBjtd4i4G+wKpLVuE8DpzVtJk1kVpIss3UwsCK5yr5tY4ysmfw
-	 Ok8uX3ZI7sG5wjSXN7RGEWErhUczdFEjeUcWsjXs=
+	b=UGQX5Ku+SGvUdUB9+sv7+izKs5+8GbSOlpI7OT8TXEuPXcqWO8CEflhQgo+2xoiWH
+	 j8EF6GqcWJx9jxG08bIPHbqQKjU27gB+bs5LUad4n2y15s/9G/iyyfB8kx9hh+yPcW
+	 wcouM+lccAzhNUxwql8+mmomPx5040fPy3GR7LaE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87A91F80256;
-	Sun,  6 Jun 2021 10:05:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 262BFF8019B;
+	Sun,  6 Jun 2021 10:06:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7368F804AB; Sun,  6 Jun 2021 10:05:42 +0200 (CEST)
+ id 94048F800D0; Sun,  6 Jun 2021 10:06:17 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A0E11F800D0
- for <alsa-devel@alsa-project.org>; Sun,  6 Jun 2021 10:05:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0E11F800D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5BA73F800D0
+ for <alsa-devel@alsa-project.org>; Sun,  6 Jun 2021 10:06:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5BA73F800D0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="bR0p67iv"; 
+ header.b="csBNT6aD"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="hRnTWqkN"
+ header.b="9sH+dSE8"
 Received: from relay2.suse.de (unknown [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 753AF1FD30;
- Sun,  6 Jun 2021 08:05:35 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 3974B1FD30;
+ Sun,  6 Jun 2021 08:06:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1622966735; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1622966771; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=dyMuwF21ERkOuf8cmIyaT0ReIbIt5YS3jn/DSqdEPTk=;
- b=bR0p67ivQGJHjFoeqmIVc/9kNrIAEsArS8sjAeLILos9O6De2if8pLpXK5Cz2g418QYzk8
- 2q6vDKXHaR0cK7+LaiqwY5pXFgVUD0RbEtR4ikbpUKJrQq83CsZmcl3FTP+trsFU9coHmR
- G9HxpAGsXiBac2q8mS9YVOgCBuwnd8w=
+ bh=O96l/L4cgbyAxuNXcVR+wwUZWVq/P0FllHdY9K14xTU=;
+ b=csBNT6aDIOhAeFClKo5ta54ZJI4C1/BoY5ggWOtMWneoDp6hIq65WmqCMEqg3I7TPbfDg1
+ qS5CbUYKwz5IPsjO9E2ar9MithGkrpeLhANjfw5cNqCgu4m1i3xQywXh6W8h66I6ouH8Ze
+ 8n6O4R0ifH5/pr3F8jp4u0I01/I2Zpg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1622966735;
+ s=susede2_ed25519; t=1622966771;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=dyMuwF21ERkOuf8cmIyaT0ReIbIt5YS3jn/DSqdEPTk=;
- b=hRnTWqkNNQOiNrsqTWCeHSnXUZX4xWrwrzUGPOSTdr948PqVptXGgJ5ONpiKHEOmuxQIt1
- MONE3SRdmJuBqNAQ==
+ bh=O96l/L4cgbyAxuNXcVR+wwUZWVq/P0FllHdY9K14xTU=;
+ b=9sH+dSE8gYOOplwh7WqOhFs7FXwhEO6SAdTamyb+WXyQoFNUGUdrOy/t6A6QwTwT85tspL
+ xvC0R518JQ8SylCA==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 663A9A3B81;
- Sun,  6 Jun 2021 08:05:35 +0000 (UTC)
-Date: Sun, 06 Jun 2021 10:05:35 +0200
-Message-ID: <s5hh7ibfmeo.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 33871A3B87;
+ Sun,  6 Jun 2021 08:06:11 +0000 (UTC)
+Date: Sun, 06 Jun 2021 10:06:11 +0200
+Message-ID: <s5hfsxvfmdo.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ALSA: firewire-lib: remove useless operations for kernel
- preemption
-In-Reply-To: <20210606025651.29970-1-o-takashi@sakamocchi.jp>
-References: <20210606025651.29970-1-o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: firewire-motu: add support for hybrid model of MOTU
+ Ultralite mk3
+In-Reply-To: <20210606043409.40019-1-o-takashi@sakamocchi.jp>
+References: <20210606043409.40019-1-o-takashi@sakamocchi.jp>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -99,12 +99,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 06 Jun 2021 04:56:51 +0200,
+On Sun, 06 Jun 2021 06:34:09 +0200,
 Takashi Sakamoto wrote:
 > 
-> In all of drivers of ALSA firewire stack, the callback of .pointer and
-> .ack in snd_pcm_ops structure is done in acquired spin_lock of PCM
-> substream, therefore already under disabled kernel preemption.
+> This commit adds support for the hybrid model of MOTU Ultralite mk3 with
+> alpha connector, which is already discontinued. The hardware specification
+> of the model is the same as the one of FireWire-only model.
+> 
+> $ cd linux-firewire-utils
+> $ python3 src/crpp < /sys/bus/firewire/devices/fw1/config_rom
+>                ROM header and bus information block
+>                -----------------------------------------------------------------
+> 400  04101573  bus_info_length 4, crc_length 16, crc 5491
+> 404  31333934  bus_name "1394"
+> 408  20ff7000  irmc 0, cmc 0, isc 1, bmc 0, cyc_clk_acc 255, max_rec 7 (256)
+> 40c  0001f200  company_id 0001f2     |
+> 410  000a059c  device_id 00000a059c  | EUI-64 0001f200000a059c
+> 
+>                root directory
+>                -----------------------------------------------------------------
+> 414  0004ef04  directory_length 4, crc 61188
+> 418  030001f2  vendor
+> 41c  0c0083c0  node capabilities per IEEE 1394
+> 420  d1000002  --> unit directory at 428
+> 424  8d000005  --> eui-64 leaf at 438
+> 
+>                unit directory at 428
+>                -----------------------------------------------------------------
+> 428  0003f00b  directory_length 3, crc 61451
+> 42c  120001f2  specifier id
+> 430  13000030  version
+> 434  17103800  model
+> 
+>                eui-64 leaf at 438
+>                -----------------------------------------------------------------
+> 438  0002d89c  leaf_length 2, crc 55452
+> 43c  0001f200  company_id 0001f2     |
+> 440  000a059c  device_id 00000a059c  | EUI-64 0001f200000a059c
 > 
 > Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
