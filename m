@@ -7,96 +7,100 @@ X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E12BAC47096
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Jun 2021 09:19:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81FE4C47096
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Jun 2021 09:20:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F0CDF61420
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Jun 2021 09:19:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F0CDF61420
+	by mail.kernel.org (Postfix) with ESMTPS id C3B986135A
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Jun 2021 09:20:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C3B986135A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8FF9516B8;
-	Sun,  6 Jun 2021 11:18:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FF9516B8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5FD6716CC;
+	Sun,  6 Jun 2021 11:19:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FD6716CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622971185;
-	bh=xUYnjhYD1oQFDHLXvygnV4GWFw9M7rYvzsc0vtxrw2I=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=PTL1CpSouaIK/OROO7nOuQWvHPsJgmuK28TitLt5U/77Xhsqp+aJ9E9UXE6IdtWm4
-	 AvAQzPEuF1PwIcUU3g4IRfJGCi8lr7JbwsXXj4FNZq7zQ1iWTUITO0EVciKWTwlyaa
-	 8+lWm3i3ZSSjTqwr+faA/WrK4d/llqAPK530h/1Y=
+	s=default; t=1622971236;
+	bh=65MAz9ZdSmbHVo4X/M6JQjEOwol9B9xmE9zYIOT6mjo=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=BdunTrTmm9v2OD1bEuHO1jtHa/uJXIWApMKYJsLldggx9TOKymfZOm4QMbQDBRtkT
+	 vwvnhaxu/QvozJUc2DG01yYizp13N/htHb23o+L+C03Jc8iZZZqOUxIj7R2+vZ2DMX
+	 CwLQgOftnc7B9arv1bC3LGlXM0D6mUExZscmKOqQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C514F80227;
-	Sun,  6 Jun 2021 11:18:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7BA05F804AC;
+	Sun,  6 Jun 2021 11:18:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6107AF804AB; Sun,  6 Jun 2021 11:18:53 +0200 (CEST)
+ id 3C640F80256; Sun,  6 Jun 2021 11:18:54 +0200 (CEST)
 Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
  [66.111.4.28])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 688B1F800D0
- for <alsa-devel@alsa-project.org>; Sun,  6 Jun 2021 11:18:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 688B1F800D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id F03C3F800C8
+ for <alsa-devel@alsa-project.org>; Sun,  6 Jun 2021 11:18:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F03C3F800C8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="NLPJevJc"; 
+ header.b="eL4f8MDS"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="jfebQ8qm"
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailout.nyi.internal (Postfix) with ESMTP id 059785C01A7;
- Sun,  6 Jun 2021 05:18:45 -0400 (EDT)
+ header.i=@messagingengine.com header.b="MyNp7hx5"
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.nyi.internal (Postfix) with ESMTP id 2D1B25C01B3;
+ Sun,  6 Jun 2021 05:18:48 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute3.internal (MEProxy); Sun, 06 Jun 2021 05:18:45 -0400
+ by compute1.internal (MEProxy); Sun, 06 Jun 2021 05:18:48 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding; s=fm1; bh=RMd1oZNq6fiIZGgBKg3wKVmZDN
- k3vPP3BGUAHCu8dAY=; b=NLPJevJcQPgDmQoxlWmdGKcXd1tO4nPt7Hh0FblslE
- q4sVS2i3AhjEajFcnNM0mG0oMxyFr+QwvtGVjjLAGnOC6vfq2pOt+0axASLgk88U
- 1JqwtpRUWOosqF79yHB6IkFZcdp5RUVgE8abUSRcayX8OSpLht7lzjaaE1geoVIb
- NMKAgd9TVcCpHtOWULCiqlQh4g1FVN09x/CbCnsLxm7HbRA0rT/lrTGClJ/+KlPq
- EMfN4ew/IMu9UipekDB8otgSA33kKyY551bpRjvfhxz6BIVJoOykw7qeGpCKa8ji
- +p8MkfbYUufpsdhLPpu/XJCam9C0DVvmZ7xIYuzRwlJQ==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding; s=fm1; bh=mfaXpaM4c4ID3
+ Ic3X/jCI/AfCYY9GDYh3IAuyWUA+co=; b=eL4f8MDSEvw/OkOd2SBLuWsLAe7qL
+ hzY9Edknw+HVX6zRa6gGpUja0uvdFuS0660HKJvngKVm9GbZVjo20CVVIH1c9GDR
+ FFA4P5oN3CuX+9AqE/EWNI6dKSu3EJt91/WfoTW3np3p2KiFTT6zMt7RMzPNiEVB
+ 12jrC+7/h+0efu41pryoyTTE1p+Z7J76BmS2zMK/Jm+vosbn6j2LEuzI7BD197ud
+ ZitVfM1KDUMCWVQt0lxUPs/cpwtEhxjQIubT2jA/U0HqDS7I+ey9Q+EdYWf9fPJA
+ k6vTzimEQ2A/EkRUeA9phTdWJASEE0U0ZOMuGKsteaYSF7wczpLxe2dlw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
- :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
- :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=RMd1oZNq6fiIZGgBK
- g3wKVmZDNk3vPP3BGUAHCu8dAY=; b=jfebQ8qmM0h3G+P7ungNHONq5t2zSyqqV
- RiZcMUioq8sc9M1iRw/BCOYo98VCt+H+ZPePhi1BkUTfJUHrJQQDxUT4KO5jPBLA
- VSsnu1qWrksXEdDTJLZjYgmrNmsLDZJENtKrABO+VDoGe4KYYLiBJ3DFQqX4kwlV
- RZuAEEc5XiL3jwS6QazYZxkBWg4CoIN42VpVR7fg7FyEu1r+EUh/cfGdBDZCVnoz
- 5jTzmo+OtN92iVlpYq0oAxTw9dqRhc0RSx4itLUeQBEZb9LI9VrO3HVcfAkwjECf
- tsMh1RY7GPCGSoXrI5OpRa2ytYjzchxXLPP5QrbXosGoTnubLLhhg==
-X-ME-Sender: <xms:8pK8YMb-e9ZycMGHZ0wdZMLzcNwRCCNwLoP_cKr2fVdJiCfC9KbMWA>
- <xme:8pK8YHZ6L5Q3ZPLkcJqoeDi_yDo3_o-Zxp7CcOkPikq6qoDrtQal2FbPjKVdaDiJI
- YCAEfYGXKBwtZkx2BA>
-X-ME-Received: <xmr:8pK8YG-AZfBeENvGclOoKyfSyPjGZxkGU8hZwDHpm0lldQG0Sq1EcpdKhNcbFDwy5zUJo_lUbFe59AH9zPa1iQ-dYgEvloELy_DTd6Vw8k5par2439-y>
+ :in-reply-to:message-id:mime-version:references:subject:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm3; bh=mfaXpaM4c4ID3Ic3X/jCI/AfCYY9GDYh3IAuyWUA+co=; b=MyNp7hx5
+ uIBg1HmXohuXSQo15zHbYWHMkCsmA+DvoDRyh7p4EKRWQdvm6J4P0cLDJQjfioCq
+ Pc8QOXtUqX5z9SKjbj1Mg8y1nf1JmJGxwPRc1Hilh0UAt6D3ZW5oCFYLZk+Hs94h
+ netf/rJ/qelK/svgJHVkvDWwf4r0iE+uSC2QtikHBF3hSYMPRhShltlhLK5uLmuf
+ zyOpd/UeTpnX0p83A3dLf5HxfI2GufRNHgg2LB5xAVAB0kWm+6kX6Kd/wmSrwnbg
+ /+6oci/ee5O7xZ6ZKag4dM6unAl8H5B9BcBdzJnl7y0gYP5YXkJ8Bm7GOnN025Gj
+ dIYRIPpM++qB/w==
+X-ME-Sender: <xms:95K8YHYQ8TPpeMZOsp4hjucL3tTDqlr0h2GG9RJYaJQqNHVEBpWFOQ>
+ <xme:95K8YGYiLHuckjvbMbL3lseGmDJ2vhveIQFZLOboYVfq_9QYA00jNTZ48Ug2ydb6s
+ 8xv4qmYdfef8kLz6tE>
+X-ME-Received: <xmr:95K8YJ-hGjomnxG-HchIODxzWAFPBKUgYd68-_bxt0NAC6eE6JYHui3I98GrE-IbH1gWUDwMSYEagKtlTxomronMsKparsJXkuzW34FjWBhuxuwF6Uoe>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedthedgudehucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
- dttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhh
- ihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepudejteelhfdttd
- ekgfdtueeilefhgfetjeejheekgeevuddvveegieehueeukeejnecuvehluhhsthgvrhfu
- ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkh
- grmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:8pK8YGrV0nkddHPSYoqaMlfHzHMB6ku-eHSDQqFsQvNDOt_5nHSsLQ>
- <xmx:8pK8YHrefTAI7Q14YBkpEC7aPeS2v-5x_09NxVa-GcyDG2wjT4gA_A>
- <xmx:8pK8YETy1yBrqWJSr1u945A7Rf4cShU2MVmeQssUDfjWSRa8CVL6kQ>
- <xmx:9ZK8YABkY3CtW0rmTffEochrnPqJCVoBmD9lHVN1T2NTDVPAaLRPgw>
+ uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
+ dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
+ shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepveefffefke
+ etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecuvehluhhsthgv
+ rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihessh
+ grkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:-JK8YNoWA9ALfsz4xyVjceS8Qj6rHfjb3uQPhgmYjfYfHG7BKxX8iQ>
+ <xmx:-JK8YCpbFLEOTSXE0TOnD9taZvBWsBRGwdGpYd94tKmh1uKf7rJk-A>
+ <xmx:-JK8YDQpMaeiZs3D6QViLo95P_1ogo9VrvYgmTSt1zp6XBa8684-Aw>
+ <xmx:-JK8YHBjcIr7xr0njBjsH5k4mOdR-yEajeB6y10_WYOx-cikaJBcPw>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 6 Jun 2021 05:18:41 -0400 (EDT)
+ 6 Jun 2021 05:18:46 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Subject: [RFC][PATCH 0/3] ALSA: pcm/firewire: allow to queue period elapse
- event in process context
-Date: Sun,  6 Jun 2021 18:18:35 +0900
-Message-Id: <20210606091838.80812-1-o-takashi@sakamocchi.jp>
+Subject: [RFC][PATCH 2/3] ALSA: firewire-lib: queue event of period elapse in
+ process context
+Date: Sun,  6 Jun 2021 18:18:37 +0900
+Message-Id: <20210606091838.80812-3-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210606091838.80812-1-o-takashi@sakamocchi.jp>
+References: <20210606091838.80812-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
@@ -115,8 +119,6 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
-
 All of drivers in ALSA firewire stack processes two chances to process
 isochronous packets in any isochronous context; in software IRQ context
 for 1394 OHCI, and in process context of ALSA PCM application.
@@ -127,33 +129,70 @@ callbacks are done by ALSA PCM core under acquiring lock of PCM substream,
 In design of ALSA PCM core, call of snd_pcm_period_elapsed() is used for
 drivers to awaken user processes from waiting for available frames. The
 function voluntarily acquires lock of PCM substream, therefore it is not
-called in the process context since it causes dead lock. As a workaround
-to avoid the dead lock, all of drivers in ALSA firewire stack uses
-workqueue to delegate the call.
+called in the process context since it causes dead lock.
 
-This patchset is my attempt for the issue. A variant of 
-'snd_pcm_period_elapsed()' without lock acquisition is going to be added,
-named 'snd_pcm_period_elapsed_without_lock()'. This is used in callbacks
-of .pointer and .ack of snd_pcm_ops structure.
+As a workaround to avoid the dead lock, all of drivers in ALSA firewire
+stack uses workqueue to delegate the call. A variant of
+snd_pcm_period_elapsed() without lock acquisition can obsolete the
+workqueue.
 
-The patchset is still under my test, but it looks to work well in my
-easy and rough test. Before posting for merge, I'd like to get your
-comment to the idea. When evaluating, please merge below two histories:
- * 64584f329352 (for-next)
- * 9981b20a5e36 (for-linus)
+An extra care is needed for the callback of .pointer since it's called
+from snd_pcm_period_elapsed(). The isochronous context in Linux FireWire
+subsystem is safe mostly for nested call except in software IRQ context.
+---
+ sound/firewire/amdtp-stream.c | 31 ++++++++++++++-----------------
+ 1 file changed, 14 insertions(+), 17 deletions(-)
 
-Takashi Sakamoto (3):
-  ALSA: pcm: add snd_pcm_period_elapsed() variant without acquiring lock
-    of PCM substream
-  ALSA: firewire-lib: queue event of period elapse in process context
-  ALSA: firewire-lib: obsolete workqueue for period update
-
- include/sound/pcm.h           | 53 ++++++++++++++++++++++++++++++++++-
- sound/core/pcm_lib.c          | 25 +++--------------
- sound/firewire/amdtp-stream.c | 46 +++++++++---------------------
- sound/firewire/amdtp-stream.h |  1 -
- 4 files changed, 70 insertions(+), 55 deletions(-)
-
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index 150ee0b9e707..b39328eab67e 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -613,8 +613,16 @@ static void update_pcm_pointers(struct amdtp_stream *s,
+ 		// The program in user process should periodically check the status of intermediate
+ 		// buffer associated to PCM substream to process PCM frames in the buffer, instead
+ 		// of receiving notification of period elapsed by poll wait.
+-		if (!pcm->runtime->no_period_wakeup)
+-			queue_work(system_highpri_wq, &s->period_work);
++		if (!pcm->runtime->no_period_wakeup) {
++			if (in_interrupt()) {
++				// In software IRQ context for 1394 OHCI.
++				snd_pcm_period_elapsed(pcm);
++			} else {
++				// In process context of ALSA PCM application under acquiring lock
++				// of PCM substream.
++				snd_pcm_period_elapsed_without_lock(pcm);
++			}
++		}
+ 	}
+ }
+ 
+@@ -1740,22 +1748,11 @@ unsigned long amdtp_domain_stream_pcm_pointer(struct amdtp_domain *d,
+ {
+ 	struct amdtp_stream *irq_target = d->irq_target;
+ 
++	// Process isochronous packets queued till recent isochronous cycle to handle PCM frames.
+ 	if (irq_target && amdtp_stream_running(irq_target)) {
+-		// This function is called in software IRQ context of
+-		// period_work or process context.
+-		//
+-		// When the software IRQ context was scheduled by software IRQ
+-		// context of IT contexts, queued packets were already handled.
+-		// Therefore, no need to flush the queue in buffer furthermore.
+-		//
+-		// When the process context reach here, some packets will be
+-		// already queued in the buffer. These packets should be handled
+-		// immediately to keep better granularity of PCM pointer.
+-		//
+-		// Later, the process context will sometimes schedules software
+-		// IRQ context of the period_work. Then, no need to flush the
+-		// queue by the same reason as described in the above
+-		if (current_work() != &s->period_work)
++		// In software IRQ context, the call causes dead-lock to disable the tasklet
++		// synchronously.
++		if (!in_interrupt())
+ 			fw_iso_context_flush_completions(irq_target->context);
+ 	}
+ 
 -- 
 2.27.0
 
