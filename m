@@ -2,57 +2,60 @@ Return-Path: <SRS0=TNia=LA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D3C4C47096
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Jun 2021 14:17:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 398BBC47096
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Jun 2021 14:18:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CD3616141E
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Jun 2021 14:17:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD3616141E
+	by mail.kernel.org (Postfix) with ESMTPS id F3349610A2
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Jun 2021 14:18:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F3349610A2
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=b4.vu
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 80F1616C2;
-	Sun,  6 Jun 2021 16:17:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 80F1616C2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 319D116D8;
+	Sun,  6 Jun 2021 16:17:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 319D116D8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1622989072;
-	bh=oNSPTjjm8OJ+HCcdcqOvpIwKzxhhwzSFGpIBDCBW6LU=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=vqIslqavtJIKMBBmzi6OQtPBeOsGPeWoi+t2xVhVXKsywicXbu/qrgPr+tw++NIK2
-	 go7cSEJuWt22jMURG3npxo+uQK9i7JX5j5Z3+kJG/uQr8/lV+9FrZ/bCK64NO4SPuP
-	 8l3rDOY1qH3npeFNrGFjArdvdaVEwY1Krn4HPmIM=
+	s=default; t=1622989123;
+	bh=Du7CP5duniY9qfnWc5GhEGmm/Nvi6j16fSXW9kCocmc=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=lCrPh+3QbIr5QKGK4mMdd3jAA+MNshtEz9TWBwuCQjQNwIfhxoJW1FIVcWrxZj+mm
+	 iYXlgS25x3yI2w6Gk+UpR7nwKY7E2iWZsW/43qmmBbjxOmr6TgCvxJJhjfTq6YSqbz
+	 vIkMPcSLlYP0Jj97S0X0Zt09+pWeM3gwZf78TT58=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0ADB9F8019B;
-	Sun,  6 Jun 2021 16:17:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C6F99F80218;
+	Sun,  6 Jun 2021 16:17:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B9075F80218; Sun,  6 Jun 2021 16:16:59 +0200 (CEST)
+ id 16BEEF80256; Sun,  6 Jun 2021 16:17:11 +0200 (CEST)
 Received: from m.b4.vu (m.b4.vu [203.16.231.148])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A1EDAF80103
- for <alsa-devel@alsa-project.org>; Sun,  6 Jun 2021 16:16:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1EDAF80103
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1E3ECF80256
+ for <alsa-devel@alsa-project.org>; Sun,  6 Jun 2021 16:17:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E3ECF80256
 Received: by m.b4.vu (Postfix, from userid 1000)
- id 8A37B61956CD; Sun,  6 Jun 2021 23:46:44 +0930 (ACST)
-Date: Sun, 6 Jun 2021 23:46:44 +0930
+ id 18D85612FB14; Sun,  6 Jun 2021 23:46:59 +0930 (ACST)
+Date: Sun, 6 Jun 2021 23:46:59 +0930
 From: "Geoffrey D. Bennett" <g@b4.vu>
 To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 0/2] ALSA: usb-audio: scarlett2: Read all configuration at
- init time
-Message-ID: <cover.1622974661.git.g@b4.vu>
+Subject: [PATCH 1/2] ALSA: usb-audio: scarlett2: Read mixer volumes at init
+ time
+Message-ID: <68f57d71862e1c858e48dd6c0a6c68342ac53fc9.1622974661.git.g@b4.vu>
+References: <cover.1622974661.git.g@b4.vu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <cover.1622974661.git.g@b4.vu>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: Daniel Sales <daniel.sales.z@gmail.com>,
  Markus Schroetter <project.m.schroetter@gmail.com>,
@@ -72,28 +75,125 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-These two patches add support for reading the mixer volumes and mux
-configuration from the hardware when the driver is initialising.
+Add support for reading the mixer volumes from the hardware when the
+driver is initialising. Previously these ALSA volume controls were
+initialised to zero instead of being initialised to match the hardware
+state.
 
-Previously the ALSA volume controls were initialised to zero and the
-mux configuration set to a fixed default instead of being initialised
-to match the hardware state.
+Fixes: 9e4d5c1be21f ("ALSA: usb-audio: Scarlett Gen 2 mixer interface")
+Suggested-by: Vladimir Sadovnikov <sadko4u@gmail.com>
+Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
+---
+ sound/usb/mixer_scarlett_gen2.c | 57 +++++++++++++++++++++++++++++++--
+ 1 file changed, 55 insertions(+), 2 deletions(-)
 
-The ALSA controls for the Scarlett Gen 2 interfaces should now always
-be in sync with the hardware. Thanks to Vladimir Sadovnikov for
-figuring out how to do this.
-
-Takashi, if these pass your review, I believe that they are
-appropriate for:
-#Cc: stable@vger.kernel.org
-
-Geoffrey D. Bennett (2):
-  ALSA: usb-audio: scarlett2: Read mixer volumes at init time
-  ALSA: usb-audio: scarlett2: Read mux at init time
-
- sound/usb/mixer_scarlett_gen2.c | 227 ++++++++++++++++++++++----------
- 1 file changed, 161 insertions(+), 66 deletions(-)
-
+diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
+index 4caf379d5b99..b0043906c77f 100644
+--- a/sound/usb/mixer_scarlett_gen2.c
++++ b/sound/usb/mixer_scarlett_gen2.c
+@@ -117,11 +117,12 @@
+ #define SCARLETT2_MIXER_MAX_DB 6
+ #define SCARLETT2_MIXER_MAX_VALUE \
+ 	((SCARLETT2_MIXER_MAX_DB - SCARLETT2_MIXER_MIN_DB) * 2)
++#define SCARLETT2_MIXER_VALUE_COUNT (SCARLETT2_MIXER_MAX_VALUE + 1)
+ 
+ /* map from (dB + 80) * 2 to mixer value
+  * for dB in 0 .. 172: int(8192 * pow(10, ((dB - 160) / 2 / 20)))
+  */
+-static const u16 scarlett2_mixer_values[173] = {
++static const u16 scarlett2_mixer_values[SCARLETT2_MIXER_VALUE_COUNT] = {
+ 	0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2,
+ 	2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8,
+ 	9, 9, 10, 10, 11, 12, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+@@ -465,6 +466,7 @@ static int scarlett2_get_port_start_num(const struct scarlett2_ports *ports,
+ 
+ #define SCARLETT2_USB_INIT_SEQ 0x00000000
+ #define SCARLETT2_USB_GET_METER_LEVELS 0x00001001
++#define SCARLETT2_USB_GET_MIX 0x00002001
+ #define SCARLETT2_USB_SET_MIX 0x00002002
+ #define SCARLETT2_USB_SET_MUX 0x00003002
+ #define SCARLETT2_USB_GET_DATA 0x00800000
+@@ -784,6 +786,49 @@ static int scarlett2_usb_get_volume_status(
+ 				 buf, sizeof(*buf));
+ }
+ 
++/* Send a USB message to get the volumes for all inputs of one mix
++ * and put the values into private->mix[]
++ */
++static int scarlett2_usb_get_mix(struct usb_mixer_interface *mixer,
++				 int mix_num)
++{
++	struct scarlett2_mixer_data *private = mixer->private_data;
++	const struct scarlett2_device_info *info = private->info;
++
++	int num_mixer_in =
++		info->ports[SCARLETT2_PORT_TYPE_MIX].num[SCARLETT2_PORT_OUT];
++	int err, i, j, k;
++
++	struct {
++		__le16 mix_num;
++		__le16 count;
++	} __packed req;
++
++	__le16 data[SCARLETT2_INPUT_MIX_MAX];
++
++	req.mix_num = mix_num;
++	req.count = num_mixer_in;
++
++	err = scarlett2_usb(mixer, SCARLETT2_USB_GET_MIX,
++			    &req, sizeof(req),
++			    data, num_mixer_in * sizeof(u16));
++	if (err < 0)
++		return err;
++
++	for (i = 0, j = mix_num * num_mixer_in; i < num_mixer_in; i++, j++) {
++		u16 mixer_value = le16_to_cpu(data[i]);
++
++		for (k = 0; k < SCARLETT2_MIXER_VALUE_COUNT; k++)
++			if (scarlett2_mixer_values[k] >= mixer_value)
++				break;
++		if (k == SCARLETT2_MIXER_VALUE_COUNT)
++			k = SCARLETT2_MIXER_MAX_VALUE;
++		private->mix[j] = k;
++	}
++
++	return 0;
++}
++
+ /* Send a USB message to set the volumes for all inputs of one mix
+  * (values obtained from private->mix[])
+  */
+@@ -1831,7 +1876,7 @@ static int scarlett2_init_private(struct usb_mixer_interface *mixer,
+ 	return scarlett2_usb(mixer, SCARLETT2_USB_INIT_SEQ, NULL, 0, NULL, 0);
+ }
+ 
+-/* Read line-in config and line-out volume settings on start */
++/* Read configuration from the interface on start */
+ static int scarlett2_read_configs(struct usb_mixer_interface *mixer)
+ {
+ 	struct scarlett2_mixer_data *private = mixer->private_data;
+@@ -1839,6 +1884,8 @@ static int scarlett2_read_configs(struct usb_mixer_interface *mixer)
+ 	const struct scarlett2_ports *ports = info->ports;
+ 	int num_line_out =
+ 		ports[SCARLETT2_PORT_TYPE_ANALOGUE].num[SCARLETT2_PORT_OUT];
++	int num_mixer_out =
++		ports[SCARLETT2_PORT_TYPE_MIX].num[SCARLETT2_PORT_IN];
+ 	u8 level_switches[SCARLETT2_LEVEL_SWITCH_MAX];
+ 	u8 pad_switches[SCARLETT2_PAD_SWITCH_MAX];
+ 	struct scarlett2_usb_volume_status volume_status;
+@@ -1894,6 +1941,12 @@ static int scarlett2_read_configs(struct usb_mixer_interface *mixer)
+ 	for (i = 0; i < info->button_count; i++)
+ 		private->buttons[i] = !!volume_status.buttons[i];
+ 
++	for (i = 0; i < num_mixer_out; i++) {
++		err = scarlett2_usb_get_mix(mixer, i);
++		if (err < 0)
++			return err;
++	}
++
+ 	return 0;
+ }
+ 
 -- 
 2.31.1
 
