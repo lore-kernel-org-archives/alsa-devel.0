@@ -2,55 +2,74 @@ Return-Path: <SRS0=v4AK=LB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C6BFC47082
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 21:05:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D69AC47082
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 22:24:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BFBA9611BD
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 21:05:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BFBA9611BD
-Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
+	by mail.kernel.org (Postfix) with ESMTPS id 99FE46120F
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 22:24:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 99FE46120F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 628C51674;
-	Mon,  7 Jun 2021 23:04:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 628C51674
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4639A1674;
+	Tue,  8 Jun 2021 00:23:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4639A1674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623099945;
-	bh=z+6NzayOksWsCGM9QMU1lOxtWgcUz/kWakCj1df/XIY=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=eUrShG/3US1ySD4PENwjzt9UH6wkd3I4Xx39beLNmZq5NpaQaxYlt3FMPHDPpmZBl
-	 /ap3wOrzZwM5OZ09shfxfV1Y0thisYOw9gfrmnVVMsDli3n20t26N0UAwBHYZr/ipW
-	 ZTz4VH1O5LQ6/pQOBMOMRCbIawkpkF6YhD2W7QiM=
+	s=default; t=1623104647;
+	bh=AxTUPvaKwld9cy4hwu0+BuV2TZ+ozW4sU96IfMzP6BE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=BTY0xlKDo22fH1AXB6XHQ9k19+dsc4zAw0rqHlz83C8MIQvOmU+MF7ZNrXwwRQr01
+	 gGfiyK558bMdQvcdVEk85Gb+C5yCsQPIdS5bl4M1WWYuP4HAP25zO+BMyf5Iv9fMrr
+	 zkq18XxlTjZTT2m3wSnYaiwmvoVXRu0stxkAAKow=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EE313F8020D;
-	Mon,  7 Jun 2021 23:04:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C1FD0F8032D;
+	Tue,  8 Jun 2021 00:23:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CA19FF80212; Mon,  7 Jun 2021 23:04:53 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id E57E0F800AF
- for <alsa-devel@alsa-project.org>; Mon,  7 Jun 2021 23:04:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E57E0F800AF
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
+ id 8E78FF800DF; Tue,  8 Jun 2021 00:23:14 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0D95FF800DF
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 00:23:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D95FF800DF
+IronPort-SDR: LV3zqBFygX2MOR0+hD/PxgqPNpVGonSUhgCK9KyCKS4aCv4wFGfbItp5HOGWyWSnC2lePnPeDL
+ x1QBs8IfXpeQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="202867350"
+X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; d="scan'208";a="202867350"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Jun 2021 15:23:01 -0700
+IronPort-SDR: YXPBqT+531tLr4DxcCarfTUtNUMFTpFAGjZM7eoPUxkhpOXEByyyvDVrziXUJMwyOaHpu0uzE4
+ Cg129BiUH8AQ==
+X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; d="scan'208";a="449270940"
+Received: from ticela-or-160.amr.corp.intel.com (HELO
+ pbossart-mobl3.intel.com) ([10.212.108.70])
+ by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Jun 2021 15:23:01 -0700
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1623099884613096952-webhooks-bot@alsa-project.org>
-References: <1623099884613096952-webhooks-bot@alsa-project.org>
-Subject: added an option to aseqnet to optionally set the midi process name
-Message-Id: <20210607210453.CA19FF80212@alsa1.perex.cz>
-Date: Mon,  7 Jun 2021 23:04:53 +0200 (CEST)
+Subject: [PATCH 00/15] ASoC: fixes for SoundWire codec drivers
+Date: Mon,  7 Jun 2021 17:22:24 -0500
+Message-Id: <20210607222239.582139-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>,
+ Ryan Lee <ryans.lee@maximintegrated.com>, tiwai@suse.de,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ broonie@kernel.org, Shuming Fan <shumingf@realtek.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,15 +85,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils pull request #95 was opened from BrainDamage:
+The SOF CI exposed a set of issues with suspend/resume, error
+handling, register access and mixer values.
 
-This option allows to run multiple instances of aseqnet without having
-to double check the assigned port number, since each one can get spawned
-with a unique name.
+These fixes were indentified with a tag so that they can be applied by
+linux-stable and distributions. Thanks to the Realtek and Maxim teams
+for their help.
 
-The patch is pretty minimal and clean, thopefully here shouldn't be troubles 
-merging it.
+Bard Liao (3):
+  ASoC: rt5682-sdw: set regcache_cache_only false before reading
+    RT5682_DEVICE_ID
+  ASoC: rt711-sdca-sdw: add readable for SDW_SDCA_CTL() registers
+  ASoC: rt711-sdca: handle mbq_regmap in rt711_sdca_io_init
 
-Request URL   : https://github.com/alsa-project/alsa-utils/pull/95
-Patch URL     : https://github.com/alsa-project/alsa-utils/pull/95.patch
-Repository URL: https://github.com/alsa-project/alsa-utils
+Jack Yu (1):
+  ASoC: rt715-sdca: fix clock stop prepare timeout issue
+
+Oder Chiou (1):
+  ASoC: rt5682: Fix a problem with error handling in the io init
+    function of the soundwire
+
+Pierre-Louis Bossart (10):
+  ASoC: max98373-sdw: add missing memory allocation check
+  ASoC: max98373-sdw: use first_hw_init flag on resume
+  ASoC: rt1308-sdw: use first_hw_init flag on resume
+  ASoC: rt1316-sdw: use first_hw_init flag on resume
+  ASoC: rt5682-sdw: use first_hw_init flag on resume
+  ASoC: rt700-sdw: use first_hw_init flag on resume
+  ASoC: rt711-sdca-sdw: use first_hw_init flag on resume
+  ASoC: rt711-sdw: use first_hw_init flag on resume
+  ASoC: rt715-sdca-sdw: use first_hw_init flag on resume
+  ASoC: rt715-sdw: use first_hw_init flag on resume
+
+ sound/soc/codecs/max98373-sdw.c   | 14 ++++++++------
+ sound/soc/codecs/max98373.h       |  2 +-
+ sound/soc/codecs/rt1308-sdw.c     |  2 +-
+ sound/soc/codecs/rt1316-sdw.c     |  2 +-
+ sound/soc/codecs/rt5682-sdw.c     | 19 +++++++++++--------
+ sound/soc/codecs/rt700-sdw.c      |  2 +-
+ sound/soc/codecs/rt711-sdca-sdw.c | 12 +++++++++++-
+ sound/soc/codecs/rt711-sdca.c     |  4 ++++
+ sound/soc/codecs/rt711-sdw.c      |  2 +-
+ sound/soc/codecs/rt715-sdca-sdw.c |  3 ++-
+ sound/soc/codecs/rt715-sdca-sdw.h |  1 +
+ sound/soc/codecs/rt715-sdca.c     |  9 ++++++---
+ sound/soc/codecs/rt715-sdca.h     |  3 ++-
+ sound/soc/codecs/rt715-sdw.c      |  2 +-
+ 14 files changed, 51 insertions(+), 26 deletions(-)
+
+-- 
+2.25.1
+
