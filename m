@@ -2,71 +2,71 @@ Return-Path: <SRS0=v4AK=LB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4A8DC47082
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 22:29:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C161C47082
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 22:29:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9A0B661078
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 22:29:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A0B661078
+	by mail.kernel.org (Postfix) with ESMTPS id A020A61078
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 22:29:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A020A61078
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3DC78169B;
-	Tue,  8 Jun 2021 00:28:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DC78169B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3F15F1672;
+	Tue,  8 Jun 2021 00:28:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F15F1672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623104956;
-	bh=+fAk3VBnrr6fOeX5n6z/mFtRbv16FTyXC7/WncVPpcs=;
+	s=default; t=1623104981;
+	bh=DfijiQ+CSkdyTLYBCOX8TYldCSo1qQhFMuH1U1Ifnpc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=W+5q9d+8DMQoBS43xr+vorG54e9x9yPSlwCX5gXqX3Di/7r2ftVddJ1UxSMl9ZP6c
-	 /Il/coJQyc/3SP5z9fKqqALGIUdE2wCPQcMV2EXy0qYykhCpH8tSKGATaCmhCCsJhF
-	 6H3eqdXbeDb2ulkvaH8EbZL4L+Oc82JP9fv27Dto=
+	b=fL2neDrvkI45WryGtUV/MebdqJuhaPOsrJt0CtXKxQQwoSoWRUj/VnU5/K4Ud64Ob
+	 UFnU83D+bNM+I26PF1SPSaCKUn9cr+yIST/SPh6cQ5MeGswOA54I6cUlErkAEe8RUw
+	 7KmgCbm/OAFXVefHeqpcxmXEqzpH3/HpPnAMCZ6M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE9A8F80525;
-	Tue,  8 Jun 2021 00:23:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59236F80527;
+	Tue,  8 Jun 2021 00:23:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D39A9F8050F; Tue,  8 Jun 2021 00:23:39 +0200 (CEST)
+ id E214DF80510; Tue,  8 Jun 2021 00:23:39 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C2FCFF8027C
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 00:23:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2FCFF8027C
-IronPort-SDR: uCQxOvcaRMwEpN5XBBYNbGUd+cnSF7b5NG7v+/nuLSYj2NgMMQVKlE9J8s1uXDuJkbkCy9ji91
- gOZaY7fN8hcg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="268581965"
-X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; d="scan'208";a="268581965"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5BCF7F804C3
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 00:23:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5BCF7F804C3
+IronPort-SDR: xlcQso/QvWU56kXYyCp2KXRtaMTQHfIQc578aokuwg25Q7zyuM3VYEypSKxVBH7e2p6aDXWomJ
+ 3iUn2GOppgrQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="268581950"
+X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; d="scan'208";a="268581950"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jun 2021 15:23:16 -0700
-IronPort-SDR: W0ESOtZZMW3idHCj0Hhfwm6CBfnw+nvBa9mMkznGnWZw7nq22nRsouGhfGvURBlhIHZ6tyZWFa
- MFVEATj3CoDA==
-X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; d="scan'208";a="449271020"
+ 07 Jun 2021 15:23:12 -0700
+IronPort-SDR: tWFOJVNA9vl2O4tSzI7BmKqB1/Ye5QnnvfrlEwayHE1jA+//jSFVROQ17t3VsKkt73Kwa0/8gn
+ wDJtXpYm6PGw==
+X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; d="scan'208";a="449271010"
 Received: from ticela-or-160.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.108.70])
  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jun 2021 15:23:15 -0700
+ 07 Jun 2021 15:23:12 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 15/15] ASoC: rt711-sdca: handle mbq_regmap in
- rt711_sdca_io_init
-Date: Mon,  7 Jun 2021 17:22:39 -0500
-Message-Id: <20210607222239.582139-16-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 11/15] ASoC: rt715-sdca: fix clock stop prepare timeout issue
+Date: Mon,  7 Jun 2021 17:22:35 -0500
+Message-Id: <20210607222239.582139-12-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210607222239.582139-1-pierre-louis.bossart@linux.intel.com>
 References: <20210607222239.582139-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>,
  Ryan Lee <ryans.lee@maximintegrated.com>, tiwai@suse.de,
@@ -88,40 +88,74 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
+From: Jack Yu <jack.yu@realtek.com>
 
-We currently only hangle rt711->regmap in rt711_sdca_io_init(), and
-rt711->mbq_regmap is missing.
+Fix clock stop prepare timeout issue (#2853).
+The trigger of internal circuit which belong to
+“SDCA preset stuffs” was not set correctly in previous driver,
+which could block clock_stop_preparation state.
+Add the correct register setting to fix it.
 
-Fixes: 7ad4d237e7c4a ('ASoC: rt711-sdca: Add RT711 SDCA vendor-specific driver')
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Fixes: 20d17057f0a8c ('ASoC: rt715-sdca: Add RT715 sdca vendor-specific driver')
+Signed-off-by: Jack Yu <jack.yu@realtek.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/rt711-sdca.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/codecs/rt715-sdca-sdw.c | 1 +
+ sound/soc/codecs/rt715-sdca-sdw.h | 1 +
+ sound/soc/codecs/rt715-sdca.c     | 3 +++
+ sound/soc/codecs/rt715-sdca.h     | 1 +
+ 4 files changed, 6 insertions(+)
 
-diff --git a/sound/soc/codecs/rt711-sdca.c b/sound/soc/codecs/rt711-sdca.c
-index 24a084e0b48a..0b0c230dcf71 100644
---- a/sound/soc/codecs/rt711-sdca.c
-+++ b/sound/soc/codecs/rt711-sdca.c
-@@ -1500,6 +1500,8 @@ int rt711_sdca_io_init(struct device *dev, struct sdw_slave *slave)
- 	if (rt711->first_hw_init) {
- 		regcache_cache_only(rt711->regmap, false);
- 		regcache_cache_bypass(rt711->regmap, true);
-+		regcache_cache_only(rt711->mbq_regmap, false);
-+		regcache_cache_bypass(rt711->mbq_regmap, true);
- 	} else {
- 		/*
- 		 * PM runtime is only enabled when a Slave reports as Attached
-@@ -1565,6 +1567,8 @@ int rt711_sdca_io_init(struct device *dev, struct sdw_slave *slave)
- 	if (rt711->first_hw_init) {
- 		regcache_cache_bypass(rt711->regmap, false);
- 		regcache_mark_dirty(rt711->regmap);
-+		regcache_cache_bypass(rt711->mbq_regmap, false);
-+		regcache_mark_dirty(rt711->mbq_regmap);
- 	} else
- 		rt711->first_hw_init = true;
+diff --git a/sound/soc/codecs/rt715-sdca-sdw.c b/sound/soc/codecs/rt715-sdca-sdw.c
+index 7646bbe739f1..a5c673f43d82 100644
+--- a/sound/soc/codecs/rt715-sdca-sdw.c
++++ b/sound/soc/codecs/rt715-sdca-sdw.c
+@@ -70,6 +70,7 @@ static bool rt715_sdca_mbq_readable_register(struct device *dev, unsigned int re
+ 	case 0x2000036:
+ 	case 0x2000037:
+ 	case 0x2000039:
++	case 0x2000044:
+ 	case 0x6100000:
+ 		return true;
+ 	default:
+diff --git a/sound/soc/codecs/rt715-sdca-sdw.h b/sound/soc/codecs/rt715-sdca-sdw.h
+index cd365bb60747..0cbc14844f8c 100644
+--- a/sound/soc/codecs/rt715-sdca-sdw.h
++++ b/sound/soc/codecs/rt715-sdca-sdw.h
+@@ -113,6 +113,7 @@ static const struct reg_default rt715_mbq_reg_defaults_sdca[] = {
+ 	{ 0x2000036, 0x0000 },
+ 	{ 0x2000037, 0x0000 },
+ 	{ 0x2000039, 0xaa81 },
++	{ 0x2000044, 0x0202 },
+ 	{ 0x6100000, 0x0100 },
+ 	{ SDW_SDCA_CTL(FUN_MIC_ARRAY, RT715_SDCA_FU_ADC8_9_VOL,
+ 		RT715_SDCA_FU_VOL_CTRL, CH_01), 0x00 },
+diff --git a/sound/soc/codecs/rt715-sdca.c b/sound/soc/codecs/rt715-sdca.c
+index d82166f1a378..66e166568c50 100644
+--- a/sound/soc/codecs/rt715-sdca.c
++++ b/sound/soc/codecs/rt715-sdca.c
+@@ -1054,6 +1054,9 @@ int rt715_sdca_io_init(struct device *dev, struct sdw_slave *slave)
+ 		rt715_sdca_index_update_bits(rt715, RT715_VENDOR_REG,
+ 			RT715_REV_1, 0x40, 0x40);
+ 	}
++	/* DFLL Calibration trigger */
++	rt715_sdca_index_update_bits(rt715, RT715_VENDOR_REG,
++			RT715_DFLL_VAD, 0x1, 0x1);
+ 	/* trigger mode = VAD enable */
+ 	regmap_write(rt715->regmap,
+ 		SDW_SDCA_CTL(FUN_MIC_ARRAY, RT715_SDCA_SMPU_TRIG_ST_EN,
+diff --git a/sound/soc/codecs/rt715-sdca.h b/sound/soc/codecs/rt715-sdca.h
+index 0c1fdd5bc7ca..90881b455ece 100644
+--- a/sound/soc/codecs/rt715-sdca.h
++++ b/sound/soc/codecs/rt715-sdca.h
+@@ -81,6 +81,7 @@ struct rt715_sdca_kcontrol_private {
+ #define RT715_AD_FUNC_EN				0x36
+ #define RT715_REV_1					0x37
+ #define RT715_SDW_INPUT_SEL				0x39
++#define RT715_DFLL_VAD					0x44
+ #define RT715_EXT_DMIC_CLK_CTRL2			0x54
  
+ /* Index (NID:61h) */
 -- 
 2.25.1
 
