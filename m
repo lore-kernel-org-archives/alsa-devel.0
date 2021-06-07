@@ -4,73 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0104C47082
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 19:02:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16CC6C47094
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 19:03:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7125161139
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 19:02:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7125161139
+	by mail.kernel.org (Postfix) with ESMTPS id B9231608FE
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 19:03:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B9231608FE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 86FE21675;
-	Mon,  7 Jun 2021 21:01:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86FE21675
+	by alsa0.perex.cz (Postfix) with ESMTPS id 541681687;
+	Mon,  7 Jun 2021 21:02:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 541681687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623092530;
-	bh=TqvQgPLw+SRotU9+5VQHB7MXw6yubtkFMcOggx44GO0=;
+	s=default; t=1623092581;
+	bh=J8w8KAlkN7B4v37ixjZzDlO3BVXLqJksW6PfS1AlNMg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JjJKHGHMTWKEPEt59mc4iWTbQBZj7jAUymezlEzM1TsQmmqc67b2nsKz5wCtXYXkN
-	 oLhtIh/CAzQP9Vb9t5EhuAs2vz/Q/xPgP3zrLHeXyhQSr1dsYV43vV6n70EYJcPeOt
-	 I5DQDgDR8hSE1WVmDrRtkjQyboyEZ+zF6Y5OOsic=
+	b=HaA0SVR/5t43msYfb1iTreJRdXDhOnMzwSsio+cueDJbiBgavNp0TK3d0UxvES4Zl
+	 K7LPF4X0hK2NMO2V58TQmpJe7ALEGdgh1eY54bdyYIQCRsMkRyX0LF4vJhXKQuirDP
+	 c4dzU8KwONy1JXFzh7RIBijLMjRh2UTxOLE7rU58=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17C3DF800DF;
-	Mon,  7 Jun 2021 21:01:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D5631F8026C;
+	Mon,  7 Jun 2021 21:01:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AE297F8026C; Mon,  7 Jun 2021 21:01:18 +0200 (CEST)
+ id 4FE29F80212; Mon,  7 Jun 2021 21:01:19 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E9D25F800AF
- for <alsa-devel@alsa-project.org>; Mon,  7 Jun 2021 21:01:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9D25F800AF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 80C72F800DF
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jun 2021 21:01:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80C72F800DF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Cr2uIJbb"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0142361205;
- Mon,  7 Jun 2021 19:01:11 +0000 (UTC)
+ header.b="MbqBrLia"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8981561153;
+ Mon,  7 Jun 2021 19:01:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1623092472;
- bh=TqvQgPLw+SRotU9+5VQHB7MXw6yubtkFMcOggx44GO0=;
+ s=k20201202; t=1623092475;
+ bh=J8w8KAlkN7B4v37ixjZzDlO3BVXLqJksW6PfS1AlNMg=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Cr2uIJbbpwj/zEHb8m+7IoQF/jDT1shTGqf1/prag2tGdzKoioJkN78TxtLSTmpHI
- sjHdskydyxDYAzhs8QTQn/YWW2so3TfQ557R9YJQlwTHqqsWCTevuHuF3+uSyE160A
- CeexD5w1Go8PsWhx2+RQQPOXrGMl3qwHmxaFYSKFrdIispdaGgwKkSzZmb2BhDHAde
- Qr+zr2tiCTV4j2ZXVQ+hZlzhmOMtfyqfDPkLdN30nzxfNW/1wEMUcA81vzTZAMHTpW
- jAOtBbQoKoOYhQVnggmuZY+ip2PpxsofQRIXsV8KK4V0/Xc+mJQvtBVzTEiCwflQM2
- AHZv7MxxRMf3w==
+ b=MbqBrLiaFtOjM5nM0sAJzJwZCFu/MaOlOdAIn3cWltJ726PIWgT3d1uvVPe4qlCFK
+ ffHm4O5Uw7dYS/f/npPXuJ6Dd/lNTyXHl8yCsI7o8oTj4dprr8d6aAgiZEXtXwXGMb
+ E93GBfcyH3lFVi/ebmQQbYs8DyFEdg3cX8Ak4JHTdtJwjt8DbG6w5DdfeuscW+C4Le
+ 9a5bVuPxrP/k+zdthrAOsIyDxSIolEv0fOpCYYDpUotEgijtP9zGsFKHDJdd8CXlej
+ aOmcNtsgBIrzuMpGSbvxT5/JgoWHgYSKu7wqT5xGGB35SHzRZPZ/RnCh+0GiHhLvMa
+ digfLxflhTjQw==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com,
-	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: Re: [PATCH] ASoC: rk817: Remove unneeded semicolon
-Date: Mon,  7 Jun 2021 20:00:44 +0100
-Message-Id: <162309220525.30523.10384429738666319055.b4-ty@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH v3 0/7] ASoC: adds new .auto_selectable_formats support
+Date: Mon,  7 Jun 2021 20:00:45 +0100
+Message-Id: <162309220524.30523.199749382291258220.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1622802209-45031-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-References: <1622802209-45031-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <87k0nkncaw.wl-kuninori.morimoto.gx@renesas.com>
+References: <87k0nkncaw.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, tiwai@suse.com
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,10 +84,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 4 Jun 2021 18:23:29 +0800, Jiapeng Chong wrote:
-> Fix the following coccicheck warnings:
+On 27 May 2021 11:24:55 +0900, Kuninori Morimoto wrote:
+> These are v3 of "ASoC: adds new .get_fmt support",
+> but renamed Subject.
 > 
-> ./sound/soc/codecs/rk817_codec.c:49:2-3: Unneeded semicolon.
+> This is a little bit challenging patch-set.
+> The idea/code is almost same as v1 / v2.
+> v3 has "priority" support.
+> 
+> [...]
 
 Applied to
 
@@ -97,8 +100,20 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rk817: Remove unneeded semicolon
-      commit: 54f6731394520d706c3133aab17aa90434bcf1aa
+[1/7] ASoC: soc-core: move snd_soc_runtime_set_dai_fmt() to upside
+      commit: 4d1a98b5f1abaad0ba7177fdb389a9f78584bc3a
+[2/7] ASoC: soc-core: add snd_soc_runtime_get_dai_fmt()
+      commit: ba9e82a1c8919340bee0dd7f7cafb8749810aabe
+[3/7] ASoC: ak4613: add .auto_selectable_formats support
+      commit: c50f381afcab30125e43258bba9316054c4ddfac
+[4/7] ASoC: pcm3168a: add .auto_selectable_formats support
+      commit: bea63e8bbe3326c3e2d5540edc90a7cd2ef1ee9a
+[5/7] ASoC: rsnd: add .auto_selectable_formats support
+      commit: 0292176522566fff8db524e38ffd0cb28398b736
+[6/7] ASoC: fsi: add .auto_selectable_formats support
+      commit: af69f47df1fb494e6d8050e0111dfc7d75079fd6
+[7/7] ASoC: hdmi-codec: add .auto_selectable_formats support
+      commit: 68d8b7ba360f01babe56887f37a679e981833bb7
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
