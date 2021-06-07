@@ -2,67 +2,66 @@ Return-Path: <SRS0=v4AK=LB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13A04C47094
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 22:51:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 511AAC47095
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 22:52:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7E47E60200
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 22:51:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E47E60200
+	by mail.kernel.org (Postfix) with ESMTPS id 94C2F60200
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 22:52:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94C2F60200
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0DEA816B9;
-	Tue,  8 Jun 2021 00:50:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DEA816B9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 30DFF1687;
+	Tue,  8 Jun 2021 00:51:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30DFF1687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623106304;
-	bh=gAj/13MBLTb50lCV6nsJCUK1ggcllCK+S9dJqO+tnEc=;
+	s=default; t=1623106320;
+	bh=kjesBnmvm2tSMNWJO2yj7Hkcp8L53AwZk54cC6sVvNg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Wt5yrjs1vKZlo+USdAhWPH6xX9j2wvm76uy04BJ0cZfUGKz1NgJzZSnVaLZnpCj1E
-	 E036RTtuEm+mE3tzkLo8b1eHTJUu8TZAQn3lMJj08udaHbyrAmC/w1e5+bE8w+F4G5
-	 m1sejn/GdubBkA/nLx9xB7CpP4fBoOUri0OWMTBI=
+	b=A2slywGO/YqsCRXzwExWUxLujyn/NI3ScCSXWimlp9VMSFEslH0VPlR2U/ee0Jp1n
+	 g0Zvqe/nR0ifx190a/HnLdfDhW0Fi1c3mLUWk34uskez05qX01rX7neoY0hrvLO5Yk
+	 FHKqE9nloYCRmzjioGi30RVCQiLFLrG70aG5Jmbw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E979DF80507;
-	Tue,  8 Jun 2021 00:47:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 696ACF80516;
+	Tue,  8 Jun 2021 00:47:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4CE96F804DA; Tue,  8 Jun 2021 00:47:16 +0200 (CEST)
+ id 2A87BF8032C; Tue,  8 Jun 2021 00:47:17 +0200 (CEST)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E563DF8032D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 32764F800DF
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 00:47:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E563DF8032D
-IronPort-SDR: MZc7NkYLaNhR1Wzcmap/0sTImg3GTnNXdh3dQym9cyrXKA2u7p4RWUyFXRi+QxW074boidQC7C
- PYGD1ESGSKwA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="185102195"
-X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; d="scan'208";a="185102195"
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32764F800DF
+IronPort-SDR: JVm9yLa/6otfMRioGq5uL1kD3owlqFndsjlKYfPU2GpvR0porIBv/LPrWoY+Y7C1mZckR2tzpz
+ iYsdUHDq7E7g==
+X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="185102183"
+X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; d="scan'208";a="185102183"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jun 2021 15:46:53 -0700
-IronPort-SDR: VXDTGd65LBiUS28GOPN2vt/ExzcYdWT6ZBsuk00ZLZOOo2zGq5Aww0D7K/njtRxugbG8nS/C7W
- Monn2DWm1Nkg==
-X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; d="scan'208";a="637437130"
+ 07 Jun 2021 15:46:52 -0700
+IronPort-SDR: v0zLc8xa+6JGbLIWbzBcDxbV7XK2zORx4g+e7nsqQ86wjRL5IPutzJQ5DfJnl+5AIpohBuwRCK
+ FZkVoDkSZtAQ==
+X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; d="scan'208";a="637437122"
 Received: from marocham-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.108.70])
  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jun 2021 15:46:53 -0700
+ 07 Jun 2021 15:46:51 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 09/10] ASoC: Intel: use MODULE_DEVICE_TABLE with
- platform_device_id tables
-Date: Mon,  7 Jun 2021 17:46:37 -0500
-Message-Id: <20210607224638.585486-10-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 07/10] ASoC: Intel: sof_sdw: fix signed/unsigned warning
+Date: Mon,  7 Jun 2021 17:46:35 -0500
+Message-Id: <20210607224638.585486-8-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210607224638.585486-1-pierre-louis.bossart@linux.intel.com>
 References: <20210607224638.585486-1-pierre-louis.bossart@linux.intel.com>
@@ -71,7 +70,7 @@ Content-Transfer-Encoding: 8bit
 Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
  Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Hulk Robot <hulkci@huawei.com>, Zou Wei <zou_wei@huawei.com>
+ Rander Wang <rander.wang@intel.com>, Paul Olaru <paul.olaru@oss.nxp.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,301 +86,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When we have a platform_device_id table, we can use
-MODULE_DEVICE_TABLE to automatically generate the modalias. As a
-result we can remove the manual insertion of MODULE_ALIAS.
+Sparse throws the following warning:
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Suggested-by: Zou Wei <zou_wei@huawei.com>
+sound/soc/intel/boards/sof_sdw.c:796:31: error: incorrect type in argument 6 (different signedness)
+sound/soc/intel/boards/sof_sdw.c:796:31:    expected int *group_id
+sound/soc/intel/boards/sof_sdw.c:796:31:    got unsigned int *
+
+The group_id cannot be negative, use unsigned int.
+
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Paul Olaru <paul.olaru@oss.nxp.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
 ---
- sound/soc/intel/boards/bxt_da7219_max98357a.c       |  4 +---
- sound/soc/intel/boards/bxt_rt298.c                  |  3 +--
- sound/soc/intel/boards/ehl_rt5660.c                 |  2 +-
- sound/soc/intel/boards/glk_rt5682_max98357a.c       |  2 +-
- sound/soc/intel/boards/kbl_da7219_max98357a.c       |  2 +-
- sound/soc/intel/boards/kbl_da7219_max98927.c        |  5 +----
- sound/soc/intel/boards/kbl_rt5660.c                 |  2 +-
- sound/soc/intel/boards/kbl_rt5663_max98927.c        |  3 +--
- sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c |  2 +-
- sound/soc/intel/boards/skl_nau88l25_max98357a.c     |  3 +--
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c       |  3 +--
- sound/soc/intel/boards/skl_rt286.c                  |  3 +--
- sound/soc/intel/boards/sof_cs42l42.c                |  3 +--
- sound/soc/intel/boards/sof_da7219_max98373.c        |  2 --
- sound/soc/intel/boards/sof_rt5682.c                 | 10 ----------
- 15 files changed, 13 insertions(+), 36 deletions(-)
+ sound/soc/intel/boards/sof_sdw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-index 8bc95e31e3af..e67ddfb8e469 100644
---- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-@@ -845,6 +845,7 @@ static const struct platform_device_id bxt_board_ids[] = {
- 	{ .name = "cml_da7219_mx98357a" },
- 	{ }
- };
-+MODULE_DEVICE_TABLE(platform, bxt_board_ids);
- 
- static struct platform_driver broxton_audio = {
- 	.probe = broxton_audio_probe,
-@@ -866,7 +867,4 @@ MODULE_AUTHOR("Naveen Manohar <naveen.m@intel.com>");
- MODULE_AUTHOR("Mac Chiang <mac.chiang@intel.com>");
- MODULE_AUTHOR("Brent Lu <brent.lu@intel.com>");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:bxt_da7219_mx98357a");
--MODULE_ALIAS("platform:glk_da7219_mx98357a");
--MODULE_ALIAS("platform:cml_da7219_mx98357a");
- MODULE_IMPORT_NS(SND_SOC_INTEL_HDA_DSP_COMMON);
-diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
-index 32a776fa0b86..47f6b1523ae6 100644
---- a/sound/soc/intel/boards/bxt_rt298.c
-+++ b/sound/soc/intel/boards/bxt_rt298.c
-@@ -649,6 +649,7 @@ static const struct platform_device_id bxt_board_ids[] = {
- 				(unsigned long)&geminilake_rt298 },
- 	{}
- };
-+MODULE_DEVICE_TABLE(platform, bxt_board_ids);
- 
- static struct platform_driver broxton_audio = {
- 	.probe = broxton_audio_probe,
-@@ -665,6 +666,4 @@ MODULE_AUTHOR("Ramesh Babu <Ramesh.Babu@intel.com>");
- MODULE_AUTHOR("Senthilnathan Veppur <senthilnathanx.veppur@intel.com>");
- MODULE_DESCRIPTION("Intel SST Audio for Broxton");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:bxt_alc298s_i2s");
--MODULE_ALIAS("platform:glk_alc298s_i2s");
- MODULE_IMPORT_NS(SND_SOC_INTEL_HDA_DSP_COMMON);
-diff --git a/sound/soc/intel/boards/ehl_rt5660.c b/sound/soc/intel/boards/ehl_rt5660.c
-index 00773d17d578..d5235c294c4c 100644
---- a/sound/soc/intel/boards/ehl_rt5660.c
-+++ b/sound/soc/intel/boards/ehl_rt5660.c
-@@ -304,6 +304,7 @@ static const struct platform_device_id ehl_board_ids[] = {
- 	{ .name = "ehl_rt5660" },
- 	{ }
- };
-+MODULE_DEVICE_TABLE(platform, ehl_board_ids);
- 
- static struct platform_driver snd_ehl_rt5660_driver = {
- 	.driver = {
-@@ -319,5 +320,4 @@ module_platform_driver(snd_ehl_rt5660_driver);
- MODULE_DESCRIPTION("ASoC Intel(R) Elkhartlake + rt5660 Machine driver");
- MODULE_AUTHOR("libin.yang@intel.com");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:ehl_rt5660");
- MODULE_IMPORT_NS(SND_SOC_INTEL_HDA_DSP_COMMON);
-diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
-index 9b92625288cb..71fe26a1b701 100644
---- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
-+++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
-@@ -625,6 +625,7 @@ static const struct platform_device_id glk_board_ids[] = {
- 	},
- 	{ }
- };
-+MODULE_DEVICE_TABLE(platform, glk_board_ids);
- 
- static struct platform_driver geminilake_audio = {
- 	.probe = geminilake_audio_probe,
-@@ -641,5 +642,4 @@ MODULE_DESCRIPTION("Geminilake Audio Machine driver-RT5682 & MAX98357A in I2S mo
- MODULE_AUTHOR("Naveen Manohar <naveen.m@intel.com>");
- MODULE_AUTHOR("Harsha Priya <harshapriya.n@intel.com>");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:glk_rt5682_mx98357a");
- MODULE_IMPORT_NS(SND_SOC_INTEL_HDA_DSP_COMMON);
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-index 7ca3347dbd2e..14b625e947f5 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-@@ -650,6 +650,7 @@ static const struct platform_device_id kbl_board_ids[] = {
- 	},
- 	{ }
- };
-+MODULE_DEVICE_TABLE(platform, kbl_board_ids);
- 
- static struct platform_driver kabylake_audio = {
- 	.probe = kabylake_audio_probe,
-@@ -666,4 +667,3 @@ module_platform_driver(kabylake_audio)
- MODULE_DESCRIPTION("Audio Machine driver-DA7219 & MAX98357A in I2S mode");
- MODULE_AUTHOR("Naveen Manohar <naveen.m@intel.com>");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:kbl_da7219_mx98357a");
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
-index 4b7b4a044f81..a31a7a7bbf66 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98927.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
-@@ -1175,6 +1175,7 @@ static const struct platform_device_id kbl_board_ids[] = {
- 	},
- 	{ }
- };
-+MODULE_DEVICE_TABLE(platform, kbl_board_ids);
- 
- static struct platform_driver kabylake_audio = {
- 	.probe = kabylake_audio_probe,
-@@ -1191,7 +1192,3 @@ module_platform_driver(kabylake_audio)
- MODULE_DESCRIPTION("Audio KabyLake Machine driver for MAX98927/MAX98373 & DA7219");
- MODULE_AUTHOR("Mac Chiang <mac.chiang@intel.com>");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:kbl_da7219_max98927");
--MODULE_ALIAS("platform:kbl_max98927");
--MODULE_ALIAS("platform:kbl_da7219_max98373");
--MODULE_ALIAS("platform:kbl_max98373");
-diff --git a/sound/soc/intel/boards/kbl_rt5660.c b/sound/soc/intel/boards/kbl_rt5660.c
-index 3a9f91b58e11..289ca39b8206 100644
---- a/sound/soc/intel/boards/kbl_rt5660.c
-+++ b/sound/soc/intel/boards/kbl_rt5660.c
-@@ -548,6 +548,7 @@ static const struct platform_device_id kbl_board_ids[] = {
- 	},
- 	{ }
- };
-+MODULE_DEVICE_TABLE(platform, kbl_board_ids);
- 
- static struct platform_driver kabylake_audio = {
- 	.probe = kabylake_audio_probe,
-@@ -564,4 +565,3 @@ module_platform_driver(kabylake_audio)
- MODULE_DESCRIPTION("Audio Machine driver-RT5660 in I2S mode");
- MODULE_AUTHOR("Hui Wang <hui.wang@canonical.com>");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:kbl_rt5660");
-diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-index a3de55a3b58d..a3e040a249f6 100644
---- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-@@ -1039,6 +1039,7 @@ static const struct platform_device_id kbl_board_ids[] = {
- 	},
- 	{ }
- };
-+MODULE_DEVICE_TABLE(platform, kbl_board_ids);
- 
- static struct platform_driver kabylake_audio = {
- 	.probe = kabylake_audio_probe,
-@@ -1056,5 +1057,3 @@ MODULE_DESCRIPTION("Audio Machine driver-RT5663 & MAX98927 in I2S mode");
- MODULE_AUTHOR("Naveen M <naveen.m@intel.com>");
- MODULE_AUTHOR("Harsha Priya <harshapriya.n@intel.com>");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:kbl_rt5663");
--MODULE_ALIAS("platform:kbl_rt5663_m98927");
-diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index f95546c184aa..dd38fdaf2ff5 100644
---- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -837,6 +837,7 @@ static const struct platform_device_id kbl_board_ids[] = {
- 	{ .name = "kbl_r5514_5663_max" },
- 	{ }
- };
-+MODULE_DEVICE_TABLE(platform, kbl_board_ids);
- 
- static struct platform_driver kabylake_audio = {
- 	.probe = kabylake_audio_probe,
-@@ -853,4 +854,3 @@ module_platform_driver(kabylake_audio)
- MODULE_DESCRIPTION("Audio Machine driver-RT5663 RT5514 & MAX98927");
- MODULE_AUTHOR("Harsha Priya <harshapriya.n@intel.com>");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:kbl_r5514_5663_max");
-diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-index 55802900069a..e3a1f04a8b53 100644
---- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-@@ -673,6 +673,7 @@ static const struct platform_device_id skl_board_ids[] = {
- 	{ .name = "kbl_n88l25_m98357a" },
- 	{ }
- };
-+MODULE_DEVICE_TABLE(platform, skl_board_ids);
- 
- static struct platform_driver skylake_audio = {
- 	.probe = skylake_audio_probe,
-@@ -689,5 +690,3 @@ module_platform_driver(skylake_audio)
- MODULE_DESCRIPTION("Audio Machine driver-NAU88L25 & MAX98357A in I2S mode");
- MODULE_AUTHOR("Rohit Ainapure <rohit.m.ainapure@intel.com");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:skl_n88l25_m98357a");
--MODULE_ALIAS("platform:kbl_n88l25_m98357a");
-diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-index 0c734f3a9364..adf5992a9ec5 100644
---- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -717,6 +717,7 @@ static const struct platform_device_id skl_board_ids[] = {
- 	{ .name = "kbl_n88l25_s4567" },
- 	{ }
- };
-+MODULE_DEVICE_TABLE(platform, skl_board_ids);
- 
- static struct platform_driver skylake_audio = {
- 	.probe = skylake_audio_probe,
-@@ -737,5 +738,3 @@ MODULE_AUTHOR("Sathya Prakash M R <sathya.prakash.m.r@intel.com>");
- MODULE_AUTHOR("Yong Zhi <yong.zhi@intel.com>");
- MODULE_DESCRIPTION("Intel Audio Machine driver for SKL with NAU88L25 and SSM4567 in I2S Mode");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:skl_n88l25_s4567");
--MODULE_ALIAS("platform:kbl_n88l25_s4567");
-diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
-index 5a0c64a83146..75dab5405380 100644
---- a/sound/soc/intel/boards/skl_rt286.c
-+++ b/sound/soc/intel/boards/skl_rt286.c
-@@ -548,6 +548,7 @@ static const struct platform_device_id skl_board_ids[] = {
- 	{ .name = "kbl_alc286s_i2s" },
- 	{ }
- };
-+MODULE_DEVICE_TABLE(platform, skl_board_ids);
- 
- static struct platform_driver skylake_audio = {
- 	.probe = skylake_audio_probe,
-@@ -565,5 +566,3 @@ module_platform_driver(skylake_audio)
- MODULE_AUTHOR("Omair Mohammed Abdullah <omair.m.abdullah@intel.com>");
- MODULE_DESCRIPTION("Intel SST Audio for Skylake");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:skl_alc286s_i2s");
--MODULE_ALIAS("platform:kbl_alc286s_i2s");
-diff --git a/sound/soc/intel/boards/sof_cs42l42.c b/sound/soc/intel/boards/sof_cs42l42.c
-index 8919d3ba3c89..42aadf801f72 100644
---- a/sound/soc/intel/boards/sof_cs42l42.c
-+++ b/sound/soc/intel/boards/sof_cs42l42.c
-@@ -488,6 +488,7 @@ static const struct platform_device_id board_ids[] = {
- 	},
- 	{ }
- };
-+MODULE_DEVICE_TABLE(platform, board_ids);
- 
- static struct platform_driver sof_audio = {
- 	.probe = sof_audio_probe,
-@@ -503,7 +504,5 @@ module_platform_driver(sof_audio)
- MODULE_DESCRIPTION("SOF Audio Machine driver for CS42L42");
- MODULE_AUTHOR("Brent Lu <brent.lu@intel.com>");
- MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:sof_cs42l42");
--MODULE_ALIAS("platform:glk_cs4242_max98357a");
- MODULE_IMPORT_NS(SND_SOC_INTEL_HDA_DSP_COMMON);
- MODULE_IMPORT_NS(SND_SOC_INTEL_SOF_MAXIM_COMMON);
-diff --git a/sound/soc/intel/boards/sof_da7219_max98373.c b/sound/soc/intel/boards/sof_da7219_max98373.c
-index d702a8dfa241..896251d742fe 100644
---- a/sound/soc/intel/boards/sof_da7219_max98373.c
-+++ b/sound/soc/intel/boards/sof_da7219_max98373.c
-@@ -456,6 +456,4 @@ module_platform_driver(audio)
- MODULE_DESCRIPTION("ASoC Intel(R) SOF Machine driver");
- MODULE_AUTHOR("Yong Zhi <yong.zhi@intel.com>");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:sof_da7219_mx98360a");
--MODULE_ALIAS("platform:sof_da7219_mx98373");
- MODULE_IMPORT_NS(SND_SOC_INTEL_HDA_DSP_COMMON);
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index ca95e01b0ef9..39217223d50c 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -1063,15 +1063,5 @@ MODULE_AUTHOR("Bard Liao <bard.liao@intel.com>");
- MODULE_AUTHOR("Sathya Prakash M R <sathya.prakash.m.r@intel.com>");
- MODULE_AUTHOR("Brent Lu <brent.lu@intel.com>");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:sof_rt5682");
--MODULE_ALIAS("platform:tgl_mx98357a_rt5682");
--MODULE_ALIAS("platform:jsl_rt5682_rt1015");
--MODULE_ALIAS("platform:tgl_mx98373_rt5682");
--MODULE_ALIAS("platform:jsl_rt5682_mx98360a");
--MODULE_ALIAS("platform:cml_rt1015_rt5682");
--MODULE_ALIAS("platform:tgl_rt1011_rt5682");
--MODULE_ALIAS("platform:jsl_rt5682_rt1015p");
--MODULE_ALIAS("platform:adl_mx98373_rt5682");
--MODULE_ALIAS("platform:adl_mx98357a_rt5682");
- MODULE_IMPORT_NS(SND_SOC_INTEL_HDA_DSP_COMMON);
- MODULE_IMPORT_NS(SND_SOC_INTEL_SOF_MAXIM_COMMON);
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index 34f142d7b3f9..e9118234b30e 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -682,7 +682,7 @@ static int set_codec_init_func(const struct snd_soc_acpi_link_adr *link,
+  */
+ static int get_slave_info(const struct snd_soc_acpi_link_adr *adr_link,
+ 			  struct device *dev, int *cpu_dai_id, int *cpu_dai_num,
+-			  int *codec_num, int *group_id,
++			  int *codec_num, unsigned int *group_id,
+ 			  bool *group_generated)
+ {
+ 	const struct snd_soc_acpi_adr_device *adr_d;
 -- 
 2.25.1
 
