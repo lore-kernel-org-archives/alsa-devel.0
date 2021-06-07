@@ -7,97 +7,96 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A7B3C47082
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 08:16:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4A79C47082
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 08:17:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A51166102A
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 08:16:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A51166102A
+	by mail.kernel.org (Postfix) with ESMTPS id 4CDA760FF1
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 08:17:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4CDA760FF1
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4353D168D;
-	Mon,  7 Jun 2021 10:15:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4353D168D
+	by alsa0.perex.cz (Postfix) with ESMTPS id BE5F3169C;
+	Mon,  7 Jun 2021 10:16:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE5F3169C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623053796;
-	bh=03+LufOL/LGPPDRYGIMcHqBtmtTDGojeLWTdOYpT9+g=;
+	s=default; t=1623053834;
+	bh=0XfFBwrQVJ8UfqvlHfCNZjdCLCp9bDs6bH8/ZL7vAYI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Lx/56NN9ImTDH4v3qAcCZNEaBPpi6TDMrJhFc+Fp8LQP1N/P5c9S2rvV0L/Kwncwh
-	 luFeMsP480xf/YJZWPGqPacJfjytukQxw0nQfuvcZpLyGlqaaY5ZrxdwDI+vll8GKg
-	 vFjiHV4BoWCyiV4osqiUyTHHTIz/WyMSImIC+qhw=
+	b=DpDhAo96HKRSpufKf/tmRf0EWb2r2X3G6dXmJjbodJRNFmf/Nz5vMOJOClL5l9CxD
+	 febCRrdjRWwvsc0Dbt7dE4l7dH4afuYh5HZeV57a05yhPAdCQo294h6m31LZRgxx92
+	 0BbZjz9Vq5MIi1YFCejhNR2GOivnfJ3yLrmLafSg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 09439F804E4;
-	Mon,  7 Jun 2021 10:13:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3C827F804F3;
+	Mon,  7 Jun 2021 10:13:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4EC95F802DF; Mon,  7 Jun 2021 10:13:20 +0200 (CEST)
+ id A5FA9F804D0; Mon,  7 Jun 2021 10:13:21 +0200 (CEST)
 Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
  [66.111.4.29])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4EF90F80276
- for <alsa-devel@alsa-project.org>; Mon,  7 Jun 2021 10:13:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4EF90F80276
+ by alsa1.perex.cz (Postfix) with ESMTPS id C60EEF8032C
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jun 2021 10:13:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C60EEF8032C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="c14TxnGI"; 
+ header.b="GkQYnCZC"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="Jznd8u5X"
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailout.nyi.internal (Postfix) with ESMTP id 3BCA05C0163;
- Mon,  7 Jun 2021 04:13:05 -0400 (EDT)
+ header.i=@messagingengine.com header.b="Skhz1GD2"
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+ by mailout.nyi.internal (Postfix) with ESMTP id 0F4F65C012E;
+ Mon,  7 Jun 2021 04:13:09 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute5.internal (MEProxy); Mon, 07 Jun 2021 04:13:05 -0400
+ by compute3.internal (MEProxy); Mon, 07 Jun 2021 04:13:09 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=ByyAaM+r0fDTE
- q3Pa3wcsL4rHOFoTELYVuoqyMMKHbQ=; b=c14TxnGIQl+pHbOSFEx4UJ3I9Cpnn
- kv1P26R+CXjzE1UofRDwHGgU3V9Fel0RqkKhphag/QQcT02yVWhjs62fGaFMLwPx
- dlH6fo/0M2VIXfi51RubcTZcUeW/pTFNJev0Vy8YwNij46jg80LEiHw0/Uqkfq9a
- yba8/AaVwPuLFesaClQS3FM7Dlt16tDJlS7KQrm1cL1yyFDFwhiVh7buE9dJ1/Jn
- tdH1L6r5ndzHVHRJW3fJvZTQ1uMH352PI0mOd02qhUdDgaIhZVZoAa+ot00nrUzN
- 5MWIzkLjoiQLoznYtr49Q3Tc32Au87SHq2yiU5fOaTiC9s9ZWe1b9eIqw==
+ :mime-version:content-transfer-encoding; s=fm1; bh=NPvg0gQFZoER1
+ AozOO55g+iRxgN6A5dFR/Q0x/qN2/Q=; b=GkQYnCZCwhx8hFGxixacjQt008YPa
+ d1z1HN63SWeAS+TxoMhTO6boGxzJuJ1JJA98TCjwOHzoU5pg+y2LPSxw3W10/Yv3
+ qtcs9gfmJGgGruBmGJVhNxojXul2yzHxLH3eJSrP/bTkkl8xh7jZFf8ecSdVGJES
+ udCdeQkdguuUHY9U7k9HlWnWLnnagjHmBqLKc6ph5TfJZy5Uv9umopym1oZIYBhR
+ rld3iTRx+bdlNjtYyuEfJxS1dg8Ykua54JweyyumPymQW+2TIo8fiwhXM57PUk6Z
+ 5V9D772cKI3i9VvE4IKWQEcxsvMUKxFuZHC/M28uZJNSathvE9gMzKVGw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm3; bh=ByyAaM+r0fDTEq3Pa3wcsL4rHOFoTELYVuoqyMMKHbQ=; b=Jznd8u5X
- /MELiTF5Q/eHEmMSnHianTmA4VdgaxLg1p1MPwZQ+gSh17z/60fMW4eWGkvFlRgo
- i2yYYoKelABYax+4zvfDS1SexqVCKyr2F+86NlqvQfY7sNUe88moSO2GViyOXlLU
- rSdp6vAagjp1c/jY+lqkwEubiHbuKFSM0qk5xsXBRDT5/Jv31Db9PRHNcfDRPnKi
- EvP1MMOOM1yuwDrZiDZm6PWusPWYO5zFYatfD4bDgVrSoE1g8odZsR82sT7eX90/
- x/k2qFn90lY7qRnhXWVaNxseRisVsPDn8JeLudXA8JMAkTRIa4n56Dec6rCelmYd
- Mj7Y/9S+7EnTDg==
-X-ME-Sender: <xms:EdW9YC0xFZR4P0tDGZjRBPe1iw6RrrQXMzIZQTdzqRHDkodbyhygmQ>
- <xme:EdW9YFF6prqa2744pyvj62dL2Yn40dGFLuXm0_EVgHyV3zrOngSB-YjwWE90-lfhJ
- L16g2tpnmga6Dl9QZ8>
-X-ME-Received: <xmr:EdW9YK4y0wLDNmS9DzsRsYFTu18JlAurcpDDtQGcRGpXLTsuzvCF857q6n1Us2Q4EaQemJSQt668QwdNc3VX7w9T9bGDMILeKsLUobFMQLe-SQiM3W4H>
+ fm3; bh=NPvg0gQFZoER1AozOO55g+iRxgN6A5dFR/Q0x/qN2/Q=; b=Skhz1GD2
+ mbmUi1tv+M/8JV0ORQkC/mTLAe0qc49DpH8twgWPdJb0zj21lQNNr/tPCQIKfr/S
+ VtydjUhsZlUJ2xpf5gf9gwvQxNqb6AaK4b4LLllWM61nmv3JDLn/qZhfLBF3TFwN
+ iyfUD1CZ8XNyOpf2xNKY8zWY0kp6IuEmtxLhCtbPoUhdbJcOV4nYJ5SaMay5nhnh
+ DD4y/oCK4GuzQZC0MB8sUhdvKqoCINk9erNIKkpy+s5gplFbKrY1SWNUh2u3wvbx
+ ZMt/pkBtexlcvUOLUYoNxQVh9ELlkPSvUr8fiddGWVncQ/V4RSJpAY8KuAm/mN0Z
+ KUVAc35QyLnzqg==
+X-ME-Sender: <xms:FNW9YEXRHnmRUdQf0oe5ufIlEglFYZmsSBfXwq1hoccunYh5WnMseA>
+ <xme:FNW9YIk0tUs4bdNcnJA87WQAjT14IHe5o5aIBAswJr0EArRyoUAmYRBHu45KEEx2q
+ r6GVHAZi6nJDYH9PwA>
+X-ME-Received: <xmr:FNW9YIbMBj2gIhT0h4yc9PGdqIbbCMJfMdjADDSRsh7rZQETwrcL19edyh329_wxe_91-kA-Ry7TCP55MFQNEyMvmnVaEXvwDYdTfWpY02-2xNFcULyC>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtjecutefuodetggdotefrodftvfcurf
  hrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecuuegr
  ihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertdertd
  dtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhi
  sehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeevfefffeektefgve
  egfeelheffhfeujedtjeevtefhkeevkedtjeejvddtjefhjeenucevlhhushhtvghrufhi
- iigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrg
+ iigvpedvnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrg
  hmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:EdW9YD1UwNR3gbU_F-uDyK1eUYnO07vKEVCumnfl-Jrn2NrdTIrsgg>
- <xmx:EdW9YFFwEizvCFSmZn_hQppQmNTw3uAQ8cztMQoi9mMDcqydXLccfg>
- <xmx:EdW9YM80VZ4p1uuwfuLytMQ00Ja3MXr7HZAMJYSfEairxQqx7Ll1fA>
- <xmx:EdW9YDPKRAxR-GOqY75A7zWSIQqJwsognTFgJWK6inK_4UzUl8z7Ew>
+X-ME-Proxy: <xmx:FNW9YDXlEBzUBDD41ZpV3hT_3UX3TuySQm1CHIuKkFQxLPCVtrUiTA>
+ <xmx:FNW9YOn5PqDSr97wIFwLGvuRl4_8qxqUr_c5U1GKwqrYJtsAUI20QA>
+ <xmx:FNW9YIdaCsGvjh_oBr7h9ezks0san0nhCSBqlMRqJRzQ-snhKntMFg>
+ <xmx:FdW9YCuCiUPzcaQxORmP6dpaYFr9zUY8rA6OJA49H_QVDUEdX1_f5g>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 7 Jun 2021 04:13:04 -0400 (EDT)
+ 7 Jun 2021 04:13:07 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Subject: [PATCH 6/9] ALSA: firewire-tascam: cease from delayed card
- registration
-Date: Mon,  7 Jun 2021 17:12:47 +0900
-Message-Id: <20210607081250.13397-7-o-takashi@sakamocchi.jp>
+Subject: [PATCH 9/9] ALSA: firewire-lib: delete unused kernel API
+Date: Mon,  7 Jun 2021 17:12:50 +0900
+Message-Id: <20210607081250.13397-10-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210607081250.13397-1-o-takashi@sakamocchi.jp>
 References: <20210607081250.13397-1-o-takashi@sakamocchi.jp>
@@ -119,162 +118,69 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The delayed registration of sound card instance brings less benefit than
-complication of kobject management. This commit ceases from it.
+No driver use snd_fw_schedule_registration(). Let's delete it.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/tascam/tascam.c | 92 +++++++++++-----------------------
- sound/firewire/tascam/tascam.h |  2 -
- 2 files changed, 28 insertions(+), 66 deletions(-)
+ sound/firewire/lib.c | 32 --------------------------------
+ sound/firewire/lib.h |  3 ---
+ 2 files changed, 35 deletions(-)
 
-diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
-index 75f2edd8e78f..eb58d3fcf087 100644
---- a/sound/firewire/tascam/tascam.c
-+++ b/sound/firewire/tascam/tascam.c
-@@ -90,19 +90,31 @@ static void tscm_card_free(struct snd_card *card)
- 
- 	snd_tscm_transaction_unregister(tscm);
- 	snd_tscm_stream_destroy_duplex(tscm);
-+
-+	mutex_destroy(&tscm->mutex);
-+	fw_unit_put(tscm->unit);
+diff --git a/sound/firewire/lib.c b/sound/firewire/lib.c
+index 85c4f4477c7f..e0a2337e8f27 100644
+--- a/sound/firewire/lib.c
++++ b/sound/firewire/lib.c
+@@ -67,38 +67,6 @@ int snd_fw_transaction(struct fw_unit *unit, int tcode,
  }
+ EXPORT_SYMBOL(snd_fw_transaction);
  
--static void do_registration(struct work_struct *work)
-+static int snd_tscm_probe(struct fw_unit *unit,
-+			   const struct ieee1394_device_id *entry)
- {
--	struct snd_tscm *tscm = container_of(work, struct snd_tscm, dwork.work);
-+	struct snd_card *card;
-+	struct snd_tscm *tscm;
- 	int err;
- 
--	err = snd_card_new(&tscm->unit->device, -1, NULL, THIS_MODULE, 0,
--			   &tscm->card);
-+	err = snd_card_new(&unit->device, -1, NULL, THIS_MODULE, sizeof(*tscm), &card);
- 	if (err < 0)
--		return;
--	tscm->card->private_free = tscm_card_free;
--	tscm->card->private_data = tscm;
-+		return err;
-+	card->private_free = tscm_card_free;
-+
-+	tscm = card->private_data;
-+	tscm->unit = fw_unit_get(unit);
-+	dev_set_drvdata(&unit->device, tscm);
-+	tscm->card = card;
-+
-+	mutex_init(&tscm->mutex);
-+	spin_lock_init(&tscm->lock);
-+	init_waitqueue_head(&tscm->hwdep_wait);
- 
- 	err = identify_model(tscm);
- 	if (err < 0)
-@@ -130,81 +142,33 @@ static void do_registration(struct work_struct *work)
- 	if (err < 0)
- 		goto error;
- 
--	err = snd_card_register(tscm->card);
-+	err = snd_card_register(card);
- 	if (err < 0)
- 		goto error;
- 
--	tscm->registered = true;
+-#define PROBE_DELAY_MS		(2 * MSEC_PER_SEC)
 -
--	return;
--error:
--	snd_card_free(tscm->card);
--	dev_info(&tscm->unit->device,
--		 "Sound card registration failed: %d\n", err);
--}
--
--static int snd_tscm_probe(struct fw_unit *unit,
--			   const struct ieee1394_device_id *entry)
+-/**
+- * snd_fw_schedule_registration - schedule work for sound card registration
+- * @unit: an instance for unit on IEEE 1394 bus
+- * @dwork: delayed work with callback function
+- *
+- * This function is not designed for general purposes. When new unit is
+- * connected to IEEE 1394 bus, the bus is under bus-reset state because of
+- * topological change. In this state, units tend to fail both of asynchronous
+- * and isochronous communication. To avoid this problem, this function is used
+- * to postpone sound card registration after the state. The callers must
+- * set up instance of delayed work in advance.
+- */
+-void snd_fw_schedule_registration(struct fw_unit *unit,
+-				  struct delayed_work *dwork)
 -{
--	struct snd_tscm *tscm;
+-	u64 now, delay;
 -
--	/* Allocate this independent of sound card instance. */
--	tscm = devm_kzalloc(&unit->device, sizeof(struct snd_tscm), GFP_KERNEL);
--	if (!tscm)
--		return -ENOMEM;
--	tscm->unit = fw_unit_get(unit);
--	dev_set_drvdata(&unit->device, tscm);
+-	now = get_jiffies_64();
+-	delay = fw_parent_device(unit)->card->reset_jiffies
+-					+ msecs_to_jiffies(PROBE_DELAY_MS);
 -
--	mutex_init(&tscm->mutex);
--	spin_lock_init(&tscm->lock);
--	init_waitqueue_head(&tscm->hwdep_wait);
+-	if (time_after64(delay, now))
+-		delay -= now;
+-	else
+-		delay = 0;
 -
--	/* Allocate and register this sound card later. */
--	INIT_DEFERRABLE_WORK(&tscm->dwork, do_registration);
--	snd_fw_schedule_registration(unit, &tscm->dwork);
+-	mod_delayed_work(system_wq, dwork, delay);
+-}
+-EXPORT_SYMBOL(snd_fw_schedule_registration);
 -
- 	return 0;
-+error:
-+	snd_card_free(card);
-+	return err;
+ MODULE_DESCRIPTION("FireWire audio helper functions");
+ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
+ MODULE_LICENSE("GPL v2");
+diff --git a/sound/firewire/lib.h b/sound/firewire/lib.h
+index dc815dc3933e..664dfdb9e58d 100644
+--- a/sound/firewire/lib.h
++++ b/sound/firewire/lib.h
+@@ -23,7 +23,4 @@ static inline bool rcode_is_permanent_error(int rcode)
+ 	return rcode == RCODE_TYPE_ERROR || rcode == RCODE_ADDRESS_ERROR;
  }
  
- static void snd_tscm_update(struct fw_unit *unit)
- {
- 	struct snd_tscm *tscm = dev_get_drvdata(&unit->device);
- 
--	/* Postpone a workqueue for deferred registration. */
--	if (!tscm->registered)
--		snd_fw_schedule_registration(unit, &tscm->dwork);
+-void snd_fw_schedule_registration(struct fw_unit *unit,
+-				  struct delayed_work *dwork);
 -
- 	snd_tscm_transaction_reregister(tscm);
- 
--	/*
--	 * After registration, userspace can start packet streaming, then this
--	 * code block works fine.
--	 */
--	if (tscm->registered) {
--		mutex_lock(&tscm->mutex);
--		snd_tscm_stream_update_duplex(tscm);
--		mutex_unlock(&tscm->mutex);
--	}
-+	mutex_lock(&tscm->mutex);
-+	snd_tscm_stream_update_duplex(tscm);
-+	mutex_unlock(&tscm->mutex);
- }
- 
- static void snd_tscm_remove(struct fw_unit *unit)
- {
- 	struct snd_tscm *tscm = dev_get_drvdata(&unit->device);
- 
--	/*
--	 * Confirm to stop the work for registration before the sound card is
--	 * going to be released. The work is not scheduled again because bus
--	 * reset handler is not called anymore.
--	 */
--	cancel_delayed_work_sync(&tscm->dwork);
--
--	if (tscm->registered) {
--		// Block till all of ALSA character devices are released.
--		snd_card_free(tscm->card);
--	}
--
--	mutex_destroy(&tscm->mutex);
--	fw_unit_put(tscm->unit);
-+	// Block till all of ALSA character devices are released.
-+	snd_card_free(tscm->card);
- }
- 
- static const struct ieee1394_device_id snd_tscm_id_table[] = {
-diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
-index 28dad4eae9c9..d07ffcb27be6 100644
---- a/sound/firewire/tascam/tascam.h
-+++ b/sound/firewire/tascam/tascam.h
-@@ -70,8 +70,6 @@ struct snd_tscm {
- 	struct mutex mutex;
- 	spinlock_t lock;
- 
--	bool registered;
--	struct delayed_work dwork;
- 	const struct snd_tscm_spec *spec;
- 
- 	struct fw_iso_resources tx_resources;
+ #endif
 -- 
 2.27.0
 
