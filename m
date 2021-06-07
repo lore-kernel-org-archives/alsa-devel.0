@@ -2,102 +2,90 @@ Return-Path: <SRS0=v4AK=LB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D349C47094
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 13:45:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BF87C47082
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 13:59:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC98961001
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 13:45:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC98961001
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7EE6761185
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 13:59:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7EE6761185
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CF2EF1671;
-	Mon,  7 Jun 2021 15:44:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF2EF1671
+	by alsa0.perex.cz (Postfix) with ESMTPS id 57884166E;
+	Mon,  7 Jun 2021 15:58:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57884166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623073499;
-	bh=BClo/AQH6b2spHanAeFObBPI9yjSF7HLk/cGkqc95xw=;
-	h=Subject:From:To:References:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1623074374;
+	bh=aLToCYkY0XdgCk+l364VK8kFNykE0Cr2lr03QpZXdIE=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=k5FizUvJmTHf7QfLJSWzr19zxcPy/bzVyFEOvDgMcQK4MuS3zTmpvf0Ob27p3/wu/
-	 lQvYpsV7KvoOGeJeqv+k5nFPNZGuv/0Qg3+EvaAbeV7Gq2m9FLj2AmF6bA4CxTYVK2
-	 G+zlEEi8KaQl3KPOavNkS23mqvcnUlE27zyknx0I=
+	b=fBjSDHWA+9fOFnReOaUqe/UkndERQ6M2Isv91mtxp6uiPbfpWXTNP9u8OdgTJn53q
+	 FfIIVTciINmPYUwl8tWF+omoTkdDfdvIIL81t5nYUp1R9AG+pHp6oEGEHzMY1Tyek+
+	 e1spFcftm5jjQThgjMZSNFEjlHYcy8qZZk+0Zh2g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1F47F8020D;
-	Mon,  7 Jun 2021 15:44:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE74DF80212;
+	Mon,  7 Jun 2021 15:58:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0CF84F80212; Mon,  7 Jun 2021 15:44:01 +0200 (CEST)
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com
- [IPv6:2a00:1450:4864:20::12d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id DC06EF8026C; Mon,  7 Jun 2021 15:58:42 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E4A59F801EC
- for <alsa-devel@alsa-project.org>; Mon,  7 Jun 2021 15:43:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4A59F801EC
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="LacjciDd"
-Received: by mail-lf1-x12d.google.com with SMTP id i10so26363679lfj.2
- for <alsa-devel@alsa-project.org>; Mon, 07 Jun 2021 06:43:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:from:to:cc:references:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=rynHUKkZxa9A3eifUq0bL9Bb8E1MCzJOU3IrW4Ec2FU=;
- b=LacjciDdo4wka9zD7voFzPUR82dM5PzMM0NZ5BxttPO/sUbqXPamx1iouUOYz4Tmpe
- DDuxlXggx/QRGDCVmQS5tpR9tUNUOKgZBYU6rDEATObQyPSYoZveDV2qi4X5Ku2o8OXl
- uYN2loj+iNA+c0dXqwVo4jxNdMV5kmKVsi/SysnRlyU/BAB1BzjSo34oZae8UuJ8SpOk
- c5HL2knyjMIFg1hz6C+h3AmBY8ojjZqxBa0rJyw1mmBhhgh3eSvIdus1Fjo0G+q4XCsF
- fwm/63RI2xWy7azD9ofGsX3b31qPRlqQLqR2GDLy2xhi/ZV2HGgS57xihQwPK8ivHgJh
- xJeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:from:to:cc:references:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=rynHUKkZxa9A3eifUq0bL9Bb8E1MCzJOU3IrW4Ec2FU=;
- b=FehxRW1Gw33tgE3SDnh2vFyk7JcdAQY8fMJmc8pn8DfKwjkO1H7t2HF0sGhkHsG39r
- gb5kXwignzbSKoLd6o4d2wgu9L159PeUfu8CADkFNtEQENX6gPQJ1QMUKtphjLkeKWVo
- GQix8MOuDnunDflAZE5Pv9ZBfpshw0NvbyYL345U1jfyj/cAMCAGEnsVK1oFTrfNXnyG
- IhgY2/pWrvVmv5qULC2BJjhID2CR14saM0o2v74L1i7R4Re/wsY0yFodPoONshfQGgy1
- Hd5KxkHVEAbzpEVcsZA+1o0Z/tqDLGwbEkvPecxPZcV5bn7JU7gfHy3xbYIJIKzayfQX
- 7+XA==
-X-Gm-Message-State: AOAM530S8IGlcFj2Rbbeolfzse+fs+UIweeNFcmXAbNaYtxKvlTc8Cy6
- YrxSBK1c6gaYm4hpdOxl7PA=
-X-Google-Smtp-Source: ABdhPJyDwH/ieMafTpVARxdLcSZ+RnNvA0YYGm4SAkSzAvrqqjqfXefJKxYrqLAJBdQlMBAOpedH9g==
-X-Received: by 2002:ac2:519a:: with SMTP id u26mr12017189lfi.639.1623073433632; 
- Mon, 07 Jun 2021 06:43:53 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-1-103.dynamic.spd-mgts.ru. [94.29.1.103])
- by smtp.googlemail.com with ESMTPSA id h18sm799067lfe.206.2021.06.07.06.43.52
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 07 Jun 2021 06:43:53 -0700 (PDT)
-Subject: Re: [PATCH v6 0/4] Unify NVIDIA Tegra ASoC machine drivers
-From: Dmitry Osipenko <digetx@gmail.com>
-To: Jonathan Hunter <jonathanh@nvidia.com>
-References: <20210529154649.25936-1-digetx@gmail.com>
-Message-ID: <09a8bd07-d816-038c-8722-82bf0f3cc983@gmail.com>
-Date: Mon, 7 Jun 2021 16:43:52 +0300
+ by alsa1.perex.cz (Postfix) with ESMTPS id DBB64F800AF
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jun 2021 15:58:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBB64F800AF
+IronPort-SDR: mRQ72P3XjiTpz47hYhTSIp1QG+L6Tmvh4ILWifR+XEKKsqkc+o3Pymjnmz/7WWkPsii7e5Z+6t
+ lI1P1ARMOZXQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="204648912"
+X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; d="scan'208";a="204648912"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Jun 2021 06:58:28 -0700
+IronPort-SDR: +2JcIQujUAtZXpchy2Yp26ILENur1Uhdww+RfZXY1IAef3zIjo7uEHX/170JgI3Fk8m+MBv8hZ
+ B5OH74eJ07mA==
+X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; d="scan'208";a="401636378"
+Received: from flobatol-mobl1.amr.corp.intel.com (HELO [10.209.152.154])
+ ([10.209.152.154])
+ by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Jun 2021 06:58:25 -0700
+Subject: Re: [PATCH 1/4] ASoC: Intel: sof_cs42l42: support JSL DAI link
+ sequence
+To: Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
+References: <20210606004102.26190-1-brent.lu@intel.com>
+ <20210606004102.26190-2-brent.lu@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <2ccdffb1-e905-420e-5144-ebb8356b5518@linux.intel.com>
+Date: Mon, 7 Jun 2021 08:32:35 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210529154649.25936-1-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210606004102.26190-2-brent.lu@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Svyatoslav Ryhel <clamor95@gmail.com>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Thierry Reding <thierry.reding@gmail.com>, Ion Agorria <ion@agorria.com>,
- linux-tegra@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Dharageswari R <dharageswari.r@intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Tzung-Bi Shih <tzungbi@google.com>, linux-kernel@vger.kernel.org,
+ Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>, Yong Zhi <yong.zhi@intel.com>,
+ Mark Brown <broonie@kernel.org>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Naveen Manohar <naveen.m@intel.com>, Rander Wang <rander.wang@intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, Fred Oh <fred.oh@linux.intel.com>,
+ Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
+ Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,20 +101,391 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-29.05.2021 18:46, Dmitry Osipenko пишет:
-> This series squashes all the ASoC machine drivers into a single one,
-> this change was suggested by Jon Hunter. It also sets driver_name and
-> components string of each card, allowing userspace alsa-lib to find
-> UCMs at predictable path.
-> 
-> Changelog:
-> 
-> v6: - Fixed missed configuration of AC97 clock rate for the WM9712 codec
->       in the unified driver.
-> 
->     - Added new patch that removes now obsolete "utils" helpers and moves
->       code into the unified driver.
-> 
->         ASoC: tegra: Squash utils into common machine driver
 
-Jon, please feel free to give yours ack if v6 patches are good to you.
+
+On 6/5/21 7:40 PM, Brent Lu wrote:
+> The backend DAI link sequence of GLK platform is different from the
+> sequence of other platforms. We refactor the sof_card_dai_links_create()
+> function to support both style.
+> 
+> GLK: SPK - HP - DMIC - HDMI
+> Other: HP - DMIC - HDMI - SPK
+
+I am really confused here.
+The dailink sequence is whatever we want it to be. What matters is that 
+the dailink ID matches what is in the topology.
+
+Is this saying that the GLK and JSL topologies did not follow any sort 
+of convention? Can you elaborate more on what is the issue?
+
+Put differently, why can't we fix the topology instead with a reorder of 
+the dailinks?
+
+> 
+> Signed-off-by: Brent Lu <brent.lu@intel.com>
+> ---
+>   sound/soc/intel/boards/sof_cs42l42.c | 318 ++++++++++++++++++---------
+>   1 file changed, 208 insertions(+), 110 deletions(-)
+> 
+> diff --git a/sound/soc/intel/boards/sof_cs42l42.c b/sound/soc/intel/boards/sof_cs42l42.c
+> index 8919d3ba3c89..e3171242f612 100644
+> --- a/sound/soc/intel/boards/sof_cs42l42.c
+> +++ b/sound/soc/intel/boards/sof_cs42l42.c
+> @@ -259,133 +259,166 @@ static struct snd_soc_dai_link_component dmic_component[] = {
+>   	}
+>   };
+>   
+> -static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+> -							  int ssp_codec,
+> -							  int ssp_amp,
+> -							  int dmic_be_num,
+> -							  int hdmi_num)
+> +static int create_spk_amp_dai_links(struct device *dev,
+> +				    struct snd_soc_dai_link *links,
+> +				    struct snd_soc_dai_link_component *cpus,
+> +				    int *id, int ssp_amp)
+>   {
+> -	struct snd_soc_dai_link_component *idisp_components;
+> -	struct snd_soc_dai_link_component *cpus;
+> -	struct snd_soc_dai_link *links;
+> -	int i, id = 0;
+> -
+> -	links = devm_kzalloc(dev, sizeof(struct snd_soc_dai_link) *
+> -			     sof_audio_card_cs42l42.num_links, GFP_KERNEL);
+> -	cpus = devm_kzalloc(dev, sizeof(struct snd_soc_dai_link_component) *
+> -			     sof_audio_card_cs42l42.num_links, GFP_KERNEL);
+> -	if (!links || !cpus)
+> -		goto devm_err;
+> +	int ret = 0;
+>   
+>   	/* speaker amp */
+> -	if (sof_cs42l42_quirk & SOF_SPEAKER_AMP_PRESENT) {
+> -		links[id].name = devm_kasprintf(dev, GFP_KERNEL,
+> -						"SSP%d-Codec", ssp_amp);
+> -		if (!links[id].name)
+> -			goto devm_err;
+> +	if (!(sof_cs42l42_quirk & SOF_SPEAKER_AMP_PRESENT))
+> +		return 0;
+>   
+> -		links[id].id = id;
+> +	links[*id].name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d-Codec",
+> +					 ssp_amp);
+> +	if (!links[*id].name) {
+> +		ret = -ENOMEM;
+> +		goto devm_err;
+> +	}
+>   
+> -		if (sof_cs42l42_quirk & SOF_MAX98357A_SPEAKER_AMP_PRESENT) {
+> -			max_98357a_dai_link(&links[id]);
+> -		} else {
+> -			dev_err(dev, "no amp defined\n");
+> -			goto devm_err;
+> -		}
+> +	links[*id].id = *id;
+>   
+> -		links[id].platforms = platform_component;
+> -		links[id].num_platforms = ARRAY_SIZE(platform_component);
+> -		links[id].dpcm_playback = 1;
+> -		links[id].no_pcm = 1;
+> -		links[id].cpus = &cpus[id];
+> -		links[id].num_cpus = 1;
+> -
+> -		links[id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
+> -							  "SSP%d Pin",
+> -							  ssp_amp);
+> -		if (!links[id].cpus->dai_name)
+> -			goto devm_err;
+> +	if (sof_cs42l42_quirk & SOF_MAX98357A_SPEAKER_AMP_PRESENT) {
+> +		max_98357a_dai_link(&links[*id]);
+> +	} else {
+> +		dev_err(dev, "no amp defined\n");
+> +		ret = -EINVAL;
+> +		goto devm_err;
+> +	}
+>   
+> -		id++;
+> +	links[*id].platforms = platform_component;
+> +	links[*id].num_platforms = ARRAY_SIZE(platform_component);
+> +	links[*id].dpcm_playback = 1;
+> +	links[*id].no_pcm = 1;
+> +	links[*id].cpus = &cpus[*id];
+> +	links[*id].num_cpus = 1;
+> +
+> +	links[*id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
+> +						   "SSP%d Pin", ssp_amp);
+> +	if (!links[*id].cpus->dai_name) {
+> +		ret = -ENOMEM;
+> +		goto devm_err;
+>   	}
+>   
+> +	(*id)++;
+> +
+> +devm_err:
+> +	return ret;
+> +}
+> +
+> +static int create_hp_codec_dai_links(struct device *dev,
+> +				     struct snd_soc_dai_link *links,
+> +				     struct snd_soc_dai_link_component *cpus,
+> +				     int *id, int ssp_codec)
+> +{
+>   	/* codec SSP */
+> -	links[id].name = devm_kasprintf(dev, GFP_KERNEL,
+> -					"SSP%d-Codec", ssp_codec);
+> -	if (!links[id].name)
+> +	links[*id].name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d-Codec",
+> +					 ssp_codec);
+> +	if (!links[*id].name)
+>   		goto devm_err;
+>   
+> -	links[id].id = id;
+> -	links[id].codecs = cs42l42_component;
+> -	links[id].num_codecs = ARRAY_SIZE(cs42l42_component);
+> -	links[id].platforms = platform_component;
+> -	links[id].num_platforms = ARRAY_SIZE(platform_component);
+> -	links[id].init = sof_cs42l42_init;
+> -	links[id].exit = sof_cs42l42_exit;
+> -	links[id].ops = &sof_cs42l42_ops;
+> -	links[id].dpcm_playback = 1;
+> -	links[id].dpcm_capture = 1;
+> -	links[id].no_pcm = 1;
+> -	links[id].cpus = &cpus[id];
+> -	links[id].num_cpus = 1;
+> -
+> -	links[id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
+> -						  "SSP%d Pin",
+> -						  ssp_codec);
+> -	if (!links[id].cpus->dai_name)
+> +	links[*id].id = *id;
+> +	links[*id].codecs = cs42l42_component;
+> +	links[*id].num_codecs = ARRAY_SIZE(cs42l42_component);
+> +	links[*id].platforms = platform_component;
+> +	links[*id].num_platforms = ARRAY_SIZE(platform_component);
+> +	links[*id].init = sof_cs42l42_init;
+> +	links[*id].exit = sof_cs42l42_exit;
+> +	links[*id].ops = &sof_cs42l42_ops;
+> +	links[*id].dpcm_playback = 1;
+> +	links[*id].dpcm_capture = 1;
+> +	links[*id].no_pcm = 1;
+> +	links[*id].cpus = &cpus[*id];
+> +	links[*id].num_cpus = 1;
+> +
+> +	links[*id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
+> +						   "SSP%d Pin",
+> +						   ssp_codec);
+> +	if (!links[*id].cpus->dai_name)
+>   		goto devm_err;
+>   
+> -	id++;
+> +	(*id)++;
+> +
+> +	return 0;
+> +
+> +devm_err:
+> +	return -ENOMEM;
+> +}
+> +
+> +static int create_dmic_dai_links(struct device *dev,
+> +				 struct snd_soc_dai_link *links,
+> +				 struct snd_soc_dai_link_component *cpus,
+> +				 int *id, int dmic_be_num)
+> +{
+> +	int i;
+>   
+>   	/* dmic */
+> -	if (dmic_be_num > 0) {
+> -		/* at least we have dmic01 */
+> -		links[id].name = "dmic01";
+> -		links[id].cpus = &cpus[id];
+> -		links[id].cpus->dai_name = "DMIC01 Pin";
+> -		links[id].init = dmic_init;
+> -		if (dmic_be_num > 1) {
+> -			/* set up 2 BE links at most */
+> -			links[id + 1].name = "dmic16k";
+> -			links[id + 1].cpus = &cpus[id + 1];
+> -			links[id + 1].cpus->dai_name = "DMIC16k Pin";
+> -			dmic_be_num = 2;
+> -		}
+> +	if (dmic_be_num <= 0)
+> +		return 0;
+> +
+> +	/* at least we have dmic01 */
+> +	links[*id].name = "dmic01";
+> +	links[*id].cpus = &cpus[*id];
+> +	links[*id].cpus->dai_name = "DMIC01 Pin";
+> +	links[*id].init = dmic_init;
+> +	if (dmic_be_num > 1) {
+> +		/* set up 2 BE links at most */
+> +		links[*id + 1].name = "dmic16k";
+> +		links[*id + 1].cpus = &cpus[*id + 1];
+> +		links[*id + 1].cpus->dai_name = "DMIC16k Pin";
+> +		dmic_be_num = 2;
+>   	}
+>   
+>   	for (i = 0; i < dmic_be_num; i++) {
+> -		links[id].id = id;
+> -		links[id].num_cpus = 1;
+> -		links[id].codecs = dmic_component;
+> -		links[id].num_codecs = ARRAY_SIZE(dmic_component);
+> -		links[id].platforms = platform_component;
+> -		links[id].num_platforms = ARRAY_SIZE(platform_component);
+> -		links[id].ignore_suspend = 1;
+> -		links[id].dpcm_capture = 1;
+> -		links[id].no_pcm = 1;
+> -		id++;
+> +		links[*id].id = *id;
+> +		links[*id].num_cpus = 1;
+> +		links[*id].codecs = dmic_component;
+> +		links[*id].num_codecs = ARRAY_SIZE(dmic_component);
+> +		links[*id].platforms = platform_component;
+> +		links[*id].num_platforms = ARRAY_SIZE(platform_component);
+> +		links[*id].ignore_suspend = 1;
+> +		links[*id].dpcm_capture = 1;
+> +		links[*id].no_pcm = 1;
+> +
+> +		(*id)++;
+>   	}
+>   
+> +	return 0;
+> +}
+> +
+> +static int create_hdmi_dai_links(struct device *dev,
+> +				 struct snd_soc_dai_link *links,
+> +				 struct snd_soc_dai_link_component *cpus,
+> +				 int *id, int hdmi_num)
+> +{
+> +	struct snd_soc_dai_link_component *idisp_components;
+> +	int i;
+> +
+>   	/* HDMI */
+> -	if (hdmi_num > 0) {
+> -		idisp_components = devm_kzalloc(dev,
+> -						sizeof(struct snd_soc_dai_link_component) *
+> -						hdmi_num, GFP_KERNEL);
+> -		if (!idisp_components)
+> -			goto devm_err;
+> -	}
+> +	if (hdmi_num <= 0)
+> +		return 0;
+> +
+> +	idisp_components = devm_kzalloc(dev,
+> +					sizeof(struct snd_soc_dai_link_component) *
+> +					hdmi_num, GFP_KERNEL);
+> +	if (!idisp_components)
+> +		goto devm_err;
+> +
+>   	for (i = 1; i <= hdmi_num; i++) {
+> -		links[id].name = devm_kasprintf(dev, GFP_KERNEL,
+> -						"iDisp%d", i);
+> -		if (!links[id].name)
+> +		links[*id].name = devm_kasprintf(dev, GFP_KERNEL,
+> +						 "iDisp%d", i);
+> +		if (!links[*id].name)
+>   			goto devm_err;
+>   
+> -		links[id].id = id;
+> -		links[id].cpus = &cpus[id];
+> -		links[id].num_cpus = 1;
+> -		links[id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
+> -							  "iDisp%d Pin", i);
+> -		if (!links[id].cpus->dai_name)
+> +		links[*id].id = *id;
+> +		links[*id].cpus = &cpus[*id];
+> +		links[*id].num_cpus = 1;
+> +		links[*id].cpus->dai_name = devm_kasprintf(dev,
+> +							   GFP_KERNEL,
+> +							   "iDisp%d Pin",
+> +							   i);
+> +		if (!links[*id].cpus->dai_name)
+>   			goto devm_err;
+>   
+>   		idisp_components[i - 1].name = "ehdaudio0D2";
+> @@ -396,14 +429,79 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+>   		if (!idisp_components[i - 1].dai_name)
+>   			goto devm_err;
+>   
+> -		links[id].codecs = &idisp_components[i - 1];
+> -		links[id].num_codecs = 1;
+> -		links[id].platforms = platform_component;
+> -		links[id].num_platforms = ARRAY_SIZE(platform_component);
+> -		links[id].init = sof_hdmi_init;
+> -		links[id].dpcm_playback = 1;
+> -		links[id].no_pcm = 1;
+> -		id++;
+> +		links[*id].codecs = &idisp_components[i - 1];
+> +		links[*id].num_codecs = 1;
+> +		links[*id].platforms = platform_component;
+> +		links[*id].num_platforms = ARRAY_SIZE(platform_component);
+> +		links[*id].init = sof_hdmi_init;
+> +		links[*id].dpcm_playback = 1;
+> +		links[*id].no_pcm = 1;
+> +
+> +		(*id)++;
+> +	}
+> +
+> +	return 0;
+> +
+> +devm_err:
+> +	return -ENOMEM;
+> +}
+> +
+> +static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+> +							  int ssp_codec,
+> +							  int ssp_amp,
+> +							  int dmic_be_num,
+> +							  int hdmi_num)
+> +{
+> +	struct snd_soc_dai_link_component *cpus;
+> +	struct snd_soc_dai_link *links;
+> +	int ret, id = 0;
+> +
+> +	links = devm_kzalloc(dev, sizeof(struct snd_soc_dai_link) *
+> +			     sof_audio_card_cs42l42.num_links, GFP_KERNEL);
+> +	cpus = devm_kzalloc(dev, sizeof(struct snd_soc_dai_link_component) *
+> +			     sof_audio_card_cs42l42.num_links, GFP_KERNEL);
+> +	if (!links || !cpus)
+> +		goto devm_err;
+> +
+> +	if (soc_intel_is_glk()) {
+> +		/* gemini lake starts from spk link */
+> +		ret = create_spk_amp_dai_links(dev, links, cpus, &id, ssp_amp);
+> +		if (ret < 0) {
+> +			dev_err(dev, "fail to create spk amp dai links, ret %d\n",
+> +				ret);
+> +			goto devm_err;
+> +		}
+> +	}
+> +
+> +	ret = create_hp_codec_dai_links(dev, links, cpus, &id, ssp_codec);
+> +	if (ret < 0) {
+> +		dev_err(dev, "fail to create hp codec dai links, ret %d\n",
+> +			ret);
+> +		goto devm_err;
+> +	}
+> +
+> +	ret = create_dmic_dai_links(dev, links, cpus, &id, dmic_be_num);
+> +	if (ret < 0) {
+> +		dev_err(dev, "fail to create dmic dai links, ret %d\n",
+> +			ret);
+> +		goto devm_err;
+> +	}
+> +
+> +	ret = create_hdmi_dai_links(dev, links, cpus, &id, hdmi_num);
+> +	if (ret < 0) {
+> +		dev_err(dev, "fail to create hdmi dai links, ret %d\n",
+> +			ret);
+> +		goto devm_err;
+> +	}
+> +
+> +	if (!soc_intel_is_glk()) {
+> +		/* other platforms end with spk link */
+> +		ret = create_spk_amp_dai_links(dev, links, cpus, &id, ssp_amp);
+> +		if (ret < 0) {
+> +			dev_err(dev, "fail to create spk amp dai links, ret %d\n",
+> +				ret);
+> +			goto devm_err;
+> +		}
+>   	}
+>   
+>   	return links;
+> 
