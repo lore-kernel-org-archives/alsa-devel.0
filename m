@@ -7,87 +7,87 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F997C47082
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 15:32:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07F70C47095
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 15:33:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 87BCE61164
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 15:32:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 87BCE61164
+	by mail.kernel.org (Postfix) with ESMTPS id 35E6A60FF1
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 15:33:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 35E6A60FF1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1F844169C;
-	Mon,  7 Jun 2021 17:31:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F844169C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 884951695;
+	Mon,  7 Jun 2021 17:32:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 884951695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623079961;
-	bh=W/54klP5seAxgDJ52zB6BGKjwrsx3QKtOPNYGIL0j/0=;
+	s=default; t=1623079995;
+	bh=s2kv9qp4VGAlego2ZnWZhZM7XgocwejXfYQr45RuGt4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WApsJyFbxTo65RoCMLLl2Go3NfRhhXAo7tb1kiz3w31tgAcDqKG6reWNfq0hoggXq
-	 7optBiECEt+phLrzKwKqVkIEDB9yfT+H9egqb4F7Jr8nMDctuYb4GumCLK4koi7hEg
-	 IGucgyueB6IIkpR3Lgc/LcSFcV2OSAYrj3h9KMYc=
+	b=ESN10GyMZx/yxczw3m89b2j1zRmLpAnYDG/cPp5OeV613DiJQpM1nT3uWC50vDTf6
+	 HUt1H5vIMUIIKY5tKtrJGaY+4IfZORLgBQ6pmW5xLOKa90lvpRKrNhljJ8BXdDJrCY
+	 sptvXYkB6uN2KtoiD3BGyP1IrBIW3gmuIqRqrzDA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16A92F804CF;
+	by alsa1.perex.cz (Postfix) with ESMTP id 9CF0AF804D9;
 	Mon,  7 Jun 2021 17:30:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 61C83F801EC; Mon,  7 Jun 2021 17:29:23 +0200 (CEST)
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
- [IPv6:2a00:1450:4864:20::334])
+ id 87409F804CC; Mon,  7 Jun 2021 17:29:27 +0200 (CEST)
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
+ [IPv6:2a00:1450:4864:20::32b])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E43B3F80212
- for <alsa-devel@alsa-project.org>; Mon,  7 Jun 2021 17:29:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E43B3F80212
+ by alsa1.perex.cz (Postfix) with ESMTPS id A4DDAF80276
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jun 2021 17:29:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4DDAF80276
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="wacT53Bp"
-Received: by mail-wm1-x334.google.com with SMTP id
- p13-20020a05600c358db029019f44afc845so272673wmq.3
- for <alsa-devel@alsa-project.org>; Mon, 07 Jun 2021 08:29:05 -0700 (PDT)
+ header.b="GVksAbM1"
+Received: by mail-wm1-x32b.google.com with SMTP id
+ n17-20020a7bc5d10000b0290169edfadac9so13039670wmk.1
+ for <alsa-devel@alsa-project.org>; Mon, 07 Jun 2021 08:29:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=fi+lgkzJyzyN44ZmpOxGUoTme/W0RFyfLc8FFKN0BP0=;
- b=wacT53BplXQLr08Z7Ok4NBsQap9ghJ6LvG/6uNOl0gDkeG7dyhSKHWg/mdgxh7f2yJ
- EbuwDskXZ4QqKR9Kt9z75+Uycj5pk7aQZAKzYsKfKopSmL5r0tHGqhFLO0F7KHVxutM6
- FMD76kRBb8tfFzzk/5N8Y49pSsSI31LolA8pmU1pDRaoWtk5FaXoql0XErGDZNVesAft
- 8ueA6fp4d0tRdgE/KolWFAhxtULmKMNyGSm/wypEnawvbS5n5bwl7ex1j3bxwbYfQJD8
- wczDDDa5eDaD0ufJCHorme3aJW5bzePlEBBTHxOTgZirz8ic9gYQmuHRfOMt5vaYu7nv
- a8rw==
+ bh=yi3BA8AEtRquN4AxA68Y8dqvYXCW3HraCXyu5FP/3nA=;
+ b=GVksAbM1Zam1EHykNP2pOkRk+SiAyjayEQchPML3+QXC4eTKCKYXzK21TJj4NBRI0q
+ 0+CLXZslvV009W3+8RdvuHutLVK5Hw9gfF3Kvt52e+S/B+6xtYm8+W86d/P+PqOLEN9J
+ WuCEi0H/u9lMd2WUoSD1NYHfHQ1O38VbMr1yVfsZiZsZMMUakrgI0QqNlVt1OxnBkmAD
+ ENxgGk82fqLydpHgjO5DJlI1GcxW2hk+7owBRrpOMhQC9mzyD7FX0NNgGuj9gwJgb23J
+ PmgC5NgRY2ElUkm7LOldaBD26G46ZIxTu1W+DIVCq5AHYamPvH1oLdW3/b7KwXYsAFmh
+ AR2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=fi+lgkzJyzyN44ZmpOxGUoTme/W0RFyfLc8FFKN0BP0=;
- b=FtKt4Gk9NhSmRovp/Wk/QpA2BQ5tFcphsW8OsbTJEn+e4iVgUgY1aMyynSa/+G0J7r
- Fy7WCVyozzCA7Eu7KRxMswAbl448Ezrvb+CA3x4rECucxC+7s730tRXmF2OJKd1/tBtE
- 5iEVR1WFjBxZUnTEeH/eBfV5eRb8BsbeXFvNyfYfjOHdlsUm+mGmqJ/uGrHl5hcNFAUE
- N/9F8JoRBYa8I43t7lUwWZvIH66IDUe+GgYsSVHMmQPDt/jYRy+57zEa14iltnZa09bJ
- 2TENwX89kN7n9HFTFc8wuH05kkdpH4Z5gTk/rZBJFsmet8JNRrQSJKHeQh3yT6H3u5hy
- igJg==
-X-Gm-Message-State: AOAM530mf1Nu87pRTisp3zSWmWjMgPphmizz+W4qiULDCwepnaFE/NZr
- ZMY2sxhJ+H/dRJbUjW6O8yacxA==
-X-Google-Smtp-Source: ABdhPJwoGkRDBJpc8PQy3yX+NniyX6dDFoimp6p8Big9rY7ggUDpu1jEY5P8ft+bsZIB5H2z+mBmcQ==
-X-Received: by 2002:a05:600c:2dd0:: with SMTP id
- e16mr17744030wmh.180.1623079741790; 
- Mon, 07 Jun 2021 08:29:01 -0700 (PDT)
+ bh=yi3BA8AEtRquN4AxA68Y8dqvYXCW3HraCXyu5FP/3nA=;
+ b=MM0Ir6rYmS8ALcATgDhMYL0hSVB/1ZeHqEHDgvDCCpc0hxg5l7+ECFUDqXMJhXAqMX
+ azaBb2YnLynCIY+Ebc2gOWwqOnnXPvAfu2c/kJmugz++zius3vFaI6N2J2/aA2nTniN0
+ cVRDrKWqmXyunsijBVWI6N0J+Y8PLv4LXK4aZcoaQAKEQnFqRUWsV5aynpW6FpXQwSjz
+ F1GlCdPSMv28/vz/XTMZVhWvkP5hjQefj5200NVQI7M6wLUDPAWGU3aZ/QGLjd5+jq6G
+ dPMd8OojQWNqlYm6HhhpHhDh9H9qYW/1XUcgDbMFhjZe4zpL1bR4CSoj6vrLh5lVo+uG
+ Z2dQ==
+X-Gm-Message-State: AOAM530QBOx99e/LiVWJTwK7qKFPBIMIHWpvmK2Yix98mbelJkMNLIaa
+ eoT8RPK3nUsc2e+JTzeE61DaFA==
+X-Google-Smtp-Source: ABdhPJw+OImsArKzFt3p37KLoh6Ov7zQDy17Gc+doO886EFvimQeJMDWe7bscRLPJ2FIUDD7tbl4Vw==
+X-Received: by 2002:a7b:c19a:: with SMTP id y26mr17394675wmi.132.1623079747621; 
+ Mon, 07 Jun 2021 08:29:07 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id q3sm16370170wrr.43.2021.06.07.08.29.00
+ by smtp.gmail.com with ESMTPSA id q3sm16370170wrr.43.2021.06.07.08.29.06
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 07 Jun 2021 08:29:01 -0700 (PDT)
+ Mon, 07 Jun 2021 08:29:06 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: bjorn.andersson@linaro.org,
 	broonie@kernel.org
-Subject: [RFC PATCH 02/13] soc: qcom: add gpr driver support
-Date: Mon,  7 Jun 2021 16:28:25 +0100
-Message-Id: <20210607152836.17154-3-srinivas.kandagatla@linaro.org>
+Subject: [RFC PATCH 06/13] ASoC: qcom: audioreach: add module configuration
+ command helpers
+Date: Mon,  7 Jun 2021 16:28:29 +0100
+Message-Id: <20210607152836.17154-7-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210607152836.17154-1-srinivas.kandagatla@linaro.org>
 References: <20210607152836.17154-1-srinivas.kandagatla@linaro.org>
@@ -111,709 +111,882 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Qualcomm Generic Packet router aka GPR is the IPC mechanism found
-in AudioReach next generation signal processing framework to perform
-command and response messages between various processors.
-
-GPR has concepts of static and dynamic port, all static services like
-APM (Audio Processing Manager), PRM (Proxy resource manager) have
-fixed port numbers where as dynamic services like graphs have dynamic
-port numbers which are allocated at runtime. All GPR packet messages
-will have source and destination domain and port along with opcode
-and payload.
+Audioreach module configuration helpers, which will be used by the q6apm-dai driver.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/soc/qcom/Kconfig           |   9 +
- drivers/soc/qcom/Makefile          |   1 +
- drivers/soc/qcom/gpr.c             | 487 +++++++++++++++++++++++++++++
- include/dt-bindings/soc/qcom,gpr.h |  18 ++
- include/linux/soc/qcom/gpr.h       | 127 ++++++++
- 5 files changed, 642 insertions(+)
- create mode 100644 drivers/soc/qcom/gpr.c
- create mode 100644 include/dt-bindings/soc/qcom,gpr.h
- create mode 100644 include/linux/soc/qcom/gpr.h
+ sound/soc/qcom/audioreach/audioreach.c | 551 +++++++++++++++++++++++++
+ sound/soc/qcom/audioreach/audioreach.h |  16 +
+ sound/soc/qcom/audioreach/q6apm.c      | 265 ++++++++++++
+ 3 files changed, 832 insertions(+)
 
-diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
-index 79b568f82a1c..66eb4a3e4bae 100644
---- a/drivers/soc/qcom/Kconfig
-+++ b/drivers/soc/qcom/Kconfig
-@@ -209,4 +209,13 @@ config QCOM_APR
- 	  application processor and QDSP6. APR is
- 	  used by audio driver to configure QDSP6
- 	  ASM, ADM and AFE modules.
-+
-+config QCOM_GPR
-+	tristate "Qualcomm GPR Bus (Gecko Packet Router)"
-+	depends on ARCH_QCOM || COMPILE_TEST
-+	depends on RPMSG
-+	help
-+          Enable GPR IPC protocol support between
-+          application processor and QDSP6. GPR is
-+          used by audio driver to configure QDSP6.
- endmenu
-diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
-index ad675a6593d0..2e4c4fdac77a 100644
---- a/drivers/soc/qcom/Makefile
-+++ b/drivers/soc/qcom/Makefile
-@@ -22,6 +22,7 @@ obj-$(CONFIG_QCOM_SMSM)	+= smsm.o
- obj-$(CONFIG_QCOM_SOCINFO)	+= socinfo.o
- obj-$(CONFIG_QCOM_WCNSS_CTRL) += wcnss_ctrl.o
- obj-$(CONFIG_QCOM_APR) += apr.o
-+obj-$(CONFIG_QCOM_GPR) += gpr.o
- obj-$(CONFIG_QCOM_LLCC) += llcc-qcom.o
- obj-$(CONFIG_QCOM_RPMHPD) += rpmhpd.o
- obj-$(CONFIG_QCOM_RPMPD) += rpmpd.o
-diff --git a/drivers/soc/qcom/gpr.c b/drivers/soc/qcom/gpr.c
-new file mode 100644
-index 000000000000..7c0c0fe67d92
---- /dev/null
-+++ b/drivers/soc/qcom/gpr.c
-@@ -0,0 +1,487 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2021, Linaro Limited
-+
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/device.h>
-+#include <linux/spinlock.h>
-+#include <linux/idr.h>
-+#include <linux/slab.h>
-+#include <linux/workqueue.h>
-+#include <linux/of_device.h>
-+#include <linux/soc/qcom/gpr.h>
-+#include <linux/delay.h>
-+#include <linux/rpmsg.h>
-+#include <linux/of.h>
-+
-+/* Some random values tbh which does not collide with static modules */
-+#define GPR_DYNAMIC_PORT_START	0x10000000
-+#define GPR_DYNAMIC_PORT_END	0x20000000
-+
-+struct gpr_rx_buf {
-+	struct list_head node;
-+	int len;
-+	uint8_t buf[];
-+};
-+
-+struct gpr {
-+	struct rpmsg_endpoint *ch;
-+	struct device *dev;
-+	spinlock_t ports_lock;
-+	spinlock_t rx_lock;
-+	struct idr ports_idr;
-+	int dest_domain_id;
-+	struct workqueue_struct *rxwq;
-+	struct work_struct rx_work;
-+	struct list_head rx_list;
-+};
-+
-+struct gpr_pkt *gpr_alloc_pkt(struct gpr_port *port, int payload_size,
-+			      uint32_t opcode, uint32_t token,
-+			      uint32_t dest_port)
+diff --git a/sound/soc/qcom/audioreach/audioreach.c b/sound/soc/qcom/audioreach/audioreach.c
+index 7291adb37d49..eecea02f93bd 100644
+--- a/sound/soc/qcom/audioreach/audioreach.c
++++ b/sound/soc/qcom/audioreach/audioreach.c
+@@ -529,3 +529,554 @@ void *audioreach_alloc_graph_pkt(struct q6apm *apm,
+ 	return pkt;
+ }
+ 
++int audioreach_graph_send_cmd_sync(struct q6apm_graph *graph,
++					   struct gpr_pkt *pkt,
++					   uint32_t rsp_opcode)
 +{
-+	int pkt_size = GPR_HDR_SIZE + payload_size;
-+	struct gpr *gpr = port->gpr;
++
++	struct device *dev = graph->dev;
++	struct gpr_hdr *hdr = &pkt->hdr;
++	int rc;
++
++	mutex_lock(&graph->cmd_lock);
++	graph->result.opcode = 0;
++	graph->result.status = 0;
++
++	rc = gpr_send_port_pkt(graph->port, pkt);
++	if (rc < 0)
++		goto err;
++
++	if (rsp_opcode)
++		rc = wait_event_timeout(graph->cmd_wait,
++					(graph->result.opcode == hdr->opcode) ||
++					(graph->result.opcode == rsp_opcode),
++					5 * HZ);
++	else
++		rc = wait_event_timeout(graph->cmd_wait,
++					(graph->result.opcode == hdr->opcode),
++					5 * HZ);
++
++	if (!rc) {
++		dev_err(dev, "CMD timeout for [%x] opcode\n", hdr->opcode);
++		rc = -ETIMEDOUT;
++	} else if (graph->result.status > 0) {
++		dev_err(dev, "DSP returned error[%x] %x\n", hdr->opcode,
++			graph->result.status);
++		rc = -EINVAL;
++	} else {
++		dev_err(dev, "DSP returned [%x]\n", graph->result.status);
++		rc = 0;
++	}
++
++err:
++	mutex_unlock(&graph->cmd_lock);
++	return rc;
++}
++EXPORT_SYMBOL_GPL(audioreach_graph_send_cmd_sync);
++
++static int audioreach_codec_dma_set_media_format(struct q6apm_graph *graph,
++				     struct audioreach_module *module,
++				     int direction, uint32_t rate,
++				     uint32_t num_channels,
++				     u8 channel_map[PCM_MAX_NUM_CHANNEL],
++				     uint16_t bits_per_sample)
++{
++	struct apm_module_param_data *param_data;
++	struct apm_codec_dma_module_intf_cfg *intf_cfg;
++	struct apm_module_hw_ep_mf_cfg *hw_cfg;
++	struct apm_module_frame_size_factor_cfg *fs_cfg;
++	struct apm_module_hw_ep_power_mode_cfg *pm_cfg;
++	int ic_sz, ep_sz, fs_sz, pm_sz, dl_sz;
++	int rc, payload_size;
 +	struct gpr_pkt *pkt;
 +	void *p;
 +
-+	p = kzalloc(pkt_size, GFP_KERNEL);
-+	if (!p)
-+		return ERR_PTR(-ENOMEM);
++	ic_sz = APM_CDMA_INTF_CFG_PSIZE;
++	ep_sz = APM_HW_EP_CFG_PSIZE;
++	fs_sz = APM_FS_CFG_PSIZE;
++	pm_sz = APM_HW_EP_PMODE_CFG_PSIZE;
++	dl_sz = 0;
++
++	payload_size = ic_sz + ep_sz + fs_sz + pm_sz + dl_sz;
++
++	p = audioreach_alloc_apm_cmd_pkt(payload_size, APM_CMD_SET_CFG, 0);
++	if (IS_ERR(p))
++		return -ENOMEM;
 +
 +	pkt = p;
-+	pkt->hdr.version = GPR_PKT_VER;
-+	pkt->hdr.hdr_size = GPR_PKT_HEADER_WORD_SIZE;
-+	pkt->hdr.pkt_size = pkt_size;
-+	pkt->hdr.dest_port = dest_port;
-+	pkt->hdr.src_port = port->id;
-+	pkt->hdr.dest_domain = gpr->dest_domain_id;
-+	pkt->hdr.src_domain = GPR_DOMAIN_ID_APPS;
-+	pkt->hdr.token = token;
-+	pkt->hdr.opcode = opcode;
++	p = p + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
 +
-+	return pkt;
-+}
-+EXPORT_SYMBOL_GPL(gpr_alloc_pkt);
++	hw_cfg = p;
++	param_data = &hw_cfg->param_data;
++	param_data->module_instance_id = module->instance_id;
++	param_data->error_code = 0;
++	param_data->param_id = PARAM_ID_HW_EP_MF_CFG;
++	param_data->param_size = ep_sz - APM_MODULE_PARAM_DATA_SIZE;
 +
-+void gpr_free_pkt(struct gpr_port *port, struct gpr_pkt *pkt)
-+{
++	hw_cfg->mf.sample_rate = rate;
++	hw_cfg->mf.bit_width = bits_per_sample;
++	hw_cfg->mf.num_channels = num_channels;
++	hw_cfg->mf.data_format = module->data_format;
++	p += ep_sz;
++
++	fs_cfg = p;
++	param_data = &fs_cfg->param_data;
++	param_data->module_instance_id = module->instance_id;
++	param_data->error_code = 0;
++	param_data->param_id = PARAM_ID_HW_EP_FRAME_SIZE_FACTOR;
++	param_data->param_size = fs_sz - APM_MODULE_PARAM_DATA_SIZE;
++	fs_cfg->frame_size_factor = 1;
++	p += fs_sz;
++
++	intf_cfg = p;
++	param_data = &intf_cfg->param_data;
++	param_data->module_instance_id = module->instance_id;
++	param_data->error_code = 0;
++	param_data->param_id = PARAM_ID_CODEC_DMA_INTF_CFG;
++	param_data->param_size = ic_sz - APM_MODULE_PARAM_DATA_SIZE;
++
++	intf_cfg->cfg.lpaif_type = module->hw_interface_type;
++	intf_cfg->cfg.intf_index = module->hw_interface_idx;
++	intf_cfg->cfg.active_channels_mask = (1 << num_channels) - 1;
++	p += ic_sz;
++
++	pm_cfg = p;
++	param_data = &pm_cfg->param_data;
++	param_data->module_instance_id = module->instance_id;
++	param_data->error_code = 0;
++	param_data->param_id = PARAM_ID_HW_EP_POWER_MODE_CFG;
++	param_data->param_size = pm_sz - APM_MODULE_PARAM_DATA_SIZE;
++	pm_cfg->power_mode.power_mode = 0;
++
++	rc = q6apm_send_cmd_sync(graph->apm, pkt, 0);
++
 +	kfree(pkt);
-+}
-+EXPORT_SYMBOL_GPL(gpr_free_pkt);
 +
-+int gpr_send_port_pkt(struct gpr_port *port, struct gpr_pkt *pkt)
-+{
-+	struct gpr *gpr = port->gpr;
-+	struct gpr_hdr *hdr;
-+	unsigned long flags;
-+	int ret;
-+
-+	hdr = &pkt->hdr;
-+
-+	spin_lock_irqsave(&port->lock, flags);
-+	ret = rpmsg_trysend(gpr->ch, pkt, hdr->pkt_size);
-+	spin_unlock_irqrestore(&port->lock, flags);
-+
-+	return ret ? ret : hdr->pkt_size;
-+}
-+EXPORT_SYMBOL_GPL(gpr_send_port_pkt);
-+
-+static void gpr_dev_release(struct device *dev)
-+{
-+	struct gpr_device *gdev = to_gpr_device(dev);
-+
-+	kfree(gdev);
++	return rc;
 +}
 +
-+static int gpr_callback(struct rpmsg_device *rpdev, void *buf,
-+			int len, void *priv, u32 addr)
++static int audioreach_i2s_set_media_format(struct q6apm_graph *graph,
++				     struct audioreach_module *module,
++				     int direction, uint32_t rate,
++				     uint32_t num_channels,
++				     u8 channel_map[PCM_MAX_NUM_CHANNEL],
++				     uint16_t bits_per_sample)
 +{
-+	struct gpr *gpr = dev_get_drvdata(&rpdev->dev);
-+	struct gpr_rx_buf *abuf;
-+	unsigned long flags;
++	struct apm_module_frame_size_factor_cfg *fs_cfg;
++	struct apm_module_param_data *param_data;
++	struct apm_i2s_module_intf_cfg *intf_cfg;
++	struct apm_module_hw_ep_mf_cfg *hw_cfg;
++	int ic_sz, ep_sz, fs_sz;
++	int rc, payload_size;
++	struct gpr_pkt *pkt;
++	void *p;
 +
-+	abuf = kzalloc(sizeof(*abuf) + len, GFP_ATOMIC);
-+	if (!abuf)
++	ic_sz = APM_I2S_INTF_CFG_PSIZE;
++	ep_sz = APM_HW_EP_CFG_PSIZE;
++	fs_sz = APM_FS_CFG_PSIZE;
++
++	payload_size = ic_sz + ep_sz + fs_sz;
++
++	p = audioreach_alloc_apm_cmd_pkt(payload_size, APM_CMD_SET_CFG, 0);
++	if (IS_ERR(p))
 +		return -ENOMEM;
 +
-+	abuf->len = len;
-+	memcpy(abuf->buf, buf, len);
++	pkt = p;
++	p = p + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
++	intf_cfg = p;
 +
-+	spin_lock_irqsave(&gpr->rx_lock, flags);
-+	list_add_tail(&abuf->node, &gpr->rx_list);
-+	spin_unlock_irqrestore(&gpr->rx_lock, flags);
++	param_data = &intf_cfg->param_data;
++	param_data->module_instance_id = module->instance_id;
++	param_data->error_code = 0;
++	param_data->param_id = PARAM_ID_I2S_INTF_CFG;
++	param_data->param_size = ic_sz - APM_MODULE_PARAM_DATA_SIZE;
 +
-+	queue_work(gpr->rxwq, &gpr->rx_work);
++	intf_cfg->cfg.intf_idx = module->hw_interface_idx;
++	intf_cfg->cfg.sd_line_idx = module->sd_line_idx;
++	intf_cfg->cfg.ws_src = module->ws_src;
 +
-+	return 0;
++	p += ic_sz;
++	hw_cfg = p;
++	param_data = &hw_cfg->param_data;
++	param_data->module_instance_id = module->instance_id;
++	param_data->error_code = 0;
++	param_data->param_id = PARAM_ID_HW_EP_MF_CFG;
++	param_data->param_size = ep_sz - APM_MODULE_PARAM_DATA_SIZE;
++
++	hw_cfg->mf.sample_rate = rate;
++	hw_cfg->mf.bit_width = bits_per_sample;
++	hw_cfg->mf.num_channels = num_channels;
++	hw_cfg->mf.data_format = module->data_format;
++
++	p += ep_sz;
++	fs_cfg = p;
++	param_data = &fs_cfg->param_data;
++	param_data->module_instance_id = module->instance_id;
++	param_data->error_code = 0;
++	param_data->param_id = PARAM_ID_HW_EP_FRAME_SIZE_FACTOR;
++	param_data->param_size = fs_sz - APM_MODULE_PARAM_DATA_SIZE;
++	fs_cfg->frame_size_factor = 1;
++
++	rc = q6apm_send_cmd_sync(graph->apm, pkt, 0);
++
++	kfree(pkt);
++
++	return rc;
 +}
 +
-+static int gpr_do_rx_callback(struct gpr *gpr, struct gpr_rx_buf *abuf)
++static int audioreach_logging_set_media_format(struct q6apm_graph *graph,
++					 struct audioreach_module *module)
 +{
-+	uint16_t hdr_size, ver;
-+	struct gpr_port *port = NULL;
-+	struct gpr_resp_pkt resp;
-+	struct gpr_hdr *hdr;
-+	unsigned long flags;
-+	void *buf = abuf->buf;
-+	int len = abuf->len;
++	struct apm_module_param_data *param_data;
++	struct data_logging_config *cfg;
++	int rc, payload_size;
++	struct gpr_pkt *pkt;
++	void *p;
 +
-+	hdr = buf;
-+	ver = hdr->version;
-+	if (ver > GPR_PKT_VER + 1)
-+		return -EINVAL;
++	payload_size = sizeof(*cfg) + APM_MODULE_PARAM_DATA_SIZE;
++	p = audioreach_alloc_apm_cmd_pkt(payload_size, APM_CMD_SET_CFG, 0);
++	if (IS_ERR(p))
++		return -ENOMEM;
 +
-+	hdr_size = hdr->hdr_size;
-+	if (hdr_size < GPR_PKT_HEADER_WORD_SIZE) {
-+		dev_err(gpr->dev, "GPR: Wrong hdr size:%d\n", hdr_size);
-+		return -EINVAL;
-+	}
++	pkt = p;
++	p = p + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
 +
-+	if (hdr->pkt_size < GPR_PKT_HEADER_BYTE_SIZE || hdr->pkt_size != len) {
-+		dev_err(gpr->dev, "GPR: Wrong packet size\n");
-+		return -EINVAL;
-+	}
++	param_data = p;
++	param_data->module_instance_id = module->instance_id;
++	param_data->error_code = 0;
++	param_data->param_id = PARAM_ID_DATA_LOGGING_CONFIG;
++	param_data->param_size = payload_size - APM_MODULE_PARAM_DATA_SIZE;
 +
-+	resp.hdr = *hdr;
-+	resp.payload_size = hdr->pkt_size - (hdr_size * 4);
++	p = p + APM_MODULE_PARAM_DATA_SIZE;
++	cfg = p;
++	cfg->log_code = module->log_code;
++	cfg->log_tap_point_id = module->log_tap_point_id;
++	cfg->mode = module->mode;
 +
-+	/*
-+	 * NOTE: hdr_size is not same as GPR_HDR_SIZE as remote can include
-+	 * optional headers in to gpr_hdr which should be ignored
-+	 */
-+	if (resp.payload_size > 0)
-+		resp.payload = buf + (hdr_size *  4);
++	rc = q6apm_send_cmd_sync(graph->apm, pkt, 0);
 +
++	kfree(pkt);
 +
-+	spin_lock_irqsave(&gpr->ports_lock, flags);
-+	port = idr_find(&gpr->ports_idr, hdr->dest_port);
-+	spin_unlock_irqrestore(&gpr->ports_lock, flags);
-+
-+	if (!port) {
-+		dev_err(gpr->dev, "GPR: Port(%x) is not registered\n",
-+			hdr->dest_port);
-+		return -EINVAL;
-+	}
-+
-+	if (port->callback)
-+		port->callback(&resp, port->priv, 0);
-+
-+	return 0;
++	return rc;
 +}
 +
-+static void gpr_rxwq(struct work_struct *work)
++static int audioreach_pcm_set_media_format(struct q6apm_graph *graph,
++				     struct audioreach_module *module,
++				     int direction, uint32_t rate,
++				     uint32_t num_channels,
++				     u8 channel_map[PCM_MAX_NUM_CHANNEL],
++				     uint16_t bits_per_sample)
 +{
-+	struct gpr *gpr = container_of(work, struct gpr, rx_work);
-+	struct gpr_rx_buf *abuf, *b;
++	struct apm_pcm_module_media_fmt_cmd *cfg;
++	struct apm_module_param_data *param_data;
++	int rc, payload_size;
++	struct gpr_pkt *pkt;
++	void *p;
++
++	payload_size = APM_PCM_MODULE_FMT_CMD_PSIZE(num_channels);
++
++	p = audioreach_alloc_apm_cmd_pkt(payload_size, APM_CMD_SET_CFG, 0);
++	if (IS_ERR(p))
++		return -ENOMEM;
++
++	pkt = p;
++	p = p + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
++	cfg = p;
++
++	param_data = &cfg->param_data;
++	param_data->module_instance_id = module->instance_id;
++	param_data->error_code = 0;
++	param_data->param_id = PARAM_ID_PCM_OUTPUT_FORMAT_CFG;
++	param_data->param_size = payload_size - APM_MODULE_PARAM_DATA_SIZE;
++
++	cfg->header.data_format = DATA_FORMAT_FIXED_POINT;
++	cfg->header.fmt_id = MEDIA_FMT_ID_PCM;
++	cfg->header.payload_size = APM_PCM_OUT_FMT_CFG_PSIZE(num_channels);
++
++	cfg->media_cfg.alignment = PCM_LSB_ALIGNED;
++	cfg->media_cfg.bit_width = bits_per_sample;
++	cfg->media_cfg.endianness = PCM_LITTLE_ENDIAN;
++	cfg->media_cfg.interleaved = module->interleave_type;
++	cfg->media_cfg.num_channels = num_channels;
++	cfg->media_cfg.q_factor = bits_per_sample - 1;
++	cfg->media_cfg.bits_per_sample = bits_per_sample;
++
++	if (num_channels == 1) {
++		cfg->media_cfg.channel_mapping[0] =  PCM_CHANNEL_L;
++	} else if (num_channels == 2) {
++		cfg->media_cfg.channel_mapping[0] =  PCM_CHANNEL_L;
++		cfg->media_cfg.channel_mapping[1] =  PCM_CHANNEL_R;
++	} else {
++		dev_err(graph->dev, "Error: Invalid channels (%d)!\n", num_channels);
++	}
++
++	rc = q6apm_send_cmd_sync(graph->apm, pkt, 0);
++
++	kfree(pkt);
++
++	return rc;
++}
++
++static int audioreach_shmem_set_media_format(struct q6apm_graph *graph,
++				       struct audioreach_module *module,
++				       int direction, uint32_t rate,
++				       uint32_t num_channels,
++				       u8 channel_map[PCM_MAX_NUM_CHANNEL],
++				       uint16_t bits_per_sample)
++{
++	struct apm_module_param_data *param_data;
++	struct payload_media_fmt_pcm *cfg;
++	struct media_format *header;
++	int rc, payload_size;
++	struct gpr_pkt *pkt;
++	void *p;
++
++	if (num_channels < 0 || num_channels > 2)
++		dev_err(graph->dev, "Error: Invalid channels (%d)!\n", num_channels);
++
++	payload_size = APM_SHMEM_FMT_CFG_PSIZE(num_channels) + APM_MODULE_PARAM_DATA_SIZE;
++
++	p = audioreach_alloc_cmd_pkt(payload_size, APM_CMD_SET_CFG, 0,
++				     graph->port->id, module->instance_id);
++	if (IS_ERR(p))
++		return -ENOMEM;
++
++	pkt = p;
++	p = p + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
++
++	param_data = p;
++	param_data->module_instance_id = module->instance_id;
++	param_data->error_code = 0;
++	param_data->param_id = PARAM_ID_MEDIA_FORMAT;
++	param_data->param_size = payload_size - APM_MODULE_PARAM_DATA_SIZE;
++	p = p + APM_MODULE_PARAM_DATA_SIZE;
++
++	header = p;
++	header->data_format = DATA_FORMAT_FIXED_POINT;
++	header->fmt_id = MEDIA_FMT_ID_PCM;
++	header->payload_size = payload_size - sizeof(*header);
++
++	p = p + sizeof(*header);
++	cfg = p;
++	cfg->sample_rate = rate;
++	cfg->bit_width = bits_per_sample;
++	cfg->alignment = PCM_LSB_ALIGNED;
++	cfg->bits_per_sample = bits_per_sample;
++	cfg->q_factor = bits_per_sample - 1;
++	cfg->endianness = PCM_LITTLE_ENDIAN;
++	cfg->num_channels = num_channels;
++
++	if (num_channels == 1) {
++		cfg->channel_mapping[0] =  PCM_CHANNEL_L;
++	} else if (num_channels == 2) {
++		cfg->channel_mapping[0] =  PCM_CHANNEL_L;
++		cfg->channel_mapping[1] =  PCM_CHANNEL_R;
++	} else {
++		dev_err(graph->dev, "Error: Invalid channels (%d)!\n", num_channels);
++	}
++
++	rc = audioreach_graph_send_cmd_sync(graph, pkt, 0);
++
++	kfree(pkt);
++
++	return rc;
++}
++
++static int audioreach_gain_set(struct q6apm_graph *graph,
++			 struct audioreach_module *module)
++{
++	struct apm_module_param_data *param_data;
++	struct apm_gain_module_cfg *cfg;
++	int rc, payload_size;
++	struct gpr_pkt *pkt;
++	void *p;
++
++	payload_size = APM_GAIN_CFG_PSIZE;
++	p = audioreach_alloc_apm_cmd_pkt(payload_size, APM_CMD_SET_CFG, 0);
++	if (IS_ERR(p))
++		return -ENOMEM;
++
++	pkt = p;
++	p = p + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
++	cfg = p;
++
++	param_data = &cfg->param_data;
++	param_data->module_instance_id = module->instance_id;
++	param_data->error_code = 0;
++	param_data->param_id = APM_PARAM_ID_GAIN;
++	param_data->param_size = payload_size - APM_MODULE_PARAM_DATA_SIZE;
++
++	cfg->gain_cfg.gain = module->gain;
++
++	rc = q6apm_send_cmd_sync(graph->apm, pkt, 0);
++
++	kfree(pkt);
++
++	return rc;
++}
++
++int audioreach_set_media_format(struct q6apm_graph *graph,
++				struct audioreach_module *module,
++				int direction, uint32_t rate,
++				uint32_t channels,
++				u8 channel_map[PCM_MAX_NUM_CHANNEL],
++				uint16_t bits_per_sample)
++{
++	int rc;
++
++	switch (module->module_id) {
++	case MODULE_ID_DATA_LOGGING:
++		rc = audioreach_logging_set_media_format(graph, module);
++		break;
++	case MODULE_ID_PCM_DEC:
++	case MODULE_ID_PCM_ENC:
++	case MODULE_ID_PCM_CNV:
++		rc = audioreach_pcm_set_media_format(graph, module,
++						      direction, rate,
++						      channels, channel_map,
++						      bits_per_sample);
++		break;
++	case MODULE_ID_I2S_SINK:
++		rc = audioreach_i2s_set_media_format(graph, module,
++						      direction, rate,
++						      channels, channel_map,
++						      bits_per_sample);
++		break;
++	case MODULE_ID_WR_SHARED_MEM_EP:
++		rc = audioreach_shmem_set_media_format(graph, module,
++						      direction, rate,
++						      channels, channel_map,
++						      bits_per_sample);
++		break;
++	case MODULE_ID_GAIN:
++		rc = audioreach_gain_set(graph, module);
++		break;
++	case MODULE_ID_CODEC_DMA_SINK:
++	case MODULE_ID_CODEC_DMA_SOURCE:
++		rc = audioreach_codec_dma_set_media_format(graph, module,
++						      direction, rate,
++						      channels, channel_map,
++						      bits_per_sample);
++		break;
++	default:
++		rc = 0;
++	}
++
++	return rc;
++}
++EXPORT_SYMBOL_GPL(audioreach_set_media_format);
++
++void audioreach_graph_free_buf(struct q6apm_graph *graph)
++{
++	struct audioreach_graph_data *port;
 +	unsigned long flags;
 +
-+	if (!list_empty(&gpr->rx_list)) {
-+		list_for_each_entry_safe(abuf, b, &gpr->rx_list, node) {
-+			gpr_do_rx_callback(gpr, abuf);
-+			spin_lock_irqsave(&gpr->rx_lock, flags);
-+			list_del(&abuf->node);
-+			spin_unlock_irqrestore(&gpr->rx_lock, flags);
-+			kfree(abuf);
++	spin_lock_irqsave(&graph->lock, flags);
++	port = &graph->rx_data;
++	port->num_periods = 0;
++	kfree(port->buf);
++	port->buf = NULL;
++
++	port = &graph->tx_data;
++	port->num_periods = 0;
++	kfree(port->buf);
++	port->buf = NULL;
++	spin_unlock_irqrestore(&graph->lock, flags);
++}
++EXPORT_SYMBOL_GPL(audioreach_graph_free_buf);
++
++int audioreach_map_memory_regions(struct q6apm_graph *graph,
++				  unsigned int dir, size_t period_sz,
++				  unsigned int periods,
++				  bool is_contiguous)
++{
++	struct apm_shared_map_region_payload *mregions;
++	struct apm_cmd_shared_mem_map_regions *cmd;
++	uint32_t num_regions, buf_sz, payload_size;
++	struct audioreach_graph_data *data;
++	struct audio_buffer *ab;
++	unsigned long flags;
++	struct gpr_pkt *pkt;
++	void *p;
++	int rc, i;
++
++	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
++		data = &graph->rx_data;
++	else
++		data = &graph->tx_data;
++
++	if (is_contiguous) {
++		num_regions = 1;
++		buf_sz = period_sz * periods;
++	} else {
++		buf_sz = period_sz;
++		num_regions = periods;
++	}
++
++	/* DSP expects size should be aligned to 4K */
++	buf_sz = ALIGN(buf_sz, 4096);
++
++	payload_size = sizeof(*cmd) + (sizeof(*mregions) * num_regions);
++
++	p = audioreach_alloc_apm_pkt(payload_size,
++				      APM_CMD_SHARED_MEM_MAP_REGIONS, dir,
++				      graph->port->id);
++	if (IS_ERR(p))
++		return -ENOMEM;
++
++	pkt = p;
++	p = p + GPR_HDR_SIZE;
++	cmd = p;
++	cmd->mem_pool_id = APM_MEMORY_MAP_SHMEM8_4K_POOL;
++	cmd->num_regions = num_regions;
++
++	cmd->property_flag = 0x0;
++
++	mregions = p + sizeof(*cmd);
++
++	spin_lock_irqsave(&graph->lock, flags);
++
++	for (i = 0; i < num_regions; i++) {
++		ab = &data->buf[i];
++		mregions->shm_addr_lsw = lower_32_bits(ab->phys);
++		mregions->shm_addr_msw = upper_32_bits(ab->phys);
++		mregions->mem_size_bytes = buf_sz;
++		++mregions;
++	}
++	spin_unlock_irqrestore(&graph->lock, flags);
++
++	rc = audioreach_graph_send_cmd_sync(graph, pkt,
++				     APM_CMD_RSP_SHARED_MEM_MAP_REGIONS);
++
++	kfree(pkt);
++
++	return rc;
++}
++EXPORT_SYMBOL_GPL(audioreach_map_memory_regions);
++
++int audioreach_shared_memory_send_eos(struct q6apm_graph *graph)
++{
++	struct data_cmd_wr_sh_mem_ep_eos *eos;
++	struct gpr_pkt *pkt;
++	int rc = 0, iid;
++	void *p;
++
++	iid = q6apm_graph_get_rx_shmem_module_iid(graph);
++	p = audioreach_alloc_cmd_pkt(sizeof(*eos),
++				      DATA_CMD_WR_SH_MEM_EP_EOS,
++				      0,
++				      graph->port->id, iid);
++	if (IS_ERR(p))
++		return -ENOMEM;
++
++	pkt = p;
++	eos = p + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
++
++	eos->policy = WR_SH_MEM_EP_EOS_POLICY_LAST;
++
++	rc = gpr_send_port_pkt(graph->port, pkt);
++	kfree(pkt);
++
++	return rc;
++}
++EXPORT_SYMBOL_GPL(audioreach_shared_memory_send_eos);
+diff --git a/sound/soc/qcom/audioreach/audioreach.h b/sound/soc/qcom/audioreach/audioreach.h
+index e5736fdda66b..07423369cc84 100644
+--- a/sound/soc/qcom/audioreach/audioreach.h
++++ b/sound/soc/qcom/audioreach/audioreach.h
+@@ -627,4 +627,20 @@ void *audioreach_alloc_pkt(int pkt_size, uint32_t opcode, uint32_t token,
+ void *audioreach_alloc_graph_pkt(struct q6apm *apm,
+ 				 struct list_head *sg_list,
+ 				  int graph_id);
++/* Module specific */
++void audioreach_graph_free_buf(struct q6apm_graph *graph);
++int audioreach_map_memory_regions(struct q6apm_graph *graph,
++				  unsigned int dir, size_t period_sz,
++				  unsigned int periods,
++				  bool is_contiguous);
++int audioreach_graph_send_cmd_sync(struct q6apm_graph *graph,
++					   struct gpr_pkt *pkt,
++					   uint32_t rsp_opcode);
++int audioreach_set_media_format(struct q6apm_graph *graph,
++				struct audioreach_module *module,
++				int direction, uint32_t rate,
++				uint32_t channels,
++				u8 channel_map[PCM_MAX_NUM_CHANNEL],
++				uint16_t bits_per_sample);
++int audioreach_shared_memory_send_eos(struct q6apm_graph *graph);
+ #endif /* __AUDIOREACH_H__ */
+diff --git a/sound/soc/qcom/audioreach/q6apm.c b/sound/soc/qcom/audioreach/q6apm.c
+index d0deb69114b0..6a98c114ea7a 100644
+--- a/sound/soc/qcom/audioreach/q6apm.c
++++ b/sound/soc/qcom/audioreach/q6apm.c
+@@ -309,6 +309,172 @@ int q6apm_connect_sub_graphs(struct q6apm *apm, u32 src_sgid,
+ 	return 0;
+ }
+ 
++int q6apm_graph_media_format_shmem(struct q6apm_graph *graph,
++				 int direction, uint32_t rate,
++				 uint32_t channels,
++				 u8 channel_map[PCM_MAX_NUM_CHANNEL],
++				 uint16_t bits_per_sample)
++{
++	struct audioreach_module *module;
++
++	if (direction == SNDRV_PCM_STREAM_CAPTURE)
++		module = q6apm_find_module_by_mid(graph,
++						  MODULE_ID_RD_SHARED_MEM_EP);
++	else
++		module = q6apm_find_module_by_mid(graph,
++						  MODULE_ID_WR_SHARED_MEM_EP);
++
++	if (!module)
++		return -ENODEV;
++
++	audioreach_set_media_format(graph, module, direction, rate,
++				     channels, channel_map,
++				     bits_per_sample);
++
++	return 0;
++
++}
++EXPORT_SYMBOL_GPL(q6apm_graph_media_format_shmem);
++
++int q6apm_map_memory_regions(struct q6apm_graph *graph,
++			     unsigned int dir, phys_addr_t phys,
++			     size_t period_sz, unsigned int periods)
++{
++	struct audioreach_graph_data *data;
++	struct audio_buffer *buf;
++	unsigned long flags;
++	int cnt;
++	int rc;
++
++	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
++		data = &graph->rx_data;
++	else
++		data = &graph->tx_data;
++
++	spin_lock_irqsave(&graph->lock, flags);
++
++	if (data->buf) {
++		dev_err(graph->dev, "Buffer already allocated\n");
++		spin_unlock_irqrestore(&graph->lock, flags);
++		return 0;
++	}
++
++	buf = kzalloc(((sizeof(struct audio_buffer)) * periods), GFP_ATOMIC);
++	if (!buf) {
++		spin_unlock_irqrestore(&graph->lock, flags);
++		return -ENOMEM;
++	}
++
++	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
++		data = &graph->rx_data;
++	else
++		data = &graph->tx_data;
++
++	data->buf = buf;
++
++	buf[0].phys = phys;
++	buf[0].size = period_sz;
++
++	for (cnt = 1; cnt < periods; cnt++) {
++		if (period_sz > 0) {
++			buf[cnt].phys = buf[0].phys + (cnt * period_sz);
++			buf[cnt].size = period_sz;
 +		}
 +	}
++	data->num_periods = periods;
++
++	spin_unlock_irqrestore(&graph->lock, flags);
++
++	rc = audioreach_map_memory_regions(graph, dir, period_sz,
++					      periods, 1);
++	if (rc < 0) {
++		dev_err(graph->dev, "Memory_map_regions failed\n");
++		audioreach_graph_free_buf(graph);
++	}
++
++	return rc;
 +}
++EXPORT_SYMBOL_GPL(q6apm_map_memory_regions);
 +
-+static int gpr_device_match(struct device *dev, struct device_driver *drv)
++int q6apm_unmap_memory_regions(struct q6apm_graph *graph,
++			       unsigned int dir)
 +{
-+	/* Attempt an OF style match first */
-+	if (of_driver_match_device(dev, drv))
-+		return 1;
++	struct audioreach_graph_data *data;
++	struct apm_cmd_shared_mem_unmap_regions *cmd = NULL;
++	struct gpr_pkt *pkt;
++	void *p;
++	int rc;
 +
-+	return 0;
++	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
++		data = &graph->rx_data;
++	else
++		data = &graph->tx_data;
++
++	if (!data->mem_map_handle) {
++		return 0;
++	}
++
++	p = audioreach_alloc_apm_pkt(sizeof(*cmd),
++				      APM_CMD_SHARED_MEM_UNMAP_REGIONS, dir,
++				      graph->port->id);
++	if (IS_ERR(p))
++		return -ENOMEM;
++
++	pkt = p;
++	cmd = p + GPR_HDR_SIZE;
++	cmd->mem_map_handle = data->mem_map_handle;
++
++	rc = audioreach_graph_send_cmd_sync(graph, pkt, APM_CMD_SHARED_MEM_UNMAP_REGIONS);
++	kfree(pkt);
++
++	audioreach_graph_free_buf(graph);
++
++	return rc;
 +}
++EXPORT_SYMBOL_GPL(q6apm_unmap_memory_regions);
 +
-+static int gpr_device_probe(struct device *dev)
++int q6apm_graph_media_format_pcm(struct q6apm_graph *graph,
++				 int direction, uint32_t rate,
++				 uint32_t channels,
++				 u8 channel_map[PCM_MAX_NUM_CHANNEL],
++				 uint16_t bits_per_sample)
 +{
-+	struct gpr_device *gdev = to_gpr_device(dev);
-+	struct gpr_driver *adrv = to_gpr_driver(dev->driver);
-+	int ret;
++	struct audioreach_graph_info *info = graph->info;
++	struct audioreach_sub_graph *sgs;
++	struct audioreach_container *container;
++	struct audioreach_module *module;
 +
-+	ret = adrv->probe(gdev);
-+	if (!ret)
-+		gdev->port.callback = adrv->callback;
++	list_for_each_entry(sgs, &info->sg_list, node) {
++		list_for_each_entry(container, &sgs->container_list, node) {
++			list_for_each_entry(module, &container->modules_list, node) {
++				if ((MODULE_ID_WR_SHARED_MEM_EP == module->module_id) ||
++					(MODULE_ID_WR_SHARED_MEM_EP == module->module_id))
++					continue;
 +
-+	return ret;
-+}
-+
-+static int gpr_device_remove(struct device *dev)
-+{
-+	struct gpr_device *gdev = to_gpr_device(dev);
-+	struct gpr_driver *adrv;
-+	struct gpr *gpr = dev_get_drvdata(gdev->dev.parent);
-+
-+	if (dev->driver) {
-+		adrv = to_gpr_driver(dev->driver);
-+		if (adrv->remove)
-+			adrv->remove(gdev);
-+		spin_lock(&gpr->ports_lock);
-+		idr_remove(&gpr->ports_idr, gdev->port_id);
-+		spin_unlock(&gpr->ports_lock);
++				audioreach_set_media_format(graph, module, direction, rate,
++							     channels, channel_map,
++							     bits_per_sample);
++			}
++		}
 +	}
 +
 +	return 0;
++
++}
++EXPORT_SYMBOL_GPL(q6apm_graph_media_format_pcm);
++
++static int q6apm_graph_get_tx_shmem_module_iid(struct q6apm_graph *graph)
++{
++	struct audioreach_module *module;
++
++	module = q6apm_find_module_by_mid(graph, MODULE_ID_RD_SHARED_MEM_EP);
++	if (!module)
++		return -ENODEV;
++
++	return module->instance_id;
++
 +}
 +
-+static int gpr_uevent(struct device *dev, struct kobj_uevent_env *env)
+ int q6apm_graph_get_rx_shmem_module_iid(struct q6apm_graph *graph)
+ {
+ 	struct audioreach_module *module;
+@@ -322,6 +488,105 @@ int q6apm_graph_get_rx_shmem_module_iid(struct q6apm_graph *graph)
+ }
+ EXPORT_SYMBOL_GPL(q6apm_graph_get_rx_shmem_module_iid);
+ 
++int q6apm_write_async(struct q6apm_graph *graph, uint32_t len, uint32_t msw_ts,
++		      uint32_t lsw_ts, uint32_t wflags)
 +{
-+	struct gpr_device *gdev = to_gpr_device(dev);
-+	int ret;
-+
-+	ret = of_device_uevent_modalias(dev, env);
-+	if (ret != -ENODEV)
-+		return ret;
-+
-+	return add_uevent_var(env, "MODALIAS=gpr:%s", gdev->name);
-+}
-+
-+struct bus_type gprbus = {
-+	.name		= "gprbus",
-+	.match		= gpr_device_match,
-+	.probe		= gpr_device_probe,
-+	.uevent		= gpr_uevent,
-+	.remove		= gpr_device_remove,
-+};
-+EXPORT_SYMBOL_GPL(gprbus);
-+
-+void gpr_free_port(struct gpr_port *port)
-+{
-+	struct gpr *gpr = port->gpr;
++	struct gpr_pkt *pkt;
++	void *p;
++	int rc, payload_size, iid;
++	struct apm_data_cmd_wr_sh_mem_ep_data_buffer_v2 *write;
++	struct audio_buffer *ab;
 +	unsigned long flags;
 +
-+	spin_lock_irqsave(&gpr->ports_lock, flags);
-+	idr_remove(&gpr->ports_idr, port->id);
-+	spin_unlock_irqrestore(&gpr->ports_lock, flags);
++	payload_size = sizeof(*write);
 +
-+	kfree(port);
-+}
-+EXPORT_SYMBOL_GPL(gpr_free_port);
-+
-+struct gpr_port *gpr_alloc_port(struct gpr_device* gdev, struct device *dev,
-+				gpr_port_cb cb,	void *priv)
-+{
-+	struct gpr *gpr = dev_get_drvdata(gdev->dev.parent);
-+	struct gpr_port *port;
-+	int id;
-+
-+	port = kzalloc(sizeof(*port), GFP_KERNEL);
-+	if (!port)
-+		return ERR_PTR(-ENOMEM);
-+
-+	port->callback = cb;
-+	port->gpr = gpr;
-+	port->priv = priv;
-+	port->dev = dev;
-+	spin_lock_init(&port->lock);
-+
-+	spin_lock(&gpr->ports_lock);
-+	id = idr_alloc_cyclic(&gpr->ports_idr, port, GPR_DYNAMIC_PORT_START,
-+			      GPR_DYNAMIC_PORT_END, GFP_ATOMIC);
-+	if (id < 0) {
-+		dev_err(dev, "Unable to allocate dynamic GPR src port\n");
-+		kfree(port);
-+		spin_unlock(&gpr->ports_lock);
-+		return ERR_PTR(-ENOMEM);
-+	}
-+	port->id = id;
-+	spin_unlock(&gpr->ports_lock);
-+
-+	dev_info(dev, "Adding GPR src port (%x)\n", port->id);
-+
-+	return port;
-+}
-+EXPORT_SYMBOL_GPL(gpr_alloc_port);
-+
-+static int gpr_add_device(struct device *dev, struct device_node *np,
-+			  u32 port_id, u32 domain_id)
-+{
-+	struct gpr *gpr = dev_get_drvdata(dev);
-+	struct gpr_device *gdev = NULL;
-+	int ret;
-+
-+	gdev = kzalloc(sizeof(*gdev), GFP_KERNEL);
-+	if (!gdev)
++	iid = q6apm_graph_get_rx_shmem_module_iid(graph);
++	p = audioreach_alloc_pkt(payload_size,
++				      DATA_CMD_WR_SH_MEM_EP_DATA_BUFFER_V2,
++				      graph->rx_data.dsp_buf,
++				      graph->port->id, iid);
++	if (IS_ERR(p))
 +		return -ENOMEM;
 +
-+	gdev->port_id = port_id;
-+	gdev->domain_id = domain_id;
-+	if (np)
-+		snprintf(gdev->name, GPR_NAME_SIZE, "%pOFn", np);
++	pkt = p;
++	p = p + GPR_HDR_SIZE;
++	write = p;
 +
-+	dev_set_name(&gdev->dev, "gprport:%s:%x:%x", gdev->name,
-+		     domain_id, port_id);
++	spin_lock_irqsave(&graph->lock, flags);
++	ab = &graph->rx_data.buf[graph->rx_data.dsp_buf];
 +
-+	gdev->dev.bus = &gprbus;
-+	gdev->dev.parent = dev;
-+	gdev->dev.of_node = np;
-+	gdev->dev.release = gpr_dev_release;
-+	gdev->dev.driver = NULL;
++	write->buf_addr_lsw = lower_32_bits(ab->phys);
++	write->buf_addr_msw = upper_32_bits(ab->phys);
++	write->buf_size = len;
++	write->timestamp_lsw = lsw_ts;
++	write->timestamp_msw = msw_ts;
++	write->mem_map_handle = graph->rx_data.mem_map_handle;
 +
-+	gdev->port.gpr = gpr;
-+	gdev->port.priv = gdev;
-+	gdev->port.id = port_id;
-+	spin_lock_init(&gdev->port.lock);
-+
-+	spin_lock(&gpr->ports_lock);
-+	idr_alloc(&gpr->ports_idr, &gdev->port, port_id,
-+		  port_id + 1, GFP_ATOMIC);
-+	spin_unlock(&gpr->ports_lock);
-+
-+	dev_info(dev, "Adding GPR dev: %s\n", dev_name(&gdev->dev));
-+
-+	ret = device_register(&gdev->dev);
-+	if (ret) {
-+		dev_err(dev, "device_register failed: %d\n", ret);
-+		put_device(&gdev->dev);
-+	}
-+
-+	return ret;
-+}
-+
-+static void of_register_gpr_devices(struct device *dev)
-+{
-+	struct gpr *gpr = dev_get_drvdata(dev);
-+	struct device_node *node;
-+
-+	for_each_child_of_node(dev->of_node, node) {
-+		u32 port_id;
-+		u32 domain_id;
-+
-+		if (of_property_read_u32(node, "reg", &port_id))
-+			continue;
-+
-+		domain_id = gpr->dest_domain_id;
-+
-+		if (gpr_add_device(dev, node, port_id, domain_id))
-+			dev_err(dev, "Failed to add gpr %d port\n", port_id);
-+	}
-+}
-+
-+static int gpr_probe(struct rpmsg_device *rpdev)
-+{
-+	struct device *dev = &rpdev->dev;
-+	struct gpr *gpr;
-+	int ret;
-+
-+	gpr = devm_kzalloc(dev, sizeof(*gpr), GFP_KERNEL);
-+	if (!gpr)
-+		return -ENOMEM;
-+
-+	ret = of_property_read_u32(dev->of_node, "qcom,gpr-domain",
-+				   &gpr->dest_domain_id);
-+	if (ret) {
-+		dev_err(dev, "GPR Domain ID not specified in DT\n");
-+		return ret;
-+	}
-+
-+	dev_set_drvdata(dev, gpr);
-+	gpr->ch = rpdev->ept;
-+	gpr->dev = dev;
-+	gpr->rxwq = create_singlethread_workqueue("qcom_gpr_rx");
-+	if (!gpr->rxwq) {
-+		dev_err(gpr->dev, "Failed to start Rx WQ\n");
-+		return -ENOMEM;
-+	}
-+	INIT_WORK(&gpr->rx_work, gpr_rxwq);
-+
-+	INIT_LIST_HEAD(&gpr->rx_list);
-+	spin_lock_init(&gpr->rx_lock);
-+	spin_lock_init(&gpr->ports_lock);
-+	idr_init(&gpr->ports_idr);
-+
-+	of_register_gpr_devices(dev);
-+
-+	return 0;
-+}
-+
-+static int gpr_remove_device(struct device *dev, void *null)
-+{
-+	struct gpr_device *gdev = to_gpr_device(dev);
-+
-+	device_unregister(&gdev->dev);
-+
-+	return 0;
-+}
-+
-+static void gpr_remove(struct rpmsg_device *rpdev)
-+{
-+	struct gpr *gpr = dev_get_drvdata(&rpdev->dev);
-+
-+	device_for_each_child(&rpdev->dev, NULL, gpr_remove_device);
-+	flush_workqueue(gpr->rxwq);
-+	destroy_workqueue(gpr->rxwq);
-+}
-+
-+/*
-+ * __gpr_driver_register() - Client driver registration with gprbus
-+ *
-+ * @drv:Client driver to be associated with client-device.
-+ * @owner: owning module/driver
-+ *
-+ * This API will register the client driver with the gprbus
-+ * It is called from the driver's module-init function.
-+ */
-+int __gpr_driver_register(struct gpr_driver *drv, struct module *owner)
-+{
-+	drv->driver.bus = &gprbus;
-+	drv->driver.owner = owner;
-+
-+	return driver_register(&drv->driver);
-+}
-+EXPORT_SYMBOL_GPL(__gpr_driver_register);
-+
-+/*
-+ * gpr_driver_unregister() - Undo effect of gpr_driver_register
-+ *
-+ * @drv: Client driver to be unregistered
-+ */
-+void gpr_driver_unregister(struct gpr_driver *drv)
-+{
-+	driver_unregister(&drv->driver);
-+}
-+EXPORT_SYMBOL_GPL(gpr_driver_unregister);
-+
-+static const struct of_device_id gpr_of_match[] = {
-+	{ .compatible = "qcom,gpr", },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, gpr_of_match);
-+
-+static struct rpmsg_driver gpr_driver = {
-+	.probe = gpr_probe,
-+	.remove = gpr_remove,
-+	.callback = gpr_callback,
-+	.drv = {
-+		.name = "qcom,gpr",
-+		.of_match_table = gpr_of_match,
-+	},
-+};
-+
-+static int __init gpr_init(void)
-+{
-+	int ret;
-+
-+	ret = bus_register(&gprbus);
-+	if (!ret)
-+		ret = register_rpmsg_driver(&gpr_driver);
++	//FIXME use other flags
++	if (wflags == NO_TIMESTAMP)
++		write->flags = 0;
 +	else
-+		bus_unregister(&gprbus);
++		write->flags = 0x80000000;
 +
-+	return ret;
++	graph->rx_data.dsp_buf++;
++
++	if (graph->rx_data.dsp_buf >= graph->rx_data.num_periods)
++		graph->rx_data.dsp_buf = 0;
++
++	spin_unlock_irqrestore(&graph->lock, flags);
++
++	rc = gpr_send_port_pkt(graph->port, pkt);
++
++	kfree(pkt);
++
++	return rc;
 +}
++EXPORT_SYMBOL_GPL(q6apm_write_async);
 +
-+static void __exit gpr_exit(void)
++int q6apm_read(struct q6apm_graph *graph)
 +{
-+	bus_unregister(&gprbus);
-+	unregister_rpmsg_driver(&gpr_driver);
++	struct data_cmd_rd_sh_mem_ep_data_buffer_v2 *read;
++	struct audioreach_graph_data *port;
++	struct audio_buffer *ab;
++	struct gpr_pkt *pkt;
++	unsigned long flags;
++	int rc = 0, iid;
++	void *p;
++
++	iid = q6apm_graph_get_tx_shmem_module_iid(graph);
++	p = audioreach_alloc_pkt(sizeof(*read),
++				      DATA_CMD_RD_SH_MEM_EP_DATA_BUFFER_V2,
++				      graph->tx_data.dsp_buf,
++				      graph->port->id, iid);
++	if (IS_ERR(p))
++		return -ENOMEM;
++
++	pkt = p;
++	read = p + GPR_HDR_SIZE;
++
++	spin_lock_irqsave(&graph->lock, flags);
++	port = &graph->tx_data;
++	ab = &port->buf[port->dsp_buf];
++
++	read->buf_addr_lsw = lower_32_bits(ab->phys);
++	read->buf_addr_msw = upper_32_bits(ab->phys);
++	read->mem_map_handle = port->mem_map_handle;
++	read->buf_size = ab->size;
++
++	port->dsp_buf++;
++
++	if (port->dsp_buf >= port->num_periods)
++		port->dsp_buf = 0;
++
++	spin_unlock_irqrestore(&graph->lock, flags);
++
++	rc = gpr_send_port_pkt(graph->port, pkt);
++	kfree(pkt);
++
++	return rc;
 +}
++EXPORT_SYMBOL_GPL(q6apm_read);
 +
-+subsys_initcall(gpr_init);
-+module_exit(gpr_exit);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("Qualcomm GPR Bus");
-diff --git a/include/dt-bindings/soc/qcom,gpr.h b/include/dt-bindings/soc/qcom,gpr.h
-new file mode 100644
-index 000000000000..1c68906e079c
---- /dev/null
-+++ b/include/dt-bindings/soc/qcom,gpr.h
-@@ -0,0 +1,18 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __DT_BINDINGS_QCOM_GPR_H
-+#define __DT_BINDINGS_QCOM_GPR_H
-+
-+/* DOMAINS */
-+
-+#define GPR_DOMAIN_ID_MODEM	1
-+#define GPR_DOMAIN_ID_ADSP	2
-+#define GPR_DOMAIN_ID_APPS	3
-+
-+/* Static Services */
-+
-+#define GPR_APM_MODULE_IID		1
-+#define GPR_PRM_MODULE_IID		2
-+#define GPR_AMDB_MODULE_IID		3
-+#define GPR_VCPM_MODULE_IID		4
-+
-+#endif /* __DT_BINDINGS_QCOM_GPR_H */
-diff --git a/include/linux/soc/qcom/gpr.h b/include/linux/soc/qcom/gpr.h
-new file mode 100644
-index 000000000000..05cbbc407a49
---- /dev/null
-+++ b/include/linux/soc/qcom/gpr.h
-@@ -0,0 +1,127 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef __QCOM_GPR_H_
-+#define __QCOM_GPR_H_
-+
-+#include <linux/spinlock.h>
-+#include <linux/device.h>
-+#include <dt-bindings/soc/qcom,gpr.h>
-+
-+#define APM_MODULE_INSTANCE_ID		GPR_APM_MODULE_IID
-+#define PRM_MODULE_INSTANCE_ID		GPR_PRM_MODULE_IID
-+#define AMDB_MODULE_INSTANCE_ID		GPR_AMDB_MODULE_IID
-+#define VCPM_MODULE_INSTANCE_ID		GPR_VCPM_MODULE_IID
-+
-+struct gpr_hdr {
-+	uint32_t version:4;
-+	uint32_t hdr_size:4;
-+	uint32_t pkt_size:24;
-+	uint32_t dest_domain:8;
-+	uint32_t src_domain:8;
-+	uint32_t reserved:16;
-+	uint32_t src_port;
-+	uint32_t dest_port;
-+	uint32_t token;
-+	uint32_t opcode;
-+} __packed;
-+
-+struct gpr_pkt {
-+	struct gpr_hdr hdr;
-+	uint32_t payload[0];
-+};
-+
-+struct gpr_resp_pkt {
-+	struct gpr_hdr hdr;
-+	void *payload;
-+	int payload_size;
-+};
-+
-+#define GPR_HDR_SIZE sizeof(struct gpr_hdr)
-+#define GPR_PKT_VER	0x0
-+#define GPR_PKT_HEADER_WORD_SIZE	((sizeof(struct gpr_pkt) + 3) >> 2)
-+#define GPR_PKT_HEADER_BYTE_SIZE	(GPR_PKT_HEADER_WORD_SIZE << 2)
-+#define GPR_DOMAIN_ID_MODEM	1
-+#define GPR_DOMAIN_ID_ADSP	2
-+#define GPR_DOMAIN_ID_APPS	3
-+
-+#define GPR_BASIC_RSP_RESULT 0x02001005
-+struct gpr_ibasic_rsp_result_t {
-+	uint32_t opcode;
-+	uint32_t status;
-+};
-+
-+#define GPR_BASIC_EVT_ACCEPTED 0x02001006
-+struct gpr_ibasic_rsp_accepted_t {
-+	uint32_t opcode;
-+};
-+
-+extern struct bus_type gprbus;
-+typedef int (*gpr_port_cb) (struct gpr_resp_pkt *d, void *priv, int op);
-+
-+struct gpr_port {
-+	struct device *dev;
-+	gpr_port_cb callback;
-+	struct gpr *gpr;
-+	spinlock_t lock;
-+	int id;
-+	void *priv;
-+};
-+
-+#define GPR_NAME_SIZE	128
-+struct gpr_device {
-+	struct device	dev;
-+	uint16_t	port_id;
-+	uint16_t	domain_id;
-+	uint32_t	version;
-+	char name[GPR_NAME_SIZE];
-+	struct gpr_port port;
-+};
-+
-+#define to_gpr_device(d) container_of(d, struct gpr_device, dev)
-+
-+struct gpr_driver {
-+	int	(*probe)(struct gpr_device *sl);
-+	int	(*remove)(struct gpr_device *sl);
-+	int (*callback)(struct gpr_resp_pkt *d, void *data, int op);
-+	struct device_driver		driver;
-+};
-+
-+#define to_gpr_driver(d) container_of(d, struct gpr_driver, driver)
-+
-+/*
-+ * use a macro to avoid include chaining to get THIS_MODULE
-+ */
-+#define gpr_driver_register(drv) __gpr_driver_register(drv, THIS_MODULE)
-+
-+int __gpr_driver_register(struct gpr_driver *drv, struct module *owner);
-+void gpr_driver_unregister(struct gpr_driver *drv);
-+
-+/**
-+ * module_gpr_driver() - Helper macro for registering a aprbus driver
-+ * @__aprbus_driver: aprbus_driver struct
-+ *
-+ * Helper macro for aprbus drivers which do not do anything special in
-+ * module init/exit. This eliminates a lot of boilerplate. Each module
-+ * may only use this macro once, and calling it replaces module_init()
-+ * and module_exit()
-+ */
-+#define module_gpr_driver(__gpr_driver) \
-+	module_driver(__gpr_driver, gpr_driver_register, \
-+			gpr_driver_unregister)
-+
-+struct gpr_port *gpr_alloc_port(struct gpr_device *gdev, struct device *dev,
-+				gpr_port_cb cb, void *priv);
-+void gpr_free_port(struct gpr_port *port);
-+
-+struct gpr_pkt *gpr_alloc_pkt(struct gpr_port *port, int payload_size,
-+			      uint32_t opcode, uint32_t token,
-+			      uint32_t dest_port);
-+void gpr_free_pkt(struct gpr_port *port, struct gpr_pkt *pkt);
-+
-+int gpr_send_port_pkt(struct gpr_port *port, struct gpr_pkt *pkt);
-+static inline int gpr_send_pkt(struct gpr_device *gdev, struct gpr_pkt *pkt)
-+{
-+	return gpr_send_port_pkt(&gdev->port, pkt);
-+}
-+
-+#endif /* __QCOM_GPR_H_ */
+ static int graph_callback(struct gpr_resp_pkt *data, void *priv, int op)
+ {
+ 	struct q6apm_graph *graph = priv;
 -- 
 2.21.0
 
