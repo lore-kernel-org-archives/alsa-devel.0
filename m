@@ -2,90 +2,198 @@ Return-Path: <SRS0=v4AK=LB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21E93C47094
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 14:00:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55420C47094
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 14:24:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 45EE961185
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 14:00:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 45EE961185
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 064BD60FEF
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 14:24:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 064BD60FEF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 165A9167D;
-	Mon,  7 Jun 2021 15:59:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 165A9167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id C198A166F;
+	Mon,  7 Jun 2021 16:23:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C198A166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623074425;
-	bh=vbMFp47uv+/ahRMqv73KSTj8V5VUZWqmy9YisQd8gX4=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1623075855;
+	bh=8WrAytEq6ky6UCFMExL4xaStFB0VcQcKNDyF/tTTxpY=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JC53hQhovTlgx/pCCOcRj1abQlnkzjyVywuyPsI793t5DKk2DU5X41qFxoCNEzmOU
-	 34RPFDnOanVAl7l7b9yFfO8HWijA5XR2GiR41PdY3DJcbCFzg8yTDAk5I4RM3qrvGC
-	 GofmoWEeduB5nuOhz64YwKomgepY/kHwlqf5vwxc=
+	b=eUezdiO4Ff3NN+CEGa+2uK6KbiQYyOfDffgU7eTLfG116n0OYw+lZTUSnquk+m/6Q
+	 gA8fWxYxDeoae2xWxEFlg8Q5zqDZjQJL4XpoUdkreI9As3xmppjbWmifv3T6RC/39+
+	 Nf4R9sG38MDuQwAKnv2LpAAAbHT6X5QkmWxeXbPc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 857BAF8026C;
-	Mon,  7 Jun 2021 15:58:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 58861F8020D;
+	Mon,  7 Jun 2021 16:23:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0851FF800DF; Mon,  7 Jun 2021 15:58:43 +0200 (CEST)
+ id C8EF5F80212; Mon,  7 Jun 2021 16:23:23 +0200 (CEST)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3531FF8020D
- for <alsa-devel@alsa-project.org>; Mon,  7 Jun 2021 15:58:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3531FF8020D
-IronPort-SDR: q5tWb4ATSvjh0ElGF5LF9i8Ot+vXjKhqUAiAD9gFxkiz3+Wbsnuv9c3BHEzLmTwrYjIQl9zn8k
- sYwXQ63QIZTQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="204648923"
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; d="scan'208";a="204648923"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by alsa1.perex.cz (Postfix) with ESMTPS id BDF6FF800DF
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jun 2021 16:23:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BDF6FF800DF
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=intel.onmicrosoft.com
+ header.i=@intel.onmicrosoft.com header.b="WRbAJ++A"
+IronPort-SDR: wuFyvuZWy88ofdZXCafv/mtCFfBjO+hL4aOfAui97zelUAS/K22XgsG6yHxTunIbBka6CHlXgK
+ +BHvB3SuxbCw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="204653708"
+X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; d="scan'208";a="204653708"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jun 2021 06:58:32 -0700
-IronPort-SDR: PMgHgFA2Pq/OzjyuHeOKRoET1itANVY6jX8ucvGI1shsQ8DmFZ0LxBPMfR/smLxxJFrKaSPKU/
- Bogf+fx4AIKQ==
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; d="scan'208";a="401636390"
-Received: from flobatol-mobl1.amr.corp.intel.com (HELO [10.209.152.154])
- ([10.209.152.154])
- by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jun 2021 06:58:29 -0700
-Subject: Re: [PATCH 3/4] ASoC: intel: sof_cs42l42: add support for
- jsl_cs4242_mx98360a
-To: Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
+ 07 Jun 2021 07:23:08 -0700
+IronPort-SDR: K9V9py2SDGvf0Qseh4wDWtaths1DLPFm0oSs3UsmoMBtbzbLjqAxKE7outxwRHzyEwuRzwNZ2r
+ Ri5xlC3OPhcw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; d="scan'208";a="484791019"
+Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
+ by fmsmga002.fm.intel.com with ESMTP; 07 Jun 2021 07:23:07 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Mon, 7 Jun 2021 07:23:06 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Mon, 7 Jun 2021 07:23:06 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
+ via Frontend Transport; Mon, 7 Jun 2021 07:23:06 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.176)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.4; Mon, 7 Jun 2021 07:23:06 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RLy2s6z13qOh+8LKPS9Upm/PPOPpxRycbAgobdClAxvUHws0GJ0OeC3wNLBZxONGZRxwbtYPZwwNwa8BMwuJKC1rccXwoQ0SnOVPxgfkhBepdOWOlby2EpaoW7CtwBLMHroLXbgHsHontMPrCJFkX5YFmjWf9aqLmG6AEXgneF2Ey3A5gzNku8EmJSW4cIHmj0QYDPNPa64fnFP8Rrrk+48q2iyZLFUpQj1dn9uOkCRocShnhVAsWGYqzapha3cuWLUdEebJH7iYdEIpopwsehKxx2dFTl+E0yB1VgFU5K69sqyv5C13h0I403OxctAUQ9MYuI62jY1oon58NOT/Eg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8WrAytEq6ky6UCFMExL4xaStFB0VcQcKNDyF/tTTxpY=;
+ b=ORjpWMQRHrm1lx7Ub7br6WIAy34ctn+46ao9QQozebyNiuB16fhY87VdlvnlJJB2ZUbRpMf71OJlN3TxpZT5gB1XPCWuO8QjU9vAPyUKhkY2aw+UsMgcxbYuodIoimt6BBpalAfSf63gD75Pr6J9h1brXrzwfegBvfc1U06sD8iEFZ2PiPI9caqYtRrPYePC8m9K/I6myd7OY7iU93CrmabOhczzfZoXgiW+0DITYHXAtyHHRfV6mrmr+7/0BMNYr3gldXvKdTg8Tz5xEWEBbGNReUhIpU5T2gagiRnhFllDGLddwRTeguoBPKtstdhZTL/EwXbfx+mibkX7B94pYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com; 
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8WrAytEq6ky6UCFMExL4xaStFB0VcQcKNDyF/tTTxpY=;
+ b=WRbAJ++AUlI23eBmUP6Jq4etQdytpHY7ehbn5f+t5x4IQ/gR2qy5/fC+5W/o0hL3G7KZ6B9nPWWQRvuTTycY9c22bCQbm9DwYX5CMufklxDgRq2oiBd7kDUHHKxdIInhiyHYJzb1Lu94SPIGlFu1JRYo9ZDfPcdDsi5zavDbyTo=
+Received: from DM6PR11MB3642.namprd11.prod.outlook.com (2603:10b6:5:138::26)
+ by DM4PR11MB5501.namprd11.prod.outlook.com (2603:10b6:5:39d::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Mon, 7 Jun
+ 2021 14:23:03 +0000
+Received: from DM6PR11MB3642.namprd11.prod.outlook.com
+ ([fe80::f890:381e:1e24:a6d9]) by DM6PR11MB3642.namprd11.prod.outlook.com
+ ([fe80::f890:381e:1e24:a6d9%7]) with mapi id 15.20.4195.030; Mon, 7 Jun 2021
+ 14:23:03 +0000
+From: "Lu, Brent" <brent.lu@intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Subject: RE: [PATCH 1/4] ASoC: Intel: sof_cs42l42: support JSL DAI link
+ sequence
+Thread-Topic: [PATCH 1/4] ASoC: Intel: sof_cs42l42: support JSL DAI link
+ sequence
+Thread-Index: AQHXWm97xwmY5nUjBEOmAodTtswOUqsIjkeAgAAJ2cA=
+Date: Mon, 7 Jun 2021 14:23:03 +0000
+Message-ID: <DM6PR11MB36429F4E8A6F077F8D2374F997389@DM6PR11MB3642.namprd11.prod.outlook.com>
 References: <20210606004102.26190-1-brent.lu@intel.com>
- <20210606004102.26190-4-brent.lu@intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <505c7e46-316c-9fa1-feaa-115f4561ed19@linux.intel.com>
-Date: Mon, 7 Jun 2021 08:40:44 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210606004102.26190-4-brent.lu@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ <20210606004102.26190-2-brent.lu@intel.com>
+ <2ccdffb1-e905-420e-5144-ebb8356b5518@linux.intel.com>
+In-Reply-To: <2ccdffb1-e905-420e-5144-ebb8356b5518@linux.intel.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Dharageswari R <dharageswari.r@intel.com>,
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [36.230.1.79]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 30a42fcf-9665-402a-586f-08d929bfc2ed
+x-ms-traffictypediagnostic: DM4PR11MB5501:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM4PR11MB55010F5C89BD7FF7444197B297389@DM4PR11MB5501.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Lzz//6Hx8N4tsjekYePX1ng2Q+Drh2FC8wMUHrE0NjKUp+mdzWdeZqMSLXF5m+en+P/qARLzkHU0eb8rJohOmnJ8VJXDZwfkA9vADPrXaUaIo8iOwaGyE5XCKdp5T9Wt/SGNsdX9CcN5Uz6DC6IbEBGZfvJXQgeU4rUtc6gdqrgVD7poIie1HIJgIofDOhjPMTr6YZU5JIitm1mXD7+wJ9e3c6hNAgCJiO0DmvN6j5hxUlaUntwKcd2aRligQHHc3DcWUeqWkaudh3/JgCwH47TTm9UO0D1vDGGTympz6ACnwZQ7kZ+HZh6s0DVMqWxhGJuYcDbZy0RyL53qxD5kmzzsf9RFvQarhBmnzYZBaKf5LFmoM46Rpr2sdZ/1YfNPhom2tycAS8RuQL3gmC+iU1UwX1+33r0QH5WjXiWx/g7GV6e+BBIwCliFgH3Os72zPig2AgU7UO+5w2p09JWo8utcmQlFyxlPHsfEtZ+WPXc2V3s1vs/IhpZIKwbDIEHi+13qP22UgsyafRh7Do35Qye4Zl9kPspPu1AU5p2OLOTjLJdZPHi7aLM+k0Q6O+zBdIrp8pZZuoE7YvZ0g7poj/i4yz27b0gmLpLmO4JQ0Ac=
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:DM6PR11MB3642.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(396003)(39850400004)(346002)(366004)(376002)(136003)(33656002)(8936002)(316002)(26005)(71200400001)(55016002)(66946007)(66446008)(64756008)(186003)(66556008)(66476007)(9686003)(478600001)(76116006)(4326008)(110136005)(54906003)(5660300002)(86362001)(7696005)(2906002)(53546011)(6506007)(52536014)(83380400001)(38100700002)(7416002)(122000001)(8676002);
+ DIR:OUT; SFP:1102; 
+x-ms-exchange-antispam-messagedata: =?utf-8?B?Q0UvNEd4dVpnd0xGSG9GVG5ETmt0NEVSSEVlT2pBZjErekkzbmExL0t0MDR4?=
+ =?utf-8?B?T3FqUFdRUFNhd0svV1ZYRWhLbHl6emhtL3BzRk41cWxFT21ZTkd2Qzl0V2hh?=
+ =?utf-8?B?dmJIUThIbWx4Wm5GNTJ1VmhVZUJ5Y1psSnI2MFNBa0N6MThsQkN0QU9pZTZ6?=
+ =?utf-8?B?TCtXdXNvZlFyaW1MbytKSzh3ODN3eWoxTVQ1aVBsTTFPaW00VXJLS2dmYjNH?=
+ =?utf-8?B?NDV2dHRpaFdFK05lc1VLTkZPcGZUaEtIU3kyTmszdFRaUllrTkttc3d3UDdy?=
+ =?utf-8?B?VUtBN0Z2U0pIcVZRcERUSUhJaEF3dmdpY1JuWkxFcjJmM3ljYytrS3JIR1Nk?=
+ =?utf-8?B?TnlhTFI2RW1CZjJvNjFhczhBdks3YUxJQW8rVTZ2dkxlUENBM3hoNWplaUNx?=
+ =?utf-8?B?MU9NaDludGxEaDIxWUJjRzJVVGJKckZsaU0waFFBYTZwV3BWanhKTWt5dmQw?=
+ =?utf-8?B?d1RXOVluZXZRUEJ0OXdldzZHSk1kUDFyZTdVeHlUUWhNRVJyRGU1TzBwUmp5?=
+ =?utf-8?B?QUg2MW1jNC80S2ZpMFJHRE5rdDhjT0thT2ZVbjlEcXBGNUtUL3g4NVE5aWIr?=
+ =?utf-8?B?VmYyRDFqTElZZjlrM3BINStsd3d6ZWRMa08zUU5PVGh2RUFudlJTVEZNM2VB?=
+ =?utf-8?B?dmgwdjkyT0xnbU1PRjk4aHpVczlsUTFkMlVQVlpwN3Jnejk0RzA4NzFvNWlH?=
+ =?utf-8?B?dDFmU3BPejJ3Z25MRTJ3NzlUc1h6dkJkcUVrOUsyUml5ZXo1NHltSS9Uc1Yy?=
+ =?utf-8?B?cGxOR25sdFI2NnNPRThrend1NWE0Z3VHVG13LzRnZVE0eVNEY0tjejVCdzJU?=
+ =?utf-8?B?Q2pjQXpkNXlhdm5EK1pyVTE3RVppRk5qOUhGUCtkQmZQTzFyQWpwT3NGcmRv?=
+ =?utf-8?B?OFVjbmZpTW1JSzdMYnowTEs0Q2w4K3N1TUpmUUFUMEVqRnRHTGQ4NzZ1TUcz?=
+ =?utf-8?B?aGpYNWNTUnJqRStwejFYbUFXQTl1cDdqcFJXYXZQc1Y3SGZqcmlPRldRanBl?=
+ =?utf-8?B?bjgzUUM0MHQ1YjRvQjh1Y3ViblJMaStGUkVMU1Ywdk5tNDFOajdOQkxOK1o5?=
+ =?utf-8?B?RWVWQWdVRzdaS1A5NEd4RGpEbS9oRXFiaTUrWHZ6djFHQzBYdENOY0M0OVk2?=
+ =?utf-8?B?SXEzWWVXSXU2b24ycG9RQWRtSmMrYmhwYWU2bFhGZnR5QjQyUURJMUNNdmp6?=
+ =?utf-8?B?a25MU3hjZVZuZ21DV2RJbnBZMDd0Vm4vNlplT3VxN2RjM3hldEdnYVFWOEd1?=
+ =?utf-8?B?OTZvTVU1YWhDSVR0MlZrRjJxMFU1ZUYwKzdYN01xUHJaK2ZmR01mSzRRKzkv?=
+ =?utf-8?B?UytXeisyZzBHdEFieHBpNHBZMCsxN0pYdGdxZ3FoZGY3aythRFZWbjQwb0Jk?=
+ =?utf-8?B?VGJncjhqU3U5UGFyeTVJYnd3cUlvN1QwSjdLSVpDWlBnZkIzSDk5NXN1cDJU?=
+ =?utf-8?B?RWxpOEJBN2xZYzV4MVNjRGRjaHJHYWxIbTNaWEloY0U5eHAxODQvd0l0U0Q5?=
+ =?utf-8?B?YSs5MFpzdStTY2tjbzA2L05sUDNPc3hyOW9NV3RGcG8rSnBtTVErSEhsVk9h?=
+ =?utf-8?B?SElIaEIvQlR6aGNLdHJSVXl2Z0E2U1gvWjgvS0pIV2srWUlGakFoWm8xbDFy?=
+ =?utf-8?B?alo1NmdnclZvTHI0TGk1MUJhRTBNSjdGcWhCMVptUi9EYmtpaGorYytlcVFw?=
+ =?utf-8?B?cFVCRXNxOFkxbFhTL1M3cXl2RE5qQlJNZUlCd3cvR21pN09TZFhYQWo2OENQ?=
+ =?utf-8?Q?0yivvgHUtXfms5ARmE=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3642.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 30a42fcf-9665-402a-586f-08d929bfc2ed
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jun 2021 14:23:03.3703 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1/jp7O1qRN5er99q3xZi0fC+aWPX16hmZKd3JetyibYp4yP1MJ9+jOFoPQ09LkGEGJP+hQlgqTvcSwS5h3Nk9A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5501
+X-OriginatorOrg: intel.com
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>, "Rojewski,
+ Cezary" <cezary.rojewski@intel.com>, "R,
+ Dharageswari" <dharageswari.r@intel.com>,
  Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
  Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Tzung-Bi Shih <tzungbi@google.com>, linux-kernel@vger.kernel.org,
+ Tzung-Bi Shih <tzungbi@google.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>, Yong Zhi <yong.zhi@intel.com>,
- Mark Brown <broonie@kernel.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Naveen Manohar <naveen.m@intel.com>, Rander Wang <rander.wang@intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Zhi, 
+ Yong" <yong.zhi@intel.com>, Mark Brown <broonie@kernel.org>, Ranjani
+ Sridharan <ranjani.sridharan@linux.intel.com>, "M, Naveen" <naveen.m@intel.com>,
+ "Wang, Rander" <rander.wang@intel.com>,
  Bard Liao <yung-chuan.liao@linux.intel.com>, Fred Oh <fred.oh@linux.intel.com>,
- Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
- Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+ "Gopal, Vamshi Krishna" <vamshi.krishna.gopal@intel.com>, "Nujella,
+ Sathyanarayana" <sathyanarayana.nujella@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,109 +209,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 6/5/21 7:41 PM, Brent Lu wrote:
-> This patch adds driver data for jsl_cs4242_mx98360a which supports two
-> max98360a speaker amplifiers on SSP1 and cs42l42 headphone codec on
-> SSP0 running on JSL platform. DAI format is leveraged from sof_rt5682
-> machine driver to reuse the topology.
-
-This also looks like we have two topologies configuring the same DAIs 
-differently on different platforms.
-
-Why can't we pick one configuration that would work in all cases?
-
-> Also use module device table to replace module alias.
-
-Humm, this looks like a missing dependency, I modified this a while ago.
-
-> 
-> Signed-off-by: Brent Lu <brent.lu@intel.com>
-> ---
->   sound/soc/intel/boards/sof_cs42l42.c          | 22 +++++++++++++++----
->   .../intel/common/soc-acpi-intel-jsl-match.c   |  8 +++++++
->   2 files changed, 26 insertions(+), 4 deletions(-)
-> 
-> diff --git a/sound/soc/intel/boards/sof_cs42l42.c b/sound/soc/intel/boards/sof_cs42l42.c
-> index e3171242f612..d712cfb91fd1 100644
-> --- a/sound/soc/intel/boards/sof_cs42l42.c
-> +++ b/sound/soc/intel/boards/sof_cs42l42.c
-> @@ -36,7 +36,9 @@
->   #define SOF_CS42L42_NUM_HDMIDEV_MASK		(GENMASK(9, 7))
->   #define SOF_CS42L42_NUM_HDMIDEV(quirk)	\
->   	(((quirk) << SOF_CS42L42_NUM_HDMIDEV_SHIFT) & SOF_CS42L42_NUM_HDMIDEV_MASK)
-> -#define SOF_MAX98357A_SPEAKER_AMP_PRESENT	BIT(10)
-> +#define SOF_CS42L42_BCLK_2400000		BIT(10)
-> +#define SOF_MAX98357A_SPEAKER_AMP_PRESENT	BIT(11)
-> +#define SOF_MAX98360A_SPEAKER_AMP_PRESENT	BIT(12)
->   
->   /* Default: SSP2 */
->   static unsigned long sof_cs42l42_quirk = SOF_CS42L42_SSP_CODEC(2);
-> @@ -122,7 +124,10 @@ static int sof_cs42l42_hw_params(struct snd_pcm_substream *substream,
->   	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
->   	int clk_freq, ret;
->   
-> -	clk_freq = 3072000; /* BCLK freq */
-> +	if (sof_cs42l42_quirk & SOF_CS42L42_BCLK_2400000)
-> +		clk_freq = 2400000; /* BCLK freq */
-> +	else
-> +		clk_freq = 3072000; /* BCLK freq */
->   
->   	/* Configure sysclk for codec */
->   	ret = snd_soc_dai_set_sysclk(codec_dai, 0,
-> @@ -281,6 +286,8 @@ static int create_spk_amp_dai_links(struct device *dev,
->   
->   	if (sof_cs42l42_quirk & SOF_MAX98357A_SPEAKER_AMP_PRESENT) {
->   		max_98357a_dai_link(&links[*id]);
-> +	} else if (sof_cs42l42_quirk & SOF_MAX98360A_SPEAKER_AMP_PRESENT) {
-> +		max_98360a_dai_link(&links[*id]);
->   	} else {
->   		dev_err(dev, "no amp defined\n");
->   		ret = -EINVAL;
-> @@ -584,8 +591,17 @@ static const struct platform_device_id board_ids[] = {
->   					SOF_MAX98357A_SPEAKER_AMP_PRESENT |
->   					SOF_CS42L42_SSP_AMP(1)),
->   	},
-> +	{
-> +		.name = "jsl_cs4242_mx98360a",
-> +		.driver_data = (kernel_ulong_t)(SOF_CS42L42_SSP_CODEC(0) |
-> +					SOF_SPEAKER_AMP_PRESENT |
-> +					SOF_MAX98360A_SPEAKER_AMP_PRESENT |
-> +					SOF_CS42L42_SSP_AMP(1)) |
-> +					SOF_CS42L42_BCLK_2400000,
-> +	},
->   	{ }
->   };
-> +MODULE_DEVICE_TABLE(platform, board_ids);
->   
->   static struct platform_driver sof_audio = {
->   	.probe = sof_audio_probe,
-> @@ -601,7 +617,5 @@ module_platform_driver(sof_audio)
->   MODULE_DESCRIPTION("SOF Audio Machine driver for CS42L42");
->   MODULE_AUTHOR("Brent Lu <brent.lu@intel.com>");
->   MODULE_LICENSE("GPL");
-> -MODULE_ALIAS("platform:sof_cs42l42");
-> -MODULE_ALIAS("platform:glk_cs4242_max98357a");
->   MODULE_IMPORT_NS(SND_SOC_INTEL_HDA_DSP_COMMON);
->   MODULE_IMPORT_NS(SND_SOC_INTEL_SOF_MAXIM_COMMON);
-> diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-> index 73fe4f89a82d..8e86476d48de 100644
-> --- a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-> +++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-> @@ -73,6 +73,14 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
->   		.quirk_data = &mx98360a_spk,
->   		.sof_tplg_filename = "sof-jsl-rt5682-mx98360a.tplg",
->   	},
-> +	{
-> +		.id = "10134242",
-> +		.drv_name = "jsl_cs4242_mx98360a",
-> +		.sof_fw_filename = "sof-jsl.ri",
-> +		.machine_quirk = snd_soc_acpi_codec_list,
-> +		.quirk_data = &mx98360a_spk,
-> +		.sof_tplg_filename = "sof-jsl-rt5682-mx98360a.tplg",
-> +	},
->   	{},
->   };
->   EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_jsl_machines);
-> 
+PiBPbiA2LzUvMjEgNzo0MCBQTSwgQnJlbnQgTHUgd3JvdGU6DQo+ID4gVGhlIGJhY2tlbmQgREFJ
+IGxpbmsgc2VxdWVuY2Ugb2YgR0xLIHBsYXRmb3JtIGlzIGRpZmZlcmVudCBmcm9tIHRoZQ0KPiA+
+IHNlcXVlbmNlIG9mIG90aGVyIHBsYXRmb3Jtcy4gV2UgcmVmYWN0b3IgdGhlDQo+ID4gc29mX2Nh
+cmRfZGFpX2xpbmtzX2NyZWF0ZSgpIGZ1bmN0aW9uIHRvIHN1cHBvcnQgYm90aCBzdHlsZS4NCj4g
+Pg0KPiA+IEdMSzogU1BLIC0gSFAgLSBETUlDIC0gSERNSQ0KPiA+IE90aGVyOiBIUCAtIERNSUMg
+LSBIRE1JIC0gU1BLDQo+IA0KPiBJIGFtIHJlYWxseSBjb25mdXNlZCBoZXJlLg0KPiBUaGUgZGFp
+bGluayBzZXF1ZW5jZSBpcyB3aGF0ZXZlciB3ZSB3YW50IGl0IHRvIGJlLiBXaGF0IG1hdHRlcnMg
+aXMgdGhhdCB0aGUNCj4gZGFpbGluayBJRCBtYXRjaGVzIHdoYXQgaXMgaW4gdGhlIHRvcG9sb2d5
+Lg0KPiANCj4gSXMgdGhpcyBzYXlpbmcgdGhhdCB0aGUgR0xLIGFuZCBKU0wgdG9wb2xvZ2llcyBk
+aWQgbm90IGZvbGxvdyBhbnkgc29ydCBvZg0KPiBjb252ZW50aW9uPyBDYW4geW91IGVsYWJvcmF0
+ZSBtb3JlIG9uIHdoYXQgaXMgdGhlIGlzc3VlPw0KPiANCj4gUHV0IGRpZmZlcmVudGx5LCB3aHkg
+Y2FuJ3Qgd2UgZml4IHRoZSB0b3BvbG9neSBpbnN0ZWFkIHdpdGggYSByZW9yZGVyIG9mIHRoZQ0K
+PiBkYWlsaW5rcz8NCj4gDQoNCnNuZF9zb2NfZmluZF9kYWlfbGluaygpIGNoZWNrZWQgYm90aCBk
+YWkgbGluayBuYW1lIGFuZCBpZCB3aGVuIG1hdGNoaW5nDQp0b3BvbG9neSBhbmQgbWFjaGluZSBk
+cml2ZXIuIFNvdW5kY2FyZCByZWdpc3RyYXRpb24gd291bGQgZmFpbCBpZiB0aGVpciBpZA0KZG9l
+c24ndCBtYXRjaC4NCg0KQ3M0Mmw0MiBpcyBzaGFyaW5nIHRvcG9sb2d5IHdpdGggREE3MjE5J3Mg
+dG9wb2xvZ3kgc291cmNlIGZpbGUgc29mLWdsay1kYTcyMTkubTQNCm9uIEdMSyBwbGF0Zm9ybS4g
+VGhlIGNvbmZpZ3VyYXRpb24gaXM6DQoNCmRhaSBsaW5rIGlkIDAgaXMgZm9yIHNwaw0KI1NTUCAx
+IChJRDogMCkgd2l0aCAxOS4yIE1IeiBtY2xrIHdpdGggTUNMS19JRCAxICh1bnVzZWQpLCAxLjUz
+NiBNSHogYmxjaw0KREFJX0NPTkZJRyhTU1AsIDEsIDAsIFNTUDEtQ29kZWMsDQoNCmRhaSBsaW5r
+IGlkIDEgaXMgZm9yIGhlYWRwaG9uZQ0KI1NTUCAyIChJRDogMSkgd2l0aCAxOS4yIE1IeiBtY2xr
+IHdpdGggTUNMS19JRCAxLCAxLjkyIE1IeiBiY2xrDQpEQUlfQ09ORklHKFNTUCwgMiwgMSwgU1NQ
+Mi1Db2RlYywNCg0KZGFpIGxpbmsgaWQgMiBpcyBmb3IgZG1pYw0KREFJX0NPTkZJRyhETUlDLCAw
+LCAyLCBkbWljMDEsDQoNCmRhaSBsaW5rIGlkIDMvNC81IGlzIGZvciBoZG1pDQpEQUlfQ09ORklH
+KEhEQSwgMywgMywgaURpc3AxLA0KREFJX0NPTkZJRyhIREEsIDQsIDQsIGlEaXNwMiwNCkRBSV9D
+T05GSUcoSERBLCA1LCA1LCBpRGlzcDMsDQoNCldoZW4gb24gSlNMLCB3ZSBwbGFuIHRvIHNoYXJl
+IHRvcG9sb2d5IHdpdGggcnQ1NjgyIHdoaWNoIGhhcyBkaWZmZXJlbnQgZGFpIGxpbmsNCnNlcXVl
+bmNlOg0Kc29mLWpzbC1ydDU2ODIubTQ6DQoNCmRhaSBsaW5rIGlkIDAgaXMgZm9yIGhlYWRwaG9u
+ZQ0KREFJX0NPTkZJRyhTU1AsIDAsIDAsIFNTUDAtQ29kZWMsDQoNCmRhaSBsaW5rIGlkIDYgaXMg
+Zm9yIHNwaw0KIyBTU1AgMSAoSUQ6IDYpDQpEQUlfQ09ORklHKFNTUCwgU1BLX0lOREVYLCA2LCBT
+UEtfTkFNRSwNCglTRVRfU1NQX0NPTkZJRykNCg0KZGFpIGxpbmsgaWQgMy80LzUgaXMgZm9yIGhk
+bWkNCiMgNCBIRE1JL0RQIG91dHB1dHMgKElEOiAzLDQsNSkNCkRBSV9DT05GSUcoSERBLCAwLCAz
+LCBpRGlzcDEsDQpEQUlfQ09ORklHKEhEQSwgMSwgNCwgaURpc3AyLA0KREFJX0NPTkZJRyhIREEs
+IDIsIDUsIGlEaXNwMywNCg0KSSdtIG5vdCBzdXJlIGlmIHRoZXJlIGlzIGNvbnZlbnRpb24gYWJv
+dXQgdGhlIHNlcXVlbmNlIHRvIGZvbGxvdz8NCg0KDQpSZWdhcmRzLA0KQnJlbnQNCg0K
