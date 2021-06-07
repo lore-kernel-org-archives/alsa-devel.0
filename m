@@ -2,70 +2,76 @@ Return-Path: <SRS0=v4AK=LB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B6C6C47082
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 22:47:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DEBBC47082
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 22:48:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CDBD0610A1
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 22:47:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CDBD0610A1
+	by mail.kernel.org (Postfix) with ESMTPS id 2D830610A1
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 22:48:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D830610A1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ADB051674;
-	Tue,  8 Jun 2021 00:47:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ADB051674
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7DD10167E;
+	Tue,  8 Jun 2021 00:47:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7DD10167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623106075;
-	bh=sZpW1XxLdEWSR47quWfwdna2ic5oN/cRSah0FWlZau0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=uWahUmZNCyrrCH49WdAHH6q7uB1i451gcl80cJePbaNL59jePFIpK35BiE7KNZSai
-	 kJsI1SYgYlC3eCLpdFKrKI+MZSiRAv0nigSvezuCGuRlyZFfb5H8jY2hQqGsNcBHbD
-	 3H9ucS4ijNmmwbr3oktvdUXBFj0kDJg0EhRiY/l4=
+	s=default; t=1623106126;
+	bh=1IhfP99VwYU7/nxkBOG2YWt1WDdUhTST0gTdOl4iW/k=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=FfoMeXysqloMffK61RpMbeD9e1N9AHueV3D1zrEzkylof27ipCB9YWu6cim0wGRrj
+	 tAHqD4elsryX1BY9NgTLs+X8RDJgA6E8l0Yqh/TZRutYzWh2cmXuz7nmRxPRtrOaV5
+	 x4YGK9rGlg7APxvXKSgX80byZAqhrMjTVTC0vB18=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B2B5DF804C1;
-	Tue,  8 Jun 2021 00:47:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 260D6F804CB;
+	Tue,  8 Jun 2021 00:47:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BD0F2F8032D; Tue,  8 Jun 2021 00:47:01 +0200 (CEST)
+ id BEBBAF8032C; Tue,  8 Jun 2021 00:47:02 +0200 (CEST)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EF069F800DF
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 00:46:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF069F800DF
-IronPort-SDR: aAkAySJfov7JHQMGo7Q3B/vqq9eBAsqAec4TNnn9i0FSt78tSL8pFD7EXs9450Wo+IPqs4wgad
- lnzni8ozArcA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="185102170"
-X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; d="scan'208";a="185102170"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3ABA3F8020D
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 00:46:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3ABA3F8020D
+IronPort-SDR: bzbvTi6K0YZmxdnUcD9Slqml2zcPVBzLplurCVo3assXoeo/R00MVVx5aWYfjuPQkcSnhUK8c7
+ honFHxmvVV8w==
+X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="185102174"
+X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; d="scan'208";a="185102174"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jun 2021 15:46:47 -0700
-IronPort-SDR: Zf+K+3mVLYaJ8ROT1aaUWWmsYvwuPJlrIE7iI6Oj2Zo1ruJqwgXuJFAXmRsHlgorXR2mAG978O
- 3H2LFdW7dbgQ==
-X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; d="scan'208";a="637437073"
+ 07 Jun 2021 15:46:49 -0700
+IronPort-SDR: r9BbUwP1wO0Lz5WC4W5pFgGtbmwlTU2O3Ovb4LlD1sHIedhpv7+PwjgbHfdWNYcLszUD0GB+cb
+ 7Iz5uXOPaL8g==
+X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; d="scan'208";a="637437082"
 Received: from marocham-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.108.70])
  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jun 2021 15:46:46 -0700
+ 07 Jun 2021 15:46:48 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 00/10] ASoC: Intel: machine driver corrections
-Date: Mon,  7 Jun 2021 17:46:28 -0500
-Message-Id: <20210607224638.585486-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 03/10] ASoC: Intel: sof_rt5682: shrink platform_id names below
+ 20 characters
+Date: Mon,  7 Jun 2021 17:46:31 -0500
+Message-Id: <20210607224638.585486-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210607224638.585486-1-pierre-louis.bossart@linux.intel.com>
+References: <20210607224638.585486-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Rander Wang <rander.wang@intel.com>, Paul Olaru <paul.olaru@oss.nxp.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,56 +87,158 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Some of these patches dealing with Sparse warnings were submitted
-earlier but not merged. I grouped them with a couple of fixes from
-Kai.
+Some Chromebooks machine driver aliases exceed 20 characters, which
+leads to sparse warnings:
 
-Kai Vehmanen (3):
-  ASoC: Intel: sof_sdw: use mach data for ADL RVP DMIC count
-  ASoC: Intel: sof_sdw: remove hdac-hdmi support
-  ASoC: Intel: skl_hda_dsp_generic: Update Kconfig documentation
+sound/soc/intel/boards/sof_rt5682.c:959:25: error: too long
+initializer-string for array of char(no space for nul char)
 
-Pierre-Louis Bossart (7):
-  ASoC: Intel: sof_rt5682: shrink platform_id names below 20 characters
-  ASoC: Intel: glk_rt5682_max98357a: shrink platform_id below 20
-    characters
-  ASoC: Intel: kbl_da7219_max98357a: shrink platform_id below 20
-    characters
-  ASoC: Intel: sof_da7219_max98373: shrink platform_id below 20
-    characters
-  ASoC: Intel: sof_sdw: fix signed/unsigned warning
-  ASoC: Intel: soc-acpi: add ull suffix for SoundWire _ADR values
-  ASoC: Intel: use MODULE_DEVICE_TABLE with platform_device_id tables
+sound/soc/intel/boards/sof_rt5682.c:989:25: error: too long
+initializer-string for array of char(no space for nul char)
 
- sound/soc/intel/boards/Kconfig                |  7 ++--
- sound/soc/intel/boards/bxt_da7219_max98357a.c |  4 +-
- sound/soc/intel/boards/bxt_rt298.c            |  3 +-
- sound/soc/intel/boards/ehl_rt5660.c           |  2 +-
- sound/soc/intel/boards/glk_rt5682_max98357a.c |  4 +-
- sound/soc/intel/boards/kbl_da7219_max98357a.c |  4 +-
- sound/soc/intel/boards/kbl_da7219_max98927.c  |  5 +--
- sound/soc/intel/boards/kbl_rt5660.c           |  2 +-
- sound/soc/intel/boards/kbl_rt5663_max98927.c  |  3 +-
- .../intel/boards/kbl_rt5663_rt5514_max98927.c |  2 +-
- .../soc/intel/boards/skl_nau88l25_max98357a.c |  3 +-
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c |  3 +-
- sound/soc/intel/boards/skl_rt286.c            |  3 +-
- sound/soc/intel/boards/sof_cs42l42.c          |  3 +-
- sound/soc/intel/boards/sof_da7219_max98373.c  |  6 +--
- sound/soc/intel/boards/sof_rt5682.c           | 20 +++-------
- sound/soc/intel/boards/sof_sdw.c              |  5 +--
- sound/soc/intel/boards/sof_sdw_common.h       |  1 -
- sound/soc/intel/boards/sof_sdw_hdmi.c         | 37 +-----------------
- .../intel/common/soc-acpi-intel-adl-match.c   | 28 +++++++-------
- .../intel/common/soc-acpi-intel-cml-match.c   | 20 +++++-----
- .../intel/common/soc-acpi-intel-cnl-match.c   |  2 +-
- .../intel/common/soc-acpi-intel-glk-match.c   |  2 +-
- .../intel/common/soc-acpi-intel-icl-match.c   | 12 +++---
- .../intel/common/soc-acpi-intel-jsl-match.c   |  6 +--
- .../intel/common/soc-acpi-intel-kbl-match.c   |  2 +-
- .../intel/common/soc-acpi-intel-tgl-match.c   | 38 +++++++++----------
- 27 files changed, 83 insertions(+), 144 deletions(-)
+sound/soc/intel/boards/sof_rt5682.c:1039:25: error: too long
+initializer-string for array of char(no space for nul char)
 
+Fix by using the 'mx' shortcut for Maxim platforms (already used in
+platform firmware)
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Paul Olaru <paul.olaru@oss.nxp.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+---
+ sound/soc/intel/boards/sof_rt5682.c           | 20 +++++++++----------
+ .../intel/common/soc-acpi-intel-adl-match.c   |  4 ++--
+ .../intel/common/soc-acpi-intel-jsl-match.c   |  2 +-
+ .../intel/common/soc-acpi-intel-tgl-match.c   |  4 ++--
+ 4 files changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index 3e69feaf052b..ca95e01b0ef9 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -956,7 +956,7 @@ static const struct platform_device_id board_ids[] = {
+ 		.name = "sof_rt5682",
+ 	},
+ 	{
+-		.name = "tgl_max98357a_rt5682",
++		.name = "tgl_mx98357a_rt5682",
+ 		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+ 					SOF_RT5682_SSP_CODEC(0) |
+ 					SOF_SPEAKER_AMP_PRESENT |
+@@ -975,7 +975,7 @@ static const struct platform_device_id board_ids[] = {
+ 					SOF_RT5682_SSP_AMP(1)),
+ 	},
+ 	{
+-		.name = "tgl_max98373_rt5682",
++		.name = "tgl_mx98373_rt5682",
+ 		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+ 					SOF_RT5682_SSP_CODEC(0) |
+ 					SOF_SPEAKER_AMP_PRESENT |
+@@ -986,7 +986,7 @@ static const struct platform_device_id board_ids[] = {
+ 					SOF_SSP_BT_OFFLOAD_PRESENT),
+ 	},
+ 	{
+-		.name = "jsl_rt5682_max98360a",
++		.name = "jsl_rt5682_mx98360a",
+ 		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+ 					SOF_RT5682_MCLK_24MHZ |
+ 					SOF_RT5682_SSP_CODEC(0) |
+@@ -1025,7 +1025,7 @@ static const struct platform_device_id board_ids[] = {
+ 					SOF_RT5682_SSP_AMP(1)),
+ 	},
+ 	{
+-		.name = "adl_max98373_rt5682",
++		.name = "adl_mx98373_rt5682",
+ 		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+ 					SOF_RT5682_SSP_CODEC(0) |
+ 					SOF_SPEAKER_AMP_PRESENT |
+@@ -1036,7 +1036,7 @@ static const struct platform_device_id board_ids[] = {
+ 					SOF_SSP_BT_OFFLOAD_PRESENT),
+ 	},
+ 	{
+-		.name = "adl_max98357a_rt5682",
++		.name = "adl_mx98357a_rt5682",
+ 		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+ 					SOF_RT5682_SSP_CODEC(0) |
+ 					SOF_SPEAKER_AMP_PRESENT |
+@@ -1064,14 +1064,14 @@ MODULE_AUTHOR("Sathya Prakash M R <sathya.prakash.m.r@intel.com>");
+ MODULE_AUTHOR("Brent Lu <brent.lu@intel.com>");
+ MODULE_LICENSE("GPL v2");
+ MODULE_ALIAS("platform:sof_rt5682");
+-MODULE_ALIAS("platform:tgl_max98357a_rt5682");
++MODULE_ALIAS("platform:tgl_mx98357a_rt5682");
+ MODULE_ALIAS("platform:jsl_rt5682_rt1015");
+-MODULE_ALIAS("platform:tgl_max98373_rt5682");
+-MODULE_ALIAS("platform:jsl_rt5682_max98360a");
++MODULE_ALIAS("platform:tgl_mx98373_rt5682");
++MODULE_ALIAS("platform:jsl_rt5682_mx98360a");
+ MODULE_ALIAS("platform:cml_rt1015_rt5682");
+ MODULE_ALIAS("platform:tgl_rt1011_rt5682");
+ MODULE_ALIAS("platform:jsl_rt5682_rt1015p");
+-MODULE_ALIAS("platform:adl_max98373_rt5682");
+-MODULE_ALIAS("platform:adl_max98357a_rt5682");
++MODULE_ALIAS("platform:adl_mx98373_rt5682");
++MODULE_ALIAS("platform:adl_mx98357a_rt5682");
+ MODULE_IMPORT_NS(SND_SOC_INTEL_HDA_DSP_COMMON);
+ MODULE_IMPORT_NS(SND_SOC_INTEL_SOF_MAXIM_COMMON);
+diff --git a/sound/soc/intel/common/soc-acpi-intel-adl-match.c b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
+index 22c465f1d5d8..8905f1a1ec91 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-adl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
+@@ -283,7 +283,7 @@ static const struct snd_soc_acpi_codecs adl_max98357a_amp = {
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
+ 	{
+ 		.id = "10EC5682",
+-		.drv_name = "adl_max98373_rt5682",
++		.drv_name = "adl_mx98373_rt5682",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &adl_max98373_amp,
+ 		.sof_fw_filename = "sof-adl.ri",
+@@ -291,7 +291,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
+ 	},
+ 	{
+ 		.id = "10EC5682",
+-		.drv_name = "adl_max98357a_rt5682",
++		.drv_name = "adl_mx98357a_rt5682",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &adl_max98357a_amp,
+ 		.sof_fw_filename = "sof-adl.ri",
+diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+index 73fe4f89a82d..885f6002fe53 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+@@ -67,7 +67,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
+ 	},
+ 	{
+ 		.id = "10EC5682",
+-		.drv_name = "jsl_rt5682_max98360a",
++		.drv_name = "jsl_rt5682_mx98360a",
+ 		.sof_fw_filename = "sof-jsl.ri",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &mx98360a_spk,
+diff --git a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+index b5f05b81a584..91cffc3d2f18 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+@@ -323,7 +323,7 @@ static const struct snd_soc_acpi_codecs tgl_rt1011_amp = {
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
+ 	{
+ 		.id = "10EC5682",
+-		.drv_name = "tgl_max98357a_rt5682",
++		.drv_name = "tgl_mx98357a_rt5682",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &tgl_codecs,
+ 		.sof_fw_filename = "sof-tgl.ri",
+@@ -331,7 +331,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
+ 	},
+ 	{
+ 		.id = "10EC5682",
+-		.drv_name = "tgl_max98373_rt5682",
++		.drv_name = "tgl_mx98373_rt5682",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &tgl_max98373_amp,
+ 		.sof_fw_filename = "sof-tgl.ri",
 -- 
 2.25.1
 
