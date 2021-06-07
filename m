@@ -7,86 +7,87 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E719C47082
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 15:34:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68986C47094
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 15:34:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A785A611AD
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 15:34:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A785A611AD
+	by mail.kernel.org (Postfix) with ESMTPS id A331460FF1
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 15:34:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A331460FF1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2DAEA1685;
-	Mon,  7 Jun 2021 17:33:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2DAEA1685
+	by alsa0.perex.cz (Postfix) with ESMTPS id 35A3D168B;
+	Mon,  7 Jun 2021 17:34:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35A3D168B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623080076;
-	bh=kqskMrFbvKYf5mXMhHXhVzisq96e77cdFazCZKncELY=;
+	s=default; t=1623080092;
+	bh=DmlLpbLKsgqcNtfmLN5WMY5K/nPNqbBFcCYWZVfrPTs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NIURlTwBS2iUMzpGk288L81svhKvA+paBgUE+IX5lCZ/n8+c2OFSa4HlxF9C1ArWR
-	 UEoQFsu7z+715bSRnilQCvR4tvGhOyH3Z+24z2r/6uEcS6NBCik/TPN7Yk8dfFw3oI
-	 u8UMUpo5DfPjwyuBuQli43RxsrJEVSyi6xZVt79o=
+	b=NuXmc5YtcRfSXLp8xfzDtZy+eM2WKql8wmUEGgLtFY47yK0ZVXJSyZEfAeJr5J3tV
+	 UIpiOGfZ0dPWOp/dciXgwP+uvIMGULPWws92pYYyhC3aSnVlkCIzuV8x2KyaSslZPJ
+	 tXQqoDiXK/uNfQAkSbXOzn9jOG0G07SovfNCCuqg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 018E6F804ED;
+	by alsa1.perex.cz (Postfix) with ESMTP id 9EEA0F804FD;
 	Mon,  7 Jun 2021 17:30:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7D39DF8032D; Mon,  7 Jun 2021 17:29:38 +0200 (CEST)
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
- [IPv6:2a00:1450:4864:20::430])
+ id 24487F8027C; Mon,  7 Jun 2021 17:29:39 +0200 (CEST)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
+ [IPv6:2a00:1450:4864:20::42a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9DD02F8032C
- for <alsa-devel@alsa-project.org>; Mon,  7 Jun 2021 17:29:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DD02F8032C
+ by alsa1.perex.cz (Postfix) with ESMTPS id A54A1F804C1
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jun 2021 17:29:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A54A1F804C1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="vbXNC70U"
-Received: by mail-wr1-x430.google.com with SMTP id y7so13473899wrh.7
- for <alsa-devel@alsa-project.org>; Mon, 07 Jun 2021 08:29:14 -0700 (PDT)
+ header.b="UDhiFSqx"
+Received: by mail-wr1-x42a.google.com with SMTP id r9so1405802wrz.10
+ for <alsa-devel@alsa-project.org>; Mon, 07 Jun 2021 08:29:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=idmBojPKMaEqXxTsPN9NMivz3VoeKNs2nUJ6x42cpzc=;
- b=vbXNC70ULxFFKb2gCHU+vvjhZgISGdWZ3B66ixqhsf3LWTQMUe7MN2fQfMQKBczDXu
- AJBltuf8DLQxCUEAsnoWbQdbRUt4598NJViyUyLY9ix8uAAr/UVBfqmLkAH9VxhdYhYN
- Lu2bVDSLdhPMRtHQE+RKUkId0BYQfrmEGwuWbvzw81oEnSQgJThgttlyZhgfsLwGOcOH
- HV7FWiLS4GpkrY7mvM1TAJepNBjVw6ngc/1dxB7E1Nz4E7/XJvKQtBtl2pa4vLvXXF0P
- DjpFuOHy4iDUubcbpAYQWWVrzyqMC6+V6pEQSJclbIohaBv8Am7+5Nkvhas4TMjeDeng
- E5Kw==
+ bh=lzk4lCLmAXbNCfDcTx4wmKLjACEaxBk+nh7dbPXaa38=;
+ b=UDhiFSqxE1s5YjiU15JeFLbAqZTe5nrAp1XpGXbX3+6iigSEPtlXwzTkvntFfFKvUR
+ CpBxINqcZhWT0UC1sfuoxFLEQRwISz4l/4Eiv4J3HFKjSN8JJTn4d+7SZ+3azQAoxnVh
+ AxmwdoO+fl8Jq+VPXz37aaoKN8tzydm2SBo7HzVGMsl3tfb/UdJ2T/cO8q4jTYYecott
+ QCPxHQ2SW6oWTs0oL1nM8oi6jOmXMtoR1gvlZD4nbeLwiSh5fXpXltWklGS9irK9lX/V
+ WZlzDpgHayq+NoLyEkq675dzef9ZyF/MhtS5y3zUcKPzpZTzxk2P59ioGDKB2+5D2dfy
+ cTIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=idmBojPKMaEqXxTsPN9NMivz3VoeKNs2nUJ6x42cpzc=;
- b=IO4SOnY+NHEO5xBcbIYJ/KbdwWFHl7UtgGoWGgQ5MRF1oMQwZKS7UbPkt3XqmIXUYQ
- ik50/3p+NZjhubB3x0XwE/w5grefqQQOVAOkmJNfyulVIjtQG9ezCz365zG4+WPY8rbE
- bVevc40acPZhEkXwBqXuwj6/kh/zDfUEjGkONhofSvPoZwMkQuyFzmowSBDJz6ZpipsL
- Ged+sUT/JEHkS6sF8Wpbo1xYKPlkRIShZ0OWTxXcYjoIgH/jn/PZI4b64LVYwShucIBH
- jgHnEbc4T4FItXWBxnwH448mONOdND7Kb7dp6W4hIQvk0wUceBKq7TR34gi6O+VPLVCa
- Tf2g==
-X-Gm-Message-State: AOAM530bz2o082DJo9LSNfCrew2qflq+cgdXhWwrJwCUEPhVnd1EX0Gz
- h7zjyEVwH75qEj/doKKckU5nCw==
-X-Google-Smtp-Source: ABdhPJyihoRf0jBti0BaOD0KEen6Y1OrOVBSTVZrojU+gBnh4nUMuKYPhsE3C1kCmUHxfCUoA6+v/A==
-X-Received: by 2002:adf:de91:: with SMTP id w17mr17979866wrl.352.1623079753520; 
- Mon, 07 Jun 2021 08:29:13 -0700 (PDT)
+ bh=lzk4lCLmAXbNCfDcTx4wmKLjACEaxBk+nh7dbPXaa38=;
+ b=nZzUcefiVLlk4H1vlX0IX6WEZJc2cQ1JHEZYtPjX6AXNGowY5YkQAKaqJbsn0nLvwz
+ +2aj6Amxtslkx9YdbOOo9PtF/OX4b6dtkmvQXBtrj5cTQDJ4atcmOezSo0LIi3NUvr7G
+ UBHXTTHi5MGA12AXRasrtGSawclDcihJbKNbgEGHT9syg/PBq0zrx0v4N2I/veiU/zs6
+ oixOIh0+wcFwrS/veX09tl0n92d7WVVX2ds59mOzrk3HXcpjQW/LvtU4rpt+5L8NG8uS
+ JotGUn5EOzzVx/gizfuKqHN9C1XcNaG8dHeD8FhboOJtW5FqKEfqZWb5qJp54DINErXI
+ Sw5w==
+X-Gm-Message-State: AOAM530IR1joP+4mdhOUsYwPHYbw6ucFneuaKDcMsBI+EkZ/sSGbmNjU
+ k8tZHlaNnzFoTiZmWsm+nBF5OA==
+X-Google-Smtp-Source: ABdhPJwzX/sWF8yrXRuPQ0fIro1jD8AuiOKC8LpOEgmpevy8/2G9wmoj3HHnFWe4aaCpWakoNCyS1Q==
+X-Received: by 2002:a05:6000:18a8:: with SMTP id
+ b8mr17320018wri.208.1623079755937; 
+ Mon, 07 Jun 2021 08:29:15 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id q3sm16370170wrr.43.2021.06.07.08.29.12
+ by smtp.gmail.com with ESMTPSA id q3sm16370170wrr.43.2021.06.07.08.29.14
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 07 Jun 2021 08:29:13 -0700 (PDT)
+ Mon, 07 Jun 2021 08:29:15 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: bjorn.andersson@linaro.org,
 	broonie@kernel.org
-Subject: [RFC PATCH 10/13] ASoC: qcom: dt-bindings: add bindings for Proxy
- Resource Manager
-Date: Mon,  7 Jun 2021 16:28:33 +0100
-Message-Id: <20210607152836.17154-11-srinivas.kandagatla@linaro.org>
+Subject: [RFC PATCH 12/13] ASoC: qcom: dt-bindings: add audioreach soundcard
+ compatibles
+Date: Mon,  7 Jun 2021 16:28:35 +0100
+Message-Id: <20210607152836.17154-13-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210607152836.17154-1-srinivas.kandagatla@linaro.org>
 References: <20210607152836.17154-1-srinivas.kandagatla@linaro.org>
@@ -110,64 +111,71 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds bindings support for Qualcomm Proxy Resource Manager
-service in Audio DSP.
+Add compatible strings for AudioReach DSP firmware based soundcards.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- .../devicetree/bindings/sound/qcom,q6prm.yaml | 43 +++++++++++++++++++
+ .../bindings/sound/qcom,sm8250.yaml           | 43 +++++++++++++++++++
  1 file changed, 43 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6prm.yaml
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6prm.yaml b/Documentation/devicetree/bindings/sound/qcom,q6prm.yaml
-new file mode 100644
-index 000000000000..6f14146c1ea1
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6prm.yaml
-@@ -0,0 +1,43 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/qcom,q6prm.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Q6 Proxy Resource Manager
-+
-+maintainers:
-+  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-+
-+description: |
-+  Proxy Resource Manager module is core module used to manage
-+  core dsp resources like clocks
-+
-+properties:
-+  compatible:
-+    const: qcom,q6prm
-+
-+  reg:
-+    maxItems: 1
-+
-+  '#clock-cells':
-+    const: 2
-+
-+required:
-+  - compatible
-+  - reg
-+  - '#clock-cells'
-+
-+additionalProperties: false
-+
-+examples:
+diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+index 72ad9ab91832..551f4fe04749 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+@@ -18,6 +18,8 @@ properties:
+     oneOf:
+       - const: qcom,sm8250-sndcard
+       - const: qcom,qrb5165-rb5-sndcard
++      - const: qcom,sm8250-audioreach-sndcard
++      - const: qcom,qrb5165-rb5-audioreach-sndcard
+ 
+   audio-routing:
+     $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+@@ -157,3 +159,44 @@ examples:
+             };
+         };
+     };
++#---------------------------
++# AudioReach based dai links
++#---------------------------
 +  - |
-+    gpr {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        gprservice@2 {
-+          compatible = "qcom,q6prm";
-+          reg = <2>;
-+          #clock-cells = <2>;
-+       };
-+    };
++    #include <dt-bindings/sound/qcom,q6apm.h>
++    sound {
++        compatible = "qcom,qrb5165-rb5-audioreach-sndcard";
++        model = "Qualcomm-qrb5165-RB5-WSA8815-Speakers-DMIC0";
++        audio-routing = "SpkrLeft IN", "WSA_SPK1 OUT",
++                    "SpkrRight IN", "WSA_SPK2 OUT";
++
++        wsa-dai-link {
++            link-name = "WSA Playback";
++            cpu {
++                sound-dai = <&q6apmbedai WSA_CODEC_DMA_RX_0>;
++            };
++
++            platform {
++                sound-dai = <&q6apm>;
++            };
++
++            codec {
++                sound-dai = <&left_spkr>, <&right_spkr>, <&swr0 0>, <&wsamacro>;
++            };
++        };
++
++        va-dai-link {
++            link-name = "VA Capture";
++            cpu {
++                sound-dai = <&q6apmbedai VA_CODEC_DMA_TX_0>;
++            };
++
++            platform {
++                sound-dai = <&q6apm>;
++            };
++
++            codec {
++                sound-dai = <&vamacro 0>;
++            };
++        };
++    }
 -- 
 2.21.0
 
