@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EFBDBC47082
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:21:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01835C47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:21:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6FB8F60FE9
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:21:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6FB8F60FE9
+	by mail.kernel.org (Postfix) with ESMTPS id 82A9E60FE9
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:21:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 82A9E60FE9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1E2FB17D2;
-	Tue,  8 Jun 2021 16:20:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E2FB17D2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2C1DD16F2;
+	Tue,  8 Jun 2021 16:20:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C1DD16F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623162070;
-	bh=SwpHOi2hGhzhjpOS7lL+aqHeVzD/HgrjJUhDl5cuW8g=;
+	s=default; t=1623162088;
+	bh=EWe65DrJ+mok7gl+MS1STeOR88hzkgdehmJQgEaPlho=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PSxMaMsUqt2SDA6TnKW5okqwg0fKHD0xlZ31pra1v7pR17YZIHsaU/tV/8wgCWg2F
-	 Dg87gpZT5ASD4SeT/HG+mw74Nd6rHVsnZ/N0cPywDk8h++8qJ1fBasQqZ9u76q9Khv
-	 Ptc39d1pS0mwfi/dALy4+jsW/ceDL98G926kzHyg=
+	b=Y6xzQtToO3tiqTg72+pW74+yIi3qdcbyhuNbu2TunPOu8B5JsNulUyS8IdOLaI0g+
+	 3CVJg0ZxIbbwbVK6IRD8aYFZAduGZO934PbBbgF0QrDk1xootOAaUJbwprpOCXUSeD
+	 gcLF9NNkryTuXOXY7nSdtBozBr1IZQKauwbjzBRs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B4D13F8050F;
-	Tue,  8 Jun 2021 16:07:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F2BAF8061C;
+	Tue,  8 Jun 2021 16:07:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C0FC9F80603; Tue,  8 Jun 2021 16:06:52 +0200 (CEST)
+ id 1774DF80536; Tue,  8 Jun 2021 16:06:53 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE110F804F2
+ by alsa1.perex.cz (Postfix) with ESMTPS id BEA26F804FA
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE110F804F2
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BEA26F804FA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="W8Zg2v7l"; 
+ header.b="F+1nRDn6"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="Q53fK63I"
+ header.b="MCAz7O9C"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id A16341FDF5
+ by smtp-out2.suse.de (Postfix) with ESMTP id C6FD21FDF6
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1623161145; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=KEaRCQtvHtSFkd8UrC/B/t4vuzYsPNzCceBREMLVJE4=;
- b=W8Zg2v7l3tBGYCQp3ftUvYmtdgp9cpCeZxIU14Eiyg9rta3yWbyLkZHCgKJF+KX9LhV4bb
- Mss5JjMoYgHTFHOLYYk/rWG/r27TGVwiSPIcB5a4/7fSq5QaqF7Fq3aBi49jmNw1hfc3D9
- f9SzEl8/dvoe9j0IhM83lH2saWlrmWc=
+ bh=UxL6ygppRuVuRIOnySsCavdhCCSMQyjQk/4Dot3lGZE=;
+ b=F+1nRDn6PfJF54hvEuSc7rzmk5nMwSxpbaFA0P/o+RC7WgDbKStuCblGP/m1mK3gJWxvmp
+ fVpRr1hpuvJJGQHHWhFff6D7nw24m0Jg0G1hrLLQ33+2+HaIylFXLmfrql+dPyzSREemz0
+ qPHsXz6g8ZS5Gv0mwMInSUWCn5zKdks=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1623161145;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=KEaRCQtvHtSFkd8UrC/B/t4vuzYsPNzCceBREMLVJE4=;
- b=Q53fK63IjgVpq7Sf7WUSDNKE7sQf+l08VFlpav3m/LCNS0kVE1SAcfW5KeCra+4rsMj5CQ
- UnQTU0NuqvOIV/Dg==
+ bh=UxL6ygppRuVuRIOnySsCavdhCCSMQyjQk/4Dot3lGZE=;
+ b=MCAz7O9CV5v3mcv4SNKbVcWkmgDrGY04yHkRt0+prgT/ttMdFIg5z8ragirsYQNEdCitpd
+ zh7OktYzUbmHdbDw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 92101A3B88;
+ by relay2.suse.de (Postfix) with ESMTP id B77F8A3B84;
  Tue,  8 Jun 2021 14:05:45 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 57/66] ALSA: pcmcia: Fix assignment in if condition
-Date: Tue,  8 Jun 2021 16:05:31 +0200
-Message-Id: <20210608140540.17885-58-tiwai@suse.de>
+Subject: [PATCH 61/66] ALSA: opl3: Fix assignment in if condition
+Date: Tue,  8 Jun 2021 16:05:35 +0200
+Message-Id: <20210608140540.17885-62-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210608140540.17885-1-tiwai@suse.de>
 References: <20210608140540.17885-1-tiwai@suse.de>
@@ -97,86 +97,180 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-PCMCIA VX222 and PDAudioCF drivers contain a few assignments in if
-condition, which is a bad coding style that may confuse readers and
-occasionally lead to bugs.
+OPL3 helper code contains a few assignments in if condition, which is
+a bad coding style that may confuse readers and occasionally lead to
+bugs.
 
 This patch is merely for coding-style fixes, no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pcmcia/pdaudiocf/pdaudiocf.c | 3 ++-
- sound/pcmcia/vx/vxp_mixer.c        | 6 ++++--
- sound/pcmcia/vx/vxp_ops.c          | 6 ++++--
- sound/pcmcia/vx/vxpocket.c         | 3 ++-
- 4 files changed, 12 insertions(+), 6 deletions(-)
+ sound/drivers/opl3/opl3_lib.c | 42 ++++++++++++++++++++++-------------
+ sound/drivers/opl3/opl3_oss.c |  6 +++--
+ sound/drivers/opl3/opl3_seq.c |  9 +++++---
+ 3 files changed, 37 insertions(+), 20 deletions(-)
 
-diff --git a/sound/pcmcia/pdaudiocf/pdaudiocf.c b/sound/pcmcia/pdaudiocf/pdaudiocf.c
-index 144582350a05..8363ec08df5d 100644
---- a/sound/pcmcia/pdaudiocf/pdaudiocf.c
-+++ b/sound/pcmcia/pdaudiocf/pdaudiocf.c
-@@ -170,7 +170,8 @@ static int snd_pdacf_assign_resources(struct snd_pdacf *pdacf, int port, int irq
- 	if (err < 0)
- 		return err;
+diff --git a/sound/drivers/opl3/opl3_lib.c b/sound/drivers/opl3/opl3_lib.c
+index 9259522483c8..6c1f1cc092d8 100644
+--- a/sound/drivers/opl3/opl3_lib.c
++++ b/sound/drivers/opl3/opl3_lib.c
+@@ -243,7 +243,8 @@ static int snd_opl3_timer1_init(struct snd_opl3 * opl3, int timer_no)
+ 	tid.card = opl3->card->number;
+ 	tid.device = timer_no;
+ 	tid.subdevice = 0;
+-	if ((err = snd_timer_new(opl3->card, "AdLib timer #1", &tid, &timer)) >= 0) {
++	err = snd_timer_new(opl3->card, "AdLib timer #1", &tid, &timer);
++	if (err >= 0) {
+ 		strcpy(timer->name, "AdLib timer #1");
+ 		timer->private_data = opl3;
+ 		timer->hw = snd_opl3_timer1;
+@@ -263,7 +264,8 @@ static int snd_opl3_timer2_init(struct snd_opl3 * opl3, int timer_no)
+ 	tid.card = opl3->card->number;
+ 	tid.device = timer_no;
+ 	tid.subdevice = 0;
+-	if ((err = snd_timer_new(opl3->card, "AdLib timer #2", &tid, &timer)) >= 0) {
++	err = snd_timer_new(opl3->card, "AdLib timer #2", &tid, &timer);
++	if (err >= 0) {
+ 		strcpy(timer->name, "AdLib timer #2");
+ 		timer->private_data = opl3;
+ 		timer->hw = snd_opl3_timer2;
+@@ -348,7 +350,8 @@ int snd_opl3_new(struct snd_card *card,
+ 	spin_lock_init(&opl3->reg_lock);
+ 	spin_lock_init(&opl3->timer_lock);
  
--	if ((err = snd_card_register(card)) < 0)
-+	err = snd_card_register(card);
-+	if (err < 0)
+-	if ((err = snd_device_new(card, SNDRV_DEV_CODEC, opl3, &ops)) < 0) {
++	err = snd_device_new(card, SNDRV_DEV_CODEC, opl3, &ops);
++	if (err < 0) {
+ 		snd_opl3_free(opl3);
  		return err;
- 
- 	return 0;
-diff --git a/sound/pcmcia/vx/vxp_mixer.c b/sound/pcmcia/vx/vxp_mixer.c
-index 0f59e4cca56d..bc2114475810 100644
---- a/sound/pcmcia/vx/vxp_mixer.c
-+++ b/sound/pcmcia/vx/vxp_mixer.c
-@@ -124,11 +124,13 @@ int vxp_add_mic_controls(struct vx_core *_chip)
- 	/* mic level */
- 	switch (_chip->type) {
- 	case VX_TYPE_VXPOCKET:
--		if ((err = snd_ctl_add(_chip->card, snd_ctl_new1(&vx_control_mic_level, chip))) < 0)
-+		err = snd_ctl_add(_chip->card, snd_ctl_new1(&vx_control_mic_level, chip));
-+		if (err < 0)
- 			return err;
- 		break;
- 	case VX_TYPE_VXP440:
--		if ((err = snd_ctl_add(_chip->card, snd_ctl_new1(&vx_control_mic_boost, chip))) < 0)
-+		err = snd_ctl_add(_chip->card, snd_ctl_new1(&vx_control_mic_boost, chip));
-+		if (err < 0)
- 			return err;
- 		break;
  	}
-diff --git a/sound/pcmcia/vx/vxp_ops.c b/sound/pcmcia/vx/vxp_ops.c
-index 45eeb0f57d59..4176abd73799 100644
---- a/sound/pcmcia/vx/vxp_ops.c
-+++ b/sound/pcmcia/vx/vxp_ops.c
-@@ -237,9 +237,11 @@ static int vxp_load_dsp(struct vx_core *vx, int index, const struct firmware *fw
- 	switch (index) {
- 	case 0:
- 		/* xilinx boot */
--		if ((err = vx_check_magic(vx)) < 0)
-+		err = vx_check_magic(vx);
-+		if (err < 0)
- 			return err;
--		if ((err = snd_vx_load_boot_image(vx, fw)) < 0)
-+		err = snd_vx_load_boot_image(vx, fw);
-+		if (err < 0)
- 			return err;
- 		return 0;
- 	case 1:
-diff --git a/sound/pcmcia/vx/vxpocket.c b/sound/pcmcia/vx/vxpocket.c
-index 636320489805..0dfb6a943b60 100644
---- a/sound/pcmcia/vx/vxpocket.c
-+++ b/sound/pcmcia/vx/vxpocket.c
-@@ -183,7 +183,8 @@ static int snd_vxpocket_assign_resources(struct vx_core *chip, int port, int irq
- 	chip->irq = irq;
- 	card->sync_irq = chip->irq;
+@@ -396,19 +399,23 @@ int snd_opl3_create(struct snd_card *card,
+ 	int err;
  
--	if ((err = snd_vx_setup_firmware(chip)) < 0)
-+	err = snd_vx_setup_firmware(chip);
+ 	*ropl3 = NULL;
+-	if ((err = snd_opl3_new(card, hardware, &opl3)) < 0)
++	err = snd_opl3_new(card, hardware, &opl3);
++	if (err < 0)
+ 		return err;
+ 	if (! integrated) {
+-		if ((opl3->res_l_port = request_region(l_port, 2, "OPL2/3 (left)")) == NULL) {
++		opl3->res_l_port = request_region(l_port, 2, "OPL2/3 (left)");
++		if (!opl3->res_l_port) {
+ 			snd_printk(KERN_ERR "opl3: can't grab left port 0x%lx\n", l_port);
+ 			snd_device_free(card, opl3);
+ 			return -EBUSY;
+ 		}
+-		if (r_port != 0 &&
+-		    (opl3->res_r_port = request_region(r_port, 2, "OPL2/3 (right)")) == NULL) {
+-			snd_printk(KERN_ERR "opl3: can't grab right port 0x%lx\n", r_port);
+-			snd_device_free(card, opl3);
+-			return -EBUSY;
++		if (r_port != 0) {
++			opl3->res_r_port = request_region(r_port, 2, "OPL2/3 (right)");
++			if (!opl3->res_r_port) {
++				snd_printk(KERN_ERR "opl3: can't grab right port 0x%lx\n", r_port);
++				snd_device_free(card, opl3);
++				return -EBUSY;
++			}
+ 		}
+ 	}
+ 	opl3->l_port = l_port;
+@@ -423,7 +430,8 @@ int snd_opl3_create(struct snd_card *card,
+ 		break;
+ 	default:
+ 		opl3->command = &snd_opl2_command;
+-		if ((err = snd_opl3_detect(opl3)) < 0) {
++		err = snd_opl3_detect(opl3);
++		if (err < 0) {
+ 			snd_printd("OPL2/3 chip not detected at 0x%lx/0x%lx\n",
+ 				   opl3->l_port, opl3->r_port);
+ 			snd_device_free(card, opl3);
+@@ -449,11 +457,14 @@ int snd_opl3_timer_new(struct snd_opl3 * opl3, int timer1_dev, int timer2_dev)
+ {
+ 	int err;
+ 
+-	if (timer1_dev >= 0)
+-		if ((err = snd_opl3_timer1_init(opl3, timer1_dev)) < 0)
++	if (timer1_dev >= 0) {
++		err = snd_opl3_timer1_init(opl3, timer1_dev);
++		if (err < 0)
+ 			return err;
++	}
+ 	if (timer2_dev >= 0) {
+-		if ((err = snd_opl3_timer2_init(opl3, timer2_dev)) < 0) {
++		err = snd_opl3_timer2_init(opl3, timer2_dev);
++		if (err < 0) {
+ 			snd_device_free(opl3->card, opl3->timer1);
+ 			opl3->timer1 = NULL;
+ 			return err;
+@@ -477,7 +488,8 @@ int snd_opl3_hwdep_new(struct snd_opl3 * opl3,
+ 
+ 	/* create hardware dependent device (direct FM) */
+ 
+-	if ((err = snd_hwdep_new(card, "OPL2/OPL3", device, &hw)) < 0) {
++	err = snd_hwdep_new(card, "OPL2/OPL3", device, &hw);
++	if (err < 0) {
+ 		snd_device_free(card, opl3);
+ 		return err;
+ 	}
+diff --git a/sound/drivers/opl3/opl3_oss.c b/sound/drivers/opl3/opl3_oss.c
+index c82c7c1c0714..7645365eec89 100644
+--- a/sound/drivers/opl3/opl3_oss.c
++++ b/sound/drivers/opl3/opl3_oss.c
+@@ -136,7 +136,8 @@ static int snd_opl3_open_seq_oss(struct snd_seq_oss_arg *arg, void *closure)
+ 	if (snd_BUG_ON(!arg))
+ 		return -ENXIO;
+ 
+-	if ((err = snd_opl3_synth_setup(opl3)) < 0)
++	err = snd_opl3_synth_setup(opl3);
 +	if (err < 0)
  		return err;
  
- 	return 0;
+ 	/* fill the argument data */
+@@ -144,7 +145,8 @@ static int snd_opl3_open_seq_oss(struct snd_seq_oss_arg *arg, void *closure)
+ 	arg->addr.client = opl3->oss_chset->client;
+ 	arg->addr.port = opl3->oss_chset->port;
+ 
+-	if ((err = snd_opl3_synth_use_inc(opl3)) < 0)
++	err = snd_opl3_synth_use_inc(opl3);
++	if (err < 0)
+ 		return err;
+ 
+ 	opl3->synth_mode = SNDRV_OPL3_MODE_SYNTH;
+diff --git a/sound/drivers/opl3/opl3_seq.c b/sound/drivers/opl3/opl3_seq.c
+index cd2a01b5e2e1..75de1299c3dc 100644
+--- a/sound/drivers/opl3/opl3_seq.c
++++ b/sound/drivers/opl3/opl3_seq.c
+@@ -92,7 +92,8 @@ static int snd_opl3_synth_use(void *private_data, struct snd_seq_port_subscribe
+ 	struct snd_opl3 *opl3 = private_data;
+ 	int err;
+ 
+-	if ((err = snd_opl3_synth_setup(opl3)) < 0)
++	err = snd_opl3_synth_setup(opl3);
++	if (err < 0)
+ 		return err;
+ 
+ 	if (use_internal_drums) {
+@@ -107,7 +108,8 @@ static int snd_opl3_synth_use(void *private_data, struct snd_seq_port_subscribe
+ 	}
+ 
+ 	if (info->sender.client != SNDRV_SEQ_CLIENT_SYSTEM) {
+-		if ((err = snd_opl3_synth_use_inc(opl3)) < 0)
++		err = snd_opl3_synth_use_inc(opl3);
++		if (err < 0)
+ 			return err;
+ 	}
+ 	opl3->synth_mode = SNDRV_OPL3_MODE_SEQ;
+@@ -227,7 +229,8 @@ static int snd_opl3_seq_probe(struct device *_dev)
+ 	if (client < 0)
+ 		return client;
+ 
+-	if ((err = snd_opl3_synth_create_port(opl3)) < 0) {
++	err = snd_opl3_synth_create_port(opl3);
++	if (err < 0) {
+ 		snd_seq_delete_kernel_client(client);
+ 		opl3->seq_client = -1;
+ 		return err;
 -- 
 2.26.2
 
