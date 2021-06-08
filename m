@@ -2,70 +2,88 @@ Return-Path: <SRS0=yD/C=LC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5DE6C47082
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 03:08:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 477D5C47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 06:44:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 238F96120F
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 03:08:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 238F96120F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=vivo.com
+	by mail.kernel.org (Postfix) with ESMTPS id 6CD3B61246
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 06:44:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6CD3B61246
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=wolke7.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CE6B01675;
-	Tue,  8 Jun 2021 05:07:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE6B01675
+	by alsa0.perex.cz (Postfix) with ESMTPS id 11B4C169B;
+	Tue,  8 Jun 2021 08:43:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11B4C169B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623121694;
-	bh=bVzv8Q3x92lvx1UgS0X6Pojx1Iq84GNHXfL4OJ8JCgQ=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1623134654;
+	bh=AGNIlE2Lxhi3FqaMf7DlqUw9z6wsyG1zyjS37ID+7dA=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=hikJduquw5nNQSsREeDuQtMuEeSYSAaGWk388lgYFMRrv64fwWu6PjtpeRq+R0esg
-	 USCE/J4OLIXYzZ2KrHfqsAKCVtpAIdY0hXB3YoBPHzVoQLTx09UhHNFyFyXfSE2O6x
-	 Sa4WXSjtJJMEq9b6onqYpZ+LdAU8bWQHaVaBt5Y0=
+	b=cQF5ne1+h2aWotvos8LlogkfRh5P+E83Ay9QyW+JVKUhd9vBvQIzvVvbf+US6M6IN
+	 dl4JY/jCWZz07AFYUiPCWfDjmJn55GHULAqq+fCCmf5QmmOl5qqIo01lcduhF95mQ9
+	 1cBqfK1WUoR9330NxJzJkFLSleQh73u8rwk+tZ+w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4EE0EF801EC;
-	Tue,  8 Jun 2021 05:07:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8E112F801EC;
+	Tue,  8 Jun 2021 08:43:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5ADC3F80218; Tue,  8 Jun 2021 05:07:20 +0200 (CEST)
-Received: from mail-m121144.qiye.163.com (mail-m121144.qiye.163.com
- [115.236.121.144])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 2CC11F80218; Tue,  8 Jun 2021 08:43:22 +0200 (CEST)
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7C157F800FD
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 05:07:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C157F800FD
-Received: from Wanjb.localdomain (unknown [36.152.145.182])
- by mail-m121144.qiye.163.com (Hmail) with ESMTPA id EA1F4AC0247;
- Tue,  8 Jun 2021 11:07:05 +0800 (CST)
-From: Wan Jiabing <wanjiabing@vivo.com>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@codeaurora.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: remove unneeded semicolons in wcd934x.c
-Date: Tue,  8 Jun 2021 11:06:55 +0800
-Message-Id: <20210608030656.24052-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.20.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id C4F9BF80116
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 08:43:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4F9BF80116
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net
+ header.b="kTIaMDGu"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+ s=badeba3b8450; t=1623134599;
+ bh=AGNIlE2Lxhi3FqaMf7DlqUw9z6wsyG1zyjS37ID+7dA=;
+ h=X-UI-Sender-Class:From:To:Subject:Date;
+ b=kTIaMDGuRGloEVf9s1mSqnUTh1YGUjGLlQCI+6SPmJXIU+iKmGCmlF5xcohz1i93U
+ EWvEJE+e0Ch1rRaOamVRujD+nIgNn2tOjVjiR+5qsm0k3C/GKB4Yuvl70MOKTZahzy
+ RH8Fl2JqkJZoHAlDQeX6HDbBu8FQzvCgdOoc3hi0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [93.194.223.136] ([93.194.223.136]) by web-mail.gmx.net
+ (3c-app-gmx-bs25.server.lan [172.19.170.77]) (via HTTP); Tue, 8 Jun 2021
+ 08:43:19 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
- oVCBIfWUFZGhoaQ1ZJTUIdGRpPHk1NSxpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
- hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Nyo6Hyo5Qz8VPw5MTjM3DTMO
- FU4KCRlVSlVKTUlISklKTUlNT0xKVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
- TVVKTklVSk9OVUpDSVlXWQgBWUFJT01ONwY+
-X-HM-Tid: 0a79e996840cb039kuuuea1f4ac0247
-Cc: Wan Jiabing <wanjiabing@vivo.com>
+Message-ID: <trinity-94e0c40f-401d-4d9e-84aa-f533d548ee7f-1623134599278@3c-app-gmx-bs25>
+From: Roman Muller <klangrausch@wolke7.net>
+To: alsa-devel@alsa-project.org
+Subject: Xone43C: USB communication
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 8 Jun 2021 08:43:19 +0200
+Importance: normal
+Sensitivity: Normal
+X-Priority: 3
+X-Provags-ID: V03:K1:P76v2fQerAcDiAfGJ0+1zgfEF976j0WkcmuQ1Y83OAz0VX5vqxZvrN4tDzw+db0wz6iw2
+ jTn77LawKRddQSY+6gBkqKI+BsK54ftd4CiV1L6jO1IEf/BeUIWAksT29989uVj/rMsqD/tYH608
+ Uh8PPjV9uvuVB5fNfPpVAhg7Q5cwfZDHXEnYPMqtR/9jDuUD21HJyCGz58SDrhD47cz6TwHc6ybJ
+ eisKK8Hu9qaGYeme/kYg0fxvB3TOXwPqHK0+/EHOYFCfTN4jMAVBM5JCo2OHyCuqoOGxkO/dsKKN
+ WM=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:VIQ0W2Dzpbo=:UG8KgqElruVtiNE4B+zxZ6
+ uwqmFdhQeIxZZluLxbFqIJ7YQAgxGOio6xse9ReOj/u1VlN1d2WjW1Hy5O3tsMK6fg8KaNtfl
+ /YTLfbLFhnOCJo4KBRt8uXQaagEja9fZOQbyyDsuJQJhx9Z47L04D9Cyf/cuz6ryPwe/7Hpve
+ 8bdPaxW7vm5W4A7HO3C1GAI1vIBb7KfmR9SlNhy8SMS2ApRoGk9LsievS48YaGG2enr/xc6io
+ UXEr3dxS4a66Wz2HnhqTdzstrIRkZJcMJjfcqTHXkCGbh/4Js58DQXs/8OD6NEzTjU42t8yh7
+ WyfEYi2yZV0ZwY9UL9wuGK7qLnATHPbhcb9kUkoKLPhBc9r4LvbvoGnUsADa8hTh3k1WGF7AG
+ gyBU5HRe9rMFwDwEnQMspHyV8Oeto+WU2lUQN/41JlRnJS/+YapeDe6YADABJpkogAJ/jiIBr
+ B5Saw2SFFF9Qv1LjQF7YsySuZ9rp3XYbkwKLjwoKFeBiwKXJLq8o2Zz8acCImCOwAKvFdYZsT
+ S3BxeiyeSFivvcJdps3Gz8MqSWrm46KRzHkQ64FMzvQgLgn1ZAnHpkQYmQjX09vK4v4Ay0Jwm
+ LG+WYOrtYMXpS4sl2hXDLX7LI0p4sAyBqp8awvZsjL8hccXlO1B3hYMU5o6AlWKc+L+6N3Q4C
+ ignLuj6y32zrxyiJROr9oO5+6vZeptJg1djxoLjiGjpnfjWS2OUiI7UTwO0fH/uyAl3uysBXm
+ A/XkN4Ky5rpjO7BzxY0xuK83UUsGaHULe8b40YnNHddf8Z6f9LBRQY4ViWm5UBtVbMjYTMc+M
+ kGHNGVasRaKUtQNjAA8nslo2ANXOyxzFDdbPkJ1dTTgEiFoEmX2lBAVltNUc7stoFbfDFs4
+Content-Transfer-Encoding: quoted-printable
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,47 +99,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix following coccicheck warning:
-./sound/soc/codecs/wcd934x.c:5136:2-3: Unneeded semicolon
-./sound/soc/codecs/wcd934x.c:2466:2-3: Unneeded semicolon
-./sound/soc/codecs/wcd934x.c:2527:2-3: Unneeded semicolon
+Hello Geraldo, hello all,
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- sound/soc/codecs/wcd934x.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+sorry for spamming the list with such minuscule details.
+Thank you for your message! I did not hear from other people yet,
+so it's probably safe to assume that no one else is already working on it.
+Adding a section to the quirks-table does not help, the vendor-specific
+interfaces still don't work. Obviously they need extra initialization.
 
-diff --git a/sound/soc/codecs/wcd934x.c b/sound/soc/codecs/wcd934x.c
-index 16fd1ab62609..c496b359f2f4 100644
---- a/sound/soc/codecs/wcd934x.c
-+++ b/sound/soc/codecs/wcd934x.c
-@@ -2463,7 +2463,7 @@ static int wcd934x_micbias_control(struct snd_soc_component *component,
- 		dev_err(component->dev, "%s: Invalid micbias number: %d\n",
- 			__func__, micb_num);
- 		return -EINVAL;
--	};
-+	}
- 	mutex_lock(&wcd934x->micb_lock);
- 
- 	switch (req) {
-@@ -2524,7 +2524,7 @@ static int wcd934x_micbias_control(struct snd_soc_component *component,
- 			wcd_mbhc_event_notify(wcd934x->mbhc,
- 					      WCD_EVENT_POST_DAPM_MICBIAS_2_OFF);
- 		break;
--	};
-+	}
- 
- 	mutex_unlock(&wcd934x->micb_lock);
- 
-@@ -5133,7 +5133,7 @@ static int wcd934x_codec_enable_micbias(struct snd_soc_dapm_widget *w,
- 	case SND_SOC_DAPM_POST_PMD:
- 		wcd934x_micbias_control(component, micb_num, MICB_DISABLE, true);
- 		break;
--	};
-+	}
- 
- 	return 0;
- }
--- 
-2.20.1
+Next step: sniffing again while running Windows in the vm.
+The interesting stuff is going on here:
+https://drive.google.com/file/d/1IlkR4ey9Gwsdrrf6jfOwNUVDtGcl_93-
+(Full log: https://drive.google.com/file/d/1VmSGVk8V1saw7qdPfbOH2d4HmZTrlz=
+xj)
 
+=46rom this I see several URB control messages going back and forth, for e=
+xample
+the host sending 80bbf0, and the device responding accordingly. A bit late=
+r,
+and after sending 44ac00 six times (hola!?!?) I get isodesc[0-7] cross-dev=
+ice
+link for input; and once more for output, and the device reports success. =
+These
+appear to be my eight channels. So far, so good for a first basic overview=
+ of
+the structure, but the tricky part is figuring out what message is doing w=
+hat.
+Only the manufacturer knows it, I need experiment and guessing
+with a lot of time and luck.
+Is there a common agreement where in the source code such control
+messages should be put? Probably an extra file?
+
+Best,
+Roman
