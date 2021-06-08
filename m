@@ -2,91 +2,92 @@ Return-Path: <SRS0=yD/C=LC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB7ACC4743E
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 12:36:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D606C47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 12:38:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F1F246135A
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 12:36:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F1F246135A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id E9A1D61360
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 12:38:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E9A1D61360
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8424F16CC;
-	Tue,  8 Jun 2021 14:35:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8424F16CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 56D9B16CA;
+	Tue,  8 Jun 2021 14:37:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 56D9B16CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623155765;
-	bh=ksgCOSj09XyVmszVdhSU7xO+Xrsy8JreHgRZDMEdRBo=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=eAPhG6pG+s6PEl4ItqtCVt9w1TFofbf7ES7HmKcbALeihPLEkL+JgjTM2sXq5lwGU
-	 BLYDGS+mtgD/MQrfKtp+aS4DYdbtDwx1AOWbG94t36FKzdpeWpuhA49z8Q8R9KEuv6
-	 ObGl0hwI604+sEe2vALM56mD6ryow4l/9KPJV6BQ=
+	s=default; t=1623155915;
+	bh=pbrfOJfZM5CYo8kKIZUYPO08LhPd/4ORKAYWfjU51Vk=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=mf56VQCS9jsPg7C88W10R5ZpQ++c+EfnXI2EJN2w+G0p5yJsb+xMPODVVb6LuqdEj
+	 BsV0Sy3+vkMRKH5WxQLlYbm/rBJRy6IoBD8n0j9C2l9kg5zHKECGJkuF0e8I33ygIB
+	 MyOk3wstbh5x4Qno8mJqYkYBU6flsH1OBHf18NT4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C5C8F8019B;
-	Tue,  8 Jun 2021 14:35:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EC34CF801EC;
+	Tue,  8 Jun 2021 14:37:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8C8D2F80218; Tue,  8 Jun 2021 14:35:13 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 93E40F80218; Tue,  8 Jun 2021 14:37:43 +0200 (CEST)
+Received: from m43-7.mailgun.net (m43-7.mailgun.net [69.72.43.7])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E66C6F8019B
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:35:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E66C6F8019B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 60E59F8019B
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:37:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60E59F8019B
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="KNppJYGl"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF5BD6135A;
- Tue,  8 Jun 2021 12:35:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1623155708;
- bh=ksgCOSj09XyVmszVdhSU7xO+Xrsy8JreHgRZDMEdRBo=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=KNppJYGlkWXDdfe66k7Rd90SRB2YRXGKYieIAru7ks+USnxNJqkFB7b0Il9FSZ4xO
- 9i7kATiATFbaCdQiL3AwaZ2GmU9A/eWSn3bYV8A5SAcySANn80BdPJLzuWA5LGUWfq
- Kkvv2foQboZY3dG/9cpUd+xSI0rnf7m8Go2YovWX/G7ZnGlImZyMiHUTFX8ddNkolo
- eOgqG+L5j+AZw7luRIMjjraNGxMRR0q5yOTRFYx82XsNZKmjKOGIzyuKmspG0HBjGs
- MakojXG/ejiYIRLNhIZmAiebx/DltBlNrAg2dCBc4izxNojx4p6dnvvN/bRvVw2N1r
- 9lhHSx8iBXaUw==
-Date: Tue, 8 Jun 2021 13:34:53 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Jerome Brunet <jbrunet@baylibre.com>
-Subject: Re: [PATCH 6/9] ASoC: fsl: switch to use
- snd_soc_daifmt_parse_format/clock_provider()
-Message-ID: <20210608123453.GC4200@sirena.org.uk>
-References: <875yypdxlm.wl-kuninori.morimoto.gx@renesas.com>
- <87wnr5ciyz.wl-kuninori.morimoto.gx@renesas.com>
- <1jo8cgre03.fsf@starbuckisacylon.baylibre.com>
+ dkim=pass (1024-bit key) header.d=mg.codeaurora.org
+ header.i=@mg.codeaurora.org header.b="tWOhQ4Ub"
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1623155857; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=UBlZJh5rI7/1dUw1Yk4HhHruAdp5yem1UjzvehIHwFY=;
+ b=tWOhQ4UbjHiWIlm+9U0sFfwhXMDr+Gn+bhbfNfdqLt6gZ/UD+OAZZzN0ZaqX4HO/RK/iD26B
+ wgzKaSXS2ynDm50I6/brD5r+jiRUfLwpLh+m19R+mz370wXUdGv7Fep0iVMyMf6S0vBVB+8h
+ jyZ8lOqXcS5eqpWmB3MG3ki4xMA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60bf647b2eaeb98b5ec639d3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 08 Jun 2021 12:37:15
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id 51FEAC43217; Tue,  8 Jun 2021 12:37:15 +0000 (UTC)
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: srivasam)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id D6AEFC433F1;
+ Tue,  8 Jun 2021 12:37:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D6AEFC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+ broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+ bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+ srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+ linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ swboyd@chromium.org, judyhsiao@chromium.org
+Subject: [PATCH v3] ASoC: qcom: Add four speaker support on MI2S secondary
+Date: Tue,  8 Jun 2021 18:06:44 +0530
+Message-Id: <20210608123644.31398-1-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="4ZLFUWh1odzi/v6L"
-Content-Disposition: inline
-In-Reply-To: <1jo8cgre03.fsf@starbuckisacylon.baylibre.com>
-X-Cookie: Auction:
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Timur Tabi <timur@kernel.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Xiubo Li <Xiubo.Lee@gmail.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- Shengjiu Wang <shengjiu.wang@gmail.com>, Sameer Pujar <spujar@nvidia.com>,
- Neil Armstrong <narmstrong@baylibre.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Kevin Hilman <khilman@baylibre.com>,
- Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
- Fabio Estevam <festevam@gmail.com>
+Content-Transfer-Encoding: 8bit
+Cc: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,44 +103,115 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Add four speaker support on MI2S secondary block
+by using I2S SD1 line on gpio52 pin, and add channel map
+control support in the lpass-cpu audio driver.
 
---4ZLFUWh1odzi/v6L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+---
+ sound/soc/qcom/lpass-cpu.c    | 40 ++++++++++++++++++++++++++++++++++-
+ sound/soc/qcom/lpass-sc7180.c |  1 +
+ sound/soc/qcom/lpass.h        |  8 ++++++-
+ 3 files changed, 47 insertions(+), 2 deletions(-)
 
-On Tue, Jun 08, 2021 at 09:50:52AM +0200, Jerome Brunet wrote:
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index c62d2612e8f5..d03cc359983a 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -324,10 +324,43 @@ const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops = {
+ };
+ EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cpu_dai_ops);
+ 
++int lpass_cpu_pcm_new(struct snd_soc_pcm_runtime *rtd,
++				struct snd_soc_dai *dai)
++{
++	int ret;
++	struct snd_soc_dai_driver *drv = dai->driver;
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++
++	ret =  snd_pcm_add_chmap_ctls(rtd->pcm, SNDRV_PCM_STREAM_PLAYBACK,
++			snd_pcm_alt_chmaps, drv->playback.channels_max, 0,
++			&drvdata->chmap_info);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(lpass_cpu_pcm_new);
++
+ int asoc_qcom_lpass_cpu_dai_probe(struct snd_soc_dai *dai)
+ {
+ 	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
+-	int ret;
++	struct snd_soc_dai_driver *drv = dai->driver;
++	int ret, i;
++
++	drvdata->rx_chmap.channels = drv->playback.channels_max;
++	drvdata->tx_chmap.channels = drv->playback.channels_max;
++
++	if (drv->playback.channels_max == 2)
++		drvdata->chmap_idx = 1;
++	else if (drv->playback.channels_max == 4)
++		drvdata->chmap_idx = 2;
++
++	for (i = 0; i < drv->playback.channels_max; i++) {
++		drvdata->tx_chmap.map[i] =
++				snd_pcm_alt_chmaps[drvdata->chmap_idx].map[i];
++		drvdata->rx_chmap.map[i] =
++				snd_pcm_alt_chmaps[drvdata->chmap_idx].map[i];
++	}
+ 
+ 	/* ensure audio hardware is disabled */
+ 	ret = regmap_write(drvdata->lpaif_map,
+@@ -856,6 +889,11 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
+ 				PTR_ERR(drvdata->mi2s_bit_clk[dai_id]));
+ 			return PTR_ERR(drvdata->mi2s_bit_clk[dai_id]);
+ 		}
++		if (drvdata->mi2s_playback_sd_mode[dai_id] ==
++			LPAIF_I2SCTL_MODE_QUAD01) {
++			variant->dai_driver[dai_id].playback.channels_min = 4;
++			variant->dai_driver[dai_id].playback.channels_max = 4;
++		}
+ 	}
+ 
+ 	/* Allocation for i2sctl regmap fields */
+diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
+index 8c168d3c589e..77a556b27cf0 100644
+--- a/sound/soc/qcom/lpass-sc7180.c
++++ b/sound/soc/qcom/lpass-sc7180.c
+@@ -58,6 +58,7 @@ static struct snd_soc_dai_driver sc7180_lpass_cpu_dai_driver[] = {
+ 		},
+ 		.probe	= &asoc_qcom_lpass_cpu_dai_probe,
+ 		.ops    = &asoc_qcom_lpass_cpu_dai_ops,
++		.pcm_new = lpass_cpu_pcm_new,
+ 	}, {
+ 		.id = LPASS_DP_RX,
+ 		.name = "Hdmi",
+diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
+index 83b2e08ade06..db239ea52946 100644
+--- a/sound/soc/qcom/lpass.h
++++ b/sound/soc/qcom/lpass.h
+@@ -110,6 +110,11 @@ struct lpass_data {
+ 	struct lpass_hdmitx_dmactl *hdmi_tx_dmactl[LPASS_MAX_HDMI_DMA_CHANNELS];
+ 	struct lpass_dp_metadata_ctl *meta_ctl;
+ 	struct lpass_sstream_ctl *sstream_ctl;
++	/* Channel map information */
++	struct snd_pcm_chmap *chmap_info;
++	struct snd_pcm_chmap_elem rx_chmap;
++	struct snd_pcm_chmap_elem tx_chmap;
++	int chmap_idx;
+ };
+ 
+ /* Vairant data per each SOC */
+@@ -259,5 +264,6 @@ void asoc_qcom_lpass_cpu_platform_shutdown(struct platform_device *pdev);
+ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev);
+ int asoc_qcom_lpass_cpu_dai_probe(struct snd_soc_dai *dai);
+ extern const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops;
+-
++int lpass_cpu_pcm_new(struct snd_soc_pcm_runtime *rtd,
++				struct snd_soc_dai *dai);
+ #endif /* __LPASS_H__ */
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-> I understand you are trying to fold some code but I'm not sure about this
-> snd_soc_daifmt_clock_provider_pickup().
-
-> Instead of repeating the if clause around DAIFMT (which is a bit verbose
-> but fairly easy to understand and maintain) there is now the calculation
-> of a made up constant (which is rather opaque as it is), which later
-> translate to the same type of test around DAIFMT.=20
-
-> I'd be in favor of dropping the snd_soc_daifmt_clock_provider_pickup()
-> part for the sake or readability. This apply to the rest of the series,
-> not just fsl.
-
-Yeah, I'm also just finding the _pickup() name unclear and can't really
-immediately think how to make it clearer - I think the bit being
-factored out needs to be at least as complex/unclear as the interface
-being introduced to do so.
-
---4ZLFUWh1odzi/v6L
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmC/Y+0ACgkQJNaLcl1U
-h9CZ2Af/dniFicYKlMwVzTiV1Nih7T1j+RxhLh1Xn46YJYlPgo623fb3uN6b6JZa
-rI8wmwAHK6ieHadimu6BN9xyHoqHLiXWEdSik0mgOApKdHs02iID8B+5RwDjIrW3
-e84hTeuqPQnocgaIs097SRLqZ00hFc69INX4QOZp9X9CudmuoPG/88vyiMKJp97e
-EIt+wNF4W1pxe8OG5Pdr/M1xy7eIWbM6fbkDzt6KR6CCJxJrHvuiDowKmeOnMHyN
-etDqhvEtQRbb3ZKv/113PjTT/MKyJlVPnwZMXHtAm4zLyh9l5XI4mYwdWPRCVokT
-EUnvKTA2wAqyYFWuvf8ZfV/RjKoZZw==
-=3F7H
------END PGP SIGNATURE-----
-
---4ZLFUWh1odzi/v6L--
