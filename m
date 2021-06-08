@@ -2,88 +2,77 @@ Return-Path: <SRS0=yD/C=LC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60070C47082
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 20:52:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F8DAC47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 23:51:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DB48B61185
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 20:52:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB48B61185
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 3CA246128E
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 23:51:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3CA246128E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2839916CA;
-	Tue,  8 Jun 2021 22:52:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2839916CA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8FC7116BF;
+	Wed,  9 Jun 2021 01:50:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FC7116BF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623185570;
-	bh=HlISz/6wVsEzQRRdwwTxX2g+2gHxVQw9vWLIsTOoQ6M=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1623196262;
+	bh=jyjfChppoqXXhTRYi0PU7ZSAmtDpWhFfj8DzsCNpjbE=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=c3pSn29qtKMqaBHZmKS0MlqtkJuHUyAXJ629FiXBjNm4sxoWLHiaR4qBhPXEsUeWF
-	 ItB3MCCSGKHlcJHeSggGFpAduNCPe+N5HVVmRpKbj8iuDoHxtzkCLSAm0K0vIkKwio
-	 ZKXi1yzFfDE5LlWxuoTlfqrL3hyZBhYotkXEJ3JA=
+	b=rpxbj9fQabBhYTWdI5AzUTEdNDyM7fHdGElhRAQ++XSU+6q375FGZrDI6+ywRzNxN
+	 2qVNU53Wp1FqW2cPGj/Ag9xScg4iBVNV3cKBtZzrQSpbHYhdRNYXQ2A77/kaHA6Ayg
+	 Mc1ijbiVC5DKlEiH2OrTvOa5ImkDyhyHDyfVclsU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00C33F80116;
-	Tue,  8 Jun 2021 22:51:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 20C2EF801EC;
+	Wed,  9 Jun 2021 01:50:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AADA0F801EC; Tue,  8 Jun 2021 22:51:11 +0200 (CEST)
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com
- [209.85.210.48])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 94B9FF801EC
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 22:51:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94B9FF801EC
-Received: by mail-ot1-f48.google.com with SMTP id
- i12-20020a05683033ecb02903346fa0f74dso21664748otu.10
- for <alsa-devel@alsa-project.org>; Tue, 08 Jun 2021 13:51:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
- :message-id;
- bh=i5ca9j8lK8pgPSfrs5VSvC3JrrRJ8T082ZN3VrHz6Dk=;
- b=ihvSz9NZSqizZthop+vYKYu1H3/YFwBqSkvQDJ8/3nRCjNuT0lHKOgMnAy0Hj0r1Sm
- L9VvHRhOwyKPjzPzK6ioEYQPl3lRhj0z/KZToWHzabfehkQwucd5LkEJ1WWOikARDY+N
- YUbwb7sPyXMQp5/pAWT4rjNegsEEEZ2bUVZA35cbTwVI9jcPu9vzd9Vld+gvGoy210CR
- 1pxl8gIuERUv9JZbsvlSKUM/pDtB8kHml7vr26R15hfEh04p83LxpOlGTcrdNGfKYpru
- XGAueYCtsTYA301yRaRV/XzhKzY1vYnV9gAfIbjlsqxm6sOGAN3ddwlmEWCpacrjeY2z
- gCuw==
-X-Gm-Message-State: AOAM531/dpb9IYQaVYms8l9JpbP2p0vB+OaLLK7JkZTKKHR2UvMPaRiw
- izCwtBR7bvJg63pqlieTug==
-X-Google-Smtp-Source: ABdhPJzxxcXmbBy9S9nq+NtNfhNl9dfkw8KfDjwV+1IBzsnUPC7075IUdOvwQSgV/Hjs1h1CM3uMYg==
-X-Received: by 2002:a05:6830:1196:: with SMTP id
- u22mr19182854otq.247.1623185461539; 
- Tue, 08 Jun 2021 13:51:01 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id l128sm3033425oif.16.2021.06.08.13.51.00
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 08 Jun 2021 13:51:01 -0700 (PDT)
-Received: (nullmailer pid 1556864 invoked by uid 1000);
- Tue, 08 Jun 2021 20:50:56 -0000
-From: Rob Herring <robh@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20210607152836.17154-13-srinivas.kandagatla@linaro.org>
-References: <20210607152836.17154-1-srinivas.kandagatla@linaro.org>
- <20210607152836.17154-13-srinivas.kandagatla@linaro.org>
-Subject: Re: [RFC PATCH 12/13] ASoC: qcom: dt-bindings: add audioreach
- soundcard compatibles
-Date: Tue, 08 Jun 2021 15:50:56 -0500
-Message-Id: <1623185456.805853.1556863.nullmailer@robh.at.kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, tiwai@suse.de, linux-kernel@vger.kernel.org,
- plai@codeaurora.org, lgirdwood@gmail.com, bjorn.andersson@linaro.org,
- broonie@kernel.org
+ id 0F78CF80218; Wed,  9 Jun 2021 01:50:11 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 67DEAF80116
+ for <alsa-devel@alsa-project.org>; Wed,  9 Jun 2021 01:50:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67DEAF80116
+Date: 09 Jun 2021 08:50:00 +0900
+X-IronPort-AV: E=Sophos;i="5.83,259,1616425200"; d="scan'208";a="83798820"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 09 Jun 2021 08:50:00 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 665F3400CA01;
+ Wed,  9 Jun 2021 08:50:00 +0900 (JST)
+Message-ID: <87eedbdihj.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 6/9] ASoC: fsl: switch to use
+ snd_soc_daifmt_parse_format/clock_provider()
+In-Reply-To: <20210608123453.GC4200@sirena.org.uk>
+References: <875yypdxlm.wl-kuninori.morimoto.gx@renesas.com>
+ <87wnr5ciyz.wl-kuninori.morimoto.gx@renesas.com>
+ <1jo8cgre03.fsf@starbuckisacylon.baylibre.com>
+ <20210608123453.GC4200@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Timur Tabi <timur@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>, Sameer Pujar <spujar@nvidia.com>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>,
+ Neil Armstrong <narmstrong@baylibre.com>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ Kevin Hilman <khilman@baylibre.com>,
+ Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>,
+ Jerome Brunet <jbrunet@baylibre.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,102 +88,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 07 Jun 2021 16:28:35 +0100, Srinivas Kandagatla wrote:
-> Add compatible strings for AudioReach DSP firmware based soundcards.
+
+Hi Jerome,  Mark
+
+Thank you for your feedback
+
+> > I understand you are trying to fold some code but I'm not sure about this
+> > snd_soc_daifmt_clock_provider_pickup().
 > 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  .../bindings/sound/qcom,sm8250.yaml           | 43 +++++++++++++++++++
->  1 file changed, 43 insertions(+)
+> > Instead of repeating the if clause around DAIFMT (which is a bit verbose
+> > but fairly easy to understand and maintain) there is now the calculation
+> > of a made up constant (which is rather opaque as it is), which later
+> > translate to the same type of test around DAIFMT. 
 > 
+> > I'd be in favor of dropping the snd_soc_daifmt_clock_provider_pickup()
+> > part for the sake or readability. This apply to the rest of the series,
+> > not just fsl.
+> 
+> Yeah, I'm also just finding the _pickup() name unclear and can't really
+> immediately think how to make it clearer - I think the bit being
+> factored out needs to be at least as complex/unclear as the interface
+> being introduced to do so.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Because there are many kind of use case,
+it was difficult to do this thing by 1 function.
+And indeed the naming was unclear.
 
-yamllint warnings/errors:
+Main purpose of this patch-set was that I want to have
+clock_provider related functions.
+But indeed it was a little overkill to force it to use it to
+existing drivers.
 
-dtschema/dtc warnings/errors:
-In file included from Documentation/devicetree/bindings/sound/qcom,sm8250.example.dts:116:
-./scripts/dtc/include-prefixes/dt-bindings/sound/qcom,q6apm.h:5: warning: "MSM_FRONTEND_DAI_MULTIMEDIA1" redefined
-    5 | #define MSM_FRONTEND_DAI_MULTIMEDIA1 1
-      | 
-In file included from Documentation/devicetree/bindings/sound/qcom,sm8250.example.dts:20:
-./scripts/dtc/include-prefixes/dt-bindings/sound/qcom,q6asm.h:5: note: this is the location of the previous definition
-    5 | #define MSM_FRONTEND_DAI_MULTIMEDIA1 0
-      | 
-In file included from Documentation/devicetree/bindings/sound/qcom,sm8250.example.dts:116:
-./scripts/dtc/include-prefixes/dt-bindings/sound/qcom,q6apm.h:6: warning: "MSM_FRONTEND_DAI_MULTIMEDIA2" redefined
-    6 | #define MSM_FRONTEND_DAI_MULTIMEDIA2 2
-      | 
-In file included from Documentation/devicetree/bindings/sound/qcom,sm8250.example.dts:20:
-./scripts/dtc/include-prefixes/dt-bindings/sound/qcom,q6asm.h:6: note: this is the location of the previous definition
-    6 | #define MSM_FRONTEND_DAI_MULTIMEDIA2 1
-      | 
-In file included from Documentation/devicetree/bindings/sound/qcom,sm8250.example.dts:116:
-./scripts/dtc/include-prefixes/dt-bindings/sound/qcom,q6apm.h:7: warning: "MSM_FRONTEND_DAI_MULTIMEDIA3" redefined
-    7 | #define MSM_FRONTEND_DAI_MULTIMEDIA3 3
-      | 
-In file included from Documentation/devicetree/bindings/sound/qcom,sm8250.example.dts:20:
-./scripts/dtc/include-prefixes/dt-bindings/sound/qcom,q6asm.h:7: note: this is the location of the previous definition
-    7 | #define MSM_FRONTEND_DAI_MULTIMEDIA3 2
-      | 
-In file included from Documentation/devicetree/bindings/sound/qcom,sm8250.example.dts:116:
-./scripts/dtc/include-prefixes/dt-bindings/sound/qcom,q6apm.h:8: warning: "MSM_FRONTEND_DAI_MULTIMEDIA4" redefined
-    8 | #define MSM_FRONTEND_DAI_MULTIMEDIA4 4
-      | 
-In file included from Documentation/devicetree/bindings/sound/qcom,sm8250.example.dts:20:
-./scripts/dtc/include-prefixes/dt-bindings/sound/qcom,q6asm.h:8: note: this is the location of the previous definition
-    8 | #define MSM_FRONTEND_DAI_MULTIMEDIA4 3
-      | 
-In file included from Documentation/devicetree/bindings/sound/qcom,sm8250.example.dts:116:
-./scripts/dtc/include-prefixes/dt-bindings/sound/qcom,q6apm.h:9: warning: "MSM_FRONTEND_DAI_MULTIMEDIA5" redefined
-    9 | #define MSM_FRONTEND_DAI_MULTIMEDIA5 5
-      | 
-In file included from Documentation/devicetree/bindings/sound/qcom,sm8250.example.dts:20:
-./scripts/dtc/include-prefixes/dt-bindings/sound/qcom,q6asm.h:9: note: this is the location of the previous definition
-    9 | #define MSM_FRONTEND_DAI_MULTIMEDIA5 4
-      | 
-In file included from Documentation/devicetree/bindings/sound/qcom,sm8250.example.dts:116:
-./scripts/dtc/include-prefixes/dt-bindings/sound/qcom,q6apm.h:10: warning: "MSM_FRONTEND_DAI_MULTIMEDIA6" redefined
-   10 | #define MSM_FRONTEND_DAI_MULTIMEDIA6 6
-      | 
-In file included from Documentation/devicetree/bindings/sound/qcom,sm8250.example.dts:20:
-./scripts/dtc/include-prefixes/dt-bindings/sound/qcom,q6asm.h:10: note: this is the location of the previous definition
-   10 | #define MSM_FRONTEND_DAI_MULTIMEDIA6 5
-      | 
-In file included from Documentation/devicetree/bindings/sound/qcom,sm8250.example.dts:116:
-./scripts/dtc/include-prefixes/dt-bindings/sound/qcom,q6apm.h:11: warning: "MSM_FRONTEND_DAI_MULTIMEDIA7" redefined
-   11 | #define MSM_FRONTEND_DAI_MULTIMEDIA7 7
-      | 
-In file included from Documentation/devicetree/bindings/sound/qcom,sm8250.example.dts:20:
-./scripts/dtc/include-prefixes/dt-bindings/sound/qcom,q6asm.h:11: note: this is the location of the previous definition
-   11 | #define MSM_FRONTEND_DAI_MULTIMEDIA7 6
-      | 
-In file included from Documentation/devicetree/bindings/sound/qcom,sm8250.example.dts:116:
-./scripts/dtc/include-prefixes/dt-bindings/sound/qcom,q6apm.h:12: warning: "MSM_FRONTEND_DAI_MULTIMEDIA8" redefined
-   12 | #define MSM_FRONTEND_DAI_MULTIMEDIA8 8
-      | 
-In file included from Documentation/devicetree/bindings/sound/qcom,sm8250.example.dts:20:
-./scripts/dtc/include-prefixes/dt-bindings/sound/qcom,q6asm.h:12: note: this is the location of the previous definition
-   12 | #define MSM_FRONTEND_DAI_MULTIMEDIA8 7
-      | 
-Error: Documentation/devicetree/bindings/sound/qcom,sm8250.example.dts:154.5-6 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/sound/qcom,sm8250.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1416: dt_binding_check] Error 2
-\ndoc reference errors (make refcheckdocs):
+I will fixup it in v2
 
-See https://patchwork.ozlabs.org/patch/1488759
+Thank you for your help !!
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+Best regards
+---
+Kuninori Morimoto
