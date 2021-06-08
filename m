@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E5BCC47082
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:26:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2C32C47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:27:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1DD5560FDB
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:26:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1DD5560FDB
+	by mail.kernel.org (Postfix) with ESMTPS id E5A69611BD
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:27:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E5A69611BD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD1041792;
-	Tue,  8 Jun 2021 16:25:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD1041792
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8365217A8;
+	Tue,  8 Jun 2021 16:26:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8365217A8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623162395;
-	bh=ojS34bKRzAWVyChP0ghZiGrVqY85MAfPLQF6hHu3mn4=;
+	s=default; t=1623162419;
+	bh=4x7atCLBwhXnTKWp9LGln2F1jYwDDFjyqm6lNKmdI48=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=e/zfUQ97UwXRRwc36ttTYg6pddMcOY5UfOuwO1Fm6MVA9Zpqee074LnAT7A7Rwh6H
-	 s/9ChwCBTfD2q1z3Cxd+zJNNAdN59GkLrH5aAzlMh9Da+sbvurMd8TWVeT13Pdf6wG
-	 FnqJDgTDc/GR/T1ifGPqCekhobNrPS+gsaG6gwXU=
+	b=E88L/ZFrYvCgaSG8HN5GFMmc5NdowqANnxushqn0aCmxZTe4w8L5mAylQZ3DFPJxB
+	 ZCFoc6z5lT4lVgZxSwBoSd1RPe2q2ZACqFlNd8xzXCJdr/IeK6q5AMojAaEvnqHfgc
+	 qRxaFn9deYSCKhv+va8AwferfTe8+kVZ482qlE94=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73CCAF8068A;
-	Tue,  8 Jun 2021 16:07:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 521E0F806E5;
+	Tue,  8 Jun 2021 16:07:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51A75F8061F; Tue,  8 Jun 2021 16:07:12 +0200 (CEST)
+ id F10C0F80517; Tue,  8 Jun 2021 16:07:13 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7A6EF80506
+ by alsa1.perex.cz (Postfix) with ESMTPS id F198EF80517
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7A6EF80506
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F198EF80517
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="Og9iVR+j"; 
+ header.b="kH9T1DPn"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="v5NpJP63"
+ header.b="o5ij+r/e"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 720F0219F7
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:45 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 9A554219E9
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1623161145; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1623161144; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ngBZWaAxRQ6VxkkqhATNt41+hkFq28+9VORY7vSqh98=;
- b=Og9iVR+j9LMZUi20saPKniFTkkBS3MrN6asN3TyMdXjXIk5KIEEPHwyG60R14L9xdL5GuR
- rCZm7KsapxeK/lcSZfBBaay6Cxy6CmjiBj3GsB6sBeshGk/CKJjxwGKYBr6PKJD5aX8Wg1
- TFKTBWpNySDbdejg7N8qf11xr1udmXw=
+ bh=Zrr4gQHCUKEw4VavQJPy1tbVXsA7gcjKqCUgUDfLD2g=;
+ b=kH9T1DPnl2Im/UoJ4fy7Q6xHsHYmNRkjhp6JlFLmgVvh0MoeV8WFI32k55Mhhla/5rvlkk
+ ZecDw2SzQvT5kbj3LBnnw2ce3nH6sEmN+YM24paxJLGSHOWawwORNEPt+Y1DhJsjEO+KQI
+ M0OOQ3Cg2WRnyUzY6MPjQ1NjvoqFwnk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1623161145;
+ s=susede2_ed25519; t=1623161144;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ngBZWaAxRQ6VxkkqhATNt41+hkFq28+9VORY7vSqh98=;
- b=v5NpJP63gJVg+ORzN8Nq65OrV85dDvTTi1NAUmibNkZ8gnGgaEg0KL33987C6Yatlr7Te4
- 0/gyVgOmoU+88HBQ==
+ bh=Zrr4gQHCUKEw4VavQJPy1tbVXsA7gcjKqCUgUDfLD2g=;
+ b=o5ij+r/ewLQ7xApvN8R6ZTZLL2DxaG+UL+QjFp/tI008LaIuJIGTSXYIIrTeYyKYCazkbo
+ qdpQEFE09QUo8xBw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 6B1C7A3B88;
- Tue,  8 Jun 2021 14:05:45 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 8A6AFA3B89;
+ Tue,  8 Jun 2021 14:05:44 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 54/66] ALSA: pcm: Fix assignment in if condition
-Date: Tue,  8 Jun 2021 16:05:28 +0200
-Message-Id: <20210608140540.17885-55-tiwai@suse.de>
+Subject: [PATCH 38/66] ALSA: cs5535audio: Fix assignment in if condition
+Date: Tue,  8 Jun 2021 16:05:12 +0200
+Message-Id: <20210608140540.17885-39-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210608140540.17885-1-tiwai@suse.de>
 References: <20210608140540.17885-1-tiwai@suse.de>
@@ -97,111 +97,133 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-There are a few places doing assignments in if condition in ALSA PCM
-core code, which is a bad coding style that may confuse readers and
-occasionally lead to bugs.
+PCI CS5535 driver code contains a few assignments in if condition,
+which is a bad coding style that may confuse readers and occasionally
+lead to bugs.
 
 This patch is merely for coding-style fixes, no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/pcm_compat.c |  6 ++++--
- sound/core/pcm_misc.c   | 12 ++++++++----
- sound/core/pcm_native.c |  6 ++++--
- 3 files changed, 16 insertions(+), 8 deletions(-)
+ sound/pci/cs5535audio/cs5535audio.c     | 28 ++++++++++++++++---------
+ sound/pci/cs5535audio/cs5535audio_pcm.c | 10 +++++----
+ 2 files changed, 24 insertions(+), 14 deletions(-)
 
-diff --git a/sound/core/pcm_compat.c b/sound/core/pcm_compat.c
-index 590a46a9e78d..a59de24695ec 100644
---- a/sound/core/pcm_compat.c
-+++ b/sound/core/pcm_compat.c
-@@ -239,7 +239,8 @@ static int snd_pcm_ioctl_hw_params_compat(struct snd_pcm_substream *substream,
- 	struct snd_pcm_runtime *runtime;
- 	int err;
+diff --git a/sound/pci/cs5535audio/cs5535audio.c b/sound/pci/cs5535audio/cs5535audio.c
+index 9b716b56d739..e048b45d9e7e 100644
+--- a/sound/pci/cs5535audio/cs5535audio.c
++++ b/sound/pci/cs5535audio/cs5535audio.c
+@@ -143,7 +143,8 @@ static int snd_cs5535audio_mixer(struct cs5535audio *cs5535au)
+ 		.read = snd_cs5535audio_ac97_codec_read,
+ 	};
  
--	if (! (runtime = substream->runtime))
-+	runtime = substream->runtime;
-+	if (!runtime)
- 		return -ENOTTY;
- 
- 	data = kmalloc(sizeof(*data), GFP_KERNEL);
-@@ -343,7 +344,8 @@ static int snd_pcm_ioctl_xfern_compat(struct snd_pcm_substream *substream,
- 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN)
- 		return -EBADFD;
- 
--	if ((ch = substream->runtime->channels) > 128)
-+	ch = substream->runtime->channels;
-+	if (ch > 128)
- 		return -EINVAL;
- 	if (get_user(buf, &data32->bufs) ||
- 	    get_user(frames, &data32->frames))
-diff --git a/sound/core/pcm_misc.c b/sound/core/pcm_misc.c
-index 257d412eac5d..4866aed97aac 100644
---- a/sound/core/pcm_misc.c
-+++ b/sound/core/pcm_misc.c
-@@ -266,7 +266,8 @@ int snd_pcm_format_signed(snd_pcm_format_t format)
- 	int val;
- 	if (!valid_format(format))
- 		return -EINVAL;
--	if ((val = pcm_formats[(INT)format].signd) < 0)
-+	val = pcm_formats[(INT)format].signd;
-+	if (val < 0)
- 		return -EINVAL;
- 	return val;
- }
-@@ -314,7 +315,8 @@ int snd_pcm_format_little_endian(snd_pcm_format_t format)
- 	int val;
- 	if (!valid_format(format))
- 		return -EINVAL;
--	if ((val = pcm_formats[(INT)format].le) < 0)
-+	val = pcm_formats[(INT)format].le;
-+	if (val < 0)
- 		return -EINVAL;
- 	return val;
- }
-@@ -350,7 +352,8 @@ int snd_pcm_format_width(snd_pcm_format_t format)
- 	int val;
- 	if (!valid_format(format))
- 		return -EINVAL;
--	if ((val = pcm_formats[(INT)format].width) == 0)
-+	val = pcm_formats[(INT)format].width;
-+	if (!val)
- 		return -EINVAL;
- 	return val;
- }
-@@ -368,7 +371,8 @@ int snd_pcm_format_physical_width(snd_pcm_format_t format)
- 	int val;
- 	if (!valid_format(format))
- 		return -EINVAL;
--	if ((val = pcm_formats[(INT)format].phys) == 0)
-+	val = pcm_formats[(INT)format].phys;
-+	if (!val)
- 		return -EINVAL;
- 	return val;
- }
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 11acea02bc74..eb468573f070 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -768,7 +768,8 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
- 
- 	if (cpu_latency_qos_request_active(&substream->latency_pm_qos_req))
- 		cpu_latency_qos_remove_request(&substream->latency_pm_qos_req);
--	if ((usecs = period_to_usecs(runtime)) >= 0)
-+	usecs = period_to_usecs(runtime);
-+	if (usecs >= 0)
- 		cpu_latency_qos_add_request(&substream->latency_pm_qos_req,
- 					    usecs);
- 	return 0;
-@@ -2658,7 +2659,8 @@ int snd_pcm_open_substream(struct snd_pcm *pcm, int stream,
- 		goto error;
- 	}
- 
--	if ((err = substream->ops->open(substream)) < 0)
-+	err = substream->ops->open(substream);
+-	if ((err = snd_ac97_bus(card, 0, &ops, NULL, &pbus)) < 0)
++	err = snd_ac97_bus(card, 0, &ops, NULL, &pbus);
 +	if (err < 0)
- 		goto error;
+ 		return err;
  
- 	substream->hw_opened = 1;
+ 	memset(&ac97, 0, sizeof(ac97));
+@@ -155,7 +156,8 @@ static int snd_cs5535audio_mixer(struct cs5535audio *cs5535au)
+ 	/* set any OLPC-specific scaps */
+ 	olpc_prequirks(card, &ac97);
+ 
+-	if ((err = snd_ac97_mixer(pbus, &ac97, &cs5535au->ac97)) < 0) {
++	err = snd_ac97_mixer(pbus, &ac97, &cs5535au->ac97);
++	if (err < 0) {
+ 		dev_err(card->dev, "mixer failed\n");
+ 		return err;
+ 	}
+@@ -266,7 +268,8 @@ static int snd_cs5535audio_create(struct snd_card *card,
+ 	};
+ 
+ 	*rcs5535au = NULL;
+-	if ((err = pci_enable_device(pci)) < 0)
++	err = pci_enable_device(pci);
++	if (err < 0)
+ 		return err;
+ 
+ 	if (dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(32))) {
+@@ -286,7 +289,8 @@ static int snd_cs5535audio_create(struct snd_card *card,
+ 	cs5535au->pci = pci;
+ 	cs5535au->irq = -1;
+ 
+-	if ((err = pci_request_regions(pci, "CS5535 Audio")) < 0) {
++	err = pci_request_regions(pci, "CS5535 Audio");
++	if (err < 0) {
+ 		kfree(cs5535au);
+ 		goto pcifail;
+ 	}
+@@ -304,8 +308,8 @@ static int snd_cs5535audio_create(struct snd_card *card,
+ 	card->sync_irq = cs5535au->irq;
+ 	pci_set_master(pci);
+ 
+-	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL,
+-				  cs5535au, &ops)) < 0)
++	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, cs5535au, &ops);
++	if (err < 0)
+ 		goto sndfail;
+ 
+ 	*rcs5535au = cs5535au;
+@@ -340,15 +344,18 @@ static int snd_cs5535audio_probe(struct pci_dev *pci,
+ 	if (err < 0)
+ 		return err;
+ 
+-	if ((err = snd_cs5535audio_create(card, pci, &cs5535au)) < 0)
++	err = snd_cs5535audio_create(card, pci, &cs5535au);
++	if (err < 0)
+ 		goto probefail_out;
+ 
+ 	card->private_data = cs5535au;
+ 
+-	if ((err = snd_cs5535audio_mixer(cs5535au)) < 0)
++	err = snd_cs5535audio_mixer(cs5535au);
++	if (err < 0)
+ 		goto probefail_out;
+ 
+-	if ((err = snd_cs5535audio_pcm(cs5535au)) < 0)
++	err = snd_cs5535audio_pcm(cs5535au);
++	if (err < 0)
+ 		goto probefail_out;
+ 
+ 	strcpy(card->driver, DRIVER_NAME);
+@@ -358,7 +365,8 @@ static int snd_cs5535audio_probe(struct pci_dev *pci,
+ 		card->shortname, card->driver,
+ 		cs5535au->port, cs5535au->irq);
+ 
+-	if ((err = snd_card_register(card)) < 0)
++	err = snd_card_register(card);
++	if (err < 0)
+ 		goto probefail_out;
+ 
+ 	pci_set_drvdata(pci, card);
+diff --git a/sound/pci/cs5535audio/cs5535audio_pcm.c b/sound/pci/cs5535audio/cs5535audio_pcm.c
+index 4032b89b1fc1..5ff10fec7b90 100644
+--- a/sound/pci/cs5535audio/cs5535audio_pcm.c
++++ b/sound/pci/cs5535audio/cs5535audio_pcm.c
+@@ -87,8 +87,9 @@ static int snd_cs5535audio_playback_open(struct snd_pcm_substream *substream)
+ 	snd_pcm_limit_hw_rates(runtime);
+ 	cs5535au->playback_substream = substream;
+ 	runtime->private_data = &(cs5535au->dmas[CS5535AUDIO_DMA_PLAYBACK]);
+-	if ((err = snd_pcm_hw_constraint_integer(runtime,
+-				SNDRV_PCM_HW_PARAM_PERIODS)) < 0)
++	err = snd_pcm_hw_constraint_integer(runtime,
++					    SNDRV_PCM_HW_PARAM_PERIODS);
++	if (err < 0)
+ 		return err;
+ 
+ 	return 0;
+@@ -342,8 +343,9 @@ static int snd_cs5535audio_capture_open(struct snd_pcm_substream *substream)
+ 	snd_pcm_limit_hw_rates(runtime);
+ 	cs5535au->capture_substream = substream;
+ 	runtime->private_data = &(cs5535au->dmas[CS5535AUDIO_DMA_CAPTURE]);
+-	if ((err = snd_pcm_hw_constraint_integer(runtime,
+-					 SNDRV_PCM_HW_PARAM_PERIODS)) < 0)
++	err = snd_pcm_hw_constraint_integer(runtime,
++					    SNDRV_PCM_HW_PARAM_PERIODS);
++	if (err < 0)
+ 		return err;
+ 	olpc_capture_open(cs5535au->ac97);
+ 	return 0;
 -- 
 2.26.2
 
