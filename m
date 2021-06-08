@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D30CEC4743E
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:10:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB650C47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:10:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3038D60FE9
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:10:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3038D60FE9
+	by mail.kernel.org (Postfix) with ESMTPS id 3024361078
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:10:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3024361078
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C0DE516FE;
-	Tue,  8 Jun 2021 16:09:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0DE516FE
+	by alsa0.perex.cz (Postfix) with ESMTPS id C313F171A;
+	Tue,  8 Jun 2021 16:09:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C313F171A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623161410;
-	bh=lvKCrZLd5gwmRxjjBenSSKAePxVY25oYXFN1jhpHDJ4=;
+	s=default; t=1623161435;
+	bh=jJBra0MhxW1522PRDcJFyqZRY73pOv32Kv5AhHgrprw=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DvJDZst9d0xPMuvyRsny0qMspLrkcZ6qpN7/h8ypYdgXaeo8Qi7teT1CcENomjlwR
-	 1vy7aB3JRevB8vVn9QrrSfvhCYO9CKRNS1ODifo0NPYWDGv2+tGBTNa6LpvaigFiQZ
-	 +Ws4o+HrzYvqeqG89rWRL776DoHvT/ztaYhG075Y=
+	b=myEik8xnqIdThYAsaQ9GFIL2BacSyxb2lOGQCd8ovX+LoWX7dVW30rwmhorek2i1m
+	 g5sLd5W23Rqe2ZatucO2ZPNYeAbvOJ6yGdnVcq7djdnXN2q1JNGISQrr6wb+/K8qOw
+	 81HBl/nMZuQ+mKoW1FuqwM7x2F3oxZqz5iTIJpbs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 88A7DF80567;
-	Tue,  8 Jun 2021 16:06:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19361F80566;
+	Tue,  8 Jun 2021 16:06:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A2A08F80256; Tue,  8 Jun 2021 16:06:08 +0200 (CEST)
+ id 7ABECF80557; Tue,  8 Jun 2021 16:06:08 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AB978F80256
+ by alsa1.perex.cz (Postfix) with ESMTPS id D5983F804AD
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB978F80256
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5983F804AD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="RPOiiNvh"; 
+ header.b="l7gkBm5T"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="+YxwL0EI"
+ header.b="kK+8hlLc"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 1F9A31FD55
+ by smtp-out2.suse.de (Postfix) with ESMTP id 592A81FD58
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1623161143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=r164ZoeX9+AfHhRZ8VIyrywW/15dU5dZNK+xcaYOV8U=;
- b=RPOiiNvhJt8uSgUcHhrh7WDtyuBe6QntiBFQxdW3HmGd0ZBbPayn7L+BmSfma5pq7DCEUx
- UJE7QOrPLkhyH1xdHHSUK1U4L0NZbYHz3Q7Up1/CHxe25wtI72qIjzwijOAg4gO5hvE8nS
- ON1jwCCA7RsfgJlHfV4boj+epoSzUa4=
+ bh=KYYO28bjeU8Exu1/ElDX7Ep5x15PkwvUSZJv08j/XB8=;
+ b=l7gkBm5Tcd4IK95KbNCPnYrYnzZH/SRxtlR+qedth1KyduVmDHkVa5EAAzIdl+mWn0Lw4Z
+ xcSHG2J6Y0S9xh7WWhwMbHQXih/X0y6wpgoMQIS45povRPlMzffeYrdSZET6uKS1tPJB++
+ CISDNY0bJVjBxBGu/PRsSNcjAp2GwH4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1623161143;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=r164ZoeX9+AfHhRZ8VIyrywW/15dU5dZNK+xcaYOV8U=;
- b=+YxwL0EIj+6rewcbRRxqPgBFgEZENcogEC2jrOGFD2GkEd1XGIv2d1b/R73V1f1LSOlxcO
- VuCSw7Xmd7BGyeBA==
+ bh=KYYO28bjeU8Exu1/ElDX7Ep5x15PkwvUSZJv08j/XB8=;
+ b=kK+8hlLcdWTq0lpiSIw4ivXhfdIxt7SkXKa/8s3sL/ozaBYQLFE26RNx71lBawIXXoflo1
+ BTeR1yTPMHA2vrDg==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 1BCEFA3B84;
+ by relay2.suse.de (Postfix) with ESMTP id 48AF7A3B84;
  Tue,  8 Jun 2021 14:05:43 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 11/66] ALSA: cmi8330: Fix assignment in if condition
-Date: Tue,  8 Jun 2021 16:04:45 +0200
-Message-Id: <20210608140540.17885-12-tiwai@suse.de>
+Subject: [PATCH 15/66] ALSA: ad1889: Fix assignment in if condition
+Date: Tue,  8 Jun 2021 16:04:49 +0200
+Message-Id: <20210608140540.17885-16-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210608140540.17885-1-tiwai@suse.de>
 References: <20210608140540.17885-1-tiwai@suse.de>
@@ -97,7 +97,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-ISA CMI8330 driver code contains lots of assignments in if condition,
+PCI AD1889 driver code contains a few assignments in if condition,
 which is a bad coding style that may confuse readers and occasionally
 lead to bugs.
 
@@ -105,106 +105,59 @@ This patch is merely for coding-style fixes, no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/isa/cmi8330.c | 37 +++++++++++++++++++++++--------------
- 1 file changed, 23 insertions(+), 14 deletions(-)
+ sound/pci/ad1889.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/sound/isa/cmi8330.c b/sound/isa/cmi8330.c
-index bc112df10fc5..6c59a3eec59b 100644
---- a/sound/isa/cmi8330.c
-+++ b/sound/isa/cmi8330.c
-@@ -284,7 +284,8 @@ static int cmi8330_add_sb_mixers(struct snd_sb *chip)
- 	}
+diff --git a/sound/pci/ad1889.c b/sound/pci/ad1889.c
+index 4520022801d9..5c78951dd596 100644
+--- a/sound/pci/ad1889.c
++++ b/sound/pci/ad1889.c
+@@ -852,7 +852,8 @@ snd_ad1889_create(struct snd_card *card,
  
- 	for (idx = 0; idx < ARRAY_SIZE(cmi8330_sb_mixers); idx++) {
--		if ((err = snd_sbmixer_add_ctl_elem(chip, &cmi8330_sb_mixers[idx])) < 0)
-+		err = snd_sbmixer_add_ctl_elem(chip, &cmi8330_sb_mixers[idx]);
-+		if (err < 0)
- 			return err;
- 	}
- 	return 0;
-@@ -307,7 +308,8 @@ static int snd_cmi8330_mixer(struct snd_card *card, struct snd_cmi8330 *acard)
- 	}
+ 	*rchip = NULL;
  
- #ifdef ENABLE_SB_MIXER
--	if ((err = cmi8330_add_sb_mixers(acard->sb)) < 0)
-+	err = cmi8330_add_sb_mixers(acard->sb);
+-	if ((err = pci_enable_device(pci)) < 0)
++	err = pci_enable_device(pci);
 +	if (err < 0)
  		return err;
- #endif
- 	return 0;
-@@ -432,7 +434,8 @@ static int snd_cmi8330_pcm(struct snd_card *card, struct snd_cmi8330 *chip)
- 		snd_cmi8330_capture_open
- 	};
  
--	if ((err = snd_pcm_new(card, (chip->type == CMI8329) ? "CMI8329" : "CMI8330", 0, 1, 1, &pcm)) < 0)
-+	err = snd_pcm_new(card, (chip->type == CMI8329) ? "CMI8329" : "CMI8330", 0, 1, 1, &pcm);
+ 	/* check PCI availability (32bit DMA) */
+@@ -863,7 +864,8 @@ snd_ad1889_create(struct snd_card *card,
+ 	}
+ 
+ 	/* allocate chip specific data with zero-filled memory */
+-	if ((chip = kzalloc(sizeof(*chip), GFP_KERNEL)) == NULL) {
++	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
++	if (!chip) {
+ 		pci_disable_device(pci);
+ 		return -ENOMEM;
+ 	}
+@@ -874,7 +876,8 @@ snd_ad1889_create(struct snd_card *card,
+ 	chip->irq = -1;
+ 
+ 	/* (1) PCI resource allocation */
+-	if ((err = pci_request_regions(pci, card->driver)) < 0)
++	err = pci_request_regions(pci, card->driver);
 +	if (err < 0)
- 		return err;
- 	strcpy(pcm->name, (chip->type == CMI8329) ? "CMI8329" : "CMI8330");
- 	pcm->private_data = chip;
-@@ -536,12 +539,13 @@ static int snd_cmi8330_probe(struct snd_card *card, int dev)
- 		return -ENODEV;
- 	}
+ 		goto free_and_ret;
  
--	if ((err = snd_sbdsp_create(card, sbport[dev],
--				    sbirq[dev],
--				    snd_sb16dsp_interrupt,
--				    sbdma8[dev],
--				    sbdma16[dev],
--				    SB_HW_AUTO, &acard->sb)) < 0) {
-+	err = snd_sbdsp_create(card, sbport[dev],
-+			       sbirq[dev],
-+			       snd_sb16dsp_interrupt,
-+			       sbdma8[dev],
-+			       sbdma16[dev],
-+			       SB_HW_AUTO, &acard->sb);
-+	if (err < 0) {
- 		snd_printk(KERN_ERR PFX "SB16 device busy??\n");
- 		return err;
- 	}
-@@ -555,12 +559,14 @@ static int snd_cmi8330_probe(struct snd_card *card, int dev)
- 		snd_wss_out(acard->wss, i,
- 			    snd_cmi8330_image[i - CMI8330_RMUX3D]);
+ 	chip->bar = pci_resource_start(pci, 0);
+@@ -900,12 +903,14 @@ snd_ad1889_create(struct snd_card *card,
+ 	card->sync_irq = chip->irq;
  
--	if ((err = snd_cmi8330_mixer(card, acard)) < 0) {
-+	err = snd_cmi8330_mixer(card, acard);
+ 	/* (2) initialization of the chip hardware */
+-	if ((err = snd_ad1889_init(chip)) < 0) {
++	err = snd_ad1889_init(chip);
 +	if (err < 0) {
- 		snd_printk(KERN_ERR PFX "failed to create mixers\n");
+ 		snd_ad1889_free(chip);
  		return err;
  	}
  
--	if ((err = snd_cmi8330_pcm(card, acard)) < 0) {
-+	err = snd_cmi8330_pcm(card, acard);
+-	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
++	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
 +	if (err < 0) {
- 		snd_printk(KERN_ERR PFX "failed to create pcms\n");
+ 		snd_ad1889_free(chip);
  		return err;
- 	}
-@@ -622,7 +628,8 @@ static int snd_cmi8330_isa_probe(struct device *pdev,
- 	err = snd_cmi8330_card_new(pdev, dev, &card);
- 	if (err < 0)
- 		return err;
--	if ((err = snd_cmi8330_probe(card, dev)) < 0) {
-+	err = snd_cmi8330_probe(card, dev);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
-@@ -683,12 +690,14 @@ static int snd_cmi8330_pnp_detect(struct pnp_card_link *pcard,
- 	res = snd_cmi8330_card_new(&pcard->card->dev, dev, &card);
- 	if (res < 0)
- 		return res;
--	if ((res = snd_cmi8330_pnp(dev, card->private_data, pcard, pid)) < 0) {
-+	res = snd_cmi8330_pnp(dev, card->private_data, pcard, pid);
-+	if (res < 0) {
- 		snd_printk(KERN_ERR PFX "PnP detection failed\n");
- 		snd_card_free(card);
- 		return res;
- 	}
--	if ((res = snd_cmi8330_probe(card, dev)) < 0) {
-+	res = snd_cmi8330_probe(card, dev);
-+	if (res < 0) {
- 		snd_card_free(card);
- 		return res;
  	}
 -- 
 2.26.2
