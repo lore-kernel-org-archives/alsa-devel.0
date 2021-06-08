@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BE1BC4743E
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:23:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66118C47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:24:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 04A5D6135A
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:23:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 04A5D6135A
+	by mail.kernel.org (Postfix) with ESMTPS id B1B3C611BD
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:24:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B1B3C611BD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 83AB61820;
-	Tue,  8 Jun 2021 16:22:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83AB61820
+	by alsa0.perex.cz (Postfix) with ESMTPS id 539B917F2;
+	Tue,  8 Jun 2021 16:23:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 539B917F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623162227;
-	bh=911+jmPkBius6j83n0O9C7FvusYJaz5xeY+iHY1XPkk=;
+	s=default; t=1623162265;
+	bh=qb5KpQKULGkCQ0KTNVj8iSeRxKoGCeB3+hroGIsqmS4=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EHEk3Js5KA1YtWAwU2Y5uGjCOV07gzYhMsGZDboKeTnBQj/5qhNHGK9lZvvIkZCc0
-	 QHei74SFJVtloeBve4Am5dn6hoTT8LDaXMFJkQx4avmroKJFMwZ+CoJW0NMUx0PEbp
-	 0O/x//W3TIhJFxQw1A0n8TVfTtLK3MsA0NkykH2I=
+	b=SZE65ZnOEME8+EU8U8Ml27/HnnPQvn3kHK/Gofihuxe8D8hWTfiGjmxeMnDEcX7Cn
+	 0fthcus+tYXVyLce47gVLYiRcGrPewMbDQ2d+ACapv06epdaU/Ma7Q8c8xxjPszGtm
+	 bbgZczrdT+/MK9bU6HgogP55/qMoyOIgjlvnn9NU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4EBE0F8065A;
-	Tue,  8 Jun 2021 16:07:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B05AF80676;
+	Tue,  8 Jun 2021 16:07:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 40322F8060C; Tue,  8 Jun 2021 16:07:00 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id DB0EBF80614; Tue,  8 Jun 2021 16:07:01 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5AC97F804FE
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AC97F804FE
+ by alsa1.perex.cz (Postfix) with ESMTPS id D1A12F804FC
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1A12F804FC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="wsb0+OKm"; 
+ header.b="xajC1/GG"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="nvp9P5PO"
+ header.b="T2XuTzzH"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 4A87D219DF
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:43 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 0618C1FDF8
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1623161143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1623161146; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=oD2IyxSC/XolnBEa4F4v/ISC8iZKSqSsYZ4AEMT4QXU=;
- b=wsb0+OKmIKgMTDFIMzqBbaG0JEjpyn2yPOdaHREzNkVxUEvwSTrqI/Ei0wKQW8NtJC7gnT
- d4dc8LJnjulhNqgO6b8Bg1Hlk8BIRvnoJv1ftPztuD49IfqjDk60j+6BbFQEXliIUZ4krt
- PU6JkmZvPUF+5qFpQwQEX3jc23WqSAM=
+ bh=5nJFTD0gHOknziS1n7jxybqCEtKQfBolVx/wxrqk1is=;
+ b=xajC1/GGP9fezIee/GU6b8zWhlrDhxon5CsSTY5cqAIXtzg3I8ilPHwLLxgvGpD3DdCBN5
+ iq/eMFBesUcNKlWFelMphAkiScBDTGQhPzrPSHVZafIxdClJ0QWrzWI3aiytWGMQjbiFbe
+ 64dPc+nd9RBYUcR9t3q6k3FBHYvEc6s=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1623161143;
+ s=susede2_ed25519; t=1623161146;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=oD2IyxSC/XolnBEa4F4v/ISC8iZKSqSsYZ4AEMT4QXU=;
- b=nvp9P5POeK5A0368jpcqo7sG6IP4SSQIPHJ3GRBIu5AqIhQPmQEiyeQ1ry6/ObDmvfvK8m
- fsxR6Kgc3GDrWuBw==
+ bh=5nJFTD0gHOknziS1n7jxybqCEtKQfBolVx/wxrqk1is=;
+ b=T2XuTzzHVUKFL5rLMTFgOcf/vswjTekGEVt424SQOf7GYs97Z9ZireFDJ5Hk3/VDgXWcNF
+ wUl5RL46RKFHJcAA==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 3AD0DA3B85;
- Tue,  8 Jun 2021 14:05:43 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id EA4C6A3B84;
+ Tue,  8 Jun 2021 14:05:45 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 14/66] ALSA: isa: Fix assignment in if condition
-Date: Tue,  8 Jun 2021 16:04:48 +0200
-Message-Id: <20210608140540.17885-15-tiwai@suse.de>
+Subject: [PATCH 65/66] ALSA: i2c: Fix assignment in if condition
+Date: Tue,  8 Jun 2021 16:05:39 +0200
+Message-Id: <20210608140540.17885-66-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210608140540.17885-1-tiwai@suse.de>
 References: <20210608140540.17885-1-tiwai@suse.de>
@@ -97,66 +97,204 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-ISA ES1688 and WSS  driver code contains a few assignments in if
-condition, which is a bad coding style that may confuse readers and
-occasionally lead to bugs.
+ALSA I2C helper drivers contain a few assignments in if condition,
+which is a bad coding style that may confuse readers and occasionally
+lead to bugs.
 
 This patch is merely for coding-style fixes, no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/isa/es1688/es1688_lib.c | 3 ++-
- sound/isa/wss/wss_lib.c       | 9 ++++++---
- 2 files changed, 8 insertions(+), 4 deletions(-)
+ sound/i2c/cs8427.c       | 24 ++++++++++++++++--------
+ sound/i2c/other/ak4114.c |  3 ++-
+ sound/i2c/other/ak4117.c |  3 ++-
+ sound/i2c/tea6330t.c     | 24 ++++++++++++++++--------
+ 4 files changed, 36 insertions(+), 18 deletions(-)
 
-diff --git a/sound/isa/es1688/es1688_lib.c b/sound/isa/es1688/es1688_lib.c
-index 1816e55c6edf..8554cb2263c1 100644
---- a/sound/isa/es1688/es1688_lib.c
-+++ b/sound/isa/es1688/es1688_lib.c
-@@ -971,7 +971,8 @@ int snd_es1688_mixer(struct snd_card *card, struct snd_es1688 *chip)
- 	strcpy(card->mixername, snd_es1688_chip_id(chip));
+diff --git a/sound/i2c/cs8427.c b/sound/i2c/cs8427.c
+index 8634d4f466b3..65012af6a36e 100644
+--- a/sound/i2c/cs8427.c
++++ b/sound/i2c/cs8427.c
+@@ -50,7 +50,8 @@ int snd_cs8427_reg_write(struct snd_i2c_device *device, unsigned char reg,
  
- 	for (idx = 0; idx < ARRAY_SIZE(snd_es1688_controls); idx++) {
--		if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_es1688_controls[idx], chip))) < 0)
-+		err = snd_ctl_add(card, snd_ctl_new1(&snd_es1688_controls[idx], chip));
-+		if (err < 0)
- 			return err;
+ 	buf[0] = reg & 0x7f;
+ 	buf[1] = val;
+-	if ((err = snd_i2c_sendbytes(device, buf, 2)) != 2) {
++	err = snd_i2c_sendbytes(device, buf, 2);
++	if (err != 2) {
+ 		snd_printk(KERN_ERR "unable to send bytes 0x%02x:0x%02x "
+ 			   "to CS8427 (%i)\n", buf[0], buf[1], err);
+ 		return err < 0 ? err : -EIO;
+@@ -65,12 +66,14 @@ static int snd_cs8427_reg_read(struct snd_i2c_device *device, unsigned char reg)
+ 	int err;
+ 	unsigned char buf;
+ 
+-	if ((err = snd_i2c_sendbytes(device, &reg, 1)) != 1) {
++	err = snd_i2c_sendbytes(device, &reg, 1);
++	if (err != 1) {
+ 		snd_printk(KERN_ERR "unable to send register 0x%x byte "
+ 			   "to CS8427\n", reg);
+ 		return err < 0 ? err : -EIO;
  	}
- 	for (idx = 0; idx < ES1688_INIT_TABLE_SIZE; idx++) {
-diff --git a/sound/isa/wss/wss_lib.c b/sound/isa/wss/wss_lib.c
-index ea5d3cdfe4e4..743e0f05e335 100644
---- a/sound/isa/wss/wss_lib.c
-+++ b/sound/isa/wss/wss_lib.c
-@@ -1493,7 +1493,8 @@ static int snd_wss_playback_open(struct snd_pcm_substream *substream)
- 	snd_pcm_limit_isa_dma_size(chip->dma1, &runtime->hw.period_bytes_max);
+-	if ((err = snd_i2c_readbytes(device, &buf, 1)) != 1) {
++	err = snd_i2c_readbytes(device, &buf, 1);
++	if (err != 1) {
+ 		snd_printk(KERN_ERR "unable to read register 0x%x byte "
+ 			   "from CS8427\n", reg);
+ 		return err < 0 ? err : -EIO;
+@@ -108,7 +111,8 @@ static int snd_cs8427_send_corudata(struct snd_i2c_device *device,
  
- 	if (chip->claim_dma) {
--		if ((err = chip->claim_dma(chip, chip->dma_private_data, chip->dma1)) < 0)
-+		err = chip->claim_dma(chip, chip->dma_private_data, chip->dma1);
-+		if (err < 0)
- 			return err;
- 	}
- 
-@@ -1533,7 +1534,8 @@ static int snd_wss_capture_open(struct snd_pcm_substream *substream)
- 	snd_pcm_limit_isa_dma_size(chip->dma2, &runtime->hw.period_bytes_max);
- 
- 	if (chip->claim_dma) {
--		if ((err = chip->claim_dma(chip, chip->dma_private_data, chip->dma2)) < 0)
-+		err = chip->claim_dma(chip, chip->dma_private_data, chip->dma2);
-+		if (err < 0)
- 			return err;
- 	}
- 
-@@ -1934,7 +1936,8 @@ int snd_wss_timer(struct snd_wss *chip, int device)
- 	tid.card = chip->card->number;
- 	tid.device = device;
- 	tid.subdevice = 0;
--	if ((err = snd_timer_new(chip->card, "CS4231", &tid, &timer)) < 0)
-+	err = snd_timer_new(chip->card, "CS4231", &tid, &timer);
+ 	if (!memcmp(hw_data, ndata, count))
+ 		return 0;
+-	if ((err = snd_cs8427_select_corudata(device, udata)) < 0)
++	err = snd_cs8427_select_corudata(device, udata);
 +	if (err < 0)
  		return err;
- 	strcpy(timer->name, snd_wss_chip_id(chip));
- 	timer->private_data = chip;
+ 	memcpy(hw_data, ndata, count);
+ 	if (udata) {
+@@ -209,7 +213,8 @@ int snd_cs8427_init(struct snd_i2c_bus *bus,
+ 		goto __fail;
+ 	/* send initial values */
+ 	memcpy(chip->regmap + (initvals1[0] & 0x7f), initvals1 + 1, 6);
+-	if ((err = snd_i2c_sendbytes(device, initvals1, 7)) != 7) {
++	err = snd_i2c_sendbytes(device, initvals1, 7);
++	if (err != 7) {
+ 		err = err < 0 ? err : -EIO;
+ 		goto __fail;
+ 	}
+@@ -217,11 +222,13 @@ int snd_cs8427_init(struct snd_i2c_bus *bus,
+ 	memset(buf, 0, 7);
+ 	/* from address 9 to 15 */
+ 	buf[0] = 9;	/* register */
+-	if ((err = snd_i2c_sendbytes(device, buf, 7)) != 7)
++	err = snd_i2c_sendbytes(device, buf, 7);
++	if (err != 7)
+ 		goto __fail;
+ 	/* send transfer initialization sequence */
+ 	memcpy(chip->regmap + (initvals2[0] & 0x7f), initvals2 + 1, 3);
+-	if ((err = snd_i2c_sendbytes(device, initvals2, 4)) != 4) {
++	err = snd_i2c_sendbytes(device, initvals2, 4);
++	if (err != 4) {
+ 		err = err < 0 ? err : -EIO;
+ 		goto __fail;
+ 	}
+@@ -383,7 +390,8 @@ static int snd_cs8427_qsubcode_get(struct snd_kcontrol *kcontrol,
+ 	int err;
+ 
+ 	snd_i2c_lock(device->bus);
+-	if ((err = snd_i2c_sendbytes(device, &reg, 1)) != 1) {
++	err = snd_i2c_sendbytes(device, &reg, 1);
++	if (err != 1) {
+ 		snd_printk(KERN_ERR "unable to send register 0x%x byte "
+ 			   "to CS8427\n", reg);
+ 		snd_i2c_unlock(device->bus);
+diff --git a/sound/i2c/other/ak4114.c b/sound/i2c/other/ak4114.c
+index 2ce0a97957ab..c0cffe28989b 100644
+--- a/sound/i2c/other/ak4114.c
++++ b/sound/i2c/other/ak4114.c
+@@ -97,7 +97,8 @@ int snd_ak4114_create(struct snd_card *card,
+ 	chip->rcs0 = reg_read(chip, AK4114_REG_RCS0) & ~(AK4114_QINT | AK4114_CINT);
+ 	chip->rcs1 = reg_read(chip, AK4114_REG_RCS1);
+ 
+-	if ((err = snd_device_new(card, SNDRV_DEV_CODEC, chip, &ops)) < 0)
++	err = snd_device_new(card, SNDRV_DEV_CODEC, chip, &ops);
++	if (err < 0)
+ 		goto __fail;
+ 
+ 	if (r_ak4114)
+diff --git a/sound/i2c/other/ak4117.c b/sound/i2c/other/ak4117.c
+index 905be2d0780b..1bc43e927d82 100644
+--- a/sound/i2c/other/ak4117.c
++++ b/sound/i2c/other/ak4117.c
+@@ -86,7 +86,8 @@ int snd_ak4117_create(struct snd_card *card, ak4117_read_t *read, ak4117_write_t
+ 	chip->rcs1 = reg_read(chip, AK4117_REG_RCS1);
+ 	chip->rcs2 = reg_read(chip, AK4117_REG_RCS2);
+ 
+-	if ((err = snd_device_new(card, SNDRV_DEV_CODEC, chip, &ops)) < 0)
++	err = snd_device_new(card, SNDRV_DEV_CODEC, chip, &ops);
++	if (err < 0)
+ 		goto __fail;
+ 
+ 	if (r_ak4117)
+diff --git a/sound/i2c/tea6330t.c b/sound/i2c/tea6330t.c
+index 08eb6a873768..742d0f724375 100644
+--- a/sound/i2c/tea6330t.c
++++ b/sound/i2c/tea6330t.c
+@@ -115,7 +115,8 @@ static int snd_tea6330t_put_master_volume(struct snd_kcontrol *kcontrol,
+ 		bytes[count++] = tea->regs[TEA6330T_SADDR_VOLUME_RIGHT] = tea->mright;
+ 	}
+ 	if (count > 0) {
+-		if ((err = snd_i2c_sendbytes(tea->device, bytes, count)) < 0)
++		err = snd_i2c_sendbytes(tea->device, bytes, count);
++		if (err < 0)
+ 			change = err;
+ 	}
+ 	snd_i2c_unlock(tea->bus);
+@@ -160,7 +161,8 @@ static int snd_tea6330t_put_master_switch(struct snd_kcontrol *kcontrol,
+ 	bytes[0] = TEA6330T_SADDR_VOLUME_LEFT;
+ 	bytes[1] = tea->regs[TEA6330T_SADDR_VOLUME_LEFT];
+ 	bytes[2] = tea->regs[TEA6330T_SADDR_VOLUME_RIGHT];
+-	if ((err = snd_i2c_sendbytes(tea->device, bytes, 3)) < 0)
++	err = snd_i2c_sendbytes(tea->device, bytes, 3);
++	if (err < 0)
+ 		change = err;
+ 	snd_i2c_unlock(tea->bus);
+ 	return change;
+@@ -207,7 +209,8 @@ static int snd_tea6330t_put_bass(struct snd_kcontrol *kcontrol,
+ 	change = tea->regs[TEA6330T_SADDR_BASS] != val1;
+ 	bytes[0] = TEA6330T_SADDR_BASS;
+ 	bytes[1] = tea->regs[TEA6330T_SADDR_BASS] = val1;
+-	if ((err = snd_i2c_sendbytes(tea->device, bytes, 2)) < 0)
++	err = snd_i2c_sendbytes(tea->device, bytes, 2);
++	if (err < 0)
+ 		change = err;
+ 	snd_i2c_unlock(tea->bus);
+ 	return change;
+@@ -254,7 +257,8 @@ static int snd_tea6330t_put_treble(struct snd_kcontrol *kcontrol,
+ 	change = tea->regs[TEA6330T_SADDR_TREBLE] != val1;
+ 	bytes[0] = TEA6330T_SADDR_TREBLE;
+ 	bytes[1] = tea->regs[TEA6330T_SADDR_TREBLE] = val1;
+-	if ((err = snd_i2c_sendbytes(tea->device, bytes, 2)) < 0)
++	err = snd_i2c_sendbytes(tea->device, bytes, 2);
++	if (err < 0)
+ 		change = err;
+ 	snd_i2c_unlock(tea->bus);
+ 	return change;
+@@ -287,7 +291,8 @@ int snd_tea6330t_update_mixer(struct snd_card *card,
+ 	tea = kzalloc(sizeof(*tea), GFP_KERNEL);
+ 	if (tea == NULL)
+ 		return -ENOMEM;
+-	if ((err = snd_i2c_device_create(bus, "TEA6330T", TEA6330T_ADDR, &device)) < 0) {
++	err = snd_i2c_device_create(bus, "TEA6330T", TEA6330T_ADDR, &device);
++	if (err < 0) {
+ 		kfree(tea);
+ 		return err;
+ 	}
+@@ -327,18 +332,21 @@ int snd_tea6330t_update_mixer(struct snd_card *card,
+ 	bytes[0] = TEA6330T_SADDR_VOLUME_LEFT;
+ 	for (idx = 0; idx < 6; idx++)
+ 		bytes[idx+1] = tea->regs[idx];
+-	if ((err = snd_i2c_sendbytes(device, bytes, 7)) < 0)
++	err = snd_i2c_sendbytes(device, bytes, 7);
++	if (err < 0)
+ 		goto __error;
+ 
+ 	strcat(card->mixername, ",TEA6330T");
+-	if ((err = snd_component_add(card, "TEA6330T")) < 0)
++	err = snd_component_add(card, "TEA6330T");
++	if (err < 0)
+ 		goto __error;
+ 
+ 	for (idx = 0; idx < ARRAY_SIZE(snd_tea6330t_controls); idx++) {
+ 		knew = &snd_tea6330t_controls[idx];
+ 		if (tea->treble == 0 && !strcmp(knew->name, "Tone Control - Treble"))
+ 			continue;
+-		if ((err = snd_ctl_add(card, snd_ctl_new1(knew, tea))) < 0)
++		err = snd_ctl_add(card, snd_ctl_new1(knew, tea));
++		if (err < 0)
+ 			goto __error;
+ 	}
+ 
 -- 
 2.26.2
 
