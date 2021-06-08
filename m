@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CACDCC47082
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:15:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0F40C47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:15:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4DAAE61078
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:15:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4DAAE61078
+	by mail.kernel.org (Postfix) with ESMTPS id 5D26B6108E
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:15:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D26B6108E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EBE59176A;
-	Tue,  8 Jun 2021 16:14:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBE59176A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95E7D1754;
+	Tue,  8 Jun 2021 16:14:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95E7D1754
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623161734;
-	bh=qFLOavU54pz6bidWQlC5CS7tNMdI1uf/yHGjTXKEOyY=;
+	s=default; t=1623161749;
+	bh=KH7FoAZkiyGYDqMLQbsbv+bY88Ew2oppIOcWet01nGQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Iz2rB+GM1IbH5orZ7Y5tfYZScYN6XSICB6B9zRh2S99wFTBi3aQ7wCCeU2dLOxQ2f
-	 s5ScyCdbXao04LpFkBBUUtoRdvvUcx25LyJJxiy6FjuBPxpTTdM9dRl4XEQ1KH0ICy
-	 WPS3Gl5ELSvzcC0cBaqniNtoH1JDj3PZCjH/bsa8=
+	b=BBaSv1VlspMd5sxDKAiqOs6fGIY+ULFOZrL/GW+DGtvwn9MmW0Tlw4+AdIZtv5Doj
+	 AZSPtxrFkfk44Dx63GaTf0CrTD6GwfjGeHoV4Qgfzyzn3EBVx03JdaJmkPOyfDsdgs
+	 Q0CdYRm+qhALccqAF1rMdMahrSq5Gt4sSsHLXB4M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0CC16F805E0;
-	Tue,  8 Jun 2021 16:06:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81031F805E3;
+	Tue,  8 Jun 2021 16:06:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 102B5F805B2; Tue,  8 Jun 2021 16:06:26 +0200 (CEST)
+ id 0BA57F805B2; Tue,  8 Jun 2021 16:06:27 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 015C5F804D1
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 015C5F804D1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4783CF804DA
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4783CF804DA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="mHgVkZLg"; 
+ header.b="Bm9AY63m"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="17/XaTbq"
+ header.b="iEw6f+77"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id BE3EC1FD5E
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:43 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 86B3D1FDE9
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1623161143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1623161144; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=/anyIUUM+4LjLDTbEqhbDnHp5tyg5myDxU7hYPe1kqM=;
- b=mHgVkZLgHZjbeYuC1LFcWzPnE6NO3kBGOCJOcBX+YHMaTfNz4zEu21JzjmbotESc+v+4bD
- c4D4zlIphr1wodKFvMMIAu+VRF5yk+b4WrITFjkDAXm41ExM9X9nj2KTUKwFOoitP5EoUm
- AVCVaBym6A1w/vJUPdQMIbfi1X/jr2U=
+ bh=vJs1ezFt7SYyXEv2mdSxDNGmU67WBEB9eMUm3EuE8kE=;
+ b=Bm9AY63mLc+nH8Ky73mdL58Vz1YtuF5Rh1zL2pkfgpRgDhbaEmzwYMsn+Gu8cGEjzA7pBv
+ +z7O2HyHMcwy24DE1FLlhse4cbW06i4nXAeuZ1d39aSD0X6kyMTSruArEjfxAhchn/e8ga
+ C5jfC5eSVvtLXv1ZRd8HkvV1+PgVfrI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1623161143;
+ s=susede2_ed25519; t=1623161144;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=/anyIUUM+4LjLDTbEqhbDnHp5tyg5myDxU7hYPe1kqM=;
- b=17/XaTbqSocQgurOGF2rRP1JeE6OtllG2dFde6OJsqyFYmP94wprUrfO0k1r4gLy5xq2ty
- 9jibYVib9bWeuwBg==
+ bh=vJs1ezFt7SYyXEv2mdSxDNGmU67WBEB9eMUm3EuE8kE=;
+ b=iEw6f+77WZbY7b2q2kIWnkxGVlMMzdpn8LQ9wDu+YVfC7DZ/VMLQDtoJiUKdlM7Qxf7GHR
+ 2cII5QF1OXBU2qCw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id AF691A3B88;
- Tue,  8 Jun 2021 14:05:43 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 77CBAA3B88;
+ Tue,  8 Jun 2021 14:05:44 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 23/66] ALSA: cs4281: Fix assignment in if condition
-Date: Tue,  8 Jun 2021 16:04:57 +0200
-Message-Id: <20210608140540.17885-24-tiwai@suse.de>
+Subject: [PATCH 36/66] ALSA: ca0106: Fix assignment in if condition
+Date: Tue,  8 Jun 2021 16:05:10 +0200
+Message-Id: <20210608140540.17885-37-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210608140540.17885-1-tiwai@suse.de>
 References: <20210608140540.17885-1-tiwai@suse.de>
@@ -97,7 +97,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-PCI CS4281 driver code contains a few assignments in if condition,
+PCI CA0106 driver code contains a few assignments in if condition,
 which is a bad coding style that may confuse readers and occasionally
 lead to bugs.
 
@@ -105,159 +105,77 @@ This patch is merely for coding-style fixes, no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/cs4281.c | 54 ++++++++++++++++++++++++++++++----------------
- 1 file changed, 36 insertions(+), 18 deletions(-)
+ sound/pci/ca0106/ca0106_main.c | 18 ++++++++++++------
+ sound/pci/ca0106/ca_midi.c     |  3 ++-
+ 2 files changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/sound/pci/cs4281.c b/sound/pci/cs4281.c
-index bf3bb70ffaf9..e122a168c148 100644
---- a/sound/pci/cs4281.c
-+++ b/sound/pci/cs4281.c
-@@ -1068,23 +1068,28 @@ static int snd_cs4281_mixer(struct cs4281 *chip)
- 		.read = snd_cs4281_ac97_read,
- 	};
+diff --git a/sound/pci/ca0106/ca0106_main.c b/sound/pci/ca0106/ca0106_main.c
+index bee4710916c4..99778711006a 100644
+--- a/sound/pci/ca0106/ca0106_main.c
++++ b/sound/pci/ca0106/ca0106_main.c
+@@ -575,9 +575,11 @@ static int snd_ca0106_pcm_open_playback_channel(struct snd_pcm_substream *substr
+ 	*/
+         //channel->interrupt = snd_ca0106_pcm_channel_interrupt;
+ 	channel->epcm = epcm;
+-	if ((err = snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS)) < 0)
++	err = snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
++	if (err < 0)
+                 return err;
+-	if ((err = snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 64)) < 0)
++	err = snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 64);
++	if (err < 0)
+                 return err;
+ 	snd_pcm_set_sync(substream);
  
--	if ((err = snd_ac97_bus(card, 0, &ops, chip, &chip->ac97_bus)) < 0)
-+	err = snd_ac97_bus(card, 0, &ops, chip, &chip->ac97_bus);
+@@ -668,10 +670,12 @@ static int snd_ca0106_pcm_open_capture_channel(struct snd_pcm_substream *substre
+ 	*/
+         //channel->interrupt = snd_ca0106_pcm_channel_interrupt;
+         channel->epcm = epcm;
+-	if ((err = snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS)) < 0)
++	err = snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
 +	if (err < 0)
- 		return err;
- 	chip->ac97_bus->private_free = snd_cs4281_mixer_free_ac97_bus;
- 
- 	memset(&ac97, 0, sizeof(ac97));
- 	ac97.private_data = chip;
- 	ac97.private_free = snd_cs4281_mixer_free_ac97;
--	if ((err = snd_ac97_mixer(chip->ac97_bus, &ac97, &chip->ac97)) < 0)
-+	err = snd_ac97_mixer(chip->ac97_bus, &ac97, &chip->ac97);
+                 return err;
+ 	//snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, &hw_constraints_capture_period_sizes);
+-	if ((err = snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 64)) < 0)
++	err = snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 64);
 +	if (err < 0)
- 		return err;
- 	if (chip->dual_codec) {
- 		ac97.num = 1;
--		if ((err = snd_ac97_mixer(chip->ac97_bus, &ac97, &chip->ac97_secondary)) < 0)
-+		err = snd_ac97_mixer(chip->ac97_bus, &ac97, &chip->ac97_secondary);
-+		if (err < 0)
- 			return err;
- 	}
--	if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_cs4281_fm_vol, chip))) < 0)
-+	err = snd_ctl_add(card, snd_ctl_new1(&snd_cs4281_fm_vol, chip));
-+	if (err < 0)
- 		return err;
--	if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_cs4281_pcm_vol, chip))) < 0)
-+	err = snd_ctl_add(card, snd_ctl_new1(&snd_cs4281_pcm_vol, chip));
-+	if (err < 0)
- 		return err;
+                 return err;
  	return 0;
  }
-@@ -1308,7 +1313,8 @@ static int snd_cs4281_create(struct snd_card *card,
+@@ -1166,7 +1170,8 @@ static int snd_ca0106_ac97(struct snd_ca0106 *chip)
+ 		.read = snd_ca0106_ac97_read,
  	};
- 
- 	*rchip = NULL;
--	if ((err = pci_enable_device(pci)) < 0)
-+	err = pci_enable_device(pci);
+   
+-	if ((err = snd_ac97_bus(chip->card, 0, &ops, NULL, &pbus)) < 0)
++	err = snd_ac97_bus(chip->card, 0, &ops, NULL, &pbus);
 +	if (err < 0)
  		return err;
- 	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
- 	if (chip == NULL) {
-@@ -1326,7 +1332,8 @@ static int snd_cs4281_create(struct snd_card *card,
- 	}
- 	chip->dual_codec = dual_codec;
+ 	pbus->no_vra = 1; /* we don't need VRA */
  
--	if ((err = pci_request_regions(pci, "CS4281")) < 0) {
-+	err = pci_request_regions(pci, "CS4281");
-+	if (err < 0) {
- 		kfree(chip);
- 		pci_disable_device(pci);
- 		return err;
-@@ -1356,7 +1363,8 @@ static int snd_cs4281_create(struct snd_card *card,
- 		return tmp;
- 	}
+@@ -1759,7 +1764,8 @@ static int snd_ca0106_midi(struct snd_ca0106 *chip, unsigned int channel)
  
--	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
-+	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
-+	if (err < 0) {
- 		snd_cs4281_free(chip);
- 		return err;
- 	}
-@@ -1395,12 +1403,14 @@ static int snd_cs4281_chip_init(struct cs4281 *chip)
-          * space between 0e4h and 0ffh to be written. */	
- 	snd_cs4281_pokeBA0(chip, BA0_CWPR, 0x4281);
+ 	midi->dev_id = chip;
  	
--	if ((tmp = snd_cs4281_peekBA0(chip, BA0_SERC1)) != (BA0_SERC1_SO1EN | BA0_SERC1_AC97)) {
-+	tmp = snd_cs4281_peekBA0(chip, BA0_SERC1);
-+	if (tmp != (BA0_SERC1_SO1EN | BA0_SERC1_AC97)) {
- 		dev_err(chip->card->dev,
- 			"SERC1 AC'97 check failed (0x%x)\n", tmp);
- 		return -EIO;
- 	}
--	if ((tmp = snd_cs4281_peekBA0(chip, BA0_SERC2)) != (BA0_SERC2_SI1EN | BA0_SERC2_AC97)) {
-+	tmp = snd_cs4281_peekBA0(chip, BA0_SERC2);
-+	if (tmp != (BA0_SERC2_SI1EN | BA0_SERC2_AC97)) {
- 		dev_err(chip->card->dev,
- 			"SERC2 AC'97 check failed (0x%x)\n", tmp);
- 		return -EIO;
-@@ -1748,7 +1758,8 @@ static int snd_cs4281_midi(struct cs4281 *chip, int device)
+-	if ((err = ca_midi_init(chip, midi, 0, name)) < 0)
++	err = ca_midi_init(chip, midi, 0, name);
++	if (err < 0)
+ 		return err;
+ 
+ 	return 0;
+diff --git a/sound/pci/ca0106/ca_midi.c b/sound/pci/ca0106/ca_midi.c
+index 18524e0a9102..957e60f64821 100644
+--- a/sound/pci/ca0106/ca_midi.c
++++ b/sound/pci/ca0106/ca_midi.c
+@@ -276,7 +276,8 @@ int ca_midi_init(void *dev_id, struct snd_ca_midi *midi, int device, char *name)
  	struct snd_rawmidi *rmidi;
  	int err;
  
--	if ((err = snd_rawmidi_new(chip->card, "CS4281", device, 1, 1, &rmidi)) < 0)
-+	err = snd_rawmidi_new(chip->card, "CS4281", device, 1, 1, &rmidi);
+-	if ((err = snd_rawmidi_new(midi->get_dev_id_card(midi->dev_id), name, device, 1, 1, &rmidi)) < 0)
++	err = snd_rawmidi_new(midi->get_dev_id_card(midi->dev_id), name, device, 1, 1, &rmidi);
 +	if (err < 0)
  		return err;
- 	strcpy(rmidi->name, "CS4281");
- 	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT, &snd_cs4281_midi_output);
-@@ -1881,32 +1892,38 @@ static int snd_cs4281_probe(struct pci_dev *pci,
- 	if (err < 0)
- 		return err;
  
--	if ((err = snd_cs4281_create(card, pci, &chip, dual_codec[dev])) < 0) {
-+	err = snd_cs4281_create(card, pci, &chip, dual_codec[dev]);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
- 	card->private_data = chip;
- 
--	if ((err = snd_cs4281_mixer(chip)) < 0) {
-+	err = snd_cs4281_mixer(chip);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
--	if ((err = snd_cs4281_pcm(chip, 0)) < 0) {
-+	err = snd_cs4281_pcm(chip, 0);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
--	if ((err = snd_cs4281_midi(chip, 0)) < 0) {
-+	err = snd_cs4281_midi(chip, 0);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
--	if ((err = snd_opl3_new(card, OPL3_HW_OPL3_CS4281, &opl3)) < 0) {
-+	err = snd_opl3_new(card, OPL3_HW_OPL3_CS4281, &opl3);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
- 	opl3->private_data = chip;
- 	opl3->command = snd_cs4281_opl3_command;
- 	snd_opl3_init(opl3);
--	if ((err = snd_opl3_hwdep_new(opl3, 0, 1, NULL)) < 0) {
-+	err = snd_opl3_hwdep_new(opl3, 0, 1, NULL);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
-@@ -1918,7 +1935,8 @@ static int snd_cs4281_probe(struct pci_dev *pci,
- 		chip->ba0_addr,
- 		chip->irq);
- 
--	if ((err = snd_card_register(card)) < 0) {
-+	err = snd_card_register(card);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
+ 	midi->dev_id = dev_id;
 -- 
 2.26.2
 
