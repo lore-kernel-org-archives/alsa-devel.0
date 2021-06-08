@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 658FFC47082
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:13:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D96E4C4743D
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:14:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D733B61078
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:13:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D733B61078
+	by mail.kernel.org (Postfix) with ESMTPS id 55B436108E
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:14:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 55B436108E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 77218175D;
-	Tue,  8 Jun 2021 16:12:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77218175D
+	by alsa0.perex.cz (Postfix) with ESMTPS id EEBCE176A;
+	Tue,  8 Jun 2021 16:13:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EEBCE176A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623161605;
-	bh=7FfnBSDPYtjIjnG46xjLHewrKm2bmai/Y7TjGPVJFEY=;
+	s=default; t=1623161642;
+	bh=LOVArCiEL//CllApGDxsEiXVvvtV8WJ1Gjr0Ec65CPE=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UKqYI7hC4b0MTXHg7j8CfVAoOxF1FZcIIdswCK9frZSNg6t6qASY/ikOnj4fT7F38
-	 dGgaCRthrRk0SYneLDao8oCIOn9mh0xK+tAa50AmFWcsv/vlz31wS3+m+R3Sz3uLMB
-	 BvEfPd1XldwtJRXfqcynNma8hfMxbVIDAcu54ebM=
+	b=VdX9IKO0QLZZOx2VC5u8edwhL8tS44R1FSsuX+EbzDbp7mJKvtfqImoIYU2nVRnTw
+	 oy6j5/A80GQhHZfNAzEP3nyda+0lc0a6VJKXIHITGtBrDTcxyubReCLA4D2ffFpwbt
+	 D9LL2lVmf61mLpRDY9Rvq39i48KNECB/fjAV9sto=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3BDD5F805B2;
-	Tue,  8 Jun 2021 16:06:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 62088F805BA;
+	Tue,  8 Jun 2021 16:06:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DF3A1F805A1; Tue,  8 Jun 2021 16:06:19 +0200 (CEST)
+ id 05EC5F805AB; Tue,  8 Jun 2021 16:06:21 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5B639F804CF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 03FAFF804D6
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B639F804CF
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03FAFF804D6
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="UB7xBYv0"; 
+ header.b="OI0ALPwN"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="2EIMtmzP"
+ header.b="GakqhqpF"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id A253B1FD5B
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:43 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 03C8D1FDE4
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1623161143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1623161144; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=vpWoq2DTY1aFd4D1w+V7LqrOsRz2kV+MlzhmWa4phyk=;
- b=UB7xBYv0oruPNe64Iwe6fXDNmKLUJNM1L5yijm67iaDLQ6lYdkNNJg+g4XxHCjYwCdtNTO
- ikvTdpGo0ZynO4DiE0N77ULYCTi8upU6bQZ4Vwk7cwKCTpJt4jGEq6tMQCNtLY19Rp+COa
- kuqDH0z+5mZXm+KPs55KC5IWfagFLTs=
+ bh=a5Y5YFHIFZcRTUpVpNHrCB5XrRFmFkWUZgucKl0dNJY=;
+ b=OI0ALPwNTb6SMXpH/1xjsVV6ntEscP5BGPZsDLcM6VQdy5OhjF+VHFi4HRBKz1SypQqY2i
+ rwEKFjn9AUOxFnE7jCQBiGYESrlc9vNPam9qzifsbdc066ilZur9N5Eag942FPLw2xgfxf
+ exSUMEoG1kFQVAvtFUQoZJ+GJ/vNgVU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1623161143;
+ s=susede2_ed25519; t=1623161144;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=vpWoq2DTY1aFd4D1w+V7LqrOsRz2kV+MlzhmWa4phyk=;
- b=2EIMtmzPqQqyjIc58kWc85/a0HRUcMON4cAuTYE1lNxpEnx4z3YfUXciMoU6IXLw9hflzR
- Gk/t2n+fQqJqMhDA==
+ bh=a5Y5YFHIFZcRTUpVpNHrCB5XrRFmFkWUZgucKl0dNJY=;
+ b=GakqhqpFwXovnfZKq4JOEA+Nc7W8r7pyob0WZILxYxRWPD/iPkbUGgeYqhq+DegEbDicce
+ l2h29hn+aCPwQ7Bg==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 93876A3B88;
+ by relay2.suse.de (Postfix) with ESMTP id E849CA3B88;
  Tue,  8 Jun 2021 14:05:43 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 21/66] ALSA: bt87x: Fix assignment in if condition
-Date: Tue,  8 Jun 2021 16:04:55 +0200
-Message-Id: <20210608140540.17885-22-tiwai@suse.de>
+Subject: [PATCH 27/66] ALSA: fm801: Fix assignment in if condition
+Date: Tue,  8 Jun 2021 16:05:01 +0200
+Message-Id: <20210608140540.17885-28-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210608140540.17885-1-tiwai@suse.de>
 References: <20210608140540.17885-1-tiwai@suse.de>
@@ -97,31 +97,181 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-PCI BT87x driver code contains an assignments in if condition, which
-is a bad coding style that may confuse readers and occasionally lead
-to bugs.
+PCI FM801 driver code contains a few assignments in if condition,
+which is a bad coding style that may confuse readers and occasionally
+lead to bugs.
 
 This patch is merely for coding-style fixes, no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/bt87x.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/pci/fm801.c | 63 ++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 40 insertions(+), 23 deletions(-)
 
-diff --git a/sound/pci/bt87x.c b/sound/pci/bt87x.c
-index 91512b345d19..39bcfb81e81c 100644
---- a/sound/pci/bt87x.c
-+++ b/sound/pci/bt87x.c
-@@ -719,7 +719,8 @@ static int snd_bt87x_create(struct snd_card *card,
- 	chip->irq = -1;
- 	spin_lock_init(&chip->reg_lock);
- 
--	if ((err = pci_request_regions(pci, "Bt87x audio")) < 0) {
-+	err = pci_request_regions(pci, "Bt87x audio");
-+	if (err < 0) {
- 		kfree(chip);
- 		pci_disable_device(pci);
+diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
+index 6279eb156e36..ed9dae87145b 100644
+--- a/sound/pci/fm801.c
++++ b/sound/pci/fm801.c
+@@ -659,7 +659,8 @@ static int snd_fm801_playback_open(struct snd_pcm_substream *substream)
+ 					   SNDRV_PCM_HW_PARAM_CHANNELS,
+ 					   &hw_constraints_channels);
+ 	}
+-	if ((err = snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS)) < 0)
++	err = snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
++	if (err < 0)
  		return err;
+ 	return 0;
+ }
+@@ -674,7 +675,8 @@ static int snd_fm801_capture_open(struct snd_pcm_substream *substream)
+ 	runtime->hw = snd_fm801_capture;
+ 	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
+ 				   &hw_constraints_rates);
+-	if ((err = snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS)) < 0)
++	err = snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
++	if (err < 0)
+ 		return err;
+ 	return 0;
+ }
+@@ -717,7 +719,8 @@ static int snd_fm801_pcm(struct fm801 *chip, int device)
+ 	struct snd_pcm *pcm;
+ 	int err;
+ 
+-	if ((err = snd_pcm_new(chip->card, "FM801", device, 1, 1, &pcm)) < 0)
++	err = snd_pcm_new(chip->card, "FM801", device, 1, 1, &pcm);
++	if (err < 0)
+ 		return err;
+ 
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_fm801_playback_ops);
+@@ -985,7 +988,8 @@ static int snd_fm801_put_mux(struct snd_kcontrol *kcontrol,
+ 	struct fm801 *chip = snd_kcontrol_chip(kcontrol);
+         unsigned short val;
+  
+-        if ((val = ucontrol->value.enumerated.item[0]) > 4)
++	val = ucontrol->value.enumerated.item[0];
++	if (val > 4)
+                 return -EINVAL;
+ 	return snd_fm801_update_bits(chip, FM801_REC_SRC, 7, val);
+ }
+@@ -1050,19 +1054,22 @@ static int snd_fm801_mixer(struct fm801 *chip)
+ 		.read = snd_fm801_codec_read,
+ 	};
+ 
+-	if ((err = snd_ac97_bus(chip->card, 0, &ops, chip, &chip->ac97_bus)) < 0)
++	err = snd_ac97_bus(chip->card, 0, &ops, chip, &chip->ac97_bus);
++	if (err < 0)
+ 		return err;
+ 	chip->ac97_bus->private_free = snd_fm801_mixer_free_ac97_bus;
+ 
+ 	memset(&ac97, 0, sizeof(ac97));
+ 	ac97.private_data = chip;
+ 	ac97.private_free = snd_fm801_mixer_free_ac97;
+-	if ((err = snd_ac97_mixer(chip->ac97_bus, &ac97, &chip->ac97)) < 0)
++	err = snd_ac97_mixer(chip->ac97_bus, &ac97, &chip->ac97);
++	if (err < 0)
+ 		return err;
+ 	if (chip->secondary) {
+ 		ac97.num = 1;
+ 		ac97.addr = chip->secondary_addr;
+-		if ((err = snd_ac97_mixer(chip->ac97_bus, &ac97, &chip->ac97_sec)) < 0)
++		err = snd_ac97_mixer(chip->ac97_bus, &ac97, &chip->ac97_sec);
++		if (err < 0)
+ 			return err;
+ 	}
+ 	for (i = 0; i < FM801_CONTROLS; i++) {
+@@ -1213,7 +1220,8 @@ static int snd_fm801_create(struct snd_card *card,
+ 	};
+ 
+ 	*rchip = NULL;
+-	if ((err = pcim_enable_device(pci)) < 0)
++	err = pcim_enable_device(pci);
++	if (err < 0)
+ 		return err;
+ 	chip = devm_kzalloc(&pci->dev, sizeof(*chip), GFP_KERNEL);
+ 	if (chip == NULL)
+@@ -1223,7 +1231,8 @@ static int snd_fm801_create(struct snd_card *card,
+ 	chip->dev = &pci->dev;
+ 	chip->irq = -1;
+ 	chip->tea575x_tuner = tea575x_tuner;
+-	if ((err = pci_request_regions(pci, "FM801")) < 0)
++	err = pci_request_regions(pci, "FM801");
++	if (err < 0)
+ 		return err;
+ 	chip->port = pci_resource_start(pci, 0);
+ 
+@@ -1254,7 +1263,8 @@ static int snd_fm801_create(struct snd_card *card,
+ 
+ 	snd_fm801_chip_init(chip);
+ 
+-	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
++	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
++	if (err < 0) {
+ 		snd_fm801_free(chip);
+ 		return err;
+ 	}
+@@ -1327,7 +1337,8 @@ static int snd_card_fm801_probe(struct pci_dev *pci,
+ 			   0, &card);
+ 	if (err < 0)
+ 		return err;
+-	if ((err = snd_fm801_create(card, pci, tea575x_tuner[dev], radio_nr[dev], &chip)) < 0) {
++	err = snd_fm801_create(card, pci, tea575x_tuner[dev], radio_nr[dev], &chip);
++	if (err < 0) {
+ 		snd_card_free(card);
+ 		return err;
+ 	}
+@@ -1342,35 +1353,41 @@ static int snd_card_fm801_probe(struct pci_dev *pci,
+ 	if (chip->tea575x_tuner & TUNER_ONLY)
+ 		goto __fm801_tuner_only;
+ 
+-	if ((err = snd_fm801_pcm(chip, 0)) < 0) {
++	err = snd_fm801_pcm(chip, 0);
++	if (err < 0) {
+ 		snd_card_free(card);
+ 		return err;
+ 	}
+-	if ((err = snd_fm801_mixer(chip)) < 0) {
++	err = snd_fm801_mixer(chip);
++	if (err < 0) {
+ 		snd_card_free(card);
+ 		return err;
+ 	}
+-	if ((err = snd_mpu401_uart_new(card, 0, MPU401_HW_FM801,
+-				       chip->port + FM801_MPU401_DATA,
+-				       MPU401_INFO_INTEGRATED |
+-				       MPU401_INFO_IRQ_HOOK,
+-				       -1, &chip->rmidi)) < 0) {
++	err = snd_mpu401_uart_new(card, 0, MPU401_HW_FM801,
++				  chip->port + FM801_MPU401_DATA,
++				  MPU401_INFO_INTEGRATED |
++				  MPU401_INFO_IRQ_HOOK,
++				  -1, &chip->rmidi);
++	if (err < 0) {
+ 		snd_card_free(card);
+ 		return err;
+ 	}
+-	if ((err = snd_opl3_create(card, chip->port + FM801_OPL3_BANK0,
+-				   chip->port + FM801_OPL3_BANK1,
+-				   OPL3_HW_OPL3_FM801, 1, &opl3)) < 0) {
++	err = snd_opl3_create(card, chip->port + FM801_OPL3_BANK0,
++			      chip->port + FM801_OPL3_BANK1,
++			      OPL3_HW_OPL3_FM801, 1, &opl3);
++	if (err < 0) {
+ 		snd_card_free(card);
+ 		return err;
+ 	}
+-	if ((err = snd_opl3_hwdep_new(opl3, 0, 1, NULL)) < 0) {
++	err = snd_opl3_hwdep_new(opl3, 0, 1, NULL);
++	if (err < 0) {
+ 		snd_card_free(card);
+ 		return err;
+ 	}
+ 
+       __fm801_tuner_only:
+-	if ((err = snd_card_register(card)) < 0) {
++	err = snd_card_register(card);
++	if (err < 0) {
+ 		snd_card_free(card);
+ 		return err;
+ 	}
 -- 
 2.26.2
 
