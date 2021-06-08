@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54ED3C47082
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:11:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B390C47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:11:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CC2B060FE9
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:11:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC2B060FE9
+	by mail.kernel.org (Postfix) with ESMTPS id 8ED1661078
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:11:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8ED1661078
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 76C42170E;
-	Tue,  8 Jun 2021 16:10:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76C42170E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3291B16F0;
+	Tue,  8 Jun 2021 16:10:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3291B16F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623161472;
-	bh=14jP5jddyB48X39alTroo9ykaGEgrVE8RJlUwv5Z/zw=;
+	s=default; t=1623161499;
+	bh=bWvr5gG/RxkwPf3UAvGXIHTe/oddN4QAKyVxtapdZ8k=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ToposTrBavLfgx0NxuyA8s/MQ9JNswDmQ4V48eM7IsP14mw86DN11b1z7y76vKejR
-	 jo0TOLkV3EyLPtDVkJHRrYFhjdf6yNiTk/iSRj9JGvA/i+thCC6W4OsSHgUDmCnCEu
-	 Wt3WEHf0rQu3ZHAID1Ab2sOLVJNTA2NhorRJhtDg=
+	b=F2QgtiTSTMPQZ50B5h8stDf0rhpsX0lYPdI3GkuDYSxxWfHgcFx4kIPru+Z78zutK
+	 sSuiejPJoB00GYO4vl4RESChnzQEKd9pltPFk9oRWmUWdm7io+AyrX8v6WqbtmQ+Qq
+	 q2WQLHtnc50LU5Kus9mAZdhWEZyu4g1c2QHkmbeQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46DC0F80578;
-	Tue,  8 Jun 2021 16:06:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9E4E9F80587;
+	Tue,  8 Jun 2021 16:06:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CF056F804C2; Tue,  8 Jun 2021 16:06:09 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 87FEBF80566; Tue,  8 Jun 2021 16:06:12 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 08FBEF804C1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2A553F804C3
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08FBEF804C1
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A553F804C3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="FySVDpYg"; 
+ header.b="qd/iC8bh"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="HnZq+Lsm"
+ header.b="lgR0LQCj"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 9987C1FD4B
+ by smtp-out1.suse.de (Postfix) with ESMTP id C7408219DC
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1623161142; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=zqVC2xuRnBWCO44luoZ+mUvshtShSe+5Y9DTqvWzOYI=;
- b=FySVDpYgC0NEcTTof5UW9oQkOGV+0IIz9dOx9GKfd1FoqCaZbGuw0+6Jg3CyJ+XYx+afMk
- 2z9/4YB/KVx9T65Av2i91sZuO5XrCxP4JJUN04rvlwyQYxXTRVX6x9z1VpiRBtCYfay63R
- EsLotxxgqCGr+eFgUm4YEwP8J6XMpwc=
+ bh=/Xszkd6G1zgaCiKxAkzQN2htm5JmsOJNmkoJY3/EnY8=;
+ b=qd/iC8bh1dMyu4XNUJBCb9VLdqeGgAvXQxT4UTUlmMJ4pPaZz+JQ09g4e9Nd33g/OsgU1B
+ Jib0U722dQKfvz8OMgxJgpSPzMRevN8DAVKWnJATpbdKULPYzlewndR9fkz+WEFXRvWHNy
+ mxWmigCB0m08WzFqDDpYK7K4lMgvBY4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1623161142;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=zqVC2xuRnBWCO44luoZ+mUvshtShSe+5Y9DTqvWzOYI=;
- b=HnZq+LsmUO1KSRzmbZI+CAxJdT7itUIgTeeLgvi3/fOejWeEFMpyzMwRtrhurGESsO9fUb
- ALAOEqdF8NJqVvDQ==
+ bh=/Xszkd6G1zgaCiKxAkzQN2htm5JmsOJNmkoJY3/EnY8=;
+ b=lgR0LQCjlRgmqOoBJGuG1dnqHBSVLSEWvmzRykQcP4cMwRXBcD4IFSIPs58A5fNynGRDyl
+ NOLEQzOM4c+fVOBA==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 8A5A7A3B85;
+ by relay2.suse.de (Postfix) with ESMTP id B76B3A3B84;
  Tue,  8 Jun 2021 14:05:42 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 02/66] ALSA: sb: Minor coding style fixes
-Date: Tue,  8 Jun 2021 16:04:36 +0200
-Message-Id: <20210608140540.17885-3-tiwai@suse.de>
+Subject: [PATCH 05/66] ALSA: ad1816a: Fix assignment in if condition
+Date: Tue,  8 Jun 2021 16:04:39 +0200
+Message-Id: <20210608140540.17885-6-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210608140540.17885-1-tiwai@suse.de>
 References: <20210608140540.17885-1-tiwai@suse.de>
@@ -97,87 +97,168 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The handling of snd_ctl_new1() and snd_ctl_add() can be sometimes
-tricky, as snd_ctl_add() automatically removes the passed object at
-its error path.  The recent fix addressed an overlooked issue that is
-relevant with that in SB driver code, and it can be a bit more
-simplified by assigning to a temporary variable, i.e. storing to the
-struct field only after the creation succeeds.
+ISA AD1816A driver code contains lots of assignments in if condition,
+which is a bad coding style that may confuse readers and occasionally
+lead to bugs.
+
+This patch is merely for coding-style fixes, no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/isa/sb/emu8000.c  | 10 +++++-----
- sound/isa/sb/sb16_csp.c | 19 +++++++++----------
- 2 files changed, 14 insertions(+), 15 deletions(-)
+ sound/isa/ad1816a/ad1816a.c     | 23 ++++++++++++++---------
+ sound/isa/ad1816a/ad1816a_lib.c | 27 ++++++++++++++++++---------
+ 2 files changed, 32 insertions(+), 18 deletions(-)
 
-diff --git a/sound/isa/sb/emu8000.c b/sound/isa/sb/emu8000.c
-index 896a862a9f9c..5e4187940265 100644
---- a/sound/isa/sb/emu8000.c
-+++ b/sound/isa/sb/emu8000.c
-@@ -1020,6 +1020,7 @@ static const struct snd_kcontrol_new *mixer_defs[EMU8000_NUM_CONTROLS] = {
- static int
- snd_emu8000_create_mixer(struct snd_card *card, struct snd_emu8000 *emu)
- {
-+	struct snd_kcontrol *kctl;
- 	int i, err = 0;
+diff --git a/sound/isa/ad1816a/ad1816a.c b/sound/isa/ad1816a/ad1816a.c
+index f11af983b3b6..fa5bed0d5a6f 100644
+--- a/sound/isa/ad1816a/ad1816a.c
++++ b/sound/isa/ad1816a/ad1816a.c
+@@ -131,16 +131,18 @@ static int snd_card_ad1816a_probe(int dev, struct pnp_card_link *pcard,
+ 		return error;
+ 	chip = card->private_data;
  
- 	if (snd_BUG_ON(!emu || !card))
-@@ -1029,12 +1030,11 @@ snd_emu8000_create_mixer(struct snd_card *card, struct snd_emu8000 *emu)
+-	if ((error = snd_card_ad1816a_pnp(dev, pcard, pid))) {
++	error = snd_card_ad1816a_pnp(dev, pcard, pid);
++	if (error) {
+ 		snd_card_free(card);
+ 		return error;
+ 	}
  
- 	memset(emu->controls, 0, sizeof(emu->controls));
- 	for (i = 0; i < EMU8000_NUM_CONTROLS; i++) {
--		emu->controls[i] = snd_ctl_new1(mixer_defs[i], emu);
--		err = snd_ctl_add(card, emu->controls[i]);
--		if (err < 0) {
--			emu->controls[i] = NULL;
-+		kctl = snd_ctl_new1(mixer_defs[i], emu);
-+		err = snd_ctl_add(card, kctl);
+-	if ((error = snd_ad1816a_create(card, port[dev],
+-					irq[dev],
+-					dma1[dev],
+-					dma2[dev],
+-					chip)) < 0) {
++	error = snd_ad1816a_create(card, port[dev],
++				   irq[dev],
++				   dma1[dev],
++				   dma2[dev],
++				   chip);
++	if (error) {
+ 		snd_card_free(card);
+ 		return error;
+ 	}
+@@ -152,12 +154,14 @@ static int snd_card_ad1816a_probe(int dev, struct pnp_card_link *pcard,
+ 	sprintf(card->longname, "%s, SS at 0x%lx, irq %d, dma %d&%d",
+ 		card->shortname, chip->port, irq[dev], dma1[dev], dma2[dev]);
+ 
+-	if ((error = snd_ad1816a_pcm(chip, 0)) < 0) {
++	error = snd_ad1816a_pcm(chip, 0);
++	if (error < 0) {
+ 		snd_card_free(card);
+ 		return error;
+ 	}
+ 
+-	if ((error = snd_ad1816a_mixer(chip)) < 0) {
++	error = snd_ad1816a_mixer(chip);
++	if (error < 0) {
+ 		snd_card_free(card);
+ 		return error;
+ 	}
+@@ -189,7 +193,8 @@ static int snd_card_ad1816a_probe(int dev, struct pnp_card_link *pcard,
+ 		}
+ 	}
+ 
+-	if ((error = snd_card_register(card)) < 0) {
++	error = snd_card_register(card);
++	if (error < 0) {
+ 		snd_card_free(card);
+ 		return error;
+ 	}
+diff --git a/sound/isa/ad1816a/ad1816a_lib.c b/sound/isa/ad1816a/ad1816a_lib.c
+index 01381fe7c0c9..6d4999b30461 100644
+--- a/sound/isa/ad1816a/ad1816a_lib.c
++++ b/sound/isa/ad1816a/ad1816a_lib.c
+@@ -155,7 +155,8 @@ static void snd_ad1816a_close(struct snd_ad1816a *chip, unsigned int mode)
+ 		snd_ad1816a_write_mask(chip, AD1816A_INTERRUPT_ENABLE,
+ 			AD1816A_TIMER_IRQ_ENABLE, 0x0000);
+ 	}
+-	if (!((chip->mode &= ~mode) & AD1816A_MODE_OPEN))
++	chip->mode &= ~mode;
++	if (!(chip->mode & AD1816A_MODE_OPEN))
+ 		chip->mode = 0;
+ 
+ 	spin_unlock_irqrestore(&chip->lock, flags);
+@@ -426,7 +427,8 @@ static int snd_ad1816a_playback_open(struct snd_pcm_substream *substream)
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	int error;
+ 
+-	if ((error = snd_ad1816a_open(chip, AD1816A_MODE_PLAYBACK)) < 0)
++	error = snd_ad1816a_open(chip, AD1816A_MODE_PLAYBACK);
++	if (error < 0)
+ 		return error;
+ 	runtime->hw = snd_ad1816a_playback;
+ 	snd_pcm_limit_isa_dma_size(chip->dma1, &runtime->hw.buffer_bytes_max);
+@@ -441,7 +443,8 @@ static int snd_ad1816a_capture_open(struct snd_pcm_substream *substream)
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	int error;
+ 
+-	if ((error = snd_ad1816a_open(chip, AD1816A_MODE_CAPTURE)) < 0)
++	error = snd_ad1816a_open(chip, AD1816A_MODE_CAPTURE);
++	if (error < 0)
+ 		return error;
+ 	runtime->hw = snd_ad1816a_capture;
+ 	snd_pcm_limit_isa_dma_size(chip->dma2, &runtime->hw.buffer_bytes_max);
+@@ -586,7 +589,8 @@ int snd_ad1816a_create(struct snd_card *card,
+ 	chip->dma1 = -1;
+ 	chip->dma2 = -1;
+ 
+-	if ((chip->res_port = request_region(port, 16, "AD1816A")) == NULL) {
++	chip->res_port = request_region(port, 16, "AD1816A");
++	if (!chip->res_port) {
+ 		snd_printk(KERN_ERR "ad1816a: can't grab port 0x%lx\n", port);
+ 		snd_ad1816a_free(chip);
+ 		return -EBUSY;
+@@ -615,7 +619,8 @@ int snd_ad1816a_create(struct snd_card *card,
+ 	chip->port = port;
+ 	spin_lock_init(&chip->lock);
+ 
+-	if ((error = snd_ad1816a_probe(chip))) {
++	error = snd_ad1816a_probe(chip);
++	if (error) {
+ 		snd_ad1816a_free(chip);
+ 		return error;
+ 	}
+@@ -623,7 +628,8 @@ int snd_ad1816a_create(struct snd_card *card,
+ 	snd_ad1816a_init(chip);
+ 
+ 	/* Register device */
+-	if ((error = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
++	error = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
++	if (error < 0) {
+ 		snd_ad1816a_free(chip);
+ 		return error;
+ 	}
+@@ -652,7 +658,8 @@ int snd_ad1816a_pcm(struct snd_ad1816a *chip, int device)
+ 	int error;
+ 	struct snd_pcm *pcm;
+ 
+-	if ((error = snd_pcm_new(chip->card, "AD1816A", device, 1, 1, &pcm)))
++	error = snd_pcm_new(chip->card, "AD1816A", device, 1, 1, &pcm);
++	if (error)
+ 		return error;
+ 
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_ad1816a_playback_ops);
+@@ -682,7 +689,8 @@ int snd_ad1816a_timer(struct snd_ad1816a *chip, int device)
+ 	tid.card = chip->card->number;
+ 	tid.device = device;
+ 	tid.subdevice = 0;
+-	if ((error = snd_timer_new(chip->card, "AD1816A", &tid, &timer)) < 0)
++	error = snd_timer_new(chip->card, "AD1816A", &tid, &timer);
++	if (error < 0)
+ 		return error;
+ 	strcpy(timer->name, snd_ad1816a_chip_id(chip));
+ 	timer->private_data = chip;
+@@ -944,7 +952,8 @@ int snd_ad1816a_mixer(struct snd_ad1816a *chip)
+ 	strcpy(card->mixername, snd_ad1816a_chip_id(chip));
+ 
+ 	for (idx = 0; idx < ARRAY_SIZE(snd_ad1816a_controls); idx++) {
+-		if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_ad1816a_controls[idx], chip))) < 0)
++		err = snd_ctl_add(card, snd_ctl_new1(&snd_ad1816a_controls[idx], chip));
 +		if (err < 0)
- 			goto __error;
--		}
-+		emu->controls[i] = kctl;
+ 			return err;
  	}
  	return 0;
- 
-diff --git a/sound/isa/sb/sb16_csp.c b/sound/isa/sb/sb16_csp.c
-index d6ce6b16421c..dec68ae6b599 100644
---- a/sound/isa/sb/sb16_csp.c
-+++ b/sound/isa/sb/sb16_csp.c
-@@ -1036,6 +1036,7 @@ static const struct snd_kcontrol_new snd_sb_qsound_space = {
- static int snd_sb_qsound_build(struct snd_sb_csp * p)
- {
- 	struct snd_card *card;
-+	struct snd_kcontrol *kctl;
- 	int err;
- 
- 	if (snd_BUG_ON(!p))
-@@ -1047,18 +1048,16 @@ static int snd_sb_qsound_build(struct snd_sb_csp * p)
- 
- 	spin_lock_init(&p->q_lock);
- 
--	p->qsound_switch = snd_ctl_new1(&snd_sb_qsound_switch, p);
--	err = snd_ctl_add(card, p->qsound_switch);
--	if (err < 0) {
--		p->qsound_switch = NULL;
-+	kctl = snd_ctl_new1(&snd_sb_qsound_switch, p);
-+	err = snd_ctl_add(card, kctl);
-+	if (err < 0)
- 		goto __error;
--	}
--	p->qsound_space = snd_ctl_new1(&snd_sb_qsound_space, p);
--	err = snd_ctl_add(card, p->qsound_space);
--	if (err < 0) {
--		p->qsound_space = NULL;
-+	p->qsound_switch = kctl;
-+	kctl = snd_ctl_new1(&snd_sb_qsound_space, p);
-+	err = snd_ctl_add(card, kctl);
-+	if (err < 0)
- 		goto __error;
--	}
-+	p->qsound_space = kctl;
- 
- 	return 0;
- 
 -- 
 2.26.2
 
