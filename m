@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86879C47082
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:23:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BE1BC4743E
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:23:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 062FE60E08
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:23:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 062FE60E08
+	by mail.kernel.org (Postfix) with ESMTPS id 04A5D6135A
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:23:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 04A5D6135A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A70A1811;
-	Tue,  8 Jun 2021 16:22:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A70A1811
+	by alsa0.perex.cz (Postfix) with ESMTPS id 83AB61820;
+	Tue,  8 Jun 2021 16:22:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83AB61820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623162213;
-	bh=g/NWurs6n9A2LQLnfhwFZzXWKEcKNYe36kwZZoAh7og=;
+	s=default; t=1623162227;
+	bh=911+jmPkBius6j83n0O9C7FvusYJaz5xeY+iHY1XPkk=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=t4chpsIeAa0wc/MM2RkkGkA688X0DxvrZuPcgrjT8GYMwyHxAm9hOHhr4WG5d5/vp
-	 0fA6hapW/HROg2KswBKz8S4bgF7Zc/IE6czJ5JvlDtf2ofjaBOeclHD2kmMoZ98NmM
-	 RvO83Z/XKLrNazxKELrwF8VjYfYxUesXV7uPuLRg=
+	b=EHEk3Js5KA1YtWAwU2Y5uGjCOV07gzYhMsGZDboKeTnBQj/5qhNHGK9lZvvIkZCc0
+	 QHei74SFJVtloeBve4Am5dn6hoTT8LDaXMFJkQx4avmroKJFMwZ+CoJW0NMUx0PEbp
+	 0O/x//W3TIhJFxQw1A0n8TVfTtLK3MsA0NkykH2I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59608F80642;
-	Tue,  8 Jun 2021 16:07:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4EBE0F8065A;
+	Tue,  8 Jun 2021 16:07:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 95B03F8060F; Tue,  8 Jun 2021 16:06:59 +0200 (CEST)
+ id 40322F8060C; Tue,  8 Jun 2021 16:07:00 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5AD79F804FF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5AC97F804FE
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AD79F804FF
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AC97F804FE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="qFThDeO3"; 
+ header.b="wsb0+OKm"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="aCmI6rqx"
+ header.b="nvp9P5PO"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 79770219E1
+ by smtp-out1.suse.de (Postfix) with ESMTP id 4A87D219DF
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1623161143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=lZ+UG1uKBKDfqyKhHwCLbnj2k0VpNP9yVUA48AI6+wk=;
- b=qFThDeO3JId+fIhaBxuQ297+rpR91zEAW/iK9kp+fKkaF00X6+xjtSC4leQ6NWc4xvuhvi
- ZKhvbmHk/avEUcAx3zHcjrcc+iPFp1dIvLVxYNIbnQxawDsR99sL/0M/iqCsYX98SLzAdK
- WsxOy8yfg6UkKaZxU2ye7qELHwf/oys=
+ bh=oD2IyxSC/XolnBEa4F4v/ISC8iZKSqSsYZ4AEMT4QXU=;
+ b=wsb0+OKmIKgMTDFIMzqBbaG0JEjpyn2yPOdaHREzNkVxUEvwSTrqI/Ei0wKQW8NtJC7gnT
+ d4dc8LJnjulhNqgO6b8Bg1Hlk8BIRvnoJv1ftPztuD49IfqjDk60j+6BbFQEXliIUZ4krt
+ PU6JkmZvPUF+5qFpQwQEX3jc23WqSAM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1623161143;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=lZ+UG1uKBKDfqyKhHwCLbnj2k0VpNP9yVUA48AI6+wk=;
- b=aCmI6rqx0u7KymjW2irNXFmk7iskMKmsTLrAJmZyNAqJSXxKFPXKlUitgeG47irAuTTaj7
- yGi+rGFq6u8taXCg==
+ bh=oD2IyxSC/XolnBEa4F4v/ISC8iZKSqSsYZ4AEMT4QXU=;
+ b=nvp9P5POeK5A0368jpcqo7sG6IP4SSQIPHJ3GRBIu5AqIhQPmQEiyeQ1ry6/ObDmvfvK8m
+ fsxR6Kgc3GDrWuBw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 69858A3B84;
+ by relay2.suse.de (Postfix) with ESMTP id 3AD0DA3B85;
  Tue,  8 Jun 2021 14:05:43 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 18/66] ALSA: als4000: Fix assignment in if condition
-Date: Tue,  8 Jun 2021 16:04:52 +0200
-Message-Id: <20210608140540.17885-19-tiwai@suse.de>
+Subject: [PATCH 14/66] ALSA: isa: Fix assignment in if condition
+Date: Tue,  8 Jun 2021 16:04:48 +0200
+Message-Id: <20210608140540.17885-15-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210608140540.17885-1-tiwai@suse.de>
 References: <20210608140540.17885-1-tiwai@suse.de>
@@ -97,129 +97,66 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-PCI ALS4000 driver code contains a few assignments in if condition,
-which is a bad coding style that may confuse readers and occasionally
-lead to bugs.
+ISA ES1688 and WSS  driver code contains a few assignments in if
+condition, which is a bad coding style that may confuse readers and
+occasionally lead to bugs.
 
 This patch is merely for coding-style fixes, no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/als4000.c | 55 ++++++++++++++++++++++++---------------------
- 1 file changed, 30 insertions(+), 25 deletions(-)
+ sound/isa/es1688/es1688_lib.c | 3 ++-
+ sound/isa/wss/wss_lib.c       | 9 ++++++---
+ 2 files changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/sound/pci/als4000.c b/sound/pci/als4000.c
-index 139ac2a3a0ef..509f317ee682 100644
---- a/sound/pci/als4000.c
-+++ b/sound/pci/als4000.c
-@@ -832,9 +832,10 @@ static int snd_card_als4000_probe(struct pci_dev *pci,
- 	}
+diff --git a/sound/isa/es1688/es1688_lib.c b/sound/isa/es1688/es1688_lib.c
+index 1816e55c6edf..8554cb2263c1 100644
+--- a/sound/isa/es1688/es1688_lib.c
++++ b/sound/isa/es1688/es1688_lib.c
+@@ -971,7 +971,8 @@ int snd_es1688_mixer(struct snd_card *card, struct snd_es1688 *chip)
+ 	strcpy(card->mixername, snd_es1688_chip_id(chip));
  
- 	/* enable PCI device */
--	if ((err = pci_enable_device(pci)) < 0) {
-+	err = pci_enable_device(pci);
-+	if (err < 0)
- 		return err;
--	}
-+
- 	/* check, if we can restrict PCI DMA transfers to 24 bits */
- 	if (dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(24))) {
- 		dev_err(&pci->dev, "architecture does not support 24bit PCI busmaster DMA\n");
-@@ -842,7 +843,8 @@ static int snd_card_als4000_probe(struct pci_dev *pci,
- 		return -ENXIO;
- 	}
- 
--	if ((err = pci_request_regions(pci, "ALS4000")) < 0) {
-+	err = pci_request_regions(pci, "ALS4000");
-+	if (err < 0) {
- 		pci_disable_device(pci);
- 		return err;
- 	}
-@@ -869,17 +871,17 @@ static int snd_card_als4000_probe(struct pci_dev *pci,
- 	/* disable all legacy ISA stuff */
- 	snd_als4000_set_addr(acard->iobase, 0, 0, 0, 0);
- 
--	if ((err = snd_sbdsp_create(card,
--				    iobase + ALS4K_IOB_10_ADLIB_ADDR0,
--				    pci->irq,
-+	err = snd_sbdsp_create(card,
-+			       iobase + ALS4K_IOB_10_ADLIB_ADDR0,
-+			       pci->irq,
- 		/* internally registered as IRQF_SHARED in case of ALS4000 SB */
--				    snd_als4000_interrupt,
--				    -1,
--				    -1,
--				    SB_HW_ALS4000,
--				    &chip)) < 0) {
-+			       snd_als4000_interrupt,
-+			       -1,
-+			       -1,
-+			       SB_HW_ALS4000,
-+			       &chip);
-+	if (err < 0)
- 		goto out_err;
--	}
- 	acard->chip = chip;
- 
- 	chip->pci = pci;
-@@ -892,11 +894,12 @@ static int snd_card_als4000_probe(struct pci_dev *pci,
- 	sprintf(card->longname, "%s at 0x%lx, irq %i",
- 		card->shortname, chip->alt_port, chip->irq);
- 
--	if ((err = snd_mpu401_uart_new( card, 0, MPU401_HW_ALS4000,
--					iobase + ALS4K_IOB_30_MIDI_DATA,
--					MPU401_INFO_INTEGRATED |
--					MPU401_INFO_IRQ_HOOK,
--					-1, &chip->rmidi)) < 0) {
-+	err = snd_mpu401_uart_new(card, 0, MPU401_HW_ALS4000,
-+				  iobase + ALS4K_IOB_30_MIDI_DATA,
-+				  MPU401_INFO_INTEGRATED |
-+				  MPU401_INFO_IRQ_HOOK,
-+				  -1, &chip->rmidi);
-+	if (err < 0) {
- 		dev_err(&pci->dev, "no MPU-401 device at 0x%lx?\n",
- 				iobase + ALS4K_IOB_30_MIDI_DATA);
- 		goto out_err;
-@@ -907,12 +910,13 @@ static int snd_card_als4000_probe(struct pci_dev *pci,
- 	 * however there doesn't seem to be an ALSA API for this...
- 	 * SPECS_PAGE: 21 */
- 
--	if ((err = snd_als4000_pcm(chip, 0)) < 0) {
-+	err = snd_als4000_pcm(chip, 0);
-+	if (err < 0)
- 		goto out_err;
--	}
--	if ((err = snd_sbmixer_new(chip)) < 0) {
-+
-+	err = snd_sbmixer_new(chip);
-+	if (err < 0)
- 		goto out_err;
--	}	    
- 
- 	if (snd_opl3_create(card,
- 				iobase + ALS4K_IOB_10_ADLIB_ADDR0,
-@@ -922,16 +926,17 @@ static int snd_card_als4000_probe(struct pci_dev *pci,
- 			   iobase + ALS4K_IOB_10_ADLIB_ADDR0,
- 			   iobase + ALS4K_IOB_12_ADLIB_ADDR2);
- 	} else {
--		if ((err = snd_opl3_hwdep_new(opl3, 0, 1, NULL)) < 0) {
-+		err = snd_opl3_hwdep_new(opl3, 0, 1, NULL);
+ 	for (idx = 0; idx < ARRAY_SIZE(snd_es1688_controls); idx++) {
+-		if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_es1688_controls[idx], chip))) < 0)
++		err = snd_ctl_add(card, snd_ctl_new1(&snd_es1688_controls[idx], chip));
 +		if (err < 0)
- 			goto out_err;
--		}
+ 			return err;
+ 	}
+ 	for (idx = 0; idx < ES1688_INIT_TABLE_SIZE; idx++) {
+diff --git a/sound/isa/wss/wss_lib.c b/sound/isa/wss/wss_lib.c
+index ea5d3cdfe4e4..743e0f05e335 100644
+--- a/sound/isa/wss/wss_lib.c
++++ b/sound/isa/wss/wss_lib.c
+@@ -1493,7 +1493,8 @@ static int snd_wss_playback_open(struct snd_pcm_substream *substream)
+ 	snd_pcm_limit_isa_dma_size(chip->dma1, &runtime->hw.period_bytes_max);
+ 
+ 	if (chip->claim_dma) {
+-		if ((err = chip->claim_dma(chip, chip->dma_private_data, chip->dma1)) < 0)
++		err = chip->claim_dma(chip, chip->dma_private_data, chip->dma1);
++		if (err < 0)
+ 			return err;
  	}
  
- 	snd_als4000_create_gameport(acard, dev);
+@@ -1533,7 +1534,8 @@ static int snd_wss_capture_open(struct snd_pcm_substream *substream)
+ 	snd_pcm_limit_isa_dma_size(chip->dma2, &runtime->hw.period_bytes_max);
  
--	if ((err = snd_card_register(card)) < 0) {
-+	err = snd_card_register(card);
+ 	if (chip->claim_dma) {
+-		if ((err = chip->claim_dma(chip, chip->dma_private_data, chip->dma2)) < 0)
++		err = chip->claim_dma(chip, chip->dma_private_data, chip->dma2);
++		if (err < 0)
+ 			return err;
+ 	}
+ 
+@@ -1934,7 +1936,8 @@ int snd_wss_timer(struct snd_wss *chip, int device)
+ 	tid.card = chip->card->number;
+ 	tid.device = device;
+ 	tid.subdevice = 0;
+-	if ((err = snd_timer_new(chip->card, "CS4231", &tid, &timer)) < 0)
++	err = snd_timer_new(chip->card, "CS4231", &tid, &timer);
 +	if (err < 0)
- 		goto out_err;
--	}
-+
- 	pci_set_drvdata(pci, card);
- 	dev++;
- 	err = 0;
+ 		return err;
+ 	strcpy(timer->name, snd_wss_chip_id(chip));
+ 	timer->private_data = chip;
 -- 
 2.26.2
 
