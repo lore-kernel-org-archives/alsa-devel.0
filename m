@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 491B2C47082
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:13:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 658FFC47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:13:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A897260FE9
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:13:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A897260FE9
+	by mail.kernel.org (Postfix) with ESMTPS id D733B61078
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:13:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D733B61078
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 456B71745;
-	Tue,  8 Jun 2021 16:12:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 456B71745
+	by alsa0.perex.cz (Postfix) with ESMTPS id 77218175D;
+	Tue,  8 Jun 2021 16:12:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77218175D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623161588;
-	bh=nhoCiR2R7d+Xtk/Nr/gkznCi1n0GGsrzUnJMhv2MM/s=;
+	s=default; t=1623161605;
+	bh=7FfnBSDPYtjIjnG46xjLHewrKm2bmai/Y7TjGPVJFEY=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QHhAkhMtBJToU/JlrESbZbh6g2l3NA1seehavAWRhogLS5qcXXJCHHmel194PDxyD
-	 60Mxz2rNwUoNHymiiHog3i/Sk3kJ8stdclUT1Sz1ewX9Tf4boRbXblzSaC5B9V/ZX0
-	 Ij1mpNcZb2ecHHgOas4Jvr4CWESaBR3jh2J4oiPU=
+	b=UKqYI7hC4b0MTXHg7j8CfVAoOxF1FZcIIdswCK9frZSNg6t6qASY/ikOnj4fT7F38
+	 dGgaCRthrRk0SYneLDao8oCIOn9mh0xK+tAa50AmFWcsv/vlz31wS3+m+R3Sz3uLMB
+	 BvEfPd1XldwtJRXfqcynNma8hfMxbVIDAcu54ebM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B507BF805AF;
-	Tue,  8 Jun 2021 16:06:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3BDD5F805B2;
+	Tue,  8 Jun 2021 16:06:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A030EF805A0; Tue,  8 Jun 2021 16:06:19 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id DF3A1F805A1; Tue,  8 Jun 2021 16:06:19 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 388AFF804CA
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 388AFF804CA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5B639F804CF
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B639F804CF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="if1NXR1d"; 
+ header.b="UB7xBYv0"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="h6/RPCg3"
+ header.b="2EIMtmzP"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id F4076219DE
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:42 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id A253B1FD5B
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1623161143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ovcWUwDWW2APDyCVNThkQWH3oKuh52b02uGwP/BMkzc=;
- b=if1NXR1ducw3m67ph+vNue8B9b8cJBFRo0rsGttwZTb97wsRnofPes7AbMSbC9/SlgqAqT
- DgNldQdl539RdwgcB3J/KSpvA2f1C4jsbroKvWK12TIq7A4Wa0fg/GIraIykDf/+81mOza
- aJCnrkGvQa9YyhCk0bVtRHrrWCWqbrc=
+ bh=vpWoq2DTY1aFd4D1w+V7LqrOsRz2kV+MlzhmWa4phyk=;
+ b=UB7xBYv0oruPNe64Iwe6fXDNmKLUJNM1L5yijm67iaDLQ6lYdkNNJg+g4XxHCjYwCdtNTO
+ ikvTdpGo0ZynO4DiE0N77ULYCTi8upU6bQZ4Vwk7cwKCTpJt4jGEq6tMQCNtLY19Rp+COa
+ kuqDH0z+5mZXm+KPs55KC5IWfagFLTs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1623161143;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ovcWUwDWW2APDyCVNThkQWH3oKuh52b02uGwP/BMkzc=;
- b=h6/RPCg3K9X6WRV7bCg4SaZU7EhAfUZb7ax45/wuMh88ePDt5atUK/yd4lGehsSr7QcVhm
- ZuX5zmM3uF2HqWDg==
+ bh=vpWoq2DTY1aFd4D1w+V7LqrOsRz2kV+MlzhmWa4phyk=;
+ b=2EIMtmzPqQqyjIc58kWc85/a0HRUcMON4cAuTYE1lNxpEnx4z3YfUXciMoU6IXLw9hflzR
+ Gk/t2n+fQqJqMhDA==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id E42E8A3B85;
- Tue,  8 Jun 2021 14:05:42 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 93876A3B88;
+ Tue,  8 Jun 2021 14:05:43 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 08/66] ALSA: opti9xx: Fix assignment in if condition
-Date: Tue,  8 Jun 2021 16:04:42 +0200
-Message-Id: <20210608140540.17885-9-tiwai@suse.de>
+Subject: [PATCH 21/66] ALSA: bt87x: Fix assignment in if condition
+Date: Tue,  8 Jun 2021 16:04:55 +0200
+Message-Id: <20210608140540.17885-22-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210608140540.17885-1-tiwai@suse.de>
 References: <20210608140540.17885-1-tiwai@suse.de>
@@ -97,167 +97,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-ISA Opti9xx driver code contains lots of assignments in if condition,
-which is a bad coding style that may confuse readers and occasionally
-lead to bugs.
+PCI BT87x driver code contains an assignments in if condition, which
+is a bad coding style that may confuse readers and occasionally lead
+to bugs.
 
 This patch is merely for coding-style fixes, no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/isa/opti9xx/miro.c           | 27 ++++++++++++++++++---------
- sound/isa/opti9xx/opti92x-ad1848.c | 27 ++++++++++++++++++---------
- 2 files changed, 36 insertions(+), 18 deletions(-)
+ sound/pci/bt87x.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/isa/opti9xx/miro.c b/sound/isa/opti9xx/miro.c
-index a510b201143c..e1fb7567fdcc 100644
---- a/sound/isa/opti9xx/miro.c
-+++ b/sound/isa/opti9xx/miro.c
-@@ -722,35 +722,43 @@ static int snd_miro_mixer(struct snd_card *card,
- 	}
+diff --git a/sound/pci/bt87x.c b/sound/pci/bt87x.c
+index 91512b345d19..39bcfb81e81c 100644
+--- a/sound/pci/bt87x.c
++++ b/sound/pci/bt87x.c
+@@ -719,7 +719,8 @@ static int snd_bt87x_create(struct snd_card *card,
+ 	chip->irq = -1;
+ 	spin_lock_init(&chip->reg_lock);
  
- 	for (idx = 0; idx < ARRAY_SIZE(snd_miro_controls); idx++) {
--		if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_miro_controls[idx], miro))) < 0)
-+		err = snd_ctl_add(card, snd_ctl_new1(&snd_miro_controls[idx], miro));
-+		if (err < 0)
- 			return err;
- 	}
- 
- 	if ((miro->aci->aci_product == 'A') ||
- 	    (miro->aci->aci_product == 'B')) {
- 		/* PCM1/PCM12 with power-amp and Line 2 */
--		if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_miro_line_control[0], miro))) < 0)
-+		err = snd_ctl_add(card, snd_ctl_new1(&snd_miro_line_control[0], miro));
-+		if (err < 0)
- 			return err;
--		if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_miro_amp_control[0], miro))) < 0)
-+		err = snd_ctl_add(card, snd_ctl_new1(&snd_miro_amp_control[0], miro));
-+		if (err < 0)
- 			return err;
- 	}
- 
- 	if ((miro->aci->aci_product == 'B') ||
- 	    (miro->aci->aci_product == 'C')) {
- 		/* PCM12/PCM20 with mic-preamp */
--		if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_miro_preamp_control[0], miro))) < 0)
-+		err = snd_ctl_add(card, snd_ctl_new1(&snd_miro_preamp_control[0], miro));
-+		if (err < 0)
- 			return err;
--		if (miro->aci->aci_version >= 176)
--			if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_miro_capture_control[0], miro))) < 0)
-+		if (miro->aci->aci_version >= 176) {
-+			err = snd_ctl_add(card, snd_ctl_new1(&snd_miro_capture_control[0], miro));
-+			if (err < 0)
- 				return err;
-+		}
- 	}
- 
- 	if (miro->aci->aci_product == 'C') {
- 		/* PCM20 with radio and 7 band equalizer */
--		if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_miro_radio_control[0], miro))) < 0)
-+		err = snd_ctl_add(card, snd_ctl_new1(&snd_miro_radio_control[0], miro));
-+		if (err < 0)
- 			return err;
- 		for (idx = 0; idx < ARRAY_SIZE(snd_miro_eq_controls); idx++) {
--			if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_miro_eq_controls[idx], miro))) < 0)
-+			err = snd_ctl_add(card, snd_ctl_new1(&snd_miro_eq_controls[idx], miro));
-+			if (err < 0)
- 				return err;
- 		}
- 	}
-@@ -1178,7 +1186,8 @@ static int snd_card_miro_detect(struct snd_card *card,
- 
- 	for (i = OPTi9XX_HW_82C929; i <= OPTi9XX_HW_82C924; i++) {
- 
--		if ((err = snd_miro_init(chip, i)) < 0)
-+		err = snd_miro_init(chip, i);
-+		if (err < 0)
- 			return err;
- 
- 		err = snd_miro_opti_check(chip);
-diff --git a/sound/isa/opti9xx/opti92x-ad1848.c b/sound/isa/opti9xx/opti92x-ad1848.c
-index 08e61d90057b..4bd1dc6707fc 100644
---- a/sound/isa/opti9xx/opti92x-ad1848.c
-+++ b/sound/isa/opti9xx/opti92x-ad1848.c
-@@ -970,32 +970,37 @@ static int snd_opti9xx_isa_probe(struct device *devptr,
- #endif	/* CS4231 || OPTi93X */
- 
- 	if (mpu_port == SNDRV_AUTO_PORT) {
--		if ((mpu_port = snd_legacy_find_free_ioport(possible_mpu_ports, 2)) < 0) {
-+		mpu_port = snd_legacy_find_free_ioport(possible_mpu_ports, 2);
-+		if (mpu_port < 0) {
- 			snd_printk(KERN_ERR "unable to find a free MPU401 port\n");
- 			return -EBUSY;
- 		}
- 	}
- 	if (irq == SNDRV_AUTO_IRQ) {
--		if ((irq = snd_legacy_find_free_irq(possible_irqs)) < 0) {
-+		irq = snd_legacy_find_free_irq(possible_irqs);
-+		if (irq < 0) {
- 			snd_printk(KERN_ERR "unable to find a free IRQ\n");
- 			return -EBUSY;
- 		}
- 	}
- 	if (mpu_irq == SNDRV_AUTO_IRQ) {
--		if ((mpu_irq = snd_legacy_find_free_irq(possible_mpu_irqs)) < 0) {
-+		mpu_irq = snd_legacy_find_free_irq(possible_mpu_irqs);
-+		if (mpu_irq < 0) {
- 			snd_printk(KERN_ERR "unable to find a free MPU401 IRQ\n");
- 			return -EBUSY;
- 		}
- 	}
- 	if (dma1 == SNDRV_AUTO_DMA) {
--		if ((dma1 = snd_legacy_find_free_dma(possible_dma1s)) < 0) {
-+		dma1 = snd_legacy_find_free_dma(possible_dma1s);
-+		if (dma1 < 0) {
- 			snd_printk(KERN_ERR "unable to find a free DMA1\n");
- 			return -EBUSY;
- 		}
- 	}
- #if defined(CS4231) || defined(OPTi93X)
- 	if (dma2 == SNDRV_AUTO_DMA) {
--		if ((dma2 = snd_legacy_find_free_dma(possible_dma2s[dma1 % 4])) < 0) {
-+		dma2 = snd_legacy_find_free_dma(possible_dma2s[dma1 % 4]);
-+		if (dma2 < 0) {
- 			snd_printk(KERN_ERR "unable to find a free DMA2\n");
- 			return -EBUSY;
- 		}
-@@ -1006,11 +1011,13 @@ static int snd_opti9xx_isa_probe(struct device *devptr,
- 	if (error < 0)
- 		return error;
- 
--	if ((error = snd_card_opti9xx_detect(card, card->private_data)) < 0) {
-+	error = snd_card_opti9xx_detect(card, card->private_data);
-+	if (error < 0) {
- 		snd_card_free(card);
- 		return error;
- 	}
--	if ((error = snd_opti9xx_probe(card)) < 0) {
-+	error = snd_opti9xx_probe(card);
-+	if (error < 0) {
- 		snd_card_free(card);
- 		return error;
- 	}
-@@ -1111,7 +1118,8 @@ static int snd_opti9xx_pnp_probe(struct pnp_card_link *pcard,
- 		return -ENODEV;
- 	}
- 
--	if ((error = snd_opti9xx_init(chip, hw))) {
-+	error = snd_opti9xx_init(chip, hw);
-+	if (error) {
- 		snd_card_free(card);
- 		return error;
- 	}
-@@ -1121,7 +1129,8 @@ static int snd_opti9xx_pnp_probe(struct pnp_card_link *pcard,
- 		snd_card_free(card);
- 		return error;
- 	}
--	if ((error = snd_opti9xx_probe(card)) < 0) {
-+	error = snd_opti9xx_probe(card);
-+	if (error < 0) {
- 		snd_card_free(card);
- 		return error;
- 	}
+-	if ((err = pci_request_regions(pci, "Bt87x audio")) < 0) {
++	err = pci_request_regions(pci, "Bt87x audio");
++	if (err < 0) {
+ 		kfree(chip);
+ 		pci_disable_device(pci);
+ 		return err;
 -- 
 2.26.2
 
