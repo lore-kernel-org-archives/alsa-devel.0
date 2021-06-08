@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90826C47082
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:29:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA60CC47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:30:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1CA6861287
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:29:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1CA6861287
+	by mail.kernel.org (Postfix) with ESMTPS id 68D0161003
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:30:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68D0161003
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6F2A1189C;
-	Tue,  8 Jun 2021 16:28:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F2A1189C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C772188F;
+	Tue,  8 Jun 2021 16:29:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C772188F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623162586;
-	bh=gQc1AJriJ4g6lzt6P9heVQIlfoE7c9ANAwAK7F/1Sjo=;
+	s=default; t=1623162599;
+	bh=S8PoKqc6i5doQwVBgKCh7FDkcnoZ/SytlO4ouJOOWCQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eAX8vi0SXYXIeCZaJChMydkH6DkZUyRe6To82K6mKFGI5P9MQa4c/A/ZqEl0oRWAo
-	 UaHDS8WuRbvw5ipLz+HKvwGAlXUC8I9j9sLu6KJEWi/qtgRx4WkyvTUDl4GoYJzer3
-	 K6S39IDhPgwBwiFWEfH43bgU1RA9FdD7mRmmBeno=
+	b=tUqvrQvw0e8pO1+90uL7WEEMvDvrEL7AFZjzdO18ezuI/sjUhBc0GUgbwr8g9sbMk
+	 i6qxiHZDUvP69lZatXfW3Qz6QyGXLtzIC6fkaummf+QAcm/2Swg+52XtnUDxnxC3ba
+	 T7uGP6MtWDJxokMdBVjaoBN0QAYQK7/voBB/3gsI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C941F80730;
-	Tue,  8 Jun 2021 16:07:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 37DC3F80737;
+	Tue,  8 Jun 2021 16:07:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8210AF80678; Tue,  8 Jun 2021 16:07:25 +0200 (CEST)
+ id 9EF65F8067B; Tue,  8 Jun 2021 16:07:27 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 31B37F8051C
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31B37F8051C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4C9B4F80520
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C9B4F80520
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="OU8jziCZ"; 
+ header.b="S3dcDptV"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="ArkkkIH0"
+ header.b="lN/ztUmu"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id B2A38219F9
+ by smtp-out1.suse.de (Postfix) with ESMTP id D6733219FB
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1623161145; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=qh9LAZq//7GSYNBdWHtUNmduwIdvjHSGrxW3y85YVFU=;
- b=OU8jziCZl95wvwKV9VhfHJvK5jytGWTT0FOm0XqRoJ6i3Su1k56pFC7wDXtO5WJ5MCFC/V
- GgAHCc5fZ4cDqLCuxZLGLdeduOG/gzWx+PhcBnWRPVA50HgY9dmLmFGqwShGnbUxw1/Bqn
- vEQ4s7qcA7DVyPZyy/LneyjVBSM6yok=
+ bh=cXUZcujhpWJI3Z/TxgO3dxtyF6B9GN+18/4fZUZMWwY=;
+ b=S3dcDptVbUdBzz3AfXx/tvsY9HFSstYvVG/4djXzAzR7ZqY549SY687WGZkOv+V8l7KIXC
+ mcgmgmG7+1JamwIImFTcDfpI94CuOpLUuMr1j4DsR/LsIQIFly8lXdXz+kyw4AtSvJWS+4
+ vByWz0JokGCt4j1nDa2ghZQsKCsjNc8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1623161145;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=qh9LAZq//7GSYNBdWHtUNmduwIdvjHSGrxW3y85YVFU=;
- b=ArkkkIH0n2xfiKae0LtMhdFB9stOOecFVn9vbH0adSAusEAFDF9W5qmtGHMPDr61ow5Eiv
- 2WEgkuW32PKTtJDw==
+ bh=cXUZcujhpWJI3Z/TxgO3dxtyF6B9GN+18/4fZUZMWwY=;
+ b=lN/ztUmuFyBj21IRQrM+JGBG37AibBaXZirbnddEnMeJ6qLdApCJBgAwdf4F5xQlGuTIVz
+ jNVQtjrc/smSKpDA==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id AD658A3B88;
+ by relay2.suse.de (Postfix) with ESMTP id C5DCDA3B88;
  Tue,  8 Jun 2021 14:05:45 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 59/66] ALSA: mpu401: Fix assignment in if condition
-Date: Tue,  8 Jun 2021 16:05:33 +0200
-Message-Id: <20210608140540.17885-60-tiwai@suse.de>
+Subject: [PATCH 62/66] ALSA: serial: Fix assignment in if condition
+Date: Tue,  8 Jun 2021 16:05:36 +0200
+Message-Id: <20210608140540.17885-63-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210608140540.17885-1-tiwai@suse.de>
 References: <20210608140540.17885-1-tiwai@suse.de>
@@ -97,7 +97,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-MPU401 driver code contains a few assignments in if condition, which
+A few ALSA serial drivers contain assignments in if condition, which
 is a bad coding style that may confuse readers and occasionally lead
 to bugs.
 
@@ -105,88 +105,225 @@ This patch is merely for coding-style fixes, no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/drivers/mpu401/mpu401.c      |  9 ++++++---
- sound/drivers/mpu401/mpu401_uart.c | 19 +++++++++++++------
- 2 files changed, 19 insertions(+), 9 deletions(-)
+ sound/drivers/mtpav.c         | 15 +++++++++------
+ sound/drivers/mts64.c         | 15 ++++++++++-----
+ sound/drivers/portman2x4.c    | 15 ++++++++++-----
+ sound/drivers/serial-u16550.c | 27 ++++++++++++++-------------
+ 4 files changed, 43 insertions(+), 29 deletions(-)
 
-diff --git a/sound/drivers/mpu401/mpu401.c b/sound/drivers/mpu401/mpu401.c
-index 8c552e25805a..d0b55dbb411a 100644
---- a/sound/drivers/mpu401/mpu401.c
-+++ b/sound/drivers/mpu401/mpu401.c
-@@ -104,7 +104,8 @@ static int snd_mpu401_probe(struct platform_device *devptr)
- 	err = snd_mpu401_create(&devptr->dev, dev, &card);
- 	if (err < 0)
+diff --git a/sound/drivers/mtpav.c b/sound/drivers/mtpav.c
+index df4b7f9cd50f..0e95b08d34d6 100644
+--- a/sound/drivers/mtpav.c
++++ b/sound/drivers/mtpav.c
+@@ -566,7 +566,8 @@ static irqreturn_t snd_mtpav_irqh(int irq, void *dev_id)
+  */
+ static int snd_mtpav_get_ISA(struct mtpav *mcard)
+ {
+-	if ((mcard->res_port = request_region(port, 3, "MotuMTPAV MIDI")) == NULL) {
++	mcard->res_port = request_region(port, 3, "MotuMTPAV MIDI");
++	if (!mcard->res_port) {
+ 		snd_printk(KERN_ERR "MTVAP port 0x%lx is busy\n", port);
+ 		return -EBUSY;
+ 	}
+@@ -628,10 +629,11 @@ static int snd_mtpav_get_RAWMIDI(struct mtpav *mcard)
+ 		hwports = 8;
+ 	mcard->num_ports = hwports;
+ 
+-	if ((rval = snd_rawmidi_new(mcard->card, "MotuMIDI", 0,
+-				    mcard->num_ports * 2 + MTPAV_PIDX_BROADCAST + 1,
+-				    mcard->num_ports * 2 + MTPAV_PIDX_BROADCAST + 1,
+-				    &mcard->rmidi)) < 0)
++	rval = snd_rawmidi_new(mcard->card, "MotuMIDI", 0,
++			       mcard->num_ports * 2 + MTPAV_PIDX_BROADCAST + 1,
++			       mcard->num_ports * 2 + MTPAV_PIDX_BROADCAST + 1,
++			       &mcard->rmidi);
++	if (rval < 0)
+ 		return rval;
+ 	rawmidi = mcard->rmidi;
+ 	rawmidi->private_data = mcard;
+@@ -744,7 +746,8 @@ static int __init alsa_card_mtpav_init(void)
+ {
+ 	int err;
+ 
+-	if ((err = platform_driver_register(&snd_mtpav_driver)) < 0)
++	err = platform_driver_register(&snd_mtpav_driver);
++	if (err < 0)
  		return err;
+ 
+ 	device = platform_device_register_simple(SND_MTPAV_DRIVER, -1, NULL, 0);
+diff --git a/sound/drivers/mts64.c b/sound/drivers/mts64.c
+index 322d530ab07b..d3bc9e8c407d 100644
+--- a/sound/drivers/mts64.c
++++ b/sound/drivers/mts64.c
+@@ -950,7 +950,8 @@ static int snd_mts64_probe(struct platform_device *pdev)
+ 		goto free_pardev;
+ 	}
+ 
+-	if ((err = snd_mts64_create(card, pardev, &mts)) < 0) {
++	err = snd_mts64_create(card, pardev, &mts);
++	if (err < 0) {
+ 		snd_printd("Cannot create main component\n");
+ 		goto release_pardev;
+ 	}
+@@ -963,19 +964,22 @@ static int snd_mts64_probe(struct platform_device *pdev)
+ 		goto __err;
+ 	}
+ 	
+-	if ((err = snd_mts64_rawmidi_create(card)) < 0) {
++	err = snd_mts64_rawmidi_create(card);
++	if (err < 0) {
+ 		snd_printd("Creating Rawmidi component failed\n");
+ 		goto __err;
+ 	}
+ 
+ 	/* init device */
+-	if ((err = mts64_device_init(p)) < 0)
++	err = mts64_device_init(p);
++	if (err < 0)
+ 		goto __err;
+ 
+ 	platform_set_drvdata(pdev, card);
+ 
+ 	/* At this point card will be usable */
 -	if ((err = snd_card_register(card)) < 0) {
 +	err = snd_card_register(card);
 +	if (err < 0) {
- 		snd_card_free(card);
+ 		snd_printd("Cannot register card\n");
+ 		goto __err;
+ 	}
+@@ -1031,7 +1035,8 @@ static int __init snd_mts64_module_init(void)
+ {
+ 	int err;
+ 
+-	if ((err = platform_driver_register(&snd_mts64_driver)) < 0)
++	err = platform_driver_register(&snd_mts64_driver);
++	if (err < 0)
+ 		return err;
+ 
+ 	if (parport_register_driver(&mts64_parport_driver) != 0) {
+diff --git a/sound/drivers/portman2x4.c b/sound/drivers/portman2x4.c
+index 2f4514ed47c5..52a656735365 100644
+--- a/sound/drivers/portman2x4.c
++++ b/sound/drivers/portman2x4.c
+@@ -749,7 +749,8 @@ static int snd_portman_probe(struct platform_device *pdev)
+ 		goto free_pardev;
+ 	}
+ 
+-	if ((err = portman_create(card, pardev, &pm)) < 0) {
++	err = portman_create(card, pardev, &pm);
++	if (err < 0) {
+ 		snd_printd("Cannot create main component\n");
+ 		goto release_pardev;
+ 	}
+@@ -762,19 +763,22 @@ static int snd_portman_probe(struct platform_device *pdev)
+ 		goto __err;
+ 	}
+ 	
+-	if ((err = snd_portman_rawmidi_create(card)) < 0) {
++	err = snd_portman_rawmidi_create(card);
++	if (err < 0) {
+ 		snd_printd("Creating Rawmidi component failed\n");
+ 		goto __err;
+ 	}
+ 
+ 	/* init device */
+-	if ((err = portman_device_init(pm)) < 0)
++	err = portman_device_init(pm);
++	if (err < 0)
+ 		goto __err;
+ 
+ 	platform_set_drvdata(pdev, card);
+ 
+ 	/* At this point card will be usable */
+-	if ((err = snd_card_register(card)) < 0) {
++	err = snd_card_register(card);
++	if (err < 0) {
+ 		snd_printd("Cannot register card\n");
+ 		goto __err;
+ 	}
+@@ -831,7 +835,8 @@ static int __init snd_portman_module_init(void)
+ {
+ 	int err;
+ 
+-	if ((err = platform_driver_register(&snd_portman_driver)) < 0)
++	err = platform_driver_register(&snd_portman_driver);
++	if (err < 0)
+ 		return err;
+ 
+ 	if (parport_register_driver(&portman_parport_driver) != 0) {
+diff --git a/sound/drivers/serial-u16550.c b/sound/drivers/serial-u16550.c
+index 6d5d1ca59ecf..da9983cba01c 100644
+--- a/sound/drivers/serial-u16550.c
++++ b/sound/drivers/serial-u16550.c
+@@ -783,7 +783,8 @@ static int snd_uart16550_create(struct snd_card *card,
+ 	int err;
+ 
+ 
+-	if ((uart = kzalloc(sizeof(*uart), GFP_KERNEL)) == NULL)
++	uart = kzalloc(sizeof(*uart), GFP_KERNEL);
++	if (!uart)
+ 		return -ENOMEM;
+ 	uart->adaptor = adaptor;
+ 	uart->card = card;
+@@ -792,7 +793,8 @@ static int snd_uart16550_create(struct snd_card *card,
+ 	uart->base = iobase;
+ 	uart->drop_on_full = droponfull;
+ 
+-	if ((err = snd_uart16550_detect(uart)) <= 0) {
++	err = snd_uart16550_detect(uart);
++	if (err <= 0) {
+ 		printk(KERN_ERR "no UART detected at 0x%lx\n", iobase);
+ 		snd_uart16550_free(uart);
+ 		return -ENODEV;
+@@ -818,7 +820,8 @@ static int snd_uart16550_create(struct snd_card *card,
+ 	uart->timer_running = 0;
+ 
+ 	/* Register device */
+-	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, uart, &ops)) < 0) {
++	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, uart, &ops);
++	if (err < 0) {
+ 		snd_uart16550_free(uart);
  		return err;
  	}
-@@ -182,7 +183,8 @@ static int snd_mpu401_pnp_probe(struct pnp_dev *pnp_dev,
- 		err = snd_mpu401_create(&pnp_dev->dev, dev, &card);
- 		if (err < 0)
- 			return err;
--		if ((err = snd_card_register(card)) < 0) {
-+		err = snd_card_register(card);
-+		if (err < 0) {
- 			snd_card_free(card);
- 			return err;
- 		}
-@@ -227,7 +229,8 @@ static int __init alsa_card_mpu401_init(void)
+@@ -932,14 +935,10 @@ static int snd_serial_probe(struct platform_device *devptr)
+ 	strcpy(card->driver, "Serial");
+ 	strcpy(card->shortname, "Serial MIDI (UART16550A)");
+ 
+-	if ((err = snd_uart16550_create(card,
+-					port[dev],
+-					irq[dev],
+-					speed[dev],
+-					base[dev],
+-					adaptor[dev],
+-					droponfull[dev],
+-					&uart)) < 0)
++	err = snd_uart16550_create(card, port[dev], irq[dev], speed[dev],
++				   base[dev], adaptor[dev], droponfull[dev],
++				   &uart);
++	if (err < 0)
+ 		goto _err;
+ 
+ 	err = snd_uart16550_rmidi(uart, 0, outs[dev], ins[dev], &uart->rmidi);
+@@ -952,7 +951,8 @@ static int snd_serial_probe(struct platform_device *devptr)
+ 		uart->base,
+ 		uart->irq);
+ 
+-	if ((err = snd_card_register(card)) < 0)
++	err = snd_card_register(card);
++	if (err < 0)
+ 		goto _err;
+ 
+ 	platform_set_drvdata(devptr, card);
+@@ -992,7 +992,8 @@ static int __init alsa_card_serial_init(void)
  {
- 	int i, err;
+ 	int i, cards, err;
  
--	if ((err = platform_driver_register(&snd_mpu401_driver)) < 0)
-+	err = platform_driver_register(&snd_mpu401_driver);
+-	if ((err = platform_driver_register(&snd_serial_driver)) < 0)
++	err = platform_driver_register(&snd_serial_driver);
 +	if (err < 0)
  		return err;
  
- 	for (i = 0; i < SNDRV_CARDS; i++) {
-diff --git a/sound/drivers/mpu401/mpu401_uart.c b/sound/drivers/mpu401/mpu401_uart.c
-index 65982d6babfc..f435b9b4ae24 100644
---- a/sound/drivers/mpu401/mpu401_uart.c
-+++ b/sound/drivers/mpu401/mpu401_uart.c
-@@ -271,8 +271,11 @@ static int snd_mpu401_uart_input_open(struct snd_rawmidi_substream *substream)
- 	int err;
- 
- 	mpu = substream->rmidi->private_data;
--	if (mpu->open_input && (err = mpu->open_input(mpu)) < 0)
--		return err;
-+	if (mpu->open_input) {
-+		err = mpu->open_input(mpu);
-+		if (err < 0)
-+			return err;
-+	}
- 	if (! test_bit(MPU401_MODE_BIT_OUTPUT, &mpu->mode)) {
- 		if (snd_mpu401_do_reset(mpu) < 0)
- 			goto error_out;
-@@ -293,8 +296,11 @@ static int snd_mpu401_uart_output_open(struct snd_rawmidi_substream *substream)
- 	int err;
- 
- 	mpu = substream->rmidi->private_data;
--	if (mpu->open_output && (err = mpu->open_output(mpu)) < 0)
--		return err;
-+	if (mpu->open_output) {
-+		err = mpu->open_output(mpu);
-+		if (err < 0)
-+			return err;
-+	}
- 	if (! test_bit(MPU401_MODE_BIT_INPUT, &mpu->mode)) {
- 		if (snd_mpu401_do_reset(mpu) < 0)
- 			goto error_out;
-@@ -524,8 +530,9 @@ int snd_mpu401_uart_new(struct snd_card *card, int device,
- 		info_flags |= MPU401_INFO_INPUT | MPU401_INFO_OUTPUT;
- 	in_enable = (info_flags & MPU401_INFO_INPUT) ? 1 : 0;
- 	out_enable = (info_flags & MPU401_INFO_OUTPUT) ? 1 : 0;
--	if ((err = snd_rawmidi_new(card, "MPU-401U", device,
--				   out_enable, in_enable, &rmidi)) < 0)
-+	err = snd_rawmidi_new(card, "MPU-401U", device,
-+			      out_enable, in_enable, &rmidi);
-+	if (err < 0)
- 		return err;
- 	mpu = kzalloc(sizeof(*mpu), GFP_KERNEL);
- 	if (!mpu) {
+ 	cards = 0;
 -- 
 2.26.2
 
