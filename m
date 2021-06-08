@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB650C47082
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:10:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87613C47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:10:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3024361078
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:10:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3024361078
+	by mail.kernel.org (Postfix) with ESMTPS id 12F226127A
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:10:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12F226127A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C313F171A;
-	Tue,  8 Jun 2021 16:09:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C313F171A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9761C16EC;
+	Tue,  8 Jun 2021 16:10:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9761C16EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623161435;
-	bh=jJBra0MhxW1522PRDcJFyqZRY73pOv32Kv5AhHgrprw=;
+	s=default; t=1623161451;
+	bh=Aipjm5O5mMllK4pe9ezKKbc/tDHyyVnDNXrLDmmP/Es=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=myEik8xnqIdThYAsaQ9GFIL2BacSyxb2lOGQCd8ovX+LoWX7dVW30rwmhorek2i1m
-	 g5sLd5W23Rqe2ZatucO2ZPNYeAbvOJ6yGdnVcq7djdnXN2q1JNGISQrr6wb+/K8qOw
-	 81HBl/nMZuQ+mKoW1FuqwM7x2F3oxZqz5iTIJpbs=
+	b=fZDVWAvrSo0vG4brLtLH2c5d4v7KcEO8FzsiLYganpHEUxFd/MxPzfPB0IONCcATP
+	 Dr5Gu0pct3EZ8F8k+DbwqGUEH0GtbINPmC26Q3PXPcHR0soXtl1t3bDCW3VuntAKsA
+	 LF45haEPDqCYMepMkstTgylG1XqHnpjbJFQyB9a4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 19361F80566;
-	Tue,  8 Jun 2021 16:06:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 45B1EF80571;
+	Tue,  8 Jun 2021 16:06:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7ABECF80557; Tue,  8 Jun 2021 16:06:08 +0200 (CEST)
+ id 26E6FF804C2; Tue,  8 Jun 2021 16:06:09 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D5983F804AD
+ by alsa1.perex.cz (Postfix) with ESMTPS id E7D3EF804B2
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5983F804AD
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7D3EF804B2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="l7gkBm5T"; 
+ header.b="xMotSfy6"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="kK+8hlLc"
+ header.b="+XZuM8MG"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 592A81FD58
+ by smtp-out2.suse.de (Postfix) with ESMTP id 3C1BD1FD57
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1623161143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=KYYO28bjeU8Exu1/ElDX7Ep5x15PkwvUSZJv08j/XB8=;
- b=l7gkBm5Tcd4IK95KbNCPnYrYnzZH/SRxtlR+qedth1KyduVmDHkVa5EAAzIdl+mWn0Lw4Z
- xcSHG2J6Y0S9xh7WWhwMbHQXih/X0y6wpgoMQIS45povRPlMzffeYrdSZET6uKS1tPJB++
- CISDNY0bJVjBxBGu/PRsSNcjAp2GwH4=
+ bh=TeejCGWgHbwBttd9JigXlJg1aOWIWlIRvUEwiWpt+eE=;
+ b=xMotSfy6EhXvA1EB4eDmeIgDWt9ZtOboeERKXUgWXjxQ0rdersKwEj0VSbul3oz2/oiwyy
+ 9blZGQz0rXRfo85IuFfEXoejD1kWCsQPbjqPJCC7cYFL8DVwzYJ+y9pT3vToH7u80jNLdK
+ iVsTj04n7rpOf0DLzUOFjXlJsFLWjRM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1623161143;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=KYYO28bjeU8Exu1/ElDX7Ep5x15PkwvUSZJv08j/XB8=;
- b=kK+8hlLcdWTq0lpiSIw4ivXhfdIxt7SkXKa/8s3sL/ozaBYQLFE26RNx71lBawIXXoflo1
- BTeR1yTPMHA2vrDg==
+ bh=TeejCGWgHbwBttd9JigXlJg1aOWIWlIRvUEwiWpt+eE=;
+ b=+XZuM8MG7shwcwMfrNDOAVxOT8ovvFb9QbiqoeUJgUkGxWZDzRBWSYTlQkDAapXh1+PKAp
+ EsvN/DlvQfM653BA==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 48AF7A3B84;
+ by relay2.suse.de (Postfix) with ESMTP id 2C8B2A3B84;
  Tue,  8 Jun 2021 14:05:43 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 15/66] ALSA: ad1889: Fix assignment in if condition
-Date: Tue,  8 Jun 2021 16:04:49 +0200
-Message-Id: <20210608140540.17885-16-tiwai@suse.de>
+Subject: [PATCH 13/66] ALSA: azt2320: Fix assignment in if condition
+Date: Tue,  8 Jun 2021 16:04:47 +0200
+Message-Id: <20210608140540.17885-14-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210608140540.17885-1-tiwai@suse.de>
 References: <20210608140540.17885-1-tiwai@suse.de>
@@ -97,7 +97,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-PCI AD1889 driver code contains a few assignments in if condition,
+ISA AZT2320 driver code contains lots of assignments in if condition,
 which is a bad coding style that may confuse readers and occasionally
 lead to bugs.
 
@@ -105,59 +105,68 @@ This patch is merely for coding-style fixes, no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/ad1889.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+ sound/isa/azt2320.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/sound/pci/ad1889.c b/sound/pci/ad1889.c
-index 4520022801d9..5c78951dd596 100644
---- a/sound/pci/ad1889.c
-+++ b/sound/pci/ad1889.c
-@@ -852,7 +852,8 @@ snd_ad1889_create(struct snd_card *card,
+diff --git a/sound/isa/azt2320.c b/sound/isa/azt2320.c
+index 867e9ae8f65a..dd5c059b3744 100644
+--- a/sound/isa/azt2320.c
++++ b/sound/isa/azt2320.c
+@@ -148,9 +148,11 @@ static int snd_card_azt2320_enable_wss(unsigned long port)
+ {
+ 	int error;
  
- 	*rchip = NULL;
+-	if ((error = snd_card_azt2320_command(port, 0x09)))
++	error = snd_card_azt2320_command(port, 0x09);
++	if (error)
+ 		return error;
+-	if ((error = snd_card_azt2320_command(port, 0x00)))
++	error = snd_card_azt2320_command(port, 0x00);
++	if (error)
+ 		return error;
  
--	if ((err = pci_enable_device(pci)) < 0)
-+	err = pci_enable_device(pci);
-+	if (err < 0)
- 		return err;
+ 	mdelay(5);
+@@ -174,12 +176,14 @@ static int snd_card_azt2320_probe(int dev,
+ 		return error;
+ 	acard = card->private_data;
  
- 	/* check PCI availability (32bit DMA) */
-@@ -863,7 +864,8 @@ snd_ad1889_create(struct snd_card *card,
+-	if ((error = snd_card_azt2320_pnp(dev, acard, pcard, pid))) {
++	error = snd_card_azt2320_pnp(dev, acard, pcard, pid);
++	if (error) {
+ 		snd_card_free(card);
+ 		return error;
  	}
  
- 	/* allocate chip specific data with zero-filled memory */
--	if ((chip = kzalloc(sizeof(*chip), GFP_KERNEL)) == NULL) {
-+	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
-+	if (!chip) {
- 		pci_disable_device(pci);
- 		return -ENOMEM;
+-	if ((error = snd_card_azt2320_enable_wss(port[dev]))) {
++	error = snd_card_azt2320_enable_wss(port[dev]);
++	if (error) {
+ 		snd_card_free(card);
+ 		return error;
  	}
-@@ -874,7 +876,8 @@ snd_ad1889_create(struct snd_card *card,
- 	chip->irq = -1;
- 
- 	/* (1) PCI resource allocation */
--	if ((err = pci_request_regions(pci, card->driver)) < 0)
-+	err = pci_request_regions(pci, card->driver);
-+	if (err < 0)
- 		goto free_and_ret;
- 
- 	chip->bar = pci_resource_start(pci, 0);
-@@ -900,12 +903,14 @@ snd_ad1889_create(struct snd_card *card,
- 	card->sync_irq = chip->irq;
- 
- 	/* (2) initialization of the chip hardware */
--	if ((err = snd_ad1889_init(chip)) < 0) {
-+	err = snd_ad1889_init(chip);
-+	if (err < 0) {
- 		snd_ad1889_free(chip);
- 		return err;
+@@ -228,18 +232,21 @@ static int snd_card_azt2320_probe(int dev,
+ 			snd_printk(KERN_ERR PFX "no OPL device at 0x%lx-0x%lx\n",
+ 				   fm_port[dev], fm_port[dev] + 2);
+ 		} else {
+-			if ((error = snd_opl3_timer_new(opl3, 1, 2)) < 0) {
++			error = snd_opl3_timer_new(opl3, 1, 2);
++			if (error < 0) {
+ 				snd_card_free(card);
+ 				return error;
+ 			}
+-			if ((error = snd_opl3_hwdep_new(opl3, 0, 1, NULL)) < 0) {
++			error = snd_opl3_hwdep_new(opl3, 0, 1, NULL);
++			if (error < 0) {
+ 				snd_card_free(card);
+ 				return error;
+ 			}
+ 		}
  	}
  
--	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
-+	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
-+	if (err < 0) {
- 		snd_ad1889_free(chip);
- 		return err;
+-	if ((error = snd_card_register(card)) < 0) {
++	error = snd_card_register(card);
++	if (error < 0) {
+ 		snd_card_free(card);
+ 		return error;
  	}
 -- 
 2.26.2
