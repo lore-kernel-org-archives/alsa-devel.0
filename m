@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D20DAC47082
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:20:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EFBDBC47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:21:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5B20761359
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:20:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B20761359
+	by mail.kernel.org (Postfix) with ESMTPS id 6FB8F60FE9
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:21:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6FB8F60FE9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0662A17B9;
-	Tue,  8 Jun 2021 16:19:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0662A17B9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E2FB17D2;
+	Tue,  8 Jun 2021 16:20:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E2FB17D2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623162039;
-	bh=IlDcF1JFtA2EI5rj+5I+0ibl4kvo8BNc8D8F5ecpuhg=;
+	s=default; t=1623162070;
+	bh=SwpHOi2hGhzhjpOS7lL+aqHeVzD/HgrjJUhDl5cuW8g=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Q/6a5ustg88Ow1bt3Cbkhtwszri3enGeJOCqy2izvlSITcmYZ9yRlY91gNgPeLMjy
-	 R3dYx/R/gLIBeGYRKlCHcQ5me7fL2CU6vy+TMYW9BuzSlu1urPJitY6QwapvMF0MR2
-	 pe1dLDYO67Bw4NtG634uQQuP2AKADQqBIDKFzPiA=
+	b=PSxMaMsUqt2SDA6TnKW5okqwg0fKHD0xlZ31pra1v7pR17YZIHsaU/tV/8wgCWg2F
+	 Dg87gpZT5ASD4SeT/HG+mw74Nd6rHVsnZ/N0cPywDk8h++8qJ1fBasQqZ9u76q9Khv
+	 Ptc39d1pS0mwfi/dALy4+jsW/ceDL98G926kzHyg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C7C7F8019B;
-	Tue,  8 Jun 2021 16:07:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B4D13F8050F;
+	Tue,  8 Jun 2021 16:07:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D9CD9F80600; Tue,  8 Jun 2021 16:06:48 +0200 (CEST)
+ id C0FC9F80603; Tue,  8 Jun 2021 16:06:52 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 993ACF804ED
+ by alsa1.perex.cz (Postfix) with ESMTPS id BE110F804F2
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 993ACF804ED
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE110F804F2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="LK5u5R0H"; 
+ header.b="W8Zg2v7l"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="/sJTZ5Xl"
+ header.b="Q53fK63I"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 4C7CB1FDF1
+ by smtp-out2.suse.de (Postfix) with ESMTP id A16341FDF5
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1623161145; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=jZH4J/GOkOavmZBc/g45R3fXl8GfJRPQb9vutixjtlk=;
- b=LK5u5R0Hkjbo52f5E96q37rhAJ3zpSKzb8kFOqQkmHj0iCyzAobELloOWOIVCJaizWB76z
- epBoVh66KaGQ9CZRdQHIk6NNXGjE6Jnp9Men+xcdhWDBaIYEtidpfRAqmM4oenN5xNJdNm
- 4xfcTX6qZpi9qWCyYQSn7HSr8TYKiuA=
+ bh=KEaRCQtvHtSFkd8UrC/B/t4vuzYsPNzCceBREMLVJE4=;
+ b=W8Zg2v7l3tBGYCQp3ftUvYmtdgp9cpCeZxIU14Eiyg9rta3yWbyLkZHCgKJF+KX9LhV4bb
+ Mss5JjMoYgHTFHOLYYk/rWG/r27TGVwiSPIcB5a4/7fSq5QaqF7Fq3aBi49jmNw1hfc3D9
+ f9SzEl8/dvoe9j0IhM83lH2saWlrmWc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1623161145;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=jZH4J/GOkOavmZBc/g45R3fXl8GfJRPQb9vutixjtlk=;
- b=/sJTZ5XlDkjrQiBS7V53LSSqZeqnbbdted82cd7876RUfeMSr3+LXX6bxDBJjg5IOXO54v
- W9MiinRW0oxLdNAA==
+ bh=KEaRCQtvHtSFkd8UrC/B/t4vuzYsPNzCceBREMLVJE4=;
+ b=Q53fK63IjgVpq7Sf7WUSDNKE7sQf+l08VFlpav3m/LCNS0kVE1SAcfW5KeCra+4rsMj5CQ
+ UnQTU0NuqvOIV/Dg==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 48B61A3B88;
+ by relay2.suse.de (Postfix) with ESMTP id 92101A3B88;
  Tue,  8 Jun 2021 14:05:45 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 51/66] ALSA: vx222: Fix assignment in if condition
-Date: Tue,  8 Jun 2021 16:05:25 +0200
-Message-Id: <20210608140540.17885-52-tiwai@suse.de>
+Subject: [PATCH 57/66] ALSA: pcmcia: Fix assignment in if condition
+Date: Tue,  8 Jun 2021 16:05:31 +0200
+Message-Id: <20210608140540.17885-58-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210608140540.17885-1-tiwai@suse.de>
 References: <20210608140540.17885-1-tiwai@suse.de>
@@ -97,107 +97,82 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-PCI VX222 driver code contains lots of assignments in if condition,
-which is a bad coding style that may confuse readers and occasionally
-lead to bugs.
+PCMCIA VX222 and PDAudioCF drivers contain a few assignments in if
+condition, which is a bad coding style that may confuse readers and
+occasionally lead to bugs.
 
 This patch is merely for coding-style fixes, no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/vx222/vx222.c     | 18 ++++++++++++------
- sound/pci/vx222/vx222_ops.c | 12 ++++++++----
- 2 files changed, 20 insertions(+), 10 deletions(-)
+ sound/pcmcia/pdaudiocf/pdaudiocf.c | 3 ++-
+ sound/pcmcia/vx/vxp_mixer.c        | 6 ++++--
+ sound/pcmcia/vx/vxp_ops.c          | 6 ++++--
+ sound/pcmcia/vx/vxpocket.c         | 3 ++-
+ 4 files changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/sound/pci/vx222/vx222.c b/sound/pci/vx222/vx222.c
-index 2a9e1a77a81a..04c7204cb7bc 100644
---- a/sound/pci/vx222/vx222.c
-+++ b/sound/pci/vx222/vx222.c
-@@ -133,7 +133,8 @@ static int snd_vx222_create(struct snd_card *card, struct pci_dev *pci,
- 	const struct snd_vx_ops *vx_ops;
+diff --git a/sound/pcmcia/pdaudiocf/pdaudiocf.c b/sound/pcmcia/pdaudiocf/pdaudiocf.c
+index 144582350a05..8363ec08df5d 100644
+--- a/sound/pcmcia/pdaudiocf/pdaudiocf.c
++++ b/sound/pcmcia/pdaudiocf/pdaudiocf.c
+@@ -170,7 +170,8 @@ static int snd_pdacf_assign_resources(struct snd_pdacf *pdacf, int port, int irq
+ 	if (err < 0)
+ 		return err;
  
- 	/* enable PCI device */
--	if ((err = pci_enable_device(pci)) < 0)
-+	err = pci_enable_device(pci);
+-	if ((err = snd_card_register(card)) < 0)
++	err = snd_card_register(card);
 +	if (err < 0)
  		return err;
- 	pci_set_master(pci);
  
-@@ -147,7 +148,8 @@ static int snd_vx222_create(struct snd_card *card, struct pci_dev *pci,
- 	vx = to_vx222(chip);
- 	vx->pci = pci;
- 
--	if ((err = pci_request_regions(pci, CARD_NAME)) < 0) {
-+	err = pci_request_regions(pci, CARD_NAME);
-+	if (err < 0) {
- 		snd_vx222_free(chip);
- 		return err;
- 	}
-@@ -164,7 +166,8 @@ static int snd_vx222_create(struct snd_card *card, struct pci_dev *pci,
- 	chip->irq = pci->irq;
- 	card->sync_irq = chip->irq;
- 
--	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
-+	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
-+	if (err < 0) {
- 		snd_vx222_free(chip);
- 		return err;
- 	}
-@@ -207,7 +210,8 @@ static int snd_vx222_probe(struct pci_dev *pci,
- 			hw = &vx222_v2_hw;
- 		break;
- 	}
--	if ((err = snd_vx222_create(card, pci, hw, &vx)) < 0) {
-+	err = snd_vx222_create(card, pci, hw, &vx);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
-@@ -223,12 +227,14 @@ static int snd_vx222_probe(struct pci_dev *pci,
- 	vx->core.dev = &pci->dev;
- #endif
- 
--	if ((err = snd_vx_setup_firmware(&vx->core)) < 0) {
-+	err = snd_vx_setup_firmware(&vx->core);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
- 
--	if ((err = snd_card_register(card)) < 0) {
-+	err = snd_card_register(card);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
-diff --git a/sound/pci/vx222/vx222_ops.c b/sound/pci/vx222/vx222_ops.c
-index a05537202738..3e7e928b24f8 100644
---- a/sound/pci/vx222/vx222_ops.c
-+++ b/sound/pci/vx222/vx222_ops.c
-@@ -408,9 +408,11 @@ static int vx2_load_dsp(struct vx_core *vx, int index, const struct firmware *ds
- 	switch (index) {
- 	case 1:
- 		/* xilinx image */
--		if ((err = vx2_load_xilinx_binary(vx, dsp)) < 0)
-+		err = vx2_load_xilinx_binary(vx, dsp);
+ 	return 0;
+diff --git a/sound/pcmcia/vx/vxp_mixer.c b/sound/pcmcia/vx/vxp_mixer.c
+index 0f59e4cca56d..bc2114475810 100644
+--- a/sound/pcmcia/vx/vxp_mixer.c
++++ b/sound/pcmcia/vx/vxp_mixer.c
+@@ -124,11 +124,13 @@ int vxp_add_mic_controls(struct vx_core *_chip)
+ 	/* mic level */
+ 	switch (_chip->type) {
+ 	case VX_TYPE_VXPOCKET:
+-		if ((err = snd_ctl_add(_chip->card, snd_ctl_new1(&vx_control_mic_level, chip))) < 0)
++		err = snd_ctl_add(_chip->card, snd_ctl_new1(&vx_control_mic_level, chip));
 +		if (err < 0)
  			return err;
--		if ((err = vx2_test_xilinx(vx)) < 0)
-+		err = vx2_test_xilinx(vx);
+ 		break;
+ 	case VX_TYPE_VXP440:
+-		if ((err = snd_ctl_add(_chip->card, snd_ctl_new1(&vx_control_mic_boost, chip))) < 0)
++		err = snd_ctl_add(_chip->card, snd_ctl_new1(&vx_control_mic_boost, chip));
++		if (err < 0)
+ 			return err;
+ 		break;
+ 	}
+diff --git a/sound/pcmcia/vx/vxp_ops.c b/sound/pcmcia/vx/vxp_ops.c
+index 45eeb0f57d59..4176abd73799 100644
+--- a/sound/pcmcia/vx/vxp_ops.c
++++ b/sound/pcmcia/vx/vxp_ops.c
+@@ -237,9 +237,11 @@ static int vxp_load_dsp(struct vx_core *vx, int index, const struct firmware *fw
+ 	switch (index) {
+ 	case 0:
+ 		/* xilinx boot */
+-		if ((err = vx_check_magic(vx)) < 0)
++		err = vx_check_magic(vx);
++		if (err < 0)
+ 			return err;
+-		if ((err = snd_vx_load_boot_image(vx, fw)) < 0)
++		err = snd_vx_load_boot_image(vx, fw);
 +		if (err < 0)
  			return err;
  		return 0;
- 	case 2:
-@@ -972,9 +974,11 @@ static int vx2_add_mic_controls(struct vx_core *_chip)
- 	vx2_set_input_level(chip);
+ 	case 1:
+diff --git a/sound/pcmcia/vx/vxpocket.c b/sound/pcmcia/vx/vxpocket.c
+index 636320489805..0dfb6a943b60 100644
+--- a/sound/pcmcia/vx/vxpocket.c
++++ b/sound/pcmcia/vx/vxpocket.c
+@@ -183,7 +183,8 @@ static int snd_vxpocket_assign_resources(struct vx_core *chip, int port, int irq
+ 	chip->irq = irq;
+ 	card->sync_irq = chip->irq;
  
- 	/* controls */
--	if ((err = snd_ctl_add(_chip->card, snd_ctl_new1(&vx_control_input_level, chip))) < 0)
-+	err = snd_ctl_add(_chip->card, snd_ctl_new1(&vx_control_input_level, chip));
-+	if (err < 0)
- 		return err;
--	if ((err = snd_ctl_add(_chip->card, snd_ctl_new1(&vx_control_mic_level, chip))) < 0)
-+	err = snd_ctl_add(_chip->card, snd_ctl_new1(&vx_control_mic_level, chip));
+-	if ((err = snd_vx_setup_firmware(chip)) < 0)
++	err = snd_vx_setup_firmware(chip);
 +	if (err < 0)
  		return err;
  
