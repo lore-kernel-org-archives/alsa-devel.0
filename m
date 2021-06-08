@@ -2,81 +2,82 @@ Return-Path: <SRS0=yD/C=LC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A72CDC47082
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:25:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DFEFC47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:26:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 29AF0611BD
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:25:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 29AF0611BD
+	by mail.kernel.org (Postfix) with ESMTPS id AE5946135A
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:26:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE5946135A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB79F1867;
-	Tue,  8 Jun 2021 16:24:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB79F1867
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4B25D1878;
+	Tue,  8 Jun 2021 16:25:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B25D1878
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623162342;
-	bh=QCWMO63zf5cwBCx7ES/qETUf4S/GTKgn1fwU9VW4408=;
+	s=default; t=1623162366;
+	bh=TrymA9aTa5VtU2ZPa1othmTktLRP7nVSp2vdJXAPiVU=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=q3JshdT7ZuWjpqEK+pWTFTRnWuXOYPIvsezdJ/vX+VORTPkLgJM4TCO3xSDvTDCGQ
-	 HF72SAoPGDQ25GKmPANEwJbCbhEJeF9/QV6C+It7ArOINRag0rQNWAsaoJ7sT6LG+B
-	 I7JD3jhdJcW9uW1Q5Fq2lspZdLVptnBNEg9kM8A0=
+	b=QRK8tQLldx3Mh2MZW4NclKFaBalH/DPmdVssLcuQYujXgwqldSgCKiG9UHiU2sKPU
+	 EaEy6wQjXqRZ8VSYw8dS2Ozu35G5qczDTva0qdHIskQeEhVF/QFuo2Sgc/eMstNz7F
+	 bblkZDeiN9Omo8q4Fh2Oxe8ZLn8wweHXofP2Rh2I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ADD1CF8067F;
-	Tue,  8 Jun 2021 16:07:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74933F80685;
+	Tue,  8 Jun 2021 16:07:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 36A6AF80508; Tue,  8 Jun 2021 16:07:10 +0200 (CEST)
+ id 73B19F8061D; Tue,  8 Jun 2021 16:07:11 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5AB42F804F3
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AB42F804F3
+ by alsa1.perex.cz (Postfix) with ESMTPS id CCC25F8050F
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCC25F8050F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="elgWk7yE"; 
+ header.b="Hh0tAhfA"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="0ED/deNU"
+ header.b="7Ly3tKeW"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 5D844219E0
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:43 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 6CC05219F5
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1623161143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1623161145; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=qGMLw27JChpT5CIlG46ADedxmhhe9FQt/gXNwwUhWlA=;
- b=elgWk7yETxDCbD3heE63yVTdkJWtTBFfcVl4NkJyfCfWBw/vLUH5IhHSzOP8mNSWXvPd6O
- nKJwBTtdJAcfsHp3JBM60jr276/Uo97g3YUWO68Z9Bsjvjq1ywm2gl/2J0X6QdaZ983mvg
- 6H31gwVfJZ60r+m1e9IR4wB88rlRjpc=
+ bh=40jNcmkFdBARhuXoBSJlvuDNhXJc00YvU0hr0bAMNCE=;
+ b=Hh0tAhfA8jQaSbT/2NOaHCFD/JZ6Pc9VsZnGZ0jH7etIL1VWNoJVpIFr/rlDFs2u/nkVPJ
+ 6MBPFqKuYt0+rUC4O4ebKhCcWgEBWjnN5dNQC9K38X19Jyp1+aDKh35eBrjKCRtZP/Amlg
+ BYb8r0t8DUq8AknyJ0KwAObyGvrGf8M=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1623161143;
+ s=susede2_ed25519; t=1623161145;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=qGMLw27JChpT5CIlG46ADedxmhhe9FQt/gXNwwUhWlA=;
- b=0ED/deNUgajQGeUlXKHfBqy8bb2hT2fvk629yB8APxCzjS1FvpHV92eql9PkiqbO//cwlX
- j7hRZgrC7Eo6x1AQ==
+ bh=40jNcmkFdBARhuXoBSJlvuDNhXJc00YvU0hr0bAMNCE=;
+ b=7Ly3tKeWKoUMiaLeM2njC0AXIaW1H24FyVEm3dbrihWTu2XEDk8UA8EAHZPM8m6XZPFVaI
+ dlzxm03sQPKfXRBQ==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 579B2A3B88;
- Tue,  8 Jun 2021 14:05:43 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 5C47AA3B84;
+ Tue,  8 Jun 2021 14:05:45 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 16/66] ALSA: ak4531: Fix assignment in if condition
-Date: Tue,  8 Jun 2021 16:04:50 +0200
-Message-Id: <20210608140540.17885-17-tiwai@suse.de>
+Subject: [PATCH 53/66] ALSA: core: Fix assignment in if condition
+Date: Tue,  8 Jun 2021 16:05:27 +0200
+Message-Id: <20210608140540.17885-54-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210608140540.17885-1-tiwai@suse.de>
 References: <20210608140540.17885-1-tiwai@suse.de>
@@ -97,49 +98,131 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-AK4531 codec driver code contains a few assignments in if condition,
-which is a bad coding style that may confuse readers and occasionally
-lead to bugs.
+There are a few places doing assignments in if condition in ALSA core
+code, which is a bad coding style that may confuse readers and
+occasionally lead to bugs.
 
 This patch is merely for coding-style fixes, no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/ak4531_codec.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ sound/core/hwdep.c     |  6 ++++--
+ sound/core/info_oss.c  |  3 ++-
+ sound/core/init.c      | 12 ++++++++----
+ sound/core/sound.c     |  3 ++-
+ sound/core/sound_oss.c |  3 ++-
+ 5 files changed, 18 insertions(+), 9 deletions(-)
 
-diff --git a/sound/pci/ak4531_codec.c b/sound/pci/ak4531_codec.c
-index e0a81f99f79a..6af88e7b86f8 100644
---- a/sound/pci/ak4531_codec.c
-+++ b/sound/pci/ak4531_codec.c
-@@ -384,7 +384,8 @@ int snd_ak4531_mixer(struct snd_card *card,
- 		return -ENOMEM;
- 	*ak4531 = *_ak4531;
- 	mutex_init(&ak4531->reg_mutex);
--	if ((err = snd_component_add(card, "AK4531")) < 0) {
-+	err = snd_component_add(card, "AK4531");
-+	if (err < 0) {
- 		snd_ak4531_free(ak4531);
+diff --git a/sound/core/hwdep.c b/sound/core/hwdep.c
+index 264b8ea64bc2..e95fa275c289 100644
+--- a/sound/core/hwdep.c
++++ b/sound/core/hwdep.c
+@@ -195,7 +195,8 @@ static int snd_hwdep_dsp_status(struct snd_hwdep *hw,
+ 		return -ENXIO;
+ 	memset(&info, 0, sizeof(info));
+ 	info.dsp_loaded = hw->dsp_loaded;
+-	if ((err = hw->ops.dsp_status(hw, &info)) < 0)
++	err = hw->ops.dsp_status(hw, &info);
++	if (err < 0)
  		return err;
- 	}
-@@ -398,13 +399,15 @@ int snd_ak4531_mixer(struct snd_card *card,
- 		ak4531->write(ak4531, idx, ak4531->regs[idx] = snd_ak4531_initial_map[idx]);	/* recording source is mixer */
- 	}
- 	for (idx = 0; idx < ARRAY_SIZE(snd_ak4531_controls); idx++) {
--		if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_ak4531_controls[idx], ak4531))) < 0) {
-+		err = snd_ctl_add(card, snd_ctl_new1(&snd_ak4531_controls[idx], ak4531));
-+		if (err < 0) {
- 			snd_ak4531_free(ak4531);
- 			return err;
+ 	if (copy_to_user(_info, &info, sizeof(info)))
+ 		return -EFAULT;
+@@ -500,7 +501,8 @@ static void __init snd_hwdep_proc_init(void)
+ {
+ 	struct snd_info_entry *entry;
+ 
+-	if ((entry = snd_info_create_module_entry(THIS_MODULE, "hwdep", NULL)) != NULL) {
++	entry = snd_info_create_module_entry(THIS_MODULE, "hwdep", NULL);
++	if (entry) {
+ 		entry->c.text.read = snd_hwdep_proc_read;
+ 		if (snd_info_register(entry) < 0) {
+ 			snd_info_free_entry(entry);
+diff --git a/sound/core/info_oss.c b/sound/core/info_oss.c
+index 83900485dd8c..1ba887c7954e 100644
+--- a/sound/core/info_oss.c
++++ b/sound/core/info_oss.c
+@@ -31,7 +31,8 @@ int snd_oss_info_register(int dev, int num, char *string)
+ 		return -ENXIO;
+ 	mutex_lock(&strings);
+ 	if (string == NULL) {
+-		if ((x = snd_sndstat_strings[num][dev]) != NULL) {
++		x = snd_sndstat_strings[num][dev];
++		if (x) {
+ 			kfree(x);
+ 			x = NULL;
  		}
+diff --git a/sound/core/init.c b/sound/core/init.c
+index 228faf9369dc..1490568efdb0 100644
+--- a/sound/core/init.c
++++ b/sound/core/init.c
+@@ -770,7 +770,8 @@ int snd_card_register(struct snd_card *card)
+ 		card->registered = true;
  	}
- 	snd_ak4531_proc_init(card, ak4531);
--	if ((err = snd_device_new(card, SNDRV_DEV_CODEC, ak4531, &ops)) < 0) {
-+	err = snd_device_new(card, SNDRV_DEV_CODEC, ak4531, &ops);
-+	if (err < 0) {
- 		snd_ak4531_free(ak4531);
+ 
+-	if ((err = snd_device_register_all(card)) < 0)
++	err = snd_device_register_all(card);
++	if (err < 0)
  		return err;
- 	}
+ 	mutex_lock(&snd_card_mutex);
+ 	if (snd_cards[card->number]) {
+@@ -813,7 +814,8 @@ static void snd_card_info_read(struct snd_info_entry *entry,
+ 
+ 	for (idx = count = 0; idx < SNDRV_CARDS; idx++) {
+ 		mutex_lock(&snd_card_mutex);
+-		if ((card = snd_cards[idx]) != NULL) {
++		card = snd_cards[idx];
++		if (card) {
+ 			count++;
+ 			snd_iprintf(buffer, "%2i [%-15s]: %s - %s\n",
+ 					idx,
+@@ -837,7 +839,8 @@ void snd_card_info_read_oss(struct snd_info_buffer *buffer)
+ 
+ 	for (idx = count = 0; idx < SNDRV_CARDS; idx++) {
+ 		mutex_lock(&snd_card_mutex);
+-		if ((card = snd_cards[idx]) != NULL) {
++		card = snd_cards[idx];
++		if (card) {
+ 			count++;
+ 			snd_iprintf(buffer, "%s\n", card->longname);
+ 		}
+@@ -859,7 +862,8 @@ static void snd_card_module_info_read(struct snd_info_entry *entry,
+ 
+ 	for (idx = 0; idx < SNDRV_CARDS; idx++) {
+ 		mutex_lock(&snd_card_mutex);
+-		if ((card = snd_cards[idx]) != NULL)
++		card = snd_cards[idx];
++		if (card)
+ 			snd_iprintf(buffer, "%2i %s\n",
+ 				    idx, card->module->name);
+ 		mutex_unlock(&snd_card_mutex);
+diff --git a/sound/core/sound.c b/sound/core/sound.c
+index af89e51dd44a..df5571d98629 100644
+--- a/sound/core/sound.c
++++ b/sound/core/sound.c
+@@ -357,7 +357,8 @@ static void snd_minor_info_read(struct snd_info_entry *entry, struct snd_info_bu
+ 
+ 	mutex_lock(&sound_mutex);
+ 	for (minor = 0; minor < SNDRV_OS_MINORS; ++minor) {
+-		if (!(mptr = snd_minors[minor]))
++		mptr = snd_minors[minor];
++		if (!mptr)
+ 			continue;
+ 		if (mptr->card >= 0) {
+ 			if (mptr->device >= 0)
+diff --git a/sound/core/sound_oss.c b/sound/core/sound_oss.c
+index 610f317bea9d..7ed0a2a91035 100644
+--- a/sound/core/sound_oss.c
++++ b/sound/core/sound_oss.c
+@@ -217,7 +217,8 @@ static void snd_minor_info_oss_read(struct snd_info_entry *entry,
+ 
+ 	mutex_lock(&sound_oss_mutex);
+ 	for (minor = 0; minor < SNDRV_OSS_MINORS; ++minor) {
+-		if (!(mptr = snd_oss_minors[minor]))
++		mptr = snd_oss_minors[minor];
++		if (!mptr)
+ 			continue;
+ 		if (mptr->card >= 0)
+ 			snd_iprintf(buffer, "%3i: [%i-%2i]: %s\n", minor,
 -- 
 2.26.2
 
