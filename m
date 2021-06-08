@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24673C47082
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:16:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77F5CC47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:17:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 98CB96108E
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:16:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 98CB96108E
+	by mail.kernel.org (Postfix) with ESMTPS id EDD7261359
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:17:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EDD7261359
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 39CCC172B;
-	Tue,  8 Jun 2021 16:15:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39CCC172B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 619BC176A;
+	Tue,  8 Jun 2021 16:16:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 619BC176A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623161800;
-	bh=kohkaMvKxFCfPN6+6oaZUelEM6P0kOBsmnSrjgndRSM=;
+	s=default; t=1623161825;
+	bh=Z7U7H9KVK14owLdwNBKPTO4zuzhMbDEG7l3TsT7ltAw=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ljZhuubU3GizRqbw+cFHNnqd5EzkFAFcXo8QhkBhN3coC399AmoH5U2xZwglLuaSu
-	 3a38BhhMDW9Mkm69ieOnImiP4acGNO8PS4h6PEJOHNbYdr6AbSNlb0I8ufOCX3YR9a
-	 SD9hyZG2Wv5dxoDKDJsE2Y1pj5Ek37D+AOX2zRD4=
+	b=RvB9xHqeMjXvEbHT+DmydG10E38IjFcnjTPoHl+Ilo83U52gWA/9AWPCnhHesD2aG
+	 tPGDldGPma23eqMXm+UBZVPlEguD5mlfsQLx8422TNuTyrg2qA5dR7AVgKNSx8KDyS
+	 V20l5bFGfEATBTyt7wzDAfz9j5cLAbnjEilrH6Xo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CFFA1F804E5;
-	Tue,  8 Jun 2021 16:06:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C10EDF805F2;
+	Tue,  8 Jun 2021 16:06:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 75233F805C9; Tue,  8 Jun 2021 16:06:33 +0200 (CEST)
+ id 2E9D8F805C9; Tue,  8 Jun 2021 16:06:34 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 54353F804E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4D080F804E0
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54353F804E1
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D080F804E0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="VX86Ju5h"; 
+ header.b="NbtSztIv"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="vQ8MvBpr"
+ header.b="/2LR15/h"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 43CE71FDE7
+ by smtp-out2.suse.de (Postfix) with ESMTP id 136521FDE5
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1623161144; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=b4m48LyFI1/8yO7SlVjCdEFdj5aKfo9N0XNR4L3Z8r0=;
- b=VX86Ju5hCPQ1HCfhWqgSCkzlWrJqzf1tM0qIWQsIQvfyT5RP13Ti3iO69IuKPg0BLt23ax
- 8waVG/twsdL39dy7KWyHFJs9CAqwoiUS/anVFirC4FQ1yI+KPNP935FNLaQcEG1Ml9YYtV
- TNF6Sud/hbuNLf2n1Znde+4UPzDuuJU=
+ bh=16r9B/6Im4/3mQxUNyAsbqfcLxqSJ+j2o/5LIqvA/GY=;
+ b=NbtSztIvVUrTr1niZNW4u/X44/a8Syk/bZHf70LbmEagjtDtVsKQypc/yU5bP7rbpXvaAR
+ 8ygH06TPhu+hIoaOLmGzshdPDK421FXR9AL98TWnLFgvnP1xaQlmkmmKP+Wp20TKC4RkmB
+ B6CfohqFxETK2PPMPnofTibLJK6JUE8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1623161144;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=b4m48LyFI1/8yO7SlVjCdEFdj5aKfo9N0XNR4L3Z8r0=;
- b=vQ8MvBpr9jQlQ+itxAYcv2sPskdF6ualxp64nGkZrbUT+Zbhov/o26YQXbkK0oaGKaDdba
- usXSgz+f9sOKEXDw==
+ bh=16r9B/6Im4/3mQxUNyAsbqfcLxqSJ+j2o/5LIqvA/GY=;
+ b=/2LR15/hS30YuTqcppObtmb3eUEljgMt4fpANOiQx/7sgwmPX5IZq/TGfDX2CPNBJw6E7b
+ 5gvrGB9lJTWNPqCQ==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 339F2A3B89;
+ by relay2.suse.de (Postfix) with ESMTP id 03006A3B84;
  Tue,  8 Jun 2021 14:05:44 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 32/66] ALSA: sonicvibes: Fix assignment in if condition
-Date: Tue,  8 Jun 2021 16:05:06 +0200
-Message-Id: <20210608140540.17885-33-tiwai@suse.de>
+Subject: [PATCH 28/66] ALSA: intel8x0: Fix assignment in if condition
+Date: Tue,  8 Jun 2021 16:05:02 +0200
+Message-Id: <20210608140540.17885-29-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210608140540.17885-1-tiwai@suse.de>
 References: <20210608140540.17885-1-tiwai@suse.de>
@@ -97,7 +97,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-PCI sonicvibes driver code contains a few assignments in if condition,
+PCI intel8x0 driver code contains a few assignments in if condition,
 which is a bad coding style that may confuse readers and occasionally
 lead to bugs.
 
@@ -105,163 +105,266 @@ This patch is merely for coding-style fixes, no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/sonicvibes.c | 67 ++++++++++++++++++++++++++----------------
- 1 file changed, 42 insertions(+), 25 deletions(-)
+ sound/pci/intel8x0.c  | 46 ++++++++++++++++++++++++++++---------------
+ sound/pci/intel8x0m.c | 36 ++++++++++++++++++++++-----------
+ 2 files changed, 54 insertions(+), 28 deletions(-)
 
-diff --git a/sound/pci/sonicvibes.c b/sound/pci/sonicvibes.c
-index 7de10997775f..03a48da897e3 100644
---- a/sound/pci/sonicvibes.c
-+++ b/sound/pci/sonicvibes.c
-@@ -852,7 +852,8 @@ static int snd_sonicvibes_pcm(struct sonicvibes *sonic, int device)
- 	struct snd_pcm *pcm;
- 	int err;
+diff --git a/sound/pci/intel8x0.c b/sound/pci/intel8x0.c
+index abc710ae3226..2d1bfbcba933 100644
+--- a/sound/pci/intel8x0.c
++++ b/sound/pci/intel8x0.c
+@@ -538,7 +538,8 @@ static unsigned short snd_intel8x0_codec_read(struct snd_ac97 *ac97,
+ 		res = 0xffff;
+ 	} else {
+ 		res = iagetword(chip, reg + ac97->num * 0x80);
+-		if ((tmp = igetdword(chip, ICHREG(GLOB_STA))) & ICH_RCS) {
++		tmp = igetdword(chip, ICHREG(GLOB_STA));
++		if (tmp & ICH_RCS) {
+ 			/* reset RCS and preserve other R/WC bits */
+ 			iputdword(chip, ICHREG(GLOB_STA), tmp &
+ 				  ~(chip->codec_ready_bits | ICH_GSCI));
+@@ -559,7 +560,8 @@ static void snd_intel8x0_codec_read_test(struct intel8x0 *chip,
  
--	if ((err = snd_pcm_new(sonic->card, "s3_86c617", device, 1, 1, &pcm)) < 0)
-+	err = snd_pcm_new(sonic->card, "s3_86c617", device, 1, 1, &pcm);
+ 	if (snd_intel8x0_codec_semaphore(chip, codec) >= 0) {
+ 		iagetword(chip, codec * 0x80);
+-		if ((tmp = igetdword(chip, ICHREG(GLOB_STA))) & ICH_RCS) {
++		tmp = igetdword(chip, ICHREG(GLOB_STA));
++		if (tmp & ICH_RCS) {
+ 			/* reset RCS and preserve other R/WC bits */
+ 			iputdword(chip, ICHREG(GLOB_STA), tmp &
+ 				  ~(chip->codec_ready_bits | ICH_GSCI));
+@@ -1105,7 +1107,8 @@ static int snd_intel8x0_pcm_open(struct snd_pcm_substream *substream, struct ich
+ 		runtime->hw.buffer_bytes_max = 64*1024;
+ 		runtime->hw.period_bytes_max = 64*1024;
+ 	}
+-	if ((err = snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS)) < 0)
++	err = snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
 +	if (err < 0)
  		return err;
- 	if (snd_BUG_ON(!pcm))
- 		return -EINVAL;
-@@ -1093,7 +1094,9 @@ static int snd_sonicvibes_mixer(struct sonicvibes *sonic)
- 	strcpy(card->mixername, "S3 SonicVibes");
- 
- 	for (idx = 0; idx < ARRAY_SIZE(snd_sonicvibes_controls); idx++) {
--		if ((err = snd_ctl_add(card, kctl = snd_ctl_new1(&snd_sonicvibes_controls[idx], sonic))) < 0)
-+		kctl = snd_ctl_new1(&snd_sonicvibes_controls[idx], sonic);
-+		err = snd_ctl_add(card, kctl);
+ 	runtime->private_data = ichdev;
+ 	return 0;
+@@ -2190,7 +2193,8 @@ static int snd_intel8x0_mixer(struct intel8x0 *chip, int ac97_clock,
+ 			udelay(1);
+ 		}
+ 	}
+-	if ((err = snd_ac97_bus(chip->card, 0, ops, chip, &pbus)) < 0)
++	err = snd_ac97_bus(chip->card, 0, ops, chip, &pbus);
++	if (err < 0)
+ 		goto __err;
+ 	pbus->private_free = snd_intel8x0_mixer_free_ac97_bus;
+ 	if (ac97_clock >= 8000 && ac97_clock <= 48000)
+@@ -2206,7 +2210,8 @@ static int snd_intel8x0_mixer(struct intel8x0 *chip, int ac97_clock,
+ 	ac97.pci = chip->pci;
+ 	for (i = 0; i < codecs; i++) {
+ 		ac97.num = i;
+-		if ((err = snd_ac97_mixer(pbus, &ac97, &chip->ac97[i])) < 0) {
++		err = snd_ac97_mixer(pbus, &ac97, &chip->ac97[i]);
++		if (err < 0) {
+ 			if (err != -EACCES)
+ 				dev_err(chip->card->dev,
+ 					"Unable to initialize codec #%d\n", i);
+@@ -2491,11 +2496,13 @@ static int snd_intel8x0_chip_init(struct intel8x0 *chip, int probing)
+ 	int err;
+ 	
+ 	if (chip->device_type != DEVICE_ALI) {
+-		if ((err = snd_intel8x0_ich_chip_init(chip, probing)) < 0)
++		err = snd_intel8x0_ich_chip_init(chip, probing);
 +		if (err < 0)
  			return err;
- 		switch (idx) {
- 		case 0:
-@@ -1226,7 +1229,8 @@ static int snd_sonicvibes_create(struct snd_card *card,
+ 		iagetword(chip, 0);	/* clear semaphore flag */
+ 	} else {
+-		if ((err = snd_intel8x0_ali_chip_init(chip, probing)) < 0)
++		err = snd_intel8x0_ali_chip_init(chip, probing);
++		if (err < 0)
+ 			return err;
+ 	}
  
- 	*rsonic = NULL;
- 	/* enable PCI device */
+@@ -2918,7 +2925,8 @@ static int snd_intel8x0_create(struct snd_card *card,
+ 
+ 	*r_intel8x0 = NULL;
+ 
 -	if ((err = pci_enable_device(pci)) < 0)
 +	err = pci_enable_device(pci);
 +	if (err < 0)
  		return err;
- 	/* check, if we can restrict PCI DMA transfers to 24 bits */
- 	if (dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(24))) {
-@@ -1246,7 +1250,8 @@ static int snd_sonicvibes_create(struct snd_card *card,
- 	sonic->pci = pci;
- 	sonic->irq = -1;
  
--	if ((err = pci_request_regions(pci, "S3 SonicVibes")) < 0) {
-+	err = pci_request_regions(pci, "S3 SonicVibes");
+ 	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
+@@ -2950,7 +2958,8 @@ static int snd_intel8x0_create(struct snd_card *card,
+ 	    pci->device == PCI_DEVICE_ID_INTEL_440MX)
+ 		chip->fix_nocache = 1; /* enable workaround */
+ 
+-	if ((err = pci_request_regions(pci, card->shortname)) < 0) {
++	err = pci_request_regions(pci, card->shortname);
 +	if (err < 0) {
- 		kfree(sonic);
+ 		kfree(chip);
  		pci_disable_device(pci);
  		return err;
-@@ -1289,14 +1294,16 @@ static int snd_sonicvibes_create(struct snd_card *card,
- 	pci_write_config_dword(pci, 0x40, dmaa);
- 	pci_write_config_dword(pci, 0x48, dmac);
+@@ -3064,7 +3073,8 @@ static int snd_intel8x0_create(struct snd_card *card,
+ 	for (i = 0; i < chip->max_codecs; i++)
+ 		chip->codec_isr_bits |= chip->codec_bit[i];
  
--	if ((sonic->res_dmaa = request_region(dmaa, 0x10, "S3 SonicVibes DDMA-A")) == NULL) {
-+	sonic->res_dmaa = request_region(dmaa, 0x10, "S3 SonicVibes DDMA-A");
-+	if (!sonic->res_dmaa) {
- 		snd_sonicvibes_free(sonic);
- 		dev_err(card->dev,
- 			"unable to grab DDMA-A port at 0x%x-0x%x\n",
- 			dmaa, dmaa + 0x10 - 1);
- 		return -EBUSY;
- 	}
--	if ((sonic->res_dmac = request_region(dmac, 0x10, "S3 SonicVibes DDMA-C")) == NULL) {
-+	sonic->res_dmac = request_region(dmac, 0x10, "S3 SonicVibes DDMA-C");
-+	if (!sonic->res_dmac) {
- 		snd_sonicvibes_free(sonic);
- 		dev_err(card->dev,
- 			"unable to grab DDMA-C port at 0x%x-0x%x\n",
-@@ -1358,7 +1365,8 @@ static int snd_sonicvibes_create(struct snd_card *card,
- #endif
- 	sonic->revision = snd_sonicvibes_in(sonic, SV_IREG_REVISION);
- 
--	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, sonic, &ops)) < 0) {
-+	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, sonic, &ops);
+-	if ((err = snd_intel8x0_chip_init(chip, 1)) < 0) {
++	err = snd_intel8x0_chip_init(chip, 1);
 +	if (err < 0) {
- 		snd_sonicvibes_free(sonic);
+ 		snd_intel8x0_free(chip);
  		return err;
  	}
-@@ -1405,9 +1413,11 @@ static int snd_sonicvibes_midi(struct sonicvibes *sonic,
- 	mpu->private_data = sonic;
- 	mpu->open_input = snd_sonicvibes_midi_input_open;
- 	mpu->close_input = snd_sonicvibes_midi_input_close;
--	for (idx = 0; idx < ARRAY_SIZE(snd_sonicvibes_midi_controls); idx++)
--		if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_sonicvibes_midi_controls[idx], sonic))) < 0)
-+	for (idx = 0; idx < ARRAY_SIZE(snd_sonicvibes_midi_controls); idx++) {
-+		err = snd_ctl_add(card, snd_ctl_new1(&snd_sonicvibes_midi_controls[idx], sonic));
-+		if (err < 0)
- 			return err;
-+	}
- 	return 0;
- }
+@@ -3079,7 +3089,8 @@ static int snd_intel8x0_create(struct snd_card *card,
+ 	chip->irq = pci->irq;
+ 	card->sync_irq = chip->irq;
  
-@@ -1439,10 +1449,11 @@ static int snd_sonic_probe(struct pci_dev *pci,
- 			return -ENODEV;
+-	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
++	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
++	if (err < 0) {
+ 		snd_intel8x0_free(chip);
+ 		return err;
+ 	}
+@@ -3186,18 +3197,20 @@ static int snd_intel8x0_probe(struct pci_dev *pci,
+ 			buggy_irq = 0;
+ 	}
+ 
+-	if ((err = snd_intel8x0_create(card, pci, pci_id->driver_data,
+-				       &chip)) < 0) {
++	err = snd_intel8x0_create(card, pci, pci_id->driver_data, &chip);
++	if (err < 0) {
+ 		snd_card_free(card);
+ 		return err;
+ 	}
+ 	card->private_data = chip;
+ 
+-	if ((err = snd_intel8x0_mixer(chip, ac97_clock, ac97_quirk)) < 0) {
++	err = snd_intel8x0_mixer(chip, ac97_clock, ac97_quirk);
++	if (err < 0) {
+ 		snd_card_free(card);
+ 		return err;
+ 	}
+-	if ((err = snd_intel8x0_pcm(chip)) < 0) {
++	err = snd_intel8x0_pcm(chip);
++	if (err < 0) {
+ 		snd_card_free(card);
+ 		return err;
+ 	}
+@@ -3217,7 +3230,8 @@ static int snd_intel8x0_probe(struct pci_dev *pci,
  		}
  	}
--	if ((err = snd_sonicvibes_create(card, pci,
--					 reverb[dev] ? 1 : 0,
--					 mge[dev] ? 1 : 0,
--					 &sonic)) < 0) {
-+	err = snd_sonicvibes_create(card, pci,
-+				    reverb[dev] ? 1 : 0,
-+				    mge[dev] ? 1 : 0,
-+				    &sonic);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
-@@ -1455,30 +1466,35 @@ static int snd_sonic_probe(struct pci_dev *pci,
- 		(unsigned long long)pci_resource_start(pci, 1),
- 		sonic->irq);
  
--	if ((err = snd_sonicvibes_pcm(sonic, 0)) < 0) {
-+	err = snd_sonicvibes_pcm(sonic, 0);
+-	if ((err = snd_card_register(card)) < 0) {
++	err = snd_card_register(card);
 +	if (err < 0) {
  		snd_card_free(card);
  		return err;
  	}
--	if ((err = snd_sonicvibes_mixer(sonic)) < 0) {
-+	err = snd_sonicvibes_mixer(sonic);
+diff --git a/sound/pci/intel8x0m.c b/sound/pci/intel8x0m.c
+index 6793c1ffa71b..b96fce6cbd83 100644
+--- a/sound/pci/intel8x0m.c
++++ b/sound/pci/intel8x0m.c
+@@ -342,7 +342,8 @@ static unsigned short snd_intel8x0m_codec_read(struct snd_ac97 *ac97,
+ 		res = 0xffff;
+ 	} else {
+ 		res = iagetword(chip, reg + ac97->num * 0x80);
+-		if ((tmp = igetdword(chip, ICHREG(GLOB_STA))) & ICH_RCS) {
++		tmp = igetdword(chip, ICHREG(GLOB_STA));
++		if (tmp & ICH_RCS) {
+ 			/* reset RCS and preserve other R/WC bits */
+ 			iputdword(chip, ICHREG(GLOB_STA),
+ 				  tmp & ~(ICH_SRI|ICH_PRI|ICH_TRI|ICH_GSCI));
+@@ -800,7 +801,8 @@ static int snd_intel8x0m_mixer(struct intel8x0m *chip, int ac97_clock)
+ 
+ 	glob_sta = igetdword(chip, ICHREG(GLOB_STA));
+ 
+-	if ((err = snd_ac97_bus(chip->card, 0, &ops, chip, &pbus)) < 0)
++	err = snd_ac97_bus(chip->card, 0, &ops, chip, &pbus);
++	if (err < 0)
+ 		goto __err;
+ 	pbus->private_free = snd_intel8x0m_mixer_free_ac97_bus;
+ 	if (ac97_clock >= 8000 && ac97_clock <= 48000)
+@@ -809,7 +811,8 @@ static int snd_intel8x0m_mixer(struct intel8x0m *chip, int ac97_clock)
+ 
+ 	ac97.pci = chip->pci;
+ 	ac97.num = glob_sta & ICH_SCR ? 1 : 0;
+-	if ((err = snd_ac97_mixer(pbus, &ac97, &x97)) < 0) {
++	err = snd_ac97_mixer(pbus, &ac97, &x97);
++	if (err < 0) {
+ 		dev_err(chip->card->dev,
+ 			"Unable to initialize codec #%d\n", ac97.num);
+ 		if (ac97.num == 0)
+@@ -927,7 +930,8 @@ static int snd_intel8x0m_chip_init(struct intel8x0m *chip, int probing)
+ 	unsigned int i;
+ 	int err;
+ 	
+-	if ((err = snd_intel8x0m_ich_chip_init(chip, probing)) < 0)
++	err = snd_intel8x0m_ich_chip_init(chip, probing);
++	if (err < 0)
+ 		return err;
+ 	iagetword(chip, 0);	/* clear semaphore flag */
+ 
+@@ -1075,7 +1079,8 @@ static int snd_intel8x0m_create(struct snd_card *card,
+ 
+ 	*r_intel8x0m = NULL;
+ 
+-	if ((err = pci_enable_device(pci)) < 0)
++	err = pci_enable_device(pci);
++	if (err < 0)
+ 		return err;
+ 
+ 	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
+@@ -1089,7 +1094,8 @@ static int snd_intel8x0m_create(struct snd_card *card,
+ 	chip->pci = pci;
+ 	chip->irq = -1;
+ 
+-	if ((err = pci_request_regions(pci, card->shortname)) < 0) {
++	err = pci_request_regions(pci, card->shortname);
++	if (err < 0) {
+ 		kfree(chip);
+ 		pci_disable_device(pci);
+ 		return err;
+@@ -1167,7 +1173,8 @@ static int snd_intel8x0m_create(struct snd_card *card,
+ 
+ 	pci_set_master(pci);
+ 
+-	if ((err = snd_intel8x0m_chip_init(chip, 1)) < 0) {
++	err = snd_intel8x0m_chip_init(chip, 1);
++	if (err < 0) {
+ 		snd_intel8x0m_free(chip);
+ 		return err;
+ 	}
+@@ -1181,7 +1188,8 @@ static int snd_intel8x0m_create(struct snd_card *card,
+ 	chip->irq = pci->irq;
+ 	card->sync_irq = chip->irq;
+ 
+-	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
++	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
++	if (err < 0) {
+ 		snd_intel8x0m_free(chip);
+ 		return err;
+ 	}
+@@ -1238,17 +1246,20 @@ static int snd_intel8x0m_probe(struct pci_dev *pci,
+ 	}
+ 	strcat(card->shortname," Modem");
+ 
+-	if ((err = snd_intel8x0m_create(card, pci, pci_id->driver_data, &chip)) < 0) {
++	err = snd_intel8x0m_create(card, pci, pci_id->driver_data, &chip);
 +	if (err < 0) {
  		snd_card_free(card);
  		return err;
  	}
--	if ((err = snd_mpu401_uart_new(card, 0, MPU401_HW_SONICVIBES,
--				       sonic->midi_port,
--				       MPU401_INFO_INTEGRATED |
--				       MPU401_INFO_IRQ_HOOK,
--				       -1, &midi_uart)) < 0) {
-+	err = snd_mpu401_uart_new(card, 0, MPU401_HW_SONICVIBES,
-+				  sonic->midi_port,
-+				  MPU401_INFO_INTEGRATED |
-+				  MPU401_INFO_IRQ_HOOK,
-+				  -1, &midi_uart);
+ 	card->private_data = chip;
+ 
+-	if ((err = snd_intel8x0m_mixer(chip, ac97_clock)) < 0) {
++	err = snd_intel8x0m_mixer(chip, ac97_clock);
 +	if (err < 0) {
  		snd_card_free(card);
  		return err;
  	}
- 	snd_sonicvibes_midi(sonic, midi_uart);
--	if ((err = snd_opl3_create(card, sonic->synth_port,
--				   sonic->synth_port + 2,
--				   OPL3_HW_OPL3_SV, 1, &opl3)) < 0) {
-+	err = snd_opl3_create(card, sonic->synth_port,
-+			      sonic->synth_port + 2,
-+			      OPL3_HW_OPL3_SV, 1, &opl3);
+-	if ((err = snd_intel8x0m_pcm(chip)) < 0) {
++	err = snd_intel8x0m_pcm(chip);
 +	if (err < 0) {
  		snd_card_free(card);
  		return err;
  	}
--	if ((err = snd_opl3_hwdep_new(opl3, 0, 1, NULL)) < 0) {
-+	err = snd_opl3_hwdep_new(opl3, 0, 1, NULL);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
-@@ -1489,7 +1505,8 @@ static int snd_sonic_probe(struct pci_dev *pci,
- 		return err;
- 	}
+@@ -1258,7 +1269,8 @@ static int snd_intel8x0m_probe(struct pci_dev *pci,
+ 	sprintf(card->longname, "%s at irq %i",
+ 		card->shortname, chip->irq);
  
 -	if ((err = snd_card_register(card)) < 0) {
 +	err = snd_card_register(card);
