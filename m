@@ -2,65 +2,88 @@ Return-Path: <SRS0=yD/C=LC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EDEFC47082
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 11:49:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91DACC47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 12:02:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B23CC61377
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 11:49:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B23CC61377
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id ED3756124C
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 12:02:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ED3756124C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 986BE169D;
-	Tue,  8 Jun 2021 13:48:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 986BE169D
+	by alsa0.perex.cz (Postfix) with ESMTPS id A9B4C16B8;
+	Tue,  8 Jun 2021 14:01:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9B4C16B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623152951;
-	bh=c7G/GYzeqzVZCe/jnAPqdjYXeeH82vlnPz61DiRwdts=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Ubbhsr1eUEsd5Ng44vw109OFOMeDk1NnVVbf65Gpb9m/McrCOQ2tTJQZj/XzaRSPr
-	 bQhif+AgUm60XrLD0ONtfgsVXD6qntleogmzElUeJbjZvtH2Wqhr99Jazg5/WlQA0M
-	 M7OoFA+qUgIwOgLSIENgTcWFSLN7jwXq83Qz07tU=
+	s=default; t=1623153718;
+	bh=t7U4sTnmDi6WBmwUpF+93/uxyQ5M6yrib+aa7Kdmsis=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=FY5S3YMPxKgErHEbgSB2ktPclhHIIwDx9XONInQpDnVaqYrfFKV+gLyvemTne2Mad
+	 cxhD8H4l4+IJr8f8scUcUtNH9A0hr5E70LdEw/zErdakulUFVg9izXPsNQVkMAg3VA
+	 iO7TeB1f9x/MVPMbRRzAaCE4UEsPL7hBXm98Lksc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 278CAF801EC;
-	Tue,  8 Jun 2021 13:48:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1D28BF801EC;
+	Tue,  8 Jun 2021 14:01:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3C9B5F80218; Tue,  8 Jun 2021 13:48:20 +0200 (CEST)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id C6C52F80218; Tue,  8 Jun 2021 14:01:05 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 06E83F80116
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 13:48:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06E83F80116
-Received: from 36-226-173-212.dynamic-ip.hinet.net ([36.226.173.212]
- helo=localhost) by youngberry.canonical.com with esmtpsa (TLS1.2) tls
- TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.93)
- (envelope-from <jeremy.szu@canonical.com>)
- id 1lqaD7-00028A-L1; Tue, 08 Jun 2021 11:47:58 +0000
-From: Jeremy Szu <jeremy.szu@canonical.com>
-To: tiwai@suse.com
-Subject: [PATCH] ALSA: hda/realtek: fix mute/micmute LEDs for HP ZBook Power G8
-Date: Tue,  8 Jun 2021 19:47:48 +0800
-Message-Id: <20210608114750.32009-1-jeremy.szu@canonical.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Chris Chiu <chris.chiu@canonical.com>,
- "moderated list:SOUND" <alsa-devel@alsa-project.org>,
- Kailang Yang <kailang@realtek.com>, Jeremy Szu <jeremy.szu@canonical.com>,
- open list <linux-kernel@vger.kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
- Jian-Hong Pan <jhp@endlessos.org>, Hui Wang <hui.wang@canonical.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9A814F80116
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:00:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A814F80116
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="q8h0fat6"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="qtRde8s/"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 5100C1FD2A;
+ Tue,  8 Jun 2021 12:00:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1623153657; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=YLLu5WHsAV5JwWptrE7DEG58eBzt2y6pTVCGvyZkfBs=;
+ b=q8h0fat6TnRQy0VKYJCWdqAhy9Gcu+yVltWINdQ1Y+WmSd5eVqGLH8cfhdRJOTZQ8Tim2I
+ lAhSLMJdHxiMc3caUmFhkl8kl7hP13ch1ZgCH7RA2Uxr9500Mx+t7Et7rpbGtC4ec+Dngp
+ A1S/Ff8xZ7zSl/zuX3mP+MKs9ohKrQs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1623153657;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=YLLu5WHsAV5JwWptrE7DEG58eBzt2y6pTVCGvyZkfBs=;
+ b=qtRde8s/IQzFbOw3ab/bMsnQYtjECRrOo53vsLSfbqGd6ylqkd74ziEkQnM/9UhL8b7DQj
+ B/j+Sabe2TZmvdBg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 4B134A3B85;
+ Tue,  8 Jun 2021 12:00:57 +0000 (UTC)
+Date: Tue, 08 Jun 2021 14:00:57 +0200
+Message-ID: <s5hsg1sd0qu.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: headphone and mic don't work on an
+ Acer laptop
+In-Reply-To: <20210608024600.6198-1-hui.wang@canonical.com>
+References: <20210608024600.6198-1-hui.wang@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,27 +99,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The HP ZBook Power G8 using ALC236 codec which using 0x02 to
-control mute LED and 0x01 to control micmute LED.
-Therefore, add a quirk to make it works.
+On Tue, 08 Jun 2021 04:46:00 +0200,
+Hui Wang wrote:
+> 
+> There are 2 issues on this machine, the 1st one is mic's plug/unplug
+> can't be detected, that is because the mic is set to manual detecting
+> mode, need to apply ALC255_FIXUP_XIAOMI_HEADSET_MIC to set it to auto
+> detecting mode. The other one is headphone's plug/unplug can't be
+> detected by pulseaudio, that is because the pulseaudio will use
+> ucm2/sof-hda-dsp on this machine, and the ucm2 only handle
+> 'Headphone Jack', but on this machine the headphone's pincfg sets the
+> location to Front, then the alsa mixer name is "Front Headphone Jack"
+> instead of "Headphone Jack", so override the pincfg to change location
+> to Left.
+> 
+> BugLink: http://bugs.launchpad.net/bugs/1930188
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Hui Wang <hui.wang@canonical.com>
 
-Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks, applied.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index dcd9bceace68..f2fa6953b8b7 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8335,6 +8335,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x886d, "HP ZBook Fury 17.3 Inch G8 Mobile Workstation PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
- 	SND_PCI_QUIRK(0x103c, 0x8870, "HP ZBook Fury 15.6 Inch G8 Mobile Workstation PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
- 	SND_PCI_QUIRK(0x103c, 0x8873, "HP ZBook Studio 15.6 Inch G8 Mobile Workstation PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
-+	SND_PCI_QUIRK(0x103c, 0x888d, "HP ZBook Power 15.6 inch G8 Mobile Workstation PC", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8896, "HP EliteBook 855 G8 Notebook PC", ALC285_FIXUP_HP_MUTE_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8898, "HP EliteBook 845 G8 Notebook PC", ALC285_FIXUP_HP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
--- 
-2.31.1
 
+Takashi
