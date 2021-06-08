@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33568C4743E
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:19:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC2F7C47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:20:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AFE026135A
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:19:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AFE026135A
+	by mail.kernel.org (Postfix) with ESMTPS id 372396135A
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:20:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 372396135A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 53EC717B7;
-	Tue,  8 Jun 2021 16:18:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53EC717B7
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD12D17BE;
+	Tue,  8 Jun 2021 16:19:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD12D17BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623161967;
-	bh=XgW36zS+Ax3ucrJG4XksufFb6ieKppIP/lcHlDLjjdc=;
+	s=default; t=1623161998;
+	bh=9UzVO1vCL8ORb5CcpoclaNXga5bEiNLNJiMvQKtUftQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=T7+ON3wXS156PvB7gjA27bGwwZqFubOacUlnbhIY4qmgeQYbE+rnHOsNj1OgxVVg2
-	 2udN/pA0PZiKkcF43+l5k9cS0Ak4iuPUPVtRXQxyfivaBZGheVGk7l8nRGdOU8CwJ3
-	 VkRHpuclTituHr30/ztIdWI7j7eWbUdPwN59ScJA=
+	b=k46S+VNaTfxHIZgVN5T6ZevcWSjdoLpbV13fdg/6d3ViagsvGle0AnJREHS4wmpOH
+	 AFdA12EjnYauqrpaX7jHmPcU0oHu72UgebEPLjstR2bb6zAo9aTXeUqUvx694dhPG5
+	 2/N/zdUReykbO12p3wl8MuRxIn2IRQSUUzlQ3yMc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B01C4F8060B;
-	Tue,  8 Jun 2021 16:06:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C1008F80612;
+	Tue,  8 Jun 2021 16:07:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A2106F805F4; Tue,  8 Jun 2021 16:06:44 +0200 (CEST)
+ id 672D3F805FB; Tue,  8 Jun 2021 16:06:46 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7CE64F804E2
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CE64F804E2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 95F42F804EC
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95F42F804EC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="jOparCTQ"; 
+ header.b="G6zBC7WZ"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="AN2o5FS7"
+ header.b="IiXUlO41"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 2B60D1FDEE
+ by smtp-out2.suse.de (Postfix) with ESMTP id 5D37C1FDF2
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1623161145; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=QHl5uqFLjcmOTxz7KLDIAIDPk/Mw4vfRoaOcCaAPwVI=;
- b=jOparCTQoD53DPKR57QWX2zvX8J/Or7uUk3pUAtJk9E74p9evtD7EHnUUOx3Wg3EBuYujf
- ObErf1cVRFmaG8XgMRCe/Su3ldGx84gRyoMfGM2xQLgn/x9ieclcNlGk89NuaAE23/lkau
- oXIG9b10IA/TlaKxyPHjYXSUhYjYjiE=
+ bh=dVeAYC4msHXHu7jnZ5Xbz2SdoFI8P0bJA+h/WhOHUCM=;
+ b=G6zBC7WZmmZewJKzeva11CKCGQTSxwYkrY2hQtoiRhSrrZzxY5ZmXpp80FHWD664exGq1B
+ GnJt3BsmC4BCE0Ygsb6Y/1atpPMrcmTFdnnZD5LGoT8i9RhC7ZKJQ8CHV6yrpS4CAFYwcR
+ lEkCEzrHoWuW8zcqFFZFoCv90Yo73vc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1623161145;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=QHl5uqFLjcmOTxz7KLDIAIDPk/Mw4vfRoaOcCaAPwVI=;
- b=AN2o5FS7X/sIF8eLNnu0Dw78e/9+U3i2GRjya5J5Y1d1Lbz5ARam4ahKItf9UylQue2M2D
- FytjrcGiSBEbwkDA==
+ bh=dVeAYC4msHXHu7jnZ5Xbz2SdoFI8P0bJA+h/WhOHUCM=;
+ b=IiXUlO417PsD18u+lp1rHWw8XtR7xAk1Iu2Z0LGp2+ZOZ2Ri2m6d3IuEXJvFSHOBjbDM9/
+ 9VIgCwyDR6s6l9Aw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 195BDA3B84;
+ by relay2.suse.de (Postfix) with ESMTP id 4C905A3B89;
  Tue,  8 Jun 2021 14:05:45 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 48/66] ALSA: hdsp: Fix assignment in if condition
-Date: Tue,  8 Jun 2021 16:05:22 +0200
-Message-Id: <20210608140540.17885-49-tiwai@suse.de>
+Subject: [PATCH 52/66] ALSA: ymfpci: Fix assignment in if condition
+Date: Tue,  8 Jun 2021 16:05:26 +0200
+Message-Id: <20210608140540.17885-53-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210608140540.17885-1-tiwai@suse.de>
 References: <20210608140540.17885-1-tiwai@suse.de>
@@ -97,7 +97,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-PCI HDSP driver code contains lots of assignments in if condition,
+PCI YMFPCI driver code contains lots of assignments in if condition,
 which is a bad coding style that may confuse readers and occasionally
 lead to bugs.
 
@@ -105,364 +105,369 @@ This patch is merely for coding-style fixes, no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/rme9652/hdsp.c | 121 ++++++++++++++++++++++++++-------------
- 1 file changed, 82 insertions(+), 39 deletions(-)
+ sound/pci/ymfpci/ymfpci.c      | 71 +++++++++++++++++++--------------
+ sound/pci/ymfpci/ymfpci_main.c | 72 +++++++++++++++++++++++-----------
+ 2 files changed, 91 insertions(+), 52 deletions(-)
 
-diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
-index c79f13b1fc4e..e3e4fabf4abf 100644
---- a/sound/pci/rme9652/hdsp.c
-+++ b/sound/pci/rme9652/hdsp.c
-@@ -1318,11 +1318,13 @@ static int snd_hdsp_midi_output_write (struct hdsp_midi *hmidi)
- 	spin_lock_irqsave (&hmidi->lock, flags);
- 	if (hmidi->output) {
- 		if (!snd_rawmidi_transmit_empty (hmidi->output)) {
--			if ((n_pending = snd_hdsp_midi_output_possible (hmidi->hdsp, hmidi->id)) > 0) {
-+			n_pending = snd_hdsp_midi_output_possible(hmidi->hdsp, hmidi->id);
-+			if (n_pending > 0) {
- 				if (n_pending > (int)sizeof (buf))
- 					n_pending = sizeof (buf);
+diff --git a/sound/pci/ymfpci/ymfpci.c b/sound/pci/ymfpci/ymfpci.c
+index 99be1490ef0e..7e32d57147ff 100644
+--- a/sound/pci/ymfpci/ymfpci.c
++++ b/sound/pci/ymfpci/ymfpci.c
+@@ -72,7 +72,8 @@ static int snd_ymfpci_create_gameport(struct snd_ymfpci *chip, int dev,
  
--				if ((to_write = snd_rawmidi_transmit (hmidi->output, buf, n_pending)) > 0) {
-+				to_write = snd_rawmidi_transmit(hmidi->output, buf, n_pending);
-+				if (to_write > 0) {
- 					for (i = 0; i < to_write; ++i)
- 						snd_hdsp_midi_write_byte (hmidi->hdsp, hmidi->id, buf[i]);
- 				}
-@@ -1341,7 +1343,8 @@ static int snd_hdsp_midi_input_read (struct hdsp_midi *hmidi)
- 	int i;
- 
- 	spin_lock_irqsave (&hmidi->lock, flags);
--	if ((n_pending = snd_hdsp_midi_input_available (hmidi->hdsp, hmidi->id)) > 0) {
-+	n_pending = snd_hdsp_midi_input_available(hmidi->hdsp, hmidi->id);
-+	if (n_pending > 0) {
- 		if (hmidi->input) {
- 			if (n_pending > (int)sizeof (buf))
- 				n_pending = sizeof (buf);
-@@ -3322,7 +3325,9 @@ static int snd_hdsp_create_controls(struct snd_card *card, struct hdsp *hdsp)
- 	}
- 
- 	for (idx = 0; idx < ARRAY_SIZE(snd_hdsp_controls); idx++) {
--		if ((err = snd_ctl_add(card, kctl = snd_ctl_new1(&snd_hdsp_controls[idx], hdsp))) < 0)
-+		kctl = snd_ctl_new1(&snd_hdsp_controls[idx], hdsp);
-+		err = snd_ctl_add(card, kctl);
-+		if (err < 0)
- 			return err;
- 		if (idx == 1)	/* IEC958 (S/PDIF) Stream */
- 			hdsp->spdif_ctl = kctl;
-@@ -3331,12 +3336,16 @@ static int snd_hdsp_create_controls(struct snd_card *card, struct hdsp *hdsp)
- 	/* ADAT SyncCheck status */
- 	snd_hdsp_adat_sync_check.name = "ADAT Lock Status";
- 	snd_hdsp_adat_sync_check.index = 1;
--	if ((err = snd_ctl_add (card, kctl = snd_ctl_new1(&snd_hdsp_adat_sync_check, hdsp))))
-+	kctl = snd_ctl_new1(&snd_hdsp_adat_sync_check, hdsp);
-+	err = snd_ctl_add(card, kctl);
-+	if (err < 0)
- 		return err;
- 	if (hdsp->io_type == Digiface || hdsp->io_type == H9652) {
- 		for (idx = 1; idx < 3; ++idx) {
- 			snd_hdsp_adat_sync_check.index = idx+1;
--			if ((err = snd_ctl_add (card, kctl = snd_ctl_new1(&snd_hdsp_adat_sync_check, hdsp))))
-+			kctl = snd_ctl_new1(&snd_hdsp_adat_sync_check, hdsp);
-+			err = snd_ctl_add(card, kctl);
-+			if (err < 0)
- 				return err;
+ 		if (io_port == 1) {
+ 			/* auto-detect */
+-			if (!(io_port = pci_resource_start(chip->pci, 2)))
++			io_port = pci_resource_start(chip->pci, 2);
++			if (!io_port)
+ 				return -ENODEV;
+ 		}
+ 	} else {
+@@ -81,7 +82,8 @@ static int snd_ymfpci_create_gameport(struct snd_ymfpci *chip, int dev,
+ 			for (io_port = 0x201; io_port <= 0x205; io_port++) {
+ 				if (io_port == 0x203)
+ 					continue;
+-				if ((r = request_region(io_port, 1, "YMFPCI gameport")) != NULL)
++				r = request_region(io_port, 1, "YMFPCI gameport");
++				if (r)
+ 					break;
+ 			}
+ 			if (!r) {
+@@ -102,10 +104,13 @@ static int snd_ymfpci_create_gameport(struct snd_ymfpci *chip, int dev,
  		}
  	}
-@@ -3344,7 +3353,9 @@ static int snd_hdsp_create_controls(struct snd_card *card, struct hdsp *hdsp)
- 	/* DA, AD and Phone gain and XLR breakout cable controls for H9632 cards */
- 	if (hdsp->io_type == H9632) {
- 		for (idx = 0; idx < ARRAY_SIZE(snd_hdsp_9632_controls); idx++) {
--			if ((err = snd_ctl_add(card, kctl = snd_ctl_new1(&snd_hdsp_9632_controls[idx], hdsp))) < 0)
-+			kctl = snd_ctl_new1(&snd_hdsp_9632_controls[idx], hdsp);
-+			err = snd_ctl_add(card, kctl);
-+			if (err < 0)
- 				return err;
+ 
+-	if (!r && !(r = request_region(io_port, 1, "YMFPCI gameport"))) {
+-		dev_err(chip->card->dev,
+-			"joystick port %#x is in use.\n", io_port);
+-		return -EBUSY;
++	if (!r) {
++		r = request_region(io_port, 1, "YMFPCI gameport");
++		if (!r) {
++			dev_err(chip->card->dev,
++				"joystick port %#x is in use.\n", io_port);
++			return -EBUSY;
++		}
+ 	}
+ 
+ 	chip->gameport = gp = gameport_allocate_port();
+@@ -193,8 +198,9 @@ static int snd_card_ymfpci_probe(struct pci_dev *pci,
+ 			/* auto-detect */
+ 			fm_port[dev] = pci_resource_start(pci, 1);
  		}
- 	}
-@@ -3362,8 +3373,10 @@ static int snd_hdsp_create_controls(struct snd_card *card, struct hdsp *hdsp)
+-		if (fm_port[dev] > 0 &&
+-		    (fm_res = request_region(fm_port[dev], 4, "YMFPCI OPL3")) != NULL) {
++		if (fm_port[dev] > 0)
++			fm_res = request_region(fm_port[dev], 4, "YMFPCI OPL3");
++		if (fm_res) {
+ 			legacy_ctrl |= YMFPCI_LEGACY_FMEN;
+ 			pci_write_config_word(pci, PCIR_DSXG_FMBASE, fm_port[dev]);
+ 		}
+@@ -202,8 +208,9 @@ static int snd_card_ymfpci_probe(struct pci_dev *pci,
+ 			/* auto-detect */
+ 			mpu_port[dev] = pci_resource_start(pci, 1) + 0x20;
+ 		}
+-		if (mpu_port[dev] > 0 &&
+-		    (mpu_res = request_region(mpu_port[dev], 2, "YMFPCI MPU401")) != NULL) {
++		if (mpu_port[dev] > 0)
++			mpu_res = request_region(mpu_port[dev], 2, "YMFPCI MPU401");
++		if (mpu_res) {
+ 			legacy_ctrl |= YMFPCI_LEGACY_MEN;
+ 			pci_write_config_word(pci, PCIR_DSXG_MPU401BASE, mpu_port[dev]);
+ 		}
+@@ -215,8 +222,9 @@ static int snd_card_ymfpci_probe(struct pci_dev *pci,
+ 		case 0x3a8: legacy_ctrl2 |= 3; break;
+ 		default: fm_port[dev] = 0; break;
+ 		}
+-		if (fm_port[dev] > 0 &&
+-		    (fm_res = request_region(fm_port[dev], 4, "YMFPCI OPL3")) != NULL) {
++		if (fm_port[dev] > 0)
++			fm_res = request_region(fm_port[dev], 4, "YMFPCI OPL3");
++		if (fm_res) {
+ 			legacy_ctrl |= YMFPCI_LEGACY_FMEN;
+ 		} else {
+ 			legacy_ctrl2 &= ~YMFPCI_LEGACY2_FMIO;
+@@ -229,8 +237,9 @@ static int snd_card_ymfpci_probe(struct pci_dev *pci,
+ 		case 0x334: legacy_ctrl2 |= 3 << 4; break;
+ 		default: mpu_port[dev] = 0; break;
+ 		}
+-		if (mpu_port[dev] > 0 &&
+-		    (mpu_res = request_region(mpu_port[dev], 2, "YMFPCI MPU401")) != NULL) {
++		if (mpu_port[dev] > 0)
++			mpu_res = request_region(mpu_port[dev], 2, "YMFPCI MPU401");
++		if (mpu_res) {
+ 			legacy_ctrl |= YMFPCI_LEGACY_MEN;
+ 		} else {
+ 			legacy_ctrl2 &= ~YMFPCI_LEGACY2_MPUIO;
+@@ -244,9 +253,8 @@ static int snd_card_ymfpci_probe(struct pci_dev *pci,
+ 	pci_read_config_word(pci, PCIR_DSXG_LEGACY, &old_legacy_ctrl);
+ 	pci_write_config_word(pci, PCIR_DSXG_LEGACY, legacy_ctrl);
+ 	pci_write_config_word(pci, PCIR_DSXG_ELEGACY, legacy_ctrl2);
+-	if ((err = snd_ymfpci_create(card, pci,
+-				     old_legacy_ctrl,
+-			 	     &chip)) < 0) {
++	err = snd_ymfpci_create(card, pci, old_legacy_ctrl, &chip);
++	if (err  < 0) {
+ 		release_and_free_resource(mpu_res);
+ 		release_and_free_resource(fm_res);
+ 		goto free_card;
+@@ -287,11 +295,12 @@ static int snd_card_ymfpci_probe(struct pci_dev *pci,
+ 		goto free_card;
  
- 	/* AEB control for H96xx card */
- 	if (hdsp->io_type == H9632 || hdsp->io_type == H9652) {
--		if ((err = snd_ctl_add(card, kctl = snd_ctl_new1(&snd_hdsp_96xx_aeb, hdsp))) < 0)
--				return err;
-+		kctl = snd_ctl_new1(&snd_hdsp_96xx_aeb, hdsp);
-+		err = snd_ctl_add(card, kctl);
-+		if (err < 0)
-+			return err;
- 	}
- 
- 	return 0;
-@@ -3942,7 +3955,8 @@ static char *hdsp_channel_buffer_location(struct hdsp *hdsp,
-         if (snd_BUG_ON(channel < 0 || channel >= hdsp->max_channels))
- 		return NULL;
- 
--	if ((mapped_channel = hdsp->channel_map[channel]) < 0)
-+	mapped_channel = hdsp->channel_map[channel];
-+	if (mapped_channel < 0)
- 		return NULL;
- 
- 	if (stream == SNDRV_PCM_STREAM_CAPTURE)
-@@ -4114,7 +4128,8 @@ static int snd_hdsp_hw_params(struct snd_pcm_substream *substream,
- 
- 	spin_lock_irq(&hdsp->lock);
- 	if (! hdsp->clock_source_locked) {
--		if ((err = hdsp_set_rate(hdsp, params_rate(params), 0)) < 0) {
-+		err = hdsp_set_rate(hdsp, params_rate(params), 0);
+ 	if (chip->mpu_res) {
+-		if ((err = snd_mpu401_uart_new(card, 0, MPU401_HW_YMFPCI,
+-					       mpu_port[dev],
+-					       MPU401_INFO_INTEGRATED |
+-					       MPU401_INFO_IRQ_HOOK,
+-					       -1, &chip->rawmidi)) < 0) {
++		err = snd_mpu401_uart_new(card, 0, MPU401_HW_YMFPCI,
++					  mpu_port[dev],
++					  MPU401_INFO_INTEGRATED |
++					  MPU401_INFO_IRQ_HOOK,
++					  -1, &chip->rawmidi);
 +		if (err < 0) {
- 			spin_unlock_irq(&hdsp->lock);
- 			_snd_pcm_hw_param_setempty(params, SNDRV_PCM_HW_PARAM_RATE);
- 			return err;
-@@ -4122,7 +4137,8 @@ static int snd_hdsp_hw_params(struct snd_pcm_substream *substream,
- 	}
- 	spin_unlock_irq(&hdsp->lock);
- 
--	if ((err = hdsp_set_interrupt_interval(hdsp, params_period_size(params))) < 0) {
-+	err = hdsp_set_interrupt_interval(hdsp, params_period_size(params));
-+	if (err < 0) {
- 		_snd_pcm_hw_param_setempty(params, SNDRV_PCM_HW_PARAM_PERIOD_SIZE);
- 		return err;
- 	}
-@@ -4854,13 +4870,15 @@ static int snd_hdsp_hwdep_ioctl(struct snd_hwdep *hw, struct file *file, unsigne
- 
- 		if (hdsp->io_type == H9652 || hdsp->io_type == H9632) return -EINVAL;
- 		if (hdsp->io_type == Undefined) {
--			if ((err = hdsp_get_iobox_version(hdsp)) < 0)
-+			err = hdsp_get_iobox_version(hdsp);
-+			if (err < 0)
- 				return err;
+ 			dev_warn(card->dev,
+ 				 "cannot initialize MPU401 at 0x%lx, skipping...\n",
+ 				 mpu_port[dev]);
+@@ -300,18 +309,22 @@ static int snd_card_ymfpci_probe(struct pci_dev *pci,
  		}
- 		memset(&hdsp_version, 0, sizeof(hdsp_version));
- 		hdsp_version.io_type = hdsp->io_type;
- 		hdsp_version.firmware_rev = hdsp->firmware_rev;
--		if ((err = copy_to_user(argp, &hdsp_version, sizeof(hdsp_version))))
-+		err = copy_to_user(argp, &hdsp_version, sizeof(hdsp_version));
-+		if (err < 0)
- 		    	return -EFAULT;
- 		break;
  	}
-@@ -4900,17 +4918,20 @@ static int snd_hdsp_hwdep_ioctl(struct snd_hwdep *hw, struct file *file, unsigne
- 
- 		hdsp->state |= HDSP_FirmwareCached;
- 
--		if ((err = snd_hdsp_load_firmware_from_cache(hdsp)) < 0)
-+		err = snd_hdsp_load_firmware_from_cache(hdsp);
-+		if (err < 0)
- 			return err;
- 
- 		if (!(hdsp->state & HDSP_InitializationComplete)) {
--			if ((err = snd_hdsp_enable_io(hdsp)) < 0)
-+			err = snd_hdsp_enable_io(hdsp);
-+			if (err < 0)
- 				return err;
- 
- 			snd_hdsp_initialize_channels(hdsp);
- 			snd_hdsp_initialize_midi_flush(hdsp);
- 
--			if ((err = snd_hdsp_create_alsa_devices(hdsp->card, hdsp)) < 0) {
-+			err = snd_hdsp_create_alsa_devices(hdsp->card, hdsp);
+ 	if (chip->fm_res) {
+-		if ((err = snd_opl3_create(card,
+-					   fm_port[dev],
+-					   fm_port[dev] + 2,
+-					   OPL3_HW_OPL3, 1, &opl3)) < 0) {
++		err = snd_opl3_create(card,
++				      fm_port[dev],
++				      fm_port[dev] + 2,
++				      OPL3_HW_OPL3, 1, &opl3);
++		if (err < 0) {
+ 			dev_warn(card->dev,
+ 				 "cannot initialize FM OPL3 at 0x%lx, skipping...\n",
+ 				 fm_port[dev]);
+ 			legacy_ctrl &= ~YMFPCI_LEGACY_FMEN;
+ 			pci_write_config_word(pci, PCIR_DSXG_LEGACY, legacy_ctrl);
+-		} else if ((err = snd_opl3_hwdep_new(opl3, 0, 1, NULL)) < 0) {
+-			dev_err(card->dev, "cannot create opl3 hwdep\n");
+-			goto free_card;
++		} else {
++			err = snd_opl3_hwdep_new(opl3, 0, 1, NULL);
 +			if (err < 0) {
- 				dev_err(hdsp->card->dev,
- 					"error creating alsa devices\n");
- 				return err;
-@@ -4960,7 +4981,8 @@ static int snd_hdsp_create_hwdep(struct snd_card *card, struct hdsp *hdsp)
- 	struct snd_hwdep *hw;
++				dev_err(card->dev, "cannot create opl3 hwdep\n");
++				goto free_card;
++			}
+ 		}
+ 	}
+ 
+diff --git a/sound/pci/ymfpci/ymfpci_main.c b/sound/pci/ymfpci/ymfpci_main.c
+index cacc6a9d14c8..8fd060769882 100644
+--- a/sound/pci/ymfpci/ymfpci_main.c
++++ b/sound/pci/ymfpci/ymfpci_main.c
+@@ -292,7 +292,8 @@ static void snd_ymfpci_pcm_interrupt(struct snd_ymfpci *chip, struct snd_ymfpci_
+ 	struct snd_ymfpci_pcm *ypcm;
+ 	u32 pos, delta;
+ 	
+-	if ((ypcm = voice->ypcm) == NULL)
++	ypcm = voice->ypcm;
++	if (!ypcm)
+ 		return;
+ 	if (ypcm->substream == NULL)
+ 		return;
+@@ -628,7 +629,8 @@ static int snd_ymfpci_playback_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_ymfpci_pcm *ypcm = runtime->private_data;
  	int err;
  
--	if ((err = snd_hwdep_new(card, "HDSP hwdep", 0, &hw)) < 0)
-+	err = snd_hwdep_new(card, "HDSP hwdep", 0, &hw);
+-	if ((err = snd_ymfpci_pcm_voice_alloc(ypcm, params_channels(hw_params))) < 0)
++	err = snd_ymfpci_pcm_voice_alloc(ypcm, params_channels(hw_params));
 +	if (err < 0)
  		return err;
- 
- 	hdsp->hwdep = hw;
-@@ -4978,7 +5000,8 @@ static int snd_hdsp_create_pcm(struct snd_card *card, struct hdsp *hdsp)
+ 	return 0;
+ }
+@@ -932,7 +934,8 @@ static int snd_ymfpci_playback_open(struct snd_pcm_substream *substream)
+ 	struct snd_ymfpci_pcm *ypcm;
+ 	int err;
+ 	
+-	if ((err = snd_ymfpci_playback_open_1(substream)) < 0)
++	err = snd_ymfpci_playback_open_1(substream);
++	if (err < 0)
+ 		return err;
+ 	ypcm = runtime->private_data;
+ 	ypcm->output_front = 1;
+@@ -954,7 +957,8 @@ static int snd_ymfpci_playback_spdif_open(struct snd_pcm_substream *substream)
+ 	struct snd_ymfpci_pcm *ypcm;
+ 	int err;
+ 	
+-	if ((err = snd_ymfpci_playback_open_1(substream)) < 0)
++	err = snd_ymfpci_playback_open_1(substream);
++	if (err < 0)
+ 		return err;
+ 	ypcm = runtime->private_data;
+ 	ypcm->output_front = 0;
+@@ -982,7 +986,8 @@ static int snd_ymfpci_playback_4ch_open(struct snd_pcm_substream *substream)
+ 	struct snd_ymfpci_pcm *ypcm;
+ 	int err;
+ 	
+-	if ((err = snd_ymfpci_playback_open_1(substream)) < 0)
++	err = snd_ymfpci_playback_open_1(substream);
++	if (err < 0)
+ 		return err;
+ 	ypcm = runtime->private_data;
+ 	ypcm->output_front = 0;
+@@ -1124,7 +1129,8 @@ int snd_ymfpci_pcm(struct snd_ymfpci *chip, int device)
  	struct snd_pcm *pcm;
  	int err;
  
--	if ((err = snd_pcm_new(card, hdsp->card_name, 0, 1, 1, &pcm)) < 0)
-+	err = snd_pcm_new(card, hdsp->card_name, 0, 1, 1, &pcm);
+-	if ((err = snd_pcm_new(chip->card, "YMFPCI", device, 32, 1, &pcm)) < 0)
++	err = snd_pcm_new(chip->card, "YMFPCI", device, 32, 1, &pcm);
 +	if (err < 0)
  		return err;
+ 	pcm->private_data = chip;
  
- 	hdsp->pcm = pcm;
-@@ -5084,28 +5107,32 @@ static int snd_hdsp_create_alsa_devices(struct snd_card *card, struct hdsp *hdsp
- {
+@@ -1157,7 +1163,8 @@ int snd_ymfpci_pcm2(struct snd_ymfpci *chip, int device)
+ 	struct snd_pcm *pcm;
  	int err;
  
--	if ((err = snd_hdsp_create_pcm(card, hdsp)) < 0) {
-+	err = snd_hdsp_create_pcm(card, hdsp);
-+	if (err < 0) {
- 		dev_err(card->dev,
- 			"Error creating pcm interface\n");
+-	if ((err = snd_pcm_new(chip->card, "YMFPCI - PCM2", device, 0, 1, &pcm)) < 0)
++	err = snd_pcm_new(chip->card, "YMFPCI - PCM2", device, 0, 1, &pcm);
++	if (err < 0)
  		return err;
- 	}
+ 	pcm->private_data = chip;
  
+@@ -1190,7 +1197,8 @@ int snd_ymfpci_pcm_spdif(struct snd_ymfpci *chip, int device)
+ 	struct snd_pcm *pcm;
+ 	int err;
  
--	if ((err = snd_hdsp_create_midi(card, hdsp, 0)) < 0) {
-+	err = snd_hdsp_create_midi(card, hdsp, 0);
-+	if (err < 0) {
- 		dev_err(card->dev,
- 			"Error creating first midi interface\n");
+-	if ((err = snd_pcm_new(chip->card, "YMFPCI - IEC958", device, 1, 0, &pcm)) < 0)
++	err = snd_pcm_new(chip->card, "YMFPCI - IEC958", device, 1, 0, &pcm);
++	if (err < 0)
  		return err;
- 	}
+ 	pcm->private_data = chip;
  
- 	if (hdsp->io_type == Digiface || hdsp->io_type == H9652) {
--		if ((err = snd_hdsp_create_midi(card, hdsp, 1)) < 0) {
-+		err = snd_hdsp_create_midi(card, hdsp, 1);
-+		if (err < 0) {
- 			dev_err(card->dev,
- 				"Error creating second midi interface\n");
- 			return err;
- 		}
- 	}
+@@ -1230,7 +1238,8 @@ int snd_ymfpci_pcm_4ch(struct snd_ymfpci *chip, int device)
+ 	struct snd_pcm *pcm;
+ 	int err;
  
--	if ((err = snd_hdsp_create_controls(card, hdsp)) < 0) {
-+	err = snd_hdsp_create_controls(card, hdsp);
-+	if (err < 0) {
- 		dev_err(card->dev,
- 			"Error creating ctl interface\n");
+-	if ((err = snd_pcm_new(chip->card, "YMFPCI - Rear", device, 1, 0, &pcm)) < 0)
++	err = snd_pcm_new(chip->card, "YMFPCI - Rear", device, 1, 0, &pcm);
++	if (err < 0)
  		return err;
-@@ -5119,7 +5146,8 @@ static int snd_hdsp_create_alsa_devices(struct snd_card *card, struct hdsp *hdsp
- 	hdsp->capture_substream = NULL;
- 	hdsp->playback_substream = NULL;
+ 	pcm->private_data = chip;
  
--	if ((err = snd_hdsp_set_defaults(hdsp)) < 0) {
-+	err = snd_hdsp_set_defaults(hdsp);
-+	if (err < 0) {
- 		dev_err(card->dev,
- 			"Error setting default values\n");
+@@ -1785,7 +1794,8 @@ int snd_ymfpci_mixer(struct snd_ymfpci *chip, int rear_switch)
+ 		.read = snd_ymfpci_codec_read,
+ 	};
+ 
+-	if ((err = snd_ac97_bus(chip->card, 0, &ops, chip, &chip->ac97_bus)) < 0)
++	err = snd_ac97_bus(chip->card, 0, &ops, chip, &chip->ac97_bus);
++	if (err < 0)
  		return err;
-@@ -5130,7 +5158,8 @@ static int snd_hdsp_create_alsa_devices(struct snd_card *card, struct hdsp *hdsp
- 		sprintf(card->longname, "%s at 0x%lx, irq %d", hdsp->card_name,
- 			hdsp->port, hdsp->irq);
- 
--		if ((err = snd_card_register(card)) < 0) {
-+		err = snd_card_register(card);
-+		if (err < 0) {
- 			dev_err(card->dev,
- 				"error registering card\n");
- 			return err;
-@@ -5151,7 +5180,8 @@ static int hdsp_request_fw_loader(struct hdsp *hdsp)
- 	if (hdsp->io_type == H9652 || hdsp->io_type == H9632)
- 		return 0;
- 	if (hdsp->io_type == Undefined) {
--		if ((err = hdsp_get_iobox_version(hdsp)) < 0)
-+		err = hdsp_get_iobox_version(hdsp);
-+		if (err < 0)
- 			return err;
- 		if (hdsp->io_type == H9652 || hdsp->io_type == H9632)
- 			return 0;
-@@ -5197,21 +5227,25 @@ static int hdsp_request_fw_loader(struct hdsp *hdsp)
- 
- 	hdsp->state |= HDSP_FirmwareCached;
- 
--	if ((err = snd_hdsp_load_firmware_from_cache(hdsp)) < 0)
-+	err = snd_hdsp_load_firmware_from_cache(hdsp);
+ 	chip->ac97_bus->private_free = snd_ymfpci_mixer_free_ac97_bus;
+ 	chip->ac97_bus->no_vra = 1; /* YMFPCI doesn't need VRA */
+@@ -1793,7 +1803,8 @@ int snd_ymfpci_mixer(struct snd_ymfpci *chip, int rear_switch)
+ 	memset(&ac97, 0, sizeof(ac97));
+ 	ac97.private_data = chip;
+ 	ac97.private_free = snd_ymfpci_mixer_free_ac97;
+-	if ((err = snd_ac97_mixer(chip->ac97_bus, &ac97, &chip->ac97)) < 0)
++	err = snd_ac97_mixer(chip->ac97_bus, &ac97, &chip->ac97);
 +	if (err < 0)
  		return err;
  
- 	if (!(hdsp->state & HDSP_InitializationComplete)) {
--		if ((err = snd_hdsp_enable_io(hdsp)) < 0)
-+		err = snd_hdsp_enable_io(hdsp);
+ 	/* to be sure */
+@@ -1801,7 +1812,8 @@ int snd_ymfpci_mixer(struct snd_ymfpci *chip, int rear_switch)
+ 			     AC97_EA_VRA|AC97_EA_VRM, 0);
+ 
+ 	for (idx = 0; idx < ARRAY_SIZE(snd_ymfpci_controls); idx++) {
+-		if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&snd_ymfpci_controls[idx], chip))) < 0)
++		err = snd_ctl_add(chip->card, snd_ctl_new1(&snd_ymfpci_controls[idx], chip));
 +		if (err < 0)
  			return err;
+ 	}
+ 	if (chip->ac97->ext_id & AC97_EI_SDAC) {
+@@ -1814,27 +1826,37 @@ int snd_ymfpci_mixer(struct snd_ymfpci *chip, int rear_switch)
+ 	/* add S/PDIF control */
+ 	if (snd_BUG_ON(!chip->pcm_spdif))
+ 		return -ENXIO;
+-	if ((err = snd_ctl_add(chip->card, kctl = snd_ctl_new1(&snd_ymfpci_spdif_default, chip))) < 0)
++	kctl = snd_ctl_new1(&snd_ymfpci_spdif_default, chip);
++	err = snd_ctl_add(chip->card, kctl);
++	if (err < 0)
+ 		return err;
+ 	kctl->id.device = chip->pcm_spdif->device;
+-	if ((err = snd_ctl_add(chip->card, kctl = snd_ctl_new1(&snd_ymfpci_spdif_mask, chip))) < 0)
++	kctl = snd_ctl_new1(&snd_ymfpci_spdif_mask, chip);
++	err = snd_ctl_add(chip->card, kctl);
++	if (err < 0)
+ 		return err;
+ 	kctl->id.device = chip->pcm_spdif->device;
+-	if ((err = snd_ctl_add(chip->card, kctl = snd_ctl_new1(&snd_ymfpci_spdif_stream, chip))) < 0)
++	kctl = snd_ctl_new1(&snd_ymfpci_spdif_stream, chip);
++	err = snd_ctl_add(chip->card, kctl);
++	if (err < 0)
+ 		return err;
+ 	kctl->id.device = chip->pcm_spdif->device;
+ 	chip->spdif_pcm_ctl = kctl;
  
--		if ((err = snd_hdsp_create_hwdep(hdsp->card, hdsp)) < 0) {
-+		err = snd_hdsp_create_hwdep(hdsp->card, hdsp);
-+		if (err < 0) {
- 			dev_err(hdsp->card->dev,
- 				"error creating hwdep device\n");
+ 	/* direct recording source */
+-	if (chip->device_id == PCI_DEVICE_ID_YAMAHA_754 &&
+-	    (err = snd_ctl_add(chip->card, kctl = snd_ctl_new1(&snd_ymfpci_drec_source, chip))) < 0)
+-		return err;
++	if (chip->device_id == PCI_DEVICE_ID_YAMAHA_754) {
++		kctl = snd_ctl_new1(&snd_ymfpci_drec_source, chip);
++		err = snd_ctl_add(chip->card, kctl);
++		if (err < 0)
++			return err;
++	}
+ 
+ 	/*
+ 	 * shared rear/line-in
+ 	 */
+ 	if (rear_switch) {
+-		if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&snd_ymfpci_rear_shared, chip))) < 0)
++		err = snd_ctl_add(chip->card, snd_ctl_new1(&snd_ymfpci_rear_shared, chip));
++		if (err < 0)
  			return err;
- 		}
- 		snd_hdsp_initialize_channels(hdsp);
- 		snd_hdsp_initialize_midi_flush(hdsp);
--		if ((err = snd_hdsp_create_alsa_devices(hdsp->card, hdsp)) < 0) {
-+		err = snd_hdsp_create_alsa_devices(hdsp->card, hdsp);
-+		if (err < 0) {
- 			dev_err(hdsp->card->dev,
- 				"error creating alsa devices\n");
- 			return err;
-@@ -5280,15 +5314,18 @@ static int snd_hdsp_create(struct snd_card *card,
- 		is_9632 = 1;
  	}
  
+@@ -1847,7 +1869,8 @@ int snd_ymfpci_mixer(struct snd_ymfpci *chip, int rear_switch)
+ 		kctl->id.device = chip->pcm->device;
+ 		kctl->id.subdevice = idx;
+ 		kctl->private_value = (unsigned long)substream;
+-		if ((err = snd_ctl_add(chip->card, kctl)) < 0)
++		err = snd_ctl_add(chip->card, kctl);
++		if (err < 0)
+ 			return err;
+ 		chip->pcm_mixer[idx].left = 0x8000;
+ 		chip->pcm_mixer[idx].right = 0x8000;
+@@ -1928,7 +1951,8 @@ int snd_ymfpci_timer(struct snd_ymfpci *chip, int device)
+ 	tid.card = chip->card->number;
+ 	tid.device = device;
+ 	tid.subdevice = 0;
+-	if ((err = snd_timer_new(chip->card, "YMFPCI", &tid, &timer)) >= 0) {
++	err = snd_timer_new(chip->card, "YMFPCI", &tid, &timer);
++	if (err >= 0) {
+ 		strcpy(timer->name, "YMFPCI timer");
+ 		timer->private_data = chip;
+ 		timer->hw = snd_ymfpci_timer_hw;
+@@ -2334,7 +2358,8 @@ int snd_ymfpci_create(struct snd_card *card,
+ 	*rchip = NULL;
+ 
+ 	/* enable PCI device */
 -	if ((err = pci_enable_device(pci)) < 0)
 +	err = pci_enable_device(pci);
 +	if (err < 0)
  		return err;
  
- 	pci_set_master(hdsp->pci);
+ 	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
+@@ -2357,7 +2382,8 @@ int snd_ymfpci_create(struct snd_card *card,
+ 	pci_set_master(pci);
+ 	chip->src441_used = -1;
  
--	if ((err = pci_request_regions(pci, "hdsp")) < 0)
-+	err = pci_request_regions(pci, "hdsp");
-+	if (err < 0)
- 		return err;
- 	hdsp->port = pci_resource_start(pci, 0);
--	if ((hdsp->iobase = ioremap(hdsp->port, HDSP_IO_EXTENT)) == NULL) {
-+	hdsp->iobase = ioremap(hdsp->port, HDSP_IO_EXTENT);
-+	if (!hdsp->iobase) {
- 		dev_err(hdsp->card->dev, "unable to remap region 0x%lx-0x%lx\n",
- 			hdsp->port, hdsp->port + HDSP_IO_EXTENT - 1);
- 		return -EBUSY;
-@@ -5306,7 +5343,8 @@ static int snd_hdsp_create(struct snd_card *card,
- 	hdsp->use_midi_work = 1;
- 	hdsp->dds_value = 0;
- 
--	if ((err = snd_hdsp_initialize_memory(hdsp)) < 0)
-+	err = snd_hdsp_initialize_memory(hdsp);
-+	if (err < 0)
- 		return err;
- 
- 	if (!is_9652 && !is_9632) {
-@@ -5318,7 +5356,8 @@ static int snd_hdsp_create(struct snd_card *card,
- 			return err;
- 
- 		if ((hdsp_read (hdsp, HDSP_statusRegister) & HDSP_DllError) != 0) {
--			if ((err = hdsp_request_fw_loader(hdsp)) < 0)
-+			err = hdsp_request_fw_loader(hdsp);
-+			if (err < 0)
- 				/* we don't fail as this can happen
- 				   if userspace is not ready for
- 				   firmware upload
-@@ -5331,7 +5370,8 @@ static int snd_hdsp_create(struct snd_card *card,
- 			/* we defer initialization */
- 			dev_info(hdsp->card->dev,
- 				 "card initialization pending : waiting for firmware\n");
--			if ((err = snd_hdsp_create_hwdep(card, hdsp)) < 0)
-+			err = snd_hdsp_create_hwdep(card, hdsp);
-+			if (err < 0)
- 				return err;
- 			return 0;
- 		} else {
-@@ -5346,7 +5386,8 @@ static int snd_hdsp_create(struct snd_card *card,
- 		}
- 	}
- 
--	if ((err = snd_hdsp_enable_io(hdsp)) != 0)
-+	err = snd_hdsp_enable_io(hdsp);
-+	if (err)
- 		return err;
- 
- 	if (is_9652)
-@@ -5355,7 +5396,8 @@ static int snd_hdsp_create(struct snd_card *card,
- 	if (is_9632)
- 		hdsp->io_type = H9632;
- 
--	if ((err = snd_hdsp_create_hwdep(card, hdsp)) < 0)
-+	err = snd_hdsp_create_hwdep(card, hdsp);
-+	if (err < 0)
- 		return err;
- 
- 	snd_hdsp_initialize_channels(hdsp);
-@@ -5363,7 +5405,8 @@ static int snd_hdsp_create(struct snd_card *card,
- 
- 	hdsp->state |= HDSP_FirmwareLoaded;
- 
--	if ((err = snd_hdsp_create_alsa_devices(card, hdsp)) < 0)
-+	err = snd_hdsp_create_alsa_devices(card, hdsp);
-+	if (err < 0)
- 		return err;
- 
- 	return 0;
+-	if ((chip->res_reg_area = request_mem_region(chip->reg_area_phys, 0x8000, "YMFPCI")) == NULL) {
++	chip->res_reg_area = request_mem_region(chip->reg_area_phys, 0x8000, "YMFPCI");
++	if (!chip->res_reg_area) {
+ 		dev_err(chip->card->dev,
+ 			"unable to grab memory region 0x%lx-0x%lx\n",
+ 			chip->reg_area_phys, chip->reg_area_phys + 0x8000 - 1);
 -- 
 2.26.2
 
