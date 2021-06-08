@@ -2,81 +2,82 @@ Return-Path: <SRS0=yD/C=LC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3135CC47082
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:24:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C71EDC47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:25:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AE927611BD
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:24:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE927611BD
+	by mail.kernel.org (Postfix) with ESMTPS id F010A6135A
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:25:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F010A6135A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 39EE01843;
-	Tue,  8 Jun 2021 16:23:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39EE01843
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B62D1849;
+	Tue,  8 Jun 2021 16:24:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B62D1849
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623162279;
-	bh=jR/yXyXL8RkTk507GQl8Fyc4Iytko6yVQakxk+/tFuI=;
+	s=default; t=1623162305;
+	bh=uGdzMECVlQ4UJcv6HTFBWtP9rO7Qh19Bn2RLmMlJJPE=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OIr3ILzWFNiG6jBg5IawzmxdqFkzmjWVAasZTk1RfRGgUkadSwnC8BWfXDJkG99h9
-	 v0C7SqBsXvEmm/qGkLqWzAL5am5+IeznPMXAVb0NkYibFVC4XG5KqaTjKDi0mrve5E
-	 0jvCXV3iZBFrpqcZ+iZj8f0PCbFHH/Bjh83s9fcg=
+	b=ZtmHs5nZY6jSS4Jmy4P+lnWGR9+kfCCju8eSEyevcUuoTQZYWahEyaIx4r9AmWRWm
+	 RbFJDGx7f/hlRkYUCqWSMO68kwEy2YgCzNiWcZ1kvMARt8pDkKPjxgxALgWmhu6dyL
+	 ZgnwdG1TQ1JWitOq5sLgUR/gWUOkWXF6Hj+0QY3Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F3F4CF80678;
-	Tue,  8 Jun 2021 16:07:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06A4BF8067A;
+	Tue,  8 Jun 2021 16:07:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5161BF8061C; Tue,  8 Jun 2021 16:07:05 +0200 (CEST)
+ id CBE18F8061B; Tue,  8 Jun 2021 16:07:08 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5AAD0F80218
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AAD0F80218
+ by alsa1.perex.cz (Postfix) with ESMTPS id CB0B2F80508
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB0B2F80508
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="JhjO2f2D"; 
+ header.b="KjLLyrL1"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="aOOr90Q1"
+ header.b="EiSKJRRP"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id DB0CE219E4
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:43 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 1A8EA219F1
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1623161143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1623161145; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=g6xoBu+SlD976qWqssA9xQPt1AXjcZ48xWP2e8xlD7w=;
- b=JhjO2f2D1Xa517eIu6N8RkvW467yTxZ+1EWi8jRxO96ohF54vZZv7bVz8GK6Lpq5+JlzMA
- A5OJqYwChY4PtrHqiV9abWl3ccWHzkofXncCAjX3iPaPk9iajkhBK7c5Z4NizAasvM7bDW
- it85rxUg4aZcbXz5gPlXuJTrQZkXZe8=
+ bh=etsNqx9FEMj7bKbj4D8wStPv8YUo0zrtccZ0vVE/KEU=;
+ b=KjLLyrL1RDGBDGQau3huuwgntvDxwMvvxyGwHU8veX2ly5z9benTTEvE/3587F+hEemL+O
+ QNUGFjdpSck7pA6kECESN+sb7tcIVGm3piGlituXjAMQJllEdSRgiIpPd5/b4usCJTTZTf
+ UDnq9+Y8ZmhUpyAIXPl8FuD+AMLYGGs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1623161143;
+ s=susede2_ed25519; t=1623161145;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=g6xoBu+SlD976qWqssA9xQPt1AXjcZ48xWP2e8xlD7w=;
- b=aOOr90Q1BlgDU3xZvBB1Sh9HFz9opAic3I9l7vvChsRDvtJH1wh2CKVNKdkblS6tO6lIXu
- NsZ33qZZeX1623DA==
+ bh=etsNqx9FEMj7bKbj4D8wStPv8YUo0zrtccZ0vVE/KEU=;
+ b=EiSKJRRP7Mr3YPXFBK1ojjtPlrdIsgQ6w8j4GGmXeDQ+zxLhsO9ZpvyBBkh1bUo7MK3Aig
+ sqVZZBavosdvLoCw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id CAE6AA3B88;
- Tue,  8 Jun 2021 14:05:43 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 0ABF4A3B89;
+ Tue,  8 Jun 2021 14:05:45 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 25/66] ALSA: es1938: Fix assignment in if condition
-Date: Tue,  8 Jun 2021 16:04:59 +0200
-Message-Id: <20210608140540.17885-26-tiwai@suse.de>
+Subject: [PATCH 47/66] ALSA: riptide: Fix assignment in if condition
+Date: Tue,  8 Jun 2021 16:05:21 +0200
+Message-Id: <20210608140540.17885-48-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210608140540.17885-1-tiwai@suse.de>
 References: <20210608140540.17885-1-tiwai@suse.de>
@@ -97,7 +98,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-PCI ES1938 driver code contains a few assignments in if condition,
+PCI riptide driver code contains a few assignments in if condition,
 which is a bad coding style that may confuse readers and occasionally
 lead to bugs.
 
@@ -105,139 +106,200 @@ This patch is merely for coding-style fixes, no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/es1938.c | 42 ++++++++++++++++++++++++++++--------------
- 1 file changed, 28 insertions(+), 14 deletions(-)
+ sound/pci/riptide/riptide.c | 88 ++++++++++++++++++++++---------------
+ 1 file changed, 53 insertions(+), 35 deletions(-)
 
-diff --git a/sound/pci/es1938.c b/sound/pci/es1938.c
-index afc66347d162..33b1eb347a27 100644
---- a/sound/pci/es1938.c
-+++ b/sound/pci/es1938.c
-@@ -293,7 +293,8 @@ static void snd_es1938_write_cmd(struct es1938 *chip, unsigned char cmd)
- 	int i;
- 	unsigned char v;
- 	for (i = 0; i < WRITE_LOOP_TIMEOUT; i++) {
--		if (!(v = inb(SLSB_REG(chip, READSTATUS)) & 0x80)) {
-+		v = inb(SLSB_REG(chip, READSTATUS));
-+		if (!(v & 0x80)) {
- 			outb(cmd, SLSB_REG(chip, WRITEDATA));
- 			return;
- 		}
-@@ -309,9 +310,11 @@ static int snd_es1938_get_byte(struct es1938 *chip)
- {
- 	int i;
- 	unsigned char v;
--	for (i = GET_LOOP_TIMEOUT; i; i--)
--		if ((v = inb(SLSB_REG(chip, STATUS))) & 0x80)
-+	for (i = GET_LOOP_TIMEOUT; i; i--) {
-+		v = inb(SLSB_REG(chip, STATUS));
-+		if (v & 0x80)
- 			return inb(SLSB_REG(chip, READDATA));
-+	}
- 	dev_err(chip->card->dev, "get_byte timeout: status 0x02%x\n", v);
- 	return -ENODEV;
- }
-@@ -993,7 +996,8 @@ static int snd_es1938_new_pcm(struct es1938 *chip, int device)
+diff --git a/sound/pci/riptide/riptide.c b/sound/pci/riptide/riptide.c
+index 56827db97239..709a1a2cde20 100644
+--- a/sound/pci/riptide/riptide.c
++++ b/sound/pci/riptide/riptide.c
+@@ -1087,9 +1087,15 @@ static irqreturn_t riptide_handleirq(int irq, void *dev_id)
+ 		substream[i] = chip->playback_substream[i];
+ 	substream[i] = chip->capture_substream;
+ 	for (i = 0; i < PLAYBACK_SUBSTREAMS + 1; i++) {
+-		if (substream[i] &&
+-		    (runtime = substream[i]->runtime) &&
+-		    (data = runtime->private_data) && data->state != ST_STOP) {
++		if (!substream[i])
++			continue;
++		runtime = substream[i]->runtime;
++		if (!runtime)
++			continue;
++		data = runtime->private_data;
++		if (!data)
++			continue;
++		if (data->state != ST_STOP) {
+ 			pos = 0;
+ 			for (j = 0; j < data->pages; j++) {
+ 				c = &data->sgdbuf[j];
+@@ -1549,10 +1555,10 @@ snd_riptide_hw_params(struct snd_pcm_substream *substream,
+ 		    (int)sgdlist->bytes);
+ 	if (sgdlist->area)
+ 		snd_dma_free_pages(sgdlist);
+-	if ((err = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV,
+-				       &chip->pci->dev,
+-				       sizeof(struct sgd) * (DESC_MAX_MASK + 1),
+-				       sgdlist)) < 0) {
++	err = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, &chip->pci->dev,
++				  sizeof(struct sgd) * (DESC_MAX_MASK + 1),
++				  sgdlist);
++	if (err < 0) {
+ 		snd_printk(KERN_ERR "Riptide: failed to alloc %d dma bytes\n",
+ 			   (int)sizeof(struct sgd) * (DESC_MAX_MASK + 1));
+ 		return err;
+@@ -1677,9 +1683,9 @@ static int snd_riptide_pcm(struct snd_riptide *chip, int device)
  	struct snd_pcm *pcm;
  	int err;
  
--	if ((err = snd_pcm_new(chip->card, "es-1938-1946", device, 2, 1, &pcm)) < 0)
-+	err = snd_pcm_new(chip->card, "es-1938-1946", device, 2, 1, &pcm);
+-	if ((err =
+-	     snd_pcm_new(chip->card, "RIPTIDE", device, PLAYBACK_SUBSTREAMS, 1,
+-			 &pcm)) < 0)
++	err = snd_pcm_new(chip->card, "RIPTIDE", device, PLAYBACK_SUBSTREAMS, 1,
++			  &pcm);
 +	if (err < 0)
  		return err;
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_es1938_playback_ops);
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_es1938_capture_ops);
-@@ -1553,7 +1557,8 @@ static int snd_es1938_create(struct snd_card *card,
- 	*rchip = NULL;
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
+ 			&snd_riptide_playback_ops);
+@@ -1766,14 +1772,16 @@ static int snd_riptide_initialize(struct snd_riptide *chip)
  
- 	/* enable PCI device */
+ 	cif = chip->cif;
+ 	if (!cif) {
+-		if ((cif = kzalloc(sizeof(struct cmdif), GFP_KERNEL)) == NULL)
++		cif = kzalloc(sizeof(struct cmdif), GFP_KERNEL);
++		if (!cif)
+ 			return -ENOMEM;
+ 		cif->hwport = (struct riptideport *)chip->port;
+ 		spin_lock_init(&cif->lock);
+ 		chip->cif = cif;
+ 	}
+ 	cif->is_reset = 0;
+-	if ((err = riptide_reset(cif, chip)) != 0)
++	err = riptide_reset(cif, chip);
++	if (err)
+ 		return err;
+ 	device_id = chip->device_id;
+ 	switch (device_id) {
+@@ -1797,7 +1805,8 @@ static int snd_riptide_free(struct snd_riptide *chip)
+ 	if (!chip)
+ 		return 0;
+ 
+-	if ((cif = chip->cif)) {
++	cif = chip->cif;
++	if (cif) {
+ 		SET_GRESET(cif->hwport);
+ 		udelay(100);
+ 		UNSET_GRESET(cif->hwport);
+@@ -1830,9 +1839,11 @@ snd_riptide_create(struct snd_card *card, struct pci_dev *pci,
+ 	};
+ 
+ 	*rchip = NULL;
 -	if ((err = pci_enable_device(pci)) < 0)
 +	err = pci_enable_device(pci);
 +	if (err < 0)
  		return err;
-         /* check, if we can restrict PCI DMA transfers to 24 bits */
- 	if (dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(24))) {
-@@ -1573,7 +1578,8 @@ static int snd_es1938_create(struct snd_card *card,
- 	chip->card = card;
- 	chip->pci = pci;
- 	chip->irq = -1;
--	if ((err = pci_request_regions(pci, "ESS Solo-1")) < 0) {
-+	err = pci_request_regions(pci, "ESS Solo-1");
-+	if (err < 0) {
- 		kfree(chip);
- 		pci_disable_device(pci);
- 		return err;
-@@ -1599,7 +1605,8 @@ static int snd_es1938_create(struct snd_card *card,
+-	if (!(chip = kzalloc(sizeof(struct snd_riptide), GFP_KERNEL)))
++	chip = kzalloc(sizeof(struct snd_riptide), GFP_KERNEL);
++	if (!chip)
+ 		return -ENOMEM;
  
- 	snd_es1938_chip_init(chip);
+ 	spin_lock_init(&chip->lock);
+@@ -1845,8 +1856,8 @@ snd_riptide_create(struct snd_card *card, struct pci_dev *pci,
+ 	chip->handled_irqs = 0;
+ 	chip->cif = NULL;
+ 
+-	if ((chip->res_port =
+-	     request_region(chip->port, 64, "RIPTIDE")) == NULL) {
++	chip->res_port = request_region(chip->port, 64, "RIPTIDE");
++	if (!chip->res_port) {
+ 		snd_printk(KERN_ERR
+ 			   "Riptide: unable to grab region 0x%lx-0x%lx\n",
+ 			   chip->port, chip->port + 64 - 1);
+@@ -1868,12 +1879,14 @@ snd_riptide_create(struct snd_card *card, struct pci_dev *pci,
+ 	card->sync_irq = chip->irq;
+ 	chip->device_id = pci->device;
+ 	pci_set_master(pci);
+-	if ((err = snd_riptide_initialize(chip)) < 0) {
++	err = snd_riptide_initialize(chip);
++	if (err < 0) {
+ 		snd_riptide_free(chip);
+ 		return err;
+ 	}
  
 -	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
 +	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
 +	if (err < 0) {
- 		snd_es1938_free(chip);
+ 		snd_riptide_free(chip);
  		return err;
  	}
-@@ -1731,7 +1738,8 @@ static int snd_es1938_mixer(struct es1938 *chip)
- 				kctl->private_free = snd_es1938_hwv_free;
- 				break;
- 			}
--		if ((err = snd_ctl_add(card, kctl)) < 0)
-+		err = snd_ctl_add(card, kctl);
-+		if (err < 0)
- 			return err;
+@@ -1903,7 +1916,8 @@ snd_riptide_proc_read(struct snd_info_entry *entry,
+ 	for (i = 0; i < 64; i += 4)
+ 		snd_iprintf(buffer, "%c%02x: %08x",
+ 			    (i % 16) ? ' ' : '\n', i, inl(chip->port + i));
+-	if ((cif = chip->cif)) {
++	cif = chip->cif;
++	if (cif) {
+ 		snd_iprintf(buffer,
+ 			    "\nVersion: ASIC: %d CODEC: %d AUXDSP: %d PROG: %d",
+ 			    chip->firmware.firmware.ASIC,
+@@ -1922,10 +1936,11 @@ snd_riptide_proc_read(struct snd_info_entry *entry,
  	}
- 	return 0;
-@@ -1765,7 +1773,8 @@ static int snd_es1938_probe(struct pci_dev *pci,
- 		    	return -ENODEV;
+ 	snd_iprintf(buffer, "\nOpen streams %d:\n", chip->openstreams);
+ 	for (i = 0; i < PLAYBACK_SUBSTREAMS; i++) {
+-		if (chip->playback_substream[i]
+-		    && chip->playback_substream[i]->runtime
+-		    && (data =
+-			chip->playback_substream[i]->runtime->private_data)) {
++		if (!chip->playback_substream[i] ||
++		    !chip->playback_substream[i]->runtime)
++			continue;
++		data = chip->playback_substream[i]->runtime->private_data;
++		if (data) {
+ 			snd_iprintf(buffer,
+ 				    "stream: %d mixer: %d source: %d (%d,%d)\n",
+ 				    data->id, data->mixer, data->source,
+@@ -1934,15 +1949,16 @@ snd_riptide_proc_read(struct snd_info_entry *entry,
+ 				snd_iprintf(buffer, "rate: %d\n", rate);
  		}
  	}
--	if ((err = snd_es1938_create(card, pci, &chip)) < 0) {
-+	err = snd_es1938_create(card, pci, &chip);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
+-	if (chip->capture_substream
+-	    && chip->capture_substream->runtime
+-	    && (data = chip->capture_substream->runtime->private_data)) {
+-		snd_iprintf(buffer,
+-			    "stream: %d mixer: %d source: %d (%d,%d)\n",
+-			    data->id, data->mixer,
+-			    data->source, data->intdec[0], data->intdec[1]);
+-		if (!(getsamplerate(cif, data->intdec, &rate)))
+-			snd_iprintf(buffer, "rate: %d\n", rate);
++	if (chip->capture_substream && chip->capture_substream->runtime) {
++		data = chip->capture_substream->runtime->private_data;
++		if (data) {
++			snd_iprintf(buffer,
++				    "stream: %d mixer: %d source: %d (%d,%d)\n",
++				    data->id, data->mixer,
++				    data->source, data->intdec[0], data->intdec[1]);
++			if (!(getsamplerate(cif, data->intdec, &rate)))
++				snd_iprintf(buffer, "rate: %d\n", rate);
++		}
  	}
-@@ -1778,11 +1787,13 @@ static int snd_es1938_probe(struct pci_dev *pci,
- 		chip->revision,
- 		chip->irq);
+ 	snd_iprintf(buffer, "Paths:\n");
+ 	i = getpaths(cif, p);
+@@ -1973,12 +1989,14 @@ static int snd_riptide_mixer(struct snd_riptide *chip)
+ 	ac97.private_data = chip;
+ 	ac97.scaps = AC97_SCAP_SKIP_MODEM;
  
--	if ((err = snd_es1938_new_pcm(chip, 0)) < 0) {
-+	err = snd_es1938_new_pcm(chip, 0);
-+	if (err < 0) {
- 		snd_card_free(card);
+-	if ((err = snd_ac97_bus(chip->card, 0, &ops, chip, &pbus)) < 0)
++	err = snd_ac97_bus(chip->card, 0, &ops, chip, &pbus);
++	if (err < 0)
  		return err;
- 	}
--	if ((err = snd_es1938_mixer(chip)) < 0) {
-+	err = snd_es1938_mixer(chip);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
-@@ -1793,11 +1804,13 @@ static int snd_es1938_probe(struct pci_dev *pci,
- 		dev_err(card->dev, "OPL3 not detected at 0x%lx\n",
- 			   SLSB_REG(chip, FMLOWADDR));
- 	} else {
--	        if ((err = snd_opl3_timer_new(opl3, 0, 1)) < 0) {
-+		err = snd_opl3_timer_new(opl3, 0, 1);
-+		if (err < 0) {
- 	                snd_card_free(card);
- 	                return err;
- 		}
--	        if ((err = snd_opl3_hwdep_new(opl3, 0, 1, NULL)) < 0) {
-+		err = snd_opl3_hwdep_new(opl3, 0, 1, NULL);
-+		if (err < 0) {
- 	                snd_card_free(card);
- 	                return err;
- 		}
-@@ -1815,7 +1828,8 @@ static int snd_es1938_probe(struct pci_dev *pci,
  
- 	snd_es1938_create_gameport(chip);
- 
--	if ((err = snd_card_register(card)) < 0) {
-+	err = snd_card_register(card);
-+	if (err < 0) {
- 		snd_card_free(card);
+ 	chip->ac97_bus = pbus;
+ 	ac97.pci = chip->pci;
+-	if ((err = snd_ac97_mixer(pbus, &ac97, &chip->ac97)) < 0)
++	err = snd_ac97_mixer(pbus, &ac97, &chip->ac97);
++	if (err < 0)
  		return err;
- 	}
+ 	return err;
+ }
 -- 
 2.26.2
 
