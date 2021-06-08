@@ -2,81 +2,82 @@ Return-Path: <SRS0=yD/C=LC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3627BC47082
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:27:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E9D52C47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:28:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B2C3E610C7
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:27:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B2C3E610C7
+	by mail.kernel.org (Postfix) with ESMTPS id 2116D61003
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:28:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2116D61003
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 517421893;
-	Tue,  8 Jun 2021 16:27:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 517421893
+	by alsa0.perex.cz (Postfix) with ESMTPS id B7D80187A;
+	Tue,  8 Jun 2021 16:27:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7D80187A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623162476;
-	bh=hGDo0tUJ9sduzoXMHceClOGorI+S5xrVTOr/N1uAgsA=;
+	s=default; t=1623162499;
+	bh=VpaI09EeFYkszWjq7dpJWu8AACADuPf8I197Ayr0+vo=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FyAgZHeR9tGCtO9DINaFg//QHN3MpanzczEvBXgGX9taJMkAlTvF+HG5IEB45fPEo
-	 q8e0rEI1r0sV4oXIC+Qtj+uPzNqLJWdYSRmGML+TSL39JjShQ4VIGKv4sSGwLs6eEI
-	 TIiWhLnARD9AzBQ2q+zV+nr2aUFvPkiK8+2ofP1s=
+	b=prb8KT3Qhgdf6kuj1yHP2jMDAKz6UlgHircOZVKx87iSYFun6GQt19KPfJ8JKXnKb
+	 HYv2e9/5F++Y1dpdNGX3A5HZsGTFdmP03FNxK/BYq8DQmJ4esPreWJT/xBrZ1Hlywe
+	 gwlHg7jUX/J2IqtnQ7oo2zXTbR2yMKYXbYeosOUE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 050D8F806F9;
+	by alsa1.perex.cz (Postfix) with ESMTP id D4AFEF8052D;
 	Tue,  8 Jun 2021 16:07:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CD608F80630; Tue,  8 Jun 2021 16:07:16 +0200 (CEST)
+ id 73D95F80634; Tue,  8 Jun 2021 16:07:17 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 02CD3F80515
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0937BF80519
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02CD3F80515
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0937BF80519
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="xRmLkGR8"; 
+ header.b="VUx5N/fM"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="xacYYwlz"
+ header.b="ZgWbH6fE"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id EE647219EE
+ by smtp-out1.suse.de (Postfix) with ESMTP id D04CB219EB
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1623161144; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=268R7RfcLPOHgTg88iRr0AiSpy1Cm6EldI+/sd5YZOY=;
- b=xRmLkGR8hbVH6XjSLuBgHp9qvx8cxoqe0aGacuXKFKwspcHjlJn4OwjMYTRgRbe17kW9hq
- WdYjh1iWtJTXp/7bbC3pyCWWyQyHWCWLXbwjiRkKhVQvr7jCjGI6ZpgdxMf2HgeIn7cDb8
- kYju5GqKumOzlpH5oNXj+1BaOQndMY8=
+ bh=si8FrI+trMYo24TA6jRWRcLvD22WVLvHwzu3gDyH8ww=;
+ b=VUx5N/fMw1A1JR+D1YkNgZ2Xmf9dzeglm3yCtZSQNzpFJFc35EFJLhZfsaQfEeIDB/pMbq
+ DH3tKjxnA5hWzfPVW6sEHtqntk9LSMosKe4gPN58B01d1u2DbnqBYMtl3V4E77zHprHJup
+ yQy/nfepVOd5qNQNwYSpmrL4cfaPrgM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1623161144;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=268R7RfcLPOHgTg88iRr0AiSpy1Cm6EldI+/sd5YZOY=;
- b=xacYYwlzdPLeZ0P31yt+60DChJ6qm+maepam7C15qeV/0xbNEi027B2R9cO9oo666D7OaU
- ggflnOlkeXMmNyCw==
+ bh=si8FrI+trMYo24TA6jRWRcLvD22WVLvHwzu3gDyH8ww=;
+ b=ZgWbH6fEw2v1yZxTpIImR5RZmGtKTC1I5M7zAC98BcoRKLtq7eU7BmI923X2TPqMDG5k0t
+ GspBJSUd5epb5oAA==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id DDBCEA3B88;
+ by relay2.suse.de (Postfix) with ESMTP id C1047A3B88;
  Tue,  8 Jun 2021 14:05:44 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 44/66] ALSA: mixart: Fix assignment in if condition
-Date: Tue,  8 Jun 2021 16:05:18 +0200
-Message-Id: <20210608140540.17885-45-tiwai@suse.de>
+Subject: [PATCH 42/66] ALSA: ice1712: Fix assignment in if condition
+Date: Tue,  8 Jun 2021 16:05:16 +0200
+Message-Id: <20210608140540.17885-43-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210608140540.17885-1-tiwai@suse.de>
 References: <20210608140540.17885-1-tiwai@suse.de>
@@ -97,7 +98,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-PCI miXart driver code contains a few assignments in if condition,
+PCI ICE1712 driver code contains a few assignments in if condition,
 which is a bad coding style that may confuse readers and occasionally
 lead to bugs.
 
@@ -105,226 +106,113 @@ This patch is merely for coding-style fixes, no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/mixart/mixart.c       | 29 ++++++++++++++++++-----------
- sound/pci/mixart/mixart_hwdep.c | 17 ++++++++++++-----
- sound/pci/mixart/mixart_mixer.c | 33 ++++++++++++++++++++++-----------
- 3 files changed, 52 insertions(+), 27 deletions(-)
+ sound/pci/ice1712/delta.c |  6 ++++--
+ sound/pci/ice1712/ews.c   | 24 ++++++++++++++++--------
+ 2 files changed, 20 insertions(+), 10 deletions(-)
 
-diff --git a/sound/pci/mixart/mixart.c b/sound/pci/mixart/mixart.c
-index a0bbb386dc25..1b078b789604 100644
---- a/sound/pci/mixart/mixart.c
-+++ b/sound/pci/mixart/mixart.c
-@@ -954,9 +954,10 @@ static int snd_mixart_pcm_analog(struct snd_mixart *chip)
- 	char name[32];
- 
- 	sprintf(name, "miXart analog %d", chip->chip_idx);
--	if ((err = snd_pcm_new(chip->card, name, MIXART_PCM_ANALOG,
--			       MIXART_PLAYBACK_STREAMS,
--			       MIXART_CAPTURE_STREAMS, &pcm)) < 0) {
-+	err = snd_pcm_new(chip->card, name, MIXART_PCM_ANALOG,
-+			  MIXART_PLAYBACK_STREAMS,
-+			  MIXART_CAPTURE_STREAMS, &pcm);
-+	if (err < 0) {
- 		dev_err(chip->card->dev,
- 			"cannot create the analog pcm %d\n", chip->chip_idx);
- 		return err;
-@@ -987,9 +988,10 @@ static int snd_mixart_pcm_digital(struct snd_mixart *chip)
- 	char name[32];
- 
- 	sprintf(name, "miXart AES/EBU %d", chip->chip_idx);
--	if ((err = snd_pcm_new(chip->card, name, MIXART_PCM_DIGITAL,
--			       MIXART_PLAYBACK_STREAMS,
--			       MIXART_CAPTURE_STREAMS, &pcm)) < 0) {
-+	err = snd_pcm_new(chip->card, name, MIXART_PCM_DIGITAL,
-+			  MIXART_PLAYBACK_STREAMS,
-+			  MIXART_CAPTURE_STREAMS, &pcm);
-+	if (err < 0) {
- 		dev_err(chip->card->dev,
- 			"cannot create the digital pcm %d\n", chip->chip_idx);
- 		return err;
-@@ -1042,7 +1044,8 @@ static int snd_mixart_create(struct mixart_mgr *mgr, struct snd_card *card, int
- 	chip->mgr = mgr;
- 	card->sync_irq = mgr->irq;
- 
--	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
-+	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
-+	if (err < 0) {
- 		snd_mixart_chip_free(chip);
- 		return err;
- 	}
-@@ -1243,7 +1246,8 @@ static int snd_mixart_probe(struct pci_dev *pci,
- 	}
- 
- 	/* enable PCI device */
--	if ((err = pci_enable_device(pci)) < 0)
-+	err = pci_enable_device(pci);
-+	if (err < 0)
- 		return err;
- 	pci_set_master(pci);
- 
-@@ -1267,7 +1271,8 @@ static int snd_mixart_probe(struct pci_dev *pci,
- 	mgr->irq = -1;
- 
- 	/* resource assignment */
--	if ((err = pci_request_regions(pci, CARD_NAME)) < 0) {
-+	err = pci_request_regions(pci, CARD_NAME);
-+	if (err < 0) {
- 		kfree(mgr);
- 		pci_disable_device(pci);
- 		return err;
-@@ -1332,7 +1337,8 @@ static int snd_mixart_probe(struct pci_dev *pci,
- 			"Digigram miXart at 0x%lx & 0x%lx, irq %i [PCM #%d]",
- 			mgr->mem[0].phys, mgr->mem[1].phys, mgr->irq, i);
- 
--		if ((err = snd_mixart_create(mgr, card, i)) < 0) {
-+		err = snd_mixart_create(mgr, card, i);
+diff --git a/sound/pci/ice1712/delta.c b/sound/pci/ice1712/delta.c
+index 1d2a0287284b..08adf4dd1303 100644
+--- a/sound/pci/ice1712/delta.c
++++ b/sound/pci/ice1712/delta.c
+@@ -676,13 +676,15 @@ static int snd_ice1712_delta_init(struct snd_ice1712 *ice)
+ 	case ICE1712_SUBDEVICE_DELTA1010LT:
+ 	case ICE1712_SUBDEVICE_VX442:
+ 	case ICE1712_SUBDEVICE_DELTA66E:
+-		if ((err = snd_i2c_bus_create(ice->card, "ICE1712 GPIO 1", NULL, &ice->i2c)) < 0) {
++		err = snd_i2c_bus_create(ice->card, "ICE1712 GPIO 1", NULL, &ice->i2c);
 +		if (err < 0) {
- 			snd_card_free(card);
- 			snd_mixart_free(mgr);
- 			return err;
-@@ -1343,7 +1349,8 @@ static int snd_mixart_probe(struct pci_dev *pci,
- 			snd_mixart_proc_init(mgr->chip[i]);
- 		}
- 
--		if ((err = snd_card_register(card)) < 0) {
-+		err = snd_card_register(card);
-+		if (err < 0) {
- 			snd_mixart_free(mgr);
+ 			dev_err(ice->card->dev, "unable to create I2C bus\n");
  			return err;
  		}
-diff --git a/sound/pci/mixart/mixart_hwdep.c b/sound/pci/mixart/mixart_hwdep.c
-index f579f7698bba..689c0f995a9c 100644
---- a/sound/pci/mixart/mixart_hwdep.c
-+++ b/sound/pci/mixart/mixart_hwdep.c
-@@ -306,9 +306,13 @@ static int mixart_first_init(struct mixart_mgr *mgr)
- 	int err;
- 	struct mixart_msg request;
- 
--	if((err = mixart_enum_connectors(mgr)) < 0) return err;
-+	err = mixart_enum_connectors(mgr);
-+	if (err < 0)
-+		return err;
- 
--	if((err = mixart_enum_physio(mgr)) < 0) return err;
-+	err = mixart_enum_physio(mgr);
-+	if (err < 0)
-+		return err;
- 
- 	/* send a synchro command to card (necessary to do this before first MSG_STREAM_START_STREAM_GRP_PACKET) */
- 	/* though why not here */
-@@ -528,15 +532,18 @@ static int mixart_dsp_load(struct mixart_mgr* mgr, int index, const struct firmw
-         for (card_index = 0; card_index < mgr->num_cards; card_index++) {
- 		struct snd_mixart *chip = mgr->chip[card_index];
- 
--		if ((err = snd_mixart_create_pcm(chip)) < 0)
-+		err = snd_mixart_create_pcm(chip);
+ 		ice->i2c->private_data = ice;
+ 		ice->i2c->ops = &ap_cs8427_i2c_ops;
+-		if ((err = snd_ice1712_init_cs8427(ice, CS8427_BASE_ADDR)) < 0)
++		err = snd_ice1712_init_cs8427(ice, CS8427_BASE_ADDR);
 +		if (err < 0)
  			return err;
+ 		break;
+ 	case ICE1712_SUBDEVICE_DELTA1010:
+diff --git a/sound/pci/ice1712/ews.c b/sound/pci/ice1712/ews.c
+index 3794308313bf..8bb86b3c894e 100644
+--- a/sound/pci/ice1712/ews.c
++++ b/sound/pci/ice1712/ews.c
+@@ -442,7 +442,8 @@ static int snd_ice1712_ews_init(struct snd_ice1712 *ice)
+ 	ice->spec = spec;
  
- 		if (card_index == 0) {
--			if ((err = snd_mixart_create_mixer(chip->mgr)) < 0)
-+			err = snd_mixart_create_mixer(chip->mgr);
-+			if (err < 0)
- 	        		return err;
- 		}
- 
--		if ((err = snd_card_register(chip->card)) < 0)
-+		err = snd_card_register(chip->card);
-+		if (err < 0)
- 			return err;
+ 	/* create i2c */
+-	if ((err = snd_i2c_bus_create(ice->card, "ICE1712 GPIO 1", NULL, &ice->i2c)) < 0) {
++	err = snd_i2c_bus_create(ice->card, "ICE1712 GPIO 1", NULL, &ice->i2c);
++	if (err < 0) {
+ 		dev_err(ice->card->dev, "unable to create I2C bus\n");
+ 		return err;
  	}
- 
-diff --git a/sound/pci/mixart/mixart_mixer.c b/sound/pci/mixart/mixart_mixer.c
-index d2e7c3381267..2727f3345795 100644
---- a/sound/pci/mixart/mixart_mixer.c
-+++ b/sound/pci/mixart/mixart_mixer.c
-@@ -1114,10 +1114,12 @@ int snd_mixart_create_mixer(struct mixart_mgr *mgr)
- 		temp = mixart_control_analog_level;
- 		temp.name = "Master Playback Volume";
- 		temp.private_value = 0; /* playback */
--		if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&temp, chip))) < 0)
-+		err = snd_ctl_add(chip->card, snd_ctl_new1(&temp, chip));
+@@ -483,7 +484,8 @@ static int snd_ice1712_ews_init(struct snd_ice1712 *ice)
+ 		if (err < 0)
+ 			return err;
+ 		/* Check if the front module is connected */
+-		if ((err = snd_ice1712_ews88mt_chip_select(ice, 0x0f)) < 0)
++		err = snd_ice1712_ews88mt_chip_select(ice, 0x0f);
 +		if (err < 0)
  			return err;
- 		/* output mute controls */
--		if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&mixart_control_output_switch, chip))) < 0)
-+		err = snd_ctl_add(chip->card, snd_ctl_new1(&mixart_control_output_switch, chip));
+ 		break;
+ 	case ICE1712_SUBDEVICE_EWS88D:
+@@ -498,12 +500,14 @@ static int snd_ice1712_ews_init(struct snd_ice1712 *ice)
+ 	/* set up SPDIF interface */
+ 	switch (ice->eeprom.subvendor) {
+ 	case ICE1712_SUBDEVICE_EWX2496:
+-		if ((err = snd_ice1712_init_cs8427(ice, CS8427_BASE_ADDR)) < 0)
++		err = snd_ice1712_init_cs8427(ice, CS8427_BASE_ADDR);
 +		if (err < 0)
  			return err;
- 
- 		/* analog input level control only on first two chips !*/
-@@ -1125,7 +1127,8 @@ int snd_mixart_create_mixer(struct mixart_mgr *mgr)
- 			temp = mixart_control_analog_level;
- 			temp.name = "Master Capture Volume";
- 			temp.private_value = 1; /* capture */
--			if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&temp, chip))) < 0)
-+			err = snd_ctl_add(chip->card, snd_ctl_new1(&temp, chip));
-+			if (err < 0)
- 				return err;
- 		}
- 
-@@ -1133,45 +1136,53 @@ int snd_mixart_create_mixer(struct mixart_mgr *mgr)
- 		temp.name = "PCM Playback Volume";
- 		temp.count = MIXART_PLAYBACK_STREAMS;
- 		temp.private_value = 0; /* playback analog */
--		if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&temp, chip))) < 0)
-+		err = snd_ctl_add(chip->card, snd_ctl_new1(&temp, chip));
+ 		snd_cs8427_reg_write(ice->cs8427, CS8427_REG_RECVERRMASK, CS8427_UNLOCK | CS8427_CONF | CS8427_BIP | CS8427_PAR);
+ 		break;
+ 	case ICE1712_SUBDEVICE_DMX6FIRE:
+-		if ((err = snd_ice1712_init_cs8427(ice, ICE1712_6FIRE_CS8427_ADDR)) < 0)
++		err = snd_ice1712_init_cs8427(ice, ICE1712_6FIRE_CS8427_ADDR);
 +		if (err < 0)
  			return err;
- 
- 		temp.name = "PCM Capture Volume";
- 		temp.count = 1;
- 		temp.private_value = MIXART_VOL_REC_MASK; /* capture analog */
--		if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&temp, chip))) < 0)
-+		err = snd_ctl_add(chip->card, snd_ctl_new1(&temp, chip));
-+		if (err < 0)
- 			return err;
- 
- 		if(mgr->board_type == MIXART_DAUGHTER_TYPE_AES) {
- 			temp.name = "AES Playback Volume";
- 			temp.count = MIXART_PLAYBACK_STREAMS;
- 			temp.private_value = MIXART_VOL_AES_MASK; /* playback AES/EBU */
--			if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&temp, chip))) < 0)
-+			err = snd_ctl_add(chip->card, snd_ctl_new1(&temp, chip));
-+			if (err < 0)
- 				return err;
- 
- 			temp.name = "AES Capture Volume";
- 			temp.count = 0;
- 			temp.private_value = MIXART_VOL_REC_MASK | MIXART_VOL_AES_MASK; /* capture AES/EBU */
--			if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&temp, chip))) < 0)
-+			err = snd_ctl_add(chip->card, snd_ctl_new1(&temp, chip));
-+			if (err < 0)
- 				return err;
- 		}
- 		temp = mixart_control_pcm_switch;
- 		temp.name = "PCM Playback Switch";
- 		temp.private_value = 0; /* playback analog */
--		if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&temp, chip))) < 0)
-+		err = snd_ctl_add(chip->card, snd_ctl_new1(&temp, chip));
-+		if (err < 0)
- 			return err;
- 
- 		if(mgr->board_type == MIXART_DAUGHTER_TYPE_AES) {
- 			temp.name = "AES Playback Switch";
- 			temp.private_value = MIXART_VOL_AES_MASK; /* playback AES/EBU */
--			if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&temp, chip))) < 0)
-+			err = snd_ctl_add(chip->card, snd_ctl_new1(&temp, chip));
-+			if (err < 0)
- 				return err;
- 		}
- 
- 		/* monitoring */
--		if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&mixart_control_monitor_vol, chip))) < 0)
-+		err = snd_ctl_add(chip->card, snd_ctl_new1(&mixart_control_monitor_vol, chip));
-+		if (err < 0)
- 			return err;
--		if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&mixart_control_monitor_sw, chip))) < 0)
-+		err = snd_ctl_add(chip->card, snd_ctl_new1(&mixart_control_monitor_sw, chip));
-+		if (err < 0)
- 			return err;
- 
- 		/* init all mixer data and program the master volumes/switches */
+ 		snd_cs8427_reg_write(ice->cs8427, CS8427_REG_RECVERRMASK, CS8427_UNLOCK | CS8427_CONF | CS8427_BIP | CS8427_PAR);
+ 		break;
+@@ -853,7 +857,8 @@ static int snd_ice1712_6fire_control_get(struct snd_kcontrol *kcontrol, struct s
+ 	int invert = (kcontrol->private_value >> 8) & 1;
+ 	int data;
+ 	
+-	if ((data = snd_ice1712_6fire_read_pca(ice, PCF9554_REG_OUTPUT)) < 0)
++	data = snd_ice1712_6fire_read_pca(ice, PCF9554_REG_OUTPUT);
++	if (data < 0)
+ 		return data;
+ 	data = (data >> shift) & 1;
+ 	if (invert)
+@@ -869,7 +874,8 @@ static int snd_ice1712_6fire_control_put(struct snd_kcontrol *kcontrol, struct s
+ 	int invert = (kcontrol->private_value >> 8) & 1;
+ 	int data, ndata;
+ 	
+-	if ((data = snd_ice1712_6fire_read_pca(ice, PCF9554_REG_OUTPUT)) < 0)
++	data = snd_ice1712_6fire_read_pca(ice, PCF9554_REG_OUTPUT);
++	if (data < 0)
+ 		return data;
+ 	ndata = data & ~(1 << shift);
+ 	if (ucontrol->value.integer.value[0])
+@@ -896,7 +902,8 @@ static int snd_ice1712_6fire_select_input_get(struct snd_kcontrol *kcontrol, str
+ 	struct snd_ice1712 *ice = snd_kcontrol_chip(kcontrol);
+ 	int data;
+ 	
+-	if ((data = snd_ice1712_6fire_read_pca(ice, PCF9554_REG_OUTPUT)) < 0)
++	data = snd_ice1712_6fire_read_pca(ice, PCF9554_REG_OUTPUT);
++	if (data < 0)
+ 		return data;
+ 	ucontrol->value.integer.value[0] = data & 3;
+ 	return 0;
+@@ -907,7 +914,8 @@ static int snd_ice1712_6fire_select_input_put(struct snd_kcontrol *kcontrol, str
+ 	struct snd_ice1712 *ice = snd_kcontrol_chip(kcontrol);
+ 	int data, ndata;
+ 	
+-	if ((data = snd_ice1712_6fire_read_pca(ice, PCF9554_REG_OUTPUT)) < 0)
++	data = snd_ice1712_6fire_read_pca(ice, PCF9554_REG_OUTPUT);
++	if (data < 0)
+ 		return data;
+ 	ndata = data & ~3;
+ 	ndata |= (ucontrol->value.integer.value[0] & 3);
 -- 
 2.26.2
 
