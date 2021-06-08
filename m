@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA60CC47082
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:30:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8274C47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:30:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 68D0161003
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:30:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68D0161003
+	by mail.kernel.org (Postfix) with ESMTPS id 2956B61003
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:30:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2956B61003
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C772188F;
-	Tue,  8 Jun 2021 16:29:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C772188F
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD78318B9;
+	Tue,  8 Jun 2021 16:29:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD78318B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623162599;
-	bh=S8PoKqc6i5doQwVBgKCh7FDkcnoZ/SytlO4ouJOOWCQ=;
+	s=default; t=1623162626;
+	bh=/1irUjfcDbTrN1/DJKGtuJ6wHV8P9TaBQDxURqaTzdM=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tUqvrQvw0e8pO1+90uL7WEEMvDvrEL7AFZjzdO18ezuI/sjUhBc0GUgbwr8g9sbMk
-	 i6qxiHZDUvP69lZatXfW3Qz6QyGXLtzIC6fkaummf+QAcm/2Swg+52XtnUDxnxC3ba
-	 T7uGP6MtWDJxokMdBVjaoBN0QAYQK7/voBB/3gsI=
+	b=Q5Ph+cZILv9Ht2dqXc6JnHsoeeBmedzwOsNXXih1GD0pGfmBcdsVrm5Ng8nxamJmh
+	 SJvlfNUVKk6X0OODkzFf0a8nKY25mBCvxebxeQFnw9ZwK7xWdi0sK2u75g709fJ0V7
+	 IbscLtsn3jXEjpCntVqd7tyIzMLnQIo49EK5/tX0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 37DC3F80737;
+	by alsa1.perex.cz (Postfix) with ESMTP id D1067F8074B;
 	Tue,  8 Jun 2021 16:07:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9EF65F8067B; Tue,  8 Jun 2021 16:07:27 +0200 (CEST)
+ id AF498F8067D; Tue,  8 Jun 2021 16:07:28 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4C9B4F80520
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4C913F8051F
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C9B4F80520
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C913F8051F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="S3dcDptV"; 
+ header.b="S3Ukpe4T"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="lN/ztUmu"
+ header.b="FDRgcNeN"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id D6733219FB
+ by smtp-out1.suse.de (Postfix) with ESMTP id EB8A3219FC
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1623161145; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=cXUZcujhpWJI3Z/TxgO3dxtyF6B9GN+18/4fZUZMWwY=;
- b=S3dcDptVbUdBzz3AfXx/tvsY9HFSstYvVG/4djXzAzR7ZqY549SY687WGZkOv+V8l7KIXC
- mcgmgmG7+1JamwIImFTcDfpI94CuOpLUuMr1j4DsR/LsIQIFly8lXdXz+kyw4AtSvJWS+4
- vByWz0JokGCt4j1nDa2ghZQsKCsjNc8=
+ bh=LetJNNQsRS0zetcV8C/nuUiV97hdSqZB08I6LPHIvKQ=;
+ b=S3Ukpe4TuokPNmA/WLzOfsNJyXn2xmMy61BSN26CEyWIZEuGE8GF+3sdfgl1CcFYRRTwNv
+ Zj7UQ2Ab4lC/rxJCB8mRIDCV3OMSo4ZE31lIz3CNCOVuxLkr/sRaHIPOBXOxhI8upY7gh3
+ ySSOMTOVhY2EnQtGE/8V6Q/OukthW7I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1623161145;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=cXUZcujhpWJI3Z/TxgO3dxtyF6B9GN+18/4fZUZMWwY=;
- b=lN/ztUmuFyBj21IRQrM+JGBG37AibBaXZirbnddEnMeJ6qLdApCJBgAwdf4F5xQlGuTIVz
- jNVQtjrc/smSKpDA==
+ bh=LetJNNQsRS0zetcV8C/nuUiV97hdSqZB08I6LPHIvKQ=;
+ b=FDRgcNeNp3U3IgbXuvpyOMY0n51lo9wr+jNnhSk6HCVH6/Km9hYZpgjoCea2DACJnjNcYF
+ BkCDFoGoxIL3ehAw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id C5DCDA3B88;
+ by relay2.suse.de (Postfix) with ESMTP id D99D6A3B89;
  Tue,  8 Jun 2021 14:05:45 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 62/66] ALSA: serial: Fix assignment in if condition
-Date: Tue,  8 Jun 2021 16:05:36 +0200
-Message-Id: <20210608140540.17885-63-tiwai@suse.de>
+Subject: [PATCH 64/66] ALSA: poewrmac: Fix assignment in if condition
+Date: Tue,  8 Jun 2021 16:05:38 +0200
+Message-Id: <20210608140540.17885-65-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210608140540.17885-1-tiwai@suse.de>
 References: <20210608140540.17885-1-tiwai@suse.de>
@@ -97,233 +97,447 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-A few ALSA serial drivers contain assignments in if condition, which
-is a bad coding style that may confuse readers and occasionally lead
-to bugs.
+PPC powermac driver code contains a few assignments in if condition,
+which is a bad coding style that may confuse readers and occasionally
+lead to bugs.
 
 This patch is merely for coding-style fixes, no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/drivers/mtpav.c         | 15 +++++++++------
- sound/drivers/mts64.c         | 15 ++++++++++-----
- sound/drivers/portman2x4.c    | 15 ++++++++++-----
- sound/drivers/serial-u16550.c | 27 ++++++++++++++-------------
- 4 files changed, 43 insertions(+), 29 deletions(-)
+ sound/ppc/beep.c     |  5 ++-
+ sound/ppc/daca.c     | 24 ++++++++++-----
+ sound/ppc/keywest.c  |  6 ++--
+ sound/ppc/pmac.c     |  6 ++--
+ sound/ppc/powermac.c | 21 ++++++++-----
+ sound/ppc/tumbler.c  | 72 +++++++++++++++++++++++++++++---------------
+ 6 files changed, 89 insertions(+), 45 deletions(-)
 
-diff --git a/sound/drivers/mtpav.c b/sound/drivers/mtpav.c
-index df4b7f9cd50f..0e95b08d34d6 100644
---- a/sound/drivers/mtpav.c
-+++ b/sound/drivers/mtpav.c
-@@ -566,7 +566,8 @@ static irqreturn_t snd_mtpav_irqh(int irq, void *dev_id)
-  */
- static int snd_mtpav_get_ISA(struct mtpav *mcard)
+diff --git a/sound/ppc/beep.c b/sound/ppc/beep.c
+index 6bc586a5db0f..0f4bce1c0d4f 100644
+--- a/sound/ppc/beep.c
++++ b/sound/ppc/beep.c
+@@ -105,7 +105,10 @@ static int snd_pmac_beep_event(struct input_dev *dev, unsigned int type,
+ 	}
+ 
+ 	chip = input_get_drvdata(dev);
+-	if (! chip || (beep = chip->beep) == NULL)
++	if (!chip)
++		return -1;
++	beep = chip->beep;
++	if (!beep)
+ 		return -1;
+ 
+ 	if (! hz) {
+diff --git a/sound/ppc/daca.c b/sound/ppc/daca.c
+index 1eb698dafd93..4da9278dd58a 100644
+--- a/sound/ppc/daca.c
++++ b/sound/ppc/daca.c
+@@ -84,7 +84,8 @@ static int daca_get_deemphasis(struct snd_kcontrol *kcontrol,
  {
--	if ((mcard->res_port = request_region(port, 3, "MotuMTPAV MIDI")) == NULL) {
-+	mcard->res_port = request_region(port, 3, "MotuMTPAV MIDI");
-+	if (!mcard->res_port) {
- 		snd_printk(KERN_ERR "MTVAP port 0x%lx is busy\n", port);
- 		return -EBUSY;
- 	}
-@@ -628,10 +629,11 @@ static int snd_mtpav_get_RAWMIDI(struct mtpav *mcard)
- 		hwports = 8;
- 	mcard->num_ports = hwports;
- 
--	if ((rval = snd_rawmidi_new(mcard->card, "MotuMIDI", 0,
--				    mcard->num_ports * 2 + MTPAV_PIDX_BROADCAST + 1,
--				    mcard->num_ports * 2 + MTPAV_PIDX_BROADCAST + 1,
--				    &mcard->rmidi)) < 0)
-+	rval = snd_rawmidi_new(mcard->card, "MotuMIDI", 0,
-+			       mcard->num_ports * 2 + MTPAV_PIDX_BROADCAST + 1,
-+			       mcard->num_ports * 2 + MTPAV_PIDX_BROADCAST + 1,
-+			       &mcard->rmidi);
-+	if (rval < 0)
- 		return rval;
- 	rawmidi = mcard->rmidi;
- 	rawmidi->private_data = mcard;
-@@ -744,7 +746,8 @@ static int __init alsa_card_mtpav_init(void)
- {
- 	int err;
- 
--	if ((err = platform_driver_register(&snd_mtpav_driver)) < 0)
-+	err = platform_driver_register(&snd_mtpav_driver);
-+	if (err < 0)
- 		return err;
- 
- 	device = platform_device_register_simple(SND_MTPAV_DRIVER, -1, NULL, 0);
-diff --git a/sound/drivers/mts64.c b/sound/drivers/mts64.c
-index 322d530ab07b..d3bc9e8c407d 100644
---- a/sound/drivers/mts64.c
-+++ b/sound/drivers/mts64.c
-@@ -950,7 +950,8 @@ static int snd_mts64_probe(struct platform_device *pdev)
- 		goto free_pardev;
- 	}
- 
--	if ((err = snd_mts64_create(card, pardev, &mts)) < 0) {
-+	err = snd_mts64_create(card, pardev, &mts);
-+	if (err < 0) {
- 		snd_printd("Cannot create main component\n");
- 		goto release_pardev;
- 	}
-@@ -963,19 +964,22 @@ static int snd_mts64_probe(struct platform_device *pdev)
- 		goto __err;
- 	}
- 	
--	if ((err = snd_mts64_rawmidi_create(card)) < 0) {
-+	err = snd_mts64_rawmidi_create(card);
-+	if (err < 0) {
- 		snd_printd("Creating Rawmidi component failed\n");
- 		goto __err;
- 	}
- 
- 	/* init device */
--	if ((err = mts64_device_init(p)) < 0)
-+	err = mts64_device_init(p);
-+	if (err < 0)
- 		goto __err;
- 
- 	platform_set_drvdata(pdev, card);
- 
- 	/* At this point card will be usable */
--	if ((err = snd_card_register(card)) < 0) {
-+	err = snd_card_register(card);
-+	if (err < 0) {
- 		snd_printd("Cannot register card\n");
- 		goto __err;
- 	}
-@@ -1031,7 +1035,8 @@ static int __init snd_mts64_module_init(void)
- {
- 	int err;
- 
--	if ((err = platform_driver_register(&snd_mts64_driver)) < 0)
-+	err = platform_driver_register(&snd_mts64_driver);
-+	if (err < 0)
- 		return err;
- 
- 	if (parport_register_driver(&mts64_parport_driver) != 0) {
-diff --git a/sound/drivers/portman2x4.c b/sound/drivers/portman2x4.c
-index 2f4514ed47c5..52a656735365 100644
---- a/sound/drivers/portman2x4.c
-+++ b/sound/drivers/portman2x4.c
-@@ -749,7 +749,8 @@ static int snd_portman_probe(struct platform_device *pdev)
- 		goto free_pardev;
- 	}
- 
--	if ((err = portman_create(card, pardev, &pm)) < 0) {
-+	err = portman_create(card, pardev, &pm);
-+	if (err < 0) {
- 		snd_printd("Cannot create main component\n");
- 		goto release_pardev;
- 	}
-@@ -762,19 +763,22 @@ static int snd_portman_probe(struct platform_device *pdev)
- 		goto __err;
- 	}
- 	
--	if ((err = snd_portman_rawmidi_create(card)) < 0) {
-+	err = snd_portman_rawmidi_create(card);
-+	if (err < 0) {
- 		snd_printd("Creating Rawmidi component failed\n");
- 		goto __err;
- 	}
- 
- 	/* init device */
--	if ((err = portman_device_init(pm)) < 0)
-+	err = portman_device_init(pm);
-+	if (err < 0)
- 		goto __err;
- 
- 	platform_set_drvdata(pdev, card);
- 
- 	/* At this point card will be usable */
--	if ((err = snd_card_register(card)) < 0) {
-+	err = snd_card_register(card);
-+	if (err < 0) {
- 		snd_printd("Cannot register card\n");
- 		goto __err;
- 	}
-@@ -831,7 +835,8 @@ static int __init snd_portman_module_init(void)
- {
- 	int err;
- 
--	if ((err = platform_driver_register(&snd_portman_driver)) < 0)
-+	err = platform_driver_register(&snd_portman_driver);
-+	if (err < 0)
- 		return err;
- 
- 	if (parport_register_driver(&portman_parport_driver) != 0) {
-diff --git a/sound/drivers/serial-u16550.c b/sound/drivers/serial-u16550.c
-index 6d5d1ca59ecf..da9983cba01c 100644
---- a/sound/drivers/serial-u16550.c
-+++ b/sound/drivers/serial-u16550.c
-@@ -783,7 +783,8 @@ static int snd_uart16550_create(struct snd_card *card,
- 	int err;
- 
- 
--	if ((uart = kzalloc(sizeof(*uart), GFP_KERNEL)) == NULL)
-+	uart = kzalloc(sizeof(*uart), GFP_KERNEL);
-+	if (!uart)
- 		return -ENOMEM;
- 	uart->adaptor = adaptor;
- 	uart->card = card;
-@@ -792,7 +793,8 @@ static int snd_uart16550_create(struct snd_card *card,
- 	uart->base = iobase;
- 	uart->drop_on_full = droponfull;
- 
--	if ((err = snd_uart16550_detect(uart)) <= 0) {
-+	err = snd_uart16550_detect(uart);
-+	if (err <= 0) {
- 		printk(KERN_ERR "no UART detected at 0x%lx\n", iobase);
- 		snd_uart16550_free(uart);
+ 	struct snd_pmac *chip = snd_kcontrol_chip(kcontrol);
+ 	struct pmac_daca *mix;
+-	if (! (mix = chip->mixer_data))
++	mix = chip->mixer_data;
++	if (!mix)
  		return -ENODEV;
-@@ -818,7 +820,8 @@ static int snd_uart16550_create(struct snd_card *card,
- 	uart->timer_running = 0;
+ 	ucontrol->value.integer.value[0] = mix->deemphasis ? 1 : 0;
+ 	return 0;
+@@ -97,7 +98,8 @@ static int daca_put_deemphasis(struct snd_kcontrol *kcontrol,
+ 	struct pmac_daca *mix;
+ 	int change;
  
- 	/* Register device */
--	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, uart, &ops)) < 0) {
-+	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, uart, &ops);
+-	if (! (mix = chip->mixer_data))
++	mix = chip->mixer_data;
++	if (!mix)
+ 		return -ENODEV;
+ 	change = mix->deemphasis != ucontrol->value.integer.value[0];
+ 	if (change) {
+@@ -123,7 +125,8 @@ static int daca_get_volume(struct snd_kcontrol *kcontrol,
+ {
+ 	struct snd_pmac *chip = snd_kcontrol_chip(kcontrol);
+ 	struct pmac_daca *mix;
+-	if (! (mix = chip->mixer_data))
++	mix = chip->mixer_data;
++	if (!mix)
+ 		return -ENODEV;
+ 	ucontrol->value.integer.value[0] = mix->left_vol;
+ 	ucontrol->value.integer.value[1] = mix->right_vol;
+@@ -138,7 +141,8 @@ static int daca_put_volume(struct snd_kcontrol *kcontrol,
+ 	unsigned int vol[2];
+ 	int change;
+ 
+-	if (! (mix = chip->mixer_data))
++	mix = chip->mixer_data;
++	if (!mix)
+ 		return -ENODEV;
+ 	vol[0] = ucontrol->value.integer.value[0];
+ 	vol[1] = ucontrol->value.integer.value[1];
+@@ -162,7 +166,8 @@ static int daca_get_amp(struct snd_kcontrol *kcontrol,
+ {
+ 	struct snd_pmac *chip = snd_kcontrol_chip(kcontrol);
+ 	struct pmac_daca *mix;
+-	if (! (mix = chip->mixer_data))
++	mix = chip->mixer_data;
++	if (!mix)
+ 		return -ENODEV;
+ 	ucontrol->value.integer.value[0] = mix->amp_on ? 1 : 0;
+ 	return 0;
+@@ -175,7 +180,8 @@ static int daca_put_amp(struct snd_kcontrol *kcontrol,
+ 	struct pmac_daca *mix;
+ 	int change;
+ 
+-	if (! (mix = chip->mixer_data))
++	mix = chip->mixer_data;
++	if (!mix)
+ 		return -ENODEV;
+ 	change = mix->amp_on != ucontrol->value.integer.value[0];
+ 	if (change) {
+@@ -248,7 +254,8 @@ int snd_pmac_daca_init(struct snd_pmac *chip)
+ 	mix->i2c.addr = DACA_I2C_ADDR;
+ 	mix->i2c.init_client = daca_init_client;
+ 	mix->i2c.name = "DACA";
+-	if ((err = snd_pmac_keywest_init(&mix->i2c)) < 0)
++	err = snd_pmac_keywest_init(&mix->i2c);
++	if (err < 0)
+ 		return err;
+ 
+ 	/*
+@@ -257,7 +264,8 @@ int snd_pmac_daca_init(struct snd_pmac *chip)
+ 	strcpy(chip->card->mixername, "PowerMac DACA");
+ 
+ 	for (i = 0; i < ARRAY_SIZE(daca_mixers); i++) {
+-		if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&daca_mixers[i], chip))) < 0)
++		err = snd_ctl_add(chip->card, snd_ctl_new1(&daca_mixers[i], chip));
++		if (err < 0)
+ 			return err;
+ 	}
+ 
+diff --git a/sound/ppc/keywest.c b/sound/ppc/keywest.c
+index a8915100d6bb..6e5daae18f9d 100644
+--- a/sound/ppc/keywest.c
++++ b/sound/ppc/keywest.c
+@@ -114,7 +114,8 @@ int snd_pmac_tumbler_post_init(void)
+ 	if (!keywest_ctx || !keywest_ctx->client)
+ 		return -ENXIO;
+ 
+-	if ((err = keywest_ctx->init_client(keywest_ctx)) < 0) {
++	err = keywest_ctx->init_client(keywest_ctx);
 +	if (err < 0) {
- 		snd_uart16550_free(uart);
+ 		snd_printk(KERN_ERR "tumbler: %i :cannot initialize the MCS\n", err);
  		return err;
  	}
-@@ -932,14 +935,10 @@ static int snd_serial_probe(struct platform_device *devptr)
- 	strcpy(card->driver, "Serial");
- 	strcpy(card->shortname, "Serial MIDI (UART16550A)");
+@@ -136,7 +137,8 @@ int snd_pmac_keywest_init(struct pmac_keywest *i2c)
  
--	if ((err = snd_uart16550_create(card,
--					port[dev],
--					irq[dev],
--					speed[dev],
--					base[dev],
--					adaptor[dev],
--					droponfull[dev],
--					&uart)) < 0)
-+	err = snd_uart16550_create(card, port[dev], irq[dev], speed[dev],
-+				   base[dev], adaptor[dev], droponfull[dev],
-+				   &uart);
+ 	keywest_ctx = i2c;
+ 
+-	if ((err = i2c_add_driver(&keywest_driver))) {
++	err = i2c_add_driver(&keywest_driver);
++	if (err) {
+ 		snd_printk(KERN_ERR "cannot register keywest i2c driver\n");
+ 		i2c_put_adapter(adap);
+ 		return err;
+diff --git a/sound/ppc/pmac.c b/sound/ppc/pmac.c
+index 2e750b317be1..84058bbf9d12 100644
+--- a/sound/ppc/pmac.c
++++ b/sound/ppc/pmac.c
+@@ -1160,7 +1160,8 @@ int snd_pmac_new(struct snd_card *card, struct snd_pmac **chip_return)
+ 	chip->playback.stream = SNDRV_PCM_STREAM_PLAYBACK;
+ 	chip->capture.stream = SNDRV_PCM_STREAM_CAPTURE;
+ 
+-	if ((err = snd_pmac_detect(chip)) < 0)
++	err = snd_pmac_detect(chip);
 +	if (err < 0)
- 		goto _err;
+ 		goto __error;
  
- 	err = snd_uart16550_rmidi(uart, 0, outs[dev], ins[dev], &uart->rmidi);
-@@ -952,7 +951,8 @@ static int snd_serial_probe(struct platform_device *devptr)
- 		uart->base,
- 		uart->irq);
+ 	if (snd_pmac_dbdma_alloc(chip, &chip->playback.cmd, PMAC_MAX_FRAGS + 1) < 0 ||
+@@ -1299,7 +1300,8 @@ int snd_pmac_new(struct snd_card *card, struct snd_pmac **chip_return)
+ 	/* Reset dbdma channels */
+ 	snd_pmac_dbdma_reset(chip);
+ 
+-	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0)
++	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
++	if (err < 0)
+ 		goto __error;
+ 
+ 	*chip_return = chip;
+diff --git a/sound/ppc/powermac.c b/sound/ppc/powermac.c
+index 9fb51ebafde1..1d2865c43d4b 100644
+--- a/sound/ppc/powermac.c
++++ b/sound/ppc/powermac.c
+@@ -48,7 +48,8 @@ static int snd_pmac_probe(struct platform_device *devptr)
+ 	if (err < 0)
+ 		return err;
+ 
+-	if ((err = snd_pmac_new(card, &chip)) < 0)
++	err = snd_pmac_new(card, &chip);
++	if (err < 0)
+ 		goto __error;
+ 	card->private_data = chip;
+ 
+@@ -58,7 +59,8 @@ static int snd_pmac_probe(struct platform_device *devptr)
+ 		strcpy(card->shortname, "PowerMac Burgundy");
+ 		sprintf(card->longname, "%s (Dev %d) Sub-frame %d",
+ 			card->shortname, chip->device_id, chip->subframe);
+-		if ((err = snd_pmac_burgundy_init(chip)) < 0)
++		err = snd_pmac_burgundy_init(chip);
++		if (err < 0)
+ 			goto __error;
+ 		break;
+ 	case PMAC_DACA:
+@@ -66,7 +68,8 @@ static int snd_pmac_probe(struct platform_device *devptr)
+ 		strcpy(card->shortname, "PowerMac DACA");
+ 		sprintf(card->longname, "%s (Dev %d) Sub-frame %d",
+ 			card->shortname, chip->device_id, chip->subframe);
+-		if ((err = snd_pmac_daca_init(chip)) < 0)
++		err = snd_pmac_daca_init(chip);
++		if (err < 0)
+ 			goto __error;
+ 		break;
+ 	case PMAC_TUMBLER:
+@@ -92,7 +95,8 @@ static int snd_pmac_probe(struct platform_device *devptr)
+ 			name_ext = "";
+ 		sprintf(card->longname, "%s%s Rev %d",
+ 			card->shortname, name_ext, chip->revision);
+-		if ((err = snd_pmac_awacs_init(chip)) < 0)
++		err = snd_pmac_awacs_init(chip);
++		if (err < 0)
+ 			goto __error;
+ 		break;
+ 	default:
+@@ -101,14 +105,16 @@ static int snd_pmac_probe(struct platform_device *devptr)
+ 		goto __error;
+ 	}
+ 
+-	if ((err = snd_pmac_pcm_new(chip)) < 0)
++	err = snd_pmac_pcm_new(chip);
++	if (err < 0)
+ 		goto __error;
+ 
+ 	chip->initialized = 1;
+ 	if (enable_beep)
+ 		snd_pmac_attach_beep(chip);
  
 -	if ((err = snd_card_register(card)) < 0)
 +	err = snd_card_register(card);
 +	if (err < 0)
- 		goto _err;
+ 		goto __error;
  
  	platform_set_drvdata(devptr, card);
-@@ -992,7 +992,8 @@ static int __init alsa_card_serial_init(void)
+@@ -162,7 +168,8 @@ static int __init alsa_card_pmac_init(void)
  {
- 	int i, cards, err;
+ 	int err;
  
--	if ((err = platform_driver_register(&snd_serial_driver)) < 0)
-+	err = platform_driver_register(&snd_serial_driver);
+-	if ((err = platform_driver_register(&snd_pmac_driver)) < 0)
++	err = platform_driver_register(&snd_pmac_driver);
++	if (err < 0)
+ 		return err;
+ 	device = platform_device_register_simple(SND_PMAC_DRIVER, -1, NULL, 0);
+ 	return 0;
+diff --git a/sound/ppc/tumbler.c b/sound/ppc/tumbler.c
+index 6e5bdaa262b0..c65e74d7cd0a 100644
+--- a/sound/ppc/tumbler.c
++++ b/sound/ppc/tumbler.c
+@@ -402,7 +402,8 @@ static int tumbler_get_drc_value(struct snd_kcontrol *kcontrol,
+ {
+ 	struct snd_pmac *chip = snd_kcontrol_chip(kcontrol);
+ 	struct pmac_tumbler *mix;
+-	if (! (mix = chip->mixer_data))
++	mix = chip->mixer_data;
++	if (!mix)
+ 		return -ENODEV;
+ 	ucontrol->value.integer.value[0] = mix->drc_range;
+ 	return 0;
+@@ -416,7 +417,8 @@ static int tumbler_put_drc_value(struct snd_kcontrol *kcontrol,
+ 	unsigned int val;
+ 	int change;
+ 
+-	if (! (mix = chip->mixer_data))
++	mix = chip->mixer_data;
++	if (!mix)
+ 		return -ENODEV;
+ 	val = ucontrol->value.integer.value[0];
+ 	if (chip->model == PMAC_TUMBLER) {
+@@ -442,7 +444,8 @@ static int tumbler_get_drc_switch(struct snd_kcontrol *kcontrol,
+ {
+ 	struct snd_pmac *chip = snd_kcontrol_chip(kcontrol);
+ 	struct pmac_tumbler *mix;
+-	if (! (mix = chip->mixer_data))
++	mix = chip->mixer_data;
++	if (!mix)
+ 		return -ENODEV;
+ 	ucontrol->value.integer.value[0] = mix->drc_enable;
+ 	return 0;
+@@ -455,7 +458,8 @@ static int tumbler_put_drc_switch(struct snd_kcontrol *kcontrol,
+ 	struct pmac_tumbler *mix;
+ 	int change;
+ 
+-	if (! (mix = chip->mixer_data))
++	mix = chip->mixer_data;
++	if (!mix)
+ 		return -ENODEV;
+ 	change = mix->drc_enable != ucontrol->value.integer.value[0];
+ 	if (change) {
+@@ -524,7 +528,8 @@ static int tumbler_get_mono(struct snd_kcontrol *kcontrol,
+ 	struct tumbler_mono_vol *info = (struct tumbler_mono_vol *)kcontrol->private_value;
+ 	struct snd_pmac *chip = snd_kcontrol_chip(kcontrol);
+ 	struct pmac_tumbler *mix;
+-	if (! (mix = chip->mixer_data))
++	mix = chip->mixer_data;
++	if (!mix)
+ 		return -ENODEV;
+ 	ucontrol->value.integer.value[0] = mix->mono_vol[info->index];
+ 	return 0;
+@@ -539,7 +544,8 @@ static int tumbler_put_mono(struct snd_kcontrol *kcontrol,
+ 	unsigned int vol;
+ 	int change;
+ 
+-	if (! (mix = chip->mixer_data))
++	mix = chip->mixer_data;
++	if (!mix)
+ 		return -ENODEV;
+ 	vol = ucontrol->value.integer.value[0];
+ 	if (vol >= info->max)
+@@ -669,7 +675,8 @@ static int snapper_get_mix(struct snd_kcontrol *kcontrol,
+ 	int idx = (int)kcontrol->private_value;
+ 	struct snd_pmac *chip = snd_kcontrol_chip(kcontrol);
+ 	struct pmac_tumbler *mix;
+-	if (! (mix = chip->mixer_data))
++	mix = chip->mixer_data;
++	if (!mix)
+ 		return -ENODEV;
+ 	ucontrol->value.integer.value[0] = mix->mix_vol[idx][0];
+ 	ucontrol->value.integer.value[1] = mix->mix_vol[idx][1];
+@@ -685,7 +692,8 @@ static int snapper_put_mix(struct snd_kcontrol *kcontrol,
+ 	unsigned int vol[2];
+ 	int change;
+ 
+-	if (! (mix = chip->mixer_data))
++	mix = chip->mixer_data;
++	if (!mix)
+ 		return -ENODEV;
+ 	vol[0] = ucontrol->value.integer.value[0];
+ 	vol[1] = ucontrol->value.integer.value[1];
+@@ -716,7 +724,8 @@ static int tumbler_get_mute_switch(struct snd_kcontrol *kcontrol,
+ 	struct snd_pmac *chip = snd_kcontrol_chip(kcontrol);
+ 	struct pmac_tumbler *mix;
+ 	struct pmac_gpio *gp;
+-	if (! (mix = chip->mixer_data))
++	mix = chip->mixer_data;
++	if (!mix)
+ 		return -ENODEV;
+ 	switch(kcontrol->private_value) {
+ 	case TUMBLER_MUTE_HP:
+@@ -745,7 +754,8 @@ static int tumbler_put_mute_switch(struct snd_kcontrol *kcontrol,
+ 	if (chip->update_automute && chip->auto_mute)
+ 		return 0; /* don't touch in the auto-mute mode */
+ #endif	
+-	if (! (mix = chip->mixer_data))
++	mix = chip->mixer_data;
++	if (!mix)
+ 		return -ENODEV;
+ 	switch(kcontrol->private_value) {
+ 	case TUMBLER_MUTE_HP:
+@@ -1361,7 +1371,8 @@ int snd_pmac_tumbler_init(struct snd_pmac *chip)
+ 			break;
+ 		}
+ 	}
+-	if ((err = tumbler_init(chip)) < 0)
++	err = tumbler_init(chip);
 +	if (err < 0)
  		return err;
  
- 	cards = 0;
+ 	/* set up TAS */
+@@ -1392,7 +1403,8 @@ int snd_pmac_tumbler_init(struct snd_pmac *chip)
+ 		chipname = "Snapper";
+ 	}
+ 
+-	if ((err = snd_pmac_keywest_init(&mix->i2c)) < 0)
++	err = snd_pmac_keywest_init(&mix->i2c);
++	if (err < 0)
+ 		return err;
+ 
+ 	/*
+@@ -1402,28 +1414,34 @@ int snd_pmac_tumbler_init(struct snd_pmac *chip)
+ 
+ 	if (chip->model == PMAC_TUMBLER) {
+ 		for (i = 0; i < ARRAY_SIZE(tumbler_mixers); i++) {
+-			if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&tumbler_mixers[i], chip))) < 0)
++			err = snd_ctl_add(chip->card, snd_ctl_new1(&tumbler_mixers[i], chip));
++			if (err < 0)
+ 				return err;
+ 		}
+ 	} else {
+ 		for (i = 0; i < ARRAY_SIZE(snapper_mixers); i++) {
+-			if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&snapper_mixers[i], chip))) < 0)
++			err = snd_ctl_add(chip->card, snd_ctl_new1(&snapper_mixers[i], chip));
++			if (err < 0)
+ 				return err;
+ 		}
+ 	}
+ 	chip->master_sw_ctl = snd_ctl_new1(&tumbler_hp_sw, chip);
+-	if ((err = snd_ctl_add(chip->card, chip->master_sw_ctl)) < 0)
++	err = snd_ctl_add(chip->card, chip->master_sw_ctl);
++	if (err < 0)
+ 		return err;
+ 	chip->speaker_sw_ctl = snd_ctl_new1(&tumbler_speaker_sw, chip);
+-	if ((err = snd_ctl_add(chip->card, chip->speaker_sw_ctl)) < 0)
++	err = snd_ctl_add(chip->card, chip->speaker_sw_ctl);
++	if (err < 0)
+ 		return err;
+ 	if (mix->line_mute.addr != 0) {
+ 		chip->lineout_sw_ctl = snd_ctl_new1(&tumbler_lineout_sw, chip);
+-		if ((err = snd_ctl_add(chip->card, chip->lineout_sw_ctl)) < 0)
++		err = snd_ctl_add(chip->card, chip->lineout_sw_ctl);
++		if (err < 0)
+ 			return err;
+ 	}
+ 	chip->drc_sw_ctl = snd_ctl_new1(&tumbler_drc_sw, chip);
+-	if ((err = snd_ctl_add(chip->card, chip->drc_sw_ctl)) < 0)
++	err = snd_ctl_add(chip->card, chip->drc_sw_ctl);
++	if (err < 0)
+ 		return err;
+ 
+ 	/* set initial DRC range to 60% */
+@@ -1446,9 +1464,11 @@ int snd_pmac_tumbler_init(struct snd_pmac *chip)
+ 	device_change_chip = chip;
+ 
+ #ifdef PMAC_SUPPORT_AUTOMUTE
+-	if ((mix->headphone_irq >=0 || mix->lineout_irq >= 0)
+-	    && (err = snd_pmac_add_automute(chip)) < 0)
+-		return err;
++	if (mix->headphone_irq >= 0 || mix->lineout_irq >= 0) {
++		err = snd_pmac_add_automute(chip);
++		if (err < 0)
++			return err;
++	}
+ 	chip->detect_headphone = tumbler_detect_headphone;
+ 	chip->update_automute = tumbler_update_automute;
+ 	tumbler_update_automute(chip, 0); /* update the status only */
+@@ -1456,8 +1476,9 @@ int snd_pmac_tumbler_init(struct snd_pmac *chip)
+ 	/* activate headphone status interrupts */
+   	if (mix->headphone_irq >= 0) {
+ 		unsigned char val;
+-		if ((err = request_irq(mix->headphone_irq, headphone_intr, 0,
+-				       "Sound Headphone Detection", chip)) < 0)
++		err = request_irq(mix->headphone_irq, headphone_intr, 0,
++				  "Sound Headphone Detection", chip);
++		if (err < 0)
+ 			return 0;
+ 		/* activate headphone status interrupts */
+ 		val = do_gpio_read(&mix->hp_detect);
+@@ -1465,8 +1486,9 @@ int snd_pmac_tumbler_init(struct snd_pmac *chip)
+ 	}
+   	if (mix->lineout_irq >= 0) {
+ 		unsigned char val;
+-		if ((err = request_irq(mix->lineout_irq, headphone_intr, 0,
+-				       "Sound Lineout Detection", chip)) < 0)
++		err = request_irq(mix->lineout_irq, headphone_intr, 0,
++				  "Sound Lineout Detection", chip);
++		if (err < 0)
+ 			return 0;
+ 		/* activate headphone status interrupts */
+ 		val = do_gpio_read(&mix->line_detect);
 -- 
 2.26.2
 
