@@ -2,82 +2,81 @@ Return-Path: <SRS0=yD/C=LC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1F3AC47082
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:22:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 667A7C47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:22:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 700A26135D
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:22:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 700A26135D
+	by mail.kernel.org (Postfix) with ESMTPS id 86750611BD
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:22:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 86750611BD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0FDD917D8;
-	Tue,  8 Jun 2021 16:21:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FDD917D8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 281FD17F2;
+	Tue,  8 Jun 2021 16:22:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 281FD17F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623162129;
-	bh=Eu0i+Wj/Gv0fA6bdIEi4sZ7/XBKt9z/MBDgbHbpznwc=;
+	s=default; t=1623162171;
+	bh=plPW61EX4WQErZ4Uezc9zWjeTYN/ZPcJegeQ6nW4FlM=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mNRGOkKjSE2mVya4mwIjyFYaEu1oeMRIzlpZ1u88ujpco49YRTjbaeUa1LmwI3EFH
-	 g8TQgnH6zj2XI/53vSQxVpPykpwmiaCs0A/sq9wuKeGr8oaIYd/FlJrFdTzqc7sNVQ
-	 2aL2sc2Y6XLiCWr8j7/V3Lv+pIz7K/Jap1AoR4rw=
+	b=Foh2t9M3VxE1oB8LRGGez/E0WaWmw3RV6RyBc9PoLYWBy7y6gSp8eAYuvFPwdex+I
+	 JmLGJqU1kbSETXJEsf9800rC8APVNdsZCVaofbKOofJg+ogabEKs7Z5p+c9pQpOho7
+	 xfrRxtYdDZ8xmAEWoUhrvdS2OjyA9uYzWOa4kCiE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5461F8062D;
-	Tue,  8 Jun 2021 16:07:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 01BD2F80639;
+	Tue,  8 Jun 2021 16:07:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9FD19F80605; Tue,  8 Jun 2021 16:06:54 +0200 (CEST)
+ id 44F40F8060B; Tue,  8 Jun 2021 16:06:57 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A3D7FF804F1
+ by alsa1.perex.cz (Postfix) with ESMTPS id C3BB5F804FB
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3D7FF804F1
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3BB5F804FB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="w8cJQpZx"; 
+ header.b="QJZy0vSB"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="rjpa9xpn"
+ header.b="cRSfzGBt"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 80EB31FDF3
+ by smtp-out2.suse.de (Postfix) with ESMTP id DA2721FDF7
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1623161145; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=U9PPHyh9Pnmb9u/bloTfG6MdAafchoG+mTIVdFtEqhA=;
- b=w8cJQpZxkCLnyG3mvzqrtxYCxZ8eZuwj7X+cNlL5V+39frUAQ1IEo74Y++o4vJLvozSgVQ
- UpU0K2i07HeWTddrAOUYaMs6LqObxb6m09Dn3FwNW+jRstLm4OVpYbcg3QcUHnL1X0OM9o
- XgG7IvldDA5yvgQpwftpHQIMViflpwg=
+ bh=dV/5w4qelBBq9aFMldVVeaXHoSh4XlIMLv02AS+0+cg=;
+ b=QJZy0vSBCVIAltAn8oK35f2hDhVS45Rbca+TZ3cGwJRn0Lnfij2NcNcMUla3mT5TkhC9mH
+ 5tdikpj75SPcFp6q6YL6WMXXc29LZGSSJI/ZdNwQyK1IOm9iopAG/rVv91xzRWaOVF8/R2
+ 5yfLqqD/kmWsHszBqqhXwaOtZIcpgug=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1623161145;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=U9PPHyh9Pnmb9u/bloTfG6MdAafchoG+mTIVdFtEqhA=;
- b=rjpa9xpnFrLdbJU8X87mPChrLF8gKwtq4G8GJORltbw+2ZjKcP+1OJHHso2uOdYW9p5iVO
- Rwn8K3fN1UW+zADA==
+ bh=dV/5w4qelBBq9aFMldVVeaXHoSh4XlIMLv02AS+0+cg=;
+ b=cRSfzGBt9lAxTCQUD/LPs86Or/PMnuf/uMoWEqJFr0UO3d0fP4JITULCQOtpLlyOtcnVlT
+ rXZ/dZ5oCi4JTgDg==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 6F71AA3B89;
+ by relay2.suse.de (Postfix) with ESMTP id D4F33A3B84;
  Tue,  8 Jun 2021 14:05:45 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 55/66] ALSA: oss: Fix assignment in if condition
-Date: Tue,  8 Jun 2021 16:05:29 +0200
-Message-Id: <20210608140540.17885-56-tiwai@suse.de>
+Subject: [PATCH 63/66] ALSA: synth: Fix assignment in if condition
+Date: Tue,  8 Jun 2021 16:05:37 +0200
+Message-Id: <20210608140540.17885-64-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210608140540.17885-1-tiwai@suse.de>
 References: <20210608140540.17885-1-tiwai@suse.de>
@@ -98,448 +97,230 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-There are a few places doing assignments in if condition in ALSA PCM
-and OSS emulation layers, which is a bad coding style that may confuse
-readers and occasionally lead to bugs.
+EMUx synth driver code contains lots of assignments in if condition,
+which is a bad coding style that may confuse readers and occasionally
+lead to bugs.
 
 This patch is merely for coding-style fixes, no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/oss/mixer_oss.c  | 45 ++++++++++++++++--------
- sound/core/oss/pcm_oss.c    | 70 ++++++++++++++++++++++++-------------
- sound/core/oss/pcm_plugin.c | 26 ++++++++------
- 3 files changed, 91 insertions(+), 50 deletions(-)
+ sound/synth/emux/emux.c        |  3 ++-
+ sound/synth/emux/emux_effect.c | 13 ++++++++---
+ sound/synth/emux/emux_hwdep.c  |  6 +++--
+ sound/synth/emux/soundfont.c   | 40 ++++++++++++++++++++++------------
+ 4 files changed, 42 insertions(+), 20 deletions(-)
 
-diff --git a/sound/core/oss/mixer_oss.c b/sound/core/oss/mixer_oss.c
-index bec928327478..6a5abdd4271b 100644
---- a/sound/core/oss/mixer_oss.c
-+++ b/sound/core/oss/mixer_oss.c
-@@ -185,7 +185,8 @@ static int snd_mixer_oss_get_recsrc(struct snd_mixer_oss_file *fmixer)
- 	if (mixer->put_recsrc && mixer->get_recsrc) {	/* exclusive */
- 		int err;
- 		unsigned int index;
--		if ((err = mixer->get_recsrc(fmixer, &index)) < 0)
-+		err = mixer->get_recsrc(fmixer, &index);
-+		if (err < 0)
- 			return err;
- 		result = 1 << index;
- 	} else {
-@@ -517,7 +518,8 @@ static void snd_mixer_oss_get_volume1_vol(struct snd_mixer_oss_file *fmixer,
- 	if (numid == ID_UNKNOWN)
- 		return;
- 	down_read(&card->controls_rwsem);
--	if ((kctl = snd_ctl_find_numid(card, numid)) == NULL) {
-+	kctl = snd_ctl_find_numid(card, numid);
-+	if (!kctl) {
- 		up_read(&card->controls_rwsem);
- 		return;
- 	}
-@@ -555,7 +557,8 @@ static void snd_mixer_oss_get_volume1_sw(struct snd_mixer_oss_file *fmixer,
- 	if (numid == ID_UNKNOWN)
- 		return;
- 	down_read(&card->controls_rwsem);
--	if ((kctl = snd_ctl_find_numid(card, numid)) == NULL) {
-+	kctl = snd_ctl_find_numid(card, numid);
-+	if (!kctl) {
- 		up_read(&card->controls_rwsem);
- 		return;
- 	}
-@@ -620,7 +623,8 @@ static void snd_mixer_oss_put_volume1_vol(struct snd_mixer_oss_file *fmixer,
- 	if (numid == ID_UNKNOWN)
- 		return;
- 	down_read(&card->controls_rwsem);
--	if ((kctl = snd_ctl_find_numid(card, numid)) == NULL) {
-+	kctl = snd_ctl_find_numid(card, numid);
-+	if (!kctl) {
- 		up_read(&card->controls_rwsem);
- 		return;
- 	}
-@@ -636,7 +640,8 @@ static void snd_mixer_oss_put_volume1_vol(struct snd_mixer_oss_file *fmixer,
- 	uctl->value.integer.value[0] = snd_mixer_oss_conv2(left, uinfo->value.integer.min, uinfo->value.integer.max);
- 	if (uinfo->count > 1)
- 		uctl->value.integer.value[1] = snd_mixer_oss_conv2(right, uinfo->value.integer.min, uinfo->value.integer.max);
--	if ((res = kctl->put(kctl, uctl)) < 0)
-+	res = kctl->put(kctl, uctl);
-+	if (res < 0)
- 		goto __unalloc;
- 	if (res > 0)
- 		snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_VALUE, &kctl->id);
-@@ -661,7 +666,8 @@ static void snd_mixer_oss_put_volume1_sw(struct snd_mixer_oss_file *fmixer,
- 	if (numid == ID_UNKNOWN)
- 		return;
- 	down_read(&card->controls_rwsem);
--	if ((kctl = snd_ctl_find_numid(card, numid)) == NULL) {
-+	kctl = snd_ctl_find_numid(card, numid);
-+	if (!kctl) {
- 		up_read(&card->controls_rwsem);
- 		return;
- 	}
-@@ -681,7 +687,8 @@ static void snd_mixer_oss_put_volume1_sw(struct snd_mixer_oss_file *fmixer,
- 	} else {
- 		uctl->value.integer.value[0] = (left > 0 || right > 0) ? 1 : 0;
- 	}
--	if ((res = kctl->put(kctl, uctl)) < 0)
-+	res = kctl->put(kctl, uctl);
-+	if (res < 0)
- 		goto __unalloc;
- 	if (res > 0)
- 		snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_VALUE, &kctl->id);
-@@ -809,9 +816,11 @@ static int snd_mixer_oss_get_recsrc2(struct snd_mixer_oss_file *fmixer, unsigned
- 		err = -ENOENT;
- 		goto __unlock;
- 	}
--	if ((err = kctl->info(kctl, uinfo)) < 0)
-+	err = kctl->info(kctl, uinfo);
+diff --git a/sound/synth/emux/emux.c b/sound/synth/emux/emux.c
+index f65e6c7b139f..49d1976a132c 100644
+--- a/sound/synth/emux/emux.c
++++ b/sound/synth/emux/emux.c
+@@ -104,7 +104,8 @@ int snd_emux_register(struct snd_emux *emu, struct snd_card *card, int index, ch
+ 	if (emu->sflist == NULL)
+ 		return -ENOMEM;
+ 
+-	if ((err = snd_emux_init_hwdep(emu)) < 0)
++	err = snd_emux_init_hwdep(emu);
 +	if (err < 0)
- 		goto __unlock;
--	if ((err = kctl->get(kctl, uctl)) < 0)
-+	err = kctl->get(kctl, uctl);
+ 		return err;
+ 
+ 	snd_emux_init_voices(emu);
+diff --git a/sound/synth/emux/emux_effect.c b/sound/synth/emux/emux_effect.c
+index afd119b11f39..3c7314f5fb19 100644
+--- a/sound/synth/emux/emux_effect.c
++++ b/sound/synth/emux/emux_effect.c
+@@ -181,7 +181,10 @@ snd_emux_send_effect(struct snd_emux_port *port, struct snd_midi_channel *chan,
+ 	fx->flag[type] = mode;
+ 
+ 	/* do we need to modify the register in realtime ? */
+-	if (! parm_defs[type].update || (offset = parm_defs[type].offset) < 0)
++	if (!parm_defs[type].update)
++		return;
++	offset = parm_defs[type].offset;
++	if (offset < 0)
+ 		return;
+ 
+ #ifdef SNDRV_LITTLE_ENDIAN
+@@ -223,13 +226,17 @@ snd_emux_setup_effect(struct snd_emux_voice *vp)
+ 	unsigned char *srcp;
+ 	int i;
+ 
+-	if (! (fx = chan->private))
++	fx = chan->private;
++	if (!fx)
+ 		return;
+ 
+ 	/* modify the register values via effect table */
+ 	for (i = 0; i < EMUX_FX_END; i++) {
+ 		int offset;
+-		if (! fx->flag[i] || (offset = parm_defs[i].offset) < 0)
++		if (!fx->flag[i])
++			continue;
++		offset = parm_defs[i].offset;
++		if (offset < 0)
+ 			continue;
+ #ifdef SNDRV_LITTLE_ENDIAN
+ 		if (parm_defs[i].type & PARM_IS_ALIGN_HI)
+diff --git a/sound/synth/emux/emux_hwdep.c b/sound/synth/emux/emux_hwdep.c
+index 8a965e2f160a..81719bfb8ed7 100644
+--- a/sound/synth/emux/emux_hwdep.c
++++ b/sound/synth/emux/emux_hwdep.c
+@@ -116,7 +116,8 @@ snd_emux_init_hwdep(struct snd_emux *emu)
+ 	struct snd_hwdep *hw;
+ 	int err;
+ 
+-	if ((err = snd_hwdep_new(emu->card, SNDRV_EMUX_HWDEP_NAME, emu->hwdep_idx, &hw)) < 0)
++	err = snd_hwdep_new(emu->card, SNDRV_EMUX_HWDEP_NAME, emu->hwdep_idx, &hw);
 +	if (err < 0)
- 		goto __unlock;
- 	for (idx = 0; idx < 32; idx++) {
- 		if (!(mixer->mask_recsrc & (1 << idx)))
-@@ -860,7 +869,8 @@ static int snd_mixer_oss_put_recsrc2(struct snd_mixer_oss_file *fmixer, unsigned
- 		err = -ENOENT;
- 		goto __unlock;
+ 		return err;
+ 	emu->hwdep = hw;
+ 	strcpy(hw->name, SNDRV_EMUX_HWDEP_NAME);
+@@ -127,7 +128,8 @@ snd_emux_init_hwdep(struct snd_emux *emu)
+ 	hw->ops.ioctl_compat = snd_emux_hwdep_ioctl;
+ 	hw->exclusive = 1;
+ 	hw->private_data = emu;
+-	if ((err = snd_card_register(emu->card)) < 0)
++	err = snd_card_register(emu->card);
++	if (err < 0)
+ 		return err;
+ 
+ 	return 0;
+diff --git a/sound/synth/emux/soundfont.c b/sound/synth/emux/soundfont.c
+index 9ebc711afa6b..da3cf8912463 100644
+--- a/sound/synth/emux/soundfont.c
++++ b/sound/synth/emux/soundfont.c
+@@ -349,7 +349,8 @@ sf_zone_new(struct snd_sf_list *sflist, struct snd_soundfont *sf)
+ {
+ 	struct snd_sf_zone *zp;
+ 
+-	if ((zp = kzalloc(sizeof(*zp), GFP_KERNEL)) == NULL)
++	zp = kzalloc(sizeof(*zp), GFP_KERNEL);
++	if (!zp)
+ 		return NULL;
+ 	zp->next = sf->zones;
+ 	sf->zones = zp;
+@@ -381,7 +382,8 @@ sf_sample_new(struct snd_sf_list *sflist, struct snd_soundfont *sf)
+ {
+ 	struct snd_sf_sample *sp;
+ 
+-	if ((sp = kzalloc(sizeof(*sp), GFP_KERNEL)) == NULL)
++	sp = kzalloc(sizeof(*sp), GFP_KERNEL);
++	if (!sp)
+ 		return NULL;
+ 
+ 	sp->next = sf->samples;
+@@ -451,7 +453,8 @@ load_map(struct snd_sf_list *sflist, const void __user *data, int count)
  	}
--	if ((err = kctl->info(kctl, uinfo)) < 0)
-+	err = kctl->info(kctl, uinfo);
-+	if (err < 0)
- 		goto __unlock;
- 	for (idx = 0; idx < 32; idx++) {
- 		if (!(mixer->mask_recsrc & (1 << idx)))
-@@ -915,7 +925,8 @@ static int snd_mixer_oss_build_test(struct snd_mixer_oss *mixer, struct slot *sl
- 		up_read(&card->controls_rwsem);
+ 
+ 	/* create a new zone */
+-	if ((zp = sf_zone_new(sflist, sf)) == NULL)
++	zp = sf_zone_new(sflist, sf);
++	if (!zp)
+ 		return -ENOMEM;
+ 
+ 	zp->bank = map.map_bank;
+@@ -514,7 +517,8 @@ load_info(struct snd_sf_list *sflist, const void __user *data, long count)
+ 	int i;
+ 
+ 	/* patch must be opened */
+-	if ((sf = sflist->currsf) == NULL)
++	sf = sflist->currsf;
++	if (!sf)
+ 		return -EINVAL;
+ 
+ 	if (is_special_type(sf->type))
+@@ -579,9 +583,9 @@ load_info(struct snd_sf_list *sflist, const void __user *data, long count)
+ 			init_voice_parm(&tmpzone.v.parm);
+ 
+ 		/* create a new zone */
+-		if ((zone = sf_zone_new(sflist, sf)) == NULL) {
++		zone = sf_zone_new(sflist, sf);
++		if (!zone)
+ 			return -ENOMEM;
+-		}
+ 
+ 		/* copy the temporary data */
+ 		zone->bank = tmpzone.bank;
+@@ -700,7 +704,8 @@ load_data(struct snd_sf_list *sflist, const void __user *data, long count)
+ 	long off;
+ 
+ 	/* patch must be opened */
+-	if ((sf = sflist->currsf) == NULL)
++	sf = sflist->currsf;
++	if (!sf)
+ 		return -EINVAL;
+ 
+ 	if (is_special_type(sf->type))
+@@ -723,7 +728,8 @@ load_data(struct snd_sf_list *sflist, const void __user *data, long count)
+ 	}
+ 
+ 	/* Allocate a new sample structure */
+-	if ((sp = sf_sample_new(sflist, sf)) == NULL)
++	sp = sf_sample_new(sflist, sf);
++	if (!sp)
+ 		return -ENOMEM;
+ 
+ 	sp->v = sample_info;
+@@ -958,7 +964,8 @@ load_guspatch(struct snd_sf_list *sflist, const char __user *data,
+ 	sf = newsf(sflist, SNDRV_SFNT_PAT_TYPE_GUS|SNDRV_SFNT_PAT_SHARED, NULL);
+ 	if (sf == NULL)
+ 		return -ENOMEM;
+-	if ((smp = sf_sample_new(sflist, sf)) == NULL)
++	smp = sf_sample_new(sflist, sf);
++	if (!smp)
+ 		return -ENOMEM;
+ 	sample_id = sflist->sample_counter;
+ 	smp->v.sample = sample_id;
+@@ -996,7 +1003,8 @@ load_guspatch(struct snd_sf_list *sflist, const char __user *data,
+ 	smp->v.sf_id = sf->id;
+ 
+ 	/* set up voice info */
+-	if ((zone = sf_zone_new(sflist, sf)) == NULL) {
++	zone = sf_zone_new(sflist, sf);
++	if (!zone) {
+ 		sf_sample_delete(sflist, sf, smp);
  		return -ENOMEM;
  	}
--	if ((err = kcontrol->info(kcontrol, info)) < 0) {
-+	err = kcontrol->info(kcontrol, info);
-+	if (err < 0) {
- 		up_read(&card->controls_rwsem);
- 		kfree(info);
- 		return err;
-@@ -1036,7 +1047,10 @@ static int snd_mixer_oss_build_input(struct snd_mixer_oss *mixer,
- 	if (snd_mixer_oss_build_test_all(mixer, ptr, &slot))
- 		return 0;
- 	down_read(&mixer->card->controls_rwsem);
--	if (ptr->index == 0 && (kctl = snd_mixer_oss_test_id(mixer, "Capture Source", 0)) != NULL) {
-+	kctl = NULL;
-+	if (!ptr->index)
-+		kctl = snd_mixer_oss_test_id(mixer, "Capture Source", 0);
-+	if (kctl) {
- 		struct snd_ctl_elem_info *uinfo;
- 
- 		uinfo = kzalloc(sizeof(*uinfo), GFP_KERNEL);
-@@ -1343,9 +1357,10 @@ static int snd_mixer_oss_notify_handler(struct snd_card *card, int cmd)
- 		if (mixer == NULL)
- 			return -ENOMEM;
- 		mutex_init(&mixer->reg_mutex);
--		if ((err = snd_register_oss_device(SNDRV_OSS_DEVICE_TYPE_MIXER,
--						   card, 0,
--						   &snd_mixer_oss_f_ops, card)) < 0) {
-+		err = snd_register_oss_device(SNDRV_OSS_DEVICE_TYPE_MIXER,
-+					      card, 0,
-+					      &snd_mixer_oss_f_ops, card);
-+		if (err < 0) {
- 			dev_err(card->dev,
- 				"unable to register OSS mixer device %i:%i\n",
- 				card->number, 0);
-diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
-index 86c39ee01aaa..82a818734a5f 100644
---- a/sound/core/oss/pcm_oss.c
-+++ b/sound/core/oss/pcm_oss.c
-@@ -955,9 +955,8 @@ static int snd_pcm_oss_change_params_locked(struct snd_pcm_substream *substream)
- 	if (!direct) {
- 		/* add necessary plugins */
- 		snd_pcm_oss_plugin_clear(substream);
--		if ((err = snd_pcm_plug_format_plugins(substream,
--						       params, 
--						       sparams)) < 0) {
-+		err = snd_pcm_plug_format_plugins(substream, params, sparams);
-+		if (err < 0) {
- 			pcm_dbg(substream->pcm,
- 				"snd_pcm_plug_format_plugins failed: %i\n", err);
- 			snd_pcm_oss_plugin_clear(substream);
-@@ -965,7 +964,8 @@ static int snd_pcm_oss_change_params_locked(struct snd_pcm_substream *substream)
- 		}
- 		if (runtime->oss.plugin_first) {
- 			struct snd_pcm_plugin *plugin;
--			if ((err = snd_pcm_plugin_build_io(substream, sparams, &plugin)) < 0) {
-+			err = snd_pcm_plugin_build_io(substream, sparams, &plugin);
-+			if (err < 0) {
- 				pcm_dbg(substream->pcm,
- 					"snd_pcm_plugin_build_io failed: %i\n", err);
- 				snd_pcm_oss_plugin_clear(substream);
-@@ -1011,7 +1011,8 @@ static int snd_pcm_oss_change_params_locked(struct snd_pcm_substream *substream)
- 		sw_params->silence_size = frames;
+@@ -1181,7 +1189,8 @@ add_preset(struct snd_sf_list *sflist, struct snd_sf_zone *cur)
  	}
  
--	if ((err = snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_SW_PARAMS, sw_params)) < 0) {
-+	err = snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_SW_PARAMS, sw_params);
-+	if (err < 0) {
- 		pcm_dbg(substream->pcm, "SW_PARAMS failed: %i\n", err);
- 		goto failure;
- 	}
-@@ -1573,7 +1574,8 @@ static int snd_pcm_oss_post(struct snd_pcm_oss_file *pcm_oss_file)
+ 	/* prepend this zone */
+-	if ((index = get_index(cur->bank, cur->instr, cur->v.low)) < 0)
++	index = get_index(cur->bank, cur->instr, cur->v.low);
++	if (index < 0)
+ 		return;
+ 	cur->next_zone = zone; /* zone link */
+ 	cur->next_instr = sflist->presets[index]; /* preset table link */
+@@ -1197,7 +1206,8 @@ delete_preset(struct snd_sf_list *sflist, struct snd_sf_zone *zp)
+ 	int index;
+ 	struct snd_sf_zone *p;
  
- 	substream = pcm_oss_file->streams[SNDRV_PCM_STREAM_PLAYBACK];
- 	if (substream != NULL) {
--		if ((err = snd_pcm_oss_make_ready(substream)) < 0)
-+		err = snd_pcm_oss_make_ready(substream);
-+		if (err < 0)
- 			return err;
- 		snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_START, NULL);
- 	}
-@@ -1645,7 +1647,8 @@ static int snd_pcm_oss_sync(struct snd_pcm_oss_file *pcm_oss_file)
- 		runtime = substream->runtime;
- 		if (atomic_read(&substream->mmap_count))
- 			goto __direct;
--		if ((err = snd_pcm_oss_make_ready(substream)) < 0)
-+		err = snd_pcm_oss_make_ready(substream);
-+		if (err < 0)
- 			return err;
- 		atomic_inc(&runtime->oss.rw_ref);
- 		if (mutex_lock_interruptible(&runtime->oss.params_lock)) {
-@@ -1711,7 +1714,8 @@ static int snd_pcm_oss_sync(struct snd_pcm_oss_file *pcm_oss_file)
+-	if ((index = get_index(zp->bank, zp->instr, zp->v.low)) < 0)
++	index = get_index(zp->bank, zp->instr, zp->v.low);
++	if (index < 0)
+ 		return;
+ 	for (p = sflist->presets[index]; p; p = p->next_instr) {
+ 		while (p->next_instr == zp) {
+@@ -1257,7 +1267,8 @@ search_first_zone(struct snd_sf_list *sflist, int bank, int preset, int key)
+ 	int index;
+ 	struct snd_sf_zone *zp;
  
- 	substream = pcm_oss_file->streams[SNDRV_PCM_STREAM_CAPTURE];
- 	if (substream != NULL) {
--		if ((err = snd_pcm_oss_make_ready(substream)) < 0)
-+		err = snd_pcm_oss_make_ready(substream);
-+		if (err < 0)
- 			return err;
- 		runtime = substream->runtime;
- 		err = snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_DROP, NULL);
-@@ -1758,7 +1762,8 @@ static int snd_pcm_oss_get_rate(struct snd_pcm_oss_file *pcm_oss_file)
- 	struct snd_pcm_substream *substream;
- 	int err;
- 	
--	if ((err = snd_pcm_oss_get_active_substream(pcm_oss_file, &substream)) < 0)
-+	err = snd_pcm_oss_get_active_substream(pcm_oss_file, &substream);
-+	if (err < 0)
- 		return err;
- 	return substream->runtime->oss.rate;
- }
-@@ -1795,7 +1800,8 @@ static int snd_pcm_oss_get_channels(struct snd_pcm_oss_file *pcm_oss_file)
- 	struct snd_pcm_substream *substream;
- 	int err;
- 	
--	if ((err = snd_pcm_oss_get_active_substream(pcm_oss_file, &substream)) < 0)
-+	err = snd_pcm_oss_get_active_substream(pcm_oss_file, &substream);
-+	if (err < 0)
- 		return err;
- 	return substream->runtime->oss.channels;
- }
-@@ -1805,7 +1811,8 @@ static int snd_pcm_oss_get_block_size(struct snd_pcm_oss_file *pcm_oss_file)
- 	struct snd_pcm_substream *substream;
- 	int err;
- 	
--	if ((err = snd_pcm_oss_get_active_substream(pcm_oss_file, &substream)) < 0)
-+	err = snd_pcm_oss_get_active_substream(pcm_oss_file, &substream);
-+	if (err < 0)
- 		return err;
- 	return substream->runtime->oss.period_bytes;
- }
-@@ -1820,7 +1827,8 @@ static int snd_pcm_oss_get_formats(struct snd_pcm_oss_file *pcm_oss_file)
- 	const struct snd_mask *format_mask;
- 	int fmt;
+-	if ((index = get_index(bank, preset, key)) < 0)
++	index = get_index(bank, preset, key);
++	if (index < 0)
+ 		return NULL;
+ 	for (zp = sflist->presets[index]; zp; zp = zp->next_instr) {
+ 		if (zp->instr == preset && zp->bank == bank)
+@@ -1386,7 +1397,8 @@ snd_sf_new(struct snd_sf_callback *callback, struct snd_util_memhdr *hdr)
+ {
+ 	struct snd_sf_list *sflist;
  
--	if ((err = snd_pcm_oss_get_active_substream(pcm_oss_file, &substream)) < 0)
-+	err = snd_pcm_oss_get_active_substream(pcm_oss_file, &substream);
-+	if (err < 0)
- 		return err;
- 	if (atomic_read(&substream->mmap_count))
- 		direct = 1;
-@@ -1890,7 +1898,8 @@ static int snd_pcm_oss_get_format(struct snd_pcm_oss_file *pcm_oss_file)
- 	struct snd_pcm_substream *substream;
- 	int err;
- 	
--	if ((err = snd_pcm_oss_get_active_substream(pcm_oss_file, &substream)) < 0)
-+	err = snd_pcm_oss_get_active_substream(pcm_oss_file, &substream);
-+	if (err < 0)
- 		return err;
- 	return substream->runtime->oss.format;
- }
-@@ -2050,11 +2059,13 @@ static int snd_pcm_oss_set_trigger(struct snd_pcm_oss_file *pcm_oss_file, int tr
- 	csubstream = pcm_oss_file->streams[SNDRV_PCM_STREAM_CAPTURE];
+-	if ((sflist = kzalloc(sizeof(*sflist), GFP_KERNEL)) == NULL)
++	sflist = kzalloc(sizeof(*sflist), GFP_KERNEL);
++	if (!sflist)
+ 		return NULL;
  
- 	if (psubstream) {
--		if ((err = snd_pcm_oss_make_ready(psubstream)) < 0)
-+		err = snd_pcm_oss_make_ready(psubstream);
-+		if (err < 0)
- 			return err;
- 	}
- 	if (csubstream) {
--		if ((err = snd_pcm_oss_make_ready(csubstream)) < 0)
-+		err = snd_pcm_oss_make_ready(csubstream);
-+		if (err < 0)
- 			return err;
- 	}
-       	if (psubstream) {
-@@ -2141,7 +2152,8 @@ static int snd_pcm_oss_get_odelay(struct snd_pcm_oss_file *pcm_oss_file)
- 	substream = pcm_oss_file->streams[SNDRV_PCM_STREAM_PLAYBACK];
- 	if (substream == NULL)
- 		return -EINVAL;
--	if ((err = snd_pcm_oss_make_ready(substream)) < 0)
-+	err = snd_pcm_oss_make_ready(substream);
-+	if (err < 0)
- 		return err;
- 	runtime = substream->runtime;
- 	if (runtime->oss.params || runtime->oss.prepare)
-@@ -2168,7 +2180,8 @@ static int snd_pcm_oss_get_ptr(struct snd_pcm_oss_file *pcm_oss_file, int stream
- 	substream = pcm_oss_file->streams[stream];
- 	if (substream == NULL)
- 		return -EINVAL;
--	if ((err = snd_pcm_oss_make_ready(substream)) < 0)
-+	err = snd_pcm_oss_make_ready(substream);
-+	if (err < 0)
- 		return err;
- 	runtime = substream->runtime;
- 	if (runtime->oss.params || runtime->oss.prepare) {
-@@ -2239,9 +2252,11 @@ static int snd_pcm_oss_get_space(struct snd_pcm_oss_file *pcm_oss_file, int stre
- 		return -EINVAL;
- 	runtime = substream->runtime;
- 
--	if (runtime->oss.params &&
--	    (err = snd_pcm_oss_change_params(substream, false)) < 0)
--		return err;
-+	if (runtime->oss.params) {
-+		err = snd_pcm_oss_change_params(substream, false);
-+		if (err < 0)
-+			return err;
-+	}
- 
- 	info.fragsize = runtime->oss.period_bytes;
- 	info.fragstotal = runtime->periods;
-@@ -2601,7 +2616,8 @@ static long snd_pcm_oss_ioctl(struct file *file, unsigned int cmd, unsigned long
- 	case SNDCTL_DSP_SPEED:
- 		if (get_user(res, p))
- 			return -EFAULT;
--		if ((res = snd_pcm_oss_set_rate(pcm_oss_file, res))<0)
-+		res = snd_pcm_oss_set_rate(pcm_oss_file, res);
-+		if (res < 0)
- 			return res;
- 		return put_user(res, p);
- 	case SOUND_PCM_READ_RATE:
-@@ -2613,7 +2629,8 @@ static long snd_pcm_oss_ioctl(struct file *file, unsigned int cmd, unsigned long
- 		if (get_user(res, p))
- 			return -EFAULT;
- 		res = res > 0 ? 2 : 1;
--		if ((res = snd_pcm_oss_set_channels(pcm_oss_file, res)) < 0)
-+		res = snd_pcm_oss_set_channels(pcm_oss_file, res);
-+		if (res < 0)
- 			return res;
- 		return put_user(--res, p);
- 	case SNDCTL_DSP_GETBLKSIZE:
-@@ -2829,7 +2846,8 @@ static __poll_t snd_pcm_oss_poll(struct file *file, poll_table * wait)
- 		snd_pcm_state_t ostate;
- 		poll_wait(file, &runtime->sleep, wait);
- 		snd_pcm_stream_lock_irq(csubstream);
--		if ((ostate = runtime->status->state) != SNDRV_PCM_STATE_RUNNING ||
-+		ostate = runtime->status->state;
-+		if (ostate != SNDRV_PCM_STATE_RUNNING ||
- 		    snd_pcm_oss_capture_ready(csubstream))
- 			mask |= EPOLLIN | EPOLLRDNORM;
- 		snd_pcm_stream_unlock_irq(csubstream);
-@@ -3043,7 +3061,8 @@ static void snd_pcm_oss_proc_init(struct snd_pcm *pcm)
- 		struct snd_pcm_str *pstr = &pcm->streams[stream];
- 		if (pstr->substream_count == 0)
- 			continue;
--		if ((entry = snd_info_create_card_entry(pcm->card, "oss", pstr->proc_root)) != NULL) {
-+		entry = snd_info_create_card_entry(pcm->card, "oss", pstr->proc_root);
-+		if (entry) {
- 			entry->content = SNDRV_INFO_CONTENT_TEXT;
- 			entry->mode = S_IFREG | 0644;
- 			entry->c.text.read = snd_pcm_oss_proc_read;
-@@ -3191,7 +3210,8 @@ static int __init alsa_pcm_oss_init(void)
- 			adsp_map[i] = 1;
- 		}
- 	}
--	if ((err = snd_pcm_notify(&snd_pcm_oss_notify, 0)) < 0)
-+	err = snd_pcm_notify(&snd_pcm_oss_notify, 0);
-+	if (err < 0)
- 		return err;
- 	return 0;
- }
-diff --git a/sound/core/oss/pcm_plugin.c b/sound/core/oss/pcm_plugin.c
-index d5ca161d588c..061ba06bc926 100644
---- a/sound/core/oss/pcm_plugin.c
-+++ b/sound/core/oss/pcm_plugin.c
-@@ -59,7 +59,8 @@ static int snd_pcm_plugin_alloc(struct snd_pcm_plugin *plugin, snd_pcm_uframes_t
- 	} else {
- 		format = &plugin->dst_format;
- 	}
--	if ((width = snd_pcm_format_physical_width(format->format)) < 0)
-+	width = snd_pcm_format_physical_width(format->format);
-+	if (width < 0)
- 		return width;
- 	size = frames * format->channels * width;
- 	if (snd_BUG_ON(size % 8))
-@@ -572,7 +573,8 @@ snd_pcm_sframes_t snd_pcm_plug_client_channels_buf(struct snd_pcm_substream *plu
- 	}
- 	v = plugin->buf_channels;
- 	*channels = v;
--	if ((width = snd_pcm_format_physical_width(format->format)) < 0)
-+	width = snd_pcm_format_physical_width(format->format);
-+	if (width < 0)
- 		return width;
- 	nchannels = format->channels;
- 	if (snd_BUG_ON(plugin->access != SNDRV_PCM_ACCESS_RW_INTERLEAVED &&
-@@ -600,16 +602,17 @@ snd_pcm_sframes_t snd_pcm_plug_write_transfer(struct snd_pcm_substream *plug, st
- 	while (plugin) {
- 		if (frames <= 0)
- 			return frames;
--		if ((next = plugin->next) != NULL) {
-+		next = plugin->next;
-+		if (next) {
- 			snd_pcm_sframes_t frames1 = frames;
- 			if (plugin->dst_frames) {
- 				frames1 = plugin->dst_frames(plugin, frames);
- 				if (frames1 <= 0)
- 					return frames1;
- 			}
--			if ((err = next->client_channels(next, frames1, &dst_channels)) < 0) {
-+			err = next->client_channels(next, frames1, &dst_channels);
-+			if (err < 0)
- 				return err;
--			}
- 			if (err != frames1) {
- 				frames = err;
- 				if (plugin->src_frames) {
-@@ -621,7 +624,8 @@ snd_pcm_sframes_t snd_pcm_plug_write_transfer(struct snd_pcm_substream *plug, st
- 		} else
- 			dst_channels = NULL;
- 		pdprintf("write plugin: %s, %li\n", plugin->name, frames);
--		if ((frames = plugin->transfer(plugin, src_channels, dst_channels, frames)) < 0)
-+		frames = plugin->transfer(plugin, src_channels, dst_channels, frames);
-+		if (frames < 0)
- 			return frames;
- 		src_channels = dst_channels;
- 		plugin = next;
-@@ -643,16 +647,18 @@ snd_pcm_sframes_t snd_pcm_plug_read_transfer(struct snd_pcm_substream *plug, str
- 	src_channels = NULL;
- 	plugin = snd_pcm_plug_first(plug);
- 	while (plugin && frames > 0) {
--		if ((next = plugin->next) != NULL) {
--			if ((err = plugin->client_channels(plugin, frames, &dst_channels)) < 0) {
-+		next = plugin->next;
-+		if (next) {
-+			err = plugin->client_channels(plugin, frames, &dst_channels);
-+			if (err < 0)
- 				return err;
--			}
- 			frames = err;
- 		} else {
- 			dst_channels = dst_channels_final;
- 		}
- 		pdprintf("read plugin: %s, %li\n", plugin->name, frames);
--		if ((frames = plugin->transfer(plugin, src_channels, dst_channels, frames)) < 0)
-+		frames = plugin->transfer(plugin, src_channels, dst_channels, frames);
-+		if (frames < 0)
- 			return frames;
- 		plugin = next;
- 		src_channels = dst_channels;
+ 	mutex_init(&sflist->presets_mutex);
 -- 
 2.26.2
 
