@@ -2,84 +2,77 @@ Return-Path: <SRS0=yD/C=LC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1741C47082
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:09:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D88FC47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:09:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 288DA60FE9
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:09:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 288DA60FE9
+	by mail.kernel.org (Postfix) with ESMTPS id A38096127A
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:09:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A38096127A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C83F016F2;
-	Tue,  8 Jun 2021 16:08:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C83F016F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 474971729;
+	Tue,  8 Jun 2021 16:08:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 474971729
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623161341;
-	bh=ydVdRkQbxp13pssRyVForQORkaQmDqSJPkRo6l4SR9M=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=oLb/BMnFx9x10aa30D4YKBNyNlD9zDJZxcRIj96gDI8Xo3fp+/sZXRz6l0EEeoR+D
-	 qFVGLrVNLGiae4aa5/XAc/99K5MM6gML4w00mm3kwf5cuF7O4fx4RHRePFmJu68c2q
-	 zVTKKuQZGCCnAtsKU02Sfehjw2hOsASD1G7z/c5I=
+	s=default; t=1623161359;
+	bh=G+FCNRnJP+8qEJJ/Vt6JevOMn4Ts++gf02ORk+w6Aq4=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Ew2yTn3TFBjB2fIzqwvaRR2wQUSPSVIl1by4f8RHzz22RGTEDPXBZJBije2YCwN6e
+	 wppU6X5NdB+hZmL4dSqeBsZu0aQ8LNnu3s1wJoknf9QChXPwVMXNIL+BvXWoPw1vQd
+	 26Y95HrR+cvJVDupayh6+Zi/wdIdEJ2KlKBmCqbA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D6C52F80542;
-	Tue,  8 Jun 2021 16:06:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05596F80548;
+	Tue,  8 Jun 2021 16:06:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A4EF3F804AB; Tue,  8 Jun 2021 16:06:00 +0200 (CEST)
+ id BB99CF8053B; Tue,  8 Jun 2021 16:06:02 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AE2B6F804AC
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE2B6F804AC
+ by alsa1.perex.cz (Postfix) with ESMTPS id EBC8AF801EC
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBC8AF801EC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="vj0ZXhyd"; 
+ header.b="uDXnM9YW"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="mr8idIHQ"
+ header.b="aMh7SlLe"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 1D09F1FD54
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:43 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 7909B1FD33
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1623161143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=E+YbAFWSunVYHLJi0fLHR5pXtHXD9rNtYkcdg/TCpuY=;
- b=vj0ZXhyd6RI80IBAxn1aXpJmLusnLq1It2BfvyvGLS6NfeXiMCkb3jYJjJ1b8JZdvcljaH
- 1NFRCxM8V3A3fhdBDrzfHEoFP3mXuhxTn45hAW/XjVOrsVOTBTGOR0jvgdiaqDFjTOHvew
- bvEguV1N2UsugVjz1a5enjfqle0bZBI=
+ t=1623161142; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=wstNOl7sThf1toD1FurcZzIp7jAtWDCzDCqLR3tri74=;
+ b=uDXnM9YWf+5M0jo3o5UX+rgOuxR3o7SS7ansktSj8YQqRPlQ9j1zrBBY+rpbs9B+mgbv/C
+ CnXK28H3QGNJ8W51SW8pp4PFvjGJe4wqaMchkgBQvO8PftPVNayN0HaYm6LDji38nfWLhN
+ GuqYz3Th3p0GQYC3v6acCdwuwE0htwE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1623161143;
+ s=susede2_ed25519; t=1623161142;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=E+YbAFWSunVYHLJi0fLHR5pXtHXD9rNtYkcdg/TCpuY=;
- b=mr8idIHQ05BEU6cj9edFacrB6OdKt7CkfsfzmnESbs57pw9XddxHNIengLR5qMOaJ3q7WU
- crFQU+O0zfbBm9CA==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=wstNOl7sThf1toD1FurcZzIp7jAtWDCzDCqLR3tri74=;
+ b=aMh7SlLet45wd16UHe/TrdSrM1xpFLOggPd2xGCtDuj8jY1hrMmSGch4r9Ckn3yEFdRgVN
+ v4hrC9kV/cZXX5Cw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 0D7F2A3B85;
- Tue,  8 Jun 2021 14:05:43 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 680DAA3B83;
+ Tue,  8 Jun 2021 14:05:42 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 10/66] ALSA: es18xx: Fix assignment in if condition
-Date: Tue,  8 Jun 2021 16:04:44 +0200
-Message-Id: <20210608140540.17885-11-tiwai@suse.de>
+Subject: [PATCH 00/66] ALSA: Fix assignment in if condition
+Date: Tue,  8 Jun 2021 16:04:34 +0200
+Message-Id: <20210608140540.17885-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210608140540.17885-1-tiwai@suse.de>
-References: <20210608140540.17885-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -97,165 +90,275 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-ISA ES18xx driver code contains lots of assignments in if condition,
-which is a bad coding style that may confuse readers and occasionally
-lead to bugs.
+Hi,
 
-This patch is merely for coding-style fixes, no functional changes.
+here is a largish patch set mostly for cleanup / a slight refactoring
+of the coding styles with assignment in if condition, typically such
+as:
+	if ((err = xxx()) < 0)
+		return err;
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/isa/es18xx.c | 51 ++++++++++++++++++++++++++++++----------------
- 1 file changed, 34 insertions(+), 17 deletions(-)
+This was a popular style in the old ages, but nowadays it's seen
+rather fairly harmful as it makes harder to read and easily hides
+bugs.  Since we've hit quite a few issues (although most of them are
+trivial), I decided to fix those lines.
 
-diff --git a/sound/isa/es18xx.c b/sound/isa/es18xx.c
-index 375a4a6a4717..68b9c59e1127 100644
---- a/sound/isa/es18xx.c
-+++ b/sound/isa/es18xx.c
-@@ -1573,7 +1573,8 @@ static int snd_es18xx_identify(struct snd_es18xx *chip)
- 		udelay(10);
- 		chip->ctrl_port += inb(chip->port + 0x05);
- 
--		if ((chip->res_ctrl_port = request_region(chip->ctrl_port, 8, "ES18xx - CTRL")) == NULL) {
-+		chip->res_ctrl_port = request_region(chip->ctrl_port, 8, "ES18xx - CTRL");
-+		if (!chip->res_ctrl_port) {
- 			snd_printk(KERN_ERR PFX "unable go grab port 0x%lx\n", chip->ctrl_port);
- 			return -EBUSY;
- 		}
-@@ -1832,41 +1833,48 @@ static int snd_es18xx_mixer(struct snd_card *card)
- 				break;
- 			}
- 		}
--		if ((err = snd_ctl_add(card, kctl)) < 0)
-+		err = snd_ctl_add(card, kctl);
-+		if (err < 0)
- 			return err;
- 	}
- 	if (chip->caps & ES18XX_PCM2) {
- 		for (idx = 0; idx < ARRAY_SIZE(snd_es18xx_pcm2_controls); idx++) {
--			if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_es18xx_pcm2_controls[idx], chip))) < 0)
-+			err = snd_ctl_add(card, snd_ctl_new1(&snd_es18xx_pcm2_controls[idx], chip));
-+			if (err < 0)
- 				return err;
- 		} 
- 	} else {
- 		for (idx = 0; idx < ARRAY_SIZE(snd_es18xx_pcm1_controls); idx++) {
--			if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_es18xx_pcm1_controls[idx], chip))) < 0)
-+			err = snd_ctl_add(card, snd_ctl_new1(&snd_es18xx_pcm1_controls[idx], chip));
-+			if (err < 0)
- 				return err;
- 		}
- 	}
- 
- 	if (chip->caps & ES18XX_RECMIX) {
- 		for (idx = 0; idx < ARRAY_SIZE(snd_es18xx_recmix_controls); idx++) {
--			if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_es18xx_recmix_controls[idx], chip))) < 0)
-+			err = snd_ctl_add(card, snd_ctl_new1(&snd_es18xx_recmix_controls[idx], chip));
-+			if (err < 0)
- 				return err;
- 		}
- 	}
- 	switch (chip->version) {
- 	default:
--		if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_es18xx_micpre1_control, chip))) < 0)
-+		err = snd_ctl_add(card, snd_ctl_new1(&snd_es18xx_micpre1_control, chip));
-+		if (err < 0)
- 			return err;
- 		break;
- 	case 0x1869:
- 	case 0x1879:
--		if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_es18xx_micpre2_control, chip))) < 0)
-+		err = snd_ctl_add(card, snd_ctl_new1(&snd_es18xx_micpre2_control, chip));
-+		if (err < 0)
- 			return err;
- 		break;
- 	}
- 	if (chip->caps & ES18XX_SPATIALIZER) {
- 		for (idx = 0; idx < ARRAY_SIZE(snd_es18xx_spatializer_controls); idx++) {
--			if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_es18xx_spatializer_controls[idx], chip))) < 0)
-+			err = snd_ctl_add(card, snd_ctl_new1(&snd_es18xx_spatializer_controls[idx], chip));
-+			if (err < 0)
- 				return err;
- 		}
- 	}
-@@ -1879,7 +1887,8 @@ static int snd_es18xx_mixer(struct snd_card *card)
- 			else
- 				chip->hw_switch = kctl;
- 			kctl->private_free = snd_es18xx_hwv_free;
--			if ((err = snd_ctl_add(card, kctl)) < 0)
-+			err = snd_ctl_add(card, kctl);
-+			if (err < 0)
- 				return err;
- 			
- 		}
-@@ -2154,7 +2163,8 @@ static int snd_es18xx_isa_probe1(int dev, struct device *devptr)
- 	err = snd_es18xx_card_new(devptr, dev, &card);
- 	if (err < 0)
- 		return err;
--	if ((err = snd_audiodrive_probe(card, dev)) < 0) {
-+	err = snd_audiodrive_probe(card, dev);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
-@@ -2169,19 +2179,22 @@ static int snd_es18xx_isa_probe(struct device *pdev, unsigned int dev)
- 	static const int possible_dmas[] = {1, 0, 3, 5, -1};
- 
- 	if (irq[dev] == SNDRV_AUTO_IRQ) {
--		if ((irq[dev] = snd_legacy_find_free_irq(possible_irqs)) < 0) {
-+		irq[dev] = snd_legacy_find_free_irq(possible_irqs);
-+		if (irq[dev] < 0) {
- 			snd_printk(KERN_ERR PFX "unable to find a free IRQ\n");
- 			return -EBUSY;
- 		}
- 	}
- 	if (dma1[dev] == SNDRV_AUTO_DMA) {
--		if ((dma1[dev] = snd_legacy_find_free_dma(possible_dmas)) < 0) {
-+		dma1[dev] = snd_legacy_find_free_dma(possible_dmas);
-+		if (dma1[dev] < 0) {
- 			snd_printk(KERN_ERR PFX "unable to find a free DMA1\n");
- 			return -EBUSY;
- 		}
- 	}
- 	if (dma2[dev] == SNDRV_AUTO_DMA) {
--		if ((dma2[dev] = snd_legacy_find_free_dma(possible_dmas)) < 0) {
-+		dma2[dev] = snd_legacy_find_free_dma(possible_dmas);
-+		if (dma2[dev] < 0) {
- 			snd_printk(KERN_ERR PFX "unable to find a free DMA2\n");
- 			return -EBUSY;
- 		}
-@@ -2257,11 +2270,13 @@ static int snd_audiodrive_pnp_detect(struct pnp_dev *pdev,
- 	err = snd_es18xx_card_new(&pdev->dev, dev, &card);
- 	if (err < 0)
- 		return err;
--	if ((err = snd_audiodrive_pnp(dev, card->private_data, pdev)) < 0) {
-+	err = snd_audiodrive_pnp(dev, card->private_data, pdev);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
--	if ((err = snd_audiodrive_probe(card, dev)) < 0) {
-+	err = snd_audiodrive_probe(card, dev);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
-@@ -2315,11 +2330,13 @@ static int snd_audiodrive_pnpc_detect(struct pnp_card_link *pcard,
- 	if (res < 0)
- 		return res;
- 
--	if ((res = snd_audiodrive_pnpc(dev, card->private_data, pcard, pid)) < 0) {
-+	res = snd_audiodrive_pnpc(dev, card->private_data, pcard, pid);
-+	if (res < 0) {
- 		snd_card_free(card);
- 		return res;
- 	}
--	if ((res = snd_audiodrive_probe(card, dev)) < 0) {
-+	res = snd_audiodrive_probe(card, dev);
-+	if (res < 0) {
- 		snd_card_free(card);
- 		return res;
- 	}
+While conversions, I spotted a couple of real bugs.  They are old
+driver codes and only in certain error paths, so most likely no one
+ever hits it.
+
+
+Takashi
+
+===
+
+Takashi Iwai (66):
+  ALSA: sb: Fix assignment in if condition
+  ALSA: sb: Minor coding style fixes
+  ALSA: sb: Fix potential double-free of CSP mixer elements
+  ALSA: gus: Fix assignment in if condition
+  ALSA: ad1816a: Fix assignment in if condition
+  ALSA: wavefront: Fix assignment in if condition
+  ALSA: cs423x:  Fix assignment in if condition
+  ALSA: opti9xx: Fix assignment in if condition
+  ALSA: opl3sa2: Fix assignment in if condition
+  ALSA: es18xx: Fix assignment in if condition
+  ALSA: cmi8330: Fix assignment in if condition
+  ALSA: als100: Fix assignment in if condition
+  ALSA: azt2320: Fix assignment in if condition
+  ALSA: isa: Fix assignment in if condition
+  ALSA: ad1889: Fix assignment in if condition
+  ALSA: ak4531: Fix assignment in if condition
+  ALSA: als300: Fix assignment in if condition
+  ALSA: als4000: Fix assignment in if condition
+  ALSA: atiixp: Fix assignment in if condition
+  ALSA: azt3328: Fix assignment in if condition
+  ALSA: bt87x: Fix assignment in if condition
+  ALSA: cmipci: Fix assignment in if condition
+  ALSA: cs4281: Fix assignment in if condition
+  ALSA: ens137x: Fix assignment in if condition
+  ALSA: es1938: Fix assignment in if condition
+  ALSA: es1968: Fix assignment in if condition
+  ALSA: fm801: Fix assignment in if condition
+  ALSA: intel8x0: Fix assignment in if condition
+  ALSA: maestro3: Fix assignment in if condition
+  ALSA: rme32: Fix assignment in if condition
+  ALSA: rme96: Fix assignment in if condition
+  ALSA: sonicvibes: Fix assignment in if condition
+  ALSA: via82xx: Fix assignment in if condition
+  ALSA: ac97: Fix assignment in if condition
+  ALSA: au88x0: Fix assignment in if condition
+  ALSA: ca0106: Fix assignment in if condition
+  ALSA: cs46xx: Fix assignment in if condition
+  ALSA: cs5535audio: Fix assignment in if condition
+  ALSA: echoaudio: Fix assignment in if condition
+  ALSA: emu10k1: Fix assignment in if condition
+  ALSA: emu10k1x: Fix assignment in if condition
+  ALSA: ice1712: Fix assignment in if condition
+  ALSA: korg1212: Fix assignment in if condition
+  ALSA: mixart: Fix assignment in if condition
+  ALSA: nm256: Fix assignment in if condition
+  ALSA: pcxhr: Fix assignment in if condition
+  ALSA: riptide: Fix assignment in if condition
+  ALSA: hdsp: Fix assignment in if condition
+  ALSA: rme9652: Fix assignment in if condition
+  ALSA: trident: Fix assignment in if condition
+  ALSA: vx222: Fix assignment in if condition
+  ALSA: ymfpci: Fix assignment in if condition
+  ALSA: core: Fix assignment in if condition
+  ALSA: pcm: Fix assignment in if condition
+  ALSA: oss: Fix assignment in if condition
+  ALSA: seq: Fix assignment in if condition
+  ALSA: pcmcia: Fix assignment in if condition
+  ALSA: sparc: Fix assignment in if condition
+  ALSA: mpu401: Fix assignment in if condition
+  ALSA: vx: Fix assignment in if condition
+  ALSA: opl3: Fix assignment in if condition
+  ALSA: serial: Fix assignment in if condition
+  ALSA: synth: Fix assignment in if condition
+  ALSA: poewrmac: Fix assignment in if condition
+  ALSA: i2c: Fix assignment in if condition
+  ALSA: parisc: Fix assignment in if condition
+
+ sound/core/hwdep.c                      |   6 +-
+ sound/core/info_oss.c                   |   3 +-
+ sound/core/init.c                       |  12 +-
+ sound/core/oss/mixer_oss.c              |  45 +++--
+ sound/core/oss/pcm_oss.c                |  70 +++++---
+ sound/core/oss/pcm_plugin.c             |  26 +--
+ sound/core/pcm_compat.c                 |   6 +-
+ sound/core/pcm_misc.c                   |  12 +-
+ sound/core/pcm_native.c                 |   6 +-
+ sound/core/seq/oss/seq_oss.c            |  26 +--
+ sound/core/seq/oss/seq_oss_init.c       |   9 +-
+ sound/core/seq/oss/seq_oss_midi.c       |  33 ++--
+ sound/core/seq/oss/seq_oss_rw.c         |   3 +-
+ sound/core/seq/oss/seq_oss_synth.c      |   9 +-
+ sound/core/seq/oss/seq_oss_writeq.c     |   3 +-
+ sound/core/seq/seq_clientmgr.c          |  51 ++++--
+ sound/core/seq/seq_dummy.c              |   3 +-
+ sound/core/seq/seq_fifo.c               |   3 +-
+ sound/core/seq/seq_memory.c             |   6 +-
+ sound/core/seq/seq_midi.c               |  27 +--
+ sound/core/seq/seq_queue.c              |  21 ++-
+ sound/core/seq/seq_virmidi.c            |   9 +-
+ sound/core/sound.c                      |   3 +-
+ sound/core/sound_oss.c                  |   3 +-
+ sound/drivers/mpu401/mpu401.c           |   9 +-
+ sound/drivers/mpu401/mpu401_uart.c      |  19 +-
+ sound/drivers/mtpav.c                   |  15 +-
+ sound/drivers/mts64.c                   |  15 +-
+ sound/drivers/opl3/opl3_lib.c           |  42 +++--
+ sound/drivers/opl3/opl3_oss.c           |   6 +-
+ sound/drivers/opl3/opl3_seq.c           |   9 +-
+ sound/drivers/portman2x4.c              |  15 +-
+ sound/drivers/serial-u16550.c           |  27 +--
+ sound/drivers/vx/vx_core.c              |  60 ++++---
+ sound/drivers/vx/vx_hwdep.c             |  12 +-
+ sound/drivers/vx/vx_mixer.c             |  39 +++--
+ sound/drivers/vx/vx_pcm.c               |  32 ++--
+ sound/i2c/cs8427.c                      |  24 ++-
+ sound/i2c/other/ak4114.c                |   3 +-
+ sound/i2c/other/ak4117.c                |   3 +-
+ sound/i2c/tea6330t.c                    |  24 ++-
+ sound/isa/ad1816a/ad1816a.c             |  23 ++-
+ sound/isa/ad1816a/ad1816a_lib.c         |  27 ++-
+ sound/isa/als100.c                      |  18 +-
+ sound/isa/azt2320.c                     |  21 ++-
+ sound/isa/cmi8330.c                     |  37 ++--
+ sound/isa/cs423x/cs4236.c               |  21 ++-
+ sound/isa/cs423x/cs4236_lib.c           |  12 +-
+ sound/isa/es1688/es1688_lib.c           |   3 +-
+ sound/isa/es18xx.c                      |  51 ++++--
+ sound/isa/gus/gus_main.c                |  18 +-
+ sound/isa/gus/gus_mem.c                 |   3 +-
+ sound/isa/gus/gus_mixer.c               |   6 +-
+ sound/isa/gus/gus_pcm.c                 |  23 ++-
+ sound/isa/gus/gus_uart.c                |   3 +-
+ sound/isa/gus/gusclassic.c              |   6 +-
+ sound/isa/gus/gusextreme.c              |   6 +-
+ sound/isa/gus/gusmax.c                  |  36 ++--
+ sound/isa/gus/interwave.c               |  90 ++++++----
+ sound/isa/opl3sa2.c                     |  68 +++++---
+ sound/isa/opti9xx/miro.c                |  27 ++-
+ sound/isa/opti9xx/opti92x-ad1848.c      |  27 ++-
+ sound/isa/sb/emu8000.c                  |  21 ++-
+ sound/isa/sb/emu8000_patch.c            |   3 +-
+ sound/isa/sb/emu8000_pcm.c              |   6 +-
+ sound/isa/sb/sb16.c                     |  65 ++++---
+ sound/isa/sb/sb16_csp.c                 |  29 ++--
+ sound/isa/sb/sb16_main.c                |   6 +-
+ sound/isa/sb/sb8.c                      |  38 ++--
+ sound/isa/sb/sb8_main.c                 |   3 +-
+ sound/isa/sb/sb8_midi.c                 |   3 +-
+ sound/isa/sb/sb_common.c                |   9 +-
+ sound/isa/sb/sb_mixer.c                 |  55 +++---
+ sound/isa/wavefront/wavefront.c         |   6 +-
+ sound/isa/wavefront/wavefront_midi.c    |  20 ++-
+ sound/isa/wavefront/wavefront_synth.c   |  56 +++---
+ sound/isa/wss/wss_lib.c                 |   9 +-
+ sound/parisc/harmony.c                  |   7 +-
+ sound/pci/ac97/ac97_codec.c             | 205 ++++++++++++++--------
+ sound/pci/ac97/ac97_patch.c             | 137 ++++++++++-----
+ sound/pci/ad1889.c                      |  15 +-
+ sound/pci/ak4531_codec.c                |   9 +-
+ sound/pci/als300.c                      |  22 ++-
+ sound/pci/als4000.c                     |  55 +++---
+ sound/pci/atiixp.c                      |  33 ++--
+ sound/pci/atiixp_modem.c                |  40 +++--
+ sound/pci/au88x0/au88x0.c               |  77 +++++----
+ sound/pci/au88x0/au88x0_a3d.c           |  28 +--
+ sound/pci/au88x0/au88x0_core.c          |  47 ++---
+ sound/pci/au88x0/au88x0_eq.c            |  20 ++-
+ sound/pci/au88x0/au88x0_mixer.c         |   3 +-
+ sound/pci/au88x0/au88x0_mpu401.c        |  14 +-
+ sound/pci/au88x0/au88x0_pcm.c           |  15 +-
+ sound/pci/azt3328.c                     |   3 +-
+ sound/pci/bt87x.c                       |   3 +-
+ sound/pci/ca0106/ca0106_main.c          |  18 +-
+ sound/pci/ca0106/ca_midi.c              |   3 +-
+ sound/pci/cmipci.c                      |  83 ++++++---
+ sound/pci/cs4281.c                      |  54 ++++--
+ sound/pci/cs46xx/cs46xx.c               |  31 ++--
+ sound/pci/cs46xx/cs46xx_lib.c           |  51 ++++--
+ sound/pci/cs46xx/dsp_spos.c             |   3 +-
+ sound/pci/cs5535audio/cs5535audio.c     |  28 +--
+ sound/pci/cs5535audio/cs5535audio_pcm.c |  10 +-
+ sound/pci/echoaudio/darla20_dsp.c       |   6 +-
+ sound/pci/echoaudio/darla24_dsp.c       |   6 +-
+ sound/pci/echoaudio/echo3g_dsp.c        |   3 +-
+ sound/pci/echoaudio/echoaudio.c         | 220 ++++++++++++++----------
+ sound/pci/echoaudio/echoaudio_dsp.c     |  12 +-
+ sound/pci/echoaudio/echoaudio_gml.c     |   3 +-
+ sound/pci/echoaudio/gina20_dsp.c        |   6 +-
+ sound/pci/echoaudio/gina24_dsp.c        |   6 +-
+ sound/pci/echoaudio/indigo_dsp.c        |   6 +-
+ sound/pci/echoaudio/indigodj_dsp.c      |   6 +-
+ sound/pci/echoaudio/indigoio_dsp.c      |   6 +-
+ sound/pci/echoaudio/layla20_dsp.c       |   6 +-
+ sound/pci/echoaudio/layla24_dsp.c       |   9 +-
+ sound/pci/echoaudio/mia_dsp.c           |   6 +-
+ sound/pci/echoaudio/midi.c              |   4 +-
+ sound/pci/echoaudio/mona_dsp.c          |   6 +-
+ sound/pci/emu10k1/emu10k1.c             |  42 +++--
+ sound/pci/emu10k1/emu10k1_callback.c    |   3 +-
+ sound/pci/emu10k1/emu10k1x.c            |  85 +++++----
+ sound/pci/emu10k1/emufx.c               |  13 +-
+ sound/pci/emu10k1/emumixer.c            |  78 ++++++---
+ sound/pci/emu10k1/emumpu401.c           |  12 +-
+ sound/pci/emu10k1/emupcm.c              |  24 ++-
+ sound/pci/emu10k1/memory.c              |  21 ++-
+ sound/pci/emu10k1/p16v.c                |  13 +-
+ sound/pci/emu10k1/timer.c               |   3 +-
+ sound/pci/ens1370.c                     |  45 +++--
+ sound/pci/es1938.c                      |  42 +++--
+ sound/pci/es1968.c                      |  75 ++++----
+ sound/pci/fm801.c                       |  63 ++++---
+ sound/pci/ice1712/delta.c               |   6 +-
+ sound/pci/ice1712/ews.c                 |  24 ++-
+ sound/pci/intel8x0.c                    |  46 +++--
+ sound/pci/intel8x0m.c                   |  36 ++--
+ sound/pci/korg1212/korg1212.c           |  24 ++-
+ sound/pci/maestro3.c                    |  21 ++-
+ sound/pci/mixart/mixart.c               |  29 ++--
+ sound/pci/mixart/mixart_hwdep.c         |  17 +-
+ sound/pci/mixart/mixart_mixer.c         |  33 ++--
+ sound/pci/nm256/nm256.c                 |  27 ++-
+ sound/pci/pcxhr/pcxhr.c                 |  22 ++-
+ sound/pci/pcxhr/pcxhr_hwdep.c           |   9 +-
+ sound/pci/riptide/riptide.c             |  88 ++++++----
+ sound/pci/rme32.c                       |  76 +++++---
+ sound/pci/rme96.c                       | 148 +++++++++-------
+ sound/pci/rme9652/hdsp.c                | 121 ++++++++-----
+ sound/pci/rme9652/rme9652.c             |  98 ++++++-----
+ sound/pci/sonicvibes.c                  |  67 +++++---
+ sound/pci/trident/trident.c             |  41 +++--
+ sound/pci/trident/trident_main.c        |  84 ++++++---
+ sound/pci/via82xx.c                     |  78 ++++++---
+ sound/pci/via82xx_modem.c               |  52 ++++--
+ sound/pci/vx222/vx222.c                 |  18 +-
+ sound/pci/vx222/vx222_ops.c             |  12 +-
+ sound/pci/ymfpci/ymfpci.c               |  71 ++++----
+ sound/pci/ymfpci/ymfpci_main.c          |  72 +++++---
+ sound/pcmcia/pdaudiocf/pdaudiocf.c      |   3 +-
+ sound/pcmcia/vx/vxp_mixer.c             |   6 +-
+ sound/pcmcia/vx/vxp_ops.c               |   6 +-
+ sound/pcmcia/vx/vxpocket.c              |   3 +-
+ sound/ppc/beep.c                        |   5 +-
+ sound/ppc/daca.c                        |  24 ++-
+ sound/ppc/keywest.c                     |   6 +-
+ sound/ppc/pmac.c                        |   6 +-
+ sound/ppc/powermac.c                    |  21 ++-
+ sound/ppc/tumbler.c                     |  72 +++++---
+ sound/sparc/amd7930.c                   |  14 +-
+ sound/sparc/cs4231.c                    |  10 +-
+ sound/sparc/dbri.c                      |  11 +-
+ sound/synth/emux/emux.c                 |   3 +-
+ sound/synth/emux/emux_effect.c          |  13 +-
+ sound/synth/emux/emux_hwdep.c           |   6 +-
+ sound/synth/emux/soundfont.c            |  40 +++--
+ 177 files changed, 3186 insertions(+), 1831 deletions(-)
+
 -- 
 2.26.2
 
