@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F391C47082
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:08:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 629C9C47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:08:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6755961078
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:08:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6755961078
+	by mail.kernel.org (Postfix) with ESMTPS id DDC2160FE9
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:08:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DDC2160FE9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F1B2A16F4;
-	Tue,  8 Jun 2021 16:07:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1B2A16F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 753B31708;
+	Tue,  8 Jun 2021 16:07:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 753B31708
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623161302;
-	bh=kSiooSRmE/qjfJtGinQw4i1KzyelzraLV/ZyuookvoM=;
+	s=default; t=1623161314;
+	bh=H4HHwa/GYSAL3mpDQFPXcCPlGNKkKKgyufphyCFFDmQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uJAcdB89hPYYoL3VLmNKRU0CakcHBCqDjwZyZKvPsokIrVFS0v47KrL7/psLZq46/
-	 H3yuGdoFXMO559F03Xzd18NEVaQbZPiX+q2u89VWbeHaOaBGRKX3cq33HpqDxpZjQY
-	 5LvRhjMFLfcVwDBaay3iWfeWxp+JJ22pIWyMRc8g=
+	b=G/rw9oHJxKkmwJnQ3laa8zvW0Qrqu302MIc8olaWcxs3XmklG85wqqjKQ16FKmu2h
+	 9XfINWMOzucdnxwAtHblVVXOOopRsj7IV0XziqEwOUtZnkVyqK+4BloQr8r+nOR1eC
+	 ayk4fvZ9ljZfzU+MxMPKbDIOXe8VzQ23z4iAlG6I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20174F80227;
-	Tue,  8 Jun 2021 16:06:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23C1AF8053E;
+	Tue,  8 Jun 2021 16:06:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CEB6DF8053A; Tue,  8 Jun 2021 16:05:59 +0200 (CEST)
+ id 20679F8019B; Tue,  8 Jun 2021 16:05:59 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AC74EF804AB
+ by alsa1.perex.cz (Postfix) with ESMTPS id CFD5DF80227
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC74EF804AB
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFD5DF80227
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="0E+0dAZE"; 
+ header.b="os7HILAA"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="YcEVVtuT"
+ header.b="4SkmJ4LB"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 2E1051FD56
+ by smtp-out2.suse.de (Postfix) with ESMTP id 6ACE01FD59
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1623161143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=3I72G48i2WW+u6ZQ5B0RTg3fWJO5iEq8hsqAx7cjlXE=;
- b=0E+0dAZEgaZDznIm9Kem8+0cVHg+ukouNKbIevEWDk8vjHlq3tNADsMg7NaBIA0417Aeu8
- Koi2CPXcJBmkgYUPer4qb1S7J8dE5JOQLb7s0ep1TuzWxORiXTR+ZPk39sht4hsbZOSOeK
- qcXFO4sRdZSV1aHLubbahhjqjaAz9V4=
+ bh=HMcBGkcAi8GaQxmxe7DVDCbpP8M7oiW+SCPNRtPQXJ8=;
+ b=os7HILAAZQ5jp6pKjkAZ9+gIXNY7KJYwVjfHqYy5jwXi+gp4dw+YzosZueBVpZW7ERvHAU
+ lOqgiz337ErrEfUZgOCisnqSkcHgBhZd7/Y/sVlTyc9TDfcUG1vsi3yGzuiiI/drYaIe8u
+ +secVkkOYxj35hrAGMxayKPjAAB6Rew=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1623161143;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=3I72G48i2WW+u6ZQ5B0RTg3fWJO5iEq8hsqAx7cjlXE=;
- b=YcEVVtuTSGp/UkFv4oO4LNt/7qMQcQQlWPEifu0zUiucH/axA1jJF+74r9S3M2EEj16fIM
- XU4vof4M0sTWaLDg==
+ bh=HMcBGkcAi8GaQxmxe7DVDCbpP8M7oiW+SCPNRtPQXJ8=;
+ b=4SkmJ4LBeHVlOiIS+GBwoCYbZ0puzcqTpDsam4iGq6Y/CGd/Ze903YestjTpIao68hYOvB
+ eeRn0yt+vj2jzzAQ==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 1EFF0A3B87;
+ by relay2.suse.de (Postfix) with ESMTP id 5B847A3B89;
  Tue,  8 Jun 2021 14:05:43 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 12/66] ALSA: als100: Fix assignment in if condition
-Date: Tue,  8 Jun 2021 16:04:46 +0200
-Message-Id: <20210608140540.17885-13-tiwai@suse.de>
+Subject: [PATCH 17/66] ALSA: als300: Fix assignment in if condition
+Date: Tue,  8 Jun 2021 16:04:51 +0200
+Message-Id: <20210608140540.17885-18-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210608140540.17885-1-tiwai@suse.de>
 References: <20210608140540.17885-1-tiwai@suse.de>
@@ -97,7 +97,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-ISA ALS100 driver code contains lots of assignments in if condition,
+PCI ALS300 driver code contains a few assignments in if condition,
 which is a bad coding style that may confuse readers and occasionally
 lead to bugs.
 
@@ -105,64 +105,81 @@ This patch is merely for coding-style fixes, no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/isa/als100.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ sound/pci/als300.c | 22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
 
-diff --git a/sound/isa/als100.c b/sound/isa/als100.c
-index bacb7a1b930c..d4597fdfe091 100644
---- a/sound/isa/als100.c
-+++ b/sound/isa/als100.c
-@@ -177,7 +177,8 @@ static int snd_card_als100_probe(int dev,
- 		return error;
- 	acard = card->private_data;
+diff --git a/sound/pci/als300.c b/sound/pci/als300.c
+index bd4fd09e982b..668008fc21f7 100644
+--- a/sound/pci/als300.c
++++ b/sound/pci/als300.c
+@@ -298,7 +298,8 @@ static int snd_als300_ac97(struct snd_als300 *chip)
+ 		.read = snd_als300_ac97_read,
+ 	};
  
--	if ((error = snd_card_als100_pnp(dev, acard, pcard, pid))) {
-+	error = snd_card_als100_pnp(dev, acard, pcard, pid);
-+	if (error) {
- 		snd_card_free(card);
- 		return error;
- 	}
-@@ -211,12 +212,14 @@ static int snd_card_als100_probe(int dev,
- 			 dma16[dev]);
- 	}
+-	if ((err = snd_ac97_bus(chip->card, 0, &ops, NULL, &bus)) < 0)
++	err = snd_ac97_bus(chip->card, 0, &ops, NULL, &bus);
++	if (err < 0)
+ 		return err;
  
--	if ((error = snd_sb16dsp_pcm(chip, 0)) < 0) {
-+	error = snd_sb16dsp_pcm(chip, 0);
-+	if (error < 0) {
- 		snd_card_free(card);
- 		return error;
- 	}
+ 	memset(&ac97, 0, sizeof(ac97));
+@@ -621,7 +622,8 @@ static int snd_als300_create(struct snd_card *card,
+ 	};
+ 	*rchip = NULL;
  
--	if ((error = snd_sbmixer_new(chip)) < 0) {
-+	error = snd_sbmixer_new(chip);
-+	if (error < 0) {
- 		snd_card_free(card);
- 		return error;
- 	}
-@@ -245,18 +248,21 @@ static int snd_card_als100_probe(int dev,
- 			snd_printk(KERN_ERR PFX "no OPL device at 0x%lx-0x%lx\n",
- 				   fm_port[dev], fm_port[dev] + 2);
- 		} else {
--			if ((error = snd_opl3_timer_new(opl3, 0, 1)) < 0) {
-+			error = snd_opl3_timer_new(opl3, 0, 1);
-+			if (error < 0) {
- 				snd_card_free(card);
- 				return error;
- 			}
--			if ((error = snd_opl3_hwdep_new(opl3, 0, 1, NULL)) < 0) {
-+			error = snd_opl3_hwdep_new(opl3, 0, 1, NULL);
-+			if (error < 0) {
- 				snd_card_free(card);
- 				return error;
- 			}
- 		}
+-	if ((err = pci_enable_device(pci)) < 0)
++	err = pci_enable_device(pci);
++	if (err < 0)
+ 		return err;
+ 
+ 	if (dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(28))) {
+@@ -643,7 +645,8 @@ static int snd_als300_create(struct snd_card *card,
+ 	chip->chip_type = chip_type;
+ 	spin_lock_init(&chip->reg_lock);
+ 
+-	if ((err = pci_request_regions(pci, "ALS300")) < 0) {
++	err = pci_request_regions(pci, "ALS300");
++	if (err < 0) {
+ 		kfree(chip);
+ 		pci_disable_device(pci);
+ 		return err;
+@@ -673,14 +676,15 @@ static int snd_als300_create(struct snd_card *card,
+ 		return err;
  	}
  
--	if ((error = snd_card_register(card)) < 0) {
-+	error = snd_card_register(card);
-+	if (error < 0) {
+-	if ((err = snd_als300_new_pcm(chip)) < 0) {
++	err = snd_als300_new_pcm(chip);
++	if (err < 0) {
+ 		dev_err(card->dev, "Could not create PCM\n");
+ 		snd_als300_free(chip);
+ 		return err;
+ 	}
+ 
+-	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL,
+-						chip, &ops)) < 0) {
++	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
++	if (err < 0) {
+ 		snd_als300_free(chip);
+ 		return err;
+ 	}
+@@ -741,7 +745,8 @@ static int snd_als300_probe(struct pci_dev *pci,
+ 
+ 	chip_type = pci_id->driver_data;
+ 
+-	if ((err = snd_als300_create(card, pci, chip_type, &chip)) < 0) {
++	err = snd_als300_create(card, pci, chip_type, &chip);
++	if (err < 0) {
  		snd_card_free(card);
- 		return error;
+ 		return err;
+ 	}
+@@ -758,7 +763,8 @@ static int snd_als300_probe(struct pci_dev *pci,
+ 	sprintf(card->longname, "%s at 0x%lx irq %i",
+ 				card->shortname, chip->port, chip->irq);
+ 
+-	if ((err = snd_card_register(card)) < 0) {
++	err = snd_card_register(card);
++	if (err < 0) {
+ 		snd_card_free(card);
+ 		return err;
  	}
 -- 
 2.26.2
