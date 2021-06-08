@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8274C47082
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:30:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04E80C47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:30:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2956B61003
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:30:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2956B61003
+	by mail.kernel.org (Postfix) with ESMTPS id 7922861287
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:30:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7922861287
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BD78318B9;
-	Tue,  8 Jun 2021 16:29:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD78318B9
+	by alsa0.perex.cz (Postfix) with ESMTPS id AC4171792;
+	Tue,  8 Jun 2021 16:30:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC4171792
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623162626;
-	bh=/1irUjfcDbTrN1/DJKGtuJ6wHV8P9TaBQDxURqaTzdM=;
+	s=default; t=1623162654;
+	bh=63a5fEK7qn5VXjZYsCmlUXHq8uLUTju+tB285qTE9C4=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Q5Ph+cZILv9Ht2dqXc6JnHsoeeBmedzwOsNXXih1GD0pGfmBcdsVrm5Ng8nxamJmh
-	 SJvlfNUVKk6X0OODkzFf0a8nKY25mBCvxebxeQFnw9ZwK7xWdi0sK2u75g709fJ0V7
-	 IbscLtsn3jXEjpCntVqd7tyIzMLnQIo49EK5/tX0=
+	b=c8o2hquxqyeif5yeZPv/J4+VJ0hZOgbEaGyPVGUx71q4+148kJVSTPsbf4ZhhDRkE
+	 YIm79H+IQSXzJvkRtGDOU+XOrbNhq6mXop7gUcRmt0cDi0/m4RnjcSZ9LOcEVrVCun
+	 E3dmFmbBPGtU43T2fN/AgUhRFfR5Vm72eb5f75ck=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1067F8074B;
-	Tue,  8 Jun 2021 16:07:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E663F80750;
+	Tue,  8 Jun 2021 16:07:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AF498F8067D; Tue,  8 Jun 2021 16:07:28 +0200 (CEST)
+ id 13309F80684; Tue,  8 Jun 2021 16:07:31 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4C913F8051F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 55CF9F80525
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C913F8051F
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55CF9F80525
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="S3Ukpe4T"; 
+ header.b="hM1jrWEH"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="FDRgcNeN"
+ header.b="eI4Wr+2a"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id EB8A3219FC
+ by smtp-out1.suse.de (Postfix) with ESMTP id B85BB219FA
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1623161145; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=LetJNNQsRS0zetcV8C/nuUiV97hdSqZB08I6LPHIvKQ=;
- b=S3Ukpe4TuokPNmA/WLzOfsNJyXn2xmMy61BSN26CEyWIZEuGE8GF+3sdfgl1CcFYRRTwNv
- Zj7UQ2Ab4lC/rxJCB8mRIDCV3OMSo4ZE31lIz3CNCOVuxLkr/sRaHIPOBXOxhI8upY7gh3
- ySSOMTOVhY2EnQtGE/8V6Q/OukthW7I=
+ bh=Z47lp9c+QxLL+q97FHhqJAGNuwxF6Mn2AGaa81WjnuU=;
+ b=hM1jrWEHoous4VXM23zsibSBphjFqLPjQI7xCs4ZFJFTYmf+dvlsnsqreeNIPJBclktPEi
+ xqlE4/Ec9X0qAj/SbLJl+9IChb8fH6ZHvtobcdVYI2dqhIEuxwVUN1iBWKx/jFeEGlLD0a
+ 3hGSTHjBBMyWAP3iLo1en5XMQYqb0+k=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1623161145;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=LetJNNQsRS0zetcV8C/nuUiV97hdSqZB08I6LPHIvKQ=;
- b=FDRgcNeNp3U3IgbXuvpyOMY0n51lo9wr+jNnhSk6HCVH6/Km9hYZpgjoCea2DACJnjNcYF
- BkCDFoGoxIL3ehAw==
+ bh=Z47lp9c+QxLL+q97FHhqJAGNuwxF6Mn2AGaa81WjnuU=;
+ b=eI4Wr+2apddk2yfboXlTnE3ZVPpwIxQQswRctcPmHkEm6JPAnwcfDyzIIQpCmrFegcEze7
+ qOtw20/JHaiYIOCA==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id D99D6A3B89;
+ by relay2.suse.de (Postfix) with ESMTP id B140BA3B89;
  Tue,  8 Jun 2021 14:05:45 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 64/66] ALSA: poewrmac: Fix assignment in if condition
-Date: Tue,  8 Jun 2021 16:05:38 +0200
-Message-Id: <20210608140540.17885-65-tiwai@suse.de>
+Subject: [PATCH 60/66] ALSA: vx: Fix assignment in if condition
+Date: Tue,  8 Jun 2021 16:05:34 +0200
+Message-Id: <20210608140540.17885-61-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210608140540.17885-1-tiwai@suse.de>
 References: <20210608140540.17885-1-tiwai@suse.de>
@@ -97,7 +97,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-PPC powermac driver code contains a few assignments in if condition,
+VX driver helper code contains lots of assignments in if condition,
 which is a bad coding style that may confuse readers and occasionally
 lead to bugs.
 
@@ -105,439 +105,404 @@ This patch is merely for coding-style fixes, no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/ppc/beep.c     |  5 ++-
- sound/ppc/daca.c     | 24 ++++++++++-----
- sound/ppc/keywest.c  |  6 ++--
- sound/ppc/pmac.c     |  6 ++--
- sound/ppc/powermac.c | 21 ++++++++-----
- sound/ppc/tumbler.c  | 72 +++++++++++++++++++++++++++++---------------
- 6 files changed, 89 insertions(+), 45 deletions(-)
+ sound/drivers/vx/vx_core.c  | 60 ++++++++++++++++++++++++-------------
+ sound/drivers/vx/vx_hwdep.c | 12 +++++---
+ sound/drivers/vx/vx_mixer.c | 39 ++++++++++++++++--------
+ sound/drivers/vx/vx_pcm.c   | 32 +++++++++++++-------
+ 4 files changed, 95 insertions(+), 48 deletions(-)
 
-diff --git a/sound/ppc/beep.c b/sound/ppc/beep.c
-index 6bc586a5db0f..0f4bce1c0d4f 100644
---- a/sound/ppc/beep.c
-+++ b/sound/ppc/beep.c
-@@ -105,7 +105,10 @@ static int snd_pmac_beep_event(struct input_dev *dev, unsigned int type,
- 	}
- 
- 	chip = input_get_drvdata(dev);
--	if (! chip || (beep = chip->beep) == NULL)
-+	if (!chip)
-+		return -1;
-+	beep = chip->beep;
-+	if (!beep)
- 		return -1;
- 
- 	if (! hz) {
-diff --git a/sound/ppc/daca.c b/sound/ppc/daca.c
-index 1eb698dafd93..4da9278dd58a 100644
---- a/sound/ppc/daca.c
-+++ b/sound/ppc/daca.c
-@@ -84,7 +84,8 @@ static int daca_get_deemphasis(struct snd_kcontrol *kcontrol,
- {
- 	struct snd_pmac *chip = snd_kcontrol_chip(kcontrol);
- 	struct pmac_daca *mix;
--	if (! (mix = chip->mixer_data))
-+	mix = chip->mixer_data;
-+	if (!mix)
- 		return -ENODEV;
- 	ucontrol->value.integer.value[0] = mix->deemphasis ? 1 : 0;
- 	return 0;
-@@ -97,7 +98,8 @@ static int daca_put_deemphasis(struct snd_kcontrol *kcontrol,
- 	struct pmac_daca *mix;
- 	int change;
- 
--	if (! (mix = chip->mixer_data))
-+	mix = chip->mixer_data;
-+	if (!mix)
- 		return -ENODEV;
- 	change = mix->deemphasis != ucontrol->value.integer.value[0];
- 	if (change) {
-@@ -123,7 +125,8 @@ static int daca_get_volume(struct snd_kcontrol *kcontrol,
- {
- 	struct snd_pmac *chip = snd_kcontrol_chip(kcontrol);
- 	struct pmac_daca *mix;
--	if (! (mix = chip->mixer_data))
-+	mix = chip->mixer_data;
-+	if (!mix)
- 		return -ENODEV;
- 	ucontrol->value.integer.value[0] = mix->left_vol;
- 	ucontrol->value.integer.value[1] = mix->right_vol;
-@@ -138,7 +141,8 @@ static int daca_put_volume(struct snd_kcontrol *kcontrol,
- 	unsigned int vol[2];
- 	int change;
- 
--	if (! (mix = chip->mixer_data))
-+	mix = chip->mixer_data;
-+	if (!mix)
- 		return -ENODEV;
- 	vol[0] = ucontrol->value.integer.value[0];
- 	vol[1] = ucontrol->value.integer.value[1];
-@@ -162,7 +166,8 @@ static int daca_get_amp(struct snd_kcontrol *kcontrol,
- {
- 	struct snd_pmac *chip = snd_kcontrol_chip(kcontrol);
- 	struct pmac_daca *mix;
--	if (! (mix = chip->mixer_data))
-+	mix = chip->mixer_data;
-+	if (!mix)
- 		return -ENODEV;
- 	ucontrol->value.integer.value[0] = mix->amp_on ? 1 : 0;
- 	return 0;
-@@ -175,7 +180,8 @@ static int daca_put_amp(struct snd_kcontrol *kcontrol,
- 	struct pmac_daca *mix;
- 	int change;
- 
--	if (! (mix = chip->mixer_data))
-+	mix = chip->mixer_data;
-+	if (!mix)
- 		return -ENODEV;
- 	change = mix->amp_on != ucontrol->value.integer.value[0];
- 	if (change) {
-@@ -248,7 +254,8 @@ int snd_pmac_daca_init(struct snd_pmac *chip)
- 	mix->i2c.addr = DACA_I2C_ADDR;
- 	mix->i2c.init_client = daca_init_client;
- 	mix->i2c.name = "DACA";
--	if ((err = snd_pmac_keywest_init(&mix->i2c)) < 0)
-+	err = snd_pmac_keywest_init(&mix->i2c);
-+	if (err < 0)
- 		return err;
- 
- 	/*
-@@ -257,7 +264,8 @@ int snd_pmac_daca_init(struct snd_pmac *chip)
- 	strcpy(chip->card->mixername, "PowerMac DACA");
- 
- 	for (i = 0; i < ARRAY_SIZE(daca_mixers); i++) {
--		if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&daca_mixers[i], chip))) < 0)
-+		err = snd_ctl_add(chip->card, snd_ctl_new1(&daca_mixers[i], chip));
-+		if (err < 0)
- 			return err;
- 	}
- 
-diff --git a/sound/ppc/keywest.c b/sound/ppc/keywest.c
-index a8915100d6bb..6e5daae18f9d 100644
---- a/sound/ppc/keywest.c
-+++ b/sound/ppc/keywest.c
-@@ -114,7 +114,8 @@ int snd_pmac_tumbler_post_init(void)
- 	if (!keywest_ctx || !keywest_ctx->client)
- 		return -ENXIO;
- 
--	if ((err = keywest_ctx->init_client(keywest_ctx)) < 0) {
-+	err = keywest_ctx->init_client(keywest_ctx);
-+	if (err < 0) {
- 		snd_printk(KERN_ERR "tumbler: %i :cannot initialize the MCS\n", err);
- 		return err;
- 	}
-@@ -136,7 +137,8 @@ int snd_pmac_keywest_init(struct pmac_keywest *i2c)
- 
- 	keywest_ctx = i2c;
- 
--	if ((err = i2c_add_driver(&keywest_driver))) {
-+	err = i2c_add_driver(&keywest_driver);
-+	if (err) {
- 		snd_printk(KERN_ERR "cannot register keywest i2c driver\n");
- 		i2c_put_adapter(adap);
- 		return err;
-diff --git a/sound/ppc/pmac.c b/sound/ppc/pmac.c
-index 2e750b317be1..84058bbf9d12 100644
---- a/sound/ppc/pmac.c
-+++ b/sound/ppc/pmac.c
-@@ -1160,7 +1160,8 @@ int snd_pmac_new(struct snd_card *card, struct snd_pmac **chip_return)
- 	chip->playback.stream = SNDRV_PCM_STREAM_PLAYBACK;
- 	chip->capture.stream = SNDRV_PCM_STREAM_CAPTURE;
- 
--	if ((err = snd_pmac_detect(chip)) < 0)
-+	err = snd_pmac_detect(chip);
-+	if (err < 0)
- 		goto __error;
- 
- 	if (snd_pmac_dbdma_alloc(chip, &chip->playback.cmd, PMAC_MAX_FRAGS + 1) < 0 ||
-@@ -1299,7 +1300,8 @@ int snd_pmac_new(struct snd_card *card, struct snd_pmac **chip_return)
- 	/* Reset dbdma channels */
- 	snd_pmac_dbdma_reset(chip);
- 
--	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0)
-+	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
-+	if (err < 0)
- 		goto __error;
- 
- 	*chip_return = chip;
-diff --git a/sound/ppc/powermac.c b/sound/ppc/powermac.c
-index 9fb51ebafde1..1d2865c43d4b 100644
---- a/sound/ppc/powermac.c
-+++ b/sound/ppc/powermac.c
-@@ -48,7 +48,8 @@ static int snd_pmac_probe(struct platform_device *devptr)
- 	if (err < 0)
- 		return err;
- 
--	if ((err = snd_pmac_new(card, &chip)) < 0)
-+	err = snd_pmac_new(card, &chip);
-+	if (err < 0)
- 		goto __error;
- 	card->private_data = chip;
- 
-@@ -58,7 +59,8 @@ static int snd_pmac_probe(struct platform_device *devptr)
- 		strcpy(card->shortname, "PowerMac Burgundy");
- 		sprintf(card->longname, "%s (Dev %d) Sub-frame %d",
- 			card->shortname, chip->device_id, chip->subframe);
--		if ((err = snd_pmac_burgundy_init(chip)) < 0)
-+		err = snd_pmac_burgundy_init(chip);
-+		if (err < 0)
- 			goto __error;
- 		break;
- 	case PMAC_DACA:
-@@ -66,7 +68,8 @@ static int snd_pmac_probe(struct platform_device *devptr)
- 		strcpy(card->shortname, "PowerMac DACA");
- 		sprintf(card->longname, "%s (Dev %d) Sub-frame %d",
- 			card->shortname, chip->device_id, chip->subframe);
--		if ((err = snd_pmac_daca_init(chip)) < 0)
-+		err = snd_pmac_daca_init(chip);
-+		if (err < 0)
- 			goto __error;
- 		break;
- 	case PMAC_TUMBLER:
-@@ -92,7 +95,8 @@ static int snd_pmac_probe(struct platform_device *devptr)
- 			name_ext = "";
- 		sprintf(card->longname, "%s%s Rev %d",
- 			card->shortname, name_ext, chip->revision);
--		if ((err = snd_pmac_awacs_init(chip)) < 0)
-+		err = snd_pmac_awacs_init(chip);
-+		if (err < 0)
- 			goto __error;
- 		break;
- 	default:
-@@ -101,14 +105,16 @@ static int snd_pmac_probe(struct platform_device *devptr)
- 		goto __error;
- 	}
- 
--	if ((err = snd_pmac_pcm_new(chip)) < 0)
-+	err = snd_pmac_pcm_new(chip);
-+	if (err < 0)
- 		goto __error;
- 
- 	chip->initialized = 1;
- 	if (enable_beep)
- 		snd_pmac_attach_beep(chip);
- 
--	if ((err = snd_card_register(card)) < 0)
-+	err = snd_card_register(card);
-+	if (err < 0)
- 		goto __error;
- 
- 	platform_set_drvdata(devptr, card);
-@@ -162,7 +168,8 @@ static int __init alsa_card_pmac_init(void)
+diff --git a/sound/drivers/vx/vx_core.c b/sound/drivers/vx/vx_core.c
+index a22e5b1a5458..a10449af5a76 100644
+--- a/sound/drivers/vx/vx_core.c
++++ b/sound/drivers/vx/vx_core.c
+@@ -110,20 +110,25 @@ static int vx_transfer_end(struct vx_core *chip, int cmd)
  {
  	int err;
  
--	if ((err = platform_driver_register(&snd_pmac_driver)) < 0)
-+	err = platform_driver_register(&snd_pmac_driver);
+-	if ((err = vx_reset_chk(chip)) < 0)
++	err = vx_reset_chk(chip);
 +	if (err < 0)
  		return err;
- 	device = platform_device_register_simple(SND_PMAC_DRIVER, -1, NULL, 0);
- 	return 0;
-diff --git a/sound/ppc/tumbler.c b/sound/ppc/tumbler.c
-index 6e5bdaa262b0..c65e74d7cd0a 100644
---- a/sound/ppc/tumbler.c
-+++ b/sound/ppc/tumbler.c
-@@ -402,7 +402,8 @@ static int tumbler_get_drc_value(struct snd_kcontrol *kcontrol,
- {
- 	struct snd_pmac *chip = snd_kcontrol_chip(kcontrol);
- 	struct pmac_tumbler *mix;
--	if (! (mix = chip->mixer_data))
-+	mix = chip->mixer_data;
-+	if (!mix)
- 		return -ENODEV;
- 	ucontrol->value.integer.value[0] = mix->drc_range;
- 	return 0;
-@@ -416,7 +417,8 @@ static int tumbler_put_drc_value(struct snd_kcontrol *kcontrol,
- 	unsigned int val;
- 	int change;
  
--	if (! (mix = chip->mixer_data))
-+	mix = chip->mixer_data;
-+	if (!mix)
- 		return -ENODEV;
- 	val = ucontrol->value.integer.value[0];
- 	if (chip->model == PMAC_TUMBLER) {
-@@ -442,7 +444,8 @@ static int tumbler_get_drc_switch(struct snd_kcontrol *kcontrol,
- {
- 	struct snd_pmac *chip = snd_kcontrol_chip(kcontrol);
- 	struct pmac_tumbler *mix;
--	if (! (mix = chip->mixer_data))
-+	mix = chip->mixer_data;
-+	if (!mix)
- 		return -ENODEV;
- 	ucontrol->value.integer.value[0] = mix->drc_enable;
- 	return 0;
-@@ -455,7 +458,8 @@ static int tumbler_put_drc_switch(struct snd_kcontrol *kcontrol,
- 	struct pmac_tumbler *mix;
- 	int change;
+ 	/* irq MESS_READ/WRITE_END */
+-	if ((err = vx_send_irq_dsp(chip, cmd)) < 0)
++	err = vx_send_irq_dsp(chip, cmd);
++	if (err < 0)
+ 		return err;
  
--	if (! (mix = chip->mixer_data))
-+	mix = chip->mixer_data;
-+	if (!mix)
- 		return -ENODEV;
- 	change = mix->drc_enable != ucontrol->value.integer.value[0];
- 	if (change) {
-@@ -524,7 +528,8 @@ static int tumbler_get_mono(struct snd_kcontrol *kcontrol,
- 	struct tumbler_mono_vol *info = (struct tumbler_mono_vol *)kcontrol->private_value;
- 	struct snd_pmac *chip = snd_kcontrol_chip(kcontrol);
- 	struct pmac_tumbler *mix;
--	if (! (mix = chip->mixer_data))
-+	mix = chip->mixer_data;
-+	if (!mix)
- 		return -ENODEV;
- 	ucontrol->value.integer.value[0] = mix->mono_vol[info->index];
- 	return 0;
-@@ -539,7 +544,8 @@ static int tumbler_put_mono(struct snd_kcontrol *kcontrol,
- 	unsigned int vol;
- 	int change;
+ 	/* Wait CHK = 1 */
+-	if ((err = vx_wait_isr_bit(chip, ISR_CHK)) < 0)
++	err = vx_wait_isr_bit(chip, ISR_CHK);
++	if (err < 0)
+ 		return err;
  
--	if (! (mix = chip->mixer_data))
-+	mix = chip->mixer_data;
-+	if (!mix)
- 		return -ENODEV;
- 	vol = ucontrol->value.integer.value[0];
- 	if (vol >= info->max)
-@@ -669,7 +675,8 @@ static int snapper_get_mix(struct snd_kcontrol *kcontrol,
- 	int idx = (int)kcontrol->private_value;
- 	struct snd_pmac *chip = snd_kcontrol_chip(kcontrol);
- 	struct pmac_tumbler *mix;
--	if (! (mix = chip->mixer_data))
-+	mix = chip->mixer_data;
-+	if (!mix)
- 		return -ENODEV;
- 	ucontrol->value.integer.value[0] = mix->mix_vol[idx][0];
- 	ucontrol->value.integer.value[1] = mix->mix_vol[idx][1];
-@@ -685,7 +692,8 @@ static int snapper_put_mix(struct snd_kcontrol *kcontrol,
- 	unsigned int vol[2];
- 	int change;
- 
--	if (! (mix = chip->mixer_data))
-+	mix = chip->mixer_data;
-+	if (!mix)
- 		return -ENODEV;
- 	vol[0] = ucontrol->value.integer.value[0];
- 	vol[1] = ucontrol->value.integer.value[1];
-@@ -716,7 +724,8 @@ static int tumbler_get_mute_switch(struct snd_kcontrol *kcontrol,
- 	struct snd_pmac *chip = snd_kcontrol_chip(kcontrol);
- 	struct pmac_tumbler *mix;
- 	struct pmac_gpio *gp;
--	if (! (mix = chip->mixer_data))
-+	mix = chip->mixer_data;
-+	if (!mix)
- 		return -ENODEV;
- 	switch(kcontrol->private_value) {
- 	case TUMBLER_MUTE_HP:
-@@ -745,7 +754,8 @@ static int tumbler_put_mute_switch(struct snd_kcontrol *kcontrol,
- 	if (chip->update_automute && chip->auto_mute)
- 		return 0; /* don't touch in the auto-mute mode */
- #endif	
--	if (! (mix = chip->mixer_data))
-+	mix = chip->mixer_data;
-+	if (!mix)
- 		return -ENODEV;
- 	switch(kcontrol->private_value) {
- 	case TUMBLER_MUTE_HP:
-@@ -1361,7 +1371,8 @@ int snd_pmac_tumbler_init(struct snd_pmac *chip)
- 			break;
+ 	/* If error, Read RX */
+-	if ((err = vx_inb(chip, ISR)) & ISR_ERR) {
+-		if ((err = vx_wait_for_rx_full(chip)) < 0) {
++	err = vx_inb(chip, ISR);
++	if (err & ISR_ERR) {
++		err = vx_wait_for_rx_full(chip);
++		if (err < 0) {
+ 			snd_printd(KERN_DEBUG "transfer_end: error in rx_full\n");
+ 			return err;
  		}
+@@ -232,7 +237,8 @@ int vx_send_msg_nolock(struct vx_core *chip, struct vx_rmh *rmh)
+ 	if (chip->chip_status & VX_STAT_IS_STALE)
+ 		return -EBUSY;
+ 
+-	if ((err = vx_reset_chk(chip)) < 0) {
++	err = vx_reset_chk(chip);
++	if (err < 0) {
+ 		snd_printd(KERN_DEBUG "vx_send_msg: vx_reset_chk error\n");
+ 		return err;
  	}
--	if ((err = tumbler_init(chip)) < 0)
-+	err = tumbler_init(chip);
+@@ -254,7 +260,8 @@ int vx_send_msg_nolock(struct vx_core *chip, struct vx_rmh *rmh)
+ 		rmh->Cmd[0] &= MASK_1_WORD_COMMAND;
+ 
+ 	/* Wait for TX empty */
+-	if ((err = vx_wait_isr_bit(chip, ISR_TX_EMPTY)) < 0) {
++	err = vx_wait_isr_bit(chip, ISR_TX_EMPTY);
++	if (err < 0) {
+ 		snd_printd(KERN_DEBUG "vx_send_msg: wait tx empty error\n");
+ 		return err;
+ 	}
+@@ -265,18 +272,21 @@ int vx_send_msg_nolock(struct vx_core *chip, struct vx_rmh *rmh)
+ 	vx_outb(chip, TXL, rmh->Cmd[0] & 0xff);
+ 
+ 	/* Trigger irq MESSAGE */
+-	if ((err = vx_send_irq_dsp(chip, IRQ_MESSAGE)) < 0) {
++	err = vx_send_irq_dsp(chip, IRQ_MESSAGE);
++	if (err < 0) {
+ 		snd_printd(KERN_DEBUG "vx_send_msg: send IRQ_MESSAGE error\n");
+ 		return err;
+ 	}
+ 
+ 	/* Wait for CHK = 1 */
+-	if ((err = vx_wait_isr_bit(chip, ISR_CHK)) < 0)
++	err = vx_wait_isr_bit(chip, ISR_CHK);
 +	if (err < 0)
  		return err;
  
- 	/* set up TAS */
-@@ -1392,7 +1403,8 @@ int snd_pmac_tumbler_init(struct snd_pmac *chip)
- 		chipname = "Snapper";
- 	}
- 
--	if ((err = snd_pmac_keywest_init(&mix->i2c)) < 0)
-+	err = snd_pmac_keywest_init(&mix->i2c);
-+	if (err < 0)
- 		return err;
- 
- 	/*
-@@ -1402,28 +1414,34 @@ int snd_pmac_tumbler_init(struct snd_pmac *chip)
- 
- 	if (chip->model == PMAC_TUMBLER) {
- 		for (i = 0; i < ARRAY_SIZE(tumbler_mixers); i++) {
--			if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&tumbler_mixers[i], chip))) < 0)
-+			err = snd_ctl_add(chip->card, snd_ctl_new1(&tumbler_mixers[i], chip));
-+			if (err < 0)
+ 	/* If error, get error value from RX */
+ 	if (vx_inb(chip, ISR) & ISR_ERR) {
+-		if ((err = vx_wait_for_rx_full(chip)) < 0) {
++		err = vx_wait_for_rx_full(chip);
++		if (err < 0) {
+ 			snd_printd(KERN_DEBUG "vx_send_msg: rx_full read error\n");
+ 			return err;
+ 		}
+@@ -292,7 +302,8 @@ int vx_send_msg_nolock(struct vx_core *chip, struct vx_rmh *rmh)
+ 	if (rmh->LgCmd > 1) {
+ 		for (i = 1; i < rmh->LgCmd; i++) {
+ 			/* Wait for TX ready */
+-			if ((err = vx_wait_isr_bit(chip, ISR_TX_READY)) < 0) {
++			err = vx_wait_isr_bit(chip, ISR_TX_READY);
++			if (err < 0) {
+ 				snd_printd(KERN_DEBUG "vx_send_msg: tx_ready error\n");
  				return err;
- 		}
- 	} else {
- 		for (i = 0; i < ARRAY_SIZE(snapper_mixers); i++) {
--			if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&snapper_mixers[i], chip))) < 0)
-+			err = snd_ctl_add(chip->card, snd_ctl_new1(&snapper_mixers[i], chip));
-+			if (err < 0)
+ 			}
+@@ -303,13 +314,15 @@ int vx_send_msg_nolock(struct vx_core *chip, struct vx_rmh *rmh)
+ 			vx_outb(chip, TXL, rmh->Cmd[i] & 0xff);
+ 
+ 			/* Trigger irq MESS_READ_NEXT */
+-			if ((err = vx_send_irq_dsp(chip, IRQ_MESS_READ_NEXT)) < 0) {
++			err = vx_send_irq_dsp(chip, IRQ_MESS_READ_NEXT);
++			if (err < 0) {
+ 				snd_printd(KERN_DEBUG "vx_send_msg: IRQ_READ_NEXT error\n");
  				return err;
+ 			}
  		}
- 	}
- 	chip->master_sw_ctl = snd_ctl_new1(&tumbler_hp_sw, chip);
--	if ((err = snd_ctl_add(chip->card, chip->master_sw_ctl)) < 0)
-+	err = snd_ctl_add(chip->card, chip->master_sw_ctl);
+ 		/* Wait for TX empty */
+-		if ((err = vx_wait_isr_bit(chip, ISR_TX_READY)) < 0) {
++		err = vx_wait_isr_bit(chip, ISR_TX_READY);
++		if (err < 0) {
+ 			snd_printd(KERN_DEBUG "vx_send_msg: TX_READY error\n");
+ 			return err;
+ 		}
+@@ -362,17 +375,21 @@ int vx_send_rih_nolock(struct vx_core *chip, int cmd)
+ #if 0
+ 	printk(KERN_DEBUG "send_rih: cmd = 0x%x\n", cmd);
+ #endif
+-	if ((err = vx_reset_chk(chip)) < 0)
++	err = vx_reset_chk(chip);
 +	if (err < 0)
  		return err;
- 	chip->speaker_sw_ctl = snd_ctl_new1(&tumbler_speaker_sw, chip);
--	if ((err = snd_ctl_add(chip->card, chip->speaker_sw_ctl)) < 0)
-+	err = snd_ctl_add(chip->card, chip->speaker_sw_ctl);
+ 	/* send the IRQ */
+-	if ((err = vx_send_irq_dsp(chip, cmd)) < 0)
++	err = vx_send_irq_dsp(chip, cmd);
 +	if (err < 0)
  		return err;
- 	if (mix->line_mute.addr != 0) {
- 		chip->lineout_sw_ctl = snd_ctl_new1(&tumbler_lineout_sw, chip);
--		if ((err = snd_ctl_add(chip->card, chip->lineout_sw_ctl)) < 0)
-+		err = snd_ctl_add(chip->card, chip->lineout_sw_ctl);
+ 	/* Wait CHK = 1 */
+-	if ((err = vx_wait_isr_bit(chip, ISR_CHK)) < 0)
++	err = vx_wait_isr_bit(chip, ISR_CHK);
++	if (err < 0)
+ 		return err;
+ 	/* If error, read RX */
+ 	if (vx_inb(chip, ISR) & ISR_ERR) {
+-		if ((err = vx_wait_for_rx_full(chip)) < 0)
++		err = vx_wait_for_rx_full(chip);
++		if (err < 0)
+ 			return err;
+ 		err = vx_inb(chip, RXH) << 16;
+ 		err |= vx_inb(chip, RXM) << 8;
+@@ -648,7 +665,8 @@ int snd_vx_dsp_boot(struct vx_core *chip, const struct firmware *boot)
+ 	vx_reset_board(chip, cold_reset);
+ 	vx_validate_irq(chip, 0);
+ 
+-	if ((err = snd_vx_load_boot_image(chip, boot)) < 0)
++	err = snd_vx_load_boot_image(chip, boot);
++	if (err < 0)
+ 		return err;
+ 	msleep(10);
+ 
+@@ -678,7 +696,8 @@ int snd_vx_dsp_load(struct vx_core *chip, const struct firmware *dsp)
+ 	for (i = 0; i < dsp->size; i += 3) {
+ 		image = dsp->data + i;
+ 		/* Wait DSP ready for a new read */
+-		if ((err = vx_wait_isr_bit(chip, ISR_TX_EMPTY)) < 0) {
++		err = vx_wait_isr_bit(chip, ISR_TX_EMPTY);
++		if (err < 0) {
+ 			printk(KERN_ERR
+ 			       "dsp loading error at position %d\n", i);
+ 			return err;
+@@ -698,7 +717,8 @@ int snd_vx_dsp_load(struct vx_core *chip, const struct firmware *dsp)
+ 
+ 	msleep(200);
+ 
+-	if ((err = vx_wait_isr_bit(chip, ISR_CHK)) < 0)
++	err = vx_wait_isr_bit(chip, ISR_CHK);
++	if (err < 0)
+ 		return err;
+ 
+ 	vx_toggle_dac_mute(chip, 0);
+diff --git a/sound/drivers/vx/vx_hwdep.c b/sound/drivers/vx/vx_hwdep.c
+index 01baa6d872e9..efbb644edba1 100644
+--- a/sound/drivers/vx/vx_hwdep.c
++++ b/sound/drivers/vx/vx_hwdep.c
+@@ -78,15 +78,19 @@ int snd_vx_setup_firmware(struct vx_core *chip)
+ 
+ 	/* ok, we reached to the last one */
+ 	/* create the devices if not built yet */
+-	if ((err = snd_vx_pcm_new(chip)) < 0)
++	err = snd_vx_pcm_new(chip);
++	if (err < 0)
+ 		return err;
+ 
+-	if ((err = snd_vx_mixer_new(chip)) < 0)
++	err = snd_vx_mixer_new(chip);
++	if (err < 0)
+ 		return err;
+ 
+-	if (chip->ops->add_controls)
+-		if ((err = chip->ops->add_controls(chip)) < 0)
++	if (chip->ops->add_controls) {
++		err = chip->ops->add_controls(chip);
++		if (err < 0)
+ 			return err;
++	}
+ 
+ 	chip->chip_status |= VX_STAT_DEVICE_INIT;
+ 	chip->chip_status |= VX_STAT_CHIP_INIT;
+diff --git a/sound/drivers/vx/vx_mixer.c b/sound/drivers/vx/vx_mixer.c
+index 13099f8c84d6..53d78eb13c53 100644
+--- a/sound/drivers/vx/vx_mixer.c
++++ b/sound/drivers/vx/vx_mixer.c
+@@ -910,7 +910,8 @@ int snd_vx_mixer_new(struct vx_core *chip)
+ 		temp = vx_control_output_level;
+ 		temp.index = i;
+ 		temp.tlv.p = chip->hw->output_level_db_scale;
+-		if ((err = snd_ctl_add(card, snd_ctl_new1(&temp, chip))) < 0)
++		err = snd_ctl_add(card, snd_ctl_new1(&temp, chip));
 +		if (err < 0)
  			return err;
  	}
- 	chip->drc_sw_ctl = snd_ctl_new1(&tumbler_drc_sw, chip);
--	if ((err = snd_ctl_add(chip->card, chip->drc_sw_ctl)) < 0)
-+	err = snd_ctl_add(chip->card, chip->drc_sw_ctl);
+ 
+@@ -921,22 +922,26 @@ int snd_vx_mixer_new(struct vx_core *chip)
+ 		temp.index = i;
+ 		temp.name = "PCM Playback Volume";
+ 		temp.private_value = val;
+-		if ((err = snd_ctl_add(card, snd_ctl_new1(&temp, chip))) < 0)
++		err = snd_ctl_add(card, snd_ctl_new1(&temp, chip));
++		if (err < 0)
+ 			return err;
+ 		temp = vx_control_output_switch;
+ 		temp.index = i;
+ 		temp.private_value = val;
+-		if ((err = snd_ctl_add(card, snd_ctl_new1(&temp, chip))) < 0)
++		err = snd_ctl_add(card, snd_ctl_new1(&temp, chip));
++		if (err < 0)
+ 			return err;
+ 		temp = vx_control_monitor_gain;
+ 		temp.index = i;
+ 		temp.private_value = val;
+-		if ((err = snd_ctl_add(card, snd_ctl_new1(&temp, chip))) < 0)
++		err = snd_ctl_add(card, snd_ctl_new1(&temp, chip));
++		if (err < 0)
+ 			return err;
+ 		temp = vx_control_monitor_switch;
+ 		temp.index = i;
+ 		temp.private_value = val;
+-		if ((err = snd_ctl_add(card, snd_ctl_new1(&temp, chip))) < 0)
++		err = snd_ctl_add(card, snd_ctl_new1(&temp, chip));
++		if (err < 0)
+ 			return err;
+ 	}
+ 	for (i = 0; i < chip->hw->num_outs; i++) {
+@@ -944,20 +949,25 @@ int snd_vx_mixer_new(struct vx_core *chip)
+ 		temp.index = i;
+ 		temp.name = "PCM Capture Volume";
+ 		temp.private_value = (i * 2) | (1 << 8);
+-		if ((err = snd_ctl_add(card, snd_ctl_new1(&temp, chip))) < 0)
++		err = snd_ctl_add(card, snd_ctl_new1(&temp, chip));
++		if (err < 0)
+ 			return err;
+ 	}
+ 
+ 	/* Audio source */
+-	if ((err = snd_ctl_add(card, snd_ctl_new1(&vx_control_audio_src, chip))) < 0)
++	err = snd_ctl_add(card, snd_ctl_new1(&vx_control_audio_src, chip));
++	if (err < 0)
+ 		return err;
+ 	/* clock mode */
+-	if ((err = snd_ctl_add(card, snd_ctl_new1(&vx_control_clock_mode, chip))) < 0)
++	err = snd_ctl_add(card, snd_ctl_new1(&vx_control_clock_mode, chip));
++	if (err < 0)
+ 		return err;
+ 	/* IEC958 controls */
+-	if ((err = snd_ctl_add(card, snd_ctl_new1(&vx_control_iec958_mask, chip))) < 0)
++	err = snd_ctl_add(card, snd_ctl_new1(&vx_control_iec958_mask, chip));
++	if (err < 0)
+ 		return err;
+-	if ((err = snd_ctl_add(card, snd_ctl_new1(&vx_control_iec958, chip))) < 0)
++	err = snd_ctl_add(card, snd_ctl_new1(&vx_control_iec958, chip));
++	if (err < 0)
+ 		return err;
+ 	/* VU, peak, saturation meters */
+ 	for (c = 0; c < 2; c++) {
+@@ -968,7 +978,8 @@ int snd_vx_mixer_new(struct vx_core *chip)
+ 				temp = vx_control_saturation;
+ 				temp.index = i;
+ 				temp.private_value = val;
+-				if ((err = snd_ctl_add(card, snd_ctl_new1(&temp, chip))) < 0)
++				err = snd_ctl_add(card, snd_ctl_new1(&temp, chip));
++				if (err < 0)
+ 					return err;
+ 			}
+ 			sprintf(name, "%s VU Meter", dir[c]);
+@@ -976,14 +987,16 @@ int snd_vx_mixer_new(struct vx_core *chip)
+ 			temp.index = i;
+ 			temp.name = name;
+ 			temp.private_value = val;
+-			if ((err = snd_ctl_add(card, snd_ctl_new1(&temp, chip))) < 0)
++			err = snd_ctl_add(card, snd_ctl_new1(&temp, chip));
++			if (err < 0)
+ 				return err;
+ 			sprintf(name, "%s Peak Meter", dir[c]);
+ 			temp = vx_control_peak_meter;
+ 			temp.index = i;
+ 			temp.name = name;
+ 			temp.private_value = val;
+-			if ((err = snd_ctl_add(card, snd_ctl_new1(&temp, chip))) < 0)
++			err = snd_ctl_add(card, snd_ctl_new1(&temp, chip));
++			if (err < 0)
+ 				return err;
+ 		}
+ 	}
+diff --git a/sound/drivers/vx/vx_pcm.c b/sound/drivers/vx/vx_pcm.c
+index daffda99b4f7..3924f5283745 100644
+--- a/sound/drivers/vx/vx_pcm.c
++++ b/sound/drivers/vx/vx_pcm.c
+@@ -341,10 +341,12 @@ static int vx_toggle_pipe(struct vx_core *chip, struct vx_pipe *pipe, int state)
+ 		}
+ 	}
+     
+-	if ((err = vx_conf_pipe(chip, pipe)) < 0)
++	err = vx_conf_pipe(chip, pipe);
 +	if (err < 0)
  		return err;
  
- 	/* set initial DRC range to 60% */
-@@ -1446,9 +1464,11 @@ int snd_pmac_tumbler_init(struct snd_pmac *chip)
- 	device_change_chip = chip;
- 
- #ifdef PMAC_SUPPORT_AUTOMUTE
--	if ((mix->headphone_irq >=0 || mix->lineout_irq >= 0)
--	    && (err = snd_pmac_add_automute(chip)) < 0)
--		return err;
-+	if (mix->headphone_irq >= 0 || mix->lineout_irq >= 0) {
-+		err = snd_pmac_add_automute(chip);
+-	if ((err = vx_send_irqa(chip)) < 0)
++	err = vx_send_irqa(chip);
++	if (err < 0)
+ 		return err;
+     
+ 	/* If it completes successfully, wait for the pipes
+@@ -680,8 +682,9 @@ static void vx_pcm_playback_transfer(struct vx_core *chip,
+ 	if (! pipe->prepared || (chip->chip_status & VX_STAT_IS_STALE))
+ 		return;
+ 	for (i = 0; i < nchunks; i++) {
+-		if ((err = vx_pcm_playback_transfer_chunk(chip, runtime, pipe,
+-							  chip->ibl.size)) < 0)
++		err = vx_pcm_playback_transfer_chunk(chip, runtime, pipe,
++						     chip->ibl.size);
 +		if (err < 0)
-+			return err;
-+	}
- 	chip->detect_headphone = tumbler_detect_headphone;
- 	chip->update_automute = tumbler_update_automute;
- 	tumbler_update_automute(chip, 0); /* update the status only */
-@@ -1456,8 +1476,9 @@ int snd_pmac_tumbler_init(struct snd_pmac *chip)
- 	/* activate headphone status interrupts */
-   	if (mix->headphone_irq >= 0) {
- 		unsigned char val;
--		if ((err = request_irq(mix->headphone_irq, headphone_intr, 0,
--				       "Sound Headphone Detection", chip)) < 0)
-+		err = request_irq(mix->headphone_irq, headphone_intr, 0,
-+				  "Sound Headphone Detection", chip);
-+		if (err < 0)
- 			return 0;
- 		/* activate headphone status interrupts */
- 		val = do_gpio_read(&mix->hp_detect);
-@@ -1465,8 +1486,9 @@ int snd_pmac_tumbler_init(struct snd_pmac *chip)
+ 			return;
  	}
-   	if (mix->lineout_irq >= 0) {
- 		unsigned char val;
--		if ((err = request_irq(mix->lineout_irq, headphone_intr, 0,
--				       "Sound Lineout Detection", chip)) < 0)
-+		err = request_irq(mix->lineout_irq, headphone_intr, 0,
-+				  "Sound Lineout Detection", chip);
+ }
+@@ -698,7 +701,8 @@ static void vx_pcm_playback_update(struct vx_core *chip,
+ 	struct snd_pcm_runtime *runtime = subs->runtime;
+ 
+ 	if (pipe->running && ! (chip->chip_status & VX_STAT_IS_STALE)) {
+-		if ((err = vx_update_pipe_position(chip, runtime, pipe)) < 0)
++		err = vx_update_pipe_position(chip, runtime, pipe);
 +		if (err < 0)
- 			return 0;
- 		/* activate headphone status interrupts */
- 		val = do_gpio_read(&mix->line_detect);
+ 			return;
+ 		if (pipe->transferred >= (int)runtime->period_size) {
+ 			pipe->transferred %= runtime->period_size;
+@@ -747,11 +751,13 @@ static int vx_pcm_trigger(struct snd_pcm_substream *subs, int cmd)
+ 		pipe->running = 0;
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		if ((err = vx_toggle_pipe(chip, pipe, 0)) < 0)
++		err = vx_toggle_pipe(chip, pipe, 0);
++		if (err < 0)
+ 			return err;
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		if ((err = vx_toggle_pipe(chip, pipe, 1)) < 0)
++		err = vx_toggle_pipe(chip, pipe, 1);
++		if (err < 0)
+ 			return err;
+ 		break;
+ 	default:
+@@ -792,13 +798,15 @@ static int vx_pcm_prepare(struct snd_pcm_substream *subs)
+ 		snd_printdd(KERN_DEBUG "reopen the pipe with data_mode = %d\n", data_mode);
+ 		vx_init_rmh(&rmh, CMD_FREE_PIPE);
+ 		vx_set_pipe_cmd_params(&rmh, 0, pipe->number, 0);
+-		if ((err = vx_send_msg(chip, &rmh)) < 0)
++		err = vx_send_msg(chip, &rmh);
++		if (err < 0)
+ 			return err;
+ 		vx_init_rmh(&rmh, CMD_RES_PIPE);
+ 		vx_set_pipe_cmd_params(&rmh, 0, pipe->number, pipe->channels);
+ 		if (data_mode)
+ 			rmh.Cmd[0] |= BIT_DATA_MODE;
+-		if ((err = vx_send_msg(chip, &rmh)) < 0)
++		err = vx_send_msg(chip, &rmh);
++		if (err < 0)
+ 			return err;
+ 		pipe->data_mode = data_mode;
+ 	}
+@@ -810,7 +818,8 @@ static int vx_pcm_prepare(struct snd_pcm_substream *subs)
+ 	}
+ 	vx_set_clock(chip, runtime->rate);
+ 
+-	if ((err = vx_set_format(chip, pipe, runtime)) < 0)
++	err = vx_set_format(chip, pipe, runtime);
++	if (err < 0)
+ 		return err;
+ 
+ 	if (vx_is_pcmcia(chip)) {
+@@ -1187,7 +1196,8 @@ int snd_vx_pcm_new(struct vx_core *chip)
+ 	unsigned int i;
+ 	int err;
+ 
+-	if ((err = vx_init_audio_io(chip)) < 0)
++	err = vx_init_audio_io(chip);
++	if (err < 0)
+ 		return err;
+ 
+ 	for (i = 0; i < chip->hw->num_codecs; i++) {
 -- 
 2.26.2
 
