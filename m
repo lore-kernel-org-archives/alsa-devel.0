@@ -6,75 +6,80 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7603FC4743E
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 16:08:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB84FC4743D
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 16:09:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A32C861182
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 16:08:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A32C861182
+	by mail.kernel.org (Postfix) with ESMTPS id 61DE56120F
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 16:09:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61DE56120F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC1391765;
-	Tue,  8 Jun 2021 18:07:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC1391765
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0194A1781;
+	Tue,  8 Jun 2021 18:08:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0194A1781
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623168488;
-	bh=RLYClvzf+9zh8zPCA1AZ11On8MN7nXwqdgFy13xhXyw=;
+	s=default; t=1623168539;
+	bh=1HqMT85up1oW7BsV1x894Wk/ligU+lf2igXNAdPf+zo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FH5GiOhFzZ0Tk19HEpCDsKW4eVQv1VoPjbEQKJDgh9CBguJlEeE6lSmBz21bRh4OU
-	 S61XEbWS2xoGJakF+Uqq002B2RGxewnqVXc6pVvX1d7U+v3WZBeZPcgFdoxWKBg/P6
-	 ljRvST7nKlB7/DYzpNkiJiqlFuYUGaUQdW8WRLaE=
+	b=ooXIUjXd+9Vyq95qfhoaWMgwwWQaNfoJEH8yC+0091rnNXX4JLgXKhBTbxWaWjr2s
+	 A4GY5ruSYiOqH55+DnTGWGzGTFtgmZbtl05T0G74UUnFvqKTZn4Jt0p8QbR34EYsX2
+	 jAWG55Avzt/mhXwRtbJgG8xuvTDGrvELFnbI0/W8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E78ABF80227;
-	Tue,  8 Jun 2021 18:07:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B8433F80218;
+	Tue,  8 Jun 2021 18:07:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 81AA1F80256; Tue,  8 Jun 2021 18:07:15 +0200 (CEST)
+ id CC489F80256; Tue,  8 Jun 2021 18:07:16 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EC4A7F801EC
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 18:07:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC4A7F801EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id D8766F80218
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 18:07:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8766F80218
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="KQS6ecLe"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A46BB61078;
- Tue,  8 Jun 2021 16:07:10 +0000 (UTC)
+ header.b="JEfc7dD1"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5596661278;
+ Tue,  8 Jun 2021 16:07:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1623168431;
- bh=RLYClvzf+9zh8zPCA1AZ11On8MN7nXwqdgFy13xhXyw=;
+ s=k20201202; t=1623168426;
+ bh=1HqMT85up1oW7BsV1x894Wk/ligU+lf2igXNAdPf+zo=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=KQS6ecLeAgLlnZNbkCA7n22fN+y9GGAl2b/zvkSTdodMboq4PbvxDyZYUEPuOHOGN
- w28Jb08XSl0n50MnGPVdWm3R6T4BqY1iDgVFA881ALKcWN4l7QMsbDrh8nD7othG3y
- Mra1Q8FcUj99OydSA8hZs5WJufbcnfxrPMDaVMG5w160NpG7/UqMyXeNAauQnoMTAi
- Txti6e35BGe+NEx8V0QlUPEcz+aHKcsbp58X7BhLym3kpg5KbqHZ0X1AGVA3FfdDyf
- 5FtVJxlcxkYCHYgdlyfZH1xjXuAKQCAjgUhW59cQYZowYdpUYuyIBvwMm2bCMwlPU1
- 8ONjgJs3efp9w==
+ b=JEfc7dD10fJrJpnJ1ax1qNWhEZeKKzHXiLDCVeIy3Gtu9qozOVOTX4OFUlsGJpaRS
+ fLAzwrGjrAH2sGZ8GY5G8dGm0Qp3rEt4xRNsx44+dip+D2Y/ZKhk925pGkSJEb+4PJ
+ XWLSmYNSGF71ajFwjY2WLvC8zH7QSoPfOD0gI2Ntf5a3JShXu9fKHAUlUMGN4jTPhv
+ MpMX656dFheHucESYjuoIMmpGEkFWMM3orcs6tpIEP2gaxardV9m/Cd/wi6Rmx5HHZ
+ DtcWFDgQMWB6/mMEVly3H8tWtCDjRueQqJ+DrdLTryc4tMpydh9Ufj7tJDTkYW54E8
+ 2PoRZyNJiJDXw==
 From: Mark Brown <broonie@kernel.org>
-To: kaichieh.chuang@mediatek.com, perex@perex.cz, lgirdwood@gmail.com,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>, tiwai@suse.com,
- lumi.lee@mediatek.com, matthias.bgg@gmail.com,
- pierre-louis.bossart@linux.intel.com
-Subject: Re: [PATCH] ASoC: mediatek: mtk-btcvsd: Fix an error handling path in
- 'mtk_btcvsd_snd_probe()'
-Date: Tue,  8 Jun 2021 17:06:37 +0100
-Message-Id: <162316808974.49749.9800374437345817638.b4-ty@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: (subset) [PATCH 0/9] ASoC: tidyup snd_soc_of_parse_daifmt()
+Date: Tue,  8 Jun 2021 17:06:35 +0100
+Message-Id: <162316808975.49749.4671185267832421707.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <0c2ba562c3364e61bfbd5b3013a99dfa0d9045d7.1622989685.git.christophe.jaillet@wanadoo.fr>
-References: <0c2ba562c3364e61bfbd5b3013a99dfa0d9045d7.1622989685.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <875yypdxlm.wl-kuninori.morimoto.gx@renesas.com>
+References: <875yypdxlm.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Timur Tabi <timur@kernel.org>, Neil Armstrong <narmstrong@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ Kevin Hilman <khilman@baylibre.com>, Shengjiu Wang <shengjiu.wang@gmail.com>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ Mark Brown <broonie@kernel.org>,
+ Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>,
+ Sameer Pujar <spujar@nvidia.com>, Jerome Brunet <jbrunet@baylibre.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,13 +95,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 6 Jun 2021 16:31:09 +0200, Christophe JAILLET wrote:
-> If an error occurs after a successful 'of_iomap()' call, it must be undone
-> by a corresponding 'iounmap()' call, as already done in the remove
-> function.
+On 08 Jun 2021 09:11:17 +0900, Kuninori Morimoto wrote:
+> I want to add new audio-graph-card2 sound card driver,
+> and this is last part of necessary soc-core cleanup for it.
 > 
-> While at it, remove the useless initialization of 'ret' at the beginning of
-> the function.
+> Current some drivers are using DT, and Then,
+> snd_soc_of_parse_daifmt() parses daifmt, but bitclock/frame provider
+> parsing part is one of headache, because we are assuming below both cases.
+> 
+> [...]
 
 Applied to
 
@@ -104,8 +111,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mediatek: mtk-btcvsd: Fix an error handling path in 'mtk_btcvsd_snd_probe()'
-      commit: b6052c3c7a78f5e2b9756c92ef77c0b56435f107
+[1/9] ASoC: soc-core: don't use discriminatory terms on snd_soc_runtime_get_dai_fmt()
+      commit: 640eac4c849d6390f272862ba8db14f28d423670
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
