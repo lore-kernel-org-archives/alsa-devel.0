@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66118C47082
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:24:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3135CC47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:24:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B1B3C611BD
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:24:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B1B3C611BD
+	by mail.kernel.org (Postfix) with ESMTPS id AE927611BD
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:24:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE927611BD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 539B917F2;
-	Tue,  8 Jun 2021 16:23:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 539B917F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 39EE01843;
+	Tue,  8 Jun 2021 16:23:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39EE01843
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623162265;
-	bh=qb5KpQKULGkCQ0KTNVj8iSeRxKoGCeB3+hroGIsqmS4=;
+	s=default; t=1623162279;
+	bh=jR/yXyXL8RkTk507GQl8Fyc4Iytko6yVQakxk+/tFuI=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SZE65ZnOEME8+EU8U8Ml27/HnnPQvn3kHK/Gofihuxe8D8hWTfiGjmxeMnDEcX7Cn
-	 0fthcus+tYXVyLce47gVLYiRcGrPewMbDQ2d+ACapv06epdaU/Ma7Q8c8xxjPszGtm
-	 bbgZczrdT+/MK9bU6HgogP55/qMoyOIgjlvnn9NU=
+	b=OIr3ILzWFNiG6jBg5IawzmxdqFkzmjWVAasZTk1RfRGgUkadSwnC8BWfXDJkG99h9
+	 v0C7SqBsXvEmm/qGkLqWzAL5am5+IeznPMXAVb0NkYibFVC4XG5KqaTjKDi0mrve5E
+	 0jvCXV3iZBFrpqcZ+iZj8f0PCbFHH/Bjh83s9fcg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B05AF80676;
-	Tue,  8 Jun 2021 16:07:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F3F4CF80678;
+	Tue,  8 Jun 2021 16:07:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DB0EBF80614; Tue,  8 Jun 2021 16:07:01 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 5161BF8061C; Tue,  8 Jun 2021 16:07:05 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D1A12F804FC
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1A12F804FC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5AAD0F80218
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AAD0F80218
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="xajC1/GG"; 
+ header.b="JhjO2f2D"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="T2XuTzzH"
+ header.b="aOOr90Q1"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 0618C1FDF8
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:46 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id DB0CE219E4
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1623161146; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1623161143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5nJFTD0gHOknziS1n7jxybqCEtKQfBolVx/wxrqk1is=;
- b=xajC1/GGP9fezIee/GU6b8zWhlrDhxon5CsSTY5cqAIXtzg3I8ilPHwLLxgvGpD3DdCBN5
- iq/eMFBesUcNKlWFelMphAkiScBDTGQhPzrPSHVZafIxdClJ0QWrzWI3aiytWGMQjbiFbe
- 64dPc+nd9RBYUcR9t3q6k3FBHYvEc6s=
+ bh=g6xoBu+SlD976qWqssA9xQPt1AXjcZ48xWP2e8xlD7w=;
+ b=JhjO2f2D1Xa517eIu6N8RkvW467yTxZ+1EWi8jRxO96ohF54vZZv7bVz8GK6Lpq5+JlzMA
+ A5OJqYwChY4PtrHqiV9abWl3ccWHzkofXncCAjX3iPaPk9iajkhBK7c5Z4NizAasvM7bDW
+ it85rxUg4aZcbXz5gPlXuJTrQZkXZe8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1623161146;
+ s=susede2_ed25519; t=1623161143;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5nJFTD0gHOknziS1n7jxybqCEtKQfBolVx/wxrqk1is=;
- b=T2XuTzzHVUKFL5rLMTFgOcf/vswjTekGEVt424SQOf7GYs97Z9ZireFDJ5Hk3/VDgXWcNF
- wUl5RL46RKFHJcAA==
+ bh=g6xoBu+SlD976qWqssA9xQPt1AXjcZ48xWP2e8xlD7w=;
+ b=aOOr90Q1BlgDU3xZvBB1Sh9HFz9opAic3I9l7vvChsRDvtJH1wh2CKVNKdkblS6tO6lIXu
+ NsZ33qZZeX1623DA==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id EA4C6A3B84;
- Tue,  8 Jun 2021 14:05:45 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id CAE6AA3B88;
+ Tue,  8 Jun 2021 14:05:43 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 65/66] ALSA: i2c: Fix assignment in if condition
-Date: Tue,  8 Jun 2021 16:05:39 +0200
-Message-Id: <20210608140540.17885-66-tiwai@suse.de>
+Subject: [PATCH 25/66] ALSA: es1938: Fix assignment in if condition
+Date: Tue,  8 Jun 2021 16:04:59 +0200
+Message-Id: <20210608140540.17885-26-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210608140540.17885-1-tiwai@suse.de>
 References: <20210608140540.17885-1-tiwai@suse.de>
@@ -97,7 +97,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-ALSA I2C helper drivers contain a few assignments in if condition,
+PCI ES1938 driver code contains a few assignments in if condition,
 which is a bad coding style that may confuse readers and occasionally
 lead to bugs.
 
@@ -105,196 +105,139 @@ This patch is merely for coding-style fixes, no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/i2c/cs8427.c       | 24 ++++++++++++++++--------
- sound/i2c/other/ak4114.c |  3 ++-
- sound/i2c/other/ak4117.c |  3 ++-
- sound/i2c/tea6330t.c     | 24 ++++++++++++++++--------
- 4 files changed, 36 insertions(+), 18 deletions(-)
+ sound/pci/es1938.c | 42 ++++++++++++++++++++++++++++--------------
+ 1 file changed, 28 insertions(+), 14 deletions(-)
 
-diff --git a/sound/i2c/cs8427.c b/sound/i2c/cs8427.c
-index 8634d4f466b3..65012af6a36e 100644
---- a/sound/i2c/cs8427.c
-+++ b/sound/i2c/cs8427.c
-@@ -50,7 +50,8 @@ int snd_cs8427_reg_write(struct snd_i2c_device *device, unsigned char reg,
- 
- 	buf[0] = reg & 0x7f;
- 	buf[1] = val;
--	if ((err = snd_i2c_sendbytes(device, buf, 2)) != 2) {
-+	err = snd_i2c_sendbytes(device, buf, 2);
-+	if (err != 2) {
- 		snd_printk(KERN_ERR "unable to send bytes 0x%02x:0x%02x "
- 			   "to CS8427 (%i)\n", buf[0], buf[1], err);
- 		return err < 0 ? err : -EIO;
-@@ -65,12 +66,14 @@ static int snd_cs8427_reg_read(struct snd_i2c_device *device, unsigned char reg)
+diff --git a/sound/pci/es1938.c b/sound/pci/es1938.c
+index afc66347d162..33b1eb347a27 100644
+--- a/sound/pci/es1938.c
++++ b/sound/pci/es1938.c
+@@ -293,7 +293,8 @@ static void snd_es1938_write_cmd(struct es1938 *chip, unsigned char cmd)
+ 	int i;
+ 	unsigned char v;
+ 	for (i = 0; i < WRITE_LOOP_TIMEOUT; i++) {
+-		if (!(v = inb(SLSB_REG(chip, READSTATUS)) & 0x80)) {
++		v = inb(SLSB_REG(chip, READSTATUS));
++		if (!(v & 0x80)) {
+ 			outb(cmd, SLSB_REG(chip, WRITEDATA));
+ 			return;
+ 		}
+@@ -309,9 +310,11 @@ static int snd_es1938_get_byte(struct es1938 *chip)
+ {
+ 	int i;
+ 	unsigned char v;
+-	for (i = GET_LOOP_TIMEOUT; i; i--)
+-		if ((v = inb(SLSB_REG(chip, STATUS))) & 0x80)
++	for (i = GET_LOOP_TIMEOUT; i; i--) {
++		v = inb(SLSB_REG(chip, STATUS));
++		if (v & 0x80)
+ 			return inb(SLSB_REG(chip, READDATA));
++	}
+ 	dev_err(chip->card->dev, "get_byte timeout: status 0x02%x\n", v);
+ 	return -ENODEV;
+ }
+@@ -993,7 +996,8 @@ static int snd_es1938_new_pcm(struct es1938 *chip, int device)
+ 	struct snd_pcm *pcm;
  	int err;
- 	unsigned char buf;
  
--	if ((err = snd_i2c_sendbytes(device, &reg, 1)) != 1) {
-+	err = snd_i2c_sendbytes(device, &reg, 1);
-+	if (err != 1) {
- 		snd_printk(KERN_ERR "unable to send register 0x%x byte "
- 			   "to CS8427\n", reg);
- 		return err < 0 ? err : -EIO;
- 	}
--	if ((err = snd_i2c_readbytes(device, &buf, 1)) != 1) {
-+	err = snd_i2c_readbytes(device, &buf, 1);
-+	if (err != 1) {
- 		snd_printk(KERN_ERR "unable to read register 0x%x byte "
- 			   "from CS8427\n", reg);
- 		return err < 0 ? err : -EIO;
-@@ -108,7 +111,8 @@ static int snd_cs8427_send_corudata(struct snd_i2c_device *device,
- 
- 	if (!memcmp(hw_data, ndata, count))
- 		return 0;
--	if ((err = snd_cs8427_select_corudata(device, udata)) < 0)
-+	err = snd_cs8427_select_corudata(device, udata);
+-	if ((err = snd_pcm_new(chip->card, "es-1938-1946", device, 2, 1, &pcm)) < 0)
++	err = snd_pcm_new(chip->card, "es-1938-1946", device, 2, 1, &pcm);
 +	if (err < 0)
  		return err;
- 	memcpy(hw_data, ndata, count);
- 	if (udata) {
-@@ -209,7 +213,8 @@ int snd_cs8427_init(struct snd_i2c_bus *bus,
- 		goto __fail;
- 	/* send initial values */
- 	memcpy(chip->regmap + (initvals1[0] & 0x7f), initvals1 + 1, 6);
--	if ((err = snd_i2c_sendbytes(device, initvals1, 7)) != 7) {
-+	err = snd_i2c_sendbytes(device, initvals1, 7);
-+	if (err != 7) {
- 		err = err < 0 ? err : -EIO;
- 		goto __fail;
- 	}
-@@ -217,11 +222,13 @@ int snd_cs8427_init(struct snd_i2c_bus *bus,
- 	memset(buf, 0, 7);
- 	/* from address 9 to 15 */
- 	buf[0] = 9;	/* register */
--	if ((err = snd_i2c_sendbytes(device, buf, 7)) != 7)
-+	err = snd_i2c_sendbytes(device, buf, 7);
-+	if (err != 7)
- 		goto __fail;
- 	/* send transfer initialization sequence */
- 	memcpy(chip->regmap + (initvals2[0] & 0x7f), initvals2 + 1, 3);
--	if ((err = snd_i2c_sendbytes(device, initvals2, 4)) != 4) {
-+	err = snd_i2c_sendbytes(device, initvals2, 4);
-+	if (err != 4) {
- 		err = err < 0 ? err : -EIO;
- 		goto __fail;
- 	}
-@@ -383,7 +390,8 @@ static int snd_cs8427_qsubcode_get(struct snd_kcontrol *kcontrol,
- 	int err;
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_es1938_playback_ops);
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_es1938_capture_ops);
+@@ -1553,7 +1557,8 @@ static int snd_es1938_create(struct snd_card *card,
+ 	*rchip = NULL;
  
- 	snd_i2c_lock(device->bus);
--	if ((err = snd_i2c_sendbytes(device, &reg, 1)) != 1) {
-+	err = snd_i2c_sendbytes(device, &reg, 1);
-+	if (err != 1) {
- 		snd_printk(KERN_ERR "unable to send register 0x%x byte "
- 			   "to CS8427\n", reg);
- 		snd_i2c_unlock(device->bus);
-diff --git a/sound/i2c/other/ak4114.c b/sound/i2c/other/ak4114.c
-index 2ce0a97957ab..c0cffe28989b 100644
---- a/sound/i2c/other/ak4114.c
-+++ b/sound/i2c/other/ak4114.c
-@@ -97,7 +97,8 @@ int snd_ak4114_create(struct snd_card *card,
- 	chip->rcs0 = reg_read(chip, AK4114_REG_RCS0) & ~(AK4114_QINT | AK4114_CINT);
- 	chip->rcs1 = reg_read(chip, AK4114_REG_RCS1);
- 
--	if ((err = snd_device_new(card, SNDRV_DEV_CODEC, chip, &ops)) < 0)
-+	err = snd_device_new(card, SNDRV_DEV_CODEC, chip, &ops);
+ 	/* enable PCI device */
+-	if ((err = pci_enable_device(pci)) < 0)
++	err = pci_enable_device(pci);
 +	if (err < 0)
- 		goto __fail;
- 
- 	if (r_ak4114)
-diff --git a/sound/i2c/other/ak4117.c b/sound/i2c/other/ak4117.c
-index 905be2d0780b..1bc43e927d82 100644
---- a/sound/i2c/other/ak4117.c
-+++ b/sound/i2c/other/ak4117.c
-@@ -86,7 +86,8 @@ int snd_ak4117_create(struct snd_card *card, ak4117_read_t *read, ak4117_write_t
- 	chip->rcs1 = reg_read(chip, AK4117_REG_RCS1);
- 	chip->rcs2 = reg_read(chip, AK4117_REG_RCS2);
- 
--	if ((err = snd_device_new(card, SNDRV_DEV_CODEC, chip, &ops)) < 0)
-+	err = snd_device_new(card, SNDRV_DEV_CODEC, chip, &ops);
-+	if (err < 0)
- 		goto __fail;
- 
- 	if (r_ak4117)
-diff --git a/sound/i2c/tea6330t.c b/sound/i2c/tea6330t.c
-index 08eb6a873768..742d0f724375 100644
---- a/sound/i2c/tea6330t.c
-+++ b/sound/i2c/tea6330t.c
-@@ -115,7 +115,8 @@ static int snd_tea6330t_put_master_volume(struct snd_kcontrol *kcontrol,
- 		bytes[count++] = tea->regs[TEA6330T_SADDR_VOLUME_RIGHT] = tea->mright;
- 	}
- 	if (count > 0) {
--		if ((err = snd_i2c_sendbytes(tea->device, bytes, count)) < 0)
-+		err = snd_i2c_sendbytes(tea->device, bytes, count);
-+		if (err < 0)
- 			change = err;
- 	}
- 	snd_i2c_unlock(tea->bus);
-@@ -160,7 +161,8 @@ static int snd_tea6330t_put_master_switch(struct snd_kcontrol *kcontrol,
- 	bytes[0] = TEA6330T_SADDR_VOLUME_LEFT;
- 	bytes[1] = tea->regs[TEA6330T_SADDR_VOLUME_LEFT];
- 	bytes[2] = tea->regs[TEA6330T_SADDR_VOLUME_RIGHT];
--	if ((err = snd_i2c_sendbytes(tea->device, bytes, 3)) < 0)
-+	err = snd_i2c_sendbytes(tea->device, bytes, 3);
-+	if (err < 0)
- 		change = err;
- 	snd_i2c_unlock(tea->bus);
- 	return change;
-@@ -207,7 +209,8 @@ static int snd_tea6330t_put_bass(struct snd_kcontrol *kcontrol,
- 	change = tea->regs[TEA6330T_SADDR_BASS] != val1;
- 	bytes[0] = TEA6330T_SADDR_BASS;
- 	bytes[1] = tea->regs[TEA6330T_SADDR_BASS] = val1;
--	if ((err = snd_i2c_sendbytes(tea->device, bytes, 2)) < 0)
-+	err = snd_i2c_sendbytes(tea->device, bytes, 2);
-+	if (err < 0)
- 		change = err;
- 	snd_i2c_unlock(tea->bus);
- 	return change;
-@@ -254,7 +257,8 @@ static int snd_tea6330t_put_treble(struct snd_kcontrol *kcontrol,
- 	change = tea->regs[TEA6330T_SADDR_TREBLE] != val1;
- 	bytes[0] = TEA6330T_SADDR_TREBLE;
- 	bytes[1] = tea->regs[TEA6330T_SADDR_TREBLE] = val1;
--	if ((err = snd_i2c_sendbytes(tea->device, bytes, 2)) < 0)
-+	err = snd_i2c_sendbytes(tea->device, bytes, 2);
-+	if (err < 0)
- 		change = err;
- 	snd_i2c_unlock(tea->bus);
- 	return change;
-@@ -287,7 +291,8 @@ int snd_tea6330t_update_mixer(struct snd_card *card,
- 	tea = kzalloc(sizeof(*tea), GFP_KERNEL);
- 	if (tea == NULL)
- 		return -ENOMEM;
--	if ((err = snd_i2c_device_create(bus, "TEA6330T", TEA6330T_ADDR, &device)) < 0) {
-+	err = snd_i2c_device_create(bus, "TEA6330T", TEA6330T_ADDR, &device);
+ 		return err;
+         /* check, if we can restrict PCI DMA transfers to 24 bits */
+ 	if (dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(24))) {
+@@ -1573,7 +1578,8 @@ static int snd_es1938_create(struct snd_card *card,
+ 	chip->card = card;
+ 	chip->pci = pci;
+ 	chip->irq = -1;
+-	if ((err = pci_request_regions(pci, "ESS Solo-1")) < 0) {
++	err = pci_request_regions(pci, "ESS Solo-1");
 +	if (err < 0) {
- 		kfree(tea);
+ 		kfree(chip);
+ 		pci_disable_device(pci);
+ 		return err;
+@@ -1599,7 +1605,8 @@ static int snd_es1938_create(struct snd_card *card,
+ 
+ 	snd_es1938_chip_init(chip);
+ 
+-	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
++	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
++	if (err < 0) {
+ 		snd_es1938_free(chip);
  		return err;
  	}
-@@ -327,18 +332,21 @@ int snd_tea6330t_update_mixer(struct snd_card *card,
- 	bytes[0] = TEA6330T_SADDR_VOLUME_LEFT;
- 	for (idx = 0; idx < 6; idx++)
- 		bytes[idx+1] = tea->regs[idx];
--	if ((err = snd_i2c_sendbytes(device, bytes, 7)) < 0)
-+	err = snd_i2c_sendbytes(device, bytes, 7);
-+	if (err < 0)
- 		goto __error;
- 
- 	strcat(card->mixername, ",TEA6330T");
--	if ((err = snd_component_add(card, "TEA6330T")) < 0)
-+	err = snd_component_add(card, "TEA6330T");
-+	if (err < 0)
- 		goto __error;
- 
- 	for (idx = 0; idx < ARRAY_SIZE(snd_tea6330t_controls); idx++) {
- 		knew = &snd_tea6330t_controls[idx];
- 		if (tea->treble == 0 && !strcmp(knew->name, "Tone Control - Treble"))
- 			continue;
--		if ((err = snd_ctl_add(card, snd_ctl_new1(knew, tea))) < 0)
-+		err = snd_ctl_add(card, snd_ctl_new1(knew, tea));
+@@ -1731,7 +1738,8 @@ static int snd_es1938_mixer(struct es1938 *chip)
+ 				kctl->private_free = snd_es1938_hwv_free;
+ 				break;
+ 			}
+-		if ((err = snd_ctl_add(card, kctl)) < 0)
++		err = snd_ctl_add(card, kctl);
 +		if (err < 0)
- 			goto __error;
+ 			return err;
  	}
+ 	return 0;
+@@ -1765,7 +1773,8 @@ static int snd_es1938_probe(struct pci_dev *pci,
+ 		    	return -ENODEV;
+ 		}
+ 	}
+-	if ((err = snd_es1938_create(card, pci, &chip)) < 0) {
++	err = snd_es1938_create(card, pci, &chip);
++	if (err < 0) {
+ 		snd_card_free(card);
+ 		return err;
+ 	}
+@@ -1778,11 +1787,13 @@ static int snd_es1938_probe(struct pci_dev *pci,
+ 		chip->revision,
+ 		chip->irq);
  
+-	if ((err = snd_es1938_new_pcm(chip, 0)) < 0) {
++	err = snd_es1938_new_pcm(chip, 0);
++	if (err < 0) {
+ 		snd_card_free(card);
+ 		return err;
+ 	}
+-	if ((err = snd_es1938_mixer(chip)) < 0) {
++	err = snd_es1938_mixer(chip);
++	if (err < 0) {
+ 		snd_card_free(card);
+ 		return err;
+ 	}
+@@ -1793,11 +1804,13 @@ static int snd_es1938_probe(struct pci_dev *pci,
+ 		dev_err(card->dev, "OPL3 not detected at 0x%lx\n",
+ 			   SLSB_REG(chip, FMLOWADDR));
+ 	} else {
+-	        if ((err = snd_opl3_timer_new(opl3, 0, 1)) < 0) {
++		err = snd_opl3_timer_new(opl3, 0, 1);
++		if (err < 0) {
+ 	                snd_card_free(card);
+ 	                return err;
+ 		}
+-	        if ((err = snd_opl3_hwdep_new(opl3, 0, 1, NULL)) < 0) {
++		err = snd_opl3_hwdep_new(opl3, 0, 1, NULL);
++		if (err < 0) {
+ 	                snd_card_free(card);
+ 	                return err;
+ 		}
+@@ -1815,7 +1828,8 @@ static int snd_es1938_probe(struct pci_dev *pci,
+ 
+ 	snd_es1938_create_gameport(chip);
+ 
+-	if ((err = snd_card_register(card)) < 0) {
++	err = snd_card_register(card);
++	if (err < 0) {
+ 		snd_card_free(card);
+ 		return err;
+ 	}
 -- 
 2.26.2
 
