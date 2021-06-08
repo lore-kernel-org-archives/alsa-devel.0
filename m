@@ -1,76 +1,71 @@
-Return-Path: <SRS0=v4AK=LB=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=yD/C=LC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 511AAC47095
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 22:52:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ADF91C47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 00:12:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 94C2F60200
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Jun 2021 22:52:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94C2F60200
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4424F611BD
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 00:12:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4424F611BD
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 30DFF1687;
-	Tue,  8 Jun 2021 00:51:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30DFF1687
+	by alsa0.perex.cz (Postfix) with ESMTPS id A93BE167D;
+	Tue,  8 Jun 2021 02:11:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A93BE167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623106320;
-	bh=kjesBnmvm2tSMNWJO2yj7Hkcp8L53AwZk54cC6sVvNg=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=A2slywGO/YqsCRXzwExWUxLujyn/NI3ScCSXWimlp9VMSFEslH0VPlR2U/ee0Jp1n
-	 g0Zvqe/nR0ifx190a/HnLdfDhW0Fi1c3mLUWk34uskez05qX01rX7neoY0hrvLO5Yk
-	 FHKqE9nloYCRmzjioGi30RVCQiLFLrG70aG5Jmbw=
+	s=default; t=1623111138;
+	bh=+dsh1cZvNZLQQ7G1zszpB7tBpQ6/aBpmlRC79B8RKNE=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=EmMO7n9Ce/mtBBhWS0RAS/aFigDoU3I8xdSV08UeZfPXcb82/loWuIMKszpIJm1Gn
+	 t5PobPPnTewsBhbORkEakTKEgBmGF3yD6FhiVbrOavYQYj+jR8w/7gRjAKoreKB+oc
+	 hzUjyxxX/sniiYXShuS8n0SaowkH0RuFhfHDTRTk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 696ACF80516;
-	Tue,  8 Jun 2021 00:47:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3227DF8020D;
+	Tue,  8 Jun 2021 02:11:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2A87BF8032C; Tue,  8 Jun 2021 00:47:17 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 32764F800DF
- for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 00:47:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32764F800DF
-IronPort-SDR: JVm9yLa/6otfMRioGq5uL1kD3owlqFndsjlKYfPU2GpvR0porIBv/LPrWoY+Y7C1mZckR2tzpz
- iYsdUHDq7E7g==
-X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="185102183"
-X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; d="scan'208";a="185102183"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jun 2021 15:46:52 -0700
-IronPort-SDR: v0zLc8xa+6JGbLIWbzBcDxbV7XK2zORx4g+e7nsqQ86wjRL5IPutzJQ5DfJnl+5AIpohBuwRCK
- FZkVoDkSZtAQ==
-X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; d="scan'208";a="637437122"
-Received: from marocham-mobl.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.212.108.70])
- by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jun 2021 15:46:51 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 07/10] ASoC: Intel: sof_sdw: fix signed/unsigned warning
-Date: Mon,  7 Jun 2021 17:46:35 -0500
-Message-Id: <20210607224638.585486-8-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210607224638.585486-1-pierre-louis.bossart@linux.intel.com>
-References: <20210607224638.585486-1-pierre-louis.bossart@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>, Paul Olaru <paul.olaru@oss.nxp.com>
+ id 3141BF80212; Tue,  8 Jun 2021 02:11:26 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id BC5F7F800DF
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 02:11:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC5F7F800DF
+Date: 08 Jun 2021 09:11:17 +0900
+X-IronPort-AV: E=Sophos;i="5.83,256,1616425200"; d="scan'208";a="83526826"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 08 Jun 2021 09:11:17 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 5BAA84003EB4;
+ Tue,  8 Jun 2021 09:11:17 +0900 (JST)
+Message-ID: <875yypdxlm.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 0/9] ASoC: tidyup snd_soc_of_parse_daifmt()
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>, Sameer Pujar <spujar@nvidia.com>,
+ Neil Armstrong <narmstrong@baylibre.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ Kevin Hilman <khilman@baylibre.com>,
+ Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>,
+ Jerome Brunet <jbrunet@baylibre.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,35 +81,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Sparse throws the following warning:
 
-sound/soc/intel/boards/sof_sdw.c:796:31: error: incorrect type in argument 6 (different signedness)
-sound/soc/intel/boards/sof_sdw.c:796:31:    expected int *group_id
-sound/soc/intel/boards/sof_sdw.c:796:31:    got unsigned int *
+Hi Mark
 
-The group_id cannot be negative, use unsigned int.
+I want to add new audio-graph-card2 sound card driver,
+and this is last part of necessary soc-core cleanup for it.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Paul Olaru <paul.olaru@oss.nxp.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
----
- sound/soc/intel/boards/sof_sdw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Current some drivers are using DT, and Then,
+snd_soc_of_parse_daifmt() parses daifmt, but bitclock/frame provider
+parsing part is one of headache, because we are assuming below both cases.
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 34f142d7b3f9..e9118234b30e 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -682,7 +682,7 @@ static int set_codec_init_func(const struct snd_soc_acpi_link_adr *link,
-  */
- static int get_slave_info(const struct snd_soc_acpi_link_adr *adr_link,
- 			  struct device *dev, int *cpu_dai_id, int *cpu_dai_num,
--			  int *codec_num, int *group_id,
-+			  int *codec_num, unsigned int *group_id,
- 			  bool *group_generated)
- {
- 	const struct snd_soc_acpi_adr_device *adr_d;
+A)	node {
+		bitclock-master;
+		frame-master;
+		...
+	};
+    
+B)	link {
+		bitclock-master = <&xxx>;
+		frame-master = <&xxx>;
+		...
+	};
+
+The original was style A), and style B) was added later.
+
+snd_soc_of_parse_daifmt() parses A) style as original style,
+and user need to update to B) style for clock_provider part if needed.
+In such case, user need to re-parse it, like below.
+    
+	daifmt = snd_soc_of_parse_daifmt(..., &bitclkmaster, &framemaster);
+	daifmt &= ~SND_SOC_DAIFMT_MASTER_MASK;
+    
+	if (codec == bitclkmaster)
+		daifmt |= (codec == framemaster) ?
+			SND_SOC_DAIFMT_CBM_CFM : SND_SOC_DAIFMT_CBM_CFS;
+	else
+		daifmt |= (codec == framemaster) ?
+			SND_SOC_DAIFMT_CBS_CFM : SND_SOC_DAIFMT_CBS_CFS;
+
+This patch-set adds new functions, and handle these more simply.
+Unfortunately, there are too many use-case, do it by 1 function was implessible.
+
+style A)
+	bit_frame = snd_soc_daifmt_parse_clock_provider();
+	daifmt = snd_soc_daifmt_parse_format(...) |              /* format part */
+		snd_soc_daifmt_clock_provider_pickup(bit_frame); /* clock  part */
+    
+style B)
+	snd_soc_daifmt_parse_clock_provider(..., &bit, &frame);
+	daifmt = snd_soc_daifmt_parse_format(...) |    /* format part */
+		snd_soc_daifmt_clock_provider_pickup(  /* clock  part */
+			((codec == bit) << 4) + (codec == frame));
+
+
+Kuninori Morimoto (9):
+  ASoC: soc-core: don't use discriminatory terms on snd_soc_runtime_get_dai_fmt()
+  ASoC: soc-core: add snd_soc_daifmt_clock_provider_pickup()
+  ASoC: soc-core: add snd_soc_daifmt_clock_provider_fliped()
+  ASoC: soc-core: add snd_soc_daifmt_parse_format/clock_provider()
+  ASoC: atmel: switch to use snd_soc_daifmt_parse_format/clock_provider()
+  ASoC: fsl: switch to use snd_soc_daifmt_parse_format/clock_provider()
+  ASoC: meson: switch to use snd_soc_daifmt_parse_format/clock_provider()
+  ASoC: simple-card-utils: switch to use snd_soc_daifmt_parse_format/clock_provider()
+  ASoC: soc-core: remove snd_soc_of_parse_daifmt()
+
+ include/sound/soc.h                   |  13 +++-
+ sound/soc/atmel/mikroe-proto.c        |  18 ++---
+ sound/soc/fsl/fsl-asoc-card.c         |  16 +---
+ sound/soc/generic/simple-card-utils.c |  19 ++---
+ sound/soc/meson/meson-card-utils.c    |  15 ++--
+ sound/soc/soc-core.c                  | 103 ++++++++++++++++----------
+ 6 files changed, 99 insertions(+), 85 deletions(-)
+
 -- 
 2.25.1
 
