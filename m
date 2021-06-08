@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77F5CC47082
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:17:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2894C47082
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:17:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EDD7261359
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:17:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EDD7261359
+	by mail.kernel.org (Postfix) with ESMTPS id 4DE886135A
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Jun 2021 14:17:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4DE886135A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 619BC176A;
-	Tue,  8 Jun 2021 16:16:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 619BC176A
+	by alsa0.perex.cz (Postfix) with ESMTPS id D985C1797;
+	Tue,  8 Jun 2021 16:16:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D985C1797
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623161825;
-	bh=Z7U7H9KVK14owLdwNBKPTO4zuzhMbDEG7l3TsT7ltAw=;
+	s=default; t=1623161854;
+	bh=ORjVJb5skpt9uImgGcnFTIYdZxzMSbHn9+X8D44WFho=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RvB9xHqeMjXvEbHT+DmydG10E38IjFcnjTPoHl+Ilo83U52gWA/9AWPCnhHesD2aG
-	 tPGDldGPma23eqMXm+UBZVPlEguD5mlfsQLx8422TNuTyrg2qA5dR7AVgKNSx8KDyS
-	 V20l5bFGfEATBTyt7wzDAfz9j5cLAbnjEilrH6Xo=
+	b=PdrM+Rqd8KGBN229prUSeOFwBPMqEkBeaxCIfUw/vQ9nKGDsfm78WbJTbaATE01C+
+	 34Q34NYFqRw+14mycnqQI2b2DenSy30kD4DwAp+68GeVoyw7YQ4lFLU5jStqS3m4X4
+	 7jB6MxSzKFPyEujppb11oK/nxzSSmKT7ZLwpXYpU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C10EDF805F2;
-	Tue,  8 Jun 2021 16:06:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84DBAF805FA;
+	Tue,  8 Jun 2021 16:06:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2E9D8F805C9; Tue,  8 Jun 2021 16:06:34 +0200 (CEST)
+ id D58F2F805DA; Tue,  8 Jun 2021 16:06:35 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4D080F804E0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5FFF4F804DF
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 16:05:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D080F804E0
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FFF4F804DF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="NbtSztIv"; 
+ header.b="q3rfkVga"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="/2LR15/h"
+ header.b="wdoMspDZ"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 136521FDE5
+ by smtp-out2.suse.de (Postfix) with ESMTP id 8B4681FDEA
  for <alsa-devel@alsa-project.org>; Tue,  8 Jun 2021 14:05:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1623161144; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=16r9B/6Im4/3mQxUNyAsbqfcLxqSJ+j2o/5LIqvA/GY=;
- b=NbtSztIvVUrTr1niZNW4u/X44/a8Syk/bZHf70LbmEagjtDtVsKQypc/yU5bP7rbpXvaAR
- 8ygH06TPhu+hIoaOLmGzshdPDK421FXR9AL98TWnLFgvnP1xaQlmkmmKP+Wp20TKC4RkmB
- B6CfohqFxETK2PPMPnofTibLJK6JUE8=
+ bh=pyB09o/IF8f200Wut2OgkP6yGdR5dmzOyxbwo5Zam6Y=;
+ b=q3rfkVgabO9QB6h1GL2mC08tyXXTotrS50wZyd7xlNoCJxVGE6b/5bGM2qoGwdiqGFpNFP
+ Nl/ZwCgy5Bf1KEgKP5gmEl4wxBs/QALH/4j2OkbaK5GgYSiGmccmirvM0PVJEhducB2a3J
+ NZ3sCF4QXrLEfsoQvPxfXbWu5DOjako=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1623161144;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=16r9B/6Im4/3mQxUNyAsbqfcLxqSJ+j2o/5LIqvA/GY=;
- b=/2LR15/hS30YuTqcppObtmb3eUEljgMt4fpANOiQx/7sgwmPX5IZq/TGfDX2CPNBJw6E7b
- 5gvrGB9lJTWNPqCQ==
+ bh=pyB09o/IF8f200Wut2OgkP6yGdR5dmzOyxbwo5Zam6Y=;
+ b=wdoMspDZQVtyIIUwBuK0n24is9pTLUddVJgpkRWQvFCDT14YbNtn/6MXjZmmQvKlj3qSIh
+ cLgi0RcWWDDkQGBg==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 03006A3B84;
+ by relay2.suse.de (Postfix) with ESMTP id 858ECA3B84;
  Tue,  8 Jun 2021 14:05:44 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 28/66] ALSA: intel8x0: Fix assignment in if condition
-Date: Tue,  8 Jun 2021 16:05:02 +0200
-Message-Id: <20210608140540.17885-29-tiwai@suse.de>
+Subject: [PATCH 37/66] ALSA: cs46xx: Fix assignment in if condition
+Date: Tue,  8 Jun 2021 16:05:11 +0200
+Message-Id: <20210608140540.17885-38-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210608140540.17885-1-tiwai@suse.de>
 References: <20210608140540.17885-1-tiwai@suse.de>
@@ -97,7 +97,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-PCI intel8x0 driver code contains a few assignments in if condition,
+PCI CS46xx driver code contains a few assignments in if condition,
 which is a bad coding style that may confuse readers and occasionally
 lead to bugs.
 
@@ -105,148 +105,82 @@ This patch is merely for coding-style fixes, no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/intel8x0.c  | 46 ++++++++++++++++++++++++++++---------------
- sound/pci/intel8x0m.c | 36 ++++++++++++++++++++++-----------
- 2 files changed, 54 insertions(+), 28 deletions(-)
+ sound/pci/cs46xx/cs46xx.c     | 31 +++++++++++++--------
+ sound/pci/cs46xx/cs46xx_lib.c | 51 ++++++++++++++++++++++-------------
+ sound/pci/cs46xx/dsp_spos.c   |  3 ++-
+ 3 files changed, 55 insertions(+), 30 deletions(-)
 
-diff --git a/sound/pci/intel8x0.c b/sound/pci/intel8x0.c
-index abc710ae3226..2d1bfbcba933 100644
---- a/sound/pci/intel8x0.c
-+++ b/sound/pci/intel8x0.c
-@@ -538,7 +538,8 @@ static unsigned short snd_intel8x0_codec_read(struct snd_ac97 *ac97,
- 		res = 0xffff;
- 	} else {
- 		res = iagetword(chip, reg + ac97->num * 0x80);
--		if ((tmp = igetdword(chip, ICHREG(GLOB_STA))) & ICH_RCS) {
-+		tmp = igetdword(chip, ICHREG(GLOB_STA));
-+		if (tmp & ICH_RCS) {
- 			/* reset RCS and preserve other R/WC bits */
- 			iputdword(chip, ICHREG(GLOB_STA), tmp &
- 				  ~(chip->codec_ready_bits | ICH_GSCI));
-@@ -559,7 +560,8 @@ static void snd_intel8x0_codec_read_test(struct intel8x0 *chip,
- 
- 	if (snd_intel8x0_codec_semaphore(chip, codec) >= 0) {
- 		iagetword(chip, codec * 0x80);
--		if ((tmp = igetdword(chip, ICHREG(GLOB_STA))) & ICH_RCS) {
-+		tmp = igetdword(chip, ICHREG(GLOB_STA));
-+		if (tmp & ICH_RCS) {
- 			/* reset RCS and preserve other R/WC bits */
- 			iputdword(chip, ICHREG(GLOB_STA), tmp &
- 				  ~(chip->codec_ready_bits | ICH_GSCI));
-@@ -1105,7 +1107,8 @@ static int snd_intel8x0_pcm_open(struct snd_pcm_substream *substream, struct ich
- 		runtime->hw.buffer_bytes_max = 64*1024;
- 		runtime->hw.period_bytes_max = 64*1024;
- 	}
--	if ((err = snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS)) < 0)
-+	err = snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
-+	if (err < 0)
+diff --git a/sound/pci/cs46xx/cs46xx.c b/sound/pci/cs46xx/cs46xx.c
+index 1db7b4112840..358ca84cbdea 100644
+--- a/sound/pci/cs46xx/cs46xx.c
++++ b/sound/pci/cs46xx/cs46xx.c
+@@ -70,45 +70,53 @@ static int snd_card_cs46xx_probe(struct pci_dev *pci,
+ 			   0, &card);
+ 	if (err < 0)
  		return err;
- 	runtime->private_data = ichdev;
- 	return 0;
-@@ -2190,7 +2193,8 @@ static int snd_intel8x0_mixer(struct intel8x0 *chip, int ac97_clock,
- 			udelay(1);
- 		}
+-	if ((err = snd_cs46xx_create(card, pci,
+-				     external_amp[dev], thinkpad[dev],
+-				     &chip)) < 0) {
++	err = snd_cs46xx_create(card, pci,
++				external_amp[dev], thinkpad[dev],
++				&chip);
++	if (err < 0) {
+ 		snd_card_free(card);
+ 		return err;
  	}
--	if ((err = snd_ac97_bus(chip->card, 0, ops, chip, &pbus)) < 0)
-+	err = snd_ac97_bus(chip->card, 0, ops, chip, &pbus);
-+	if (err < 0)
- 		goto __err;
- 	pbus->private_free = snd_intel8x0_mixer_free_ac97_bus;
- 	if (ac97_clock >= 8000 && ac97_clock <= 48000)
-@@ -2206,7 +2210,8 @@ static int snd_intel8x0_mixer(struct intel8x0 *chip, int ac97_clock,
- 	ac97.pci = chip->pci;
- 	for (i = 0; i < codecs; i++) {
- 		ac97.num = i;
--		if ((err = snd_ac97_mixer(pbus, &ac97, &chip->ac97[i])) < 0) {
-+		err = snd_ac97_mixer(pbus, &ac97, &chip->ac97[i]);
+ 	card->private_data = chip;
+ 	chip->accept_valid = mmap_valid[dev];
+-	if ((err = snd_cs46xx_pcm(chip, 0)) < 0) {
++	err = snd_cs46xx_pcm(chip, 0);
++	if (err < 0) {
+ 		snd_card_free(card);
+ 		return err;
+ 	}
+ #ifdef CONFIG_SND_CS46XX_NEW_DSP
+-	if ((err = snd_cs46xx_pcm_rear(chip, 1)) < 0) {
++	err = snd_cs46xx_pcm_rear(chip, 1);
++	if (err < 0) {
+ 		snd_card_free(card);
+ 		return err;
+ 	}
+-	if ((err = snd_cs46xx_pcm_iec958(chip, 2)) < 0) {
++	err = snd_cs46xx_pcm_iec958(chip, 2);
++	if (err < 0) {
+ 		snd_card_free(card);
+ 		return err;
+ 	}
+ #endif
+-	if ((err = snd_cs46xx_mixer(chip, 2)) < 0) {
++	err = snd_cs46xx_mixer(chip, 2);
++	if (err < 0) {
+ 		snd_card_free(card);
+ 		return err;
+ 	}
+ #ifdef CONFIG_SND_CS46XX_NEW_DSP
+ 	if (chip->nr_ac97_codecs ==2) {
+-		if ((err = snd_cs46xx_pcm_center_lfe(chip, 3)) < 0) {
++		err = snd_cs46xx_pcm_center_lfe(chip, 3);
 +		if (err < 0) {
- 			if (err != -EACCES)
- 				dev_err(chip->card->dev,
- 					"Unable to initialize codec #%d\n", i);
-@@ -2491,11 +2496,13 @@ static int snd_intel8x0_chip_init(struct intel8x0 *chip, int probing)
- 	int err;
- 	
- 	if (chip->device_type != DEVICE_ALI) {
--		if ((err = snd_intel8x0_ich_chip_init(chip, probing)) < 0)
-+		err = snd_intel8x0_ich_chip_init(chip, probing);
-+		if (err < 0)
+ 			snd_card_free(card);
  			return err;
- 		iagetword(chip, 0);	/* clear semaphore flag */
- 	} else {
--		if ((err = snd_intel8x0_ali_chip_init(chip, probing)) < 0)
-+		err = snd_intel8x0_ali_chip_init(chip, probing);
-+		if (err < 0)
- 			return err;
- 	}
- 
-@@ -2918,7 +2925,8 @@ static int snd_intel8x0_create(struct snd_card *card,
- 
- 	*r_intel8x0 = NULL;
- 
--	if ((err = pci_enable_device(pci)) < 0)
-+	err = pci_enable_device(pci);
-+	if (err < 0)
- 		return err;
- 
- 	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
-@@ -2950,7 +2958,8 @@ static int snd_intel8x0_create(struct snd_card *card,
- 	    pci->device == PCI_DEVICE_ID_INTEL_440MX)
- 		chip->fix_nocache = 1; /* enable workaround */
- 
--	if ((err = pci_request_regions(pci, card->shortname)) < 0) {
-+	err = pci_request_regions(pci, card->shortname);
-+	if (err < 0) {
- 		kfree(chip);
- 		pci_disable_device(pci);
- 		return err;
-@@ -3064,7 +3073,8 @@ static int snd_intel8x0_create(struct snd_card *card,
- 	for (i = 0; i < chip->max_codecs; i++)
- 		chip->codec_isr_bits |= chip->codec_bit[i];
- 
--	if ((err = snd_intel8x0_chip_init(chip, 1)) < 0) {
-+	err = snd_intel8x0_chip_init(chip, 1);
-+	if (err < 0) {
- 		snd_intel8x0_free(chip);
- 		return err;
- 	}
-@@ -3079,7 +3089,8 @@ static int snd_intel8x0_create(struct snd_card *card,
- 	chip->irq = pci->irq;
- 	card->sync_irq = chip->irq;
- 
--	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
-+	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
-+	if (err < 0) {
- 		snd_intel8x0_free(chip);
- 		return err;
- 	}
-@@ -3186,18 +3197,20 @@ static int snd_intel8x0_probe(struct pci_dev *pci,
- 			buggy_irq = 0;
- 	}
- 
--	if ((err = snd_intel8x0_create(card, pci, pci_id->driver_data,
--				       &chip)) < 0) {
-+	err = snd_intel8x0_create(card, pci, pci_id->driver_data, &chip);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
- 	card->private_data = chip;
- 
--	if ((err = snd_intel8x0_mixer(chip, ac97_clock, ac97_quirk)) < 0) {
-+	err = snd_intel8x0_mixer(chip, ac97_clock, ac97_quirk);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
--	if ((err = snd_intel8x0_pcm(chip)) < 0) {
-+	err = snd_intel8x0_pcm(chip);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
-@@ -3217,7 +3230,8 @@ static int snd_intel8x0_probe(struct pci_dev *pci,
  		}
  	}
+ #endif
+-	if ((err = snd_cs46xx_midi(chip, 0)) < 0) {
++	err = snd_cs46xx_midi(chip, 0);
++	if (err < 0) {
+ 		snd_card_free(card);
+ 		return err;
+ 	}
+-	if ((err = snd_cs46xx_start_dsp(chip)) < 0) {
++	err = snd_cs46xx_start_dsp(chip);
++	if (err < 0) {
+ 		snd_card_free(card);
+ 		return err;
+ 	}
+@@ -124,7 +132,8 @@ static int snd_card_cs46xx_probe(struct pci_dev *pci,
+ 		chip->ba1_addr,
+ 		chip->irq);
  
 -	if ((err = snd_card_register(card)) < 0) {
 +	err = snd_card_register(card);
@@ -254,124 +188,180 @@ index abc710ae3226..2d1bfbcba933 100644
  		snd_card_free(card);
  		return err;
  	}
-diff --git a/sound/pci/intel8x0m.c b/sound/pci/intel8x0m.c
-index 6793c1ffa71b..b96fce6cbd83 100644
---- a/sound/pci/intel8x0m.c
-+++ b/sound/pci/intel8x0m.c
-@@ -342,7 +342,8 @@ static unsigned short snd_intel8x0m_codec_read(struct snd_ac97 *ac97,
- 		res = 0xffff;
- 	} else {
- 		res = iagetword(chip, reg + ac97->num * 0x80);
--		if ((tmp = igetdword(chip, ICHREG(GLOB_STA))) & ICH_RCS) {
-+		tmp = igetdword(chip, ICHREG(GLOB_STA));
-+		if (tmp & ICH_RCS) {
- 			/* reset RCS and preserve other R/WC bits */
- 			iputdword(chip, ICHREG(GLOB_STA),
- 				  tmp & ~(ICH_SRI|ICH_PRI|ICH_TRI|ICH_GSCI));
-@@ -800,7 +801,8 @@ static int snd_intel8x0m_mixer(struct intel8x0m *chip, int ac97_clock)
+diff --git a/sound/pci/cs46xx/cs46xx_lib.c b/sound/pci/cs46xx/cs46xx_lib.c
+index 37f516e6a5c2..1e1eb17f8e07 100644
+--- a/sound/pci/cs46xx/cs46xx_lib.c
++++ b/sound/pci/cs46xx/cs46xx_lib.c
+@@ -1058,9 +1058,10 @@ static int _cs46xx_adjust_sample_rate (struct snd_cs46xx *chip, struct snd_cs46x
+ 		int unlinked = cpcm->pcm_channel->unlinked;
+ 		cs46xx_dsp_destroy_pcm_channel (chip,cpcm->pcm_channel);
  
- 	glob_sta = igetdword(chip, ICHREG(GLOB_STA));
- 
--	if ((err = snd_ac97_bus(chip->card, 0, &ops, chip, &pbus)) < 0)
-+	err = snd_ac97_bus(chip->card, 0, &ops, chip, &pbus);
-+	if (err < 0)
- 		goto __err;
- 	pbus->private_free = snd_intel8x0m_mixer_free_ac97_bus;
- 	if (ac97_clock >= 8000 && ac97_clock <= 48000)
-@@ -809,7 +811,8 @@ static int snd_intel8x0m_mixer(struct intel8x0m *chip, int ac97_clock)
- 
- 	ac97.pci = chip->pci;
- 	ac97.num = glob_sta & ICH_SCR ? 1 : 0;
--	if ((err = snd_ac97_mixer(pbus, &ac97, &x97)) < 0) {
-+	err = snd_ac97_mixer(pbus, &ac97, &x97);
-+	if (err < 0) {
- 		dev_err(chip->card->dev,
- 			"Unable to initialize codec #%d\n", ac97.num);
- 		if (ac97.num == 0)
-@@ -927,7 +930,8 @@ static int snd_intel8x0m_chip_init(struct intel8x0m *chip, int probing)
- 	unsigned int i;
+-		if ( (cpcm->pcm_channel = cs46xx_dsp_create_pcm_channel (chip, sample_rate, cpcm, 
+-									 cpcm->hw_buf.addr,
+-									 cpcm->pcm_channel_id)) == NULL) {
++		cpcm->pcm_channel = cs46xx_dsp_create_pcm_channel(chip, sample_rate, cpcm,
++								  cpcm->hw_buf.addr,
++								  cpcm->pcm_channel_id);
++		if (!cpcm->pcm_channel) {
+ 			dev_err(chip->card->dev,
+ 				"failed to re-create virtual PCM channel\n");
+ 			return -ENOMEM;
+@@ -1147,7 +1148,8 @@ static int snd_cs46xx_playback_hw_params(struct snd_pcm_substream *substream,
+ 			runtime->dma_addr = 0;
+ 			runtime->dma_bytes = 0;
+ 		}
+-		if ((err = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params))) < 0) {
++		err = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
++		if (err < 0) {
+ #ifdef CONFIG_SND_CS46XX_NEW_DSP
+ 			mutex_unlock(&chip->spos_mutex);
+ #endif
+@@ -1295,7 +1297,8 @@ static int snd_cs46xx_capture_hw_params(struct snd_pcm_substream *substream,
+ 			runtime->dma_addr = 0;
+ 			runtime->dma_bytes = 0;
+ 		}
+-		if ((err = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params))) < 0)
++		err = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
++		if (err < 0)
+ 			return err;
+ 		substream->ops = &snd_cs46xx_capture_indirect_ops;
+ 	}
+@@ -1760,7 +1763,8 @@ int snd_cs46xx_pcm(struct snd_cs46xx *chip, int device)
+ 	struct snd_pcm *pcm;
  	int err;
- 	
--	if ((err = snd_intel8x0m_ich_chip_init(chip, probing)) < 0)
-+	err = snd_intel8x0m_ich_chip_init(chip, probing);
+ 
+-	if ((err = snd_pcm_new(chip->card, "CS46xx", device, MAX_PLAYBACK_CHANNELS, 1, &pcm)) < 0)
++	err = snd_pcm_new(chip->card, "CS46xx", device, MAX_PLAYBACK_CHANNELS, 1, &pcm);
 +	if (err < 0)
  		return err;
- 	iagetword(chip, 0);	/* clear semaphore flag */
  
-@@ -1075,7 +1079,8 @@ static int snd_intel8x0m_create(struct snd_card *card,
+ 	pcm->private_data = chip;
+@@ -1787,7 +1791,8 @@ int snd_cs46xx_pcm_rear(struct snd_cs46xx *chip, int device)
+ 	struct snd_pcm *pcm;
+ 	int err;
  
- 	*r_intel8x0m = NULL;
+-	if ((err = snd_pcm_new(chip->card, "CS46xx - Rear", device, MAX_PLAYBACK_CHANNELS, 0, &pcm)) < 0)
++	err = snd_pcm_new(chip->card, "CS46xx - Rear", device, MAX_PLAYBACK_CHANNELS, 0, &pcm);
++	if (err < 0)
+ 		return err;
  
+ 	pcm->private_data = chip;
+@@ -1811,7 +1816,8 @@ int snd_cs46xx_pcm_center_lfe(struct snd_cs46xx *chip, int device)
+ 	struct snd_pcm *pcm;
+ 	int err;
+ 
+-	if ((err = snd_pcm_new(chip->card, "CS46xx - Center LFE", device, MAX_PLAYBACK_CHANNELS, 0, &pcm)) < 0)
++	err = snd_pcm_new(chip->card, "CS46xx - Center LFE", device, MAX_PLAYBACK_CHANNELS, 0, &pcm);
++	if (err < 0)
+ 		return err;
+ 
+ 	pcm->private_data = chip;
+@@ -1835,7 +1841,8 @@ int snd_cs46xx_pcm_iec958(struct snd_cs46xx *chip, int device)
+ 	struct snd_pcm *pcm;
+ 	int err;
+ 
+-	if ((err = snd_pcm_new(chip->card, "CS46xx - IEC958", device, 1, 0, &pcm)) < 0)
++	err = snd_pcm_new(chip->card, "CS46xx - IEC958", device, 1, 0, &pcm);
++	if (err < 0)
+ 		return err;
+ 
+ 	pcm->private_data = chip;
+@@ -2414,7 +2421,8 @@ static void snd_cs46xx_codec_reset (struct snd_ac97 * ac97)
+ 
+ 		/* test if we can write to the record gain volume register */
+ 		snd_ac97_write(ac97, AC97_REC_GAIN, 0x8a05);
+-		if ((err = snd_ac97_read(ac97, AC97_REC_GAIN)) == 0x8a05)
++		err = snd_ac97_read(ac97, AC97_REC_GAIN);
++		if (err == 0x8a05)
+ 			return;
+ 
+ 		msleep(10);
+@@ -2476,7 +2484,8 @@ int snd_cs46xx_mixer(struct snd_cs46xx *chip, int spdif_device)
+ 	/* detect primary codec */
+ 	chip->nr_ac97_codecs = 0;
+ 	dev_dbg(chip->card->dev, "detecting primary codec\n");
+-	if ((err = snd_ac97_bus(card, 0, &ops, chip, &chip->ac97_bus)) < 0)
++	err = snd_ac97_bus(card, 0, &ops, chip, &chip->ac97_bus);
++	if (err < 0)
+ 		return err;
+ 	chip->ac97_bus->private_free = snd_cs46xx_mixer_free_ac97_bus;
+ 
+@@ -2497,7 +2506,8 @@ int snd_cs46xx_mixer(struct snd_cs46xx *chip, int spdif_device)
+ 		kctl = snd_ctl_new1(&snd_cs46xx_controls[idx], chip);
+ 		if (kctl && kctl->id.iface == SNDRV_CTL_ELEM_IFACE_PCM)
+ 			kctl->id.device = spdif_device;
+-		if ((err = snd_ctl_add(card, kctl)) < 0)
++		err = snd_ctl_add(card, kctl);
++		if (err < 0)
+ 			return err;
+ 	}
+ 
+@@ -2684,7 +2694,8 @@ int snd_cs46xx_midi(struct snd_cs46xx *chip, int device)
+ 	struct snd_rawmidi *rmidi;
+ 	int err;
+ 
+-	if ((err = snd_rawmidi_new(chip->card, "CS46XX", device, 1, 1, &rmidi)) < 0)
++	err = snd_rawmidi_new(chip->card, "CS46XX", device, 1, 1, &rmidi);
++	if (err < 0)
+ 		return err;
+ 	strcpy(rmidi->name, "CS46XX");
+ 	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT, &snd_cs46xx_midi_output);
+@@ -3526,7 +3537,8 @@ static void hercules_mixer_init (struct snd_cs46xx *chip)
+ 		struct snd_kcontrol *kctl;
+ 
+ 		kctl = snd_ctl_new1(&snd_hercules_controls[idx], chip);
+-		if ((err = snd_ctl_add(card, kctl)) < 0) {
++		err = snd_ctl_add(card, kctl);
++		if (err < 0) {
+ 			dev_err(card->dev,
+ 				"failed to initialize Hercules mixer (%d)\n",
+ 				err);
+@@ -3871,7 +3883,8 @@ int snd_cs46xx_create(struct snd_card *card,
+ 	*rchip = NULL;
+ 
+ 	/* enable PCI device */
 -	if ((err = pci_enable_device(pci)) < 0)
 +	err = pci_enable_device(pci);
 +	if (err < 0)
  		return err;
  
  	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
-@@ -1089,7 +1094,8 @@ static int snd_intel8x0m_create(struct snd_card *card,
- 	chip->pci = pci;
- 	chip->irq = -1;
+@@ -3965,8 +3978,9 @@ int snd_cs46xx_create(struct snd_card *card,
  
--	if ((err = pci_request_regions(pci, card->shortname)) < 0) {
-+	err = pci_request_regions(pci, card->shortname);
-+	if (err < 0) {
- 		kfree(chip);
- 		pci_disable_device(pci);
- 		return err;
-@@ -1167,7 +1173,8 @@ static int snd_intel8x0m_create(struct snd_card *card,
- 
- 	pci_set_master(pci);
- 
--	if ((err = snd_intel8x0m_chip_init(chip, 1)) < 0) {
-+	err = snd_intel8x0m_chip_init(chip, 1);
-+	if (err < 0) {
- 		snd_intel8x0m_free(chip);
+ 	for (idx = 0; idx < 5; idx++) {
+ 		region = &chip->region.idx[idx];
+-		if ((region->resource = request_mem_region(region->base, region->size,
+-							   region->name)) == NULL) {
++		region->resource = request_mem_region(region->base, region->size,
++						      region->name);
++		if (!region->resource) {
+ 			dev_err(chip->card->dev,
+ 				"unable to request memory region 0x%lx-0x%lx\n",
+ 				   region->base, region->base + region->size - 1);
+@@ -4005,7 +4019,8 @@ int snd_cs46xx_create(struct snd_card *card,
  		return err;
  	}
-@@ -1181,7 +1188,8 @@ static int snd_intel8x0m_create(struct snd_card *card,
- 	chip->irq = pci->irq;
- 	card->sync_irq = chip->irq;
  
 -	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
 +	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
 +	if (err < 0) {
- 		snd_intel8x0m_free(chip);
+ 		snd_cs46xx_free(chip);
  		return err;
  	}
-@@ -1238,17 +1246,20 @@ static int snd_intel8x0m_probe(struct pci_dev *pci,
- 	}
- 	strcat(card->shortname," Modem");
+diff --git a/sound/pci/cs46xx/dsp_spos.c b/sound/pci/cs46xx/dsp_spos.c
+index 05f3f6dc918d..1db6bc58d6a6 100644
+--- a/sound/pci/cs46xx/dsp_spos.c
++++ b/sound/pci/cs46xx/dsp_spos.c
+@@ -617,7 +617,8 @@ static void cs46xx_dsp_proc_parameter_dump_read (struct snd_info_entry *entry,
+ 			col = 0;
+ 		}
  
--	if ((err = snd_intel8x0m_create(card, pci, pci_id->driver_data, &chip)) < 0) {
-+	err = snd_intel8x0m_create(card, pci, pci_id->driver_data, &chip);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
- 	card->private_data = chip;
- 
--	if ((err = snd_intel8x0m_mixer(chip, ac97_clock)) < 0) {
-+	err = snd_intel8x0m_mixer(chip, ac97_clock);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
--	if ((err = snd_intel8x0m_pcm(chip)) < 0) {
-+	err = snd_intel8x0m_pcm(chip);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
-@@ -1258,7 +1269,8 @@ static int snd_intel8x0m_probe(struct pci_dev *pci,
- 	sprintf(card->longname, "%s at irq %i",
- 		card->shortname, chip->irq);
- 
--	if ((err = snd_card_register(card)) < 0) {
-+	err = snd_card_register(card);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
+-		if ( (symbol = cs46xx_dsp_lookup_symbol_addr (chip,i / sizeof(u32), SYMBOL_PARAMETER)) != NULL) {
++		symbol = cs46xx_dsp_lookup_symbol_addr(chip, i / sizeof(u32), SYMBOL_PARAMETER);
++		if (symbol) {
+ 			col = 0;
+ 			snd_iprintf (buffer,"\n%s:\n",symbol->symbol_name);
+ 		}
 -- 
 2.26.2
 
