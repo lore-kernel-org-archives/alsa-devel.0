@@ -2,77 +2,84 @@ Return-Path: <SRS0=8Lk6=LD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BFFCC48BCD
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 16:28:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD90EC48BCF
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 16:28:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CF6B9610A2
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 16:28:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CF6B9610A2
+	by mail.kernel.org (Postfix) with ESMTPS id ABB44613BF
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 16:28:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ABB44613BF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5564916EB;
-	Wed,  9 Jun 2021 18:27:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5564916EB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 138C516BF;
+	Wed,  9 Jun 2021 18:27:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 138C516BF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623256085;
-	bh=CwcfJ9pmtX36rbshZeKY7SkmDKba0wUts6vOwqb+/kg=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=YSAqRxHA2YqezTdZtZ0RbocXQoXnEn1gbMYlUwitFoN8dZfnsMcgclHZQDo0h5EwD
-	 65+Y7vSql1VoWSM/wmfhDTZp1I9y/eTIY9i4R+as8w7OiUZu2X9s8mMx1m29xQ5j31
-	 +QYRevyvqKcNN7+Rtbki+IewgXVEx9P0KiYNWh/c=
+	s=default; t=1623256112;
+	bh=JBxK/uQxgmeCCNgTHNtQe7Z6TWwJb2JSfJq0bi3gTTs=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=f3p0WzN7BLdonJKqhvNfMOmrXsb0/fNOJGlwPZxvrJlDn/q/m+QZZvBH1nC7+8iGy
+	 zYIvh92jb8i0AJV2pqJapXaSK2NIEGV8hyFCFBqA7N/5h9bgbhkGQDNRRkeHhREoYa
+	 XigzMcqp44XIYo8osgLQ5mOzeEIfezBgXhhjbZ5E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CA801F804D0;
-	Wed,  9 Jun 2021 18:26:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B9B9F804D1;
+	Wed,  9 Jun 2021 18:26:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 27627F804D2; Wed,  9 Jun 2021 18:26:11 +0200 (CEST)
+ id 33D9DF8026C; Wed,  9 Jun 2021 18:26:11 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E3B83F8026C
+ by alsa1.perex.cz (Postfix) with ESMTPS id E717FF80212
  for <alsa-devel@alsa-project.org>; Wed,  9 Jun 2021 18:25:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3B83F8026C
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E717FF80212
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="dx8WDbH/"; 
+ header.b="Jq1oYFxq"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="k/frhNe2"
+ header.b="InFg3C4i"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 3DAC3219B7
+ by smtp-out1.suse.de (Postfix) with ESMTP id 6394D219BA
  for <alsa-devel@alsa-project.org>; Wed,  9 Jun 2021 16:25:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1623255954; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=g/Zaij+MG/pIu0575MK3JYFWwgBVOuh/NAtNmG3beN8=;
- b=dx8WDbH/Cr0/UVTTw1BYxlM4kOH+qN/R3VhungnQaN4ib/IONPikOeH89CYBlc2AzAhA50
- 2TMj5Z6Z9T9wZTfKFosiXCrxuIVWNH9RGBh/LH8Y9+LwQxXgUuzSTtUq0VXzJAn6TPdoza
- E/2lJveVKAByuwprrBt1SqnyM0BnBfQ=
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=jDd/v1I95491q1ynU2Yy+SyCvuaqEE1QblZRWDM+nVk=;
+ b=Jq1oYFxqgjJyqTABNhPS6NpkqzNRQh23Vv3/ibVAvCy/tvGzvO2quqevDIvjVKnmTfxbFq
+ w+nYYH79zir3fDKTAWf8amhBD12qT4N5H+LITa2OanJADHkINRv+5VdXWE0kg88X5APEoP
+ 9OcNRkeXjmmn3/Wnq5Ug+fA3EsRmQNY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1623255954;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=g/Zaij+MG/pIu0575MK3JYFWwgBVOuh/NAtNmG3beN8=;
- b=k/frhNe2g3ooUPAEKQICpfPDXa3N4IZF8mxxAO+ds3U3M+NkzwSCZ34Kn0YxeoK0xHLjsH
- 2e58BUvMQaTL0ACA==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=jDd/v1I95491q1ynU2Yy+SyCvuaqEE1QblZRWDM+nVk=;
+ b=InFg3C4ilhfZ7hh7v+ZI7HEs3sSNnIB54xo4mWA2DFEX6IfXI8KDRSCN54nzjxIi6WkDfn
+ rUPJB3RApuaTUZAw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 2D39CA3B89;
+ by relay2.suse.de (Postfix) with ESMTP id 53B31A3B8A;
  Wed,  9 Jun 2021 16:25:54 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/5] ALSA: More abstracition of memory alloc helpers
-Date: Wed,  9 Jun 2021 18:25:46 +0200
-Message-Id: <20210609162551.7842-1-tiwai@suse.de>
+Subject: [PATCH 4/5] ALSA: core: Move mmap handler into memalloc ops
+Date: Wed,  9 Jun 2021 18:25:50 +0200
+Message-Id: <20210609162551.7842-5-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210609162551.7842-1-tiwai@suse.de>
+References: <20210609162551.7842-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -90,40 +97,148 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+This patch moves the mmap handling code into the common memalloc
+handler.  It allows us to reduce the memory-type specific code in PCM
+code gracefully.
 
-this is a patch set for the code cleanup and refactoring around the
-ALSA core memory allocation helpers.  It begins with a cleanup of the
-non-used code, then followed by the refacotoring with the new ops,
-finally moved the memory-specific mmap handling code from PCM to the
-core memalloc.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/sound/memalloc.h    |  3 +++
+ sound/core/memalloc.c       | 36 ++++++++++++++++++++++++++++++++++++
+ sound/core/memalloc_local.h |  1 +
+ sound/core/pcm_native.c     | 19 +++----------------
+ 4 files changed, 43 insertions(+), 16 deletions(-)
 
-
-Takashi
-
-===
-
-Takashi Iwai (5):
-  ALSA: trident: Drop shadow TLB pointer table
-  ALSA: core: Drop snd_sgbuf_get_ptr()
-  ALSA: core: Abstract memory alloc helpers
-  ALSA: core: Move mmap handler into memalloc ops
-  ALSA: core: Add continuous and vmalloc mmap ops
-
- include/sound/memalloc.h           |  83 +-----
- include/sound/pcm.h                |  19 --
- sound/core/memalloc.c              | 444 +++++++++++++++++++----------
- sound/core/memalloc_local.h        |  19 ++
- sound/core/pcm_local.h             |   5 -
- sound/core/pcm_memory.c            |  21 --
- sound/core/pcm_native.c            |  39 +--
- sound/core/sgbuf.c                 |  90 ++++--
- sound/pci/trident/trident.h        |   1 -
- sound/pci/trident/trident_main.c   |  11 +-
- sound/pci/trident/trident_memory.c |  53 ++--
- 11 files changed, 405 insertions(+), 380 deletions(-)
- create mode 100644 sound/core/memalloc_local.h
-
+diff --git a/include/sound/memalloc.h b/include/sound/memalloc.h
+index 6dc85a7f44ad..1918c60f1f35 100644
+--- a/include/sound/memalloc.h
++++ b/include/sound/memalloc.h
+@@ -11,6 +11,7 @@
+ 
+ struct device;
+ struct page;
++struct vm_area_struct;
+ 
+ /*
+  * buffer device info
+@@ -69,6 +70,8 @@ int snd_dma_alloc_pages(int type, struct device *dev, size_t size,
+ int snd_dma_alloc_pages_fallback(int type, struct device *dev, size_t size,
+                                  struct snd_dma_buffer *dmab);
+ void snd_dma_free_pages(struct snd_dma_buffer *dmab);
++int snd_dma_buffer_mmap(struct snd_dma_buffer *dmab,
++			struct vm_area_struct *area);
+ 
+ dma_addr_t snd_sgbuf_get_addr(struct snd_dma_buffer *dmab, size_t offset);
+ struct page *snd_sgbuf_get_page(struct snd_dma_buffer *dmab, size_t offset);
+diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
+index ad68bcdf82cf..bdcb9230acf8 100644
+--- a/sound/core/memalloc.c
++++ b/sound/core/memalloc.c
+@@ -127,6 +127,23 @@ void snd_dma_free_pages(struct snd_dma_buffer *dmab)
+ }
+ EXPORT_SYMBOL(snd_dma_free_pages);
+ 
++/**
++ * snd_dma_buffer_mmap - perform mmap of the given DMA buffer
++ * @dmab: buffer allocation information
++ * @area: VM area information
++ */
++int snd_dma_buffer_mmap(struct snd_dma_buffer *dmab,
++			struct vm_area_struct *area)
++{
++	const struct snd_malloc_ops *ops = snd_dma_get_ops(dmab);
++
++	if (ops && ops->mmap)
++		return ops->mmap(dmab, area);
++	else
++		return -ENOENT;
++}
++EXPORT_SYMBOL(snd_dma_buffer_mmap);
++
+ /**
+  * snd_sgbuf_get_addr - return the physical address at the corresponding offset
+  * @dmab: buffer allocation information
+@@ -283,9 +300,20 @@ static void snd_dma_iram_free(struct snd_dma_buffer *dmab)
+ 		gen_pool_free(pool, (unsigned long)dmab->area, dmab->bytes);
+ }
+ 
++static int snd_dma_iram_mmap(struct snd_dma_buffer *dmab,
++			     struct vm_area_struct *area)
++{
++	area->vm_page_prot = pgprot_writecombine(area->vm_page_prot);
++	return remap_pfn_range(area, area->vm_start,
++			       dmab->addr >> PAGE_SHIFT,
++			       area->vm_end - area->vm_start,
++			       area->vm_page_prot);
++}
++
+ static const struct snd_malloc_ops snd_dma_iram_ops = {
+ 	.alloc = snd_dma_iram_alloc,
+ 	.free = snd_dma_iram_free,
++	.mmap = snd_dma_iram_mmap,
+ };
+ #endif /* CONFIG_GENERIC_ALLOCATOR */
+ 
+@@ -320,9 +348,17 @@ static void snd_dma_dev_free(struct snd_dma_buffer *dmab)
+ 	dma_free_coherent(dmab->dev.dev, dmab->bytes, dmab->area, dmab->addr);
+ }
+ 
++static int snd_dma_dev_mmap(struct snd_dma_buffer *dmab,
++			    struct vm_area_struct *area)
++{
++	return dma_mmap_coherent(dmab->dev.dev, area,
++				 dmab->area, dmab->addr, dmab->bytes);
++}
++
+ static const struct snd_malloc_ops snd_dma_dev_ops = {
+ 	.alloc = snd_dma_dev_alloc,
+ 	.free = snd_dma_dev_free,
++	.mmap = snd_dma_dev_mmap,
+ };
+ #endif /* CONFIG_HAS_DMA */
+ 
+diff --git a/sound/core/memalloc_local.h b/sound/core/memalloc_local.h
+index fe55416253bf..dbea7f2aed07 100644
+--- a/sound/core/memalloc_local.h
++++ b/sound/core/memalloc_local.h
+@@ -9,6 +9,7 @@ struct snd_malloc_ops {
+ 	struct page *(*get_page)(struct snd_dma_buffer *dmab, size_t offset);
+ 	unsigned int (*get_chunk_size)(struct snd_dma_buffer *dmab,
+ 				       unsigned int ofs, unsigned int size);
++	int (*mmap)(struct snd_dma_buffer *dmab, struct vm_area_struct *area);
+ };
+ 
+ #ifdef CONFIG_SND_DMA_SGBUF
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 48d63dbb17ba..14e32825c339 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -3700,22 +3700,9 @@ int snd_pcm_lib_default_mmap(struct snd_pcm_substream *substream,
+ 			     struct vm_area_struct *area)
+ {
+ 	area->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
+-#ifdef CONFIG_GENERIC_ALLOCATOR
+-	if (substream->dma_buffer.dev.type == SNDRV_DMA_TYPE_DEV_IRAM) {
+-		area->vm_page_prot = pgprot_writecombine(area->vm_page_prot);
+-		return remap_pfn_range(area, area->vm_start,
+-				substream->dma_buffer.addr >> PAGE_SHIFT,
+-				area->vm_end - area->vm_start, area->vm_page_prot);
+-	}
+-#endif /* CONFIG_GENERIC_ALLOCATOR */
+-	if (IS_ENABLED(CONFIG_HAS_DMA) && !substream->ops->page &&
+-	    (substream->dma_buffer.dev.type == SNDRV_DMA_TYPE_DEV ||
+-	     substream->dma_buffer.dev.type == SNDRV_DMA_TYPE_DEV_UC))
+-		return dma_mmap_coherent(substream->dma_buffer.dev.dev,
+-					 area,
+-					 substream->runtime->dma_area,
+-					 substream->runtime->dma_addr,
+-					 substream->runtime->dma_bytes);
++	if (!substream->ops->page &&
++	    !snd_dma_buffer_mmap(snd_pcm_get_dma_buf(substream), area))
++		return 0;
+ 	/* mmap with fault handler */
+ 	area->vm_ops = &snd_pcm_vm_ops_data_fault;
+ 	return 0;
 -- 
 2.26.2
 
