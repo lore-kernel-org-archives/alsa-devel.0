@@ -7,104 +7,84 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 437BFC47095
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 07:12:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 730A6C47095
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 07:13:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7FB0561375
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 07:12:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7FB0561375
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+	by mail.kernel.org (Postfix) with ESMTPS id E612561002
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 07:13:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E612561002
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 474A616C7;
-	Wed,  9 Jun 2021 09:11:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 474A616C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3DD9816CA;
+	Wed,  9 Jun 2021 09:12:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DD9816CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623222765;
-	bh=89wXSVQlS43EZyafg08NVPMM6xcIubSVLlwVUzy/v5g=;
-	h=References:From:To:Subject:In-reply-to:Date:Cc:List-Id:
+	s=default; t=1623222818;
+	bh=BT0d3QlT/U1likUmymPQd4Q4CbkNj/1qCgNJ6eKryYk=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JWiSqm75kvDdge+s46jYnx0ORKMr3ep5/t1rUUrTWZMnFInUN84jUitCnbQhyDL0g
-	 sBawBWNVdUthftW5EowIZ6Lr/yEEcp5UjGClSlNUHFy/dcM+JwoUkiNYyhvS2CNHyX
-	 E549x5S7qEGJBLRcfHnRSfNGGDWNurQva5ea49gg=
+	b=Y0IejBWpx4iKosk5jtLEdwI8B1LhJfzTIE/qS/lwDYe/eLP6e1SOefBwh4g6SqOtm
+	 ZF4rZf4EvqRVShpB5MOjaMEC9Qa+apZMcg8AmgBAUWDjXDKIZJGRBx/Tr5US6QSimB
+	 z0gGfHSAM2o3E80ZVkeS2JoPqpCY33pgIIoPVufY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CABADF80212;
-	Wed,  9 Jun 2021 09:11:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0499DF804C1;
+	Wed,  9 Jun 2021 09:12:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 66B5EF8026C; Wed,  9 Jun 2021 09:11:53 +0200 (CEST)
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com
- [IPv6:2a00:1450:4864:20::636])
+ id 8C80EF802DF; Wed,  9 Jun 2021 09:12:28 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 22AE2F8020D
- for <alsa-devel@alsa-project.org>; Wed,  9 Jun 2021 09:11:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22AE2F8020D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5C91EF802DF
+ for <alsa-devel@alsa-project.org>; Wed,  9 Jun 2021 09:12:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C91EF802DF
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.b="swhdumkL"
-Received: by mail-ej1-x636.google.com with SMTP id ci15so36776519ejc.10
- for <alsa-devel@alsa-project.org>; Wed, 09 Jun 2021 00:11:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20150623.gappssmtp.com; s=20150623;
- h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
- :date:mime-version;
- bh=EZJp9zOehIko5t4uubArbt+07NlOr9djpJPtl7qPgLs=;
- b=swhdumkLHlYoJCLgI24mR14Np3kR/+bmonVOf+HXAJ0g9Vx8S5qb/jcS4TvZ/PxE4M
- UQPBimvDHsNJ756SUjr1pVxxuhjg3nPH9WFq/kj6wLtVWilB6n1U2K3otkLp+aEEhMVq
- ZZUyX0GaC1eOMQsxfuAWO9UaZ+yMbjP60b74+/tVo6E/kHBTG3hG1IaZ3AoSYVMtP1NN
- aV/tcFEghrhBgTbZXprs8dGmjcc6K0VQY7N14LmlDFwpnrzTY/La26gwzpBi7uqUmyTC
- obyYgfVZRtLJdEmXxYs/jgrHBQpCmEzwf1SGZuWHC+qsG6wkdCvdF4Ftqemv/ZwTJbjJ
- 139A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:references:user-agent:from:to:cc:subject
- :in-reply-to:message-id:date:mime-version;
- bh=EZJp9zOehIko5t4uubArbt+07NlOr9djpJPtl7qPgLs=;
- b=sVEsVpOgsjqavIqC7LDYOeRwQfZbfnH/P1ijumnS/Pju3sXysJp1qy3IxzgfoejUZL
- j6Ci3I6p6fyRRAukyWkhfkG+ekON7pBHcAkNp6Ks69G4q7VD1Ie2XvrC5NxNn395yyBd
- vOVPgnaOdjpDGNZhjm/K4vFWLadZ7dav9rQLIsfFgjivAHf0CHAj9qPkZjODnMlzwRqx
- VN59vTkVz43sWvS7HtmJ/9AGFrGSuDJahVkFXA+Ocw21D7PnsAyLtf4UxW5mdLYh5nM3
- 3TPTNww+SR9R4MGxu47Terz9juagWdtjeB9qe4PFT4CSDyTBpaWoUSPyk6EIkNmkiMyn
- TA/A==
-X-Gm-Message-State: AOAM5318wjSyCVYU4WEg7/ZWVsrPbPw7SggSYNfirSuyorcDRcpOVNMS
- vkbKy/quOtLjY7yyFIn14xikgg==
-X-Google-Smtp-Source: ABdhPJxyyLoBglUWq3zI0nm/vqt7y01oL/+3wRRfAh0Hhb8ZiUOH+TYOEIdAF5uty/norNePPld8GQ==
-X-Received: by 2002:a17:907:2149:: with SMTP id
- rk9mr11606ejb.229.1623222705582; 
- Wed, 09 Jun 2021 00:11:45 -0700 (PDT)
-Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
- by smtp.gmail.com with ESMTPSA id x3sm686556ejw.69.2021.06.09.00.11.44
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 09 Jun 2021 00:11:45 -0700 (PDT)
-References: <87czsvdc4o.wl-kuninori.morimoto.gx@renesas.com>
- <874ke7dbpj.wl-kuninori.morimoto.gx@renesas.com>
-User-agent: mu4e 1.4.15; emacs 27.1
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood
- <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 6/8] ASoC: meson: switch to use
- snd_soc_daifmt_parse_format/clock_provider()
-In-reply-to: <874ke7dbpj.wl-kuninori.morimoto.gx@renesas.com>
-Message-ID: <1ja6nz1phr.fsf@starbuckisacylon.baylibre.com>
-Date: Wed, 09 Jun 2021 09:11:44 +0200
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- Shengjiu Wang <shengjiu.wang@gmail.com>, Sameer Pujar <spujar@nvidia.com>,
- Neil Armstrong <narmstrong@baylibre.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Nicolin Chen <nicoleotsuka@gmail.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Kevin Hilman <khilman@baylibre.com>,
- Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
- alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="1IkvgkHC"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="DT8iR7ah"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 5F83E1FD2A;
+ Wed,  9 Jun 2021 07:12:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1623222741; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=x8oH2FozkrzARMm/1U9/WB0JpPjf+Bo9vg8QTZaadh4=;
+ b=1IkvgkHCP42h4hS+pe0nCRMwGp4C/gMSt+WfxzXhGj9yJh76T3EBfapfx7vLdsOcqIt3C/
+ xQYabB7jnNUN1U4aCnEgLdYsXbBryuHnUa1yGCleOoxxLLB3VJ+cLhUe9YavqoGqc0P5mT
+ fV7q6adVRoGNAVx4TxjXnlA2UodddQM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1623222741;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=x8oH2FozkrzARMm/1U9/WB0JpPjf+Bo9vg8QTZaadh4=;
+ b=DT8iR7ah5kIt8Kexla3tMnLYYBKAmtHfu6uWEfrmKcP59rhcfUspVPWAy3cd3eZIeGmX8y
+ vo7+/6ZYFBeWOyAA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 52E94A3B83;
+ Wed,  9 Jun 2021 07:12:20 +0000 (UTC)
+Date: Wed, 09 Jun 2021 09:12:20 +0200
+Message-ID: <s5h4ke7cy0b.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 1/3] ALSA: pcm: add snd_pcm_period_elapsed() variant
+ without acquiring lock of PCM substream
+In-Reply-To: <20210609012244.24296-2-o-takashi@sakamocchi.jp>
+References: <20210609012244.24296-1-o-takashi@sakamocchi.jp>
+ <20210609012244.24296-2-o-takashi@sakamocchi.jp>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -120,61 +100,87 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-On Wed 09 Jun 2021 at 04:16, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com> wrote:
-
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->
-> This patch switch to use snd_soc_daifmt_parse_format/clock_provider() from
-> snd_soc_of_parse_daifmt().
->
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+On Wed, 09 Jun 2021 03:22:42 +0200,
+Takashi Sakamoto wrote:
+> 
+> Current implementation of ALSA PCM core has a kernel API,
+> snd_pcm_period_elapsed(), for drivers to awaken processes from waiting for
+> available frames. The function voluntarily acquires lock of PCM substream,
+> therefore it is not called in process context for any PCM operation since
+> the lock is already acquired.
+> 
+> The call in process context is convenient for packet-oriented driver, at
+> least for drivers to audio and music unit in IEEE 1394 bus. The drivers
+> are allowed by Linux FireWire subsystem to process isochronous packets
+> queued till recent isochronous cycle in process context in any time.
+> 
+> This commit adds snd_pcm_period_elapsed() variant,
+> snd_pcm_period_elapsed_under_stream_lock(), for drivers to queue the event
+> in the process context.
+> 
+> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 > ---
->  sound/soc/meson/meson-card-utils.c | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
->
-> diff --git a/sound/soc/meson/meson-card-utils.c b/sound/soc/meson/meson-card-utils.c
-> index 300ac8be46ef..779ac282e36d 100644
-> --- a/sound/soc/meson/meson-card-utils.c
-> +++ b/sound/soc/meson/meson-card-utils.c
-> @@ -118,24 +118,25 @@ unsigned int meson_card_parse_daifmt(struct device_node *node,
->  	struct device_node *bitclkmaster = NULL;
->  	struct device_node *framemaster = NULL;
->  	unsigned int daifmt;
-> +	unsigned int daiclk;
-
-Why did you need to add this local ? 
-
+>  include/sound/pcm.h  |  1 +
+>  sound/core/pcm_lib.c | 68 ++++++++++++++++++++++++++++++++++----------
+>  2 files changed, 54 insertions(+), 15 deletions(-)
+> 
+> diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+> index 2e1200d17d0c..bae90696cd06 100644
+> --- a/include/sound/pcm.h
+> +++ b/include/sound/pcm.h
+> @@ -1066,6 +1066,7 @@ void snd_pcm_set_ops(struct snd_pcm * pcm, int direction,
+>  void snd_pcm_set_sync(struct snd_pcm_substream *substream);
+>  int snd_pcm_lib_ioctl(struct snd_pcm_substream *substream,
+>  		      unsigned int cmd, void *arg);                      
+> +void snd_pcm_period_elapsed_under_stream_lock(struct snd_pcm_substream *substream);
+>  void snd_pcm_period_elapsed(struct snd_pcm_substream *substream);
+>  snd_pcm_sframes_t __snd_pcm_lib_xfer(struct snd_pcm_substream *substream,
+>  				     void *buf, bool interleaved,
+> diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+> index b7e3d8f44511..6f01b0c805ca 100644
+> --- a/sound/core/pcm_lib.c
+> +++ b/sound/core/pcm_lib.c
+> @@ -1778,27 +1778,40 @@ int snd_pcm_lib_ioctl(struct snd_pcm_substream *substream,
+>  EXPORT_SYMBOL(snd_pcm_lib_ioctl);
 >  
-> -	daifmt = snd_soc_of_parse_daifmt(node, "",
-> -					 &bitclkmaster, &framemaster);
-> -	daifmt &= ~SND_SOC_DAIFMT_MASTER_MASK;
-> +	daifmt = snd_soc_daifmt_parse_format(node, NULL);
-> +
-> +	snd_soc_daifmt_parse_clock_provider_as_phandle(node, NULL, &bitclkmaster, &framemaster);
->
+>  /**
+> - * snd_pcm_period_elapsed - update the pcm status for the next period
+> - * @substream: the pcm substream instance
+> + * snd_pcm_period_elapsed_under_stream_lock() - update the status of runtime for the next period
+> + *						under acquired lock of PCM substream.
+> + * @substream: the instance of pcm substream.
+> + *
+> + * The function is called when the batch of audio data frames as the same size as the period of
+> + * buffer is already processed in audio data transmission.
+> + *
+> + * The call of function updates the status of runtime with the latest position of audio data
+> + * transmission, checks overrun and underrun over buffer, awaken user processes from waiting for
+> + * available audio data frames, sampling audio timestamp, and performs stop or drain the PCM
+> + * substream according to configured threshold.
+> + *
+> + * The function is intended to use for the case that PCM driver operates audio data frames under
+> + * acquired lock of PCM substream; e.g. in callback of any operation of &snd_pcm_ops in process
+> + * context. In any interrupt context, it's preferable to use ``snd_pcm_period_elapsed()`` instead
+> + * since lock of PCM substream should be acquired in advance.
+>   *
+> - * This function is called from the interrupt handler when the
+> - * PCM has processed the period size.  It will update the current
+> - * pointer, wake up sleepers, etc.
+> + * Developer should pay enough attention that some callbacks in &snd_pcm_ops are done by the call of
+> + * function:
+>   *
+> - * Even if more than one periods have elapsed since the last call, you
+> - * have to call this only once.
+> + * - .pointer - to retrieve current position of audio data transmission by frame count or XRUN state.
+> + * - .trigger - with SNDRV_PCM_TRIGGER_STOP at XRUN or DRAINING state.
+> + * - .get_time_info - to retrieve audio time stamp if needed.
+> + *
+> + * Even if more than one periods have elapsed since the last call, you have to call this only once.
+> + *
+> + * Context: Any context under acquired lock of PCM substream. This function may not sleep.
 
-Thanks for this
+Actually it may sleep if the PCM is nonatomic mode; then the stream
+lock is a mutex instead of a spinlock.
 
->  	/* If no master is provided, default to cpu master */
->  	if (!bitclkmaster || bitclkmaster == cpu_node) {
-> -		daifmt |= (!framemaster || framemaster == cpu_node) ?
-> +		daiclk = (!framemaster || framemaster == cpu_node) ?
->  			SND_SOC_DAIFMT_CBS_CFS : SND_SOC_DAIFMT_CBS_CFM;
->  	} else {
-> -		daifmt |= (!framemaster || framemaster == cpu_node) ?
-> +		daiclk = (!framemaster || framemaster == cpu_node) ?
->  			SND_SOC_DAIFMT_CBM_CFS : SND_SOC_DAIFMT_CBM_CFM;
->  	}
->  
->  	of_node_put(bitclkmaster);
->  	of_node_put(framemaster);
->  
-> -	return daifmt;
-> +	return daifmt | daiclk;
 
-These 3 last changes does seem to necessary
-
->  }
->  EXPORT_SYMBOL_GPL(meson_card_parse_daifmt);
-
+Takashi
