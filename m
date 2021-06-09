@@ -4,93 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E300C48BD1
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 19:32:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9D0CC48BCF
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 23:03:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BFD87613D4
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 19:32:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BFD87613D4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	by mail.kernel.org (Postfix) with ESMTPS id B8B61613EA
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 23:03:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B8B61613EA
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 834D016D0;
-	Wed,  9 Jun 2021 21:31:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 834D016D0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C76616DD;
+	Thu, 10 Jun 2021 01:02:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C76616DD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623267152;
-	bh=Upot+h4BOUxop9u5aoOEm30KgW0P5W74+xDE4RuL2BA=;
-	h=In-Reply-To:References:From:Date:Subject:To:List-Id:
+	s=default; t=1623279806;
+	bh=DKTICLj3Sm/QP/N78XIz1XuWooLwtRJcZZ7jgpLMZLE=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mgVfoomVhq9xPqfKE8bIV6O5c9qhLKcSGIqwSyKoJk09BAHbyYJB9V+9s4zjlv0VH
-	 fMpjKWh1z2hTwgblv865u4QtVLTUDp5xt1s1kJt5oGJP/o5iIA4k/XaOa8TuENWPjX
-	 HESJzl4mtFwy28lHdcCHNjLHx8+pZ08lM/KQ5Bmc=
+	b=e33yP/SN5O+pfdEYGd5MUrsdDi5bCIyMeWJ9D5IslrVgMX4rdKe2l0gXw3lx4JH4c
+	 Sy4ebyCkNcH4Sw9tFUZHrdOI5tNdKzQVm7afFraRsh8Up+HXKDXpbfWBiGRLtY6M0L
+	 hL7i7P9WjK9MWS92aNFGkc0CHVU/+iMB41jGb/rw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D193F80212;
-	Wed,  9 Jun 2021 21:31:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F3C5DF80116;
+	Thu, 10 Jun 2021 01:02:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A7E75F8026C; Wed,  9 Jun 2021 21:31:40 +0200 (CEST)
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com
- [IPv6:2607:f8b0:4864:20::32b])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 84DA0F800F4
- for <alsa-devel@alsa-project.org>; Wed,  9 Jun 2021 21:31:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84DA0F800F4
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="MMFEzs5U"
-Received: by mail-ot1-x32b.google.com with SMTP id
- o17-20020a9d76510000b02903eabfc221a9so11360499otl.0
- for <alsa-devel@alsa-project.org>; Wed, 09 Jun 2021 12:31:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=mime-version:in-reply-to:references:from:user-agent:date:message-id
- :subject:to; bh=/5hRR3JhxA61/7kGbJ52XF4Id3fG9uBeIzCvCACHPQw=;
- b=MMFEzs5U6IDNKqGfwXrix6STIsbRevLZaidgF9ycrqSfLwnZd2nH5WPjEDTby0ZOMT
- 8mSMBVUXuPyJIo4vUqhf5ZC9cfz4dg6jelk7kAgdMPS1kHmslrmOtoqpiLM/7/f0b9tk
- 3nPQf+T5651vsSqqm8Tz1nlX7vFJ6ukPeraZY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:in-reply-to:references:from
- :user-agent:date:message-id:subject:to;
- bh=/5hRR3JhxA61/7kGbJ52XF4Id3fG9uBeIzCvCACHPQw=;
- b=Bl+qyUzE0OjtJKGDHNxmayVxDl+oE5qZfMWXWwlaQNhmvX14dIlVYlvw4MdTP4hqTX
- GpvFLWmnmWiW16Fk0Qz1Zx7YCJE5OCfiIyq1HKUHOPzARgrCuDfC/gB4QTyiqXb2oLkK
- K0IRpu/EUvPHrLUh5vYGm97sI8NkJJvciw8y3zKL7xjGwpe6ELfHFVDoHIMoKMrvRW5K
- aFUuGaS7dMky064vVvktDRlt6d2Galo+KPkFvttz5QNm22zL2FIqgbZhmD5glm/KFesd
- xYnt+GIlhkUUH5O6Oc5kk3Hk76J9japBxU2QQYdAou4nHkKTjNIIGWmmy3VQbRn9g1WC
- 2/sg==
-X-Gm-Message-State: AOAM531D0M1lIeN2LQIrCUjUFE38Y3IZSj3TM8qe/RDu+rPyXc8VOR8F
- pt0aU2w/PsQoCFoJOOXg6OJ5VrNQNhErbeHbljUCLw==
-X-Google-Smtp-Source: ABdhPJwbGOmwALrdCY6bSX1H2qs6NY1fPr3SD/WDtOxCLEy4O9BT2CZIneFt6DfO7TE5QTj4TK4ORmu+XZn+RYoNM64=
-X-Received: by 2002:a05:6830:190:: with SMTP id
- q16mr865886ota.34.1623267094752; 
- Wed, 09 Jun 2021 12:31:34 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 9 Jun 2021 12:31:33 -0700
-MIME-Version: 1.0
-In-Reply-To: <20210609133039.4648-1-srivasam@codeaurora.org>
-References: <20210609133039.4648-1-srivasam@codeaurora.org>
-From: Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date: Wed, 9 Jun 2021 12:31:33 -0700
-Message-ID: <CAE-0n53Jy_kRK-6L4bZMZ2EAv2n3b9PX2GZSaUodZtU8P7P=6Q@mail.gmail.com>
-Subject: Re: [PATCH v3] ASoC: qcom: Add four speaker support on MI2S secondary
-To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>, agross@kernel.org,
- alsa-devel@alsa-project.org, 
- bgoswami@codeaurora.org, bjorn.andersson@linaro.org, broonie@kernel.org, 
- devicetree@vger.kernel.org, judyhsiao@chromium.org, lgirdwood@gmail.com, 
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, perex@perex.cz, 
- plai@codeaurora.org, robh+dt@kernel.org, rohitkr@codeaurora.org, 
- srinivas.kandagatla@linaro.org, tiwai@suse.com
-Content-Type: text/plain; charset="UTF-8"
+ id 80517F8026C; Thu, 10 Jun 2021 01:02:34 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 38064F80116
+ for <alsa-devel@alsa-project.org>; Thu, 10 Jun 2021 01:02:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38064F80116
+Date: 10 Jun 2021 08:02:25 +0900
+X-IronPort-AV: E=Sophos;i="5.83,261,1616425200"; d="scan'208";a="83906470"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 10 Jun 2021 08:02:25 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 1DAF24004D1B;
+ Thu, 10 Jun 2021 08:02:25 +0900 (JST)
+Message-ID: <87wnr2bq0u.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Jerome Brunet <jbrunet@baylibre.com>
+Subject: Re: [PATCH v2 6/8] ASoC: meson: switch to use
+ snd_soc_daifmt_parse_format/clock_provider()
+In-Reply-To: <1ja6nz1phr.fsf@starbuckisacylon.baylibre.com>
+References: <87czsvdc4o.wl-kuninori.morimoto.gx@renesas.com>
+ <874ke7dbpj.wl-kuninori.morimoto.gx@renesas.com>
+ <1ja6nz1phr.fsf@starbuckisacylon.baylibre.com>
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>, Sameer Pujar <spujar@nvidia.com>,
+ Neil Armstrong <narmstrong@baylibre.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ Mark Brown <broonie@kernel.org>, Kevin Hilman <khilman@baylibre.com>,
+ Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ Fabio Estevam <festevam@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,27 +87,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Quoting Srinivasa Rao Mandadapu (2021-06-09 06:30:39)
-> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-> index c62d2612e8f5..aff39c9f6326 100644
-> --- a/sound/soc/qcom/lpass-cpu.c
-> +++ b/sound/soc/qcom/lpass-cpu.c
-> @@ -29,6 +29,15 @@
->  #define LPASS_CPU_I2S_SD0_1_2_MASK     GENMASK(2, 0)
->  #define LPASS_CPU_I2S_SD0_1_2_3_MASK   GENMASK(3, 0)
->
-> +/*
-> + * Channel maps for Quad channel playbacks on MI2S Secondary
-> + */
-> +static struct snd_pcm_chmap_elem lpass_quad_chmaps[] = {
 
-Can this be const?
+Hi Jerome
 
-> +               { .channels = 4,
-> +                 .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_RL,
-> +                               SNDRV_CHMAP_FR, SNDRV_CHMAP_RR } },
-> +               { }
-> +};
->  static int lpass_cpu_init_i2sctl_bitfields(struct device *dev,
->                         struct lpaif_i2sctl *i2sctl, struct regmap *map)
->  {
+Thank you for your feedback
+
+> > @@ -118,24 +118,25 @@ unsigned int meson_card_parse_daifmt(struct device_node *node,
+> >  	struct device_node *bitclkmaster = NULL;
+> >  	struct device_node *framemaster = NULL;
+> >  	unsigned int daifmt;
+> > +	unsigned int daiclk;
+> 
+> Why did you need to add this local ?
+
+If you don't like using daiclk here,
+I can merge these into daifmt.
+I will wait other feedback, and will post patch next week.
+
+Thank you for your help !!
+
+Best regards
+---
+Kuninori Morimoto
