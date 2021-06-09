@@ -2,107 +2,70 @@ Return-Path: <SRS0=8Lk6=LD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E827C48BCD
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 01:25:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFD4EC4743D
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 02:08:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 782466108D
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 01:25:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 782466108D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
+	by mail.kernel.org (Postfix) with ESMTPS id 5C1176128A
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 02:08:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5C1176128A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 156A816D8;
-	Wed,  9 Jun 2021 03:24:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 156A816D8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 133C61695;
+	Wed,  9 Jun 2021 04:07:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 133C61695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623201930;
-	bh=l2Qtut3VbwZ6UM6Ttgeb7QGVD3my6oi3/TX10/O8b6o=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=gp2Wnzr7qMIDx8mZaiK9qKcG16jA2t33NWG8LeJVZJfvOChPA7awQbo6NKBz06p1i
-	 o9+sm8jCk0lKFefOI47SYx6d4QR0mDoRG5u1joRimwOxbhc2InYsNtugd8V00R3f+H
-	 ZhdEG+4eaMQe8bFoGWr+QdUDYaRZtH6Zq/KDlgt4=
+	s=default; t=1623204505;
+	bh=yzSivmTdbvk/1ZCPeSvo2UCSQQlxc+kQwOuacTlfP3U=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=OBurBeWuYDv36mkkwqrb0xdiX/GSXUyL1GzUMn4dVZ/m+0Pfa48BKTLe4Bkb9OLHS
+	 BedCL5mQZlcPtO4ZZcLJn4RBS+dcOP30iuRBNJnSVrSHCrXmoX4yAoilG+mWuGiskh
+	 hqfOezjUjAfvQKib8axlyMPkEeE81NBMI7UMDN7k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8D14DF804D1;
-	Wed,  9 Jun 2021 03:23:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4B1F9F8020D;
+	Wed,  9 Jun 2021 04:07:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E50A1F80218; Wed,  9 Jun 2021 03:23:09 +0200 (CEST)
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com
- [64.147.123.24])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 30AE0F801EC
- for <alsa-devel@alsa-project.org>; Wed,  9 Jun 2021 03:23:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30AE0F801EC
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="OpDzqIWk"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="oVjB6iDi"
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailout.west.internal (Postfix) with ESMTP id 820D62092;
- Tue,  8 Jun 2021 21:22:58 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute5.internal (MEProxy); Tue, 08 Jun 2021 21:22:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=oXvWhLbwOh/u0
- n7UxIKnxJd7w7AA/kV4i4aL6hsnj80=; b=OpDzqIWkb0lnvOUZW4VJMJ3a4x48G
- 8r3CI8hQN6dTf/2GlM/r3PkLflgwPXw7nPbEKix45hZkjKE1CBfRCXp6LjQzHuCG
- NdAXWLdwyGpCjMk9bLZoU2I7D0BmieGuYo4WN490t8rSiStE+OAnhWJJVk0KIqwG
- i0UP8qPpuWCOQXDiha6ez+pT4up73TO4yrLb4OfKwlLT/30joBwd4VCVC1xZZrJe
- r2R/SXWIkb5LYUq9XanM5qS4G+B7Qe31fRXBz4ETS0OYipLiqD83GCf3YY3Dp2gd
- f6opRVuxPq1wlpLHqeJ+mukkjA5XaQVWdkYdDyLxGGvXxgNZNWHVM7uWQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-transfer-encoding:date:from
- :in-reply-to:message-id:mime-version:references:subject:to
- :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm3; bh=oXvWhLbwOh/u0n7UxIKnxJd7w7AA/kV4i4aL6hsnj80=; b=oVjB6iDi
- ry4ny2UNxl/oG6IwPDd4yHL9MwrFzOb+bDUFP0OG9060IKawPwL510WfF5S3TTuF
- EEtRThZvvgPjmENQAx4YnckijfS1IytgyNVKHLKp/e5+d0ni7CmlEECE1qGCIf+C
- Kr3AxFbuxIF+RmkZipEmNGp6QCnLr1dPlZwLqrt6aqd3Jy6WAU/FMEbq1xbhUU8g
- JqRxgTDl+PL/9fUn13T87YIb3EmzBVHxz4qIcdbim8dSQ5wW75NprC4EmNXIz3ji
- JBwkvtsGpwJcaqROdzGERE6AMKs7KFAqVTuhAT8C3hhOaRb2VbOkAKl10mP9P7f1
- PkKPLKJzCvpp1w==
-X-ME-Sender: <xms:8hfAYPTNgyFr-IQTjTZW4-Il2FTyBMvinhFiYt2mu-ksjwOsKqc-2g>
- <xme:8hfAYAwFDm3msj_zfqDVRkTi1TBPTzWmKuybiFfb_2n4VfwfXGQqrMOcMM34_LVWF
- RVSYUAuA6ITq8d1Q5Y>
-X-ME-Received: <xmr:8hfAYE1G8Q30_5EZLgBAPEaNmWsjADYZiiJW5Q7i6NBrjqAe27_rY3WOevHaIq_7wX7JiRGJIbrzgA33LPHJ0O9aT7vgEZ8BiQegM1YS2uj3FYT6Tk20>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedutddgfeekucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
- dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
- shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepveefffefke
- etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecuvehluhhsthgv
- rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihessh
- grkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:8hfAYPCIw46G7xYn4DWCUA4HdtIymHJpsZqoykESfc0TVdBoCuo3eQ>
- <xmx:8hfAYIiyzA9DjJZiSo17PWzVPZNAWE1z4CWtliJPTUmNJu__hRoC1g>
- <xmx:8hfAYDrQ1Ki2gUf38v1QvGet7ntJ2Bnxx31d6VJVG5_JafkmNEfCsQ>
- <xmx:8hfAYEbCSM_wG1hO3k5Onh-lmg-3pY86syS-bSA0CPOuTaE-cQkfsg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 8 Jun 2021 21:22:57 -0400 (EDT)
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: tiwai@suse.de
-Subject: [PATCH 3/3] ALSA: firewire-lib: obsolete workqueue for period update
-Date: Wed,  9 Jun 2021 10:22:44 +0900
-Message-Id: <20210609012244.24296-4-o-takashi@sakamocchi.jp>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210609012244.24296-1-o-takashi@sakamocchi.jp>
-References: <20210609012244.24296-1-o-takashi@sakamocchi.jp>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
+ id 58BF9F8026C; Wed,  9 Jun 2021 04:07:32 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id D9ED5F8020D
+ for <alsa-devel@alsa-project.org>; Wed,  9 Jun 2021 04:07:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9ED5F8020D
+Date: 09 Jun 2021 11:07:19 +0900
+X-IronPort-AV: E=Sophos;i="5.83,259,1616425200"; d="scan'208";a="83814596"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 09 Jun 2021 11:07:19 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id ACDB14151C19;
+ Wed,  9 Jun 2021 11:07:19 +0900 (JST)
+Message-ID: <87czsvdc4o.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH v2 0/8] ASoC: tidyup snd_soc_of_parse_daifmt()
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>, Sameer Pujar <spujar@nvidia.com>,
+ Neil Armstrong <narmstrong@baylibre.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ Kevin Hilman <khilman@baylibre.com>,
+ Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>,
+ Jerome Brunet <jbrunet@baylibre.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -118,80 +81,67 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The workqueue to notify PCM period elapse is not used anymore.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/amdtp-stream.c | 15 ---------------
- sound/firewire/amdtp-stream.h |  1 -
- 2 files changed, 16 deletions(-)
+Hi Mark
 
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 426a85b56cf1..1d9bc7b07df1 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -77,8 +77,6 @@
- // overrun. Actual device can skip more, then this module stops the packet streaming.
- #define IR_JUMBO_PAYLOAD_MAX_SKIP_CYCLES	5
- 
--static void pcm_period_work(struct work_struct *work);
--
- /**
-  * amdtp_stream_init - initialize an AMDTP stream structure
-  * @s: the AMDTP stream to initialize
-@@ -107,7 +105,6 @@ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
- 	s->flags = flags;
- 	s->context = ERR_PTR(-1);
- 	mutex_init(&s->mutex);
--	INIT_WORK(&s->period_work, pcm_period_work);
- 	s->packet_index = 0;
- 
- 	init_waitqueue_head(&s->ready_wait);
-@@ -346,7 +343,6 @@ EXPORT_SYMBOL(amdtp_stream_get_max_payload);
-  */
- void amdtp_stream_pcm_prepare(struct amdtp_stream *s)
- {
--	cancel_work_sync(&s->period_work);
- 	s->pcm_buffer_pointer = 0;
- 	s->pcm_period_pointer = 0;
- }
-@@ -626,16 +622,6 @@ static void update_pcm_pointers(struct amdtp_stream *s,
- 	}
- }
- 
--static void pcm_period_work(struct work_struct *work)
--{
--	struct amdtp_stream *s = container_of(work, struct amdtp_stream,
--					      period_work);
--	struct snd_pcm_substream *pcm = READ_ONCE(s->pcm);
--
--	if (pcm)
--		snd_pcm_period_elapsed(pcm);
--}
--
- static int queue_packet(struct amdtp_stream *s, struct fw_iso_packet *params,
- 			bool sched_irq)
- {
-@@ -1808,7 +1794,6 @@ static void amdtp_stream_stop(struct amdtp_stream *s)
- 		return;
- 	}
- 
--	cancel_work_sync(&s->period_work);
- 	fw_iso_context_stop(s->context);
- 	fw_iso_context_destroy(s->context);
- 	s->context = ERR_PTR(-1);
-diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
-index b25592d5f6af..1f957c946c95 100644
---- a/sound/firewire/amdtp-stream.h
-+++ b/sound/firewire/amdtp-stream.h
-@@ -186,7 +186,6 @@ struct amdtp_stream {
- 
- 	/* For a PCM substream processing. */
- 	struct snd_pcm_substream *pcm;
--	struct work_struct period_work;
- 	snd_pcm_uframes_t pcm_buffer_pointer;
- 	unsigned int pcm_period_pointer;
- 
+These are v2 of parsing for daifmt.
+
+I want to add new audio-graph-card2 sound card driver,
+and this is last part of necessary soc-core cleanup for it.
+
+Current some drivers are using DT, and then,
+snd_soc_of_parse_daifmt() parses daifmt, but bitclock/frame provider
+parsing part is one of headache, because we are assuming below both cases.
+
+A)	node {
+		bitclock-master;
+		frame-master;
+		...
+	};
+    
+B)	link {
+		bitclock-master = <&xxx>;
+		frame-master = <&xxx>;
+		...
+	};
+
+The original was style A), and style B) was added later.
+
+snd_soc_of_parse_daifmt() parses A) style as original style,
+and user need to update to B) style for clock_provider part if needed.
+
+To handle it more flexibile, this patch-set adds new functions
+which separates snd_soc_of_parse_daifmt() helper function.
+
+	snd_soc_daifmt_parse_format()			: format part
+	snd_soc_daifmt_parse_clock_provider_as_flag()	: clock part for style A)
+	snd_soc_daifmt_parse_clock_provider_as_phandl()	: clock part for style B)
+	snd_soc_daifmt_parse_clock_provider_as_bitmap()	: clock part use with _from_bitmap
+
+v1 -> v2
+	- tidyup parse_clock_provider functions to _as_flag/phandle/bitmap()
+	- don't exchange code style on each drivers.
+
+Link: https://lore.kernel.org/r/875yypdxlm.wl-kuninori.morimoto.gx@renesas.com
+
+Kuninori Morimoto (8):
+  ASoC: soc-core: add snd_soc_daifmt_clock_provider_from_bitmap()
+  ASoC: soc-core: add snd_soc_daifmt_clock_provider_fliped()
+  ASoC: soc-core: add snd_soc_daifmt_parse_format/clock_provider()
+  ASoC: atmel: switch to use snd_soc_daifmt_parse_format/clock_provider()
+  ASoC: fsl: switch to use snd_soc_daifmt_parse_format/clock_provider()
+  ASoC: meson: switch to use snd_soc_daifmt_parse_format/clock_provider()
+  ASoC: simple-card-utils: switch to use snd_soc_daifmt_parse_format/clock_provider()
+  ASoC: soc-core: remove snd_soc_of_parse_daifmt()
+
+ include/sound/soc.h                   | 21 ++++--
+ sound/soc/atmel/mikroe-proto.c        | 16 +++--
+ sound/soc/fsl/fsl-asoc-card.c         | 14 ++--
+ sound/soc/generic/simple-card-utils.c | 19 ++---
+ sound/soc/meson/meson-card-utils.c    | 13 ++--
+ sound/soc/soc-core.c                  | 99 +++++++++++++++++----------
+ 6 files changed, 110 insertions(+), 72 deletions(-)
+
 -- 
-2.27.0
+2.25.1
 
