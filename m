@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD90EC48BCF
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 16:28:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AA5DC48BCF
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 16:28:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ABB44613BF
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 16:28:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ABB44613BF
+	by mail.kernel.org (Postfix) with ESMTPS id 7B6E3613BF
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 16:28:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B6E3613BF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 138C516BF;
-	Wed,  9 Jun 2021 18:27:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 138C516BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B6CC16F6;
+	Wed,  9 Jun 2021 18:27:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B6CC16F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623256112;
-	bh=JBxK/uQxgmeCCNgTHNtQe7Z6TWwJb2JSfJq0bi3gTTs=;
+	s=default; t=1623256125;
+	bh=Olv/z5Oxfk0eGa5Pwo/KcRdttRXsqUuG7wlU1SY20Jg=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=f3p0WzN7BLdonJKqhvNfMOmrXsb0/fNOJGlwPZxvrJlDn/q/m+QZZvBH1nC7+8iGy
-	 zYIvh92jb8i0AJV2pqJapXaSK2NIEGV8hyFCFBqA7N/5h9bgbhkGQDNRRkeHhREoYa
-	 XigzMcqp44XIYo8osgLQ5mOzeEIfezBgXhhjbZ5E=
+	b=OXDFd5Lcg/fx0Sme5AmYipq8BOmCfTKnXJ3wGBtqY0HQ936udpvp2+TJLiG3/2H9j
+	 4RlJkcDuiSvWOoIobdZCCAbaiyshffoTa6mgvU+3KJEhFWzUvft7L0QfsstCcWqeW/
+	 oXTYbG4ScBQwSu3exueEZJImF73+ZESKbDLSrVrE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B9B9F804D1;
-	Wed,  9 Jun 2021 18:26:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 91DE3F804D2;
+	Wed,  9 Jun 2021 18:26:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33D9DF8026C; Wed,  9 Jun 2021 18:26:11 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id EA80AF804CB; Wed,  9 Jun 2021 18:26:11 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E717FF80212
+ by alsa1.perex.cz (Postfix) with ESMTPS id ECB9DF802A0
  for <alsa-devel@alsa-project.org>; Wed,  9 Jun 2021 18:25:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E717FF80212
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ECB9DF802A0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="Jq1oYFxq"; 
+ header.b="rLFF2unG"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="InFg3C4i"
+ header.b="ESa4p9KG"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 6394D219BA
+ by smtp-out2.suse.de (Postfix) with ESMTP id 420911FD62
  for <alsa-devel@alsa-project.org>; Wed,  9 Jun 2021 16:25:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1623255954; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=jDd/v1I95491q1ynU2Yy+SyCvuaqEE1QblZRWDM+nVk=;
- b=Jq1oYFxqgjJyqTABNhPS6NpkqzNRQh23Vv3/ibVAvCy/tvGzvO2quqevDIvjVKnmTfxbFq
- w+nYYH79zir3fDKTAWf8amhBD12qT4N5H+LITa2OanJADHkINRv+5VdXWE0kg88X5APEoP
- 9OcNRkeXjmmn3/Wnq5Ug+fA3EsRmQNY=
+ bh=aLbPQt5/Zd36KlLJv5Gnrj0eT+L4+eKjLKd3Dz/aqh8=;
+ b=rLFF2unGhJ72Bhg5cSGOPAbd7onm41PUbWCMNbADZ1TTjZwl+Ehf47dI5ZYZ0v8hOO2qgp
+ Olsbj1I8Xs2SSWlH6RbKpzQPICbLXw6cKbUNk8cYBsFAc2XxovFf2QXWNm3M6GVUCMsV7p
+ /SStUYVcMx4NH/SSaKrdE6VPofLRoHE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1623255954;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=jDd/v1I95491q1ynU2Yy+SyCvuaqEE1QblZRWDM+nVk=;
- b=InFg3C4ilhfZ7hh7v+ZI7HEs3sSNnIB54xo4mWA2DFEX6IfXI8KDRSCN54nzjxIi6WkDfn
- rUPJB3RApuaTUZAw==
+ bh=aLbPQt5/Zd36KlLJv5Gnrj0eT+L4+eKjLKd3Dz/aqh8=;
+ b=ESa4p9KGLyFy58xQipdBS8N7VStOiCKW9Pkt3EwXOSgOl6W0pbPJRiFJBQ1okKyzBKO+xH
+ w9OHbwMbG0UWx3AA==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 53B31A3B8A;
+ by relay2.suse.de (Postfix) with ESMTP id 3D11DA3B8A;
  Wed,  9 Jun 2021 16:25:54 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 4/5] ALSA: core: Move mmap handler into memalloc ops
-Date: Wed,  9 Jun 2021 18:25:50 +0200
-Message-Id: <20210609162551.7842-5-tiwai@suse.de>
+Subject: [PATCH 1/5] ALSA: trident: Drop shadow TLB pointer table
+Date: Wed,  9 Jun 2021 18:25:47 +0200
+Message-Id: <20210609162551.7842-2-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210609162551.7842-1-tiwai@suse.de>
 References: <20210609162551.7842-1-tiwai@suse.de>
@@ -97,148 +97,218 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch moves the mmap handling code into the common memalloc
-handler.  It allows us to reduce the memory-type specific code in PCM
-code gracefully.
+The shadow TLB pointer table is allocated and set up, but never really
+used any longer by the driver.  Let's drop it.
+
+Since this is the only user of snd_pcm_sgbuf_get_ptr(), we can clean
+up the API after this change.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/memalloc.h    |  3 +++
- sound/core/memalloc.c       | 36 ++++++++++++++++++++++++++++++++++++
- sound/core/memalloc_local.h |  1 +
- sound/core/pcm_native.c     | 19 +++----------------
- 4 files changed, 43 insertions(+), 16 deletions(-)
+ sound/pci/trident/trident.h        |  1 -
+ sound/pci/trident/trident_main.c   | 11 +------
+ sound/pci/trident/trident_memory.c | 53 +++++++++---------------------
+ 3 files changed, 17 insertions(+), 48 deletions(-)
 
-diff --git a/include/sound/memalloc.h b/include/sound/memalloc.h
-index 6dc85a7f44ad..1918c60f1f35 100644
---- a/include/sound/memalloc.h
-+++ b/include/sound/memalloc.h
-@@ -11,6 +11,7 @@
+diff --git a/sound/pci/trident/trident.h b/sound/pci/trident/trident.h
+index c7567edbe4c4..c579a44bb9ae 100644
+--- a/sound/pci/trident/trident.h
++++ b/sound/pci/trident/trident.h
+@@ -251,7 +251,6 @@ struct snd_trident_memblk_arg {
+ struct snd_trident_tlb {
+ 	__le32 *entries;		/* 16k-aligned TLB table */
+ 	dma_addr_t entries_dmaaddr;	/* 16k-aligned PCI address to TLB table */
+-	unsigned long * shadow_entries;	/* shadow entries with virtual addresses */
+ 	struct snd_dma_buffer buffer;
+ 	struct snd_util_memhdr * memhdr;	/* page allocation list */
+ 	struct snd_dma_buffer silent_page;
+diff --git a/sound/pci/trident/trident_main.c b/sound/pci/trident/trident_main.c
+index 281ea7143b1c..cfbca3bd60ed 100644
+--- a/sound/pci/trident/trident_main.c
++++ b/sound/pci/trident/trident_main.c
+@@ -3331,12 +3331,6 @@ static int snd_trident_tlb_alloc(struct snd_trident *trident)
+ 	}
+ 	trident->tlb.entries = (__le32 *)ALIGN((unsigned long)trident->tlb.buffer.area, SNDRV_TRIDENT_MAX_PAGES * 4);
+ 	trident->tlb.entries_dmaaddr = ALIGN(trident->tlb.buffer.addr, SNDRV_TRIDENT_MAX_PAGES * 4);
+-	/* allocate shadow TLB page table (virtual addresses) */
+-	trident->tlb.shadow_entries =
+-		vmalloc(array_size(SNDRV_TRIDENT_MAX_PAGES,
+-				   sizeof(unsigned long)));
+-	if (!trident->tlb.shadow_entries)
+-		return -ENOMEM;
  
- struct device;
- struct page;
-+struct vm_area_struct;
- 
- /*
-  * buffer device info
-@@ -69,6 +70,8 @@ int snd_dma_alloc_pages(int type, struct device *dev, size_t size,
- int snd_dma_alloc_pages_fallback(int type, struct device *dev, size_t size,
-                                  struct snd_dma_buffer *dmab);
- void snd_dma_free_pages(struct snd_dma_buffer *dmab);
-+int snd_dma_buffer_mmap(struct snd_dma_buffer *dmab,
-+			struct vm_area_struct *area);
- 
- dma_addr_t snd_sgbuf_get_addr(struct snd_dma_buffer *dmab, size_t offset);
- struct page *snd_sgbuf_get_page(struct snd_dma_buffer *dmab, size_t offset);
-diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
-index ad68bcdf82cf..bdcb9230acf8 100644
---- a/sound/core/memalloc.c
-+++ b/sound/core/memalloc.c
-@@ -127,6 +127,23 @@ void snd_dma_free_pages(struct snd_dma_buffer *dmab)
- }
- EXPORT_SYMBOL(snd_dma_free_pages);
- 
-+/**
-+ * snd_dma_buffer_mmap - perform mmap of the given DMA buffer
-+ * @dmab: buffer allocation information
-+ * @area: VM area information
-+ */
-+int snd_dma_buffer_mmap(struct snd_dma_buffer *dmab,
-+			struct vm_area_struct *area)
-+{
-+	const struct snd_malloc_ops *ops = snd_dma_get_ops(dmab);
-+
-+	if (ops && ops->mmap)
-+		return ops->mmap(dmab, area);
-+	else
-+		return -ENOENT;
-+}
-+EXPORT_SYMBOL(snd_dma_buffer_mmap);
-+
- /**
-  * snd_sgbuf_get_addr - return the physical address at the corresponding offset
-  * @dmab: buffer allocation information
-@@ -283,9 +300,20 @@ static void snd_dma_iram_free(struct snd_dma_buffer *dmab)
- 		gen_pool_free(pool, (unsigned long)dmab->area, dmab->bytes);
- }
- 
-+static int snd_dma_iram_mmap(struct snd_dma_buffer *dmab,
-+			     struct vm_area_struct *area)
-+{
-+	area->vm_page_prot = pgprot_writecombine(area->vm_page_prot);
-+	return remap_pfn_range(area, area->vm_start,
-+			       dmab->addr >> PAGE_SHIFT,
-+			       area->vm_end - area->vm_start,
-+			       area->vm_page_prot);
-+}
-+
- static const struct snd_malloc_ops snd_dma_iram_ops = {
- 	.alloc = snd_dma_iram_alloc,
- 	.free = snd_dma_iram_free,
-+	.mmap = snd_dma_iram_mmap,
- };
- #endif /* CONFIG_GENERIC_ALLOCATOR */
- 
-@@ -320,9 +348,17 @@ static void snd_dma_dev_free(struct snd_dma_buffer *dmab)
- 	dma_free_coherent(dmab->dev.dev, dmab->bytes, dmab->area, dmab->addr);
- }
- 
-+static int snd_dma_dev_mmap(struct snd_dma_buffer *dmab,
-+			    struct vm_area_struct *area)
-+{
-+	return dma_mmap_coherent(dmab->dev.dev, area,
-+				 dmab->area, dmab->addr, dmab->bytes);
-+}
-+
- static const struct snd_malloc_ops snd_dma_dev_ops = {
- 	.alloc = snd_dma_dev_alloc,
- 	.free = snd_dma_dev_free,
-+	.mmap = snd_dma_dev_mmap,
- };
- #endif /* CONFIG_HAS_DMA */
- 
-diff --git a/sound/core/memalloc_local.h b/sound/core/memalloc_local.h
-index fe55416253bf..dbea7f2aed07 100644
---- a/sound/core/memalloc_local.h
-+++ b/sound/core/memalloc_local.h
-@@ -9,6 +9,7 @@ struct snd_malloc_ops {
- 	struct page *(*get_page)(struct snd_dma_buffer *dmab, size_t offset);
- 	unsigned int (*get_chunk_size)(struct snd_dma_buffer *dmab,
- 				       unsigned int ofs, unsigned int size);
-+	int (*mmap)(struct snd_dma_buffer *dmab, struct vm_area_struct *area);
- };
- 
- #ifdef CONFIG_SND_DMA_SGBUF
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 48d63dbb17ba..14e32825c339 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -3700,22 +3700,9 @@ int snd_pcm_lib_default_mmap(struct snd_pcm_substream *substream,
- 			     struct vm_area_struct *area)
- {
- 	area->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
--#ifdef CONFIG_GENERIC_ALLOCATOR
--	if (substream->dma_buffer.dev.type == SNDRV_DMA_TYPE_DEV_IRAM) {
--		area->vm_page_prot = pgprot_writecombine(area->vm_page_prot);
--		return remap_pfn_range(area, area->vm_start,
--				substream->dma_buffer.addr >> PAGE_SHIFT,
--				area->vm_end - area->vm_start, area->vm_page_prot);
+ 	/* allocate and setup silent page and initialise TLB entries */
+ 	if (snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, &trident->pci->dev,
+@@ -3345,10 +3339,8 @@ static int snd_trident_tlb_alloc(struct snd_trident *trident)
+ 		return -ENOMEM;
+ 	}
+ 	memset(trident->tlb.silent_page.area, 0, SNDRV_TRIDENT_PAGE_SIZE);
+-	for (i = 0; i < SNDRV_TRIDENT_MAX_PAGES; i++) {
++	for (i = 0; i < SNDRV_TRIDENT_MAX_PAGES; i++)
+ 		trident->tlb.entries[i] = cpu_to_le32(trident->tlb.silent_page.addr & ~(SNDRV_TRIDENT_PAGE_SIZE-1));
+-		trident->tlb.shadow_entries[i] = (unsigned long)trident->tlb.silent_page.area;
 -	}
--#endif /* CONFIG_GENERIC_ALLOCATOR */
--	if (IS_ENABLED(CONFIG_HAS_DMA) && !substream->ops->page &&
--	    (substream->dma_buffer.dev.type == SNDRV_DMA_TYPE_DEV ||
--	     substream->dma_buffer.dev.type == SNDRV_DMA_TYPE_DEV_UC))
--		return dma_mmap_coherent(substream->dma_buffer.dev.dev,
--					 area,
--					 substream->runtime->dma_area,
--					 substream->runtime->dma_addr,
--					 substream->runtime->dma_bytes);
-+	if (!substream->ops->page &&
-+	    !snd_dma_buffer_mmap(snd_pcm_get_dma_buf(substream), area))
-+		return 0;
- 	/* mmap with fault handler */
- 	area->vm_ops = &snd_pcm_vm_ops_data_fault;
- 	return 0;
+ 
+ 	/* use emu memory block manager code to manage tlb page allocation */
+ 	trident->tlb.memhdr = snd_util_memhdr_new(SNDRV_TRIDENT_PAGE_SIZE * SNDRV_TRIDENT_MAX_PAGES);
+@@ -3665,7 +3657,6 @@ static int snd_trident_free(struct snd_trident *trident)
+ 		snd_util_memhdr_free(trident->tlb.memhdr);
+ 		if (trident->tlb.silent_page.area)
+ 			snd_dma_free_pages(&trident->tlb.silent_page);
+-		vfree(trident->tlb.shadow_entries);
+ 		snd_dma_free_pages(&trident->tlb.buffer);
+ 	}
+ 	pci_release_regions(trident->pci);
+diff --git a/sound/pci/trident/trident_memory.c b/sound/pci/trident/trident_memory.c
+index bb24dbf0530d..f831ec02702f 100644
+--- a/sound/pci/trident/trident_memory.c
++++ b/sound/pci/trident/trident_memory.c
+@@ -19,11 +19,8 @@
+ /* page arguments of these two macros are Trident page (4096 bytes), not like
+  * aligned pages in others
+  */
+-#define __set_tlb_bus(trident,page,ptr,addr) \
+-	do { (trident)->tlb.entries[page] = cpu_to_le32((addr) & ~(SNDRV_TRIDENT_PAGE_SIZE-1)); \
+-	     (trident)->tlb.shadow_entries[page] = (ptr); } while (0)
+-#define __tlb_to_ptr(trident,page) \
+-	(void*)((trident)->tlb.shadow_entries[page])
++#define __set_tlb_bus(trident,page,addr) \
++	(trident)->tlb.entries[page] = cpu_to_le32((addr) & ~(SNDRV_TRIDENT_PAGE_SIZE-1))
+ #define __tlb_to_addr(trident,page) \
+ 	(dma_addr_t)le32_to_cpu((trident->tlb.entries[page]) & ~(SNDRV_TRIDENT_PAGE_SIZE - 1))
+ 
+@@ -32,15 +29,13 @@
+ #define ALIGN_PAGE_SIZE		PAGE_SIZE	/* minimum page size for allocation */
+ #define MAX_ALIGN_PAGES		SNDRV_TRIDENT_MAX_PAGES	/* maxmium aligned pages */
+ /* fill TLB entrie(s) corresponding to page with ptr */
+-#define set_tlb_bus(trident,page,ptr,addr) __set_tlb_bus(trident,page,ptr,addr)
++#define set_tlb_bus(trident,page,addr) __set_tlb_bus(trident,page,addr)
+ /* fill TLB entrie(s) corresponding to page with silence pointer */
+-#define set_silent_tlb(trident,page)	__set_tlb_bus(trident, page, (unsigned long)trident->tlb.silent_page.area, trident->tlb.silent_page.addr)
++#define set_silent_tlb(trident,page)	__set_tlb_bus(trident, page, trident->tlb.silent_page.addr)
+ /* get aligned page from offset address */
+ #define get_aligned_page(offset)	((offset) >> 12)
+ /* get offset address from aligned page */
+ #define aligned_page_offset(page)	((page) << 12)
+-/* get buffer address from aligned page */
+-#define page_to_ptr(trident,page)	__tlb_to_ptr(trident, page)
+ /* get PCI physical address from aligned page */
+ #define page_to_addr(trident,page)	__tlb_to_addr(trident, page)
+ 
+@@ -50,22 +45,21 @@
+ #define MAX_ALIGN_PAGES		(SNDRV_TRIDENT_MAX_PAGES / 2)
+ #define get_aligned_page(offset)	((offset) >> 13)
+ #define aligned_page_offset(page)	((page) << 13)
+-#define page_to_ptr(trident,page)	__tlb_to_ptr(trident, (page) << 1)
+ #define page_to_addr(trident,page)	__tlb_to_addr(trident, (page) << 1)
+ 
+ /* fill TLB entries -- we need to fill two entries */
+ static inline void set_tlb_bus(struct snd_trident *trident, int page,
+-			       unsigned long ptr, dma_addr_t addr)
++			       dma_addr_t addr)
+ {
+ 	page <<= 1;
+-	__set_tlb_bus(trident, page, ptr, addr);
+-	__set_tlb_bus(trident, page+1, ptr + SNDRV_TRIDENT_PAGE_SIZE, addr + SNDRV_TRIDENT_PAGE_SIZE);
++	__set_tlb_bus(trident, page, addr);
++	__set_tlb_bus(trident, page+1, addr + SNDRV_TRIDENT_PAGE_SIZE);
+ }
+ static inline void set_silent_tlb(struct snd_trident *trident, int page)
+ {
+ 	page <<= 1;
+-	__set_tlb_bus(trident, page, (unsigned long)trident->tlb.silent_page.area, trident->tlb.silent_page.addr);
+-	__set_tlb_bus(trident, page+1, (unsigned long)trident->tlb.silent_page.area, trident->tlb.silent_page.addr);
++	__set_tlb_bus(trident, page, trident->tlb.silent_page.addr);
++	__set_tlb_bus(trident, page+1, trident->tlb.silent_page.addr);
+ }
+ 
+ #else
+@@ -80,18 +74,16 @@ static inline void set_silent_tlb(struct snd_trident *trident, int page)
+  */
+ #define get_aligned_page(offset)	((offset) / ALIGN_PAGE_SIZE)
+ #define aligned_page_offset(page)	((page) * ALIGN_PAGE_SIZE)
+-#define page_to_ptr(trident,page)	__tlb_to_ptr(trident, (page) * UNIT_PAGES)
+ #define page_to_addr(trident,page)	__tlb_to_addr(trident, (page) * UNIT_PAGES)
+ 
+ /* fill TLB entries -- UNIT_PAGES entries must be filled */
+ static inline void set_tlb_bus(struct snd_trident *trident, int page,
+-			       unsigned long ptr, dma_addr_t addr)
++			       dma_addr_t addr)
+ {
+ 	int i;
+ 	page *= UNIT_PAGES;
+-	for (i = 0; i < UNIT_PAGES; i++, page++) {
+-		__set_tlb_bus(trident, page, ptr, addr);
+-		ptr += SNDRV_TRIDENT_PAGE_SIZE;
++	for (i = 0; i < UNIT_PAGES; i++, pagetr++) {
++		__set_tlb_bus(trident, page, addr);
+ 		addr += SNDRV_TRIDENT_PAGE_SIZE;
+ 	}
+ }
+@@ -100,20 +92,11 @@ static inline void set_silent_tlb(struct snd_trident *trident, int page)
+ 	int i;
+ 	page *= UNIT_PAGES;
+ 	for (i = 0; i < UNIT_PAGES; i++, page++)
+-		__set_tlb_bus(trident, page, (unsigned long)trident->tlb.silent_page.area, trident->tlb.silent_page.addr);
++		__set_tlb_bus(trident, page, trident->tlb.silent_page.addr);
+ }
+ 
+ #endif /* PAGE_SIZE */
+ 
+-/* calculate buffer pointer from offset address */
+-static inline void *offset_ptr(struct snd_trident *trident, int offset)
+-{
+-	char *ptr;
+-	ptr = page_to_ptr(trident, get_aligned_page(offset));
+-	ptr += offset % ALIGN_PAGE_SIZE;
+-	return (void*)ptr;
+-}
+-
+ /* first and last (aligned) pages of memory block */
+ #define firstpg(blk)	(((struct snd_trident_memblk_arg *)snd_util_memblk_argptr(blk))->first_page)
+ #define lastpg(blk)	(((struct snd_trident_memblk_arg *)snd_util_memblk_argptr(blk))->last_page)
+@@ -201,14 +184,12 @@ snd_trident_alloc_sg_pages(struct snd_trident *trident,
+ 	for (page = firstpg(blk); page <= lastpg(blk); page++, idx++) {
+ 		unsigned long ofs = idx << PAGE_SHIFT;
+ 		dma_addr_t addr = snd_pcm_sgbuf_get_addr(substream, ofs);
+-		unsigned long ptr = (unsigned long)
+-			snd_pcm_sgbuf_get_ptr(substream, ofs);
+ 		if (! is_valid_page(addr)) {
+ 			__snd_util_mem_free(hdr, blk);
+ 			mutex_unlock(&hdr->block_mutex);
+ 			return NULL;
+ 		}
+-		set_tlb_bus(trident, page, ptr, addr);
++		set_tlb_bus(trident, page, addr);
+ 	}
+ 	mutex_unlock(&hdr->block_mutex);
+ 	return blk;
+@@ -226,7 +207,6 @@ snd_trident_alloc_cont_pages(struct snd_trident *trident,
+ 	int page;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	dma_addr_t addr;
+-	unsigned long ptr;
+ 
+ 	if (snd_BUG_ON(runtime->dma_bytes <= 0 ||
+ 		       runtime->dma_bytes > SNDRV_TRIDENT_MAX_PAGES *
+@@ -245,15 +225,14 @@ snd_trident_alloc_cont_pages(struct snd_trident *trident,
+ 			   
+ 	/* set TLB entries */
+ 	addr = runtime->dma_addr;
+-	ptr = (unsigned long)runtime->dma_area;
+ 	for (page = firstpg(blk); page <= lastpg(blk); page++,
+-	     ptr += SNDRV_TRIDENT_PAGE_SIZE, addr += SNDRV_TRIDENT_PAGE_SIZE) {
++	     addr += SNDRV_TRIDENT_PAGE_SIZE) {
+ 		if (! is_valid_page(addr)) {
+ 			__snd_util_mem_free(hdr, blk);
+ 			mutex_unlock(&hdr->block_mutex);
+ 			return NULL;
+ 		}
+-		set_tlb_bus(trident, page, ptr, addr);
++		set_tlb_bus(trident, page, addr);
+ 	}
+ 	mutex_unlock(&hdr->block_mutex);
+ 	return blk;
 -- 
 2.26.2
 
