@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF0A5C4743D
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 02:16:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10F2BC4743D
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 02:17:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D94BC60FE4
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 02:16:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D94BC60FE4
+	by mail.kernel.org (Postfix) with ESMTPS id 9051761287
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 02:17:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9051761287
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F24216CA;
-	Wed,  9 Jun 2021 04:15:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F24216CA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2F81A16C1;
+	Wed,  9 Jun 2021 04:16:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F81A16C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623205001;
-	bh=IyWPpms7kSwKaTM6CaDyAvOZkwFY1fNKbBD8wQ8rU7U=;
+	s=default; t=1623205024;
+	bh=pRdYtW9bmdCcq5uHxmwfvJIWnjD4AOn+KwXM5BNcp5M=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Rpj6mThxWWUaXXpzer2VRfpdVKBF1ExbIyC/PardO1H8fVtULrzZxh7ipoWw35VLJ
-	 HDNN9fEAtNnIXWWpgZrvsJ4shvObZ6XSFvVi/d6/qshd4QNtbW2Wd12MA8R30XK1ZB
-	 3HKRXLkJJC4FSVaRsCaFEstMwIr2ZQaVLYoSirfg=
+	b=BhRw5De1OTNXMeofBzjEQJAVw+VOr14c0UuM9d0uFmv2SVxYLKfzGJu5lG8YPfX98
+	 iA9HtPVwL7LMd3dbwpE8ed2nuypYp+lnRuCbioF+15NyHUKctJfdzWEiCseLXp96dx
+	 KMz/ZVjvbCRfphZpSjsUTXPzc9On+5vimrKI2bNE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 21694F80276;
-	Wed,  9 Jun 2021 04:15:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C4E52F802A0;
+	Wed,  9 Jun 2021 04:16:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9FF2DF802A0; Wed,  9 Jun 2021 04:15:48 +0200 (CEST)
+ id DD31AF802DF; Wed,  9 Jun 2021 04:16:12 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id EA820F80276
- for <alsa-devel@alsa-project.org>; Wed,  9 Jun 2021 04:15:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA820F80276
-Date: 09 Jun 2021 11:15:44 +0900
-X-IronPort-AV: E=Sophos;i="5.83,259,1616425200"; d="scan'208";a="83815836"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 09 Jun 2021 11:15:44 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 483E2F802A0
+ for <alsa-devel@alsa-project.org>; Wed,  9 Jun 2021 04:16:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 483E2F802A0
+Date: 09 Jun 2021 11:16:05 +0900
+X-IronPort-AV: E=Sophos;i="5.83,259,1616425200"; d="scan'208";a="83815869"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 09 Jun 2021 11:16:05 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 91A9A40116D1;
- Wed,  9 Jun 2021 11:15:44 +0900 (JST)
-Message-ID: <877dj3dbqn.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 0AF954154309;
+ Wed,  9 Jun 2021 11:16:05 +0900 (JST)
+Message-ID: <875yyndbq3.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v2 4/8] ASoC: atmel: switch to use
+Subject: [PATCH v2 5/8] ASoC: fsl: switch to use
  snd_soc_daifmt_parse_format/clock_provider()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Liam Girdwood <lgirdwood@gmail.com>,
@@ -94,53 +94,48 @@ snd_soc_of_parse_daifmt().
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/atmel/mikroe-proto.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ sound/soc/fsl/fsl-asoc-card.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/atmel/mikroe-proto.c b/sound/soc/atmel/mikroe-proto.c
-index f9a85fd01b79..5bdba38ec408 100644
---- a/sound/soc/atmel/mikroe-proto.c
-+++ b/sound/soc/atmel/mikroe-proto.c
-@@ -69,6 +69,7 @@ static int snd_proto_probe(struct platform_device *pdev)
- 	struct device_node *bitclkmaster = NULL;
- 	struct device_node *framemaster = NULL;
- 	unsigned int dai_fmt;
-+	unsigned int dai_clk;
- 	int ret = 0;
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index c62bfd1c3ac7..d28d9c1ea659 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -540,7 +540,6 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 	struct device *codec_dev = NULL;
+ 	const char *codec_dai_name;
+ 	const char *codec_dev_name;
+-	unsigned int daifmt;
+ 	u32 width;
+ 	int ret;
  
- 	if (!np) {
-@@ -120,22 +121,25 @@ static int snd_proto_probe(struct platform_device *pdev)
- 	dai->cpus->of_node = cpu_np;
- 	dai->platforms->of_node = cpu_np;
+@@ -684,19 +683,20 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 	}
  
--	dai_fmt = snd_soc_of_parse_daifmt(np, NULL,
--					  &bitclkmaster, &framemaster);
-+	dai_fmt = snd_soc_daifmt_parse_format(np, NULL);
-+	snd_soc_daifmt_parse_clock_provider_as_phandle(np, NULL,
-+						       &bitclkmaster, &framemaster);
- 	if (bitclkmaster != framemaster) {
- 		dev_err(&pdev->dev, "Must be the same bitclock and frame master\n");
- 		return -EINVAL;
- 	}
- 	if (bitclkmaster) {
--		dai_fmt &= ~SND_SOC_DAIFMT_MASTER_MASK;
- 		if (codec_np == bitclkmaster)
--			dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
-+			dai_clk = SND_SOC_DAIFMT_CBM_CFM;
- 		else
--			dai_fmt |= SND_SOC_DAIFMT_CBS_CFS;
-+			dai_clk = SND_SOC_DAIFMT_CBS_CFS;
-+	} else {
-+		dai_clk = snd_soc_daifmt_parse_clock_provider_as_flag(np, NULL);
- 	}
+ 	/* Format info from DT is optional. */
+-	daifmt = snd_soc_of_parse_daifmt(np, NULL,
+-					 &bitclkmaster, &framemaster);
+-	daifmt &= ~SND_SOC_DAIFMT_MASTER_MASK;
++	snd_soc_daifmt_parse_clock_provider_as_phandle(np, NULL, &bitclkmaster, &framemaster);
+ 	if (bitclkmaster || framemaster) {
++		unsigned int daifmt = snd_soc_daifmt_parse_format(np, NULL);
++		unsigned int daiclk;
 +
- 	of_node_put(bitclkmaster);
- 	of_node_put(framemaster);
--	dai->dai_fmt = dai_fmt;
-+	dai->dai_fmt = dai_fmt | dai_clk;
+ 		if (codec_np == bitclkmaster)
+-			daifmt |= (codec_np == framemaster) ?
++			daiclk = (codec_np == framemaster) ?
+ 				SND_SOC_DAIFMT_CBM_CFM : SND_SOC_DAIFMT_CBM_CFS;
+ 		else
+-			daifmt |= (codec_np == framemaster) ?
++			daiclk = (codec_np == framemaster) ?
+ 				SND_SOC_DAIFMT_CBS_CFM : SND_SOC_DAIFMT_CBS_CFS;
  
- 	of_node_put(codec_np);
- 	of_node_put(cpu_np);
+ 		/* Override dai_fmt with value from DT */
+-		priv->dai_fmt = daifmt;
++		priv->dai_fmt = daifmt | daiclk;
+ 	}
+ 
+ 	/* Change direction according to format */
 -- 
 2.25.1
 
