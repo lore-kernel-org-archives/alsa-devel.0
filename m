@@ -2,86 +2,102 @@ Return-Path: <SRS0=8Lk6=LD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0570C48BCF
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 10:32:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BCDDC48BCD
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 11:33:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D342608FE
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 10:32:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D342608FE
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id B24AE613B6
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 11:33:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B24AE613B6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 48DB716BD;
-	Wed,  9 Jun 2021 12:31:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48DB716BD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 99D8682E;
+	Wed,  9 Jun 2021 13:32:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99D8682E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623234737;
-	bh=hNBwJO7DN4+fqvtMFAoE0xdhnXEr87HDMzZRllAaheA=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Wq0+hnlfI2GgoRYXf+waVU9FyxjANWeuuIaggYvx4PmGU7iwZju7PWSgj3JiBgH+p
-	 62SL4zg/igikXslZtCH02Yw27YAydS7WN6TopImi9iCCFz5eRP9p2Otx39lgolwtWJ
-	 YRHkGVK6mD6KptNIE3K8j53GDh0w0zXM4zTdgtSs=
+	s=default; t=1623238411;
+	bh=wpE+D9/qpr9ZeG3E897BhDch9Gn3jLFJRH+RxEctbYQ=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=pStXGT2r7JTEgc+rJIfH3fh/J/xQq1Vp6GLWCitE/6qKPOoyrRP+rlQdCSkKIQrOJ
+	 +RobP4KVlfwfrYHTTNu+MQh/X6ktxJOR0gOM0nVLBZ3jAxL3eFTTqQiFdJgcmm7rgh
+	 bdL+29ll415LftuOCfZPLIXGgq/BrtK5NdoPAkL8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4704F80116;
-	Wed,  9 Jun 2021 12:31:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B67DF8020D;
+	Wed,  9 Jun 2021 13:32:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E81B3F8026C; Wed,  9 Jun 2021 12:31:24 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 595AFF8026C; Wed,  9 Jun 2021 13:32:40 +0200 (CEST)
+Received: from userp2130.oracle.com (userp2130.oracle.com [156.151.31.86])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2D6EBF80116
- for <alsa-devel@alsa-project.org>; Wed,  9 Jun 2021 12:31:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D6EBF80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id CC7C7F8020D
+ for <alsa-devel@alsa-project.org>; Wed,  9 Jun 2021 13:32:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC7C7F8020D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="ECIpNf9a"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="QlpBb1Z8"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 5137F1FD2A;
- Wed,  9 Jun 2021 10:31:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1623234677; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=kZGSiD9FcCkW3cz2EVT+LMaOViQeq4T7JZP3FIeNCSA=;
- b=ECIpNf9aEaapPJUMrbUJeMODMVs1rSDmhrws+vLgcqkitpGly1ZZLJbDiZYmgTdXOIlQy4
- 5Z1XGxRH1Skve5W+uqWg7IVhj6SFZzGsA6j0+8GLHPn+C6PywftIxmgvMxLYn3bv1dDS0p
- ALB2WdjJOyknqTIlpwnYw4g56YSgUBk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1623234677;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=kZGSiD9FcCkW3cz2EVT+LMaOViQeq4T7JZP3FIeNCSA=;
- b=QlpBb1Z81S42pDWBACrKswdFL+jdMBq85AlCvLQOutMaUWeZP0YYBsRqBofIjy23PV+A+K
- sCEemnIEtoE/vHBQ==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 3513CA3BA6;
- Wed,  9 Jun 2021 10:31:17 +0000 (UTC)
-Date: Wed, 09 Jun 2021 12:31:17 +0200
-Message-ID: <s5hwnr3ba8a.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Damien Zammit <damien@zamaudio.com>
-Subject: Re: [PATCH] usb-audio: Add support for Denon DN-X1600
-In-Reply-To: <20210608071501.580017-1-damien@zamaudio.com>
-References: <20210608071501.580017-1-damien@zamaudio.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
+ dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
+ header.b="oY3Om2kJ"
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+ by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 159BQ7mk123170;
+ Wed, 9 Jun 2021 11:32:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=kTWqT2o/HN7pdyhcerzSs3sAT1yLTpEn8l854pTm+Qk=;
+ b=oY3Om2kJ9H7rgrvqUjy9iNvLEnJHE+Oj2x/1hWWb8+/6cYhCz3csrJ1rGNynYDiztfQv
+ QKEy1kWedFjrBJYX7avavjQwMCOXS/fDYNiVmZy1GJEBW9XAjplMM+/B0t8OU7eNqN39
+ w0N75vMhOZOa2Gl6Gfk2FXBJ/81ytV9mUy7hTuCn+DqunRx/L5KzqtLew7l1x9cJX+u5
+ pOkv0gt7LzYgLE0y+TJ/PvmrvMYirsUS/WiGKJAAZvF5lZJAqB3J3mYI0GzdX8fPO5AO
+ 1aSOV1zPtlcLBOeYG8bgTqVLaRfZ10+quxXzrIfMW+qLMHkWCMwSN9TRs01BCWtoXR8n jA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+ by userp2130.oracle.com with ESMTP id 3900ps8uhy-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 09 Jun 2021 11:32:29 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+ by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 159BQsq8165319;
+ Wed, 9 Jun 2021 11:32:28 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+ by aserp3020.oracle.com with ESMTP id 3922wuqmj0-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 09 Jun 2021 11:32:28 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+ by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 159BW803041213;
+ Wed, 9 Jun 2021 11:32:08 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+ by aserp3020.oracle.com with ESMTP id 3922wuqgjw-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 09 Jun 2021 11:32:08 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+ by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 159BVN4i004539;
+ Wed, 9 Jun 2021 11:31:27 GMT
+Received: from mwanda (/41.212.42.34) by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Wed, 09 Jun 2021 04:31:23 -0700
+Date: Wed, 9 Jun 2021 14:31:17 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: kuninori.morimoto.gx@renesas.com
+Subject: [bug report] ASoC: rsnd: add null CLOCKIN support
+Message-ID: <YMCmhfQUimHCSH/n@mwanda>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Proofpoint-GUID: oAiJenV3TL_aHHhLFql5TQIZ3Xh_Yq5n
+X-Proofpoint-ORIG-GUID: oAiJenV3TL_aHHhLFql5TQIZ3Xh_Yq5n
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10009
+ signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 clxscore=1015
+ bulkscore=0 spamscore=0 mlxscore=0 adultscore=0 malwarescore=0
+ phishscore=0 suspectscore=0 lowpriorityscore=0 mlxlogscore=971
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106090056
 Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -98,26 +114,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 08 Jun 2021 09:15:01 +0200,
-Damien Zammit wrote:
-> --- a/sound/usb/pcm.c
-> +++ b/sound/usb/pcm.c
-> @@ -197,6 +197,10 @@ int snd_usb_init_pitch(struct snd_usb_audio *chip,
->  	if (!(fmt->attributes & UAC_EP_CS_ATTR_PITCH_CONTROL))
->  		return 0;
->  
-> +	/* Denon DN-X1600 doesn't properly handle this, bail out too */
-> +	if (chip->usb_id == USB_ID(0x154e, 0x500e))
-> +		return 0;
-> +
+Hello Kuninori Morimoto,
 
-Do we need this part?  If this is required, it means that the
-audioformat sets UAC_EP_CS_ATTR_PITCH_CONTROL incorrectly.
+The patch d6956a7dde6f: "ASoC: rsnd: add null CLOCKIN support" from
+May 24, 2021, leads to the following static checker warning:
 
-Also, at the next time, please put maintainers to Cc.  This will avoid
-overlooks from maintainers side.
+	sound/soc/sh/rcar/adg.c:435 rsnd_adg_get_clkin()
+	warn: 'clk' isn't an ERR_PTR
+
+sound/soc/sh/rcar/adg.c
+   423  static int rsnd_adg_get_clkin(struct rsnd_priv *priv)
+   424  {
+   425          struct rsnd_adg *adg = priv->adg;
+   426          struct device *dev = rsnd_priv_to_dev(priv);
+   427          struct clk *clk;
+   428          int i;
+   429  
+   430          for (i = 0; i < CLKMAX; i++) {
+   431                  clk = devm_clk_get(dev, clk_name[i]);
+
+If devm_clk_get() returns NULL that's not an error.
 
 
-thanks,
+   432  
+   433                  if (IS_ERR(clk))
+   434                          clk = rsnd_adg_null_clk_get(priv);
 
-Takashi
+But I think if rsnd_adg_null_clk_get() returns an error then it is an
+error.
+
+
+   435                  if (IS_ERR(clk))
+
+This is impossible.
+
+   436                          goto err;
+
+So I think it should be:
+
+			if (IS_ERR(clk)) {
+				clk = rsnd_adg_null_clk_get(priv);
+				if (!clk)
+					goto err;
+			}
+
+   437  
+   438                  adg->clk[i] = clk;
+   439          }
+   440  
+   441          return 0;
+   442  
+   443  err:
+   444          dev_err(dev, "adg clock IN get failed\n");
+   445  
+   446          rsnd_adg_null_clk_clean(priv);
+   447  
+   448          return -EIO;
+   449  }
+
+regards,
+dan carpenter
