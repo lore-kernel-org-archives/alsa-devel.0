@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40775C48BCD
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 16:27:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 017DFC48BCD
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 16:27:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A65EF61246
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 16:27:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A65EF61246
+	by mail.kernel.org (Postfix) with ESMTPS id 4DBB3613C0
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Jun 2021 16:27:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4DBB3613C0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8CB7716BF;
-	Wed,  9 Jun 2021 18:26:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CB7716BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8BFE916C7;
+	Wed,  9 Jun 2021 18:26:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BFE916C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623256018;
-	bh=EjXnkhdcqFkWNeyEmZ8Iv9+Nkx8z+df/e7iBjz8SGBQ=;
+	s=default; t=1623256069;
+	bh=wIcbUcrhr8DjGd+LTtToF7B/qEBTL5ZJ+ct7uJ1Dj9Y=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=becSMr0h9SOiiQnyC3+MFUIFIsI1XnyI+HgVOcmxXNNIY97rsPshibaj2Is/yNRbg
-	 C14mU2nmT/KBVjQXEC8tGpQWdsy0xb5GNpZ6NaTDYS8NUxQQpZYRsBY4LMeQdGbLZC
-	 bjJD8cOSBYKiUlPxLVr0tr3SfOQNuxUzdCFugUUQ=
+	b=Zwi7iHNM3paFrU04C9F6jUsbtK+ZssfBeitXE5lG8HmUjb/AwTxMv5HZlilIqZE4u
+	 cHFBSO+dMRHUFC7yA3HcyB8DhgDK4MnBW8MBF0zy9vTbwv/I2hPuZx2hEPCB1ZACXv
+	 wl3vSBJAwnUseVC6T2BjWOE12dLZCMt9OaZ6zKi4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 08668F800F4;
-	Wed,  9 Jun 2021 18:26:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 09D9BF8032B;
+	Wed,  9 Jun 2021 18:26:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4288DF8032B; Wed,  9 Jun 2021 18:26:06 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 7777DF802DF; Wed,  9 Jun 2021 18:26:06 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DE17DF80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id D92C0F800F4
  for <alsa-devel@alsa-project.org>; Wed,  9 Jun 2021 18:25:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE17DF80116
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D92C0F800F4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="ZQ2xP6NH"; 
+ header.b="yPozEAiC"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="uk3ZN3SF"
+ header.b="np6Q10IR"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 442781FD64
+ by smtp-out1.suse.de (Postfix) with ESMTP id 665AE219BB
  for <alsa-devel@alsa-project.org>; Wed,  9 Jun 2021 16:25:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1623255954; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=OjUs4Eyhqb2gXIIa3bpD8A3F9HPoFXWYVW3xxFskUYE=;
- b=ZQ2xP6NH/1sgKwQkegBS+aZvzmRJOP3uD2zNW3SJwU9nnfq8y7WHRG7z9TAr8piknq3C9s
- ixpApIIxB183fY5EmUfVf0gvgB6bYwvagh7JnhfYBhS8rC+TepcegNqwR214aHOgAC7ABr
- ZNIPPZa84mD2ijh1cv9YwU0q8zcZOqw=
+ bh=QG36/Dj1I+IoRxpO9YEYCuHQtClvDu+QtO22T3wPDD8=;
+ b=yPozEAiCW5kUT/Es9jJNhHpD+q/0jMMuBriyqKR04wMD4njIJKEjhPvzYMGuEZA9LrPwPv
+ vAlgrwPo6zwhYf302EOBq4oXAqbIIy3guxIzwl78OWtpD+at8CvXNu7bQ7uyt93EG1xbEM
+ 9rrGG8KmxHLE3BeM26k9UCmWOf4DheA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1623255954;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=OjUs4Eyhqb2gXIIa3bpD8A3F9HPoFXWYVW3xxFskUYE=;
- b=uk3ZN3SFr+ovVMypMfDKxIUgwo09y6yylOKvBCzbC/dk08m7nX6Ie/N/aYdo+4+b4aGCz+
- mpWrNuUUsf5E/IBQ==
+ bh=QG36/Dj1I+IoRxpO9YEYCuHQtClvDu+QtO22T3wPDD8=;
+ b=np6Q10IR3EeGLVapZnUnyAzYVKR/YHf+NS4aA9xDMXWiKdDluWpwIPfEWBNpXXtm/n6Iyr
+ 5M2Q0cYqfjJtfPAw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 3FDAFA3B8B;
+ by relay2.suse.de (Postfix) with ESMTP id 61C63A3B89;
  Wed,  9 Jun 2021 16:25:54 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/5] ALSA: core: Drop snd_sgbuf_get_ptr()
-Date: Wed,  9 Jun 2021 18:25:48 +0200
-Message-Id: <20210609162551.7842-3-tiwai@suse.de>
+Subject: [PATCH 5/5] ALSA: core: Add continuous and vmalloc mmap ops
+Date: Wed,  9 Jun 2021 18:25:51 +0200
+Message-Id: <20210609162551.7842-6-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210609162551.7842-1-tiwai@suse.de>
 References: <20210609162551.7842-1-tiwai@suse.de>
@@ -97,74 +97,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-snd_sgbuf_get_ptr() and its sibling snd_pcm_sgbuf_get_ptr() are no
-longer used by any drivers.  Let's drop them.
+The mmap of continuous pages and vmalloc'ed pages are relatively
+easily done in a shot with the existing helper functions.
+Implement the mmap ops for those types, so that the mmap works without
+relying on the page fault handling.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/memalloc.h | 19 -------------------
- include/sound/pcm.h      | 11 -----------
- 2 files changed, 30 deletions(-)
+ sound/core/memalloc.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/include/sound/memalloc.h b/include/sound/memalloc.h
-index 5daa937684a4..3ab084438fdc 100644
---- a/include/sound/memalloc.h
-+++ b/include/sound/memalloc.h
-@@ -103,19 +103,6 @@ static inline dma_addr_t snd_sgbuf_get_addr(struct snd_dma_buffer *dmab,
- 	return addr + offset % PAGE_SIZE;
+diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
+index bdcb9230acf8..83b79edfa52d 100644
+--- a/sound/core/memalloc.c
++++ b/sound/core/memalloc.c
+@@ -211,9 +211,19 @@ static void snd_dma_continuous_free(struct snd_dma_buffer *dmab)
+ 	free_pages_exact(dmab->area, dmab->bytes);
  }
  
--/*
-- * return the virtual address at the corresponding offset
-- */
--static inline void *snd_sgbuf_get_ptr(struct snd_dma_buffer *dmab,
--				     size_t offset)
--{
--	struct snd_sg_buf *sgbuf = dmab->private_data;
--
--	if (!sgbuf)
--		return dmab->area + offset;
--	return sgbuf->table[offset >> PAGE_SHIFT].buf + offset % PAGE_SIZE;
--}
--
- unsigned int snd_sgbuf_get_chunk_size(struct snd_dma_buffer *dmab,
- 				      unsigned int ofs, unsigned int size);
- #else
-@@ -126,12 +113,6 @@ static inline dma_addr_t snd_sgbuf_get_addr(struct snd_dma_buffer *dmab,
- 	return dmab->addr + offset;
++static int snd_dma_continuous_mmap(struct snd_dma_buffer *dmab,
++				   struct vm_area_struct *area)
++{
++	return remap_pfn_range(area, area->vm_start,
++			       dmab->addr >> PAGE_SHIFT,
++			       area->vm_end - area->vm_start,
++			       area->vm_page_prot);
++}
++
+ static const struct snd_malloc_ops snd_dma_continuous_ops = {
+ 	.alloc = snd_dma_continuous_alloc,
+ 	.free = snd_dma_continuous_free,
++	.mmap = snd_dma_continuous_mmap,
+ };
+ 
+ /*
+@@ -232,6 +242,12 @@ static void snd_dma_vmalloc_free(struct snd_dma_buffer *dmab)
+ 	vfree(dmab->area);
  }
  
--static inline void *snd_sgbuf_get_ptr(struct snd_dma_buffer *dmab,
--				      size_t offset)
--{
--	return dmab->area + offset;
--}
--
- #define snd_sgbuf_get_chunk_size(dmab, ofs, size)	(size)
- 
- #endif /* CONFIG_SND_DMA_SGBUF */
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 2e1200d17d0c..11e0a68335bd 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -1272,17 +1272,6 @@ snd_pcm_sgbuf_get_addr(struct snd_pcm_substream *substream, unsigned int ofs)
- 	return snd_sgbuf_get_addr(snd_pcm_get_dma_buf(substream), ofs);
- }
- 
--/**
-- * snd_pcm_sgbuf_get_ptr - Get the virtual address at the corresponding offset
-- * @substream: PCM substream
-- * @ofs: byte offset
-- */
--static inline void *
--snd_pcm_sgbuf_get_ptr(struct snd_pcm_substream *substream, unsigned int ofs)
--{
--	return snd_sgbuf_get_ptr(snd_pcm_get_dma_buf(substream), ofs);
--}
--
- /**
-  * snd_pcm_sgbuf_get_chunk_size - Compute the max size that fits within the
-  * contig. page from the given size
++static int snd_dma_vmalloc_mmap(struct snd_dma_buffer *dmab,
++				struct vm_area_struct *area)
++{
++	return remap_vmalloc_range(area, dmab->area, 0);
++}
++
+ static dma_addr_t snd_dma_vmalloc_get_addr(struct snd_dma_buffer *dmab,
+ 					   size_t offset)
+ {
+@@ -259,6 +275,7 @@ snd_dma_vmalloc_get_chunk_size(struct snd_dma_buffer *dmab,
+ static const struct snd_malloc_ops snd_dma_vmalloc_ops = {
+ 	.alloc = snd_dma_vmalloc_alloc,
+ 	.free = snd_dma_vmalloc_free,
++	.mmap = snd_dma_vmalloc_mmap,
+ 	.get_addr = snd_dma_vmalloc_get_addr,
+ 	.get_page = snd_dma_vmalloc_get_page,
+ 	.get_chunk_size = snd_dma_vmalloc_get_chunk_size,
 -- 
 2.26.2
 
