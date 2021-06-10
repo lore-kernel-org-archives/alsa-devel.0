@@ -7,62 +7,62 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32E10C48BD1
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Jun 2021 20:56:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68F67C48BDF
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Jun 2021 20:57:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2DB9761407
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Jun 2021 20:56:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DB9761407
+	by mail.kernel.org (Postfix) with ESMTPS id 8E7E06135C
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Jun 2021 20:57:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8E7E06135C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 66A9E17D8;
-	Thu, 10 Jun 2021 22:55:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66A9E17D8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 304E417E4;
+	Thu, 10 Jun 2021 22:56:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 304E417E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623358586;
-	bh=tN4IvoEx0a1A9Pppwk9QZKLfCtyYJSwSnVJT/NEb/EM=;
+	s=default; t=1623358619;
+	bh=5eNa5kU9nCmfgnI7D+LCESTceHRFJ0/G9yq86FMXnJ4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Mh3kY3xHwi459E+8FWT4IJxjCEIH35KQap4dxNgmsieq6mtdiA0MlVBIOP5gQ56qo
-	 5WHsQFBxbyNOkUG6d0OYhG61mOc3TzMqTgpkU3DyMSOpVOHxs66mAvAqe+2FjuAx5W
-	 WjTM1pgARHIZQIBTpL8xE1jTVIw6lXjOMonEY4Gw=
+	b=ZaDmK6DVmoj/uKjKdBib9WQFkw2pcyz/9FWs/QGNy00jqkHiusLLnFO6pgSmVANra
+	 fk2IoWSEsDHlyQXojbo6JK8DeQsAbuyP8/qC6ptcjmj5KEofvqBuW9eEvte2MVKEzY
+	 Bm1auWoq3cK6dIVqGS7ruXvuxmRRnUPbdNeiJGaU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F16BBF80256;
-	Thu, 10 Jun 2021 22:54:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F91BF804D8;
+	Thu, 10 Jun 2021 22:54:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 318CCF804CB; Thu, 10 Jun 2021 22:54:10 +0200 (CEST)
+ id 7C6A0F804CC; Thu, 10 Jun 2021 22:54:11 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D6A9FF80218
- for <alsa-devel@alsa-project.org>; Thu, 10 Jun 2021 22:54:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6A9FF80218
-IronPort-SDR: k6fjhRinoUlhjcVT0l/PJ7TnSJq3mHDKhRG1a2SObwiT4k495pcdY34OVSHXLQ01sgGlXPZAgq
- GuadRpi8HApg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10011"; a="226812417"
-X-IronPort-AV: E=Sophos;i="5.83,264,1616482800"; d="scan'208";a="226812417"
+ by alsa1.perex.cz (Postfix) with ESMTPS id BE804F80256
+ for <alsa-devel@alsa-project.org>; Thu, 10 Jun 2021 22:54:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE804F80256
+IronPort-SDR: IuOd5YGjRXRn9XiCbW8KMSlRArJvrDasaaGuCa5VkXK3tDUKzZvWv0fiB6Fn6vxcySXy+3fG2l
+ vzGS/kaiGb9Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,10011"; a="226812421"
+X-IronPort-AV: E=Sophos;i="5.83,264,1616482800"; d="scan'208";a="226812421"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jun 2021 13:53:50 -0700
-IronPort-SDR: Q/zXwKmU63mRxyPJs57o390VAekzzIHPXieasR/DpnWu1l4Ye9o+xwvlmJ7CgcfWfXlm9EYV2w
- BdKhDbSpStPg==
-X-IronPort-AV: E=Sophos;i="5.83,264,1616482800"; d="scan'208";a="620183623"
+ 10 Jun 2021 13:53:52 -0700
+IronPort-SDR: qUoOJ5jtluiz2jtFhgMMd+80mGtjereWZDYaxQhPO1NGEJ3kDY1z266BXuj5Uc/XZ6jTHkvQ0R
+ XwMO6reOtCPQ==
+X-IronPort-AV: E=Sophos;i="5.83,264,1616482800"; d="scan'208";a="620183635"
 Received: from umedepal-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.213.170.65])
  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jun 2021 13:53:50 -0700
+ 10 Jun 2021 13:53:51 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/8] ASoC: SOF: pcm: add mechanisms to disable ALSA
- pause_push/release
-Date: Thu, 10 Jun 2021 15:53:21 -0500
-Message-Id: <20210610205326.1176400-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 5/8] ASoC: SOF: Intel: enable DMI L1 when pause is not
+ supported
+Date: Thu, 10 Jun 2021 15:53:23 -0500
+Message-Id: <20210610205326.1176400-6-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210610205326.1176400-1-pierre-louis.bossart@linux.intel.com>
 References: <20210610205326.1176400-1-pierre-louis.bossart@linux.intel.com>
@@ -87,77 +87,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-PulseAudio, PipeWire and CRAS do not use pause push/release, which
-means that we can optionally disable this capability without any
-impact on most users.
+DMI L1 entry is incompatible with pause on a capture stream, so if
+pause is not supported we can enable DMI L1 unconditionally.
 
-In addition, on some platforms, e.g. based on HDaudio DMAs, support for
-pause_push/release prevents the system from entering low-power
-states.
-
-This patch suggests an opt-in selection via kconfig or kernel
-parameter to disable pause.
+Experimental results show an increased residency in higher C states
+and a significant decrease of system power consumption for "work from
+home" usages such as VoIP calls.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/Kconfig | 9 +++++++++
- sound/soc/sof/pcm.c   | 7 +++++++
- 2 files changed, 16 insertions(+)
+ sound/soc/sof/intel/hda-pcm.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
-index cd659493b5df..81b834558a2d 100644
---- a/sound/soc/sof/Kconfig
-+++ b/sound/soc/sof/Kconfig
-@@ -55,6 +55,15 @@ config SND_SOC_SOF_DEBUG_PROBES
- 	  Say Y if you want to enable probes.
- 	  If unsure, select "N".
+diff --git a/sound/soc/sof/intel/hda-pcm.c b/sound/soc/sof/intel/hda-pcm.c
+index 47ff2c757d0a..aaa7686c00ee 100644
+--- a/sound/soc/sof/intel/hda-pcm.c
++++ b/sound/soc/sof/intel/hda-pcm.c
+@@ -221,6 +221,7 @@ int hda_dsp_pcm_open(struct snd_sof_dev *sdev,
+ 		     struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_soc_component *scomp = sdev->component;
+ 	struct hdac_ext_stream *dsp_stream;
+ 	struct snd_sof_pcm *spcm;
+@@ -233,7 +234,13 @@ int hda_dsp_pcm_open(struct snd_sof_dev *sdev,
+ 		return -EINVAL;
+ 	}
  
-+config SND_SOC_SOF_PCM_DISABLE_PAUSE
-+	bool "SOF disable pause push/release"
-+	help
-+	  This option disables ALSA pause push/release capabilities for
-+	  SOF drivers. These capabilities are not used by typical
-+	  sound servers such as PulseAudio, PipeWire and CRAS.
-+	  Say Y if you want to disable pause push/release
-+	  If unsure, select "N".
+-	/* All playback and D0i3 compatible streams are DMI L1 capable */
++	/*
++	 * All playback and D0i3 compatible streams are DMI L1 capable, others need
++	 * pause push/release to be disabled
++	 */
++	if (!(runtime->hw.info & SNDRV_PCM_INFO_PAUSE))
++		hda_always_enable_dmi_l1 = true;
 +
- config SND_SOC_SOF_DEVELOPER_SUPPORT
- 	bool "SOF developer options support"
- 	depends on EXPERT
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index 9893b182da43..bab837ed8c7f 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -10,6 +10,7 @@
- // PCM Layer, interface between ALSA and IPC.
- //
- 
-+#include <linux/moduleparam.h>
- #include <linux/pm_runtime.h>
- #include <sound/pcm_params.h>
- #include <sound/sof.h>
-@@ -20,6 +21,10 @@
- #include "compress.h"
- #endif
- 
-+static bool pcm_disable_pause = IS_ENABLED(CONFIG_SND_SOC_SOF_PCM_DISABLE_PAUSE);
-+module_param_named(disable_pause, pcm_disable_pause, bool, 0444);
-+MODULE_PARM_DESC(disable_pause, "SOF HDA disable pause");
-+
- /* Create DMA buffer page table for DSP */
- static int create_page_table(struct snd_soc_component *component,
- 			     struct snd_pcm_substream *substream,
-@@ -480,6 +485,8 @@ static int sof_pcm_open(struct snd_soc_component *component,
- 
- 	/* set runtime config */
- 	runtime->hw.info = ops->hw_info; /* platform-specific */
-+	if (pcm_disable_pause)
-+		runtime->hw.info &= ~SNDRV_PCM_INFO_PAUSE;
- 
- 	/* set any runtime constraints based on topology */
- 	runtime->hw.formats = le64_to_cpu(caps->formats);
+ 	if (hda_always_enable_dmi_l1 ||
+ 	    direction == SNDRV_PCM_STREAM_PLAYBACK ||
+ 	    spcm->stream[substream->stream].d0i3_compatible)
 -- 
 2.25.1
 
