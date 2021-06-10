@@ -7,61 +7,61 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E374C48BD1
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Jun 2021 20:57:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80BA6C48BDF
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Jun 2021 20:57:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D96F7613B3
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Jun 2021 20:57:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D96F7613B3
+	by mail.kernel.org (Postfix) with ESMTPS id 059F9613D8
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Jun 2021 20:57:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 059F9613D8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 82C5817D7;
-	Thu, 10 Jun 2021 22:56:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82C5817D7
+	by alsa0.perex.cz (Postfix) with ESMTPS id A423717F5;
+	Thu, 10 Jun 2021 22:57:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A423717F5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623358651;
-	bh=XpUgVnwM3lHg7Nb4lqCqRUbp5LRayUjLBJJGJaVqHRg=;
+	s=default; t=1623358674;
+	bh=n4IK28I0hZljCIWjfrJVRRms7HhJ8zIkuXV+0AqHV1M=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XBNogN09JNWJJ6VewP/WaKhP0wi0PBOCvnfw9chXB7v67dQbuq6eCFckflMw4h6dm
-	 eiGerDT/DzaZt+hAHWlIqq4bm8AAAX98EmmGeMj/O59YgmEXY23/etXkj/5pVqhmha
-	 /0UVMYnDKqo92z4u2i0RkcEm2uJsV1blKvhUjLo4=
+	b=t8BjhOE3Yy1dc24A3iTD5oI8b53nSmChnTPv4PRPd1rkq1Fm78tMofgPrlG7B7cPc
+	 uEJiYrvd1mliVd7MjCWPM/GxAQq1IKS5zpY+kGYYJb7Gt3XGnldgdjobOvko9iJVtj
+	 kfEHJwZ/hSqQoSz1Tb4TlnMRuq+OSJlvbDeSfmz0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ED57EF804E5;
-	Thu, 10 Jun 2021 22:54:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9E47EF804E7;
+	Thu, 10 Jun 2021 22:54:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7ED5DF804C2; Thu, 10 Jun 2021 22:54:12 +0200 (CEST)
+ id 076B7F804B3; Thu, 10 Jun 2021 22:54:12 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 09738F804B3
- for <alsa-devel@alsa-project.org>; Thu, 10 Jun 2021 22:54:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09738F804B3
-IronPort-SDR: uNvCNS7BQuYU+jV5FNxM8QgfarRhqzSMVR8CSvzWdNXuRyTToGi4q3E//+DV6zvj8AXCO2po+h
- FGIRUpj6/AoA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10011"; a="226812423"
-X-IronPort-AV: E=Sophos;i="5.83,264,1616482800"; d="scan'208";a="226812423"
+ by alsa1.perex.cz (Postfix) with ESMTPS id C7CF2F804AB
+ for <alsa-devel@alsa-project.org>; Thu, 10 Jun 2021 22:53:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7CF2F804AB
+IronPort-SDR: HYU6j48H/pCRGAEGnj8cT+YMaO64VLJ1ju6CCheKe5tZEMLKTxTBtlK7CRhyYVhBMLWVOOywxV
+ Ue1q86l04U3g==
+X-IronPort-AV: E=McAfee;i="6200,9189,10011"; a="226812413"
+X-IronPort-AV: E=Sophos;i="5.83,264,1616482800"; d="scan'208";a="226812413"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jun 2021 13:53:53 -0700
-IronPort-SDR: 2PLW9ZJ8YOydIH/1KJFXDe3OTcphEMguCu6IC1tsOQ4QfGZoTL2jrMQcXkzgFyUjFdyYrnONwP
- /LnbZlXSFUqw==
-X-IronPort-AV: E=Sophos;i="5.83,264,1616482800"; d="scan'208";a="620183641"
+ 10 Jun 2021 13:53:50 -0700
+IronPort-SDR: lgkQN7a7rYJQBmjNjkpN6yp+1GOZY61uzQsRI3KY/VV/PTUwujnOh/8I5E3mpS7WQxUmYmBUf6
+ i2SIeWTCmLXA==
+X-IronPort-AV: E=Sophos;i="5.83,264,1616482800"; d="scan'208";a="620183621"
 Received: from umedepal-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.213.170.65])
  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jun 2021 13:53:52 -0700
+ 10 Jun 2021 13:53:49 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 6/8] ALSA: pcm: conditionally avoid mmap of control data
-Date: Thu, 10 Jun 2021 15:53:24 -0500
-Message-Id: <20210610205326.1176400-7-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/8] ASoC: SOF: Intel: simplify logic for DMI_L1 handling
+Date: Thu, 10 Jun 2021 15:53:20 -0500
+Message-Id: <20210610205326.1176400-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210610205326.1176400-1-pierre-louis.bossart@linux.intel.com>
 References: <20210610205326.1176400-1-pierre-louis.bossart@linux.intel.com>
@@ -86,87 +86,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In case of mmap, by default alsa-lib mmaps both control and status data.
+We don't need to test in multiple places if the kconfig
+SND_SOC_SOF_HDA_ALWAYS_ENABLE_DMI_L1 is enabled or not, we might as
+well set the existing DMI_L1_COMPATIBLE flag.
 
-If driver subscribes for application pointer update, driver needs to get
-notification whenever appl ptr changes. With the above case driver won't
-get appl ptr notifications.
-
-This patch check on a hw info flag and returns error when user land asks
-for mmaping control & status data, thus forcing user to issue
-IOCTL_SYNC_PTR.
-
-This patch was originally submitted in 2017, c.f.
-https://lore.kernel.org/alsa-devel/1494896518-23399-4-git-send-email-subhransu.s.prusty@intel.com/
-
-Suggested-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- include/uapi/sound/asound.h |  1 +
- sound/core/pcm_native.c     | 17 +++++++++++++++++
- 2 files changed, 18 insertions(+)
+ sound/soc/sof/intel/hda-pcm.c    |  3 ++-
+ sound/soc/sof/intel/hda-stream.c | 11 +++++------
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index 535a7229e1d9..e7566bfc106c 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -299,6 +299,7 @@ typedef int __bitwise snd_pcm_subformat_t;
- #define SNDRV_PCM_INFO_HAS_LINK_ABSOLUTE_ATIME     0x02000000  /* report absolute hardware link audio time, not reset on startup */
- #define SNDRV_PCM_INFO_HAS_LINK_ESTIMATED_ATIME    0x04000000  /* report estimated link audio time */
- #define SNDRV_PCM_INFO_HAS_LINK_SYNCHRONIZED_ATIME 0x08000000  /* report synchronized audio/system time */
-+#define SNDRV_PCM_INFO_NO_STATUS_MMAP	0x10000000	/* status and control mmap not supported */
+diff --git a/sound/soc/sof/intel/hda-pcm.c b/sound/soc/sof/intel/hda-pcm.c
+index df00db8369c7..59220fa1def1 100644
+--- a/sound/soc/sof/intel/hda-pcm.c
++++ b/sound/soc/sof/intel/hda-pcm.c
+@@ -229,7 +229,8 @@ int hda_dsp_pcm_open(struct snd_sof_dev *sdev,
+ 	}
  
- #define SNDRV_PCM_INFO_DRAIN_TRIGGER	0x40000000		/* internal kernel flag - trigger in drain */
- #define SNDRV_PCM_INFO_FIFO_IN_FRAMES	0x80000000	/* internal kernel flag - FIFO size is in frames */
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 8dbe86cf2e4f..01f755ce54a8 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -3810,11 +3810,13 @@ static int snd_pcm_mmap(struct file *file, struct vm_area_struct *area)
- 	struct snd_pcm_file * pcm_file;
- 	struct snd_pcm_substream *substream;	
- 	unsigned long offset;
-+	unsigned int info;
- 	
- 	pcm_file = file->private_data;
- 	substream = pcm_file->substream;
- 	if (PCM_RUNTIME_CHECK(substream))
- 		return -ENXIO;
-+	info = substream->runtime->hw.info;
+ 	/* All playback and D0i3 compatible streams are DMI L1 capable */
+-	if (direction == SNDRV_PCM_STREAM_PLAYBACK ||
++	if (IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_ALWAYS_ENABLE_DMI_L1) ||
++	    direction == SNDRV_PCM_STREAM_PLAYBACK ||
+ 	    spcm->stream[substream->stream].d0i3_compatible)
+ 		flags |= SOF_HDA_STREAM_DMI_L1_COMPATIBLE;
  
- 	offset = area->vm_pgoff << PAGE_SHIFT;
- 	switch (offset) {
-@@ -3825,6 +3827,13 @@ static int snd_pcm_mmap(struct file *file, struct vm_area_struct *area)
- 	case SNDRV_PCM_MMAP_OFFSET_STATUS_NEW:
- 		if (!pcm_status_mmap_allowed(pcm_file))
- 			return -ENXIO;
-+		/*
-+		 * force fallback to ioctl if driver doesn't support status
-+		 * and control mmap.
-+		 */
-+		if (info & SNDRV_PCM_INFO_NO_STATUS_MMAP)
-+			return -ENXIO;
-+
- 		return snd_pcm_mmap_status(substream, file, area);
- 	case SNDRV_PCM_MMAP_OFFSET_CONTROL_OLD:
- 		if (pcm_file->no_compat_mmap || !IS_ENABLED(CONFIG_64BIT))
-@@ -3833,6 +3842,14 @@ static int snd_pcm_mmap(struct file *file, struct vm_area_struct *area)
- 	case SNDRV_PCM_MMAP_OFFSET_CONTROL_NEW:
- 		if (!pcm_control_mmap_allowed(pcm_file))
- 			return -ENXIO;
-+
-+		/*
-+		 * force fallback to ioctl if driver doesn't support status
-+		 * and control mmap.
-+		 */
-+		if (info & SNDRV_PCM_INFO_NO_STATUS_MMAP)
-+			return -ENXIO;
-+
- 		return snd_pcm_mmap_control(substream, file, area);
- 	default:
- 		return snd_pcm_mmap_data(substream, file, area);
+diff --git a/sound/soc/sof/intel/hda-stream.c b/sound/soc/sof/intel/hda-stream.c
+index 40a3993ae2cb..4e49b7b16b4c 100644
+--- a/sound/soc/sof/intel/hda-stream.c
++++ b/sound/soc/sof/intel/hda-stream.c
+@@ -197,11 +197,10 @@ hda_dsp_stream_get(struct snd_sof_dev *sdev, int direction, u32 flags)
+ 	 * Workaround to address a known issue with host DMA that results
+ 	 * in xruns during pause/release in capture scenarios.
+ 	 */
+-	if (!IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_ALWAYS_ENABLE_DMI_L1))
+-		if (stream && !(flags & SOF_HDA_STREAM_DMI_L1_COMPATIBLE))
+-			snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR,
+-						HDA_VS_INTEL_EM2,
+-						HDA_VS_INTEL_EM2_L1SEN, 0);
++	if (stream && !(flags & SOF_HDA_STREAM_DMI_L1_COMPATIBLE))
++		snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR,
++					HDA_VS_INTEL_EM2,
++					HDA_VS_INTEL_EM2_L1SEN, 0);
+ 
+ 	return stream;
+ }
+@@ -240,7 +239,7 @@ int hda_dsp_stream_put(struct snd_sof_dev *sdev, int direction, int stream_tag)
+ 	spin_unlock_irq(&bus->reg_lock);
+ 
+ 	/* Enable DMI L1 if permitted */
+-	if (!IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_ALWAYS_ENABLE_DMI_L1) && dmi_l1_enable)
++	if (dmi_l1_enable)
+ 		snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, HDA_VS_INTEL_EM2,
+ 					HDA_VS_INTEL_EM2_L1SEN, HDA_VS_INTEL_EM2_L1SEN);
+ 
 -- 
 2.25.1
 
