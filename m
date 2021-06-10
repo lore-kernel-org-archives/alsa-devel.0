@@ -2,55 +2,79 @@ Return-Path: <SRS0=wkXm=LE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DB5CC47094
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Jun 2021 05:07:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85679C47094
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Jun 2021 06:21:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 526D26128A
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Jun 2021 05:07:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 526D26128A
-Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
+	by mail.kernel.org (Postfix) with ESMTPS id 65592601FA
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Jun 2021 06:21:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 65592601FA
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 183C4171A;
-	Thu, 10 Jun 2021 07:06:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 183C4171A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E82B171D;
+	Thu, 10 Jun 2021 08:20:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E82B171D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623301666;
-	bh=lBlDHBSFyadgC6T0DTt5blLcF7SaJXtSJqX3QL5lBOA=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=MuxP7qySMVJL7fPeEQhLFZEmX7tshoYNbTcrpl/svfsvvV/QPm/RmosbQZADbgWQD
-	 Q2KKoGrY5/kW06X/uLeDFlQum00XWBwXQpvyqNootVrfnQoawTCDx25+PsueGbhFAU
-	 2FPBV9WXYlpGUEHP4ppq6amVTCTHH9ZIkuCp1o7M=
+	s=default; t=1623306109;
+	bh=ZCc0McA1OeNylaKYcPQalDnyqRtmeEKzR1Q4SNWsSX0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=QpzOWKmd6GvAOEyJSOa4WwTewcOeiDeWG8M+LmaNseTV4oT11Umm6TeZdzNabwaU7
+	 Cf2Xb4HhEsJoyQ5syxr7plqzHIK/NsJhrh8+DKVhe1yC6Yy8jMGrHlWnSw9Ck5PsUM
+	 9pAgWpSNar02QLLRSg8o9DrOY5vLEe0i+LdGRYLA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 385BFF8020D;
-	Thu, 10 Jun 2021 07:06:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2D4DF8020D;
+	Thu, 10 Jun 2021 08:20:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B8400F80218; Thu, 10 Jun 2021 07:06:52 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 8650DF800FC
- for <alsa-devel@alsa-project.org>; Thu, 10 Jun 2021 07:06:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8650DF800FC
+ id 7E5DCF80218; Thu, 10 Jun 2021 08:20:56 +0200 (CEST)
+Received: from lucky1.263xmail.com (lucky1.263xmail.com [211.157.147.131])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 30A0AF80149
+ for <alsa-devel@alsa-project.org>; Thu, 10 Jun 2021 08:20:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30A0AF80149
+Received: from localhost (unknown [192.168.167.16])
+ by lucky1.263xmail.com (Postfix) with ESMTP id DA17FBA7F6;
+ Thu, 10 Jun 2021 14:20:43 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [113.57.152.160])
+ by smtp.263.net (postfix) whith ESMTP id
+ P32529T140357287958272S1623306042221794_; 
+ Thu, 10 Jun 2021 14:20:44 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <0a0ef2f2f4c7605f7bd6b05bff47d8d4>
+X-RL-SENDER: huangjianghui@uniontech.com
+X-SENDER: huangjianghui@uniontech.com
+X-LOGIN-NAME: huangjianghui@uniontech.com
+X-FST-TO: corbet@lwn.net
+X-RCPT-COUNT: 7
+X-SENDER-IP: 113.57.152.160
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From: huangjianghui <huangjianghui@uniontech.com>
+To: Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH] Docs: hda: Fix spelling mistakes
+Date: Thu, 10 Jun 2021 14:20:36 +0800
+Message-Id: <20210610062036.30300-1-huangjianghui@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1623301608142592907-webhooks-bot@alsa-project.org>
-References: <1623301608142592907-webhooks-bot@alsa-project.org>
-Subject: [Bug] Duplication in Array Element not Handled in Parsing conf
-Message-Id: <20210610050652.B8400F80218@alsa1.perex.cz>
-Date: Thu, 10 Jun 2021 07:06:52 +0200 (CEST)
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ huangjianghui <huangjianghui@uniontech.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,48 +90,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #151 was opened from aiChaoSONG:
+correct Reatek to Realtek
 
-When parsing array element in conf files, an auto-increase number is used as config id(`snd_config_t->id`), and array element as the config value(`snd_config_t->u.string/integer/integer64/real`), duplication is not handle in `parse_array_defs/parse_array_def/parse_value` functions.
+Signed-off-by: huangjianghui <huangjianghui@uniontech.com>
+---
+ Documentation/sound/hd-audio/controls.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Suppose we have a conf:
-```
-array [
-    "a"
-    "b"
-    "a"
-]
-```
-the parsed result will be:
-```
-    parent
-        |
-        ---- snd_config_t {id: "0", u.string: "a"}
-        |
-        ---- snd_config_t {id: "1", u.string: "b"}
-        |
-        ---- snd_config_t {id: "2", u.string: "a"}
-```
-The duplication in "a" may be desired. But please consider this condition: suppose we have four conf files A, B, C and D, where A 
-is the conf above, let B include A, C include A, D include B and C, so D include A twice indirectly. File A will be processed twice when parsing D, because duplication is not handled, here comes the problem, the parsed result of A in D is:
-```
-    parent
-        |
-        ---- snd_config_t {id: "0", u.string: "a"}
-        |
-        ---- snd_config_t {id: "1", u.string: "b"}
-        |
-        ---- snd_config_t {id: "2", u.string: "a"}
-        |
-        ---- snd_config_t {id: "3", u.string: "a"}
-        |
-        ---- snd_config_t {id: "4", u.string: "b"}
-        |
-        ---- snd_config_t {id: "5", u.string: "a"}
-```
-This is obviously wrong.
+diff --git a/Documentation/sound/hd-audio/controls.rst b/Documentation/sound/hd-audio/controls.rst
+index f2ebc4f79b44..dbe6483f4ff4 100644
+--- a/Documentation/sound/hd-audio/controls.rst
++++ b/Documentation/sound/hd-audio/controls.rst
+@@ -102,7 +102,7 @@ Conexant codecs
+ ---------------
+ 
+ Auto-Mute Mode
+-  See Reatek codecs.
++  See Realtek codecs.
+ 
+ 
+ Analog codecs
+-- 
+2.20.1
 
-I think handle duplication in parse_value is not the solution, because element duplication in an array is wanted. The key problem here is that we parse the same conf more than once.
 
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/151
-Repository URL: https://github.com/alsa-project/alsa-lib
+
