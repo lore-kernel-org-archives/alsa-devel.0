@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01E83C48BE0
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 09:40:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19E5DC48BE0
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 09:41:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7B9B6613CF
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 09:40:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B9B6613CF
+	by mail.kernel.org (Postfix) with ESMTPS id 8204C613CF
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 09:41:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8204C613CF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 145071919;
-	Fri, 11 Jun 2021 11:39:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 145071919
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2C7211937;
+	Fri, 11 Jun 2021 11:40:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C7211937
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623404441;
-	bh=t/u9exB41Dj9Wj/HEe2AeMCe5J9vf6rR116iV9gJ+gM=;
+	s=default; t=1623404459;
+	bh=tWWzFWkQoilsn19hZjvlIlDlGcOFXhvl2Qt66A9RJiM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FVJGVi5vui/b8VPOT1f3+HazbTdC1CEVqe8vPmOG2rD8FQpi7lFMolojVn+2Ar+b9
-	 gIoe5tMvbALF9vcflq3BCWZxIF2XgXtZDgbNRwbnK2ghS/+6Gk7Sl4dNq8IBLEsW+r
-	 26iSGvSbnmeTN4mD6XhVKtoQYzM0ZTNPj1jglobc=
+	b=Fcl4cZpjXEyhgZL4ZoKjH4XjfOhX7pj+7N++B8p8iO1EnM2kGiGAzPm1MP4A/NOrX
+	 EnUUI3fwU5GQOd4rCkE3mUkHkiy+md4nvietiWO4q1ZpIDXT/BslVn9rB3L0THB7u2
+	 fKJ0BxV6o0P9W6mLrp/NLweM4kgjwNS6Mz8vB+fg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7D5A7F804DA;
-	Fri, 11 Jun 2021 11:38:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 20726F804DF;
+	Fri, 11 Jun 2021 11:38:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E0355F804CA; Fri, 11 Jun 2021 11:37:53 +0200 (CEST)
+ id 1DE6EF804CB; Fri, 11 Jun 2021 11:37:54 +0200 (CEST)
 Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com
  [64.147.123.19])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1BCA2F804C2
- for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2021 11:37:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1BCA2F804C2
+ by alsa1.perex.cz (Postfix) with ESMTPS id E35F5F800FC
+ for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2021 11:37:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E35F5F800FC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="4elbml2S"; 
+ header.b="0Q7gBIno"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="wmHVJV+6"
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailout.west.internal (Postfix) with ESMTP id 7B7711AFF;
- Fri, 11 Jun 2021 05:37:48 -0400 (EDT)
+ header.i=@messagingengine.com header.b="jKiNeb8g"
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+ by mailout.west.internal (Postfix) with ESMTP id B08A61AC2;
+ Fri, 11 Jun 2021 05:37:37 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute3.internal (MEProxy); Fri, 11 Jun 2021 05:37:48 -0400
+ by compute4.internal (MEProxy); Fri, 11 Jun 2021 05:37:37 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=efE89pEmRxnS3
- XYyJlRs4LPxJ1xwWk2TzmO3uBn0TRU=; b=4elbml2S4QMBoFW+WBkgkaQ+xgcAl
- yLaaUOT5HTakgrtlpxAZ/SZxzeSOckXWv5RTJdCgegADKTmJ4EZvfsH2XDtcwSL/
- Kkv5bwTMPBjrM+wgK7drKtzIsivhU+a1K334jCvL+pB0LM3xaJQatsmr9+x2+Myy
- dJXp82ZA/bZ73H6YAlkm1IgnoHDwgnA4U0BsdMlAzoP7HH/bY6iVkWiSIH5hthAL
- elWUHlGv8PhHhd6HirWbb4z8VWRDlVDY/Krzeu6IBjfAL0GOprAabl40ZK+cqDxl
- M+Yc5r5u6Dddv1hgsTwqapu5f50QFw0wL9Khe6GYFf3ZMlYdNmWgnzIfg==
+ :mime-version:content-transfer-encoding; s=fm1; bh=5OiXjz2blseXL
+ X6uOImQq7JNfbaDCn/Hk0nGyXH7Ewg=; b=0Q7gBInoWmRgAX1IxiHVYmjP05hK+
+ CfNbB8hRO8Wu66dRgEGjU/wE3ums0n+7eJwSmIhYYzkRvcYYxwpfvTvCDZn7CtK/
+ MGaNz8IZiqHf25OwQ0zNVKmoG3JpZhyTtHEb2d0/0X1EoNGhwpFhj+W9p/vnKLeA
+ aWz6ckyZxXuPZQDXZvbi1xQ0SmZRJLFFrxghatNmgRSrRc/dIAXzX0nhC1+EA/Vp
+ DsC7PHfLwt241TqgrVD8NM3ZMPePQrUznorsrU8clvkrNKakWX/wSKA45A3UxYBM
+ hNknr94nSKMSmMQHHvO4bOt7xYG9fP3ZoAdGNj7ugMB9GTjoH16Mgvtfg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm3; bh=efE89pEmRxnS3XYyJlRs4LPxJ1xwWk2TzmO3uBn0TRU=; b=wmHVJV+6
- f7+FjJG2p5D5EJtE+SapBFu7MuMzYYbdUigYbNSuqK9+ZrCeH6SE4jFt5Dp5h3pz
- CE3tBgZGmbsZxW619gdcVFLWwQFtTgUEED/y5qgYeq+W+vz4saU4Aia9u9aIYXnX
- a5srDUqnfi5ikO1z3BGHnkWgqSNSOV/6pk+4K6FpwY/T3V0LV3u4s2sXJc8A4R3A
- ISEidAcNJlWZHPr/uT3ZeLCxaVCnbnVdioVZ6FHrumY2w3CP52jmaH0DNfcSzxPQ
- grOFPde752a8iYxwJbpBM7+7/nXqU470cCnSXAb5ra/fwliv6nULzslb/feZpFZw
- hwOkjLGpKGoTug==
-X-ME-Sender: <xms:6y7DYOfM3TGCqNfvnBdelxaAufo_sjbtg7joVg2NdxXRL-Nmh7dqKQ>
- <xme:6y7DYIPkcQA4_oeH5wFrZwO-zt70MbjD6A3bMFvjLWWIhoCfe6aFOamplqmbGsts8
- DKSxRiaTS9G9bamvx0>
-X-ME-Received: <xmr:6y7DYPhV8L19DjXZvL4534qMzM_1IOLCiG1x8jYKF-RrD4XTOzgzEXEKT0gbyDicU9wY8aPe_r5e5R7Kc5c4rWAJWLJB4dexBOqNDJjy3knGBh0s1Oq1>
+ fm3; bh=5OiXjz2blseXLX6uOImQq7JNfbaDCn/Hk0nGyXH7Ewg=; b=jKiNeb8g
+ 9PI2mjvq8SO0lMuNKh/CGZSMbgtbKTl8L5xSxAffQoVDwUNv7zGzb4ZwQcdaJe3u
+ vVSNrlO4/13pKC5VtKOTLp7GiPTMpQEcX7Q5+LySemU8AA0YxX1urYDj2UfYAaLZ
+ 4oA2ZYHwCwKH1uibSlfzgyjYaNFbGSSETfKIVez9PBTWCx2kNpxlV3EmrQVekiQn
+ aqVDbyhFh565QQ7bK7kYDbbvkhAXcAVrmSRk+h4vrlJeGCp6DGoE9DBnVxBLsSOI
+ 8+9GXEelw9srI5URHBltadUNkhVwTtNbN0s5xMFP2CzJ0Ujyx4NZNP9k5bZEL0Cz
+ fsQGxCZoJXahbQ==
+X-ME-Sender: <xms:4C7DYF5PdRWFpE_87FfNEqdHwCTSeg03gBx2pn8XGpPOXsh0sDJdmw>
+ <xme:4C7DYC5b334PCwxsgw8EinQwPRZvnPrg_IJ6OYuVm3gTLBJ-JUYXe7yzKfuK3i7yb
+ 6AjjpQPZZe6Deim6cs>
+X-ME-Received: <xmr:4C7DYMd-zZrrElLCNxRLFAIwLukDqaEaS1gBS6AQOZVGT9VRk8yeiC16n5i2HTgfZKPzdV4-AHZ7YFoEVruqZKOmR3vSc_uANpgB9S3L7Hrn_rQZgcpM>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedujedgudejucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
@@ -86,18 +86,17 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedujedgudejucetufdoteggod
  etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecuvehluhhsthgv
  rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihessh
  grkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:6y7DYL_WFGIQmFQOMfN9saM_qPwSdaINVJoRn6H_toHWv5npJ-MtzA>
- <xmx:6y7DYKvNJlJRSbGuIfKOXta9n2oRtEwOU0VqSXnwmGZ_d7insN_SfQ>
- <xmx:6y7DYCHQ1zty9-ZcG84DMuvICNUPync5Orm0CozZl_ew2dEDvBOKJg>
- <xmx:7C7DYPVaAlyEe-l4SPCKK1WIyfNwjfKZpgb4-BvWsQuQmCOajSmUew>
+X-ME-Proxy: <xmx:4C7DYOIwvT_DUW1SPP4eXLZjAWCOk3n__LMK4b57r0EUchL_ep6mGw>
+ <xmx:4C7DYJKgFGYlka39CeMroxF_sNqS1a--wn0lIJtLH9L8mNfG4SDcYQ>
+ <xmx:4C7DYHwmiiKIXc4uIlWVrTqMHGQ3Elu_3E9NyE4W5wrlt-8Wpd9xPQ>
+ <xmx:4S7DYHi2wELUJDisVwkvkhYqnoQPINwOCYA_w_LqkNFbuRUEhZ_FTQ>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 11 Jun 2021 05:37:46 -0400 (EDT)
+ 11 Jun 2021 05:37:35 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Subject: [PATCH 6/6] ALSA: bebob: correct device entries for Phonic Helix
- Board and FireFly series
-Date: Fri, 11 Jun 2021 18:37:30 +0900
-Message-Id: <20210611093730.78254-7-o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/6] ALSA: bebob: fulfil device entries
+Date: Fri, 11 Jun 2021 18:37:25 +0900
+Message-Id: <20210611093730.78254-2-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210611093730.78254-1-o-takashi@sakamocchi.jp>
 References: <20210611093730.78254-1-o-takashi@sakamocchi.jp>
@@ -119,66 +118,82 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Phonic shipped Helix board and FireFly series with IEEE 1394
-functionality. Regarding to the parameters in unit directory, these
-series have two cases below:
-
-1. the same parameters in unit directory
- * Firefly 202
- * Firefly 302
- * Firefly 808 Universal
- * HelixBoard 12 FireWire, 12 Universal
- * HelixBoard 18 FireWire, 18 Universal
- * HelixBoard 24 FireWire, 24 Universal
-
-2. Unique parameters in unit directory
- * FireFly 808
- * HelixBoard 12 FireWire MkII
- * HelixBoard 18 FireWire MkII
- * HelixBoard 24 FireWire MkII
+Although unit directory in root directory of configuration ROM has the
+same value (0x00a02d) for its specifier_id entry to express AV/C device,
+it has two cases for the value (0x010001/0x014001) to version entry.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/bebob/bebob.c | 16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
+ sound/firewire/bebob/bebob.c | 30 +++++++++++++++++-------------
+ sound/firewire/bebob/bebob.h |  9 ---------
+ 2 files changed, 17 insertions(+), 22 deletions(-)
 
 diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index 9f8df57c1e8b..e8d5ba105480 100644
+index 452317e53565..5ce25ddcbf5c 100644
 --- a/sound/firewire/bebob/bebob.c
 +++ b/sound/firewire/bebob/bebob.c
-@@ -406,13 +406,16 @@ static const struct ieee1394_device_id bebob_id_table[] = {
- 	SND_BEBOB_DEV_ENTRY(VEN_TERRATEC, 0x00000002, &spec_normal),
- 	/* CME, MatrixKFW */
- 	SND_BEBOB_DEV_ENTRY(VEN_CME, 0x00030000, &spec_normal),
--	/* Phonic, Helix Board 12 MkII */
-+	// Phonic Helix Board 12 FireWire MkII.
- 	SND_BEBOB_DEV_ENTRY(VEN_PHONIC, 0x00050000, &spec_normal),
--	/* Phonic, Helix Board 18 MkII */
-+	// Phonic Helix Board 18 FireWire MkII.
- 	SND_BEBOB_DEV_ENTRY(VEN_PHONIC, 0x00060000, &spec_normal),
--	/* Phonic, Helix Board 24 MkII */
-+	// Phonic Helix Board 24 FireWire MkII.
- 	SND_BEBOB_DEV_ENTRY(VEN_PHONIC, 0x00070000, &spec_normal),
--	/* Phonic, Helix Board 12 Universal/18 Universal/24 Universal */
-+	// Phonic FireFly 808 FireWire.
-+	SND_BEBOB_DEV_ENTRY(VEN_PHONIC, 0x00080000, &spec_normal),
-+	// Phonic FireFly 202, 302, 808 Universal.
-+	// Phinic Helix Board 12/18/24 FireWire, 12/18/24 Universal
- 	SND_BEBOB_DEV_ENTRY(VEN_PHONIC, 0x00000000, &spec_normal),
- 	/* Lynx, Aurora 8/16 (LT-FW) */
- 	SND_BEBOB_DEV_ENTRY(VEN_LYNX, 0x00000001, &spec_normal),
-@@ -476,11 +479,6 @@ static const struct ieee1394_device_id bebob_id_table[] = {
- 	/*  Infrasonic, Windy6 */
- 	/*  Mackie, Digital X Bus x.200 */
- 	/*  Mackie, Digital X Bus x.400 */
--	/*  Phonic, HB 12 */
--	/*  Phonic, HB 24 */
--	/*  Phonic, HB 18 */
--	/*  Phonic, FireFly 202 */
--	/*  Phonic, FireFly 302 */
- 	/*  Rolf Spuler, Firewire Guitar */
- 	{}
+@@ -348,6 +348,22 @@ static const struct snd_bebob_spec spec_normal = {
+ 	.meter	= NULL
  };
+ 
++#define SPECIFIER_1394TA	0x00a02d
++
++// The immediate entry for version in unit directory differs depending on models:
++//  * 0x010001
++//  * 0x014001
++#define SND_BEBOB_DEV_ENTRY(vendor, model, data) \
++{ \
++	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
++			  IEEE1394_MATCH_MODEL_ID | \
++			  IEEE1394_MATCH_SPECIFIER_ID, \
++	.vendor_id	= vendor, \
++	.model_id	= model, \
++	.specifier_id	= SPECIFIER_1394TA, \
++	.driver_data	= (kernel_ulong_t)data \
++}
++
+ static const struct ieee1394_device_id bebob_id_table[] = {
+ 	/* Edirol, FA-66 */
+ 	SND_BEBOB_DEV_ENTRY(VEN_EDIROL, 0x00010049, &spec_normal),
+@@ -425,19 +441,7 @@ static const struct ieee1394_device_id bebob_id_table[] = {
+ 	/* Focusrite, SaffirePro 26 I/O */
+ 	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, 0x00000003, &saffirepro_26_spec),
+ 	/* Focusrite, SaffirePro 10 I/O */
+-	{
+-		// The combination of vendor_id and model_id is the same as the
+-		// same as the one of Liquid Saffire 56.
+-		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
+-				  IEEE1394_MATCH_MODEL_ID |
+-				  IEEE1394_MATCH_SPECIFIER_ID |
+-				  IEEE1394_MATCH_VERSION,
+-		.vendor_id	= VEN_FOCUSRITE,
+-		.model_id	= 0x000006,
+-		.specifier_id	= 0x00a02d,
+-		.version	= 0x010001,
+-		.driver_data	= (kernel_ulong_t)&saffirepro_10_spec,
+-	},
++	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, 0x000006, &saffirepro_10_spec),
+ 	/* Focusrite, Saffire(no label and LE) */
+ 	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, MODEL_FOCUSRITE_SAFFIRE_BOTH,
+ 			    &saffire_spec),
+diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
+index dff8e25c6ca3..c06579d9380e 100644
+--- a/sound/firewire/bebob/bebob.h
++++ b/sound/firewire/bebob/bebob.h
+@@ -253,13 +253,4 @@ extern const struct snd_bebob_spec maudio_special_spec;
+ int snd_bebob_maudio_special_discover(struct snd_bebob *bebob, bool is1814);
+ int snd_bebob_maudio_load_firmware(struct fw_unit *unit);
+ 
+-#define SND_BEBOB_DEV_ENTRY(vendor, model, data) \
+-{ \
+-	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
+-			  IEEE1394_MATCH_MODEL_ID, \
+-	.vendor_id	= vendor, \
+-	.model_id	= model, \
+-	.driver_data	= (kernel_ulong_t)data \
+-}
+-
+ #endif
 -- 
 2.30.2
 
