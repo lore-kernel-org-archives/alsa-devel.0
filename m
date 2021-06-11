@@ -2,56 +2,86 @@ Return-Path: <SRS0=W3EJ=LF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45105C48BD1
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 07:33:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8960C4743D
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 07:51:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EFCE461364
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 07:33:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EFCE461364
-Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
+	by mail.kernel.org (Postfix) with ESMTPS id 3FA72613AE
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 07:51:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3FA72613AE
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 84ED318B7;
-	Fri, 11 Jun 2021 09:32:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84ED318B7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 03D4018AE;
+	Fri, 11 Jun 2021 09:50:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03D4018AE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623396811;
-	bh=2+ypJyTREljnVjS0Z2b730PP2XEs/ES40JbJetUwtIY=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1623397861;
+	bh=A3T3g0cCL04h7Qku+K/jjVHzr6wmq0MpW9B+8ZhJ6/g=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=j/ZVhrSIC/ErAQb0hQ+hswXqXMIwhEliSWzWK9Yq4c00GpwPhTITrDiLXkXOg86WZ
-	 9i3y+qHG21OX+niMCUeHce8b+vDYj3qBfvPUFCuMDr8pkk/g9Ctjwuutb70y99Snsl
-	 1EeHmbRrHCXC/ATIcH6rvAIraC3nmMApkntEWutA=
+	b=jXo6nCyRsuaXVtGkklW8eNQZ4u9d/oSO3S+5+zqi3IJPckJD+EMHbLlsktZDvhJaV
+	 446/eqvaYZDsxDv7YLNC/l3osQ93OdLnsu1Vyjapa8ccmI4cWSGNqOvXgZyNO/FtdD
+	 OAWttc1SjV5xg/Z4Jk2WiR1Qc9z15itwGArM908Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9DCBEF802DF;
-	Fri, 11 Jun 2021 09:32:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 82352F80149;
+	Fri, 11 Jun 2021 09:50:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B3BB7F804BD; Fri, 11 Jun 2021 09:32:24 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 7CF08F802DF
- for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2021 09:32:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CF08F802DF
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1623396742125567913-webhooks-bot@alsa-project.org>
-References: <1623396742125567913-webhooks-bot@alsa-project.org>
-Subject: ALSA lib pcm_dmix.c:1063:(snd_pcm_dmix_open) unable to create IPC
- semaphore
-Message-Id: <20210611073224.B3BB7F804BD@alsa1.perex.cz>
-Date: Fri, 11 Jun 2021 09:32:24 +0200 (CEST)
+ id 1DCF6F8026C; Fri, 11 Jun 2021 09:50:05 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3C2DDF80149
+ for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2021 09:49:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C2DDF80149
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="EN+HUPge"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="M+AaZqP1"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id B15E321A4A;
+ Fri, 11 Jun 2021 07:49:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1623397798; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Xil17hKyfQ38VrWNwr1D88XXgQnfebmvHMvzSZy7isU=;
+ b=EN+HUPgeG3e4jLjePf+9WHQ25kc1Z4veyeHVnFjA9MfegMa3BV7wuscKbpCxVbt7vmjxvv
+ tRRld8d1PSF0fyfpV7BDShCz54r+CpxPbITBU+c8umsKffY9GHj0nQEKH2RqnXt5VLqsBe
+ vJLQ2icF3lMFcJJsl04XSPUY+PI5vF0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1623397798;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Xil17hKyfQ38VrWNwr1D88XXgQnfebmvHMvzSZy7isU=;
+ b=M+AaZqP1AwvvkntGnC9DVr+5ZOuj1c7tJwwAqrH5LPoUfpWHOGyENdRc927WXYAvv91Sp9
+ VxLqqft6v2/YQMDw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 98299A3B89;
+ Fri, 11 Jun 2021 07:49:58 +0000 (UTC)
+Date: Fri, 11 Jun 2021 09:49:58 +0200
+Message-ID: <s5heed896xl.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Muni Sekhar <munisekharrms@gmail.com>
+Subject: Re: SNDRV_PCM_IOCTL_READI_FRAMES returns EIO
+In-Reply-To: <CAHhAz+iW30L0xsVaKD5V4P412L-hQ_5zZ-byd7qSW-MpSZB8AA@mail.gmail.com>
+References: <CAHhAz+iW30L0xsVaKD5V4P412L-hQ_5zZ-byd7qSW-MpSZB8AA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,43 +97,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #153 was edited from Cean1024:
+On Fri, 11 Jun 2021 09:02:44 +0200,
+Muni Sekhar wrote:
+> 
+> Hi all,
+> 
+> I am using a USB sound card(snd-usb-audio), and it fails while doing
+> the audio recording "arecord: pcm_read:2032: read error: Input/output
+> error".
+> 
+>  I noticed recording(arecord) audio data on a USB sound card fails at
+> SNDRV_PCM_IOCTL_READI_FRAMES is giving EIO.
+> 
+> Can someone please clarify when the kernel returns EIO for Ioctl
+> SNDRV_PCM_IOCTL_READI_FRAMES? and is there a workaround for this?
 
-alsa info:
-  alsa-config-1.0    
-  alsa-lib-1.1.5
-  alsa-plugins-1.1.5
-  alsa-utils-1.1.5
-
-asound.conf:
-
-```
-pcm.dmixer {
-    type dmix
-    ipc_key 1024
-    slave {
-        pcm "hw:0,0"
-        period_time 0
-        period_size 1024
-        buffer_size 4096
-        rate 48000
-        format "S32_LE"
-        channels 2
-    }
-
-    bindings {
-        0 0
-        1 1
-    }
-}
-```
+It's a problem of either your device (e.g. USB device firmware) or the
+kernel.  Do you get any relevant kernel error messages?
 
 
-test cmd:
-
-```
-arecord -f dat | aplay -f dat -D plug:dmixer
-```
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/153
-Repository URL: https://github.com/alsa-project/alsa-lib
+Takashi
