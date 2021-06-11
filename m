@@ -3,99 +3,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 921D7C48BD1
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 09:38:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 792E1C48BD1
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 09:39:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0E43D613D0
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 09:38:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E43D613D0
+	by mail.kernel.org (Postfix) with ESMTPS id DFC4B613D0
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 09:39:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFC4B613D0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 58A7A18F6;
-	Fri, 11 Jun 2021 11:37:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58A7A18F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3F4BD190A;
+	Fri, 11 Jun 2021 11:38:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F4BD190A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623404317;
-	bh=3ALWn7P3Z1dvFrBm4uHJdqRIuLujnQqkjmlVvb3cZZk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=uRgHpQHk1kpdYqvlYPdhGqpHf6RwwSYq8zdsPo9pp4SQyeoAc52KxViF5yCqx+Mye
-	 NlluUnPi+d2M5+A6pvyAPhkFIrB9K7Pt16YprjNwUYOdxgLYr4unxMzSqGK4AsqeZT
-	 vPfmOsP4/hGTkNSx0XVyOJqOxOG9Rkn11Ro7XCe0=
+	s=default; t=1623404368;
+	bh=AHWrocUWpbLKW2AzSG6TsnAId+jh+az6VTpssUqJOxE=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=IfK304BTp4g8Exxj5W+3PggnBzqSDBTDJpUiqkVMIZiV1zufYzLin33QauS+Pw7qB
+	 vYuklzv5eT9+ALoc6fda/vNk7BYU4chIpzVbiDMHZ3YRfl6iqHrMPhW3nRAyhYeTKr
+	 F8/vp0NnvDcDUKBs4t3bzZiHxnbZHHE/DaVzT2Mk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D40FBF802A0;
-	Fri, 11 Jun 2021 11:37:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D10CFF804B4;
+	Fri, 11 Jun 2021 11:37:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 22765F802A0; Fri, 11 Jun 2021 11:37:45 +0200 (CEST)
+ id C7ED0F804BD; Fri, 11 Jun 2021 11:37:48 +0200 (CEST)
 Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com
  [64.147.123.19])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 124B0F80149
- for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2021 11:37:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 124B0F80149
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8A471F80212
+ for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2021 11:37:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A471F80212
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="3zRiRti6"; 
+ header.b="qdaPtfX0"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="jUY00AE6"
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailout.west.internal (Postfix) with ESMTP id 528D31AF4;
- Fri, 11 Jun 2021 05:37:35 -0400 (EDT)
+ header.i=@messagingengine.com header.b="Jrup4YXS"
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+ by mailout.west.internal (Postfix) with ESMTP id C412C1B00;
+ Fri, 11 Jun 2021 05:37:39 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute5.internal (MEProxy); Fri, 11 Jun 2021 05:37:35 -0400
+ by compute2.internal (MEProxy); Fri, 11 Jun 2021 05:37:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding; s=fm1; bh=DLkPD33ep/X/wxfHu3FRiM/cFg
- ippOLS6QQhYzo3w84=; b=3zRiRti6V0HxJvkCGxy23bVby64hWpfCPT6neUq/qM
- 61/wQO3g8hmh78yY8twIHwRie8WdmektxhQHYQrYkARtyLdT6e0DNR36abi3xpyY
- YZsfsfxsloFaJCmdO6cmQx8PnM5fujeKW2VUySCWZc19rRElvasnKmyiL1OAMZx9
- uOIHznVdDEyjw5xzQUWNehxtyy8f38dgBYwIszue4j9U0jUT24Elmh8fYz2ZKbuP
- Ulo9ooME6YXwY7Ft9Lpi6t+uLOFhf12EHh3EEydkEKzvvelGalHWGdqlky4ixPKD
- jKU8uCCwjkFQZKGIhRVA7Rfgki+V82oV+6Ls5yzuk7jQ==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding; s=fm1; bh=1qxI25uU7EIAp
+ GdsMS/7IjnByhQ+OPEqq2kaypsy3Jc=; b=qdaPtfX0+8+dmRFZoCUe+ghFSjFLv
+ YxP2jA4l+ENZKvsL8v73jgbbzkJptk0d+w2szAoX//pSs3f3Gi9E7ZZXlRmGdqET
+ adW6bxovKBBdvB+5LrpDKwmVVHX612g4Wd+OcEsMOa5qywuBW+dqhIk3SrTw0PCa
+ U7c44Ncs3nwikSLWtcYElF/ViflPk+hNvQzwHh/NmkT3u2mSqj07FmIUE1E9xurY
+ Oe7fdVX0BGzt6JJmQWE5+tZRxriK5f/clVwVoWxESeS+nLLBU4KkdXjr3wCczSwp
+ WlwbTGnDJMEWxb9wbKRjCEDPFje7ufun1HWP6z+bnKXBB4Rog15mflqHg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
- :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
- :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=DLkPD33ep/X/wxfHu
- 3FRiM/cFgippOLS6QQhYzo3w84=; b=jUY00AE6VpBvk2UTB5zRfTGC2RU55hX7A
- m4ObirT3LQ58M5nVDgu/eyujovPYRtST+imnW3wTDXVSCnN/yiDlM+Na/c/C+9Xm
- aJ2/bCtK56EEM9xKAw2+vk/Umn9jng6W9KVYPYY5qXOhDbs232fphaHVjaibeSyA
- dyYLHeomB/nnr0ONZRbMVGYO//GdD9rL7gk3P3MIAxNf+r1vaWPcIIR650A/voaX
- 7NiXujbZK+1/fhPXNr4K2zAykCvEO1dvLWVyVoV41+J/vx7BmezRIXnGezl2sB0v
- GbjghonOceQNQNa4nsjlxiL0FiJvkd13OaSK69zCGzJr6k+Ne6GVw==
-X-ME-Sender: <xms:3i7DYJW_5pboE-Ihun8Ylc7hgsSshESF_AeSkNeOkdwnx9KCb_dYAA>
- <xme:3i7DYJmMsavt9_bMmjyouFGvcw0xN-4oBZT3uXPV7GWNdlUxURfBetpblJym4U9if
- EAedmnBtfZ220B0ZxI>
-X-ME-Received: <xmr:3i7DYFarVuE-SbST2uNSPAINe0hF1E__Zgn7ONt5ghCSUl-WbzTSW11bV7dFKACwsrrpJyKq6NDKssZuprkkg9wA7IxRhiR75mRVQpQS7drpaKAGnyzn>
+ :in-reply-to:message-id:mime-version:references:subject:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm3; bh=1qxI25uU7EIApGdsMS/7IjnByhQ+OPEqq2kaypsy3Jc=; b=Jrup4YXS
+ uBOxJNG6/N+xCmCBldVkdZJzaujShsNEzVZAeitaUm1HWEy0EFtTD3Vfv1wWlkkL
+ fZVwMAJettqf77oza8viERm8SzSGy2vP5AP65HljyJloZkY4JlJbgB6oJQB2TnfQ
+ wMYvm//Fs5a+UKhtICUJicphcwC2S25drnaiJmqgSPVUd65ZYNNeIXsVjt4kVSUb
+ UlZOpY6r/MPo9iAFK9IEkb3H3Ddx6XAoXn3l0/DMCPLHUHKOu7QBomVz/DIuJHeA
+ rx/nql97VYnPI3lHfDbi9yxAUOYYyUbeomTXf0f1HBmuapaOUFSX4uyinFm+ZNni
+ tWMymNcoD3Bd+A==
+X-ME-Sender: <xms:4y7DYECOMxtTcHIi76rnLIwHXy9-2UYLm2Kx_bbs2aw7pioQG7EFjQ>
+ <xme:4y7DYGgtt9H_ncuf9NPZJVRNm-caIg_klHYnj9FUqoZDWwk59_EgiK2wMy8hgJNvj
+ 8DPv3_wTyEa4wgJl2c>
+X-ME-Received: <xmr:4y7DYHkdCuHR0CAhfs7iy47KLsKe8K2KtRU-YXHLSWT6cQL6mE6VkaUv-1oiaw37RmD-TzEs8aSAm1k4os7B9uHi16zPjkvTgXFbYSEvYnMSWiguwWp4>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedujedgudejucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
- dttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhh
- ihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepvddtgeegjeejte
- ejudffhfduvdefhfevhfelleevfeefhfelhefhgeeufeetvdehnecuffhomhgrihhnpehg
- ihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
- hlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:3i7DYMWjAZwkJvsCAPoIJ7Sa--6Cg1FNBdrfJCbYX2Ml_GsYSylYCA>
- <xmx:3i7DYDl9tfGVKSILvN1oR-Og4gG1NX8JFHpsSRz-X0cMDLEHeyL4Sw>
- <xmx:3i7DYJcjOlimQXTJQ1GlDtzEKW40keJYniBFbsoxPtl35ENLhb2teA>
- <xmx:3i7DYLuCvUIzaFnZjx51_igirw1xJF_eDioS7cOAUUYpIRsXpt295Q>
+ uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
+ dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
+ shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepveefffefke
+ etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecuvehluhhsthgv
+ rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihessh
+ grkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:4y7DYKyuOEbEHVnzpN_G0EhJ_GGd77Y3f18MSium_REbuXp0wwormg>
+ <xmx:4y7DYJSr5D0kwmmMgcisi2x5z1v6IloaBXev62jI57vxmiprmjGucg>
+ <xmx:4y7DYFai2tH1c48FD_7MSVxouky3CvYFvXOnJ19aID4olmgIBNbnbQ>
+ <xmx:4y7DYIJj_m_xuxD4TFpDCg4yNE0wsYhHJXCRF62PU5quR0T-fyJFYg>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 11 Jun 2021 05:37:33 -0400 (EDT)
+ 11 Jun 2021 05:37:38 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Subject: [PATCH 0/6] ALSA: bebob/fireworks: device entry corrections
-Date: Fri, 11 Jun 2021 18:37:24 +0900
-Message-Id: <20210611093730.78254-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/6] ALSA: fireworks: fulfil device entries
+Date: Fri, 11 Jun 2021 18:37:26 +0900
+Message-Id: <20210611093730.78254-3-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210611093730.78254-1-o-takashi@sakamocchi.jp>
+References: <20210611093730.78254-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
@@ -114,30 +118,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+All of devices with Echo Audio Fireworks board module has the same
+combination of specifier_id (0x00a02d) and version (0x010000) in
+unit directory.
 
-After working for hardware database of systemd[1], I realize that
-current device entries of ALSA bebob/fireworks drivers includes some
-issues. This patchset corrects them.
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/fireworks/fireworks.c | 15 +++++++++++++++
+ sound/firewire/fireworks/fireworks.h |  8 --------
+ 2 files changed, 15 insertions(+), 8 deletions(-)
 
-[1] https://github.com/systemd/systemd/pull/19124
-
-Takashi Sakamoto (6):
-  ALSA: bebob: fulfil device entries
-  ALSA: fireworks: fulfil device entries
-  ALSA: bebob: correct device entry for Mackie D.2 FireWire option card
-  ALSA: bebob: correct device entry for Acoustic Reality eAR Master One,
-    Eroica, Figaro, and Ciaccona
-  ALSA: bebob: code refactoring for M-Audio models
-  ALSA: bebob: correct device entries for Phonic Helix Board and FireFly
-    series
-
- sound/firewire/bebob/bebob.c         | 92 ++++++++++++++--------------
- sound/firewire/bebob/bebob.h         |  9 ---
- sound/firewire/fireworks/fireworks.c | 15 +++++
- sound/firewire/fireworks/fireworks.h |  8 ---
- 4 files changed, 61 insertions(+), 63 deletions(-)
-
+diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
+index 865dac3b37e6..ffb6dd796243 100644
+--- a/sound/firewire/fireworks/fireworks.c
++++ b/sound/firewire/fireworks/fireworks.c
+@@ -300,6 +300,21 @@ static void efw_remove(struct fw_unit *unit)
+ 	snd_card_free(efw->card);
+ }
+ 
++#define SPECIFIER_1394TA	0x00a02d
++#define VERSION_EFW		0x010000
++
++#define SND_EFW_DEV_ENTRY(vendor, model) \
++{ \
++	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
++			  IEEE1394_MATCH_MODEL_ID | \
++			  IEEE1394_MATCH_SPECIFIER_ID | \
++			  IEEE1394_MATCH_VERSION, \
++	.vendor_id	= vendor,\
++	.model_id	= model, \
++	.specifier_id	= SPECIFIER_1394TA, \
++	.version	= VERSION_EFW, \
++}
++
+ static const struct ieee1394_device_id efw_id_table[] = {
+ 	SND_EFW_DEV_ENTRY(VENDOR_LOUD, MODEL_MACKIE_400F),
+ 	SND_EFW_DEV_ENTRY(VENDOR_LOUD, MODEL_MACKIE_1200F),
+diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
+index 2c0c7de8b824..c8d5879efe28 100644
+--- a/sound/firewire/fireworks/fireworks.h
++++ b/sound/firewire/fireworks/fireworks.h
+@@ -224,12 +224,4 @@ int snd_efw_get_multiplier_mode(unsigned int sampling_rate, unsigned int *mode);
+ 
+ int snd_efw_create_hwdep_device(struct snd_efw *efw);
+ 
+-#define SND_EFW_DEV_ENTRY(vendor, model) \
+-{ \
+-	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
+-			  IEEE1394_MATCH_MODEL_ID, \
+-	.vendor_id	= vendor,\
+-	.model_id	= model \
+-}
+-
+ #endif
 -- 
 2.30.2
 
