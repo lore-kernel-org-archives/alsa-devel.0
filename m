@@ -2,86 +2,55 @@ Return-Path: <SRS0=W3EJ=LF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E433C48BD1
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 07:59:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A7A6C4743D
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 08:00:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 58BD761027
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 07:59:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 58BD761027
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 94CA7613AE
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 08:00:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94CA7613AE
+Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E678718BE;
-	Fri, 11 Jun 2021 09:58:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E678718BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 13B6418C7;
+	Fri, 11 Jun 2021 09:59:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13B6418C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623398365;
-	bh=nX8S794/xchNP2et0g5fpFeSU6e2TKE/AekS9HFT/G4=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1623398432;
+	bh=ubkSQbsePueuMuAElvTM28q1OAUBybPD4/4sxOaWgAo=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QbwbZ4qv8igmbFM7NCVXOJ/q8S2FfxS0yw9PjSj5z6LCG0KEjUHVuuBno/jFiZpbc
-	 NfVqvl5dqw9/M6+eUHFQy0nezInPkdR4LU/TOs+UfuJBS4reJrqwzxxJk7V3PicgR0
-	 4+0cQ/FhcaNtg0VsTi1kw2Ppjo9OX5nRHn1x5zfc=
+	b=dOaj0mLD1rIJiBGnm793STDGOkXT6OZ9NEYx6q0VVjBdxtXTOjIosGKVTFb2BhoQ6
+	 NrW8CtueoCt1PeggdpEMfZ8geRYSmB+hux5OpfzRpsEv5D8uaPpPzTXs+s+OonDbGc
+	 Nyk0o7sL77Fev3bjjqXu3h/UZEzfcEX7lF2KcOlA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7F8AEF80212;
-	Fri, 11 Jun 2021 09:58:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AAEC4F80276;
+	Fri, 11 Jun 2021 09:59:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AA600F8026C; Fri, 11 Jun 2021 09:58:25 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 36418F80149
- for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2021 09:58:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36418F80149
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="welKPvzQ"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="5l4ug6p/"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id E60751FD2F;
- Fri, 11 Jun 2021 07:58:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1623398298; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=OvC9zI7eMQ0N/K/+1JTTbu7aEtmtInqhK9oXeNTwRxE=;
- b=welKPvzQAkbplKaCIypswrEDbQSfOE8orm/dZiG1s8e3DRDHMOsBEcfZJd1QKDiSQzJP4U
- SHhMf5KyGvQS2EDq5Hz18PoqnSbhNlI2wpaS6pt7zOimxarLa41yg8oRkp5EKmGs3oSHd0
- EOHt5VKSbqNuelsn+0rS747Pxb7GOLE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1623398298;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=OvC9zI7eMQ0N/K/+1JTTbu7aEtmtInqhK9oXeNTwRxE=;
- b=5l4ug6p/9Ax/VNBsKLJMgBKxjxI8PEWalTBN1pK42LAd/9IYQTxaIe816HstiK8impzaC8
- p/tW4PgaE2vUKgDA==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id E0534A3B84;
- Fri, 11 Jun 2021 07:58:18 +0000 (UTC)
-Date: Fri, 11 Jun 2021 09:58:18 +0200
-Message-ID: <s5hczss96jp.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/8] ASoC: SOF: power optimizations for HDaudio platforms
-In-Reply-To: <20210610205326.1176400-1-pierre-louis.bossart@linux.intel.com>
-References: <20210610205326.1176400-1-pierre-louis.bossart@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org
+ id 2C2BBF80212; Fri, 11 Jun 2021 09:59:39 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id BCA71F80212
+ for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2021 09:59:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCA71F80212
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1623398371258145094-webhooks-bot@alsa-project.org>
+References: <1623398371258145094-webhooks-bot@alsa-project.org>
+Subject: Add support for automatic attributes in Topology2.0
+Message-Id: <20210611075939.2C2BBF80212@alsa1.perex.cz>
+Date: Fri, 11 Jun 2021 09:59:39 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,67 +66,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 10 Jun 2021 22:53:18 +0200,
-Pierre-Louis Bossart wrote:
-> 
-> This patchset provides two optimizations that result in significant power
-> savings on Intel HDAudio platforms using SOF (Sound Open Firmware).
-> 
-> a) We previously prevented the Intel DSP from enabling the DMI_L1
-> capability to work-around issues with pause on capture streams. It
-> turns out that this also prevented the platform from entering high C
-> states in full-duplex usages such as videoconferencing - a rather
-> basic use case since the start of the pandemic. The support for
-> pause_push/release was already a bit controversial for Intel
-> platforms, in theory platforms should only enable PAUSE if they can
-> resume on the same sample, which is not the case on any Intel
-> platform. Since we didn't want to disable a capability that could
-> impact existing users, the suggestion is to optionally disable
-> pause_push/release at build time or via a kernel parameter, in which
-> case DMI_L1 is enabled. In practice very few applications make use of
-> pause_push/release so there should be a limited impact when disabling
-> this ALSA capability.
-> 
-> b) The use of the SPIB register also helps reduce power consumption,
-> though to a smaller degree than DMI_L1. This hardware capability is
-> however incompatible with userspace-initiated rewinds typically used
-> by PulseAudio. In the past (2015..2017) Intel suggested an API
-> extension to let applications disable rewinds. At the time the
-> feedback was that such a capability was too Intel-specific and SPIB
-> remained unused except for loading DSP code. We now see devices with
-> smaller batteries being released, and it's time to revisit Linux
-> support for SPIB to extend battery life. In this update the rewinds
-> are disabled either at build-time or via a kernel parameter. As
-> suggested by Takashi, a new SDNDRV_PCM_INFO flag is needed though to
-> make sure the appl_ptr value is provided to the driver through the
-> .ack callback. Distributions using PipeWire (Fedora34) and CRAS
-> (ChromeOS/Chromium) can safely enable this option. Distributions using
-> PulseAudio should probably avoid enabling it, although nothing is
-> really fundamentally broken if they do. While in theory volume updates
-> and mixing of notifications could be delayed, in practice
-> distributions use small ring buffers that make such delays difficult
-> to notice.
-> 
-> Again both of these updates are opt-in to avoid any impact on existing
-> solutions or users: someone updating their kernel source but using
-> 'make olddefconfig' will see the same results. Distributions that care
-> neither about pause_push/release or rewinds should enable both
-> options, in case of issues users will still be able to override
-> these build-time choices with a simple module parameter.
+alsa-project/alsa-utils pull request #97 was opened from ranj063:
 
-Hmm, in general it's not easy for distros to decide which kconfig to
-take because most of distros ship both PulseAuadio and pipweire.
-It's rather the runtime choice, even different for each user at
-starting a different DE session, hence a kconfig or a module config
-doesn't fit well.
+Add support for automatic attributes in Topology2.0 and also add support for processing objects that are simply used to
+update the parent object's private data.
 
-That said, it comes to the question about the severity of the change:
-how badly would behave if we disable the rewind?  If the influence is
-limited, distros can take it as a cost of the better power-saving
-(which is often preferred).  If PA's behavior change is significant,
-the option is way too dangerous, and it's hard to set as default.
-
-
-thanks,
-
-Takashi
+Request URL   : https://github.com/alsa-project/alsa-utils/pull/97
+Patch URL     : https://github.com/alsa-project/alsa-utils/pull/97.patch
+Repository URL: https://github.com/alsa-project/alsa-utils
