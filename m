@@ -8,80 +8,80 @@ X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4D49C48BDF
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 02:23:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 050E4C48BD1
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 02:27:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D96F660C3E
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 02:23:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D96F660C3E
+	by mail.kernel.org (Postfix) with ESMTPS id DE95661364
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 02:27:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE95661364
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 42F7B180D;
-	Fri, 11 Jun 2021 04:22:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42F7B180D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45B991813;
+	Fri, 11 Jun 2021 04:26:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45B991813
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623378215;
-	bh=VJJU/fMw5bQhr/bb0mvaJZ77AQmkNAvOg0+Tf/jKDx8=;
+	s=default; t=1623378420;
+	bh=xdDhcXcyITYzCgL30PKqNO2dx+lPbs1pBRJ95LB/rI0=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZzramcZmITiNY4OTelJtxCbEMY86vH6UR54Z/sOLQiGbw2KazS0dCeLwmnBIzi/K+
-	 BnonU/2pTf9kqqZq8LH2LunxMxG/RpgY6TUeRiZy1UuSxauPNft3IX0rDt6ERGoTEM
-	 +H4in4e58ce9N5QxttECAmKAO1dng8CnNI6EUxAQ=
+	b=DVfOY9LTITWyXbrCWQq0gCIJbAFwJwGRvVGiUr7sdUGBQDkQzByV0gkyciWeUGi0o
+	 B3XO8csvhtX+f2MojRyxfvV/l1gVkyQGHRejwymac74sPowSnRtUmvpIFBOp/F9VwH
+	 m3sHoEBHIyCreywCzzT4unp9fg2suzjFQCJ8jy9g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D54BEF80212;
-	Fri, 11 Jun 2021 04:22:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C8306F80212;
+	Fri, 11 Jun 2021 04:26:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 898B8F8026C; Fri, 11 Jun 2021 04:22:42 +0200 (CEST)
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com
- [IPv6:2607:f8b0:4864:20::732])
+ id 93486F8026C; Fri, 11 Jun 2021 04:26:08 +0200 (CEST)
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com
+ [IPv6:2607:f8b0:4864:20::f2b])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0A31FF80149
- for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2021 04:22:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A31FF80149
+ by alsa1.perex.cz (Postfix) with ESMTPS id 143FBF800FB
+ for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2021 04:26:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 143FBF800FB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="nJCere7L"
-Received: by mail-qk1-x732.google.com with SMTP id c9so3201877qkm.0
- for <alsa-devel@alsa-project.org>; Thu, 10 Jun 2021 19:22:35 -0700 (PDT)
+ header.b="I2eukyki"
+Received: by mail-qv1-xf2b.google.com with SMTP id im10so14936427qvb.3
+ for <alsa-devel@alsa-project.org>; Thu, 10 Jun 2021 19:26:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=CTFlovwtrqxUOZ0WoQulGA+S/cNwfLiqBtlEH+BQzqQ=;
- b=nJCere7LOSrhMIfWD9e3SYHFAobt75P+qmj3bZ8wly9ssO30SIjc03f5DOKJZBgIrA
- E1CRT2L2mbWltL8t/yPOo1LFACAc56vOI2yhtRTYFHMnO1tlshUUAkMo/RCMCTWukNAx
- p4jf2YOSVxJkWYq/J1pj5v80b6kvfUsdHzounC04d8n6tv2dT5bTCioZqMeukW6Jhp5t
- vPA9GRhD2pNsr23B0/yiT1HF+mVB/J6gG4E9zuhEXGUvJbg4X4GdhE9/6hiWSmOihT1s
- tF9QNNLxQU4+YpiG3PxT4qDlp7LH/F1LjfsFcEu4eZh9EWvirF6S2KVBZMDC0Pf2mWZW
- tFZQ==
+ :cc; bh=7FsXY/TbSGUUDENZzS6CIpHdUvNAOKNKXgpKq5u4rXU=;
+ b=I2eukykiphXFQViXcXYmNXYcayHQieCzV49bgZWYLDdkww6G3d2j0qfqzxreHlnYSI
+ v/HEDSDf02kjpLsUckDsFqDTQoVG0g4s04oX/4cCJ+iN8hs/Ar1nRZ+2CaodIEbP/CQR
+ fBL9nAbihtMYVpgNmymE0y4FaiGGHXBr5JQipolDQ9y1duTTcuOn1biEoOsaWsk4ts0H
+ oBQkD6Wvsz/4nkbP9EEfgsDmbAwS0Voq6kY6jTBaCKZBdIGolFuD8IdP0ZJF3nvQq/sa
+ zglPT+b/jLnTA8hkzYcjo6OcDop+++rp4rdNR5Tk3ceiqO8ntyN9mf6+Ae87R3jMbJI4
+ +t+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=CTFlovwtrqxUOZ0WoQulGA+S/cNwfLiqBtlEH+BQzqQ=;
- b=ey2+S1qffdOkQPcQJdAFvHiu6N+VeUKy8/lGWxxjeLc4pJX6RvSepV37Enacyf8MM8
- NMAEiKJPUdTfdK1SmyBlHoUgag8Kk79RwGw0aibSqheqUyoR0pBLcgR66z5d9j/bCCmQ
- jMKIAapF+xNzs8Kr5jxnxd/qexTkZOqScv9DeesmWPU3xA6lzEgvYDznTokbcJmK+w0M
- ebYyjJQxCEEjMwfY88TEBJpAy5Q0kNZCkXYZ3ftWB3ctMQKfQwr0NGp71ouIns/+pNSu
- BPXfACiYCkVlDaRA7FL+OBWR/uQD6PWPZsvHE6UJ2W4aXSi64utG0Kz+7EE9PSfOzyE1
- ak8g==
-X-Gm-Message-State: AOAM533FEeHLyU8hhl5yET5/DEp5W7e4/3jP4VEATrEQAoj10sm1T91/
- Tm4tpnElVYW36p6vYgqhJma9bxQz5N7ciK4RcPo=
-X-Google-Smtp-Source: ABdhPJwVE3MlwWUimCYQvJayxGP7hU75ji8nembIFoLu6+sidUiX6/wx3tIsymXPfJaTimO7t79BV4a5rJbWDLVHbIc=
-X-Received: by 2002:a37:af84:: with SMTP id y126mr1725374qke.450.1623378153832; 
- Thu, 10 Jun 2021 19:22:33 -0700 (PDT)
+ bh=7FsXY/TbSGUUDENZzS6CIpHdUvNAOKNKXgpKq5u4rXU=;
+ b=C7Bht0XjZGk4MQVubE6BIlwXL/2nsT5AEckXBop9NHeBGW4RGv8ZwRA/wnLolLxsyI
+ rWfxoRj4S5FYYyGYKtKR4mswn4rVRHAr50qrPiLHK261nFmo9NhjZSRQogtNPyg+9s17
+ tki97NYh7uCM3kF6klRc/40bTbMHfvOCvS/Kl1Kd2Abt68fKCOF43XrjhbGUWFmXU83C
+ MuuTN8JdTcG8lFcp2XCDwbZmD5zz4xda3bKudax1FEk+nmqroS857oJnm73P84GIPrdV
+ An5pMfmQJFAB/chCtpXpHT/bLF6i2FFCvpoNSH8vAxym+EQV+aErJXKctL93s7wiGT4R
+ ejEw==
+X-Gm-Message-State: AOAM533+426QPqafFembxbt1w91gdaghWEhNL0FPbrKrpgzOS2i5YV0s
+ c/WOB5UqIbRz+Rhj5y0x2XuTl2YWo8oQq2wkuNw=
+X-Google-Smtp-Source: ABdhPJxT+CsEUPgmUbbvvdovqN50qvrZPZs4VXtBZa26L9aij/35ZW5rkX2cu6uMHZw3aT20weyVwPl2f64lDccacTM=
+X-Received: by 2002:ad4:576c:: with SMTP id r12mr2699884qvx.28.1623378357051; 
+ Thu, 10 Jun 2021 19:25:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210610125052.1280-1-hbut_tan@163.com>
-In-Reply-To: <20210610125052.1280-1-hbut_tan@163.com>
+References: <20210610040037.1064-1-hbut_tan@163.com>
+In-Reply-To: <20210610040037.1064-1-hbut_tan@163.com>
 From: Shengjiu Wang <shengjiu.wang@gmail.com>
-Date: Fri, 11 Jun 2021 10:22:23 +0800
-Message-ID: <CAA+D8AOHdArkc2mM--4yLLpGyEzfZb241MWj+10JjezXY_-UZw@mail.gmail.com>
-Subject: Re: [PATCH] ASoC:fsl_easrc:Remove superfluous error message around
+Date: Fri, 11 Jun 2021 10:25:46 +0800
+Message-ID: <CAA+D8AOseYcjf6erSObjkpAhZGJW0VGio-T91kFZ7q0f3PhQPA@mail.gmail.com>
+Subject: Re: [PATCH] ASoC:fsl_spdif:Remove superfluous error message around
  platform_get_irq()
 To: Zhongjun Tan <hbut_tan@163.com>
 Content-Type: text/plain; charset="UTF-8"
@@ -106,39 +106,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Jun 10, 2021 at 8:52 PM Zhongjun Tan <hbut_tan@163.com> wrote:
+On Thu, Jun 10, 2021 at 12:02 PM Zhongjun Tan <hbut_tan@163.com> wrote:
 >
 > From: Tan Zhongjun <tanzhongjun@yulong.com>
 >
-> Clean up the check for irq.dev_err is superfluous as platform_get_irq()
-> already prints an error.Remove curly braces to confirm to styling
-> requirements.
+> The platform_get_irq() prints error message telling that interrupt is
+> missing, hence there is no need to duplicated that message.
 >
 > Signed-off-by: Tan Zhongjun <tanzhongjun@yulong.com>
 
 Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
 
 > ---
->  sound/soc/fsl/fsl_easrc.c | 4 +---
+>  sound/soc/fsl/fsl_spdif.c | 4 +---
 >  1 file changed, 1 insertion(+), 3 deletions(-)
 >
-> diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
-> index b1765c7d3bcd..25747433916e 100644
-> --- a/sound/soc/fsl/fsl_easrc.c
-> +++ b/sound/soc/fsl/fsl_easrc.c
-> @@ -1901,10 +1901,8 @@ static int fsl_easrc_probe(struct platform_device *pdev)
->         }
+> diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+> index 2a76714eb8e6..29cefd459241 100644
+> --- a/sound/soc/fsl/fsl_spdif.c
+> +++ b/sound/soc/fsl/fsl_spdif.c
+> @@ -1368,10 +1368,8 @@ static int fsl_spdif_probe(struct platform_device *pdev)
 >
->         irq = platform_get_irq(pdev, 0);
-> -       if (irq < 0) {
-> -               dev_err(dev, "no irq for node %pOF\n", np);
-> +       if (irq < 0)
->                 return irq;
-> -       }
+>         for (i = 0; i < spdif_priv->soc->interrupts; i++) {
+>                 irq = platform_get_irq(pdev, i);
+> -               if (irq < 0) {
+> -                       dev_err(&pdev->dev, "no irq for node %s\n", pdev->name);
+> +               if (irq < 0)
+>                         return irq;
+> -               }
 >
->         ret = devm_request_irq(&pdev->dev, irq, fsl_easrc_isr, 0,
->                                dev_name(dev), easrc);
+>                 ret = devm_request_irq(&pdev->dev, irq, spdif_isr, 0,
+>                                        dev_name(&pdev->dev), spdif_priv);
 > --
 > 2.17.1
->
 >
