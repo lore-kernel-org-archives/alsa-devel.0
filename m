@@ -2,68 +2,65 @@ Return-Path: <SRS0=W3EJ=LF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2133C48BD1
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 09:36:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21595C48BE0
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 09:37:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1C31960234
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 09:36:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C31960234
+	by mail.kernel.org (Postfix) with ESMTPS id 9E1C5613D0
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 09:37:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E1C5613D0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 93C2C18FC;
-	Fri, 11 Jun 2021 11:35:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93C2C18FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 34E4B18F1;
+	Fri, 11 Jun 2021 11:36:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34E4B18F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623404207;
-	bh=MGet28kUg9dIvtoMz9YbxxOf47n/cFL/UVo4XNtUL00=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=WqKJ9FUhQJ9McxZOClvv8Nph55b3g3de2iinVCn8+sfluKcuD6S0gVoLaKFUmw2In
-	 ZOUFWPs/hVs9yEmoL0iJBuWlreMQEaPiCU8y/J7HPx05YmjQZlyj4v788k+gucIjeA
-	 668ev0yJcjF5rmnSoPQPZz2O6gdxHI2f/Aanet3Q=
+	s=default; t=1623404238;
+	bh=6/MOiOeu5Ao8hbrvJMYICh6Na4IOmKyJE4pRIxPNUJE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=C5hymXuBRqlgbFCM4+Tw2j2+axWpH3sUJ7bS7Crw9uoy8PsYS+atKtlAFa5D3/NhC
+	 HqIHAd+ucbfRNi+NEqSSBwswDvGMRloTLukrQGoZkpRtaM+mGtt2XmSsKlMOE94X+M
+	 +kejNqw93QrgAPkAYlnGf+wlfRNDh1v1uDubAhA8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 112D1F804FA;
-	Fri, 11 Jun 2021 11:33:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BFFEEF804FD;
+	Fri, 11 Jun 2021 11:33:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0B156F804ED; Fri, 11 Jun 2021 11:33:19 +0200 (CEST)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+ id 17D05F804F2; Fri, 11 Jun 2021 11:33:17 +0200 (CEST)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9B559F80276
- for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2021 11:32:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B559F80276
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G1bCD0Sgkz6w0y;
- Fri, 11 Jun 2021 17:29:28 +0800 (CST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DBCFCF802A0
+ for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2021 11:32:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBCFCF802A0
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+ by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G1b932bBMz1BGvt;
+ Fri, 11 Jun 2021 17:27:35 +0800 (CST)
 Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
  dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 11 Jun 2021 17:32:33 +0800
+ 15.1.2176.2; Fri, 11 Jun 2021 17:32:29 +0800
 Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
  (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 11 Jun
- 2021 17:32:33 +0800
+ 2021 17:32:29 +0800
 From: Yang Yingliang <yangyingliang@huawei.com>
 To: <linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
  <alsa-devel@alsa-project.org>
-Subject: [PATCH -next 9/9] ASoC: fsl_xcvr: check return value after calling
- platform_get_resource_byname()
-Date: Fri, 11 Jun 2021 17:36:26 +0800
-Message-ID: <20210611093626.579176-10-yangyingliang@huawei.com>
+Subject: [PATCH -next 0/9] ASoC: fsl: Use
+ devm_platform_get_and_ioremap_resource()
+Date: Fri, 11 Jun 2021 17:36:17 +0800
+Message-ID: <20210611093626.579176-1-yangyingliang@huawei.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210611093626.579176-1-yangyingliang@huawei.com>
-References: <20210611093626.579176-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -87,29 +84,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-It will cause null-ptr-deref if platform_get_resource_byname() returns NULL,
-we need check the return value.
+patch #1 ~ #8:
+  Use devm_platform_get_and_ioremap_resource()
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- sound/soc/fsl/fsl_xcvr.c | 4 ++++
- 1 file changed, 4 insertions(+)
+patch #9
+  check return value of platform_get_resource_byname()
 
-diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
-index df7c189d97dd..2e9061c5ed74 100644
---- a/sound/soc/fsl/fsl_xcvr.c
-+++ b/sound/soc/fsl/fsl_xcvr.c
-@@ -1202,6 +1202,10 @@ static int fsl_xcvr_probe(struct platform_device *pdev)
- 
- 	rx_res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "rxfifo");
- 	tx_res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "txfifo");
-+	if (!rx_res || !tx_res) {
-+		dev_err(dev, "Invalid resource\n");
-+		return -EINVAL;
-+	}
- 	xcvr->dma_prms_rx.chan_name = "rx";
- 	xcvr->dma_prms_tx.chan_name = "tx";
- 	xcvr->dma_prms_rx.addr = rx_res->start;
+Yang Yingliang (9):
+  ASoC: fsl_asrc: Use devm_platform_get_and_ioremap_resource()
+  ASoC: fsl_aud2htx: Use devm_platform_get_and_ioremap_resource()
+  ASoC: fsl_easrc: Use devm_platform_get_and_ioremap_resource()
+  ASoC: fsl_esai: Use devm_platform_get_and_ioremap_resource()
+  ASoC: fsl_micfil: Use devm_platform_get_and_ioremap_resource()
+  ASoC: fsl_sai: Use devm_platform_get_and_ioremap_resource()
+  ASoC: fsl_spdif: Use devm_platform_get_and_ioremap_resource()
+  ASoC: fsl_ssi: Use devm_platform_get_and_ioremap_resource()
+  ASoC: fsl_xcvr: check return value after calling
+    platform_get_resource_byname()
+
+ sound/soc/fsl/fsl_asrc.c    | 3 +--
+ sound/soc/fsl/fsl_aud2htx.c | 3 +--
+ sound/soc/fsl/fsl_easrc.c   | 3 +--
+ sound/soc/fsl/fsl_esai.c    | 3 +--
+ sound/soc/fsl/fsl_micfil.c  | 3 +--
+ sound/soc/fsl/fsl_sai.c     | 3 +--
+ sound/soc/fsl/fsl_spdif.c   | 3 +--
+ sound/soc/fsl/fsl_ssi.c     | 3 +--
+ sound/soc/fsl/fsl_xcvr.c    | 4 ++++
+ 9 files changed, 12 insertions(+), 16 deletions(-)
+
 -- 
 2.25.1
 
