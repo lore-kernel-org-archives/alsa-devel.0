@@ -2,107 +2,88 @@ Return-Path: <SRS0=W3EJ=LF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E00BAC48BE0
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 09:41:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 850D9C48BE0
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 09:56:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 651C1613CF
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 09:41:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 651C1613CF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
+	by mail.kernel.org (Postfix) with ESMTPS id 3ED99613F3
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 09:56:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3ED99613F3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 09DCA193B;
-	Fri, 11 Jun 2021 11:40:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09DCA193B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 238D0186B;
+	Fri, 11 Jun 2021 11:55:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 238D0186B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623404474;
-	bh=IufTmV0BMdSJwpe7aunH79inBcHXGHi17GzE3wPe7es=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1623405385;
+	bh=3wG/TCQZ3O54F6NXItDwStkCj4fcCJIrjjz0TqVpLpY=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ICIIB7/Qqx+uQVN5hB70whr9biHVY2lC5sSW95wh+T9aTD8Enom8M5MesFdSf7QFn
-	 SsxifZBeQS3+M/N0ltoqZa2pqBfULsEVUBA7ohGluw/1KwSfJtSIOi7UxyckKbhweT
-	 VqTf6dN2NDC/kkVpjIQgngxj92GVoqspEvdTgPrw=
+	b=SGcnZ1WPPfRxCv6Ki8DIHVlb1da+5zIyCS54yNTjZUJ4fz350xhk5Y3HGDVImaj0Q
+	 dF523MmNKU3R3TFMyGArQ25l1XfQXZPgkRR6HKIxzIlcOv4KyaY+X0xXJCZpTQj0O6
+	 7pFmkHT+7IAuZLocT0DL+zJSes5ggRuwlPAHjkaE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3F9EF804E6;
-	Fri, 11 Jun 2021 11:38:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B2CFFF80149;
+	Fri, 11 Jun 2021 11:55:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F12C7F804CF; Fri, 11 Jun 2021 11:37:54 +0200 (CEST)
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com
- [64.147.123.19])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 1E5A1F80149; Fri, 11 Jun 2021 11:55:33 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 11FB8F8026C
- for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2021 11:37:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11FB8F8026C
+ by alsa1.perex.cz (Postfix) with ESMTPS id DEB52F80149
+ for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2021 11:55:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DEB52F80149
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="FH5Fpo5P"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="jauythSI"
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailout.west.internal (Postfix) with ESMTP id 5FFCB1AF0;
- Fri, 11 Jun 2021 05:37:46 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute5.internal (MEProxy); Fri, 11 Jun 2021 05:37:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=v61mwo6enk6eI
- JzCYspnEl9PtoberoQfSu8atFP9GFM=; b=FH5Fpo5P/UTmZ1upMMw4wAf66Vu9y
- krF+xmS+J7NbAGGHsKkvgY5nvY2cssT0hiHXD4+iezOGlHEvZTaThCOopB/fxk4a
- 4DXTNBwv8GlnYsUg3ARgHJoK1yvmRA7GXf4BHXw+gRBC71X0RO4+sYcEoeKBsHXi
- Sd/tUDEu1zsgCFydxbKAyVvlYglWkl4N3lfuUO93qYVIuYxcq6BiVmIGMwLo3gKG
- gqDSRFuRBhCyhuCxj0q2+oKxIJfXUZxiaM8qqLmtJ0Dy2W9NY9HqZn0Yw0IqtIWf
- EAtbxDmSEBDBf1//RPXH2u0flvN0N7OvA0gxP/ciXCuNCi//q2zxQGMUA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-transfer-encoding:date:from
- :in-reply-to:message-id:mime-version:references:subject:to
- :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm3; bh=v61mwo6enk6eIJzCYspnEl9PtoberoQfSu8atFP9GFM=; b=jauythSI
- /+352D4e7ODFS5O2wzeahnPEsX7fShycCb3ef+srwkiVcu/cTrwaOZWIlBiks9hm
- EIjZVC04c1acTAOE07l8gnb712fHT7geCxZ53kDT4fRNJMDQSCTymdC0RtPXH2gG
- L2492MrqSYCMDtqh0EclaQUeD6KGpGrfuUe610Vx04yIUQQJgvwrzRBJhGbXxxS4
- 3WMe6IjO91ZZjoNr8b4Ox8EbLyyvWqcil0Y8PukrU4xKcvpd15XAPI5XShkASxLP
- q5InTtpPq5yd5Z78Q2phYimlEX5Fyen/AeiYgZWylWK9umHkdkGawZWwALPRTY8y
- hJa5zmLC8hbdGw==
-X-ME-Sender: <xms:6S7DYDe81Yzctunm7m-qwJrvcf67M0l37yLhj7cGerYj4S_jfNDsyw>
- <xme:6S7DYJOpxHr6UAiMJ8aCslHooIJrwQnDJLCsAGsXnHtj6cR8yYJ0QEJQPpb1yoVBW
- 4l0lj53VM0Yt0x_9c4>
-X-ME-Received: <xmr:6S7DYMid-rqnW7FSMULWEAT8GY1To1y-vf1fmeRy6-rzAPnBFGdrkeb6oMwWkFuuqPrA_C4_9w1uWycvMAdKMPiHXowa4YCp-nQ6sSFMbcgue0DN04RM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedujedgudejucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
- dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
- shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepveefffefke
- etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecuvehluhhsthgv
- rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihessh
- grkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:6S7DYE9Kuu8ItrREdhxyXn72FMWXV9Srzprm-TTilVRHTEK7MQTAHw>
- <xmx:6S7DYPthLLBJlndQoXg_usRQRgmkX4zMuKSjxy0SG9gSnBAg_buEmQ>
- <xmx:6S7DYDHWN2HEpn6UKwtJlJkk5mJqxDrOj6OGk_N-mcEH3y0UmSm5gA>
- <xmx:6i7DYIWw7ITu8NsXT9vwtHX72WMmERISGrBSc3dTGzUEPjaZP97cdw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 11 Jun 2021 05:37:44 -0400 (EDT)
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: tiwai@suse.de
-Subject: [PATCH 5/6] ALSA: bebob: code refactoring for M-Audio models
-Date: Fri, 11 Jun 2021 18:37:29 +0900
-Message-Id: <20210611093730.78254-6-o-takashi@sakamocchi.jp>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210611093730.78254-1-o-takashi@sakamocchi.jp>
-References: <20210611093730.78254-1-o-takashi@sakamocchi.jp>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="ehhH3ksO"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="spGexavE"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 3EBB321987;
+ Fri, 11 Jun 2021 09:55:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1623405323; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=VWlAXvt7ukm5oVPggCsdY4FUG1gcQcyeBBwOyXCsnkU=;
+ b=ehhH3ksOHJ6jBK3pFCfkD8fqdfkSwaz6DHQcdpZTifgXfkINF+PBENIisI98nPvAQAxgqd
+ UkGPQZlcZtDDTuw2B7No3nKk9jjvRTUKj3Q/XTnjVbOkw+TFSkPEcHCt9UhXEdCtMzZzxU
+ ztNh93plDA80SfHzhetDxLrjKe0ZgtU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1623405323;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=VWlAXvt7ukm5oVPggCsdY4FUG1gcQcyeBBwOyXCsnkU=;
+ b=spGexavE9X9LDmSSjUcIaA02qGLPU2QkWXUEmwQOD0eVeY6X8andvIdYwNGaZF+KJppU2J
+ jTzTPLX9PjiIoXCw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 2F8EFA3B9F;
+ Fri, 11 Jun 2021 09:55:23 +0000 (UTC)
+Date: Fri, 11 Jun 2021 11:55:23 +0200
+Message-ID: <s5hr1h87mk4.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Muni Sekhar <munisekharrms@gmail.com>
+Subject: Re: SNDRV_PCM_IOCTL_READI_FRAMES returns EIO
+In-Reply-To: <CAHhAz+isS-TSMNhyCH_L3Vvc3ah+5NusFu1pBk0Z=Bepcst0aA@mail.gmail.com>
+References: <CAHhAz+iW30L0xsVaKD5V4P412L-hQ_5zZ-byd7qSW-MpSZB8AA@mail.gmail.com>
+ <s5heed896xl.wl-tiwai@suse.de>
+ <CAHhAz+isS-TSMNhyCH_L3Vvc3ah+5NusFu1pBk0Z=Bepcst0aA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -118,104 +99,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-For M-Audio FireWire 410, the value of immediate entry for vendor in unit
-directory is the value for BridgeCo. AG OUI. It seems that M-Audio uses
-initial settings as is for its product.
+On Fri, 11 Jun 2021 10:43:01 +0200,
+Muni Sekhar wrote:
+> 
+> On Fri, Jun 11, 2021 at 1:19 PM Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > On Fri, 11 Jun 2021 09:02:44 +0200,
+> > Muni Sekhar wrote:
+> > >
+> > > Hi all,
+> > >
+> > > I am using a USB sound card(snd-usb-audio), and it fails while doing
+> > > the audio recording "arecord: pcm_read:2032: read error: Input/output
+> > > error".
+> > >
+> > >  I noticed recording(arecord) audio data on a USB sound card fails at
+> > > SNDRV_PCM_IOCTL_READI_FRAMES is giving EIO.
+> > >
+> > > Can someone please clarify when the kernel returns EIO for Ioctl
+> > > SNDRV_PCM_IOCTL_READI_FRAMES? and is there a workaround for this?
+> >
+> > It's a problem of either your device (e.g. USB device firmware) or the
+> > kernel.  Do you get any relevant kernel error messages?
+> dmesg log does not indicate any such error messages when arecord fails.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/bebob/bebob.c | 34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+Then it's likely a debug print in PCM core, which is suppressed as
+default.  You can enable it via dyndbg stuff.  It won't help much for
+diagnose at this stage, though.
 
-diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index 6784ab2cb678..9f8df57c1e8b 100644
---- a/sound/firewire/bebob/bebob.c
-+++ b/sound/firewire/bebob/bebob.c
-@@ -54,8 +54,7 @@ static DECLARE_BITMAP(devices_used, SNDRV_CARDS);
- #define VEN_TERRATEC	0x00000aac
- #define VEN_YAMAHA	0x0000a0de
- #define VEN_FOCUSRITE	0x0000130e
--#define VEN_MAUDIO1	0x00000d6c
--#define VEN_MAUDIO2	0x000007f5
-+#define VEN_MAUDIO	0x00000d6c
- #define VEN_DIGIDESIGN	0x00a07e
- 
- #define MODEL_FOCUSRITE_SAFFIRE_BOTH	0x00000000
-@@ -159,7 +158,7 @@ check_audiophile_booted(struct fw_unit *unit)
- 
- static int detect_quirks(struct snd_bebob *bebob, const struct ieee1394_device_id *entry)
- {
--	if (entry->vendor_id == VEN_MAUDIO1) {
-+	if (entry->vendor_id == VEN_MAUDIO) {
- 		switch (entry->model_id) {
- 		case MODEL_MAUDIO_PROFIRELIGHTBRIDGE:
- 			// M-Audio ProFire Lightbridge has a quirk to transfer packets with
-@@ -192,7 +191,7 @@ static int bebob_probe(struct fw_unit *unit, const struct ieee1394_device_id *en
- 	if (entry->vendor_id == VEN_FOCUSRITE &&
- 	    entry->model_id == MODEL_FOCUSRITE_SAFFIRE_BOTH)
- 		spec = get_saffire_spec(unit);
--	else if (entry->vendor_id == VEN_MAUDIO1 &&
-+	else if (entry->vendor_id == VEN_MAUDIO &&
- 		 entry->model_id == MODEL_MAUDIO_AUDIOPHILE_BOTH &&
- 		 !check_audiophile_booted(unit))
- 		spec = NULL;
-@@ -200,7 +199,8 @@ static int bebob_probe(struct fw_unit *unit, const struct ieee1394_device_id *en
- 		spec = (const struct snd_bebob_spec *)entry->driver_data;
- 
- 	if (spec == NULL) {
--		if (entry->vendor_id == VEN_MAUDIO1 || entry->vendor_id == VEN_MAUDIO2)
-+		// To boot up M-Audio models.
-+		if (entry->vendor_id == VEN_MAUDIO || entry->vendor_id == VEN_BRIDGECO)
- 			return snd_bebob_maudio_load_firmware(unit);
- 		else
- 			return -ENODEV;
-@@ -280,7 +280,7 @@ static int bebob_probe(struct fw_unit *unit, const struct ieee1394_device_id *en
- 	if (err < 0)
- 		goto error;
- 
--	if (entry->vendor_id == VEN_MAUDIO1 &&
-+	if (entry->vendor_id == VEN_MAUDIO &&
- 	    (entry->model_id == MODEL_MAUDIO_FW1814 || entry->model_id == MODEL_MAUDIO_PROJECTMIX)) {
- 		// This is a workaround. This bus reset seems to have an effect to make devices
- 		// correctly handling transactions. Without this, the devices have gap_count
-@@ -443,26 +443,26 @@ static const struct ieee1394_device_id bebob_id_table[] = {
- 	/* Focusrite, Saffire(no label and LE) */
- 	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, MODEL_FOCUSRITE_SAFFIRE_BOTH,
- 			    &saffire_spec),
--	/* M-Audio, Firewire 410 */
--	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO2, 0x00010058, NULL),	/* bootloader */
--	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO2, 0x00010046, &maudio_fw410_spec),
-+	// M-Audio, Firewire 410. The vendor field is left as BridgeCo. AG.
-+	SND_BEBOB_DEV_ENTRY(VEN_BRIDGECO, 0x00010058, NULL),
-+	SND_BEBOB_DEV_ENTRY(VEN_BRIDGECO, 0x00010046, &maudio_fw410_spec),
- 	/* M-Audio, Firewire Audiophile */
--	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, MODEL_MAUDIO_AUDIOPHILE_BOTH,
-+	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO, MODEL_MAUDIO_AUDIOPHILE_BOTH,
- 			    &maudio_audiophile_spec),
- 	/* M-Audio, Firewire Solo */
--	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x00010062, &maudio_solo_spec),
-+	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO, 0x00010062, &maudio_solo_spec),
- 	/* M-Audio, Ozonic */
--	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x0000000a, &maudio_ozonic_spec),
-+	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO, 0x0000000a, &maudio_ozonic_spec),
- 	/* M-Audio NRV10 */
--	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x00010081, &maudio_nrv10_spec),
-+	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO, 0x00010081, &maudio_nrv10_spec),
- 	/* M-Audio, ProFireLightbridge */
--	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, MODEL_MAUDIO_PROFIRELIGHTBRIDGE, &spec_normal),
-+	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO, MODEL_MAUDIO_PROFIRELIGHTBRIDGE, &spec_normal),
- 	/* Firewire 1814 */
--	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x00010070, NULL),	/* bootloader */
--	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, MODEL_MAUDIO_FW1814,
-+	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO, 0x00010070, NULL),	/* bootloader */
-+	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO, MODEL_MAUDIO_FW1814,
- 			    &maudio_special_spec),
- 	/* M-Audio ProjectMix */
--	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, MODEL_MAUDIO_PROJECTMIX,
-+	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO, MODEL_MAUDIO_PROJECTMIX,
- 			    &maudio_special_spec),
- 	/* Digidesign Mbox 2 Pro */
- 	SND_BEBOB_DEV_ENTRY(VEN_DIGIDESIGN, 0x0000a9, &spec_normal),
--- 
-2.30.2
+> Is there a way to prove it as a USB device firmware issue or kernel issue?
 
+You can check strace output, for example.  The PCM core is supposed to
+be bug-free regarding this, so it's about USB-audio driver, and the
+problem is specific to your device (other USB-audio devices work),
+hence it's very likely a firmware problem.
+
+> Please find the alsamixer output in the attached file alsamixer_output.png file.
+
+The mixer output has nothing to do with the PCM problem.
+
+
+Takashi
