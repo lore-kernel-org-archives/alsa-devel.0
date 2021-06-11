@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 143F8C48BD1
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 07:33:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45105C48BD1
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 07:33:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7178E61364
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 07:33:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7178E61364
+	by mail.kernel.org (Postfix) with ESMTPS id EFCE461364
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 07:33:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EFCE461364
 Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D9A17186E;
-	Fri, 11 Jun 2021 09:32:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9A17186E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 84ED318B7;
+	Fri, 11 Jun 2021 09:32:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84ED318B7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623396806;
-	bh=qluACuDz7PYLit6jsSkAahyx2ue0G6DphQScMUuyxl0=;
+	s=default; t=1623396811;
+	bh=2+ypJyTREljnVjS0Z2b730PP2XEs/ES40JbJetUwtIY=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NhaJrFG27hlwXT/sh08QGQoFA0mQLiiqSbB8SHimpl2nItmXDjBmUFp+fyfzxH1ks
-	 CF+w9dYIlYci8F5xPGLs53pw3xqioGnQt4xtb4+mzkwsuag4hu67567AqXztktIqPy
-	 K6VuDBzdTBJJr5BT8md7UXaeU/Tz9sQdI8cRZzwM=
+	b=j/ZVhrSIC/ErAQb0hQ+hswXqXMIwhEliSWzWK9Yq4c00GpwPhTITrDiLXkXOg86WZ
+	 9i3y+qHG21OX+niMCUeHce8b+vDYj3qBfvPUFCuMDr8pkk/g9Ctjwuutb70y99Snsl
+	 1EeHmbRrHCXC/ATIcH6rvAIraC3nmMApkntEWutA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 623BEF8027C;
-	Fri, 11 Jun 2021 09:31:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9DCBEF802DF;
+	Fri, 11 Jun 2021 09:32:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9A3F2F8026C; Fri, 11 Jun 2021 09:31:44 +0200 (CEST)
+ id B3BB7F804BD; Fri, 11 Jun 2021 09:32:24 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 5118CF80149
- for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2021 09:31:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5118CF80149
+ by alsa1.perex.cz (Postfix) with ESMTP id 7CF08F802DF
+ for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2021 09:32:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CF08F802DF
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1623396696780062914-webhooks-bot@alsa-project.org>
-References: <1623396696780062914-webhooks-bot@alsa-project.org>
+In-Reply-To: <1623396742125567913-webhooks-bot@alsa-project.org>
+References: <1623396742125567913-webhooks-bot@alsa-project.org>
 Subject: ALSA lib pcm_dmix.c:1063:(snd_pcm_dmix_open) unable to create IPC
  semaphore
-Message-Id: <20210611073144.9A3F2F8026C@alsa1.perex.cz>
-Date: Fri, 11 Jun 2021 09:31:44 +0200 (CEST)
+Message-Id: <20210611073224.B3BB7F804BD@alsa1.perex.cz>
+Date: Fri, 11 Jun 2021 09:32:24 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,6 +77,7 @@ alsa info:
 
 asound.conf:
 
+```
 pcm.dmixer {
     type dmix
     ipc_key 1024
@@ -95,11 +96,14 @@ pcm.dmixer {
         1 1
     }
 }
-
+```
 
 
 test cmd:
+
+```
 arecord -f dat | aplay -f dat -D plug:dmixer
+```
 
 Issue URL     : https://github.com/alsa-project/alsa-lib/issues/153
 Repository URL: https://github.com/alsa-project/alsa-lib
