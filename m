@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19E5DC48BE0
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 09:41:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E00BAC48BE0
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 09:41:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8204C613CF
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 09:41:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8204C613CF
+	by mail.kernel.org (Postfix) with ESMTPS id 651C1613CF
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jun 2021 09:41:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 651C1613CF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2C7211937;
-	Fri, 11 Jun 2021 11:40:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C7211937
+	by alsa0.perex.cz (Postfix) with ESMTPS id 09DCA193B;
+	Fri, 11 Jun 2021 11:40:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09DCA193B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623404459;
-	bh=tWWzFWkQoilsn19hZjvlIlDlGcOFXhvl2Qt66A9RJiM=;
+	s=default; t=1623404474;
+	bh=IufTmV0BMdSJwpe7aunH79inBcHXGHi17GzE3wPe7es=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Fcl4cZpjXEyhgZL4ZoKjH4XjfOhX7pj+7N++B8p8iO1EnM2kGiGAzPm1MP4A/NOrX
-	 EnUUI3fwU5GQOd4rCkE3mUkHkiy+md4nvietiWO4q1ZpIDXT/BslVn9rB3L0THB7u2
-	 fKJ0BxV6o0P9W6mLrp/NLweM4kgjwNS6Mz8vB+fg=
+	b=ICIIB7/Qqx+uQVN5hB70whr9biHVY2lC5sSW95wh+T9aTD8Enom8M5MesFdSf7QFn
+	 SsxifZBeQS3+M/N0ltoqZa2pqBfULsEVUBA7ohGluw/1KwSfJtSIOi7UxyckKbhweT
+	 VqTf6dN2NDC/kkVpjIQgngxj92GVoqspEvdTgPrw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20726F804DF;
+	by alsa1.perex.cz (Postfix) with ESMTP id B3F9EF804E6;
 	Fri, 11 Jun 2021 11:38:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1DE6EF804CB; Fri, 11 Jun 2021 11:37:54 +0200 (CEST)
+ id F12C7F804CF; Fri, 11 Jun 2021 11:37:54 +0200 (CEST)
 Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com
  [64.147.123.19])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E35F5F800FC
- for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2021 11:37:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E35F5F800FC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11FB8F8026C
+ for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2021 11:37:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11FB8F8026C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="0Q7gBIno"; 
+ header.b="FH5Fpo5P"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="jKiNeb8g"
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
- by mailout.west.internal (Postfix) with ESMTP id B08A61AC2;
- Fri, 11 Jun 2021 05:37:37 -0400 (EDT)
+ header.i=@messagingengine.com header.b="jauythSI"
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+ by mailout.west.internal (Postfix) with ESMTP id 5FFCB1AF0;
+ Fri, 11 Jun 2021 05:37:46 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute4.internal (MEProxy); Fri, 11 Jun 2021 05:37:37 -0400
+ by compute5.internal (MEProxy); Fri, 11 Jun 2021 05:37:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=5OiXjz2blseXL
- X6uOImQq7JNfbaDCn/Hk0nGyXH7Ewg=; b=0Q7gBInoWmRgAX1IxiHVYmjP05hK+
- CfNbB8hRO8Wu66dRgEGjU/wE3ums0n+7eJwSmIhYYzkRvcYYxwpfvTvCDZn7CtK/
- MGaNz8IZiqHf25OwQ0zNVKmoG3JpZhyTtHEb2d0/0X1EoNGhwpFhj+W9p/vnKLeA
- aWz6ckyZxXuPZQDXZvbi1xQ0SmZRJLFFrxghatNmgRSrRc/dIAXzX0nhC1+EA/Vp
- DsC7PHfLwt241TqgrVD8NM3ZMPePQrUznorsrU8clvkrNKakWX/wSKA45A3UxYBM
- hNknr94nSKMSmMQHHvO4bOt7xYG9fP3ZoAdGNj7ugMB9GTjoH16Mgvtfg==
+ :mime-version:content-transfer-encoding; s=fm1; bh=v61mwo6enk6eI
+ JzCYspnEl9PtoberoQfSu8atFP9GFM=; b=FH5Fpo5P/UTmZ1upMMw4wAf66Vu9y
+ krF+xmS+J7NbAGGHsKkvgY5nvY2cssT0hiHXD4+iezOGlHEvZTaThCOopB/fxk4a
+ 4DXTNBwv8GlnYsUg3ARgHJoK1yvmRA7GXf4BHXw+gRBC71X0RO4+sYcEoeKBsHXi
+ Sd/tUDEu1zsgCFydxbKAyVvlYglWkl4N3lfuUO93qYVIuYxcq6BiVmIGMwLo3gKG
+ gqDSRFuRBhCyhuCxj0q2+oKxIJfXUZxiaM8qqLmtJ0Dy2W9NY9HqZn0Yw0IqtIWf
+ EAtbxDmSEBDBf1//RPXH2u0flvN0N7OvA0gxP/ciXCuNCi//q2zxQGMUA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm3; bh=5OiXjz2blseXLX6uOImQq7JNfbaDCn/Hk0nGyXH7Ewg=; b=jKiNeb8g
- 9PI2mjvq8SO0lMuNKh/CGZSMbgtbKTl8L5xSxAffQoVDwUNv7zGzb4ZwQcdaJe3u
- vVSNrlO4/13pKC5VtKOTLp7GiPTMpQEcX7Q5+LySemU8AA0YxX1urYDj2UfYAaLZ
- 4oA2ZYHwCwKH1uibSlfzgyjYaNFbGSSETfKIVez9PBTWCx2kNpxlV3EmrQVekiQn
- aqVDbyhFh565QQ7bK7kYDbbvkhAXcAVrmSRk+h4vrlJeGCp6DGoE9DBnVxBLsSOI
- 8+9GXEelw9srI5URHBltadUNkhVwTtNbN0s5xMFP2CzJ0Ujyx4NZNP9k5bZEL0Cz
- fsQGxCZoJXahbQ==
-X-ME-Sender: <xms:4C7DYF5PdRWFpE_87FfNEqdHwCTSeg03gBx2pn8XGpPOXsh0sDJdmw>
- <xme:4C7DYC5b334PCwxsgw8EinQwPRZvnPrg_IJ6OYuVm3gTLBJ-JUYXe7yzKfuK3i7yb
- 6AjjpQPZZe6Deim6cs>
-X-ME-Received: <xmr:4C7DYMd-zZrrElLCNxRLFAIwLukDqaEaS1gBS6AQOZVGT9VRk8yeiC16n5i2HTgfZKPzdV4-AHZ7YFoEVruqZKOmR3vSc_uANpgB9S3L7Hrn_rQZgcpM>
+ fm3; bh=v61mwo6enk6eIJzCYspnEl9PtoberoQfSu8atFP9GFM=; b=jauythSI
+ /+352D4e7ODFS5O2wzeahnPEsX7fShycCb3ef+srwkiVcu/cTrwaOZWIlBiks9hm
+ EIjZVC04c1acTAOE07l8gnb712fHT7geCxZ53kDT4fRNJMDQSCTymdC0RtPXH2gG
+ L2492MrqSYCMDtqh0EclaQUeD6KGpGrfuUe610Vx04yIUQQJgvwrzRBJhGbXxxS4
+ 3WMe6IjO91ZZjoNr8b4Ox8EbLyyvWqcil0Y8PukrU4xKcvpd15XAPI5XShkASxLP
+ q5InTtpPq5yd5Z78Q2phYimlEX5Fyen/AeiYgZWylWK9umHkdkGawZWwALPRTY8y
+ hJa5zmLC8hbdGw==
+X-ME-Sender: <xms:6S7DYDe81Yzctunm7m-qwJrvcf67M0l37yLhj7cGerYj4S_jfNDsyw>
+ <xme:6S7DYJOpxHr6UAiMJ8aCslHooIJrwQnDJLCsAGsXnHtj6cR8yYJ0QEJQPpb1yoVBW
+ 4l0lj53VM0Yt0x_9c4>
+X-ME-Received: <xmr:6S7DYMid-rqnW7FSMULWEAT8GY1To1y-vf1fmeRy6-rzAPnBFGdrkeb6oMwWkFuuqPrA_C4_9w1uWycvMAdKMPiHXowa4YCp-nQ6sSFMbcgue0DN04RM>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedujedgudejucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
@@ -86,17 +86,17 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedujedgudejucetufdoteggod
  etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecuvehluhhsthgv
  rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihessh
  grkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:4C7DYOIwvT_DUW1SPP4eXLZjAWCOk3n__LMK4b57r0EUchL_ep6mGw>
- <xmx:4C7DYJKgFGYlka39CeMroxF_sNqS1a--wn0lIJtLH9L8mNfG4SDcYQ>
- <xmx:4C7DYHwmiiKIXc4uIlWVrTqMHGQ3Elu_3E9NyE4W5wrlt-8Wpd9xPQ>
- <xmx:4S7DYHi2wELUJDisVwkvkhYqnoQPINwOCYA_w_LqkNFbuRUEhZ_FTQ>
+X-ME-Proxy: <xmx:6S7DYE9Kuu8ItrREdhxyXn72FMWXV9Srzprm-TTilVRHTEK7MQTAHw>
+ <xmx:6S7DYPthLLBJlndQoXg_usRQRgmkX4zMuKSjxy0SG9gSnBAg_buEmQ>
+ <xmx:6S7DYDHWN2HEpn6UKwtJlJkk5mJqxDrOj6OGk_N-mcEH3y0UmSm5gA>
+ <xmx:6i7DYIWw7ITu8NsXT9vwtHX72WMmERISGrBSc3dTGzUEPjaZP97cdw>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 11 Jun 2021 05:37:35 -0400 (EDT)
+ 11 Jun 2021 05:37:44 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Subject: [PATCH 1/6] ALSA: bebob: fulfil device entries
-Date: Fri, 11 Jun 2021 18:37:25 +0900
-Message-Id: <20210611093730.78254-2-o-takashi@sakamocchi.jp>
+Subject: [PATCH 5/6] ALSA: bebob: code refactoring for M-Audio models
+Date: Fri, 11 Jun 2021 18:37:29 +0900
+Message-Id: <20210611093730.78254-6-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210611093730.78254-1-o-takashi@sakamocchi.jp>
 References: <20210611093730.78254-1-o-takashi@sakamocchi.jp>
@@ -118,82 +118,104 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Although unit directory in root directory of configuration ROM has the
-same value (0x00a02d) for its specifier_id entry to express AV/C device,
-it has two cases for the value (0x010001/0x014001) to version entry.
+For M-Audio FireWire 410, the value of immediate entry for vendor in unit
+directory is the value for BridgeCo. AG OUI. It seems that M-Audio uses
+initial settings as is for its product.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/bebob/bebob.c | 30 +++++++++++++++++-------------
- sound/firewire/bebob/bebob.h |  9 ---------
- 2 files changed, 17 insertions(+), 22 deletions(-)
+ sound/firewire/bebob/bebob.c | 34 +++++++++++++++++-----------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
 
 diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index 452317e53565..5ce25ddcbf5c 100644
+index 6784ab2cb678..9f8df57c1e8b 100644
 --- a/sound/firewire/bebob/bebob.c
 +++ b/sound/firewire/bebob/bebob.c
-@@ -348,6 +348,22 @@ static const struct snd_bebob_spec spec_normal = {
- 	.meter	= NULL
- };
+@@ -54,8 +54,7 @@ static DECLARE_BITMAP(devices_used, SNDRV_CARDS);
+ #define VEN_TERRATEC	0x00000aac
+ #define VEN_YAMAHA	0x0000a0de
+ #define VEN_FOCUSRITE	0x0000130e
+-#define VEN_MAUDIO1	0x00000d6c
+-#define VEN_MAUDIO2	0x000007f5
++#define VEN_MAUDIO	0x00000d6c
+ #define VEN_DIGIDESIGN	0x00a07e
  
-+#define SPECIFIER_1394TA	0x00a02d
-+
-+// The immediate entry for version in unit directory differs depending on models:
-+//  * 0x010001
-+//  * 0x014001
-+#define SND_BEBOB_DEV_ENTRY(vendor, model, data) \
-+{ \
-+	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
-+			  IEEE1394_MATCH_MODEL_ID | \
-+			  IEEE1394_MATCH_SPECIFIER_ID, \
-+	.vendor_id	= vendor, \
-+	.model_id	= model, \
-+	.specifier_id	= SPECIFIER_1394TA, \
-+	.driver_data	= (kernel_ulong_t)data \
-+}
-+
- static const struct ieee1394_device_id bebob_id_table[] = {
- 	/* Edirol, FA-66 */
- 	SND_BEBOB_DEV_ENTRY(VEN_EDIROL, 0x00010049, &spec_normal),
-@@ -425,19 +441,7 @@ static const struct ieee1394_device_id bebob_id_table[] = {
- 	/* Focusrite, SaffirePro 26 I/O */
- 	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, 0x00000003, &saffirepro_26_spec),
- 	/* Focusrite, SaffirePro 10 I/O */
--	{
--		// The combination of vendor_id and model_id is the same as the
--		// same as the one of Liquid Saffire 56.
--		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
--				  IEEE1394_MATCH_MODEL_ID |
--				  IEEE1394_MATCH_SPECIFIER_ID |
--				  IEEE1394_MATCH_VERSION,
--		.vendor_id	= VEN_FOCUSRITE,
--		.model_id	= 0x000006,
--		.specifier_id	= 0x00a02d,
--		.version	= 0x010001,
--		.driver_data	= (kernel_ulong_t)&saffirepro_10_spec,
--	},
-+	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, 0x000006, &saffirepro_10_spec),
+ #define MODEL_FOCUSRITE_SAFFIRE_BOTH	0x00000000
+@@ -159,7 +158,7 @@ check_audiophile_booted(struct fw_unit *unit)
+ 
+ static int detect_quirks(struct snd_bebob *bebob, const struct ieee1394_device_id *entry)
+ {
+-	if (entry->vendor_id == VEN_MAUDIO1) {
++	if (entry->vendor_id == VEN_MAUDIO) {
+ 		switch (entry->model_id) {
+ 		case MODEL_MAUDIO_PROFIRELIGHTBRIDGE:
+ 			// M-Audio ProFire Lightbridge has a quirk to transfer packets with
+@@ -192,7 +191,7 @@ static int bebob_probe(struct fw_unit *unit, const struct ieee1394_device_id *en
+ 	if (entry->vendor_id == VEN_FOCUSRITE &&
+ 	    entry->model_id == MODEL_FOCUSRITE_SAFFIRE_BOTH)
+ 		spec = get_saffire_spec(unit);
+-	else if (entry->vendor_id == VEN_MAUDIO1 &&
++	else if (entry->vendor_id == VEN_MAUDIO &&
+ 		 entry->model_id == MODEL_MAUDIO_AUDIOPHILE_BOTH &&
+ 		 !check_audiophile_booted(unit))
+ 		spec = NULL;
+@@ -200,7 +199,8 @@ static int bebob_probe(struct fw_unit *unit, const struct ieee1394_device_id *en
+ 		spec = (const struct snd_bebob_spec *)entry->driver_data;
+ 
+ 	if (spec == NULL) {
+-		if (entry->vendor_id == VEN_MAUDIO1 || entry->vendor_id == VEN_MAUDIO2)
++		// To boot up M-Audio models.
++		if (entry->vendor_id == VEN_MAUDIO || entry->vendor_id == VEN_BRIDGECO)
+ 			return snd_bebob_maudio_load_firmware(unit);
+ 		else
+ 			return -ENODEV;
+@@ -280,7 +280,7 @@ static int bebob_probe(struct fw_unit *unit, const struct ieee1394_device_id *en
+ 	if (err < 0)
+ 		goto error;
+ 
+-	if (entry->vendor_id == VEN_MAUDIO1 &&
++	if (entry->vendor_id == VEN_MAUDIO &&
+ 	    (entry->model_id == MODEL_MAUDIO_FW1814 || entry->model_id == MODEL_MAUDIO_PROJECTMIX)) {
+ 		// This is a workaround. This bus reset seems to have an effect to make devices
+ 		// correctly handling transactions. Without this, the devices have gap_count
+@@ -443,26 +443,26 @@ static const struct ieee1394_device_id bebob_id_table[] = {
  	/* Focusrite, Saffire(no label and LE) */
  	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, MODEL_FOCUSRITE_SAFFIRE_BOTH,
  			    &saffire_spec),
-diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-index dff8e25c6ca3..c06579d9380e 100644
---- a/sound/firewire/bebob/bebob.h
-+++ b/sound/firewire/bebob/bebob.h
-@@ -253,13 +253,4 @@ extern const struct snd_bebob_spec maudio_special_spec;
- int snd_bebob_maudio_special_discover(struct snd_bebob *bebob, bool is1814);
- int snd_bebob_maudio_load_firmware(struct fw_unit *unit);
- 
--#define SND_BEBOB_DEV_ENTRY(vendor, model, data) \
--{ \
--	.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
--			  IEEE1394_MATCH_MODEL_ID, \
--	.vendor_id	= vendor, \
--	.model_id	= model, \
--	.driver_data	= (kernel_ulong_t)data \
--}
--
- #endif
+-	/* M-Audio, Firewire 410 */
+-	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO2, 0x00010058, NULL),	/* bootloader */
+-	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO2, 0x00010046, &maudio_fw410_spec),
++	// M-Audio, Firewire 410. The vendor field is left as BridgeCo. AG.
++	SND_BEBOB_DEV_ENTRY(VEN_BRIDGECO, 0x00010058, NULL),
++	SND_BEBOB_DEV_ENTRY(VEN_BRIDGECO, 0x00010046, &maudio_fw410_spec),
+ 	/* M-Audio, Firewire Audiophile */
+-	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, MODEL_MAUDIO_AUDIOPHILE_BOTH,
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO, MODEL_MAUDIO_AUDIOPHILE_BOTH,
+ 			    &maudio_audiophile_spec),
+ 	/* M-Audio, Firewire Solo */
+-	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x00010062, &maudio_solo_spec),
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO, 0x00010062, &maudio_solo_spec),
+ 	/* M-Audio, Ozonic */
+-	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x0000000a, &maudio_ozonic_spec),
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO, 0x0000000a, &maudio_ozonic_spec),
+ 	/* M-Audio NRV10 */
+-	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x00010081, &maudio_nrv10_spec),
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO, 0x00010081, &maudio_nrv10_spec),
+ 	/* M-Audio, ProFireLightbridge */
+-	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, MODEL_MAUDIO_PROFIRELIGHTBRIDGE, &spec_normal),
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO, MODEL_MAUDIO_PROFIRELIGHTBRIDGE, &spec_normal),
+ 	/* Firewire 1814 */
+-	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, 0x00010070, NULL),	/* bootloader */
+-	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, MODEL_MAUDIO_FW1814,
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO, 0x00010070, NULL),	/* bootloader */
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO, MODEL_MAUDIO_FW1814,
+ 			    &maudio_special_spec),
+ 	/* M-Audio ProjectMix */
+-	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, MODEL_MAUDIO_PROJECTMIX,
++	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO, MODEL_MAUDIO_PROJECTMIX,
+ 			    &maudio_special_spec),
+ 	/* Digidesign Mbox 2 Pro */
+ 	SND_BEBOB_DEV_ENTRY(VEN_DIGIDESIGN, 0x0000a9, &spec_normal),
 -- 
 2.30.2
 
