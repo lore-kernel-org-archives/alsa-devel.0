@@ -2,72 +2,90 @@ Return-Path: <SRS0=nkEL=LG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA5F0C48BCF
-	for <alsa-devel@archiver.kernel.org>; Sat, 12 Jun 2021 03:36:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B5CBC48BCF
+	for <alsa-devel@archiver.kernel.org>; Sat, 12 Jun 2021 07:31:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 31FDD61108
-	for <alsa-devel@archiver.kernel.org>; Sat, 12 Jun 2021 03:36:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 31FDD61108
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
+	by mail.kernel.org (Postfix) with ESMTPS id 0C08D610A0
+	for <alsa-devel@archiver.kernel.org>; Sat, 12 Jun 2021 07:31:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C08D610A0
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F0A601AB3;
-	Sat, 12 Jun 2021 05:35:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0A601AB3
+	by alsa0.perex.cz (Postfix) with ESMTPS id AE5CE1AAF;
+	Sat, 12 Jun 2021 09:30:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE5CE1AAF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623468974;
-	bh=JoUoA6g8FGPsqf2WoxAUUMJYkOrzdwQyt5o4XCvXaWY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=WOpXP6CsovqG9d4fbLF2j1Z07JhdKwGaH98p4ixMPURYyb30/dlN6dvJCY1maOI4u
-	 aOVdayzNCoFK4iA1ARujliNsPLL+FgSeK4lHHKzbMx1SB4X3cu4TGWKQjPf/X01G6p
-	 zeNRf5vIf2aKwFQUW6v4IUQfJ5u0M/YEV9a4VvFc=
+	s=default; t=1623483071;
+	bh=tHXl7SWOPtgmO7BL7LQMODbhIquviGYISr0mRTRB/7E=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=b2bjeV+iriPHtYwsTbL0AbYYzAH174HHTrJgOkfDwURxDmdZSb1Eaa1YhrCIgEtxm
+	 5DlWjKtV2tvcvLYrKN/Cg8qxKvBZZInWgfHtoVZvv6Ioflo+F+TwpohQ1apDxSSYsr
+	 oLdMHXbfkMp4hnCR3KuRk9uNxepcTdJeUYkVMHHw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86581F8020D;
-	Sat, 12 Jun 2021 05:35:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9EE3AF800FB;
+	Sat, 12 Jun 2021 09:30:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0BBBFF80218; Sat, 12 Jun 2021 05:35:21 +0200 (CEST)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 27ECCF80218; Sat, 12 Jun 2021 09:30:12 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8A820F80149
- for <alsa-devel@alsa-project.org>; Sat, 12 Jun 2021 05:35:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A820F80149
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
- by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G23BC4HCjz1BLdg;
- Sat, 12 Jun 2021 11:30:11 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sat, 12 Jun 2021 11:35:02 +0800
-Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
- (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sat, 12
- Jun 2021 11:35:02 +0800
-From: YueHaibing <yuehaibing@huawei.com>
-To: <perex@perex.cz>, <tiwai@suse.com>
-Subject: [PATCH -next] ALSA: trident: Fix build error
-Date: Sat, 12 Jun 2021 11:34:58 +0800
-Message-ID: <20210612033458.42928-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+ by alsa1.perex.cz (Postfix) with ESMTPS id E2305F800FB
+ for <alsa-devel@alsa-project.org>; Sat, 12 Jun 2021 09:30:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2305F800FB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="W1NTx2DK"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="go48V8Ie"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id A89AC2199D;
+ Sat, 12 Jun 2021 07:30:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1623483002; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=d4KBxpSu2FYjcjpQOtcw/aAHU40Zo/SsRhf98joc1V4=;
+ b=W1NTx2DKztNRmGGfAgmF5k/nKRqHu5z3N89vBZUoqp331zrG6xMNW3HpUNhADT00QHo6NT
+ 5vlVGhRMef3jpD0nVQPGThn47OwmwuN90wF2G2IzNfpd+peNqwFVpgco1BoqHK7GSH31LS
+ 4Zw/eADbk8MtoGEUoY5IvizL5iw3xMk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1623483002;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=d4KBxpSu2FYjcjpQOtcw/aAHU40Zo/SsRhf98joc1V4=;
+ b=go48V8Ief54zQ/YUuvWwLg4+SL5LCeZuhFPbsqzFwswJVF/62tvgDy1Xh3oMMEYwYS33wA
+ 2MhV3CiV4xrV8kBA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 8A0F4A3B83;
+ Sat, 12 Jun 2021 07:30:02 +0000 (UTC)
+Date: Sat, 12 Jun 2021 09:30:02 +0200
+Message-ID: <s5hk0mz5ymd.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: YueHaibing <yuehaibing@huawei.com>
+Subject: Re: [PATCH -next] ALSA: trident: Fix build error
+In-Reply-To: <20210612033458.42928-1-yuehaibing@huawei.com>
+References: <20210612033458.42928-1-yuehaibing@huawei.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
-Cc: alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>,
- linux-kernel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,31 +101,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-sound/pci/trident/trident_memory.c: In function ‘set_tlb_bus’:
-sound/pci/trident/trident_memory.c:85:35: error: ‘pagetr’ undeclared (first use in this function); did you mean ‘page’?
-  for (i = 0; i < UNIT_PAGES; i++, pagetr++) {
-                                   ^~~~~~
-                                   page
+On Sat, 12 Jun 2021 05:34:58 +0200,
+YueHaibing wrote:
+> 
+> sound/pci/trident/trident_memory.c: In function ‘set_tlb_bus’:
+> sound/pci/trident/trident_memory.c:85:35: error: ‘pagetr’ undeclared (first use in this function); did you mean ‘page’?
+>   for (i = 0; i < UNIT_PAGES; i++, pagetr++) {
+>                                    ^~~~~~
+>                                    page
+> 
+> Fixes: 74fb98311c4e ("ALSA: trident: Drop shadow TLB pointer table")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-Fixes: 74fb98311c4e ("ALSA: trident: Drop shadow TLB pointer table")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- sound/pci/trident/trident_memory.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks, applied.
 
-diff --git a/sound/pci/trident/trident_memory.c b/sound/pci/trident/trident_memory.c
-index f831ec02702f..4ad3855101c9 100644
---- a/sound/pci/trident/trident_memory.c
-+++ b/sound/pci/trident/trident_memory.c
-@@ -82,7 +82,7 @@ static inline void set_tlb_bus(struct snd_trident *trident, int page,
- {
- 	int i;
- 	page *= UNIT_PAGES;
--	for (i = 0; i < UNIT_PAGES; i++, pagetr++) {
-+	for (i = 0; i < UNIT_PAGES; i++, page++) {
- 		__set_tlb_bus(trident, page, addr);
- 		addr += SNDRV_TRIDENT_PAGE_SIZE;
- 	}
--- 
-2.17.1
 
+Takashi
