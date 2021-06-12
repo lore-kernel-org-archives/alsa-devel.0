@@ -7,84 +7,83 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57C92C48BCF
-	for <alsa-devel@archiver.kernel.org>; Sat, 12 Jun 2021 07:32:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF7A6C48BE5
+	for <alsa-devel@archiver.kernel.org>; Sat, 12 Jun 2021 07:32:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 20B9F610F8
-	for <alsa-devel@archiver.kernel.org>; Sat, 12 Jun 2021 07:32:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 20B9F610F8
+	by mail.kernel.org (Postfix) with ESMTPS id 1F3E3610E9
+	for <alsa-devel@archiver.kernel.org>; Sat, 12 Jun 2021 07:32:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1F3E3610E9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7A8711ABF;
-	Sat, 12 Jun 2021 09:31:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A8711ABF
+	by alsa0.perex.cz (Postfix) with ESMTPS id B86E61ABD;
+	Sat, 12 Jun 2021 09:31:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B86E61ABD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623483122;
-	bh=2uaDO5nA53XeN40T5e3rmOIbIq1PZ8E/j4nobxm1cHI=;
+	s=default; t=1623483144;
+	bh=gBdv74QV8HUlswtx2ZO9HDWdpIBb2i1RL+4av03AIB0=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AgLupxSuQRFe9DmR5moksDOgJwMT5a5TFS5dLztzkiK+X6fJb1ww+nxOPU8f7g7Q4
-	 q9ne7Mb8ZCXMguBg+IEW/YN0g5B69wIH2ZrhQJDR1PzkZDfQveGJRnH6vBm6NzbFmv
-	 /oUG3+fhiKTWlZz3zzp8zmu5sXnZoC2p3OAe2HgU=
+	b=r7pYGNYR+1T1OPqG9d015iRUYuyvr2IgrP8nZqKoBDiz+pKeV28fwD6HmzTsYoldG
+	 22iwTFBZ200iXit7XZJF6yVWC0KC4kJ31NTiTO/7V+adBiC/lJKoCRq4EBkboeCMIg
+	 5aif7BkPD87hDNInINUOkFZPLWQRzYgc2AtJ2HVI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B463F80256;
-	Sat, 12 Jun 2021 09:30:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4BC45F8020D;
+	Sat, 12 Jun 2021 09:31:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 41CFEF804AB; Sat, 12 Jun 2021 09:30:45 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id EF132F804AD; Sat, 12 Jun 2021 09:31:32 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4F577F8020D
- for <alsa-devel@alsa-project.org>; Sat, 12 Jun 2021 09:30:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F577F8020D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 90E5EF800FB
+ for <alsa-devel@alsa-project.org>; Sat, 12 Jun 2021 09:31:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90E5EF800FB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="h/XSTcNP"; 
+ header.b="Th8MmK48"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="YWPcWxMX"
+ header.b="tkMVi0+Q"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 518E621994;
- Sat, 12 Jun 2021 07:30:38 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 717F51FD7B;
+ Sat, 12 Jun 2021 07:31:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1623483038; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1623483085; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=r2s1gQ67F+Qqs185IyCMy7UU3m8IkMgGFSBejMEBN2s=;
- b=h/XSTcNP6FQSQ5sSo/oM1tdClqCRmGWni1uK7PwKdXaFgm+Wrucn0QDmPon79jN5zrpyna
- tAE7H+p20nfg7KjHNIoPnxfsuDy7pf7rhBhmveBgdY6AscmPZx9PDsaMqnmR+ZJZozAwye
- WY1bCFtOaJusxYLeLv/OnsU84j0o5Ug=
+ bh=0AzuUkzLo4ruyuK5SkVmh+ZfHnjfIQeuO610XtpJtoc=;
+ b=Th8MmK48g6ot7pnJc9RJa5NxgHqdKafjyupDDILXFgTJFqWxZV5jDYLcYpc6rEpqOS+qxB
+ DO8XZxUxVZmt7qWLL7Bb4H+AdxzJia/2isAqc0AfOmILjW0D3yB3EV+NE5twUtIB7eJOU8
+ MDucw0jD/isO2O0ntmm/xqlGPZc+1NA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1623483038;
+ s=susede2_ed25519; t=1623483085;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=r2s1gQ67F+Qqs185IyCMy7UU3m8IkMgGFSBejMEBN2s=;
- b=YWPcWxMXp2sD40QH+v8C4nsxgXO9D5Bk0qj/FuhJl5vpiga79ftHwvrDSrx2Q4sq6013nK
- igFjVldwoWfjDlDA==
+ bh=0AzuUkzLo4ruyuK5SkVmh+ZfHnjfIQeuO610XtpJtoc=;
+ b=tkMVi0+QeY0xP0fnmRmMKT5kFSL5KTNWmBTcOO0NwLZ7HZl5Q3WlfQ5qxBpAfZrbE5SnP6
+ 98sxcfdLVwRiJABQ==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 402BFA3B83;
- Sat, 12 Jun 2021 07:30:38 +0000 (UTC)
-Date: Sat, 12 Jun 2021 09:30:38 +0200
-Message-ID: <s5him2j5yld.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 618D0A3B85;
+ Sat, 12 Jun 2021 07:31:25 +0000 (UTC)
+Date: Sat, 12 Jun 2021 09:31:25 +0200
+Message-ID: <s5hh7i35yk2.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Yang Yingliang <yangyingliang@huawei.com>
-Subject: Re: [PATCH -next] ALSA: hda/tegra: Use
- devm_platform_get_and_ioremap_resource()
-In-Reply-To: <20210610131922.134788-1-yangyingliang@huawei.com>
-References: <20210610131922.134788-1-yangyingliang@huawei.com>
+Subject: Re: [PATCH -next] ALSA: n64: check return value after calling
+ platform_get_resource()
+In-Reply-To: <20210610124958.116142-1-yangyingliang@huawei.com>
+References: <20210610124958.116142-1-yangyingliang@huawei.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,11 +99,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 10 Jun 2021 15:19:22 +0200,
+On Thu, 10 Jun 2021 14:49:58 +0200,
 Yang Yingliang wrote:
 > 
-> Use devm_platform_get_and_ioremap_resource() to simplify
-> code.
+> It will cause null-ptr-deref if platform_get_resource() returns NULL,
+> we need check the return value.
 > 
 > Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 
