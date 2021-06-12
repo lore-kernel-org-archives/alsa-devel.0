@@ -4,86 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06EE2C48BE5
-	for <alsa-devel@archiver.kernel.org>; Sat, 12 Jun 2021 07:33:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8193DC48BCF
+	for <alsa-devel@archiver.kernel.org>; Sat, 12 Jun 2021 07:33:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 267BB61108
-	for <alsa-devel@archiver.kernel.org>; Sat, 12 Jun 2021 07:32:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 267BB61108
+	by mail.kernel.org (Postfix) with ESMTPS id 991FB610A1
+	for <alsa-devel@archiver.kernel.org>; Sat, 12 Jun 2021 07:33:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 991FB610A1
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D6F31AC0;
-	Sat, 12 Jun 2021 09:32:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D6F31AC0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 344DF1ACF;
+	Sat, 12 Jun 2021 09:32:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 344DF1ACF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623483177;
-	bh=AHwAhqpSBbe5WyZgFem2bEymFMuVezFCwSO8ZywNZ8k=;
+	s=default; t=1623483214;
+	bh=5fqhLOzCPHvN07/XBEILqXBxRxgLbcICvfO2GWTSGQQ=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ha1t0Z+mCbDtIvpIKN1R77STG9mn2PVoyKu/4ikQPP5niIWVqMYjZ20DSjr7GTrLi
-	 phU68SPWzwVYwBqZmCzRyQcib3SWYIpzbk32co8p/P/E/FcTwsd0d9kxhVNwomsGhR
-	 VR93ySrMO89Gbi+yP7J8zD6M6GP0z+bhOG0pp7XA=
+	b=eksbUDKLloN6IP8D8EM1jWimI0bS0mM8q5ztudjb7pRgLK1urkUDm1s4PlOzK8jEq
+	 xHAo7vvgjarV0UEJwnZ8SsEsTw+DjvQj12WfMvaD2QW0PClmJvz9VfzaI0ktwZ5IsA
+	 dKL7oYzw/frUFkBdn6uNHPNOoIOp7MnUtPIEki18=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F5E5F80227;
-	Sat, 12 Jun 2021 09:32:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93C3BF80218;
+	Sat, 12 Jun 2021 09:32:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 20161F804AB; Sat, 12 Jun 2021 09:32:06 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 8F393F80149; Sat, 12 Jun 2021 09:32:42 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 22711F80149
- for <alsa-devel@alsa-project.org>; Sat, 12 Jun 2021 09:32:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22711F80149
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8C569F80149
+ for <alsa-devel@alsa-project.org>; Sat, 12 Jun 2021 09:32:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C569F80149
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="PSk1KpCb"; 
+ header.b="AF8dHSAF"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="IpVzqpKj"
+ header.b="tOPcINzJ"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 71B281FD7B;
- Sat, 12 Jun 2021 07:31:59 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 6AFE721997;
+ Sat, 12 Jun 2021 07:32:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1623483119; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1623483156; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yutMlrtR9/fi3FPQdfAg8+6aYSVFv2jCGZUqnYgigxs=;
- b=PSk1KpCbfjEYtntdUl6FotEH8yo3Dn7p4ughyRyE8pgkEpWVPkQIb4NYh6Ni0gH/xVxWsJ
- XMcEcpDtatOe9sPHDp0qkBRij1HQIE5JnVQuiM2rNjuvwJxK+XFaY7Ck30WbGZGgUsKQ/j
- Jm6ygSwsh4c1zN9YdqQmLFbXdyCituM=
+ bh=BN/x1Lb4XHuqUfl+VT2+NHV4QJZ8D328rkqjy4dKwwA=;
+ b=AF8dHSAFLHbVNJBulUONbx9x7US7IYhqXdNw2Mh8YrbjcRySICwf34Dv/AvmbU5NWKuMHH
+ /6bhU7j4wUjXncc+SUYNZWUQtseiNRxlmYktvwnRoVv1J/G76M6WodRu+yQiv5hoAByDJP
+ Q8Y67Yo/miPFfJ1jVbpGK+4fzN0vEL8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1623483119;
+ s=susede2_ed25519; t=1623483156;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yutMlrtR9/fi3FPQdfAg8+6aYSVFv2jCGZUqnYgigxs=;
- b=IpVzqpKjP5SYA/RYMs7HspCKVeth7jEd7Tr934fxdTdGxffbGTZGbMshAHvJOyYBzOXdGK
- 7ZgOSUJGBERLgTCg==
+ bh=BN/x1Lb4XHuqUfl+VT2+NHV4QJZ8D328rkqjy4dKwwA=;
+ b=tOPcINzJFC3mCUWrCUjAKcy12bMlbT3aQ0CCj3HYn+iD+WsicaCNJQTvv9pKcn0T7cYJ8J
+ 9jbiFTIi5xIYkJCQ==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 5F9EEA3B83;
- Sat, 12 Jun 2021 07:31:59 +0000 (UTC)
-Date: Sat, 12 Jun 2021 09:31:59 +0200
-Message-ID: <s5hfsxn5yj4.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 5862BA3B87;
+ Sat, 12 Jun 2021 07:32:36 +0000 (UTC)
+Date: Sat, 12 Jun 2021 09:32:36 +0200
+Message-ID: <s5heed75yi3.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ALSA: firewire-lib: replace in_interrupt() with
- in_softirq()
-In-Reply-To: <20210611083425.61204-1-o-takashi@sakamocchi.jp>
-References: <20210611083425.61204-1-o-takashi@sakamocchi.jp>
+To: Colin King <colin.king@canonical.com>
+Subject: Re: [PATCH][next] ALSA: i2c: tea6330t: Remove redundant
+ initialization of variable err
+In-Reply-To: <20210611165223.38983-1-colin.king@canonical.com>
+References: <20210611165223.38983-1-colin.king@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,13 +100,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 11 Jun 2021 10:34:25 +0200,
-Takashi Sakamoto wrote:
+On Fri, 11 Jun 2021 18:52:23 +0200,
+Colin King wrote:
 > 
-> Tasklet is used to handle isochronous context of 1394 OHCI. The explicit
-> usage of in_softirq() may be preferable than in_interrupt().
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> The variable err is being initialized with a value that is never read,
+> it is being updated later on. The assignment is redundant and can be
+> removed.
+> 
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
 Thanks, applied.
 
