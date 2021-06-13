@@ -2,55 +2,63 @@ Return-Path: <SRS0=P1jl=LH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56C81C48BDF
-	for <alsa-devel@archiver.kernel.org>; Sun, 13 Jun 2021 19:58:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0567FC48BE8
+	for <alsa-devel@archiver.kernel.org>; Sun, 13 Jun 2021 22:58:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E681861245
-	for <alsa-devel@archiver.kernel.org>; Sun, 13 Jun 2021 19:58:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E681861245
-Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
+	by mail.kernel.org (Postfix) with ESMTPS id 596A86135F
+	for <alsa-devel@archiver.kernel.org>; Sun, 13 Jun 2021 22:58:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 596A86135F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8F8211753;
-	Sun, 13 Jun 2021 21:57:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F8211753
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0EC831754;
+	Mon, 14 Jun 2021 00:57:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EC831754
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623614298;
-	bh=E2JEtqVmnggsz6jnVf/2WlQURSUafNIQHCPPZ1hz66E=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1623625114;
+	bh=eyvUiJ1ICwS1XLbidv/RcFSkqr35U2KmsAEQC2WKcJc=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oVT3GUxuCIVa87+EfZR0X7Xpx0BG5Ajy/BvowtmrpHOKIX+Z+8gFvg0d1SJ2ZjUQo
-	 n9CSewj5i1O4kDTUgQLZE/N5VybuwzDn58F9AH6suhgrG+ErWLL1G0aY69jS68sX2q
-	 wRuKPIFAC6chr2Af3tkVttwDUn00UP0jtOsV7Q4Y=
+	b=p6ABvk5nlBKKoF3YAZ3gcUcRjlAC+pwNJ+H0vns7AwSvmP7ADyc78xzu/4rfrlUCB
+	 prDzMl9xVOg1pC7uB/o9cuMvHmJtu62vEKh3e32LlAkTiF5MukS6uZJJF7tfCFYH89
+	 CnFWUXLuecDhSjYcU9Ic7+CGEHVF6tA4kPd2pb7c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2046FF800FB;
-	Sun, 13 Jun 2021 21:57:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75768F800FB;
+	Mon, 14 Jun 2021 00:57:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0852BF80165; Sun, 13 Jun 2021 21:57:26 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 49AECF800F7
- for <alsa-devel@alsa-project.org>; Sun, 13 Jun 2021 21:57:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49AECF800F7
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1623614235852114916-webhooks-bot@alsa-project.org>
-References: <1623614235852114916-webhooks-bot@alsa-project.org>
-Subject: Some minor fixes for Topology2.0
-Message-Id: <20210613195726.0852BF80165@alsa1.perex.cz>
-Date: Sun, 13 Jun 2021 21:57:26 +0200 (CEST)
+ id 8FFCEF80165; Mon, 14 Jun 2021 00:57:41 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 00A8DF800F8
+ for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2021 00:57:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00A8DF800F8
+Date: 14 Jun 2021 07:57:32 +0900
+X-IronPort-AV: E=Sophos;i="5.83,272,1616425200"; d="scan'208";a="84237144"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 14 Jun 2021 07:57:32 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 747D24007F2E;
+ Mon, 14 Jun 2021 07:57:32 +0900 (JST)
+Message-ID: <87h7i1wexv.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH] ASoC: rsnd: adg: clearly handle clock error / NULL case
+In-Reply-To: <20210611075151.GC10983@kadam>
+References: <87zgvxs3rj.wl-kuninori.morimoto.gx@renesas.com>
+ <20210611075151.GC10983@kadam>
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,10 +74,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils pull request #98 was opened from ranj063:
 
+Hi Dan
 
+Thank you for your feedback
 
-Request URL   : https://github.com/alsa-project/alsa-utils/pull/98
-Patch URL     : https://github.com/alsa-project/alsa-utils/pull/98.patch
-Repository URL: https://github.com/alsa-project/alsa-utils
+> > @@ -430,9 +430,9 @@ static int rsnd_adg_get_clkin(struct rsnd_priv *priv)
+> >  	for (i = 0; i < CLKMAX; i++) {
+> >  		clk = devm_clk_get(dev, clk_name[i]);
+> >  
+> > -		if (IS_ERR(clk))
+> > +		if (IS_ERR_OR_NULL(clk))
+> >  			clk = rsnd_adg_null_clk_get(priv);
+> > -		if (IS_ERR(clk))
+> > +		if (IS_ERR_OR_NULL(clk))
+> 
+> "clk" can't be NULL here, right?  So this should just be:
+> 
+> 	if (IS_ERR(clk))
+
+clk_register_fixed_rate() might return NULL ?
+I'm not sure detail.
+It is indicating that "error / NULL are both error on this driver".
+
+> (because when a function returns NULL it shouldn't print an error)
+
+It is "from clk framework point of view" right ?
+This driver doesn't assume "NULL clk" for any case.
+
+Thank you for your help !!
+
+Best regards
+---
+Kuninori Morimoto
