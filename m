@@ -2,82 +2,78 @@ Return-Path: <SRS0=68EG=LI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C9FBC2B9F4
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Jun 2021 18:12:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4C2AC48BE8
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Jun 2021 19:55:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7431C610A3
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Jun 2021 18:12:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7431C610A3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id A500A6124B
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Jun 2021 19:55:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A500A6124B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F0C031699;
-	Mon, 14 Jun 2021 20:11:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0C031699
+	by alsa0.perex.cz (Postfix) with ESMTPS id EEF8A1677;
+	Mon, 14 Jun 2021 21:54:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EEF8A1677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623694326;
-	bh=UrfyM19Gzr1IPLHE8IrRlP8ldlC+LoFnsjbE7B5yO6Q=;
+	s=default; t=1623700541;
+	bh=OFqLWt9YcU2q5M/HjfpqEhWhcGqRS3yWcy7sAyaGMeE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tZpV+jZQm5Dbdx3aMOtUgjD1qsOcbrmb2Qi7YPq05AtePwtwhq5CdIqTAhaPJnOrd
-	 TRSrgIqWgz6ahNsAobFoWrKoD3EV27qjAMlamPIfJtDKWdde3E0CJsAVfbDavPu2Il
-	 m1OQRm7XekaPWq7M+YF4DpANcvv4aK7UajecGhok=
+	b=sYWt9WCm/gov5FKTFuSU8/Ng8UIdO5BFEkwkQ5ztmg75Kd5N49o/u9zXn9zG+oWly
+	 j1OXm5+L4nVpYTqdIBJCKbgzXus7xJiM9qSUxScHR0FkE3SONTuUmM489wk2L/yqff
+	 PrGJNA4BFO5D4Cee9/He1FB9OhUzIcSkScMK52qI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A0B4F804E2;
-	Mon, 14 Jun 2021 20:09:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81412F804B0;
+	Mon, 14 Jun 2021 21:54:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3F847F8028B; Mon, 14 Jun 2021 20:09:00 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 421A5F804B0; Mon, 14 Jun 2021 21:54:48 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B8A30F804B0
- for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2021 20:08:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8A30F804B0
-IronPort-SDR: DE187v1OTQOl6HsdfP81MwD6G1wsUov0V9KOsZZL7yOk22IqvM53vDrMqq/rULMFcXj3yf7Q2C
- 4QyYRpFw71aw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="192969572"
-X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; d="scan'208";a="192969572"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Jun 2021 11:08:43 -0700
-IronPort-SDR: epK+xTlGYHENtncTLXGdA6WyMiw/vl1OD/KZoeuxdbIk3sesVcf4S5kDKrTVL6uzmlq3N5E6HR
- 5nxDiOhEVZ4A==
-X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; d="scan'208";a="484166413"
-Received: from jepowell-mobl1.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.212.114.106])
- by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Jun 2021 11:08:42 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	srinivas.kandagatla@linaro.org
-Subject: [PATCH 1/5] soundwire: export sdw_update() and sdw_update_no_pm()
-Date: Mon, 14 Jun 2021 13:08:11 -0500
-Message-Id: <20210614180815.153711-2-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210614180815.153711-1-pierre-louis.bossart@linux.intel.com>
-References: <20210614180815.153711-1-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9A92F8025E
+ for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2021 21:54:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9A92F8025E
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="XXHHa4xq"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B0DB611CA;
+ Mon, 14 Jun 2021 19:54:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1623700480;
+ bh=OFqLWt9YcU2q5M/HjfpqEhWhcGqRS3yWcy7sAyaGMeE=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=XXHHa4xq/Isu9+95fpnbyi2ZUuVcWVETqOU2y5lYYjop2Z0KMVbhP99crM0rdDsD0
+ MmwcnZuz6xNJx8gLnUL3pkCyU4tHYbxoF2AP57ivb7ZUTvaKnJJXfkOtWKM8+gbnVc
+ z9vnoM8eg9dpGInpzCPv0moeAhHkdqNPEfK7zZER93LoN5HgFN67rx9M9WKqq8Umfa
+ D9QyOkL1yrYAk8h0i2owJypIHiSZ7qPegPaURJ3hYaLaMDtKbiTgoLV35d6zln1GRP
+ Sfyk/nM9dKthDNMD0AmoOLGy4NsMvkl6C+RgK/L/ORbju9cSDjO2rGYFu+4hzAMsEr
+ 89swlSD9TdVSg==
+From: Mark Brown <broonie@kernel.org>
+To: timur@kernel.org, tiwai@suse.com, Zhongjun Tan <hbut_tan@163.com>,
+ nicoleotsuka@gmail.com, shengjiu.wang@gmail.com, lgirdwood@gmail.com,
+ festevam@gmail.com, perex@perex.cz, Xiubo.Lee@gmail.com
+Subject: Re: [PATCH] ASoC:fsl_spdif:Remove superfluous error message around
+ platform_get_irq()
+Date: Mon, 14 Jun 2021 20:53:39 +0100
+Message-Id: <162369994008.34524.18042209109927514476.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210610040037.1064-1-hbut_tan@163.com>
+References: <20210610040037.1064-1-hbut_tan@163.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>,
- open list <linux-kernel@vger.kernel.org>, tiwai@suse.de,
- gregkh@linuxfoundation.org,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Hui Wang <hui.wang@canonical.com>, vkoul@kernel.org, broonie@kernel.org,
- Shuming Fan <shumingf@realtek.com>, Sanyog Kale <sanyog.r.kale@intel.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>, Bard Liao <bard.liao@intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ Tan Zhongjun <tanzhongjun@yulong.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,96 +89,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We currently export sdw_read() and sdw_write() but the sdw_update()
-and sdw_update_no_pm() are currently available only to the bus
-code. This was missed in an earlier contribution.
+On Thu, 10 Jun 2021 12:00:37 +0800, Zhongjun Tan wrote:
+> The platform_get_irq() prints error message telling that interrupt is
+> missing, hence there is no need to duplicated that message.
 
-Export both functions so that codec drivers can perform
-read-modify-write operations without duplicating the code.
+Applied to
 
-Fixes: b04c975e654c ('soundwire: bus: use sdw_update_no_pm when initializing a device')
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <bard.liao@intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
----
- drivers/soundwire/bus.c       | 17 ++++++++++++++++-
- drivers/soundwire/bus.h       | 13 -------------
- include/linux/soundwire/sdw.h |  3 +++
- 3 files changed, 19 insertions(+), 14 deletions(-)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index a9e0aa72654d..5d5b0bd59ae3 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -492,7 +492,7 @@ int sdw_read_no_pm(struct sdw_slave *slave, u32 addr)
- }
- EXPORT_SYMBOL(sdw_read_no_pm);
- 
--static int sdw_update_no_pm(struct sdw_slave *slave, u32 addr, u8 mask, u8 val)
-+int sdw_update_no_pm(struct sdw_slave *slave, u32 addr, u8 mask, u8 val)
- {
- 	int tmp;
- 
-@@ -503,6 +503,21 @@ static int sdw_update_no_pm(struct sdw_slave *slave, u32 addr, u8 mask, u8 val)
- 	tmp = (tmp & ~mask) | val;
- 	return sdw_write_no_pm(slave, addr, tmp);
- }
-+EXPORT_SYMBOL(sdw_update_no_pm);
-+
-+/* Read-Modify-Write Slave register */
-+int sdw_update(struct sdw_slave *slave, u32 addr, u8 mask, u8 val)
-+{
-+	int tmp;
-+
-+	tmp = sdw_read(slave, addr);
-+	if (tmp < 0)
-+		return tmp;
-+
-+	tmp = (tmp & ~mask) | val;
-+	return sdw_write(slave, addr, tmp);
-+}
-+EXPORT_SYMBOL(sdw_update);
- 
- /**
-  * sdw_nread() - Read "n" contiguous SDW Slave registers
-diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-index 40354469860a..7631ef5e71fb 100644
---- a/drivers/soundwire/bus.h
-+++ b/drivers/soundwire/bus.h
-@@ -201,19 +201,6 @@ static inline void sdw_fill_port_params(struct sdw_port_params *params,
- 	params->data_mode = data_mode;
- }
- 
--/* Read-Modify-Write Slave register */
--static inline int sdw_update(struct sdw_slave *slave, u32 addr, u8 mask, u8 val)
--{
--	int tmp;
--
--	tmp = sdw_read(slave, addr);
--	if (tmp < 0)
--		return tmp;
--
--	tmp = (tmp & ~mask) | val;
--	return sdw_write(slave, addr, tmp);
--}
--
- /* broadcast read/write for tests */
- int sdw_bread_no_pm_unlocked(struct sdw_bus *bus, u16 dev_num, u32 addr);
- int sdw_bwrite_no_pm_unlocked(struct sdw_bus *bus, u16 dev_num, u32 addr, u8 value);
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index ced07f8fde87..de9802a24e7e 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -1041,6 +1041,9 @@ int sdw_write_no_pm(struct sdw_slave *slave, u32 addr, u8 value);
- int sdw_read_no_pm(struct sdw_slave *slave, u32 addr);
- int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
- int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
-+int sdw_update(struct sdw_slave *slave, u32 addr, u8 mask, u8 val);
-+int sdw_update_no_pm(struct sdw_slave *slave, u32 addr, u8 mask, u8 val);
-+
- int sdw_compare_devid(struct sdw_slave *slave, struct sdw_slave_id id);
- void sdw_extract_slave_id(struct sdw_bus *bus, u64 addr, struct sdw_slave_id *id);
- 
--- 
-2.25.1
+Thanks!
 
+[1/1] ASoC:fsl_spdif:Remove superfluous error message around platform_get_irq()
+      commit: 2e8a8adb96a335a04f1697dd4314f5569521328f
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
