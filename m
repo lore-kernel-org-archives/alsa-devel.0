@@ -2,77 +2,82 @@ Return-Path: <SRS0=68EG=LI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8EFBC2B9F4
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Jun 2021 18:09:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78BF8C2B9F4
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Jun 2021 18:10:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 58E74610A3
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Jun 2021 18:09:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 58E74610A3
+	by mail.kernel.org (Postfix) with ESMTPS id AF7C5601FA
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Jun 2021 18:10:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AF7C5601FA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 07E4E1680;
-	Mon, 14 Jun 2021 20:08:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07E4E1680
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A7CB168B;
+	Mon, 14 Jun 2021 20:09:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A7CB168B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623694188;
-	bh=Gmb1eBqABuq8cT3TZSLys9/qbt9JGKL05zguZYjiwLY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Gb829JtqPaMxX4wI39vzgkIM13y0L9+ZuPlwin2ygCmRrDfztHSehLROPF+UIJJuL
-	 BQr74LonW5ZTBpbR+BFLf3E+cQZyrn3xTYZTWjMg/3kymFP38SveFoWoXSqHgW8mJE
-	 dYXUcOt4veG/Kyf9YEUw5+7jo3VNDVyGuIAsFKm4=
+	s=default; t=1623694239;
+	bh=ng/L5vEWSUxMmHGYfl9Pc9AQ1U7DhYLZq24p8A4yI5k=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=CLk3HK88NpjO54m2mLFxM/GHM+GD/32jCUNQPRdUs9OSFBhvTkZV0uUTBEAllxUXQ
+	 E7SBJE2YQ/kasrfE032NrabS4RPRQYtKX5wHs2Ikgqdyag1m51+uKd3r5t3mZwmUfu
+	 GVL5qn0nv6pYo/i1tVUZ4W9Iw9sf2qcioQOOqCSE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 62D0EF80424;
-	Mon, 14 Jun 2021 20:08:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CF8A1F800F7;
+	Mon, 14 Jun 2021 20:09:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D35CEF802E8; Mon, 14 Jun 2021 20:08:54 +0200 (CEST)
+ id 7DAA1F804C2; Mon, 14 Jun 2021 20:08:56 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C3255F8028B
- for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2021 20:08:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3255F8028B
-IronPort-SDR: Y6yc8zrk/bnxGOIfKL1QzLsnVmKgldZsyOYfmPZ9gns/aFxnQiIaBzBw1IL1tApgqIQTr0ypTd
- +atZQlubMRKA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="192969566"
-X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; d="scan'208";a="192969566"
+ by alsa1.perex.cz (Postfix) with ESMTPS id D06B2F800F7
+ for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2021 20:08:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D06B2F800F7
+IronPort-SDR: TAZvkYvx5jQZlD+6KJ6i6roF7uFQ+vtuX8X9ix9iBSiEsvEgeMzU+kQunymzOyd/DlIfrg1JQj
+ cCZeOoq6fuew==
+X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="192969575"
+X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; d="scan'208";a="192969575"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Jun 2021 11:08:41 -0700
-IronPort-SDR: EvpQTFRg023oCYWkjYuwIkhaEc6U0dc8KW6wqo7VqH5bSOZHuLxydtE05O0Y0gb4mM9l3guSo+
- vIac9wJzlH/w==
-X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; d="scan'208";a="484166401"
+ 14 Jun 2021 11:08:45 -0700
+IronPort-SDR: lhAyVb42Y4tFIWQd17H9o9r/4UwWb+jlKm45saZS4Yc4VKAeIesxvfM2d9LCK+n4h6z4CwcFxu
+ uefeOaX+rBbQ==
+X-IronPort-AV: E=Sophos;i="5.83,273,1616482800"; d="scan'208";a="484166421"
 Received: from jepowell-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.114.106])
  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Jun 2021 11:08:39 -0700
+ 14 Jun 2021 11:08:44 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	srinivas.kandagatla@linaro.org
-Subject: [PATCH 0/5] ASoC/SoundWire: fix race condition on system suspend
-Date: Mon, 14 Jun 2021 13:08:10 -0500
-Message-Id: <20210614180815.153711-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/5] ASoC: rt700-sdw: fix race condition on system suspend
+Date: Mon, 14 Jun 2021 13:08:12 -0500
+Message-Id: <20210614180815.153711-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210614180815.153711-1-pierre-louis.bossart@linux.intel.com>
+References: <20210614180815.153711-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>,
- tiwai@suse.de, gregkh@linuxfoundation.org,
+ open list <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ tiwai@suse.de, gregkh@linuxfoundation.org, Takashi Iwai <tiwai@suse.com>,
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Hui Wang <hui.wang@canonical.com>, vkoul@kernel.org, broonie@kernel.org,
  Shuming Fan <shumingf@realtek.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
+ Rander Wang <rander.wang@linux.intel.com>, Bard Liao <bard.liao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,66 +93,132 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patchset fixes a race condition when a SoundWire codec signals an
-'Alert' status during a system suspend, which can happen when e.g. a
-jack detection event is detected and handled in a workqueue scheduled
-after the link is suspended.
+In previous commits we cancelled deferred work, but there is still a
+window of time where a new interrupt could result in new deferred work
+executed after the link is disabled, leading to an IO error.
 
-When this happens in pm_runtime suspend, we already use
-pm_runtime_get_resume() to force the link to remain active, or resume
-immediately, but during a system suspend we don't have this option: we
-can't prevent the entire system from suspending just because of a jack
-detection or codec-specific event.
+This patch uses an 'disable_irq_lock' mutex to prevent new interrupts
+from happening after the start of the system suspend. The choice of a
+mutex v. a spinlock is mainly due to the time required to clear
+interrupts, which requires a command to be transmitted by the
+SoundWire host IP and acknowledged with an interrupt. The
+'interrupt_callback' routine is also not meant to be called from an
+interrupt context.
 
-This patch suggests instead disabling the implementation-defined or
-class-defined IRQs at the start of the suspend, along with an
-additional flag to protect against an interrupt thread/workqueue being
-scheduled after the interrupts are disabled.
+An additional 'disable_irq' flag prevents race conditions where the
+status changes before the interrupts are disabled, but the workqueue
+handling status changes is scheduled after the completion of the
+system suspend. On resume the interrupts are re-enabled already by the
+io_init routine so we only clear the flag.
 
-One could argue that the SoundWire core could have handled this case,
-which is a fair objection. I chose to keep the interrupt handling
-codec-specific since not all codecs can actually generate interrupts,
-and what they do during these interrupts is also quite custom - see
-e.g. the difference between the RT711 and RT711-SDCA versions. In the
-latter case the class-defined interrupts are cleared by the codec
-driver, not by the core.
+BugLink: https://github.com/thesofproject/linux/issues/2943
+Fixes: 5f2df2a4583b ('ASoC: rt700: wait for the delayed work to finish when the system suspends')
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Bard Liao <bard.liao@intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+---
+ sound/soc/codecs/rt700-sdw.c | 34 ++++++++++++++++++++++++++++++++--
+ sound/soc/codecs/rt700.c     |  4 ++++
+ sound/soc/codecs/rt700.h     |  2 ++
+ 3 files changed, 38 insertions(+), 2 deletions(-)
 
-This patchset implies changes to both ASoC and SoundWire, with a
-minimal dependency on a sdw_update() helper and its _no_pm version,
-both of which should have been added a long time ago for
-read-modify-write operations.
-
-This race condition was present in all previous kernel versions but
-was only identified in late May in automated tests. We added Fixes tag
-to help linux-stable backports, but there's no real point in
-back-porting to earlier than 5.10 due to other missing dependencies in
-the upstream code.
-
-Pierre-Louis Bossart (5):
-  soundwire: export sdw_update() and sdw_update_no_pm()
-  ASoC: rt700-sdw: fix race condition on system suspend
-  ASoC: rt711-sdw: fix race condition on system suspend
-  ASoC: rt5682-sdw: fix race condition on system suspend
-  ASoC: rt711-sdca-sdw: fix race condition on system suspend
-
- drivers/soundwire/bus.c           | 17 +++++++++++-
- drivers/soundwire/bus.h           | 13 ---------
- include/linux/soundwire/sdw.h     |  3 ++
- sound/soc/codecs/rt5682-sdw.c     | 38 +++++++++++++++++++++++--
- sound/soc/codecs/rt5682.h         |  2 ++
- sound/soc/codecs/rt700-sdw.c      | 34 +++++++++++++++++++++--
- sound/soc/codecs/rt700.c          |  4 +++
- sound/soc/codecs/rt700.h          |  2 ++
- sound/soc/codecs/rt711-sdca-sdw.c | 46 +++++++++++++++++++++++++++++--
- sound/soc/codecs/rt711-sdca.c     |  4 +++
- sound/soc/codecs/rt711-sdca.h     |  2 ++
- sound/soc/codecs/rt711-sdw.c      | 34 +++++++++++++++++++++--
- sound/soc/codecs/rt711.c          |  4 +++
- sound/soc/codecs/rt711.h          |  2 ++
- 14 files changed, 183 insertions(+), 22 deletions(-)
-
-
-base-commit: bf28c803f2f4b14716df168e98f6ede4ba955866
+diff --git a/sound/soc/codecs/rt700-sdw.c b/sound/soc/codecs/rt700-sdw.c
+index d1d9c0f455b4..bda594899664 100644
+--- a/sound/soc/codecs/rt700-sdw.c
++++ b/sound/soc/codecs/rt700-sdw.c
+@@ -418,10 +418,12 @@ static int rt700_interrupt_callback(struct sdw_slave *slave,
+ 	dev_dbg(&slave->dev,
+ 		"%s control_port_stat=%x", __func__, status->control_port);
+ 
+-	if (status->control_port & 0x4) {
++	mutex_lock(&rt700->disable_irq_lock);
++	if (status->control_port & 0x4 && !rt700->disable_irq) {
+ 		mod_delayed_work(system_power_efficient_wq,
+ 			&rt700->jack_detect_work, msecs_to_jiffies(250));
+ 	}
++	mutex_unlock(&rt700->disable_irq_lock);
+ 
+ 	return 0;
+ }
+@@ -490,6 +492,34 @@ static int __maybe_unused rt700_dev_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
++static int __maybe_unused rt700_dev_system_suspend(struct device *dev)
++{
++	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++	struct rt700_priv *rt700 = dev_get_drvdata(dev);
++	int ret;
++
++	if (!rt700->hw_init)
++		return 0;
++
++	/*
++	 * prevent new interrupts from being handled after the
++	 * deferred work completes and before the parent disables
++	 * interrupts on the link
++	 */
++	mutex_lock(&rt700->disable_irq_lock);
++	rt700->disable_irq = true;
++	ret = sdw_update_no_pm(slave, SDW_SCP_INTMASK1,
++			       SDW_SCP_INT1_IMPL_DEF, 0);
++	mutex_unlock(&rt700->disable_irq_lock);
++
++	if (ret < 0) {
++		/* log but don't prevent suspend from happening */
++		dev_dbg(&slave->dev, "%s: could not disable imp-def interrupts\n:", __func__);
++	}
++
++	return rt700_dev_suspend(dev);
++}
++
+ #define RT700_PROBE_TIMEOUT 5000
+ 
+ static int __maybe_unused rt700_dev_resume(struct device *dev)
+@@ -521,7 +551,7 @@ static int __maybe_unused rt700_dev_resume(struct device *dev)
+ }
+ 
+ static const struct dev_pm_ops rt700_pm = {
+-	SET_SYSTEM_SLEEP_PM_OPS(rt700_dev_suspend, rt700_dev_resume)
++	SET_SYSTEM_SLEEP_PM_OPS(rt700_dev_system_suspend, rt700_dev_resume)
+ 	SET_RUNTIME_PM_OPS(rt700_dev_suspend, rt700_dev_resume, NULL)
+ };
+ 
+diff --git a/sound/soc/codecs/rt700.c b/sound/soc/codecs/rt700.c
+index 01af9d9dd3ca..921382724f9c 100644
+--- a/sound/soc/codecs/rt700.c
++++ b/sound/soc/codecs/rt700.c
+@@ -1112,6 +1112,8 @@ int rt700_init(struct device *dev, struct regmap *sdw_regmap,
+ 	rt700->sdw_regmap = sdw_regmap;
+ 	rt700->regmap = regmap;
+ 
++	mutex_init(&rt700->disable_irq_lock);
++
+ 	/*
+ 	 * Mark hw_init to false
+ 	 * HW init will be performed when device reports present
+@@ -1133,6 +1135,8 @@ int rt700_io_init(struct device *dev, struct sdw_slave *slave)
+ {
+ 	struct rt700_priv *rt700 = dev_get_drvdata(dev);
+ 
++	rt700->disable_irq = false;
++
+ 	if (rt700->hw_init)
+ 		return 0;
+ 
+diff --git a/sound/soc/codecs/rt700.h b/sound/soc/codecs/rt700.h
+index 794ee2e29051..bed9d1de6d5b 100644
+--- a/sound/soc/codecs/rt700.h
++++ b/sound/soc/codecs/rt700.h
+@@ -23,6 +23,8 @@ struct  rt700_priv {
+ 	struct delayed_work jack_detect_work;
+ 	struct delayed_work jack_btn_check_work;
+ 	int jack_type;
++	struct mutex disable_irq_lock; /* imp-def irq lock protection */
++	bool disable_irq;
+ };
+ 
+ struct sdw_stream_data {
 -- 
 2.25.1
 
