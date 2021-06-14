@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E63FCC2B9F4
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Jun 2021 19:58:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9076BC2B9F4
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Jun 2021 19:59:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 20CAF61246
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Jun 2021 19:58:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 20CAF61246
+	by mail.kernel.org (Postfix) with ESMTPS id 175EB61246
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Jun 2021 19:59:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 175EB61246
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A572A16A0;
-	Mon, 14 Jun 2021 21:57:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A572A16A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id A2A651686;
+	Mon, 14 Jun 2021 21:58:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2A651686
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623700720;
-	bh=UaMAdaGCIFZTe9Lid8hlx9FlqRqLHjiFO76ePbDjrE0=;
+	s=default; t=1623700741;
+	bh=gOtV2H3G16EwP1AcvCKrNDEsDikEYklsor3HqzolUsQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dJfkv4+TK4Dzazss6iwayZ+jQ/M3I8lCGcakN8ztio0BJ0QQnLU55IARb+INJx3tg
-	 59y7QXn9opq6JERmsPiKJ60mrVCfzgIuiBXajRT2zmUX4bbMa40/4eCKvl7NCnoSk1
-	 ChQCFVPD7127lo08KG5+eRw3yl9+n2YE0sShmF2I=
+	b=gswpBh8QSpgr4ulXqBq51ot1v1xjOWetVRi6lqLWgxiSGL+4kvUybwCzZI4RY4Brd
+	 BBsAnLwt7oN4Z4MVAOLtJ3AegDIrtpQ0wTYDhuW5nQi7f0PjKWWMVTCvjpPKk5LpWt
+	 hWY4V8NuxqEe8pciBQgUGEdrSEaVHOjQBz1A3TQQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6BB52F804FC;
-	Mon, 14 Jun 2021 21:55:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6648EF804FB;
+	Mon, 14 Jun 2021 21:55:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6CCA2F804FD; Mon, 14 Jun 2021 21:55:08 +0200 (CEST)
+ id 86580F80507; Mon, 14 Jun 2021 21:55:10 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9C25BF804FA
- for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2021 21:55:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C25BF804FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id DB5E3F804FB
+ for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2021 21:55:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB5E3F804FB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="XKfnJWBW"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AA3A6128A;
- Mon, 14 Jun 2021 19:55:03 +0000 (UTC)
+ header.b="VrkjePLz"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0B6A6128C;
+ Mon, 14 Jun 2021 19:55:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1623700503;
- bh=UaMAdaGCIFZTe9Lid8hlx9FlqRqLHjiFO76ePbDjrE0=;
+ s=k20201202; t=1623700506;
+ bh=gOtV2H3G16EwP1AcvCKrNDEsDikEYklsor3HqzolUsQ=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=XKfnJWBW4djyyeyu+bnBwYV3kA0AMw1zcNBMq6AoparWdnwL6o6Ze65nCZUigY81f
- S970hJT5ru0jnee4ijuWhFUX5tcMP0nxgmo9nF4IHvqXMVGgKpxmtHMadoZzETvPHs
- Rcjj/by5SMn7+AHhyz7J0KlkmUr2vFwn1T0ySzJa5oqvP1oUzu5nw8CqdZfqHe/ZYm
- Mj5JXw0BAh8bKgTfa+EXPyx9afERF6ds5sdsShqr/CPJW3Yj+gZbuy8OHf0bA2PAFX
- NvDt32juFXFEkAIrIBnMloIn+8dB6qb+5verJlJax0bnLTAm0EV9TOIj3xmi+RM9MF
- fNNk2vur8lIhw==
+ b=VrkjePLzQ+cJwc8EkPKIaStwEFI+/x7mjolZ1lsOrRcSEWERVzfnUzXLPDKH1xppv
+ 8KTtgNxjN7YrSf/YTvdTS4rilZWBD5V66QMsw9zA++j9jEjbvnaOjBMf8WoA74cYLx
+ tI91H17vGDRRyKEM21O7gI3FOQhQ25GJNBj3nutqpQ165wWmfGCcN7NjrQIL4ycM85
+ PB/AhQjYH4ZLRv6SxguOzNt2s1E1UFOiazt0wYgNBUFwfQ4jbNLRitRoTeXcTAnpEJ
+ Uo1KU+mxaSPhPPjn7iBMeE7Uax+9vCst+/xotHo1lfPYmcxFNlx+bjzyfKMz8rzT5q
+ UspZER+O1LmrQ==
 From: Mark Brown <broonie@kernel.org>
-To: Mark Brown <broonie@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>
-Subject: Re: [PATCH] ASoC: rt5645: Avoid upgrading static warnings to errors
-Date: Mon, 14 Jun 2021 20:53:46 +0100
-Message-Id: <162369994008.34524.1712121519306200413.b4-ty@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v9 0/9] ASoC: codecs: add wcd938x support
+Date: Mon, 14 Jun 2021 20:53:47 +0100
+Message-Id: <162369994008.34524.18038515036369844950.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210608160713.21040-1-broonie@kernel.org>
-References: <20210608160713.21040-1-broonie@kernel.org>
+In-Reply-To: <20210609090943.7896-1-srinivas.kandagatla@linaro.org>
+References: <20210609090943.7896-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- alsa-devel@alsa-project.org, Phillip Potter <phil@philpotter.co.uk>
+Cc: robh@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,14 +86,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 8 Jun 2021 17:07:13 +0100, Mark Brown wrote:
-> One of the fixes reverted as part of the UMN fallout was actually fine,
-> however rather than undoing the revert the process that handled all this
-> stuff resulted in a patch which attempted to add extra error checks
-> instead.  Unfortunately this new change wasn't really based on a good
-> understanding of the subsystem APIs and bypassed the usual patch flow
-> without ensuring it was reviewed by people with subsystem knowledge and
-> was merged as a fix rather than during the merge window.
+On Wed, 9 Jun 2021 10:09:34 +0100, Srinivas Kandagatla wrote:
+> This patchset adds support for Qualcomm WCD938X codec.
+> 
+> Qualcomm WCD9380/WCD9385 Codec is a standalone Hi-Fi audio codec IC
+> connected over SoundWire. This device has two SoundWire devices, RX and
+> TX respectively supporting 4 x ADCs, ClassH, Ear, Aux PA, 2xHPH,
+> 7 x TX diff inputs, 8 DMICs and MBHC.
 > 
 > [...]
 
@@ -103,8 +102,24 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rt5645: Avoid upgrading static warnings to errors
-      commit: 916cccb5078eee57fce131c5fe18e417545083e2
+[1/9] ASoC: dt-bindings: wcd938x: add bindings for wcd938x
+      commit: 10ee3e07d32bede6cd007fb76150a1ccd0628852
+[2/9] ASoC: codecs: wcd-clsh: add new version support
+      commit: 19c5d1f6a0c39cf910c8d211ea40ff758bcb3f49
+[3/9] ASoC: codecs: wcd938x: add basic driver
+      commit: 8d78602aa87a3805902bed83157526fdc5b837d4
+[4/9] ASoC: dt-bindings: wcd938x-sdw: add bindings for wcd938x-sdw
+      commit: e02c65f3a7ce11ce522e805c78ed2f1da5d96975
+[5/9] ASoC: codecs: wcd938x-sdw: add SoundWire driver
+      commit: 16572522aece6a142d303a25f32544643f52c383
+[6/9] ASoC: codecs: wcd938x: add basic controls
+      commit: e8ba1e05bdc016700c85fad559a812c2e795442f
+[7/9] ASoC: codecs: wcd938x: add playback dapm widgets
+      commit: 8da9db0cd6694c98f64b6ec413337ac834e05bb0
+[8/9] ASoC: codecs: wcd938x: add capture dapm widgets
+      commit: d5add08fcbce35faeeffa62d7e8f21fd979d8420
+[9/9] ASoC: codecs: wcd938x: add audio routing and Kconfig
+      commit: 04544222886881cb0865040dcdf747fe7e025947
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
