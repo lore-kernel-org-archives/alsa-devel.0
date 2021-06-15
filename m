@@ -2,76 +2,55 @@ Return-Path: <SRS0=yBFe=LJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 713D6C48BDF
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 15:16:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A191C48BDF
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 15:44:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AD14160FDB
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 15:16:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD14160FDB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id D0A2461002
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 15:44:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D0A2461002
+Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E86B1678;
-	Tue, 15 Jun 2021 17:15:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E86B1678
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9CB331677;
+	Tue, 15 Jun 2021 17:44:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CB331677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623770194;
-	bh=LGwVPo0Y/aLPCEiDrC1crvd4LvwuYtE4FdfFxVWndSI=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1623771895;
+	bh=BuhlqQstT4rS2KUOaPFkw68loy3tyMtQNldCjJy0sLE=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lN1GaP1gnlljOge9lqdfcOujllJ+AMivHMn4ZS8NJ9f9pZ4t1ctGzFG1rHrVq8Udk
-	 Cc6j3goNPb8Ras/7Bic4nQICkAAohUetLc22cEmoprK6Ii7sJibOw7DOf26GQWMAkl
-	 JHsrLnDx4ITWEdIClyvV3wk8OPVHQMDHLGAnek6I=
+	b=s/bj6tRbBmfAZmy2ebNQ/o6SvmhJ7rs4/Tyr2gxOl3/Dg7RAwo908c17UezKDB83T
+	 WnuJNfHCBfuRCY66m7Q5AF4ndo3NFDz/K3konKXpFRyfDJALLYbwoE2QtYX+uvUpfq
+	 t3aEJonrIPzgq2RHNb4EKNW6FLlN8msdczRtE6Vc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 24BD8F8016D;
-	Tue, 15 Jun 2021 17:15:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 261B6F8016D;
+	Tue, 15 Jun 2021 17:44:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E3919F80171; Tue, 15 Jun 2021 17:15:42 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8097AF80165
- for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 17:15:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8097AF80165
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="TgXwKoZM"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CFF7611CE;
- Tue, 15 Jun 2021 15:15:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1623770132;
- bh=LGwVPo0Y/aLPCEiDrC1crvd4LvwuYtE4FdfFxVWndSI=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=TgXwKoZMbnQccXof0lAWG6BImPv639MHdDL8jqBlZ927bZiyrnKASo3B9F41RpLoW
- aQi144EqOep3LuVJy2YSleQvrDK332SjvhywDNAe+qAaLYMLrq1CidINvtA0BVoTgk
- QaKpNb3w7r6A8DmufPsEzrnhulfv/sPZcl6xsdwOFfN1bAZeINC/HN/V24ZvoyWNzA
- uTljKZJTsNbqeaRVJTOaYFIGE+altl/ccr0mWV/kwUhQRqe6udVSvH/l6EgPz6HOKn
- bMKNqzHVmFyK9x02RdHWoWCGr4v4kB7h3gHBHuOwleyfhKFWhVkQk7NHJ6NcycHuh3
- c1XOUIax0yvrA==
-From: Mark Brown <broonie@kernel.org>
-To: perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
- sfr@canb.auug.org.au, Pu Lehui <pulehui@huawei.com>, lgirdwood@gmail.com
-Subject: Re: [PATCH -next] ASoC: codecs: wcd938x: constify static struct
- snd_soc_dai_ops
-Date: Tue, 15 Jun 2021 16:15:07 +0100
-Message-Id: <162376540392.36156.3517885436389644399.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210615113324.238837-1-pulehui@huawei.com>
-References: <20210615113324.238837-1-pulehui@huawei.com>
+ id 8D0B0F80113; Tue, 15 Jun 2021 17:44:03 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 9DAC1F80113
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 17:43:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DAC1F80113
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: zhangjinhao2@huawei.com, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1623771834847848892-webhooks-bot@alsa-project.org>
+References: <1623771834847848892-webhooks-bot@alsa-project.org>
+Subject: Undefined symbol in static library
+Message-Id: <20210615154403.8D0B0F80113@alsa1.perex.cz>
+Date: Tue, 15 Jun 2021 17:44:03 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,35 +66,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 15 Jun 2021 19:33:24 +0800, Pu Lehui wrote:
-> The snd_soc_dai_ops structures is only stored in the ops field of a
-> snd_soc_dai_driver structure, so make the snd_soc_dai_ops structure
-> const to allow the compiler to put it in read-only memory.
+alsa-project/alsa-lib issue #157 was opened from jpalus:
 
-Applied to
+There is a mismatch between declaration:
+https://github.com/alsa-project/alsa-lib/blob/f4c061f349188c548497607efd4622c6e6a43270/src/control/control_symbols.c#L24
+and actual definition:
+https://github.com/alsa-project/alsa-lib/blob/f4c061f349188c548497607efd4622c6e6a43270/src/control/control_empty.c#L33
+resulting in undefined symbol in static library. Judging by convention used in other files I suppose the latter should be renamed to match declaration.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: codecs: wcd938x: constify static struct snd_soc_dai_ops
-      commit: 355af6c0c09d4dd0d97fa1aca0ff797b64cd6187
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/157
+Repository URL: https://github.com/alsa-project/alsa-lib
