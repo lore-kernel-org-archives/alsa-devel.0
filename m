@@ -7,43 +7,44 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75F5CC48BE5
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 13:50:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4385FC48BE8
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 13:50:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6CC2161477
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 13:50:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6CC2161477
+	by mail.kernel.org (Postfix) with ESMTPS id 62C2961474
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 13:50:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 62C2961474
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 78E021691;
-	Tue, 15 Jun 2021 15:49:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78E021691
+	by alsa0.perex.cz (Postfix) with ESMTPS id D7BB91693;
+	Tue, 15 Jun 2021 15:49:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D7BB91693
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623765000;
-	bh=QQkFUXS7zkHKkC9MqVQnDoglteo96ABlLYqig1k+feE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=TqymRuO1k6gltxcgKqccVq+qlRdsKTylSXtl3rq86HPXO444+5YWqfOQ+MpF8usjv
-	 de7N4nepmQ3M05gEOpUvfYIwSH1cDFCN82FolQofz0sT6wNYraZ+zkYNrE0QeQ6B/8
-	 KXqnM32P7xOFO34767fLVX5cYlmMAaueSrnHBTQg=
+	s=default; t=1623765004;
+	bh=6q3xeu4xNXBUAvUzTWBa4+vpG+ac0he2YfAoUtZDxnw=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=YqJJ3pdYZBD1iFsH0njjmXSu7PADmPiU0VGR0prWlQ0Nzo5Rhz2jh2x43DhW9mzS6
+	 cC5ZSDABeSHNh0XlaSKG0vp7xdvg7kRu3FWkGxOnz52oKtBHzOp5EjsWmSIhWKbKNi
+	 hiN9tRYH7DKwXHUttE/um0QpwD61sW8ibvTCrkM8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F9B0F802A9;
+	by alsa1.perex.cz (Postfix) with ESMTP id D129EF8016C;
 	Tue, 15 Jun 2021 15:48:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E4E38F802A9; Tue, 15 Jun 2021 15:48:17 +0200 (CEST)
+ id 39C26F804D0; Tue, 15 Jun 2021 15:48:20 +0200 (CEST)
 Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 78795F80171
- for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 15:48:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78795F80171
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
- by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G48gB5yyzz63c6;
+ by alsa1.perex.cz (Postfix) with ESMTPS id 756D1F80113
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 15:48:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 756D1F80113
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+ by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G48gB6sqYz63c8;
  Tue, 15 Jun 2021 21:44:06 +0800 (CST)
 Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
  dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
@@ -55,11 +56,13 @@ Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
  2021 21:48:04 +0800
 From: Yang Yingliang <yangyingliang@huawei.com>
 To: <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>
-Subject: [PATCH -next 1/5] ASoC: img-i2s-in: Use
+Subject: [PATCH -next 2/5] ASoC: img-i2s-out: Use
  devm_platform_get_and_ioremap_resource()
-Date: Tue, 15 Jun 2021 21:51:56 +0800
-Message-ID: <20210615135200.1661695-1-yangyingliang@huawei.com>
+Date: Tue, 15 Jun 2021 21:51:57 +0800
+Message-ID: <20210615135200.1661695-2-yangyingliang@huawei.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210615135200.1661695-1-yangyingliang@huawei.com>
+References: <20210615135200.1661695-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -88,19 +91,19 @@ code.
 
 Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- sound/soc/img/img-i2s-in.c | 3 +--
+ sound/soc/img/img-i2s-out.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/img/img-i2s-in.c b/sound/soc/img/img-i2s-in.c
-index fd3432a1d6ab..1bf5d6edbd32 100644
---- a/sound/soc/img/img-i2s-in.c
-+++ b/sound/soc/img/img-i2s-in.c
-@@ -434,8 +434,7 @@ static int img_i2s_in_probe(struct platform_device *pdev)
+diff --git a/sound/soc/img/img-i2s-out.c b/sound/soc/img/img-i2s-out.c
+index b56a18e7f3ac..4f90d36dc7df 100644
+--- a/sound/soc/img/img-i2s-out.c
++++ b/sound/soc/img/img-i2s-out.c
+@@ -440,8 +440,7 @@ static int img_i2s_out_probe(struct platform_device *pdev)
  
- 	i2s->dev = dev;
+ 	i2s->dev = &pdev->dev;
  
 -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	base = devm_ioremap_resource(dev, res);
+-	base = devm_ioremap_resource(&pdev->dev, res);
 +	base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
  	if (IS_ERR(base))
  		return PTR_ERR(base);
