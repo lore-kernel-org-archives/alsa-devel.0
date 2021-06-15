@@ -2,75 +2,76 @@ Return-Path: <SRS0=yBFe=LJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22CCDC48BE5
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 17:31:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD1DFC48BE5
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 17:32:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A72D161413
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 17:31:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A72D161413
+	by mail.kernel.org (Postfix) with ESMTPS id 2B242611EE
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 17:32:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B242611EE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AADB61690;
-	Tue, 15 Jun 2021 19:30:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AADB61690
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7A83E168D;
+	Tue, 15 Jun 2021 19:31:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A83E168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623778275;
-	bh=G9e09QWzx1MRxXb9RBiiGNL1fTJFC8HemQb4EYYQhc4=;
+	s=default; t=1623778326;
+	bh=GEAwyVbCu9FzP4tJk0ycazZjAaockIItbW1zOcgtnD4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PUpxRWKqbDJTxgiX104ZzXiDOxSEW+pgPXOXwbDEgXkAV1qFhJkHH4XV0GJhQoFho
-	 QabXsESV6CmDjaX5geso6VImI+MEz52zLNSqh5ir7Rm436jMdOqmOM5WokurvCzk2F
-	 QzpUmO3kkWV1Pq8hqBR2SSJG2hCzfXrkdzIXMYLw=
+	b=t/R/GXXs+4mf1h4pGNtV1msEmLk+JQku5SYlSkgUo4WphRc+E5/jfIFE+2SmUA/ob
+	 bZXCwkUpk0xgJv+xTG6DID/Jxb+Hgms/QaAsrhUAdmNi+Ro1udvygZpOxFxAWWPEl3
+	 RE6v9hDhh+B9VqxxCvcIRXM0vl+FypiUIY8cXZ1Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 57093F8016D;
-	Tue, 15 Jun 2021 19:30:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 66E29F802A9;
+	Tue, 15 Jun 2021 19:30:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8BF8AF804D1; Tue, 15 Jun 2021 19:30:15 +0200 (CEST)
+ id D14C0F8016D; Tue, 15 Jun 2021 19:30:15 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3B9ABF8016D
- for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 19:30:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B9ABF8016D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9A6E0F8016C
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 19:29:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A6E0F8016C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Ya2eZp3J"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC35F61410;
- Tue, 15 Jun 2021 17:29:55 +0000 (UTC)
+ header.b="eX1MFs5S"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BB7D613FA;
+ Tue, 15 Jun 2021 17:29:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1623778196;
- bh=G9e09QWzx1MRxXb9RBiiGNL1fTJFC8HemQb4EYYQhc4=;
+ s=k20201202; t=1623778188;
+ bh=GEAwyVbCu9FzP4tJk0ycazZjAaockIItbW1zOcgtnD4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Ya2eZp3JhJS3pUFakebcLkiPKLSAHw0OYQN1lT3E19/RroIOBrCO1dA7H8jQG7mL+
- ABO0CWidRifZ4O12H0tH1DtfThLp05JgeLZui2Nf+iG6caCoTg1hHmQtLKC54PT7wY
- EoqSlJOMAh6Z+Etq8ACjc9jAPzxDU4DL1WaSP7JKpRIAupAPaIMci+W5nbYJbqTcEZ
- Y93i00fSIpIIievJMJ0BGSiNNUyj+F81OlKFp/quohqolPldcEElz9TSA1+uRKzGEY
- SLljnn/V+0GTq0yzd2yccqINFQIDjbAjpC6suZFpanhcWZvI3KDsbTX6OcM88XNvA5
- /8gn7htN3hQ1w==
+ b=eX1MFs5SdRZYdboOArHyCe3KH+hld9wSZdB6J9XsMl//rcSw/eheZf04JLhr+JzBo
+ smRhD2+nsvraIGjpvAlWC24r381xwFlFL/00BduN8OOcPRVCoB93VVEy4lh+pquCTk
+ ZWziAgcGx57J0mf+acJuobuCaRlq3ecc9qcDKGXirKp9KngvF34rju4CRPnZ0oEu5A
+ QMjMBCqdqzHif1R5jLXGHQg+0edA0LeWBCfVgci2sQOsRHoulsZgaIHSCTA6szTDun
+ tyABhZE4caX7WdvDpDv71jqYaWSvaNDHU8COul+I5JMlxeiHs1uI+1iUdI+dbChB/G
+ eyu/DIPvmXnSA==
 From: Mark Brown <broonie@kernel.org>
-To: srinivas.kandagatla@linaro.org,
-	Gabriel David <ultracoolguy@disroot.org>
-Subject: Re: [PATCH 0/4] ASoC: qdsp6: Add Quinary MI2S ports support
-Date: Tue, 15 Jun 2021 18:29:21 +0100
-Message-Id: <162377763944.21612.14888112602907087469.b4-ty@kernel.org>
+To: Yang Yingliang <yangyingliang@huawei.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] ASoC: hisilicon: Use
+ devm_platform_get_and_ioremap_resource()
+Date: Tue, 15 Jun 2021 18:29:18 +0100
+Message-Id: <162377763944.21612.17506249147724784597.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210605022206.13226-1-ultracoolguy@disroot.org>
-References: <20210605022206.13226-1-ultracoolguy@disroot.org>
+In-Reply-To: <20210615133515.1376290-1-yangyingliang@huawei.com>
+References: <20210615133515.1376290-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,20 +87,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 4 Jun 2021 22:22:02 -0400, Gabriel David wrote:
-> Various devices(such as the Motorola Moto G7 Power, codename ocean) use
-> the Quinary MI2S ports for reproducing audio. Add support to them in
-> kernel.
-> 
-> Signed-off-by: Gabriel David <ultracoolguy@disroot.org>
-> 
-> Gabriel David (4):
->   ASoC: q6afe: dt-bindings: Add QUIN_MI2S_RX/TX
->   ASoC: qdsp6: q6afe: Add Quinary MI2S ports
->   ASoC: qdsp6: q6afe-dai: Add Quinary MI2S ports
->   ASoC: qdsp6: q6routing: Add Quinary MI2S ports
-> 
-> [...]
+On Tue, 15 Jun 2021 21:35:15 +0800, Yang Yingliang wrote:
+> Use devm_platform_get_and_ioremap_resource() to simplify
+> code.
 
 Applied to
 
@@ -107,14 +97,8 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: q6afe: dt-bindings: Add QUIN_MI2S_RX/TX
-      commit: 099ab4fcf3752a1bc721138632d28aa6685b1cee
-[2/4] ASoC: qdsp6: q6afe: Add Quinary MI2S ports
-      commit: d0293e2aa6c1cfc29c7e571721036650b4f656eb
-[3/4] ASoC: qdsp6: q6afe-dai: Add Quinary MI2S ports
-      commit: 98e80779ff9a03b913e59850d55ac00f3eec9cdd
-[4/4] ASoC: qdsp6: q6routing: Add Quinary MI2S ports
-      commit: 35f78d0277fc522028e9504454c555d9b0f53bec
+[1/1] ASoC: hisilicon: Use devm_platform_get_and_ioremap_resource()
+      commit: afc3a0b4c408b00787d60225e6d667e1e6f93b6a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
