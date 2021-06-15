@@ -2,119 +2,74 @@ Return-Path: <SRS0=NYZN=LL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26118C48BE5
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 14:35:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69424C2B9F4
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 14:36:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8722E613FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 14:35:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8722E613FE
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	by mail.kernel.org (Postfix) with ESMTPS id ADC4C6140F
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 14:36:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ADC4C6140F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 06C391704;
-	Thu, 17 Jun 2021 16:34:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06C391704
+	by alsa0.perex.cz (Postfix) with ESMTPS id D08871711;
+	Thu, 17 Jun 2021 16:35:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D08871711
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623940539;
-	bh=2pT6diwY3dHqhQNq0TZW9ZAI8vRzneLi7AxE1GAN/Os=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Urc3eu8DnCe0nY8my0PQew40UzBiPHU7vQxlG4Ai0CqszROrGoki7E68Wxh+hMYhr
-	 diUNmdQ/6uKWXyIl3SZlEA23oUUhiyW/Fge9zT14bmkMYZDhDKKe/LnQPdi+M8rleu
-	 4V6M4a5mR3qXqiFMgmxx3OpjuprAiiiapiGrhvDg=
+	s=default; t=1623940589;
+	bh=8BzqWwaFC/7vdEBpTuwlkiroz81wWOuUXuM8tambKHk=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=bKE0VsF/Yb2RhcunTHcZrJTGyWr/GdWlYBms9ZixQDg8KrHSFR13tIvGzsREVmIuJ
+	 u4OfJKdh2IrD1qzcWYmVA5k9EHs9T4VVx9aiFuy0EjrIfzTKPdEKyneceBmSgEe112
+	 UVuOIMJWR/otreQe+acBa7QZMPlCGxJjFgVjgtao=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8C8C6F80171;
-	Thu, 17 Jun 2021 16:34:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E23CF8025E;
+	Thu, 17 Jun 2021 16:34:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C9CD0F8028B; Wed, 16 Jun 2021 12:41:56 +0200 (CEST)
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 5ED73F80171; Tue, 15 Jun 2021 13:32:50 +0200 (CEST)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2DDD1F8028B
- for <alsa-devel@alsa-project.org>; Wed, 16 Jun 2021 12:41:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DDD1F8028B
-Received: from gallifrey.ext.pengutronix.de
- ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <mkl@pengutronix.de>)
- id 1ltSzV-0004RW-VS; Wed, 16 Jun 2021 12:41:50 +0200
-Received: from pengutronix.de (unknown
- [IPv6:2a03:f580:87bc:d400:27:4a54:dbae:b593])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest
- SHA256) (Client did not present a certificate)
- (Authenticated sender: mkl-all@blackshift.org)
- by smtp.blackshift.org (Postfix) with ESMTPSA id 9048463D23F;
- Wed, 16 Jun 2021 10:41:36 +0000 (UTC)
-Date: Wed, 16 Jun 2021 12:41:35 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: Drop redundant minItems/maxItems
-Message-ID: <20210616104135.z5bjalhan4ui2ibz@pengutronix.de>
-References: <20210615191543.1043414-1-robh@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1F64DF80113
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 13:32:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F64DF80113
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G45df6YCJzXg5V;
+ Tue, 15 Jun 2021 19:27:34 +0800 (CST)
+Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 19:32:34 +0800
+Received: from ubuntu1804.huawei.com (10.67.174.98) by
+ dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 19:32:34 +0800
+From: Pu Lehui <pulehui@huawei.com>
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+ <tiwai@suse.com>, <srinivas.kandagatla@linaro.org>, <sfr@canb.auug.org.au>
+Subject: [PATCH -next] ASoC: codecs: wcd938x: constify static struct
+ snd_soc_dai_ops
+Date: Tue, 15 Jun 2021 19:33:24 +0800
+Message-ID: <20210615113324.238837-1-pulehui@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="agvztsrh6izyn335"
-Content-Disposition: inline
-In-Reply-To: <20210615191543.1043414-1-robh@kernel.org>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-X-Mailman-Approved-At: Thu, 17 Jun 2021 16:34:45 +0200
-Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>, linux-pwm@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-pci@vger.kernel.org,
- Linus Walleij <linus.walleij@linaro.org>,
- Wim Van Sebroeck <wim@linux-watchdog.org>, linux-remoteproc@vger.kernel.org,
- Ulf Hansson <ulf.hansson@linaro.org>, dri-devel@lists.freedesktop.org,
- linux-ide@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-phy@lists.infradead.org, linux-riscv@lists.infradead.org,
- Lee Jones <lee.jones@linaro.org>, linux-clk@vger.kernel.org,
- linux-rtc@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
- Herbert Xu <herbert@gondor.apana.org.au>,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>, Marc Zyngier <maz@kernel.org>,
- Joerg Roedel <joro@8bytes.org>, Jassi Brar <jassisinghbrar@gmail.com>,
- Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@ti.com>,
- David Airlie <airlied@linux.ie>, linux-serial@vger.kernel.org,
- Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Jakub Kicinski <kuba@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
- Vivien Didelot <vivien.didelot@gmail.com>,
- Wolfgang Grandegger <wg@grandegger.com>, linux-media@vger.kernel.org,
- Ohad Ben-Cohen <ohad@wizery.com>, devicetree@vger.kernel.org,
- Albert Ou <aou@eecs.berkeley.edu>, linux-watchdog@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-can@vger.kernel.org,
- linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Kamal Dasu <kdasu.kdev@gmail.com>, Paul Walmsley <paul.walmsley@sifive.com>,
- Bjorn Helgaas <bhelgaas@google.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- Thomas Gleixner <tglx@linutronix.de>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- linux-arm-kernel@lists.infradead.org, Jens Axboe <axboe@kernel.dk>,
- Alessandro Zummo <a.zummo@towertech.it>, Guenter Roeck <linux@roeck-us.net>,
- Mathieu Poirier <mathieu.poirier@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
- netdev@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>,
- linux-usb@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- iommu@lists.linux-foundation.org, Palmer Dabbelt <palmer@dabbelt.com>,
- linux-crypto@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dmaengine@vger.kernel.org,
- Vladimir Oltean <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>,
- Jonathan Cameron <jic23@kernel.org>
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.98]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500019.china.huawei.com (7.185.36.180)
+X-CFilter-Loop: Reflected
+X-Mailman-Approved-At: Thu, 17 Jun 2021 16:34:46 +0200
+Cc: zhangjinhao2@huawei.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, pulehui@huawei.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -130,50 +85,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The snd_soc_dai_ops structures is only stored in the ops field of a
+snd_soc_dai_driver structure, so make the snd_soc_dai_ops structure
+const to allow the compiler to put it in read-only memory.
 
---agvztsrh6izyn335
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Pu Lehui <pulehui@huawei.com>
+---
+ sound/soc/codecs/wcd938x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 15.06.2021 13:15:43, Rob Herring wrote:
-> If a property has an 'items' list, then a 'minItems' or 'maxItems' with t=
-he
-> same size as the list is redundant and can be dropped. Note that is DT
-> schema specific behavior and not standard json-schema behavior. The tooli=
-ng
-> will fixup the final schema adding any unspecified minItems/maxItems.
->=20
-> This condition is partially checked with the meta-schema already, but
-> only if both 'minItems' and 'maxItems' are equal to the 'items' length.
-> An improved meta-schema is pending.
-[...]
->  Documentation/devicetree/bindings/net/can/bosch,m_can.yaml  | 2 --
+diff --git a/sound/soc/codecs/wcd938x.c b/sound/soc/codecs/wcd938x.c
+index 2cf6145b7219..8ec9357fd855 100644
+--- a/sound/soc/codecs/wcd938x.c
++++ b/sound/soc/codecs/wcd938x.c
+@@ -3425,7 +3425,7 @@ static int wcd938x_codec_set_sdw_stream(struct snd_soc_dai *dai,
+ 
+ }
+ 
+-static struct snd_soc_dai_ops wcd938x_sdw_dai_ops = {
++static const struct snd_soc_dai_ops wcd938x_sdw_dai_ops = {
+ 	.hw_params = wcd938x_codec_hw_params,
+ 	.hw_free = wcd938x_codec_free,
+ 	.set_sdw_stream = wcd938x_codec_set_sdw_stream,
+-- 
+2.17.1
 
-Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---agvztsrh6izyn335
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmDJ1V0ACgkQqclaivrt
-76nTUAf+NueTtFpURzEcaqcVzU9on1r9+EA8Cl4Mxhgg3Nw3TGp6enDeBSGPVR5B
-MaJtsub8PAEbECezUQxWPaNPa5uvS7dCW5eygZ2z3lDMGZGhYjtv67LVAJgCDq3q
-BWNuKMkKu25Ccsxl33ItHRrAmrlcwBcZMfzN+E9OgZ60GySlRv+AxcLR2XiwST9t
-kWlEW417Mj0P+cvwFo/3Ms4zRddEiw92YruesAK73pkxrB2u2xqaSy9BqNHZCG/J
-F9Q0VsjhTwLAI/7VQohXgcrL2yHsMRJt0M1+XMaxNncf1amrPNo8eWjyNDNbbIIi
-s6uvO8FoLgDLRqbX7Q14cLQ+uQmadw==
-=ZOig
------END PGP SIGNATURE-----
-
---agvztsrh6izyn335--
