@@ -1,89 +1,77 @@
-Return-Path: <SRS0=68EG=LI=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=yBFe=LJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24707C2B9F4
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Jun 2021 23:05:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A10D3C2B9F4
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 01:36:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C91F361350
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Jun 2021 23:05:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C91F361350
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 09667611CE
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 01:36:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 09667611CE
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 80C2D1684;
-	Tue, 15 Jun 2021 01:04:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 80C2D1684
+	by alsa0.perex.cz (Postfix) with ESMTPS id C4A9A167A;
+	Tue, 15 Jun 2021 03:35:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4A9A167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623711921;
-	bh=JmsSuDlieADbo+QDhQbqCbM+PNPDveRbyB9Hao4XtpM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1623720991;
+	bh=xYS6kiiQRm7AjzBLwGjAOR0PYgoYY/9if6ZnCDs63B8=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DIaELoXcvs/KPJ1T84+F4huqVZpFPWOALs9l5YohIaJ06GNG16yhVq6RguwKmbOOA
-	 Pz3am3XM/3LA2Taq/K+Weixua+RPpLzi72R+GU9U741B8JUPhQq+FBKuqGz/KyY/3S
-	 DvvvY/H8lYYl+PtN9o0fa1M5tFmZnlN1RoMG8uVE=
+	b=VnGnZWRt5va0HuDNiuVYzhNpPQmw7Se/Kz7I6A0m59PpX7dsuQnZafIA/UQQLLu6d
+	 TnHoi7OvD53b/ZRTrdZHpXrD6RXc0piJKawSSuTT9iCi1yaF7KkAiI8UBxbfQBkl/Q
+	 NRj3f/3F++CA/kBNbWZlT6sn1X6x6jj0oqjpOZ3Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EBAD3F802E8;
-	Tue, 15 Jun 2021 01:04:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42750F80424;
+	Tue, 15 Jun 2021 03:35:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 53734F80424; Tue, 15 Jun 2021 01:04:29 +0200 (CEST)
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com
- [IPv6:2607:f8b0:4864:20::82c])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 3F4F3F8025E; Tue, 15 Jun 2021 03:35:39 +0200 (CEST)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4443BF8025E
- for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 01:04:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4443BF8025E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="czG+z7x7"
-Received: by mail-qt1-x82c.google.com with SMTP id 93so9844380qtc.10
- for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2021 16:04:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=JmsSuDlieADbo+QDhQbqCbM+PNPDveRbyB9Hao4XtpM=;
- b=czG+z7x7kg09lfjHklXE7ygIBearwJ/wTjc8LMUOQpQsXSbV5zkr55NKnRsZ6AyrtQ
- Fahk4VSxr2gGVsJ0N4ACAV7VXE1gbfczJ/j937VbZ60Aa9nNyPmqPwlDYVjalGvVSp1C
- UxJjICgqdG0CM1Vk6juWNmpJn8VrTOJKrEOKVkJqTsNa1igbxznNJ8AKi2eT/b3MDGMK
- 2jzJV5tYtAkf0B6iD22t0swtaWVw4f2qHqMUn6wi0pWj+vLwsyN57c91i3OzMuyEAzHi
- su4h7ui1RQ+fGayuP+zGahxcgDCjxhDPqquDjuVNrsinno3fb/9YLWog/5Ns/6+PWYJJ
- AzMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=JmsSuDlieADbo+QDhQbqCbM+PNPDveRbyB9Hao4XtpM=;
- b=VudSSM9bw0CkkjlqfQc+gsZu8/Wi1tFe4Xznkb4fOSY14z2DZn0cZP3r6Or262Xt7l
- npivZ1q1siFm6tW6+ngByRT9xNJbMB46GYUrM7kgY6+mN4zfV6vIj7Xp8Mk7uI4BjXGx
- 5A+q1FtRA6U7d/k75dw7nyTckr9sgQhFv/JIkNf6JIqMAE4myrAJLFuECzW2KZ+sxHYX
- S0BKyjkGiQiW3SDm9Ac7k32De4c4ZZI8u8B9DprlFq+b4E+nEs175V09XvTa29x+axxT
- cF1ZqtEs6BNymKf/aIBRZmkMSqT9dMBwB0VfkvxMnt3sNlg+JCcUYlG1K20eYzTrREU8
- MjKQ==
-X-Gm-Message-State: AOAM531tAoVnINbEfE85OBKpIzgEACbYWgMeVFuE2QPLc0M80aLBL/pc
- VClhC5kfXvFcJG7qNvHERrVAdgN+FaLJAVKLNX0=
-X-Google-Smtp-Source: ABdhPJyjICcCQd1xiqStNRf3+2mdPRpIMOquY3IVQU2HuVshXYgA4LRtyT1RAmO1PoNh2n8zgzGH9y1qVQGJ/WuUgoQ=
-X-Received: by 2002:ac8:1188:: with SMTP id d8mr18492913qtj.218.1623711856226; 
- Mon, 14 Jun 2021 16:04:16 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 458FBF8028B
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 03:35:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 458FBF8028B
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G3rQq48gHz6yqm;
+ Tue, 15 Jun 2021 09:32:19 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 09:35:28 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 15 Jun
+ 2021 09:35:27 +0800
+From: Yang Yingliang <yangyingliang@huawei.com>
+To: <linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+ <alsa-devel@alsa-project.org>
+Subject: [PATCH -next v2 7/9] ASoC: fsl_spdif: Use
+ devm_platform_get_and_ioremap_resource()
+Date: Tue, 15 Jun 2021 09:39:20 +0800
+Message-ID: <20210615013922.784296-8-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210615013922.784296-1-yangyingliang@huawei.com>
+References: <20210615013922.784296-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
-References: <trinity-60583881-3802-43ab-8ebb-6172dc0508fe-1623648773558@3c-app-gmx-bs57>
-In-Reply-To: <trinity-60583881-3802-43ab-8ebb-6172dc0508fe-1623648773558@3c-app-gmx-bs57>
-From: Geraldo Nascimento <geraldogabriel@gmail.com>
-Date: Mon, 14 Jun 2021 19:58:00 -0300
-Message-ID: <CAEsQvcvYEoP6=AYOqg2wdA1EchBw83zLSUejnd+YmNwV=Qp8Cg@mail.gmail.com>
-Subject: Re: Xone43C: USB communication
-To: Roman Muller <klangrausch@wolke7.net>
-Content-Type: text/plain; charset="UTF-8"
-Cc: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
+Cc: broonie@kernel.org, timur@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,28 +87,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Jun 14, 2021 at 2:32 AM Roman Muller <klangrausch@wolke7.net> wrote:
->
-> Hello Gerardo, hello all of you,
->
-> > Is your capture complete from a software standpoint? i.e. are you
-> > starting Serato or Traktor on the VM while doing the usbmon capture?
->
-> Not tested yet, I need to get a few items for that and investigate the
-> matter! It is complete up to loading the Win10 driver (which has been
-> supplied by the manufacturer). Maybe I am lucky and
-> this is already sufficient.
+Use devm_platform_get_and_ioremap_resource() to simplify
+code.
 
-I hope you are lucky and there isn't any more magic than what you have
-already captured.
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ sound/soc/fsl/fsl_spdif.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-So, the process at least theoretically is to put the URB CONTROLs
-inside sound/usb/quirks.c and remember that it may be necessary to put
-your vendor specs EPs with altsetting etc. inside
-sound/usb/quirks-table.h too.
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index 2a76714eb8e6..d812a3ff5845 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -1355,8 +1355,7 @@ static int fsl_spdif_probe(struct platform_device *pdev)
+ 				spdif_priv->soc->tx_formats;
+ 
+ 	/* Get the addresses and IRQ */
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	regs = devm_ioremap_resource(&pdev->dev, res);
++	regs = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+ 	if (IS_ERR(regs))
+ 		return PTR_ERR(regs);
+ 
+-- 
+2.25.1
 
-Good luck, Roman!
-
->
-> Have a nice day,
-> Roman
