@@ -2,76 +2,75 @@ Return-Path: <SRS0=yBFe=LJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5A63C48BDF
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 17:32:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59991C49361
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 17:33:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AFC47613F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 17:32:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AFC47613F5
+	by mail.kernel.org (Postfix) with ESMTPS id C8ABF61414
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 17:33:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C8ABF61414
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CA3F016BC;
-	Tue, 15 Jun 2021 19:31:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA3F016BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 63E0D16AE;
+	Tue, 15 Jun 2021 19:32:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63E0D16AE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623778366;
-	bh=I+jgj6nQlpvNNyLiWopyqY9UP0+/vKlXRtn+3XYdWwM=;
+	s=default; t=1623778379;
+	bh=SdONMFRJs7Ih+OqCLHPKOjGOo6+vcLRW40A4/iSbxzU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RvRkBZyWl6buwfF5XjZGf7aut6cpKz9L9RbLrz4G1YJt7R/aQuIhQR5Cg/q4YXVGo
-	 YEN/PblRTLsxY50u1T3LCIgXpG6u+fzI/ArkOcimEqqo0q6XycILGZPGxAZ2ZcPiX2
-	 w8Fytl2DLAZtV3Nd2nhCVhIA94WiDOvqkR9SaRng=
+	b=n7AQ1M7OBWhojTpkygLj2J2fOW8wI3LD4WdIpyqy2DNndF4jSyrERmumFFQjIxCOQ
+	 oBw96sZX5r/9PvTW0obDokZNISjLN4x0t+pP2eCC16ednXm6c62j6pBDHRsZKQtXt/
+	 1+nABj/LcTMove6alKiRrt0tgihNs+mtMcYgwrYE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 96B10F804D8;
-	Tue, 15 Jun 2021 19:30:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42380F804E0;
+	Tue, 15 Jun 2021 19:30:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 42F48F8049E; Tue, 15 Jun 2021 19:30:18 +0200 (CEST)
+ id 10B40F8025A; Tue, 15 Jun 2021 19:30:20 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 71C9BF8025A
- for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 19:30:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71C9BF8025A
+ by alsa1.perex.cz (Postfix) with ESMTPS id C3714F8025E
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 19:30:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3714F8025E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="sBqAAbFU"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 954B8610A3;
- Tue, 15 Jun 2021 17:30:03 +0000 (UTC)
+ header.b="My/AzXud"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B51361403;
+ Tue, 15 Jun 2021 17:29:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1623778204;
- bh=I+jgj6nQlpvNNyLiWopyqY9UP0+/vKlXRtn+3XYdWwM=;
+ s=k20201202; t=1623778198;
+ bh=SdONMFRJs7Ih+OqCLHPKOjGOo6+vcLRW40A4/iSbxzU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=sBqAAbFUZgTBINdXHKBYSRNeJPFojOkr9GmnEdaWDL+VvAMXGyIJYNYBcbUSSdo5D
- Na3OWrh1bLPaUAWoXdvVhVba7OkGA9va5ra0accxiFQETti2Cyb3K1ZYWRnR6eUchw
- /nXr3q18KJ8qMiHRuSD8t00hDzU5vKm5u8wXdT83Ag0bnPHoNys+ACgb45T4RptkRK
- vlkoglORLLaQ05kvnEhXIpr0jjRRsw/Qk0mnv6hc3HWFPrbjh2hAnz06XsAcmCvtts
- qljG4/Ofx7OtEbMi6/12FCWtigudo1R+/zaHo/wAF5EPldzIQkYxmiVS2tMsH9TkOb
- MwLQx8HirIrQA==
+ b=My/AzXudtPgjPxNE3pkwlv9Ni3jGESjXpfpUicUM+TTyr6QUmlyQbJMUovaMqjNGo
+ NqffrS1qp+WcqS9ooEUfC+2OMFs04OUiSGjQETRx4uV8qRc4nCTiPx8PdYHWImf2ES
+ RUhVnweyAUkQjuo8xrTI+vxxQGeLkaqgJpwC034c9fXHSIf1TquswOBWf68BrDKdYh
+ Z6mhmujHUCDketUjhexzn9ejGpT0t5RHne9+ejIr6yfsQp1Muzdp5mPZB2s4dXgiBl
+ 0HAkdvL8CvE7FtJyPB4bZLVHYjq+Ygaz80FkgdCtztu1WYXRrb6LCSfJNa1G2p63uL
+ zkti5omBNs7sw==
 From: Mark Brown <broonie@kernel.org>
 To: Yang Yingliang <yangyingliang@huawei.com>, linux-kernel@vger.kernel.org,
  alsa-devel@alsa-project.org
-Subject: Re: [PATCH -next] ASoC: dwc: dwc-i2s: Use
+Subject: Re: [PATCH -next] ASoC: jz4740-i2s: Use
  devm_platform_get_and_ioremap_resource()
-Date: Tue, 15 Jun 2021 18:29:24 +0100
-Message-Id: <162377763945.21612.7111520770208595617.b4-ty@kernel.org>
+Date: Tue, 15 Jun 2021 18:29:22 +0100
+Message-Id: <162377763945.21612.3642505677079279664.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210615132933.1372463-1-yangyingliang@huawei.com>
-References: <20210615132933.1372463-1-yangyingliang@huawei.com>
+In-Reply-To: <20210615135627.1665168-1-yangyingliang@huawei.com>
+References: <20210615135627.1665168-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
+Cc: paul@crapouillou.net, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,7 +86,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 15 Jun 2021 21:29:33 +0800, Yang Yingliang wrote:
+On Tue, 15 Jun 2021 21:56:27 +0800, Yang Yingliang wrote:
 > Use devm_platform_get_and_ioremap_resource() to simplify
 > code.
 
@@ -97,8 +96,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: dwc: dwc-i2s: Use devm_platform_get_and_ioremap_resource()
-      commit: 1f65c9bdd6dd7bd292cfadfb135f660aeaa928f1
+[1/1] ASoC: jz4740-i2s: Use devm_platform_get_and_ioremap_resource()
+      commit: 50484d14ac3c9d93de0da5b8c546b1cb86df3d31
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
