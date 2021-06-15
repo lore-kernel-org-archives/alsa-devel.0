@@ -6,66 +6,66 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BFBAC48BE5
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 17:33:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51A5EC49361
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 17:33:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 105CC613F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 17:33:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 105CC613F5
+	by mail.kernel.org (Postfix) with ESMTPS id CE424611EE
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 17:33:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE424611EE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 904F816B0;
-	Tue, 15 Jun 2021 19:32:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 904F816B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 495C916C0;
+	Tue, 15 Jun 2021 19:32:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 495C916C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623778413;
-	bh=Rdz4u0dD548hQlAPF6EISilDnI1Xwl3Uw2h8hinLM6Q=;
+	s=default; t=1623778420;
+	bh=38JelWkBVrb1iUB2+ACoZ3vPaIr4XdmxQrI+4XMqupc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cOFMjoDspZdqNc1dbdYQ/TgGT9BK5qZzCdDdwECBmVTnIdJLnQmuq/HJD53bq7DTI
-	 JC+TVgsbSI4IpBPngLYR0vpFv1QBO89drMNYHQaipsbav/7GoYN1K6+uCuuisuFAL7
-	 Dv+GKz48VxOUoh9U8LqcAErcrW3ShddhqEFCW2Cs=
+	b=nPzAYL/nqmo54PT64lcL1vtmwZC26kj4q8eKQckW9x7VyyMY+9u1eNcuRW7VcQrJm
+	 WpqDnLvAUOV4Eq/6GrhP1wzAjUxaXnWb77exPqG3hR0gZhx0QjehzeoyJ7/5oa0K6y
+	 6cVBQFjyR6U1Buph7OMQt3ibvpIaQB1q4LBF9oUM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EAE79F804E4;
-	Tue, 15 Jun 2021 19:30:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3678F804EB;
+	Tue, 15 Jun 2021 19:30:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 480A0F804D0; Tue, 15 Jun 2021 19:30:20 +0200 (CEST)
+ id 4F0A0F80165; Tue, 15 Jun 2021 19:30:20 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0A496F802A9
- for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 19:30:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A496F802A9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45068F80165
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 19:30:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45068F80165
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="k2Kv5yC7"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F06B861414;
- Tue, 15 Jun 2021 17:30:00 +0000 (UTC)
+ header.b="UJt1n0ls"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C47E66140B;
+ Tue, 15 Jun 2021 17:29:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1623778201;
- bh=Rdz4u0dD548hQlAPF6EISilDnI1Xwl3Uw2h8hinLM6Q=;
+ s=k20201202; t=1623778191;
+ bh=38JelWkBVrb1iUB2+ACoZ3vPaIr4XdmxQrI+4XMqupc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=k2Kv5yC7k6iBREpyDqDVXPPe6gYHQi39CacItMwVySP3KNhQa8DnYoBgne/cX5RrF
- Og5g53RTE84HX/N9iLRo2ozeW8piIgjbn+j5Bl+jGl/Yk1KPVDrcGEE+USGoLUq3Vl
- ywPoBFiPBrStz56ttumZTtF/8tbN78zq7jmJtjzLIV6Lkgq8oTaNh5fc+NTF7xX1Sq
- MkYb2HYbJ/0rjes1HstDk1nAlM3yPcvVwTB+2BuOTfAChUEUCzaPwMR4jomA8baWbo
- UPVAUgn8G9ajv1wja79aTs3HgzelSgS3H7/vAGbmP25sQa754qoT8nk+1btQnAfycM
- XTJPuQcLCrmww==
+ b=UJt1n0ls189Ad/QEKwY8yffRNrbFNvA299X0mCuS0dchWw3DEmzx4Tn5o8Vd1KZEV
+ 7AonNI8LZf4voHiR2PmQ5jaFHX6yc6Ger1stDvkPoDdi5iHFlt/uGKCyniGR084MgE
+ IzFd5d6zpuqmXeG3iloKzWfmP1XOcvKjtxQQ7kvIEj+dx/MLO2o6i5bV3Y88NsNhio
+ yRmny0UtHQRaPswoDSURxQxC6j+9KhWGnNmKXdPNJ+QSueKcQXugGP1OedZzzowFh4
+ B7TcRCVgEE304oR4nvHRidUG/Uvu9xeB01t3oIk5EbrjNB3zjsjyKE59GfTJDU6D6O
+ 01p08OkPBBXEA==
 From: Mark Brown <broonie@kernel.org>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH] ASoC: codecs: wcd938x: remove incorrect module
+Subject: Re: [PATCH v2] ASoC: codecs: wcd938x: remove incorrect module
  interdependency
-Date: Tue, 15 Jun 2021 18:29:23 +0100
-Message-Id: <162377763943.21612.12264093680635019137.b4-ty@kernel.org>
+Date: Tue, 15 Jun 2021 18:29:19 +0100
+Message-Id: <162377763944.21612.1027421204392314156.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210615094839.27237-1-srinivas.kandagatla@linaro.org>
-References: <20210615094839.27237-1-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20210615132829.23067-1-srinivas.kandagatla@linaro.org>
+References: <20210615132829.23067-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -87,7 +87,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 15 Jun 2021 10:48:39 +0100, Srinivas Kandagatla wrote:
+On Tue, 15 Jun 2021 14:28:29 +0100, Srinivas Kandagatla wrote:
 > For some reason we ended up with cyclic dependency between snd_soc_wcd938x
 > and snd_soc_wcd938x_sdw modules.
 > 
