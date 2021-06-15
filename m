@@ -7,89 +7,67 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C30B4C48BE5
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 13:30:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0823C48BE5
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 13:32:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EF75F61460
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 13:30:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF75F61460
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 2FB1661474
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 13:32:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2FB1661474
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 58231168B;
-	Tue, 15 Jun 2021 15:29:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58231168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD99B168E;
+	Tue, 15 Jun 2021 15:31:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD99B168E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623763819;
-	bh=D898+VYl+8FXqws5u7y9Pg/8PYefGG+seL8UDi4oG8E=;
+	s=default; t=1623763947;
+	bh=EWMLs0nWhztHVqKZ67ZlDSkcvqcYwW46hIDk1Td6HJI=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=qWwiiXN+NsDrlGjJgGOOGAPIeJRMLb0Ynz/S3kKUFEPUZEwKDLJ9zhamPQBKuvBTS
-	 39bGhWN34a6D0Ynv2CK1NLVBsDZEyYYiI0Ukl9Q+elPa1S/kwKPmdzk2F8bqdpoKHn
-	 QfPbleMRA6PGaNYc01I+5NJy46bpv3YtkOBg0s4o=
+	b=TFZh0wCrLfEKioC2Wi+T3Bv/S7pSYRRMy5VZ7I1xxs29I+rbJ59CdSlVFHws3TOfb
+	 B8YpubmDxQGG6Mr6EiJcn1GsGjzIvlmsMGRiVnGf0nn1lgegebhCBIiO0WVuTb4hj3
+	 r/4xC9gw7Ld/xmt6tpAHZEXHu+Y5/wkohi0SQpTU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 913F9F8016C;
-	Tue, 15 Jun 2021 15:29:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 47948F80113;
+	Tue, 15 Jun 2021 15:31:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DCAD4F80171; Tue, 15 Jun 2021 15:29:11 +0200 (CEST)
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
- [IPv6:2a00:1450:4864:20::432])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 44BAAF80113; Tue, 15 Jun 2021 15:31:35 +0200 (CEST)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CEFE9F80113
- for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 15:28:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CEFE9F80113
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="gJCWhvG0"
-Received: by mail-wr1-x432.google.com with SMTP id m18so18343370wrv.2
- for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 06:28:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=T+ZBfjNZ6RVCUMCqyMKxAFRbxUFsjkm4bDvJhAhi6Mo=;
- b=gJCWhvG0trZGmdFS8qp6GD/DyxLD997cSOh9vJBIEZ7dUTKcNqJ8MRslZ1gQwvKrMX
- 9qAO6kg/rQDf0+cvWzZ6EkabPI5CybTfv/5lhffEhhrrh3e8/YETU56bgNY+Vx3RQGfm
- QwuRVs5i4gczeywUObgfHdYG4qzR6Dtu1Tf6H9v5SkcfZBysBDawIQcp5YTkMDMXPext
- O0Q9HwXgV6+r1slWfVYcfIOjAXjniWOAz81YKBHwm5DyUcgmDiUnRSnmRXVK5cg0u3mi
- yFoztK2uY9w7kpCetrxSGADPag6sqG9aNTdlol5j1maBNUyXX7RodQuH5aTUi+4cnWBX
- YANg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=T+ZBfjNZ6RVCUMCqyMKxAFRbxUFsjkm4bDvJhAhi6Mo=;
- b=kRA2DUicPnRJc+grr8oFRoYDJT075ZAMOJgqrjBA6dlquB+aocd/1pr/qw5m8jR8ed
- FJ/z0buf/SxCcy07MtXGEXKq7MQ7IMa++Id7JrRG0FXR0Ny02CBW03qhrHPOGo/UG5Tn
- 9zmqot7GNCY5mJ00wIoWZX6Cm7bXjLh8bUnVbee1MQPW+n0th243easFSubxAbthYAz5
- 5632NDfMYnxGAkAMLwRCfP5RABdeT5ruofyGr53RVewMtKGLl+sQuKjL0h+06U8zHXMh
- 6aCNDH+U32zUVkGEsjLugYl+FOKYkjyTsW2o2cbKPTWQKlZFS4kkpet4Z8tIyD6jp+HF
- dB3w==
-X-Gm-Message-State: AOAM533eGWkpkNiHQ5OdueKF+lYV2ExitZMQfrxWcNb2MdMmUf0urwfF
- g1Vln9t1oxYROdlO5W/r8+Vd+A==
-X-Google-Smtp-Source: ABdhPJyWg1bDgJUfWRsHMUg6+jsrtUK+wN9wS8tdwfKLmUtKjDpeKPg1IzKFYpVO+Mbs6l7J138zCw==
-X-Received: by 2002:adf:ff88:: with SMTP id j8mr25287530wrr.10.1623763725369; 
- Tue, 15 Jun 2021 06:28:45 -0700 (PDT)
-Received: from srini-hackbox.lan
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id u7sm22583054wrt.18.2021.06.15.06.28.43
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 15 Jun 2021 06:28:44 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: broonie@kernel.org
-Subject: [PATCH v2] ASoC: codecs: wcd938x: remove incorrect module
- interdependency
-Date: Tue, 15 Jun 2021 14:28:29 +0100
-Message-Id: <20210615132829.23067-1-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11FB0F80113
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 15:31:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11FB0F80113
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+ by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G48Hw0xzdz63cB;
+ Tue, 15 Jun 2021 21:27:24 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 21:31:22 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 15 Jun
+ 2021 21:31:21 +0800
+From: Yang Yingliang <yangyingliang@huawei.com>
+To: <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>
+Subject: [PATCH -next] ASoC: hisilicon: Use
+ devm_platform_get_and_ioremap_resource()
+Date: Tue, 15 Jun 2021 21:35:15 +0800
+Message-ID: <20210615133515.1376290-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, lgirdwood@gmail.com
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
+Cc: broonie@kernel.org, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,168 +83,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-For some reason we ended up with cyclic dependency between snd_soc_wcd938x
-and snd_soc_wcd938x_sdw modules.
+Use devm_platform_get_and_ioremap_resource() to simplify
+code.
 
-Remove this cyclic dependency by handling them in respective modules.
-Without this below error is reported during make modules_install
-
-depmod: ERROR: Cycle detected: snd_soc_wcd938x -> snd_soc_wcd938x_sdw -> snd_soc_wcd938x
-depmod: ERROR: Found 2 modules in dependency cycles!
-
-Fixes: 045442228868 ("ASoC: codecs: wcd938x: add audio routing and Kconfig")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
-Changes since v1:
-	- included irq.h as x86 allmodconfig build reported implicit declaration
-	 of function handle_nested_irq
+ sound/soc/hisilicon/hi6210-i2s.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
- sound/soc/codecs/wcd938x-sdw.c | 20 +++++++++++++-------
- sound/soc/codecs/wcd938x.c     | 27 +++++----------------------
- sound/soc/codecs/wcd938x.h     |  4 +---
- 3 files changed, 19 insertions(+), 32 deletions(-)
-
-diff --git a/sound/soc/codecs/wcd938x-sdw.c b/sound/soc/codecs/wcd938x-sdw.c
-index d82c40ec6898..d8d4caf48dc7 100644
---- a/sound/soc/codecs/wcd938x-sdw.c
-+++ b/sound/soc/codecs/wcd938x-sdw.c
-@@ -9,6 +9,7 @@
- #include <linux/component.h>
- #include <sound/soc.h>
- #include <linux/pm_runtime.h>
-+#include <linux/irq.h>
- #include <linux/irqdomain.h>
- #include <linux/of.h>
- #include <linux/soundwire/sdw.h>
-@@ -176,8 +177,19 @@ static int wcd9380_interrupt_callback(struct sdw_slave *slave,
- 				      struct sdw_slave_intr_status *status)
- {
- 	struct wcd938x_sdw_priv *wcd = dev_get_drvdata(&slave->dev);
-+	struct irq_domain *slave_irq = wcd->slave_irq;
-+	struct regmap *regmap = dev_get_regmap(&slave->dev, NULL);
-+	u32 sts1, sts2, sts3;
+diff --git a/sound/soc/hisilicon/hi6210-i2s.c b/sound/soc/hisilicon/hi6210-i2s.c
+index ff05b9779e4b..a297d4af5099 100644
+--- a/sound/soc/hisilicon/hi6210-i2s.c
++++ b/sound/soc/hisilicon/hi6210-i2s.c
+@@ -556,8 +556,7 @@ static int hi6210_i2s_probe(struct platform_device *pdev)
+ 	i2s->dev = dev;
+ 	spin_lock_init(&i2s->lock);
  
--	return wcd938x_handle_sdw_irq(wcd);
-+	do {
-+		handle_nested_irq(irq_find_mapping(slave_irq, 0));
-+		regmap_read(regmap, WCD938X_DIGITAL_INTR_STATUS_0, &sts1);
-+		regmap_read(regmap, WCD938X_DIGITAL_INTR_STATUS_1, &sts2);
-+		regmap_read(regmap, WCD938X_DIGITAL_INTR_STATUS_2, &sts3);
-+
-+	} while (sts1 || sts2 || sts3);
-+
-+	return IRQ_HANDLED;
- }
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	i2s->base = devm_ioremap_resource(dev, res);
++	i2s->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+ 	if (IS_ERR(i2s->base))
+ 		return PTR_ERR(i2s->base);
  
- static struct sdw_slave_ops wcd9380_slave_ops = {
-@@ -239,16 +251,10 @@ static int wcd9380_probe(struct sdw_slave *pdev,
- 					SDW_SCP_INT1_PARITY;
- 	pdev->prop.lane_control_support = true;
- 	if (wcd->is_tx) {
--		struct regmap *rm;
--
- 		pdev->prop.source_ports = GENMASK(WCD938X_MAX_SWR_PORTS, 0);
- 		pdev->prop.src_dpn_prop = wcd938x_dpn_prop;
- 		wcd->ch_info = &wcd938x_sdw_tx_ch_info[0];
- 		pdev->prop.wake_capable = true;
--
--		rm = devm_regmap_init_sdw(pdev, &wcd938x_regmap_config);
--		if (IS_ERR(rm))
--			return PTR_ERR(rm);
- 	} else {
- 		pdev->prop.sink_ports = GENMASK(WCD938X_MAX_SWR_PORTS, 0);
- 		pdev->prop.sink_dpn_prop = wcd938x_dpn_prop;
-diff --git a/sound/soc/codecs/wcd938x.c b/sound/soc/codecs/wcd938x.c
-index a2c76dc8fd89..24afe93830ce 100644
---- a/sound/soc/codecs/wcd938x.c
-+++ b/sound/soc/codecs/wcd938x.c
-@@ -1198,7 +1198,7 @@ static bool wcd938x_volatile_register(struct device *dev, unsigned int reg)
- 	return false;
- }
- 
--struct regmap_config wcd938x_regmap_config = {
-+static struct regmap_config wcd938x_regmap_config = {
- 	.name = "wcd938x_csr",
- 	.reg_bits = 32,
- 	.val_bits = 8,
-@@ -1211,7 +1211,6 @@ struct regmap_config wcd938x_regmap_config = {
- 	.volatile_reg = wcd938x_volatile_register,
- 	.can_multi_write = true,
- };
--EXPORT_SYMBOL_GPL(wcd938x_regmap_config);
- 
- static const struct regmap_irq wcd938x_irqs[WCD938X_NUM_IRQS] = {
- 	REGMAP_IRQ_REG(WCD938X_IRQ_MBHC_BUTTON_PRESS_DET, 0, 0x01),
-@@ -3472,24 +3471,6 @@ static int wcd938x_reset(struct wcd938x_priv *wcd938x)
- 	return 0;
- }
- 
--int wcd938x_handle_sdw_irq(struct wcd938x_sdw_priv *wcd)
--{
--	struct wcd938x_priv *wcd938x = wcd->wcd938x;
--	struct irq_domain *slave_irq = wcd938x->virq;
--	u32 sts1, sts2, sts3;
--
--	do {
--		handle_nested_irq(irq_find_mapping(slave_irq, 0));
--		regmap_read(wcd938x->regmap, WCD938X_DIGITAL_INTR_STATUS_0, &sts1);
--		regmap_read(wcd938x->regmap, WCD938X_DIGITAL_INTR_STATUS_1, &sts2);
--		regmap_read(wcd938x->regmap, WCD938X_DIGITAL_INTR_STATUS_2, &sts3);
--
--	} while (sts1 || sts2 || sts3);
--
--	return IRQ_HANDLED;
--}
--EXPORT_SYMBOL_GPL(wcd938x_handle_sdw_irq);
--
- static int wcd938x_codec_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params,
- 				struct snd_soc_dai *dai)
-@@ -3573,6 +3554,7 @@ static int wcd938x_bind(struct device *dev)
- 	}
- 	wcd938x->sdw_priv[AIF1_PB] = dev_get_drvdata(wcd938x->rxdev);
- 	wcd938x->sdw_priv[AIF1_PB]->wcd938x = wcd938x;
-+	wcd938x->sdw_priv[AIF1_PB]->slave_irq = wcd938x->virq;
- 
- 	wcd938x->txdev = wcd938x_sdw_device_get(wcd938x->txnode);
- 	if (!wcd938x->txdev) {
-@@ -3581,6 +3563,7 @@ static int wcd938x_bind(struct device *dev)
- 	}
- 	wcd938x->sdw_priv[AIF1_CAP] = dev_get_drvdata(wcd938x->txdev);
- 	wcd938x->sdw_priv[AIF1_CAP]->wcd938x = wcd938x;
-+	wcd938x->sdw_priv[AIF1_CAP]->slave_irq = wcd938x->virq;
- 	wcd938x->tx_sdw_dev = dev_to_sdw_dev(wcd938x->txdev);
- 	if (!wcd938x->tx_sdw_dev) {
- 		dev_err(dev, "could not get txslave with matching of dev\n");
-@@ -3607,8 +3590,8 @@ static int wcd938x_bind(struct device *dev)
- 		return -EINVAL;
- 	}
- 
--	wcd938x->regmap = dev_get_regmap(wcd938x->txdev, NULL);
--	if (!wcd938x->regmap) {
-+	wcd938x->regmap = devm_regmap_init_sdw(wcd938x->tx_sdw_dev, &wcd938x_regmap_config);
-+	if (IS_ERR(wcd938x->regmap)) {
- 		dev_err(dev, "%s: tx csr regmap not found\n", __func__);
- 		return PTR_ERR(wcd938x->regmap);
- 	}
-diff --git a/sound/soc/codecs/wcd938x.h b/sound/soc/codecs/wcd938x.h
-index 9db3ab6e47a6..07b08de4cebf 100644
---- a/sound/soc/codecs/wcd938x.h
-+++ b/sound/soc/codecs/wcd938x.h
-@@ -663,11 +663,9 @@ struct wcd938x_sdw_priv {
- 	int num_ports;
- 	bool is_tx;
- 	struct wcd938x_priv *wcd938x;
-+	struct irq_domain *slave_irq;
- };
- 
--extern struct regmap_config wcd938x_regmap_config;
--int wcd938x_handle_sdw_irq(struct wcd938x_sdw_priv *priv);
--
- #if IS_ENABLED(CONFIG_SND_SOC_WCD938X_SDW)
- int wcd938x_sdw_free(struct wcd938x_sdw_priv *wcd,
- 		     struct snd_pcm_substream *substream,
 -- 
-2.21.0
+2.25.1
 
