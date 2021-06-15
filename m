@@ -7,64 +7,63 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8329CC48BE5
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 15:53:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C41B3C48BE5
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 15:53:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 030956142E
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 15:53:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 030956142E
+	by mail.kernel.org (Postfix) with ESMTPS id 4796D60FE9
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 15:53:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4796D60FE9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 871E0169A;
-	Tue, 15 Jun 2021 17:52:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 871E0169A
+	by alsa0.perex.cz (Postfix) with ESMTPS id C8145166C;
+	Tue, 15 Jun 2021 17:52:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8145166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623772398;
-	bh=EheN55RV15pxgeIQu4DP1PTRSoQC4OUgOyikc4uj/g8=;
+	s=default; t=1623772422;
+	bh=9Rc61qOEX4dCvbIso4TMKwr7VWeVpYgY8rXvC9B+Xtc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=b3/CiwmV3KSzgvBVaNFpGWLPNM/pnHSAfDyy+F/aBvbcCavw5vadX5mKzkq+dcf0F
-	 cMg70y/gfkXagG0Nv/7ea5Im3A7j9qY2yGqNfn3M5lH5zqdrPCF9deC/3AuvrUVE8x
-	 mhJQiFfYNZ0p60PYsRqoDOfg9mnDmfZPAL8p+iLw=
+	b=ZKkgbu5Kl9gEJRuOBglxq3tioezuh+NVRE6QIdyS6X1/Lc1QbZXo7iz+tQ9ARRe5S
+	 1VJy20Xvdip72wSB+3mxfhYRlPF9cTC27ZRpQ4hfhNLE96unmtAjB3uwwyiy0/61oH
+	 5HvpqNT4lG/0WLulaGRTO0U4DNrzXV32f0WTI+Gg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B8249F8051B;
-	Tue, 15 Jun 2021 17:49:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 94CEEF8051F;
+	Tue, 15 Jun 2021 17:49:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C8F9AF80516; Tue, 15 Jun 2021 17:49:28 +0200 (CEST)
+ id 28F83F80518; Tue, 15 Jun 2021 17:49:30 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04E16F8049E
- for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 17:49:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04E16F8049E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5BE84F80515
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 17:49:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5BE84F80515
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ZK2Q5K9U"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C66E1617ED;
- Tue, 15 Jun 2021 15:49:16 +0000 (UTC)
+ header.b="skUxbzMs"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BF736162F;
+ Tue, 15 Jun 2021 15:49:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1623772157;
- bh=EheN55RV15pxgeIQu4DP1PTRSoQC4OUgOyikc4uj/g8=;
+ s=k20201202; t=1623772166;
+ bh=9Rc61qOEX4dCvbIso4TMKwr7VWeVpYgY8rXvC9B+Xtc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ZK2Q5K9U1a+PX1+Q54IvkiR9ljKxxNTUdAHnju5RD12C++GukoX9W1V2L8NrZeem3
- 6X+aQgcOenFa54LpuAf+qZlFPRMvyzg4GyL6YbiGOMdrUoM/QsiPPyMOw3U4P3UY8C
- lsiejMZf9Ph1zTl2fLWVzg+aQgwsII1XES79cyp9iefuwoYkW2M6mFoqRVVpAzuq9r
- G8ny4XpEx5+ZpPNdGGqlrbFbMz9qK8DdP/+mq8eXtF2rZMuqNf/NLibwyqIsEBNmPy
- 0gnjeuqssgDylnPEsAqCzaDok2WZLOrTw9HB8wH0IDj1lhzQQnjVDMhVtnJHvB/ehz
- bSf8rdoN6nYRg==
+ b=skUxbzMshsIKGUgJFbQOGsIeh78vB8f+roVelbiCm/PkMHMDp0zm7W/QDwqHW7f25
+ DyO0RPaSrH4+nHQ3wKqgDlE/Q2dRaW+z/sxxUnsmhk2lRPbU0G54TMdxR4Mbt7DF1c
+ t9Xb2Yownez4AYKx8YgkYDySntV29/eyunDEiA4B8qSN05qwRJkGACs84s95uhOu20
+ 93VhIzhCQdyNJn7y54N8V5L9tValEkz2DEZqMLRejQrmN/ukYJQEDR7Euv3LK9Cdeo
+ eXH9MTYQvtvoXo1RBzq1UUnpLBPfrcTWqPkc1AHgnebP7ATVn9kkPcV42R2Acr94aM
+ u1nnOpUzZzHYg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 07/30] ASoC: fsl-asoc-card: Set .owner attribute
- when registering card.
-Date: Tue, 15 Jun 2021 11:48:44 -0400
-Message-Id: <20210615154908.62388-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 14/30] ASoC: tas2562: Fix TDM_CFG0_SAMPRATE values
+Date: Tue, 15 Jun 2021 11:48:51 -0400
+Message-Id: <20210615154908.62388-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210615154908.62388-1-sashal@kernel.org>
 References: <20210615154908.62388-1-sashal@kernel.org>
@@ -72,10 +71,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Nicolas Cavallari <nicolas.cavallari@green-communications.fr>,
- Shengjiu Wang <shengjiu.wang@gmail.com>, Mark Brown <broonie@kernel.org>,
- linuxppc-dev@lists.ozlabs.org
+Cc: Sasha Levin <sashal@kernel.org>, Richard Weinberger <richard@nod.at>,
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,49 +88,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Nicolas Cavallari <nicolas.cavallari@green-communications.fr>
+From: Richard Weinberger <richard@nod.at>
 
-[ Upstream commit a8437f05384cb472518ec21bf4fffbe8f0a47378 ]
+[ Upstream commit 8bef925e37bdc9b6554b85eda16ced9a8e3c135f ]
 
-Otherwise, when compiled as module, a WARN_ON is triggered:
+TAS2562_TDM_CFG0_SAMPRATE_MASK starts at bit 1, not 0.
+So all values need to be left shifted by 1.
 
-WARNING: CPU: 0 PID: 5 at sound/core/init.c:208 snd_card_new+0x310/0x39c [snd]
-[...]
-CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.10.39 #1
-Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-Workqueue: events deferred_probe_work_func
-[<c0111988>] (unwind_backtrace) from [<c010c8ac>] (show_stack+0x10/0x14)
-[<c010c8ac>] (show_stack) from [<c092784c>] (dump_stack+0xdc/0x104)
-[<c092784c>] (dump_stack) from [<c0129710>] (__warn+0xd8/0x114)
-[<c0129710>] (__warn) from [<c0922a48>] (warn_slowpath_fmt+0x5c/0xc4)
-[<c0922a48>] (warn_slowpath_fmt) from [<bf0496f8>] (snd_card_new+0x310/0x39c [snd])
-[<bf0496f8>] (snd_card_new [snd]) from [<bf1d7df8>] (snd_soc_bind_card+0x334/0x9c4 [snd_soc_core])
-[<bf1d7df8>] (snd_soc_bind_card [snd_soc_core]) from [<bf1e9cd8>] (devm_snd_soc_register_card+0x30/0x6c [snd_soc_core])
-[<bf1e9cd8>] (devm_snd_soc_register_card [snd_soc_core]) from [<bf22d964>] (fsl_asoc_card_probe+0x550/0xcc8 [snd_soc_fsl_asoc_card])
-[<bf22d964>] (fsl_asoc_card_probe [snd_soc_fsl_asoc_card]) from [<c060c930>] (platform_drv_probe+0x48/0x98)
-[...]
-
-Signed-off-by: Nicolas Cavallari <nicolas.cavallari@green-communications.fr>
-Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
-Link: https://lore.kernel.org/r/20210527163409.22049-1-nicolas.cavallari@green-communications.fr
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Link: https://lore.kernel.org/r/20210530203446.19022-1-richard@nod.at
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/fsl/fsl-asoc-card.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/tas2562.h | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index a2dd3b6b7fec..7cd14d6b9436 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -720,6 +720,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 	/* Initialize sound card */
- 	priv->pdev = pdev;
- 	priv->card.dev = &pdev->dev;
-+	priv->card.owner = THIS_MODULE;
- 	ret = snd_soc_of_parse_card_name(&priv->card, "model");
- 	if (ret) {
- 		snprintf(priv->name, sizeof(priv->name), "%s-audio",
+diff --git a/sound/soc/codecs/tas2562.h b/sound/soc/codecs/tas2562.h
+index 81866aeb3fbf..55b2a1f52ca3 100644
+--- a/sound/soc/codecs/tas2562.h
++++ b/sound/soc/codecs/tas2562.h
+@@ -57,13 +57,13 @@
+ #define TAS2562_TDM_CFG0_RAMPRATE_MASK		BIT(5)
+ #define TAS2562_TDM_CFG0_RAMPRATE_44_1		BIT(5)
+ #define TAS2562_TDM_CFG0_SAMPRATE_MASK		GENMASK(3, 1)
+-#define TAS2562_TDM_CFG0_SAMPRATE_7305_8KHZ	0x0
+-#define TAS2562_TDM_CFG0_SAMPRATE_14_7_16KHZ	0x1
+-#define TAS2562_TDM_CFG0_SAMPRATE_22_05_24KHZ	0x2
+-#define TAS2562_TDM_CFG0_SAMPRATE_29_4_32KHZ	0x3
+-#define TAS2562_TDM_CFG0_SAMPRATE_44_1_48KHZ	0x4
+-#define TAS2562_TDM_CFG0_SAMPRATE_88_2_96KHZ	0x5
+-#define TAS2562_TDM_CFG0_SAMPRATE_176_4_192KHZ	0x6
++#define TAS2562_TDM_CFG0_SAMPRATE_7305_8KHZ	(0x0 << 1)
++#define TAS2562_TDM_CFG0_SAMPRATE_14_7_16KHZ	(0x1 << 1)
++#define TAS2562_TDM_CFG0_SAMPRATE_22_05_24KHZ	(0x2 << 1)
++#define TAS2562_TDM_CFG0_SAMPRATE_29_4_32KHZ	(0x3 << 1)
++#define TAS2562_TDM_CFG0_SAMPRATE_44_1_48KHZ	(0x4 << 1)
++#define TAS2562_TDM_CFG0_SAMPRATE_88_2_96KHZ	(0x5 << 1)
++#define TAS2562_TDM_CFG0_SAMPRATE_176_4_192KHZ	(0x6 << 1)
+ 
+ #define TAS2562_TDM_CFG2_RIGHT_JUSTIFY	BIT(6)
+ 
 -- 
 2.30.2
 
