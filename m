@@ -2,94 +2,94 @@ Return-Path: <SRS0=yBFe=LJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E15BEC48BDF
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 07:02:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32F5AC48BDF
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 09:50:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6E92D61417
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 07:02:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6E92D61417
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 929C360FEA
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 09:49:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 929C360FEA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B8FC1678;
-	Tue, 15 Jun 2021 09:01:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B8FC1678
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4F4471676;
+	Tue, 15 Jun 2021 11:49:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F4471676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623740522;
-	bh=9R6yJGe9iXR+QKQYp3ed6kj3FohafuSvjRzw5BTEgL8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=V3C/27kF740t5kf587HH/iqTROKv3EFVXSsQBFcIQzwb/h1I2He/pOQG31e46rYBx
-	 Tnn80meTHKGbcPsTuCBKKuTzXH2DEStBGBN94OUNhbACMTeMas2NwprfjoLgcwXUpI
-	 AgVDqYeekOKz/S4vaKFwjfzP/2TrVv96nPkPqUU4=
+	s=default; t=1623750597;
+	bh=0McE3Yhkyi8WifmcxHAHHnot1hUainufds9iOV3gjCA=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=WCDrwPjjV3Cl/SApB4+vgBMtjJOVw6GlQwqd28xNkkw13W007WA9snGmaB6Qdcjoi
+	 nMnTzQZCbwMJSuUZLoKZ7NudmgTn+qf2kU+nLf6BNp4B+77RON+4/xeL0ul/9zr6O6
+	 HL/ITTJ+hnIHOxh9nHeSV1zKRUYQsM8qNYcjuWZQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9FA3F8016D;
-	Tue, 15 Jun 2021 09:01:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D8B9FF8016D;
+	Tue, 15 Jun 2021 11:49:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 574ABF80171; Tue, 15 Jun 2021 09:01:10 +0200 (CEST)
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com
- [IPv6:2a00:1450:4864:20::12d])
+ id 81EC1F80171; Tue, 15 Jun 2021 11:49:05 +0200 (CEST)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
+ [IPv6:2a00:1450:4864:20::32e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7155F80113
- for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 09:01:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7155F80113
+ by alsa1.perex.cz (Postfix) with ESMTPS id 63E39F80113
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 11:48:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63E39F80113
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="umkC6wBa"
-Received: by mail-lf1-x12d.google.com with SMTP id m21so25156646lfg.13
- for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 00:01:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=9R6yJGe9iXR+QKQYp3ed6kj3FohafuSvjRzw5BTEgL8=;
- b=umkC6wBaORmGymofAod7RGVV1/CFa3gkF1CQn9wzc5EdLRiFhVCfpGj4KyX7JTVjvx
- uuhHrzT0515t+Yvglmxuz/XKjq2Xfggw8B78fd/15+Me4cfqluoK9kRKk7G+jVYTbctV
- OWOWHqY/XBcg7EcN2XnFoYNHquUWFVVyjhy8mklTV3vIqFFheMmfQ0aVQMir+C/7eUx1
- K9np5llFqzLB3Npo13I8KgtbuLAIbRImfo2gaktQujf5aU5kZryi4p5r35tKRSLMYype
- Y2nCX8mu+3XxjtZzDZFtpNfRDjwldRgdSW18jXGwCN8rx6oPpq//Nlfq5ndG9WJykeVY
- jSpQ==
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="k6Io1xJW"
+Received: by mail-wm1-x32e.google.com with SMTP id
+ k5-20020a05600c1c85b02901affeec3ef8so1348578wms.0
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 02:48:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=f5Ef4gTb6IG+2Rp0mfxvJGUVzw2jq0Fb0ytCRN/UGpA=;
+ b=k6Io1xJWIKUJ/pf8bmL7BPSsKG15nKbO6LcBCCTsyC18dYvFU49kvKOO4Dc+OZLWq4
+ aNEOSebC6lV/vQvjNW7zu8a1sJAOWhNgXZea/pfefRVX04A3AQL+PMiutACJjan4hCSG
+ BOG77oPWqVWBNPLqcqpNlLzwqxFRWNWM5WZqFgeSqOIzHZsiZaT1WsGBzKJKeMtdfMxY
+ DHNRjBAXjsWwzDwqur3mGTFHKDPqBLFOzJfm1yK7GbKTjpuq3zto1qoned05eF7eHN32
+ YmGOaj3p6peNxu3fO4wQxraau0JsZGyOyNZNEpx+lYBrbOIotasUCGvOCGQVGw7FuCSh
+ k5pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=9R6yJGe9iXR+QKQYp3ed6kj3FohafuSvjRzw5BTEgL8=;
- b=eAO514ghKNHQEds2LRiI5C3NeLncHeXkHBPRj8ktWXAARBP6MW9KDL2MzoVzijwDBU
- Si0DP5W+cv90c/gxY9q7vxoB4G/naPAZaApI6VYHRw+Qomy1rv/HvYXTpMzLTymAUHUk
- /5ly4ASRmF4yprY4qHhPJ8VTJD4TbeNCcHd/JRhiQna+h4DfMsp5QV38gmDxk36MVvs5
- eIaeUwh+ZEby6pAiL5OkHoXhBErHx9FiKMq5s58JzVZJyhgiY7lvyceWO7j7Q9TVWjiN
- sHc+9ZqMzdNWxU7O2UCs4JlIfWB8uVUgJfLkX9hmcBthRrFzBakK63sb6XeZWo0/N1sK
- iOwA==
-X-Gm-Message-State: AOAM533XfN5/rXFzgMdUi9iZkbNlL49BJpVPqKxuQgF76LiB1kju80+V
- Owp481jtWMzitGz4xkCPlrguAJrXYV9Z3joQdUk=
-X-Google-Smtp-Source: ABdhPJytbmpBc/v6/ujKDjf3vh3FQsf5IDAR1hAnC4zwXLCCxyHZEhLaHGrG2m9yRzgcGvIdYRh4TaR09Z8B2Z0GQfM=
-X-Received: by 2002:ac2:5ecc:: with SMTP id d12mr15247436lfq.539.1623740456413; 
- Tue, 15 Jun 2021 00:00:56 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=f5Ef4gTb6IG+2Rp0mfxvJGUVzw2jq0Fb0ytCRN/UGpA=;
+ b=dA9NltssltTc+qhJ+5CNVtP4acnHVdZLBJgFI7IRuBKrUIXG3uYKGW4sfXZBQC/ZcB
+ Fw37K935NcyETjrt9b6SaNs/xBBk7MmE+DC8z0Rq5CYeG6DDOx+7BsLTYdNKLwghDfY+
+ X5xJUNAP8ZxW/zTiKWtFKeTrkcmMuZD5suigkABOheaXemg8mhMOSrOgKRrT5B8EHB8G
+ JGL6io6uB6vt24IgLwDZPI6AQHGQvyokX5MdO+2FPFBhM4N8LV0+nC6L5n5ZwxZyZjI8
+ z6A1CH1yXrp6094dhQOIdY9KOn4LSIeFZCBmpsK3wLP5jwestPmurbZ26YqzNrPL1nw6
+ aBFg==
+X-Gm-Message-State: AOAM533uIqxUkjKUdzbo0xQiUJrNEMnImSpAz5vyU4opI7khrj2nDqMO
+ 6MvqTHu7eHhK0ngpnAuJZEBLKg==
+X-Google-Smtp-Source: ABdhPJzClcaiKxxGXqt7y/6C+JfdhJ7Om/lY0IBIb3XYwNo8AOQYlpz6A3rc44WL9tJ6sTmMRziV9g==
+X-Received: by 2002:a7b:c192:: with SMTP id y18mr4274471wmi.65.1623750532170; 
+ Tue, 15 Jun 2021 02:48:52 -0700 (PDT)
+Received: from srini-hackbox.lan
+ (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+ by smtp.gmail.com with ESMTPSA id n6sm1648471wme.21.2021.06.15.02.48.50
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 15 Jun 2021 02:48:51 -0700 (PDT)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: broonie@kernel.org
+Subject: [PATCH] ASoC: codecs: wcd938x: remove incorrect module interdependency
+Date: Tue, 15 Jun 2021 10:48:39 +0100
+Message-Id: <20210615094839.27237-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-References: <CAHhAz+haTa8FJep+mokae4O7Gy9zzq2dbPk28fuEH5FO24uTzw@mail.gmail.com>
- <26698.1623455194@turing-police>
- <CAHhAz+goVhacpDPc-OaVuG151TS8QKYdsqdnK9UcAx+Hc07zSg@mail.gmail.com>
- <27987.1623737660@turing-police>
-In-Reply-To: <27987.1623737660@turing-police>
-From: Muni Sekhar <munisekharrms@gmail.com>
-Date: Tue, 15 Jun 2021 12:30:45 +0530
-Message-ID: <CAHhAz+iOFda+T3=ri2o8UhNR1L1KVdKJUYABS8djijqvhsn3JQ@mail.gmail.com>
-Subject: Re: USB sound card issues
-To: =?UTF-8?Q?Valdis_Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Cc: alsa-devel <alsa-devel@alsa-project.org>, linux-usb@vger.kernel.org,
- linux-sound@vger.kernel.org, kernelnewbies <kernelnewbies@kernelnewbies.org>
+Content-Transfer-Encoding: 8bit
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,41 +105,156 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Jun 15, 2021 at 11:44 AM Valdis Kl=C4=93tnieks
-<valdis.kletnieks@vt.edu> wrote:
->
-> On Sat, 12 Jun 2021 16:45:00 +0530, Muni Sekhar said:
->
-> > > And if it's configurable for multiple formats, was it set for the cor=
-rect one?
-> > Is there a way to verify was it set for the correct one or not?
->
-> arecord -v gives what it thinks the setup is.
->
-> > > Does the record die immediately, or hang for a few seconds and timeou=
-t?
-> > What is the difference between these two ways?
->
-> An immediate failure is usually related to a "Can't do it" situation wher=
-e the
-> USB interaction to configure the device has failed, while a timeout usual=
-ly
-> indicates that the configuration at least *claimed* to succeed, but is fa=
-iling
-> to properly transfer valid data.
->
-> > For my hardware, I noticed that it hangs for a few seconds and gives EI=
-O (arecord:
-> > pcm_read:2032: read error: Input/output error).
->
-> Given that the usbmon output ran to several megabytes, that's tending to
-> point at "the card was returning lots of packets, but they weren't actual=
-ly the
-> format/data that arecord was expecting.
-So, is it a USB card issue?
+For some reason we ended up with cyclic dependency between snd_soc_wcd938x
+and snd_soc_wcd938x_sdw modules.
 
+Remove this cyclic dependency by handling them in respective modules.
+Without this below error is reported during make modules_install
 
+depmod: ERROR: Cycle detected: snd_soc_wcd938x -> snd_soc_wcd938x_sdw -> snd_soc_wcd938x
+depmod: ERROR: Found 2 modules in dependency cycles!
 
---=20
-Thanks,
-Sekhar
+Fixes: 045442228868 ("ASoC: codecs: wcd938x: add audio routing and Kconfig")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/soc/codecs/wcd938x-sdw.c | 19 ++++++++++++-------
+ sound/soc/codecs/wcd938x.c     | 27 +++++----------------------
+ sound/soc/codecs/wcd938x.h     |  4 +---
+ 3 files changed, 18 insertions(+), 32 deletions(-)
+
+diff --git a/sound/soc/codecs/wcd938x-sdw.c b/sound/soc/codecs/wcd938x-sdw.c
+index d82c40ec6898..d1cabf300c36 100644
+--- a/sound/soc/codecs/wcd938x-sdw.c
++++ b/sound/soc/codecs/wcd938x-sdw.c
+@@ -176,8 +176,19 @@ static int wcd9380_interrupt_callback(struct sdw_slave *slave,
+ 				      struct sdw_slave_intr_status *status)
+ {
+ 	struct wcd938x_sdw_priv *wcd = dev_get_drvdata(&slave->dev);
++	struct irq_domain *slave_irq = wcd->slave_irq;
++	struct regmap *regmap = dev_get_regmap(&slave->dev, NULL);
++	u32 sts1, sts2, sts3;
+ 
+-	return wcd938x_handle_sdw_irq(wcd);
++	do {
++		handle_nested_irq(irq_find_mapping(slave_irq, 0));
++		regmap_read(regmap, WCD938X_DIGITAL_INTR_STATUS_0, &sts1);
++		regmap_read(regmap, WCD938X_DIGITAL_INTR_STATUS_1, &sts2);
++		regmap_read(regmap, WCD938X_DIGITAL_INTR_STATUS_2, &sts3);
++
++	} while (sts1 || sts2 || sts3);
++
++	return IRQ_HANDLED;
+ }
+ 
+ static struct sdw_slave_ops wcd9380_slave_ops = {
+@@ -239,16 +250,10 @@ static int wcd9380_probe(struct sdw_slave *pdev,
+ 					SDW_SCP_INT1_PARITY;
+ 	pdev->prop.lane_control_support = true;
+ 	if (wcd->is_tx) {
+-		struct regmap *rm;
+-
+ 		pdev->prop.source_ports = GENMASK(WCD938X_MAX_SWR_PORTS, 0);
+ 		pdev->prop.src_dpn_prop = wcd938x_dpn_prop;
+ 		wcd->ch_info = &wcd938x_sdw_tx_ch_info[0];
+ 		pdev->prop.wake_capable = true;
+-
+-		rm = devm_regmap_init_sdw(pdev, &wcd938x_regmap_config);
+-		if (IS_ERR(rm))
+-			return PTR_ERR(rm);
+ 	} else {
+ 		pdev->prop.sink_ports = GENMASK(WCD938X_MAX_SWR_PORTS, 0);
+ 		pdev->prop.sink_dpn_prop = wcd938x_dpn_prop;
+diff --git a/sound/soc/codecs/wcd938x.c b/sound/soc/codecs/wcd938x.c
+index a2c76dc8fd89..24afe93830ce 100644
+--- a/sound/soc/codecs/wcd938x.c
++++ b/sound/soc/codecs/wcd938x.c
+@@ -1198,7 +1198,7 @@ static bool wcd938x_volatile_register(struct device *dev, unsigned int reg)
+ 	return false;
+ }
+ 
+-struct regmap_config wcd938x_regmap_config = {
++static struct regmap_config wcd938x_regmap_config = {
+ 	.name = "wcd938x_csr",
+ 	.reg_bits = 32,
+ 	.val_bits = 8,
+@@ -1211,7 +1211,6 @@ struct regmap_config wcd938x_regmap_config = {
+ 	.volatile_reg = wcd938x_volatile_register,
+ 	.can_multi_write = true,
+ };
+-EXPORT_SYMBOL_GPL(wcd938x_regmap_config);
+ 
+ static const struct regmap_irq wcd938x_irqs[WCD938X_NUM_IRQS] = {
+ 	REGMAP_IRQ_REG(WCD938X_IRQ_MBHC_BUTTON_PRESS_DET, 0, 0x01),
+@@ -3472,24 +3471,6 @@ static int wcd938x_reset(struct wcd938x_priv *wcd938x)
+ 	return 0;
+ }
+ 
+-int wcd938x_handle_sdw_irq(struct wcd938x_sdw_priv *wcd)
+-{
+-	struct wcd938x_priv *wcd938x = wcd->wcd938x;
+-	struct irq_domain *slave_irq = wcd938x->virq;
+-	u32 sts1, sts2, sts3;
+-
+-	do {
+-		handle_nested_irq(irq_find_mapping(slave_irq, 0));
+-		regmap_read(wcd938x->regmap, WCD938X_DIGITAL_INTR_STATUS_0, &sts1);
+-		regmap_read(wcd938x->regmap, WCD938X_DIGITAL_INTR_STATUS_1, &sts2);
+-		regmap_read(wcd938x->regmap, WCD938X_DIGITAL_INTR_STATUS_2, &sts3);
+-
+-	} while (sts1 || sts2 || sts3);
+-
+-	return IRQ_HANDLED;
+-}
+-EXPORT_SYMBOL_GPL(wcd938x_handle_sdw_irq);
+-
+ static int wcd938x_codec_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params,
+ 				struct snd_soc_dai *dai)
+@@ -3573,6 +3554,7 @@ static int wcd938x_bind(struct device *dev)
+ 	}
+ 	wcd938x->sdw_priv[AIF1_PB] = dev_get_drvdata(wcd938x->rxdev);
+ 	wcd938x->sdw_priv[AIF1_PB]->wcd938x = wcd938x;
++	wcd938x->sdw_priv[AIF1_PB]->slave_irq = wcd938x->virq;
+ 
+ 	wcd938x->txdev = wcd938x_sdw_device_get(wcd938x->txnode);
+ 	if (!wcd938x->txdev) {
+@@ -3581,6 +3563,7 @@ static int wcd938x_bind(struct device *dev)
+ 	}
+ 	wcd938x->sdw_priv[AIF1_CAP] = dev_get_drvdata(wcd938x->txdev);
+ 	wcd938x->sdw_priv[AIF1_CAP]->wcd938x = wcd938x;
++	wcd938x->sdw_priv[AIF1_CAP]->slave_irq = wcd938x->virq;
+ 	wcd938x->tx_sdw_dev = dev_to_sdw_dev(wcd938x->txdev);
+ 	if (!wcd938x->tx_sdw_dev) {
+ 		dev_err(dev, "could not get txslave with matching of dev\n");
+@@ -3607,8 +3590,8 @@ static int wcd938x_bind(struct device *dev)
+ 		return -EINVAL;
+ 	}
+ 
+-	wcd938x->regmap = dev_get_regmap(wcd938x->txdev, NULL);
+-	if (!wcd938x->regmap) {
++	wcd938x->regmap = devm_regmap_init_sdw(wcd938x->tx_sdw_dev, &wcd938x_regmap_config);
++	if (IS_ERR(wcd938x->regmap)) {
+ 		dev_err(dev, "%s: tx csr regmap not found\n", __func__);
+ 		return PTR_ERR(wcd938x->regmap);
+ 	}
+diff --git a/sound/soc/codecs/wcd938x.h b/sound/soc/codecs/wcd938x.h
+index 9db3ab6e47a6..07b08de4cebf 100644
+--- a/sound/soc/codecs/wcd938x.h
++++ b/sound/soc/codecs/wcd938x.h
+@@ -663,11 +663,9 @@ struct wcd938x_sdw_priv {
+ 	int num_ports;
+ 	bool is_tx;
+ 	struct wcd938x_priv *wcd938x;
++	struct irq_domain *slave_irq;
+ };
+ 
+-extern struct regmap_config wcd938x_regmap_config;
+-int wcd938x_handle_sdw_irq(struct wcd938x_sdw_priv *priv);
+-
+ #if IS_ENABLED(CONFIG_SND_SOC_WCD938X_SDW)
+ int wcd938x_sdw_free(struct wcd938x_sdw_priv *wcd,
+ 		     struct snd_pcm_substream *substream,
+-- 
+2.21.0
+
