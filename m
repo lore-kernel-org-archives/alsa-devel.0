@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0230C49EA2
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 15:49:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 984EFC48BDF
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 15:50:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D82F61864
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 15:49:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D82F61864
+	by mail.kernel.org (Postfix) with ESMTPS id 1BAB861922
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 15:50:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1BAB861922
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A8DF16B5;
-	Tue, 15 Jun 2021 17:49:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A8DF16B5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 704C91688;
+	Tue, 15 Jun 2021 17:49:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 704C91688
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623772196;
-	bh=NtMKHikNEMchJUzwx8CdjNO3tpRArTcGzKU5NJGU3j4=;
+	s=default; t=1623772230;
+	bh=r6aVGaHXr6OT7yCuvc3B2Gy4u2zDuO7MZmKBYuzwQg4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gKDxXMIL2y7ZaZa6HrNKmMEo6QVpEnseh0uiW+EZAW8Hkg1/dWIke5Y7KIFd+POwR
-	 Ok7fnBK+l0mkFpITWNEAzJZOut87LaFPJmS1vKJ90Z9dxG0egbqFaS+hLjleEbZ68V
-	 P0qVBnz/vPeARGJ8O6H9d8VxS/2pVwJWe9UfC8IY=
+	b=GT3tnoQa4vm9hgqpj5N1A6Bn5bdYn5aLXTOYE9LsMxY76qDYH8XLMDUMDf58mOkQV
+	 ye5a5sT9a8jmKZTatJZEvjUZZmt0YwHyctDahnjZq6PImjwWceFwv+qz3jGx8wBPF2
+	 Hth03x96GWV2mMy+oGmfIAsxmCP7dVGZFc+AHcAM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C6549F804E2;
-	Tue, 15 Jun 2021 17:48:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E21F1F804E5;
+	Tue, 15 Jun 2021 17:48:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C36D8F804E3; Tue, 15 Jun 2021 17:48:46 +0200 (CEST)
+ id C5336F804E6; Tue, 15 Jun 2021 17:48:49 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4AC6FF8016C
- for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 17:48:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AC6FF8016C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6B325F804DA
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 17:48:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B325F804DA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="AVgxaFF3"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F12DD61626;
- Tue, 15 Jun 2021 15:48:32 +0000 (UTC)
+ header.b="I6GKW8Zf"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CCD86142E;
+ Tue, 15 Jun 2021 15:48:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1623772113;
- bh=NtMKHikNEMchJUzwx8CdjNO3tpRArTcGzKU5NJGU3j4=;
+ s=k20201202; t=1623772122;
+ bh=r6aVGaHXr6OT7yCuvc3B2Gy4u2zDuO7MZmKBYuzwQg4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=AVgxaFF3ACdw4oO8qEU3k9z23pilTzhVvIUSp3JBhcYEOfsClkYVgkwpmVFa373GL
- e1AgHHlHSqEm266dJFCg+ClnQcX9SJeXiFgxp6bzy6ViA2ryqDf3anVPqArJhGH++i
- pc3hbSTANRYcD7YDjuXNAADWj9PJeK2O2eLkz0AdHETxOO1maWVMV/Vu8/6Yh73kyP
- SI0gRSc3MAfrTJPVGL5XReLmAXN1gyRobYJza43lL3NDFTvZGNkJ3tXYMeVDtPqZpC
- XIPPcEQyRd7bGtJIPDjpAlNVGFom3vkcmBWPmxPnZ5UaN0XrphhedZl0g7xtWVROSi
- B7EVkVfh7EogQ==
+ b=I6GKW8ZfBOQHkE8QMtQLsW+4mSZ3rFoJfjNUexXN2AZ3V5RyXU3mWscA+ZbOKuMvE
+ 0p5WxWZ/nwHWOyCca+oSupr5K3H9GUqEFFZZhdczj1qE6UNMhfy++hXSOWPxwGng9y
+ mN735w7yGQ0JHebNm1kvZVAO+VOsLvRZQkAeTpDn7vkusvras5bGEbGhc47ZgQgQ8E
+ d5H9td7A/d9yZgC8nf8/TxHqq03APzzrjvlhQyobqbaM8jmN1SjqznqY+sQE+A9V8k
+ 4EvpT4o+sge0BZe/n+ZuO2RCNxQos9n7rgCoG+w7kAhq2PVQ+3DZMIh0xTSpxcSRaa
+ yrdpQLDTsI7MQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.12 07/33] ASoC: fsl-asoc-card: Set .owner attribute
- when registering card.
-Date: Tue, 15 Jun 2021 11:47:58 -0400
-Message-Id: <20210615154824.62044-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.12 14/33] ASoC: AMD Renoir: Remove fix for DMI entry
+ on Lenovo 2020 platforms
+Date: Tue, 15 Jun 2021 11:48:05 -0400
+Message-Id: <20210615154824.62044-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210615154824.62044-1-sashal@kernel.org>
 References: <20210615154824.62044-1-sashal@kernel.org>
@@ -72,10 +72,9 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Nicolas Cavallari <nicolas.cavallari@green-communications.fr>,
- Shengjiu Wang <shengjiu.wang@gmail.com>, Mark Brown <broonie@kernel.org>,
- linuxppc-dev@lists.ozlabs.org
+Cc: Sasha Levin <sashal@kernel.org>, Mark Pearson <markpearson@lenovo.com>,
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Gabriel Craciunescu <unix.or.die@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,49 +90,72 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Nicolas Cavallari <nicolas.cavallari@green-communications.fr>
+From: Mark Pearson <markpearson@lenovo.com>
 
-[ Upstream commit a8437f05384cb472518ec21bf4fffbe8f0a47378 ]
+[ Upstream commit 320232caf1d8febea17312dab4b2dfe02e033520 ]
 
-Otherwise, when compiled as module, a WARN_ON is triggered:
+Unfortunately the previous patch to fix issues using the AMD ACP bridge
+has the side effect of breaking the dmic in other cases and needs to be
+reverted.
 
-WARNING: CPU: 0 PID: 5 at sound/core/init.c:208 snd_card_new+0x310/0x39c [snd]
-[...]
-CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.10.39 #1
-Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-Workqueue: events deferred_probe_work_func
-[<c0111988>] (unwind_backtrace) from [<c010c8ac>] (show_stack+0x10/0x14)
-[<c010c8ac>] (show_stack) from [<c092784c>] (dump_stack+0xdc/0x104)
-[<c092784c>] (dump_stack) from [<c0129710>] (__warn+0xd8/0x114)
-[<c0129710>] (__warn) from [<c0922a48>] (warn_slowpath_fmt+0x5c/0xc4)
-[<c0922a48>] (warn_slowpath_fmt) from [<bf0496f8>] (snd_card_new+0x310/0x39c [snd])
-[<bf0496f8>] (snd_card_new [snd]) from [<bf1d7df8>] (snd_soc_bind_card+0x334/0x9c4 [snd_soc_core])
-[<bf1d7df8>] (snd_soc_bind_card [snd_soc_core]) from [<bf1e9cd8>] (devm_snd_soc_register_card+0x30/0x6c [snd_soc_core])
-[<bf1e9cd8>] (devm_snd_soc_register_card [snd_soc_core]) from [<bf22d964>] (fsl_asoc_card_probe+0x550/0xcc8 [snd_soc_fsl_asoc_card])
-[<bf22d964>] (fsl_asoc_card_probe [snd_soc_fsl_asoc_card]) from [<c060c930>] (platform_drv_probe+0x48/0x98)
-[...]
+Removing the changes while we revisit the fix and find something better.
+Apologies for the churn.
 
-Signed-off-by: Nicolas Cavallari <nicolas.cavallari@green-communications.fr>
-Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
-Link: https://lore.kernel.org/r/20210527163409.22049-1-nicolas.cavallari@green-communications.fr
+Suggested-by: Gabriel Craciunescu <unix.or.die@gmail.com>
+Signed-off-by: Mark Pearson <markpearson@lenovo.com>
+Link: https://lore.kernel.org/r/20210602171251.3243-1-markpearson@lenovo.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/fsl/fsl-asoc-card.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/amd/renoir/rn-pci-acp3x.c | 35 -----------------------------
+ 1 file changed, 35 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index f62f81ceab0d..9dcbe5d5a428 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -732,6 +732,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 	/* Initialize sound card */
- 	priv->pdev = pdev;
- 	priv->card.dev = &pdev->dev;
-+	priv->card.owner = THIS_MODULE;
- 	ret = snd_soc_of_parse_card_name(&priv->card, "model");
- 	if (ret) {
- 		snprintf(priv->name, sizeof(priv->name), "%s-audio",
+diff --git a/sound/soc/amd/renoir/rn-pci-acp3x.c b/sound/soc/amd/renoir/rn-pci-acp3x.c
+index 47a4dfd81a46..050a61fe9693 100644
+--- a/sound/soc/amd/renoir/rn-pci-acp3x.c
++++ b/sound/soc/amd/renoir/rn-pci-acp3x.c
+@@ -199,41 +199,6 @@ static const struct dmi_system_id rn_acp_quirk_table[] = {
+ 			DMI_EXACT_MATCH(DMI_BOARD_NAME, "20NLCTO1WW"),
+ 		}
+ 	},
+-	{
+-		/* Lenovo ThinkPad P14s Gen 1 (20Y1) */
+-		.matches = {
+-			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
+-			DMI_MATCH(DMI_BOARD_NAME, "20Y1"),
+-		}
+-	},
+-	{
+-		/* Lenovo ThinkPad T14s Gen1 */
+-		.matches = {
+-			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
+-			DMI_MATCH(DMI_BOARD_NAME, "20UH"),
+-		}
+-	},
+-	{
+-		/* Lenovo ThinkPad T14s Gen1 Campus */
+-		.matches = {
+-			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
+-			DMI_MATCH(DMI_BOARD_NAME, "20UJ"),
+-		}
+-	},
+-	{
+-		/* Lenovo ThinkPad T14 Gen 1*/
+-		.matches = {
+-			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
+-			DMI_MATCH(DMI_BOARD_NAME, "20UD"),
+-		}
+-	},
+-	{
+-		/* Lenovo ThinkPad X13 Gen 1*/
+-		.matches = {
+-			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
+-			DMI_MATCH(DMI_BOARD_NAME, "20UF"),
+-		}
+-	},
+ 	{}
+ };
+ 
 -- 
 2.30.2
 
