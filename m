@@ -7,50 +7,50 @@ X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB05DC48BE5
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 21:10:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4EF6C48BDF
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 21:12:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DAF2C613B1
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 21:10:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DAF2C613B1
+	by mail.kernel.org (Postfix) with ESMTPS id 6973F613B1
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 21:12:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6973F613B1
 Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E37E1688;
-	Tue, 15 Jun 2021 23:09:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E37E1688
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7D78D168B;
+	Tue, 15 Jun 2021 23:11:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D78D168B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623791445;
-	bh=17iKdOwlrmwGKNLVpFfyYVO97sviq/JhBBJvumSvKF8=;
+	s=default; t=1623791545;
+	bh=Yrdw1Re9L5tLshJ9tBEXAyzzZOu2q/ZkB2nqbGdxH2U=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ro+OCIjXGMmm8eDvrZRSHJ2MS49Pxi6cSIB6RR7I/OdAkFGZVWw1Cshzf6ygI2/yv
-	 GC1l3GjLA7yo5aetlcgjpG9D9xmdZk+7q7L4AW6XPrYoFIQSOTyEK+p4O4fso4LkbL
-	 RTxB9KWiKlNM/voWyzBfvo9nGdRBeNGnEp53H4GA=
+	b=V2Q6Fpm+XjFahWSj8y30EjifMAYRGySVt8eJlc7TCQVkWuAdog9RmBZ54nqgZeKSp
+	 XMw6vVk+3WzRAlenHg+pdm+rsGGQJbInt2/oxeAmUQbOMsddqk6dwZvxXsNfFOqZBi
+	 59ET+Hlsvkyb4+ia0Po6NFpKHp/JWnt0wULaGCdw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2294CF8016D;
-	Tue, 15 Jun 2021 23:09:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 14107F8016D;
+	Tue, 15 Jun 2021 23:11:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C3B39F80171; Tue, 15 Jun 2021 23:09:53 +0200 (CEST)
+ id 6ED69F80171; Tue, 15 Jun 2021 23:11:33 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id B5282F80165
- for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 23:09:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5282F80165
+ by alsa1.perex.cz (Postfix) with ESMTP id DAB42F80113
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 23:11:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DAB42F80113
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1623791385115118027-webhooks-bot@alsa-project.org>
-References: <1623791385115118027-webhooks-bot@alsa-project.org>
-Subject: Build failes with "undefined macro AM_GNU_GETTEXT"
-Message-Id: <20210615210953.C3B39F80171@alsa1.perex.cz>
-Date: Tue, 15 Jun 2021 23:09:53 +0200 (CEST)
+In-Reply-To: <1623791490391488075-webhooks-bot@alsa-project.org>
+References: <1623791490391488075-webhooks-bot@alsa-project.org>
+Subject: Build fails with "undefined macro AM_GNU_GETTEXT"
+Message-Id: <20210615211133.6ED69F80171@alsa1.perex.cz>
+Date: Tue, 15 Jun 2021 23:11:33 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,7 +66,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils issue #99 was opened from edward-a:
+alsa-project/alsa-utils issue #99 was edited from edward-a:
 
 **./gitcompile** fails with the following output:
 
