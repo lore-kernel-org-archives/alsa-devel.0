@@ -7,60 +7,60 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 718EDC2B9F4
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 01:39:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35F10C2B9F4
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 01:39:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B88796141B
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 01:39:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B88796141B
+	by mail.kernel.org (Postfix) with ESMTPS id AC9106140F
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Jun 2021 01:39:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC9106140F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C4DC169F;
-	Tue, 15 Jun 2021 03:38:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C4DC169F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4119E169D;
+	Tue, 15 Jun 2021 03:38:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4119E169D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623721168;
-	bh=eYgze+wzpedl+inArYOZF9a7HlCR5sh+AIuRdEPxDLo=;
+	s=default; t=1623721184;
+	bh=EL6kNiBTQ8OwHlttcbBrHQqRKWydhxOEt2oPtybzFTw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Efg/6tN36qQCoNMmOOkno8fUW8YxJz9Mn9seIMz+1wwIOcROfnST5w6LYDHvN493W
-	 1HMSWmPDfssO+F99zBlvv8Ceo2QfRwRr89rNSJdAwS93/maKsQQJVRC5c9Zkiqq0b6
-	 gJupKP7MJy2loRwzac+7wi4BXaw+kxAxBxqLXcNc=
+	b=cRGytG9/xJftez8A4LAW5eczsH/IEAmfG68AbO/hlGV03V3hpnMccE3DE692jbvq5
+	 dX4P8epxnf8DRd+i+CB218r8kJ1X+ec+2eQ92oDKQol4B2Q8CvGgX3eu1KR0PX9SKE
+	 KT9ONs7JlWc0o01oFVrU+Qbhn2B2vYLEdl62XAhM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2923BF804ED;
+	by alsa1.perex.cz (Postfix) with ESMTP id B6FB3F804F2;
 	Tue, 15 Jun 2021 03:35:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F3D6DF804CC; Tue, 15 Jun 2021 03:35:46 +0200 (CEST)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+ id 63686F804CC; Tue, 15 Jun 2021 03:35:47 +0200 (CEST)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9DC57F804CB
- for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 03:35:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DC57F804CB
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
- by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G3rNl4YgGzXfyp;
- Tue, 15 Jun 2021 09:30:31 +0800 (CST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 42EBAF802E8
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2021 03:35:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42EBAF802E8
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G3rQq74qzz6yrF;
+ Tue, 15 Jun 2021 09:32:19 +0800 (CST)
 Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 15 Jun 2021 09:35:26 +0800
+ 15.1.2176.2; Tue, 15 Jun 2021 09:35:28 +0800
 Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
  (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 15 Jun
- 2021 09:35:26 +0800
+ 2021 09:35:28 +0800
 From: Yang Yingliang <yangyingliang@huawei.com>
 To: <linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
  <alsa-devel@alsa-project.org>
-Subject: [PATCH -next v2 3/9] ASoC: fsl_easrc: Use
+Subject: [PATCH -next v2 8/9] ASoC: fsl_ssi: Use
  devm_platform_get_and_ioremap_resource()
-Date: Tue, 15 Jun 2021 09:39:16 +0800
-Message-ID: <20210615013922.784296-4-yangyingliang@huawei.com>
+Date: Tue, 15 Jun 2021 09:39:21 +0800
+Message-ID: <20210615013922.784296-9-yangyingliang@huawei.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210615013922.784296-1-yangyingliang@huawei.com>
 References: <20210615013922.784296-1-yangyingliang@huawei.com>
@@ -92,23 +92,23 @@ code.
 
 Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- sound/soc/fsl/fsl_easrc.c | 3 +--
+ sound/soc/fsl/fsl_ssi.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
-index b1765c7d3bcd..19c3c3b5939e 100644
---- a/sound/soc/fsl/fsl_easrc.c
-+++ b/sound/soc/fsl/fsl_easrc.c
-@@ -1887,8 +1887,7 @@ static int fsl_easrc_probe(struct platform_device *pdev)
- 	easrc->private = easrc_priv;
- 	np = dev->of_node;
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 2b57b60431bb..ecbc1c365d5b 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -1503,8 +1503,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	}
+ 	ssi->cpu_dai_drv.name = dev_name(dev);
  
 -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	regs = devm_ioremap_resource(dev, res);
-+	regs = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
- 	if (IS_ERR(regs))
- 		return PTR_ERR(regs);
- 
+-	iomem = devm_ioremap_resource(dev, res);
++	iomem = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+ 	if (IS_ERR(iomem))
+ 		return PTR_ERR(iomem);
+ 	ssi->ssi_phys = res->start;
 -- 
 2.25.1
 
