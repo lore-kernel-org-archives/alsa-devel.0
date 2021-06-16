@@ -2,89 +2,119 @@ Return-Path: <SRS0=NYZN=LL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47B36C48BE5
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 14:24:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26118C48BE5
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 14:35:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D69B1613F0
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 14:24:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D69B1613F0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8722E613FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 14:35:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8722E613FE
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7979416FB;
-	Thu, 17 Jun 2021 16:23:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7979416FB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 06C391704;
+	Thu, 17 Jun 2021 16:34:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06C391704
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623939887;
-	bh=G2UFbbrtx2A0NRIpUN+M+blVtgnKYVgKAo93NAqdrVk=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1623940539;
+	bh=2pT6diwY3dHqhQNq0TZW9ZAI8vRzneLi7AxE1GAN/Os=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rB9YBja73p5cyY8/jAKjbHIlqnldgnBf8BexpYakCV3pr1OUvgKZV42olY0+SU7JQ
-	 S7KED0JWRHCbq7YUsqbyoP6EY+iaKLb03fWGhnbMnQpXmw3WfWCmlw2mSXszFzcAjs
-	 rJdZf9/nNzHSp51lkHl1Iq9BlaNVdjIOLaXaVdvU=
+	b=Urc3eu8DnCe0nY8my0PQew40UzBiPHU7vQxlG4Ai0CqszROrGoki7E68Wxh+hMYhr
+	 diUNmdQ/6uKWXyIl3SZlEA23oUUhiyW/Fge9zT14bmkMYZDhDKKe/LnQPdi+M8rleu
+	 4V6M4a5mR3qXqiFMgmxx3OpjuprAiiiapiGrhvDg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 18DF1F80171;
-	Thu, 17 Jun 2021 16:23:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C8C6F80171;
+	Thu, 17 Jun 2021 16:34:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0DAE8F8025A; Thu, 17 Jun 2021 16:23:55 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ id C9CD0F8028B; Wed, 16 Jun 2021 12:41:56 +0200 (CEST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 57242F80148
- for <alsa-devel@alsa-project.org>; Thu, 17 Jun 2021 16:23:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57242F80148
-IronPort-SDR: wBtX8eALG64g+kL3tTsojnTjiU+RQIDiplBxNmx2ODekXfSKMYyDYchcmN9AqUaBdQ6RCQ+qwe
- CQF6dvUh5c3A==
-X-IronPort-AV: E=McAfee;i="6200,9189,10017"; a="186070560"
-X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; d="scan'208";a="186070560"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Jun 2021 07:23:42 -0700
-IronPort-SDR: JcoSIh2heyhrkpOxvw6NjAw5/F4wXqaDFoQ/639ucTvXKoeogF3EsPQJrfHc+vAELLjVqcE19t
- dkfvKmSve0fQ==
-X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; d="scan'208";a="485309513"
-Received: from changwh-mobl1.amr.corp.intel.com (HELO [10.212.5.22])
- ([10.212.5.22])
- by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Jun 2021 07:23:40 -0700
-Subject: Re: [PATCH 1/2] ASoC: rt711: remap buttons
-To: Mark Brown <broonie@kernel.org>, =?UTF-8?B?U2h1bWluZyBb6IyD5pu46YqYXQ==?=
- <shumingf@realtek.com>
-References: <20210617090809.16901-1-shumingf@realtek.com>
- <20210617123914.GD5067@sirena.org.uk>
- <d6374c5158c844d69b4f546fd741f07f@realtek.com>
- <20210617132716.GE5067@sirena.org.uk>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <638be5ea-a310-3711-df08-798f7bee5804@linux.intel.com>
-Date: Thu, 17 Jun 2021 09:23:37 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2DDD1F8028B
+ for <alsa-devel@alsa-project.org>; Wed, 16 Jun 2021 12:41:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DDD1F8028B
+Received: from gallifrey.ext.pengutronix.de
+ ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <mkl@pengutronix.de>)
+ id 1ltSzV-0004RW-VS; Wed, 16 Jun 2021 12:41:50 +0200
+Received: from pengutronix.de (unknown
+ [IPv6:2a03:f580:87bc:d400:27:4a54:dbae:b593])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest
+ SHA256) (Client did not present a certificate)
+ (Authenticated sender: mkl-all@blackshift.org)
+ by smtp.blackshift.org (Postfix) with ESMTPSA id 9048463D23F;
+ Wed, 16 Jun 2021 10:41:36 +0000 (UTC)
+Date: Wed, 16 Jun 2021 12:41:35 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH] dt-bindings: Drop redundant minItems/maxItems
+Message-ID: <20210616104135.z5bjalhan4ui2ibz@pengutronix.de>
+References: <20210615191543.1043414-1-robh@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210617132716.GE5067@sirena.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "lars@metafoo.de" <lars@metafoo.de>,
- Jimmy Cheng-Yi Chiang <cychiang@google.com>,
- "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
- "jairaj.arava@intel.com" <jairaj.arava@intel.com>,
- =?UTF-8?B?RGVyZWsgW+aWueW+t+e+qV0=?= <derek.fang@realtek.com>,
- "Flove\(HsinFu\)" <flove@realtek.com>,
- "sathya.prakash.m.r@intel.com" <sathya.prakash.m.r@intel.com>,
- Curtis Malainey <cujomalainey@chromium.org>, "Lu, Brent" <brent.lu@intel.com>,
- "bard.liao@intel.com" <bard.liao@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="agvztsrh6izyn335"
+Content-Disposition: inline
+In-Reply-To: <20210615191543.1043414-1-robh@kernel.org>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+X-Mailman-Approved-At: Thu, 17 Jun 2021 16:34:45 +0200
+Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>, linux-pwm@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-pci@vger.kernel.org,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Wim Van Sebroeck <wim@linux-watchdog.org>, linux-remoteproc@vger.kernel.org,
+ Ulf Hansson <ulf.hansson@linaro.org>, dri-devel@lists.freedesktop.org,
+ linux-ide@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-phy@lists.infradead.org, linux-riscv@lists.infradead.org,
+ Lee Jones <lee.jones@linaro.org>, linux-clk@vger.kernel.org,
+ linux-rtc@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>, Marc Zyngier <maz@kernel.org>,
+ Joerg Roedel <joro@8bytes.org>, Jassi Brar <jassisinghbrar@gmail.com>,
+ Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@ti.com>,
+ David Airlie <airlied@linux.ie>, linux-serial@vger.kernel.org,
+ Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ Jakub Kicinski <kuba@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
+ Vivien Didelot <vivien.didelot@gmail.com>,
+ Wolfgang Grandegger <wg@grandegger.com>, linux-media@vger.kernel.org,
+ Ohad Ben-Cohen <ohad@wizery.com>, devicetree@vger.kernel.org,
+ Albert Ou <aou@eecs.berkeley.edu>, linux-watchdog@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-can@vger.kernel.org,
+ linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, Paul Walmsley <paul.walmsley@sifive.com>,
+ Bjorn Helgaas <bhelgaas@google.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, Jens Axboe <axboe@kernel.dk>,
+ Alessandro Zummo <a.zummo@towertech.it>, Guenter Roeck <linux@roeck-us.net>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
+ netdev@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>,
+ linux-usb@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ iommu@lists.linux-foundation.org, Palmer Dabbelt <palmer@dabbelt.com>,
+ linux-crypto@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dmaengine@vger.kernel.org,
+ Vladimir Oltean <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>,
+ Jonathan Cameron <jic23@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,69 +131,49 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--agvztsrh6izyn335
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 6/17/21 8:27 AM, Mark Brown wrote:
-> On Thu, Jun 17, 2021 at 01:19:05PM +0000, Shuming [范書銘] wrote:
-> 
->>>> This patch uses the same mapping as the machine driver:
->>>> BTN_0 : KEY_PLAYPAUSE
->>>> BTN_1 : KEY_VOICECOMMAND
->>>> BTN_2 : KEY_VOLUMEUP
->>>> BTN_3 : KEY_VOLUMEDOWN
-> 
->>> Which machine driver?  Can't there be multiple machine drivers, and if
->>> they're already overriding things why do this?
-> 
->> The rt711 codec is designed in the Intel platform only for now.
-> 
-> I'm sure your sales team would be happy to change that!
-> 
->> The machine driver is 'sof_sdw.c' that resides under sound/soc/intel/boards.
->> It seems Intel uses the same mapping in all other Intel machine drivers.
->> Please check the commit as below.
->> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/commit/?id=1f64a08bd5a9a218deb37c03c1e98e9567379698
-> 
-> Sure, but if the machine drivers for these platforms already do the
-> right thing why change the CODEC driver?
-> 
->> Hi Sathya,
->> Do you know why the m/c driver uses this mapping?
-> 
-> I'd guess it's just because that's the standard set of headphone buttons
-> that Intel uses for their platforms.
+On 15.06.2021 13:15:43, Rob Herring wrote:
+> If a property has an 'items' list, then a 'minItems' or 'maxItems' with t=
+he
+> same size as the list is redundant and can be dropped. Note that is DT
+> schema specific behavior and not standard json-schema behavior. The tooli=
+ng
+> will fixup the final schema adding any unspecified minItems/maxItems.
+>=20
+> This condition is partially checked with the meta-schema already, but
+> only if both 'minItems' and 'maxItems' are equal to the 'items' length.
+> An improved meta-schema is pending.
+[...]
+>  Documentation/devicetree/bindings/net/can/bosch,m_can.yaml  | 2 --
 
-Intel has no specific requirement, we just follow what the Google 4-button description says [1]
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
-That said, I can't recall why half of the machine drivers follow one pattern and the other half a different one.
+regards,
+Marc
 
-Same as spec:
-sof_da7219_max98373.c:  snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
-sof_da7219_max98373.c-  snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
-sof_da7219_max98373.c-  snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
-sof_da7219_max98373.c-  snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
-sof_cs42l42.c:  snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
-sof_cs42l42.c-  snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
-sof_cs42l42.c-  snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
-sof_cs42l42.c-  snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
+--agvztsrh6izyn335
+Content-Type: application/pgp-signature; name="signature.asc"
 
-swap wrt. spec:
-sof_sdw_rt711.c:        snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
-sof_sdw_rt711.c-        snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-sof_sdw_rt711.c-        snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-sof_sdw_rt711.c-        snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
+-----BEGIN PGP SIGNATURE-----
 
-kbl_rt5663_max98927.c:  snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
-kbl_rt5663_max98927.c-  snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-kbl_rt5663_max98927.c-  snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-kbl_rt5663_max98927.c-  snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmDJ1V0ACgkQqclaivrt
+76nTUAf+NueTtFpURzEcaqcVzU9on1r9+EA8Cl4Mxhgg3Nw3TGp6enDeBSGPVR5B
+MaJtsub8PAEbECezUQxWPaNPa5uvS7dCW5eygZ2z3lDMGZGhYjtv67LVAJgCDq3q
+BWNuKMkKu25Ccsxl33ItHRrAmrlcwBcZMfzN+E9OgZ60GySlRv+AxcLR2XiwST9t
+kWlEW417Mj0P+cvwFo/3Ms4zRddEiw92YruesAK73pkxrB2u2xqaSy9BqNHZCG/J
+F9Q0VsjhTwLAI/7VQohXgcrL2yHsMRJt0M1+XMaxNncf1amrPNo8eWjyNDNbbIIi
+s6uvO8FoLgDLRqbX7Q14cLQ+uQmadw==
+=ZOig
+-----END PGP SIGNATURE-----
 
-Brent, Curtis, Jimmy, can you comment on the order?
-
-
-[1] https://source.android.com/devices/accessories/headset/plug-headset-spec#control-function_mapping
-
-
-
-
- 
+--agvztsrh6izyn335--
