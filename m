@@ -2,72 +2,87 @@ Return-Path: <SRS0=Vkr5=LK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D38D8C48BE5
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Jun 2021 10:31:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BECA9C49EA3
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Jun 2021 11:08:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 261376101B
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Jun 2021 10:31:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 261376101B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
+	by mail.kernel.org (Postfix) with ESMTPS id 6A16361351
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Jun 2021 11:08:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A16361351
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 442E8166F;
-	Wed, 16 Jun 2021 12:30:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 442E8166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 12B50166B;
+	Wed, 16 Jun 2021 13:07:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12B50166B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623839500;
-	bh=mqqLnnrtOe1x+IQER3v/M1RZ1eEvzy87JkFegkes+cc=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1623841726;
+	bh=hHCm7QGRqaZC8Gl2fPTCRiIe+dhhN8+ksDa9QdeMqB4=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Rn6P95C2+vxevbxVvURK5pXtD+/fmVYuY+BfYm1UveIfMQXR1d9hpTl6IIa2CzRyE
-	 2XvveonPpD8sovKVCtLnGnxagddyaxkKeO54U9Fb3lr9SraatqxtpQ8A8HZRkGCiDj
-	 LYprvtUQUZ6nBAahO44qs8ZuLyuP8rB4HSRo0VGw=
+	b=fHHXwJNrFy9Rwh4Omq5s+FoNicNqPm9WMNjSkAREdjdXZ5lpY6zIAxuXPjUwPEXEC
+	 lGgoDmQLqKdEQ4T1lJm/7oo0zkoulBR5+alTrFappOFtsIEseOvkT9SIdQBW/9QGAi
+	 vKBrChbDUYOobhRFHEi2xMXq2FUp7yGU7DuaVNzA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3179F802E8;
-	Wed, 16 Jun 2021 12:30:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93F8CF8028B;
+	Wed, 16 Jun 2021 13:07:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4DAE3F80423; Wed, 16 Jun 2021 12:30:43 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id BFDF9F80423; Wed, 16 Jun 2021 13:07:54 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 71644F8028B
- for <alsa-devel@alsa-project.org>; Wed, 16 Jun 2021 12:30:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71644F8028B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8148FF8028B
+ for <alsa-devel@alsa-project.org>; Wed, 16 Jun 2021 13:07:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8148FF8028B
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="OnWsBphA"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D3F460FE6;
- Wed, 16 Jun 2021 10:30:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1623839432;
- bh=mqqLnnrtOe1x+IQER3v/M1RZ1eEvzy87JkFegkes+cc=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=OnWsBphAHVb2rg/ju/6Hmsj9CKJESH5L8S3YyKZMowlYIITokBtAacamo6ne6B4RJ
- xkyDkVC44/qaGqBTWAXtH/TaV1e/lcQ7RNlplQvYzisJOz4p/Dw9LrtsbDA8TOBvmH
- UBpffBaFYiJKlt50hNCdpZBmpU/RzF4RFEi/LMWg=
-Date: Wed, 16 Jun 2021 12:30:29 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Daehwan Jung <dh10.jung@samsung.com>
-Subject: Re: ALSA: usb-audio: fix rate on Ozone Z90 USB headset
-Message-ID: <YMnSxQx15C8xAq98@kroah.com>
-References: <CGME20210616094912epcas2p38028df32b89b7cc79ba16c0215f8f664@epcas2p3.samsung.com>
- <1623836097-61918-1-git-send-email-dh10.jung@samsung.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1623836097-61918-1-git-send-email-dh10.jung@samsung.com>
-Cc: Lukasz Halman <lukasz.halman@gmail.com>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, Johan Hovold <johan@kernel.org>,
- linux-kernel@vger.kernel.org
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="LQP7PdMo"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="3wmALmay"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id EAB281FD6E;
+ Wed, 16 Jun 2021 11:07:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1623841669; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=nAbGrWoG60KN5mQTsO5Y7mwWTIs/ork4w4bAwiRuuro=;
+ b=LQP7PdMok24SO0aOqd3aQMNMKz5heWdXUr3O/2votYND0Q87VgetG9py8XJgx06Mo8lr5K
+ KmKU8eSUtiQd+LFdVdCjR0SlfUxTcx64l870xvgzfaveW+H580XXJtn2oABLVd5bcB0LGd
+ gtWsFdeAFJH09mIiWNe1GLY23eoyK3k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1623841669;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=nAbGrWoG60KN5mQTsO5Y7mwWTIs/ork4w4bAwiRuuro=;
+ b=3wmALmay+gH20mWXfG1Nd4qNYxzqG+vHRECYuBCeDs/imYJgSoYbfk6O+vC6S/mcgecgvj
+ TPk1DTVjmtyKMMDw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id D59C0A3B98;
+ Wed, 16 Jun 2021 11:07:49 +0000 (UTC)
+Date: Wed, 16 Jun 2021 13:07:49 +0200
+Message-ID: <s5h1r92130a.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: Re: [PATCH] ALSA: oss: Remove redundant assignment to src_access
+In-Reply-To: <1623754423-84072-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+References: <1623754423-84072-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,16 +98,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Jun 16, 2021 at 06:34:55PM +0900, Daehwan Jung wrote:
-> It mislabels its 96 kHz altsetting and that's why it causes some noise
+On Tue, 15 Jun 2021 12:53:43 +0200,
+Jiapeng Chong wrote:
 > 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Variable src_access is set to 'dst_access', but this value is never read
+> as it is not used later on, hence it is a redundant assignment and can
+> be removed.
+> 
+> Clean up the following clang-analyzer warning:
+> 
+> sound/core/oss/pcm_plugin.c:472:4: warning: Value stored to 'src_access'
+> is never read [clang-analyzer-deadcode.DeadStores].
 
-I don't care about this.  But the stable tree probably does, please
-read:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-for how to do this properly.
+That's true, but OTOH, this is better to kept for synchronization with
+other parts where all set the same src_access.  So I'd keep it as is.
+The compiler will optimize out, after all.
+
 
 thanks,
 
-greg k-h
+Takashi
+
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  sound/core/oss/pcm_plugin.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/sound/core/oss/pcm_plugin.c b/sound/core/oss/pcm_plugin.c
+> index 061ba06..a7c0e50 100644
+> --- a/sound/core/oss/pcm_plugin.c
+> +++ b/sound/core/oss/pcm_plugin.c
+> @@ -469,7 +469,6 @@ int snd_pcm_plug_format_plugins(struct snd_pcm_substream *plug,
+>  				return err;
+>  			}
+>  			srcformat = tmpformat;
+> -			src_access = dst_access;
+>  		}
+>  		tmpformat.rate = dstformat.rate;
+>          	err = snd_pcm_plugin_build_rate(plug,
+> -- 
+> 1.8.3.1
+> 
