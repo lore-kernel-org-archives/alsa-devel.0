@@ -7,82 +7,83 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BCA7C48BE5
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Jun 2021 06:53:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE970C48BE5
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Jun 2021 06:54:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 215DB613B9
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Jun 2021 06:53:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 215DB613B9
+	by mail.kernel.org (Postfix) with ESMTPS id 75AF161164
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Jun 2021 06:54:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 75AF161164
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 70D001677;
-	Wed, 16 Jun 2021 08:52:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70D001677
+	by alsa0.perex.cz (Postfix) with ESMTPS id 123E31687;
+	Wed, 16 Jun 2021 08:53:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 123E31687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623826418;
-	bh=EAiFOrslrnRxKoxWEkSGWdFs637u7tZRYVP321UISjE=;
+	s=default; t=1623826485;
+	bh=vukqxSfeJFQCiSDgQ04ysf6wf5NkDltmcoZCdYxo2BQ=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=C6lVqbDfLOE/q8JTmo1xWrb89exIdp3mA+76hNd+bcdtHV/gLtYuouMWO3sTcN1Xg
-	 oYHnrEhsm34TQ5A0lEAACLzU35DwzkFBKHMAGAPoyton3OhMwWiR/wLTqkSLgwVPrD
-	 giWBGY6VdME6cf0HGPnMU8fC1fUwrTxTd7xKlZvc=
+	b=FTyNNB9aoSEas57i6cqLnbhohADwATPNwPmpxDi2nqWKE6u0TX1tkcHotEo4pwQ7n
+	 NQEfhaoue2PZQJTW7Vbgayk5twCG46cfgRKTgDHDSWpfka4yOtLZ79N6DIkV/1f2wd
+	 QRknr/UexEsxtWDvXB/HPGGN+ELqrNs+3Q9p0qP0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16AABF8028B;
-	Wed, 16 Jun 2021 08:52:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AB855F802E8;
+	Wed, 16 Jun 2021 08:53:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 291C4F8028B; Wed, 16 Jun 2021 08:52:46 +0200 (CEST)
+ id A51CFF804B0; Wed, 16 Jun 2021 08:53:53 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 22FBAF8028B
- for <alsa-devel@alsa-project.org>; Wed, 16 Jun 2021 08:52:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22FBAF8028B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 960B5F802E8
+ for <alsa-devel@alsa-project.org>; Wed, 16 Jun 2021 08:53:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 960B5F802E8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="cUAG4pvs"; 
+ header.b="gQcNSllA"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="W4wS98Wy"
+ header.b="G4fVMevD"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id D9F461FD47;
- Wed, 16 Jun 2021 06:52:39 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 679E41FD60;
+ Wed, 16 Jun 2021 06:53:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1623826359; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1623826427; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=9dtpHmxG9F+duxkzM+uQ9RlsPBfsGhT8mwHBkyxkxTs=;
- b=cUAG4pvsdd7c6HXg0IeSmR6FTmu+C91n8zsukLfLEDadCKyxf9DrZ3ts+eDCs9B8Dd1NI6
- kTTgoIDu8g6grXW727c5IitfJjukXz7Y98YEJGHbHy4+qhCozT+Z2EW+8BPbSJfZVKMgvi
- X0DnWyNNgo6Pp2OMsjmnfh4UgW/DT/Y=
+ bh=rw34yZqXHDppUBaot5Jq8vMZnluEjhZukXnTfLjMgc4=;
+ b=gQcNSllAIpd7mnAIOWHMrPjP/CkmhCYmMHOj0OhMX6eu10mQv+RenRhq/7BCUotaOGwjfJ
+ sSK7yzq5MvU+sZZn6Y96YCZEOSnhX3eM1B7WUzFH6X/6JDwB13mgWZFtkpCUr4LEiUjmlk
+ r2SgGZi5j/QVxFCvyiMoSO1xxMzhvZk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1623826359;
+ s=susede2_ed25519; t=1623826427;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=9dtpHmxG9F+duxkzM+uQ9RlsPBfsGhT8mwHBkyxkxTs=;
- b=W4wS98Wy1a/ASlDa/AuMqvsoI2Q+gsmus8jIOwI6w5R4KvAAonHqyYV/xTA+lMT+5quM/+
- Xh+eYFqcdO1wnSCQ==
+ bh=rw34yZqXHDppUBaot5Jq8vMZnluEjhZukXnTfLjMgc4=;
+ b=G4fVMevDww0GZrlpq6Vjlgv6hA8KNDRjm2sehMPIj1cBa87U7G9aJGu2yhh5EQUHxvvt/p
+ YEaBhex7NcVP3DAQ==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id C23CDA3B89;
- Wed, 16 Jun 2021 06:52:39 +0000 (UTC)
-Date: Wed, 16 Jun 2021 08:52:39 +0200
-Message-ID: <s5heed21etk.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id E0969A3B8A;
+ Wed, 16 Jun 2021 06:53:46 +0000 (UTC)
+Date: Wed, 16 Jun 2021 08:53:46 +0200
+Message-ID: <s5hczsm1erp.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Yang Yingliang <yangyingliang@huawei.com>
-Subject: Re: [PATCH -next] ALSA: ppc: fix error return code in snd_pmac_probe()
-In-Reply-To: <20210616021121.1991502-1-yangyingliang@huawei.com>
-References: <20210616021121.1991502-1-yangyingliang@huawei.com>
+To: Colin King <colin.king@canonical.com>
+Subject: Re: [PATCH][next] ALSA: bebob: Fix bit flag quirk constants
+In-Reply-To: <20210615142048.59900-1-colin.king@canonical.com>
+References: <20210615142048.59900-1-colin.king@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: mpe@ellerman.id.au, alsa-devel@alsa-project.org, tiwai@suse.com,
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>,
+ kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
  linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -99,14 +100,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 16 Jun 2021 04:11:21 +0200,
-Yang Yingliang wrote:
+On Tue, 15 Jun 2021 16:20:48 +0200,
+Colin King wrote:
 > 
-> If snd_pmac_tumbler_init() or snd_pmac_tumbler_post_init() fails,
-> snd_pmac_probe() need return error code.
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> The quirking bit-flags are currently set as contiguous integer enum values
+> and so currently SND_BEBOB_QUIRK_INITIAL_DISCONTINUOUS_DBC is zero and so
+> he quirking never getting set or tested correctly for this quirk. Fix this
+> by setting the quirking constants as shifted bit values.
+> 
+> Addresses-Coverity: ("Bitwise-and with zero")
+> Fixes: 93cd12d6e88a ("ALSA: bebob: code refactoring for model-dependent quirks")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
 Thanks, applied.
 
