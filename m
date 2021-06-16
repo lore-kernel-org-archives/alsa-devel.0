@@ -6,66 +6,66 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EEEBC48BE5
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Jun 2021 16:43:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C07CC48BE5
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Jun 2021 16:44:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D964A61351
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Jun 2021 16:43:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D964A61351
+	by mail.kernel.org (Postfix) with ESMTPS id 0E3C161359
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Jun 2021 16:44:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E3C161359
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6C0FA16EE;
-	Wed, 16 Jun 2021 18:42:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C0FA16EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5D31416F1;
+	Wed, 16 Jun 2021 18:43:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D31416F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623861820;
-	bh=2onQOibA4CQc7noe+2STOIXu78f3FAxW2qGwNCOGv8o=;
+	s=default; t=1623861855;
+	bh=559inuTvPdv6Mxx/p8xEYL/60qazKbf5t845mqHXAY0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LS9qWEnfP6cnkJYuwNAjJf5YCwFYg77KhwBGf9JQmJKFxNClrSTFuz9u+wNSBnGGS
-	 YVWN2a49RVfM13EHB6TLW2E8jAggtpaCkunTGPG0JjEjZcokYVH/q1yacyCHxhBNuC
-	 fM1FLRxHiEd+tEok7LwU8y3xga3zdzC+JZmZPsXM=
+	b=Nf2XzdzBee34ggI7az5nTz46rAEqq4OAkOLpv5zAIp8qACZgOxWjnrPsDZ/MA2qrI
+	 yjs9Pw57n8Q/sdY+2TnKH8gvuvvGrS953ninYz/x3vwRIr9xhF/IaSAF5FSn0Z4o9n
+	 XJf6uBRR1DNnmoDzMg/cKnlqX+K7qqCw1RF/kFcE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BA6DEF804CB;
-	Wed, 16 Jun 2021 18:42:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8E42BF804D1;
+	Wed, 16 Jun 2021 18:42:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 52726F804C3; Wed, 16 Jun 2021 18:41:55 +0200 (CEST)
+ id D6164F804D1; Wed, 16 Jun 2021 18:41:57 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 86636F80165
- for <alsa-devel@alsa-project.org>; Wed, 16 Jun 2021 18:41:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86636F80165
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57090F804CB
+ for <alsa-devel@alsa-project.org>; Wed, 16 Jun 2021 18:41:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57090F804CB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="k5H4Xi3D"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C6C861245;
- Wed, 16 Jun 2021 16:41:50 +0000 (UTC)
+ header.b="SShVWR9l"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D042961351;
+ Wed, 16 Jun 2021 16:41:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1623861710;
- bh=2onQOibA4CQc7noe+2STOIXu78f3FAxW2qGwNCOGv8o=;
+ s=k20201202; t=1623861713;
+ bh=559inuTvPdv6Mxx/p8xEYL/60qazKbf5t845mqHXAY0=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=k5H4Xi3DGBblbdIIqDBF/+JtxWem19ECMx4PAC6q4Do0j8SqCtxGUuMkJgFZpjZHD
- L3HM5Mvfw+eM4HATWyqg6u0zOuySxvHQyZV2Sxqmx0TTEyONqaQJPcQ/AKCugJMbMK
- 5O9wcghRSoOcQmOP24QEvHJsxpQ79AGoTtamtxQ5ZYZp5OgGWy+RZnCRdQdRWY6efj
- tDWLa0S7dbzxuBSDyrJsaTFxDmv3mW5UM49aZYndc6lymQAN4M63kfWfMTof1xAIyU
- IGDLmSluePjlV4h94I24Clz55oF9QzNfCqLsOTz0ogD/Ur6gEkb3UzNgqhpQLi0SBM
- MF/yRCsLe5xJQ==
+ b=SShVWR9lMmHcWWTCezzzzBI1dFb2eEWlLwjz3qpAT5Dh0U1v6F4EBPRhCBaPgz1Lo
+ 2IQHBhw0GPTzAKrU/PGOzj21j2zxSc1s9kKcjkUcswoh5FiSe0srOTkTYZ+5ASZcyc
+ CBniE0EbycEqUUOFejePEU1RIJWBZEb3fhmmRUZxPKbSy86sz1bXgYOyZXVzmRQWa0
+ QNHaN+leewogEeUfsx9GjIBEzToTEQi83MwmuiZ5Yw9Cgm6HRBlzQCa8aeWTu6R7x2
+ p2dghFphkBIqq6nDtHWT5C6Id5k5oiy2dKr2UlQTPSL7CETNVktFdSroYJHefP6TnY
+ 7T8YM76d7ZLzw==
 From: Mark Brown <broonie@kernel.org>
 To: lgirdwood@gmail.com,
-	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: Re: [PATCH] ASoC: codecs: Fix duplicate included sound/soc.h
-Date: Wed, 16 Jun 2021 17:41:15 +0100
-Message-Id: <162386001971.25644.6040330182836931770.b4-ty@kernel.org>
+	Yang Li <yang.lee@linux.alibaba.com>
+Subject: Re: [PATCH -next] SoC: codecs: wcd938x: fix boolreturn.cocci warning
+Date: Wed, 16 Jun 2021 17:41:16 +0100
+Message-Id: <162386001971.25644.6927312581095753036.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1623822667-130511-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-References: <1623822667-130511-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1623811535-15841-1-git-send-email-yang.lee@linux.alibaba.com>
+References: <1623811535-15841-1-git-send-email-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -86,14 +86,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 16 Jun 2021 13:51:07 +0800, Jiapeng Chong wrote:
-> Clean up the following includecheck warnings:
+On Wed, 16 Jun 2021 10:45:35 +0800, Yang Li wrote:
+> Return statements in functions returning bool should use true/false
+> instead of 1/0.
 > 
-> ./sound/soc/codecs/wcd938x.c: sound/soc.h is included more than once.
-> ./sound/soc/codecs/wcd938x-sdw.c: sound/soc.h is included more than
-> once.
-> 
-> No functional change.
+> Fix the following coccicheck warning:
+> ./sound/soc/codecs/wcd938x.c:1190:9-10: WARNING: return of 0/1 in
+> function 'wcd938x_volatile_register' with return type bool.
 
 Applied to
 
@@ -101,8 +100,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: Fix duplicate included sound/soc.h
-      commit: 06cc52329cb098ba0858032998e382311dcd9743
+[1/1] SoC: codecs: wcd938x: fix boolreturn.cocci warning
+      commit: 83bd5c53ebf6f2f7b8b0b7db4c038ad7a5a5448a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
