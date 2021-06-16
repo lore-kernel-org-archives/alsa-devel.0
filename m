@@ -2,55 +2,89 @@ Return-Path: <SRS0=Vkr5=LK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28AB0C48BE5
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Jun 2021 06:45:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CE2BC48BE6
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Jun 2021 06:52:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A62B9611CE
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Jun 2021 06:45:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A62B9611CE
-Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
+	by mail.kernel.org (Postfix) with ESMTPS id 505EA61078
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Jun 2021 06:52:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 505EA61078
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8CF221674;
-	Wed, 16 Jun 2021 08:44:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CF221674
+	by alsa0.perex.cz (Postfix) with ESMTPS id 922461676;
+	Wed, 16 Jun 2021 08:51:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 922461676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623825898;
-	bh=hPrfosOmzit2iKrdluf6vby0JcEidmBpfpcXn/FcHjc=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1623826319;
+	bh=kpWCczfJ6+iqaaG/w+u2DY+Tz2k7i9io5NwauZEskBY=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ES58fZ3EQKxGzBjygF45Zpx+0YbTa48zIA5pApnmLUPXmZ8ppltfrqy0hLVSnBtFL
-	 WoXwcwqPcj/ldQPei7s19NkuZe9fgQfgErrGMcBXYW6DQqhmAQFRw7JuS103qbTes9
-	 f+zDZv8jxPK5qWtHcuUK+aetQ4WAldLFh7aCK/Lg=
+	b=PXhhpRzQlNndxJaN25m80V4MupQfwtuP2jGxBvSMGvP8a8D4SuqrmyZDrGWuL9+RW
+	 Ix2hc1b9s9vBix9TM5P1iE12mlRSnysM1sB3d9zzIypoDYvbwGrKqsmiCtwkktRM5F
+	 PVdjY99DJjmUAg8B25g6vAm5O3UoTNBovhHrn3rM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 03A39F80148;
-	Wed, 16 Jun 2021 08:44:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34CB3F80148;
+	Wed, 16 Jun 2021 08:51:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1FE8DF80423; Wed, 16 Jun 2021 08:44:06 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 4A046F80148
- for <alsa-devel@alsa-project.org>; Wed, 16 Jun 2021 08:44:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A046F80148
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1623825842300086021-webhooks-bot@alsa-project.org>
-References: <1623825842300086021-webhooks-bot@alsa-project.org>
-Subject: Fix a52 for the recent avcodec
-Message-Id: <20210616064406.1FE8DF80423@alsa1.perex.cz>
-Date: Wed, 16 Jun 2021 08:44:06 +0200 (CEST)
+ id A34C0F80423; Wed, 16 Jun 2021 08:51:08 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 96489F80148
+ for <alsa-devel@alsa-project.org>; Wed, 16 Jun 2021 08:51:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96489F80148
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="kY52ZIeH"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="JmHTL/9O"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id D6D6A1FD47;
+ Wed, 16 Jun 2021 06:50:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1623826259; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DVo8Z1hPdxqSxUn+mu8aduZxE8KaKDVvpZcxB4cNmtE=;
+ b=kY52ZIeHIRqtq9k6vcryyqlQ5U06056YwupY2sn1DpsU1Cs1Ncx9CKbWkrywWk+DcC7hh0
+ +f3AxHM92SL4FDVhTwVOXzalDhKFb4T8xdahTyv/odslN1pozSoTZJANDWHVnMrPiwYySB
+ sa//RCwxqjR+PzG05CB0CH89mlAyaGc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1623826259;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DVo8Z1hPdxqSxUn+mu8aduZxE8KaKDVvpZcxB4cNmtE=;
+ b=JmHTL/9ONj5cSKMjxqft6Fb7xrqaQjBcg2jaAwSYMhgviMj/+JdA6mJA6ArN2yvwSqWg8E
+ 4qlPB6G2p4gWaADQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id BBF3EA3B8F;
+ Wed, 16 Jun 2021 06:50:59 +0000 (UTC)
+Date: Wed, 16 Jun 2021 08:50:59 +0200
+Message-ID: <s5hfsxi1ewc.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Yang Yingliang <yangyingliang@huawei.com>
+Subject: Re: [PATCH -next] ALSA: fm801: Fix missing pci_release_regions() on
+ error in snd_fm801_create()
+In-Reply-To: <20210616025507.2120103-1-yangyingliang@huawei.com>
+References: <20210616025507.2120103-1-yangyingliang@huawei.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, broonie@kernel.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,10 +100,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-plugins pull request #26 was opened from tiwai:
+On Wed, 16 Jun 2021 04:55:07 +0200,
+Yang Yingliang wrote:
+> 
+> Fix the missing pci_release_regions() before return
+> from snd_fm801_create() in the error handling case.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+
+pci_regions() is manated in pcim_release(), hence you don't need to
+call it explicitly.
 
 
+thanks,
 
-Request URL   : https://github.com/alsa-project/alsa-plugins/pull/26
-Patch URL     : https://github.com/alsa-project/alsa-plugins/pull/26.patch
-Repository URL: https://github.com/alsa-project/alsa-plugins
+Takashi
