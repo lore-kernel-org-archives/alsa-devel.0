@@ -2,110 +2,88 @@ Return-Path: <SRS0=NYZN=LL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BEF16C2B9F4
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 10:06:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CAB8AC2B9F4
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 10:07:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0EC0D6109D
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 10:06:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0EC0D6109D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
+	by mail.kernel.org (Postfix) with ESMTPS id 4C20461185
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 10:07:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C20461185
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B0318170D;
-	Thu, 17 Jun 2021 12:05:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0318170D
+	by alsa0.perex.cz (Postfix) with ESMTPS id E738016F3;
+	Thu, 17 Jun 2021 12:06:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E738016F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623924390;
-	bh=AnzHO6QtIYC7jcQgLCgKctN26Wod6SOj5O+EwgJ5Ols=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1623924442;
+	bh=BDZ/9iY7ySnw9vqLr2BAszS44fqtoHb1RWIctspTXEM=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MrFthTTdD6B5LPhBOcC7Xf6PxzkqSQ7HXZ0G8JlJSTe3IcjrngKY6rF7MtieknFcr
-	 7fy7d5PHfw6zLEb0u0LZtaCYFd3m1vr0/3Flzdme77KaBQNvx7svFSxsEd6QGbt54c
-	 GX38N9vCDJyUsmXBYtNz+iFJskMwGTI7FcbcAIIA=
+	b=oD6Ksj1/eaXyr7+x+AwlTrzx/yvs0CmdeWAzi60TdtQ1w6qb3suSDg3bY81Owt53H
+	 dfc61zgHQZidmnRfyjj2Hbp1x4zuCTLGx4UXQAhIydOqDRQ0p3S7V3PjJgefocUYff
+	 XZSn/tmilOHLR8wSn+FBNur0eePhbDnAjIuzOpvI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C7470F804D9;
-	Thu, 17 Jun 2021 12:04:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 91C0BF8025A;
+	Thu, 17 Jun 2021 12:06:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 393CEF8049E; Thu, 17 Jun 2021 12:04:10 +0200 (CEST)
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com
- [64.147.123.24])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id CC9F8F8025E; Thu, 17 Jun 2021 12:06:30 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B3448F8016D
- for <alsa-devel@alsa-project.org>; Thu, 17 Jun 2021 12:04:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3448F8016D
+ by alsa1.perex.cz (Postfix) with ESMTPS id C637CF8016D
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jun 2021 12:06:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C637CF8016D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="z3i7eNvx"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="tBZuFjEl"
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailout.west.internal (Postfix) with ESMTP id CB6B6169C;
- Thu, 17 Jun 2021 06:04:00 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute5.internal (MEProxy); Thu, 17 Jun 2021 06:04:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm1; bh=+dPn6PVWaHHCQnOr2QLQefxdOLA
- acaxsHkk35to4F6M=; b=z3i7eNvx/wvy5SkUjUbbBxCCzkemnzcNvn119br0hjE
- lNKscol186cdBrLmDbRTucDKKvtMG06Cpy3R8eFvgOr/WG5Ck/uGftr+BzEs+KEP
- ABX9P7NDajgefsGFInRw9Fs4xs7nO0hxFMP91DNt9wHePPjz+FAf2zM51XyZ8lH2
- uOfmTPdFKaAgXBol+dSXEwDws8WFRlaP0YLGtrNCaJ616nG32Guu1WxTe62dkG11
- KXcfCMlw/ozAc6HG35He/OmCA5MJRz6nvUGUIcTqsXJ8TNb5VgXGBFuZFpa/dfib
- UdyhGwEk53b8j4V6DhlRwVSa032Dj/P+l7uznVgO/FA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=+dPn6P
- VWaHHCQnOr2QLQefxdOLAacaxsHkk35to4F6M=; b=tBZuFjEl4IEyvS1Ctb40Bw
- iuM0K9txJM5h+P4iTH33Zuau7DMVKIJTgo6EtUeLUJmbWYPgJjKah9sfQmKokFSw
- IdgdGCVIeS1wryR6M5nBZCgKnviwRCFj6L2Ai2VPEi267dfonH6uCzHOQeIa6h3g
- ViFhJzz8tk9xaBg7m2Z15GM1MXPhLSbbNStKXWXj3nzuhu1Tm4SrpbQlse99ipbP
- Q9tp3yZEjnuMp0c7YxUFdaXJGOZZr29jrBev6moGcKCmYaOaon3YMkl830ka5cRw
- keaS0LFNblrA9CZq1HWYIfYUSAqK/YQtbr4pskisceXpO6+7QaKh2V61Ze3LTwZQ
- ==
-X-ME-Sender: <xms:Dx7LYN-n-CAkDVqUTC1jDpx5K6_4SZzPvKXEfonjf5tKcmhy7dxWjA>
- <xme:Dx7LYBvwO9wpjCvCrzFw3m6vvBRKeQ0xMXN49UqSMwhp6utlSmLx5pQXeutzVYrTn
- c6rxDPwY6uakch6B-g>
-X-ME-Received: <xmr:Dx7LYLDVgVll0lIoaQeOPn5QpLF88gW8scVEXSc_xtyaNJPtp1ul2NhzEjw6njehB5ed3cCYcWLfM-0o2Q8H4xU1UKsFYHTugg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeefuddgvdduucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
- cujfgurhepfffhvffukfhfgggtuggjsehttdortddttddvnecuhfhrohhmpefvrghkrghs
- hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
- hpqeenucggtffrrghtthgvrhhnpefhhfdvjeevffekieffhfeuudefkeekgfdtvdetgeeg
- heegleejudfhvdfhjedvkeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluh
- hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhh
- ihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:Dx7LYBeIZ6XTiNa6cj5kH6A3SArR5aOtVwXRXIlAJaLS3D_TJpfLmw>
- <xmx:Dx7LYCNg0RSzKC7fgje0zrn23V32eo-zBq6oGznetlExERH406Ywww>
- <xmx:Dx7LYDn9r3SazAQDn6QSLW0SqQUAuw6nbNS8rKWheUoWYHf402lSPQ>
- <xmx:EB7LYE3fiK_pcHLOXNkhpIzFwBpMCWRtKlOuklndmklytCKoCAiEFw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 17 Jun 2021 06:03:58 -0400 (EDT)
-Date: Thu, 17 Jun 2021 19:03:55 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH 0/2] ALSA: firewire-motu: add support for MOTU 828 and 896
-Message-ID: <YMseCwhRcbSsneZo@workstation>
-Mail-Followup-To: Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de,
- alsa-devel@alsa-project.org
-References: <20210616082847.124688-1-o-takashi@sakamocchi.jp>
- <s5hfsxgzv9m.wl-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <s5hfsxgzv9m.wl-tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="fgfohPFz"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="cmyBgCgb"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 993AA1FD78;
+ Thu, 17 Jun 2021 10:06:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1623924384; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=QE1KylyuN2hqH+VJRrJuDzwsPz1B4aRvf6J05Z76vow=;
+ b=fgfohPFz/bApSH08QxWPCaQcF+BixssG7Ry6YvouyqOiLaFdgJI6ACTTTs1avx/H6Bdm28
+ HNpD6c7AkMXXQ6Jllv2LFyeE51axBd8wjzvPFtJBoh5Ow4sckk13HYph2AVRPsgSoF0qCA
+ tM2/KRiJzYLBqIuSIK90ue6qZmFQdis=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1623924384;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=QE1KylyuN2hqH+VJRrJuDzwsPz1B4aRvf6J05Z76vow=;
+ b=cmyBgCgb/BH+8kDcop0mvXNIRUkliuD81WwlEb6x6Ikc0kbDDqvmwf8UXVKjzPr4c7Xqof
+ rbmSyzA5SnpIp3DQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 83F70A3BB8;
+ Thu, 17 Jun 2021 10:06:24 +0000 (UTC)
+Date: Thu, 17 Jun 2021 12:06:24 +0200
+Message-ID: <s5hbl84zty7.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: firewire-motu: fix stream format for MOTU 8pre
+ FireWire
+In-Reply-To: <20210614083133.39753-1-o-takashi@sakamocchi.jp>
+References: <20210614083133.39753-1-o-takashi@sakamocchi.jp>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -121,44 +99,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Jun 17, 2021 at 11:37:57AM +0200, Takashi Iwai wrote:
-> On Wed, 16 Jun 2021 10:28:45 +0200,
-> Takashi Sakamoto wrote:
-> > 
-> > Hi,
-> > 
-> > This patchset is to add support for Mark of the unicorn (MOTU) 828 and
-> > 896, which were shipped two decades ago (2001) and already discontinued.
-> > (yes, it's 2021).
-> > 
-> > It's reasonable to count them as first generation of MOTU FireWire
-> > series since they are based on QuickLogic QuickRAM FPGA apart from
-> > Altera or Xilinx FPGA in the latter generation. Unlike the latter
-> > generation, they doesn't allow software to configure internal
-> > multiplexer.
-> > 
-> > I note that the sequence replay for media clock recovery[1] allows to
-> > support them. The device doesn't generate better sound with nominal (ideal)
-> > sequence of packets, thus the patches should be applied to development
-> > tree for v5.14 kernel.
-> > 
-> > [1] [PATCH 0/3] ALSA: firewire-motu: media clock recovery for sph-aware devices
-> > https://lore.kernel.org/alsa-devel/20210602013406.26442-1-o-takashi@sakamocchi.jp/
-> > 
-> > Takashi Sakamoto (2):
-> >   ALSA: firewire-motu: add support for MOTU 828
-> >   ALSA: firewire-motu: add support for MOTU 896
+On Mon, 14 Jun 2021 10:31:33 +0200,
+Takashi Sakamoto wrote:
 > 
-> Applied both patches now.  Thanks.
+> My previous refactoring for ALSA firewire-motu driver brought regression
+> to handle MOTU 8pre FireWire. The packet format is not operated correctly.
+> 
+> Cc: <stable@vger.kernel.org>
+> Fixes: dfbaa4dc11eb ("ALSA: firewire-motu: add model-specific table of chunk count")
+> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-Thanks for applying them.
-
-I'm glad if getting your care of below fix:
-
-[PATCH] ALSA: firewire-motu: fix stream format for MOTU 8pre FireWire
- * https://lore.kernel.org/alsa-devel/20210614083133.39753-1-o-takashi@sakamocchi.jp/
+Thanks, applied.
 
 
-Thanks
-
-Takashi Sakamoto
+Takashi
