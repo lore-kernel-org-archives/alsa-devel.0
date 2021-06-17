@@ -2,84 +2,77 @@ Return-Path: <SRS0=NYZN=LL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8D69C2B9F4
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 10:05:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B165C2B9F4
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 10:05:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A82316109D
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 10:05:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A82316109D
+	by mail.kernel.org (Postfix) with ESMTPS id 7761B6109D
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 10:05:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7761B6109D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 09F2616FA;
-	Thu, 17 Jun 2021 12:05:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09F2616FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 17D7D16FE;
+	Thu, 17 Jun 2021 12:05:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17D7D16FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623924351;
-	bh=YAdKBLimSrV+Fh1wHERggPj1NfEKwFEec3iu+NJFteU=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=VYHcEAmVGyFP77N4La16zuuJLSsOYDeCBjVDX9g/o3XnH75Gr9c2jsNfF54+9wlqg
-	 AyQIqgUFfxW4z/u3D2x9rFB7bvhjTOux5aD88lYKD9gMdGLBp9llrGOOHJXHEAXFWR
-	 yGU0jp2R6xItVfPFSet1AKG8nM/vv81C2DkfSCdo=
+	s=default; t=1623924355;
+	bh=/bkh8ElBLpMZXY1g3rtqYv5ng47YtR5a7chegS0dhTM=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=LF2v70tjZDCzTOgigAnNY6Lxi+AxAriScaaOt9ps8lA4qSytskdka0x+jdWRKkesX
+	 do9mYsoHGh/2DyaTpdy+5yLStQrWfGZ3FEZ65NA7CzM9aW3eaEPp0gTm5CXy5Cg6KW
+	 ymlF5re8PKW/YXzUeq67dyW1sie0IGhws7XjyAUU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 76D47F8049E;
-	Thu, 17 Jun 2021 12:04:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16BE4F804CF;
+	Thu, 17 Jun 2021 12:04:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 65C08F8016D; Thu, 17 Jun 2021 12:04:07 +0200 (CEST)
+ id 92B04F8025A; Thu, 17 Jun 2021 12:04:08 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1BAF1F8025A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 24529F80171
  for <alsa-devel@alsa-project.org>; Thu, 17 Jun 2021 12:04:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1BAF1F8025A
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24529F80171
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="ODTplCHa"; 
+ header.b="HGXuJhXz"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="aOr7raOd"
+ header.b="5h7crLR8"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id EC40021AFC
+ by smtp-out1.suse.de (Postfix) with ESMTP id D8BF521AF2
  for <alsa-devel@alsa-project.org>; Thu, 17 Jun 2021 10:04:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1623924240; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=21q6YR5crVqsCHy4T4kJPjAnfiEAtL8l7MQRZcym6Fk=;
- b=ODTplCHabtG4CkfGEtMixXJ3s/kOMWIcF09OqHQQ+ldZ4NGqv2whL9WvAxdRhnr97BRBsC
- 1Z4pGNdou2hF+Jw3S9BUU38+aXyZpQ+kechi0c1rEvv77HhaGlEEkqg3r/W3EcHhplKz5z
- pX+3uPrgu2cfq4/o/Z5cZO0ho6KdV9Y=
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=eM9oT5VPctkpLs8wyJkAQlrnxlY0+48aH9uZynsuBEE=;
+ b=HGXuJhXzjjSeXM15rV7JqmWPrbHYpparrIr5MM5wjRf7o3tq29A3jMpY6Al3Eke87h90fL
+ WPClTu1E+KUt8WXsiWVy0Iki940LQte7C0EJNUpetyA4aA2V07QLXa7egPYJ3VqBUCHjM1
+ y9nLhm33NqcirgcLXneRUPT8Hgm4hzQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1623924240;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=21q6YR5crVqsCHy4T4kJPjAnfiEAtL8l7MQRZcym6Fk=;
- b=aOr7raOdhnJL/pdTDs/lYdqeJ9YoP/d4ImhQ928KLskvxvq/FACU91Gzw3jDziDLI4Ew9o
- D94Iylhlz0BNniCA==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=eM9oT5VPctkpLs8wyJkAQlrnxlY0+48aH9uZynsuBEE=;
+ b=5h7crLR85UmpaidnwI+QI8lvMa2PrKEpnelVcp4MEFU7X4j9WDajluyb/RYtLngub64cCq
+ KmgMsG+vCAPbLYAQ==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id E5BD2A3BB7;
+ by relay2.suse.de (Postfix) with ESMTP id C953FA3BB7;
  Thu, 17 Jun 2021 10:04:00 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH alsa-plugins 2/2] samplerate: Support multiple formats
-Date: Thu, 17 Jun 2021 12:03:59 +0200
-Message-Id: <20210617100359.12197-3-tiwai@suse.de>
+Subject: [PATCH alsa-plugins 0/2] Support multiple formats
+Date: Thu, 17 Jun 2021 12:03:57 +0200
+Message-Id: <20210617100359.12197-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210617100359.12197-1-tiwai@suse.de>
-References: <20210617100359.12197-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -97,191 +90,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Now that ALSA rate plugin core allows each rate plugin dealing with
-multiple formats, this patch extends the libsamplerate plugin to
-accept more formats, namely, S16 and S32.  The code has been carefully
-modified so that it should still be compilable with old alsa-lib.
+Hi,
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- rate/rate_samplerate.c | 99 +++++++++++++++++++++++++++++++++++-------
- 1 file changed, 84 insertions(+), 15 deletions(-)
+this is a patch set to add the multi-format support for the existing
+rate plugins.
 
-diff --git a/rate/rate_samplerate.c b/rate/rate_samplerate.c
-index 100d6f2b110e..af0bf98cb4e9 100644
---- a/rate/rate_samplerate.c
-+++ b/rate/rate_samplerate.c
-@@ -40,9 +40,12 @@
- #include <alsa/pcm_rate.h>
- 
- struct rate_src {
-+	unsigned int version;
- 	double ratio;
- 	int converter;
- 	unsigned int channels;
-+	int in_int;
-+	int out_int;
- 	float *src_buf;
- 	float *dst_buf;
- 	SRC_STATE *state;
-@@ -109,6 +112,13 @@ static int pcm_src_init(void *obj, snd_pcm_rate_info_t *info)
- 	rate->data.src_ratio = rate->ratio;
- 	rate->data.end_of_input = 0;
- 
-+#if SND_PCM_RATE_PLUGIN_VERSION >= 0x010003
-+	if (rate->version >= 0x010003) {
-+		rate->in_int = info->in.format == SND_PCM_FORMAT_S32;
-+		rate->out_int = info->out.format == SND_PCM_FORMAT_S32;
-+	}
-+#endif
-+
- 	return 0;
- }
- 
-@@ -128,24 +138,61 @@ static void pcm_src_reset(void *obj)
- 	src_reset(rate->state);
- }
- 
--static void pcm_src_convert_s16(void *obj, int16_t *dst, unsigned int dst_frames,
--				const int16_t *src, unsigned int src_frames)
-+static void do_convert(struct rate_src *rate,
-+		       void *dst, unsigned int dst_frames,
-+		       const void *src, unsigned int src_frames)
- {
--	struct rate_src *rate = obj;
- 	unsigned int ofs;
- 
- 	rate->data.input_frames = src_frames;
- 	rate->data.output_frames = dst_frames;
- 	rate->data.end_of_input = 0;
- 	
--	src_short_to_float_array(src, rate->src_buf, src_frames * rate->channels);
-+	if (rate->in_int)
-+		src_int_to_float_array(src, rate->src_buf, src_frames * rate->channels);
-+	else
-+		src_short_to_float_array(src, rate->src_buf, src_frames * rate->channels);
- 	src_process(rate->state, &rate->data);
- 	if (rate->data.output_frames_gen < dst_frames)
- 		ofs = dst_frames - rate->data.output_frames_gen;
- 	else
- 		ofs = 0;
--	src_float_to_short_array(rate->dst_buf, dst + ofs * rate->channels,
--				 rate->data.output_frames_gen * rate->channels);
-+	if (rate->out_int)
-+		src_float_to_int_array(rate->dst_buf, dst + ofs * rate->channels * 4,
-+				       rate->data.output_frames_gen * rate->channels);
-+	else
-+		src_float_to_short_array(rate->dst_buf, dst + ofs * rate->channels * 2,
-+					 rate->data.output_frames_gen * rate->channels);
-+}
-+
-+#if SND_PCM_RATE_PLUGIN_VERSION >= 0x010003
-+static inline void *get_addr(const snd_pcm_channel_area_t *area, snd_pcm_uframes_t offset)
-+{
-+	return (char *)area->addr + (area->first + area->step * offset) / 8;
-+}
-+
-+static void pcm_src_convert(void *obj,
-+			    const snd_pcm_channel_area_t *dst_areas,
-+			    snd_pcm_uframes_t dst_offset,
-+			    unsigned int dst_frames,
-+			    const snd_pcm_channel_area_t *src_areas,
-+			    snd_pcm_uframes_t src_offset,
-+			    unsigned int src_frames)
-+{
-+	struct rate_src *rate = obj;
-+	const void *src = get_addr(src_areas, src_offset);
-+	void *dst = get_addr(dst_areas, dst_offset);
-+
-+	do_convert(rate, dst, dst_frames, src, src_frames);
-+}
-+#endif
-+
-+static void pcm_src_convert_s16(void *obj, int16_t *dst, unsigned int dst_frames,
-+				const int16_t *src, unsigned int src_frames)
-+{
-+	struct rate_src *rate = obj;
-+
-+	do_convert(rate, dst, dst_frames, src, src_frames);
- }
- 
- static void pcm_src_close(void *obj)
-@@ -167,12 +214,28 @@ static void dump(void *obj ATTRIBUTE_UNUSED, snd_output_t *out)
- }
- #endif
- 
-+#if SND_PCM_RATE_PLUGIN_VERSION >= 0x010003
-+static int get_supported_formats(void *obj, uint64_t *in_formats,
-+				 uint64_t *out_formats,
-+				 unsigned int *flags)
-+{
-+	*in_formats = *out_formats =
-+		(1ULL << SND_PCM_FORMAT_S16) |
-+		(1ULL << SND_PCM_FORMAT_S32);
-+	*flags = SND_PCM_RATE_FLAG_INTERLEAVED;
-+	return 0;
-+}
-+#endif
-+
- static snd_pcm_rate_ops_t pcm_src_ops = {
- 	.close = pcm_src_close,
- 	.init = pcm_src_init,
- 	.free = pcm_src_free,
- 	.reset = pcm_src_reset,
- 	.adjust_pitch = pcm_src_adjust_pitch,
-+#if SND_PCM_RATE_PLUGIN_VERSION >= 0x010003
-+	.convert = pcm_src_convert,
-+#endif
- 	.convert_s16 = pcm_src_convert_s16,
- 	.input_frames = input_frames,
- 	.output_frames = output_frames,
-@@ -181,6 +244,9 @@ static snd_pcm_rate_ops_t pcm_src_ops = {
- 	.get_supported_rates = get_supported_rates,
- 	.dump = dump,
- #endif
-+#if SND_PCM_RATE_PLUGIN_VERSION >= 0x010003
-+	.get_supported_formats = get_supported_formats,
-+#endif
- };
- 
- static int pcm_src_open(unsigned int version, void **objp,
-@@ -188,24 +254,27 @@ static int pcm_src_open(unsigned int version, void **objp,
- {
- 	struct rate_src *rate;
- 
--#if SND_PCM_RATE_PLUGIN_VERSION < 0x010002
--	if (version != SND_PCM_RATE_PLUGIN_VERSION) {
--		fprintf(stderr, "Invalid rate plugin version %x\n", version);
--		return -EINVAL;
--	}
--#endif
- 	rate = calloc(1, sizeof(*rate));
- 	if (! rate)
- 		return -ENOMEM;
-+
-+	rate->version = version;
- 	rate->converter = type;
- 
- 	*objp = rate;
- #if SND_PCM_RATE_PLUGIN_VERSION >= 0x010002
--	if (version == 0x010001)
-+	if (version == 0x010001) {
- 		memcpy(ops, &pcm_src_ops, sizeof(snd_pcm_rate_old_ops_t));
--	else
-+		return 0;
-+	}
-+#endif
-+#if SND_PCM_RATE_PLUGIN_VERSION >= 0x010003
-+	if (version == 0x010002) {
-+		memcpy(ops, &pcm_src_ops, sizeof(snd_pcm_rate_v2_ops_t));
-+		return 0;
-+	}
- #endif
--		*ops = pcm_src_ops;
-+	*ops = pcm_src_ops;
- 	return 0;
- }
- 
+
+Takashi
+
+===
+
+Takashi Iwai (2):
+  rate-lav: Support multiple formats
+  samplerate: Support multiple formats
+
+ rate-lav/rate_lavrate.c | 115 ++++++++++++++++++++++++++++++++++------
+ rate/rate_samplerate.c  |  99 ++++++++++++++++++++++++++++------
+ 2 files changed, 183 insertions(+), 31 deletions(-)
+
 -- 
 2.26.2
 
