@@ -7,50 +7,50 @@ X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F0B0C2B9F4
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 13:17:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BBD9C49EA2
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 13:18:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D9A106100B
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 13:17:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D9A106100B
+	by mail.kernel.org (Postfix) with ESMTPS id 38A5E613BA
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 13:18:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 38A5E613BA
 Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9BD6B16EA;
-	Thu, 17 Jun 2021 15:16:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BD6B16EA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6EAF316FB;
+	Thu, 17 Jun 2021 15:17:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EAF316FB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623935842;
-	bh=eSfnsAygfM2RHYwAj6QC/2ZVO/zB9HAIlcREaGg4hJc=;
+	s=default; t=1623935893;
+	bh=uO6FUItMW4c/U160iSRinJdYu9tYiRZiA0cpF8BL3eY=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FFRFS2C0BWhZ2GhEO9XMVUPLWEqDW3gv1gHMu4MebsKdzjobmyVVJu+Wdqb29guPJ
-	 HhNbuxPBE17WQk2eGhtLEOuQd8RkIlX5cvxHChcnnP4hJJN/o/aTdd6JZaiHyaE6h1
-	 caI6BcYap/LUfSZzxHnjDlW9SgxJ7wc005qb4pyw=
+	b=peNDCbjNy321yV33MQHCUPgvChOBn2scstieLdZ5jLjButvpWqwJabAk+L7lJCeZz
+	 ZoUOdMgH5pSpVfR1yOEG7kG4rzfI3L6evlMs8JJwfldh5C848f9O8Wq5C3ZAn10s/h
+	 wTJzPvjah3tcRlkYoeIJvYpzDfRGEJw9zZ6T/VEs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3AEF7F80171;
-	Thu, 17 Jun 2021 15:16:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E7285F8028B;
+	Thu, 17 Jun 2021 15:17:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A0111F8025A; Thu, 17 Jun 2021 15:16:30 +0200 (CEST)
+ id CFD3BF802A9; Thu, 17 Jun 2021 15:17:14 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id AE33AF8016D
- for <alsa-devel@alsa-project.org>; Thu, 17 Jun 2021 15:16:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE33AF8016D
+ by alsa1.perex.cz (Postfix) with ESMTP id 0C98FF8025E
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jun 2021 15:17:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C98FF8025E
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1623935778038362980-webhooks-bot@alsa-project.org>
-References: <1623935778038362980-webhooks-bot@alsa-project.org>
+In-Reply-To: <1623935824550184011-webhooks-bot@alsa-project.org>
+References: <1623935824550184011-webhooks-bot@alsa-project.org>
 Subject: a52 plugin crashing pulseaudio
-Message-Id: <20210617131630.A0111F8025A@alsa1.perex.cz>
-Date: Thu, 17 Jun 2021 15:16:30 +0200 (CEST)
+Message-Id: <20210617131714.CFD3BF802A9@alsa1.perex.cz>
+Date: Thu, 17 Jun 2021 15:17:14 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,7 +68,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 alsa-project/alsa-plugins issue #28 was edited from quequotion:
 
-Ever since f11e7a8994111f971bc881d4069f768472452f4f, the recent commit that brings the a52 plugin up to speed with ffmpeg's requirement for s32le format sampling, sending any audio via plug:a52 from any pulseaudio client crashes pulseaudio.
+Ever since f11e7a8994111f971bc881d4069f768472452f4f, the recent commit that brings the a52 plugin up to speed with ffmpeg's requirement for s32le format sampling, sending any audio to plug:a52 from any pulseaudio client crashes pulseaudio.
 
 I [posted this log](https://gist.github.com/quequotion/78972bac339f5249cf6b383519cdcedf) earlier in #23, in which audio from mpv crashes pulseaudio.
 
