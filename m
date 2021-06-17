@@ -2,114 +2,98 @@ Return-Path: <SRS0=NYZN=LL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF5D1C2B9F4
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 15:26:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE6CAC2B9F4
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 15:35:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 11CC361249
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 15:26:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11CC361249
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cerno.tech
+	by mail.kernel.org (Postfix) with ESMTPS id DDCA8613E3
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 15:35:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DDCA8613E3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BD6421754;
-	Thu, 17 Jun 2021 17:26:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD6421754
+	by alsa0.perex.cz (Postfix) with ESMTPS id 60FF71761;
+	Thu, 17 Jun 2021 17:34:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60FF71761
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623943614;
-	bh=Sj38CVBwD/q4Tn6QawviFV8yZQrOlwmiLUOLqpXxNx8=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=HXwYkGtxWYxz1efRoJHcYOtsQsjMcu9S7c6oeDfcUMMt94s03rUakvUzjwNEu30HE
-	 39J9Gsvd2vGsFuIkzOXVAxHfvyVMdxWrEfFVES4/SBMrbJUHf/b3oCfWablfdJ2wTs
-	 ikOSd+Geu6Drd/HrIJ0ffAy2++/52umkzW8PyB34=
-Received: from vmi242170.contaboserver.net (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3031AF8016D;
-	Thu, 17 Jun 2021 17:26:04 +0200 (CEST)
+	s=default; t=1623944123;
+	bh=45+OUeUcuxmZh903VUSQwJcvNaT3B5aCS0N5FDP6NmQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=JgfAKOTupgIsIa4c0PaKG7/lalrwu5DRBvTbHQJacWgwesYi1g7Gvh4VAumBEwbZs
+	 qqeuP5pCpMcv34/o+AWGv12tjxUWHlWfGytMUxcMWQygqs2TdW8c2fOO/xs2HeR5OE
+	 sGDGAJ03KlZmRb1gkt8GpHyAEDjHL9fKuN0vJ5KY=
+Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
+	by alsa1.perex.cz (Postfix) with ESMTP id EA43CF80171;
+	Thu, 17 Jun 2021 17:34:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 52E40F8025A; Thu, 17 Jun 2021 17:25:58 +0200 (CEST)
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
- [66.111.4.29])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id E1018F8025A; Thu, 17 Jun 2021 17:34:31 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C8249F8016D
- for <alsa-devel@alsa-project.org>; Thu, 17 Jun 2021 17:25:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8249F8016D
+ by alsa1.perex.cz (Postfix) with ESMTPS id E8317F80088
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jun 2021 17:34:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8317F80088
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
- header.b="4GAqFDoM"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="cQUtMz6+"
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailout.nyi.internal (Postfix) with ESMTP id 0AB605C015C;
- Thu, 17 Jun 2021 11:25:50 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute3.internal (MEProxy); Thu, 17 Jun 2021 11:25:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
- date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm3; bh=Sj38CVBwD/q4Tn6QawviFV8yZQr
- OlwmiLUOLqpXxNx8=; b=4GAqFDoMKYI+3xdwI9qgL3LhOOnO/ZNUTHETJSyyfjy
- CWhlZ1YWKogjvp/NWS8fZ1Vl2Oqynicahj7bElyS9dn7EHf3IUGmVUpSVrbP7ieg
- J1iq36SnNhrfTauW5DhYybpY6pP4CYLVfk8ssBAzCTen+M+agbHaX2GeuaVfeIM9
- MnPK1mjpXt8YeDqaM3QR01ss+Rmn/7v8Lr/cijIWWi06a96f/6u4qeA9fRQbOjrJ
- 89KDRHa/DOeGRXpenAz12PI33B8iDYd4g1ZJq6b8jCCQrsRu796S9Y2ZgF9SuQnG
- nHXNZqg93NttaAGpgsFpeOrzL79HeQ61WC6FBmMu51w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Sj38CV
- BwD/q4Tn6QawviFV8yZQrOlwmiLUOLqpXxNx8=; b=cQUtMz6+ZX0c9I3OjL/d06
- 9Lh8+i9IkyAqQXFg73POinDg283dPWm+20Yt5zP7LQEBPraF/++D1sAO98RzhYsd
- MoeTR/KjOi+6O8uzkQkmkwzsYHRVvdnadYDMcYpX9Nai2/DBg1TiiO1NilAx2ArL
- SVtbr27Eoqek9cDhGWAeloNQFYTF3HfZo/Gjuhf6vb7BzobwnMAkWlN/vy5Un9xF
- fcO6fP48+UBrwol+gt8mJyAYTmb2Tj9ilYl/+cCGW9RzHx1SYHearNhGfnnlVddV
- N7rlB9Oi+tEo3vhAoz7QT7AaDab0dkVMrcgWjdx2LulEkwfHHDx4QrTnLPJJpsDA
- ==
-X-ME-Sender: <xms:fWnLYLaIS9600yDgK-9QdpIs5WJmXT_F9YlCkqATDbYG7qkL75v4UQ>
- <xme:fWnLYKbVuqZ2boRHpUb9i_NiAD84cL2T44K0KUNAUDagP9I5reurRTbgFSIBCb2Xs
- 3EclAZZ2_pnORwEJwQ>
-X-ME-Received: <xmr:fWnLYN9z6LnOBiRi1DfFvuJNgqlh-DbDWHo7URKMbMBgTTTOpMDFSl9-pxXSrsPxW8DTvhawY7_90DjYKEY7eXqN5aqzg38szUjo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeefuddgkeeiucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
- cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
- vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
- htvghrnhepfeehuddulefgteekfeetfefhueeuteeigedvudekleeikeelhedtteetleek
- ueeunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpfhhrvggvuggvshhkthhophdroh
- hrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehm
- rgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:fWnLYBoci3jDebyoWWxtF-AzjkrHRXhOw2zTvPyE52IO66kjvLmylA>
- <xmx:fWnLYGoXtv7WIafqYxwJInYfRcL-nFlQobEkV1p6ecD2VbvPEjwmbg>
- <xmx:fWnLYHTQLw8JIfMxKr1sxluc4Dgj0o-u1sMLMsHrK6ozz7qB71y3GA>
- <xmx:fmnLYN3nIOMM0x86zlv1FLAmacf9tCz4FAJ7b9D5EfNGiF4LTgjN4g>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 17 Jun 2021 11:25:48 -0400 (EDT)
-Date: Thu, 17 Jun 2021 17:25:45 +0200
-From: Maxime Ripard <maxime@cerno.tech>
-To: Stefan Wahren <stefan.wahren@i2se.com>
-Subject: Re: vc4: hdmi: audio: ASoC: error at snd_soc_dai_startup on
- fef00700.hdmi
-Message-ID: <20210617152545.slgm5r7y2pur7mv3@gilmour>
-References: <612b134c-d356-f027-46d7-322bdaff37a4@i2se.com>
- <20210604090215.cpvoryvwrfzj5ikx@gilmour>
- <c5290159-89a3-3128-c54f-e1174212a893@i2se.com>
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="Z0VTMRJs"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
+ 15HFQxis003388; Thu, 17 Jun 2021 10:34:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=ZWlX/sKpUGcPSj/SPb1oTSUr/7SHFkb0kqclKOs2YCA=;
+ b=Z0VTMRJs6DLqlqEepZKhSG2qH+h8LtSHY90a9+/MfEtvMp7E6ZzhgMHF0856i3WysZBa
+ +ZShuFzY8xq4aIcEpaiPbB7/5HebVAFWK0VnZxnVt9vUFZie5eUUxMNbkTR7YJS1Nb1C
+ ZKzp0RNzQhAV4LPKGZ8f9MdRmgbZF3RhmeZF23/nis9QS6vdVmfr7PpqCY9dE9VAJaZ7
+ ZjJPo+k5TciZ84JsBYlBU2EbUl1VdOCROuW7/keBwZqXC+AWc59jt9pQ6mJ763sm1cHF
+ 2wzgW6rn3BezkxszftsIdbozDqP7Ij1X+dzPJt/KdKXNMj4UtoNV/WH8TrCkQcBpzGef tw== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+ by mx0b-001ae601.pphosted.com with ESMTP id 397ab2jq1s-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Thu, 17 Jun 2021 10:34:22 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Thu, 17 Jun
+ 2021 16:34:21 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Thu, 17 Jun 2021 16:34:21 +0100
+Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
+ [198.61.65.68])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C0BE52B2;
+ Thu, 17 Jun 2021 15:34:19 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <vkoul@kernel.org>, <yung-chuan.liao@linux.intel.com>,
+ <pierre-louis.bossart@linux.intel.com>, <sanyog.r.kale@intel.com>
+Subject: [PATCH] soundwire: stream: Use polling for DP Prepare completion
+Date: Thu, 17 Jun 2021 16:34:10 +0100
+Message-ID: <20210617153410.27922-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="q3o6ybqjwppil4m4"
-Content-Disposition: inline
-In-Reply-To: <c5290159-89a3-3128-c54f-e1174212a893@i2se.com>
-Cc: alsa-devel@alsa-project.org,
- DRI Development <dri-devel@lists.freedesktop.org>,
- Emma Anholt <emma@anholt.net>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: FPNt1Es1ya0FIeLF4-ytsavhjvH8W67v
+X-Proofpoint-GUID: FPNt1Es1ya0FIeLF4-ytsavhjvH8W67v
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 bulkscore=0
+ spamscore=0 mlxlogscore=999 clxscore=1015 impostorscore=0 adultscore=0
+ suspectscore=0 lowpriorityscore=0 phishscore=0 malwarescore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106170098
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -125,50 +109,173 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+sdw_prep_deprep_slave_ports() cannot use the port interrupt to signal
+CP_SM completion because it is called while holding the bus lock, which
+blocks the alert handler from running.
 
---q3o6ybqjwppil4m4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Change to polling the PREPARESTATUS register and remove the
+infrastructure that was implemented for the previous interrupt waiting.
 
-Hi Stefan,
+A new configuration field 'ch_prep_poll_us' is added to struct
+sdw_dpn_prop so that the peripheral driver may select a polling interval.
+If this is left at zero a default interval of 500 usec is used.
 
-On Sat, Jun 12, 2021 at 12:04:08PM +0200, Stefan Wahren wrote:
-> Hi Maxime,
->=20
-> Am 04.06.21 um 11:02 schrieb Maxime Ripard:
-> > Hi Stefan,
-> >
-> > I would assume it's due to this:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/drivers/gpu/drm/vc4/vc4_hdmi.c#n1083
-> >
-> > It pre-dates my time working on the vc4 driver so I'm not really sure
-> > what this is supposed to prevent, but my guess is that it's there to
-> > avoid someone using the audio card before we have a display detected and
-> > connected, and its capabilities known (the first and more obvious one
-> > being does it support audio in the first place).
-> >
-> > It's nothing new though, maybe it's the error printing itself that is?
->=20
-> i'm sorry, i forgot about this discussion here:
->=20
-> https://lists.freedesktop.org/archives/dri-devel/2020-December/292701.html
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ drivers/soundwire/bus.c       |  2 --
+ drivers/soundwire/slave.c     |  4 ----
+ drivers/soundwire/stream.c    | 24 ++++++++++++++----------
+ include/linux/soundwire/sdw.h |  8 ++++++--
+ 4 files changed, 20 insertions(+), 18 deletions(-)
 
-It looks like there's no discussion on that link, is it the link you wanted=
- to paste?
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index adcbf3969110..606fc26d407f 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -1351,7 +1351,6 @@ static int sdw_handle_dp0_interrupt(struct sdw_slave *slave, u8 *slave_status)
+ 		 */
+ 
+ 		if (status & SDW_DP0_INT_PORT_READY) {
+-			complete(&slave->port_ready[0]);
+ 			clear |= SDW_DP0_INT_PORT_READY;
+ 		}
+ 
+@@ -1429,7 +1428,6 @@ static int sdw_handle_port_interrupt(struct sdw_slave *slave,
+ 		 * for ports implementing CP_SM.
+ 		 */
+ 		if (status & SDW_DPN_INT_PORT_READY) {
+-			complete(&slave->port_ready[port]);
+ 			clear |= SDW_DPN_INT_PORT_READY;
+ 		}
+ 
+diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
+index 669d7573320b..55ca884ea951 100644
+--- a/drivers/soundwire/slave.c
++++ b/drivers/soundwire/slave.c
+@@ -26,7 +26,6 @@ int sdw_slave_add(struct sdw_bus *bus,
+ {
+ 	struct sdw_slave *slave;
+ 	int ret;
+-	int i;
+ 
+ 	slave = kzalloc(sizeof(*slave), GFP_KERNEL);
+ 	if (!slave)
+@@ -62,9 +61,6 @@ int sdw_slave_add(struct sdw_bus *bus,
+ 	slave->probed = false;
+ 	slave->first_interrupt_done = false;
+ 
+-	for (i = 0; i < SDW_MAX_PORTS; i++)
+-		init_completion(&slave->port_ready[i]);
+-
+ 	mutex_lock(&bus->bus_lock);
+ 	list_add_tail(&slave->node, &bus->slaves);
+ 	mutex_unlock(&bus->bus_lock);
+diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+index 1eaedaaba094..bd6b3b64de90 100644
+--- a/drivers/soundwire/stream.c
++++ b/drivers/soundwire/stream.c
+@@ -8,11 +8,13 @@
+ #include <linux/delay.h>
+ #include <linux/device.h>
+ #include <linux/init.h>
++#include <linux/iopoll.h>
+ #include <linux/module.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/slab.h>
+ #include <linux/soundwire/sdw_registers.h>
+ #include <linux/soundwire/sdw.h>
++#include <linux/time.h>
+ #include <sound/soc.h>
+ #include "bus.h"
+ 
+@@ -419,11 +421,10 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
+ 				       struct sdw_port_runtime *p_rt,
+ 				       bool prep)
+ {
+-	struct completion *port_ready;
+ 	struct sdw_dpn_prop *dpn_prop;
+ 	struct sdw_prepare_ch prep_ch;
+-	unsigned int time_left;
+ 	bool intr = false;
++	unsigned long prep_poll_us, prep_timeout_us;
+ 	int ret = 0, val;
+ 	u32 addr;
+ 
+@@ -478,16 +479,19 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
+ 		}
+ 
+ 		/* Wait for completion on port ready */
+-		port_ready = &s_rt->slave->port_ready[prep_ch.num];
+-		time_left = wait_for_completion_timeout(port_ready,
+-				msecs_to_jiffies(dpn_prop->ch_prep_timeout));
++		prep_timeout_us = dpn_prop->ch_prep_timeout * USEC_PER_MSEC;
++		if (dpn_prop->ch_prep_poll_us)
++			prep_poll_us = dpn_prop->ch_prep_poll_us;
++		else
++			prep_poll_us = SDW_DEFAULT_DP_PREP_POLL_US;
+ 
+-		val = sdw_read(s_rt->slave, SDW_DPN_PREPARESTATUS(p_rt->num));
+-		val &= p_rt->ch_mask;
+-		if (!time_left || val) {
++		ret = read_poll_timeout(sdw_read, val, ((val & p_rt->ch_mask) == 0),
++					prep_poll_us, prep_timeout_us, false,
++					s_rt->slave, SDW_DPN_PREPARESTATUS(p_rt->num));
++		if (ret < 0) {
+ 			dev_err(&s_rt->slave->dev,
+-				"Chn prep failed for port:%d\n", prep_ch.num);
+-			return -ETIMEDOUT;
++				"Chn prep failed for port %d: %d\n", prep_ch.num, ret);
++			return ret;
+ 		}
+ 	}
+ 
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index ddbeb00799e4..4e5290b083bf 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -67,6 +67,9 @@ enum {
+ #define SDW_BLOCK_PACKG_PER_PORT	BIT(0)
+ #define SDW_BLOCK_PACKG_PER_CH		BIT(1)
+ 
++/* Default interval to poll for DP prepare completion */
++#define SDW_DEFAULT_DP_PREP_POLL_US	500
++
+ /**
+  * enum sdw_slave_status - Slave status
+  * @SDW_SLAVE_UNATTACHED: Slave is not attached with the bus.
+@@ -295,6 +298,8 @@ struct sdw_dpn_audio_mode {
+  * @simple_ch_prep_sm: If the port supports simplified channel prepare state
+  * machine
+  * @ch_prep_timeout: Port-specific timeout value, in milliseconds
++ * @ch_prep_poll_us: Interval to poll for CP_SM prepare completion. Zero means
++ *                   poll at SDW_DEFAULT_DP_PREP_POLL_US intervals.
+  * @imp_def_interrupts: If set, each bit corresponds to support for
+  * implementation-defined interrupts
+  * @max_ch: Maximum channels supported
+@@ -321,6 +326,7 @@ struct sdw_dpn_prop {
+ 	u32 max_grouping;
+ 	bool simple_ch_prep_sm;
+ 	u32 ch_prep_timeout;
++	u32 ch_prep_poll_us;
+ 	u32 imp_def_interrupts;
+ 	u32 max_ch;
+ 	u32 min_ch;
+@@ -641,7 +647,6 @@ struct sdw_slave_ops {
+  * @prop: Slave properties
+  * @debugfs: Slave debugfs
+  * @node: node for bus list
+- * @port_ready: Port ready completion flag for each Slave port
+  * @m_port_map: static Master port map for each Slave port
+  * @dev_num: Current Device Number, values can be 0 or dev_num_sticky
+  * @dev_num_sticky: one-time static Device Number assigned by Bus
+@@ -673,7 +678,6 @@ struct sdw_slave {
+ 	struct dentry *debugfs;
+ #endif
+ 	struct list_head node;
+-	struct completion port_ready[SDW_MAX_PORTS];
+ 	unsigned int m_port_map[SDW_MAX_PORTS];
+ 	u16 dev_num;
+ 	u16 dev_num_sticky;
+-- 
+2.20.1
 
-Maxime
-
---q3o6ybqjwppil4m4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYMtpeQAKCRDj7w1vZxhR
-xXb8APkBObTYDL60D0JYHFhpQEOmcZQK72m+0bKLB15fsvHiPQEAroCeReJ1LM5D
-O15ZFpwR7XKy/zq0BXMQnohkX2TJQwI=
-=b4vV
------END PGP SIGNATURE-----
-
---q3o6ybqjwppil4m4--
