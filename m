@@ -6,78 +6,80 @@ X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C92DFC2B9F4
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 21:27:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E870CC2B9F4
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 21:28:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 69578613B4
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 21:27:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 69578613B4
+	by mail.kernel.org (Postfix) with ESMTPS id C757D611BE
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 21:28:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C757D611BE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E8E091778;
-	Thu, 17 Jun 2021 23:26:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8E091778
+	by alsa0.perex.cz (Postfix) with ESMTPS id 04CE8179C;
+	Thu, 17 Jun 2021 23:27:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04CE8179C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623965247;
-	bh=cUSZZJkJrJaVQ5o+mXRxC0e8eGW5FCGrbAYb3qp4EEA=;
+	s=default; t=1623965298;
+	bh=4Qkp7ow6TIV/yIRwGbWUKgTqH6qtppJ12O5uIIyHHdc=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=e7mtCW3yKpUrLCIqL4cnFvmuaXnwWv2GcD70wnr4R9xFYpr2vlfQ2uGtzzL6SER/Y
-	 gPUIgB3snB0KoLUNNOD24P3hnbOIvh8IXsZmdANnr8Vbg4JgPIiqYGO8R3proB9rHY
-	 Wfba63h36FpWvz7IuKEM8yQXT+vqWoSEmWOFWkHY=
+	b=n+tRlJmlFFN7Bm4/87z9DikwKrvmjsDCOTyloLk8SIhAQX0Wpm9ZJCnOx3+Afm0KG
+	 gC4/OKO19miuTuPfwiRREAN9TFA2ipigHGCK2FFcoI+VIMi4N/VY8KYGBtg9wbaSYd
+	 sY04hSlB4ZucrLRiyIeUQXPZ/qu+jBfrEo/RAFig=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8279EF80171;
-	Thu, 17 Jun 2021 23:26:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6CB55F8028B;
+	Thu, 17 Jun 2021 23:26:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 92732F8025A; Thu, 17 Jun 2021 23:26:35 +0200 (CEST)
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com
- [209.85.166.173])
+ id 56B67F8025A; Thu, 17 Jun 2021 23:26:40 +0200 (CEST)
+Received: from mail-io1-f44.google.com (mail-io1-f44.google.com
+ [209.85.166.44])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 86CDFF80148
- for <alsa-devel@alsa-project.org>; Thu, 17 Jun 2021 23:26:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86CDFF80148
-Received: by mail-il1-f173.google.com with SMTP id z1so6710571ils.0
- for <alsa-devel@alsa-project.org>; Thu, 17 Jun 2021 14:26:29 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C252BF8025A
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jun 2021 23:26:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C252BF8025A
+Received: by mail-io1-f44.google.com with SMTP id k11so3604368ioa.5
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jun 2021 14:26:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
  :message-id;
- bh=p45NMbcaVp4H9evUR08HW/+ZfqRoQVKi3z17BKOdh6c=;
- b=H3zqOytB75kCj9F6R4Kmhb0SMuNpInXFwGb/2PkJq6TvSozAqiZJIMqo7eJ/BEj1XQ
- eNY5Gn3n0Wsp/9uYiVSQz61V48e6odDxiiiD+zqt1vXqqpGaqCa8v7xEbXPSpFss8aqz
- TGSlCpAnZ+BUXKllfmtQdayIVC5X53WBW3PJY5MdmXfgscG7J2chBuTx/wAh7mGMDkfB
- E5Cdh93xg7TMK2w6F/5t+JAHjBjwd3X6wc7Ei1u2GxdLzwBe1Z+iA/rP9BvITnnl7Ph9
- aZ6s960KNv5XHJiCjMVAYW7v7mq36Tm4GHVPC5DhSYAJzBS1USX2ZLPZwa0TID1G8gia
- nITQ==
-X-Gm-Message-State: AOAM530cMh43yhw5qSqCNeu0oCcB7beoYeIhTS3GCMybRK7jJ6djWUGD
- hXNTfVQcOV7rvajl3g79Ng==
-X-Google-Smtp-Source: ABdhPJwm3AS35eq/yoc+fK1o+R4mYlC3E5uJ1Rfsjp9EPZNVptpaddPf4yldQ69E3tTW7CyCyzsmPA==
-X-Received: by 2002:a92:260b:: with SMTP id n11mr4925314ile.134.1623965187706; 
- Thu, 17 Jun 2021 14:26:27 -0700 (PDT)
+ bh=5eq4f8x/PBXQ0L0KWI8lbvRWrLgR98TD03TAWNAHP0I=;
+ b=fvIlspQ53rttjlaJw8kHpwjKrg6+ptG70VjjBinFBMDvn1Zh3+0Qq58DGNv0+zVkcm
+ cVlhuniE2KSRe5AIZCVQw9BvwSRIq9C2J07PUAFMBpumH0MuZcQk+nX//9Q5qY1ta/Wj
+ ZBeB8+YPLDEy3qQlMsihlNBbNX0mGKHKCrSeSAKlZREHRCaalprf04M0D/MdQqWWDL9+
+ 42nZEDNHeadBdmTXuQ2P9SxRGcsTmCZPuza3atrcIybmYFXDlf1g7IWU9vpO3IWTFqMF
+ ix066s9dlhrsM8TTzLdY/jOxSFX4k+itbH8CDi4QVCooBqxXMqbCRQIuwv0AwY3n/120
+ BlTw==
+X-Gm-Message-State: AOAM533kKxtRPWev8Sd6aQGFts9UEqdMNhzck58cyAXOvnfUOElj1wET
+ t6PzxogL/a1yCVW2615YtQ==
+X-Google-Smtp-Source: ABdhPJzKYftIYW1nBl+6hxGS0Ti9h9zAzlQz9WsWpBDeaZqwQntNxz3ul/G3t+wNmMg4w6xTU/xNXw==
+X-Received: by 2002:a05:6602:581:: with SMTP id
+ v1mr5561875iox.192.1623965195650; 
+ Thu, 17 Jun 2021 14:26:35 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
- by smtp.gmail.com with ESMTPSA id q19sm82124ilc.70.2021.06.17.14.26.25
+ by smtp.gmail.com with ESMTPSA id 6sm3685511ioe.43.2021.06.17.14.26.33
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 17 Jun 2021 14:26:27 -0700 (PDT)
-Received: (nullmailer pid 3336113 invoked by uid 1000);
+ Thu, 17 Jun 2021 14:26:35 -0700 (PDT)
+Received: (nullmailer pid 3336117 invoked by uid 1000);
  Thu, 17 Jun 2021 21:26:24 -0000
 From: Rob Herring <robh@kernel.org>
 To: Trevor Wu <trevor.wu@mediatek.com>
-In-Reply-To: <20210617054740.8081-7-trevor.wu@mediatek.com>
+In-Reply-To: <20210617054740.8081-9-trevor.wu@mediatek.com>
 References: <20210617054740.8081-1-trevor.wu@mediatek.com>
- <20210617054740.8081-7-trevor.wu@mediatek.com>
-Subject: Re: [PATCH 6/8] dt-bindings: mediatek: mt8195: add audio afe document
+ <20210617054740.8081-9-trevor.wu@mediatek.com>
+Subject: Re: [PATCH 8/8] dt-bindings: mediatek: mt8195: add
+ mt8195-mt6359-rt1019-rt5682 document
 Date: Thu, 17 Jun 2021 15:26:24 -0600
-Message-Id: <1623965184.501241.3336112.nullmailer@robh.at.kernel.org>
+Message-Id: <1623965184.524304.3336116.nullmailer@robh.at.kernel.org>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- cychiang@google.com, bicycle.tsai@mediatek.com, linux-kernel@vger.kernel.org,
- robh+dt@kernel.org, tiwai@suse.com, broonie@kernel.org,
+ cychiang@google.com, bicycle.tsai@mediatek.com, tiwai@suse.com,
+ robh+dt@kernel.org, linux-kernel@vger.kernel.org, broonie@kernel.org,
  linux-mediatek@lists.infradead.org, jiaxin.yu@mediatek.com,
  matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
@@ -95,34 +97,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 17 Jun 2021 13:47:37 +0800, Trevor Wu wrote:
-> This patch adds mt8195 audio afe document.
+On Thu, 17 Jun 2021 13:47:39 +0800, Trevor Wu wrote:
+> This patch adds document for mt8195 board with mt6359, rt1019 and rt5682
 > 
 > Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
 > ---
->  .../bindings/sound/mt8195-afe-pcm.yaml        | 72 +++++++++++++++++++
->  1 file changed, 72 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
+>  .../sound/mt8195-mt6359-rt1019-rt5682.yaml    | 39 +++++++++++++++++++
+>  1 file changed, 39 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
 on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
 yamllint warnings/errors:
-./Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml:10:4: [warning] wrong indentation: expected 2 but found 3 (indentation)
-./Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml:14:7: [warning] wrong indentation: expected 4 but found 6 (indentation)
+./Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml:10:4: [warning] wrong indentation: expected 2 but found 3 (indentation)
+./Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml:17:7: [warning] wrong indentation: expected 4 but found 6 (indentation)
 
 dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/sound/mt8195-afe-pcm.example.dts:19:18: fatal error: dt-bindings/clock/mt8195-clk.h: No such file or directory
-   19 |         #include <dt-bindings/clock/mt8195-clk.h>
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
-make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/sound/mt8195-afe-pcm.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1416: dt_binding_check] Error 2
+Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.example.dt.yaml:0:0: /example-0/mt8195-sound: failed to match any schema with compatible: ['mediatek,mt8195-sound']
 \ndoc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1493197
+See https://patchwork.ozlabs.org/patch/1493198
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
