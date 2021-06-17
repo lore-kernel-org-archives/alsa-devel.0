@@ -2,138 +2,137 @@ Return-Path: <SRS0=NYZN=LL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_RED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5DE8C48BE5
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 14:38:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0AE0C49361
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 14:38:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 22275610EA
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 14:38:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 22275610EA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
+	by mail.kernel.org (Postfix) with ESMTPS id 434F1610EA
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Jun 2021 14:38:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 434F1610EA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC6BC1726;
-	Thu, 17 Jun 2021 16:37:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC6BC1726
+	by alsa0.perex.cz (Postfix) with ESMTPS id B4D9A1739;
+	Thu, 17 Jun 2021 16:38:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4D9A1739
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623940714;
-	bh=zekCIqBSouQR2zSsW7RYYQbUQED/5DBQBq+/5Hu7uW4=;
-	h=From:To:Subject:Date:References:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=DIFYgKty/nKMHVbxjF9SZA4IEPUYUBLNc41SjoBxsv/wLXXBa3o15xkMcNg7UF+tL
-	 TYNRJE9zambRtLUN5RqCRcLmpYToWggDnOjsM0q5Vb/wA64IuyxIxy+EdCd3OOew05
-	 V5p7TQNGWifphZ+YIgtCQjPWsJjsDEXDcrdHhjC4=
+	s=default; t=1623940731;
+	bh=NiiU6fiVLbE4syulfvGQUEnbQNZvmtFPXY1KRGZ4VKs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ZdYhweePvudNF5TeCuAEHlX9ClzGR5z5riAWNlSppVbT7fm2afRh3K2wfyYyiRz2A
+	 UM1Vg1WTu6puyGxFrlq2NGUketRVyd0+vKtIYfoGzhsvv7/Hyr/mHI3nVHbMXqZ6ik
+	 cUoUcUO5We6WFh1YqOmrnskhx+hCd29sinZISO3o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 28E70F804F2;
+	by alsa1.perex.cz (Postfix) with ESMTP id E0A6FF804FA;
 	Thu, 17 Jun 2021 16:34:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 83FAFF80424; Wed, 16 Jun 2021 11:15:32 +0200 (CEST)
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 3ACF3F8025A; Thu, 17 Jun 2021 11:15:08 +0200 (CEST)
+Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com
+ [IPv6:2607:f8b0:4864:20::e31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 70385F8028B
- for <alsa-devel@alsa-project.org>; Wed, 16 Jun 2021 11:15:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70385F8028B
+ by alsa1.perex.cz (Postfix) with ESMTPS id F11D0F80088
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jun 2021 11:15:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F11D0F80088
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com
- header.b="fgRql6hU"
-Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
- by mailout2.samsung.com (KnoxPortal) with ESMTP id
- 20210616091520epoutp023cf4da82086dba60a7cee40f0defa2bc~JBUG3o5Ya0300503005epoutp02d
- for <alsa-devel@alsa-project.org>; Wed, 16 Jun 2021 09:15:20 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com
- 20210616091520epoutp023cf4da82086dba60a7cee40f0defa2bc~JBUG3o5Ya0300503005epoutp02d
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
- s=mail20170921; t=1623834920;
- bh=myOAqeIc6heLE/UNDGthBzZkw4lnE8HqhfmiMgQ+BjI=;
- h=From:To:Cc:Subject:Date:References:From;
- b=fgRql6hUMAmAcCAvvaIqYbXZl3QDwRb6xI/kBE04vUllF7pPJ4EB1xibGjHxArNMQ
- Z0cHm0sC61WxRwSrtEWu8eNBrm9mXlVBVOJCxHHb/TIzd1/WW8jFATjkREYO7YsGE6
- 55aAySbJvHP5lmhP89Et8J0fC98T8fSf6greAjVA=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
- epcas2p2.samsung.com (KnoxPortal) with ESMTP id
- 20210616091520epcas2p29bddba3267c4ba31d5a9c2d61018e0e4~JBUGh0aSq1516115161epcas2p2c;
- Wed, 16 Jun 2021 09:15:20 +0000 (GMT)
-Received: from epsmges2p4.samsung.com (unknown [182.195.40.188]) by
- epsnrtp1.localdomain (Postfix) with ESMTP id 4G4ffZ1FxPz4x9Pp; Wed, 16 Jun
- 2021 09:15:18 +0000 (GMT)
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
- epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
- 1B.8C.09717.421C9C06; Wed, 16 Jun 2021 18:15:16 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
- epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
- 20210616091516epcas2p2111c9b941d0e60fb0a6ae9646fb80d26~JBUDNjJbO1490614906epcas2p2M;
- Wed, 16 Jun 2021 09:15:16 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
- epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
- 20210616091516epsmtrp185a50060f680492726b0b199e1ac86de~JBUDMtjbx2764927649epsmtrp1g;
- Wed, 16 Jun 2021 09:15:16 +0000 (GMT)
-X-AuditID: b6c32a48-4fbff700000025f5-36-60c9c1242619
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
- epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
- 68.5A.08163.421C9C06; Wed, 16 Jun 2021 18:15:16 +0900 (KST)
-Received: from ubuntu.dsn.sec.samsung.com (unknown [12.36.155.120]) by
- epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
- 20210616091516epsmtip23061ebbfcc75ed4703a1829595f1dffb~JBUC8-5RK2448224482epsmtip2u;
- Wed, 16 Jun 2021 09:15:16 +0000 (GMT)
-From: Daehwan Jung <dh10.jung@samsung.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: ALSA: usb-audio: Fix rate on Ozone Z90 USB headset
-Date: Wed, 16 Jun 2021 18:01:01 +0900
-Message-Id: <1623834063-108482-1-git-send-email-dh10.jung@samsung.com>
-X-Mailer: git-send-email 2.7.4
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrEKsWRmVeSWpSXmKPExsWy7bCmqa7KwZMJBjs3W1tcuXiIyeLOgmlM
- Fs2L17NZNN3oYbW4vGsOm8Wu/3eZLDp39bNabPi+ltGBw2PD5yY2j52z7rJ7bFrVyeaxf+4a
- do99b5exefRtWcXosX7LVRaPz5vkAjiicmwyUhNTUosUUvOS81My89JtlbyD453jTc0MDHUN
- LS3MlRTyEnNTbZVcfAJ03TJzgE5TUihLzCkFCgUkFhcr6dvZFOWXlqQqZOQXl9gqpRak5BQY
- GhboFSfmFpfmpesl5+daGRoYGJkCVSbkZOxaf5OlYD17xeYNNxgbGG+wdjFyckgImEhMuPuO
- rYuRi0NIYAejxMEts6GcT4wSGz5+Y4ZwPjNK3N/1iwWmpf/tPXaIxC5GiSW7j7JAOD8YJWbv
- WgnkcHCwCWhJfF/ICNIgImAs0X92FlgDs8AXRon9s2aygSSEBawlbi1qAStiEVCVuL3gNiNI
- L6+Am8TunaIQy+Qkbp7rZIawT7FLnJ7tCWG7SFzd+psJwhaWeHV8CzuELSXxsr+NHWSMhEC5
- xKL5diBrJQQ6GCXWfDrLCFFjLDHrWTvYKmYBTYn1u/QhypUljtwCe5FZgE+i4/BfqCm8Eh1t
- QhCNyhLTL0+ABpykxMHX56AO85A43t8BdoCQQKzEkmnzmCYwys5CmL+AkXEVo1hqQXFuemqx
- UYEJchRtYgQnNi2PHYyz337QO8TIxMF4iFGCg1lJhFe3+ESCEG9KYmVValF+fFFpTmrxIUZT
- YGBNZJYSTc4Hpta8knhDUyMzMwNLUwtTMyMLJXFeDvZDCUIC6YklqdmpqQWpRTB9TBycUg1M
- ixXvSvc//biZu1Fb51MS2ymvxPk33pg5iZ/SfzK9t28io+2VhKZl2qGBRzSK/j2exNrhFMj8
- rjpcQflrVrFRsEly0g6Jd+ULl9k/tH3W6cM7Ndw6buLUJxf2nZYTiedu/+jyX/CwaIqT8BGn
- Sc+X/7W80Gq2a/uByB3bNH8rfdgmJzh37t6YW+bzRCZFePzw8rbsmeSRuvnKkSnV746k6K40
- L7dZMdVWr2T+89lBXZfe+y9pL1B6cCzf/UeVhpV39n3byW6bkr7riD58Utfq87ci0O/cNJdf
- V9pvL3Xa++/H1P4VXL+9jK3b1vBmrtp+6vLz2ytjv2tseSN7W/VdpcMX4YePdghf6I15XMBZ
- osRSnJFoqMVcVJwIAA1BYCv1AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprELMWRmVeSWpSXmKPExsWy7bCSvK7KwZMJBucniVtcuXiIyeLOgmlM
- Fs2L17NZNN3oYbW4vGsOm8Wu/3eZLDp39bNabPi+ltGBw2PD5yY2j52z7rJ7bFrVyeaxf+4a
- do99b5exefRtWcXosX7LVRaPz5vkAjiiuGxSUnMyy1KL9O0SuDJ2rb/JUrCevWLzhhuMDYw3
- WLsYOTkkBEwk+t/eY+9i5OIQEtjBKPG54w1UQlJi6dwb7BC2sMT9liOsEEXfGCXety0Dcjg4
- 2AS0JL4vZASpEREwlug/OwtsELPAL0aJddNngDULC1hL3FrUAlbEIqAqcXvBbUaQXl4BN4nd
- O0Uh5stJ3DzXyTyBkWcBI8MqRsnUguLc9NxiwwKjvNRyveLE3OLSvHS95PzcTYzgYNPS2sG4
- Z9UHvUOMTByMhxglOJiVRHh1i08kCPGmJFZWpRblxxeV5qQWH2KU5mBREue90HUyXkggPbEk
- NTs1tSC1CCbLxMEp1cAkMLnd/I0ow2WBP6vniPccXpHQqvtSOHrLa8taXb5ZwXlGHH+1y+S2
- BadpsJj3CoSzqc8JO3nxyq8eUYVLQVXnHsYWd8/7VaWS0HVZqHrhXfZ+QW7hgPtOzS8Y9h/K
- 9b5euWGZWP23Zq2eegeZoM7NSY/LA19nZO6M0PBS+LQ24rnwo5rP9hqOOXpxb7b3zZ4YdUXw
- zqy8af3CX8sObXgfd+q8wO42hhb53TPTs3as/NP+9fH6J/Zn+5c84nD7bnqv3lC6L/6Hacey
- brYJv56GxJ1ou7yvQj155zSn7s0nPiVIdco21O92vKkazPm/+trnrSeZP//0tBafo/hQrGXf
- LfnZAQZhN2VzL6TJpiqxFGckGmoxFxUnAgC02/pbpQIAAA==
-X-CMS-MailID: 20210616091516epcas2p2111c9b941d0e60fb0a6ae9646fb80d26
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210616091516epcas2p2111c9b941d0e60fb0a6ae9646fb80d26
-References: <CGME20210616091516epcas2p2111c9b941d0e60fb0a6ae9646fb80d26@epcas2p2.samsung.com>
-X-Mailman-Approved-At: Thu, 17 Jun 2021 16:34:46 +0200
-Cc: Lukasz Halman <lukasz.halman@gmail.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Daehwan Jung <dh10.jung@samsung.com>
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="tspUddDm"
+Received: by mail-vs1-xe31.google.com with SMTP id b1so2610707vsh.7
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jun 2021 02:15:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=NiiU6fiVLbE4syulfvGQUEnbQNZvmtFPXY1KRGZ4VKs=;
+ b=tspUddDmWP1nXGb8dYzDapkXukDhtaQZ8yVoZQOykE4MszNmnQ2Jc7pAu3v7qBcemT
+ UyLs98rU9nEy8e3wRIJkxsl8g3L8Eb/AvQODxlfCIA8Y+SqSVtbG2msAYvDIZFEizfbY
+ 20UD8As6h7+oRqO/LBfp1JKzos5qS4bIZn22juJCAEEZOMhbhqM1f/S6KCbcFkkK35Tr
+ P7laFgsJQmqhNYip+ALRHKPPvbOtIHBYtRpZR/hgm9hpO06Ne5Y1MzvmGVRytTLSpocX
+ +CLKqhQk6OUYMP0R+b/JJQ4/QkH+6e5JGgp8Hm8OfSHuZ6CIo4hVwTpj+jWWd51a3cq+
+ 7N8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=NiiU6fiVLbE4syulfvGQUEnbQNZvmtFPXY1KRGZ4VKs=;
+ b=NH+yL/tBq0keieRiIWThpepVwYn9fVHODnuFF36J8i5pIHAyBhYGqDOWr0q+HO/C3v
+ 0EhR6QlUb182y2FqACdcpmwIkW6RQujC4cr2SYpfpWmohDmJKCKi++O2RW4agRmpDFes
+ wS9PoxJktfZjLtyLMb2yqLZ3VuwPYvVgGzoFH7G0Nt9eYaUp2fGJSEVl4NOLum1QWyk2
+ C2WIRgDp/LsuxfSwW60M5MoX/4dSzobApakx/NHFwZbRKPb//rKlJpladbO5vXDUaLe8
+ Ei2gwO52eWFCasLx6byk05jXccSESsgpQdMtFKja43s/UAdYykAmFn9EinvEhxtZawbR
+ gIAg==
+X-Gm-Message-State: AOAM533NXivnK7T76vNskHNLJP0Zthn2xSaR6iyA7NWG7CvVcEfOM0OB
+ u1kMF71YIaCTjF8apaY71j6h3XWtlyaYBQkuJz7uWw==
+X-Google-Smtp-Source: ABdhPJyDDRUn2syWiuy8XigFtL3iDYKz59Ub/6ekAvgFfmAY9tRuxX/nulbHrrDC8J99+RHvCUQeMQ9XnjKDaURJSR4=
+X-Received: by 2002:a05:6102:2159:: with SMTP id
+ h25mr3349328vsg.19.1623921301368; 
+ Thu, 17 Jun 2021 02:15:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210615191543.1043414-1-robh@kernel.org>
+In-Reply-To: <20210615191543.1043414-1-robh@kernel.org>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Thu, 17 Jun 2021 11:14:25 +0200
+Message-ID: <CAPDyKFrY4UOO5CbZ8Bj7AH2+3Wo1PRpUv+Zs96tub=MzGuGrrQ@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: Drop redundant minItems/maxItems
+To: Rob Herring <robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailman-Approved-At: Thu, 17 Jun 2021 16:34:45 +0200
+Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org,
+ Daniel Lezcano <daniel.lezcano@linaro.org>, linux-pwm@vger.kernel.org,
+ linux-iio@vger.kernel.org, Linux PCI <linux-pci@vger.kernel.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Wim Van Sebroeck <wim@linux-watchdog.org>, linux-remoteproc@vger.kernel.org,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ dri-devel <dri-devel@lists.freedesktop.org>, linux-ide@vger.kernel.org,
+ linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
+ linux-riscv <linux-riscv@lists.infradead.org>,
+ Lee Jones <lee.jones@linaro.org>, linux-clk <linux-clk@vger.kernel.org>,
+ linux-rtc@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>, Marc Zyngier <maz@kernel.org>,
+ Joerg Roedel <joro@8bytes.org>, Jassi Brar <jassisinghbrar@gmail.com>,
+ Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@ti.com>,
+ David Airlie <airlied@linux.ie>, linux-serial@vger.kernel.org,
+ =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ Jakub Kicinski <kuba@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
+ Vivien Didelot <vivien.didelot@gmail.com>,
+ Wolfgang Grandegger <wg@grandegger.com>,
+ Linux Media Mailing List <linux-media@vger.kernel.org>,
+ Ohad Ben-Cohen <ohad@wizery.com>, DTML <devicetree@vger.kernel.org>,
+ Albert Ou <aou@eecs.berkeley.edu>, linux-watchdog@vger.kernel.org,
+ Linux PM <linux-pm@vger.kernel.org>, linux-can@vger.kernel.org,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+ Mark Brown <broonie@kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, Paul Walmsley <paul.walmsley@sifive.com>,
+ Bjorn Helgaas <bhelgaas@google.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>, Jens Axboe <axboe@kernel.dk>,
+ Alessandro Zummo <a.zummo@towertech.it>, Guenter Roeck <linux@roeck-us.net>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
+ netdev <netdev@vger.kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
+ Linux USB List <linux-usb@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-spi@vger.kernel.org,
+ "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>,
+ Joerg Roedel <joro@8bytes.org>, " <iommu@lists.linux-foundation.org>,
+ Palmer Dabbelt <palmer@dabbelt.com>, linux-crypto@vger.kernel.org,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dmaengine@vger.kernel.org,
+ Vladimir Oltean <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>,
+ Jonathan Cameron <jic23@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -149,29 +148,67 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-It mislabels its 96 kHz altsetting and that's why it causes some noise
+On Tue, 15 Jun 2021 at 21:15, Rob Herring <robh@kernel.org> wrote:
+>
+> If a property has an 'items' list, then a 'minItems' or 'maxItems' with t=
+he
+> same size as the list is redundant and can be dropped. Note that is DT
+> schema specific behavior and not standard json-schema behavior. The tooli=
+ng
+> will fixup the final schema adding any unspecified minItems/maxItems.
+>
+> This condition is partially checked with the meta-schema already, but
+> only if both 'minItems' and 'maxItems' are equal to the 'items' length.
+> An improved meta-schema is pending.
+>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> Cc: Kamal Dasu <kdasu.kdev@gmail.com>
+> Cc: Jonathan Cameron <jic23@kernel.org>
+> Cc: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Jassi Brar <jassisinghbrar@gmail.com>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Wolfgang Grandegger <wg@grandegger.com>
+> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+> Cc: Andrew Lunn <andrew@lunn.ch>
+> Cc: Vivien Didelot <vivien.didelot@gmail.com>
+> Cc: Vladimir Oltean <olteanv@gmail.com>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Kishon Vijay Abraham I <kishon@ti.com>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: "Uwe Kleine-K=C3=B6nig" <u.kleine-koenig@pengutronix.de>
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Cc: Ohad Ben-Cohen <ohad@wizery.com>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Albert Ou <aou@eecs.berkeley.edu>
+> Cc: Alessandro Zummo <a.zummo@towertech.it>
+> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Zhang Rui <rui.zhang@intel.com>
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-Signed-off-by: Daehwan Jung <dh10.jung@samsung.com>
----
- sound/usb/format.c | 2 ++
- 1 file changed, 2 insertions(+)
+Acked-by: Ulf Hansson <ulf.hansson@linaro.org> # for MMC
 
-diff --git a/sound/usb/format.c b/sound/usb/format.c
-index 2287f8c..eb216fe 100644
---- a/sound/usb/format.c
-+++ b/sound/usb/format.c
-@@ -223,9 +223,11 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
- 				continue;
- 			/* C-Media CM6501 mislabels its 96 kHz altsetting */
- 			/* Terratec Aureon 7.1 USB C-Media 6206, too */
-+			/* Ozone Z90 USB C-Media, too */
- 			if (rate == 48000 && nr_rates == 1 &&
- 			    (chip->usb_id == USB_ID(0x0d8c, 0x0201) ||
- 			     chip->usb_id == USB_ID(0x0d8c, 0x0102) ||
-+			     chip->usb_id == USB_ID(0x0d8c, 0x0078) ||
- 			     chip->usb_id == USB_ID(0x0ccd, 0x00b1)) &&
- 			    fp->altsetting == 5 && fp->maxpacksize == 392)
- 				rate = 96000;
--- 
-2.7.4
+[...]
 
+Kind regards
+Uffe
