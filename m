@@ -4,86 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE764C48BDF
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jun 2021 07:43:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5CA5C48BDF
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jun 2021 07:44:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C7CB9613AA
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jun 2021 07:43:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C7CB9613AA
+	by mail.kernel.org (Postfix) with ESMTPS id E2B3C6120A
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jun 2021 07:44:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E2B3C6120A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1581016FB;
-	Fri, 18 Jun 2021 09:42:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1581016FB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7605016CD;
+	Fri, 18 Jun 2021 09:43:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7605016CD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624002221;
-	bh=Bozg7Xz5T+zEffr+a/LEHnjq7Uz4tb+Y66lN1sVzNKw=;
+	s=default; t=1624002257;
+	bh=6EKKgzzYLq38HO8iisbBrdr2sd2k3FnopU1hfhcHV84=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lUu25tgpN7XGAV/evbkNAkvLUHCqOaeqHfp5m8Vfm6SF567LRqwYZSS8Vnqc6L+SX
-	 TGTtiplGhoa8FQRGFE6nrtWptycf/C68SGK4773aFEw/a0Lit5IjL5GXrHsebeTLfy
-	 2oACaX5FH36/Bc2Kx0ARsvEv5ys/Da19YCt6oYS8=
+	b=EO4GY25hzMYFmGg/zcX7VOermY9K7k65s685t8Xx4HLnlF0gWmh/bqidFgh02x3na
+	 46dIFNM20aptgLdtgleFoXxxwY4/A9zSyz4bBeGeZmJu7BM4hNgzMG+XofKwyj2Db4
+	 EqxpSpMOs1VaMsU/6RxPBL6gMUroTKNEeFZgg11Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B4B92F80148;
-	Fri, 18 Jun 2021 09:42:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0229FF802E8;
+	Fri, 18 Jun 2021 09:43:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7AFFCF804B0; Fri, 18 Jun 2021 09:42:25 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id DB774F804C2; Fri, 18 Jun 2021 09:43:24 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D9914F80148
- for <alsa-devel@alsa-project.org>; Fri, 18 Jun 2021 09:42:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9914F80148
+ by alsa1.perex.cz (Postfix) with ESMTPS id D3B22F802E8
+ for <alsa-devel@alsa-project.org>; Fri, 18 Jun 2021 09:43:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3B22F802E8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="KIUuyiOH"; 
+ header.b="N3jVFh06"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="GG7dzInM"
+ header.b="zhncF2xw"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id AD0F51FD8F;
- Fri, 18 Jun 2021 07:42:19 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id E026B21AF3;
+ Fri, 18 Jun 2021 07:43:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1624002139; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1624002193; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=wW4uK14G+DnI0eEqS1Fdsebsiu8vbcML/7CVAAUKI8s=;
- b=KIUuyiOHrMKwjCpvS9jpPxf45RZV93gxTBduAqdgkmtUC70WmcHWywMJ9FCAEFIMcnjJzl
- YBF5XIvrFcR71tNkd2EFugS61vAlRKBnHyuqmTbAMglL9BVdyaCeM8VjqAJmns+ge83vgU
- mmmqMSgPagFtqwoBxzwOpbHPNGs/bOM=
+ bh=Y4v/k5mlaQJAihZ/QfcbN+KVnXp7AXEohpremRS1rp0=;
+ b=N3jVFh060eCXco6I6hnyjTV8zJ/k7S6ZburXxFYyoifPAghs00y77Qo7nRKMJZ7wM4c2M7
+ iKXb1hNIczt7cd0lrYLEszQAmA37ZRjJysRyTSiPR0XD/NKP+4id8ItQsjokk5VBJRrSgA
+ +WrsAE2joWBQatPJcJZ89EsTVEx69pg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1624002139;
+ s=susede2_ed25519; t=1624002193;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=wW4uK14G+DnI0eEqS1Fdsebsiu8vbcML/7CVAAUKI8s=;
- b=GG7dzInMp3AicSsjobQq8MyZcxNjb2T62pligAaWVzB4S1s+1/5ex3pm06wCoA2gBPHwXu
- yxzGoWH17CFPZ3AQ==
+ bh=Y4v/k5mlaQJAihZ/QfcbN+KVnXp7AXEohpremRS1rp0=;
+ b=zhncF2xw2gbKNWioqwqqnRM0BZ+b6G5/D325E7RofjuwajBlfIN2MBGQG70SeFNJtaUb8Q
+ psNCLQ9XbXb44+Bw==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 99055A3B9E;
- Fri, 18 Jun 2021 07:42:18 +0000 (UTC)
-Date: Fri, 18 Jun 2021 09:42:18 +0200
-Message-ID: <s5hsg1fwrdx.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id CDF24A3B9E;
+ Fri, 18 Jun 2021 07:43:13 +0000 (UTC)
+Date: Fri, 18 Jun 2021 09:43:13 +0200
+Message-ID: <s5hr1gzwrce.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ALSA: bebob: fix rx packet format for Yamaha GO44/GO46,
- Terratec Phase 24/x24
-In-Reply-To: <20210618040447.113306-1-o-takashi@sakamocchi.jp>
-References: <20210618040447.113306-1-o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: firewire-motu: fix rx packet format at higher rate
+ for MOTU 828 mk3 Hybrid
+In-Reply-To: <20210618040713.114611-1-o-takashi@sakamocchi.jp>
+References: <20210618040713.114611-1-o-takashi@sakamocchi.jp>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,23 +99,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 18 Jun 2021 06:04:47 +0200,
+On Fri, 18 Jun 2021 06:07:13 +0200,
 Takashi Sakamoto wrote:
 > 
-> Below devices reports zero as the number of channels for external output
-> plug with MIDI type:
+> I assumed that the combination of packet formats for MOTU 828 mk3 Hybrid
+> is the same as MOTU 828 mk3 FireWire. However at higher sampling rate, it
+> is different. MOTU 828 mk3 Hybrid has additional 4 dummy data chunks for
+> rx packet.
 > 
->  * Yamaha GO44/GO46
->  * Terratec Phase 24/X24
+> This commit fixes the issue to which I address at a commit f2ac3b839540
+> ("ALSA: firewire-motu: sequence replay for source packet header").
 > 
-> As a result, rx packet format is invalid and they generate silent sound.
-> This is a regression added in v5.13.
-> 
-> This commit fixes the bug, addressed at a commit 1bd1b3be8655 ("ALSA:
-> bebob: perform sequence replay for media clock recovery").
-> 
-> Cc: <stable@vger.kernel.org>
-> Fixes: 5c6ea94f2b7c ("ALSA: bebob: detect the number of available MIDI ports")
 > Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
 Thanks, applied.
