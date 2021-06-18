@@ -2,65 +2,68 @@ Return-Path: <SRS0=HRrq=LM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8938CC2B9F4
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jun 2021 02:44:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6949FC2B9F4
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jun 2021 02:45:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A9BE613BA
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jun 2021 02:44:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A9BE613BA
+	by mail.kernel.org (Postfix) with ESMTPS id 579A8613BD
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jun 2021 02:45:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 579A8613BD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F2CCC16EA;
-	Fri, 18 Jun 2021 04:43:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2CCC16EA
+	by alsa0.perex.cz (Postfix) with ESMTPS id AAF9716F6;
+	Fri, 18 Jun 2021 04:44:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAF9716F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623984277;
-	bh=ShZW1FIhY7R7CD0GuB8p3x4+BCE/wfj0A4R+ZjVi7TM=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=FI3+hSpMs97sBruaMJN1BJXWdA2+lssQhyL+BBnkDVEoRnIjcO1XuSUfCLfqoMgPB
-	 CNTJ+BURg99aL3sXgC3jZo2GUiWDSvfdFn8CHLNrTL0B5w5vqxsDwqdXpCaP6JMyED
-	 W7GXlsM7wkfV8db8eILsiYAIzdWX2pWD39FgtLO0=
+	s=default; t=1623984327;
+	bh=SKhv9ss60FjPbmroOeCKd0U19lpFCTuvyRdjfn/2GkQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=k5ij7fqZJCztXYOs1x3ahVoMEIcZ6cQ7SZz7dZBbRA6tn4PjfpuFzjMWOnzAzmeGQ
+	 SN18xyAXaOcc3c6TY1KLEsYey16ByScV2pUr8aLQAYWZIZX6li0oLmFnJkEGJBgs67
+	 GNsoFr1wKY6PSd+AKCTSKFeIzBJEuYJjZzcf6CSw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 70158F802E8;
-	Fri, 18 Jun 2021 04:43:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9702DF804B0;
+	Fri, 18 Jun 2021 04:43:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7A303F804C2; Fri, 18 Jun 2021 04:43:41 +0200 (CEST)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+ id 6342EF804B0; Fri, 18 Jun 2021 04:43:43 +0200 (CEST)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8C8E7F80148
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9B39EF800E1
  for <alsa-devel@alsa-project.org>; Fri, 18 Jun 2021 04:43:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C8E7F80148
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
- by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G5jpC4kcxzZf7L;
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B39EF800E1
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G5jpC6ctKzZjV1;
  Fri, 18 Jun 2021 10:40:35 +0800 (CST)
 Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2176.2; Fri, 18 Jun 2021 10:43:32 +0800
 Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
  (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 18 Jun
- 2021 10:43:31 +0800
+ 2021 10:43:32 +0800
 From: Yang Yingliang <yangyingliang@huawei.com>
 To: <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
  <linux-tegra@vger.kernel.org>
-Subject: [PATCH -next 0/4] ASoC: tegra: Use
+Subject: [PATCH -next 1/4] ASoC: tegra20: i2s: Use
  devm_platform_get_and_ioremap_resource()
-Date: Fri, 18 Jun 2021 10:47:18 +0800
-Message-ID: <20210618024722.2618842-1-yangyingliang@huawei.com>
+Date: Fri, 18 Jun 2021 10:47:19 +0800
+Message-ID: <20210618024722.2618842-2-yangyingliang@huawei.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210618024722.2618842-1-yangyingliang@huawei.com>
+References: <20210618024722.2618842-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -87,19 +90,25 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 Use devm_platform_get_and_ioremap_resource() to simplify
 code.
 
-Yang Yingliang (4):
-  ASoC: tegra20: i2s: Use devm_platform_get_and_ioremap_resource()
-  ASoC: tegra20: spdif: Use devm_platform_get_and_ioremap_resource()
-  ASoC: tegra: tegra210_admaif: Use
-    devm_platform_get_and_ioremap_resource()
-  ASoC: tegra30: ahub: Use devm_platform_get_and_ioremap_resource()
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ sound/soc/tegra/tegra20_i2s.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
- sound/soc/tegra/tegra20_i2s.c     | 3 +--
- sound/soc/tegra/tegra20_spdif.c   | 3 +--
- sound/soc/tegra/tegra210_admaif.c | 4 +---
- sound/soc/tegra/tegra30_ahub.c    | 3 +--
- 4 files changed, 4 insertions(+), 9 deletions(-)
-
+diff --git a/sound/soc/tegra/tegra20_i2s.c b/sound/soc/tegra/tegra20_i2s.c
+index b280ebd72591..266d2cab9f49 100644
+--- a/sound/soc/tegra/tegra20_i2s.c
++++ b/sound/soc/tegra/tegra20_i2s.c
+@@ -377,8 +377,7 @@ static int tegra20_i2s_platform_probe(struct platform_device *pdev)
+ 		goto err;
+ 	}
+ 
+-	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	regs = devm_ioremap_resource(&pdev->dev, mem);
++	regs = devm_platform_get_and_ioremap_resource(pdev, 0, &mem);
+ 	if (IS_ERR(regs)) {
+ 		ret = PTR_ERR(regs);
+ 		goto err;
 -- 
 2.25.1
 
