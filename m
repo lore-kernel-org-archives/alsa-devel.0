@@ -2,75 +2,80 @@ Return-Path: <SRS0=HRrq=LM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7847BC48BDF
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jun 2021 12:10:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2675C48BDF
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jun 2021 12:10:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 94166613D5
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jun 2021 12:10:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94166613D5
+	by mail.kernel.org (Postfix) with ESMTPS id D9622613EB
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jun 2021 12:10:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D9622613EB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 00A021730;
-	Fri, 18 Jun 2021 14:09:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00A021730
+	by alsa0.perex.cz (Postfix) with ESMTPS id 46EAD172F;
+	Fri, 18 Jun 2021 14:09:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46EAD172F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624018207;
-	bh=7qgOWH+nPcb2n6CEaH8HR2FF25lTlE4tAE8bf61gk/E=;
+	s=default; t=1624018211;
+	bh=DTTi1DchjjmNSAeM+qJLln9rd7TA4vuL5UUuTx4GPj8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=toxrK+fKIlbZzAwuykknQXCnqh18WqiVS9xlG0nY/okkKAvg+CBttX4125TKD+pPm
-	 2xCnrU3RgdEnyu0qi21vXKrImAX+HQThb9pijcHHto0ScvSebC4OR7OvxfEkTQplQn
-	 aNg0Ldv5ImLoIz0IBhOks3LDfe4IlFBR06KXNqBE=
+	b=Xn7IjoUtaDHyqp4Oo5YHe8rSQmNUl2+ka0hZYPUqnF8d0QX3SiK1yXNPYYxLrZOLW
+	 nod57qgTFp2g+1Pvkzd9BNykLAqzeRoAPtdeukq6WvWT69lKrG+IjlZ2cRcpk8JxF9
+	 gdS+1mF/gSEx3QlUcTk8UdSz15hBSU5V3CceQwSo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8430EF804C2;
-	Fri, 18 Jun 2021 14:08:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35610F804C3;
+	Fri, 18 Jun 2021 14:08:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D558BF80084; Fri, 18 Jun 2021 14:08:23 +0200 (CEST)
+ id A0121F804D1; Fri, 18 Jun 2021 14:08:30 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 43291F80084
- for <alsa-devel@alsa-project.org>; Fri, 18 Jun 2021 14:08:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43291F80084
+ by alsa1.perex.cz (Postfix) with ESMTPS id DB6A0F80148
+ for <alsa-devel@alsa-project.org>; Fri, 18 Jun 2021 14:08:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB6A0F80148
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bgWnRLDs"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 002FD613EB;
- Fri, 18 Jun 2021 12:08:18 +0000 (UTC)
+ header.b="BdzazckL"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4520613F2;
+ Fri, 18 Jun 2021 12:08:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1624018099;
- bh=7qgOWH+nPcb2n6CEaH8HR2FF25lTlE4tAE8bf61gk/E=;
+ s=k20201202; t=1624018102;
+ bh=DTTi1DchjjmNSAeM+qJLln9rd7TA4vuL5UUuTx4GPj8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=bgWnRLDssZJpxPfygsD+SOhyfBaYcSuwZvA7pBGgiCVv2zqvo5aMG+lv4ahDHiGNQ
- VXydgXhDNzxmYKp+ATYVdKRQ+wuHUby2A237gLXe2LXbHjcfE0OtksCRhmKjJHCsHY
- ibhuTCN/YTSdHtRrhxeoh0btoHnh28h8+AskaLOZXd+61jwE/yCeKq8aTd53mnP7i+
- eHnQV3ociVgEBrbvBMR7Bnd0QksQuUTU3HDAP0s5d39YZNXBi+mUzKvuk3dKxNM/Y0
- HOkuPIehep6Cu7xzMTmSbeUS6mWPewaykw3CIfrY3fh71ziSj4woKJCl9OfV2bsPw4
- hJBECVMvJaupw==
+ b=BdzazckL0knCkcUHGlsE04DDuTzj4EZSwZDrB6ZXnq5skooG68nwyl/srls48jm3k
+ HCvkNNFMG/ZtOZ4LFruSyGQb8fo97TaCvUAyW3qT2t3gv3w/YNkq1Ug8sCMTtJG5nN
+ +d8YeeqCeYO5X7lhnQPRx1miGJxUSVFr5cgVgveJ62SbZekp7wMP+bkpQpRjuLCAbi
+ Qr8lbWfGDli8H7QpEmbCtOYgl4JklWz9PFuJzao9uo8jpuwQWvWKMyjwkYNdodE0GP
+ VN3gQ6B20RR+NSDZM3qMUDeXy1VrY4cQkqY901ZqP8DGJj0v539kH45T8bPsWWHM38
+ +VBykSQkSsZrw==
 From: Mark Brown <broonie@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Flavio Suligoi <f.suligoi@asem.it>
-Subject: Re: [PATCH] ASoC: fsi: fix spelling mistake
-Date: Fri, 18 Jun 2021 13:07:54 +0100
-Message-Id: <162401758813.52682.15832699521448200223.b4-ty@kernel.org>
+To: alsa-devel <alsa-devel@alsa-project.org>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Zhen Lei <thunder.leizhen@huawei.com>, Jie Yang <yang.jie@linux.intel.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 1/1] ASoC: Intel: bdw-rt5677: remove unnecessary oom
+ message
+Date: Fri, 18 Jun 2021 13:07:55 +0100
+Message-Id: <162401758812.52682.15431464249144019207.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210618085324.1038524-1-f.suligoi@asem.it>
-References: <20210618085324.1038524-1-f.suligoi@asem.it>
+In-Reply-To: <20210617103538.1818-1-thunder.leizhen@huawei.com>
+References: <20210617103538.1818-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,8 +91,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 18 Jun 2021 10:53:24 +0200, Flavio Suligoi wrote:
-> Fix "thse" --> "these" in struct fsi_stream declaration.
+On Thu, 17 Jun 2021 18:35:38 +0800, Zhen Lei wrote:
+> Fixes scripts/checkpatch.pl warning:
+> WARNING: Possible unnecessary 'out of memory' message
+> 
+> Remove it can help us save a bit of memory.
 
 Applied to
 
@@ -95,8 +103,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsi: fix spelling mistake
-      commit: eb1e9b8f581a48943073c60adc3cd3cf63972580
+[1/1] ASoC: Intel: bdw-rt5677: remove unnecessary oom message
+      commit: c5ad09a346651c4612668e2da68b8ebf78d66fd4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
