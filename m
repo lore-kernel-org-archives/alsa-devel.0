@@ -2,80 +2,67 @@ Return-Path: <SRS0=HRrq=LM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2675C48BDF
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jun 2021 12:10:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6552CC48BDF
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jun 2021 12:58:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D9622613EB
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jun 2021 12:10:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D9622613EB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id D031C610CD
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jun 2021 12:58:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D031C610CD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 46EAD172F;
-	Fri, 18 Jun 2021 14:09:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46EAD172F
+	by alsa0.perex.cz (Postfix) with ESMTPS id C10A91705;
+	Fri, 18 Jun 2021 14:57:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C10A91705
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624018211;
-	bh=DTTi1DchjjmNSAeM+qJLln9rd7TA4vuL5UUuTx4GPj8=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Xn7IjoUtaDHyqp4Oo5YHe8rSQmNUl2+ka0hZYPUqnF8d0QX3SiK1yXNPYYxLrZOLW
-	 nod57qgTFp2g+1Pvkzd9BNykLAqzeRoAPtdeukq6WvWT69lKrG+IjlZ2cRcpk8JxF9
-	 gdS+1mF/gSEx3QlUcTk8UdSz15hBSU5V3CceQwSo=
+	s=default; t=1624021088;
+	bh=s/73pZ6odDD6VHFRe5nMak3Ev3diZXpEc4a798nugzs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=cMK6xY1ai1PiV7+3Vv9U/20fOzeF0AcJ0+omPQRkxScyQ4SkyTIWxN+09CRr/i5R7
+	 NrWDs3LmPOHlUAOVCiGSp3Cv+6fcwG4AOhYVt3exLMxfr6zSe8vUyMilsfqS6lTM1K
+	 8cuvc0fPWRqQHLNCaM/t329lcBtIWgoqPUyC1g9c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 35610F804C3;
-	Fri, 18 Jun 2021 14:08:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5379EF80148;
+	Fri, 18 Jun 2021 14:57:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A0121F804D1; Fri, 18 Jun 2021 14:08:30 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 9D58CF8032D; Fri, 18 Jun 2021 14:57:17 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DB6A0F80148
- for <alsa-devel@alsa-project.org>; Fri, 18 Jun 2021 14:08:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB6A0F80148
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BdzazckL"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4520613F2;
- Fri, 18 Jun 2021 12:08:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1624018102;
- bh=DTTi1DchjjmNSAeM+qJLln9rd7TA4vuL5UUuTx4GPj8=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=BdzazckL0knCkcUHGlsE04DDuTzj4EZSwZDrB6ZXnq5skooG68nwyl/srls48jm3k
- HCvkNNFMG/ZtOZ4LFruSyGQb8fo97TaCvUAyW3qT2t3gv3w/YNkq1Ug8sCMTtJG5nN
- +d8YeeqCeYO5X7lhnQPRx1miGJxUSVFr5cgVgveJ62SbZekp7wMP+bkpQpRjuLCAbi
- Qr8lbWfGDli8H7QpEmbCtOYgl4JklWz9PFuJzao9uo8jpuwQWvWKMyjwkYNdodE0GP
- VN3gQ6B20RR+NSDZM3qMUDeXy1VrY4cQkqY901ZqP8DGJj0v539kH45T8bPsWWHM38
- +VBykSQkSsZrw==
-From: Mark Brown <broonie@kernel.org>
-To: alsa-devel <alsa-devel@alsa-project.org>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Zhen Lei <thunder.leizhen@huawei.com>, Jie Yang <yang.jie@linux.intel.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 1/1] ASoC: Intel: bdw-rt5677: remove unnecessary oom
- message
-Date: Fri, 18 Jun 2021 13:07:55 +0100
-Message-Id: <162401758812.52682.15431464249144019207.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210617103538.1818-1-thunder.leizhen@huawei.com>
-References: <20210617103538.1818-1-thunder.leizhen@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: Mark Brown <broonie@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id ADF05F800E1
+ for <alsa-devel@alsa-project.org>; Fri, 18 Jun 2021 14:57:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADF05F800E1
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 140BF1A0CF8;
+ Fri, 18 Jun 2021 14:57:07 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D87C01A20D8;
+ Fri, 18 Jun 2021 14:57:02 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 7A3FB402B6;
+ Fri, 18 Jun 2021 20:56:57 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org
+Subject: [PATCH v2] ASoC: fsl_xcvr: disable all interrupts when suspend happens
+Date: Fri, 18 Jun 2021 20:38:33 +0800
+Message-Id: <1624019913-3380-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,36 +78,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 17 Jun 2021 18:35:38 +0800, Zhen Lei wrote:
-> Fixes scripts/checkpatch.pl warning:
-> WARNING: Possible unnecessary 'out of memory' message
-> 
-> Remove it can help us save a bit of memory.
+There is an unhandled interrupt after suspend, which cause endless
+interrupt when system resume, so system may hang.
 
-Applied to
+Disable all interrupts in runtime suspend callback to avoid above
+issue.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Fixes: 28564486866f ("ASoC: fsl_xcvr: Add XCVR ASoC CPU DAI driver")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+changes in v2:
+- Add Fixes tag
+- Add comments for the change
 
-Thanks!
+ sound/soc/fsl/fsl_xcvr.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-[1/1] ASoC: Intel: bdw-rt5677: remove unnecessary oom message
-      commit: c5ad09a346651c4612668e2da68b8ebf78d66fd4
+diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
+index df7c189d97dd..92dd99258edf 100644
+--- a/sound/soc/fsl/fsl_xcvr.c
++++ b/sound/soc/fsl/fsl_xcvr.c
+@@ -1233,6 +1233,16 @@ static __maybe_unused int fsl_xcvr_runtime_suspend(struct device *dev)
+ 	struct fsl_xcvr *xcvr = dev_get_drvdata(dev);
+ 	int ret;
+ 
++	/*
++	 * Clear interrupts, when streams starts or resumes after
++	 * suspend, interrupts are enabled in prepare(), so no need
++	 * to enable interrupts in resume().
++	 */
++	ret = regmap_update_bits(xcvr->regmap, FSL_XCVR_EXT_IER0,
++				 FSL_XCVR_IRQ_EARC_ALL, 0);
++	if (ret < 0)
++		dev_err(dev, "Failed to clear IER0: %d\n", ret);
++
+ 	/* Assert M0+ reset */
+ 	ret = regmap_update_bits(xcvr->regmap, FSL_XCVR_EXT_CTRL,
+ 				 FSL_XCVR_EXT_CTRL_CORE_RESET,
+-- 
+2.27.0
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
