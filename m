@@ -7,60 +7,60 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6949FC2B9F4
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jun 2021 02:45:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 181F5C2B9F4
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jun 2021 02:45:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 579A8613BD
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jun 2021 02:45:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 579A8613BD
+	by mail.kernel.org (Postfix) with ESMTPS id 4FE2C613BD
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jun 2021 02:45:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4FE2C613BD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AAF9716F6;
-	Fri, 18 Jun 2021 04:44:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAF9716F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id E34FB1705;
+	Fri, 18 Jun 2021 04:44:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E34FB1705
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1623984327;
-	bh=SKhv9ss60FjPbmroOeCKd0U19lpFCTuvyRdjfn/2GkQ=;
+	s=default; t=1623984343;
+	bh=DGFCKsBDYhM4x6vAUAxxDuDNV9NAnCBqJrC2ywCIbAI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=k5ij7fqZJCztXYOs1x3ahVoMEIcZ6cQ7SZz7dZBbRA6tn4PjfpuFzjMWOnzAzmeGQ
-	 SN18xyAXaOcc3c6TY1KLEsYey16ByScV2pUr8aLQAYWZIZX6li0oLmFnJkEGJBgs67
-	 GNsoFr1wKY6PSd+AKCTSKFeIzBJEuYJjZzcf6CSw=
+	b=cyhOTQ1bDwAANqas2IZTmujSRkiMmuL+m1ea+e2O9lXBnMFtgEna29C/0xTNz311C
+	 mPY4POAn25HYdPbiKNJjPyC2MRhXUBfnsy5uCFWNboN/vRDWqW9JMFk98kIVOUS4Fc
+	 7ovq650iuRMSn6hiVtlBRosGhGhcUAKm/hPK7k9E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9702DF804B0;
-	Fri, 18 Jun 2021 04:43:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 09B26F804D9;
+	Fri, 18 Jun 2021 04:43:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6342EF804B0; Fri, 18 Jun 2021 04:43:43 +0200 (CEST)
+ id 7A999F80424; Fri, 18 Jun 2021 04:43:44 +0200 (CEST)
 Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9B39EF800E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9796BF80423
  for <alsa-devel@alsa-project.org>; Fri, 18 Jun 2021 04:43:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B39EF800E1
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G5jpC6ctKzZjV1;
- Fri, 18 Jun 2021 10:40:35 +0800 (CST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9796BF80423
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G5jny6DxFz6yBt;
+ Fri, 18 Jun 2021 10:40:22 +0800 (CST)
 Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
  dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 18 Jun 2021 10:43:32 +0800
+ 15.1.2176.2; Fri, 18 Jun 2021 10:43:33 +0800
 Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
  (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 18 Jun
- 2021 10:43:32 +0800
+ 2021 10:43:33 +0800
 From: Yang Yingliang <yangyingliang@huawei.com>
 To: <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
  <linux-tegra@vger.kernel.org>
-Subject: [PATCH -next 1/4] ASoC: tegra20: i2s: Use
+Subject: [PATCH -next 4/4] ASoC: tegra30: ahub: Use
  devm_platform_get_and_ioremap_resource()
-Date: Fri, 18 Jun 2021 10:47:19 +0800
-Message-ID: <20210618024722.2618842-2-yangyingliang@huawei.com>
+Date: Fri, 18 Jun 2021 10:47:22 +0800
+Message-ID: <20210618024722.2618842-5-yangyingliang@huawei.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210618024722.2618842-1-yangyingliang@huawei.com>
 References: <20210618024722.2618842-1-yangyingliang@huawei.com>
@@ -92,23 +92,23 @@ code.
 
 Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- sound/soc/tegra/tegra20_i2s.c | 3 +--
+ sound/soc/tegra/tegra30_ahub.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra20_i2s.c b/sound/soc/tegra/tegra20_i2s.c
-index b280ebd72591..266d2cab9f49 100644
---- a/sound/soc/tegra/tegra20_i2s.c
-+++ b/sound/soc/tegra/tegra20_i2s.c
-@@ -377,8 +377,7 @@ static int tegra20_i2s_platform_probe(struct platform_device *pdev)
- 		goto err;
+diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
+index 4692c70ed933..b3e1df693381 100644
+--- a/sound/soc/tegra/tegra30_ahub.c
++++ b/sound/soc/tegra/tegra30_ahub.c
+@@ -550,8 +550,7 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
+ 		goto err_unset_ahub;
  	}
  
--	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	regs = devm_ioremap_resource(&pdev->dev, mem);
-+	regs = devm_platform_get_and_ioremap_resource(pdev, 0, &mem);
- 	if (IS_ERR(regs)) {
- 		ret = PTR_ERR(regs);
- 		goto err;
+-	res0 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	regs_apbif = devm_ioremap_resource(&pdev->dev, res0);
++	regs_apbif = devm_platform_get_and_ioremap_resource(pdev, 0, &res0);
+ 	if (IS_ERR(regs_apbif)) {
+ 		ret = PTR_ERR(regs_apbif);
+ 		goto err_unset_ahub;
 -- 
 2.25.1
 
