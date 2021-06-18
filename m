@@ -2,96 +2,94 @@ Return-Path: <SRS0=HRrq=LM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,UNPARSEABLE_RELAY autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DD55C48BDF
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jun 2021 09:18:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36334C48BDF
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jun 2021 09:26:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 130C8613B4
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jun 2021 09:18:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 130C8613B4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	by mail.kernel.org (Postfix) with ESMTPS id 08472613D6
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jun 2021 09:26:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 08472613D6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1C3E41686;
-	Fri, 18 Jun 2021 11:17:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C3E41686
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5D9991706;
+	Fri, 18 Jun 2021 11:25:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D9991706
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624007896;
-	bh=+6YROVLmsQEImrRJZauNOrwwfwLrqH9UYUkj7qYQxdc=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1624008373;
+	bh=PZHIJb8V57r4Bwis5uLp8FoGAnWanjj2H51slUSKVpM=;
+	h=To:From:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=eBcpM9pK33X+d3LOmBXi7Ck9qMTHQScclVjIl04/xLoLYoTCqWe7w0slmPrJnvDqK
-	 b4FOn4SKCDOT+4K1jHzhsC25kfhZ4H1PGJJIVWF6Lu67+Exj7L28VRao6hw510JN9f
-	 /pMUzOp4IHVst+N/aIMbLsmtrSQ38ToOT1WT12mc=
+	b=svzcsaxi1aCHgNiX23VOAYoGNnN4Y9wFivqCTE4uygATQg45xgCj1pzbLRaPS/V6L
+	 S957CxK26ZrfhMutKXmI++6NZn2otsGGoEchdUZVNVqYY2NgI32i3jlUOpoLPhLYbd
+	 rtiYkDAk/1ms7V2nhKHMjGdFrVEFe3mHtEwFukxg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A45EBF802E8;
-	Fri, 18 Jun 2021 11:17:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E55D8F802E8;
+	Fri, 18 Jun 2021 11:25:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ACD05F8032D; Fri, 18 Jun 2021 11:17:23 +0200 (CEST)
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com
- [205.220.177.32])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 4985EF8032D; Fri, 18 Jun 2021 11:25:21 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4F065F80084
- for <alsa-devel@alsa-project.org>; Fri, 18 Jun 2021 11:17:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F065F80084
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
- header.b="iL3hncc9"
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
- by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 15I9Bj24010506; Fri, 18 Jun 2021 09:17:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=WD+/EmQvcBf27Rwf8ptwYMAsvMh6Al8V5cD5IJ2JT+8=;
- b=iL3hncc941WS7Bjn8WfxeyqZO0tYzuAgx1732AUzdP2D4y3icHzTydbi08NrpMCB2OBu
- dXzR/AFYYStqcN6wdzNFNwGJS83O4t6WhgWZZMmeVQ/GXzNOUW6cLGPtdyiWXYGYqkF2
- lNApDPJpXkYOPPB5fPpPV6Z9rYwamOmat/QFXIujT0nXFxH48N3UmXLTq6T2vGbtGilZ
- ceBCsuUQKgpU6208WbnR3P9ofKrYRu79AFsjPcINh9irPCIR6Usv/qUaMUsMppOpKVFR
- SepPCB3SFblXsK4G+uXR3zsD0/QBh5/FDPVBhsCywGpKBV3kBS0grN0XRO+Atk9yCEgb Fw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
- by mx0b-00069f02.pphosted.com with ESMTP id 39893qsgc5-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 18 Jun 2021 09:17:14 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
- by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15I9FbT7177366;
- Fri, 18 Jun 2021 09:17:13 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
- by userp3020.oracle.com with ESMTP id 396waynray-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 18 Jun 2021 09:17:13 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
- by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15I9HDow180324;
- Fri, 18 Jun 2021 09:17:13 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
- by userp3020.oracle.com with ESMTP id 396waynrag-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 18 Jun 2021 09:17:13 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
- by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 15I9H9uq030940;
- Fri, 18 Jun 2021 09:17:12 GMT
-Received: from mwanda (/102.222.70.252)
- by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Fri, 18 Jun 2021 02:17:08 -0700
-Date: Fri, 18 Jun 2021 12:17:03 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: srinivas.kandagatla@linaro.org
-Subject: [bug report] ASoC: codecs: wcd938x: add capture dapm widgets
-Message-ID: <YMxkjxBO3sQpq5rY@mwanda>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 410F7F80084
+ for <alsa-devel@alsa-project.org>; Fri, 18 Jun 2021 11:25:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 410F7F80084
+Received: from mail-pg1-f198.google.com ([209.85.215.198])
+ by youngberry.canonical.com with esmtps (TLS1.2) tls
+ TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.93)
+ (envelope-from <andy.chi@canonical.com>) id 1luAkT-0003qb-Il
+ for alsa-devel@alsa-project.org; Fri, 18 Jun 2021 09:25:13 +0000
+Received: by mail-pg1-f198.google.com with SMTP id
+ l28-20020a63571c0000b02902224bbd5ea1so5496934pgb.16
+ for <alsa-devel@alsa-project.org>; Fri, 18 Jun 2021 02:25:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+ :mime-version:content-transfer-encoding:content-language;
+ bh=E7KqypH/WQUMF9Du8fxlBjjhwnPAUXJyG3rzSTA+emY=;
+ b=bGfetSwvuvfkX8IxDVh7Wzr9A2NYuDte4bL9/ojVFMhy6Tnc/u/vBQFFUHpu78RYuO
+ Pl1XimfhOpguIpy2M42IISRMXTkmGWw3fdlP4V42nymElkDSEVlWnOTaFicvCpqdpKiT
+ AHan6wNWvykuFIT+uy0ShJNZ3NOd+U57TcOOjhJ4WVTZYVBkeQJE8cmCelBGBp3pOEI4
+ TCvPPkuvHCPdLV3uA2x+iwS4nZRH4aOdsPyk0YeKFiU+rL52AqPDkG+6B+N+4SWFnSwo
+ qOMK91o52QJ9rhf4z4HDzSB98DYn5dYsexuzEEecF80Z7wOHJFwd39EmpAkKAIO7U2eX
+ u7Fw==
+X-Gm-Message-State: AOAM532EFV2++fZWi3xMksq71pGAnM7WUTdWvFzcfZAuQTbr+bhsTtW5
+ A6F42hp1e/Bb4JCHm6Zn5Wpconans3IZ4OWlTcA8XtLZyUfSzYiK7yJDdtwZOANtjYX21irhQFp
+ jICgBVjr1yfwl1POiGCGXvH37jov/snGezbkIgoCm
+X-Received: by 2002:a17:902:e04f:b029:eb:66b0:6d08 with SMTP id
+ x15-20020a170902e04fb02900eb66b06d08mr4000883plx.50.1624008312362; 
+ Fri, 18 Jun 2021 02:25:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwBfPjy4mQOWDzzfnsRaE2kmGYfR4rlU94En6udVPlvJdf1w5SSLHY/oatMVmTc+0nXg05gHw==
+X-Received: by 2002:a17:902:e04f:b029:eb:66b0:6d08 with SMTP id
+ x15-20020a170902e04fb02900eb66b06d08mr4000863plx.50.1624008311911; 
+ Fri, 18 Jun 2021 02:25:11 -0700 (PDT)
+Received: from [192.168.0.101] (36-224-193-219.dynamic-ip.hinet.net.
+ [36.224.193.219])
+ by smtp.gmail.com with ESMTPSA id r19sm7292633pfh.152.2021.06.18.02.25.10
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 18 Jun 2021 02:25:11 -0700 (PDT)
+To: alsa-devel@alsa-project.org
+From: Andy Chi <andy.chi@canonical.com>
+Subject: [PATCH 1/2] ALSA: hda/realtek: fix mute/micmute LEDs for HP ProBook
+ 450 G8
+Message-ID: <7797aabe-83c7-a63c-7749-73dea0e25f54@canonical.com>
+Date: Fri, 18 Jun 2021 17:25:09 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Proofpoint-ORIG-GUID: 4iAbBaqmDK4MOkXwEph09P8LdidPM8FJ
-X-Proofpoint-GUID: 4iAbBaqmDK4MOkXwEph09P8LdidPM8FJ
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Cc: tiwai@suse.de, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,49 +105,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello Srinivas Kandagatla,
+From fdeab6f32dbdbfd83c9af6efc5a51f91021b6578 Mon Sep 17 00:00:00 2001
+From: Andy Chi <andy.chi@canonical.com>
+Date: Fri, 18 Jun 2021 16:17:48 +0800
+Subject: [PATCH 1/2] ALSA: hda/realtek: fix mute/micmute LEDs for HP ProBook
+ 450 G8
 
-The patch d5add08fcbce: "ASoC: codecs: wcd938x: add capture dapm
-widgets" from Jun 9, 2021, leads to the following static checker
-warning:
+The HP ProBook 450 G8 using ALC236 codec which using 0x02 to
+control mute LED and 0x01 to control micmute LED.
+Therefore, add a quirk to make it works.
 
-	sound/soc/codecs/wcd938x.c:2189 wcd938x_tx_channel_config()
-	error: uninitialized symbol 'reg'.
+Signed-off-by: Andy Chi <andy.chi@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-sound/soc/codecs/wcd938x.c
-  2165  static void wcd938x_tx_channel_config(struct snd_soc_component *component,
-  2166                                       int channel, int mode)
-  2167  {
-  2168          int reg, mask;
-  2169  
-  2170          switch (channel) {
-  2171          case 0:
-  2172                  reg = WCD938X_ANA_TX_CH2;
-  2173                  mask = WCD938X_HPF1_INIT_MASK;
-  2174                  break;
-  2175          case 1:
-  2176                  reg = WCD938X_ANA_TX_CH2;
-  2177                  mask = WCD938X_HPF2_INIT_MASK;
-  2178                  break;
-  2179          case 2:
-  2180                  reg = WCD938X_ANA_TX_CH4;
-  2181                  mask = WCD938X_HPF3_INIT_MASK;
-  2182                  break;
-  2183          case 3:
-  2184                  reg = WCD938X_ANA_TX_CH4;
-  2185                  mask = WCD938X_HPF4_INIT_MASK;
-  2186                  break;
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index ab5113cccffa..70bc5b11acfd 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8336,6 +8336,7 @@ static const struct snd_pci_quirk
+alc269_fixup_tbl[] = {
+               ALC285_FIXUP_HP_GPIO_AMP_INIT),
+     SND_PCI_QUIRK(0x103c, 0x87c8, "HP", ALC287_FIXUP_HP_GPIO_LED),
+     SND_PCI_QUIRK(0x103c, 0x87e5, "HP ProBook 440 G8 Notebook PC",
+ALC236_FIXUP_HP_GPIO_LED),
++    SND_PCI_QUIRK(0x103c, 0x87e7, "HP ProBook 440 G8 Notebook PC",
+ALC236_FIXUP_HP_GPIO_LED),
+     SND_PCI_QUIRK(0x103c, 0x87f2, "HP ProBook 640 G8 Notebook PC",
+ALC236_FIXUP_HP_GPIO_LED),
+     SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
+     SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
+-- 
+2.25.1
 
-We could add a default case?
-
-default:
-	return;
-
-  2187          }
-  2188  
-  2189          snd_soc_component_write_field(component, reg, mask, mode);
-  2190  }
-
-
-regards,
-dan carpenter
