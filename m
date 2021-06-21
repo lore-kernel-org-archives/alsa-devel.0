@@ -7,50 +7,50 @@ X-Spam-Status: No, score=-12.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
 	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2FAEC4743C
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:19:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E78E8C4743C
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:19:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7253A606A5
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:19:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7253A606A5
+	by mail.kernel.org (Postfix) with ESMTPS id 6E3526100B
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:19:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6E3526100B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=b4.vu
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F0AA9173D;
-	Mon, 21 Jun 2021 20:18:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0AA9173D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0866C1744;
+	Mon, 21 Jun 2021 20:18:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0866C1744
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624299571;
-	bh=HmvVpvDrAgBwlg2Qs2MYTbEuOf650rSgrn34kUrXohI=;
+	s=default; t=1624299587;
+	bh=jzyZ8yWoSbM5HgrfmIuvWH1inzf/5DyVHS4xPFWCUkg=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EOC0W9f9MG88ksDDoR3uXRbVkH6CKBt3NJXQvuvfekz4OGacc2AL8AB8XmtL3PJMN
-	 E/Fg0tAeQ9Ioe/PN4Nx9/ywahJPsAWdtwRvjl046wFHPwM9RRGPEaw5s1Esq8xt70V
-	 5SXC8Owd9oOd6EfdeKzc9Dh7CQl6489SjpO93q5Q=
+	b=AulfGrbU7mdLwZKaqXCjjk9eZWXoDB5VQUXBIvoKuoo3wt4hEBlvL6MUZ9EqFt/8z
+	 Na8Mc6hNqMkzZrZPe1lMqCdBbM6lny7/cdOk3XVIRxuD5MTi2GRCBP7kptTgcQgrKE
+	 lvLbV4nL9v82rr2gC9cvKZJSha0oh30CqaIK/W4w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9B90CF805B6;
-	Mon, 21 Jun 2021 20:10:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B7BC5F805C1;
+	Mon, 21 Jun 2021 20:10:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7175EF805AF; Mon, 21 Jun 2021 20:10:12 +0200 (CEST)
+ id 286BFF805B0; Mon, 21 Jun 2021 20:10:13 +0200 (CEST)
 Received: from m.b4.vu (m.b4.vu [203.16.231.148])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F244DF8057D
- for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 20:10:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F244DF8057D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7DD11F805A1
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 20:10:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DD11F805A1
 Received: by m.b4.vu (Postfix, from userid 1000)
- id 7363E61E5F00; Tue, 22 Jun 2021 03:40:05 +0930 (ACST)
-Date: Tue, 22 Jun 2021 03:40:05 +0930
+ id 055C261E5F04; Tue, 22 Jun 2021 03:40:07 +0930 (ACST)
+Date: Tue, 22 Jun 2021 03:40:06 +0930
 From: "Geoffrey D. Bennett" <g@b4.vu>
 To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 25/31] ALSA: usb-audio: scarlett2: Label 18i8 Gen 3 line
- outputs correctly
-Message-ID: <2aa653a0b4a18020c50805952676c5c5383cd593.1624294591.git.g@b4.vu>
+Subject: [PATCH 26/31] ALSA: usb-audio: scarlett2: Split up
+ sw_hw_enum_ctl_put()
+Message-ID: <9f66950730a058480a135ac57fa3e114b78d66ea.1624294591.git.g@b4.vu>
 References: <cover.1624294591.git.g@b4.vu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -74,242 +74,92 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The 18i8 Gen 3 analogue 7/8 outputs are identified as line 3/4 on the
-rear of the unit. Add support for remapping the channel numbers to
-match the labelling.
+Split part of scarlett2_sw_hw_enum_ctl_put() out into
+scarlett2_sw_hw_change() so that the code which actually makes the
+change is available in its own function. This will be used by the
+speaker switching support which needs to set the SW/HW switch to HW
+when speaker switching is enabled.
 
 Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
 ---
- sound/usb/mixer_scarlett_gen2.c | 82 ++++++++++++++++++++++++---------
- 1 file changed, 59 insertions(+), 23 deletions(-)
+ sound/usb/mixer_scarlett_gen2.c | 46 ++++++++++++++++++++-------------
+ 1 file changed, 28 insertions(+), 18 deletions(-)
 
 diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
-index 94de63847169..03decb35d25e 100644
+index 03decb35d25e..1b398a06d4b2 100644
 --- a/sound/usb/mixer_scarlett_gen2.c
 +++ b/sound/usb/mixer_scarlett_gen2.c
-@@ -344,6 +344,12 @@ struct scarlett2_device_info {
- 	 */
- 	u8 direct_monitor;
- 
-+	/* remap analogue outputs; 18i8 Gen 3 has "line 3/4" connected
-+	 * internally to the analogue 7/8 outputs
-+	 */
-+	u8 line_out_remap_enable;
-+	u8 line_out_remap[SCARLETT2_ANALOGUE_MAX];
-+
- 	/* additional description for the line out volume controls */
- 	const char * const line_out_descrs[SCARLETT2_ANALOGUE_MAX];
- 
-@@ -684,15 +690,18 @@ static const struct scarlett2_device_info s18i8_gen3_info = {
- 	.phantom_count = 2,
- 	.inputs_per_phantom = 2,
- 
-+	.line_out_remap_enable = 1,
-+	.line_out_remap = { 0, 1, 6, 7, 2, 3, 4, 5 },
-+
- 	.line_out_descrs = {
- 		"Monitor L",
- 		"Monitor R",
-+		"Alt Monitor L",
-+		"Alt Monitor R",
- 		"Headphones 1 L",
- 		"Headphones 1 R",
- 		"Headphones 2 L",
- 		"Headphones 2 R",
--		"Alt Monitor L",
--		"Alt Monitor R",
- 	},
- 
- 	.port_count = {
-@@ -1711,13 +1720,22 @@ static int scarlett2_master_volume_ctl_get(struct snd_kcontrol *kctl,
- 	return 0;
+@@ -1899,23 +1899,12 @@ static void scarlett2_vol_ctl_set_writable(struct usb_mixer_interface *mixer,
+ 		       &private->mute_ctls[index]->id);
  }
  
-+static int line_out_remap(struct scarlett2_data *private, int index)
-+{
-+	const struct scarlett2_device_info *info = private->info;
-+
-+	if (!info->line_out_remap_enable)
-+		return index;
-+	return info->line_out_remap[index];
+-static int scarlett2_sw_hw_enum_ctl_put(struct snd_kcontrol *kctl,
+-					struct snd_ctl_elem_value *ucontrol)
++static int scarlett2_sw_hw_change(struct usb_mixer_interface *mixer,
++				  int ctl_index, int val)
+ {
+-	struct usb_mixer_elem_info *elem = kctl->private_data;
+-	struct usb_mixer_interface *mixer = elem->head.mixer;
+ 	struct scarlett2_data *private = mixer->private_data;
+-	int ctl_index = elem->control;
+ 	int index = line_out_remap(private, ctl_index);
+-	int oval, val, err = 0;
+-
+-	mutex_lock(&private->data_mutex);
+-
+-	oval = private->vol_sw_hw_switch[index];
+-	val = !!ucontrol->value.enumerated.item[0];
+-
+-	if (oval == val)
+-		goto unlock;
++	int err;
+ 
+ 	private->vol_sw_hw_switch[index] = val;
+ 
+@@ -1933,18 +1922,39 @@ static int scarlett2_sw_hw_enum_ctl_put(struct snd_kcontrol *kctl,
+ 		mixer, SCARLETT2_CONFIG_LINE_OUT_VOLUME,
+ 		index, private->master_vol - SCARLETT2_VOLUME_BIAS);
+ 	if (err < 0)
+-		goto unlock;
++		return err;
+ 
+ 	/* Set SW mute to current HW mute */
+ 	err = scarlett2_usb_set_config(
+ 		mixer, SCARLETT2_CONFIG_MUTE_SWITCH,
+ 		index, private->dim_mute[SCARLETT2_BUTTON_MUTE]);
+ 	if (err < 0)
+-		goto unlock;
++		return err;
+ 
+ 	/* Send SW/HW switch change to the device */
+-	err = scarlett2_usb_set_config(mixer, SCARLETT2_CONFIG_SW_HW_SWITCH,
+-				       index, val);
++	return scarlett2_usb_set_config(mixer, SCARLETT2_CONFIG_SW_HW_SWITCH,
++					index, val);
 +}
 +
- static int scarlett2_volume_ctl_get(struct snd_kcontrol *kctl,
- 				    struct snd_ctl_elem_value *ucontrol)
- {
- 	struct usb_mixer_elem_info *elem = kctl->private_data;
- 	struct usb_mixer_interface *mixer = elem->head.mixer;
- 	struct scarlett2_data *private = mixer->private_data;
--	int index = elem->control;
-+	int index = line_out_remap(private, elem->control);
- 
- 	mutex_lock(&private->data_mutex);
- 	if (private->vol_updated)
-@@ -1734,7 +1752,7 @@ static int scarlett2_volume_ctl_put(struct snd_kcontrol *kctl,
- 	struct usb_mixer_elem_info *elem = kctl->private_data;
- 	struct usb_mixer_interface *mixer = elem->head.mixer;
- 	struct scarlett2_data *private = mixer->private_data;
--	int index = elem->control;
-+	int index = line_out_remap(private, elem->control);
- 	int oval, val, err = 0;
- 
- 	mutex_lock(&private->data_mutex);
-@@ -1790,7 +1808,7 @@ static int scarlett2_mute_ctl_get(struct snd_kcontrol *kctl,
- {
- 	struct usb_mixer_elem_info *elem = kctl->private_data;
- 	struct scarlett2_data *private = elem->head.mixer->private_data;
--	int index = elem->control;
-+	int index = line_out_remap(private, elem->control);
- 
- 	ucontrol->value.integer.value[0] = private->mute_switch[index];
- 	return 0;
-@@ -1802,7 +1820,7 @@ static int scarlett2_mute_ctl_put(struct snd_kcontrol *kctl,
- 	struct usb_mixer_elem_info *elem = kctl->private_data;
- 	struct usb_mixer_interface *mixer = elem->head.mixer;
- 	struct scarlett2_data *private = mixer->private_data;
--	int index = elem->control;
-+	int index = line_out_remap(private, elem->control);
- 	int oval, val, err = 0;
- 
- 	mutex_lock(&private->data_mutex);
-@@ -1849,9 +1867,9 @@ static int scarlett2_sw_hw_enum_ctl_get(struct snd_kcontrol *kctl,
- {
- 	struct usb_mixer_elem_info *elem = kctl->private_data;
- 	struct scarlett2_data *private = elem->head.mixer->private_data;
-+	int index = line_out_remap(private, elem->control);
- 
--	ucontrol->value.enumerated.item[0] =
--		private->vol_sw_hw_switch[elem->control];
-+	ucontrol->value.enumerated.item[0] = private->vol_sw_hw_switch[index];
- 	return 0;
- }
- 
-@@ -1887,8 +1905,8 @@ static int scarlett2_sw_hw_enum_ctl_put(struct snd_kcontrol *kctl,
- 	struct usb_mixer_elem_info *elem = kctl->private_data;
- 	struct usb_mixer_interface *mixer = elem->head.mixer;
- 	struct scarlett2_data *private = mixer->private_data;
--
--	int index = elem->control;
++static int scarlett2_sw_hw_enum_ctl_put(struct snd_kcontrol *kctl,
++					struct snd_ctl_elem_value *ucontrol)
++{
++	struct usb_mixer_elem_info *elem = kctl->private_data;
++	struct usb_mixer_interface *mixer = elem->head.mixer;
++	struct scarlett2_data *private = mixer->private_data;
 +	int ctl_index = elem->control;
 +	int index = line_out_remap(private, ctl_index);
- 	int oval, val, err = 0;
- 
- 	mutex_lock(&private->data_mutex);
-@@ -1904,7 +1922,7 @@ static int scarlett2_sw_hw_enum_ctl_put(struct snd_kcontrol *kctl,
- 	/* Change access mode to RO (hardware controlled volume)
- 	 * or RW (software controlled volume)
- 	 */
--	scarlett2_vol_ctl_set_writable(mixer, index, !val);
-+	scarlett2_vol_ctl_set_writable(mixer, ctl_index, !val);
- 
- 	/* Reset volume/mute to master volume/mute */
- 	private->vol[index] = private->master_vol;
-@@ -2436,13 +2454,16 @@ static int scarlett2_dim_mute_ctl_put(struct snd_kcontrol *kctl,
++	int oval, val, err = 0;
++
++	mutex_lock(&private->data_mutex);
++
++	oval = private->vol_sw_hw_switch[index];
++	val = !!ucontrol->value.enumerated.item[0];
++
++	if (oval == val)
++		goto unlock;
++
++	err = scarlett2_sw_hw_change(mixer, ctl_index, val);
+ 	if (err == 0)
  		err = 1;
  
- 	if (index == SCARLETT2_BUTTON_MUTE)
--		for (i = 0; i < num_line_out; i++)
--			if (private->vol_sw_hw_switch[i]) {
--				private->mute_switch[i] = val;
-+		for (i = 0; i < num_line_out; i++) {
-+			int line_index = line_out_remap(private, i);
-+
-+			if (private->vol_sw_hw_switch[line_index]) {
-+				private->mute_switch[line_index] = val;
- 				snd_ctl_notify(mixer->chip->card,
- 					       SNDRV_CTL_EVENT_MASK_INFO,
- 					       &private->mute_ctls[i]->id);
- 			}
-+		}
- 
- unlock:
- 	mutex_unlock(&private->data_mutex);
-@@ -2481,6 +2502,7 @@ static int scarlett2_add_line_out_ctls(struct usb_mixer_interface *mixer)
- 
- 	/* Add volume controls */
- 	for (i = 0; i < num_line_out; i++) {
-+		int index = line_out_remap(private, i);
- 
- 		/* Fader */
- 		if (info->line_out_descrs[i])
-@@ -2511,7 +2533,7 @@ static int scarlett2_add_line_out_ctls(struct usb_mixer_interface *mixer)
- 		/* Make the fader and mute controls read-only if the
- 		 * SW/HW switch is set to HW
- 		 */
--		if (private->vol_sw_hw_switch[i])
-+		if (private->vol_sw_hw_switch[index])
- 			scarlett2_vol_ctl_set_writable(mixer, i, 0);
- 
- 		/* SW/HW Switch */
-@@ -2760,8 +2782,16 @@ static int scarlett2_mux_src_enum_ctl_get(struct snd_kcontrol *kctl,
- {
- 	struct usb_mixer_elem_info *elem = kctl->private_data;
- 	struct scarlett2_data *private = elem->head.mixer->private_data;
-+	const struct scarlett2_device_info *info = private->info;
-+	const int (*port_count)[SCARLETT2_PORT_DIRNS] = info->port_count;
-+	int line_out_count =
-+		port_count[SCARLETT2_PORT_TYPE_ANALOGUE][SCARLETT2_PORT_OUT];
-+	int index = elem->control;
-+
-+	if (index < line_out_count)
-+		index = line_out_remap(private, index);
- 
--	ucontrol->value.enumerated.item[0] = private->mux[elem->control];
-+	ucontrol->value.enumerated.item[0] = private->mux[index];
- 	return 0;
- }
- 
-@@ -2771,9 +2801,16 @@ static int scarlett2_mux_src_enum_ctl_put(struct snd_kcontrol *kctl,
- 	struct usb_mixer_elem_info *elem = kctl->private_data;
- 	struct usb_mixer_interface *mixer = elem->head.mixer;
- 	struct scarlett2_data *private = mixer->private_data;
-+	const struct scarlett2_device_info *info = private->info;
-+	const int (*port_count)[SCARLETT2_PORT_DIRNS] = info->port_count;
-+	int line_out_count =
-+		port_count[SCARLETT2_PORT_TYPE_ANALOGUE][SCARLETT2_PORT_OUT];
- 	int index = elem->control;
- 	int oval, val, err = 0;
- 
-+	if (index < line_out_count)
-+		index = line_out_remap(private, index);
-+
- 	mutex_lock(&private->data_mutex);
- 
- 	oval = private->mux[index];
-@@ -3174,6 +3211,7 @@ static void scarlett2_notify_sync(
- static void scarlett2_notify_monitor(
- 	struct usb_mixer_interface *mixer)
- {
-+	struct snd_card *card = mixer->chip->card;
- 	struct scarlett2_data *private = mixer->private_data;
- 	const struct scarlett2_device_info *info = private->info;
- 	const int (*port_count)[SCARLETT2_PORT_DIRNS] = info->port_count;
-@@ -3190,12 +3228,10 @@ static void scarlett2_notify_monitor(
- 	snd_ctl_notify(mixer->chip->card, SNDRV_CTL_EVENT_MASK_VALUE,
- 		       &private->master_vol_ctl->id);
- 
--	for (i = 0; i < num_line_out; i++) {
--		if (!private->vol_sw_hw_switch[i])
--			continue;
--		snd_ctl_notify(mixer->chip->card, SNDRV_CTL_EVENT_MASK_VALUE,
--			       &private->vol_ctls[i]->id);
--	}
-+	for (i = 0; i < num_line_out; i++)
-+		if (private->vol_sw_hw_switch[line_out_remap(private, i)])
-+			snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_VALUE,
-+				       &private->vol_ctls[i]->id);
- }
- 
- /* Notify on dim/mute change */
-@@ -3220,7 +3256,7 @@ static void scarlett2_notify_dim_mute(
- 			       &private->dim_mute_ctls[i]->id);
- 
- 	for (i = 0; i < num_line_out; i++)
--		if (private->vol_sw_hw_switch[i])
-+		if (private->vol_sw_hw_switch[line_out_remap(private, i)])
- 			snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_VALUE,
- 				       &private->mute_ctls[i]->id);
- }
 -- 
 2.31.1
 
