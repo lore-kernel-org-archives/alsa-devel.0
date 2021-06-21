@@ -7,49 +7,50 @@ X-Spam-Status: No, score=-12.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
 	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02C16C4743C
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:16:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 409CDC4743C
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:16:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 79CC5611BD
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:16:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 79CC5611BD
+	by mail.kernel.org (Postfix) with ESMTPS id B8FD96115B
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:16:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B8FD96115B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=b4.vu
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 214D616E1;
-	Mon, 21 Jun 2021 20:15:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 214D616E1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4FF1516F8;
+	Mon, 21 Jun 2021 20:15:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4FF1516F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624299376;
-	bh=hgF29ZyTwWFBWYeXqBdoOYT0fcwuSIRsnYib6oP90RE=;
+	s=default; t=1624299390;
+	bh=uJeyzBKQVva5IbwKX18m6y57Gthe/VSbZI5LzDBof3s=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Y9yDQfMev8ffs/VJOzqe4KRzA4e3weVkT4BjCiur9mO5JgIY+Bz6cTOB1dnw0fkYs
-	 FyTzcmaex+7JTOyFPwUStaFhCOnPY0yBHhUrsVgEvcMUIgc8x3zfDNO4956sSuKgRu
-	 /rPeb5/WwIMRB1QDRSg1Vou2NTIo6f7/qNfw9mlE=
+	b=EopWsqSU6Utq8INSSNJl1jyQp45l4rQwxOCu9B5XYwX9weSbhKniJbjtM4ykm9pSW
+	 LrN6gdDWJNy6Y9D8scSBDemolPuhBaI/QS0Nv+ucUJ1CVagdF9oztASHkWcAnulx0Q
+	 dAORxKlDdobZcwqyx9+fcdp6H6u5SPDOlr6tTWFM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 85289F80559;
-	Mon, 21 Jun 2021 20:09:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 387C4F80566;
+	Mon, 21 Jun 2021 20:10:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 578ADF80548; Mon, 21 Jun 2021 20:09:56 +0200 (CEST)
+ id B65CBF80551; Mon, 21 Jun 2021 20:09:56 +0200 (CEST)
 Received: from m.b4.vu (m.b4.vu [203.16.231.148])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B2BB8F8052E
- for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 20:09:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2BB8F8052E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 19EE0F8053E
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 20:09:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19EE0F8053E
 Received: by m.b4.vu (Postfix, from userid 1000)
- id 419C461E5F04; Tue, 22 Jun 2021 03:39:46 +0930 (ACST)
-Date: Tue, 22 Jun 2021 03:39:46 +0930
+ id 95E9961E2871; Tue, 22 Jun 2021 03:39:50 +0930 (ACST)
+Date: Tue, 22 Jun 2021 03:39:50 +0930
 From: "Geoffrey D. Bennett" <g@b4.vu>
 To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 15/31] ALSA: usb-audio: scarlett2: Fix Level Meter control
-Message-ID: <5e9a2d5c136270db2d048db53a3b4b6e6d4a63de.1624294591.git.g@b4.vu>
+Subject: [PATCH 17/31] ALSA: usb-audio: scarlett2: Add support for
+ "input-other" notify
+Message-ID: <8a845e2e5a45519150aff4446bc910cf80c6f4b3.1624294591.git.g@b4.vu>
 References: <cover.1624294591.git.g@b4.vu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -73,90 +74,202 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The Level Meter control had a fixed number of channels and therefore
-only worked with the 18i20 Gen 2. Fix the control to contain the
-correct number of channels.
+Some models allow the level and pad settings to be controlled from the
+front-panel of the device. For these, the device will send an
+"input-other" notification to prompt the driver to re-read the status
+of those settings.
 
 Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
 ---
- sound/usb/mixer_scarlett_gen2.c | 25 +++++++++++++------------
- 1 file changed, 13 insertions(+), 12 deletions(-)
+ sound/usb/mixer_scarlett_gen2.c | 99 ++++++++++++++++++++++++---------
+ 1 file changed, 73 insertions(+), 26 deletions(-)
 
 diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
-index 7647b3428093..dde008ea21d7 100644
+index c4bcccb5aecd..a4f92291b74f 100644
 --- a/sound/usb/mixer_scarlett_gen2.c
 +++ b/sound/usb/mixer_scarlett_gen2.c
-@@ -161,10 +161,8 @@ static const u16 scarlett2_mixer_values[SCARLETT2_MIXER_VALUE_COUNT] = {
-  */
- #define SCARLETT2_MUX_MAX 64
+@@ -318,6 +318,7 @@ struct scarlett2_data {
+ 	u16 scarlett2_seq;
+ 	u8 sync_updated;
+ 	u8 vol_updated;
++	u8 input_other_updated;
+ 	u8 sync;
+ 	u8 master_vol;
+ 	u8 vol[SCARLETT2_ANALOGUE_MAX];
+@@ -331,6 +332,8 @@ struct scarlett2_data {
+ 	struct snd_kcontrol *vol_ctls[SCARLETT2_ANALOGUE_MAX];
+ 	struct snd_kcontrol *mute_ctls[SCARLETT2_ANALOGUE_MAX];
+ 	struct snd_kcontrol *dim_mute_ctls[SCARLETT2_DIM_MUTE_COUNT];
++	struct snd_kcontrol *level_ctls[SCARLETT2_LEVEL_SWITCH_MAX];
++	struct snd_kcontrol *pad_ctls[SCARLETT2_PAD_SWITCH_MAX];
+ 	u8 mux[SCARLETT2_MUX_MAX];
+ 	u8 mix[SCARLETT2_INPUT_MIX_MAX * SCARLETT2_OUTPUT_MIX_MAX];
+ };
+@@ -723,9 +726,10 @@ static int scarlett2_get_port_start_num(
+ /*** USB Interactions ***/
  
--/* Number of meters:
-- * 18 inputs, 20 outputs, 18 matrix inputs
-- */
--#define SCARLETT2_NUM_METERS 56
-+/* Maximum number of meters (sum of output port counts) */
-+#define SCARLETT2_MAX_METERS 56
+ /* Notifications from the interface */
+-#define SCARLETT2_USB_NOTIFY_SYNC     0x00000008
+-#define SCARLETT2_USB_NOTIFY_DIM_MUTE 0x00200000
+-#define SCARLETT2_USB_NOTIFY_MONITOR  0x00400000
++#define SCARLETT2_USB_NOTIFY_SYNC        0x00000008
++#define SCARLETT2_USB_NOTIFY_DIM_MUTE    0x00200000
++#define SCARLETT2_USB_NOTIFY_MONITOR     0x00400000
++#define SCARLETT2_USB_NOTIFY_INPUT_OTHER 0x00800000
  
- /* Hardware port types:
-  * - None (no input to mux)
-@@ -1097,26 +1095,26 @@ static int scarlett2_usb_set_mux(struct usb_mixer_interface *mixer)
+ /* Commands for sending/receiving requests/responses */
+ #define SCARLETT2_USB_CMD_INIT 0
+@@ -1740,6 +1744,32 @@ static const struct snd_kcontrol_new scarlett2_sw_hw_enum_ctl = {
  
- /* Send USB message to get meter levels */
- static int scarlett2_usb_get_meter_levels(struct usb_mixer_interface *mixer,
--					  u16 *levels)
-+					  u16 num_meters, u16 *levels)
+ /*** Line Level/Instrument Level Switch Controls ***/
+ 
++static int scarlett2_update_input_other(struct usb_mixer_interface *mixer)
++{
++	struct scarlett2_data *private = mixer->private_data;
++	const struct scarlett2_device_info *info = private->info;
++
++	private->input_other_updated = 0;
++
++	if (info->level_input_count) {
++		int err = scarlett2_usb_get_config(
++			mixer, SCARLETT2_CONFIG_LEVEL_SWITCH,
++			info->level_input_count, private->level_switch);
++		if (err < 0)
++			return err;
++	}
++
++	if (info->pad_input_count) {
++		int err = scarlett2_usb_get_config(
++			mixer, SCARLETT2_CONFIG_PAD_SWITCH,
++			info->pad_input_count, private->pad_switch);
++		if (err < 0)
++			return err;
++	}
++
++	return 0;
++}
++
+ static int scarlett2_level_enum_ctl_info(struct snd_kcontrol *kctl,
+ 					 struct snd_ctl_elem_info *uinfo)
  {
- 	struct {
- 		__le16 pad;
- 		__le16 num_meters;
- 		__le32 magic;
- 	} __packed req;
--	u32 resp[SCARLETT2_NUM_METERS];
-+	u32 resp[SCARLETT2_MAX_METERS];
- 	int i, err;
- 
- 	req.pad = 0;
--	req.num_meters = cpu_to_le16(SCARLETT2_NUM_METERS);
-+	req.num_meters = cpu_to_le16(num_meters);
- 	req.magic = cpu_to_le32(SCARLETT2_USB_METER_LEVELS_GET_MAGIC);
- 	err = scarlett2_usb(mixer, SCARLETT2_USB_GET_METER,
--			    &req, sizeof(req), resp, sizeof(resp));
-+			    &req, sizeof(req), resp, num_meters * sizeof(u32));
- 	if (err < 0)
- 		return err;
- 
- 	/* copy, convert to u16 */
--	for (i = 0; i < SCARLETT2_NUM_METERS; i++)
-+	for (i = 0; i < num_meters; i++)
- 		levels[i] = resp[i];
- 
- 	return 0;
-@@ -2053,10 +2051,11 @@ static int scarlett2_meter_ctl_get(struct snd_kcontrol *kctl,
- 				   struct snd_ctl_elem_value *ucontrol)
+@@ -1754,10 +1784,16 @@ static int scarlett2_level_enum_ctl_get(struct snd_kcontrol *kctl,
+ 					struct snd_ctl_elem_value *ucontrol)
  {
  	struct usb_mixer_elem_info *elem = kctl->private_data;
--	u16 meter_levels[SCARLETT2_NUM_METERS];
-+	u16 meter_levels[SCARLETT2_MAX_METERS];
- 	int i, err;
- 
--	err = scarlett2_usb_get_meter_levels(elem->head.mixer, meter_levels);
-+	err = scarlett2_usb_get_meter_levels(elem->head.mixer, elem->channels,
-+					     meter_levels);
- 	if (err < 0)
- 		return err;
- 
-@@ -2076,8 +2075,10 @@ static const struct snd_kcontrol_new scarlett2_meter_ctl = {
- 
- static int scarlett2_add_meter_ctl(struct usb_mixer_interface *mixer)
- {
+-	struct scarlett2_data *private = elem->head.mixer->private_data;
++	struct usb_mixer_interface *mixer = elem->head.mixer;
 +	struct scarlett2_data *private = mixer->private_data;
+ 
++	mutex_lock(&private->data_mutex);
++	if (private->input_other_updated)
++		scarlett2_update_input_other(mixer);
+ 	ucontrol->value.enumerated.item[0] =
+ 		private->level_switch[elem->control];
++	mutex_unlock(&private->data_mutex);
 +
- 	return scarlett2_add_new_ctl(mixer, &scarlett2_meter_ctl,
--				     0, SCARLETT2_NUM_METERS,
-+				     0, private->num_mux_dsts,
- 				     "Level Meter", NULL);
+ 	return 0;
  }
  
+@@ -1806,10 +1842,16 @@ static int scarlett2_pad_ctl_get(struct snd_kcontrol *kctl,
+ 				 struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct usb_mixer_elem_info *elem = kctl->private_data;
+-	struct scarlett2_data *private = elem->head.mixer->private_data;
++	struct usb_mixer_interface *mixer = elem->head.mixer;
++	struct scarlett2_data *private = mixer->private_data;
+ 
++	mutex_lock(&private->data_mutex);
++	if (private->input_other_updated)
++		scarlett2_update_input_other(mixer);
+ 	ucontrol->value.integer.value[0] =
+ 		private->pad_switch[elem->control];
++	mutex_unlock(&private->data_mutex);
++
+ 	return 0;
+ }
+ 
+@@ -2020,7 +2062,7 @@ static int scarlett2_add_line_in_ctls(struct usb_mixer_interface *mixer)
+ 	for (i = 0; i < info->level_input_count; i++) {
+ 		snprintf(s, sizeof(s), fmt, i + 1, "Level", "Enum");
+ 		err = scarlett2_add_new_ctl(mixer, &scarlett2_level_enum_ctl,
+-					    i, 1, s, NULL);
++					    i, 1, s, &private->level_ctls[i]);
+ 		if (err < 0)
+ 			return err;
+ 	}
+@@ -2029,7 +2071,7 @@ static int scarlett2_add_line_in_ctls(struct usb_mixer_interface *mixer)
+ 	for (i = 0; i < info->pad_input_count; i++) {
+ 		snprintf(s, sizeof(s), fmt, i + 1, "Pad", "Switch");
+ 		err = scarlett2_add_new_ctl(mixer, &scarlett2_pad_ctl,
+-					    i, 1, s, NULL);
++					    i, 1, s, &private->pad_ctls[i]);
+ 		if (err < 0)
+ 			return err;
+ 	}
+@@ -2441,25 +2483,9 @@ static int scarlett2_read_configs(struct usb_mixer_interface *mixer)
+ 	struct scarlett2_usb_volume_status volume_status;
+ 	int err, i;
+ 
+-	if (info->level_input_count) {
+-		err = scarlett2_usb_get_config(
+-			mixer,
+-			SCARLETT2_CONFIG_LEVEL_SWITCH,
+-			info->level_input_count,
+-			private->level_switch);
+-		if (err < 0)
+-			return err;
+-	}
+-
+-	if (info->pad_input_count) {
+-		err = scarlett2_usb_get_config(
+-			mixer,
+-			SCARLETT2_CONFIG_PAD_SWITCH,
+-			info->pad_input_count,
+-			private->pad_switch);
+-		if (err < 0)
+-			return err;
+-	}
++	err = scarlett2_update_input_other(mixer);
++	if (err < 0)
++		return err;
+ 
+ 	err = scarlett2_update_sync(mixer);
+ 	if (err < 0)
+@@ -2573,6 +2599,25 @@ static void scarlett2_notify_dim_mute(
+ 				       &private->mute_ctls[i]->id);
+ }
+ 
++/* Notify on "input other" change (level/pad) */
++static void scarlett2_notify_input_other(
++	struct usb_mixer_interface *mixer)
++{
++	struct snd_card *card = mixer->chip->card;
++	struct scarlett2_data *private = mixer->private_data;
++	const struct scarlett2_device_info *info = private->info;
++	int i;
++
++	private->input_other_updated = 1;
++
++	for (i = 0; i < info->level_input_count; i++)
++		snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_VALUE,
++			       &private->level_ctls[i]->id);
++	for (i = 0; i < info->pad_input_count; i++)
++		snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_VALUE,
++			       &private->pad_ctls[i]->id);
++}
++
+ /* Interrupt callback */
+ static void scarlett2_notify(struct urb *urb)
+ {
+@@ -2591,6 +2636,8 @@ static void scarlett2_notify(struct urb *urb)
+ 		scarlett2_notify_monitor(mixer);
+ 	if (data & SCARLETT2_USB_NOTIFY_DIM_MUTE)
+ 		scarlett2_notify_dim_mute(mixer);
++	if (data & SCARLETT2_USB_NOTIFY_INPUT_OTHER)
++		scarlett2_notify_input_other(mixer);
+ 
+ requeue:
+ 	if (ustatus != -ENOENT &&
 -- 
 2.31.1
 
