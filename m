@@ -7,72 +7,71 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32222C4743C
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 19:45:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65007C4743C
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 19:45:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 59DD16108E
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 19:45:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 59DD16108E
+	by mail.kernel.org (Postfix) with ESMTPS id DAC7D6101D
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 19:45:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DAC7D6101D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C9BDC1697;
-	Mon, 21 Jun 2021 21:44:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9BDC1697
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D57D1690;
+	Mon, 21 Jun 2021 21:44:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D57D1690
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624304725;
-	bh=8EndkjbwCDLvxXdiRQG4UnEVCmfZHBIXkR17hJ7DFvs=;
+	s=default; t=1624304735;
+	bh=44OsWvZdy0J3kbj30Em7hjJLSjPHmSPV3BXSQQZGftQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Vxl8n28z+ENN76FwcI1jVH2TKKITNVUD5X3cjJZ7VYnn8LHaslH520JiNtElaX92+
-	 7qqyRouQeZwIFRdr21hCZDnwczuQyAabJ0bI21+sHlH9QsKMlPX0oUUGIl5ne7QKGS
-	 peNflZ/x278N02LsOy6m1980Tmmf7/ycBHAl2Dcg=
+	b=PbPa3Qc0um+v4kuuWTWEQQkKZ5hns8v1bOeDurKtihzYrHFYmJBqEvQts8X30/H01
+	 hTuPiprcU597pCxHiV2DcNLbR9wjt7UG9LfTEF+UDvruwDzHtJO2MzqIhIIrSjC1ex
+	 b8j4eSuzLPlJSgiwqNBVr1f4A2VX6BQOyiyTxwTY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB1CFF804FD;
-	Mon, 21 Jun 2021 21:41:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8D158F8050F;
+	Mon, 21 Jun 2021 21:41:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CD334F804E0; Mon, 21 Jun 2021 21:41:36 +0200 (CEST)
+ id 84D82F804E2; Mon, 21 Jun 2021 21:41:37 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1801CF8016D
- for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 21:41:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1801CF8016D
-IronPort-SDR: oLFL3vUHnUeg8fQr0z/194uWCu10ThapWTkD8pc8WwC09EXP/AHq1VpXWK0AvwLXQAo6cftZRx
- J7p53iL4j3cg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="203903338"
-X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; d="scan'208";a="203903338"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 574FAF804DA
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 21:41:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 574FAF804DA
+IronPort-SDR: ShC/nMDU/I6AZY2CoHeaFFfvUHYOVP1QMghRtKlHk4d5tfI0bVhJPpgW8Q/HnHZGCXvcRg0zil
+ y3TV1n1MYjIQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="203903345"
+X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; d="scan'208";a="203903345"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Jun 2021 12:41:23 -0700
-IronPort-SDR: DkKPASEfBYDWUrXy8iBEyzDDvnvv2qj66Jcmv0hDI6bRMe6vswNCqjPC1ONaJ0wH5/MFaAZHAY
- wHQqGsTA0fzw==
-X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; d="scan'208";a="486619070"
+ 21 Jun 2021 12:41:26 -0700
+IronPort-SDR: 7YWgFvMXGKiWAxENAbjR2t63i1rHGsTVydr4SHt1cGhYliHzkCN9fAKnPHAvzZH+et6avwTWQQ
+ b7EfAi1j/41w==
+X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; d="scan'208";a="486619095"
 Received: from gwhaugh-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.209.175.53])
  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Jun 2021 12:41:21 -0700
+ 21 Jun 2021 12:41:26 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 06/10] ASoC: Intel: sof_da7219_max98373: shrink platform_id
- below 20 characters
-Date: Mon, 21 Jun 2021 14:40:53 -0500
-Message-Id: <20210621194057.21711-7-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 10/10] ASoC: Intel: skl_hda_dsp_generic: Update Kconfig
+ documentation
+Date: Mon, 21 Jun 2021 14:40:57 -0500
+Message-Id: <20210621194057.21711-11-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210621194057.21711-1-pierre-louis.bossart@linux.intel.com>
 References: <20210621194057.21711-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>, broonie@kernel.org,
- Paul Olaru <paul.olaru@oss.nxp.com>
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,71 +87,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Sparse throws the following warning:
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-sound/soc/intel/boards/sof_da7219_max98373.c:438:25: error: too long
-initializer-string for array of char(no space for nul char)
+The Kconfig documentation for SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH
+is a bit misleading as it refers to a set of older platforms,
+while in practise this machine driver supports all modern
+Intel systems with Smart Sound Technology based DSP and HDA codecs.
 
-Fix by using 'mx' acronym for Maxim.
+Modify the Kconfig text to reflect current state.
 
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Paul Olaru <paul.olaru@oss.nxp.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
 ---
- sound/soc/intel/boards/sof_da7219_max98373.c      | 8 ++++----
- sound/soc/intel/common/soc-acpi-intel-jsl-match.c | 4 ++--
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/intel/boards/Kconfig | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_da7219_max98373.c b/sound/soc/intel/boards/sof_da7219_max98373.c
-index 2116d70d1ea8..d702a8dfa241 100644
---- a/sound/soc/intel/boards/sof_da7219_max98373.c
-+++ b/sound/soc/intel/boards/sof_da7219_max98373.c
-@@ -431,11 +431,11 @@ static int audio_probe(struct platform_device *pdev)
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index eef5f4ac87c5..7e29b0d911e2 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -442,7 +442,7 @@ endif ## SND_SOC_SOF_GEMINILAKE
+ if SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC || SND_SOC_SOF_HDA_AUDIO_CODEC
  
- static const struct platform_device_id board_ids[] = {
- 	{
--		.name = "sof_da7219_max98373",
-+		.name = "sof_da7219_mx98373",
- 		.driver_data = (kernel_ulong_t)&card_da7219_m98373,
- 	},
- 	{
--		.name = "sof_da7219_max98360a",
-+		.name = "sof_da7219_mx98360a",
- 		.driver_data = (kernel_ulong_t)&card_da7219_m98360a,
- 	},
- 	{ }
-@@ -456,6 +456,6 @@ module_platform_driver(audio)
- MODULE_DESCRIPTION("ASoC Intel(R) SOF Machine driver");
- MODULE_AUTHOR("Yong Zhi <yong.zhi@intel.com>");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:sof_da7219_max98360a");
--MODULE_ALIAS("platform:sof_da7219_max98373");
-+MODULE_ALIAS("platform:sof_da7219_mx98360a");
-+MODULE_ALIAS("platform:sof_da7219_mx98373");
- MODULE_IMPORT_NS(SND_SOC_INTEL_HDA_DSP_COMMON);
-diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-index 885f6002fe53..3586ce72c42c 100644
---- a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-@@ -37,7 +37,7 @@ static struct snd_soc_acpi_codecs mx98360a_spk = {
- struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
- 	{
- 		.id = "DLGS7219",
--		.drv_name = "sof_da7219_max98373",
-+		.drv_name = "sof_da7219_mx98373",
- 		.sof_fw_filename = "sof-jsl.ri",
- 		.sof_tplg_filename = "sof-jsl-da7219.tplg",
- 		.machine_quirk = snd_soc_acpi_codec_list,
-@@ -45,7 +45,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
- 	},
- 	{
- 		.id = "DLGS7219",
--		.drv_name = "sof_da7219_max98360a",
-+		.drv_name = "sof_da7219_mx98360a",
- 		.sof_fw_filename = "sof-jsl.ri",
- 		.sof_tplg_filename = "sof-jsl-da7219-mx98360a.tplg",
- 	},
+ config SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH
+-	tristate "SKL/KBL/BXT/APL with HDA Codecs"
++	tristate "Skylake+ with HDA Codecs"
+ 	depends on SND_HDA_CODEC_HDMI
+ 	depends on GPIOLIB
+ 	select SND_SOC_HDAC_HDMI
+@@ -450,8 +450,9 @@ config SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH
+ 	select SND_SOC_DMIC
+ 	# SND_SOC_HDAC_HDA is already selected
+ 	help
+-	  This adds support for ASoC machine driver for Intel platforms
+-	  SKL/KBL/BXT/APL with iDisp, HDA audio codecs.
++	  This adds support for ASoC machine driver for Intel Skylake+
++	  platforms with display (HDMI/DP) and HDA audio codecs, and
++	  Smart Sound Technology (SST) integrated audio DSP.
+ 	  Say Y or m if you have such a device. This is a recommended option.
+ 	  If unsure select "N".
+ 
 -- 
 2.25.1
 
