@@ -7,50 +7,49 @@ X-Spam-Status: No, score=-12.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
 	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 696B2C4743C
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:18:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B69FAC48BC2
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:18:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E1A226100B
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:18:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E1A226100B
+	by mail.kernel.org (Postfix) with ESMTPS id 424836100B
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:18:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 424836100B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=b4.vu
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 791E016BB;
-	Mon, 21 Jun 2021 20:17:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 791E016BB
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD787170B;
+	Mon, 21 Jun 2021 20:17:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD787170B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624299481;
-	bh=XPXwYis85l+2H3wX2hRoWLPZFiJ4+8VSMwn2dqRDaTc=;
+	s=default; t=1624299506;
+	bh=PA0KmEER4peSIDoQEBPGxL4EIkBzwlU8wDEH5/u9qdk=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XQS4UF8JjwHvKn7NMrgi1v0Wyubw+ORymgydD7r3d86tNMXU4lOh3Ah1NCq1eGMOY
-	 wh57vqQCJax9eDVJVKkbLU3ERE/eUt4ME2KURUL/EtymB9gHCvG5uk18XFbBo1fN/c
-	 LFqBr8CbvXdiHHzBhHnRVG2SSmbiEEw+yrX1zFGA=
+	b=BAmyGK/CfWonP27iWzQM4K2nR4rsvx5WjyfPHZNwzIw+iAMRztddGJst+aJhLAIM2
+	 BizcSH6IPaAkx5GVCR9Yn8ty7pH+rGuct42xxI+aAgGh3Qvb0+sW6kjZzoCFPPcEHN
+	 lO1/vGnmW+dKmVBb7Y3OS+D9wPidV00trqqqQ1Lk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C134EF805AA;
-	Mon, 21 Jun 2021 20:10:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5A201F80137;
+	Mon, 21 Jun 2021 20:10:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 80F38F8057C; Mon, 21 Jun 2021 20:10:04 +0200 (CEST)
+ id B19C2F805A0; Mon, 21 Jun 2021 20:10:06 +0200 (CEST)
 Received: from m.b4.vu (m.b4.vu [203.16.231.148])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A8168F8055A
- for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 20:09:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8168F8055A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 64281F8057A
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 20:10:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64281F8057A
 Received: by m.b4.vu (Postfix, from userid 1000)
- id 2EEF261E287C; Tue, 22 Jun 2021 03:39:55 +0930 (ACST)
-Date: Tue, 22 Jun 2021 03:39:55 +0930
+ id BECC461E5F02; Tue, 22 Jun 2021 03:40:00 +0930 (ACST)
+Date: Tue, 22 Jun 2021 03:40:00 +0930
 From: "Geoffrey D. Bennett" <g@b4.vu>
 To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 19/31] ALSA: usb-audio: scarlett2: Move get config above set
- config
-Message-ID: <61337880a0eaec60cb6c15e4882435408528694d.1624294591.git.g@b4.vu>
+Subject: [PATCH 22/31] ALSA: usb-audio: scarlett2: Add "air" switch support
+Message-ID: <bc827776df1d8119053db533d511c40ef19c82f5.1624294591.git.g@b4.vu>
 References: <cover.1624294591.git.g@b4.vu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -74,90 +73,265 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Move scarlett2_usb_get() and scarlett2_usb_get_config() above the
-functions relating to updating the configuration so that
-scarlett2_usb_set_config() can call scarlett2_usb_get() in a
-subsequent patch.
+Some inputs on Gen 3 models have an "air" feature which can be enabled
+from the driver or (model-dependent) from the front panel. Add support
+for getting and setting the state of those switches.
 
 Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
 ---
- sound/usb/mixer_scarlett_gen2.c | 56 ++++++++++++++++-----------------
- 1 file changed, 28 insertions(+), 28 deletions(-)
+ sound/usb/mixer_scarlett_gen2.c | 106 ++++++++++++++++++++++++++++++--
+ 1 file changed, 100 insertions(+), 6 deletions(-)
 
 diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
-index 6995d692c6b2..87a90cafb175 100644
+index 50a90693482f..a8c5a28f21c9 100644
 --- a/sound/usb/mixer_scarlett_gen2.c
 +++ b/sound/usb/mixer_scarlett_gen2.c
-@@ -985,6 +985,34 @@ static int scarlett2_usb(
- 	return err;
+@@ -53,7 +53,7 @@
+  *  - mixer-matrix gain stages
+  *  - gain/volume/mute controls
+  *  - level meters
+- *  - line/inst level and pad controls
++ *  - line/inst level, pad, and air controls
+  *  - disable/enable MSD mode
+  *
+  * <ditaa>
+@@ -173,6 +173,7 @@ static const u16 scarlett2_mixer_values[SCARLETT2_MIXER_VALUE_COUNT] = {
+ /* Maximum number of level and pad switches */
+ #define SCARLETT2_LEVEL_SWITCH_MAX 2
+ #define SCARLETT2_PAD_SWITCH_MAX 8
++#define SCARLETT2_AIR_SWITCH_MAX 8
+ 
+ /* Maximum number of inputs to the mixer */
+ #define SCARLETT2_INPUT_MIX_MAX 25
+@@ -322,6 +323,11 @@ struct scarlett2_device_info {
+ 	 */
+ 	u8 pad_input_count;
+ 
++	/* the number of analogue inputs with a software switchable
++	 * "air" control
++	 */
++	u8 air_input_count;
++
+ 	/* additional description for the line out volume controls */
+ 	const char * const line_out_descrs[SCARLETT2_ANALOGUE_MAX];
+ 
+@@ -357,6 +363,7 @@ struct scarlett2_data {
+ 	u8 level_switch[SCARLETT2_LEVEL_SWITCH_MAX];
+ 	u8 pad_switch[SCARLETT2_PAD_SWITCH_MAX];
+ 	u8 dim_mute[SCARLETT2_DIM_MUTE_COUNT];
++	u8 air_switch[SCARLETT2_AIR_SWITCH_MAX];
+ 	u8 msd_switch;
+ 	struct snd_kcontrol *sync_ctl;
+ 	struct snd_kcontrol *master_vol_ctl;
+@@ -365,6 +372,7 @@ struct scarlett2_data {
+ 	struct snd_kcontrol *dim_mute_ctls[SCARLETT2_DIM_MUTE_COUNT];
+ 	struct snd_kcontrol *level_ctls[SCARLETT2_LEVEL_SWITCH_MAX];
+ 	struct snd_kcontrol *pad_ctls[SCARLETT2_PAD_SWITCH_MAX];
++	struct snd_kcontrol *air_ctls[SCARLETT2_AIR_SWITCH_MAX];
+ 	u8 mux[SCARLETT2_MUX_MAX];
+ 	u8 mix[SCARLETT2_INPUT_MIX_MAX * SCARLETT2_OUTPUT_MIX_MAX];
+ };
+@@ -526,6 +534,7 @@ static const struct scarlett2_device_info solo_gen3_info = {
+ 	.has_msd_mode = 1,
+ 	.level_input_count = 1,
+ 	.level_input_first = 1,
++	.air_input_count = 1,
+ };
+ 
+ static const struct scarlett2_device_info s2i2_gen3_info = {
+@@ -533,6 +542,7 @@ static const struct scarlett2_device_info s2i2_gen3_info = {
+ 
+ 	.has_msd_mode = 1,
+ 	.level_input_count = 2,
++	.air_input_count = 2,
+ };
+ 
+ static const struct scarlett2_device_info s4i4_gen3_info = {
+@@ -542,6 +552,7 @@ static const struct scarlett2_device_info s4i4_gen3_info = {
+ 	.has_mixer = 1,
+ 	.level_input_count = 2,
+ 	.pad_input_count = 2,
++	.air_input_count = 2,
+ 
+ 	.line_out_descrs = {
+ 		"Monitor L",
+@@ -585,6 +596,7 @@ static const struct scarlett2_device_info s8i6_gen3_info = {
+ 	.has_mixer = 1,
+ 	.level_input_count = 2,
+ 	.pad_input_count = 2,
++	.air_input_count = 2,
+ 
+ 	.line_out_descrs = {
+ 		"Headphones 1 L",
+@@ -636,6 +648,7 @@ static const struct scarlett2_device_info s18i8_gen3_info = {
+ 	.line_out_hw_vol = 1,
+ 	.level_input_count = 2,
+ 	.pad_input_count = 2,
++	.air_input_count = 4,
+ 
+ 	.line_out_descrs = {
+ 		"Monitor L",
+@@ -699,6 +712,7 @@ static const struct scarlett2_device_info s18i20_gen3_info = {
+ 	.line_out_hw_vol = 1,
+ 	.level_input_count = 2,
+ 	.pad_input_count = 8,
++	.air_input_count = 8,
+ 
+ 	.line_out_descrs = {
+ 		"Monitor 1 L",
+@@ -846,7 +860,8 @@ enum {
+ 	SCARLETT2_CONFIG_LEVEL_SWITCH = 4,
+ 	SCARLETT2_CONFIG_PAD_SWITCH = 5,
+ 	SCARLETT2_CONFIG_MSD_SWITCH = 6,
+-	SCARLETT2_CONFIG_COUNT = 7
++	SCARLETT2_CONFIG_AIR_SWITCH = 7,
++	SCARLETT2_CONFIG_COUNT = 8
+ };
+ 
+ /* Location, size, and activation command number for the configuration
+@@ -872,6 +887,9 @@ static const struct scarlett2_config
+ 	[SCARLETT2_CONFIG_LEVEL_SWITCH] = {
+ 		.offset = 0x08, .size = 1, .activate = 7 },
+ 
++	[SCARLETT2_CONFIG_AIR_SWITCH] = {
++		.offset = 0x09, .size = 1, .activate = 8 },
++
+ /* Devices with a mixer (Gen 2 and all other Gen 3) */
+ }, {
+ 	[SCARLETT2_CONFIG_DIM_MUTE] = {
+@@ -892,6 +910,9 @@ static const struct scarlett2_config
+ 	[SCARLETT2_CONFIG_PAD_SWITCH] = {
+ 		.offset = 0x84, .size = 8, .activate = 8 },
+ 
++	[SCARLETT2_CONFIG_AIR_SWITCH] = {
++		.offset = 0x8c, .size = 8, .activate = 8 },
++
+ 	[SCARLETT2_CONFIG_MSD_SWITCH] = {
+ 		.offset = 0x9d, .size = 8, .activate = 6 },
+ } };
+@@ -1100,9 +1121,7 @@ static void scarlett2_config_save_work(struct work_struct *work)
+ 	scarlett2_config_save(private->mixer);
  }
  
-+/* Send a USB message to get data; result placed in *buf */
-+static int scarlett2_usb_get(
-+	struct usb_mixer_interface *mixer,
-+	int offset, void *buf, int size)
-+{
-+	struct {
-+		__le32 offset;
-+		__le32 size;
-+	} __packed req;
+-/* Send a USB message to set a configuration parameter (volume level,
+- * sw/hw volume switch, line/inst level switch, or pad switch)
+- */
++/* Send a USB message to set a SCARLETT2_CONFIG_* parameter */
+ static int scarlett2_usb_set_config(
+ 	struct usb_mixer_interface *mixer,
+ 	int config_item_num, int index, int value)
+@@ -1895,6 +1914,14 @@ static int scarlett2_update_input_other(struct usb_mixer_interface *mixer)
+ 			return err;
+ 	}
+ 
++	if (info->air_input_count) {
++		int err = scarlett2_usb_get_config(
++			mixer, SCARLETT2_CONFIG_AIR_SWITCH,
++			info->air_input_count, private->air_switch);
++		if (err < 0)
++			return err;
++	}
 +
-+	req.offset = cpu_to_le32(offset);
-+	req.size = cpu_to_le32(size);
-+	return scarlett2_usb(mixer, SCARLETT2_USB_GET_DATA,
-+			     &req, sizeof(req), buf, size);
-+}
-+
-+/* Send a USB message to get configuration parameters; result placed in *buf */
-+static int scarlett2_usb_get_config(
-+	struct usb_mixer_interface *mixer,
-+	int config_item_num, int count, void *buf)
-+{
-+	const struct scarlett2_config *config_item =
-+		&scarlett2_config_items[config_item_num];
-+	int size = config_item->size * count;
-+
-+	return scarlett2_usb_get(mixer, config_item->offset, buf, size);
-+}
-+
- /* Send SCARLETT2_USB_DATA_CMD SCARLETT2_USB_CONFIG_SAVE */
- static void scarlett2_config_save(struct usb_mixer_interface *mixer)
- {
-@@ -1049,34 +1077,6 @@ static int scarlett2_usb_set_config(
  	return 0;
  }
  
--/* Send a USB message to get data; result placed in *buf */
--static int scarlett2_usb_get(
--	struct usb_mixer_interface *mixer,
--	int offset, void *buf, int size)
--{
--	struct {
--		__le32 offset;
--		__le32 size;
--	} __packed req;
--
--	req.offset = cpu_to_le32(offset);
--	req.size = cpu_to_le32(size);
--	return scarlett2_usb(mixer, SCARLETT2_USB_GET_DATA,
--			     &req, sizeof(req), buf, size);
--}
--
--/* Send a USB message to get configuration parameters; result placed in *buf */
--static int scarlett2_usb_get_config(
--	struct usb_mixer_interface *mixer,
--	int config_item_num, int count, void *buf)
--{
--	const struct scarlett2_config *config_item =
--		&scarlett2_config_items[config_item_num];
--	int size = config_item->size * count;
--
--	return scarlett2_usb_get(mixer, config_item->offset, buf, size);
--}
--
- /* Send a USB message to get sync status; result placed in *sync */
- static int scarlett2_usb_get_sync_status(
- 	struct usb_mixer_interface *mixer,
+@@ -2025,6 +2052,61 @@ static const struct snd_kcontrol_new scarlett2_pad_ctl = {
+ 	.put  = scarlett2_pad_ctl_put,
+ };
+ 
++/*** Air Switch Controls ***/
++
++static int scarlett2_air_ctl_get(struct snd_kcontrol *kctl,
++				 struct snd_ctl_elem_value *ucontrol)
++{
++	struct usb_mixer_elem_info *elem = kctl->private_data;
++	struct usb_mixer_interface *mixer = elem->head.mixer;
++	struct scarlett2_data *private = mixer->private_data;
++
++	mutex_lock(&private->data_mutex);
++	if (private->input_other_updated)
++		scarlett2_update_input_other(mixer);
++	ucontrol->value.integer.value[0] = private->air_switch[elem->control];
++	mutex_unlock(&private->data_mutex);
++
++	return 0;
++}
++
++static int scarlett2_air_ctl_put(struct snd_kcontrol *kctl,
++				 struct snd_ctl_elem_value *ucontrol)
++{
++	struct usb_mixer_elem_info *elem = kctl->private_data;
++	struct usb_mixer_interface *mixer = elem->head.mixer;
++	struct scarlett2_data *private = mixer->private_data;
++
++	int index = elem->control;
++	int oval, val, err = 0;
++
++	mutex_lock(&private->data_mutex);
++
++	oval = private->air_switch[index];
++	val = !!ucontrol->value.integer.value[0];
++
++	if (oval == val)
++		goto unlock;
++
++	private->air_switch[index] = val;
++
++	/* Send switch change to the device */
++	err = scarlett2_usb_set_config(mixer, SCARLETT2_CONFIG_AIR_SWITCH,
++				       index, val);
++
++unlock:
++	mutex_unlock(&private->data_mutex);
++	return err;
++}
++
++static const struct snd_kcontrol_new scarlett2_air_ctl = {
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name = "",
++	.info = snd_ctl_boolean_mono_info,
++	.get  = scarlett2_air_ctl_get,
++	.put  = scarlett2_air_ctl_put,
++};
++
+ /*** Dim/Mute Controls ***/
+ 
+ static int scarlett2_dim_mute_ctl_get(struct snd_kcontrol *kctl,
+@@ -2208,6 +2290,15 @@ static int scarlett2_add_line_in_ctls(struct usb_mixer_interface *mixer)
+ 			return err;
+ 	}
+ 
++	/* Add input air controls */
++	for (i = 0; i < info->air_input_count; i++) {
++		snprintf(s, sizeof(s), fmt, i + 1, "Air", "Switch");
++		err = scarlett2_add_new_ctl(mixer, &scarlett2_air_ctl,
++					    i, 1, s, &private->air_ctls[i]);
++		if (err < 0)
++			return err;
++	}
++
+ 	return 0;
+ }
+ 
+@@ -2816,7 +2907,7 @@ static void scarlett2_notify_dim_mute(
+ 				       &private->mute_ctls[i]->id);
+ }
+ 
+-/* Notify on "input other" change (level/pad) */
++/* Notify on "input other" change (level/pad/air) */
+ static void scarlett2_notify_input_other(
+ 	struct usb_mixer_interface *mixer)
+ {
+@@ -2833,6 +2924,9 @@ static void scarlett2_notify_input_other(
+ 	for (i = 0; i < info->pad_input_count; i++)
+ 		snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_VALUE,
+ 			       &private->pad_ctls[i]->id);
++	for (i = 0; i < info->air_input_count; i++)
++		snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_VALUE,
++			       &private->air_ctls[i]->id);
+ }
+ 
+ /* Interrupt callback */
 -- 
 2.31.1
 
