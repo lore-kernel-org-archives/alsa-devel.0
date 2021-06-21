@@ -2,76 +2,77 @@ Return-Path: <SRS0=WNc7=LP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59670C4743C
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:47:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D133FC4743C
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:48:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 056ED61245
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:47:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 056ED61245
+	by mail.kernel.org (Postfix) with ESMTPS id 7B2FD6128C
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:48:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B2FD6128C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EFD0C167B;
-	Mon, 21 Jun 2021 20:46:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EFD0C167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8BBDE16D4;
+	Mon, 21 Jun 2021 20:47:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BBDE16D4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624301269;
-	bh=MOO73DEGhW1d22CxLcZCw47NDPO4vbpIGcI1cX5HFcM=;
+	s=default; t=1624301319;
+	bh=BWOLJ0W+DyN0bIwjEcQUXM9qVf1PU48ef2v/ZiY7EAw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RJVYxXeqlctv+NyviGik+fGF0hYYdJY9O1csW5UJyX+9ViBxP/xdyEr7wbzPiho9R
-	 VMkXLh25FlQ5Otba/clAYJYc+D0MR7OJ9WP+5OzS2cZ7y/FMDSj/qaXq+qR6I3c1sY
-	 nI4OOdw5FCaIbkFiG77mksSlahO0OG/ZTXaqWajE=
+	b=Z7TRJAKmkJjK7moSVXJlCQ76JcFHr/L9csH3e+oaNpysAJYK1NWJGKSP3/eorieBS
+	 W9kloM0UwaFVNuQdxo77Jmy6UedGSOvi1tozIvPC49sJri3mpiwyg2BHGZPPC33x7p
+	 QSAlWMP3vDq7F59greYl8zT6A9Wbqws4lJKWQonc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5642EF801D5;
-	Mon, 21 Jun 2021 20:46:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55A1AF80163;
+	Mon, 21 Jun 2021 20:47:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2452BF8016D; Mon, 21 Jun 2021 20:46:56 +0200 (CEST)
+ id 5A1FEF80163; Mon, 21 Jun 2021 20:46:57 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BF7C2F80163
- for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 20:46:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF7C2F80163
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0DB6EF80137
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 20:46:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0DB6EF80137
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="p85Y09DR"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D0B6611BD;
- Mon, 21 Jun 2021 18:46:51 +0000 (UTC)
+ header.b="qKXQvMHH"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 520396128A;
+ Mon, 21 Jun 2021 18:46:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1624301212;
- bh=MOO73DEGhW1d22CxLcZCw47NDPO4vbpIGcI1cX5HFcM=;
+ s=k20201202; t=1624301208;
+ bh=BWOLJ0W+DyN0bIwjEcQUXM9qVf1PU48ef2v/ZiY7EAw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=p85Y09DRjTpOKNpxLV7F1BPWX8xocpqQenD28wxTPBBOjK+BxoTRsvsqRv9Ur/FQp
- 9PFv4jbBoD74kyXzAiZd/topDWCILOFCGTo1CsoNkts3uRJC/hLWWTnV8NrwrmYryn
- O48brFyvao0wDxU1xv75GSso3ZX+f16OcHgroNyQkQetb/28YTFJbT4UvyO0fb1rWZ
- wZK1aigwlRQt8GfMd+9ERz9ysz9tkcXgVmfmHCa5ku4l67XCaVfU/DQ/1iQEnAYTMw
- G9N0Z+p09K1dTuF9uTYPyY2auUDp2XsNT3bV5DgNwXxxusOsJojtpbk6w6Heq1pj5L
- VVXllDbZhQLMw==
+ b=qKXQvMHHlHKMPaPgxtLqtGD3L131cTrUjohy4lRa9n/F4bwGD55w7e0XY+VMWRuQp
+ LO/iTFSC5GkwHF7Ncw0ebm99YUpZQXs1/XbwLr5NGFQY4paX6VZgAY7ZNHJV7rDN4o
+ YKSVDyF2YK29KWJmbJ0vtkdawZtphPLBla79SkRErneNdzDnoKfDPua2zrgbtPrZhR
+ XtaG0NhsjLkHxeqC7La/GtHg/eMxYifPuVEzIQuNCcP57IstV/SHhjdfaQqa80IelM
+ lQ1Gnt2q9wJFRNsPQJi3oTdmrCrtCkTyXwcmlb9+4zB2BYEPPVA7WpotGXQO4y9YYq
+ ElrPyhBYF8Slg==
 From: Mark Brown <broonie@kernel.org>
-To: linuxppc-dev@lists.ozlabs.org, Yang Yingliang <yangyingliang@huawei.com>,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH -next v2 0/9] ASoC: fsl: Use
- devm_platform_get_and_ioremap_resource()
-Date: Mon, 21 Jun 2021 19:45:57 +0100
-Message-Id: <162430055263.9224.2887926675781712898.b4-ty@kernel.org>
+To: lgirdwood@gmail.com,
+	shumingf@realtek.com
+Subject: Re: [PATCH 2/2] ASoC: rt711: add two jack detection modes
+Date: Mon, 21 Jun 2021 19:45:56 +0100
+Message-Id: <162430055262.9224.15115096030073154792.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210615013922.784296-1-yangyingliang@huawei.com>
-References: <20210615013922.784296-1-yangyingliang@huawei.com>
+In-Reply-To: <20210617090822.16960-1-shumingf@realtek.com>
+References: <20210617090822.16960-1-shumingf@realtek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Mark Brown <broonie@kernel.org>, timur@kernel.org
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ jairaj.arava@intel.com, lars@metafoo.de, Mark Brown <broonie@kernel.org>,
+ derek.fang@realtek.com, bard.liao@intel.com, sathya.prakash.m.r@intel.com,
+ flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,17 +88,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 15 Jun 2021 09:39:13 +0800, Yang Yingliang wrote:
-> patch #1 ~ #8:
->   Use devm_platform_get_and_ioremap_resource()
-> 
-> patch #9
->   check return value of platform_get_resource_byname()
-> 
-> v2:
->   change error message in patch #9
-> 
-> [...]
+On Thu, 17 Jun 2021 17:08:22 +0800, shumingf@realtek.com wrote:
+> Some boards use different circuits for jack detection.
+> This patch adds two modes as below
+> 1. JD2/2 ports/external resister 100k
+> 2. JD2/1 port/JD voltage 1.8V
 
 Applied to
 
@@ -105,24 +100,8 @@ Applied to
 
 Thanks!
 
-[1/9] ASoC: fsl_asrc: Use devm_platform_get_and_ioremap_resource()
-      commit: c66d7621737fb07e660b3d6eef40636ef4e9103a
-[2/9] ASoC: fsl_aud2htx: Use devm_platform_get_and_ioremap_resource()
-      commit: 41e90cbbc50085487b4633f08c86dd71b0f18d7f
-[3/9] ASoC: fsl_easrc: Use devm_platform_get_and_ioremap_resource()
-      commit: 2cd16cf0d6bbb47adddc633c60ca405f672e64f4
-[4/9] ASoC: fsl_esai: Use devm_platform_get_and_ioremap_resource()
-      commit: f25bb69e6f04a3d45effbe1c571f5f3ac10253bb
-[5/9] ASoC: fsl_micfil: Use devm_platform_get_and_ioremap_resource()
-      commit: d9bf1e791ae61d606b0da0003ad19dbe7f252fe8
-[6/9] ASoC: fsl_sai: Use devm_platform_get_and_ioremap_resource()
-      commit: 664107f63888bdd8a5e1d38c8246b9508a1dc46a
-[7/9] ASoC: fsl_spdif: Use devm_platform_get_and_ioremap_resource()
-      commit: cbb7ea0aebf0c07061be615cab97ac9cab8a48a0
-[8/9] ASoC: fsl_ssi: Use devm_platform_get_and_ioremap_resource()
-      commit: 67798860e6d0114149562e6897cf07ba4bebc1d6
-[9/9] ASoC: fsl_xcvr: check return value after calling platform_get_resource_byname()
-      commit: a2f6ed4a44721d3a9fdf4da7e0743cb13866bf61
+[2/2] ASoC: rt711: add two jack detection modes
+      commit: 683b0df26c3333a5c020a2764b71a70d082c1c61
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
