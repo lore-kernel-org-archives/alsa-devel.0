@@ -7,71 +7,73 @@ X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AFEADC48BC2
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:49:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12D77C48BE5
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:49:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A47CF61107
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:49:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A47CF61107
+	by mail.kernel.org (Postfix) with ESMTPS id E24B461245
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:49:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E24B461245
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A12B16B6;
-	Mon, 21 Jun 2021 20:48:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A12B16B6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 87CA916EE;
+	Mon, 21 Jun 2021 20:49:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87CA916EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624301359;
-	bh=VT8jjUiO3DASVpwIemns7UpacAV+opD53af/FKpn/Xw=;
+	s=default; t=1624301391;
+	bh=7yUZDZlOIzDIa47OFbFJ/39Qwhe/+XOMMOCaPdtaBwc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=L0/FSMGRDi+d0bzB8n8EvGEl9juOBYEZTILy2c0/IrDQtULJKiyYhZ/T4mQ4GTwaG
-	 +NoIfaUm+3XU/i45+Lga+No5Dyq4cQvTWCQwHcHQkPOtMAw7HXY+CLQq4Ai8L2ykFS
-	 IUhS69cFpc8RMp9bpsZJfzqs6AwnhDE+KxhJO0tI=
+	b=m1N3uXoDYLJwFTwY+17t/fAZde1wH8ELvUXfPW/0WVk9GRdcPug1bClO5JqqVWUYL
+	 GnldMmDqfwdhncaeZZ3zpK15Q09nqm0UdafICw+0/S9l70AQom4DAiWMdFNro+huTo
+	 bm50iCd+MpZ3YZ7U5Tffx5uURGJSDDig5p4gKtuc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3EE3BF804D9;
-	Mon, 21 Jun 2021 20:47:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A127BF804E7;
+	Mon, 21 Jun 2021 20:47:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 92830F804B0; Mon, 21 Jun 2021 20:47:02 +0200 (CEST)
+ id CE595F804E6; Mon, 21 Jun 2021 20:47:08 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F1FA1F8016D
- for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 20:46:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1FA1F8016D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 85EB3F804DF
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 20:47:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85EB3F804DF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="H3z4XWyB"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 340C261107;
- Mon, 21 Jun 2021 18:46:57 +0000 (UTC)
+ header.b="lD6c1pBH"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FA4D61351;
+ Mon, 21 Jun 2021 18:47:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1624301217;
- bh=VT8jjUiO3DASVpwIemns7UpacAV+opD53af/FKpn/Xw=;
+ s=k20201202; t=1624301224;
+ bh=7yUZDZlOIzDIa47OFbFJ/39Qwhe/+XOMMOCaPdtaBwc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=H3z4XWyBxOm/dlbGHRS3F+pNprVp1oFTb2un2UstPuDejQdlAL0PxO5uspdKS6Fsf
- T2M3UUut19kemJI9IMiak79ELrnm7c15IYEg7vZKt4at/HTAe/kjkmjRG52jAdXMT7
- dmR9KB35tkU4pJDaZ+nNG3hdNKq0Y86xNOdraNh7JtJxYCGp4THAXayUsnluG+FuCG
- pnsNbAREKpfmJKYZyiEnb3Rd6YBxq+3/enAgn9VfXy5lO6O3GkYf6qNZy7K4vtr19/
- QYMnAMQX/wei61w0KzcYMhDb6HY9SbbIaHl/R7l/SiJL48fYJNDkGEfU0Yi1ottBuz
- FU4nNlNjUhN1A==
+ b=lD6c1pBHZwqs5eiQs8buzuuA9BfkqJolhjZ6EDv4VF4us1aV1CC0LUyTsb6VhIGp2
+ E/becPsixhGwp4yQaCduiuDSkM/u6NQKgTxxGB+Gb+5l1ACSAQo9z+SUbO6AHK5wU8
+ X35Wg2dinDz5gYfjdhPQPAcn+0z5czmkVkny/B828TD9H3VvA47bg9OSPoqp9nQuQI
+ coxMZ68+/EyAh4aDiT0zJ68a6InuiFLM4sRM5KzBoYyeVu8s0vqXaciwdbVsUcTxNH
+ gEgCasF2SK3G82tGxTq/RjJ854+IlLq7yVQYrjOCUJ9SPpaiBG7JDOM6U0YW5Nx5Wo
+ 2C7AKlzucp/Cg==
 From: Mark Brown <broonie@kernel.org>
-To: linux-sunxi@lists.linux.dev, Yang Yingliang <yangyingliang@huawei.com>,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH -next 0/3] ASoC: sunxi: Use
- devm_platform_get_and_ioremap_resource()
-Date: Mon, 21 Jun 2021 19:45:59 +0100
-Message-Id: <162430055263.9224.277778628672275964.b4-ty@kernel.org>
+To: tiwai@suse.com, Xiubo.Lee@gmail.com, nicoleotsuka@gmail.com,
+ perex@perex.cz, timur@kernel.org, alsa-devel@alsa-project.org,
+ festevam@gmail.com, Shengjiu Wang <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: fsl_xcvr: disable all interrupts when suspend
+ happens
+Date: Mon, 21 Jun 2021 19:46:01 +0100
+Message-Id: <162430055262.9224.10660705196927221469.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210617045012.1119650-1-yangyingliang@huawei.com>
-References: <20210617045012.1119650-1-yangyingliang@huawei.com>
+In-Reply-To: <1624009876-3076-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1624009876-3076-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
+Cc: Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,16 +89,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 17 Jun 2021 12:50:09 +0800, Yang Yingliang wrote:
-> Use devm_platform_get_and_ioremap_resource() to simplify
-> code.
+On Fri, 18 Jun 2021 17:51:16 +0800, Shengjiu Wang wrote:
+> There is an unhandled interrupt after suspend, which cause endless
+> interrupt when system resume, so system may hang.
 > 
-> Yang Yingliang (3):
->   ASoC: sunxi: sun4i-codec: Use devm_platform_get_and_ioremap_resource()
->   ASoC: sun4i-i2s: Use devm_platform_get_and_ioremap_resource()
->   ASoC: sunxi: sun4i-spdif: Use devm_platform_get_and_ioremap_resource()
-> 
-> [...]
+> Disable all interrupts in runtime suspend callback to avoid above
+> issue.
 
 Applied to
 
@@ -104,12 +102,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: sunxi: sun4i-codec: Use devm_platform_get_and_ioremap_resource()
-      commit: 37c617f1cf062b56141a06e2ae355e3ecc8b8451
-[2/3] ASoC: sun4i-i2s: Use devm_platform_get_and_ioremap_resource()
-      commit: cc384f05c05618dfcf1990054c1f40bedbb01cca
-[3/3] ASoC: sunxi: sun4i-spdif: Use devm_platform_get_and_ioremap_resource()
-      commit: bb17379cf278c15574b0c1c94a76531f637970c7
+[1/1] ASoC: fsl_xcvr: disable all interrupts when suspend happens
+      commit: ea837090b388245744988083313f6e9c7c9b9699
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
