@@ -7,91 +7,89 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BAA34C4743C
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 13:46:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACAAEC4743C
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 13:47:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 16361611C1
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 13:46:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 16361611C1
+	by mail.kernel.org (Postfix) with ESMTPS id EE9B9611C1
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 13:47:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE9B9611C1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CE8F41691;
-	Mon, 21 Jun 2021 15:45:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE8F41691
+	by alsa0.perex.cz (Postfix) with ESMTPS id 788F016A2;
+	Mon, 21 Jun 2021 15:46:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 788F016A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624283184;
-	bh=g5oFni9C9CqwROR85bD11vcyrwu7XQNT/mfxNMGAvnU=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=qapi2V9EJLn+JtqmT4DnztQgcEEG5Odm5BYhxr9vz1b5RLREcm8ZHfcJ7SfTr58zq
-	 QIcNDb4gNImN75Vdm9tux7e+1LXAja/ZLSfkvjVv+JbBR15yHx+qcOaKucH5uX0xN6
-	 b6d8g/e4Yy7W3BvOLi/V2Ol+IHsB3s5YrKUTpt8Y=
+	s=default; t=1624283235;
+	bh=wOSfEPwSQ4z5JMiM/XHRehkYSJOjpij6KcWIayR8SvM=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=s6d/XwlfLMDBW706Qga2yz+b6rG4YmapGJOODiTWdRx0LERSAacRRrEeHl+mjpbOO
+	 x93eo7fn9M5EIfM0oHh0VuS45T8prkZQu0hx6Ysf09AxVle7RAZRFVHYgZsKjrVsr/
+	 1sGMwpzuZcSRZLyd3Mqy1HCabkgeRT84Id/RIEFk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5478FF8016A;
-	Mon, 21 Jun 2021 15:45:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08370F8016D;
+	Mon, 21 Jun 2021 15:45:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F0665F8016D; Mon, 21 Jun 2021 15:45:32 +0200 (CEST)
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
- [IPv6:2a00:1450:4864:20::430])
+ id 1B7C1F80111; Mon, 21 Jun 2021 15:45:34 +0200 (CEST)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
+ [IPv6:2a00:1450:4864:20::331])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E3E27F80111
- for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 15:45:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3E27F80111
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2FF1CF8016A
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 15:45:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FF1CF8016A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="guTJc7On"
-Received: by mail-wr1-x430.google.com with SMTP id i94so19732654wri.4
- for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 06:45:24 -0700 (PDT)
+ header.b="RWVK1iYz"
+Received: by mail-wm1-x331.google.com with SMTP id
+ j21-20020a05600c1c15b02901dde2accccbso3528wms.4
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 06:45:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=pAIv5ocE40xJoNsZIv++9AOR0LE9aTCfg1rxh8nwgxg=;
- b=guTJc7On2LFjGZ8lVBDXOxGeqL73iRh1QfAJ4/zOF77kF1Vuv6T8g7+fXFso128+rP
- AFmyyKFZ+s8abFjozMOsjWke5t9c6dqWsIQigTCNAzDmJ96ioGg5W+Iu961Vb7dozbYA
- 0Vop3UqBcs4Ymen7/ud9QmkaDXlr19OMJikECXQDPisLTFJ2iqP7Bv1hldki3gEwgbl3
- 70VJZhSBSwE9LFe6jSQtSmcNSl+LqHORSNKoJWBDrg6hjO84P/86h0A/97QB+0Cm4cn7
- vHASX1tcgta7wWNcxebVYwkCaeJcCb8Jz97iZSIi5bOb5AA6nvbDDVqEc0yXkJcOY/I5
- kpWQ==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=8W5nhl+E1Jscrd29RdD//tmI8j2cQzzETvUZPc9CaL0=;
+ b=RWVK1iYzzle9AEz+xodpd8RcSevaWoL296o9oBGwPtEOLzygAjgg2AtnDFl0yH/f91
+ /SZWyENY/SSJv9yUAirokw3cJIF1kJQ0w5R9f9HU8wWGOomeVoZz5x5Yi548NkqYpuJA
+ Ds2y26JuXlCxrMI/UJ5EfbkFDOiV8PZOw8NA63hAw9OQ/GyryE8XjPWp86utBZgQsBJj
+ E1Za9IdK+OKfvtLVBbXPPtBjqW8+Bh1sQK9bUZ8IHwSrvKBUMRCl8lxoSah6AGS82+lD
+ YQJM57WjNWUb5rki2tDJKnyydogA9+dSNeJ1chXMY1Bvzv0IFoMtwlZPVns7BZbbdPTp
+ M8dA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=pAIv5ocE40xJoNsZIv++9AOR0LE9aTCfg1rxh8nwgxg=;
- b=K4yz5gGEpavgae0GDYRVZSE4OE5TRM2HSzZhKMu1IUW3+lYSNQ+GlrZ5D6c6Y1PjY9
- QMo6g7SOTh2trFtABNOlUJ3hz9oMSGFYv5pgARdreRkjvobMfWGiz1hh0KmaI3zhOi1i
- 3C/gu+eUM/McBJwTyNwVZVDzgKwu2WF1/jdItZ4uiHGgk5kIDbFdyGPvMfwfJm270tu9
- 3OlfbRZdxLQP9BRU/CEh5rxdI71an2HE8SnuiFZM8PUfSqTDZSgp9mp82xZ3OJS95YxZ
- nM3qHV81Y0VrHrAVmbLm/S61d69/MD5ewlZsg4ZMea2lfaS5X7W37yeWJTGAlRvsoNEU
- 9Y/w==
-X-Gm-Message-State: AOAM531kuULIXTR6W8aepbuCDZT2E6luWZCumQ10eojJ03GDX1dsRMz4
- NiGYi1y/uJK6bO+el3JJ+dF5fw==
-X-Google-Smtp-Source: ABdhPJyCzCj448Bpy2dWzTq6/4ovn/wNNa/MVJP9R68doPFkJ0EIVoTaBHtXNlIatz+aS7V6a9CVOA==
-X-Received: by 2002:adf:eace:: with SMTP id o14mr25889416wrn.159.1624283124401; 
- Mon, 21 Jun 2021 06:45:24 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=8W5nhl+E1Jscrd29RdD//tmI8j2cQzzETvUZPc9CaL0=;
+ b=FMPTn9JMD8vFGmrxpzjRqwtqJ2018mQoKQQwBGFE+8JvwY5hgYsEth+gOUcfKFhilc
+ TBSge5J2UFOkFMtX3CSfPCnH2ukkLrh45i8hrl61H++VJgubXR3Nd/j0hZduybtMgFmZ
+ 5yZEYAzGv/zcOA1Y3wEDpfQwGtVyOwi8sS6XwCgIrWDGbY5gFBuf3ba080RE+bKQx0yT
+ eLWNXkTbAphjCgj47AyPg/bh9d4BrDZAfD41cKdkE7ApSzAvYvzWOL86SucVjX+EEpG8
+ Y4ChEcqQT8pkOqhBraDjPK8Tw8bkMwnJtH+798NMr6NIwCSDw9ueRZy6Go84SC6j3YAo
+ 4lNQ==
+X-Gm-Message-State: AOAM531FtYkju7w+1PfseOySd5TVrtvxBrZtaSJ/gIv2PwOk1KX6g/gY
+ 1As9uAKFwTm/XO1agwCRMTZcGQ==
+X-Google-Smtp-Source: ABdhPJywfntwqCOwSS9wjiSUCUjFC/d0VtmUvA0ChK9E9Ep7JTEfxh5L3ggLCOOTT89F61RxASAYfQ==
+X-Received: by 2002:a1c:3dc2:: with SMTP id k185mr27324248wma.15.1624283123343; 
+ Mon, 21 Jun 2021 06:45:23 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id e38sm12848741wmp.4.2021.06.21.06.45.23
+ by smtp.gmail.com with ESMTPSA id e38sm12848741wmp.4.2021.06.21.06.45.21
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 21 Jun 2021 06:45:23 -0700 (PDT)
+ Mon, 21 Jun 2021 06:45:22 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH 2/2] ASoC: codecs: wcd938x: fix uninitialized symbol warnings
-Date: Mon, 21 Jun 2021 14:45:02 +0100
-Message-Id: <20210621134502.19537-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 1/2] ASoC: codecs: wcd938x: fix unused variable warning
+Date: Mon, 21 Jun 2021 14:45:01 +0100
+Message-Id: <20210621134502.19537-1-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210621134502.19537-1-srinivas.kandagatla@linaro.org>
-References: <20210621134502.19537-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Dan Carpenter <dan.carpenter@oracle.com>, lgirdwood@gmail.com
+Cc: kernel test robot <lkp@intel.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,50 +105,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch fixes below two uninitialized symbol warnings
+This patch fixes below
 
-warning:
-	sound/soc/codecs/wcd938x.c:2092 wcd938x_tx_swr_ctrl()
-	error: uninitialized symbol 'rate'
+	warning: unused variable wcd938x_dt_match
 
-	sound/soc/codecs/wcd938x.c:2189 wcd938x_tx_channel_config()
-	error: uninitialized symbol 'reg'.
+by placing device match table under CONFIG_OF
 
-First one my brining in check to already existing if condition and
-second one by adding a default switch case to avoid any access to reg.
-
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/codecs/wcd938x.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/wcd938x.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/sound/soc/codecs/wcd938x.c b/sound/soc/codecs/wcd938x.c
-index 427f51fade37..11315262391e 100644
+index 4be61122b0b5..427f51fade37 100644
 --- a/sound/soc/codecs/wcd938x.c
 +++ b/sound/soc/codecs/wcd938x.c
-@@ -2086,11 +2086,9 @@ static int wcd938x_tx_swr_ctrl(struct snd_soc_dapm_widget *w,
- 			}
- 			rate = wcd938x_get_clk_rate(i);
- 			wcd938x_set_swr_clk_rate(component, rate, bank);
--		}
--
--		if (strnstr(w->name, "ADC", sizeof("ADC")))
- 			/* Copy clk settings to active bank */
- 			wcd938x_set_swr_clk_rate(component, rate, !bank);
-+		}
- 		break;
- 	case SND_SOC_DAPM_POST_PMD:
- 		if (strnstr(w->name, "ADC", sizeof("ADC"))) {
-@@ -2185,6 +2183,8 @@ static void wcd938x_tx_channel_config(struct snd_soc_component *component,
- 		reg = WCD938X_ANA_TX_CH4;
- 		mask = WCD938X_HPF4_INIT_MASK;
- 		break;
-+	default:
-+		return;
- 	}
+@@ -3714,12 +3714,14 @@ static int wcd938x_remove(struct platform_device *pdev)
+ 	return 0;
+ }
  
- 	snd_soc_component_write_field(component, reg, mask, mode);
++#if defined(CONFIG_OF)
+ static const struct of_device_id wcd938x_dt_match[] = {
+ 	{ .compatible = "qcom,wcd9380-codec" },
+ 	{ .compatible = "qcom,wcd9385-codec" },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, wcd938x_dt_match);
++#endif
+ 
+ static struct platform_driver wcd938x_codec_driver = {
+ 	.probe = wcd938x_probe,
 -- 
 2.21.0
 
