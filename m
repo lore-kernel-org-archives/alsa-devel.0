@@ -2,82 +2,77 @@ Return-Path: <SRS0=WNc7=LP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B8C3C4743C
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:51:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5DFFC4743C
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:51:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BECC96115A
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:51:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BECC96115A
+	by mail.kernel.org (Postfix) with ESMTPS id 5CAB86124B
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:51:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5CAB86124B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 58BF5170B;
-	Mon, 21 Jun 2021 20:50:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58BF5170B
+	by alsa0.perex.cz (Postfix) with ESMTPS id EF71B1689;
+	Mon, 21 Jun 2021 20:50:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF71B1689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624301464;
-	bh=GNyIa4fa2uI8VR7bS9Ty1jjFSGpmNLNuoPJXPMaZs7E=;
+	s=default; t=1624301495;
+	bh=SN+qrXMbE8Abb64kSFh88Ffj5fHdUzBtrTUgIubwrTA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=plI+XVhFzcTh7yLmATTZB+Dg69vaCysSVTuMxOpIvDHczzews6BJdyl/jdVtYHQQW
-	 9rYs5Otuz666eiJDz2HdEThyEZ+hxaEz0a5wRcedBT6DJ0NFJK8qND0rdWUMpYUc2c
-	 9SH96uiiqDOEOxIcsPFKgnK7h3HfPR8sHWp2zLiU=
+	b=BS1L+6+VjF3NquYgA6AzTm8211QnwPj/KoOjNYdlqQBdkQNQ7rpMHjTjYHlMzOTNZ
+	 8jtJ7B1XmG087drEL/5R/u+pP06ihrrtfvsXdrxfmJBU19BXP6uAMKT1guW5S9gjbl
+	 fhZO6KhaX9DTma+qhrYvpuf905WXhOQQXiIAapEg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4ED05F80507;
-	Mon, 21 Jun 2021 20:47:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0EF0EF80516;
+	Mon, 21 Jun 2021 20:47:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C598CF804E5; Mon, 21 Jun 2021 20:47:16 +0200 (CEST)
+ id 491B4F804DA; Mon, 21 Jun 2021 20:47:18 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6398EF804DF
- for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 20:47:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6398EF804DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 05C44F804DA
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 20:47:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05C44F804DA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="jX8fa7ly"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E5D261107;
- Mon, 21 Jun 2021 18:47:11 +0000 (UTC)
+ header.b="QAigzp5Q"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 213BA61353;
+ Mon, 21 Jun 2021 18:47:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1624301232;
- bh=GNyIa4fa2uI8VR7bS9Ty1jjFSGpmNLNuoPJXPMaZs7E=;
+ s=k20201202; t=1624301234;
+ bh=SN+qrXMbE8Abb64kSFh88Ffj5fHdUzBtrTUgIubwrTA=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=jX8fa7lyBY/ap9StCFLsika0Ms80+tOYIQGxMCkmW4+FWNR3OxCUj0OnWor7kdi32
- 2clQrlEnSnilQPJIGJZwvq8Aex0HJjdulXnCrNaSNOUja0aS8BVM3K9rfmkXKFkT+L
- 5tAxWGeR7q93wzIEd+pasyNAzSWoGeF3FcNKRTCWtZvv2VUW7x+/inBNFY4uLCsdZz
- Uu+qHcwFXNRVuvm6l5/CSJJhq/yGt84u1J6FGSrM1LWoHfTH7x5zcvgY5vG4KC5ubd
- Tjzq9vLowZBRgow6ULj/eIbhVkZIESBM2xygcIZcoNGuc85mHwk3Ie098I4JY5hf+x
- 23jI0rqb63jVQ==
+ b=QAigzp5QiPP1G4RRjO6QuPsrgEiWx45SAn5QiE6kq/+LLsW54eR7NEeAZ/nA5DVPo
+ 4Gxei37y8aZfNz+TMGx6P9/1XRvIV1K194hrcPND9/O0e5s3FaGouj9bxsTib538pU
+ aGSG3AeOdoXotl1lVgbRKGx+s3XC9Tg0qDUo5XF4CuIsBcUrqDcyuffBEFUnKQ+hK0
+ p7RovdBPuqaANh5hX+XQh/id0pxAUa7tb2MD9LsiaxkN0X9/USqYsfb6kSlxwjvBqD
+ VNeG/aGPUwqpsV4MutPyfmvpR1TsM70mXCcMc9KoGzRQ5bdhYsbVgL+wtiBQ8mdcQF
+ pnYCR+TDIA1eA==
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- srinivas.kandagatla@linaro.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH 1/5] soundwire: export sdw_update() and sdw_update_no_pm()
-Date: Mon, 21 Jun 2021 19:46:04 +0100
-Message-Id: <162430055264.9224.8953420856630209073.b4-ty@kernel.org>
+To: Xiubo.Lee@gmail.com, Shengjiu Wang <shengjiu.wang@gmail.com>,
+ Fabio Estevam <festevam@gmail.com>, Timur Tabi <timur@kernel.org>,
+ Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org
+Subject: Re: [PATCH] MAINTAINERS: remove Timur Tabi from Freescale SOC sound
+ drivers
+Date: Mon, 21 Jun 2021 19:46:05 +0100
+Message-Id: <162430055264.9224.16409542437209758766.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210614180815.153711-2-pierre-louis.bossart@linux.intel.com>
-References: <20210614180815.153711-1-pierre-louis.bossart@linux.intel.com>
- <20210614180815.153711-2-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20210620160135.28651-1-timur@kernel.org>
+References: <20210620160135.28651-1-timur@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>,
- tiwai@suse.de, gregkh@linuxfoundation.org,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- open list <linux-kernel@vger.kernel.org>, Hui Wang <hui.wang@canonical.com>,
- vkoul@kernel.org, Mark Brown <broonie@kernel.org>,
- Shuming Fan <shumingf@realtek.com>, Sanyog Kale <sanyog.r.kale@intel.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>, Bard Liao <bard.liao@intel.com>
+Cc: Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,13 +88,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 14 Jun 2021 13:08:11 -0500, Pierre-Louis Bossart wrote:
-> We currently export sdw_read() and sdw_write() but the sdw_update()
-> and sdw_update_no_pm() are currently available only to the bus
-> code. This was missed in an earlier contribution.
-> 
-> Export both functions so that codec drivers can perform
-> read-modify-write operations without duplicating the code.
+On Sun, 20 Jun 2021 11:01:35 -0500, Timur Tabi wrote:
+> I haven't touched these drivers in seven years, and none of the
+> patches sent to me these days affect code that I wrote.  The
+> other maintainers are doing a very good job without me.
 
 Applied to
 
@@ -107,16 +99,8 @@ Applied to
 
 Thanks!
 
-[1/5] soundwire: export sdw_update() and sdw_update_no_pm()
-      commit: d38ebaf2c88442a830d402fa7805ddbb60c4cd0c
-[2/5] ASoC: rt700-sdw: fix race condition on system suspend
-      commit: 60888ef827e354d7a3611288d86629e5f1824613
-[3/5] ASoC: rt711-sdw: fix race condition on system suspend
-      commit: 18236370a098428d7639686daa36584d0d363c9e
-[4/5] ASoC: rt5682-sdw: fix race condition on system suspend
-      commit: 14f4946d55d335692462f6fa4eb4ace0bf6ad1d9
-[5/5] ASoC: rt711-sdca-sdw: fix race condition on system suspend
-      commit: d2bf75f4f6b277c35eb887859139df7c2d390b87
+[1/1] MAINTAINERS: remove Timur Tabi from Freescale SOC sound drivers
+      commit: 50b1ce617d66d04f1f9006e51793e6cffcdec6ea
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
