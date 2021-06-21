@@ -6,71 +6,74 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB81CC48BE5
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:50:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99D68C4743C
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:50:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 69BAF60FEE
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:50:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 69BAF60FEE
+	by mail.kernel.org (Postfix) with ESMTPS id 1A0E06115A
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:50:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1A0E06115A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D5E0416A9;
-	Mon, 21 Jun 2021 20:49:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5E0416A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id A9AF0825;
+	Mon, 21 Jun 2021 20:49:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9AF0825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624301410;
-	bh=u4E7N74D5ICKc9j+WDBObEXlU0zyPpspSv6KfmMn7N0=;
+	s=default; t=1624301425;
+	bh=4ynnjLFGqT7jeVoGFXKGU1jJH+2RzYGaTP4Lm67YYMU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=L4Lr1Q7wHOihfo53FXVKJGoFxszBv0S+1s5LILWu8a6d3aL4Mdi9NTSS+l1zvgaFn
-	 fAmzbHU6aBr+3DVZ8fbAh2MxyvDQyNhk6bSaukzPIEVdQsO1UC4FuHF34t7eI5FlAI
-	 WHrn9ueoB6u7zvv/aIzAPFiV5znYSGyPuQUEs6Fo=
-Received: from vmi242170.contaboserver.net (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68886F804ED;
-	Mon, 21 Jun 2021 20:47:32 +0200 (CEST)
+	b=c92ifnSA4fZRwAGMBZ+Uv3nvMnB4THd1SbPhejzDEjoT5AkilL70r0AF/h44VG38m
+	 WSEvv5WieY5vqg5mBUBJoifDUA2AvC5Th+PgPk/ni61Iw/GZmb0KA5wEd1bOun9mSX
+	 aYYh6Eu3tR7xnrpPZf7JkpcE6bibRPJcmCmILOro=
+Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
+	by alsa1.perex.cz (Postfix) with ESMTP id 08670F804FB;
+	Mon, 21 Jun 2021 20:47:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3A9BBF804DA; Mon, 21 Jun 2021 20:47:05 +0200 (CEST)
+ id 82C96F804E5; Mon, 21 Jun 2021 20:47:10 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 68884F804B0
- for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 20:47:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68884F804B0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2F409F804E2
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 20:47:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F409F804E2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="H4F0ibZg"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 848D26128A;
- Mon, 21 Jun 2021 18:47:00 +0000 (UTC)
+ header.b="ny0E3T5R"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D78B6128C;
+ Mon, 21 Jun 2021 18:47:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1624301221;
- bh=u4E7N74D5ICKc9j+WDBObEXlU0zyPpspSv6KfmMn7N0=;
+ s=k20201202; t=1624301226;
+ bh=4ynnjLFGqT7jeVoGFXKGU1jJH+2RzYGaTP4Lm67YYMU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=H4F0ibZgaXX6U83jHhLZTIC+Zm3XoM6mzWjO98BNqOQgt71PSWzGOjwawLckH/1cB
- r7kJhbRtCuSr0kqT2QZEgjnIUkinK0re8nNRQ4G8pFFL6lGMae/xuTXKSv8q0S3TB4
- mXxqPEJeTwZw2epe2dShvJWypBTROYodLqH4San8xzhpolWyvnLE/8e91f+7UR+yq9
- RYKFVbUqHnPjmRZRXiFpN3HUXGg86OOXUHGGJYTWg+Zv93HSzZNjt8KVCWAZmlcWZs
- GsYg6B92qITz0xeOXe6aU8YRzjgWxHw7JVuIMtruj4B9IyLWbFAfUyD1PekZKe/JmY
- tk2NNknLE4vDg==
+ b=ny0E3T5RoNSybmXudw3iIbk8cMmu/KS9qAH9i8fLgRzSJaZmj2gYncYDR1q4PxVWF
+ b53Dac9NfbCRhF4c/Pu5hqX2OOncLEZdiud6h9ABGt4UKzGoaqoeXkNAkTIikKcjED
+ ZpUyFrsKKDml4i5FpwOV/Jf8nt47FRt25QdyDC5x16cjpaCr2mlwMYA7GTBo+++NBc
+ fjzRr5kPx0J3mIRqqqSHtG23xpNgsE4279mr18+yvS2zd4Y355uLorxYYaBb33HCP7
+ ZfuXWv8qN/8uYwdhiJ+7gcHryjUsEKraB5b9igFkVt7KpP2GxEXbmqRmfv05P5jNdt
+ IpdJ4mewPLiqQ==
 From: Mark Brown <broonie@kernel.org>
-To: Yang Yingliang <yangyingliang@huawei.com>, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org
-Subject: Re: [PATCH -next 1/2] ASoC: qcom: apq8016_sbc: Use
- devm_platform_get_and_ioremap_resource()
-Date: Mon, 21 Jun 2021 19:46:00 +0100
-Message-Id: <162430055263.9224.4713697107804997031.b4-ty@kernel.org>
+To: Dan Carpenter <dan.carpenter@oracle.com>,
+ Dmitry Osipenko <digetx@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>
+Subject: Re: [PATCH] ASoC: tegra: Fix a NULL vs IS_ERR() check
+Date: Mon, 21 Jun 2021 19:46:02 +0100
+Message-Id: <162430055263.9224.14507478089189972560.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210615140711.1676704-1-yangyingliang@huawei.com>
-References: <20210615140711.1676704-1-yangyingliang@huawei.com>
+In-Reply-To: <YMyjOKFsPe9SietU@mwanda>
+References: <YMyjOKFsPe9SietU@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Svyatoslav Ryhel <clamor95@gmail.com>, kernel-janitors@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Jonathan Hunter <jonathanh@nvidia.com>,
+ Thierry Reding <thierry.reding@gmail.com>, Ion Agorria <ion@agorria.com>,
+ linux-tegra@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,9 +89,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 15 Jun 2021 22:07:10 +0800, Yang Yingliang wrote:
-> Use devm_platform_get_and_ioremap_resource() to simplify
-> code.
+On Fri, 18 Jun 2021 16:44:24 +0300, Dan Carpenter wrote:
+> The tegra_machine_parse_phandle() function doesn't return NULL, it returns
+> error pointers.
 
 Applied to
 
@@ -96,10 +99,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: qcom: apq8016_sbc: Use devm_platform_get_and_ioremap_resource()
-      commit: e6bb518199181c9c35827a48142fbb548125d0b0
-[2/2] ASoC: qcom: lpass-cpu: Use devm_platform_get_and_ioremap_resource()
-      commit: 77b7bae7802848feabe37a92533bee64387906e7
+[1/1] ASoC: tegra: Fix a NULL vs IS_ERR() check
+      commit: 3aed3ddf9639a4f915984177ff8a2253f3f8acfe
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
