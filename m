@@ -2,88 +2,62 @@ Return-Path: <SRS0=WNc7=LP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 396CFC4743C
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 15:15:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C08FBC4743C
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:01:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DABCE6100A
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 15:15:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DABCE6100A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id BEDC66115B
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:01:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BEDC66115B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=b4.vu
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E20AD1691;
-	Mon, 21 Jun 2021 17:14:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E20AD1691
+	by alsa0.perex.cz (Postfix) with ESMTPS id 28ECC1683;
+	Mon, 21 Jun 2021 20:00:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28ECC1683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624288549;
-	bh=MrSWi70Xbte4J4mo9h7wVBFxj5XeyDZG9M4VYzbCtTM=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1624298491;
+	bh=UC54o7V1NAA6wo7/aVBJZo0ISS94uRTb4rGQjke5A1U=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ngnyqp1FUys5PcY0zwCKhVxyx9ECvU+J9/WuB/deA3B4PjorYlT12X3r4Uuik5g4h
-	 Sq+OwtLajGU8lO8zl8xOvzjOJFcQFJgJdA3uPUZ7h94iPY+8/HXWXHPVVS8QlzKzy+
-	 54SzqllzWofkZem9Ipyx8m7IOz2jY1f7hUjPK6D0=
+	b=DrrhZtUb7lBF1bYGd6UrXrIaoXNlyyJl7vf08m/QosRpXj6Ykailc3QbnN6Wod/Uj
+	 UgncxbLSrwXACS8s5mylzH9u2Xsz2ObrIwlrtfIStGCFiVL960L1LMXZTjlx4gUWrI
+	 Id+G9X6ArvAhaUx2Je4iFghbnh6/01S2BBiwvS2k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 71780F801D5;
-	Mon, 21 Jun 2021 17:14:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29CE9F8016A;
+	Mon, 21 Jun 2021 20:00:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BA30DF80245; Mon, 21 Jun 2021 17:14:21 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 586C1F8016B; Mon, 21 Jun 2021 20:00:37 +0200 (CEST)
+Received: from m.b4.vu (m.b4.vu [203.16.231.148])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A866AF8016A
- for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 17:14:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A866AF8016A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="Euz2gbyW"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="+DJmL6Nu"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id C4480219DB;
- Mon, 21 Jun 2021 15:14:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1624288446; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=HU84UjhkgimGlSUgNsfPdhjI24bA4WfSFNcmnBGb7OE=;
- b=Euz2gbyWOYSs644D9VZ9V+S79Ayv758QxB8sfu3EVZfCUoFdXo6trv+cYvRR5LIPs33xst
- ESg9zhSqKGt5n+ziCWNlWmOt6ZQCaQ+wZBLb+8r0vaN/PJNriwkc6xcBe5pNzh8SWEmJmi
- UqiCg+FZa3Spp6ydhUGFpRKlPkp9WQ0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1624288446;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=HU84UjhkgimGlSUgNsfPdhjI24bA4WfSFNcmnBGb7OE=;
- b=+DJmL6NuMErAhimtxieDHhc7qYeKYIJtG9TelG+Wr66JFWoNUBEsTBDSptykPeVYv1YmnW
- hQ620MkqduHoozCQ==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id B2BFBA3BAE;
- Mon, 21 Jun 2021 15:14:06 +0000 (UTC)
-Date: Mon, 21 Jun 2021 17:14:06 +0200
-Message-ID: <s5hzgvjs11d.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: "Tanjeff-N. Moos" <tanjeff@cccmz.de>
-Subject: Re: [PATCH 2/2] control: Minor documentation fixes.
-In-Reply-To: <20210617083639.155781-2-tanjeff@cccmz.de>
-References: <20210617083639.155781-1-tanjeff@cccmz.de>
- <20210617083639.155781-2-tanjeff@cccmz.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91E82F80137
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 20:00:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91E82F80137
+Received: by m.b4.vu (Postfix, from userid 1000)
+ id 1182561E286F; Tue, 22 Jun 2021 03:30:20 +0930 (ACST)
+Date: Tue, 22 Jun 2021 03:30:20 +0930
+From: "Geoffrey D. Bennett" <g@b4.vu>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH V2 00/14] Cleanup before adding Scarlett Gen 3 support
+Message-ID: <20210621180020.GA11686@m.b4.vu>
+References: <20210620164615.GA9148@m.b4.vu>
+ <s5hmtrjvhso.wl-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5hmtrjvhso.wl-tiwai@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Hin-Tak Leung <htl10@users.sourceforge.net>, alsa-devel@alsa-project.org,
+ Vladimir Sadovnikov <sadko4u@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,12 +73,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 17 Jun 2021 10:36:39 +0200,
-Tanjeff-N. Moos wrote:
+On Mon, Jun 21, 2021 at 08:43:51AM +0200, Takashi Iwai wrote:
+> On Sun, 20 Jun 2021 18:46:15 +0200,
+> Geoffrey D. Bennett wrote:
+> > 
+> > Hi Takashi,
+> > 
+> > Here is version 2 of a set of patches which is some cleanup of the
+> > Scarlett Gen 2 mixer driver in preparation for adding Scarlett Gen 3
+> > support.
+> > 
+> > One review comment I got (from Hin-Tak) was:
+> > 
+> > > 40+ patches is a lot, for modifying just one file. I would collapse
+> > > it all into one and break it up again to under 10, maybe, broadly
+> > > into "functionally-equivalent re-org", "small isolated bug fixes",
+> > > "additional functions, not yet used", "hooking up those new
+> > > functions", etc?
+> > 
+> > I'm not sure that I agree with that comment -- I tried to follow the
+> > Documentation/process/submitting-patches.rst advice of "Separate each
+> > logical change into a separate patch" for easy review of the
+> > individual pieces, but perhaps I went too far in that direction?
+> > 
+> > Please let me know if I should combine some of these patches together.
 > 
-> Signed-off-by: Tanjeff-N. Moos <tanjeff@cccmz.de>
+> The split is fine as long as it's done logically, so I took as is.
+> 
+> But, one thing that can be improved at the next time is to sort out
+> fix patches.  e.g. you had patches for fixing the mixer field type
+> (int vs enum) and a patch to correct the locking; those are rather
+> independent from the cleanup series and should be applied for the
+> stable backports, too.  I didn't add stable at this time because I
+> wasn't sure whether applicable and that's no severe issue, but the
+> process can be better.
 
-Thanks, applied.
+I did not notice any actual bug from using the wrong field type, and
+nobody reported the locking problem with Gen 2, so I think those are
+low priority.
 
+The two patches I submitted before for "Read all configuration at init
+time" are a higher priority for stable as they fix an actual problem
+that users are encountering: since our last discussion I had another
+report from a user; they were wondering why their headphones stopped
+working after changing an unrelated control.
 
-Takashi
+> Note that the merge window may be closed in this week, so if you want
+> the stuff to be merged, please submit now.
+
+Thanks, I will submit very soon.
+
+> Oh, one more thing: please use the mail thread for a patch set at the
+> next time!
+
+Sorry about that. Right after I sent I noticed that I forgot
+--thread=shallow.
+
+Thanks,
+Geoffrey.
