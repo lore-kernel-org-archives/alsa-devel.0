@@ -6,76 +6,77 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AFB76C49EA2
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 06:44:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13537C48BE5
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 06:45:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5BDE861040
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 06:44:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5BDE861040
+	by mail.kernel.org (Postfix) with ESMTPS id CCBCA6102A
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 06:45:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CCBCA6102A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B29FE16AB;
-	Mon, 21 Jun 2021 08:44:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B29FE16AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 630E316C1;
+	Mon, 21 Jun 2021 08:44:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 630E316C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624257890;
-	bh=vpBSzUNmQ0DwauRrTPy5glAvsdumuvu9oV6avPzRUXs=;
+	s=default; t=1624257941;
+	bh=xoQ1NkjaTq6s1DrZKLsUJczTH5Ur2H9z6Syn1xmE2lU=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rpnGwhxlyoL4QOdujc4GnJ6quJFovGUSSHpLzZ9e3MSmjfFP2hu53ez33+5s/B1TQ
-	 6+5i3JXPCF4nUaL8lLz/ZBS18Ley8UBNpLXkUuLw19MnXiJo3GoBy8hI0zoGaA0hZt
-	 JkjyiWLYWt3e4nbI7v+INq9vejRHa99+vbnQ6K9E=
+	b=Eii7NBd/o/F1t4/RDc7Pr03RigD+L1dmbkOaxuvj9RMKRCIsDx15l+dLyjUxSH7Hh
+	 GXyoODCWgB9/iYftdEUyKy1iWfK7xEGbUyalPaO95tJYZGKRrLZeOzhGWxngRFH0ce
+	 swHqUiB9H3VA26b8AqUIjcgWyP7VC+XlY7DQGjpM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 38774F80111;
-	Mon, 21 Jun 2021 08:44:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32A9BF801D5;
+	Mon, 21 Jun 2021 08:44:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0B10AF8016B; Mon, 21 Jun 2021 08:43:58 +0200 (CEST)
+ id DD039F80245; Mon, 21 Jun 2021 08:44:37 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8F80AF80111
- for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 08:43:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F80AF80111
+ by alsa1.perex.cz (Postfix) with ESMTPS id 58354F80137
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 08:44:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58354F80137
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="WkPz3KZ7"; 
+ header.b="jTzNP8MM"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="XYixP3ja"
+ header.b="K9HhDdEM"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 4F6E31FD2A;
- Mon, 21 Jun 2021 06:43:52 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 2E0171FD34;
+ Mon, 21 Jun 2021 06:44:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1624257832; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1624257875; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=l4Oo5fBF1HJNJuiW+SezPi9XOdxZijiHzFJHAiV07rc=;
- b=WkPz3KZ7HRg8e/rIJajxYevrBdsqjtGWlFUqbZf3u9PRiw74RSn7v3a764SXpt/cUoBzzY
- fNo+9v/swo2AyvLE8B6fkG6RzdPd/PXfMv7gUvjQM2MOfqfOFi7V5ddzJ2WUwfOZxfSodl
- QtdlIId5ZaJyDhXEfVv5KhkL4L27q0c=
+ bh=VIr9pGc+rZUrizVhlpUQkbzL3XqoCZs8B9fr8N7m3FI=;
+ b=jTzNP8MMYZ1niGHeaYpdcPYLfkCrChdUlERfjW/bPBp5+4XRlt/VqLw0+xkuS+TYfA8HtS
+ adaiVqvmPewiqdlIibFpUbdG4ZVlhGMC1YCJy43BxjAWeWweU0HjO6vHuRT8Z9EX+dE/Bl
+ 7eDClkKgAe7voetcBRt6mHcm4eVXUBU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1624257832;
+ s=susede2_ed25519; t=1624257875;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=l4Oo5fBF1HJNJuiW+SezPi9XOdxZijiHzFJHAiV07rc=;
- b=XYixP3ja/jemM0UF85b8vI63QGzYBva9pS9DynHoGjNuBNKZ66nR4nQDp+Dyfp6QNXa9Bm
- hnY8lBgSiQ2bM9DA==
+ bh=VIr9pGc+rZUrizVhlpUQkbzL3XqoCZs8B9fr8N7m3FI=;
+ b=K9HhDdEMznSHow1tmpilwD/kKm4MAFfzrcDq3at+hhpNK/6zqzRw5sTFBJCbzUNW5BzHDM
+ ZO5qADpoXeWdZlAg==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 44183A3B96;
- Mon, 21 Jun 2021 06:43:51 +0000 (UTC)
-Date: Mon, 21 Jun 2021 08:43:51 +0200
-Message-ID: <s5hmtrjvhso.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 266CEA3BA0;
+ Mon, 21 Jun 2021 06:44:35 +0000 (UTC)
+Date: Mon, 21 Jun 2021 08:44:35 +0200
+Message-ID: <s5hlf73vhrg.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: "Geoffrey D. Bennett" <g@b4.vu>
 Subject: Re: [PATCH V2 00/14] Cleanup before adding Scarlett Gen 3 support
-In-Reply-To: <20210620164615.GA9148@m.b4.vu>
+In-Reply-To: <s5hmtrjvhso.wl-tiwai@suse.de>
 References: <20210620164615.GA9148@m.b4.vu>
+	<s5hmtrjvhso.wl-tiwai@suse.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -98,44 +99,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 20 Jun 2021 18:46:15 +0200,
-Geoffrey D. Bennett wrote:
+On Mon, 21 Jun 2021 08:43:51 +0200,
+Takashi Iwai wrote:
 > 
-> Hi Takashi,
+> On Sun, 20 Jun 2021 18:46:15 +0200,
+> Geoffrey D. Bennett wrote:
+> > 
+> > Hi Takashi,
+> > 
+> > Here is version 2 of a set of patches which is some cleanup of the
+> > Scarlett Gen 2 mixer driver in preparation for adding Scarlett Gen 3
+> > support.
+> > 
+> > One review comment I got (from Hin-Tak) was:
+> > 
+> > > 40+ patches is a lot, for modifying just one file. I would collapse
+> > > it all into one and break it up again to under 10, maybe, broadly
+> > > into "functionally-equivalent re-org", "small isolated bug fixes",
+> > > "additional functions, not yet used", "hooking up those new
+> > > functions", etc?
+> > 
+> > I'm not sure that I agree with that comment -- I tried to follow the
+> > Documentation/process/submitting-patches.rst advice of "Separate each
+> > logical change into a separate patch" for easy review of the
+> > individual pieces, but perhaps I went too far in that direction?
+> > 
+> > Please let me know if I should combine some of these patches together.
 > 
-> Here is version 2 of a set of patches which is some cleanup of the
-> Scarlett Gen 2 mixer driver in preparation for adding Scarlett Gen 3
-> support.
+> The split is fine as long as it's done logically, so I took as is.
 > 
-> One review comment I got (from Hin-Tak) was:
+> But, one thing that can be improved at the next time is to sort out
+> fix patches.  e.g. you had patches for fixing the mixer field type
+> (int vs enum) and a patch to correct the locking; those are rather
+> independent from the cleanup series and should be applied for the
+> stable backports, too.  I didn't add stable at this time because I
+> wasn't sure whether applicable and that's no severe issue, but the
+> process can be better.
 > 
-> > 40+ patches is a lot, for modifying just one file. I would collapse
-> > it all into one and break it up again to under 10, maybe, broadly
-> > into "functionally-equivalent re-org", "small isolated bug fixes",
-> > "additional functions, not yet used", "hooking up those new
-> > functions", etc?
-> 
-> I'm not sure that I agree with that comment -- I tried to follow the
-> Documentation/process/submitting-patches.rst advice of "Separate each
-> logical change into a separate patch" for easy review of the
-> individual pieces, but perhaps I went too far in that direction?
-> 
-> Please let me know if I should combine some of these patches together.
+> Note that the merge window may be closed in this week, so if you want
+> the stuff to be merged, please submit now.
 
-The split is fine as long as it's done logically, so I took as is.
+Oh, one more thing: please use the mail thread for a patch set at the
+next time!
 
-But, one thing that can be improved at the next time is to sort out
-fix patches.  e.g. you had patches for fixing the mixer field type
-(int vs enum) and a patch to correct the locking; those are rather
-independent from the cleanup series and should be applied for the
-stable backports, too.  I didn't add stable at this time because I
-wasn't sure whether applicable and that's no severe issue, but the
-process can be better.
-
-Note that the merge window may be closed in this week, so if you want
-the stuff to be merged, please submit now.
-
-
-thanks,
 
 Takashi
