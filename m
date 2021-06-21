@@ -4,75 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D133FC4743C
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:48:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39F6CC48BC2
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:48:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7B2FD6128C
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:48:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B2FD6128C
+	by mail.kernel.org (Postfix) with ESMTPS id 6AB1F61245
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:48:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6AB1F61245
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8BBDE16D4;
-	Mon, 21 Jun 2021 20:47:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BBDE16D4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9DCEA16D0;
+	Mon, 21 Jun 2021 20:47:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DCEA16D0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624301319;
-	bh=BWOLJ0W+DyN0bIwjEcQUXM9qVf1PU48ef2v/ZiY7EAw=;
+	s=default; t=1624301324;
+	bh=sLgWN4s8GNDPO25dfpT1/TNRtfd/uI79Qq9d1BCDPn0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Z7TRJAKmkJjK7moSVXJlCQ76JcFHr/L9csH3e+oaNpysAJYK1NWJGKSP3/eorieBS
-	 W9kloM0UwaFVNuQdxo77Jmy6UedGSOvi1tozIvPC49sJri3mpiwyg2BHGZPPC33x7p
-	 QSAlWMP3vDq7F59greYl8zT6A9Wbqws4lJKWQonc=
+	b=KIHgziPnu8WSrAV3qEmq3QiTyGNhp9yOYz9jYgO+EEriCJsbIxGDHe3dzy9Bw20DV
+	 ViQ6PO7nKpezD/GJeh7etzhLDJxEDnZ95hNiEhpHJnszwm6IaKP/0rC//cgdcQSr2b
+	 Im/9+IOLMz8FUa3vqw66FGh8AyeekwdOScGREMvo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 55A1AF80163;
-	Mon, 21 Jun 2021 20:47:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6DE57F804D2;
+	Mon, 21 Jun 2021 20:47:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5A1FEF80163; Mon, 21 Jun 2021 20:46:57 +0200 (CEST)
+ id F04BAF80245; Mon, 21 Jun 2021 20:46:58 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0DB6EF80137
- for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 20:46:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0DB6EF80137
+ by alsa1.perex.cz (Postfix) with ESMTPS id 52A26F8016D
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 20:46:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52A26F8016D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qKXQvMHH"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 520396128A;
- Mon, 21 Jun 2021 18:46:48 +0000 (UTC)
+ header.b="okFEYST2"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 548896124B;
+ Mon, 21 Jun 2021 18:46:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1624301208;
- bh=BWOLJ0W+DyN0bIwjEcQUXM9qVf1PU48ef2v/ZiY7EAw=;
+ s=k20201202; t=1624301214;
+ bh=sLgWN4s8GNDPO25dfpT1/TNRtfd/uI79Qq9d1BCDPn0=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=qKXQvMHHlHKMPaPgxtLqtGD3L131cTrUjohy4lRa9n/F4bwGD55w7e0XY+VMWRuQp
- LO/iTFSC5GkwHF7Ncw0ebm99YUpZQXs1/XbwLr5NGFQY4paX6VZgAY7ZNHJV7rDN4o
- YKSVDyF2YK29KWJmbJ0vtkdawZtphPLBla79SkRErneNdzDnoKfDPua2zrgbtPrZhR
- XtaG0NhsjLkHxeqC7La/GtHg/eMxYifPuVEzIQuNCcP57IstV/SHhjdfaQqa80IelM
- lQ1Gnt2q9wJFRNsPQJi3oTdmrCrtCkTyXwcmlb9+4zB2BYEPPVA7WpotGXQO4y9YYq
- ElrPyhBYF8Slg==
+ b=okFEYST20zwXUCNHRYwS5D1ZL6h6+goigd12M/UhFB8z0WGZvIYE2YfCUKswCfqAG
+ G+fx5IkxaPouvVCVuUGYLTTr3x1y70Wkha5xwjuoT5abJebF41ydOjjJfPJfxCHJI8
+ +dI8DnXosBpO7kDuF0rrFo//Xbx6ACEr3cMgT0plEDmpNo0IjQUATivQAPdxqTCEOV
+ hxf9aX8MbNUknFshx9/+tJ+7Q6uKPJX56F7N4ol+13+LiUSxQlKhaTXLsx5JaxngBo
+ 896sqShMb4LaYG9GyYgySi89N2LuRxt1rO9LWTJQhR+Wi9iY/bH8t6N/IHXwALZ4ly
+ Byu/hFZPltQ7w==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com,
-	shumingf@realtek.com
-Subject: Re: [PATCH 2/2] ASoC: rt711: add two jack detection modes
-Date: Mon, 21 Jun 2021 19:45:56 +0100
-Message-Id: <162430055262.9224.15115096030073154792.b4-ty@kernel.org>
+To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ alsa-devel@alsa-project.org
+Subject: Re: [PATCH 1/2] ASoC: atmel-i2s: Set symmetric sample bits
+Date: Mon, 21 Jun 2021 19:45:58 +0100
+Message-Id: <162430055264.9224.7571690631298505549.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210617090822.16960-1-shumingf@realtek.com>
-References: <20210617090822.16960-1-shumingf@realtek.com>
+In-Reply-To: <20210618150741.401739-1-codrin.ciubotariu@microchip.com>
+References: <20210618150741.401739-1-codrin.ciubotariu@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- jairaj.arava@intel.com, lars@metafoo.de, Mark Brown <broonie@kernel.org>,
- derek.fang@realtek.com, bard.liao@intel.com, sathya.prakash.m.r@intel.com,
- flove@realtek.com
+Cc: alexandre.belloni@bootlin.com, tiwai@suse.com, nicolas.ferre@microchip.com,
+ ludovic.desroches@microchip.com, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,11 +87,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 17 Jun 2021 17:08:22 +0800, shumingf@realtek.com wrote:
-> Some boards use different circuits for jack detection.
-> This patch adds two modes as below
-> 1. JD2/2 ports/external resister 100k
-> 2. JD2/1 port/JD voltage 1.8V
+On Fri, 18 Jun 2021 18:07:40 +0300, Codrin Ciubotariu wrote:
+> The I2S needs to have the same sample bits for both capture and playback
+> streams.
 
 Applied to
 
@@ -100,8 +97,10 @@ Applied to
 
 Thanks!
 
-[2/2] ASoC: rt711: add two jack detection modes
-      commit: 683b0df26c3333a5c020a2764b71a70d082c1c61
+[1/2] ASoC: atmel-i2s: Set symmetric sample bits
+      commit: 489a830a25e1730aebf7ff53430c170db9a1771b
+[2/2] ASoC: atmel-i2s: Fix usage of capture and playback at the same time
+      commit: 3b7961a326f8a7e03f54a19f02fedae8d488b80f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
