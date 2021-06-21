@@ -4,76 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99D68C4743C
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:50:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52EB7C4743C
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:50:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1A0E06115A
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:50:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1A0E06115A
+	by mail.kernel.org (Postfix) with ESMTPS id C97ED61245
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:50:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C97ED61245
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A9AF0825;
-	Mon, 21 Jun 2021 20:49:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9AF0825
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5A5D91700;
+	Mon, 21 Jun 2021 20:49:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A5D91700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624301425;
-	bh=4ynnjLFGqT7jeVoGFXKGU1jJH+2RzYGaTP4Lm67YYMU=;
+	s=default; t=1624301448;
+	bh=Hvqbvb8PEP9vWPndDQlnnurh023iAvKbgDVNy5Fy/VE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=c92ifnSA4fZRwAGMBZ+Uv3nvMnB4THd1SbPhejzDEjoT5AkilL70r0AF/h44VG38m
-	 WSEvv5WieY5vqg5mBUBJoifDUA2AvC5Th+PgPk/ni61Iw/GZmb0KA5wEd1bOun9mSX
-	 aYYh6Eu3tR7xnrpPZf7JkpcE6bibRPJcmCmILOro=
+	b=oPsRRzVnNq7mf9cE9kJj0umJ3J4GVdIQ4Ayy6uJDCsj8U8OmVy7zdNvLwq9dLWcuK
+	 8i5dBquxtRq6Vm2KNbzp3bMIOcjh0s7PX8OUIQpAiCGPqQUAjBQgHvCu66knNE+thf
+	 fMeR/gbo/f5i2YXnZEF9sVSTvcKlhEHTnw3FHSzg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 08670F804FB;
-	Mon, 21 Jun 2021 20:47:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F7BEF804FF;
+	Mon, 21 Jun 2021 20:47:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 82C96F804E5; Mon, 21 Jun 2021 20:47:10 +0200 (CEST)
+ id 72457F804E5; Mon, 21 Jun 2021 20:47:13 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2F409F804E2
- for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 20:47:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F409F804E2
+ by alsa1.perex.cz (Postfix) with ESMTPS id DE506F804DA
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 20:47:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE506F804DA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ny0E3T5R"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D78B6128C;
- Mon, 21 Jun 2021 18:47:06 +0000 (UTC)
+ header.b="qpz7GK5d"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C260F6128A;
+ Mon, 21 Jun 2021 18:47:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1624301226;
- bh=4ynnjLFGqT7jeVoGFXKGU1jJH+2RzYGaTP4Lm67YYMU=;
+ s=k20201202; t=1624301229;
+ bh=Hvqbvb8PEP9vWPndDQlnnurh023iAvKbgDVNy5Fy/VE=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ny0E3T5RoNSybmXudw3iIbk8cMmu/KS9qAH9i8fLgRzSJaZmj2gYncYDR1q4PxVWF
- b53Dac9NfbCRhF4c/Pu5hqX2OOncLEZdiud6h9ABGt4UKzGoaqoeXkNAkTIikKcjED
- ZpUyFrsKKDml4i5FpwOV/Jf8nt47FRt25QdyDC5x16cjpaCr2mlwMYA7GTBo+++NBc
- fjzRr5kPx0J3mIRqqqSHtG23xpNgsE4279mr18+yvS2zd4Y355uLorxYYaBb33HCP7
- ZfuXWv8qN/8uYwdhiJ+7gcHryjUsEKraB5b9igFkVt7KpP2GxEXbmqRmfv05P5jNdt
- IpdJ4mewPLiqQ==
+ b=qpz7GK5doKWuCvFcAPBastocIb80UdJmfCuF8sXGOyIznO4YQ2NJmnH8ivpKT/lS+
+ aFhnzUSTd4sRjSQxs3kr0ah17nPIJ9tSj5c7yFvQnWfY8Q1E7mh6gxCVoNXAQyZdc4
+ e4hFcziXubn77RvcnhZYmp3EC49+EZl1u5Od0liYs+1s4YeytWumcDgPdXvcSxhZO8
+ b+iXyWM1izHzt3ZZFJxuM2ZwW2QW9IQLKw2q0YdM5wWKph89Q97rq3Cl9u90H/Ldnb
+ +SCsI9571ubZJQu2KTRoWYf4qz9x3rINElkDfF3Lfq8qhj6SUjDkebvM58ZxC9Qr0h
+ D5UI2yUa43dnw==
 From: Mark Brown <broonie@kernel.org>
-To: Dan Carpenter <dan.carpenter@oracle.com>,
- Dmitry Osipenko <digetx@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>
-Subject: Re: [PATCH] ASoC: tegra: Fix a NULL vs IS_ERR() check
-Date: Mon, 21 Jun 2021 19:46:02 +0100
-Message-Id: <162430055263.9224.14507478089189972560.b4-ty@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Liam Girdwood <lgirdwood@gmail.com>
+Subject: Re: [PATCH v3 0/8] ASoC: tidyup snd_soc_of_parse_daifmt()
+Date: Mon, 21 Jun 2021 19:46:03 +0100
+Message-Id: <162430055264.9224.15415217994628967307.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <YMyjOKFsPe9SietU@mwanda>
-References: <YMyjOKFsPe9SietU@mwanda>
+In-Reply-To: <87bl89w9fw.wl-kuninori.morimoto.gx@renesas.com>
+References: <87bl89w9fw.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Svyatoslav Ryhel <clamor95@gmail.com>, kernel-janitors@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Jonathan Hunter <jonathanh@nvidia.com>,
- Thierry Reding <thierry.reding@gmail.com>, Ion Agorria <ion@agorria.com>,
- linux-tegra@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@kernel.org>,
+ Neil Armstrong <narmstrong@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>, Sameer Pujar <spujar@nvidia.com>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ Mark Brown <broonie@kernel.org>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Kevin Hilman <khilman@baylibre.com>,
+ Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ Fabio Estevam <festevam@gmail.com>, Jerome Brunet <jbrunet@baylibre.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,9 +96,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 18 Jun 2021 16:44:24 +0300, Dan Carpenter wrote:
-> The tegra_machine_parse_phandle() function doesn't return NULL, it returns
-> error pointers.
+On 14 Jun 2021 09:56:19 +0900, Kuninori Morimoto wrote:
+> These are v3 of parsing for daifmt.
+> 
+> I want to add new audio-graph-card2 sound card driver,
+> and this is last part of necessary soc-core cleanup for it.
+> 
+> Current some drivers are using DT, and then,
+> snd_soc_of_parse_daifmt() parses daifmt, but bitclock/frame provider
+> parsing part is one of headache, because we are assuming below both cases.
+> 
+> [...]
 
 Applied to
 
@@ -99,8 +114,22 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: tegra: Fix a NULL vs IS_ERR() check
-      commit: 3aed3ddf9639a4f915984177ff8a2253f3f8acfe
+[1/8] ASoC: soc-core: add snd_soc_daifmt_clock_provider_from_bitmap()
+      commit: 91ae447762517c814672e2e5ff2383348101a032
+[2/8] ASoC: soc-core: add snd_soc_daifmt_clock_provider_fliped()
+      commit: b44a67f89366597364693e07e814660d5df8c66f
+[3/8] ASoC: soc-core: add snd_soc_daifmt_parse_format/clock_provider()
+      commit: 7766861d1f8d3afc35361ab599eee6851fcd4416
+[4/8] ASoC: atmel: switch to use snd_soc_daifmt_parse_format/clock_provider()
+      commit: 22108b9c2248f187d2b50af14e48807a0fb3db79
+[5/8] ASoC: fsl: switch to use snd_soc_daifmt_parse_format/clock_provider()
+      commit: 3bba9414512fc16c96c4cd25ee6447c8da4b4a76
+[6/8] ASoC: meson: switch to use snd_soc_daifmt_parse_format/clock_provider()
+      commit: 0c4c7a9667daf52c88cfc7fe44201ff653eab8f9
+[7/8] ASoC: simple-card-utils: switch to use snd_soc_daifmt_parse_format/clock_provider()
+      commit: 2c7fd9de8956ea1d8ea18b11d33fcf2fde9da81e
+[8/8] ASoC: soc-core: remove snd_soc_of_parse_daifmt()
+      commit: 8439c5861cf0c88037f6e9cdd3ba5f1c472f847a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
