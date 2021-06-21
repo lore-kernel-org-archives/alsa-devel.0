@@ -7,49 +7,50 @@ X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E107EC4743C
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:17:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C33CC4743C
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:17:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 14E25611BD
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:17:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14E25611BD
+	by mail.kernel.org (Postfix) with ESMTPS id A6A3D611BD
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Jun 2021 18:17:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A6A3D611BD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=b4.vu
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ACE231706;
-	Mon, 21 Jun 2021 20:16:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACE231706
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3419E16E0;
+	Mon, 21 Jun 2021 20:16:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3419E16E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624299430;
-	bh=25N+hSepopggMZUg+sz4SYSdCvRfnC/IPhhNwEYkWiE=;
+	s=default; t=1624299468;
+	bh=nIlZS+hAmltGcDwGCsjqTV0Wf0AoJ8ptIARlhUBlnxU=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JvO63NUof/jUVxY+D6r/YHpVk0k1M08s/Se55YgJkSTo+stxkdE0/X50DpGjoPuk1
-	 8duqn9HYJe0gmCGXEFu0Vt+/PpbIvB93wnCqRce7rnvTp2W7vHuxBw8c81+5X6k9Ii
-	 xQgHqxjIB7B3Z6/kc7lH4ccGFVSEdpBMP5vKkZp8=
+	b=cZuYxiSLB2ROBIAXnI3IqT1uSDsaP3sBs4GUvXZ7Pjz/Zw4ShY1sE5+ncy9R9m69+
+	 uiWgl12c+hcOOQJIh3PuD5r+Uwu1JMSTc8Lw0Hfw3oV/CEv6ZxLG8KM/N0YCFD2GnT
+	 DisKgIaOJUjUur+DOjMiXKUQolmw1+7kYkHQ8F2M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF76FF8057B;
-	Mon, 21 Jun 2021 20:10:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3C23AF801D5;
+	Mon, 21 Jun 2021 20:10:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B38CAF8055B; Mon, 21 Jun 2021 20:09:58 +0200 (CEST)
+ id C2914F80579; Mon, 21 Jun 2021 20:10:03 +0200 (CEST)
 Received: from m.b4.vu (m.b4.vu [203.16.231.148])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5902FF8052E
- for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 20:09:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5902FF8052E
+ by alsa1.perex.cz (Postfix) with ESMTPS id B2B30F80563
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 20:09:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2B30F80563
 Received: by m.b4.vu (Postfix, from userid 1000)
- id DC26361E286F; Tue, 22 Jun 2021 03:39:52 +0930 (ACST)
-Date: Tue, 22 Jun 2021 03:39:52 +0930
+ id 3FB1A61E287D; Tue, 22 Jun 2021 03:39:57 +0930 (ACST)
+Date: Tue, 22 Jun 2021 03:39:57 +0930
 From: "Geoffrey D. Bennett" <g@b4.vu>
 To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 18/31] ALSA: usb-audio: scarlett2: Add Gen 3 MSD mode switch
-Message-ID: <06f41cdc8c843a1c0ab0f7a1c01160ebbe7a7cdb.1624294591.git.g@b4.vu>
+Subject: [PATCH 20/31] ALSA: usb-audio: scarlett2: Allow bit-level access to
+ config
+Message-ID: <162ad60730bae6ff52cc492ab5d442d4b2f4b0b1.1624294591.git.g@b4.vu>
 References: <cover.1624294591.git.g@b4.vu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -73,249 +74,137 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add a control to disable the Gen 3 MSD mode so that the full
-functionality of the device is available. Don't create the other
-controls until MSD mode is disabled.
+Add support for accessing configuration values when multiple values
+are stored in one byte. Needed by the upcoming Solo and 2i2 Gen 3
+support.
 
 Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
 ---
- sound/usb/mixer_scarlett_gen2.c | 120 +++++++++++++++++++++++++++++++-
- 1 file changed, 117 insertions(+), 3 deletions(-)
+ sound/usb/mixer_scarlett_gen2.c | 68 ++++++++++++++++++++++++++-------
+ 1 file changed, 55 insertions(+), 13 deletions(-)
 
 diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
-index a4f92291b74f..6995d692c6b2 100644
+index 87a90cafb175..45b28585dacb 100644
 --- a/sound/usb/mixer_scarlett_gen2.c
 +++ b/sound/usb/mixer_scarlett_gen2.c
-@@ -44,12 +44,13 @@
-  * interface during driver initialisation added in May 2021 (thanks to
-  * Vladimir Sadovnikov for figuring out how).
-  *
-- * This ALSA mixer gives access to:
-+ * This ALSA mixer gives access to (model-dependent):
-  *  - input, output, mixer-matrix muxes
-  *  - mixer-matrix gain stages
-  *  - gain/volume/mute controls
-  *  - level meters
-  *  - line/inst level and pad controls
-+ *  - disable/enable MSD mode
-  *
-  * <ditaa>
-  *    /--------------\    18chn            20chn     /--------------\
-@@ -102,6 +103,14 @@
-  *  \--------------/
-  * </ditaa>
-  *
-+ * Gen 3 devices have a Mass Storage Device (MSD) mode where a small
-+ * disk with registration and driver download information is presented
-+ * to the host. To access the full functionality of the device without
-+ * proprietary software, MSD mode can be disabled by:
-+ * - holding down the 48V button for five seconds while powering on
-+ *   the device, or
-+ * - using this driver and alsamixer to change the "MSD Mode" setting
-+ *   to Off and power-cycling the device
-  */
- 
- #include <linux/slab.h>
-@@ -120,6 +129,9 @@
- /* device_setup value to enable */
- #define SCARLETT2_ENABLE 0x01
- 
-+/* device_setup value to allow turning MSD mode back on */
-+#define SCARLETT2_MSD_ENABLE 0x02
-+
- /* some gui mixers can't handle negative ctl values */
- #define SCARLETT2_VOLUME_BIAS 127
- 
-@@ -279,6 +291,12 @@ struct scarlett2_mux_entry {
- struct scarlett2_device_info {
- 	u32 usb_id; /* USB device identifier */
- 
-+	/* Gen 3 devices have an internal MSD mode switch that needs
-+	 * to be disabled in order to access the full functionality of
-+	 * the device.
-+	 */
-+	u8 has_msd_mode;
-+
- 	/* line out hw volume is sw controlled */
- 	u8 line_out_hw_vol;
- 
-@@ -327,6 +345,7 @@ struct scarlett2_data {
- 	u8 level_switch[SCARLETT2_LEVEL_SWITCH_MAX];
- 	u8 pad_switch[SCARLETT2_PAD_SWITCH_MAX];
- 	u8 dim_mute[SCARLETT2_DIM_MUTE_COUNT];
-+	u8 msd_switch;
- 	struct snd_kcontrol *sync_ctl;
- 	struct snd_kcontrol *master_vol_ctl;
- 	struct snd_kcontrol *vol_ctls[SCARLETT2_ANALOGUE_MAX];
-@@ -489,6 +508,7 @@ static const struct scarlett2_device_info s18i20_gen2_info = {
- static const struct scarlett2_device_info s4i4_gen3_info = {
- 	.usb_id = USB_ID(0x1235, 0x8212),
- 
-+	.has_msd_mode = 1,
- 	.level_input_count = 2,
- 	.pad_input_count = 2,
- 
-@@ -530,6 +550,7 @@ static const struct scarlett2_device_info s4i4_gen3_info = {
- static const struct scarlett2_device_info s8i6_gen3_info = {
- 	.usb_id = USB_ID(0x1235, 0x8213),
- 
-+	.has_msd_mode = 1,
- 	.level_input_count = 2,
- 	.pad_input_count = 2,
- 
-@@ -578,6 +599,7 @@ static const struct scarlett2_device_info s8i6_gen3_info = {
- static const struct scarlett2_device_info s18i8_gen3_info = {
- 	.usb_id = USB_ID(0x1235, 0x8214),
- 
-+	.has_msd_mode = 1,
- 	.line_out_hw_vol = 1,
- 	.level_input_count = 2,
- 	.pad_input_count = 2,
-@@ -639,6 +661,7 @@ static const struct scarlett2_device_info s18i8_gen3_info = {
- static const struct scarlett2_device_info s18i20_gen3_info = {
- 	.usb_id = USB_ID(0x1235, 0x8215),
- 
-+	.has_msd_mode = 1,
- 	.line_out_hw_vol = 1,
- 	.level_input_count = 2,
- 	.pad_input_count = 8,
-@@ -786,7 +809,8 @@ enum {
- 	SCARLETT2_CONFIG_SW_HW_SWITCH = 3,
- 	SCARLETT2_CONFIG_LEVEL_SWITCH = 4,
- 	SCARLETT2_CONFIG_PAD_SWITCH = 5,
--	SCARLETT2_CONFIG_COUNT = 6
-+	SCARLETT2_CONFIG_MSD_SWITCH = 6,
-+	SCARLETT2_CONFIG_COUNT = 7
+@@ -814,7 +814,7 @@ enum {
  };
  
  /* Location, size, and activation command number for the configuration
-@@ -817,6 +841,9 @@ static const struct scarlett2_config
+- * parameters
++ * parameters. Size is in bits and may be 1, 8, or 16.
+  */
+ struct scarlett2_config {
+ 	u8 offset;
+@@ -825,25 +825,25 @@ struct scarlett2_config {
+ static const struct scarlett2_config
+ 		scarlett2_config_items[SCARLETT2_CONFIG_COUNT] = {
+ 	[SCARLETT2_CONFIG_DIM_MUTE] = {
+-		.offset = 0x31, .size = 1, .activate = 2 },
++		.offset = 0x31, .size = 8, .activate = 2 },
+ 
+ 	[SCARLETT2_CONFIG_LINE_OUT_VOLUME] = {
+-		.offset = 0x34, .size = 2, .activate = 1 },
++		.offset = 0x34, .size = 16, .activate = 1 },
+ 
+ 	[SCARLETT2_CONFIG_MUTE_SWITCH] = {
+-		.offset = 0x5c, .size = 1, .activate = 1 },
++		.offset = 0x5c, .size = 8, .activate = 1 },
+ 
+ 	[SCARLETT2_CONFIG_SW_HW_SWITCH] = {
+-		.offset = 0x66, .size = 1, .activate = 3 },
++		.offset = 0x66, .size = 8, .activate = 3 },
+ 
+ 	[SCARLETT2_CONFIG_LEVEL_SWITCH] = {
+-		.offset = 0x7c, .size = 1, .activate = 7 },
++		.offset = 0x7c, .size = 8, .activate = 7 },
  
  	[SCARLETT2_CONFIG_PAD_SWITCH] = {
- 		.offset = 0x84, .size = 1, .activate = 8 },
-+
-+	[SCARLETT2_CONFIG_MSD_SWITCH] = {
-+		.offset = 0x9d, .size = 1, .activate = 6 },
+-		.offset = 0x84, .size = 1, .activate = 8 },
++		.offset = 0x84, .size = 8, .activate = 8 },
+ 
+ 	[SCARLETT2_CONFIG_MSD_SWITCH] = {
+-		.offset = 0x9d, .size = 1, .activate = 6 },
++		.offset = 0x9d, .size = 8, .activate = 6 },
  };
  
  /* proprietary request/response format */
-@@ -1016,7 +1043,8 @@ static int scarlett2_usb_set_config(
- 		return err;
+@@ -1008,9 +1008,25 @@ static int scarlett2_usb_get_config(
+ {
+ 	const struct scarlett2_config *config_item =
+ 		&scarlett2_config_items[config_item_num];
+-	int size = config_item->size * count;
++	int size, err, i;
++	u8 value;
  
- 	/* Schedule the change to be written to NVRAM */
--	schedule_delayed_work(&private->work, msecs_to_jiffies(2000));
-+	if (config_item->activate != SCARLETT2_USB_CONFIG_SAVE)
-+		schedule_delayed_work(&private->work, msecs_to_jiffies(2000));
- 
- 	return 0;
- }
-@@ -2346,6 +2374,71 @@ static int scarlett2_add_meter_ctl(struct usb_mixer_interface *mixer)
- 				     "Level Meter", NULL);
- }
- 
-+/*** MSD Controls ***/
-+
-+static int scarlett2_msd_ctl_get(struct snd_kcontrol *kctl,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct usb_mixer_elem_info *elem = kctl->private_data;
-+	struct scarlett2_data *private = elem->head.mixer->private_data;
-+
-+	ucontrol->value.integer.value[0] = private->msd_switch;
-+	return 0;
-+}
-+
-+static int scarlett2_msd_ctl_put(struct snd_kcontrol *kctl,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct usb_mixer_elem_info *elem = kctl->private_data;
-+	struct usb_mixer_interface *mixer = elem->head.mixer;
-+	struct scarlett2_data *private = mixer->private_data;
-+
-+	int oval, val, err = 0;
-+
-+	mutex_lock(&private->data_mutex);
-+
-+	oval = private->msd_switch;
-+	val = !!ucontrol->value.integer.value[0];
-+
-+	if (oval == val)
-+		goto unlock;
-+
-+	private->msd_switch = val;
-+
-+	/* Send switch change to the device */
-+	err = scarlett2_usb_set_config(mixer, SCARLETT2_CONFIG_MSD_SWITCH,
-+				       0, val);
-+
-+unlock:
-+	mutex_unlock(&private->data_mutex);
-+	return err;
-+}
-+
-+static const struct snd_kcontrol_new scarlett2_msd_ctl = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.name = "",
-+	.info = snd_ctl_boolean_mono_info,
-+	.get  = scarlett2_msd_ctl_get,
-+	.put  = scarlett2_msd_ctl_put,
-+};
-+
-+static int scarlett2_add_msd_ctl(struct usb_mixer_interface *mixer)
-+{
-+	struct scarlett2_data *private = mixer->private_data;
-+	const struct scarlett2_device_info *info = private->info;
-+
-+	if (!info->has_msd_mode)
-+		return 0;
-+
-+	/* If MSD mode is off, hide the switch by default */
-+	if (!private->msd_switch && !(mixer->chip->setup & SCARLETT2_MSD_ENABLE))
-+		return 0;
-+
-+	/* Add MSD control */
-+	return scarlett2_add_new_ctl(mixer, &scarlett2_msd_ctl,
-+				     0, 1, "MSD Mode", NULL);
-+}
-+
- /*** Cleanup/Suspend Callbacks ***/
- 
- static void scarlett2_private_free(struct usb_mixer_interface *mixer)
-@@ -2483,6 +2576,18 @@ static int scarlett2_read_configs(struct usb_mixer_interface *mixer)
- 	struct scarlett2_usb_volume_status volume_status;
- 	int err, i;
- 
-+	if (info->has_msd_mode) {
-+		err = scarlett2_usb_get_config(
-+			mixer, SCARLETT2_CONFIG_MSD_SWITCH,
-+			1, &private->msd_switch);
-+		if (err < 0)
-+			return err;
-+
-+		/* no other controls are created if MSD mode is on */
-+		if (private->msd_switch)
-+			return 0;
+-	return scarlett2_usb_get(mixer, config_item->offset, buf, size);
++	/* For byte-sized parameters, retrieve directly into buf */
++	if (config_item->size >= 8) {
++		size = config_item->size / 8 * count;
++		return scarlett2_usb_get(mixer, config_item->offset, buf, size);
 +	}
 +
- 	err = scarlett2_update_input_other(mixer);
- 	if (err < 0)
- 		return err;
-@@ -2705,6 +2810,15 @@ static int snd_scarlett_gen2_controls_create(struct usb_mixer_interface *mixer)
- 	if (err < 0)
- 		return err;
- 
-+	/* Create the MSD control */
-+	err = scarlett2_add_msd_ctl(mixer);
++	/* For bit-sized parameters, retrieve into value */
++	err = scarlett2_usb_get(mixer, config_item->offset, &value, 1);
 +	if (err < 0)
 +		return err;
 +
-+	/* If MSD mode is enabled, don't create any other controls */
-+	if (((struct scarlett2_data *)mixer->private_data)->msd_switch)
-+		return 0;
++	/* then unpack from value into buf[] */
++	for (i = 0; i < 8 && i < count; i++, value >>= 1)
++		*(u8 *)buf++ = value & 1;
 +
- 	/* Create the analogue output controls */
- 	err = scarlett2_add_line_out_ctls(mixer);
++	return 0;
+ }
+ 
+ /* Send SCARLETT2_USB_DATA_CMD SCARLETT2_USB_CONFIG_SAVE */
+@@ -1047,18 +1063,44 @@ static int scarlett2_usb_set_config(
+ 		__le32 value;
+ 	} __packed req;
+ 	__le32 req2;
++	int offset, size;
+ 	int err;
+ 	struct scarlett2_data *private = mixer->private_data;
+ 
+ 	/* Cancel any pending NVRAM save */
+ 	cancel_delayed_work_sync(&private->work);
+ 
++	/* Convert config_item->size in bits to size in bytes and
++	 * calculate offset
++	 */
++	if (config_item->size >= 8) {
++		size = config_item->size / 8;
++		offset = config_item->offset + index * size;
++
++	/* If updating a bit, retrieve the old value, set/clear the
++	 * bit as needed, and update value
++	 */
++	} else {
++		u8 tmp;
++
++		size = 1;
++		offset = config_item->offset;
++
++		scarlett2_usb_get(mixer, offset, &tmp, 1);
++		if (value)
++			tmp |= (1 << index);
++		else
++			tmp &= ~(1 << index);
++
++		value = tmp;
++	}
++
+ 	/* Send the configuration parameter data */
+-	req.offset = cpu_to_le32(config_item->offset + index * config_item->size);
+-	req.bytes = cpu_to_le32(config_item->size);
++	req.offset = cpu_to_le32(offset);
++	req.bytes = cpu_to_le32(size);
+ 	req.value = cpu_to_le32(value);
+ 	err = scarlett2_usb(mixer, SCARLETT2_USB_SET_DATA,
+-			    &req, sizeof(u32) * 2 + config_item->size,
++			    &req, sizeof(u32) * 2 + size,
+ 			    NULL, 0);
  	if (err < 0)
+ 		return err;
 -- 
 2.31.1
 
