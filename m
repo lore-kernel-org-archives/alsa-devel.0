@@ -2,75 +2,79 @@ Return-Path: <SRS0=bL7i=LQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B98EBC2B9F4
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Jun 2021 15:15:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31609C2B9F4
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Jun 2021 15:16:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C14906128E
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Jun 2021 15:15:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C14906128E
+	by mail.kernel.org (Postfix) with ESMTPS id D94D56128E
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Jun 2021 15:16:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D94D56128E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6331E82C;
-	Tue, 22 Jun 2021 17:14:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6331E82C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1857D828;
+	Tue, 22 Jun 2021 17:15:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1857D828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624374939;
-	bh=3we7Q+7oup/k3bH7oBPacMDKI+UoeT+oMJOH2NAnA1U=;
+	s=default; t=1624374990;
+	bh=tq5W3HglBF9jy+mJvlAU7lrMCvmo4pvk0yjiPuf4/xk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ecYjR4iim/DNUlqFGEovrW+0NLbaMfX9dBzqagOKAXpl3o8VSLzGB+7YDTXU4tdon
-	 y2K3t+eFAnw2sOT5d7wzxOGxgagDGUTQJpFWhm6r5cOIJCL63ApJuCRY7UjELFpANb
-	 LtAepV4p8jt3pYxIVIrn9+jGwTpX+BVFhxkInAQw=
+	b=msL6Vb31xpxg4nsbX8W16RG6QW4349SL2J7qdDy0fmExTBMKFUzHJ71spb7sLbQ+b
+	 PVyn2v+lgvm+RMTpkXbH+E2BfJ4+6HbxyQ/bu+gS2u/NItNWywSJPKywKEh+746ia5
+	 tuu0e6Vg6KhLHYe0+Qt06SsAb1LPWxtOKj3gJrG8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01BBCF8025F;
+	by alsa1.perex.cz (Postfix) with ESMTP id A5065F80424;
 	Tue, 22 Jun 2021 17:14:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2B434F8026A; Tue, 22 Jun 2021 17:14:46 +0200 (CEST)
+ id 87BA0F80268; Tue, 22 Jun 2021 17:14:46 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BD684F80161
- for <alsa-devel@alsa-project.org>; Tue, 22 Jun 2021 17:14:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD684F80161
+ by alsa1.perex.cz (Postfix) with ESMTPS id 039B9F800E1
+ for <alsa-devel@alsa-project.org>; Tue, 22 Jun 2021 17:14:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 039B9F800E1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="a/rZhZb6"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5970B61289;
- Tue, 22 Jun 2021 15:14:41 +0000 (UTC)
+ header.b="XL3S/7xb"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 864BE600D3;
+ Tue, 22 Jun 2021 15:14:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1624374881;
- bh=3we7Q+7oup/k3bH7oBPacMDKI+UoeT+oMJOH2NAnA1U=;
+ s=k20201202; t=1624374879;
+ bh=tq5W3HglBF9jy+mJvlAU7lrMCvmo4pvk0yjiPuf4/xk=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=a/rZhZb6KlhJka/XnPA9DRrd8wfTm16TgdD2lazvGqxdhP/5iuEPGivLCU7hnVJQj
- jz3a1tH6Co83YUcbYsXlsi9I2s8z1611ere2zxOjjCAws0sm7qSgavZq0o9v8ljybR
- jU17FAJrIdUx7ukqhTx6TI81XLmNoJV6MG32UvdG2znTs+XNhhGZ/KTgCZEKtLDlfV
- YO0l3ifu1/QQ6FfF32jfptbEh71CTgnvqgZoJQnp5gESk0UgOonEpbDKs6pZmULSng
- ILX+HInKPpZrqQje5U/OaSWBrbrqwZaqLwgLpzotPbwXvT7o8nb2mDRhcFiCre091x
- k0oF4ub6SPTgA==
+ b=XL3S/7xbkKgf1TrgRLc11BaBRHJ1nsarxcrvBseoyoZN6FtUM90Eh4mD2gCbdS+th
+ SfLvRws8xd8LydAe0yOkyrcNYseRW460yO5xSpUfFu2Jz01guOeNeO1UD61L8aayBi
+ n1OQY97sXsY/1Zc7hHDcTAS6m/IS7QjaElauE/L/JuCo/a+H3pWMa45yc2XYAu2P+v
+ ztDpx+p4aktwtT/LARiSyQTIlVs40j/+lORZzl9ZAHXtJ1QO2Yml4nxAuD1xRwIZPB
+ SoZN5nouq5Su4diURilLDobNThZCwARFE7hz11rgqBssLqmLi3QFrBdjno1Iu6HJ3o
+ 16CBVm8czFFog==
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 1/2] ASoC: codecs: wcd938x: fix unused variable warning
-Date: Tue, 22 Jun 2021 16:14:05 +0100
-Message-Id: <162437355277.1773.9681249031887965233.b4-ty@kernel.org>
+To: Stephan Gerhold <stephan@gerhold.net>, Jaroslav Kysela <perex@perex.cz>,
+ Thierry Reding <treding@nvidia.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+ =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Jon Hunter <jonathanh@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>
+Subject: Re: [PATCH] ASoC: simple-card: Fill in driver name
+Date: Tue, 22 Jun 2021 16:14:04 +0100
+Message-Id: <162437355278.1773.13469789646711861169.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210621134502.19537-1-srinivas.kandagatla@linaro.org>
-References: <20210621134502.19537-1-srinivas.kandagatla@linaro.org>
+In-Reply-To: <YNGe3akAntQi8qJD@qwark.sigxcpu.org>
+References: <YNGe3akAntQi8qJD@qwark.sigxcpu.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, kernel test robot <lkp@intel.com>,
- linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,12 +90,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 21 Jun 2021 14:45:01 +0100, Srinivas Kandagatla wrote:
-> This patch fixes below
+On Tue, 22 Jun 2021 10:27:09 +0200, Guido Günther wrote:
+> alsa-ucm groups by driver name so fill that in as well. Otherwise the
+> presented information is redundant and doesn't reflect the used
+> driver. We can't just use 'asoc-simple-card' since the driver name is
+> restricted to 15 characters.
 > 
-> 	warning: unused variable wcd938x_dt_match
+> Before:
 > 
-> by placing device match table under CONFIG_OF
+> [...]
 
 Applied to
 
@@ -99,10 +106,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: codecs: wcd938x: fix unused variable warning
-      commit: 8c4863c261c812a1088b0f8c6b66386d885390e1
-[2/2] ASoC: codecs: wcd938x: fix uninitialized symbol warnings
-      commit: d245fff1013cb7456ea9ca3f7b858e438c6bbf79
+[1/1] ASoC: simple-card: Fill in driver name
+      commit: 907f0a3051869a61499905377212500155bd28ec
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
