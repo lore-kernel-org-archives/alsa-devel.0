@@ -2,94 +2,65 @@ Return-Path: <SRS0=bL7i=LQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A700C2B9F4
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Jun 2021 07:35:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8528C2B9F4
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Jun 2021 07:45:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DFC476102A
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Jun 2021 07:35:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFC476102A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 1EE0A6128E
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Jun 2021 07:45:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1EE0A6128E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=b4.vu
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 228DE1677;
-	Tue, 22 Jun 2021 09:34:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 228DE1677
+	by alsa0.perex.cz (Postfix) with ESMTPS id EABC286F;
+	Tue, 22 Jun 2021 09:45:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EABC286F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624347324;
-	bh=hC6yFMlcabodQhEobeqoMpAQgvZtHq66TZwWhIqFuB0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1624347955;
+	bh=RUJIDZGnns9jY0ORfp2RNmHm1iCTDcERk5lqXSg5t2c=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CHYhQNJd/nqPfp/X1XUeNDByu3gHo0YgCzcAqZIq0xlphgUaXRdaRDnTtOYlPDjHq
-	 AWH2lSUaV79p0VA/bBLRY1QmH99+44dqflZ8QnwkYxuvxdQhqDgZ5XvctkjoDMbkZk
-	 OLgnCDy0YphqkYi9SIwz884Ae2m8ZM5GeFCYEEy0=
+	b=M0WtmhYZVJKV9D7zI/pEeqp+m74vIkBmnmQuTB9JvuQDzkeS6HC1vYiiqxVUl5mR+
+	 rwgti/+7bSq6IlS/KNnBNCb77KZxiyEcbaZvyWRZK+zajmxQz5GscqMFGdT3JAps/T
+	 34CHl7KNRoAGzOHht8jnziYiL5GOaRj+Gye40lOo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A90CFF8025F;
-	Tue, 22 Jun 2021 09:34:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7A91BF80137;
+	Tue, 22 Jun 2021 09:45:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16340F80268; Tue, 22 Jun 2021 09:34:32 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 80A45F80268; Tue, 22 Jun 2021 09:45:02 +0200 (CEST)
+Received: from m.b4.vu (m.b4.vu [203.16.231.148])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0608CF800E1
- for <alsa-devel@alsa-project.org>; Tue, 22 Jun 2021 09:34:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0608CF800E1
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="tBCrYGaq"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="89arODnM"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 5D1CB1FD45;
- Tue, 22 Jun 2021 07:34:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1624347265; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=9LKbNFBkQ2Ddvv/ym//yRRitqlpl+pT84mlYwBxMcGU=;
- b=tBCrYGaqSF3+ru5AXFhWkVcQf9AiZ2FCH/COj4aiapBdVxL/Z1WTxgGa+SVRTbBETX4/VH
- pxvYt/ZzUVypl9TC40wDCYpNV70cFBc2YaUui8dwm2ZXO1EgB0qABLYTKdBzVxMAIdvdKE
- KmaSXG23fx8NsSqtWq8ATdHS5j0jiTo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1624347265;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=9LKbNFBkQ2Ddvv/ym//yRRitqlpl+pT84mlYwBxMcGU=;
- b=89arODnMoB+pU68M+quWs55fJOOz/EsScuhmha/QYHN6uwcHlK3PpV/DH7DNp/ZwHSSrLI
- NrjSy2gmBSttSCDg==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 56466A3B8D;
- Tue, 22 Jun 2021 07:34:25 +0000 (UTC)
-Date: Tue, 22 Jun 2021 09:34:25 +0200
-Message-ID: <s5hczses67y.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Vladimir Sadovnikov <sadko4u@gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1A393F80137
+ for <alsa-devel@alsa-project.org>; Tue, 22 Jun 2021 09:44:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A393F80137
+Received: by m.b4.vu (Postfix, from userid 1000)
+ id 4797061E2853; Tue, 22 Jun 2021 17:14:54 +0930 (ACST)
+Date: Tue, 22 Jun 2021 17:14:54 +0930
+From: "Geoffrey D. Bennett" <g@b4.vu>
+To: Takashi Iwai <tiwai@suse.de>
 Subject: Re: [PATCH 16/31] ALSA: usb-audio: scarlett2: Add Gen 3 mixer support
-In-Reply-To: <0b00f3a5-fe31-0ad5-c723-d354dc724e58@gmail.com>
+Message-ID: <20210622074454.GB13614@m.b4.vu>
 References: <cover.1624294591.git.g@b4.vu>
  <fc4bb1e8cfb3019b1033afeed59badb904990115.1624294591.git.g@b4.vu>
  <s5hh7hqs7ss.wl-tiwai@suse.de>
  <0b00f3a5-fe31-0ad5-c723-d354dc724e58@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+ <s5hczses67y.wl-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5hczses67y.wl-tiwai@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: Hin-Tak Leung <htl10@users.sourceforge.net>, alsa-devel@alsa-project.org,
- "Geoffrey D. Bennett" <g@b4.vu>
+ Vladimir Sadovnikov <sadko4u@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,64 +76,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 22 Jun 2021 09:07:20 +0200,
-Vladimir Sadovnikov wrote:
+On Tue, Jun 22, 2021 at 09:34:25AM +0200, Takashi Iwai wrote:
+> On Tue, 22 Jun 2021 09:07:20 +0200,
+> Vladimir Sadovnikov wrote:
+> > 
+> > Hello Takashi!
+> > 
+> > Since Focusrite devices are too advanced in settings, the overall
+> > amount of 256 controls is not enough for these devices (like 18i20).
+> > I would like also to extend this constant up to 1024 or even more
+> > since adding support of software configuration of the device also
+> > can exceed the amount of 512 control elements.
 > 
-> Hello Takashi!
-> 
-> Since Focusrite devices are too advanced in settings, the overall
-> amount of 256 controls is not enough for these devices (like 18i20).
-> I would like also to extend this constant up to 1024 or even more
-> since adding support of software configuration of the device also
-> can exceed the amount of 512 control elements.
+> This define isn't for the total number of mixer elements.  Instead,
+> it's just a size of the bitmap table that contains the head of the
+> linked list for each unit id (in the sense of USB mixer spec).
+> So the number of mixer elements is unlimited.
 
-This define isn't for the total number of mixer elements.  Instead,
-it's just a size of the bitmap table that contains the head of the
-linked list for each unit id (in the sense of USB mixer spec).
-So the number of mixer elements is unlimited.
+Sorry I don't understand what's going on then. Am I calling
+snd_usb_mixer_add_control() wrong? Because when I called it more than
+MAX_ID_ELEMS times I got a buffer overflow in mixer->id_elems[] (from
+memory, I can confirm tonight).
 
+snd_usb_create_mixer() has:
 
-Takashi
+        mixer->id_elems = kcalloc(MAX_ID_ELEMS, sizeof(*mixer->id_elems),
+                                  GFP_KERNEL);
 
-> 
-> Let's assume we have a mute switch for each mixer gain setting. For
-> the 18i20 device this will give:
-> 12 inputs * 25 outputs = 300 mute switches.
-> 
-> So I think this constant should be increased rapidly up to 1024 or even to 2048.
-> 
-> Best,
-> Vladimir
-> 
-> 22.06.2021 10:00, Takashi Iwai пишет:
-> > On Mon, 21 Jun 2021 20:09:48 +0200,
-> > Geoffrey D. Bennett wrote:
-> >> Add mixer support for the Focusrite Scarlett 4i4, 8i6, 18i8, and 18i20
-> >> Gen 3 devices.
-> >>
-> >> Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
-> >> ---
-> >>   sound/usb/mixer.c               |   2 +-
-> >>   sound/usb/mixer_quirks.c        |   4 +
-> >>   sound/usb/mixer_scarlett_gen2.c | 260 +++++++++++++++++++++++++++++---
-> >>   3 files changed, 246 insertions(+), 20 deletions(-)
-> >>
-> >> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-> >> index 428d581f988f..ba4aa1eacb04 100644
-> >> --- a/sound/usb/mixer.c
-> >> +++ b/sound/usb/mixer.c
-> >> @@ -50,7 +50,7 @@
-> >>   #include "mixer_quirks.h"
-> >>   #include "power.h"
-> >>   -#define MAX_ID_ELEMS	256
-> >> +#define MAX_ID_ELEMS	512
-> > This change requires the explanation.
-> > Usually the unit id is a byte per definition, so it can't be over
-> > 256.
-> >
-> >
-> > thanks,
-> >
-> > Takashi
-> 
-> 
+snd_usb_mixer_add_control() called from mixer_scarlett_gen2.c ends up
+at snd_usb_mixer_add_list() which does:
+
+        list->next_id_elem = mixer->id_elems[list->id];
+        mixer->id_elems[list->id] = list;
+
+And list->id was going over MAX_ID_ELEMS.
