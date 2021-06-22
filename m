@@ -2,83 +2,59 @@ Return-Path: <SRS0=bL7i=LQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AA8CC48BDF
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Jun 2021 16:24:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74341C2B9F4
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Jun 2021 17:01:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 736B1611BF
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Jun 2021 16:24:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 736B1611BF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id BCAB76128C
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Jun 2021 17:01:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BCAB76128C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=b4.vu
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 859419F6;
-	Tue, 22 Jun 2021 18:23:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 859419F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6F75E850;
+	Tue, 22 Jun 2021 19:00:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F75E850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624379069;
-	bh=dvnbdNnOiv03SgjtecC7Dh5JlTHc3Gn16vJg0Lm+0VQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=hnsn0RJNcJJvzDmKGRhr3E1856PPYngo8pZUUwQqMgt+2xHmGe5M/sGTwOw2wgYAQ
-	 UqqMUb5TXkUNXuvS4WGlTpgJ7G4M/r1c0Xhetcq9h/ZYJ/qolm2bBC7dzOu4+JhW7D
-	 yW5wOU7W6PYdLdoTftLsnFrN90qvSSoFjWYjzc/M=
+	s=default; t=1624381302;
+	bh=vkM+Hrttef4o+HJ9JKsaNV8KRKRJYqWj8KncEakkFmo=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=H1gcYyOYzPr9olU6z4dNDydnugN+Plb6yujIyBG3GUEE+Bww0JXD8p15+i8wk0YOM
+	 hMbUjtk4IJLTxpxlNylYH6yEYQ4gjfmogA4ujp69X+xhd58AsO6THrcS2VWTUnV58y
+	 tzZDzlacwKcOHbEXb30pFRTDppXzjgLx+0mAViQ4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23D38F8025F;
-	Tue, 22 Jun 2021 18:23:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EC898F8025F;
+	Tue, 22 Jun 2021 19:00:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4DAA7F80268; Tue, 22 Jun 2021 18:23:38 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id F077CF80268; Tue, 22 Jun 2021 19:00:50 +0200 (CEST)
+Received: from m.b4.vu (m.b4.vu [203.16.231.148])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E8227F80137
- for <alsa-devel@alsa-project.org>; Tue, 22 Jun 2021 18:23:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8227F80137
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="lIZK4me2"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBAF860240;
- Tue, 22 Jun 2021 16:23:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1624379010;
- bh=dvnbdNnOiv03SgjtecC7Dh5JlTHc3Gn16vJg0Lm+0VQ=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=lIZK4me2EB7vjw3OO3BFGCQ6AOkbHde3QpzQhzvTRf4rBlt0/HJ16wOBqS6XKXP1n
- Os0RgH4qcR6j+Xj/PPQkHFPoTIFuV997H5bRIahKQ8R69mAdtSL8wH6j4XD7zK04Lk
- PF3vJYOXOfHPOhrUqBSMweeLRhq4B6Nu9pCCVt+lCOrZkj4GlxFbCLe3eL1hfstHLg
- OxnR/9MoQaKyZMQHZuKbD9hsvKfgUcoC4iro246CKO0gWQ1H1Q2x3JBKuCINIWi9os
- PKHI4n4SMcyrwbm1PnubdP3LzISh0K2Xb4Cwh1x3Jn439lHLJ52qon/UgEHbLCdbkd
- UdxJnAsXiMpHg==
-Date: Tue, 22 Jun 2021 17:23:07 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Judy Hsiao <judyhsiao@chromium.org>
-Subject: Re: [PATCH] ASoC: snd-soc-dummy: add Device Tree support
-Message-ID: <20210622162307.GF4574@sirena.org.uk>
-References: <20210621074152.306362-1-judyhsiao@chromium.org>
- <20210621114546.GD4094@sirena.org.uk>
- <CAJXt+b-eRLKORqPOX1cJM3xzEyJhdeuj+w9-btpZSmy7v4U6Sw@mail.gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 02986F80161
+ for <alsa-devel@alsa-project.org>; Tue, 22 Jun 2021 19:00:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02986F80161
+Received: by m.b4.vu (Postfix, from userid 1000)
+ id 09D5561E286E; Wed, 23 Jun 2021 02:30:34 +0930 (ACST)
+Date: Wed, 23 Jun 2021 02:30:33 +0930
+From: "Geoffrey D. Bennett" <g@b4.vu>
+To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH V3 00/17] Add Scarlett Gen 3 support
+Message-ID: <cover.1624379707.git.g@b4.vu>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="Y/WcH0a6A93yCHGr"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJXt+b-eRLKORqPOX1cJM3xzEyJhdeuj+w9-btpZSmy7v4U6Sw@mail.gmail.com>
-X-Cookie: fortune: not found
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: devicetree@vger.kernel.org, Judy Hsiao <judyhsiao@google.com>,
- Tzung-Bi Shih <tzungbi@chromium.org>,
- Jimmy Cheng-Yi Chiang <cychiang@google.com>, alsa-devel@alsa-project.org,
- Liam Girdwood <lgirdwood@gmail.com>, linux-arm-msm@vger.kernel.org,
- Stephen Boyd <swboyd@chromium.org>, Douglas Anderson <dianders@chromium.org>,
- Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>,
- Dylan Reid <dgreid@chromium.org>, linux-arm-kernel@lists.infradead.org
+Cc: Hin-Tak Leung <htl10@users.sourceforge.net>,
+ Vladimir Sadovnikov <sadko4u@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,51 +70,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+This patch series adds a fixed version of Scarlett Gen 3 support on
+top of the previous "Refactor Scarlett Gen 2 support" patches 1-15/31.
 
---Y/WcH0a6A93yCHGr
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Two differences from the previous patches 16-31/31:
 
-On Wed, Jun 23, 2021 at 12:10:53AM +0800, Judy Hsiao wrote:
+- Add patch from Takashi fixing scarlett2_add_new_ctl()
 
-> Thanks for your review comment.
-> This patch is used to support multi-channel where we want one codec to
-> control the only GPIO shared by 4 amps.
+- Don't increase MAX_ID_ELEMS
 
-So you've got 4 instances of the same CODEC?  Then I'd expect to see
-those all individually represented in DT.  Or if there's a single
-physical CODEC then I'm not sure what the dummies are for?
+I tested the above changes on the 18i20 Gen 3 and confirmed no crash
+with 439 controls and MAX_ID_ELEMS 256.
 
-> In snd_soc_runtime_calc_hw(), by creating dummy codecs that share a
-> DAI link with a real codec:
->   1. The min/ max channel of  CPU DAI will be directly adopted.
->   2. The formats and sample rates of the DAI link will be determined
-> by the real codec unless the real codec supports the rate
->       and format that do not intersect with the rate and format of
-> snd-soc-dummy.
-> That is the reason why we don=E2=80=99t specify the format and sample rat=
-es of
-> the dummy codec with the real codec determining the properties .
+Geoffrey D. Bennett (16):
+  ALSA: usb-audio: scarlett2: Add Gen 3 mixer support
+  ALSA: usb-audio: scarlett2: Add support for "input-other" notify
+  ALSA: usb-audio: scarlett2: Add Gen 3 MSD mode switch
+  ALSA: usb-audio: scarlett2: Move get config above set config
+  ALSA: usb-audio: scarlett2: Allow bit-level access to config
+  ALSA: usb-audio: scarlett2: Add support for Solo and 2i2 Gen 3
+  ALSA: usb-audio: scarlett2: Add "air" switch support
+  ALSA: usb-audio: scarlett2: Add phantom power switch support
+  ALSA: usb-audio: scarlett2: Add direct monitor support
+  ALSA: usb-audio: scarlett2: Label 18i8 Gen 3 line outputs correctly
+  ALSA: usb-audio: scarlett2: Split up sw_hw_enum_ctl_put()
+  ALSA: usb-audio: scarlett2: Add sw_hw_ctls and mux_ctls
+  ALSA: usb-audio: scarlett2: Update mux controls to allow updates
+  ALSA: usb-audio: scarlett2: Add speaker switching support
+  ALSA: usb-audio: scarlett2: Update get_config to do endian conversion
+  ALSA: usb-audio: scarlett2: Add support for the talkback feature
 
-It's not clear to me why you'd not just describe the actual CODECs here
-rather than using a dummy CODEC, the fact that the dummy CODEC is doing
-what you want is just an accident of the implementation rather than a
-description of the hardware.
+Takashi Iwai (1):
+  ALSA: usb-audio: scarlett2: Fix wrong resume call
 
---Y/WcH0a6A93yCHGr
-Content-Type: application/pgp-signature; name="signature.asc"
+ sound/usb/mixer.c               |    3 +
+ sound/usb/mixer.h               |    1 +
+ sound/usb/mixer_quirks.c        |    6 +
+ sound/usb/mixer_scarlett_gen2.c | 1804 ++++++++++++++++++++++++++++---
+ 4 files changed, 1637 insertions(+), 177 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.31.1
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDSDmoACgkQJNaLcl1U
-h9CHhgf9GyO7DmKsckUqnMgiWbG3VYozrFo/OBZbuZQ9BpW1Z1HA8NODEpIGZnJu
-IFCzwNcBW9kli0vU6+PDVxxhMtuGuj3/+Y2IabUlr/f0Mq6s+rgKJAjPmyqb8MI8
-7RkBXF9O0esDEhYBV5w0sMhAp/galLTCgUjPevMdSmfCuiMZHLpKnHW1cW+FgK0m
-8gGcALicOwyv2nYo42vozX8jt3ujOrccNTHP0mlPuqj2ceW8IAF/yQDqkb9C7kqL
-K4aUK/VJ5mcx4z0Aj2PQyFoHn1ITfSOOo4ROsOT89HdupM1TeuCv6pms0KIfHGYG
-exburGtpvtRoijicCRPkG7E03VLbZg==
-=UqxB
------END PGP SIGNATURE-----
-
---Y/WcH0a6A93yCHGr--
