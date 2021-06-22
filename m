@@ -2,95 +2,96 @@ Return-Path: <SRS0=bL7i=LQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD53AC4743C
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Jun 2021 02:16:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A9B6C4743C
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Jun 2021 02:17:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 83E0A60FDC
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Jun 2021 02:16:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 83E0A60FDC
+	by mail.kernel.org (Postfix) with ESMTPS id BC28D6120D
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Jun 2021 02:17:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC28D6120D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2EF5D1674;
-	Tue, 22 Jun 2021 04:15:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EF5D1674
+	by alsa0.perex.cz (Postfix) with ESMTPS id 288591689;
+	Tue, 22 Jun 2021 04:16:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 288591689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624328209;
-	bh=F2edfi4s3f9niJ74V5k0A8ikA/QKdSL+1dsNla29MbY=;
+	s=default; t=1624328260;
+	bh=nb03Cre1SX8lGrapFgoB5qUMfwXXOtzwk2mSdLJAip4=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PE7pC5dU325RnZ3X32tdTCvDp3oXfdF2RfnGRbkCWM6fg9KC4fxEREe7TbHg9g7wC
-	 ky2obQRzloMuOEm+JcVqXrZ0/4MiKKxFNoPo5cwaQu8qYlAkNR/02TABxKRD6xmCpL
-	 jS41cmvmnClkHUKYq35UCpr2o+d1bpinwXrH3e8I=
+	b=U1q9J1H4pHm7PqBzd07k760EO6Tdg98GWv9bTEfn/Cw5Fjj1AxG88itDiOqiClHxx
+	 CcaRWhVMcP+TnGEzRifHVmwXGpboGqAQj+QqJJtR3KPD6vviuKVkJP9Bsi2zxFABxz
+	 dcy9K87Cl7PARleBINFpluREH0VgM8zwgqKxCL1s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C16A6F80137;
-	Tue, 22 Jun 2021 04:15:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C792DF80271;
+	Tue, 22 Jun 2021 04:16:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8FF79F80268; Tue, 22 Jun 2021 04:15:56 +0200 (CEST)
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com
- [IPv6:2a00:1450:4864:20::12e])
+ id A22F1F80424; Tue, 22 Jun 2021 04:16:40 +0200 (CEST)
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com
+ [IPv6:2a00:1450:4864:20::235])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0A9DFF80137
- for <alsa-devel@alsa-project.org>; Tue, 22 Jun 2021 04:15:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A9DFF80137
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2D7A2F80161
+ for <alsa-devel@alsa-project.org>; Tue, 22 Jun 2021 04:16:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D7A2F80161
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="tu17vS/f"
-Received: by mail-lf1-x12e.google.com with SMTP id p7so33207231lfg.4
- for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 19:15:49 -0700 (PDT)
+ header.b="JTALaRfb"
+Received: by mail-lj1-x235.google.com with SMTP id d2so27936885ljj.11
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2021 19:16:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=GpzA+s8lvFsctseOT+5uPm2562t7LAgE0eEfnLZ9Pnk=;
- b=tu17vS/fM+jlMjiPABq2Ut09SAl1FccrJO20rnttQ86LkZwVvGSLjgGo8vxGraZB+v
- kcutcVyqy70RxIUm+t7V9u0WCu+u4UCChFwziU/vtJb1tgoogLW9puWtsEu1V4WE1FNU
- pxDnM6H40WkKN3Njroyh9l5FIe73uWL5VgMpjgHhGrS0+rCibtx8js7T39nxX/ceZbMT
- EFhCT8yG+uOKWPMbwxwQnOo1CpZxS7ZdV9XuZH1Zr9vfwHUVFqIzaILq9wWcPw23WUHt
- iFjiwhWNw9uQ9/HsH1yNmM9Fk2mEMytMkJ3R46w2DEBKYQfk7sKd9Vrkxi8lUhJI+1um
- mQjQ==
+ :cc; bh=uH43oKWAZxpslYVAdfEnkXLzWtnCAv3z3ny62+2EWkM=;
+ b=JTALaRfb9HY9P+En5sSGe5RUQambcJhT8v2O/nCquiTozLmbSfB0cF/4OFZzr7DWLQ
+ xjrb9mmE4+4tDlOAYjkR35nMFmL1ES4FtH3VhfSluC2VJZOniLhfzRpiRK3dDhJ2XhKn
+ 4YfYmBnL+/DIHxb0R1E2F4ReoABbaqZ9ay6PjaBVFw4EBvt1zQUFJt5LG/wELvbjIJpF
+ SFYrPwIs3/1uMT9UpIQPex9Cz0VhiwtMXOSsMWCFVRCha8odC6JKgEwTOFAx4Yf2lhLb
+ 5QSYbjfK3DUTOUS+cHZQLwKtieKSOX94YqFCp2dTDgAd73G7gFc0fN4lT4+RfmvJS2Xj
+ GMAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=GpzA+s8lvFsctseOT+5uPm2562t7LAgE0eEfnLZ9Pnk=;
- b=kcF9ydjQ+TXSEvM/5SofNR7+rq+CuzTIPVEzK7DhcnM1yrYlL7LG7LHFcrj5S5SKOj
- Ovr+5kFLXcVo6LJ23irgSxeVL52Ep+I077MLkL1xue7ntHVKEYvnNyrN/dPTnBet1sFG
- FNlW37wNGG0IFd6+o0tJt0ToP/nJZMRGAPDy5CU565/D8nq1qPwUNLPJfkF9eSFSh3Jq
- 8atrfFDkb3yjJX9bIsxJe4Fyz6kyfzQfvPDLCtX4kxSN2XgSXoLrFzVxK9tBbPHltGye
- YpSmUDgivE7yorxYmvW9Jqs+nwS1tRCfiUCLQulCgWVm0yi0gZZ2FWHdnG7awgdBYkgR
- l0PQ==
-X-Gm-Message-State: AOAM531yAxyJ66FWu92Cg0EHA5cEcnvGNu5ZWIO/iWiDq/KAtW1F0deI
- GrcRakSAJVc6vecnIN53igVg5XjxmEHsdgdG4zs=
-X-Google-Smtp-Source: ABdhPJySHFadxRfxD2SOtm1zWGyqRaIAuj8te+5MBb7/YjkBkJfWXviGXjXRVJYQppsXBO3rNOBU78QAAUAO4vVNiMw=
-X-Received: by 2002:a05:6512:3b24:: with SMTP id
- f36mr927384lfv.443.1624328148749; 
- Mon, 21 Jun 2021 19:15:48 -0700 (PDT)
+ bh=uH43oKWAZxpslYVAdfEnkXLzWtnCAv3z3ny62+2EWkM=;
+ b=qiE1nmPSSYezLxFtdvOc9FWLVQDZSlB4SfW8zbxNIebBCGde/5V5wMRu0FyAvagPT0
+ bLYenQttEgXKDWoy62SstuYSGzbAjn5XucDT44qYtLwV1Gd1Tllx/ctP4rkBpke/cVjS
+ zP7wD6GeZERR1+X0kL99pspnaldJ0xhVW7DGS3B7gD6v2L6jQQw32jS0/malWkanFABa
+ WH+V7+Tr1qJsL3BTEsMsZLkQSKOvADUdaS6u2HxCwGhWKU8cYYEtfckwPKPaoWJ2ler5
+ 3vb9xBX1l6t1RZgZ5rnuB5cDCc6bgsGdeR9qDmszATNRPRjUQS2gGDRpJPHKZ2/yxv3y
+ mg1Q==
+X-Gm-Message-State: AOAM5311Aytip16XnU8jI3O76tUqAUAChEVWiF7/8CvkJuLadTqTV0bZ
+ ZqMV9yBMjaomRpjEbc7S+85VWBNkxLv5ICHKkOk=
+X-Google-Smtp-Source: ABdhPJxeG9iccGHA6DRH7csV1eHv/FBVdq7lad+GoU0gi82ueW4xDhFF6+9W1CvvNYTqkL/1UuZEnSBlxuaZh/IJhDc=
+X-Received: by 2002:a05:651c:54f:: with SMTP id
+ q15mr996055ljp.347.1624328194500; 
+ Mon, 21 Jun 2021 19:16:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <1622616132-10391-1-git-send-email-shengjiu.wang@nxp.com>
-In-Reply-To: <1622616132-10391-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1624324395-7260-1-git-send-email-shengjiu.wang@nxp.com>
+ <CAOMZO5Bh6J8=E=P1btDdgkYm9bvBN1ituRHLLOtW1cFsheQBdg@mail.gmail.com>
+ <CAA+D8AN4Nch5FMjCDN8vs2+Nqs88k8jvMEBZwQuUdG+9pt1yZA@mail.gmail.com>
+In-Reply-To: <CAA+D8AN4Nch5FMjCDN8vs2+Nqs88k8jvMEBZwQuUdG+9pt1yZA@mail.gmail.com>
 From: Fabio Estevam <festevam@gmail.com>
-Date: Mon, 21 Jun 2021 23:15:37 -0300
-Message-ID: <CAOMZO5A1+HUmUVhYv4en4Vgw93AoS62UwQx1GwC9i4XiG5QZvw@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: fsl-asoc-card: change dev_err to dev_dbg for defer
- probe
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Date: Mon, 21 Jun 2021 23:16:23 -0300
+Message-ID: <CAOMZO5A=OrHNz0Bye+p3H6UbF2_wq2m9KquWurXez1E0-WBYuA@mail.gmail.com>
+Subject: Re: [RESEND PATCH v2] ASoC: fsl-asoc-card: change dev_err to
+ dev_err_probe for defer probe
+To: Shengjiu Wang <shengjiu.wang@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Timur Tabi <timur@kernel.org>,
- Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, Shengjiu Wang <shengjiu.wang@nxp.com>,
+ linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
  Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>,
- linuxppc-dev@lists.ozlabs.org
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,34 +107,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Shengjiu,
+On Mon, Jun 21, 2021 at 10:53 PM Shengjiu Wang <shengjiu.wang@gmail.com> wrote:
 
-On Wed, Jun 2, 2021 at 3:59 AM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
->
-> Don't need to print error message for defer probe
->
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  sound/soc/fsl/fsl-asoc-card.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-> index 4f55b316cf0f..b40ba910ae9d 100644
-> --- a/sound/soc/fsl/fsl-asoc-card.c
-> +++ b/sound/soc/fsl/fsl-asoc-card.c
-> @@ -709,7 +709,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
->         of_node_put(framemaster);
->
->         if (!fsl_asoc_card_is_ac97(priv) && !codec_dev) {
-> -               dev_err(&pdev->dev, "failed to find codec device\n");
-> +               dev_dbg(&pdev->dev, "failed to find codec device\n");
->                 ret = -EPROBE_DEFER;
+> so I think we can use the v1 one,  use dev_dbg instead.
 
-This looks good:
-
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
-
-My previous suggestion of using dev_err_probe() would make the message
-never to be printed.
+Agreed. I have just reviewed v1.
 
 Thanks
