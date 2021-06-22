@@ -2,56 +2,60 @@ Return-Path: <SRS0=bL7i=LQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3B39C48BC2
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Jun 2021 01:14:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B79C6C4743C
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Jun 2021 01:15:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CEBEE60C41
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Jun 2021 01:14:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CEBEE60C41
+	by mail.kernel.org (Postfix) with ESMTPS id 0D7896124B
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Jun 2021 01:15:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D7896124B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DCC8E826;
-	Tue, 22 Jun 2021 03:13:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCC8E826
+	by alsa0.perex.cz (Postfix) with ESMTPS id A14751690;
+	Tue, 22 Jun 2021 03:14:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A14751690
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624324486;
-	bh=/9g1S9gN+STWA+RaRQUAjK398mmxpOqKtNhwsf6vFD0=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=M1FolAv62F3QS0RRN716pGzKNuDbsTiyrv4oUP4wH5tnDhVGgJsGDlZ75p0LRgj1i
-	 dkeCE+VTFPDDRowM2l2xYqT1qDrEkuhd7zQe21oBk8X27KKfDaziGdVwRm0Y2H8v7p
-	 vkBUuxBnu60Uq/N47AZEFRnZeAxyhaXtt924Vztw=
+	s=default; t=1624324537;
+	bh=InqjXSZJtpDc9Wlwd3mEbY1Ow1SAP/WJDfFGtniMb50=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=qDm0iVBGwif4hNGAV2wa99DtklFyoc/1uRIut3wy78hS5gGdISzjQJCtqk19Lkwgg
+	 Qs4qQwuVBF5OjStc+xx2t7ukKYgfsa1hWUJtZnsNT/Vv5S6wkijtoadZTYNdXpvg3M
+	 qoCeIWfkaeOWSPXZtRgUSz/ccP/sUNPIEwvFL79s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 70F02F80163;
-	Tue, 22 Jun 2021 03:13:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97D9BF80245;
+	Tue, 22 Jun 2021 03:14:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 729F1F8016B; Tue, 22 Jun 2021 03:13:55 +0200 (CEST)
+ id 0925AF80245; Tue, 22 Jun 2021 03:14:22 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 1AE86F80163
- for <alsa-devel@alsa-project.org>; Tue, 22 Jun 2021 03:13:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AE86F80163
-Date: 22 Jun 2021 10:13:49 +0900
-X-IronPort-AV: E=Sophos;i="5.83,290,1616425200"; d="scan'208";a="85109177"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 22 Jun 2021 10:13:49 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 4138FF80111
+ for <alsa-devel@alsa-project.org>; Tue, 22 Jun 2021 03:14:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4138FF80111
+Date: 22 Jun 2021 10:14:13 +0900
+X-IronPort-AV: E=Sophos;i="5.83,290,1616425200"; d="scan'208";a="85109211"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 22 Jun 2021 10:14:13 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 1E974400D0C5;
- Tue, 22 Jun 2021 10:13:49 +0900 (JST)
-Message-ID: <871r8u4s6q.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id D6B264148A7D;
+ Tue, 22 Jun 2021 10:14:13 +0900 (JST)
+Message-ID: <87zgvi3dlm.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH RFC 00/15] ASoC: add Audio Graph Card2 driver
+Subject: [PATCH RFC 01/15] of: property: add port base loop
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>
+In-Reply-To: <871r8u4s6q.wl-kuninori.morimoto.gx@renesas.com>
+References: <871r8u4s6q.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -71,106 +75,194 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark, Rob
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-We already have Audio-Graph-Card which is Of-Graph base general sound
-card driver. Basically it supports basic CPU-Codec connection, and is
-also supporting DPCM connection. Because it was forcibly expanded to
-DPCM, DT parsing is very limited and very difficult to add new features
-on it, for example Multi CPU/Codec support, Codec2Codec support, etc.
+We have endpoint base functions
+	- of_graph_get_next_endpoint()
+	- of_graph_get_endpoint_count()
+	- for_each_endpoint_of_node()
 
-And some users want to use Audio-Graph-Card as basic connection and
-expand its own settings on it.
+for_each_endpoint_of_node() loop finds endpoint.
 
-This patch adds more flexible new Audio-Graph-Card2 driver for it.
-Audio-Graph-Card and Audio-Graph-Card2 are similar, but don't have
-full compatibility.
+	ports {
+		port@0 {
+(1)			endpoint {...};
+		};
+		port@1 {
+(2)			endpoint {...};
+		};
+		...
+	};
 
-Audio-Graph-Card2 supports Normal Connection, DPCM Connection,
-Multi CPU/Codec Connection, Codec2Codec Connection, and possible to
-Customizing.
+In above case, for_each_endpoint_of_node() loop
+finds endpoint as (1) -> (2) -> ...
+If we want to get port@0 -> port@1 -> ...
+instead of endpoint, we need do like below
 
-This patch-set adds Audio-Graph-Card2 driver and customized driver
-sample, and DT settings sample which can be used for testing.
+	for_each_endpoint_of_node(node, endpoint) {
+		port = of_get_parent(endpoint);
+		...
+	}
 
-To enable testing/debuging, this patch-set also adds Test-Component
-driver. We already have Dummy Component and/or Dummy DAI on soc-utils,
-but 1) we can't use it from DT, 2) it do nothing.
-Added new Test-Component can be used from DT, and it indicates called
-function name. We can use it to trace callback order / understanding
-ALSA SoC behavior, etc.
-Sample DT settings which can be used for testing is using Test-Component.
+But port might have multi endpoints.
 
-This patch set includes sample DT for custome driver and/or
-audio-graph-card2. You can easily try to use/test it if you added
-below line to your DT file. It needs below CONFIGs.
-It will probe sample Sound Card which has Normal/DPCM/Multi/Codec2Codec
-connections.
+	ports {
+		port@0 {
+(1)			endpoint@0 {...};
+(2)			endpoint@1 {...};
+		};
+		port@1 {
+(3)			endpoint {...};
+		};
+		...
+	};
 
-	#include "../../../../../sound/soc/generic/audio-graph-card2-sample.dtsi"
+In such case, people want to have "port base" loop
+instead of "endpoints base" loop.
+This patch adds such functions/macros.
 
-	CONFIG_SND_AUDIO_GRAPH_CARD2
-	CONFIG_SND_SAMPLE_CUSTOM_CARD
-	CONFIG_SND_TEST_COMPONENT
+Link: https://lore.kernel.org/r/87pn29pc5w.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ drivers/of/property.c    | 69 ++++++++++++++++++++++++++++++++++------
+ include/linux/of_graph.h | 14 ++++++++
+ 2 files changed, 73 insertions(+), 10 deletions(-)
 
-There are some notes.
-
-Because Audio Graph Card2 is still under experimental stage, it will
-indicate such warning when probing, and the DT might be updated/exchanged.
-
-It can use Codec2Codec, but it will start automatically when probed,
-and can't stop it so far. It should be updated.
-
- 1      : add Of-Graph *port base* loop which is used at Audio-Graph-Card2
- 2 -  3 : add Test-Component driver
- 4 - 10 : add Audio-Graph-Card2 driver
-11      : add Audio-Graph-Card2 base custome driver sample
-12 - 15 : Audio-Graph-Card2 driver / custome driver DT sample
-
-Link: https://lore.kernel.org/r/87k0xszlep.wl-kuninori.morimoto.gx@renesas.com
-
-Kuninori Morimoto (15):
-   1 of: property: add port base loop
-   2 ASoC: dt-bindings: test-component: add Test Component YAML bindings
-   3 ASoC: test-component: add Test Component for Sound debug/test
-   4 ASoC: simple-card-utils: add asoc_graph_is_ports0()
-   5 ASoC: simple-card-utils: add codec2codec support
-   6 ASoC: audio-graph-card2: add Audio Graph Card2 driver
-   7 ASoC: audio-graph-card2: add DPCM support
-   8 ASoC: audio-graph-card2: add Multi CPU/Codec support
-   9 ASoC: audio-graph-card2: add Codec2Codec support
-  10 ASoC: audio-graph-card2: add Yaml Document
-  11 ASoC: sample-custom-card: add Audio Graph Card2 custome sample
-  12 ASoC: audio-graph-card2-sample.dtsi: add Sample DT for Audio Graph Card2
-  13 ASoC: audio-graph-card2-sample.dtsi: add DPCM sample
-  14 ASoC: audio-graph-card2-sample.dtsi: add Multi CPU/Codec sample
-  15 ASoC: audio-graph-card2-sample.dtsi: add Codec2Codec sample.
-
- .../sound/audio-graph-card2-items.yaml        |   36 +
- .../bindings/sound/audio-graph-card2.yaml     |   45 +
- .../bindings/sound/audio-graph-port2.yaml     |   74 +
- .../bindings/sound/test-component.yaml        |   33 +
- drivers/of/property.c                         |   69 +-
- include/linux/of_graph.h                      |   14 +
- include/sound/graph_card.h                    |   24 +
- include/sound/simple_card_utils.h             |    4 +
- sound/soc/generic/Kconfig                     |   20 +
- sound/soc/generic/Makefile                    |    6 +
- .../soc/generic/audio-graph-card2-sample.dtsi |  140 ++
- sound/soc/generic/audio-graph-card2.c         | 1253 +++++++++++++++++
- sound/soc/generic/sample-custom-card.c        |  160 +++
- sound/soc/generic/simple-card-utils.c         |   46 +-
- sound/soc/generic/test-component.c            |  659 +++++++++
- 15 files changed, 2572 insertions(+), 11 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/audio-graph-card2-items.yaml
- create mode 100644 Documentation/devicetree/bindings/sound/audio-graph-card2.yaml
- create mode 100644 Documentation/devicetree/bindings/sound/audio-graph-port2.yaml
- create mode 100644 Documentation/devicetree/bindings/sound/test-component.yaml
- create mode 100644 sound/soc/generic/audio-graph-card2-sample.dtsi
- create mode 100644 sound/soc/generic/audio-graph-card2.c
- create mode 100644 sound/soc/generic/sample-custom-card.c
- create mode 100644 sound/soc/generic/test-component.c
-
+diff --git a/drivers/of/property.c b/drivers/of/property.c
+index 6c028632f425..bf3bdeeba2f9 100644
+--- a/drivers/of/property.c
++++ b/drivers/of/property.c
+@@ -650,15 +650,7 @@ struct device_node *of_graph_get_next_endpoint(const struct device_node *parent,
+ 	 * parent port node.
+ 	 */
+ 	if (!prev) {
+-		struct device_node *node;
+-
+-		node = of_get_child_by_name(parent, "ports");
+-		if (node)
+-			parent = node;
+-
+-		port = of_get_child_by_name(parent, "port");
+-		of_node_put(node);
+-
++		port = of_graph_get_next_port(parent, NULL);
+ 		if (!port) {
+ 			pr_err("graph: no port node found in %pOF\n", parent);
+ 			return NULL;
+@@ -685,14 +677,59 @@ struct device_node *of_graph_get_next_endpoint(const struct device_node *parent,
+ 		/* No more endpoints under this port, try the next one. */
+ 		prev = NULL;
+ 
++		port = of_graph_get_next_port(parent, port);
++		if (!port)
++			return NULL;
++	}
++}
++EXPORT_SYMBOL(of_graph_get_next_endpoint);
++
++/**
++ * of_graph_get_next_port() - get next port node
++ * @parent: pointer to the parent device node
++ * @prev: previous port node, or NULL to get first
++ *
++ * Return: An 'port' node pointer with refcount incremented. Refcount
++ * of the passed @prev node is decremented.
++ */
++struct device_node *of_graph_get_next_port(const struct device_node *parent,
++					   struct device_node *prev)
++{
++	struct device_node *port = prev;
++
++	if (!parent)
++		return NULL;
++
++	/*
++	 * Start by locating the port node. If no previous endpoint is specified
++	 * search for the first port node, otherwise get the previous endpoint
++	 * parent port node.
++	 */
++	if (!port) {
++		struct device_node *node;
++
++		node = of_get_child_by_name(parent, "ports");
++		if (node)
++			parent = node;
++
++		port = of_get_child_by_name(parent, "port");
++		of_node_put(node);
++
++		if (!port) {
++			pr_err("graph: no port node found in %pOF\n", parent);
++			return NULL;
++		}
++	} else {
+ 		do {
+ 			port = of_get_next_child(parent, port);
+ 			if (!port)
+ 				return NULL;
+ 		} while (!of_node_name_eq(port, "port"));
+ 	}
++
++	return port;
+ }
+-EXPORT_SYMBOL(of_graph_get_next_endpoint);
++EXPORT_SYMBOL(of_graph_get_next_port);
+ 
+ /**
+  * of_graph_get_endpoint_by_regs() - get endpoint node of specific identifiers
+@@ -819,6 +856,18 @@ int of_graph_get_endpoint_count(const struct device_node *np)
+ }
+ EXPORT_SYMBOL(of_graph_get_endpoint_count);
+ 
++int of_graph_get_port_count(const struct device_node *np)
++{
++	struct device_node *port;
++	int num = 0;
++
++	for_each_port_of_node(np, port)
++		num++;
++
++	return num;
++}
++EXPORT_SYMBOL(of_graph_get_port_count);
++
+ /**
+  * of_graph_get_remote_node() - get remote parent device_node for given port/endpoint
+  * @node: pointer to parent device_node containing graph port/endpoint
+diff --git a/include/linux/of_graph.h b/include/linux/of_graph.h
+index 4d7756087b6b..8cd3bd674ebd 100644
+--- a/include/linux/of_graph.h
++++ b/include/linux/of_graph.h
+@@ -26,6 +26,17 @@ struct of_endpoint {
+ 	const struct device_node *local_node;
+ };
+ 
++/**
++ * for_each_port_of_node - iterate over every port in a device node
++ * @parent: parent device node containing ports and port
++ * @child: loop variable pointing to the current port node
++ *
++ * When breaking out of the loop, of_node_put(child) has to be called manually.
++ */
++#define for_each_port_of_node(parent, child)			\
++	for (child = of_graph_get_next_port(parent, NULL); child != NULL; \
++	     child = of_graph_get_next_port(parent, child))
++
+ /**
+  * for_each_endpoint_of_node - iterate over every endpoint in a device node
+  * @parent: parent device node containing ports and endpoints
+@@ -41,8 +52,11 @@ struct of_endpoint {
+ bool of_graph_is_present(const struct device_node *node);
+ int of_graph_parse_endpoint(const struct device_node *node,
+ 				struct of_endpoint *endpoint);
++int of_graph_get_port_count(const struct device_node *np);
+ int of_graph_get_endpoint_count(const struct device_node *np);
+ struct device_node *of_graph_get_port_by_id(struct device_node *node, u32 id);
++struct device_node *of_graph_get_next_port(const struct device_node *parent,
++					   struct device_node *previous);
+ struct device_node *of_graph_get_next_endpoint(const struct device_node *parent,
+ 					struct device_node *previous);
+ struct device_node *of_graph_get_endpoint_by_regs(
 -- 
 2.25.1
 
