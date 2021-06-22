@@ -2,87 +2,76 @@ Return-Path: <SRS0=bL7i=LQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1750C2B9F4
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Jun 2021 16:12:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AA8CC48BDF
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Jun 2021 16:24:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AF81C610C7
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Jun 2021 16:12:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AF81C610C7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	by mail.kernel.org (Postfix) with ESMTPS id 736B1611BF
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Jun 2021 16:24:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 736B1611BF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5A8519F6;
-	Tue, 22 Jun 2021 18:11:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A8519F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 859419F6;
+	Tue, 22 Jun 2021 18:23:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 859419F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624378320;
-	bh=eoXQ/HLOPJ1ZL6ifYqtHv17VK7GiLIVM06x2osYKz6Y=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1624379069;
+	bh=dvnbdNnOiv03SgjtecC7Dh5JlTHc3Gn16vJg0Lm+0VQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZnTft/NqWwD4ao8XeWxnRVXkdszBwDsvkXYgjuYD+x42+FUYtfAZibTP76ZZYRf8Y
-	 pUnPc7VtGE8/52l1fE57+fI7m7e64SwI5SJqvl8NWBqUr6inq8MQu82J/Ufh0ooeEu
-	 Q7Z6KMGv3TUMyse0CLBaig1KF0eDM+PmeMu+La4I=
+	b=hnsn0RJNcJJvzDmKGRhr3E1856PPYngo8pZUUwQqMgt+2xHmGe5M/sGTwOw2wgYAQ
+	 UqqMUb5TXkUNXuvS4WGlTpgJ7G4M/r1c0Xhetcq9h/ZYJ/qolm2bBC7dzOu4+JhW7D
+	 yW5wOU7W6PYdLdoTftLsnFrN90qvSSoFjWYjzc/M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BBB63F8025F;
-	Tue, 22 Jun 2021 18:11:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23D38F8025F;
+	Tue, 22 Jun 2021 18:23:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 66EA6F80268; Tue, 22 Jun 2021 18:11:08 +0200 (CEST)
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com
- [IPv6:2a00:1450:4864:20::634])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 4DAA7F80268; Tue, 22 Jun 2021 18:23:38 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 140F5F800E1
- for <alsa-devel@alsa-project.org>; Tue, 22 Jun 2021 18:11:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 140F5F800E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id E8227F80137
+ for <alsa-devel@alsa-project.org>; Tue, 22 Jun 2021 18:23:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8227F80137
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="JoWO76bS"
-Received: by mail-ej1-x634.google.com with SMTP id bu12so2125922ejb.0
- for <alsa-devel@alsa-project.org>; Tue, 22 Jun 2021 09:11:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=vUaa49+IpptNOMLBet5loWbWxua8vz3pz9+hJM0DysA=;
- b=JoWO76bSpdLeQy5raImQZVy8kWIlBu223s0LgU66ck+jTTwwNklVp9QexxIMkCOWnd
- zvYlt55snx4xFt5fFueb8Vor4fraGnMaFhbg6eT4Xif+PZPct8BBxwAGi1Wf8XYUTV8z
- +bSYQeHCU97YONUY2McqcSAiC+lEmyuxvtPg8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=vUaa49+IpptNOMLBet5loWbWxua8vz3pz9+hJM0DysA=;
- b=kAPGP31QZgjjrskjoB2IC5hdhHzVKzbKP86hi04O9FG1327yMIlvOycIWGGsPK9wE3
- /o/DYuhK2TJbKWRfkummgA8pI8o/+8B2PcfPdT1etBDwlUrCbd4+VBNlVR4wZeTSIABr
- 5jHHtb3Ww7QBu1qp9OSLnfV+rFtjmyBL87s2Ph2LAeH2IyFjQAeWbzUgzsgXWvsIQvUz
- yKNvJXoblE9PET2fGOimiJ/80ghDEUHHjnbEaVrhpxLp675HK2ovW3LpXs6VR1I1yu7R
- Zb9sdC+fBQw6am4UaCeCqZFAdGIxldpuyz3PS3eAOqa3l1OdlboU6AIYQ8dn6ZJabhfJ
- Oddw==
-X-Gm-Message-State: AOAM530GsBzXBVcfU9ui/+sTfXKRJBo8nWwwcxKrNsK7HoWbYhVMV6QQ
- /8pSqhf9FhVExk3jkYpcJ+7tiw4wX7GyQ00xKoeO9w==
-X-Google-Smtp-Source: ABdhPJyRoaQ6qHQfdem8pZzXTW1Ky+LtLjfwVmIzRD47hgaShM+PfsaM9EDnomrcW5hRGbdsO5lon4HAy7wpYxgvQV4=
-X-Received: by 2002:a17:906:8041:: with SMTP id
- x1mr4713697ejw.81.1624378263922; 
- Tue, 22 Jun 2021 09:11:03 -0700 (PDT)
-MIME-Version: 1.0
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="lIZK4me2"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBAF860240;
+ Tue, 22 Jun 2021 16:23:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1624379010;
+ bh=dvnbdNnOiv03SgjtecC7Dh5JlTHc3Gn16vJg0Lm+0VQ=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=lIZK4me2EB7vjw3OO3BFGCQ6AOkbHde3QpzQhzvTRf4rBlt0/HJ16wOBqS6XKXP1n
+ Os0RgH4qcR6j+Xj/PPQkHFPoTIFuV997H5bRIahKQ8R69mAdtSL8wH6j4XD7zK04Lk
+ PF3vJYOXOfHPOhrUqBSMweeLRhq4B6Nu9pCCVt+lCOrZkj4GlxFbCLe3eL1hfstHLg
+ OxnR/9MoQaKyZMQHZuKbD9hsvKfgUcoC4iro246CKO0gWQ1H1Q2x3JBKuCINIWi9os
+ PKHI4n4SMcyrwbm1PnubdP3LzISh0K2Xb4Cwh1x3Jn439lHLJ52qon/UgEHbLCdbkd
+ UdxJnAsXiMpHg==
+Date: Tue, 22 Jun 2021 17:23:07 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Judy Hsiao <judyhsiao@chromium.org>
+Subject: Re: [PATCH] ASoC: snd-soc-dummy: add Device Tree support
+Message-ID: <20210622162307.GF4574@sirena.org.uk>
 References: <20210621074152.306362-1-judyhsiao@chromium.org>
  <20210621114546.GD4094@sirena.org.uk>
-In-Reply-To: <20210621114546.GD4094@sirena.org.uk>
-From: Judy Hsiao <judyhsiao@chromium.org>
-Date: Wed, 23 Jun 2021 00:10:53 +0800
-Message-ID: <CAJXt+b-eRLKORqPOX1cJM3xzEyJhdeuj+w9-btpZSmy7v4U6Sw@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: snd-soc-dummy: add Device Tree support
-To: Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+ <CAJXt+b-eRLKORqPOX1cJM3xzEyJhdeuj+w9-btpZSmy7v4U6Sw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="Y/WcH0a6A93yCHGr"
+Content-Disposition: inline
+In-Reply-To: <CAJXt+b-eRLKORqPOX1cJM3xzEyJhdeuj+w9-btpZSmy7v4U6Sw@mail.gmail.com>
+X-Cookie: fortune: not found
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: devicetree@vger.kernel.org, Judy Hsiao <judyhsiao@google.com>,
  Tzung-Bi Shih <tzungbi@chromium.org>,
  Jimmy Cheng-Yi Chiang <cychiang@google.com>, alsa-devel@alsa-project.org,
@@ -105,41 +94,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Jun 21, 2021 at 7:46 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Mon, Jun 21, 2021 at 03:41:52PM +0800, Judy Hsiao wrote:
->
-> > Support for loading the snd-soc-dummy via DeviceTree.
-> > This is useful to create dummy codec devices where we need to have some
-> > DAI links without a real Codec.
->
-> Why would it be useful to create DAI links to a dummy device that has
-> no properties?  If you've got a device with no software control it's
-> still going to have some limits on things like what formats and sample
-> rates it can accept so you should describe that in DT.
 
-Thanks for your review comment.
-This patch is used to support multi-channel where we want one codec to
-control the only GPIO shared by 4 amps.
-(Please refer to
-:https://patchwork.kernel.org/project/alsa-devel/patch/20210526154704.11495=
-7-1-judyhsiao@chromium.org/)
+--Y/WcH0a6A93yCHGr
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-In snd_soc_runtime_calc_hw(), by creating dummy codecs that share a
-DAI link with a real codec:
-  1. The min/ max channel of  CPU DAI will be directly adopted.
-  2. The formats and sample rates of the DAI link will be determined
-by the real codec unless the real codec supports the rate
-      and format that do not intersect with the rate and format of
-snd-soc-dummy.
-That is the reason why we don=E2=80=99t specify the format and sample rates=
- of
-the dummy codec with the real codec determining the properties .
+On Wed, Jun 23, 2021 at 12:10:53AM +0800, Judy Hsiao wrote:
 
-Does reposting a new patch with  a more clear commit message to
-describe the use case sound good to you?
->
-> Please try to keep the CC lists for patches you are submitting relevant
-> to the patch, people get a lot of mail and reviews for irrelevant
-> patches add to the noise.
-Sorry about that. I have adjusted the CC lists.
+> Thanks for your review comment.
+> This patch is used to support multi-channel where we want one codec to
+> control the only GPIO shared by 4 amps.
+
+So you've got 4 instances of the same CODEC?  Then I'd expect to see
+those all individually represented in DT.  Or if there's a single
+physical CODEC then I'm not sure what the dummies are for?
+
+> In snd_soc_runtime_calc_hw(), by creating dummy codecs that share a
+> DAI link with a real codec:
+>   1. The min/ max channel of  CPU DAI will be directly adopted.
+>   2. The formats and sample rates of the DAI link will be determined
+> by the real codec unless the real codec supports the rate
+>       and format that do not intersect with the rate and format of
+> snd-soc-dummy.
+> That is the reason why we don=E2=80=99t specify the format and sample rat=
+es of
+> the dummy codec with the real codec determining the properties .
+
+It's not clear to me why you'd not just describe the actual CODECs here
+rather than using a dummy CODEC, the fact that the dummy CODEC is doing
+what you want is just an accident of the implementation rather than a
+description of the hardware.
+
+--Y/WcH0a6A93yCHGr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDSDmoACgkQJNaLcl1U
+h9CHhgf9GyO7DmKsckUqnMgiWbG3VYozrFo/OBZbuZQ9BpW1Z1HA8NODEpIGZnJu
+IFCzwNcBW9kli0vU6+PDVxxhMtuGuj3/+Y2IabUlr/f0Mq6s+rgKJAjPmyqb8MI8
+7RkBXF9O0esDEhYBV5w0sMhAp/galLTCgUjPevMdSmfCuiMZHLpKnHW1cW+FgK0m
+8gGcALicOwyv2nYo42vozX8jt3ujOrccNTHP0mlPuqj2ceW8IAF/yQDqkb9C7kqL
+K4aUK/VJ5mcx4z0Aj2PQyFoHn1ITfSOOo4ROsOT89HdupM1TeuCv6pms0KIfHGYG
+exburGtpvtRoijicCRPkG7E03VLbZg==
+=UqxB
+-----END PGP SIGNATURE-----
+
+--Y/WcH0a6A93yCHGr--
