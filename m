@@ -7,96 +7,97 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F27C4C4743C
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Jun 2021 08:03:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CDBBC4743C
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Jun 2021 08:03:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7ABCD60FEE
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Jun 2021 08:03:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7ABCD60FEE
+	by mail.kernel.org (Postfix) with ESMTPS id 02BFE61185
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Jun 2021 08:03:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 02BFE61185
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0CFD41672;
-	Wed, 23 Jun 2021 10:02:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CFD41672
+	by alsa0.perex.cz (Postfix) with ESMTPS id 900FB167B;
+	Wed, 23 Jun 2021 10:03:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 900FB167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624435413;
-	bh=uKuUbEoJJ9PasAf0bIqrAO1JUVq3/Os5YGTTvuDNDn0=;
+	s=default; t=1624435437;
+	bh=WLOrkjQnDtj0gioStvNhO9QkhCqMiaK4wqcEJPlY52U=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=O7UdsLQ7DAP4GwbfcwbwmNIGYd4E8jbNdG8e+yGF5pvjydiT+jMoYs/12lbYSuGGe
-	 DbBt//4pC/1dKlckw8KGjyHNo/vc4UIcsuNGu3Mka/FoFC7MqMR1C7ct6lSGEqAcKU
-	 5p/P/9f9YeZjUVZXg2sDuLfV2m0IDY22GUM3Pkdw=
+	b=YcAwM0muGRDl2qgz100Iih7LVHqRAy780hZV4mWo8t4lCaKNbkjxHCGjooHQgtvwJ
+	 7TLtaBjGIbRsAm+r5Ahj1DskA8HBlNOtkvscHHzo4ODq4Bs+wFNd+yg+sDXs152ghq
+	 AwSOMku9xExAQ+c4H/MxSuIbz4eOeexXSahbz5/k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8A6B3F804FD;
-	Wed, 23 Jun 2021 10:00:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 57443F8016D;
+	Wed, 23 Jun 2021 10:01:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D05F8F804EB; Wed, 23 Jun 2021 10:00:15 +0200 (CEST)
+ id C8830F800B5; Wed, 23 Jun 2021 10:01:38 +0200 (CEST)
 Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com
  [64.147.123.20])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2CFA0F804E4
- for <alsa-devel@alsa-project.org>; Wed, 23 Jun 2021 10:00:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CFA0F804E4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0B5D0F8016B
+ for <alsa-devel@alsa-project.org>; Wed, 23 Jun 2021 10:00:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B5D0F8016B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="CXgV3rv+"; 
+ header.b="x5SUrStn"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="lIYA2Uld"
+ header.i=@messagingengine.com header.b="GEgUFmwR"
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailout.west.internal (Postfix) with ESMTP id 8166610C6;
- Wed, 23 Jun 2021 04:00:07 -0400 (EDT)
+ by mailout.west.internal (Postfix) with ESMTP id 5CDF310CB;
+ Wed, 23 Jun 2021 04:00:02 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute3.internal (MEProxy); Wed, 23 Jun 2021 04:00:07 -0400
+ by compute3.internal (MEProxy); Wed, 23 Jun 2021 04:00:02 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=WIJWu0FLrM2ac
- 3hhH9t625EWYjm1NpmZuKBrZ12XXik=; b=CXgV3rv+ZAP0LxfYxf7oaVVASfCbe
- nBLaLjN9ngC+kU0HL5KI178TKhxU9UBC8bCCRS3ENCGr21IyMt6HGddcW6/TyiK/
- vCvkpub9obXT7edgGDf3lSYL/4ceLBooA/vTV0olhtb4LGdLeID+tdybrsK98pF6
- TuWfw7NpNvPfa/rw+EW+vRJVHirEkN/THPglTLzFh++u0RgAPBUJCd6LRpTJ2XfD
- oLmC+3cspG2UGAzZOIAZOrfzStSK5nMwSko0JZ2KuaMBeTBirLJbQuh8KLsrfp93
- EwUb3U+S3xXD2gd1teTBycj63EdwV4CZ4fzD8/Lz2oADWQz/rHIY3lo8A==
+ :mime-version:content-transfer-encoding; s=fm1; bh=wEz1U8uSpYMst
+ cUi949swWU0DVoPNO8nkou+azSgQ3Y=; b=x5SUrStnOkoZ8K/8K/N5pjbrSq1kc
+ cMZ2JrQWBNcKfAY36QcRD6XSAFYMZRkPl0UZTJdfs3/p/kZXGQo0MHajVpa6/Doh
+ rq4XgCvNrhnPIqrqyE4iOaOmcAForqZhYmZWat+T5aoGyqM1b6GmKNW1frTXp+H7
+ PfJxO91RdHX6Ism3sx9mz/CWQYvq8h3gqBRlvdvJUYSRRDD9bKJdUEZk07Vj65Wi
+ TIII9k+a7u48SxM2q9WoLCc9MONnsXHmM5Cc+cFPOikMjlZdEfv/mQAqXkDAOZE6
+ 1wJaLb7qM9hXYCvvehKmzUaxgjxLpvCzSaJQTCDqzrBsKgB3IB4ZcDA7Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm3; bh=WIJWu0FLrM2ac3hhH9t625EWYjm1NpmZuKBrZ12XXik=; b=lIYA2Uld
- SAVRP+l/34XsBpoc0deYneJarQZ+scQthFTI6ixGfa99eS7OASHzhRazxI7ZV3wk
- XWcd50xik1Ma/Ruy+HV1HxWa2Jda0HMyk35SglFWxKTPqMXozyRa0I8qkoWkCW/P
- jc+b6LorlQFud2bH/KT7qBDsj4zTB+Q21Tcx8kMpQecku7jXV/cAuQYUFrfI6iMu
- xld1PFd29S3iocDzM6meeKhnrplhH9pS4MJ/vi1WZLgQM6mFLv6gIVLm2RxDwDnn
- d9dq2VI78kUnlEU0f470ampwVOaKgRBXQk6toVReaXVLWORGKgeCJ21N4e+dDazT
- nj9RA6SznXDqAA==
-X-ME-Sender: <xms:BurSYPsEFYUtfrNlnKvLrWPmSPhMplhq0Etef8zkObK0Xb3SLD88Sg>
- <xme:BurSYAe9xhWOiPMwIAPJ5cYqaDOVrJZgaGS35FqaLmm5wKl-bO_U35u8ida3-H0HO
- rfDHwkhPwNf-8wIzRs>
-X-ME-Received: <xmr:BurSYCweRx8FziJ51pcXvwhn98lQsw4ieKzWi-4zqc8i29pw3bNiujTGNzQ-nrDKPhWLL_qxbJHUERpllXbty5sNNgPigps5cYmsGj3wWz_9dSRX_ShO>
+ fm3; bh=wEz1U8uSpYMstcUi949swWU0DVoPNO8nkou+azSgQ3Y=; b=GEgUFmwR
+ nxj+iw9pYTQRhs6FxFA48M+A19GUODZc9ztrP+1O3RcaYg/j3LiGMENZK871A8Kl
+ YliaaDB6FY0+rLM2WUNAMBmz+101sCEBt1QFtO72qWU7MSa1nGDhPGanU4m4A0mL
+ TzRsKAGOfxzLSDyCp7lAHCWfqyUS6FpGfQJsykphUgEl1hEI4+hb3cIzS4b0CW7g
+ ILRu3dyuwdegEy/yEfCSSnpf95CNgaTz+vPi8VZGFG9cfgckJmdA1gu+x0Xj6gN4
+ lvcPEVQhps64Jgl6764BtScEwAb/mh+68JQYeAykE7iXk3ijCiFL9g4DcIgT2sRo
+ eI8eIDbOCWL7Yg==
+X-ME-Sender: <xms:AerSYFbcWoNtt36iGAYzGx73cT2z0mo5hPDTcDn3bcAhmp3-MCk0Mg>
+ <xme:AerSYMYw44owEnFE3ELpCFdt1bHuMvus8vtUNt50zGpS6LAxQ8tRUcbH1Cf_3-Q5r
+ 8IdPg15fJC_l9Eskl0>
+X-ME-Received: <xmr:AerSYH8AduLdxUW4m-vmqty46zEGdcjz0er1wl8mLsooFW-0YFHO-8-paQFV0HSu1S__wFqS85Goc39QVtDPLgmbGhIqXc_Vy_qt5xU4Rq-VmCL14DoV>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeegvddguddukecutefuodetggdotefrod
  ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
  necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtke
  ertdertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghk
  rghshhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeevfefffe
  ektefgveegfeelheffhfeujedtjeevtefhkeevkedtjeejvddtjefhjeenucevlhhushht
- vghrufhiiigvpeegnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhise
+ vghrufhiiigvpedvnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhise
  hsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:BurSYOPM1nOEMmogp-02hGFTWbES9p_qGi3mVkNqc9aJ3zM91Q3zGg>
- <xmx:BurSYP_yEEZnRPRE2lu0q930HCNWpbJ30LzZ8SXVUj1Tl2SAcBjaug>
- <xmx:BurSYOUsg7Xsseyrvxis_DrvHrGHv3zcJBrvhMV67s7I4S0w5VY5OA>
- <xmx:BurSYJlxFw0lsIDPA72VEv4B8UiBBknIMAXUy6J_1yLT-UjpnMv-SA>
+X-ME-Proxy: <xmx:AerSYDq8p0yz4ZpIsob9d_pva5Qc7kp1aqnWoJo0SUR50yTuskUQ8Q>
+ <xmx:AerSYAoFQ2RNLAvXDyZYvsDqzfHSW2oCKbO_nfaklK_Z3C40PhVZoA>
+ <xmx:AerSYJS9Lrn-oTzok_6SvHWS1zKAEXF6wVssioY9y9eA36kUhImbTw>
+ <xmx:AurSYNBUQGVRktmsY74IRMCGxWcqqGHLXv46UlNW2JuGeMjKgkprXQ>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 23 Jun 2021 04:00:04 -0400 (EDT)
+ 23 Jun 2021 04:00:00 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Subject: [PATCH 9/9] ALSA: firewire-motu: fix register handling for 896
-Date: Wed, 23 Jun 2021 16:59:41 +0900
-Message-Id: <20210623075941.72562-10-o-takashi@sakamocchi.jp>
+Subject: [PATCH 7/9] ALSA: firewire-motu: use macro instead of magic number
+ for clock source in v3 protocol
+Date: Wed, 23 Jun 2021 16:59:39 +0900
+Message-Id: <20210623075941.72562-8-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210623075941.72562-1-o-takashi@sakamocchi.jp>
 References: <20210623075941.72562-1-o-takashi@sakamocchi.jp>
@@ -118,98 +119,67 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-After further investigation, I find out some mistakes for 896 about its
-register. This commit fixes it.
+This commit adds a series of macro for source of sampling clock in
+version 3 protocol.
 
-Fixes: b431f16f1685 ("ALSA: firewire-motu: add support for MOTU 896")
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/motu/motu-protocol-v1.c | 33 ++++++++++++++++++--------
- 1 file changed, 23 insertions(+), 10 deletions(-)
+ sound/firewire/motu/motu-protocol-v3.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
-diff --git a/sound/firewire/motu/motu-protocol-v1.c b/sound/firewire/motu/motu-protocol-v1.c
-index 3b766615a9ee..f1d6a326dc07 100644
---- a/sound/firewire/motu/motu-protocol-v1.c
-+++ b/sound/firewire/motu/motu-protocol-v1.c
-@@ -61,13 +61,21 @@
+diff --git a/sound/firewire/motu/motu-protocol-v3.c b/sound/firewire/motu/motu-protocol-v3.c
+index ab113651107b..56e4504e7ec9 100644
+--- a/sound/firewire/motu/motu-protocol-v3.c
++++ b/sound/firewire/motu/motu-protocol-v3.c
+@@ -13,6 +13,12 @@
+ #define  V3_CLOCK_RATE_MASK		0x0000ff00
+ #define  V3_CLOCK_RATE_SHIFT		8
+ #define  V3_CLOCK_SOURCE_MASK		0x000000ff
++#define   V3_CLOCK_SRC_INTERNAL		0x00
++#define   V3_CLOCK_SRC_WORD_ON_BNC	0x01
++#define   V3_CLOCK_SRC_SPH		0x02
++#define   V3_CLOCK_SRC_SPDIF_ON_COAX	0x10
++#define   V3_CLOCK_SRC_OPT_IFACE_A	0x18
++#define   V3_CLOCK_SRC_OPT_IFACE_B	0x19
  
- // Status register for MOTU 896 (0x'ffff'f000'0b14).
- //
--// 0x20000000: fetch PCM frames from communication IC to DAC.
-+// 0xf0000000: enable physical and stream input to DAC.
-+//   0x80000000: disable
-+//   0x40000000: disable
-+//   0x20000000: enable (prior to the other bits)
-+//   0x10000000: disable
-+//   0x00000000: disable
- // 0x08000000: speed of word clock signal output on BNC interface.
--//   0x00000000: follow to system clock.
--//   0x08000000: half of system clock.
--// 0x01000000: Route main output to headphone output.
--// 0x00ffff00: input to monitor.
--//   0x00000000: none
-+//   0x00000000: force to low rate (44.1/48.0 kHz).
-+//   0x08000000: follow to system clock.
-+// 0x04000000: something relevant to clock.
-+// 0x03000000: enable output.
-+//  0x02000000: enabled irreversibly once standing unless the device voluntarily disables it.
-+//  0x01000000: enabled irreversibly once standing unless the device voluntarily disables it.
-+// 0x00ffff00: monitor input mode.
-+//   0x00000000: disabled
- //   0x00004800: analog-1/2
- //   0x00005a00: analog-3/4
- //   0x00006c00: analog-5/6
-@@ -83,7 +91,7 @@
- //   0x00007f00: analog-8
- //   0x00104000: AES/EBU-1
- //   0x00104900: AES/EBU-2
--// 0x00000060: sample rate conversin for AES/EBU input/output.
-+// 0x00000060: sample rate conversion for AES/EBU input/output.
- //   0x00000000: None
- //   0x00000020: input signal is converted to system rate
- //   0x00000040: output is slave to input, ignoring system rate
-@@ -97,16 +105,18 @@
- //   0x00000000: internal
- //   0x00000001: ADAT on optical interface
- //   0x00000002: AES/EBU on XLR
-+//   0x00000003: source packet header (SPH)
- //   0x00000004: word clock on BNC
- //   0x00000005: ADAT on Dsub 9pin
+ #define V3_OPT_IFACE_MODE_OFFSET	0x0c94
+ #define  V3_ENABLE_OPT_IN_IFACE_A	0x00000001
+@@ -111,20 +117,20 @@ int snd_motu_protocol_v3_get_clock_source(struct snd_motu *motu,
+ 	data = be32_to_cpu(reg) & V3_CLOCK_SOURCE_MASK;
  
- #define CLK_896_STATUS_OFFSET			0x0b14
- #define  CLK_896_STATUS_FLAG_FETCH_ENABLE	0x20000000
--#define  CLK_896_STATUS_FLAG_MAIN_TO_HP		0x01000000
-+#define  CLK_896_STATUS_FLAG_OUTPUT_ON		0x03000000
- #define  CLK_896_STATUS_MASK_SRC		0x00000007
- #define   CLK_896_STATUS_FLAG_SRC_INTERNAL	0x00000000
- #define   CLK_896_STATUS_FLAG_SRC_ADAT_ON_OPT	0x00000001
- #define   CLK_896_STATUS_FLAG_SRC_AESEBU	0x00000002
-+#define   CLK_896_STATUS_FLAG_SRC_SPH		0x00000003
- #define   CLK_896_STATUS_FLAG_SRC_WORD		0x00000004
- #define   CLK_896_STATUS_FLAG_SRC_ADAT_ON_DSUB	0x00000005
- #define  CLK_896_STATUS_MASK_RATE		0x00000018
-@@ -304,6 +314,9 @@ static int get_clock_source_896(struct snd_motu *motu, enum snd_motu_clock_sourc
- 	case CLK_896_STATUS_FLAG_SRC_AESEBU:
- 		*src = SND_MOTU_CLOCK_SOURCE_AESEBU_ON_XLR;
+ 	switch (data) {
+-	case 0x00:
++	case V3_CLOCK_SRC_INTERNAL:
+ 		*src = SND_MOTU_CLOCK_SOURCE_INTERNAL;
  		break;
-+	case CLK_896_STATUS_FLAG_SRC_SPH:
-+		*src = SND_MOTU_CLOCK_SOURCE_SPH;
-+		break;
- 	case CLK_896_STATUS_FLAG_SRC_WORD:
+-	case 0x01:
++	case V3_CLOCK_SRC_WORD_ON_BNC:
  		*src = SND_MOTU_CLOCK_SOURCE_WORD_ON_BNC;
  		break;
-@@ -362,9 +375,9 @@ static int switch_fetching_mode_896(struct snd_motu *motu, bool enable)
- 		return err;
- 	data = be32_to_cpu(reg);
+-	case 0x02:
++	case V3_CLOCK_SRC_SPH:
+ 		*src = SND_MOTU_CLOCK_SOURCE_SPH;
+ 		break;
+-	case 0x10:
++	case V3_CLOCK_SRC_SPDIF_ON_COAX:
+ 		*src = SND_MOTU_CLOCK_SOURCE_SPDIF_ON_COAX;
+ 		break;
+-	case 0x18:
+-	case 0x19:
++	case V3_CLOCK_SRC_OPT_IFACE_A:
++	case V3_CLOCK_SRC_OPT_IFACE_B:
+ 	{
+ 		__be32 reg;
+ 		u32 options;
+@@ -135,7 +141,7 @@ int snd_motu_protocol_v3_get_clock_source(struct snd_motu *motu,
+ 			return err;
+ 		options = be32_to_cpu(reg);
  
--	data &= ~(CLK_896_STATUS_FLAG_FETCH_ENABLE | CLK_896_STATUS_FLAG_MAIN_TO_HP);
-+	data &= ~CLK_896_STATUS_FLAG_FETCH_ENABLE;
- 	if (enable)
--		data |= (CLK_896_STATUS_FLAG_FETCH_ENABLE | CLK_896_STATUS_FLAG_MAIN_TO_HP);
-+		data |= CLK_896_STATUS_FLAG_FETCH_ENABLE | CLK_896_STATUS_FLAG_OUTPUT_ON;
- 
- 	reg = cpu_to_be32(data);
- 	return snd_motu_transaction_write(motu, CLK_896_STATUS_OFFSET, &reg, sizeof(reg));
+-		if (data == 0x18) {
++		if (data == V3_CLOCK_SRC_OPT_IFACE_A) {
+ 			if (options & V3_NO_ADAT_OPT_IN_IFACE_A)
+ 				*src = SND_MOTU_CLOCK_SOURCE_SPDIF_ON_OPT_A;
+ 			else
 -- 
 2.30.2
 
