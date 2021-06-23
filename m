@@ -7,97 +7,96 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A31E8C4743C
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Jun 2021 08:03:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F27C4C4743C
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Jun 2021 08:03:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2B36060FEE
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Jun 2021 08:03:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B36060FEE
+	by mail.kernel.org (Postfix) with ESMTPS id 7ABCD60FEE
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Jun 2021 08:03:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7ABCD60FEE
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 91AEE166F;
-	Wed, 23 Jun 2021 10:02:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91AEE166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0CFD41672;
+	Wed, 23 Jun 2021 10:02:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CFD41672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624435398;
-	bh=g0vn32DNepJneY8Myao8mIp+iG8XcyVC59GzTXkvlpU=;
+	s=default; t=1624435413;
+	bh=uKuUbEoJJ9PasAf0bIqrAO1JUVq3/Os5YGTTvuDNDn0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MDfi15+JP3cAif9ITWS8SexHM1xiZ+UVf1OHThDYGdC3gHNhLYZ7zsh/KXMciJKMz
-	 fSFP1SbYx1/ek+chezbge3OYgVIcGaOQPAIQq2lDMp60f5roW7i4WOuosCngSWFS0h
-	 FiV1CVM0nRDSJlKK5Qz/HpwMfwydMGGBPasL0OJE=
+	b=O7UdsLQ7DAP4GwbfcwbwmNIGYd4E8jbNdG8e+yGF5pvjydiT+jMoYs/12lbYSuGGe
+	 DbBt//4pC/1dKlckw8KGjyHNo/vc4UIcsuNGu3Mka/FoFC7MqMR1C7ct6lSGEqAcKU
+	 5p/P/9f9YeZjUVZXg2sDuLfV2m0IDY22GUM3Pkdw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3345F804FB;
-	Wed, 23 Jun 2021 10:00:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8A6B3F804FD;
+	Wed, 23 Jun 2021 10:00:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3D667F804E7; Wed, 23 Jun 2021 10:00:12 +0200 (CEST)
+ id D05F8F804EB; Wed, 23 Jun 2021 10:00:15 +0200 (CEST)
 Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com
  [64.147.123.20])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5464BF801D5
- for <alsa-devel@alsa-project.org>; Wed, 23 Jun 2021 10:00:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5464BF801D5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2CFA0F804E4
+ for <alsa-devel@alsa-project.org>; Wed, 23 Jun 2021 10:00:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CFA0F804E4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="KbIptk2c"; 
+ header.b="CXgV3rv+"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="vjddERoP"
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
- by mailout.west.internal (Postfix) with ESMTP id 4A26210C8;
- Wed, 23 Jun 2021 03:59:58 -0400 (EDT)
+ header.i=@messagingengine.com header.b="lIYA2Uld"
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+ by mailout.west.internal (Postfix) with ESMTP id 8166610C6;
+ Wed, 23 Jun 2021 04:00:07 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute6.internal (MEProxy); Wed, 23 Jun 2021 03:59:58 -0400
+ by compute3.internal (MEProxy); Wed, 23 Jun 2021 04:00:07 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=bgM+BBaiYgnlx
- KK+lDh3YhTF6GAJBpRYHulmrUHniZE=; b=KbIptk2cIjmQD4OZyL4JJCRTQBXX4
- YTPBD2dbjvR2mQ6m6qW/3nUlYE8bVb/oHn3+PVYMRUIHZump7nNs68s1/QjE7hzp
- 4DK5Y2wRc7ZlgkdJXhx4VcKTt2VWwRHllAeD5mp3P0v5NByTvtUbzT/GroxhccSl
- QQHdJKfH3h4pGmcG79iBj8ylbSW/LojZ5jIFIvmJKKfcCyCDe/Yi6L64uO/PFf6S
- fpFyDxSkmoEDQpddSmZo5XT0oF68PMcJSHyiFsemfWoXrNKsmEuZ+tq/xQrfnz9K
- PdVhHIwps6B8yQ8L1eeHvuI7Wl/shnPxbRaMNJ3+axQaLDvr/VxgBh8mg==
+ :mime-version:content-transfer-encoding; s=fm1; bh=WIJWu0FLrM2ac
+ 3hhH9t625EWYjm1NpmZuKBrZ12XXik=; b=CXgV3rv+ZAP0LxfYxf7oaVVASfCbe
+ nBLaLjN9ngC+kU0HL5KI178TKhxU9UBC8bCCRS3ENCGr21IyMt6HGddcW6/TyiK/
+ vCvkpub9obXT7edgGDf3lSYL/4ceLBooA/vTV0olhtb4LGdLeID+tdybrsK98pF6
+ TuWfw7NpNvPfa/rw+EW+vRJVHirEkN/THPglTLzFh++u0RgAPBUJCd6LRpTJ2XfD
+ oLmC+3cspG2UGAzZOIAZOrfzStSK5nMwSko0JZ2KuaMBeTBirLJbQuh8KLsrfp93
+ EwUb3U+S3xXD2gd1teTBycj63EdwV4CZ4fzD8/Lz2oADWQz/rHIY3lo8A==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm3; bh=bgM+BBaiYgnlxKK+lDh3YhTF6GAJBpRYHulmrUHniZE=; b=vjddERoP
- O8/YEFufJCUiYFgUI4oJ2GSGNXUaR1vdwR+1lhEYXh/IkPjlEQHGYqj3B92WAX+S
- iv/ZAbHaynQdzeK+oY4Mcc06Y2VELnibeRUasGohwSQQoWC1X2exRQmhPMO0cvw9
- 5Fiuk1hj1qYx7wJnF9/ExQsY1nGhlDp5aZkKw54dFIXPMbaNuihcTKCzGqc68h7U
- BffUizxEl9Bjarl46JTazgaWBhq3e9QibuUqEl+O6cUP8oRT/dl3EhUgnVWfinZD
- htz7bjldIX8v5D5INAT0Pz8ksV/BOXJpOA33Qbb7azPcjYRq0DflYFMQD69AIBKF
- bWR2ywx1Kx9UqQ==
-X-ME-Sender: <xms:_enSYKb1ln46hIQsigG6BNVqU9sxC91mQLnkRf9T99Owjk3pawkZpQ>
- <xme:_enSYNbX9ze0Tg_YAcAnxbAzLKuZm3xRaMOwhK-O8chzYMjwTepRPsshICt0b95BV
- cjClrQ4j40-pbTLmR8>
-X-ME-Received: <xmr:_enSYE-CGQXJ-u3b_xijuzz0o4FoRFMXFWJrM1v7zY8Nuxfr0Jl9wuhvBarN9mU2htnFR1BQiKdydH8AesShdWy82Qya-tbyxFbmbIUrSCdGPNZh4gvL>
+ fm3; bh=WIJWu0FLrM2ac3hhH9t625EWYjm1NpmZuKBrZ12XXik=; b=lIYA2Uld
+ SAVRP+l/34XsBpoc0deYneJarQZ+scQthFTI6ixGfa99eS7OASHzhRazxI7ZV3wk
+ XWcd50xik1Ma/Ruy+HV1HxWa2Jda0HMyk35SglFWxKTPqMXozyRa0I8qkoWkCW/P
+ jc+b6LorlQFud2bH/KT7qBDsj4zTB+Q21Tcx8kMpQecku7jXV/cAuQYUFrfI6iMu
+ xld1PFd29S3iocDzM6meeKhnrplhH9pS4MJ/vi1WZLgQM6mFLv6gIVLm2RxDwDnn
+ d9dq2VI78kUnlEU0f470ampwVOaKgRBXQk6toVReaXVLWORGKgeCJ21N4e+dDazT
+ nj9RA6SznXDqAA==
+X-ME-Sender: <xms:BurSYPsEFYUtfrNlnKvLrWPmSPhMplhq0Etef8zkObK0Xb3SLD88Sg>
+ <xme:BurSYAe9xhWOiPMwIAPJ5cYqaDOVrJZgaGS35FqaLmm5wKl-bO_U35u8ida3-H0HO
+ rfDHwkhPwNf-8wIzRs>
+X-ME-Received: <xmr:BurSYCweRx8FziJ51pcXvwhn98lQsw4ieKzWi-4zqc8i29pw3bNiujTGNzQ-nrDKPhWLL_qxbJHUERpllXbty5sNNgPigps5cYmsGj3wWz_9dSRX_ShO>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeegvddguddukecutefuodetggdotefrod
  ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
  necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtke
  ertdertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghk
  rghshhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeevfefffe
  ektefgveegfeelheffhfeujedtjeevtefhkeevkedtjeejvddtjefhjeenucevlhhushht
- vghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhise
+ vghrufhiiigvpeegnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhise
  hsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:_enSYMrhpv61CXl5tQy33mvy2Ug1Qpc7T1KRsHJ0xOjFnGe_7_hQGw>
- <xmx:_enSYFpjZepZ2TCo8IYm87sndoVzZUbzuFIqDojM8DqlrVPMlfbVcQ>
- <xmx:_enSYKTFTAh0UCNUI90S1Xc-6HhAtxERKholo7_S9c1OljJkvNnN6g>
- <xmx:_enSYGCcSK0nVj8VTVAyaDwzYfc7CcDLk5z5IRltBIBJ8XcFNJh9Bw>
+X-ME-Proxy: <xmx:BurSYOPM1nOEMmogp-02hGFTWbES9p_qGi3mVkNqc9aJ3zM91Q3zGg>
+ <xmx:BurSYP_yEEZnRPRE2lu0q930HCNWpbJ30LzZ8SXVUj1Tl2SAcBjaug>
+ <xmx:BurSYOUsg7Xsseyrvxis_DrvHrGHv3zcJBrvhMV67s7I4S0w5VY5OA>
+ <xmx:BurSYJlxFw0lsIDPA72VEv4B8UiBBknIMAXUy6J_1yLT-UjpnMv-SA>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 23 Jun 2021 03:59:56 -0400 (EDT)
+ 23 Jun 2021 04:00:04 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Subject: [PATCH 5/9] ALSA: firewire-motu: code refactoring for packet format
- detection in v2 protocol
-Date: Wed, 23 Jun 2021 16:59:37 +0900
-Message-Id: <20210623075941.72562-6-o-takashi@sakamocchi.jp>
+Subject: [PATCH 9/9] ALSA: firewire-motu: fix register handling for 896
+Date: Wed, 23 Jun 2021 16:59:41 +0900
+Message-Id: <20210623075941.72562-10-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210623075941.72562-1-o-takashi@sakamocchi.jp>
 References: <20210623075941.72562-1-o-takashi@sakamocchi.jp>
@@ -119,115 +118,98 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Current implementation of driver has several similar helper functions
-for packet format detection in protocol version 2.
+After further investigation, I find out some mistakes for 896 about its
+register. This commit fixes it.
 
-This commit merges them as code refactoring.
-
+Fixes: b431f16f1685 ("ALSA: firewire-motu: add support for MOTU 896")
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/motu/motu-protocol-v2.c | 79 +++++++-------------------
- 1 file changed, 20 insertions(+), 59 deletions(-)
+ sound/firewire/motu/motu-protocol-v1.c | 33 ++++++++++++++++++--------
+ 1 file changed, 23 insertions(+), 10 deletions(-)
 
-diff --git a/sound/firewire/motu/motu-protocol-v2.c b/sound/firewire/motu/motu-protocol-v2.c
-index 8865308c2c8e..93d5df1ae550 100644
---- a/sound/firewire/motu/motu-protocol-v2.c
-+++ b/sound/firewire/motu/motu-protocol-v2.c
-@@ -218,59 +218,9 @@ int snd_motu_protocol_v2_switch_fetching_mode(struct snd_motu *motu,
- 	}
- }
+diff --git a/sound/firewire/motu/motu-protocol-v1.c b/sound/firewire/motu/motu-protocol-v1.c
+index 3b766615a9ee..f1d6a326dc07 100644
+--- a/sound/firewire/motu/motu-protocol-v1.c
++++ b/sound/firewire/motu/motu-protocol-v1.c
+@@ -61,13 +61,21 @@
  
--static int detect_packet_formats_828mk2(struct snd_motu *motu, u32 data)
--{
--	if (((data & V2_OPT_IN_IFACE_MASK) >> V2_OPT_IN_IFACE_SHIFT) ==
--	    V2_OPT_IFACE_MODE_ADAT) {
--		motu->tx_packet_formats.pcm_chunks[0] += 8;
--		motu->tx_packet_formats.pcm_chunks[1] += 4;
--	}
--
--	if (((data & V2_OPT_OUT_IFACE_MASK) >> V2_OPT_OUT_IFACE_SHIFT) ==
--	    V2_OPT_IFACE_MODE_ADAT) {
--		motu->rx_packet_formats.pcm_chunks[0] += 8;
--		motu->rx_packet_formats.pcm_chunks[1] += 4;
--	}
--
--	return 0;
--}
--
--static int detect_packet_formats_traveler(struct snd_motu *motu, u32 data)
--{
--	if (((data & V2_OPT_IN_IFACE_MASK) >> V2_OPT_IN_IFACE_SHIFT) ==
--	    V2_OPT_IFACE_MODE_ADAT) {
--		motu->tx_packet_formats.pcm_chunks[0] += 8;
--		motu->tx_packet_formats.pcm_chunks[1] += 4;
--	}
--
--	if (((data & V2_OPT_OUT_IFACE_MASK) >> V2_OPT_OUT_IFACE_SHIFT) ==
--	    V2_OPT_IFACE_MODE_ADAT) {
--		motu->rx_packet_formats.pcm_chunks[0] += 8;
--		motu->rx_packet_formats.pcm_chunks[1] += 4;
--	}
--
--	return 0;
--}
--
--static int detect_packet_formats_8pre(struct snd_motu *motu, u32 data)
--{
--	if (((data & V2_OPT_IN_IFACE_MASK) >> V2_OPT_IN_IFACE_SHIFT) ==
--	    V2_OPT_IFACE_MODE_ADAT) {
--		motu->tx_packet_formats.pcm_chunks[0] += 8;
--		motu->tx_packet_formats.pcm_chunks[1] += 8;
--	}
--
--	if (((data & V2_OPT_OUT_IFACE_MASK) >> V2_OPT_OUT_IFACE_SHIFT) ==
--	    V2_OPT_IFACE_MODE_ADAT) {
--		motu->rx_packet_formats.pcm_chunks[0] += 8;
--		motu->rx_packet_formats.pcm_chunks[1] += 8;
--	}
--
--	return 0;
--}
--
- int snd_motu_protocol_v2_cache_packet_formats(struct snd_motu *motu)
- {
-+	bool has_two_opt_ifaces = (motu->spec == &snd_motu_spec_8pre);
- 	__be32 reg;
- 	u32 data;
- 	int err;
-@@ -294,14 +244,25 @@ int snd_motu_protocol_v2_cache_packet_formats(struct snd_motu *motu)
- 	       motu->spec->rx_fixed_pcm_chunks,
- 	       sizeof(motu->rx_packet_formats.pcm_chunks));
+ // Status register for MOTU 896 (0x'ffff'f000'0b14).
+ //
+-// 0x20000000: fetch PCM frames from communication IC to DAC.
++// 0xf0000000: enable physical and stream input to DAC.
++//   0x80000000: disable
++//   0x40000000: disable
++//   0x20000000: enable (prior to the other bits)
++//   0x10000000: disable
++//   0x00000000: disable
+ // 0x08000000: speed of word clock signal output on BNC interface.
+-//   0x00000000: follow to system clock.
+-//   0x08000000: half of system clock.
+-// 0x01000000: Route main output to headphone output.
+-// 0x00ffff00: input to monitor.
+-//   0x00000000: none
++//   0x00000000: force to low rate (44.1/48.0 kHz).
++//   0x08000000: follow to system clock.
++// 0x04000000: something relevant to clock.
++// 0x03000000: enable output.
++//  0x02000000: enabled irreversibly once standing unless the device voluntarily disables it.
++//  0x01000000: enabled irreversibly once standing unless the device voluntarily disables it.
++// 0x00ffff00: monitor input mode.
++//   0x00000000: disabled
+ //   0x00004800: analog-1/2
+ //   0x00005a00: analog-3/4
+ //   0x00006c00: analog-5/6
+@@ -83,7 +91,7 @@
+ //   0x00007f00: analog-8
+ //   0x00104000: AES/EBU-1
+ //   0x00104900: AES/EBU-2
+-// 0x00000060: sample rate conversin for AES/EBU input/output.
++// 0x00000060: sample rate conversion for AES/EBU input/output.
+ //   0x00000000: None
+ //   0x00000020: input signal is converted to system rate
+ //   0x00000040: output is slave to input, ignoring system rate
+@@ -97,16 +105,18 @@
+ //   0x00000000: internal
+ //   0x00000001: ADAT on optical interface
+ //   0x00000002: AES/EBU on XLR
++//   0x00000003: source packet header (SPH)
+ //   0x00000004: word clock on BNC
+ //   0x00000005: ADAT on Dsub 9pin
  
--	if (motu->spec == &snd_motu_spec_828mk2)
--		return detect_packet_formats_828mk2(motu, data);
--	else if (motu->spec == &snd_motu_spec_traveler)
--		return detect_packet_formats_traveler(motu, data);
--	else if (motu->spec == &snd_motu_spec_8pre)
--		return detect_packet_formats_8pre(motu, data);
--	else
--		return 0;
-+	if (((data & V2_OPT_IN_IFACE_MASK) >> V2_OPT_IN_IFACE_SHIFT) == V2_OPT_IFACE_MODE_ADAT) {
-+		motu->tx_packet_formats.pcm_chunks[0] += 8;
-+
-+		if (!has_two_opt_ifaces)
-+			motu->tx_packet_formats.pcm_chunks[1] += 4;
-+		else
-+			motu->tx_packet_formats.pcm_chunks[1] += 8;
-+	}
-+
-+	if (((data & V2_OPT_OUT_IFACE_MASK) >> V2_OPT_OUT_IFACE_SHIFT) == V2_OPT_IFACE_MODE_ADAT) {
-+		motu->rx_packet_formats.pcm_chunks[0] += 8;
-+
-+		if (!has_two_opt_ifaces)
-+			motu->rx_packet_formats.pcm_chunks[1] += 4;
-+		else
-+			motu->rx_packet_formats.pcm_chunks[1] += 8;
-+	}
-+
-+	return 0;
- }
+ #define CLK_896_STATUS_OFFSET			0x0b14
+ #define  CLK_896_STATUS_FLAG_FETCH_ENABLE	0x20000000
+-#define  CLK_896_STATUS_FLAG_MAIN_TO_HP		0x01000000
++#define  CLK_896_STATUS_FLAG_OUTPUT_ON		0x03000000
+ #define  CLK_896_STATUS_MASK_SRC		0x00000007
+ #define   CLK_896_STATUS_FLAG_SRC_INTERNAL	0x00000000
+ #define   CLK_896_STATUS_FLAG_SRC_ADAT_ON_OPT	0x00000001
+ #define   CLK_896_STATUS_FLAG_SRC_AESEBU	0x00000002
++#define   CLK_896_STATUS_FLAG_SRC_SPH		0x00000003
+ #define   CLK_896_STATUS_FLAG_SRC_WORD		0x00000004
+ #define   CLK_896_STATUS_FLAG_SRC_ADAT_ON_DSUB	0x00000005
+ #define  CLK_896_STATUS_MASK_RATE		0x00000018
+@@ -304,6 +314,9 @@ static int get_clock_source_896(struct snd_motu *motu, enum snd_motu_clock_sourc
+ 	case CLK_896_STATUS_FLAG_SRC_AESEBU:
+ 		*src = SND_MOTU_CLOCK_SOURCE_AESEBU_ON_XLR;
+ 		break;
++	case CLK_896_STATUS_FLAG_SRC_SPH:
++		*src = SND_MOTU_CLOCK_SOURCE_SPH;
++		break;
+ 	case CLK_896_STATUS_FLAG_SRC_WORD:
+ 		*src = SND_MOTU_CLOCK_SOURCE_WORD_ON_BNC;
+ 		break;
+@@ -362,9 +375,9 @@ static int switch_fetching_mode_896(struct snd_motu *motu, bool enable)
+ 		return err;
+ 	data = be32_to_cpu(reg);
  
- const struct snd_motu_spec snd_motu_spec_828mk2 = {
+-	data &= ~(CLK_896_STATUS_FLAG_FETCH_ENABLE | CLK_896_STATUS_FLAG_MAIN_TO_HP);
++	data &= ~CLK_896_STATUS_FLAG_FETCH_ENABLE;
+ 	if (enable)
+-		data |= (CLK_896_STATUS_FLAG_FETCH_ENABLE | CLK_896_STATUS_FLAG_MAIN_TO_HP);
++		data |= CLK_896_STATUS_FLAG_FETCH_ENABLE | CLK_896_STATUS_FLAG_OUTPUT_ON;
+ 
+ 	reg = cpu_to_be32(data);
+ 	return snd_motu_transaction_write(motu, CLK_896_STATUS_OFFSET, &reg, sizeof(reg));
 -- 
 2.30.2
 
