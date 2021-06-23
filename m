@@ -2,123 +2,72 @@ Return-Path: <SRS0=sqcX=LR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ACCB7C4743C
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Jun 2021 12:30:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4069BC4743C
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Jun 2021 13:47:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E1F6D610A0
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Jun 2021 12:30:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E1F6D610A0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cerno.tech
+	by mail.kernel.org (Postfix) with ESMTPS id BE5F361076
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Jun 2021 13:47:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE5F361076
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1F011851;
-	Wed, 23 Jun 2021 14:29:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F011851
+	by alsa0.perex.cz (Postfix) with ESMTPS id 799C784D;
+	Wed, 23 Jun 2021 15:46:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 799C784D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624451422;
-	bh=LYmysgAYQbYf4D5WIV3nX+JHKv4gcr5JH0CPAhQp3EQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1624456032;
+	bh=VZ9dMcy8if+qpRdfooKiik6IaNR8XTPMhIXUPf3EuK4=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cIU/8ntGXhe2YrO1qRn8tCLLH/bbowkpTHY0jMVz2KAuQCZnawMuCQtHLychiLBuQ
-	 Kwt41OJ6j9AiAmCHr3gUohjkF3D6zxSsKJnpof6vatVzKNIMZstzy+gcwF0fmLTJ5i
-	 LLOcQWD/LdVsAMMC+T2nUpRsshnPLc/YaYCDrhoI=
+	b=m4Y1yOIcY4ftF7v6VM19ek9Z/vLTbiydIHsW6xj61YOCoMTlZ35/cL1tdLinUq3Y8
+	 cMU5trFZ9+tz9q+nmQVzztP/S9sNvd56E5szaTH03v5+vyh+jHQNKAwuuo22GJEY0H
+	 XnVEI6kLdwp/JAwUvRKOc750KwgY/fJaCBEuE8xs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B7E9F80137;
-	Wed, 23 Jun 2021 14:29:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1909AF800E1;
+	Wed, 23 Jun 2021 15:46:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 23EF5F8016D; Wed, 23 Jun 2021 14:29:19 +0200 (CEST)
-Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com
- [66.111.4.230])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 6F343F801D5; Wed, 23 Jun 2021 15:46:20 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AA780F80137
- for <alsa-devel@alsa-project.org>; Wed, 23 Jun 2021 14:29:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA780F80137
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
- header.b="2eJlQpIH"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="lcr+uzMg"
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
- by mailnew.nyi.internal (Postfix) with ESMTP id 44CF35805E0;
- Wed, 23 Jun 2021 08:29:07 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute6.internal (MEProxy); Wed, 23 Jun 2021 08:29:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
- date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm3; bh=LYmysgAYQbYf4D5WIV3nX+JHKv4
- gcr5JH0CPAhQp3EQ=; b=2eJlQpIHzliDahyhagWavmKnGgwp95ZisZfiYEn9MQr
- kFnx2PwYMwEwfxbsdSuu5H0iwUSDqsdvFTmGqElDbDAKRvHLLvLCIS1C2D4DLieT
- tdt+ULQRftMO8WV54GoiYsTiwbC3K1wUdoLrhvxobU6PNICaLAhzZZh5qwYIYHgW
- Qot3r07h03x4S/7gR4qA7Boi0D2f9UFjmRPBw0qSmGz4XnDhs7jQPkAAdv7QCFLi
- nJ9LVhD5NkgH7pPP4p/GixwP9y3ZHmJ2RmYL33AYyyR72L0/7xJhBtB7rBKnw5uJ
- aGzyS9WSLYNaGC0bdDafCdCCbAUf/zU12Sh0GMJYOCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=LYmysg
- AYQbYf4D5WIV3nX+JHKv4gcr5JH0CPAhQp3EQ=; b=lcr+uzMgCh79q2GtuWp50h
- xEyL0RWnfNYX34/c26G/ynQQcmDVGgDu76mPvLqRRyrlHWQm54BVa78BABb3nkjD
- RiE2e7XdKfj1iVGoZVQ27NgzEBxvM/5y4zx4W6Nd0dTIpqxtQgmQdEcaiXvm0Yp5
- MIGwT6Y0dztc9joSc9wgrs7/e2oOtOMeCndXFrRRrlCoirJE24OTBUeJF+EMLOdE
- APyK+Rzg9kPtZD+blzODFda0w24L/NONnXqZOovMh6kY6zlKzZLQlAwKiaN0GlyK
- eVGAOHLp5rFyuNX7+j7zSLsA1ePkLNUQVn59JahN0ZKhhonk+V1xtXGWaY3MxZaw
- ==
-X-ME-Sender: <xms:ESnTYK_C-21U2l2QozyILoNSlPVqKfpTp1q6YqEseQtERYTgD7wEjA>
- <xme:ESnTYKs6ZYg2RUE3T4E6_4WYfh7byUamSHlJxrXSRIO9zEAnf3vP53J6ISh3gHTex
- vjveIKAZEot9ElXG9Q>
-X-ME-Received: <xmr:ESnTYAD101y1Z0cSzKC5muGw7O86ArnMv0EERbPkuBkRESwg4ufvcqvrEDGFH43cICse_euQkCXeR5wF_iBFxf7l5AzuiVuIDg2F>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeegfedgheefucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
- cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
- vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
- htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
- gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
- grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:ESnTYCe9QBXtVFJhfKsnRwaDl-xkxqvQydUEScUwiqPYbRcEi1TlPQ>
- <xmx:ESnTYPNXuaRR8kEvEfb-7qU59Zify5c9K1HKVr_vC8Om2KWmtIZAxg>
- <xmx:ESnTYMlg2fbk5mkdtWnpb4rpr71L0d4YVRQ-KoHTE6BfyypN_1u9OQ>
- <xmx:EynTYCdX2W4keJN3BziO7ALHGBYvumNaAZ_6JzvRr3sRzPLV1XkbCg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 23 Jun 2021 08:29:04 -0400 (EDT)
-Date: Wed, 23 Jun 2021 14:29:03 +0200
-From: Maxime Ripard <maxime@cerno.tech>
-To: nicolas saenz julienne <nsaenz@kernel.org>
-Subject: Re: [PATCH v2 10/12] drm/vc4: hdmi: Register HDMI codec
-Message-ID: <20210623122903.nvkm7hagt324n4pd@gilmour>
-References: <20210525132354.297468-1-maxime@cerno.tech>
- <20210525132354.297468-11-maxime@cerno.tech>
- <c1ee306fbc81da2df7d0041c719fc8cd3302cf0f.camel@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2551EF800B5
+ for <alsa-devel@alsa-project.org>; Wed, 23 Jun 2021 15:46:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2551EF800B5
+IronPort-SDR: lYFF8+jcubFO9+QOy8purGYBo6Gt/SNQjyIV+qF3BmiHl+S5DCDuezE2VTHTKxbo11SMMiv7/E
+ t2ouXCJ3CvNA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="207200310"
+X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; d="scan'208";a="207200310"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 Jun 2021 06:46:07 -0700
+IronPort-SDR: QmmaNyHPt/kDF2exNRI2+7bBZe9G4nt/yVAQCu1fTk9gokGRCW0YPhozcX57YLRoNMcZcoj8xy
+ XKITrhfi37tA==
+X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; d="scan'208";a="453039198"
+Received: from ideak-desk.fi.intel.com ([10.237.68.141])
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 Jun 2021 06:46:06 -0700
+From: Imre Deak <imre.deak@intel.com>
+To: intel-gfx@lists.freedesktop.org
+Subject: [PATCH 2/2] ALSA: hda: Release codec display power during
+ shutdown/reboot
+Date: Wed, 23 Jun 2021 16:46:01 +0300
+Message-Id: <20210623134601.2128663-2-imre.deak@intel.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210623134601.2128663-1-imre.deak@intel.com>
+References: <20210623134601.2128663-1-imre.deak@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="ed3s3jfq3fuhw3ac"
-Content-Disposition: inline
-In-Reply-To: <c1ee306fbc81da2df7d0041c719fc8cd3302cf0f.camel@kernel.org>
-Cc: alsa-devel@alsa-project.org, Tim Gover <tim.gover@raspberrypi.com>,
- Liam Girdwood <lgirdwood@gmail.com>, David Airlie <airlied@linux.ie>,
- dri-devel@lists.freedesktop.org, Takashi Iwai <tiwai@suse.com>,
- Eric Anholt <eric@anholt.net>, Daniel Vetter <daniel.vetter@intel.com>,
- Phil Elwell <phil@raspberrypi.com>,
- Dave Stevenson <dave.stevenson@raspberrypi.com>, linux-doc@vger.kernel.org,
- bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, linux-rpi-kernel@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, Dom Cobley <dom@raspberrypi.com>,
- Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Content-Transfer-Encoding: 8bit
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -134,36 +83,104 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Similarly to the previous patch for the HDA controller make sure here
+that codecs also drop the display power reference during shutdown and
+reboot.
 
---ed3s3jfq3fuhw3ac
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This fixes a power ref leaked WARN in i915 during shutdown if the HDA
+driver is built with CONFIG_PM=n.
 
-On Tue, Jun 01, 2021 at 11:26:24AM +0200, nicolas saenz julienne wrote:
-> On Tue, 2021-05-25 at 15:23 +0200, Maxime Ripard wrote:
-> > The hdmi-codec brings a lot of advanced features, including the HDMI
-> > channel mapping. Let's use it in our driver instead of our own codec.
-> >=20
-> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> > ---
->=20
-> Reviewed-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
+Suggested-by: Takashi Iwai <tiwai@suse.de>
+References: https://gitlab.freedesktop.org/drm/intel/-/issues/3618
+References: https://lore.kernel.org/intel-gfx/s5hzgvhngw6.wl-tiwai@suse.de
+Cc: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Imre Deak <imre.deak@intel.com>
+---
+ sound/pci/hda/hda_bind.c  |  7 +++++--
+ sound/pci/hda/hda_codec.c | 10 +++++-----
+ sound/pci/hda/hda_local.h |  2 ++
+ 3 files changed, 12 insertions(+), 7 deletions(-)
 
-Applied 6 to 10, I'll resend 11
+diff --git a/sound/pci/hda/hda_bind.c b/sound/pci/hda/hda_bind.c
+index 17a25e453f60c..e8dee24c309da 100644
+--- a/sound/pci/hda/hda_bind.c
++++ b/sound/pci/hda/hda_bind.c
+@@ -167,8 +167,11 @@ static void hda_codec_driver_shutdown(struct device *dev)
+ {
+ 	struct hda_codec *codec = dev_to_hda_codec(dev);
+ 
+-	if (!pm_runtime_suspended(dev) && codec->patch_ops.reboot_notify)
+-		codec->patch_ops.reboot_notify(codec);
++	if (!pm_runtime_suspended(dev)) {
++		if (codec->patch_ops.reboot_notify)
++			codec->patch_ops.reboot_notify(codec);
++		snd_hda_codec_display_power(codec, false);
++	}
+ }
+ 
+ int __hda_codec_driver_register(struct hda_codec_driver *drv, const char *name,
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 5462f771c2f90..7a717e1511569 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -798,7 +798,7 @@ static unsigned int hda_set_power_state(struct hda_codec *codec,
+ 				unsigned int power_state);
+ 
+ /* enable/disable display power per codec */
+-static void codec_display_power(struct hda_codec *codec, bool enable)
++void snd_hda_codec_display_power(struct hda_codec *codec, bool enable)
+ {
+ 	if (codec->display_power_control)
+ 		snd_hdac_display_power(&codec->bus->core, codec->addr, enable);
+@@ -810,7 +810,7 @@ void snd_hda_codec_register(struct hda_codec *codec)
+ 	if (codec->registered)
+ 		return;
+ 	if (device_is_registered(hda_codec_dev(codec))) {
+-		codec_display_power(codec, true);
++		snd_hda_codec_display_power(codec, true);
+ 		pm_runtime_enable(hda_codec_dev(codec));
+ 		/* it was powered up in snd_hda_codec_new(), now all done */
+ 		snd_hda_power_down(codec);
+@@ -836,7 +836,7 @@ static int snd_hda_codec_dev_free(struct snd_device *device)
+ 	 */
+ 	if (codec->core.type == HDA_DEV_LEGACY)
+ 		snd_hdac_device_unregister(&codec->core);
+-	codec_display_power(codec, false);
++	snd_hda_codec_display_power(codec, false);
+ 
+ 	/*
+ 	 * In the case of ASoC HD-audio bus, the device refcount is released in
+@@ -2893,7 +2893,7 @@ static int hda_codec_runtime_suspend(struct device *dev)
+ 	    (codec_has_clkstop(codec) && codec_has_epss(codec) &&
+ 	     (state & AC_PWRST_CLK_STOP_OK)))
+ 		snd_hdac_codec_link_down(&codec->core);
+-	codec_display_power(codec, false);
++	snd_hda_codec_display_power(codec, false);
+ 	return 0;
+ }
+ 
+@@ -2905,7 +2905,7 @@ static int hda_codec_runtime_resume(struct device *dev)
+ 	if (!codec->card)
+ 		return 0;
+ 
+-	codec_display_power(codec, true);
++	snd_hda_codec_display_power(codec, true);
+ 	snd_hdac_codec_link_up(&codec->core);
+ 	hda_call_codec_resume(codec);
+ 	pm_runtime_mark_last_busy(dev);
+diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
+index 4c5589c10f1d6..8d2503e8dad86 100644
+--- a/sound/pci/hda/hda_local.h
++++ b/sound/pci/hda/hda_local.h
+@@ -709,6 +709,8 @@ void snd_hdmi_write_eld_info(struct hdmi_eld *eld,
+ #define SND_PRINT_CHANNEL_ALLOCATION_ADVISED_BUFSIZE 80
+ void snd_print_channel_allocation(int spk_alloc, char *buf, int buflen);
+ 
++void snd_hda_codec_display_power(struct hda_codec *codec, bool enable);
++
+ /*
+  */
+ #define codec_err(codec, fmt, args...) \
+-- 
+2.27.0
 
-Thanks!
-Maxime
-
---ed3s3jfq3fuhw3ac
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYNMpDwAKCRDj7w1vZxhR
-xTtEAQCsRUnfy20Se4iYG9OnMpYBOcMIXkIlk4MHoGG22GbIhgD+KEWBCy8hUjqQ
-hXB++Vu4wHH9EPXj1HdCg3lwFXxWrQI=
-=QYZn
------END PGP SIGNATURE-----
-
---ed3s3jfq3fuhw3ac--
