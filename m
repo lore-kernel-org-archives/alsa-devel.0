@@ -2,90 +2,88 @@ Return-Path: <SRS0=sqcX=LR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99F7BC4743C
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Jun 2021 06:40:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4994C4743C
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Jun 2021 07:53:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ABBFC6120D
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Jun 2021 06:40:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ABBFC6120D
+	by mail.kernel.org (Postfix) with ESMTPS id 5205D61185
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Jun 2021 07:53:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5205D61185
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C33E84B;
-	Wed, 23 Jun 2021 08:39:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C33E84B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1155D846;
+	Wed, 23 Jun 2021 09:52:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1155D846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624430426;
-	bh=GdMGbGTyGuiLB/V/gpiWMSo/LEK3grghjimuHQ2ndqU=;
+	s=default; t=1624434801;
+	bh=tDC005aILTTjECiMIqJECyRaHhzFzzGbRa7x02wr7l0=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=A8N5C+0aMs73u2J2hAaAsA9MF8Lb12GZYM/XbogKLU5WEktcgah92kbRSAvDtpjIF
-	 TQM5exhtjTssK+ytt9jMm4+y0eQP7LTZoVOtbSs5hpQ56j5ZJISjurgdD+bOBLRYo8
-	 6wRGRVgH+8GrNUL3zSTHKAiKJgMwTmlOQ2Ckawd8=
+	b=aqCDVPT8HLbLLG6JE3eLu0Vq/yRSZAR0AdZtdNJXT41eTKtFxUYyC9N3vo6ub4qvj
+	 J18lkYvtcUrgKV7GgP2ToY5lbVKr3XXxsLxAH3Z1VDpsU4Eq/Ci/N5jJgEq1F81MMV
+	 0EFTphgfgkqOcHYjC3YZblDZV7D5J1pYg6Ywd5H0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B902EF8016B;
-	Wed, 23 Jun 2021 08:39:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6CB5F800B5;
+	Wed, 23 Jun 2021 09:52:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 12C7EF8016D; Wed, 23 Jun 2021 08:39:34 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 39F29F8016D; Wed, 23 Jun 2021 09:52:29 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F088EF800E1
- for <alsa-devel@alsa-project.org>; Wed, 23 Jun 2021 08:39:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F088EF800E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4CD8FF800E1
+ for <alsa-devel@alsa-project.org>; Wed, 23 Jun 2021 09:52:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CD8FF800E1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="vktH8ihX"; 
+ header.b="Dw/u2DxL"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="nY540LxX"
+ header.b="1jhj+zZ1"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 39A1A21970;
- Wed, 23 Jun 2021 06:39:26 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id EAAF71FD65;
+ Wed, 23 Jun 2021 07:52:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1624430366; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1624434739; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=n1SVaT4veF/ljeg+Pvx71YlU9Zxp4lGDbfLWbAn7RH4=;
- b=vktH8ihX4KHbYym6T0lOQYXbDVYFUzt7uefTpEkMQP7qpKGH2grwu2m7R+HXJf9qdWZpIg
- tOpvpFDe5XbudSg7DlYYEbdWKAqVAvM9eDEq5nGd3y+ShTwPZJzlgG77iJVdGerKrSaI+H
- 90WA55C/gl505bs7IK61Pp0926o1dvc=
+ bh=Pcv/RxJqvs+ARh32kXIcvqKvvuFd/O/2pKppZ76oYFA=;
+ b=Dw/u2DxL41ugf+b06A4ItxEkj6c4v4X95A7l8SlzANxV8ZOesjVL13XhN+nOrpBxoSMwtI
+ PhV0iw6ProHr4XZE6vtl93+khcGouvxQV22AKJiVJHBiu6rUrnxPxEEkm0G/Jtf5TpGwH8
+ Wr9HqAr3StZB1d8xhquiAcU6IfH8q34=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1624430366;
+ s=susede2_ed25519; t=1624434739;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=n1SVaT4veF/ljeg+Pvx71YlU9Zxp4lGDbfLWbAn7RH4=;
- b=nY540LxXdWKyjq7ppGwDGvolsbe94Cg8HX+UIuAwuUrJ5NwOLZtw7c6HrKvhvAHS8PklPn
- bMrbztnqrjC0mzBg==
+ bh=Pcv/RxJqvs+ARh32kXIcvqKvvuFd/O/2pKppZ76oYFA=;
+ b=1jhj+zZ1IHIAQtHOhRiKRx88CqacVqSYsjiQVz27jFLZ+q0Y74vni2+q2ukbwtmuA3SCNZ
+ Gsz9ncyL7/+Q9qBg==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 2EFBBA3BAC;
- Wed, 23 Jun 2021 06:39:24 +0000 (UTC)
-Date: Wed, 23 Jun 2021 08:39:24 +0200
-Message-ID: <s5ha6nhozj7.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id D3183A3B91;
+ Wed, 23 Jun 2021 07:52:19 +0000 (UTC)
+Date: Wed, 23 Jun 2021 09:52:19 +0200
+Message-ID: <s5h1r8tow5o.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: "Geoffrey D. Bennett" <g@b4.vu>
-Subject: Re: [PATCH 01/17] ALSA: usb-audio: scarlett2: Fix wrong resume call
-In-Reply-To: <20210623010327.GA15559@m.b4.vu>
-References: <cover.1624379707.git.g@b4.vu>
- <49721219f45b7e175e729b0d9d9c142fd8f4342a.1624379707.git.g@b4.vu>
- <s5hfsx9ptyl.wl-tiwai@suse.de> <20210623010327.GA15559@m.b4.vu>
+Subject: Re: [PATCH] MAINTAINERS: Add Focusrite Scarlett Gen 2/3 Mixer Driver
+ entry
+In-Reply-To: <20210622171724.GA15534@m.b4.vu>
+References: <20210622171724.GA15534@m.b4.vu>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Hin-Tak Leung <htl10@users.sourceforge.net>, alsa-devel@alsa-project.org,
- Vladimir Sadovnikov <sadko4u@gmail.com>
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,45 +99,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 23 Jun 2021 03:03:27 +0200,
+On Tue, 22 Jun 2021 19:17:24 +0200,
 Geoffrey D. Bennett wrote:
 > 
-> On Tue, Jun 22, 2021 at 09:42:10PM +0200, Takashi Iwai wrote:
-> > On Tue, 22 Jun 2021 19:00:49 +0200,
-> > Geoffrey D. Bennett wrote:
-> > > 
-> > > From: Takashi Iwai <tiwai@suse.de>
-> > > 
-> > > The current way of the scarlett2 mixer code managing the
-> > > usb_mixer_elem_info object is wrong in two ways: it passes its
-> > > internal index to the head.id field, and the val_type field is
-> > > uninitialized.  This ended up with the wrong execution at the resume
-> > > because a bogus unit id is passed wrongly.  Also, in the later code
-> > > extensions, we'll have more mixer elements, and passing the index will
-> > > overflow the unit id size (of 256).
-> > > 
-> > > This patch corrects those issues.  It introduces a new value type,
-> > > USB_MIXER_BESPOKEN, which indicates a non-standard mixer element, and
-> > > use this type for all scarlett2 mixer elements, as well as
-> > > initializing the fixed unit id 0 for avoiding the overflow.
-> > > 
-> > > Tested-by: Geoffrey D. Bennett <g@b4.vu>
-> > > Cc: <stable@vger.kernel.org>
-> > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> > 
-> > When submitting a patch, you have to your Signed-off-by line even if
-> > you are no author.  Could you give it?  Just reply with a proper SOB,
-> > then I'll fix manually.
-> 
-> Of course. You know how many times I've read
-> Documentation/process/submitting-patches.rst ? Not enough for it to
-> sink in, apparently :). Please append my SOB:
+> Add Focusrite Scarlett Gen 2/3 Mixer Driver entry.
 > 
 > Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
 
-OK, now all patches have been merged.
+Applied, thanks.
 
-
-Thanks!
 
 Takashi
