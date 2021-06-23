@@ -2,76 +2,76 @@ Return-Path: <SRS0=sqcX=LR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22E76C4743C
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Jun 2021 16:10:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E770C4743C
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Jun 2021 16:11:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BABD1611CB
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Jun 2021 16:10:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BABD1611CB
+	by mail.kernel.org (Postfix) with ESMTPS id 75F99611C1
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Jun 2021 16:11:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 75F99611C1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6B0C23E;
-	Wed, 23 Jun 2021 18:09:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B0C23E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1F9151660;
+	Wed, 23 Jun 2021 18:10:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F9151660
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624464642;
-	bh=a9fb1OmIXyYRR5DVn5i5LpyVNuUaMJ+ArHKgLjEbbVI=;
+	s=default; t=1624464693;
+	bh=XycGzb/Or5rXgqXxq5Pfdilk0APC+bbYpOpd9WsN+44=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=D1ZNG5ti2BZriFqfc4iw/0ZtrH8pu2lfkIoKWZiPufsEOYroLdXnIFOCvFFK+2rA5
-	 amz1p7Ib4Xvg/fEftKI50lPLVKi7kdrJJZP+KbXao9cFSUP0AFEeClJGTIuHlolaBo
-	 vU6y9CnEB+Eawkm4Z45IgHkehFYqBKQvAueBBQPM=
+	b=NZ6RjfCcaTYTuwQiUpYwg1COnvSU5XH0u2E2LVDP2rkySyfzLss/hacFgcAToBcf1
+	 Mp4MJlXyYlBC+wmMwQ1NScsNmWVy/INTabSRnrxwXh470FkJCLEsl1OD2oa8LS4G5T
+	 r98toVlrnN3rG6Tz8yq0z5rTEgj9a0Fp/EcgiqUM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 03140F800E1;
+	by alsa1.perex.cz (Postfix) with ESMTP id 9C348F801DB;
 	Wed, 23 Jun 2021 18:09:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E96AFF801DB; Wed, 23 Jun 2021 18:09:49 +0200 (CEST)
+ id 5024DF801D5; Wed, 23 Jun 2021 18:09:50 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 873CBF800E1
- for <alsa-devel@alsa-project.org>; Wed, 23 Jun 2021 18:09:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 873CBF800E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8B1E6F8016B
+ for <alsa-devel@alsa-project.org>; Wed, 23 Jun 2021 18:09:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B1E6F8016B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Z+wuDago"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DFE8611C1;
- Wed, 23 Jun 2021 16:09:44 +0000 (UTC)
+ header.b="Y6+OULoo"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8DEA611CB;
+ Wed, 23 Jun 2021 16:09:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1624464584;
- bh=a9fb1OmIXyYRR5DVn5i5LpyVNuUaMJ+ArHKgLjEbbVI=;
+ s=k20201202; t=1624464582;
+ bh=XycGzb/Or5rXgqXxq5Pfdilk0APC+bbYpOpd9WsN+44=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Z+wuDagoFRZ3WUE6QB5L8Le5X0PH+ELlnERMWCNQaThVvJw0klcde8MUTITQKnHWZ
- /Y+tii8ugW/X49vAIHr3TJjkkEbRuDwjTGGF8KBTDmHVVsIRWaEVpDLY3E3Vc17Thb
- hugjO5XEZ1xXApJ6f/iWNz+x6grKOxCP4P4PpqW1hwDK3DxZPfpfxXwnDIRnSj2cM8
- wk3Kb0rvC9fGNdYCttXkfyLlbJMGtsXDs8DLEOC4yxgOS35fP0UdtvpDfakoH4thcB
- AE9l6YTFGE8WZP1Ah5xhzZdIeKSoGOzJMwnXeH4+l9CLpdTyO/2oGgTgtGpBH0sxKk
- m+Yh5tyFj1qgw==
+ b=Y6+OULooCZkRCYLOck+FarGNR1whZWAjnNUqxQP+vHnmdm9fIh8d320I+xsj5N7R9
+ B94VqkbW6XVZRajonlkGv2gaOJT8p/mFoMKw0UM1+nD8531vDy5t/AfsKWaAQievpK
+ bbrrlwuL5/nzDJpjMeOBJyGoEng62Brx74mqbVxtsWbmXshGc8KpN69HQJMK3usTbo
+ Zm0+HCgd9a7RzYPhWA/6/prSSUxjFi8xWVuiTLgZpGwoFIltvsMIzqPDoPclGZAza2
+ MwQPtefUA28lMu9KE4QlL6FuY10IqCifknf6HM6fFcFzSC04WfjTNwoMQ+MSB72/qy
+ 5X7yZnzfXkHcA==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Claudius Heine <ch@denx.de>,
- Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Jaroslav Kysela <perex@perex.cz>, Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH v2 0/3] ASoC: tlv320aic32x4: Add support for TAS2505
-Date: Wed, 23 Jun 2021 17:08:57 +0100
-Message-Id: <162446397756.55213.16376816348258130032.b4-ty@kernel.org>
+To: alsa-devel@alsa-project.org, nicoleotsuka@gmail.com, festevam@gmail.com,
+ tiwai@suse.com, Shengjiu Wang <shengjiu.wang@nxp.com>, timur@kernel.org,
+ Xiubo.Lee@gmail.com, perex@perex.cz
+Subject: Re: [PATCH] ASoC: fsl_spdif: Fix unexpected interrupt after suspend
+Date: Wed, 23 Jun 2021 17:08:56 +0100
+Message-Id: <162446397756.55213.7915054235058479880.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210617085230.1851503-1-ch@denx.de>
-References: <20210617085230.1851503-1-ch@denx.de>
+In-Reply-To: <1624365084-7934-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1624365084-7934-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Mark Brown <broonie@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,17 +87,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 17 Jun 2021 10:52:27 +0200, Claudius Heine wrote:
-> this is v2 from my patchset that add support for the TAS2505 to the tlv320aic32x4 driver.
+On Tue, 22 Jun 2021 20:31:24 +0800, Shengjiu Wang wrote:
+> When system enter suspend, the machine driver suspend callback
+> function will be called, then the cpu driver trigger callback
+> (SNDRV_PCM_TRIGGER_SUSPEND) be called, it would disable the
+> interrupt.
 > 
-> kind regards,
-> Claudius
-> 
-> Changes from v1:
-> - clarified commit message of first patch, which add the type value to the struct
-> - removed unnecessary code to put and get speaker volume
-> - removed 'Gain' from 'HP Driver Playback Volume' control
-> - fixed rebase issues
+> But the machine driver suspend and cpu dai driver suspend order
+> maybe changed, the cpu dai driver's suspend callback is called before
+> machine driver's suppend callback, then the interrupt is not cleared
+> successfully in trigger callback.
 > 
 > [...]
 
@@ -107,12 +106,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: tlv320aic32x4: add type to device private data struct
-      commit: 688d47cdd9344b1485eb28c2a7aa99743ed529a3
-[2/3] ASoC: tlv320aic32x4: add support for TAS2505
-      commit: b4525b6196cd7f83eba16d8679a55f8bb9571052
-[3/3] ASoC: tlv320aic32x4: dt-bindings: add TAS2505 to compatible
-      commit: 8e0eb2fb5c0732a6fa53f2df7079754152857c24
+[1/1] ASoC: fsl_spdif: Fix unexpected interrupt after suspend
+      commit: a7a0a2feb957e446b2bcf732f245ba04fc8b6314
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
