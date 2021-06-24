@@ -7,60 +7,65 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50248C49EA5
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Jun 2021 17:17:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EA02C49EA5
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Jun 2021 17:18:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DC93C61166
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Jun 2021 17:17:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DC93C61166
+	by mail.kernel.org (Postfix) with ESMTPS id 353FC61166
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Jun 2021 17:18:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 353FC61166
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nihaljere.xyz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3B3C83D;
-	Thu, 24 Jun 2021 19:16:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3B3C83D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9185B1660;
+	Thu, 24 Jun 2021 19:17:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9185B1660
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624555032;
-	bh=Hu8JaT9Km6GBXYrpmirJG9u8etu1H3SLUaxK17oMB2U=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=FQ7QJfturhruHDyS0WsQ3ajiiFU2tTynA66zLAPkXABQ4BH6Y5xNBtFebQdDvM3X4
-	 hBCLmzX/dzMKVxYrqK8ayr1hB9bBdrmmZEmcB0x/DTr10hMxiTtH5JIMmwTAiLm4zM
-	 WhkaVNPGbZAUTIudXWnUZzzKVytoufMsauSES/LA=
+	s=default; t=1624555083;
+	bh=ULZiFuZ1SRLTDVAsRV/Zy+ZTseEtff31uZqMLatIDnY=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=TtCO6sMP2T/GOAQFBXCzHOFSxr6ehQ4zbiikMRzMGy2mW4qVyAKP9U7Tl5UhH0Y1U
+	 mpTvM+p2MGdVurm6bwqQOAvOebTiFEVpEKV2GhUETrJLPZz15jBhEr+Kj7oTqQrwR7
+	 1LTJCuctYcoSHqAP6onAeB0QZhIQZHwRSg1HyOQA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 61F69F8025F;
-	Thu, 24 Jun 2021 19:16:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 39BC6F801F7;
+	Thu, 24 Jun 2021 19:16:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B4B5FF80268; Thu, 24 Jun 2021 19:16:21 +0200 (CEST)
+ id 4ADE4F802C4; Thu, 24 Jun 2021 19:16:23 +0200 (CEST)
 Received: from mail.nihaljere.xyz (nihaljere.xyz [142.11.196.26])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 36A06F800E1
- for <alsa-devel@alsa-project.org>; Thu, 24 Jun 2021 19:16:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36A06F800E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0379FF801F7
+ for <alsa-devel@alsa-project.org>; Thu, 24 Jun 2021 19:16:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0379FF801F7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=nihaljere.xyz header.i=@nihaljere.xyz
- header.b="ldnKBOGc"
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=20200619; bh=Hu8JaT9Km6G
- BXYrpmirJG9u8etu1H3SLUaxK17oMB2U=; h=date:subject:cc:to:from; 
- d=nihaljere.xyz;
- b=ldnKBOGcEBy679w7MSRWsTR3xMAzC/qZD36MYQihvfCnKd44Dq+
- fUPBLhS8W6LNMVt8BT622KgGImRxqVTLtOjJJ+22/FQ01U3nEEfeNU969JQKdEc+srnwCP
- EPtCbxHVWIXOLZSpQXzUm1c0Slb4d0kKjx0caXrrMsA7i3hF+o=
+ header.b="M0NNXSw7"
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=20200619; bh=ULZiFuZ1SRL
+ TDVAsRV/Zy+ZTseEtff31uZqMLatIDnY=;
+ h=references:in-reply-to:date:
+ subject:cc:to:from; d=nihaljere.xyz; b=M0NNXSw7zM/FPXtZwZmjNTqK3b5drms
+ UIPY3OGyrxWDPoKGh4/Qe6jxYoELn/u0w2/7pw4W8slXLagZTtk0Pz2Q53ypydKZkzhe2p
+ xymmufAXV5O7V1M3vNFT3YlXxQktv4MhOateqKFDOLaQBA7uPFZoIJ8hAmbVEVnfl/d3FM
+ =
 Received: from localhost (136-49-115-232.googlefiber.net [136.49.115.232])
- by vps.nihaljere.xyz (OpenSMTPD) with ESMTPSA id eb474e66
+ by vps.nihaljere.xyz (OpenSMTPD) with ESMTPSA id 52ce93a8
  (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO); 
- Thu, 24 Jun 2021 12:16:06 -0500 (CDT)
+ Thu, 24 Jun 2021 12:16:16 -0500 (CDT)
 From: Nihal Jere <nihal@nihaljere.xyz>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH alsa-lib 1/2] control: fix typo
-Date: Thu, 24 Jun 2021 12:15:59 -0500
-Message-Id: <20210624171559.14003-1-nihal@nihaljere.xyz>
+Subject: [PATCH alsa-lib 2/2] control: improve documentation for
+ snd_ctl_elem_info_t
+Date: Thu, 24 Jun 2021 12:16:01 -0500
+Message-Id: <20210624171559.14003-2-nihal@nihaljere.xyz>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210624171559.14003-1-nihal@nihaljere.xyz>
+References: <20210624171559.14003-1-nihal@nihaljere.xyz>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Nihal Jere <nihal@nihaljere.xyz>
@@ -81,22 +86,75 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Signed-off-by: Nihal Jere <nihal@nihaljere.xyz>
 ---
- src/control/control.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/control.h     | 38 +++++++++++++++++++++++++++++++++++++-
+ src/control/control.c |  5 +++++
+ 2 files changed, 42 insertions(+), 1 deletion(-)
 
+diff --git a/include/control.h b/include/control.h
+index e386ecec..47e462fd 100644
+--- a/include/control.h
++++ b/include/control.h
+@@ -152,7 +152,43 @@ typedef struct _snd_ctl_elem_id snd_ctl_elem_id_t;
+  */
+ typedef struct _snd_ctl_elem_list snd_ctl_elem_list_t;
+ 
+-/** CTL element info container */
++/** CTL element info container
++ *
++ * snd_ctl_elem_info_t can be allocated, cleared, and copied in the same
++ * way as #snd_ctl_elem_value_t, using the analogous functions.
++ *
++ * The ID can be filled in in the same way as for snd_ctl_elem_value_t,
++ * substituting snd_ctl_elem_value_* functions for snd_ctl_elem_info_*
++ * functions. See #snd_ctl_elem_value_t for details.
++ *
++ * The ID or numid must be set before calling snd_ctl_elem_info.
++ *
++ * \code
++ *   snd_ctl_t* ctl;
++ *   snd_ctl_elem_info_t* info;
++ *   snd_ctl_elem_id_t* id;
++ *
++ *   // Allocate info
++ *   snd_ctl_elem_info_malloc(&info);
++ *
++ *   // Obtain id, setup ctl...
++ *
++ *   // set id
++ *   snd_ctl_elem_info_set_id(info, id);
++ *   // OR just set numid (more applicable if you don't have an id)
++ *   snd_ctl_elem_info_set_id(info, snd_ctl_elem_id_get_numid(id));
++ *
++ *   // Get info from driver
++ *   snd_ctl_elem_info(ctl, info);
++ *
++ *   // Do things with info...
++ *
++ *   // Cleanup
++ *   snd_ctl_elem_info_free(info);
++ * \endcode
++ *
++ * The above example excludes error checking for the sake of readability.
++ */
+ typedef struct _snd_ctl_elem_info snd_ctl_elem_info_t;
+ 
+ /** CTL element value container.
 diff --git a/src/control/control.c b/src/control/control.c
-index 91415b51..3930c7b1 100644
+index 3930c7b1..e346fa6b 100644
 --- a/src/control/control.c
 +++ b/src/control/control.c
-@@ -390,7 +390,7 @@ int snd_ctl_card_info(snd_ctl_t *ctl, snd_ctl_card_info_t *info)
+@@ -417,6 +417,11 @@ int snd_ctl_elem_list(snd_ctl_t *ctl, snd_ctl_elem_list_t *list)
+ 
  /**
-  * \brief Get a list of element identifiers
-  *
-- * Before calling this function, memoru must be allocated using
-+ * Before calling this function, memory must be allocated using
-  * snd_ctl_elem_list_malloc().
-  *
-  * This function obtains data from the sound card driver and puts it
+  * \brief Get CTL element information
++ * 
++ * The object "info" must be allocated and the ID or numid must be filled
++ * prior to calling this function.
++ * See #snd_ctl_elem_info_t to learn more.
++ *
+  * \param ctl CTL handle
+  * \param info CTL element id/information pointer
+  * \return 0 on success otherwise a negative error code
 -- 
 2.32.0
 
