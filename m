@@ -2,66 +2,92 @@ Return-Path: <SRS0=Xi7p=LT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F11AC49EA7
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Jun 2021 13:35:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 518A5C2B9F4
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Jun 2021 16:31:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BBFD361981
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Jun 2021 13:35:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BBFD361981
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id BF5EC61965
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Jun 2021 16:31:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BF5EC61965
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 08CDA1684;
-	Fri, 25 Jun 2021 15:34:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08CDA1684
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5F0BE1616;
+	Fri, 25 Jun 2021 18:30:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F0BE1616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624628132;
-	bh=CqMuuNOif8DfwXMvLHMcJSY3dc4DCXMnjJHtII7MaD8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=BzEhTr9/3cDmFu3UCXTajevuXjRrHooYAaRD6ulgc9xA+3TPRHhfZ7O0Kb7XbYtF3
-	 7hPw+aPp72ipavvFkbAWryxzfqYcFH3NqQYX49GYG9L4Dxsm2x5mtnJZHj/LcPVLdE
-	 tqU4QZCWWXVPdojwoGWJulU/xLuT6PNdPScKnPvc=
+	s=default; t=1624638668;
+	bh=z4ntLfLfLFXnmXCVG89b2LRiGGLF3Pu5TeMJl/Q6hK8=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=BBr+OlE6jb+l7R2pBtIcjNFlUjhNxyIjc34lfmWaXPv0P/0sEtMz8X8lkABvBZ/fc
+	 cf72dCNyQOT8KOWKdO5BOxU2YnzHVSmvaj5QiGndBsbGIJ6oBnqPzStX3FN89BP5XD
+	 vs4tXuY7OJeZxLLk52TRifhma+1xKXp9wOnxCHZs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 80A35F8016D;
-	Fri, 25 Jun 2021 15:34:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1A57F8016D;
+	Fri, 25 Jun 2021 18:30:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C41D3F801D5; Fri, 25 Jun 2021 15:34:39 +0200 (CEST)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id 4F3E2F801D5; Fri, 25 Jun 2021 18:29:31 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CAACBF800E1
- for <alsa-devel@alsa-project.org>; Fri, 25 Jun 2021 15:34:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CAACBF800E1
-Received: from 118-169-44-162.dynamic-ip.hinet.net ([118.169.44.162]
- helo=localhost) by youngberry.canonical.com with esmtpsa (TLS1.2) tls
- TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.93)
- (envelope-from <jeremy.szu@canonical.com>)
- id 1lwlyO-0001E6-KA; Fri, 25 Jun 2021 13:34:21 +0000
-From: Jeremy Szu <jeremy.szu@canonical.com>
-To: tiwai@suse.com
-Subject: [PATCH] ALSA: hda/realtek: fix mute/micmute LEDs for HP EliteBook 830
- G8 Notebook PC
-Date: Fri, 25 Jun 2021 21:34:13 +0800
-Message-Id: <20210625133414.26760-1-jeremy.szu@canonical.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ by alsa1.perex.cz (Postfix) with ESMTPS id 32029F8012C
+ for <alsa-devel@alsa-project.org>; Fri, 25 Jun 2021 18:29:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32029F8012C
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="mhE7Oopt"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="sb1UEG0v"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 94B321FED2;
+ Fri, 25 Jun 2021 16:29:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1624638551; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=1K/2nVirfUXX1LbbYqUtK35CXPDWKFm1emv7PhHbjqg=;
+ b=mhE7OoptHqxoaUIwWP3q57KifBymNS1xGuKOtQwdroDHTly1W/T85IX4mqrONMNq9UecAN
+ ENo6WpT2cADghyPowxPE5HFMuec+VG4dMrdLA+W0KBVSqc7/IBaT3oTz2/Tb5r98aSSZch
+ 8YO1nOsmMDCpGUUXlzFEIRd8arDtBKA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1624638551;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=1K/2nVirfUXX1LbbYqUtK35CXPDWKFm1emv7PhHbjqg=;
+ b=sb1UEG0vwcl0XqsicoXtA4dSehP9Ef6tIMVsaKjWd0gUaIPywuD+acPoyPLmDr6UvAHFuu
+ ZRz87lIot5ihXYBQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 0E24FA3BFE;
+ Fri, 25 Jun 2021 16:29:11 +0000 (UTC)
+Date: Fri, 25 Jun 2021 18:29:11 +0200
+Message-ID: <s5h8s2xkiw8.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jeremy Szu <jeremy.szu@canonical.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: fix mute/micmute LEDs for HP EliteBook
+ 830 G8 Notebook PC
+In-Reply-To: <20210625133414.26760-1-jeremy.szu@canonical.com>
+References: <20210625133414.26760-1-jeremy.szu@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Cc: Chris Chiu <chris.chiu@canonical.com>,
  "moderated list:SOUND" <alsa-devel@alsa-project.org>,
- Kailang Yang <kailang@realtek.com>, Jeremy Szu <jeremy.szu@canonical.com>,
- open list <linux-kernel@vger.kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
- Jian-Hong Pan <jhp@endlessos.org>, Werner Sembach <wse@tuxedocomputers.com>,
+ Kailang Yang <kailang@realtek.com>, open list <linux-kernel@vger.kernel.org>,
+ Huacai Chen <chenhuacai@kernel.org>, Jian-Hong Pan <jhp@endlessos.org>,
+ Werner Sembach <wse@tuxedocomputers.com>, tiwai@suse.com,
  Hui Wang <hui.wang@canonical.com>, Sami Loone <sami@loone.fi>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -78,27 +104,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The HP EliteBook 830 G8 Notebook PC using ALC285 codec which using 0x04 to
-control mute LED and 0x01 to control micmute LED.
-Therefore, add a quirk to make it works.
+On Fri, 25 Jun 2021 15:34:13 +0200,
+Jeremy Szu wrote:
+> 
+> The HP EliteBook 830 G8 Notebook PC using ALC285 codec which using 0x04 to
+> control mute LED and 0x01 to control micmute LED.
+> Therefore, add a quirk to make it works.
+> 
+> Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
 
-Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks, applied.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 49f4cac8b05e..1ea9853bbb09 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8366,6 +8366,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f7, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
-+	SND_PCI_QUIRK(0x103c, 0x880d, "HP EliteBook 830 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8846, "HP EliteBook 850 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8847, "HP EliteBook x360 830 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x884b, "HP EliteBook 840 Aero G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
--- 
-2.31.1
 
+Takashi
