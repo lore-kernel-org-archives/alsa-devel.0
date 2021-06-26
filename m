@@ -1,76 +1,99 @@
-Return-Path: <SRS0=Xi7p=LT=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=8YYX=LU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 601B7C2B9F4
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Jun 2021 20:53:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6660EC49EA5
+	for <alsa-devel@archiver.kernel.org>; Sat, 26 Jun 2021 16:31:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8324B6195F
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Jun 2021 20:53:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8324B6195F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 0A90F619C5
+	for <alsa-devel@archiver.kernel.org>; Sat, 26 Jun 2021 16:31:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A90F619C5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1F70C168C;
-	Fri, 25 Jun 2021 22:53:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F70C168C
+	by alsa0.perex.cz (Postfix) with ESMTPS id C9FA0827;
+	Sat, 26 Jun 2021 18:30:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9FA0827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624654437;
-	bh=mJ4+vdL514zY9qAnBec/nagQ8JWygykajWAHYr/Alcw=;
+	s=default; t=1624725061;
+	bh=MBOGGS8a0aqu/HaweRNF8LHysELV3y53xGZcsCEXem8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lSfEqEjxpEiH9dYlp6HGDwgBy3AKzY0+g9YAmGeJTXGzu1NCxVNa8jBXAIvRGXkT3
-	 pJ34R3xOqpzzqwCrthoqXE8RzaMKqIJjzCEtVR128R1GF3f1ZJr4bT3Q5fJMvJL0DH
-	 t78sMTcJyeWH6zneAJ/UjTH/VqYZ3ifaQo82vIyc=
+	b=NeiSgEs2UvZCC5p98RIIvZEjCwySQmT6poV9esSLnY6me7xtZghRhmYW4kDT1CGvP
+	 3TAeDLqGUbEgu/vgt6nd4GSEMulDFXvuhSousS00oT1zxCld5qO1MbPltbF8aslLPR
+	 c59OENMrnNVApB3PIAlQzJ0/JfHHVhHvL2EeM96U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 861E1F804E2;
-	Fri, 25 Jun 2021 22:51:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B686F801F7;
+	Sat, 26 Jun 2021 18:30:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 86E5DF804DF; Fri, 25 Jun 2021 22:51:32 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ id 19526F800E1; Sat, 26 Jun 2021 18:30:03 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5A0E5F804B4
- for <alsa-devel@alsa-project.org>; Fri, 25 Jun 2021 22:51:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A0E5F804B4
-IronPort-SDR: qcvZpfRbOBKutwwDSLfJkC4w1Trq4vXIYRQITRwyNsoDBuobMcnHB/mea1kgDN0jCyXSyzSWl4
- Az3RGt5mmQ/A==
-X-IronPort-AV: E=McAfee;i="6200,9189,10026"; a="188122681"
-X-IronPort-AV: E=Sophos;i="5.83,299,1616482800"; d="scan'208";a="188122681"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jun 2021 13:51:11 -0700
-IronPort-SDR: CfdCblRX48r2wv8CNA60VUoVvAwlwr7WEkfa7OpLhcy6+q+N5WuPFbyg4TdbjHRUXoztaJLIqd
- AWQI7SZRF3ag==
-X-IronPort-AV: E=Sophos;i="5.83,299,1616482800"; d="scan'208";a="640223036"
-Received: from rlcervan-mobl1.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.212.127.151])
- by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jun 2021 13:50:59 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 4/4] ASoC: Intel: sof_cs42l42: use helper function to get bclk
- frequency
-Date: Fri, 25 Jun 2021 15:50:42 -0500
-Message-Id: <20210625205042.65181-5-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210625205042.65181-1-pierre-louis.bossart@linux.intel.com>
-References: <20210625205042.65181-1-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id AAF6DF80118
+ for <alsa-devel@alsa-project.org>; Sat, 26 Jun 2021 18:29:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AAF6DF80118
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="aQ/0zJAM"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
+ 15QGNGeq010064; Sat, 26 Jun 2021 11:29:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=PODMain02222019;
+ bh=e7DrEIr40zU/mO68nSwoDuZveWMDxwCr/9B98Esucfg=;
+ b=aQ/0zJAM1RVx5zuJ7fc1F3DLDkMNMxy8SZFBGWJGk7s9AdtjqMgt+ldpUdwPa9PbCB2G
+ 6KsJTaR5VirXoe9zMxvisoyl69O/Iy8M22Y0on3ifwFTgnujiHZfai+82Pe538ioTHDM
+ Y2x/cHjviqNOOqRou9d0/SQiv7QIeg1lyL4TvK7tYsBQqPUXG7ZDYVKNPgYRm2SqY0BE
+ Dg98edpAsX5lIEabCfHnZtOangBfeGlWjLyfBi9BrN7UUKJFox8vr5WKN1wH8NrgcQZL
+ Tbaspv4BdvCsG4cBAP4H2iS09kf7sa2LKW9dAwwqE8mPgfsFKqZ9Jsm1Tvu+i1aZg+fk Zg== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 39e1n30ctj-2
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Sat, 26 Jun 2021 11:29:48 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Sat, 26 Jun
+ 2021 16:59:41 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Sat, 26 Jun 2021 16:59:41 +0100
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C0BF146E;
+ Sat, 26 Jun 2021 15:59:41 +0000 (UTC)
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: <broonie@kernel.org>
+Subject: [PATCH 3/3] ASoC: wm_adsp: Remove pointless string comparison
+Date: Sat, 26 Jun 2021 16:59:41 +0100
+Message-ID: <20210626155941.12251-3-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20210626155941.12251-1-ckeepax@opensource.cirrus.com>
+References: <20210626155941.12251-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org, Brent Lu <brent.lu@intel.com>,
- Bard Liao <bard.liao@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain
+X-Proofpoint-GUID: ELZQuY9SRQf3-5xk8m8DVZmzBVXzYdzU
+X-Proofpoint-ORIG-GUID: ELZQuY9SRQf3-5xk8m8DVZmzBVXzYdzU
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ lowpriorityscore=0 adultscore=0
+ mlxlogscore=869 clxscore=1015 spamscore=0 mlxscore=0 malwarescore=0
+ phishscore=0 priorityscore=1501 impostorscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106260114
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,44 +109,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Brent Lu <brent.lu@intel.com>
+The control fw_name is always directly assigned from the wm_adsp_fw_text
+array, so it isn't necessary to compare the actual strings just the
+pointer values.
 
-Use sof_dai_get_bclk() function to get bclk frequency instead of a
-hard-coded magic number depending on configuration in topology.
-
-Reviewed-by: Bard Liao <bard.liao@intel.com>
-Signed-off-by: Brent Lu <brent.lu@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/intel/boards/sof_cs42l42.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/codecs/wm_adsp.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_cs42l42.c b/sound/soc/intel/boards/sof_cs42l42.c
-index 42aadf801f72..2b16011b7a06 100644
---- a/sound/soc/intel/boards/sof_cs42l42.c
-+++ b/sound/soc/intel/boards/sof_cs42l42.c
-@@ -16,6 +16,7 @@
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-+#include <sound/sof.h>
- #include <sound/soc-acpi.h>
- #include <dt-bindings/sound/cs42l42.h>
- #include "../../codecs/hdac_hdmi.h"
-@@ -122,7 +123,12 @@ static int sof_cs42l42_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	int clk_freq, ret;
- 
--	clk_freq = 3072000; /* BCLK freq */
-+	clk_freq = sof_dai_get_bclk(rtd); /* BCLK freq */
-+
-+	if (clk_freq <= 0) {
-+		dev_err(rtd->dev, "get bclk freq failed: %d\n", clk_freq);
-+		return -EINVAL;
-+	}
- 
- 	/* Configure sysclk for codec */
- 	ret = snd_soc_dai_set_sysclk(codec_dai, 0,
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 549d98241daec..b395df1eb72d8 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -2030,10 +2030,9 @@ static struct wm_coeff_ctl *wm_adsp_get_ctl(struct wm_adsp *dsp,
+ 		if (!pos->subname)
+ 			continue;
+ 		if (strncmp(pos->subname, name, pos->subname_len) == 0 &&
+-		    strncmp(pos->fw_name, fw_txt,
+-			    SNDRV_CTL_ELEM_ID_NAME_MAXLEN) == 0 &&
+-				pos->alg_region.alg == alg &&
+-				pos->alg_region.type == type) {
++		    pos->fw_name == fw_txt &&
++		    pos->alg_region.alg == alg &&
++		    pos->alg_region.type == type) {
+ 			rslt = pos;
+ 			break;
+ 		}
 -- 
-2.25.1
+2.11.0
 
