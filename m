@@ -2,77 +2,74 @@ Return-Path: <SRS0=rSKw=LW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AC19C2B9F4
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Jun 2021 17:00:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25069C2B9F4
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Jun 2021 17:03:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DD28961990
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Jun 2021 17:00:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DD28961990
+	by mail.kernel.org (Postfix) with ESMTPS id A69F061998
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Jun 2021 17:03:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A69F061998
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B9AB01674;
-	Mon, 28 Jun 2021 18:59:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9AB01674
+	by alsa0.perex.cz (Postfix) with ESMTPS id DF3F21673;
+	Mon, 28 Jun 2021 19:02:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF3F21673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624899602;
-	bh=izByTaFSY/D05L9njblRovpj2pxDUZcGEA2EcpI6IqI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1624899814;
+	bh=Fiv1YQ90stTSnPr6LUlfDc0aZQp0fWAdibbVI8+dBWs=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=g2qn3rlpJ13KHLQ2h+b5WGdKWghZAcElX9SB3t+U4EP2U8bEL4eHF+wmyS9Mpb/0B
-	 wOXBRTohQ3xCkYXSNZ2pqIWiVlVJf7fffjdnqTXYbZFhG/VdmfgXGPVj9A8KW5iAJP
-	 jUk+Q0XgytPH5H7C8b+LkqSvdwppvVPh6vwh+/80=
+	b=L5/+kPJrT0TFHsKf04RIbzUVqmTEof1fr6Jj1clBXHgqRxaCZDeL/4RvbagpPvKPi
+	 NKL0u4xEK7paG903RZPZyQStqRFq1YtLZ3D0AMBuuCxsw96G6FLpYhQqcD9nBbLEeN
+	 XyEyS+kRzxQlnptu703DOry8YS3+yAlGPmnTCcS4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 45B7FF80217;
-	Mon, 28 Jun 2021 18:59:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5E634F80229;
+	Mon, 28 Jun 2021 19:02:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 07F1BF80229; Mon, 28 Jun 2021 18:59:11 +0200 (CEST)
+ id 0F2A5F80229; Mon, 28 Jun 2021 19:02:42 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9F4E7F8020C
- for <alsa-devel@alsa-project.org>; Mon, 28 Jun 2021 18:59:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F4E7F8020C
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8B40F8020C
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jun 2021 19:02:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8B40F8020C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="WHYuacD1"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64E2261920;
- Mon, 28 Jun 2021 16:59:04 +0000 (UTC)
+ header.b="N8hDwMqo"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C4BF6199B;
+ Mon, 28 Jun 2021 17:02:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1624899544;
- bh=izByTaFSY/D05L9njblRovpj2pxDUZcGEA2EcpI6IqI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=WHYuacD1onMjpG0vzyLSDeHIqDQbjXbenx7+/ll908orS0qNqeaxStTKdUsgDaOo0
- xEmtt5c3uk6bRFbzyCmZj4V8C62adBF8LKGNQqBGeqCshkPWJVbXTz4NLKynnd0qEk
- 9m8rXmAfMe8ssWaCqGT62H1uqXsFZaf2DZ5TbiCs/CIJJrVo6wXkw6UVDFYByqnbAf
- kMsT0PdZBgAP5Q62EuTEs/5MbyrkA8Koj3281bcNFaYzx5ApmpARITmTNJSN7OTiOT
- P1y0HRLevzmerYyqbTzxHR+epGD8o6xobBZDlIV2sCy1JtywN0NLu8EzFKrDMmj9HW
- CpKsyUuUuiuQQ==
-Date: Mon, 28 Jun 2021 17:58:37 +0100
+ s=k20201202; t=1624899757;
+ bh=Fiv1YQ90stTSnPr6LUlfDc0aZQp0fWAdibbVI8+dBWs=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=N8hDwMqoWGGZHKSi7eAoVjCSMh7VCf/o+0Q6YC8L3aAeQxjCP9UfFfOKRGim/9tO1
+ MI31QxB6H4g7MqnDvN5fI7Jwf9kFDbvvuvQBxBxX30SiGcVCO7egQsUCF5L7W3efzo
+ NwnFQWe66P2xK5hQYkzAr1Nfi1Dned/whOD0UjRiLtuGYmc7E5Fw8+Re0hph1IGCJE
+ eGHUd2qAUT3kQhfviAU9qJAqyIHiZ71qG3ACosIEsXurDB4eKiae/u2r4+5tX+qkYp
+ TXzm1dFdyQj8WP4zz50vb/X7+I2HucDUR9w8L7NGtq2iQuTDpDkQVyyP0ErB7azgSR
+ elUbCty22QUgw==
 From: Mark Brown <broonie@kernel.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH 3/3] ASoC: wm_adsp: Remove pointless string comparison
-Message-ID: <20210628165837.GE4492@sirena.org.uk>
-References: <20210626155941.12251-1-ckeepax@opensource.cirrus.com>
- <20210626155941.12251-3-ckeepax@opensource.cirrus.com>
+To: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: (subset) [PATCH 0/4] ASoC: Intel: machine driver corrections
+Date: Mon, 28 Jun 2021 18:02:00 +0100
+Message-Id: <162489923152.4847.16597431604027903670.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210625205042.65181-1-pierre-louis.bossart@linux.intel.com>
+References: <20210625205042.65181-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="zaRBsRFn0XYhEU69"
-Content-Disposition: inline
-In-Reply-To: <20210626155941.12251-3-ckeepax@opensource.cirrus.com>
-X-Cookie: Someone is speaking well of you.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,32 +85,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Fri, 25 Jun 2021 15:50:38 -0500, Pierre-Louis Bossart wrote:
+> The first fix solves an underflow in SoundWire platforms using the
+> max98373 amplifier, the rest of the patches are minor corrections in
+> machine drivers.
+> 
+> The fix should be queued for the 5.14 cycle, the rest should be
+> harmless but can be deferred for 5.15 if it's too late already.
+> 
+> [...]
 
---zaRBsRFn0XYhEU69
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Sat, Jun 26, 2021 at 04:59:41PM +0100, Charles Keepax wrote:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> The control fw_name is always directly assigned from the wm_adsp_fw_text
-> array, so it isn't necessary to compare the actual strings just the
-> pointer values.
+Thanks!
 
-This feels like it's asking for trouble in the future...
+[1/4] ASoC: Intel: boards: fix xrun issue on platform with max98373
+      commit: 33c8516841ea4fa12fdb8961711bf95095c607ee
 
---zaRBsRFn0XYhEU69
-Content-Type: application/pgp-signature; name="signature.asc"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
------BEGIN PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDZ/7wACgkQJNaLcl1U
-h9DTIwf/RiKVO86xh/BJlWIFcibTiJrEZG93HC/R7zE+3CAsVh/ndwjM9qrmT7ZX
-fEOcTDlFgE8K+Nb6uN3VsbI+pHprxeCaNw+Q88UrLbf+UC54deCBwBnVt/Pw4laF
-iVIsIvEodaDju8xbnDVEakrD6HZvjykZys5DwUgN3KL66msmL/OefXM0t/sFHf1e
-zrVhtYDlhd3D0K1bNgmjEeHXHkjP9zagSt9XlvlCZf4SVnDhMFTO3H6r3uatp/O5
-jdIW94nK9MdsnDw0IG3oA60jqOTywGvFU523O+5HoualmxWYV7pLP2kBHA07jILY
-T0EQUfj+qlSbjG266XUxTF8gKYm9tg==
-=uKiZ
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---zaRBsRFn0XYhEU69--
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
