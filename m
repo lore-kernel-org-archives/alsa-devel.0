@@ -2,65 +2,69 @@ Return-Path: <SRS0=Z0V9=LX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE6E5C11F64
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Jun 2021 01:48:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A966C11F64
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Jun 2021 01:49:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 40DF761CC9
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Jun 2021 01:48:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 40DF761CC9
+	by mail.kernel.org (Postfix) with ESMTPS id A39EE61CA3
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Jun 2021 01:49:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A39EE61CA3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 024B4167A;
-	Tue, 29 Jun 2021 03:48:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 024B4167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C306168E;
+	Tue, 29 Jun 2021 03:48:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C306168E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624931335;
-	bh=ivLgCaOSCPbM+G52ny6KIYgGJejiIabQGvzj8Tl1tCc=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=anvWRJTH2vpmfTdmoKP/3nXIEIWD3kEh8GE/tdEsw/BtCY/zA5BnOBTSik9WQuUfU
-	 NZWgbpEj9MWPkrswxx5GUs88wCEZN4/fZL/qZwStTwYtwSDqbRKy933XiV5Y1u/WVp
-	 2DPolnsTWZLUhK+gZ8AsFgmyq/EbdPk++u7KtHBA=
+	s=default; t=1624931386;
+	bh=c+cAar5+H3mZ6qMdiGI7L+Yt5ybv19Uy/eYe50rD1Kc=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=HlC9pgug/XJcrNvS+RyVKhWzH+ET105e5R1prQjrjW0FFXTOU5AeikDslCMwkIdqf
+	 pTBjiFnc21hHmSg8kSN9T4jTgAi6JXoRx0oT/c9U5oX5mBIihPLClcbV3FAa8R4w5I
+	 UFVcQYFr073cBFlN4Dze2KHbIbRLxDS8eXzax4Qo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 36C9FF800EE;
-	Tue, 29 Jun 2021 03:48:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 09F24F804D9;
+	Tue, 29 Jun 2021 03:48:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 91FD9F80259; Tue, 29 Jun 2021 03:48:02 +0200 (CEST)
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+ id A2960F804DA; Tue, 29 Jun 2021 03:48:09 +0200 (CEST)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0951BF800EE
- for <alsa-devel@alsa-project.org>; Tue, 29 Jun 2021 03:47:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0951BF800EE
-X-UUID: 84474fcaed974a57a226c3aa63e2374a-20210629
-X-UUID: 84474fcaed974a57a226c3aa63e2374a-20210629
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by
- mailgw01.mediatek.com (envelope-from <trevor.wu@mediatek.com>)
+ by alsa1.perex.cz (Postfix) with ESMTPS id AF924F802D2
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jun 2021 03:48:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF924F802D2
+X-UUID: a8a0207b94024167a4c1ea857ae0f16b-20210629
+X-UUID: a8a0207b94024167a4c1ea857ae0f16b-20210629
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+ (envelope-from <trevor.wu@mediatek.com>)
  (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 640803979; Tue, 29 Jun 2021 09:47:50 +0800
+ with ESMTP id 665135059; Tue, 29 Jun 2021 09:47:53 +0800
 Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 29 Jun 2021 09:47:49 +0800
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 29 Jun 2021 09:47:53 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
- Frontend Transport; Tue, 29 Jun 2021 09:47:49 +0800
+ Frontend Transport; Tue, 29 Jun 2021 09:47:52 +0800
 From: Trevor Wu <trevor.wu@mediatek.com>
 To: <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
  <matthias.bgg@gmail.com>
-Subject: [PATCH v2 0/8] ASoC: mediatek: Add support for MT8195 SoC
-Date: Tue, 29 Jun 2021 09:47:28 +0800
-Message-ID: <20210629014736.31153-1-trevor.wu@mediatek.com>
+Subject: [PATCH v2 8/8] dt-bindings: mediatek: mt8195: add
+ mt8195-mt6359-rt1019-rt5682 document
+Date: Tue, 29 Jun 2021 09:47:36 +0800
+Message-ID: <20210629014736.31153-9-trevor.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210629014736.31153-1-trevor.wu@mediatek.com>
+References: <20210629014736.31153-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MTK: N
@@ -84,57 +88,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series of patches adds support for Mediatek AFE of MT8195 SoC.
-Patches are based on broonie tree "for-next" branch.
+This patch adds document for mt8195 board with mt6359, rt1019 and rt5682
 
-Changes since v1:
-  - fixed some problems related to dt-bindings
-  - add some missing properties to dt-bindings
-  - add depency declaration on dt-bindings
-  - fixed some warnings found by kernel test robot
-
-Trevor Wu (8):
-  ASoC: mediatek: mt8195: update mediatek common driver
-  ASoC: mediatek: mt8195: support etdm in platform driver
-  ASoC: mediatek: mt8195: support adda in platform driver
-  ASoC: mediatek: mt8195: support pcm in platform driver
-  ASoC: mediatek: mt8195: add platform driver
-  dt-bindings: mediatek: mt8195: add audio afe document
-  ASoC: mediatek: mt8195: add machine driver with mt6359, rt1019 and
-    rt5682
-  dt-bindings: mediatek: mt8195: add mt8195-mt6359-rt1019-rt5682
-    document
-
- .../bindings/sound/mt8195-afe-pcm.yaml        |  136 +
- .../sound/mt8195-mt6359-rt1019-rt5682.yaml    |   39 +
- sound/soc/mediatek/Kconfig                    |   23 +
- sound/soc/mediatek/Makefile                   |    1 +
- sound/soc/mediatek/common/mtk-afe-fe-dai.c    |   22 +-
- sound/soc/mediatek/common/mtk-base-afe.h      |   10 +-
- sound/soc/mediatek/mt8195/Makefile            |   14 +
- sound/soc/mediatek/mt8195/mt8195-afe-clk.c    |  899 +++++
- sound/soc/mediatek/mt8195/mt8195-afe-clk.h    |  201 +
- sound/soc/mediatek/mt8195/mt8195-afe-common.h |  200 +
- sound/soc/mediatek/mt8195/mt8195-afe-pcm.c    | 3264 +++++++++++++++++
- sound/soc/mediatek/mt8195/mt8195-dai-adda.c   |  929 +++++
- sound/soc/mediatek/mt8195/mt8195-dai-etdm.c   | 2666 ++++++++++++++
- sound/soc/mediatek/mt8195/mt8195-dai-pcm.c    |  393 ++
- .../mt8195/mt8195-mt6359-rt1019-rt5682.c      |  977 +++++
- sound/soc/mediatek/mt8195/mt8195-reg.h        | 2793 ++++++++++++++
- 16 files changed, 12562 insertions(+), 5 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
+Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+---
+ .../sound/mt8195-mt6359-rt1019-rt5682.yaml    | 39 +++++++++++++++++++
+ 1 file changed, 39 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml
- create mode 100644 sound/soc/mediatek/mt8195/Makefile
- create mode 100644 sound/soc/mediatek/mt8195/mt8195-afe-clk.c
- create mode 100644 sound/soc/mediatek/mt8195/mt8195-afe-clk.h
- create mode 100644 sound/soc/mediatek/mt8195/mt8195-afe-common.h
- create mode 100644 sound/soc/mediatek/mt8195/mt8195-afe-pcm.c
- create mode 100644 sound/soc/mediatek/mt8195/mt8195-dai-adda.c
- create mode 100644 sound/soc/mediatek/mt8195/mt8195-dai-etdm.c
- create mode 100644 sound/soc/mediatek/mt8195/mt8195-dai-pcm.c
- create mode 100644 sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c
- create mode 100644 sound/soc/mediatek/mt8195/mt8195-reg.h
 
+diff --git a/Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml b/Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml
+new file mode 100644
+index 000000000000..246c0875e64e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml
+@@ -0,0 +1,39 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/mt8195-mt6359-rt1019-rt5682.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Mediatek MT8195 with MT6359, RT1019 and RT5682 ASoC sound card driver
++
++maintainers:
++  - Trevor Wu <trevor.wu@mediatek.com>
++
++description:
++  This binding describes the MT8195 sound card.
++
++properties:
++  compatible:
++    const: mediatek,mt8195_mt6359_rt1019_rt5682
++
++  mediatek,platform:
++    $ref: "/schemas/types.yaml#/definitions/phandle"
++    description: The phandle of MT8195 ASoC platform.
++
++additionalProperties: false
++
++required:
++  - compatible
++  - mediatek,platform
++
++examples:
++  - |
++
++    sound: mt8195-sound {
++        compatible = "mediatek,mt8195_mt6359_rt1019_rt5682";
++        mediatek,platform = <&afe>;
++        pinctrl-names = "default";
++        pinctrl-0 = <&aud_pins_default>;
++    };
++
++...
 -- 
 2.18.0
 
