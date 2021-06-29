@@ -2,66 +2,66 @@ Return-Path: <SRS0=Z0V9=LX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+	UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A966C11F64
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Jun 2021 01:49:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69309C11F65
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Jun 2021 01:50:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A39EE61CA3
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Jun 2021 01:49:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A39EE61CA3
+	by mail.kernel.org (Postfix) with ESMTPS id B53FB61CCE
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Jun 2021 01:50:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B53FB61CCE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C306168E;
-	Tue, 29 Jun 2021 03:48:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C306168E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4CDB81686;
+	Tue, 29 Jun 2021 03:49:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CDB81686
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624931386;
-	bh=c+cAar5+H3mZ6qMdiGI7L+Yt5ybv19Uy/eYe50rD1Kc=;
+	s=default; t=1624931400;
+	bh=2ttD6Qo11oN2/pzObdCbuQgfUeyjjNnKhyz67t/ggIE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HlC9pgug/XJcrNvS+RyVKhWzH+ET105e5R1prQjrjW0FFXTOU5AeikDslCMwkIdqf
-	 pTBjiFnc21hHmSg8kSN9T4jTgAi6JXoRx0oT/c9U5oX5mBIihPLClcbV3FAa8R4w5I
-	 UFVcQYFr073cBFlN4Dze2KHbIbRLxDS8eXzax4Qo=
+	b=gn7OIXmn9dAAF6RvYgl0DnbmVR8B+dnJ1rr7zLRRzBje8DM7WGa8ymyOKcgqdrUsr
+	 +nWNs0QchLtVVYqgTwDjd3SeFy3f780G+X4SXvLl7dmMVHCFC36OXSB51yKmvfOLdF
+	 swIDRq8V6jwrn8k6IQcOJY0ukGL9IWpLr/TogHYc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 09F24F804D9;
-	Tue, 29 Jun 2021 03:48:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 33CFAF804E2;
+	Tue, 29 Jun 2021 03:48:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A2960F804DA; Tue, 29 Jun 2021 03:48:09 +0200 (CEST)
+ id 68316F802D2; Tue, 29 Jun 2021 03:48:15 +0200 (CEST)
 Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AF924F802D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id AB9CCF804AE
  for <alsa-devel@alsa-project.org>; Tue, 29 Jun 2021 03:48:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF924F802D2
-X-UUID: a8a0207b94024167a4c1ea857ae0f16b-20210629
-X-UUID: a8a0207b94024167a4c1ea857ae0f16b-20210629
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
- (envelope-from <trevor.wu@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 665135059; Tue, 29 Jun 2021 09:47:53 +0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB9CCF804AE
+X-UUID: db902d2dabce4739aac1f4d9e4b53a46-20210629
+X-UUID: db902d2dabce4739aac1f4d9e4b53a46-20210629
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by
+ mailgw02.mediatek.com (envelope-from <trevor.wu@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+ with ESMTP id 519757739; Tue, 29 Jun 2021 09:47:53 +0800
 Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 29 Jun 2021 09:47:53 +0800
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 29 Jun 2021 09:47:52 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
- Frontend Transport; Tue, 29 Jun 2021 09:47:52 +0800
+ Frontend Transport; Tue, 29 Jun 2021 09:47:51 +0800
 From: Trevor Wu <trevor.wu@mediatek.com>
 To: <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
  <matthias.bgg@gmail.com>
-Subject: [PATCH v2 8/8] dt-bindings: mediatek: mt8195: add
- mt8195-mt6359-rt1019-rt5682 document
-Date: Tue, 29 Jun 2021 09:47:36 +0800
-Message-ID: <20210629014736.31153-9-trevor.wu@mediatek.com>
+Subject: [PATCH v2 4/8] ASoC: mediatek: mt8195: support pcm in platform driver
+Date: Tue, 29 Jun 2021 09:47:32 +0800
+Message-ID: <20210629014736.31153-5-trevor.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20210629014736.31153-1-trevor.wu@mediatek.com>
 References: <20210629014736.31153-1-trevor.wu@mediatek.com>
@@ -88,59 +88,413 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds document for mt8195 board with mt6359, rt1019 and rt5682
+This patch adds mt8195 pcm dai driver.
 
 Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
 ---
- .../sound/mt8195-mt6359-rt1019-rt5682.yaml    | 39 +++++++++++++++++++
- 1 file changed, 39 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml
+ sound/soc/mediatek/mt8195/mt8195-dai-pcm.c | 393 +++++++++++++++++++++
+ 1 file changed, 393 insertions(+)
+ create mode 100644 sound/soc/mediatek/mt8195/mt8195-dai-pcm.c
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml b/Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml
+diff --git a/sound/soc/mediatek/mt8195/mt8195-dai-pcm.c b/sound/soc/mediatek/mt8195/mt8195-dai-pcm.c
 new file mode 100644
-index 000000000000..246c0875e64e
+index 000000000000..bb0e2e4da14a
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml
-@@ -0,0 +1,39 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/mt8195-mt6359-rt1019-rt5682.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/sound/soc/mediatek/mt8195/mt8195-dai-pcm.c
+@@ -0,0 +1,393 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * MediaTek ALSA SoC Audio DAI PCM I/F Control
++ *
++ * Copyright (c) 2020 MediaTek Inc.
++ * Author: Bicycle Tsai <bicycle.tsai@mediatek.com>
++ *         Trevor Wu <trevor.wu@mediatek.com>
++ */
 +
-+title: Mediatek MT8195 with MT6359, RT1019 and RT5682 ASoC sound card driver
++#include <linux/regmap.h>
++#include <sound/pcm_params.h>
++#include "mt8195-afe-clk.h"
++#include "mt8195-afe-common.h"
++#include "mt8195-reg.h"
 +
-+maintainers:
-+  - Trevor Wu <trevor.wu@mediatek.com>
++enum {
++	MTK_DAI_PCM_FMT_I2S,
++	MTK_DAI_PCM_FMT_EIAJ,
++	MTK_DAI_PCM_FMT_MODEA,
++	MTK_DAI_PCM_FMT_MODEB,
++};
 +
-+description:
-+  This binding describes the MT8195 sound card.
++enum {
++	MTK_DAI_PCM_CLK_A1SYS,
++	MTK_DAI_PCM_CLK_A2SYS,
++	MTK_DAI_PCM_CLK_26M_48K,
++	MTK_DAI_PCM_CLK_26M_441K,
++};
 +
-+properties:
-+  compatible:
-+    const: mediatek,mt8195_mt6359_rt1019_rt5682
++struct mtk_dai_pcm_rate {
++	unsigned int rate;
++	unsigned int reg_value;
++};
 +
-+  mediatek,platform:
-+    $ref: "/schemas/types.yaml#/definitions/phandle"
-+    description: The phandle of MT8195 ASoC platform.
++struct mtk_dai_pcmif_priv {
++	unsigned int slave_mode;
++	unsigned int lrck_inv;
++	unsigned int bck_inv;
++	unsigned int format;
++};
 +
-+additionalProperties: false
++static const struct mtk_dai_pcm_rate mtk_dai_pcm_rates[] = {
++	{ .rate = 8000, .reg_value = 0, },
++	{ .rate = 16000, .reg_value = 1, },
++	{ .rate = 32000, .reg_value = 2, },
++	{ .rate = 48000, .reg_value = 3, },
++	{ .rate = 11025, .reg_value = 1, },
++	{ .rate = 22050, .reg_value = 2, },
++	{ .rate = 44100, .reg_value = 3, },
++};
 +
-+required:
-+  - compatible
-+  - mediatek,platform
++static int mtk_dai_pcm_mode(unsigned int rate)
++{
++	int i;
 +
-+examples:
-+  - |
++	for (i = 0; i < ARRAY_SIZE(mtk_dai_pcm_rates); i++)
++		if (mtk_dai_pcm_rates[i].rate == rate)
++			return mtk_dai_pcm_rates[i].reg_value;
 +
-+    sound: mt8195-sound {
-+        compatible = "mediatek,mt8195_mt6359_rt1019_rt5682";
-+        mediatek,platform = <&afe>;
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&aud_pins_default>;
-+    };
++	return -EINVAL;
++}
 +
-+...
++static const struct snd_kcontrol_new mtk_dai_pcm_o000_mix[] = {
++	SOC_DAPM_SINGLE_AUTODISABLE("I000 Switch", AFE_CONN0, 0, 1, 0),
++	SOC_DAPM_SINGLE_AUTODISABLE("I070 Switch", AFE_CONN0_2, 6, 1, 0),
++};
++
++static const struct snd_kcontrol_new mtk_dai_pcm_o001_mix[] = {
++	SOC_DAPM_SINGLE_AUTODISABLE("I001 Switch", AFE_CONN1, 1, 1, 0),
++	SOC_DAPM_SINGLE_AUTODISABLE("I071 Switch", AFE_CONN1_2, 7, 1, 0),
++};
++
++static const struct snd_soc_dapm_widget mtk_dai_pcm_widgets[] = {
++	SND_SOC_DAPM_MIXER("I002", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("I003", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("O000", SND_SOC_NOPM, 0, 0,
++			   mtk_dai_pcm_o000_mix,
++			   ARRAY_SIZE(mtk_dai_pcm_o000_mix)),
++	SND_SOC_DAPM_MIXER("O001", SND_SOC_NOPM, 0, 0,
++			   mtk_dai_pcm_o001_mix,
++			   ARRAY_SIZE(mtk_dai_pcm_o001_mix)),
++
++	SND_SOC_DAPM_INPUT("PCM1_INPUT"),
++	SND_SOC_DAPM_OUTPUT("PCM1_OUTPUT"),
++};
++
++static const struct snd_soc_dapm_route mtk_dai_pcm_routes[] = {
++	{"I002", NULL, "PCM1 Capture"},
++	{"I003", NULL, "PCM1 Capture"},
++
++	{"O000", "I000 Switch", "I000"},
++	{"O001", "I001 Switch", "I001"},
++
++	{"O000", "I070 Switch", "I070"},
++	{"O001", "I071 Switch", "I071"},
++
++	{"PCM1 Playback", NULL, "O000"},
++	{"PCM1 Playback", NULL, "O001"},
++
++	{"PCM1_OUTPUT", NULL, "PCM1 Playback"},
++	{"PCM1 Capture", NULL, "PCM1_INPUT"},
++};
++
++static void mtk_dai_pcm_enable(struct mtk_base_afe *afe)
++{
++	regmap_update_bits(afe->regmap, PCM_INTF_CON1,
++			   PCM_INTF_CON1_PCM_EN, PCM_INTF_CON1_PCM_EN);
++}
++
++static void mtk_dai_pcm_disable(struct mtk_base_afe *afe)
++{
++	regmap_update_bits(afe->regmap, PCM_INTF_CON1,
++			   PCM_INTF_CON1_PCM_EN, 0x0);
++}
++
++static int mtk_dai_pcm_configure(struct snd_pcm_substream *substream,
++				 struct snd_soc_dai *dai)
++{
++	struct snd_pcm_runtime * const runtime = substream->runtime;
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
++	struct mt8195_afe_private *afe_priv = afe->platform_priv;
++	struct mtk_dai_pcmif_priv *pcmif_priv = afe_priv->dai_priv[dai->id];
++	unsigned int slave_mode = pcmif_priv->slave_mode;
++	unsigned int lrck_inv = pcmif_priv->lrck_inv;
++	unsigned int bck_inv = pcmif_priv->bck_inv;
++	unsigned int fmt = pcmif_priv->format;
++	unsigned int bit_width = dai->sample_bits;
++	unsigned int val = 0;
++	unsigned int mask = 0;
++	int fs = 0;
++	int mode = 0;
++
++	/* sync freq mode */
++	fs = mt8195_afe_fs_timing(runtime->rate);
++	if (fs < 0)
++		return -EINVAL;
++	val |= PCM_INTF_CON2_SYNC_FREQ_MODE(fs);
++	mask |= PCM_INTF_CON2_SYNC_FREQ_MODE_MASK;
++
++	/* clk domain sel */
++	if (runtime->rate % 8000)
++		val |= PCM_INTF_CON2_CLK_DOMAIN_SEL(MTK_DAI_PCM_CLK_26M_441K);
++	else
++		val |= PCM_INTF_CON2_CLK_DOMAIN_SEL(MTK_DAI_PCM_CLK_26M_48K);
++	mask |= PCM_INTF_CON2_CLK_DOMAIN_SEL_MASK;
++
++	regmap_update_bits(afe->regmap, PCM_INTF_CON2, mask, val);
++
++	val = 0;
++	mask = 0;
++
++	/* pcm mode */
++	mode = mtk_dai_pcm_mode(runtime->rate);
++	if (mode < 0)
++		return -EINVAL;
++	val |= PCM_INTF_CON1_PCM_MODE(mode);
++	mask |= PCM_INTF_CON1_PCM_MODE_MASK;
++
++	/* pcm format */
++	val |= PCM_INTF_CON1_PCM_FMT(fmt);
++	mask |= PCM_INTF_CON1_PCM_FMT_MASK;
++
++	/* pcm sync length */
++	if (fmt == MTK_DAI_PCM_FMT_MODEA ||
++	    fmt == MTK_DAI_PCM_FMT_MODEB)
++		val |= PCM_INTF_CON1_SYNC_LENGTH(1);
++	else
++		val |= PCM_INTF_CON1_SYNC_LENGTH(bit_width);
++	mask |= PCM_INTF_CON1_SYNC_LENGTH_MASK;
++
++	/* pcm bits, word length */
++	if (bit_width > 16) {
++		val |= PCM_INTF_CON1_PCM_24BIT;
++		val |= PCM_INTF_CON1_PCM_WLEN_64BCK;
++	} else {
++		val |= PCM_INTF_CON1_PCM_16BIT;
++		val |= PCM_INTF_CON1_PCM_WLEN_32BCK;
++	}
++	mask |= PCM_INTF_CON1_PCM_BIT_MASK;
++	mask |= PCM_INTF_CON1_PCM_WLEN_MASK;
++
++	/* master/slave */
++	if (!slave_mode) {
++		val |= PCM_INTF_CON1_PCM_MASTER;
++
++		if (lrck_inv)
++			val |= PCM_INTF_CON1_SYNC_OUT_INV;
++		if (bck_inv)
++			val |= PCM_INTF_CON1_BCLK_OUT_INV;
++		mask |= PCM_INTF_CON1_CLK_OUT_INV_MASK;
++	} else {
++		val |= PCM_INTF_CON1_PCM_SLAVE;
++
++		if (lrck_inv)
++			val |= PCM_INTF_CON1_SYNC_IN_INV;
++		if (bck_inv)
++			val |= PCM_INTF_CON1_BCLK_IN_INV;
++		mask |= PCM_INTF_CON1_CLK_IN_INV_MASK;
++
++		/* TODO: add asrc setting for slave mode */
++	}
++	mask |= PCM_INTF_CON1_PCM_M_S_MASK;
++
++	regmap_update_bits(afe->regmap, PCM_INTF_CON1, mask, val);
++
++	return 0;
++}
++
++/* dai ops */
++static int mtk_dai_pcm_startup(struct snd_pcm_substream *substream,
++			       struct snd_soc_dai *dai)
++{
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
++	struct mt8195_afe_private *afe_priv = afe->platform_priv;
++
++	if (dai->component->active)
++		return 0;
++
++	mt8195_afe_enable_main_clock(afe);
++
++	mt8195_afe_enable_clk(afe, afe_priv->clk[MT8195_CLK_AUD_ASRC11]);
++	mt8195_afe_enable_clk(afe, afe_priv->clk[MT8195_CLK_AUD_ASRC12]);
++	mt8195_afe_enable_clk(afe, afe_priv->clk[MT8195_CLK_AUD_PCMIF]);
++
++	return 0;
++}
++
++static void mtk_dai_pcm_shutdown(struct snd_pcm_substream *substream,
++				 struct snd_soc_dai *dai)
++{
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
++	struct mt8195_afe_private *afe_priv = afe->platform_priv;
++
++	if (dai->component->active)
++		return;
++
++	mtk_dai_pcm_disable(afe);
++
++	mt8195_afe_disable_clk(afe, afe_priv->clk[MT8195_CLK_AUD_PCMIF]);
++	mt8195_afe_disable_clk(afe, afe_priv->clk[MT8195_CLK_AUD_ASRC12]);
++	mt8195_afe_disable_clk(afe, afe_priv->clk[MT8195_CLK_AUD_ASRC11]);
++
++	mt8195_afe_disable_main_clock(afe);
++}
++
++static int mtk_dai_pcm_prepare(struct snd_pcm_substream *substream,
++			       struct snd_soc_dai *dai)
++{
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
++	int ret = 0;
++
++	if (snd_soc_dai_stream_active(dai, SNDRV_PCM_STREAM_PLAYBACK) &&
++	    snd_soc_dai_stream_active(dai, SNDRV_PCM_STREAM_CAPTURE))
++		return 0;
++
++	ret = mtk_dai_pcm_configure(substream, dai);
++	if (ret)
++		return ret;
++
++	mtk_dai_pcm_enable(afe);
++
++	return 0;
++}
++
++static int mtk_dai_pcm_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++{
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
++	struct mt8195_afe_private *afe_priv = afe->platform_priv;
++	struct mtk_dai_pcmif_priv *pcmif_priv = afe_priv->dai_priv[dai->id];
++
++	dev_dbg(dai->dev, "%s fmt 0x%x\n", __func__, fmt);
++
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		pcmif_priv->format = MTK_DAI_PCM_FMT_I2S;
++		break;
++	case SND_SOC_DAIFMT_DSP_A:
++		pcmif_priv->format = MTK_DAI_PCM_FMT_MODEA;
++		break;
++	case SND_SOC_DAIFMT_DSP_B:
++		pcmif_priv->format = MTK_DAI_PCM_FMT_MODEB;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_NB_NF:
++		pcmif_priv->bck_inv = 0;
++		pcmif_priv->lrck_inv = 0;
++		break;
++	case SND_SOC_DAIFMT_NB_IF:
++		pcmif_priv->bck_inv = 0;
++		pcmif_priv->lrck_inv = 1;
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		pcmif_priv->bck_inv = 1;
++		pcmif_priv->lrck_inv = 0;
++		break;
++	case SND_SOC_DAIFMT_IB_IF:
++		pcmif_priv->bck_inv = 1;
++		pcmif_priv->lrck_inv = 1;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBM_CFM:
++		pcmif_priv->slave_mode = 1;
++		break;
++	case SND_SOC_DAIFMT_CBS_CFS:
++		pcmif_priv->slave_mode = 0;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static const struct snd_soc_dai_ops mtk_dai_pcm_ops = {
++	.startup	= mtk_dai_pcm_startup,
++	.shutdown	= mtk_dai_pcm_shutdown,
++	.prepare	= mtk_dai_pcm_prepare,
++	.set_fmt	= mtk_dai_pcm_set_fmt,
++};
++
++/* dai driver */
++#define MTK_PCM_RATES (SNDRV_PCM_RATE_8000_48000)
++
++#define MTK_PCM_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
++			 SNDRV_PCM_FMTBIT_S24_LE |\
++			 SNDRV_PCM_FMTBIT_S32_LE)
++
++static struct snd_soc_dai_driver mtk_dai_pcm_driver[] = {
++	{
++		.name = "PCM1",
++		.id = MT8195_AFE_IO_PCM,
++		.playback = {
++			.stream_name = "PCM1 Playback",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = MTK_PCM_RATES,
++			.formats = MTK_PCM_FORMATS,
++		},
++		.capture = {
++			.stream_name = "PCM1 Capture",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = MTK_PCM_RATES,
++			.formats = MTK_PCM_FORMATS,
++		},
++		.ops = &mtk_dai_pcm_ops,
++		.symmetric_rate = 1,
++		.symmetric_sample_bits = 1,
++	},
++};
++
++static int init_pcmif_priv_data(struct mtk_base_afe *afe)
++{
++	struct mt8195_afe_private *afe_priv = afe->platform_priv;
++	struct mtk_dai_pcmif_priv *pcmif_priv;
++
++	pcmif_priv = devm_kzalloc(afe->dev, sizeof(struct mtk_dai_pcmif_priv),
++				  GFP_KERNEL);
++	if (!pcmif_priv)
++		return -ENOMEM;
++
++	afe_priv->dai_priv[MT8195_AFE_IO_PCM] = pcmif_priv;
++	return 0;
++}
++
++int mt8195_dai_pcm_register(struct mtk_base_afe *afe)
++{
++	struct mtk_base_afe_dai *dai;
++
++	dai = devm_kzalloc(afe->dev, sizeof(*dai), GFP_KERNEL);
++	if (!dai)
++		return -ENOMEM;
++
++	list_add(&dai->list, &afe->sub_dais);
++
++	dai->dai_drivers = mtk_dai_pcm_driver;
++	dai->num_dai_drivers = ARRAY_SIZE(mtk_dai_pcm_driver);
++
++	dai->dapm_widgets = mtk_dai_pcm_widgets;
++	dai->num_dapm_widgets = ARRAY_SIZE(mtk_dai_pcm_widgets);
++	dai->dapm_routes = mtk_dai_pcm_routes;
++	dai->num_dapm_routes = ARRAY_SIZE(mtk_dai_pcm_routes);
++
++	return init_pcmif_priv_data(afe);
++}
 -- 
 2.18.0
 
