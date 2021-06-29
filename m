@@ -7,60 +7,60 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DFB2C11F64
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Jun 2021 01:50:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77AE6C11F64
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Jun 2021 01:50:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 08FBF61CCE
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Jun 2021 01:50:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 08FBF61CCE
+	by mail.kernel.org (Postfix) with ESMTPS id EA47B61CA3
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Jun 2021 01:50:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EA47B61CA3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9DE0E1687;
-	Tue, 29 Jun 2021 03:49:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DE0E1687
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8420F16A1;
+	Tue, 29 Jun 2021 03:49:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8420F16A1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624931429;
-	bh=+bHZR8XGylzwqkGtSrvskWx5bIIv8VBzXW7BVOzrhKE=;
+	s=default; t=1624931441;
+	bh=hnTi7qhS57uBrMK/moyB44/v/nBepvUWKt3Yc00n6tc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bd+bneVGDTn4ZgcXkLPBpQCoVeZAIo4oPUr76HeJDT5MzYu45wMevyomCbeiWMNEj
-	 /rVchjqj2H7zPWbsoDfSbfzWtJlCyMwLk2hy//H5Sy0fmpMGqJWHM16S5AdM1dcZJO
-	 z94Wbx2azvfz4IVBdKQ+7I78k5x3LsP0mjTvsZ2o=
+	b=m2kmn/KhklD7gnZcCjnxgNjTjKIbCqpH+b+PSxk8f701+VxLvGCbCkB49RNSIroBR
+	 fSs+QcqdvEbhtsgdn6ZQ00LCxWoXs27IJhEyvyNvx9X9Y2j+oxLbQSzVqyukmXJG3J
+	 MZtWW/xby62SKOp/VuTViR83JzwsPiONRYztFT5Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F90BF804E4;
-	Tue, 29 Jun 2021 03:48:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 610EAF804EC;
+	Tue, 29 Jun 2021 03:48:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CACEBF804D6; Tue, 29 Jun 2021 03:48:15 +0200 (CEST)
+ id 624F9F804E1; Tue, 29 Jun 2021 03:48:20 +0200 (CEST)
 Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A7BB6F80259
- for <alsa-devel@alsa-project.org>; Tue, 29 Jun 2021 03:48:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7BB6F80259
-X-UUID: e01f0acc8f564f299e194a32c7026b01-20210629
-X-UUID: e01f0acc8f564f299e194a32c7026b01-20210629
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 43103F804CA
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jun 2021 03:48:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43103F804CA
+X-UUID: 4b8d795882d94e85a1977564b40edc4c-20210629
+X-UUID: 4b8d795882d94e85a1977564b40edc4c-20210629
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
  (envelope-from <trevor.wu@mediatek.com>)
  (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 566307297; Tue, 29 Jun 2021 09:47:53 +0800
+ with ESMTP id 1094891874; Tue, 29 Jun 2021 09:47:59 +0800
 Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 29 Jun 2021 09:47:52 +0800
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 29 Jun 2021 09:47:51 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
- Frontend Transport; Tue, 29 Jun 2021 09:47:52 +0800
+ Frontend Transport; Tue, 29 Jun 2021 09:47:51 +0800
 From: Trevor Wu <trevor.wu@mediatek.com>
 To: <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
  <matthias.bgg@gmail.com>
-Subject: [PATCH v2 6/8] dt-bindings: mediatek: mt8195: add audio afe document
-Date: Tue, 29 Jun 2021 09:47:34 +0800
-Message-ID: <20210629014736.31153-7-trevor.wu@mediatek.com>
+Subject: [PATCH v2 1/8] ASoC: mediatek: mt8195: update mediatek common driver
+Date: Tue, 29 Jun 2021 09:47:29 +0800
+Message-ID: <20210629014736.31153-2-trevor.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20210629014736.31153-1-trevor.wu@mediatek.com>
 References: <20210629014736.31153-1-trevor.wu@mediatek.com>
@@ -87,166 +87,102 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds mt8195 audio afe document.
+Update mediatek common driver to support MT8195
 
 Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+Reported-by: kernel test robot <lkp@intel.com>
 ---
-This patch depends on the following series that have not been accepted.
+ sound/soc/mediatek/common/mtk-afe-fe-dai.c | 22 +++++++++++++++++++---
+ sound/soc/mediatek/common/mtk-base-afe.h   | 10 ++++++++--
+ 2 files changed, 27 insertions(+), 5 deletions(-)
 
-[1] Mediatek MT8195 clock support
-https://patchwork.kernel.org/project/linux-mediatek/list/?series=501923
-(dt-bindings/clock/mt8195-clk.h is included)
-
-[2] Mediatek MT8195 power domain support
-https://patchwork.kernel.org/project/linux-mediatek/list/?series=500709
-(dt-bindings/power/mt8195-power.h is included)
----
- .../bindings/sound/mt8195-afe-pcm.yaml        | 136 ++++++++++++++++++
- 1 file changed, 136 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
-
-diff --git a/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml b/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
-new file mode 100644
-index 000000000000..a4fb5c7dd022
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
-@@ -0,0 +1,136 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/mt8195-afe-pcm.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/sound/soc/mediatek/common/mtk-afe-fe-dai.c b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
+index 3cb2adf420bb..baaa5881b1d4 100644
+--- a/sound/soc/mediatek/common/mtk-afe-fe-dai.c
++++ b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
+@@ -139,7 +139,7 @@ int mtk_afe_fe_hw_params(struct snd_pcm_substream *substream,
+ 		substream->runtime->dma_area,
+ 		substream->runtime->dma_bytes);
+ 
+-	memset_io(substream->runtime->dma_area, 0,
++	memset_io((void __force __iomem *)substream->runtime->dma_area, 0,
+ 		  substream->runtime->dma_bytes);
+ 
+ 	/* set addr */
+@@ -433,11 +433,20 @@ int mtk_memif_set_addr(struct mtk_base_afe *afe, int id,
+ 				 phys_buf_addr_upper_32);
+ 	}
+ 
+-	/* set MSB to 33-bit */
+-	if (memif->data->msb_reg >= 0)
++	/*
++	 * set MSB to 33-bit, for memif address
++	 * only for memif base address, if msb_end_reg exists
++	 */
++	if (memif->data->msb_reg)
+ 		mtk_regmap_update_bits(afe->regmap, memif->data->msb_reg,
+ 				       1, msb_at_bit33, memif->data->msb_shift);
+ 
++	/* set MSB to 33-bit, for memif end address */
++	if (memif->data->msb_end_reg)
++		mtk_regmap_update_bits(afe->regmap, memif->data->msb_end_reg,
++				       1, msb_at_bit33,
++				       memif->data->msb_end_shift);
 +
-+title: Mediatek AFE PCM controller for mt8195
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(mtk_memif_set_addr);
+@@ -464,6 +473,13 @@ int mtk_memif_set_channel(struct mtk_base_afe *afe,
+ 	else
+ 		mono = (channel == 1) ? 1 : 0;
+ 
++	/* for specific configuration of memif mono mode */
++	if (memif->data->int_odd_flag_reg)
++		mtk_regmap_update_bits(afe->regmap,
++				       memif->data->int_odd_flag_reg,
++				       1, mono,
++				       memif->data->int_odd_flag_shift);
 +
-+maintainers:
-+  - Trevor Wu <trevor.wu@mediatek.com>
-+
-+properties:
-+  compatible:
-+    const: mediatek,mt8195-audio
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  mediatek,topckgen:
-+    $ref: "/schemas/types.yaml#/definitions/phandle"
-+    description: The phandle of the mediatek topckgen controller
-+
-+  power-domains:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: audio 26M clock
-+      - description: AFE clock
-+      - description: audio infra sys clock
-+      - description: audio infra 26M clock
-+
-+  clock-names:
-+    items:
-+      - const: clk26m
-+      - const: aud_afe
-+      - const: infra_ao_audio
-+      - const: infra_ao_audio_26m_b
-+
-+  etdm-in1-chn-disabled:
-+    $ref: /schemas/types.yaml#/definitions/uint8-array
-+    maxItems: 24
-+    description: Specify which input channel should be disabled.
-+
-+  etdm-in2-chn-disabled:
-+    $ref: /schemas/types.yaml#/definitions/uint8-array
-+    maxItems: 16
-+    description: Specify which input channel should be disabled.
-+
-+patternProperties:
-+  "^etdm-in[1-2]-mclk-source$":
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Specify etdm in mclk source clock.
-+    enum:
-+      - 0 # xtal_26m_ck
-+      - 1 # apll1_ck
-+      - 2 # apll2_ck
-+      - 3 # apll3_ck
-+      - 4 # apll4_ck
-+      - 5 # apll5_ck
-+      - 6 # hdmirx_apll_ck
-+
-+  "^etdm-out[1-3]-mclk-source$":
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Specify etdm out mclk source clock.
-+
-+  "^etdm-in[1-2]-mclk-alwasys-on-rate$":
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Specify etdm in mclk output rate for always on case.
-+
-+  "^etdm-out[1-3]-mclk-alwasys-on-rate$":
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Specify etdm out mclk output rate for always on case.
-+
-+  "^etdm-in[1-2]-data-mode$":
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Specify etdm in data mode.
-+    enum:
-+      - 0 # one pin (TDM)
-+      - 1 # multi pin (I2S)
-+
-+  "^etdm-out[1-3]-data-mode$":
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Specify etdm out data mode.
-+
-+  "^etdm-in[1-2]-cowork-source$":
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      etdm modules can share the same external clock pin. Specify
-+      which etdm clock source is required by this etdm in moudule.
-+    enum:
-+      - 0 # etdm1_in
-+      - 1 # etdm2_in
-+      - 2 # etdm1_out
-+      - 3 # etdm2_out
-+      - 4 # etdm3_out
-+
-+  "^etdm-out[1-3]-cowork-source$":
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      etdm modules can share the same external clock pin. Specify
-+      which etdm clock source is required by this etdm out moudule.
-+
-+required:
-+  - compatible
-+  - interrupts
-+  - mediatek,topckgen
-+  - power-domains
-+  - clocks
-+  - clock-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/mt8195-clk.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    #include <dt-bindings/power/mt8195-power.h>
-+
-+    afe: mt8195-afe-pcm {
-+        compatible = "mediatek,mt8195-audio";
-+        interrupts = <GIC_SPI 822 IRQ_TYPE_LEVEL_HIGH 0>;
-+        mediatek,topckgen = <&topckgen>;
-+        power-domains = <&spm MT8195_POWER_DOMAIN_AUDIO>;
-+        clocks = <&clk26m>,
-+                 <&audsys CLK_AUD_AFE>,
-+                 <&infracfg_ao CLK_INFRA_AO_AUDIO>,
-+                 <&infracfg_ao CLK_INFRA_AO_AUDIO_26M_B>;
-+        clock-names = "clk26m",
-+                      "aud_afe",
-+                      "infra_ao_audio",
-+                      "infra_ao_audio_26m_b";
-+    };
-+
-+...
+ 	return mtk_regmap_update_bits(afe->regmap, memif->data->mono_reg,
+ 				      1, mono, memif->data->mono_shift);
+ }
+diff --git a/sound/soc/mediatek/common/mtk-base-afe.h b/sound/soc/mediatek/common/mtk-base-afe.h
+index a6f68c68581c..ef83e78c22a8 100644
+--- a/sound/soc/mediatek/common/mtk-base-afe.h
++++ b/sound/soc/mediatek/common/mtk-base-afe.h
+@@ -29,6 +29,8 @@ struct mtk_base_memif_data {
+ 	int quad_ch_reg;
+ 	int quad_ch_mask;
+ 	int quad_ch_shift;
++	int int_odd_flag_reg;
++	int int_odd_flag_shift;
+ 	int enable_reg;
+ 	int enable_shift;
+ 	int hd_reg;
+@@ -37,10 +39,13 @@ struct mtk_base_memif_data {
+ 	int hd_align_mshift;
+ 	int msb_reg;
+ 	int msb_shift;
+-	int msb2_reg;
+-	int msb2_shift;
++	int msb_end_reg;
++	int msb_end_shift;
+ 	int agent_disable_reg;
+ 	int agent_disable_shift;
++	int ch_num_reg;
++	int ch_num_shift;
++	int ch_num_maskbit;
+ 	/* playback memif only */
+ 	int pbuf_reg;
+ 	int pbuf_mask;
+@@ -62,6 +67,7 @@ struct mtk_base_irq_data {
+ 	int irq_en_shift;
+ 	int irq_clr_reg;
+ 	int irq_clr_shift;
++	int irq_status_shift;
+ };
+ 
+ struct device;
 -- 
 2.18.0
 
