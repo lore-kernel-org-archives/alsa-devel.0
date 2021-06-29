@@ -7,86 +7,83 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AA08C11F66
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Jun 2021 08:30:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 965C8C11F66
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Jun 2021 08:31:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EE1F161DD1
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Jun 2021 08:30:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE1F161DD1
+	by mail.kernel.org (Postfix) with ESMTPS id BC6F661DD1
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Jun 2021 08:31:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC6F661DD1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 49BEB167A;
-	Tue, 29 Jun 2021 10:29:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49BEB167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id E89BD1683;
+	Tue, 29 Jun 2021 10:30:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E89BD1683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1624955443;
-	bh=YHzWIa69ElM68S511DfZwwMO3O+q84es27oKk79zhyY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ItIzlpTajvn8wDhGr8QHqzokl/W9+eEG19BV3Updy6/ouXoxWHEGgcGtWUg0h+p4V
-	 qjdQhRllJZCftLBdUCWwEtrrC7inEC6GG/C3xu5/9J+r/337g4Zd2u3QtEHNOcoBn+
-	 C3ES8l3xwhAmt+qM+TncGLdDxHi24wRANFEhqnjs=
+	s=default; t=1624955494;
+	bh=eWI2YWSYg3pseFcSRjVe3s8vkP7X+JqpXSJ0ezKK+IU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=MObPkBgxT3uXdn32S3G6/eVxllNjUb+q3SB0YqqdxaWCldncVmmInR8KU+ceaQBRu
+	 z5bNmUBKX6cFabjYX6zESq/UeF1MUiHdATWSAoPpCkIUTEDZo1/I1ipT+QU3XuyvBg
+	 FeePf7GDjS9qamlzGD3swQGY9DmeJKQJP0ItWaEk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17A00F80156;
-	Tue, 29 Jun 2021 10:29:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ABD18F804AE;
+	Tue, 29 Jun 2021 10:29:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 56BEDF8025D; Tue, 29 Jun 2021 10:29:39 +0200 (CEST)
+ id 1F5DDF802D2; Tue, 29 Jun 2021 10:29:33 +0200 (CEST)
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DE51BF80240
- for <alsa-devel@alsa-project.org>; Tue, 29 Jun 2021 10:29:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE51BF80240
-Received: from mail-pg1-f199.google.com ([209.85.215.199])
+ by alsa1.perex.cz (Postfix) with ESMTPS id 07AE3F80156
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jun 2021 10:29:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07AE3F80156
+Received: from mail-pg1-f197.google.com ([209.85.215.197])
  by youngberry.canonical.com with esmtps (TLS1.2) tls
  TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.93)
- (envelope-from <andy.chi@canonical.com>) id 1ly97W-0000L4-TY
- for alsa-devel@alsa-project.org; Tue, 29 Jun 2021 08:29:27 +0000
-Received: by mail-pg1-f199.google.com with SMTP id
- p14-20020a63fe0e0000b0290223af1026abso13689392pgh.20
- for <alsa-devel@alsa-project.org>; Tue, 29 Jun 2021 01:29:26 -0700 (PDT)
+ (envelope-from <andy.chi@canonical.com>) id 1ly97M-0000Ia-Uw
+ for alsa-devel@alsa-project.org; Tue, 29 Jun 2021 08:29:17 +0000
+Received: by mail-pg1-f197.google.com with SMTP id
+ o9-20020a6561490000b0290226fc371410so12678701pgv.8
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jun 2021 01:29:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=toSlKwLIoJaylZ3jHBQTTvJkInZwz79Yfvkqkzo/W98=;
- b=sLasDBVWOaU2AwTN753wKpRuhTj4hYpVyvUvlLNNHtCXCl7gV5hLwD4J0fyLza3SOt
- 4VL5AoXGf/Bu0YcZstygUM0Jyfh7pau1z938xUHjcRrHov3a68MwFNuQwWFSk2rB9Yfe
- dYf8cSWx8lmn9a3xqVoQokXBXJWXfIXOgGw3fLe6VF9O1qoFW/LDLMWdmTP1QRwSRheo
- 4zwyXfVWj+N1X4TE4waOd3BgiZ0XPEPGDAUIdY8knHrJ5XPnBq6FbLgv06kM4X0Jy6AX
- 2K0ckG05fiXLhtwxQhQ4mopsAOr1DgZRIckB3LC4bBcnna+HASLCRGepD7JQMQwcdea8
- x3dg==
-X-Gm-Message-State: AOAM531OlsAdkue1AKC+Id3GTtkU8n0ZKcZTwWfbK8A19XzGRjBOMU/d
- eZ11azx9KM7E2bOoxiJZUdKgJKqxhptFQW+k6Z1ICIBUWsbl8639Bm+kuH13u89sXahOM4gBI+G
- OSJnmIZBkBKfsgIrMN50MyxdHdzqPKiK47dH0PdRS
-X-Received: by 2002:a17:902:7446:b029:128:ec77:b41e with SMTP id
- e6-20020a1709027446b0290128ec77b41emr5395336plt.80.1624955365642; 
- Tue, 29 Jun 2021 01:29:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx3rJTpLAVpOugSkqbdGzg37BM1HfA5uvI4BBZMTPky38pJlKqaSYVeohwYjsgN0PugSolhoQ==
-X-Received: by 2002:a17:902:7446:b029:128:ec77:b41e with SMTP id
- e6-20020a1709027446b0290128ec77b41emr5395324plt.80.1624955365446; 
- Tue, 29 Jun 2021 01:29:25 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=zT+AAyuwYYGwcA7gJxKF1kV6Ix+q/p+7TtOQey3g0sY=;
+ b=kJyfLxvdm101gSlw7bvW8uICRL/kyV2Ms8pNTA9ONwTEzts8hJC+a8E3zwS8j17zhV
+ M2QgqonhMB5IYqMeAMMQ4pNAnsihNM353utcBnhE8IIY5PvrTP48N/NIfbRqRhkxjfCX
+ 1FbmHxJovSP2X3ePc5yalrNdutjUXBYDTo1nBJ3EGQZV3m/EdrZpvoolr8xd1ctEJlET
+ 4GOAXjugAGa1kCNsXCsEIxNO302R5arzjbTGEKgVLOOHBXsfDWkIF32ftwMHE7w8KcoM
+ e/vQWcQVk6Bc/I94jxJJibITVAHo6Ykmy8iA7KNPzBNRheqicvIbbZpEZsMEsHG10Lp3
+ EUlQ==
+X-Gm-Message-State: AOAM530SvO+yCfyY0p0LrxF9A/F+cy3ulzXhxfJ6ZZk8SWm891fi8zG2
+ pdZ51kBoM/Fnu55DfcqEZFMfJC7vIPW0yedMa97sNJ1Q4JeoOiQ0JyGCHFFEX0f4EkhWKGqK7Nw
+ /BeAdj026/AP7KrapPH/Lrk902NFpyV267fjHdw8+
+X-Received: by 2002:a17:90a:6602:: with SMTP id
+ l2mr1096605pjj.103.1624955355717; 
+ Tue, 29 Jun 2021 01:29:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzYKEDhGe+xAvSsUjWW8jMLc/HpzQELmLPbu/30Sr5x7ckwsp151qQs4Wn4g+L5Rw7f6AYP7A==
+X-Received: by 2002:a17:90a:6602:: with SMTP id
+ l2mr1096589pjj.103.1624955355485; 
+ Tue, 29 Jun 2021 01:29:15 -0700 (PDT)
 Received: from localhost.localdomain (36-224-198-238.dynamic-ip.hinet.net.
  [36.224.198.238])
- by smtp.gmail.com with ESMTPSA id 28sm17526830pgq.39.2021.06.29.01.29.22
+ by smtp.gmail.com with ESMTPSA id 28sm17526830pgq.39.2021.06.29.01.29.12
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 29 Jun 2021 01:29:25 -0700 (PDT)
+ Tue, 29 Jun 2021 01:29:14 -0700 (PDT)
 From: Andy Chi <andy.chi@canonical.com>
 To: 
-Subject: [PATCH 3/3] ALSA: hda/realtek: fix mute/micmute LEDs for HP ProBook
- 630 G8
-Date: Tue, 29 Jun 2021 16:28:59 +0800
-Message-Id: <20210629082902.408881-3-andy.chi@canonical.com>
+Subject: [PATCH 1/3] ALSA: hda/realtek: fix mute/micmute LEDs for HP ProBook
+ 450 G8
+Date: Tue, 29 Jun 2021 16:28:57 +0800
+Message-Id: <20210629082902.408881-1-andy.chi@canonical.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210629082902.408881-1-andy.chi@canonical.com>
-References: <20210629082902.408881-1-andy.chi@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Chris Chiu <chris.chiu@canonical.com>, Jian-Hong Pan <jhp@endlessos.org>,
@@ -110,7 +107,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The HP ProBook 630 G8 using ALC236 codec which using 0x02 to
+The HP ProBook 450 G8 using ALC236 codec which using 0x02 to
 control mute LED and 0x01 to control micmute LED.
 Therefore, add a quirk to make it works.
 
@@ -120,14 +117,14 @@ Signed-off-by: Andy Chi <andy.chi@canonical.com>
  1 file changed, 1 insertion(+)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 25a32b718fbc..58e185c6e77f 100644
+index ab5113cccffa..9c3bb1a2b849 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -8337,6 +8337,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -8336,6 +8336,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 		      ALC285_FIXUP_HP_GPIO_AMP_INIT),
  	SND_PCI_QUIRK(0x103c, 0x87c8, "HP", ALC287_FIXUP_HP_GPIO_LED),
  	SND_PCI_QUIRK(0x103c, 0x87e5, "HP ProBook 440 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87e7, "HP ProBook 450 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x87f1, "HP ProBook 630 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
++	SND_PCI_QUIRK(0x103c, 0x87e7, "HP ProBook 450 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
  	SND_PCI_QUIRK(0x103c, 0x87f2, "HP ProBook 640 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
  	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
  	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
