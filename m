@@ -2,106 +2,85 @@ Return-Path: <SRS0=p6mo=LY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9291EC11F65
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Jun 2021 21:36:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB315C11F66
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Jun 2021 23:42:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B45F060233
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Jun 2021 21:36:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B45F060233
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id 392A46142D
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Jun 2021 23:42:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 392A46142D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 30DCD950;
-	Wed, 30 Jun 2021 23:35:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30DCD950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9D10D15E5;
+	Thu,  1 Jul 2021 01:41:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D10D15E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625088973;
-	bh=X/GwsvBawuMevL9/pcr9YEhKB9lp6MNS/BGqoo2MPqg=;
-	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=IS7tETkWDxIfRpp1d4nBlIFfmZ505jmZzz91EyigGken6Rx+f2FqC/XYAn6X5OOhL
-	 Bgu2jXodtaqwgu3ltZHghSJ82MFCg33pvin7SxjtpHMH71i7Gw43U2nnPBthtr03K9
-	 JslQcctNp3BcBYjUKCx5Err27tZH8lKlehizdZbo=
+	s=default; t=1625096558;
+	bh=1a1xjYyAxAJukVlOWgAQ3qeB6p+FGxo20u3NzOJY/MQ=;
+	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=HgfrLbbat4HCS+2XYkBOjmrnqTNbPhw8XyX7NJMTPy5J8Zrx9U1FYPNt/fterv+8M
+	 Ib23Nv8M2nHQk9eze8oU7JRl6bmQrZQl8e1L7QOlAyxXlMJ8mDxDtmaxzE26Yv3T63
+	 pGCxsHqTup+7H8BUhDRLhKuQGK2Bi8HjiBkeTOeg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8E4AF80217;
-	Wed, 30 Jun 2021 23:35:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 41629F80217;
+	Thu,  1 Jul 2021 01:41:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 10B62F80229; Wed, 30 Jun 2021 23:35:21 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 416A9F80229; Thu,  1 Jul 2021 01:41:47 +0200 (CEST)
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
+ [IPv6:2a00:1450:4864:20::130])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6A6DFF8020C
- for <alsa-devel@alsa-project.org>; Wed, 30 Jun 2021 23:35:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A6DFF8020C
+ by alsa1.perex.cz (Postfix) with ESMTPS id E88C9F800BA
+ for <alsa-devel@alsa-project.org>; Thu,  1 Jul 2021 01:41:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E88C9F800BA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="Ic0a0vtC"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 15ULUg1p025646; Wed, 30 Jun 2021 16:35:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=t3WVrSDESxT6qPLEWoFh8SSANEvuzseNPWesieHFCgk=;
- b=Ic0a0vtCzWZ1NHJnf6KjuBhwpEFZmLPgMGXZYZ1/sjJAZVUDl+T3cIg12X5NM1Fgby55
- MES89rWHTVctg/G+/Oak+/bVBi50CjRgBtsl3UaM8Pdyi0d5p2Z3RbY8GHKJmTt9jDFq
- NFDCoGeYkxRe04ccOkG8yQVoGHPN9Q2gNysE8NH16I6+3f+Tsbail3uQvutT2ckjv6Yp
- L2giIjIL0UAIHaWw9+3vIOeo/FbXdigmq0HOgb/8b/RIpX0sIIH/PzuZk+Fo3s9L6Wmv
- y1g245sy7o+7lrbxlsupgUpXmBWXwgDsh+nzobKBFlq586tAkDPUtiql2m4JPm3NrZMP Cg== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 39gg1whajv-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 30 Jun 2021 16:35:16 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 30 Jun
- 2021 22:35:14 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Wed, 30 Jun 2021 22:35:14 +0100
-Received: from [192.168.99.238] (macC02XQ1DJJG5K.ad.cirrus.com
- [141.131.65.143])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 34CBF448;
- Wed, 30 Jun 2021 21:35:08 +0000 (UTC)
-Subject: Re: [PATCH v2 1/2] ASoC: cs35l41: CS35L41 Boosted Smart Amplifier
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- <broonie@kernel.org>, <robh@kernel.org>,
- <ckeepax@opensource.cirrus.com>, <brian.austin@cirrus.com>,
- <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
- <david.rhodes@cirrus.com>
-References: <20210629222719.1391653-1-drhodes@opensource.cirrus.com>
- <20210629222719.1391653-2-drhodes@opensource.cirrus.com>
- <b14da5ca-2b5a-43fc-11bb-7f87c873d3c4@linux.intel.com>
-From: David Rhodes <drhodes@opensource.cirrus.com>
-Message-ID: <9e432f81-9229-57d3-5231-50d6f935d084@opensource.cirrus.com>
-Date: Wed, 30 Jun 2021 16:35:07 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="VGPacmbi"
+Received: by mail-lf1-x130.google.com with SMTP id a18so8256021lfs.10
+ for <alsa-devel@alsa-project.org>; Wed, 30 Jun 2021 16:41:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:from:date:message-id:subject:to;
+ bh=iT6ND97dfk1N1ou/NLd8RsXm1QHsVroYIyzxZ1twf0M=;
+ b=VGPacmbiMrlFdJugR+OtBhElHikylG9x6knAXSDLg3j4jZ2nWC+loYL9k/xhGRlzv9
+ e63kmeFwqiH8TYfhpIjSs1f00JEI7mu5xMisxgR/JdPteq09HeBOZ9WfWH39qsUugJQ4
+ Gosbuijezz0kJp5Ogg6PeqDorrF+v3M1WCxnqzT3rXH49NLZreoansGSiRmQSkwr6BUq
+ zK7AOncK9GoS4Joe+73+avHsHkQW/6mBt9UrJ3Vwijyt0gs/DdB2fHkzhTyhA+EOv3wa
+ LCIfxpR0hXKTYjmdfoWgD8663DMJH6f/UXKrt7lq0HKsazVWez1TdLpo20EVeK9iWG3G
+ CZHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=iT6ND97dfk1N1ou/NLd8RsXm1QHsVroYIyzxZ1twf0M=;
+ b=mJ0eeAjVWaysxKMPf5irktKnrrnX0iPyH3ux4rOle8jUfJVYNkZ2KcEX7H7LGD+6pX
+ mDrTEuzG5rc8wQjvGk+bwv6d3eNU5M46D54A6pZ75qbKtugbQjOwHwJWPfv+Y2olOnXM
+ 86PhaQ/2dFgLcIr5s3UH8CCVrqgBI1i40W9XUyWDMf/K2NSq5gPETyTuCpN+mTy/pmnu
+ F8za+IlQhR+J7ncD0syP0eDJ9UkVQgs6uWiWz7BIoNnUAOluTCjjso3E8R1v6kCbOb3h
+ gPb3MfoASgxfSr+noXoBFhAy3WelNzDB/8KcR+xt2+ybd10SwOCWSxZja1iJRq53SlYO
+ r79g==
+X-Gm-Message-State: AOAM532RlWCnTeBrL2EYBpZmqiQeEM3ioZL4YjniD5FhskgiOS4pqmNG
+ 5JoOk2tjktpJAkZkUScesHwPKSbJqGPduyBLaoRxwLIU6Cc=
+X-Google-Smtp-Source: ABdhPJwYoHX2P9Y5kEUgsq3B5Bx9h6c2pBtvvlrFXz3FzGYniWz92oC9dA7jq87L2r5wJOtVSaLe5ovWgI29WZNf/Bg=
+X-Received: by 2002:a05:6512:219:: with SMTP id
+ a25mr30871315lfo.295.1625096500364; 
+ Wed, 30 Jun 2021 16:41:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <b14da5ca-2b5a-43fc-11bb-7f87c873d3c4@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-GUID: Qyi14v8YMlHa3VIG9mvYp2VWjiTF8neF
-X-Proofpoint-ORIG-GUID: Qyi14v8YMlHa3VIG9mvYp2VWjiTF8neF
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0
- malwarescore=0
- suspectscore=0 bulkscore=0 clxscore=1011 mlxlogscore=999 phishscore=0
- adultscore=0 mlxscore=0 lowpriorityscore=0 impostorscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106300119
+From: Muni Sekhar <munisekharrms@gmail.com>
+Date: Thu, 1 Jul 2021 05:11:29 +0530
+Message-ID: <CAHhAz+h9=fMu7jLfmzZF2XMWAT=JBLik2WSSbfYtLg3kmzqWtg@mail.gmail.com>
+Subject: trigger timestamp
+To: alsa-devel <alsa-devel@alsa-project.org>, 
+ kernelnewbies <kernelnewbies@kernelnewbies.org>
+Content-Type: text/plain; charset="UTF-8"
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -117,16 +96,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 6/29/21 6:51 PM, Pierre-Louis Bossart wrote:
-> 
->> +#ifdef CONFIG_ACPI
->> +static const struct acpi_device_id cs35l41_acpi_match[] = {
->> +	{ "CSC3541", 0 }, /* Cirrus Logic PCI ID + part ID */
-> 
-> Wrong comment or wrong ID, "CSC" is clearly not a PCI ID?
-> 
+Hi all,
 
-CSC is a PnP ID, not a PCI ID. I will change the comment to reflect this.
+From the user space test application , Is it possible to get the
+trigger timestamp corresponding to SNDRV_PCM_TRIGGER_START &
+SNDRV_PCM_TRIGGER_STOP events for audio playback capture?
 
-Thanks for the review. I will fix the license headers, NULL checks, 
-includes, dev_crit, and inits in the next revision as well.
+-- 
+Thanks,
+Sekhar
