@@ -2,87 +2,92 @@ Return-Path: <SRS0=xdAn=LZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA06AC11F64
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Jul 2021 06:37:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EE5EC11F64
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Jul 2021 06:43:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 38EE461480
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Jul 2021 06:37:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 38EE461480
+	by mail.kernel.org (Postfix) with ESMTPS id D42EC61480
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Jul 2021 06:43:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D42EC61480
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 664E91691;
-	Thu,  1 Jul 2021 08:37:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 664E91691
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2DD36168E;
+	Thu,  1 Jul 2021 08:42:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2DD36168E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625121474;
-	bh=fn+dxXhHM62iAj/vUkwxc37k0cRUJJnl/Cz1xJLun/w=;
+	s=default; t=1625121805;
+	bh=ncpV4T4qTHVjpI4i5WmsJdh6Ii59vdJp+Xg6eG7Ojzc=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AdjhzhlagE6lNeEYb//+vcwU5reTim1vwJ4bsj+q2iQFLlvJhtemACw4vXfDmAK6k
-	 OFzGKeJLAY2PGLgLKOxw7drW4Me8WptJTda5p577fjqLwpqEYTgdoXHwkefGOeH9jS
-	 JSqLSYELR8lbNl8OWnoweHmarIraWscouo0E5R6w=
+	b=RZ8NMdYxrV+hgS6cMvgC4ajduYg4YQBlN1jR9azs5xyWtkAabpQVvtVZCew8Zjwrw
+	 LUjH0rD9sstOP39QoXVAfIan385LwRO0KBA3kc6u6Eo60KeMm6W4Kf0SUZ0ka2YA07
+	 M1CAxhHLV7KvFqKbwRzydYLyMWZHsrkP7gaJ4GKk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0BFE5F8025D;
-	Thu,  1 Jul 2021 08:37:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C0AAFF8025D;
+	Thu,  1 Jul 2021 08:42:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 352F5F802D2; Thu,  1 Jul 2021 08:37:02 +0200 (CEST)
+ id 8F4B5F802D2; Thu,  1 Jul 2021 08:42:32 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 31C22F80259
- for <alsa-devel@alsa-project.org>; Thu,  1 Jul 2021 08:36:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31C22F80259
+ by alsa1.perex.cz (Postfix) with ESMTPS id 56F5CF800BA
+ for <alsa-devel@alsa-project.org>; Thu,  1 Jul 2021 08:42:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56F5CF800BA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="QEbBdXiN"; 
+ header.b="KdFHoZGC"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="gQzDFH/6"
+ header.b="Eu5QeTwG"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 9A7F31FF70;
- Thu,  1 Jul 2021 06:36:56 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 070441FF6E;
+ Thu,  1 Jul 2021 06:42:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1625121416; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1625121750; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=X6efxvN55ScstjZuvt7HObJuuCo3kW8APtIAyHc52IY=;
- b=QEbBdXiNW5Zvz8Z94UgI191nFUkOD22Z2m+1tO5CvFidWM1KBxn9kW9YZvuKQHZL+//2wn
- que5uAs263G6rRrPDO20foLim0lGnVTvuKPHgAfX/Of4hz7b4WcOaKgjq/q3tHeHF9Ybgp
- l8RU8w/lAeDQxUE70QaZE+BnOqU+dhs=
+ bh=KtelaqLMZmtclzBeoimXKnTe1oTnMdqDN5TlnIFlVW8=;
+ b=KdFHoZGCMe9HXSWQ+Ueu7EeeCClOVfmRhLGBZHxmfC40n2lQs6+dzQTvrxXcZWFEqRUaW6
+ I/3tr9ExwW7Ys5VD7SXWfmKyyz5bcfSg7FLFMBzPkfs+SiK+D7IAyWIr3JRHo1qGm2hJaJ
+ QDjDZd2xrniL8Ag+DhAeOMev6zb8Snk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1625121416;
+ s=susede2_ed25519; t=1625121750;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=X6efxvN55ScstjZuvt7HObJuuCo3kW8APtIAyHc52IY=;
- b=gQzDFH/6Z2JQZdwp92jWRc4xpZf5KqF0Pr2N5eqOiaqhRj020kAOsty4xGI3GHvV0tOrLH
- 6De8naCooqlAdKDQ==
+ bh=KtelaqLMZmtclzBeoimXKnTe1oTnMdqDN5TlnIFlVW8=;
+ b=Eu5QeTwGswGHbPSQl3rgEb1fKisroKw3focJPikqP4vuOUrUrtaKm9ACOg8Og+qr32hZVU
+ dxjO/2xHJoJXQyCw==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 9384AA3B83;
- Thu,  1 Jul 2021 06:36:56 +0000 (UTC)
-Date: Thu, 01 Jul 2021 08:36:56 +0200
-Message-ID: <s5hpmw2ilpz.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id DB897A3B83;
+ Thu,  1 Jul 2021 06:42:29 +0000 (UTC)
+Date: Thu, 01 Jul 2021 08:42:29 +0200
+Message-ID: <s5hmtr6ilgq.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [GIT PULL] ASoC updates for v5.14
-In-Reply-To: <20210628145420.C66B661C7F@mail.kernel.org>
-References: <20210628145420.C66B661C7F@mail.kernel.org>
+To: Andy Chi <andy.chi@canonical.com>
+Subject: Re: [PATCH 1/3] ALSA: hda/realtek: fix mute/micmute LEDs for HP
+ ProBook 450 G8
+In-Reply-To: <20210629082902.408881-1-andy.chi@canonical.com>
+References: <20210629082902.408881-1-andy.chi@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Chris Chiu <chris.chiu@canonical.com>, alsa-devel@alsa-project.org,
+ Kailang Yang <kailang@realtek.com>, Jeremy Szu <jeremy.szu@canonical.com>,
+ linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>,
+ Jian-Hong Pan <jhp@endlessos.org>, Takashi Iwai <tiwai@suse.com>,
+ Hui Wang <hui.wang@canonical.com>, Sami Loone <sami@loone.fi>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,38 +103,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 28 Jun 2021 16:53:42 +0200,
-Mark Brown wrote:
+On Tue, 29 Jun 2021 10:28:57 +0200,
+Andy Chi wrote:
 > 
-> The following changes since commit 13311e74253fe64329390df80bed3f07314ddd61:
+> The HP ProBook 450 G8 using ALC236 codec which using 0x02 to
+> control mute LED and 0x01 to control micmute LED.
+> Therefore, add a quirk to make it works.
 > 
->   Linux 5.13-rc7 (2021-06-20 15:03:15 -0700)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v5.14
-> 
-> for you to fetch changes up to 192664528154a84fab4e6d820f9cb2e2e0835544:
-> 
->   Merge remote-tracking branch 'asoc/for-5.14' into asoc-next (2021-06-25 14:08:03 +0100)
-> 
-> ----------------------------------------------------------------
-> ASoC: Updates for v5.14
-> 
-> This release sees a nice new feature in the core from Morimoto-san,
-> support for automatic negotiation of DAI formats between the components
-> on the link.  Otherwise the big highlight was the merging of the Tegra
-> machine drivers into a single driver avoiding a bunch of duplication.
-> 
->  - Support for automatic negotiation of DAI formats.
->  - Accessory detection support for several Qualcomm parts.
->  - Support for IEC958 control with hdmi-codec.
->  - Merging of Tegra machine drivers into a single driver.
->  - Support for AmLogic SM1 TOACODEC, Intel AlderLake-M, several NXP
->    i.MX8 variants, NXP TFA1 and TDF9897, Rockchip RK817, Qualcomm
->    Quinary MI2S, Texas Instruments TAS2505
+> Signed-off-by: Andy Chi <andy.chi@canonical.com>
 
-Thanks, pulled now.
+The patch series (at least the patch 2) doesn't seem cleanly
+applicable via git-am.  Could you check your MUA setup?
 
+
+thanks,
 
 Takashi
