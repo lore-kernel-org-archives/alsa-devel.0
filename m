@@ -7,51 +7,52 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E867EC11F68
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jul 2021 18:00:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 178B6C07E95
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jul 2021 18:27:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 756A061220
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jul 2021 18:00:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 756A061220
+	by mail.kernel.org (Postfix) with ESMTPS id 9A1246140E
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jul 2021 18:27:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A1246140E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9D78D16B1;
-	Fri,  2 Jul 2021 19:59:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D78D16B1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6934D16B6;
+	Fri,  2 Jul 2021 20:26:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6934D16B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625248841;
-	bh=XyRbQJqx8E0mpqgzR2LpyRntxmo4hMDvtyz/ZGQmUqI=;
+	s=default; t=1625250468;
+	bh=gn8Ta4wZVDsSsqsnjj0mqtLFt6JRWFAswoHUSoV5Cmw=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RSo8vYKAHnF3BdHFbLaxn/kHa4WzRhRmbhenL92ZwTqWqZZM+q4HGOBxAgFKxcaRH
-	 nDc8xke3pyZS9P83F5mgOuwS/p7Co3VAuC1XrkywpBUyYf+knWwe28lkDfPFk6lqZP
-	 KajISPiIde7WhHrKxK0XWH6coZZQGnvl6dYlU1/Y=
+	b=HSu4561Dlk3utuTT9fs997h2BpHX5Fj73WNlsUl7uE0jJLspk0UtC6FltJ2QHW0Ki
+	 1HAeHdBu4CJY+F8MCjGHgN8+ynUuaAeCuRZihpwxlhcPOCCWUBD1jcm+e3acacyKOD
+	 eubovNSq1fBZLyRf9yaITUeK1kEt3z0GYW0Rqt8o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 39AC5F80217;
-	Fri,  2 Jul 2021 19:59:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 04594F800F3;
+	Fri,  2 Jul 2021 20:26:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 34193F80229; Fri,  2 Jul 2021 19:59:50 +0200 (CEST)
+ id 04AB2F80229; Fri,  2 Jul 2021 20:26:56 +0200 (CEST)
 Received: from aposti.net (aposti.net [89.234.176.197])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 702A1F80165
- for <alsa-devel@alsa-project.org>; Fri,  2 Jul 2021 19:59:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 702A1F80165
-Date: Fri, 02 Jul 2021 18:59:33 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 37F6AF800F3
+ for <alsa-devel@alsa-project.org>; Fri,  2 Jul 2021 20:26:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37F6AF800F3
+Date: Fri, 02 Jul 2021 19:26:38 +0100
 From: Paul Cercueil <paul@crapouillou.net>
 Subject: Re: [PATCH v2] ALSA: hda: Continue to probe when codec probe fails
 To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Message-Id: <9ZPMVQ.7NLNMVBCK1243@crapouillou.net>
-In-Reply-To: <ZRC9VQ.M548GASAC18G2@crapouillou.net>
+Message-Id: <E8RMVQ.F0HRHAOIPPHU1@crapouillou.net>
+In-Reply-To: <9ZPMVQ.7NLNMVBCK1243@crapouillou.net>
 References: <20201214060621.1102931-1-kai.heng.feng@canonical.com>
  <20201216124726.2842197-1-kai.heng.feng@canonical.com>
  <ZRC9VQ.M548GASAC18G2@crapouillou.net>
+ <9ZPMVQ.7NLNMVBCK1243@crapouillou.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1; format=flowed
 Content-Transfer-Encoding: quoted-printable
@@ -75,148 +76,164 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
 
-Le ven., juin 25 2021 at 13:45:35 +0100, Paul Cercueil=20
+
+Le ven., juil. 2 2021 at 18:59:33 +0100, Paul Cercueil=20
 <paul@crapouillou.net> a =E9crit :
-> Hi Kai-Heng,
+> Hi,
 >=20
-> I am facing the same bug. Unfortunately your patch does not seem to=20
-> fix the bug for me, the nvidia GPU stays constantly active. Only if I=20
-> unbind the snd-hda-intel module for this PCI device that the nvidia=20
-> GPU will eventually go to sleep.
+> Le ven., juin 25 2021 at 13:45:35 +0100, Paul Cercueil=20
+> <paul@crapouillou.net> a =E9crit :
+>> Hi Kai-Heng,
+>>=20
+>> I am facing the same bug. Unfortunately your patch does not seem to=20
+>> =7Ffix the bug for me, the nvidia GPU stays constantly active. Only if=20
+>> I =7Funbind the snd-hda-intel module for this PCI device that the=20
+>> nvidia =7FGPU will eventually go to sleep.
+>=20
+> Nevermind, I'm stupid. I think I just didn't have the PM mode set to=20
+> "auto", because I tried again and it works now. Ignore my email.
 
-Nevermind, I'm stupid. I think I just didn't have the PM mode set to=20
-"auto", because I tried again and it works now. Ignore my email.
+Ok, I'm definitely not stupid, I could reproduce it again, with this=20
+patch applied and the PM set to "auto". It then only suspends when I=20
+unload the snd-hda-intel module.
 
-If you (or anybody) does a v3, please Cc me.
+Sorry about the spam.
 
-Cheers,
 -Paul
 
-> My dmesg (with your patch applied):
 >=20
-> [ 1.821358] MXM: GUID detected in BIOS
-> [ 1.821396] ACPI BIOS Error (bug): AE_AML_PACKAGE_LIMIT, Index=20
-> (0x000000003) is beyond end of object (length 0x0)=20
-> (20200925/exoparg2-393)
-> [ 1.821406] ACPI Error: Aborting method \_SB.PCI0.GFX0._DSM due to=20
-> previous error (AE_AML_PACKAGE_LIMIT) (20200925/psparse-529)
-> [ 1.821415] ACPI: \_SB_.PCI0.GFX0: failed to evaluate _DSM (0x300b)
-> [ 1.821419] ACPI Warning: \_SB.PCI0.GFX0._DSM: Argument #4 type=20
-> mismatch - Found [Buffer], ACPI requires [Package]=20
-> (20200925/nsarguments-61)
-> [ 1.821528] i915 0000:00:02.0: optimus capabilities: enabled, status=20
-> dynamic power,
-> [ 1.821554] ACPI BIOS Error (bug): AE_AML_PACKAGE_LIMIT, Index=20
-> (0x000000003) is beyond end of object (length 0x0)=20
-> (20200925/exoparg2-393)
-> [ 1.821560] ACPI Error: Aborting method \_SB.PCI0.GFX0._DSM due to=20
-> previous error (AE_AML_PACKAGE_LIMIT) (20200925/psparse-529)
-> [ 1.821565] ACPI Error: Aborting method \_SB.PCI0.PEG0.PEGP._DSM due=20
-> to previous error (AE_AML_PACKAGE_LIMIT) (20200925/psparse-529)
-> [ 1.821572] ACPI: \_SB_.PCI0.PEG0.PEGP: failed to evaluate _DSM=20
-> (0x300b)
-> [ 1.821574] ACPI Warning: \_SB.PCI0.PEG0.PEGP._DSM: Argument #4 type=20
-> mismatch - Found [Buffer], ACPI requires [Package]=20
-> (20200925/nsarguments-61)
-> [ 1.821683] pci 0000:01:00.0: optimus capabilities: enabled, status=20
-> dynamic power,
-> [ 1.821685] VGA switcheroo: detected Optimus DSM method=20
-> \_SB_.PCI0.PEG0.PEGP handle
-> [ 1.821920] nouveau 0000:01:00.0: NVIDIA GK107 (0e71f0a2)
-> [ 1.830781] nouveau 0000:01:00.0: bios: version 80.07.95.00.07
-> [ 1.894392] nouveau 0000:01:00.0: fb: 2048 MiB DDR3
-> [ 1.896669] [drm] Initialized i915 1.6.0 20200917 for 0000:00:02.0 on=20
-> minor 0
-> [ 1.896862] ACPI: Video Device [PEGP] (multi-head: yes rom: yes post:=20
-> no)
-> [ 1.897361] input: Video Bus as=20
-> /devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/device:02/LNXVIDEO:00/input/i=
-nput12
-> [ 1.897974] ACPI: Video Device [GFX0] (multi-head: yes rom: no post:=20
-> no)
-> [ 1.898219] nouveau 0000:01:00.0: bus: MMIO write of 0000001f FAULT=20
-> at 6013d4 [ IBUS ]
-> [ 1.900114] input: Video Bus as=20
-> /devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/LNXVIDEO:01/input/input13
-> [ 1.969353] vga_switcheroo: enabled
-> [ 1.969407] [TTM] Zone kernel: Available graphics memory: 3791596 KiB
-> [ 1.969408] [TTM] Zone dma32: Available graphics memory: 2097152 KiB
-> [ 1.969409] [TTM] Initializing pool allocator
-> [ 1.969416] [TTM] Initializing DMA pool allocator
-> [ 1.969431] nouveau 0000:01:00.0: DRM: VRAM: 2048 MiB
-> [ 1.969432] nouveau 0000:01:00.0: DRM: GART: 1048576 MiB
-> [ 1.969436] nouveau 0000:01:00.0: DRM: Pointer to TMDS table not found
-> [ 1.969438] nouveau 0000:01:00.0: DRM: DCB version 4.0
-> [ 1.971139] nouveau 0000:01:00.0: DRM: MM: using COPY for buffer=20
-> copies
-> [ 1.971485] [drm] Initialized nouveau 1.3.1 20120801 for 0000:01:00.0=20
-> on minor 1
->=20
-> [ ... ]
->=20
-> [ 4.594245] snd_hda_intel 0000:00:1b.0: bound 0000:00:02.0 (ops=20
-> i915_audio_component_bind_ops [i915])
-> [ 4.594380] snd_hda_intel 0000:01:00.1: can't change power state from=20
-> D3cold to D0 (config space inaccessible)
-> [ 4.594410] snd_hda_intel 0000:01:00.1: can't change power state from=20
-> D3cold to D0 (config space inaccessible)
-> [ 4.594486] snd_hda_intel 0000:01:00.1: Disabling MSI
-> [ 4.594494] snd_hda_intel 0000:01:00.1: Handle vga_switcheroo audio=20
-> client
-> [ 4.594526] snd_hda_intel 0000:01:00.1: number of I/O streams is 30,=20
-> forcing separate stream tags
->=20
-> [ ... ]
->=20
-> [ 4.696732] hdaudio hdaudioC1D0: no AFG or MFG node found
-> [ 4.696745] hdaudio hdaudioC1D1: no AFG or MFG node found
-> [ 4.696752] hdaudio hdaudioC1D2: no AFG or MFG node found
-> [ 4.696759] hdaudio hdaudioC1D3: no AFG or MFG node found
-> [ 4.696765] hdaudio hdaudioC1D4: no AFG or MFG node found
-> [ 4.696771] hdaudio hdaudioC1D5: no AFG or MFG node found
-> [ 4.696778] hdaudio hdaudioC1D6: no AFG or MFG node found
-> [ 4.696785] hdaudio hdaudioC1D7: no AFG or MFG node found
-> [ 4.696787] snd_hda_intel 0000:01:00.1: no codecs initialized
+> If you (or anybody) does a v3, please Cc me.
 >=20
 > Cheers,
 > -Paul
 >=20
->=20
-> Le mer., d=E9c. 16 2020 at 20:47:24 +0800, Kai-Heng Feng=20
-> <kai.heng.feng@canonical.com> a =E9crit :
->> Similar to commit 9479e75fca37 ("ALSA: hda: Keep the controller
->> initialization even if no codecs found"), when codec probe fails, it
->> doesn't enable runtime suspend, and can prevent graphics card from
->> getting powered down:
->> [    4.280991] snd_hda_intel 0000:01:00.1: no codecs initialized
+>> My dmesg (with your patch applied):
 >>=20
->> $ cat /sys/bus/pci/devices/0000:01:00.1/power/runtime_status
->> active
+>> [ 1.821358] MXM: GUID detected in BIOS
+>> [ 1.821396] ACPI BIOS Error (bug): AE_AML_PACKAGE_LIMIT, Index=20
+>> =7F(0x000000003) is beyond end of object (length 0x0)=20
+>> =7F(20200925/exoparg2-393)
+>> [ 1.821406] ACPI Error: Aborting method \_SB.PCI0.GFX0._DSM due to=20
+>> =7Fprevious error (AE_AML_PACKAGE_LIMIT) (20200925/psparse-529)
+>> [ 1.821415] ACPI: \_SB_.PCI0.GFX0: failed to evaluate _DSM (0x300b)
+>> [ 1.821419] ACPI Warning: \_SB.PCI0.GFX0._DSM: Argument #4 type=20
+>> =7Fmismatch - Found [Buffer], ACPI requires [Package]=20
+>> =7F(20200925/nsarguments-61)
+>> [ 1.821528] i915 0000:00:02.0: optimus capabilities: enabled, status=20
+>> =7Fdynamic power,
+>> [ 1.821554] ACPI BIOS Error (bug): AE_AML_PACKAGE_LIMIT, Index=20
+>> =7F(0x000000003) is beyond end of object (length 0x0)=20
+>> =7F(20200925/exoparg2-393)
+>> [ 1.821560] ACPI Error: Aborting method \_SB.PCI0.GFX0._DSM due to=20
+>> =7Fprevious error (AE_AML_PACKAGE_LIMIT) (20200925/psparse-529)
+>> [ 1.821565] ACPI Error: Aborting method \_SB.PCI0.PEG0.PEGP._DSM due=20
+>> =7Fto previous error (AE_AML_PACKAGE_LIMIT) (20200925/psparse-529)
+>> [ 1.821572] ACPI: \_SB_.PCI0.PEG0.PEGP: failed to evaluate _DSM=20
+>> =7F(0x300b)
+>> [ 1.821574] ACPI Warning: \_SB.PCI0.PEG0.PEGP._DSM: Argument #4 type=20
+>> =7Fmismatch - Found [Buffer], ACPI requires [Package]=20
+>> =7F(20200925/nsarguments-61)
+>> [ 1.821683] pci 0000:01:00.0: optimus capabilities: enabled, status=20
+>> =7Fdynamic power,
+>> [ 1.821685] VGA switcheroo: detected Optimus DSM method=20
+>> =7F\_SB_.PCI0.PEG0.PEGP handle
+>> [ 1.821920] nouveau 0000:01:00.0: NVIDIA GK107 (0e71f0a2)
+>> [ 1.830781] nouveau 0000:01:00.0: bios: version 80.07.95.00.07
+>> [ 1.894392] nouveau 0000:01:00.0: fb: 2048 MiB DDR3
+>> [ 1.896669] [drm] Initialized i915 1.6.0 20200917 for 0000:00:02.0=20
+>> on =7Fminor 0
+>> [ 1.896862] ACPI: Video Device [PEGP] (multi-head: yes rom: yes=20
+>> post: =7Fno)
+>> [ 1.897361] input: Video Bus as=20
+>> =7F/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/device:02/LNXVIDEO:00/inp=
+ut/input12
+>> [ 1.897974] ACPI: Video Device [GFX0] (multi-head: yes rom: no post:=20
+>> =7Fno)
+>> [ 1.898219] nouveau 0000:01:00.0: bus: MMIO write of 0000001f FAULT=20
+>> =7Fat 6013d4 [ IBUS ]
+>> [ 1.900114] input: Video Bus as=20
+>> =7F/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/LNXVIDEO:01/input/input13
+>> [ 1.969353] vga_switcheroo: enabled
+>> [ 1.969407] [TTM] Zone kernel: Available graphics memory: 3791596 KiB
+>> [ 1.969408] [TTM] Zone dma32: Available graphics memory: 2097152 KiB
+>> [ 1.969409] [TTM] Initializing pool allocator
+>> [ 1.969416] [TTM] Initializing DMA pool allocator
+>> [ 1.969431] nouveau 0000:01:00.0: DRM: VRAM: 2048 MiB
+>> [ 1.969432] nouveau 0000:01:00.0: DRM: GART: 1048576 MiB
+>> [ 1.969436] nouveau 0000:01:00.0: DRM: Pointer to TMDS table not=20
+>> found
+>> [ 1.969438] nouveau 0000:01:00.0: DRM: DCB version 4.0
+>> [ 1.971139] nouveau 0000:01:00.0: DRM: MM: using COPY for buffer=20
+>> =7Fcopies
+>> [ 1.971485] [drm] Initialized nouveau 1.3.1 20120801 for=20
+>> 0000:01:00.0 =7Fon minor 1
 >>=20
->> So mark there's no codec and continue probing to let runtime PM to=20
->> =7Fwork.
+>> [ ... ]
 >>=20
->> BugLink: https://bugs.launchpad.net/bugs/1907212
->> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->> ---
->>  sound/pci/hda/hda_intel.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
+>> [ 4.594245] snd_hda_intel 0000:00:1b.0: bound 0000:00:02.0 (ops=20
+>> =7Fi915_audio_component_bind_ops [i915])
+>> [ 4.594380] snd_hda_intel 0000:01:00.1: can't change power state=20
+>> from =7FD3cold to D0 (config space inaccessible)
+>> [ 4.594410] snd_hda_intel 0000:01:00.1: can't change power state=20
+>> from =7FD3cold to D0 (config space inaccessible)
+>> [ 4.594486] snd_hda_intel 0000:01:00.1: Disabling MSI
+>> [ 4.594494] snd_hda_intel 0000:01:00.1: Handle vga_switcheroo audio=20
+>> =7Fclient
+>> [ 4.594526] snd_hda_intel 0000:01:00.1: number of I/O streams is 30,=20
+>> =7Fforcing separate stream tags
 >>=20
->> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
->> index 6852668f1bcb..872a703dee43 100644
->> --- a/sound/pci/hda/hda_intel.c
->> +++ b/sound/pci/hda/hda_intel.c
->> @@ -2328,7 +2328,7 @@ static int azx_probe_continue(struct azx *chip)
->>  	if (bus->codec_mask) {
->>  		err =3D azx_probe_codecs(chip, azx_max_codecs[chip->driver_type]);
->>  		if (err < 0)
->> -			goto out_free;
->> +			bus->codec_mask =3D 0;
->>  	}
+>> [ ... ]
 >>=20
->>  #ifdef CONFIG_SND_HDA_PATCH_LOADER
+>> [ 4.696732] hdaudio hdaudioC1D0: no AFG or MFG node found
+>> [ 4.696745] hdaudio hdaudioC1D1: no AFG or MFG node found
+>> [ 4.696752] hdaudio hdaudioC1D2: no AFG or MFG node found
+>> [ 4.696759] hdaudio hdaudioC1D3: no AFG or MFG node found
+>> [ 4.696765] hdaudio hdaudioC1D4: no AFG or MFG node found
+>> [ 4.696771] hdaudio hdaudioC1D5: no AFG or MFG node found
+>> [ 4.696778] hdaudio hdaudioC1D6: no AFG or MFG node found
+>> [ 4.696785] hdaudio hdaudioC1D7: no AFG or MFG node found
+>> [ 4.696787] snd_hda_intel 0000:01:00.1: no codecs initialized
+>>=20
+>> Cheers,
+>> -Paul
+>>=20
+>>=20
+>> Le mer., d=E9c. 16 2020 at 20:47:24 +0800, Kai-Heng Feng=20
+>> =7F<kai.heng.feng@canonical.com> a =E9crit :
+>>> Similar to commit 9479e75fca37 ("ALSA: hda: Keep the controller
+>>> initialization even if no codecs found"), when codec probe fails, it
+>>> doesn't enable runtime suspend, and can prevent graphics card from
+>>> getting powered down:
+>>> [    4.280991] snd_hda_intel 0000:01:00.1: no codecs initialized
+>>>=20
+>>> $ cat /sys/bus/pci/devices/0000:01:00.1/power/runtime_status
+>>> active
+>>>=20
+>>> So mark there's no codec and continue probing to let runtime PM to=20
+>>> =7F=7F=7Fwork.
+>>>=20
+>>> BugLink: https://bugs.launchpad.net/bugs/1907212
+>>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>>> ---
+>>>  sound/pci/hda/hda_intel.c | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>=20
+>>> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+>>> index 6852668f1bcb..872a703dee43 100644
+>>> --- a/sound/pci/hda/hda_intel.c
+>>> +++ b/sound/pci/hda/hda_intel.c
+>>> @@ -2328,7 +2328,7 @@ static int azx_probe_continue(struct azx=20
+>>> *chip)
+>>>  	if (bus->codec_mask) {
+>>>  		err =3D azx_probe_codecs(chip, azx_max_codecs[chip->driver_type]);
+>>>  		if (err < 0)
+>>> -			goto out_free;
+>>> +			bus->codec_mask =3D 0;
+>>>  	}
+>>>=20
+>>>  #ifdef CONFIG_SND_HDA_PATCH_LOADER
+>>=20
 >=20
 
 
