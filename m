@@ -2,75 +2,99 @@ Return-Path: <SRS0=DqXu=L3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6CF4C07E97
-	for <alsa-devel@archiver.kernel.org>; Sat,  3 Jul 2021 12:07:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AEC02C07E97
+	for <alsa-devel@archiver.kernel.org>; Sat,  3 Jul 2021 14:06:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2745E6192B
-	for <alsa-devel@archiver.kernel.org>; Sat,  3 Jul 2021 12:07:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2745E6192B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=marcan.st
+	by mail.kernel.org (Postfix) with ESMTPS id 5536861883
+	for <alsa-devel@archiver.kernel.org>; Sat,  3 Jul 2021 14:06:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5536861883
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D3415169B;
-	Sat,  3 Jul 2021 14:06:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3415169B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 18980169C;
+	Sat,  3 Jul 2021 16:06:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18980169C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625314065;
-	bh=drMSmAx2jGYSy6pKW4kJh7azC/G3EVjxtSdNZPgViKY=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=gOQN9RUzsSPCZ3owo1wtCj/H4TPY9NlocyjY9Mupf9uxD04bWlSFrSb0PujdjEaYu
-	 kxX2HgjXt97TNnUZRhbTXcHcIlb/frq2+sbqIKZ8PeV77tLilSzW5Vkp/VUMzHIK5p
-	 8DNoRyVo4LoqmDh8Z9/5+FLjcJRrimmJqjEBmlVQ=
+	s=default; t=1625321215;
+	bh=XJmub2GIFfpS3UOzpC7x8akIBnSGwHskiSua3ehQo2o=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=PQa6KVaix2/FdRJfHgxrIV5MJ3IsKSnMyleRGN4KaYSan5Z00XViLIq7R/Wrzwi9X
+	 joUSZxFuR7vEbEv8kniGhsdF+ZfxF6dIX9UHVpJLdyY+t+MaYWVyVQ0A4UpQ6SH/sE
+	 Wm2DEc+wNAHS3U27GnXz2v1Nst5E5MlIrrue7920=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6B2DCF8003A;
-	Sat,  3 Jul 2021 14:06:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9438AF8025D;
+	Sat,  3 Jul 2021 16:06:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 57D4FF802D2; Sat,  3 Jul 2021 14:06:53 +0200 (CEST)
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 629F4F802D2; Sat,  3 Jul 2021 16:06:03 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2C88FF8003A
- for <alsa-devel@alsa-project.org>; Sat,  3 Jul 2021 14:06:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C88FF8003A
-Received: from [127.0.0.1] (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- (Authenticated sender: marcan@marcan.st)
- by mail.marcansoft.com (Postfix) with ESMTPSA id 127C1425EA;
- Sat,  3 Jul 2021 12:06:38 +0000 (UTC)
-Subject: Re: [GIT PULL] sound updates for 5.14-rc1
-To: Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
-References: <s5hbl7li0fe.wl-tiwai@suse.de>
- <CAHk-=wiTwX5mzzEcw3jk3QdW600Hntt=Ehgoyz8K-VU8zbEmBg@mail.gmail.com>
- <CAHk-=whhDWDsVz12mhKtnS6DG-GzVWxBk2XjoOp=gwNJ7T0bTw@mail.gmail.com>
- <CAHk-=wisOVeVpH42f6i5qW1gxtYxbRJQXvpt=mdVx+8p=w-yMg@mail.gmail.com>
- <YOAF+EnvdBvSeZnR@workstation> <s5hh7hbakzk.wl-tiwai@suse.de>
-From: Hector Martin <marcan@marcan.st>
-Message-ID: <6adcc9cd-d916-5a50-5a14-8f3b82f60ef6@marcan.st>
-Date: Sat, 3 Jul 2021 21:06:36 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5F59BF800E3
+ for <alsa-devel@alsa-project.org>; Sat,  3 Jul 2021 16:05:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F59BF800E3
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="hp7ICpZ9"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
+ 163E0YWr013527; Sat, 3 Jul 2021 09:05:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=EOf4cKIB0FqWNQK2j6LhV/cilGvo/DOygUIpnrYil1E=;
+ b=hp7ICpZ9Jq5/U8+nLVtdWJRfDUQuDn9e75hYmOlF+b9b3ECQJCp33rhk2MwnQFHCrCeg
+ RIcWFh4D7mUdmW7dquHLjvjW0+H8OQCPPVZxWXuX/nwigSGi7s8lcykTniFgtn8yXXwK
+ kwT4CtcJdbdU5PaBMQTfd8ITAXkYoIUp7kHtuxSCAkst2XurhfhOFMmYKmy0CB2gfRyT
+ JDA07yotqeQmI1RjOPjAuIOqhZOZ3f08Nif228Ni1QwE7SIN8hJb6m1svpiIfHhDH6Q4
+ S+SQ2fIGXjw5MyUWBVF7xMJHqPPZ0XDvT1yhIFiLRK56gLtFzA27RyPymgUWy5OJ4TB6 SQ== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0b-001ae601.pphosted.com with ESMTP id 39jmar88ha-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Sat, 03 Jul 2021 09:05:54 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Sat, 3 Jul 2021
+ 13:50:45 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Sat, 3 Jul 2021 13:50:45 +0100
+Received: from AUSNPC0LSNW1-debian.cirrus.com (unknown [141.131.79.42])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5812545D;
+ Sat,  3 Jul 2021 12:50:37 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <broonie@kernel.org>
+Subject: [PATCH] ASoC: dapm: Revert "use component prefix when checking widget
+ names"
+Date: Sat, 3 Jul 2021 13:50:34 +0100
+Message-ID: <20210703125034.24655-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <s5hh7hbakzk.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: IyvtYpgLWwGE8sf6t0jw3YsMfjJ5lkof
+X-Proofpoint-ORIG-GUID: IyvtYpgLWwGE8sf6t0jw3YsMfjJ5lkof
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ lowpriorityscore=0 spamscore=0
+ mlxscore=0 suspectscore=0 mlxlogscore=930 bulkscore=0 clxscore=1011
+ impostorscore=0 adultscore=0 phishscore=0 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107030089
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
+ Richard Fitzgerald <rf@opensource.cirrus.com>, shumingf@realtek.com,
+ rander.wang@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,17 +110,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 03/07/2021 16.56, Takashi Iwai wrote:
-> Unfortunately I can't test much right now in my side as I'm traveling
-> (until the next Tuesday).  So, Linus, Hector, please let me know if
-> this works.  Once when it's confirmed to work, I'll prepare the new PR
-> including the fix later in today.
+This reverts
+commit ae4fc532244b ("ASoC: dapm: use component prefix when checking widget names")
 
-Works for me on top of the for-next branch that was previously 
-deadlocking. I can't get it to crash any more.
+That commit breaks all users of the snd_soc_component_*_pin() functions
+because it results in the prefix being added twice. It also breaks code
+that correctly uses the snd_soc_dapm_*_pin() functions.
 
-Tested-by: Hector Martin <marcan@marcan.st>
+Use the snd_soc_component_*_pin() functions if you want the component
+prefix to be prepended automatically.
 
+Use the raw snd_soc_dapm_*_pin() functions if the caller has the full
+name that should be matched exactly.
+
+Fixes: commit ae4fc532244b ("ASoC: dapm: use component prefix when checking widget names")
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ sound/soc/soc-dapm.c | 13 +------------
+ 1 file changed, 1 insertion(+), 12 deletions(-)
+
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 91bf939d5233..1369a3fea911 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2528,20 +2528,9 @@ static struct snd_soc_dapm_widget *dapm_find_widget(
+ {
+ 	struct snd_soc_dapm_widget *w;
+ 	struct snd_soc_dapm_widget *fallback = NULL;
+-	char prefixed_pin[80];
+-	const char *pin_name;
+-	const char *prefix = soc_dapm_prefix(dapm);
+-
+-	if (prefix) {
+-		snprintf(prefixed_pin, sizeof(prefixed_pin), "%s %s",
+-			 prefix, pin);
+-		pin_name = prefixed_pin;
+-	} else {
+-		pin_name = pin;
+-	}
+ 
+ 	for_each_card_widgets(dapm->card, w) {
+-		if (!strcmp(w->name, pin_name)) {
++		if (!strcmp(w->name, pin)) {
+ 			if (w->dapm == dapm)
+ 				return w;
+ 			else
 -- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+2.11.0
+
