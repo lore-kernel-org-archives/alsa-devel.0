@@ -2,91 +2,93 @@ Return-Path: <SRS0=9fdC=L4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,
 	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
 	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27F25C07E95
-	for <alsa-devel@archiver.kernel.org>; Sun,  4 Jul 2021 15:05:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E07FFC07E95
+	for <alsa-devel@archiver.kernel.org>; Sun,  4 Jul 2021 15:05:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ABD6E613BA
-	for <alsa-devel@archiver.kernel.org>; Sun,  4 Jul 2021 15:05:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ABD6E613BA
+	by mail.kernel.org (Postfix) with ESMTPS id 5F52E613BA
+	for <alsa-devel@archiver.kernel.org>; Sun,  4 Jul 2021 15:05:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F52E613BA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 43EE116CF;
-	Sun,  4 Jul 2021 17:04:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43EE116CF
+	by alsa0.perex.cz (Postfix) with ESMTPS id DB0DA16BD;
+	Sun,  4 Jul 2021 17:05:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB0DA16BD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625411113;
-	bh=+OWXB0SVuxqCZ/DNf5CJA5uZ9uvw25rUj4kUEH6F4xE=;
+	s=default; t=1625411152;
+	bh=kXzO3QksjToydUzcnoqOUriPRBXc1hbUrHyWb+j3gYc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kscr7H8HtPEQUCNJHzCKwTuOzjgk4fU0JlWgw5ErTTQlLwjwhTUiS59A6KIsZPLZn
-	 7xKyjKzA8KKJA4CXhtBxojkhmkKfjVV8bi/fCsTI686Nfqopa7ucvOC+TzD+FzqHpU
-	 Ha0vHm+/Tj+uum1n3fHJVJiygQLhhAuMHXly+Vf4=
+	b=jFjSuGoewroyJy3NOxIWczIBIpsprn2xH+ufka96aK7+R7gUyIsS9ryE9g3qqGBc0
+	 mF2j+09IEDpgakJP58vMM8vVymQ2q43v7fm5rh7BQVWjo3nomsep4dvoQE2Ype3tyU
+	 7Qpaaq0/y/yf8RyE0P4fto2v3T/8//lBElMoqglY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 575A9F804E5;
-	Sun,  4 Jul 2021 17:02:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63FD1F804E1;
+	Sun,  4 Jul 2021 17:02:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B489BF804E6; Sun,  4 Jul 2021 17:02:49 +0200 (CEST)
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com
- [IPv6:2a00:1450:4864:20::234])
+ id C1C6DF804FB; Sun,  4 Jul 2021 17:02:52 +0200 (CEST)
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com
+ [IPv6:2a00:1450:4864:20::12a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 15235F80425
- for <alsa-devel@alsa-project.org>; Sun,  4 Jul 2021 17:02:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15235F80425
+ by alsa1.perex.cz (Postfix) with ESMTPS id 914C9F804E1
+ for <alsa-devel@alsa-project.org>; Sun,  4 Jul 2021 17:02:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 914C9F804E1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="YocJjm6n"
-Received: by mail-lj1-x234.google.com with SMTP id r20so6336854ljd.10
+ header.b="XRsE2Guq"
+Received: by mail-lf1-x12a.google.com with SMTP id n14so27694008lfu.8
  for <alsa-devel@alsa-project.org>; Sun, 04 Jul 2021 08:02:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=rG8Wa9DCPn+LJLpCJ8agJSEaH0afH0syVdCVNBofvlc=;
- b=YocJjm6n9bM4Z2Y+D1N1nCcOZKsPF8y7tfeprCgumybmWRfVWqIS75Bq/NmZbdjIyh
- 8HskQqleK77e03XhE+Rv0Hoh/05IWd4i+l6zioD56vE+iom+XA5gZn27hpSoHda8s6vi
- VCgTrpVumPjXTxLvnaWYD1CdzPmVHi/LDmAtohu4f32L7KX1Zx8J/0eFl+DzjfaiwHaD
- fZW026LXabirhhW+pmK8M2BvQ6OubZeHmtUVgZXaRJWYNs7FVQsYoVfF0EAIsuiozk+d
- SYBCoT5482YWbt291Bx8FSrwO3HtSLzLqPGK3a2u9is1P83VqGErm7Qqmb7t6vdznDHl
- swcQ==
+ bh=aMFV9aMPXhkidl0Shg2y0S/3JmD1x6u1AFTNBB2LV50=;
+ b=XRsE2GuqHLNjYcPKFh4G+usOFtZXGs6OxXyN8MvG2q/55q7d7ccdXJbSclCVuT8Wpl
+ ylNX+W0PcV0u3lC17mGlGMf9F/q4zxEyfjGJVUziyIo9vtSzCfCvCYcGPSrpj6+OsUNO
+ ESsJTQWBlqF/N2fz3dqfJNe4XnEPW9EikWhAwWxCd6PVJ89GoFe1gZL3pfyVz+2ZTgli
+ URC+mS85voT0c/qfxlXCTBUCy+Q97Ar6P93NWZ8YWzkF13IQ0DEs+G4xGG6BtTwmzEed
+ bETJFzUTRzsl9aJ17oH/keK42+Kyc9BSK9ib2LLT2eEfLMPzHWCKwZqqBblYFCes1KhK
+ WIzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=rG8Wa9DCPn+LJLpCJ8agJSEaH0afH0syVdCVNBofvlc=;
- b=fTQ4ElFeMaCVyFOrQxZbzcPq132JdVNa6YYix52EQHiJ9O6UPp4d0xOf9FzTjZeWJB
- uZsopH/Q4aCM/khnYQrlXWH6qdFNdi/axM5DGaelftqQ7QX8u3H1SWqnCuff5QFqnAkk
- vmxEW8ih48Nmb6EGr7FnpwIGqBqzjDUjHcj3tBkAR/yrEKgflb0G0Msty8gA8jyBnHVQ
- mBcMT9G4wpjLZSyodd+nprArj5ou408kmimI4JVzacLhb35ez6HKmqT2yZ7QUN+WgWq2
- kAVeWmOp3CR3cEu6Vn0w3qsk3RLrbwzOvFHe7VjO/K1MXngDN7CZwf8sNVbxoseTNeE/
- QxrQ==
-X-Gm-Message-State: AOAM533RzQygXTrJHjPWcE/M4jHtlSdZidjVY1cPmZUitat7whGBvmL9
- ECXSP9pYdbJDCPi64t7PmXY=
-X-Google-Smtp-Source: ABdhPJxGdC/Z3S2H8slU0FlpXoe5lliGF7ERtRDubU533St6/KeGCY1zYnihEdV4TTnw5GlrBcXocg==
-X-Received: by 2002:a2e:2a85:: with SMTP id q127mr7396552ljq.77.1625410961018; 
- Sun, 04 Jul 2021 08:02:41 -0700 (PDT)
+ bh=aMFV9aMPXhkidl0Shg2y0S/3JmD1x6u1AFTNBB2LV50=;
+ b=U0eEUjCovg7bH+x24jf15NLfbgO4MbdCo8nyhaf7tx3HwJn+AryVuszj7jy6VAYs9N
+ cTCVvN9o2oJ4XPL0mquI/LYSEVj8S2pf3TBobLISp0IjJIRESV4jhnhViGmZqPu6Hyvc
+ coGKzLWq0FkMrjKGXrkrYsPZEFUct4qaAhxUiUmjHLTzfR9VUAVkgVgJeNoHzM6ZE+MM
+ P+iAk660DnQiwnNpX0rSHw9of89DW4Au6VdXR2sHIELuA8EodNpbXTrdKxYb2n4XIyp9
+ Uj23kPnK0jJVzH2kBPC4WwtaKp+PTIhICzhiFHGQ/7ievdy+3qC1re6wnzeuD/A5txFD
+ HvPg==
+X-Gm-Message-State: AOAM531/c+bxVqve3NGdrbEaB7v38cnA5RuYjkr98Y/RHOG64v3vFhIa
+ BLygk/p+jC+oSuiW16UwcU0=
+X-Google-Smtp-Source: ABdhPJwO99spGf6BMeG90kmpkwBFy8BTyxCt0IOaDm2fPRF7mSJiXycpHL33FtQvNKitomPB4uPVZA==
+X-Received: by 2002:ac2:5f62:: with SMTP id c2mr6238988lfc.156.1625410958698; 
+ Sun, 04 Jul 2021 08:02:38 -0700 (PDT)
 Received: from localhost.localdomain (91-155-111-71.elisa-laajakaista.fi.
  [91.155.111.71])
- by smtp.gmail.com with ESMTPSA id k11sm268826lfc.272.2021.07.04.08.02.40
+ by smtp.gmail.com with ESMTPSA id k11sm268826lfc.272.2021.07.04.08.02.36
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 04 Jul 2021 08:02:40 -0700 (PDT)
+ Sun, 04 Jul 2021 08:02:37 -0700 (PDT)
 From: Peter Ujfalusi <peter.ujfalusi@gmail.com>
 To: broonie@kernel.org,
 	tony@atomide.com
-Subject: [PATCH 5/5] ARM: dts: omap4-l4-abe: Add McASP configuration
-Date: Sun,  4 Jul 2021 18:04:50 +0300
-Message-Id: <20210704150450.20106-6-peter.ujfalusi@gmail.com>
+Subject: [PATCH 3/5] ASoC: ti: davinci-mcasp: Add support for the OMAP4
+ version of McASP
+Date: Sun,  4 Jul 2021 18:04:48 +0300
+Message-Id: <20210704150450.20106-4-peter.ujfalusi@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210704150450.20106-1-peter.ujfalusi@gmail.com>
 References: <20210704150450.20106-1-peter.ujfalusi@gmail.com>
@@ -109,83 +111,104 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-OMAP4 has a single McASP instance with single serializer and locked for DIT
-mode.
-To be able to enable the support the following fixes needed:
-- Add the DAT port ranges to the target module's ranges
-- SIDLE mode must be disabled as it is not working with McASP
- most likely module integration issue with McASP
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-We can already fill in the op-mode and serial-dir  for McASP as it only
-supports this configuration, but keep the module disabled as there is no
-known device available where it is used.
+There is a single McASP on OMAP4 (and OMAP5) which is configured to only
+support DIT playback mode on a single serializer.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Add 0x200 offset to DAT port address as the TRM suggests it.
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- arch/arm/boot/dts/omap4-l4-abe.dtsi | 38 +++++++++++++++--------------
- 1 file changed, 20 insertions(+), 18 deletions(-)
+ include/linux/platform_data/davinci_asp.h |  1 +
+ sound/soc/ti/Kconfig                      |  1 +
+ sound/soc/ti/davinci-mcasp.c              | 26 ++++++++++++++++++++---
+ 3 files changed, 25 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/omap4-l4-abe.dtsi b/arch/arm/boot/dts/omap4-l4-abe.dtsi
-index 8287fdaa526e..a8d66240d17d 100644
---- a/arch/arm/boot/dts/omap4-l4-abe.dtsi
-+++ b/arch/arm/boot/dts/omap4-l4-abe.dtsi
-@@ -186,36 +186,38 @@ mcbsp3: mcbsp@0 {
- 		};
+diff --git a/include/linux/platform_data/davinci_asp.h b/include/linux/platform_data/davinci_asp.h
+index 5d1fb0d78a22..76b13ef67562 100644
+--- a/include/linux/platform_data/davinci_asp.h
++++ b/include/linux/platform_data/davinci_asp.h
+@@ -96,6 +96,7 @@ enum {
+ 	MCASP_VERSION_2,	/* DA8xx/OMAPL1x */
+ 	MCASP_VERSION_3,        /* TI81xx/AM33xx */
+ 	MCASP_VERSION_4,	/* DRA7xxx */
++	MCASP_VERSION_OMAP,	/* OMAP4/5 */
+ };
  
- 		target-module@28000 {			/* 0x40128000, ap 8 08.0 */
-+							/* 0x4012a000, ap 10 0a.0 */
- 			compatible = "ti,sysc-mcasp", "ti,sysc";
- 			reg = <0x28000 0x4>,
- 			      <0x28004 0x4>;
- 			reg-names = "rev", "sysc";
- 			ti,sysc-sidle = <SYSC_IDLE_FORCE>,
--					<SYSC_IDLE_NO>,
--					<SYSC_IDLE_SMART>;
-+					<SYSC_IDLE_NO>;
- 			/* Domains (V, P, C): iva, abe_pwrdm, abe_clkdm */
- 			clocks = <&abe_clkctrl OMAP4_MCASP_CLKCTRL 0>;
- 			clock-names = "fck";
- 			#address-cells = <1>;
- 			#size-cells = <1>;
- 			ranges = <0x0 0x28000 0x1000>,
--				 <0x49028000 0x49028000 0x1000>;
--
--			/*
--			 * Child device unsupported by davinci-mcasp. At least
--			 * RX path is disabled for omap4, and only DIT mode
--			 * works with no I2S. See also old Android kernel
--			 * omap-mcasp driver for more information.
--			 */
--		};
--
--		target-module@2a000 {			/* 0x4012a000, ap 10 0a.0 */
--			compatible = "ti,sysc";
--			status = "disabled";
--			#address-cells = <1>;
--			#size-cells = <1>;
--			ranges = <0x0 0x2a000 0x1000>,
-+				 <0x49028000 0x49028000 0x1000>,
-+				 <0x2000 0x2a000 0x1000>,
- 				 <0x4902a000 0x4902a000 0x1000>;
+ enum mcbsp_clk_input_pin {
+diff --git a/sound/soc/ti/Kconfig b/sound/soc/ti/Kconfig
+index 698d7bc84dcf..1d9fe3fca193 100644
+--- a/sound/soc/ti/Kconfig
++++ b/sound/soc/ti/Kconfig
+@@ -35,6 +35,7 @@ config SND_SOC_DAVINCI_MCASP
+ 	  various Texas Instruments SoCs like:
+ 	  - daVinci devices
+ 	  - Sitara line of SoCs (AM335x, AM438x, etc)
++	  - OMAP4
+ 	  - DRA7x devices
+ 	  - Keystone devices
+ 	  - K3 devices (am654, j721e)
+diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
+index e56a22c28467..f453728d2afc 100644
+--- a/sound/soc/ti/davinci-mcasp.c
++++ b/sound/soc/ti/davinci-mcasp.c
+@@ -1788,6 +1788,12 @@ static struct davinci_mcasp_pdata dra7_mcasp_pdata = {
+ 	.version = MCASP_VERSION_4,
+ };
+ 
++static struct davinci_mcasp_pdata omap_mcasp_pdata = {
++	.tx_dma_offset = 0x200,
++	.rx_dma_offset = 0,
++	.version = MCASP_VERSION_OMAP,
++};
 +
-+			mcasp0: mcasp@0 {
-+				compatible = "ti,omap4-mcasp-audio";
-+				reg = <0x0 0x2000>,
-+				      <0x4902a000 0x1000>;	/* L3 data port */
-+				reg-names = "mpu","dat";
-+				interrupts = <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>;
-+				interrupt-names = "tx";
-+				dmas = <&sdma 8>;
-+				dma-names = "tx";
-+				clocks = <&abe_clkctrl OMAP4_MCASP_CLKCTRL 0>;
-+				clock-names = "fck";
-+				op-mode = <1>;	/* MCASP_DIT_MODE */
-+				serial-dir = < 1 >; /* 1 TX serializers */
-+				status = "disabled";
-+			};
- 		};
+ static const struct of_device_id mcasp_dt_ids[] = {
+ 	{
+ 		.compatible = "ti,dm646x-mcasp-audio",
+@@ -1805,6 +1811,10 @@ static const struct of_device_id mcasp_dt_ids[] = {
+ 		.compatible = "ti,dra7-mcasp-audio",
+ 		.data = &dra7_mcasp_pdata,
+ 	},
++	{
++		.compatible = "ti,omap4-mcasp-audio",
++		.data = &omap_mcasp_pdata,
++	},
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, mcasp_dt_ids);
+@@ -2344,10 +2354,17 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
  
- 		target-module@2e000 {			/* 0x4012e000, ap 12 0c.0 */
+ 	dma_data = &mcasp->dma_data[SNDRV_PCM_STREAM_PLAYBACK];
+ 	dma_data->filter_data = "tx";
+-	if (dat)
++	if (dat) {
+ 		dma_data->addr = dat->start;
+-	else
++		/*
++		 * According to the TRM there should be 0x200 offset added to
++		 * the DAT port address
++		 */
++		if (mcasp->version == MCASP_VERSION_OMAP)
++			dma_data->addr += davinci_mcasp_txdma_offset(mcasp->pdata);
++	} else {
+ 		dma_data->addr = mem->start + davinci_mcasp_txdma_offset(mcasp->pdata);
++	}
+ 
+ 
+ 	/* RX is not valid in DIT mode */
+@@ -2412,7 +2429,10 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 		ret = edma_pcm_platform_register(&pdev->dev);
+ 		break;
+ 	case PCM_SDMA:
+-		ret = sdma_pcm_platform_register(&pdev->dev, "tx", "rx");
++		if (mcasp->op_mode == DAVINCI_MCASP_IIS_MODE)
++			ret = sdma_pcm_platform_register(&pdev->dev, "tx", "rx");
++		else
++			ret = sdma_pcm_platform_register(&pdev->dev, "tx", NULL);
+ 		break;
+ 	case PCM_UDMA:
+ 		ret = udma_pcm_platform_register(&pdev->dev);
 -- 
 2.32.0
 
