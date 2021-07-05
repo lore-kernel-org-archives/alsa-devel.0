@@ -2,87 +2,96 @@ Return-Path: <SRS0=3BcS=MA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F8B9C07E99
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 10:03:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 254EAC07E96
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 10:05:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A899961C4C
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 10:03:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A899961C4C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id EE672619B6
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 10:05:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE672619B6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8AD1885D;
-	Thu,  8 Jul 2021 12:02:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8AD1885D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5910385D;
+	Thu,  8 Jul 2021 12:04:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5910385D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625738578;
-	bh=T8BYv0CK3BGV6zrt+jceUBSG9bJ2wJg821hTESWOdbE=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ocfEsocoor7U/8tCQ6bHOKIT3YT4i/uAGl27MQZK/kE6zZzyzsDlpicf/kB19/P88
-	 Lb+zvZA0L8as/DoEokhF73z4+z7xCPmFAgVT1XO7mGjny2Zt46wiY498pJwS20G5/N
-	 70cb82/2EaXaKQ32EcBc+7pGlJQp38d9Two3jgkw=
+	s=default; t=1625738718;
+	bh=XNWlBZfM7mH/gyKHv/th4XIV5Pw370O5lAgIBERdu8Q=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=uxdwvXZeSjulTjNyZcOS7wXe990rkJZK5WHRnHg0cOYKd8SoZ1W+4EL62yKEzB68d
+	 N+XL5bzKSPRWdVIR8H1k2uA3a3aHsSd2heWJNUxfRqmlIGC+O8Uf3v8CZkFS4uLbDv
+	 rMNBKqZ4I9OjuvXLem3MwlMAxl8W/0ZrJZ6EN1Fk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 25109F8012F;
-	Thu,  8 Jul 2021 12:02:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EBA62F8012F;
+	Thu,  8 Jul 2021 12:04:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 503B2F80249; Thu,  8 Jul 2021 12:02:06 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 6CA91F80224; Mon,  5 Jul 2021 09:38:01 +0200 (CEST)
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com
+ [IPv6:2607:f8b0:4864:20::635])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4FF75F80143
- for <alsa-devel@alsa-project.org>; Thu,  8 Jul 2021 12:01:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FF75F80143
+ by alsa1.perex.cz (Postfix) with ESMTPS id 92078F80124
+ for <alsa-devel@alsa-project.org>; Mon,  5 Jul 2021 09:37:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92078F80124
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="WxUxbLdm"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="U/X06iRv"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 0EC4022323;
- Thu,  8 Jul 2021 10:01:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1625738517; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=hq62MSBLIYaa+j7ONulpQ7m6RGRTqHHU/kHV9BPddVA=;
- b=WxUxbLdmYIyIMmEWnfnGTupDBiw+P9ndyWJOs5jblDQphPyt1FfXpl78z8zYnIxXR4dq8r
- HmthXoZAZs2t3lp7nba46hGKoM4NcGcjmLTCJxGN15+FbB8+cnhLICXiVLh60J9moHzXy8
- neReKGNkTXcmZnsXDNmD/rMC+mC70rI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1625738517;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=hq62MSBLIYaa+j7ONulpQ7m6RGRTqHHU/kHV9BPddVA=;
- b=U/X06iRvFfWPSxtsQO79jcPO4DI+lrOgd18foJerRkkvOQMEvVjyaDGmoQ8LcNKuWAaK+J
- 7dpdMufa5fQLLEBA==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 04B11A3B9E;
- Thu,  8 Jul 2021 10:01:56 +0000 (UTC)
-Date: Thu, 08 Jul 2021 12:01:56 +0200
-Message-ID: <s5hy2ah5dkb.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Cameron Berkenpas <cam@neo-zeon.de>
-Subject: Re: Patch For Lenovo Legion 7 15IMHg05 & Yoga 7 14ITL5
-In-Reply-To: <f3bbf247-ae21-474d-ccb5-f56710c2391f@neo-zeon.de>
-References: <f3bbf247-ae21-474d-ccb5-f56710c2391f@neo-zeon.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="RURpQEki"
+Received: by mail-pl1-x635.google.com with SMTP id a14so9588398pls.4
+ for <alsa-devel@alsa-project.org>; Mon, 05 Jul 2021 00:37:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=uIYkWEg6ddHgyeOZ+TasZ9tt9xSrdpyE5MFOa1Fdx4E=;
+ b=RURpQEkiG89CAuGiDuimdVkL4MKD3H9WowmHt3ZTKdEgfEvqvKYljuU/SaSeHinBW0
+ 5oaa9s8J1UodnyjLvOk6QdBTFD/f3Q9+iuCHs/Whnqqlwlw4pZh0qX+BV3q1ZR5Hz5Yk
+ oGDaoh7BmvRTZAxwX0BT9bthVDqALGu8zmam5HL/fgQGdXyg+5z7RtJQvWN08uMjv5jC
+ Mldc3udVmwc+SXCNTgIY7zqM60rWf9xAYwfq/5LS3PAMmrXb9WIEYMs3sw1D/fkO/ApB
+ TlnrXf9nHPMDmWrFW9hRhyIj9CMZWMVemHpIpyxbj3JuDYqkWXpzxkdaiyBIphB6O7bk
+ KCfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=uIYkWEg6ddHgyeOZ+TasZ9tt9xSrdpyE5MFOa1Fdx4E=;
+ b=t1Ki3xx7VjW6IPCZ6G2avuWgAuXhM9+FciZOdxhvphoxLY59a67ytURCxK09U5hoEF
+ AZBsq5pYBlVuO7mYI8pE/7cZSBlJhE3HmrMTP2Q5cRGAqWwRFUsa5z4CJLVvRsmYMMhX
+ ykVEv2UCy1zfJzrwaBDEnSdWms7gmtf7RT1uxgaFpu04TEcoik7PpzAQ+R0o/Pywophl
+ P3zwkRjahNSoPqdxozbj4wNKys/KRB6XeI/ZJRcEU3Vh3ViX/9W9T4FgYpqtK98y+Pj1
+ s9TquHqaVKsCDPUC+F1gPe9RxszEXmT+ghgPAvnNYg3u60KgyGOB96I1Hd/bBMVNwm+q
+ CMig==
+X-Gm-Message-State: AOAM532ITWgr7FgQuRzyHE8rWgK+x0z1WBkEu2ZjkvBB8lQz0t2cVlt6
+ KV8xcVuiaAh3Hm98y30mPoM=
+X-Google-Smtp-Source: ABdhPJxwk9VAwLAt6zdodDdK4aaJMDRuD9OasQ3YaXQSuVpnBPtwDVw+vAGCokaehZ/TR5Zp/RZ10Q==
+X-Received: by 2002:a17:90b:1403:: with SMTP id
+ jo3mr14330309pjb.160.1625470670034; 
+ Mon, 05 Jul 2021 00:37:50 -0700 (PDT)
+Received: from ubuntu.localdomain ([103.220.76.197])
+ by smtp.gmail.com with ESMTPSA id g4sm2694975pfo.44.2021.07.05.00.37.48
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 05 Jul 2021 00:37:49 -0700 (PDT)
+From: gushengxian <gushengxian507419@gmail.com>
+To: perex@perex.cz,
+	tiwai@suse.com
+Subject: [PATCH] sound: x86: fix spelling mistakes
+Date: Mon,  5 Jul 2021 00:37:36 -0700
+Message-Id: <20210705073736.662875-1-gushengxian507419@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Thu, 08 Jul 2021 12:04:25 +0200
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ gushengxian <gushengxian@yulong.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,178 +107,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 08 Jul 2021 02:16:49 +0200,
-Cameron Berkenpas wrote:
-> 
-> Hello,
-> 
-> I have a patch against 5.12.x that results in working speaker audio
-> for the Lenovo Legion 7 15IMHg05 and the Lenovo Yoga 7 14ITL5.
-> 
-> How should I go about getting this merged? Should this be against the
-> latest torvalds git? Is this the right place to present this
-> particular patch? There are no issues checking my changes against
-> checkpatch.pl.
+From: gushengxian <gushengxian@yulong.com>
 
-The patch needs to be arranged in a proper format and submitted to
-alsa-devel ML (and Cc to me).  It needs a description (what this patch
-fixes and how), references to the information sources, and most
-importantly, your signed-off-by line.  Please refer to
-Documentation/process/submitting-patches.rst for details.
+Fix some spelling mistakes as follows:
+regiter ==> register
+confgiuration ==> configuration
+playabck ==> playback
+platoform ==> platform
 
-As the size of the COEF table is relatively small, you can just put
-all stuff into patch_realtek.c.  Also, the verb { 0x20, 0x4b0, 0x20 }
-is equivalent with { 0x20, AC_VERB_SET_COEF, 0xb020 }.  Better to
-replace in that form.
+Signed-off-by: gushengxian <gushengxian@yulong.com>
+---
+ sound/x86/intel_hdmi_audio.c | 6 +++---
+ sound/x86/intel_hdmi_audio.h | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
+diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
+index 33b12aa67cf5..a34d7d9c2a57 100644
+--- a/sound/x86/intel_hdmi_audio.c
++++ b/sound/x86/intel_hdmi_audio.c
+@@ -236,7 +236,7 @@ static void had_write_register(struct snd_intelhad *ctx, u32 reg, u32 val)
+  * updating AUD_CONFIG register.
+  * This is because:
+  * Bit6 of AUD_CONFIG register is writeonly due to a silicon bug on VLV2
+- * HDMI IP. As a result a read-modify of AUD_CONFIG regiter will always
++ * HDMI IP. As a result a read-modify of AUD_CONFIG register will always
+  * clear bit6. AUD_CONFIG[6:4] represents the "channels" field of the
+  * register. This field should be 1xy binary for configuration with 6 or
+  * more channels. Read-modify of AUD_CONFIG (Eg. for enabling audio)
+@@ -342,7 +342,7 @@ static int had_prog_status_reg(struct snd_pcm_substream *substream,
+ 
+ /*
+  * function to initialize audio
+- * registers and buffer confgiuration registers
++ * registers and buffer configuration registers
+  * This function is called in the prepare callback
+  */
+ static int had_init_audio_ctrl(struct snd_pcm_substream *substream,
+@@ -1790,7 +1790,7 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
+ 		pcm->private_data = ctx;
+ 		pcm->info_flags = 0;
+ 		strscpy(pcm->name, card->shortname, strlen(card->shortname));
+-		/* setup the ops for playabck */
++		/* setup the ops for playback */
+ 		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &had_pcm_ops);
+ 
+ 		/* allocate dma pages;
+diff --git a/sound/x86/intel_hdmi_audio.h b/sound/x86/intel_hdmi_audio.h
+index 0d91bb5dbab7..bb3853195922 100644
+--- a/sound/x86/intel_hdmi_audio.h
++++ b/sound/x86/intel_hdmi_audio.h
+@@ -96,7 +96,7 @@ struct pcm_stream_info {
+  * @had_spinlock: driver lock
+  * @aes_bits: IEC958 status bits
+  * @buff_done: id of current buffer done intr
+- * @dev: platoform device handle
++ * @dev: platform device handle
+  * @chmap: holds channel map info
+  */
+ struct snd_intelhad {
+-- 
+2.25.1
 
-thanks,
-
-Takashi
-
-> 
-> Thanks!
-> 
-> diff --git a/sound/pci/hda/legion_15imhg05_helper.c b/sound/pci/hda/legion_15imhg05_helper.c
-> new file mode 100644
-> index 000000000000..6ead999ec3c9
-> --- /dev/null
-> +++ b/sound/pci/hda/legion_15imhg05_helper.c
-> @@ -0,0 +1,41 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Fixes for Lenovo Legion 15IMHg05 speaker output. */
-> +
-> +static const struct hda_verb legion_15imhg05_coefs[] = {
-> +{0x20, AC_VERB_SET_COEF_INDEX, 0x24 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x41 },
-> +{0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x2 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-> +{0x20, 0x4b0, 0x20 },
-> +
-> +// Set right speaker for Legion 7i.
-> +{0x20, AC_VERB_SET_COEF_INDEX, 0x24 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x42 },
-> +
-> +{0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0xc },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x2a },
-> +{0x20, 0x4b0, 0x20 },
-> +{0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x2 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-> +{0x20, 0x4b0, 0x20 },
-> +{}
-> +};
-> +
-> +static void alc287_fixup_legion_15imhg05_speakers(struct hda_codec *codec,
-> +						  const struct hda_fixup *fix,
-> +						  int action)
-> +{
-> +	struct alc_spec *spec = codec->spec;
-> +
-> +	switch (action) {
-> +	case HDA_FIXUP_ACT_INIT:
-> +		spec->gen.automute_speaker = 0;
-> +		break;
-> +	}
-> +}
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index e46e43dac6bf..28a4955cf2c2 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -6352,6 +6352,12 @@ static void alc_fixup_thinkpad_acpi(struct hda_codec *codec,
->  /* for alc285_fixup_ideapad_s740_coef() */
->  #include "ideapad_s740_helper.c"
->  +/* For alc287_fixup_legion_15imhg05_speakers() */
-> +#include "legion_15imhg05_helper.c"
-> +
-> +/* For yoga7_14itl5_coefs */
-> +#include "yoga7_14itl5_coefs.c"
-> +
->  enum {
->  	ALC269_FIXUP_GPIO2,
->  	ALC269_FIXUP_SONY_VAIO,
-> @@ -6561,6 +6567,9 @@ enum {
->  	ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP,
->  	ALC623_FIXUP_LENOVO_THINKSTATION_P340,
->  	ALC255_FIXUP_ACER_HEADPHONE_AND_MIC,
-> +	ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS,
-> +	ALC287_FIXUP_LEGION_15IMHG05_AUTOMUTE,
-> +	ALC287_FIXUP_YOGA7_14ITL_SPEAKERS,
->  };
->  static const struct hda_fixup alc269_fixups[] = {
-> @@ -8088,6 +8097,24 @@ static const struct hda_fixup alc269_fixups[] = {
->  		.chained = true,
->  		.chain_id = ALC269_FIXUP_THINKPAD_ACPI,
->  	},
-> +	[ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS] = {
-> +		.type = HDA_FIXUP_VERBS,
-> +		.v.verbs = legion_15imhg05_coefs,
-> +		.chained = true,
-> +		.chain_id = ALC287_FIXUP_LEGION_15IMHG05_AUTOMUTE,
-> +	},
-> +	[ALC287_FIXUP_LEGION_15IMHG05_AUTOMUTE] = {
-> +		.type = HDA_FIXUP_FUNC,
-> +		.v.func = alc287_fixup_legion_15imhg05_speakers,
-> +		.chained = true,
-> +		.chain_id = ALC269_FIXUP_HEADSET_MODE,
-> +	},
-> +	[ALC287_FIXUP_YOGA7_14ITL_SPEAKERS] = {
-> +		.type = HDA_FIXUP_VERBS,
-> +		.v.verbs = yoga7_14itl5_coefs,
-> +		.chained = true,
-> +		.chain_id = ALC269_FIXUP_HEADSET_MODE,
-> +	},
->  	[ALC295_FIXUP_ASUS_DACS] = {
->  		.type = HDA_FIXUP_FUNC,
->  		.v.func = alc295_fixup_asus_dacs,
-> @@ -8520,6 +8547,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
->  	SND_PCI_QUIRK(0x17aa, 0x3818, "Lenovo C940", ALC298_FIXUP_LENOVO_SPK_VOLUME),
->  	SND_PCI_QUIRK(0x17aa, 0x3827, "Ideapad S740", ALC285_FIXUP_IDEAPAD_S740_COEF),
->  	SND_PCI_QUIRK(0x17aa, 0x3843, "Yoga 9i", ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP),
-> +	SND_PCI_QUIRK(0x17aa, 0x3813, "Lenovo Legion 7", ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS),
-> +	SND_PCI_QUIRK(0x17aa, 0x3852, "Lenovo Yoga 7 14ITL5", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
->  	SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo E50-80", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
->  	SND_PCI_QUIRK(0x17aa, 0x3977, "IdeaPad S210", ALC283_FIXUP_INT_MIC),
->  	SND_PCI_QUIRK(0x17aa, 0x3978, "Lenovo B50-70", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
-> diff --git a/sound/pci/hda/yoga7_14itl5_coefs.c b/sound/pci/hda/yoga7_14itl5_coefs.c
-> new file mode 100644
-> index 000000000000..a437fe042a1d
-> --- /dev/null
-> +++ b/sound/pci/hda/yoga7_14itl5_coefs.c
-> @@ -0,0 +1,29 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Fixes for Lenovo Yoga 7 14ITL5 speaker output. */
-> +
-> +static const struct hda_verb yoga7_14itl5_coefs[] = {
-> +{0x20, AC_VERB_SET_COEF_INDEX, 0x24 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x41 },
-> +{0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x2 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-> +{0x20, 0x4b0, 0x20 },
-> +
-> +// set right speaker Yoga 7i.
-> +{0x20, AC_VERB_SET_COEF_INDEX, 0x24 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x46 },
-> +
-> +{0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0xc },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x2a },
-> +{0x20, 0x4b0, 0x20 },
-> +{0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x2 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-> +{0x20, 0x4b0, 0x20 },
-> +{}
-> +};
-> +
-> 
-> 
