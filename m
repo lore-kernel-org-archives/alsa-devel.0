@@ -2,93 +2,96 @@ Return-Path: <SRS0=cdus=L5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 122FBC07E99
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jul 2021 19:42:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B12BC07E99
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jul 2021 19:42:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7C0C561483
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jul 2021 19:42:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7C0C561483
+	by mail.kernel.org (Postfix) with ESMTPS id 72EF961961
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jul 2021 19:42:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72EF961961
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1DD6716E1;
-	Mon,  5 Jul 2021 21:41:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DD6716E1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 13E8116E9;
+	Mon,  5 Jul 2021 21:41:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13E8116E9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625514141;
-	bh=5qZeiYbxuz10gFdRgNypXGX6EMZhzV8dzOo+Rf1bNfE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=l1ZUGLu7To0nYACAjIzIGnQ5DO3pCmWQihY/Zx3YdR6jkvgzqdZrAqCFS1ByfMDK5
-	 0RJVg+R0zdxofNJtCbAPp8X7L2OUnVUtbZKIQwDJhhps3NGZilMjHtTT2jqD4xodnX
-	 QqykSNziAVlTxOiO1HgrfERaGD7APZnW7JzniE6c=
+	s=default; t=1625514148;
+	bh=r2d7hz6CaMOA9hIyHT7KzsUERCqR5aCXm8BZlxxWcQg=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=vVtAmW9bFF7ZstSo92yd6B7ngeoUZr8tCn3RMV9ZQj1nq5RmghcJLdM8SdAD96hKR
+	 tUTc4X0L67dNrmFD4+JI4g7Wx2CiczrysBfHIqbT761ObMDMvZH3AFU8/w/yic1RBS
+	 MiKWGSjJJ72VEpylrgaelnkGndbxl1LLuPZXBgTI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 09F11F8014E;
-	Mon,  5 Jul 2021 21:40:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BA354F804E1;
+	Mon,  5 Jul 2021 21:40:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 040BEF804E0; Mon,  5 Jul 2021 21:40:41 +0200 (CEST)
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com
- [IPv6:2a00:1450:4864:20::236])
+ id 5067EF804E0; Mon,  5 Jul 2021 21:40:42 +0200 (CEST)
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com
+ [IPv6:2a00:1450:4864:20::233])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 02922F8016B
- for <alsa-devel@alsa-project.org>; Mon,  5 Jul 2021 21:40:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02922F8016B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4922FF804DA
+ for <alsa-devel@alsa-project.org>; Mon,  5 Jul 2021 21:40:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4922FF804DA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="LP7li9Wx"
-Received: by mail-lj1-x236.google.com with SMTP id w11so26045625ljh.0
- for <alsa-devel@alsa-project.org>; Mon, 05 Jul 2021 12:40:32 -0700 (PDT)
+ header.b="K/3hCros"
+Received: by mail-lj1-x233.google.com with SMTP id b40so6174852ljf.12
+ for <alsa-devel@alsa-project.org>; Mon, 05 Jul 2021 12:40:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=2U0wvxPRKxvDIv/UsBUgP1f1+9ZNjFw1lh7hg331W6o=;
- b=LP7li9WxtyVh6I4wyeda/ydzYLij+dGAuC4DGZksPaI1cVn+R8/rq9EgLPUTZ8jCt8
- kGzm96nodNX0cAg3wL0PTyAOJSgfTBOMvR9FlSw4HJLIsm28hkdUWdegoq9x97NPZo5d
- fHC/hKVCtjW+Roc/+V3gJEZDuQHcxiSmH0zJgiSEdryZOMb4tKA/ti4XftJkxioaDnff
- 2myBI5regMViCbspFLMBC5G5IgIQScqM1ewA1KFijvG82nPg1oIZ+JomQfGp5G0VT74Y
- ize6fXJehGpHoElHYbdjyyQqBZ7BcV8O+tMZj+sdrq/XkIHtQ+qh2H0HTCHqVHb99ld6
- Z7TQ==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=nOpUy5xHeuJOos9ar9hRXmpZzYmMtFmjPsSjfELVa8A=;
+ b=K/3hCrosFdpUbTHdtCDAWPK55w7YXi114gMvfr6QFGBsNZ9I8ctS6xNowG1DyDFCOE
+ 5MgAGVcNPI15zGyiCIYnPXW9ZvgDx9kGiUG4NLte6GGPW5XIlaJrCbBzdq02EXOfuuAO
+ nnSJEB8Ewg4i/OjKaL+aPJV+nQTXhfWBTa4iGV/B05IcHWIbKU1v7GZwrUN+RWCIIzds
+ Q9uIt5u3ij3zx6vaPN0bOwPWmw2amqE81kgegvXDR74wrpq6Nk0Mf9PnrgnPWV7itT+f
+ PSV3u+dQB/zBr8680yZLvPoyrOHAwFZ3LvvVzkrLuEWgZT5SAFW0gHDHRLEsthHCnLve
+ jkEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=2U0wvxPRKxvDIv/UsBUgP1f1+9ZNjFw1lh7hg331W6o=;
- b=JazU/N2pLdwgLKcxTsknKVxtYfRNurf7hVOMqjwM2O41jmMLyonV9pykj2TFmKvwNo
- mr/HBFvEquN0vr4KI6vEm7Efbm2UQsKV6HKP9JjwlYS0DyVyajvzqbbr4RK7mpnzzTIS
- I2rir8IDg/MyEDZ1uDlaAjJPnF5HigbG32YzHzh+Zp2y7cX4drUjvv7aZiH9Y2EpK32n
- Vm82P1FMLNspjkxn1J+ifODkEDkz9yKEG2Hm0PyyxZHNU0XUrUkk6jxHypW0czJyvATB
- QFoUQc5iBkyWk0vucXG/7O/VkItcuWMluzjhkfPSl9DMOOroAbKGcLmc2I+/PKVLklNl
- YyRg==
-X-Gm-Message-State: AOAM531y/6naOfazQpXjlW6HxpddXJKmnEcSAMRERr2fy8iFKCpdZ32B
- Qp1PmOIrjRS7NupjJxxl2Vg=
-X-Google-Smtp-Source: ABdhPJzs3XKPF7dxtOZ7jnHpnB9/6EpP5VmrK9kqc4/pd1Kc/4KaZF2AI/infMrzAk0zyqsFzK0jKw==
-X-Received: by 2002:a2e:4c19:: with SMTP id z25mr12351302lja.47.1625514031141; 
- Mon, 05 Jul 2021 12:40:31 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=nOpUy5xHeuJOos9ar9hRXmpZzYmMtFmjPsSjfELVa8A=;
+ b=YilD1GxumuCMLg9K3rAJovCd56SIC9/aYvkxCvTy+sR28yg8oFqywlTny5+9Ha4h8J
+ 2gFTigjWbEAZZEu6nq6xPzJGd0C9h+ajEoJM9OEO+2zZAVlFx8sBkJE6qbcYzgae9ryk
+ GRXeSLl/DQzZgTCnOdwU+9MNuymfdtTBkIb6cklP4LcNCvw/38o90nU6PYKuftiHW8op
+ jkq9WaGfL5jr2Cy/AbxngUM1gPWRxbhRXovtr7KNqv9jvU5Pp14VF/AoU25Hwf2imlG5
+ +DrBEgWmfTLi06Gq1D6y9KMWpg+S5+2RzABHb9JZIiy1bTLaPmlGY2QWPdYaddGel/Gm
+ E6/A==
+X-Gm-Message-State: AOAM533s7Wwr40PVk9JkX3b7nEwZC4BLCih1zaLG/MX+T4Qv56L8EB2I
+ oiDkkf++lh3AH2Ws2bzW2YI=
+X-Google-Smtp-Source: ABdhPJzr0skanV+K7S8YxGJQYbDceG65gegEXC37d2KrV7inNrK+bn0IBtMHYTLGoV8cFXUro1cVyA==
+X-Received: by 2002:a2e:844a:: with SMTP id u10mr12312217ljh.443.1625514033638; 
+ Mon, 05 Jul 2021 12:40:33 -0700 (PDT)
 Received: from localhost.localdomain (91-155-111-71.elisa-laajakaista.fi.
  [91.155.111.71])
- by smtp.gmail.com with ESMTPSA id b5sm1167248lfv.3.2021.07.05.12.40.29
+ by smtp.gmail.com with ESMTPSA id b5sm1167248lfv.3.2021.07.05.12.40.32
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 05 Jul 2021 12:40:30 -0700 (PDT)
+ Mon, 05 Jul 2021 12:40:32 -0700 (PDT)
 From: Peter Ujfalusi <peter.ujfalusi@gmail.com>
 To: broonie@kernel.org,
 	tony@atomide.com
-Subject: [PATCH v2 0/5] ASoC: ti: davinci-mcasp: Fix the DIT mode and OMAP4
- support
-Date: Mon,  5 Jul 2021 22:42:44 +0300
-Message-Id: <20210705194249.2385-1-peter.ujfalusi@gmail.com>
+Subject: [PATCH v2 2/5] ASoC: dt-bindings: davinci-mcasp: Add compatible
+ string for OMAP4
+Date: Mon,  5 Jul 2021 22:42:46 +0300
+Message-Id: <20210705194249.2385-3-peter.ujfalusi@gmail.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210705194249.2385-1-peter.ujfalusi@gmail.com>
+References: <20210705194249.2385-1-peter.ujfalusi@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: hns@goldelico.com, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org,
  lgirdwood@gmail.com
@@ -107,50 +110,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+OMAP4 has one McASP instance with single serializer and supporting only
+DIT mode.
+According to the TRM the DAT port needs to be accessed as specific offset
+compared to other devices where access to any part of the DAT region is
+valid.
+To handle this constraint we need to introduce a new compatiple string for
+OMAP4.
 
-Changes since v1:
-- Do not calculat that we allow one serializer in DIT mode, just set the
-  max_active_serializers to 1.
-  Reported-by: kernel test robot <lkp@intel.com>
-
-it has been on my todo list for several years to support McASP on OMAP4 devices.
-For Galaxy Nexus we had an omap-mcasp driver (which was mostly a stripped down
-davinci-mcasp driver) to support what was needed on that specific phone + it's
-dock for S/PDIF (48KHz, 16bit, stereo).
-
-Not many (if any) device available to test the DIT mode of McASP.
-I have used BeagleBone White (McASP1 AXR3 can be routed to a pin) to get the
-S/PDIF mode working then PandaES for OMAP4 support (on PandaES the gpio_121 is
-not used and the signal is routed to expansion J6 pin14).
-
-In theory the McASP in OMAP5 should be working after this series, but the OMAP5
-TRM is not public and I do not have one to check the addresses and see if there
-is a way to test it on omap5-uevm.
-
-Mark, Tony:
-The ASoC and dts patches can go via separate tree I felt that it is better if
-they are together, at least initially.
-
-Nikolaus: fyi, this might be useful for Pyra?
-
-Regards,
-Péter
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
 ---
-Peter Ujfalusi (5):
-  ASoC: ti: davinci-mcasp: Fix DIT mode support
-  ASoC: dt-bindings: davinci-mcasp: Add compatible string for OMAP4
-  ASoC: ti: davinci-mcasp: Add support for the OMAP4 version of McASP
-  ARM: dts: omap4-l4-abe: Correct sidle modes for McASP
-  ARM: dts: omap4-l4-abe: Add McASP configuration
+ Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
- .../bindings/sound/davinci-mcasp-audio.txt    |   1 +
- arch/arm/boot/dts/omap4-l4-abe.dtsi           |  39 ++--
- include/linux/platform_data/davinci_asp.h     |   1 +
- sound/soc/ti/Kconfig                          |   1 +
- sound/soc/ti/davinci-mcasp.c                  | 176 +++++++++++++++---
- 5 files changed, 175 insertions(+), 43 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
+index c483dcec01f8..bd863bd69501 100644
+--- a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
++++ b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
+@@ -6,6 +6,7 @@ Required properties:
+ 	"ti,da830-mcasp-audio"	: for both DA830 & DA850 platforms
+ 	"ti,am33xx-mcasp-audio"	: for AM33xx platforms (AM33xx, AM43xx, TI81xx)
+ 	"ti,dra7-mcasp-audio"	: for DRA7xx platforms
++	"ti,omap4-mcasp-audio"	: for OMAP4
+ 
+ - reg : Should contain reg specifiers for the entries in the reg-names property.
+ - reg-names : Should contain:
 -- 
 2.32.0
 
