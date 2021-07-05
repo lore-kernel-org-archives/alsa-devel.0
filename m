@@ -2,73 +2,73 @@ Return-Path: <SRS0=cdus=L5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4ADD7C07E99
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jul 2021 19:22:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3ACF6C07E99
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jul 2021 19:30:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 39BAD6141C
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jul 2021 19:22:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 39BAD6141C
+	by mail.kernel.org (Postfix) with ESMTPS id 6548B6197F
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jul 2021 19:30:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6548B6197F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C966B16B1;
-	Mon,  5 Jul 2021 21:21:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C966B16B1
+	by alsa0.perex.cz (Postfix) with ESMTPS id ED1A416CB;
+	Mon,  5 Jul 2021 21:29:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED1A416CB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625512947;
-	bh=CzgLO/M8aM0IVE6URq0nrafA+LqiKiGXjmvU1S6Bn1Q=;
+	s=default; t=1625513447;
+	bh=q3ZTByD/UPcR9TQOFBpdTkGaFvLeAfYpSg0koE0aWN0=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=J3rIGZqXJC3K4P6508bf3+2pfdqqDOoeemMARNx7qakALzyCv9knJ3CFUaORjBW3T
-	 y0RckrRIgo/v3LQYwKI408cf969IuUCR2VfSySOxR+JkoJRYl4LYqBp9dHpbAXecfx
-	 gdt+06CNgrqBsc98lB7SGGkHt1fZwhRSYKawYAjk=
+	b=pjxLDTakOfFCahle9TBZAwOQQqx5tQYxu7Cke0eZUiUMPXNSNXm2ZZwUJdwSoO6Ei
+	 PtmFxWbw40IEGP1TXVDWOaCFCb189R0249qZLbVbiT/zHffB9yxZH4uL4/K3x7IrA4
+	 jok8RyluvtEgOW4KNU1MvPpRoFqDw3rsp57c4Gm8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6E0D7F8016B;
-	Mon,  5 Jul 2021 21:21:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 60D72F8016B;
+	Mon,  5 Jul 2021 21:29:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8D133F80134; Mon,  5 Jul 2021 21:21:36 +0200 (CEST)
+ id 6980DF80224; Mon,  5 Jul 2021 21:29:29 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 57CB4F80134
- for <alsa-devel@alsa-project.org>; Mon,  5 Jul 2021 21:21:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57CB4F80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9BF65F80134
+ for <alsa-devel@alsa-project.org>; Mon,  5 Jul 2021 21:29:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BF65F80134
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="SDwK5FUJ"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82E8F6141C;
- Mon,  5 Jul 2021 19:21:25 +0000 (UTC)
+ header.b="hOutMW62"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B43B4613C9;
+ Mon,  5 Jul 2021 19:29:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1625512886;
- bh=CzgLO/M8aM0IVE6URq0nrafA+LqiKiGXjmvU1S6Bn1Q=;
+ s=k20201202; t=1625513348;
+ bh=q3ZTByD/UPcR9TQOFBpdTkGaFvLeAfYpSg0koE0aWN0=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=SDwK5FUJCou3ZVHhVzZpHbSxvfBHf6bMKERN5yuusTTCzEvfYnk1KBZ+sYZoCwvLb
- mA5jOAcovNcmtU5W7MzZ8/eP2/ldKJ/ZnhuqP+FsXiHSucQV7yoV2pZMgsiNPvSlZ0
- VeEMJV5Q39xkfrgxTWif/ei0/WxHsXCUB/hh+5NwYoYsdUw4oZB47dDcfkpT5Dd8xM
- R6ZveGjeS/RthP0QANMwTLIFTLfAZe1QeSRCLCj8bg1E5tuW1Gnw6QCxzovw/HSgzJ
- 1++QoffNg4urd1TqyXs4kyrmmF4fn8aeArIROudEnoDw/9FQ4J3Z2F5ES2EhskZ8G0
- RwHDzP6ZcnwQQ==
-Date: Mon, 5 Jul 2021 20:20:54 +0100
+ b=hOutMW62HwviynA8QRiX7JsUDmzA4MGC6TXLa0ljCz5flVdv8k3rY4v+UhkWHEPAm
+ InZTgcjru6U0qSR36iO9RVdd7ZPevMTnlTbyVPHNg2YROeLQzQXZDeXSTlcMBesDub
+ NyH5L6nPhp82rxh94v6IjsW761ly/c7TXikzQD2CMBRYI1ZEWlZtxgtEhlOmTfasza
+ bGeFDENm/8wbbwpINpH3XgeRFSBDd5r2n/AxKbhMin4/pErWRoIaxUfKG3Ab0K1h9M
+ FL06PjvJDoCouul8O9JPcsGXg5t92kRW53lLJZGEh7YOeK/QZBH8kh9+d/bVKU9AqB
+ atuOuaw8JLpqQ==
+Date: Mon, 5 Jul 2021 20:28:37 +0100
 From: Mark Brown <broonie@kernel.org>
 To: David Rhodes <drhodes@opensource.cirrus.com>
-Subject: Re: [PATCH v3 1/2] ASoC: cs35l41: CS35L41 Boosted Smart Amplifier
-Message-ID: <20210705192054.GG4574@sirena.org.uk>
+Subject: Re: [PATCH v3 2/2] ASoC: cs35l41: Add bindings for CS35L41
+Message-ID: <20210705192837.GH4574@sirena.org.uk>
 References: <20210702205127.1400539-1-drhodes@opensource.cirrus.com>
- <20210702205127.1400539-2-drhodes@opensource.cirrus.com>
+ <20210702205127.1400539-3-drhodes@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="PpAOPzA3dXsRhoo+"
+ protocol="application/pgp-signature"; boundary="Rn7IEEq3VEzCw+ji"
 Content-Disposition: inline
-In-Reply-To: <20210702205127.1400539-2-drhodes@opensource.cirrus.com>
+In-Reply-To: <20210702205127.1400539-3-drhodes@opensource.cirrus.com>
 X-Cookie: Star Trek Lives!
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: robh@kernel.org, brian.austin@cirrus.com, ckeepax@opensource.cirrus.com,
@@ -90,200 +90,51 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---PpAOPzA3dXsRhoo+
+--Rn7IEEq3VEzCw+ji
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jul 02, 2021 at 03:51:26PM -0500, David Rhodes wrote:
+On Fri, Jul 02, 2021 at 03:51:27PM -0500, David Rhodes wrote:
 
-This looks pretty good - a few fairly small issues and some queries
-below:
+> +  cirrus,hw-noise-gate-select:
+> +    description: Hardware Noise Gate feature. Each bit selects
+> +      a different block for detection.
+> +      000000 - All noise gating functionality disabled
+> +      xxxxx1 - Amplifier noise gating detection enabled
+> +      xxxx1x - Boost converter DCM detection enabled
+> +      xxx1xx - VMON low power mode detection enabled
+> +      xx1xxx - IMON low power mode detection enabled
+> +      x1xxxx - VP brownout prevention detection enabled
+> +      1xxxxx - VBST brownout prevention detection enabled
+> +    type: boolean
 
-> index 000000000000..7ee60ff0de26
-> --- /dev/null
-> +++ b/include/sound/cs35l41.h
-> @@ -0,0 +1,79 @@
+That description doesn't appear to be for a boolean field, either this
+should be a number of properties or it's not a boolean.  It's also not
+clear to me that we shouldn't be able to control these features at
+runtime.
 
-> +struct cs35l41_private {
-> +	struct snd_soc_codec *codec;
-> +	struct cs35l41_platform_data pdata;
+> +  cirrus,invert-pcm:
+> +    description:
+> +      Inverts the polarity of the audio signal output from
+> +      the Class-D amplifier.
+> +    type: boolean
 
-Why does anything looking in include/sound need the driver private data?
-It's not entirely clear why this is in include/sound at all.
+Given the potential confusion with the audio interface it might be
+better to call this invert-class-d or something.
 
-> +	struct regulator_bulk_data supplies[2];
-> +	int num_supplies;
-
-Why might the number of supplies vary?
-
-> +++ b/sound/soc/codecs/cs35l41-i2c.c
-> @@ -0,0 +1,120 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +/*
-> + * cs35l41-i2c.c -- CS35l41 I2C driver
-
-Please make the entire comment a C++ one so things look more
-intentional.
-
-> +#include <linux/slab.h>
-> +#include <linux/version.h>
-
-You probably don't need at least version.h here.
-
-> +static void cs35l41_spi_otp_setup(struct cs35l41_private *cs35l41,
-> +					bool is_pre_setup, unsigned int *freq)
-> +{
-> +	struct spi_device *spi;
-> +	u32 orig_spi_freq;
-> +
-> +	spi = to_spi_device(cs35l41->dev);
-> +
-> +	if (!spi)
-> +		return;
-
-Why might this reasonably happen, shouldn't we complain loudly?
-
-> +#ifdef CONFIG_OF
-> +static const struct of_device_id cs35l41_of_match[] = {
-> +	{.compatible = "cirrus,cs35l40"},
-> +	{.compatible = "cirrus,cs35l41"},
-> +	{},
-
-
-Coding style - spaces around the { } like everywhere else.
-
-> +	/* Check to see if unmasked bits are active */
-> +	if (!(status[0] & ~masks[0]) && !(status[1] & ~masks[1]) &&
-> +		!(status[2] & ~masks[2]) && !(status[3] & ~masks[3]))
-> +		return IRQ_NONE;
-
-
-> +	}
-> +
-> +	return IRQ_HANDLED;
-> +}
-
-This seems to handle any asserted interrupt, is it clear on read?
-
-> +	case SND_SOC_DAPM_POST_PMD:
-> +		regmap_read(cs35l41->regmap, CS35L41_PWR_CTRL1, &val);
-> +		if (val & CS35L41_GLOBAL_EN_MASK) {
-> +			regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL1,
-> +					CS35L41_GLOBAL_EN_MASK, 0);
-
-I can't see any references to GLOBAL_EN outside this function, why might
-it not be set?
-
-> +static int cs35l41_set_pdata(struct cs35l41_private *cs35l41)
-> +{
-> +	struct cs35l41_classh_cfg *classh = &cs35l41->pdata.classh_config;
-> +	int ret;
-> +
-> +	/* Set Platform Data */
-> +	/* Required */
-> +	if (cs35l41->pdata.bst_ipk &&
-> +			cs35l41->pdata.bst_ind && cs35l41->pdata.bst_cap) {
-
-The indentation here is weird, normally the second line would be
-indented with the (.
-
-> +	if (cs35l41->pdata.dout_hiz <= CS35L41_ASP_DOUT_HIZ_MASK &&
-> +	    cs35l41->pdata.dout_hiz >= 0)
-> +		regmap_update_bits(cs35l41->regmap, CS35L41_SP_HIZ_CTRL,
-> +				CS35L41_ASP_DOUT_HIZ_MASK,
-> +				cs35l41->pdata.dout_hiz);
-
-No error or warning on out of range?
-
-> +static int cs35l41_component_probe(struct snd_soc_component *component)
-> +{
-> +	struct cs35l41_private *cs35l41 =
-> +		snd_soc_component_get_drvdata(component);
-> +
-> +	component->regmap = cs35l41->regmap;
-> +
-> +	return cs35l41_set_pdata(cs35l41);
-> +}
-
-Why wait until here to apply the configuration, why not just do it
-immediately on the bus level probe?  I didn't notice anything that
-needed the card, just the regmap.
-
-> +static const struct reg_sequence cs35l41_reva0_errata_patch[] = {
-> +	{0x00000040,			0x00005555},
-> +	{0x00000040,			0x0000AAAA},
-
-Spaces around the { }.
-
-> +
-> +	do {
-> +		if (timeout == 0) {
-> +			dev_err(cs35l41->dev,
-> +				"Timeout waiting for OTP_BOOT_DONE\n");
-> +			ret = -EBUSY;
-> +			goto err;
-> +		}
-> +		usleep_range(1000, 1100);
-> +		regmap_read(cs35l41->regmap, CS35L41_IRQ1_STATUS4, &int_status);
-> +		timeout--;
-> +	} while (!(int_status & CS35L41_OTP_BOOT_DONE));
-
-It would be clearer to assign timeout at the top of the loop rather than
-when declaring the variable so people don't have to search back and make
-sure it was set.
-
-> +	ret = devm_request_threaded_irq(cs35l41->dev, cs35l41->irq, NULL,
-> +			cs35l41_irq, IRQF_ONESHOT | IRQF_SHARED | irq_pol,
-> +			"cs35l41", cs35l41);
-> +
-> +	/* CS35L41 needs INT for PDN_DONE */
-> +	if (ret != 0) {
-> +		dev_err(cs35l41->dev, "Failed to request IRQ: %d\n", ret);
-> +		ret = -ENODEV;
-> +		goto err;
-> +	}
-> +
-> +	/* Set interrupt masks for critical errors */
-> +	regmap_write(cs35l41->regmap, CS35L41_IRQ1_MASK1,
-> +			CS35L41_INT1_MASK_DEFAULT);
-
-Shouldn't this be configured prior to requesting interrupts or might
-there be a race?
-
-> +	switch (reg_revid) {
-> +	case CS35L41_REVID_A0:
-> +		ret = regmap_register_patch(cs35l41->regmap,
-> +				cs35l41_reva0_errata_patch,
-> +				ARRAY_SIZE(cs35l41_reva0_errata_patch));
-> +		if (ret < 0) {
-> +			dev_err(cs35l41->dev,
-> +				"Failed to apply A0 errata patch %d\n", ret);
-> +			goto err;
-> +		}
-> +		break;
-> +	case CS35L41_REVID_B0:
-> +		ret = regmap_register_patch(cs35l41->regmap,
-> +				cs35l41_revb0_errata_patch,
-> +				ARRAY_SIZE(cs35l41_revb0_errata_patch));
-
-I'd also expect patching to be done prior to requesting interrupts so
-the device is in a known good state first.  Perhaps it doesn't make any
-difference but the patches are undocumented so...
-
---PpAOPzA3dXsRhoo+
+--Rn7IEEq3VEzCw+ji
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDjW5YACgkQJNaLcl1U
-h9CZQAf/dQBKPUvBrtF0ee3F6wEy++Z9T80o6hgk4inQxcJpQAQ66yohoeOsDOPR
-DstQLszhcEr1XWlBybHfcU8n4ZYw2Fhiqrc7x96kYWcpb4SE8efmETo8Q1pQwehD
-NX2Ejkp/i2FQ2srk/usVZL2JE8R1WdDVlJWcOz7HtH5jRrxwx4RzyxVJlQQEoYzy
-A+JUyBIPZ6fUAv4ynnfH5WdJudP7b5O+AUnxjn3fKlGx8Nc5T1bZfEuD07Qtujwa
-ouBzgG1KtS29z6PvULeJtDp38Yb/D9x5aoSyHhViEmITkVFWfQsmJ04cVg5rhZOo
-e13HC0n9cZUOM3KJOaXLpfCnU0ABoQ==
-=DPHU
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDjXWQACgkQJNaLcl1U
+h9D/sAf/ccV0v6/q4CQGzoHbbWh4RFtbyl9Mpegbx9nap3S/8ygpR6uWeLndLFVu
+TJ/pn9B/SZrWmGipxK1oRT2lrPjCt3RzvIhhxgELgp56nu1Tq1iVvDLyV7aB0Y18
+MJwWAo/wJy68vrIYGAOgp/TxxjYhu/j4ZZmC5SLRoJ/sMkQpbha4Zo+mn7/y1xc7
+VTw4SuNF2fkLWBltkuPg4MeCizjPZhlml6DUCDz6Lil19olX7CHUs8Msqz/NBKkf
+3TuYcYvaeEHawvoFk3AnPOlDVIq5GpsuaLrxkEYSREM/N60yvjJw7+Eo7yX71sW8
+5MrIIFvZGq6f07B5JgGBOAGXhzE2Aw==
+=7b7u
 -----END PGP SIGNATURE-----
 
---PpAOPzA3dXsRhoo+--
+--Rn7IEEq3VEzCw+ji--
