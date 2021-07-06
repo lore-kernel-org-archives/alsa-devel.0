@@ -2,87 +2,86 @@ Return-Path: <SRS0=3BcS=MA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7478C07E96
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 10:13:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D955C07E96
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 10:14:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 60D32619BE
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 10:13:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 60D32619BE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 0503C61451
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 10:14:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0503C61451
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF8711654;
-	Thu,  8 Jul 2021 12:12:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF8711654
+	by alsa0.perex.cz (Postfix) with ESMTPS id 957B616DB;
+	Thu,  8 Jul 2021 12:13:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 957B616DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625739223;
-	bh=rioQhG4JgrtBZWjYHPb541peYatH1ADUv7L67a0GVVs=;
+	s=default; t=1625739242;
+	bh=U9BPr75t+2VVToWC7CxtrSHSP4esl36mDv6GN5r20fM=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WSVS44W67sR1eC8xfSSnwJtl27X7M7crdGXiXNCbBMt+Fv84Dt6A5Q1xFUirljdbm
-	 9JXTJzDbVg9mLpWE6eqwXNlkzDHtxbphiXwNyYBG7HSX9z7ZVNDaRCHXHbe+FsYrNB
-	 FRD+3Y4PZHUY+4JvpmXktt04oEPKawZlNrCtVp4g=
+	b=g17iyF4gfXMBlNr3PIal9NzXWyXSj3t1jfmJYj/lIxL7Xn7D0l26e1Jkk6A7P8EEi
+	 91pSaqvHsnj9a1NO9+V+FjCRF6i0XzHzITDu0UtndTgEhACzZz/l0IhHf48Wi/v8tz
+	 kxrWnSZcsF3hx01Vt2BoqiQWMu00Cb6pV0usMAyQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2516F80571;
-	Thu,  8 Jul 2021 12:04:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 87DA8F8057B;
+	Thu,  8 Jul 2021 12:04:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ADC62F80249; Tue,  6 Jul 2021 17:07:12 +0200 (CEST)
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com
- [IPv6:2a00:1450:4864:20::634])
+ id B62C3F80249; Tue,  6 Jul 2021 17:11:44 +0200 (CEST)
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com
+ [IPv6:2607:f8b0:4864:20::133])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 95816F8014E
- for <alsa-devel@alsa-project.org>; Tue,  6 Jul 2021 17:07:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95816F8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7853AF80134
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jul 2021 17:11:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7853AF80134
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="SBHfWn82"
-Received: by mail-ej1-x634.google.com with SMTP id gb6so18039166ejc.5
- for <alsa-devel@alsa-project.org>; Tue, 06 Jul 2021 08:07:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="IvCXivhu"
+Received: by mail-il1-x133.google.com with SMTP id h3so21072258ilc.9
+ for <alsa-devel@alsa-project.org>; Tue, 06 Jul 2021 08:11:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
  :cc:content-transfer-encoding;
- bh=+9dsgPbS//aUCZUFixPgGcG7qxsG2EJ3dbyOzFDh8TA=;
- b=SBHfWn821HxdveyktStHQrYDe4MbFpbgRsAdNfnT39UeMrTpAkqi5Mw9J7eZv7cX8o
- 4IiMGVVUkNi11aAd4XiuIPLnSf4etnUsfgOrP0HPkyuBpadE2fbx2e+Mv3rlJzIHAso+
- o7XaFo1UlSb/NBSAjQV11bNqf2gionJphJcRl4YCGJk45hXp5V+Gpo6AbrJv2xqP31dM
- +oUmVZwHbjtRk+sinfDNsF+kPOGLbKlYnyzpn0vB+NsB4Whl5CCwUy8NwaOykBdFTFHG
- XhUidv7/qS7jG1fnPfvqgohVjfRj0vLF0MFd7Vbksyj/BKvpyZ1bN9xNMq5MG35cMCap
- n6sA==
+ bh=4MFz8ETd/nmuIWZiubiifP+Omq2X9iSE9tCmj3gucYM=;
+ b=IvCXivhuxpkQcwCSP/v/Rrn0oejjH/xBgjRtfoGhDm7lPAT9ogutmMgacy+clPyi90
+ DRK6HgR8AmsyVM4QORABjf/IAyGQ3UrkgNOTqIRMXsHteuk6/x/Br3dCjgnqoJCe77/0
+ NoZ6+4GEFW/mdLd6ihS8LHap9sTax8kG5BzSjYrBjsLKheGiGE55U68yC8yRpvGR3lrH
+ i1lwKI80NFV0bQ+s0xhkaB3n4XHhOaW+jqS4RzYr17yLCz7jyCyj2zJOvQd/bsO7dMy8
+ 2ctnoUx7hTSh3dWCQ/T9gwlXwnhJ8TT3KyPZF8lHiLfnzYjBh4g93fOsXwM2kjJbuutz
+ CEWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc:content-transfer-encoding;
- bh=+9dsgPbS//aUCZUFixPgGcG7qxsG2EJ3dbyOzFDh8TA=;
- b=tmM3IQ0Z75RK+ssx8KbmzteTw/iNVF/KUkV7pJNLIIvNR0Dxl8GEUvYQeW7Z4IxZ0C
- /f4E6VZD28tm8agwxzfDhmje5tJbd+2yY6xtyU26LGObFlkRQJ6oVFkJ9OcKJeyip0Nx
- EPQkwaGanVWsD2leKHj2KbaSssFHSPtWK/wA9Ck3zcNV82Z+CaBHXdtckWnwFujWl6Nz
- NNmoW4gOkFK3vBUbq26QUHoFH0BrXr1XO18+C2qDkutqId8dy0Am/21Lb3Fhy3hLUTTr
- zUb6LZxwUBEUt9GnWbYRWH4DZgMRiXoZ9lTJiL6zcXzU0uaT9Pk425ahfH2U2fgy6i1a
- W7Aw==
-X-Gm-Message-State: AOAM530ETefAeu0egz86h2/iq7xhdYH4TkJn1QJ/k0dvf3iX7w4RQBcu
- RJtJjiTIqRbJy/iewvuUYKrAMNlgWlKTq+zP0jo=
-X-Google-Smtp-Source: ABdhPJyx2s89fjP7kWr4sVrlETefy/K9QI98mSZLW/XMLqqA4vHIWAGZQnqqZ+CiP6xjmA9K+asUF6gnTpo1w9tsizc=
-X-Received: by 2002:a17:907:6289:: with SMTP id
- nd9mr19151547ejc.384.1625584024338; 
- Tue, 06 Jul 2021 08:07:04 -0700 (PDT)
+ bh=4MFz8ETd/nmuIWZiubiifP+Omq2X9iSE9tCmj3gucYM=;
+ b=Hg2VKVGRFHz+COz7zubFAihfARzyBkUNQ6eznTTz97exGMeDFPKmR03+bQmSoRnj+K
+ mGLKsH96AX/m6NNaAC4w25UQxVT1DyntEFD6OGzSu4hxVIyaIt+hzCGFZvDno4Dcd81n
+ rcgDUDe6h9cBtupqsKzpcT/EiSdOhg/qNbmqz5KM12M7HlKrZSaoWU5ygnhVMaY268JT
+ YaPmD9vdCvY4kxUcN6/Aem9Ftj9b3SWP1fd4dVeZZEL2nYqPinconPV+/YyVKvgffZtD
+ TxWyMupYmJFgi13W+jq/6WNVYHH4lLT0oiBS4Zxs3ly2qYfWQDYyzmgAmpiaqH+/h3kp
+ 7PUA==
+X-Gm-Message-State: AOAM5304S+bQ/P9TKXIJJf8BG2rehrgzDWwS6Jt8TFLVlBl8oI52O3/G
+ 3uGGgJ3YmR2P2U1OY+nuDAMTC7fTrszYwjI8+q4EWQ==
+X-Google-Smtp-Source: ABdhPJzdclmD8PsHwW9RgRKWE0tJHszXQy4UssslzUqRBaLI9w/Jj1BdJnRyjKvoHgub8buDAUaWux7OCTROnp7miaQ=
+X-Received: by 2002:a05:6e02:1a0f:: with SMTP id
+ s15mr14885840ild.58.1625584295743; 
+ Tue, 06 Jul 2021 08:11:35 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210706095037.1425211-1-u.kleine-koenig@pengutronix.de>
 In-Reply-To: <20210706095037.1425211-1-u.kleine-koenig@pengutronix.de>
-From: Yehezkel Bernat <yehezkelshb@gmail.com>
-Date: Tue, 6 Jul 2021 18:06:47 +0300
-Message-ID: <CA+CmpXu5-NCvfuOc8fso2a9bmi0Dacmd=+u=XB-Wd7X=WgOTBA@mail.gmail.com>
+From: Mathieu Poirier <mathieu.poirier@linaro.org>
+Date: Tue, 6 Jul 2021 09:11:24 -0600
+Message-ID: <CANLsYkz_k3rBETkFWd9mm+Lgfcyp=YgiAM8rq8DaqaOcSofEkA@mail.gmail.com>
 Subject: Re: [PATCH] bus: Make remove callback return void
 To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 Content-Type: text/plain; charset="UTF-8"
@@ -100,15 +99,16 @@ Cc: nvdimm@lists.linux.dev, Alexey Kardashevskiy <aik@ozlabs.ru>,
  Mike Christie <michael.christie@oracle.com>, Wei Liu <wei.liu@kernel.org>,
  Maxim Levitsky <maximlevitsky@gmail.com>, Samuel Holland <samuel@sholland.org>,
  Michael Ellerman <mpe@ellerman.id.au>, linux-acpi@vger.kernel.org,
- Linux PCI <linux-pci@vger.kernel.org>, xen-devel@lists.xenproject.org,
+ linux-pci@vger.kernel.org, xen-devel@lists.xenproject.org,
  Tomas Winkler <tomas.winkler@intel.com>, Julien Grall <jgrall@amazon.com>,
  Ohad Ben-Cohen <ohad@wizery.com>, Alex Williamson <alex.williamson@redhat.com>,
  Alex Elder <elder@kernel.org>, linux-parisc@vger.kernel.org,
  Geoff Levand <geoff@infradead.org>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- "Rafael J. Wysocki" <rjw@rjwysocki.net>, LKML <linux-kernel@vger.kernel.org>,
+ "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
  linux-spi@vger.kernel.org, Thorsten Scherer <t.scherer@eckelmann.de>,
- kernel@pengutronix.de, Jon Mason <jdmason@kudzu.us>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>, Jon Mason <jdmason@kudzu.us>,
  linux-ntb@googlegroups.com, Wu Hao <hao.wu@intel.com>,
  David Woodhouse <dwmw@amazon.co.uk>,
  =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
@@ -125,16 +125,16 @@ Cc: nvdimm@lists.linux.dev, Alexey Kardashevskiy <aik@ozlabs.ru>,
  =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
  industrypack-devel@lists.sourceforge.net, linux-mips@vger.kernel.org,
  Len Brown <lenb@kernel.org>, alsa-devel@alsa-project.org,
- linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-arm-msm <linux-arm-msm@vger.kernel.org>, linux-media@vger.kernel.org,
  Maxime Ripard <mripard@kernel.org>, Johan Hovold <johan@kernel.org>,
  greybus-dev@lists.linaro.org, Bjorn Helgaas <bhelgaas@google.com>,
  Dave Jiang <dave.jiang@intel.com>,
  Boris Ostrovsky <boris.ostrovsky@oracle.com>,
  Mika Westerberg <mika.westerberg@linux.intel.com>,
- linux-arm-kernel@lists.infradead.org, Johannes Thumshirn <morbidrsa@gmail.com>,
- Mathieu Poirier <mathieu.poirier@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+ Johannes Thumshirn <morbidrsa@gmail.com>, Stephen Boyd <sboyd@kernel.org>,
  Cornelia Huck <cohuck@redhat.com>, Wolfram Sang <wsa@kernel.org>,
- Joey Pabalan <jpabalanb@gmail.com>,
+ Joey Pabalan <jpabalanb@gmail.com>, Yehezkel Bernat <YehezkelShB@gmail.com>,
  =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
  Bodo Stroesser <bostroesser@gmail.com>,
  Alison Schofield <alison.schofield@intel.com>,
@@ -165,7 +165,8 @@ Cc: nvdimm@lists.linux.dev, Alexey Kardashevskiy <aik@ozlabs.ru>,
  linux-sunxi@lists.linux.dev, Stefan Richter <stefanr@s5r6.in-berlin.de>,
  Sudeep Holla <sudeep.holla@arm.com>, "David S. Miller" <davem@davemloft.net>,
  Sven Van Asbroeck <TheSven73@gmail.com>, kvm@vger.kernel.org,
- "Michael S. Tsirkin" <mst@redhat.com>, linux-remoteproc@vger.kernel.org,
+ "Michael S. Tsirkin" <mst@redhat.com>,
+ linux-remoteproc <linux-remoteproc@vger.kernel.org>,
  Bjorn Andersson <bjorn.andersson@linaro.org>,
  Kirti Wankhede <kwankhede@nvidia.com>,
  Andreas Noever <andreas.noever@gmail.com>, linux-i3c@lists.infradead.org,
@@ -197,7 +198,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Jul 6, 2021 at 12:50 PM Uwe Kleine-K=C3=B6nig
+On Tue, 6 Jul 2021 at 03:56, Uwe Kleine-K=C3=B6nig
 <u.kleine-koenig@pengutronix.de> wrote:
 >
 > The driver core ignores the return value of this callback because there
@@ -215,10 +216,75 @@ On Tue, Jul 6, 2021 at 12:50 PM Uwe Kleine-K=C3=B6nig
 >
 > Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
 > ---
-
+> Hello,
 >
->  drivers/thunderbolt/domain.c              | 4 +---
+> this patch depends on "PCI: endpoint: Make struct pci_epf_driver::remove
+> return void" that is not yet applied, see
+> https://lore.kernel.org/r/20210223090757.57604-1-u.kleine-koenig@pengutro=
+nix.de.
+>
+> I tested it using allmodconfig on amd64 and arm, but I wouldn't be
+> surprised if I still missed to convert a driver. So it would be great to
+> get this into next early after the merge window closes.
+>
+> I send this mail to all people that get_maintainer.pl emits for this
+> patch. I wonder how many recipents will refuse this mail because of the
+> long Cc: list :-)
+>
+> Best regards
+> Uwe
+>
+>  arch/arm/common/locomo.c                  | 3 +--
+>  arch/arm/common/sa1111.c                  | 4 +---
+>  arch/arm/mach-rpc/ecard.c                 | 4 +---
+>  arch/mips/sgi-ip22/ip22-gio.c             | 3 +--
+>  arch/parisc/kernel/drivers.c              | 5 ++---
+>  arch/powerpc/platforms/ps3/system-bus.c   | 3 +--
+>  arch/powerpc/platforms/pseries/ibmebus.c  | 3 +--
+>  arch/powerpc/platforms/pseries/vio.c      | 3 +--
+>  drivers/acpi/bus.c                        | 3 +--
+>  drivers/amba/bus.c                        | 4 +---
+>  drivers/base/auxiliary.c                  | 4 +---
+>  drivers/base/isa.c                        | 4 +---
+>  drivers/base/platform.c                   | 4 +---
+>  drivers/bcma/main.c                       | 6 ++----
+>  drivers/bus/sunxi-rsb.c                   | 4 +---
+>  drivers/cxl/core.c                        | 3 +--
+>  drivers/dax/bus.c                         | 4 +---
+>  drivers/dma/idxd/sysfs.c                  | 4 +---
+>  drivers/firewire/core-device.c            | 4 +---
+>  drivers/firmware/arm_scmi/bus.c           | 4 +---
+>  drivers/firmware/google/coreboot_table.c  | 4 +---
+>  drivers/fpga/dfl.c                        | 4 +---
+>  drivers/hid/hid-core.c                    | 4 +---
+>  drivers/hid/intel-ish-hid/ishtp/bus.c     | 4 +---
+>  drivers/hv/vmbus_drv.c                    | 5 +----
+>  drivers/hwtracing/intel_th/core.c         | 4 +---
+>  drivers/i2c/i2c-core-base.c               | 5 +----
+>  drivers/i3c/master.c                      | 4 +---
+>  drivers/input/gameport/gameport.c         | 3 +--
+>  drivers/input/serio/serio.c               | 3 +--
+>  drivers/ipack/ipack.c                     | 4 +---
+>  drivers/macintosh/macio_asic.c            | 4 +---
+>  drivers/mcb/mcb-core.c                    | 4 +---
+>  drivers/media/pci/bt8xx/bttv-gpio.c       | 3 +--
+>  drivers/memstick/core/memstick.c          | 3 +--
+>  drivers/mfd/mcp-core.c                    | 3 +--
+>  drivers/misc/mei/bus.c                    | 4 +---
+>  drivers/misc/tifm_core.c                  | 3 +--
+>  drivers/mmc/core/bus.c                    | 4 +---
+>  drivers/mmc/core/sdio_bus.c               | 4 +---
+>  drivers/net/netdevsim/bus.c               | 3 +--
+>  drivers/ntb/core.c                        | 4 +---
+>  drivers/ntb/ntb_transport.c               | 4 +---
+>  drivers/nvdimm/bus.c                      | 3 +--
+>  drivers/pci/endpoint/pci-epf-core.c       | 4 +---
+>  drivers/pci/pci-driver.c                  | 3 +--
+>  drivers/pcmcia/ds.c                       | 4 +---
+>  drivers/platform/surface/aggregator/bus.c | 4 +---
+>  drivers/platform/x86/wmi.c                | 4 +---
+>  drivers/pnp/driver.c                      | 3 +--
+>  drivers/rapidio/rio-driver.c              | 4 +---
+>  drivers/rpmsg/rpmsg_core.c                | 4 +---
 
-For Thunderbolt:
-
-Acked-by: Yehezkel Bernat <YehezkelShB@gmail.com>
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
