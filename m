@@ -2,121 +2,167 @@ Return-Path: <SRS0=3BcS=MA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EC12C07E99
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 10:09:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3076AC07E96
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 10:09:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C9F1061451
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 10:09:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9F1061451
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id A5744619B6
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 10:09:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5744619B6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D25F1689;
-	Thu,  8 Jul 2021 12:08:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D25F1689
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3AA60165E;
+	Thu,  8 Jul 2021 12:09:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3AA60165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625738971;
-	bh=HC73kGvEvKi3oROAdfvwS2UVfOz7+/dVHyufwqEgl9M=;
+	s=default; t=1625738994;
+	bh=TAVF2IHc14rn/yOfV6TgmbqJAnfb0ILtNpwUOOE8P74=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=p4dTLGXrWvOymizLoycAL2Hpf+NOHwPKhjXbJ7sXJtT3ylW3eW1i5TEl/bmy9qSVQ
-	 RGBc0wAoBvQ81BUP4kR0p9Ei3d4e/nRSeCJOrDDvr182hPkaS9xx09I8aG2FYd2+N0
-	 OUzbOuaU8RR1SGyOJtKyf5l7qmKCpKKV/973R7Vk=
+	b=N4m+Zha+mzrqafyZoaS7ra7EwHYO0upowvofPkrn24Bag4v2dLdiHpG9+DCaSIjRh
+	 LH1m7tB3pzIimEFB6Vcr6wJeG/EZT6OMkbHBEwWwx8tRwHZxF04wkwh1JekjbFl3d/
+	 QMxdwZ0RYMXMnCk+Gdz7rRX42E7eRQBXoGjGsvJo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 11A70F8051B;
+	by alsa1.perex.cz (Postfix) with ESMTP id ABE35F8051C;
 	Thu,  8 Jul 2021 12:04:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93000F80249; Tue,  6 Jul 2021 12:36:05 +0200 (CEST)
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
- [IPv6:2a00:1450:4864:20::434])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 8597EF80249; Tue,  6 Jul 2021 12:45:46 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EAEDCF8012F
- for <alsa-devel@alsa-project.org>; Tue,  6 Jul 2021 12:35:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAEDCF8012F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 01FEAF80134
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jul 2021 12:45:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01FEAF80134
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="Yt+wwRbD"
-Received: by mail-wr1-x434.google.com with SMTP id i94so25505608wri.4
- for <alsa-devel@alsa-project.org>; Tue, 06 Jul 2021 03:35:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:content-transfer-encoding:in-reply-to;
- bh=6xuYHcNFKOKQBrKUFUDH+4OX/ZzxgolWWFVCDDtB2Y0=;
- b=Yt+wwRbDrooYfJ07+RIOcvlbNAmDArbrvJ7r1S0Vf2cjg/rLU7fAYgPxXpkS/Es1c/
- LcGWWFOVsEF/0XQJw8Ic4i6Dtc59Y/PIazeWXS81o/I5/ykvg7NDoqtNhU6ZQY0qgpts
- hX13gyhgO6x+I73AAGb4ZN/+qaseZR6quq5U1fL8NFgVa2YoJXURs1gKcClPP7oowGFt
- CUO7YRn27lhbGlEADkw/xBbGzLYaM6sE1cZhR+vatbGDVqfyXQOHsgSlmcoOTDifCPOm
- ISHjTYrtj1Tj6vkK+FyowiPdLCC1ljyYKvKt5eTXHZu+z0mb6AF50iygoibOaTtpwXde
- Om/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to;
- bh=6xuYHcNFKOKQBrKUFUDH+4OX/ZzxgolWWFVCDDtB2Y0=;
- b=lT7dYQy3dZGdmmJpH6bk2roZ+0z05c/3gMzztqCXUzSNUltaAME3cR7Sbh/AxY8nQH
- POqdjnr4c8IumnNbvKN/6F3EYgVNDK5covX0cyvI5VMufsfuAizxV7IVaVQzC+QM0tGY
- bw+XShxGZDsxmbIumu/lYmUcThULclszNKF0NNesHWHaz8xD5K27Lqp+CkigFDPyPgy3
- nkRwA6Qdm2l+E9+objgMr9VSS5QdmP2J2QobGXihrwQnFxGiBf/ZtniVCDpBH8HQSsiZ
- qvhbDPEc3/UtxcDjzVACkOJU1DjqWNABd2g6p/0dnlRfa3J6/+JR+mevrAgDmD/FC+w+
- 3tGA==
-X-Gm-Message-State: AOAM5310rAtjE4GOLxarlbo0/U4Rqtb4IDNgJKm0qtuW/agCsmm7JiRC
- M22I5C1nuSd8/CI5ubrwFR9heg==
-X-Google-Smtp-Source: ABdhPJxx+Xr4AcuLpRSkCC4EtytSRujE0SZ0zcPphvKN4FEK+8OpQKjY5aHg/Lctw2KdmVZr98nK+A==
-X-Received: by 2002:a05:6000:12d0:: with SMTP id
- l16mr21397024wrx.189.1625567755049; 
- Tue, 06 Jul 2021 03:35:55 -0700 (PDT)
-Received: from dell ([109.180.115.218])
- by smtp.gmail.com with ESMTPSA id l9sm16428319wrp.14.2021.07.06.03.35.53
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 06 Jul 2021 03:35:54 -0700 (PDT)
-Date: Tue, 6 Jul 2021 11:35:52 +0100
-From: Lee Jones <lee.jones@linaro.org>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="qnDz57Ox"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B74ED6115A;
+ Tue,  6 Jul 2021 10:45:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1625568340;
+ bh=TAVF2IHc14rn/yOfV6TgmbqJAnfb0ILtNpwUOOE8P74=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=qnDz57OxqxhKbIGKnm6WXO3ax9Jo3aAHpLlFSbF8mTdAxrJmPQJCxsr8+ht0s7IDc
+ xYOYxvjvsX3ziqU/f/XYLRW5li2BYhFWrAufqc4Y6IUt+VIgCU61q8WT5QtyauWi71
+ 3GBT4a+et00hGy9nCLqm8Av7L+ECtX1ZZb7AHvZBYeXJOuPw/J+F5+MSk6hfnqsqky
+ 3hf/hCxp2HS6AXb1Eu+dF2EELhZURp3muNIoWPu7Xiyh/FENrfSE7Xc8B3v9PjCgSi
+ vKnGjaNhJjEE1iB7jKy6BPi3AsIP1HMf37fHc+SUFeV7QSyxP2vm1nOS/QzuTrjnob
+ Lq9ChTTCah7rA==
+Date: Tue, 6 Jul 2021 16:15:36 +0530
+From: Vinod Koul <vkoul@kernel.org>
 To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
 Subject: Re: [PATCH] bus: Make remove callback return void
-Message-ID: <YOQxRS8HLTYthWNn@dell>
+Message-ID: <YOQ0UPduZkhZ+CmB@matsya>
 References: <20210706095037.1425211-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 In-Reply-To: <20210706095037.1425211-1-u.kleine-koenig@pengutronix.de>
-X-Mailman-Approved-At: Thu, 08 Jul 2021 12:04:25 +0200
-Cc: nvdimm@lists.linux.dev, linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>, linux-fpga@vger.kernel.org,
- linux-pci@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-cxl@vger.kernel.org, linux-mips@vger.kernel.org,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- target-devel@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-i3c@lists.infradead.org, linux1394-devel@lists.sourceforge.net,
- linux-scsi@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
- Helge Deller <deller@gmx.de>, linux-staging@lists.linux.dev,
- Russell King <linux@armlinux.org.uk>, linux-acpi@vger.kernel.org,
- industrypack-devel@lists.sourceforge.net, linux-input@vger.kernel.org,
- linux-mmc@vger.kernel.org, virtualization@lists.linux-foundation.org,
- linux-sunxi@lists.linux.dev, linux-media@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-remoteproc@vger.kernel.org, greybus-dev@lists.linaro.org,
- xen-devel@lists.xenproject.org, platform-driver-x86@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-parisc@vger.kernel.org,
+X-Mailman-Approved-At: Thu, 08 Jul 2021 12:04:26 +0200
+Cc: nvdimm@lists.linux.dev, Alexey Kardashevskiy <aik@ozlabs.ru>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
+ Jens Taprogge <jens.taprogge@taprogge.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>, linux-fpga@vger.kernel.org,
+ Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+ Paul Mackerras <paulus@samba.org>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ "K. Y. Srinivasan" <kys@microsoft.com>,
+ Mike Christie <michael.christie@oracle.com>, Wei Liu <wei.liu@kernel.org>,
+ Maxim Levitsky <maximlevitsky@gmail.com>, Samuel Holland <samuel@sholland.org>,
+ Michael Ellerman <mpe@ellerman.id.au>, linux-acpi@vger.kernel.org,
+ linux-pci@vger.kernel.org, xen-devel@lists.xenproject.org,
+ Tomas Winkler <tomas.winkler@intel.com>, Julien Grall <jgrall@amazon.com>,
+ Ohad Ben-Cohen <ohad@wizery.com>, Alex Williamson <alex.williamson@redhat.com>,
+ Alex Elder <elder@kernel.org>, linux-parisc@vger.kernel.org,
  Geoff Levand <geoff@infradead.org>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, kernel@pengutronix.de, netdev@vger.kernel.org,
- dmaengine@vger.kernel.org, linux-ntb@googlegroups.com,
- linuxppc-dev@lists.ozlabs.org
+ "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, Thorsten Scherer <t.scherer@eckelmann.de>,
+ kernel@pengutronix.de, Jon Mason <jdmason@kudzu.us>,
+ linux-ntb@googlegroups.com, Wu Hao <hao.wu@intel.com>,
+ David Woodhouse <dwmw@amazon.co.uk>,
+ Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Manohar Vanga <manohar.vanga@gmail.com>, linux-wireless@vger.kernel.org,
+ Dominik Brodowski <linux@dominikbrodowski.net>,
+ virtualization@lists.linux-foundation.org,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ target-devel@vger.kernel.org, linux-i2c@vger.kernel.org,
+ Kai-Heng Feng <kai.heng.feng@canonical.com>,
+ Stefano Stabellini <sstabellini@kernel.org>,
+ Stephen Hemminger <sthemmin@microsoft.com>, Ira Weiny <ira.weiny@intel.com>,
+ Helge Deller <deller@gmx.de>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ industrypack-devel@lists.sourceforge.net, linux-mips@vger.kernel.org,
+ Len Brown <lenb@kernel.org>, alsa-devel@alsa-project.org,
+ linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+ Maxime Ripard <mripard@kernel.org>, Johan Hovold <johan@kernel.org>,
+ greybus-dev@lists.linaro.org, Bjorn Helgaas <bhelgaas@google.com>,
+ Dave Jiang <dave.jiang@intel.com>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ linux-arm-kernel@lists.infradead.org, Johannes Thumshirn <morbidrsa@gmail.com>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
+ Cornelia Huck <cohuck@redhat.com>, Wolfram Sang <wsa@kernel.org>,
+ Joey Pabalan <jpabalanb@gmail.com>, Yehezkel Bernat <YehezkelShB@gmail.com>,
+ Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+ Bodo Stroesser <bostroesser@gmail.com>,
+ Alison Schofield <alison.schofield@intel.com>,
+ Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+ Tyrel Datwyler <tyreld@linux.ibm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Tom Rix <trix@redhat.com>, Jason Wang <jasowang@redhat.com>,
+ SeongJae Park <sjpark@amazon.de>, linux-hyperv@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org, Frank Li <lznuaa@gmail.com>,
+ netdev@vger.kernel.org, Qinglang Miao <miaoqinglang@huawei.com>,
+ Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh@kernel.org>,
+ Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+ Mark Gross <mgross@linux.intel.com>, linux-staging@lists.linux.dev,
+ Dexuan Cui <decui@microsoft.com>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Kishon Vijay Abraham I <kishon@ti.com>, Chen-Yu Tsai <wens@csie.org>,
+ linux-input@vger.kernel.org, Matt Porter <mporter@kernel.crashing.org>,
+ Allen Hubbe <allenbh@gmail.com>, Alex Dubov <oakad@yahoo.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, Jiri Kosina <jikos@kernel.org>,
+ Vladimir Zapolskiy <vz@mleia.com>, Ben Widawsky <ben.widawsky@intel.com>,
+ Moritz Fischer <mdf@kernel.org>, linux-cxl@vger.kernel.org,
+ Michael Buesch <m@bues.ch>, Dan Williams <dan.j.williams@intel.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Cristian Marussi <cristian.marussi@arm.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Martyn Welch <martyn@welchs.me.uk>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-mmc@vger.kernel.org,
+ linux-sunxi@lists.linux.dev, Stefan Richter <stefanr@s5r6.in-berlin.de>,
+ Sudeep Holla <sudeep.holla@arm.com>, "David S. Miller" <davem@davemloft.net>,
+ Sven Van Asbroeck <TheSven73@gmail.com>, kvm@vger.kernel.org,
+ "Michael S. Tsirkin" <mst@redhat.com>, linux-remoteproc@vger.kernel.org,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Kirti Wankhede <kwankhede@nvidia.com>,
+ Andreas Noever <andreas.noever@gmail.com>, linux-i3c@lists.infradead.org,
+ linux1394-devel@lists.sourceforge.net, Lee Jones <lee.jones@linaro.org>,
+ Arnd Bergmann <arnd@arndb.de>, linux-scsi@vger.kernel.org,
+ Vishal Verma <vishal.l.verma@intel.com>, Russell King <linux@armlinux.org.uk>,
+ Andy Gross <agross@kernel.org>, linux-serial@vger.kernel.org,
+ Jakub Kicinski <kuba@kernel.org>, Michael Jamet <michael.jamet@intel.com>,
+ William Breathitt Gray <vilhelm.gray@gmail.com>,
+ Hans de Goede <hdegoede@redhat.com>, Hannes Reinecke <hare@suse.de>,
+ Adrian Hunter <adrian.hunter@intel.com>, Juergen Gross <jgross@suse.com>,
+ linuxppc-dev@lists.ozlabs.org, Takashi Iwai <tiwai@suse.com>,
+ Alexandre Bounine <alex.bou9@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Marc Zyngier <maz@kernel.org>, dmaengine@vger.kernel.org,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Maximilian Luz <luzmaximilian@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -132,8 +178,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 06 Jul 2021, Uwe Kleine-König wrote:
-
+On 06-07-21, 11:50, Uwe Kleine-K�nig wrote:
 > The driver core ignores the return value of this callback because there
 > is only little it can do when a device disappears.
 > 
@@ -146,68 +191,8 @@ On Tue, 06 Jul 2021, Uwe Kleine-König wrote:
 > With struct bus_type::remove returning void it's prevented that newly
 > implemented buses return an ignored error code and so don't anticipate
 > wrong expectations for driver authors.
-> 
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> ---
-> Hello,
-> 
-> this patch depends on "PCI: endpoint: Make struct pci_epf_driver::remove
-> return void" that is not yet applied, see
-> https://lore.kernel.org/r/20210223090757.57604-1-u.kleine-koenig@pengutronix.de.
-> 
-> I tested it using allmodconfig on amd64 and arm, but I wouldn't be
-> surprised if I still missed to convert a driver. So it would be great to
-> get this into next early after the merge window closes.
-> 
-> I send this mail to all people that get_maintainer.pl emits for this
-> patch. I wonder how many recipents will refuse this mail because of the
-> long Cc: list :-)
-> 
-> Best regards
-> Uwe
-> 
->  arch/arm/common/locomo.c                  | 3 +--
->  arch/arm/common/sa1111.c                  | 4 +---
->  arch/arm/mach-rpc/ecard.c                 | 4 +---
->  arch/mips/sgi-ip22/ip22-gio.c             | 3 +--
->  arch/parisc/kernel/drivers.c              | 5 ++---
->  arch/powerpc/platforms/ps3/system-bus.c   | 3 +--
->  arch/powerpc/platforms/pseries/ibmebus.c  | 3 +--
->  arch/powerpc/platforms/pseries/vio.c      | 3 +--
->  drivers/acpi/bus.c                        | 3 +--
->  drivers/amba/bus.c                        | 4 +---
->  drivers/base/auxiliary.c                  | 4 +---
->  drivers/base/isa.c                        | 4 +---
->  drivers/base/platform.c                   | 4 +---
->  drivers/bcma/main.c                       | 6 ++----
->  drivers/bus/sunxi-rsb.c                   | 4 +---
->  drivers/cxl/core.c                        | 3 +--
->  drivers/dax/bus.c                         | 4 +---
->  drivers/dma/idxd/sysfs.c                  | 4 +---
->  drivers/firewire/core-device.c            | 4 +---
->  drivers/firmware/arm_scmi/bus.c           | 4 +---
->  drivers/firmware/google/coreboot_table.c  | 4 +---
->  drivers/fpga/dfl.c                        | 4 +---
->  drivers/hid/hid-core.c                    | 4 +---
->  drivers/hid/intel-ish-hid/ishtp/bus.c     | 4 +---
->  drivers/hv/vmbus_drv.c                    | 5 +----
->  drivers/hwtracing/intel_th/core.c         | 4 +---
->  drivers/i2c/i2c-core-base.c               | 5 +----
->  drivers/i3c/master.c                      | 4 +---
->  drivers/input/gameport/gameport.c         | 3 +--
->  drivers/input/serio/serio.c               | 3 +--
->  drivers/ipack/ipack.c                     | 4 +---
->  drivers/macintosh/macio_asic.c            | 4 +---
->  drivers/mcb/mcb-core.c                    | 4 +---
->  drivers/media/pci/bt8xx/bttv-gpio.c       | 3 +--
->  drivers/memstick/core/memstick.c          | 3 +--
 
->  drivers/mfd/mcp-core.c                    | 3 +--
-
-Acked-by: Lee Jones <lee.jones@linaro.org>
+Acked-By: Vinod Koul <vkoul@kernel.org>
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+~Vinod
