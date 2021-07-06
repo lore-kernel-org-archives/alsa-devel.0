@@ -2,76 +2,73 @@ Return-Path: <SRS0=47st=L6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D04F6C07E96
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jul 2021 12:32:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87AE5C07E96
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jul 2021 12:36:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AD48F6233C
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jul 2021 12:32:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD48F6233C
+	by mail.kernel.org (Postfix) with ESMTPS id 540E86225E
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jul 2021 12:36:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 540E86225E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0542F166F;
-	Tue,  6 Jul 2021 14:31:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0542F166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id CCF9A83D;
+	Tue,  6 Jul 2021 14:29:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCF9A83D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625574726;
-	bh=Me4h8Svxr0oEY24HAdRXkrZoovr8uE/hMjWWvsAowfw=;
+	s=default; t=1625574620;
+	bh=Sut5QXr6y+C9xjy3IeaZ+BbqPrn67rDwl5hTIz19DpI=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a4TQjyDJe2baaqjDCalgFb01mHnn8hDEqHxBSVFiAEzaiCAry8cA5Zz6Om1BnrLUV
-	 wPjEdE8vyKhaxmmW3u6gVe0jVnYnBz1M5bxfjFbIk8YWbSwMrmaHmTndQA2NxttxLa
-	 WVacUmA9vT1zkJPageDzeGW398QO5rPV+5NerTFg=
+	b=L1TA2C88Badxgj3RJn3JO5mkeP97WtPVOBuuuu+pgjprodAK0xRJ1TdUIU6itSXRw
+	 TB3M0LLtXtkA6bI9vn4DcflmvBJWDJ82yKoqN7fXgtKuOnGWcfeh9NsbnGJZYpUXFZ
+	 Ejsu0Te0y24Rk1pQz60QhzCxGyU46CST8iEHkHNk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97694F8014E;
-	Tue,  6 Jul 2021 14:31:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 572C2F80246;
+	Tue,  6 Jul 2021 14:29:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CA9BCF80249; Tue,  6 Jul 2021 14:31:13 +0200 (CEST)
+ id 5D3FEF80249; Tue,  6 Jul 2021 14:29:27 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 401BEF8014E
- for <alsa-devel@alsa-project.org>; Tue,  6 Jul 2021 14:31:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 401BEF8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 10490F8014E
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jul 2021 14:29:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10490F8014E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="HFt0g9ha"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDD5D619C8;
- Tue,  6 Jul 2021 12:31:06 +0000 (UTC)
+ header.b="MfeTK+TS"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9561F622F8;
+ Tue,  6 Jul 2021 12:29:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1625574667;
- bh=Me4h8Svxr0oEY24HAdRXkrZoovr8uE/hMjWWvsAowfw=;
+ s=k20201202; t=1625574556;
+ bh=Sut5QXr6y+C9xjy3IeaZ+BbqPrn67rDwl5hTIz19DpI=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=HFt0g9haQ8yyxZbpnpFN9XSyMBSA/1s8NBR8RYEIjUmHvOMolZj8hsmjpDRONuKMD
- OAmsDyP0LBvkfs/mKR2/rQ3X9oG/rLM/8C1zuripKBsxY0TTeUEbEPW3nZoQ83De/b
- GYfN+kFYYX1LIpMAglDitkCIDVOR2RPni4wY/Hkb5nGmEBvs6aQBhMP84WLL0pw97r
- apiYmJqdf7zH8pAmz6OY4QFjZvvFiZevggUHwxC9/wS/CDSnJXydFpbGTnx32lqvzC
- lS8OQsinI0qoXoTed8W6mq4UNUZ7q4vMmd8AugjxqSGXLaznMXu9DP/xKpsBfJlkz4
- XEUuJlzvx9iuA==
-Date: Tue, 6 Jul 2021 13:30:35 +0100
+ b=MfeTK+TSk4iXPcoww75x6O8k4ZpyHSDTjSwjtYi9Mq18ISjNvsvh5PGzk2oUnE283
+ pBwZUER+m5xVAW0cBoxwtBWflcX90aFgQdnHU1W3dfJBmQrfz30o+AudgdVzYVyLfZ
+ K1ovcu7ggBHKWBfy1AKUs3TPY3tNOardF7W8eY0k5jNcM2RAPksK00Zi19GB8PLW5/
+ wsY6RGYGGJVdXMu2l67coLwFSzDOxSZrms5owRNuZetmpBvm4wWWrZ3+3e3wJEiQxY
+ 0dGAocnZiGPPGJSL62Jqv/hLK2mvZRu5nxrlLxVrleOvYdalQlWqb1HhoK6h4ptQx8
+ j/hSE4vQxZ6jA==
+Date: Tue, 6 Jul 2021 13:28:44 +0100
 From: Mark Brown <broonie@kernel.org>
-To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Subject: Re: [PATCH] ASoC: add dai_reoder flag to reverse the stop sequence
-Message-ID: <20210706123035.GE4529@sirena.org.uk>
-References: <20210705155830.24693-1-vijendar.mukunda@amd.com>
- <20210705174241.GF4574@sirena.org.uk>
- <7f1ad1b3-b509-24cf-00d8-f82766aae0d6@amd.com>
- <20210705192952.GI4574@sirena.org.uk>
- <48b0a8e6-ca29-3f77-2689-ad7515f8743b@amd.com>
+To: Vijendar Mukunda <vijendar.mukunda@amd.com>
+Subject: Re: [PATCH v2] ASoC: add stop_dma_first flag to reverse the stop
+ sequence
+Message-ID: <20210706122844.GD4529@sirena.org.uk>
+References: <20210705193620.1144-1-vijendar.mukunda@amd.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="9l24NVCWtSuIVIod"
+ protocol="application/pgp-signature"; boundary="OaZoDhBhXzo6bW1J"
 Content-Disposition: inline
-In-Reply-To: <48b0a8e6-ca29-3f77-2689-ad7515f8743b@amd.com>
+In-Reply-To: <20210705193620.1144-1-vijendar.mukunda@amd.com>
 X-Cookie: Some restrictions may apply.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
@@ -97,36 +94,38 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---9l24NVCWtSuIVIod
+--OaZoDhBhXzo6bW1J
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 06, 2021 at 01:40:59AM +0530, Mukunda,Vijendar wrote:
+On Tue, Jul 06, 2021 at 01:06:17AM +0530, Vijendar Mukunda wrote:
 
-> To make AMD specific platform change(which uses ACP 2.x IP), As per our
-> understanding we should only update the flag in ACP DMA driver by adding
-> flag in snd_pcm_substream structure rather than adding flag in card
-> structure.
-> Please suggest us, if there is any better place holder to add
-> "stop_dma_first" flag.
+> @@ -982,6 +982,7 @@ struct snd_soc_card {
+>  	unsigned int disable_route_checks:1;
+>  	unsigned int probed:1;
+>  	unsigned int component_chaining:1;
+> +	unsigned int stop_dma_first:1;
+> =20
+>  	void *drvdata;
+>  };
 
-I'd expect this to be configured by the machine driver in the dai_link.
-It might need copying over to the substream for runtime use but the core
-should do that.
+This still doesn't seem like something which should be controlled at the
+card level, I'd expect it to be configured at the dai_link level.
 
---9l24NVCWtSuIVIod
+--OaZoDhBhXzo6bW1J
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDkTOoACgkQJNaLcl1U
-h9CD0Af6Aml9JrNZjaM7DWoPKWUc6A7Eh7aC5xXuVGPp6bPnt7nmt48yswr6l9nS
-FYAFulGmlW7KmNOXQ2sLEbdmNQvWyKdKbQyfsLr3KqaKkhYkVL/c6oPjzrx9jQL2
-2C05Ofe+Aue2VoT+6LXeeHcrJc4zzXkdgWw7Q1amvV+uBKSyN8T1QCjaAvh2cpKl
-2CZsZZz8Eq6PAvoBhvEVLjjQgrAeW5+V3BfYvWdwhEhhiTitz7MoWLO5ntq0/+qJ
-43mjCbqPLFYaUcvqriafZqW6xArg5WexmDC9NiNuCuyffjW36AQxkfizIPKZAFx8
-yZrsX1SAYkBUtZQ9wUITPEq8kM+/Ng==
-=gGgo
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDkTHsACgkQJNaLcl1U
+h9CbbAf+JVrUPOvyKgDMgQ69A/T7wiXFEz/9WjR1Zxoo8tKXGnUogQkoZ9ZdKXG8
+FjLHNmtEOv92CiJ4ziUNH+22/erswHAKWXmGWF2k+9NKvZKlZCu6zxLrVGHaPgqA
+awxZFA6k1j5NS/fLCfa9BdSo1n7XAeltqkb4YhH5kTwhUYaNiMnFTifPFeriFQLp
+ASaJP9+Sh3bG2PYiDyUc+MSoIQ4Ak+QI0VAZppePeEtbvi17zoCMeXJVLkEqNBF1
+Q4MQMo1VTefu/0eK3zxjeA8UmxN9uRrp5MHQ5iqjUiwsVp8bSikfX7Pj4rwlm56p
+buaM9OpzPE+D4sujnw8oRB/dqAyNAA==
+=7N7D
 -----END PGP SIGNATURE-----
 
---9l24NVCWtSuIVIod--
+--OaZoDhBhXzo6bW1J--
