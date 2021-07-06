@@ -1,150 +1,79 @@
-Return-Path: <SRS0=cdus=L5=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=47st=L6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MSGID_FROM_MTA_HEADER,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F943C07E99
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jul 2021 19:54:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D04F6C07E96
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jul 2021 12:32:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8ACBE61483
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jul 2021 19:54:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8ACBE61483
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com
+	by mail.kernel.org (Postfix) with ESMTPS id AD48F6233C
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jul 2021 12:32:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD48F6233C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C45A716E4;
-	Mon,  5 Jul 2021 21:53:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C45A716E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0542F166F;
+	Tue,  6 Jul 2021 14:31:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0542F166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625514864;
-	bh=mKCpG6+/E16uSFMIk0GGgk9oYtnqzGEJUgSHj6Hzvc4=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1625574726;
+	bh=Me4h8Svxr0oEY24HAdRXkrZoovr8uE/hMjWWvsAowfw=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=J2tkK5jfReyH6yC2XRumei252rT9BCTzKoQlWVo2d7xYIkqsfpFY83DQnv4nnir0p
-	 1uaDiSXUWFYoxwAnPFelygxFChJPlmgplueJ3P3EJHtkDEvSB8h9oNsYEjTENa7TBr
-	 QI0vS42j25PUQz849j4F3xfTQ7R3o9nnX2s20CoI=
+	b=a4TQjyDJe2baaqjDCalgFb01mHnn8hDEqHxBSVFiAEzaiCAry8cA5Zz6Om1BnrLUV
+	 wPjEdE8vyKhaxmmW3u6gVe0jVnYnBz1M5bxfjFbIk8YWbSwMrmaHmTndQA2NxttxLa
+	 WVacUmA9vT1zkJPageDzeGW398QO5rPV+5NerTFg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 64BF2F8016B;
-	Mon,  5 Jul 2021 21:53:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97694F8014E;
+	Tue,  6 Jul 2021 14:31:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 27891F80224; Mon,  5 Jul 2021 21:53:33 +0200 (CEST)
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com
- (mail-bn8nam12on2077.outbound.protection.outlook.com [40.107.237.77])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id CA9BCF80249; Tue,  6 Jul 2021 14:31:13 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A628CF8014E
- for <alsa-devel@alsa-project.org>; Mon,  5 Jul 2021 21:53:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A628CF8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 401BEF8014E
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jul 2021 14:31:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 401BEF8014E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com
- header.b="XfAEvdBs"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GtZS5AEMfKgAIYzgWlRWpRa5lEQFh3hl+NPMuUefF/hQ0ga4tZUVHE7lNdrt5IckaCJZSGeAsdWHA9UW8MbX/meYxbWZgDE9QyX3fa4QOBxNRSBF8NFO8jruLMOLK1oFNB7uWlxLNk4J67eJYlA6uqxVuBtYNBPUttqhPi5d5gnkiAqCtZaDRk52Nfarp+t3ebKC+t3aoOwA0YJirPvwN6phasSkq8yQLgd6FFk10Xuh343W4z70XK79wjJLQMGmnJBTf/KYXwck/NLbDuJltelnSF/gJ0Lkl/OmqLX0vlXh9DAbhpdX5xUzy9TJusngzVHSZS1o8agfkjqQLZNsgw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MKduQjJcdUdFpE7I9fTBsmmZbT+xvuRyEbxbulpGycI=;
- b=LYMdi4KfxHYHbX3i6iRPxPYZWM3YqkOrL0QD/zb7JqgiVLYBwmua66um0N1bSg//CEi9Udc7dGCJWBL42wAlTj2R1vUzwnTlLPqUE6f3PC4PeXhPe54/9RWWpj1b3M7LhbiLu0Nyk1BcTowB1j3rkYYXIskrwBF9lDYAlrZdptCfHiOhw2uZkAQBHNn4hCMDFN01Kn7U/+ATF60iQoyVFqv2CjeJ0lfeTr0GIf1IOH+SQPU3UE21T9mmnCu2/dVfP7p3KbLc08nxYASw2Yzi+19gR4P23mzgFkcG1Sqn6QzmpmYtOluHpBldP5U932GotNFA3PfpFnkbpe+OdWL2JA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MKduQjJcdUdFpE7I9fTBsmmZbT+xvuRyEbxbulpGycI=;
- b=XfAEvdBsCjZ+AoQ0+qKeS0hVnF7B4m6dMljzfKZtpdrbQ/WzpmguBw62m/RI9ipwDv/j03AOEt6PUKtBgsuqAYddhmxoHzwNLvc82v6i4BUveyPZYLwQR++/Ly2b0VEY86su8OzebrEiXzetSnzDDCj31iav5Qc3pqBGoVYos2Y=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
- (2603:10b6:300:e4::23) by MWHPR12MB1471.namprd12.prod.outlook.com
- (2603:10b6:301:e::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.32; Mon, 5 Jul
- 2021 19:53:23 +0000
-Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
- ([fe80::d0a9:a5f1:ca5a:b439]) by MWHPR1201MB2557.namprd12.prod.outlook.com
- ([fe80::d0a9:a5f1:ca5a:b439%11]) with mapi id 15.20.4287.033; Mon, 5 Jul 2021
- 19:53:23 +0000
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="HFt0g9ha"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDD5D619C8;
+ Tue,  6 Jul 2021 12:31:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1625574667;
+ bh=Me4h8Svxr0oEY24HAdRXkrZoovr8uE/hMjWWvsAowfw=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=HFt0g9haQ8yyxZbpnpFN9XSyMBSA/1s8NBR8RYEIjUmHvOMolZj8hsmjpDRONuKMD
+ OAmsDyP0LBvkfs/mKR2/rQ3X9oG/rLM/8C1zuripKBsxY0TTeUEbEPW3nZoQ83De/b
+ GYfN+kFYYX1LIpMAglDitkCIDVOR2RPni4wY/Hkb5nGmEBvs6aQBhMP84WLL0pw97r
+ apiYmJqdf7zH8pAmz6OY4QFjZvvFiZevggUHwxC9/wS/CDSnJXydFpbGTnx32lqvzC
+ lS8OQsinI0qoXoTed8W6mq4UNUZ7q4vMmd8AugjxqSGXLaznMXu9DP/xKpsBfJlkz4
+ XEUuJlzvx9iuA==
+Date: Tue, 6 Jul 2021 13:30:35 +0100
+From: Mark Brown <broonie@kernel.org>
+To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
 Subject: Re: [PATCH] ASoC: add dai_reoder flag to reverse the stop sequence
-To: Mark Brown <broonie@kernel.org>
+Message-ID: <20210706123035.GE4529@sirena.org.uk>
 References: <20210705155830.24693-1-vijendar.mukunda@amd.com>
  <20210705174241.GF4574@sirena.org.uk>
  <7f1ad1b3-b509-24cf-00d8-f82766aae0d6@amd.com>
  <20210705192952.GI4574@sirena.org.uk>
-From: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Message-ID: <48b0a8e6-ca29-3f77-2689-ad7515f8743b@amd.com>
-Date: Tue, 6 Jul 2021 01:40:59 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210705192952.GI4574@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.159.242]
-X-ClientProxiedBy: SGXP274CA0009.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::21)
- To MWHPR1201MB2557.namprd12.prod.outlook.com
- (2603:10b6:300:e4::23)
+ <48b0a8e6-ca29-3f77-2689-ad7515f8743b@amd.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.252.93.39] (165.204.159.242) by
- SGXP274CA0009.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::21) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4287.22 via Frontend Transport; Mon, 5 Jul 2021 19:53:18 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 79144543-2b14-4914-e43c-08d93fee8bd7
-X-MS-TrafficTypeDiagnostic: MWHPR12MB1471:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR12MB14719C61D5C61AF7F14EE14C971C9@MWHPR12MB1471.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Z+6N6NffwmYj/DMdl6WCDehi8UQN0ESySDrd7Ob/oqcUjGI7YVLvwCTmLBRNfNkcXCufIpAxQbO4L1lQlIJQbgrSP1xOb8F7ZkGyOFfeZ/ih6XU1IhEU0wBe7xjXTOumqn45depHbm5CtbIiO26x04WpmZpFqNEzzc/oOIAntxO/07A0Fof34pWsmZTLZIaQQo1SY6JNBmDEbB/nRLSs7LPPLLl4Yn+NlTFanyPyrEsLKIl215SGQ/yr4Zs2S4Dv0NXMKd6tkNhsgNB5J6H/laEXOiW6N/XWVwy2b2A6O++WqVNqFKEPQJckznRXXP4034C1ONvDJKCVHx4MinDNXAu1xYo2jF1oLx4/szfoeioNsdcX811RoyIuMpbmmluAzZI00L/XR3Guhkfzm+NhRPtN0Gx+3jneOMYkmQu0HO6F3Ut/CN8kLaGo0wZVyFx1kjFEvTtk4vlDVDMJn8kRvZdbtfNOoYYJSK+KFUqzHuDPZ3PehkKbbdVqpDeMz8BEEav/78fm0SGLTCo64H6zRqRYfc0j3ucGpwaaA3pJ7k+1BfZSHbnNdriplaRDbMnHCHFHtxn8wd1vYEe6GFy1iyrGgalzg3i4xx1bPPWldI1CeuUJZ4isG/JUr0NHC2NpgTuPRWhmylbRe+3GsspM3KzFnXHDAtwvhJ6OdEJT7dAXu+Q6dF3TzPufICJLPiZHptlVGCEgXtYasKt5tzfNgHbwBUj9a4CbktEyi4vNiY8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:MWHPR1201MB2557.namprd12.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(39860400002)(396003)(346002)(136003)(376002)(366004)(16576012)(66556008)(31696002)(54906003)(316002)(2906002)(66476007)(66946007)(478600001)(6486002)(53546011)(83380400001)(7416002)(4326008)(16526019)(956004)(6666004)(8676002)(186003)(26005)(6916009)(38100700002)(5660300002)(86362001)(36756003)(2616005)(31686004)(8936002)(45980500001)(43740500002);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?Windows-1252?Q?f5TPbkmTBJ9AQL+CAxDMJSyHpaBjxVr12GlgoGo7+7P/cYGuoNfsHagq?=
- =?Windows-1252?Q?vXNxC8iKC00MOkILLM5DL5PaPtLj8bKh18CybJHsol1FFuR3BKZ4slVw?=
- =?Windows-1252?Q?VGTJgcDnPHFILoiD7K7fJpYXIf99y/81q/V5ZR668yf6eqE831wPnaKO?=
- =?Windows-1252?Q?wsGTTQPNp1n2gK/UB9ekxU8eojpZgUAGDfi3WwrtQ9A0hv2xiI3TV3xd?=
- =?Windows-1252?Q?elYsuPZZECT7FpBlTwJKU695L8PhkWdVrsAsHhWzUO2mQ/Xz7Y2DBPhn?=
- =?Windows-1252?Q?skmIWbyQS0PpIZ6RYIQYhMlssrHW3yv+2dsDIRIaFLdbc8h2WOs+/hqo?=
- =?Windows-1252?Q?eJ0DA7ydRFMupEFxEqch6vpFKYaR3GPHcs5Ni49QGtj8OZLXZouUQk9Z?=
- =?Windows-1252?Q?psBqdLrLvdJKhyomB+FQs7wAaajRJ4kGJXYvMq6Xdwl0jELnizJhQmhE?=
- =?Windows-1252?Q?XMA2vvKQsGZ+lRTAK11s/X3hCMCJyXoGkU2mjta5C9817izQPPqCINiS?=
- =?Windows-1252?Q?Bq31pkY/jYBGjxHM56CTm//cWN4XK6DYA3FmA3qQCVm4ymlZK60D6clH?=
- =?Windows-1252?Q?mdUgTLRnGHtq93+SJKIverwLZjNEywEO8siyNwl/og+RzNAveSCWeUCY?=
- =?Windows-1252?Q?UCgJgqMtIpQd7a9ePK+kaKf+ePTDLhTCXb9JG9sdDwdrPoVD4OhcpVYh?=
- =?Windows-1252?Q?2NwSurUO56oDtBnP5cFWVVKy6w/cwLvM+3V+UtVIXcvBYPU3E09Adb4y?=
- =?Windows-1252?Q?MZHMbqznDD8yACq1X0urivTNAf4Ss7jbv1XLvoXJuNGY+61+oL/CWlET?=
- =?Windows-1252?Q?2nTpd1KucTPbRb0Mk1eQMmiCx1N8y5Gpt9ANTGsDFYdFSCyG+Z4DULik?=
- =?Windows-1252?Q?knLTpFaS3diUdPWCYugFzaLr8j9YDD3ysq3mQ5zGV0ebrQOpSbqrwrcG?=
- =?Windows-1252?Q?++cDl4EX3dXWCZmg0e+DBxxVfWZFsfn9ayTPMtniOg5I5+4Hv/LtonML?=
- =?Windows-1252?Q?dX08dDHj9648fPJlLzeq4k9WFrCklm9gHVDZ/vglitjg7m9/zCIh812V?=
- =?Windows-1252?Q?zyNExGQSmDR9DCYK52WpFaXK3mKlPVyg56W/+zBLedbQFUINve8lRwxI?=
- =?Windows-1252?Q?7zrqJ+d3rhtECx0KjeNthOTPVcZTk/j1+D/pu8YcbTzUx3wxCMm/TpjK?=
- =?Windows-1252?Q?H04dBvfCjSAi4Ua93rzQs4rm4YwEEUtbwjSyr9TpVEk5nEOmpHNChS81?=
- =?Windows-1252?Q?cLVeesyFGXQYXTT8VnCIX1numzokICgNqJNvz1KVeFTTymmjX3Y3m+YT?=
- =?Windows-1252?Q?ANo3IACNCiDd3+c/Aub1PjZgt503Dz8vXdK0sYeNoyH9u24uMUeesgpY?=
- =?Windows-1252?Q?kDyGVPa0V8K8jZOU1/zwhwZiiX8LiohQZ2tiHGHOqKRdWSw2V26nPQSX?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 79144543-2b14-4914-e43c-08d93fee8bd7
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB2557.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jul 2021 19:53:23.3897 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EozLjmMmDXXWiMe/zcGLLDiMS3m3WM0HnoR+bhoVwXmDybGQ6XTytcCGOjE9YNOke/qFtkI2CosJXvOCXDZ1JQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1471
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="9l24NVCWtSuIVIod"
+Content-Disposition: inline
+In-Reply-To: <48b0a8e6-ca29-3f77-2689-ad7515f8743b@amd.com>
+X-Cookie: Some restrictions may apply.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  alsa-devel@alsa-project.org, Sunil-kumar.Dommati@amd.com, amistry@google.com,
  Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
@@ -167,29 +96,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 7/6/21 12:59 AM, Mark Brown wrote:
-> On Tue, Jul 06, 2021 at 12:30:10AM +0530, Mukunda,Vijendar wrote:
-> 
->> As per our understanding by going with card wide option is easier rather
->> than checking dai link name for re-ordering the stop sequence for
->> specific platforms.
->> We will rename the flag as "stop_dma_fist" and will post the new version.
-> 
-> Why would we need to check the name for the link?  Presumably all
-> affected AMD cards would just unconditionally set the flag, and other
-> systems could do what they like?
-> 
 
-This issue is only observed with older ACP2.x AMD platforms.
-To make AMD specific platform change(which uses ACP 2.x IP), As per our
-understanding we should only update the flag in ACP DMA driver by adding
-flag in snd_pcm_substream structure rather than adding flag in card
-structure.
-Please suggest us, if there is any better place holder to add
-"stop_dma_first" flag.
+--9l24NVCWtSuIVIod
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Due to some problem with mail client, i have received mail response
-late. I have posted v2 version already.
+On Tue, Jul 06, 2021 at 01:40:59AM +0530, Mukunda,Vijendar wrote:
 
-Based on your suggestion, We will make the changes and post the new version.
+> To make AMD specific platform change(which uses ACP 2.x IP), As per our
+> understanding we should only update the flag in ACP DMA driver by adding
+> flag in snd_pcm_substream structure rather than adding flag in card
+> structure.
+> Please suggest us, if there is any better place holder to add
+> "stop_dma_first" flag.
 
+I'd expect this to be configured by the machine driver in the dai_link.
+It might need copying over to the substream for runtime use but the core
+should do that.
+
+--9l24NVCWtSuIVIod
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDkTOoACgkQJNaLcl1U
+h9CD0Af6Aml9JrNZjaM7DWoPKWUc6A7Eh7aC5xXuVGPp6bPnt7nmt48yswr6l9nS
+FYAFulGmlW7KmNOXQ2sLEbdmNQvWyKdKbQyfsLr3KqaKkhYkVL/c6oPjzrx9jQL2
+2C05Ofe+Aue2VoT+6LXeeHcrJc4zzXkdgWw7Q1amvV+uBKSyN8T1QCjaAvh2cpKl
+2CZsZZz8Eq6PAvoBhvEVLjjQgrAeW5+V3BfYvWdwhEhhiTitz7MoWLO5ntq0/+qJ
+43mjCbqPLFYaUcvqriafZqW6xArg5WexmDC9NiNuCuyffjW36AQxkfizIPKZAFx8
+yZrsX1SAYkBUtZQ9wUITPEq8kM+/Ng==
+=gGgo
+-----END PGP SIGNATURE-----
+
+--9l24NVCWtSuIVIod--
