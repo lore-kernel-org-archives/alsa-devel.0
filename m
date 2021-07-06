@@ -2,84 +2,97 @@ Return-Path: <SRS0=3BcS=MA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8321C07E96
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 10:13:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7478C07E96
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 10:13:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 57779619BE
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 10:13:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 57779619BE
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	by mail.kernel.org (Postfix) with ESMTPS id 60D32619BE
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 10:13:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 60D32619BE
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ECED81691;
-	Thu,  8 Jul 2021 12:12:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECED81691
+	by alsa0.perex.cz (Postfix) with ESMTPS id EF8711654;
+	Thu,  8 Jul 2021 12:12:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF8711654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625739200;
-	bh=UU18mXWVWBOAKsPR2tdcrUtKm1XZJhHfX5ucNrdqlz4=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1625739223;
+	bh=rioQhG4JgrtBZWjYHPb541peYatH1ADUv7L67a0GVVs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gW6injN+U59yOsZz7hgmqbh8mk4h8Mht7wtEc2/X0YEPDvVhgJXD62RZS/Mukyn4g
-	 8gvD7B5TCgUeVFpvqlSTndRl/RRmiYJnIjfHpjvwnkM0sm17RWfN+aw5l/Ek4l53cz
-	 tJzlRCKcivaIo8q4GJyJ88yWYQIvBZjI0/+lWpDU=
+	b=WSVS44W67sR1eC8xfSSnwJtl27X7M7crdGXiXNCbBMt+Fv84Dt6A5Q1xFUirljdbm
+	 9JXTJzDbVg9mLpWE6eqwXNlkzDHtxbphiXwNyYBG7HSX9z7ZVNDaRCHXHbe+FsYrNB
+	 FRD+3Y4PZHUY+4JvpmXktt04oEPKawZlNrCtVp4g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3762CF80567;
+	by alsa1.perex.cz (Postfix) with ESMTP id D2516F80571;
 	Thu,  8 Jul 2021 12:04:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ABB08F80249; Tue,  6 Jul 2021 16:52:42 +0200 (CEST)
-Received: from desiato.infradead.org (desiato.infradead.org
- [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id ADC62F80249; Tue,  6 Jul 2021 17:07:12 +0200 (CEST)
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com
+ [IPv6:2a00:1450:4864:20::634])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CDE96F8014E
- for <alsa-devel@alsa-project.org>; Tue,  6 Jul 2021 16:52:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CDE96F8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 95816F8014E
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jul 2021 17:07:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95816F8014E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="JbK3meFo"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
- :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
- Sender:Reply-To:Content-ID:Content-Description;
- bh=1ayrkKf5NvJjQdfUl2A/VO9K+bU0q5/9ZgivWetFS3o=; b=JbK3meFocLJ6fB6QYONBPtOQk9
- DJh8XYIRvVsq19DtaRbOde3Pqt+U3mVhAJRiVq9/pLYYfHRPetQ2VwkvtOK63TFIov9LQtN9N9PJt
- W7/r5BUcb6i86u+BjFat8OYQU9y2P1DA/EDcTwU14mU2aPtj4aDiy4zBQ/DSm0rkTEqy36baSOqyA
- V4yYgj7JmTV6DLtcs5VRxDGb3q6cP0CLL/po4JfkE8jt0lxs+Hs+g3d6AcmGzyEozq//QEL4RnMt8
- byUYd3U5VUmkthiwr4pU7QnYiaWZQxohw6U15DrlSostKCZf7pcDzFMvg9GIfhVhYyVE4cG/tyrih
- 3mmB/xNA==;
-Received: from [2602:306:c5a2:a380:b447:81b0:ffaa:defc]
- by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1m0mQg-00F4IY-8x; Tue, 06 Jul 2021 14:52:06 +0000
-Subject: Re: [PATCH] bus: Make remove callback return void
-To: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20210706095037.1425211-1-u.kleine-koenig@pengutronix.de>
-From: Geoff Levand <geoff@infradead.org>
-Message-ID: <7a68b536-302c-0374-848f-4b9535ff1306@infradead.org>
-Date: Tue, 6 Jul 2021 07:51:36 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="SBHfWn82"
+Received: by mail-ej1-x634.google.com with SMTP id gb6so18039166ejc.5
+ for <alsa-devel@alsa-project.org>; Tue, 06 Jul 2021 08:07:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=+9dsgPbS//aUCZUFixPgGcG7qxsG2EJ3dbyOzFDh8TA=;
+ b=SBHfWn821HxdveyktStHQrYDe4MbFpbgRsAdNfnT39UeMrTpAkqi5Mw9J7eZv7cX8o
+ 4IiMGVVUkNi11aAd4XiuIPLnSf4etnUsfgOrP0HPkyuBpadE2fbx2e+Mv3rlJzIHAso+
+ o7XaFo1UlSb/NBSAjQV11bNqf2gionJphJcRl4YCGJk45hXp5V+Gpo6AbrJv2xqP31dM
+ +oUmVZwHbjtRk+sinfDNsF+kPOGLbKlYnyzpn0vB+NsB4Whl5CCwUy8NwaOykBdFTFHG
+ XhUidv7/qS7jG1fnPfvqgohVjfRj0vLF0MFd7Vbksyj/BKvpyZ1bN9xNMq5MG35cMCap
+ n6sA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=+9dsgPbS//aUCZUFixPgGcG7qxsG2EJ3dbyOzFDh8TA=;
+ b=tmM3IQ0Z75RK+ssx8KbmzteTw/iNVF/KUkV7pJNLIIvNR0Dxl8GEUvYQeW7Z4IxZ0C
+ /f4E6VZD28tm8agwxzfDhmje5tJbd+2yY6xtyU26LGObFlkRQJ6oVFkJ9OcKJeyip0Nx
+ EPQkwaGanVWsD2leKHj2KbaSssFHSPtWK/wA9Ck3zcNV82Z+CaBHXdtckWnwFujWl6Nz
+ NNmoW4gOkFK3vBUbq26QUHoFH0BrXr1XO18+C2qDkutqId8dy0Am/21Lb3Fhy3hLUTTr
+ zUb6LZxwUBEUt9GnWbYRWH4DZgMRiXoZ9lTJiL6zcXzU0uaT9Pk425ahfH2U2fgy6i1a
+ W7Aw==
+X-Gm-Message-State: AOAM530ETefAeu0egz86h2/iq7xhdYH4TkJn1QJ/k0dvf3iX7w4RQBcu
+ RJtJjiTIqRbJy/iewvuUYKrAMNlgWlKTq+zP0jo=
+X-Google-Smtp-Source: ABdhPJyx2s89fjP7kWr4sVrlETefy/K9QI98mSZLW/XMLqqA4vHIWAGZQnqqZ+CiP6xjmA9K+asUF6gnTpo1w9tsizc=
+X-Received: by 2002:a17:907:6289:: with SMTP id
+ nd9mr19151547ejc.384.1625584024338; 
+ Tue, 06 Jul 2021 08:07:04 -0700 (PDT)
 MIME-Version: 1.0
+References: <20210706095037.1425211-1-u.kleine-koenig@pengutronix.de>
 In-Reply-To: <20210706095037.1425211-1-u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+From: Yehezkel Bernat <yehezkelshb@gmail.com>
+Date: Tue, 6 Jul 2021 18:06:47 +0300
+Message-ID: <CA+CmpXu5-NCvfuOc8fso2a9bmi0Dacmd=+u=XB-Wd7X=WgOTBA@mail.gmail.com>
+Subject: Re: [PATCH] bus: Make remove callback return void
+To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Mailman-Approved-At: Thu, 08 Jul 2021 12:04:26 +0200
 Cc: nvdimm@lists.linux.dev, Alexey Kardashevskiy <aik@ozlabs.ru>,
  Benjamin Herrenschmidt <benh@kernel.crashing.org>,
  Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
  Jens Taprogge <jens.taprogge@taprogge.org>,
- Ulf Hansson <ulf.hansson@linaro.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>, linux-fpga@vger.kernel.org,
  Benjamin Tissoires <benjamin.tissoires@redhat.com>,
  Paul Mackerras <paulus@samba.org>,
  Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
@@ -87,22 +100,23 @@ Cc: nvdimm@lists.linux.dev, Alexey Kardashevskiy <aik@ozlabs.ru>,
  Mike Christie <michael.christie@oracle.com>, Wei Liu <wei.liu@kernel.org>,
  Maxim Levitsky <maximlevitsky@gmail.com>, Samuel Holland <samuel@sholland.org>,
  Michael Ellerman <mpe@ellerman.id.au>, linux-acpi@vger.kernel.org,
- linux-pci@vger.kernel.org, xen-devel@lists.xenproject.org,
+ Linux PCI <linux-pci@vger.kernel.org>, xen-devel@lists.xenproject.org,
  Tomas Winkler <tomas.winkler@intel.com>, Julien Grall <jgrall@amazon.com>,
  Ohad Ben-Cohen <ohad@wizery.com>, Alex Williamson <alex.williamson@redhat.com>,
  Alex Elder <elder@kernel.org>, linux-parisc@vger.kernel.org,
- linux-fpga@vger.kernel.org, linux-usb@vger.kernel.org,
- "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-kernel@vger.kernel.org,
+ Geoff Levand <geoff@infradead.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
+ "Rafael J. Wysocki" <rjw@rjwysocki.net>, LKML <linux-kernel@vger.kernel.org>,
  linux-spi@vger.kernel.org, Thorsten Scherer <t.scherer@eckelmann.de>,
  kernel@pengutronix.de, Jon Mason <jdmason@kudzu.us>,
  linux-ntb@googlegroups.com, Wu Hao <hao.wu@intel.com>,
  David Woodhouse <dwmw@amazon.co.uk>,
- =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
  Alexandre Belloni <alexandre.belloni@bootlin.com>,
  Manohar Vanga <manohar.vanga@gmail.com>, linux-wireless@vger.kernel.org,
  Dominik Brodowski <linux@dominikbrodowski.net>,
  virtualization@lists.linux-foundation.org,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
  target-devel@vger.kernel.org, linux-i2c@vger.kernel.org,
  Kai-Heng Feng <kai.heng.feng@canonical.com>,
  Stefano Stabellini <sstabellini@kernel.org>,
@@ -120,8 +134,8 @@ Cc: nvdimm@lists.linux.dev, Alexey Kardashevskiy <aik@ozlabs.ru>,
  linux-arm-kernel@lists.infradead.org, Johannes Thumshirn <morbidrsa@gmail.com>,
  Mathieu Poirier <mathieu.poirier@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
  Cornelia Huck <cohuck@redhat.com>, Wolfram Sang <wsa@kernel.org>,
- Joey Pabalan <jpabalanb@gmail.com>, Yehezkel Bernat <YehezkelShB@gmail.com>,
- =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+ Joey Pabalan <jpabalanb@gmail.com>,
+ =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
  Bodo Stroesser <bostroesser@gmail.com>,
  Alison Schofield <alison.schofield@intel.com>,
  Heikki Krogerus <heikki.krogerus@linux.intel.com>,
@@ -183,26 +197,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 7/6/21 2:50 AM, Uwe Kleine-König wrote:
+On Tue, Jul 6, 2021 at 12:50 PM Uwe Kleine-K=C3=B6nig
+<u.kleine-koenig@pengutronix.de> wrote:
+>
+> The driver core ignores the return value of this callback because there
+> is only little it can do when a device disappears.
+>
+> This is the final bit of a long lasting cleanup quest where several
+> buses were converted to also return void from their remove callback.
+> Additionally some resource leaks were fixed that were caused by drivers
+> returning an error code in the expectation that the driver won't go
+> away.
+>
+> With struct bus_type::remove returning void it's prevented that newly
+> implemented buses return an ignored error code and so don't anticipate
+> wrong expectations for driver authors.
+>
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+> ---
 
-> --- a/arch/powerpc/platforms/ps3/system-bus.c
-> +++ b/arch/powerpc/platforms/ps3/system-bus.c
-> @@ -381,7 +381,7 @@ static int ps3_system_bus_probe(struct device *_dev)
->  	return result;
->  }
->  
-> -static int ps3_system_bus_remove(struct device *_dev)
-> +static void ps3_system_bus_remove(struct device *_dev)
->  {
->  	struct ps3_system_bus_device *dev = ps3_dev_to_system_bus_dev(_dev);
->  	struct ps3_system_bus_driver *drv;
-> @@ -399,7 +399,6 @@ static int ps3_system_bus_remove(struct device *_dev)
->  			__func__, __LINE__, drv->core.name);
->  
->  	pr_debug(" <- %s:%d: %s\n", __func__, __LINE__, dev_name(&dev->core));
-> -	return 0;
->  }
+>
+>  drivers/thunderbolt/domain.c              | 4 +---
 
-PS3 part looks fine.
+For Thunderbolt:
 
-Acked-by: Geoff Levand <geoff@infradead.org>
+Acked-by: Yehezkel Bernat <YehezkelShB@gmail.com>
