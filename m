@@ -1,92 +1,106 @@
-Return-Path: <SRS0=zwJL=MF=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=3BcS=MA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71083C07E95
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 16:16:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42144C07E96
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 10:07:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D53C9611AB
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 16:16:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D53C9611AB
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 933E861955
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 10:07:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 933E861955
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 47B161683;
-	Tue, 13 Jul 2021 18:15:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47B161683
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1F8D91614;
+	Thu,  8 Jul 2021 12:06:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F8D91614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626193006;
-	bh=hl+lIRA/4dHYDAFZ5Z4IUT8/vuPCzr6jGBJDmHqyGaY=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1625738822;
+	bh=tnfX0qQGPCPMxBGdPonzbGA1T2X52E/rJTKcj3RX4A4=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OAd3DdaQzgWbdT71vFn3rPF92cwuveT+ryvCjVd1l3ePT5qXwe92MIhgchfj1qP6+
-	 ccj6tJE5DyeL7ug/YjaXEpXJm56l5IbJK8TDFLtbTUA9qKhMgnFbK7nKCSV9dsGWWk
-	 ge7jUts8TxJ5U3R82TikYeHhvjF1CAKN/rLS2wxc=
+	b=dTENy22GblseSO+JwGt7pguL82vpFzGqqbeNA+LAC74XnSltOpBDBc68iKQuCYo54
+	 1FRU50bFWCR+xoXdPP58ZXQa3jsTbAHx4QULPQ1JXFL8lgNpD553j+GdkTmK7OPf4j
+	 B6RUCnmRSrxvsALHaP5xnQMYrvKAYdSNMEjZk9cQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DBD7FF800D3;
-	Tue, 13 Jul 2021 18:15:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99581F804E1;
+	Thu,  8 Jul 2021 12:04:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CDB95F80217; Tue, 13 Jul 2021 18:15:54 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id CCC79F80249; Tue,  6 Jul 2021 13:42:27 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 398A3F800D3
- for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 18:15:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 398A3F800D3
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="GWqtFwcS"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="nCQhOW6o"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id B772D1FD69;
- Tue, 13 Jul 2021 16:15:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626192951; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=LU+dInQu9Jdqkd5CpV8rL7U5oz/FsqXDg3CRBGL5+sw=;
- b=GWqtFwcSNNNC6raZp1IlALbsmbpTL2hgXcnX9ESP2gP8X3tIhGFn5764j/xXUj2Y38Le7m
- W1gRnrbj9YDEYonu5ni+Ka/7iBlTbKHvuKxXkbEoIZ5yJGsQRwuhx4fe0kyT5H+9s5Cf4e
- DfYGo/O/eKDz7btOyYn2+JdhAUJRt8o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626192951;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=LU+dInQu9Jdqkd5CpV8rL7U5oz/FsqXDg3CRBGL5+sw=;
- b=nCQhOW6oqyije80MihcrBIgBViKqNicAniNYzIcnyAH2SIzLn+Ju6vVOBOv3Qiii84J96S
- RBYpfFIMSihMvADQ==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id B0BCDA3B95;
- Tue, 13 Jul 2021 16:15:51 +0000 (UTC)
-Date: Tue, 13 Jul 2021 18:15:51 +0200
-Message-ID: <s5ha6mq196w.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Amadeusz SX2awiX4ski
- <amadeuszx.slawinski@linux.intel.com>
-Subject: Re: [PATCH 02/51] ALSA: core: Add managed card creation
-In-Reply-To: <s5hfswi19o1.wl-tiwai@suse.de>
-References: <20210713142857.19654-1-tiwai@suse.de>
- <20210713142857.19654-3-tiwai@suse.de>
- <9d6ce40b-101e-5b16-cd6c-8734aea4c4fd@linux.intel.com>
- <s5hfswi19o1.wl-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5DADCF8014E
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jul 2021 13:42:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5DADCF8014E
+X-IronPort-AV: E=McAfee;i="6200,9189,10036"; a="272945353"
+X-IronPort-AV: E=Sophos;i="5.83,328,1616482800"; d="scan'208";a="272945353"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Jul 2021 04:42:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,328,1616482800"; d="scan'208";a="562991774"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+ by fmsmga001.fm.intel.com with SMTP; 06 Jul 2021 04:41:40 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation);
+ Tue, 06 Jul 2021 14:41:39 +0300
+Date: Tue, 6 Jul 2021 14:41:39 +0300
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH] bus: Make remove callback return void
+Message-ID: <YORBc384OjIBC/Yj@kuha.fi.intel.com>
+References: <20210706095037.1425211-1-u.kleine-koenig@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210706095037.1425211-1-u.kleine-koenig@pengutronix.de>
+X-Mailman-Approved-At: Thu, 08 Jul 2021 12:04:25 +0200
+Cc: Alison Schofield <alison.schofield@intel.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
+ "Dubov <oakad"@ya.alsa-project.org, Jens Taprogge <jens.taprogge@taprogge.org>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+ Paul Mackerras <paulus@samba.org>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ "K. Y. Srinivasan" <kys@microsoft.com>, Ira Weiny <ira.weiny@intel.com>,
+ Wei Liu <wei.liu@kernel.org>, Dave Jiang <dave.jiang@intel.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>,
+ Johannes Thumshirn <morbidrsa@gmail.com>,
+ Vishal Verma <vishal.l.verma@intel.com>, Helge Deller <deller@gmx.de>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Dexuan Cui <decui@microsoft.com>, Russell King <linux@armlinux.org.uk>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
+ Alex@alsa-project.org, Tom Rix <trix@redhat.com>, Len Brown <lenb@kernel.org>,
+ Jiri Kosina <jikos@kernel.org>, Haiyang Zhang <haiyangz@microsoft.com>,
+ Sudeep Holla <sudeep.holla@arm.com>,
+ William Breathitt Gray <vilhelm.gray@gmail.com>,
+ Maxime Ripard <mripard@kernel.org>, Ben Widawsky <ben.widawsky@intel.com>,
+ Moritz Fischer <mdf@kernel.org>, Stephen Hemminger <sthemmin@microsoft.com>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Cristian Marussi <cristian.marussi@arm.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Geoff Levand <geoff@infradead.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-kernel@vger.kernel.org,
+ Wolfram Sang <wsa@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+ Stefan Richter <stefanr@s5r6.in-berlin.de>, kernel@pengutronix.de,
+ Michael Ellerman <mpe@ellerman.id.au>, Wu Hao <hao.wu@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,58 +116,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 13 Jul 2021 18:05:34 +0200,
-Takashi Iwai wrote:
+On Tue, Jul 06, 2021 at 11:50:37AM +0200, Uwe Kleine-König wrote:
+> The driver core ignores the return value of this callback because there
+> is only little it can do when a device disappears.
 > 
-> On Tue, 13 Jul 2021 17:23:02 +0200,
-> Amadeusz SX2awiX4ski wrote:
-> > 
-> > On 7/13/2021 4:28 PM, Takashi Iwai wrote:
-> > 
-> > >     /**
-> > >    * snd_card_ref - Get the card object from the index
-> > > @@ -481,6 +547,7 @@ EXPORT_SYMBOL_GPL(snd_card_disconnect_sync);
-> > >     static int snd_card_do_free(struct snd_card *card)
-> > >   {
-> > > +	card->releasing = true;
-> > >   #if IS_ENABLED(CONFIG_SND_MIXER_OSS)
-> > >   	if (snd_mixer_oss_notify_callback)
-> > >   		snd_mixer_oss_notify_callback(card, SND_MIXER_OSS_NOTIFY_FREE);
-> > > @@ -498,7 +565,8 @@ static int snd_card_do_free(struct snd_card *card)
-> > >   #endif
-> > >   	if (card->release_completion)
-> > >   		complete(card->release_completion);
-> > > -	kfree(card);
-> > > +	if (!card->managed)
-> > > +		kfree(card);
-> > >   	return 0;
-> > >   }
-> > >   @@ -539,6 +607,9 @@ int snd_card_free(struct snd_card *card)
-> > >   	DECLARE_COMPLETION_ONSTACK(released);
-> > >   	int ret;
-> > >   +	if (card->releasing)
-> > > +		return 0;
-> > > +
-> > 
-> > "card->releasing" use feels bit racy to me... something like below
-> > would break it?
-> > 
-> > thread1                   thread2
-> > snd_card_free()
-> > if(card->releasing) == false
-> > thread1 goes sleep
-> >                           snd_card_do_free()
-> >                           card->releasing = true
-> >                           run until the end
-> > thread1 resume
-> > continues with trying to release
+> This is the final bit of a long lasting cleanup quest where several
+> buses were converted to also return void from their remove callback.
+> Additionally some resource leaks were fixed that were caused by drivers
+> returning an error code in the expectation that the driver won't go
+> away.
 > 
-> It's a destructor and can't be called in parallel.
+> With struct bus_type::remove returning void it's prevented that newly
+> implemented buses return an ignored error code and so don't anticipate
+> wrong expectations for driver authors.
+> 
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-That is, what the code above cares is the case where snd_card_free()
-is called explicitly even if the card is created with devres.  So the
-check of card->releasing could be __snd_card_release() instead in
-snd_card_free(), too.
+For ulpi and typec:
 
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-Takashi
+thanks,
+
+-- 
+heikki
