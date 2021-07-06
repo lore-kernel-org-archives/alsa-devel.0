@@ -2,92 +2,195 @@ Return-Path: <SRS0=3BcS=MA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99B64C07E99
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 10:07:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24EA3C07E96
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 10:08:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1A56F61955
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 10:07:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1A56F61955
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 994BA61451
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 10:08:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 994BA61451
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 87EE51684;
-	Thu,  8 Jul 2021 12:06:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87EE51684
+	by alsa0.perex.cz (Postfix) with ESMTPS id 38B721607;
+	Thu,  8 Jul 2021 12:07:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38B721607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625738861;
-	bh=aGYUE0CyCZ3kam8FDQF9c88u1uSpu1Mb06azUpawlyw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1625738893;
+	bh=CVw0hKyMav3rIRaqV9zNgy7mU4Mw36sPMSvkirDCWbw=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MsrHeox3KVKpRHUrMEoiyFOMvZT2Qeu12ntHlKLc8jlzIXFXvlpeBghP6bBXJJCph
-	 JFFNLlXzqr7r1yhdbQx/sdsW7W9yOZPGWxGWomXi8ejWfzfEsqj2U6Cvr9LF7VBxB4
-	 /b0JU8gG+ybiEe5wCBphtgMs0s+Ao7U0/K5AolRw=
+	b=FYbHSWo3e51SbTLekcWodjzqItdvsmYEVXiUawta/lf/XrWa7rTqSWaHxLFqWKhSr
+	 cag9zJtypqRD9GL7KV+VgV6NXkjZK58/XV6v3UJI2WweHMKsjDoQerSdnDFrID1Uyg
+	 dGCae3ZRiSzXgkXZp0c1WxMBov1ZfEYdOLDL/pVI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB055F804F2;
-	Thu,  8 Jul 2021 12:04:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 76D56F804FC;
+	Thu,  8 Jul 2021 12:04:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4C1B9F80249; Thu,  8 Jul 2021 04:09:18 +0200 (CEST)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
- [IPv6:2a00:1450:4864:20::336])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 8A48AF80249; Tue,  6 Jul 2021 12:22:34 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E649DF8012A
- for <alsa-devel@alsa-project.org>; Thu,  8 Jul 2021 04:09:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E649DF8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id E33E5F8014E
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jul 2021 12:22:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E33E5F8014E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Io7pdvzL"
-Received: by mail-wm1-x336.google.com with SMTP id
- k31-20020a05600c1c9fb029021727d66d33so1316152wms.0
- for <alsa-devel@alsa-project.org>; Wed, 07 Jul 2021 19:09:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=3PsL89oWHD3lPAqXaooZwbzxbg1c8VW9/mevLYmxoEY=;
- b=Io7pdvzLgLAcWTLuF5ChPlqPXk8RD3AjkbMakmdmrW+tJF8WmpTLIy+6Q6+3CkaEMB
- DiGtf8xMIi/Js/Dp28RJSTDsd6fivWwEshHU0ncZmqrlNcSixmrFJIMiY5aH0CNk37lu
- ZxaGIjIRv4gnUqRRsRV9LF3hBCpGMTCjFBPurxMRm/oJnUVBQLyBO98Tze3h39uGWPjq
- L1hynZ4nw5dufGsacwH52FPdsq9ucSHiu2W0uD2PM6zfNlldOQXdtSmYU4w64AhwrfAV
- AGk22auShLhCRWC8I72blncKoOlQeoTMsnm/VTRo3w2RzqnlGs4u/t7Kteji5q2GImlm
- Xejg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=3PsL89oWHD3lPAqXaooZwbzxbg1c8VW9/mevLYmxoEY=;
- b=XnXOgf8tGZGII/My04/abmeNGnV1kSm99Ntxd1EpjVNv3ICmp9699Zwjdi6SGJ9cUY
- qCMgd5Cn8baTwPWcQ0FGW66iX5Bmmy7ndsfWT50xUe8hWQvbpU1gwAxMULpF81OCOmAU
- ob0pEzZpdY/ciDFV+Vt34sGFha8TitmZiSzNE1zdSkFJSigSJ6bHPfYTGzsNAMovIUkc
- 3H8/URL8t/di96PRTx8mGWiLAmLgTCBYXP2bqdzB6KBYhsaMBu15RRGugYQcXMl+Fxl+
- P2r3mvIiyWVZqr2pJlQhUe8PY2awCdaOoTR7vG9wKPpjhx4eiXD2Trz3JQDTAVCI95eI
- PI1Q==
-X-Gm-Message-State: AOAM531J4yN68GyjRWA6nIx3VJP30xiGoX8EgaP71bjohQcMwAD2jEvC
- 6XYn8o3Rydd8rvfywiZ8OV05UbDtETedQ8Xxw3o=
-X-Google-Smtp-Source: ABdhPJx2ABZfFCczzC2+tHa6i67MY0TTbXPJ4h7OQNwopTDiNt9WjzOb7awBWWfFzzKIcRsQNvEeOBa03Rz7d0rVqcg=
-X-Received: by 2002:a1c:7512:: with SMTP id o18mr999573wmc.94.1625710144333;
- Wed, 07 Jul 2021 19:09:04 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Oy+mHp7h"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46675619A2;
+ Tue,  6 Jul 2021 10:22:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1625566946;
+ bh=CVw0hKyMav3rIRaqV9zNgy7mU4Mw36sPMSvkirDCWbw=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=Oy+mHp7honxzQyOE+wiK41kmp6JUhn55W2wKSp+Vbq/T3tSaJx6stV0fB6qfwxpuH
+ TZMucp2PpXSBWZZ8UuwZi0VErfdCkgx9V9lzMcIIVDbwZ6uoJBpnGqRW6TTGOLGPYG
+ UZlgH6BlJ1UcUXPyUgWEQPmEIm5h5aEhRvJ5dQI9JFByS/LCYVZRwDSup+oN35CuLQ
+ o6cRp/OvagxKTRqp1mZcWbXtiL+0BErueKp5LxgqFHu+8lCzy/LfC12ocG23wWxgEy
+ fwSWUWEZxeGd21itz7GPzm0iIksLONvOP0BBIC/IQaAHE+fWWwMn/rZdpJvXYfuX0L
+ B7JCQob2OHz4A==
+Date: Tue, 6 Jul 2021 11:21:53 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH] bus: Make remove callback return void
+Message-ID: <20210706102153.GA4529@sirena.org.uk>
+Mail-Followup-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?=
+ <u.kleine-koenig@pengutronix.de>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+ Russell King <linux@armlinux.org.uk>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ Helge Deller <deller@gmx.de>, Geoff Levand <geoff@infradead.org>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Paul Mackerras <paulus@samba.org>,
+ "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+ Len Brown <lenb@kernel.org>,
+ William Breathitt Gray <vilhelm.gray@gmail.com>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Alison Schofield <alison.schofield@intel.com>,
+ Vishal Verma <vishal.l.verma@intel.com>,
+ Ira Weiny <ira.weiny@intel.com>,
+ Ben Widawsky <ben.widawsky@intel.com>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Dave Jiang <dave.jiang@intel.com>, Vinod Koul <vkoul@kernel.org>,
+ Stefan Richter <stefanr@s5r6.in-berlin.de>,
+ Sudeep Holla <sudeep.holla@arm.com>,
+ Cristian Marussi <cristian.marussi@arm.com>,
+ Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
+ Moritz Fischer <mdf@kernel.org>, Jiri Kosina <jikos@kernel.org>,
+ Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>,
+ Stephen Hemminger <sthemmin@microsoft.com>,
+ Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Wolfram Sang <wsa@kernel.org>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
+ Jens Taprogge <jens.taprogge@taprogge.org>,
+ Johannes Thumshirn <morbidrsa@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Maxim Levitsky <maximlevitsky@gmail.com>,
+ Alex Dubov <oakad@yahoo.com>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Lee Jones <lee.jones@linaro.org>,
+ Tomas Winkler <tomas.winkler@intel.com>,
+ Arnd Bergmann <arnd@arndb.de>, Jakub Kicinski <kuba@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>,
+ Jon Mason <jdmason@kudzu.us>, Allen Hubbe <allenbh@gmail.com>,
+ Kishon Vijay Abraham I <kishon@ti.com>,
+ Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+ Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+ Bjorn Helgaas <bhelgaas@google.com>,
+ Dominik Brodowski <linux@dominikbrodowski.net>,
+ Maximilian Luz <luzmaximilian@gmail.com>,
+ Hans de Goede <hdegoede@redhat.com>,
+ Mark Gross <mgross@linux.intel.com>,
+ Matt Porter <mporter@kernel.crashing.org>,
+ Alexandre Bounine <alex.bou9@gmail.com>,
+ Ohad Ben-Cohen <ohad@wizery.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Thorsten Scherer <t.scherer@eckelmann.de>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Andy Gross <agross@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+ Michael Buesch <m@bues.ch>, Sven Van Asbroeck <TheSven73@gmail.com>,
+ Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+ Andreas Noever <andreas.noever@gmail.com>,
+ Michael Jamet <michael.jamet@intel.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Yehezkel Bernat <YehezkelShB@gmail.com>,
+ Rob Herring <robh@kernel.org>, Jiri Slaby <jirislaby@kernel.org>,
+ Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+ "Michael S. Tsirkin" <mst@redhat.com>,
+ Jason Wang <jasowang@redhat.com>,
+ Kirti Wankhede <kwankhede@nvidia.com>,
+ Alex Williamson <alex.williamson@redhat.com>,
+ Cornelia Huck <cohuck@redhat.com>,
+ Martyn Welch <martyn@welchs.me.uk>,
+ Manohar Vanga <manohar.vanga@gmail.com>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Juergen Gross <jgross@suse.com>,
+ Stefano Stabellini <sstabellini@kernel.org>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Marc Zyngier <maz@kernel.org>,
+ Tyrel Datwyler <tyreld@linux.ibm.com>,
+ Vladimir Zapolskiy <vz@mleia.com>,
+ Samuel Holland <samuel@sholland.org>,
+ Qinglang Miao <miaoqinglang@huawei.com>,
+ Alexey Kardashevskiy <aik@ozlabs.ru>,
+ Kai-Heng Feng <kai.heng.feng@canonical.com>,
+ Joey Pabalan <jpabalanb@gmail.com>,
+ Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Frank Li <lznuaa@gmail.com>,
+ Mike Christie <michael.christie@oracle.com>,
+ Bodo Stroesser <bostroesser@gmail.com>,
+ Hannes Reinecke <hare@suse.de>, David Woodhouse <dwmw@amazon.co.uk>,
+ SeongJae Park <sjpark@amazon.de>, Julien Grall <jgrall@amazon.com>,
+ linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-acpi@vger.kernel.org, linux-wireless@vger.kernel.org,
+ linux-sunxi@lists.linux.dev, linux-cxl@vger.kernel.org,
+ nvdimm@lists.linux.dev, dmaengine@vger.kernel.org,
+ linux1394-devel@lists.sourceforge.net, linux-fpga@vger.kernel.org,
+ linux-input@vger.kernel.org, linux-hyperv@vger.kernel.org,
+ linux-i2c@vger.kernel.org, linux-i3c@lists.infradead.org,
+ industrypack-devel@lists.sourceforge.net,
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+ netdev@vger.kernel.org, linux-ntb@googlegroups.com,
+ linux-pci@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org, linux-scsi@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-staging@lists.linux.dev,
+ greybus-dev@lists.linaro.org, target-devel@vger.kernel.org,
+ linux-usb@vger.kernel.org, linux-serial@vger.kernel.org,
+ virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+ xen-devel@lists.xenproject.org
+References: <20210706095037.1425211-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-References: <20210706154803.1631813-1-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <20210706154803.1631813-1-u.kleine-koenig@pengutronix.de>
-From: Sven Van Asbroeck <thesven73@gmail.com>
-Date: Wed, 7 Jul 2021 22:08:53 -0400
-Message-ID: <CAGngYiWm4u27o-yy5L5tokMB5G1RUR5uYmKf2oXah2P3J=hK2A@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] bus: Make remove callback return void
-To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailman-Approved-At: Thu, 08 Jul 2021 12:04:24 +0200
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="h31gzZEtNLTqOjlF"
+Content-Disposition: inline
+In-Reply-To: <20210706095037.1425211-1-u.kleine-koenig@pengutronix.de>
+X-Cookie: Some restrictions may apply.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Mailman-Approved-At: Thu, 08 Jul 2021 12:04:26 +0200
 Cc: nvdimm@lists.linux.dev, Alexey Kardashevskiy <aik@ozlabs.ru>,
  Benjamin Herrenschmidt <benh@kernel.crashing.org>,
  Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
@@ -106,40 +209,36 @@ Cc: nvdimm@lists.linux.dev, Alexey Kardashevskiy <aik@ozlabs.ru>,
  Alex Elder <elder@kernel.org>, linux-parisc@vger.kernel.org,
  Geoff Levand <geoff@infradead.org>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- "Rafael J. Wysocki" <rjw@rjwysocki.net>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>,
- Thorsten Scherer <t.scherer@eckelmann.de>,
- Sascha Hauer <kernel@pengutronix.de>, Jon Mason <jdmason@kudzu.us>,
+ "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, Thorsten Scherer <t.scherer@eckelmann.de>,
+ kernel@pengutronix.de, Jon Mason <jdmason@kudzu.us>,
  linux-ntb@googlegroups.com, Wu Hao <hao.wu@intel.com>,
  David Woodhouse <dwmw@amazon.co.uk>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
  Alexandre Belloni <alexandre.belloni@bootlin.com>,
  Manohar Vanga <manohar.vanga@gmail.com>, linux-wireless@vger.kernel.org,
  Dominik Brodowski <linux@dominikbrodowski.net>,
  virtualization@lists.linux-foundation.org,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- target-devel@vger.kernel.org, linux-i2c <linux-i2c@vger.kernel.org>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ target-devel@vger.kernel.org, linux-i2c@vger.kernel.org,
  Kai-Heng Feng <kai.heng.feng@canonical.com>,
  Stefano Stabellini <sstabellini@kernel.org>,
  Stephen Hemminger <sthemmin@microsoft.com>, Ira Weiny <ira.weiny@intel.com>,
  Helge Deller <deller@gmx.de>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
  industrypack-devel@lists.sourceforge.net, linux-mips@vger.kernel.org,
  Len Brown <lenb@kernel.org>, alsa-devel@alsa-project.org,
- linux-arm-msm@vger.kernel.org, linux-media <linux-media@vger.kernel.org>,
+ linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
  Maxime Ripard <mripard@kernel.org>, Johan Hovold <johan@kernel.org>,
  greybus-dev@lists.linaro.org, Bjorn Helgaas <bhelgaas@google.com>,
  Dave Jiang <dave.jiang@intel.com>,
  Boris Ostrovsky <boris.ostrovsky@oracle.com>,
  Mika Westerberg <mika.westerberg@linux.intel.com>,
- "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE"
- <linux-arm-kernel@lists.infradead.org>,
- Johannes Thumshirn <morbidrsa@gmail.com>,
+ linux-arm-kernel@lists.infradead.org, Johannes Thumshirn <morbidrsa@gmail.com>,
  Mathieu Poirier <mathieu.poirier@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
  Cornelia Huck <cohuck@redhat.com>, Wolfram Sang <wsa@kernel.org>,
  Joey Pabalan <jpabalanb@gmail.com>, Yehezkel Bernat <YehezkelShB@gmail.com>,
- =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+ Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
  Bodo Stroesser <bostroesser@gmail.com>,
  Alison Schofield <alison.schofield@intel.com>,
  Heikki Krogerus <heikki.krogerus@linux.intel.com>,
@@ -148,7 +247,7 @@ Cc: nvdimm@lists.linux.dev, Alexey Kardashevskiy <aik@ozlabs.ru>,
  Tom Rix <trix@redhat.com>, Jason Wang <jasowang@redhat.com>,
  SeongJae Park <sjpark@amazon.de>, linux-hyperv@vger.kernel.org,
  platform-driver-x86@vger.kernel.org, Frank Li <lznuaa@gmail.com>,
- netdev <netdev@vger.kernel.org>, Qinglang Miao <miaoqinglang@huawei.com>,
+ netdev@vger.kernel.org, Qinglang Miao <miaoqinglang@huawei.com>,
  Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh@kernel.org>,
  Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
  Mark Gross <mgross@linux.intel.com>, linux-staging@lists.linux.dev,
@@ -168,8 +267,9 @@ Cc: nvdimm@lists.linux.dev, Alexey Kardashevskiy <aik@ozlabs.ru>,
  Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-mmc@vger.kernel.org,
  linux-sunxi@lists.linux.dev, Stefan Richter <stefanr@s5r6.in-berlin.de>,
  Sudeep Holla <sudeep.holla@arm.com>, "David S. Miller" <davem@davemloft.net>,
- kvm@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
- linux-remoteproc@vger.kernel.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Sven Van Asbroeck <TheSven73@gmail.com>, kvm@vger.kernel.org,
+ "Michael S. Tsirkin" <mst@redhat.com>, linux-remoteproc@vger.kernel.org,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
  Kirti Wankhede <kwankhede@nvidia.com>,
  Andreas Noever <andreas.noever@gmail.com>, linux-i3c@lists.infradead.org,
  linux1394-devel@lists.sourceforge.net, Lee Jones <lee.jones@linaro.org>,
@@ -182,8 +282,8 @@ Cc: nvdimm@lists.linux.dev, Alexey Kardashevskiy <aik@ozlabs.ru>,
  Adrian Hunter <adrian.hunter@intel.com>, Juergen Gross <jgross@suse.com>,
  linuxppc-dev@lists.ozlabs.org, Takashi Iwai <tiwai@suse.com>,
  Alexandre Bounine <alex.bou9@gmail.com>, Vinod Koul <vkoul@kernel.org>,
- Mark Brown <broonie@kernel.org>, Marc Zyngier <maz@kernel.org>,
- dmaengine@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>,
+ Marc Zyngier <maz@kernel.org>, dmaengine@vger.kernel.org,
+ Johannes Berg <johannes@sipsolutions.net>,
  Maximilian Luz <luzmaximilian@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -200,11 +300,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Jul 6, 2021 at 11:50 AM Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de> wrote:
->
->  drivers/staging/fieldbus/anybuss/host.c   | 4 +---
 
-Awesome !
+--h31gzZEtNLTqOjlF
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Sven Van Asbroeck <TheSven73@gmail.com>
+On Tue, Jul 06, 2021 at 11:50:37AM +0200, Uwe Kleine-K=F6nig wrote:
+> The driver core ignores the return value of this callback because there
+> is only little it can do when a device disappears.
+
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--h31gzZEtNLTqOjlF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDkLsEACgkQJNaLcl1U
+h9DTPwf+KbK6BlKGymyR/lS6jHNFzqdjZJtNgnrGCAQPShECrFWEoT+hh+wbGftz
++dyPIG3olrPCj20bdTdirf0mN6fK5b1ws7Y51Pl5kFKWSF9anPqHvugsBWlktrLI
+ZQGpHaOaDBzTO9z+a88du417htx2DY8Y84yObqoGeFEMODdEwf+d7aWTAsAumvEd
+W3tqktVLL+RKuqiM2ppKuMZRdRGwtv8d+Mo44RUmPtQGuj5slIJU22Ew0Nrn/eyI
+xRq4Q2GeqkJQJWsXmJ+C6hMJvgdnisNu+4eaDrkhaY/V36HQFRMl+PUAdt0W1ayI
+ftXC4GrcHhpLlLwnb8FUQzYy+hMN1g==
+=PinY
+-----END PGP SIGNATURE-----
+
+--h31gzZEtNLTqOjlF--
