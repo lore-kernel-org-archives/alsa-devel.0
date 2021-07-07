@@ -2,155 +2,81 @@ Return-Path: <SRS0=Jhnj=L7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7556EC07E95
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Jul 2021 10:09:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84A31C07E95
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Jul 2021 11:25:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 067E861C99
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Jul 2021 10:09:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 067E861C99
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com
+	by mail.kernel.org (Postfix) with ESMTPS id 40B4D61CB9
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Jul 2021 11:25:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 40B4D61CB9
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C7499843;
-	Wed,  7 Jul 2021 12:08:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7499843
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD9B2886;
+	Wed,  7 Jul 2021 13:24:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD9B2886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625652540;
-	bh=Vsn0/Q92Mi2Klzt+chgF2lUsjiv0r60693ioNTJmGzM=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=thmeeK0qIf7wFfcQaoaaBA4VJPZq3vaCM73abnRgDBD9gP0/M8EaPYgglhY7XeAwm
-	 K0mwUmJ5Gi8Rl4uDtkcj5R4amTPeONYjl8FH2g1ShevtVq4dU7fdQExh7Fe6gNQmy7
-	 cSkXtdJoCLRSzChlV5GUEetfPQ41nXgsG5VTZlns=
+	s=default; t=1625657149;
+	bh=Cxf00uc9CYC+U94/gMkB4+xS8joxj+OBSVcDGx/8NII=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=odOB09I8O+aEL5NCFW6SY1PhtfX6mCtwqQUqJUPcXuX4Oc+KOjU4ikZUpaD7GTtDi
+	 ooLJbe7CJfsS9Fo7U7m6uo4MyyylO5CYCRXFyY5pdz3aSBuoUECUrA1IcynwazoA29
+	 nwqN91dpVEEgm8NUpoZz3yT4EubKqNm4LKX+JcaE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5FC36F8016C;
-	Wed,  7 Jul 2021 12:08:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63DCEF8016C;
+	Wed,  7 Jul 2021 13:24:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 50F5EF80224; Wed,  7 Jul 2021 12:08:09 +0200 (CEST)
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com
- (mail-dm6nam10on2048.outbound.protection.outlook.com [40.107.93.48])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id EA091F80224; Wed,  7 Jul 2021 13:24:57 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D537AF8014E
- for <alsa-devel@alsa-project.org>; Wed,  7 Jul 2021 12:08:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D537AF8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0ED6F8012F
+ for <alsa-devel@alsa-project.org>; Wed,  7 Jul 2021 13:24:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0ED6F8012F
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com
- header.b="cKwdqF6X"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kTflFzmxFQKVoJtWhl6YZFLJdRgxPsTkVIvfMWx0QKihGDNV5YcqNboERqRDWz3P2ktOovHhEHHSjxSnwIRX/S6S4m+KXKLlOX9Vb5HGNtewfsyM3drElWuY+PiTKbf6QHWfomOScjTJ9W6I6vHcy0e+UfYp9pO/4bdy4CmosnWA6Wj0nYPI+AfN7zdhtdW4z13C8AL510iCQL56gNjV4Y/daboUprEfSQI1BaR51jfSJBKuFBLTyqi3KEB9UBa5bsBG3JGbGErLtBaDKud1gR9BqYwKg1vYQIulgfV2gNWxZvvF3LcrsqOYv+eM+WhKDq9sze4GGhaKYkIvvAvYpA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FDb+bG9eOhCv7P3JJoAjmhw70PW5zDkR5sZxGuDDT30=;
- b=Z0xsLIP0oXARm+m5wXx4EdhS7UvucXtLNWPsElmbv9wG7yFbVDzTbwVIilsigN3J/Yk88pZu8NJUhBNddikqkGqmQaNwc2tpKS3j6XY0/qgyMybqQekx2qfiglHPueyu7KzonHHLfjZPJt9TctsR+4APCp+M4oYQ+KnaUpKYhmAxrtFTpHaEiUpmNSUVopuQY8LqSkeFVlH3Ztdee2jrfEMikURvfWE9t+20LV444MjNzv0sSN66D28uNyENWaejcYFkrmWs5Ha4rZlID/snfBAkWEMnrsd1rBpexcACyxXeg/Hv2Pw2vqMorv9cg2WKd6xD3u9Kileyj8NvV6jikA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FDb+bG9eOhCv7P3JJoAjmhw70PW5zDkR5sZxGuDDT30=;
- b=cKwdqF6XNcUbQdZDqQbajVpcR79Fl8+hSsF9vQRl4fTFrjTAHXYjTbntrvaszQv8USRu3p62vYCCn4dlrtaB5DrH+0ckpo+dsjsLbLo6w5Ro6Jwif6A4pFDYkwH/SpQUJ4kbWWNy5TqQeLvDIkPy72EERfM8lP5nEvj28vzmcMM=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
- (2603:10b6:300:e4::23) by MW2PR12MB2570.namprd12.prod.outlook.com
- (2603:10b6:907:a::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.33; Wed, 7 Jul
- 2021 10:08:01 +0000
-Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
- ([fe80::d0a9:a5f1:ca5a:b439]) by MWHPR1201MB2557.namprd12.prod.outlook.com
- ([fe80::d0a9:a5f1:ca5a:b439%11]) with mapi id 15.20.4308.021; Wed, 7 Jul 2021
- 10:08:01 +0000
-Subject: Re: [PATCH v2] ASoC: add stop_dma_first flag to reverse the stop
- sequence
-To: Mark Brown <broonie@kernel.org>
-References: <20210705193620.1144-1-vijendar.mukunda@amd.com>
- <20210706122844.GD4529@sirena.org.uk>
-From: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Message-ID: <07047388-6570-6501-abfd-f940777ad5cc@amd.com>
-Date: Wed, 7 Jul 2021 15:55:31 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210706122844.GD4529@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BM1PR0101CA0003.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:b00:18::13) To MWHPR1201MB2557.namprd12.prod.outlook.com
- (2603:10b6:300:e4::23)
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="CU2tCccK"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="UkZyRCoL"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 6E76320072;
+ Wed,  7 Jul 2021 11:24:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1625657090; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=pgxl15du2YQEkh8BlT3T5it72MXPsOm/8OcE2SYe0M4=;
+ b=CU2tCccKLOkEdgLgvGVtZn4FOS2VXhxAV933QROzzRPVBO6sVyocpG6q5i+JsdbgYXpETR
+ i/tLup2XiHVm0XXi+P0lUx3QMNq8wnROuuVluk10+1johgRTVZKiJhYxJY6EOFEbCcaL4y
+ Q0f4DdkPkWHJJypTFaDP4CHVVxo3fZs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1625657090;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=pgxl15du2YQEkh8BlT3T5it72MXPsOm/8OcE2SYe0M4=;
+ b=UkZyRCoLhb/59Z4PhYs0ufrpsDVbpGZTix2EGGTyve/h8mbtOX1McqNqZdflA+6VOHLpA2
+ slMAXD6BvoOo7XBQ==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 12CB4A3BA0;
+ Wed,  7 Jul 2021 11:24:50 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: usb-audio: Reduce latency at playback start, take#2
+Date: Wed,  7 Jul 2021 13:24:47 +0200
+Message-Id: <20210707112447.27485-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.252.93.39] (165.204.159.242) by
- BM1PR0101CA0003.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:18::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend
- Transport; Wed, 7 Jul 2021 10:07:54 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0b5da8b3-bd49-4d7f-9510-08d9412f1a69
-X-MS-TrafficTypeDiagnostic: MW2PR12MB2570:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW2PR12MB2570A340E53ACCF2FDB467BC971A9@MW2PR12MB2570.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GoToXm3RDo6i7ExqnYdlZwFKOmuBbdcZM89ZKjDtjnW3sq3cX1ZWVaBKSjYNPv0XHjBLpcCjBoEFqogD2mo80qBBzeJVEGJ/tzWwA10iw9icRFif/OVdUGS+SxkOK+G8cz9d/zR1U0twUz3f9YvNLBK9SKHzcaDl5UaGNIW5hhVznXulbbbRp0oTwGgMnCFuklZHnNKxTkW+PMyVDfcpFretNnKhmZPkgL8xYU3HDlm6wk+8D+pcJv1fNR+gs0OxkDfvuNfHOLN/4naA++UggFbl0dtAecE4tfJmCC4lA3r1C1glZ7zTJGeCgu6MiiauAf0D2okbQOnKUiFf4iNhn5Ik4bgCV7p6OzYpjS74Ai/dq5rXZabX4sZb9MWMHfjn3Nwqsab5r849hCvTxkclngHShefyyoU9FFu1a6u0SnPe0obV1hFqSFwQEImKTFfDRkeuDpaOWXz6AQIPSCxV/48AumI3KfBQ9RwNDzA8guu64NYAYFM64c6PnCP8AqNERycpRKp51YMCESET5/8boWz2uZSp0v+qBPTiU5CCRJhDLkWYfVkWVMZkpc7UTSqS1ri8q0BJB/OngvLJ+IfdHlqFrEnLsG8tTpWLPvHy4MCBnzxT47HfVCX0jTLWh0xFkcxp9MotzSjxNuvMg8idMPjWel1BF+lKO/puXiwPCuwYPl+GKfsLiy4bBf7BwCME3UCr+WZoAWxLPQ3Dwx5kHpkaaoA+T5sTbeAvWKBSqjk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:MWHPR1201MB2557.namprd12.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(346002)(39860400002)(376002)(366004)(136003)(396003)(8676002)(31686004)(38100700002)(6916009)(956004)(2616005)(4744005)(6666004)(66476007)(478600001)(36756003)(66556008)(316002)(8936002)(16576012)(31696002)(4326008)(2906002)(186003)(53546011)(5660300002)(26005)(54906003)(6486002)(86362001)(66946007)(7416002)(45980500001)(43740500002);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?Windows-1252?Q?5q5Nnc7nHflas1e4DICMLCcWCn+xmnwkoTI+vWAPrZNugxh5XuGJkclk?=
- =?Windows-1252?Q?aDpwoyNRuOdTmkrGc4sXwxzwF6gabKoZYO9rNfF9ge6NEa7zRvcQtube?=
- =?Windows-1252?Q?NSqNVUvx83j9UyopIufk8ZDrfco7Ky2eU7Vo95Mtlud7+ldyGmShMavv?=
- =?Windows-1252?Q?p1nTkhHfVKFuEhd/iiJba1M2bTYEykF/EIDY9aZZFAu6m2UAwQkKXaSg?=
- =?Windows-1252?Q?wtHjEFN/82qVoK/nkHVS7okHqWS44HOdRZw6oaYlIwVJrQCU3LZCkRbQ?=
- =?Windows-1252?Q?MW3H9IL1yjgHkmAdJka+CnAhtcWQnc6H/ds21GSNHzY0z6Zt/UokgXwH?=
- =?Windows-1252?Q?pB7y76vpqoBh4nHRWoVKMN0cBVKKQYPLT5zXDM/Cn20rYT17Spz3tGbF?=
- =?Windows-1252?Q?qGY/yKs1z0gmXf6RQhXVFEc4Y5I1Vygir9OJiHkwi2EhoiAROXkDZmEy?=
- =?Windows-1252?Q?Guheess1NkGqWXXpYrGu1AZQggcqEPNMJ5MCQ27BlNoSPvhbuPKlv9WD?=
- =?Windows-1252?Q?9r/dTtNbsDUi5h5WgIgFxhcdwTlUeMH+JeVlTaiB7tubNUg2RRx2ypeV?=
- =?Windows-1252?Q?cZ6XtgccyGPH6D/qmpjJFZzceEOxBOoHK5f1iqDyIid9MxiHSG6CDh7c?=
- =?Windows-1252?Q?Y64BRf3n9MqcJplZbCDP/RlN+Vr9e5599vKkTAP1hWEbvHv+pr36k8Zf?=
- =?Windows-1252?Q?RB0toPa3xoh15yWV79Ja2iTpuK+KvpGiOS+QpedWfWXEFCTrv7v2g87x?=
- =?Windows-1252?Q?XrAvVanFqPWZtn7WFi14PV5wEFhG9BrMJeugKk2Gu+boicVdiLyDp2Z6?=
- =?Windows-1252?Q?IkobY7Pvj5/FY9gMCZ3CSA+AP8jCS1siwbWZsKcBJoH10Zwh41mKbyXm?=
- =?Windows-1252?Q?vPS2xJNV53zBX8Lzfer5CFChHp0n8ypwjhN4sIaPTRX9OdLLchTUKvxV?=
- =?Windows-1252?Q?Che72nabR63vFSk9CixyYvqel+fJjdep9f4GxOEsbi6lCd2//PTYa6m6?=
- =?Windows-1252?Q?fD2KBV9VeXO7nkznxadOS7bBL8eR4qefmFIAi0vMKXKY3eEcT4qstH0k?=
- =?Windows-1252?Q?TgDKHFtHUJDzBfQEPmi2relG0LWviq/7xs429JPy22nNewxuEOU35p9q?=
- =?Windows-1252?Q?Z86D4gCQuKWC6D87m4deixZ2njClDdOfZgo6vHSbQGsvoapbWLbGMZm1?=
- =?Windows-1252?Q?IhfG3uyhn09mgopgfRIjlpmfQOh7l5yCB81/R4aCPxLdcgzjvs9Bz+nG?=
- =?Windows-1252?Q?jB/RZhStqwV77e2PniiqDf9Jih19K4/LfHNFC6Ad7m5zPCgv5U99bI8i?=
- =?Windows-1252?Q?z7QMzyPJW6pNyQhVXE3tDBHY7D57lHiVKZg1Tp7oHZ0+dCCv2jxv9BZo?=
- =?Windows-1252?Q?erGPHImWNAQx7RrRfJPjiJZJRN6iu/jclFGTEHQ25dTTjTkfO6iGuF6Y?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b5da8b3-bd49-4d7f-9510-08d9412f1a69
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB2557.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2021 10:08:01.7278 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Hz5hFAxWGVN6eUWax2G4BE9+uaimvlL/eMMcoSSTRyjQgy7vH9x89jPDwJNnS3ReRS3BsXDa/LZ8BXzZWsQ3pg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR12MB2570
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org, Sunil-kumar.Dommati@amd.com, amistry@google.com,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- open list <linux-kernel@vger.kernel.org>, Basavaraj.Hiregoudar@amd.com,
- Takashi Iwai <tiwai@suse.com>, Chuhong Yuan <hslester96@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, peter.ujfalusi@ti.com,
- Alexander.Deucher@amd.com, nartemiev@google.com
+Content-Transfer-Encoding: 8bit
+Cc: Hector Martin <marcan@marcan.st>,
+ Linus Torvalds <torvalds@linux-foundation.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -166,19 +92,159 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 7/6/21 5:58 PM, Mark Brown wrote:
-> On Tue, Jul 06, 2021 at 01:06:17AM +0530, Vijendar Mukunda wrote:
-> 
->> @@ -982,6 +982,7 @@ struct snd_soc_card {
->>  	unsigned int disable_route_checks:1;
->>  	unsigned int probed:1;
->>  	unsigned int component_chaining:1;
->> +	unsigned int stop_dma_first:1;
->>  
->>  	void *drvdata;
->>  };
-> 
-> This still doesn't seem like something which should be controlled at the
-> card level, I'd expect it to be configured at the dai_link level.
-> 
-will make changes by adding flag in dai_link and will post the new version
+This is another attempt for the reduction of the latency at the start
+of a USB audio playback stream.  The first attempt in the commit
+9ce650a75a3b caused an unexpected regression (a deadlock with pipewire
+usage) and was later reverted by the commit 4b820e167bf6.  The devils
+are always living in details, of course; the cause of the deadlock was
+the call of snd_pcm_period_elapsed() inside prepare_playback_urb()
+callback.  In the original code, this callback is never called from
+the stream lock context as it's driven solely from the URB complete
+callback.  Along with the movement of the URB submission into the
+trigger START, this prepare call may be also executed in the stream
+lock context, hence it deadlocked with the another lock in
+snd_pcm_period_elapsed().  (Note that this happens only conditionally
+with a small period size that matches with the URB buffer length,
+which was a reason I overlooked during my tests.  Also, the problem
+wasn't seen in the capture stream because the capture stream handles
+the period-elapsed only at retire callback that isn't executed at the
+trigger.)
+
+If it were only about avoiding the deadlock, it'd be possible to use
+snd_pcm_period_elapsed_under_stream_lock() as a solution.  However, in
+general, the period elapsed notification must be sent after the actual
+stream start, and replacing the call wouldn't satisfy the pattern.
+A better option is to delay the notification after the stream start
+procedure finished, instead.  In the case of USB framework, one of the
+fitting place would be the complete callback of the first URB.
+
+So, as a workaround of the deadlock and the order fixes above, in
+addition to the re-applying the changes in the commit 9ce650a75a3,
+this patch introduces a new flag indicating the delayed period-elapsed
+handling and sets it under the possible deadlock condition
+(i.e. prepare callback being called before subs->running is set).
+Once when the flag is set, the period-elapsed call is handled at a
+later URB complete call instead.
+
+As a reference for the original motivation for the low-latency change,
+I cite here again:
+
+| USB-audio driver behaves a bit strangely for the playback stream --
+| namely, it starts sending silent packets at PCM prepare state while
+| the actual data is submitted at first when the trigger START is
+| kicked off.  This is a workaround for the behavior where URBs are
+| processed too quickly at the beginning.  That is, if we start
+| submitting URBs at trigger START, the first few URBs will be
+| immediately completed, and this would result in the immediate
+| period-elapsed calls right after the start, which may confuse
+| applications.
+|
+| OTOH, submitting the data after silent URBs would, of course, result
+| in a certain delay of the actual data processing, and this is rather
+| more serious problem on modern systems, in practice.
+|
+| This patch tries to revert the workaround and lets the URB
+| submission starting at PCM trigger for the playback again.  As far
+| as I've tested with various backends (native ALSA, PA, JACK, PW), I
+| haven't seen any problems (famous last words :)
+|
+| Note that the capture stream handling needs no such workaround,
+| since the capture is driven per received URB.
+
+Link: https://lore.kernel.org/r/4e71531f-4535-fd46-040e-506a3c256bbd@marcan.st
+Link: https://lore.kernel.org/r/s5hbl7li0fe.wl-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/card.h |  1 +
+ sound/usb/pcm.c  | 26 +++++++++++++++++++++-----
+ 2 files changed, 22 insertions(+), 5 deletions(-)
+
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index f41dbdc31336..6c0a052a28f9 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -158,6 +158,7 @@ struct snd_usb_substream {
+ 	unsigned int stream_offset_adj;	/* Bytes to drop from beginning of stream (for non-compliant devices) */
+ 
+ 	unsigned int running: 1;	/* running status */
++	unsigned int period_elapsed_pending;	/* delay period handling */
+ 
+ 	unsigned int buffer_bytes;	/* buffer size in bytes */
+ 	unsigned int inflight_bytes;	/* in-flight data bytes on buffer (for playback) */
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index e26d37365f02..4e5031a68064 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -611,13 +611,9 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
+ 	subs->hwptr_done = 0;
+ 	subs->transfer_done = 0;
+ 	subs->last_frame_number = 0;
++	subs->period_elapsed_pending = 0;
+ 	runtime->delay = 0;
+ 
+-	/* for playback, submit the URBs now; otherwise, the first hwptr_done
+-	 * updates for all URBs would happen at the same time when starting */
+-	if (subs->direction == SNDRV_PCM_STREAM_PLAYBACK)
+-		ret = start_endpoints(subs);
+-
+  unlock:
+ 	snd_usb_unlock_shutdown(chip);
+ 	return ret;
+@@ -1398,6 +1394,10 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
+ 		subs->trigger_tstamp_pending_update = false;
+ 	}
+ 
++	if (period_elapsed && !subs->running) {
++		subs->period_elapsed_pending = 1;
++		period_elapsed = 0;
++	}
+ 	spin_unlock_irqrestore(&subs->lock, flags);
+ 	urb->transfer_buffer_length = bytes;
+ 	if (period_elapsed)
+@@ -1413,6 +1413,7 @@ static void retire_playback_urb(struct snd_usb_substream *subs,
+ {
+ 	unsigned long flags;
+ 	struct snd_urb_ctx *ctx = urb->context;
++	bool period_elapsed = false;
+ 
+ 	spin_lock_irqsave(&subs->lock, flags);
+ 	if (ctx->queued) {
+@@ -1423,13 +1424,20 @@ static void retire_playback_urb(struct snd_usb_substream *subs,
+ 	}
+ 
+ 	subs->last_frame_number = usb_get_current_frame_number(subs->dev);
++	if (subs->running) {
++		period_elapsed = subs->period_elapsed_pending;
++		subs->period_elapsed_pending = 0;
++	}
+ 	spin_unlock_irqrestore(&subs->lock, flags);
++	if (period_elapsed)
++		snd_pcm_period_elapsed(subs->pcm_substream);
+ }
+ 
+ static int snd_usb_substream_playback_trigger(struct snd_pcm_substream *substream,
+ 					      int cmd)
+ {
+ 	struct snd_usb_substream *subs = substream->runtime->private_data;
++	int err;
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+@@ -1440,6 +1448,14 @@ static int snd_usb_substream_playback_trigger(struct snd_pcm_substream *substrea
+ 					      prepare_playback_urb,
+ 					      retire_playback_urb,
+ 					      subs);
++		if (cmd == SNDRV_PCM_TRIGGER_START) {
++			err = start_endpoints(subs);
++			if (err < 0) {
++				snd_usb_endpoint_set_callback(subs->data_endpoint,
++							      NULL, NULL, NULL);
++				return err;
++			}
++		}
+ 		subs->running = 1;
+ 		dev_dbg(&subs->dev->dev, "%d:%d Start Playback PCM\n",
+ 			subs->cur_audiofmt->iface,
+-- 
+2.26.2
+
