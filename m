@@ -2,91 +2,90 @@ Return-Path: <SRS0=3BcS=MA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CCCE5C07E96
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 16:12:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ADC34C07E96
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 16:16:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 39D4061876
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 16:12:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 39D4061876
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 3A51061407
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 16:16:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A51061407
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F116B823;
-	Thu,  8 Jul 2021 18:11:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F116B823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E09B823;
+	Thu,  8 Jul 2021 18:15:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E09B823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625760746;
-	bh=5E8kdc9Oqm2QoJ6/RD6rJ80t5LJsrDUm9T1DCsErFNk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1625760986;
+	bh=5/+ZEj9pRkH/s1rcjwsVp9t3i31Y2rlXtooNdVw7RQ4=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=crkLyaNDrenY18xVojRnPHlv+oiljZaJqlTfnfmUntWtkV4uff+JIzE2K01YS5BnO
-	 8yqgTuUJMiowlZWWcrIszEW/NuGC/4+E8IjVQUtriYm5O0ilmYKc5T41LvQJGKNlEz
-	 y3OSIbZ/2eepILWEPfADe/3ZCCnC4dqcnmg5aO7M=
+	b=PML0sFqLJpCStAhkj9MXKAFvtXpAMUai2McMSIeUqMmIWnEZUVVOUx1ME88FCjcTb
+	 oQweXRCDrbYgNCwBGEL7kNPzE3wtzY5Vdpef9fbcLw0cJKwmoaYFEG8uhmW/KvBnHw
+	 u/kvD9FAuwKflolwB8292+Y9AXFZT7Lym0SCzhAI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7D06DF80246;
-	Thu,  8 Jul 2021 18:11:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9A376F80246;
+	Thu,  8 Jul 2021 18:15:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 04982F80249; Thu,  8 Jul 2021 18:11:34 +0200 (CEST)
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com
- [IPv6:2a00:1450:4864:20::234])
+ id 446A9F80249; Thu,  8 Jul 2021 18:15:14 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A777EF8012F
- for <alsa-devel@alsa-project.org>; Thu,  8 Jul 2021 18:11:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A777EF8012F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2E974F8012F
+ for <alsa-devel@alsa-project.org>; Thu,  8 Jul 2021 18:15:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E974F8012F
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="vb1pUKkp"
-Received: by mail-lj1-x234.google.com with SMTP id q4so3271289ljp.13
- for <alsa-devel@alsa-project.org>; Thu, 08 Jul 2021 09:11:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=fwTYwmISOcExj5Z6gmpYDNMFuU7Hd9ffs4yLfzQoLnA=;
- b=vb1pUKkpw/ZI2+Ehi1mTyHXRI7wuTyubVirC7X3/nIbGwL8Ett2qME4ove9OS2JVWH
- HhZ8easPKNU712AcVRh/OoN0t5uruWa3E3AWL4mdkpKvb0J7uEmdB2CWg+WhLSfmuXdQ
- m+4zAvR8K8reCBmWV0ZstebUzW5LcN1VrKDpSS6M8GIaPx60jB0npgoJhU28ABrAsjeO
- cgrCqrDOxeln1hZ91/TJ02Soh/a1y9NqTyK8bBKem7eqNwCxhixXuED/GYXQ5vADNxa2
- bncpENQxNgPDKDNHoV+hbpr8WqwfJJBnd3k+VTdMAXQ2lLxdvMgMyuh0cqH2hRPj5/mL
- Amzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=fwTYwmISOcExj5Z6gmpYDNMFuU7Hd9ffs4yLfzQoLnA=;
- b=nIrKdVU3FMJuPi6zeIqmJBNjlbWNy2eOR9WISsMIz0gETQjlgwhDOe7YGeyt3vGss7
- 8yAZVTe1/e6Z3IhXSYFtGijhLPB3F+wpr932E/2y5po9lXEyZ1pMSmQdYkWQGH9NrWv1
- /nHJYtm2UazeaOj0PMxWtnfUvi+GhIaS+C1bO0Q/0Dz9rk5rG3dFW3NGsOnAm1uKXiXv
- HbiBsq88e6fBH4Ux/hLoIroeVneoVCj26Wo8+timUS5KtDEG2XjcaQLQFoWHd7K9EHdl
- zBR6b0/eCGZW7ysswPZcz2QOfNq9zV8TmVB9aHlrrh5/Uznl2edUA1Q6pJuwc3zTkcL7
- FkYg==
-X-Gm-Message-State: AOAM532QNmi6kx1ObygGJYyJo2akSObzIDlWAyafAklqW6UsBIpz3Wcr
- kpx5gtk9yZegBFOjI+A7DKQl3Gkb81jGmkECVSE=
-X-Google-Smtp-Source: ABdhPJw0LozJgH/8zg+aOhqsED4xPjiLNkDDXU7X8/N2qsgOjsFp3ddw8tQIW2AuQvakbS/hz9OFr7yj/D7DMgU2vno=
-X-Received: by 2002:a05:651c:28a:: with SMTP id
- b10mr13713758ljo.355.1625760685294; 
- Thu, 08 Jul 2021 09:11:25 -0700 (PDT)
-MIME-Version: 1.0
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="MaszoWxm"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="T7XvFHyz"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id A02FE1FD6A;
+ Thu,  8 Jul 2021 16:15:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1625760901; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=XR/L0+CaPtFdS7++i50EDeO2Jek5OnInkrK8zzhkHKQ=;
+ b=MaszoWxmJZiJlYWdHKQ3dqe/VWEIfs6fxVW9SDlAtTr5r7RlGFigfb78zzFlZw15XhrGbO
+ 2fHv+ifIUUwaA1P+iHaFT4hXydG4/yPRuLulYiUuoSRsFA1xhrN16HCYXafURGVzjnF7Qx
+ flqxynu+Gbu00QXo5BEbS2okbWstcDI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1625760901;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=XR/L0+CaPtFdS7++i50EDeO2Jek5OnInkrK8zzhkHKQ=;
+ b=T7XvFHyz5b5cy7BnaPQ/zFQ5ivPmvO5NEtftUN23rk6CcdrFa5FkMly2QX8ps+RtCN9/6J
+ iQ9odLC+rrSvjWDA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 98D85A3B9D;
+ Thu,  8 Jul 2021 16:15:01 +0000 (UTC)
+Date: Thu, 08 Jul 2021 18:15:01 +0200
+Message-ID: <s5hwnq04wai.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Muni Sekhar <munisekharrms@gmail.com>
+Subject: Re: trigger timestamp
+In-Reply-To: <CAHhAz+gAAdrZJzr3fYXACnTW0r_5v35-wH+ohsrZ7nOcomoW5w@mail.gmail.com>
 References: <CAHhAz+h9=fMu7jLfmzZF2XMWAT=JBLik2WSSbfYtLg3kmzqWtg@mail.gmail.com>
  <s5hmtqx59hm.wl-tiwai@suse.de>
  <CAHhAz+guERMjmT_bRrgWzMoKkH2S0Zv0JatjpbNJZnLj+RyxXw@mail.gmail.com>
  <s5heec956kn.wl-tiwai@suse.de>
-In-Reply-To: <s5heec956kn.wl-tiwai@suse.de>
-From: Muni Sekhar <munisekharrms@gmail.com>
-Date: Thu, 8 Jul 2021 21:41:13 +0530
-Message-ID: <CAHhAz+gAAdrZJzr3fYXACnTW0r_5v35-wH+ohsrZ7nOcomoW5w@mail.gmail.com>
-Subject: Re: trigger timestamp
-To: Takashi Iwai <tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+ <CAHhAz+gAAdrZJzr3fYXACnTW0r_5v35-wH+ohsrZ7nOcomoW5w@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Cc: alsa-devel <alsa-devel@alsa-project.org>,
  kernelnewbies <kernelnewbies@kernelnewbies.org>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -104,41 +103,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Jul 8, 2021 at 6:02 PM Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Thu, 08 Jul 2021 14:19:12 +0200,
-> Muni Sekhar wrote:
+On Thu, 08 Jul 2021 18:11:13 +0200,
+Muni Sekhar wrote:
+> 
+> On Thu, Jul 8, 2021 at 6:02 PM Takashi Iwai <tiwai@suse.de> wrote:
 > >
-> > On Thu, Jul 8, 2021 at 4:59 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > On Thu, 08 Jul 2021 14:19:12 +0200,
+> > Muni Sekhar wrote:
 > > >
-> > > On Thu, 01 Jul 2021 01:41:29 +0200,
-> > > Muni Sekhar wrote:
+> > > On Thu, Jul 8, 2021 at 4:59 PM Takashi Iwai <tiwai@suse.de> wrote:
 > > > >
-> > > > Hi all,
+> > > > On Thu, 01 Jul 2021 01:41:29 +0200,
+> > > > Muni Sekhar wrote:
+> > > > >
+> > > > > Hi all,
+> > > > >
+> > > > > >From the user space test application , Is it possible to get the
+> > > > > trigger timestamp corresponding to SNDRV_PCM_TRIGGER_START &
+> > > > > SNDRV_PCM_TRIGGER_STOP events for audio playback capture?
 > > > >
-> > > > >From the user space test application , Is it possible to get the
-> > > > trigger timestamp corresponding to SNDRV_PCM_TRIGGER_START &
-> > > > SNDRV_PCM_TRIGGER_STOP events for audio playback capture?
-> > >
-> > > That's exactly what trigger_tstamp of snd_pcm_status corresponds for.
-> > Does aplay and arecord have any command line options to get the
-> > trigger_tstamp? If not how to get it?
->
-> Implement some code :)
->
-> Alternatively you can check the proc output contents in
-> /proc/asound/card*/pcm*/sub*/status.  It'd be difficult to see the
-> stop timestamp, though (as the application closes the stream
-> immediately after that).
-How to specify if i want the REALTIME/MONOTONIC_RAW trigger_time
-timestamp type output in  /proc/asound/card*/pcm*/sub*/status?
->
->
-> Takashi
+> > > > That's exactly what trigger_tstamp of snd_pcm_status corresponds for.
+> > > Does aplay and arecord have any command line options to get the
+> > > trigger_tstamp? If not how to get it?
+> >
+> > Implement some code :)
+> >
+> > Alternatively you can check the proc output contents in
+> > /proc/asound/card*/pcm*/sub*/status.  It'd be difficult to see the
+> > stop timestamp, though (as the application closes the stream
+> > immediately after that).
+> How to specify if i want the REALTIME/MONOTONIC_RAW trigger_time
+> timestamp type output in  /proc/asound/card*/pcm*/sub*/status?
+
+It's not provided in a standard tool and you have to write some
+program by yourself, I suppose.
 
 
-
-
---
-Thanks,
-Sekhar
+Takashi
