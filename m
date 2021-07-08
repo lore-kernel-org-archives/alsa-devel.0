@@ -2,77 +2,94 @@ Return-Path: <SRS0=3BcS=MA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A44F9C07E96
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 13:23:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C4F4C07E96
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 13:48:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6618061483
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 13:23:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6618061483
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=neo-zeon.de
+	by mail.kernel.org (Postfix) with ESMTPS id 6B951613D1
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 13:48:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B951613D1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BA69D85D;
-	Thu,  8 Jul 2021 15:22:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA69D85D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 311DE828;
+	Thu,  8 Jul 2021 15:47:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 311DE828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625750589;
-	bh=f63d6fDYkKnbVxgmM4DGLh60YtJvYsXMbAqJfQ1XqAA=;
-	h=Subject:From:To:References:Date:In-Reply-To:List-Id:
+	s=default; t=1625752120;
+	bh=nl4YU9AVpz8tjPyDGRUqEgnFlnpfw0Fvlt7kyai5sNA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MPzpMH9/3Rt022OapNR4gEfAnK16EIQSHCPPoDFveubaqZWi+DSnKHeeDWtrO2rzM
-	 CaiqXZwe/WDF5I0Nq+Ipk777kwZz5cTd4VgXGrQ4noZ/Ol03bP39vAoNIy16wiNu2c
-	 l9ys0hcO29TZ4g8U6FnFZo42+HtMsCGrhTr3zm5M=
+	b=G+Swc7IGpUJ+1RUM8msgf7ZPa5HhLqfVISIQlfp9XiCWr9CFzdmCl9hBpryDveeO9
+	 EziGNmxp8lQKb8fGCwyU7zuIg9BPqn6L4iEQox7xLJSpP/rTmNQpeUOkPMjCVVNFQU
+	 QPSfl9HhEbC8yEFn/lKRe8xk99XAPf1KTkujpuUU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 57585F80246;
-	Thu,  8 Jul 2021 15:22:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ABBB8F80246;
+	Thu,  8 Jul 2021 15:47:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C85FDF80249; Thu,  8 Jul 2021 15:22:17 +0200 (CEST)
-Received: from neo-zeon.de (neo-zeon.de [70.229.12.130])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 4BEB6F80249; Thu,  8 Jul 2021 15:47:48 +0200 (CEST)
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com
+ [IPv6:2607:f8b0:4864:20::735])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0E0EDF8012A
- for <alsa-devel@alsa-project.org>; Thu,  8 Jul 2021 15:22:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E0EDF8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id AE241F8012A
+ for <alsa-devel@alsa-project.org>; Thu,  8 Jul 2021 15:47:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE241F8012A
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=neo-zeon.de header.i=@neo-zeon.de
- header.b="AJPhcljx"
-Received: from neo-zeon.de (localhost [127.0.0.1])
- by neo-zeon.de (OpenSMTPD) with ESMTP id 56d5999c
- for <alsa-devel@alsa-project.org>;
- Thu, 8 Jul 2021 06:22:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=neo-zeon.de; h=subject
- :from:to:references:message-id:date:mime-version:in-reply-to
- :content-type:content-transfer-encoding; s=1; bh=kCWxQjw8DuR20G5
- aeMPcXox89Mc=; b=AJPhcljxkvXq8jr9idpzEhRtUl7WmXl7m+Mop1VpjGXZIig
- wvQpV2zoHBxqxWvg7bwmqHukQ6NP0dYXMUbEMJEmdcmYqZWND5j5lywSRBAtH9AR
- T8cSiWbP0qszeLOLH+1qGKUpwTJEU2XE6+/A1kCVX6xXR0xomq9NrzxRckrE=
-Received: by neo-zeon.de (OpenSMTPD) with ESMTPSA id a3982d23
- (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO)
- for <alsa-devel@alsa-project.org>;
- Thu, 8 Jul 2021 06:22:06 -0700 (PDT)
-Subject: [PATCH] Lenovo Legion 7 15IMHg05 & Yoga 7 14ITL5 speaker output fix
-From: Cameron Berkenpas <cam@neo-zeon.de>
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-References: <f3bbf247-ae21-474d-ccb5-f56710c2391f@neo-zeon.de>
-Message-ID: <654920a0-962d-fe25-a267-315de5269add@neo-zeon.de>
-Date: Thu, 8 Jul 2021 06:22:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="FEUtm6k7"
+Received: by mail-qk1-x735.google.com with SMTP id t19so5649438qkg.7
+ for <alsa-devel@alsa-project.org>; Thu, 08 Jul 2021 06:47:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=dcoeEcEIjqF8z6oBeMSQO0+nsBtqHQ+RSAADgarXULk=;
+ b=FEUtm6k7pOULwc1g2GuWwg9ec+OFT9nFXNHy0FQUg5yslsXl/zWIK27+1NTJbM/7DI
+ MTvLfSYX+y9XUO/NN87bJfhcDj+YbAo0FTEV5jcfj9T6S39PcvCcIocusy3/AENHY20a
+ +Va2YDR++bDDHnSJvNiAmDjwQI0064Eo+5uZfLyfqX9l6L3PcldrewWMOTwauECAgAfK
+ BzVxphbpYg2bpsDp7mwiGgzX+geREXzeIsA/Xkfnul+Ycy/fniIXCEj2xchrYDxLIEX/
+ Vxnzj4dMSw+elFVSfF8P/mBFzWEq37Gy3DsDtBRNy7dOUbteahYkHCK6oiaq/pACSUDq
+ /1yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=dcoeEcEIjqF8z6oBeMSQO0+nsBtqHQ+RSAADgarXULk=;
+ b=eMS6Lc2CZzsEE7iRc4sRdYZzFCpjajk85y/hOBBdXrGaP//OSoqwCPCsUmey3Ai/pF
+ UeUUzOoltg36qaPmE2dlOG8OKrRxgISk528SCSFuqjTb4EpAUIBvESNSKUr34N5o+MvH
+ JWCQaZp6oHD5jbRX1c1/jQshcnE/ANtDTRR82Q+KDNH0YirnvrwAhTATVERc6U4ajXnR
+ x48ZkI93FAkP2T+V6i+R5mDbR5QGS3Ikxr9DGPMCLjVGN+dZ92DO2gLz84XfMeO0ZUdP
+ 4W4MCQNywtcsrPDU1e55fLOYw4qWi7k//tb2TIKmn7ERDmMe5fRLVAKOgExKPMqJh+oa
+ mX7Q==
+X-Gm-Message-State: AOAM532H29MAkYOk+iDJN3ZrWsF7E31fSs3RGTKBuqWsuWGVhsWKNQt5
+ J+gRNCigWPcH602pjp1nsmuxxgXV3qBsO7l2CdHa
+X-Google-Smtp-Source: ABdhPJyUsMtjO8wnhwRZut4p82VJ4jqmBsd5Llz44/hnsTOYseyp3t05psKtKvRnSTVa4QEwvKkRMweTnM1Cp/js6dY=
+X-Received: by 2002:a37:8345:: with SMTP id f66mr31099925qkd.396.1625752055653; 
+ Thu, 08 Jul 2021 06:47:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f3bbf247-ae21-474d-ccb5-f56710c2391f@neo-zeon.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210708020815.3489365-1-lerobert@google.com>
+ <s5ho8bd59q4.wl-tiwai@suse.de>
+In-Reply-To: <s5ho8bd59q4.wl-tiwai@suse.de>
+From: Robert Lee <lerobert@google.com>
+Date: Thu, 8 Jul 2021 21:47:24 +0800
+Message-ID: <CAOM6g_Cv6rsLOAb0+Lr_YkjHpKfw+zvWXH0X5LKR=Z4dtXGRng@mail.gmail.com>
+Subject: Re: [Patch v2] ALSA: compress: allow to leave draining state when
+ pausing in draining
+To: Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Cc: alsa-devel@alsa-project.org, zxinhui@google.com, carterhsu@google.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, vkoul@kernel.org,
+ bubblefang@google.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,176 +105,152 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Don't mean to spam, but I missed that email subjects with patches should 
-have their subjects prefixed with '[PATCH]'.
+Hi Takashi,
 
-On 7/7/21 5:16 PM, Cameron Berkenpas wrote:
-> Hello,
->
-> I have a patch against 5.12.x that results in working speaker audio 
-> for the Lenovo Legion 7 15IMHg05 and the Lenovo Yoga 7 14ITL5.
->
-> How should I go about getting this merged? Should this be against the 
-> latest torvalds git? Is this the right place to present this 
-> particular patch? There are no issues checking my changes against 
-> checkpatch.pl.
->
-> Thanks!
->
-> diff --git a/sound/pci/hda/legion_15imhg05_helper.c 
-> b/sound/pci/hda/legion_15imhg05_helper.c
-> new file mode 100644
-> index 000000000000..6ead999ec3c9
-> --- /dev/null
-> +++ b/sound/pci/hda/legion_15imhg05_helper.c
-> @@ -0,0 +1,41 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Fixes for Lenovo Legion 15IMHg05 speaker output. */
-> +
-> +static const struct hda_verb legion_15imhg05_coefs[] = {
-> +{0x20, AC_VERB_SET_COEF_INDEX, 0x24 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x41 },
-> +{0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x2 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-> +{0x20, 0x4b0, 0x20 },
-> +
-> +// Set right speaker for Legion 7i.
-> +{0x20, AC_VERB_SET_COEF_INDEX, 0x24 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x42 },
-> +
-> +{0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0xc },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x2a },
-> +{0x20, 0x4b0, 0x20 },
-> +{0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x2 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-> +{0x20, 0x4b0, 0x20 },
-> +{}
-> +};
-> +
-> +static void alc287_fixup_legion_15imhg05_speakers(struct hda_codec 
-> *codec,
-> +                          const struct hda_fixup *fix,
-> +                          int action)
-> +{
-> +    struct alc_spec *spec = codec->spec;
-> +
-> +    switch (action) {
-> +    case HDA_FIXUP_ACT_INIT:
-> +        spec->gen.automute_speaker = 0;
-> +        break;
-> +    }
-> +}
-> diff --git a/sound/pci/hda/patch_realtek.c 
-> b/sound/pci/hda/patch_realtek.c
-> index e46e43dac6bf..28a4955cf2c2 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -6352,6 +6352,12 @@ static void alc_fixup_thinkpad_acpi(struct 
-> hda_codec *codec,
->  /* for alc285_fixup_ideapad_s740_coef() */
->  #include "ideapad_s740_helper.c"
->
-> +/* For alc287_fixup_legion_15imhg05_speakers() */
-> +#include "legion_15imhg05_helper.c"
-> +
-> +/* For yoga7_14itl5_coefs */
-> +#include "yoga7_14itl5_coefs.c"
-> +
->  enum {
->      ALC269_FIXUP_GPIO2,
->      ALC269_FIXUP_SONY_VAIO,
-> @@ -6561,6 +6567,9 @@ enum {
->      ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP,
->      ALC623_FIXUP_LENOVO_THINKSTATION_P340,
->      ALC255_FIXUP_ACER_HEADPHONE_AND_MIC,
-> +    ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS,
-> +    ALC287_FIXUP_LEGION_15IMHG05_AUTOMUTE,
-> +    ALC287_FIXUP_YOGA7_14ITL_SPEAKERS,
->  };
->
->  static const struct hda_fixup alc269_fixups[] = {
-> @@ -8088,6 +8097,24 @@ static const struct hda_fixup alc269_fixups[] = {
->          .chained = true,
->          .chain_id = ALC269_FIXUP_THINKPAD_ACPI,
->      },
-> +    [ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS] = {
-> +        .type = HDA_FIXUP_VERBS,
-> +        .v.verbs = legion_15imhg05_coefs,
-> +        .chained = true,
-> +        .chain_id = ALC287_FIXUP_LEGION_15IMHG05_AUTOMUTE,
-> +    },
-> +    [ALC287_FIXUP_LEGION_15IMHG05_AUTOMUTE] = {
-> +        .type = HDA_FIXUP_FUNC,
-> +        .v.func = alc287_fixup_legion_15imhg05_speakers,
-> +        .chained = true,
-> +        .chain_id = ALC269_FIXUP_HEADSET_MODE,
-> +    },
-> +    [ALC287_FIXUP_YOGA7_14ITL_SPEAKERS] = {
-> +        .type = HDA_FIXUP_VERBS,
-> +        .v.verbs = yoga7_14itl5_coefs,
-> +        .chained = true,
-> +        .chain_id = ALC269_FIXUP_HEADSET_MODE,
-> +    },
->      [ALC295_FIXUP_ASUS_DACS] = {
->          .type = HDA_FIXUP_FUNC,
->          .v.func = alc295_fixup_asus_dacs,
-> @@ -8520,6 +8547,8 @@ static const struct snd_pci_quirk 
-> alc269_fixup_tbl[] = {
->      SND_PCI_QUIRK(0x17aa, 0x3818, "Lenovo C940", 
-> ALC298_FIXUP_LENOVO_SPK_VOLUME),
->      SND_PCI_QUIRK(0x17aa, 0x3827, "Ideapad S740", 
-> ALC285_FIXUP_IDEAPAD_S740_COEF),
->      SND_PCI_QUIRK(0x17aa, 0x3843, "Yoga 9i", 
-> ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP),
-> +    SND_PCI_QUIRK(0x17aa, 0x3813, "Lenovo Legion 7", 
-> ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS),
-> +    SND_PCI_QUIRK(0x17aa, 0x3852, "Lenovo Yoga 7 14ITL5", 
-> ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
->      SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo E50-80", 
-> ALC269_FIXUP_DMIC_THINKPAD_ACPI),
->      SND_PCI_QUIRK(0x17aa, 0x3977, "IdeaPad S210", ALC283_FIXUP_INT_MIC),
->      SND_PCI_QUIRK(0x17aa, 0x3978, "Lenovo B50-70", 
-> ALC269_FIXUP_DMIC_THINKPAD_ACPI),
-> diff --git a/sound/pci/hda/yoga7_14itl5_coefs.c 
-> b/sound/pci/hda/yoga7_14itl5_coefs.c
-> new file mode 100644
-> index 000000000000..a437fe042a1d
-> --- /dev/null
-> +++ b/sound/pci/hda/yoga7_14itl5_coefs.c
-> @@ -0,0 +1,29 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Fixes for Lenovo Yoga 7 14ITL5 speaker output. */
-> +
-> +static const struct hda_verb yoga7_14itl5_coefs[] = {
-> +{0x20, AC_VERB_SET_COEF_INDEX, 0x24 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x41 },
-> +{0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x2 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-> +{0x20, 0x4b0, 0x20 },
-> +
-> +// set right speaker Yoga 7i.
-> +{0x20, AC_VERB_SET_COEF_INDEX, 0x24 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x46 },
-> +
-> +{0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0xc },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x2a },
-> +{0x20, 0x4b0, 0x20 },
-> +{0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x2 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-> +{0x20, 0x4b0, 0x20 },
-> +{}
-> +};
-> +
+It is a little complex to describe the design in detail, but try to
+explain simply
+what issue we meet.
 
+If w/o the change,  after user resumes from the pause, our system would cal=
+l
+snd_compr_drain() or snd_compr_partial_drain() again after it returns from
+previous drain (when EOF reaches). Then it will block in this drain and no =
+one
+wake it up because EOF has already reached. I add this change to return fro=
+m
+the previous drain.
+
+And yes, after user resumes it, it will change state to RUNNING. Then it wi=
+ll
+call snd_compr_drain() or snd_compr_partial_drain() very soon and change
+state to DRAINING again.
+
+Actually, I am wondering how the pause-during-drain can keep the state in
+DRAINING. It should have a different design. :)
+
+I also checked the snd_compr_open() comment, and it doesn't mention that
+we cannot pause in DRAINING state. Looks like it needs to be updated accord=
+ing
+to these changes. Maybe it can be updated in another commit?
+
+* SNDRV_PCM_STATE_DRAINING: When stream is draining current data. This is d=
+one
+ *      by calling SNDRV_COMPRESS_DRAIN.
+ * SNDRV_PCM_STATE_PAUSED: When stream is paused. This is done by calling
+ *      SNDRV_COMPRESS_PAUSE. It can be stopped or resumed by calling
+ *      SNDRV_COMPRESS_STOP or SNDRV_COMPRESS_RESUME respectively.
+
+thanks,
+Robert.
+
+Takashi Iwai <tiwai@suse.de> =E6=96=BC 2021=E5=B9=B47=E6=9C=888=E6=97=A5 =
+=E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=887:24=E5=AF=AB=E9=81=93=EF=BC=9A
+
+
+Takashi Iwai <tiwai@suse.de> =E6=96=BC 2021=E5=B9=B47=E6=9C=888=E6=97=A5 =
+=E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=887:24=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Thu, 08 Jul 2021 04:08:15 +0200,
+> Robert Lee wrote:
+> >
+> > When compress offload pauses in draining state, not all platforms
+> > need to keep in draining state. Some platforms may call drain or
+> > partial drain again when resume from pause in draining, so it needs
+> > to wake up from snd_compress_wait_for_drain() in this case.
+> >
+> > Call API snd_compr_leave_draining_in_pause(), if the platform
+> > doesn't need to keep in draining state when pause in draining
+> > state.
+> >
+> > Signed-off-by: Robert Lee <lerobert@google.com>
+> > ---
+> >  include/sound/compress_driver.h | 14 ++++++++++++++
+> >  sound/core/compress_offload.c   |  8 +++++++-
+> >  2 files changed, 21 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/include/sound/compress_driver.h b/include/sound/compress_d=
+river.h
+> > index 277087f635f3..e16524a93a14 100644
+> > --- a/include/sound/compress_driver.h
+> > +++ b/include/sound/compress_driver.h
+> > @@ -145,6 +145,7 @@ struct snd_compr_ops {
+> >   * @lock: device lock
+> >   * @device: device id
+> >   * @use_pause_in_draining: allow pause in draining, true when set
+> > + * @leave_draining_in_pause: leave draining state when pausing in drai=
+ning
+> >   */
+> >  struct snd_compr {
+> >       const char *name;
+> > @@ -156,6 +157,7 @@ struct snd_compr {
+> >       struct mutex lock;
+> >       int device;
+> >       bool use_pause_in_draining;
+> > +     bool leave_draining_in_pause;
+> >  #ifdef CONFIG_SND_VERBOSE_PROCFS
+> >       /* private: */
+> >       char id[64];
+> > @@ -182,6 +184,18 @@ static inline void snd_compr_use_pause_in_draining=
+(struct snd_compr_stream *subs
+> >       substream->device->use_pause_in_draining =3D true;
+> >  }
+> >
+> > +/**
+> > + * snd_compr_leave_draining_in_pause - Leave draining state when pause=
+ in draining
+> > + * @substream: compress substream to set
+> > + *
+> > + * In some platform, we need to leave draining state when we use pause=
+ in draining.
+> > + * Add API to allow leave draining state.
+> > + */
+> > +static inline void snd_compr_leave_draining_in_pause(struct snd_compr_=
+stream *substream)
+> > +{
+> > +     substream->device->leave_draining_in_pause =3D true;
+> > +}
+> > +
+> >  /* dsp driver callback apis
+> >   * For playback: driver should call snd_compress_fragment_elapsed() to=
+ let the
+> >   * framework know that a fragment has been consumed from the ring buff=
+er
+> > diff --git a/sound/core/compress_offload.c b/sound/core/compress_offloa=
+d.c
+> > index 21ce4c056a92..c6e5c8f072d7 100644
+> > --- a/sound/core/compress_offload.c
+> > +++ b/sound/core/compress_offload.c
+> > @@ -719,8 +719,14 @@ static int snd_compr_pause(struct snd_compr_stream=
+ *stream)
+> >               if (!stream->device->use_pause_in_draining)
+> >                       return -EPERM;
+> >               retval =3D stream->ops->trigger(stream, SNDRV_PCM_TRIGGER=
+_PAUSE_PUSH);
+> > -             if (!retval)
+> > +             if (!retval) {
+> > +                     if (stream->device->leave_draining_in_pause) {
+> > +                             stream->runtime->state =3D SNDRV_PCM_STAT=
+E_PAUSED;
+> > +                             wake_up(&stream->runtime->sleep);
+> > +                             break;
+> > +                     }
+> >                       stream->pause_in_draining =3D true;
+> > +             }
+>
+> Hrm, what actually happens with this new flag?  It changes the state
+> to PAUSED even if it's done during the draining.  Then user resumes
+> the pause via snd_compr_resume(), and now the state changes to
+> RUNNING.  OTOH, if the draining runs normally, it'll end up with
+> SETUP.
+>
+> Even if the above is even designed behavior, it must be described
+> properly somewhere.  The state change is described in snd_compr_open()
+> comment, and the new behavior should be mentioned there as well.
+> (Admittedly, the previous hack for the pause-during-drain is also
+> missing and should have been mentioned there; but an excuse is that
+> the pause-during-drain doesn't change the state itself :)
+>
+>
+> thanks,
+>
+> Takashi
