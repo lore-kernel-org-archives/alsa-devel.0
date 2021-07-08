@@ -2,77 +2,87 @@ Return-Path: <SRS0=3BcS=MA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B399AC07E96
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 09:14:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F8B9C07E99
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 10:03:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3C6FB6146E
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 09:14:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C6FB6146E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=denx.de
+	by mail.kernel.org (Postfix) with ESMTPS id A899961C4C
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 10:03:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A899961C4C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A2440165E;
-	Thu,  8 Jul 2021 11:13:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2440165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8AD1885D;
+	Thu,  8 Jul 2021 12:02:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8AD1885D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625735662;
-	bh=eus4BD03luebpH3Fxa0IptnLzaI2nBucujc2Srots/Q=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=imOpZqMY+0+5QYU/TE0oTrI+kA698T5KYrIneomYNCa9YNlkE3m0pOcJ4INISAsIP
-	 IIUWEbRKG99dJvQv/ivVNW9pE6irplm6lKhMNCOCEQzd3IKIIHj+QHtiQE35WMaVSc
-	 /ywHI9TNKN/1Khsnafo0gtRk5HsEQ3NpYTIn0Oq0=
+	s=default; t=1625738578;
+	bh=T8BYv0CK3BGV6zrt+jceUBSG9bJ2wJg821hTESWOdbE=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ocfEsocoor7U/8tCQ6bHOKIT3YT4i/uAGl27MQZK/kE6zZzyzsDlpicf/kB19/P88
+	 Lb+zvZA0L8as/DoEokhF73z4+z7xCPmFAgVT1XO7mGjny2Zt46wiY498pJwS20G5/N
+	 70cb82/2EaXaKQ32EcBc+7pGlJQp38d9Two3jgkw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C208CF802BE;
-	Thu,  8 Jul 2021 11:13:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 25109F8012F;
+	Thu,  8 Jul 2021 12:02:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 04434F80143; Thu,  8 Jul 2021 11:13:04 +0200 (CEST)
-Received: from phobos.denx.de (phobos.denx.de
- [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+ id 503B2F80249; Thu,  8 Jul 2021 12:02:06 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2BF5F80143
- for <alsa-devel@alsa-project.org>; Thu,  8 Jul 2021 11:12:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2BF5F80143
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4FF75F80143
+ for <alsa-devel@alsa-project.org>; Thu,  8 Jul 2021 12:01:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FF75F80143
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de
- header.b="Wyu2z7QU"
-Received: from tr.lan (ip-89-176-112-137.net.upcbroadband.cz [89.176.112.137])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
- (No client certificate requested)
- (Authenticated sender: marex@denx.de)
- by phobos.denx.de (Postfix) with ESMTPSA id 6CAF882A13;
- Thu,  8 Jul 2021 11:12:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
- s=phobos-20191101; t=1625735578;
- bh=6PrtEOO5NWH/SLHaWLKK/dourcU2gKiC8AMwQVhBBbY=;
- h=From:To:Cc:Subject:Date:From;
- b=Wyu2z7QUvMniQuQkeTarZdPnHnoHVevRETq+GFQQDIfW2kDF0LzQ9fXEHnf/IE8CE
- HdeNQfJV8aSagSCafyCR4aQcULx0/6PpDfYyvG2Qvma6x6qWeLXWy+sSkRC/WWqKsq
- 4SrArBpS9dlRSZXSm2jNJ0gKxeo4Q600RyZCCI4NpGcQQhyCNA+6Q7f31d2bp9BMQg
- MGHQs4IJIM8pclemabkql6WvfeSgFmaJrHAPVpPvmIV+U83KSVzHZuV3UGiV88JT5G
- 22SwAOFg7ZlbD64aO6eLwG9B5dHvVvlUyYi1GcPqub9BSM68iX6CldGuBmIt8JoQ5r
- ty1Le9ZOFR4fg==
-From: Marek Vasut <marex@denx.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: tlv320aic32x4: Fix TAS2505 volume controls
-Date: Thu,  8 Jul 2021 11:12:55 +0200
-Message-Id: <20210708091255.56502-1-marex@denx.de>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
-Cc: Marek Vasut <marex@denx.de>, Mark Brown <broonie@kernel.org>, ch@denx.de
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="WxUxbLdm"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="U/X06iRv"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 0EC4022323;
+ Thu,  8 Jul 2021 10:01:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1625738517; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hq62MSBLIYaa+j7ONulpQ7m6RGRTqHHU/kHV9BPddVA=;
+ b=WxUxbLdmYIyIMmEWnfnGTupDBiw+P9ndyWJOs5jblDQphPyt1FfXpl78z8zYnIxXR4dq8r
+ HmthXoZAZs2t3lp7nba46hGKoM4NcGcjmLTCJxGN15+FbB8+cnhLICXiVLh60J9moHzXy8
+ neReKGNkTXcmZnsXDNmD/rMC+mC70rI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1625738517;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hq62MSBLIYaa+j7ONulpQ7m6RGRTqHHU/kHV9BPddVA=;
+ b=U/X06iRvFfWPSxtsQO79jcPO4DI+lrOgd18foJerRkkvOQMEvVjyaDGmoQ8LcNKuWAaK+J
+ 7dpdMufa5fQLLEBA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 04B11A3B9E;
+ Thu,  8 Jul 2021 10:01:56 +0000 (UTC)
+Date: Thu, 08 Jul 2021 12:01:56 +0200
+Message-ID: <s5hy2ah5dkb.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Cameron Berkenpas <cam@neo-zeon.de>
+Subject: Re: Patch For Lenovo Legion 7 15IMHg05 & Yoga 7 14ITL5
+In-Reply-To: <f3bbf247-ae21-474d-ccb5-f56710c2391f@neo-zeon.de>
+References: <f3bbf247-ae21-474d-ccb5-f56710c2391f@neo-zeon.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,67 +98,178 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-None of the TAS2505 outputs are stereo, do not pretend they are by
-implementing them using SOC*DOUBLE* macros referencing the same
-register twice, use SOC*SINGLE* instead. Fix volume ranges and mute
-control for the codec according to datasheet.
+On Thu, 08 Jul 2021 02:16:49 +0200,
+Cameron Berkenpas wrote:
+> 
+> Hello,
+> 
+> I have a patch against 5.12.x that results in working speaker audio
+> for the Lenovo Legion 7 15IMHg05 and the Lenovo Yoga 7 14ITL5.
+> 
+> How should I go about getting this merged? Should this be against the
+> latest torvalds git? Is this the right place to present this
+> particular patch? There are no issues checking my changes against
+> checkpatch.pl.
 
-Fixes: b4525b6196cd7 ("ASoC: tlv320aic32x4: add support for TAS2505")
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Claudius Heine <ch@denx.de>
-Cc: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/tlv320aic32x4.c | 27 +++++++++++++--------------
- 1 file changed, 13 insertions(+), 14 deletions(-)
+The patch needs to be arranged in a proper format and submitted to
+alsa-devel ML (and Cc to me).  It needs a description (what this patch
+fixes and how), references to the information sources, and most
+importantly, your signed-off-by line.  Please refer to
+Documentation/process/submitting-patches.rst for details.
 
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index 8af739284fbec..30a503e154604 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -250,8 +250,8 @@ static DECLARE_TLV_DB_SCALE(tlv_pcm, -6350, 50, 0);
- static DECLARE_TLV_DB_SCALE(tlv_driver_gain, -600, 100, 0);
- /* -12dB min, 0.5dB steps */
- static DECLARE_TLV_DB_SCALE(tlv_adc_vol, -1200, 50, 0);
--
--static DECLARE_TLV_DB_LINEAR(tlv_spk_vol, TLV_DB_GAIN_MUTE, 0);
-+/* -6dB min, 1dB steps */
-+static DECLARE_TLV_DB_SCALE(tlv_tas_driver_gain, -5850, 50, 0);
- static DECLARE_TLV_DB_SCALE(tlv_amp_vol, 0, 600, 1);
- 
- static const char * const lo_cm_text[] = {
-@@ -1063,21 +1063,20 @@ static const struct snd_soc_component_driver soc_component_dev_aic32x4 = {
- };
- 
- static const struct snd_kcontrol_new aic32x4_tas2505_snd_controls[] = {
--	SOC_DOUBLE_R_S_TLV("PCM Playback Volume", AIC32X4_LDACVOL,
--			AIC32X4_LDACVOL, 0, -0x7f, 0x30, 7, 0, tlv_pcm),
-+	SOC_SINGLE_S8_TLV("PCM Playback Volume",
-+			  AIC32X4_LDACVOL, -0x7f, 0x30, tlv_pcm),
- 	SOC_ENUM("DAC Playback PowerTune Switch", l_ptm_enum),
--	SOC_DOUBLE_R_S_TLV("HP Driver Playback Volume", AIC32X4_HPLGAIN,
--			AIC32X4_HPLGAIN, 0, -0x6, 0x1d, 5, 0,
--			tlv_driver_gain),
--	SOC_DOUBLE_R("HP DAC Playback Switch", AIC32X4_HPLGAIN,
--			AIC32X4_HPLGAIN, 6, 0x01, 1),
- 
--	SOC_SINGLE("Auto-mute Switch", AIC32X4_DACMUTE, 4, 7, 0),
-+	SOC_SINGLE_TLV("HP Driver Gain Volume",
-+			AIC32X4_HPLGAIN, 0, 0x74, 1, tlv_tas_driver_gain),
-+	SOC_SINGLE("HP DAC Playback Switch", AIC32X4_HPLGAIN, 6, 1, 1),
- 
--	SOC_SINGLE_RANGE_TLV("Speaker Driver Playback Volume", TAS2505_SPKVOL1,
--			0, 0, 117, 1, tlv_spk_vol),
--	SOC_SINGLE_TLV("Speaker Amplifier Playback Volume", TAS2505_SPKVOL2,
--			4, 5, 0, tlv_amp_vol),
-+	SOC_SINGLE_TLV("Speaker Driver Playback Volume",
-+			TAS2505_SPKVOL1, 0, 0x74, 1, tlv_tas_driver_gain),
-+	SOC_SINGLE_TLV("Speaker Amplifier Playback Volume",
-+			TAS2505_SPKVOL2, 4, 5, 0, tlv_amp_vol),
-+
-+	SOC_SINGLE("Auto-mute Switch", AIC32X4_DACMUTE, 4, 7, 0),
- };
- 
- static const struct snd_kcontrol_new hp_output_mixer_controls[] = {
--- 
-2.30.2
+As the size of the COEF table is relatively small, you can just put
+all stuff into patch_realtek.c.  Also, the verb { 0x20, 0x4b0, 0x20 }
+is equivalent with { 0x20, AC_VERB_SET_COEF, 0xb020 }.  Better to
+replace in that form.
 
+
+thanks,
+
+Takashi
+
+> 
+> Thanks!
+> 
+> diff --git a/sound/pci/hda/legion_15imhg05_helper.c b/sound/pci/hda/legion_15imhg05_helper.c
+> new file mode 100644
+> index 000000000000..6ead999ec3c9
+> --- /dev/null
+> +++ b/sound/pci/hda/legion_15imhg05_helper.c
+> @@ -0,0 +1,41 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Fixes for Lenovo Legion 15IMHg05 speaker output. */
+> +
+> +static const struct hda_verb legion_15imhg05_coefs[] = {
+> +{0x20, AC_VERB_SET_COEF_INDEX, 0x24 },
+> +{0x20, AC_VERB_SET_PROC_COEF, 0x41 },
+> +{0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
+> +{0x20, AC_VERB_SET_PROC_COEF, 0x2 },
+> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
+> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
+> +{0x20, 0x4b0, 0x20 },
+> +
+> +// Set right speaker for Legion 7i.
+> +{0x20, AC_VERB_SET_COEF_INDEX, 0x24 },
+> +{0x20, AC_VERB_SET_PROC_COEF, 0x42 },
+> +
+> +{0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
+> +{0x20, AC_VERB_SET_PROC_COEF, 0xc },
+> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
+> +{0x20, AC_VERB_SET_PROC_COEF, 0x2a },
+> +{0x20, 0x4b0, 0x20 },
+> +{0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
+> +{0x20, AC_VERB_SET_PROC_COEF, 0x2 },
+> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
+> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
+> +{0x20, 0x4b0, 0x20 },
+> +{}
+> +};
+> +
+> +static void alc287_fixup_legion_15imhg05_speakers(struct hda_codec *codec,
+> +						  const struct hda_fixup *fix,
+> +						  int action)
+> +{
+> +	struct alc_spec *spec = codec->spec;
+> +
+> +	switch (action) {
+> +	case HDA_FIXUP_ACT_INIT:
+> +		spec->gen.automute_speaker = 0;
+> +		break;
+> +	}
+> +}
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index e46e43dac6bf..28a4955cf2c2 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -6352,6 +6352,12 @@ static void alc_fixup_thinkpad_acpi(struct hda_codec *codec,
+>  /* for alc285_fixup_ideapad_s740_coef() */
+>  #include "ideapad_s740_helper.c"
+>  +/* For alc287_fixup_legion_15imhg05_speakers() */
+> +#include "legion_15imhg05_helper.c"
+> +
+> +/* For yoga7_14itl5_coefs */
+> +#include "yoga7_14itl5_coefs.c"
+> +
+>  enum {
+>  	ALC269_FIXUP_GPIO2,
+>  	ALC269_FIXUP_SONY_VAIO,
+> @@ -6561,6 +6567,9 @@ enum {
+>  	ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP,
+>  	ALC623_FIXUP_LENOVO_THINKSTATION_P340,
+>  	ALC255_FIXUP_ACER_HEADPHONE_AND_MIC,
+> +	ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS,
+> +	ALC287_FIXUP_LEGION_15IMHG05_AUTOMUTE,
+> +	ALC287_FIXUP_YOGA7_14ITL_SPEAKERS,
+>  };
+>  static const struct hda_fixup alc269_fixups[] = {
+> @@ -8088,6 +8097,24 @@ static const struct hda_fixup alc269_fixups[] = {
+>  		.chained = true,
+>  		.chain_id = ALC269_FIXUP_THINKPAD_ACPI,
+>  	},
+> +	[ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS] = {
+> +		.type = HDA_FIXUP_VERBS,
+> +		.v.verbs = legion_15imhg05_coefs,
+> +		.chained = true,
+> +		.chain_id = ALC287_FIXUP_LEGION_15IMHG05_AUTOMUTE,
+> +	},
+> +	[ALC287_FIXUP_LEGION_15IMHG05_AUTOMUTE] = {
+> +		.type = HDA_FIXUP_FUNC,
+> +		.v.func = alc287_fixup_legion_15imhg05_speakers,
+> +		.chained = true,
+> +		.chain_id = ALC269_FIXUP_HEADSET_MODE,
+> +	},
+> +	[ALC287_FIXUP_YOGA7_14ITL_SPEAKERS] = {
+> +		.type = HDA_FIXUP_VERBS,
+> +		.v.verbs = yoga7_14itl5_coefs,
+> +		.chained = true,
+> +		.chain_id = ALC269_FIXUP_HEADSET_MODE,
+> +	},
+>  	[ALC295_FIXUP_ASUS_DACS] = {
+>  		.type = HDA_FIXUP_FUNC,
+>  		.v.func = alc295_fixup_asus_dacs,
+> @@ -8520,6 +8547,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+>  	SND_PCI_QUIRK(0x17aa, 0x3818, "Lenovo C940", ALC298_FIXUP_LENOVO_SPK_VOLUME),
+>  	SND_PCI_QUIRK(0x17aa, 0x3827, "Ideapad S740", ALC285_FIXUP_IDEAPAD_S740_COEF),
+>  	SND_PCI_QUIRK(0x17aa, 0x3843, "Yoga 9i", ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP),
+> +	SND_PCI_QUIRK(0x17aa, 0x3813, "Lenovo Legion 7", ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS),
+> +	SND_PCI_QUIRK(0x17aa, 0x3852, "Lenovo Yoga 7 14ITL5", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
+>  	SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo E50-80", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
+>  	SND_PCI_QUIRK(0x17aa, 0x3977, "IdeaPad S210", ALC283_FIXUP_INT_MIC),
+>  	SND_PCI_QUIRK(0x17aa, 0x3978, "Lenovo B50-70", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
+> diff --git a/sound/pci/hda/yoga7_14itl5_coefs.c b/sound/pci/hda/yoga7_14itl5_coefs.c
+> new file mode 100644
+> index 000000000000..a437fe042a1d
+> --- /dev/null
+> +++ b/sound/pci/hda/yoga7_14itl5_coefs.c
+> @@ -0,0 +1,29 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Fixes for Lenovo Yoga 7 14ITL5 speaker output. */
+> +
+> +static const struct hda_verb yoga7_14itl5_coefs[] = {
+> +{0x20, AC_VERB_SET_COEF_INDEX, 0x24 },
+> +{0x20, AC_VERB_SET_PROC_COEF, 0x41 },
+> +{0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
+> +{0x20, AC_VERB_SET_PROC_COEF, 0x2 },
+> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
+> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
+> +{0x20, 0x4b0, 0x20 },
+> +
+> +// set right speaker Yoga 7i.
+> +{0x20, AC_VERB_SET_COEF_INDEX, 0x24 },
+> +{0x20, AC_VERB_SET_PROC_COEF, 0x46 },
+> +
+> +{0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
+> +{0x20, AC_VERB_SET_PROC_COEF, 0xc },
+> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
+> +{0x20, AC_VERB_SET_PROC_COEF, 0x2a },
+> +{0x20, 0x4b0, 0x20 },
+> +{0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
+> +{0x20, AC_VERB_SET_PROC_COEF, 0x2 },
+> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
+> +{0x20, AC_VERB_SET_PROC_COEF, 0x0 },
+> +{0x20, 0x4b0, 0x20 },
+> +{}
+> +};
+> +
+> 
+> 
