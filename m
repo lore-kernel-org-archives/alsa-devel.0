@@ -7,66 +7,66 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3CBDC07E96
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 09:13:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B399AC07E96
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 09:14:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 739BE6146E
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 09:13:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 739BE6146E
+	by mail.kernel.org (Postfix) with ESMTPS id 3C6FB6146E
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 09:14:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C6FB6146E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=denx.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6F0E085D;
-	Thu,  8 Jul 2021 11:12:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F0E085D
+	by alsa0.perex.cz (Postfix) with ESMTPS id A2440165E;
+	Thu,  8 Jul 2021 11:13:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2440165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625735611;
-	bh=NWNPYEJ/BZAE4tON4Ez1jHn7pUhu6R8XBldJ5dvcX+Q=;
+	s=default; t=1625735662;
+	bh=eus4BD03luebpH3Fxa0IptnLzaI2nBucujc2Srots/Q=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=VI8e4aG2um7Q7RKADJ6LvcUG5BZ+v6VyD2V6T0D6ew2mns0SWUvA5wEB+73dTZIDy
-	 jBz/LtEurEq1g55Q3N0bW6yfqg+Zv9zBxXo1kEeFNm/KwtN1TWP1etWRIgwi5nP3Ea
-	 N+ew22J4i1OmzzcbP/zuurKKiQP8nRw0juhBRTXM=
+	b=imOpZqMY+0+5QYU/TE0oTrI+kA698T5KYrIneomYNCa9YNlkE3m0pOcJ4INISAsIP
+	 IIUWEbRKG99dJvQv/ivVNW9pE6irplm6lKhMNCOCEQzd3IKIIHj+QHtiQE35WMaVSc
+	 /ywHI9TNKN/1Khsnafo0gtRk5HsEQ3NpYTIn0Oq0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E747F80246;
-	Thu,  8 Jul 2021 11:12:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C208CF802BE;
+	Thu,  8 Jul 2021 11:13:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 07519F8012A; Thu,  8 Jul 2021 11:12:40 +0200 (CEST)
+ id 04434F80143; Thu,  8 Jul 2021 11:13:04 +0200 (CEST)
 Received: from phobos.denx.de (phobos.denx.de
  [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D0B7EF8012A
- for <alsa-devel@alsa-project.org>; Thu,  8 Jul 2021 11:12:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0B7EF8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id E2BF5F80143
+ for <alsa-devel@alsa-project.org>; Thu,  8 Jul 2021 11:12:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2BF5F80143
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de
- header.b="YKMXUfU6"
+ header.b="Wyu2z7QU"
 Received: from tr.lan (ip-89-176-112-137.net.upcbroadband.cz [89.176.112.137])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
  (No client certificate requested)
  (Authenticated sender: marex@denx.de)
- by phobos.denx.de (Postfix) with ESMTPSA id C0EDD80661;
- Thu,  8 Jul 2021 11:12:31 +0200 (CEST)
+ by phobos.denx.de (Postfix) with ESMTPSA id 6CAF882A13;
+ Thu,  8 Jul 2021 11:12:58 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
- s=phobos-20191101; t=1625735552;
- bh=IDbXSfA9WgWUl324OfUj5IXalKW4jFt20fRBLf6DOuA=;
+ s=phobos-20191101; t=1625735578;
+ bh=6PrtEOO5NWH/SLHaWLKK/dourcU2gKiC8AMwQVhBBbY=;
  h=From:To:Cc:Subject:Date:From;
- b=YKMXUfU6Q6ZpVMfxoQL/0c71vRzGdJpTS9KGXCzHobK/7p5eA0HMaMs4XsSC+D6xe
- cigCEJmu/0MmnsNmZ0C5jl1L6JH7rVQTGgSEdnkLotlPYeBNbnG2wQxOato/69alGE
- WjRKnu0/pwxXyJWXdgwBknuxfLhJDMjlLd2Jnbenr7B/7nGKsQqi0WPABU/R/d2kOw
- 6ST0wsjUk3TdsmU3pk6WtXVfk2L6kXAgZcaPjmnPF7VVArTEhHWOHAfEkeldANq4SO
- 17P5EHnfUuprjUX+KenRwnSmVm2jmC5DxrxvsI0Hy/tKMW6DTkJ2L8EKXKhueEJTuR
- 2KVOrtOdOPeEw==
+ b=Wyu2z7QUvMniQuQkeTarZdPnHnoHVevRETq+GFQQDIfW2kDF0LzQ9fXEHnf/IE8CE
+ HdeNQfJV8aSagSCafyCR4aQcULx0/6PpDfYyvG2Qvma6x6qWeLXWy+sSkRC/WWqKsq
+ 4SrArBpS9dlRSZXSm2jNJ0gKxeo4Q600RyZCCI4NpGcQQhyCNA+6Q7f31d2bp9BMQg
+ MGHQs4IJIM8pclemabkql6WvfeSgFmaJrHAPVpPvmIV+U83KSVzHZuV3UGiV88JT5G
+ 22SwAOFg7ZlbD64aO6eLwG9B5dHvVvlUyYi1GcPqub9BSM68iX6CldGuBmIt8JoQ5r
+ ty1Le9ZOFR4fg==
 From: Marek Vasut <marex@denx.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: tlv320aic32x4: Fix TAS2505/TAS2521 channel count
-Date: Thu,  8 Jul 2021 11:12:29 +0200
-Message-Id: <20210708091229.56443-1-marex@denx.de>
+Subject: [PATCH] ASoC: tlv320aic32x4: Fix TAS2505 volume controls
+Date: Thu,  8 Jul 2021 11:12:55 +0200
+Message-Id: <20210708091255.56502-1-marex@denx.de>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -88,33 +88,67 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The TAS2505/TAS2521 does support up to two channels, LEFT and RIGHT,
-which are being alternated on the audio data bus by Word Clock, WCLK.
-This is documented in TI slau472 2.7.1 Digital Audio Interface. Note
-that both the LEFT and RIGHT channels are only used for audio INPUT,
-while only the LEFT channel is used for audio OUTPUT.
+None of the TAS2505 outputs are stereo, do not pretend they are by
+implementing them using SOC*DOUBLE* macros referencing the same
+register twice, use SOC*SINGLE* instead. Fix volume ranges and mute
+control for the codec according to datasheet.
 
 Fixes: b4525b6196cd7 ("ASoC: tlv320aic32x4: add support for TAS2505")
 Signed-off-by: Marek Vasut <marex@denx.de>
 Cc: Claudius Heine <ch@denx.de>
 Cc: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic32x4.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/tlv320aic32x4.c | 27 +++++++++++++--------------
+ 1 file changed, 13 insertions(+), 14 deletions(-)
 
 diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index c63b717040ed2..8af739284fbec 100644
+index 8af739284fbec..30a503e154604 100644
 --- a/sound/soc/codecs/tlv320aic32x4.c
 +++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -1113,7 +1113,7 @@ static struct snd_soc_dai_driver aic32x4_tas2505_dai = {
- 	.playback = {
- 			 .stream_name = "Playback",
- 			 .channels_min = 1,
--			 .channels_max = 1,
-+			 .channels_max = 2,
- 			 .rates = SNDRV_PCM_RATE_8000_96000,
- 			 .formats = AIC32X4_FORMATS,},
- 	.ops = &aic32x4_ops,
+@@ -250,8 +250,8 @@ static DECLARE_TLV_DB_SCALE(tlv_pcm, -6350, 50, 0);
+ static DECLARE_TLV_DB_SCALE(tlv_driver_gain, -600, 100, 0);
+ /* -12dB min, 0.5dB steps */
+ static DECLARE_TLV_DB_SCALE(tlv_adc_vol, -1200, 50, 0);
+-
+-static DECLARE_TLV_DB_LINEAR(tlv_spk_vol, TLV_DB_GAIN_MUTE, 0);
++/* -6dB min, 1dB steps */
++static DECLARE_TLV_DB_SCALE(tlv_tas_driver_gain, -5850, 50, 0);
+ static DECLARE_TLV_DB_SCALE(tlv_amp_vol, 0, 600, 1);
+ 
+ static const char * const lo_cm_text[] = {
+@@ -1063,21 +1063,20 @@ static const struct snd_soc_component_driver soc_component_dev_aic32x4 = {
+ };
+ 
+ static const struct snd_kcontrol_new aic32x4_tas2505_snd_controls[] = {
+-	SOC_DOUBLE_R_S_TLV("PCM Playback Volume", AIC32X4_LDACVOL,
+-			AIC32X4_LDACVOL, 0, -0x7f, 0x30, 7, 0, tlv_pcm),
++	SOC_SINGLE_S8_TLV("PCM Playback Volume",
++			  AIC32X4_LDACVOL, -0x7f, 0x30, tlv_pcm),
+ 	SOC_ENUM("DAC Playback PowerTune Switch", l_ptm_enum),
+-	SOC_DOUBLE_R_S_TLV("HP Driver Playback Volume", AIC32X4_HPLGAIN,
+-			AIC32X4_HPLGAIN, 0, -0x6, 0x1d, 5, 0,
+-			tlv_driver_gain),
+-	SOC_DOUBLE_R("HP DAC Playback Switch", AIC32X4_HPLGAIN,
+-			AIC32X4_HPLGAIN, 6, 0x01, 1),
+ 
+-	SOC_SINGLE("Auto-mute Switch", AIC32X4_DACMUTE, 4, 7, 0),
++	SOC_SINGLE_TLV("HP Driver Gain Volume",
++			AIC32X4_HPLGAIN, 0, 0x74, 1, tlv_tas_driver_gain),
++	SOC_SINGLE("HP DAC Playback Switch", AIC32X4_HPLGAIN, 6, 1, 1),
+ 
+-	SOC_SINGLE_RANGE_TLV("Speaker Driver Playback Volume", TAS2505_SPKVOL1,
+-			0, 0, 117, 1, tlv_spk_vol),
+-	SOC_SINGLE_TLV("Speaker Amplifier Playback Volume", TAS2505_SPKVOL2,
+-			4, 5, 0, tlv_amp_vol),
++	SOC_SINGLE_TLV("Speaker Driver Playback Volume",
++			TAS2505_SPKVOL1, 0, 0x74, 1, tlv_tas_driver_gain),
++	SOC_SINGLE_TLV("Speaker Amplifier Playback Volume",
++			TAS2505_SPKVOL2, 4, 5, 0, tlv_amp_vol),
++
++	SOC_SINGLE("Auto-mute Switch", AIC32X4_DACMUTE, 4, 7, 0),
+ };
+ 
+ static const struct snd_kcontrol_new hp_output_mixer_controls[] = {
 -- 
 2.30.2
 
