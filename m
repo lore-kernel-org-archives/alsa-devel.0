@@ -2,80 +2,93 @@ Return-Path: <SRS0=3BcS=MA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C90B3C07E96
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 14:54:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CCCE5C07E96
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 16:12:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4585061283
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 14:54:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4585061283
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	by mail.kernel.org (Postfix) with ESMTPS id 39D4061876
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jul 2021 16:12:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 39D4061876
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 86B6F825;
-	Thu,  8 Jul 2021 16:53:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86B6F825
+	by alsa0.perex.cz (Postfix) with ESMTPS id F116B823;
+	Thu,  8 Jul 2021 18:11:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F116B823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625756073;
-	bh=rpsXE9AJLSqA8Kv/HQrm10YwdRvBtb3W8EuH96A9sRY=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1625760746;
+	bh=5E8kdc9Oqm2QoJ6/RD6rJ80t5LJsrDUm9T1DCsErFNk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WFG0Hka9HmejuIGt1AlJ7aTBphmuSqnGeoFIM27ItS7u88i/To2XnOzvE3Twq4AS0
-	 5R1pvLvY3KbLgLPfvym0JCNR7JKKcLMPZNwR4mRnQlIi9XslBaKdV4Z13hcu/syoYL
-	 9vDo0Ht7OjQkxTL1KLNENM8bAVv/969AZiSg2iMU=
+	b=crkLyaNDrenY18xVojRnPHlv+oiljZaJqlTfnfmUntWtkV4uff+JIzE2K01YS5BnO
+	 8yqgTuUJMiowlZWWcrIszEW/NuGC/4+E8IjVQUtriYm5O0ilmYKc5T41LvQJGKNlEz
+	 y3OSIbZ/2eepILWEPfADe/3ZCCnC4dqcnmg5aO7M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 24F3BF80246;
-	Thu,  8 Jul 2021 16:53:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7D06DF80246;
+	Thu,  8 Jul 2021 18:11:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 23CECF80249; Thu,  8 Jul 2021 16:53:42 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CEC63F8012F
- for <alsa-devel@alsa-project.org>; Thu,  8 Jul 2021 16:53:31 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id E7812A003F;
- Thu,  8 Jul 2021 16:53:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz E7812A003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1625756009; bh=50Pcd5aTX9wikvo2sIBF0vJ6IcrjySrof/14/tpqP8k=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=phgeDJEeL3CJ2C+r+weBuDGCtGDMtCBf8XucknY8xtRV+9n1UxbGse81CzdL9m7Ru
- AntvgEqAMSaowOfV+vTJPwyqirFmSYAYpmlhCPFRLL4DZVRlhH4VHxn85oxOFgnFsJ
- gt6H/bNUob/HValmw35d8rWFyLg9tbCG5ViZFM0Q=
-Received: from p1gen2.localdomain (unknown [192.168.100.98])
+ id 04982F80249; Thu,  8 Jul 2021 18:11:34 +0200 (CEST)
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com
+ [IPv6:2a00:1450:4864:20::234])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Thu,  8 Jul 2021 16:53:20 +0200 (CEST)
-Subject: Re: [Patch v2] ALSA: compress: allow to leave draining state when
- pausing in draining
-To: Robert Lee <lerobert@google.com>, Takashi Iwai <tiwai@suse.de>
-References: <20210708020815.3489365-1-lerobert@google.com>
- <s5ho8bd59q4.wl-tiwai@suse.de>
- <CAOM6g_Cv6rsLOAb0+Lr_YkjHpKfw+zvWXH0X5LKR=Z4dtXGRng@mail.gmail.com>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <e2705267-4400-bb7f-e96a-9b103872c0a1@perex.cz>
-Date: Thu, 8 Jul 2021 16:53:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A777EF8012F
+ for <alsa-devel@alsa-project.org>; Thu,  8 Jul 2021 18:11:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A777EF8012F
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="vb1pUKkp"
+Received: by mail-lj1-x234.google.com with SMTP id q4so3271289ljp.13
+ for <alsa-devel@alsa-project.org>; Thu, 08 Jul 2021 09:11:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=fwTYwmISOcExj5Z6gmpYDNMFuU7Hd9ffs4yLfzQoLnA=;
+ b=vb1pUKkpw/ZI2+Ehi1mTyHXRI7wuTyubVirC7X3/nIbGwL8Ett2qME4ove9OS2JVWH
+ HhZ8easPKNU712AcVRh/OoN0t5uruWa3E3AWL4mdkpKvb0J7uEmdB2CWg+WhLSfmuXdQ
+ m+4zAvR8K8reCBmWV0ZstebUzW5LcN1VrKDpSS6M8GIaPx60jB0npgoJhU28ABrAsjeO
+ cgrCqrDOxeln1hZ91/TJ02Soh/a1y9NqTyK8bBKem7eqNwCxhixXuED/GYXQ5vADNxa2
+ bncpENQxNgPDKDNHoV+hbpr8WqwfJJBnd3k+VTdMAXQ2lLxdvMgMyuh0cqH2hRPj5/mL
+ Amzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=fwTYwmISOcExj5Z6gmpYDNMFuU7Hd9ffs4yLfzQoLnA=;
+ b=nIrKdVU3FMJuPi6zeIqmJBNjlbWNy2eOR9WISsMIz0gETQjlgwhDOe7YGeyt3vGss7
+ 8yAZVTe1/e6Z3IhXSYFtGijhLPB3F+wpr932E/2y5po9lXEyZ1pMSmQdYkWQGH9NrWv1
+ /nHJYtm2UazeaOj0PMxWtnfUvi+GhIaS+C1bO0Q/0Dz9rk5rG3dFW3NGsOnAm1uKXiXv
+ HbiBsq88e6fBH4Ux/hLoIroeVneoVCj26Wo8+timUS5KtDEG2XjcaQLQFoWHd7K9EHdl
+ zBR6b0/eCGZW7ysswPZcz2QOfNq9zV8TmVB9aHlrrh5/Uznl2edUA1Q6pJuwc3zTkcL7
+ FkYg==
+X-Gm-Message-State: AOAM532QNmi6kx1ObygGJYyJo2akSObzIDlWAyafAklqW6UsBIpz3Wcr
+ kpx5gtk9yZegBFOjI+A7DKQl3Gkb81jGmkECVSE=
+X-Google-Smtp-Source: ABdhPJw0LozJgH/8zg+aOhqsED4xPjiLNkDDXU7X8/N2qsgOjsFp3ddw8tQIW2AuQvakbS/hz9OFr7yj/D7DMgU2vno=
+X-Received: by 2002:a05:651c:28a:: with SMTP id
+ b10mr13713758ljo.355.1625760685294; 
+ Thu, 08 Jul 2021 09:11:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAOM6g_Cv6rsLOAb0+Lr_YkjHpKfw+zvWXH0X5LKR=Z4dtXGRng@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, zxinhui@google.com, carterhsu@google.com,
- tiwai@suse.com, linux-kernel@vger.kernel.org, vkoul@kernel.org,
- bubblefang@google.com
+References: <CAHhAz+h9=fMu7jLfmzZF2XMWAT=JBLik2WSSbfYtLg3kmzqWtg@mail.gmail.com>
+ <s5hmtqx59hm.wl-tiwai@suse.de>
+ <CAHhAz+guERMjmT_bRrgWzMoKkH2S0Zv0JatjpbNJZnLj+RyxXw@mail.gmail.com>
+ <s5heec956kn.wl-tiwai@suse.de>
+In-Reply-To: <s5heec956kn.wl-tiwai@suse.de>
+From: Muni Sekhar <munisekharrms@gmail.com>
+Date: Thu, 8 Jul 2021 21:41:13 +0530
+Message-ID: <CAHhAz+gAAdrZJzr3fYXACnTW0r_5v35-wH+ohsrZ7nOcomoW5w@mail.gmail.com>
+Subject: Re: trigger timestamp
+To: Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+Cc: alsa-devel <alsa-devel@alsa-project.org>,
+ kernelnewbies <kernelnewbies@kernelnewbies.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,30 +104,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 08. 07. 21 15:47, Robert Lee wrote:
-> Hi Takashi,
-> 
-> It is a little complex to describe the design in detail, but try to
-> explain simply
-> what issue we meet.
-> 
-> If w/o the change,  after user resumes from the pause, our system would call
-> snd_compr_drain() or snd_compr_partial_drain() again after it returns from
-> previous drain (when EOF reaches). Then it will block in this drain and no one
-> wake it up because EOF has already reached. I add this change to return from
-> the previous drain.
+On Thu, Jul 8, 2021 at 6:02 PM Takashi Iwai <tiwai@suse.de> wrote:
+>
+> On Thu, 08 Jul 2021 14:19:12 +0200,
+> Muni Sekhar wrote:
+> >
+> > On Thu, Jul 8, 2021 at 4:59 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > >
+> > > On Thu, 01 Jul 2021 01:41:29 +0200,
+> > > Muni Sekhar wrote:
+> > > >
+> > > > Hi all,
+> > > >
+> > > > >From the user space test application , Is it possible to get the
+> > > > trigger timestamp corresponding to SNDRV_PCM_TRIGGER_START &
+> > > > SNDRV_PCM_TRIGGER_STOP events for audio playback capture?
+> > >
+> > > That's exactly what trigger_tstamp of snd_pcm_status corresponds for.
+> > Does aplay and arecord have any command line options to get the
+> > trigger_tstamp? If not how to get it?
+>
+> Implement some code :)
+>
+> Alternatively you can check the proc output contents in
+> /proc/asound/card*/pcm*/sub*/status.  It'd be difficult to see the
+> stop timestamp, though (as the application closes the stream
+> immediately after that).
+How to specify if i want the REALTIME/MONOTONIC_RAW trigger_time
+timestamp type output in  /proc/asound/card*/pcm*/sub*/status?
+>
+>
+> Takashi
 
-It looks like that the driver does not call snd_compr_drain_notify() so the
-state is not updated to SETUP on EOF.
 
-> Actually, I am wondering how the pause-during-drain can keep the state in
-> DRAINING. It should have a different design. :)
 
-I already proposed to add a new state (because it's a new state), but the
-conservative way was elected to avoid user space changes.
 
-				Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+--
+Thanks,
+Sekhar
