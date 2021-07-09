@@ -2,105 +2,93 @@ Return-Path: <SRS0=Xr4r=MB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A0D0C07E99
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jul 2021 13:00:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4711AC07E99
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jul 2021 14:41:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CE900613BF
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jul 2021 13:00:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE900613BF
+	by mail.kernel.org (Postfix) with ESMTPS id 97E22613BD
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jul 2021 14:41:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 97E22613BD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 76AD6950;
-	Fri,  9 Jul 2021 15:00:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76AD6950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 60617852;
+	Fri,  9 Jul 2021 16:40:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60617852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625835650;
-	bh=lOYU7UyliGU5TqAUngdjF5p1fnc7PLJjGxIDm3Zl3Jc=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1625841691;
+	bh=tWkj1CPfpq2ygg5ceXzbxsvDR+JFw2BRTjJ0/PgFYV4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pb6ON4aFByhj4Y1pUvO+afmTyIhkEDduHtpGIuwOBVsb8CL2JKX3SeTi6/wxYRyg/
-	 KmpF3+L/QKG2bW1MFohdj/DskkT6jaxFcF3k+v14YW6oCKPKBaLKnVu3eG9ovg9eW9
-	 VbafjvfLzWtuR9G0NVbk+MzGjgm924VIdZZyynec=
+	b=Uph25IhQdrneOZhvEOVQECpSPJvVnjzrq1i9XC5lXAaSRKMHDPplri/jnP5aWA8HV
+	 Vvae2CQD+vQnYZYFQhDa50iTJVEMjRnVzlx8o9i4vYDYZbtDOKNPkjg6ya0RP8NPzf
+	 15iSDNlu1HouSFtQEclB5hn6cFy9MWXuK6b3ZUNw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0956CF80171;
-	Fri,  9 Jul 2021 15:00:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CCF95F80059;
+	Fri,  9 Jul 2021 16:40:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 178C8F80224; Fri,  9 Jul 2021 14:59:59 +0200 (CEST)
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com
- [IPv6:2a00:1450:4864:20::12d])
+ id 81424F80224; Fri,  9 Jul 2021 16:40:39 +0200 (CEST)
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com
+ [IPv6:2a00:1450:4864:20::132])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B33BBF8012A
- for <alsa-devel@alsa-project.org>; Fri,  9 Jul 2021 14:59:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B33BBF8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3A3B6F80059
+ for <alsa-devel@alsa-project.org>; Fri,  9 Jul 2021 16:40:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A3B6F80059
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="SHs4ajRZ"
-Received: by mail-lf1-x12d.google.com with SMTP id p1so23042838lfr.12
- for <alsa-devel@alsa-project.org>; Fri, 09 Jul 2021 05:59:56 -0700 (PDT)
+ header.b="D8lk6Lj8"
+Received: by mail-lf1-x132.google.com with SMTP id x25so10926929lfu.13
+ for <alsa-devel@alsa-project.org>; Fri, 09 Jul 2021 07:40:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=SWmHBZLdC5NZNQ2ScKEe+hKqBEvH9WBA7y1IwIcat+U=;
- b=SHs4ajRZPu2SAknqb5pOh0a0zu4Lp06WJUSpv7ADlKwmF7m/CptwMMYT9xq04oL566
- VoGvhT0fw2oLBzGQwRAnhOsze61h0MZAvfFecMaLVnksj1+a5P3v6S6lvvONxb+H5GoP
- 265yXNX+KL+xDk9KuFZM7WRBZq6OZ2bnt2pvyhuMrmXFa0LRB3yImNeRw7rSFCfCNZA7
- ydtOjPBLyYR5Lcvxuu1gzQZ3OTC2PygNq7uQC8cmVZdB1KmBMe4icTZDVddn3fBOZw8k
- O16hf501P1n34XxWHvXp+BpjLsCd+A7IWDdYE5WFjXKpwpk4jlNPO6AuzbDymCnqWF3k
- U6xA==
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=ZL12w8fFLbmAUNIpYNN7IW/U1IsQYiXwxKki1Gb33EM=;
+ b=D8lk6Lj8Rewb94TQyAZI1uKPbva5tr+DLmYmUQkKLgjB0f2fXN6FnfX6fjjGTh2eFG
+ 6NFifvq8RHM4zPEo3GyAhmqRcGbwtTJVk6GjtQU+4SXHitTBEIQv4GUKesAqAj17452X
+ tmfTQ6vuNoyCinS0tGXc+wTBusin1eh/7uzNNHF0lt3ge0+JM2ONQf4ML4rAdNhtvJ4G
+ b5T8D8XPFh4vhCX3k2vntE2cc/N0mehSV1KKGSzJo85AXjHxQtAH34qeabfJ9SJ2SKat
+ p5vtdmBEbWQAhj+/E9DV/cggxHzCDnQJxXue/sVfabf3jkab4DPvSkfysu3SlT0kHOvV
+ hD/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=SWmHBZLdC5NZNQ2ScKEe+hKqBEvH9WBA7y1IwIcat+U=;
- b=XA+/r2xrZoCwzeAfP39Y89QKrFZfCJmydAAzkXl6tcCOPg0l2mXyDeOOWYDNBHet1Y
- /noLxLRx+pPak4tnrZd0MjjmhrmAkYFgPq5rfvJObDe+UG4ab9hGIZWsmjdbK/JCLPc/
- 3lu8cY8LN9OK5aigNdncB3tVrv+NOV/oP4Zzy9YBwga8tyi1ZZ1831KEcyOf1awPAol5
- hrWq81eo5Chk86cE0Ukt8PgpfCfX4k/CBs/fNJ3PoUALaAcYd/WkI6DDMARUqvN0xiOD
- Z12+5BRn6ohRRIHko47kS2M9J2w4usXlxeAEHegSjRVnm+1eiSkSxfrQyGri5NQOCR7C
- fDRQ==
-X-Gm-Message-State: AOAM532pTZ2j8tp0uAwQBwDctFgFBMntDd5EYzKzHRO1tfxfvFEjVINI
- bj5wm8AYO6xfIejGWrrTOyg=
-X-Google-Smtp-Source: ABdhPJxgALEChnkxIOwqkPMPhicimI9FDt604TMi871X8mCspd86mTWsO5netvQY66sQRvBUiNMgMA==
-X-Received: by 2002:a05:6512:1327:: with SMTP id
- x39mr29651277lfu.37.1625835595239; 
- Fri, 09 Jul 2021 05:59:55 -0700 (PDT)
-Received: from [10.0.0.40] (91-155-111-71.elisa-laajakaista.fi.
- [91.155.111.71])
- by smtp.gmail.com with ESMTPSA id a26sm463370lfr.58.2021.07.09.05.59.54
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 09 Jul 2021 05:59:54 -0700 (PDT)
-Subject: Re: [PATCH v2 0/5] ASoC: ti: davinci-mcasp: Fix the DIT mode and
- OMAP4 support
-To: Mark Brown <broonie@kernel.org>, Tony Lindgren <tony@atomide.com>
-References: <20210705194249.2385-1-peter.ujfalusi@gmail.com>
- <20210707173245.GK4394@sirena.org.uk>
- <b800e9ff-c8dc-ca09-8b2d-a750f05edb12@gmail.com>
- <YOftKVAsRaxtEY8n@atomide.com> <20210709124004.GB4112@sirena.org.uk>
-From: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-Message-ID: <50098bbb-089c-298c-1370-07179103706b@gmail.com>
-Date: Fri, 9 Jul 2021 15:59:57 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=ZL12w8fFLbmAUNIpYNN7IW/U1IsQYiXwxKki1Gb33EM=;
+ b=mcnIJnEnrCpRvAKiaWlzSAJwL9s+KpqmTNuQeAFDMM8H1zJgHbRVdtVNB75a4mX3bD
+ YOwJK1lST7FsNN23G8WTElMyuHj4yfuA1eeHkYYVIJ1R0n9erGs70myh420MrQyNHhl1
+ vyAxGja1nq+rxvI9EaAkLchAKA3RHiLNMZx3iOgbniUw9uGWlJEomVEOGhZKkYULIinp
+ hqzDAZEKhdlhzaznqiaPKYP5MsSYYawCR0yPyH7guG+d2ydhTEf0wtGSQbOkpFpUidkP
+ bnzMCK313xrqoiCa3/N+ZR6MveIIWf7unu/7UmFLsvfPT3Tyql225qCuC8PGcQMusj+7
+ pDvw==
+X-Gm-Message-State: AOAM532/Eym0n4PPWSdjR5+dJMczMQR/ZZQtanOmI/regMFoyvHnf9SI
+ kzMFjvtxkl+ncOsbgH5j/afS9NWrNV46r6ezIos=
+X-Google-Smtp-Source: ABdhPJy2RKavWzgLQ7lDPz/WawBHYPzX2FMYza8MuYzLw8PblWlYourkKLMyPXunmx+RUM0pcbrFFGmdA+P+KTrSZOU=
+X-Received: by 2002:a19:4950:: with SMTP id l16mr3838101lfj.4.1625841629807;
+ Fri, 09 Jul 2021 07:40:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210709124004.GB4112@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Cc: hns@goldelico.com, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org,
- lgirdwood@gmail.com
+References: <CAEk1YH4Jd0a8vfZxORVu7qg+Zsc-K+pR187ezNq8QhJBPW4gpw@mail.gmail.com>
+ <s5hlf6h594o.wl-tiwai@suse.de>
+ <CAEk1YH6ca3jDq4AD7tD8xk3Cht5aA9rhkmFsMjjjzrKvRgL3Lw@mail.gmail.com>
+ <s5hczrt55mp.wl-tiwai@suse.de>
+In-Reply-To: <s5hczrt55mp.wl-tiwai@suse.de>
+From: Damjan Georgievski <gdamjan@gmail.com>
+Date: Fri, 9 Jul 2021 16:40:18 +0200
+Message-ID: <CAEk1YH4vXSjf1kYM=uJ5DKbO3zPaY1K6W4MveEBtkzao5V=NHA@mail.gmail.com>
+Subject: Re: Audio out on DisplayPort but not HDMI, on AMD Ryzen APU/Vega
+To: Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -116,23 +104,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+> > Should this hardware be supported with the
+> > sound/soc/amd/renoir/rn-pci-acp3x.c driver (instead of snd_hda_intel)?
+> > =E2=80=A6 since it is a Renoir desktop APU.
+> >
+> > > Please give alsa-info.sh output for more detailed analysis.
+> >
+> > http://alsa-project.org/db/?f=3D00b31f3f0e6c58b56c73f98aec7c6b5ccaff700=
+e
+>
+> The codec proc output there shows that only one pin is enabled for
+> HDMI/DP output, and that's the reason why the driver created only one
+> stream.  It's basically a BIOS setup.
+>
+> The patch below should enable all pins forcibly and this should give
+> more streams.  Give it a try.
+>
+>
+> Takashi
+>
+> --- a/sound/pci/hda/patch_hdmi.c
+> +++ b/sound/pci/hda/patch_hdmi.c
+> @@ -1940,6 +1940,7 @@ static int hdmi_add_cvt(struct hda_codec *codec, hd=
+a_nid_t cvt_nid)
+>  static const struct snd_pci_quirk force_connect_list[] =3D {
+>         SND_PCI_QUIRK(0x103c, 0x870f, "HP", 1),
+>         SND_PCI_QUIRK(0x103c, 0x871a, "HP", 1),
+> +       SND_PCI_QUIRK(0x1462, 0xec94, "MS-7C94", 1),
+>         {}
+>  };
+>
+
+This somewhat improved the situation. I get multiple HDMI devices on
+the card now, and the
+default seems to be the actual HDMI port (as opposed to the DisplayPort).
+
+But I can't manually control where the audio goes, and at one point (I
+think when the TV was off),
+it automatically switched to the DisplayPort.
+
+http://alsa-project.org/db/?f=3Deb8da3434b011820de868451e55ae4f22fbb350c
 
 
-On 09/07/2021 15:40, Mark Brown wrote:
-> On Fri, Jul 09, 2021 at 09:31:05AM +0300, Tony Lindgren wrote:
-> 
->>> The ASoC patches are not affected by this, it is just that we need to
->>> block SIDLE mode in a different way than how I did it in the last patch.
-> 
->>> I'll take a look on how to implement the needed quirk for the McASP
->>> module, then I can send the dts+ti-sysc patch to linux-omap.
-> 
->> OK sounds good to me.
-> 
-> So should I queue the ASoC patches and then let the DT patches go via
-> Tony's tree?
 
-Yes, please. I don't know when I will have time to revisit the DT part.
-
--- 
-Péter
+--=20
+damjan
