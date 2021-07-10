@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6C93C07E99
-	for <alsa-devel@archiver.kernel.org>; Sat, 10 Jul 2021 02:41:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7ECE3C07E99
+	for <alsa-devel@archiver.kernel.org>; Sat, 10 Jul 2021 02:42:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5DCE3613C5
-	for <alsa-devel@archiver.kernel.org>; Sat, 10 Jul 2021 02:41:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5DCE3613C5
+	by mail.kernel.org (Postfix) with ESMTPS id F29AD6124C
+	for <alsa-devel@archiver.kernel.org>; Sat, 10 Jul 2021 02:42:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F29AD6124C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EBFF9173F;
-	Sat, 10 Jul 2021 04:40:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBFF9173F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9ACCB174A;
+	Sat, 10 Jul 2021 04:41:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9ACCB174A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625884885;
-	bh=vRJBqCGDlyiiqx2PHsFVrbw8cwYyu7XjjgUbITPBjU8=;
+	s=default; t=1625884921;
+	bh=CW1WmbuVl1Tuj60stuh6NuzXVGlP0X1tiTCK37+XWn8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=olVBQ0acLA5p1HWf2UwnkfdMIqdJyxqcBbUTZe5HDKRKQA4iSbUGMCEgMdWqixdzm
-	 Jl8drDjtOwcIB1kv36kzYImRCYbCp49MHyLdWimNUjdzuCGt0HkSULBG/oYPEfZJMp
-	 7i6QZIn8BqZbOg431ylbgW0TuTb7LslDC2PQHUss=
+	b=heLGIxTg9E/vfeeLyHqcsQ03vWQJ/69I5rnRMhmnXRhCFLQGUkaWxJAg47L/g4bhG
+	 4a44UENBxUOClwTE39AWvQVefyUCooApFiAEFz7q3iLThWSC5aZzX8/nPuAOYm/6qb
+	 OL44rA6k5ZD7J2vIr4B8OZ7Qj7BlKrBxuyhL0Xg4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 88916F80508;
-	Sat, 10 Jul 2021 04:26:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB2CAF80610;
+	Sat, 10 Jul 2021 04:26:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2E1ABF80611; Sat, 10 Jul 2021 04:26:57 +0200 (CEST)
+ id 86374F804EC; Sat, 10 Jul 2021 04:26:57 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A0ECEF804EC
- for <alsa-devel@alsa-project.org>; Sat, 10 Jul 2021 04:26:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0ECEF804EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1667AF80609
+ for <alsa-devel@alsa-project.org>; Sat, 10 Jul 2021 04:26:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1667AF80609
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="QcBGbOs7"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA31C613AF;
- Sat, 10 Jul 2021 02:26:47 +0000 (UTC)
+ header.b="RJIz0NEm"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DD81613D1;
+ Sat, 10 Jul 2021 02:26:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1625884008;
- bh=vRJBqCGDlyiiqx2PHsFVrbw8cwYyu7XjjgUbITPBjU8=;
+ s=k20201202; t=1625884012;
+ bh=CW1WmbuVl1Tuj60stuh6NuzXVGlP0X1tiTCK37+XWn8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=QcBGbOs79W7+iCq9XUKgfddkZkuIupITMCjhCb3o/51KEjQN8EDiTD9TpkzO6iBCE
- q9hubZuNrvAtp+tocVb16aYD51M1bslg25wi9kCeUsNPi2fIC+RQVYUb0b6S9HU7Vh
- 5YAdPIm8hTMM9uv2CyEZo9xgDlpX5/UZt9bHuaMhwqlP9jxG/hSAUcm6Kt92oT8XRt
- KE1DdH9hZ4D3iawMNAZ5G+LeVackilEk5rFanoAdGjAyl54Sw6FihVXDUIwVC/aRr6
- g01l0kwMus7XNJF7aQ/HTGlez1x++BrwW/JqTlBkKRKhNYbm7zQkipv3WJcq1XfmgL
- rkHZQQaYuziyw==
+ b=RJIz0NEmeuHE4si3NSRmtnVbRNFN4+nhFv1kwuks5tQD79MjAg508uCfb4HrFXVBn
+ XR1TIc83AqfnMOogRV/lSVplqVX1PFOaCAwbd/aHVHQiFBMsjZid6iUC0Ag3Rrf42V
+ LAHYwNQbVEQt56B9Z9YPT3aKGpUDNz/nqwxh9zLrCxqZSOHTmYnBs/oy167GbDmCOV
+ gmvGKn8toD04J5KwbAzfdXaKSaJcpCxeKI3stc1iTVhrmvn6rLU2gRhSIP/o57hjqy
+ lD55wVnH7UYUyzrwqhBzi290V4VzPJELm+ddj2rr9vJHC435+kZkO3LJp4eGCbq+fN
+ apSkuziOYV/cA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 81/93] ASoC: Intel: kbl_da7219_max98357a: shrink
- platform_id below 20 characters
-Date: Fri,  9 Jul 2021 22:24:15 -0400
-Message-Id: <20210710022428.3169839-81-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 84/93] ALSA: usb-audio: scarlett2: Fix 6i6 Gen 2
+ line out descriptions
+Date: Fri,  9 Jul 2021 22:24:18 -0400
+Message-Id: <20210710022428.3169839-84-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210710022428.3169839-1-sashal@kernel.org>
 References: <20210710022428.3169839-1-sashal@kernel.org>
@@ -72,12 +72,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>,
- Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>, Mark Brown <broonie@kernel.org>,
- Paul Olaru <paul.olaru@oss.nxp.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org, "Geoffrey D. Bennett" <g@b4.vu>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,61 +89,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: "Geoffrey D. Bennett" <g@b4.vu>
 
-[ Upstream commit 94efd726b947f265bd313605c9f73edec5469d65 ]
+[ Upstream commit c712c6c0ff2d60478582e337185bcdd520a7dc2e ]
 
-Sparse throws the following warnings:
+There are two headphone outputs, and they map to the four analogue
+outputs.
 
-sound/soc/intel/boards/kbl_da7219_max98357a.c:647:25: error: too long
-initializer-string for array of char(no space for nul char)
-
-Fix by using the 'mx' acronym for Maxim.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Paul Olaru <paul.olaru@oss.nxp.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Link: https://lore.kernel.org/r/20210621194057.21711-6-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
+Link: https://lore.kernel.org/r/205e5e5348f08ded0cc4da5446f604d4b91db5bf.1624294591.git.g@b4.vu
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/kbl_da7219_max98357a.c     | 4 ++--
- sound/soc/intel/common/soc-acpi-intel-kbl-match.c | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ sound/usb/mixer_scarlett_gen2.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-index dc3d897ad280..36f1f49e0b76 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-@@ -594,7 +594,7 @@ static int kabylake_audio_probe(struct platform_device *pdev)
+diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
+index 6d7805d3c39a..d93ae8c244ba 100644
+--- a/sound/usb/mixer_scarlett_gen2.c
++++ b/sound/usb/mixer_scarlett_gen2.c
+@@ -254,10 +254,10 @@ static const struct scarlett2_device_info s6i6_gen2_info = {
+ 	.pad_input_count = 2,
  
- static const struct platform_device_id kbl_board_ids[] = {
- 	{
--		.name = "kbl_da7219_max98357a",
-+		.name = "kbl_da7219_mx98357a",
- 		.driver_data =
- 			(kernel_ulong_t)&kabylake_audio_card_da7219_m98357a,
+ 	.line_out_descrs = {
+-		"Monitor L",
+-		"Monitor R",
+-		"Headphones L",
+-		"Headphones R",
++		"Headphones 1 L",
++		"Headphones 1 R",
++		"Headphones 2 L",
++		"Headphones 2 R",
  	},
-@@ -616,4 +616,4 @@ module_platform_driver(kabylake_audio)
- MODULE_DESCRIPTION("Audio Machine driver-DA7219 & MAX98357A in I2S mode");
- MODULE_AUTHOR("Naveen Manohar <naveen.m@intel.com>");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:kbl_da7219_max98357a");
-+MODULE_ALIAS("platform:kbl_da7219_mx98357a");
-diff --git a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
-index a4fbe6707ca7..4ed1349affc4 100644
---- a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
-@@ -113,7 +113,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
- 	},
- 	{
- 		.id = "DLGS7219",
--		.drv_name = "kbl_da7219_max98373",
-+		.drv_name = "kbl_da7219_mx98373",
- 		.fw_filename = "intel/dsp_fw_kbl.bin",
- 		.machine_quirk = snd_soc_acpi_codec_list,
- 		.quirk_data = &kbl_7219_98373_codecs,
+ 
+ 	.ports = {
 -- 
 2.30.2
 
