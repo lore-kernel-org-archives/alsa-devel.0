@@ -2,80 +2,78 @@ Return-Path: <SRS0=XhfU=MC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B060DC07E99
-	for <alsa-devel@archiver.kernel.org>; Sat, 10 Jul 2021 02:54:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EA44C07E99
+	for <alsa-devel@archiver.kernel.org>; Sat, 10 Jul 2021 02:55:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2BFDC613BE
-	for <alsa-devel@archiver.kernel.org>; Sat, 10 Jul 2021 02:54:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2BFDC613BE
+	by mail.kernel.org (Postfix) with ESMTPS id ECA0F611CD
+	for <alsa-devel@archiver.kernel.org>; Sat, 10 Jul 2021 02:55:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ECA0F611CD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C198A1793;
-	Sat, 10 Jul 2021 04:53:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C198A1793
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7CFC217B4;
+	Sat, 10 Jul 2021 04:54:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CFC217B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625885685;
-	bh=L97dLeP6erxCCovARaRHBZiyyAeRSD+wLyweSRUnot8=;
+	s=default; t=1625885705;
+	bh=0maWroivBJOvh18abpe9bTk7gxcjye2N3W9KBM9/MHA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=e4EE/8708aZTuv6vlFiQmBvqZ6CyayP6EdbK9YRCm2k4L+AAdNOTvBGRSiu/DwVYy
-	 3b3X3rb0V9slfe/2t/cOPYfw+CkV4+8IX5PjCXhYJ3Ed6kXAu++DSJAAzRA65sGcqN
-	 d/l5zt9WaaEmmXW+mUc7Dm8NzJR0Tuz3PjBWq8ug=
+	b=hnx4HKf9GhVXLF8X4jd4zUvVkYN+icKe0GZ1rXsDRxFh3A7b993a47PPWpADLUlQa
+	 dQMI6PbhPBK4Ahygt6GauRzlBaRcw9ZmiZRH8Nrdn186BbZAYVoVp+9xxSSkb4ld1k
+	 bjkhqo1n7iOxpQac0UXbrpps8zMWJIufI8hdBpoM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BA8D2F8053D;
-	Sat, 10 Jul 2021 04:39:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 850C9F80425;
+	Sat, 10 Jul 2021 04:39:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A7FC8F80558; Sat, 10 Jul 2021 04:39:15 +0200 (CEST)
+ id B9F90F805E0; Sat, 10 Jul 2021 04:39:29 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DBA0CF8053D
- for <alsa-devel@alsa-project.org>; Sat, 10 Jul 2021 04:39:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBA0CF8053D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3ACA8F80425
+ for <alsa-devel@alsa-project.org>; Sat, 10 Jul 2021 04:39:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3ACA8F80425
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="JaYDYPVc"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C614613E4;
- Sat, 10 Jul 2021 02:39:05 +0000 (UTC)
+ header.b="bvPQhzPo"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4532613F5;
+ Sat, 10 Jul 2021 02:39:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1625884747;
- bh=L97dLeP6erxCCovARaRHBZiyyAeRSD+wLyweSRUnot8=;
+ s=k20201202; t=1625884765;
+ bh=0maWroivBJOvh18abpe9bTk7gxcjye2N3W9KBM9/MHA=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=JaYDYPVci2/iArRrQkbzwh2FcGqPVdH5NdVtC0C4RZ0wEd7JqeclcjoWO8sYyQeXk
- qw0nWbmAsqwtBWraxX4vpCM85xnH7E6h8O4eTKWsHTyteJzKfJU2VEJjy11OZEHdCw
- A5m7dQcSWwdHA7uUqZJGfY4J0Gkk5ZJcUQIraY9qvVHYwjmnuxjEebZBcYbi8omKIL
- 7JwpahoZrphuElV1rJrYXEZ2LZxB2z9Qd2BCq/D3BK9g6EaBJDD9yhkPHZATMZwrI6
- g6FpFlHcnk2LFh/JINtodS/U8r29EkJwXn/e/eH8fJRwVKmziICZeAhTMBKHMPT2QK
- IvZQzh6yqY3Ow==
+ b=bvPQhzPofrmCADB5Y2K2PVmQyIvk8uhUaQSuQBy0irTpkCBH2eibm9Lcdit3F3pZA
+ 0fbCiti5q7wIWHXqlQG/axnk2APAr3dgwkMHfu7MgqmZYPUekEaFV0maveu5wKhK/p
+ JakBOiFBhQtKqFr5DVMKY/CZyCuYNt7cZGjPl9Hfdb2S5q/DdDyJoOoWT9n3IOsUBb
+ 1/og6LRYMdhuwnC6gRrS+Rp43j89d89fTHCPkDQhMh8icQ8U+/cBzE/NQ97q2PpR6D
+ 6BazdifTveXSm24GdIR0doZvUWMHOA8HqLgkqtCJkH+qAomr+3+ExiQl9pLTRT/ONJ
+ 3qRGZ4Ag8XkoQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 23/26] ALSA: hda: Add IRQ check for
- platform_get_irq()
-Date: Fri,  9 Jul 2021 22:36:01 -0400
-Message-Id: <20210710023604.3172486-23-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 10/23] ALSA: sb: Fix potential double-free of CSP
+ mixer elements
+Date: Fri,  9 Jul 2021 22:38:59 -0400
+Message-Id: <20210710023912.3172972-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210710023604.3172486-1-sashal@kernel.org>
-References: <20210710023604.3172486-1-sashal@kernel.org>
+In-Reply-To: <20210710023912.3172972-1-sashal@kernel.org>
+References: <20210710023912.3172972-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, Xin Tan <tanxin.ctf@gmail.com>,
- Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
- Jiajun Cao <jjcao20@fudan.edu.cn>, linux-tegra@vger.kernel.org,
- Thierry Reding <treding@nvidia.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,43 +89,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Jiajun Cao <jjcao20@fudan.edu.cn>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 8c13212443230d03ff25014514ec0d53498c0912 ]
+[ Upstream commit c305366a37441c2ac90b08711cb6f032b43672f2 ]
 
-The function hda_tegra_first_init() neglects to check the return
-value after executing platform_get_irq().
+snd_sb_qsound_destroy() contains the calls of removing the previously
+created mixer controls, but it doesn't clear the pointers.  As
+snd_sb_qsound_destroy() itself may be repeatedly called via ioctl,
+this could lead to double-free potentially.
 
-hda_tegra_first_init() should check the return value (if negative
-error number) for errors so as to not pass a negative value to
-the devm_request_irq().
+Fix it by clearing the struct fields properly afterwards.
 
-Fix it by adding a check for the return value irq_id.
-
-Signed-off-by: Jiajun Cao <jjcao20@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Reviewed-by: Thierry Reding <treding@nvidia.com>
-Link: https://lore.kernel.org/r/20210622131947.94346-1-jjcao20@fudan.edu.cn
+Link: https://lore.kernel.org/r/20210608140540.17885-4-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/hda_tegra.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/isa/sb/sb16_csp.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
-index e85fb04ec7be..b567c4bdae00 100644
---- a/sound/pci/hda/hda_tegra.c
-+++ b/sound/pci/hda/hda_tegra.c
-@@ -363,6 +363,9 @@ static int hda_tegra_first_init(struct azx *chip, struct platform_device *pdev)
- 	unsigned short gcap;
- 	int irq_id = platform_get_irq(pdev, 0);
+diff --git a/sound/isa/sb/sb16_csp.c b/sound/isa/sb/sb16_csp.c
+index 2cc068be7d3b..90fa57ad14c0 100644
+--- a/sound/isa/sb/sb16_csp.c
++++ b/sound/isa/sb/sb16_csp.c
+@@ -1086,10 +1086,14 @@ static void snd_sb_qsound_destroy(struct snd_sb_csp * p)
+ 	card = p->chip->card;	
+ 	
+ 	down_write(&card->controls_rwsem);
+-	if (p->qsound_switch)
++	if (p->qsound_switch) {
+ 		snd_ctl_remove(card, p->qsound_switch);
+-	if (p->qsound_space)
++		p->qsound_switch = NULL;
++	}
++	if (p->qsound_space) {
+ 		snd_ctl_remove(card, p->qsound_space);
++		p->qsound_space = NULL;
++	}
+ 	up_write(&card->controls_rwsem);
  
-+	if (irq_id < 0)
-+		return irq_id;
-+
- 	err = hda_tegra_init_chip(chip, pdev);
- 	if (err)
- 		return err;
+ 	/* cancel pending transfer of QSound parameters */
 -- 
 2.30.2
 
