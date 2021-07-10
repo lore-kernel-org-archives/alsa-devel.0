@@ -2,69 +2,69 @@ Return-Path: <SRS0=XhfU=MC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FB04C07E9B
-	for <alsa-devel@archiver.kernel.org>; Sat, 10 Jul 2021 02:43:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1ECE1C07E9C
+	for <alsa-devel@archiver.kernel.org>; Sat, 10 Jul 2021 02:43:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 81035613C9
-	for <alsa-devel@archiver.kernel.org>; Sat, 10 Jul 2021 02:43:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 81035613C9
+	by mail.kernel.org (Postfix) with ESMTPS id 9B225613C5
+	for <alsa-devel@archiver.kernel.org>; Sat, 10 Jul 2021 02:43:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B225613C5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 25AC116BB;
-	Sat, 10 Jul 2021 04:42:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25AC116BB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0EAB01719;
+	Sat, 10 Jul 2021 04:42:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EAB01719
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625884984;
-	bh=PFPsC1bwNfkre24GbZAloHDyURgIzkgS9yrhCz7qWhA=;
+	s=default; t=1625885010;
+	bh=bJZpDz9NxLlI3Hwub0xn2z/Th0eq+i9p8YQI6id92D0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WPw0w5qJDrNdySx9xqDXiFrX2xNiN9zmmcoJQiHG0A83z2LxvFj1CbG87oQDL7zLd
-	 CsVv50WXnBbl7rHWtlGBo6acDCG7/+R6TLxSyclqteGIyAQClToqzraTTAC/eMobMm
-	 V4eZmjwyhWEBLis/iBOZa9b7OatBIRML8DBAwxGQ=
+	b=OYTSIb45lTG6u469PQvc5NfAgHia/Th//beZi8SzK6KFj0Y/2sQgmWZIOqqRwcuD8
+	 upDgk4EBtkwjgzsCAklbgverDuRUHYCizPZcsZmpsgUG3JvWbDAoabBePqWRk17L5O
+	 1gxNP6jlSwGt3BBU57IN/JimlkO6Oe/zBiies0cg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 04DF9F804FA;
-	Sat, 10 Jul 2021 04:27:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6CD9F804D9;
+	Sat, 10 Jul 2021 04:27:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EFD20F804FF; Sat, 10 Jul 2021 04:27:25 +0200 (CEST)
+ id BD520F804FA; Sat, 10 Jul 2021 04:27:26 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 15A62F804D9
+ by alsa1.perex.cz (Postfix) with ESMTPS id C0CE5F804F2
  for <alsa-devel@alsa-project.org>; Sat, 10 Jul 2021 04:27:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15A62F804D9
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0CE5F804F2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="RqZMpD81"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3372613CC;
- Sat, 10 Jul 2021 02:27:20 +0000 (UTC)
+ header.b="HNvJIPpN"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB41B613FD;
+ Sat, 10 Jul 2021 02:27:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1625884041;
- bh=PFPsC1bwNfkre24GbZAloHDyURgIzkgS9yrhCz7qWhA=;
+ s=k20201202; t=1625884042;
+ bh=bJZpDz9NxLlI3Hwub0xn2z/Th0eq+i9p8YQI6id92D0=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=RqZMpD81TyRUzQNI1aiI5xTyc3zQKKa5Eu6pXEIJlXuzeyobCZ91Y/m1AXbVclXg4
- 3KfEjyZhlIyocdm+7ZqvDCw605pm3ocIN9Y5bQY40/QbJ1LUNMPpgx7hO/2Zf8bb5U
- EwgaZ9pkREU8m/e+DAIDa9m1Aee+6ZiDmJr00rdTHICqO2Xq37QZNnFfpFxfbS+5Ls
- 3hKL1Ku7P/2wMCyo1Yd0F4ZHEitVWiEUi6Q4I3komne8fol3Vr6faUKHlnJYSTs6vu
- GNRjchnSq27XqXUGbCoRJFRwtbbvwZSIv8aiTxfZPL3Aj/pl4FHb4lzr8gegB69rLd
- BbNyOS4NUYr+w==
+ b=HNvJIPpNJGiqzznJAT/m0od+eJ4+8UTNuXndj5UZZLlprSb+35uW7vZ2Ol3+3WHCT
+ PpRl/Z/Zo7pqjX3eLEWgSu2M/0kfNb8V4RBG0LcKEfENu3ZB3GHXp+ZDD84HrwCckd
+ 5pc8cxd6+YX8rScKrQzRZPJiMtZrpmLSaoh/SBzAOBKgEPPZrDcgXxUoE4mGSWRV7l
+ EPOVne3lyr2NTYHERFIZRZxNz/uRdtOfLHB9OUIwYTbENQekWrHJrHqJDRvXkiNrLD
+ bwQAxMMuseYyuilKX60fBVCUc+DJUDDaQRApmgx8m0ypXJyoChrj5AkDmx4V55ClDV
+ UCuF1Z1dQh5fg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 09/63] ALSA: usx2y: Don't call free_pages_exact()
- with NULL address
-Date: Fri,  9 Jul 2021 22:26:15 -0400
-Message-Id: <20210710022709.3170675-9-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 10/63] Revert "ALSA: bebob/oxfw: fix Kconfig entry
+ for Mackie d.2 Pro"
+Date: Fri,  9 Jul 2021 22:26:16 -0400
+Message-Id: <20210710022709.3170675-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210710022709.3170675-1-sashal@kernel.org>
 References: <20210710022709.3170675-1-sashal@kernel.org>
@@ -89,39 +89,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-[ Upstream commit cae0cf651adccee2c3f376e78f30fbd788d0829f ]
+[ Upstream commit 5d6fb80a142b5994355ce675c517baba6089d199 ]
 
-Unlike some other functions, we can't pass NULL pointer to
-free_pages_exact().  Add a proper NULL check for avoiding possible
-Oops.
+This reverts commit 0edabdfe89581669609eaac5f6a8d0ae6fe95e7f.
 
-Link: https://lore.kernel.org/r/20210517131545.27252-10-tiwai@suse.de
+I've explained that optional FireWire card for d.2 is also built-in to
+d.2 Pro, however it's wrong. The optional card uses DM1000 ASIC and has
+'Mackie DJ Mixer' in its model name of configuration ROM. On the other
+hand, built-in FireWire card for d.2 Pro and d.4 Pro uses OXFW971 ASIC
+and has 'd.Pro' in its model name according to manuals and user
+experiences. The former card is not the card for d.2 Pro. They are similar
+in appearance but different internally.
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20210518084557.102681-2-o-takashi@sakamocchi.jp
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/usx2y/usb_stream.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ sound/firewire/Kconfig       | 4 ++--
+ sound/firewire/bebob/bebob.c | 2 +-
+ sound/firewire/oxfw/oxfw.c   | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/usb/usx2y/usb_stream.c b/sound/usb/usx2y/usb_stream.c
-index 091c071b270a..cff684942c4f 100644
---- a/sound/usb/usx2y/usb_stream.c
-+++ b/sound/usb/usx2y/usb_stream.c
-@@ -142,8 +142,11 @@ void usb_stream_free(struct usb_stream_kernel *sk)
- 	if (!s)
- 		return;
- 
--	free_pages_exact(sk->write_page, s->write_size);
--	sk->write_page = NULL;
-+	if (sk->write_page) {
-+		free_pages_exact(sk->write_page, s->write_size);
-+		sk->write_page = NULL;
-+	}
-+
- 	free_pages_exact(s, s->read_size);
- 	sk->s = NULL;
- }
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index e6b4ca469b2a..c16d2dd9a66f 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -38,7 +38,7 @@ config SND_OXFW
+ 	   * Mackie(Loud) Onyx 1640i (former model)
+ 	   * Mackie(Loud) Onyx Satellite
+ 	   * Mackie(Loud) Tapco Link.Firewire
+-	   * Mackie(Loud) d.4 pro
++	   * Mackie(Loud) d.2 pro/d.4 pro (built-in FireWire card with OXFW971 ASIC)
+ 	   * Mackie(Loud) U.420/U.420d
+ 	   * TASCAM FireOne
+ 	   * Stanton Controllers & Systems 1 Deck/Mixer
+@@ -84,7 +84,7 @@ config SND_BEBOB
+ 	  * PreSonus FIREBOX/FIREPOD/FP10/Inspire1394
+ 	  * BridgeCo RDAudio1/Audio5
+ 	  * Mackie Onyx 1220/1620/1640 (FireWire I/O Card)
+-	  * Mackie d.2 (FireWire Option) and d.2 Pro
++	  * Mackie d.2 (optional FireWire card with DM1000 ASIC)
+ 	  * Stanton FinalScratch 2 (ScratchAmp)
+ 	  * Tascam IF-FW/DM
+ 	  * Behringer XENIX UFX 1204/1604
+diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
+index 441c58283b47..eeb0e4b2f77a 100644
+--- a/sound/firewire/bebob/bebob.c
++++ b/sound/firewire/bebob/bebob.c
+@@ -387,7 +387,7 @@ static const struct ieee1394_device_id bebob_id_table[] = {
+ 	SND_BEBOB_DEV_ENTRY(VEN_BRIDGECO, 0x00010049, &spec_normal),
+ 	/* Mackie, Onyx 1220/1620/1640 (Firewire I/O Card) */
+ 	SND_BEBOB_DEV_ENTRY(VEN_MACKIE2, 0x00010065, &spec_normal),
+-	// Mackie, d.2 (Firewire option card) and d.2 Pro (the card is built-in).
++	// Mackie, d.2 (optional Firewire card with DM1000).
+ 	SND_BEBOB_DEV_ENTRY(VEN_MACKIE1, 0x00010067, &spec_normal),
+ 	/* Stanton, ScratchAmp */
+ 	SND_BEBOB_DEV_ENTRY(VEN_STANTON, 0x00000001, &spec_normal),
+diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
+index 6184a7c8f2b3..bebb2b8296cb 100644
+--- a/sound/firewire/oxfw/oxfw.c
++++ b/sound/firewire/oxfw/oxfw.c
+@@ -350,7 +350,7 @@ static const struct ieee1394_device_id oxfw_id_table[] = {
+ 	 *  Onyx-i series (former models):	0x081216
+ 	 *  Mackie Onyx Satellite:		0x00200f
+ 	 *  Tapco LINK.firewire 4x6:		0x000460
+-	 *  d.4 pro:				Unknown
++	 *  d.2 pro/d.4 pro (built-in card):	Unknown
+ 	 *  U.420:				Unknown
+ 	 *  U.420d:				Unknown
+ 	 */
 -- 
 2.30.2
 
