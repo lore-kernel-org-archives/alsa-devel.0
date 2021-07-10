@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E0A0C07E9B
-	for <alsa-devel@archiver.kernel.org>; Sat, 10 Jul 2021 02:35:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9BEDC07E99
+	for <alsa-devel@archiver.kernel.org>; Sat, 10 Jul 2021 02:35:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EB9B9613F4
-	for <alsa-devel@archiver.kernel.org>; Sat, 10 Jul 2021 02:35:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EB9B9613F4
+	by mail.kernel.org (Postfix) with ESMTPS id 62F3661411
+	for <alsa-devel@archiver.kernel.org>; Sat, 10 Jul 2021 02:35:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 62F3661411
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E8BD1726;
-	Sat, 10 Jul 2021 04:34:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E8BD1726
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0FBC6172C;
+	Sat, 10 Jul 2021 04:34:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FBC6172C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625884509;
-	bh=FUpAEdQq+XfwL3GPsyMFhIPGfekmtIg7/BW20ILiQFM=;
+	s=default; t=1625884532;
+	bh=osn4rjtANXWskyEV0mZWjevf0Tk15UGwMHiy8emKj2E=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=E4D4bLubYDK2NnEuZHbvjZirPnVUNVCcqhJClsFTB3wPxb6vgwNaeleJjpj5Dd+Kt
-	 tgtx2+Nd5SfTX3t7bMYgqSdMdzkr8p/uGz9VR85vgdOmIYLfEvPQ1f8KfvZMPufc+I
-	 DM6jAqp9bSjMTH+OrS/8IvebkxRz6gCRSSUipUEs=
+	b=vOUjV9EodC4h9yPaInL415cWZvBAYwbHVFGZEVi+FBIFu8O/isu4AKN4pjPPaM33Z
+	 9HmcubboolKyBq/fk80CMbuyjIcZnnoeqdri/ZRv5cUlpZ7ONBBSr5BrpfgmkfVAWO
+	 YS2Ap0JGiuymaxdTuhq6XkWkJow8o8h2QrlpVgUw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 10E87F805D7;
-	Sat, 10 Jul 2021 04:24:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6EC5F8054A;
+	Sat, 10 Jul 2021 04:24:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D4DF6F805BB; Sat, 10 Jul 2021 04:24:40 +0200 (CEST)
+ id 87D40F805CB; Sat, 10 Jul 2021 04:24:50 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 42E13F805CA
- for <alsa-devel@alsa-project.org>; Sat, 10 Jul 2021 04:24:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42E13F805CA
+ by alsa1.perex.cz (Postfix) with ESMTPS id B9A80F80544
+ for <alsa-devel@alsa-project.org>; Sat, 10 Jul 2021 04:24:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9A80F80544
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="q8zmeyy6"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2873F613EC;
- Sat, 10 Jul 2021 02:24:32 +0000 (UTC)
+ header.b="B1qHuYdM"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04A0861409;
+ Sat, 10 Jul 2021 02:24:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1625883872;
- bh=FUpAEdQq+XfwL3GPsyMFhIPGfekmtIg7/BW20ILiQFM=;
+ s=k20201202; t=1625883885;
+ bh=osn4rjtANXWskyEV0mZWjevf0Tk15UGwMHiy8emKj2E=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=q8zmeyy6HAOM8glGPPIuJozy8dcC2ItVLixOTYMUouWd/eCae8yLwFQ+LJaZzNzmC
- nXTThFzy2SjTlZFk6whDlsd8X62BkLypudBu+ufG/RiNkMQpK8lmXkuXgsOBYY0Ztg
- 2tOspkH8qfsCrLEw8huJt49kbSxyxGdL1EqcLp3+qZhI+AFu+uPK13p/wQp93Kpt8J
- xp6KNKG+UgbBkNMj3JtXDwSfbC/JtwZP4GhxkIo9bju+EY/uR1/zDwqH7+eWZMP7Rq
- Rj/iJVuO8rN3SwJ6PZOYDDNevdtjWpYpfPYKpLSKDe9XrLbBt983hn01vWbtgTHwfB
- 3bKv4k0gIDikw==
+ b=B1qHuYdMHM6lG1H/TlrX31o843sW6TOVe8FJXpiBwI4cDIZgR0lg4QpEuA7ykQhGH
+ VN8KT0KNahgbqEp6OgQaOilm6uDWpIOWGR4xM0sPfZ1A0f7riYlZCWe2EdIJAaP/1A
+ ExkLDPKZm0n+backrbIbd6k9WMHbCtJeVubCyhmk0XM1y0nDMRZj58xRWNpAnmQM+v
+ JJXiFWEDx4L0F2Ruib7V7/yidvxN6aGa6dGo8MKaj8ZG7zPHfN8adqW3vqnF7Eh/zB
+ SzIEP6TjmnU/s3uVsJgFfBaaJ5EinuGzFPBvr37uWYj/0WZsTFCw7/iSk13fnbL9nG
+ kNGxfs9V+tkIQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 03/93] ASoC: Intel: sof_sdw: add
- SOF_RT715_DAI_ID_FIX for AlderLake
-Date: Fri,  9 Jul 2021 22:22:57 -0400
-Message-Id: <20210710022428.3169839-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 13/93] ASoC: intel/boards: add missing
+ MODULE_DEVICE_TABLE
+Date: Fri,  9 Jul 2021 22:23:07 -0400
+Message-Id: <20210710022428.3169839-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210710022428.3169839-1-sashal@kernel.org>
 References: <20210710022428.3169839-1-sashal@kernel.org>
@@ -72,10 +72,9 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Libin Yang <libin.yang@intel.com>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, Bard Liao <bard.liao@intel.com>
+Cc: Sasha Levin <sashal@kernel.org>, Hulk Robot <hulkci@huawei.com>,
+ Zou Wei <zou_wei@huawei.com>, Mark Brown <broonie@kernel.org>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,35 +90,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Libin Yang <libin.yang@intel.com>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit 81cd42e5174ba7918edd3d006406ce21ebaa8507 ]
+[ Upstream commit a75e5cdf4dd1307bb1541edbb0c008f40896644c ]
 
-AlderLake needs the flag SOF_RT715_DAI_ID_FIX if it is using the
-rt715 DMIC.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-Reviewed-by: Bard Liao <bard.liao@intel.com>
-Signed-off-by: Libin Yang <libin.yang@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210505163705.305616-11-pierre-louis.bossart@linux.intel.com
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Link: https://lore.kernel.org/r/1620791647-16024-1-git-send-email-zou_wei@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_sdw.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/intel/boards/sof_da7219_max98373.c | 1 +
+ sound/soc/intel/boards/sof_rt5682.c          | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 53c9b47d1ad4..2770e8179983 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -196,6 +196,7 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
- 		},
- 		.driver_data = (void *)(SOF_RT711_JD_SRC_JD1 |
- 					SOF_SDW_TGL_HDMI |
-+					SOF_RT715_DAI_ID_FIX |
- 					SOF_SDW_PCH_DMIC),
+diff --git a/sound/soc/intel/boards/sof_da7219_max98373.c b/sound/soc/intel/boards/sof_da7219_max98373.c
+index f3cb0773e70e..8d1ad892e86b 100644
+--- a/sound/soc/intel/boards/sof_da7219_max98373.c
++++ b/sound/soc/intel/boards/sof_da7219_max98373.c
+@@ -440,6 +440,7 @@ static const struct platform_device_id board_ids[] = {
  	},
- 	{}
+ 	{ }
+ };
++MODULE_DEVICE_TABLE(platform, board_ids);
+ 
+ static struct platform_driver audio = {
+ 	.probe = audio_probe,
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index ddbb9fe7cc06..1f94fa5a15db 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -877,6 +877,7 @@ static const struct platform_device_id board_ids[] = {
+ 	},
+ 	{ }
+ };
++MODULE_DEVICE_TABLE(platform, board_ids);
+ 
+ static struct platform_driver sof_audio = {
+ 	.probe = sof_audio_probe,
 -- 
 2.30.2
 
