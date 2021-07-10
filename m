@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57A27C07E99
-	for <alsa-devel@archiver.kernel.org>; Sat, 10 Jul 2021 02:56:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 051D2C07E9B
+	for <alsa-devel@archiver.kernel.org>; Sat, 10 Jul 2021 02:56:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CA0C7611CD
-	for <alsa-devel@archiver.kernel.org>; Sat, 10 Jul 2021 02:55:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA0C7611CD
+	by mail.kernel.org (Postfix) with ESMTPS id 76415613BE
+	for <alsa-devel@archiver.kernel.org>; Sat, 10 Jul 2021 02:56:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76415613BE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 70B0117B0;
-	Sat, 10 Jul 2021 04:55:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70B0117B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1B4A71711;
+	Sat, 10 Jul 2021 04:55:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B4A71711
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1625885758;
-	bh=U3XyAJ4TRtQBnQOuHtoGHvzGvSgBkJEg6w1xIsCvSHU=;
+	s=default; t=1625885777;
+	bh=18h5QgI/2WUOpyySkBczK5t5R7/zMrYxEkMhhzuJCBc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=e3MkM7b/v2f79xJ8PCiYOL9Kf2YgYcJKkVYaaoBpv+2Vr4BwyqjpygLolm/JiKEvn
-	 PamGeuxwmm7IQESjU9tfejRQ9ipqkpftMThZ8UVc5+7n2L5Jh7kJb+lLZn9Jlh2EIF
-	 eAIulUsCB/4NdGwbZBODazu44xWD+9B2HyLlwV0Q=
+	b=txVv2tSPbwREr3Fq0hDQQ6JjM3sHZXLzuuz1qM5aCZSRJTgPghaj7gkSYMdm6qQby
+	 OxGldKqMwYF2pJeG3/78N06L8OExDjR7m6z97Xk12bCE5fCr6Zyyxrn6kP10WwfcDG
+	 YPSHsnUcBa/cEf/yw0L9romQdiRGD9ca/Mpsxxwo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91534F805F6;
-	Sat, 10 Jul 2021 04:39:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6DFD7F805FB;
+	Sat, 10 Jul 2021 04:40:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7760F805F9; Sat, 10 Jul 2021 04:39:35 +0200 (CEST)
+ id F1D0CF805FD; Sat, 10 Jul 2021 04:39:40 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 823CCF80564
- for <alsa-devel@alsa-project.org>; Sat, 10 Jul 2021 04:39:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 823CCF80564
+ by alsa1.perex.cz (Postfix) with ESMTPS id 41DC9F805F7
+ for <alsa-devel@alsa-project.org>; Sat, 10 Jul 2021 04:39:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41DC9F805F7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="UPmCIH5t"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42B5C61400;
- Sat, 10 Jul 2021 02:39:28 +0000 (UTC)
+ header.b="BBk6d4G5"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A224261418;
+ Sat, 10 Jul 2021 02:39:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1625884769;
- bh=U3XyAJ4TRtQBnQOuHtoGHvzGvSgBkJEg6w1xIsCvSHU=;
+ s=k20201202; t=1625884776;
+ bh=18h5QgI/2WUOpyySkBczK5t5R7/zMrYxEkMhhzuJCBc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=UPmCIH5tu5QKMuq5UJlD/55QizMX48Un/7F3Yri3cUTCkL4dwzpRm4YW15KVSatdM
- CjJbweD9SpfM+RKeyoBXqwWffBc54gxgIkGn2FoNVvOBkVWJuvQ1H17wAupURhbL9Q
- Dqh+qP9PuwGnFR4zAsZS3rSL8PjvlM1HeQzZe6B0JBqoppdYIKovACPicf65uhhxeX
- I8JvIgUQqzT0kZGGnzBc+My+XPk59R2i0OT2TSLsLmfzgAeSE3HrAXry1JaZc/xSwj
- A7UQ4hkzCtBkCOBko+pZgiZGMnsqOD2prUitscE+zkZlhXYtqiwWWtlbwtQOfe/MK3
- QTbEx6JF1gSHg==
+ b=BBk6d4G5IaxWiOJfQMGawpMJ1ahHUnoLZFO6j8IpGonAbVoFN8i6nmGGE8LSn4QxN
+ 0LBCgDu8zLJ8luxTVXQmDg7v3LGeww2d6BNMFL1h5xq3sd1HX7L6eLBgTGNkRuZhr+
+ qh+F8F+AOaeW4Cp2v4thZoU9GcNykx4SyyCjrGgBQNtnn++gsbGnX+Ejdc0UwSMyJr
+ OAv4WJ8WAjVYnncrdTikeY+w/tdZRyq7JODtR/xllZd5g99NwtARbYVqPjglNvwq7i
+ wlO9TwDW5QBABpBTWfonOrQr3zOSXd61KtkiGJZBJu+B8zIYqkw5xWrnDMwHTbXpuQ
+ lAGPgIgwLxyQg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 13/23] ALSA: ppc: fix error return code in
- snd_pmac_probe()
-Date: Fri,  9 Jul 2021 22:39:02 -0400
-Message-Id: <20210710023912.3172972-13-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 15/23] ASoC: soc-core: Fix the error return code
+ in snd_soc_of_parse_audio_routing()
+Date: Fri,  9 Jul 2021 22:39:04 -0400
+Message-Id: <20210710023912.3172972-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210710023912.3172972-1-sashal@kernel.org>
 References: <20210710023912.3172972-1-sashal@kernel.org>
@@ -73,8 +73,7 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.de>, Hulk Robot <hulkci@huawei.com>,
- Yang Yingliang <yangyingliang@huawei.com>, linuxppc-dev@lists.ozlabs.org
+ Mark Brown <broonie@kernel.org>, Zhen Lei <thunder.leizhen@huawei.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,39 +89,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 80b9c1be567c3c6bbe0d4b290af578e630485b5d ]
+[ Upstream commit 7d3865a10b9ff2669c531d5ddd60bf46b3d48f1e ]
 
-If snd_pmac_tumbler_init() or snd_pmac_tumbler_post_init() fails,
-snd_pmac_probe() need return error code.
+When devm_kcalloc() fails, the error code -ENOMEM should be returned
+instead of -EINVAL.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20210616021121.1991502-1-yangyingliang@huawei.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20210617103729.1918-1-thunder.leizhen@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/ppc/powermac.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/soc/soc-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/ppc/powermac.c b/sound/ppc/powermac.c
-index 33c6be9fb388..7c70ba5e2540 100644
---- a/sound/ppc/powermac.c
-+++ b/sound/ppc/powermac.c
-@@ -90,7 +90,11 @@ static int snd_pmac_probe(struct platform_device *devptr)
- 		sprintf(card->shortname, "PowerMac %s", name_ext);
- 		sprintf(card->longname, "%s (Dev %d) Sub-frame %d",
- 			card->shortname, chip->device_id, chip->subframe);
--		if ( snd_pmac_tumbler_init(chip) < 0 || snd_pmac_tumbler_post_init() < 0)
-+		err = snd_pmac_tumbler_init(chip);
-+		if (err < 0)
-+			goto __error;
-+		err = snd_pmac_tumbler_post_init();
-+		if (err < 0)
- 			goto __error;
- 		break;
- 	case PMAC_AWACS:
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index b927f9c81d92..e69a7f8b6163 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -3394,7 +3394,7 @@ int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
+ 	if (!routes) {
+ 		dev_err(card->dev,
+ 			"ASoC: Could not allocate DAPM route table\n");
+-		return -EINVAL;
++		return -ENOMEM;
+ 	}
+ 
+ 	for (i = 0; i < num_routes; i++) {
 -- 
 2.30.2
 
