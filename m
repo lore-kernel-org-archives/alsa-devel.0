@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C7B7C07E96
-	for <alsa-devel@archiver.kernel.org>; Sun, 11 Jul 2021 17:39:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79756C07E96
+	for <alsa-devel@archiver.kernel.org>; Sun, 11 Jul 2021 17:39:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DAADD61151
-	for <alsa-devel@archiver.kernel.org>; Sun, 11 Jul 2021 17:39:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DAADD61151
+	by mail.kernel.org (Postfix) with ESMTPS id E5F6F61074
+	for <alsa-devel@archiver.kernel.org>; Sun, 11 Jul 2021 17:39:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E5F6F61074
 Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7310315DC;
-	Sun, 11 Jul 2021 19:38:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7310315DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 800D11670;
+	Sun, 11 Jul 2021 19:38:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 800D11670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626025157;
-	bh=EmRvq22oZjCIKkFTldPMWjpKyDVQ7bI4dXHcbgoqcTk=;
+	s=default; t=1626025185;
+	bh=Nx+L0Sk66cDRAM4qx2Iwcd2KgdGO/bQBCG1kqxU99vc=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=s8akohjsKV1YZ2foGPHojzP5EkZA24k80Cs4MIXr53ngNbuvcLI5rSvfoeZwtnz0c
-	 FGnGU7SjMLfHUoSpzHquYOLEtEiUKBygtap5ycTMyd9zI7APiM++yCaNNGBS+8jf7M
-	 NWv3xYyqfVliki6uoFqrA/bEFDg9pGqVK4AWC8Vk=
+	b=MkyZgiYSH8E20qxFN58jtQTI/nTO+2SLsR1pI3ksUlvhFXdQ/PHi1oD1uYJ2bcq0O
+	 EzWrF9Z2n1t6aRQZ51yazsoLUkNPC/Gx/z2CgrzPMBW2A1U6bjJxZRkkM91O43cFsg
+	 oSM6+V8j9Cb6a2ULl2phOvsxnMnHgV1o3DHXVhf4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16029F8013D;
-	Sun, 11 Jul 2021 19:38:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2414FF802E0;
+	Sun, 11 Jul 2021 19:38:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 31912F80229; Sun, 11 Jul 2021 19:38:25 +0200 (CEST)
+ id 2CE2AF8049C; Sun, 11 Jul 2021 19:38:43 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 94596F8013D
- for <alsa-devel@alsa-project.org>; Sun, 11 Jul 2021 19:38:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94596F8013D
+ by alsa1.perex.cz (Postfix) with ESMTP id CB4C4F80083
+ for <alsa-devel@alsa-project.org>; Sun, 11 Jul 2021 19:38:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB4C4F80083
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1626025101007884979-webhooks-bot@alsa-project.org>
-References: <1626025101007884979-webhooks-bot@alsa-project.org>
+In-Reply-To: <1626025120664640903-webhooks-bot@alsa-project.org>
+References: <1626025120664640903-webhooks-bot@alsa-project.org>
 Subject: Realtek analog audio output limited to 48 kHz,
  chips support up to 192kHz
-Message-Id: <20210711173825.31912F80229@alsa1.perex.cz>
-Date: Sun, 11 Jul 2021 19:38:25 +0200 (CEST)
+Message-Id: <20210711173843.2CE2AF8049C@alsa1.perex.cz>
+Date: Sun, 11 Jul 2021 19:38:43 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,7 +108,7 @@ Node 0x03 [Audio Output] wcaps 0x41d: Stereo Amp-Out
 Following is also the output of the alsa-info script:
 [alsa-debug.txt](https://github.com/alsa-project/alsa-lib/files/6797358/alsa-debug.txt)
 
-I tried different kernel versions, both generic and custom, on distros ranging from Ubuntu 19.04, Ubuntu 21.04, Pop OS 20.04 and 21.04, Fedora 32...
+I tried different kernel versions, both generic/mainline and custom, on distros ranging from Ubuntu 19.04, Ubuntu 21.04, Pop OS 20.04 and 21.04, Fedora 32...
 
 Issue URL     : https://github.com/alsa-project/alsa-lib/issues/163
 Repository URL: https://github.com/alsa-project/alsa-lib
