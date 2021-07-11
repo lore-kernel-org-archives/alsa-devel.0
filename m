@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BECAC07E96
-	for <alsa-devel@archiver.kernel.org>; Sun, 11 Jul 2021 17:37:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28B9AC07E96
+	for <alsa-devel@archiver.kernel.org>; Sun, 11 Jul 2021 17:38:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E820F61153
-	for <alsa-devel@archiver.kernel.org>; Sun, 11 Jul 2021 17:37:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E820F61153
+	by mail.kernel.org (Postfix) with ESMTPS id 1D38C61151
+	for <alsa-devel@archiver.kernel.org>; Sun, 11 Jul 2021 17:38:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D38C61151
 Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A8B1A15DC;
-	Sun, 11 Jul 2021 19:36:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8B1A15DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8F7BC166A;
+	Sun, 11 Jul 2021 19:37:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F7BC166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626025057;
-	bh=XDglnfxMHT/WzGC7CEDEB56RQnU5weCEJTosHxbdgxc=;
+	s=default; t=1626025124;
+	bh=odpj4cV2js5WphAn8KtTes+6tJbkeplB3tHG+8qLrvY=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=upo3+p7lbBo31219SvugAWRwgWVbqXWRPYe8Q6bVAG5ZW5BFPSNrEpzQEwGmt3hQL
-	 uacs91xKKzAZrJIZIk/QLYyj8jK8geC9TBOCG8FBxx+B5J/nq5z0ujVqtHnB0UUPoE
-	 ndXeG2KdOyZwVfq9gHBA0/eUTL66z5LG6R+nSftA=
+	b=CdThcizibMbqAkcapgrCS4X2OR0S3bJhBemrHvWYTtHjZ/+jqV+L5pryoESmOVw31
+	 /AxOBHacycCjclnJZXpcaht0bocicGyaq35u5zOsCfanSYeNxjOd1DXgnsZ2YwEd+h
+	 /sODBhsDrwnJ0C3OnQUjulJbYVXhN7ROtxhuvtXg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30C5CF80083;
-	Sun, 11 Jul 2021 19:36:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3A3ABF800AE;
+	Sun, 11 Jul 2021 19:37:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EA355F80217; Sun, 11 Jul 2021 19:36:43 +0200 (CEST)
+ id 1A654F802E0; Sun, 11 Jul 2021 19:37:51 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 0273FF800AE
- for <alsa-devel@alsa-project.org>; Sun, 11 Jul 2021 19:36:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0273FF800AE
+ by alsa1.perex.cz (Postfix) with ESMTP id 9685BF8013D
+ for <alsa-devel@alsa-project.org>; Sun, 11 Jul 2021 19:37:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9685BF8013D
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1626024998612728119-webhooks-bot@alsa-project.org>
-References: <1626024998612728119-webhooks-bot@alsa-project.org>
+In-Reply-To: <1626025066156984091-webhooks-bot@alsa-project.org>
+References: <1626025066156984091-webhooks-bot@alsa-project.org>
 Subject: Realtek analog audio output limited to 48 kHz,
  chips support up to 192kHz
-Message-Id: <20210711173643.EA355F80217@alsa1.perex.cz>
-Date: Sun, 11 Jul 2021 19:36:43 +0200 (CEST)
+Message-Id: <20210711173751.1A654F802E0@alsa1.perex.cz>
+Date: Sun, 11 Jul 2021 19:37:51 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,7 +67,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #163 was opened from markojurkovic:
+alsa-project/alsa-lib issue #163 was edited from markojurkovic:
 
 There seems to be an issue with ALSA and some onboard Realtek laptop audio chips, in my case Realtek ALC233 (but I've seen some reports online of people with other Realtek chips facing this issue). Namely, I've noticed that I cannot make use of all the sampling rates that the chip supports in GNU/Linux using ALSA. The chip supports up to 24-bit/192kHz analog stereo output, but in the three Linux distributions I've tried (Ubuntu, Fedora, Manjaro) I can only get either 44.1 or 48 kHz. The problem manifests itself by throwing the following error when attempting to play, for example, a 96kHz file in Audacious:
 
@@ -77,7 +77,7 @@ If I attempt to play such a file using PulseAudio, I am able to play the file, b
 
 In Windows, I can get up to 192kHz without problems using both WASAPI Exclusive and ASIO modes, meaning modes that directly communicate with hardware, just like ALSA.
 
-Following is the output of running "cat /proc/asound/card0/codec#0". This output indicates that the only supported sample rates for the sound card are 44100 and 48000, whereas this Realtek chip supports also 96000 and 192000.
+Following is the output of running "cat /proc/asound/card0/codec#0". This output indicates that the only supported sample rates for the sound card are 44100 and 48000 (for the analog outputs), whereas this Realtek chip supports also 96000 and 192000.
 
 Node 0x02 [Audio Output] wcaps 0x41d: Stereo Amp-Out
   Control: name="Speaker Playback Volume", index=0, device=0
