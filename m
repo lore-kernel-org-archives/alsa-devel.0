@@ -2,62 +2,62 @@ Return-Path: <SRS0=F1iH=ME=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60F2BC07E99
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jul 2021 20:36:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80C83C07E99
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jul 2021 20:36:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DBA25611C1
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jul 2021 20:36:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DBA25611C1
+	by mail.kernel.org (Postfix) with ESMTPS id 031A960FDB
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jul 2021 20:36:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 031A960FDB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 845C916C7;
-	Mon, 12 Jul 2021 22:35:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 845C916C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9A51D16D9;
+	Mon, 12 Jul 2021 22:35:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A51D16D9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626122177;
-	bh=/zqf1KmiRB3gB5KII4PWv3s3J6IO8rej8CY1HM9oGnE=;
+	s=default; t=1626122208;
+	bh=scxRVlRUUc4/CeWasph9jlxNXWQRo6zNIRUd5HYjx+0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YGqQS0J8vONbMXE7E0N6OByBtv3/ZkQkRcpH1ahGYarlys+DIgx79M4qbu0iJCuFi
-	 /W9IxU5aPUSeoLdacl9/dGEyTXTnb4DR6zUy2RY9pzx1UdDTQk5KY2AlzBCPrjCxHx
-	 8IeLQSo9+OrLPv3cqOLu26WuhLnDqUOu85hdlUhE=
+	b=XPrIJLLf8h/VKrR4xxjsnI77ac93Q/mW8wGaB40RX5tDVU0gu8NmMhB5ZfJSfap/D
+	 KCkmF2AgHArF2XYPy1d9+Adgx7o4ca7Mi3tRXcGY/b3hIZK4TKDTYRX9knv8FkxcgV
+	 T+HIRym1v8Mavtwxwx+6fyI4kINCoo9c8dKilv9M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8226BF804F3;
-	Mon, 12 Jul 2021 22:33:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 38858F804FA;
+	Mon, 12 Jul 2021 22:33:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1857FF804E4; Mon, 12 Jul 2021 22:33:11 +0200 (CEST)
+ id 5AA08F802E7; Mon, 12 Jul 2021 22:33:11 +0200 (CEST)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B7A70F80253
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1E1F7F80269
  for <alsa-devel@alsa-project.org>; Mon, 12 Jul 2021 22:32:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7A70F80253
-X-IronPort-AV: E=McAfee;i="6200,9189,10043"; a="190431640"
-X-IronPort-AV: E=Sophos;i="5.84,234,1620716400"; d="scan'208";a="190431640"
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E1F7F80269
+X-IronPort-AV: E=McAfee;i="6200,9189,10043"; a="190431647"
+X-IronPort-AV: E=Sophos;i="5.84,234,1620716400"; d="scan'208";a="190431647"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jul 2021 13:32:54 -0700
-X-IronPort-AV: E=Sophos;i="5.84,234,1620716400"; d="scan'208";a="561880765"
+ 12 Jul 2021 13:32:56 -0700
+X-IronPort-AV: E=Sophos;i="5.84,234,1620716400"; d="scan'208";a="561880771"
 Received: from yangbosh-mobl3.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.95.167])
  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jul 2021 13:32:53 -0700
+ 12 Jul 2021 13:32:55 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/7] ASoC: Intel: maxim-common: support max98360a
-Date: Mon, 12 Jul 2021 15:32:35 -0500
-Message-Id: <20210712203240.46960-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 4/7] ASoC: Intel: sof_rt5682: code refactor for max98360a
+Date: Mon, 12 Jul 2021 15:32:37 -0500
+Message-Id: <20210712203240.46960-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210712203240.46960-1-pierre-louis.bossart@linux.intel.com>
 References: <20210712203240.46960-1-pierre-louis.bossart@linux.intel.com>
@@ -83,79 +83,114 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Brent Lu <brent.lu@intel.com>
 
-Move max98360a code to this common module so it could be shared
-between multiple SOF machine drivers. MAX98357A and MAX98360A are
-sharing same codec driver so here we also share some function and
-structures.
+Refactor the machine driver by using the common code in maxim-common
+module to support max98360a.
 
 Reviewed-by: Bard Liao <bard.liao@intel.com>
 Signed-off-by: Brent Lu <brent.lu@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_maxim_common.c | 17 ++++++++++++++++-
- sound/soc/intel/boards/sof_maxim_common.h |  4 +++-
- 2 files changed, 19 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/sof_rt5682.c | 52 +----------------------------
+ 1 file changed, 1 insertion(+), 51 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_maxim_common.c b/sound/soc/intel/boards/sof_maxim_common.c
-index e9c52f8b6428..e66dfe666915 100644
---- a/sound/soc/intel/boards/sof_maxim_common.c
-+++ b/sound/soc/intel/boards/sof_maxim_common.c
-@@ -134,7 +134,7 @@ void max_98373_set_codec_conf(struct snd_soc_card *card)
- EXPORT_SYMBOL_NS(max_98373_set_codec_conf, SND_SOC_INTEL_SOF_MAXIM_COMMON);
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index 39217223d50c..adfb4214f24b 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -456,10 +456,6 @@ static const struct snd_kcontrol_new sof_controls[] = {
  
- /*
-- * Maxim MAX98357A
-+ * Maxim MAX98357A/MAX98360A
-  */
- static const struct snd_kcontrol_new max_98357a_kcontrols[] = {
- 	SOC_DAPM_PIN_SWITCH("Spk"),
-@@ -156,6 +156,13 @@ static struct snd_soc_dai_link_component max_98357a_components[] = {
+ };
+ 
+-static const struct snd_kcontrol_new speaker_controls[] = {
+-	SOC_DAPM_PIN_SWITCH("Spk"),
+-};
+-
+ static const struct snd_soc_dapm_widget sof_widgets[] = {
+ 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+@@ -467,10 +463,6 @@ static const struct snd_soc_dapm_widget sof_widgets[] = {
+ 	SND_SOC_DAPM_SPK("Right Spk", NULL),
+ };
+ 
+-static const struct snd_soc_dapm_widget speaker_widgets[] = {
+-	SND_SOC_DAPM_SPK("Spk", NULL),
+-};
+-
+ static const struct snd_soc_dapm_widget dmic_widgets[] = {
+ 	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
+ };
+@@ -484,11 +476,6 @@ static const struct snd_soc_dapm_route sof_map[] = {
+ 	{ "IN1P", NULL, "Headset Mic" },
+ };
+ 
+-static const struct snd_soc_dapm_route speaker_map[] = {
+-	/* speaker */
+-	{ "Spk", NULL, "Speaker" },
+-};
+-
+ static const struct snd_soc_dapm_route speaker_map_lr[] = {
+ 	{ "Left Spk", NULL, "Left SPO" },
+ 	{ "Right Spk", NULL, "Right SPO" },
+@@ -505,34 +492,6 @@ static int speaker_codec_init_lr(struct snd_soc_pcm_runtime *rtd)
+ 				       ARRAY_SIZE(speaker_map_lr));
+ }
+ 
+-static int speaker_codec_init(struct snd_soc_pcm_runtime *rtd)
+-{
+-	struct snd_soc_card *card = rtd->card;
+-	int ret;
+-
+-	ret = snd_soc_dapm_new_controls(&card->dapm, speaker_widgets,
+-					ARRAY_SIZE(speaker_widgets));
+-	if (ret) {
+-		dev_err(rtd->dev, "unable to add dapm controls, ret %d\n", ret);
+-		/* Don't need to add routes if widget addition failed */
+-		return ret;
+-	}
+-
+-	ret = snd_soc_add_card_controls(card, speaker_controls,
+-					ARRAY_SIZE(speaker_controls));
+-	if (ret) {
+-		dev_err(rtd->dev, "unable to add card controls, ret %d\n", ret);
+-		return ret;
+-	}
+-
+-	ret = snd_soc_dapm_add_routes(&card->dapm, speaker_map,
+-				      ARRAY_SIZE(speaker_map));
+-
+-	if (ret)
+-		dev_err(rtd->dev, "Speaker map addition failed: %d\n", ret);
+-	return ret;
+-}
+-
+ static int dmic_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_soc_card *card = rtd->card;
+@@ -594,13 +553,6 @@ static struct snd_soc_dai_link_component dmic_component[] = {
  	}
  };
  
-+static struct snd_soc_dai_link_component max_98360a_components[] = {
-+	{
-+		.name = MAX_98360A_DEV0_NAME,
-+		.dai_name = MAX_98357A_CODEC_DAI,
-+	}
-+};
-+
- static int max_98357a_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_card *card = rtd->card;
-@@ -193,5 +200,13 @@ void max_98357a_dai_link(struct snd_soc_dai_link *link)
- }
- EXPORT_SYMBOL_NS(max_98357a_dai_link, SND_SOC_INTEL_SOF_MAXIM_COMMON);
- 
-+void max_98360a_dai_link(struct snd_soc_dai_link *link)
-+{
-+	link->codecs = max_98360a_components;
-+	link->num_codecs = ARRAY_SIZE(max_98360a_components);
-+	link->init = max_98357a_init;
-+}
-+EXPORT_SYMBOL_NS(max_98360a_dai_link, SND_SOC_INTEL_SOF_MAXIM_COMMON);
-+
- MODULE_DESCRIPTION("ASoC Intel SOF Maxim helpers");
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/intel/boards/sof_maxim_common.h b/sound/soc/intel/boards/sof_maxim_common.h
-index 2674f1e373ef..3ff5e8fec4de 100644
---- a/sound/soc/intel/boards/sof_maxim_common.h
-+++ b/sound/soc/intel/boards/sof_maxim_common.h
-@@ -25,11 +25,13 @@ void max_98373_set_codec_conf(struct snd_soc_card *card);
- int max_98373_trigger(struct snd_pcm_substream *substream, int cmd);
- 
- /*
-- * Maxim MAX98357A
-+ * Maxim MAX98357A/MAX98360A
-  */
- #define MAX_98357A_CODEC_DAI	"HiFi"
- #define MAX_98357A_DEV0_NAME	"MX98357A:00"
-+#define MAX_98360A_DEV0_NAME	"MX98360A:00"
- 
- void max_98357a_dai_link(struct snd_soc_dai_link *link);
-+void max_98360a_dai_link(struct snd_soc_dai_link *link);
- 
- #endif /* __SOF_MAXIM_COMMON_H */
+-static struct snd_soc_dai_link_component max98360a_component[] = {
+-	{
+-		.name = "MX98360A:00",
+-		.dai_name = "HiFi",
+-	}
+-};
+-
+ static struct snd_soc_dai_link_component rt1015_components[] = {
+ 	{
+ 		.name = "i2c-10EC1015:00",
+@@ -775,9 +727,7 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+ 			links[id].dpcm_capture = 1;
+ 		} else if (sof_rt5682_quirk &
+ 				SOF_MAX98360A_SPEAKER_AMP_PRESENT) {
+-			links[id].codecs = max98360a_component;
+-			links[id].num_codecs = ARRAY_SIZE(max98360a_component);
+-			links[id].init = speaker_codec_init;
++			max_98360a_dai_link(&links[id]);
+ 		} else if (sof_rt5682_quirk &
+ 				SOF_RT1011_SPEAKER_AMP_PRESENT) {
+ 			sof_rt1011_dai_link(&links[id]);
 -- 
 2.25.1
 
