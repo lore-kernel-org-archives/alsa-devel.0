@@ -2,88 +2,80 @@ Return-Path: <SRS0=F1iH=ME=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1074EC07E99
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jul 2021 11:12:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1117FC07E99
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jul 2021 15:05:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 82A4C60FED
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jul 2021 11:12:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 82A4C60FED
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 14F3B61209
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jul 2021 15:05:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14F3B61209
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2CAA2168F;
-	Mon, 12 Jul 2021 13:12:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2CAA2168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 16AA8167A;
+	Mon, 12 Jul 2021 17:04:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16AA8167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626088370;
-	bh=pG3526ZPCUPh5sIxvP+Stjw+WCU761KQjmTsvai6FW8=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1626102317;
+	bh=rluwW6y8nVcOb3m+0LUyNE4F6mvAXFue6/Y51oqSnMc=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Qtzd4Ke/4vGR/yBZ0YzpT2V06N7riP9ey2eJRilNYquunTa1CQgKL9Q0q9Iije+I0
-	 QRJQhebc+xWvhCAvDut/z5CdIIfqtvDYXL+zFT5VT+Asge17uZLus09Cuwo+pGAiah
-	 XQkGq/ZnfH4XZKW97TICjZyGuVOqn5N8Y12wDvN8=
+	b=e2PxGeL01T0nwOoFcrJUOk9ZKI+HJWL5NwWsMFVcQjK50eflOVn6dlfm1Z5eqQCPW
+	 yR58ibwqI2+DuDrIqpOAGR7db/pTS1zMEv7tCFkphbNCxzKbSyYuWxEOr5BLLrFv9C
+	 uAvGrODvJ4KYsdnioh/r30urkS3Xl4b8bN95PnIA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B8A8EF80253;
-	Mon, 12 Jul 2021 13:11:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 995B3F80083;
+	Mon, 12 Jul 2021 17:04:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 92C18F80083; Mon, 12 Jul 2021 13:11:57 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 270D1F800EB; Mon, 12 Jul 2021 17:04:23 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 38C7FF80083
- for <alsa-devel@alsa-project.org>; Mon, 12 Jul 2021 13:11:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38C7FF80083
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9BC6EF80083
+ for <alsa-devel@alsa-project.org>; Mon, 12 Jul 2021 17:04:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BC6EF80083
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="k301d9Ek"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="O73yPhVt"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 19D242215B;
- Mon, 12 Jul 2021 11:11:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626088312; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=wGyjZ54sfARrkTiF9gq//0yu31/Cfo3jARX6yFoGgcQ=;
- b=k301d9EkspvvpafGnh7pPkzoDza/hXcMvpPrPYmV3nC8nfvud+zNbNMeE9rCAHc5/V1upF
- /CnwV4wPNrGf606hrMgW3ibNmrpwhVg0kGLMR5lhcX7z2oW+rg+xAatnCJET/v1Wvqxvlk
- 3tiCfPvYjFHU6WjfRr6cQnC9CASDXtM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626088312;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=wGyjZ54sfARrkTiF9gq//0yu31/Cfo3jARX6yFoGgcQ=;
- b=O73yPhVtf9xM92f3TdCArmX4zIHIc03l9riELuSvUGWb7cASXH6yg2WFAwJJYbL+q21dlG
- FIHCSSE6JZSiT+DQ==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 0CF09A3B87;
- Mon, 12 Jul 2021 11:11:52 +0000 (UTC)
-Date: Mon, 12 Jul 2021 13:11:52 +0200
-Message-ID: <s5hlf6b3hxj.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Alan Young <consult.awy@gmail.com>
-Subject: Re: [PATCH] ALSA: core: Call substream ack() method upon compat mmap,
- commit
-In-Reply-To: <c441f18c-eb2a-3bdd-299a-696ccca2de9c@gmail.com>
-References: <c441f18c-eb2a-3bdd-299a-696ccca2de9c@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Aw75TgH1"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CBD2611CC;
+ Mon, 12 Jul 2021 15:04:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1626102257;
+ bh=rluwW6y8nVcOb3m+0LUyNE4F6mvAXFue6/Y51oqSnMc=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=Aw75TgH1AegpEkKY53N/iVUdwiEfgp58DilBSbdlXjdGLQCmQRAekTf31k9r11HLU
+ atU+mG9zBI7G4gYYteGoHnd4IxviCb2w9Se2aws9uxqmj/JWJm0vQks/HbmOURQ2C8
+ 9xdl0AtCgDdkUywGGzPUqIZoaulRIjPbdq9edn2rGxoGgnRmhx9PQ3Sh+dUs9sd2wH
+ yIWgud8w0OMn4AY2tGI2FaSJZKDSd0dG82JTCOSi3O24AlNVsNNcgrvEfSXRGXwUBC
+ h9dbUKiGeiyWjkrrbopcdWXxwAocpXEUxxAFb54ch53lfYWFEChCM6M818kgj6FFXA
+ 2/78BUuXzwoTw==
+Date: Mon, 12 Jul 2021 16:03:41 +0100
+From: Mark Brown <broonie@kernel.org>
+To: David Rhodes <drhodes@opensource.cirrus.com>
+Subject: Re: [PATCH v3 1/2] ASoC: cs35l41: CS35L41 Boosted Smart Amplifier
+Message-ID: <20210712150341.GF4435@sirena.org.uk>
+References: <20210702205127.1400539-1-drhodes@opensource.cirrus.com>
+ <20210702205127.1400539-2-drhodes@opensource.cirrus.com>
+ <20210705192054.GG4574@sirena.org.uk>
+ <b9627394-4d71-cafa-0944-14dad137ffdd@opensource.cirrus.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="SnV5plBeK2Ge1I9g"
+Content-Disposition: inline
+In-Reply-To: <b9627394-4d71-cafa-0944-14dad137ffdd@opensource.cirrus.com>
+X-Cookie: Hailing frequencies open, Captain.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: robh@kernel.org, brian.austin@cirrus.com, ckeepax@opensource.cirrus.com,
+ patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ david.rhodes@cirrus.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,37 +91,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 12 Jul 2021 12:05:40 +0200,
-Alan Young wrote:
-> 
-> If a 32-bit application is being used with a 64-bit kernel and is using
-> the mmap mechanism to write data, then the SNDRV_PCM_IOCTL_SYNC_PTR
-> ioctl results in calling snd_pcm_ioctl_sync_ptr_compat(). Make this use
-> pcm_lib_apply_appl_ptr() so that the substream's ack() method, if
-> defined, is called.
-> 
-> The snd_pcm_sync_ptr() function, used in the 64-bit ioctl case, already
-> uses snd_pcm_ioctl_sync_ptr_compat().
-> 
-> 
-> >From 9c3a4ffca82a0106cd858db8be29945cfbcc9952 Mon Sep 17 00:00:00 2001
-> From: Alan Young <consult.awy@gmail.com>
-> Date: Fri, 9 Jul 2021 09:48:54 +0100
-> Subject: [PATCH] ALSA: core: Call substream ack() method upon compat mmap
->  commit
-> 
-> If a 32-bit application is being used with a 64-bit kernel and is using
-> the mmap mechanism to write data, then the SNDRV_PCM_IOCTL_SYNC_PTR
-> ioctl results in calling snd_pcm_ioctl_sync_ptr_compat(). Make this use
-> pcm_lib_apply_appl_ptr() so that the substream's ack() method, if
-> defined, is called.
-> 
-> The snd_pcm_sync_ptr() function, used in the 64-bit ioctl case, already
-> uses snd_pcm_ioctl_sync_ptr_compat().
-> 
-> Signed-off-by: Alan Young <consult.awy@gmail.com>
 
-Thanks, applied.
+--SnV5plBeK2Ge1I9g
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Fri, Jul 09, 2021 at 06:11:28PM -0500, David Rhodes wrote:
+> On 7/5/21 2:20 PM, Mark Brown wrote:
 
-Takashi
+> > > +	case SND_SOC_DAPM_POST_PMD:
+> > > +		regmap_read(cs35l41->regmap, CS35L41_PWR_CTRL1, &val);
+> > > +		if (val & CS35L41_GLOBAL_EN_MASK) {
+> > > +			regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL1,
+> > > +					CS35L41_GLOBAL_EN_MASK, 0);
+
+> > I can't see any references to GLOBAL_EN outside this function, why might
+> > it not be set?
+
+> This check prevents an incorrect 'PDN Failed' message if DAPM initializes
+> and turns the widget off at boot (with no prior power-up).
+
+In what way does it prevent this message and why is this a good approach
+to the issue?
+
+--SnV5plBeK2Ge1I9g
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDsWcwACgkQJNaLcl1U
+h9Bqbwf8ChpbNX3xhN+1UYIYz4EUtQOPDYMHOQ6hiQXU+9YFaTCh8hFdm93sKIi/
+jqpljRFCpilwxR7NMxuUtg/5REWzJ66esaO96thEQ1RRZ6hYXjj3oTPoO01h7LKL
+giL3zBxkOsii+z54WMnAF7px+PgCgfTCqz0euvnmw1N4L9ZBXQA9gc+gIRGcyrZz
+a5lu5pM++lAT8kmLir1GpbibvhM4Iri/wN9YMaQstGW7dPUTwz5cL0NWQkOhraH3
+/pNVAw2Dzh9jSUAZnBiV0isndc0E/OGyoXfdKiz3WXJ1nwaPwY5vSBeNeTOTyTOh
+9oJLK6j3PedewvcOseccyr8+6wbhVQ==
+=vh/D
+-----END PGP SIGNATURE-----
+
+--SnV5plBeK2Ge1I9g--
