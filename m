@@ -6,73 +6,75 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 719D3C07E99
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jul 2021 10:51:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BAE68C07E99
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jul 2021 10:51:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D8A5160698
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jul 2021 10:51:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D8A5160698
+	by mail.kernel.org (Postfix) with ESMTPS id 45FCA610A7
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jul 2021 10:51:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 45FCA610A7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6DBC41690;
-	Mon, 12 Jul 2021 12:50:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DBC41690
+	by alsa0.perex.cz (Postfix) with ESMTPS id DECA816A5;
+	Mon, 12 Jul 2021 12:50:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DECA816A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626087059;
-	bh=p+qLz+HhOqEFcAKXAJHCu8puLmOSYZop39X5dZG07EY=;
+	s=default; t=1626087066;
+	bh=46E1CeF79r1yJEc0CYntJQ8YThB+2GHEJlvblQRhrak=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LnDbJoKl7C0Xu2K2P/HDxht8sqncUkFVD66+imwNPSy7Ie2DNIaZMfbxGV+ExUItY
-	 egX+g0SLZagGo//aaogn5EPtBXEIHtbEbs4hlmAZzzGyym3fCBIYeJh+OsARtg6R3N
-	 nwuD2SbEcAVNx/rf46k3YcyYqjWKYikPVmx9qHhM=
+	b=iYAslQWXMOXeSwtrYQ67lPVxo7q48URX5A/iWG1q/yrzj+BOpIbC2yxJ1X5ANO8cw
+	 ElYdH+m3f2Nm15mVIWNRBZcwjpsrgv12jZltTEf60wEg5kzFZ8BKIyIWremBoueyG3
+	 F3ehdhULKkJiekSCLbigQ2SXHNVDrvzlX3lluy0Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 55FB8F804ED;
+	by alsa1.perex.cz (Postfix) with ESMTP id F01A6F804FA;
 	Mon, 12 Jul 2021 12:47:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 96433F804E6; Mon, 12 Jul 2021 12:47:55 +0200 (CEST)
+ id 6465DF804E6; Mon, 12 Jul 2021 12:47:57 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C8918F804E4
- for <alsa-devel@alsa-project.org>; Mon, 12 Jul 2021 12:47:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8918F804E4
+ by alsa1.perex.cz (Postfix) with ESMTPS id EB628F804E3
+ for <alsa-devel@alsa-project.org>; Mon, 12 Jul 2021 12:47:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB628F804E3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="rU49web7"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6D99610FA;
- Mon, 12 Jul 2021 10:47:44 +0000 (UTC)
+ header.b="XfhfT9h3"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AE1A610CD;
+ Mon, 12 Jul 2021 10:47:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1626086865;
- bh=p+qLz+HhOqEFcAKXAJHCu8puLmOSYZop39X5dZG07EY=;
+ s=k20201202; t=1626086873;
+ bh=46E1CeF79r1yJEc0CYntJQ8YThB+2GHEJlvblQRhrak=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=rU49web7RUua2IMfaM//7+M8yiIKwUXhdv/e9Lsl0tVAtN/EQj9BVMhbCL8YKua1j
- 8nqoKs2sXd54M4LPlV1bq1W1VKT9dKMeRyT0E2wMNN/7JA24+0XwLvO9tTEnOJHP+c
- oBVojxFrYQ9Un5iayEwV6932dPiboBqfLQJc+3K3fEr4K+/hh8ofXz9kz/Ofx8ENti
- Mvz9XizXA8pcuNqnrWLaP0P/gSaNyMNfrGgRBKdMQC6dvc51jb7Sib1xtw3NkH9dfw
- 2MS6M/Rx4rAAmiyXXO7OUf2KCWmSJzYSKe256pA3Ntsct+etX7uKAi16h0mq5WeZjw
- ZE7Nhg7tdikPQ==
+ b=XfhfT9h3zl8opADpfbEcny9NqomJ/at32pgYqWHnh+x0CjG5xwu/HMRj6IjbBgnMM
+ 5YLBqRiZFDbMgyWPiu2ZYo208cHAECycyP9Nuw9+hfIbEBBmeY4TyXXUE+14mCon66
+ Dh5FLr/K6r1hT7NZ0S8INPmMaF7w5hCi7seaBxQTgmzFbn8uRu4VAlAMdhJ5P1bNNf
+ GDtdi9UutvNfLd3v8utgRN/yhMl5pTeW9iA0pK5aA3CdwftxFGrqSJ9dd+erTEJcYN
+ FBo3mmlU/0QwwK7UpX+UaJORoU06vHLOfiRduwaGIal1QxFR37QBfViUSFPWIrZXhD
+ etk87SCTWZxrA==
 From: Mark Brown <broonie@kernel.org>
-To: timur@kernel.org, nicoleotsuka@gmail.com,
- Tang Bin <tangbin@cmss.chinamobile.com>, Xiubo.Lee@gmail.com,
- tiwai@suse.com, lgirdwood@gmail.com, perex@perex.cz
-Subject: Re: [PATCH] ASoC: fsl_xcvr: Omit superfluous error message in
- fsl_xcvr_probe()
-Date: Mon, 12 Jul 2021 11:45:59 +0100
-Message-Id: <162608623153.3192.455683453441836535.b4-ty@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] ASoC: codecs: wcd938x: fix returnvar.cocci warnings
+Date: Mon, 12 Jul 2021 11:46:02 +0100
+Message-Id: <162608623150.3192.4279840860459056797.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210624104505.13680-1-tangbin@cmss.chinamobile.com>
-References: <20210624104505.13680-1-tangbin@cmss.chinamobile.com>
+In-Reply-To: <20210629132909.GA7935@233d919f385f>
+References: <202106292156.mWNAaVQA-lkp@intel.com>
+ <20210629132909.GA7935@233d919f385f>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, kbuild-all@lists.01.org,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Linux Memory Management List <linux-mm@kvack.org>,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,10 +90,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 24 Jun 2021 18:45:05 +0800, Tang Bin wrote:
-> In the function fsl_xcvr__probe(), when get irq failed,
-> the function platform_get_irq() logs an error message, so remove
-> redundant message here.
+On Tue, 29 Jun 2021 21:29:09 +0800, kernel test robot wrote:
+> sound/soc/codecs/wcd938x.c:1628:5-8: Unneeded variable: "ret". Return "0" on line 1656
+> sound/soc/codecs/wcd938x.c:1871:5-8: Unneeded variable: "ret". Return "0" on line 1907
+> 
+> 
+>  Remove unneeded variable used to store return value.
+> 
+> Generated by: scripts/coccinelle/misc/returnvar.cocci
 
 Applied to
 
@@ -99,8 +105,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl_xcvr: Omit superfluous error message in fsl_xcvr_probe()
-      commit: 8620c40002db9679279546cc3be2aceb8c5e5e76
+[1/1] ASoC: codecs: wcd938x: fix returnvar.cocci warnings
+      commit: 4d0b79ec9eb81b227c8ae211b7f159bd7194d9ae
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
