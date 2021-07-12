@@ -2,88 +2,90 @@ Return-Path: <SRS0=F1iH=ME=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D62DC07E99
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jul 2021 09:13:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17E6EC07E99
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jul 2021 09:14:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A56C061004
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jul 2021 09:13:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A56C061004
+	by mail.kernel.org (Postfix) with ESMTPS id 3D3DC6100B
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jul 2021 09:14:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D3DC6100B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3F6751677;
-	Mon, 12 Jul 2021 11:12:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F6751677
+	by alsa0.perex.cz (Postfix) with ESMTPS id 75939167B;
+	Mon, 12 Jul 2021 11:13:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75939167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626081206;
-	bh=t3/yBqH3pNMevAjrZCc6UUc8n1IXLCDQkHayMNB2PAs=;
+	s=default; t=1626081282;
+	bh=OTX7suvUxh/VVmeQpySLAdvVfvkBo6aVWHTk9yiGgAU=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=k2yV6WDrj7cnkrPvefbtcDd4A+oC2sZDElwXCYKtOp7nQ+fspuq/3ibvhVyxj8ZpU
-	 h93yLc70LH4IYpXuEyvTI3bQyQmelFWsYuYo3/SP4gEzFdMnt9gvafVZS3d82MLDwZ
-	 6IW2KGEIMHp/+lpZmnpQEfEZuyE3PrXA1mnVJxWw=
+	b=UmsjgntA1X+FrFZNV1Umnlc11+Y5087LWXcomw/7MdJDfvmebh7i3MXC6KJ80HMH/
+	 RKrXuj8eG/Ckt9ngf+1bXjh2z/X9ELJ0fNOKtVtJhq9KuHwnyTH7sInkC80kmsOkgv
+	 x2NRiUSyCeF5a9YbR8Z2tUZsw9pA7hHdlPNpf4RA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 95659F8020C;
-	Mon, 12 Jul 2021 11:12:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08C8BF8020C;
+	Mon, 12 Jul 2021 11:13:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5F06AF80253; Mon, 12 Jul 2021 11:12:34 +0200 (CEST)
+ id 36439F80269; Mon, 12 Jul 2021 11:13:50 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1EC0EF80083
- for <alsa-devel@alsa-project.org>; Mon, 12 Jul 2021 11:12:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EC0EF80083
+ by alsa1.perex.cz (Postfix) with ESMTPS id 265F8F80083
+ for <alsa-devel@alsa-project.org>; Mon, 12 Jul 2021 11:13:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 265F8F80083
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="p3kbg9z9"; 
+ header.b="SXjk2s43"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="cnHfTUM+"
+ header.b="wdoZVY/k"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id D1BD322136;
- Mon, 12 Jul 2021 09:12:28 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 6625022138;
+ Mon, 12 Jul 2021 09:13:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626081148; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1626081223; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=2kcr+vPOQbQ2fMejnI0iavZ9pd2jRr1r6KJPXEtdkgQ=;
- b=p3kbg9z9rBjgYtQnLMkxDsO6GAR0zpucNYd0xCFlKQDAgr53VfkrcLcBAHMx5XiOmzESuA
- PDKbwmKWQmJuEtpvZEf1E3h0wmWyoKmdERLLzCNVH/arblHfx/GpegnL7VAoOX3rShwmOr
- kd3GNyf7+RtENGBXS+dwhjS2RqSRZAw=
+ bh=hqRJFUYPrxlcoHHM4i5lEdjJpg9DF8FHcayW7Habd7I=;
+ b=SXjk2s43kkwSjkFx0w17ZpcVDVAo1W/Bu6q33XILfye4yYC4kaeXdwQV+i4ipTVqvldqwT
+ 8wMkzf1KtksWKmPML/VP79bSw5TlEu7OIY7nSQ7mfDxE0VgxxyYZhnbmiWbz/Dn/sh9CHx
+ CXB+CrI7hxlqHky+GNjFso4QaUM1J3E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626081148;
+ s=susede2_ed25519; t=1626081223;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=2kcr+vPOQbQ2fMejnI0iavZ9pd2jRr1r6KJPXEtdkgQ=;
- b=cnHfTUM+3AeGdh6lO1Keg5rFrVRfHh/fimfm0i53HxD1lw5FTWUFjnW5IkilrM2HRu4AP5
- gMTtq2abvh8dSUCg==
+ bh=hqRJFUYPrxlcoHHM4i5lEdjJpg9DF8FHcayW7Habd7I=;
+ b=wdoZVY/ke0WkcAjNWUm9wjKCs+CiYA1XSzhGfEoSULA8O9zCeeMY1X8myfyiLJTvgcqrP0
+ ZDkCE/8Gw/b0U+Bg==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id BFEC2A3BAB;
- Mon, 12 Jul 2021 09:12:28 +0000 (UTC)
-Date: Mon, 12 Jul 2021 11:12:28 +0200
-Message-ID: <s5hsg0j3ngj.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 47864A3B87;
+ Mon, 12 Jul 2021 09:13:43 +0000 (UTC)
+Date: Mon, 12 Jul 2021 11:13:43 +0200
+Message-ID: <s5hr1g33neg.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Alan Young <consult.awy@gmail.com>
-Subject: Re: [PATCH] ALSA: core: Call substream ack() method upon compat mmap,
- commit
-In-Reply-To: <d786c278-c5df-7ab3-2d1c-e0bbc6e5300c@gmail.com>
-References: <d786c278-c5df-7ab3-2d1c-e0bbc6e5300c@gmail.com>
+To: Colin King <colin.king@canonical.com>
+Subject: Re: [PATCH] ALSA: hda/ca0132: remove redundant initialization of
+ variable status
+In-Reply-To: <20210709152938.460763-1-colin.king@canonical.com>
+References: <20210709152938.460763-1-colin.king@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Connor McAdams <conmanx360@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,24 +101,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 09 Jul 2021 10:53:42 +0200,
-Alan Young wrote:
+On Fri, 09 Jul 2021 17:29:38 +0200,
+Colin King wrote:
 > 
-> If a 32-bit application is being used with a 64-bit kernel and is using
-> the mmap mechanism to write data, then the SNDRV_PCM_IOCTL_SYNC_PTR
-> ioctl results in calling snd_pcm_ioctl_sync_ptr_compat(). Make this use
-> pcm_lib_apply_appl_ptr() so that the substream's ack() method, if
-> defined, is called.
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> The snd_pcm_sync_ptr() function, used in the 64-bit ioctl case, already
-> uses snd_pcm_ioctl_sync_ptr_compat().
+> The variable status is being initialized with a value that is never
+> read, the assignment is redundant and can be removed.
 > 
-> Signed-off-by: Alan Young <consult.awy@gmail.com>
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-A good catch.  But unfortunately the posted patch couldn't be applied
-cleanly.  Could you check your MUA setup and resubmit?
+Thanks, applied.
 
-
-thanks,
 
 Takashi
