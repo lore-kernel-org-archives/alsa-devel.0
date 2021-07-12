@@ -1,57 +1,97 @@
-Return-Path: <SRS0=hvs4=MD=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=F1iH=ME=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 489EFC07E96
-	for <alsa-devel@archiver.kernel.org>; Sun, 11 Jul 2021 20:20:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDB53C07E96
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jul 2021 00:52:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 864586105A
-	for <alsa-devel@archiver.kernel.org>; Sun, 11 Jul 2021 20:20:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 864586105A
-Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
+	by mail.kernel.org (Postfix) with ESMTPS id 56B6B61057
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jul 2021 00:52:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 56B6B61057
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B9EC15DC;
-	Sun, 11 Jul 2021 22:20:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B9EC15DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 070D3886;
+	Mon, 12 Jul 2021 02:51:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 070D3886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626034854;
-	bh=rw0MHrta0a1lxcyqnz1+gUTI99q7CfCSR4xOU4wzvlg=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Up8ttk/ULD7xnefoqlvx8ABvOF7TOaFUeiLumHSP+qVHZpGCz/1+S4bUupGYy52XY
-	 CgieKkwXoYpHKO1caWG8xfODGU3iwtLWcOOeGazDMUyNZLCfxQW3bzGTi38ODhP6+P
-	 NRdE2XwVLnZX6bRVrgVnk4sChT3LKQX+/ImNxMk8=
+	s=default; t=1626051140;
+	bh=TwnDq+xL2PbqxUx7K0I/6jeiiVWk8OLPfZMuxzwIyh4=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=XnWKG6SFitW7lHEqc0j/MAONQ1W6XTQ1VggN++GiTVVFZ4eQUrGp1Q6mDG4FTlPHJ
+	 0Xne10QXDtYcj8zahdJH/78fUz2RceUNAiWtNekaldMYn2bMRXOEzD80DPi1ROwBHc
+	 8qPkusBujzXhCA9qdllT3/5Nohb76UrbyVx/FmSI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B396FF8013D;
-	Sun, 11 Jul 2021 22:20:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40AADF8013D;
+	Mon, 12 Jul 2021 02:51:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 15829F800AE; Sun, 11 Jul 2021 22:20:01 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id CC483F800AE
- for <alsa-devel@alsa-project.org>; Sun, 11 Jul 2021 22:19:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC483F800AE
+ id AD158F80217; Mon, 12 Jul 2021 02:51:27 +0200 (CEST)
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com
+ [IPv6:2607:f8b0:4864:20::82c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E99CFF800E8
+ for <alsa-devel@alsa-project.org>; Mon, 12 Jul 2021 02:51:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E99CFF800E8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="uHRAjl4K"
+Received: by mail-qt1-x82c.google.com with SMTP id z25so9931755qto.12
+ for <alsa-devel@alsa-project.org>; Sun, 11 Jul 2021 17:51:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=Ntp2N+FnF9cu5TY3c6BDZ2BT3tHEvf2ZI4kcZulyHTY=;
+ b=uHRAjl4KstuBPiKhxZ/W2fwEeSj+KSOWzTOs7yoFGqBCagx4RutvdyTA4i9jzSxs6r
+ qMeTPktyK+HLKWxe1tFIbZ4vEica8vJqrKnuk5vh98okN7K1OOxKmYWXFdBpsYrv11aL
+ VSYymD+OdKs74nc6yPT6P/mGeINh0QMJebIj5hZblC47OyGHWJpJhVRjKr+MuLYStI2J
+ PPwNdB6fvbSHB8YAgkX7hJwhpi+z/beYQKDkqY7U5I3hzLBVW4hw5PHsB1nyIcLxweCu
+ 6IvG0Y4jVRSFUwMTxoqjC7B/MrI23J1jDv6YUQkefqj8hCpDuKkYE8iGZGxL0k25+urj
+ GIdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=Ntp2N+FnF9cu5TY3c6BDZ2BT3tHEvf2ZI4kcZulyHTY=;
+ b=YOOAcOBitJzZsuootEM0R0UdXRDvwfD0yfAWG3AOZxj2Xs3bpOQ0tKBZ0mV/k6ie4t
+ kbEDvzSS1DpkqesqSQbeyomCwrn3yE9yhlPRSRtTuPrg6EhIqi80qScaf20ixznnSpr2
+ SKwmnyjgQzIfPzDWCyOJxSauQvD7e6K5dkLw8VCp+5cnnXnYB0HyKRdUb6Zb4KRNT7zY
+ XZWiO0GHQiQ7dBPncCIAIMgYvKaWvzPCVhQwQZlYEm5Yt9qq5b/ijR2xpyV4+9ahm37I
+ EbaZlN9t38HRHjizR1Jek3fvFJYDnS9BnlFTYKSsq6FxE8MvohhT8ijW7s9ajgtOxhS1
+ 98Zg==
+X-Gm-Message-State: AOAM532D9O7tlIcCZuUEaNLFHpCpwHXTP6sedsWijqIYcrUhv3RlmJD0
+ tv/MIZF6jKt8snWXZ5m38xs=
+X-Google-Smtp-Source: ABdhPJzNcone+ITVv7tkPYfnB6EEZgMOxjj87y/qt9w5WIUrmXKgrsDgfl4sb4P2cLPSiGqztPWqmg==
+X-Received: by 2002:ac8:7c85:: with SMTP id y5mr43954762qtv.376.1626051076421; 
+ Sun, 11 Jul 2021 17:51:16 -0700 (PDT)
+Received: from localhost.localdomain (94-29-37-113.dynamic.spd-mgts.ru.
+ [94.29.37.113])
+ by smtp.gmail.com with ESMTPSA id x15sm5783823qkm.66.2021.07.11.17.51.14
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 11 Jul 2021 17:51:16 -0700 (PDT)
+From: Dmitry Osipenko <digetx@gmail.com>
+To: Oder Chiou <oder_chiou@realtek.com>, Mark Brown <broonie@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+ Maxim Schwalm <maxim.schwalm@gmail.com>,
+ Liam Girdwood <lgirdwood@gmail.com>
+Subject: [PATCH v1] ASoC: rt5631: Fix regcache sync errors on resume
+Date: Mon, 12 Jul 2021 03:50:11 +0300
+Message-Id: <20210712005011.28536-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1626034790104780912-webhooks-bot@alsa-project.org>
-References: <1626034790104780912-webhooks-bot@alsa-project.org>
-Subject: Realtek analog audio output limited to 48 kHz,
- chips support up to 192kHz
-Message-Id: <20210711202001.15829F800AE@alsa1.perex.cz>
-Date: Sun, 11 Jul 2021 22:20:01 +0200 (CEST)
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,48 +107,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #163 was edited from markojurkovic:
+From: Maxim Schwalm <maxim.schwalm@gmail.com>
 
-There seems to be an issue with ALSA and some onboard Realtek laptop audio chips, in my case Realtek ALC233 (but I've seen some reports online of people with other Realtek chips facing this issue). Namely, I've noticed that I cannot make use of all the sampling rates that the chip supports in GNU/Linux using ALSA. The chip supports up to 24-bit/192kHz analog stereo output, but in the three Linux distributions I've tried (Ubuntu, Fedora, Manjaro) I can only get either 44.1 or 48 kHz. The problem manifests itself by throwing the following error when attempting to play, for example, a 96kHz file in Audacious:
+The ALC5631 does not like multi-write accesses, avoid them. This fixes:
 
-"ALSA error: snd_pcm_hw_params_set_rate failed: Invalid argument."
+rt5631 4-001a: Unable to sync registers 0x3a-0x3c. -121
 
-If I attempt to play such a file using PulseAudio, I am able to play the file, but it gets resampled to 48kHz (which I've verified by running "cat /proc/asound/card0/pcm0p/sub0/hw_params")
+errors on resume from suspend (and all registers after the registers in
+the error not being synced).
 
-In Windows, I can get up to 192kHz without problems using both WASAPI Exclusive and ASIO modes, meaning modes that directly communicate with hardware, just like ALSA.
+Inspired by commit 2d30e9494f1e ("ASoC: rt5651: Fix regcache sync errors
+on resume") from Hans de Geode, which fixed the same errors on ALC5651.
 
-Following is the output of running "cat /proc/asound/card0/codec#0". This output indicates that the only supported sample rates for the sound card are 44100 and 48000 (for the analog outputs), whereas this Realtek chip supports also 96000 and 192000.
+Signed-off-by: Maxim Schwalm <maxim.schwalm@gmail.com>
+---
+ sound/soc/codecs/rt5631.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Node 0x02 [Audio Output] wcaps 0x41d: Stereo Amp-Out
-  Control: name="Speaker Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-Out caps: ofs=0x57, nsteps=0x57, stepsize=0x02, mute=0
-  Amp-Out vals:  [0x44 0x44]
-  Converter: stream=1, channel=0
-  PCM:
-    rates [0x60]: 44100 48000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x03 [Audio Output] wcaps 0x41d: Stereo Amp-Out
-  Control: name="Headphone Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Device: name="ALC233 Analog", type="Audio", device=0
-  Amp-Out caps: ofs=0x57, nsteps=0x57, stepsize=0x02, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Converter: stream=1, channel=0
-  PCM:
-    rates [0x60]: 44100 48000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
+diff --git a/sound/soc/codecs/rt5631.c b/sound/soc/codecs/rt5631.c
+index 3000bc128b5b..38356ea2bd6e 100644
+--- a/sound/soc/codecs/rt5631.c
++++ b/sound/soc/codecs/rt5631.c
+@@ -1695,6 +1695,8 @@ static const struct regmap_config rt5631_regmap_config = {
+ 	.reg_defaults = rt5631_reg,
+ 	.num_reg_defaults = ARRAY_SIZE(rt5631_reg),
+ 	.cache_type = REGCACHE_RBTREE,
++	.use_single_read = true,
++	.use_single_write = true,
+ };
+ 
+ static int rt5631_i2c_probe(struct i2c_client *i2c,
+-- 
+2.32.0
 
-Following is also the output of the alsa-info script:
-[alsa-debug.txt](https://github.com/alsa-project/alsa-lib/files/6797358/alsa-debug.txt)
-
-I tried different kernel versions, both generic/mainline and custom, including the latest one (5.13.1) on distros ranging from Ubuntu 19.04, Ubuntu 21.04, Pop OS 20.04 and 21.04, Fedora 32...
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/163
-Repository URL: https://github.com/alsa-project/alsa-lib
