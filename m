@@ -4,76 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A848C07E99
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jul 2021 10:50:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 708F0C07E99
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jul 2021 10:50:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 90E6660698
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jul 2021 10:50:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 90E6660698
+	by mail.kernel.org (Postfix) with ESMTPS id E6C2E610A7
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jul 2021 10:50:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E6C2E610A7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 139601691;
-	Mon, 12 Jul 2021 12:49:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 139601691
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D69D169D;
+	Mon, 12 Jul 2021 12:49:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D69D169D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626087013;
-	bh=uRqilg7CCTiXiMk2e657oj18CYOzh/zfcgwLHSndPMQ=;
+	s=default; t=1626087025;
+	bh=6I21jOSt2z0gqLk0ND4rhdMDbKCAlffeVuEN0sf5oH4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cyRaL/hS28rhX4PsnIhsJAPw6+svOmvTpl3KxPhAC8KAT0Njo2guYgUXEDsd2DF47
-	 Ap3jHq9Wa5ehOvaMmQTaGc0I3ppSf61suPUks6aVkzD1dmbtbPlZiO7bR79g/n6FVl
-	 rlSnfhSiNoO2mL5A02iyZesMGzon4BOKHssusHvY=
+	b=kn0RnVvu3gZBp3c/L1hgKAj/agMhNrNLymeBoNDTamo2Y/dd1Eiit5xbg62IbDcGK
+	 D91TskxeYIRmPybx22dQTR+K3zPw6Ff+JIfRLgO70VbBiqENT6mu5pF2HhbMGZRCRM
+	 KnIQgwm7JYMp3lk3tzp7H+ZBcoewH5OEqQFqrMQQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE155F804E1;
-	Mon, 12 Jul 2021 12:47:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C7571F804E4;
+	Mon, 12 Jul 2021 12:47:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5B5C4F80253; Mon, 12 Jul 2021 12:47:52 +0200 (CEST)
+ id 8BC74F804E7; Mon, 12 Jul 2021 12:47:54 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4D308F800EB
- for <alsa-devel@alsa-project.org>; Mon, 12 Jul 2021 12:47:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D308F800EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id CAB59F804D8
+ for <alsa-devel@alsa-project.org>; Mon, 12 Jul 2021 12:47:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CAB59F804D8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="PKOxR9gV"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68DBD61106;
- Mon, 12 Jul 2021 10:47:47 +0000 (UTC)
+ header.b="D1un9XkS"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EAFBC61152;
+ Mon, 12 Jul 2021 10:47:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1626086867;
- bh=uRqilg7CCTiXiMk2e657oj18CYOzh/zfcgwLHSndPMQ=;
+ s=k20201202; t=1626086870;
+ bh=6I21jOSt2z0gqLk0ND4rhdMDbKCAlffeVuEN0sf5oH4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=PKOxR9gVyRb/aKDarMb/OT2NEcDK9yFr2DEwpzFEDPFyQ/aQJAcIyCICNQRs/e8EV
- 0SmE0cWC5yYdSb98+kyVV4/H9Xs9pycosczh12IikVberE9L3J20FbituhvfHI238v
- GzrkpG69UOm1Bes627oVpbIgkGJganlb7bdEwE7qLK5D4GLoR9a9qE4+rgU+fvoXxt
- u7JoTitIAku8r99u35O2Ncp2+Q5pT97h/QRE/sjYF1yWw/cyUP3lOjr4TUPy2iTenC
- kPv/gu3q2lZlTYv5YpRqIo2Lx0b2XiGq8lG4SPxdPb0QH1eaFiImLDfLcetDUNIVtm
- LJB7cHe0GukcQ==
+ b=D1un9XkSk2rlSxB1C0Xg2KUqEDA1YZxMQPl87Rlc/v6z7Sptmgpumi8T1PstNopV0
+ QCkVV02dkOMZXV4aYMYBll+EHoYVVxGMhCxpvkl+eeNJ4p+SXxdpc2vHJ1iNh+z6wA
+ qpRavDKkpkc352rpsl4e3Ja7alCnpTrYLzSRmewaBSLqoDNxdq9sgdZCMuddFZCVfs
+ U0OIDNEwnM/CwJBr0ap/uNCxdWDwVAr3GxXQLxDqDgyBDUyNrAFSZMvNNEMTyxGKQk
+ KEowvIOrLr4kL7XYTfmYt9W54PlHjll2qKU6XEVB2mKScqTBx7cWHeRinkuqyBm9uR
+ o36i04i/JlcIg==
 From: Mark Brown <broonie@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v3] ASoC: atmel: ATMEL drivers don't need HAS_DMA
-Date: Mon, 12 Jul 2021 11:46:00 +0100
-Message-Id: <162608623152.3192.2676358338088676059.b4-ty@kernel.org>
+To: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: (subset) [PATCH 0/4] ASoC: Intel: machine driver corrections
+Date: Mon, 12 Jul 2021 11:46:01 +0100
+Message-Id: <162608623150.3192.15945956952232307901.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210707214752.3831-1-rdunlap@infradead.org>
-References: <20210707214752.3831-1-rdunlap@infradead.org>
+In-Reply-To: <20210625205042.65181-1-pierre-louis.bossart@linux.intel.com>
+References: <20210625205042.65181-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
- Mark Brown <broonie@kernel.org>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Cc: tiwai@suse.de, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,14 +85,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 7 Jul 2021 14:47:52 -0700, Randy Dunlap wrote:
-> On a config (such as arch/sh/) which does not set HAS_DMA when MMU
-> is not set, several ATMEL ASoC drivers select symbols that cause
-> kconfig warnings. There is one "depends on HAS_DMA" which is no longer
-> needed. Dropping it eliminates the kconfig warnings and still builds
-> with no problems reported.
+On Fri, 25 Jun 2021 15:50:38 -0500, Pierre-Louis Bossart wrote:
+> The first fix solves an underflow in SoundWire platforms using the
+> max98373 amplifier, the rest of the patches are minor corrections in
+> machine drivers.
 > 
-> Fix the following kconfig warnings:
+> The fix should be queued for the 5.14 cycle, the rest should be
+> harmless but can be deferred for 5.15 if it's too late already.
 > 
 > [...]
 
@@ -106,8 +101,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: atmel: ATMEL drivers don't need HAS_DMA
-      commit: 6c5c659dfe3f02e08054a6c20019e3886618b512
+[2/4] ASoC: Intel: soc-acpi: add support for SoundWire of TGL-H-RVP
+      commit: f99acc259f621ae6667782778b2065c15e109693
+[3/4] ASoC: SOF: add a helper to get topology configured bclk
+      commit: bc619cfc6278c87b4e310f9db9f45abc263220e8
+[4/4] ASoC: Intel: sof_cs42l42: use helper function to get bclk frequency
+      commit: 837ad6da36ba765d9ff8120c93dd243b9200957e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
