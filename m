@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 850EDC07E95
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:47:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82059C07E95
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:47:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A84D61289
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:47:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A84D61289
+	by mail.kernel.org (Postfix) with ESMTPS id 0B24461289
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:47:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B24461289
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 86D0E16CE;
-	Tue, 13 Jul 2021 16:46:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86D0E16CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 969081766;
+	Tue, 13 Jul 2021 16:46:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 969081766
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626187623;
-	bh=h/HJYUIQ3H10Nk8LVYQibcebt4L9OhjMroqVoklppgE=;
+	s=default; t=1626187643;
+	bh=1LgK4r7Nt4cZqkoHSz3NM/gpMmd8SDCt8Uebltn1EFI=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KgwWYhZ9dGCDgePr1nw/R/phZsluLTxUOt39vqAkzWQTd4fietwQ+3BwBlUOk/AFR
-	 9leUR1dKtYDNXtuK8UJpi8QT+Zfm053+QLb39CTmJvtxKJjfHiTVnx09VoaPPMTm7N
-	 OFF90YUXALCwyKrW6MNfh32VvluLbh39khNnUqgA=
+	b=ihHr8F3FyPQpIYugQk1gzX/tctrch+i187Hqu+PcnMqt57H5ftfXU6LUX4yRKnQ+4
+	 3dBjZG9kXt4939uO+GGKHADmyY6uKABHx5ySJ/tmcj5a1dnbWZThmwUM3fvFVYG4Cj
+	 FFzdHPIGyRNbuKtf+2AxFPEH8Asqyc9VknwB0ZiE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E571FF80632;
-	Tue, 13 Jul 2021 16:30:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 69640F80633;
+	Tue, 13 Jul 2021 16:30:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2D379F804F3; Tue, 13 Jul 2021 16:30:11 +0200 (CEST)
+ id 818D5F804F3; Tue, 13 Jul 2021 16:30:11 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4FA16F8055C
- for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 16:29:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FA16F8055C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3212CF8016A
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 16:29:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3212CF8016A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="V6yFS/Yi"; 
+ header.b="VGwa4VKN"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="MmGEJhcP"
+ header.b="UAym//pK"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 24A8622855
- for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 14:29:45 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 11E6522837
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 14:29:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626186585; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1626186584; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=W+X/2bTEhxb1+unE4n5+9Yg7YPVtnmR7yNJ0qjGYang=;
- b=V6yFS/Yii8vtG77gEAJXaIzZ7ZGBe0k/8LMULbvtulcrOKCvDS5pboGQY02/EN1sUBXfoR
- 1N3NmSUAeLOhdXf7LZBURpzkjeUa9yEQuhdZO2jJYzLEKkvDS9WF7/+oBI+fd04o8Err89
- rRXrucVwo3MU4DsoLGzjDbDqCMk4Ex0=
+ bh=6fmFbwAl0scRniMBGRmt/LYV5Q59V+Yu7zP10IIZFwE=;
+ b=VGwa4VKNidNIvC6TzAWg8jmPTwbDmP27UXP7GTnpdL+YSGzdGnDo1r0IkZUlpkxQnJHrju
+ DchyTG5zo7H4DulOQNTka4z4k7Mg+7a05RfJod/g/NWrmTbThivC0qBpWDavcN1hXsmh8j
+ rJyzbgXORSvzoojwlqBnZwlrS76wHXY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626186585;
+ s=susede2_ed25519; t=1626186584;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=W+X/2bTEhxb1+unE4n5+9Yg7YPVtnmR7yNJ0qjGYang=;
- b=MmGEJhcPq/u55adKb1BQ5NWnl0bJbbq/MUewBWYvK8uqErwvHRN6MVE4lOMsGUwMOGn0c6
- 8eH6uWljF3pTIRDw==
+ bh=6fmFbwAl0scRniMBGRmt/LYV5Q59V+Yu7zP10IIZFwE=;
+ b=UAym//pKU0DHoUymrZIxKcUjluB9CHZVtdjGpsjS3iCVBeJxoUN1PnxG3uT/nFRlMcLcyP
+ RjCyrJQKQA6HwMBQ==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 15386A3B85;
- Tue, 13 Jul 2021 14:29:45 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 015E0A3B92;
+ Tue, 13 Jul 2021 14:29:44 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 49/51] ALSA: mtpav: Allocate resources with device-managed APIs
-Date: Tue, 13 Jul 2021 16:28:55 +0200
-Message-Id: <20210713142857.19654-50-tiwai@suse.de>
+Subject: [PATCH 47/51] ALSA: x86: Allocate resources with device-managed APIs
+Date: Tue, 13 Jul 2021 16:28:53 +0200
+Message-Id: <20210713142857.19654-48-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210713142857.19654-1-tiwai@suse.de>
 References: <20210713142857.19654-1-tiwai@suse.de>
@@ -97,106 +97,149 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the resource management in mtpav driver with
-devres as a clean up.  Each manual resource management is converted
-with the corresponding devres helper now.
-
-This should give no user-visible functional changes.
+This patch converts the resource management in x86 HDMI LPE audio
+driver with devres as a clean up.  Each manual resource management is
+converted with the corresponding devres helper now.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/drivers/mtpav.c | 30 +++++++++---------------------
- 1 file changed, 9 insertions(+), 21 deletions(-)
+ sound/x86/intel_hdmi_audio.c | 57 ++++++++++--------------------------
+ 1 file changed, 16 insertions(+), 41 deletions(-)
 
-diff --git a/sound/drivers/mtpav.c b/sound/drivers/mtpav.c
-index 0e95b08d34d6..11235baaf6fa 100644
---- a/sound/drivers/mtpav.c
-+++ b/sound/drivers/mtpav.c
-@@ -566,13 +566,15 @@ static irqreturn_t snd_mtpav_irqh(int irq, void *dev_id)
-  */
- static int snd_mtpav_get_ISA(struct mtpav *mcard)
- {
--	mcard->res_port = request_region(port, 3, "MotuMTPAV MIDI");
-+	mcard->res_port = devm_request_region(mcard->card->dev, port, 3,
-+					      "MotuMTPAV MIDI");
- 	if (!mcard->res_port) {
- 		snd_printk(KERN_ERR "MTVAP port 0x%lx is busy\n", port);
- 		return -EBUSY;
+diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
+index 6d87c099d997..d60e532edf5f 100644
+--- a/sound/x86/intel_hdmi_audio.c
++++ b/sound/x86/intel_hdmi_audio.c
+@@ -1657,11 +1657,6 @@ static void hdmi_lpe_audio_free(struct snd_card *card)
+ 
+ 		cancel_work_sync(&ctx->hdmi_audio_wq);
  	}
- 	mcard->port = port;
--	if (request_irq(irq, snd_mtpav_irqh, 0, "MOTU MTPAV", mcard)) {
-+	if (devm_request_irq(mcard->card->dev, irq, snd_mtpav_irqh, 0,
-+			     "MOTU MTPAV", mcard)) {
- 		snd_printk(KERN_ERR "MTVAP IRQ %d busy\n", irq);
- 		return -EBUSY;
- 	}
-@@ -667,9 +669,6 @@ static void snd_mtpav_free(struct snd_card *card)
- 	if (crd->istimer > 0)
- 		snd_mtpav_remove_output_timer(crd);
- 	spin_unlock_irqrestore(&crd->spinlock, flags);
--	if (crd->irq >= 0)
--		free_irq(crd->irq, (void *)crd);
--	release_and_free_resource(crd->res_port);
+-
+-	if (card_ctx->mmio_start)
+-		iounmap(card_ctx->mmio_start);
+-	if (card_ctx->irq >= 0)
+-		free_irq(card_ctx->irq, card_ctx);
  }
  
  /*
-@@ -680,8 +679,8 @@ static int snd_mtpav_probe(struct platform_device *dev)
- 	int err;
- 	struct mtpav *mtp_card;
+@@ -1699,8 +1694,8 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
+ 	}
  
--	err = snd_card_new(&dev->dev, index, id, THIS_MODULE,
--			   sizeof(*mtp_card), &card);
-+	err = snd_devm_card_new(&dev->dev, index, id, THIS_MODULE,
-+				sizeof(*mtp_card), &card);
- 	if (err < 0)
- 		return err;
+ 	/* create a card instance with ALSA framework */
+-	ret = snd_card_new(&pdev->dev, hdmi_card_index, hdmi_card_id,
+-			   THIS_MODULE, sizeof(*card_ctx), &card);
++	ret = snd_devm_card_new(&pdev->dev, hdmi_card_index, hdmi_card_id,
++				THIS_MODULE, sizeof(*card_ctx), &card);
+ 	if (ret)
+ 		return ret;
  
-@@ -698,13 +697,13 @@ static int snd_mtpav_probe(struct platform_device *dev)
+@@ -1736,20 +1731,20 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
+ 		__func__, (unsigned int)res_mmio->start,
+ 		(unsigned int)res_mmio->end);
  
- 	err = snd_mtpav_get_RAWMIDI(mtp_card);
- 	if (err < 0)
--		goto __error;
-+		return err;
+-	card_ctx->mmio_start = ioremap(res_mmio->start,
+-					       (size_t)(resource_size(res_mmio)));
++	card_ctx->mmio_start =
++		devm_ioremap(&pdev->dev, res_mmio->start,
++			     (size_t)(resource_size(res_mmio)));
+ 	if (!card_ctx->mmio_start) {
+ 		dev_err(&pdev->dev, "Could not get ioremap\n");
+-		ret = -EACCES;
+-		goto err;
++		return -EACCES;
+ 	}
  
- 	mtp_card->inmidiport = mtp_card->num_ports + MTPAV_PIDX_BROADCAST;
+ 	/* setup interrupt handler */
+-	ret = request_irq(irq, display_pipe_interrupt_handler, 0,
+-			  pdev->name, card_ctx);
++	ret = devm_request_irq(&pdev->dev, irq, display_pipe_interrupt_handler,
++			       0, pdev->name, card_ctx);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "request_irq failed\n");
+-		goto err;
++		return ret;
+ 	}
  
- 	err = snd_mtpav_get_ISA(mtp_card);
- 	if (err < 0)
--		goto __error;
-+		return err;
+ 	card_ctx->irq = irq;
+@@ -1769,7 +1764,7 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
+ 		ret = snd_pcm_new(card, INTEL_HAD, port, MAX_PB_STREAMS,
+ 				  MAX_CAP_STREAMS, &pcm);
+ 		if (ret)
+-			goto err;
++			return ret;
  
- 	strcpy(card->driver, "MTPAV");
- 	strcpy(card->shortname, "MTPAV on parallel port");
-@@ -715,28 +714,17 @@ static int snd_mtpav_probe(struct platform_device *dev)
+ 		/* setup private data which can be retrieved when required */
+ 		pcm->private_data = ctx;
+@@ -1790,31 +1785,29 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
+ 			struct snd_kcontrol *kctl;
  
- 	err = snd_card_register(mtp_card->card);
- 	if (err < 0)
--		goto __error;
-+		return err;
+ 			kctl = snd_ctl_new1(&had_controls[i], ctx);
+-			if (!kctl) {
+-				ret = -ENOMEM;
+-				goto err;
+-			}
++			if (!kctl)
++				return -ENOMEM;
  
- 	platform_set_drvdata(dev, card);
- 	printk(KERN_INFO "Motu MidiTimePiece on parallel port irq: %d ioport: 0x%lx\n", irq, port);
+ 			kctl->id.device = pcm->device;
+ 
+ 			ret = snd_ctl_add(card, kctl);
+ 			if (ret < 0)
+-				goto err;
++				return ret;
+ 		}
+ 
+ 		/* Register channel map controls */
+ 		ret = had_register_chmap_ctls(ctx, pcm);
+ 		if (ret < 0)
+-			goto err;
++			return ret;
+ 
+ 		ret = had_create_jack(ctx, pcm);
+ 		if (ret < 0)
+-			goto err;
++			return ret;
+ 	}
+ 
+ 	ret = snd_card_register(card);
+ 	if (ret)
+-		goto err;
++		return ret;
+ 
+ 	spin_lock_irq(&pdata->lpe_audio_slock);
+ 	pdata->notify_audio_lpe = notify_audio_lpe;
+@@ -1831,23 +1824,6 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
+ 	}
+ 
  	return 0;
 -
-- __error:
+-err:
 -	snd_card_free(card);
--	return err;
+-	return ret;
 -}
 -
--static int snd_mtpav_remove(struct platform_device *devptr)
+-/*
+- * hdmi_lpe_audio_remove - stop bridge with i915
+- *
+- * This function is called when the platform device is destroyed.
+- */
+-static int hdmi_lpe_audio_remove(struct platform_device *pdev)
 -{
--	snd_card_free(platform_get_drvdata(devptr));
+-	struct snd_intelhad_card *card_ctx = platform_get_drvdata(pdev);
+-
+-	snd_card_free(card_ctx->card);
 -	return 0;
  }
  
- #define SND_MTPAV_DRIVER	"snd_mtpav"
- 
- static struct platform_driver snd_mtpav_driver = {
- 	.probe		= snd_mtpav_probe,
--	.remove		= snd_mtpav_remove,
- 	.driver		= {
- 		.name	= SND_MTPAV_DRIVER,
+ static const struct dev_pm_ops hdmi_lpe_audio_pm = {
+@@ -1860,7 +1836,6 @@ static struct platform_driver hdmi_lpe_audio_driver = {
+ 		.pm = &hdmi_lpe_audio_pm,
  	},
+ 	.probe          = hdmi_lpe_audio_probe,
+-	.remove		= hdmi_lpe_audio_remove,
+ };
+ 
+ module_platform_driver(hdmi_lpe_audio_driver);
 -- 
 2.26.2
 
