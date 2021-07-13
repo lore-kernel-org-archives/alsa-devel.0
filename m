@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89885C07E95
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:46:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 850EDC07E95
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:47:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 157B560E0B
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:46:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 157B560E0B
+	by mail.kernel.org (Postfix) with ESMTPS id 0A84D61289
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:47:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A84D61289
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AFFDF174D;
-	Tue, 13 Jul 2021 16:45:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AFFDF174D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 86D0E16CE;
+	Tue, 13 Jul 2021 16:46:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86D0E16CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626187599;
-	bh=1nXVLbJizRCzbqWhJsYwntzhTvFTPeQw0VyNJjq0Xc0=;
+	s=default; t=1626187623;
+	bh=h/HJYUIQ3H10Nk8LVYQibcebt4L9OhjMroqVoklppgE=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lM8c2DMWsuK888PyFti3UjamqCeKsAqpjFLB4u/hjp8VMt64Pmqgeohj20MXZEgR3
-	 l+jpv6lMusLPvHzezvS5WqLVKvC4OxoRv9SInUbuCmeIdG3friea6a/M5CgivvExUb
-	 FPihjRKv65N22dsQV46dXgB5+rsxsbTcNZnPJYoc=
+	b=KgwWYhZ9dGCDgePr1nw/R/phZsluLTxUOt39vqAkzWQTd4fietwQ+3BwBlUOk/AFR
+	 9leUR1dKtYDNXtuK8UJpi8QT+Zfm053+QLb39CTmJvtxKJjfHiTVnx09VoaPPMTm7N
+	 OFF90YUXALCwyKrW6MNfh32VvluLbh39khNnUqgA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 483EAF80623;
+	by alsa1.perex.cz (Postfix) with ESMTP id E571FF80632;
 	Tue, 13 Jul 2021 16:30:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C3529F8052D; Tue, 13 Jul 2021 16:30:08 +0200 (CEST)
+ id 2D379F804F3; Tue, 13 Jul 2021 16:30:11 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A88ADF80551
- for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 16:29:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A88ADF80551
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4FA16F8055C
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 16:29:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FA16F8055C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="i7WyzWTk"; 
+ header.b="V6yFS/Yi"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="hyE9EUJZ"
+ header.b="MmGEJhcP"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 82ECB22837
- for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 14:29:42 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 24A8622855
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 14:29:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626186582; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1626186585; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=eW8LFcUjjkXO6ltupu8MlVuWejyBsrIe+N/GJDppXF0=;
- b=i7WyzWTkNDy9EWT5e6a/lwJH96WimDfnMLJ4KnQTAN6KxWlPQTV2qtIaEzA0W8KQg/o8s+
- hznTKP4MkWm2Eqiac8VvJa87tPK8hcGWHDIHiC+/ywbHZ/3vTU4QhlL/bHn+cDgrbIXsCv
- jsOoAmEG5dDaeAcxJKbqlZ55+6api8A=
+ bh=W+X/2bTEhxb1+unE4n5+9Yg7YPVtnmR7yNJ0qjGYang=;
+ b=V6yFS/Yii8vtG77gEAJXaIzZ7ZGBe0k/8LMULbvtulcrOKCvDS5pboGQY02/EN1sUBXfoR
+ 1N3NmSUAeLOhdXf7LZBURpzkjeUa9yEQuhdZO2jJYzLEKkvDS9WF7/+oBI+fd04o8Err89
+ rRXrucVwo3MU4DsoLGzjDbDqCMk4Ex0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626186582;
+ s=susede2_ed25519; t=1626186585;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=eW8LFcUjjkXO6ltupu8MlVuWejyBsrIe+N/GJDppXF0=;
- b=hyE9EUJZyOF9q73cShrLi0RilCp7rEKYicaLPB0w4B1AEZWQnIE0lJvOPybxrXqPeXBU1n
- c4DGrkAfRYX3k4CQ==
+ bh=W+X/2bTEhxb1+unE4n5+9Yg7YPVtnmR7yNJ0qjGYang=;
+ b=MmGEJhcPq/u55adKb1BQ5NWnl0bJbbq/MUewBWYvK8uqErwvHRN6MVE4lOMsGUwMOGn0c6
+ 8eH6uWljF3pTIRDw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 72C4DA3B8E;
- Tue, 13 Jul 2021 14:29:42 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 15386A3B85;
+ Tue, 13 Jul 2021 14:29:45 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 44/51] ALSA: vx: Manage vx_core object with devres
-Date: Tue, 13 Jul 2021 16:28:50 +0200
-Message-Id: <20210713142857.19654-45-tiwai@suse.de>
+Subject: [PATCH 49/51] ALSA: mtpav: Allocate resources with device-managed APIs
+Date: Tue, 13 Jul 2021 16:28:55 +0200
+Message-Id: <20210713142857.19654-50-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210713142857.19654-1-tiwai@suse.de>
 References: <20210713142857.19654-1-tiwai@suse.de>
@@ -97,110 +97,106 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The firmware data are also released automatically.
+This patch converts the resource management in mtpav driver with
+devres as a clean up.  Each manual resource management is converted
+with the corresponding devres helper now.
+
+This should give no user-visible functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/drivers/vx/vx_core.c | 12 ++++++++++--
- sound/pci/vx222/vx222.c    |  1 -
- sound/pcmcia/vx/vxpocket.c | 21 ---------------------
- 3 files changed, 10 insertions(+), 24 deletions(-)
+ sound/drivers/mtpav.c | 30 +++++++++---------------------
+ 1 file changed, 9 insertions(+), 21 deletions(-)
 
-diff --git a/sound/drivers/vx/vx_core.c b/sound/drivers/vx/vx_core.c
-index a10449af5a76..18901e5bcfcf 100644
---- a/sound/drivers/vx/vx_core.c
-+++ b/sound/drivers/vx/vx_core.c
-@@ -774,6 +774,11 @@ int snd_vx_resume(struct vx_core *chip)
- EXPORT_SYMBOL(snd_vx_resume);
- #endif
- 
-+static void snd_vx_release(struct device *dev, void *data)
-+{
-+	snd_vx_free_firmware(data);
-+}
-+
- /**
-  * snd_vx_create - constructor for struct vx_core
-  * @card: card instance
-@@ -784,6 +789,8 @@ EXPORT_SYMBOL(snd_vx_resume);
-  * this function allocates the instance and prepare for the hardware
-  * initialization.
-  *
-+ * The object is managed via devres, and will be automatically released.
-+ *
-  * return the instance pointer if successful, NULL in error.
+diff --git a/sound/drivers/mtpav.c b/sound/drivers/mtpav.c
+index 0e95b08d34d6..11235baaf6fa 100644
+--- a/sound/drivers/mtpav.c
++++ b/sound/drivers/mtpav.c
+@@ -566,13 +566,15 @@ static irqreturn_t snd_mtpav_irqh(int irq, void *dev_id)
   */
- struct vx_core *snd_vx_create(struct snd_card *card,
-@@ -796,8 +803,9 @@ struct vx_core *snd_vx_create(struct snd_card *card,
- 	if (snd_BUG_ON(!card || !hw || !ops))
- 		return NULL;
+ static int snd_mtpav_get_ISA(struct mtpav *mcard)
+ {
+-	mcard->res_port = request_region(port, 3, "MotuMTPAV MIDI");
++	mcard->res_port = devm_request_region(mcard->card->dev, port, 3,
++					      "MotuMTPAV MIDI");
+ 	if (!mcard->res_port) {
+ 		snd_printk(KERN_ERR "MTVAP port 0x%lx is busy\n", port);
+ 		return -EBUSY;
+ 	}
+ 	mcard->port = port;
+-	if (request_irq(irq, snd_mtpav_irqh, 0, "MOTU MTPAV", mcard)) {
++	if (devm_request_irq(mcard->card->dev, irq, snd_mtpav_irqh, 0,
++			     "MOTU MTPAV", mcard)) {
+ 		snd_printk(KERN_ERR "MTVAP IRQ %d busy\n", irq);
+ 		return -EBUSY;
+ 	}
+@@ -667,9 +669,6 @@ static void snd_mtpav_free(struct snd_card *card)
+ 	if (crd->istimer > 0)
+ 		snd_mtpav_remove_output_timer(crd);
+ 	spin_unlock_irqrestore(&crd->spinlock, flags);
+-	if (crd->irq >= 0)
+-		free_irq(crd->irq, (void *)crd);
+-	release_and_free_resource(crd->res_port);
+ }
  
--	chip = kzalloc(sizeof(*chip) + extra_size, GFP_KERNEL);
--	if (! chip)
-+	chip = devres_alloc(snd_vx_release, sizeof(*chip) + extra_size,
-+			    GFP_KERNEL);
-+	if (!chip)
- 		return NULL;
- 	mutex_init(&chip->lock);
- 	chip->irq = -1;
-diff --git a/sound/pci/vx222/vx222.c b/sound/pci/vx222/vx222.c
-index 04c7204cb7bc..46a80ef1d481 100644
---- a/sound/pci/vx222/vx222.c
-+++ b/sound/pci/vx222/vx222.c
-@@ -109,7 +109,6 @@ static int snd_vx222_free(struct vx_core *chip)
- 	if (vx->port[0])
- 		pci_release_regions(vx->pci);
- 	pci_disable_device(vx->pci);
--	kfree(chip);
+ /*
+@@ -680,8 +679,8 @@ static int snd_mtpav_probe(struct platform_device *dev)
+ 	int err;
+ 	struct mtpav *mtp_card;
+ 
+-	err = snd_card_new(&dev->dev, index, id, THIS_MODULE,
+-			   sizeof(*mtp_card), &card);
++	err = snd_devm_card_new(&dev->dev, index, id, THIS_MODULE,
++				sizeof(*mtp_card), &card);
+ 	if (err < 0)
+ 		return err;
+ 
+@@ -698,13 +697,13 @@ static int snd_mtpav_probe(struct platform_device *dev)
+ 
+ 	err = snd_mtpav_get_RAWMIDI(mtp_card);
+ 	if (err < 0)
+-		goto __error;
++		return err;
+ 
+ 	mtp_card->inmidiport = mtp_card->num_ports + MTPAV_PIDX_BROADCAST;
+ 
+ 	err = snd_mtpav_get_ISA(mtp_card);
+ 	if (err < 0)
+-		goto __error;
++		return err;
+ 
+ 	strcpy(card->driver, "MTPAV");
+ 	strcpy(card->shortname, "MTPAV on parallel port");
+@@ -715,28 +714,17 @@ static int snd_mtpav_probe(struct platform_device *dev)
+ 
+ 	err = snd_card_register(mtp_card->card);
+ 	if (err < 0)
+-		goto __error;
++		return err;
+ 
+ 	platform_set_drvdata(dev, card);
+ 	printk(KERN_INFO "Motu MidiTimePiece on parallel port irq: %d ioport: 0x%lx\n", irq, port);
  	return 0;
- }
- 
-diff --git a/sound/pcmcia/vx/vxpocket.c b/sound/pcmcia/vx/vxpocket.c
-index 0dfb6a943b60..30ac1f96c6c7 100644
---- a/sound/pcmcia/vx/vxpocket.c
-+++ b/sound/pcmcia/vx/vxpocket.c
-@@ -50,19 +50,6 @@ static void vxpocket_release(struct pcmcia_device *link)
- 	pcmcia_disable_device(link);
- }
- 
--/*
-- * destructor, called from snd_card_free_when_closed()
-- */
--static int snd_vxpocket_dev_free(struct snd_device *device)
--{
--	struct vx_core *chip = device->device_data;
 -
--	snd_vx_free_firmware(chip);
--	kfree(chip);
--	return 0;
+- __error:
+-	snd_card_free(card);
+-	return err;
 -}
 -
--
- /*
-  * Hardware information
-  */
-@@ -122,9 +109,6 @@ static int snd_vxpocket_new(struct snd_card *card, int ibl,
- {
- 	struct vx_core *chip;
- 	struct snd_vxpocket *vxp;
--	static const struct snd_device_ops ops = {
--		.dev_free =	snd_vxpocket_dev_free,
--	};
- 	int err;
+-static int snd_mtpav_remove(struct platform_device *devptr)
+-{
+-	snd_card_free(platform_get_drvdata(devptr));
+-	return 0;
+ }
  
- 	chip = snd_vx_create(card, &vxpocket_hw, &snd_vxpocket_ops,
-@@ -132,11 +116,6 @@ static int snd_vxpocket_new(struct snd_card *card, int ibl,
- 	if (!chip)
- 		return -ENOMEM;
+ #define SND_MTPAV_DRIVER	"snd_mtpav"
  
--	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
--	if (err < 0) {
--		kfree(chip);
--		return err;
--	}
- 	chip->ibl.size = ibl;
- 
- 	vxp = to_vxpocket(chip);
+ static struct platform_driver snd_mtpav_driver = {
+ 	.probe		= snd_mtpav_probe,
+-	.remove		= snd_mtpav_remove,
+ 	.driver		= {
+ 		.name	= SND_MTPAV_DRIVER,
+ 	},
 -- 
 2.26.2
 
