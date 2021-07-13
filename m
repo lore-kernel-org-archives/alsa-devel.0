@@ -7,76 +7,77 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D264C07E96
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:39:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71B16C07E95
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:40:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D90106115B
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:39:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D90106115B
+	by mail.kernel.org (Postfix) with ESMTPS id EB46D610CB
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:40:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EB46D610CB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6AE5F16D5;
-	Tue, 13 Jul 2021 16:39:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6AE5F16D5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9272B1724;
+	Tue, 13 Jul 2021 16:39:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9272B1724
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626187196;
-	bh=fu11GM+ZB0D95X8OuNVx5SB/HWFmYfshIvHjM3NERmE=;
+	s=default; t=1626187215;
+	bh=NcrN6L4WZTUj1jg6eN92u1KO9xlQjaJzRLodgbjRVqY=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iQCJCq8TzkN7XTsl8uNCZ/nUw8sOumEmxytnWWup1WYKw53YlabnNpkw/KQ2oy2KY
-	 NwUiLTno88IjNvn12+R9YXF29kwxUsOFxsWHQMjX9W/NyPCAGjFpKKzPP9H7ITxzsT
-	 1H8DTPm4txT5rBzYi5R9ReSSEpXDqfB466aY4/QM=
+	b=oFJQIk4ePcwAEqCtUjnGJpwDvkdLH45qPhP7pVQ3B1QyewTkNc8OSxmX78g/mss7i
+	 JJlnju9si9Jh5i9Eo3wU6l6kvXgy2vkNmmLwa5gT+DWU6NEY3ibC0g0+KrCoykWyWh
+	 yWEJks+d5uHQjDe8Xb3wrNm/S/eRc+UGv4zyjif0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A871F805AC;
+	by alsa1.perex.cz (Postfix) with ESMTP id 992EBF805B3;
 	Tue, 13 Jul 2021 16:30:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 05B7EF8056F; Tue, 13 Jul 2021 16:29:49 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id CE9BFF80571; Tue, 13 Jul 2021 16:29:49 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A726EF804FD
- for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 16:29:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A726EF804FD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7731FF8050F
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 16:29:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7731FF8050F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="H2C1fZj9"; 
+ header.b="nj6pr70Z"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="iKIURmA4"
+ header.b="WTtUaSKT"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 82BB522855
- for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 14:29:31 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 4DF28201E4
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 14:29:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626186571; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1626186570; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=yHOkfojWelSINRHgCcja7PJLZL2yqm6jelxRU/Mdrd0=;
- b=H2C1fZj9rqOCeaMijud6PJSBx73LhpRjA+snxCXsALWRbjolHTbZC11O9WYieU0y8ilGcq
- eLIxeUWH/yKe0+fLOGllbBhIenZpMV4YD01+85xYEqK26WUw3WSoE60Ssebp5WoyQVaoVJ
- wyaR+eGiUJ/9PnCuy7JJ4vvooQQGBFU=
+ bh=8nus57fjny4yCUjw8vUksNK+8q7u3TAt5nxvdIRA/wE=;
+ b=nj6pr70ZO13vpTwTOmcKTxp4M6Nhhp1alfzoQy35bNxsFiZW8WUg/ot5iEoawGKSWJyKwK
+ fzO++03oavut+PqMciXAckU+YXI8GehzCI61MC3GQSQ4mTAMYO8lxu5Y8DlLbPiltah5jI
+ Y4DzFs4n7rhNSSAIE8jpllxmX3x0960=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626186571;
+ s=susede2_ed25519; t=1626186570;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=yHOkfojWelSINRHgCcja7PJLZL2yqm6jelxRU/Mdrd0=;
- b=iKIURmA4+MrsLmutIa+sQt7TUd4BGHCIG0gM44E0mGA9XKwy3Z1HF0l1t7P90eOa8ebIM1
- 37C6G6BaKoFL+6Cw==
+ bh=8nus57fjny4yCUjw8vUksNK+8q7u3TAt5nxvdIRA/wE=;
+ b=WTtUaSKTghhFVrlrSozG9R4uZz4yH2iEh+WW4EKHOWNOf+wIS0BFftX/r/LmiIH4VARQY5
+ hpW78pPAnc+iC9AA==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 72997A3B85;
- Tue, 13 Jul 2021 14:29:31 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 3C532A3B83;
+ Tue, 13 Jul 2021 14:29:30 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 27/51] ALSA: aw2: Allocate resources with device-managed APIs
-Date: Tue, 13 Jul 2021 16:28:33 +0200
-Message-Id: <20210713142857.19654-28-tiwai@suse.de>
+Subject: [PATCH 25/51] ALSA: ali5451: Allocate resources with device-managed
+ APIs
+Date: Tue, 13 Jul 2021 16:28:31 +0200
+Message-Id: <20210713142857.19654-26-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210713142857.19654-1-tiwai@suse.de>
 References: <20210713142857.19654-1-tiwai@suse.de>
@@ -97,7 +98,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the resource management in PCI aw2 driver with
+This patch converts the resource management in PCI ali5451 driver with
 devres as a clean up.  Each manual resource management is converted
 with the corresponding devres helper, and the card object release is
 managed now via card->private_free instead of a lowlevel snd_device.
@@ -106,204 +107,221 @@ This should give no user-visible functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/aw2/aw2-alsa.c | 102 +++++++--------------------------------
- 1 file changed, 18 insertions(+), 84 deletions(-)
+ sound/pci/ali5451/ali5451.c | 88 +++++++++----------------------------
+ 1 file changed, 20 insertions(+), 68 deletions(-)
 
-diff --git a/sound/pci/aw2/aw2-alsa.c b/sound/pci/aw2/aw2-alsa.c
-index 43396849a01c..d56f126d6fdd 100644
---- a/sound/pci/aw2/aw2-alsa.c
-+++ b/sound/pci/aw2/aw2-alsa.c
-@@ -99,12 +99,9 @@ struct aw2 {
- /*********************************
-  * FUNCTION DECLARATIONS
-  ********************************/
--static int snd_aw2_dev_free(struct snd_device *device);
--static int snd_aw2_create(struct snd_card *card,
--			  struct pci_dev *pci, struct aw2 **rchip);
-+static int snd_aw2_create(struct snd_card *card, struct pci_dev *pci);
- static int snd_aw2_probe(struct pci_dev *pci,
- 			 const struct pci_device_id *pci_id);
--static void snd_aw2_remove(struct pci_dev *pci);
- static int snd_aw2_pcm_playback_open(struct snd_pcm_substream *substream);
- static int snd_aw2_pcm_playback_close(struct snd_pcm_substream *substream);
- static int snd_aw2_pcm_capture_open(struct snd_pcm_substream *substream);
-@@ -157,7 +154,6 @@ static struct pci_driver aw2_driver = {
- 	.name = KBUILD_MODNAME,
- 	.id_table = snd_aw2_ids,
- 	.probe = snd_aw2_probe,
--	.remove = snd_aw2_remove,
- };
+diff --git a/sound/pci/ali5451/ali5451.c b/sound/pci/ali5451/ali5451.c
+index 0d66b92466d5..ccbf9e2c72d6 100644
+--- a/sound/pci/ali5451/ali5451.c
++++ b/sound/pci/ali5451/ali5451.c
+@@ -1914,22 +1914,14 @@ static SIMPLE_DEV_PM_OPS(ali_pm, ali_suspend, ali_resume);
+ #define ALI_PM_OPS	NULL
+ #endif /* CONFIG_PM_SLEEP */
  
- module_pci_driver(aw2_driver);
-@@ -196,41 +192,23 @@ static const struct snd_kcontrol_new aw2_control = {
-  ********************************/
- 
- /* component-destructor */
--static int snd_aw2_dev_free(struct snd_device *device)
-+static void snd_aw2_free(struct snd_card *card)
+-static int snd_ali_free(struct snd_ali * codec)
++static void snd_ali_free(struct snd_card *card)
  {
--	struct aw2 *chip = device->device_data;
-+	struct aw2 *chip = card->private_data;
- 
- 	/* Free hardware */
- 	snd_aw2_saa7146_free(&chip->saa7146);
--
--	/* release the irq */
--	if (chip->irq >= 0)
--		free_irq(chip->irq, (void *)chip);
--	/* release the i/o ports & memory */
--	iounmap(chip->iobase_virt);
--	pci_release_regions(chip->pci);
--	/* disable the PCI entry */
--	pci_disable_device(chip->pci);
--	/* release the data */
--	kfree(chip);
--
++	struct snd_ali *codec = card->private_data;
++
+ 	if (codec->hw_initialized)
+ 		snd_ali_disable_address_interrupt(codec);
+-	if (codec->irq >= 0)
+-		free_irq(codec->irq, codec);
+-	if (codec->port)
+-		pci_release_regions(codec->pci);
+-	pci_disable_device(codec->pci);
+-#ifdef CONFIG_PM_SLEEP
+-	kfree(codec->image);
+-#endif
+ 	pci_dev_put(codec->pci_m1533);
+ 	pci_dev_put(codec->pci_m7101);
+-	kfree(codec);
 -	return 0;
  }
  
- /* chip-specific constructor */
- static int snd_aw2_create(struct snd_card *card,
--			  struct pci_dev *pci, struct aw2 **rchip)
-+			  struct pci_dev *pci)
- {
--	struct aw2 *chip;
-+	struct aw2 *chip = card->private_data;
- 	int err;
--	static const struct snd_device_ops ops = {
--		.dev_free = snd_aw2_dev_free,
--	};
--
--	*rchip = NULL;
+ static int snd_ali_chip_init(struct snd_ali *codec)
+@@ -2017,8 +2009,9 @@ static int snd_ali_resources(struct snd_ali *codec)
+ 		return err;
+ 	codec->port = pci_resource_start(codec->pci, 0);
  
- 	/* initialize the PCI entry */
+-	if (request_irq(codec->pci->irq, snd_ali_card_interrupt,
+-			IRQF_SHARED, KBUILD_MODNAME, codec)) {
++	if (devm_request_irq(&codec->pci->dev, codec->pci->irq,
++			     snd_ali_card_interrupt,
++			     IRQF_SHARED, KBUILD_MODNAME, codec)) {
+ 		dev_err(codec->card->dev, "Unable to request irq.\n");
+ 		return -EBUSY;
+ 	}
+@@ -2027,48 +2020,29 @@ static int snd_ali_resources(struct snd_ali *codec)
+ 	dev_dbg(codec->card->dev, "resources allocated.\n");
+ 	return 0;
+ }
+-static int snd_ali_dev_free(struct snd_device *device)
+-{
+-	struct snd_ali *codec = device->device_data;
+-	snd_ali_free(codec);
+-	return 0;
+-}
+ 
+ static int snd_ali_create(struct snd_card *card,
+ 			  struct pci_dev *pci,
+ 			  int pcm_streams,
+-			  int spdif_support,
+-			  struct snd_ali **r_ali)
++			  int spdif_support)
+ {
+ 	struct snd_ali *codec;
+ 	int i, err;
+ 	unsigned short cmdw;
+-	static const struct snd_device_ops ops = {
+-		.dev_free = snd_ali_dev_free,
+-        };
+-
+-	*r_ali = NULL;
+ 
+ 	dev_dbg(card->dev, "creating ...\n");
+ 
+ 	/* enable PCI device */
 -	err = pci_enable_device(pci);
 +	err = pcim_enable_device(pci);
  	if (err < 0)
  		return err;
- 	pci_set_master(pci);
-@@ -238,14 +216,8 @@ static int snd_aw2_create(struct snd_card *card,
- 	/* check PCI availability (32bit DMA) */
- 	if (dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(32))) {
- 		dev_err(card->dev, "Impossible to set 32bit mask DMA\n");
+ 	/* check, if we can restrict PCI DMA transfers to 31 bits */
+ 	if (dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(31))) {
+ 		dev_err(card->dev,
+ 			"architecture does not support 31bit PCI busmaster DMA\n");
 -		pci_disable_device(pci);
  		return -ENXIO;
  	}
--	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
--	if (chip == NULL) {
+ 
+-	codec = kzalloc(sizeof(*codec), GFP_KERNEL);
+-	if (!codec) {
 -		pci_disable_device(pci);
 -		return -ENOMEM;
 -	}
- 
- 	/* initialize the stuff */
- 	chip->card = card;
-@@ -253,52 +225,23 @@ static int snd_aw2_create(struct snd_card *card,
- 	chip->irq = -1;
- 
- 	/* (1) PCI resource allocation */
--	err = pci_request_regions(pci, "Audiowerk2");
--	if (err < 0) {
--		pci_disable_device(pci);
--		kfree(chip);
-+	err = pcim_iomap_regions(pci, 1 << 0, "Audiowerk2");
-+	if (err < 0)
- 		return err;
--	}
- 	chip->iobase_phys = pci_resource_start(pci, 0);
--	chip->iobase_virt =
--		ioremap(chip->iobase_phys,
--				pci_resource_len(pci, 0));
 -
--	if (chip->iobase_virt == NULL) {
--		dev_err(card->dev, "unable to remap memory region");
--		pci_release_regions(pci);
--		pci_disable_device(pci);
--		kfree(chip);
--		return -ENOMEM;
--	}
-+	chip->iobase_virt = pcim_iomap_table(pci)[0];
+ 	spin_lock_init(&codec->reg_lock);
+ 	spin_lock_init(&codec->voice_alloc);
  
- 	/* (2) initialization of the chip hardware */
- 	snd_aw2_saa7146_setup(&chip->saa7146, chip->iobase_virt);
- 
--	if (request_irq(pci->irq, snd_aw2_saa7146_interrupt,
--			IRQF_SHARED, KBUILD_MODNAME, chip)) {
-+	if (devm_request_irq(&pci->dev, pci->irq, snd_aw2_saa7146_interrupt,
-+			     IRQF_SHARED, KBUILD_MODNAME, chip)) {
- 		dev_err(card->dev, "Cannot grab irq %d\n", pci->irq);
--
--		iounmap(chip->iobase_virt);
--		pci_release_regions(chip->pci);
--		pci_disable_device(chip->pci);
--		kfree(chip);
- 		return -EBUSY;
+@@ -2089,12 +2063,10 @@ static int snd_ali_create(struct snd_card *card,
+ 		cmdw |= PCI_COMMAND_IO;
+ 		pci_write_config_word(pci, PCI_COMMAND, cmdw);
  	}
- 	chip->irq = pci->irq;
- 	card->sync_irq = chip->irq;
--
--	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
+-	pci_set_master(pci);
+ 	
+-	if (snd_ali_resources(codec)) {
+-		snd_ali_free(codec);
++	if (snd_ali_resources(codec))
+ 		return -EBUSY;
+-	}
++	card->private_free = snd_ali_free;
+ 
+ 	codec->synth.chmap = 0;
+ 	codec->synth.chcnt = 0;
+@@ -2121,24 +2093,15 @@ static int snd_ali_create(struct snd_card *card,
+ 	codec->pci_m1533 = pci_get_device(0x10b9, 0x1533, NULL);
+ 	if (!codec->pci_m1533) {
+ 		dev_err(card->dev, "cannot find ALi 1533 chip.\n");
+-		snd_ali_free(codec);
+ 		return -ENODEV;
+ 	}
+ 	/* M7101: power management */
+ 	codec->pci_m7101 = pci_get_device(0x10b9, 0x7101, NULL);
+ 	if (!codec->pci_m7101 && codec->revision == ALI_5451_V02) {
+ 		dev_err(card->dev, "cannot find ALi 7101 chip.\n");
+-		snd_ali_free(codec);
+ 		return -ENODEV;
+ 	}
+ 
+-	dev_dbg(card->dev, "snd_device_new is called.\n");
+-	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, codec, &ops);
 -	if (err < 0) {
--		free_irq(chip->irq, (void *)chip);
--		iounmap(chip->iobase_virt);
--		pci_release_regions(chip->pci);
--		pci_disable_device(chip->pci);
--		kfree(chip);
+-		snd_ali_free(codec);
 -		return err;
 -	}
 -
--	*rchip = chip;
-+	card->private_free = snd_aw2_free;
- 
- 	dev_info(card->dev,
- 		 "Audiowerk 2 sound card (saa7146 chipset) detected and managed\n");
-@@ -323,17 +266,16 @@ static int snd_aw2_probe(struct pci_dev *pci,
+ 	/* initialise synth voices*/
+ 	for (i = 0; i < ALI_CHANNELS; i++)
+ 		codec->synth.voices[i].number = i;
+@@ -2150,16 +2113,14 @@ static int snd_ali_create(struct snd_card *card,
  	}
  
- 	/* (2) Create card instance */
--	err = snd_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
--			   0, &card);
-+	err = snd_devm_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
-+				sizeof(*chip), &card);
- 	if (err < 0)
- 		return err;
-+	chip = card->private_data;
+ #ifdef CONFIG_PM_SLEEP
+-	codec->image = kmalloc(sizeof(*codec->image), GFP_KERNEL);
++	codec->image = devm_kmalloc(&pci->dev, sizeof(*codec->image),
++				    GFP_KERNEL);
+ 	if (!codec->image)
+ 		dev_warn(card->dev, "can't allocate apm buffer\n");
+ #endif
  
- 	/* (3) Create main component */
--	err = snd_aw2_create(card, pci, &chip);
--	if (err < 0) {
--		snd_card_free(card);
-+	err = snd_aw2_create(card, pci);
-+	if (err < 0)
- 		return err;
--	}
- 
- 	/* initialize mutex */
- 	mutex_init(&chip->mtx);
-@@ -351,10 +293,8 @@ static int snd_aw2_probe(struct pci_dev *pci,
- 
- 	/* (6) Register card instance */
- 	err = snd_card_register(card);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 
- 	/* (7) Set PCI driver data */
- 	pci_set_drvdata(pci, card);
-@@ -363,12 +303,6 @@ static int snd_aw2_probe(struct pci_dev *pci,
+ 	snd_ali_enable_address_interrupt(codec);
+ 	codec->hw_initialized = 1;
+-
+-	*r_ali = codec;
+-	dev_dbg(card->dev, "created.\n");
  	return 0;
  }
  
--/* destructor */
--static void snd_aw2_remove(struct pci_dev *pci)
--{
--	snd_card_free(pci_get_drvdata(pci));
+@@ -2172,24 +2133,25 @@ static int snd_ali_probe(struct pci_dev *pci,
+ 
+ 	dev_dbg(&pci->dev, "probe ...\n");
+ 
+-	err = snd_card_new(&pci->dev, index, id, THIS_MODULE, 0, &card);
++	err = snd_devm_card_new(&pci->dev, index, id, THIS_MODULE,
++				sizeof(*codec), &card);
+ 	if (err < 0)
+ 		return err;
++	codec = card->private_data;
+ 
+-	err = snd_ali_create(card, pci, pcm_channels, spdif, &codec);
++	err = snd_ali_create(card, pci, pcm_channels, spdif);
+ 	if (err < 0)
+-		goto error;
+-	card->private_data = codec;
++		return err;
+ 
+ 	dev_dbg(&pci->dev, "mixer building ...\n");
+ 	err = snd_ali_mixer(codec);
+ 	if (err < 0)
+-		goto error;
++		return err;
+ 	
+ 	dev_dbg(&pci->dev, "pcm building ...\n");
+ 	err = snd_ali_build_pcms(codec);
+ 	if (err < 0)
+-		goto error;
++		return err;
+ 
+ 	snd_ali_proc_init(codec);
+ 
+@@ -2202,26 +2164,16 @@ static int snd_ali_probe(struct pci_dev *pci,
+ 	dev_dbg(&pci->dev, "register card.\n");
+ 	err = snd_card_register(card);
+ 	if (err < 0)
+-		goto error;
++		return err;
+ 
+ 	pci_set_drvdata(pci, card);
+ 	return 0;
+-
+- error:
+-	snd_card_free(card);
+-	return err;
 -}
 -
- /* open callback */
- static int snd_aw2_pcm_playback_open(struct snd_pcm_substream *substream)
- {
+-static void snd_ali_remove(struct pci_dev *pci)
+-{
+-	snd_card_free(pci_get_drvdata(pci));
+ }
+ 
+ static struct pci_driver ali5451_driver = {
+ 	.name = KBUILD_MODNAME,
+ 	.id_table = snd_ali_ids,
+ 	.probe = snd_ali_probe,
+-	.remove = snd_ali_remove,
+ 	.driver = {
+ 		.pm = ALI_PM_OPS,
+ 	},
 -- 
 2.26.2
 
