@@ -2,77 +2,93 @@ Return-Path: <SRS0=zwJL=MF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 828A9C07E95
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 12:40:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 877FAC07E95
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:05:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3951E61289
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 12:40:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3951E61289
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id C06A46127C
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:05:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C06A46127C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6623516D3;
-	Tue, 13 Jul 2021 14:39:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6623516D3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 828C216B4;
+	Tue, 13 Jul 2021 16:04:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 828C216B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626180034;
-	bh=EjpHeCmPVe9zGWbOawzFWTHINmWF7wRVl+MoXtdX5NY=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=oFpYFnk7MMbq4LYzP4HFNUd2wH+d2uv89z7MRdI0fKNOgIPhER9xOc4rXUU83FEGb
-	 MokeedkBOSUCKQULHxBCeeOJS4JUqyyL5oX0EdSO02Myx0DJkopW3x3gdH5gq4zw/H
-	 Sc/8S13KLZs2NCs46C+Ha5SSiPdedQMBG7Y2yxcE=
+	s=default; t=1626185132;
+	bh=piXZV862GtolsNFRZgfu4EhZ6LLCPw8RvgJ+4RopueI=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=BWeVN6IROIi5jAdNqcwDOaZCu4/aH3N0AbobQCnK2o+g05LM2x+X+RFTmpBSGIrBh
+	 hQQgrPGIVPOvL/4k81MXMf/as936E05VkUaHgxNArcv+JgoIVtaScKeNgr5BBm4jJl
+	 bk8o6dP5I3M6whCpiMSOj68lrjxmf46fHUz0HlsU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E722EF8020C;
-	Tue, 13 Jul 2021 14:39:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18575F8020C;
+	Tue, 13 Jul 2021 16:04:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3A8BEF80217; Tue, 13 Jul 2021 14:39:42 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 9EDE0F80217; Tue, 13 Jul 2021 16:04:40 +0200 (CEST)
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
+ [IPv6:2a00:1450:4864:20::429])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B1AC2F800ED
- for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 14:39:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1AC2F800ED
-X-IronPort-AV: E=McAfee;i="6200,9189,10043"; a="190531961"
-X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; d="scan'208";a="190531961"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jul 2021 05:39:28 -0700
-X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; d="scan'208";a="649448840"
-Received: from skrishn6-mobl.amr.corp.intel.com (HELO [10.213.170.159])
- ([10.213.170.159])
- by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jul 2021 05:39:27 -0700
-Subject: Re: [PATCH 6/8] ALSA: pcm: conditionally avoid mmap of control data
-To: Takashi Iwai <tiwai@suse.de>
-References: <20210610205326.1176400-1-pierre-louis.bossart@linux.intel.com>
- <20210610205326.1176400-7-pierre-louis.bossart@linux.intel.com>
- <s5h4ke25ill.wl-tiwai@suse.de>
- <15cdd983-e25b-a872-aa25-5086ec71756f@linux.intel.com>
- <s5h8s2a3fgh.wl-tiwai@suse.de>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <d7a3b3fd-eddf-000b-f9ed-711d3e3156f4@linux.intel.com>
-Date: Tue, 13 Jul 2021 07:39:24 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id A3BE5F8016A
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 16:04:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3BE5F8016A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="rzozn0NM"
+Received: by mail-wr1-x429.google.com with SMTP id f9so24975984wrq.11
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 07:04:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=vOIUcGl6OP33Jqy69oCSIbVfIJAMACUPuFSgBT/mZq0=;
+ b=rzozn0NMI7/ypYCD3LqzYeKGRY4hQQps8JSy49mzE9Qu45D1JYakCSLOXvA0veTpPI
+ iP361IVy26u6qRpPMMzeT9t2kOtyVd9EXDLbhx1m4uDxgLYojmav9itvEBCFx9SI1U7l
+ dnnVYe/MQd5a0j9vG4l3YJQduuoFuSEYwS2wZij7UpyZSHU749g0CfOLRIxuWHqCQCHp
+ dk4+ldbEacv0Ul2FrOu7alqH2Nhjav7lXqwjkB4qitGNbv0NgEBGmdwYe+XfgS+Yy2sq
+ TH4zFeBzK72qRQpZg4UM463isHBWpCaQ3eIEGGoV11oFHzxVg1C1TPsdJ+jwp5dRCQqM
+ iwXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=vOIUcGl6OP33Jqy69oCSIbVfIJAMACUPuFSgBT/mZq0=;
+ b=hhDLgfQ6y8/Z0n9/NkRw6Su4i0BSH2EFLfWv8ii5Gc5YKg9tv8eje1juJ1h2xTFbPT
+ undbPg4diTn6YT6bd8ndNymeru4sOBXaEDBgpz7qYwaQJyBwvQJnM5I3iGaOComSVgk9
+ 1JktOT2yJBq9JQ971ssTCEl7A/g69JrOxJ5Lh7KolFyDNmPVadXVFASpZKtE1tp61Msg
+ 0KQ4CSGK3hQ216IDMuSBuI/PDbdpLCCIAoGh5PEWDulr0QsTG1xQ0dlZq6s4VPhu12xd
+ DmNu8awQloVxRH054jIhYOCVMbxA8A+qnelzrf5s0Sq/aecO9O5tM1jZNSS8no/tbcEW
+ MkCg==
+X-Gm-Message-State: AOAM531Alm9cpKNGLAACCX3tQdfgj3ptg/fo5VPDXF10h5zQgyBlNBrN
+ lKlR5NJD3IziudXUNiPZWWVWrg==
+X-Google-Smtp-Source: ABdhPJwFeZ1fRJKzzL9MhDH5tR7drpblpFSuiq6qqLeTrory6p0I+Rm77YJ2fJuituCtWlrzpA7NKw==
+X-Received: by 2002:adf:ed4a:: with SMTP id u10mr5943502wro.330.1626185072316; 
+ Tue, 13 Jul 2021 07:04:32 -0700 (PDT)
+Received: from srini-hackbox.lan
+ (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+ by smtp.gmail.com with ESMTPSA id x1sm2958240wmc.0.2021.07.13.07.04.31
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 13 Jul 2021 07:04:31 -0700 (PDT)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: broonie@kernel.org
+Subject: [PATCH] ASoC: codecs: wcd938x: make sdw dependency explicit in Kconfig
+Date: Tue, 13 Jul 2021 15:04:17 +0100
+Message-Id: <20210713140417.23693-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <s5h8s2a3fgh.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+Cc: kernel test robot <lkp@intel.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,53 +104,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+currenlty wcd938x has only soundwire interface and depends on
+symbols from wcd938x soundwire module, so make this dependency
+explicit in Kconfig
 
+Without this one of the randconfig endup setting
+CONFIG_SND_SOC_WCD938X=y
+CONFIG_SND_SOC_WCD938X_SDW=m
+resulting in some undefined reference to wcd938x_sdw* symbols.
 
-On 7/13/21 1:17 AM, Takashi Iwai wrote:
-> On Mon, 12 Jul 2021 22:56:07 +0200,
-> Pierre-Louis Bossart wrote:
->>
->>
->>
->> On 6/13/21 2:28 AM, Takashi Iwai wrote:
->>> On Thu, 10 Jun 2021 22:53:24 +0200,
->>> Pierre-Louis Bossart wrote:
->>>>
->>>> In case of mmap, by default alsa-lib mmaps both control and status data.
->>>>
->>>> If driver subscribes for application pointer update, driver needs to get
->>>> notification whenever appl ptr changes. With the above case driver won't
->>>> get appl ptr notifications.
->>>>
->>>> This patch check on a hw info flag and returns error when user land asks
->>>> for mmaping control & status data, thus forcing user to issue
->>>> IOCTL_SYNC_PTR.
->>>>
->>>> This patch was originally submitted in 2017, c.f.
->>>> https://lore.kernel.org/alsa-devel/1494896518-23399-4-git-send-email-subhransu.s.prusty@intel.com/
->>>>
->>>> Suggested-by: Takashi Iwai <tiwai@suse.de>
->>>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->>>> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
->>>> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
->>>
->>> This kind of flag itself was what I also introduced for another
->>> purpose, too.  There is a WIP patch that allows the use of
->>> non-coherent non-contiguous buffer pages, and this flag would fit for
->>> that.  FWIW, the patch is found at
->>>   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/log/?h=topic/memalloc
->>
->> Sorry Takashi, I missed your feedback on this patch.
->>
->> Are you saying I should use the definition in that patch?
->>
->> +#define SNDRV_DMA_TYPE_NONCONTIG	8	/* non-coherent SG buffer */
->>
->> I am not quite sure if how this is related to the application using mmap or not?
-> 
-> Not about that, but rather meant that some flag for disabling the mmap
-> of PCM control record would be needed for other purposes like the
-> above, too.  That is, this patch could be out of series and applied
-> beforehand in my side.
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 045442228868 ("ASoC: codecs: wcd938x: add audio routing and Kconfig")
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/soc/codecs/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks Takashi, I will resubmit this separately. I may also break the series in two, the two parts (pause/L1EN support and rewinds) are not really connected, they help reduce power but at different levels.
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 2d80836ef220..f47d46eb76bc 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1557,6 +1557,7 @@ config SND_SOC_WCD934X
+ 	  Qualcomm SoCs like SDM845.
+ 
+ config SND_SOC_WCD938X
++	depends on SND_SOC_WCD938X_SDW
+ 	tristate
+ 
+ config SND_SOC_WCD938X_SDW
+-- 
+2.21.0
+
