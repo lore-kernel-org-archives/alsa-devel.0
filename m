@@ -2,82 +2,83 @@ Return-Path: <SRS0=zwJL=MF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C10D7C07E95
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:34:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20E07C07E95
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:34:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 50CA8610CB
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:34:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 50CA8610CB
+	by mail.kernel.org (Postfix) with ESMTPS id A11FF610C7
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:34:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A11FF610C7
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DB96E1708;
-	Tue, 13 Jul 2021 16:33:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB96E1708
+	by alsa0.perex.cz (Postfix) with ESMTPS id 433E7170D;
+	Tue, 13 Jul 2021 16:33:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 433E7170D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626186840;
-	bh=0CHq83icnk0lyM3pxrlCAd8K+/mSoHI/DB7w6Nb0DpE=;
+	s=default; t=1626186866;
+	bh=Ck6Cplh12e2/4Ry/cKFmHmlFG2GiCCBWWU5Sy2TA2zo=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bMZ3xKvlqpzW8eNEsqiD49QpcLTZlrRhqsDx7lNa1ZSZt6VTKmtL5sFcnrWWlQ0VG
-	 K/JMSVnWlhAOs1oroKjtjCbp2dl3hHhhRbrK6Xxh7f17Z98eX8n8HgLQIQCWroWJY2
-	 XByjcldZ6XdPbcDyQcVzdJpP+r14vWsDifsWK/2E=
+	b=rfYW4hMXrGHlMOp3DoOSq64pG0PPLxv/y5LTYcs5Soddtep4k2ENy/O9ZKdJI8hsi
+	 P7MbTm6rKJ/U5NAYsBE5hqU/6yoDjHNQV41x6YfEN4aDpR+FuCEDbtUwNNobPw1Bbr
+	 5QUFPd2D5xjVQJf3vZfFrxwhrQ6/jPhV04fz69f0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49713F80558;
-	Tue, 13 Jul 2021 16:29:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E4D6F80567;
+	Tue, 13 Jul 2021 16:29:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4C70AF80526; Tue, 13 Jul 2021 16:29:30 +0200 (CEST)
+ id 275E0F80526; Tue, 13 Jul 2021 16:29:31 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DA690F804FC
- for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 16:29:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA690F804FC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 06B09F8050F
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 16:29:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06B09F8050F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="cwOiDTLE"; 
+ header.b="MUAhKtIC"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="XsVED/Dt"
+ header.b="EbkhPjs6"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id AB9F8201DA
- for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 14:29:17 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id AA48A201DA
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 14:29:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626186557; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1626186559; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ur5TcnpNUht5hJjxu5Icx9JkyUj2FHX6R1MyuDkEkcc=;
- b=cwOiDTLEDk7eaV25pjnca43jRBJW0s0Feo8Rt/cQBRd7IC8nfL0JEXW5DHIs9R7jteptWy
- S7Lhf1v0huNhO23dt07KghfiXhJ5F3VWO7PDTm9MAjjY+F0MQLOI5CmF6UbPeCjduILbL8
- dAjj6Ew1Fr2E4FGOfE7iJtihIXGwW1E=
+ bh=H25n8pVOAJLV1vEegg0jwwU//7sMaIgSc2yDYPgDsXk=;
+ b=MUAhKtICsB2ZABGXyjE8wgFTG/qN+uFJpidqbEJNUjaynZJnGRPZmV/sbQXtl6Wy2mdPkt
+ MEzQWIknskCp6fpTjLTLs7h3jzZ4YP1xd/9TdpAFX4ouiwjJnwAbCURh8ljTWYqO4GrXRT
+ s3ocFp3gaRf2eYO+DUB/tOqLqqNQZJs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626186557;
+ s=susede2_ed25519; t=1626186559;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ur5TcnpNUht5hJjxu5Icx9JkyUj2FHX6R1MyuDkEkcc=;
- b=XsVED/Dtgg0m1UH0FZMdzQuDo/BbUR1gTO0tqYT7s9cYPj1J6hJxKP93CB1tBVgFa7PGs7
- 6tblZJiXa0pCqZCw==
+ bh=H25n8pVOAJLV1vEegg0jwwU//7sMaIgSc2yDYPgDsXk=;
+ b=EbkhPjs6Zgcje8GrmYiDFsy1lw2ZLENDCkXq93C5xJ8KxOn0R/11EdwO6KkVG+2M7KE/lP
+ DAAJQ3M/X8qFUYCw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 9A052A3B85;
- Tue, 13 Jul 2021 14:29:17 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 99AC1A3B88;
+ Tue, 13 Jul 2021 14:29:19 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 10/51] ALSA: azt3328: Allocate resources with device-managed
+Subject: [PATCH 12/51] ALSA: cmipci: Allocate resources with device-managed
  APIs
-Date: Tue, 13 Jul 2021 16:28:16 +0200
-Message-Id: <20210713142857.19654-11-tiwai@suse.de>
+Date: Tue, 13 Jul 2021 16:28:18 +0200
+Message-Id: <20210713142857.19654-13-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210713142857.19654-1-tiwai@suse.de>
 References: <20210713142857.19654-1-tiwai@suse.de>
@@ -98,7 +99,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the resource management in PCI azt3328 driver with
+This patch converts the resource management in PCI cmipci driver with
 devres as a clean up.  Each manual resource management is converted
 with the corresponding devres helper, and the card object release is
 managed now via card->private_free instead of a lowlevel snd_device.
@@ -107,262 +108,245 @@ This should give no user-visible functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/azt3328.c | 124 +++++++++++---------------------------------
- 1 file changed, 30 insertions(+), 94 deletions(-)
+ sound/pci/cmipci.c | 104 ++++++++++++---------------------------------
+ 1 file changed, 28 insertions(+), 76 deletions(-)
 
-diff --git a/sound/pci/azt3328.c b/sound/pci/azt3328.c
-index 4ee7ab409807..089050470ff2 100644
---- a/sound/pci/azt3328.c
-+++ b/sound/pci/azt3328.c
-@@ -2244,32 +2244,15 @@ snd_azf3328_timer(struct snd_azf3328 *chip, int device)
+diff --git a/sound/pci/cmipci.c b/sound/pci/cmipci.c
+index f44f118aacad..ea20236f35db 100644
+--- a/sound/pci/cmipci.c
++++ b/sound/pci/cmipci.c
+@@ -2852,13 +2852,15 @@ static int snd_cmipci_create_gameport(struct cmipci *cm, int dev)
+ 	if (joystick_port[dev] == 1) { /* auto-detect */
+ 		for (i = 0; ports[i]; i++) {
+ 			io_port = ports[i];
+-			r = request_region(io_port, 1, "CMIPCI gameport");
++			r = devm_request_region(&cm->pci->dev, io_port, 1,
++						"CMIPCI gameport");
+ 			if (r)
+ 				break;
+ 		}
+ 	} else {
+ 		io_port = joystick_port[dev];
+-		r = request_region(io_port, 1, "CMIPCI gameport");
++		r = devm_request_region(&cm->pci->dev, io_port, 1,
++					"CMIPCI gameport");
+ 	}
  
- /******************************************************************/
+ 	if (!r) {
+@@ -2869,14 +2871,12 @@ static int snd_cmipci_create_gameport(struct cmipci *cm, int dev)
+ 	cm->gameport = gp = gameport_allocate_port();
+ 	if (!gp) {
+ 		dev_err(cm->card->dev, "cannot allocate memory for gameport\n");
+-		release_and_free_resource(r);
+ 		return -ENOMEM;
+ 	}
+ 	gameport_set_name(gp, "C-Media Gameport");
+ 	gameport_set_phys(gp, "pci%s/gameport0", pci_name(cm->pci));
+ 	gameport_set_dev_parent(gp, &cm->pci->dev);
+ 	gp->io = io_port;
+-	gameport_set_port_data(gp, r);
  
--static int
--snd_azf3328_free(struct snd_azf3328 *chip)
-+static void
-+snd_azf3328_free(struct snd_card *card)
+ 	snd_cmipci_set_bit(cm, CM_REG_FUNCTRL1, CM_JYSTK_EN);
+ 
+@@ -2888,13 +2888,10 @@ static int snd_cmipci_create_gameport(struct cmipci *cm, int dev)
+ static void snd_cmipci_free_gameport(struct cmipci *cm)
  {
--	if (chip->irq < 0)
--		goto __end_hw;
-+	struct snd_azf3328 *chip = card->private_data;
- 
- 	snd_azf3328_mixer_reset(chip);
- 
- 	snd_azf3328_timer_stop(chip->timer);
- 	snd_azf3328_gameport_free(chip);
+ 	if (cm->gameport) {
+-		struct resource *r = gameport_get_port_data(cm->gameport);
 -
--__end_hw:
--	if (chip->irq >= 0)
--		free_irq(chip->irq, chip);
--	pci_release_regions(chip->pci);
--	pci_disable_device(chip->pci);
--
--	kfree(chip);
+ 		gameport_unregister_port(cm->gameport);
+ 		cm->gameport = NULL;
+ 
+ 		snd_cmipci_clear_bit(cm, CM_REG_FUNCTRL1, CM_JYSTK_EN);
+-		release_and_free_resource(r);
+ 	}
+ }
+ #else
+@@ -2902,34 +2899,22 @@ static inline int snd_cmipci_create_gameport(struct cmipci *cm, int dev) { retur
+ static inline void snd_cmipci_free_gameport(struct cmipci *cm) { }
+ #endif
+ 
+-static int snd_cmipci_free(struct cmipci *cm)
++static void snd_cmipci_free(struct snd_card *card)
+ {
+-	if (cm->irq >= 0) {
+-		snd_cmipci_clear_bit(cm, CM_REG_MISC_CTRL, CM_FM_EN);
+-		snd_cmipci_clear_bit(cm, CM_REG_LEGACY_CTRL, CM_ENSPDOUT);
+-		snd_cmipci_write(cm, CM_REG_INT_HLDCLR, 0);  /* disable ints */
+-		snd_cmipci_ch_reset(cm, CM_CH_PLAY);
+-		snd_cmipci_ch_reset(cm, CM_CH_CAPT);
+-		snd_cmipci_write(cm, CM_REG_FUNCTRL0, 0); /* disable channels */
+-		snd_cmipci_write(cm, CM_REG_FUNCTRL1, 0);
++	struct cmipci *cm = card->private_data;
+ 
+-		/* reset mixer */
+-		snd_cmipci_mixer_write(cm, 0, 0);
++	snd_cmipci_clear_bit(cm, CM_REG_MISC_CTRL, CM_FM_EN);
++	snd_cmipci_clear_bit(cm, CM_REG_LEGACY_CTRL, CM_ENSPDOUT);
++	snd_cmipci_write(cm, CM_REG_INT_HLDCLR, 0);  /* disable ints */
++	snd_cmipci_ch_reset(cm, CM_CH_PLAY);
++	snd_cmipci_ch_reset(cm, CM_CH_CAPT);
++	snd_cmipci_write(cm, CM_REG_FUNCTRL0, 0); /* disable channels */
++	snd_cmipci_write(cm, CM_REG_FUNCTRL1, 0);
+ 
+-		free_irq(cm->irq, cm);
+-	}
++	/* reset mixer */
++	snd_cmipci_mixer_write(cm, 0, 0);
+ 
+ 	snd_cmipci_free_gameport(cm);
+-	pci_release_regions(cm->pci);
+-	pci_disable_device(cm->pci);
+-	kfree(cm);
 -	return 0;
 -}
 -
--static int
--snd_azf3328_dev_free(struct snd_device *device)
+-static int snd_cmipci_dev_free(struct snd_device *device)
 -{
--	struct snd_azf3328 *chip = device->device_data;
--	return snd_azf3328_free(chip);
+-	struct cmipci *cm = device->device_data;
+-	return snd_cmipci_free(cm);
  }
  
- #if 0
-@@ -2350,29 +2333,18 @@ snd_azf3328_debug_show_ports(const struct snd_azf3328 *chip)
- static int
- snd_azf3328_create(struct snd_card *card,
- 		   struct pci_dev *pci,
--		   unsigned long device_type,
--		   struct snd_azf3328 **rchip)
-+		   unsigned long device_type)
+ static int snd_cmipci_create_fm(struct cmipci *cm, long fm_port)
+@@ -2988,13 +2973,10 @@ static int snd_cmipci_create_fm(struct cmipci *cm, long fm_port)
+ }
+ 
+ static int snd_cmipci_create(struct snd_card *card, struct pci_dev *pci,
+-			     int dev, struct cmipci **rcmipci)
++			     int dev)
  {
--	struct snd_azf3328 *chip;
-+	struct snd_azf3328 *chip = card->private_data;
+-	struct cmipci *cm;
++	struct cmipci *cm = card->private_data;
  	int err;
 -	static const struct snd_device_ops ops = {
--		.dev_free =     snd_azf3328_dev_free,
+-		.dev_free =	snd_cmipci_dev_free,
 -	};
- 	u8 dma_init;
- 	enum snd_azf3328_codec_type codec_type;
- 	struct snd_azf3328_codec_data *codec_setup;
+ 	unsigned int val;
+ 	long iomidi = 0;
+ 	int integrated_midi = 0;
+@@ -3005,18 +2987,10 @@ static int snd_cmipci_create(struct snd_card *card, struct pci_dev *pci,
+ 		{ },
+ 	};
  
--	*rchip = NULL;
+-	*rcmipci = NULL;
 -
 -	err = pci_enable_device(pci);
 +	err = pcim_enable_device(pci);
  	if (err < 0)
  		return err;
  
--	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
--	if (chip == NULL) {
--		err = -ENOMEM;
--		goto out_err;
+-	cm = kzalloc(sizeof(*cm), GFP_KERNEL);
+-	if (cm == NULL) {
+-		pci_disable_device(pci);
+-		return -ENOMEM;
 -	}
- 	spin_lock_init(&chip->reg_lock);
- 	chip->card = card;
- 	chip->pci = pci;
-@@ -2383,13 +2355,12 @@ snd_azf3328_create(struct snd_card *card,
- 		dev_err(card->dev,
- 			"architecture does not support 24bit PCI busmaster DMA\n"
- 		);
--		err = -ENXIO;
--		goto out_err;
-+		return -ENXIO;
- 	}
+-
+ 	spin_lock_init(&cm->reg_lock);
+ 	mutex_init(&cm->open_mutex);
+ 	cm->device = pci->device;
+@@ -3028,21 +3002,18 @@ static int snd_cmipci_create(struct snd_card *card, struct pci_dev *pci,
+ 	cm->channel[0].is_dac = cm->channel[1].is_dac = 1; /* dual DAC mode */
  
- 	err = pci_request_regions(pci, "Aztech AZF3328");
- 	if (err < 0)
--		goto out_err;
-+		return err;
+ 	err = pci_request_regions(pci, card->driver);
+-	if (err < 0) {
+-		kfree(cm);
+-		pci_disable_device(pci);
++	if (err < 0)
+ 		return err;
+-	}
+ 	cm->iobase = pci_resource_start(pci, 0);
  
- 	chip->ctrl_io  = pci_resource_start(pci, 0);
- 	chip->game_io  = pci_resource_start(pci, 1);
-@@ -2415,26 +2386,22 @@ snd_azf3328_create(struct snd_card *card,
- 	codec_setup->type = AZF_CODEC_I2S_OUT;
- 	codec_setup->name = "I2S_OUT";
- 
--	if (request_irq(pci->irq, snd_azf3328_interrupt,
--			IRQF_SHARED, KBUILD_MODNAME, chip)) {
-+	if (devm_request_irq(&pci->dev, pci->irq, snd_azf3328_interrupt,
-+			     IRQF_SHARED, KBUILD_MODNAME, chip)) {
+-	if (request_irq(pci->irq, snd_cmipci_interrupt,
+-			IRQF_SHARED, KBUILD_MODNAME, cm)) {
++	if (devm_request_irq(&pci->dev, pci->irq, snd_cmipci_interrupt,
++			     IRQF_SHARED, KBUILD_MODNAME, cm)) {
  		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
--		err = -EBUSY;
--		goto out_err;
-+		return -EBUSY;
+-		snd_cmipci_free(cm);
+ 		return -EBUSY;
  	}
- 	chip->irq = pci->irq;
- 	card->sync_irq = chip->irq;
-+	card->private_free = snd_azf3328_free;
- 	pci_set_master(pci);
+ 	cm->irq = pci->irq;
+ 	card->sync_irq = cm->irq;
++	card->private_free = snd_cmipci_free;
  
- 	snd_azf3328_debug_show_ports(chip);
+ 	pci_set_master(cm->pci);
  
--	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
--	if (err < 0)
--		goto out_err;
--
- 	/* create mixer interface & switches */
- 	err = snd_azf3328_mixer_new(chip);
- 	if (err < 0)
--		goto out_err;
-+		return err;
+@@ -3142,12 +3113,6 @@ static int snd_cmipci_create(struct snd_card *card, struct pci_dev *pci,
+ 	sprintf(card->longname, "%s%s at %#lx, irq %i",
+ 		card->shortname, modelstr, cm->iobase, cm->irq);
  
- 	/* standard codec init stuff */
- 		/* default DMA init value */
-@@ -2456,18 +2423,7 @@ snd_azf3328_create(struct snd_card *card,
- 		spin_unlock_irq(codec->lock);
- 	}
+-	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, cm, &ops);
+-	if (err < 0) {
+-		snd_cmipci_free(cm);
+-		return err;
+-	}
+-
+ 	if (cm->chip_version >= 39) {
+ 		val = snd_cmipci_read_b(cm, CM_REG_MPU_PCI + 1);
+ 		if (val != 0x00 && val != 0xff) {
+@@ -3240,7 +3205,6 @@ static int snd_cmipci_create(struct snd_card *card, struct pci_dev *pci,
+ 	if (snd_cmipci_create_gameport(cm, dev) < 0)
+ 		snd_cmipci_clear_bit(cm, CM_REG_FUNCTRL1, CM_JYSTK_EN);
  
--	*rchip = chip;
--
--	err = 0;
--	goto out;
--
--out_err:
--	if (chip)
--		snd_azf3328_free(chip);
--	pci_disable_device(pci);
--
--out:
--	return err;
-+	return 0;
+-	*rcmipci = cm;
+ 	return 0;
  }
  
- static int
-@@ -2479,29 +2435,25 @@ snd_azf3328_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
- 	struct snd_opl3 *opl3;
- 	int err;
- 
--	if (dev >= SNDRV_CARDS) {
--		err = -ENODEV;
--		goto out;
--	}
-+	if (dev >= SNDRV_CARDS)
-+		return -ENODEV;
- 	if (!enable[dev]) {
- 		dev++;
--		err = -ENOENT;
--		goto out;
-+		return -ENOENT;
+@@ -3264,10 +3228,11 @@ static int snd_cmipci_probe(struct pci_dev *pci,
+ 		return -ENOENT;
  	}
  
 -	err = snd_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
 -			   0, &card);
 +	err = snd_devm_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
-+				sizeof(*chip), &card);
++				sizeof(*cm), &card);
  	if (err < 0)
--		goto out;
-+		return err;
-+	chip = card->private_data;
+ 		return err;
++	cm = card->private_data;
+ 	
+ 	switch (pci->device) {
+ 	case PCI_DEVICE_ID_CMEDIA_CM8738:
+@@ -3283,31 +3248,19 @@ static int snd_cmipci_probe(struct pci_dev *pci,
+ 		break;
+ 	}
  
- 	strcpy(card->driver, "AZF3328");
- 	strcpy(card->shortname, "Aztech AZF3328 (PCI168)");
- 
--	err = snd_azf3328_create(card, pci, pci_id->driver_data, &chip);
-+	err = snd_azf3328_create(card, pci, pci_id->driver_data);
+-	err = snd_cmipci_create(card, pci, dev, &cm);
++	err = snd_cmipci_create(card, pci, dev);
  	if (err < 0)
--		goto out_err;
+-		goto free_card;
 -
--	card->private_data = chip;
+-	card->private_data = cm;
 +		return err;
- 
- 	/* chose to use MPU401_HW_AZT2320 ID instead of MPU401_HW_MPU401,
- 	   since our hardware ought to be similar, thus use same ID. */
-@@ -2515,16 +2467,16 @@ snd_azf3328_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
- 		dev_err(card->dev, "no MPU-401 device at 0x%lx?\n",
- 				chip->mpu_io
- 		);
--		goto out_err;
-+		return err;
- 	}
- 
- 	err = snd_azf3328_timer(chip, 0);
- 	if (err < 0)
--		goto out_err;
-+		return err;
- 
- 	err = snd_azf3328_pcm(chip);
- 	if (err < 0)
--		goto out_err;
-+		return err;
- 
- 	if (snd_opl3_create(card, chip->opl3_io, chip->opl3_io+2,
- 			    OPL3_HW_AUTO, 1, &opl3) < 0) {
-@@ -2535,10 +2487,10 @@ snd_azf3328_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
- 		/* need to use IDs 1, 2 since ID 0 is snd_azf3328_timer above */
- 		err = snd_opl3_timer_new(opl3, 1, 2);
- 		if (err < 0)
--			goto out_err;
-+			return err;
- 		err = snd_opl3_hwdep_new(opl3, 0, 1, NULL);
- 		if (err < 0)
--			goto out_err;
-+			return err;
- 		opl3->private_data = chip;
- 	}
- 
-@@ -2547,7 +2499,7 @@ snd_azf3328_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
  
  	err = snd_card_register(card);
  	if (err < 0)
--		goto out_err;
+-		goto free_card;
 +		return err;
- 
- #ifdef MODULE
- 	dev_info(card->dev,
-@@ -2565,22 +2517,7 @@ snd_azf3328_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
  
  	pci_set_drvdata(pci, card);
  	dev++;
+ 	return 0;
 -
--	err = 0;
--	goto out;
--
--out_err:
--	dev_err(card->dev, "something failed, exiting\n");
+-free_card:
 -	snd_card_free(card);
--
--out:
 -	return err;
--}
--
--static void
--snd_azf3328_remove(struct pci_dev *pci)
--{
--	snd_card_free(pci_get_drvdata(pci));
-+	return 0;
  }
  
+-static void snd_cmipci_remove(struct pci_dev *pci)
+-{
+-	snd_card_free(pci_get_drvdata(pci));
+-}
+-
+-
  #ifdef CONFIG_PM_SLEEP
-@@ -2709,7 +2646,6 @@ static struct pci_driver azf3328_driver = {
+ /*
+  * power management
+@@ -3382,7 +3335,6 @@ static struct pci_driver cmipci_driver = {
  	.name = KBUILD_MODNAME,
- 	.id_table = snd_azf3328_ids,
- 	.probe = snd_azf3328_probe,
--	.remove = snd_azf3328_remove,
+ 	.id_table = snd_cmipci_ids,
+ 	.probe = snd_cmipci_probe,
+-	.remove = snd_cmipci_remove,
  	.driver = {
- 		.pm = SND_AZF3328_PM_OPS,
+ 		.pm = SND_CMIPCI_PM_OPS,
  	},
 -- 
 2.26.2
