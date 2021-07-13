@@ -2,93 +2,86 @@ Return-Path: <SRS0=zwJL=MF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 877FAC07E95
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:05:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CD4BC07E95
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:26:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C06A46127C
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:05:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C06A46127C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 95ACB6127C
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:25:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 95ACB6127C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 828C216B4;
-	Tue, 13 Jul 2021 16:04:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 828C216B4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A0511681;
+	Tue, 13 Jul 2021 16:25:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A0511681
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626185132;
-	bh=piXZV862GtolsNFRZgfu4EhZ6LLCPw8RvgJ+4RopueI=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=BWeVN6IROIi5jAdNqcwDOaZCu4/aH3N0AbobQCnK2o+g05LM2x+X+RFTmpBSGIrBh
-	 hQQgrPGIVPOvL/4k81MXMf/as936E05VkUaHgxNArcv+JgoIVtaScKeNgr5BBm4jJl
-	 bk8o6dP5I3M6whCpiMSOj68lrjxmf46fHUz0HlsU=
+	s=default; t=1626186356;
+	bh=su/XBxZrvbHeNkljbv11v5AuahV4ZU5dSx+qBW5X4DM=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=VUV7K/VHdEQlGdJWlKdxWabB8a+diC69bvepcdmANb2X/sG2L3DMVn0AaYsh4ATTG
+	 i0MZni855QOfdH4u2y+0dhv0bLnQigT2TPuueoxVPcoFx0VuhuO1mEWWLrsH6TVPnV
+	 UYNltwIoZtR30qlYf5cg+srpzhv3GR7KreSeQr9Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 18575F8020C;
-	Tue, 13 Jul 2021 16:04:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9905CF804DA;
+	Tue, 13 Jul 2021 16:25:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9EDE0F80217; Tue, 13 Jul 2021 16:04:40 +0200 (CEST)
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
- [IPv6:2a00:1450:4864:20::429])
+ id 85660F804DA; Tue, 13 Jul 2021 16:25:02 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A3BE5F8016A
- for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 16:04:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3BE5F8016A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 138D1F80240
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 16:24:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 138D1F80240
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="rzozn0NM"
-Received: by mail-wr1-x429.google.com with SMTP id f9so24975984wrq.11
- for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 07:04:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=vOIUcGl6OP33Jqy69oCSIbVfIJAMACUPuFSgBT/mZq0=;
- b=rzozn0NMI7/ypYCD3LqzYeKGRY4hQQps8JSy49mzE9Qu45D1JYakCSLOXvA0veTpPI
- iP361IVy26u6qRpPMMzeT9t2kOtyVd9EXDLbhx1m4uDxgLYojmav9itvEBCFx9SI1U7l
- dnnVYe/MQd5a0j9vG4l3YJQduuoFuSEYwS2wZij7UpyZSHU749g0CfOLRIxuWHqCQCHp
- dk4+ldbEacv0Ul2FrOu7alqH2Nhjav7lXqwjkB4qitGNbv0NgEBGmdwYe+XfgS+Yy2sq
- TH4zFeBzK72qRQpZg4UM463isHBWpCaQ3eIEGGoV11oFHzxVg1C1TPsdJ+jwp5dRCQqM
- iwXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=vOIUcGl6OP33Jqy69oCSIbVfIJAMACUPuFSgBT/mZq0=;
- b=hhDLgfQ6y8/Z0n9/NkRw6Su4i0BSH2EFLfWv8ii5Gc5YKg9tv8eje1juJ1h2xTFbPT
- undbPg4diTn6YT6bd8ndNymeru4sOBXaEDBgpz7qYwaQJyBwvQJnM5I3iGaOComSVgk9
- 1JktOT2yJBq9JQ971ssTCEl7A/g69JrOxJ5Lh7KolFyDNmPVadXVFASpZKtE1tp61Msg
- 0KQ4CSGK3hQ216IDMuSBuI/PDbdpLCCIAoGh5PEWDulr0QsTG1xQ0dlZq6s4VPhu12xd
- DmNu8awQloVxRH054jIhYOCVMbxA8A+qnelzrf5s0Sq/aecO9O5tM1jZNSS8no/tbcEW
- MkCg==
-X-Gm-Message-State: AOAM531Alm9cpKNGLAACCX3tQdfgj3ptg/fo5VPDXF10h5zQgyBlNBrN
- lKlR5NJD3IziudXUNiPZWWVWrg==
-X-Google-Smtp-Source: ABdhPJwFeZ1fRJKzzL9MhDH5tR7drpblpFSuiq6qqLeTrory6p0I+Rm77YJ2fJuituCtWlrzpA7NKw==
-X-Received: by 2002:adf:ed4a:: with SMTP id u10mr5943502wro.330.1626185072316; 
- Tue, 13 Jul 2021 07:04:32 -0700 (PDT)
-Received: from srini-hackbox.lan
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id x1sm2958240wmc.0.2021.07.13.07.04.31
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 13 Jul 2021 07:04:31 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: broonie@kernel.org
-Subject: [PATCH] ASoC: codecs: wcd938x: make sdw dependency explicit in Kconfig
-Date: Tue, 13 Jul 2021 15:04:17 +0100
-Message-Id: <20210713140417.23693-1-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="QcfJWaLi"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="mvA3NGcc"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id E30EC228B5
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 14:24:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1626186294; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=uJLN+dYFy/ga5QCNrr0gxKDdDi7pu/z9zg2rB0J/WUE=;
+ b=QcfJWaLiEfzy5/YvhwVeD9hBXafViMlnFUvSYE0e1vZhxkpxFFUEcISMEv5DhZk49TJiRQ
+ cNRY/NhMSQWv90rYhWQT1TJBtNiYsDZ/rJ4A3MyOoBHkE/9S3mOOM6ztmPgamqToYiEj/q
+ PuvepLIO3D16bYIgDgjNUuZ86X1/kEU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1626186294;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=uJLN+dYFy/ga5QCNrr0gxKDdDi7pu/z9zg2rB0J/WUE=;
+ b=mvA3NGccWUwprHVaoIs8MkcenYmmelj6aXwOfOqjVSNYO6jMwxRUyT7vaAtGBcZV5k0Pye
+ v+ZUFexUF2/eogBg==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id D28A9A3B88;
+ Tue, 13 Jul 2021 14:24:54 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 02/51] ALSA: core: Add managed card creation
+Date: Tue, 13 Jul 2021 16:24:38 +0200
+Message-Id: <20210713142445.19252-3-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210713142445.19252-1-tiwai@suse.de>
+References: <20210713142445.19252-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: kernel test robot <lkp@intel.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,34 +97,244 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-currenlty wcd938x has only soundwire interface and depends on
-symbols from wcd938x soundwire module, so make this dependency
-explicit in Kconfig
+As a second step for preliminary to widen the devres usages among
+sound drivers, this patch adds a new ALSA core API function,
+snd_devm_card_new(), to create a snd_card object via devres.
+When a card object is created by this new function, snd_card_free() is
+called automatically and the card object resource gets released at the
+device unbinding time.
 
-Without this one of the randconfig endup setting
-CONFIG_SND_SOC_WCD938X=y
-CONFIG_SND_SOC_WCD938X_SDW=m
-resulting in some undefined reference to wcd938x_sdw* symbols.
+However, the story isn't that simple.  A caveat is that we have to
+call snd_card_free() at the very first of the whole resource release
+procedure, in order to assure that the all exposed devices on
+user-space are deleted and sync with processes accessing those devices
+before releasing resources.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: 045442228868 ("ASoC: codecs: wcd938x: add audio routing and Kconfig")
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+For achieving it, snd_card_register() adds a new devres action to
+trigger snd_card_free() automatically when the given card object is a
+"managed" one.  Since usually snd_card_register() is the last step of
+the initialization, this should work in most cases.
+
+With all these tricks, some drivers can get rid of the whole driver
+remove callback code.
+
+About a bit of implementation details: the patch adds two new flags to
+snd_card object: managed and releasing.  The former indicates that the
+object was created via snd_devm_card_new(), and the latter is used for
+avoiding the double-free of snd_card_free() calls.  Both flags are
+fairly internal and likely uninteresting to normal users.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ include/sound/core.h |   5 +++
+ sound/core/init.c    | 101 +++++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 98 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 2d80836ef220..f47d46eb76bc 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -1557,6 +1557,7 @@ config SND_SOC_WCD934X
- 	  Qualcomm SoCs like SDM845.
+diff --git a/include/sound/core.h b/include/sound/core.h
+index c4ade121727d..331195b51237 100644
+--- a/include/sound/core.h
++++ b/include/sound/core.h
+@@ -117,6 +117,8 @@ struct snd_card {
+ 	struct device card_dev;		/* cardX object for sysfs */
+ 	const struct attribute_group *dev_groups[4]; /* assigned sysfs attr */
+ 	bool registered;		/* card_dev is registered? */
++	bool managed;			/* managed via devres */
++	bool releasing;			/* during card free process */
+ 	int sync_irq;			/* assigned irq, used for PCM sync */
+ 	wait_queue_head_t remove_sleep;
  
- config SND_SOC_WCD938X
-+	depends on SND_SOC_WCD938X_SDW
- 	tristate
+@@ -274,6 +276,9 @@ extern int (*snd_mixer_oss_notify_callback)(struct snd_card *card, int cmd);
+ int snd_card_new(struct device *parent, int idx, const char *xid,
+ 		 struct module *module, int extra_size,
+ 		 struct snd_card **card_ret);
++int snd_devm_card_new(struct device *parent, int idx, const char *xid,
++		      struct module *module, int extra_size,
++		      struct snd_card **card_ret);
  
- config SND_SOC_WCD938X_SDW
+ int snd_card_disconnect(struct snd_card *card);
+ void snd_card_disconnect_sync(struct snd_card *card);
+diff --git a/sound/core/init.c b/sound/core/init.c
+index 1490568efdb0..7a507e8d24c1 100644
+--- a/sound/core/init.c
++++ b/sound/core/init.c
+@@ -134,6 +134,9 @@ void snd_device_initialize(struct device *dev, struct snd_card *card)
+ }
+ EXPORT_SYMBOL_GPL(snd_device_initialize);
+ 
++static int snd_card_init(struct snd_card *card, struct device *parent,
++			 int idx, const char *xid, struct module *module,
++			 int extra_size);
+ static int snd_card_do_free(struct snd_card *card);
+ static const struct attribute_group card_dev_attr_group;
+ 
+@@ -163,9 +166,6 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
+ {
+ 	struct snd_card *card;
+ 	int err;
+-#ifdef CONFIG_SND_DEBUG
+-	char name[8];
+-#endif
+ 
+ 	if (snd_BUG_ON(!card_ret))
+ 		return -EINVAL;
+@@ -176,6 +176,76 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
+ 	card = kzalloc(sizeof(*card) + extra_size, GFP_KERNEL);
+ 	if (!card)
+ 		return -ENOMEM;
++
++	err = snd_card_init(card, parent, idx, xid, module, extra_size);
++	if (err < 0) {
++		kfree(card);
++		return err;
++	}
++
++	*card_ret = card;
++	return 0;
++}
++EXPORT_SYMBOL(snd_card_new);
++
++static void __snd_card_release(struct device *dev, void *data)
++{
++	snd_card_free(data);
++}
++
++/**
++ * snd_devm_card_new - managed snd_card object creation
++ * @parent: the parent device object
++ * @idx: card index (address) [0 ... (SNDRV_CARDS-1)]
++ * @xid: card identification (ASCII string)
++ * @module: top level module for locking
++ * @extra_size: allocate this extra size after the main soundcard structure
++ * @card_ret: the pointer to store the created card instance
++ *
++ * This function works like snd_card_new() but manages the allocated resource
++ * via devres, i.e. you don't need to free explicitly.
++ *
++ * When a snd_card object is created with this function and registered via
++ * snd_card_register(), the very first devres action to call snd_card_free()
++ * is added automatically.  In that way, the resource disconnection is assured
++ * at first, then released in the expected order.
++ */
++int snd_devm_card_new(struct device *parent, int idx, const char *xid,
++		      struct module *module, int extra_size,
++		      struct snd_card **card_ret)
++{
++	struct snd_card *card;
++	int err;
++
++	*card_ret = NULL;
++	if (extra_size < 0)
++		extra_size = 0;
++	card = devres_alloc(__snd_card_release, sizeof(*card) + extra_size,
++			    GFP_KERNEL);
++	if (!card)
++		return -ENOMEM;
++	card->managed = true;
++	err = snd_card_init(card, parent, idx, xid, module, extra_size);
++	if (err < 0) {
++		devres_free(card);
++		return err;
++	}
++
++	devres_add(parent, card);
++	*card_ret = card;
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_devm_card_new);
++
++static int snd_card_init(struct snd_card *card, struct device *parent,
++			 int idx, const char *xid, struct module *module,
++			 int extra_size)
++{
++	int err;
++#ifdef CONFIG_SND_DEBUG
++	char name[8];
++#endif
++
+ 	if (extra_size > 0)
+ 		card->private_data = (char *)card + sizeof(struct snd_card);
+ 	if (xid)
+@@ -197,7 +267,6 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
+ 		mutex_unlock(&snd_card_mutex);
+ 		dev_err(parent, "cannot find the slot for index %d (range 0-%i), error: %d\n",
+ 			 idx, snd_ecards_limit - 1, err);
+-		kfree(card);
+ 		return err;
+ 	}
+ 	set_bit(idx, snd_cards_lock);		/* lock it */
+@@ -256,8 +325,6 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
+ 	sprintf(name, "card%d", idx);
+ 	card->debugfs_root = debugfs_create_dir(name, sound_debugfs_root);
+ #endif
+-
+-	*card_ret = card;
+ 	return 0;
+ 
+       __error_ctl:
+@@ -266,7 +333,6 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
+ 	put_device(&card->card_dev);
+   	return err;
+ }
+-EXPORT_SYMBOL(snd_card_new);
+ 
+ /**
+  * snd_card_ref - Get the card object from the index
+@@ -481,6 +547,7 @@ EXPORT_SYMBOL_GPL(snd_card_disconnect_sync);
+ 
+ static int snd_card_do_free(struct snd_card *card)
+ {
++	card->releasing = true;
+ #if IS_ENABLED(CONFIG_SND_MIXER_OSS)
+ 	if (snd_mixer_oss_notify_callback)
+ 		snd_mixer_oss_notify_callback(card, SND_MIXER_OSS_NOTIFY_FREE);
+@@ -498,7 +565,8 @@ static int snd_card_do_free(struct snd_card *card)
+ #endif
+ 	if (card->release_completion)
+ 		complete(card->release_completion);
+-	kfree(card);
++	if (!card->managed)
++		kfree(card);
+ 	return 0;
+ }
+ 
+@@ -539,6 +607,9 @@ int snd_card_free(struct snd_card *card)
+ 	DECLARE_COMPLETION_ONSTACK(released);
+ 	int ret;
+ 
++	if (card->releasing)
++		return 0;
++
+ 	card->release_completion = &released;
+ 	ret = snd_card_free_when_closed(card);
+ 	if (ret)
+@@ -745,6 +816,11 @@ int snd_card_add_dev_attr(struct snd_card *card,
+ }
+ EXPORT_SYMBOL_GPL(snd_card_add_dev_attr);
+ 
++static void trigger_card_free(void *data)
++{
++	snd_card_free(data);
++}
++
+ /**
+  *  snd_card_register - register the soundcard
+  *  @card: soundcard structure
+@@ -768,6 +844,15 @@ int snd_card_register(struct snd_card *card)
+ 		if (err < 0)
+ 			return err;
+ 		card->registered = true;
++	} else {
++		if (card->managed)
++			devm_remove_action(card->dev, trigger_card_free, card);
++	}
++
++	if (card->managed) {
++		err = devm_add_action(card->dev, trigger_card_free, card);
++		if (err < 0)
++			return err;
+ 	}
+ 
+ 	err = snd_device_register_all(card);
 -- 
-2.21.0
+2.26.2
 
