@@ -7,76 +7,77 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DE52C07E95
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:49:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3157C07E95
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:49:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B5E94611AB
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:49:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5E94611AB
+	by mail.kernel.org (Postfix) with ESMTPS id 306EE610CB
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:49:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 306EE610CB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 56FAE177D;
-	Tue, 13 Jul 2021 16:48:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 56FAE177D
+	by alsa0.perex.cz (Postfix) with ESMTPS id C408B1775;
+	Tue, 13 Jul 2021 16:48:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C408B1775
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626187748;
-	bh=bJeooBzmrn4yWHblukwag+ihLGjQto098NhO1OjFHz4=;
+	s=default; t=1626187770;
+	bh=BcouPs2oiOXfISqCuhU9v3hJt1yTHbZsJ/KJv8DjMYQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HnLCC4NmMKo4u0nPLdBThebAjGaE5OX0QReiJImrw0FVNNpFuMUBTuFdj8YOTnlQi
-	 zJpio3h7vFso+vvT4h7nAUJe/ZHDaDXm3JYONnRZSqNAhko9S68l8yNWdjBRvH4Q7q
-	 wL0Ruf0afhBn3ajGLg8Jl1kOG5TcGJeRISInMEMA=
+	b=TX4lJaKvJJt++jRI4M0ZpgJTiLg6RHPpGEv3rWxuVJV7sTA5c+Ot80tF/yVcp77t6
+	 Gh/gXRDx98ZDs8oF451PngfirXBsFwJVFF7JxeXaPmURjVkrIb8Bte24s1PMxfEOYB
+	 A01DA2FSCoGqsj3yy0piNNTsqxdzH3c/KtwoHuPQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8F8E0F8065D;
-	Tue, 13 Jul 2021 16:31:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3BDE0F80674;
+	Tue, 13 Jul 2021 16:31:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C45A7F805AB; Tue, 13 Jul 2021 16:30:18 +0200 (CEST)
+ id 12419F805AA; Tue, 13 Jul 2021 16:30:21 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3905CF804FD
- for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 16:29:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3905CF804FD
+ by alsa1.perex.cz (Postfix) with ESMTPS id C5351F80520
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 16:29:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5351F80520
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="1YoYHpCu"; 
+ header.b="0AIwgpnS"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="oZyZ+/0m"
+ header.b="FU+WUh3t"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 105B5201E4
- for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 14:29:43 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 9B44C201DA
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 14:29:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626186583; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1626186584; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=g79u6p2iEPWn+mTcvW/LzQPp6XkIOpnWgGbmffefZSk=;
- b=1YoYHpCuR06+bRI19zTljSOQUM5Wq3V1H9zaWgmK6/Hc+p76NGb0tgX3Vpb6ENfJwtujVl
- CvgPGTWR7QlmyhLu7qWKse9e+C1N6pnv39CPgXeNTOSj1PplM0huvvFrmfgoqOOsIZVwyR
- lOxDjG9VKjFQfYRKpAI+Bb8EBeE8vbA=
+ bh=WBwQBJBGsn4PeR2I3zEBE2ni2A8jQnZMXEn2wo06JxI=;
+ b=0AIwgpnSXh4uvx6ZWpo/vYA4o4xsO2wgGE9nDg8u7AnVou1zqKQDJ4P4mNGKKrpQylRFc3
+ ptA3aF2kVpSQRQPNcXVgW5iegZbgPHsX58/UL53Q11RIsu1ASTxHwZYwDgmW2C3Gzmzpc9
+ vBPBZ+MuhK+Y38NDh60MBohRLJSmzlM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626186583;
+ s=susede2_ed25519; t=1626186584;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=g79u6p2iEPWn+mTcvW/LzQPp6XkIOpnWgGbmffefZSk=;
- b=oZyZ+/0ma6VONhsuFAZsdmZqsw7E5VNqVwlAzYo0qTkyVYXIaHJo4bXHg5gA40STDDyLVR
- r5jOzh8/SV0N+EBQ==
+ bh=WBwQBJBGsn4PeR2I3zEBE2ni2A8jQnZMXEn2wo06JxI=;
+ b=FU+WUh3tpxJ1EUBeNH95ypsLFlE+QcTfMYUH1WA3PoDAyBzwiYxKaZ51OYZUtvzAaDR5bT
+ iNPZi3x0A+kyRrAg==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id F3DE6A3B92;
- Tue, 13 Jul 2021 14:29:42 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 88A63A3B92;
+ Tue, 13 Jul 2021 14:29:44 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 45/51] ALSA: vx222: Allocate resources with device-managed APIs
-Date: Tue, 13 Jul 2021 16:28:51 +0200
-Message-Id: <20210713142857.19654-46-tiwai@suse.de>
+Subject: [PATCH 48/51] ALSA: virmidi: Allocate resources with device-managed
+ APIs
+Date: Tue, 13 Jul 2021 16:28:54 +0200
+Message-Id: <20210713142857.19654-49-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210713142857.19654-1-tiwai@suse.de>
 References: <20210713142857.19654-1-tiwai@suse.de>
@@ -97,167 +98,69 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the resource management in PCI vx222 driver with
-devres as a clean up.  Each manual resource management is converted
-with the corresponding devres helper, and the card object release is
-managed now via card->private_free instead of a lowlevel snd_device.
+This patch converts the card object management with devres as a clean
+up.  The remove callback gets reduced by that.
 
 This should give no user-visible functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/vx222/vx222.c | 68 +++++++----------------------------------
- 1 file changed, 11 insertions(+), 57 deletions(-)
+ sound/drivers/virmidi.c | 21 ++++++---------------
+ 1 file changed, 6 insertions(+), 15 deletions(-)
 
-diff --git a/sound/pci/vx222/vx222.c b/sound/pci/vx222/vx222.c
-index 46a80ef1d481..f48cc20b9e8a 100644
---- a/sound/pci/vx222/vx222.c
-+++ b/sound/pci/vx222/vx222.c
-@@ -100,25 +100,6 @@ static const struct snd_vx_hardware vx222_mic_hw = {
+diff --git a/sound/drivers/virmidi.c b/sound/drivers/virmidi.c
+index 4206d93ab47e..7f7eed6faaae 100644
+--- a/sound/drivers/virmidi.c
++++ b/sound/drivers/virmidi.c
+@@ -75,8 +75,8 @@ static int snd_virmidi_probe(struct platform_device *devptr)
+ 	int idx, err;
+ 	int dev = devptr->id;
  
- /*
-  */
--static int snd_vx222_free(struct vx_core *chip)
--{
--	struct snd_vx222 *vx = to_vx222(chip);
--
--	if (chip->irq >= 0)
--		free_irq(chip->irq, (void*)chip);
--	if (vx->port[0])
--		pci_release_regions(vx->pci);
--	pci_disable_device(vx->pci);
--	return 0;
--}
--
--static int snd_vx222_dev_free(struct snd_device *device)
--{
--	struct vx_core *chip = device->device_data;
--	return snd_vx222_free(chip);
--}
--
--
- static int snd_vx222_create(struct snd_card *card, struct pci_dev *pci,
- 			    const struct snd_vx_hardware *hw,
- 			    struct snd_vx222 **rchip)
-@@ -126,13 +107,10 @@ static int snd_vx222_create(struct snd_card *card, struct pci_dev *pci,
- 	struct vx_core *chip;
- 	struct snd_vx222 *vx;
- 	int i, err;
--	static const struct snd_device_ops ops = {
--		.dev_free =	snd_vx222_dev_free,
--	};
- 	const struct snd_vx_ops *vx_ops;
- 
- 	/* enable PCI device */
--	err = pci_enable_device(pci);
-+	err = pcim_enable_device(pci);
+-	err = snd_card_new(&devptr->dev, index[dev], id[dev], THIS_MODULE,
+-			   sizeof(struct snd_card_virmidi), &card);
++	err = snd_devm_card_new(&devptr->dev, index[dev], id[dev], THIS_MODULE,
++				sizeof(struct snd_card_virmidi), &card);
  	if (err < 0)
  		return err;
- 	pci_set_master(pci);
-@@ -140,38 +118,26 @@ static int snd_vx222_create(struct snd_card *card, struct pci_dev *pci,
- 	vx_ops = hw->type == VX_TYPE_BOARD ? &vx222_old_ops : &vx222_ops;
- 	chip = snd_vx_create(card, hw, vx_ops,
- 			     sizeof(struct snd_vx222) - sizeof(struct vx_core));
--	if (! chip) {
--		pci_disable_device(pci);
-+	if (!chip)
- 		return -ENOMEM;
--	}
- 	vx = to_vx222(chip);
- 	vx->pci = pci;
+ 	vmidi = card->private_data;
+@@ -94,7 +94,7 @@ static int snd_virmidi_probe(struct platform_device *devptr)
  
- 	err = pci_request_regions(pci, CARD_NAME);
--	if (err < 0) {
--		snd_vx222_free(chip);
-+	if (err < 0)
- 		return err;
--	}
- 	for (i = 0; i < 2; i++)
- 		vx->port[i] = pci_resource_start(pci, i + 1);
- 
--	if (request_threaded_irq(pci->irq, snd_vx_irq_handler,
--				 snd_vx_threaded_irq_handler, IRQF_SHARED,
--				 KBUILD_MODNAME, chip)) {
-+	if (devm_request_threaded_irq(&pci->dev, pci->irq, snd_vx_irq_handler,
-+				      snd_vx_threaded_irq_handler, IRQF_SHARED,
-+				      KBUILD_MODNAME, chip)) {
- 		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
--		snd_vx222_free(chip);
- 		return -EBUSY;
- 	}
- 	chip->irq = pci->irq;
- 	card->sync_irq = chip->irq;
- 
--	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
--	if (err < 0) {
--		snd_vx222_free(chip);
--		return err;
--	}
--
--	*rchip = vx;
- 	return 0;
- }
- 
-@@ -192,8 +158,8 @@ static int snd_vx222_probe(struct pci_dev *pci,
- 		return -ENOENT;
- 	}
- 
--	err = snd_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
--			   0, &card);
-+	err = snd_devm_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
-+				0, &card);
- 	if (err < 0)
- 		return err;
- 
-@@ -210,10 +176,8 @@ static int snd_vx222_probe(struct pci_dev *pci,
- 		break;
- 	}
- 	err = snd_vx222_create(card, pci, hw, &vx);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 	card->private_data = vx;
- 	vx->core.ibl.size = ibl[dev];
- 
-@@ -227,27 +191,18 @@ static int snd_vx222_probe(struct pci_dev *pci,
- #endif
- 
- 	err = snd_vx_setup_firmware(&vx->core);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
+ 		err = snd_virmidi_new(card, idx, &rmidi);
+ 		if (err < 0)
+-			goto __nodev;
++			return err;
+ 		rdev = rmidi->private_data;
+ 		vmidi->midi[idx] = rmidi;
+ 		strcpy(rmidi->name, "Virtual Raw MIDI");
+@@ -106,18 +106,10 @@ static int snd_virmidi_probe(struct platform_device *devptr)
+ 	sprintf(card->longname, "Virtual MIDI Card %i", dev + 1);
  
  	err = snd_card_register(card);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
+-	if (!err) {
+-		platform_set_drvdata(devptr, card);
+-		return 0;
 -	}
+-__nodev:
+-	snd_card_free(card);
+-	return err;
+-}
++	if (err)
++		return err;
  
- 	pci_set_drvdata(pci, card);
- 	dev++;
+-static int snd_virmidi_remove(struct platform_device *devptr)
+-{
+-	snd_card_free(platform_get_drvdata(devptr));
++	platform_set_drvdata(devptr, card);
  	return 0;
  }
  
--static void snd_vx222_remove(struct pci_dev *pci)
--{
--	snd_card_free(pci_get_drvdata(pci));
--}
--
- #ifdef CONFIG_PM_SLEEP
- static int snd_vx222_suspend(struct device *dev)
- {
-@@ -275,7 +230,6 @@ static struct pci_driver vx222_driver = {
- 	.name = KBUILD_MODNAME,
- 	.id_table = snd_vx222_ids,
- 	.probe = snd_vx222_probe,
--	.remove = snd_vx222_remove,
- 	.driver = {
- 		.pm = SND_VX222_PM_OPS,
+@@ -125,7 +117,6 @@ static int snd_virmidi_remove(struct platform_device *devptr)
+ 
+ static struct platform_driver snd_virmidi_driver = {
+ 	.probe		= snd_virmidi_probe,
+-	.remove		= snd_virmidi_remove,
+ 	.driver		= {
+ 		.name	= SND_VIRMIDI_DRIVER,
  	},
 -- 
 2.26.2
