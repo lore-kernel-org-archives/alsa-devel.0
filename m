@@ -7,77 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 857C7C07E95
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:46:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89885C07E95
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:46:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 021BE61289
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:46:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 021BE61289
+	by mail.kernel.org (Postfix) with ESMTPS id 157B560E0B
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:46:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 157B560E0B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 938911758;
-	Tue, 13 Jul 2021 16:45:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 938911758
+	by alsa0.perex.cz (Postfix) with ESMTPS id AFFDF174D;
+	Tue, 13 Jul 2021 16:45:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AFFDF174D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626187581;
-	bh=X+EKB321wIZcLoRBhY7M+HvVxeEwP0kRS8hdb3YSHNE=;
+	s=default; t=1626187599;
+	bh=1nXVLbJizRCzbqWhJsYwntzhTvFTPeQw0VyNJjq0Xc0=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CKM2f6tXff8AG9b6x2xQ6BXbDDw8swApHCeOOmkmpTPdaRMO66t9KtVMFgnD+ksMR
-	 k71R6+QkKNIpASJnMIQeg1gMrkERpArDSJan3vFeHIitgVo+t4fDmS8XiGo7C/bJHF
-	 NwVtJmdH2mhJgaK97/nepRLxCei7I75L55n7FhJA=
+	b=lM8c2DMWsuK888PyFti3UjamqCeKsAqpjFLB4u/hjp8VMt64Pmqgeohj20MXZEgR3
+	 l+jpv6lMusLPvHzezvS5WqLVKvC4OxoRv9SInUbuCmeIdG3friea6a/M5CgivvExUb
+	 FPihjRKv65N22dsQV46dXgB5+rsxsbTcNZnPJYoc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E4A5F80622;
-	Tue, 13 Jul 2021 16:30:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 483EAF80623;
+	Tue, 13 Jul 2021 16:30:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2B618F8052D; Tue, 13 Jul 2021 16:30:08 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id C3529F8052D; Tue, 13 Jul 2021 16:30:08 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C3A02F804F3
- for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 16:29:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3A02F804F3
+ by alsa1.perex.cz (Postfix) with ESMTPS id A88ADF80551
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 16:29:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A88ADF80551
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="Jf1V7cGC"; 
+ header.b="i7WyzWTk"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="SsqIKzD4"
+ header.b="hyE9EUJZ"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 9BB25201E4
- for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 14:29:39 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 82ECB22837
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 14:29:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626186579; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1626186582; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=kgWBHQVODUeHp2jMa9p6i+45SIGnHJjefe5XxogOvKY=;
- b=Jf1V7cGC2ttY3yyrYB02hIjKKo7Sf7G3aH/rTpUu1d2Kp/PD4RlIF984we0SCvpgDmjSed
- 8BfEF5dlut+94hxVmKgBCwmjbvI77yg0kl/SaAQL4co14hZtntiP2L7p4qX75B9Rgjia+n
- g3qTlQ6uI3C32dFJKj+j4DZknws2cp4=
+ bh=eW8LFcUjjkXO6ltupu8MlVuWejyBsrIe+N/GJDppXF0=;
+ b=i7WyzWTkNDy9EWT5e6a/lwJH96WimDfnMLJ4KnQTAN6KxWlPQTV2qtIaEzA0W8KQg/o8s+
+ hznTKP4MkWm2Eqiac8VvJa87tPK8hcGWHDIHiC+/ywbHZ/3vTU4QhlL/bHn+cDgrbIXsCv
+ jsOoAmEG5dDaeAcxJKbqlZ55+6api8A=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626186579;
+ s=susede2_ed25519; t=1626186582;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=kgWBHQVODUeHp2jMa9p6i+45SIGnHJjefe5XxogOvKY=;
- b=SsqIKzD4wX45SaVXJRc8CX4C7PJhHJa0R7Z55RL5oY5+XXSVN6ovtRf67Y7OcNHS5uD1/c
- BukbBVgvOxjO9qCg==
+ bh=eW8LFcUjjkXO6ltupu8MlVuWejyBsrIe+N/GJDppXF0=;
+ b=hyE9EUJZyOF9q73cShrLi0RilCp7rEKYicaLPB0w4B1AEZWQnIE0lJvOPybxrXqPeXBU1n
+ c4DGrkAfRYX3k4CQ==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 95CFDA3B92;
- Tue, 13 Jul 2021 14:29:39 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 72C4DA3B8E;
+ Tue, 13 Jul 2021 14:29:42 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 39/51] ALSA: riptide: Allocate resources with device-managed
- APIs
-Date: Tue, 13 Jul 2021 16:28:45 +0200
-Message-Id: <20210713142857.19654-40-tiwai@suse.de>
+Subject: [PATCH 44/51] ALSA: vx: Manage vx_core object with devres
+Date: Tue, 13 Jul 2021 16:28:50 +0200
+Message-Id: <20210713142857.19654-45-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210713142857.19654-1-tiwai@suse.de>
 References: <20210713142857.19654-1-tiwai@suse.de>
@@ -98,190 +97,110 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the resource management in PCI riptide driver with
-devres as a clean up.  Each manual resource management is converted
-with the corresponding devres helper, and the card object release is
-managed now via card->private_free instead of a lowlevel snd_device.
-
-This should give no user-visible functional changes.
+The firmware data are also released automatically.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/riptide/riptide.c | 89 +++++++++----------------------------
- 1 file changed, 22 insertions(+), 67 deletions(-)
+ sound/drivers/vx/vx_core.c | 12 ++++++++++--
+ sound/pci/vx222/vx222.c    |  1 -
+ sound/pcmcia/vx/vxpocket.c | 21 ---------------------
+ 3 files changed, 10 insertions(+), 24 deletions(-)
 
-diff --git a/sound/pci/riptide/riptide.c b/sound/pci/riptide/riptide.c
-index 709a1a2cde20..5a987c683c41 100644
---- a/sound/pci/riptide/riptide.c
-+++ b/sound/pci/riptide/riptide.c
-@@ -1798,13 +1798,11 @@ static int snd_riptide_initialize(struct snd_riptide *chip)
- 	return err;
+diff --git a/sound/drivers/vx/vx_core.c b/sound/drivers/vx/vx_core.c
+index a10449af5a76..18901e5bcfcf 100644
+--- a/sound/drivers/vx/vx_core.c
++++ b/sound/drivers/vx/vx_core.c
+@@ -774,6 +774,11 @@ int snd_vx_resume(struct vx_core *chip)
+ EXPORT_SYMBOL(snd_vx_resume);
+ #endif
+ 
++static void snd_vx_release(struct device *dev, void *data)
++{
++	snd_vx_free_firmware(data);
++}
++
+ /**
+  * snd_vx_create - constructor for struct vx_core
+  * @card: card instance
+@@ -784,6 +789,8 @@ EXPORT_SYMBOL(snd_vx_resume);
+  * this function allocates the instance and prepare for the hardware
+  * initialization.
+  *
++ * The object is managed via devres, and will be automatically released.
++ *
+  * return the instance pointer if successful, NULL in error.
+  */
+ struct vx_core *snd_vx_create(struct snd_card *card,
+@@ -796,8 +803,9 @@ struct vx_core *snd_vx_create(struct snd_card *card,
+ 	if (snd_BUG_ON(!card || !hw || !ops))
+ 		return NULL;
+ 
+-	chip = kzalloc(sizeof(*chip) + extra_size, GFP_KERNEL);
+-	if (! chip)
++	chip = devres_alloc(snd_vx_release, sizeof(*chip) + extra_size,
++			    GFP_KERNEL);
++	if (!chip)
+ 		return NULL;
+ 	mutex_init(&chip->lock);
+ 	chip->irq = -1;
+diff --git a/sound/pci/vx222/vx222.c b/sound/pci/vx222/vx222.c
+index 04c7204cb7bc..46a80ef1d481 100644
+--- a/sound/pci/vx222/vx222.c
++++ b/sound/pci/vx222/vx222.c
+@@ -109,7 +109,6 @@ static int snd_vx222_free(struct vx_core *chip)
+ 	if (vx->port[0])
+ 		pci_release_regions(vx->pci);
+ 	pci_disable_device(vx->pci);
+-	kfree(chip);
+ 	return 0;
  }
  
--static int snd_riptide_free(struct snd_riptide *chip)
-+static void snd_riptide_free(struct snd_card *card)
- {
-+	struct snd_riptide *chip = card->private_data;
- 	struct cmdif *cif;
+diff --git a/sound/pcmcia/vx/vxpocket.c b/sound/pcmcia/vx/vxpocket.c
+index 0dfb6a943b60..30ac1f96c6c7 100644
+--- a/sound/pcmcia/vx/vxpocket.c
++++ b/sound/pcmcia/vx/vxpocket.c
+@@ -50,19 +50,6 @@ static void vxpocket_release(struct pcmcia_device *link)
+ 	pcmcia_disable_device(link);
+ }
  
--	if (!chip)
--		return 0;
+-/*
+- * destructor, called from snd_card_free_when_closed()
+- */
+-static int snd_vxpocket_dev_free(struct snd_device *device)
+-{
+-	struct vx_core *chip = device->device_data;
 -
- 	cif = chip->cif;
- 	if (cif) {
- 		SET_GRESET(cif->hwport);
-@@ -1812,39 +1810,19 @@ static int snd_riptide_free(struct snd_riptide *chip)
- 		UNSET_GRESET(cif->hwport);
- 		kfree(chip->cif);
- 	}
--	if (chip->irq >= 0)
--		free_irq(chip->irq, chip);
- 	release_firmware(chip->fw_entry);
--	release_and_free_resource(chip->res_port);
+-	snd_vx_free_firmware(chip);
 -	kfree(chip);
 -	return 0;
 -}
 -
--static int snd_riptide_dev_free(struct snd_device *device)
--{
--	struct snd_riptide *chip = device->device_data;
 -
--	return snd_riptide_free(chip);
- }
- 
- static int
--snd_riptide_create(struct snd_card *card, struct pci_dev *pci,
--		   struct snd_riptide **rchip)
-+snd_riptide_create(struct snd_card *card, struct pci_dev *pci)
+ /*
+  * Hardware information
+  */
+@@ -122,9 +109,6 @@ static int snd_vxpocket_new(struct snd_card *card, int ibl,
  {
--	struct snd_riptide *chip;
-+	struct snd_riptide *chip = card->private_data;
- 	struct riptideport *hwport;
- 	int err;
+ 	struct vx_core *chip;
+ 	struct snd_vxpocket *vxp;
 -	static const struct snd_device_ops ops = {
--		.dev_free = snd_riptide_dev_free,
+-		.dev_free =	snd_vxpocket_dev_free,
 -	};
+ 	int err;
  
--	*rchip = NULL;
--	err = pci_enable_device(pci);
-+	err = pcim_enable_device(pci);
- 	if (err < 0)
- 		return err;
--	chip = kzalloc(sizeof(struct snd_riptide), GFP_KERNEL);
--	if (!chip)
--		return -ENOMEM;
+ 	chip = snd_vx_create(card, &vxpocket_hw, &snd_vxpocket_ops,
+@@ -132,11 +116,6 @@ static int snd_vxpocket_new(struct snd_card *card, int ibl,
+ 	if (!chip)
+ 		return -ENOMEM;
  
- 	spin_lock_init(&chip->lock);
- 	chip->card = card;
-@@ -1855,24 +1833,20 @@ snd_riptide_create(struct snd_card *card, struct pci_dev *pci,
- 	chip->received_irqs = 0;
- 	chip->handled_irqs = 0;
- 	chip->cif = NULL;
-+	card->private_free = snd_riptide_free;
- 
--	chip->res_port = request_region(chip->port, 64, "RIPTIDE");
--	if (!chip->res_port) {
--		snd_printk(KERN_ERR
--			   "Riptide: unable to grab region 0x%lx-0x%lx\n",
--			   chip->port, chip->port + 64 - 1);
--		snd_riptide_free(chip);
--		return -EBUSY;
--	}
-+	err = pci_request_regions(pci, "RIPTIDE");
-+	if (err < 0)
-+		return err;
- 	hwport = (struct riptideport *)chip->port;
- 	UNSET_AIE(hwport);
- 
--	if (request_threaded_irq(pci->irq, snd_riptide_interrupt,
--				 riptide_handleirq, IRQF_SHARED,
--				 KBUILD_MODNAME, chip)) {
-+	if (devm_request_threaded_irq(&pci->dev, pci->irq,
-+				      snd_riptide_interrupt,
-+				      riptide_handleirq, IRQF_SHARED,
-+				      KBUILD_MODNAME, chip)) {
- 		snd_printk(KERN_ERR "Riptide: unable to grab IRQ %d\n",
- 			   pci->irq);
--		snd_riptide_free(chip);
- 		return -EBUSY;
- 	}
- 	chip->irq = pci->irq;
-@@ -1880,18 +1854,9 @@ snd_riptide_create(struct snd_card *card, struct pci_dev *pci,
- 	chip->device_id = pci->device;
- 	pci_set_master(pci);
- 	err = snd_riptide_initialize(chip);
--	if (err < 0) {
--		snd_riptide_free(chip);
--		return err;
--	}
--
 -	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
 -	if (err < 0) {
--		snd_riptide_free(chip);
-+	if (err < 0)
- 		return err;
+-		kfree(chip);
+-		return err;
 -	}
+ 	chip->ibl.size = ibl;
  
--	*rchip = chip;
- 	return 0;
- }
- 
-@@ -2073,20 +2038,20 @@ snd_card_riptide_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
- 		return -ENOENT;
- 	}
- 
--	err = snd_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
--			   0, &card);
-+	err = snd_devm_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
-+				sizeof(*chip), &card);
- 	if (err < 0)
- 		return err;
--	err = snd_riptide_create(card, pci, &chip);
-+	chip = card->private_data;
-+	err = snd_riptide_create(card, pci);
- 	if (err < 0)
--		goto error;
--	card->private_data = chip;
-+		return err;
- 	err = snd_riptide_pcm(chip, 0);
- 	if (err < 0)
--		goto error;
-+		return err;
- 	err = snd_riptide_mixer(chip);
- 	if (err < 0)
--		goto error;
-+		return err;
- 
- 	val = LEGACY_ENABLE_ALL;
- 	if (opl3_port[dev])
-@@ -2153,26 +2118,16 @@ snd_card_riptide_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
- 	snd_riptide_proc_init(chip);
- 	err = snd_card_register(card);
- 	if (err < 0)
--		goto error;
-+		return err;
- 	pci_set_drvdata(pci, card);
- 	dev++;
- 	return 0;
--
-- error:
--	snd_card_free(card);
--	return err;
--}
--
--static void snd_card_riptide_remove(struct pci_dev *pci)
--{
--	snd_card_free(pci_get_drvdata(pci));
- }
- 
- static struct pci_driver driver = {
- 	.name = KBUILD_MODNAME,
- 	.id_table = snd_riptide_ids,
- 	.probe = snd_card_riptide_probe,
--	.remove = snd_card_riptide_remove,
- 	.driver = {
- 		.pm = RIPTIDE_PM_OPS,
- 	},
+ 	vxp = to_vxpocket(chip);
 -- 
 2.26.2
 
