@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23622C07E95
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:44:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F9D8C07E95
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:45:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 957FA6128B
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:44:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 957FA6128B
+	by mail.kernel.org (Postfix) with ESMTPS id 4A12760E0B
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:45:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A12760E0B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2C27E172F;
-	Tue, 13 Jul 2021 16:44:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C27E172F
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB4A31706;
+	Tue, 13 Jul 2021 16:44:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB4A31706
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626187496;
-	bh=YolAqSXetGAUVxgLobS1MDHXC3XY4a4cUyX0dAPjSsE=;
+	s=default; t=1626187518;
+	bh=XSFCpWcarI/UhCKK6/mXpzQb2gxAtZeW+imCNhjyJEI=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mJZE36myQl5VeQvXlJYdNbFWms90Ljlden5bVzNeYWYTKpNGMng/pIUvLqdORyYvP
-	 wb8t1JCqCzxHE0bGA/uyJTUhB2CEmSrdqz+9JoWcDKb5VJ3c+S7aqbFmG3oXFhcPwb
-	 00fLCnS4b+N5XCQ8RB0TcBJcchf+IhVCyxJzjK8Q=
+	b=OnXgEr70j3Acrsr1VavcdmPjAEiwyGfaIZriIFKslQKIS+Z6dYOgogpL2n60Jonol
+	 Qw7oxkLmuqOnBeck6IGDwaH9BQmsYLjlPCyuidNp/az9FwDxd2R4b89NXfzfDTdgyz
+	 HYgeqEMptyfUD7cRlk0q9kzkiKQXa8BqPwQvGf/k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2E1EFF80612;
+	by alsa1.perex.cz (Postfix) with ESMTP id C87DDF80616;
 	Tue, 13 Jul 2021 16:30:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8F981F80537; Tue, 13 Jul 2021 16:30:03 +0200 (CEST)
+ id 83440F8052D; Tue, 13 Jul 2021 16:30:06 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AB84BF80527
- for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 16:29:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB84BF80527
+ by alsa1.perex.cz (Postfix) with ESMTPS id 23B4CF8053C
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 16:29:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23B4CF8053C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="H8fAtcGl"; 
+ header.b="LYvsuUfY"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="qdzLF6FK"
+ header.b="am7jT/Iz"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 7A6F222837
- for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 14:29:38 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id DFDE222855
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 14:29:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626186578; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1626186580; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=kFYQmvZBz/Rv+iOemGkk9WuHcg2BLKGc66cW/sYHUBY=;
- b=H8fAtcGlmZkgtwjGHg26gAfdY3BNZA2OHckk1cO036VRhDtHkTYXeN8Tned1nD3QgNGJpo
- UomdhxKKgLVQfKZR6r6vGwFTCrK/SVxo01lx58rlUD7Y9qjD9DBb8lhyrFY1J0tbpcb0JU
- 25BvBuGgkPWE06dknrfbx3HWC0ApjFU=
+ bh=FAMtIW8bRBSWt+2TSKRdiNb5VV+3csQJNzMKaqR7Heg=;
+ b=LYvsuUfYClqEQLkHFhz4aoTC+ZZUbb+2XJCN98dDy/+g9eSg50yTlCVIkkx9zq7tvVSkHR
+ oY6Ka8J3e97kN3IXABndVkEvgqoXLSIpnZmOyhmHoUY87q9UiNW9ePsHiyhHesu/s+CDyb
+ pNEVhtuX1NUI+KrVavq1y8iwx2DP5CA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626186578;
+ s=susede2_ed25519; t=1626186580;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=kFYQmvZBz/Rv+iOemGkk9WuHcg2BLKGc66cW/sYHUBY=;
- b=qdzLF6FKUJ4+0Y5KTdpxYGDW5FmK8H26Mj+ieeCjtrtI5IgDzmW4q+Pbm9SQZU3W+g1LLW
- S4EAYniAWE/MbHAA==
+ bh=FAMtIW8bRBSWt+2TSKRdiNb5VV+3csQJNzMKaqR7Heg=;
+ b=am7jT/Izg+bVIGjYbL5x4hZqAgwqAnP5uQiFiOLfcMOMakXD6uzzqAaEP9JmolftBx716l
+ 3AhZTDiyKQ6BLkDg==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 69041A3B88;
- Tue, 13 Jul 2021 14:29:38 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id D02D5A3B92;
+ Tue, 13 Jul 2021 14:29:40 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 37/51] ALSA: lola: Allocate resources with device-managed APIs
-Date: Tue, 13 Jul 2021 16:28:43 +0200
-Message-Id: <20210713142857.19654-38-tiwai@suse.de>
+Subject: [PATCH 41/51] ALSA: hdspm: Allocate resources with device-managed APIs
+Date: Tue, 13 Jul 2021 16:28:47 +0200
+Message-Id: <20210713142857.19654-42-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210713142857.19654-1-tiwai@suse.de>
 References: <20210713142857.19654-1-tiwai@suse.de>
@@ -97,344 +97,161 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the resource management in PCI lola driver with
+This patch converts the resource management in PCI hdspm driver with
 devres as a clean up.  Each manual resource management is converted
-with the corresponding devres helper, the page allocations are done
-with the devres helper, and the card object release is managed now via
-card->private_free instead of a lowlevel snd_device.
+with the corresponding devres helper, and the card object release is
+managed now via card->private_free instead of a lowlevel snd_device.
 
 This should give no user-visible functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/lola/lola.c     | 127 +++++++++++---------------------------
- sound/pci/lola/lola.h     |   5 +-
- sound/pci/lola/lola_pcm.c |  20 +++---
- 3 files changed, 44 insertions(+), 108 deletions(-)
+ sound/pci/rme9652/hdspm.c | 64 ++++++++-------------------------------
+ 1 file changed, 12 insertions(+), 52 deletions(-)
 
-diff --git a/sound/pci/lola/lola.c b/sound/pci/lola/lola.c
-index 03b4be44bb26..5269a1d396a5 100644
---- a/sound/pci/lola/lola.c
-+++ b/sound/pci/lola/lola.c
-@@ -344,20 +344,18 @@ static void lola_irq_disable(struct lola *chip)
+diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
+index 97a0bff96b28..ff06ee82607c 100644
+--- a/sound/pci/rme9652/hdspm.c
++++ b/sound/pci/rme9652/hdspm.c
+@@ -6575,34 +6575,25 @@ static int snd_hdspm_create(struct snd_card *card,
+ 		}
+ 	}
  
- static int setup_corb_rirb(struct lola *chip)
- {
--	int err;
- 	unsigned char tmp;
- 	unsigned long end_time;
- 
--	err = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV,
--				  &chip->pci->dev,
--				  PAGE_SIZE, &chip->rb);
--	if (err < 0)
--		return err;
-+	chip->rb = snd_devm_alloc_pages(&chip->pci->dev, SNDRV_DMA_TYPE_DEV,
-+					PAGE_SIZE);
-+	if (!chip->rb)
-+		return -ENOMEM;
- 
--	chip->corb.addr = chip->rb.addr;
--	chip->corb.buf = (__le32 *)chip->rb.area;
--	chip->rirb.addr = chip->rb.addr + 2048;
--	chip->rirb.buf = (__le32 *)(chip->rb.area + 2048);
-+	chip->corb.addr = chip->rb->addr;
-+	chip->corb.buf = (__le32 *)chip->rb->area;
-+	chip->rirb.addr = chip->rb->addr + 2048;
-+	chip->rirb.buf = (__le32 *)(chip->rb->area + 2048);
- 
- 	/* disable ringbuffer DMAs */
- 	lola_writeb(chip, BAR0, RIRBCTL, 0);
-@@ -529,56 +527,31 @@ static void lola_stop_hw(struct lola *chip)
- 	lola_irq_disable(chip);
- }
- 
--static void lola_free(struct lola *chip)
-+static void lola_free(struct snd_card *card)
- {
-+	struct lola *chip = card->private_data;
-+
- 	if (chip->initialized)
- 		lola_stop_hw(chip);
--	lola_free_pcm(chip);
- 	lola_free_mixer(chip);
--	if (chip->irq >= 0)
--		free_irq(chip->irq, (void *)chip);
--	iounmap(chip->bar[0].remap_addr);
--	iounmap(chip->bar[1].remap_addr);
--	if (chip->rb.area)
--		snd_dma_free_pages(&chip->rb);
--	pci_release_regions(chip->pci);
--	pci_disable_device(chip->pci);
--	kfree(chip);
- }
- 
--static int lola_dev_free(struct snd_device *device)
-+static int lola_create(struct snd_card *card, struct pci_dev *pci, int dev)
- {
--	lola_free(device->device_data);
--	return 0;
--}
--
--static int lola_create(struct snd_card *card, struct pci_dev *pci,
--		       int dev, struct lola **rchip)
--{
--	struct lola *chip;
-+	struct lola *chip = card->private_data;
- 	int err;
- 	unsigned int dever;
--	static const struct snd_device_ops ops = {
--		.dev_free = lola_dev_free,
--	};
- 
--	*rchip = NULL;
--
 -	err = pci_enable_device(pci);
 +	err = pcim_enable_device(pci);
  	if (err < 0)
  		return err;
  
--	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
--	if (!chip) {
--		pci_disable_device(pci);
--		return -ENOMEM;
--	}
--
- 	spin_lock_init(&chip->reg_lock);
- 	mutex_init(&chip->open_mutex);
- 	chip->card = card;
- 	chip->pci = pci;
- 	chip->irq = -1;
-+	card->private_free = lola_free;
+ 	pci_set_master(hdspm->pci);
  
- 	chip->granularity = granularity[dev];
- 	switch (chip->granularity) {
-@@ -607,34 +580,25 @@ static int lola_create(struct snd_card *card, struct pci_dev *pci,
- 		chip->sample_rate_min = 16000;
- 	}
- 
--	err = pci_request_regions(pci, DRVNAME);
--	if (err < 0) {
--		kfree(chip);
--		pci_disable_device(pci);
-+	err = pcim_iomap_regions(pci, (1 << 0) | (1 << 2), DRVNAME);
-+	if (err < 0)
+-	err = pci_request_regions(pci, "hdspm");
++	err = pcim_iomap_regions(pci, 1 << 0, "hdspm");
+ 	if (err < 0)
  		return err;
--	}
  
- 	chip->bar[0].addr = pci_resource_start(pci, 0);
--	chip->bar[0].remap_addr = pci_ioremap_bar(pci, 0);
-+	chip->bar[0].remap_addr = pcim_iomap_table(pci)[0];
- 	chip->bar[1].addr = pci_resource_start(pci, 2);
--	chip->bar[1].remap_addr = pci_ioremap_bar(pci, 2);
--	if (!chip->bar[0].remap_addr || !chip->bar[1].remap_addr) {
--		dev_err(chip->card->dev, "ioremap error\n");
--		err = -ENXIO;
--		goto errout;
--	}
-+	chip->bar[1].remap_addr = pcim_iomap_table(pci)[2];
- 
- 	pci_set_master(pci);
- 
- 	err = reset_controller(chip);
- 	if (err < 0)
--		goto errout;
-+		return err;
- 
--	if (request_irq(pci->irq, lola_interrupt, IRQF_SHARED,
--			KBUILD_MODNAME, chip)) {
-+	if (devm_request_irq(&pci->dev, pci->irq, lola_interrupt, IRQF_SHARED,
-+			     KBUILD_MODNAME, chip)) {
- 		dev_err(chip->card->dev, "unable to grab IRQ %d\n", pci->irq);
--		err = -EBUSY;
--		goto errout;
-+		return -EBUSY;
- 	}
- 	chip->irq = pci->irq;
- 	card->sync_irq = chip->irq;
-@@ -653,19 +617,12 @@ static int lola_create(struct snd_card *card, struct pci_dev *pci,
- 	    (!chip->pcm[CAPT].num_streams &&
- 	     !chip->pcm[PLAY].num_streams)) {
- 		dev_err(chip->card->dev, "invalid DEVER = %x\n", dever);
--		err = -EINVAL;
--		goto errout;
-+		return -EINVAL;
- 	}
- 
- 	err = setup_corb_rirb(chip);
- 	if (err < 0)
--		goto errout;
+ 	hdspm->port = pci_resource_start(pci, 0);
+ 	io_extent = pci_resource_len(pci, 0);
 -
--	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
--	if (err < 0) {
--		dev_err(chip->card->dev, "Error creating device [card]!\n");
--		goto errout;
--	}
-+		return err;
- 
- 	strcpy(card->driver, "Lola");
- 	strscpy(card->shortname, "Digigram Lola", sizeof(card->shortname));
-@@ -677,12 +634,7 @@ static int lola_create(struct snd_card *card, struct pci_dev *pci,
- 	lola_irq_enable(chip);
- 
- 	chip->initialized = 1;
--	*rchip = chip;
- 	return 0;
+-	dev_dbg(card->dev, "grabbed memory region 0x%lx-0x%lx\n",
+-			hdspm->port, hdspm->port + io_extent - 1);
 -
-- errout:
--	lola_free(chip);
--	return err;
+-	hdspm->iobase = ioremap(hdspm->port, io_extent);
+-	if (!hdspm->iobase) {
+-		dev_err(card->dev, "unable to remap region 0x%lx-0x%lx\n",
+-				hdspm->port, hdspm->port + io_extent - 1);
+-		return -EBUSY;
+-	}
++	hdspm->iobase = pcim_iomap_table(pci)[0];
+ 	dev_dbg(card->dev, "remapped region (0x%lx) 0x%lx-0x%lx\n",
+ 			(unsigned long)hdspm->iobase, hdspm->port,
+ 			hdspm->port + io_extent - 1);
+ 
+-	if (request_irq(pci->irq, snd_hdspm_interrupt,
+-			IRQF_SHARED, KBUILD_MODNAME, hdspm)) {
++	if (devm_request_irq(&pci->dev, pci->irq, snd_hdspm_interrupt,
++			     IRQF_SHARED, KBUILD_MODNAME, hdspm)) {
+ 		dev_err(card->dev, "unable to use IRQ %d\n", pci->irq);
+ 		return -EBUSY;
+ 	}
+@@ -6614,7 +6605,7 @@ static int snd_hdspm_create(struct snd_card *card,
+ 
+ 	dev_dbg(card->dev, "kmalloc Mixer memory of %zd Bytes\n",
+ 		sizeof(*hdspm->mixer));
+-	hdspm->mixer = kzalloc(sizeof(*hdspm->mixer), GFP_KERNEL);
++	hdspm->mixer = devm_kzalloc(&pci->dev, sizeof(*hdspm->mixer), GFP_KERNEL);
+ 	if (!hdspm->mixer)
+ 		return -ENOMEM;
+ 
+@@ -6859,8 +6850,9 @@ static int snd_hdspm_create(struct snd_card *card,
  }
  
- static int lola_probe(struct pci_dev *pci,
-@@ -700,47 +652,39 @@ static int lola_probe(struct pci_dev *pci,
+ 
+-static int snd_hdspm_free(struct hdspm * hdspm)
++static void snd_hdspm_card_free(struct snd_card *card)
+ {
++	struct hdspm *hdspm = card->private_data;
+ 
+ 	if (hdspm->port) {
+ 		cancel_work_sync(&hdspm->midi_work);
+@@ -6873,28 +6865,6 @@ static int snd_hdspm_free(struct hdspm * hdspm)
+ 		hdspm_write(hdspm, HDSPM_controlRegister,
+ 			    hdspm->control_register);
+ 	}
+-
+-	if (hdspm->irq >= 0)
+-		free_irq(hdspm->irq, (void *) hdspm);
+-
+-	kfree(hdspm->mixer);
+-	iounmap(hdspm->iobase);
+-
+-	if (hdspm->port)
+-		pci_release_regions(hdspm->pci);
+-
+-	if (pci_is_enabled(hdspm->pci))
+-		pci_disable_device(hdspm->pci);
+-	return 0;
+-}
+-
+-
+-static void snd_hdspm_card_free(struct snd_card *card)
+-{
+-	struct hdspm *hdspm = card->private_data;
+-
+-	if (hdspm)
+-		snd_hdspm_free(hdspm);
+ }
+ 
+ 
+@@ -6913,8 +6883,8 @@ static int snd_hdspm_probe(struct pci_dev *pci,
  		return -ENOENT;
  	}
  
--	err = snd_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
--			   0, &card);
-+	err = snd_devm_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
-+				sizeof(*chip), &card);
- 	if (err < 0) {
- 		dev_err(&pci->dev, "Error creating card!\n");
+-	err = snd_card_new(&pci->dev, index[dev], id[dev],
+-			   THIS_MODULE, sizeof(*hdspm), &card);
++	err = snd_devm_card_new(&pci->dev, index[dev], id[dev],
++				THIS_MODULE, sizeof(*hdspm), &card);
+ 	if (err < 0)
  		return err;
- 	}
-+	chip = card->private_data;
  
--	err = lola_create(card, pci, dev, &chip);
-+	err = lola_create(card, pci, dev);
+@@ -6925,7 +6895,7 @@ static int snd_hdspm_probe(struct pci_dev *pci,
+ 
+ 	err = snd_hdspm_create(card, hdspm);
  	if (err < 0)
--		goto out_free;
--	card->private_data = chip;
+-		goto free_card;
 +		return err;
  
- 	err = lola_parse_tree(chip);
- 	if (err < 0)
--		goto out_free;
-+		return err;
- 
- 	err = lola_create_pcm(chip);
- 	if (err < 0)
--		goto out_free;
-+		return err;
- 
- 	err = lola_create_mixer(chip);
- 	if (err < 0)
--		goto out_free;
-+		return err;
- 
- 	lola_proc_debug_new(chip);
+ 	if (hdspm->io_type != MADIface) {
+ 		snprintf(card->shortname, sizeof(card->shortname), "%s_%x",
+@@ -6944,28 +6914,18 @@ static int snd_hdspm_probe(struct pci_dev *pci,
  
  	err = snd_card_register(card);
  	if (err < 0)
--		goto out_free;
+-		goto free_card;
 +		return err;
  
  	pci_set_drvdata(pci, card);
+ 
  	dev++;
--	return err;
--out_free:
+ 	return 0;
+-
+-free_card:
 -	snd_card_free(card);
 -	return err;
 -}
 -
--static void lola_remove(struct pci_dev *pci)
+-static void snd_hdspm_remove(struct pci_dev *pci)
 -{
 -	snd_card_free(pci_get_drvdata(pci));
-+	return 0;
  }
  
- /* PCI IDs */
-@@ -755,7 +699,6 @@ static struct pci_driver lola_driver = {
+ static struct pci_driver hdspm_driver = {
  	.name = KBUILD_MODNAME,
- 	.id_table = lola_ids,
- 	.probe = lola_probe,
--	.remove = lola_remove,
+ 	.id_table = snd_hdspm_ids,
+ 	.probe = snd_hdspm_probe,
+-	.remove = snd_hdspm_remove,
  };
  
- module_pci_driver(lola_driver);
-diff --git a/sound/pci/lola/lola.h b/sound/pci/lola/lola.h
-index 8a598aa40bf3..0ff772cf66e6 100644
---- a/sound/pci/lola/lola.h
-+++ b/sound/pci/lola/lola.h
-@@ -303,7 +303,7 @@ struct lola_stream {
- 
- struct lola_pcm {
- 	unsigned int num_streams;
--	struct snd_dma_buffer bdl; /* BDL buffer */
-+	struct snd_dma_buffer *bdl; /* BDL buffer */
- 	struct lola_stream streams[MAX_STREAM_COUNT];
- };
- 
-@@ -328,7 +328,7 @@ struct lola {
- 	unsigned int last_cmd_nid, last_verb, last_data, last_extdata;
- 
- 	/* CORB/RIRB buffers */
--	struct snd_dma_buffer rb;
-+	struct snd_dma_buffer *rb;
- 
- 	/* unsolicited events */
- 	unsigned int last_unsol_res;
-@@ -480,7 +480,6 @@ int lola_codec_flush(struct lola *chip);
- 
- /* PCM */
- int lola_create_pcm(struct lola *chip);
--void lola_free_pcm(struct lola *chip);
- int lola_init_pcm(struct lola *chip, int dir, int *nidp);
- void lola_pcm_update(struct lola *chip, struct lola_pcm *pcm, unsigned int bits);
- 
-diff --git a/sound/pci/lola/lola_pcm.c b/sound/pci/lola/lola_pcm.c
-index 684faaf40f31..738ec987000a 100644
---- a/sound/pci/lola/lola_pcm.c
-+++ b/sound/pci/lola/lola_pcm.c
-@@ -348,7 +348,7 @@ static int lola_setup_periods(struct lola *chip, struct lola_pcm *pcm,
- 	periods = str->bufsize / period_bytes;
- 
- 	/* program the initial BDL entries */
--	bdl = (__le32 *)(pcm->bdl.area + LOLA_BDL_ENTRY_SIZE * str->index);
-+	bdl = (__le32 *)(pcm->bdl->area + LOLA_BDL_ENTRY_SIZE * str->index);
- 	ofs = 0;
- 	str->frags = 0;
- 	for (i = 0; i < periods; i++) {
-@@ -433,7 +433,7 @@ static int lola_setup_controller(struct lola *chip, struct lola_pcm *pcm,
- 		return -EINVAL;
- 
- 	/* set up BDL */
--	bdl = pcm->bdl.addr + LOLA_BDL_ENTRY_SIZE * str->index;
-+	bdl = pcm->bdl->addr + LOLA_BDL_ENTRY_SIZE * str->index;
- 	lola_dsd_write(chip, str->dsd, BDPL, (u32)bdl);
- 	lola_dsd_write(chip, str->dsd, BDPU, upper_32_bits(bdl));
- 	/* program the stream LVI (last valid index) of the BDL */
-@@ -588,11 +588,11 @@ int lola_create_pcm(struct lola *chip)
- 	int i, err;
- 
- 	for (i = 0; i < 2; i++) {
--		err = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV,
--					  &chip->pci->dev,
--					  PAGE_SIZE, &chip->pcm[i].bdl);
--		if (err < 0)
--			return err;
-+		chip->pcm[i].bdl =
-+			snd_devm_alloc_pages(&chip->pci->dev, SNDRV_DMA_TYPE_DEV,
-+					     PAGE_SIZE);
-+		if (!chip->pcm[i].bdl)
-+			return -ENOMEM;
- 	}
- 
- 	err = snd_pcm_new(chip->card, "Digigram Lola", 0,
-@@ -614,12 +614,6 @@ int lola_create_pcm(struct lola *chip)
- 	return 0;
- }
- 
--void lola_free_pcm(struct lola *chip)
--{
--	snd_dma_free_pages(&chip->pcm[0].bdl);
--	snd_dma_free_pages(&chip->pcm[1].bdl);
--}
--
- /*
-  */
- 
+ module_pci_driver(hdspm_driver);
 -- 
 2.26.2
 
