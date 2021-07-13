@@ -2,91 +2,88 @@ Return-Path: <SRS0=zwJL=MF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94DF0C07E95
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 16:08:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71C3BC07E95
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 16:09:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C11F961164
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 16:08:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C11F961164
+	by mail.kernel.org (Postfix) with ESMTPS id 7414161183
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 16:09:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7414161183
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3CCE51675;
-	Tue, 13 Jul 2021 18:08:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3CCE51675
+	by alsa0.perex.cz (Postfix) with ESMTPS id 008B51683;
+	Tue, 13 Jul 2021 18:08:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 008B51683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626192531;
-	bh=Enx2C/qeyb7Ah1ShHkRM3zxtZc3o8X6Y8WmhxyoagKA=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1626192589;
+	bh=eG7JtWgGY7ExUUM1sJdVsIuVowW1dpvoViHivCiH+MU=;
+	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KAWckkNws3lgslA7Dc8j6KWmjuGNj8wQ0NgjlDq/SRziV6fQqhPnALr7Y5/uHHRWu
-	 g/mdQW+V273KnXwzqhBz8SeAzZXAcA23nb288b+BeaB9hGpiYfib6C8xQUcTHaGftY
-	 YR6JnSagxAkn7AJTpVTB+nnHNhKPMpwluOM8CPOc=
+	b=HfAP7Fo48BGY//t8SSuBY5hIKiN3FTSGcbqjoLpP2pPOB9zmRddT44lfE20SeT3RK
+	 lTDC1FyJpqphKomP2Js0TO9xVL0G1Tf7fEvoJ0skdq/3+xw/J5pQ2FqoWrevGJ02lN
+	 63m10QAU6qlScgw0sy12HVV5tiD5ehA63VePFKXQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5E94F8020C;
-	Tue, 13 Jul 2021 18:08:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 96CA3F80229;
+	Tue, 13 Jul 2021 18:08:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E17B7F80217; Tue, 13 Jul 2021 18:07:58 +0200 (CEST)
+ id 383F1F802E0; Tue, 13 Jul 2021 18:08:57 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AF01EF800ED
- for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 18:07:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF01EF800ED
+ by alsa1.perex.cz (Postfix) with ESMTPS id C50A7F8020C
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 18:08:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C50A7F8020C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="bpuKcxEs"; 
+ header.b="lrSz7g9h"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="cB45TT2l"
+ header.b="jyn1dcYO"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id C0C2B201FA;
- Tue, 13 Jul 2021 16:07:55 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id A4DAF201FE
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 16:08:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626192475; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1626192534; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=onaD3uM5AtnYexO9vckWln2jRhqLEOBldPaL6VGWFeE=;
- b=bpuKcxEsLY+6wAjT752fnvLSclMnE+lefFCphlf/JxmEBvanhO0jZMhF8MPV+0JfbOz7C1
- zP17hYTcvZ428Pf+Gy1jpzhsmdEQ7L2n7KyiBt3kaRrz/DEWKnESHHsR1Zy0taXq/l6R0e
- 4imzB8F7OtugAG+dOgZO5D9LFDK0CAU=
+ bh=4jS+Lez198+ga7LCCdE8fMFOK5ynAoAiWaVsMt7FTr8=;
+ b=lrSz7g9hTSzU2S51FWoZ653zGtKLM27JGBBXLGgAiCAmVjqWVUuAWSzORjJUgIhmj6pUIl
+ DnknNmdU39rHhpKVoMhU/TEZmpOt434IRup/QVM3MsekAo3kBMCGZVqIIy9i5YFvvb65jk
+ dMCIYikTEoqwbyKOY8+dtaGGtCl4ij0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626192475;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ s=susede2_ed25519; t=1626192534;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=onaD3uM5AtnYexO9vckWln2jRhqLEOBldPaL6VGWFeE=;
- b=cB45TT2lYZFKUG0i4vBMf3eB+hC9ZTGs1gXN8cUVN0zG5PUB/NawMG0kLEXJN5p4TUeQzJ
- ElM5/UmlTjgZcCBA==
+ bh=4jS+Lez198+ga7LCCdE8fMFOK5ynAoAiWaVsMt7FTr8=;
+ b=jyn1dcYOE/rkXI24sVB0IyTP8nwmWLwVMbE+yv9ps14MpLn9yYnGO2b3S9tMIudYAa4j4r
+ pdZNvrVUE3p4WGAQ==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id B8CF8A3B88;
- Tue, 13 Jul 2021 16:07:55 +0000 (UTC)
-Date: Tue, 13 Jul 2021 18:07:55 +0200
-Message-ID: <s5heec219k4.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 93916A3B83
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 16:08:54 +0000 (UTC)
+Date: Tue, 13 Jul 2021 18:08:54 +0200
+Message-ID: <s5hczrm19ih.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Amadeusz SX2awiX4ski
- <amadeuszx.slawinski@linux.intel.com>
-Subject: Re: [PATCH 15/51] ALSA: ens137x: Allocate resources with
+To: alsa-devel@alsa-project.org
+Subject: Re: [PATCH 50/51] ALSA: serial-u16550: Allocate resources with
  device-managed APIs
-In-Reply-To: <e7601f56-fd97-7c86-362e-778c6b1c3f65@linux.intel.com>
+In-Reply-To: <20210713142857.19654-51-tiwai@suse.de>
 References: <20210713142857.19654-1-tiwai@suse.de>
- <20210713142857.19654-16-tiwai@suse.de>
- <e7601f56-fd97-7c86-362e-778c6b1c3f65@linux.intel.com>
+ <20210713142857.19654-51-tiwai@suse.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,40 +99,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 13 Jul 2021 17:23:26 +0200,
-Amadeusz SX2awiX4ski wrote:
+On Tue, 13 Jul 2021 16:28:56 +0200,
+Takashi Iwai wrote:
 > 
-> On 7/13/2021 4:28 PM, Takashi Iwai wrote:
-> > This patch converts the resource management in PCI esn137x drivers
-> > with devres as a clean up.  Each manual resource management is
-> > converted with the corresponding devres helper, the devres helper is
-> > used for the DMA buffer page allocations, and the card object release
-> > is managed now via card->private_free instead of a lowlevel
-> > snd_device.
-> >
-> > This should give no user-visible functional changes.
-> >
-> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> > ---
-> >   sound/pci/ens1370.c | 115 +++++++++++---------------------------------
-> >   1 file changed, 27 insertions(+), 88 deletions(-)
-> >
-> > diff --git a/sound/pci/ens1370.c b/sound/pci/ens1370.c
-> > index 728b69dad21b..2651f0c64c06 100644
-> > --- a/sound/pci/ens1370.c
-> > +++ b/sound/pci/ens1370.c
-> > @@ -414,7 +414,7 @@ struct ensoniq {
-> >   	unsigned int spdif_stream;
-> >     #ifdef CHIP1370
-> > -	struct snd_dma_buffer dma_bug;
-> > +	struct snd_dma_buffer *dma_bug;
+> This patch converts the resource management in serial u16550 driver
+> with devres as a clean up.  Each manual resource management is
+> converted with the corresponding devres helper, and the card object
+> release is managed now via card->private_free instead of a lowlevel
+> snd_device.
 > 
+> This should give no user-visible functional changes.
 > 
-> You seem to touch all uses of this variable and it seems like it has a
-> typo (dma_bug -> dms_buf),
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
-Really?  I couldn't find it.
+This and the next one seem to have typos, maybe the old versions have
+been smashed into the series wrongly.  Will be corrected in v2 series.
 
 
 Takashi
-
