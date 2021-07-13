@@ -2,100 +2,77 @@ Return-Path: <SRS0=zwJL=MF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26BF1C11F68
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 12:34:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 828A9C07E95
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 12:40:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BB67D6115A
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 12:34:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB67D6115A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id 3951E61289
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 12:40:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3951E61289
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 33F981697;
-	Tue, 13 Jul 2021 14:33:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33F981697
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6623516D3;
+	Tue, 13 Jul 2021 14:39:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6623516D3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626179683;
-	bh=RuajR1QbaKqwqZFaxsg9eJJDnPGNaiP7WTAeEwcpGno=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1626180034;
+	bh=EjpHeCmPVe9zGWbOawzFWTHINmWF7wRVl+MoXtdX5NY=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Jt52z63xFdC1oPnQwJ37gxEH5nFVYgdV2mQI8stU6ZXR74459Tt3WRjy2T3Jaky/Q
-	 S82GNyA4jIWHnAxcSlO/vwaylZByiF6AIas0nEmO1RtKQnMVBRG2GoxrWWr23Bw1Qw
-	 8x3orJV+EbzDMyufSZYcdpo5rMNfoEDX6JJEAms4=
+	b=oFpYFnk7MMbq4LYzP4HFNUd2wH+d2uv89z7MRdI0fKNOgIPhER9xOc4rXUU83FEGb
+	 MokeedkBOSUCKQULHxBCeeOJS4JUqyyL5oX0EdSO02Myx0DJkopW3x3gdH5gq4zw/H
+	 Sc/8S13KLZs2NCs46C+Ha5SSiPdedQMBG7Y2yxcE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1895F8020C;
-	Tue, 13 Jul 2021 14:33:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E722EF8020C;
+	Tue, 13 Jul 2021 14:39:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 82E9CF80217; Tue, 13 Jul 2021 14:33:49 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 3A8BEF80217; Tue, 13 Jul 2021 14:39:42 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4E675F800ED
- for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 14:33:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E675F800ED
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="pPmDUU+F"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 16DCW04W013936; Tue, 13 Jul 2021 07:33:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=39Lrw0fMg611l8BSiNPaxV04L1jFmV2o4lE6fTsCa1o=;
- b=pPmDUU+Fa0HVPvfgLxDAFvz6rei0ymJoZQ2oO/5ujQ1qh6MdhcdEjfkm5hqA19Jfq6L9
- kRmxLViWYQcTmmqBLB9rDNu66/3TzRw5AQaex/1pmXcQRpa9kg0QBdTvu41z5yqNXjds
- UtMOOBQXYWqsM40Y50Ed8e+OMQpX/18gpMI8pwQYeUbQXNggPv2A9qCoHbDAqCYvDHWo
- WLERt2Fgv0YcKDhvJX3Bb2UJNj+2M1DC0y9ccws2UfAs4DTIR2abNXEeGf3jqZaQKlkO
- PuY3kDx3sHLT5K+qxWuCtxa9WwA4uaTIWtVwC1fLhO5cOXWm41Q6p5Jve8dmChGNv2+D wA== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 39rgp71mm6-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 13 Jul 2021 07:33:41 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 13 Jul
- 2021 13:33:39 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Tue, 13 Jul 2021 13:33:39 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id F0CC545D;
- Tue, 13 Jul 2021 12:33:38 +0000 (UTC)
-Date: Tue, 13 Jul 2021 12:33:38 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: wm_adsp: Remove pointless string comparison
-Message-ID: <20210713123338.GH9223@ediswmail.ad.cirrus.com>
-References: <20210626155941.12251-1-ckeepax@opensource.cirrus.com>
- <20210626155941.12251-3-ckeepax@opensource.cirrus.com>
- <20210628165837.GE4492@sirena.org.uk>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B1AC2F800ED
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 14:39:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1AC2F800ED
+X-IronPort-AV: E=McAfee;i="6200,9189,10043"; a="190531961"
+X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; d="scan'208";a="190531961"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Jul 2021 05:39:28 -0700
+X-IronPort-AV: E=Sophos;i="5.84,236,1620716400"; d="scan'208";a="649448840"
+Received: from skrishn6-mobl.amr.corp.intel.com (HELO [10.213.170.159])
+ ([10.213.170.159])
+ by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Jul 2021 05:39:27 -0700
+Subject: Re: [PATCH 6/8] ALSA: pcm: conditionally avoid mmap of control data
+To: Takashi Iwai <tiwai@suse.de>
+References: <20210610205326.1176400-1-pierre-louis.bossart@linux.intel.com>
+ <20210610205326.1176400-7-pierre-louis.bossart@linux.intel.com>
+ <s5h4ke25ill.wl-tiwai@suse.de>
+ <15cdd983-e25b-a872-aa25-5086ec71756f@linux.intel.com>
+ <s5h8s2a3fgh.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <d7a3b3fd-eddf-000b-f9ed-711d3e3156f4@linux.intel.com>
+Date: Tue, 13 Jul 2021 07:39:24 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210628165837.GE4492@sirena.org.uk>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: fwAuXKcY4WGUvOOsaZrY2p-WjMaYPevU
-X-Proofpoint-ORIG-GUID: fwAuXKcY4WGUvOOsaZrY2p-WjMaYPevU
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- lowpriorityscore=0 impostorscore=0
- bulkscore=0 priorityscore=1501 adultscore=0 malwarescore=0 mlxlogscore=718
- spamscore=0 suspectscore=0 mlxscore=0 clxscore=1015 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107130080
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com
+In-Reply-To: <s5h8s2a3fgh.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,19 +88,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Jun 28, 2021 at 05:58:37PM +0100, Mark Brown wrote:
-> On Sat, Jun 26, 2021 at 04:59:41PM +0100, Charles Keepax wrote:
-> 
-> > The control fw_name is always directly assigned from the wm_adsp_fw_text
-> > array, so it isn't necessary to compare the actual strings just the
-> > pointer values.
-> 
-> This feels like it's asking for trouble in the future...
 
-Thanks for applying anyway, apologies for my slow reply been off work.
-We already have the same optimisation in other places so at least this
-way its all broken in the same way if we hit an issue in the
-future :-)
 
-Thanks,
-Charles
+On 7/13/21 1:17 AM, Takashi Iwai wrote:
+> On Mon, 12 Jul 2021 22:56:07 +0200,
+> Pierre-Louis Bossart wrote:
+>>
+>>
+>>
+>> On 6/13/21 2:28 AM, Takashi Iwai wrote:
+>>> On Thu, 10 Jun 2021 22:53:24 +0200,
+>>> Pierre-Louis Bossart wrote:
+>>>>
+>>>> In case of mmap, by default alsa-lib mmaps both control and status data.
+>>>>
+>>>> If driver subscribes for application pointer update, driver needs to get
+>>>> notification whenever appl ptr changes. With the above case driver won't
+>>>> get appl ptr notifications.
+>>>>
+>>>> This patch check on a hw info flag and returns error when user land asks
+>>>> for mmaping control & status data, thus forcing user to issue
+>>>> IOCTL_SYNC_PTR.
+>>>>
+>>>> This patch was originally submitted in 2017, c.f.
+>>>> https://lore.kernel.org/alsa-devel/1494896518-23399-4-git-send-email-subhransu.s.prusty@intel.com/
+>>>>
+>>>> Suggested-by: Takashi Iwai <tiwai@suse.de>
+>>>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>>>> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+>>>> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+>>>
+>>> This kind of flag itself was what I also introduced for another
+>>> purpose, too.  There is a WIP patch that allows the use of
+>>> non-coherent non-contiguous buffer pages, and this flag would fit for
+>>> that.  FWIW, the patch is found at
+>>>   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/log/?h=topic/memalloc
+>>
+>> Sorry Takashi, I missed your feedback on this patch.
+>>
+>> Are you saying I should use the definition in that patch?
+>>
+>> +#define SNDRV_DMA_TYPE_NONCONTIG	8	/* non-coherent SG buffer */
+>>
+>> I am not quite sure if how this is related to the application using mmap or not?
+> 
+> Not about that, but rather meant that some flag for disabling the mmap
+> of PCM control record would be needed for other purposes like the
+> above, too.  That is, this patch could be out of series and applied
+> beforehand in my side.
+
+Thanks Takashi, I will resubmit this separately. I may also break the series in two, the two parts (pause/L1EN support and rewinds) are not really connected, they help reduce power but at different levels.
