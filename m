@@ -2,85 +2,77 @@ Return-Path: <SRS0=zwJL=MF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FC00C07E95
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:27:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC938C07E95
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:28:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DD61261026
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:27:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DD61261026
+	by mail.kernel.org (Postfix) with ESMTPS id 0A44F61026
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jul 2021 14:28:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A44F61026
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6EE421681;
-	Tue, 13 Jul 2021 16:26:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EE421681
+	by alsa0.perex.cz (Postfix) with ESMTPS id A1F0B16B3;
+	Tue, 13 Jul 2021 16:27:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1F0B16B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626186461;
-	bh=Sgyr/28/hWi3iqXKf4RMHJdDGR7248SaE8ju4gupa08=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Z0E1Dbu4dVGOWy7OFfIg6V3NIrrBbv5RBJedOtX6hsnQs5KvfnMbbowQTWV5Zw/j2
-	 jTQYpG7me0V28fvw24+OgR2X9wMaPw+FgCdWHGgGN9SV9XrTZtPcEVW3+rL6hz2QYV
-	 717Vtrkgzhalt5aOU9hBKOtagbAO8Ia2x0heeYyA=
+	s=default; t=1626186487;
+	bh=fUk0hvgWXiHeQbBEOr4eUZbWu+yI4mIGxEfriA2tTe0=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=DUULlUwpFdS9pemfk28+LGXZ6es/VshreMzvvRp6Ng0r8N9jTG+aWDnLtgY6RUMDJ
+	 r9CnBqsRjfPyNyyzANir4gDpc8vnbwdxvbGQV2Rydt6/cn0HCprfdymSiWGttSSIi8
+	 0TSerpciZEMcKF9HTkBGR2EmVed04p2CzPaiN2rw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AC4AAF804F2;
-	Tue, 13 Jul 2021 16:25:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23CCDF804B3;
+	Tue, 13 Jul 2021 16:25:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1C057F804F2; Tue, 13 Jul 2021 16:25:11 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 703A2F804F1; Tue, 13 Jul 2021 16:25:11 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F2A72F8020C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 197EAF802E0
  for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 16:24:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2A72F8020C
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 197EAF802E0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="idUh72vE"; 
+ header.b="FYxdYJaw"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="gLwzQ7w5"
+ header.b="MU557g+p"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 352CA20581
- for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 14:24:55 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id C695722837
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2021 14:24:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626186295; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=i31mm3UNYG7ksKe/S6D/uXkcvMfW/Lx8iyy2EJ3/ez8=;
- b=idUh72vEDSXwuTMqPXT6FlleZrn8MJrOIr2aCZU4nzPK0E+Ra1QSotTYuLTZWx4VNvIot0
- Gc3sYA/u630SeGiZNT5KRY4uhUWIiz63D1rwerAbyGjDyHMmyirAZzMNTj+Ybzj3hQFQDa
- 9ertixWWydei49pcopAomECJgkq2I28=
+ t=1626186294; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=xzo6vhoKd5947wjz6YmV4d8Wh2vRKwf8TYvaiJc4H54=;
+ b=FYxdYJawx/lSCa576DSzlxAAAMfmwx+pwQClhmz0LFkfwK8lCBLRqLDwgVoIbguSDA2pbf
+ bctMfY5+PUkgXeCTs/yrH/3UXrvkCHYQGyvz0f1Bkf3P1pQmeY3zqyLmK6Fi5C1PbNIARM
+ aOG1XcDBSKfN4UmmmDy5x2HUpKWxlXM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626186295;
+ s=susede2_ed25519; t=1626186294;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=i31mm3UNYG7ksKe/S6D/uXkcvMfW/Lx8iyy2EJ3/ez8=;
- b=gLwzQ7w5dDwK/8lMgpFvXlTBKtmNtk6Z7ieKSD/CdvF44dujgpOHTcowzX9s75WaaZsTgC
- pk8nYKeO7Fcfe2AQ==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=xzo6vhoKd5947wjz6YmV4d8Wh2vRKwf8TYvaiJc4H54=;
+ b=MU557g+pUVk3PGZ62+ZYO8WMaPTV6f/SR7cRFIMqfwMg4tvKrn78RW0lsBifiDlGahevfo
+ p22o9060Ssk4UiAw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 25921A3B8C;
- Tue, 13 Jul 2021 14:24:55 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id B6253A3B88;
+ Tue, 13 Jul 2021 14:24:54 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 08/51] ALSA: als300: Allocate resources with device-managed
- APIs
-Date: Tue, 13 Jul 2021 16:24:44 +0200
-Message-Id: <20210713142445.19252-9-tiwai@suse.de>
+Subject: [PATCH 00/51] ALSA: More devres usages
+Date: Tue, 13 Jul 2021 16:24:36 +0200
+Message-Id: <20210713142445.19252-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210713142445.19252-1-tiwai@suse.de>
-References: <20210713142445.19252-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -98,200 +90,159 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the resource management in PCI als300 driver with
-devres as a clean up.  Each manual resource management is converted
-with the corresponding devres helper, and the card object release is
-managed now via card->private_free instead of a lowlevel snd_device.
+Hi,
 
-This should give no user-visible functional changes.
+this is a resurrect of my early RFC patch with the fix and applying to
+more drivers.  The main purpose is merely the code cleanup over the
+tree by replacing the resource allocations with devres helpers as much
+as possible.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/als300.c | 79 ++++++++++------------------------------------
- 1 file changed, 17 insertions(+), 62 deletions(-)
+The only major change is the addition of devres-supported card object
+handling snd_devm_card_new() and the page allocation helper
+snd_devm_alloc_pages().  Those allow us to get rid of the remove
+callback completely in many drivers.  In the end, the series resulted
+in a significant amount of code reduction.
 
-diff --git a/sound/pci/als300.c b/sound/pci/als300.c
-index 668008fc21f7..9c94072572a5 100644
---- a/sound/pci/als300.c
-+++ b/sound/pci/als300.c
-@@ -163,21 +163,11 @@ static void snd_als300_set_irq_flag(struct snd_als300 *chip, int cmd)
- 	snd_als300_gcr_write(chip->port, MISC_CONTROL, tmp);
- }
- 
--static int snd_als300_free(struct snd_als300 *chip)
-+static void snd_als300_free(struct snd_card *card)
- {
--	snd_als300_set_irq_flag(chip, IRQ_DISABLE);
--	if (chip->irq >= 0)
--		free_irq(chip->irq, chip);
--	pci_release_regions(chip->pci);
--	pci_disable_device(chip->pci);
--	kfree(chip);
--	return 0;
--}
-+	struct snd_als300 *chip = card->private_data;
- 
--static int snd_als300_dev_free(struct snd_device *device)
--{
--	struct snd_als300 *chip = device->device_data;
--	return snd_als300_free(chip);
-+	snd_als300_set_irq_flag(chip, IRQ_DISABLE);
- }
- 
- static irqreturn_t snd_als300_interrupt(int irq, void *dev_id)
-@@ -248,11 +238,6 @@ static irqreturn_t snd_als300plus_interrupt(int irq, void *dev_id)
- 	return IRQ_HANDLED;
- }
- 
--static void snd_als300_remove(struct pci_dev *pci)
--{
--	snd_card_free(pci_get_drvdata(pci));
--}
--
- static unsigned short snd_als300_ac97_read(struct snd_ac97 *ac97,
- 							unsigned short reg)
- {
-@@ -610,35 +595,22 @@ static void snd_als300_init(struct snd_als300 *chip)
- }
- 
- static int snd_als300_create(struct snd_card *card,
--			     struct pci_dev *pci, int chip_type,
--			     struct snd_als300 **rchip)
-+			     struct pci_dev *pci, int chip_type)
- {
--	struct snd_als300 *chip;
-+	struct snd_als300 *chip = card->private_data;
- 	void *irq_handler;
- 	int err;
- 
--	static const struct snd_device_ops ops = {
--		.dev_free = snd_als300_dev_free,
--	};
--	*rchip = NULL;
--
--	err = pci_enable_device(pci);
-+	err = pcim_enable_device(pci);
- 	if (err < 0)
- 		return err;
- 
- 	if (dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(28))) {
- 		dev_err(card->dev, "error setting 28bit DMA mask\n");
--		pci_disable_device(pci);
- 		return -ENXIO;
- 	}
- 	pci_set_master(pci);
- 
--	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
--	if (chip == NULL) {
--		pci_disable_device(pci);
--		return -ENOMEM;
--	}
--
- 	chip->card = card;
- 	chip->pci = pci;
- 	chip->irq = -1;
-@@ -646,11 +618,9 @@ static int snd_als300_create(struct snd_card *card,
- 	spin_lock_init(&chip->reg_lock);
- 
- 	err = pci_request_regions(pci, "ALS300");
--	if (err < 0) {
--		kfree(chip);
--		pci_disable_device(pci);
-+	if (err < 0)
- 		return err;
--	}
-+
- 	chip->port = pci_resource_start(pci, 0);
- 
- 	if (chip->chip_type == DEVICE_ALS300_PLUS)
-@@ -658,38 +628,29 @@ static int snd_als300_create(struct snd_card *card,
- 	else
- 		irq_handler = snd_als300_interrupt;
- 
--	if (request_irq(pci->irq, irq_handler, IRQF_SHARED,
--			KBUILD_MODNAME, chip)) {
-+	if (devm_request_irq(&pci->dev, pci->irq, irq_handler, IRQF_SHARED,
-+			     KBUILD_MODNAME, chip)) {
- 		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
--		snd_als300_free(chip);
- 		return -EBUSY;
- 	}
- 	chip->irq = pci->irq;
- 	card->sync_irq = chip->irq;
-+	card->private_free = snd_als300_free;
- 
- 	snd_als300_init(chip);
- 
- 	err = snd_als300_ac97(chip);
- 	if (err < 0) {
- 		dev_err(card->dev, "Could not create ac97\n");
--		snd_als300_free(chip);
- 		return err;
- 	}
- 
- 	err = snd_als300_new_pcm(chip);
- 	if (err < 0) {
- 		dev_err(card->dev, "Could not create PCM\n");
--		snd_als300_free(chip);
--		return err;
--	}
--
--	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
--	if (err < 0) {
--		snd_als300_free(chip);
- 		return err;
- 	}
- 
--	*rchip = chip;
- 	return 0;
- }
- 
-@@ -737,20 +698,16 @@ static int snd_als300_probe(struct pci_dev *pci,
- 		return -ENOENT;
- 	}
- 
--	err = snd_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
--			   0, &card);
--
-+	err = snd_devm_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
-+				sizeof(*chip), &card);
- 	if (err < 0)
- 		return err;
- 
- 	chip_type = pci_id->driver_data;
- 
--	err = snd_als300_create(card, pci, chip_type, &chip);
--	if (err < 0) {
--		snd_card_free(card);
-+	err = snd_als300_create(card, pci, chip_type);
-+	if (err < 0)
- 		return err;
--	}
--	card->private_data = chip;
- 
- 	strcpy(card->driver, "ALS300");
- 	if (chip->chip_type == DEVICE_ALS300_PLUS)
-@@ -764,10 +721,9 @@ static int snd_als300_probe(struct pci_dev *pci,
- 				card->shortname, chip->port, chip->irq);
- 
- 	err = snd_card_register(card);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
-+
- 	pci_set_drvdata(pci, card);
- 	dev++;
- 	return 0;
-@@ -777,7 +733,6 @@ static struct pci_driver als300_driver = {
- 	.name = KBUILD_MODNAME,
- 	.id_table = snd_als300_ids,
- 	.probe = snd_als300_probe,
--	.remove = snd_als300_remove,
- 	.driver = {
- 		.pm = SND_ALS300_PM_OPS,
- 	},
+This series covers only the drivers in pci, x86 and drivers
+subdirectories.  The patches for isa subdirectory will follow later.
+
+
+Takashi
+
+===
+
+Takashi Iwai (51):
+  ALSA: core: Add device-managed page allocator helper
+  ALSA: core: Add managed card creation
+  ALSA: intel8x0: Allocate resources with device-managed APIs
+  ALSA: atiixp: Allocate resources with device-managed APIs
+  ALSA: hda: Allocate resources with device-managed APIs
+  ALSA: doc: Add device-managed resource section
+  ALSA: ad1889: Allocate resources with device-managed APIs
+  ALSA: als300: Allocate resources with device-managed APIs
+  ALSA: als4000: Allocate resources with device-managed APIs
+  ALSA: azt3328: Allocate resources with device-managed APIs
+  ALSA: bt87x: Allocate resources with device-managed APIs
+  ALSA: cmipci: Allocate resources with device-managed APIs
+  ALSA: cs4281: Allocate resources with device-managed APIs
+  ALSA: cs5530: Allocate resources with device-managed APIs
+  ALSA: ens137x: Allocate resources with device-managed APIs
+  ALSA: es1938: Allocate resources with device-managed APIs
+  ALSA: es1968: Allocate resources with device-managed APIs
+  ALSA: fm801: Allocate resources with device-managed APIs
+  ALSA: maestro3: Allocate resources with device-managed APIs
+  ALSA: rme32: Allocate resources with device-managed APIs
+  ALSA: rme96: Allocate resources with device-managed APIs
+  ALSA: sis7019: Allocate resources with device-managed APIs
+  ALSA: sonicvibes: Allocate resources with device-managed APIs
+  ALSA: via82xx: Allocate resources with device-managed APIs
+  ALSA: ali5451: Allocate resources with device-managed APIs
+  ALSA: au88x0: Allocate resources with device-managed APIs
+  ALSA: aw2: Allocate resources with device-managed APIs
+  ALSA: ca0106: Allocate resources with device-managed APIs
+  ALSA: cs46xx: Allocate resources with device-managed APIs
+  ALSA: cs5535audio: Allocate resources with device-managed APIs
+  ALSA: echoaudio: Allocate resources with device-managed APIs
+  ALSA: emu10k1: Allocate resources with device-managed APIs
+  ALSA: emu10k1x: Allocate resources with device-managed APIs
+  ALSA: ice1712: Allocate resources with device-managed APIs
+  ALSA: ice1724: Allocate resources with device-managed APIs
+  ALSA: korg1212: Allocate resources with device-managed APIs
+  ALSA: lola: Allocate resources with device-managed APIs
+  ALSA: oxygen: Allocate resources with device-managed APIs
+  ALSA: riptide: Allocate resources with device-managed APIs
+  ALSA: hdsp: Allocate resources with device-managed APIs
+  ALSA: hdspm: Allocate resources with device-managed APIs
+  ALSA: rme9652: Allocate resources with device-managed APIs
+  ALSA: trident: Allocate resources with device-managed APIs
+  ALSA: vx: Manage vx_core object with devres
+  ALSA: vx222: Allocate resources with device-managed APIs
+  ALSA: ymfpci: Allocate resources with device-managed APIs
+  ALSA: x86: Allocate resources with device-managed APIs
+  ALSA: virmidi: Allocate resources with device-managed APIs
+  ALSA: mtpav: Allocate resources with device-managed APIs
+  ALSA: serial-u16550: Allocate resources with device-managed APIs
+  ALSA: mpu401: Allocate resources with device-managed APIs
+
+ .../kernel-api/writing-an-alsa-driver.rst     |  33 +++
+ include/sound/core.h                          |   5 +
+ include/sound/emu10k1.h                       |   6 +-
+ include/sound/memalloc.h                      |   4 +
+ sound/core/init.c                             | 101 ++++++++-
+ sound/core/memalloc.c                         |  46 ++++
+ sound/drivers/mpu401/mpu401.c                 |  33 +--
+ sound/drivers/mtpav.c                         |  30 +--
+ sound/drivers/serial-u16550.c                 |  57 +----
+ sound/drivers/virmidi.c                       |  21 +-
+ sound/drivers/vx/vx_core.c                    |  12 +-
+ sound/pci/ad1889.c                            | 144 +++---------
+ sound/pci/ali5451/ali5451.c                   |  88 ++------
+ sound/pci/als300.c                            |  79 ++-----
+ sound/pci/als4000.c                           |  59 ++---
+ sound/pci/atiixp.c                            |  92 ++------
+ sound/pci/atiixp_modem.c                      |  92 ++------
+ sound/pci/au88x0/au88x0.c                     | 134 +++--------
+ sound/pci/aw2/aw2-alsa.c                      | 102 ++-------
+ sound/pci/azt3328.c                           | 124 +++-------
+ sound/pci/bt87x.c                             |  97 ++------
+ sound/pci/ca0106/ca0106.h                     |   3 +-
+ sound/pci/ca0106/ca0106_main.c                | 114 +++-------
+ sound/pci/cmipci.c                            | 104 +++------
+ sound/pci/cs4281.c                            | 112 ++--------
+ sound/pci/cs46xx/cs46xx.c                     |  51 ++---
+ sound/pci/cs46xx/cs46xx.h                     |   4 +-
+ sound/pci/cs46xx/cs46xx_lib.c                 | 109 ++-------
+ sound/pci/cs5530.c                            |  86 ++-----
+ sound/pci/cs5535audio/cs5535audio.c           |  94 ++------
+ sound/pci/cs5535audio/cs5535audio_olpc.c      |   7 +-
+ sound/pci/echoaudio/echoaudio.c               | 168 ++++----------
+ sound/pci/echoaudio/echoaudio.h               |   2 +-
+ sound/pci/emu10k1/emu10k1.c                   |  53 ++---
+ sound/pci/emu10k1/emu10k1_main.c              | 102 +++------
+ sound/pci/emu10k1/emu10k1x.c                  | 128 +++--------
+ sound/pci/emu10k1/p16v.c                      |  22 +-
+ sound/pci/ens1370.c                           | 115 +++-------
+ sound/pci/es1938.c                            |  97 ++------
+ sound/pci/es1968.c                            | 112 ++--------
+ sound/pci/fm801.c                             | 103 ++-------
+ sound/pci/hda/hda_controller.h                |   1 -
+ sound/pci/hda/hda_intel.c                     |  26 +--
+ sound/pci/ice1712/ice1712.c                   | 133 +++--------
+ sound/pci/ice1712/ice1724.c                   | 127 +++--------
+ sound/pci/intel8x0.c                          | 140 ++++--------
+ sound/pci/intel8x0m.c                         | 139 ++++--------
+ sound/pci/korg1212/korg1212.c                 | 211 +++++-------------
+ sound/pci/lola/lola.c                         | 127 +++--------
+ sound/pci/lola/lola.h                         |   5 +-
+ sound/pci/lola/lola_pcm.c                     |  20 +-
+ sound/pci/maestro3.c                          | 106 ++-------
+ sound/pci/oxygen/oxygen.c                     |   1 -
+ sound/pci/oxygen/oxygen.h                     |   1 -
+ sound/pci/oxygen/oxygen_lib.c                 |  66 ++----
+ sound/pci/oxygen/se6x.c                       |   1 -
+ sound/pci/oxygen/virtuoso.c                   |   1 -
+ sound/pci/riptide/riptide.c                   |  89 ++------
+ sound/pci/rme32.c                             |  49 +---
+ sound/pci/rme96.c                             |  57 ++---
+ sound/pci/rme9652/hdsp.c                      |  89 +++-----
+ sound/pci/rme9652/hdspm.c                     |  64 +-----
+ sound/pci/rme9652/rme9652.c                   |  85 ++-----
+ sound/pci/sis7019.c                           |  87 ++------
+ sound/pci/sonicvibes.c                        | 117 +++-------
+ sound/pci/trident/trident.c                   |  39 +---
+ sound/pci/trident/trident.h                   |   7 +-
+ sound/pci/trident/trident_main.c              |  90 +++-----
+ sound/pci/trident/trident_memory.c            |   8 +-
+ sound/pci/via82xx.c                           | 106 +++------
+ sound/pci/via82xx_modem.c                     |  86 ++-----
+ sound/pci/vx222/vx222.c                       |  69 +-----
+ sound/pci/ymfpci/ymfpci.c                     |  66 +++---
+ sound/pci/ymfpci/ymfpci.h                     |   8 +-
+ sound/pci/ymfpci/ymfpci_main.c                | 149 ++++---------
+ sound/pcmcia/vx/vxpocket.c                    |  21 --
+ sound/x86/intel_hdmi_audio.c                  |  57 ++---
+ 77 files changed, 1449 insertions(+), 3944 deletions(-)
+
 -- 
 2.26.2
 
