@@ -2,75 +2,79 @@ Return-Path: <SRS0=PPjj=MG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-20.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2661AC07E9A
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 17:18:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81AB6C12002
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 19:35:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 90741613B5
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 17:18:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 90741613B5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8828C613BA
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 19:35:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8828C613BA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3030516B1;
-	Wed, 14 Jul 2021 19:17:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3030516B1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2EBBA167F;
+	Wed, 14 Jul 2021 21:34:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EBBA167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626283119;
-	bh=JvY0RPNhDFGRIDDlcWau0biVcrGrUlcz1AzyNPCi/Bs=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1626291299;
+	bh=6t8P63gUUVmHpSDAy+xkJ87md14MyIPty+YX4jWejW4=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Z+izj4Ach6yd6xLxPadJ8UDs1lgGsT/Rmf4qeUpmKQJgzl0rFHMsyGA5zhjc8ctF5
-	 5f556rD/CuH2ffhGEUymbyB5yR3qqMQMMCrmAzEP1aM/OMfrxGn23n+AxaFtrqXiN0
-	 l8AmSDms9+mU0RPjxFaKf3oQRJLIl9W2QfWFd24o=
+	b=UMDOlVROCcT9WblvHLeoZ9lqN+7Ix/BYiipihoUxgt+3BkyJ6roaHD0zOn+z52dM2
+	 E8KNZvsSnG059wSRwg7UwKUINbTZUnKp9UUNYbVbha6lM4tlno5bTdX8L/eCEkinJn
+	 11VGjjeV/pVnBxZvFY5FAFuZZwefJuz8p0nmwZkw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5131F80516;
-	Wed, 14 Jul 2021 19:14:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C7E1F80253;
+	Wed, 14 Jul 2021 21:34:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E0D43F80517; Wed, 14 Jul 2021 19:14:46 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 7B2D1F80254; Wed, 14 Jul 2021 21:34:06 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E32C6F80507
- for <alsa-devel@alsa-project.org>; Wed, 14 Jul 2021 19:14:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E32C6F80507
-X-IronPort-AV: E=McAfee;i="6200,9189,10045"; a="190770010"
-X-IronPort-AV: E=Sophos;i="5.84,239,1620716400"; d="scan'208";a="190770010"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Jul 2021 10:14:39 -0700
-X-IronPort-AV: E=Sophos;i="5.84,239,1620716400"; d="scan'208";a="413353810"
-Received: from alpinagh-mobl1.amr.corp.intel.com (HELO [10.212.71.223])
- ([10.212.71.223])
- by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Jul 2021 10:14:37 -0700
-Subject: Re: [PATCH v2 16/16] ASoC: qcom: sm8250: Add audioreach support
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- bjorn.andersson@linaro.org, broonie@kernel.org, robh@kernel.org
-References: <20210714153039.28373-1-srinivas.kandagatla@linaro.org>
- <20210714153039.28373-17-srinivas.kandagatla@linaro.org>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <67e19b85-7f97-c965-04ea-6a46eaf19f3f@linux.intel.com>
-Date: Wed, 14 Jul 2021 12:12:36 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 54440F8011C
+ for <alsa-devel@alsa-project.org>; Wed, 14 Jul 2021 21:34:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54440F8011C
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="TH7S5C/G"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8E9760698;
+ Wed, 14 Jul 2021 19:33:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1626291234;
+ bh=6t8P63gUUVmHpSDAy+xkJ87md14MyIPty+YX4jWejW4=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=TH7S5C/G90qfYco8QyzfxkfNyp4Z1j8TOKuOVi3B7wpT42765dmXT5aTkV9Jbb97B
+ NPp+ozMz5/8yvmFCquH7/myfT2P9BfhTNqQu3cTikZDlq3JI9wPHtX9MeeA2xUpfe7
+ LJGUMI+px+WkF0fqBi/YZAyjhmnjbnrSjc69kEYpSU85/aBjzLtFaYSIuHQset9958
+ tCAxKTRwMQ/pWfXTzoeU4Rb071hv7KHRR/gaAEDg9E1XhXo9pqa5gLLF7iuRlJZrVf
+ WMCJfPEsZl8n2t49BwALHqsDIEftANv2Ru/NsDLluPb8upWhO2f0vPvXUCkCbHZrad
+ c9m3kfM/SBgUA==
+Date: Wed, 14 Jul 2021 20:33:15 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Bard Liao <yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH 00/10] soundwire/ASoC: add mockup codec support
+Message-ID: <20210714193315.GK4719@sirena.org.uk>
+References: <20210714032209.11284-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210714153039.28373-17-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, tiwai@suse.de, plai@codeaurora.org,
- lgirdwood@gmail.com, linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="g4MvFqI7wmANiPDo"
+Content-Disposition: inline
+In-Reply-To: <20210714032209.11284-1-yung-chuan.liao@linux.intel.com>
+X-Cookie: C for yourself.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, vinod.koul@linaro.org, tiwai@suse.de,
+ gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ pierre-louis.bossart@linux.intel.com, vkoul@kernel.org,
+ sanyog.r.kale@intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,164 +91,66 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--g4MvFqI7wmANiPDo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 7/14/21 10:30 AM, Srinivas Kandagatla wrote:
-> This patch adds support for parsing dt for AudioReach based soundcards
-> which only have backend DAI links in DT.
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  sound/soc/qcom/sm8250.c | 144 +++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 143 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/qcom/sm8250.c b/sound/soc/qcom/sm8250.c
-> index fe8fd7367e21..421f9d1d2bed 100644
-> --- a/sound/soc/qcom/sm8250.c
-> +++ b/sound/soc/qcom/sm8250.c
-> @@ -20,6 +20,141 @@ struct sm8250_snd_data {
->  	struct sdw_stream_runtime *sruntime[AFE_PORT_MAX];
->  };
->  
-> +static int qcom_audioreach_snd_parse_of(struct snd_soc_card *card)
-> +{
-> +	struct device_node *np;
-> +	struct device_node *codec = NULL;
-> +	struct device_node *platform = NULL;
-> +	struct device_node *cpu = NULL;
-> +	struct device *dev = card->dev;
-> +	struct snd_soc_dai_link *link;
-> +	struct of_phandle_args args;
-> +	struct snd_soc_dai_link_component *dlc;
-> +	int ret, num_links;
-> +
-> +	ret = snd_soc_of_parse_card_name(card, "model");
-> +	if (ret) {
-> +		dev_err(dev, "Error parsing card name: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	/* DAPM routes */
-> +	if (of_property_read_bool(dev->of_node, "audio-routing")) {
-> +		ret = snd_soc_of_parse_audio_routing(card, "audio-routing");
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	/* Populate links */
-> +	num_links = of_get_child_count(dev->of_node);
-> +
-> +	/* Allocate the DAI link array */
-> +	card->dai_link = devm_kcalloc(dev, num_links, sizeof(*link), GFP_KERNEL);
-> +	if (!card->dai_link)
-> +		return -ENOMEM;
-> +
-> +	card->num_links = num_links;
-> +	link = card->dai_link;
-> +
-> +	for_each_child_of_node(dev->of_node, np) {
-> +
-> +		dlc = devm_kzalloc(dev, 2 * sizeof(*dlc), GFP_KERNEL);
-> +		if (!dlc) {
-> +			ret = -ENOMEM;
-> +			goto err_put_np;
-> +		}
-> +
-> +		link->cpus	= &dlc[0];
-> +		link->platforms	= &dlc[1];
-> +
-> +		link->num_cpus		= 1;
-> +		link->num_platforms	= 1;
-> +
-> +
-> +		ret = of_property_read_string(np, "link-name", &link->name);
-> +		if (ret) {
-> +			dev_err(card->dev, "error getting codec dai_link name\n");
-> +			goto err_put_np;
-> +		}
-> +
-> +		cpu = of_get_child_by_name(np, "cpu");
-> +		platform = of_get_child_by_name(np, "platform");
-> +		codec = of_get_child_by_name(np, "codec");
-> +		if (!cpu) {
-> +			dev_err(dev, "%s: Can't find cpu DT node\n", link->name);
-> +			ret = -EINVAL;
-> +			goto err;
-> +		}
-> +
-> +		if (!platform) {
-> +			dev_err(dev, "%s: Can't find platform DT node\n", link->name);
-> +			ret = -EINVAL;
-> +			goto err;
-> +		}
-> +
-> +		if (!codec) {
-> +			dev_err(dev, "%s: Can't find codec DT node\n", link->name);
-> +			ret = -EINVAL;
-> +			goto err;
-> +		}
-> +
-> +		ret = of_parse_phandle_with_args(cpu, "sound-dai", "#sound-dai-cells", 0, &args);
-> +		if (ret) {
-> +			dev_err(card->dev, "%s: error getting cpu phandle\n", link->name);
-> +			goto err;
-> +		}
-> +
-> +		link->cpus->of_node = args.np;
-> +		link->id = args.args[0];
-> +
-> +		ret = snd_soc_of_get_dai_name(cpu, &link->cpus->dai_name);
-> +		if (ret) {
-> +			if (ret != -EPROBE_DEFER)
-> +				dev_err(card->dev, "%s: error getting cpu dai name: %d\n",
-> +					link->name, ret);
-> +			goto err;
-> +		}
-> +
-> +		link->platforms->of_node = of_parse_phandle(platform, "sound-dai", 0);
-> +		if (!link->platforms->of_node) {
-> +			dev_err(card->dev, "%s: platform dai not found\n", link->name);
-> +			ret = -EINVAL;
-> +			goto err;
-> +		}
-> +
-> +		ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
-> +		if (ret < 0) {
-> +			if (ret != -EPROBE_DEFER)
-> +				dev_err(card->dev, "%s: codec dai not found: %d\n",
-> +					link->name, ret);
-> +			goto err;
-> +		}
-> +
-> +		/* DPCM backend */
-> +		link->no_pcm = 1;
-> +		link->ignore_pmdown_time = 1;
-> +		link->ignore_suspend = 1;
+On Wed, Jul 14, 2021 at 11:21:59AM +0800, Bard Liao wrote:
+> Adding mockup SoundWire codec is useful to debug driver/topology changes
+> without having any actual device connected.
 
-why are those two fields set unconditionally?
+The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
 
-If you parse information from DT shouldn't those links be explicitly tagged as requiring those fields to be set?
+  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
 
-It's a recurring battle for me to ask why people set them in Intel machine drivers, I find it really odd that you would set them since they aren't without side effect on clocks and suspend.
+are available in the Git repository at:
 
-> +
-> +		link->stream_name = link->name;
-> +		snd_soc_dai_link_set_capabilities(link);
-> +		link++;
-> +
-> +		of_node_put(cpu);
-> +		of_node_put(codec);
-> +		of_node_put(platform);
-> +
-> +	}
-> +
-> +	return 0;
-> +err:
-> +	of_node_put(cpu);
-> +	of_node_put(codec);
-> +	of_node_put(platform);
-> +err_put_np:
-> +	of_node_put(np);
-> +	return ret;
-> +}
-> +
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-sdw-mockup-codec
 
+for you to fetch changes up to 0ccac3bcf3564cbcba483dec20c7550939873f59:
+
+  ASoC: Intel: boards: sof_sdw: add SoundWire mockup codecs for tests (2021-07-14 18:02:07 +0100)
+
+----------------------------------------------------------------
+ASoC: Add mockup SoundWire CODEC
+
+Useful for bringup testing, not for production usage.
+
+----------------------------------------------------------------
+Pierre-Louis Bossart (4):
+      ASoC: codecs: add SoundWire mockup device support
+      ASoC: soc-acpi: cnl: add table for SoundWire mockup devices
+      ASoC: soc-acpi: tgl: add table for SoundWire mockup devices
+      ASoC: Intel: boards: sof_sdw: add SoundWire mockup codecs for tests
+
+ sound/soc/codecs/Kconfig                           |  18 ++
+ sound/soc/codecs/Makefile                          |   2 +
+ sound/soc/codecs/sdw-mockup.c                      | 310 +++++++++++++++++++++
+ sound/soc/intel/boards/Kconfig                     |   1 +
+ sound/soc/intel/boards/sof_sdw.c                   |  41 +++
+ sound/soc/intel/common/Makefile                    |   3 +-
+ sound/soc/intel/common/soc-acpi-intel-cnl-match.c  |  15 +
+ .../intel/common/soc-acpi-intel-sdw-mockup-match.c | 166 +++++++++++
+ .../intel/common/soc-acpi-intel-sdw-mockup-match.h |  17 ++
+ sound/soc/intel/common/soc-acpi-intel-tgl-match.c  |  23 ++
+ 10 files changed, 595 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/codecs/sdw-mockup.c
+ create mode 100644 sound/soc/intel/common/soc-acpi-intel-sdw-mockup-match.c
+ create mode 100644 sound/soc/intel/common/soc-acpi-intel-sdw-mockup-match.h
+
+--g4MvFqI7wmANiPDo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDvO/oACgkQJNaLcl1U
+h9D7HQf9H4qYjHhqgj4kDvFhdKdFwRRYYaRQcB0IT7zKt4T2NHRl4YX3D2sLOoZz
+/tC4hdM9nwW8BWOsamCScZyKHjtQoE7PjKQwyWMD8JTG8HBKr5NqDiGzdiKUvp0C
+6S+q9Ft3n9zI+G5pGfhTJeIPEtItdvly4xWkbGzuD4ovGbxEte6KM5GBekekmCss
+uEx88ujhNReKj50Q2EHmd+DxblESue3Zm9Xx6JI7tpP83aTM8qv5LZ31F8uYXuRZ
+K0rx0qXqRV47jWGBsQxftShM797m9zowC8Rl9/gTLs1R3g4PVPye40G5kIhnmEpc
+gT3Xq/2+v6991DJh6++wN46L0E26OA==
+=f5bU
+-----END PGP SIGNATURE-----
+
+--g4MvFqI7wmANiPDo--
