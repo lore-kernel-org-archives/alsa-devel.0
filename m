@@ -2,65 +2,55 @@ Return-Path: <SRS0=PPjj=MG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C628C07E9A
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 05:15:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B34BC07E9A
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 06:51:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A187C61369
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 05:15:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A187C61369
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8FE046136E
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 06:51:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8FE046136E
+Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 400551685;
-	Wed, 14 Jul 2021 07:14:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 400551685
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3F9531681;
+	Wed, 14 Jul 2021 08:51:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F9531681
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626239706;
-	bh=rDU0JeH1yq77q6Xafom3SP0OHqPJSUirTryXGA8iUkk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Gizv7WdDgOQS+q9Yaym9BAx52CcKVHiePzFEvqdaA8pMOukFjBEvrZ8Tq2feypLMy
-	 s2ognvEwZVt+e+/VAdspX2ZjMXtNKcGtcSRdKR1NkiinduJK1JqoFWYibf9gkTKfuO
-	 pq01WLGplPcD04xfPgz6tgCM9KiMtuKEHrt2vEzg=
+	s=default; t=1626245513;
+	bh=GEDr+SH46CfIQvTqX7vuW5PFxZCddVnablTMIwZVbfM=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Gn6lViBQjtKnIC0Dvbz0rJWKeiPywDVBvjAQ5BZP8zIJ94Ji0aenSzBrI/FP1VRQA
+	 GLJyWQPy8/eCHE5v7NRrnRZD1hsyC5AxyCsRnZLG1BIkC9inkL2/qhHhY+Y7v6EqHX
+	 JPS9NQ4WfhO1a0H5oaWZksHAdq3kveAXb6l1DVS4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7CA5F8013C;
-	Wed, 14 Jul 2021 07:14:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D02D2F80253;
+	Wed, 14 Jul 2021 08:51:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 23A8AF80254; Wed, 14 Jul 2021 07:14:14 +0200 (CEST)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1F3B4F8011C
- for <alsa-devel@alsa-project.org>; Wed, 14 Jul 2021 07:14:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F3B4F8011C
-X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="207269911"
-X-IronPort-AV: E=Sophos;i="5.84,238,1620716400"; d="scan'208";a="207269911"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jul 2021 22:14:00 -0700
-X-IronPort-AV: E=Sophos;i="5.84,238,1620716400"; d="scan'208";a="505096283"
-Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
- by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jul 2021 22:13:58 -0700
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	vkoul@kernel.org
-Subject: [PATCH] soundwire: cadence: add paranoid check on self-clearing bits
-Date: Wed, 14 Jul 2021 13:13:49 +0800
-Message-Id: <20210714051349.13064-1-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-Cc: vinod.koul@linaro.org, gregkh@linuxfoundation.org,
- pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
- sanyog.r.kale@intel.com, rander.wang@linux.intel.com, bard.liao@intel.com
+ id 02F9AF80254; Wed, 14 Jul 2021 08:51:01 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id B957AF8011C
+ for <alsa-devel@alsa-project.org>; Wed, 14 Jul 2021 08:50:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B957AF8011C
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1626245452262412071-webhooks-bot@alsa-project.org>
+References: <1626245452262412071-webhooks-bot@alsa-project.org>
+Subject: sof-ehl-rt5660: Add UCM for Intel sof-ehl-rt5660
+Message-Id: <20210714065101.02F9AF80254@alsa1.perex.cz>
+Date: Wed, 14 Jul 2021 08:51:01 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,194 +66,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+alsa-project/alsa-ucm-conf pull request #106 was opened from libinyang:
 
-The Cadence IP exposes a small number of self-clearing bits in
-the MCP_CONTROL and MCP_CONFIG_UPDATE registers.
+Add the UCM support for the sof-ehl-rt5660 platform.
 
-We currently do not check that those bits are indeed cleared,
-e.g. during resume operations. That could lead to resuming peripheral
-devices too early.
+Signed-off-by: Libin Yang <libin.yang@intel.com>
 
-In addition, if we happen to read these registers, update one of the
-fields and write the register back, we may be writing stale data that
-might have been cleared in hardware. These sort of race conditions
-could lead to e.g. doing a hw_reset twice or stopping a clock that
-just restarted. There is no clear way of avoiding these potential race
-conditions other than making sure that these registers fields are
-cleared before any read-modify-write sequence. If we detect this sort
-of errors, we only log them since there is no clear recovery
-possible. The only way out is likely to restart the IP with a
-suspend/resume cycle.
-
-Note that the checks are performed before updating the registers, as
-well as after the Intel 'sync go' sequence in multi-link mode. That
-should cover both the start and end of suspend/resume hardware
-configurations. The Multi-Master mode gates the configuration updates
-until the 'sync go' signal is asserted, so we only check on init and
-after the end of the 'sync go' sequence.
-
-The duration of the usleep_range() was defined by the GSYNC frequency
-used in multi-master mode. With a 4kHz frequency, any configuration
-change might be deferred by up to 250us. Extending the range to
-1000-1500us should guarantee that the configuration change is
-completed without any significant impact on the overall resume
-time.
-
-Suggested-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/cadence_master.c | 47 ++++++++++++++++++++++++++++++
- drivers/soundwire/cadence_master.h |  4 +++
- drivers/soundwire/intel.c          | 14 +++++++++
- 3 files changed, 65 insertions(+)
-
-diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index c7372519452b..0b7f037e6cd0 100644
---- a/drivers/soundwire/cadence_master.c
-+++ b/drivers/soundwire/cadence_master.c
-@@ -979,6 +979,49 @@ static void cdns_update_slave_status_work(struct work_struct *work)
- 
- }
- 
-+/* paranoia check to make sure self-cleared bits are indeed cleared */
-+void sdw_cdns_check_self_clearing_bits(struct sdw_cdns *cdns, const char *string,
-+				       bool initial_delay, int reset_iterations)
-+{
-+	u32 mcp_control;
-+	u32 mcp_config_update;
-+	int i;
-+
-+	if (initial_delay)
-+		usleep_range(1000, 1500);
-+
-+	mcp_control = cdns_readl(cdns, CDNS_MCP_CONTROL);
-+
-+	/* the following bits should be cleared immediately */
-+	if (mcp_control & CDNS_MCP_CONTROL_CMD_RST)
-+		dev_err(cdns->dev, "%s failed: MCP_CONTROL_CMD_RST is not cleared\n", string);
-+	if (mcp_control & CDNS_MCP_CONTROL_SOFT_RST)
-+		dev_err(cdns->dev, "%s failed: MCP_CONTROL_SOFT_RST is not cleared\n", string);
-+	if (mcp_control & CDNS_MCP_CONTROL_SW_RST)
-+		dev_err(cdns->dev, "%s failed: MCP_CONTROL_SW_RST is not cleared\n", string);
-+	if (mcp_control & CDNS_MCP_CONTROL_CLK_STOP_CLR)
-+		dev_err(cdns->dev, "%s failed: MCP_CONTROL_CLK_STOP_CLR is not cleared\n", string);
-+	mcp_config_update = cdns_readl(cdns, CDNS_MCP_CONFIG_UPDATE);
-+	if (mcp_config_update & CDNS_MCP_CONFIG_UPDATE_BIT)
-+		dev_err(cdns->dev, "%s failed: MCP_CONFIG_UPDATE_BIT is not cleared\n", string);
-+
-+	i = 0;
-+	while (mcp_control & CDNS_MCP_CONTROL_HW_RST) {
-+		if (i == reset_iterations) {
-+			dev_err(cdns->dev, "%s failed: MCP_CONTROL_HW_RST is not cleared\n", string);
-+			break;
-+		}
-+
-+		dev_dbg(cdns->dev, "%s: MCP_CONTROL_HW_RST is not cleared at iteration %d\n", string, i);
-+		i++;
-+
-+		usleep_range(1000, 1500);
-+		mcp_control = cdns_readl(cdns, CDNS_MCP_CONTROL);
-+	}
-+
-+}
-+EXPORT_SYMBOL(sdw_cdns_check_self_clearing_bits);
-+
- /*
-  * init routines
-  */
-@@ -1256,6 +1299,8 @@ int sdw_cdns_init(struct sdw_cdns *cdns)
- 
- 	cdns_init_clock_ctrl(cdns);
- 
-+	sdw_cdns_check_self_clearing_bits(cdns, __func__, false, 0);
-+
- 	/* reset msg_count to default value of FIFOLEVEL */
- 	cdns->msg_count = cdns_readl(cdns, CDNS_MCP_FIFOLEVEL);
- 
-@@ -1500,6 +1545,8 @@ int sdw_cdns_clock_stop(struct sdw_cdns *cdns, bool block_wake)
- 	struct sdw_slave *slave;
- 	int ret;
- 
-+	sdw_cdns_check_self_clearing_bits(cdns, __func__, false, 0);
-+
- 	/* Check suspend status */
- 	if (sdw_cdns_is_clock_stop(cdns)) {
- 		dev_dbg(cdns->dev, "Clock is already stopped\n");
-diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
-index 6c039d456ba8..e587aede63bf 100644
---- a/drivers/soundwire/cadence_master.h
-+++ b/drivers/soundwire/cadence_master.h
-@@ -187,4 +187,8 @@ int cdns_bus_conf(struct sdw_bus *bus, struct sdw_bus_params *params);
- 
- int cdns_set_sdw_stream(struct snd_soc_dai *dai,
- 			void *stream, bool pcm, int direction);
-+
-+void sdw_cdns_check_self_clearing_bits(struct sdw_cdns *cdns, const char *string,
-+				       bool initial_delay, int reset_iterations);
-+
- #endif /* __SDW_CADENCE_H */
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 15668d6fecd6..fb9c23e13206 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -23,6 +23,7 @@
- #include "intel.h"
- 
- #define INTEL_MASTER_SUSPEND_DELAY_MS	3000
-+#define INTEL_MASTER_RESET_ITERATIONS	10
- 
- /*
-  * debug/config flags for the Intel SoundWire Master.
-@@ -1393,6 +1394,8 @@ int intel_link_startup(struct auxiliary_device *auxdev)
- 			goto err_interrupt;
- 		}
- 	}
-+	sdw_cdns_check_self_clearing_bits(cdns, __func__,
-+					  true, INTEL_MASTER_RESET_ITERATIONS);
- 
- 	/* Register DAIs */
- 	ret = intel_register_dai(sdw);
-@@ -1709,6 +1712,8 @@ static int __maybe_unused intel_resume(struct device *dev)
- 			return ret;
- 		}
- 	}
-+	sdw_cdns_check_self_clearing_bits(cdns, __func__,
-+					  true, INTEL_MASTER_RESET_ITERATIONS);
- 
- 	/*
- 	 * after system resume, the pm_runtime suspend() may kick in
-@@ -1793,6 +1798,9 @@ static int __maybe_unused intel_resume_runtime(struct device *dev)
- 				return ret;
- 			}
- 		}
-+		sdw_cdns_check_self_clearing_bits(cdns, "intel_resume_runtime TEARDOWN",
-+						  true, INTEL_MASTER_RESET_ITERATIONS);
-+
- 	} else if (clock_stop_quirks & SDW_INTEL_CLK_STOP_BUS_RESET) {
- 		ret = intel_init(sdw);
- 		if (ret) {
-@@ -1866,6 +1874,9 @@ static int __maybe_unused intel_resume_runtime(struct device *dev)
- 				}
- 			}
- 		}
-+		sdw_cdns_check_self_clearing_bits(cdns, "intel_resume_runtime BUS_RESET",
-+						  true, INTEL_MASTER_RESET_ITERATIONS);
-+
- 	} else if (!clock_stop_quirks) {
- 
- 		clock_stop0 = sdw_cdns_is_clock_stop(&sdw->cdns);
-@@ -1889,6 +1900,9 @@ static int __maybe_unused intel_resume_runtime(struct device *dev)
- 			dev_err(dev, "unable to resume master during resume\n");
- 			return ret;
- 		}
-+
-+		sdw_cdns_check_self_clearing_bits(cdns, "intel_resume_runtime no_quirks",
-+						  true, INTEL_MASTER_RESET_ITERATIONS);
- 	} else {
- 		dev_err(dev, "%s clock_stop_quirks %x unsupported\n",
- 			__func__, clock_stop_quirks);
--- 
-2.17.1
-
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/106
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/106.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
