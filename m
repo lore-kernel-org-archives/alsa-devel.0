@@ -2,84 +2,77 @@ Return-Path: <SRS0=PPjj=MG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB59CC07E9A
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 16:26:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 692EFC07E9A
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 16:26:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0B5B260E0B
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 16:26:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B5B260E0B
+	by mail.kernel.org (Postfix) with ESMTPS id 409FF61377
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 16:26:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 409FF61377
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9B714167F;
-	Wed, 14 Jul 2021 18:25:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B714167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id A27CA167A;
+	Wed, 14 Jul 2021 18:26:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A27CA167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626279971;
-	bh=i2wXXkbg9vk8CW7avwvJsWqAXKc4hHySeDBwA/WCZXw=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=hxI4ZIqHYp4IDxC8v8OCPfsQy2CBkgpEHeN8JflJTQCtDEq47b9ZaCvqM027vM9T3
-	 DrwXGc4YHnlAO01A+MdT/5TOlcDCZ0WiORA4Cl/afbJavLVcEt47OOzpwzOMbFlfSp
-	 lFu9cAsMktJ9daw4ITk8zv8xrrRmPa2IYI/3KrYc=
+	s=default; t=1626280013;
+	bh=yITBmiUeKzClFsMI1hWbfSrj1JsGZm75bjNrcX443so=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=e5/OOsp0vy3rsU4SWIu7ehj6L8rdimPVpgw4TQY+tHeteb4rnuxq8Mq5S3szRZz9I
+	 cAvULENhwfy9UPjicvzfKIgQbyCGA01vGU/DgaPlAeCklh6l7SVn9aY6N9khpDr0nl
+	 jxWRMC0GLG6MYIUxSG1CfefF7JKY53cXkB71Plic=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30FECF80300;
-	Wed, 14 Jul 2021 18:24:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A8F1F804E7;
+	Wed, 14 Jul 2021 18:24:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 90C1EF8013C; Wed, 14 Jul 2021 18:24:35 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id B11E6F804A9; Wed, 14 Jul 2021 18:24:36 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6A2C5F8013C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 71ACAF80269
  for <alsa-devel@alsa-project.org>; Wed, 14 Jul 2021 18:24:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A2C5F8013C
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71ACAF80269
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="2Mu9yqCh"; 
+ header.b="nqvzggoB"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="bB4E0SbZ"
+ header.b="kYHJdYM/"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 06A9D1FD7C;
- Wed, 14 Jul 2021 16:24:26 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id E9C87229F7;
+ Wed, 14 Jul 2021 16:24:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626279866; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=B+tYYGdB0H+UO8zZ0dbgxkh2l2/D6HiM8oaHivGXcMA=;
- b=2Mu9yqChcf8+ueaC5HgfihK/Ycj92VqAFHmQdoqu8DS5o/FF8rocRzeuS/RjiZxnjSy0Ts
- jJX2T0qH8iVaFzU53X+5yLIAeqU+kcvPao+FI9QLJuDnPUm6zpHjIr8oB7bsUd/hYkJN2A
- Z4EXR9ohAW5rAW68bXoDzsIqx8fNIog=
+ t=1626279865; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=E6MZ7vTHGU7nF/5rzye0t5v0fzqCMgN1QCrd2ptNr/o=;
+ b=nqvzggoB8JGzyu+JHt91CY3rdF1Pwoxz6hN4u90HWs9cWBn6WpP0TGpSVAGOmFf9NhsCl4
+ wbhPCDqGA0gomz5U8SUT6pGVtSx/zfI78pNKZPBA5Up9UTXTdzjHzbSduF2BOIFc7E9BzL
+ Ty2fAM9rPrvhmAztzYZSsEtko/GZe20=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626279866;
+ s=susede2_ed25519; t=1626279865;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=B+tYYGdB0H+UO8zZ0dbgxkh2l2/D6HiM8oaHivGXcMA=;
- b=bB4E0SbZp2yWLEk1k8ZLdC7UnhwfpK2JCxkC2fdt9r6fcx5f9MdZGP4IPIW2MlRmpAeDut
- L3bkOsn+Nlz4XHCw==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=E6MZ7vTHGU7nF/5rzye0t5v0fzqCMgN1QCrd2ptNr/o=;
+ b=kYHJdYM/kvmKdJOTpW6nQWqsX4uo5XAw/ojBZg0BDe1pfyB9J8ITNb+iH1rXi5GKiqcm5y
+ bVR8WqNVDsQJg8Cg==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 017A7A3B89;
- Wed, 14 Jul 2021 16:24:26 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id D7D8EA3B89;
+ Wed, 14 Jul 2021 16:24:25 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/2] ALSA: compress: Initialize mutex in snd_compress_new()
-Date: Wed, 14 Jul 2021 18:24:24 +0200
-Message-Id: <20210714162424.4412-3-tiwai@suse.de>
+Subject: [PATCH 0/2] ALSA: compress: Cleanup and a potential fix
+Date: Wed, 14 Jul 2021 18:24:22 +0200
+Message-Id: <20210714162424.4412-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210714162424.4412-1-tiwai@suse.de>
-References: <20210714162424.4412-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>
@@ -98,46 +91,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Currently the snd_compr.lock mutex isn't initialized in the API
-functions although the lock is used many places in other code in
-compress offload API.  It's because the object was expected to be
-initialized via snd_compress_register(), but this was never used by
-ASoC, which is the only user.  Instead, ASoC initializes the mutex by
-itself, and this is error-prone.
+Hi,
 
-This patch moves the mutex initialization into the more appropriate
-place, snd_compress_new(), for avoiding the missing init.
+this series contains a couple of patches for compress-offload API, one
+for a cleanup of unused API functions and another for the proper mutex
+initialization.  I stumbled on the second while doing the first.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/compress_offload.c | 1 +
- sound/soc/soc-compress.c      | 1 -
- 2 files changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index ed5546ae300a..de514ec8c83d 100644
---- a/sound/core/compress_offload.c
-+++ b/sound/core/compress_offload.c
-@@ -1177,6 +1177,7 @@ int snd_compress_new(struct snd_card *card, int device,
- 	compr->card = card;
- 	compr->device = device;
- 	compr->direction = dirn;
-+	mutex_init(&compr->lock);
- 
- 	snd_compress_set_id(compr, id);
- 
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index b4f59350a5a8..36060800e9bd 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -604,7 +604,6 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
- 		break;
- 	}
- 
--	mutex_init(&compr->lock);
- 	ret = snd_compress_new(rtd->card->snd_card, num, direction,
- 				new_name, compr);
- 	if (ret < 0) {
+Takashi
+
+===
+
+Takashi Iwai (2):
+  ALSA: compress: Drop unused functions
+  ALSA: compress: Initialize mutex in snd_compress_new()
+
+ include/sound/compress_driver.h |  2 -
+ sound/core/compress_offload.c   | 69 +--------------------------------
+ sound/soc/soc-compress.c        |  1 -
+ 3 files changed, 1 insertion(+), 71 deletions(-)
+
 -- 
 2.26.2
 
