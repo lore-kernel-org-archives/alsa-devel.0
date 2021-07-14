@@ -2,92 +2,91 @@ Return-Path: <SRS0=PPjj=MG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37FE2C07E9A
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 15:37:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36998C07E9A
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 15:37:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B2CF96008E
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 15:37:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B2CF96008E
+	by mail.kernel.org (Postfix) with ESMTPS id B76AF6008E
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 15:37:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B76AF6008E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5676516C7;
-	Wed, 14 Jul 2021 17:36:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5676516C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4FE271681;
+	Wed, 14 Jul 2021 17:36:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4FE271681
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626277044;
-	bh=BrqRNG8cihVnauLLe6GJ3GXajQxB9iBpzJrWThYF8SI=;
+	s=default; t=1626277061;
+	bh=8jlmeovQn8EcXNq+H1jw4MVVrp0jrYpB5Cnk6I2Bej0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nsl29xyJi2u+7dporzWA/DXhvZNVpNi9nT8fBtI4P+B7yonRVd+41oFtUX+pQEaxV
-	 J8y4+7pMnI3cOk25IYaw1TvDiX+klSYXFjf6av23QLupP2zifmoA0PJKmYXsom04ZV
-	 biYTNT3PFAO6vf+0ydQJ0Z9Dhew5wieyI6Iwonck=
+	b=Ro8XLs42dBhr4OTA5Z4L2pbpaBvnsFLeWBdtwnU0otNy04+WcL4jN/H2jM5vNVw2y
+	 i2RXtnPY2BSiOX6swv9u5o3Vw5s6Q1ftU2GOCTwHinflVvXA8ugDZ0nFHiOGcu5HQL
+	 1jA2wiAldOzhu1u/zr71c5wUtPbQ2eDI6z3b++ws=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D4569F80253;
-	Wed, 14 Jul 2021 17:32:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8644AF804ED;
+	Wed, 14 Jul 2021 17:32:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 52C1DF80557; Wed, 14 Jul 2021 17:32:09 +0200 (CEST)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
+ id 582D2F8011C; Wed, 14 Jul 2021 17:32:09 +0200 (CEST)
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com
+ [IPv6:2a00:1450:4864:20::433])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 47DFDF800D3
- for <alsa-devel@alsa-project.org>; Wed, 14 Jul 2021 17:31:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47DFDF800D3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 76DAAF80254
+ for <alsa-devel@alsa-project.org>; Wed, 14 Jul 2021 17:30:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76DAAF80254
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="Jcvj/hE3"
-Received: by mail-wm1-x335.google.com with SMTP id f190so282446wmf.4
- for <alsa-devel@alsa-project.org>; Wed, 14 Jul 2021 08:31:05 -0700 (PDT)
+ header.b="IQ81BEeq"
+Received: by mail-wr1-x433.google.com with SMTP id g16so3741147wrw.5
+ for <alsa-devel@alsa-project.org>; Wed, 14 Jul 2021 08:30:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=TOW0xtVmjFZwoE2WPoy9oLyoY5igmiFrh7tl1HYciYs=;
- b=Jcvj/hE3Wcpj5K/yQ+mDVCgrCXATUAHqmP5z/UMvEvUqwJh6c7KQVGuT73xBco8n//
- pF9cozBBuJOuIl9Lt1scJm2OPNYsLSXyrWPDBRc5s90cpyqKv/raTkywMfTtgBP7BJoP
- ogW51NSHBJZiqjjG/L9+pTwtp01GX7AydumCGvD1/ol7eLRzdAYujjG30WqlzbM3PhWw
- LueJUY2fOAYZ5K8Kg5mZOP8piQhN69NLDdQLuCkrbtHPxJker/zCKNrynGt1E6UCZ7mG
- QRyP1N9DzMjwjkoB4n6TrqlZIM5TJIPpUCcFu6CYkLlL0eiWN0FJDZEQzNSC/S1PjBaL
- xf0A==
+ bh=cyAk2v6poN79l/B5El2Lg5vZD9WF0qfTOCiPdf+Otvs=;
+ b=IQ81BEeqHSAOKWWAGUEj0WQM1Y9dLNj45SvUf/i6Fg/S4caLxT3GSgCk2astVt6tGx
+ wTNnrt2lyu548zAuYOe1c5opM3TR7OX09cewGWgWbUKHIO/ppLtB/1aL99wQ4MdnmmOG
+ kreNMt7Y5RVV/b+bi/OjrunewMu/+hO+80yfLCly/sLel7tn47skrRbJTYl6lmLcVf+d
+ gjN8wcUPgeaPbWhMA2EO/nhTzKeYLrmpkNq8RfrUTN0G653S2bk0uze5TdyokKMQii22
+ aZS04uYdnZI4MagUnzeyCNQflCCctT9WTstTeBcm+ZIP9dVZW7UFpb2nd148Oowos9QT
+ lwcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=TOW0xtVmjFZwoE2WPoy9oLyoY5igmiFrh7tl1HYciYs=;
- b=F0F3HUeeJvpfMerwtsAZdWiKxzJHn4836lMRyf+iXunLODSTgTlF46vjzDUVEXaEiu
- IID40JxwT2HDGvoufSGzGMm86X6X4xqmyCRJoOvZhkEn0GJXTothgdum/srFRwR6k/LA
- kF8lnUtsYP2RmBI93nRQ1OkgEXFnXr2i9NslTB+qhSOIISbpyvJkpVVajxIAPAKuHKki
- 77YrksGrubUU6mOOJqkfh00UsuUFeA7nv9nLM0FRT+uQn1xecWUmdkU5cubynypJ1+Sc
- shJ0BOADGeNVNE8YMeqZEfNlWF+TqHY7PkmL3jFrZ5xcMsMZ63en0PXroFhjSXi6G1Vt
- WeuQ==
-X-Gm-Message-State: AOAM530Pz3AffhF2WU06MdsDgRQ0Ty5j8RUQRVqhdyAszLX9dVTDPo5i
- YZR1hPXy5ohl7Y9HTi/0Q+F28A==
-X-Google-Smtp-Source: ABdhPJwGjHnvWmHSApvzdxWfTtKNiDeDwxq2gkAKzIefs0Bx8yYaA2xfdVYM9cgaT7zODQ4vFDyFmw==
-X-Received: by 2002:a1c:63d6:: with SMTP id x205mr12146657wmb.42.1626276665261; 
- Wed, 14 Jul 2021 08:31:05 -0700 (PDT)
+ bh=cyAk2v6poN79l/B5El2Lg5vZD9WF0qfTOCiPdf+Otvs=;
+ b=Ydkop+ocLMThaTO/9F/PR6+aeQzY4jJhSaF9rvYLnesMrlxq/zpnuULOFSA5WQ+cGL
+ HToX8QBHcL2vYaUHfxJ6rK4pNn5m/hrnMWEQl1Di2leD2o5xrKUpd1/r/5Fytf3a20nb
+ reasN6azetgLkUWMb4LQlvFeAUGATu7z8IOfwRNm9mCTxTjqEpE9SksAhLLviL6MN3xk
+ tLiDjV5H/6ZW3PqswADK86On5QBpc1I/lh4CZTsrVMAUe17RfQ+JFhiPQnLAMPTmp0iu
+ OrVXrjTrldIgASsh9+6Os46oXlk7aH83fieumMG8Esu+/7026EJlpdOvL+gru96+leYV
+ bFAA==
+X-Gm-Message-State: AOAM531e5EgCGdi55L4GJ+CKfe5Bq/0iw94/t4u7+B/zos6i3k5s4Rb0
+ NpnJjVX+pJqm8Vye/+CUlKZPBw==
+X-Google-Smtp-Source: ABdhPJxOEEP6C/7xE6RL/b7h3fOki8X23zLH8VvUv37XIXufGUZaBSsNIxf3wHpQ5jG3OtYTGdu0cA==
+X-Received: by 2002:adf:facf:: with SMTP id a15mr13664180wrs.39.1626276657504; 
+ Wed, 14 Jul 2021 08:30:57 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id y6sm2465174wma.48.2021.07.14.08.31.04
+ by smtp.gmail.com with ESMTPSA id y6sm2465174wma.48.2021.07.14.08.30.56
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 14 Jul 2021 08:31:04 -0700 (PDT)
+ Wed, 14 Jul 2021 08:30:57 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: bjorn.andersson@linaro.org,
 	broonie@kernel.org,
 	robh@kernel.org
-Subject: [PATCH v2 05/16] ASoC: qcom: audioreach: add basic pkt alloc support
-Date: Wed, 14 Jul 2021 16:30:28 +0100
-Message-Id: <20210714153039.28373-6-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 03/16] soc: qcom: apr: Add GPR support
+Date: Wed, 14 Jul 2021 16:30:26 +0100
+Message-Id: <20210714153039.28373-4-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210714153039.28373-1-srinivas.kandagatla@linaro.org>
 References: <20210714153039.28373-1-srinivas.kandagatla@linaro.org>
@@ -111,964 +110,383 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Qualcomm Generic Packet router aka GPR is the IPC mechanism found
+in AudioReach next generation signal processing framework to perform
+command and response messages between various processors.
+
+GPR has concepts of static and dynamic port, all static services like
+APM (Audio Processing Manager), PRM (Proxy resource manager) have
+fixed port numbers where as dynamic services like graphs have dynamic
+port numbers which are allocated at runtime. All GPR packet messages
+will have source and destination domain and port along with opcode
+and payload.
+
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/Kconfig                 |   6 +
- sound/soc/qcom/Makefile                |   1 +
- sound/soc/qcom/audioreach/Makefile     |   6 +
- sound/soc/qcom/audioreach/audioreach.c | 272 +++++++++++
- sound/soc/qcom/audioreach/audioreach.h | 624 +++++++++++++++++++++++++
- 5 files changed, 909 insertions(+)
- create mode 100644 sound/soc/qcom/audioreach/Makefile
- create mode 100644 sound/soc/qcom/audioreach/audioreach.c
- create mode 100644 sound/soc/qcom/audioreach/audioreach.h
+ drivers/soc/qcom/Kconfig     |   8 ++
+ drivers/soc/qcom/apr.c       | 157 ++++++++++++++++++++++++++++++++++-
+ include/linux/soc/qcom/apr.h |  58 +++++++++++++
+ 3 files changed, 221 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index cc7c1de2f1d9..721ea56b2cb5 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -103,6 +103,12 @@ config SND_SOC_QDSP6
- 	 audio drivers. This includes q6asm, q6adm,
- 	 q6afe interfaces to DSP using apr.
- 
-+config SND_SOC_QCOM_AUDIOREACH
-+	tristate "SoC ALSA audio drives for Qualcomm AUDIOREACH"
-+	depends on QCOM_GPR
+diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+index 79b568f82a1c..0b6e6412c98e 100644
+--- a/drivers/soc/qcom/Kconfig
++++ b/drivers/soc/qcom/Kconfig
+@@ -209,4 +209,12 @@ config QCOM_APR
+ 	  application processor and QDSP6. APR is
+ 	  used by audio driver to configure QDSP6
+ 	  ASM, ADM and AFE modules.
++
++config QCOM_GPR
++	tristate "Qualcomm GPR Bus (Generic Packet Router)"
++	select QCOM_APR
 +	help
-+	 Support for AudioReach in QDSP
-+
- config SND_SOC_MSM8996
- 	tristate "SoC Machine driver for MSM8996 and APQ8096 boards"
- 	depends on QCOM_APR
-diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
-index 1600ae55bd34..bfa5d44f9592 100644
---- a/sound/soc/qcom/Makefile
-+++ b/sound/soc/qcom/Makefile
-@@ -33,3 +33,4 @@ obj-$(CONFIG_SND_SOC_QCOM_COMMON) += snd-soc-qcom-common.o
++          Enable GPR IPC protocol support between
++          application processor and QDSP6. GPR is
++          used by audio driver to configure QDSP6.
+ endmenu
+diff --git a/drivers/soc/qcom/apr.c b/drivers/soc/qcom/apr.c
+index ef49d26c6848..b8ef77ab993a 100644
+--- a/drivers/soc/qcom/apr.c
++++ b/drivers/soc/qcom/apr.c
+@@ -17,8 +17,13 @@
  
- #DSP lib
- obj-$(CONFIG_SND_SOC_QDSP6) += qdsp6/
-+obj-${CONFIG_SND_SOC_QCOM_AUDIOREACH} += audioreach/
-diff --git a/sound/soc/qcom/audioreach/Makefile b/sound/soc/qcom/audioreach/Makefile
-new file mode 100644
-index 000000000000..575edbed29a2
---- /dev/null
-+++ b/sound/soc/qcom/audioreach/Makefile
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+snd-ar-objs := audioreach.o
+ enum {
+ 	PR_TYPE_APR = 0,
++	PR_TYPE_GPR,
+ };
+ 
++/* Some random values tbh which does not collide with static modules */
++#define GPR_DYNAMIC_PORT_START	0x10000000
++#define GPR_DYNAMIC_PORT_END	0x20000000
 +
-+obj-$(CONFIG_SND_SOC_QCOM_AUDIOREACH) += snd-ar.o
-+
-+
-diff --git a/sound/soc/qcom/audioreach/audioreach.c b/sound/soc/qcom/audioreach/audioreach.c
-new file mode 100644
-index 000000000000..4cda274d59a6
---- /dev/null
-+++ b/sound/soc/qcom/audioreach/audioreach.c
-@@ -0,0 +1,272 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020, Linaro Limited
-+
-+#include <linux/kernel.h>
-+#include <linux/slab.h>
-+#include <linux/soc/qcom/apr.h>
-+#include <dt-bindings/soc/qcom,gpr.h>
-+#include "audioreach.h"
-+
-+/* SubGraph Config */
-+struct apm_sub_graph_data {
-+	struct apm_sub_graph_cfg sub_graph_cfg;
-+	struct apm_prop_data perf_data;
-+	struct apm_sg_prop_id_perf_mode perf;
-+	struct apm_prop_data dir_data;
-+	struct apm_sg_prop_id_direction dir;
-+	struct apm_prop_data sid_data;
-+	struct apm_sg_prop_id_scenario_id sid;
-+
-+} __packed;
-+
-+#define APM_SUB_GRAPH_CFG_NPROP	3
-+
-+struct apm_sub_graph_params  {
-+	struct apm_module_param_data param_data;
-+	uint32_t num_sub_graphs;
-+	struct apm_sub_graph_data sg_cfg[0];
-+} __packed;
-+
-+#define APM_SUB_GRAPH_PSIZE(n) ALIGN(sizeof(struct apm_sub_graph_params) + \
-+				n * sizeof(struct apm_sub_graph_data), 8)
-+/* container config */
-+struct apm_container_obj  {
-+	struct apm_container_cfg container_cfg;
-+	/* Capablity ID list */
-+	struct apm_prop_data cap_data;
-+	uint32_t num_capablity_id;
-+	uint32_t capability_id;
-+
-+	/* Container graph Position */
-+	struct apm_prop_data pos_data;
-+	struct apm_cont_prop_id_graph_pos pos;
-+
-+	/* Container Stack size */
-+	struct apm_prop_data stack_data;
-+	struct apm_cont_prop_id_stack_size stack;
-+
-+	/* Container proc domain id */
-+	struct apm_prop_data domain_data;
-+	struct apm_cont_prop_id_domain domain;
-+} __packed;
-+
-+struct apm_container_params  {
-+	struct apm_module_param_data param_data;
-+	uint32_t num_containers;
-+	struct apm_container_obj cont_obj[0];
-+} __packed;
-+
-+#define APM_CONTAINER_PSIZE(n) ALIGN(sizeof(struct apm_container_params) + \
-+				n * sizeof(struct apm_container_obj), 8)
-+
-+/* Module List config */
-+struct apm_mod_list_obj {
-+	/* Modules list cfg */
-+	uint32_t sub_graph_id;
-+	uint32_t container_id;
-+	uint32_t num_modules;
-+	struct apm_module_obj mod_cfg[0];
-+} __packed;
-+
-+struct apm_module_list_params {
-+	struct apm_module_param_data param_data;
-+	uint32_t num_modules_list;
-+	/* Module list config array */
-+	struct apm_mod_list_obj mod_list_obj[0];
-+
-+} __packed;
-+
-+#define APM_MOD_LIST_OBJ_PSIZE(m) (sizeof(struct apm_mod_list_obj) + \
-+				    m * sizeof(struct apm_module_obj))
-+
-+/* n modules list m mod per list */
-+#define APM_MOD_LIST_PSIZE(n, m) ALIGN(sizeof(struct apm_module_list_params) + \
-+				n * (sizeof(struct apm_mod_list_obj) + \
-+				m * sizeof(struct apm_module_obj)), 8)
-+
-+/* Module Properties */
-+struct apm_mod_prop_obj {
-+	u32 instance_id;
-+	u32 num_props;
-+	struct apm_prop_data prop_data_1;
-+	struct apm_module_prop_id_port_info prop_id_port;
-+} __packed;
-+
-+struct apm_prop_list_params {
-+	struct apm_module_param_data param_data;
-+	u32 num_modules_prop_cfg;
-+	struct apm_mod_prop_obj mod_prop_obj[0];
-+
-+} __packed;
-+
-+#define APM_MOD_PROP_PSIZE(n) ALIGN(sizeof(struct apm_prop_list_params) + \
-+			       n * sizeof(struct apm_mod_prop_obj), 8)
-+
-+/* Module Connections */
-+struct apm_mod_conn_list_params {
-+	struct apm_module_param_data param_data;
-+	u32 num_connections;
-+	struct apm_module_conn_obj conn_obj[0];
-+
-+} __packed;
-+
-+#define APM_MOD_CONN_PSIZE(n) ALIGN(sizeof(struct apm_mod_conn_list_params) + \
-+			       n * sizeof(struct apm_module_conn_obj), 8)
-+
-+struct apm_graph_open_params {
-+	struct apm_cmd_header *cmd_header;
-+	struct apm_sub_graph_params *sg_data;
-+	struct apm_container_params *cont_data;
-+	struct apm_module_list_params *mod_list_data;
-+	struct apm_prop_list_params *mod_prop_data;
-+	struct apm_mod_conn_list_params *mod_conn_list_data;
-+} __packed;
-+
-+struct apm_pcm_module_media_fmt_cmd {
-+	struct apm_module_param_data param_data;
-+	struct param_id_pcm_output_format_cfg header;
-+	struct payload_pcm_output_format_cfg media_cfg;
-+} __packed;
-+
-+struct apm_rd_shmem_module_config_cmd {
-+	struct apm_module_param_data param_data;
-+	struct param_id_rd_sh_mem_cfg cfg;
-+} __packed;
-+
-+struct apm_sh_module_media_fmt_cmd {
-+	struct media_format header;
-+	struct payload_media_fmt_pcm cfg;
-+} __packed;
-+
-+#define APM_SHMEM_FMT_CFG_PSIZE(n) ALIGN( \
-+				sizeof(struct apm_sh_module_media_fmt_cmd) + \
-+				n * sizeof(uint8_t), 8)
-+
-+/* num of channels as argument */
-+#define APM_PCM_MODULE_FMT_CMD_PSIZE(n) ALIGN( \
-+				sizeof(struct apm_pcm_module_media_fmt_cmd) + \
-+				n * sizeof(uint8_t), 8)
-+#define APM_PCM_OUT_FMT_CFG_PSIZE(n) ALIGN((sizeof( \
-+				struct payload_pcm_output_format_cfg) + \
-+				n * sizeof(uint8_t)), 4)
-+
-+struct apm_i2s_module_intf_cfg {
-+	struct apm_module_param_data param_data;
-+	struct param_id_i2s_intf_cfg cfg;
-+} __packed;
-+#define APM_I2S_INTF_CFG_PSIZE ALIGN(sizeof(struct apm_i2s_module_intf_cfg), \
-+				       8)
-+
-+struct apm_module_hw_ep_mf_cfg {
-+	struct apm_module_param_data param_data;
-+	struct param_id_hw_ep_mf mf;
-+} __packed;
-+#define APM_HW_EP_CFG_PSIZE ALIGN( \
-+				sizeof(struct apm_module_hw_ep_mf_cfg), \
-+				8)
-+
-+struct apm_module_frame_size_factor_cfg {
-+	struct apm_module_param_data param_data;
-+	uint32_t frame_size_factor;
-+} __packed;
-+#define APM_FS_CFG_PSIZE ALIGN( \
-+			sizeof(struct apm_module_frame_size_factor_cfg), \
-+			8)
-+
-+struct apm_module_hw_ep_power_mode_cfg {
-+	struct apm_module_param_data param_data;
-+	struct param_id_hw_ep_power_mode_cfg power_mode;
-+} __packed;
-+#define APM_HW_EP_PMODE_CFG_PSIZE ALIGN( \
-+			sizeof(struct apm_module_hw_ep_power_mode_cfg), \
-+			8)
-+
-+struct apm_module_hw_ep_dma_data_align_cfg {
-+	struct apm_module_param_data param_data;
-+	struct param_id_hw_ep_dma_data_align align;
-+} __packed;
-+#define APM_HW_EP_DALIGN_CFG_PSIZE ALIGN( \
-+			sizeof(struct apm_module_hw_ep_dma_data_align_cfg), \
-+			8)
-+
-+struct apm_gain_module_cfg {
-+	struct apm_module_param_data param_data;
-+	struct param_id_gain_cfg gain_cfg;
-+} __packed;
-+#define APM_GAIN_CFG_PSIZE ALIGN(sizeof(struct apm_gain_module_cfg), 8)
-+
-+struct apm_codec_dma_module_intf_cfg {
-+	struct apm_module_param_data param_data;
-+	struct param_id_codec_dma_intf_cfg cfg;
-+} __packed;
-+#define APM_CDMA_INTF_CFG_PSIZE ALIGN( \
-+		      sizeof(struct apm_codec_dma_module_intf_cfg), 8)
-+
-+static void *__audioreach_alloc_pkt(int payload_size, uint32_t opcode,
-+				     uint32_t token, uint32_t src_port,
-+				     uint32_t dest_port, bool has_cmd_hdr)
+ struct packet_router {
+ 	struct rpmsg_endpoint *ch;
+ 	struct device *dev;
+@@ -69,6 +74,85 @@ int apr_send_pkt(struct apr_device *adev, struct apr_pkt *pkt)
+ }
+ EXPORT_SYMBOL_GPL(apr_send_pkt);
+ 
++void gpr_free_port(gpr_port_t *port)
 +{
-+	struct apm_cmd_header *cmd_header;
-+	struct gpr_pkt *pkt;
-+	void *p;
-+	int pkt_size = GPR_HDR_SIZE + payload_size;
++	struct packet_router *gpr = port->pr;
++	unsigned long flags;
 +
-+	if (has_cmd_hdr)
-+		pkt_size += APM_CMD_HDR_SIZE;
++	spin_lock_irqsave(&gpr->svcs_lock, flags);
++	idr_remove(&gpr->svcs_idr, port->id);
++	spin_unlock_irqrestore(&gpr->svcs_lock, flags);
 +
-+	p = kzalloc(pkt_size, GFP_ATOMIC);
-+	if (!p)
++	kfree(port);
++}
++EXPORT_SYMBOL_GPL(gpr_free_port);
++
++gpr_port_t *gpr_alloc_port(struct apr_device *gdev, struct device *dev,
++				gpr_port_cb cb,	void *priv)
++{
++	struct packet_router *pr = dev_get_drvdata(gdev->dev.parent);
++	gpr_port_t *port;
++	struct pkt_router_svc *svc;
++	int id;
++
++	port = kzalloc(sizeof(*port), GFP_KERNEL);
++	if (!port)
 +		return ERR_PTR(-ENOMEM);
 +
-+	pkt = p;
-+	pkt->hdr.version = GPR_PKT_VER;
-+	pkt->hdr.hdr_size = 6;
-+	pkt->hdr.pkt_size = pkt_size;
-+	pkt->hdr.dest_port = dest_port;
-+	pkt->hdr.src_port = src_port;
++	svc = port;
++	svc->callback = cb;
++	svc->pr = pr;
++	svc->priv = priv;
++	svc->dev = dev;
++	spin_lock_init(&svc->lock);
 +
-+	pkt->hdr.dest_domain = GPR_DOMAIN_ID_ADSP;
-+	pkt->hdr.src_domain = GPR_DOMAIN_ID_APPS;
-+	pkt->hdr.token = token;
-+	pkt->hdr.opcode = opcode;
-+
-+	if (has_cmd_hdr) {
-+		p = p + GPR_HDR_SIZE;
-+		cmd_header = p;
-+		cmd_header->payload_size = payload_size;
++	spin_lock(&pr->svcs_lock);
++	id = idr_alloc_cyclic(&pr->svcs_idr, svc, GPR_DYNAMIC_PORT_START,
++			      GPR_DYNAMIC_PORT_END, GFP_ATOMIC);
++	if (id < 0) {
++		dev_err(dev, "Unable to allocate dynamic GPR src port\n");
++		kfree(port);
++		spin_unlock(&pr->svcs_lock);
++		return ERR_PTR(-ENOMEM);
 +	}
 +
-+	return pkt;
-+}
++	svc->id = id;
++	spin_unlock(&pr->svcs_lock);
 +
-+void *audioreach_alloc_pkt(int payload_size, uint32_t opcode,
-+				uint32_t token, uint32_t src_port,
-+				uint32_t dest_port)
++	dev_info(dev, "Adding GPR src port (%x)\n", svc->id);
++
++	return port;
++}
++EXPORT_SYMBOL_GPL(gpr_alloc_port);
++
++static int pkt_router_send_svc_pkt(struct pkt_router_svc *svc, struct gpr_pkt *pkt)
 +{
-+	return __audioreach_alloc_pkt(payload_size, opcode, token, src_port,
-+				     dest_port, false);
++	struct packet_router *pr = svc->pr;
++	struct gpr_hdr *hdr;
++	unsigned long flags;
++	int ret;
++
++	hdr = &pkt->hdr;
++
++	spin_lock_irqsave(&svc->lock, flags);
++	ret = rpmsg_trysend(pr->ch, pkt, hdr->pkt_size);
++	spin_unlock_irqrestore(&svc->lock, flags);
++
++	return ret ? ret : hdr->pkt_size;
 +}
 +
-+void *audioreach_alloc_apm_pkt(int pkt_size, uint32_t opcode,
-+				    uint32_t token, uint32_t src_port)
++int gpr_send_pkt(struct apr_device *gdev, struct gpr_pkt *pkt)
 +{
-+	return __audioreach_alloc_pkt(pkt_size, opcode, token, src_port,
-+				     APM_MODULE_INSTANCE_ID, false);
++	return pkt_router_send_svc_pkt(&gdev->svc, pkt);
 +}
++EXPORT_SYMBOL_GPL(gpr_send_pkt);
 +
-+void *audioreach_alloc_cmd_pkt(int payload_size, uint32_t opcode,
-+				uint32_t token, uint32_t src_port,
-+				uint32_t dest_port)
++int gpr_send_port_pkt(gpr_port_t *port, struct gpr_pkt *pkt)
 +{
-+	return __audioreach_alloc_pkt(payload_size, opcode, token, src_port,
-+				     dest_port, true);
++	return pkt_router_send_svc_pkt(port, pkt);
 +}
++EXPORT_SYMBOL_GPL(gpr_send_port_pkt);
 +
-+void *audioreach_alloc_apm_cmd_pkt(int pkt_size, uint32_t opcode,
-+				    uint32_t token)
+ static void apr_dev_release(struct device *dev)
+ {
+ 	struct apr_device *adev = to_apr_device(dev);
+@@ -173,6 +257,59 @@ static int apr_do_rx_callback(struct packet_router *apr, struct apr_rx_buf *abuf
+ 	return 0;
+ }
+ 
++static int gpr_do_rx_callback(struct packet_router *gpr, struct apr_rx_buf *abuf)
 +{
-+	return __audioreach_alloc_pkt(pkt_size, opcode, token,
-+				       GPR_APM_MODULE_IID,
-+				       APM_MODULE_INSTANCE_ID,
-+				       true);
-+}
-diff --git a/sound/soc/qcom/audioreach/audioreach.h b/sound/soc/qcom/audioreach/audioreach.h
-new file mode 100644
-index 000000000000..952c97bd88d7
---- /dev/null
-+++ b/sound/soc/qcom/audioreach/audioreach.h
-@@ -0,0 +1,624 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
++	uint16_t hdr_size, ver;
++	struct pkt_router_svc *svc = NULL;
++	struct gpr_resp_pkt resp;
++	struct gpr_hdr *hdr;
++	unsigned long flags;
++	void *buf = abuf->buf;
++	int len = abuf->len;
++
++	hdr = buf;
++	ver = hdr->version;
++	if (ver > GPR_PKT_VER + 1)
++		return -EINVAL;
++
++	hdr_size = hdr->hdr_size;
++	if (hdr_size < GPR_PKT_HEADER_WORD_SIZE) {
++		dev_err(gpr->dev, "GPR: Wrong hdr size:%d\n", hdr_size);
++		return -EINVAL;
++	}
++
++	if (hdr->pkt_size < GPR_PKT_HEADER_BYTE_SIZE || hdr->pkt_size != len) {
++		dev_err(gpr->dev, "GPR: Wrong packet size\n");
++		return -EINVAL;
++	}
++
++	resp.hdr = *hdr;
++	resp.payload_size = hdr->pkt_size - (hdr_size * 4);
 +
-+#ifndef __AUDIOREACH_H__
-+#define __AUDIOREACH_H__
-+#include <linux/types.h>
-+#include <linux/soc/qcom/apr.h>
-+#include <sound/soc.h>
-+
-+/* Module IDs */
-+#define MODULE_ID_WR_SHARED_MEM_EP	0x07001000
-+#define MODULE_ID_RD_SHARED_MEM_EP	0x07001001
-+#define MODULE_ID_GAIN			0x07001002
-+#define MODULE_ID_PCM_CNV		0x07001003
-+#define MODULE_ID_PCM_ENC		0x07001004
-+#define MODULE_ID_PCM_DEC		0x07001005
-+#define MODULE_ID_CODEC_DMA_SINK	0x07001023
-+#define MODULE_ID_CODEC_DMA_SOURCE	0x07001024
-+#define MODULE_ID_I2S_SINK		0x0700100A
-+#define MODULE_ID_I2S_SOURCE		0x0700100b
-+#define MODULE_ID_DATA_LOGGING		0x0700101A
-+
-+#define APM_CMD_GET_SPF_STATE		0x01001021
-+#define APM_CMD_RSP_GET_SPF_STATE	0x02001007
-+
-+#define APM_MODULE_INSTANCE_ID		0x00000001
-+#define PRM_MODULE_INSTANCE_ID		0x00000002
-+#define AMDB_MODULE_INSTANCE_ID		0x00000003
-+#define VCPM_MODULE_INSTANCE_ID		0x00000004
-+
-+#define APM_CMD_GRAPH_OPEN			0x01001000
-+#define APM_CMD_GRAPH_PREPARE			0x01001001
-+#define APM_CMD_GRAPH_START			0x01001002
-+#define APM_CMD_GRAPH_STOP			0x01001003
-+#define APM_CMD_GRAPH_CLOSE			0x01001004
-+#define APM_CMD_GRAPH_FLUSH			0x01001005
-+#define APM_CMD_SET_CFG				0x01001006
-+#define APM_CMD_GET_CFG				0x01001007
-+#define APM_CMD_SHARED_MEM_MAP_REGIONS		0x0100100c
-+#define APM_CMD_SHARED_MEM_UNMAP_REGIONS	0x0100100d
-+#define APM_CMD_RSP_SHARED_MEM_MAP_REGIONS	0x02001001
-+#define APM_CMD_RSP_GET_CFG			0x02001000
-+#define APM_CMD_CLOSE_ALL			0x01001013
-+#define APM_CMD_REGISTER_SHARED_CFG		0x0100100A
-+
-+#define APM_MEMORY_MAP_SHMEM8_4K_POOL		3
-+struct apm_cmd_shared_mem_map_regions {
-+	uint16_t mem_pool_id;
-+	uint16_t num_regions;
-+	uint32_t property_flag;
-+} __packed;
-+
-+struct apm_shared_map_region_payload {
-+	uint32_t shm_addr_lsw;
-+	uint32_t shm_addr_msw;
-+	uint32_t mem_size_bytes;
-+} __packed;
-+
-+struct apm_cmd_shared_mem_unmap_regions {
-+	uint32_t mem_map_handle;
-+} __packed;
-+
-+struct apm_cmd_rsp_shared_mem_map_regions {
-+	uint32_t mem_map_handle;
-+} __packed;
-+
-+/* APM module */
-+#define APM_PARAM_ID_SUB_GRAPH_LIST		0x08001005
-+
-+#define APM_PARAM_ID_MODULE_LIST		0x08001002
-+struct apm_param_id_modules_list {
-+	uint32_t num_modules_list;
-+} __packed;
-+
-+#define APM_PARAM_ID_MODULE_PROP		0x08001003
-+struct apm_param_id_module_prop {
-+	uint32_t num_modules_prop_cfg;
-+} __packed;
-+
-+struct apm_module_prop_cfg {
-+	uint32_t instance_id;
-+	uint32_t num_props;
-+} __packed;
-+
-+#define APM_PARAM_ID_MODULE_CONN		0x08001004
-+struct apm_param_id_module_conn {
-+	uint32_t num_connections;
-+} __packed;
-+
-+struct apm_module_conn_obj {
-+	uint32_t src_mod_inst_id;
-+	uint32_t src_mod_op_port_id;
-+	uint32_t dst_mod_inst_id;
-+	uint32_t dst_mod_ip_port_id;
-+} __packed;
-+
-+#define APM_PARAM_ID_GAIN			0x08001006
-+struct param_id_gain_cfg {
-+	uint16_t gain;
-+	uint16_t reserved;
-+};
-+
-+#define PARAM_ID_PCM_OUTPUT_FORMAT_CFG		0x08001008
-+struct param_id_pcm_output_format_cfg {
-+	uint32_t data_format;
-+	uint32_t fmt_id;
-+	uint32_t payload_size;
-+} __packed;
-+
-+struct payload_pcm_output_format_cfg {
-+	uint16_t bit_width;
-+	uint16_t alignment;
-+	uint16_t bits_per_sample;
-+	uint16_t q_factor;
-+	uint16_t endianness;
-+	uint16_t interleaved;
-+	uint16_t reserved;
-+	uint16_t num_channels;
-+	uint8_t channel_mapping[0];
-+} __packed;
-+
-+#define PARAM_ID_ENC_BITRATE			0x08001052
-+struct param_id_enc_bitrate_param {
-+	uint32_t bitrate;
-+} __packed;
-+
-+#define DATA_FORMAT_FIXED_POINT		1
-+#define PCM_LSB_ALIGNED			1
-+#define PCM_MSB_ALIGNED			2
-+#define PCM_LITTLE_ENDIAN		1
-+#define PCM_BIT_ENDIAN			2
-+
-+#define MEDIA_FMT_ID_PCM	0x09001000
-+#define PCM_CHANNEL_L		1
-+#define PCM_CHANNEL_R		2
-+#define SAMPLE_RATE_48K		48000
-+#define BIT_WIDTH_16		16
-+
-+#define APM_PARAM_ID_PROP_PORT_INFO		0x08001015
-+struct apm_modules_prop_info {
-+	uint32_t max_ip_port;
-+	uint32_t max_op_port;
-+} __packed;
-+
-+//Shared memory module
-+#define DATA_CMD_WR_SH_MEM_EP_DATA_BUFFER	0x04001000
-+#define WR_SH_MEM_EP_TIMESTAMP_VALID_FLAG	BIT(31)
-+#define WR_SH_MEM_EP_LAST_BUFFER_FLAG		BIT(30)
-+#define WR_SH_MEM_EP_TS_CONTINUE_FLAG		BIT(29)
-+#define WR_SH_MEM_EP_EOF_FLAG			BIT(4)
-+struct apm_data_cmd_wr_sh_mem_ep_data_buffer {
-+	uint32_t buf_addr_lsw;
-+	uint32_t buf_addr_msw;
-+	uint32_t mem_map_handle;
-+	uint32_t buf_size;
-+	uint32_t timestamp_lsw;
-+	uint32_t timestamp_msw;
-+	uint32_t flags;
-+} __packed;
-+
-+#define DATA_CMD_WR_SH_MEM_EP_DATA_BUFFER_V2	0x0400100A
-+struct apm_data_cmd_wr_sh_mem_ep_data_buffer_v2 {
-+	uint32_t buf_addr_lsw;
-+	uint32_t buf_addr_msw;
-+	uint32_t mem_map_handle;
-+	uint32_t buf_size;
-+	uint32_t timestamp_lsw;
-+	uint32_t timestamp_msw;
-+	uint32_t flags;
-+	uint32_t md_addr_lsw;
-+	uint32_t md_addr_msw;
-+	uint32_t md_map_handle;
-+	uint32_t md_buf_size;
-+} __packed;
-+
-+#define DATA_CMD_RSP_WR_SH_MEM_EP_DATA_BUFFER_DONE	0x05001000
-+struct data_cmd_rsp_wr_sh_mem_ep_data_buffer_done {
-+	uint32_t buf_addr_lsw;
-+	uint32_t buf_addr_msw;
-+	uint32_t mem_map_handle;
-+	uint32_t status;
-+
-+} __packed;
-+
-+#define DATA_CMD_RSP_WR_SH_MEM_EP_DATA_BUFFER_DONE_V2	0x05001004
-+struct data_cmd_rsp_wr_sh_mem_ep_data_buffer_done_v2 {
-+	uint32_t buf_addr_lsw;
-+	uint32_t buf_addr_msw;
-+	uint32_t mem_map_handle;
-+	uint32_t status;
-+	uint32_t md_buf_addr_lsw;
-+	uint32_t md_buf_addr_msw;
-+	uint32_t md_mem_map_handle;
-+	uint32_t md_status;
-+} __packed;
-+
-+#define PARAM_ID_MEDIA_FORMAT	0x0800100C
-+#define DATA_CMD_WR_SH_MEM_EP_MEDIA_FORMAT		0x04001001
-+struct apm_media_format {
-+	uint32_t data_format;
-+	uint32_t fmt_id;
-+	uint32_t payload_size;
-+} __packed;
-+
-+#define DATA_CMD_WR_SH_MEM_EP_EOS			0x04001002
-+#define WR_SH_MEM_EP_EOS_POLICY_LAST	1
-+#define WR_SH_MEM_EP_EOS_POLICY_EACH	2
-+
-+struct data_cmd_wr_sh_mem_ep_eos {
-+	uint32_t policy;
-+
-+} __packed;
-+
-+#define DATA_CMD_RD_SH_MEM_EP_DATA_BUFFER		0x04001003
-+struct data_cmd_rd_sh_mem_ep_data_buffer {
-+	uint32_t buf_addr_lsw;
-+	uint32_t buf_addr_msw;
-+	uint32_t mem_map_handle;
-+	uint32_t buf_size;
-+};
-+
-+#define DATA_CMD_RSP_RD_SH_MEM_EP_DATA_BUFFER		0x05001002
-+struct data_cmd_rsp_rd_sh_mem_ep_data_buffer_done {
-+	uint32_t status;
-+	uint32_t buf_addr_lsw;
-+	uint32_t buf_addr_msw;
-+	uint32_t mem_map_handle;
-+	uint32_t data_size;
-+	uint32_t offset;
-+	uint32_t timestamp_lsw;
-+	uint32_t timestamp_msw;
-+	uint32_t flags;
-+	uint32_t num_frames;
-+};
-+
-+#define DATA_CMD_RD_SH_MEM_EP_DATA_BUFFER_V2		0x0400100B
-+struct data_cmd_rd_sh_mem_ep_data_buffer_v2 {
-+	uint32_t buf_addr_lsw;
-+	uint32_t buf_addr_msw;
-+	uint32_t mem_map_handle;
-+	uint32_t buf_size;
-+	uint32_t md_buf_addr_lsw;
-+	uint32_t md_buf_addr_msw;
-+	uint32_t md_mem_map_handle;
-+	uint32_t md_buf_size;
-+};
-+
-+#define DATA_CMD_RSP_RD_SH_MEM_EP_DATA_BUFFER_V2		0x05001005
-+struct data_cmd_rsp_rd_sh_mem_ep_data_buffer_done_v2 {
-+	uint32_t status;
-+	uint32_t buf_addr_lsw;
-+	uint32_t buf_addr_msw;
-+	uint32_t mem_map_handle;
-+	uint32_t data_size;
-+	uint32_t offset;
-+	uint32_t timestamp_lsw;
-+	uint32_t timestamp_msw;
-+	uint32_t flags;
-+	uint32_t num_frames;
-+	uint32_t md_status;
-+	uint32_t md_buf_addr_lsw;
-+	uint32_t md_buf_addr_msw;
-+	uint32_t md_mem_map_handle;
-+	uint32_t md_size;
-+} __packed;
-+
-+#define PARAM_ID_RD_SH_MEM_CFG			0x08001007
-+struct param_id_rd_sh_mem_cfg {
-+	uint32_t num_frames_per_buffer;
-+	uint32_t metadata_control_flags;
-+
-+} __packed;
-+#define DATA_CMD_WR_SH_MEM_EP_EOS_RENDERED		0x05001001
-+struct data_cmd_wr_sh_mem_ep_eos_rendered {
-+	uint32_t module_instance_id;
-+	uint32_t render_status;
-+} __packed;
-+
-+#define MODULE_ID_WR_SHARED_MEM_EP			0x07001000
-+
-+struct apm_cmd_header {
-+	uint32_t payload_address_lsw;
-+	uint32_t payload_address_msw;
-+	uint32_t mem_map_handle;
-+	uint32_t payload_size;
-+} __packed;
-+
-+#define APM_CMD_HDR_SIZE sizeof(struct apm_cmd_header)
-+
-+struct apm_module_param_data  {
-+	uint32_t module_instance_id;
-+	uint32_t param_id;
-+	uint32_t param_size;
-+	uint32_t error_code;
-+} __packed;
-+
-+#define APM_MODULE_PARAM_DATA_SIZE	sizeof(struct apm_module_param_data)
-+struct apm_module_param_shared_data  {
-+	uint32_t param_id;
-+	uint32_t param_size;
-+} __packed;
-+
-+struct apm_prop_data {
-+	uint32_t prop_id;
-+	uint32_t prop_size;
-+} __packed;
-+
-+/* Sub-Graph Properties */
-+#define APM_PARAM_ID_SUB_GRAPH_CONFIG	0x08001001
-+
-+struct apm_param_id_sub_graph_cfg {
-+	uint32_t num_sub_graphs;
-+} __packed;
-+
-+struct apm_sub_graph_cfg {
-+	uint32_t sub_graph_id;
-+	uint32_t num_sub_graph_prop;
-+} __packed;
-+
-+#define APM_SUB_GRAPH_PROP_ID_PERF_MODE		0x0800100E
-+
-+struct apm_sg_prop_id_perf_mode {
-+	uint32_t perf_mode;
-+} __packed;
-+
-+#define APM_SG_PROP_ID_PERF_MODE_SIZE	4
-+
-+#define APM_SUB_GRAPH_PROP_ID_DIRECTION	0x0800100F
-+
-+struct apm_sg_prop_id_direction {
-+	uint32_t direction;
-+} __packed;
-+
-+#define APM_SG_PROP_ID_DIR_SIZE		4
-+
-+#define APM_SUB_GRAPH_PROP_ID_SCENARIO_ID	0x08001010
-+#define APM_SUB_GRAPH_SID_AUDIO_PLAYBACK	0x1
-+#define APM_SUB_GRAPH_SID_AUDIO_RECORD		0x2
-+#define APM_SUB_GRAPH_SID_AUDIO_VOICE_CALL	0x3
-+
-+struct apm_sg_prop_id_scenario_id {
-+	uint32_t scenario_id;
-+} __packed;
-+
-+#define APM_SG_PROP_ID_SID_SIZE	4
-+//container api
-+#define APM_PARAM_ID_CONTAINER_CONFIG	0x08001000
-+struct apm_param_id_container_cfg {
-+	uint32_t num_containers;
-+} __packed;
-+
-+struct apm_container_cfg {
-+	uint32_t container_id;
-+	uint32_t num_prop;
-+} __packed;
-+
-+struct apm_cont_capablity  {
-+	uint32_t capability_id;
-+} __packed;
-+
-+#define APM_CONTAINER_PROP_ID_CAPABILITY_LIST	0x08001011
-+#define APM_CONTAINER_PROP_ID_CAPABILITY_SIZE	8
-+
-+#define APM_PROP_ID_INVALID			0x0
-+#define APM_CONTAINER_CAP_ID_PP			0x1
-+#define APM_CONTAINER_CAP_ID_PP			0x1
-+
-+struct apm_cont_prop_id_cap_list  {
-+	uint32_t num_capablity_id;
-+} __packed;
-+
-+#define APM_CONTAINER_PROP_ID_GRAPH_POS		0x08001012
-+
-+struct apm_cont_prop_id_graph_pos  {
-+	uint32_t graph_pos;
-+} __packed;
-+
-+#define APM_CONTAINER_PROP_ID_STACK_SIZE	0x08001013
-+struct apm_cont_prop_id_stack_size  {
-+	uint32_t stack_size;
-+} __packed;
-+
-+#define APM_CONTAINER_PROP_ID_PROC_DOMAIN	0x08001014
-+struct apm_cont_prop_id_domain  {
-+	uint32_t proc_domain;
-+} __packed;
-+
-+#define PARAM_ID_I2S_INTF_CFG	0x08001019
-+struct param_id_i2s_intf_cfg {
-+	uint32_t lpaif_type;
-+	uint32_t intf_idx;
-+	uint16_t sd_line_idx;
-+	uint16_t ws_src;
-+} __packed;
-+
-+#define I2S_INTF_TYPE_PRIMARY		0
-+#define I2S_INTF_TYPE_SECOINDARY	1
-+#define I2S_INTF_TYPE_TERTINARY		2
-+#define I2S_INTF_TYPE_QUATERNARY	3
-+#define I2S_INTF_TYPE_QUINARY		4
-+#define I2S_SD0				1
-+#define I2S_SD1				2
-+#define I2S_SD2				3
-+#define I2S_SD3				4
-+
-+#define PORT_ID_I2S_INPUT		2
-+#define PORT_ID_I2S_OUPUT		1
-+#define I2S_STACK_SIZE			2048
-+
-+#define PARAM_ID_HW_EP_MF_CFG		0x08001017
-+struct param_id_hw_ep_mf {
-+	uint32_t sample_rate;
-+	uint16_t bit_width;
-+	uint16_t num_channels;
-+	uint32_t data_format;
-+} __packed;
-+
-+#define PARAM_ID_HW_EP_FRAME_SIZE_FACTOR		0x08001018
-+
-+struct param_id_fram_size_factor {
-+	uint32_t frame_size_factor;
-+} __packed;
-+
-+#define APM_CONTAINER_PROP_ID_PARENT_CONTAINER_ID	0x080010CB
-+struct apm_cont_prop_id_parent_container  {
-+	uint32_t parent_container_id;
-+} __packed;
-+
-+#define APM_CONTAINER_PROP_ID_HEAP_ID			0x08001174
-+#define APM_CONT_HEAP_DEFAULT				0x1
-+#define APM_CONT_HEAP_LOW_POWER				0x2
-+struct apm_cont_prop_id_headp_id  {
-+	uint32_t heap_id;
-+} __packed;
-+
-+struct apm_modules_list {
-+	uint32_t sub_graph_id;
-+	uint32_t container_id;
-+	uint32_t num_modules;
-+} __packed;
-+
-+struct apm_module_obj {
-+	uint32_t module_id;
-+	uint32_t instance_id;
-+} __packed;
-+
-+#define APM_MODULE_PROP_ID_PORT_INFO		0x08001015
-+#define APM_MODULE_PROP_ID_PORT_INFO_SZ		8
-+struct apm_module_prop_id_port_info {
-+	uint32_t max_ip_port;
-+	uint32_t max_op_port;
-+} __packed;
-+
-+#define DATA_LOGGING_MAX_INPUT_PORTS		0x1
-+#define DATA_LOGGING_MAX_OUTPUT_PORTS		0x1
-+#define DATA_LOGGING_STACK_SIZE			2048
-+#define PARAM_ID_DATA_LOGGING_CONFIG		0x08001031
-+struct data_logging_config {
-+	uint32_t log_code;
-+	uint32_t log_tap_point_id;
-+	uint32_t mode;
-+} __packed;
-+
-+#define PARAM_ID_MFC_OUTPUT_MEDIA_FORMAT	0x08001024
-+struct param_id_mfc_media_format {
-+	uint32_t sample_rate;
-+	uint16_t bit_width;
-+	uint16_t num_channels;
-+	uint16_t channel_mapping[0];
-+} __packed;
-+
-+struct media_format {
-+	uint32_t data_format;
-+	uint32_t fmt_id;
-+	uint32_t payload_size;
-+} __packed;
-+
-+struct payload_media_fmt_pcm {
-+	uint32_t sample_rate;
-+	uint16_t bit_width;
-+	uint16_t alignment;
-+	uint16_t bits_per_sample;
-+	uint16_t q_factor;
-+	uint16_t endianness;
-+	uint16_t num_channels;
-+	uint8_t channel_mapping[0];
-+} __packed;
-+
-+#define PARAM_ID_CODEC_DMA_INTF_CFG		0x08001063
-+struct param_id_codec_dma_intf_cfg {
-+	/* 1 - RXTX
-+	 * 2 - WSA
-+	 * 3 - VA
-+	 * 4 - AXI
-+	 */
-+	uint32_t lpaif_type;
 +	/*
-+	 *  RX0 | TX0 = 1
-+	 *  RX1 | TX1 = 2
-+	 *  RX2 | TX2 = 3... so on
++	 * NOTE: hdr_size is not same as GPR_HDR_SIZE as remote can include
++	 * optional headers in to gpr_hdr which should be ignored
 +	 */
-+	uint32_t intf_index;
-+	uint32_t active_channels_mask;
++	if (resp.payload_size > 0)
++		resp.payload = buf + (hdr_size *  4);
++
++
++	spin_lock_irqsave(&gpr->svcs_lock, flags);
++	svc = idr_find(&gpr->svcs_idr, hdr->dest_port);
++	spin_unlock_irqrestore(&gpr->svcs_lock, flags);
++
++	if (!svc) {
++		dev_err(gpr->dev, "GPR: Port(%x) is not registered\n",
++			hdr->dest_port);
++		return -EINVAL;
++	}
++
++	if (svc->callback)
++		svc->callback(&resp, svc->priv, 0);
++
++	return 0;
++}
++
+ static void apr_rxwq(struct work_struct *work)
+ {
+ 	struct packet_router *apr = container_of(work, struct packet_router, rx_work);
+@@ -185,6 +322,9 @@ static void apr_rxwq(struct work_struct *work)
+ 			case PR_TYPE_APR:
+ 				apr_do_rx_callback(apr, abuf);
+ 				break;
++			case PR_TYPE_GPR:
++				gpr_do_rx_callback(apr, abuf);
++				break;
+ 			default:
+ 				break;
+ 			}
+@@ -223,8 +363,13 @@ static int apr_device_probe(struct device *dev)
+ {
+ 	struct apr_device *adev = to_apr_device(dev);
+ 	struct apr_driver *adrv = to_apr_driver(dev->driver);
++	int ret;
+ 
+-	return adrv->probe(adev);
++	ret = adrv->probe(adev);
++	if (!ret)
++		adev->svc.callback = adrv->gpr_callback;
++
++	return ret;
+ }
+ 
+ static int apr_device_remove(struct device *dev)
+@@ -297,6 +442,10 @@ static int apr_add_device(struct device *dev, struct device_node *np,
+ 		dev_set_name(&adev->dev, "aprsvc:%s:%x:%x", adev->name,
+ 			     domain_id, svc_id);
+ 		break;
++	case PR_TYPE_GPR:
++		dev_set_name(&adev->dev, "gprsvc:%s:%x:%x", adev->name,
++			     domain_id, svc_id);
++		break;
+ 	default:
+ 		break;
+ 	}
+@@ -314,7 +463,7 @@ static int apr_add_device(struct device *dev, struct device_node *np,
+ 	of_property_read_string_index(np, "qcom,protection-domain",
+ 				      1, &adev->service_path);
+ 
+-	dev_info(dev, "Adding APR dev: %s\n", dev_name(&adev->dev));
++	dev_info(dev, "Adding APR/GPR dev: %s\n", dev_name(&adev->dev));
+ 
+ 	ret = device_register(&adev->dev);
+ 	if (ret) {
+@@ -446,6 +595,9 @@ static int apr_probe(struct rpmsg_device *rpdev)
+ 	if (of_device_is_compatible(dev->of_node, "qcom,apr")) {
+ 		ret = of_property_read_u32(dev->of_node, "qcom,apr-domain", &apr->dest_domain_id);
+ 		apr->type = PR_TYPE_APR;
++	} else if (of_device_is_compatible(dev->of_node, "qcom,gpr")) {
++		ret = of_property_read_u32(dev->of_node, "qcom,gpr-domain", &apr->dest_domain_id);
++		apr->type = PR_TYPE_GPR;
+ 	}
+ 
+ 	if (ret) {
+@@ -532,6 +684,7 @@ EXPORT_SYMBOL_GPL(apr_driver_unregister);
+ static const struct of_device_id pkt_router_of_match[] = {
+ 	{ .compatible = "qcom,apr"},
+ 	{ .compatible = "qcom,apr-v2"},
++	{ .compatible = "qcom,gpr"},
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, pkt_router_of_match);
+diff --git a/include/linux/soc/qcom/apr.h b/include/linux/soc/qcom/apr.h
+index 6dc0e160131b..10024a4ef18e 100644
+--- a/include/linux/soc/qcom/apr.h
++++ b/include/linux/soc/qcom/apr.h
+@@ -7,6 +7,7 @@
+ #include <linux/device.h>
+ #include <linux/mod_devicetable.h>
+ #include <dt-bindings/soc/qcom,apr.h>
++#include <dt-bindings/soc/qcom,gpr.h>
+ 
+ extern struct bus_type aprbus;
+ 
+@@ -75,19 +76,65 @@ struct apr_resp_pkt {
+ 	int payload_size;
+ };
+ 
++struct gpr_hdr {
++	uint32_t version:4;
++	uint32_t hdr_size:4;
++	uint32_t pkt_size:24;
++	uint32_t dest_domain:8;
++	uint32_t src_domain:8;
++	uint32_t reserved:16;
++	uint32_t src_port;
++	uint32_t dest_port;
++	uint32_t token;
++	uint32_t opcode;
 +} __packed;
 +
-+struct audio_hw_clk_cfg {
-+	uint32_t clock_id;
-+	uint32_t clock_freq;
-+	uint32_t clock_attri;
-+	uint32_t clock_root;
-+} __packed;
-+
-+#define PARAM_ID_HW_EP_POWER_MODE_CFG	0x8001176
-+#define POWER_MODE_0	0 /* default */
-+#define POWER_MODE_1	1 /* XO Shutdown allowed */
-+#define POWER_MODE_2	2 /* XO Shutdown not allowed */
-+struct param_id_hw_ep_power_mode_cfg {
-+	uint32_t power_mode;
-+} __packed;
-+
-+#define PARAM_ID_HW_EP_DMA_DATA_ALIGN	0x08001233
-+#define DMA_DATA_ALIGN_MSB	0
-+#define DMA_DATA_ALIGN_LSB	1
-+
-+#define PCM_MAX_NUM_CHANNEL  8
-+struct param_id_hw_ep_dma_data_align {
-+	uint32_t dma_data_align;
-+} __packed;
-+
-+/* Graph */
-+struct audioreach_connection {
-+	/* Connections */
-+	uint32_t src_mod_inst_id;
-+	uint32_t src_mod_op_port_id;
-+	uint32_t dst_mod_inst_id;
-+	uint32_t dst_mod_ip_port_id;
-+	struct list_head node;
++struct gpr_pkt {
++	struct gpr_hdr hdr;
++	uint32_t payload[0];
 +};
 +
-+struct audioreach_graph_info {
-+	int id;
-+	uint32_t num_sub_graphs;
-+	struct list_head sg_list;
-+	struct list_head connection_list;
-+	spinlock_t sg_list_lock;
++struct gpr_resp_pkt {
++	struct gpr_hdr hdr;
++	void *payload;
++	int payload_size;
 +};
 +
-+struct audioreach_sub_graph {
-+	uint32_t sub_graph_id;
-+	uint32_t perf_mode;
-+	uint32_t direction;
-+	uint32_t scenario_id;
-+	struct list_head node;
++#define GPR_HDR_SIZE			sizeof(struct gpr_hdr)
++#define GPR_PKT_VER			0x0
++#define GPR_PKT_HEADER_WORD_SIZE	((sizeof(struct gpr_pkt) + 3) >> 2)
++#define GPR_PKT_HEADER_BYTE_SIZE	(GPR_PKT_HEADER_WORD_SIZE << 2)
 +
-+	struct audioreach_graph_info *info;
-+	uint32_t num_containers;
-+	struct list_head container_list;
++#define GPR_BASIC_RSP_RESULT		0x02001005
++
++struct gpr_ibasic_rsp_result_t {
++	uint32_t opcode;
++	uint32_t status;
 +};
 +
-+struct audioreach_container {
-+	uint32_t container_id;
-+	uint32_t capability_id;
-+	uint32_t graph_pos;
-+	uint32_t stack_size;
-+	uint32_t proc_domain;
-+	struct list_head node;
++#define GPR_BASIC_EVT_ACCEPTED		0x02001006
 +
-+	uint32_t num_modules;
-+	struct list_head modules_list;
-+	struct audioreach_sub_graph *sub_graph;
++struct gpr_ibasic_rsp_accepted_t {
++	uint32_t opcode;
 +};
 +
-+struct audioreach_module {
-+	uint32_t module_id;
-+	uint32_t instance_id;
+ /* Bits 0 to 15 -- Minor version,  Bits 16 to 31 -- Major version */
+ #define APR_SVC_MAJOR_VERSION(v)	((v >> 16) & 0xFF)
+ #define APR_SVC_MINOR_VERSION(v)	(v & 0xFF)
+ 
++typedef int (*gpr_port_cb) (struct gpr_resp_pkt *d, void *priv, int op);
+ struct packet_router;
+ struct pkt_router_svc {
+ 	struct device *dev;
++	gpr_port_cb callback;
+ 	struct packet_router *pr;
+ 	spinlock_t lock;
+ 	int id;
+ 	void *priv;
+ };
+ 
++typedef struct pkt_router_svc gpr_port_t;
 +
-+	uint32_t max_ip_port;
-+	uint32_t max_op_port;
+ struct apr_device {
+ 	struct device	dev;
+ 	uint16_t	svc_id;
+@@ -99,6 +146,8 @@ struct apr_device {
+ 	struct list_head node;
+ };
+ 
++typedef struct apr_device gpr_device_t;
 +
-+	uint32_t in_port;
-+	uint32_t out_port;
+ #define to_apr_device(d) container_of(d, struct apr_device, dev)
+ 
+ struct apr_driver {
+@@ -106,10 +155,12 @@ struct apr_driver {
+ 	int	(*remove)(struct apr_device *sl);
+ 	int	(*callback)(struct apr_device *a,
+ 			    struct apr_resp_pkt *d);
++	int	(*gpr_callback)(struct gpr_resp_pkt *d, void *data, int op);
+ 	struct device_driver		driver;
+ 	const struct apr_device_id	*id_table;
+ };
+ 
++typedef struct apr_driver gpr_driver_t;
+ #define to_apr_driver(d) container_of(d, struct apr_driver, driver)
+ 
+ /*
+@@ -132,7 +183,14 @@ void apr_driver_unregister(struct apr_driver *drv);
+ #define module_apr_driver(__apr_driver) \
+ 	module_driver(__apr_driver, apr_driver_register, \
+ 			apr_driver_unregister)
++#define module_gpr_driver(__gpr_driver) module_apr_driver(__gpr_driver)
+ 
+ int apr_send_pkt(struct apr_device *adev, struct apr_pkt *pkt);
+ 
++gpr_port_t *gpr_alloc_port(gpr_device_t *gdev, struct device *dev,
++				gpr_port_cb cb, void *priv);
++void gpr_free_port(gpr_port_t *port);
++int gpr_send_port_pkt(gpr_port_t *port, struct gpr_pkt *pkt);
++int gpr_send_pkt(gpr_device_t *gdev, struct gpr_pkt *pkt);
 +
-+	/* Connections */
-+	uint32_t src_mod_inst_id;
-+	uint32_t src_mod_op_port_id;
-+	uint32_t dst_mod_inst_id;
-+	uint32_t dst_mod_ip_port_id;
-+
-+	/* Format specifics */
-+	uint32_t ch_fmt;
-+	uint32_t rate;
-+	uint32_t bit_depth;
-+
-+	/* I2S module Specfic */
-+	uint32_t hw_interface_idx;
-+	uint32_t sd_line_idx;
-+	uint32_t ws_src;
-+	uint32_t frame_size_factor;
-+	uint32_t data_format;
-+	uint32_t hw_interface_type;
-+
-+	/* PCM module specific */
-+	uint32_t interleave_type;
-+
-+	/* GAIN/Vol Control Module */
-+	uint16_t gain;
-+	/* Logging */
-+	uint32_t log_code;
-+	uint32_t log_tap_point_id;
-+	uint32_t mode;
-+	struct list_head node;
-+	struct audioreach_container *container;
-+	struct snd_soc_dapm_widget *widget;
-+};
-+
-+/* Packet Allocation routines */
-+void *audioreach_alloc_apm_cmd_pkt(int pkt_size, uint32_t opcode, uint32_t
-+				    token);
-+void *audioreach_alloc_cmd_pkt(int pkt_size, uint32_t opcode, uint32_t token,
-+				uint32_t src_port, uint32_t dest_port);
-+void *audioreach_alloc_apm_pkt(int pkt_size, uint32_t opcode, uint32_t token,
-+				uint32_t src_port);
-+void *audioreach_alloc_pkt(int pkt_size, uint32_t opcode, uint32_t token,
-+				uint32_t src_port, uint32_t dest_port);
-+#endif /* __AUDIOREACH_H__ */
+ #endif /* __QCOM_APR_H_ */
 -- 
 2.21.0
 
