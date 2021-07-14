@@ -7,57 +7,58 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD49BC07E95
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 02:49:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F46AC07E95
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 02:50:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 11ED4610A6
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 02:49:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11ED4610A6
+	by mail.kernel.org (Postfix) with ESMTPS id DDFD8610A6
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 02:50:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DDFD8610A6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9CAEA1692;
-	Wed, 14 Jul 2021 04:48:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CAEA1692
+	by alsa0.perex.cz (Postfix) with ESMTPS id 81ACB169C;
+	Wed, 14 Jul 2021 04:49:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81ACB169C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626230985;
-	bh=nShhwil9duWOcycNbjuBHHbKbSTqOf4wWJUKTia/640=;
+	s=default; t=1626231009;
+	bh=xIXdWqE+yZ7R1LvP0c0gbpZYw1I4tGp2hJpGaLMpp0w=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hK7XoG7h9t6WXg2YuSNoD7FqdTNJyqjpTsy+SuaanomZ2mCZoE1WXraGeum9qVjqi
-	 OA6z154CsbLwzCg9VfNXnEOr99ylOUBtMHzNE/ryy8tSRDq6am54cXqXTPyf2MmjNz
-	 MGZOr8XmAEAZ3Zpw5aYaD4ez+Kqt/BU4xzgkS+m0=
+	b=cjF7YyLz8uOdN4WakXlPCU1LKq4S7HtQdOEFTffOKGylfC9iLiXo7TUF/koDBydwL
+	 +rWml+cb0Of4sND74IGKMm3vdQXATOStSVxt/o9iPWMPZKrO2JEzhadIGBsVNhwbiY
+	 k7HL3GPGeywhLmlktLGdhFYatoOm3Vg0SRO6w4dU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BD182F804FB;
-	Wed, 14 Jul 2021 04:46:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F72BF804FF;
+	Wed, 14 Jul 2021 04:47:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A8200F8025B; Wed, 14 Jul 2021 04:46:56 +0200 (CEST)
+ id 694EFF804ED; Wed, 14 Jul 2021 04:46:56 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CE428F8025B
- for <alsa-devel@alsa-project.org>; Wed, 14 Jul 2021 04:46:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE428F8025B
-X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="210092405"
-X-IronPort-AV: E=Sophos;i="5.84,238,1620716400"; d="scan'208";a="210092405"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 89D80F80254
+ for <alsa-devel@alsa-project.org>; Wed, 14 Jul 2021 04:46:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89D80F80254
+X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="210092394"
+X-IronPort-AV: E=Sophos;i="5.84,238,1620716400"; d="scan'208";a="210092394"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jul 2021 19:46:40 -0700
-X-IronPort-AV: E=Sophos;i="5.84,238,1620716400"; d="scan'208";a="493593241"
+ 13 Jul 2021 19:46:33 -0700
+X-IronPort-AV: E=Sophos;i="5.84,238,1620716400"; d="scan'208";a="493593216"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jul 2021 19:46:35 -0700
+ 13 Jul 2021 19:46:30 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 5/6] ASoC: SOF: intel: add snd_sof_dsp_check_sdw_irq ops
-Date: Wed, 14 Jul 2021 10:46:13 +0800
-Message-Id: <20210714024614.9357-6-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 3/6] ASoC: SOF: intel: hda: remove HDA_DSP_REG_SNDW_WAKE_STS
+ definition
+Date: Wed, 14 Jul 2021 10:46:11 +0800
+Message-Id: <20210714024614.9357-4-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210714024614.9357-1-yung-chuan.liao@linux.intel.com>
 References: <20210714024614.9357-1-yung-chuan.liao@linux.intel.com>
@@ -79,154 +80,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-SoundWire IRQ status checks are platform-dependent, add new ops structure
-to provide abstraction.
+HDA_DSP_REG_SNDW_WAKE_STS is actually (SDW_SHIM_BASE + SDW_SHIM_WAKESTS)
+and SDW_SHIM_BASE is platform-dependent. Removing HDA_DSP_REG_SNDW_WAKE_STS
+and use (hdev->desc->sdw_shim_base + SDW_SHIM_WAKESTS) instead.
 
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/intel/cnl.c  |  2 ++
- sound/soc/sof/intel/hda.c  | 13 ++++++++++++-
- sound/soc/sof/intel/hda.h  |  7 +++++++
- sound/soc/sof/intel/icl.c  |  1 +
- sound/soc/sof/intel/shim.h |  1 +
- sound/soc/sof/intel/tgl.c  |  4 ++++
- 6 files changed, 27 insertions(+), 1 deletion(-)
+ sound/soc/sof/intel/hda.c | 2 +-
+ sound/soc/sof/intel/hda.h | 1 -
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index acc07cfbc8e3..e115e12a856f 100644
---- a/sound/soc/sof/intel/cnl.c
-+++ b/sound/soc/sof/intel/cnl.c
-@@ -349,6 +349,7 @@ const struct sof_intel_dsp_desc cnl_chip_info = {
- 	.ssp_base_offset = CNL_SSP_BASE_OFFSET,
- 	.sdw_shim_base = SDW_SHIM_BASE,
- 	.sdw_alh_base = SDW_ALH_BASE,
-+	.check_sdw_irq	= hda_common_check_sdw_irq,
- };
- EXPORT_SYMBOL_NS(cnl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
- 
-@@ -367,5 +368,6 @@ const struct sof_intel_dsp_desc jsl_chip_info = {
- 	.ssp_base_offset = CNL_SSP_BASE_OFFSET,
- 	.sdw_shim_base = SDW_SHIM_BASE,
- 	.sdw_alh_base = SDW_ALH_BASE,
-+	.check_sdw_irq	= hda_common_check_sdw_irq,
- };
- EXPORT_SYMBOL_NS(jsl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
 diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 79388489c4e2..c979581c6812 100644
+index e1e368ff2b12..e48e030f6005 100644
 --- a/sound/soc/sof/intel/hda.c
 +++ b/sound/soc/sof/intel/hda.c
-@@ -222,7 +222,7 @@ static int hda_sdw_exit(struct snd_sof_dev *sdev)
- 	return 0;
- }
+@@ -249,7 +249,7 @@ static bool hda_sdw_check_wakeen_irq(struct snd_sof_dev *sdev)
+ 	hdev = sdev->pdata->hw_pdata;
+ 	if (hdev->sdw &&
+ 	    snd_sof_dsp_read(sdev, HDA_DSP_BAR,
+-			     HDA_DSP_REG_SNDW_WAKE_STS))
++			     hdev->desc->sdw_shim_base + SDW_SHIM_WAKESTS))
+ 		return true;
  
--static bool hda_dsp_check_sdw_irq(struct snd_sof_dev *sdev)
-+bool hda_common_check_sdw_irq(struct snd_sof_dev *sdev)
- {
- 	struct sof_intel_hda_dev *hdev;
- 	bool ret = false;
-@@ -248,6 +248,17 @@ static bool hda_dsp_check_sdw_irq(struct snd_sof_dev *sdev)
- 	return ret;
- }
- 
-+static bool hda_dsp_check_sdw_irq(struct snd_sof_dev *sdev)
-+{
-+	const struct sof_intel_dsp_desc *chip;
-+
-+	chip = get_chip_info(sdev->pdata);
-+	if (chip && chip->check_sdw_irq)
-+		return chip->check_sdw_irq(sdev);
-+
-+	return false;
-+}
-+
- static irqreturn_t hda_dsp_sdw_thread(int irq, void *context)
- {
- 	return sdw_intel_thread(irq, context);
+ 	return false;
 diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 06ea0006999a..4fdfb108645c 100644
+index 4d44f8910393..06ea0006999a 100644
 --- a/sound/soc/sof/intel/hda.h
 +++ b/sound/soc/sof/intel/hda.h
-@@ -691,6 +691,7 @@ int hda_dsp_trace_trigger(struct snd_sof_dev *sdev, int cmd);
- int hda_sdw_startup(struct snd_sof_dev *sdev);
- void hda_sdw_int_enable(struct snd_sof_dev *sdev, bool enable);
- void hda_sdw_process_wakeen(struct snd_sof_dev *sdev);
-+bool hda_common_check_sdw_irq(struct snd_sof_dev *sdev);
+@@ -233,7 +233,6 @@
+ #define HDA_DSP_REG_ADSPIS2		(HDA_DSP_GEN_BASE + 0x14)
  
- #else
+ #define HDA_DSP_REG_ADSPIS2_SNDW	BIT(5)
+-#define HDA_DSP_REG_SNDW_WAKE_STS      0x2C192
  
-@@ -736,6 +737,12 @@ static inline bool hda_sdw_check_wakeen_irq(struct snd_sof_dev *sdev)
- static inline void hda_sdw_process_wakeen(struct snd_sof_dev *sdev)
- {
- }
-+
-+static inline bool hda_common_check_sdw_irq(struct snd_sof_dev *sdev)
-+{
-+	return false;
-+}
-+
- #endif
- 
- /* common dai driver */
-diff --git a/sound/soc/sof/intel/icl.c b/sound/soc/sof/intel/icl.c
-index 74a14b24794c..ee095b8f2d01 100644
---- a/sound/soc/sof/intel/icl.c
-+++ b/sound/soc/sof/intel/icl.c
-@@ -144,5 +144,6 @@ const struct sof_intel_dsp_desc icl_chip_info = {
- 	.ssp_base_offset = CNL_SSP_BASE_OFFSET,
- 	.sdw_shim_base = SDW_SHIM_BASE,
- 	.sdw_alh_base = SDW_ALH_BASE,
-+	.check_sdw_irq	= hda_common_check_sdw_irq,
- };
- EXPORT_SYMBOL_NS(icl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
-diff --git a/sound/soc/sof/intel/shim.h b/sound/soc/sof/intel/shim.h
-index ee031248d834..e9f7d4d7fcce 100644
---- a/sound/soc/sof/intel/shim.h
-+++ b/sound/soc/sof/intel/shim.h
-@@ -166,6 +166,7 @@ struct sof_intel_dsp_desc {
- 	int ssp_base_offset;		/* base address of the SSPs */
- 	u32 sdw_shim_base;
- 	u32 sdw_alh_base;
-+	bool (*check_sdw_irq)(struct snd_sof_dev *sdev);
- };
- 
- extern const struct snd_sof_dsp_ops sof_tng_ops;
-diff --git a/sound/soc/sof/intel/tgl.c b/sound/soc/sof/intel/tgl.c
-index 73aa45bc6f2b..199d41a7dc9b 100644
---- a/sound/soc/sof/intel/tgl.c
-+++ b/sound/soc/sof/intel/tgl.c
-@@ -139,6 +139,7 @@ const struct sof_intel_dsp_desc tgl_chip_info = {
- 	.ssp_base_offset = CNL_SSP_BASE_OFFSET,
- 	.sdw_shim_base = SDW_SHIM_BASE,
- 	.sdw_alh_base = SDW_ALH_BASE,
-+	.check_sdw_irq	= hda_common_check_sdw_irq,
- };
- EXPORT_SYMBOL_NS(tgl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
- 
-@@ -157,6 +158,7 @@ const struct sof_intel_dsp_desc tglh_chip_info = {
- 	.ssp_base_offset = CNL_SSP_BASE_OFFSET,
- 	.sdw_shim_base = SDW_SHIM_BASE,
- 	.sdw_alh_base = SDW_ALH_BASE,
-+	.check_sdw_irq	= hda_common_check_sdw_irq,
- };
- EXPORT_SYMBOL_NS(tglh_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
- 
-@@ -175,6 +177,7 @@ const struct sof_intel_dsp_desc ehl_chip_info = {
- 	.ssp_base_offset = CNL_SSP_BASE_OFFSET,
- 	.sdw_shim_base = SDW_SHIM_BASE,
- 	.sdw_alh_base = SDW_ALH_BASE,
-+	.check_sdw_irq	= hda_common_check_sdw_irq,
- };
- EXPORT_SYMBOL_NS(ehl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
- 
-@@ -193,5 +196,6 @@ const struct sof_intel_dsp_desc adls_chip_info = {
- 	.ssp_base_offset = CNL_SSP_BASE_OFFSET,
- 	.sdw_shim_base = SDW_SHIM_BASE,
- 	.sdw_alh_base = SDW_ALH_BASE,
-+	.check_sdw_irq	= hda_common_check_sdw_irq,
- };
- EXPORT_SYMBOL_NS(adls_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
+ /* Intel HD Audio Inter-Processor Communication Registers */
+ #define HDA_DSP_IPC_BASE		0x40
 -- 
 2.17.1
 
