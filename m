@@ -2,76 +2,83 @@ Return-Path: <SRS0=PPjj=MG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00433C07E9A
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 15:58:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84164C07E9A
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 16:25:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CC6D560FEB
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 15:58:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC6D560FEB
+	by mail.kernel.org (Postfix) with ESMTPS id 5ACB8613AB
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 16:25:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5ACB8613AB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 617601654;
-	Wed, 14 Jul 2021 17:58:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 617601654
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2DF521678;
+	Wed, 14 Jul 2021 18:24:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2DF521678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626278332;
-	bh=SKCnb/eIuTrVyunpch/wIe19Xz1rsgxRCQg61kM4o5Y=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1626279916;
+	bh=ydb3bROEvCOilFapPnKxoGtuhQaXeTXNdteDjVKfyIQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=G3F6+vtd1qKwpFowS7Pl0nEXzaraJkfSb60USwbT/z5TM4Jblt8IM0qW8/FTeQTBe
-	 SisG7hF8SW1vNY9TsNEXgCy7UfRUFBppl7rtdyE+6V9ZIk5IUMRwR0Tgz4icSOVFOb
-	 OfrQf/evDt2vLev94rhsF+mGF1ndqXec7IVg1KBU=
+	b=QhKJsMI1AQ5VpWF/rnGC59MBh5NTjkW6cdTqZLhvchJLngMAZkr3YP+vvsRgH1HGE
+	 SORFN2zHEfE5t1evAZIPpOEh65jdNwjbwVzSX0iFiUXU2kedzeWNPbgaSGT6cvna9r
+	 7NVjl7LBuhQAFNQyoKI8oY2J9Jw+GXbnrlz17Yyg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27040F804E7;
-	Wed, 14 Jul 2021 17:56:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C0BD1F80253;
+	Wed, 14 Jul 2021 18:24:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 169FCF804DA; Wed, 14 Jul 2021 17:56:28 +0200 (CEST)
+ id E2E8CF80254; Wed, 14 Jul 2021 18:24:23 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8B8D1F80300
- for <alsa-devel@alsa-project.org>; Wed, 14 Jul 2021 17:56:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B8D1F80300
+ by alsa1.perex.cz (Postfix) with ESMTPS id 830E8F8013C
+ for <alsa-devel@alsa-project.org>; Wed, 14 Jul 2021 18:24:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 830E8F8013C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="J3G8yvhX"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C76660FEB;
- Wed, 14 Jul 2021 15:56:19 +0000 (UTC)
+ header.b="UKnUVgN5"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A573461106;
+ Wed, 14 Jul 2021 16:24:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1626278180;
- bh=SKCnb/eIuTrVyunpch/wIe19Xz1rsgxRCQg61kM4o5Y=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=J3G8yvhXUAmhRLOFvwIkrw+DX/J7EymymYfHm3RspRr24QPHVsZxHEh0TVTC+f31v
- NHHjT3N09kaS14Rr1vaejUP8nkjnty3JyItST0/u6F8hjlhbkwhqT8g40kba7312/L
- SXf6xUBJSNwJ3tRCComaFi9TKmzPYQdvzYpOkdJfwOQ04BH+i9+BXF+Oh3TfACo2X2
- a1yFuBPoA0FdqwNmisv0NAA+OiGc4ejVuQaoFtnE+mZqEPJmWtyjB/lyRZ17zQX9Uh
- r97+AMZ0CfbdGnkAYUuXlqkDZx/uk8sNPeGrOgr+GY+lxyeHl7G7ooNWb4o5g0vvPg
- ew/tqTSJT5YCA==
+ s=k20201202; t=1626279856;
+ bh=ydb3bROEvCOilFapPnKxoGtuhQaXeTXNdteDjVKfyIQ=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=UKnUVgN5Vuj1Xmz2RRwq631aSQ4uiLZdgsPhSjSkXWpj/uHQ8Jmy3IvnQmSUEfPwT
+ 11m8uzFLs7Cw/BEjuHqNR8m9LlynlV32YhjUp1eGR+h5c18cIOlv0U3x+7Fe/uv/gb
+ 9SaMsAzCIQboNDfl6sQS4RTAtZsTggaa+wDI7z7JvPQv7SF6iJRpYtigVKmvr9yuYB
+ N5lhzQileVGiG/ISOyLZm1k9ievTEcE3X2AQH4UcBq4OYvuSPX/thWnXcpmtd5XGUy
+ 3W3L+/PeJT2OwQpRBl/G5Nakb/ggDmUSs7gDiSR74LO9mHPrHogj9H5JtZPm1ULIT1
+ w0KlfpiSsmGQQ==
+Date: Wed, 14 Jul 2021 17:23:39 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Oder Chiou <oder_chiou@realtek.com>, Jaroslav Kysela <perex@perex.cz>,
- Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Dmitry Osipenko <digetx@gmail.com>, Maxim Schwalm <maxim.schwalm@gmail.com>
-Subject: Re: [PATCH v1] ASoC: rt5631: Fix regcache sync errors on resume
-Date: Wed, 14 Jul 2021 16:55:21 +0100
-Message-Id: <162627737185.54838.4180550842494082478.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210712005011.28536-1-digetx@gmail.com>
-References: <20210712005011.28536-1-digetx@gmail.com>
+To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Subject: Re: [PATCH 10/12] ASoC: amd: add vangogh pci driver pm ops
+Message-ID: <20210714162339.GD4719@sirena.org.uk>
+References: <20210707055623.27371-1-vijendar.mukunda@amd.com>
+ <20210707055623.27371-11-vijendar.mukunda@amd.com>
+ <ce03f4b3-874f-a286-5523-7793722a6ee7@linux.intel.com>
+ <b754ef05-065d-ee7b-754f-1498f7c6cff6@amd.com>
+ <38def9e9-5161-9441-c88a-43b21edfec43@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="Xm/fll+QQv+hsKip"
+Content-Disposition: inline
+In-Reply-To: <38def9e9-5161-9441-c88a-43b21edfec43@amd.com>
+X-Cookie: C for yourself.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org, Sunil-kumar.Dommati@amd.com,
+ Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Alexander.Deucher@amd.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,40 +94,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 12 Jul 2021 03:50:11 +0300, Dmitry Osipenko wrote:
-> The ALC5631 does not like multi-write accesses, avoid them. This fixes:
-> 
-> rt5631 4-001a: Unable to sync registers 0x3a-0x3c. -121
-> 
-> errors on resume from suspend (and all registers after the registers in
-> the error not being synced).
-> 
-> [...]
 
-Applied to
+--Xm/fll+QQv+hsKip
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Tue, Jul 13, 2021 at 12:06:38PM +0530, Mukunda,Vijendar wrote:
+> On 7/8/21 5:11 PM, Mukunda,Vijendar wrote:
+> > On 7/7/21 10:04 PM, Pierre-Louis Bossart wrote:
 
-Thanks!
+> >>> +static const struct dev_pm_ops acp5x_pm =3D {
+> >>> +	.runtime_suspend =3D snd_acp5x_suspend,
+> >>> +	.runtime_resume =3D  snd_acp5x_resume,
+> >>> +	.resume =3D	snd_acp5x_resume,
 
-[1/1] ASoC: rt5631: Fix regcache sync errors on resume
-      commit: c71f78a662611fe2c67f3155da19b0eff0f29762
+> >> use SET_SYSTEM_SLEEP_PM_OPS and SET_RUNTIME_PM_OPS?
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+> suspend and resume callbacks implementation is same for runtime pm ops
+> and system level pm ops in ACP PCI driver i.e in suspend callback acp
+> de-init sequence will be invoked and in resume callback acp init
+> sequence will be invoked.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> As per our understanding if we safeguard code with CONFIG_PM_SLEEP
+> macro, then runtime pm ops won't work.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+That's not what Pierre is suggesting though?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> Do we need to duplicate the same code as mentioned below?
 
-Thanks,
-Mark
+> static const struct dev_pm_ops acp5x_pm =3D {
+>         SET_RUNTIME_PM_OPS(snd_acp5x_runtime_suspend,
+>                            snd_acp5x_runtime_resume, NULL)
+>         SET_SYSTEM_SLEEP_PM_OPS(snd_acp5x_suspend, snd_acp5x_resume)
+> };
+
+Using the SET_ macros doesn't require that you duplicate the functions,
+it literally just means changing the way the ops are assigned. =20
+
+--Xm/fll+QQv+hsKip
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDvD4oACgkQJNaLcl1U
+h9CFSAf9GXJDYHFf1ZYbjnC5Y/psNti5ZQIkL894y7bQ1oR/KwYUHFEUKag4zOJa
+UxaEGAEFQe2pcFefvMz8jo6MtARR3jgsoetUVHCQTLdoaEcdsP98XxCQX+cr3yXq
+41LkTiKUl1EEiThrDUkDxPlVxzn46R17ilHVQquyAcUgdnZqNb2Ggk2I/HWySA/x
+ZkSjs8O7cIi0Z90c9qLVoFJRMY4SPvZ9hcf6aEbu/0eo24kWnt21bxD0V03y9u9D
+fN6UlPF3anejGy3w+B78Ih651m4khWzqqEGYTtXcF6yAll7CYGOSHdMIQVKCd3AI
+VI5Maa4nX676OciEdgu0YfOmZx3VUw==
+=9L9r
+-----END PGP SIGNATURE-----
+
+--Xm/fll+QQv+hsKip--
