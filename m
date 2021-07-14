@@ -7,57 +7,56 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3ABBC07E95
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 01:31:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E9D2C07E95
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 01:43:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 050E661374
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 01:31:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 050E661374
+	by mail.kernel.org (Postfix) with ESMTPS id 26F4461360
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 01:43:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26F4461360
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DB331168C;
-	Wed, 14 Jul 2021 03:30:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB331168C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 311761690;
+	Wed, 14 Jul 2021 03:42:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 311761690
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626226308;
-	bh=Xs3Jemi2rq7XXMytV8JplIB/loUWYG1pYPA/65laKhU=;
+	s=default; t=1626227015;
+	bh=RvRu5zehQkKQfBEsnQ46TMGajM2cQv4gVwGtAr0AMNs=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=t+7YwyjYPDbHZ5xuhsoS3JDRzXnRqlI8jhChTRcpM714TG0vnZKACD6OiXo02dyI/
-	 yhcrILBSbPLw26HSZOFFS/hT45Z10xVqC9CpdhlmkgwQshGCJVA3nZiroNIac1F7T9
-	 w1sfHAEuduLYOaM9+DQFtWaL0sTv6QpMMmQPv2I8=
+	b=FDFbg8MYn/DdN2O8W1wI5ipB5LzbjgeKzmG7MIi4lT/2PX7RWmiaBvb/uGVs2Uob/
+	 VpJaq+8SHXDfg7ve2y6shsucFJOHQ1uilawjYvnZ9schM4ulKcfCzSWeGsph4R5O0D
+	 ziH9wGNAEtCmueHqicRz4aL/m8h9X57o3dK4xZqo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5FC97F8020C;
-	Wed, 14 Jul 2021 03:30:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A5CDEF8020C;
+	Wed, 14 Jul 2021 03:42:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D9856F80217; Wed, 14 Jul 2021 03:30:56 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ id 5CA11F80217; Wed, 14 Jul 2021 03:42:43 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BFF01F800ED
- for <alsa-devel@alsa-project.org>; Wed, 14 Jul 2021 03:30:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFF01F800ED
-X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="190646659"
-X-IronPort-AV: E=Sophos;i="5.84,237,1620716400"; d="scan'208";a="190646659"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jul 2021 18:30:40 -0700
-X-IronPort-AV: E=Sophos;i="5.84,237,1620716400"; d="scan'208";a="570947946"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1B367F800ED
+ for <alsa-devel@alsa-project.org>; Wed, 14 Jul 2021 03:42:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B367F800ED
+X-IronPort-AV: E=McAfee;i="6200,9189,10044"; a="197455083"
+X-IronPort-AV: E=Sophos;i="5.84,237,1620716400"; d="scan'208";a="197455083"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Jul 2021 18:42:20 -0700
+X-IronPort-AV: E=Sophos;i="5.84,237,1620716400"; d="scan'208";a="459796564"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
- by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jul 2021 18:30:38 -0700
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Jul 2021 18:42:17 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH] soundwire: dmi-quirks: add ull suffix for SoundWire _ADR
- values
-Date: Wed, 14 Jul 2021 09:30:27 +0800
-Message-Id: <20210714013027.17022-1-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH] soundwire: bus: filter out more -EDATA errors on clock stop
+Date: Wed, 14 Jul 2021 09:42:09 +0800
+Message-Id: <20210714014209.17357-1-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 Cc: vinod.koul@linaro.org, gregkh@linuxfoundation.org,
  pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
@@ -79,68 +78,40 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Sparse throws the following type of warnings:
+We've added quite a few filters to avoid throwing errors if a Device
+does not respond to commands during the clock stop sequences, but we
+missed one.
 
-drivers/soundwire/dmi-quirks.c:25:17: error: constant
-0x000010025D070100 is so big it is long
+This will lead to an isolated message
+[ 6115.294412] soundwire sdw-master-1: SDW_SCP_STAT bread failed:-61
 
-Let's add the 'ull' suffix to make this go away and find real issues.
+The callers already filter this error code, so there's no point in
+keeping it at the lower level.
+
+Since this is a recoverable error, make this dev_err() conditional and
+only log cases with Command Failed.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Paul Olaru <paul.olaru@oss.nxp.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/dmi-quirks.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ drivers/soundwire/bus.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/soundwire/dmi-quirks.c b/drivers/soundwire/dmi-quirks.c
-index 5db0a2443a1d..1ac16687e315 100644
---- a/drivers/soundwire/dmi-quirks.c
-+++ b/drivers/soundwire/dmi-quirks.c
-@@ -22,12 +22,12 @@ struct adr_remap {
-  */
- static const struct adr_remap hp_spectre_360[] = {
- 	{
--		0x000010025D070100,
--		0x000020025D071100
-+		0x000010025D070100ull,
-+		0x000020025D071100ull
- 	},
- 	{
--		0x000110025d070100,
--		0x000120025D130800
-+		0x000110025d070100ull,
-+		0x000120025D130800ull
- 	},
- 	{}
- };
-@@ -39,18 +39,18 @@ static const struct adr_remap hp_spectre_360[] = {
- static const struct adr_remap dell_sku_0A3E[] = {
- 	/* rt715 on link0 */
- 	{
--		0x00020025d071100,
--		0x00021025d071500
-+		0x00020025d071100ull,
-+		0x00021025d071500ull
- 	},
- 	/* rt711 on link1 */
- 	{
--		0x000120025d130800,
--		0x000120025d071100,
-+		0x000120025d130800ull,
-+		0x000120025d071100ull,
- 	},
- 	/* rt1308 on link2 */
- 	{
--		0x000220025d071500,
--		0x000220025d130800
-+		0x000220025d071500ull,
-+		0x000220025d130800ull
- 	},
- 	{}
- };
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 3e6d4addac2f..278a4fbdb88d 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -896,7 +896,8 @@ static int sdw_bus_wait_for_clk_prep_deprep(struct sdw_bus *bus, u16 dev_num)
+ 	do {
+ 		val = sdw_bread_no_pm(bus, dev_num, SDW_SCP_STAT);
+ 		if (val < 0) {
+-			dev_err(bus->dev, "SDW_SCP_STAT bread failed:%d\n", val);
++			if (val != -ENODATA)
++				dev_err(bus->dev, "SDW_SCP_STAT bread failed:%d\n", val);
+ 			return val;
+ 		}
+ 		val &= SDW_SCP_STAT_CLK_STP_NF;
 -- 
 2.17.1
 
