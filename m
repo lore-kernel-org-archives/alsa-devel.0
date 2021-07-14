@@ -7,72 +7,58 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 454BFC07E96
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 06:55:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01681C07E96
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 06:55:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2C4216136E
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 06:55:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C4216136E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	by mail.kernel.org (Postfix) with ESMTPS id 35E096115B
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 06:55:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 35E096115B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=arm.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B148B1693;
-	Thu, 15 Jul 2021 08:54:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B148B1693
+	by alsa0.perex.cz (Postfix) with ESMTPS id B56961678;
+	Thu, 15 Jul 2021 08:54:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B56961678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626332136;
-	bh=Z5JfYk3NohnbUw7lzJgETDpdZxSX84ejWHvKmpmN4vA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1626332143;
+	bh=CbrpcyeqpThN22c7AnZ2gvHM/1rSnYyYbfbAjvAEqwU=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XKqP32NhcBC2paPaGbRMupP9U3cqXl+AyKvTQR5YcbygngnLmB4ShaFt5XQoVZBhb
-	 0VhndA5CqWQvTevUzJip3jn49RE70bqkmyz6T45Mx+ORRSgqs7jViSyxvlwzB6D6Pa
-	 iGwqz4DHmUyxlI/pMGaqrhln5D1yugtExnHgoi4E=
+	b=N/mZw1fnVaFVPawkmIEuwI/WMdvqKUsR/1h2gRNEKPo6JFq7dsavsJJFkIv/mqDg2
+	 wApeLcuSzx7VkyafU3vmqOL4DC30uv0nTM45fnxw/wTneyWdqCN9BR5uJYXP7Rr9Tm
+	 Y6ZDCIoA09evxeY9ThrGkMz8pCUIfPdCHz/w0V90=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8E78F804EC;
-	Thu, 15 Jul 2021 08:52:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 54E2AF804F1;
+	Thu, 15 Jul 2021 08:52:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 98ED5F80254; Wed, 14 Jul 2021 10:44:27 +0200 (CEST)
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com
- [209.85.222.45])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F346DF800D3
- for <alsa-devel@alsa-project.org>; Wed, 14 Jul 2021 10:44:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F346DF800D3
-Received: by mail-ua1-f45.google.com with SMTP id f11so346089uan.6
- for <alsa-devel@alsa-project.org>; Wed, 14 Jul 2021 01:44:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=r5k/nzvm++7I0kjlsxJbLPoLxldn2GkCJzAXrc4Q3tE=;
- b=c5dJOEqnDhv1CtHVS1khD9O2b4jA+ZsdLBsi4QkZ5ZZ/tkkdRyWj6F+SNjE+d4v9rJ
- W1K0ebTl3LckrOfUDCMJ2/LlNulll7cGm7923W7Z6dnHjvJiIsRAeNIuKONTNiZ69cEe
- kwvhLShskOKL6olrrxBI9ihbYkx2HpM5x1QKd1mzeIhJrNFEVuSgKwU6jTLtMQpBEjb7
- o8THRHlH2l5JeRztGdO7DziJL9YXnOd5KawqmAWQcGbp08ARqPPGvfotu7f3soTPrQr8
- r01Nr//i2P6+1vD/c71AATxvLBxOan0XYI6KxuD7QujWDbwJxSKd3Fy0Ys+5NrWRwosb
- oUcw==
-X-Gm-Message-State: AOAM530w3XffoA2OPvdvid/wC/EqpxKh9OZtEgtvAWchWNc62dxUD8sw
- gNu81HJGGzJFlldQxM01QIRUhsWpL94Xudwzw0U=
-X-Google-Smtp-Source: ABdhPJw+Y3tnjfY/zI+Y1qOhR0PNRzn2MQD3PHuwf/AzIRJfXjUIjP825Ll9FtnbmVsf04QAqWLG0Tq2dErAW2+m0rM=
-X-Received: by 2002:a9f:3f0d:: with SMTP id h13mr12412958uaj.100.1626252258156; 
- Wed, 14 Jul 2021 01:44:18 -0700 (PDT)
-MIME-Version: 1.0
+ id C98DDF80254; Wed, 14 Jul 2021 12:27:15 +0200 (CEST)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id E3A67F8013C
+ for <alsa-devel@alsa-project.org>; Wed, 14 Jul 2021 12:27:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3A67F8013C
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2CFE91FB;
+ Wed, 14 Jul 2021 03:27:00 -0700 (PDT)
+Received: from bogus (unknown [10.57.79.213])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2FF633F774;
+ Wed, 14 Jul 2021 03:26:27 -0700 (PDT)
+Date: Wed, 14 Jul 2021 11:25:29 +0100
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH v4 5/5] bus: Make remove callback return void
+Message-ID: <20210714102529.ehwquc2s2qlbccyg@bogus>
 References: <20210713193522.1770306-1-u.kleine-koenig@pengutronix.de>
  <20210713193522.1770306-6-u.kleine-koenig@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 In-Reply-To: <20210713193522.1770306-6-u.kleine-koenig@pengutronix.de>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 14 Jul 2021 10:44:06 +0200
-Message-ID: <CAMuHMdW8r6u4O5zv2ee-3=jPP6qwnOSHdSzf8pPE_y=jY3Bn5A@mail.gmail.com>
-Subject: Re: [PATCH v4 5/5] bus: Make remove callback return void
-To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Mailman-Approved-At: Thu, 15 Jul 2021 08:52:27 +0200
 Cc: nvdimm@lists.linux.dev, linux-sh@vger.kernel.org,
  Benjamin Herrenschmidt <benh@kernel.crashing.org>,
@@ -87,30 +73,30 @@ Cc: nvdimm@lists.linux.dev, linux-sh@vger.kernel.org,
  Maxim Levitsky <maximlevitsky@gmail.com>, Samuel Holland <samuel@sholland.org>,
  Michael Ellerman <mpe@ellerman.id.au>,
  "Rafael J . Wysocki" <rafael@kernel.org>, linux-acpi@vger.kernel.org,
- linux-pci@vger.kernel.org, xen-devel@lists.xenproject.org,
- Tomas Winkler <tomas.winkler@intel.com>, Julien Grall <jgrall@amazon.com>,
- Ohad Ben-Cohen <ohad@wizery.com>, Yufen Yu <yuyufen@huawei.com>,
- Alex Williamson <alex.williamson@redhat.com>, Alex Elder <elder@kernel.org>,
- linux-parisc@vger.kernel.org, Finn Thain <fthain@linux-m68k.org>,
- Geoff Levand <geoff@infradead.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, linux-pci@vger.kernel.org,
+ xen-devel@lists.xenproject.org, Tomas Winkler <tomas.winkler@intel.com>,
+ Julien Grall <jgrall@amazon.com>, Ohad Ben-Cohen <ohad@wizery.com>,
+ Yufen Yu <yuyufen@huawei.com>, Alex Williamson <alex.williamson@redhat.com>,
+ Alex Elder <elder@kernel.org>, linux-parisc@vger.kernel.org,
+ Finn Thain <fthain@linux-m68k.org>, Geoff Levand <geoff@infradead.org>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
  "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-kernel@vger.kernel.org,
  linux-spi@vger.kernel.org, Kai-Heng Feng <kai.heng.feng@canonical.com>,
- Sascha Hauer <kernel@pengutronix.de>, Jon Mason <jdmason@kudzu.us>,
+ kernel@pengutronix.de, Jon Mason <jdmason@kudzu.us>,
  linux-ntb@googlegroups.com, Wu Hao <hao.wu@intel.com>,
  David Woodhouse <dwmw@amazon.co.uk>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
  Alexandre Belloni <alexandre.belloni@bootlin.com>,
  Manohar Vanga <manohar.vanga@gmail.com>, linux-wireless@vger.kernel.org,
  Dominik Brodowski <linux@dominikbrodowski.net>,
  virtualization@lists.linux-foundation.org,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
  target-devel@vger.kernel.org, linux-i2c@vger.kernel.org,
  linux-s390@vger.kernel.org, Stefano Stabellini <sstabellini@kernel.org>,
  Stephen Hemminger <sthemmin@microsoft.com>,
  Yoshinori Sato <ysato@users.sourceforge.jp>, Jiri Slaby <jirislaby@kernel.org>,
  Helge Deller <deller@gmx.de>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
  YueHaibing <yuehaibing@huawei.com>, industrypack-devel@lists.sourceforge.net,
  linux-mips@vger.kernel.org, Len Brown <lenb@kernel.org>,
  Vasily Gorbik <gor@linux.ibm.com>, linux-arm-msm@vger.kernel.org,
@@ -126,7 +112,7 @@ Cc: nvdimm@lists.linux.dev, linux-sh@vger.kernel.org,
  Cornelia Huck <cohuck@redhat.com>, Peter Oberparleiter <oberpar@linux.ibm.com>,
  Wolfram Sang <wsa@kernel.org>, Joey Pabalan <jpabalanb@gmail.com>,
  Yehezkel Bernat <YehezkelShB@gmail.com>,
- =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+ Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>,
  Bodo Stroesser <bostroesser@gmail.com>,
  Alison Schofield <alison.schofield@intel.com>,
  Heikki Krogerus <heikki.krogerus@linux.intel.com>,
@@ -191,35 +177,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Jul 13, 2021 at 9:35 PM Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de> wrote:
+On Tue, Jul 13, 2021 at 09:35:22PM +0200, Uwe Kleine-König wrote:
 > The driver core ignores the return value of this callback because there
 > is only little it can do when a device disappears.
->
+> 
 > This is the final bit of a long lasting cleanup quest where several
 > buses were converted to also return void from their remove callback.
 > Additionally some resource leaks were fixed that were caused by drivers
 > returning an error code in the expectation that the driver won't go
 > away.
->
+> 
 > With struct bus_type::remove returning void it's prevented that newly
 > implemented buses return an ignored error code and so don't anticipate
 > wrong expectations for driver authors.
+> 
 
->  drivers/zorro/zorro-driver.c              | 3 +--
+[...]
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> diff --git a/drivers/firmware/arm_scmi/bus.c b/drivers/firmware/arm_scmi/bus.c
+> index 784cf0027da3..2682c3df651c 100644
+> --- a/drivers/firmware/arm_scmi/bus.c
+> +++ b/drivers/firmware/arm_scmi/bus.c
+> @@ -116,15 +116,13 @@ static int scmi_dev_probe(struct device *dev)
+>  	return scmi_drv->probe(scmi_dev);
+>  }
+>  
+> -static int scmi_dev_remove(struct device *dev)
+> +static void scmi_dev_remove(struct device *dev)
+>  {
+>  	struct scmi_driver *scmi_drv = to_scmi_driver(dev->driver);
+>  	struct scmi_device *scmi_dev = to_scmi_dev(dev);
+>  
+>  	if (scmi_drv->remove)
+>  		scmi_drv->remove(scmi_dev);
+> -
+> -	return 0;
+>  }
+>  
+>  static struct bus_type scmi_bus_type = {
 
-Gr{oetje,eeting}s,
+Acked-by: Sudeep Holla <sudeep.holla@arm.com>
 
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+--
+Regards,
+Sudeep
