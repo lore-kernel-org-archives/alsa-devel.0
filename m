@@ -2,69 +2,69 @@ Return-Path: <SRS0=PPjj=MG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 628EDC11F67
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 17:17:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17B70C07E9A
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 17:17:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9425460FF1
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 17:17:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9425460FF1
+	by mail.kernel.org (Postfix) with ESMTPS id 910F760FF1
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jul 2021 17:17:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 910F760FF1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2A6B7169C;
-	Wed, 14 Jul 2021 19:16:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A6B7169C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 30EC0169F;
+	Wed, 14 Jul 2021 19:16:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30EC0169F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626283028;
-	bh=upuQn4ogoc7l3f4Qz2DSRDW1MLjDVWd/PHVPAjaj31E=;
+	s=default; t=1626283066;
+	bh=zmqAOHGhKyP15v8NjCVzpJIyiLRPOkXC01wOqeHlNi0=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=icfsOsF47Z2fpxvLf2WpGNeq8INThkn9jCcZNryiec9i6hJaCiGgAIXkbndFMsB05
-	 VUM71JiDZCsiZoRvdftReLRDgV6OR37iNe2ZoBILBp9jPBCMkSLGQeSqpMCdMWgWbK
-	 1W8kcUMsLa6NjgCCy7BpYAA2NZi9zUlEa9Qwx3Es=
+	b=SDFvXp7dp1qkz6yhVfGHEBdN4GBfPJi1kpN2lMmJwEfS7bUnLVolfD3+kaYoSkdvW
+	 Fr81vYIBNF2XQX77k88BuyGSIDFigPje9aJmbGLNoIivjTRLXeaojes/E/PSBbDq50
+	 vNe/PF4rw1cCUSFF1ROUZD33wyFznjZsvI/qUiy4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A607AF804E5;
-	Wed, 14 Jul 2021 19:14:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1706BF804F3;
+	Wed, 14 Jul 2021 19:14:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A49A1F802E7; Wed, 14 Jul 2021 19:14:34 +0200 (CEST)
+ id 65C2FF804E3; Wed, 14 Jul 2021 19:14:36 +0200 (CEST)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 769BDF8011C
- for <alsa-devel@alsa-project.org>; Wed, 14 Jul 2021 19:14:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 769BDF8011C
-X-IronPort-AV: E=McAfee;i="6200,9189,10045"; a="190769944"
-X-IronPort-AV: E=Sophos;i="5.84,239,1620716400"; d="scan'208";a="190769944"
+ by alsa1.perex.cz (Postfix) with ESMTPS id A723DF80253
+ for <alsa-devel@alsa-project.org>; Wed, 14 Jul 2021 19:14:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A723DF80253
+X-IronPort-AV: E=McAfee;i="6200,9189,10045"; a="190769967"
+X-IronPort-AV: E=Sophos;i="5.84,239,1620716400"; d="scan'208";a="190769967"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Jul 2021 10:14:27 -0700
-X-IronPort-AV: E=Sophos;i="5.84,239,1620716400"; d="scan'208";a="413353730"
+ 14 Jul 2021 10:14:32 -0700
+X-IronPort-AV: E=Sophos;i="5.84,239,1620716400"; d="scan'208";a="413353770"
 Received: from alpinagh-mobl1.amr.corp.intel.com (HELO [10.212.71.223])
  ([10.212.71.223])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Jul 2021 10:14:26 -0700
-Subject: Re: [PATCH v2 06/16] ASoC: qcom: audioreach: add q6apm support
+ 14 Jul 2021 10:14:30 -0700
+Subject: Re: [PATCH v2 09/16] ASoC: qcom: audioreach: add q6apm-dai support
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  bjorn.andersson@linaro.org, broonie@kernel.org, robh@kernel.org
 References: <20210714153039.28373-1-srinivas.kandagatla@linaro.org>
- <20210714153039.28373-7-srinivas.kandagatla@linaro.org>
+ <20210714153039.28373-10-srinivas.kandagatla@linaro.org>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <77b9d17d-33b6-8a7a-bb1d-e32543d9da79@linux.intel.com>
-Date: Wed, 14 Jul 2021 11:40:21 -0500
+Message-ID: <9b669a36-f9e4-bd90-7b02-e55fe5b99814@linux.intel.com>
+Date: Wed, 14 Jul 2021 11:59:12 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210714153039.28373-7-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20210714153039.28373-10-srinivas.kandagatla@linaro.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -87,176 +87,185 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
->  /* SubGraph Config */
-> @@ -32,7 +33,7 @@ struct apm_sub_graph_params  {
->  /* container config */
->  struct apm_container_obj  {
->  	struct apm_container_cfg container_cfg;
-> -	/* Capablity ID list */
-> +	/* Capability ID list */
 
-squash in wrong patch, this should have been included in the previous patch.
-
->  	struct apm_prop_data cap_data;
->  	uint32_t num_capablity_id;
-
-and this is still wrong...
-
->  	uint32_t capability_id;
-> @@ -270,3 +271,308 @@ void *audioreach_alloc_apm_cmd_pkt(int pkt_size, uint32_t opcode,
->  				       APM_MODULE_INSTANCE_ID,
->  				       true);
->  }
-> +
-> +static void apm_populate_container_config(
-> +			struct apm_container_obj *cfg,
-> +			struct audioreach_container *cont)
+> +static void event_handler(uint32_t opcode, uint32_t token,
+> +			  uint32_t *payload, void *priv)
 > +{
+> +	struct q6apm_dai_rtd *prtd = priv;
+> +	struct snd_pcm_substream *substream = prtd->substream;
 > +
-> +	/* Container Config */
-> +	cfg->container_cfg.container_id = cont->container_id;
-> +	cfg->container_cfg.num_prop = 4;
-> +
-> +	/* Capablity list */
+> +	switch (opcode) {
+> +	case APM_CLIENT_EVENT_CMD_EOS_DONE:
+> +		prtd->state = Q6APM_STREAM_STOPPED;
+> +		break;
+> +	case APM_CLIENT_EVENT_DATA_WRITE_DONE: {
+> +		prtd->pcm_irq_pos += prtd->pcm_count;
+> +		snd_pcm_period_elapsed(substream);
 
-Man, again ...
+A comment on the relationship between data writes and periods would be nice. It looks like the code assumes the period and data transfers are identical, but periods can be chosen by applications, can't they?
 
-> +	cfg->cap_data.prop_id = APM_CONTAINER_PROP_ID_CAPABILITY_LIST;
-> +	cfg->cap_data.prop_size = APM_CONTAINER_PROP_ID_CAPABILITY_SIZE;
-> +	cfg->num_capablity_id = 1;
-> +	cfg->capability_id = cont->capability_id;
+> +		if (prtd->state == Q6APM_STREAM_RUNNING) {
+> +			q6apm_write_async(prtd->graph,
+> +					   prtd->pcm_count, 0, 0, NO_TIMESTAMP);
+> +		}
 > +
-> +	/* Graph Position */
-> +	cfg->pos_data.prop_id = APM_CONTAINER_PROP_ID_GRAPH_POS;
-> +	cfg->pos_data.prop_size = sizeof(struct apm_cont_prop_id_graph_pos);
-> +	cfg->pos.graph_pos = cont->graph_pos;
+> +		break;
+> +		}
+> +	case APM_CLIENT_EVENT_DATA_READ_DONE:
+> +		prtd->pcm_irq_pos += prtd->pcm_count;
+> +		snd_pcm_period_elapsed(substream);
+> +		if (prtd->state == Q6APM_STREAM_RUNNING)
+> +			q6apm_read(prtd->graph);
 > +
-> +	/* Stack size */
-> +	cfg->stack_data.prop_id = APM_CONTAINER_PROP_ID_STACK_SIZE;
-> +	cfg->stack_data.prop_size = sizeof(struct
-> +					       apm_cont_prop_id_stack_size);
-> +	cfg->stack.stack_size = cont->stack_size;
-> +
-> +	/* Proc domain */
-> +	cfg->domain_data.prop_id = APM_CONTAINER_PROP_ID_PROC_DOMAIN;
-> +	cfg->domain_data.prop_size = sizeof(struct
-> +					       apm_cont_prop_id_domain);
-> +	cfg->domain.proc_domain = cont->proc_domain;
+> +		break;
+> +	default:
+> +		break;
+> +	}
 > +}
 
-> +static struct audioreach_graph *q6apm_get_audioreach_graph(struct q6apm *apm,
-> +						      uint32_t graph_id)
+> +static int q6apm_dai_trigger(struct snd_soc_component *component,
+> +			     struct snd_pcm_substream *substream, int cmd)
 > +{
-> +	struct audioreach_graph *graph = NULL;
-
-useless init
-
-> +	struct audioreach_graph_info *info;
-> +	unsigned long flags;
+> +	struct snd_pcm_runtime *runtime = substream->runtime;
+> +	struct q6apm_dai_rtd *prtd = runtime->private_data;
+> +	int ret = 0;
 > +
-> +	spin_lock_irqsave(&apm->lock, flags);
-> +	graph = idr_find(&apm->graph_idr, graph_id);
-> +	spin_unlock_irqrestore(&apm->lock, flags);
-> +
-> +	if (graph) {
-> +		kref_get(&graph->refcount);
-> +		return graph;
+> +	switch (cmd) {
+> +	case SNDRV_PCM_TRIGGER_START:
+> +	case SNDRV_PCM_TRIGGER_RESUME:
+> +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+> +		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +			ret = q6apm_write_async(prtd->graph, prtd->pcm_count, 0, 0, NO_TIMESTAMP);
+> +		break;
+> +	case SNDRV_PCM_TRIGGER_STOP:
+> +		prtd->state = Q6APM_STREAM_STOPPED;
+> +		//ret = q6apm_cmd_nowait(prtd->graph, CMD_EOS);
+> +		break;
+> +	case SNDRV_PCM_TRIGGER_SUSPEND:
+> +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+> +		//ret = q6apm_cmd_nowait(prtd->graph, CMD_PAUSE);
+
+these // comments are odd, with a clear imbalance between suspend/resume and pause_push/pause_release... 
+is this intentional or a left-over from an experiment?
+
+> +		break;
+> +	default:
+> +		ret = -EINVAL;
+> +		break;
 > +	}
 > +
-> +	info = idr_find(&apm->graph_info_idr, graph_id);
-> +
-> +	if (!info)
-> +		return ERR_PTR(-ENODEV);
-> +
-> +	graph = kzalloc(sizeof(*graph), GFP_KERNEL);
-> +	if (!graph)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	graph->apm = apm;
-> +	graph->info = info;
-> +	graph->id = graph_id;
-> +
-> +	/* Assuming Linear Graphs only for now! */
-> +	graph->graph = audioreach_alloc_graph_pkt(apm, &info->sg_list, graph_id);
-> +	if (IS_ERR(graph->graph))
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	spin_lock(&apm->lock);
-> +	idr_alloc(&apm->graph_idr, graph, graph_id,
-> +		  graph_id + 1, GFP_ATOMIC);
-
-ATOMIC?
-
-> +	spin_unlock(&apm->lock);
-> +
-> +	kref_init(&graph->refcount);
-> +
-> +	q6apm_send_cmd_sync(apm, graph->graph, 0);
-> +
-> +	return graph;
+> +	return ret;
 > +}
 > +
-> +static int audioreach_graph_mgmt_cmd(struct audioreach_graph *graph,
-> +				      uint32_t opcode)
+> +static int q6apm_dai_open(struct snd_soc_component *component,
+> +			  struct snd_pcm_substream *substream)
 > +{
-> +	struct gpr_pkt *pkt;
-> +	void *p;
-> +	int i = 0, rc, payload_size;
-> +	struct q6apm *apm = graph->apm;
-> +	struct audioreach_graph_info *info = graph->info;
-> +	int num_sub_graphs = info->num_sub_graphs;
-> +	struct apm_graph_mgmt_cmd *mgmt_cmd;
-> +	struct apm_module_param_data *param_data;
-> +	struct audioreach_sub_graph *sg;
+> +	struct snd_pcm_runtime *runtime = substream->runtime;
+> +	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
+> +	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(soc_prtd, 0);
+> +	struct q6apm_dai_rtd *prtd;
+> +	struct q6apm_dai_data *pdata;
+> +	struct device *dev = component->dev;
+> +	int ret;
+> +	int graph_id;
 > +
-> +	payload_size = APM_GRAPH_MGMT_PSIZE(num_sub_graphs);
+> +	graph_id = cpu_dai->driver->id;
 > +
-> +	p = audioreach_alloc_apm_cmd_pkt(payload_size, opcode, 0);
-> +	if (IS_ERR(p))
+> +	pdata = snd_soc_component_get_drvdata(component);
+> +	if (!pdata) {
+> +		dev_err(component->dev, "Drv data not found ..\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	prtd = kzalloc(sizeof(*prtd), GFP_KERNEL);
+> +	if (prtd == NULL)
 > +		return -ENOMEM;
 > +
-> +	pkt = p;
-> +	p = p + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
+> +	prtd->substream = substream;
 > +
-> +	mgmt_cmd = p;
-> +	mgmt_cmd->num_sub_graphs = num_sub_graphs;
-> +
-> +	param_data = &mgmt_cmd->param_data;
-> +	param_data->module_instance_id = APM_MODULE_INSTANCE_ID;
-> +	param_data->param_id = APM_PARAM_ID_SUB_GRAPH_LIST;
-> +	param_data->param_size = payload_size - APM_MODULE_PARAM_DATA_SIZE;
-> +
-> +	list_for_each_entry(sg, &info->sg_list, node) {
-> +		mgmt_cmd->sub_graph_id_list[i++] = sg->sub_graph_id;
+> +	prtd->graph = q6apm_graph_open(dev, (q6apm_cb)event_handler,
+> +				       prtd, graph_id);
+> +	if (IS_ERR(prtd->graph)) {
+> +		pr_info("%s: Could not allocate memory\n", __func__);
+> +		ret = PTR_ERR(prtd->graph);
+> +		kfree(prtd);
+> +		return ret;
 > +	}
 > +
-> +	rc = q6apm_send_cmd_sync(apm, pkt, 0);
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +		runtime->hw = q6apm_dai_hardware_playback;
+> +	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
+> +		runtime->hw = q6apm_dai_hardware_capture;
 > +
-> +	kfree(pkt);
+> +	/* Ensure that buffer size is a multiple of period size */
+> +	ret = snd_pcm_hw_constraint_integer(runtime,
+> +					    SNDRV_PCM_HW_PARAM_PERIODS);
+> +	if (ret < 0)
+> +		dev_err(dev, "snd_pcm_hw_constraint_integer failed\n");
 > +
-> +	return rc;
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> +		ret = snd_pcm_hw_constraint_minmax(runtime,
+> +			SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
+> +			BUFFER_BYTES_MIN, BUFFER_BYTES_MAX);
+> +		if (ret < 0) {
+> +			dev_err(dev, "constraint for buffer bytes min max ret = %d\n",
+> +									ret);
+> +		}
+> +	}
+> +
+> +	ret = snd_pcm_hw_constraint_step(runtime, 0,
+> +					 SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 32);
+> +	if (ret < 0) {
+> +		dev_err(dev, "constraint for period bytes step ret = %d\n",
+> +								ret);
+> +	}
+> +	ret = snd_pcm_hw_constraint_step(runtime, 0,
+> +					 SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 32);
+> +	if (ret < 0) {
+> +		dev_err(dev, "constraint for buffer bytes step ret = %d\n",
+> +								ret);
+> +	}
+
+dev_err() used but no return code sent?
+
+> +
+> +	runtime->private_data = prtd;
+> +	runtime->dma_bytes = BUFFER_BYTES_MAX;
+> +	if (pdata->sid < 0)
+> +		prtd->phys = substream->dma_buffer.addr;
+> +	else
+> +		prtd->phys = substream->dma_buffer.addr | (pdata->sid << 32);
+> +
+> +	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
+> +
+> +	return 0;
+> +}
+
+> +static int q6apm_dai_hw_params(struct snd_soc_component *component,
+> +			       struct snd_pcm_substream *substream,
+> +			       struct snd_pcm_hw_params *params)
+> +{
+> +	struct snd_pcm_runtime *runtime = substream->runtime;
+> +	struct q6apm_dai_rtd *prtd = runtime->private_data;
+> +
+> +	prtd->pcm_size = params_buffer_bytes(params);
+> +	prtd->periods = params_periods(params);
+> +
+> +	switch (params_format(params)) {
+> +	case SNDRV_PCM_FORMAT_S16_LE:
+> +		prtd->bits_per_sample = 16;
+> +		break;
+> +	case SNDRV_PCM_FORMAT_S24_LE:
+> +		prtd->bits_per_sample = 24;
+> +		break;
+
+default:
+    return -EINVAL
+?
+
+> +	}
+> +
+> +	return 0;
 > +}
 > +
-> +static void q6apm_put_audioreach_graph(struct kref *ref)
-> +{
-> +	struct audioreach_graph *graph;
-> +	struct q6apm *apm;
-> +	unsigned long flags;
-> +
-> +	graph = container_of(ref, struct audioreach_graph, refcount);
-> +	apm = graph->apm;
-> +
-> +	audioreach_graph_mgmt_cmd(graph, APM_CMD_GRAPH_CLOSE);
-> +
-> +	spin_lock_irqsave(&apm->lock, flags);
-> +	graph = idr_remove(&apm->graph_idr, graph->id);
-> +	spin_unlock_irqrestore(&apm->lock, flags);
-> +
-> +	kfree(graph->graph);
-> +	kfree(graph);
 
-earlier in the _get routine, you had a kref_get(&graph->refcount)
-
-is it intentional that there's kref_put?
-
-adding a comment on the refcounts might be useful...
