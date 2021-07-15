@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18FCFC07E96
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:12:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1887CC07E96
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:12:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9AF2A610D1
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:12:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9AF2A610D1
+	by mail.kernel.org (Postfix) with ESMTPS id 99CE561106
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:12:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 99CE561106
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D1BC1715;
-	Thu, 15 Jul 2021 10:11:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D1BC1715
+	by alsa0.perex.cz (Postfix) with ESMTPS id 35C8E171C;
+	Thu, 15 Jul 2021 10:11:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35C8E171C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626336727;
-	bh=kkFw+cG+OvXBXoonKwLOysgYvtzZDiCs0oiGkjoNbXQ=;
+	s=default; t=1626336748;
+	bh=MM8nAbkRXnqXeWcb/DQsJlSaUL9thQCCxkxM8LTIGkY=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=I58hSVL8cSZi0MZQsbbX/OxN2S0jOLpZHMWzWN54VPQManvO1hTjMrVZussllsJxy
-	 /AlxVweImvAA4De15JV0EzoiD6PftbPKUBmA+kCxyFltD799rGZ8amIFHyk48GZSg+
-	 zzccAy2pBIqC99GPfJ5Y9LEpZfqk9K+/+dUNHkKE=
+	b=itgs/3J9i5sgnGmZA6XNGsl/NzlCAnmKn3bMLIr2FJGbWJWKpESJ/kNQdxSmJHPGu
+	 BTX8YC2jTtb1bbKZOHd2VCnYx72It9/cdXiIEFKccLshfFlTjMasUaf5VL8voDTMJf
+	 GOcdwkMCbkUCWZx+tqNxbaVdYfGwE2CxICyrASLw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 500A6F80507;
-	Thu, 15 Jul 2021 10:00:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3046CF80620;
+	Thu, 15 Jul 2021 10:00:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D13F2F805FC; Thu, 15 Jul 2021 10:00:40 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id E3342F8061C; Thu, 15 Jul 2021 10:00:47 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 34E46F804FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 15702F804FF
  for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34E46F804FA
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15702F804FF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="iR94wLR7"; 
+ header.b="mZ00ZDNH"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="CSRnuVSf"
+ header.b="Ftvbz7uB"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 0E7EE22852
+ by smtp-out2.suse.de (Postfix) with ESMTP id CD8D41FDF4
  for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1626336004; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=3mr/zNFJMS6D20lvwn61DOLlz7DX+1O7pzWKGYewfM8=;
- b=iR94wLR7y9hwV933SYZfonu54XE1skNTUKWydbzuksEqalRElygwJRD3CnWYfoyLy53Rcz
- 08EDTw/5tmleqLkKas+fxiRUB1kwq1gRb4YZdvEthRuBdZKVl1CgkgjiKJYJeuWT924i9y
- 6zmJj3YzsutcKP574u59KzvwNVVoRLs=
+ bh=0+VjR1w11Q3F9wCC/be1IS6Bth9NT0VM8G6Mbvn1q2U=;
+ b=mZ00ZDNHWGk0inNsfeByZ04sytLWHwjnLd2gep3eMPjM7EE7Sa4a5+Af2TJXNsdTDE9y/G
+ p+AkBMjO9/KdxrMsuSFx6kOViMOhqtd9ojtEQ+RGIItCabIwJvzdW4fKfdN7Lpp8bM1j/Z
+ eJSqmE1sB1e2dahO1WX4/yrCTCOy8P8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1626336004;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=3mr/zNFJMS6D20lvwn61DOLlz7DX+1O7pzWKGYewfM8=;
- b=CSRnuVSfjonociupxAAfqsKU8fvFluSovmokBxReU0aog43DMBRsQeUitgWJyJklBYEHx8
- f8/H9kG8LiDGglCg==
+ bh=0+VjR1w11Q3F9wCC/be1IS6Bth9NT0VM8G6Mbvn1q2U=;
+ b=Ftvbz7uB5rgGFDyd4efuzIHdyXgsD3Guw16Eg4e2k7A01DG6xL+3Cfg5MCyYmjIP0Y1l8p
+ f1a/YEj9XNC3ScCA==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id F0D93A3B8D;
- Thu, 15 Jul 2021 08:00:03 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id BC2D8A3BA7;
+ Thu, 15 Jul 2021 08:00:04 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 27/79] ALSA: au88x0: Allocate resources with device-managed
+Subject: [PATCH v2 29/79] ALSA: ca0106: Allocate resources with device-managed
  APIs
-Date: Thu, 15 Jul 2021 09:58:49 +0200
-Message-Id: <20210715075941.23332-28-tiwai@suse.de>
+Date: Thu, 15 Jul 2021 09:58:51 +0200
+Message-Id: <20210715075941.23332-30-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210715075941.23332-1-tiwai@suse.de>
 References: <20210715075941.23332-1-tiwai@suse.de>
@@ -98,7 +98,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the resource management in PCI au88x0 driver with
+This patch converts the resource management in PCI ca0106 driver with
 devres as a clean up.  Each manual resource management is converted
 with the corresponding devres helper, and the card object release is
 managed now via card->private_free instead of a lowlevel snd_device.
@@ -107,57 +107,138 @@ This should give no user-visible functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/au88x0/au88x0.c | 134 +++++++++-----------------------------
- 1 file changed, 29 insertions(+), 105 deletions(-)
+ sound/pci/ca0106/ca0106.h      |   3 +-
+ sound/pci/ca0106/ca0106_main.c | 114 +++++++++------------------------
+ 2 files changed, 30 insertions(+), 87 deletions(-)
 
-diff --git a/sound/pci/au88x0/au88x0.c b/sound/pci/au88x0/au88x0.c
-index 1f7fee470266..342ef2a6655e 100644
---- a/sound/pci/au88x0/au88x0.c
-+++ b/sound/pci/au88x0/au88x0.c
-@@ -123,56 +123,35 @@ static void snd_vortex_workaround(struct pci_dev *vortex, int fix)
+diff --git a/sound/pci/ca0106/ca0106.h b/sound/pci/ca0106/ca0106.h
+index 62a22ca3b9de..f246e6094289 100644
+--- a/sound/pci/ca0106/ca0106.h
++++ b/sound/pci/ca0106/ca0106.h
+@@ -667,7 +667,6 @@ struct snd_ca0106 {
+ 	struct pci_dev *pci;
  
- // component-destructor
- // (see "Management of Cards and Components")
--static int snd_vortex_dev_free(struct snd_device *device)
-+static void snd_vortex_free(struct snd_card *card)
+ 	unsigned long port;
+-	struct resource *res_port;
+ 	int irq;
+ 
+ 	unsigned int serial;            /* serial number */
+@@ -688,7 +687,7 @@ struct snd_ca0106 {
+ 	u8 i2c_capture_volume[4][2];
+ 	int capture_mic_line_in;
+ 
+-	struct snd_dma_buffer buffer;
++	struct snd_dma_buffer *buffer;
+ 
+ 	struct snd_ca_midi midi;
+ 	struct snd_ca_midi midi2;
+diff --git a/sound/pci/ca0106/ca0106_main.c b/sound/pci/ca0106/ca0106_main.c
+index 99778711006a..36fb150b72fb 100644
+--- a/sound/pci/ca0106/ca0106_main.c
++++ b/sound/pci/ca0106/ca0106_main.c
+@@ -718,7 +718,7 @@ static int snd_ca0106_pcm_prepare_playback(struct snd_pcm_substream *substream)
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_ca0106_pcm *epcm = runtime->private_data;
+ 	int channel = epcm->channel_id;
+-	u32 *table_base = (u32 *)(emu->buffer.area+(8*16*channel));
++	u32 *table_base = (u32 *)(emu->buffer->area+(8*16*channel));
+ 	u32 period_size_bytes = frames_to_bytes(runtime, runtime->period_size);
+ 	u32 hcfg_mask = HCFG_PLAYBACK_S32_LE;
+ 	u32 hcfg_set = 0x00000000;
+@@ -746,7 +746,7 @@ static int snd_ca0106_pcm_prepare_playback(struct snd_pcm_substream *substream)
+ 		   runtime->dma_addr, runtime->dma_area, table_base);
+ 	dev_dbg(emu->card->dev,
+ 		"dma_addr=%x, dma_area=%p, dma_bytes(size)=%x\n",
+-		   emu->buffer.addr, emu->buffer.area, emu->buffer.bytes);
++		   emu->buffer->addr, emu->buffer->area, emu->buffer->bytes);
+ #endif /* debug */
+ 	/* Rate can be set per channel. */
+ 	/* reg40 control host to fifo */
+@@ -796,13 +796,13 @@ static int snd_ca0106_pcm_prepare_playback(struct snd_pcm_substream *substream)
+ 	reg71 = (reg71 & ~reg71_mask) | reg71_set;
+ 	snd_ca0106_ptr_write(emu, 0x71, 0, reg71);
+ 
+-	/* FIXME: Check emu->buffer.size before actually writing to it. */
++	/* FIXME: Check emu->buffer->size before actually writing to it. */
+         for(i=0; i < runtime->periods; i++) {
+ 		table_base[i*2] = runtime->dma_addr + (i * period_size_bytes);
+ 		table_base[i*2+1] = period_size_bytes << 16;
+ 	}
+  
+-	snd_ca0106_ptr_write(emu, PLAYBACK_LIST_ADDR, channel, emu->buffer.addr+(8*16*channel));
++	snd_ca0106_ptr_write(emu, PLAYBACK_LIST_ADDR, channel, emu->buffer->addr+(8*16*channel));
+ 	snd_ca0106_ptr_write(emu, PLAYBACK_LIST_SIZE, channel, (runtime->periods - 1) << 19);
+ 	snd_ca0106_ptr_write(emu, PLAYBACK_LIST_PTR, channel, 0);
+ 	snd_ca0106_ptr_write(emu, PLAYBACK_DMA_ADDR, channel, runtime->dma_addr);
+@@ -853,7 +853,7 @@ static int snd_ca0106_pcm_prepare_capture(struct snd_pcm_substream *substream)
+ 		   runtime->dma_addr, runtime->dma_area, table_base);
+ 	dev_dbg(emu->card->dev,
+ 		"dma_addr=%x, dma_area=%p, dma_bytes(size)=%x\n",
+-		   emu->buffer.addr, emu->buffer.area, emu->buffer.bytes);
++		   emu->buffer->addr, emu->buffer->area, emu->buffer->bytes);
+ #endif /* debug */
+ 	/* reg71 controls ADC rate. */
+ 	switch (runtime->rate) {
+@@ -1183,32 +1183,11 @@ static int snd_ca0106_ac97(struct snd_ca0106 *chip)
+ 
+ static void ca0106_stop_chip(struct snd_ca0106 *chip);
+ 
+-static int snd_ca0106_free(struct snd_ca0106 *chip)
++static void snd_ca0106_free(struct snd_card *card)
  {
--	vortex_t *vortex = device->device_data;
-+	vortex_t *vortex = card->private_data;
- 
- 	vortex_gameport_unregister(vortex);
- 	vortex_core_shutdown(vortex);
--	// Take down PCI interface.
--	free_irq(vortex->irq, vortex);
--	iounmap(vortex->mmio);
--	pci_release_regions(vortex->pci_dev);
--	pci_disable_device(vortex->pci_dev);
--	kfree(vortex);
+-	if (chip->res_port != NULL) {
+-		/* avoid access to already used hardware */
+-		ca0106_stop_chip(chip);
+-	}
+-	if (chip->irq >= 0)
+-		free_irq(chip->irq, chip);
+-	// release the data
+-#if 1
+-	if (chip->buffer.area)
+-		snd_dma_free_pages(&chip->buffer);
+-#endif
 -
+-	// release the i/o port
+-	release_and_free_resource(chip->res_port);
+-
+-	pci_disable_device(chip->pci);
+-	kfree(chip);
 -	return 0;
+-}
++	struct snd_ca0106 *chip = card->private_data;
+ 
+-static int snd_ca0106_dev_free(struct snd_device *device)
+-{
+-	struct snd_ca0106 *chip = device->device_data;
+-	return snd_ca0106_free(chip);
++	ca0106_stop_chip(chip);
  }
  
- // chip-specific constructor
- // (see "Management of Cards and Components")
- static int
--snd_vortex_create(struct snd_card *card, struct pci_dev *pci, vortex_t ** rchip)
-+snd_vortex_create(struct snd_card *card, struct pci_dev *pci)
+ static irqreturn_t snd_ca0106_interrupt(int irq, void *dev_id)
+@@ -1594,50 +1573,33 @@ static void ca0106_stop_chip(struct snd_ca0106 *chip)
+ }
+ 
+ static int snd_ca0106_create(int dev, struct snd_card *card,
+-					 struct pci_dev *pci,
+-					 struct snd_ca0106 **rchip)
++			     struct pci_dev *pci)
  {
--	vortex_t *chip;
-+	vortex_t *chip = card->private_data;
+-	struct snd_ca0106 *chip;
++	struct snd_ca0106 *chip = card->private_data;
+ 	const struct snd_ca0106_details *c;
  	int err;
 -	static const struct snd_device_ops ops = {
--		.dev_free = snd_vortex_dev_free,
+-		.dev_free = snd_ca0106_dev_free,
 -	};
 -
 -	*rchip = NULL;
  
- 	// check PCI availability (DMA).
 -	err = pci_enable_device(pci);
 +	err = pcim_enable_device(pci);
  	if (err < 0)
  		return err;
  	if (dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(32))) {
- 		dev_err(card->dev, "error to set DMA mask\n");
+ 		dev_err(card->dev, "error to set 32bit mask DMA\n");
 -		pci_disable_device(pci);
  		return -ENXIO;
  	}
@@ -169,88 +250,62 @@ index 1f7fee470266..342ef2a6655e 100644
 -	}
 -
  	chip->card = card;
+ 	chip->pci = pci;
+ 	chip->irq = -1;
  
- 	// initialize the stuff
- 	chip->pci_dev = pci;
--	chip->io = pci_resource_start(pci, 0);
- 	chip->vendor = pci->vendor;
- 	chip->device = pci->device;
- 	chip->card = card;
-@@ -181,16 +160,12 @@ snd_vortex_create(struct snd_card *card, struct pci_dev *pci, vortex_t ** rchip)
- 	// (1) PCI resource allocation
- 	// Get MMIO area
- 	//
--	err = pci_request_regions(pci, CARD_NAME_SHORT);
-+	err = pcim_iomap_regions(pci, 1 << 0, CARD_NAME_SHORT);
- 	if (err)
--		goto regions_out;
+ 	spin_lock_init(&chip->emu_lock);
+ 
++	err = pci_request_regions(pci, "snd_ca0106");
++	if (err < 0)
 +		return err;
- 
--	chip->mmio = pci_ioremap_bar(pci, 0);
--	if (!chip->mmio) {
--		dev_err(card->dev, "MMIO area remap failed.\n");
--		err = -ENOMEM;
--		goto ioremap_out;
+ 	chip->port = pci_resource_start(pci, 0);
+-	chip->res_port = request_region(chip->port, 0x20, "snd_ca0106");
+-	if (!chip->res_port) {
+-		snd_ca0106_free(chip);
+-		dev_err(card->dev, "cannot allocate the port\n");
+-		return -EBUSY;
 -	}
-+	chip->io = pci_resource_start(pci, 0);
-+	chip->mmio = pcim_iomap_table(pci)[0];
  
- 	/* Init audio core.
- 	 * This must be done before we do request_irq otherwise we can get spurious
-@@ -198,44 +173,22 @@ snd_vortex_create(struct snd_card *card, struct pci_dev *pci, vortex_t ** rchip)
- 	err = vortex_core_init(chip);
- 	if (err) {
- 		dev_err(card->dev, "hw core init failed\n");
--		goto core_out;
-+		return err;
- 	}
- 
--	err = request_irq(pci->irq, vortex_interrupt,
--			  IRQF_SHARED, KBUILD_MODNAME, chip);
-+	err = devm_request_irq(&pci->dev, pci->irq, vortex_interrupt,
-+			       IRQF_SHARED, KBUILD_MODNAME, chip);
- 	if (err) {
+-	if (request_irq(pci->irq, snd_ca0106_interrupt,
+-			IRQF_SHARED, KBUILD_MODNAME, chip)) {
+-		snd_ca0106_free(chip);
++	if (devm_request_irq(&pci->dev, pci->irq, snd_ca0106_interrupt,
++			     IRQF_SHARED, KBUILD_MODNAME, chip)) {
  		dev_err(card->dev, "cannot grab irq\n");
--		goto irq_out;
-+		return err;
+ 		return -EBUSY;
  	}
- 	chip->irq = pci->irq;
+@@ -1645,11 +1607,9 @@ static int snd_ca0106_create(int dev, struct snd_card *card,
  	card->sync_irq = chip->irq;
-+	card->private_free = snd_vortex_free;
+ 
+ 	/* This stores the periods table. */
+-	if (snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, &pci->dev,
+-				1024, &chip->buffer) < 0) {
+-		snd_ca0106_free(chip);
++	chip->buffer = snd_devm_alloc_pages(&pci->dev, SNDRV_DMA_TYPE_DEV, 1024);
++	if (!chip->buffer)
+ 		return -ENOMEM;
+-	}
  
  	pci_set_master(pci);
- 	// End of PCI setup.
+ 	/* read serial */
+@@ -1678,13 +1638,6 @@ static int snd_ca0106_create(int dev, struct snd_card *card,
+ 		c->name, chip->port, chip->irq);
+ 
+ 	ca0106_init_chip(chip, 0);
 -
--	// Register alsa root device.
 -	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
--	if (err < 0)
--		goto alloc_out;
--
+-	if (err < 0) {
+-		snd_ca0106_free(chip);
+-		return err;
+-	}
 -	*rchip = chip;
--
  	return 0;
--
--      alloc_out:
--	free_irq(chip->irq, chip);
--      irq_out:
--	vortex_core_shutdown(chip);
--      core_out:
--	iounmap(chip->mmio);
--      ioremap_out:
--	pci_release_regions(chip->pci_dev);
--      regions_out:
--	pci_disable_device(chip->pci_dev);
--	//FIXME: this not the right place to unregister the gameport
--	vortex_gameport_unregister(chip);
--	kfree(chip);
--	return err;
  }
  
- // constructor -- see "Constructor" sub-section
-@@ -255,17 +208,16 @@ snd_vortex_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+@@ -1787,36 +1740,37 @@ static int snd_ca0106_probe(struct pci_dev *pci,
  		return -ENOENT;
  	}
- 	// (2)
+ 
 -	err = snd_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
 -			   0, &card);
 +	err = snd_devm_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
@@ -259,132 +314,71 @@ index 1f7fee470266..342ef2a6655e 100644
  		return err;
 +	chip = card->private_data;
  
- 	// (3)
--	err = snd_vortex_create(card, pci, &chip);
--	if (err < 0) {
--		snd_card_free(card);
-+	err = snd_vortex_create(card, pci);
-+	if (err < 0)
- 		return err;
--	}
- 	snd_vortex_workaround(pci, pcifix[dev]);
+-	err = snd_ca0106_create(dev, card, pci, &chip);
++	err = snd_ca0106_create(dev, card, pci);
+ 	if (err < 0)
+-		goto error;
+-	card->private_data = chip;
++		return err;
++	card->private_free = snd_ca0106_free;
  
- 	// Card details needed in snd_vortex_midi
-@@ -276,50 +228,37 @@ snd_vortex_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
- 
- 	// (4) Alloc components.
- 	err = snd_vortex_mixer(chip);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 	// ADB pcm.
- 	err = snd_vortex_new_pcm(chip, VORTEX_PCM_ADB, NR_PCM);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- #ifndef CHIP_AU8820
- 	// ADB SPDIF
- 	err = snd_vortex_new_pcm(chip, VORTEX_PCM_SPDIF, 1);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 	// A3D
- 	err = snd_vortex_new_pcm(chip, VORTEX_PCM_A3D, NR_A3D);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- #endif
- 	/*
- 	   // ADB I2S
- 	   if ((err = snd_vortex_new_pcm(chip, VORTEX_PCM_I2S, 1)) < 0) {
--	   snd_card_free(card);
- 	   return err;
- 	   }
- 	 */
- #ifndef CHIP_AU8810
- 	// WT pcm.
- 	err = snd_vortex_new_pcm(chip, VORTEX_PCM_WT, NR_WT);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- #endif
- 	err = snd_vortex_midi(chip);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 
- 	vortex_gameport_register(chip);
- 
-@@ -342,15 +281,11 @@ snd_vortex_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
- 
- 	// (5)
- 	err = pci_read_config_word(pci, PCI_DEVICE_ID, &chip->device);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}	
- 	err = pci_read_config_word(pci, PCI_VENDOR_ID, &chip->vendor);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 	chip->rev = pci->revision;
- #ifdef CHIP_AU8830
- 	if ((chip->rev) != 0xfe && (chip->rev) != 0xfa) {
-@@ -359,18 +294,14 @@ snd_vortex_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
- 		       chip->rev);
- 		dev_alert(card->dev,
- 			  "Please email the results of 'lspci -vv' to openvortex-dev@nongnu.org.\n");
--		snd_card_free(card);
--		err = -ENODEV;
--		return err;
-+		return -ENODEV;
+ 	for (i = 0; i < 4; i++) {
+ 		err = snd_ca0106_pcm(chip, i);
+ 		if (err < 0)
+-			goto error;
++			return err;
  	}
- #endif
  
- 	// (6)
+ 	if (chip->details->ac97 == 1) {
+ 		/* The SB0410 and SB0413 do not have an AC97 chip. */
+ 		err = snd_ca0106_ac97(chip);
+ 		if (err < 0)
+-			goto error;
++			return err;
+ 	}
+ 	err = snd_ca0106_mixer(chip);
+ 	if (err < 0)
+-		goto error;
++		return err;
+ 
+ 	dev_dbg(card->dev, "probe for MIDI channel A ...");
+ 	err = snd_ca0106_midi(chip, CA0106_MIDI_CHAN_A);
+ 	if (err < 0)
+-		goto error;
++		return err;
+ 	dev_dbg(card->dev, " done.\n");
+ 
+ #ifdef CONFIG_SND_PROC_FS
+@@ -1825,20 +1779,11 @@ static int snd_ca0106_probe(struct pci_dev *pci,
+ 
  	err = snd_card_register(card);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 	// (7)
+ 	if (err < 0)
+-		goto error;
++		return err;
+ 
  	pci_set_drvdata(pci, card);
  	dev++;
-@@ -379,18 +310,11 @@ snd_vortex_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
  	return 0;
- }
- 
--// destructor -- see "Destructor" sub-section
--static void snd_vortex_remove(struct pci_dev *pci)
--{
--	snd_card_free(pci_get_drvdata(pci));
+-
+- error:
+-	snd_card_free(card);
+-	return err;
 -}
 -
- // pci_driver definition
- static struct pci_driver vortex_driver = {
- 	.name = KBUILD_MODNAME,
- 	.id_table = snd_vortex_ids,
- 	.probe = snd_vortex_probe,
--	.remove = snd_vortex_remove,
- };
+-static void snd_ca0106_remove(struct pci_dev *pci)
+-{
+-	snd_card_free(pci_get_drvdata(pci));
+ }
  
- module_pci_driver(vortex_driver);
+ #ifdef CONFIG_PM_SLEEP
+@@ -1894,7 +1839,6 @@ static struct pci_driver ca0106_driver = {
+ 	.name = KBUILD_MODNAME,
+ 	.id_table = snd_ca0106_ids,
+ 	.probe = snd_ca0106_probe,
+-	.remove = snd_ca0106_remove,
+ 	.driver = {
+ 		.pm = SND_CA0106_PM_OPS,
+ 	},
 -- 
 2.26.2
 
