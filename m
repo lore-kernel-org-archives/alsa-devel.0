@@ -2,98 +2,99 @@ Return-Path: <SRS0=jeit=MH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FBA2C07E96
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 10:33:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD371C47E4D
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 10:34:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6BCB161360
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 10:33:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6BCB161360
+	by mail.kernel.org (Postfix) with ESMTPS id 13881613C3
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 10:34:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 13881613C3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E7CFA16A8;
-	Thu, 15 Jul 2021 12:32:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7CFA16A8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6ED8616A6;
+	Thu, 15 Jul 2021 12:33:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6ED8616A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626345227;
-	bh=xdtJCBYNqWas/Kq4FZMDys/KoE7L3yB5CoWX8Bnix9E=;
+	s=default; t=1626345262;
+	bh=8UGWIRXOpWfyBJ0SeBQBDasSB74f0qs61vp1EWOCedw=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qgiFZ2RHrdabmIa83rgHL2Upr63+DzT/S35xagZc6v03le4TKYwV5tn7TT4W+T7Z/
-	 +FhIirwL4Mu7OZH6KldBY0tqwq6OZVgGRL3z2jNHmRmAY5H5DhENEHpPckndtyBHPq
-	 zu6ewszop8HhfFgJV4U5PF8xukT1olIGAVNox2ok=
+	b=EMNU5GecwjhbNZxjLbt+zDo9IMvvUXmyMHHafYV6gYFdjKtweSlwlveMzBE4j7Ejw
+	 p0K6+ZZELa3xbG2XgrKnaPraAHsIm/KmUeK9z8JxZVVnTvs8yioKyJjkicqayMTSo+
+	 ChRoi8M7vtkHUm18WxluvTtDLBO242ZfQoompddk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50870F804D2;
-	Thu, 15 Jul 2021 12:32:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 091C9F804DA;
+	Thu, 15 Jul 2021 12:32:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0155FF80430; Thu, 15 Jul 2021 12:32:03 +0200 (CEST)
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
- [IPv6:2a00:1450:4864:20::436])
+ id 34632F804E2; Thu, 15 Jul 2021 12:32:15 +0200 (CEST)
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com
+ [IPv6:2a00:1450:4864:20::433])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 86C3AF80229
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 12:31:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86C3AF80229
+ by alsa1.perex.cz (Postfix) with ESMTPS id E0AC5F804DA
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 12:32:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0AC5F804DA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="c4uipzQy"
-Received: by mail-wr1-x436.google.com with SMTP id r11so7074884wro.9
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 03:31:56 -0700 (PDT)
+ header.b="wUmdJPHc"
+Received: by mail-wr1-x433.google.com with SMTP id a13so7064397wrf.10
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 03:32:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=subject:to:cc:references:from:message-id:date:user-agent
  :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=OeiiPl20p9927jbWX7/PfpqS3lSPvusA08Tdqa5UmsY=;
- b=c4uipzQyvebNcq97tf/wFVVx3CSXp3afJYoykf5QKzyirFj9iWO4uusgOI0uPHrtTE
- VfgyKigHuq4KbdCSGL0eVh3ddESvxWA6SFdVHg41aU5mrPCCXDaBIZzIBzUQNPD8XU5r
- 7Ql6MK5BejSEOUee+GZOdcidK+JTfrE91sLDFpFs+894+41stPfKcm3BlHozyYM10F6V
- cfokdoruOYjViQkYpjAx8XJ1rTEPxRnxbz6r2cX5yNDNX8gN57jVcyXygP8HvpHEjbCx
- EdUJ3HJ9d6DSOcYO3sjQvVhO/7yHvtuwT8UmuM0nDX2y5qHBio8MZxqD770QEiTvYk1l
- glCw==
+ bh=QQ9uYw60QT52Mb6pwDvwipu2yY8+bwDR1+TUxrl1UKg=;
+ b=wUmdJPHcrUBQXsFk6OQVqkBVLEvFwKaynwMe9+94Zwnofrjs/vvigT28RgKWKS0x1X
+ QqVta5d9JGRFbDeD5vMTECO30aIn30e0g4P+MuWtskgg3+Bd8mJKgpLNDvq9I1XDxfz8
+ mccDpBwfxXBbl5B70SvH0ZSfYV+/ytfK/ko2040mq6/RgSfRPviHZzcNwgCV7qrUvcE6
+ q1TkX7/aV2DivCPlcuf6Liu93osMxNISUMzTAEecaiBdF8NiVC6nVVQ//L6Ly4vakmwM
+ UqvEYDmiyOGZtdotfW/Th8oKZBlvjzQWSRjtDxmnC4LeuHpQzWGB5+wzBNBukmeqBzCf
+ yHiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:subject:to:cc:references:from:message-id:date
  :user-agent:mime-version:in-reply-to:content-language
  :content-transfer-encoding;
- bh=OeiiPl20p9927jbWX7/PfpqS3lSPvusA08Tdqa5UmsY=;
- b=SO3W6JI2Y2vV9gGFfPfUEyhlcSWcZ/quyizf58eELKqHf79k+fNYXo80YQ3TjlLULl
- UPR/qs8u7CZkfHKaHVujF1xsDWAe284wIyCMfR6ozXFL7AoIvDKygYwPumd8sOLkqOTi
- orUCvETsWLRmRDEMf+i5BTMNWESWt964OcYa2N6m/xBvHrxDyV3OK9t1Db7aDtdLk/Yh
- 34TSYUq4O5yvk57d6+nRRIF8u6oDYpIZ8SYJ1mo+5sdLl1onJuv1hnSd6OjL9+TppyoU
- 3D3ateTZQMhrySKLmuEFjMkSptIGqxkcLGC5OJbfmx36WsJ4dOibQ643LQUweO93IZ8g
- tlsg==
-X-Gm-Message-State: AOAM531HsT3s/qjokqY0XPrQ8/ml9EZC3sWLnSRX+wgOuD39J2F69upB
- slMjXFlD1KxdCDx5siC55FsHqQ==
-X-Google-Smtp-Source: ABdhPJwgt9sLn+0DSNgKRhtlwDwl9INltt2ugA0cLn21vmM1i3UCR0E0SsLtUikbolq1R6hUyExSdg==
-X-Received: by 2002:a5d:5989:: with SMTP id n9mr4535183wri.8.1626345116330;
- Thu, 15 Jul 2021 03:31:56 -0700 (PDT)
+ bh=QQ9uYw60QT52Mb6pwDvwipu2yY8+bwDR1+TUxrl1UKg=;
+ b=eai16+80sdCt/i4WKxhvEWT3xIFryEXbAzEnAf9mmBBQqEy+jmdhjL4QQuytYbHeEi
+ XSOlSPI66d27fUwHRdDaqE+KiaNyBzrlNQIeCbFkkqdoXDPBrmvvRmUgL3pVDe8C0F4W
+ NL7ErAysIhp/a2UjXCE517nfgn6QFak4KuCznv4C7zZmhrax6q9jwVpd3Qgyf0Yzx6sW
+ xYJu/ihE8QFwx6uCle9WEvruTLWOGeZftav0BfrIZ0pAT6gcG44eL/2bQB8l8lQSQt7t
+ dNU23t0RaiP00Q49poCgScrQQqKlAfI9lQKvqEVJ48bimogtotP7QfZ+/ShjKM6h/oXZ
+ EOnQ==
+X-Gm-Message-State: AOAM531FcvBZYwNXTKPV8js5oWn8+jZyV6l68wmx1qMuGQP/YSDOaQ71
+ fXrz4Lq8bUBoTyIp+1Xg13mmmA==
+X-Google-Smtp-Source: ABdhPJzbmzr56TMMDysLHgbDl/J9edrHkbunhopnL4Ep1n/ouXkSOU2eeiUZe+h/zHlAE2GwjOyh+Q==
+X-Received: by 2002:a5d:6992:: with SMTP id g18mr4738344wru.118.1626345127586; 
+ Thu, 15 Jul 2021 03:32:07 -0700 (PDT)
 Received: from [192.168.86.34]
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.googlemail.com with ESMTPSA id d14sm5927985wrs.49.2021.07.15.03.31.55
+ by smtp.googlemail.com with ESMTPSA id o22sm4593073wmc.18.2021.07.15.03.32.06
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 15 Jul 2021 03:31:55 -0700 (PDT)
-Subject: Re: [PATCH v2 06/16] ASoC: qcom: audioreach: add q6apm support
+ Thu, 15 Jul 2021 03:32:07 -0700 (PDT)
+Subject: Re: [PATCH v2 07/16] ASoC: qcom: audioreach: add module configuration
+ command helpers
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  bjorn.andersson@linaro.org, broonie@kernel.org, robh@kernel.org
 References: <20210714153039.28373-1-srinivas.kandagatla@linaro.org>
- <20210714153039.28373-7-srinivas.kandagatla@linaro.org>
- <77b9d17d-33b6-8a7a-bb1d-e32543d9da79@linux.intel.com>
+ <20210714153039.28373-8-srinivas.kandagatla@linaro.org>
+ <d3e9bf09-cc72-c527-89b2-5f23a15163e4@linux.intel.com>
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <d52fa4c9-d3c7-7501-0bcb-2c7ff997aa55@linaro.org>
-Date: Thu, 15 Jul 2021 11:31:54 +0100
+Message-ID: <5d8eadba-dc58-5f84-93ad-0430de049958@linaro.org>
+Date: Thu, 15 Jul 2021 11:32:06 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <77b9d17d-33b6-8a7a-bb1d-e32543d9da79@linux.intel.com>
+In-Reply-To: <d3e9bf09-cc72-c527-89b2-5f23a15163e4@linux.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -115,161 +116,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Thanks Pierre for review,
+Thanks Pierre,
 
-On 14/07/2021 17:40, Pierre-Louis Bossart wrote:
+On 14/07/2021 17:48, Pierre-Louis Bossart wrote:
 > 
->>   /* SubGraph Config */
->> @@ -32,7 +33,7 @@ struct apm_sub_graph_params  {
->>   /* container config */
->>   struct apm_container_obj  {
->>   	struct apm_container_cfg container_cfg;
->> -	/* Capablity ID list */
->> +	/* Capability ID list */
-> 
-> squash in wrong patch, this should have been included in the previous patch.
-
-My bad.. will fix such instances in next spin.
-
-
-> 
->>   	struct apm_prop_data cap_data;
->>   	uint32_t num_capablity_id;
-
-...
-
-> 
->> +static struct audioreach_graph *q6apm_get_audioreach_graph(struct q6apm *apm,
->> +						      uint32_t graph_id)
+>> +static int audioreach_shmem_set_media_format(struct q6apm_graph *graph,
+>> +				       struct audioreach_module *module,
+>> +				       int direction, uint32_t rate,
+>> +				       uint32_t num_channels,
+>> +				       u8 channel_map[PCM_MAX_NUM_CHANNEL],
+>> +				       uint16_t bits_per_sample)
 >> +{
->> +	struct audioreach_graph *graph = NULL;
-> 
-> useless init
-> 
->> +	struct audioreach_graph_info *info;
->> +	unsigned long flags;
->> +
->> +	spin_lock_irqsave(&apm->lock, flags);
->> +	graph = idr_find(&apm->graph_idr, graph_id);
->> +	spin_unlock_irqrestore(&apm->lock, flags);
->> +
->> +	if (graph) {
->> +		kref_get(&graph->refcount);
->> +		return graph;
->> +	}
->> +
->> +	info = idr_find(&apm->graph_info_idr, graph_id);
->> +
->> +	if (!info)
->> +		return ERR_PTR(-ENODEV);
->> +
->> +	graph = kzalloc(sizeof(*graph), GFP_KERNEL);
->> +	if (!graph)
->> +		return ERR_PTR(-ENOMEM);
->> +
->> +	graph->apm = apm;
->> +	graph->info = info;
->> +	graph->id = graph_id;
->> +
->> +	/* Assuming Linear Graphs only for now! */
->> +	graph->graph = audioreach_alloc_graph_pkt(apm, &info->sg_list, graph_id);
->> +	if (IS_ERR(graph->graph))
->> +		return ERR_PTR(-ENOMEM);
->> +
->> +	spin_lock(&apm->lock);
->> +	idr_alloc(&apm->graph_idr, graph, graph_id,
->> +		  graph_id + 1, GFP_ATOMIC);
-> 
-> ATOMIC?
-we are under spinlock here, so we need this.
-
-> 
->> +	spin_unlock(&apm->lock);
->> +
->> +	kref_init(&graph->refcount);
->> +
->> +	q6apm_send_cmd_sync(apm, graph->graph, 0);
->> +
->> +	return graph;
->> +}
->> +
->> +static int audioreach_graph_mgmt_cmd(struct audioreach_graph *graph,
->> +				      uint32_t opcode)
->> +{
+>> +	struct apm_module_param_data *param_data;
+>> +	struct payload_media_fmt_pcm *cfg;
+>> +	struct media_format *header;
+>> +	int rc, payload_size;
 >> +	struct gpr_pkt *pkt;
 >> +	void *p;
->> +	int i = 0, rc, payload_size;
->> +	struct q6apm *apm = graph->apm;
->> +	struct audioreach_graph_info *info = graph->info;
->> +	int num_sub_graphs = info->num_sub_graphs;
->> +	struct apm_graph_mgmt_cmd *mgmt_cmd;
->> +	struct apm_module_param_data *param_data;
->> +	struct audioreach_sub_graph *sg;
 >> +
->> +	payload_size = APM_GRAPH_MGMT_PSIZE(num_sub_graphs);
->> +
->> +	p = audioreach_alloc_apm_cmd_pkt(payload_size, opcode, 0);
->> +	if (IS_ERR(p))
->> +		return -ENOMEM;
->> +
->> +	pkt = p;
->> +	p = p + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
->> +
->> +	mgmt_cmd = p;
->> +	mgmt_cmd->num_sub_graphs = num_sub_graphs;
->> +
->> +	param_data = &mgmt_cmd->param_data;
->> +	param_data->module_instance_id = APM_MODULE_INSTANCE_ID;
->> +	param_data->param_id = APM_PARAM_ID_SUB_GRAPH_LIST;
->> +	param_data->param_size = payload_size - APM_MODULE_PARAM_DATA_SIZE;
->> +
->> +	list_for_each_entry(sg, &info->sg_list, node) {
->> +		mgmt_cmd->sub_graph_id_list[i++] = sg->sub_graph_id;
->> +	}
->> +
->> +	rc = q6apm_send_cmd_sync(apm, pkt, 0);
->> +
->> +	kfree(pkt);
->> +
->> +	return rc;
->> +}
->> +
->> +static void q6apm_put_audioreach_graph(struct kref *ref)
->> +{
->> +	struct audioreach_graph *graph;
->> +	struct q6apm *apm;
->> +	unsigned long flags;
->> +
->> +	graph = container_of(ref, struct audioreach_graph, refcount);
->> +	apm = graph->apm;
->> +
->> +	audioreach_graph_mgmt_cmd(graph, APM_CMD_GRAPH_CLOSE);
->> +
->> +	spin_lock_irqsave(&apm->lock, flags);
->> +	graph = idr_remove(&apm->graph_idr, graph->id);
->> +	spin_unlock_irqrestore(&apm->lock, flags);
->> +
->> +	kfree(graph->graph);
->> +	kfree(graph);
+>> +	if (num_channels < 0 || num_channels > 2)
+>> +		dev_err(graph->dev, "Error: Invalid channels (%d)!\n", num_channels);
 > 
-> earlier in the _get routine, you had a kref_get(&graph->refcount)
-> 
-This is a release callback for kref. Probably I should rename this to 
-q6apm_release_audioreach_graph().
+> that doesn't sound good, you flag num_channels as an invalid value but still continue using it.
+
+I forgot to run cppcheck after doing make W=1 C=1.
+
+It did catch these, will fix all such instances before I send out next 
+version.
 
 
-> is it intentional that there's kref_put?
-
-kref_put is called in q6apm_graph_close()
-
-q6apm_graph_open() calls q6apm_get_audioreach_graph() which will do 
-kref_get.
-
-q6apm_graph_close() will call kref_put().
-
-when refcount is zero q6apm_put_audioreach_graph() callback will be invoked.
 
 --srini
-> 
-> adding a comment on the refcounts might be useful...
-> 
