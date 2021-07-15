@@ -2,83 +2,81 @@ Return-Path: <SRS0=jeit=MH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1592C07E96
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:02:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74771C07E96
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:03:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 275CE610D1
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:02:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 275CE610D1
+	by mail.kernel.org (Postfix) with ESMTPS id 9B64F610C7
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:03:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B64F610C7
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A677A16C3;
-	Thu, 15 Jul 2021 10:01:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A677A16C3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 354D016A5;
+	Thu, 15 Jul 2021 10:02:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 354D016A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626336164;
-	bh=u0r0MMcEXuzys7gB+r1poMB/JHK06NbQ41Atw2AjXvI=;
+	s=default; t=1626336195;
+	bh=5tTHYYQ5v3MBBQitDlfw8tM+z5RB/PxEsu0/G4osaW8=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pouGU9wLxYBFgpsAAQWDFdB3DDUF3Xv9TllRLY0GWTqRby2dnfoFzT9OzSEd9gpAa
-	 dOlOUmbfZf34BkfkfAmXJXpT7jRVX9YvfFgShxZat0+/TYZl1xcDSsL5tl9EXUWCaG
-	 oEgwBEQtx2V6TqC4fyjjsw9/bCJ3+G+dbqAYCGqQ=
+	b=idlnR1WNDHEXF/tBU/0cKHbfvEpO+nYM7c6Rqqv/tABsaJJtzTsZkPq79a/WKI7Ex
+	 OS7bH5RVKYIRidZ2M9scrnI3I1wU/ed1rRWL7IOpMSRCRBMYW13vaNn7ltCqv5vfUr
+	 AUvz3G2V672nVlASThpeBH9zRq9L2SXk47npWGUc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3AAAF8053A;
-	Thu, 15 Jul 2021 10:00:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8032FF80542;
+	Thu, 15 Jul 2021 10:00:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C8FA6F8051D; Thu, 15 Jul 2021 10:00:09 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 1325EF80240; Thu, 15 Jul 2021 10:00:10 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A5B2FF80240
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 09:59:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5B2FF80240
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0550AF8020C
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 09:59:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0550AF8020C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="o72VEIM0"; 
+ header.b="yUg90BZa"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="6V6no7oH"
+ header.b="DG2F/NfK"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 05C811FDF1
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 07:59:55 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 545FB2284E
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 07:59:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626335995; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1626335991; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=m8pc2c6upT4f/IawpfVgQ9TB9w3B6L3EC07I8Ldp8lY=;
- b=o72VEIM0yT8mcc7Od/N6QahGy4KzckKv39HhCxTINCCrTilM5Oyn4qbZQCs3sdWFgwuJOR
- UYleXUN5RkE0E/OMx6WRSGCdqbWVb6FwqP1vI+fTmv8XY8tvsE2/2AEGd+awY63FrtSarn
- q2AsebjXGbi+JjYwcQgdvNoTFtO1mRA=
+ bh=vklpQFKwIuhfxYLlJB9POJCv52g3xNBgveJ+77rJc90=;
+ b=yUg90BZaTeus9YqP1rD58Vsj3Az1HukeYES0+tbxIUb3ZRcwJoSl5Y2D9TQgZ0XoPXJ3ju
+ vkwRFTKAs4iiqLn2UOesBY9wvfVh//keWtAF3HYb+vFwt8D606GhpTob5+joj62sLTOcWS
+ mheSVu0aKluYiIl9aRj7d8kKvaab+1c=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626335995;
+ s=susede2_ed25519; t=1626335991;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=m8pc2c6upT4f/IawpfVgQ9TB9w3B6L3EC07I8Ldp8lY=;
- b=6V6no7oHOEOKuBpR64U1/fE6L/iuPI3f7VU+G1DC86TCfiNujHkk9DiqG8IKMjDRQsh/3X
- QOHvFl9XlKCP5DAA==
+ bh=vklpQFKwIuhfxYLlJB9POJCv52g3xNBgveJ+77rJc90=;
+ b=DG2F/NfKIw2gsrY8MwtqfqN1TcW7CShz++iINOHpn9dWcw1XtUAr44ZBC4IHAo8v6Ptni3
+ HvuKdbQLJKtKuCCA==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id E825AA3B8D;
- Thu, 15 Jul 2021 07:59:54 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 413E8A3B8F;
+ Thu, 15 Jul 2021 07:59:51 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 08/79] ALSA: ad1889: Allocate resources with device-managed
- APIs
-Date: Thu, 15 Jul 2021 09:58:30 +0200
-Message-Id: <20210715075941.23332-9-tiwai@suse.de>
+Subject: [PATCH v2 02/79] ALSA: core: Add managed card creation
+Date: Thu, 15 Jul 2021 09:58:24 +0200
+Message-Id: <20210715075941.23332-3-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210715075941.23332-1-tiwai@suse.de>
 References: <20210715075941.23332-1-tiwai@suse.de>
@@ -99,283 +97,235 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the resource management in PCI ad1889 driver with
-devres as a clean up.  Each manual resource management is converted
-with the corresponding devres helper, and the card object release is
-managed now via card->private_free instead of a lowlevel snd_device.
-Also, the unnecessary ac97 free callbacks are removed, too.
+As a second step for preliminary to widen the devres usages among
+sound drivers, this patch adds a new ALSA core API function,
+snd_devm_card_new(), to create a snd_card object via devres.
+When a card object is created by this new function, snd_card_free() is
+called automatically and the card object resource gets released at the
+device unbinding time.
 
-This should give no user-visible functional changes.
+However, the story isn't that simple.  A caveat is that we have to
+call snd_card_free() at the very first of the whole resource release
+procedure, in order to assure that the all exposed devices on
+user-space are deleted and sync with processes accessing those devices
+before releasing resources.
+
+For achieving it, snd_card_register() adds a new devres action to
+trigger snd_card_free() automatically when the given card object is a
+"managed" one.  Since usually snd_card_register() is the last step of
+the initialization, this should work in most cases.
+
+With all these tricks, some drivers can get rid of the whole driver
+remove callback code.
+
+About a bit of implementation details: the patch adds two new flags to
+snd_card object: managed and releasing.  The former indicates that the
+object was created via snd_devm_card_new(), and the latter is used for
+avoiding the double-free of snd_card_free() calls.  Both flags are
+fairly internal and likely uninteresting to normal users.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/ad1889.c | 144 ++++++++-------------------------------------
- 1 file changed, 25 insertions(+), 119 deletions(-)
+ include/sound/core.h |  5 +++
+ sound/core/init.c    | 99 ++++++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 96 insertions(+), 8 deletions(-)
 
-diff --git a/sound/pci/ad1889.c b/sound/pci/ad1889.c
-index 5c78951dd596..bba4dae8dcc7 100644
---- a/sound/pci/ad1889.c
-+++ b/sound/pci/ad1889.c
-@@ -740,20 +740,6 @@ snd_ad1889_ac97_xinit(struct snd_ad1889 *chip)
+diff --git a/include/sound/core.h b/include/sound/core.h
+index c4ade121727d..7885f903cd5a 100644
+--- a/include/sound/core.h
++++ b/include/sound/core.h
+@@ -117,6 +117,8 @@ struct snd_card {
+ 	struct device card_dev;		/* cardX object for sysfs */
+ 	const struct attribute_group *dev_groups[4]; /* assigned sysfs attr */
+ 	bool registered;		/* card_dev is registered? */
++	bool managed;			/* managed via devres */
++	bool releasing;			/* during card free process */
+ 	int sync_irq;			/* assigned irq, used for PCM sync */
+ 	wait_queue_head_t remove_sleep;
  
+@@ -274,6 +276,9 @@ extern int (*snd_mixer_oss_notify_callback)(struct snd_card *card, int cmd);
+ int snd_card_new(struct device *parent, int idx, const char *xid,
+ 		 struct module *module, int extra_size,
+ 		 struct snd_card **card_ret);
++int snd_devm_card_new(struct device *parent, int idx, const char *xid,
++		      struct module *module, size_t extra_size,
++		      struct snd_card **card_ret);
+ 
+ int snd_card_disconnect(struct snd_card *card);
+ void snd_card_disconnect_sync(struct snd_card *card);
+diff --git a/sound/core/init.c b/sound/core/init.c
+index 1490568efdb0..e985185ebc91 100644
+--- a/sound/core/init.c
++++ b/sound/core/init.c
+@@ -134,6 +134,9 @@ void snd_device_initialize(struct device *dev, struct snd_card *card)
  }
+ EXPORT_SYMBOL_GPL(snd_device_initialize);
  
--static void
--snd_ad1889_ac97_bus_free(struct snd_ac97_bus *bus)
--{
--	struct snd_ad1889 *chip = bus->private_data;
--	chip->ac97_bus = NULL;
--}
--
--static void
--snd_ad1889_ac97_free(struct snd_ac97 *ac97)
--{
--	struct snd_ad1889 *chip = ac97->private_data;
--	chip->ac97 = NULL;
--}
--
- static int
- snd_ad1889_ac97_init(struct snd_ad1889 *chip, const char *quirk_override)
++static int snd_card_init(struct snd_card *card, struct device *parent,
++			 int idx, const char *xid, struct module *module,
++			 size_t extra_size);
+ static int snd_card_do_free(struct snd_card *card);
+ static const struct attribute_group card_dev_attr_group;
+ 
+@@ -163,9 +166,6 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
  {
-@@ -771,11 +757,8 @@ snd_ad1889_ac97_init(struct snd_ad1889 *chip, const char *quirk_override)
- 	if (err < 0)
- 		return err;
- 	
--	chip->ac97_bus->private_free = snd_ad1889_ac97_bus_free;
--
- 	memset(&ac97, 0, sizeof(ac97));
- 	ac97.private_data = chip;
--	ac97.private_free = snd_ad1889_ac97_free;
- 	ac97.pci = chip->pci;
- 
- 	err = snd_ac97_mixer(chip->ac97_bus, &ac97, &chip->ac97);
-@@ -787,11 +770,10 @@ snd_ad1889_ac97_init(struct snd_ad1889 *chip, const char *quirk_override)
- 	return 0;
- }
- 
--static int
--snd_ad1889_free(struct snd_ad1889 *chip)
-+static void
-+snd_ad1889_free(struct snd_card *card)
- {
--	if (chip->irq < 0)
--		goto skip_hw;
-+	struct snd_ad1889 *chip = card->private_data;
- 
- 	spin_lock_irq(&chip->lock);
- 
-@@ -805,125 +787,60 @@ snd_ad1889_free(struct snd_ad1889 *chip)
- 	ad1889_readl(chip, AD_DMA_DISR);	/* flush, dammit! */
- 
- 	spin_unlock_irq(&chip->lock);
--
--	if (chip->irq >= 0)
--		free_irq(chip->irq, chip);
--
--skip_hw:
--	iounmap(chip->iobase);
--	pci_release_regions(chip->pci);
--	pci_disable_device(chip->pci);
--	kfree(chip);
--	return 0;
--}
--
--static int
--snd_ad1889_dev_free(struct snd_device *device) 
--{
--	struct snd_ad1889 *chip = device->device_data;
--	return snd_ad1889_free(chip);
--}
--
--static int
--snd_ad1889_init(struct snd_ad1889 *chip) 
--{
--	ad1889_writew(chip, AD_DS_CCS, AD_DS_CCS_CLKEN); /* turn on clock */
--	ad1889_readw(chip, AD_DS_CCS);	/* flush posted write */
--
--	usleep_range(10000, 11000);
--
--	/* enable Master and Target abort interrupts */
--	ad1889_writel(chip, AD_DMA_DISR, AD_DMA_DISR_PMAE | AD_DMA_DISR_PTAE);
--
--	return 0;
- }
- 
- static int
--snd_ad1889_create(struct snd_card *card,
--		  struct pci_dev *pci,
--		  struct snd_ad1889 **rchip)
-+snd_ad1889_create(struct snd_card *card, struct pci_dev *pci)
- {
-+	struct snd_ad1889 *chip = card->private_data;
+ 	struct snd_card *card;
  	int err;
+-#ifdef CONFIG_SND_DEBUG
+-	char name[8];
+-#endif
  
--	struct snd_ad1889 *chip;
--	static const struct snd_device_ops ops = {
--		.dev_free = snd_ad1889_dev_free,
--	};
--
--	*rchip = NULL;
--
--	err = pci_enable_device(pci);
-+	err = pcim_enable_device(pci);
- 	if (err < 0)
- 		return err;
- 
- 	/* check PCI availability (32bit DMA) */
- 	if (dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(32))) {
- 		dev_err(card->dev, "error setting 32-bit DMA mask.\n");
--		pci_disable_device(pci);
- 		return -ENXIO;
- 	}
- 
--	/* allocate chip specific data with zero-filled memory */
--	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
--	if (!chip) {
--		pci_disable_device(pci);
--		return -ENOMEM;
--	}
--
- 	chip->card = card;
--	card->private_data = chip;
- 	chip->pci = pci;
- 	chip->irq = -1;
- 
- 	/* (1) PCI resource allocation */
--	err = pci_request_regions(pci, card->driver);
-+	err = pcim_iomap_regions(pci, 1 << 0, card->driver);
- 	if (err < 0)
--		goto free_and_ret;
+ 	if (snd_BUG_ON(!card_ret))
+ 		return -EINVAL;
+@@ -176,6 +176,74 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
+ 	card = kzalloc(sizeof(*card) + extra_size, GFP_KERNEL);
+ 	if (!card)
+ 		return -ENOMEM;
++
++	err = snd_card_init(card, parent, idx, xid, module, extra_size);
++	if (err < 0) {
++		kfree(card);
 +		return err;
- 
- 	chip->bar = pci_resource_start(pci, 0);
--	chip->iobase = pci_ioremap_bar(pci, 0);
--	if (chip->iobase == NULL) {
--		dev_err(card->dev, "unable to reserve region.\n");
--		err = -EBUSY;
--		goto free_and_ret;
--	}
-+	chip->iobase = pcim_iomap_table(pci)[0];
- 	
- 	pci_set_master(pci);
- 
- 	spin_lock_init(&chip->lock);	/* only now can we call ad1889_free */
- 
--	if (request_irq(pci->irq, snd_ad1889_interrupt,
--			IRQF_SHARED, KBUILD_MODNAME, chip)) {
-+	if (devm_request_irq(&pci->dev, pci->irq, snd_ad1889_interrupt,
-+			     IRQF_SHARED, KBUILD_MODNAME, chip)) {
- 		dev_err(card->dev, "cannot obtain IRQ %d\n", pci->irq);
--		snd_ad1889_free(chip);
- 		return -EBUSY;
++	}
++
++	*card_ret = card;
++	return 0;
++}
++EXPORT_SYMBOL(snd_card_new);
++
++static void __snd_card_release(struct device *dev, void *data)
++{
++	snd_card_free(data);
++}
++
++/**
++ * snd_devm_card_new - managed snd_card object creation
++ * @parent: the parent device object
++ * @idx: card index (address) [0 ... (SNDRV_CARDS-1)]
++ * @xid: card identification (ASCII string)
++ * @module: top level module for locking
++ * @extra_size: allocate this extra size after the main soundcard structure
++ * @card_ret: the pointer to store the created card instance
++ *
++ * This function works like snd_card_new() but manages the allocated resource
++ * via devres, i.e. you don't need to free explicitly.
++ *
++ * When a snd_card object is created with this function and registered via
++ * snd_card_register(), the very first devres action to call snd_card_free()
++ * is added automatically.  In that way, the resource disconnection is assured
++ * at first, then released in the expected order.
++ */
++int snd_devm_card_new(struct device *parent, int idx, const char *xid,
++		      struct module *module, size_t extra_size,
++		      struct snd_card **card_ret)
++{
++	struct snd_card *card;
++	int err;
++
++	*card_ret = NULL;
++	card = devres_alloc(__snd_card_release, sizeof(*card) + extra_size,
++			    GFP_KERNEL);
++	if (!card)
++		return -ENOMEM;
++	card->managed = true;
++	err = snd_card_init(card, parent, idx, xid, module, extra_size);
++	if (err < 0) {
++		devres_free(card);
++		return err;
++	}
++
++	devres_add(parent, card);
++	*card_ret = card;
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_devm_card_new);
++
++static int snd_card_init(struct snd_card *card, struct device *parent,
++			 int idx, const char *xid, struct module *module,
++			 size_t extra_size)
++{
++	int err;
++#ifdef CONFIG_SND_DEBUG
++	char name[8];
++#endif
++
+ 	if (extra_size > 0)
+ 		card->private_data = (char *)card + sizeof(struct snd_card);
+ 	if (xid)
+@@ -197,7 +265,6 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
+ 		mutex_unlock(&snd_card_mutex);
+ 		dev_err(parent, "cannot find the slot for index %d (range 0-%i), error: %d\n",
+ 			 idx, snd_ecards_limit - 1, err);
+-		kfree(card);
+ 		return err;
  	}
- 
- 	chip->irq = pci->irq;
- 	card->sync_irq = chip->irq;
-+	card->private_free = snd_ad1889_free;
- 
- 	/* (2) initialization of the chip hardware */
--	err = snd_ad1889_init(chip);
--	if (err < 0) {
--		snd_ad1889_free(chip);
--		return err;
--	}
-+	ad1889_writew(chip, AD_DS_CCS, AD_DS_CCS_CLKEN); /* turn on clock */
-+	ad1889_readw(chip, AD_DS_CCS);	/* flush posted write */
- 
--	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
--	if (err < 0) {
--		snd_ad1889_free(chip);
--		return err;
--	}
-+	usleep_range(10000, 11000);
- 
--	*rchip = chip;
-+	/* enable Master and Target abort interrupts */
-+	ad1889_writel(chip, AD_DMA_DISR, AD_DMA_DISR_PMAE | AD_DMA_DISR_PTAE);
- 
+ 	set_bit(idx, snd_cards_lock);		/* lock it */
+@@ -256,8 +323,6 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
+ 	sprintf(name, "card%d", idx);
+ 	card->debugfs_root = debugfs_create_dir(name, sound_debugfs_root);
+ #endif
+-
+-	*card_ret = card;
  	return 0;
--
--free_and_ret:
--	kfree(chip);
--	pci_disable_device(pci);
--
--	return err;
+ 
+       __error_ctl:
+@@ -266,7 +331,6 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
+ 	put_device(&card->card_dev);
+   	return err;
+ }
+-EXPORT_SYMBOL(snd_card_new);
+ 
+ /**
+  * snd_card_ref - Get the card object from the index
+@@ -481,6 +545,7 @@ EXPORT_SYMBOL_GPL(snd_card_disconnect_sync);
+ 
+ static int snd_card_do_free(struct snd_card *card)
+ {
++	card->releasing = true;
+ #if IS_ENABLED(CONFIG_SND_MIXER_OSS)
+ 	if (snd_mixer_oss_notify_callback)
+ 		snd_mixer_oss_notify_callback(card, SND_MIXER_OSS_NOTIFY_FREE);
+@@ -498,7 +563,8 @@ static int snd_card_do_free(struct snd_card *card)
+ #endif
+ 	if (card->release_completion)
+ 		complete(card->release_completion);
+-	kfree(card);
++	if (!card->managed)
++		kfree(card);
+ 	return 0;
  }
  
- static int
-@@ -944,19 +861,19 @@ snd_ad1889_probe(struct pci_dev *pci,
+@@ -745,6 +811,14 @@ int snd_card_add_dev_attr(struct snd_card *card,
+ }
+ EXPORT_SYMBOL_GPL(snd_card_add_dev_attr);
+ 
++static void trigger_card_free(void *data)
++{
++	struct snd_card *card = data;
++
++	if (!card->releasing)
++		snd_card_free(data);
++}
++
+ /**
+  *  snd_card_register - register the soundcard
+  *  @card: soundcard structure
+@@ -768,6 +842,15 @@ int snd_card_register(struct snd_card *card)
+ 		if (err < 0)
+ 			return err;
+ 		card->registered = true;
++	} else {
++		if (card->managed)
++			devm_remove_action(card->dev, trigger_card_free, card);
++	}
++
++	if (card->managed) {
++		err = devm_add_action(card->dev, trigger_card_free, card);
++		if (err < 0)
++			return err;
  	}
  
- 	/* (2) */
--	err = snd_card_new(&pci->dev, index[devno], id[devno], THIS_MODULE,
--			   0, &card);
--	/* XXX REVISIT: we can probably allocate chip in this call */
-+	err = snd_devm_card_new(&pci->dev, index[devno], id[devno], THIS_MODULE,
-+				sizeof(*chip), &card);
- 	if (err < 0)
- 		return err;
-+	chip = card->private_data;
- 
- 	strcpy(card->driver, "AD1889");
- 	strcpy(card->shortname, "Analog Devices AD1889");
- 
- 	/* (3) */
--	err = snd_ad1889_create(card, pci, &chip);
-+	err = snd_ad1889_create(card, pci);
- 	if (err < 0)
--		goto free_and_ret;
-+		return err;
- 
- 	/* (4) */
- 	sprintf(card->longname, "%s at 0x%lx irq %i",
-@@ -966,11 +883,11 @@ snd_ad1889_probe(struct pci_dev *pci,
- 	/* register AC97 mixer */
- 	err = snd_ad1889_ac97_init(chip, ac97_quirk[devno]);
- 	if (err < 0)
--		goto free_and_ret;
-+		return err;
- 	
- 	err = snd_ad1889_pcm_init(chip, 0);
- 	if (err < 0)
--		goto free_and_ret;
-+		return err;
- 
- 	/* register proc interface */
- 	snd_ad1889_proc_init(chip);
-@@ -978,23 +895,13 @@ snd_ad1889_probe(struct pci_dev *pci,
- 	/* (6) */
- 	err = snd_card_register(card);
- 	if (err < 0)
--		goto free_and_ret;
-+		return err;
- 
- 	/* (7) */
- 	pci_set_drvdata(pci, card);
- 
- 	devno++;
- 	return 0;
--
--free_and_ret:
--	snd_card_free(card);
--	return err;
--}
--
--static void
--snd_ad1889_remove(struct pci_dev *pci)
--{
--	snd_card_free(pci_get_drvdata(pci));
- }
- 
- static const struct pci_device_id snd_ad1889_ids[] = {
-@@ -1007,7 +914,6 @@ static struct pci_driver ad1889_pci_driver = {
- 	.name = KBUILD_MODNAME,
- 	.id_table = snd_ad1889_ids,
- 	.probe = snd_ad1889_probe,
--	.remove = snd_ad1889_remove,
- };
- 
- module_pci_driver(ad1889_pci_driver);
+ 	err = snd_device_register_all(card);
 -- 
 2.26.2
 
