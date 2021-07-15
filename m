@@ -7,76 +7,77 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74771C07E96
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:03:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E157DC07E96
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:03:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9B64F610C7
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:03:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B64F610C7
+	by mail.kernel.org (Postfix) with ESMTPS id 60769610C7
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:03:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 60769610C7
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 354D016A5;
-	Thu, 15 Jul 2021 10:02:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 354D016A5
+	by alsa0.perex.cz (Postfix) with ESMTPS id F0BB7167E;
+	Thu, 15 Jul 2021 10:02:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0BB7167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626336195;
-	bh=5tTHYYQ5v3MBBQitDlfw8tM+z5RB/PxEsu0/G4osaW8=;
+	s=default; t=1626336211;
+	bh=CEUUEMRpKh2q+wEKO3UkqbaUVHguEKirBq7NjDfVM0E=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=idlnR1WNDHEXF/tBU/0cKHbfvEpO+nYM7c6Rqqv/tABsaJJtzTsZkPq79a/WKI7Ex
-	 OS7bH5RVKYIRidZ2M9scrnI3I1wU/ed1rRWL7IOpMSRCRBMYW13vaNn7ltCqv5vfUr
-	 AUvz3G2V672nVlASThpeBH9zRq9L2SXk47npWGUc=
+	b=SyABAuSuu0qoLZ3fwGv4YV+8x2WowGRuwDjd8Tlw8HNEetf6oeenxCTnR90Lv9d8T
+	 ivX5+Q7hT7jLirxEI6Klfyism3HYoOlB+OQwWMX54wg9QIqAxi1INi+IYp7QbU9lgo
+	 OEvpDLc7Vs1/uLkiFrwYJAviiyzi4H8rnuvbtNdY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8032FF80542;
-	Thu, 15 Jul 2021 10:00:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84B93F80548;
+	Thu, 15 Jul 2021 10:00:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1325EF80240; Thu, 15 Jul 2021 10:00:10 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id A9D0FF80520; Thu, 15 Jul 2021 10:00:10 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0550AF8020C
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 09:59:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0550AF8020C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 388A4F80431
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 09:59:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 388A4F80431
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="yUg90BZa"; 
+ header.b="0tbZ2Ef+"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="DG2F/NfK"
+ header.b="VemStAJe"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 545FB2284E
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 07:59:51 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id C8B901FD3E
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 07:59:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626335991; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1626335993; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=vklpQFKwIuhfxYLlJB9POJCv52g3xNBgveJ+77rJc90=;
- b=yUg90BZaTeus9YqP1rD58Vsj3Az1HukeYES0+tbxIUb3ZRcwJoSl5Y2D9TQgZ0XoPXJ3ju
- vkwRFTKAs4iiqLn2UOesBY9wvfVh//keWtAF3HYb+vFwt8D606GhpTob5+joj62sLTOcWS
- mheSVu0aKluYiIl9aRj7d8kKvaab+1c=
+ bh=EJDCaxedyEx7rQY8uxQVc9bkBE7FagFDqODBfkzm5cU=;
+ b=0tbZ2Ef+JXelipQQavSwDwLnAD3BSxaJfR+Q8VwIjUgVkSRgaZR2LtK5zAW4ClvDok4pbc
+ SOHHzs/I7x6hP/IqKJ+KZE0YUryu4oxPE6ykN2nJyiFHzYOMEGsOEKYVG0r9uxQI+OB9v0
+ r/2Lss6j2mMO7Lqy7299rLrhNCe3hw8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626335991;
+ s=susede2_ed25519; t=1626335993;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=vklpQFKwIuhfxYLlJB9POJCv52g3xNBgveJ+77rJc90=;
- b=DG2F/NfKIw2gsrY8MwtqfqN1TcW7CShz++iINOHpn9dWcw1XtUAr44ZBC4IHAo8v6Ptni3
- HvuKdbQLJKtKuCCA==
+ bh=EJDCaxedyEx7rQY8uxQVc9bkBE7FagFDqODBfkzm5cU=;
+ b=VemStAJeDHH/PKP/CmPsnVyxn9IuOKzbYNw+O5BNjqWS37OHZRfyOweVMwcniSxNAkFsy/
+ PL6V5wr5MzPUQSAw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 413E8A3B8F;
- Thu, 15 Jul 2021 07:59:51 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id C0188A3B8F;
+ Thu, 15 Jul 2021 07:59:53 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 02/79] ALSA: core: Add managed card creation
-Date: Thu, 15 Jul 2021 09:58:24 +0200
-Message-Id: <20210715075941.23332-3-tiwai@suse.de>
+Subject: [PATCH v2 06/79] ALSA: atiixp: Allocate resources with device-managed
+ APIs
+Date: Thu, 15 Jul 2021 09:58:28 +0200
+Message-Id: <20210715075941.23332-7-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210715075941.23332-1-tiwai@suse.de>
 References: <20210715075941.23332-1-tiwai@suse.de>
@@ -97,235 +98,359 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-As a second step for preliminary to widen the devres usages among
-sound drivers, this patch adds a new ALSA core API function,
-snd_devm_card_new(), to create a snd_card object via devres.
-When a card object is created by this new function, snd_card_free() is
-called automatically and the card object resource gets released at the
-device unbinding time.
+Like the previous patch, this patch converts the resource allocations
+with device-managed API calls, so that we can reduce resource-free
+calls.
 
-However, the story isn't that simple.  A caveat is that we have to
-call snd_card_free() at the very first of the whole resource release
-procedure, in order to assure that the all exposed devices on
-user-space are deleted and sync with processes accessing those devices
-before releasing resources.
+The atiixp drivers are simpler than intel8x0, and even the irq can be
+allocated with devres.
 
-For achieving it, snd_card_register() adds a new devres action to
-trigger snd_card_free() automatically when the given card object is a
-"managed" one.  Since usually snd_card_register() is the last step of
-the initialization, this should work in most cases.
-
-With all these tricks, some drivers can get rid of the whole driver
-remove callback code.
-
-About a bit of implementation details: the patch adds two new flags to
-snd_card object: managed and releasing.  The former indicates that the
-object was created via snd_devm_card_new(), and the latter is used for
-avoiding the double-free of snd_card_free() calls.  Both flags are
-fairly internal and likely uninteresting to normal users.
+The end result is a good amount of code reduction.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/core.h |  5 +++
- sound/core/init.c    | 99 ++++++++++++++++++++++++++++++++++++++++----
- 2 files changed, 96 insertions(+), 8 deletions(-)
+ sound/pci/atiixp.c       | 92 +++++++++-------------------------------
+ sound/pci/atiixp_modem.c | 92 +++++++++-------------------------------
+ 2 files changed, 40 insertions(+), 144 deletions(-)
 
-diff --git a/include/sound/core.h b/include/sound/core.h
-index c4ade121727d..7885f903cd5a 100644
---- a/include/sound/core.h
-+++ b/include/sound/core.h
-@@ -117,6 +117,8 @@ struct snd_card {
- 	struct device card_dev;		/* cardX object for sysfs */
- 	const struct attribute_group *dev_groups[4]; /* assigned sysfs attr */
- 	bool registered;		/* card_dev is registered? */
-+	bool managed;			/* managed via devres */
-+	bool releasing;			/* during card free process */
- 	int sync_irq;			/* assigned irq, used for PCM sync */
- 	wait_queue_head_t remove_sleep;
+diff --git a/sound/pci/atiixp.c b/sound/pci/atiixp.c
+index 5f8aa35c4bea..b8e035d5930d 100644
+--- a/sound/pci/atiixp.c
++++ b/sound/pci/atiixp.c
+@@ -1530,87 +1530,44 @@ static void snd_atiixp_proc_init(struct atiixp *chip)
+  * destructor
+  */
  
-@@ -274,6 +276,9 @@ extern int (*snd_mixer_oss_notify_callback)(struct snd_card *card, int cmd);
- int snd_card_new(struct device *parent, int idx, const char *xid,
- 		 struct module *module, int extra_size,
- 		 struct snd_card **card_ret);
-+int snd_devm_card_new(struct device *parent, int idx, const char *xid,
-+		      struct module *module, size_t extra_size,
-+		      struct snd_card **card_ret);
- 
- int snd_card_disconnect(struct snd_card *card);
- void snd_card_disconnect_sync(struct snd_card *card);
-diff --git a/sound/core/init.c b/sound/core/init.c
-index 1490568efdb0..e985185ebc91 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -134,6 +134,9 @@ void snd_device_initialize(struct device *dev, struct snd_card *card)
- }
- EXPORT_SYMBOL_GPL(snd_device_initialize);
- 
-+static int snd_card_init(struct snd_card *card, struct device *parent,
-+			 int idx, const char *xid, struct module *module,
-+			 size_t extra_size);
- static int snd_card_do_free(struct snd_card *card);
- static const struct attribute_group card_dev_attr_group;
- 
-@@ -163,9 +166,6 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
+-static int snd_atiixp_free(struct atiixp *chip)
++static void snd_atiixp_free(struct snd_card *card)
  {
- 	struct snd_card *card;
- 	int err;
--#ifdef CONFIG_SND_DEBUG
--	char name[8];
--#endif
- 
- 	if (snd_BUG_ON(!card_ret))
- 		return -EINVAL;
-@@ -176,6 +176,74 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
- 	card = kzalloc(sizeof(*card) + extra_size, GFP_KERNEL);
- 	if (!card)
- 		return -ENOMEM;
-+
-+	err = snd_card_init(card, parent, idx, xid, module, extra_size);
-+	if (err < 0) {
-+		kfree(card);
-+		return err;
-+	}
-+
-+	*card_ret = card;
-+	return 0;
-+}
-+EXPORT_SYMBOL(snd_card_new);
-+
-+static void __snd_card_release(struct device *dev, void *data)
-+{
-+	snd_card_free(data);
-+}
-+
-+/**
-+ * snd_devm_card_new - managed snd_card object creation
-+ * @parent: the parent device object
-+ * @idx: card index (address) [0 ... (SNDRV_CARDS-1)]
-+ * @xid: card identification (ASCII string)
-+ * @module: top level module for locking
-+ * @extra_size: allocate this extra size after the main soundcard structure
-+ * @card_ret: the pointer to store the created card instance
-+ *
-+ * This function works like snd_card_new() but manages the allocated resource
-+ * via devres, i.e. you don't need to free explicitly.
-+ *
-+ * When a snd_card object is created with this function and registered via
-+ * snd_card_register(), the very first devres action to call snd_card_free()
-+ * is added automatically.  In that way, the resource disconnection is assured
-+ * at first, then released in the expected order.
-+ */
-+int snd_devm_card_new(struct device *parent, int idx, const char *xid,
-+		      struct module *module, size_t extra_size,
-+		      struct snd_card **card_ret)
-+{
-+	struct snd_card *card;
-+	int err;
-+
-+	*card_ret = NULL;
-+	card = devres_alloc(__snd_card_release, sizeof(*card) + extra_size,
-+			    GFP_KERNEL);
-+	if (!card)
-+		return -ENOMEM;
-+	card->managed = true;
-+	err = snd_card_init(card, parent, idx, xid, module, extra_size);
-+	if (err < 0) {
-+		devres_free(card);
-+		return err;
-+	}
-+
-+	devres_add(parent, card);
-+	*card_ret = card;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_devm_card_new);
-+
-+static int snd_card_init(struct snd_card *card, struct device *parent,
-+			 int idx, const char *xid, struct module *module,
-+			 size_t extra_size)
-+{
-+	int err;
-+#ifdef CONFIG_SND_DEBUG
-+	char name[8];
-+#endif
-+
- 	if (extra_size > 0)
- 		card->private_data = (char *)card + sizeof(struct snd_card);
- 	if (xid)
-@@ -197,7 +265,6 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
- 		mutex_unlock(&snd_card_mutex);
- 		dev_err(parent, "cannot find the slot for index %d (range 0-%i), error: %d\n",
- 			 idx, snd_ecards_limit - 1, err);
--		kfree(card);
- 		return err;
- 	}
- 	set_bit(idx, snd_cards_lock);		/* lock it */
-@@ -256,8 +323,6 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
- 	sprintf(name, "card%d", idx);
- 	card->debugfs_root = debugfs_create_dir(name, sound_debugfs_root);
- #endif
+-	if (chip->irq < 0)
+-		goto __hw_end;
+-	snd_atiixp_chip_stop(chip);
 -
--	*card_ret = card;
- 	return 0;
- 
-       __error_ctl:
-@@ -266,7 +331,6 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
- 	put_device(&card->card_dev);
-   	return err;
+-      __hw_end:
+-	if (chip->irq >= 0)
+-		free_irq(chip->irq, chip);
+-	iounmap(chip->remap_addr);
+-	pci_release_regions(chip->pci);
+-	pci_disable_device(chip->pci);
+-	kfree(chip);
+-	return 0;
+-}
+-
+-static int snd_atiixp_dev_free(struct snd_device *device)
+-{
+-	struct atiixp *chip = device->device_data;
+-	return snd_atiixp_free(chip);
++	snd_atiixp_chip_stop(card->private_data);
  }
--EXPORT_SYMBOL(snd_card_new);
  
- /**
-  * snd_card_ref - Get the card object from the index
-@@ -481,6 +545,7 @@ EXPORT_SYMBOL_GPL(snd_card_disconnect_sync);
- 
- static int snd_card_do_free(struct snd_card *card)
+ /*
+  * constructor for chip instance
+  */
+-static int snd_atiixp_create(struct snd_card *card,
+-			     struct pci_dev *pci,
+-			     struct atiixp **r_chip)
++static int snd_atiixp_init(struct snd_card *card, struct pci_dev *pci)
  {
-+	card->releasing = true;
- #if IS_ENABLED(CONFIG_SND_MIXER_OSS)
- 	if (snd_mixer_oss_notify_callback)
- 		snd_mixer_oss_notify_callback(card, SND_MIXER_OSS_NOTIFY_FREE);
-@@ -498,7 +563,8 @@ static int snd_card_do_free(struct snd_card *card)
- #endif
- 	if (card->release_completion)
- 		complete(card->release_completion);
--	kfree(card);
-+	if (!card->managed)
-+		kfree(card);
+-	static const struct snd_device_ops ops = {
+-		.dev_free =	snd_atiixp_dev_free,
+-	};
+-	struct atiixp *chip;
++	struct atiixp *chip = card->private_data;
+ 	int err;
+ 
+-	err = pci_enable_device(pci);
++	err = pcim_enable_device(pci);
+ 	if (err < 0)
+ 		return err;
+ 
+-	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
+-	if (chip == NULL) {
+-		pci_disable_device(pci);
+-		return -ENOMEM;
+-	}
+-
+ 	spin_lock_init(&chip->reg_lock);
+ 	mutex_init(&chip->open_mutex);
+ 	chip->card = card;
+ 	chip->pci = pci;
+ 	chip->irq = -1;
+-	err = pci_request_regions(pci, "ATI IXP AC97");
+-	if (err < 0) {
+-		pci_disable_device(pci);
+-		kfree(chip);
++	err = pcim_iomap_regions(pci, 1 << 0, "ATI IXP AC97");
++	if (err < 0)
+ 		return err;
+-	}
+ 	chip->addr = pci_resource_start(pci, 0);
+-	chip->remap_addr = pci_ioremap_bar(pci, 0);
+-	if (chip->remap_addr == NULL) {
+-		dev_err(card->dev, "AC'97 space ioremap problem\n");
+-		snd_atiixp_free(chip);
+-		return -EIO;
+-	}
++	chip->remap_addr = pcim_iomap_table(pci)[0];
+ 
+-	if (request_irq(pci->irq, snd_atiixp_interrupt, IRQF_SHARED,
+-			KBUILD_MODNAME, chip)) {
++	if (devm_request_irq(&pci->dev, pci->irq, snd_atiixp_interrupt,
++			     IRQF_SHARED, KBUILD_MODNAME, chip)) {
+ 		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
+-		snd_atiixp_free(chip);
+ 		return -EBUSY;
+ 	}
+ 	chip->irq = pci->irq;
+ 	card->sync_irq = chip->irq;
++	card->private_free = snd_atiixp_free;
+ 	pci_set_master(pci);
+ 
+-	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
+-	if (err < 0) {
+-		snd_atiixp_free(chip);
+-		return err;
+-	}
+-
+-	*r_chip = chip;
  	return 0;
  }
  
-@@ -745,6 +811,14 @@ int snd_card_add_dev_attr(struct snd_card *card,
+@@ -1622,30 +1579,31 @@ static int snd_atiixp_probe(struct pci_dev *pci,
+ 	struct atiixp *chip;
+ 	int err;
+ 
+-	err = snd_card_new(&pci->dev, index, id, THIS_MODULE, 0, &card);
++	err = snd_devm_card_new(&pci->dev, index, id, THIS_MODULE,
++				sizeof(*chip), &card);
+ 	if (err < 0)
+ 		return err;
++	chip = card->private_data;
+ 
+ 	strcpy(card->driver, spdif_aclink ? "ATIIXP" : "ATIIXP-SPDMA");
+ 	strcpy(card->shortname, "ATI IXP");
+-	err = snd_atiixp_create(card, pci, &chip);
++	err = snd_atiixp_init(card, pci);
+ 	if (err < 0)
+-		goto __error;
+-	card->private_data = chip;
++		return err;
+ 
+ 	err = snd_atiixp_aclink_reset(chip);
+ 	if (err < 0)
+-		goto __error;
++		return err;
+ 
+ 	chip->spdif_over_aclink = spdif_aclink;
+ 
+ 	err = snd_atiixp_mixer_new(chip, ac97_clock, ac97_quirk);
+ 	if (err < 0)
+-		goto __error;
++		return err;
+ 
+ 	err = snd_atiixp_pcm_new(chip);
+ 	if (err < 0)
+-		goto __error;
++		return err;
+ 	
+ 	snd_atiixp_proc_init(chip);
+ 
+@@ -1659,26 +1617,16 @@ static int snd_atiixp_probe(struct pci_dev *pci,
+ 
+ 	err = snd_card_register(card);
+ 	if (err < 0)
+-		goto __error;
++		return err;
+ 
+ 	pci_set_drvdata(pci, card);
+ 	return 0;
+-
+- __error:
+-	snd_card_free(card);
+-	return err;
+-}
+-
+-static void snd_atiixp_remove(struct pci_dev *pci)
+-{
+-	snd_card_free(pci_get_drvdata(pci));
  }
- EXPORT_SYMBOL_GPL(snd_card_add_dev_attr);
  
-+static void trigger_card_free(void *data)
-+{
-+	struct snd_card *card = data;
-+
-+	if (!card->releasing)
-+		snd_card_free(data);
-+}
-+
- /**
-  *  snd_card_register - register the soundcard
-  *  @card: soundcard structure
-@@ -768,6 +842,15 @@ int snd_card_register(struct snd_card *card)
- 		if (err < 0)
- 			return err;
- 		card->registered = true;
-+	} else {
-+		if (card->managed)
-+			devm_remove_action(card->dev, trigger_card_free, card);
-+	}
-+
-+	if (card->managed) {
-+		err = devm_add_action(card->dev, trigger_card_free, card);
-+		if (err < 0)
-+			return err;
+ static struct pci_driver atiixp_driver = {
+ 	.name = KBUILD_MODNAME,
+ 	.id_table = snd_atiixp_ids,
+ 	.probe = snd_atiixp_probe,
+-	.remove = snd_atiixp_remove,
+ 	.driver = {
+ 		.pm = SND_ATIIXP_PM_OPS,
+ 	},
+diff --git a/sound/pci/atiixp_modem.c b/sound/pci/atiixp_modem.c
+index 9739c3a82777..178dce8ef1e9 100644
+--- a/sound/pci/atiixp_modem.c
++++ b/sound/pci/atiixp_modem.c
+@@ -1159,87 +1159,44 @@ static void snd_atiixp_proc_init(struct atiixp_modem *chip)
+  * destructor
+  */
+ 
+-static int snd_atiixp_free(struct atiixp_modem *chip)
++static void snd_atiixp_free(struct snd_card *card)
+ {
+-	if (chip->irq < 0)
+-		goto __hw_end;
+-	snd_atiixp_chip_stop(chip);
+-
+-      __hw_end:
+-	if (chip->irq >= 0)
+-		free_irq(chip->irq, chip);
+-	iounmap(chip->remap_addr);
+-	pci_release_regions(chip->pci);
+-	pci_disable_device(chip->pci);
+-	kfree(chip);
+-	return 0;
+-}
+-
+-static int snd_atiixp_dev_free(struct snd_device *device)
+-{
+-	struct atiixp_modem *chip = device->device_data;
+-	return snd_atiixp_free(chip);
++	snd_atiixp_chip_stop(card->private_data);
+ }
+ 
+ /*
+  * constructor for chip instance
+  */
+-static int snd_atiixp_create(struct snd_card *card,
+-			     struct pci_dev *pci,
+-			     struct atiixp_modem **r_chip)
++static int snd_atiixp_init(struct snd_card *card, struct pci_dev *pci)
+ {
+-	static const struct snd_device_ops ops = {
+-		.dev_free =	snd_atiixp_dev_free,
+-	};
+-	struct atiixp_modem *chip;
++	struct atiixp_modem *chip = card->private_data;
+ 	int err;
+ 
+-	err = pci_enable_device(pci);
++	err = pcim_enable_device(pci);
+ 	if (err < 0)
+ 		return err;
+ 
+-	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
+-	if (chip == NULL) {
+-		pci_disable_device(pci);
+-		return -ENOMEM;
+-	}
+-
+ 	spin_lock_init(&chip->reg_lock);
+ 	mutex_init(&chip->open_mutex);
+ 	chip->card = card;
+ 	chip->pci = pci;
+ 	chip->irq = -1;
+-	err = pci_request_regions(pci, "ATI IXP MC97");
+-	if (err < 0) {
+-		kfree(chip);
+-		pci_disable_device(pci);
++	err = pcim_iomap_regions(pci, 1 << 0, "ATI IXP MC97");
++	if (err < 0)
+ 		return err;
+-	}
+ 	chip->addr = pci_resource_start(pci, 0);
+-	chip->remap_addr = pci_ioremap_bar(pci, 0);
+-	if (chip->remap_addr == NULL) {
+-		dev_err(card->dev, "AC'97 space ioremap problem\n");
+-		snd_atiixp_free(chip);
+-		return -EIO;
+-	}
++	chip->remap_addr = pcim_iomap_table(pci)[0];
+ 
+-	if (request_irq(pci->irq, snd_atiixp_interrupt, IRQF_SHARED,
+-			KBUILD_MODNAME, chip)) {
++	if (devm_request_irq(&pci->dev, pci->irq, snd_atiixp_interrupt,
++			     IRQF_SHARED, KBUILD_MODNAME, chip)) {
+ 		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
+-		snd_atiixp_free(chip);
+ 		return -EBUSY;
  	}
+ 	chip->irq = pci->irq;
+ 	card->sync_irq = chip->irq;
++	card->private_free = snd_atiixp_free;
+ 	pci_set_master(pci);
  
- 	err = snd_device_register_all(card);
+-	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
+-	if (err < 0) {
+-		snd_atiixp_free(chip);
+-		return err;
+-	}
+-
+-	*r_chip = chip;
+ 	return 0;
+ }
+ 
+@@ -1251,28 +1208,29 @@ static int snd_atiixp_probe(struct pci_dev *pci,
+ 	struct atiixp_modem *chip;
+ 	int err;
+ 
+-	err = snd_card_new(&pci->dev, index, id, THIS_MODULE, 0, &card);
++	err = snd_devm_card_new(&pci->dev, index, id, THIS_MODULE,
++				sizeof(*chip), &card);
+ 	if (err < 0)
+ 		return err;
++	chip = card->private_data;
+ 
+ 	strcpy(card->driver, "ATIIXP-MODEM");
+ 	strcpy(card->shortname, "ATI IXP Modem");
+-	err = snd_atiixp_create(card, pci, &chip);
++	err = snd_atiixp_init(card, pci);
+ 	if (err < 0)
+-		goto __error;
+-	card->private_data = chip;
++		return err;
+ 
+ 	err = snd_atiixp_aclink_reset(chip);
+ 	if (err < 0)
+-		goto __error;
++		return err;
+ 
+ 	err = snd_atiixp_mixer_new(chip, ac97_clock);
+ 	if (err < 0)
+-		goto __error;
++		return err;
+ 
+ 	err = snd_atiixp_pcm_new(chip);
+ 	if (err < 0)
+-		goto __error;
++		return err;
+ 	
+ 	snd_atiixp_proc_init(chip);
+ 
+@@ -1283,26 +1241,16 @@ static int snd_atiixp_probe(struct pci_dev *pci,
+ 
+ 	err = snd_card_register(card);
+ 	if (err < 0)
+-		goto __error;
++		return err;
+ 
+ 	pci_set_drvdata(pci, card);
+ 	return 0;
+-
+- __error:
+-	snd_card_free(card);
+-	return err;
+-}
+-
+-static void snd_atiixp_remove(struct pci_dev *pci)
+-{
+-	snd_card_free(pci_get_drvdata(pci));
+ }
+ 
+ static struct pci_driver atiixp_modem_driver = {
+ 	.name = KBUILD_MODNAME,
+ 	.id_table = snd_atiixp_ids,
+ 	.probe = snd_atiixp_probe,
+-	.remove = snd_atiixp_remove,
+ 	.driver = {
+ 		.pm = SND_ATIIXP_PM_OPS,
+ 	},
 -- 
 2.26.2
 
