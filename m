@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB711C07E96
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:18:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14014C07E96
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:18:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 28250611AC
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:18:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 28250611AC
+	by mail.kernel.org (Postfix) with ESMTPS id 8C8AE6117A
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:18:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C8AE6117A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B85681663;
-	Thu, 15 Jul 2021 10:17:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B85681663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2865916E8;
+	Thu, 15 Jul 2021 10:17:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2865916E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626337091;
-	bh=d/C0rxyXkKVuR0Uscy2kZMRm2mBQNj8N5xvsZfdYMbI=;
+	s=default; t=1626337125;
+	bh=XSFCpWcarI/UhCKK6/mXpzQb2gxAtZeW+imCNhjyJEI=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SWY18AiHUPmL/fUjKWHT9lXF9xQCwPN3zrhEZwWe1RprUJxlz/EkN9ZvHPIX3+f7B
-	 MH5VCT8duzujQKkNmaLn3hkWGAcnp+uGma9ZzPVbTdYMVZFlC9qfTMc0Gdg15PcB30
-	 ypfYYMREWrCIItdX0wQzrMNF6eLohgD7EhaUhe54=
+	b=gkmUq8S7ZH4QCYNCB2LiV2XYkOt6cYAPRd703o4bSP5upy/gNXjcWH/A6r3FMFJDM
+	 rdUEUHT68Xu/uLBK/+NQuHnnC1x9wYgbFNT/IdqwJlmx4Jbm2zSwooPTotdMHVzuIb
+	 HYo4z7QUgi6XwClAwsI+AwCPxDQwMgxafwVQXW+Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4F309F806ED;
-	Thu, 15 Jul 2021 10:01:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4B230F806FC;
+	Thu, 15 Jul 2021 10:01:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 05189F8067A; Thu, 15 Jul 2021 10:01:06 +0200 (CEST)
+ id A91D0F806ED; Thu, 15 Jul 2021 10:01:12 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D4C81F80527
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4C81F80527
+ by alsa1.perex.cz (Postfix) with ESMTPS id 46608F80529
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46608F80529
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="Vo1Ukmcs"; 
+ header.b="haLQtpGD"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="gIdpdcFP"
+ header.b="lna+izMB"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id A85E81FD3E
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:10 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 244F01FD3E
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626336010; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1626336012; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=NzI14anQ4CDPJLD01RdxJOrySULsuaN6XiAhanN5VYg=;
- b=Vo1Ukmcsua1Yy/3Mip8l4ecefHEbh6nsvRSG3w9CBZujRUObIz7LygteF7fWKMLtIwb8Ar
- +F+/VkK4CGo+VmwWTAmfeTozDg0ABd9WUy94yYIE+I+U1PwhgXNncQ2VpxH6/U5HegmTOb
- EsxxRQ7TPMhx1RVucC+tKSnHZAHfxh4=
+ bh=FAMtIW8bRBSWt+2TSKRdiNb5VV+3csQJNzMKaqR7Heg=;
+ b=haLQtpGDwDV95wfYeLl37VFcFErSycUulMOS0IaqLs9QGNjplhxGQPKSKrfi4Juu0a6M+2
+ jOY+sqdFQOo2kl7gdaKFGUwWuESWcnY0fT7+upSIbON8kwBAMGl6ttVA5ST/9A6vcnxf+h
+ u8LCNHezcrOsiA12CyQrmlVcjcIY/iE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626336010;
+ s=susede2_ed25519; t=1626336012;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=NzI14anQ4CDPJLD01RdxJOrySULsuaN6XiAhanN5VYg=;
- b=gIdpdcFPs4bFzdwbu/n1lZMA9+ub5rt2fxARCvnn6SwMtZcvVcNV+j61Z6QSS9qqjSCuNp
- NDzvBOIu8tqsbWBQ==
+ bh=FAMtIW8bRBSWt+2TSKRdiNb5VV+3csQJNzMKaqR7Heg=;
+ b=lna+izMBho9ac8fHNt/HpCEy/TF+nrchff0/jRRuh4iHiS44Jh8a96GyzFnMh1DFJk0pLw
+ BpxFT86M7agZZMCQ==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 964DDA3BC0;
- Thu, 15 Jul 2021 08:00:10 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 1226EA3B99;
+ Thu, 15 Jul 2021 08:00:12 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 43/79] ALSA: oxygen: Allocate resources with device-managed
+Subject: [PATCH v2 46/79] ALSA: hdspm: Allocate resources with device-managed
  APIs
-Date: Thu, 15 Jul 2021 09:59:05 +0200
-Message-Id: <20210715075941.23332-44-tiwai@suse.de>
+Date: Thu, 15 Jul 2021 09:59:08 +0200
+Message-Id: <20210715075941.23332-47-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210715075941.23332-1-tiwai@suse.de>
 References: <20210715075941.23332-1-tiwai@suse.de>
@@ -98,223 +98,161 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the resource management in PCI oxygen drivers with
+This patch converts the resource management in PCI hdspm driver with
 devres as a clean up.  Each manual resource management is converted
-with the corresponding devres helper, and the page allocations are
-done with the devres helper.
+with the corresponding devres helper, and the card object release is
+managed now via card->private_free instead of a lowlevel snd_device.
 
 This should give no user-visible functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/oxygen/oxygen.c     |  1 -
- sound/pci/oxygen/oxygen.h     |  1 -
- sound/pci/oxygen/oxygen_lib.c | 66 ++++++++++++-----------------------
- sound/pci/oxygen/se6x.c       |  1 -
- sound/pci/oxygen/virtuoso.c   |  1 -
- 5 files changed, 22 insertions(+), 48 deletions(-)
+ sound/pci/rme9652/hdspm.c | 64 ++++++++-------------------------------
+ 1 file changed, 12 insertions(+), 52 deletions(-)
 
-diff --git a/sound/pci/oxygen/oxygen.c b/sound/pci/oxygen/oxygen.c
-index e335c4b5b381..c346f42befc2 100644
---- a/sound/pci/oxygen/oxygen.c
-+++ b/sound/pci/oxygen/oxygen.c
-@@ -854,7 +854,6 @@ static struct pci_driver oxygen_driver = {
- 	.name = KBUILD_MODNAME,
- 	.id_table = oxygen_ids,
- 	.probe = generic_oxygen_probe,
--	.remove = oxygen_pci_remove,
- #ifdef CONFIG_PM_SLEEP
- 	.driver = {
- 		.pm = &oxygen_pci_pm,
-diff --git a/sound/pci/oxygen/oxygen.h b/sound/pci/oxygen/oxygen.h
-index 06bf7e5744d0..0cae640708f3 100644
---- a/sound/pci/oxygen/oxygen.h
-+++ b/sound/pci/oxygen/oxygen.h
-@@ -161,7 +161,6 @@ int oxygen_pci_probe(struct pci_dev *pci, int index, char *id,
- 				      const struct pci_device_id *id
- 				     )
- 		    );
--void oxygen_pci_remove(struct pci_dev *pci);
- #ifdef CONFIG_PM_SLEEP
- extern const struct dev_pm_ops oxygen_pci_pm;
- #endif
-diff --git a/sound/pci/oxygen/oxygen_lib.c b/sound/pci/oxygen/oxygen_lib.c
-index afc6dd329c09..4fb3f2484fdb 100644
---- a/sound/pci/oxygen/oxygen_lib.c
-+++ b/sound/pci/oxygen/oxygen_lib.c
-@@ -570,15 +570,10 @@ static void oxygen_card_free(struct snd_card *card)
- 	struct oxygen *chip = card->private_data;
- 
- 	oxygen_shutdown(chip);
--	if (chip->irq >= 0)
--		free_irq(chip->irq, chip);
- 	flush_work(&chip->spdif_input_bits_work);
- 	flush_work(&chip->gpio_work);
- 	chip->model.cleanup(chip);
--	kfree(chip->model_data);
- 	mutex_destroy(&chip->mutex);
--	pci_release_regions(chip->pci);
--	pci_disable_device(chip->pci);
- }
- 
- int oxygen_pci_probe(struct pci_dev *pci, int index, char *id,
-@@ -594,8 +589,8 @@ int oxygen_pci_probe(struct pci_dev *pci, int index, char *id,
- 	const struct pci_device_id *pci_id;
- 	int err;
- 
--	err = snd_card_new(&pci->dev, index, id, owner,
--			   sizeof(*chip), &card);
-+	err = snd_devm_card_new(&pci->dev, index, id, owner,
-+				sizeof(*chip), &card);
- 	if (err < 0)
- 		return err;
- 
-@@ -610,41 +605,38 @@ int oxygen_pci_probe(struct pci_dev *pci, int index, char *id,
- 	INIT_WORK(&chip->gpio_work, oxygen_gpio_changed);
- 	init_waitqueue_head(&chip->ac97_waitqueue);
+diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
+index 97a0bff96b28..ff06ee82607c 100644
+--- a/sound/pci/rme9652/hdspm.c
++++ b/sound/pci/rme9652/hdspm.c
+@@ -6575,34 +6575,25 @@ static int snd_hdspm_create(struct snd_card *card,
+ 		}
+ 	}
  
 -	err = pci_enable_device(pci);
 +	err = pcim_enable_device(pci);
  	if (err < 0)
--		goto err_card;
-+		return err;
+ 		return err;
  
- 	err = pci_request_regions(pci, DRIVER);
- 	if (err < 0) {
- 		dev_err(card->dev, "cannot reserve PCI resources\n");
--		goto err_pci_enable;
-+		return err;
- 	}
+ 	pci_set_master(hdspm->pci);
  
- 	if (!(pci_resource_flags(pci, 0) & IORESOURCE_IO) ||
- 	    pci_resource_len(pci, 0) < OXYGEN_IO_SIZE) {
- 		dev_err(card->dev, "invalid PCI I/O range\n");
--		err = -ENXIO;
--		goto err_pci_regions;
-+		return -ENXIO;
- 	}
- 	chip->addr = pci_resource_start(pci, 0);
+-	err = pci_request_regions(pci, "hdspm");
++	err = pcim_iomap_regions(pci, 1 << 0, "hdspm");
+ 	if (err < 0)
+ 		return err;
  
- 	pci_id = oxygen_search_pci_id(chip, ids);
--	if (!pci_id) {
--		err = -ENODEV;
--		goto err_pci_regions;
+ 	hdspm->port = pci_resource_start(pci, 0);
+ 	io_extent = pci_resource_len(pci, 0);
+-
+-	dev_dbg(card->dev, "grabbed memory region 0x%lx-0x%lx\n",
+-			hdspm->port, hdspm->port + io_extent - 1);
+-
+-	hdspm->iobase = ioremap(hdspm->port, io_extent);
+-	if (!hdspm->iobase) {
+-		dev_err(card->dev, "unable to remap region 0x%lx-0x%lx\n",
+-				hdspm->port, hdspm->port + io_extent - 1);
+-		return -EBUSY;
 -	}
-+	if (!pci_id)
-+		return -ENODEV;
-+
- 	oxygen_restore_eeprom(chip, pci_id);
- 	err = get_model(chip, pci_id);
- 	if (err < 0)
--		goto err_pci_regions;
-+		return err;
++	hdspm->iobase = pcim_iomap_table(pci)[0];
+ 	dev_dbg(card->dev, "remapped region (0x%lx) 0x%lx-0x%lx\n",
+ 			(unsigned long)hdspm->iobase, hdspm->port,
+ 			hdspm->port + io_extent - 1);
  
- 	if (chip->model.model_data_size) {
--		chip->model_data = kzalloc(chip->model.model_data_size,
--					   GFP_KERNEL);
--		if (!chip->model_data) {
--			err = -ENOMEM;
--			goto err_pci_regions;
--		}
-+		chip->model_data = devm_kzalloc(&pci->dev,
-+						chip->model.model_data_size,
-+						GFP_KERNEL);
-+		if (!chip->model_data)
-+			return -ENOMEM;
+-	if (request_irq(pci->irq, snd_hdspm_interrupt,
+-			IRQF_SHARED, KBUILD_MODNAME, hdspm)) {
++	if (devm_request_irq(&pci->dev, pci->irq, snd_hdspm_interrupt,
++			     IRQF_SHARED, KBUILD_MODNAME, hdspm)) {
+ 		dev_err(card->dev, "unable to use IRQ %d\n", pci->irq);
+ 		return -EBUSY;
+ 	}
+@@ -6614,7 +6605,7 @@ static int snd_hdspm_create(struct snd_card *card,
+ 
+ 	dev_dbg(card->dev, "kmalloc Mixer memory of %zd Bytes\n",
+ 		sizeof(*hdspm->mixer));
+-	hdspm->mixer = kzalloc(sizeof(*hdspm->mixer), GFP_KERNEL);
++	hdspm->mixer = devm_kzalloc(&pci->dev, sizeof(*hdspm->mixer), GFP_KERNEL);
+ 	if (!hdspm->mixer)
+ 		return -ENOMEM;
+ 
+@@ -6859,8 +6850,9 @@ static int snd_hdspm_create(struct snd_card *card,
+ }
+ 
+ 
+-static int snd_hdspm_free(struct hdspm * hdspm)
++static void snd_hdspm_card_free(struct snd_card *card)
+ {
++	struct hdspm *hdspm = card->private_data;
+ 
+ 	if (hdspm->port) {
+ 		cancel_work_sync(&hdspm->midi_work);
+@@ -6873,28 +6865,6 @@ static int snd_hdspm_free(struct hdspm * hdspm)
+ 		hdspm_write(hdspm, HDSPM_controlRegister,
+ 			    hdspm->control_register);
+ 	}
+-
+-	if (hdspm->irq >= 0)
+-		free_irq(hdspm->irq, (void *) hdspm);
+-
+-	kfree(hdspm->mixer);
+-	iounmap(hdspm->iobase);
+-
+-	if (hdspm->port)
+-		pci_release_regions(hdspm->pci);
+-
+-	if (pci_is_enabled(hdspm->pci))
+-		pci_disable_device(hdspm->pci);
+-	return 0;
+-}
+-
+-
+-static void snd_hdspm_card_free(struct snd_card *card)
+-{
+-	struct hdspm *hdspm = card->private_data;
+-
+-	if (hdspm)
+-		snd_hdspm_free(hdspm);
+ }
+ 
+ 
+@@ -6913,8 +6883,8 @@ static int snd_hdspm_probe(struct pci_dev *pci,
+ 		return -ENOENT;
  	}
  
- 	pci_set_master(pci);
-@@ -654,11 +646,11 @@ int oxygen_pci_probe(struct pci_dev *pci, int index, char *id,
- 	oxygen_init(chip);
- 	chip->model.init(chip);
- 
--	err = request_irq(pci->irq, oxygen_interrupt, IRQF_SHARED,
--			  KBUILD_MODNAME, chip);
-+	err = devm_request_irq(&pci->dev, pci->irq, oxygen_interrupt,
-+			       IRQF_SHARED, KBUILD_MODNAME, chip);
- 	if (err < 0) {
- 		dev_err(card->dev, "cannot grab interrupt %d\n", pci->irq);
--		goto err_card;
-+		return err;
- 	}
- 	chip->irq = pci->irq;
- 	card->sync_irq = chip->irq;
-@@ -672,11 +664,11 @@ int oxygen_pci_probe(struct pci_dev *pci, int index, char *id,
- 
- 	err = oxygen_pcm_init(chip);
+-	err = snd_card_new(&pci->dev, index[dev], id[dev],
+-			   THIS_MODULE, sizeof(*hdspm), &card);
++	err = snd_devm_card_new(&pci->dev, index[dev], id[dev],
++				THIS_MODULE, sizeof(*hdspm), &card);
  	if (err < 0)
--		goto err_card;
-+		return err;
+ 		return err;
  
- 	err = oxygen_mixer_init(chip);
+@@ -6925,7 +6895,7 @@ static int snd_hdspm_probe(struct pci_dev *pci,
+ 
+ 	err = snd_hdspm_create(card, hdspm);
  	if (err < 0)
--		goto err_card;
+-		goto free_card;
 +		return err;
  
- 	if (chip->model.device_config & (MIDI_OUTPUT | MIDI_INPUT)) {
- 		unsigned int info_flags =
-@@ -689,7 +681,7 @@ int oxygen_pci_probe(struct pci_dev *pci, int index, char *id,
- 					  chip->addr + OXYGEN_MPU401,
- 					  info_flags, -1, &chip->midi);
- 		if (err < 0)
--			goto err_card;
-+			return err;
- 	}
- 
- 	oxygen_proc_init(chip);
-@@ -704,27 +696,13 @@ int oxygen_pci_probe(struct pci_dev *pci, int index, char *id,
+ 	if (hdspm->io_type != MADIface) {
+ 		snprintf(card->shortname, sizeof(card->shortname), "%s_%x",
+@@ -6944,28 +6914,18 @@ static int snd_hdspm_probe(struct pci_dev *pci,
  
  	err = snd_card_register(card);
  	if (err < 0)
--		goto err_card;
+-		goto free_card;
 +		return err;
  
  	pci_set_drvdata(pci, card);
+ 
+ 	dev++;
  	return 0;
 -
--err_pci_regions:
--	pci_release_regions(pci);
--err_pci_enable:
--	pci_disable_device(pci);
--err_card:
+-free_card:
 -	snd_card_free(card);
 -	return err;
- }
- EXPORT_SYMBOL(oxygen_pci_probe);
- 
--void oxygen_pci_remove(struct pci_dev *pci)
+-}
+-
+-static void snd_hdspm_remove(struct pci_dev *pci)
 -{
 -	snd_card_free(pci_get_drvdata(pci));
--}
--EXPORT_SYMBOL(oxygen_pci_remove);
--
- #ifdef CONFIG_PM_SLEEP
- static int oxygen_pci_suspend(struct device *dev)
- {
-diff --git a/sound/pci/oxygen/se6x.c b/sound/pci/oxygen/se6x.c
-index 434f885f6f91..17650a5b1bfa 100644
---- a/sound/pci/oxygen/se6x.c
-+++ b/sound/pci/oxygen/se6x.c
-@@ -137,7 +137,6 @@ static struct pci_driver se6x_driver = {
+ }
+ 
+ static struct pci_driver hdspm_driver = {
  	.name = KBUILD_MODNAME,
- 	.id_table = se6x_ids,
- 	.probe = se6x_probe,
--	.remove = oxygen_pci_remove,
- #ifdef CONFIG_PM_SLEEP
- 	.driver = {
- 		.pm = &oxygen_pci_pm,
-diff --git a/sound/pci/oxygen/virtuoso.c b/sound/pci/oxygen/virtuoso.c
-index baa3244d4dab..2e405133371f 100644
---- a/sound/pci/oxygen/virtuoso.c
-+++ b/sound/pci/oxygen/virtuoso.c
-@@ -82,7 +82,6 @@ static struct pci_driver xonar_driver = {
- 	.name = KBUILD_MODNAME,
- 	.id_table = xonar_ids,
- 	.probe = xonar_probe,
--	.remove = oxygen_pci_remove,
- #ifdef CONFIG_PM_SLEEP
- 	.driver = {
- 		.pm = &oxygen_pci_pm,
+ 	.id_table = snd_hdspm_ids,
+ 	.probe = snd_hdspm_probe,
+-	.remove = snd_hdspm_remove,
+ };
+ 
+ module_pci_driver(hdspm_driver);
 -- 
 2.26.2
 
