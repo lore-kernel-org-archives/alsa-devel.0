@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CA51C47E48
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:30:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 055ABC07E96
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:31:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6358361374
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:30:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6358361374
+	by mail.kernel.org (Postfix) with ESMTPS id 5D18A6120A
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:31:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D18A6120A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D18CA178D;
-	Thu, 15 Jul 2021 10:29:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D18CA178D
+	by alsa0.perex.cz (Postfix) with ESMTPS id EABAF1790;
+	Thu, 15 Jul 2021 10:30:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EABAF1790
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626337838;
-	bh=BrnnahUI/+BrdJk1v74pDJ5S3309FQKChtYS0sh9WMY=;
+	s=default; t=1626337866;
+	bh=2SmcCjFcjQPx/wvX1ZIYejRsTsdh6xlVOmCKJS2/2RQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nwVLS/0uryMxvNo9fjk/cXqeoWqD9OXAcKAwh5gujWK9VNRjtfqcXYRgse8ObcL0T
-	 35iknNh+1oDLJRcmpN6A47UHOKdPIALsX6L5A/1O18nJocSZIpYkYr73fgJewRzeHx
-	 W6n4aAva4BxP6IIZM42JAEEgwn8uP0YYDwUDHFwA=
+	b=k+tlPIvkpqlob4m6zLjoC6J6bHHvTg7hcXdXLn3bvowW31c9PPgTh9u1cCFtXA9iQ
+	 mOBdOk8UZNzrxEyoHftjbkpOyDX6NXAwX1kn4z9DMhiUAYwjeVjVY/TtwuvzurASOW
+	 LtpD+QiPpOT6haVlFGfcz6bJ/zUZ1FbeIv3vKaNE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9DD44F8087D;
-	Thu, 15 Jul 2021 10:02:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C9F3F808BB;
+	Thu, 15 Jul 2021 10:02:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AD2FAF80834; Thu, 15 Jul 2021 10:01:53 +0200 (CEST)
+ id 24CE6F80845; Thu, 15 Jul 2021 10:01:54 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AC2CCF805C1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 194BFF805C3
  for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC2CCF805C1
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 194BFF805C3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="BWuBZbSq"; 
+ header.b="bodB12GR"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="8DFFwlzN"
+ header.b="xz3NEwIs"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 823BA1FDEA
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:27 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id DDE171FD3E
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626336027; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1626336026; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=T9/wjL8XOFPcYFn7iEzZ+N6ui4168KzCi9G2P7u0p70=;
- b=BWuBZbSqQJtj8ejT3muO6JDS/Ypch761+HRtdC6b77tQCGWqQizoEuuJyAL0ZBzp0d0UI5
- MD31gVgpzkV4FXCJPFCmw/bqB9SHOZHAVqCHiPrVLI6vYRQQMLviqpKoZkjM8RV9wUn3Bf
- FLrLfgGu8wKDt0pC2D9YxL5CVh9HSnE=
+ bh=/pz+RApgN44AKKQQ1URRIssEFrG77OnAyrrJtH5E+/Q=;
+ b=bodB12GRqtB5UyMdKTyQsIcUUkY0iqRA3OSzLMCU4WqMya1tUh+9LoBgd1s3s2a7pJTNKr
+ dfoGh+YWVXl/8Tdo8onajQXk9wF3GwVIxS6sBvxutTkG3u+Nqd5wXz3/vrXwsLELMwwDbx
+ ang0gkgcsfBII9wSXlhiNrjsHzN4Pj4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626336027;
+ s=susede2_ed25519; t=1626336026;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=T9/wjL8XOFPcYFn7iEzZ+N6ui4168KzCi9G2P7u0p70=;
- b=8DFFwlzNUtyItbwCrw1sXmKiCG52qy8k/dTNvr0n/I/4MLh4iyKPF4pbZ/MyGeaxJX/RAz
- KkwRXwCXQkeRLcBg==
+ bh=/pz+RApgN44AKKQQ1URRIssEFrG77OnAyrrJtH5E+/Q=;
+ b=xz3NEwIsAcD6Gmm9PR3gFg/aw8Vb82lHFSQe4tCbP4A+1q303GATulkaq6WOwit35R8dde
+ 5CsSeTNwEY7lzkCQ==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 72384A3B8F;
- Thu, 15 Jul 2021 08:00:27 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id CD9E3A3B8F;
+ Thu, 15 Jul 2021 08:00:26 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 78/79] ALSA: dummy: Allocate resources with device-managed
+Subject: [PATCH v2 77/79] ALSA: aloop: Allocate resources with device-managed
  APIs
-Date: Thu, 15 Jul 2021 09:59:40 +0200
-Message-Id: <20210715075941.23332-79-tiwai@suse.de>
+Date: Thu, 15 Jul 2021 09:59:39 +0200
+Message-Id: <20210715075941.23332-78-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210715075941.23332-1-tiwai@suse.de>
 References: <20210715075941.23332-1-tiwai@suse.de>
@@ -103,47 +103,46 @@ clean up the superfluous remove callback.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/drivers/dummy.c | 24 +++++++-----------------
- 1 file changed, 7 insertions(+), 17 deletions(-)
+ sound/drivers/aloop.c | 26 ++++++++------------------
+ 1 file changed, 8 insertions(+), 18 deletions(-)
 
-diff --git a/sound/drivers/dummy.c b/sound/drivers/dummy.c
-index 01a3eab50d7b..2a7fc49c1a7c 100644
---- a/sound/drivers/dummy.c
-+++ b/sound/drivers/dummy.c
-@@ -1025,8 +1025,8 @@ static int snd_dummy_probe(struct platform_device *devptr)
- 	int idx, err;
+diff --git a/sound/drivers/aloop.c b/sound/drivers/aloop.c
+index 80b814b9922a..9b4a7cdb103a 100644
+--- a/sound/drivers/aloop.c
++++ b/sound/drivers/aloop.c
+@@ -1712,8 +1712,8 @@ static int loopback_probe(struct platform_device *devptr)
  	int dev = devptr->id;
+ 	int err;
  
 -	err = snd_card_new(&devptr->dev, index[dev], id[dev], THIS_MODULE,
--			   sizeof(struct snd_dummy), &card);
+-			   sizeof(struct loopback), &card);
 +	err = snd_devm_card_new(&devptr->dev, index[dev], id[dev], THIS_MODULE,
-+				sizeof(struct snd_dummy), &card);
++				sizeof(struct loopback), &card);
  	if (err < 0)
  		return err;
- 	dummy = card->private_data;
-@@ -1047,7 +1047,7 @@ static int snd_dummy_probe(struct platform_device *devptr)
- 			pcm_substreams[dev] = MAX_PCM_SUBSTREAMS;
- 		err = snd_card_dummy_pcm(dummy, idx, pcm_substreams[dev]);
- 		if (err < 0)
--			goto __nodev;
-+			return err;
- 	}
+ 	loopback = card->private_data;
+@@ -1730,13 +1730,13 @@ static int loopback_probe(struct platform_device *devptr)
  
- 	dummy->pcm_hw = dummy_pcm_hardware;
-@@ -1078,7 +1078,7 @@ static int snd_dummy_probe(struct platform_device *devptr)
- 
- 	err = snd_card_dummy_new_mixer(dummy);
+ 	err = loopback_pcm_new(loopback, 0, pcm_substreams[dev]);
  	if (err < 0)
 -		goto __nodev;
 +		return err;
- 	strcpy(card->driver, "Dummy");
- 	strcpy(card->shortname, "Dummy");
- 	sprintf(card->longname, "Dummy %i", dev + 1);
-@@ -1086,18 +1086,9 @@ static int snd_dummy_probe(struct platform_device *devptr)
- 	dummy_proc_init(dummy);
- 
+ 	err = loopback_pcm_new(loopback, 1, pcm_substreams[dev]);
+ 	if (err < 0)
+-		goto __nodev;
++		return err;
+ 	err = loopback_mixer_new(loopback, pcm_notify[dev] ? 1 : 0);
+ 	if (err < 0)
+-		goto __nodev;
++		return err;
+ 	loopback_cable_proc_new(loopback, 0);
+ 	loopback_cable_proc_new(loopback, 1);
+ 	loopback_timer_source_proc_new(loopback);
+@@ -1744,18 +1744,9 @@ static int loopback_probe(struct platform_device *devptr)
+ 	strcpy(card->shortname, "Loopback");
+ 	sprintf(card->longname, "Loopback %i", dev + 1);
  	err = snd_card_register(card);
--	if (err == 0) {
+-	if (!err) {
 -		platform_set_drvdata(devptr, card);
 -		return 0;
 -	}
@@ -152,7 +151,7 @@ index 01a3eab50d7b..2a7fc49c1a7c 100644
 -	return err;
 -}
 -
--static int snd_dummy_remove(struct platform_device *devptr)
+-static int loopback_remove(struct platform_device *devptr)
 -{
 -	snd_card_free(platform_get_drvdata(devptr));
 +	if (err < 0)
@@ -161,14 +160,14 @@ index 01a3eab50d7b..2a7fc49c1a7c 100644
  	return 0;
  }
  
-@@ -1128,7 +1119,6 @@ static SIMPLE_DEV_PM_OPS(snd_dummy_pm, snd_dummy_suspend, snd_dummy_resume);
+@@ -1786,7 +1777,6 @@ static SIMPLE_DEV_PM_OPS(loopback_pm, loopback_suspend, loopback_resume);
  
- static struct platform_driver snd_dummy_driver = {
- 	.probe		= snd_dummy_probe,
--	.remove		= snd_dummy_remove,
+ static struct platform_driver loopback_driver = {
+ 	.probe		= loopback_probe,
+-	.remove		= loopback_remove,
  	.driver		= {
- 		.name	= SND_DUMMY_DRIVER,
- 		.pm	= SND_DUMMY_PM_OPS,
+ 		.name	= SND_LOOPBACK_DRIVER,
+ 		.pm	= LOOPBACK_PM_OPS,
 -- 
 2.26.2
 
