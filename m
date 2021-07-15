@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB70CC07E96
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:21:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E5F7C07E96
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:21:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D2A5361183
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:20:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D2A5361183
+	by mail.kernel.org (Postfix) with ESMTPS id 8FF2B61183
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:21:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8FF2B61183
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6FBD416DD;
-	Thu, 15 Jul 2021 10:20:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FBD416DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 25C911661;
+	Thu, 15 Jul 2021 10:20:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25C911661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626337258;
-	bh=bJeooBzmrn4yWHblukwag+ihLGjQto098NhO1OjFHz4=;
+	s=default; t=1626337278;
+	bh=sa4ah6JtEcK+tWnFZfcpLmZ9ze+pRkrhKELgkgKDmJM=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aDQzBsYYBgQ+4fUsC/8nmX5QV7Ti+oYJPmB1XRbUOi0ohD0DtnPjRmeaLSg3GEtpz
-	 cwrorhwFSO1Ys0wSLDQKx79KFOA5pgcxVRF8Xl193lVCkD9w6FPDDK8zXPimlB79zn
-	 ZJhzucLgtCz47tG33TsG0TX87ZhZMaYmbVJ6JRV4=
+	b=Va5rT9yomwlJWGkoUbfnN24JunnXyzRqdZi08EPCvY91f5xtgPwFoHs80uetaRVMG
+	 VnxrSuVf8RAdWk8/avFii1V29/qPCJuivsCTHanbpGqjuYUaDgCMEFo9sqMRe8hTdT
+	 Q/rhahu4zM+68Z+OUfyWjYi/TVt3ukCEvcngeeu4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F2237F8072A;
-	Thu, 15 Jul 2021 10:01:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CFBC7F80733;
+	Thu, 15 Jul 2021 10:01:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB898F80713; Thu, 15 Jul 2021 10:01:20 +0200 (CEST)
+ id 37BA2F80710; Thu, 15 Jul 2021 10:01:21 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E28A8F80534
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E28A8F80534
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4CF7DF80549
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CF7DF80549
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="yZKf8WSO"; 
+ header.b="MUEdLDxT"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="e5r5y2MX"
+ header.b="LrIZkuFp"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id BFE1F1FD3E
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:13 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 257651FD3E
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626336013; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1626336015; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=g79u6p2iEPWn+mTcvW/LzQPp6XkIOpnWgGbmffefZSk=;
- b=yZKf8WSOYHShHLgwiJWc3dMVSBsogGXNK8ulSgKZTOe5Q0fj5mkqT6eh294kRDGdRpx5Jr
- HTH7x6yblizY5Ft0kEs1liB/LDpS9HfpnImGKPrehvze/wgGcnGk5fpQ1SfXRosVr9NEZH
- npIx7fVoJFbcpSsm+P6mxPfIbuzjRLo=
+ bh=JrKMj97jEZ1Ruv60pMc3FAQRmlcNJ1z2f901Umap9Xw=;
+ b=MUEdLDxTA42FshxtlTuOz97DPhodssajEWOe3ayrqvTPJEPWsiKDyT3xJ7psKebFFzveJD
+ 5lbLgRafAFT0uqV51rZcw85tY6p1KawYgXnZsldwTJdsJ4CC+qRIRq3hGvnMO8T6eeqVD8
+ 4SZUo7UJqk/mR7QKLLtaWGQWRhFHWp4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626336013;
+ s=susede2_ed25519; t=1626336015;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=g79u6p2iEPWn+mTcvW/LzQPp6XkIOpnWgGbmffefZSk=;
- b=e5r5y2MXEGy8RM/14w0lQNb71zv4/vkP9N2eULQpjMVF53tgh2jdX6flHNT/c2rq/XTorL
- W4LuMrDfByetawAg==
+ bh=JrKMj97jEZ1Ruv60pMc3FAQRmlcNJ1z2f901Umap9Xw=;
+ b=LrIZkuFphVapKKBIxQSC4rZFPNhICagU6RfX2jkCtaLDmvPHGlm3DdYgFKIPLr70aMN8w4
+ hLNn+hN/yVdVBfCA==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id AEF84A3B9C;
- Thu, 15 Jul 2021 08:00:13 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 1479DA3B8F;
+ Thu, 15 Jul 2021 08:00:15 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 50/79] ALSA: vx222: Allocate resources with device-managed
+Subject: [PATCH v2 53/79] ALSA: wss: Allocate resources with device-managed
  APIs
-Date: Thu, 15 Jul 2021 09:59:12 +0200
-Message-Id: <20210715075941.23332-51-tiwai@suse.de>
+Date: Thu, 15 Jul 2021 09:59:15 +0200
+Message-Id: <20210715075941.23332-54-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210715075941.23332-1-tiwai@suse.de>
 References: <20210715075941.23332-1-tiwai@suse.de>
@@ -98,168 +98,178 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the resource management in PCI vx222 driver with
+This patch converts the resource management in ISA wss driver with
 devres as a clean up.  Each manual resource management is converted
-with the corresponding devres helper, and the card object release is
-managed now via card->private_free instead of a lowlevel snd_device.
+with the corresponding devres helper.  Since the whole destructor code
+could be removed by the conversion, the lowlevel snd_device was
+dropped as well.
 
 This should give no user-visible functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/vx222/vx222.c | 68 +++++++----------------------------------
- 1 file changed, 11 insertions(+), 57 deletions(-)
+ sound/isa/cs423x/cs4236_lib.c |  2 --
+ sound/isa/wss/wss_lib.c       | 67 ++++++-----------------------------
+ 2 files changed, 11 insertions(+), 58 deletions(-)
 
-diff --git a/sound/pci/vx222/vx222.c b/sound/pci/vx222/vx222.c
-index 46a80ef1d481..f48cc20b9e8a 100644
---- a/sound/pci/vx222/vx222.c
-+++ b/sound/pci/vx222/vx222.c
-@@ -100,25 +100,6 @@ static const struct snd_vx_hardware vx222_mic_hw = {
+diff --git a/sound/isa/cs423x/cs4236_lib.c b/sound/isa/cs423x/cs4236_lib.c
+index 63957aea456b..35f25911adcf 100644
+--- a/sound/isa/cs423x/cs4236_lib.c
++++ b/sound/isa/cs423x/cs4236_lib.c
+@@ -298,7 +298,6 @@ int snd_cs4236_create(struct snd_card *card,
+ 	if (cport < 0x100 || cport == SNDRV_AUTO_PORT) {
+ 		snd_printk(KERN_ERR "please, specify control port "
+ 			   "for CS4236+ chips\n");
+-		snd_device_free(card, chip);
+ 		return -ENODEV;
+ 	}
+ 	ver1 = snd_cs4236_ctrl_in(chip, 1);
+@@ -308,7 +307,6 @@ int snd_cs4236_create(struct snd_card *card,
+ 	if (ver1 != ver2) {
+ 		snd_printk(KERN_ERR "CS4236+ chip detected, but "
+ 			   "control port 0x%lx is not valid\n", cport);
+-		snd_device_free(card, chip);
+ 		return -ENODEV;
+ 	}
+ 	snd_cs4236_ctrl_out(chip, 0, 0x00);
+diff --git a/sound/isa/wss/wss_lib.c b/sound/isa/wss/wss_lib.c
+index 743e0f05e335..026061b55ee9 100644
+--- a/sound/isa/wss/wss_lib.c
++++ b/sound/isa/wss/wss_lib.c
+@@ -1655,36 +1655,6 @@ static void snd_wss_resume(struct snd_wss *chip)
+ }
+ #endif /* CONFIG_PM */
  
- /*
-  */
--static int snd_vx222_free(struct vx_core *chip)
+-static int snd_wss_free(struct snd_wss *chip)
 -{
--	struct snd_vx222 *vx = to_vx222(chip);
--
--	if (chip->irq >= 0)
--		free_irq(chip->irq, (void*)chip);
--	if (vx->port[0])
--		pci_release_regions(vx->pci);
--	pci_disable_device(vx->pci);
+-	release_and_free_resource(chip->res_port);
+-	release_and_free_resource(chip->res_cport);
+-	if (chip->irq >= 0) {
+-		disable_irq(chip->irq);
+-		if (!(chip->hwshare & WSS_HWSHARE_IRQ))
+-			free_irq(chip->irq, (void *) chip);
+-	}
+-	if (!(chip->hwshare & WSS_HWSHARE_DMA1) && chip->dma1 >= 0) {
+-		snd_dma_disable(chip->dma1);
+-		free_dma(chip->dma1);
+-	}
+-	if (!(chip->hwshare & WSS_HWSHARE_DMA2) &&
+-	    chip->dma2 >= 0 && chip->dma2 != chip->dma1) {
+-		snd_dma_disable(chip->dma2);
+-		free_dma(chip->dma2);
+-	}
+-	if (chip->timer)
+-		snd_device_free(chip->card, chip->timer);
+-	kfree(chip);
 -	return 0;
 -}
 -
--static int snd_vx222_dev_free(struct snd_device *device)
+-static int snd_wss_dev_free(struct snd_device *device)
 -{
--	struct vx_core *chip = device->device_data;
--	return snd_vx222_free(chip);
+-	struct snd_wss *chip = device->device_data;
+-	return snd_wss_free(chip);
 -}
 -
--
- static int snd_vx222_create(struct snd_card *card, struct pci_dev *pci,
- 			    const struct snd_vx_hardware *hw,
- 			    struct snd_vx222 **rchip)
-@@ -126,13 +107,10 @@ static int snd_vx222_create(struct snd_card *card, struct pci_dev *pci,
- 	struct vx_core *chip;
- 	struct snd_vx222 *vx;
- 	int i, err;
--	static const struct snd_device_ops ops = {
--		.dev_free =	snd_vx222_dev_free,
--	};
- 	const struct snd_vx_ops *vx_ops;
+ const char *snd_wss_chip_id(struct snd_wss *chip)
+ {
+ 	switch (chip->hardware) {
+@@ -1738,7 +1708,7 @@ static int snd_wss_new(struct snd_card *card,
+ 	struct snd_wss *chip;
  
- 	/* enable PCI device */
--	err = pci_enable_device(pci);
-+	err = pcim_enable_device(pci);
- 	if (err < 0)
- 		return err;
- 	pci_set_master(pci);
-@@ -140,38 +118,26 @@ static int snd_vx222_create(struct snd_card *card, struct pci_dev *pci,
- 	vx_ops = hw->type == VX_TYPE_BOARD ? &vx222_old_ops : &vx222_ops;
- 	chip = snd_vx_create(card, hw, vx_ops,
- 			     sizeof(struct snd_vx222) - sizeof(struct vx_core));
--	if (! chip) {
--		pci_disable_device(pci);
-+	if (!chip)
+ 	*rchip = NULL;
+-	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
++	chip = devm_kzalloc(card->dev, sizeof(*chip), GFP_KERNEL);
+ 	if (chip == NULL)
  		return -ENOMEM;
--	}
- 	vx = to_vx222(chip);
- 	vx->pci = pci;
+ 	chip->hardware = hardware;
+@@ -1774,9 +1744,6 @@ int snd_wss_create(struct snd_card *card,
+ 		      unsigned short hwshare,
+ 		      struct snd_wss **rchip)
+ {
+-	static const struct snd_device_ops ops = {
+-		.dev_free =	snd_wss_dev_free,
+-	};
+ 	struct snd_wss *chip;
+ 	int err;
  
- 	err = pci_request_regions(pci, CARD_NAME);
--	if (err < 0) {
--		snd_vx222_free(chip);
-+	if (err < 0)
- 		return err;
--	}
- 	for (i = 0; i < 2; i++)
- 		vx->port[i] = pci_resource_start(pci, i + 1);
+@@ -1788,42 +1755,39 @@ int snd_wss_create(struct snd_card *card,
+ 	chip->dma1 = -1;
+ 	chip->dma2 = -1;
  
--	if (request_threaded_irq(pci->irq, snd_vx_irq_handler,
--				 snd_vx_threaded_irq_handler, IRQF_SHARED,
--				 KBUILD_MODNAME, chip)) {
-+	if (devm_request_threaded_irq(&pci->dev, pci->irq, snd_vx_irq_handler,
-+				      snd_vx_threaded_irq_handler, IRQF_SHARED,
-+				      KBUILD_MODNAME, chip)) {
- 		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
--		snd_vx222_free(chip);
+-	chip->res_port = request_region(port, 4, "WSS");
++	chip->res_port = devm_request_region(card->dev, port, 4, "WSS");
+ 	if (!chip->res_port) {
+ 		snd_printk(KERN_ERR "wss: can't grab port 0x%lx\n", port);
+-		snd_wss_free(chip);
  		return -EBUSY;
  	}
- 	chip->irq = pci->irq;
+ 	chip->port = port;
+ 	if ((long)cport >= 0) {
+-		chip->res_cport = request_region(cport, 8, "CS4232 Control");
++		chip->res_cport = devm_request_region(card->dev, cport, 8,
++						      "CS4232 Control");
+ 		if (!chip->res_cport) {
+ 			snd_printk(KERN_ERR
+ 				"wss: can't grab control port 0x%lx\n", cport);
+-			snd_wss_free(chip);
+ 			return -ENODEV;
+ 		}
+ 	}
+ 	chip->cport = cport;
+ 	if (!(hwshare & WSS_HWSHARE_IRQ))
+-		if (request_irq(irq, snd_wss_interrupt, 0,
+-				"WSS", (void *) chip)) {
++		if (devm_request_irq(card->dev, irq, snd_wss_interrupt, 0,
++				     "WSS", (void *) chip)) {
+ 			snd_printk(KERN_ERR "wss: can't grab IRQ %d\n", irq);
+-			snd_wss_free(chip);
+ 			return -EBUSY;
+ 		}
+ 	chip->irq = irq;
  	card->sync_irq = chip->irq;
+-	if (!(hwshare & WSS_HWSHARE_DMA1) && request_dma(dma1, "WSS - 1")) {
++	if (!(hwshare & WSS_HWSHARE_DMA1) &&
++	    snd_devm_request_dma(card->dev, dma1, "WSS - 1")) {
+ 		snd_printk(KERN_ERR "wss: can't grab DMA1 %d\n", dma1);
+-		snd_wss_free(chip);
+ 		return -EBUSY;
+ 	}
+ 	chip->dma1 = dma1;
+-	if (!(hwshare & WSS_HWSHARE_DMA2) && dma1 != dma2 &&
+-	      dma2 >= 0 && request_dma(dma2, "WSS - 2")) {
++	if (!(hwshare & WSS_HWSHARE_DMA2) && dma1 != dma2 && dma2 >= 0 &&
++	    snd_devm_request_dma(card->dev, dma2, "WSS - 2")) {
+ 		snd_printk(KERN_ERR "wss: can't grab DMA2 %d\n", dma2);
+-		snd_wss_free(chip);
+ 		return -EBUSY;
+ 	}
+ 	if (dma1 == dma2 || dma2 < 0) {
+@@ -1839,10 +1803,8 @@ int snd_wss_create(struct snd_card *card,
+ 	}
  
+ 	/* global setup */
+-	if (snd_wss_probe(chip) < 0) {
+-		snd_wss_free(chip);
++	if (snd_wss_probe(chip) < 0)
+ 		return -ENODEV;
+-	}
+ 	snd_wss_init(chip);
+ 
+ #if 0
+@@ -1853,13 +1815,6 @@ int snd_wss_create(struct snd_card *card,
+ 	}
+ #endif
+ 
+-	/* Register device */
 -	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
 -	if (err < 0) {
--		snd_vx222_free(chip);
+-		snd_wss_free(chip);
 -		return err;
 -	}
 -
--	*rchip = vx;
- 	return 0;
- }
- 
-@@ -192,8 +158,8 @@ static int snd_vx222_probe(struct pci_dev *pci,
- 		return -ENOENT;
- 	}
- 
--	err = snd_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
--			   0, &card);
-+	err = snd_devm_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
-+				0, &card);
- 	if (err < 0)
- 		return err;
- 
-@@ -210,10 +176,8 @@ static int snd_vx222_probe(struct pci_dev *pci,
- 		break;
- 	}
- 	err = snd_vx222_create(card, pci, hw, &vx);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 	card->private_data = vx;
- 	vx->core.ibl.size = ibl[dev];
- 
-@@ -227,27 +191,18 @@ static int snd_vx222_probe(struct pci_dev *pci,
- #endif
- 
- 	err = snd_vx_setup_firmware(&vx->core);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 
- 	err = snd_card_register(card);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 
- 	pci_set_drvdata(pci, card);
- 	dev++;
- 	return 0;
- }
- 
--static void snd_vx222_remove(struct pci_dev *pci)
--{
--	snd_card_free(pci_get_drvdata(pci));
--}
--
- #ifdef CONFIG_PM_SLEEP
- static int snd_vx222_suspend(struct device *dev)
- {
-@@ -275,7 +230,6 @@ static struct pci_driver vx222_driver = {
- 	.name = KBUILD_MODNAME,
- 	.id_table = snd_vx222_ids,
- 	.probe = snd_vx222_probe,
--	.remove = snd_vx222_remove,
- 	.driver = {
- 		.pm = SND_VX222_PM_OPS,
- 	},
+ #ifdef CONFIG_PM
+ 	/* Power Management */
+ 	chip->suspend = snd_wss_suspend;
 -- 
 2.26.2
 
