@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62C36C07E96
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:17:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AAF4DC07E96
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:17:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 879366117A
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:17:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 879366117A
+	by mail.kernel.org (Postfix) with ESMTPS id 2E5C1611AC
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:17:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E5C1611AC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2DFBC1731;
-	Thu, 15 Jul 2021 10:16:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2DFBC1731
+	by alsa0.perex.cz (Postfix) with ESMTPS id BC3821721;
+	Thu, 15 Jul 2021 10:16:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC3821721
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626337031;
-	bh=x2y5nsZB57txz1whjjVzk5rAKRhvdk+GAi44U3tWxBU=;
+	s=default; t=1626337054;
+	bh=YolAqSXetGAUVxgLobS1MDHXC3XY4a4cUyX0dAPjSsE=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BTnPAaUoGyyl8oe0i35Qp6B5Dwijmuyo/iPY2sok+yd7YasFrJsuhpzX/+4qITvrN
-	 ZgSXZXGeummaAfUm3APUIpSQL6XZCnFmZJ563A0QPGLr/SrGGCO1RLckp41hwsA8UV
-	 RgZy+4phyuklcjyEzIspxutL9AtMtBXyu6fOwLr8=
+	b=rjDzLR07jyBPX7rZkXz6OxTRTmDnChbJMndK+k0kC+4ncZACS/Wz93FAlq4wgnJ7k
+	 SYG3ObI+yAH8rvyCaENSir4bC+ouPeB5elIkUgCifOCjFAgqWHCDtYUGVoM7lqKSoM
+	 bgYyIJw1XjJ3VsKy+e5nRe3Jj1isEjBZ9TR+WJjk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AA5D1F806E7;
-	Thu, 15 Jul 2021 10:01:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C3DF1F806E8;
+	Thu, 15 Jul 2021 10:01:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F3350F80678; Thu, 15 Jul 2021 10:01:05 +0200 (CEST)
+ id 84BA0F8067A; Thu, 15 Jul 2021 10:01:06 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3942DF80524
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3942DF80524
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4284EF8051D
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4284EF8051D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="rrnPV1W8"; 
+ header.b="JbuXsnRu"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="1ge7t/qn"
+ header.b="idmNrUG7"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 093A31FDE5
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:10 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 1FA441FD3E
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626336010; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1626336009; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ZylPcUdm825DBGsYo9uClnk9V1jD3btPbVGNcPlaL1w=;
- b=rrnPV1W8zZxn81GQ8kc3BHMM+ZzXmeEkFsJJfmxh0OIAdrs4TPy5OZDh8mKooiUJdE5FLd
- 3VxMza9410PkuIi8QxyJNbP2VUR0F3v4aQsknNr4ffYRoq7ZRmrADm/WpYl3V8JvU5Oj96
- PT0gaMEw9l0VG4QSHbxlVipC5smQa9c=
+ bh=kFYQmvZBz/Rv+iOemGkk9WuHcg2BLKGc66cW/sYHUBY=;
+ b=JbuXsnRuOAe+RogNpunJr/2/aRMx8C2j++4ReRkSYIW5K3JasPF1Ka8zQItvwRD2BRsx5t
+ oQ8byLq6VVXQUew44BKQHuJs10FzyYD2IZ9vpYgNs69dDHzaMHhLIIOyfmenB+lqjCTRv1
+ u0ZSZbiLPav1RBfxUe3wtZINFrMBKtM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626336010;
+ s=susede2_ed25519; t=1626336009;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ZylPcUdm825DBGsYo9uClnk9V1jD3btPbVGNcPlaL1w=;
- b=1ge7t/qndyWXpbPM7GTJHPvohvdtrLJB4jbP5cDbBV8BpW2rYo51AtlbsO9RdkpfTtgsRv
- lbEzxCU7Brv8hGCQ==
+ bh=kFYQmvZBz/Rv+iOemGkk9WuHcg2BLKGc66cW/sYHUBY=;
+ b=idmNrUG7TrjqI8HfGzQHU4sF/ggA5B8/xjPE+LcoTz7NFI/V8drWAY5sNuM18DIJLfch7D
+ 0h7MWko0yUlJ9pBw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id EB731A3BBC;
+ by relay2.suse.de (Postfix) with ESMTP id 0C728A3BB9;
  Thu, 15 Jul 2021 08:00:09 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 42/79] ALSA: nm256: Allocate resources with device-managed
+Subject: [PATCH v2 40/79] ALSA: lola: Allocate resources with device-managed
  APIs
-Date: Thu, 15 Jul 2021 09:59:04 +0200
-Message-Id: <20210715075941.23332-43-tiwai@suse.de>
+Date: Thu, 15 Jul 2021 09:59:02 +0200
+Message-Id: <20210715075941.23332-41-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210715075941.23332-1-tiwai@suse.de>
 References: <20210715075941.23332-1-tiwai@suse.de>
@@ -98,94 +98,97 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the resource management in PCI nm256 driver with
+This patch converts the resource management in PCI lola driver with
 devres as a clean up.  Each manual resource management is converted
-with the corresponding devres helper, and the card object release is
-managed now via card->private_free instead of a lowlevel snd_device.
+with the corresponding devres helper, the page allocations are done
+with the devres helper, and the card object release is managed now via
+card->private_free instead of a lowlevel snd_device.
 
 This should give no user-visible functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/nm256/nm256.c | 130 ++++++++++------------------------------
- 1 file changed, 30 insertions(+), 100 deletions(-)
+ sound/pci/lola/lola.c     | 127 +++++++++++---------------------------
+ sound/pci/lola/lola.h     |   5 +-
+ sound/pci/lola/lola_pcm.c |  20 +++---
+ 3 files changed, 44 insertions(+), 108 deletions(-)
 
-diff --git a/sound/pci/nm256/nm256.c b/sound/pci/nm256/nm256.c
-index 12d02d7d3b51..a54b9b26a0c2 100644
---- a/sound/pci/nm256/nm256.c
-+++ b/sound/pci/nm256/nm256.c
-@@ -193,11 +193,9 @@ struct nm256 {
- 	struct snd_card *card;
+diff --git a/sound/pci/lola/lola.c b/sound/pci/lola/lola.c
+index 03b4be44bb26..5269a1d396a5 100644
+--- a/sound/pci/lola/lola.c
++++ b/sound/pci/lola/lola.c
+@@ -344,20 +344,18 @@ static void lola_irq_disable(struct lola *chip)
  
- 	void __iomem *cport;		/* control port */
--	struct resource *res_cport;	/* its resource */
- 	unsigned long cport_addr;	/* physical address */
- 
- 	void __iomem *buffer;		/* buffer */
--	struct resource *res_buffer;	/* its resource */
- 	unsigned long buffer_addr;	/* buffer phyiscal address */
- 
- 	u32 buffer_start;		/* start offset from pci resource 0 */
-@@ -1313,8 +1311,9 @@ snd_nm256_mixer(struct nm256 *chip)
- 		.read = snd_nm256_ac97_read,
- 	};
- 
--	chip->ac97_regs = kcalloc(ARRAY_SIZE(nm256_ac97_init_val),
--				  sizeof(short), GFP_KERNEL);
-+	chip->ac97_regs = devm_kcalloc(chip->card->dev,
-+				       ARRAY_SIZE(nm256_ac97_init_val),
-+				       sizeof(short), GFP_KERNEL);
- 	if (! chip->ac97_regs)
- 		return -ENOMEM;
- 
-@@ -1437,56 +1436,27 @@ static SIMPLE_DEV_PM_OPS(nm256_pm, nm256_suspend, nm256_resume);
- #define NM256_PM_OPS	NULL
- #endif /* CONFIG_PM_SLEEP */
- 
--static int snd_nm256_free(struct nm256 *chip)
-+static void snd_nm256_free(struct snd_card *card)
+ static int setup_corb_rirb(struct lola *chip)
  {
-+	struct nm256 *chip = card->private_data;
+-	int err;
+ 	unsigned char tmp;
+ 	unsigned long end_time;
+ 
+-	err = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV,
+-				  &chip->pci->dev,
+-				  PAGE_SIZE, &chip->rb);
+-	if (err < 0)
+-		return err;
++	chip->rb = snd_devm_alloc_pages(&chip->pci->dev, SNDRV_DMA_TYPE_DEV,
++					PAGE_SIZE);
++	if (!chip->rb)
++		return -ENOMEM;
+ 
+-	chip->corb.addr = chip->rb.addr;
+-	chip->corb.buf = (__le32 *)chip->rb.area;
+-	chip->rirb.addr = chip->rb.addr + 2048;
+-	chip->rirb.buf = (__le32 *)(chip->rb.area + 2048);
++	chip->corb.addr = chip->rb->addr;
++	chip->corb.buf = (__le32 *)chip->rb->area;
++	chip->rirb.addr = chip->rb->addr + 2048;
++	chip->rirb.buf = (__le32 *)(chip->rb->area + 2048);
+ 
+ 	/* disable ringbuffer DMAs */
+ 	lola_writeb(chip, BAR0, RIRBCTL, 0);
+@@ -529,56 +527,31 @@ static void lola_stop_hw(struct lola *chip)
+ 	lola_irq_disable(chip);
+ }
+ 
+-static void lola_free(struct lola *chip)
++static void lola_free(struct snd_card *card)
+ {
++	struct lola *chip = card->private_data;
 +
- 	if (chip->streams[SNDRV_PCM_STREAM_PLAYBACK].running)
- 		snd_nm256_playback_stop(chip);
- 	if (chip->streams[SNDRV_PCM_STREAM_CAPTURE].running)
- 		snd_nm256_capture_stop(chip);
--
+ 	if (chip->initialized)
+ 		lola_stop_hw(chip);
+-	lola_free_pcm(chip);
+ 	lola_free_mixer(chip);
 -	if (chip->irq >= 0)
--		free_irq(chip->irq, chip);
--
--	iounmap(chip->cport);
--	iounmap(chip->buffer);
--	release_and_free_resource(chip->res_cport);
--	release_and_free_resource(chip->res_buffer);
--
+-		free_irq(chip->irq, (void *)chip);
+-	iounmap(chip->bar[0].remap_addr);
+-	iounmap(chip->bar[1].remap_addr);
+-	if (chip->rb.area)
+-		snd_dma_free_pages(&chip->rb);
+-	pci_release_regions(chip->pci);
 -	pci_disable_device(chip->pci);
--	kfree(chip->ac97_regs);
 -	kfree(chip);
+ }
+ 
+-static int lola_dev_free(struct snd_device *device)
++static int lola_create(struct snd_card *card, struct pci_dev *pci, int dev)
+ {
+-	lola_free(device->device_data);
 -	return 0;
 -}
 -
--static int snd_nm256_dev_free(struct snd_device *device)
+-static int lola_create(struct snd_card *card, struct pci_dev *pci,
+-		       int dev, struct lola **rchip)
 -{
--	struct nm256 *chip = device->device_data;
--	return snd_nm256_free(chip);
- }
- 
- static int
--snd_nm256_create(struct snd_card *card, struct pci_dev *pci,
--		 struct nm256 **chip_ret)
-+snd_nm256_create(struct snd_card *card, struct pci_dev *pci)
- {
--	struct nm256 *chip;
-+	struct nm256 *chip = card->private_data;
- 	int err, pval;
+-	struct lola *chip;
++	struct lola *chip = card->private_data;
+ 	int err;
+ 	unsigned int dever;
 -	static const struct snd_device_ops ops = {
--		.dev_free =	snd_nm256_dev_free,
+-		.dev_free = lola_dev_free,
 -	};
- 	u32 addr;
  
--	*chip_ret = NULL;
+-	*rchip = NULL;
 -
 -	err = pci_enable_device(pci);
 +	err = pcim_enable_device(pci);
@@ -193,191 +196,246 @@ index 12d02d7d3b51..a54b9b26a0c2 100644
  		return err;
  
 -	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
--	if (chip == NULL) {
+-	if (!chip) {
 -		pci_disable_device(pci);
 -		return -ENOMEM;
 -	}
 -
+ 	spin_lock_init(&chip->reg_lock);
+ 	mutex_init(&chip->open_mutex);
  	chip->card = card;
  	chip->pci = pci;
- 	chip->use_cache = use_cache;
-@@ -1508,22 +1478,16 @@ snd_nm256_create(struct snd_card *card, struct pci_dev *pci,
- 	chip->buffer_addr = pci_resource_start(pci, 0);
- 	chip->cport_addr = pci_resource_start(pci, 1);
+ 	chip->irq = -1;
++	card->private_free = lola_free;
  
-+	if (pci_request_regions(pci, card->driver))
+ 	chip->granularity = granularity[dev];
+ 	switch (chip->granularity) {
+@@ -607,34 +580,25 @@ static int lola_create(struct snd_card *card, struct pci_dev *pci,
+ 		chip->sample_rate_min = 16000;
+ 	}
+ 
+-	err = pci_request_regions(pci, DRVNAME);
+-	if (err < 0) {
+-		kfree(chip);
+-		pci_disable_device(pci);
++	err = pcim_iomap_regions(pci, (1 << 0) | (1 << 2), DRVNAME);
++	if (err < 0)
+ 		return err;
+-	}
+ 
+ 	chip->bar[0].addr = pci_resource_start(pci, 0);
+-	chip->bar[0].remap_addr = pci_ioremap_bar(pci, 0);
++	chip->bar[0].remap_addr = pcim_iomap_table(pci)[0];
+ 	chip->bar[1].addr = pci_resource_start(pci, 2);
+-	chip->bar[1].remap_addr = pci_ioremap_bar(pci, 2);
+-	if (!chip->bar[0].remap_addr || !chip->bar[1].remap_addr) {
+-		dev_err(chip->card->dev, "ioremap error\n");
+-		err = -ENXIO;
+-		goto errout;
+-	}
++	chip->bar[1].remap_addr = pcim_iomap_table(pci)[2];
+ 
+ 	pci_set_master(pci);
+ 
+ 	err = reset_controller(chip);
+ 	if (err < 0)
+-		goto errout;
 +		return err;
-+
- 	/* Init the memory port info.  */
- 	/* remap control port (#2) */
--	chip->res_cport = request_mem_region(chip->cport_addr, NM_PORT2_SIZE,
--					     card->driver);
--	if (chip->res_cport == NULL) {
--		dev_err(card->dev, "memory region 0x%lx (size 0x%x) busy\n",
--			   chip->cport_addr, NM_PORT2_SIZE);
+ 
+-	if (request_irq(pci->irq, lola_interrupt, IRQF_SHARED,
+-			KBUILD_MODNAME, chip)) {
++	if (devm_request_irq(&pci->dev, pci->irq, lola_interrupt, IRQF_SHARED,
++			     KBUILD_MODNAME, chip)) {
+ 		dev_err(chip->card->dev, "unable to grab IRQ %d\n", pci->irq);
 -		err = -EBUSY;
--		goto __error;
--	}
--	chip->cport = ioremap(chip->cport_addr, NM_PORT2_SIZE);
--	if (chip->cport == NULL) {
-+	chip->cport = devm_ioremap(&pci->dev, chip->cport_addr, NM_PORT2_SIZE);
-+	if (!chip->cport) {
- 		dev_err(card->dev, "unable to map control port %lx\n",
- 			chip->cport_addr);
--		err = -ENOMEM;
--		goto __error;
-+		return -ENOMEM;
+-		goto errout;
++		return -EBUSY;
+ 	}
+ 	chip->irq = pci->irq;
+ 	card->sync_irq = chip->irq;
+@@ -653,19 +617,12 @@ static int lola_create(struct snd_card *card, struct pci_dev *pci,
+ 	    (!chip->pcm[CAPT].num_streams &&
+ 	     !chip->pcm[PLAY].num_streams)) {
+ 		dev_err(chip->card->dev, "invalid DEVER = %x\n", dever);
+-		err = -EINVAL;
+-		goto errout;
++		return -EINVAL;
  	}
  
- 	if (!strcmp(card->driver, "NM256AV")) {
-@@ -1539,8 +1503,7 @@ snd_nm256_create(struct snd_card *card, struct pci_dev *pci,
- 					" force_ac97=1\n");
- 				dev_err(card->dev,
- 					"or try sb16, opl3sa2, or cs423x drivers instead.\n");
--				err = -ENXIO;
--				goto __error;
-+				return -ENXIO;
- 			}
- 		}
- 		chip->buffer_end = 2560 * 1024;
-@@ -1572,7 +1535,7 @@ snd_nm256_create(struct snd_card *card, struct pci_dev *pci,
- 		/* get buffer end pointer from signature */
- 		err = snd_nm256_peek_for_sig(chip);
- 		if (err < 0)
--			goto __error;
-+			return err;
- 	}
- 
- 	chip->buffer_start = chip->buffer_end - chip->buffer_size;
-@@ -1581,21 +1544,12 @@ snd_nm256_create(struct snd_card *card, struct pci_dev *pci,
- 	dev_info(card->dev, "Mapping port 1 from 0x%x - 0x%x\n",
- 	       chip->buffer_start, chip->buffer_end);
- 
--	chip->res_buffer = request_mem_region(chip->buffer_addr,
--					      chip->buffer_size,
--					      card->driver);
--	if (chip->res_buffer == NULL) {
--		dev_err(card->dev, "buffer 0x%lx (size 0x%x) busy\n",
--			   chip->buffer_addr, chip->buffer_size);
--		err = -EBUSY;
--		goto __error;
--	}
--	chip->buffer = ioremap(chip->buffer_addr, chip->buffer_size);
--	if (chip->buffer == NULL) {
--		err = -ENOMEM;
-+	chip->buffer = devm_ioremap(&pci->dev, chip->buffer_addr,
-+				    chip->buffer_size);
-+	if (!chip->buffer) {
- 		dev_err(card->dev, "unable to map ring buffer at %lx\n",
- 			chip->buffer_addr);
--		goto __error;
-+		return -ENOMEM;
- 	}
- 
- 	/* set offsets */
-@@ -1618,19 +1572,10 @@ snd_nm256_create(struct snd_card *card, struct pci_dev *pci,
- 	chip->coeffs_current = 0;
- 
- 	snd_nm256_init_chip(chip);
-+	card->private_free = snd_nm256_free;
- 
- 	// pci_set_master(pci); /* needed? */
--	
--	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
--	if (err < 0)
--		goto __error;
+ 	err = setup_corb_rirb(chip);
+ 	if (err < 0)
+-		goto errout;
 -
--	*chip_ret = chip;
+-	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
+-	if (err < 0) {
+-		dev_err(chip->card->dev, "Error creating device [card]!\n");
+-		goto errout;
+-	}
++		return err;
+ 
+ 	strcpy(card->driver, "Lola");
+ 	strscpy(card->shortname, "Digigram Lola", sizeof(card->shortname));
+@@ -677,12 +634,7 @@ static int lola_create(struct snd_card *card, struct pci_dev *pci,
+ 	lola_irq_enable(chip);
+ 
+ 	chip->initialized = 1;
+-	*rchip = chip;
  	return 0;
 -
--__error:
--	snd_nm256_free(chip);
+- errout:
+-	lola_free(chip);
 -	return err;
  }
  
- 
-@@ -1673,9 +1618,11 @@ static int snd_nm256_probe(struct pci_dev *pci,
- 		}
+ static int lola_probe(struct pci_dev *pci,
+@@ -700,47 +652,39 @@ static int lola_probe(struct pci_dev *pci,
+ 		return -ENOENT;
  	}
  
--	err = snd_card_new(&pci->dev, index, id, THIS_MODULE, 0, &card);
-+	err = snd_devm_card_new(&pci->dev, index, id, THIS_MODULE,
+-	err = snd_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
+-			   0, &card);
++	err = snd_devm_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
 +				sizeof(*chip), &card);
- 	if (err < 0)
+ 	if (err < 0) {
+ 		dev_err(&pci->dev, "Error creating card!\n");
  		return err;
+ 	}
 +	chip = card->private_data;
  
- 	switch (pci->device) {
- 	case PCI_DEVICE_ID_NEOMAGIC_NM256AV_AUDIO:
-@@ -1689,7 +1636,6 @@ static int snd_nm256_probe(struct pci_dev *pci,
- 		break;
- 	default:
- 		dev_err(&pci->dev, "invalid device id 0x%x\n", pci->device);
--		snd_card_free(card);
- 		return -EINVAL;
- 	}
- 
-@@ -1704,12 +1650,9 @@ static int snd_nm256_probe(struct pci_dev *pci,
- 		capture_bufsize = 4;
- 	if (capture_bufsize > 128)
- 		capture_bufsize = 128;
--	err = snd_nm256_create(card, pci, &chip);
--	if (err < 0) {
--		snd_card_free(card);
-+	err = snd_nm256_create(card, pci);
-+	if (err < 0)
- 		return err;
--	}
+-	err = lola_create(card, pci, dev, &chip);
++	err = lola_create(card, pci, dev);
+ 	if (err < 0)
+-		goto out_free;
 -	card->private_data = chip;
++		return err;
  
- 	if (reset_workaround) {
- 		dev_dbg(&pci->dev, "reset_workaround activated\n");
-@@ -1722,15 +1665,11 @@ static int snd_nm256_probe(struct pci_dev *pci,
- 	}
+ 	err = lola_parse_tree(chip);
+ 	if (err < 0)
+-		goto out_free;
++		return err;
  
- 	err = snd_nm256_pcm(chip, 0);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 	err = snd_nm256_mixer(chip);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
+ 	err = lola_create_pcm(chip);
+ 	if (err < 0)
+-		goto out_free;
++		return err;
  
- 	sprintf(card->shortname, "NeoMagic %s", card->driver);
- 	sprintf(card->longname, "%s at 0x%lx & 0x%lx, irq %d",
-@@ -1738,26 +1677,17 @@ static int snd_nm256_probe(struct pci_dev *pci,
- 		chip->buffer_addr, chip->cport_addr, chip->irq);
+ 	err = lola_create_mixer(chip);
+ 	if (err < 0)
+-		goto out_free;
++		return err;
+ 
+ 	lola_proc_debug_new(chip);
  
  	err = snd_card_register(card);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
+ 	if (err < 0)
+-		goto out_free;
++		return err;
  
  	pci_set_drvdata(pci, card);
+ 	dev++;
+-	return err;
+-out_free:
+-	snd_card_free(card);
+-	return err;
+-}
+-
+-static void lola_remove(struct pci_dev *pci)
+-{
+-	snd_card_free(pci_get_drvdata(pci));
++	return 0;
+ }
+ 
+ /* PCI IDs */
+@@ -755,7 +699,6 @@ static struct pci_driver lola_driver = {
+ 	.name = KBUILD_MODNAME,
+ 	.id_table = lola_ids,
+ 	.probe = lola_probe,
+-	.remove = lola_remove,
+ };
+ 
+ module_pci_driver(lola_driver);
+diff --git a/sound/pci/lola/lola.h b/sound/pci/lola/lola.h
+index 8a598aa40bf3..0ff772cf66e6 100644
+--- a/sound/pci/lola/lola.h
++++ b/sound/pci/lola/lola.h
+@@ -303,7 +303,7 @@ struct lola_stream {
+ 
+ struct lola_pcm {
+ 	unsigned int num_streams;
+-	struct snd_dma_buffer bdl; /* BDL buffer */
++	struct snd_dma_buffer *bdl; /* BDL buffer */
+ 	struct lola_stream streams[MAX_STREAM_COUNT];
+ };
+ 
+@@ -328,7 +328,7 @@ struct lola {
+ 	unsigned int last_cmd_nid, last_verb, last_data, last_extdata;
+ 
+ 	/* CORB/RIRB buffers */
+-	struct snd_dma_buffer rb;
++	struct snd_dma_buffer *rb;
+ 
+ 	/* unsolicited events */
+ 	unsigned int last_unsol_res;
+@@ -480,7 +480,6 @@ int lola_codec_flush(struct lola *chip);
+ 
+ /* PCM */
+ int lola_create_pcm(struct lola *chip);
+-void lola_free_pcm(struct lola *chip);
+ int lola_init_pcm(struct lola *chip, int dir, int *nidp);
+ void lola_pcm_update(struct lola *chip, struct lola_pcm *pcm, unsigned int bits);
+ 
+diff --git a/sound/pci/lola/lola_pcm.c b/sound/pci/lola/lola_pcm.c
+index 684faaf40f31..738ec987000a 100644
+--- a/sound/pci/lola/lola_pcm.c
++++ b/sound/pci/lola/lola_pcm.c
+@@ -348,7 +348,7 @@ static int lola_setup_periods(struct lola *chip, struct lola_pcm *pcm,
+ 	periods = str->bufsize / period_bytes;
+ 
+ 	/* program the initial BDL entries */
+-	bdl = (__le32 *)(pcm->bdl.area + LOLA_BDL_ENTRY_SIZE * str->index);
++	bdl = (__le32 *)(pcm->bdl->area + LOLA_BDL_ENTRY_SIZE * str->index);
+ 	ofs = 0;
+ 	str->frags = 0;
+ 	for (i = 0; i < periods; i++) {
+@@ -433,7 +433,7 @@ static int lola_setup_controller(struct lola *chip, struct lola_pcm *pcm,
+ 		return -EINVAL;
+ 
+ 	/* set up BDL */
+-	bdl = pcm->bdl.addr + LOLA_BDL_ENTRY_SIZE * str->index;
++	bdl = pcm->bdl->addr + LOLA_BDL_ENTRY_SIZE * str->index;
+ 	lola_dsd_write(chip, str->dsd, BDPL, (u32)bdl);
+ 	lola_dsd_write(chip, str->dsd, BDPU, upper_32_bits(bdl));
+ 	/* program the stream LVI (last valid index) of the BDL */
+@@ -588,11 +588,11 @@ int lola_create_pcm(struct lola *chip)
+ 	int i, err;
+ 
+ 	for (i = 0; i < 2; i++) {
+-		err = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV,
+-					  &chip->pci->dev,
+-					  PAGE_SIZE, &chip->pcm[i].bdl);
+-		if (err < 0)
+-			return err;
++		chip->pcm[i].bdl =
++			snd_devm_alloc_pages(&chip->pci->dev, SNDRV_DMA_TYPE_DEV,
++					     PAGE_SIZE);
++		if (!chip->pcm[i].bdl)
++			return -ENOMEM;
+ 	}
+ 
+ 	err = snd_pcm_new(chip->card, "Digigram Lola", 0,
+@@ -614,12 +614,6 @@ int lola_create_pcm(struct lola *chip)
  	return 0;
  }
  
--static void snd_nm256_remove(struct pci_dev *pci)
+-void lola_free_pcm(struct lola *chip)
 -{
--	snd_card_free(pci_get_drvdata(pci));
+-	snd_dma_free_pages(&chip->pcm[0].bdl);
+-	snd_dma_free_pages(&chip->pcm[1].bdl);
 -}
 -
--
- static struct pci_driver nm256_driver = {
- 	.name = KBUILD_MODNAME,
- 	.id_table = snd_nm256_ids,
- 	.probe = snd_nm256_probe,
--	.remove = snd_nm256_remove,
- 	.driver = {
- 		.pm = NM256_PM_OPS,
- 	},
+ /*
+  */
+ 
 -- 
 2.26.2
 
