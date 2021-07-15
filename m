@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08936C07E96
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:27:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27EC6C07E96
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:28:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8B5AA611C0
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:27:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B5AA611C0
+	by mail.kernel.org (Postfix) with ESMTPS id 98A96611C0
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:28:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 98A96611C0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 333D01781;
-	Thu, 15 Jul 2021 10:26:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 333D01781
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E16D16F1;
+	Thu, 15 Jul 2021 10:27:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E16D16F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626337640;
-	bh=i+tPLyRyXQqhEEW97p4tOJFZ7s2B2+3s3jZGcabMA3k=;
+	s=default; t=1626337690;
+	bh=NsTOi7A7XrHjdiN0lE/+CUawVXb9U9dCVSEoPo/7Lxw=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=u58ertPMVTLvStCLFV8FkqzDaBo2cfJlJogJ4x64s4RSrtEUJMjNsuQvJ7r5LScMf
-	 SABdj4pg+GD/OxBQO0GIlrHT+1Sfu2ViSvXuX3GWwAlYwLnMaRSvVKDkt13Uu/ajWo
-	 L+Jp9zJFE7zgVTn5IPiZn/60ee18uq81sZ3gt6tc=
+	b=ZVCO5rky87Xzp7r9AM0eFm3GTm7QvGHsrxuznq4tea0i8/IGsIQd/WemR9Ke70Eeo
+	 kw9K7K55tQddvZzLUve5Ekj0nQBZl72jO76sLaIqXJrH9tJKhnz89NarDvl2cEYGPW
+	 ugsTuM0ObagWr/d4mio216+PnpnYYf2diKP9Fp3M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B8DFF80806;
-	Thu, 15 Jul 2021 10:01:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16298F804E4;
+	Thu, 15 Jul 2021 10:01:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BBB88F8079B; Thu, 15 Jul 2021 10:01:42 +0200 (CEST)
+ id A6F38F807DC; Thu, 15 Jul 2021 10:01:45 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 89F48F805AB
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89F48F805AB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7E02AF805B0
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E02AF805B0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="HlcZhAsY"; 
+ header.b="xefNSzcc"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="rkOwLW3b"
+ header.b="WA5BMWGD"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 626162284F
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:22 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 5809622855
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626336022; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1626336023; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=r6vFinjlhLc0ENWa69KTssHtx3Sut+fM1cEirG3hAvI=;
- b=HlcZhAsYNBlChiZHYwP+M4eXupQDVF2kynWV1/K9DrRWHIKAOdWZFmWIh7VuC9l1M7XEa+
- U8vGryGMt8VC1gnk/DS2GSyCaGTYcGgXYPP/YNsjHLQ6v7NKq1yJfPTvKSAy7p4NRsh3t9
- eLc5jOjZZgk40KqJn1+s5eIVmYYBz/g=
+ bh=SLbHE8gL3568LNDNyp83CCjAj1qzs/+1vwUVbQlIa84=;
+ b=xefNSzccXejLvPuF6MhN4AO8p4+nuzzGs6CBhSywOAZH38EpHy/2GVOPJD1a/gWrQFTwan
+ QADp1CZvdPfy2FllIqNQYBcT0aos1Lz1FyGfWMWYojysd/5/wMO5Sf8I8yXE+KEXfMIxpU
+ br2BgmaxgwMxW3F0dfZdr/tPtlV2Fd4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626336022;
+ s=susede2_ed25519; t=1626336023;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=r6vFinjlhLc0ENWa69KTssHtx3Sut+fM1cEirG3hAvI=;
- b=rkOwLW3b47vYoznK2jRUMmt3CxRsEzM6/q4mfRpBnyoa57vfB9XOze7zEGkaOzMfJaenF2
- Onw7NHqWj0OXx7BA==
+ bh=SLbHE8gL3568LNDNyp83CCjAj1qzs/+1vwUVbQlIa84=;
+ b=WA5BMWGDWWVBceb+szFP03LbI8oNfYWmrCS3u+zf19RCaqziw2U+NkUU7+8n++5u6ygw2F
+ yNOlZqLvJANXXuCQ==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 5A9D5A3B9B;
- Thu, 15 Jul 2021 08:00:22 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 45421A3B8F;
+ Thu, 15 Jul 2021 08:00:23 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 69/79] ALSA: sc6000: Allocate resources with device-managed
- APIs
-Date: Thu, 15 Jul 2021 09:59:31 +0200
-Message-Id: <20210715075941.23332-70-tiwai@suse.de>
+Subject: [PATCH v2 71/79] ALSA: wavefront: Allocate resources with
+ device-managed APIs
+Date: Thu, 15 Jul 2021 09:59:33 +0200
+Message-Id: <20210715075941.23332-72-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210715075941.23332-1-tiwai@suse.de>
 References: <20210715075941.23332-1-tiwai@suse.de>
@@ -98,190 +98,138 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the resource management in ISA als100 driver with
-devres as a clean up.  Each manual resource management is converted
-with the corresponding devres helper.  The cleanup code was moved from
-the remove callback to card->private_free, and then the remove
-callback became superfluous and dropped.
+This patch converts the resource management in ISA wavefront driver
+with devres as a clean up.  Each manual resource management is
+converted with the corresponding devres helper.  The remove callback
+became superfluous and dropped.
 
 This should give no user-visible functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/isa/sc6000.c | 73 +++++++++++++++++-----------------------------
- 1 file changed, 26 insertions(+), 47 deletions(-)
+ sound/isa/wavefront/wavefront.c | 46 +++++++--------------------------
+ 1 file changed, 9 insertions(+), 37 deletions(-)
 
-diff --git a/sound/isa/sc6000.c b/sound/isa/sc6000.c
-index 3462663050bb..6236c4fa766a 100644
---- a/sound/isa/sc6000.c
-+++ b/sound/isa/sc6000.c
-@@ -529,6 +529,14 @@ static int snd_sc6000_match(struct device *devptr, unsigned int dev)
- 	return 1;
+diff --git a/sound/isa/wavefront/wavefront.c b/sound/isa/wavefront/wavefront.c
+index dfdeaf7b6bf4..e6e46a0266b0 100644
+--- a/sound/isa/wavefront/wavefront.c
++++ b/sound/isa/wavefront/wavefront.c
+@@ -308,18 +308,6 @@ static struct snd_rawmidi *snd_wavefront_new_midi(struct snd_card *card,
+ 	return rmidi;
  }
  
-+static void snd_sc6000_free(struct snd_card *card)
-+{
-+	char __iomem **vport = card->private_data;
-+
-+	if (*vport)
-+		sc6000_setup_board(*vport, 0);
-+}
-+
- static int snd_sc6000_probe(struct device *devptr, unsigned int dev)
+-static void
+-snd_wavefront_free(struct snd_card *card)
+-{
+-	snd_wavefront_card_t *acard = (snd_wavefront_card_t *)card->private_data;
+-	
+-	if (acard) {
+-		release_and_free_resource(acard->wavefront.res_base);
+-		if (acard->wavefront.irq > 0)
+-			free_irq(acard->wavefront.irq, (void *)acard);
+-	}
+-}
+-
+ static int snd_wavefront_card_new(struct device *pdev, int dev,
+ 				  struct snd_card **cardp)
  {
- 	static const int possible_irqs[] = { 5, 7, 9, 10, 11, -1 };
-@@ -543,8 +551,8 @@ static int snd_sc6000_probe(struct device *devptr, unsigned int dev)
- 	char __iomem *vmss_port;
+@@ -327,8 +315,8 @@ static int snd_wavefront_card_new(struct device *pdev, int dev,
+ 	snd_wavefront_card_t *acard;
+ 	int err;
  
- 
--	err = snd_card_new(devptr, index[dev], id[dev], THIS_MODULE,
--			   sizeof(vport), &card);
-+	err = snd_devm_card_new(devptr, index[dev], id[dev], THIS_MODULE,
-+				sizeof(vport), &card);
+-	err = snd_card_new(pdev, index[dev], id[dev], THIS_MODULE,
+-			   sizeof(snd_wavefront_card_t), &card);
++	err = snd_devm_card_new(pdev, index[dev], id[dev], THIS_MODULE,
++				sizeof(snd_wavefront_card_t), &card);
  	if (err < 0)
  		return err;
  
-@@ -553,8 +561,7 @@ static int snd_sc6000_probe(struct device *devptr, unsigned int dev)
- 		xirq = snd_legacy_find_free_irq(possible_irqs);
- 		if (xirq < 0) {
- 			snd_printk(KERN_ERR PFX "unable to find a free IRQ\n");
--			err = -EBUSY;
--			goto err_exit;
-+			return -EBUSY;
- 		}
- 	}
+@@ -339,7 +327,6 @@ static int snd_wavefront_card_new(struct device *pdev, int dev,
+ 	spin_lock_init(&acard->wavefront.midi.open);
+ 	spin_lock_init(&acard->wavefront.midi.virtual);
+ 	acard->wavefront.card = card;
+-	card->private_free = snd_wavefront_free;
  
-@@ -562,38 +569,33 @@ static int snd_sc6000_probe(struct device *devptr, unsigned int dev)
- 		xdma = snd_legacy_find_free_dma(possible_dmas);
- 		if (xdma < 0) {
- 			snd_printk(KERN_ERR PFX "unable to find a free DMA\n");
--			err = -EBUSY;
--			goto err_exit;
-+			return -EBUSY;
- 		}
- 	}
- 
--	if (!request_region(port[dev], 0x10, DRV_NAME)) {
-+	if (!devm_request_region(devptr, port[dev], 0x10, DRV_NAME)) {
- 		snd_printk(KERN_ERR PFX
- 			   "I/O port region is already in use.\n");
--		err = -EBUSY;
--		goto err_exit;
-+		return -EBUSY;
- 	}
- 	*vport = devm_ioport_map(devptr, port[dev], 0x10);
- 	if (*vport == NULL) {
- 		snd_printk(KERN_ERR PFX
- 			   "I/O port cannot be iomapped.\n");
--		err = -EBUSY;
--		goto err_unmap1;
-+		return -EBUSY;
- 	}
- 
- 	/* to make it marked as used */
--	if (!request_region(mss_port[dev], 4, DRV_NAME)) {
-+	if (!devm_request_region(devptr, mss_port[dev], 4, DRV_NAME)) {
- 		snd_printk(KERN_ERR PFX
- 			   "SC-6000 port I/O port region is already in use.\n");
--		err = -EBUSY;
--		goto err_unmap1;
-+		return -EBUSY;
- 	}
- 	vmss_port = devm_ioport_map(devptr, mss_port[dev], 4);
- 	if (!vmss_port) {
- 		snd_printk(KERN_ERR PFX
- 			   "MSS port I/O cannot be iomapped.\n");
--		err = -EBUSY;
--		goto err_unmap2;
-+		return -EBUSY;
- 	}
- 
- 	snd_printd("Initializing BASE[0x%lx] IRQ[%d] DMA[%d] MIRQ[%d]\n",
-@@ -602,28 +604,29 @@ static int snd_sc6000_probe(struct device *devptr, unsigned int dev)
- 
- 	err = sc6000_init_board(*vport, vmss_port, dev);
- 	if (err < 0)
--		goto err_unmap2;
-+		return err;
-+	card->private_free = snd_sc6000_free;
- 
- 	err = snd_wss_create(card, mss_port[dev] + 4,  -1, xirq, xdma, -1,
- 			     WSS_HW_DETECT, 0, &chip);
- 	if (err < 0)
--		goto err_unmap2;
-+		return err;
- 
- 	err = snd_wss_pcm(chip, 0);
- 	if (err < 0) {
- 		snd_printk(KERN_ERR PFX
- 			   "error creating new WSS PCM device\n");
--		goto err_unmap2;
-+		return err;
- 	}
- 	err = snd_wss_mixer(chip);
- 	if (err < 0) {
- 		snd_printk(KERN_ERR PFX "error creating new WSS mixer\n");
--		goto err_unmap2;
-+		return err;
- 	}
- 	err = snd_sc6000_mixer(chip);
- 	if (err < 0) {
- 		snd_printk(KERN_ERR PFX "the mixer rewrite failed\n");
--		goto err_unmap2;
-+		return err;
- 	}
- 	if (snd_opl3_create(card,
- 			    0x388, 0x388 + 2,
-@@ -633,7 +636,7 @@ static int snd_sc6000_probe(struct device *devptr, unsigned int dev)
- 	} else {
- 		err = snd_opl3_hwdep_new(opl3, 0, 1, NULL);
- 		if (err < 0)
--			goto err_unmap2;
-+			return err;
- 	}
- 
- 	if (mpu_port[dev] != SNDRV_AUTO_PORT) {
-@@ -654,39 +657,15 @@ static int snd_sc6000_probe(struct device *devptr, unsigned int dev)
- 
- 	err = snd_card_register(card);
- 	if (err < 0)
--		goto err_unmap2;
-+		return err;
- 
- 	dev_set_drvdata(devptr, card);
+ 	*cardp = card;
  	return 0;
--
--err_unmap2:
--	sc6000_setup_board(*vport, 0);
--	release_region(mss_port[dev], 4);
--err_unmap1:
--	release_region(port[dev], 0x10);
--err_exit:
--	snd_card_free(card);
--	return err;
--}
--
--static void snd_sc6000_remove(struct device *devptr, unsigned int dev)
--{
--	struct snd_card *card = dev_get_drvdata(devptr);
--	char __iomem **vport = card->private_data;
--
--	if (sc6000_setup_board(*vport, 0) < 0)
--		snd_printk(KERN_WARNING "sc6000_setup_board failed on exit!\n");
--
--	release_region(port[dev], 0x10);
--	release_region(mss_port[dev], 4);
--
--	snd_card_free(card);
+@@ -394,15 +381,17 @@ snd_wavefront_probe (struct snd_card *card, int dev)
+ 
+ 	/* ------- ICS2115 Wavetable synth ------- */
+ 
+-	acard->wavefront.res_base = request_region(ics2115_port[dev], 16,
+-						   "ICS2115");
++	acard->wavefront.res_base =
++		devm_request_region(card->dev, ics2115_port[dev], 16,
++				    "ICS2115");
+ 	if (acard->wavefront.res_base == NULL) {
+ 		snd_printk(KERN_ERR "unable to grab ICS2115 i/o region 0x%lx-0x%lx\n",
+ 			   ics2115_port[dev], ics2115_port[dev] + 16 - 1);
+ 		return -EBUSY;
+ 	}
+-	if (request_irq(ics2115_irq[dev], snd_wavefront_ics2115_interrupt,
+-			0, "ICS2115", acard)) {
++	if (devm_request_irq(card->dev, ics2115_irq[dev],
++			     snd_wavefront_ics2115_interrupt,
++			     0, "ICS2115", acard)) {
+ 		snd_printk(KERN_ERR "unable to use ICS2115 IRQ %d\n", ics2115_irq[dev]);
+ 		return -EBUSY;
+ 	}
+@@ -556,27 +545,18 @@ static int snd_wavefront_isa_probe(struct device *pdev,
+ 	if (err < 0)
+ 		return err;
+ 	err = snd_wavefront_probe(card, dev);
+-	if (err < 0) {
+-		snd_card_free(card);
++	if (err < 0)
+ 		return err;
+-	}
+ 	
+ 	dev_set_drvdata(pdev, card);
+ 	return 0;
  }
  
- static struct isa_driver snd_sc6000_driver = {
- 	.match		= snd_sc6000_match,
- 	.probe		= snd_sc6000_probe,
--	.remove		= snd_sc6000_remove,
- 	/* FIXME: suspend/resume */
+-static void snd_wavefront_isa_remove(struct device *devptr,
+-				    unsigned int dev)
+-{
+-	snd_card_free(dev_get_drvdata(devptr));
+-}
+-
+ #define DEV_NAME "wavefront"
+ 
+ static struct isa_driver snd_wavefront_driver = {
+ 	.match		= snd_wavefront_isa_match,
+ 	.probe		= snd_wavefront_isa_probe,
+-	.remove		= snd_wavefront_isa_remove,
+ 	/* FIXME: suspend, resume */
  	.driver		= {
- 		.name	= DRV_NAME,
+ 		.name	= DEV_NAME
+@@ -606,7 +586,6 @@ static int snd_wavefront_pnp_detect(struct pnp_card_link *pcard,
+ 	if (snd_wavefront_pnp (dev, card->private_data, pcard, pid) < 0) {
+ 		if (cs4232_pcm_port[dev] == SNDRV_AUTO_PORT) {
+ 			snd_printk (KERN_ERR "isapnp detection failed\n");
+-			snd_card_free (card);
+ 			return -ENODEV;
+ 		}
+ 	}
+@@ -620,18 +599,11 @@ static int snd_wavefront_pnp_detect(struct pnp_card_link *pcard,
+ 	return 0;
+ }
+ 
+-static void snd_wavefront_pnp_remove(struct pnp_card_link *pcard)
+-{
+-	snd_card_free(pnp_get_card_drvdata(pcard));
+-	pnp_set_card_drvdata(pcard, NULL);
+-}
+-
+ static struct pnp_card_driver wavefront_pnpc_driver = {
+ 	.flags		= PNP_DRIVER_RES_DISABLE,
+ 	.name		= "wavefront",
+ 	.id_table	= snd_wavefront_pnpids,
+ 	.probe		= snd_wavefront_pnp_detect,
+-	.remove		= snd_wavefront_pnp_remove,
+ 	/* FIXME: suspend,resume */
+ };
+ 
 -- 
 2.26.2
 
