@@ -2,55 +2,87 @@ Return-Path: <SRS0=jeit=MH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FA8FC07E96
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 05:35:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16F4FC1B08C
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 06:49:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6016161358
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 05:35:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6016161358
-Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
+	by mail.kernel.org (Postfix) with ESMTPS id DA1F56117A
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 06:49:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA1F56117A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F05891684;
-	Thu, 15 Jul 2021 07:34:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F05891684
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7EA941675;
+	Thu, 15 Jul 2021 08:48:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EA941675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626327336;
-	bh=anggAd6nROv+xxCDR3DZ4oxGYu+5MiOImAeEb9kRMx8=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1626331785;
+	bh=4Su4aN+Gxci42bVMjV8KbT8at65VU0a/VIXKIVBU4GM=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dRluZqIsMIA8elG5bT8VzvyR7BL15DASi9TifoL1bBcHc2hyRYUhh8jW4skbLVh92
-	 tFVjWybSgLAzVvLvJZsGKj+kEkCGW1bq/8dsqhqBL72w70QKjd++gu0u8iXHZHBf9p
-	 /KuxPoUeQOfVlr4p/s1RpO/ASQB41bkN+dn8tR+Y=
+	b=PN7EfYXBWJ9Fdj8dPvKuNTC6ZJInGXFlTjaR0MJzDYhM7hsFJzwN3rpf+o2Ng/6MB
+	 QaKMJ0c/bPm2V3zFf++IgI6D6iKxmqQBUaVhbcGNcX4QXH9nlicmvZqcO6KTVQavkb
+	 8aratVZIo+G+1WOT1zEyZAvdwswn+XWLMxsEdyqU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AAD39F80240;
-	Thu, 15 Jul 2021 07:34:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 116FFF8020C;
+	Thu, 15 Jul 2021 08:48:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0A5ECF80430; Thu, 15 Jul 2021 07:34:21 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id C1A40F80229
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 07:34:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1A40F80229
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1626327254536343098-webhooks-bot@alsa-project.org>
-References: <1626327254536343098-webhooks-bot@alsa-project.org>
-Subject: How can turn on auto-mute mode in alsa ?
-Message-Id: <20210715053421.0A5ECF80430@alsa1.perex.cz>
-Date: Thu, 15 Jul 2021 07:34:21 +0200 (CEST)
+ id 7572CF80217; Thu, 15 Jul 2021 08:48:53 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6FF84F800D3
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:48:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FF84F800D3
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="aI0H5jmr"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="pTAxrY3c"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id B10FC1FDE2;
+ Thu, 15 Jul 2021 06:48:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1626331724; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=KMVcV71TI/LuoLV2GP9IW9DEEyibgxgYmwaXh7NXv/I=;
+ b=aI0H5jmrPeIdEFTHGuxWTQxaNoI0gdjyN3G0wKfJMP4+t3ehnQe94aS95yBNRYc84ZqSGD
+ jjgAFU4CrjD6kI1cnQowjppCEAe8kzxiZpaWPuepAlMncGAA2chHSeXbrSPwwMkYoCNtaP
+ aN7Tq3TqC9Mf3bg3+D/SIlg6+fSRHIg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1626331724;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=KMVcV71TI/LuoLV2GP9IW9DEEyibgxgYmwaXh7NXv/I=;
+ b=pTAxrY3c/ZDLqg/BYAThxWrea5cF0ElXBugfjuzFjsmZbqTBqHBYzrBe4GWC3uEnheJNJH
+ M0hjLd9bJxOnbMAw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 99844A3BA4;
+ Thu, 15 Jul 2021 06:48:44 +0000 (UTC)
+Date: Thu, 15 Jul 2021 08:48:44 +0200
+Message-ID: <s5hy2a8xeb7.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Salah Triki <salah.triki@gmail.com>
+Subject: Re: [PATCH] sound: usb: line6: free allocated urbs on failure
+In-Reply-To: <20210715005625.GA1997259@pc>
+References: <20210715005625.GA1997259@pc>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,22 +98,72 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #164 was edited from yufeiluo:
+On Thu, 15 Jul 2021 02:56:25 +0200,
+Salah Triki wrote:
+> 
+> Free allocated urbs on failure in order to prevent memory leaks.
+> 
+> Signed-off-by: Salah Triki <salah.triki@gmail.com>
 
-My alsa-utils version:
-
-
-    aplay --version
-    aplay: version 1.1.8 by Jaroslav Kysela <perex@perex.cz>
-
-
-
-No auto-mute option in alsamixer gui menu.
-[https://www.dropbox.com/s/ie6meqto1t1rv9g/alsamixer.png?dl=0](url)
+This will lead to double-free.  The resources are freed in the
+destructor of PCM component, line6_cleanup_pcm().
 
 
-    debian@debian:~$ amixer -c 0 sset 'Auto-Mute Mode' Enabled
-    amixer: Unable to find simple control 'Auto-Mute Mode',0
+Takashi
 
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/164
-Repository URL: https://github.com/alsa-project/alsa-lib
+
+> ---
+>  sound/usb/line6/capture.c | 22 ++++++++++++++++++----
+>  1 file changed, 18 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/usb/line6/capture.c b/sound/usb/line6/capture.c
+> index 970c9bdce0b2..345b75ede5d5 100644
+> --- a/sound/usb/line6/capture.c
+> +++ b/sound/usb/line6/capture.c
+> @@ -258,6 +258,7 @@ int line6_create_audio_in_urbs(struct snd_line6_pcm *line6pcm)
+>  {
+>  	struct usb_line6 *line6 = line6pcm->line6;
+>  	int i;
+> +	int ret;
+>  
+>  	line6pcm->in.urbs = kcalloc(line6->iso_buffers, sizeof(struct urb *),
+>  				    GFP_KERNEL);
+> @@ -272,8 +273,10 @@ int line6_create_audio_in_urbs(struct snd_line6_pcm *line6pcm)
+>  		urb = line6pcm->in.urbs[i] =
+>  		    usb_alloc_urb(LINE6_ISO_PACKETS, GFP_KERNEL);
+>  
+> -		if (urb == NULL)
+> -			return -ENOMEM;
+> +		if (urb == NULL) {
+> +			ret = -ENOMEM;
+> +			goto enomem;
+> +		}
+>  
+>  		urb->dev = line6->usbdev;
+>  		urb->pipe =
+> @@ -286,9 +289,20 @@ int line6_create_audio_in_urbs(struct snd_line6_pcm *line6pcm)
+>  		urb->interval = LINE6_ISO_INTERVAL;
+>  		urb->error_count = 0;
+>  		urb->complete = audio_in_callback;
+> -		if (usb_urb_ep_type_check(urb))
+> -			return -EINVAL;
+> +		if (usb_urb_ep_type_check(urb)) {
+> +			ret = -EINVAL;
+> +			goto einval;
+> +		}
+>  	}
+>  
+>  	return 0;
+> +
+> +enomem:
+> +	i--;
+> +
+> +einval:
+> +	while (i >= 0)
+> +		usb_free_urb(line6pcm->in.urbs[i--]);
+> +
+> +	return ret;
+>  }
+> -- 
+> 2.25.1
+> 
