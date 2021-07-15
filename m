@@ -7,77 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FF0CC07E96
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:21:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB86CC07E96
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:21:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0188E611C0
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:21:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0188E611C0
+	by mail.kernel.org (Postfix) with ESMTPS id 4419E61183
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:21:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4419E61183
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 901C716B6;
-	Thu, 15 Jul 2021 10:20:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 901C716B6
+	by alsa0.perex.cz (Postfix) with ESMTPS id E3554175E;
+	Thu, 15 Jul 2021 10:21:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3554175E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626337297;
-	bh=leC9hgDjkXiJVunPaREytezWH6Bv1WE2rEOjnOhH7Tw=;
+	s=default; t=1626337318;
+	bh=CqLU72kmYR+w71JU+Ui2kX395SvgaMILLnJIQbnwbeA=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JszBm/sT1L8OS3nnT/UXmf/zC69meHysKWDzdppaC/xV8eHBAekmfRh8HAkNlNK/H
-	 3wBJwYJ6nPLqFAxFCchNgOp+0wX8T84sTq0pZjC/Z+qaltbouNvnQ0hD9R7RdWfnGN
-	 QXQhhd5fx4B8IPYyVto+2rq8vNnX7fmOwXlYjPOg=
+	b=b3PU9oLtldl8c08yNIrIjFUtt7LGPvNbbtGHXX64UQ+NRfqIzm1nRHEm0HO1CBkil
+	 hXB/vQjE4cCI3zUJDjmbABv+5LkOXdLl+6mF/NwbskRkHH7qhWiWA/VBcPFJKESbIj
+	 VFlOwuefFwKfx48HkMCV1fkH9Xcjnp7vJwRqE2qQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2D853F80737;
-	Thu, 15 Jul 2021 10:01:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3C09DF80746;
+	Thu, 15 Jul 2021 10:01:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 06C10F80714; Thu, 15 Jul 2021 10:01:21 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 3A47BF80714; Thu, 15 Jul 2021 10:01:22 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5D8FAF8053E
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D8FAF8053E
+ by alsa1.perex.cz (Postfix) with ESMTPS id D4BECF80229
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4BECF80229
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="QlWRRoA9"; 
+ header.b="xmHBa2bj"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="S7Hp3tg6"
+ header.b="DVwXPSfv"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 315361FDE5
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:14 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 8F3C02284F
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626336014; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1626336015; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=6rZ6pOlZew0R2Yyj8RoZrrzWfRNG6rdH5eF8fLndoIo=;
- b=QlWRRoA9rd5+SQQwVV+BkMngrhgTlKVNOUbXOZ5pQd0HpW6T+snPyPViFOwPRR2fP+O6Au
- L4JICReCBcxUQf5G7jic4kru252gp3O611n/HtAzivkpNauNfM5KnX+EDUKyXcRQZLMotP
- HicYGlSNPdaukwZovMIAqwjnQxbzLKs=
+ bh=4z/+fbKGGqodB9tLJokLnzebyu7FxpXZ5TqZcwFQ2lo=;
+ b=xmHBa2bjmqMXTQszggHqNb5q/pw01NX06Rt3CwuyGpv7chHK/5H338/zPxacRg9Q//xoJ4
+ m3V9opqLTAPpKhjug/pPLmvfL2cFhoI0Gaxhl3oW04iRsue74IidJ7+BRH5uzhCqhLO8hs
+ k7QNZ8sRpzU1lGjN2VkL3jbVViYHqpo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626336014;
+ s=susede2_ed25519; t=1626336015;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=6rZ6pOlZew0R2Yyj8RoZrrzWfRNG6rdH5eF8fLndoIo=;
- b=S7Hp3tg6DUXWt7EyOSp8VjDMSwtW4zpaUp5TEQN4LYlR/n4JEdt4MgCNJOhAu2/f+vhHuZ
- TKm1lLR3mUqQ1fBA==
+ bh=4z/+fbKGGqodB9tLJokLnzebyu7FxpXZ5TqZcwFQ2lo=;
+ b=DVwXPSfvtk9FLVt3NWx33JRlliHOf9PxS5vppv79nvc3u2SoA0Q1z5FBYJVUuInly9AXwj
+ ji3nMHWVYlA5vFBA==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 2819FA3B8F;
- Thu, 15 Jul 2021 08:00:14 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 7AE37A3B8F;
+ Thu, 15 Jul 2021 08:00:15 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 51/79] ALSA: ymfpci: Allocate resources with device-managed
- APIs
-Date: Thu, 15 Jul 2021 09:59:13 +0200
-Message-Id: <20210715075941.23332-52-tiwai@suse.de>
+Subject: [PATCH v2 54/79] ALSA: sb: Allocate resources with device-managed APIs
+Date: Thu, 15 Jul 2021 09:59:16 +0200
+Message-Id: <20210715075941.23332-55-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210715075941.23332-1-tiwai@suse.de>
 References: <20210715075941.23332-1-tiwai@suse.de>
@@ -98,488 +97,622 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the resource management in PCI ymfpci driver with
+This patch converts the resource management in ISA sb drivers with
 devres as a clean up.  Each manual resource management is converted
-with the corresponding devres helper, the page allocations are done
-with the devres helper, and the card object release is managed now via
-card->private_free instead of a lowlevel snd_device.
+with the corresponding devres helper, and the card object release is
+managed now via card->private_free instead of a lowlevel snd_device.
 
 This should give no user-visible functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/ymfpci/ymfpci.c      |  66 ++++++---------
- sound/pci/ymfpci/ymfpci.h      |   8 +-
- sound/pci/ymfpci/ymfpci_main.c | 149 +++++++++++----------------------
- 3 files changed, 74 insertions(+), 149 deletions(-)
+ include/sound/emu8000.h  |  3 --
+ sound/isa/sb/emu8000.c   | 48 ++++--------------------------
+ sound/isa/sb/jazz16.c    | 39 ++++++++----------------
+ sound/isa/sb/sb16.c      | 42 +++++---------------------
+ sound/isa/sb/sb8.c       | 48 ++++++++----------------------
+ sound/isa/sb/sb_common.c | 64 +++++++++-------------------------------
+ 6 files changed, 52 insertions(+), 192 deletions(-)
 
-diff --git a/sound/pci/ymfpci/ymfpci.c b/sound/pci/ymfpci/ymfpci.c
-index 7e32d57147ff..1e198e4d57b8 100644
---- a/sound/pci/ymfpci/ymfpci.c
-+++ b/sound/pci/ymfpci/ymfpci.c
-@@ -105,7 +105,8 @@ static int snd_ymfpci_create_gameport(struct snd_ymfpci *chip, int dev,
- 	}
+diff --git a/include/sound/emu8000.h b/include/sound/emu8000.h
+index ad0365d6de5e..072791bbcf5c 100644
+--- a/include/sound/emu8000.h
++++ b/include/sound/emu8000.h
+@@ -56,9 +56,6 @@ struct snd_emu8000 {
+ 	unsigned long port1;	/* Port usually base+0 */
+ 	unsigned long port2;	/* Port usually at base+0x400 */
+ 	unsigned long port3;	/* Port usually at base+0x800 */
+-	struct resource *res_port1;
+-	struct resource *res_port2;
+-	struct resource *res_port3;
+ 	unsigned short last_reg;/* Last register command */
+ 	spinlock_t reg_lock;
  
- 	if (!r) {
--		r = request_region(io_port, 1, "YMFPCI gameport");
-+		r = devm_request_region(&chip->pci->dev, io_port, 1,
-+					"YMFPCI gameport");
- 		if (!r) {
- 			dev_err(chip->card->dev,
- 				"joystick port %#x is in use.\n", io_port);
-@@ -117,7 +118,6 @@ static int snd_ymfpci_create_gameport(struct snd_ymfpci *chip, int dev,
- 	if (!gp) {
- 		dev_err(chip->card->dev,
- 			"cannot allocate memory for gameport\n");
--		release_and_free_resource(r);
- 		return -ENOMEM;
- 	}
- 
-@@ -126,7 +126,6 @@ static int snd_ymfpci_create_gameport(struct snd_ymfpci *chip, int dev,
- 	gameport_set_phys(gp, "pci%s/gameport0", pci_name(chip->pci));
- 	gameport_set_dev_parent(gp, &chip->pci->dev);
- 	gp->io = io_port;
--	gameport_set_port_data(gp, r);
- 
- 	if (chip->pci->device >= 0x0010) /* YMF 744/754 */
- 		pci_write_config_word(chip->pci, PCIR_DSXG_JOYBASE, io_port);
-@@ -142,12 +141,8 @@ static int snd_ymfpci_create_gameport(struct snd_ymfpci *chip, int dev,
- void snd_ymfpci_free_gameport(struct snd_ymfpci *chip)
- {
- 	if (chip->gameport) {
--		struct resource *r = gameport_get_port_data(chip->gameport);
--
- 		gameport_unregister_port(chip->gameport);
- 		chip->gameport = NULL;
--
--		release_and_free_resource(r);
- 	}
+diff --git a/sound/isa/sb/emu8000.c b/sound/isa/sb/emu8000.c
+index 5e4187940265..e02029677743 100644
+--- a/sound/isa/sb/emu8000.c
++++ b/sound/isa/sb/emu8000.c
+@@ -1048,27 +1048,6 @@ snd_emu8000_create_mixer(struct snd_card *card, struct snd_emu8000 *emu)
+ 	return err;
  }
- #else
-@@ -176,9 +171,10 @@ static int snd_card_ymfpci_probe(struct pci_dev *pci,
- 	}
  
- 	err = snd_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
--			   0, &card);
-+			   sizeof(*chip), &card);
+-
+-/*
+- * free resources
+- */
+-static int snd_emu8000_free(struct snd_emu8000 *hw)
+-{
+-	release_and_free_resource(hw->res_port1);
+-	release_and_free_resource(hw->res_port2);
+-	release_and_free_resource(hw->res_port3);
+-	kfree(hw);
+-	return 0;
+-}
+-
+-/*
+- */
+-static int snd_emu8000_dev_free(struct snd_device *device)
+-{
+-	struct snd_emu8000 *hw = device->device_data;
+-	return snd_emu8000_free(hw);
+-}
+-
+ /*
+  * initialize and register emu8000 synth device.
+  */
+@@ -1079,9 +1058,6 @@ snd_emu8000_new(struct snd_card *card, int index, long port, int seq_ports,
+ 	struct snd_seq_device *awe;
+ 	struct snd_emu8000 *hw;
+ 	int err;
+-	static const struct snd_device_ops ops = {
+-		.dev_free = snd_emu8000_dev_free,
+-	};
+ 
+ 	if (awe_ret)
+ 		*awe_ret = NULL;
+@@ -1089,7 +1065,7 @@ snd_emu8000_new(struct snd_card *card, int index, long port, int seq_ports,
+ 	if (seq_ports <= 0)
+ 		return 0;
+ 
+-	hw = kzalloc(sizeof(*hw), GFP_KERNEL);
++	hw = devm_kzalloc(card->dev, sizeof(*hw), GFP_KERNEL);
+ 	if (hw == NULL)
+ 		return -ENOMEM;
+ 	spin_lock_init(&hw->reg_lock);
+@@ -1097,12 +1073,10 @@ snd_emu8000_new(struct snd_card *card, int index, long port, int seq_ports,
+ 	hw->port1 = port;
+ 	hw->port2 = port + 0x400;
+ 	hw->port3 = port + 0x800;
+-	hw->res_port1 = request_region(hw->port1, 4, "Emu8000-1");
+-	hw->res_port2 = request_region(hw->port2, 4, "Emu8000-2");
+-	hw->res_port3 = request_region(hw->port3, 4, "Emu8000-3");
+-	if (!hw->res_port1 || !hw->res_port2 || !hw->res_port3) {
++	if (!devm_request_region(card->dev, hw->port1, 4, "Emu8000-1") ||
++	    !devm_request_region(card->dev, hw->port2, 4, "Emu8000-2") ||
++	    !devm_request_region(card->dev, hw->port3, 4, "Emu8000-3")) {
+ 		snd_printk(KERN_ERR "sbawe: can't grab ports 0x%lx, 0x%lx, 0x%lx\n", hw->port1, hw->port2, hw->port3);
+-		snd_emu8000_free(hw);
+ 		return -EBUSY;
+ 	}
+ 	hw->mem_size = 0;
+@@ -1115,23 +1089,13 @@ snd_emu8000_new(struct snd_card *card, int index, long port, int seq_ports,
+ 	hw->fm_chorus_depth = 0;
+ 	hw->fm_reverb_depth = 0;
+ 
+-	if (snd_emu8000_detect(hw) < 0) {
+-		snd_emu8000_free(hw);
++	if (snd_emu8000_detect(hw) < 0)
+ 		return -ENODEV;
+-	}
+ 
+ 	snd_emu8000_init_hw(hw);
+ 	err = snd_emu8000_create_mixer(card, hw);
+-	if (err < 0) {
+-		snd_emu8000_free(hw);
++	if (err < 0)
+ 		return err;
+-	}
+-	
+-	err = snd_device_new(card, SNDRV_DEV_CODEC, hw, &ops);
+-	if (err < 0) {
+-		snd_emu8000_free(hw);
+-		return err;
+-	}
+ #if IS_ENABLED(CONFIG_SND_SEQUENCER)
+ 	if (snd_seq_device_new(card, index, SNDRV_SEQ_DEV_ID_EMU8000,
+ 			       sizeof(struct snd_emu8000*), &awe) >= 0) {
+diff --git a/sound/isa/sb/jazz16.c b/sound/isa/sb/jazz16.c
+index 7ba5dd1ec810..64936c917170 100644
+--- a/sound/isa/sb/jazz16.c
++++ b/sound/isa/sb/jazz16.c
+@@ -226,8 +226,8 @@ static int snd_jazz16_probe(struct device *devptr, unsigned int dev)
+ 	static const int possible_dmas16[] = {5, 7, -1};
+ 	int err, xirq, xdma8, xdma16, xmpu_port, xmpu_irq;
+ 
+-	err = snd_card_new(devptr, index[dev], id[dev], THIS_MODULE,
+-			   sizeof(struct snd_card_jazz16), &card);
++	err = snd_devm_card_new(devptr, index[dev], id[dev], THIS_MODULE,
++				sizeof(struct snd_card_jazz16), &card);
  	if (err < 0)
  		return err;
-+	chip = card->private_data;
  
- 	switch (pci_id->device) {
- 	case 0x0004: str = "YMF724";  model = "DS-1"; break;
-@@ -199,7 +195,8 @@ static int snd_card_ymfpci_probe(struct pci_dev *pci,
- 			fm_port[dev] = pci_resource_start(pci, 1);
+@@ -238,8 +238,7 @@ static int snd_jazz16_probe(struct device *devptr, unsigned int dev)
+ 		xirq = snd_legacy_find_free_irq(possible_irqs);
+ 		if (xirq < 0) {
+ 			snd_printk(KERN_ERR "unable to find a free IRQ\n");
+-			err = -EBUSY;
+-			goto err_free;
++			return -EBUSY;
  		}
- 		if (fm_port[dev] > 0)
--			fm_res = request_region(fm_port[dev], 4, "YMFPCI OPL3");
-+			fm_res = devm_request_region(&pci->dev, fm_port[dev],
-+						     4, "YMFPCI OPL3");
- 		if (fm_res) {
- 			legacy_ctrl |= YMFPCI_LEGACY_FMEN;
- 			pci_write_config_word(pci, PCIR_DSXG_FMBASE, fm_port[dev]);
-@@ -209,7 +206,8 @@ static int snd_card_ymfpci_probe(struct pci_dev *pci,
- 			mpu_port[dev] = pci_resource_start(pci, 1) + 0x20;
+ 	}
+ 	xdma8 = dma8[dev];
+@@ -247,8 +246,7 @@ static int snd_jazz16_probe(struct device *devptr, unsigned int dev)
+ 		xdma8 = snd_legacy_find_free_dma(possible_dmas8);
+ 		if (xdma8 < 0) {
+ 			snd_printk(KERN_ERR "unable to find a free DMA8\n");
+-			err = -EBUSY;
+-			goto err_free;
++			return -EBUSY;
  		}
- 		if (mpu_port[dev] > 0)
--			mpu_res = request_region(mpu_port[dev], 2, "YMFPCI MPU401");
-+			mpu_res = devm_request_region(&pci->dev, mpu_port[dev],
-+						      2, "YMFPCI MPU401");
- 		if (mpu_res) {
- 			legacy_ctrl |= YMFPCI_LEGACY_MEN;
- 			pci_write_config_word(pci, PCIR_DSXG_MPU401BASE, mpu_port[dev]);
-@@ -223,7 +221,8 @@ static int snd_card_ymfpci_probe(struct pci_dev *pci,
- 		default: fm_port[dev] = 0; break;
+ 	}
+ 	xdma16 = dma16[dev];
+@@ -256,8 +254,7 @@ static int snd_jazz16_probe(struct device *devptr, unsigned int dev)
+ 		xdma16 = snd_legacy_find_free_dma(possible_dmas16);
+ 		if (xdma16 < 0) {
+ 			snd_printk(KERN_ERR "unable to find a free DMA16\n");
+-			err = -EBUSY;
+-			goto err_free;
++			return -EBUSY;
  		}
- 		if (fm_port[dev] > 0)
--			fm_res = request_region(fm_port[dev], 4, "YMFPCI OPL3");
-+			fm_res = devm_request_region(&pci->dev, fm_port[dev],
-+						     4, "YMFPCI OPL3");
- 		if (fm_res) {
- 			legacy_ctrl |= YMFPCI_LEGACY_FMEN;
- 		} else {
-@@ -238,7 +237,8 @@ static int snd_card_ymfpci_probe(struct pci_dev *pci,
- 		default: mpu_port[dev] = 0; break;
- 		}
- 		if (mpu_port[dev] > 0)
--			mpu_res = request_region(mpu_port[dev], 2, "YMFPCI MPU401");
-+			mpu_res = devm_request_region(&pci->dev, mpu_port[dev],
-+						      2, "YMFPCI MPU401");
- 		if (mpu_res) {
- 			legacy_ctrl |= YMFPCI_LEGACY_MEN;
- 		} else {
-@@ -253,15 +253,9 @@ static int snd_card_ymfpci_probe(struct pci_dev *pci,
- 	pci_read_config_word(pci, PCIR_DSXG_LEGACY, &old_legacy_ctrl);
- 	pci_write_config_word(pci, PCIR_DSXG_LEGACY, legacy_ctrl);
- 	pci_write_config_word(pci, PCIR_DSXG_ELEGACY, legacy_ctrl2);
--	err = snd_ymfpci_create(card, pci, old_legacy_ctrl, &chip);
--	if (err  < 0) {
--		release_and_free_resource(mpu_res);
--		release_and_free_resource(fm_res);
--		goto free_card;
--	}
--	chip->fm_res = fm_res;
--	chip->mpu_res = mpu_res;
--	card->private_data = chip;
-+	err = snd_ymfpci_create(card, pci, old_legacy_ctrl);
-+	if (err  < 0)
+ 	}
+ 
+@@ -267,7 +264,7 @@ static int snd_jazz16_probe(struct device *devptr, unsigned int dev)
+ 	err = jazz16_detect_board(port[dev], xmpu_port);
+ 	if (err < 0) {
+ 		printk(KERN_ERR "Media Vision Jazz16 board not detected\n");
+-		goto err_free;
 +		return err;
- 
- 	strcpy(card->driver, str);
- 	sprintf(card->shortname, "Yamaha %s (%s)", model, str);
-@@ -271,30 +265,30 @@ static int snd_card_ymfpci_probe(struct pci_dev *pci,
- 		chip->irq);
- 	err = snd_ymfpci_pcm(chip, 0);
+ 	}
+ 	err = snd_sbdsp_create(card, port[dev], irq[dev],
+ 			       jazz16_interrupt,
+@@ -275,7 +272,7 @@ static int snd_jazz16_probe(struct device *devptr, unsigned int dev)
+ 			       SB_HW_JAZZ16,
+ 			       &chip);
  	if (err < 0)
--		goto free_card;
+-		goto err_free;
 +		return err;
  
- 	err = snd_ymfpci_pcm_spdif(chip, 1);
+ 	xmpu_irq = mpu_irq[dev];
+ 	if (xmpu_irq == SNDRV_AUTO_IRQ || mpu_port[dev] == SNDRV_AUTO_PORT)
+@@ -283,7 +280,7 @@ static int snd_jazz16_probe(struct device *devptr, unsigned int dev)
+ 	err = jazz16_configure_board(chip, xmpu_irq);
+ 	if (err < 0) {
+ 		printk(KERN_ERR "Media Vision Jazz16 configuration failed\n");
+-		goto err_free;
++		return err;
+ 	}
+ 
+ 	jazz16->chip = chip;
+@@ -296,10 +293,10 @@ static int snd_jazz16_probe(struct device *devptr, unsigned int dev)
+ 
+ 	err = snd_sb8dsp_pcm(chip, 0);
  	if (err < 0)
--		goto free_card;
+-		goto err_free;
 +		return err;
- 
- 	err = snd_ymfpci_mixer(chip, rear_switch[dev]);
+ 	err = snd_sbmixer_new(chip);
  	if (err < 0)
--		goto free_card;
+-		goto err_free;
 +		return err;
  
- 	if (chip->ac97->ext_id & AC97_EI_SDAC) {
- 		err = snd_ymfpci_pcm_4ch(chip, 2);
+ 	err = snd_opl3_create(card, chip->port, chip->port + 2,
+ 			      OPL3_HW_AUTO, 1, &opl3);
+@@ -309,7 +306,7 @@ static int snd_jazz16_probe(struct device *devptr, unsigned int dev)
+ 	else {
+ 		err = snd_opl3_hwdep_new(opl3, 0, 1, NULL);
  		if (err < 0)
--			goto free_card;
-+			return err;
- 
- 		err = snd_ymfpci_pcm2(chip, 3);
- 		if (err < 0)
--			goto free_card;
+-			goto err_free;
 +			return err;
  	}
- 	err = snd_ymfpci_timer(chip, 0);
- 	if (err < 0)
--		goto free_card;
-+		return err;
- 
--	if (chip->mpu_res) {
-+	if (mpu_res) {
- 		err = snd_mpu401_uart_new(card, 0, MPU401_HW_YMFPCI,
- 					  mpu_port[dev],
- 					  MPU401_INFO_INTEGRATED |
-@@ -308,7 +302,7 @@ static int snd_card_ymfpci_probe(struct pci_dev *pci,
- 			pci_write_config_word(pci, PCIR_DSXG_LEGACY, legacy_ctrl);
- 		}
- 	}
--	if (chip->fm_res) {
-+	if (fm_res) {
- 		err = snd_opl3_create(card,
- 				      fm_port[dev],
- 				      fm_port[dev] + 2,
-@@ -323,7 +317,7 @@ static int snd_card_ymfpci_probe(struct pci_dev *pci,
- 			err = snd_opl3_hwdep_new(opl3, 0, 1, NULL);
- 			if (err < 0) {
- 				dev_err(card->dev, "cannot create opl3 hwdep\n");
--				goto free_card;
-+				return err;
- 			}
- 		}
- 	}
-@@ -332,27 +326,17 @@ static int snd_card_ymfpci_probe(struct pci_dev *pci,
+ 	if (mpu_port[dev] > 0 && mpu_port[dev] != SNDRV_AUTO_PORT) {
+ 		if (mpu_irq[dev] == SNDRV_AUTO_IRQ)
+@@ -326,21 +323,10 @@ static int snd_jazz16_probe(struct device *devptr, unsigned int dev)
  
  	err = snd_card_register(card);
  	if (err < 0)
--		goto free_card;
+-		goto err_free;
 +		return err;
  
- 	pci_set_drvdata(pci, card);
- 	dev++;
+ 	dev_set_drvdata(devptr, card);
  	return 0;
 -
--free_card:
+-err_free:
 -	snd_card_free(card);
 -	return err;
 -}
 -
--static void snd_card_ymfpci_remove(struct pci_dev *pci)
+-static void snd_jazz16_remove(struct device *devptr, unsigned int dev)
 -{
--	snd_card_free(pci_get_drvdata(pci));
+-	struct snd_card *card = dev_get_drvdata(devptr);
+-
+-	snd_card_free(card);
  }
  
- static struct pci_driver ymfpci_driver = {
- 	.name = KBUILD_MODNAME,
- 	.id_table = snd_ymfpci_ids,
- 	.probe = snd_card_ymfpci_probe,
--	.remove = snd_card_ymfpci_remove,
- #ifdef CONFIG_PM_SLEEP
- 	.driver = {
- 		.pm = &snd_ymfpci_pm,
-diff --git a/sound/pci/ymfpci/ymfpci.h b/sound/pci/ymfpci/ymfpci.h
-index c73d8a5f4d0b..66968776478a 100644
---- a/sound/pci/ymfpci/ymfpci.h
-+++ b/sound/pci/ymfpci/ymfpci.h
-@@ -275,16 +275,13 @@ struct snd_ymfpci {
- 	unsigned char rev;	/* PCI revision */
- 	unsigned long reg_area_phys;
- 	void __iomem *reg_area_virt;
--	struct resource *res_reg_area;
--	struct resource *fm_res;
--	struct resource *mpu_res;
+ #ifdef CONFIG_PM
+@@ -372,7 +358,6 @@ static int snd_jazz16_resume(struct device *pdev, unsigned int n)
+ static struct isa_driver snd_jazz16_driver = {
+ 	.match		= snd_jazz16_match,
+ 	.probe		= snd_jazz16_probe,
+-	.remove		= snd_jazz16_remove,
+ #ifdef CONFIG_PM
+ 	.suspend	= snd_jazz16_suspend,
+ 	.resume		= snd_jazz16_resume,
+diff --git a/sound/isa/sb/sb16.c b/sound/isa/sb/sb16.c
+index d0f797c02841..e89b095aa282 100644
+--- a/sound/isa/sb/sb16.c
++++ b/sound/isa/sb/sb16.c
+@@ -285,15 +285,6 @@ static int snd_card_sb16_pnp(int dev, struct snd_card_sb16 *acard,
  
- 	unsigned short old_legacy_ctrl;
- #ifdef SUPPORT_JOYSTICK
- 	struct gameport *gameport;
+ #endif /* CONFIG_PNP */
+ 
+-static void snd_sb16_free(struct snd_card *card)
+-{
+-	struct snd_card_sb16 *acard = card->private_data;
+-        
+-	if (acard == NULL)
+-		return;
+-	release_and_free_resource(acard->fm_res);
+-}
+-
+ #ifdef CONFIG_PNP
+ #define is_isapnp_selected(dev)		isapnp[dev]
+ #else
+@@ -306,11 +297,10 @@ static int snd_sb16_card_new(struct device *devptr, int dev,
+ 	struct snd_card *card;
+ 	int err;
+ 
+-	err = snd_card_new(devptr, index[dev], id[dev], THIS_MODULE,
+-			   sizeof(struct snd_card_sb16), &card);
++	err = snd_devm_card_new(devptr, index[dev], id[dev], THIS_MODULE,
++				sizeof(struct snd_card_sb16), &card);
+ 	if (err < 0)
+ 		return err;
+-	card->private_free = snd_sb16_free;
+ 	*cardp = card;
+ 	return 0;
+ }
+@@ -482,17 +472,16 @@ static int snd_sb16_isa_probe1(int dev, struct device *pdev)
+ 	/* non-PnP FM port address is hardwired with base port address */
+ 	fm_port[dev] = port[dev];
+ 	/* block the 0x388 port to avoid PnP conflicts */
+-	acard->fm_res = request_region(0x388, 4, "SoundBlaster FM");
++	acard->fm_res = devm_request_region(card->dev, 0x388, 4,
++					    "SoundBlaster FM");
+ #ifdef SNDRV_SBAWE_EMU8000
+ 	/* non-PnP AWE port address is hardwired with base port address */
+ 	awe_port[dev] = port[dev] + 0x400;
  #endif
  
--	struct snd_dma_buffer work_ptr;
-+	struct snd_dma_buffer *work_ptr;
+ 	err = snd_sb16_probe(card, dev);
+-	if (err < 0) {
+-		snd_card_free(card);
++	if (err < 0)
+ 		return err;
+-	}
+ 	dev_set_drvdata(pdev, card);
+ 	return 0;
+ }
+@@ -547,11 +536,6 @@ static int snd_sb16_isa_probe(struct device *pdev, unsigned int dev)
+ 	}
+ }
  
- 	unsigned int bank_size_playback;
- 	unsigned int bank_size_capture;
-@@ -358,8 +355,7 @@ struct snd_ymfpci {
+-static void snd_sb16_isa_remove(struct device *pdev, unsigned int dev)
+-{
+-	snd_card_free(dev_get_drvdata(pdev));
+-}
+-
+ #ifdef CONFIG_PM
+ static int snd_sb16_isa_suspend(struct device *dev, unsigned int n,
+ 				pm_message_t state)
+@@ -574,7 +558,6 @@ static int snd_sb16_isa_resume(struct device *dev, unsigned int n)
+ static struct isa_driver snd_sb16_isa_driver = {
+ 	.match		= snd_sb16_isa_match,
+ 	.probe		= snd_sb16_isa_probe,
+-	.remove		= snd_sb16_isa_remove,
+ #ifdef CONFIG_PM
+ 	.suspend	= snd_sb16_isa_suspend,
+ 	.resume		= snd_sb16_isa_resume,
+@@ -600,15 +583,11 @@ static int snd_sb16_pnp_detect(struct pnp_card_link *pcard,
+ 		if (res < 0)
+ 			return res;
+ 		res = snd_card_sb16_pnp(dev, card->private_data, pcard, pid);
+-		if (res < 0) {
+-			snd_card_free(card);
++		if (res < 0)
+ 			return res;
+-		}
+ 		res = snd_sb16_probe(card, dev);
+-		if (res < 0) {
+-			snd_card_free(card);
++		if (res < 0)
+ 			return res;
+-		}
+ 		pnp_set_card_drvdata(pcard, card);
+ 		dev++;
+ 		return 0;
+@@ -617,12 +596,6 @@ static int snd_sb16_pnp_detect(struct pnp_card_link *pcard,
+ 	return -ENODEV;
+ }
  
- int snd_ymfpci_create(struct snd_card *card,
- 		      struct pci_dev *pci,
--		      unsigned short old_legacy_ctrl,
--		      struct snd_ymfpci ** rcodec);
-+		      unsigned short old_legacy_ctrl);
- void snd_ymfpci_free_gameport(struct snd_ymfpci *chip);
+-static void snd_sb16_pnp_remove(struct pnp_card_link *pcard)
+-{
+-	snd_card_free(pnp_get_card_drvdata(pcard));
+-	pnp_set_card_drvdata(pcard, NULL);
+-}
+-
+ #ifdef CONFIG_PM
+ static int snd_sb16_pnp_suspend(struct pnp_card_link *pcard, pm_message_t state)
+ {
+@@ -643,7 +616,6 @@ static struct pnp_card_driver sb16_pnpc_driver = {
+ #endif
+ 	.id_table = snd_sb16_pnpids,
+ 	.probe = snd_sb16_pnp_detect,
+-	.remove = snd_sb16_pnp_remove,
+ #ifdef CONFIG_PM
+ 	.suspend = snd_sb16_pnp_suspend,
+ 	.resume = snd_sb16_pnp_resume,
+diff --git a/sound/isa/sb/sb8.c b/sound/isa/sb/sb8.c
+index b08e6e7690c9..e5ef1777161f 100644
+--- a/sound/isa/sb/sb8.c
++++ b/sound/isa/sb/sb8.c
+@@ -54,15 +54,6 @@ static irqreturn_t snd_sb8_interrupt(int irq, void *dev_id)
+ 	}
+ }
  
- extern const struct dev_pm_ops snd_ymfpci_pm;
-diff --git a/sound/pci/ymfpci/ymfpci_main.c b/sound/pci/ymfpci/ymfpci_main.c
-index 8fd060769882..c80114c0ad7b 100644
---- a/sound/pci/ymfpci/ymfpci_main.c
-+++ b/sound/pci/ymfpci/ymfpci_main.c
-@@ -2116,11 +2116,12 @@ static int snd_ymfpci_memalloc(struct snd_ymfpci *chip)
- 	       chip->work_size;
- 	/* work_ptr must be aligned to 256 bytes, but it's already
- 	   covered with the kernel page allocation mechanism */
--	if (snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, &chip->pci->dev,
--				size, &chip->work_ptr) < 0) 
-+	chip->work_ptr = snd_devm_alloc_pages(&chip->pci->dev,
-+					      SNDRV_DMA_TYPE_DEV, size);
-+	if (!chip->work_ptr)
- 		return -ENOMEM;
--	ptr = chip->work_ptr.area;
--	ptr_addr = chip->work_ptr.addr;
-+	ptr = chip->work_ptr->area;
-+	ptr_addr = chip->work_ptr->addr;
- 	memset(ptr, 0, size);	/* for sure */
+-static void snd_sb8_free(struct snd_card *card)
+-{
+-	struct snd_sb8 *acard = card->private_data;
+-
+-	if (acard == NULL)
+-		return;
+-	release_and_free_resource(acard->fm_res);
+-}
+-
+ static int snd_sb8_match(struct device *pdev, unsigned int dev)
+ {
+ 	if (!enable[dev])
+@@ -86,26 +77,26 @@ static int snd_sb8_probe(struct device *pdev, unsigned int dev)
+ 	struct snd_opl3 *opl3;
+ 	int err;
  
- 	chip->bank_base_playback = ptr;
-@@ -2165,7 +2166,7 @@ static int snd_ymfpci_memalloc(struct snd_ymfpci *chip)
- 	chip->work_base_addr = ptr_addr;
- 	
- 	snd_BUG_ON(ptr + chip->work_size !=
--		   chip->work_ptr.area + chip->work_ptr.bytes);
-+		   chip->work_ptr->area + chip->work_ptr->bytes);
+-	err = snd_card_new(pdev, index[dev], id[dev], THIS_MODULE,
+-			   sizeof(struct snd_sb8), &card);
++	err = snd_devm_card_new(pdev, index[dev], id[dev], THIS_MODULE,
++				sizeof(struct snd_sb8), &card);
+ 	if (err < 0)
+ 		return err;
+ 	acard = card->private_data;
+-	card->private_free = snd_sb8_free;
  
- 	snd_ymfpci_writel(chip, YDSXGR_PLAYCTRLBASE, chip->bank_base_playback_addr);
- 	snd_ymfpci_writel(chip, YDSXGR_RECCTRLBASE, chip->bank_base_capture_addr);
-@@ -2196,65 +2197,32 @@ static int snd_ymfpci_memalloc(struct snd_ymfpci *chip)
+ 	/*
+ 	 * Block the 0x388 port to avoid PnP conflicts.
+ 	 * No need to check this value after request_region,
+ 	 * as we never do anything with it.
+ 	 */
+-	acard->fm_res = request_region(0x388, 4, "SoundBlaster FM");
++	acard->fm_res = devm_request_region(card->dev, 0x388, 4,
++					    "SoundBlaster FM");
+ 
+ 	if (port[dev] != SNDRV_AUTO_PORT) {
+ 		err = snd_sbdsp_create(card, port[dev], irq[dev],
+ 				       snd_sb8_interrupt, dma8[dev],
+ 				       -1, SB_HW_AUTO, &chip);
+ 		if (err < 0)
+-			goto _err;
++			return err;
+ 	} else {
+ 		/* auto-probe legacy ports */
+ 		static const unsigned long possible_ports[] = {
+@@ -125,10 +116,8 @@ static int snd_sb8_probe(struct device *pdev, unsigned int dev)
+ 				break;
+ 			}
+ 		}
+-		if (i >= ARRAY_SIZE(possible_ports)) {
+-			err = -EINVAL;
+-			goto _err;
+-		}
++		if (i >= ARRAY_SIZE(possible_ports))
++			return -EINVAL;
+ 	}
+ 	acard->chip = chip;
+ 			
+@@ -139,17 +128,16 @@ static int snd_sb8_probe(struct device *pdev, unsigned int dev)
+ 		else
+ 			snd_printk(KERN_WARNING "SB 16 chip detected at 0x%lx, try snd-sb16 module\n",
+ 				   port[dev]);
+-		err = -ENODEV;
+-		goto _err;
++		return -ENODEV;
+ 	}
+ 
+ 	err = snd_sb8dsp_pcm(chip, 0);
+ 	if (err < 0)
+-		goto _err;
++		return err;
+ 
+ 	err = snd_sbmixer_new(chip);
+ 	if (err < 0)
+-		goto _err;
++		return err;
+ 
+ 	if (chip->hardware == SB_HW_10 || chip->hardware == SB_HW_20) {
+ 		err = snd_opl3_create(card, chip->port + 8, 0,
+@@ -167,12 +155,12 @@ static int snd_sb8_probe(struct device *pdev, unsigned int dev)
+ 	if (err >= 0) {
+ 		err = snd_opl3_hwdep_new(opl3, 0, 1, NULL);
+ 		if (err < 0)
+-			goto _err;
++			return err;
+ 	}
+ 
+ 	err = snd_sb8dsp_midi(chip, 0);
+ 	if (err < 0)
+-		goto _err;
++		return err;
+ 
+ 	strcpy(card->driver, chip->hardware == SB_HW_PRO ? "SB Pro" : "SB8");
+ 	strcpy(card->shortname, chip->name);
+@@ -183,19 +171,10 @@ static int snd_sb8_probe(struct device *pdev, unsigned int dev)
+ 
+ 	err = snd_card_register(card);
+ 	if (err < 0)
+-		goto _err;
++		return err;
+ 
+ 	dev_set_drvdata(pdev, card);
+ 	return 0;
+-
+- _err:
+-	snd_card_free(card);
+-	return err;
+-}
+-
+-static void snd_sb8_remove(struct device *pdev, unsigned int dev)
+-{
+-	snd_card_free(dev_get_drvdata(pdev));
+ }
+ 
+ #ifdef CONFIG_PM
+@@ -229,7 +208,6 @@ static int snd_sb8_resume(struct device *dev, unsigned int n)
+ static struct isa_driver snd_sb8_driver = {
+ 	.match		= snd_sb8_match,
+ 	.probe		= snd_sb8_probe,
+-	.remove		= snd_sb8_remove,
+ #ifdef CONFIG_PM
+ 	.suspend	= snd_sb8_suspend,
+ 	.resume		= snd_sb8_resume,
+diff --git a/sound/isa/sb/sb_common.c b/sound/isa/sb/sb_common.c
+index 57121218ed24..c0e319d14210 100644
+--- a/sound/isa/sb/sb_common.c
++++ b/sound/isa/sb/sb_common.c
+@@ -168,31 +168,6 @@ static int snd_sbdsp_probe(struct snd_sb * chip)
  	return 0;
  }
  
--static int snd_ymfpci_free(struct snd_ymfpci *chip)
-+static void snd_ymfpci_free(struct snd_card *card)
- {
-+	struct snd_ymfpci *chip = card->private_data;
- 	u16 ctrl;
- 
--	if (snd_BUG_ON(!chip))
--		return -EINVAL;
--
--	if (chip->res_reg_area) {	/* don't touch busy hardware */
--		snd_ymfpci_writel(chip, YDSXGR_NATIVEDACOUTVOL, 0);
--		snd_ymfpci_writel(chip, YDSXGR_BUF441OUTVOL, 0);
--		snd_ymfpci_writel(chip, YDSXGR_LEGACYOUTVOL, 0);
--		snd_ymfpci_writel(chip, YDSXGR_STATUS, ~0);
--		snd_ymfpci_disable_dsp(chip);
--		snd_ymfpci_writel(chip, YDSXGR_PLAYCTRLBASE, 0);
--		snd_ymfpci_writel(chip, YDSXGR_RECCTRLBASE, 0);
--		snd_ymfpci_writel(chip, YDSXGR_EFFCTRLBASE, 0);
--		snd_ymfpci_writel(chip, YDSXGR_WORKBASE, 0);
--		snd_ymfpci_writel(chip, YDSXGR_WORKSIZE, 0);
--		ctrl = snd_ymfpci_readw(chip, YDSXGR_GLOBALCTRL);
--		snd_ymfpci_writew(chip, YDSXGR_GLOBALCTRL, ctrl & ~0x0007);
--	}
-+	snd_ymfpci_writel(chip, YDSXGR_NATIVEDACOUTVOL, 0);
-+	snd_ymfpci_writel(chip, YDSXGR_BUF441OUTVOL, 0);
-+	snd_ymfpci_writel(chip, YDSXGR_LEGACYOUTVOL, 0);
-+	snd_ymfpci_writel(chip, YDSXGR_STATUS, ~0);
-+	snd_ymfpci_disable_dsp(chip);
-+	snd_ymfpci_writel(chip, YDSXGR_PLAYCTRLBASE, 0);
-+	snd_ymfpci_writel(chip, YDSXGR_RECCTRLBASE, 0);
-+	snd_ymfpci_writel(chip, YDSXGR_EFFCTRLBASE, 0);
-+	snd_ymfpci_writel(chip, YDSXGR_WORKBASE, 0);
-+	snd_ymfpci_writel(chip, YDSXGR_WORKSIZE, 0);
-+	ctrl = snd_ymfpci_readw(chip, YDSXGR_GLOBALCTRL);
-+	snd_ymfpci_writew(chip, YDSXGR_GLOBALCTRL, ctrl & ~0x0007);
- 
- 	snd_ymfpci_ac3_done(chip);
- 
--	/* Set PCI device to D3 state */
--#if 0
--	/* FIXME: temporarily disabled, otherwise we cannot fire up
--	 * the chip again unless reboot.  ACPI bug?
--	 */
--	pci_set_power_state(chip->pci, PCI_D3hot);
--#endif
--
--#ifdef CONFIG_PM_SLEEP
--	kfree(chip->saved_regs);
--#endif
+-static int snd_sbdsp_free(struct snd_sb *chip)
+-{
+-	release_and_free_resource(chip->res_port);
 -	if (chip->irq >= 0)
--		free_irq(chip->irq, chip);
--	release_and_free_resource(chip->mpu_res);
--	release_and_free_resource(chip->fm_res);
- 	snd_ymfpci_free_gameport(chip);
--	iounmap(chip->reg_area_virt);
--	if (chip->work_ptr.area)
--		snd_dma_free_pages(&chip->work_ptr);
- 	
--	release_and_free_resource(chip->res_reg_area);
--
- 	pci_write_config_word(chip->pci, 0x40, chip->old_legacy_ctrl);
- 	
--	pci_disable_device(chip->pci);
- 	release_firmware(chip->dsp_microcode);
- 	release_firmware(chip->controller_microcode);
+-		free_irq(chip->irq, (void *) chip);
+-#ifdef CONFIG_ISA
+-	if (chip->dma8 >= 0) {
+-		disable_dma(chip->dma8);
+-		free_dma(chip->dma8);
+-	}
+-	if (chip->dma16 >= 0 && chip->dma16 != chip->dma8) {
+-		disable_dma(chip->dma16);
+-		free_dma(chip->dma16);
+-	}
+-#endif
 -	kfree(chip);
 -	return 0;
 -}
 -
--static int snd_ymfpci_dev_free(struct snd_device *device)
+-static int snd_sbdsp_dev_free(struct snd_device *device)
 -{
--	struct snd_ymfpci *chip = device->device_data;
--	return snd_ymfpci_free(chip);
- }
- 
- #ifdef CONFIG_PM_SLEEP
-@@ -2346,27 +2314,16 @@ SIMPLE_DEV_PM_OPS(snd_ymfpci_pm, snd_ymfpci_suspend, snd_ymfpci_resume);
- 
- int snd_ymfpci_create(struct snd_card *card,
- 		      struct pci_dev *pci,
--		      unsigned short old_legacy_ctrl,
--		      struct snd_ymfpci **rchip)
-+		      unsigned short old_legacy_ctrl)
+-	struct snd_sb *chip = device->device_data;
+-	return snd_sbdsp_free(chip);
+-}
+-
+ int snd_sbdsp_create(struct snd_card *card,
+ 		     unsigned long port,
+ 		     int irq,
+@@ -204,15 +179,12 @@ int snd_sbdsp_create(struct snd_card *card,
  {
--	struct snd_ymfpci *chip;
-+	struct snd_ymfpci *chip = card->private_data;
+ 	struct snd_sb *chip;
  	int err;
 -	static const struct snd_device_ops ops = {
--		.dev_free =	snd_ymfpci_dev_free,
+-		.dev_free =	snd_sbdsp_dev_free,
 -	};
- 	
--	*rchip = NULL;
--
- 	/* enable PCI device */
--	err = pci_enable_device(pci);
-+	err = pcim_enable_device(pci);
- 	if (err < 0)
- 		return err;
  
+ 	if (snd_BUG_ON(!r_chip))
+ 		return -EINVAL;
+ 	*r_chip = NULL;
 -	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
--	if (chip == NULL) {
--		pci_disable_device(pci);
--		return -ENOMEM;
--	}
- 	chip->old_legacy_ctrl = old_legacy_ctrl;
+-	if (chip == NULL)
++	chip = devm_kzalloc(card->dev, sizeof(*chip), GFP_KERNEL);
++	if (!chip)
+ 		return -ENOMEM;
  	spin_lock_init(&chip->reg_lock);
- 	spin_lock_init(&chip->voice_lock);
-@@ -2377,71 +2334,59 @@ int snd_ymfpci_create(struct snd_card *card,
- 	chip->irq = -1;
- 	chip->device_id = pci->device;
- 	chip->rev = pci->revision;
--	chip->reg_area_phys = pci_resource_start(pci, 0);
--	chip->reg_area_virt = ioremap(chip->reg_area_phys, 0x8000);
--	pci_set_master(pci);
--	chip->src441_used = -1;
+ 	spin_lock_init(&chip->open_lock);
+@@ -223,13 +195,12 @@ int snd_sbdsp_create(struct snd_card *card,
+ 	chip->dma16 = -1;
+ 	chip->port = port;
+ 	
+-	if (request_irq(irq, irq_handler,
+-			(hardware == SB_HW_ALS4000 ||
+-			 hardware == SB_HW_CS5530) ?
+-			IRQF_SHARED : 0,
+-			"SoundBlaster", (void *) chip)) {
++	if (devm_request_irq(card->dev, irq, irq_handler,
++			     (hardware == SB_HW_ALS4000 ||
++			      hardware == SB_HW_CS5530) ?
++			     IRQF_SHARED : 0,
++			     "SoundBlaster", (void *) chip)) {
+ 		snd_printk(KERN_ERR "sb: can't grab irq %d\n", irq);
+-		snd_sbdsp_free(chip);
+ 		return -EBUSY;
+ 	}
+ 	chip->irq = irq;
+@@ -238,17 +209,17 @@ int snd_sbdsp_create(struct snd_card *card,
+ 	if (hardware == SB_HW_ALS4000)
+ 		goto __skip_allocation;
+ 	
+-	chip->res_port = request_region(port, 16, "SoundBlaster");
++	chip->res_port = devm_request_region(card->dev, port, 16,
++					     "SoundBlaster");
+ 	if (!chip->res_port) {
+ 		snd_printk(KERN_ERR "sb: can't grab port 0x%lx\n", port);
+-		snd_sbdsp_free(chip);
+ 		return -EBUSY;
+ 	}
  
--	chip->res_reg_area = request_mem_region(chip->reg_area_phys, 0x8000, "YMFPCI");
--	if (!chip->res_reg_area) {
-+	err = pci_request_regions(pci, "YMFPCI");
+ #ifdef CONFIG_ISA
+-	if (dma8 >= 0 && request_dma(dma8, "SoundBlaster - 8bit")) {
++	if (dma8 >= 0 && snd_devm_request_dma(card->dev, dma8,
++					      "SoundBlaster - 8bit")) {
+ 		snd_printk(KERN_ERR "sb: can't grab DMA8 %d\n", dma8);
+-		snd_sbdsp_free(chip);
+ 		return -EBUSY;
+ 	}
+ 	chip->dma8 = dma8;
+@@ -256,9 +227,9 @@ int snd_sbdsp_create(struct snd_card *card,
+ 		if (hardware != SB_HW_ALS100 && (dma16 < 5 || dma16 > 7)) {
+ 			/* no duplex */
+ 			dma16 = -1;
+-		} else if (request_dma(dma16, "SoundBlaster - 16bit")) {
++		} else if (snd_devm_request_dma(card->dev, dma16,
++						"SoundBlaster - 16bit")) {
+ 			snd_printk(KERN_ERR "sb: can't grab DMA16 %d\n", dma16);
+-			snd_sbdsp_free(chip);
+ 			return -EBUSY;
+ 		}
+ 	}
+@@ -269,15 +240,8 @@ int snd_sbdsp_create(struct snd_card *card,
+ 	chip->card = card;
+ 	chip->hardware = hardware;
+ 	err = snd_sbdsp_probe(chip);
+-	if (err < 0) {
+-		snd_sbdsp_free(chip);
 +	if (err < 0)
-+		return err;
-+
-+	chip->reg_area_phys = pci_resource_start(pci, 0);
-+	chip->reg_area_virt = devm_ioremap(&pci->dev, chip->reg_area_phys, 0x8000);
-+	if (!chip->reg_area_virt) {
- 		dev_err(chip->card->dev,
- 			"unable to grab memory region 0x%lx-0x%lx\n",
- 			chip->reg_area_phys, chip->reg_area_phys + 0x8000 - 1);
--		err = -EBUSY;
--		goto free_chip;
-+		return -EBUSY;
- 	}
--	if (request_irq(pci->irq, snd_ymfpci_interrupt, IRQF_SHARED,
-+	pci_set_master(pci);
-+	chip->src441_used = -1;
-+
-+	if (devm_request_irq(&pci->dev, pci->irq, snd_ymfpci_interrupt, IRQF_SHARED,
- 			KBUILD_MODNAME, chip)) {
- 		dev_err(chip->card->dev, "unable to grab IRQ %d\n", pci->irq);
--		err = -EBUSY;
--		goto free_chip;
-+		return -EBUSY;
- 	}
- 	chip->irq = pci->irq;
- 	card->sync_irq = chip->irq;
-+	card->private_free = snd_ymfpci_free;
- 
- 	snd_ymfpci_aclink_reset(pci);
--	if (snd_ymfpci_codec_ready(chip, 0) < 0) {
--		err = -EIO;
--		goto free_chip;
+ 		return err;
 -	}
-+	if (snd_ymfpci_codec_ready(chip, 0) < 0)
-+		return -EIO;
- 
- 	err = snd_ymfpci_request_firmware(chip);
- 	if (err < 0) {
- 		dev_err(chip->card->dev, "firmware request failed: %d\n", err);
--		goto free_chip;
-+		return err;
- 	}
- 	snd_ymfpci_download_image(chip);
- 
- 	udelay(100); /* seems we need a delay after downloading image.. */
- 
--	if (snd_ymfpci_memalloc(chip) < 0) {
--		err = -EIO;
--		goto free_chip;
--	}
-+	if (snd_ymfpci_memalloc(chip) < 0)
-+		return -EIO;
- 
- 	err = snd_ymfpci_ac3_init(chip);
- 	if (err < 0)
--		goto free_chip;
-+		return err;
- 
- #ifdef CONFIG_PM_SLEEP
--	chip->saved_regs = kmalloc_array(YDSXGR_NUM_SAVED_REGS, sizeof(u32),
--					 GFP_KERNEL);
--	if (chip->saved_regs == NULL) {
--		err = -ENOMEM;
--		goto free_chip;
--	}
-+	chip->saved_regs = devm_kmalloc_array(&pci->dev, YDSXGR_NUM_SAVED_REGS,
-+					      sizeof(u32), GFP_KERNEL);
-+	if (!chip->saved_regs)
-+		return -ENOMEM;
- #endif
- 
 -	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
--	if (err < 0)
--		goto free_chip;
--
- 	snd_ymfpci_proc_init(card, chip);
- 
--	*rchip = chip;
+-	if (err < 0) {
+-		snd_sbdsp_free(chip);
+-		return err;
+-	}
+ 	*r_chip = chip;
  	return 0;
--
--free_chip:
--	snd_ymfpci_free(chip);
--	return err;
  }
 -- 
 2.26.2
