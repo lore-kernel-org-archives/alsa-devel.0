@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58F3CC07E96
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:29:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 747C2C07E96
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:30:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DAAEC611C0
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:29:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DAAEC611C0
+	by mail.kernel.org (Postfix) with ESMTPS id EE1FF6127C
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:29:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE1FF6127C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 75CAD177C;
-	Thu, 15 Jul 2021 10:28:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75CAD177C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D94A16E1;
+	Thu, 15 Jul 2021 10:29:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D94A16E1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626337782;
-	bh=8wBY3kR9ayksoY26T6cY/tEuYhEBgN45pciMsEj4K1g=;
+	s=default; t=1626337798;
+	bh=ikXnwzJZ5my4pJOsNUJLH1f9DfRUdtT8Vdutbg8Rja0=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ltiETU2/QoLGXpV2Sfl7VoIJQi48zR7gCajfA4u53KSBvHc91bY0hfw2tz74JwbKa
-	 EbdpnJgoZNMLCifL8N9XP5RWh87k5VNSTlVmmN91LJnTWLy3fPEhObhjs40kzWG62v
-	 ZuB7Fcpnn0++gMvrTswofGvG1xnckj6twFDm0bTk=
+	b=beA8/7nhB+WAQNYlJo3RV0kSxD8PAJI5EfOSihKrfvLLFrhOVFwOmPyVX7AN6jDQZ
+	 ERcorbjVGWGPuCZ4rlku0FwS1Y1sj+YlkQS0m2t7Ppq/8ptbwrsglk9fGF+i2IV1x+
+	 w/XwXijhMik8UAPbga0XhDaJxlp88xyMZsTYa5Vw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CA8C5F8085D;
-	Thu, 15 Jul 2021 10:01:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7AC5DF80862;
+	Thu, 15 Jul 2021 10:02:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EC291F8080C; Thu, 15 Jul 2021 10:01:51 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id C3D9FF804E2; Thu, 15 Jul 2021 10:01:52 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ADB7BF805AF
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADB7BF805AF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 12B0BF804E2
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12B0BF804E2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="0iRQdb25"; 
+ header.b="E7zSmzve"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="yGEP/tpE"
+ header.b="q7WF2HBX"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 85EA822833
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:19 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id CF6121FDEA
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626336019; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1626336025; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=uHFhxAgjrhLYApqQjhNVcHFXdRgRQ7KpN2whoRT+Qe0=;
- b=0iRQdb257FNnW0m3hnvFGoZCsj5wROqNU93aaz7gbafN4e0LF9Vnznq3ug7K4IQNOXnxID
- 2pLQoGaI9f+IpGt2LyLA1V2xxXCVkhE6NsN84dEgP81sLsiuHuqlOtuBppONUZgAm1l/rE
- V2C0SnNA/djun+VGKhyfhA0vHEot2/g=
+ bh=gCd9c1zgyBBKJAW/4WqODYcciQ3eutX3GjhAua4snGU=;
+ b=E7zSmzvesx/PYgyzVaPbb/4UmK2QVC2kl9xLoNVZGnG4spnrMSodUCEVadZrg9QRZlLNn1
+ yniSkSn7U4MKCq2fCCae5GGUXxF0JlRXUZLC7k41MtXzWTjhGXlbOTUj8mjl+F4cG+EEwp
+ 1S/9ecwPT18QjN3gVPVwf5CeoXgC2sU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626336019;
+ s=susede2_ed25519; t=1626336025;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=uHFhxAgjrhLYApqQjhNVcHFXdRgRQ7KpN2whoRT+Qe0=;
- b=yGEP/tpEb2XZzpCBZZUhvFboqc1PdGWhx6levioAMuydZ5D/KyqrJ3ZYJl930pJE3oeE7e
- mazEMv/SNb8eJcBQ==
+ bh=gCd9c1zgyBBKJAW/4WqODYcciQ3eutX3GjhAua4snGU=;
+ b=q7WF2HBXsCCmi3eBHVktBed/YGfb6S+tYtE3KHyfqoKC3znnkEdRqteDs1NaB6x7OW0pnj
+ S7wPk22BvDvb88AQ==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 73B90A3B8F;
- Thu, 15 Jul 2021 08:00:19 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id C0016A3BA4;
+ Thu, 15 Jul 2021 08:00:25 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 63/79] ALSA: es18xx: Allocate resources with device-managed
- APIs
-Date: Thu, 15 Jul 2021 09:59:25 +0200
-Message-Id: <20210715075941.23332-64-tiwai@suse.de>
+Subject: [PATCH v2 75/79] ALSA: serial-u16550: Allocate resources with
+ device-managed APIs
+Date: Thu, 15 Jul 2021 09:59:37 +0200
+Message-Id: <20210715075941.23332-76-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210715075941.23332-1-tiwai@suse.de>
 References: <20210715075941.23332-1-tiwai@suse.de>
@@ -98,281 +98,163 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the resource management in ISA es18xx driver with
-devres as a clean up.  Each manual resource management is converted
-with the corresponding devres helper.  The remove callback became
-superfluous and dropped.
+This patch converts the resource management in serial u16550 driver
+with devres as a clean up.  Each manual resource management is
+converted with the corresponding devres helper, and the card object
+release is managed now via card->private_free instead of a lowlevel
+snd_device.
 
 This should give no user-visible functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/isa/es18xx.c | 112 ++++++++-------------------------------------
- 1 file changed, 20 insertions(+), 92 deletions(-)
+ sound/drivers/serial-u16550.c | 57 ++++++-----------------------------
+ 1 file changed, 9 insertions(+), 48 deletions(-)
 
-diff --git a/sound/isa/es18xx.c b/sound/isa/es18xx.c
-index 68b9c59e1127..3fcd168480b6 100644
---- a/sound/isa/es18xx.c
-+++ b/sound/isa/es18xx.c
-@@ -87,9 +87,6 @@
- struct snd_es18xx {
- 	unsigned long port;		/* port of ESS chip */
- 	unsigned long ctrl_port;	/* Control port of ESS chip */
--	struct resource *res_port;
--	struct resource *res_mpu_port;
--	struct resource *res_ctrl_port;
- 	int irq;			/* IRQ number of ESS chip */
- 	int dma1;			/* DMA1 */
- 	int dma2;			/* DMA2 */
-@@ -1531,7 +1528,7 @@ static int snd_es18xx_initialize(struct snd_es18xx *chip,
-         return 0;
- }
+diff --git a/sound/drivers/serial-u16550.c b/sound/drivers/serial-u16550.c
+index da9983cba01c..3cbc7a4adcb4 100644
+--- a/sound/drivers/serial-u16550.c
++++ b/sound/drivers/serial-u16550.c
+@@ -115,7 +115,6 @@ struct snd_uart16550 {
+ 	int irq;
  
--static int snd_es18xx_identify(struct snd_es18xx *chip)
-+static int snd_es18xx_identify(struct snd_card *card, struct snd_es18xx *chip)
- {
- 	int hi,lo;
+ 	unsigned long base;
+-	struct resource *res_base;
  
-@@ -1573,8 +1570,8 @@ static int snd_es18xx_identify(struct snd_es18xx *chip)
- 		udelay(10);
- 		chip->ctrl_port += inb(chip->port + 0x05);
- 
--		chip->res_ctrl_port = request_region(chip->ctrl_port, 8, "ES18xx - CTRL");
--		if (!chip->res_ctrl_port) {
-+		if (!devm_request_region(card->dev, chip->ctrl_port, 8,
-+					 "ES18xx - CTRL")) {
- 			snd_printk(KERN_ERR PFX "unable go grab port 0x%lx\n", chip->ctrl_port);
- 			return -EBUSY;
- 		}
-@@ -1601,11 +1598,12 @@ static int snd_es18xx_identify(struct snd_es18xx *chip)
- 	return 0;
- }
- 
--static int snd_es18xx_probe(struct snd_es18xx *chip,
-+static int snd_es18xx_probe(struct snd_card *card,
-+			    struct snd_es18xx *chip,
- 			    unsigned long mpu_port,
- 			    unsigned long fm_port)
- {
--	if (snd_es18xx_identify(chip) < 0) {
-+	if (snd_es18xx_identify(card, chip) < 0) {
- 		snd_printk(KERN_ERR PFX "[0x%lx] ESS chip not found\n", chip->port);
-                 return -ENODEV;
+ 	unsigned int speed;
+ 	unsigned int speed_base;
+@@ -323,8 +322,7 @@ static int snd_uart16550_detect(struct snd_uart16550 *uart)
+ 		return -ENODEV;	/* Not configured */
  	}
-@@ -1722,31 +1720,6 @@ static int snd_es18xx_resume(struct snd_card *card)
- }
- #endif /* CONFIG_PM */
  
--static int snd_es18xx_free(struct snd_card *card)
+-	uart->res_base = request_region(io_base, 8, "Serial MIDI");
+-	if (uart->res_base == NULL) {
++	if (!devm_request_region(uart->card->dev, io_base, 8, "Serial MIDI")) {
+ 		snd_printk(KERN_ERR "u16550: can't grab port 0x%lx\n", io_base);
+ 		return -EBUSY;
+ 	}
+@@ -752,21 +750,6 @@ static const struct snd_rawmidi_ops snd_uart16550_input =
+ 	.trigger =	snd_uart16550_input_trigger,
+ };
+ 
+-static int snd_uart16550_free(struct snd_uart16550 *uart)
 -{
--	struct snd_es18xx *chip = card->private_data;
--
--	release_and_free_resource(chip->res_port);
--	release_and_free_resource(chip->res_ctrl_port);
--	release_and_free_resource(chip->res_mpu_port);
--	if (chip->irq >= 0)
--		free_irq(chip->irq, (void *) card);
--	if (chip->dma1 >= 0) {
--		disable_dma(chip->dma1);
--		free_dma(chip->dma1);
--	}
--	if (chip->dma2 >= 0 && chip->dma1 != chip->dma2) {
--		disable_dma(chip->dma2);
--		free_dma(chip->dma2);
--	}
+-	if (uart->irq >= 0)
+-		free_irq(uart->irq, uart);
+-	release_and_free_resource(uart->res_base);
+-	kfree(uart);
 -	return 0;
--}
+-};
 -
--static int snd_es18xx_dev_free(struct snd_device *device)
+-static int snd_uart16550_dev_free(struct snd_device *device)
 -{
--	return snd_es18xx_free(device->card);
+-	struct snd_uart16550 *uart = device->device_data;
+-	return snd_uart16550_free(uart);
 -}
 -
- static int snd_es18xx_new_device(struct snd_card *card,
- 				 unsigned long port,
- 				 unsigned long mpu_port,
-@@ -1754,10 +1727,6 @@ static int snd_es18xx_new_device(struct snd_card *card,
- 				 int irq, int dma1, int dma2)
+ static int snd_uart16550_create(struct snd_card *card,
+ 				unsigned long iobase,
+ 				int irq,
+@@ -776,14 +759,11 @@ static int snd_uart16550_create(struct snd_card *card,
+ 				int droponfull,
+ 				struct snd_uart16550 **ruart)
  {
- 	struct snd_es18xx *chip = card->private_data;
 -	static const struct snd_device_ops ops = {
--		.dev_free =	snd_es18xx_dev_free,
--        };
--	int err;
+-		.dev_free =	snd_uart16550_dev_free,
+-	};
+ 	struct snd_uart16550 *uart;
+ 	int err;
  
- 	spin_lock_init(&chip->reg_lock);
-  	spin_lock_init(&chip->mixer_lock);
-@@ -1768,45 +1737,34 @@ static int snd_es18xx_new_device(struct snd_card *card,
-         chip->audio2_vol = 0x00;
- 	chip->active = 0;
  
--	chip->res_port = request_region(port, 16, "ES18xx");
--	if (chip->res_port == NULL) {
--		snd_es18xx_free(card);
-+	if (!devm_request_region(card->dev, port, 16, "ES18xx")) {
- 		snd_printk(KERN_ERR PFX "unable to grap ports 0x%lx-0x%lx\n", port, port + 16 - 1);
- 		return -EBUSY;
- 	}
- 
--	if (request_irq(irq, snd_es18xx_interrupt, 0, "ES18xx",
--			(void *) card)) {
--		snd_es18xx_free(card);
-+	if (devm_request_irq(card->dev, irq, snd_es18xx_interrupt, 0, "ES18xx",
-+			     (void *) card)) {
- 		snd_printk(KERN_ERR PFX "unable to grap IRQ %d\n", irq);
- 		return -EBUSY;
- 	}
- 	chip->irq = irq;
- 	card->sync_irq = chip->irq;
- 
--	if (request_dma(dma1, "ES18xx DMA 1")) {
--		snd_es18xx_free(card);
-+	if (snd_devm_request_dma(card->dev, dma1, "ES18xx DMA 1")) {
- 		snd_printk(KERN_ERR PFX "unable to grap DMA1 %d\n", dma1);
- 		return -EBUSY;
- 	}
- 	chip->dma1 = dma1;
- 
--	if (dma2 != dma1 && request_dma(dma2, "ES18xx DMA 2")) {
--		snd_es18xx_free(card);
-+	if (dma2 != dma1 &&
-+	    snd_devm_request_dma(card->dev, dma2, "ES18xx DMA 2")) {
- 		snd_printk(KERN_ERR PFX "unable to grap DMA2 %d\n", dma2);
- 		return -EBUSY;
- 	}
- 	chip->dma2 = dma2;
- 
--	if (snd_es18xx_probe(chip, mpu_port, fm_port) < 0) {
--		snd_es18xx_free(card);
-+	if (snd_es18xx_probe(card, chip, mpu_port, fm_port) < 0)
+-	uart = kzalloc(sizeof(*uart), GFP_KERNEL);
++	uart = devm_kzalloc(card->dev, sizeof(*uart), GFP_KERNEL);
+ 	if (!uart)
+ 		return -ENOMEM;
+ 	uart->adaptor = adaptor;
+@@ -796,13 +776,12 @@ static int snd_uart16550_create(struct snd_card *card,
+ 	err = snd_uart16550_detect(uart);
+ 	if (err <= 0) {
+ 		printk(KERN_ERR "no UART detected at 0x%lx\n", iobase);
+-		snd_uart16550_free(uart);
  		return -ENODEV;
--	}
--	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
+ 	}
+ 
+ 	if (irq >= 0 && irq != SNDRV_AUTO_IRQ) {
+-		if (request_irq(irq, snd_uart16550_interrupt,
+-				0, "Serial MIDI", uart)) {
++		if (devm_request_irq(card->dev, irq, snd_uart16550_interrupt,
++				     0, "Serial MIDI", uart)) {
+ 			snd_printk(KERN_WARNING
+ 				   "irq %d busy. Using Polling.\n", irq);
+ 		} else {
+@@ -819,13 +798,6 @@ static int snd_uart16550_create(struct snd_card *card,
+ 	timer_setup(&uart->buffer_timer, snd_uart16550_buffer_timer, 0);
+ 	uart->timer_running = 0;
+ 
+-	/* Register device */
+-	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, uart, &ops);
 -	if (err < 0) {
--		snd_es18xx_free(card);
+-		snd_uart16550_free(uart);
 -		return err;
 -	}
-         return 0;
- }
- 
-@@ -2088,8 +2046,8 @@ static int snd_audiodrive_pnpc(int dev, struct snd_es18xx *chip,
- static int snd_es18xx_card_new(struct device *pdev, int dev,
- 			       struct snd_card **cardp)
- {
--	return snd_card_new(pdev, index[dev], id[dev], THIS_MODULE,
--			    sizeof(struct snd_es18xx), cardp);
-+	return snd_devm_card_new(pdev, index[dev], id[dev], THIS_MODULE,
-+				 sizeof(struct snd_es18xx), cardp);
- }
- 
- static int snd_audiodrive_probe(struct snd_card *card, int dev)
-@@ -2164,10 +2122,8 @@ static int snd_es18xx_isa_probe1(int dev, struct device *devptr)
- 	if (err < 0)
- 		return err;
- 	err = snd_audiodrive_probe(card, dev);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 	dev_set_drvdata(devptr, card);
- 	return 0;
- }
-@@ -2215,12 +2171,6 @@ static int snd_es18xx_isa_probe(struct device *pdev, unsigned int dev)
+-
+ 	switch (uart->adaptor) {
+ 	case SNDRV_SERIAL_MS124W_SA:
+ 	case SNDRV_SERIAL_MS124W_MB:
+@@ -927,8 +899,8 @@ static int snd_serial_probe(struct platform_device *devptr)
+ 		return -ENODEV;
  	}
- }
  
--static void snd_es18xx_isa_remove(struct device *devptr,
--				  unsigned int dev)
--{
--	snd_card_free(dev_get_drvdata(devptr));
--}
--
- #ifdef CONFIG_PM
- static int snd_es18xx_isa_suspend(struct device *dev, unsigned int n,
- 				  pm_message_t state)
-@@ -2239,7 +2189,6 @@ static int snd_es18xx_isa_resume(struct device *dev, unsigned int n)
- static struct isa_driver snd_es18xx_isa_driver = {
- 	.match		= snd_es18xx_isa_match,
- 	.probe		= snd_es18xx_isa_probe,
--	.remove		= snd_es18xx_isa_remove,
- #ifdef CONFIG_PM
- 	.suspend	= snd_es18xx_isa_suspend,
- 	.resume		= snd_es18xx_isa_resume,
-@@ -2271,25 +2220,16 @@ static int snd_audiodrive_pnp_detect(struct pnp_dev *pdev,
+-	err  = snd_card_new(&devptr->dev, index[dev], id[dev], THIS_MODULE,
+-			    0, &card);
++	err  = snd_devm_card_new(&devptr->dev, index[dev], id[dev], THIS_MODULE,
++				 0, &card);
  	if (err < 0)
  		return err;
- 	err = snd_audiodrive_pnp(dev, card->private_data, pdev);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 	err = snd_audiodrive_probe(card, dev);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 	pnp_set_drvdata(pdev, card);
- 	dev++;
- 	return 0;
- }
  
--static void snd_audiodrive_pnp_remove(struct pnp_dev *pdev)
--{
--	snd_card_free(pnp_get_drvdata(pdev));
+@@ -939,11 +911,11 @@ static int snd_serial_probe(struct platform_device *devptr)
+ 				   base[dev], adaptor[dev], droponfull[dev],
+ 				   &uart);
+ 	if (err < 0)
+-		goto _err;
++		return err;
+ 
+ 	err = snd_uart16550_rmidi(uart, 0, outs[dev], ins[dev], &uart->rmidi);
+ 	if (err < 0)
+-		goto _err;
++		return err;
+ 
+ 	sprintf(card->longname, "%s [%s] at %#lx, irq %d",
+ 		card->shortname,
+@@ -953,27 +925,16 @@ static int snd_serial_probe(struct platform_device *devptr)
+ 
+ 	err = snd_card_register(card);
+ 	if (err < 0)
+-		goto _err;
++		return err;
+ 
+ 	platform_set_drvdata(devptr, card);
+ 	return 0;
+-
+- _err:
+-	snd_card_free(card);
+-	return err;
 -}
 -
- #ifdef CONFIG_PM
- static int snd_audiodrive_pnp_suspend(struct pnp_dev *pdev, pm_message_t state)
- {
-@@ -2305,7 +2245,6 @@ static struct pnp_driver es18xx_pnp_driver = {
- 	.name = "es18xx-pnpbios",
- 	.id_table = snd_audiodrive_pnpbiosids,
- 	.probe = snd_audiodrive_pnp_detect,
--	.remove = snd_audiodrive_pnp_remove,
- #ifdef CONFIG_PM
- 	.suspend = snd_audiodrive_pnp_suspend,
- 	.resume = snd_audiodrive_pnp_resume,
-@@ -2331,27 +2270,17 @@ static int snd_audiodrive_pnpc_detect(struct pnp_card_link *pcard,
- 		return res;
- 
- 	res = snd_audiodrive_pnpc(dev, card->private_data, pcard, pid);
--	if (res < 0) {
--		snd_card_free(card);
-+	if (res < 0)
- 		return res;
--	}
- 	res = snd_audiodrive_probe(card, dev);
--	if (res < 0) {
--		snd_card_free(card);
-+	if (res < 0)
- 		return res;
--	}
- 
- 	pnp_set_card_drvdata(pcard, card);
- 	dev++;
- 	return 0;
+-static int snd_serial_remove(struct platform_device *devptr)
+-{
+-	snd_card_free(platform_get_drvdata(devptr));
+-	return 0;
  }
  
--static void snd_audiodrive_pnpc_remove(struct pnp_card_link *pcard)
--{
--	snd_card_free(pnp_get_card_drvdata(pcard));
--	pnp_set_card_drvdata(pcard, NULL);
--}
--
- #ifdef CONFIG_PM
- static int snd_audiodrive_pnpc_suspend(struct pnp_card_link *pcard, pm_message_t state)
- {
-@@ -2370,7 +2299,6 @@ static struct pnp_card_driver es18xx_pnpc_driver = {
- 	.name = "es18xx",
- 	.id_table = snd_audiodrive_pnpids,
- 	.probe = snd_audiodrive_pnpc_detect,
--	.remove = snd_audiodrive_pnpc_remove,
- #ifdef CONFIG_PM
- 	.suspend	= snd_audiodrive_pnpc_suspend,
- 	.resume		= snd_audiodrive_pnpc_resume,
+ #define SND_SERIAL_DRIVER	"snd_serial_u16550"
+ 
+ static struct platform_driver snd_serial_driver = {
+ 	.probe		= snd_serial_probe,
+-	.remove		=  snd_serial_remove,
+ 	.driver		= {
+ 		.name	= SND_SERIAL_DRIVER,
+ 	},
 -- 
 2.26.2
 
