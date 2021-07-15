@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CBF9C07E96
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:04:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75536C07E96
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:05:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A3E4A610C7
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:04:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A3E4A610C7
+	by mail.kernel.org (Postfix) with ESMTPS id E70A5610C7
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:05:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E70A5610C7
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 37CDD1685;
-	Thu, 15 Jul 2021 10:03:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37CDD1685
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7F8A2167E;
+	Thu, 15 Jul 2021 10:04:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F8A2167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626336286;
-	bh=EmXsO8A6hKMGipEIU2L5NclT23mD126IniGJcoPq4wg=;
+	s=default; t=1626336306;
+	bh=0CHq83icnk0lyM3pxrlCAd8K+/mSoHI/DB7w6Nb0DpE=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gAi7DM8qLKcPW2rGij9vHP7GvFQjtBv/gfRGM80RYiGDVNdcnr98Wg0L3jZJY5Ybp
-	 V+ZF8dvTRKzD0MOPMhF+Qq9XKCK8bZpQWTLVW2J+cFQneAgwk0AvyW11XmK/q6P0VQ
-	 IaV6g+eGchI8KSyqwKGGK1PQ1UGip0MsBnm3zkYk=
+	b=fp4ReC4kVKeG3wAciO1zks5b00Jj6qB5ZIDqorwfKHALONLK3F2swl8ZNOTa3vxQM
+	 2QpLKb695H9TEpAL/ZhB6XtJM7idbZR08Cfv3VtyNKbOqDT6dKoqRkrW0YlA8l4VLC
+	 9AS6NRCux6JlllZ3wXVGdIFdGSqiStSZWnT3aC90=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D733F80588;
-	Thu, 15 Jul 2021 10:00:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 136C1F805A8;
+	Thu, 15 Jul 2021 10:00:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5466CF8054A; Thu, 15 Jul 2021 10:00:16 +0200 (CEST)
+ id BB25FF80551; Thu, 15 Jul 2021 10:00:16 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3CE8BF80229
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 09:59:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CE8BF80229
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0D3CF804D2
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 09:59:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0D3CF804D2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="ikvEuh/7"; 
+ header.b="tDUlW/0w"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="+rS27I6n"
+ header.b="cULpvaZZ"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 3EE2D1FDEC
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 07:59:53 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id BD8B01FDE5
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 07:59:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626335993; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1626335996; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=IYGwEgxSe3lfwTayzEuKCrhyKkUnngXAooaOVfsxXoc=;
- b=ikvEuh/7Ku4nBILW0lsnZUEPymUP3WgJ8ssf6TEPLXLhSr8bcRRyISsgRGJjWL1JfhBc6d
- YTDrY0Kj5NktcLJme6qEnR1/oJ5xVW4JmeCONg5xUk6yj6B79MhXPgD3mcwWWbf0tNDcPe
- Jy63igS3WISbwzpcyytQCT7lwb9wJ/8=
+ bh=ur5TcnpNUht5hJjxu5Icx9JkyUj2FHX6R1MyuDkEkcc=;
+ b=tDUlW/0wF1M2pdx49B3JtGDH8WpK8DdWVzS0GvFPm/2Bt0ouE4jLEIgb6Sc7rK5klq12Dt
+ IL5SSMIcbvP7PazuBajPbOCLKt2CHWivAtDjMMc3Wg3Lsq7/EVbbawtQtNsD9jJiF5x7Da
+ lBuD3inKfKKo21C0lin48yiu2dcjQ6I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626335993;
+ s=susede2_ed25519; t=1626335996;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=IYGwEgxSe3lfwTayzEuKCrhyKkUnngXAooaOVfsxXoc=;
- b=+rS27I6nSKnDb6JBDiydN5DoM/ZiuaWbA/9ydv4m2q/WaQK+fG85I2SREUQyiSm6+9h24+
- 5yF5Oc7hgoa6V9Bg==
+ bh=ur5TcnpNUht5hJjxu5Icx9JkyUj2FHX6R1MyuDkEkcc=;
+ b=cULpvaZZtDasgDCBS83zrYjnng0XY0RtcxKlfdYj1MCthDmhAZcB2E74VWeBDyS+jvk8mR
+ kTMDAEYyQ2/prKDw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 29E35A3B8F;
- Thu, 15 Jul 2021 07:59:53 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id AACFBA3B99;
+ Thu, 15 Jul 2021 07:59:56 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 05/79] ALSA: intel8x0: Allocate resources with
+Subject: [PATCH v2 11/79] ALSA: azt3328: Allocate resources with
  device-managed APIs
-Date: Thu, 15 Jul 2021 09:58:27 +0200
-Message-Id: <20210715075941.23332-6-tiwai@suse.de>
+Date: Thu, 15 Jul 2021 09:58:33 +0200
+Message-Id: <20210715075941.23332-12-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210715075941.23332-1-tiwai@suse.de>
 References: <20210715075941.23332-1-tiwai@suse.de>
@@ -98,117 +98,77 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch refactors the intel8x0 and intel8x0m driver codes using
-devres and gets rid of the driver remove callback.
+This patch converts the resource management in PCI azt3328 driver with
+devres as a clean up.  Each manual resource management is converted
+with the corresponding devres helper, and the card object release is
+managed now via card->private_free instead of a lowlevel snd_device.
 
-The conversion is fairly straightforward: each API call is replaced
-with the device-managed API function, e.g. pci_enable_device() ->
-pcim_enable_device(), and so on.  The buffer descriptor list is
-allocated with a new API, snd_devm_alloc_pages().
-
-A slight code structure change is that the intel8x0 object is
-allocated as a card's private_data instead of the own lowlevel
-snd_device object.  This simplifies the resource management.
-And, the take-down procedure is triggered via card->private_free, and
-it's registered at the end of the whole initialization, i.e. after the
-all resources get properly managed.
-
-The only not-devres-managed resource is the irq handler.  Since we
-need to release at suspend and re-acquire at resume (otherwise
-something weird happens on some machines), this is still managed
-manually.  But the rest are all freed automatically.
-
-The end result is a good amount of code reduction.
+This should give no user-visible functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/intel8x0.c  | 140 +++++++++++++-----------------------------
- sound/pci/intel8x0m.c | 139 ++++++++++++-----------------------------
- 2 files changed, 81 insertions(+), 198 deletions(-)
+ sound/pci/azt3328.c | 124 +++++++++++---------------------------------
+ 1 file changed, 30 insertions(+), 94 deletions(-)
 
-diff --git a/sound/pci/intel8x0.c b/sound/pci/intel8x0.c
-index 6a436a2ce26a..67cb65a53edd 100644
---- a/sound/pci/intel8x0.c
-+++ b/sound/pci/intel8x0.c
-@@ -378,7 +378,7 @@ struct intel8x0 {
- 	spinlock_t reg_lock;
- 	
- 	u32 bdbars_count;
--	struct snd_dma_buffer bdbars;
-+	struct snd_dma_buffer *bdbars;
- 	u32 int_sta_reg;		/* interrupt status register */
- 	u32 int_sta_mask;		/* interrupt status mask */
- };
-@@ -2528,8 +2528,9 @@ static int snd_intel8x0_chip_init(struct intel8x0 *chip, int probing)
- 	return 0;
- }
+diff --git a/sound/pci/azt3328.c b/sound/pci/azt3328.c
+index 4ee7ab409807..089050470ff2 100644
+--- a/sound/pci/azt3328.c
++++ b/sound/pci/azt3328.c
+@@ -2244,32 +2244,15 @@ snd_azf3328_timer(struct snd_azf3328 *chip, int device)
  
--static int snd_intel8x0_free(struct intel8x0 *chip)
-+static void snd_intel8x0_free(struct snd_card *card)
+ /******************************************************************/
+ 
+-static int
+-snd_azf3328_free(struct snd_azf3328 *chip)
++static void
++snd_azf3328_free(struct snd_card *card)
  {
-+	struct intel8x0 *chip = card->private_data;
- 	unsigned int i;
+-	if (chip->irq < 0)
+-		goto __end_hw;
++	struct snd_azf3328 *chip = card->private_data;
  
- 	if (chip->irq < 0)
-@@ -2552,16 +2553,6 @@ static int snd_intel8x0_free(struct intel8x0 *chip)
-       __hw_end:
- 	if (chip->irq >= 0)
- 		free_irq(chip->irq, chip);
--	if (chip->bdbars.area)
--		snd_dma_free_pages(&chip->bdbars);
--	if (chip->addr)
--		pci_iounmap(chip->pci, chip->addr);
--	if (chip->bmaddr)
--		pci_iounmap(chip->pci, chip->bmaddr);
+ 	snd_azf3328_mixer_reset(chip);
+ 
+ 	snd_azf3328_timer_stop(chip->timer);
+ 	snd_azf3328_gameport_free(chip);
+-
+-__end_hw:
+-	if (chip->irq >= 0)
+-		free_irq(chip->irq, chip);
 -	pci_release_regions(chip->pci);
 -	pci_disable_device(chip->pci);
+-
 -	kfree(chip);
 -	return 0;
- }
- 
- #ifdef CONFIG_PM_SLEEP
-@@ -2831,12 +2822,6 @@ static void snd_intel8x0_proc_init(struct intel8x0 *chip)
- 			     snd_intel8x0_proc_read);
- }
- 
--static int snd_intel8x0_dev_free(struct snd_device *device)
--{
--	struct intel8x0 *chip = device->device_data;
--	return snd_intel8x0_free(chip);
 -}
 -
- struct ich_reg_info {
- 	unsigned int int_sta_mask;
- 	unsigned int offset;
-@@ -2880,19 +2865,15 @@ static int snd_intel8x0_inside_vm(struct pci_dev *pci)
- 	return result;
+-static int
+-snd_azf3328_dev_free(struct snd_device *device)
+-{
+-	struct snd_azf3328 *chip = device->device_data;
+-	return snd_azf3328_free(chip);
  }
  
--static int snd_intel8x0_create(struct snd_card *card,
--			       struct pci_dev *pci,
--			       unsigned long device_type,
--			       struct intel8x0 **r_intel8x0)
-+static int snd_intel8x0_init(struct snd_card *card,
-+			     struct pci_dev *pci,
-+			     unsigned long device_type)
+ #if 0
+@@ -2350,29 +2333,18 @@ snd_azf3328_debug_show_ports(const struct snd_azf3328 *chip)
+ static int
+ snd_azf3328_create(struct snd_card *card,
+ 		   struct pci_dev *pci,
+-		   unsigned long device_type,
+-		   struct snd_azf3328 **rchip)
++		   unsigned long device_type)
  {
--	struct intel8x0 *chip;
-+	struct intel8x0 *chip = card->private_data;
+-	struct snd_azf3328 *chip;
++	struct snd_azf3328 *chip = card->private_data;
  	int err;
- 	unsigned int i;
- 	unsigned int int_sta_masks;
- 	struct ichdev *ichdev;
 -	static const struct snd_device_ops ops = {
--		.dev_free =	snd_intel8x0_dev_free,
+-		.dev_free =     snd_azf3328_dev_free,
 -	};
+ 	u8 dma_init;
+ 	enum snd_azf3328_codec_type codec_type;
+ 	struct snd_azf3328_codec_data *codec_setup;
  
- 	static const unsigned int bdbars[] = {
- 		3, /* DEVICE_INTEL */
-@@ -2925,17 +2906,10 @@ static int snd_intel8x0_create(struct snd_card *card,
- 	};
- 	const struct ich_reg_info *tbl;
- 
--	*r_intel8x0 = NULL;
+-	*rchip = NULL;
 -
 -	err = pci_enable_device(pci);
 +	err = pcim_enable_device(pci);
@@ -217,464 +177,192 @@ index 6a436a2ce26a..67cb65a53edd 100644
  
 -	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
 -	if (chip == NULL) {
--		pci_disable_device(pci);
--		return -ENOMEM;
+-		err = -ENOMEM;
+-		goto out_err;
 -	}
  	spin_lock_init(&chip->reg_lock);
- 	chip->device_type = device_type;
  	chip->card = card;
-@@ -2961,38 +2935,23 @@ static int snd_intel8x0_create(struct snd_card *card,
- 		chip->fix_nocache = 1; /* enable workaround */
- 
- 	err = pci_request_regions(pci, card->shortname);
--	if (err < 0) {
--		kfree(chip);
--		pci_disable_device(pci);
-+	if (err < 0)
- 		return err;
--	}
- 
- 	if (device_type == DEVICE_ALI) {
- 		/* ALI5455 has no ac97 region */
--		chip->bmaddr = pci_iomap(pci, 0, 0);
--		goto port_inited;
--	}
--
--	if (pci_resource_flags(pci, 2) & IORESOURCE_MEM) /* ICH4 and Nforce */
--		chip->addr = pci_iomap(pci, 2, 0);
--	else
--		chip->addr = pci_iomap(pci, 0, 0);
--	if (!chip->addr) {
--		dev_err(card->dev, "AC'97 space ioremap problem\n");
--		snd_intel8x0_free(chip);
--		return -EIO;
-+		chip->bmaddr = pcim_iomap(pci, 0, 0);
-+	} else {
-+		if (pci_resource_flags(pci, 2) & IORESOURCE_MEM) /* ICH4 and Nforce */
-+			chip->addr = pcim_iomap(pci, 2, 0);
-+		else
-+			chip->addr = pcim_iomap(pci, 0, 0);
-+		if (pci_resource_flags(pci, 3) & IORESOURCE_MEM) /* ICH4 */
-+			chip->bmaddr = pcim_iomap(pci, 3, 0);
-+		else
-+			chip->bmaddr = pcim_iomap(pci, 1, 0);
+ 	chip->pci = pci;
+@@ -2383,13 +2355,12 @@ snd_azf3328_create(struct snd_card *card,
+ 		dev_err(card->dev,
+ 			"architecture does not support 24bit PCI busmaster DMA\n"
+ 		);
+-		err = -ENXIO;
+-		goto out_err;
++		return -ENXIO;
  	}
--	if (pci_resource_flags(pci, 3) & IORESOURCE_MEM) /* ICH4 */
--		chip->bmaddr = pci_iomap(pci, 3, 0);
--	else
--		chip->bmaddr = pci_iomap(pci, 1, 0);
  
-- port_inited:
--	if (!chip->bmaddr) {
--		dev_err(card->dev, "Controller space ioremap problem\n");
--		snd_intel8x0_free(chip);
--		return -EIO;
--	}
- 	chip->bdbars_count = bdbars[device_type];
+ 	err = pci_request_regions(pci, "Aztech AZF3328");
+ 	if (err < 0)
+-		goto out_err;
++		return err;
  
- 	/* initialize offsets */
-@@ -3028,21 +2987,20 @@ static int snd_intel8x0_create(struct snd_card *card,
+ 	chip->ctrl_io  = pci_resource_start(pci, 0);
+ 	chip->game_io  = pci_resource_start(pci, 1);
+@@ -2415,26 +2386,22 @@ snd_azf3328_create(struct snd_card *card,
+ 	codec_setup->type = AZF_CODEC_I2S_OUT;
+ 	codec_setup->name = "I2S_OUT";
  
- 	/* allocate buffer descriptor lists */
- 	/* the start of each lists must be aligned to 8 bytes */
--	if (snd_dma_alloc_pages(intel8x0_dma_type(chip), &pci->dev,
--				chip->bdbars_count * sizeof(u32) * ICH_MAX_FRAGS * 2,
--				&chip->bdbars) < 0) {
--		snd_intel8x0_free(chip);
--		dev_err(card->dev, "cannot allocate buffer descriptors\n");
-+	chip->bdbars = snd_devm_alloc_pages(&pci->dev, intel8x0_dma_type(chip),
-+					    chip->bdbars_count * sizeof(u32) *
-+					    ICH_MAX_FRAGS * 2);
-+	if (!chip->bdbars)
- 		return -ENOMEM;
--	}
-+
- 	/* tables must be aligned to 8 bytes here, but the kernel pages
- 	   are much bigger, so we don't care (on i386) */
- 	int_sta_masks = 0;
- 	for (i = 0; i < chip->bdbars_count; i++) {
- 		ichdev = &chip->ichd[i];
--		ichdev->bdbar = ((__le32 *)chip->bdbars.area) +
-+		ichdev->bdbar = ((__le32 *)chip->bdbars->area) +
- 			(i * ICH_MAX_FRAGS * 2);
--		ichdev->bdbar_addr = chip->bdbars.addr +
-+		ichdev->bdbar_addr = chip->bdbars->addr +
- 			(i * sizeof(u32) * ICH_MAX_FRAGS * 2);
- 		int_sta_masks |= ichdev->int_sta_mask;
- 	}
-@@ -3076,28 +3034,24 @@ static int snd_intel8x0_create(struct snd_card *card,
- 		chip->codec_isr_bits |= chip->codec_bit[i];
- 
- 	err = snd_intel8x0_chip_init(chip, 1);
--	if (err < 0) {
--		snd_intel8x0_free(chip);
-+	if (err < 0)
- 		return err;
--	}
- 
- 	/* request irq after initializaing int_sta_mask, etc */
-+	/* NOTE: we don't use devm version here since it's released /
-+	 * re-acquired in PM callbacks.
-+	 * It's released explicitly in snd_intel8x0_free(), too.
-+	 */
- 	if (request_irq(pci->irq, snd_intel8x0_interrupt,
- 			IRQF_SHARED, KBUILD_MODNAME, chip)) {
+-	if (request_irq(pci->irq, snd_azf3328_interrupt,
+-			IRQF_SHARED, KBUILD_MODNAME, chip)) {
++	if (devm_request_irq(&pci->dev, pci->irq, snd_azf3328_interrupt,
++			     IRQF_SHARED, KBUILD_MODNAME, chip)) {
  		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
--		snd_intel8x0_free(chip);
- 		return -EBUSY;
+-		err = -EBUSY;
+-		goto out_err;
++		return -EBUSY;
  	}
  	chip->irq = pci->irq;
  	card->sync_irq = chip->irq;
- 
--	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
--	if (err < 0) {
--		snd_intel8x0_free(chip);
--		return err;
--	}
-+	card->private_free = snd_intel8x0_free;
- 
--	*r_intel8x0 = chip;
- 	return 0;
- }
- 
-@@ -3163,9 +3117,11 @@ static int snd_intel8x0_probe(struct pci_dev *pci,
- 	int err;
- 	struct shortname_table *name;
- 
--	err = snd_card_new(&pci->dev, index, id, THIS_MODULE, 0, &card);
-+	err = snd_devm_card_new(&pci->dev, index, id, THIS_MODULE,
-+				sizeof(*chip), &card);
- 	if (err < 0)
- 		return err;
-+	chip = card->private_data;
- 
- 	if (spdif_aclink < 0)
- 		spdif_aclink = check_default_spdif_aclink(pci);
-@@ -3199,23 +3155,16 @@ static int snd_intel8x0_probe(struct pci_dev *pci,
- 			buggy_irq = 0;
- 	}
- 
--	err = snd_intel8x0_create(card, pci, pci_id->driver_data, &chip);
--	if (err < 0) {
--		snd_card_free(card);
-+	err = snd_intel8x0_init(card, pci, pci_id->driver_data);
-+	if (err < 0)
- 		return err;
--	}
--	card->private_data = chip;
- 
- 	err = snd_intel8x0_mixer(chip, ac97_clock, ac97_quirk);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 	err = snd_intel8x0_pcm(chip);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 	
- 	snd_intel8x0_proc_init(chip);
- 
-@@ -3233,24 +3182,17 @@ static int snd_intel8x0_probe(struct pci_dev *pci,
- 	}
- 
- 	err = snd_card_register(card);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
-+
- 	pci_set_drvdata(pci, card);
- 	return 0;
- }
- 
--static void snd_intel8x0_remove(struct pci_dev *pci)
--{
--	snd_card_free(pci_get_drvdata(pci));
--}
--
- static struct pci_driver intel8x0_driver = {
- 	.name = KBUILD_MODNAME,
- 	.id_table = snd_intel8x0_ids,
- 	.probe = snd_intel8x0_probe,
--	.remove = snd_intel8x0_remove,
- 	.driver = {
- 		.pm = INTEL8X0_PM_OPS,
- 	},
-diff --git a/sound/pci/intel8x0m.c b/sound/pci/intel8x0m.c
-index b96fce6cbd83..7de3cb2f17b5 100644
---- a/sound/pci/intel8x0m.c
-+++ b/sound/pci/intel8x0m.c
-@@ -182,7 +182,7 @@ struct intel8x0m {
- 
- 	spinlock_t reg_lock;
- 	
--	struct snd_dma_buffer bdbars;
-+	struct snd_dma_buffer *bdbars;
- 	u32 bdbars_count;
- 	u32 int_sta_reg;		/* interrupt status register */
- 	u32 int_sta_mask;		/* interrupt status mask */
-@@ -947,8 +947,9 @@ static int snd_intel8x0m_chip_init(struct intel8x0m *chip, int probing)
- 	return 0;
- }
- 
--static int snd_intel8x0m_free(struct intel8x0m *chip)
-+static void snd_intel8x0m_free(struct snd_card *card)
- {
-+	struct intel8x0m *chip = card->private_data;
- 	unsigned int i;
- 
- 	if (chip->irq < 0)
-@@ -962,16 +963,6 @@ static int snd_intel8x0m_free(struct intel8x0m *chip)
-  __hw_end:
- 	if (chip->irq >= 0)
- 		free_irq(chip->irq, chip);
--	if (chip->bdbars.area)
--		snd_dma_free_pages(&chip->bdbars);
--	if (chip->addr)
--		pci_iounmap(chip->pci, chip->addr);
--	if (chip->bmaddr)
--		pci_iounmap(chip->pci, chip->bmaddr);
--	pci_release_regions(chip->pci);
--	pci_disable_device(chip->pci);
--	kfree(chip);
--	return 0;
- }
- 
- #ifdef CONFIG_PM_SLEEP
-@@ -1047,47 +1038,30 @@ static void snd_intel8x0m_proc_init(struct intel8x0m *chip)
- 			     snd_intel8x0m_proc_read);
- }
- 
--static int snd_intel8x0m_dev_free(struct snd_device *device)
--{
--	struct intel8x0m *chip = device->device_data;
--	return snd_intel8x0m_free(chip);
--}
--
- struct ich_reg_info {
- 	unsigned int int_sta_mask;
- 	unsigned int offset;
- };
- 
--static int snd_intel8x0m_create(struct snd_card *card,
--				struct pci_dev *pci,
--				unsigned long device_type,
--				struct intel8x0m **r_intel8x0m)
-+static int snd_intel8x0m_init(struct snd_card *card,
-+			      struct pci_dev *pci,
-+			      unsigned long device_type)
- {
--	struct intel8x0m *chip;
-+	struct intel8x0m *chip = card->private_data;
- 	int err;
- 	unsigned int i;
- 	unsigned int int_sta_masks;
- 	struct ichdev *ichdev;
--	static const struct snd_device_ops ops = {
--		.dev_free =	snd_intel8x0m_dev_free,
--	};
- 	static const struct ich_reg_info intel_regs[2] = {
- 		{ ICH_MIINT, 0 },
- 		{ ICH_MOINT, 0x10 },
- 	};
- 	const struct ich_reg_info *tbl;
- 
--	*r_intel8x0m = NULL;
--
--	err = pci_enable_device(pci);
-+	err = pcim_enable_device(pci);
- 	if (err < 0)
- 		return err;
- 
--	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
--	if (chip == NULL) {
--		pci_disable_device(pci);
--		return -ENOMEM;
--	}
- 	spin_lock_init(&chip->reg_lock);
- 	chip->device_type = device_type;
- 	chip->card = card;
-@@ -1095,37 +1069,21 @@ static int snd_intel8x0m_create(struct snd_card *card,
- 	chip->irq = -1;
- 
- 	err = pci_request_regions(pci, card->shortname);
--	if (err < 0) {
--		kfree(chip);
--		pci_disable_device(pci);
-+	if (err < 0)
- 		return err;
--	}
- 
- 	if (device_type == DEVICE_ALI) {
- 		/* ALI5455 has no ac97 region */
--		chip->bmaddr = pci_iomap(pci, 0, 0);
--		goto port_inited;
--	}
--
--	if (pci_resource_flags(pci, 2) & IORESOURCE_MEM) /* ICH4 and Nforce */
--		chip->addr = pci_iomap(pci, 2, 0);
--	else
--		chip->addr = pci_iomap(pci, 0, 0);
--	if (!chip->addr) {
--		dev_err(card->dev, "AC'97 space ioremap problem\n");
--		snd_intel8x0m_free(chip);
--		return -EIO;
--	}
--	if (pci_resource_flags(pci, 3) & IORESOURCE_MEM) /* ICH4 */
--		chip->bmaddr = pci_iomap(pci, 3, 0);
--	else
--		chip->bmaddr = pci_iomap(pci, 1, 0);
--
--port_inited:
--	if (!chip->bmaddr) {
--		dev_err(card->dev, "Controller space ioremap problem\n");
--		snd_intel8x0m_free(chip);
--		return -EIO;
-+		chip->bmaddr = pcim_iomap(pci, 0, 0);
-+	} else {
-+		if (pci_resource_flags(pci, 2) & IORESOURCE_MEM) /* ICH4 and Nforce */
-+			chip->addr = pcim_iomap(pci, 2, 0);
-+		else
-+			chip->addr = pcim_iomap(pci, 0, 0);
-+		if (pci_resource_flags(pci, 3) & IORESOURCE_MEM) /* ICH4 */
-+			chip->bmaddr = pcim_iomap(pci, 3, 0);
-+		else
-+			chip->bmaddr = pcim_iomap(pci, 1, 0);
- 	}
- 
- 	/* initialize offsets */
-@@ -1153,19 +1111,19 @@ static int snd_intel8x0m_create(struct snd_card *card,
- 
- 	/* allocate buffer descriptor lists */
- 	/* the start of each lists must be aligned to 8 bytes */
--	if (snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, &pci->dev,
--				chip->bdbars_count * sizeof(u32) * ICH_MAX_FRAGS * 2,
--				&chip->bdbars) < 0) {
--		snd_intel8x0m_free(chip);
-+	chip->bdbars = snd_devm_alloc_pages(&pci->dev, SNDRV_DMA_TYPE_DEV,
-+					    chip->bdbars_count * sizeof(u32) *
-+					    ICH_MAX_FRAGS * 2);
-+	if (!chip->bdbars)
- 		return -ENOMEM;
--	}
-+
- 	/* tables must be aligned to 8 bytes here, but the kernel pages
- 	   are much bigger, so we don't care (on i386) */
- 	int_sta_masks = 0;
- 	for (i = 0; i < chip->bdbars_count; i++) {
- 		ichdev = &chip->ichd[i];
--		ichdev->bdbar = ((__le32 *)chip->bdbars.area) + (i * ICH_MAX_FRAGS * 2);
--		ichdev->bdbar_addr = chip->bdbars.addr + (i * sizeof(u32) * ICH_MAX_FRAGS * 2);
-+		ichdev->bdbar = ((__le32 *)chip->bdbars->area) + (i * ICH_MAX_FRAGS * 2);
-+		ichdev->bdbar_addr = chip->bdbars->addr + (i * sizeof(u32) * ICH_MAX_FRAGS * 2);
- 		int_sta_masks |= ichdev->int_sta_mask;
- 	}
- 	chip->int_sta_reg = ICH_REG_GLOB_STA;
-@@ -1174,27 +1132,23 @@ static int snd_intel8x0m_create(struct snd_card *card,
++	card->private_free = snd_azf3328_free;
  	pci_set_master(pci);
  
- 	err = snd_intel8x0m_chip_init(chip, 1);
--	if (err < 0) {
--		snd_intel8x0m_free(chip);
-+	if (err < 0)
- 		return err;
--	}
- 
-+	/* NOTE: we don't use devm version here since it's released /
-+	 * re-acquired in PM callbacks.
-+	 * It's released explicitly in snd_intel8x0m_free(), too.
-+	 */
- 	if (request_irq(pci->irq, snd_intel8x0m_interrupt, IRQF_SHARED,
- 			KBUILD_MODNAME, chip)) {
- 		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
--		snd_intel8x0m_free(chip);
- 		return -EBUSY;
- 	}
- 	chip->irq = pci->irq;
- 	card->sync_irq = chip->irq;
+ 	snd_azf3328_debug_show_ports(chip);
  
 -	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
--	if (err < 0) {
--		snd_intel8x0m_free(chip);
--		return err;
--	}
-+	card->private_free = snd_intel8x0m_free;
+-	if (err < 0)
+-		goto out_err;
+-
+ 	/* create mixer interface & switches */
+ 	err = snd_azf3328_mixer_new(chip);
+ 	if (err < 0)
+-		goto out_err;
++		return err;
  
--	*r_intel8x0m = chip;
- 	return 0;
+ 	/* standard codec init stuff */
+ 		/* default DMA init value */
+@@ -2456,18 +2423,7 @@ snd_azf3328_create(struct snd_card *card,
+ 		spin_unlock_irq(codec->lock);
+ 	}
+ 
+-	*rchip = chip;
+-
+-	err = 0;
+-	goto out;
+-
+-out_err:
+-	if (chip)
+-		snd_azf3328_free(chip);
+-	pci_disable_device(pci);
+-
+-out:
+-	return err;
++	return 0;
  }
  
-@@ -1232,9 +1186,11 @@ static int snd_intel8x0m_probe(struct pci_dev *pci,
+ static int
+@@ -2479,29 +2435,25 @@ snd_azf3328_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+ 	struct snd_opl3 *opl3;
  	int err;
- 	struct shortname_table *name;
  
--	err = snd_card_new(&pci->dev, index, id, THIS_MODULE, 0, &card);
-+	err = snd_devm_card_new(&pci->dev, index, id, THIS_MODULE,
+-	if (dev >= SNDRV_CARDS) {
+-		err = -ENODEV;
+-		goto out;
+-	}
++	if (dev >= SNDRV_CARDS)
++		return -ENODEV;
+ 	if (!enable[dev]) {
+ 		dev++;
+-		err = -ENOENT;
+-		goto out;
++		return -ENOENT;
+ 	}
+ 
+-	err = snd_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
+-			   0, &card);
++	err = snd_devm_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
 +				sizeof(*chip), &card);
  	if (err < 0)
- 		return err;
+-		goto out;
++		return err;
 +	chip = card->private_data;
  
- 	strcpy(card->driver, "ICH-MODEM");
- 	strcpy(card->shortname, "Intel ICH");
-@@ -1246,23 +1202,16 @@ static int snd_intel8x0m_probe(struct pci_dev *pci,
- 	}
- 	strcat(card->shortname," Modem");
+ 	strcpy(card->driver, "AZF3328");
+ 	strcpy(card->shortname, "Aztech AZF3328 (PCI168)");
  
--	err = snd_intel8x0m_create(card, pci, pci_id->driver_data, &chip);
--	if (err < 0) {
--		snd_card_free(card);
-+	err = snd_intel8x0m_init(card, pci, pci_id->driver_data);
-+	if (err < 0)
- 		return err;
--	}
+-	err = snd_azf3328_create(card, pci, pci_id->driver_data, &chip);
++	err = snd_azf3328_create(card, pci, pci_id->driver_data);
+ 	if (err < 0)
+-		goto out_err;
+-
 -	card->private_data = chip;
++		return err;
  
- 	err = snd_intel8x0m_mixer(chip, ac97_clock);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 	err = snd_intel8x0m_pcm(chip);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 	
- 	snd_intel8x0m_proc_init(chip);
+ 	/* chose to use MPU401_HW_AZT2320 ID instead of MPU401_HW_MPU401,
+ 	   since our hardware ought to be similar, thus use same ID. */
+@@ -2515,16 +2467,16 @@ snd_azf3328_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+ 		dev_err(card->dev, "no MPU-401 device at 0x%lx?\n",
+ 				chip->mpu_io
+ 		);
+-		goto out_err;
++		return err;
+ 	}
  
-@@ -1270,24 +1219,16 @@ static int snd_intel8x0m_probe(struct pci_dev *pci,
- 		card->shortname, chip->irq);
+ 	err = snd_azf3328_timer(chip, 0);
+ 	if (err < 0)
+-		goto out_err;
++		return err;
+ 
+ 	err = snd_azf3328_pcm(chip);
+ 	if (err < 0)
+-		goto out_err;
++		return err;
+ 
+ 	if (snd_opl3_create(card, chip->opl3_io, chip->opl3_io+2,
+ 			    OPL3_HW_AUTO, 1, &opl3) < 0) {
+@@ -2535,10 +2487,10 @@ snd_azf3328_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+ 		/* need to use IDs 1, 2 since ID 0 is snd_azf3328_timer above */
+ 		err = snd_opl3_timer_new(opl3, 1, 2);
+ 		if (err < 0)
+-			goto out_err;
++			return err;
+ 		err = snd_opl3_hwdep_new(opl3, 0, 1, NULL);
+ 		if (err < 0)
+-			goto out_err;
++			return err;
+ 		opl3->private_data = chip;
+ 	}
+ 
+@@ -2547,7 +2499,7 @@ snd_azf3328_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
  
  	err = snd_card_register(card);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 	pci_set_drvdata(pci, card);
- 	return 0;
- }
+ 	if (err < 0)
+-		goto out_err;
++		return err;
  
--static void snd_intel8x0m_remove(struct pci_dev *pci)
--{
--	snd_card_free(pci_get_drvdata(pci));
+ #ifdef MODULE
+ 	dev_info(card->dev,
+@@ -2565,22 +2517,7 @@ snd_azf3328_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+ 
+ 	pci_set_drvdata(pci, card);
+ 	dev++;
+-
+-	err = 0;
+-	goto out;
+-
+-out_err:
+-	dev_err(card->dev, "something failed, exiting\n");
+-	snd_card_free(card);
+-
+-out:
+-	return err;
 -}
 -
- static struct pci_driver intel8x0m_driver = {
+-static void
+-snd_azf3328_remove(struct pci_dev *pci)
+-{
+-	snd_card_free(pci_get_drvdata(pci));
++	return 0;
+ }
+ 
+ #ifdef CONFIG_PM_SLEEP
+@@ -2709,7 +2646,6 @@ static struct pci_driver azf3328_driver = {
  	.name = KBUILD_MODNAME,
- 	.id_table = snd_intel8x0m_ids,
- 	.probe = snd_intel8x0m_probe,
--	.remove = snd_intel8x0m_remove,
+ 	.id_table = snd_azf3328_ids,
+ 	.probe = snd_azf3328_probe,
+-	.remove = snd_azf3328_remove,
  	.driver = {
- 		.pm = INTEL8X0M_PM_OPS,
+ 		.pm = SND_AZF3328_PM_OPS,
  	},
 -- 
 2.26.2
