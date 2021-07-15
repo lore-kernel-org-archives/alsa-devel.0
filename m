@@ -7,77 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42B50C07E96
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:19:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AA1EC07E96
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:19:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AF5E060FEB
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:19:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AF5E060FEB
+	by mail.kernel.org (Postfix) with ESMTPS id 2FEB761183
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:19:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2FEB761183
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4B4F11700;
-	Thu, 15 Jul 2021 10:18:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B4F11700
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD3191663;
+	Thu, 15 Jul 2021 10:18:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD3191663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626337166;
-	bh=rHsxd+v0mhkecxXBQ+rDzQSZSqPBYuEhskwV0L+lXHc=;
+	s=default; t=1626337182;
+	bh=ZNOjcVUmN7mpJBg0fwsyXG3qaNDYfAmD1igigzAYbBU=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pbp6g2WTL0ZT3/1JYgQe8pd5RSf6z50fYHfUg6wcRtAZzo4mKkenM4ATAB0TsLrsc
-	 5BYeIogfl3LqWPHfh7JuoOA65Ywq2G6wqSgW9rm2mCJ1Kie+ZVGVrdz5lExqVSrDoy
-	 zgjUt9NmeZE0vaby7qAY2pDu/4rG8WIiHTIMORZ4=
+	b=qavrnIh/mKdly7ykAOA9TI1Mm4ldrLEWe5HvJFpj1hEH96oMCkcGKeojvT5paoW+G
+	 dHVYWJpg5F13lH0o34rQtosYZ4aMs7HiaJyoe4lQzDc6GFwhxIEqvGajnKZ1qDMOn1
+	 KsXLfn12qpFkdgW6RwliZjrO9fdXPFFbnzo+6XSE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BFBFCF80549;
-	Thu, 15 Jul 2021 10:01:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 298C9F80714;
+	Thu, 15 Jul 2021 10:01:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5DFC6F80536; Thu, 15 Jul 2021 10:01:13 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id D4A29F806ED; Thu, 15 Jul 2021 10:01:13 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D298BF80528
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D298BF80528
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7A96FF80538
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A96FF80538
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="tHkD/YS4"; 
+ header.b="pHdCPoJt"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="fEM/I5YV"
+ header.b="S/6mzRDO"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id AA0ED1FDE5
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:11 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 565B922833
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626336011; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1626336013; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=VISn0WVaelPlAIIWemmJVN6fWOaz1Q9xpZNf/RGCWp4=;
- b=tHkD/YS4Gq4HDTsjP1v2oXGoN0TifBDL6O2SEcINMD1QlmJRoV5dCWVjW55Q0lJSyXCyLt
- 0LmpDNcwtwkOBVtD5uJqVLlrIJdy8andCgmjKiorN5rLF2atPTpR+V5O4dwB1N9UJ7Lii+
- xY2T2PnwLcn+83+6Oi1rrNEtTzIvNYg=
+ bh=PKlGyoq1rpQzmRBIL2v666jZgzLLVK+izAKnR8LW/ZM=;
+ b=pHdCPoJthKyfYOg8NAvc8JWhIrzBtrkVtIFP05pI6k9y5I3rLf6Mp+CCnhIiV1uYEBN9ES
+ Zl0Q8/9ifiELo5s5ye6tDbr7w8BRbC50ihwuG8bznCmRj5fx8uM4SuG6sHTkyfdppW5uv5
+ bbPoCAj2HsmTWtc+TZ18JjVpBYas+NU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626336011;
+ s=susede2_ed25519; t=1626336013;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=VISn0WVaelPlAIIWemmJVN6fWOaz1Q9xpZNf/RGCWp4=;
- b=fEM/I5YVgbQ3EB+o1EomcPDJPAQ1WSRg+2VcbK5DHpshoxncq0JuknPD/M41CCRq09A7S6
- pMRDca0q6MaKbnCQ==
+ bh=PKlGyoq1rpQzmRBIL2v666jZgzLLVK+izAKnR8LW/ZM=;
+ b=S/6mzRDOHJuzY3HlHjxoXAfoPurbTkwY7tfKeXzqksw701Ub8Dd+DAq+CPh/VvRKrht0w3
+ MLQQnsd2y9kAZ5Dg==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 968FEA3B99;
- Thu, 15 Jul 2021 08:00:11 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 456E4A3B9C;
+ Thu, 15 Jul 2021 08:00:13 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 45/79] ALSA: hdsp: Allocate resources with device-managed
- APIs
-Date: Thu, 15 Jul 2021 09:59:07 +0200
-Message-Id: <20210715075941.23332-46-tiwai@suse.de>
+Subject: [PATCH v2 49/79] ALSA: vx: Manage vx_core object with devres
+Date: Thu, 15 Jul 2021 09:59:11 +0200
+Message-Id: <20210715075941.23332-50-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210715075941.23332-1-tiwai@suse.de>
 References: <20210715075941.23332-1-tiwai@suse.de>
@@ -98,219 +97,110 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the resource management in PCI hdsp driver with
-devres as a clean up.  Each manual resource management is converted
-with the corresponding devres helper, the page allocations are done
-with the devres helper, and the card object release is managed now via
-card->private_free instead of a lowlevel snd_device.
-
-This should give no user-visible functional changes.
+The firmware data are also released automatically.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/rme9652/hdsp.c | 89 +++++++++++-----------------------------
- 1 file changed, 25 insertions(+), 64 deletions(-)
+ sound/drivers/vx/vx_core.c | 12 ++++++++++--
+ sound/pci/vx222/vx222.c    |  1 -
+ sound/pcmcia/vx/vxpocket.c | 22 ----------------------
+ 3 files changed, 10 insertions(+), 25 deletions(-)
 
-diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
-index 8457a4bbc3df..982278f8724d 100644
---- a/sound/pci/rme9652/hdsp.c
-+++ b/sound/pci/rme9652/hdsp.c
-@@ -468,8 +468,8 @@ struct hdsp {
- 	unsigned char         ss_out_channels;
- 	u32                   io_loopback;          /* output loopback channel states*/
+diff --git a/sound/drivers/vx/vx_core.c b/sound/drivers/vx/vx_core.c
+index a10449af5a76..18901e5bcfcf 100644
+--- a/sound/drivers/vx/vx_core.c
++++ b/sound/drivers/vx/vx_core.c
+@@ -774,6 +774,11 @@ int snd_vx_resume(struct vx_core *chip)
+ EXPORT_SYMBOL(snd_vx_resume);
+ #endif
  
--	struct snd_dma_buffer capture_dma_buf;
--	struct snd_dma_buffer playback_dma_buf;
-+	struct snd_dma_buffer *capture_dma_buf;
-+	struct snd_dma_buffer *playback_dma_buf;
- 	unsigned char        *capture_buffer;	    /* suitably aligned address */
- 	unsigned char        *playback_buffer;	    /* suitably aligned address */
- 
-@@ -565,18 +565,12 @@ static const char channel_map_H9632_qs[HDSP_MAX_CHANNELS] = {
- 	-1, -1
- };
- 
--static int snd_hammerfall_get_buffer(struct pci_dev *pci, struct snd_dma_buffer *dmab, size_t size)
-+static struct snd_dma_buffer *
-+snd_hammerfall_get_buffer(struct pci_dev *pci, size_t size)
- {
--	return snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, &pci->dev, size, dmab);
-+	return snd_devm_alloc_pages(&pci->dev, SNDRV_DMA_TYPE_DEV, size);
- }
- 
--static void snd_hammerfall_free_buffer(struct snd_dma_buffer *dmab, struct pci_dev *pci)
--{
--	if (dmab->area)
--		snd_dma_free_pages(dmab);
--}
--
--
- static const struct pci_device_id snd_hdsp_ids[] = {
- 	{
- 		.vendor = PCI_VENDOR_ID_XILINX,
-@@ -3768,20 +3762,15 @@ static void snd_hdsp_proc_init(struct hdsp *hdsp)
- 	snd_card_ro_proc_new(hdsp->card, "hdsp", hdsp, snd_hdsp_proc_read);
- }
- 
--static void snd_hdsp_free_buffers(struct hdsp *hdsp)
--{
--	snd_hammerfall_free_buffer(&hdsp->capture_dma_buf, hdsp->pci);
--	snd_hammerfall_free_buffer(&hdsp->playback_dma_buf, hdsp->pci);
--}
--
- static int snd_hdsp_initialize_memory(struct hdsp *hdsp)
- {
- 	unsigned long pb_bus, cb_bus;
- 
--	if (snd_hammerfall_get_buffer(hdsp->pci, &hdsp->capture_dma_buf, HDSP_DMA_AREA_BYTES) < 0 ||
--	    snd_hammerfall_get_buffer(hdsp->pci, &hdsp->playback_dma_buf, HDSP_DMA_AREA_BYTES) < 0) {
--		if (hdsp->capture_dma_buf.area)
--			snd_dma_free_pages(&hdsp->capture_dma_buf);
-+	hdsp->capture_dma_buf =
-+		snd_hammerfall_get_buffer(hdsp->pci, HDSP_DMA_AREA_BYTES);
-+	hdsp->playback_dma_buf =
-+		snd_hammerfall_get_buffer(hdsp->pci, HDSP_DMA_AREA_BYTES);
-+	if (!hdsp->capture_dma_buf || !hdsp->playback_dma_buf) {
- 		dev_err(hdsp->card->dev,
- 			"%s: no buffers available\n", hdsp->card_name);
- 		return -ENOMEM;
-@@ -3789,16 +3778,16 @@ static int snd_hdsp_initialize_memory(struct hdsp *hdsp)
- 
- 	/* Align to bus-space 64K boundary */
- 
--	cb_bus = ALIGN(hdsp->capture_dma_buf.addr, 0x10000ul);
--	pb_bus = ALIGN(hdsp->playback_dma_buf.addr, 0x10000ul);
-+	cb_bus = ALIGN(hdsp->capture_dma_buf->addr, 0x10000ul);
-+	pb_bus = ALIGN(hdsp->playback_dma_buf->addr, 0x10000ul);
- 
- 	/* Tell the card where it is */
- 
- 	hdsp_write(hdsp, HDSP_inputBufferAddress, cb_bus);
- 	hdsp_write(hdsp, HDSP_outputBufferAddress, pb_bus);
- 
--	hdsp->capture_buffer = hdsp->capture_dma_buf.area + (cb_bus - hdsp->capture_dma_buf.addr);
--	hdsp->playback_buffer = hdsp->playback_dma_buf.area + (pb_bus - hdsp->playback_dma_buf.addr);
-+	hdsp->capture_buffer = hdsp->capture_dma_buf->area + (cb_bus - hdsp->capture_dma_buf->addr);
-+	hdsp->playback_buffer = hdsp->playback_dma_buf->area + (pb_bus - hdsp->playback_dma_buf->addr);
- 
- 	return 0;
- }
-@@ -5313,7 +5302,7 @@ static int snd_hdsp_create(struct snd_card *card,
- 		is_9632 = 1;
- 	}
- 
--	err = pci_enable_device(pci);
-+	err = pcim_enable_device(pci);
- 	if (err < 0)
- 		return err;
- 
-@@ -5323,15 +5312,15 @@ static int snd_hdsp_create(struct snd_card *card,
- 	if (err < 0)
- 		return err;
- 	hdsp->port = pci_resource_start(pci, 0);
--	hdsp->iobase = ioremap(hdsp->port, HDSP_IO_EXTENT);
-+	hdsp->iobase = devm_ioremap(&pci->dev, hdsp->port, HDSP_IO_EXTENT);
- 	if (!hdsp->iobase) {
- 		dev_err(hdsp->card->dev, "unable to remap region 0x%lx-0x%lx\n",
- 			hdsp->port, hdsp->port + HDSP_IO_EXTENT - 1);
- 		return -EBUSY;
- 	}
- 
--	if (request_irq(pci->irq, snd_hdsp_interrupt, IRQF_SHARED,
--			KBUILD_MODNAME, hdsp)) {
-+	if (devm_request_irq(&pci->dev, pci->irq, snd_hdsp_interrupt,
-+			     IRQF_SHARED, KBUILD_MODNAME, hdsp)) {
- 		dev_err(hdsp->card->dev, "unable to use IRQ %d\n", pci->irq);
- 		return -EBUSY;
- 	}
-@@ -5411,8 +5400,10 @@ static int snd_hdsp_create(struct snd_card *card,
- 	return 0;
- }
- 
--static int snd_hdsp_free(struct hdsp *hdsp)
-+static void snd_hdsp_card_free(struct snd_card *card)
- {
-+	struct hdsp *hdsp = card->private_data;
++static void snd_vx_release(struct device *dev, void *data)
++{
++	snd_vx_free_firmware(data);
++}
 +
- 	if (hdsp->port) {
- 		/* stop the audio, and cancel all interrupts */
- 		cancel_work_sync(&hdsp->midi_work);
-@@ -5420,29 +5411,8 @@ static int snd_hdsp_free(struct hdsp *hdsp)
- 		hdsp_write (hdsp, HDSP_controlRegister, hdsp->control_register);
- 	}
+ /**
+  * snd_vx_create - constructor for struct vx_core
+  * @card: card instance
+@@ -784,6 +789,8 @@ EXPORT_SYMBOL(snd_vx_resume);
+  * this function allocates the instance and prepare for the hardware
+  * initialization.
+  *
++ * The object is managed via devres, and will be automatically released.
++ *
+  * return the instance pointer if successful, NULL in error.
+  */
+ struct vx_core *snd_vx_create(struct snd_card *card,
+@@ -796,8 +803,9 @@ struct vx_core *snd_vx_create(struct snd_card *card,
+ 	if (snd_BUG_ON(!card || !hw || !ops))
+ 		return NULL;
  
--	if (hdsp->irq >= 0)
--		free_irq(hdsp->irq, (void *)hdsp);
+-	chip = kzalloc(sizeof(*chip) + extra_size, GFP_KERNEL);
+-	if (! chip)
++	chip = devres_alloc(snd_vx_release, sizeof(*chip) + extra_size,
++			    GFP_KERNEL);
++	if (!chip)
+ 		return NULL;
+ 	mutex_init(&chip->lock);
+ 	chip->irq = -1;
+diff --git a/sound/pci/vx222/vx222.c b/sound/pci/vx222/vx222.c
+index 04c7204cb7bc..46a80ef1d481 100644
+--- a/sound/pci/vx222/vx222.c
++++ b/sound/pci/vx222/vx222.c
+@@ -109,7 +109,6 @@ static int snd_vx222_free(struct vx_core *chip)
+ 	if (vx->port[0])
+ 		pci_release_regions(vx->pci);
+ 	pci_disable_device(vx->pci);
+-	kfree(chip);
+ 	return 0;
+ }
+ 
+diff --git a/sound/pcmcia/vx/vxpocket.c b/sound/pcmcia/vx/vxpocket.c
+index 0dfb6a943b60..7a0f0e73ceb2 100644
+--- a/sound/pcmcia/vx/vxpocket.c
++++ b/sound/pcmcia/vx/vxpocket.c
+@@ -50,19 +50,6 @@ static void vxpocket_release(struct pcmcia_device *link)
+ 	pcmcia_disable_device(link);
+ }
+ 
+-/*
+- * destructor, called from snd_card_free_when_closed()
+- */
+-static int snd_vxpocket_dev_free(struct snd_device *device)
+-{
+-	struct vx_core *chip = device->device_data;
 -
--	snd_hdsp_free_buffers(hdsp);
--
- 	release_firmware(hdsp->firmware);
- 	vfree(hdsp->fw_uploaded);
--	iounmap(hdsp->iobase);
--
--	if (hdsp->port)
--		pci_release_regions(hdsp->pci);
--
--	if (pci_is_enabled(hdsp->pci))
--		pci_disable_device(hdsp->pci);
+-	snd_vx_free_firmware(chip);
+-	kfree(chip);
 -	return 0;
 -}
 -
--static void snd_hdsp_card_free(struct snd_card *card)
--{
--	struct hdsp *hdsp = card->private_data;
 -
--	if (hdsp)
--		snd_hdsp_free(hdsp);
- }
+ /*
+  * Hardware information
+  */
+@@ -122,21 +109,12 @@ static int snd_vxpocket_new(struct snd_card *card, int ibl,
+ {
+ 	struct vx_core *chip;
+ 	struct snd_vxpocket *vxp;
+-	static const struct snd_device_ops ops = {
+-		.dev_free =	snd_vxpocket_dev_free,
+-	};
+-	int err;
  
- static int snd_hdsp_probe(struct pci_dev *pci,
-@@ -5460,8 +5430,8 @@ static int snd_hdsp_probe(struct pci_dev *pci,
- 		return -ENOENT;
- 	}
+ 	chip = snd_vx_create(card, &vxpocket_hw, &snd_vxpocket_ops,
+ 			     sizeof(struct snd_vxpocket) - sizeof(struct vx_core));
+ 	if (!chip)
+ 		return -ENOMEM;
  
--	err = snd_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
--			   sizeof(struct hdsp), &card);
-+	err = snd_devm_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
-+				sizeof(struct hdsp), &card);
- 	if (err < 0)
- 		return err;
- 
-@@ -5471,32 +5441,23 @@ static int snd_hdsp_probe(struct pci_dev *pci,
- 	hdsp->pci = pci;
- 	err = snd_hdsp_create(card, hdsp);
- 	if (err)
--		goto free_card;
-+		return err;
- 
- 	strcpy(card->shortname, "Hammerfall DSP");
- 	sprintf(card->longname, "%s at 0x%lx, irq %d", hdsp->card_name,
- 		hdsp->port, hdsp->irq);
- 	err = snd_card_register(card);
--	if (err) {
--free_card:
--		snd_card_free(card);
-+	if (err)
- 		return err;
+-	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
+-	if (err < 0) {
+-		kfree(chip);
+-		return err;
 -	}
- 	pci_set_drvdata(pci, card);
- 	dev++;
- 	return 0;
- }
+ 	chip->ibl.size = ibl;
  
--static void snd_hdsp_remove(struct pci_dev *pci)
--{
--	snd_card_free(pci_get_drvdata(pci));
--}
--
- static struct pci_driver hdsp_driver = {
- 	.name =     KBUILD_MODNAME,
- 	.id_table = snd_hdsp_ids,
- 	.probe =    snd_hdsp_probe,
--	.remove = snd_hdsp_remove,
- };
- 
- module_pci_driver(hdsp_driver);
+ 	vxp = to_vxpocket(chip);
 -- 
 2.26.2
 
