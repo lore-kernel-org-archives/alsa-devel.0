@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90871C07E96
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:31:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1646DC07E96
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:31:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 170A96120A
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:31:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 170A96120A
+	by mail.kernel.org (Postfix) with ESMTPS id 94FAC6120A
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:31:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94FAC6120A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A66621799;
-	Thu, 15 Jul 2021 10:30:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A66621799
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1FA351735;
+	Thu, 15 Jul 2021 10:31:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FA351735
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626337884;
-	bh=gNYrnzJBD7oS1I0cMqnEXaic/oz0sKeijbKW5AxDeNs=;
+	s=default; t=1626337916;
+	bh=iBsXn4w2dJ4CyMPTkybYJPdDpIu8nu6+vmNTQ/CbzGw=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CfsxmJv3zscJnnX7ODj3wal/RXRZUeD7rCoLlDCZviUknK6xhHEpuIR+YV8r4mgil
-	 jH0MdKTDzzxTEj9Tq6JSLCcw2mC9cII4pob8NkmBEQ951awu6r1civW8uZEmlb9K6E
-	 wNRpj+P7IJLV9slggi1O60ugEOztJ3uhM6IvxszQ=
+	b=sDd/KuzUc9Yaey91+/HQE2hIH/FEuqXcMbQQ/rULoH977Rc8jP/K7uVlnKsVgxH+D
+	 q9WM1pUdpiWNsjqbf7is1c9rXOwbNu4p6HIMlaLGOVPaTGRhYz8ggniEE3bxea7AnV
+	 2//fH9n8+puny+UaqD4mMv1nuA/OXGtL5boGPZcE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EA641F808C3;
-	Thu, 15 Jul 2021 10:02:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05083F808F4;
+	Thu, 15 Jul 2021 10:02:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2E35BF80844; Thu, 15 Jul 2021 10:01:54 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id EBC96F80858; Thu, 15 Jul 2021 10:01:57 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E1B7F805B6
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E1B7F805B6
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3FA99F805C5
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FA99F805C5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="jG0yaZpv"; 
+ header.b="YDATGMTw"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="X3D/7SaG"
+ header.b="xkAYDWvN"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 682DC22285
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:26 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 15E051FDEB
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626336026; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1626336028; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=1dr4v6qn4IruHDbmov8fH0fheRl/U9KVdzrtudFX2VU=;
- b=jG0yaZpv6lUdiJ2g528Vvnda7USgtPQxrglT24Dl5E9o1KHC1omn8V/T4ylQKN6T7BNUX4
- Az+bicn812ndip9YxlVAlDNPGYDjIIa/FM83NQL2UnrFOOHg8ebr0C8QbjR76V5mpspxqa
- lCHpsKsgVaUWgs76MdPjh3cjy/CKu5I=
+ bh=hsL3EB2EcG8KWez8PWBtNZ+HiyZkGGHXHw4xv/wdK5Q=;
+ b=YDATGMTwHrzXFA7ljru4OKcv8aPnzcOxTGsQWdZ3o5tVOz+7c7ZPD0shUEpgsPf2Ik8ANs
+ hMcaClGUtZhfEY2cmjhkcC9YlfF+eqRZYMbv4XWjYO4gz/SjxRjP6sXqAUwVpW53Py+wy6
+ kbYMRccJRj4HBpG0lzs4Wf0qGr4liZs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626336026;
+ s=susede2_ed25519; t=1626336028;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=1dr4v6qn4IruHDbmov8fH0fheRl/U9KVdzrtudFX2VU=;
- b=X3D/7SaGLDyHqTBi3qOof0cllqT1F93z3Vmf26Hl9ZS1gV0Cwll6q7pGRbp1x9v4z0gDUk
- tf1M0bdT816C3hCA==
+ bh=hsL3EB2EcG8KWez8PWBtNZ+HiyZkGGHXHw4xv/wdK5Q=;
+ b=xkAYDWvN76kt3eoyeQRB1ZMiig28N4NLrtONVqhEgitj5Ag5MgX7eBXQ91QGoTfBzOjQvO
+ qJiT5g5hkr2Ft+Cg==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 54A63A3BBA;
- Thu, 15 Jul 2021 08:00:26 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 04ACAA3B8F;
+ Thu, 15 Jul 2021 08:00:28 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 76/79] ALSA: mpu401: Allocate resources with device-managed
+Subject: [PATCH v2 79/79] ALSA: pcsp: Allocate resources with device-managed
  APIs
-Date: Thu, 15 Jul 2021 09:59:38 +0200
-Message-Id: <20210715075941.23332-77-tiwai@suse.de>
+Date: Thu, 15 Jul 2021 09:59:41 +0200
+Message-Id: <20210715075941.23332-80-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210715075941.23332-1-tiwai@suse.de>
 References: <20210715075941.23332-1-tiwai@suse.de>
@@ -98,112 +98,190 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the card object management with devres as a clean
-up.  The remove callback gets reduced by that.
-
-This should give no user-visible functional changes.
-
-Note that this converts only the mpu401 card driver.  The mpu401_uart
-component is still managed with snd_device.  It's for the case where
-the mpu401_uart component may be removed dynamically without the
-actual device unbind.
+Use the new snd_devm_card_new() for the card object allocation and the
+devres version for the input device, and clean up the superfluous
+remove callback.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/drivers/mpu401/mpu401.c | 34 +++++-----------------------------
- 1 file changed, 5 insertions(+), 29 deletions(-)
+ sound/drivers/pcsp/pcsp.c       | 49 +++++++++++----------------------
+ sound/drivers/pcsp/pcsp_input.c | 14 ++--------
+ sound/drivers/pcsp/pcsp_input.h |  1 -
+ 3 files changed, 18 insertions(+), 46 deletions(-)
 
-diff --git a/sound/drivers/mpu401/mpu401.c b/sound/drivers/mpu401/mpu401.c
-index d0b55dbb411a..3398aee33baa 100644
---- a/sound/drivers/mpu401/mpu401.c
-+++ b/sound/drivers/mpu401/mpu401.c
-@@ -59,8 +59,8 @@ static int snd_mpu401_create(struct device *devptr, int dev,
- 		snd_printk(KERN_ERR "the uart_enter option is obsolete; remove it\n");
+diff --git a/sound/drivers/pcsp/pcsp.c b/sound/drivers/pcsp/pcsp.c
+index 7689fa2f9531..c7be1c395bcb 100644
+--- a/sound/drivers/pcsp/pcsp.c
++++ b/sound/drivers/pcsp/pcsp.c
+@@ -42,9 +42,8 @@ struct snd_pcsp pcsp_chip;
  
- 	*rcard = NULL;
--	err = snd_card_new(devptr, index[dev], id[dev], THIS_MODULE,
--			   0, &card);
-+	err = snd_devm_card_new(devptr, index[dev], id[dev], THIS_MODULE,
-+				0, &card);
+ static int snd_pcsp_create(struct snd_card *card)
+ {
+-	static const struct snd_device_ops ops = { };
+ 	unsigned int resolution = hrtimer_resolution;
+-	int err, div, min_div, order;
++	int div, min_div, order;
+ 
+ 	if (!nopcm) {
+ 		if (resolution > PCSP_MAX_PERIOD_NS) {
+@@ -83,15 +82,18 @@ static int snd_pcsp_create(struct snd_card *card)
+ 	pcsp_chip.port = 0x61;
+ 	pcsp_chip.irq = -1;
+ 	pcsp_chip.dma = -1;
+-
+-	/* Register device */
+-	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, &pcsp_chip, &ops);
+-	if (err < 0)
+-		return err;
++	card->private_data = &pcsp_chip;
+ 
+ 	return 0;
+ }
+ 
++static void pcsp_stop_beep(struct snd_pcsp *chip);
++
++static void alsa_card_pcsp_free(struct snd_card *card)
++{
++	pcsp_stop_beep(card->private_data);
++}
++
+ static int snd_card_pcsp_probe(int devnum, struct device *dev)
+ {
+ 	struct snd_card *card;
+@@ -103,22 +105,22 @@ static int snd_card_pcsp_probe(int devnum, struct device *dev)
+ 	hrtimer_init(&pcsp_chip.timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+ 	pcsp_chip.timer.function = pcsp_do_timer;
+ 
+-	err = snd_card_new(dev, index, id, THIS_MODULE, 0, &card);
++	err = snd_devm_card_new(dev, index, id, THIS_MODULE, 0, &card);
  	if (err < 0)
  		return err;
- 	strcpy(card->driver, "MPU-401 UART");
-@@ -76,15 +76,11 @@ static int snd_mpu401_create(struct device *devptr, int dev,
- 				  irq[dev], NULL);
- 	if (err < 0) {
- 		printk(KERN_ERR "MPU401 not detected at 0x%lx\n", port[dev]);
--		goto _err;
-+		return err;
- 	}
  
- 	*rcard = card;
+ 	err = snd_pcsp_create(card);
+ 	if (err < 0)
+-		goto free_card;
++		return err;
+ 
+ 	if (!nopcm) {
+ 		err = snd_pcsp_new_pcm(&pcsp_chip);
+ 		if (err < 0)
+-			goto free_card;
++			return err;
+ 	}
+ 	err = snd_pcsp_new_mixer(&pcsp_chip, nopcm);
+ 	if (err < 0)
+-		goto free_card;
++		return err;
+ 
+ 	strcpy(card->driver, "PC-Speaker");
+ 	strcpy(card->shortname, "pcsp");
+@@ -127,13 +129,10 @@ static int snd_card_pcsp_probe(int devnum, struct device *dev)
+ 
+ 	err = snd_card_register(card);
+ 	if (err < 0)
+-		goto free_card;
++		return err;
++	card->private_free = alsa_card_pcsp_free;
+ 
  	return 0;
 -
-- _err:
+-free_card:
 -	snd_card_free(card);
 -	return err;
  }
  
- static int snd_mpu401_probe(struct platform_device *devptr)
-@@ -105,25 +101,16 @@ static int snd_mpu401_probe(struct platform_device *devptr)
- 	if (err < 0)
- 		return err;
- 	err = snd_card_register(card);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 	platform_set_drvdata(devptr, card);
+ static int alsa_card_pcsp_init(struct device *dev)
+@@ -155,11 +154,6 @@ static int alsa_card_pcsp_init(struct device *dev)
  	return 0;
  }
  
--static int snd_mpu401_remove(struct platform_device *devptr)
+-static void alsa_card_pcsp_exit(struct snd_pcsp *chip)
 -{
--	snd_card_free(platform_get_drvdata(devptr));
+-	snd_card_free(chip->card);
+-}
+-
+ static int pcsp_probe(struct platform_device *dev)
+ {
+ 	int err;
+@@ -169,23 +163,13 @@ static int pcsp_probe(struct platform_device *dev)
+ 		return err;
+ 
+ 	err = alsa_card_pcsp_init(&dev->dev);
+-	if (err < 0) {
+-		pcspkr_input_remove(pcsp_chip.input_dev);
++	if (err < 0)
+ 		return err;
+-	}
+ 
+ 	platform_set_drvdata(dev, &pcsp_chip);
+ 	return 0;
+ }
+ 
+-static int pcsp_remove(struct platform_device *dev)
+-{
+-	struct snd_pcsp *chip = platform_get_drvdata(dev);
+-	pcspkr_input_remove(chip->input_dev);
+-	alsa_card_pcsp_exit(chip);
 -	return 0;
 -}
 -
- #define SND_MPU401_DRIVER	"snd_mpu401"
- 
- static struct platform_driver snd_mpu401_driver = {
- 	.probe		= snd_mpu401_probe,
--	.remove		= snd_mpu401_remove,
- 	.driver		= {
- 		.name	= SND_MPU401_DRIVER,
+ static void pcsp_stop_beep(struct snd_pcsp *chip)
+ {
+ 	pcsp_sync_stop(chip);
+@@ -218,7 +202,6 @@ static struct platform_driver pcsp_platform_driver = {
+ 		.pm	= PCSP_PM_OPS,
  	},
-@@ -184,10 +171,8 @@ static int snd_mpu401_pnp_probe(struct pnp_dev *pnp_dev,
- 		if (err < 0)
- 			return err;
- 		err = snd_card_register(card);
--		if (err < 0) {
--			snd_card_free(card);
-+		if (err < 0)
- 			return err;
--		}
- 		pnp_set_drvdata(pnp_dev, card);
- 		snd_mpu401_devices++;
- 		++dev;
-@@ -196,19 +181,10 @@ static int snd_mpu401_pnp_probe(struct pnp_dev *pnp_dev,
- 	return -ENODEV;
- }
- 
--static void snd_mpu401_pnp_remove(struct pnp_dev *dev)
--{
--	struct snd_card *card = (struct snd_card *) pnp_get_drvdata(dev);
--
--	snd_card_disconnect(card);
--	snd_card_free_when_closed(card);
--}
--
- static struct pnp_driver snd_mpu401_pnp_driver = {
- 	.name = "mpu401",
- 	.id_table = snd_mpu401_pnpids,
- 	.probe = snd_mpu401_pnp_probe,
--	.remove = snd_mpu401_pnp_remove,
+ 	.probe		= pcsp_probe,
+-	.remove		= pcsp_remove,
+ 	.shutdown	= pcsp_shutdown,
  };
- #else
- static struct pnp_driver snd_mpu401_pnp_driver;
+ 
+diff --git a/sound/drivers/pcsp/pcsp_input.c b/sound/drivers/pcsp/pcsp_input.c
+index e79603fe743d..5a799f7f00a2 100644
+--- a/sound/drivers/pcsp/pcsp_input.c
++++ b/sound/drivers/pcsp/pcsp_input.c
+@@ -78,7 +78,7 @@ int pcspkr_input_init(struct input_dev **rdev, struct device *dev)
+ {
+ 	int err;
+ 
+-	struct input_dev *input_dev = input_allocate_device();
++	struct input_dev *input_dev = devm_input_allocate_device(dev);
+ 	if (!input_dev)
+ 		return -ENOMEM;
+ 
+@@ -95,19 +95,9 @@ int pcspkr_input_init(struct input_dev **rdev, struct device *dev)
+ 	input_dev->event = pcspkr_input_event;
+ 
+ 	err = input_register_device(input_dev);
+-	if (err) {
+-		input_free_device(input_dev);
++	if (err)
+ 		return err;
+-	}
+ 
+ 	*rdev = input_dev;
+ 	return 0;
+ }
+-
+-int pcspkr_input_remove(struct input_dev *dev)
+-{
+-	pcspkr_stop_sound();
+-	input_unregister_device(dev);	/* this also does kfree() */
+-
+-	return 0;
+-}
+diff --git a/sound/drivers/pcsp/pcsp_input.h b/sound/drivers/pcsp/pcsp_input.h
+index e80079b38a56..42bfc9eab6eb 100644
+--- a/sound/drivers/pcsp/pcsp_input.h
++++ b/sound/drivers/pcsp/pcsp_input.h
+@@ -9,7 +9,6 @@
+ #define __PCSP_INPUT_H__
+ 
+ int pcspkr_input_init(struct input_dev **rdev, struct device *dev);
+-int pcspkr_input_remove(struct input_dev *dev);
+ void pcspkr_stop_sound(void);
+ 
+ #endif
 -- 
 2.26.2
 
