@@ -2,82 +2,83 @@ Return-Path: <SRS0=jeit=MH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03B37C07E96
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:09:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2420C07E96
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:09:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 855876136E
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:09:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 855876136E
+	by mail.kernel.org (Postfix) with ESMTPS id 48F19610D1
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:09:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 48F19610D1
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 26F4116E1;
-	Thu, 15 Jul 2021 10:08:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26F4116E1
+	by alsa0.perex.cz (Postfix) with ESMTPS id C10DE1693;
+	Thu, 15 Jul 2021 10:08:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C10DE1693
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626336543;
-	bh=tbIThGY2VsWnck0Zq9qRfZnheBoMGQGe3YYNJ1zqUQA=;
+	s=default; t=1626336563;
+	bh=C2DUk2ahSyWUnhSSP5O9DlVQ7Nj1+6BKI+gxHE0FpYw=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RAMEGDGhEtlk28qbbfSV4kyengwiW+IFK1CQcKN0aREefmC99YtAA79Vab6UMFT+4
-	 pvNvmCvFR3+9cx5Lw9i0OHdFgw4wL3J8upz/DzEizJKnWqb7adQQmgLWSWn8Wu0p0f
-	 MbZBSg7e31PGb5UyJqh/lkM+vOgWSXsCp77FFJPg=
+	b=lV2rMk7ZXiLUIN1Y8pM/RBgVw9nHn5uTQ/agiNdTSgrf37S1jIOVgT6bYIxHZfSLA
+	 l3KLMFNnVk6oNks0LN3unS1b9v+KhTwRrY/5TMVfraVFBbeyKOCd6cfKCTS938dMJ1
+	 +m5hSKKpnFgYnjqSYHN+onzdvcpeVbusEnbeeWeQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB4A5F805F7;
-	Thu, 15 Jul 2021 10:00:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 566CEF805F8;
+	Thu, 15 Jul 2021 10:00:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BBD84F805D5; Thu, 15 Jul 2021 10:00:30 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 1753AF804EB; Thu, 15 Jul 2021 10:00:32 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D5F9CF804F2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 65EBBF804F1
  for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5F9CF804F2
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65EBBF804F1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="arlJ+Ic2"; 
+ header.b="IB5jZDwS"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="GRNbJmkO"
+ header.b="jaWQNava"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id A5E4E1FD3E
+ by smtp-out1.suse.de (Postfix) with ESMTP id 41F632284C
  for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1626336001; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=2UJlcNtLCmRyyiZVZtAne3g+hTdewxTFXlBLrEUT66E=;
- b=arlJ+Ic273C9rGgKMGnSAdMYlZP3oQ78T010mZk/pXHvWqG5zmchGpRH19zypcckKSuhO5
- aIOiC1RJKqFhMzeR9TrP+kg0yBoIkmtRq9y2+JFWs4XojNnpSQyBAxaH/kkjW541mrD4P8
- KaGS2lQijxH68tQtI8Yd/Lx83Bd9RMQ=
+ bh=fusZtg22Gbb/Jg9/if1Lw2R8bfZp7jjBjx0z+VU3ZIM=;
+ b=IB5jZDwSlnKBkC/gYDddeGUTdjrK2gRT3cZvoKmDwtmi33vVhkSHn1TqrMcg/VwFNP4LLR
+ KlFmSkoTxhQGEtSTbuAjPnKgWxCk3E/cVKK80ajzspEl4Jb03pbfVli+1fG6fc9sLXcKO6
+ Ffn9JAP3fPWn1L7Wwuxq5tor2DGrHUs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1626336001;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=2UJlcNtLCmRyyiZVZtAne3g+hTdewxTFXlBLrEUT66E=;
- b=GRNbJmkOGEKr5h1EA0ErVkqUDgmG76k49kd3UbLtcssVojLciF32DcxvylCJaWCRRAyN/1
- 1nRFkuPJ+llnkABA==
+ bh=fusZtg22Gbb/Jg9/if1Lw2R8bfZp7jjBjx0z+VU3ZIM=;
+ b=jaWQNavaqlhBQna4LBkuYd57waKwAU8O3xnVW1tWXTXPWCUmgawA2ALt7B42j/QUEnKy91
+ zJ8zlbMAe0PMbKDA==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 93430A3B8D;
+ by relay2.suse.de (Postfix) with ESMTP id 2F7EAA3B8D;
  Thu, 15 Jul 2021 08:00:01 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 21/79] ALSA: rme32: Allocate resources with device-managed
- APIs
-Date: Thu, 15 Jul 2021 09:58:43 +0200
-Message-Id: <20210715075941.23332-22-tiwai@suse.de>
+Subject: [PATCH v2 20/79] ALSA: maestro3: Allocate resources with
+ device-managed APIs
+Date: Thu, 15 Jul 2021 09:58:42 +0200
+Message-Id: <20210715075941.23332-21-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210715075941.23332-1-tiwai@suse.de>
 References: <20210715075941.23332-1-tiwai@suse.de>
@@ -98,131 +99,282 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the resource management in PCI rme32 driver with
-devres as a clean up.  Each manual resource management is converted
-with the corresponding devres helper.
+This patch converts the resource management in PCI maestro3 driver
+with devres as a clean up.  Each manual resource management is
+converted with the corresponding devres helper, and the card object
+release is managed now via card->private_free instead of a lowlevel
+snd_device.  Superfluous ac97 private_free callbacks were dropped,
+too.
 
 This should give no user-visible functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/rme32.c | 49 +++++++++++------------------------------------
- 1 file changed, 11 insertions(+), 38 deletions(-)
+ sound/pci/maestro3.c | 106 ++++++++++---------------------------------
+ 1 file changed, 23 insertions(+), 83 deletions(-)
 
-diff --git a/sound/pci/rme32.c b/sound/pci/rme32.c
-index b5b357853c94..5b6bd9f0b2f7 100644
---- a/sound/pci/rme32.c
-+++ b/sound/pci/rme32.c
-@@ -1278,27 +1278,10 @@ static const struct snd_pcm_ops snd_rme32_capture_adat_fd_ops = {
- 	.ack =		snd_rme32_capture_fd_ack,
- };
+diff --git a/sound/pci/maestro3.c b/sound/pci/maestro3.c
+index 77a484bc8c0d..056838ead21d 100644
+--- a/sound/pci/maestro3.c
++++ b/sound/pci/maestro3.c
+@@ -2339,16 +2339,13 @@ snd_m3_enable_ints(struct snd_m3 *chip)
+ /*
+  */
  
--static void snd_rme32_free(void *private_data)
-+static void snd_rme32_free(struct rme32 *rme32)
+-static int snd_m3_free(struct snd_m3 *chip)
++static void snd_m3_free(struct snd_card *card)
  {
--	struct rme32 *rme32 = (struct rme32 *) private_data;
++	struct snd_m3 *chip = card->private_data;
+ 	struct m3_dma *s;
+ 	int i;
+ 
+ 	cancel_work_sync(&chip->hwvol_work);
+-#ifdef CONFIG_SND_MAESTRO3_INPUT
+-	if (chip->input_dev)
+-		input_unregister_device(chip->input_dev);
+-#endif
+ 
+ 	if (chip->substreams) {
+ 		spin_lock_irq(&chip->reg_lock);
+@@ -2359,7 +2356,6 @@ static int snd_m3_free(struct snd_m3 *chip)
+ 				snd_m3_pcm_stop(chip, s, s->substream);
+ 		}
+ 		spin_unlock_irq(&chip->reg_lock);
+-		kfree(chip->substreams);
+ 	}
+ 	if (chip->iobase) {
+ 		outw(0, chip->iobase + HOST_INT_CTRL); /* disable ints */
+@@ -2368,19 +2364,8 @@ static int snd_m3_free(struct snd_m3 *chip)
+ #ifdef CONFIG_PM_SLEEP
+ 	vfree(chip->suspend_mem);
+ #endif
 -
--	if (rme32 == NULL) {
--		return;
--	}
--	if (rme32->irq >= 0) {
-+	if (rme32->irq >= 0)
- 		snd_rme32_pcm_stop(rme32, 0);
--		free_irq(rme32->irq, (void *) rme32);
--		rme32->irq = -1;
--	}
--	if (rme32->iobase) {
--		iounmap(rme32->iobase);
--		rme32->iobase = NULL;
--	}
--	if (rme32->port) {
--		pci_release_regions(rme32->pci);
--		rme32->port = 0;
--	}
--	pci_disable_device(rme32->pci);
+-	if (chip->irq >= 0)
+-		free_irq(chip->irq, chip);
+-
+-	if (chip->iobase)
+-		pci_release_regions(chip->pci);
+-
+ 	release_firmware(chip->assp_kernel_image);
+ 	release_firmware(chip->assp_minisrc_image);
+-
+-	pci_disable_device(chip->pci);
+-	kfree(chip);
+-	return 0;
  }
  
- static void snd_rme32_free_spdif_pcm(struct snd_pcm *pcm)
-@@ -1322,7 +1305,7 @@ static int snd_rme32_create(struct rme32 *rme32)
- 	rme32->irq = -1;
- 	spin_lock_init(&rme32->lock);
  
--	err = pci_enable_device(pci);
-+	err = pcim_enable_device(pci);
+@@ -2473,7 +2458,7 @@ static int snd_m3_input_register(struct snd_m3 *chip)
+ 	struct input_dev *input_dev;
+ 	int err;
+ 
+-	input_dev = input_allocate_device();
++	input_dev = devm_input_allocate_device(&chip->pci->dev);
+ 	if (!input_dev)
+ 		return -ENOMEM;
+ 
+@@ -2493,10 +2478,8 @@ static int snd_m3_input_register(struct snd_m3 *chip)
+ 	__set_bit(KEY_VOLUMEUP, input_dev->keybit);
+ 
+ 	err = input_register_device(input_dev);
+-	if (err) {
+-		input_free_device(input_dev);
++	if (err)
+ 		return err;
+-	}
+ 
+ 	chip->input_dev = input_dev;
+ 	return 0;
+@@ -2506,44 +2489,25 @@ static int snd_m3_input_register(struct snd_m3 *chip)
+ /*
+  */
+ 
+-static int snd_m3_dev_free(struct snd_device *device)
+-{
+-	struct snd_m3 *chip = device->device_data;
+-	return snd_m3_free(chip);
+-}
+-
+ static int
+ snd_m3_create(struct snd_card *card, struct pci_dev *pci,
+ 	      int enable_amp,
+-	      int amp_gpio,
+-	      struct snd_m3 **chip_ret)
++	      int amp_gpio)
+ {
+-	struct snd_m3 *chip;
++	struct snd_m3 *chip = card->private_data;
+ 	int i, err;
+ 	const struct snd_pci_quirk *quirk;
+-	static const struct snd_device_ops ops = {
+-		.dev_free =	snd_m3_dev_free,
+-	};
+ 
+-	*chip_ret = NULL;
+-
+-	if (pci_enable_device(pci))
++	if (pcim_enable_device(pci))
+ 		return -EIO;
+ 
+ 	/* check, if we can restrict PCI DMA transfers to 28 bits */
+ 	if (dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(28))) {
+ 		dev_err(card->dev,
+ 			"architecture does not support 28bit PCI busmaster DMA\n");
+-		pci_disable_device(pci);
+ 		return -ENXIO;
+ 	}
+ 
+-	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
+-	if (chip == NULL) {
+-		pci_disable_device(pci);
+-		return -ENOMEM;
+-	}
+-
+ 	spin_lock_init(&chip->reg_lock);
+ 
+ 	switch (pci->device) {
+@@ -2559,6 +2523,7 @@ snd_m3_create(struct snd_card *card, struct pci_dev *pci,
+ 	chip->pci = pci;
+ 	chip->irq = -1;
+ 	INIT_WORK(&chip->hwvol_work, snd_m3_update_hw_volume);
++	card->private_free = snd_m3_free;
+ 
+ 	chip->external_amp = enable_amp;
+ 	if (amp_gpio >= 0 && amp_gpio <= 0x0f)
+@@ -2588,27 +2553,24 @@ snd_m3_create(struct snd_card *card, struct pci_dev *pci,
+ 		chip->is_omnibook = 1;
+ 
+ 	chip->num_substreams = NR_DSPS;
+-	chip->substreams = kcalloc(chip->num_substreams, sizeof(struct m3_dma),
+-				   GFP_KERNEL);
+-	if (chip->substreams == NULL) {
+-		kfree(chip);
+-		pci_disable_device(pci);
++	chip->substreams = devm_kcalloc(&pci->dev, chip->num_substreams,
++					sizeof(struct m3_dma), GFP_KERNEL);
++	if (!chip->substreams)
+ 		return -ENOMEM;
+-	}
+ 
+ 	err = request_firmware(&chip->assp_kernel_image,
+ 			       "ess/maestro3_assp_kernel.fw", &pci->dev);
+ 	if (err < 0)
+-		goto free_chip;
++		return err;
+ 
+ 	err = request_firmware(&chip->assp_minisrc_image,
+ 			       "ess/maestro3_assp_minisrc.fw", &pci->dev);
+ 	if (err < 0)
+-		goto free_chip;
++		return err;
+ 
+ 	err = pci_request_regions(pci, card->driver);
+ 	if (err < 0)
+-		goto free_chip;
++		return err;
+ 
+ 	chip->iobase = pci_resource_start(pci, 0);
+ 	
+@@ -2624,11 +2586,10 @@ snd_m3_create(struct snd_card *card, struct pci_dev *pci,
+ 
+ 	snd_m3_hv_init(chip);
+ 
+-	if (request_irq(pci->irq, snd_m3_interrupt, IRQF_SHARED,
+-			KBUILD_MODNAME, chip)) {
++	if (devm_request_irq(&pci->dev, pci->irq, snd_m3_interrupt, IRQF_SHARED,
++			     KBUILD_MODNAME, chip)) {
+ 		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
+-		err = -ENOMEM;
+-		goto free_chip;
++		return -ENOMEM;
+ 	}
+ 	chip->irq = pci->irq;
+ 	card->sync_irq = chip->irq;
+@@ -2642,10 +2603,6 @@ snd_m3_create(struct snd_card *card, struct pci_dev *pci,
+ 		dev_warn(card->dev, "can't allocate apm buffer\n");
+ #endif
+ 
+-	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
+-	if (err < 0)
+-		goto free_chip;
+-
+ 	err = snd_m3_mixer(chip);
  	if (err < 0)
  		return err;
+@@ -2674,13 +2631,7 @@ snd_m3_create(struct snd_card *card, struct pci_dev *pci,
+ 	snd_m3_enable_ints(chip);
+ 	snd_m3_assp_continue(chip);
  
-@@ -1331,16 +1314,16 @@ static int snd_rme32_create(struct rme32 *rme32)
- 		return err;
- 	rme32->port = pci_resource_start(rme32->pci, 0);
+-	*chip_ret = chip;
+-
+ 	return 0; 
+-
+-free_chip:
+-	snd_m3_free(chip);
+-	return err;
+ }
  
--	rme32->iobase = ioremap(rme32->port, RME32_IO_SIZE);
-+	rme32->iobase = devm_ioremap(&pci->dev, rme32->port, RME32_IO_SIZE);
- 	if (!rme32->iobase) {
- 		dev_err(rme32->card->dev,
- 			"unable to remap memory region 0x%lx-0x%lx\n",
--			   rme32->port, rme32->port + RME32_IO_SIZE - 1);
-+			rme32->port, rme32->port + RME32_IO_SIZE - 1);
- 		return -ENOMEM;
- 	}
- 
--	if (request_irq(pci->irq, snd_rme32_interrupt, IRQF_SHARED,
--			KBUILD_MODNAME, rme32)) {
-+	if (devm_request_irq(&pci->dev, pci->irq, snd_rme32_interrupt,
-+			     IRQF_SHARED, KBUILD_MODNAME, rme32)) {
- 		dev_err(rme32->card->dev, "unable to grab IRQ %d\n", pci->irq);
- 		return -EBUSY;
- 	}
-@@ -1907,8 +1890,8 @@ snd_rme32_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+ /*
+@@ -2704,10 +2655,11 @@ snd_m3_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
  		return -ENOENT;
  	}
  
 -	err = snd_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
--			   sizeof(struct rme32), &card);
+-			   0, &card);
 +	err = snd_devm_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
-+				sizeof(*rme32), &card);
++				sizeof(*chip), &card);
  	if (err < 0)
  		return err;
- 	card->private_free = snd_rme32_card_free;
-@@ -1918,10 +1901,8 @@ snd_rme32_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
-         if (fullduplex[dev])
- 		rme32->fullduplex_mode = 1;
- 	err = snd_rme32_create(rme32);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
++	chip = card->private_data;
  
- 	strcpy(card->driver, "Digi32");
- 	switch (rme32->pci->device) {
-@@ -1939,25 +1920,17 @@ snd_rme32_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
- 		card->shortname, rme32->rev, rme32->port, rme32->irq);
+ 	switch (pci->device) {
+ 	case PCI_DEVICE_ID_ESS_ALLEGRO:
+@@ -2723,11 +2675,9 @@ snd_m3_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+ 		break;
+ 	}
+ 
+-	err = snd_m3_create(card, pci, external_amp[dev], amp_gpio[dev], &chip);
++	err = snd_m3_create(card, pci, external_amp[dev], amp_gpio[dev]);
+ 	if (err < 0)
+-		goto free_card;
+-
+-	card->private_data = chip;
++		return err;
+ 
+ 	sprintf(card->shortname, "ESS %s PCI", card->driver);
+ 	sprintf(card->longname, "%s at 0x%lx, irq %d",
+@@ -2735,7 +2685,7 @@ snd_m3_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
  
  	err = snd_card_register(card);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
+ 	if (err < 0)
+-		goto free_card;
++		return err;
+ 
+ #if 0 /* TODO: not supported yet */
+ 	/* TODO enable MIDI IRQ and I/O */
+@@ -2750,22 +2700,12 @@ snd_m3_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
  	pci_set_drvdata(pci, card);
  	dev++;
  	return 0;
- }
- 
--static void snd_rme32_remove(struct pci_dev *pci)
--{
--	snd_card_free(pci_get_drvdata(pci));
+-
+-free_card:
+-	snd_card_free(card);
+-	return err;
 -}
 -
- static struct pci_driver rme32_driver = {
- 	.name =		KBUILD_MODNAME,
- 	.id_table =	snd_rme32_ids,
- 	.probe =	snd_rme32_probe,
--	.remove =	snd_rme32_remove,
- };
+-static void snd_m3_remove(struct pci_dev *pci)
+-{
+-	snd_card_free(pci_get_drvdata(pci));
+ }
  
- module_pci_driver(rme32_driver);
+ static struct pci_driver m3_driver = {
+ 	.name = KBUILD_MODNAME,
+ 	.id_table = snd_m3_ids,
+ 	.probe = snd_m3_probe,
+-	.remove = snd_m3_remove,
+ 	.driver = {
+ 		.pm = M3_PM_OPS,
+ 	},
 -- 
 2.26.2
 
