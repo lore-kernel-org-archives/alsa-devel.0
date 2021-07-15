@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE6AAC07E96
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:25:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 113B3C07E96
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:25:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 73132611C0
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:25:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73132611C0
+	by mail.kernel.org (Postfix) with ESMTPS id 8D6266120A
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:25:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D6266120A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 13C2E171B;
-	Thu, 15 Jul 2021 10:24:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13C2E171B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 17872176B;
+	Thu, 15 Jul 2021 10:24:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17872176B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626337512;
-	bh=f8Exp9nQ4/RjdzLrHagW/ojVbJAx7q9RxNf+Gs97iRo=;
+	s=default; t=1626337534;
+	bh=N8bGt2d3GmBzaRdIFOFNRfQhAupN8fTw0uXA3r95Wn0=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OGW9S+n/hTkunsmCNCJ2Hy3eR6izqDzWkBkNOcDHmE04oUQSCIRW5Kb3wqZj5/WqV
-	 nv8TeFQWWPUh/gmOb5XSfGuBCC+KHWePfGenOObcD/aLa8VKO4YNQOVv1uVMRLh3r6
-	 61GHBToHb/Et0kP1/fhipDgb9Z2pjcIdsH/rIjfg=
+	b=Zucw4hjujpmByTpgOl7JqUS0ASqQuEPsAr1HV2JAFh2OpQ8LzkuYtA97pIWwG41u2
+	 l4HDJyMkt4DTZxdGOnWSagSzI3+rdnJ9sQrZgA5Kg/NRTDk5R+l7ZMKFHiD4+341t8
+	 xP9sGM8lKHwDew506aE1OFrL+vwtKXA2MGXu/I8Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6B1E2F805AB;
-	Thu, 15 Jul 2021 10:01:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21584F807A2;
+	Thu, 15 Jul 2021 10:01:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 79C9FF80752; Thu, 15 Jul 2021 10:01:33 +0200 (CEST)
+ id 9755DF80579; Thu, 15 Jul 2021 10:01:35 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E4678F80571
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4678F80571
+ by alsa1.perex.cz (Postfix) with ESMTPS id 13628F80579
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13628F80579
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="l6dx8Lbc"; 
+ header.b="uRpBKLnb"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="0sRH6ry/"
+ header.b="7CdWeLc7"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id BD3031FD3E
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:18 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id DC6481FDEA
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626336018; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1626336019; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=G2bGx86bFHXrSseO5QPIpD1LTrmxR/AYBno1JEt8gXo=;
- b=l6dx8Lbc1dSanfXeSqIY5CmxOQ+DnVdda2sLrYVd1SZ01b9HpdEOqSk4TJuM85ZO0S2hk1
- 0aMl64rC8VWIiIbftOGCqotaZX85VKdokvX6uw1WXMWRBwqA6ZUBSg5oHkDqAtB2j/apni
- l4jD+8HUr2jKRNW1kGWK8Iyx96LydZM=
+ bh=AiZ0EA9mT23ir39teMSDmM++T966FtiEpWucGxOKKb0=;
+ b=uRpBKLnbY0BAQbym1KD2B0RiS1wK9JqbXbkBErvqf+Dc+64EMI4shlYMPPU8bfy7WR7YeD
+ SYsJ/9Sd26IGMHle+8kScR/uTeWPIAFqtezIT+lkahkhoNUJb8IFKx/fBMj4WWcGfqeFZf
+ LMfAzBMzWWFacn43i2pMRAx9wdUqJdE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626336018;
+ s=susede2_ed25519; t=1626336019;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=G2bGx86bFHXrSseO5QPIpD1LTrmxR/AYBno1JEt8gXo=;
- b=0sRH6ry/TBfi0wu8t4hZoLo3JtSMaOv4mzUccwReJ65QP4vf2QxrCSUF4zdYxZo8Qp2uWL
- JL3dqqmcAlkhJPDA==
+ bh=AiZ0EA9mT23ir39teMSDmM++T966FtiEpWucGxOKKb0=;
+ b=7CdWeLc7A8gaHjNiWjBX4AAtt6WtM5+97DITnrOxUSJmTt8KujmOiaGHm8hUMugC0Qv+Fn
+ yVPXcAhzfPuKSuDw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id B64EBA3B8F;
- Thu, 15 Jul 2021 08:00:18 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id D5BF1A3B8F;
+ Thu, 15 Jul 2021 08:00:19 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 61/79] ALSA: cs423x: Allocate resources with device-managed
+Subject: [PATCH v2 64/79] ALSA: galaxy: Allocate resources with device-managed
  APIs
-Date: Thu, 15 Jul 2021 09:59:23 +0200
-Message-Id: <20210715075941.23332-62-tiwai@suse.de>
+Date: Thu, 15 Jul 2021 09:59:26 +0200
+Message-Id: <20210715075941.23332-65-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210715075941.23332-1-tiwai@suse.de>
 References: <20210715075941.23332-1-tiwai@suse.de>
@@ -98,7 +98,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the resource management in ISA cs423x drivers with
+This patch converts the resource management in ISA galaxy drivers with
 devres as a clean up.  Each manual resource management is converted
 with the corresponding devres helper.  The remove callback became
 superfluous and dropped.
@@ -107,230 +107,189 @@ This should give no user-visible functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/isa/cs423x/cs4231.c | 21 +++++-----------
- sound/isa/cs423x/cs4236.c | 52 ++++++---------------------------------
- 2 files changed, 13 insertions(+), 60 deletions(-)
+ sound/isa/galaxy/galaxy.c | 82 ++++++++++++++++-----------------------
+ 1 file changed, 33 insertions(+), 49 deletions(-)
 
-diff --git a/sound/isa/cs423x/cs4231.c b/sound/isa/cs423x/cs4231.c
-index ec054b929214..1e8923385366 100644
---- a/sound/isa/cs423x/cs4231.c
-+++ b/sound/isa/cs423x/cs4231.c
-@@ -79,20 +79,20 @@ static int snd_cs4231_probe(struct device *dev, unsigned int n)
- 	struct snd_wss *chip;
- 	int error;
+diff --git a/sound/isa/galaxy/galaxy.c b/sound/isa/galaxy/galaxy.c
+index d33d69f29924..ea001c80149d 100644
+--- a/sound/isa/galaxy/galaxy.c
++++ b/sound/isa/galaxy/galaxy.c
+@@ -472,20 +472,10 @@ static void snd_galaxy_free(struct snd_card *card)
+ {
+ 	struct snd_galaxy *galaxy = card->private_data;
  
--	error = snd_card_new(dev, index[n], id[n], THIS_MODULE, 0, &card);
-+	error = snd_devm_card_new(dev, index[n], id[n], THIS_MODULE, 0, &card);
- 	if (error < 0)
- 		return error;
+-	if (galaxy->wss_port) {
++	if (galaxy->wss_port)
+ 		wss_set_config(galaxy->wss_port, 0);
+-		ioport_unmap(galaxy->wss_port);
+-		release_and_free_resource(galaxy->res_wss_port);
+-	}
+-	if (galaxy->config_port) {
++	if (galaxy->config_port)
+ 		galaxy_set_config(galaxy, galaxy->config);
+-		ioport_unmap(galaxy->config_port);
+-		release_and_free_resource(galaxy->res_config_port);
+-	}
+-	if (galaxy->port) {
+-		ioport_unmap(galaxy->port);
+-		release_and_free_resource(galaxy->res_port);
+-	}
+ }
  
- 	error = snd_wss_create(card, port[n], -1, irq[n], dma1[n], dma2[n],
- 			WSS_HW_DETECT, 0, &chip);
- 	if (error < 0)
--		goto out;
-+		return error;
+ static int snd_galaxy_probe(struct device *dev, unsigned int n)
+@@ -496,56 +486,60 @@ static int snd_galaxy_probe(struct device *dev, unsigned int n)
+ 	u8 type;
+ 	int err;
  
- 	card->private_data = chip;
+-	err = snd_card_new(dev, index[n], id[n], THIS_MODULE,
+-			   sizeof(*galaxy), &card);
++	err = snd_devm_card_new(dev, index[n], id[n], THIS_MODULE,
++				sizeof(*galaxy), &card);
+ 	if (err < 0)
+ 		return err;
  
- 	error = snd_wss_pcm(chip, 0);
- 	if (error < 0)
--		goto out;
-+		return error;
+ 	card->private_free = snd_galaxy_free;
+ 	galaxy = card->private_data;
  
- 	strscpy(card->driver, "CS4231", sizeof(card->driver));
- 	strscpy(card->shortname, chip->pcm->name, sizeof(card->shortname));
-@@ -108,11 +108,11 @@ static int snd_cs4231_probe(struct device *dev, unsigned int n)
+-	galaxy->res_port = request_region(port[n], 16, DRV_NAME);
++	galaxy->res_port = devm_request_region(dev, port[n], 16, DRV_NAME);
+ 	if (!galaxy->res_port) {
+ 		dev_err(dev, "could not grab ports %#lx-%#lx\n", port[n],
+ 			port[n] + 15);
+-		err = -EBUSY;
+-		goto error;
++		return -EBUSY;
+ 	}
+-	galaxy->port = ioport_map(port[n], 16);
++	galaxy->port = devm_ioport_map(dev, port[n], 16);
++	if (!galaxy->port)
++		return -ENOMEM;
  
- 	error = snd_wss_mixer(chip);
- 	if (error < 0)
--		goto out;
-+		return error;
+ 	err = galaxy_init(galaxy, &type);
+ 	if (err < 0) {
+ 		dev_err(dev, "did not find a Sound Galaxy at %#lx\n", port[n]);
+-		goto error;
++		return err;
+ 	}
+ 	dev_info(dev, "Sound Galaxy (type %d) found at %#lx\n", type, port[n]);
  
- 	error = snd_wss_timer(chip, 0);
- 	if (error < 0)
--		goto out;
-+		return error;
+-	galaxy->res_config_port = request_region(port[n] + GALAXY_PORT_CONFIG,
+-						 16, DRV_NAME);
++	galaxy->res_config_port =
++		devm_request_region(dev, port[n] + GALAXY_PORT_CONFIG, 16,
++				    DRV_NAME);
+ 	if (!galaxy->res_config_port) {
+ 		dev_err(dev, "could not grab ports %#lx-%#lx\n",
+ 			port[n] + GALAXY_PORT_CONFIG,
+ 			port[n] + GALAXY_PORT_CONFIG + 15);
+-		err = -EBUSY;
+-		goto error;
++		return -EBUSY;
+ 	}
+-	galaxy->config_port = ioport_map(port[n] + GALAXY_PORT_CONFIG, 16);
+-
++	galaxy->config_port =
++		devm_ioport_map(dev, port[n] + GALAXY_PORT_CONFIG, 16);
++	if (!galaxy->config_port)
++		return -ENOMEM;
+ 	galaxy_config(galaxy, config[n]);
  
- 	if (mpu_port[n] > 0 && mpu_port[n] != SNDRV_AUTO_PORT) {
- 		if (mpu_irq[n] == SNDRV_AUTO_IRQ)
-@@ -125,18 +125,10 @@ static int snd_cs4231_probe(struct device *dev, unsigned int n)
+-	galaxy->res_wss_port = request_region(wss_port[n], 4, DRV_NAME);
++	galaxy->res_wss_port = devm_request_region(dev, wss_port[n], 4, DRV_NAME);
+ 	if (!galaxy->res_wss_port)  {
+ 		dev_err(dev, "could not grab ports %#lx-%#lx\n", wss_port[n],
+ 			wss_port[n] + 3);
+-		err = -EBUSY;
+-		goto error;
++		return -EBUSY;
+ 	}
+-	galaxy->wss_port = ioport_map(wss_port[n], 4);
++	galaxy->wss_port = devm_ioport_map(dev, wss_port[n], 4);
++	if (!galaxy->wss_port)
++		return -ENOMEM;
  
- 	error = snd_card_register(card);
- 	if (error < 0)
--		goto out;
-+		return error;
+ 	err = galaxy_wss_config(galaxy, wss_config[n]);
+ 	if (err < 0) {
+ 		dev_err(dev, "could not configure WSS\n");
+-		goto error;
++		return err;
+ 	}
+ 
+ 	strcpy(card->driver, DRV_NAME);
+@@ -557,25 +551,25 @@ static int snd_galaxy_probe(struct device *dev, unsigned int n)
+ 	err = snd_wss_create(card, wss_port[n] + 4, -1, irq[n], dma1[n],
+ 			     dma2[n], WSS_HW_DETECT, 0, &chip);
+ 	if (err < 0)
+-		goto error;
++		return err;
+ 
+ 	err = snd_wss_pcm(chip, 0);
+ 	if (err < 0)
+-		goto error;
++		return err;
+ 
+ 	err = snd_wss_mixer(chip);
+ 	if (err < 0)
+-		goto error;
++		return err;
+ 
+ 	err = snd_wss_timer(chip, 0);
+ 	if (err < 0)
+-		goto error;
++		return err;
+ 
+ 	if (mpu_port[n] >= 0) {
+ 		err = snd_mpu401_uart_new(card, 0, MPU401_HW_MPU401,
+ 					  mpu_port[n], 0, mpu_irq[n], NULL);
+ 		if (err < 0)
+-			goto error;
++			return err;
+ 	}
+ 
+ 	if (fm_port[n] >= 0) {
+@@ -585,38 +579,28 @@ static int snd_galaxy_probe(struct device *dev, unsigned int n)
+ 				      OPL3_HW_AUTO, 0, &opl3);
+ 		if (err < 0) {
+ 			dev_err(dev, "no OPL device at %#lx\n", fm_port[n]);
+-			goto error;
++			return err;
+ 		}
+ 		err = snd_opl3_timer_new(opl3, 1, 2);
+ 		if (err < 0)
+-			goto error;
++			return err;
+ 
+ 		err = snd_opl3_hwdep_new(opl3, 0, 1, NULL);
+ 		if (err < 0)
+-			goto error;
++			return err;
+ 	}
+ 
+ 	err = snd_card_register(card);
+ 	if (err < 0)
+-		goto error;
++		return err;
  
  	dev_set_drvdata(dev, card);
  	return 0;
 -
--out:	snd_card_free(card);
--	return error;
+-error:
+-	snd_card_free(card);
+-	return err;
 -}
 -
--static void snd_cs4231_remove(struct device *dev, unsigned int n)
+-static void snd_galaxy_remove(struct device *dev, unsigned int n)
 -{
 -	snd_card_free(dev_get_drvdata(dev));
  }
  
- #ifdef CONFIG_PM
-@@ -164,7 +156,6 @@ static int snd_cs4231_resume(struct device *dev, unsigned int n)
- static struct isa_driver snd_cs4231_driver = {
- 	.match		= snd_cs4231_match,
- 	.probe		= snd_cs4231_probe,
--	.remove		= snd_cs4231_remove,
- #ifdef CONFIG_PM
- 	.suspend	= snd_cs4231_suspend,
- 	.resume		= snd_cs4231_resume,
-diff --git a/sound/isa/cs423x/cs4236.c b/sound/isa/cs423x/cs4236.c
-index 0b7fd17f8ecc..b6bdebd9ef27 100644
---- a/sound/isa/cs423x/cs4236.c
-+++ b/sound/isa/cs423x/cs4236.c
-@@ -76,7 +76,6 @@ static int pnp_registered;
+ static struct isa_driver snd_galaxy_driver = {
+ 	.match		= snd_galaxy_match,
+ 	.probe		= snd_galaxy_probe,
+-	.remove		= snd_galaxy_remove,
  
- struct snd_card_cs4236 {
- 	struct snd_wss *chip;
--	struct resource *res_sb_port;
- #ifdef CONFIG_PNP
- 	struct pnp_dev *wss;
- 	struct pnp_dev *ctrl;
-@@ -309,24 +308,16 @@ static int snd_card_cs423x_pnpc(int dev, struct snd_card_cs4236 *acard,
- #define is_isapnp_selected(dev)		0
- #endif
- 
--static void snd_card_cs4236_free(struct snd_card *card)
--{
--	struct snd_card_cs4236 *acard = card->private_data;
--
--	release_and_free_resource(acard->res_sb_port);
--}
--
- static int snd_cs423x_card_new(struct device *pdev, int dev,
- 			       struct snd_card **cardp)
- {
- 	struct snd_card *card;
- 	int err;
- 
--	err = snd_card_new(pdev, index[dev], id[dev], THIS_MODULE,
--			   sizeof(struct snd_card_cs4236), &card);
-+	err = snd_devm_card_new(pdev, index[dev], id[dev], THIS_MODULE,
-+				sizeof(struct snd_card_cs4236), &card);
- 	if (err < 0)
- 		return err;
--	card->private_free = snd_card_cs4236_free;
- 	*cardp = card;
- 	return 0;
- }
-@@ -340,8 +331,8 @@ static int snd_cs423x_probe(struct snd_card *card, int dev)
- 
- 	acard = card->private_data;
- 	if (sb_port[dev] > 0 && sb_port[dev] != SNDRV_AUTO_PORT) {
--		acard->res_sb_port = request_region(sb_port[dev], 16, IDENT " SB");
--		if (!acard->res_sb_port) {
-+		if (!devm_request_region(card->dev, sb_port[dev], 16,
-+					 IDENT " SB")) {
- 			printk(KERN_ERR IDENT ": unable to register SB port at 0x%lx\n", sb_port[dev]);
- 			return -EBUSY;
- 		}
-@@ -448,21 +439,12 @@ static int snd_cs423x_isa_probe(struct device *pdev,
- 	if (err < 0)
- 		return err;
- 	err = snd_cs423x_probe(card, dev);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
--
- 	dev_set_drvdata(pdev, card);
- 	return 0;
- }
- 
--static void snd_cs423x_isa_remove(struct device *pdev,
--				 unsigned int dev)
--{
--	snd_card_free(dev_get_drvdata(pdev));
--}
--
- #ifdef CONFIG_PM
- static int snd_cs423x_suspend(struct snd_card *card)
- {
-@@ -495,7 +477,6 @@ static int snd_cs423x_isa_resume(struct device *dev, unsigned int n)
- static struct isa_driver cs423x_isa_driver = {
- 	.match		= snd_cs423x_isa_match,
- 	.probe		= snd_cs423x_isa_probe,
--	.remove		= snd_cs423x_isa_remove,
- #ifdef CONFIG_PM
- 	.suspend	= snd_cs423x_isa_suspend,
- 	.resume		= snd_cs423x_isa_resume,
-@@ -539,24 +520,16 @@ static int snd_cs423x_pnpbios_detect(struct pnp_dev *pdev,
- 	err = snd_card_cs423x_pnp(dev, card->private_data, pdev, cdev);
- 	if (err < 0) {
- 		printk(KERN_ERR "PnP BIOS detection failed for " IDENT "\n");
--		snd_card_free(card);
- 		return err;
- 	}
- 	err = snd_cs423x_probe(card, dev);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 	pnp_set_drvdata(pdev, card);
- 	dev++;
- 	return 0;
- }
- 
--static void snd_cs423x_pnp_remove(struct pnp_dev *pdev)
--{
--	snd_card_free(pnp_get_drvdata(pdev));
--}
--
- #ifdef CONFIG_PM
- static int snd_cs423x_pnp_suspend(struct pnp_dev *pdev, pm_message_t state)
- {
-@@ -573,7 +546,6 @@ static struct pnp_driver cs423x_pnp_driver = {
- 	.name = "cs423x-pnpbios",
- 	.id_table = snd_cs423x_pnpbiosids,
- 	.probe = snd_cs423x_pnpbios_detect,
--	.remove = snd_cs423x_pnp_remove,
- #ifdef CONFIG_PM
- 	.suspend	= snd_cs423x_pnp_suspend,
- 	.resume		= snd_cs423x_pnp_resume,
-@@ -601,25 +573,16 @@ static int snd_cs423x_pnpc_detect(struct pnp_card_link *pcard,
- 	if (res < 0) {
- 		printk(KERN_ERR "isapnp detection failed and probing for " IDENT
- 		       " is not supported\n");
--		snd_card_free(card);
- 		return res;
- 	}
- 	res = snd_cs423x_probe(card, dev);
--	if (res < 0) {
--		snd_card_free(card);
-+	if (res < 0)
- 		return res;
--	}
- 	pnp_set_card_drvdata(pcard, card);
- 	dev++;
- 	return 0;
- }
- 
--static void snd_cs423x_pnpc_remove(struct pnp_card_link *pcard)
--{
--	snd_card_free(pnp_get_card_drvdata(pcard));
--	pnp_set_card_drvdata(pcard, NULL);
--}
--
- #ifdef CONFIG_PM
- static int snd_cs423x_pnpc_suspend(struct pnp_card_link *pcard, pm_message_t state)
- {
-@@ -637,7 +600,6 @@ static struct pnp_card_driver cs423x_pnpc_driver = {
- 	.name = CS423X_ISAPNP_DRIVER,
- 	.id_table = snd_cs423x_pnpids,
- 	.probe = snd_cs423x_pnpc_detect,
--	.remove = snd_cs423x_pnpc_remove,
- #ifdef CONFIG_PM
- 	.suspend	= snd_cs423x_pnpc_suspend,
- 	.resume		= snd_cs423x_pnpc_resume,
+ 	.driver		= {
+ 		.name	= DEV_NAME
 -- 
 2.26.2
 
