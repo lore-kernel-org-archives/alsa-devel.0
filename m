@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43315C07E96
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:28:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EE15C07E96
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:28:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 720C2611C0
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:28:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 720C2611C0
+	by mail.kernel.org (Postfix) with ESMTPS id CFB57611C0
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:28:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFB57611C0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E7DE1723;
-	Thu, 15 Jul 2021 10:27:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E7DE1723
+	by alsa0.perex.cz (Postfix) with ESMTPS id 63AA61758;
+	Thu, 15 Jul 2021 10:28:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63AA61758
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626337701;
-	bh=TXuTrEN08yehKr7Ciy62unZ11BMc5BaFrn3/wwNyw6A=;
+	s=default; t=1626337730;
+	bh=BcouPs2oiOXfISqCuhU9v3hJt1yTHbZsJ/KJv8DjMYQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VtHhGeNyW0vCf0fBpdB2/jgg7qThjzii7vHf1Rs1Z/qt88AdNfqbkDTEM3k33v71y
-	 iwNpdW/MNJX7q9cC50uqkoFvUn7G5UQfemFBiuOtW8RHZXyNfA/Nz6BJLMfJQdRR5H
-	 6wZyjTW0eUFHjvReASyawD1uGDGBIs5HzwoywuHk=
+	b=kwnh0PUB7zdm920NeXmIdd5qC0nFfe6+3qU8Eu8M49wQRuSaKDiKDcCsTuvjmiu6T
+	 Dk4b7xiRQi4uyrGxviVkdOSQRIx53Tci5Wp7zRzZ72gyS58LaKGGd/XxMGvqROpfTt
+	 HlQmU/+jqr67TKCF6GxTRED6EiKY2txHtv7wsSd4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B82C6F80844;
-	Thu, 15 Jul 2021 10:01:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B93E0F80852;
+	Thu, 15 Jul 2021 10:01:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E38DAF807DE; Thu, 15 Jul 2021 10:01:45 +0200 (CEST)
+ id 6B075F807DE; Thu, 15 Jul 2021 10:01:46 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 18F30F805AA
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18F30F805AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6276BF804E5
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6276BF804E5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="ZOLDZ+8I"; 
+ header.b="pvUtnCip"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="9+sZg/ie"
+ header.b="ALOOgWRi"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id D8D0522854
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:22 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 3B45622856
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626336022; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1626336024; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=iRUeyFmo/r1kEv9m/+nXyBfMbslPAZh0fUINSstUFp4=;
- b=ZOLDZ+8Ig0ookJEcAEWx5PgmZoBr6Ts0lrsYaPCNDD3O5xRhOvtYwTescgTXUd7o+7hsHS
- JybqJmopOVrnPW6Y8nmk/ApW8EVRf/xWtVoRQHUMV71BXi3gp9j855g/8d+SYMucAm/O7/
- gSqbDBfRzS6SR4WXrga+jTAA/YGd7eY=
+ bh=WBwQBJBGsn4PeR2I3zEBE2ni2A8jQnZMXEn2wo06JxI=;
+ b=pvUtnCipJzm+FkYNV4hfK8pgwFJZEY7AuwpW3XDB8/icM9f9aCeFXPHnAO2shDFHdcx2Au
+ 0MJ6BJVnylVWhazH8dw+XpZakQBYk7VVA+hskPgC1B6X6MErZdGB2P0UP5ajyUCvtepV73
+ sHwtrC4sPsW/6quvSMyxXrpp4cnou2g=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626336022;
+ s=susede2_ed25519; t=1626336024;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=iRUeyFmo/r1kEv9m/+nXyBfMbslPAZh0fUINSstUFp4=;
- b=9+sZg/iet2yjfb+qzJ43/ZTFdw6d/MRS7uh6V5LNmW3s+hVVWZgifYjrBzGYFceug8Obn+
- 7S9ma44c5CcqCvAA==
+ bh=WBwQBJBGsn4PeR2I3zEBE2ni2A8jQnZMXEn2wo06JxI=;
+ b=ALOOgWRiR1LfwyzZKuhn8IvlPftp9tWH1TZehIYrhEYO7x4IJcH+otCKzLIXz7Xb1GYbtr
+ TBU6vN3btUSzR+BQ==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id C647FA3B9D;
- Thu, 15 Jul 2021 08:00:22 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 29E58A3B8F;
+ Thu, 15 Jul 2021 08:00:24 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 70/79] ALSA: sscape: Allocate resources with device-managed
- APIs
-Date: Thu, 15 Jul 2021 09:59:32 +0200
-Message-Id: <20210715075941.23332-71-tiwai@suse.de>
+Subject: [PATCH v2 73/79] ALSA: virmidi: Allocate resources with
+ device-managed APIs
+Date: Thu, 15 Jul 2021 09:59:35 +0200
+Message-Id: <20210715075941.23332-74-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210715075941.23332-1-tiwai@suse.de>
 References: <20210715075941.23332-1-tiwai@suse.de>
@@ -98,245 +98,70 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the resource management in ISA sscape driver with
-devres as a clean up.  Each manual resource management is converted
-with the corresponding devres helper.  The remove callback became
-superfluous and dropped.
+This patch converts the card object management with devres as a clean
+up.  The remove callback gets reduced by that.
 
 This should give no user-visible functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/isa/sscape.c | 92 ++++++++++------------------------------------
- 1 file changed, 20 insertions(+), 72 deletions(-)
+ sound/drivers/virmidi.c | 21 ++++++---------------
+ 1 file changed, 6 insertions(+), 15 deletions(-)
 
-diff --git a/sound/isa/sscape.c b/sound/isa/sscape.c
-index e70ef9aee545..0bc0025f7c19 100644
---- a/sound/isa/sscape.c
-+++ b/sound/isa/sscape.c
-@@ -327,17 +327,6 @@ static void activate_ad1845_unsafe(unsigned io_base)
- 	sscape_write_unsafe(io_base, GA_CDCFG_REG, 0x80);
- }
+diff --git a/sound/drivers/virmidi.c b/sound/drivers/virmidi.c
+index 4206d93ab47e..7f7eed6faaae 100644
+--- a/sound/drivers/virmidi.c
++++ b/sound/drivers/virmidi.c
+@@ -75,8 +75,8 @@ static int snd_virmidi_probe(struct platform_device *devptr)
+ 	int idx, err;
+ 	int dev = devptr->id;
  
--/*
-- * Do the necessary ALSA-level cleanup to deallocate our driver ...
-- */
--static void soundscape_free(struct snd_card *c)
--{
--	struct soundscape *sscape = get_card_soundscape(c);
--	release_and_free_resource(sscape->io_res);
--	release_and_free_resource(sscape->wss_res);
--	free_dma(sscape->chip->dma1);
--}
--
- /*
-  * Tell the SoundScape to begin a DMA transfer using the given channel.
-  * All locking issues are left to the caller.
-@@ -941,7 +930,7 @@ static int create_sscape(int dev, struct snd_card *card)
- 	 * Grab IO ports that we will need to probe so that we
- 	 * can detect and control this hardware ...
- 	 */
--	io_res = request_region(port[dev], 8, "SoundScape");
-+	io_res = devm_request_region(card->dev, port[dev], 8, "SoundScape");
- 	if (!io_res) {
- 		snd_printk(KERN_ERR
- 			   "sscape: can't grab port 0x%lx\n", port[dev]);
-@@ -949,22 +938,22 @@ static int create_sscape(int dev, struct snd_card *card)
- 	}
- 	wss_res = NULL;
- 	if (sscape->type == SSCAPE_VIVO) {
--		wss_res = request_region(wss_port[dev], 4, "SoundScape");
-+		wss_res = devm_request_region(card->dev, wss_port[dev], 4,
-+					      "SoundScape");
- 		if (!wss_res) {
- 			snd_printk(KERN_ERR "sscape: can't grab port 0x%lx\n",
- 					    wss_port[dev]);
--			err = -EBUSY;
--			goto _release_region;
-+			return -EBUSY;
- 		}
- 	}
+-	err = snd_card_new(&devptr->dev, index[dev], id[dev], THIS_MODULE,
+-			   sizeof(struct snd_card_virmidi), &card);
++	err = snd_devm_card_new(&devptr->dev, index[dev], id[dev], THIS_MODULE,
++				sizeof(struct snd_card_virmidi), &card);
+ 	if (err < 0)
+ 		return err;
+ 	vmidi = card->private_data;
+@@ -94,7 +94,7 @@ static int snd_virmidi_probe(struct platform_device *devptr)
  
- 	/*
- 	 * Grab one DMA channel ...
- 	 */
--	err = request_dma(dma[dev], "SoundScape");
-+	err = snd_devm_request_dma(card->dev, dma[dev], "SoundScape");
- 	if (err < 0) {
- 		snd_printk(KERN_ERR "sscape: can't grab DMA %d\n", dma[dev]);
--		goto _release_region;
-+		return err;
- 	}
+ 		err = snd_virmidi_new(card, idx, &rmidi);
+ 		if (err < 0)
+-			goto __nodev;
++			return err;
+ 		rdev = rmidi->private_data;
+ 		vmidi->midi[idx] = rmidi;
+ 		strcpy(rmidi->name, "Virtual Raw MIDI");
+@@ -106,18 +106,10 @@ static int snd_virmidi_probe(struct platform_device *devptr)
+ 	sprintf(card->longname, "Virtual MIDI Card %i", dev + 1);
  
- 	spin_lock_init(&sscape->lock);
-@@ -975,8 +964,7 @@ static int create_sscape(int dev, struct snd_card *card)
- 	if (!detect_sscape(sscape, wss_port[dev])) {
- 		printk(KERN_ERR "sscape: hardware not detected at 0x%x\n",
- 			sscape->io_base);
--		err = -ENODEV;
--		goto _release_dma;
-+		return -ENODEV;
- 	}
- 
- 	switch (sscape->type) {
-@@ -1006,15 +994,13 @@ static int create_sscape(int dev, struct snd_card *card)
- 	irq_cfg = get_irq_config(sscape->type, irq[dev]);
- 	if (irq_cfg == INVALID_IRQ) {
- 		snd_printk(KERN_ERR "sscape: Invalid IRQ %d\n", irq[dev]);
--		err = -ENXIO;
--		goto _release_dma;
-+		return -ENXIO;
- 	}
- 
- 	mpu_irq_cfg = get_irq_config(sscape->type, mpu_irq[dev]);
- 	if (mpu_irq_cfg == INVALID_IRQ) {
- 		snd_printk(KERN_ERR "sscape: Invalid IRQ %d\n", mpu_irq[dev]);
--		err = -ENXIO;
--		goto _release_dma;
-+		return -ENXIO;
- 	}
- 
- 	/*
-@@ -1060,7 +1046,7 @@ static int create_sscape(int dev, struct snd_card *card)
- 		snd_printk(KERN_ERR
- 				"sscape: No AD1845 device at 0x%lx, IRQ %d\n",
- 				wss_port[dev], irq[dev]);
--		goto _release_dma;
-+		return err;
- 	}
- 	strcpy(card->driver, "SoundScape");
- 	strcpy(card->shortname, name);
-@@ -1082,7 +1068,7 @@ static int create_sscape(int dev, struct snd_card *card)
- 				snd_printk(KERN_ERR "sscape: Failed to create "
- 						"MPU-401 device at 0x%lx\n",
- 						port[dev]);
--				goto _release_dma;
-+				return err;
- 			}
- 
- 			/*
-@@ -1109,24 +1095,7 @@ static int create_sscape(int dev, struct snd_card *card)
- 		}
- 	}
- 
--	/*
--	 * Now that we have successfully created this sound card,
--	 * it is safe to store the pointer.
--	 * NOTE: we only register the sound card's "destructor"
--	 *       function now that our "constructor" has completed.
--	 */
--	card->private_free = soundscape_free;
--
- 	return 0;
--
--_release_dma:
--	free_dma(dma[dev]);
--
--_release_region:
--	release_and_free_resource(wss_res);
--	release_and_free_resource(io_res);
--
+ 	err = snd_card_register(card);
+-	if (!err) {
+-		platform_set_drvdata(devptr, card);
+-		return 0;
+-	}
+-__nodev:
+-	snd_card_free(card);
 -	return err;
- }
- 
- 
-@@ -1156,8 +1125,8 @@ static int snd_sscape_probe(struct device *pdev, unsigned int dev)
- 	struct soundscape *sscape;
- 	int ret;
- 
--	ret = snd_card_new(pdev, index[dev], id[dev], THIS_MODULE,
--			   sizeof(struct soundscape), &card);
-+	ret = snd_devm_card_new(pdev, index[dev], id[dev], THIS_MODULE,
-+				sizeof(struct soundscape), &card);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -1168,24 +1137,15 @@ static int snd_sscape_probe(struct device *pdev, unsigned int dev)
- 
- 	ret = create_sscape(dev, card);
- 	if (ret < 0)
--		goto _release_card;
-+		return ret;
- 
- 	ret = snd_card_register(card);
- 	if (ret < 0) {
- 		snd_printk(KERN_ERR "sscape: Failed to register sound card\n");
--		goto _release_card;
-+		return ret;
- 	}
- 	dev_set_drvdata(pdev, card);
- 	return 0;
--
--_release_card:
--	snd_card_free(card);
--	return ret;
 -}
--
--static void snd_sscape_remove(struct device *devptr, unsigned int dev)
++	if (err)
++		return err;
+ 
+-static int snd_virmidi_remove(struct platform_device *devptr)
 -{
--	snd_card_free(dev_get_drvdata(devptr));
+-	snd_card_free(platform_get_drvdata(devptr));
++	platform_set_drvdata(devptr, card);
+ 	return 0;
  }
  
- #define DEV_NAME "sscape"
-@@ -1193,7 +1153,6 @@ static void snd_sscape_remove(struct device *devptr, unsigned int dev)
- static struct isa_driver snd_sscape_driver = {
- 	.match		= snd_sscape_match,
- 	.probe		= snd_sscape_probe,
--	.remove		= snd_sscape_remove,
- 	/* FIXME: suspend/resume */
+@@ -125,7 +117,6 @@ static int snd_virmidi_remove(struct platform_device *devptr)
+ 
+ static struct platform_driver snd_virmidi_driver = {
+ 	.probe		= snd_virmidi_probe,
+-	.remove		= snd_virmidi_remove,
  	.driver		= {
- 		.name	= DEV_NAME
-@@ -1244,9 +1203,9 @@ static int sscape_pnp_detect(struct pnp_card_link *pcard,
- 	 * Create a new ALSA sound card entry, in anticipation
- 	 * of detecting our hardware ...
- 	 */
--	ret = snd_card_new(&pcard->card->dev,
--			   index[idx], id[idx], THIS_MODULE,
--			   sizeof(struct soundscape), &card);
-+	ret = snd_devm_card_new(&pcard->card->dev,
-+				index[idx], id[idx], THIS_MODULE,
-+				sizeof(struct soundscape), &card);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -1277,27 +1236,17 @@ static int sscape_pnp_detect(struct pnp_card_link *pcard,
- 
- 	ret = create_sscape(idx, card);
- 	if (ret < 0)
--		goto _release_card;
-+		return ret;
- 
- 	ret = snd_card_register(card);
- 	if (ret < 0) {
- 		snd_printk(KERN_ERR "sscape: Failed to register sound card\n");
--		goto _release_card;
-+		return ret;
- 	}
- 
- 	pnp_set_card_drvdata(pcard, card);
- 	++idx;
- 	return 0;
--
--_release_card:
--	snd_card_free(card);
--	return ret;
--}
--
--static void sscape_pnp_remove(struct pnp_card_link *pcard)
--{
--	snd_card_free(pnp_get_card_drvdata(pcard));
--	pnp_set_card_drvdata(pcard, NULL);
- }
- 
- static struct pnp_card_driver sscape_pnpc_driver = {
-@@ -1305,7 +1254,6 @@ static struct pnp_card_driver sscape_pnpc_driver = {
- 	.name = "sscape",
- 	.id_table = sscape_pnpids,
- 	.probe = sscape_pnp_detect,
--	.remove = sscape_pnp_remove,
- };
- 
- #endif /* CONFIG_PNP */
+ 		.name	= SND_VIRMIDI_DRIVER,
+ 	},
 -- 
 2.26.2
 
