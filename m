@@ -7,81 +7,81 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E672C07E96
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:03:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E88CC07E96
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:04:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 264A6610C7
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:03:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 264A6610C7
+	by mail.kernel.org (Postfix) with ESMTPS id 04E4E61073
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:04:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 04E4E61073
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A9B1416BE;
-	Thu, 15 Jul 2021 10:03:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9B1416BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D90E167A;
+	Thu, 15 Jul 2021 10:03:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D90E167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626336235;
-	bh=Sgyr/28/hWi3iqXKf4RMHJdDGR7248SaE8ju4gupa08=;
+	s=default; t=1626336266;
+	bh=rXd3rGaZ0EkgeHDojGaFPpZiTaj1DBoxC6XqwIBWSCo=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CCXRf8Bxisdfy3XJ7uY5sKrpKKMH8PkHpLWEPnqosCtfHlrcazSdrirY5JbqUeWnl
-	 ihLtO/W6kJ14d8INhMjYei0V4RZQvRyaIfZvX4i/S0mw00vr70pCl2xwlT49U8pOLA
-	 CglWv3759qBv3mlQbTtrKsydQtp5Vlc3bV4lXN2U=
+	b=s9IIyFcqRG+p8XvNdi4MBo2sXxwXKgFoXndActPhAUI4yG7Sh46RIhPUs86CgKJfS
+	 L5gfnQ94Rkd0hFptat3UHyn9oD8n0ZWgawz14BIEzWvO/kqRWFg5JYuJKPXOZBiZbr
+	 XON37yo8K8Xp8hpEu17tTgRrTalC+1EwwG4+x7wk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5FE29F80559;
-	Thu, 15 Jul 2021 10:00:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32A0CF80578;
+	Thu, 15 Jul 2021 10:00:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4A434F80527; Thu, 15 Jul 2021 10:00:11 +0200 (CEST)
+ id 7DF04F80544; Thu, 15 Jul 2021 10:00:15 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 393C8F804A9
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 09:59:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 393C8F804A9
+ by alsa1.perex.cz (Postfix) with ESMTPS id CA574F804DA
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 09:59:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA574F804DA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="Kz3xAUIR"; 
+ header.b="HckqRdQ6"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="lXF94iUM"
+ header.b="VzJte51Y"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 9517D1FDF2
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 07:59:55 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 981531FDEB
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 07:59:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626335995; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
+ t=1626335992; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=i31mm3UNYG7ksKe/S6D/uXkcvMfW/Lx8iyy2EJ3/ez8=;
- b=Kz3xAUIRruBIs8U1ZoJmmRz3l6BNtDh0ZahtDeBjRW/L9y4h8+Mf8XSwrNNGVNIr4Kfy0k
- CJa1khNKdl3cjVfuY7RkJUPKvTxW8R1HUCoFyyKSvj9WPgMhTzGEFr1thQ7PChDk6W3gRI
- nrn4WS6Dp+3Wgboe78TDILsWSjV65cM=
+ bh=p+80vNdV6jE9Ou8O5FXAHfr7DOF9xGqto4WGILLz14c=;
+ b=HckqRdQ6SGh9JzUdfNrkvTAQIQpQ8AtVZ8hhlYczC8/S1FTrWpscB1Cd4ENS1ATSTyvhnu
+ 0pgkie22c1dI8Ve0p5VMexSKbTQQZxqkbQlEsdZ+ULSCS5jG8rFQUh0yB1sEL7kSiF+R8P
+ jMnsFW1L+9OZ0UyCp555sF75wGcO530=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626335995;
+ s=susede2_ed25519; t=1626335992;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
+ mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=i31mm3UNYG7ksKe/S6D/uXkcvMfW/Lx8iyy2EJ3/ez8=;
- b=lXF94iUMm3zjueRJcsLadDT/9fG7cbekMxCgV/1Ffeon2i/hRLrhmqMxsVlDlJ1L+9/73u
- +i4+1cjVpuFHOHCw==
+ bh=p+80vNdV6jE9Ou8O5FXAHfr7DOF9xGqto4WGILLz14c=;
+ b=VzJte51YWp6KnPn/utzTLyfXukQZ3h+HcGFW01eGjE3snTFnX5WqVpPSl3q51Idn+q6/S/
+ +R571eUdXWWaqiDA==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 81A11A3B99;
- Thu, 15 Jul 2021 07:59:55 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 85BF4A3B8F;
+ Thu, 15 Jul 2021 07:59:52 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 09/79] ALSA: als300: Allocate resources with device-managed
- APIs
-Date: Thu, 15 Jul 2021 09:58:31 +0200
-Message-Id: <20210715075941.23332-10-tiwai@suse.de>
+Subject: [PATCH v2 04/79] ALSA: doc: Add device-managed resource section
+Date: Thu, 15 Jul 2021 09:58:26 +0200
+Message-Id: <20210715075941.23332-5-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210715075941.23332-1-tiwai@suse.de>
 References: <20210715075941.23332-1-tiwai@suse.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -98,200 +98,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the resource management in PCI als300 driver with
-devres as a clean up.  Each manual resource management is converted
-with the corresponding devres helper, and the card object release is
-managed now via card->private_free instead of a lowlevel snd_device.
-
-This should give no user-visible functional changes.
+Give brief explanations about the device-managed resources and the
+newly introduced snd_devm_card_new() helper.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/als300.c | 79 ++++++++++------------------------------------
- 1 file changed, 17 insertions(+), 62 deletions(-)
+ .../kernel-api/writing-an-alsa-driver.rst     | 33 +++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
-diff --git a/sound/pci/als300.c b/sound/pci/als300.c
-index 668008fc21f7..9c94072572a5 100644
---- a/sound/pci/als300.c
-+++ b/sound/pci/als300.c
-@@ -163,21 +163,11 @@ static void snd_als300_set_irq_flag(struct snd_als300 *chip, int cmd)
- 	snd_als300_gcr_write(chip->port, MISC_CONTROL, tmp);
- }
+diff --git a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+index 01d59b8aea92..255b7d3bebd6 100644
+--- a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
++++ b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+@@ -4172,6 +4172,39 @@ module license as GPL, etc., otherwise the system is shown as “tainted”.
+   MODULE_LICENSE("GPL");
  
--static int snd_als300_free(struct snd_als300 *chip)
-+static void snd_als300_free(struct snd_card *card)
- {
--	snd_als300_set_irq_flag(chip, IRQ_DISABLE);
--	if (chip->irq >= 0)
--		free_irq(chip->irq, chip);
--	pci_release_regions(chip->pci);
--	pci_disable_device(chip->pci);
--	kfree(chip);
--	return 0;
--}
-+	struct snd_als300 *chip = card->private_data;
  
--static int snd_als300_dev_free(struct snd_device *device)
--{
--	struct snd_als300 *chip = device->device_data;
--	return snd_als300_free(chip);
-+	snd_als300_set_irq_flag(chip, IRQ_DISABLE);
- }
- 
- static irqreturn_t snd_als300_interrupt(int irq, void *dev_id)
-@@ -248,11 +238,6 @@ static irqreturn_t snd_als300plus_interrupt(int irq, void *dev_id)
- 	return IRQ_HANDLED;
- }
- 
--static void snd_als300_remove(struct pci_dev *pci)
--{
--	snd_card_free(pci_get_drvdata(pci));
--}
--
- static unsigned short snd_als300_ac97_read(struct snd_ac97 *ac97,
- 							unsigned short reg)
- {
-@@ -610,35 +595,22 @@ static void snd_als300_init(struct snd_als300 *chip)
- }
- 
- static int snd_als300_create(struct snd_card *card,
--			     struct pci_dev *pci, int chip_type,
--			     struct snd_als300 **rchip)
-+			     struct pci_dev *pci, int chip_type)
- {
--	struct snd_als300 *chip;
-+	struct snd_als300 *chip = card->private_data;
- 	void *irq_handler;
- 	int err;
- 
--	static const struct snd_device_ops ops = {
--		.dev_free = snd_als300_dev_free,
--	};
--	*rchip = NULL;
--
--	err = pci_enable_device(pci);
-+	err = pcim_enable_device(pci);
- 	if (err < 0)
- 		return err;
- 
- 	if (dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(28))) {
- 		dev_err(card->dev, "error setting 28bit DMA mask\n");
--		pci_disable_device(pci);
- 		return -ENXIO;
- 	}
- 	pci_set_master(pci);
- 
--	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
--	if (chip == NULL) {
--		pci_disable_device(pci);
--		return -ENOMEM;
--	}
--
- 	chip->card = card;
- 	chip->pci = pci;
- 	chip->irq = -1;
-@@ -646,11 +618,9 @@ static int snd_als300_create(struct snd_card *card,
- 	spin_lock_init(&chip->reg_lock);
- 
- 	err = pci_request_regions(pci, "ALS300");
--	if (err < 0) {
--		kfree(chip);
--		pci_disable_device(pci);
-+	if (err < 0)
- 		return err;
--	}
++Device-Managed Resources
++========================
 +
- 	chip->port = pci_resource_start(pci, 0);
- 
- 	if (chip->chip_type == DEVICE_ALS300_PLUS)
-@@ -658,38 +628,29 @@ static int snd_als300_create(struct snd_card *card,
- 	else
- 		irq_handler = snd_als300_interrupt;
- 
--	if (request_irq(pci->irq, irq_handler, IRQF_SHARED,
--			KBUILD_MODNAME, chip)) {
-+	if (devm_request_irq(&pci->dev, pci->irq, irq_handler, IRQF_SHARED,
-+			     KBUILD_MODNAME, chip)) {
- 		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
--		snd_als300_free(chip);
- 		return -EBUSY;
- 	}
- 	chip->irq = pci->irq;
- 	card->sync_irq = chip->irq;
-+	card->private_free = snd_als300_free;
- 
- 	snd_als300_init(chip);
- 
- 	err = snd_als300_ac97(chip);
- 	if (err < 0) {
- 		dev_err(card->dev, "Could not create ac97\n");
--		snd_als300_free(chip);
- 		return err;
- 	}
- 
- 	err = snd_als300_new_pcm(chip);
- 	if (err < 0) {
- 		dev_err(card->dev, "Could not create PCM\n");
--		snd_als300_free(chip);
--		return err;
--	}
--
--	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
--	if (err < 0) {
--		snd_als300_free(chip);
- 		return err;
- 	}
- 
--	*rchip = chip;
- 	return 0;
- }
- 
-@@ -737,20 +698,16 @@ static int snd_als300_probe(struct pci_dev *pci,
- 		return -ENOENT;
- 	}
- 
--	err = snd_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
--			   0, &card);
--
-+	err = snd_devm_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
-+				sizeof(*chip), &card);
- 	if (err < 0)
- 		return err;
- 
- 	chip_type = pci_id->driver_data;
- 
--	err = snd_als300_create(card, pci, chip_type, &chip);
--	if (err < 0) {
--		snd_card_free(card);
-+	err = snd_als300_create(card, pci, chip_type);
-+	if (err < 0)
- 		return err;
--	}
--	card->private_data = chip;
- 
- 	strcpy(card->driver, "ALS300");
- 	if (chip->chip_type == DEVICE_ALS300_PLUS)
-@@ -764,10 +721,9 @@ static int snd_als300_probe(struct pci_dev *pci,
- 				card->shortname, chip->port, chip->irq);
- 
- 	err = snd_card_register(card);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
++In the examples above, all resources are allocated and released
++manually.  But human beings are lazy in nature, especially developers
++are lazier.  So there are some ways to automate the release part; it's
++the (device-)managed resources aka devres or devm family.  For
++example, an object allocated via :c:func:`devm_kmalloc()` will be
++freed automatically at unbinding the device.
 +
- 	pci_set_drvdata(pci, card);
- 	dev++;
- 	return 0;
-@@ -777,7 +733,6 @@ static struct pci_driver als300_driver = {
- 	.name = KBUILD_MODNAME,
- 	.id_table = snd_als300_ids,
- 	.probe = snd_als300_probe,
--	.remove = snd_als300_remove,
- 	.driver = {
- 		.pm = SND_ALS300_PM_OPS,
- 	},
++ALSA core provides also the device-managed helper, namely,
++:c:func:`snd_devm_card_new()` for creating a card object.
++Call this functions instead of the normal :c:func:`snd_card_new()`,
++and you can forget the explicit :c:func:`snd_card_free()` call, as
++it's called automagically at error and removal paths.
++
++One caveat is that the call of :c:func:`snd_card_free()` would be put
++at the beginning of the call chain only after you call
++:c:func:`snd_card_register()`.
++
++Also, the ``private_free`` callback is always called at the card free,
++so be careful to put the hardware clean-up procedure in
++``private_free`` callback.  It might be called even before you
++actually set up at an earlier error path.  For avoiding such an
++invalid initialization, you can set ``private_free`` callback after
++:c:func:`snd_card_register()` call succeeds.
++
++Another thing to be remarked is that you should use device-managed
++helpers for each component as much as possible once when you manage
++the card in that way.  Mixing up with the normal and the managed
++resources may screw up the release order.
++
++
+ How To Put Your Driver Into ALSA Tree
+ =====================================
+ 
 -- 
 2.26.2
 
