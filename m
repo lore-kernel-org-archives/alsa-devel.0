@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 262A3C07E96
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:08:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03B37C07E96
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:09:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 943B461362
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:08:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 943B461362
+	by mail.kernel.org (Postfix) with ESMTPS id 855876136E
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:09:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 855876136E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B85416B6;
-	Thu, 15 Jul 2021 10:07:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B85416B6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 26F4116E1;
+	Thu, 15 Jul 2021 10:08:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26F4116E1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626336525;
-	bh=pBtt/uTISb8NPCkEom15usZ6QN8XM+za30pYh42Crn8=;
+	s=default; t=1626336543;
+	bh=tbIThGY2VsWnck0Zq9qRfZnheBoMGQGe3YYNJ1zqUQA=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=M/48jFxULKVTTVhQlHnbf1RVNZf6zgdA/S4hGT/w37OG6k3bMkY9Y1ZUmtchOnw3m
-	 8k/NBbiRNdRc9oprL7Id5fKriX4JA9eT2xQmtHfP60+X6aDEENz5O4jHCbTHGm3TmP
-	 Qmw+idL5kw979ezsjQdVvxnZYcuvttlx18SBiF20=
+	b=RAMEGDGhEtlk28qbbfSV4kyengwiW+IFK1CQcKN0aREefmC99YtAA79Vab6UMFT+4
+	 pvNvmCvFR3+9cx5Lw9i0OHdFgw4wL3J8upz/DzEizJKnWqb7adQQmgLWSWn8Wu0p0f
+	 MbZBSg7e31PGb5UyJqh/lkM+vOgWSXsCp77FFJPg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C7A2DF805F5;
-	Thu, 15 Jul 2021 10:00:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DB4A5F805F7;
+	Thu, 15 Jul 2021 10:00:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0BC39F804EB; Thu, 15 Jul 2021 10:00:30 +0200 (CEST)
+ id BBD84F805D5; Thu, 15 Jul 2021 10:00:30 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 07396F804EB
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07396F804EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id D5F9CF804F2
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5F9CF804F2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="wj0caXi+"; 
+ header.b="arlJ+Ic2"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="EuY6aKSv"
+ header.b="GRNbJmkO"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id D2D1F1FDE5
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:00 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id A5E4E1FD3E
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626336000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1626336001; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=H+FcHIP2zdusgbPrYoClAr9cEuLFcqZ/s7i7OKllpgQ=;
- b=wj0caXi+pLReM87KOMDWWit+h7bomiIqAgOi0ZdEJajTAvZmsvNGXI2INZaaeCMhmoaunD
- PdPQdQOM4bnt3NHmWKKDXha4o51q39HTb9RRWKc1bA5aF3N2OkbP6xfiHIDxSmhwiIb2U6
- hjBbO76XH193b5rH480QUAkZPG/sjm8=
+ bh=2UJlcNtLCmRyyiZVZtAne3g+hTdewxTFXlBLrEUT66E=;
+ b=arlJ+Ic273C9rGgKMGnSAdMYlZP3oQ78T010mZk/pXHvWqG5zmchGpRH19zypcckKSuhO5
+ aIOiC1RJKqFhMzeR9TrP+kg0yBoIkmtRq9y2+JFWs4XojNnpSQyBAxaH/kkjW541mrD4P8
+ KaGS2lQijxH68tQtI8Yd/Lx83Bd9RMQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626336000;
+ s=susede2_ed25519; t=1626336001;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=H+FcHIP2zdusgbPrYoClAr9cEuLFcqZ/s7i7OKllpgQ=;
- b=EuY6aKSvbgJ4Tu3PTXMMC/NWFyYQPjuVigFr2K4Q/lfJVenbCBCpXZABL8R0Nxot+b9c9X
- 52FBYBIHZu2h2WBQ==
+ bh=2UJlcNtLCmRyyiZVZtAne3g+hTdewxTFXlBLrEUT66E=;
+ b=GRNbJmkOGEKr5h1EA0ErVkqUDgmG76k49kd3UbLtcssVojLciF32DcxvylCJaWCRRAyN/1
+ 1nRFkuPJ+llnkABA==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id C0405A3B8D;
- Thu, 15 Jul 2021 08:00:00 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 93430A3B8D;
+ Thu, 15 Jul 2021 08:00:01 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 19/79] ALSA: fm801: Allocate resources with device-managed
+Subject: [PATCH v2 21/79] ALSA: rme32: Allocate resources with device-managed
  APIs
-Date: Thu, 15 Jul 2021 09:58:41 +0200
-Message-Id: <20210715075941.23332-20-tiwai@suse.de>
+Date: Thu, 15 Jul 2021 09:58:43 +0200
+Message-Id: <20210715075941.23332-22-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210715075941.23332-1-tiwai@suse.de>
 References: <20210715075941.23332-1-tiwai@suse.de>
@@ -98,229 +98,107 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the resource management in PCI fm801 driver with
+This patch converts the resource management in PCI rme32 driver with
 devres as a clean up.  Each manual resource management is converted
-with the corresponding devres helper, and the card object release is
-managed now via card->private_free instead of a lowlevel snd_device.
-Also the superfluous ac97 private_free callbacks were dropped, too.
+with the corresponding devres helper.
 
 This should give no user-visible functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/fm801.c | 103 ++++++++--------------------------------------
- 1 file changed, 17 insertions(+), 86 deletions(-)
+ sound/pci/rme32.c | 49 +++++++++++------------------------------------
+ 1 file changed, 11 insertions(+), 38 deletions(-)
 
-diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
-index ed9dae87145b..9c22ff19e56d 100644
---- a/sound/pci/fm801.c
-+++ b/sound/pci/fm801.c
-@@ -1028,22 +1028,6 @@ FM801_SINGLE(SNDRV_CTL_NAME_IEC958("Raw Data ",CAPTURE,SWITCH), FM801_I2S_MODE,
- FM801_SINGLE(SNDRV_CTL_NAME_IEC958("",PLAYBACK,SWITCH), FM801_GEN_CTRL, 2, 1, 0),
+diff --git a/sound/pci/rme32.c b/sound/pci/rme32.c
+index b5b357853c94..5b6bd9f0b2f7 100644
+--- a/sound/pci/rme32.c
++++ b/sound/pci/rme32.c
+@@ -1278,27 +1278,10 @@ static const struct snd_pcm_ops snd_rme32_capture_adat_fd_ops = {
+ 	.ack =		snd_rme32_capture_fd_ack,
  };
  
--static void snd_fm801_mixer_free_ac97_bus(struct snd_ac97_bus *bus)
--{
--	struct fm801 *chip = bus->private_data;
--	chip->ac97_bus = NULL;
--}
--
--static void snd_fm801_mixer_free_ac97(struct snd_ac97 *ac97)
--{
--	struct fm801 *chip = ac97->private_data;
--	if (ac97->num == 0) {
--		chip->ac97 = NULL;
--	} else {
--		chip->ac97_sec = NULL;
--	}
--}
--
- static int snd_fm801_mixer(struct fm801 *chip)
+-static void snd_rme32_free(void *private_data)
++static void snd_rme32_free(struct rme32 *rme32)
  {
- 	struct snd_ac97_template ac97;
-@@ -1057,11 +1041,9 @@ static int snd_fm801_mixer(struct fm801 *chip)
- 	err = snd_ac97_bus(chip->card, 0, &ops, chip, &chip->ac97_bus);
- 	if (err < 0)
- 		return err;
--	chip->ac97_bus->private_free = snd_fm801_mixer_free_ac97_bus;
- 
- 	memset(&ac97, 0, sizeof(ac97));
- 	ac97.private_data = chip;
--	ac97.private_free = snd_fm801_mixer_free_ac97;
- 	err = snd_ac97_mixer(chip->ac97_bus, &ac97, &chip->ac97);
- 	if (err < 0)
- 		return err;
-@@ -1177,55 +1159,35 @@ static void snd_fm801_chip_init(struct fm801 *chip)
- 		     FM801_IRQ_PLAYBACK | FM801_IRQ_CAPTURE | FM801_IRQ_MPU);
+-	struct rme32 *rme32 = (struct rme32 *) private_data;
+-
+-	if (rme32 == NULL) {
+-		return;
+-	}
+-	if (rme32->irq >= 0) {
++	if (rme32->irq >= 0)
+ 		snd_rme32_pcm_stop(rme32, 0);
+-		free_irq(rme32->irq, (void *) rme32);
+-		rme32->irq = -1;
+-	}
+-	if (rme32->iobase) {
+-		iounmap(rme32->iobase);
+-		rme32->iobase = NULL;
+-	}
+-	if (rme32->port) {
+-		pci_release_regions(rme32->pci);
+-		rme32->port = 0;
+-	}
+-	pci_disable_device(rme32->pci);
  }
  
--static int snd_fm801_free(struct fm801 *chip)
-+static void snd_fm801_free(struct snd_card *card)
- {
-+	struct fm801 *chip = card->private_data;
- 	unsigned short cmdw;
+ static void snd_rme32_free_spdif_pcm(struct snd_pcm *pcm)
+@@ -1322,7 +1305,7 @@ static int snd_rme32_create(struct rme32 *rme32)
+ 	rme32->irq = -1;
+ 	spin_lock_init(&rme32->lock);
  
--	if (chip->irq < 0)
--		goto __end_hw;
--
- 	/* interrupt setup - mask everything */
- 	cmdw = fm801_readw(chip, IRQ_MASK);
- 	cmdw |= 0x00c3;
- 	fm801_writew(chip, IRQ_MASK, cmdw);
- 
--	devm_free_irq(chip->dev, chip->irq, chip);
--
--      __end_hw:
- #ifdef CONFIG_SND_FM801_TEA575X_BOOL
- 	if (!(chip->tea575x_tuner & TUNER_DISABLED)) {
- 		snd_tea575x_exit(&chip->tea);
- 		v4l2_device_unregister(&chip->v4l2_dev);
- 	}
- #endif
--	return 0;
--}
--
--static int snd_fm801_dev_free(struct snd_device *device)
--{
--	struct fm801 *chip = device->device_data;
--	return snd_fm801_free(chip);
- }
- 
- static int snd_fm801_create(struct snd_card *card,
- 			    struct pci_dev *pci,
- 			    int tea575x_tuner,
--			    int radio_nr,
--			    struct fm801 **rchip)
-+			    int radio_nr)
- {
--	struct fm801 *chip;
-+	struct fm801 *chip = card->private_data;
- 	int err;
--	static const struct snd_device_ops ops = {
--		.dev_free =	snd_fm801_dev_free,
--	};
- 
--	*rchip = NULL;
- 	err = pcim_enable_device(pci);
+-	err = pci_enable_device(pci);
++	err = pcim_enable_device(pci);
  	if (err < 0)
  		return err;
--	chip = devm_kzalloc(&pci->dev, sizeof(*chip), GFP_KERNEL);
--	if (chip == NULL)
--		return -ENOMEM;
- 	spin_lock_init(&chip->reg_lock);
- 	chip->card = card;
- 	chip->dev = &pci->dev;
-@@ -1253,7 +1215,6 @@ static int snd_fm801_create(struct snd_card *card,
- 		if (devm_request_irq(&pci->dev, pci->irq, snd_fm801_interrupt,
- 				IRQF_SHARED, KBUILD_MODNAME, chip)) {
- 			dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
--			snd_fm801_free(chip);
- 			return -EBUSY;
- 		}
- 		chip->irq = pci->irq;
-@@ -1261,20 +1222,13 @@ static int snd_fm801_create(struct snd_card *card,
- 		pci_set_master(pci);
- 	}
  
-+	card->private_free = snd_fm801_free;
- 	snd_fm801_chip_init(chip);
- 
--	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
--	if (err < 0) {
--		snd_fm801_free(chip);
--		return err;
--	}
--
- #ifdef CONFIG_SND_FM801_TEA575X_BOOL
- 	err = v4l2_device_register(&pci->dev, &chip->v4l2_dev);
--	if (err < 0) {
--		snd_fm801_free(chip);
-+	if (err < 0)
+@@ -1331,16 +1314,16 @@ static int snd_rme32_create(struct rme32 *rme32)
  		return err;
--	}
- 	chip->tea.v4l2_dev = &chip->v4l2_dev;
- 	chip->tea.radio_nr = radio_nr;
- 	chip->tea.private_data = chip;
-@@ -1284,7 +1238,6 @@ static int snd_fm801_create(struct snd_card *card,
- 	    (chip->tea575x_tuner & TUNER_TYPE_MASK) < 4) {
- 		if (snd_tea575x_init(&chip->tea, THIS_MODULE)) {
- 			dev_err(card->dev, "TEA575x radio not found\n");
--			snd_fm801_free(chip);
- 			return -ENODEV;
- 		}
- 	} else if ((chip->tea575x_tuner & TUNER_TYPE_MASK) == 0) {
-@@ -1312,8 +1265,6 @@ static int snd_fm801_create(struct snd_card *card,
- 			sizeof(chip->tea.card));
- 	}
- #endif
--
--	*rchip = chip;
- 	return 0;
- }
+ 	rme32->port = pci_resource_start(rme32->pci, 0);
  
-@@ -1333,16 +1284,14 @@ static int snd_card_fm801_probe(struct pci_dev *pci,
+-	rme32->iobase = ioremap(rme32->port, RME32_IO_SIZE);
++	rme32->iobase = devm_ioremap(&pci->dev, rme32->port, RME32_IO_SIZE);
+ 	if (!rme32->iobase) {
+ 		dev_err(rme32->card->dev,
+ 			"unable to remap memory region 0x%lx-0x%lx\n",
+-			   rme32->port, rme32->port + RME32_IO_SIZE - 1);
++			rme32->port, rme32->port + RME32_IO_SIZE - 1);
+ 		return -ENOMEM;
+ 	}
+ 
+-	if (request_irq(pci->irq, snd_rme32_interrupt, IRQF_SHARED,
+-			KBUILD_MODNAME, rme32)) {
++	if (devm_request_irq(&pci->dev, pci->irq, snd_rme32_interrupt,
++			     IRQF_SHARED, KBUILD_MODNAME, rme32)) {
+ 		dev_err(rme32->card->dev, "unable to grab IRQ %d\n", pci->irq);
+ 		return -EBUSY;
+ 	}
+@@ -1907,8 +1890,8 @@ snd_rme32_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
  		return -ENOENT;
  	}
  
 -	err = snd_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
--			   0, &card);
+-			   sizeof(struct rme32), &card);
 +	err = snd_devm_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
-+				sizeof(*chip), &card);
++				sizeof(*rme32), &card);
  	if (err < 0)
  		return err;
--	err = snd_fm801_create(card, pci, tea575x_tuner[dev], radio_nr[dev], &chip);
--	if (err < 0) {
--		snd_card_free(card);
-+	chip = card->private_data;
-+	err = snd_fm801_create(card, pci, tea575x_tuner[dev], radio_nr[dev]);
-+	if (err < 0)
- 		return err;
--	}
--	card->private_data = chip;
- 
- 	strcpy(card->driver, "FM801");
- 	strcpy(card->shortname, "ForteMedia FM801-");
-@@ -1354,53 +1303,36 @@ static int snd_card_fm801_probe(struct pci_dev *pci,
- 		goto __fm801_tuner_only;
- 
- 	err = snd_fm801_pcm(chip, 0);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 	err = snd_fm801_mixer(chip);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 	err = snd_mpu401_uart_new(card, 0, MPU401_HW_FM801,
- 				  chip->port + FM801_MPU401_DATA,
- 				  MPU401_INFO_INTEGRATED |
- 				  MPU401_INFO_IRQ_HOOK,
- 				  -1, &chip->rmidi);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 	err = snd_opl3_create(card, chip->port + FM801_OPL3_BANK0,
- 			      chip->port + FM801_OPL3_BANK1,
- 			      OPL3_HW_OPL3_FM801, 1, &opl3);
--	if (err < 0) {
--		snd_card_free(card);
-+	if (err < 0)
- 		return err;
--	}
- 	err = snd_opl3_hwdep_new(opl3, 0, 1, NULL);
+ 	card->private_free = snd_rme32_card_free;
+@@ -1918,10 +1901,8 @@ snd_rme32_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+         if (fullduplex[dev])
+ 		rme32->fullduplex_mode = 1;
+ 	err = snd_rme32_create(rme32);
 -	if (err < 0) {
 -		snd_card_free(card);
 +	if (err < 0)
  		return err;
 -	}
  
-       __fm801_tuner_only:
+ 	strcpy(card->driver, "Digi32");
+ 	switch (rme32->pci->device) {
+@@ -1939,25 +1920,17 @@ snd_rme32_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+ 		card->shortname, rme32->rev, rme32->port, rme32->irq);
+ 
  	err = snd_card_register(card);
 -	if (err < 0) {
 -		snd_card_free(card);
@@ -332,22 +210,19 @@ index ed9dae87145b..9c22ff19e56d 100644
  	return 0;
  }
  
--static void snd_card_fm801_remove(struct pci_dev *pci)
+-static void snd_rme32_remove(struct pci_dev *pci)
 -{
 -	snd_card_free(pci_get_drvdata(pci));
 -}
 -
- #ifdef CONFIG_PM_SLEEP
- static const unsigned char saved_regs[] = {
- 	FM801_PCM_VOL, FM801_I2S_VOL, FM801_FM_VOL, FM801_REC_SRC,
-@@ -1468,7 +1400,6 @@ static struct pci_driver fm801_driver = {
- 	.name = KBUILD_MODNAME,
- 	.id_table = snd_fm801_ids,
- 	.probe = snd_card_fm801_probe,
--	.remove = snd_card_fm801_remove,
- 	.driver = {
- 		.pm = SND_FM801_PM_OPS,
- 	},
+ static struct pci_driver rme32_driver = {
+ 	.name =		KBUILD_MODNAME,
+ 	.id_table =	snd_rme32_ids,
+ 	.probe =	snd_rme32_probe,
+-	.remove =	snd_rme32_remove,
+ };
+ 
+ module_pci_driver(rme32_driver);
 -- 
 2.26.2
 
