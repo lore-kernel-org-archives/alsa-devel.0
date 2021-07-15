@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A28AC07E96
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:23:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CA9BC07E96
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:24:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B4D3F6120A
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:23:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B4D3F6120A
+	by mail.kernel.org (Postfix) with ESMTPS id BA1AC611C0
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jul 2021 08:24:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA1AC611C0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1F6A51731;
-	Thu, 15 Jul 2021 10:23:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F6A51731
+	by alsa0.perex.cz (Postfix) with ESMTPS id 55DE1172C;
+	Thu, 15 Jul 2021 10:23:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55DE1172C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626337432;
-	bh=6h9irJrIDEGyKS5Xu0pfBS6kV4Q5NR7VYeiYXW+mKC0=;
+	s=default; t=1626337451;
+	bh=Z5jilQdlCU+ecvpcWvo7FZHN7ukKaSxot+1nMDo4rws=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=smCmnkJRB16AHg40otHECTV/kVEFeNM0NS4udPYChKE3+eq48Azry43BB947/xd0U
-	 lWASWd33ZpXuCaUr5rrey2YTWdu6bTChSwikH+XvNDVio+wOxF7jaaKorY9zlsrVMp
-	 s53Rs5jxgBUbp9ZTWlzKRuvEpkfkQeHFObwlRJGM=
+	b=gxYLnvfmi1DOgqVzyoOL8dSnxrZ2pMzIcavieB3Ul5jV6ub45tBeGZVEvtu95bVPr
+	 SyTR4taJpE6z6ZRnaJT+ZhCz58gj9P6Dj3Btos20+FluJwhyySHPxuXrIiUcEfmHlT
+	 MoyTC5j/97Bv01iV1y7V9UjdYYxr1h4nKP4J8Ue4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2354FF80772;
+	by alsa1.perex.cz (Postfix) with ESMTP id F2A73F80787;
 	Thu, 15 Jul 2021 10:01:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7EA69F8072A; Thu, 15 Jul 2021 10:01:26 +0200 (CEST)
+ id E0411F80727; Thu, 15 Jul 2021 10:01:26 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 266CBF8054A
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 266CBF8054A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 054B4F8055C
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 10:00:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 054B4F8055C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="AHEdiU3b"; 
+ header.b="x89aarh3"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="Bv6YCRF3"
+ header.b="ma8/nXlc"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 01D521FDE5
- for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:16 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id D43F01FDE5
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2021 08:00:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626336016; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1626336017; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=drthx1EGwL1/x7T6ZSLfCNWdvW5bSDZl7lLhK8kpG24=;
- b=AHEdiU3bbfQOYmOzakWctsipbYH8luL+2uBdXMfZI+MDApKM1pK2UQbPI7aGzQnJMKRdI+
- lysCRubtuI31nQGuwC9PlUmyjfuyRK6dh5Nn2ex4ahsZlAduAWjqXzrHKHA5tY7sd5Ldas
- ekJg0S5p4dtVkEoYYvBHOg5ZtC9FKqU=
+ bh=yW7HisTCVctoOzQXfvpnF5WdDsgPe7fCJ3Y4gwvxgII=;
+ b=x89aarh3S13dhizwlgZ88Bd5zAlaqvadoXBtCZl4ulzSupA1AS+LTxyELHkFfHXPgl/IBr
+ qlWAy0VIuEhDerhmWXVmKtv6NTCSFeFphseCHYrEYBnrUyjuZLXnzU74TOjOuHUHodPdsP
+ 1T2JOKmTESwcVYsy9By+vrRe5NtRR7Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626336016;
+ s=susede2_ed25519; t=1626336017;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=drthx1EGwL1/x7T6ZSLfCNWdvW5bSDZl7lLhK8kpG24=;
- b=Bv6YCRF345ZZwrMjhJwM9CyFyC1ylodnAhovX2eniu1SUlr38YPOeVKhV52Ln4fFD9Fre/
- /f3ywf35O34FMoBg==
+ bh=yW7HisTCVctoOzQXfvpnF5WdDsgPe7fCJ3Y4gwvxgII=;
+ b=ma8/nXlcmucm02i9dMll/Xsw0LdmCsvnVT6Z838dGdf86OPjJIwPzkSug2FqWvkCOdmksq
+ CXFPUNXFJNX4+wBg==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id E544AA3B8F;
- Thu, 15 Jul 2021 08:00:15 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id C9F6AA3B8F;
+ Thu, 15 Jul 2021 08:00:17 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 55/79] ALSA: ad1848: Allocate resources with device-managed
- APIs
-Date: Thu, 15 Jul 2021 09:59:17 +0200
-Message-Id: <20210715075941.23332-56-tiwai@suse.de>
+Subject: [PATCH v2 59/79] ALSA: cmi8328: Allocate resources with
+ device-managed APIs
+Date: Thu, 15 Jul 2021 09:59:21 +0200
+Message-Id: <20210715075941.23332-60-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210715075941.23332-1-tiwai@suse.de>
 References: <20210715075941.23332-1-tiwai@suse.de>
@@ -98,80 +98,113 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the resource management in ISA ad1848 driver with
+This patch converts the resource management in ISA cmi8328 driver with
 devres as a clean up.  Each manual resource management is converted
-with the corresponding devres helper.  The remove callback became
-superfluous and dropped.
+with the corresponding devres helper.
 
 This should give no user-visible functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/isa/ad1848/ad1848.c | 19 +++++--------------
- 1 file changed, 5 insertions(+), 14 deletions(-)
+ sound/isa/cmi8328.c | 31 ++++++++++---------------------
+ 1 file changed, 10 insertions(+), 21 deletions(-)
 
-diff --git a/sound/isa/ad1848/ad1848.c b/sound/isa/ad1848/ad1848.c
-index edafb49797e7..c471ac2aa450 100644
---- a/sound/isa/ad1848/ad1848.c
-+++ b/sound/isa/ad1848/ad1848.c
-@@ -72,7 +72,7 @@ static int snd_ad1848_probe(struct device *dev, unsigned int n)
- 	struct snd_wss *chip;
- 	int error;
+diff --git a/sound/isa/cmi8328.c b/sound/isa/cmi8328.c
+index 3b9fbb02864b..8902cfb830f7 100644
+--- a/sound/isa/cmi8328.c
++++ b/sound/isa/cmi8328.c
+@@ -294,8 +294,8 @@ static int snd_cmi8328_probe(struct device *pdev, unsigned int ndev)
+ 	}
+ 	outb(val, port);
  
--	error = snd_card_new(dev, index[n], id[n], THIS_MODULE, 0, &card);
-+	error = snd_devm_card_new(dev, index[n], id[n], THIS_MODULE, 0, &card);
- 	if (error < 0)
- 		return error;
+-	err = snd_card_new(pdev, index[ndev], id[ndev], THIS_MODULE,
+-			   sizeof(struct snd_cmi8328), &card);
++	err = snd_devm_card_new(pdev, index[ndev], id[ndev], THIS_MODULE,
++				sizeof(struct snd_cmi8328), &card);
+ 	if (err < 0)
+ 		return err;
+ 	cmi = card->private_data;
+@@ -306,18 +306,18 @@ static int snd_cmi8328_probe(struct device *pdev, unsigned int ndev)
+ 	err = snd_wss_create(card, port + 4, -1, irq[ndev], dma1[ndev],
+ 			dma2[ndev], WSS_HW_DETECT, 0, &cmi->wss);
+ 	if (err < 0)
+-		goto error;
++		return err;
  
-@@ -80,17 +80,17 @@ static int snd_ad1848_probe(struct device *dev, unsigned int n)
- 			thinkpad[n] ? WSS_HW_THINKPAD : WSS_HW_DETECT,
- 			0, &chip);
- 	if (error < 0)
--		goto out;
-+		return error;
+ 	err = snd_wss_pcm(cmi->wss, 0);
+ 	if (err < 0)
+-		goto error;
++		return err;
  
- 	card->private_data = chip;
+ 	err = snd_wss_mixer(cmi->wss);
+ 	if (err < 0)
+-		goto error;
++		return err;
+ 	err = snd_cmi8328_mixer(cmi->wss);
+ 	if (err < 0)
+-		goto error;
++		return err;
  
- 	error = snd_wss_pcm(chip, 0);
- 	if (error < 0)
--		goto out;
-+		return error;
- 
- 	error = snd_wss_mixer(chip);
- 	if (error < 0)
--		goto out;
-+		return error;
- 
- 	strscpy(card->driver, "AD1848", sizeof(card->driver));
- 	strscpy(card->shortname, chip->pcm->name, sizeof(card->shortname));
-@@ -106,18 +106,10 @@ static int snd_ad1848_probe(struct device *dev, unsigned int n)
- 
- 	error = snd_card_register(card);
- 	if (error < 0)
--		goto out;
-+		return error;
- 
- 	dev_set_drvdata(dev, card);
+ 	if (snd_wss_timer(cmi->wss, 0) < 0)
+ 		snd_printk(KERN_WARNING "error initializing WSS timer\n");
+@@ -371,24 +371,21 @@ static int snd_cmi8328_probe(struct device *pdev, unsigned int ndev)
+ 	dev_set_drvdata(pdev, card);
+ 	err = snd_card_register(card);
+ 	if (err < 0)
+-		goto error;
++		return err;
+ #ifdef SUPPORT_JOYSTICK
+ 	if (!gameport[ndev])
+ 		return 0;
+ 	/* gameport is hardwired to 0x200 */
+-	res = request_region(0x200, 8, "CMI8328 gameport");
++	res = devm_request_region(pdev, 0x200, 8, "CMI8328 gameport");
+ 	if (!res)
+ 		snd_printk(KERN_WARNING "unable to allocate gameport I/O port\n");
+ 	else {
+ 		struct gameport *gp = cmi->gameport = gameport_allocate_port();
+-		if (!cmi->gameport)
+-			release_and_free_resource(res);
+-		else {
++		if (cmi->gameport) {
+ 			gameport_set_name(gp, "CMI8328 Gameport");
+ 			gameport_set_phys(gp, "%s/gameport0", dev_name(pdev));
+ 			gameport_set_dev_parent(gp, pdev);
+ 			gp->io = 0x200;
+-			gameport_set_port_data(gp, res);
+ 			/* Enable gameport */
+ 			snd_cmi8328_cfg_write(port, CFG1,
+ 					CFG1_SB_DISABLE | CFG1_GAMEPORT);
+@@ -397,10 +394,6 @@ static int snd_cmi8328_probe(struct device *pdev, unsigned int ndev)
+ 	}
+ #endif
  	return 0;
+-error:
+-	snd_card_free(card);
 -
--out:	snd_card_free(card);
--	return error;
--}
--
--static void snd_ad1848_remove(struct device *dev, unsigned int n)
--{
--	snd_card_free(dev_get_drvdata(dev));
+-	return err;
+ }
+ 
+ static void snd_cmi8328_remove(struct device *pdev, unsigned int dev)
+@@ -409,17 +402,13 @@ static void snd_cmi8328_remove(struct device *pdev, unsigned int dev)
+ 	struct snd_cmi8328 *cmi = card->private_data;
+ 
+ #ifdef SUPPORT_JOYSTICK
+-	if (cmi->gameport) {
+-		struct resource *res = gameport_get_port_data(cmi->gameport);
++	if (cmi->gameport)
+ 		gameport_unregister_port(cmi->gameport);
+-		release_and_free_resource(res);
+-	}
+ #endif
+ 	/* disable everything */
+ 	snd_cmi8328_cfg_write(cmi->port, CFG1, CFG1_SB_DISABLE);
+ 	snd_cmi8328_cfg_write(cmi->port, CFG2, 0);
+ 	snd_cmi8328_cfg_write(cmi->port, CFG3, 0);
+-	snd_card_free(card);
  }
  
  #ifdef CONFIG_PM
-@@ -145,7 +137,6 @@ static int snd_ad1848_resume(struct device *dev, unsigned int n)
- static struct isa_driver snd_ad1848_driver = {
- 	.match		= snd_ad1848_match,
- 	.probe		= snd_ad1848_probe,
--	.remove		= snd_ad1848_remove,
- #ifdef CONFIG_PM
- 	.suspend	= snd_ad1848_suspend,
- 	.resume		= snd_ad1848_resume,
 -- 
 2.26.2
 
