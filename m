@@ -7,84 +7,84 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85C3BC07E95
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jul 2021 10:25:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B9E8C07E95
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jul 2021 10:25:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 958DB613EB
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jul 2021 10:25:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 958DB613EB
+	by mail.kernel.org (Postfix) with ESMTPS id 342D4613EB
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jul 2021 10:25:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 342D4613EB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 18A44169B;
-	Fri, 16 Jul 2021 12:24:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18A44169B
+	by alsa0.perex.cz (Postfix) with ESMTPS id B8FEF169E;
+	Fri, 16 Jul 2021 12:24:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8FEF169E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626431102;
-	bh=M8OCnyw2vkf8WdKQTzUIX6K9NX7wGgYzbCqnAQX+1AQ=;
+	s=default; t=1626431114;
+	bh=jFYjOkx/i7sWLMhI9VYqYgK0iSETaXPo7ZQNnOt5kig=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hy144/TwaI7YplFTQJtescGFVWSF+FsqpJnaYRJ1d46EyCFlUoOsFDX/3c7H4/Qwx
-	 3uJb1/lzMUd/6NGE6BQVdbNU8MU/+9lK1MAILF/JaIAo3GFN3WtAa1bSnUPgEjbX5N
-	 kEq6zqTuFVLKlnH50aeVH6jowJPaJQrey7rx9OR0=
+	b=o6ocZrvBZzTQWlJrLm0Xop6hZf0R4qpnwvcQvkoXoOoYgheAbu/8M/uvrh23Oh42S
+	 Th68SyvC7eQ+aez+kIhgJQzF8sQLyl32m8vkQURhlHzuhj/M3xHsS7FwAtEvJ+5LJx
+	 06AfqJNBVGWSQ45xbiFUr4w85dXdu912ccQWpKfU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47260F804E0;
-	Fri, 16 Jul 2021 12:22:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E6828F804E6;
+	Fri, 16 Jul 2021 12:22:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16429F80424; Fri, 16 Jul 2021 12:22:46 +0200 (CEST)
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com
- [IPv6:2a00:1450:4864:20::42c])
+ id 8533CF804E6; Fri, 16 Jul 2021 12:22:48 +0200 (CEST)
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com
+ [IPv6:2a00:1450:4864:20::42b])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 28A32F80254
- for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2021 12:22:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28A32F80254
+ by alsa1.perex.cz (Postfix) with ESMTPS id ADB8CF8026D
+ for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2021 12:22:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADB8CF8026D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="xSyYife0"
-Received: by mail-wr1-x42c.google.com with SMTP id f9so11451169wrq.11
- for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2021 03:22:38 -0700 (PDT)
+ header.b="RtMIQpqg"
+Received: by mail-wr1-x42b.google.com with SMTP id u1so11527272wrs.1
+ for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2021 03:22:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=RH8cJpfI22EW3WzQFW97y0L55bfdGZoYafA5iYEI+Gs=;
- b=xSyYife0tK8Wfn1AeIqVivedOLa58eDWnp2XZ/NO8MbdLNwDv2h5WY/icWPtYUorEv
- THnhvCJFfY7DbION+eaZnVdlFIo738ELu3z8hK8jH9RXCWUgYR+QwdMIBb8qsBjl3AID
- dYx6WsO6/rcNYAtbvNOFWhUB4TLof2I2fLpplYd6Z2pMjhgEBipZ1gVN6l435fPoOyTy
- OfLIyNn28MNMJJOT343A8thpGAzWkTSshp8RvfD3OK+6la4NtmUSs9JbNjDY9uBlRcqo
- wowE1Y6vWw9i+wu7Iohh1HamHfw3xUnGcc6srf/d+35Zhht1z42oazBl3f3f3voecOar
- Vbqg==
+ bh=phsqVDKt7cS5gPFlQtF9euIsqh6Lyd2uhcBMlgfbuug=;
+ b=RtMIQpqgVXDnA7mNNctHnw56XAzb+jtElYAMhxhCoKj31wcOD2of9eOV5AF5H2iw0t
+ 5PnhV/EhLW5DTYV9G8tA46UxrsZpjxQ7MZvbzbR3U5fi+VhV3FDD3D9qLDuzkDzKnyig
+ 4TJwJp2TVuO7zP/kEEd2ZSYh1rDmw+MK6ji2Onh96ti5KlcyVCNkHVH282Vd9393OIt+
+ ROyoCwrwwx5pwJjHKJzAHgLsQtldUdSDOZ8qDUJ/qXUy22iNNjbuyMrt1q/sOwwumgj6
+ cIrObp9ZMrjQJs4OJTLiAfmvR9TF8B2++M4n6VvldrpIKKZR5QuX1Dj3gkJbQvJQHu/y
+ AlSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=RH8cJpfI22EW3WzQFW97y0L55bfdGZoYafA5iYEI+Gs=;
- b=Qd/7BLxCdMc7Bpp+qtcLbhJjXvl4MIP8BLkChBlAKT5NiMkFKLl3JJAqISwuqecfjB
- FuV5ifsRIxQyGXUKaHgXJ878QV2i3pby1hjODaB/EVNbL+dzMajXYdzB0kbe+RkwhzT4
- UOd2fBdsCOpzhNRj7SBNogZSw7wY2JRBgmtOFl7xND5uJsyQf+KvYy6zLIQZ/IFVr5Pg
- 41kwKCsJ3+GBRIpmziIwZ+YO0NymNhQ1+jWI0dc/Za9XP3Kun6oSzmDYQ4ZJxUmljiW+
- NaYqua9AzT3K7PgXWX8vAmKi8FfCjR366AIW6QaDvR/dHwIUWYWDWrboajCvmOGaKyLP
- g46Q==
-X-Gm-Message-State: AOAM530f6XJd3MmQuCKsjqwqzJ/GtXP3711JuKKKMdg5m2mmjc8GfzT5
- nPWSto96Jv/gFIhB3mb/S4PFOg==
-X-Google-Smtp-Source: ABdhPJxkdjbtScSNsWZzVR5VWqcv2L/5BW51zAQpb8zHod1cXpcF3Ss+cnsGhFs2Bqw+BOUK9cyoNA==
-X-Received: by 2002:adf:e107:: with SMTP id t7mr11391576wrz.165.1626430958309; 
- Fri, 16 Jul 2021 03:22:38 -0700 (PDT)
+ bh=phsqVDKt7cS5gPFlQtF9euIsqh6Lyd2uhcBMlgfbuug=;
+ b=mSbpZfrEUfWJvFGzkM/4NRIfAPxpMyr4vQwgn0Y6ztODP6SQpgStLZj+rIAcPj7/fA
+ hgTHx8b5dGbtZKG6ylmMbGVzYM4Gxj9+XC3ot4UyV1pOaJFnP1yMn+bVz6/uZwjovJoL
+ YcMkPmUzb8KUO248KZfs8UM1pzFxYcLyxwmV6DenhFOXAB6f79i8/Rai1rHqQ6+KzQEa
+ UEZBUiAMoUDuyVrmA0bs8EpjfQjlR70XO4n+lF4b6CyVxBPY3QBiGBHRf/CB25SnAkr4
+ uvJp+id1x090JJlso1Z3XBgaHfggN3uxYMHMAy9p0Fx6cnTrGlEXcjLZiDnWHsWTRSuM
+ 1GUw==
+X-Gm-Message-State: AOAM530VUWkxS3MnM15P1CIWYoAukAXuC/Ab9XCqUiE85dqlYMml4hVr
+ PQ8dPMhVFwpCLS/mNOQvM7YZqg==
+X-Google-Smtp-Source: ABdhPJxjZzopWWGCvCIFeBejgXYqA5vngsb3D5YCPozsZs+/7/AGqcMT6p2CiHWlc5BZ8MP4jg8kVw==
+X-Received: by 2002:adf:fc85:: with SMTP id g5mr11523289wrr.296.1626430959130; 
+ Fri, 16 Jul 2021 03:22:39 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id g15sm7421796wmh.44.2021.07.16.03.22.37
+ by smtp.gmail.com with ESMTPSA id g15sm7421796wmh.44.2021.07.16.03.22.38
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 16 Jul 2021 03:22:37 -0700 (PDT)
+ Fri, 16 Jul 2021 03:22:38 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: srini@kernel.org
-Subject: [PATCH 3/4] slimbus: ngd: set correct device for pm
-Date: Fri, 16 Jul 2021 11:21:22 +0100
-Message-Id: <20210716102123.26861-4-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 4/4] slimbus: ngd: reset dma setup during runtime pm
+Date: Fri, 16 Jul 2021 11:21:23 +0100
+Message-Id: <20210716102123.26861-5-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210716102123.26861-1-srinivas.kandagatla@linaro.org>
 References: <20210716102123.26861-1-srinivas.kandagatla@linaro.org>
@@ -106,58 +106,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-For some reason we ended up using wrong device in some places for pm_runtime calls.
-Fix this so that NGG driver can do runtime pm correctly.
+During suspend/resume NGD remote instance is power cycled along
+with remotely controlled bam dma engine.
+So Reset the dma configuration during this suspend resume path
+so that we are not dealing with any stale dma setup.
+
+Without this transactions timeout after first suspend resume path.
 
 Fixes: 917809e2280b ("slimbus: ngd: Add qcom SLIMBus NGD driver")
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/slimbus/qcom-ngd-ctrl.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ drivers/slimbus/qcom-ngd-ctrl.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
-index c054e83ab636..f3ee8e036372 100644
+index f3ee8e036372..7040293c2ee8 100644
 --- a/drivers/slimbus/qcom-ngd-ctrl.c
 +++ b/drivers/slimbus/qcom-ngd-ctrl.c
-@@ -618,7 +618,7 @@ static void qcom_slim_ngd_rx(struct qcom_slim_ngd_ctrl *ctrl, u8 *buf)
- 		(mc == SLIM_USR_MC_GENERIC_ACK &&
- 		 mt == SLIM_MSG_MT_SRC_REFERRED_USER)) {
- 		slim_msg_response(&ctrl->ctrl, &buf[4], buf[3], len - 4);
--		pm_runtime_mark_last_busy(ctrl->dev);
-+		pm_runtime_mark_last_busy(ctrl->ctrl.dev);
- 	}
- }
+@@ -1080,7 +1080,8 @@ static void qcom_slim_ngd_setup(struct qcom_slim_ngd_ctrl *ctrl)
+ {
+ 	u32 cfg = readl_relaxed(ctrl->ngd->base);
  
-@@ -1257,13 +1257,14 @@ static int qcom_slim_ngd_enable(struct qcom_slim_ngd_ctrl *ctrl, bool enable)
+-	if (ctrl->state == QCOM_SLIM_NGD_CTRL_DOWN)
++	if (ctrl->state == QCOM_SLIM_NGD_CTRL_DOWN ||
++		ctrl->state == QCOM_SLIM_NGD_CTRL_ASLEEP)
+ 		qcom_slim_ngd_init_dma(ctrl);
+ 
+ 	/* By default enable message queues */
+@@ -1131,6 +1132,7 @@ static int qcom_slim_ngd_power_up(struct qcom_slim_ngd_ctrl *ctrl)
+ 			dev_info(ctrl->dev, "Subsys restart: ADSP active framer\n");
+ 			return 0;
  		}
- 		/* controller state should be in sync with framework state */
- 		complete(&ctrl->qmi.qmi_comp);
--		if (!pm_runtime_enabled(ctrl->dev) ||
--				!pm_runtime_suspended(ctrl->dev))
--			qcom_slim_ngd_runtime_resume(ctrl->dev);
-+		if (!pm_runtime_enabled(ctrl->ctrl.dev) ||
-+			 !pm_runtime_suspended(ctrl->ctrl.dev))
-+			qcom_slim_ngd_runtime_resume(ctrl->ctrl.dev);
- 		else
--			pm_runtime_resume(ctrl->dev);
--		pm_runtime_mark_last_busy(ctrl->dev);
--		pm_runtime_put(ctrl->dev);
-+			pm_runtime_resume(ctrl->ctrl.dev);
-+
-+		pm_runtime_mark_last_busy(ctrl->ctrl.dev);
-+		pm_runtime_put(ctrl->ctrl.dev);
++		qcom_slim_ngd_setup(ctrl);
+ 		return 0;
+ 	}
  
- 		ret = slim_register_controller(&ctrl->ctrl);
- 		if (ret) {
-@@ -1389,7 +1390,7 @@ static int qcom_slim_ngd_ssr_pdr_notify(struct qcom_slim_ngd_ctrl *ctrl,
- 		/* Make sure the last dma xfer is finished */
- 		mutex_lock(&ctrl->tx_lock);
- 		if (ctrl->state != QCOM_SLIM_NGD_CTRL_DOWN) {
--			pm_runtime_get_noresume(ctrl->dev);
-+			pm_runtime_get_noresume(ctrl->ctrl.dev);
- 			ctrl->state = QCOM_SLIM_NGD_CTRL_DOWN;
- 			qcom_slim_ngd_down(ctrl);
- 			qcom_slim_ngd_exit_dma(ctrl);
+@@ -1618,6 +1620,7 @@ static int __maybe_unused qcom_slim_ngd_runtime_suspend(struct device *dev)
+ 	struct qcom_slim_ngd_ctrl *ctrl = dev_get_drvdata(dev);
+ 	int ret = 0;
+ 
++	qcom_slim_ngd_exit_dma(ctrl);
+ 	if (!ctrl->qmi.handle)
+ 		return 0;
+ 
 -- 
 2.21.0
 
