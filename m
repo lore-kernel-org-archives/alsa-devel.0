@@ -2,97 +2,111 @@ Return-Path: <SRS0=ec3H=MJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-8.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E91CC636CA
-	for <alsa-devel@archiver.kernel.org>; Sat, 17 Jul 2021 12:28:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4E21C636C9
+	for <alsa-devel@archiver.kernel.org>; Sat, 17 Jul 2021 21:00:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 206FA611C1
-	for <alsa-devel@archiver.kernel.org>; Sat, 17 Jul 2021 12:28:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 206FA611C1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 610E4610F9
+	for <alsa-devel@archiver.kernel.org>; Sat, 17 Jul 2021 21:00:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 610E4610F9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD52D166B;
-	Sat, 17 Jul 2021 14:27:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD52D166B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 15B1E3E;
+	Sat, 17 Jul 2021 22:59:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15B1E3E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626524898;
-	bh=uzTlJXmnHGJ7XvcJ/3YpYVrDyPbjbf0gvf18kk265fE=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=GUaaJ6CDcCkzc7NnlFTZjArL+pRyYMD3FzK+CwYsn3MTilc5fgSXYt4mMQyK/i67/
-	 A7jz3nbvObbbdh1HJEbKn9lYbAjhloj4E1KkaueiYab/yfOH88Swl8sIcWsxuv52ND
-	 A9tWQdSRkV62Z23uRUTHQ4/zXhveepN0vv76J1Rs=
+	s=default; t=1626555632;
+	bh=IYhVlpmc05EbLd0ZA1kqaZIyn6ruEZDqghXIkPA5+u8=;
+	h=To:From:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=EO9qGfZrcVPQ4PGIJNbHVzuKJCpcNutt0HoszZq2OmDBCeckTY3ca+uFugH1Z/8q0
+	 5UfAThel2QRiRIrjAsNi+QoVXEJPBlV1LKwl/RORROOx2mQjTHk9vtwmDqozDSWmO2
+	 D9SLmTq8oX2eutmvfzasgb2ks0VgQbTPgZ07XDGw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2BF91F804E1;
-	Sat, 17 Jul 2021 14:26:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9290FF8020C;
+	Sat, 17 Jul 2021 22:59:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1CF23F80424; Sat, 17 Jul 2021 14:26:01 +0200 (CEST)
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com
- [IPv6:2a00:1450:4864:20::134])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id B1CABF80217; Sat, 17 Jul 2021 22:59:39 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F05D3F80217
- for <alsa-devel@alsa-project.org>; Sat, 17 Jul 2021 14:25:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F05D3F80217
+ by alsa1.perex.cz (Postfix) with ESMTPS id D53C5F800C5
+ for <alsa-devel@alsa-project.org>; Sat, 17 Jul 2021 22:59:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D53C5F800C5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="HagJseli"
-Received: by mail-lf1-x134.google.com with SMTP id u13so20611746lfs.11
- for <alsa-devel@alsa-project.org>; Sat, 17 Jul 2021 05:25:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=QQNp0sdJ1Pncpy92tkHPev6Ip/OvjtBZgI6rNz1+HnQ=;
- b=HagJselij1rPkM83SkXRi8s5txDFX3iZo24S2R4hEnOrrQGOmjxpOj2f/Ubp/KwrMh
- eQQAVkAa/d/2qiApChdMTlifgVc8mTYbdd9F+xycTz58txExhdewxGYv3mJQ2zrEo4Pl
- 1bUymxNUNiHCh2BrSinuc0T0AQNYlUXfbNvY61COhHCAT08NKdzjOdgy8ijKnpu8PSDK
- +g7qOiWP6f1y5DO6oQH9RDyslvKU8Rr6+ioNcNXo3UTqUzlMjKiosJv0e9cNCKHsYDeL
- Y/fLf9o+TD+7Cctgdwgj9vwIEkTuFLWtnyBMGTRNYRSz4T9X2i0Ue2VJb4JoqJpZ+oCy
- sWkw==
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="SM+KGndo"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1626555570;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=IYhVlpmc05EbLd0ZA1kqaZIyn6ruEZDqghXIkPA5+u8=;
+ b=SM+KGndoeemizA9n2AT0T9DvE4frVxq+xBK+lDVmaD1DZHZEAUzRZ1yiuiwW93t2zYI54T
+ QrpF19dDfiqMRWFjR19AnbyzeK/hnzSWkPXnZYhbmvqh64e6antU2eUm2V5o8/FT2qfzBA
+ DfRxrl4A6+rWfbhCuhEGrazjkVWoZWw=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-129-LxoUtBLaNMe0DFdTwcqrXQ-1; Sat, 17 Jul 2021 16:59:28 -0400
+X-MC-Unique: LxoUtBLaNMe0DFdTwcqrXQ-1
+Received: by mail-ed1-f70.google.com with SMTP id
+ n6-20020a05640205c6b02903a65bbc4aebso6756567edx.10
+ for <alsa-devel@alsa-project.org>; Sat, 17 Jul 2021 13:59:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=QQNp0sdJ1Pncpy92tkHPev6Ip/OvjtBZgI6rNz1+HnQ=;
- b=NZY45K5ZrziGnWcIU0ojgnffzf2W/8JkCfKOmVhZWm3aiyTTcFFiQxi94QLQOZIebB
- luV/7JhqVAVm04ZwkKO9BjJJv21leH/z9coueCHLMgn0ZoJfS8IOTYMzKwYoQTtbbrrD
- EUP8hEjeutVpnDQbxbs+Aew+AkE33mrTHLXmHBfVmrraYl+GtYqZeH/7c6vg3hhq8XKg
- 8O3em7Wv/9aSd7o0rSqWRCyVOEV5I5rR5NAP3nbHcg7yncT6gD/c5DUExBm5xrLjW/Nd
- yYZQHyttcVXz0QG3QyxfbcLMqVDrzgdR4pdCyoCufyd2dpwPGkcPWGyZy6XKwHr8tuCo
- Kvzw==
-X-Gm-Message-State: AOAM532CXuaQpTpZuwzO3ww2E3OYSxrjuxCcU2yCW9yCibyd8q+NruFT
- 74QII5rxpjei7R0B0M2sTp4=
-X-Google-Smtp-Source: ABdhPJwvjZYy4JK+uyCUeuLazErVsTkw42oyvSUNnwSGJ2+I4tunXj0aL2huEmXDf7NnkY+/GDNpXg==
-X-Received: by 2002:ac2:5d2e:: with SMTP id i14mr11130476lfb.642.1626524754566; 
- Sat, 17 Jul 2021 05:25:54 -0700 (PDT)
-Received: from localhost.localdomain (91-155-111-71.elisa-laajakaista.fi.
- [91.155.111.71])
- by smtp.gmail.com with ESMTPSA id v4sm860087lfi.118.2021.07.17.05.25.53
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 17 Jul 2021 05:25:54 -0700 (PDT)
-From: Peter Ujfalusi <peter.ujfalusi@gmail.com>
-To: broonie@kernel.org
-Subject: [PATCH 2/3] ASoC: ti: j721e-evm: Check for not initialized
- parent_clk_id
-Date: Sat, 17 Jul 2021 15:28:19 +0300
-Message-Id: <20210717122820.1467-3-peter.ujfalusi@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210717122820.1467-1-peter.ujfalusi@gmail.com>
-References: <20210717122820.1467-1-peter.ujfalusi@gmail.com>
+ h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+ :mime-version:content-language:content-transfer-encoding;
+ bh=IYhVlpmc05EbLd0ZA1kqaZIyn6ruEZDqghXIkPA5+u8=;
+ b=PlEaDBypRGOnAP0fJ08HJDtiIsSaK0GSh3DsXWOqTS/Krs2nNDXvFqehFHx2rkjz7g
+ xdGfZn9RJ+owOEx679b9ixPsMkruwf0pzEHL6+4Daq/xtaXSG3ov6lPMGWTTm01b3tX3
+ X3PGc0vNVDqlEvxhTmHtMSb+D73razJYpYAsu4yJ7O3dO5BnypjuoCr/OSqkcf8NPMiZ
+ 4YL2bzVpWAdOiLHzUGqkf+UEa1a13dDiuQrqGwXLL54t7bLOj3iPPBMoVYJqw/0LqRRB
+ hLGLABXk7oE91JbEyn2Bsr2gLd4kmJs1yt9X2T2kWaZfI5peDPp79EpX9fQYM627CMV6
+ plng==
+X-Gm-Message-State: AOAM530TyOkDT07eiM1UNbwbZUTkdqc/a1TUC0nXm8sQksBMV7tgbyJo
+ Rtev8jYmUfgMcaR498fe7s7fjkFvi7ll13p+MOcW6q9hRc8fGP0NRHzIOEmHMi587Oi+U/biVDC
+ TyklvGqtSCykL2AM3ZkJBbrOuAOWtJQDXxcg3A6bxZI7UUOcLRzKR7FQahD3SYd/vdZaEbLyjy4
+ g=
+X-Received: by 2002:a17:906:70c9:: with SMTP id
+ g9mr19386053ejk.286.1626555567494; 
+ Sat, 17 Jul 2021 13:59:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzP4vskh5IBqK09D9H6jJPVMJsNJNG3ijBHl2N28ygS+nPvTolfpDg7Zp88YIHS2+BJ4TDnFQ==
+X-Received: by 2002:a17:906:70c9:: with SMTP id
+ g9mr19386039ejk.286.1626555567261; 
+ Sat, 17 Jul 2021 13:59:27 -0700 (PDT)
+Received: from x1.localdomain
+ (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl.
+ [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+ by smtp.gmail.com with ESMTPSA id ot18sm4185319ejb.109.2021.07.17.13.59.26
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Sat, 17 Jul 2021 13:59:26 -0700 (PDT)
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: 5.14 regression, Intel SST (BYT) audio no longer works
+Message-ID: <6ebbcf0f-3a4b-0b28-1f17-8e1108f040c0@redhat.com>
+Date: Sat, 17 Jul 2021 22:59:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,27 +122,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-During probe the parent_clk_id is set to -1 which should not be used to
-array index within hsdiv_rates[].
+Hi All,
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
----
- sound/soc/ti/j721e-evm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I just noticed and I won't have time to dig any deeper for approx. the
+coming 10 days. Still I wanted to report this in case anyone has any
+ideas. Or maybe you can reproduce and look for a fix ?
 
-diff --git a/sound/soc/ti/j721e-evm.c b/sound/soc/ti/j721e-evm.c
-index 017c4ad11ca6..265bbc5a2f96 100644
---- a/sound/soc/ti/j721e-evm.c
-+++ b/sound/soc/ti/j721e-evm.c
-@@ -197,7 +197,7 @@ static int j721e_configure_refclk(struct j721e_priv *priv,
- 		return ret;
- 	}
- 
--	if (priv->hsdiv_rates[domain->parent_clk_id] != scki) {
-+	if (domain->parent_clk_id == -1 || priv->hsdiv_rates[domain->parent_clk_id] != scki) {
- 		dev_dbg(priv->dev,
- 			"%s configuration for %u Hz: %s, %dxFS (SCKI: %u Hz)\n",
- 			audio_domain == J721E_AUDIO_DOMAIN_CPB ? "CPB" : "IVI",
--- 
-2.32.0
+After building + installing 5.14-rc1 on a HP Elitepad 1000 G2
+(Bay Trail) with a RT5642 codec, I noticed that sound over the
+speakers and over the docks line-out jack no longer works.
+
+Downgrading to 5.13 (without any other changes) fixes this, so this
+seems to be a regression with 5.14.
+
+I've no been able to make time to test this on other BYT/CHT hardware,
+but I suspect that other models will be affected too.
+
+Regards,
+
+Hans
 
