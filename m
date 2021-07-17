@@ -2,90 +2,95 @@ Return-Path: <SRS0=ec3H=MJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2008FC636C9
-	for <alsa-devel@archiver.kernel.org>; Sat, 17 Jul 2021 12:26:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5B76C636CA
+	for <alsa-devel@archiver.kernel.org>; Sat, 17 Jul 2021 12:27:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8D9D9611C1
-	for <alsa-devel@archiver.kernel.org>; Sat, 17 Jul 2021 12:26:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D9D9611C1
+	by mail.kernel.org (Postfix) with ESMTPS id C425A61289
+	for <alsa-devel@archiver.kernel.org>; Sat, 17 Jul 2021 12:27:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C425A61289
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4775C166B;
-	Sat, 17 Jul 2021 14:25:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4775C166B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 31504168B;
+	Sat, 17 Jul 2021 14:26:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31504168B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626524807;
-	bh=TaWmSeXWQvSB7kWmrqMVx0u2csLZFd4MJ+tOSFoJ5co=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=UzbMFdD/Hr8WKvGxZgzJadGQzM694YISZzf35DBrI+ohc+BMCtMhmIufRGNZtfgza
-	 fjjDVyuVsIBxBgl2fElI4CY3LbqfvWuXVCLhd6TzzGGCaHWkJLP/nSDBWkLkNqDlmA
-	 4v9G/kCWFd5vyZsilowBjEtlgT/lAkJETrOizRQo=
+	s=default; t=1626524858;
+	bh=ESGc8PokAmodL0USFBs/7zg3F6tnVkZg1r8ipZuPP34=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=SR4GxiRtLPa/r800RTSM+9ssfcGuZOCYW71HXhIvHhCCZf33e7K37oZLEKcmeMxkq
+	 but+Z3lSOJ7vuKdiHQ+cCINS6xYkT2bYDgerO3u9tSH70s7yOIVOpQuJgMVjF0kqd5
+	 csLvqNxwE7Z5rD/EbDF5ysVfEMcsfCBMbShmuNs0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CEEBBF8020C;
-	Sat, 17 Jul 2021 14:25:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB065F80229;
+	Sat, 17 Jul 2021 14:26:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 10F67F80217; Sat, 17 Jul 2021 14:25:56 +0200 (CEST)
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com
- [IPv6:2a00:1450:4864:20::12a])
+ id 6A9D1F80431; Sat, 17 Jul 2021 14:25:59 +0200 (CEST)
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com
+ [IPv6:2a00:1450:4864:20::131])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9B67CF800FE
- for <alsa-devel@alsa-project.org>; Sat, 17 Jul 2021 14:25:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B67CF800FE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4BA1FF80229
+ for <alsa-devel@alsa-project.org>; Sat, 17 Jul 2021 14:25:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4BA1FF80229
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="GsW3pyPD"
-Received: by mail-lf1-x12a.google.com with SMTP id q16so20663676lfa.5
- for <alsa-devel@alsa-project.org>; Sat, 17 Jul 2021 05:25:53 -0700 (PDT)
+ header.b="RSzTnpMY"
+Received: by mail-lf1-x131.google.com with SMTP id i5so20667017lfe.2
+ for <alsa-devel@alsa-project.org>; Sat, 17 Jul 2021 05:25:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=zvVBAukd9Gk1uTkhSPYm6/BYXRLISCOEs0bifnzXGkk=;
- b=GsW3pyPDhOy7vRDMD/iNnzOmA2qXh03z+50V6MZCQ9zzqKTgte9HMjQUWxsfRVFN6z
- NiIjwnNj7e6EJE/P+t7tAK0plvirq0Z5mwnv0h2gzuFboEtFkq66e0PI4tTZrMbg3G4k
- 67g+l//tzX8UALSxtb/6szBhAGrj00Ql1cId29EvfSGVftrq4hqVljjWe9VA0bEpHNJN
- dBH5+Yvg9y403AcfzRWmaHzn0VMsSKfxcSNI+HT9ZgNp7kTfXrDRbsqdn/4gdTzbHm86
- AwIvrsEwbDKE+8f/koknE8bd61iXRVeeH74Txwdpx7legp3US6HMHYEcWQ8sh4Eqi9Uy
- S6wg==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=Ypbb2fZOaRerFrY+AdWyHL6dgvPr9G9nzcoyo2dI9vs=;
+ b=RSzTnpMYDpqadLHPwYbC8EQLrodpl+80mHJYiWevdDIb1V2oPOYnQHQ7OaGgR3Atiq
+ xpyBiaktS7dUJPoeBunnid2lGPRiAdTzWGMK7FuKOtqCBv7qreU1AnLrCIPJ6fTK/44+
+ Y/jOgALdFKZy1PAjhxmVEUTev8sja9umFBwLFAeYdlSAejJb5jmoFRUB3UT1c9xMXU3g
+ 5nRhp5aHmWLtRH37wYGXPSNlkuRsbl7+Go6TRRd2N7b0yWKePn5C32y7V3bIXKmsHtW+
+ +GsMNR92AOJGkwuNv7dp+CfuQjQcSN6HEPnEY0OJW3arhRNZSBqhPkf5fRpSRxIXIrJt
+ 46Hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=zvVBAukd9Gk1uTkhSPYm6/BYXRLISCOEs0bifnzXGkk=;
- b=KOyTndyG18+AcqdfUQV/JOSDs0P7+PgZbtB/LV6kTZcJq4hKHMJgLwH4KVfYGaCZ8E
- Ef/wGateDnWFxnT8ubyhVjs4TBtSeWg8eRXKdqKyXM+KXaDTCbjVxeKwld/sko6R2WV6
- VoCl7D1RO+CkyVDLMIqGaKszWShs15D/hZ0eLQQgivlpi+w2FO3tQmgDlRNx9pOzcf3d
- QH9iAryvCXYYMtE+HiHx9Nx+NXcSEzwB9oue0Z947nYGwCZRJAWjxN4k2/x7183MA/Ni
- xwIMO/kXwHPsGyp0jt+TNDaE5/Tn7PheBBtF6c/MPXH1lYEyM32yZNFsQrzuNEA45ojB
- pI4w==
-X-Gm-Message-State: AOAM530KOA7LlkGaSyORXChzZlxgQBCi71zbxg1DV+Tp+064eans0OU9
- MdXTNKyhjS8nvBJ91CDhyYc=
-X-Google-Smtp-Source: ABdhPJyGwOE/kpU6SnOs76cMejCtGbfjIa5F8gIV5X+mQZyfYTHnEpZLZ3u/ZPBqiaxUzPzjDlsYlg==
-X-Received: by 2002:a05:6512:ac5:: with SMTP id
- n5mr11534719lfu.434.1626524752522; 
- Sat, 17 Jul 2021 05:25:52 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=Ypbb2fZOaRerFrY+AdWyHL6dgvPr9G9nzcoyo2dI9vs=;
+ b=Lys/aB4baXZximMXaZy8EKlo7KwnddLg8K7MCRSrdhYSpXVZ137k8qPGoxIz1zdzxO
+ GcMpdtWGGurMCQzHNqNI9BtWPNg9YddPgCokEvLzF8Ol0ax/iUVNRsuGKxcRTp2rW86s
+ 895WEOjVzrQ+J7LnqUv6tQC3wdd2OT/V2QLn3dRY457UaRZ69WYzUC05bhpqfRNYMmcw
+ LfyXKt3++so9dwe/rCVabJ1VSs2YKEi5oO2Xi6S3Db9kFSltAADeH9hsbs7wUDxxDtnR
+ y9NglLBNUwXdmN4ycc4oB3whV1NSoZyjFJDPB5whE9sQMEXbC7gUmzEHCXXnPE1ZoJx+
+ 4PSg==
+X-Gm-Message-State: AOAM533GJh5WEuq0IjpPbHmk2/HJ1oAP9vgK5M6Knhp3C2MKW3GK66t7
+ MK760A+vpI2kaBdUEZtNRlU=
+X-Google-Smtp-Source: ABdhPJxBJoZBtAmyLPo2Nj1k9SAAHj225TeXbUiN2/MmD5VD/aJue+n8obkwrk7JkwyLlyQxIJKknQ==
+X-Received: by 2002:a05:6512:158b:: with SMTP id
+ bp11mr11091561lfb.172.1626524753557; 
+ Sat, 17 Jul 2021 05:25:53 -0700 (PDT)
 Received: from localhost.localdomain (91-155-111-71.elisa-laajakaista.fi.
  [91.155.111.71])
- by smtp.gmail.com with ESMTPSA id v4sm860087lfi.118.2021.07.17.05.25.51
+ by smtp.gmail.com with ESMTPSA id v4sm860087lfi.118.2021.07.17.05.25.52
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
  Sat, 17 Jul 2021 05:25:52 -0700 (PDT)
 From: Peter Ujfalusi <peter.ujfalusi@gmail.com>
 To: broonie@kernel.org
-Subject: [PATCH 0/3] ASoC: ti: j721e-evm: Small fixes and code cleanup
-Date: Sat, 17 Jul 2021 15:28:17 +0300
-Message-Id: <20210717122820.1467-1-peter.ujfalusi@gmail.com>
+Subject: [PATCH 1/3] ASoC: ti: j721e-evm: Fix unbalanced domain activity
+ tracking during startup
+Date: Sat, 17 Jul 2021 15:28:18 +0300
+Message-Id: <20210717122820.1467-2-peter.ujfalusi@gmail.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210717122820.1467-1-peter.ujfalusi@gmail.com>
+References: <20210717122820.1467-1-peter.ujfalusi@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
@@ -104,25 +109,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+In case of an error within j721e_audio_startup() the domain->active must
+be decremented to avoid unbalanced counter.
 
-I have found two issues with the machine driver which for some reason did not
-caused errors but they are certainly bugs.
-
-The last patch is just to convert the IDs from define to enum.
-
-Regards,
-Peter
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
 ---
-Peter Ujfalusi (3):
-  ASoC: ti: j721e-evm: Fix unbalanced domain activity tracking during
-    startup
-  ASoC: ti: j721e-evm: Check for not initialized parent_clk_id
-  ASoC: ti: j721e-evm: Convert the audio domain IDs to enum
+ sound/soc/ti/j721e-evm.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
- sound/soc/ti/j721e-evm.c | 48 ++++++++++++++++++++++++----------------
- 1 file changed, 29 insertions(+), 19 deletions(-)
-
+diff --git a/sound/soc/ti/j721e-evm.c b/sound/soc/ti/j721e-evm.c
+index a7c0484d44ec..017c4ad11ca6 100644
+--- a/sound/soc/ti/j721e-evm.c
++++ b/sound/soc/ti/j721e-evm.c
+@@ -278,23 +278,29 @@ static int j721e_audio_startup(struct snd_pcm_substream *substream)
+ 					  j721e_rule_rate, &priv->rate_range,
+ 					  SNDRV_PCM_HW_PARAM_RATE, -1);
+ 
+-	mutex_unlock(&priv->mutex);
+ 
+ 	if (ret)
+-		return ret;
++		goto out;
+ 
+ 	/* Reset TDM slots to 32 */
+ 	ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0x3, 0x3, 2, 32);
+ 	if (ret && ret != -ENOTSUPP)
+-		return ret;
++		goto out;
+ 
+ 	for_each_rtd_codec_dais(rtd, i, codec_dai) {
+ 		ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x3, 0x3, 2, 32);
+ 		if (ret && ret != -ENOTSUPP)
+-			return ret;
++			goto out;
+ 	}
+ 
+-	return 0;
++	if (ret == -ENOTSUPP)
++		ret = 0;
++out:
++	if (ret)
++		domain->active--;
++	mutex_unlock(&priv->mutex);
++
++	return ret;
+ }
+ 
+ static int j721e_audio_hw_params(struct snd_pcm_substream *substream,
 -- 
 2.32.0
 
