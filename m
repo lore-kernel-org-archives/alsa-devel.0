@@ -1,91 +1,103 @@
-Return-Path: <SRS0=PHkf=MK=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=MK90=ML=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BF76C636C8
-	for <alsa-devel@archiver.kernel.org>; Sun, 18 Jul 2021 17:59:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 377E2C636CA
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Jul 2021 02:23:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D856F61003
-	for <alsa-devel@archiver.kernel.org>; Sun, 18 Jul 2021 17:59:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D856F61003
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	by mail.kernel.org (Postfix) with ESMTPS id CD8E36100C
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Jul 2021 02:23:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD8E36100C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 836051658;
-	Sun, 18 Jul 2021 19:58:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 836051658
+	by alsa0.perex.cz (Postfix) with ESMTPS id 71B6315DC;
+	Mon, 19 Jul 2021 04:22:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71B6315DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626631188;
-	bh=ClESuv63cHd3zQY0G0vHNVEnTexDu9RWhR1UtxNg6UI=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=f9f9/iu7qtVdbOywvoVygUphcqzJjDMiQVd8rM5cXlPMFTDImniWYRPusKD3jWw/L
-	 kmBdznx7hdTHsFCi7fy807Mq9NQoq5JuuGcjQie7V3a7iV5EETjS3+MV8TFvhZdSBn
-	 JTdGrjr3+FI8ZBP8Vl5pmtr8jBjoUe0O6Qwn7N50=
+	s=default; t=1626661425;
+	bh=RdphLGYfx/8TjQmUFHQ5/ES+aj7G7OYuNxv66rDMRK0=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Epix+TjOVxBqzHTynZmhZF3sKG2K83Q9VMvu4FipqSJ1BIX549TbwIKlBsp3bHlgg
+	 Gy7TOYUGQfohgQuvEimWnMZuAtJVOSyIbdsZ09I3E9TXNcZxM6bUpHQNQZUNBOh3nh
+	 9NTlT/7p/nLsnAOleZs5ghlJctQtC62EEpHLoqCI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D8378F804A9;
-	Sun, 18 Jul 2021 19:58:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DD786F80218;
+	Mon, 19 Jul 2021 04:22:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5E44BF8032B; Sun, 18 Jul 2021 19:58:04 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [216.205.24.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 251ECF80227; Mon, 19 Jul 2021 04:22:51 +0200 (CEST)
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com
+ [IPv6:2607:f8b0:4864:20::42c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 81E6FF800DA
- for <alsa-devel@alsa-project.org>; Sun, 18 Jul 2021 19:57:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81E6FF800DA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 96E9EF800DA
+ for <alsa-devel@alsa-project.org>; Mon, 19 Jul 2021 04:22:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96E9EF800DA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="BWmRtom7"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1626631077;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=pMXqtNQYb8pZOIOQkMH7F6H0o9rVPHyBAyEGKrjx3nk=;
- b=BWmRtom7I1odhppCwdcpmG2iXiuCynCkVLMoGgicUPPJ2jNzBnW1pFVx8ar0BTTaYOfPer
- 2g616zP/f+Q4UxUfkx+RITnwZtVX1fqMHNl66DX+q9KzYTTgTMJMLbB9BQVZQ/+YLeubed
- 20mI4Q8EJwGaGmhtKF2yMFwH1poZNHA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-211-dVFi_CGuP3OG2SQKgrl8UQ-1; Sun, 18 Jul 2021 13:57:54 -0400
-X-MC-Unique: dVFi_CGuP3OG2SQKgrl8UQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com
- [10.5.11.13])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D56701800D41;
- Sun, 18 Jul 2021 17:57:52 +0000 (UTC)
-Received: from x1.localdomain (ovpn-112-58.ams2.redhat.com [10.36.112.58])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 6702060871;
- Sun, 18 Jul 2021 17:57:51 +0000 (UTC)
-From: Hans de Goede <hdegoede@redhat.com>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH alsa-ucm-conf 1/2] bytcr-rt5640: Fix 'Headphone Switch' /
- 'Headset Mic Switch' no longer getting set
-Date: Sun, 18 Jul 2021 19:57:49 +0200
-Message-Id: <20210718175750.12353-1-hdegoede@redhat.com>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="j6x7161Q"
+Received: by mail-pf1-x42c.google.com with SMTP id a127so15093124pfa.10
+ for <alsa-devel@alsa-project.org>; Sun, 18 Jul 2021 19:22:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-transfer-encoding:content-language;
+ bh=vBKXyvVxdCKu3OqvyqumajmYvsEUys0czY+E4eDZup4=;
+ b=j6x7161Qw3k5DqjiWIfNYy2Pej3jSENkrNqMx1espZ54hH9Jfz/622pZg7shSXaMT7
+ OJ9Ezo/A00F3Ik0dniPx5rj59aGdtCBpRcaSoLSWZnTD05cZ54stkrWPJgdg83DNdQvj
+ G2MBHhq1clNLhl2/H1dEzvNj68XjmR8yY44QkZdnNCDLxtre1m2FjUB8lqxD0oqKtAoX
+ 8Mbz1cfDW/UCwXpf8SthUzKIGRKVYjXNs7A9IjmxYt/LxM2/Y9+1W9YcWwB9mYaQwlQY
+ 5Oy1UMG2ge53B4wCau45oepnYaDr5dL3PBPLPDC1lmqS+d+5A9ccoS0vxxEXcftVdIT9
+ fyLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-transfer-encoding
+ :content-language;
+ bh=vBKXyvVxdCKu3OqvyqumajmYvsEUys0czY+E4eDZup4=;
+ b=T+6fGM5PlY1jN0KDFSzjnYBm7Ez7V/RILDr1OXva6oJYCFYPy1Tujd+4QvtNK7ixas
+ T1pS4SXucaWaX1JeokRcnUUOMZf0EOqRyXi/QjKFoVP5f99IApfWIerFMVeU9+3a6C7s
+ db1pm0SCObpJc8IfPM87n40VYXrc7Lp1P/D3GTYLXP0B1sUbV1pEY/u7CNSJ+4BiB90V
+ 3O7zCUQfTuV92cyu+0En9EGMRsLl9S+VPSWLUVKvz1QUqQ4qQ+M6UUw3Dr55X8rXfxuZ
+ eRtFCBFBN06kKYLJW6vPDjmP38sCcdmgRQKh30sbBXACeskJkST5aSGTvg2BjmP0KuAi
+ rMVQ==
+X-Gm-Message-State: AOAM531YHGenQ0fPi/UWbUbj+Lx1v/nWPlsgzGTYs55v0Wlso7a/44Sw
+ QE7olidcw5XGTtzRslaNIl0=
+X-Google-Smtp-Source: ABdhPJzcYKL/xyFFp2W4/EVyqouIpcvkOiDD8SALBl18eeQiQ6JqQJ2+HaX44T7HejoyIa6RSpP/8w==
+X-Received: by 2002:a65:5343:: with SMTP id w3mr23150557pgr.51.1626661363320; 
+ Sun, 18 Jul 2021 19:22:43 -0700 (PDT)
+Received: from [10.29.0.130] ([45.135.186.118])
+ by smtp.gmail.com with ESMTPSA id f17sm17711971pjj.21.2021.07.18.19.22.41
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Sun, 18 Jul 2021 19:22:42 -0700 (PDT)
+Subject: Re: [BUG] ALSA: sb16: possible ABBA deadlock in snd_sb_csp_stop() and
+ snd_sb_csp_load()
+To: Takashi Iwai <tiwai@suse.de>
+References: <7b0fcdaf-cd4f-4728-2eae-48c151a92e10@gmail.com>
+ <s5ho8b3x3wu.wl-tiwai@suse.de>
+From: Jia-Ju Bai <baijiaju1990@gmail.com>
+Message-ID: <a160198b-19c6-5f50-329a-3f54fd464168@gmail.com>
+Date: Mon, 19 Jul 2021 10:22:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
+In-Reply-To: <s5ho8b3x3wu.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="US-ASCII"
-Cc: Hans de Goede <hdegoede@redhat.com>, Dmitry Osipenko <digetx@gmail.com>,
- alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Bard Liao <bard.liao@intel.com>
+Content-Language: en-US
+Cc: "linux-kernel@vger.kernel.org >> linux-kernel"
+ <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,80 +113,87 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Commit 446d0a71b47f ("codecs/rt5640: Move out BayTrail-specific pin switches")
-moved the setting of the 'Headphone Switch' / 'Headset Mic Switch' into
-"If.hp" resp "If.hsmic" blocks. But instead of making them part of the
-True {} block inside that If, the statements where added add the top-level
-of the If {} block where they are no-ops.
 
-Move them to inside the True blocks so that these Switches again get
-properly turned on/off. This fixes the Headphones and Headset-mic no longer
-working on bytcr-rt5640 devices.
 
-Cc: Dmitry Osipenko <digetx@gmail.com>
-Fixes: 446d0a71b47f ("codecs/rt5640: Move out BayTrail-specific pin switches")
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- ucm2/bytcr-rt5640/HiFi.conf | 36 ++++++++++++++++++++----------------
- 1 file changed, 20 insertions(+), 16 deletions(-)
+On 2021/7/15 18:33, Takashi Iwai wrote:
+> On Thu, 15 Jul 2021 12:20:36 +0200,
+> Jia-Ju Bai wrote:
+>> Hello,
+>>
+>> I find there is a possible ABBA deadlock in the SB16 driver in Linux 5.10:
+>>
+>> In snd_sb_csp_stop():
+>> 876:     spin_lock_irqsave(&p->chip->mixer_lock, flags);
+>> 882:     spin_lock(&p->chip->reg_lock);
+>>
+>> In snd_sb_csp_load():
+>> 614:     spin_lock_irqsave(&p->chip->reg_lock, flags);
+>> 653:     spin_lock(&p->chip->mixer_lock);
+>>
+>> When snd_sb_csp_stop() and snd_sb_csp_load() are concurrently
+>> executed, the deadlock can occur.
+>>
+>> I check the code and find a possible case of such concurrent execution:
+>>
+>> #CPU1:
+>> snd_sb16_playback_close
+>>    snd_sb16_csp_playback_close (csp->ops.csp_stop(csp))
+>>      snd_sb_csp_stop
+>>
+>> #CPU2:
+>> snd_sb_csp_ioctl
+>>    snd_sb_csp_riff_load
+>>      snd_sb_csp_load_user
+>>        snd_sb_csp_load
+>>
+>> I am not quite sure whether this possible deadlock is real and how to
+>> fix it if it is real.
+>> Any feedback would be appreciated, thanks
+> The impact must be quite low, as both functions run in different
+> state (running or stopped), so those are basically exclusive.
+> And, above all, there is no VM supporting this chip, hence it's only
+> for the real hardware and it's about very old ISA boards that maybe
+> only less than handful people in the world can run now.
+>
+> About the fix: just split the locks in snb_sb_csp_stop() (also
+> snd_sb_csp_start()) like below should suffice.
 
-diff --git a/ucm2/bytcr-rt5640/HiFi.conf b/ucm2/bytcr-rt5640/HiFi.conf
-index a5b47df..08127e0 100644
---- a/ucm2/bytcr-rt5640/HiFi.conf
-+++ b/ucm2/bytcr-rt5640/HiFi.conf
-@@ -100,16 +100,18 @@ If.mono {
- 
- If.hp {
- 	Condition { Type String Empty "" }
--	True.Include.hs.File "/codecs/rt5640/HeadPhones.conf"
-+	True {
-+		Include.hs.File "/codecs/rt5640/HeadPhones.conf"
- 
--	SectionDevice."Headphones" {
--		EnableSequence [
--			cset "name='Headphone Switch' on"
--		]
-+		SectionDevice."Headphones" {
-+			EnableSequence [
-+				cset "name='Headphone Switch' on"
-+			]
- 
--		DisableSequence [
--			cset "name='Headphone Switch' off"
--		]
-+			DisableSequence [
-+				cset "name='Headphone Switch' off"
-+			]
-+		}
- 	}
- }
- 
-@@ -178,15 +180,17 @@ If.in3 {
- 
- If.hsmic {
- 	Condition { Type String Empty "" }
--	True.Include.hsmic.File "/codecs/rt5640/HeadsetMic.conf"
-+	True {
-+		Include.hsmic.File "/codecs/rt5640/HeadsetMic.conf"
- 
--	SectionDevice."Headset" {
--		EnableSequence [
--			cset "name='Headset Mic Switch' on"
--		]
-+		SectionDevice."Headset" {
-+			EnableSequence [
-+				cset "name='Headset Mic Switch' on"
-+			]
- 
--		DisableSequence [
--			cset "name='Headset Mic Switch' off"
--		]
-+			DisableSequence [
-+				cset "name='Headset Mic Switch' off"
-+			]
-+		}
- 	}
- }
--- 
-2.31.1
+Thanks for the feedback and explanation :)
+The patch looks good to me.
+
+>
+> --- a/sound/isa/sb/sb16_csp.c
+> +++ b/sound/isa/sb/sb16_csp.c
+> @@ -816,6 +816,7 @@ static int snd_sb_csp_start(struct snd_sb_csp * p, int sample_width, int channel
+>   	mixR = snd_sbmixer_read(p->chip, SB_DSP4_PCM_DEV + 1);
+>   	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL & 0x7);
+>   	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR & 0x7);
+> +	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
+>   
+>   	spin_lock(&p->chip->reg_lock);
+>   	set_mode_register(p->chip, 0xc0);	/* c0 = STOP */
+> @@ -855,6 +856,7 @@ static int snd_sb_csp_start(struct snd_sb_csp * p, int sample_width, int channel
+>   	spin_unlock(&p->chip->reg_lock);
+>   
+>   	/* restore PCM volume */
+> +	spin_lock_irqsave(&p->chip->mixer_lock, flags);
+>   	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL);
+>   	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR);
+>   	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
+> @@ -880,6 +882,7 @@ static int snd_sb_csp_stop(struct snd_sb_csp * p)
+>   	mixR = snd_sbmixer_read(p->chip, SB_DSP4_PCM_DEV + 1);
+>   	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL & 0x7);
+>   	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR & 0x7);
+> +	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
+>   
+>   	spin_lock(&p->chip->reg_lock);
+>   	if (p->running & SNDRV_SB_CSP_ST_QSOUND) {
+> @@ -894,6 +897,7 @@ static int snd_sb_csp_stop(struct snd_sb_csp * p)
+>   	spin_unlock(&p->chip->reg_lock);
+>   
+>   	/* restore PCM volume */
+> +	spin_lock_irqsave(&p->chip->mixer_lock, flags);
+>   	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL);
+>   	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR);
+>   	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
 
