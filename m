@@ -2,56 +2,57 @@ Return-Path: <SRS0=et8u=MM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DF6DC07E9B
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Jul 2021 01:44:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D64AFC07E95
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Jul 2021 01:45:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 05DC86101E
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Jul 2021 01:44:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 05DC86101E
+	by mail.kernel.org (Postfix) with ESMTPS id 545F56101E
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Jul 2021 01:45:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 545F56101E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 99FC41660;
-	Tue, 20 Jul 2021 03:43:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99FC41660
+	by alsa0.perex.cz (Postfix) with ESMTPS id F231E1684;
+	Tue, 20 Jul 2021 03:44:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F231E1684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626745481;
-	bh=Uqzxsp2vBTcWzj9C4CKoSGM79cFjMhOrf6fYHNi5DAM=;
+	s=default; t=1626745507;
+	bh=do6zhIu3+EdeRRvf6bEwWoYdsNMQrhvB7YDK7iJjABc=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=je/P9UN66imeOrrfBHznuNnFqYFK9dqc2jJeAiLVtCphNQjkm5QPFCdCDZ6NaNA1c
-	 qgC8ARp79xxgNOSv81+n1FBCc0KCX/3FBw/uk9EYEotzSyFD8ctt0KCuFFwH0HcRyi
-	 CN4TDntqt9pcDNe20zv3fR6k/Yti4fFTd6cccBFE=
+	b=ldurB04JkeV+49ZLSmMmvMgyljPwWmt/rJFEy+Kq4uDYWiY83DkBt1XG6F4xLGThR
+	 PGl386HMaf491tkKpVD2STD13MaDH4FgkySFDRoaHiq4nUsmkybRZ1FPAvCA/i393f
+	 rPey/crKQZRIGcop6DHT2gs5xEEv1TKkiYcra+Zc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00C31F804FB;
-	Tue, 20 Jul 2021 03:41:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F3ACF80525;
+	Tue, 20 Jul 2021 03:41:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7B6AEF804FB; Tue, 20 Jul 2021 03:41:31 +0200 (CEST)
+ id CD5E5F80524; Tue, 20 Jul 2021 03:41:38 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id B23ABF8051B
- for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2021 03:41:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B23ABF8051B
-Date: 20 Jul 2021 10:41:27 +0900
-X-IronPort-AV: E=Sophos;i="5.84,253,1620658800"; d="scan'208";a="88130093"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 20 Jul 2021 10:41:27 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 14683F804E7
+ for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2021 03:41:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14683F804E7
+Date: 20 Jul 2021 10:41:31 +0900
+X-IronPort-AV: E=Sophos;i="5.84,253,1620658800"; d="scan'208";a="88130102"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 20 Jul 2021 10:41:31 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 6DD124005164;
- Tue, 20 Jul 2021 10:41:27 +0900 (JST)
-Message-ID: <87sg09vk1k.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 9E8F64153E80;
+ Tue, 20 Jul 2021 10:41:31 +0900 (JST)
+Message-ID: <87r1ftvk1g.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v2 12/14] ASoC: audio-graph-card2-sample.dtsi: add DPCM sample
+Subject: [PATCH v2 13/14] ASoC: audio-graph-card2-sample.dtsi: add Multi
+ CPU/Codec sample
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87a6mhwyqn.wl-kuninori.morimoto.gx@renesas.com>
@@ -74,84 +75,85 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-This patch adds DPCM sample to audio-graph-card2-sample.dtsi.
-This sample is assuming MIXer connection.
+This patch adds Multi CPU/Codec sample to audio-graph-card2-sample.dtsi.
+Because ASoC doesn't support "N CPUs to M Codecs", this sample
+uses "2 CPUs to 2 Codecs".
 
-	CPU2 --\
-	        +-- Codec2
-	CPU3 --/
+	       +---+
+	CPU4 --|   |-- Codec3
+	CPU5 --|   |-- Codec4
+	       +---+
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- .../soc/generic/audio-graph-card2-sample.dtsi | 28 +++++++++++++++++++
- 1 file changed, 28 insertions(+)
+ .../soc/generic/audio-graph-card2-sample.dtsi | 27 +++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
 diff --git a/sound/soc/generic/audio-graph-card2-sample.dtsi b/sound/soc/generic/audio-graph-card2-sample.dtsi
-index 5e83bfed1781..9aab6be176e5 100644
+index 9aab6be176e5..1d18aba22011 100644
 --- a/sound/soc/generic/audio-graph-card2-sample.dtsi
 +++ b/sound/soc/generic/audio-graph-card2-sample.dtsi
-@@ -20,6 +20,8 @@ / {
- 	/*
- 	 * cpu0 <--> codec0	// Normal
+@@ -22,6 +22,8 @@ / {
  	 * cpu1 <--> codec1	// Normal
-+	 * cpu2 <--> codec2	// DPCM
-+	 * cpu3 <-/		// DPCM
+ 	 * cpu2 <--> codec2	// DPCM
+ 	 * cpu3 <-/		// DPCM
++	 * cpu4 <==> codec3	// Multi (*1)
++	 * cpu5 <==> codec4	// Multi (*1)
  	 */
  	card2 {
  		/*
-@@ -30,10 +32,27 @@ card2 {
- 		 */
- 		compatible = "sample-custom-card";
+@@ -39,6 +41,7 @@ card2 {
  
-+		routing = "TC DAI2 Playback", "DAI2 Playback",
-+			  "TC DAI2 Playback", "DAI3 Playback",
-+			  "DAI2 Capture", "TC DAI2 Capture",
-+			  "DAI3 Capture", "TC DAI2 Capture";
-+
  		links = <&cpu0 &cpu1			/* normal: cpu side only  */
-+			 &mix_fe0 &mix_fe1 &mix_be0	/* dsp   : both fe/be     */
+ 			 &mix_fe0 &mix_fe1 &mix_be0	/* dsp   : both fe/be     */
++			 &multi_cpu			/* multi : cpu side only  */
  		>;
  	};
  
-+	mix {
-+		compatible = "audio-graph-card2-dsp";
-+		DSP_FE: ports@0 {
-+			mix_fe0: port@0 { mix_fe0_ep: endpoint { remote-endpoint = <&cpu2_ep>; }; };
-+			mix_fe1: port@1 { mix_fe1_ep: endpoint { remote-endpoint = <&cpu3_ep>; }; };
+@@ -53,6 +56,26 @@ DSP_BE: ports@1 {
+ 		};
+ 	};
+ 
++	multi {
++		compatible = "audio-graph-card2-multi";
++
++		/*
++		 * (*1)
++		 *
++		 * This uses 2 CPUs x 2 Codecs as Multi connection,
++		 * Because ASoC doesn't support N cpus to M codecs
++		 */
++
++		multi_cpu: ports@0 {
++			port@0 { multi_00_ep: endpoint { remote-endpoint = <&cpu4_ep>; }; };
++			port@1 { multi_01_ep: endpoint { remote-endpoint = <&cpu5_ep>; }; };
 +		};
-+		DSP_BE: ports@1 {
-+			mix_be0: port   { mix_be0_ep: endpoint { remote-endpoint = <&codec2_ep>; }; };
++		multi_codec: ports@1 {
++			port@0 { multi_10_ep: endpoint { remote-endpoint = <&codec3_ep>; }; };
++			port@1 { multi_11_ep: endpoint { remote-endpoint = <&codec4_ep>; }; };
 +		};
 +	};
 +
  	test_cpu {
  		/*
  		 * update compatible to indicate more detail behaviour
-@@ -48,6 +67,8 @@ ports {
- 			frame-master;
- 			cpu0: port@0 { cpu0_ep: endpoint { remote-endpoint = <&codec0_ep>; }; };
+@@ -69,6 +92,8 @@ ports {
  			cpu1: port@1 { cpu1_ep: endpoint { remote-endpoint = <&codec1_ep>; }; };
-+			      port@2 { cpu2_ep: endpoint { remote-endpoint = <&mix_fe0_ep>; }; };
-+			      port@3 { cpu3_ep: endpoint { remote-endpoint = <&mix_fe1_ep>; }; };
+ 			      port@2 { cpu2_ep: endpoint { remote-endpoint = <&mix_fe0_ep>; }; };
+ 			      port@3 { cpu3_ep: endpoint { remote-endpoint = <&mix_fe1_ep>; }; };
++			      port@4 { cpu4_ep: endpoint { remote-endpoint = <&multi_00_ep>; }; };
++			      port@5 { cpu5_ep: endpoint { remote-endpoint = <&multi_01_ep>; }; };
  		};
  	};
  
-@@ -61,8 +82,15 @@ test_codec {
- 		 */
- 		compatible = "test-codec";
- 		ports {
-+			/*
-+			 * prefix can be added to *component*,
-+			 * see card2::routing
-+			 */
-+			prefix = "TC";
-+
+@@ -91,6 +116,8 @@ ports {
  			port@0 { codec0_ep: endpoint { remote-endpoint = <&cpu0_ep>; }; };
  			port@1 { codec1_ep: endpoint { remote-endpoint = <&cpu1_ep>; }; };
-+			port@2 { codec2_ep: endpoint { remote-endpoint = <&mix_be0_ep>; }; };
+ 			port@2 { codec2_ep: endpoint { remote-endpoint = <&mix_be0_ep>; }; };
++			port@3 { codec3_ep: endpoint { remote-endpoint = <&multi_10_ep>; }; };
++			port@4 { codec4_ep: endpoint { remote-endpoint = <&multi_11_ep>; }; };
  		};
  	};
  };
