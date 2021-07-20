@@ -2,66 +2,81 @@ Return-Path: <SRS0=2VZE=MQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A14B1C4338F
-	for <alsa-devel@archiver.kernel.org>; Sat, 24 Jul 2021 08:56:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62330C4320A
+	for <alsa-devel@archiver.kernel.org>; Sat, 24 Jul 2021 08:56:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CC36E60E91
-	for <alsa-devel@archiver.kernel.org>; Sat, 24 Jul 2021 08:55:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CC36E60E91
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id E0A54600EF
+	for <alsa-devel@archiver.kernel.org>; Sat, 24 Jul 2021 08:56:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E0A54600EF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6ACD91792;
-	Sat, 24 Jul 2021 10:55:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6ACD91792
+	by alsa0.perex.cz (Postfix) with ESMTPS id 52961179C;
+	Sat, 24 Jul 2021 10:55:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52961179C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627116958;
-	bh=Gv8Goi63wrDynGMe+bgUSpeIPdRHU5UZgCTMf0v64ro=;
+	s=default; t=1627116992;
+	bh=eAL8QwelZEjqkrY6xpSxtA3PODMbnmYsssC4KoVZiOc=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=duR2wbnZ3rQ37hL/hWTES59/0Vwf3YwBTF25EKc+AbeAMt1e7ypOTTgcwuyRY5B2x
-	 bArCzXw6BsKOoi8SlRv+Dslei6aGY4FIxt9z0J7UdahY4AdrbqGFEPWN0wSs35fgmh
-	 ym/plJZ7kbHjZ+JWjI9Jmn5T9Njn4tj0QhrcZC1U=
+	b=vjlLRwJnbapGznHr9x707OHZr3yCEOLcQsBxcp8llfjRxngLHiov7G2Y8U1vsHDwo
+	 8iiUdoSziLUVqwNX7JkdJ1lkv8rFmoYfA8PuwS5BGyD8Yi6Pp7iEec6dgrxIJIlLWw
+	 DTHMvFCB+u7j8XSvNkmtVYppDEJ0Njyo7QhfBmnQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CF983F804E5;
-	Sat, 24 Jul 2021 10:53:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DFAFDF804E7;
+	Sat, 24 Jul 2021 10:53:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F2FAFF80218; Tue, 20 Jul 2021 20:40:52 +0200 (CEST)
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net
- [217.70.183.200])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 263FBF80218; Tue, 20 Jul 2021 22:33:22 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6CDABF80104
- for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2021 20:40:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6CDABF80104
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id BA49E20004;
- Tue, 20 Jul 2021 18:40:42 +0000 (UTC)
-Date: Tue, 20 Jul 2021 20:40:42 +0200
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 59CFFF800DA
+ for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2021 22:33:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59CFFF800DA
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="JJpAfKhn"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA00A60FF2;
+ Tue, 20 Jul 2021 20:33:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1626813196;
+ bh=eAL8QwelZEjqkrY6xpSxtA3PODMbnmYsssC4KoVZiOc=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=JJpAfKhnABUmpxOg9U/fYhIdK676lUC7zxdZO4Ov+XkzsTN1uNQpBFvYrirDfIakZ
+ byh9JWGpUaePwdP9P8a5i5BEvhoOUPFLDQF/TDfF6Dt16A3BeRLHI/9/G2uzjph8jw
+ MevIZGtIuySKTu1ntOZrkKNQFaWrdWeYOaJyeJpxUnq3KG8ahCOJyb+BlK+zntCxgx
+ Ed4I0eXobO8J3Ubp6zPV5nmDpkVivVrUweH+mzg1CoHXf/MLoxDBrQyTc2c5HwIyLh
+ QY1nFaI0Gwrfw7HTmsQ+TalbuwunzUd9K0sOoGUuoML7Km3jvcukKSLHc3yF+IDiUt
+ vtHRTxUbK9qGQ==
+Date: Tue, 20 Jul 2021 21:33:12 +0100
+From: Mark Brown <broonie@kernel.org>
 To: Rob Herring <robh@kernel.org>
 Subject: Re: [PATCH] dt-bindings: Remove "status" from schema examples
-Message-ID: <YPcYqolGFpwbDsiv@piout.net>
+Message-ID: <20210720203312.GG5042@sirena.org.uk>
 References: <20210720172025.363238-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="kadn00tgSopKmJ1H"
 Content-Disposition: inline
 In-Reply-To: <20210720172025.363238-1-robh@kernel.org>
-X-Mailman-Approved-At: Sat, 24 Jul 2021 10:53:21 +0200
-Cc: alsa-devel@alsa-project.org, Olivier Moysan <olivier.moysan@st.com>,
+X-Cookie: Revenge is a meal best served cold.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Mailman-Approved-At: Sat, 24 Jul 2021 10:53:22 +0200
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Olivier Moysan <olivier.moysan@st.com>,
  Mateusz Holenko <mholenko@antmicro.com>,
- Linus Walleij <linus.walleij@linaro.org>, dri-devel@lists.freedesktop.org,
- Peter Ujfalusi <peter.ujfalusi@ti.com>, ChiYuan Huang <cy_huang@richtek.com>,
+ Linus Walleij <linus.walleij@linaro.org>, alsa-devel@alsa-project.org,
+ dri-devel@lists.freedesktop.org, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ ChiYuan Huang <cy_huang@richtek.com>,
  Thierry Reding <thierry.reding@gmail.com>,
  Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
  Sam Ravnborg <sam@ravnborg.org>, Karol Gugala <kgugala@antmicro.com>,
@@ -71,7 +86,7 @@ Cc: alsa-devel@alsa-project.org, Olivier Moysan <olivier.moysan@st.com>,
  Jakub Kicinski <kuba@kernel.org>, linux-media@vger.kernel.org,
  devicetree@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
  Ramesh Shanmugasundaram <rashanmu@gmail.com>,
- Rui Miguel Silva <rmfrfs@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rui Miguel Silva <rmfrfs@gmail.com>,
  "G. Jaya Kumaran" <vineetha.g.jaya.kumaran@intel.com>,
  Robert Marko <robert.marko@sartura.hr>,
  Alessandro Zummo <a.zummo@towertech.it>, netdev@vger.kernel.org,
@@ -92,385 +107,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 20/07/2021 11:20:25-0600, Rob Herring wrote:
+
+--kadn00tgSopKmJ1H
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jul 20, 2021 at 11:20:25AM -0600, Rob Herring wrote:
 > There's no reason to have "status" properties in examples. "okay" is the
 > default, and "disabled" turns off some schema checks ('required'
 > specifically).
-> 
-> Enabling qca,ar71xx causes a warning, so let's fix the node names:
-> 
-> Documentation/devicetree/bindings/net/qca,ar71xx.example.dt.yaml: phy@3: '#phy-cells' is a required property
->         From schema: schemas/phy/phy-provider.yaml
-> 
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Chen-Yu Tsai <wens@csie.org>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: Sam Ravnborg <sam@ravnborg.org>
-> Cc: Rui Miguel Silva <rmfrfs@gmail.com>
-> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Robert Marko <robert.marko@sartura.hr>
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> Cc: Alessandro Zummo <a.zummo@towertech.it>
-> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Cc: Ramesh Shanmugasundaram <rashanmu@gmail.com>
-> Cc: "G. Jaya Kumaran" <vineetha.g.jaya.kumaran@intel.com>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-> Cc: ChiYuan Huang <cy_huang@richtek.com>
-> Cc: Wei Xu <xuwei5@hisilicon.com>
-> Cc: Dilip Kota <eswara.kota@linux.intel.com>
-> Cc: Karol Gugala <kgugala@antmicro.com>
-> Cc: Mateusz Holenko <mholenko@antmicro.com>
-> Cc: Olivier Moysan <olivier.moysan@st.com>
-> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: linux-rtc@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-> ---
->  .../display/allwinner,sun8i-a83t-dw-hdmi.yaml |  2 --
->  .../display/panel/boe,tv101wum-nl6.yaml       |  1 -
->  .../bindings/media/nxp,imx7-mipi-csi2.yaml    |  2 --
->  .../bindings/media/renesas,drif.yaml          |  1 -
->  .../bindings/net/intel,dwmac-plat.yaml        |  2 --
->  .../bindings/net/intel,ixp4xx-ethernet.yaml   |  2 --
->  .../bindings/net/nfc/samsung,s3fwrn5.yaml     |  3 ---
->  .../devicetree/bindings/net/qca,ar71xx.yaml   | 25 ++++---------------
->  .../regulator/richtek,rt6245-regulator.yaml   |  1 -
->  .../regulator/vqmmc-ipq4019-regulator.yaml    |  1 -
->  .../reset/hisilicon,hi3660-reset.yaml         |  1 -
->  .../bindings/reset/intel,rcu-gw.yaml          |  1 -
->  .../bindings/rtc/microcrystal,rv3032.yaml     |  1 -
->  .../soc/litex/litex,soc-controller.yaml       |  1 -
->  .../bindings/sound/st,stm32-sai.yaml          |  2 --
->  .../bindings/sound/ti,j721e-cpb-audio.yaml    |  2 --
->  .../sound/ti,j721e-cpb-ivi-audio.yaml         |  2 --
->  17 files changed, 5 insertions(+), 45 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/display/allwinner,sun8i-a83t-dw-hdmi.yaml b/Documentation/devicetree/bindings/display/allwinner,sun8i-a83t-dw-hdmi.yaml
-> index 5d42d36608d9..4951b5ef5c6a 100644
-> --- a/Documentation/devicetree/bindings/display/allwinner,sun8i-a83t-dw-hdmi.yaml
-> +++ b/Documentation/devicetree/bindings/display/allwinner,sun8i-a83t-dw-hdmi.yaml
-> @@ -174,7 +174,6 @@ examples:
->          phy-names = "phy";
->          pinctrl-names = "default";
->          pinctrl-0 = <&hdmi_pins>;
-> -        status = "disabled";
->  
->          ports {
->              #address-cells = <1>;
-> @@ -233,7 +232,6 @@ examples:
->          phy-names = "phy";
->          pinctrl-names = "default";
->          pinctrl-0 = <&hdmi_pins>;
-> -        status = "disabled";
->  
->          ports {
->              #address-cells = <1>;
-> diff --git a/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml b/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml
-> index 38bc1d1b511e..b87a2e28c866 100644
-> --- a/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml
-> +++ b/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml
-> @@ -70,7 +70,6 @@ examples:
->              avee-supply = <&ppvarp_lcd>;
->              pp1800-supply = <&pp1800_lcd>;
->              backlight = <&backlight_lcd0>;
-> -            status = "okay";
->              port {
->                  panel_in: endpoint {
->                      remote-endpoint = <&dsi_out>;
-> diff --git a/Documentation/devicetree/bindings/media/nxp,imx7-mipi-csi2.yaml b/Documentation/devicetree/bindings/media/nxp,imx7-mipi-csi2.yaml
-> index 7c09eec78ce5..877183cf4278 100644
-> --- a/Documentation/devicetree/bindings/media/nxp,imx7-mipi-csi2.yaml
-> +++ b/Documentation/devicetree/bindings/media/nxp,imx7-mipi-csi2.yaml
-> @@ -200,8 +200,6 @@ examples:
->          clock-names = "pclk", "wrap", "phy", "axi";
->          power-domains = <&mipi_pd>;
->  
-> -        status = "disabled";
-> -
->          ports {
->              #address-cells = <1>;
->              #size-cells = <0>;
-> diff --git a/Documentation/devicetree/bindings/media/renesas,drif.yaml b/Documentation/devicetree/bindings/media/renesas,drif.yaml
-> index 2867d11fe156..9403b235e976 100644
-> --- a/Documentation/devicetree/bindings/media/renesas,drif.yaml
-> +++ b/Documentation/devicetree/bindings/media/renesas,drif.yaml
-> @@ -242,7 +242,6 @@ examples:
->                      power-domains = <&sysc R8A7795_PD_ALWAYS_ON>;
->                      resets = <&cpg 513>;
->                      renesas,bonding = <&drif11>;
-> -                    status = "disabled";
->              };
->  
->              drif11: rif@e6f70000 {
-> diff --git a/Documentation/devicetree/bindings/net/intel,dwmac-plat.yaml b/Documentation/devicetree/bindings/net/intel,dwmac-plat.yaml
-> index c1948ce00081..79fa04f5e40d 100644
-> --- a/Documentation/devicetree/bindings/net/intel,dwmac-plat.yaml
-> +++ b/Documentation/devicetree/bindings/net/intel,dwmac-plat.yaml
-> @@ -116,8 +116,6 @@ examples:
->          snps,mtl-rx-config = <&mtl_rx_setup>;
->          snps,mtl-tx-config = <&mtl_tx_setup>;
->          snps,tso;
-> -        status = "okay";
-> -
->          mdio0 {
->              #address-cells = <1>;
->              #size-cells = <0>;
-> diff --git a/Documentation/devicetree/bindings/net/intel,ixp4xx-ethernet.yaml b/Documentation/devicetree/bindings/net/intel,ixp4xx-ethernet.yaml
-> index f2e91d1bf7d7..378ed2d3b003 100644
-> --- a/Documentation/devicetree/bindings/net/intel,ixp4xx-ethernet.yaml
-> +++ b/Documentation/devicetree/bindings/net/intel,ixp4xx-ethernet.yaml
-> @@ -71,7 +71,6 @@ examples:
->      ethernet@c8009000 {
->        compatible = "intel,ixp4xx-ethernet";
->        reg = <0xc8009000 0x1000>;
-> -      status = "disabled";
->        queue-rx = <&qmgr 4>;
->        queue-txready = <&qmgr 21>;
->        intel,npe-handle = <&npe 1>;
-> @@ -82,7 +81,6 @@ examples:
->      ethernet@c800c000 {
->        compatible = "intel,ixp4xx-ethernet";
->        reg = <0xc800c000 0x1000>;
-> -      status = "disabled";
->        queue-rx = <&qmgr 3>;
->        queue-txready = <&qmgr 20>;
->        intel,npe-handle = <&npe 2>;
-> diff --git a/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml b/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
-> index 081742c2b726..64995cbb0f97 100644
-> --- a/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
-> +++ b/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
-> @@ -90,14 +90,11 @@ examples:
->    # UART example on Raspberry Pi
->    - |
->      uart0 {
-> -        status = "okay";
-> -
->          nfc {
->              compatible = "samsung,s3fwrn82";
->  
->              en-gpios = <&gpio 20 GPIO_ACTIVE_HIGH>;
->              wake-gpios = <&gpio 16 GPIO_ACTIVE_HIGH>;
->  
-> -            status = "okay";
->          };
->      };
-> diff --git a/Documentation/devicetree/bindings/net/qca,ar71xx.yaml b/Documentation/devicetree/bindings/net/qca,ar71xx.yaml
-> index f0db22645d73..cf4d35edaa1b 100644
-> --- a/Documentation/devicetree/bindings/net/qca,ar71xx.yaml
-> +++ b/Documentation/devicetree/bindings/net/qca,ar71xx.yaml
-> @@ -101,8 +101,6 @@ examples:
->  
->          phy-mode = "gmii";
->  
-> -        status = "disabled";
-> -
->          fixed-link {
->              speed = <1000>;
->              full-duplex;
-> @@ -148,32 +146,24 @@ examples:
->                          reg = <0x1>;
->                          phy-handle = <&phy_port0>;
->                          phy-mode = "internal";
-> -
-> -                        status = "disabled";
->                      };
->  
->                      switch_port2: port@2 {
->                          reg = <0x2>;
->                          phy-handle = <&phy_port1>;
->                          phy-mode = "internal";
-> -
-> -                        status = "disabled";
->                      };
->  
->                      switch_port3: port@3 {
->                          reg = <0x3>;
->                          phy-handle = <&phy_port2>;
->                          phy-mode = "internal";
-> -
-> -                        status = "disabled";
->                      };
->  
->                      switch_port4: port@4 {
->                          reg = <0x4>;
->                          phy-handle = <&phy_port3>;
->                          phy-mode = "internal";
-> -
-> -                        status = "disabled";
->                      };
->                  };
->  
-> @@ -183,34 +173,29 @@ examples:
->  
->                      interrupt-parent = <&switch10>;
->  
-> -                    phy_port0: phy@0 {
-> +                    phy_port0: ethernet-phy@0 {
->                          reg = <0x0>;
->                          interrupts = <0>;
-> -                        status = "disabled";
->                      };
->  
-> -                    phy_port1: phy@1 {
-> +                    phy_port1: ethernet-phy@1 {
->                          reg = <0x1>;
->                          interrupts = <0>;
-> -                        status = "disabled";
->                      };
->  
-> -                    phy_port2: phy@2 {
-> +                    phy_port2: ethernet-phy@2 {
->                          reg = <0x2>;
->                          interrupts = <0>;
-> -                        status = "disabled";
->                      };
->  
-> -                    phy_port3: phy@3 {
-> +                    phy_port3: ethernet-phy@3 {
->                          reg = <0x3>;
->                          interrupts = <0>;
-> -                        status = "disabled";
->                      };
->  
-> -                    phy_port4: phy@4 {
-> +                    phy_port4: ethernet-phy@4 {
->                          reg = <0x4>;
->                          interrupts = <0>;
-> -                        status = "disabled";
->                      };
->                  };
->              };
-> diff --git a/Documentation/devicetree/bindings/regulator/richtek,rt6245-regulator.yaml b/Documentation/devicetree/bindings/regulator/richtek,rt6245-regulator.yaml
-> index 796ceac87445..e983d0e70c9b 100644
-> --- a/Documentation/devicetree/bindings/regulator/richtek,rt6245-regulator.yaml
-> +++ b/Documentation/devicetree/bindings/regulator/richtek,rt6245-regulator.yaml
-> @@ -77,7 +77,6 @@ examples:
->  
->        rt6245@34 {
->          compatible = "richtek,rt6245";
-> -        status = "okay";
->          reg = <0x34>;
->          enable-gpios = <&gpio26 2 0>;
->  
-> diff --git a/Documentation/devicetree/bindings/regulator/vqmmc-ipq4019-regulator.yaml b/Documentation/devicetree/bindings/regulator/vqmmc-ipq4019-regulator.yaml
-> index 6f45582c914e..dd7a2f92634c 100644
-> --- a/Documentation/devicetree/bindings/regulator/vqmmc-ipq4019-regulator.yaml
-> +++ b/Documentation/devicetree/bindings/regulator/vqmmc-ipq4019-regulator.yaml
-> @@ -39,6 +39,5 @@ examples:
->        regulator-min-microvolt = <1500000>;
->        regulator-max-microvolt = <3000000>;
->        regulator-always-on;
-> -      status = "disabled";
->      };
->  ...
-> diff --git a/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml b/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml
-> index 9bf40952e5b7..b0c41ab1a746 100644
-> --- a/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml
-> +++ b/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml
-> @@ -72,6 +72,5 @@ examples:
->          resets = <&iomcu_rst 0x20 3>;
->          pinctrl-names = "default";
->          pinctrl-0 = <&i2c0_pmx_func &i2c0_cfg_func>;
-> -        status = "disabled";
->      };
->  ...
-> diff --git a/Documentation/devicetree/bindings/reset/intel,rcu-gw.yaml b/Documentation/devicetree/bindings/reset/intel,rcu-gw.yaml
-> index 6b2d56cc3f38..13bf6bb3f097 100644
-> --- a/Documentation/devicetree/bindings/reset/intel,rcu-gw.yaml
-> +++ b/Documentation/devicetree/bindings/reset/intel,rcu-gw.yaml
-> @@ -57,7 +57,6 @@ examples:
->      };
->  
->      pwm: pwm@e0d00000 {
-> -        status = "disabled";
->          compatible = "intel,lgm-pwm";
->          reg = <0xe0d00000 0x30>;
->          clocks = <&cgu0 1>;
-> diff --git a/Documentation/devicetree/bindings/rtc/microcrystal,rv3032.yaml b/Documentation/devicetree/bindings/rtc/microcrystal,rv3032.yaml
-> index a2c55303810d..9593840a4a2b 100644
-> --- a/Documentation/devicetree/bindings/rtc/microcrystal,rv3032.yaml
-> +++ b/Documentation/devicetree/bindings/rtc/microcrystal,rv3032.yaml
-> @@ -53,7 +53,6 @@ examples:
->          rtc@51 {
->              compatible = "microcrystal,rv3032";
->              reg = <0x51>;
-> -            status = "okay";
->              pinctrl-0 = <&rtc_nint_pins>;
->              interrupts-extended = <&gpio1 16 IRQ_TYPE_LEVEL_HIGH>;
->              trickle-resistor-ohms = <7000>;
-> diff --git a/Documentation/devicetree/bindings/soc/litex/litex,soc-controller.yaml b/Documentation/devicetree/bindings/soc/litex/litex,soc-controller.yaml
-> index c8b57c7fd08c..ecae9fa8561b 100644
-> --- a/Documentation/devicetree/bindings/soc/litex/litex,soc-controller.yaml
-> +++ b/Documentation/devicetree/bindings/soc/litex/litex,soc-controller.yaml
-> @@ -35,7 +35,6 @@ examples:
->      soc_ctrl0: soc-controller@f0000000 {
->          compatible = "litex,soc-controller";
->          reg = <0xf0000000 0xc>;
-> -        status = "okay";
->      };
->  
->  ...
-> diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml b/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
-> index 06e83461705c..f97132400bb6 100644
-> --- a/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
-> +++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
-> @@ -180,7 +180,6 @@ examples:
->        pinctrl-names = "default", "sleep";
->        pinctrl-0 = <&sai2a_pins_a>, <&sai2b_pins_b>;
->        pinctrl-1 = <&sai2a_sleep_pins_a>, <&sai2b_sleep_pins_b>;
-> -      status = "okay";
->  
->        sai2a: audio-controller@4400b004 {
->          #sound-dai-cells = <0>;
-> @@ -190,7 +189,6 @@ examples:
->          dma-names = "tx";
->          clocks = <&rcc SAI2_K>;
->          clock-names = "sai_ck";
-> -        status = "okay";
->        };
->      };
->  
-> diff --git a/Documentation/devicetree/bindings/sound/ti,j721e-cpb-audio.yaml b/Documentation/devicetree/bindings/sound/ti,j721e-cpb-audio.yaml
-> index ec06789b21df..6806f53a4aed 100644
-> --- a/Documentation/devicetree/bindings/sound/ti,j721e-cpb-audio.yaml
-> +++ b/Documentation/devicetree/bindings/sound/ti,j721e-cpb-audio.yaml
-> @@ -127,8 +127,6 @@ examples:
->          compatible = "ti,j721e-cpb-audio";
->          model = "j721e-cpb";
->  
-> -        status = "okay";
-> -
->          ti,cpb-mcasp = <&mcasp10>;
->          ti,cpb-codec = <&pcm3168a_1>;
->  
-> diff --git a/Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml b/Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml
-> index ee9f960de36b..859d369c71e2 100644
-> --- a/Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml
-> +++ b/Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml
-> @@ -119,8 +119,6 @@ examples:
->          compatible = "ti,j721e-cpb-ivi-audio";
->          model = "j721e-cpb-ivi";
->  
-> -        status = "okay";
-> -
->          ti,cpb-mcasp = <&mcasp10>;
->          ti,cpb-codec = <&pcm3168a_1>;
->  
-> -- 
-> 2.27.0
-> 
+Acked-by: Mark Brown <broonie@kernel.org>
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+--kadn00tgSopKmJ1H
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD3MwcACgkQJNaLcl1U
+h9Bjsgf8DIiqqQ26ZTa4jvNqa3wI4t/EHPC0PLaGmxZWA2e7eTEGVrmipVIkUz2m
+dX2Rrsl6xOoU39mzMuCNQwVu9iqiJUoxt6xQsFG13raVCQhBTxxgkkVV2qU6BWh0
+TEuDrDM4Uh5EIU/PxpwbywfyPELaMCBkFvkd9D8O/0ek7OPcVuw5Au7es/ZG+NS/
+nQBA4oFRFdrIVSQmZ+Tn3/VjiivJhZ4H8MZ3oSKcFrMpQjG6ppG31dZGHpKtJNwE
+bUqasYXWrqKz1seky+xKbpbMnSjok627Byj0cGtNir3l8MpB2bV+Ae2OE/tc3nyZ
+aRZ/bNwgS/oYZ+vrKSOeJcgAasfyYw==
+=3Ukn
+-----END PGP SIGNATURE-----
+
+--kadn00tgSopKmJ1H--
