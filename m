@@ -2,69 +2,69 @@ Return-Path: <SRS0=et8u=MM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75091C07E95
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Jul 2021 18:48:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46894C07E95
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Jul 2021 18:49:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7810A610A7
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Jul 2021 18:48:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7810A610A7
+	by mail.kernel.org (Postfix) with ESMTPS id 3E52361009
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Jul 2021 18:49:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E52361009
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7DF271683;
-	Tue, 20 Jul 2021 20:47:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7DF271683
+	by alsa0.perex.cz (Postfix) with ESMTPS id C12E91693;
+	Tue, 20 Jul 2021 20:48:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C12E91693
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626806913;
-	bh=wTzRj8ntaHPZgeMc5NyHUMUtG0LdtzjV5Pwcjik0Y58=;
+	s=default; t=1626806964;
+	bh=jhmkBQroeb0b0Tq7gCPwTxRe66qpATM21Ks41LFU6qA=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VbvqvHcW16kGzlKgZ+jFTUhTUgYDUF0OuSwpIE7f6n7wrTlriqnSII+jVDLnkeGnH
-	 YnDk4LIpZqjqx+aIsJ+0bOd7cBdIreJx76BekWRk+kUIpE8O0IUzcs7dy5DOy/+ptC
-	 /PzZgeUBVrEC9ywpRgPTHnx4J1U9cfQ1OTSB6FSQ=
+	b=Qri4wG3JlAGce9YLkLcRcjf38gtPboht3zZ87zP3ArO4+pajWZKp8qzdvrYs71TsB
+	 Wa5idDwZz05vLv9kvLUokQCH6d9wE9RdMvnIcZJ+mY5bU+o2KitZFRMxp15EHyv84R
+	 5PrYC1DCKpWRm0W/5sp7gDwNt3hM/MVyOdt8elhA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C172CF8020D;
-	Tue, 20 Jul 2021 20:47:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1CCCFF80423;
+	Tue, 20 Jul 2021 20:47:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D7CF1F800DA; Tue, 20 Jul 2021 20:47:40 +0200 (CEST)
+ id E9307F80218; Tue, 20 Jul 2021 20:47:40 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AF3EAF800DA
+ by alsa1.perex.cz (Postfix) with ESMTPS id B24E5F8020D
  for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2021 20:47:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF3EAF800DA
-X-IronPort-AV: E=McAfee;i="6200,9189,10051"; a="198511657"
-X-IronPort-AV: E=Sophos;i="5.84,255,1620716400"; d="scan'208";a="198511657"
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B24E5F8020D
+X-IronPort-AV: E=McAfee;i="6200,9189,10051"; a="198511662"
+X-IronPort-AV: E=Sophos;i="5.84,255,1620716400"; d="scan'208";a="198511662"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Jul 2021 11:47:28 -0700
-X-IronPort-AV: E=Sophos;i="5.84,255,1620716400"; d="scan'208";a="462146668"
+ 20 Jul 2021 11:47:29 -0700
+X-IronPort-AV: E=Sophos;i="5.84,255,1620716400"; d="scan'208";a="462146675"
 Received: from aremenni-mobl.amr.corp.intel.com (HELO [10.209.130.10])
  ([10.209.130.10])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Jul 2021 11:47:25 -0700
-Subject: Re: [PATCH v4 05/12] ASoC: amd: add ACP5x PCM platform driver
+ 20 Jul 2021 11:47:28 -0700
+Subject: Re: [PATCH v4 07/12] ASoC: amd: add ACP5x pcm dma driver ops
 To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, broonie@kernel.org,
  alsa-devel@alsa-project.org
 References: <20210720163732.23003-1-Vijendar.Mukunda@amd.com>
- <20210720163732.23003-6-Vijendar.Mukunda@amd.com>
+ <20210720163732.23003-8-Vijendar.Mukunda@amd.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <106fa9e8-1d22-dd6a-8301-20761a212e4f@linux.intel.com>
-Date: Tue, 20 Jul 2021 13:12:55 -0500
+Message-ID: <331065bd-32d5-45eb-37fc-d4fc76c23fe8@linux.intel.com>
+Date: Tue, 20 Jul 2021 13:27:45 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210720163732.23003-6-Vijendar.Mukunda@amd.com>
+In-Reply-To: <20210720163732.23003-8-Vijendar.Mukunda@amd.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -87,41 +87,96 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-> +static int acp5x_audio_probe(struct platform_device *pdev)
+> +static int acp5x_dma_open(struct snd_soc_component *component,
+> +			  struct snd_pcm_substream *substream)
 > +{
-> +	struct resource *res;
+> +	struct snd_pcm_runtime *runtime;
+> +	struct snd_soc_pcm_runtime *prtd;
 > +	struct i2s_dev_data *adata;
-> +	int status;
+> +	struct i2s_stream_instance *i2s_data;
+> +	int ret;
 > +
-> +	if (!pdev->dev.platform_data) {
-> +		dev_err(&pdev->dev, "platform_data not retrieved\n");
-> +		return -ENODEV;
-> +	}
-> +	irqflags = *((unsigned int *)(pdev->dev.platform_data));
+> +	runtime = substream->runtime;
+> +	prtd = asoc_substream_to_rtd(substream);
+> +	component = snd_soc_rtdcom_lookup(prtd, DRV_NAME);
+> +	adata = dev_get_drvdata(component->dev);
 > +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (!res) {
-> +		dev_err(&pdev->dev, "IORESOURCE_MEM FAILED\n");
-> +			return -ENODEV;
+> +	i2s_data = kzalloc(sizeof(*i2s_data), GFP_KERNEL);
+> +	if (!i2s_data)
+> +		return -EINVAL;
 
-indentation is off?
+return -ENOMEM?
 
+> +
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +		runtime->hw = acp5x_pcm_hardware_playback;
+> +	else
+> +		runtime->hw = acp5x_pcm_hardware_capture;
+> +
+> +	ret = snd_pcm_hw_constraint_integer(runtime,
+> +					    SNDRV_PCM_HW_PARAM_PERIODS);
+> +	if (ret < 0) {
+> +		dev_err(component->dev, "set integer constraint failed\n");
+> +		kfree(i2s_data);
+> +		return ret;
 > +	}
-> +
-> +	adata = devm_kzalloc(&pdev->dev, sizeof(*adata), GFP_KERNEL);
-> +	if (!adata)
-> +		return -ENOMEM;
-> +
-> +	adata->acp5x_base = devm_ioremap(&pdev->dev, res->start,
-> +					 resource_size(res));
-> +	if (!adata->acp5x_base)
-> +		return -ENOMEM;
-> +	dev_set_drvdata(&pdev->dev, adata);
-> +	status = devm_snd_soc_register_component(&pdev->dev,
-> +						 &acp5x_i2s_component,
-> +						 NULL, 0);
-> +	if (status)
-> +		dev_err(&pdev->dev, "Fail to register acp i2s component\n");
-> +
-> +	return status;
+> +	i2s_data->acp5x_base = adata->acp5x_base;
+> +	runtime->private_data = i2s_data;
+> +	return ret;
 > +}
+> +
+> +static int acp5x_dma_hw_params(struct snd_soc_component *component,
+> +			       struct snd_pcm_substream *substream,
+> +			       struct snd_pcm_hw_params *params)
+> +{
+> +	struct i2s_stream_instance *rtd;
+> +	struct snd_soc_pcm_runtime *prtd;
+> +	struct snd_soc_card *card;
+> +	struct acp5x_platform_info *pinfo;
+> +	struct i2s_dev_data *adata;
+> +	u64 size;
+> +
+> +	prtd = asoc_substream_to_rtd(substream);
+> +	card = prtd->card;
+> +	pinfo = snd_soc_card_get_drvdata(card);
+> +	adata = dev_get_drvdata(component->dev);
+> +	rtd = substream->runtime->private_data;
+> +
+> +	if (!rtd)
+> +		return -EINVAL;
+> +
+> +	if (pinfo) {
+> +		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> +			rtd->i2s_instance = pinfo->play_i2s_instance;
+> +			switch (rtd->i2s_instance) {
+> +			case I2S_HS_INSTANCE:
+> +				adata->play_stream = substream;
+> +				break;
+> +			case I2S_SP_INSTANCE:
+> +			default:
+> +				adata->i2ssp_play_stream = substream;
+> +			}
+> +		} else {
+> +			rtd->i2s_instance = pinfo->cap_i2s_instance;
+> +			switch (rtd->i2s_instance) {
+> +			case I2S_HS_INSTANCE:
+> +				adata->capture_stream = substream;
+> +				break;
+> +			case I2S_SP_INSTANCE:
+> +			default:
+> +				adata->i2ssp_capture_stream = substream;
+> +			}
+> +		}
+> +	} else {
+> +		dev_err(component->dev, "pinfo failed\n");
+
+should you bail here with e.g. return -EINVAL?
+
+> +	}
+> +	size = params_buffer_bytes(params);
+> +	rtd->dma_addr = substream->dma_buffer.addr;
+> +	rtd->num_pages = (PAGE_ALIGN(size) >> PAGE_SHIFT);
+> +	config_acp5x_dma(rtd, substream->stream);
+> +	return 0;
+> +}
+
