@@ -2,79 +2,87 @@ Return-Path: <SRS0=et8u=MM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CA47C07E95
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Jul 2021 09:28:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F90DC07E9B
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Jul 2021 09:58:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E4F976120F
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Jul 2021 09:28:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E4F976120F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id C3E1B60FE9
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Jul 2021 09:58:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C3E1B60FE9
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2FC351669;
-	Tue, 20 Jul 2021 11:27:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FC351669
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7BB2F165E;
+	Tue, 20 Jul 2021 11:58:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7BB2F165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626773314;
-	bh=YmcrEGndW8VjDL4QxftrC6khjsJM6w5FBFs64HKxWDs=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=tHXoff3i4/x18ytmyITEUVprpw7pNzGRiDbR/UBg4ZXzrsfnBvkXgtIf0DkFDQa/T
-	 zj+WTAsaHLx6VKBRGuXgSVnNbmCci8wB401sV45phqKN+CtmeCiw/2qPU072VerV5z
-	 laXV6kCVdjlF4TagbWvzc5zqHYK0ccuqiSNdGAuI=
+	s=default; t=1626775130;
+	bh=+yZYeX2YKlpFOes9sbdT8KFERxR8SN8gSfWl7kajpj8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=uLRDMYuFGqOZ6G/ogoLUy1NIrwobZRm2Ka4H5+yHEnbY/6a6ueXd5D26LeCBLQHJM
+	 xpUSUUElvBQV9x7Okt8xcVkHAz3jGURKHJjexY1Zq6iRYT9OvRfCQkHMt7s7ieumuU
+	 aCHw1Xdo1urWpjl+roEJYGnhmp75TLDwZ9UHYmLI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3DA3F8020D;
-	Tue, 20 Jul 2021 11:27:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B6EFF80104;
+	Tue, 20 Jul 2021 11:58:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 69762F80256; Tue, 20 Jul 2021 11:27:42 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id CBB5EF80218; Tue, 20 Jul 2021 11:57:58 +0200 (CEST)
+Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com
+ [209.85.222.41])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 40303F8020D
- for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2021 11:27:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40303F8020D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="mQR9Moka"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="Nmh3gqdu"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 349B11FDE4
- for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2021 09:27:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626773254; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=VWSMnmQSJPOyfeZokzcdIB+YqXCRAnLOmlcubJwtiME=;
- b=mQR9MokalxkrHpaOzJ9/yNfqSzowy9WVZD0ywhZb+q9TMi/FC+aEqpzFploArIL9+Ra4Bh
- 1JilEoOr8r8x7TVVIDIhWKQhhglihgsucVPBZjeNo8/KDGrl5q5aE474htUTa8R8w7r0CR
- bWUTqw4YMIxhjb2wRZdSfH4BgkNGZOY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626773254;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=VWSMnmQSJPOyfeZokzcdIB+YqXCRAnLOmlcubJwtiME=;
- b=Nmh3gqduLJFFU0FrYs5UZPe4IOqduZeXcuWsWq5KzhzNe02wIrAZkEuQ/MtQk/RzxTsB1u
- 0pPjd+3riIuFluBw==
-Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 24C34A3B85;
- Tue, 20 Jul 2021 09:27:34 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: pcm: Fix mmap without buffer preallocation
-Date: Tue, 20 Jul 2021 11:27:32 +0200
-Message-Id: <20210720092732.12412-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
+ by alsa1.perex.cz (Postfix) with ESMTPS id A4697F80104
+ for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2021 11:57:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4697F80104
+Received: by mail-ua1-f41.google.com with SMTP id 109so7868925uar.10
+ for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2021 02:57:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=eJGM0RL5AN+h+vqFmyVhrYwvPstbguOVmw1vvv/X9nQ=;
+ b=RIfFMR24cEFvJe+Ke9XiliO6azbCgqZdMXWmAuwn2T/8kX0B4R8Cdu78KwLbb3vLj3
+ j65bfwApn01FqJNXFgAGnFsSualvAgpVKfyfNv+dPN7hw4nq1RAl+efV+OtRLCmfAL93
+ uSKNTTNxEs9WzsWM6foayZPqNVdeoYMwYWS5fRLom/xj/7g6c+gnmjOh5gt5E3KeRytj
+ n7l08RVDU2rS6FDX5ijk4qmAr2zPufzdafZMd5DjuogWGnzBQ/8Cg7VvfMKckk14CThO
+ y/s+TP2SeVp1mW4zIzHpbIDSE5B5zw0l9wcz/xVTwi5HLXBqAcS0rUf18UNIz8vFJRqs
+ OzlQ==
+X-Gm-Message-State: AOAM530zK5tkhRHHqCyet+opHU73YxCcl0nL0XafnJyVGZoh/nutqnGo
+ JkvvSPfwVLnEMT2+BusPzvzvUjtJp+YxM/dVEmI=
+X-Google-Smtp-Source: ABdhPJyxjSTjcCC3q1+chNBc2dgfFtqHNKvgcywOC8BfkjjlY3Gzjn8/vT6Xz9Pg5lWgRXNjTgN320Zq5LydgfkuFlI=
+X-Received: by 2002:ab0:6710:: with SMTP id q16mr7224714uam.106.1626775070742; 
+ Tue, 20 Jul 2021 02:57:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210719134040.7964-1-biju.das.jz@bp.renesas.com>
+ <20210719134040.7964-3-biju.das.jz@bp.renesas.com>
+In-Reply-To: <20210719134040.7964-3-biju.das.jz@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 20 Jul 2021 11:57:39 +0200
+Message-ID: <CAMuHMdV1f3TM3pKsftNkaOrFifAMdLkEcKdWs=wL54uFhEKoZg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/8] sound: soc: sh: Add RZ/G2L SSIF-2 driver
+To: Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ Randy Dunlap <rdunlap@infradead.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Krzysztof Kozlowski <krzk@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Chris Brandt <chris.brandt@renesas.com>, Mark Brown <broonie@kernel.org>,
+ Chris Paterson <Chris.Paterson2@renesas.com>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>, Biju Das <biju.das@bp.renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,33 +98,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The recent rewrite of the memory allocation helpers also changed the
-page extraction to a common helper, snd_sgbuf_get_page().  But this
-assumes implicitly that the buffer was allocated via the standard
-helper (usually via preallocation), and didn't consider the case of
-the manual buffer handling.
+Hi Biju,
 
-This patch fixes it and also covers the manual buffer management.
+On Mon, Jul 19, 2021 at 3:40 PM Biju Das <biju.das.jz@bp.renesas.com> wrote:
+> Add serial sound interface(SSIF-2) driver support for
+> RZ/G2L SoC.
+>
+> Based on the work done by Chris Brandt for RZ/A SSI driver.
+>
+> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+> Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Fixes: 37af81c5998f ("ALSA: core: Abstract memory alloc helpers")
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/pcm_native.c | 2 ++
- 1 file changed, 2 insertions(+)
+Thanks for your patch!
 
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 6919d2943b9d..6a2971a7e6a1 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -3675,6 +3675,8 @@ static vm_fault_t snd_pcm_mmap_data_fault(struct vm_fault *vmf)
- 		return VM_FAULT_SIGBUS;
- 	if (substream->ops->page)
- 		page = substream->ops->page(substream, offset);
-+	else if (!snd_pcm_get_dma_buf(substream))
-+		page = virt_to_page(runtime->dma_area + offset);
- 	else
- 		page = snd_sgbuf_get_page(snd_pcm_get_dma_buf(substream), offset);
- 	if (!page)
+> --- a/sound/soc/sh/Kconfig
+> +++ b/sound/soc/sh/Kconfig
+> @@ -45,6 +45,16 @@ config SND_SOC_RCAR
+>         help
+>           This option enables R-Car SRU/SCU/SSIU/SSI sound support
+>
+> +config SND_SOC_RZ
+> +       tristate "RZ/G2L series SSIF-2 support"
+> +       depends on OF || COMPILE_TEST
+
+ARCH_R9A07G044 implies OF
+
+> +       depends on ARCH_R9A07G044
+
+Is there any hard compile-time dependency on ARCH_R9A07G044?
+
+Perhaps you meant
+
+    depends on ARCH_R9A07G044 || COMPILE_TEST
+
+?
+
+> +       select SND_SIMPLE_CARD
+> +       help
+> +         This option enables ASoC sound support for the RZ/G2L MPUs.
+> +         The simple-audio-card driver and the RZ/G2L built-in serial
+> +         sound interface (SSIF-2) driver are used.
+> +
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.26.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
