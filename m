@@ -2,87 +2,79 @@ Return-Path: <SRS0=et8u=MM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 091B5C07E9B
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Jul 2021 07:12:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13442C07E95
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Jul 2021 09:27:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 31BF261165
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Jul 2021 07:12:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 31BF261165
+	by mail.kernel.org (Postfix) with ESMTPS id 9B53B6121E
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Jul 2021 09:27:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B53B6121E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3CF5165E;
-	Tue, 20 Jul 2021 09:11:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3CF5165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 69A6E165D;
+	Tue, 20 Jul 2021 11:26:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69A6E165D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626765142;
-	bh=SNQ+td8QRGNIJZRrHTJ16Bp4Q4pMaC+z2RocOTG1w30=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=QwA7G3zpU5Zva511gZj7TTQh0lcliCgOnFvrDDy6IgqfpIiTM8FPmi5g9TpSaqT7Z
-	 NNedz2b8Kxgk5l7MC0gZy5hPGXdUWnXSeo1C3fXcoUR+1SX9ImFl25uMCOJqKHghj8
-	 Zn+5BrMOjpFw1eKv5lyHEz0Lsh3/2p/SM/mY4aBg=
+	s=default; t=1626773261;
+	bh=xpjM+CWm8NZPh48G63wpwxpB0T/7NA29fjT4tdYQS2k=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=qb7pZbM6+pngrkJA5lzJSOG0nYhIS8FmhUZpFgBuk1SdGH+VnNugB3p5CLoIKEQGk
+	 /ooOAebvkqmfIqSpcBaN0GiLau2IJyEQrkHx4pNCZHNSb+jDZPtzEB2GUkijVZHtZs
+	 d1AgCWXorrGJf+CUxvTqFaKKWaN4MEnvw5jYtPyI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 517AEF8020D;
-	Tue, 20 Jul 2021 09:11:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C7910F80169;
+	Tue, 20 Jul 2021 11:26:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 86FB7F80104; Tue, 20 Jul 2021 09:11:30 +0200 (CEST)
+ id 2C6C5F80104; Tue, 20 Jul 2021 11:26:49 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 66C43F80104
- for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2021 09:11:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66C43F80104
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2DF46F80104
+ for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2021 11:26:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DF46F80104
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="F/yO+jqu"; 
+ header.b="UD6NcusD"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="OogypA/Q"
+ header.b="rywFjaui"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id F089F2232E;
- Tue, 20 Jul 2021 07:11:22 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id D3E9D223FB
+ for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2021 09:26:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1626765082; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=pdazhreQGbSR1bC436gJK7+ypxQeHMeGsk8kNbM/JiM=;
- b=F/yO+jquyxwUxRxavpyvkGLlsaEYhcZ30ZQhlK1FGRaDpnSAixKFCyF4jw7hzeAhUPHEcq
- VkTBfDfeLmBMNUR8O9I7H/ySMaTZ63MnODXnLoTdYraSJ4dcpcAHKbN6n5FUDYotDOEc6P
- r2EE37sY/Cd3T3gnba7A9j4SRdVYTBI=
+ t=1626773201; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=KO1zLNs8YpHOxkmyQPfZyJwEux2dIZiQsv+vdxcZvLY=;
+ b=UD6NcusDXu31tT+N6z4b5QTu/Y2W3f1pUS0UkR7U3ZNGHDskmBXven0e7zT+uZQ2l22GWw
+ 5zaO3ggL5hUVghfaa0GgPFwKwFcRpdozr+P/cr4HkOoxcAbsgWdm/x/7s5u4gLP7TcJFO8
+ ocOPcp8F9GGSJ3qnb6O/xwwgiHsDglY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1626765082;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=pdazhreQGbSR1bC436gJK7+ypxQeHMeGsk8kNbM/JiM=;
- b=OogypA/QT7Pab6o8qB2trcpYMuRpCxuGt99KXABH9Ztj5ggASKAaWA15WXOx549hr3wKmt
- 7usDfctJznkdScDw==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id DB9D4A3B8C;
- Tue, 20 Jul 2021 07:11:22 +0000 (UTC)
-Date: Tue, 20 Jul 2021 09:11:22 +0200
-Message-ID: <s5h8s21qx2d.wl-tiwai@suse.de>
+ s=susede2_ed25519; t=1626773201;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=KO1zLNs8YpHOxkmyQPfZyJwEux2dIZiQsv+vdxcZvLY=;
+ b=rywFjauid5k+nSLy3e/f28b3MNdgY48+eIJ+JHmPWFWvLoyIvjyNJZZoo1KsoZadgpL2tV
+ FwwInCi988MSAUCg==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id C28D0A3B85;
+ Tue, 20 Jul 2021 09:26:41 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ALSA: hda: intel-dsp-cfg: add missing ElkhartLake PCI ID
-In-Reply-To: <20210719231746.557325-1-pierre-louis.bossart@linux.intel.com>
-References: <20210719231746.557325-1-pierre-louis.bossart@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: pcm: Fix mmap capability check
+Date: Tue, 20 Jul 2021 11:26:40 +0200
+Message-Id: <20210720092640.12338-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,18 +90,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 20 Jul 2021 01:17:46 +0200,
-Pierre-Louis Bossart wrote:
-> 
-> We missed the fact that ElkhartLake platforms have two different PCI
-> IDs. We only added one so the SOF driver is never selected by the
-> autodetection logic for the missing configuration.
-> 
-> BugLink: https://github.com/thesofproject/linux/issues/2990
-> Fixes: cc8f81c7e625 ('ALSA: hda: fix intel DSP config')
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+The hw_support_mmap() doesn't cover all memory allocation types and
+might use a wrong device pointer for checking the capability.
+Check the all memory allocation types more completely.
 
-Thanks, applied.
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/pcm_native.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index c88c4316c417..6919d2943b9d 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -246,12 +246,18 @@ static bool hw_support_mmap(struct snd_pcm_substream *substream)
+ 	if (!(substream->runtime->hw.info & SNDRV_PCM_INFO_MMAP))
+ 		return false;
+ 
+-	if (substream->ops->mmap ||
+-	    (substream->dma_buffer.dev.type != SNDRV_DMA_TYPE_DEV &&
+-	     substream->dma_buffer.dev.type != SNDRV_DMA_TYPE_DEV_UC))
++	if (substream->ops->mmap)
+ 		return true;
+ 
+-	return dma_can_mmap(substream->dma_buffer.dev.dev);
++	switch (substream->dma_buffer.dev.type) {
++	case SNDRV_DMA_TYPE_UNKNOWN:
++		return false;
++	case SNDRV_DMA_TYPE_CONTINUOUS:
++	case SNDRV_DMA_TYPE_VMALLOC:
++		return true;
++	default:
++		return dma_can_mmap(substream->dma_buffer.dev.dev);
++	}
+ }
+ 
+ static int constrain_mask_params(struct snd_pcm_substream *substream,
+-- 
+2.26.2
 
-Takashi
