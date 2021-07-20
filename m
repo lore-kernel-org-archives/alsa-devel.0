@@ -2,82 +2,71 @@ Return-Path: <SRS0=et8u=MM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A918C07E9B
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Jul 2021 13:13:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9ABCEC636C8
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Jul 2021 13:51:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F09D761165
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Jul 2021 13:13:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F09D761165
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 36C0761186
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Jul 2021 13:51:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 36C0761186
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3E171669;
-	Tue, 20 Jul 2021 15:12:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3E171669
+	by alsa0.perex.cz (Postfix) with ESMTPS id E4F151663;
+	Tue, 20 Jul 2021 15:50:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4F151663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626786785;
-	bh=IRukrG0lQbrhR63TQuhf1CsfxaEyDUJRxHrCKHxVZ1o=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=rvGAGOpYHRFTAKWxS8iLeuJD+fencwJbv0LKa5CHWoW6OUTYnZcaSkq8WWUC3Ksp2
-	 6Wn4N8RTTjRIE0hnjvPFXKJitl8gsmVcRey2VypG/pa4Vj+J02FWKKnEJXSIuvIABe
-	 enBEVvb9F3L0GEvyGR6dg+jdX2x7Cih/lVyVGR40=
+	s=default; t=1626789060;
+	bh=r7Cq161ChrpOH27+C+tRho9jMMJfE/nP7shcb78sVQY=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=FhQxRosWy8CqCcFwqHnYshIRYHjrTSrArCWp0+atyw6b266jhrKp+y5db6lx1nRek
+	 CjZFxNEx2Tnk4aXJSSgXA6PZ7Z4DwxpyZTMIlnIEu4zwkvD9wF18PPHr77CFkfiOJ2
+	 8nPnh9a585NYEgil+8SOLqJma4e8nNnklcstFAH0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D5C8F80104;
-	Tue, 20 Jul 2021 15:12:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4B005F80104;
+	Tue, 20 Jul 2021 15:50:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2F58EF80218; Tue, 20 Jul 2021 15:12:14 +0200 (CEST)
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com
- [209.85.166.170])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 8418BF80218; Tue, 20 Jul 2021 15:50:07 +0200 (CEST)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9B283F80104
- for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2021 15:12:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B283F80104
-Received: by mail-il1-f170.google.com with SMTP id y6so19055816ilj.13
- for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2021 06:12:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
- :message-id;
- bh=MrD9zPiZTZvwVFMJ0sm25SmAJuUN1FGIWLE0xooWCJU=;
- b=qzpQpf6fiYaSroobd7Wj2sgSkmE+2tHrc5hL7pzQe9g4dsb4uHo7dhiq4Jo5t1RCeC
- tVrS0MpdP2mN8+bplfhou6QTAlFPdhje1z+7+SudM1buxq6wuK6vQFGuGBe9QF3bWaOB
- e+Vfbiazev41KiygY7ry+IPN7Q+hU1+ct+V8pj5M9vZuGUt4NpE0ROYNt2skZ1J6AdYQ
- FMIju6JBLc610qzxEW04kXwT1ZJ1q4EZBb+NgFHdsw731L9yQrtI50jtav0bhZVpKErC
- 7V1XD5R8VOBbrdU8OyKg+mvwWANrnTqFh7wQAiQ0mBwhAvxAx6O6VhGF16zSizMaLJr7
- QEgA==
-X-Gm-Message-State: AOAM530AUz8q1yHCoLGGEqq17joER3kzHJOjWWuKVf5HfqjdRKup3PoN
- SxP4lx2Y4L5TYif20tzpTg==
-X-Google-Smtp-Source: ABdhPJxDm0VwI3x/qnyhQWulPyMMfC6oajosDUc1UI/060M93rUk1p7P2rq5nhNdKtKy8dOI5PsP2A==
-X-Received: by 2002:a92:c7a2:: with SMTP id f2mr19724855ilk.3.1626786723965;
- Tue, 20 Jul 2021 06:12:03 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
- by smtp.gmail.com with ESMTPSA id x13sm11514009ilo.11.2021.07.20.06.12.02
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 20 Jul 2021 06:12:03 -0700 (PDT)
-Received: (nullmailer pid 4121604 invoked by uid 1000);
- Tue, 20 Jul 2021 13:11:58 -0000
-From: Rob Herring <robh@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87wnplvk2a.wl-kuninori.morimoto.gx@renesas.com>
-References: <87a6mhwyqn.wl-kuninori.morimoto.gx@renesas.com>
- <87wnplvk2a.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH v2 09/14] ASoC: audio-graph-card2: add Yaml Document
-Date: Tue, 20 Jul 2021 07:11:58 -0600
-Message-Id: <1626786718.731708.4121603.nullmailer@robh.at.kernel.org>
-Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>,
- Mark Brown <broonie@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B35FCF80104
+ for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2021 15:50:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B35FCF80104
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GTg3r6TChzcbXY;
+ Tue, 20 Jul 2021 21:46:32 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 20 Jul 2021 21:49:55 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 20 Jul
+ 2021 21:49:54 +0800
+From: Yang Yingliang <yangyingliang@huawei.com>
+To: <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>
+Subject: [PATCH -next] ALSA: nm256: Fix error return code in snd_nm256_create()
+Date: Tue, 20 Jul 2021 21:52:37 +0800
+Message-ID: <20210720135237.3424521-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
+Cc: tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,58 +82,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 20 Jul 2021 10:41:01 +0900, Kuninori Morimoto wrote:
-> 
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> This patch adds Audio Graph Card2 Yaml bindings.
-> It is similar to Audio Graph Card, but different.
-> 
-> 	- audio-graph-card  used "dais"  to indicate DAI-links,
-> 	  audio-graph-card2 uses "links" to it.
-> 
-> 	- audio-graph-card  used "phandle" to indicate bitclock/frame-master,
-> 	  audio-graph-card2 uses flag to it.
-> 
-> 	- audio-graph-card  used "format" to indicate DAI format,
-> 	  audio-graph-card2 assumes CPU/Codec drivers have .get_fmt support.
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->  .../sound/audio-graph-card2-items.yaml        | 80 +++++++++++++++++++
->  .../bindings/sound/audio-graph-card2.yaml     | 51 ++++++++++++
->  2 files changed, 131 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/audio-graph-card2-items.yaml
->  create mode 100644 Documentation/devicetree/bindings/sound/audio-graph-card2.yaml
-> 
+If pci_request_regions() fails, it should return error
+code in snd_nm256_create().
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ sound/pci/nm256/nm256.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/audio-graph-card2-items.yaml: patternProperties:^ports(@[0-1])?$:properties: 'port(@[0-9a-f]+)?' does not match '^[#$a-zA-Z][a-zA-Z0-9,+\\-._@]{0,63}$'
-	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/audio-graph-card2-items.yaml: ignoring, error in schema: patternProperties: ^ports(@[0-1])?$: properties
-warning: no schema found in file: ./Documentation/devicetree/bindings/sound/audio-graph-card2-items.yaml
-Documentation/devicetree/bindings/sound/audio-graph-card2.example.dt.yaml:0:0: /example-0/cpu: failed to match any schema with compatible: ['cpu-driver']
-Documentation/devicetree/bindings/sound/audio-graph-card2.example.dt.yaml:0:0: /example-0/codec: failed to match any schema with compatible: ['codec-driver']
-Documentation/devicetree/bindings/sound/audio-graph-card2-items.example.dt.yaml:0:0: /example-0/mix: failed to match any schema with compatible: ['audio-graph-card2-dsp']
-Documentation/devicetree/bindings/sound/audio-graph-card2-items.example.dt.yaml:0:0: /example-0/multi: failed to match any schema with compatible: ['audio-graph-card2-multi']
-Documentation/devicetree/bindings/sound/audio-graph-card2-items.example.dt.yaml:0:0: /example-0/codec2codec: failed to match any schema with compatible: ['audio-graph-card2-codec2codec']
-\ndoc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1507357
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+diff --git a/sound/pci/nm256/nm256.c b/sound/pci/nm256/nm256.c
+index a54b9b26a0c2..c9c178504959 100644
+--- a/sound/pci/nm256/nm256.c
++++ b/sound/pci/nm256/nm256.c
+@@ -1478,7 +1478,8 @@ snd_nm256_create(struct snd_card *card, struct pci_dev *pci)
+ 	chip->buffer_addr = pci_resource_start(pci, 0);
+ 	chip->cport_addr = pci_resource_start(pci, 1);
+ 
+-	if (pci_request_regions(pci, card->driver))
++	err = pci_request_regions(pci, card->driver);
++	if (err < 0)
+ 		return err;
+ 
+ 	/* Init the memory port info.  */
+-- 
+2.25.1
 
