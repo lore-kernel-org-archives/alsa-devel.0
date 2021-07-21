@@ -2,113 +2,72 @@ Return-Path: <SRS0=DIBW=MN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 102EAC636CA
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Jul 2021 14:06:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA121C12002
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Jul 2021 15:06:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 43B5361249
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Jul 2021 14:06:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 43B5361249
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cerno.tech
+	by mail.kernel.org (Postfix) with ESMTPS id BACCA61019
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Jul 2021 15:06:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BACCA61019
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C8FB61714;
-	Wed, 21 Jul 2021 16:05:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8FB61714
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7A48A16E4;
+	Wed, 21 Jul 2021 17:05:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A48A16E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626876406;
-	bh=kfzDmCb97IYtrf4iWchgaBcSv7dFwaN6n8qFmPcYPHQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=oSx45ft8zy1IdWwpErxJxMbgXat1IIesl5SNb3uW/C5n024GqNE+Dv++wPBe9EcZt
-	 FdOp4X0EyD63fYWkHuYxOJGnyI5lmQsZ7ltRVxNhthvYg1ub7ruOm81uYIKdn9zznu
-	 2tjmRaGhyufVNwNR/E8+1EDtMAocsSPR/v35pWGA=
+	s=default; t=1626879984;
+	bh=LlZsTCwo55N+RZAir1Av59XUrJ9QoPgdyfVVcThgmU0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=bQ7XYgKkIIezYASoPxqOXnf2laTV5XjuhVaHPXGzP/SykBdFcW01AduOjFbEmr9RR
+	 0bqbrDwaOEraObuPMBhLJdv/rcCsqOeeWhtdlDDqpUp/2rQ68FT/y4V1TxllIxYfoJ
+	 2XapRckEVmmGVXVJlp8WVh0CEZMH2wkQDUVNAEnw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DFC18F804E4;
-	Wed, 21 Jul 2021 16:04:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 165C2F804AB;
+	Wed, 21 Jul 2021 17:05:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3AB2AF804E5; Wed, 21 Jul 2021 16:04:43 +0200 (CEST)
-Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com
- [66.111.4.230])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 748EAF800DA; Wed, 21 Jul 2021 17:05:29 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0AF2AF80143
- for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2021 16:04:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0AF2AF80143
+ by alsa1.perex.cz (Postfix) with ESMTPS id 03109F800DA
+ for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2021 17:05:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03109F800DA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
- header.b="nHYd2x17"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="koyCtw10"
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailnew.nyi.internal (Postfix) with ESMTP id 42B125809C2;
- Wed, 21 Jul 2021 10:04:36 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute5.internal (MEProxy); Wed, 21 Jul 2021 10:04:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
- from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm3; bh=Qg2NPL/yZBC7I
- 3hyaV9giczjY9T0ILg1ulIEH+Zapyc=; b=nHYd2x17bk+by/B+Rhwbj/HOInlfa
- HLaK2LIicSbg1B8qGwB7gMn0Zuhkwf7tpi+b4k44fUI0gcPKDbeyrg1BleHZZmvm
- b6JOBYeRnyA0WtxTnP5QrfSvm8SnwpADL1iu2Tp4S6tClcBJQwVzcwQrdeGxMKGO
- 2/aywLi9xJG0uD8de3eqtQTd9DRG/dMnHqrUcLANC4/cLEJugYf4sCcybONCtc0V
- DOWuJOS352Z+aZ+pa1uafa10f9+YBsmbnw/ejBemoDaQmGjDLcoyif5loL7bn+nP
- QUQ97kCmBBtqOMchXvxPZ33EcfXALAaqzVWmMVK1RXBr1Hg50hLUtKlcQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-transfer-encoding:date:from
- :in-reply-to:message-id:mime-version:references:subject:to
- :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm3; bh=Qg2NPL/yZBC7I3hyaV9giczjY9T0ILg1ulIEH+Zapyc=; b=koyCtw10
- raK/A/YJRpCo2dpUsLdYtwkYtrLYjRSV4WZrEbKfMfCDYZ9EtSMqX1B+6z8pFaIp
- R7Kt3dZ6ZwieUgE6mWFSyfRdPNCAyytqou3Gt0dLxMyv//utr4tnvBMfJCbN3R4Y
- qIvU5ot+gyjVSM2niNyepRtE2EroulirJMEwaGFrvvZ0LT30YDgjpXU5zXg9ahyv
- lybHy9KYnif3mo5SMEhPyUR4S2mdGlYD/rUCUFq15w5yBf2tekD1Kl95ZcyQmzLQ
- 3WMVBfg54o1OK439KmbTNR+/ifJ+PBZpbBK4NiusPUFOl8c05wm0Uhs64Vk575hs
- z5kZZ4OKKSHlgQ==
-X-ME-Sender: <xms:cyn4YCl9ssv0Xz3ayIt8OV-Z_3F078wWR86776cuHBlIkwotYUfgVw>
- <xme:cyn4YJ08NE_Q9rta9_KvN2KA4uHbO5YOd0HExIdAIqJoCnOzx6tngDjiKIbnY2iY9
- oXkweYFoYa3DCH_Ws0>
-X-ME-Received: <xmr:cyn4YAo1z6XBKFR1eZ5zVleQa9Gc2FF0JwrVQeY1N6Jt-fANeQhfwIdqj76t-TWUbU1xAHqnEi4lani5eNFjYIN_9F470aPmA-Ib>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrfeeggdeiiecutefuodetggdotefrodftvf
- curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
- uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenog
- evohgrshhtrghlqdfhgeduvddqtddvucdludehtddmnecujfgurhephffvufffkffojghf
- ggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhmvgcutfhiphgrrhguuceomhgrgi
- himhgvsegtvghrnhhordhtvggthheqnecuggftrfgrthhtvghrnhepveejieejtdevgfff
- gfejuefggfeutdelteekgeetueeftddutddtgfffhffgueffnecuffhomhgrihhnpeguvg
- hvihgtvghtrhgvvgdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
- mhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:cyn4YGn9-5iUm7SLRQtlFCJT1W_UpeIgV7PwkrcHZq-a89WSuYeUIA>
- <xmx:cyn4YA0AB3DWmiozyx1Kmk8S9CPsdKn2GmmheFSmcAZ0m9swX9nSOg>
- <xmx:cyn4YNtP6c-NcW-eVnG2MhHZgJ4-N-TZ4C80_NgYYlRqtwBGpu4EOg>
- <xmx:dCn4YGxKnyC-oPzPOsDYp--M_i23VyOI_VzdDY4QMASgSlBXRZYx_Q>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 21 Jul 2021 10:04:35 -0400 (EDT)
-From: Maxime Ripard <maxime@cerno.tech>
-To: Chen-Yu Tsai <wens@csie.org>, Maxime Ripard <maxime@cerno.tech>,
- Jernej Skrabec <jernej.skrabec@siol.net>, devicetree@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>
-Subject: [PATCH 03/54] ASoC: dt-bindings: Convert SPDIF Transmitter binding to
- a schema
-Date: Wed, 21 Jul 2021 16:03:33 +0200
-Message-Id: <20210721140424.725744-4-maxime@cerno.tech>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210721140424.725744-1-maxime@cerno.tech>
-References: <20210721140424.725744-1-maxime@cerno.tech>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="WKZDCgOB"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19E1B60FF1;
+ Wed, 21 Jul 2021 15:05:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1626879914;
+ bh=LlZsTCwo55N+RZAir1Av59XUrJ9QoPgdyfVVcThgmU0=;
+ h=From:To:Cc:Subject:Date:From;
+ b=WKZDCgOBjqILAGhDpdTVHkDHsrxce8rMUvBPzPZqC3HXdO83Q8ga62HWf2xGvmovt
+ 7jg+Y5v/9rdSQx9w9jJUsnOHWep2quxQfaVP4OYKRfhsJHaWUimWOu7iGbFeaDsjYL
+ R1y/p7bPfifpppU71AMjt7JQ+vYjCcZ72UqJ1nHiCOA93IgEDuOlufjpxP4MO6JQU3
+ w7/6maXf1yz+hBbvHGYaYnrZyXQmyrEMFQWoqecWo44Cw2DI3HCbCgjzpDi9nbxnOJ
+ pJrdqsrwvsmBjSfyCWrkMtn1F4j1+4GqezA1TZR0wAtFYHp1fb2A0d3/+3x6Mc89on
+ A5Aud3XlQad9A==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: codecs: wcd938x: fix wcd module dependency
+Date: Wed, 21 Jul 2021 17:04:45 +0200
+Message-Id: <20210721150510.1837221-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-sunxi@googlegroups.com, Mark Brown <broonie@kernel.org>,
- alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
- Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -124,77 +83,68 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The SPDIF Transmitter binding is used by Linux with a matching Device
-Tree binding.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Now that we have the DT validation in place, let's convert the device
-tree bindings for that driver over to a YAML schema.
+With SND_SOC_ALL_CODECS=y and SND_SOC_WCD938X_SDW=m, there is a link
+error from a reverse dependency, since the built-in codec driver calls
+into the modular soundwire back-end:
 
-Cc: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+x86_64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_codec_free':
+wcd938x.c:(.text+0x2c0): undefined reference to `wcd938x_sdw_free'
+x86_64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_codec_hw_params':
+wcd938x.c:(.text+0x2f6): undefined reference to `wcd938x_sdw_hw_params'
+x86_64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_codec_set_sdw_stream':
+wcd938x.c:(.text+0x332): undefined reference to `wcd938x_sdw_set_sdw_stream'
+x86_64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_tx_swr_ctrl':
+wcd938x.c:(.text+0x23de): undefined reference to `wcd938x_swr_get_current_bank'
+x86_64-linux-ld: sound/soc/codecs/wcd938x.o: in function `wcd938x_bind':
+wcd938x.c:(.text+0x2579): undefined reference to `wcd938x_sdw_device_get'
+x86_64-linux-ld: wcd938x.c:(.text+0x25a1): undefined reference to `wcd938x_sdw_device_get'
+x86_64-linux-ld: wcd938x.c:(.text+0x262a): undefined reference to `__devm_regmap_init_sdw'
+
+Work around this using two small hacks: An added Kconfig dependency
+prevents the main driver from being built-in when soundwire support
+itself is a loadable module to allow calling devm_regmap_init_sdw(),
+and a Makefile trick links the wcd938x-sdw backend as built-in
+if needed to solve the dependency between the two modules.
+
+Fixes: 045442228868 ("ASoC: codecs: wcd938x: add audio routing and Kconfig")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- .../bindings/sound/linux,spdif-dit.yaml       | 32 +++++++++++++++++++
- .../bindings/sound/spdif-transmitter.txt      | 10 ------
- 2 files changed, 32 insertions(+), 10 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/linux,spdif-dit.yaml
- delete mode 100644 Documentation/devicetree/bindings/sound/spdif-transmitter.txt
+I saw this on -rc2, please ignore if this is already fixed
+---
+ sound/soc/codecs/Kconfig  | 1 +
+ sound/soc/codecs/Makefile | 5 ++++-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/linux,spdif-dit.yaml b/Documentation/devicetree/bindings/sound/linux,spdif-dit.yaml
-new file mode 100644
-index 000000000000..c6b070e1d014
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/linux,spdif-dit.yaml
-@@ -0,0 +1,32 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/linux,spdif-dit.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Dummy SPDIF Transmitter Device Tree Bindings
-+
-+maintainers:
-+  - Mark Brown <broonie@kernel.org>
-+
-+properties:
-+  compatible:
-+    const: linux,spdif-dit
-+
-+  "#sound-dai-cells":
-+    const: 0
-+
-+required:
-+  - "#sound-dai-cells"
-+  - compatible
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    spdif-out {
-+        #sound-dai-cells = <0>;
-+        compatible = "linux,spdif-dit";
-+    };
-+
-+...
-diff --git a/Documentation/devicetree/bindings/sound/spdif-transmitter.txt b/Documentation/devicetree/bindings/sound/spdif-transmitter.txt
-deleted file mode 100644
-index 55a85841dd85..000000000000
---- a/Documentation/devicetree/bindings/sound/spdif-transmitter.txt
-+++ /dev/null
-@@ -1,10 +0,0 @@
--Device-Tree bindings for dummy spdif transmitter
--
--Required properties:
--	- compatible: should be "linux,spdif-dit".
--
--Example node:
--
--	codec: spdif-transmitter {
--		compatible = "linux,spdif-dit";
--	};
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 7ebae3f09435..459deba31485 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1558,6 +1558,7 @@ config SND_SOC_WCD934X
+ 
+ config SND_SOC_WCD938X
+ 	tristate
++	depends on SOUNDWIRE || !SOUNDWIRE
+ 
+ config SND_SOC_WCD938X_SDW
+ 	tristate "WCD9380/WCD9385 Codec - SDW"
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index de8b83dd2c76..7bb38c370842 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -583,7 +583,10 @@ obj-$(CONFIG_SND_SOC_WCD_MBHC)	+= snd-soc-wcd-mbhc.o
+ obj-$(CONFIG_SND_SOC_WCD9335)	+= snd-soc-wcd9335.o
+ obj-$(CONFIG_SND_SOC_WCD934X)	+= snd-soc-wcd934x.o
+ obj-$(CONFIG_SND_SOC_WCD938X)	+= snd-soc-wcd938x.o
+-obj-$(CONFIG_SND_SOC_WCD938X_SDW) += snd-soc-wcd938x-sdw.o
++ifdef CONFIG_SND_SOC_WCD938X_SDW
++# avoid link failure by forcing sdw code built-in when needed
++obj-$(CONFIG_SND_SOC_WCD938X) += snd-soc-wcd938x-sdw.o
++endif
+ obj-$(CONFIG_SND_SOC_WL1273)	+= snd-soc-wl1273.o
+ obj-$(CONFIG_SND_SOC_WM0010)	+= snd-soc-wm0010.o
+ obj-$(CONFIG_SND_SOC_WM1250_EV1) += snd-soc-wm1250-ev1.o
 -- 
-2.31.1
+2.29.2
 
