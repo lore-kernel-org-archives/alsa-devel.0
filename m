@@ -2,76 +2,76 @@ Return-Path: <SRS0=+9Uh=MO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C33C2C63797
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jul 2021 17:12:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 666F7C63797
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jul 2021 17:12:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4AB866101E
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jul 2021 17:12:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4AB866101E
+	by mail.kernel.org (Postfix) with ESMTPS id B3D43610CC
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jul 2021 17:12:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B3D43610CC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C881116EC;
-	Thu, 22 Jul 2021 19:11:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C881116EC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 451D7170B;
+	Thu, 22 Jul 2021 19:12:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 451D7170B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626973939;
-	bh=wDaHHscThEWC8K6B4wuYHQc+xyB2BVkHsjvEDq1D9Tw=;
+	s=default; t=1626973974;
+	bh=c/r05jnGbq/nHLz0Un8lx7+6395Tpl4CZ/372Di0ubA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=X/L3aGLStH7wO2qcRMTkPgEduA/v2S9c3p+29TdjMnF0ctHkB+imP7TjO7FUJuJFs
-	 7gbhenwQmElJAqM/n21KZZIFiH42nM+BGL13bOk9FQ97WRWe57lV0f3048Wx7JyPaG
-	 DdZuk6c4XN2vcJws93l+iA+/+/IOYcFntEU5cmHE=
+	b=arZ1ErxKwOqipg2cVM2SCGf00DcyMuX/gbYPEp311fkTv9lC0/oGFodGss6QdiUMD
+	 0OJgUXCZJD74Nu+3Rvb/o2wV8ViDEfuoT7liasqJNXLX0x14/x3wEU5WSWf46WSkpU
+	 W4QIE47/QOGrgfizpC+hSLA6Iuj9mWxLon3SNT3A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6EDD3F804DF;
-	Thu, 22 Jul 2021 19:10:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7CCF5F804E1;
+	Thu, 22 Jul 2021 19:10:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 74E91F80423; Thu, 22 Jul 2021 19:10:36 +0200 (CEST)
+ id 98756F804E2; Thu, 22 Jul 2021 19:10:39 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE66BF800DA
- for <alsa-devel@alsa-project.org>; Thu, 22 Jul 2021 19:10:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE66BF800DA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 36EC4F80218
+ for <alsa-devel@alsa-project.org>; Thu, 22 Jul 2021 19:10:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36EC4F80218
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="gtoSRNBy"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADE5E61183;
- Thu, 22 Jul 2021 17:10:24 +0000 (UTC)
+ header.b="olNEVnFT"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 310D161241;
+ Thu, 22 Jul 2021 17:10:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1626973825;
- bh=wDaHHscThEWC8K6B4wuYHQc+xyB2BVkHsjvEDq1D9Tw=;
+ s=k20201202; t=1626973835;
+ bh=c/r05jnGbq/nHLz0Un8lx7+6395Tpl4CZ/372Di0ubA=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=gtoSRNBycnMVb53UygZh9kdS3XgLjzPdNq81190IZm7uHKV5aO1vCJw8LFfhBpKr7
- 08atPhc/pOCDxc7u8RP1QEDHr6pIdRCLZlsZV2IVL85vmH81T8wi/YM8XEZwE7IPvg
- 3pY+PjLRsvTLq7O/G008WIRNVQCYGPE1tELa+oz1s2fhyD7U08ETICMtkD4KZNfEgs
- OOrx/rsocWbef+StyIuPG6pDoD0E7HYJIwLeYyymzQI0w0v85uDjvD0TzokOKq5cUC
- 1faSxW3of9pGMl1yt1Xr319cGKZvqCK7GNVGPDXbG/6raERY3AH13QzO4kWROvuU/1
- 8V9wrRlaoQz8A==
+ b=olNEVnFTyFbQoyrC8A/9Yy6oBYdSLuvNi2OjFMAb9JzNH0Uk55451ktbiyg2C9U7C
+ TwhhA4NcNtStIymtbAJ6LDGkQ+rTOsbtBcA4Nn+fh9m8MGPoxCydKnWjUGUYX32coC
+ 5lUS8BpxO2hWevUwsmFT7na1yMHRE+Vy3fWkoFamCs7mTiCsIVyYybRF3whkQguvbE
+ 1wX2s9LiZnFp3brNA7W2g+k8k53bS/iccagDWuoPZheg4BnGeS2qlanCIGeHDIuhRY
+ su3SN+zzH4O3F7F5dKMGcpe11GBsEXteGtOhTstrg180KQYF+JGxlquVZdH1rQe02x
+ kQpQtDtsJp3mg==
 From: Mark Brown <broonie@kernel.org>
 To: alsa-devel@alsa-project.org,
-	Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: Re: [PATCH v5 00/12] Add Vangogh ACP ASoC driver
-Date: Thu, 22 Jul 2021 18:10:00 +0100
-Message-Id: <162697068327.1747.6728778450187644611.b4-ty@kernel.org>
+	Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH] ASoC: tlv320aic32x4: Fix TAS2505/TAS2521 processing block
+ selection
+Date: Thu, 22 Jul 2021 18:10:04 +0100
+Message-Id: <162697068325.1747.58888733005352259.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210721180430.11571-1-Vijendar.Mukunda@amd.com>
-References: <20210721180430.11571-1-Vijendar.Mukunda@amd.com>
+In-Reply-To: <20210720200348.182139-1-marex@denx.de>
+References: <20210720200348.182139-1-marex@denx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Alexander.Deucher@amd.com, Mark Brown <broonie@kernel.org>,
- krisman@collabora.com, pierre-louis.bossart@linux.intel.com,
- Sunil-kumar.Dommati@amd.com
+Cc: Mark Brown <broonie@kernel.org>, ch@denx.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,17 +87,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 21 Jul 2021 23:34:16 +0530, Vijendar Mukunda wrote:
-> This adds an ASoC driver for the ACP (Audio CoProcessor)
-> block on AMD Vangogh APU.
+On Tue, 20 Jul 2021 22:03:48 +0200, Marek Vasut wrote:
+> The TAS2505/TAS2521 does support only three processing block options, unlike
+> TLV320AIC32x4 which supports 25. This is documented in TI slau472 2.5.1.2
+> Processing Blocks and Page 0 / Register 60: DAC Instruction Set - 0x00 / 0x3C.
 > 
-> Changes since v4:
->          - Fixed indentaion issue
->          - Fixed error handling
->          - reverted hex notation for macros
->          - Fixed typo error in Kconfig file
-> 
-> [...]
+> Limit the Processing Blocks maximum value to 3 on TAS2505/TAS2521 and select
+> processing block PRB_P1 always, because for the configuration of teh codec
+> implemented in this driver, this is the best quality option.
 
 Applied to
 
@@ -105,30 +102,8 @@ Applied to
 
 Thanks!
 
-[01/12] ASoC: amd: add Vangogh ACP5x IP register header
-        commit: 7bf060d0d579129e5f405d2300fbaa5222e3d1cb
-[02/12] ASoC: amd: add Vangogh ACP PCI driver
-        commit: 4a7151c9688cc166ff6bf5a1a00e3cee429a2f11
-[03/12] ASoc: amd: add acp5x init/de-init functions
-        commit: 5d9ee88a10e854c5c43e0ae6b1bb0ff454cd45d1
-[04/12] ASoC: amd: create acp5x platform devices
-        commit: 603f2dedccac1ae2d201dfb10df74f3cae3c7832
-[05/12] ASoC: amd: add ACP5x PCM platform driver
-        commit: 77f61444e48b79e991b15da6399cf24685a042c9
-[06/12] ASoC: amd: irq handler changes for ACP5x PCM dma driver
-        commit: fc2c8067c76b3f322447491efb9837f051e86c69
-[07/12] ASoC: amd: add ACP5x pcm dma driver ops
-        commit: cab396d8b22c13b424d9ba66f626f036f802658c
-[08/12] ASoC: amd: add vangogh i2s controller driver
-        commit: e550339ee65226b059b4647f12c16710181e36b2
-[09/12] ASoC: amd: add vangogh i2s dai driver ops
-        commit: b80556addd1a0db551a0c82fb9651e502ac0119b
-[10/12] ASoC: amd: add vangogh pci driver pm ops
-        commit: b0a37ac6782fa0a62cf90e40e81e01728b07922a
-[11/12] ASoC: amd: add vangogh i2s dma driver pm ops
-        commit: 361414dc1f07b72f2f6942fca60f2f158c022a6d
-[12/12] ASoC: amd: enable vangogh acp5x driver build
-        commit: 08413fca62c63ccd245d20985460759c84499ebc
+[1/1] ASoC: tlv320aic32x4: Fix TAS2505/TAS2521 processing block selection
+      commit: 090c57da5fd59fb59adc9d9341a77558c93b0abd
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
