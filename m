@@ -2,104 +2,97 @@ Return-Path: <SRS0=+9Uh=MO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F46CC63797
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jul 2021 09:56:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 979D5C6377D
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jul 2021 10:58:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 534D661244
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jul 2021 09:56:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 534D661244
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id 240F661221
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jul 2021 10:58:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 240F661221
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 883C616AD;
-	Thu, 22 Jul 2021 11:55:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 883C616AD
+	by alsa0.perex.cz (Postfix) with ESMTPS id D226616D2;
+	Thu, 22 Jul 2021 12:57:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D226616D2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626947788;
-	bh=r/jLGd34KqvfPWMVorFBHdVDXAH4XBBh19saIRO0dRA=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=cDGIUfhqc0IeTUfZdxR8Qaef4qOPuanHJp1nmRvuRVcF9YV4lwKzzppRYW0hzkKLB
-	 tRofxTQj5ei9ncn9lYKzxfStKX3t0WELQvu9tFk9mk1gbt6h1xWU5jGZrpth8F3ePi
-	 mjockiVA2r1R2PL278LrCGaJxcqtGKGDTOsAwSOA=
+	s=default; t=1626951517;
+	bh=nf23O06qE62w9mVjenazulQAhxANbVfA0QEK/ePjKaE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=d43gaGTP0Q250whi9GBrAUPHXr4kCPNbSv9iZA1Ok7DwxdjknNg+uGvvzw8piLdmL
+	 XqMQQzu6ewUlVm/jRjGW1/1YgZWKbLA5arEc4g/z8nas6ooytdGvFgWKwOmR9JOvCI
+	 /ymMgf7bn4+upw2xcPRAiNgxjbF91TDonfSpAogc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB9CAF80218;
-	Thu, 22 Jul 2021 11:55:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4C82CF800DA;
+	Thu, 22 Jul 2021 12:57:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5EA8DF80227; Thu, 22 Jul 2021 11:55:36 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 5CAB4F80227; Thu, 22 Jul 2021 12:57:41 +0200 (CEST)
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com
+ [IPv6:2607:f8b0:4864:20::1035])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1F069F80114
- for <alsa-devel@alsa-project.org>; Thu, 22 Jul 2021 11:55:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F069F80114
+ by alsa1.perex.cz (Postfix) with ESMTPS id C96F7F800DA
+ for <alsa-devel@alsa-project.org>; Thu, 22 Jul 2021 12:56:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C96F7F800DA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="ENZHGPM/"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16M7GEwY021297; 
- Thu, 22 Jul 2021 04:55:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=MFSYCskN+1QDzOxOKrFIg7/n0TUbqpFAwQmpyPlf204=;
- b=ENZHGPM/4OmP7uz+p5ph0NRhjU1PAdM2Tw0tMKZJ5gvZv0hH1IAJyLiIXdBwh0U5chi2
- JdWLXfnGJI6tVXQcmICQlR1YQd/24mn5K/H7YTan77OYi+Z26VCMlTaNPPtBFb5Fdgg1
- chpVGryIuFD4ERMr413KENCcL/osp7aNhizrMHWr8T8rdQ0JkU/plAXHsZH7+KOE45e6
- YLCeRW7LHf6N3Pp6ovAZ2pqkCQggHkhGuWNiwBF5Mlm++mzQaOqJgQO79w+wLtTScNoJ
- /9Ky9VJoWJ9s4lB23KHfZV/9nczJD4epPL2AhhSy2Bl7MSpB1bxfISVZdTYopsuL1jSi Bw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 39xgrt9cby-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 22 Jul 2021 04:55:26 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Thu, 22 Jul
- 2021 10:55:24 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Thu, 22 Jul 2021 10:55:24 +0100
-Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.17])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 100B92BA;
- Thu, 22 Jul 2021 09:55:24 +0000 (UTC)
-Subject: Re: [PATCH] ASoC: dapm: Revert "use component prefix when checking
- widget names"
-To: Mark Brown <broonie@kernel.org>
-References: <20210703125034.24655-1-rf@opensource.cirrus.com>
- <20210705165041.GC4574@sirena.org.uk>
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-Message-ID: <a882a9e0-db05-2f89-abb9-8b308ccb56c8@opensource.cirrus.com>
-Date: Thu, 22 Jul 2021 10:55:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="EMpD0Y5k"
+Received: by mail-pj1-x1035.google.com with SMTP id my10so5610495pjb.1
+ for <alsa-devel@alsa-project.org>; Thu, 22 Jul 2021 03:56:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=keprLEvQ6kzmfss+PY9Ymf8ZxzzEljbUGjNECEDOpCE=;
+ b=EMpD0Y5kmc1b4rRLX/oPEJJcSx372ijyD0LH7hIhnogSpvCmIqtbi0rFWAD1ukEmDw
+ R6jitOHCrRxwYuWOAHnlefXehjSHG8+8fu/z9JtaRW8qzuLCRUDoiTRkfwv+9n29sZ9J
+ 3LFYEssjsHnP8YLaiGF4s3nUm4jyQBcfqN7rcrKRfTuwM3JjtRRR2I98sdQh1dVaDM06
+ cRf1HjUo9X5pcKMnzzLC1XyX3U15R4+buGhf+hsN/RUzrBsB1GK1oOYEVBzvf8xXvkD1
+ 62QGzb9LIlv5WtObCiH/IFuKSllQydmO+zgEsI8aN6WCQaIxw51PC9WXS+i/kS28ovz/
+ tciw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=keprLEvQ6kzmfss+PY9Ymf8ZxzzEljbUGjNECEDOpCE=;
+ b=nIvzTtagYb6ocGE2hOcusMZ8sVXcN7sfJZ8Cgh6GcwZc2DJJ/HoUEMPNqkQsVRqnxE
+ rFnPyTz9y2mDEkP6TruAVeavmYnsIZGdOyYE4VbNgGvpUH5MbiJj/flxDksWZK0/dzxn
+ EOJz6PhxT54i8wAvATzgTYTbCjuydrSFLcrGQ+DVjgPFMG0Wyz6Y5VGynvoodvzlTgpL
+ Lluqn2NT2SA845oyWYH4UOsyFVQ7ILEmDz7BuDtFl1hICiI09R7k/wbgG8d83XGF6+Ux
+ dDHRHOodPyI2ylKvvlH0iRjScTkq/qmxY+6Z+IbMZDctZDLvqGnW6Q+QRJ1bquPGWw2E
+ eg1Q==
+X-Gm-Message-State: AOAM533GssAFyQutyI2tAamyRKfS60jAoK0a7q6hDUhIrljIsJxDVPmv
+ uZuYRvZQNtq1liB1mVS93+Q=
+X-Google-Smtp-Source: ABdhPJzgg/V/keoqHBCfWG++5HUaKDkKHRKaDhk6R9KAYsZunDfLFfd3ecs4BeatdH5xvAQudqpU0w==
+X-Received: by 2002:a17:902:dacd:b029:12b:acab:b878 with SMTP id
+ q13-20020a170902dacdb029012bacabb878mr3683960plx.4.1626951402411; 
+ Thu, 22 Jul 2021 03:56:42 -0700 (PDT)
+Received: from localhost.localdomain ([154.16.166.166])
+ by smtp.gmail.com with ESMTPSA id c5sm30535481pfn.144.2021.07.22.03.56.39
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 22 Jul 2021 03:56:41 -0700 (PDT)
+From: Dongliang Mu <mudongliangabcd@gmail.com>
+To: Vinod Koul <vkoul@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Sanyog Kale <sanyog.r.kale@intel.com>
+Subject: [PATCH] soundwire: stream: add s_rt into slave_rt_list before
+ sdw_config_stream
+Date: Thu, 22 Jul 2021 18:56:11 +0800
+Message-Id: <20210722105611.1582803-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210705165041.GC4574@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-GUID: XCW_dW3XhHisG8xyfLH0o6NIRjmT_Q9G
-X-Proofpoint-ORIG-GUID: XCW_dW3XhHisG8xyfLH0o6NIRjmT_Q9G
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- lowpriorityscore=0 malwarescore=0
- adultscore=0 spamscore=0 mlxlogscore=957 suspectscore=0 priorityscore=1501
- impostorscore=0 phishscore=0 bulkscore=0 clxscore=1011 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107220066
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
- shumingf@realtek.com, rander.wang@linux.intel.com
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Dongliang Mu <mudongliangabcd@gmail.com>,
+ dan.carpenter@oracle.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -115,44 +108,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 05/07/2021 17:50, Mark Brown wrote:
-> On Sat, Jul 03, 2021 at 01:50:34PM +0100, Richard Fitzgerald wrote:
-> 
->> That commit breaks all users of the snd_soc_component_*_pin() functions
->> because it results in the prefix being added twice. It also breaks code
->> that correctly uses the snd_soc_dapm_*_pin() functions.
-> 
->> Use the snd_soc_component_*_pin() functions if you want the component
->> prefix to be prepended automatically.
-> 
->> Use the raw snd_soc_dapm_*_pin() functions if the caller has the full
->> name that should be matched exactly.
-> 
-> I'm not sure the analysis of which function to use when is correct or
-> what we want here (though it will work ATM), though looking again more
-> closely at the patch it doesn't look entirely right either.  The way
-> this used to be done, and the way that older code will most likely
-> assume things work, was that the DAPM functions would first try to match
-> on the local DAPM context before falling back to doing a global match.
-> This is what the fallback loop is intended to do, and the dapm functions
-> are passing the "search other contexts" flag into dapm_find_widget().
-> 
-> I'd not expect the distinction you seem to expect between component and
-> DAPM and we probably have a bunch of older drivers that aren't working
-> correctly like the Realtek driver mentioned in the original fix.  I
-> think what needs to happen is that dapm_find_widget() needs to be
-> checking both the prefixed and non-prefixed names, and that the
-> component stuff shouldn't need to bother and just be a convenience
-> wrapper for users that happene to have a component to hand.
-> Alternatively we need to do an audit of all the non-machine drivers to
-> switch them to use the component functions exclusively (and possibly
-> some of the machine drivers as well), most of the CODEC users look to be
-> a small number of Wolfson/Cirrus ones.
-> 
+The commit 48f17f96a817 ("soundwire: stream: fix memory leak in stream
+config error path") fixes the memory leak by implicitly freeing the s_rt
+object. However, this fixing style is not very good.
 
-I don't mind if someone wants to change the core dapm functions if that
-is generally useful, providing that it also updates all callers of those
-functions to still work.
+The better fix is to move list_add_tail before sdw_config_stream and
+revert the previous commit.
 
-Changing the behaviour of core code to fix the Realtek driver without
-updating other callers of those functions is a problem.
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+ drivers/soundwire/stream.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+index 1a18308f4ef4..66a4ce4f923f 100644
+--- a/drivers/soundwire/stream.c
++++ b/drivers/soundwire/stream.c
+@@ -1373,19 +1373,11 @@ int sdw_stream_add_slave(struct sdw_slave *slave,
+ 		goto stream_error;
+ 	}
+ 
++	list_add_tail(&s_rt->m_rt_node, &m_rt->slave_rt_list);
++
+ 	ret = sdw_config_stream(&slave->dev, stream, stream_config, true);
+-	if (ret) {
+-		/*
+-		 * sdw_release_master_stream will release s_rt in slave_rt_list in
+-		 * stream_error case, but s_rt is only added to slave_rt_list
+-		 * when sdw_config_stream is successful, so free s_rt explicitly
+-		 * when sdw_config_stream is failed.
+-		 */
+-		kfree(s_rt);
++	if (ret)
+ 		goto stream_error;
+-	}
+-
+-	list_add_tail(&s_rt->m_rt_node, &m_rt->slave_rt_list);
+ 
+ 	ret = sdw_slave_port_config(slave, s_rt, port_config, num_ports);
+ 	if (ret)
+-- 
+2.25.1
+
