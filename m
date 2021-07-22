@@ -2,76 +2,104 @@ Return-Path: <SRS0=+9Uh=MO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9EA4C6377D
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jul 2021 09:52:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F46CC63797
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jul 2021 09:56:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EB39661244
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jul 2021 09:52:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EB39661244
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 534D661244
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jul 2021 09:56:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 534D661244
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF8F416B4;
-	Thu, 22 Jul 2021 11:51:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF8F416B4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 883C616AD;
+	Thu, 22 Jul 2021 11:55:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 883C616AD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626947544;
-	bh=5nxov8ciV1tfLgw1o3KidC/AG7DmWvz/Jsf5svr9jzs=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=aNdF1zW3W9H08AaIFoPROxKg7BiGY0BIh7xDmGnpwUz7PVoHAVT5Ki85WBVbD7Ybf
-	 E6zRCEkvKxXIy2vOkQz02jl7VGqHEjtGVGsEeTmS14WI9M3J3Gs2sdCnkgmLEhNJnu
-	 UAvVnf+GsY2lSu/Dy33Jf+7DysOMI+weDu3R7xs4=
+	s=default; t=1626947788;
+	bh=r/jLGd34KqvfPWMVorFBHdVDXAH4XBBh19saIRO0dRA=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=cDGIUfhqc0IeTUfZdxR8Qaef4qOPuanHJp1nmRvuRVcF9YV4lwKzzppRYW0hzkKLB
+	 tRofxTQj5ei9ncn9lYKzxfStKX3t0WELQvu9tFk9mk1gbt6h1xWU5jGZrpth8F3ePi
+	 mjockiVA2r1R2PL278LrCGaJxcqtGKGDTOsAwSOA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 84633F80114;
-	Thu, 22 Jul 2021 11:51:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB9CAF80218;
+	Thu, 22 Jul 2021 11:55:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D8A88F80227; Thu, 22 Jul 2021 11:51:27 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 5EA8DF80227; Thu, 22 Jul 2021 11:55:36 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EB453F80114
- for <alsa-devel@alsa-project.org>; Thu, 22 Jul 2021 11:50:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB453F80114
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1F069F80114
+ for <alsa-devel@alsa-project.org>; Thu, 22 Jul 2021 11:55:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F069F80114
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Cm8nE1/+"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A848861244;
- Thu, 22 Jul 2021 09:50:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1626947415;
- bh=5nxov8ciV1tfLgw1o3KidC/AG7DmWvz/Jsf5svr9jzs=;
- h=From:To:Cc:Subject:Date:From;
- b=Cm8nE1/+TevcInwy+rn1B4+T5kVqAqTToUucYXWnerFGM2OTi+341mhrug0MILyKv
- h8yEojyplk3+LOL4qcHM/GwFDf8ppmWWlQF7mZzjBgqOEj6mgT5gGhmZgeu7itteuq
- STubEdS4MhdXCz+cAhSaz24CStCSAIhZt19+9O6URK/G0M3f5AFv315U4+UH+MlQhM
- ypYq/o2V2cdxN+A2SdQpT04BvjZ66gh+9giRFNmvjBSRdynd68JDSWlsl88Sjw9vGH
- DukwKI3tpCLtxUiEWogBreNm6inVVlYG5nM6GyZqTc9t4eYqIO0eH222FdR+JqMCWq
- +JF3xjLNGUw5Q==
-Received: by mail.kernel.org with local (Exim 4.94.2)
- (envelope-from <mchehab@kernel.org>)
- id 1m6VLD-008lGb-AO; Thu, 22 Jul 2021 11:50:07 +0200
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To: Linux Doc Mailing List <linux-doc@vger.kernel.org>,
- Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH 0/3] Get rid of some undesirable characters
-Date: Thu, 22 Jul 2021 11:50:00 +0200
-Message-Id: <cover.1626947264.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="ENZHGPM/"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16M7GEwY021297; 
+ Thu, 22 Jul 2021 04:55:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=MFSYCskN+1QDzOxOKrFIg7/n0TUbqpFAwQmpyPlf204=;
+ b=ENZHGPM/4OmP7uz+p5ph0NRhjU1PAdM2Tw0tMKZJ5gvZv0hH1IAJyLiIXdBwh0U5chi2
+ JdWLXfnGJI6tVXQcmICQlR1YQd/24mn5K/H7YTan77OYi+Z26VCMlTaNPPtBFb5Fdgg1
+ chpVGryIuFD4ERMr413KENCcL/osp7aNhizrMHWr8T8rdQ0JkU/plAXHsZH7+KOE45e6
+ YLCeRW7LHf6N3Pp6ovAZ2pqkCQggHkhGuWNiwBF5Mlm++mzQaOqJgQO79w+wLtTScNoJ
+ /9Ky9VJoWJ9s4lB23KHfZV/9nczJD4epPL2AhhSy2Bl7MSpB1bxfISVZdTYopsuL1jSi Bw== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 39xgrt9cby-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Thu, 22 Jul 2021 04:55:26 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Thu, 22 Jul
+ 2021 10:55:24 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Thu, 22 Jul 2021 10:55:24 +0100
+Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.17])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 100B92BA;
+ Thu, 22 Jul 2021 09:55:24 +0000 (UTC)
+Subject: Re: [PATCH] ASoC: dapm: Revert "use component prefix when checking
+ widget names"
+To: Mark Brown <broonie@kernel.org>
+References: <20210703125034.24655-1-rf@opensource.cirrus.com>
+ <20210705165041.GC4574@sirena.org.uk>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+Message-ID: <a882a9e0-db05-2f89-abb9-8b308ccb56c8@opensource.cirrus.com>
+Date: Thu, 22 Jul 2021 10:55:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, kvm@vger.kernel.org,
- Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
- linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
+In-Reply-To: <20210705165041.GC4574@sirena.org.uk>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-GUID: XCW_dW3XhHisG8xyfLH0o6NIRjmT_Q9G
+X-Proofpoint-ORIG-GUID: XCW_dW3XhHisG8xyfLH0o6NIRjmT_Q9G
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ lowpriorityscore=0 malwarescore=0
+ adultscore=0 spamscore=0 mlxlogscore=957 suspectscore=0 priorityscore=1501
+ impostorscore=0 phishscore=0 bulkscore=0 clxscore=1011 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107220066
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
+ shumingf@realtek.com, rander.wang@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,26 +115,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Jon,
+On 05/07/2021 17:50, Mark Brown wrote:
+> On Sat, Jul 03, 2021 at 01:50:34PM +0100, Richard Fitzgerald wrote:
+> 
+>> That commit breaks all users of the snd_soc_component_*_pin() functions
+>> because it results in the prefix being added twice. It also breaks code
+>> that correctly uses the snd_soc_dapm_*_pin() functions.
+> 
+>> Use the snd_soc_component_*_pin() functions if you want the component
+>> prefix to be prepended automatically.
+> 
+>> Use the raw snd_soc_dapm_*_pin() functions if the caller has the full
+>> name that should be matched exactly.
+> 
+> I'm not sure the analysis of which function to use when is correct or
+> what we want here (though it will work ATM), though looking again more
+> closely at the patch it doesn't look entirely right either.  The way
+> this used to be done, and the way that older code will most likely
+> assume things work, was that the DAPM functions would first try to match
+> on the local DAPM context before falling back to doing a global match.
+> This is what the fallback loop is intended to do, and the dapm functions
+> are passing the "search other contexts" flag into dapm_find_widget().
+> 
+> I'd not expect the distinction you seem to expect between component and
+> DAPM and we probably have a bunch of older drivers that aren't working
+> correctly like the Realtek driver mentioned in the original fix.  I
+> think what needs to happen is that dapm_find_widget() needs to be
+> checking both the prefixed and non-prefixed names, and that the
+> component stuff shouldn't need to bother and just be a convenience
+> wrapper for users that happene to have a component to hand.
+> Alternatively we need to do an audit of all the non-machine drivers to
+> switch them to use the component functions exclusively (and possibly
+> some of the machine drivers as well), most of the CODEC users look to be
+> a small number of Wolfson/Cirrus ones.
+> 
 
-While rebasing my docs tree, I noticed that there are three remaining
-patches from my past series that replace some UTF-8 chars by ASCII
-ones that aren't applied yet. Not sure what happened here.
+I don't mind if someone wants to change the core dapm functions if that
+is generally useful, providing that it also updates all callers of those
+functions to still work.
 
-Anyway, those are the missing ones.
-
-Mauro Carvalho Chehab (3):
-  docs: sound: kernel-api: writing-an-alsa-driver.rst: replace some
-    characters
-  docs: firmware-guide: acpi: dsd: graph.rst: replace some characters
-  docs: virt: kvm: api.rst: replace some characters
-
- .../firmware-guide/acpi/dsd/graph.rst         |  2 +-
- .../kernel-api/writing-an-alsa-driver.rst     |  2 +-
- Documentation/virt/kvm/api.rst                | 28 +++++++++----------
- 3 files changed, 16 insertions(+), 16 deletions(-)
-
--- 
-2.31.1
-
-
+Changing the behaviour of core code to fix the Realtek driver without
+updating other callers of those functions is a problem.
