@@ -4,78 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48C77C6377D
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jul 2021 17:12:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C33C2C63797
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jul 2021 17:12:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6CB866101E
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jul 2021 17:12:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6CB866101E
+	by mail.kernel.org (Postfix) with ESMTPS id 4AB866101E
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jul 2021 17:12:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4AB866101E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DE1A016FC;
-	Thu, 22 Jul 2021 19:11:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE1A016FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id C881116EC;
+	Thu, 22 Jul 2021 19:11:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C881116EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626973935;
-	bh=+rD2PKxj01stiGTanUKjIRztANneYKa/SZ3LruXgchc=;
+	s=default; t=1626973939;
+	bh=wDaHHscThEWC8K6B4wuYHQc+xyB2BVkHsjvEDq1D9Tw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eopOXnR+YKsGA4g/TsP9aN3FBFO2xQPsGWAR54k1GAoNuictByMzigVcCqw6ZgCx4
-	 bdVSy8MjKbYv0R0kDZdJ9PtRj0aaRsc9ksmnRWFnpL5T/yS0NqUlOoGjWUoeKxn8Jg
-	 zmOpE1A/KMBMgwM/5bjEkLv57a5oZEM+006zXiOQ=
+	b=X/L3aGLStH7wO2qcRMTkPgEduA/v2S9c3p+29TdjMnF0ctHkB+imP7TjO7FUJuJFs
+	 7gbhenwQmElJAqM/n21KZZIFiH42nM+BGL13bOk9FQ97WRWe57lV0f3048Wx7JyPaG
+	 DdZuk6c4XN2vcJws93l+iA+/+/IOYcFntEU5cmHE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8655EF800DA;
-	Thu, 22 Jul 2021 19:10:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6EDD3F804DF;
+	Thu, 22 Jul 2021 19:10:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 30C98F8049C; Thu, 22 Jul 2021 19:10:35 +0200 (CEST)
+ id 74E91F80423; Thu, 22 Jul 2021 19:10:36 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 482C1F80218
- for <alsa-devel@alsa-project.org>; Thu, 22 Jul 2021 19:10:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 482C1F80218
+ by alsa1.perex.cz (Postfix) with ESMTPS id BE66BF800DA
+ for <alsa-devel@alsa-project.org>; Thu, 22 Jul 2021 19:10:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE66BF800DA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="icYx9b0s"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CDAA610CC;
- Thu, 22 Jul 2021 17:10:29 +0000 (UTC)
+ header.b="gtoSRNBy"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADE5E61183;
+ Thu, 22 Jul 2021 17:10:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1626973830;
- bh=+rD2PKxj01stiGTanUKjIRztANneYKa/SZ3LruXgchc=;
+ s=k20201202; t=1626973825;
+ bh=wDaHHscThEWC8K6B4wuYHQc+xyB2BVkHsjvEDq1D9Tw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=icYx9b0swGiJQNxMBllLxkWlkhl++ExfWLPz5vQOGR9WLXdxQAY02thuCHIfRVy2v
- gXqWAbdIQXqcTlMfcYUuhAmvynD5aXJXIAGPwl2rDX2xSCSumgaAJU7Kj9xIKosw2w
- 6ocfM7krt4dYE0PCoOUcl4yEYApADuYyIt5rIz8Jq036axqDSZEIXSlL5ypQ1ILKvE
- LzEQC/CZCb4dnscCSgMUUJHX3c+tlMmtcOX2fZSySbR3zFzRBBlxMd5YiN4uOs3COu
- G5mh0+mQfDc7tg4n14iXreSByLHP7dUMtpWa8w9JWKMDyc3JBlQ05cdoWtotz1AdIN
- lwKVMjej/wt6Q==
+ b=gtoSRNBycnMVb53UygZh9kdS3XgLjzPdNq81190IZm7uHKV5aO1vCJw8LFfhBpKr7
+ 08atPhc/pOCDxc7u8RP1QEDHr6pIdRCLZlsZV2IVL85vmH81T8wi/YM8XEZwE7IPvg
+ 3pY+PjLRsvTLq7O/G008WIRNVQCYGPE1tELa+oz1s2fhyD7U08ETICMtkD4KZNfEgs
+ OOrx/rsocWbef+StyIuPG6pDoD0E7HYJIwLeYyymzQI0w0v85uDjvD0TzokOKq5cUC
+ 1faSxW3of9pGMl1yt1Xr319cGKZvqCK7GNVGPDXbG/6raERY3AH13QzO4kWROvuU/1
+ 8V9wrRlaoQz8A==
 From: Mark Brown <broonie@kernel.org>
 To: alsa-devel@alsa-project.org,
 	Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: Re: [PATCH] ASoC: amd: enable stop_dma_first flag for
- cz_dai_7219_98357 dai link
-Date: Thu, 22 Jul 2021 18:10:02 +0100
-Message-Id: <162697068327.1747.17528885369683390221.b4-ty@kernel.org>
+Subject: Re: [PATCH v5 00/12] Add Vangogh ACP ASoC driver
+Date: Thu, 22 Jul 2021 18:10:00 +0100
+Message-Id: <162697068327.1747.6728778450187644611.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210722130328.23796-1-Vijendar.Mukunda@amd.com>
-References: <20210722130328.23796-1-Vijendar.Mukunda@amd.com>
+In-Reply-To: <20210721180430.11571-1-Vijendar.Mukunda@amd.com>
+References: <20210721180430.11571-1-Vijendar.Mukunda@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Sunil-kumar.Dommati@amd.com, amistry@google.com,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Basavaraj.Hiregoudar@amd.com, Takashi Iwai <tiwai@suse.com>,
- Chuhong Yuan <hslester96@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
- open list <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
- Alexander.Deucher@amd.com, nartemiev@google.com
+Cc: Alexander.Deucher@amd.com, Mark Brown <broonie@kernel.org>,
+ krisman@collabora.com, pierre-louis.bossart@linux.intel.com,
+ Sunil-kumar.Dommati@amd.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,11 +87,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 22 Jul 2021 18:33:15 +0530, Vijendar Mukunda wrote:
-> DMA driver stop sequence should be invoked first before invoking I2S
-> controller driver stop sequence for Stoneyridge platform.
+On Wed, 21 Jul 2021 23:34:16 +0530, Vijendar Mukunda wrote:
+> This adds an ASoC driver for the ACP (Audio CoProcessor)
+> block on AMD Vangogh APU.
 > 
-> Enable stop_dma_first flag for cz_dai_7219_98357 dai link structure.
+> Changes since v4:
+>          - Fixed indentaion issue
+>          - Fixed error handling
+>          - reverted hex notation for macros
+>          - Fixed typo error in Kconfig file
+> 
+> [...]
 
 Applied to
 
@@ -103,8 +105,30 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: amd: enable stop_dma_first flag for cz_dai_7219_98357 dai link
-      commit: 5434d0dc56bce4510109a431a7eb71ec5131ef0f
+[01/12] ASoC: amd: add Vangogh ACP5x IP register header
+        commit: 7bf060d0d579129e5f405d2300fbaa5222e3d1cb
+[02/12] ASoC: amd: add Vangogh ACP PCI driver
+        commit: 4a7151c9688cc166ff6bf5a1a00e3cee429a2f11
+[03/12] ASoc: amd: add acp5x init/de-init functions
+        commit: 5d9ee88a10e854c5c43e0ae6b1bb0ff454cd45d1
+[04/12] ASoC: amd: create acp5x platform devices
+        commit: 603f2dedccac1ae2d201dfb10df74f3cae3c7832
+[05/12] ASoC: amd: add ACP5x PCM platform driver
+        commit: 77f61444e48b79e991b15da6399cf24685a042c9
+[06/12] ASoC: amd: irq handler changes for ACP5x PCM dma driver
+        commit: fc2c8067c76b3f322447491efb9837f051e86c69
+[07/12] ASoC: amd: add ACP5x pcm dma driver ops
+        commit: cab396d8b22c13b424d9ba66f626f036f802658c
+[08/12] ASoC: amd: add vangogh i2s controller driver
+        commit: e550339ee65226b059b4647f12c16710181e36b2
+[09/12] ASoC: amd: add vangogh i2s dai driver ops
+        commit: b80556addd1a0db551a0c82fb9651e502ac0119b
+[10/12] ASoC: amd: add vangogh pci driver pm ops
+        commit: b0a37ac6782fa0a62cf90e40e81e01728b07922a
+[11/12] ASoC: amd: add vangogh i2s dma driver pm ops
+        commit: 361414dc1f07b72f2f6942fca60f2f158c022a6d
+[12/12] ASoC: amd: enable vangogh acp5x driver build
+        commit: 08413fca62c63ccd245d20985460759c84499ebc
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
