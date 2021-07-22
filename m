@@ -2,84 +2,76 @@ Return-Path: <SRS0=+9Uh=MO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 842E5C63793
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jul 2021 09:51:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9EA4C6377D
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jul 2021 09:52:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5055460725
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jul 2021 09:51:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5055460725
+	by mail.kernel.org (Postfix) with ESMTPS id EB39661244
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jul 2021 09:52:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EB39661244
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A547A16AA;
-	Thu, 22 Jul 2021 11:50:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A547A16AA
+	by alsa0.perex.cz (Postfix) with ESMTPS id EF8F416B4;
+	Thu, 22 Jul 2021 11:51:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF8F416B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626947479;
-	bh=Kbwlt8w6o/6jn6C+GN3lvDJvqGRuUEe+9My7sEXYggo=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=tFmPGZXecfLNTqlIOG6pY+yQRvNEj+lVKu/sdZtVLjmSs/j3eVYtdK3AHfV25CI8B
-	 UWU6TkbAqlx+f6ABesDMzEzCqNkRU86+EaQSdb5LLajGBfUw/J9KaROg2CXsUIUFJj
-	 sCR3NUkPMvaNQJsIiloeJ/dvvR8hP1rObuDPapnw=
+	s=default; t=1626947544;
+	bh=5nxov8ciV1tfLgw1o3KidC/AG7DmWvz/Jsf5svr9jzs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=aNdF1zW3W9H08AaIFoPROxKg7BiGY0BIh7xDmGnpwUz7PVoHAVT5Ki85WBVbD7Ybf
+	 E6zRCEkvKxXIy2vOkQz02jl7VGqHEjtGVGsEeTmS14WI9M3J3Gs2sdCnkgmLEhNJnu
+	 UAvVnf+GsY2lSu/Dy33Jf+7DysOMI+weDu3R7xs4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3E983F800DA;
-	Thu, 22 Jul 2021 11:50:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84633F80114;
+	Thu, 22 Jul 2021 11:51:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 19D38F80256; Thu, 22 Jul 2021 11:50:27 +0200 (CEST)
+ id D8A88F80227; Thu, 22 Jul 2021 11:51:27 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E8E50F800DA
+ by alsa1.perex.cz (Postfix) with ESMTPS id EB453F80114
  for <alsa-devel@alsa-project.org>; Thu, 22 Jul 2021 11:50:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8E50F800DA
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB453F80114
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="AJezXu+m"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B025161248;
+ header.b="Cm8nE1/+"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A848861244;
  Thu, 22 Jul 2021 09:50:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
  s=k20201202; t=1626947415;
- bh=Kbwlt8w6o/6jn6C+GN3lvDJvqGRuUEe+9My7sEXYggo=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=AJezXu+mELcrPCJVhsc9iZCYFWmV7Z9eW/ZDCHrITUf2A+bECIQ00tScc50hYk7sd
- iMzI8mc5c7H6if5RfAn7KeUWMOsT3QSV6J8SUOg31CJ6f1TdrvuX8FFNa+wQR4uDDq
- VLLlf1pDMaHtgqCJP9VctcVMIOTpZmDUXc7bXpvIJF9M3NsYIpJ4g5csh6OS1gwbNK
- pkpNQnBmBXRhashshkyK1iKOfR0qRHXEzG1hYncpv7CqVnvlINdRDRlA9Qnj90TiQ6
- fWjAlo4pBOEX2AbW8bOqur+FPyBUDfbm1Ya90ZTuS0fhGvREV1QJxq3iP18opxjt3Q
- IORwo97aI9PTw==
+ bh=5nxov8ciV1tfLgw1o3KidC/AG7DmWvz/Jsf5svr9jzs=;
+ h=From:To:Cc:Subject:Date:From;
+ b=Cm8nE1/+TevcInwy+rn1B4+T5kVqAqTToUucYXWnerFGM2OTi+341mhrug0MILyKv
+ h8yEojyplk3+LOL4qcHM/GwFDf8ppmWWlQF7mZzjBgqOEj6mgT5gGhmZgeu7itteuq
+ STubEdS4MhdXCz+cAhSaz24CStCSAIhZt19+9O6URK/G0M3f5AFv315U4+UH+MlQhM
+ ypYq/o2V2cdxN+A2SdQpT04BvjZ66gh+9giRFNmvjBSRdynd68JDSWlsl88Sjw9vGH
+ DukwKI3tpCLtxUiEWogBreNm6inVVlYG5nM6GyZqTc9t4eYqIO0eH222FdR+JqMCWq
+ +JF3xjLNGUw5Q==
 Received: by mail.kernel.org with local (Exim 4.94.2)
  (envelope-from <mchehab@kernel.org>)
- id 1m6VLD-008lGf-CD; Thu, 22 Jul 2021 11:50:07 +0200
+ id 1m6VLD-008lGb-AO; Thu, 22 Jul 2021 11:50:07 +0200
 From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>,
  Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH 1/3] docs: sound: kernel-api: writing-an-alsa-driver.rst:
- replace some characters
-Date: Thu, 22 Jul 2021 11:50:01 +0200
-Message-Id: <21abe5fa495a05ac1f998ed66184a77e19ac89cc.1626947264.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 0/3] Get rid of some undesirable characters
+Date: Thu, 22 Jul 2021 11:50:00 +0200
+Message-Id: <cover.1626947264.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1626947264.git.mchehab+huawei@kernel.org>
-References: <cover.1626947264.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org,
+Cc: alsa-devel@alsa-project.org, kvm@vger.kernel.org,
  Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Julia Lawall <Julia.Lawall@inria.fr>, Takashi Iwai <tiwai@suse.de>,
- =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?=
- <nfraprado@protonmail.com>, Maxime Ripard <maxime@cerno.tech>
+ linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,35 +87,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The conversion tools used during DocBook/LaTeX/html/Markdown->ReST
-conversion and some cut-and-pasted text contain some characters that
-aren't easily reachable on standard keyboards and/or could cause
-troubles when parsed by the documentation build system.
+Hi Jon,
 
-Replace the occurences of the following characters:
+While rebasing my docs tree, I noticed that there are three remaining
+patches from my past series that replace some UTF-8 chars by ASCII
+ones that aren't applied yet. Not sure what happened here.
 
-	- U+00a0 (' '): NO-BREAK SPACE
-	  as it can cause lines being truncated on PDF output
+Anyway, those are the missing ones.
 
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- Documentation/sound/kernel-api/writing-an-alsa-driver.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Mauro Carvalho Chehab (3):
+  docs: sound: kernel-api: writing-an-alsa-driver.rst: replace some
+    characters
+  docs: firmware-guide: acpi: dsd: graph.rst: replace some characters
+  docs: virt: kvm: api.rst: replace some characters
 
-diff --git a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-index 255b7d3bebd6..176b73583b7a 100644
---- a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-+++ b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-@@ -3368,7 +3368,7 @@ This ensures that the device can be closed and the driver unloaded
- without losing data.
- 
- This callback is optional. If you do not set ``drain`` in the struct
--snd_rawmidi_ops structure, ALSA will simply wait for 50 milliseconds
-+snd_rawmidi_ops structure, ALSA will simply wait for 50 milliseconds
- instead.
- 
- Miscellaneous Devices
+ .../firmware-guide/acpi/dsd/graph.rst         |  2 +-
+ .../kernel-api/writing-an-alsa-driver.rst     |  2 +-
+ Documentation/virt/kvm/api.rst                | 28 +++++++++----------
+ 3 files changed, 16 insertions(+), 16 deletions(-)
+
 -- 
 2.31.1
+
 
