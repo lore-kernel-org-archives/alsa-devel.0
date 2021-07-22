@@ -2,76 +2,55 @@ Return-Path: <SRS0=+9Uh=MO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C072EC63797
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jul 2021 17:13:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09720C76197
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jul 2021 18:47:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 394E5610CC
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jul 2021 17:13:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 394E5610CC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
+	by mail.kernel.org (Postfix) with ESMTPS id 8E68560EB6
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jul 2021 18:47:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8E68560EB6
+Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
+Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C6BA8170A;
-	Thu, 22 Jul 2021 19:12:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6BA8170A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 33C5716EB;
+	Thu, 22 Jul 2021 20:46:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33C5716EB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1626974024;
-	bh=gSfEIL5aNzLMpA5veC35HnSYGi8S+58Fj29Haj8xiFM=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1626979652;
+	bh=uI1JF9iByXHDuhAOh0i3FOJ4OfPBfygCJOJB/khs3zc=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Do0FQBEC1YYA6HlHvTGQhiGPqpmdhL6y3yp5a5fC6Kqcb6LVQVyHKTDFfNEmFI0eB
-	 0JyH8w2/szc6glX6KCtPBLSKQy0AF1VXd/u50325CQkUnPxaq+dfubC8DqjTXb9VBo
-	 m+lqXmDK/bUbGljag4iqu5TVmlWddpiFswFRidyo=
+	b=DyUlkW5HqsV4BUzUDygLnWAAoR7ShGEgiWYQA0RjGQxM1ZrtGCsK26XRwaYH3cPhG
+	 2PTlfGYZvz0VeTH53JTNva7a0xcVNxTOLPylCKVn2BaZeHPQgL6oNzgS8k77afR+u7
+	 6Kg2Aof4/QMdXsLBQYxIGe0LP/ACVVybuL0bVkCk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7F5F9F804F3;
-	Thu, 22 Jul 2021 19:10:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B4931F80218;
+	Thu, 22 Jul 2021 20:46:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3CE7CF804E4; Thu, 22 Jul 2021 19:10:42 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D9A1AF802E0
- for <alsa-devel@alsa-project.org>; Thu, 22 Jul 2021 19:10:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9A1AF802E0
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="QAbvbzHv"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6DE56101E;
- Thu, 22 Jul 2021 17:10:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1626973833;
- bh=gSfEIL5aNzLMpA5veC35HnSYGi8S+58Fj29Haj8xiFM=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=QAbvbzHvIKmhalZZcbGVGNVGTo3H2lwolnC32CmAkzT/yzN1vBIjAZ7Qn6qeuaO8r
- paDJ08f1cNyVSj3yrTFTyjRiI3x+uvooqMwWMZ2iNLtQnUfU1VpEy/6DmaVYUhVArn
- WhEw5ujAyMgCEfADIOkAId8WO/nQ5NSJJ66MtDm3Emo2APD8vf/56z8xguF68omowk
- nHg6m1btqmC5YOI2P7X2j+rAybc84NMRLPSw5vKLBlN+TkRqfyWU2FU/0rM/jFY0gc
- znQ/hhCnmIHOzT5vdJDdos/rz1smDoFF/O3HjFhySc+it81IKeKcN0Q/Tt7JxOkw89
- 1ESYL6U+6eLAA==
-From: Mark Brown <broonie@kernel.org>
-To: derek.fang@realtek.com,
-	lgirdwood@gmail.com
-Subject: Re: [PATCH] ASoC: rt5682: Adjust headset volume button threshold
-Date: Thu, 22 Jul 2021 18:10:03 +0100
-Message-Id: <162697068326.1747.6369155628252463841.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210721133121.12333-1-derek.fang@realtek.com>
-References: <20210721133121.12333-1-derek.fang@realtek.com>
+ id AD730F80227; Thu, 22 Jul 2021 20:46:39 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id C087CF800F2
+ for <alsa-devel@alsa-project.org>; Thu, 22 Jul 2021 20:46:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C087CF800F2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- jacal_tseng@realtek.com, lars@metafoo.de, albertchen@realtek.com,
- Mark Brown <broonie@kernel.org>, shumingf@realtek.com, flove@realtek.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1626979594101609945-webhooks-bot@alsa-project.org>
+References: <1626979594101609945-webhooks-bot@alsa-project.org>
+Subject: ASRock (A320M-HDV R4.0) No analog audio driver detected -
+Message-Id: <20210722184639.AD730F80227@alsa1.perex.cz>
+Date: Thu, 22 Jul 2021 20:46:39 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,34 +66,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 21 Jul 2021 21:31:21 +0800, derek.fang@realtek.com wrote:
-> Adjust the threshold of headset button volume+ to fix
-> the wrong button detection issue with some brand headsets.
+alsa-project/alsa-lib issue #165 was opened from PedePanoOriginal:
 
-Applied to
+Hello guys!
+I just got a new PC and I was so happy about it. It's a Ryzen 5 - 3600, GeForce GT 1030 GPU, the motherboard is a ASRock A320M-HDV R4.0. The first thing I did when I pluged it in was installing Pop!_OS 20.04 LTS. Everything worked fine except my audio analog ports. They are simply not detected by OS, the only output audio device detected is "GP108 High Definition Audio Controller Digital Stereo".
+I've done a lot of googling, tried everything I could find, but, no success. I noticed that when I turn on the PC a message is displayed, something like that: "snd_hda_intel 0000:23:00.4: no codecs found". This message disappear if I turn off onboard audio stuff at the bios.
+I would love some help if possible. I'm a linux noob, so I'm sorry to not be able to provide better information now but, I can do it later with some help.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: rt5682: Adjust headset volume button threshold
-      commit: 6d20bf7c020f417fdef1810a22da17c126603472
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/165
+Repository URL: https://github.com/alsa-project/alsa-lib
