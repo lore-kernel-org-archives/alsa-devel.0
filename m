@@ -7,57 +7,57 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB581C4338F
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Jul 2021 11:58:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 48E98C4338F
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Jul 2021 11:58:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2554060E8C
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Jul 2021 11:58:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2554060E8C
+	by mail.kernel.org (Postfix) with ESMTPS id C3C5B60E8C
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Jul 2021 11:58:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C3C5B60E8C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B53C71729;
-	Fri, 23 Jul 2021 13:57:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B53C71729
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5BEF6172C;
+	Fri, 23 Jul 2021 13:57:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5BEF6172C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627041506;
-	bh=YT1MyTVF81kJp02unFYB356BJDdGykEtivTrtV6i844=;
+	s=default; t=1627041520;
+	bh=d/v+eKQIltOHlJGn0n5hOQgYImu7lpKX//LyUiT2D2c=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jmJKbpqifWyZOLSes9i7cUdm/uPpBlEIRUEGQsB/r9W8K43+ogZCxSfV1Ow/V1aOe
-	 59dZJLlc2LNfr1iPdHkCO8+BaQ5+qD1OQyTapBsdYG1/C3FN48GWOgBG/57hNruhed
-	 uFzWynz2JUtT+VdQlZGX/dPVppixMcNhIZYz8M4M=
+	b=vvAHms+hTcKNcmEhFCBGj2ocTR0YK+FxvGcBgkdQIJ7Y+XR+7w1rg6A6NLLvWjMHw
+	 413lFTBBEXLTqhhtFWTTA+nTIpYkBWnPRNRMs3ZrA85UFj8R/YZ5FlJBiRu9M9NTgP
+	 AssrIGvqPQih+1FmdhksD2DoU3p6PI3Yk94Bg9UU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4C199F804F3;
-	Fri, 23 Jul 2021 13:55:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21246F804FF;
+	Fri, 23 Jul 2021 13:55:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A8C15F804F3; Fri, 23 Jul 2021 13:55:23 +0200 (CEST)
+ id C2F6EF804F2; Fri, 23 Jul 2021 13:55:24 +0200 (CEST)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 99D32F804CB
- for <alsa-devel@alsa-project.org>; Fri, 23 Jul 2021 13:55:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99D32F804CB
-X-IronPort-AV: E=McAfee;i="6200,9189,10053"; a="209972210"
-X-IronPort-AV: E=Sophos;i="5.84,263,1620716400"; d="scan'208";a="209972210"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9EA6DF804BD
+ for <alsa-devel@alsa-project.org>; Fri, 23 Jul 2021 13:55:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9EA6DF804BD
+X-IronPort-AV: E=McAfee;i="6200,9189,10053"; a="209972222"
+X-IronPort-AV: E=Sophos;i="5.84,263,1620716400"; d="scan'208";a="209972222"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Jul 2021 04:55:13 -0700
-X-IronPort-AV: E=Sophos;i="5.84,263,1620716400"; d="scan'208";a="455069789"
+ 23 Jul 2021 04:55:19 -0700
+X-IronPort-AV: E=Sophos;i="5.84,263,1620716400"; d="scan'208";a="455069803"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Jul 2021 04:55:10 -0700
+ 23 Jul 2021 04:55:16 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH v2 4/6] ASoC: SOF: intel: move sof_intel_dsp_desc() forward
-Date: Fri, 23 Jul 2021 19:54:49 +0800
-Message-Id: <20210723115451.7245-5-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH v2 6/6] soundwire: intel: introduce shim and alh base
+Date: Fri, 23 Jul 2021 19:54:51 +0800
+Message-Id: <20210723115451.7245-7-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210723115451.7245-1-yung-chuan.liao@linux.intel.com>
 References: <20210723115451.7245-1-yung-chuan.liao@linux.intel.com>
@@ -79,56 +79,105 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-sof_intel_dsp_desc() will be used by hda_dsp_check_sdw_irq() in the
-following commit.
+shim base and alh base are platform-dependent. Adding these two
+parameters allows us to use different shim/alh base for each
+platform.
 
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/intel/hda.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ drivers/soundwire/intel_init.c      | 8 +++++---
+ include/linux/soundwire/sdw_intel.h | 8 ++++++++
+ sound/soc/sof/intel/hda.c           | 2 ++
+ 3 files changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index e48e030f6005..79388489c4e2 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -41,6 +41,17 @@
- #define EXCEPT_MAX_HDR_SIZE	0x400
- #define HDA_EXT_ROM_STATUS_SIZE 8
+diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
+index 03ff69ab1797..e329022e1669 100644
+--- a/drivers/soundwire/intel_init.c
++++ b/drivers/soundwire/intel_init.c
+@@ -63,8 +63,8 @@ static struct sdw_intel_link_dev *intel_link_dev_register(struct sdw_intel_res *
+ 	link->mmio_base = res->mmio_base;
+ 	link->registers = res->mmio_base + SDW_LINK_BASE
+ 		+ (SDW_LINK_SIZE * link_id);
+-	link->shim = res->mmio_base + SDW_SHIM_BASE;
+-	link->alh = res->mmio_base + SDW_ALH_BASE;
++	link->shim = res->mmio_base + res->shim_base;
++	link->alh = res->mmio_base + res->alh_base;
  
-+static const struct sof_intel_dsp_desc
-+	*get_chip_info(struct snd_sof_pdata *pdata)
-+{
-+	const struct sof_dev_desc *desc = pdata->desc;
-+	const struct sof_intel_dsp_desc *chip_info;
-+
-+	chip_info = desc->chip_info;
-+
-+	return chip_info;
-+}
-+
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE)
+ 	link->ops = res->ops;
+ 	link->dev = res->dev;
+@@ -214,6 +214,8 @@ static struct sdw_intel_ctx
+ 	}
+ 
+ 	ctx->mmio_base = res->mmio_base;
++	ctx->shim_base = res->shim_base;
++	ctx->alh_base = res->alh_base;
+ 	ctx->link_mask = res->link_mask;
+ 	ctx->handle = res->handle;
+ 	mutex_init(&ctx->shim_lock);
+@@ -302,7 +304,7 @@ sdw_intel_startup_controller(struct sdw_intel_ctx *ctx)
+ 		return -EINVAL;
+ 
+ 	/* Check SNDWLCAP.LCOUNT */
+-	caps = ioread32(ctx->mmio_base + SDW_SHIM_BASE + SDW_SHIM_LCAP);
++	caps = ioread32(ctx->mmio_base + ctx->shim_base + SDW_SHIM_LCAP);
+ 	caps &= GENMASK(2, 0);
+ 
+ 	/* Check HW supported vs property value */
+diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
+index 7fce6aee0c36..8a463b8fc12a 100644
+--- a/include/linux/soundwire/sdw_intel.h
++++ b/include/linux/soundwire/sdw_intel.h
+@@ -195,6 +195,8 @@ struct sdw_intel_slave_id {
+  * @link_list: list to handle interrupts across all links
+  * @shim_lock: mutex to handle concurrent rmw access to shared SHIM registers.
+  * @shim_mask: flags to track initialization of SHIM shared registers
++ * @shim_base: sdw shim base.
++ * @alh_base: sdw alh base.
+  */
+ struct sdw_intel_ctx {
+ 	int count;
+@@ -207,6 +209,8 @@ struct sdw_intel_ctx {
+ 	struct list_head link_list;
+ 	struct mutex shim_lock; /* lock for access to shared SHIM registers */
+ 	u32 shim_mask;
++	u32 shim_base;
++	u32 alh_base;
+ };
+ 
+ /**
+@@ -225,6 +229,8 @@ struct sdw_intel_ctx {
+  * machine-specific quirks are handled in the DSP driver.
+  * @clock_stop_quirks: mask array of possible behaviors requested by the
+  * DSP driver. The quirks are common for all links for now.
++ * @shim_base: sdw shim base.
++ * @alh_base: sdw alh base.
+  */
+ struct sdw_intel_res {
+ 	int count;
+@@ -236,6 +242,8 @@ struct sdw_intel_res {
+ 	struct device *dev;
+ 	u32 link_mask;
+ 	u32 clock_stop_quirks;
++	u32 shim_base;
++	u32 alh_base;
+ };
  
  /*
-@@ -668,17 +679,6 @@ static int hda_init_caps(struct snd_sof_dev *sdev)
- 	return 0;
- }
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index c979581c6812..b4e35fbbe693 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -166,6 +166,8 @@ static int hda_sdw_probe(struct snd_sof_dev *sdev)
+ 	memset(&res, 0, sizeof(res));
  
--static const struct sof_intel_dsp_desc
--	*get_chip_info(struct snd_sof_pdata *pdata)
--{
--	const struct sof_dev_desc *desc = pdata->desc;
--	const struct sof_intel_dsp_desc *chip_info;
--
--	chip_info = desc->chip_info;
--
--	return chip_info;
--}
--
- static irqreturn_t hda_dsp_interrupt_handler(int irq, void *context)
- {
- 	struct snd_sof_dev *sdev = context;
+ 	res.mmio_base = sdev->bar[HDA_DSP_BAR];
++	res.shim_base = hdev->desc->sdw_shim_base;
++	res.alh_base = hdev->desc->sdw_alh_base;
+ 	res.irq = sdev->ipc_irq;
+ 	res.handle = hdev->info.handle;
+ 	res.parent = sdev->dev;
 -- 
 2.17.1
 
