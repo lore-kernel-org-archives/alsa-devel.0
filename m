@@ -2,83 +2,77 @@ Return-Path: <SRS0=VrYT=MP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81206C432BE
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Jul 2021 15:25:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A70E0C4338F
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Jul 2021 17:03:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A8B2D60F02
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Jul 2021 15:25:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A8B2D60F02
+	by mail.kernel.org (Postfix) with ESMTPS id 77E9160EB5
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Jul 2021 17:02:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 77E9160EB5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1EFF9173C;
-	Fri, 23 Jul 2021 17:24:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EFF9173C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C5D71741;
+	Fri, 23 Jul 2021 19:02:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C5D71741
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627053908;
-	bh=SZPewBRQJZCojWC9vM1jkHzk7FV+fphq0zntMxmhJzc=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1627059777;
+	bh=s/BHG12tgApqgvctm7zwp9zN19QNZZdnL+jeha8tQ4w=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZDXl44hGK45FxA9bw5E7PERiTRHnQ/qGVJhP2OBDVQjYbGLRqiy6hNfJsmoC3mbxu
-	 GXI41SyfFl2Gg1LbSdGF3ydDNSCUuQ9FYtHEP9fTw1LKnZe7srGLgHTtYUCoBDrdsx
-	 EJOSnuzeUFYRdA+mA1/bLWrjl3Cw1VoGzPm7kKc4=
+	b=a69MF/lkGJ+LEgTMNHuG62pqaQDy3IrKCnnPy/CNrCI1tqt5nI/N0TB3zBoXmyvW8
+	 yspSwExaHF32GVqA+lB78fNB/cXy4W6cZnSxXUMAPZrxG0vH45HZBJF/KQNBNBMw+z
+	 dO/jw6HHKRCZW1WlyKXLb0kByz+Y/INs2P5Nvzco=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A61C9F804AB;
-	Fri, 23 Jul 2021 17:24:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 961F9F804AB;
+	Fri, 23 Jul 2021 19:02:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 45B3AF804AB; Fri, 23 Jul 2021 17:24:16 +0200 (CEST)
+ id 4A69FF804AC; Fri, 23 Jul 2021 19:02:05 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7F6DF800DA
- for <alsa-devel@alsa-project.org>; Fri, 23 Jul 2021 17:24:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7F6DF800DA
+ by alsa1.perex.cz (Postfix) with ESMTPS id E85BEF80086
+ for <alsa-devel@alsa-project.org>; Fri, 23 Jul 2021 19:02:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E85BEF80086
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="HaIkDedA"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1073E60EFD;
- Fri, 23 Jul 2021 15:24:10 +0000 (UTC)
+ header.b="KmGPOxeX"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 506DD60EAF;
+ Fri, 23 Jul 2021 17:01:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1627053851;
- bh=SZPewBRQJZCojWC9vM1jkHzk7FV+fphq0zntMxmhJzc=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=HaIkDedAtDCZljuTL7JA30QSgh2NdLwwF6ylOSfdGVrSOAR2l2ogTktTgnB6ZA5k5
- TL01S4GvsUQRNDV9qVxHSuFXtXvA6CStDbP/xA3cT7S4nd4XvBmiNQoA7MSodobUDE
- VClN8jjuAVEpciJ8n0BUNaPmpBkdnTaJnGZBo1xu/2x5zKvWA0jXi9UlxDzHuqOOKq
- 4OHk92aIe4wPIBSJreuY/vz8YAlWONNJOlkbyYgNp2dcrC/vYQYxdu5lSuII/NmoOc
- CEwNNPJMhi/eBswekTbT40+cYmoWq/PQ+kPDg3oLjvq+v+5NuyLN8U8Mt+MZY4mmiC
- 4x5UrwbtQ/iOQ==
-Date: Fri, 23 Jul 2021 16:24:03 +0100
+ s=k20201202; t=1627059719;
+ bh=s/BHG12tgApqgvctm7zwp9zN19QNZZdnL+jeha8tQ4w=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=KmGPOxeXPGzlvOFhqckW50tj9xuuxJoTMPjuVpT0WPDtcIPJMU1yLOD0OEnuGgQV8
+ B6iMQ1iOUbwyBTts5+eeyl6XZnlWD4yC+iOppPMdDP4wZGgfDEq4eSMflU3+M/tzAk
+ t0H6vOOlO5/nOiTDCs2a80trWjLoHU1VfRVPmGE9/U0E+YhpI9bWFTvi+nFhasjueE
+ vvXHArxD8B19lN4jARW1vvz/KfibjrIRju72TeVRu6cAnqtHZeLjWMTHWVKDHDMvZc
+ Co5CeujziRhR0bfjIe468Fpv6nM3anFePsck5ROUL+asE+l4N5q8S57viiwwxezu8l
+ jl/0kH76zSc6A==
 From: Mark Brown <broonie@kernel.org>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: dapm: Revert "use component prefix when checking
- widget names"
-Message-ID: <20210723152403.GH5221@sirena.org.uk>
-References: <20210703125034.24655-1-rf@opensource.cirrus.com>
- <20210705165041.GC4574@sirena.org.uk>
- <a882a9e0-db05-2f89-abb9-8b308ccb56c8@opensource.cirrus.com>
- <1952b7f0-3c0a-faa4-8a1b-1a8bc4fff473@opensource.cirrus.com>
+To: alsa-devel@alsa-project.org, Vijendar.Mukunda@amd.com,
+ Mario Limonciello <mario.limonciello@amd.com>
+Subject: Re: [PATCH v3 1/2] ASoC: amd: Don't show messages about deferred
+ probing by default
+Date: Fri, 23 Jul 2021 18:01:51 +0100
+Message-Id: <162705877778.18788.10167377888396986791.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210722132731.13264-1-mario.limonciello@amd.com>
+References: <20210722132731.13264-1-mario.limonciello@amd.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="qVHblb/y9DPlgkHs"
-Content-Disposition: inline
-In-Reply-To: <1952b7f0-3c0a-faa4-8a1b-1a8bc4fff473@opensource.cirrus.com>
-X-Cookie: Integrity has no need for rules.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
- patches@opensource.cirrus.com,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- linux-kernel@vger.kernel.org, shumingf@realtek.com,
- rander.wang@linux.intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: Liam Girdwood <lgirdwood@gmail.com>,
+ open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Mark Brown <broonie@kernel.org>, markpearson@lenovo.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,45 +88,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Thu, 22 Jul 2021 08:27:27 -0500, Mario Limonciello wrote:
+> Nearly every boot with a Lenovo P14s is showing
+> acp_pdm_mach acp_pdm_mach.0: snd_soc_register_card(acp) failed: -517
+> 
+> This isn't useful to a user, especially as probing will run again.
+> Use the dev_err_probe helper to hide the deferrerd probing messages.
 
---qVHblb/y9DPlgkHs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Fri, Jul 23, 2021 at 04:17:26PM +0100, Richard Fitzgerald wrote:
-> On 22/07/2021 10:55, Richard Fitzgerald wrote:
-> > On 05/07/2021 17:50, Mark Brown wrote:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> > I don't mind if someone wants to change the core dapm functions if that
-> > is generally useful, providing that it also updates all callers of those
-> > functions to still work.
+Thanks!
 
-> > Changing the behaviour of core code to fix the Realtek driver without
-> > updating other callers of those functions is a problem.
+[1/2] ASoC: amd: Don't show messages about deferred probing by default
+      commit: af7dc6f194a866cb3e991ef5248ffdeb3ef5c46a
+[2/2] ASoC: amd: Use dev_probe_err helper
+      commit: 718693352d8bcea65276615f4f8c8d531246b644
 
-> Just to point out this is breaking stuff right now. It's not just
-> theoretical.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-You took several weeks to respond to my review comment, I'm sure you can
-cope with waiting a day or two for a response to your followup (which
-I'm having trouble understanding TBH).  It would probably help if you
-could specifically identify the problem you are seeing and where you're
-seeing it - as I said in my review comment there appears to be a
-misconception about how the APIs are expected to work.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---qVHblb/y9DPlgkHs
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD63xMACgkQJNaLcl1U
-h9C3Hwf+Mcep2J6MgGpHOIe7hbta2Wm+ZNc4j3NpK2rdi8GcR2+9+OMw6u2MlAug
-CWVjXEZQE3JwjWAE5HXye+zYA60oC8I4PhzAJFRN/CIGbyzc8yJwgJe0KN6w66is
-Op+sAyI8efowRSx4GdkLTZLrTVuNCwVz8pj0IWmgSXoGVA5sCviAnN5m+kii/jFP
-xfCbdOdMuxImE5HEC8g+XlCovLmkqs6cqN1df/Pt4OWra0RbOeCbXmSfS7U0ZL3I
-EeTCgDKYXNrvTg3tkGnsdD11jlauSnjHlfOtubX8MjXHGwBwowEBw/rQb0D01Cqn
-X2u4h/iExKTaE1K60DNx/HUpW/ijGA==
-=rpD2
------END PGP SIGNATURE-----
-
---qVHblb/y9DPlgkHs--
+Thanks,
+Mark
