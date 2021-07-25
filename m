@@ -2,108 +2,79 @@ Return-Path: <SRS0=TC80=MT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4001C4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 08:31:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA757C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 08:31:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0C12560F59
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 08:31:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0C12560F59
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=maquefel.me
+	by mail.kernel.org (Postfix) with ESMTPS id E04786054F
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 08:31:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E04786054F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7199F1B0A;
-	Tue, 27 Jul 2021 10:30:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7199F1B0A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 81C041E09;
+	Tue, 27 Jul 2021 10:30:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81C041E09
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627374662;
-	bh=RZK6MkghXAgza+gEV8l5bRDCh5GjgBp+Po11vm+bers=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1627374666;
+	bh=wG561TxCZMs7JrotYeJddivgmLHjJBrTO08lco/Bpm0=;
+	h=Date:Subject:From:To:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=XPX188zTuIFdRTaQvReCZ+iwTZ0nKmlOG4JhlGpht9oha/6b755BN4BWBgKpyAZ0r
-	 G0vpAyFp44d6zVN8F1ywXGWHmwZQJwR8DfBqdhENsdHQ0AYAqGxkFzVKPj5FpRqk5h
-	 8a8cnKpGbU+vdy7g+ZgoHMsFa3rX52q17pFXTYNI=
+	b=KxUiaiq6NpPL9FRaLfyqORbG6yyvbT0sCrphPwY0hXy2lRUsnaYMti8LAsgoQ/KWa
+	 RaGjyxK8rkVI6PMoNSK6UC47vP6oz2XWi93gAhXNAhqoOkzScc8kvGjvVzbsi1iTFR
+	 jlmWVMbuI17ZmJVolBUjoTJ+Qno2sy/vPGkDeEg0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32E39F80276;
+	by alsa1.perex.cz (Postfix) with ESMTP id EB659F804BD;
 	Tue, 27 Jul 2021 10:29:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 00DCCF8025A; Mon, 26 Jul 2021 13:51:40 +0200 (CEST)
-Received: from forward105o.mail.yandex.net (forward105o.mail.yandex.net
- [37.140.190.183])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 482BEF8026C; Sun, 25 Jul 2021 14:39:36 +0200 (CEST)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
+ [209.85.166.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D76AAF8020D
- for <alsa-devel@alsa-project.org>; Mon, 26 Jul 2021 13:51:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D76AAF8020D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=maquefel.me header.i=@maquefel.me
- header.b="E0wy+n4m"
-Received: from iva8-40f91c705526.qloud-c.yandex.net
- (iva8-40f91c705526.qloud-c.yandex.net
- [IPv6:2a02:6b8:c0c:b9a7:0:640:40f9:1c70])
- by forward105o.mail.yandex.net (Yandex) with ESMTP id 57BEC4200B66;
- Mon, 26 Jul 2021 14:51:31 +0300 (MSK)
-Received: from iva6-2d18925256a6.qloud-c.yandex.net
- (iva6-2d18925256a6.qloud-c.yandex.net [2a02:6b8:c0c:7594:0:640:2d18:9252])
- by iva8-40f91c705526.qloud-c.yandex.net (mxback/Yandex) with ESMTP id
- lkre8hYrIW-pTH0Ga7j; Mon, 26 Jul 2021 14:51:31 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail;
- t=1627300291; bh=syS++HTe1Cfn1grqGafzmOlSb2JtfOhz46f0mgWNJy4=;
- h=Date:Subject:To:From:Message-Id:Cc;
- b=E0wy+n4muSO1ZLMeBWliO0BhcyWs6KoSoeJWdqaCR52kWT6mHi7gxowiUFGY6irYT
- be1AwLTE4dNL+xYTAkyBJYWgCXYptO8V83/LNeZFDp4RbyoGeo2C+M9Dr7oKoKzW4P
- dZKZcvyhEJp7DS7GLat0LUjSneb5gTIb+hVwaHc8=
-Authentication-Results: iva8-40f91c705526.qloud-c.yandex.net;
- dkim=pass header.i=@maquefel.me
-Received: by iva6-2d18925256a6.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA
- id PIKatQa27D-pR2S8g73; Mon, 26 Jul 2021 14:51:28 +0300
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
- (Client certificate not present)
-From: Nikita Shubin <nikita.shubin@maquefel.me>
-To: Alexander Sverdlin <alexander.sverdlin@gmail.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 0/8] arm: ep93xx: CCF conversion
-Date: Mon, 26 Jul 2021 14:50:44 +0300
-Message-Id: <20210726115058.23729-1-nikita.shubin@maquefel.me>
-X-Mailer: git-send-email 2.26.2
+ by alsa1.perex.cz (Postfix) with ESMTPS id B00B0F800C0
+ for <alsa-devel@alsa-project.org>; Sun, 25 Jul 2021 14:39:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B00B0F800C0
+Received: by mail-il1-f198.google.com with SMTP id
+ g9-20020a92cda90000b029020cc3319a86so3285436ild.18
+ for <alsa-devel@alsa-project.org>; Sun, 25 Jul 2021 05:39:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+ bh=ssP/jFlbxcppa+61oz3isSi1xq9UoOZXF7Brl1WHddA=;
+ b=TzKhe8iFUBfPNQKjNY7vmAQdyXNatB5T2sgr9koqGUuUIBsKtHbrlKP9BF+uxKSkgB
+ GeFvxZfWxdT6f2NLSSnfX4JaHZVCLtlSk+SxQ2JkYKRcKLan+gg1NtKVhwlBtXffi9rQ
+ vWYpBU83BYTkqBPLgEcmJhoDwjjARmMQn65zqZRxCbYVRNzuZ06hCA238GGCcXx/qCAm
+ Z7bFoMYT2aRSK/T136Gr6shqSXa2s7DcPYN8PCFTLZXaCoFRdurdtcSYidc6u8VnaJNv
+ c4IWf60mBNuipBnt+RDfT8na8Atbao05Qj4+dPdY1cHCKbZHLJDkpiLIEHl3Uvz0v7lh
+ ooEQ==
+X-Gm-Message-State: AOAM531mFzMxG6hyxpRvaHKuAXnwcILMG/5UFx7s4GaL50X8ulhsYSlg
+ edpleTJIji0/6ek67nkO5XeFZYZqqGpILD9aVY7dqA0g3AMN
+X-Google-Smtp-Source: ABdhPJwFTiK7nrshnMGu3T23VN8McsgjPVvS1SLdSm2rDflgcIci9QBroqJGVaK1fAu9BzTnE4K/jviShJUqCENnuXnldTOhD2we
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Tue, 27 Jul 2021 10:29:04 +0200
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
- "open list:FRAMEBUFFER LAYER" <dri-devel@lists.freedesktop.org>,
- "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
- Ard Biesheuvel <ardb@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Nikita Shubin <nikita.shubin@maquefel.me>,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- YiFei Zhu <yifeifz2@illinois.edu>, Krzysztof Kozlowski <krzk@kernel.org>,
- "open list:INPUT KEYBOARD, MOUSE, JOYSTICK,
- TOUCHSCREEN..." <linux-input@vger.kernel.org>,
- "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
- Arnd Bergmann <arnd@arndb.de>, Anshuman Khandual <anshuman.khandual@arm.com>,
- =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Russell King <rmk+kernel@armlinux.org.uk>, Mark Brown <broonie@kernel.org>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- open list <linux-kernel@vger.kernel.org>,
- Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
- "open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM" <dmaengine@vger.kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>
+X-Received: by 2002:a92:cecf:: with SMTP id z15mr9039792ilq.225.1627216765804; 
+ Sun, 25 Jul 2021 05:39:25 -0700 (PDT)
+Date: Sun, 25 Jul 2021 05:39:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004c664005c7f1ede0@google.com>
+Subject: [syzbot] possible deadlock in snd_timer_interrupt
+From: syzbot <syzbot+17c16b868e6af41acdd4@syzkaller.appspotmail.com>
+To: allen.lkml@gmail.com, alsa-devel@alsa-project.org, boqun.feng@gmail.com, 
+ broonie@kernel.org, joe@perches.com, linux-kernel@vger.kernel.org, 
+ mingo@redhat.com, perex@perex.cz, peterz@infradead.org, 
+ pierre-louis.bossart@linux.intel.com, syzkaller-bugs@googlegroups.com, 
+ tiwai@suse.com, will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Mailman-Approved-At: Tue, 27 Jul 2021 10:29:07 +0200
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -119,42 +90,346 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series series of patches converts ep93xx to Common Clock Framework.
+Hello,
 
-It consists of preparation patches to use clk_prepare_enable where it is 
-needed, instead of clk_enable used in ep93xx drivers prior to CCF and
-a patch converting mach-ep93xx/clock.c to CCF.
+syzbot found the following issue on:
 
-Link: https://lore.kernel.org/patchwork/cover/1445563/
-Link: https://lore.kernel.org/patchwork/patch/1435884/
+HEAD commit:    f0fddcec6b62 Merge tag 'for-5.14-rc2-tag' of git://git.ker..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13cbb70e300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5dc0e3202ae2f574
+dashboard link: https://syzkaller.appspot.com/bug?extid=17c16b868e6af41acdd4
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17667ecc300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=179e0582300000
 
-Alexander Sverdlin (7):
-  iio: ep93xx: Prepare clock before using it
-  spi: spi-ep93xx: Prepare clock before using it
-  Input: ep93xx_keypad: Prepare clock before using it
-  video: ep93xx: Prepare clock before using it
-  dmaengine: ep93xx: Prepare clock before using it
-  ASoC: cirrus: i2s: Prepare clock before using it
-  pwm: ep93xx: Prepare clock before using it
+The issue was bisected to:
 
-Nikita Shubin (1):
-  ep93xx: clock: convert in-place to COMMON_CLK
+commit e918188611f073063415f40fae568fa4d86d9044
+Author: Boqun Feng <boqun.feng@gmail.com>
+Date:   Fri Aug 7 07:42:20 2020 +0000
 
- arch/arm/Kconfig                       |   2 +-
- arch/arm/mach-ep93xx/clock.c           | 975 ++++++++++++++-----------
- arch/arm/mach-ep93xx/core.c            |   2 +-
- arch/arm/mach-ep93xx/soc.h             |  42 +-
- drivers/dma/ep93xx_dma.c               |   6 +-
- drivers/iio/adc/ep93xx_adc.c           |   6 +-
- drivers/input/keyboard/ep93xx_keypad.c |   4 +-
- drivers/pwm/pwm-ep93xx.c               |  12 +-
- drivers/spi/spi-ep93xx.c               |   4 +-
- drivers/video/fbdev/ep93xx-fb.c        |   4 +-
- sound/soc/cirrus/ep93xx-i2s.c          |  12 +-
- 11 files changed, 605 insertions(+), 464 deletions(-)
+    locking: More accurate annotations for read_lock()
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=109610b2300000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=129610b2300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=149610b2300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+17c16b868e6af41acdd4@syzkaller.appspotmail.com
+Fixes: e918188611f0 ("locking: More accurate annotations for read_lock()")
+
+========================================================
+WARNING: possible irq lock inversion dependency detected
+5.14.0-rc2-syzkaller #0 Not tainted
+--------------------------------------------------------
+syz-executor065/8431 just changed the state of lock:
+ffff888027e94148 (&timer->lock){..-.}-{2:2}, at: snd_timer_interrupt+0x210/0x1410 sound/core/timer.c:857
+but this lock took another, SOFTIRQ-READ-unsafe lock in the past:
+ (&f->f_owner.lock){.+.+}-{2:2}
 
 
-base-commit: 64376a981a0e2e57c46efa63197c2ebb7dab35df
--- 
-2.26.2
+and interrupts could create inverse lock ordering between them.
 
+
+other info that might help us debug this:
+Chain exists of:
+  &timer->lock --> &new->fa_lock --> &f->f_owner.lock
+
+ Possible interrupt unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&f->f_owner.lock);
+                               local_irq_disable();
+                               lock(&timer->lock);
+                               lock(&new->fa_lock);
+  <Interrupt>
+    lock(&timer->lock);
+
+ *** DEADLOCK ***
+
+4 locks held by syz-executor065/8431:
+ #0: ffff888029390460 (sb_writers#5){.+.+}-{0:0}, at: mnt_want_write+0x3b/0x80 fs/namespace.c:375
+ #1: ffff888039f60e80 (&type->i_mutex_dir_key#4/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:809 [inline]
+ #1: ffff888039f60e80 (&type->i_mutex_dir_key#4/1){+.+.}-{3:3}, at: filename_create+0x19f/0x700 fs/namei.c:3602
+ #2: ffffffff8c7177c0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0x5/0x30 include/linux/rcupdate.h:266
+ #3: ffffc90000dc0be0 ((&priv->tlist)){+.-.}-{0:0}, at: lockdep_copy_map include/linux/lockdep.h:45 [inline]
+ #3: ffffc90000dc0be0 ((&priv->tlist)){+.-.}-{0:0}, at: call_timer_fn+0xbd/0x210 kernel/time/timer.c:1407
+
+the shortest dependencies between 2nd lock and 1st lock:
+  -> (&f->f_owner.lock){.+.+}-{2:2} {
+     HARDIRQ-ON-R at:
+                        lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+                        __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+                        _raw_read_lock+0x32/0x40 kernel/locking/spinlock.c:223
+                        f_getown_ex fs/fcntl.c:211 [inline]
+                        do_fcntl+0x150/0x1510 fs/fcntl.c:395
+                        __do_sys_fcntl fs/fcntl.c:471 [inline]
+                        __se_sys_fcntl+0xd8/0x1b0 fs/fcntl.c:456
+                        do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+                        do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+                        entry_SYSCALL_64_after_hwframe+0x44/0xae
+     SOFTIRQ-ON-R at:
+                        lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+                        __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+                        _raw_read_lock+0x32/0x40 kernel/locking/spinlock.c:223
+                        f_getown_ex fs/fcntl.c:211 [inline]
+                        do_fcntl+0x150/0x1510 fs/fcntl.c:395
+                        __do_sys_fcntl fs/fcntl.c:471 [inline]
+                        __se_sys_fcntl+0xd8/0x1b0 fs/fcntl.c:456
+                        do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+                        do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+                        entry_SYSCALL_64_after_hwframe+0x44/0xae
+     INITIAL READ USE at:
+                            lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+                            __raw_read_lock_irqsave include/linux/rwlock_api_smp.h:159 [inline]
+                            _raw_read_lock_irqsave+0xbb/0x100 kernel/locking/spinlock.c:231
+                            send_sigio+0x2f/0x300 fs/fcntl.c:795
+                            kill_fasync_rcu fs/fcntl.c:1019 [inline]
+                            kill_fasync+0x1e3/0x430 fs/fcntl.c:1033
+                            snd_timer_user_ccallback+0x3ee/0x710 sound/core/timer.c:1387
+                            snd_timer_notify1+0x19e/0x340 sound/core/timer.c:516
+                            snd_timer_start1+0x53d/0x640 sound/core/timer.c:578
+                            snd_timer_start sound/core/timer.c:697 [inline]
+                            snd_timer_user_start sound/core/timer.c:1985 [inline]
+                            __snd_timer_user_ioctl+0xe18/0x5ed0 sound/core/timer.c:2108
+                            snd_timer_user_ioctl+0x5d/0x80 sound/core/timer.c:2129
+                            vfs_ioctl fs/ioctl.c:51 [inline]
+                            __do_sys_ioctl fs/ioctl.c:1069 [inline]
+                            __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:1055
+                            do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+                            do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+                            entry_SYSCALL_64_after_hwframe+0x44/0xae
+   }
+   ... key      at: [<ffffffff907d04a0>] __alloc_file.__key+0x0/0x10
+   ... acquired at:
+   lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+   __raw_read_lock_irqsave include/linux/rwlock_api_smp.h:159 [inline]
+   _raw_read_lock_irqsave+0xbb/0x100 kernel/locking/spinlock.c:231
+   send_sigio+0x2f/0x300 fs/fcntl.c:795
+   kill_fasync_rcu fs/fcntl.c:1019 [inline]
+   kill_fasync+0x1e3/0x430 fs/fcntl.c:1033
+   snd_timer_user_ccallback+0x3ee/0x710 sound/core/timer.c:1387
+   snd_timer_notify1+0x19e/0x340 sound/core/timer.c:516
+   snd_timer_start1+0x53d/0x640 sound/core/timer.c:578
+   snd_timer_start sound/core/timer.c:697 [inline]
+   snd_timer_user_start sound/core/timer.c:1985 [inline]
+   __snd_timer_user_ioctl+0xe18/0x5ed0 sound/core/timer.c:2108
+   snd_timer_user_ioctl+0x5d/0x80 sound/core/timer.c:2129
+   vfs_ioctl fs/ioctl.c:51 [inline]
+   __do_sys_ioctl fs/ioctl.c:1069 [inline]
+   __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:1055
+   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+   do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+ -> (&new->fa_lock){....}-{2:2} {
+    INITIAL USE at:
+                     lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+                     __raw_write_lock_irq include/linux/rwlock_api_smp.h:196 [inline]
+                     _raw_write_lock_irq+0xae/0xf0 kernel/locking/spinlock.c:311
+                     fasync_remove_entry+0xff/0x1d0 fs/fcntl.c:890
+                     __fput+0x65b/0x7b0 fs/file_table.c:277
+                     task_work_run+0x146/0x1c0 kernel/task_work.c:164
+                     exit_task_work include/linux/task_work.h:32 [inline]
+                     do_exit+0x72b/0x2510 kernel/exit.c:825
+                     do_group_exit+0x168/0x2d0 kernel/exit.c:922
+                     get_signal+0x16b0/0x2080 kernel/signal.c:2808
+                     arch_do_signal_or_restart+0x8e/0x6d0 arch/x86/kernel/signal.c:865
+                     handle_signal_work kernel/entry/common.c:148 [inline]
+                     exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+                     exit_to_user_mode_prepare+0x191/0x220 kernel/entry/common.c:209
+                     __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+                     syscall_exit_to_user_mode+0x26/0x60 kernel/entry/common.c:302
+                     do_syscall_64+0x4c/0xb0 arch/x86/entry/common.c:86
+                     entry_SYSCALL_64_after_hwframe+0x44/0xae
+    INITIAL READ USE at:
+                          lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+                          __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+                          _raw_read_lock+0x32/0x40 kernel/locking/spinlock.c:223
+                          kill_fasync_rcu fs/fcntl.c:1012 [inline]
+                          kill_fasync+0x13b/0x430 fs/fcntl.c:1033
+                          snd_timer_user_ccallback+0x3ee/0x710 sound/core/timer.c:1387
+                          snd_timer_notify1+0x19e/0x340 sound/core/timer.c:516
+                          snd_timer_start1+0x53d/0x640 sound/core/timer.c:578
+                          snd_timer_start sound/core/timer.c:697 [inline]
+                          snd_timer_user_start sound/core/timer.c:1985 [inline]
+                          __snd_timer_user_ioctl+0xe18/0x5ed0 sound/core/timer.c:2108
+                          snd_timer_user_ioctl+0x5d/0x80 sound/core/timer.c:2129
+                          vfs_ioctl fs/ioctl.c:51 [inline]
+                          __do_sys_ioctl fs/ioctl.c:1069 [inline]
+                          __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:1055
+                          do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+                          do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+                          entry_SYSCALL_64_after_hwframe+0x44/0xae
+  }
+  ... key      at: [<ffffffff907d1360>] fasync_insert_entry.__key+0x0/0x40
+  ... acquired at:
+   lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+   __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+   _raw_read_lock+0x32/0x40 kernel/locking/spinlock.c:223
+   kill_fasync_rcu fs/fcntl.c:1012 [inline]
+   kill_fasync+0x13b/0x430 fs/fcntl.c:1033
+   snd_timer_user_ccallback+0x3ee/0x710 sound/core/timer.c:1387
+   snd_timer_notify1+0x19e/0x340 sound/core/timer.c:516
+   snd_timer_start1+0x53d/0x640 sound/core/timer.c:578
+   snd_timer_start sound/core/timer.c:697 [inline]
+   snd_timer_user_start sound/core/timer.c:1985 [inline]
+   __snd_timer_user_ioctl+0xe18/0x5ed0 sound/core/timer.c:2108
+   snd_timer_user_ioctl+0x5d/0x80 sound/core/timer.c:2129
+   vfs_ioctl fs/ioctl.c:51 [inline]
+   __do_sys_ioctl fs/ioctl.c:1069 [inline]
+   __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:1055
+   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+   do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> (&timer->lock){..-.}-{2:2} {
+   IN-SOFTIRQ-W at:
+                    lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+                    __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+                    _raw_spin_lock_irqsave+0xb3/0x100 kernel/locking/spinlock.c:159
+                    snd_timer_interrupt+0x210/0x1410 sound/core/timer.c:857
+                    call_timer_fn+0xf6/0x210 kernel/time/timer.c:1417
+                    expire_timers kernel/time/timer.c:1462 [inline]
+                    __run_timers+0x6ff/0x910 kernel/time/timer.c:1731
+                    run_timer_softirq+0x63/0xf0 kernel/time/timer.c:1744
+                    __do_softirq+0x372/0x783 kernel/softirq.c:558
+                    invoke_softirq kernel/softirq.c:432 [inline]
+                    __irq_exit_rcu+0x21b/0x260 kernel/softirq.c:636
+                    irq_exit_rcu+0x5/0x20 kernel/softirq.c:648
+                    sysvec_apic_timer_interrupt+0x91/0xb0 arch/x86/kernel/apic/apic.c:1100
+                    asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+                    __preempt_count_add arch/x86/include/asm/preempt.h:80 [inline]
+                    rcu_is_watching+0xd/0xb0 kernel/rcu/tree.c:1159
+                    rcu_read_lock include/linux/rcupdate.h:688 [inline]
+                    get_cached_acl+0x103/0x540 fs/posix_acl.c:44
+                    get_acl+0x20/0x2e0 fs/posix_acl.c:108
+                    posix_acl_create+0x119/0x560 fs/posix_acl.c:616
+                    ext4_init_acl+0xa6/0x3d0 fs/ext4/acl.c:282
+                    __ext4_new_inode+0x44e7/0x5810 fs/ext4/ialloc.c:1316
+                    ext4_mkdir+0x3fa/0xc10 fs/ext4/namei.c:2921
+                    vfs_mkdir+0x451/0x630 fs/namei.c:3823
+                    do_mkdirat+0x267/0x3e0 fs/namei.c:3848
+                    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+                    do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+                    entry_SYSCALL_64_after_hwframe+0x44/0xae
+   INITIAL USE at:
+                   lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+                   __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+                   _raw_spin_lock_irqsave+0xb3/0x100 kernel/locking/spinlock.c:159
+                   snd_timer_resolution sound/core/timer.c:489 [inline]
+                   snd_timer_user_params sound/core/timer.c:1852 [inline]
+                   __snd_timer_user_ioctl+0x1df7/0x5ed0 sound/core/timer.c:2101
+                   snd_timer_user_ioctl+0x5d/0x80 sound/core/timer.c:2129
+                   vfs_ioctl fs/ioctl.c:51 [inline]
+                   __do_sys_ioctl fs/ioctl.c:1069 [inline]
+                   __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:1055
+                   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+                   do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+                   entry_SYSCALL_64_after_hwframe+0x44/0xae
+ }
+ ... key      at: [<ffffffff90b60220>] snd_timer_new.__key+0x0/0x40
+ ... acquired at:
+   mark_usage kernel/locking/lockdep.c:4488 [inline]
+   __lock_acquire+0xca1/0x6100 kernel/locking/lockdep.c:4969
+   lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+   __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+   _raw_spin_lock_irqsave+0xb3/0x100 kernel/locking/spinlock.c:159
+   snd_timer_interrupt+0x210/0x1410 sound/core/timer.c:857
+   call_timer_fn+0xf6/0x210 kernel/time/timer.c:1417
+   expire_timers kernel/time/timer.c:1462 [inline]
+   __run_timers+0x6ff/0x910 kernel/time/timer.c:1731
+   run_timer_softirq+0x63/0xf0 kernel/time/timer.c:1744
+   __do_softirq+0x372/0x783 kernel/softirq.c:558
+   invoke_softirq kernel/softirq.c:432 [inline]
+   __irq_exit_rcu+0x21b/0x260 kernel/softirq.c:636
+   irq_exit_rcu+0x5/0x20 kernel/softirq.c:648
+   sysvec_apic_timer_interrupt+0x91/0xb0 arch/x86/kernel/apic/apic.c:1100
+   asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+   __preempt_count_add arch/x86/include/asm/preempt.h:80 [inline]
+   rcu_is_watching+0xd/0xb0 kernel/rcu/tree.c:1159
+   rcu_read_lock include/linux/rcupdate.h:688 [inline]
+   get_cached_acl+0x103/0x540 fs/posix_acl.c:44
+   get_acl+0x20/0x2e0 fs/posix_acl.c:108
+   posix_acl_create+0x119/0x560 fs/posix_acl.c:616
+   ext4_init_acl+0xa6/0x3d0 fs/ext4/acl.c:282
+   __ext4_new_inode+0x44e7/0x5810 fs/ext4/ialloc.c:1316
+   ext4_mkdir+0x3fa/0xc10 fs/ext4/namei.c:2921
+   vfs_mkdir+0x451/0x630 fs/namei.c:3823
+   do_mkdirat+0x267/0x3e0 fs/namei.c:3848
+   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+   do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+
+stack backtrace:
+CPU: 1 PID: 8431 Comm: syz-executor065 Not tainted 5.14.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1ae/0x29f lib/dump_stack.c:105
+ print_irq_inversion_bug+0xa58/0xda0 kernel/locking/lockdep.c:4000
+ check_usage_forwards kernel/locking/lockdep.c:2585 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:4163 [inline]
+ mark_lock+0x1064/0x1eb0 kernel/locking/lockdep.c:4593
+ mark_usage kernel/locking/lockdep.c:4488 [inline]
+ __lock_acquire+0xca1/0x6100 kernel/locking/lockdep.c:4969
+ lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0xb3/0x100 kernel/locking/spinlock.c:159
+ snd_timer_interrupt+0x210/0x1410 sound/core/timer.c:857
+ call_timer_fn+0xf6/0x210 kernel/time/timer.c:1417
+ expire_timers kernel/time/timer.c:1462 [inline]
+ __run_timers+0x6ff/0x910 kernel/time/timer.c:1731
+ run_timer_softirq+0x63/0xf0 kernel/time/timer.c:1744
+ __do_softirq+0x372/0x783 kernel/softirq.c:558
+ invoke_softirq kernel/softirq.c:432 [inline]
+ __irq_exit_rcu+0x21b/0x260 kernel/softirq.c:636
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:648
+ sysvec_apic_timer_interrupt+0x91/0xb0 arch/x86/kernel/apic/apic.c:1100
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+RIP: 0010:rcu_dynticks_curr_cpu_in_eqs kernel/rcu/tree.c:339 [inline]
+RIP: 0010:rcu_is_watching+0xd/0xb0 kernel/rcu/tree.c:1160
+Code: 41 5e 41 5f 5d c3 e8 92 a8 6d 08 41 f7 c4 00 02 00 00 75 b6 eb b5 e8 62 a8 6d 08 66 90 41 57 41 56 53 65 83 05 4b e3 96 7e 01 <e8> 1e bb 6d 08 89 c3 83 f8 08 73 74 49 bf 00 00 00 00 00 fc ff df
+RSP: 0018:ffffc9000164f820 EFLAGS: 00000282
+RAX: 12a9aafecb760900 RBX: 1ffff920002c9f0c RCX: ffffffff816213c5
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc9000164f8e8 R08: dffffc0000000000 R09: fffffbfff1f5e1b1
+R10: fffffbfff1f5e1b1 R11: 0000000000000000 R12: 0000000000004000
+R13: dffffc0000000000 R14: 1ffff920002c9f10 R15: ffff888039f60d48
+ rcu_read_lock include/linux/rcupdate.h:688 [inline]
+ get_cached_acl+0x103/0x540 fs/posix_acl.c:44
+ get_acl+0x20/0x2e0 fs/posix_acl.c:108
+ posix_acl_create+0x119/0x560 fs/posix_acl.c:616
+ ext4_init_acl+0xa6/0x3d0 fs/ext4/acl.c:282
+ __ext4_new_inode+0x44e7/0x5810 fs/ext4/ialloc.c:1316
+ ext4_mkdir+0x3fa/0xc10 fs/ext4/namei.c:2921
+ vfs_mkdir+0x451/0x630 fs/namei.c:3823
+ do_mkdirat+0x267/0x3e0 fs/namei.c:3848
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x445d87
+Code: 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 53 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc332de6a8 EFLAGS: 00000202 ORIG_RAX: 0000000000000053
+RAX: ffffffffffffffda RBX: 000000000000e3bb RCX: 0000000000445d87
+RDX: 0000000000000000 RSI: 00000000000001ff RDI: 00007ffc332de740
+RBP: 0000000000002ebc R08: 0000000000000000 R09: 0000000000000005
+R10: 00007ffc332de445 R11: 0000000000000202 R12: 00007ffc332de6e4
+R13: 00007ffc332de740 R14: 00000000000000bd R15: 431bde82d7b634db
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
