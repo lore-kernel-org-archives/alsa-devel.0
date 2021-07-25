@@ -2,91 +2,80 @@ Return-Path: <SRS0=9Ww9=MR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93428C4338F
-	for <alsa-devel@archiver.kernel.org>; Sun, 25 Jul 2021 07:45:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74592C4338F
+	for <alsa-devel@archiver.kernel.org>; Sun, 25 Jul 2021 10:24:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1E4DD60F13
-	for <alsa-devel@archiver.kernel.org>; Sun, 25 Jul 2021 07:45:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1E4DD60F13
+	by mail.kernel.org (Postfix) with ESMTPS id A35F060F13
+	for <alsa-devel@archiver.kernel.org>; Sun, 25 Jul 2021 10:24:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A35F060F13
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 128B71740;
-	Sun, 25 Jul 2021 09:44:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 128B71740
+	by alsa0.perex.cz (Postfix) with ESMTPS id 69D831738;
+	Sun, 25 Jul 2021 12:23:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69D831738
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627199109;
-	bh=Mt5qcVD+0ZP9D7xmdA1qdExLXQwxLEWv6P3pevc9YVc=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=BgG0n2gzS1dP4DgvR1SSYcMMp+4RNyUoNcyu25YVvQuhCrE73B/zP+/brI2feV8wN
-	 fsyL/wMWanR9tuMRWJh0IYhcpyGoUlsIJIEp7dlkDnE7SX23xhJUd8YGgFQgHHK1vn
-	 TylsR9RjLLI2AQSN52+cxjxKISx9eZLEvQ2L5cec=
+	s=default; t=1627208653;
+	bh=3CBNphdmSsMlkg/du5dYfr9FXMdT9lx9GDCP52agSbQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=jdIrkG6QLoNPSuccyb71ve/rCyTtoetyQ7hEg31vNH9sx/4ML3lxV352hUyDpHsDQ
+	 McJ9Qpyu/+us2BxxYsVVxZgf3kYZopdMjeLaAQNOA6AkUtlMMAPiPZ9Cc8Fs8HOuek
+	 GKK9lR6Ce/4TPDMU/ihhz21tXEtUYDlsMPIzSGBo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9157EF80132;
-	Sun, 25 Jul 2021 09:44:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F017BF80258;
+	Sun, 25 Jul 2021 12:23:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8FB64F8026C; Sun, 25 Jul 2021 09:44:15 +0200 (CEST)
+ id 81E16F8026C; Sun, 25 Jul 2021 12:23:20 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 68BFAF80132
- for <alsa-devel@alsa-project.org>; Sun, 25 Jul 2021 09:44:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68BFAF80132
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9DF26F800C0
+ for <alsa-devel@alsa-project.org>; Sun, 25 Jul 2021 12:23:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DF26F800C0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="JR7YVXuM"; 
+ header.b="etyzjX9p"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="bqh8bugg"
+ header.b="hge6b/ZE"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 688B321FE7;
- Sun, 25 Jul 2021 07:44:01 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 775B521F57;
+ Sun, 25 Jul 2021 10:23:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1627199041; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=uTdCr90EhfYnVuvMUH866bNjY+DJx+dcPV6cBpY0faA=;
- b=JR7YVXuM1KyXY9KsF7olywfQ42lvfjVIQ3rHJlj6rnRT1X8Cp6FkRYAKPKzipr2026307J
- UchhKdD28lxNGgMvm75l0ckPIGmxcyJfAwyHnG5NFIw3BnE3IvsqmKYLmYcMuDT64gNPE0
- UPzrvOmTeZy/gTY9Sm7sxbwjIYKzJKQ=
+ t=1627208591; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=qpPPDLdi8RDjDNmJHofqo9ot+sqS32SUhTgutcLpiH8=;
+ b=etyzjX9pgYY/9FeISbh/+2AHZKiadrm921jHnZx7cJms6ndsXWp78kPA8B8pt5IDWOAUNs
+ aIEM0FhnMKoBuKA4dHQTPQVy/6vAyD3SKGVIwnHmCzItvfUiMfAdYjz/hMBoO5r67wXSIf
+ rkqbzcIIofOwACCDQBzSaiOvSLRrwnE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1627199041;
+ s=susede2_ed25519; t=1627208591;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=uTdCr90EhfYnVuvMUH866bNjY+DJx+dcPV6cBpY0faA=;
- b=bqh8bugg/inwtUvpftZtGto0o7dU9nbda8gUGpA4YRgoQSDW0Px0JTiFPUDZpT/+FoCTYs
- v4i0H0vzna/4f1Dg==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 3B937A3B83;
- Sun, 25 Jul 2021 07:44:01 +0000 (UTC)
-Date: Sun, 25 Jul 2021 09:44:01 +0200
-Message-ID: <s5hwnpehm7y.wl-tiwai@suse.de>
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=qpPPDLdi8RDjDNmJHofqo9ot+sqS32SUhTgutcLpiH8=;
+ b=hge6b/ZESMvkv1JNhOF1uiUldSc4l1eOBJ44lQquju1YwaGLfJIqPh57ccR4e3fBnOx63j
+ s/0i+G+L4EsHaLDw==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 5C21DA3B88;
+ Sun, 25 Jul 2021 10:23:11 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Geraldo Nascimento <geraldogabriel@gmail.com>
-Subject: Re: [PATCH] ALSA: usb-audio: fix incorrect clock source setting
-In-Reply-To: <CAEsQvcs3P+TqQFzQetPfRycpo66eJFwnzwhk2JyCXFaCLFHmFg@mail.gmail.com>
-References: <1627100621-19225-1-git-send-email-chihhao.chen@mediatek.com>
- <s5h7dhgi1e2.wl-tiwai@suse.de>
- <CAEsQvcs3P+TqQFzQetPfRycpo66eJFwnzwhk2JyCXFaCLFHmFg@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, wsd_upstream@mediatek.com, damien@zamaudio.com,
- linux-kernel@vger.kernel.org, tiwai@suse.com, chihhao.chen@mediatek.com,
- linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
- linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: usb-audio: Fix superfluous autosuspend recovery
+Date: Sun, 25 Jul 2021 12:23:09 +0200
+Message-Id: <20210725102309.19607-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,34 +91,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 24 Jul 2021 17:04:13 +0200,
-Geraldo Nascimento wrote:
-> 
-> On Sat, Jul 24, 2021 at 8:05 AM Takashi Iwai <tiwai@suse.de> wrote:
-> >
-> > This looks like a regression introduced by the recent commit
-> > d2e8f641257d ("ALSA: usb-audio: Explicitly set up the clock
-> > selector"), which is a fix for certain devices.  Too bad that the
-> > behavior really depends on the device...
-> 
-> Dr. Iwai, perhaps we could restrict the generalized fix for the
-> Behringer UFX1604 / UFX1204 with some simple logic to devices that
-> only have *one* clock source.
-> 
-> In that case the clock selector must be set to the only clock source.
-> 
-> This way we keep the generalization without breaking devices with more
-> than one clock source.
-> 
-> Just an idea.
+The change to restore the autosuspend from the disabled state uses a
+wrong check: namely, it should have been the exact comparison of the
+quirk_type instead of the logical and (&&).  Otherwise it matches
+wrongly with the other quirk types.
 
-I don't think it's easy to generalize.  All those bugs are more or
-less BIOS bugs, and a logic doesn't apply always, just because it's a
-bug :)  For example, setting the clock selector itself should be a
-valid operation from the specification POV, while this leads to
-breakage on some devices.  So, even if we add a more generic
-workaround, we need to see which side effect is more commonly seen at
-first.
+Although re-enabling the autosuspend for the already enabled device
+shouldn't matter much, it's better to fix the unbalanced call.
 
+Fixes: 9799110825db ("ALSA: usb-audio: Disable USB autosuspend properly in setup_disable_autosuspend()")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/card.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Takashi
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 2f6a62416c05..a1f8c3a026f5 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -907,7 +907,7 @@ static void usb_audio_disconnect(struct usb_interface *intf)
+ 		}
+ 	}
+ 
+-	if (chip->quirk_type & QUIRK_SETUP_DISABLE_AUTOSUSPEND)
++	if (chip->quirk_type == QUIRK_SETUP_DISABLE_AUTOSUSPEND)
+ 		usb_enable_autosuspend(interface_to_usbdev(intf));
+ 
+ 	chip->num_interfaces--;
+-- 
+2.26.2
+
