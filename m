@@ -2,100 +2,97 @@ Return-Path: <SRS0=yf6i=MS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3EC0C4338F
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jul 2021 17:49:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68ABEC4338F
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jul 2021 18:03:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 396C560F93
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jul 2021 17:49:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 396C560F93
+	by mail.kernel.org (Postfix) with ESMTPS id E277960F6C
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jul 2021 18:03:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E277960F6C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2BFAF16DF;
-	Mon, 26 Jul 2021 19:48:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BFAF16DF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 406D21746;
+	Mon, 26 Jul 2021 20:02:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 406D21746
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627321747;
-	bh=YU3WdsFVb0TwNRHpB2wNlwuA+UhsMEawmkpjJWKWmIM=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=fyJ20JUH6uo8cwchkV8EONksV3REthtCB51HAMeM2JIpVKz6qkd4g3E6Z81uER6x8
-	 /2JFM7iVdn8cUaG30xK+m5WcqUkPC+WlWND82FuEW+cyV68RPP0aj8b8TDeEQ3SO7a
-	 RbUH2XmBzFM10s0NX8gMDNton//hU1u5gDKkBl3k=
+	s=default; t=1627322583;
+	bh=UPLHZ2j+c5fQSYs7kBZu5uPsvMTOD/vWlkmnmXnalGg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=QzLxOVuOhCihs2UeB65KE7/9Q5vFNPvIrh4Y5TUXaWVBQROji/g9IJS7ad5dpNjYf
+	 dCWAaodt9qGw/CwPLL1sX/dSwVXjginw4l7pOFZy2D8ZvJtI5IqVt1eG12h+TUTDnX
+	 BDGi98Y0GSFyKSt76tnEV4rhZxC1dpGAW+0K24xc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A27FF80253;
-	Mon, 26 Jul 2021 19:48:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 90380F8049E;
+	Mon, 26 Jul 2021 20:02:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DE0BEF8025A; Mon, 26 Jul 2021 19:48:15 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 10007F804CF; Mon, 26 Jul 2021 20:02:10 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B16BCF80130
- for <alsa-devel@alsa-project.org>; Mon, 26 Jul 2021 19:48:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B16BCF80130
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3E5C3F8025A
+ for <alsa-devel@alsa-project.org>; Mon, 26 Jul 2021 20:02:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E5C3F8025A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="Z9e1QYcm"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16Q2DYcP012545; 
- Mon, 26 Jul 2021 12:48:04 -0500
+ header.b="edbAeJQM"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16Q9XBFC001064; 
+ Mon, 26 Jul 2021 13:02:01 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=8pSBGfgJ/nBC52HcUY+Q/EOMjuHRhWatj/yyeT8OEoM=;
- b=Z9e1QYcmlCduGLsKqZkmeSjrhrSXQKZ3bVbEqeahrKu0Ks99HP0+usZjr3T91VA6x+F+
- B5q7y2oeX0sQGwqfo3PPuGAA7w7hXtrL7zGZnZEFL1jH84k4QUXbAbdhSNXYuyvpwEsj
- dw4wahrlunZaasoYQlZVR1ZQ7EdBzBzH1aV8ECZDuJidnkYE0qYdPSjkJKJQYE3JclCX
- ZOcq/71h8QLWKpsxakCOEBNcMKxkmjZ9mCYhhozHslEKtXyxBKTgnZcZ4TCzylsrVWV6
- otkaPdtpqDbvvQ/XcAqVISv1x6beMPutmBLYY/B5dAa+nUsY0NDZVKSRDMkcXtyzZ7Ku Cw== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3a17cvhgum-1
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=KFhMj4zInmP23rRrrQYzay5UeaPGV8+kCYH0f0Qe5bY=;
+ b=edbAeJQMx+jQiZnOAOAy47jEZ21vkJAlQu9p4pZZrR0GWrcPFQJsxngxoyu8i2HCkMuK
+ suKjsRV7wX8Igv2LA4HPhD75MiSVYd0W3NoEBeINGOqxuhmtyJt+3Qa78Aay4noomWz4
+ c25qRu7LLzJHrNPv6LIUEk5oOsE/57gfeTX0V54hpKC33QSy6USgayaVjv+MhSpCFHCc
+ YuBLwyEyHVGx7HzLoMrMc104Q9j+SyEIUt2Moeued/Ih9DW45oJnkEOfQx/c0gVM489h
+ FtpsUFEQYb+GzdmYBjl0cfFwYBF52kDuFnmELdRxNQv5c7wvvPQ5tKdpeoXczCTmjH2a RQ== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0b-001ae601.pphosted.com with ESMTP id 3a1th2rgpq-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Mon, 26 Jul 2021 12:48:04 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Mon, 26 Jul 2021 13:02:01 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 26 Jul
- 2021 18:47:01 +0100
+ 2021 18:46:58 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Mon, 26 Jul 2021 18:47:01 +0100
+ Transport; Mon, 26 Jul 2021 18:46:58 +0100
 Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.32])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 439FB45D;
- Mon, 26 Jul 2021 17:47:01 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id CEE7A45D;
+ Mon, 26 Jul 2021 17:46:57 +0000 (UTC)
 From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 06/27] ALSA: hda/cs8409: Disable unnecessary Ring Sense for
- Cyborg/Warlock/Bullseye
-Date: Mon, 26 Jul 2021 18:46:19 +0100
-Message-ID: <20210726174640.6390-7-vitalyr@opensource.cirrus.com>
+Subject: [PATCH 00/27] ALSA: hda/cirrus: Split generic cirrus HDA codecs and
+ CS8490 bridge into separate modules.
+Date: Mon, 26 Jul 2021 18:46:13 +0100
+Message-ID: <20210726174640.6390-1-vitalyr@opensource.cirrus.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210726174640.6390-1-vitalyr@opensource.cirrus.com>
-References: <20210726174640.6390-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: lnfAB6NkG-eq8WfA5RDCRPy1-FoHY93q
-X-Proofpoint-ORIG-GUID: lnfAB6NkG-eq8WfA5RDCRPy1-FoHY93q
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0
- priorityscore=1501
- malwarescore=0 bulkscore=0 adultscore=0 impostorscore=0 mlxlogscore=999
- spamscore=0 lowpriorityscore=0 clxscore=1011 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107260103
+X-Proofpoint-ORIG-GUID: 9QikoGclDdf5ouUEFOR8S_37rzz_57LQ
+X-Proofpoint-GUID: 9QikoGclDdf5ouUEFOR8S_37rzz_57LQ
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 clxscore=1015
+ suspectscore=0 impostorscore=0 mlxlogscore=999 lowpriorityscore=0
+ spamscore=0 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107260105
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,33 +108,69 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
+This series of patches splits generic cirrus HDA codecs and CS8490 bridge
+into separate modules, adds support for multiple companion codecs connected to
+CS8409, and also adds support for new DELL HW platform.
 
-Also remove unnecessary repeated register writes.
+CS8409 part is not really a HDA codec, it is a HDA bridge where companion codecs
+(up to 16) can be attached. With growing number of supported configurations and 
+platforms, patch_cirrus is getting less and less transparent and maintainable.
+So, the logical step is to separate generic Cirrus HDA codecs support 
+and Cirrus HDA bridge support.
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
----
- sound/pci/hda/patch_cs8409-tables.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Lots of improvements to existing functionality, code clean-up and refactoring,
+remove duplicated/redundant code, improve I2C functions etc.
 
-diff --git a/sound/pci/hda/patch_cs8409-tables.c b/sound/pci/hda/patch_cs8409-tables.c
-index 91b6a5b2824a..07d3ae28c105 100644
---- a/sound/pci/hda/patch_cs8409-tables.c
-+++ b/sound/pci/hda/patch_cs8409-tables.c
-@@ -153,11 +153,9 @@ const struct cs8409_i2c_param cs42l42_init_reg_seq[] = {
- 	{ 0x1121, 0xF3 },
- 	{ 0x1103, 0x20 },
- 	{ 0x1105, 0x00 },
--	{ 0x1112, 0xC0 },
-+	{ 0x1112, 0x00 },
- 	{ 0x1113, 0x80 },
- 	{ 0x1C03, 0xC0 },
--	{ 0x1105, 0x00 },
--	{ 0x1112, 0xC0 },
- 	{ 0x1101, 0x02 },
- 	{ 0x1316, 0xff },
- 	{ 0x1317, 0xff },
+Add support for new DELL HW platform with 2 CS42L42 codecs for front and rear jacks.
+
+Lucas Tanure (12):
+  ALSA: hda/cirrus: Move CS8409 HDA bridge to separate module
+  ALSA: hda/cs8409: Move arrays of configuration to a new file
+  ALSA: hda/cs8409: Disable unsolicited response for the first boot
+  ALSA: hda/cs8409: Prevent I2C access during suspend time
+  ALSA: hda/cs8409: Generalize volume controls
+  ALSA: hda/cs8409: Dont disable I2C clock between consecutive accesses
+  ALSA: hda/cs8409: Avoid setting the same I2C address for every access
+  ALSA: hda/cs8409: Avoid re-setting the same page as the last access
+  ALSA: hda/cs8409: Support i2c bulk read/write functions
+  ALSA: hda/cs8409: Separate CS8409, CS42L42 and project functions
+  ALSA: hda/cs8409: Move codec properties to its own struct
+  ALSA: hda/cs8409: Add support for dolphin
+
+Stefan Binding (15):
+  ALSA: hda/cs8409: Use enums for register names and coefficients
+  ALSA: hda/cs8409: Mask all CS42L42 interrupts on initialization
+  ALSA: hda/cs8409: Reduce HS pops/clicks for Cyborg
+  ALSA: hda/cs8409: Disable unnecessary Ring Sense for
+    Cyborg/Warlock/Bullseye
+  ALSA: hda/cs8409: Disable unsolicited responses during suspend
+  ALSA: hda/cs8409: Mask CS42L42 wake events
+  ALSA: hda/cs8409: Simplify CS42L42 jack detect.
+  ALSA: hda/cs8409: Support multiple sub_codecs for Suspend/Resume/Unsol
+    events
+  ALSA: hda/cs8409: Add Support to disable jack type detection for
+    CS42L42
+  ALSA: hda/cs8409: Enable Full Scale Volume for Line Out Codec on
+    Dolphin
+  ALSA: hda/cs8409: Set fixed sample rate of 48kHz for CS42L42
+  ALSA: hda/cs8409: Use timeout rather than retries for I2C transaction
+    waits
+  ALSA: hda/cs8409: Remove unnecessary delays
+  ALSA: hda/cs8409: Follow correct CS42L42 power down sequence for
+    suspend
+  ALSA: hda/cs8409: Unmute/Mute codec when stream starts/stops
+
+ sound/pci/hda/Kconfig               |   11 +
+ sound/pci/hda/Makefile              |    2 +
+ sound/pci/hda/patch_cirrus.c        | 1074 -----------------------
+ sound/pci/hda/patch_cs8409-tables.c |  560 ++++++++++++
+ sound/pci/hda/patch_cs8409.c        | 1234 +++++++++++++++++++++++++++
+ sound/pci/hda/patch_cs8409.h        |  369 ++++++++
+ 6 files changed, 2176 insertions(+), 1074 deletions(-)
+ create mode 100644 sound/pci/hda/patch_cs8409-tables.c
+ create mode 100644 sound/pci/hda/patch_cs8409.c
+ create mode 100644 sound/pci/hda/patch_cs8409.h
+
 -- 
 2.25.1
 
