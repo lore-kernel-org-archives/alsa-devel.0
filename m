@@ -2,67 +2,89 @@ Return-Path: <SRS0=TC80=MT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF462C4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 08:31:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9E77C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 08:32:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8BFD360FC1
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 08:31:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8BFD360FC1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=protonmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id B5EBF611AD
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 08:32:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B5EBF611AD
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=maquefel.me
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2CF821ED5;
-	Tue, 27 Jul 2021 10:31:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2CF821ED5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 424D51EF3;
+	Tue, 27 Jul 2021 10:31:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 424D51EF3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627374714;
-	bh=bpnnTCAOZXYR/ahVUTLu8Kh7lZ/41Mrlx2hq6aZlQ5g=;
-	h=Date:To:From:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Reply-To:From;
-	b=usKV3miBs24xHrvCPjEQt1aEJe3ZKFLQuoc7G0BDiBm0LHvPpX1XBY3NzG6wO90nl
-	 1HAroDxsrJMqc+JEzYAjvo+Mabw4JwB0bKZ9//bkbMX8v6DbxR/tTRD9cEpFzd4T+w
-	 oKMLG8cg5Dq/vMF++KM8h7cPsTA4ee3lWMDGT0Yg=
+	s=default; t=1627374750;
+	bh=ex4/weB/cAhG3m1UCwopGM2ootzJsG3QvaAGaYI5y48=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ZUqROxymLiMWaFf3MxsvOpXBJkPg6l3q+o8qHkHA3ZlOvH+VEsxQnBScs7S7UcN4E
+	 Lua7KZebmzmqs3peqq4+ZXmFJTElU+VeUXbp0dp7qQvqyI/fpD9bswlYrWz/mEehVt
+	 2d+lpwtD00VEMybBnv6DIgldUWl/lFxgi8iiYpdY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DEDA6F804E5;
-	Tue, 27 Jul 2021 10:29:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BCD54F804EC;
+	Tue, 27 Jul 2021 10:29:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 79618F8025A; Mon, 26 Jul 2021 08:38:00 +0200 (CEST)
-Received: from mail-40132.protonmail.ch (mail-40132.protonmail.ch
- [185.70.40.132])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A9939F8025A; Mon, 26 Jul 2021 13:52:22 +0200 (CEST)
+Received: from forward102o.mail.yandex.net (forward102o.mail.yandex.net
+ [IPv6:2a02:6b8:0:1a2d::602])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 536DAF8020D
- for <alsa-devel@alsa-project.org>; Mon, 26 Jul 2021 08:37:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 536DAF8020D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 32682F80130
+ for <alsa-devel@alsa-project.org>; Mon, 26 Jul 2021 13:52:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32682F80130
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=protonmail.com header.i=@protonmail.com
- header.b="CGzqPaR5"
-Date: Mon, 26 Jul 2021 06:37:52 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
- s=protonmail; t=1627281473;
- bh=pUijLgOUB/oFELisLkBXvEdSEe4CkElRAeuD8g7f1fw=;
- h=Date:To:From:Reply-To:Subject:From;
- b=CGzqPaR5HnpKlPnN/6fk+ATY6NvBP0rBYiO457nHCm7pmHrFCvQQ3LaRxhy7jWdzX
- QFnINyGGrZ7St4lxsv4EprGvTX6n8b9zcK1uMnsKMD1Q+FfTVnMFjuTiO0Sq1XqNXp
- ZVKBJ7LKpjHIAK4QEgEgFMyLN9TGtLIpED3BIzvc=
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-From: Ryan McClue <re.mcclue@protonmail.com>
-Subject: Intel HDA Driver Issue With PCM RW Interleaved
-Message-ID: <Ku86LtfuLk75iQJb_s7DVAxjlOhldXkAV4wBG4bROaixMRleq2XwF8-x9xmi-eNQC8G1CP-RvfXNM5Cob3XPnKNcjXqaMAnRLMyTI8PWfZY=@protonmail.com>
+ dkim=pass (1024-bit key) header.d=maquefel.me header.i=@maquefel.me
+ header.b="Kg0Rp1ZB"
+Received: from iva8-34fb5df223d4.qloud-c.yandex.net
+ (iva8-34fb5df223d4.qloud-c.yandex.net
+ [IPv6:2a02:6b8:c0c:b999:0:640:34fb:5df2])
+ by forward102o.mail.yandex.net (Yandex) with ESMTP id F23336681AC5;
+ Mon, 26 Jul 2021 14:52:12 +0300 (MSK)
+Received: from iva6-2d18925256a6.qloud-c.yandex.net
+ (iva6-2d18925256a6.qloud-c.yandex.net [2a02:6b8:c0c:7594:0:640:2d18:9252])
+ by iva8-34fb5df223d4.qloud-c.yandex.net (mxback/Yandex) with ESMTP id
+ iUqqxXqB0d-qCHe0deu; Mon, 26 Jul 2021 14:52:12 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail;
+ t=1627300332; bh=wrYpi7Lb3bPjDh2wgnPPsmcJxdCvpxYqsSBC4dQvxwE=;
+ h=In-Reply-To:Message-Id:References:Date:Subject:To:From:Cc;
+ b=Kg0Rp1ZB8LHBIQKvqXdI+108oirKG5Yjb+IXuAulSRKCtVgd/0B6WGsA113q9sB4I
+ wVqNk4mT04s11eG1/x2ypfxY4ii4jdy/I4i0X7yz0WI/QNDVOFpRw2Gd53DGk2Ncbk
+ rzc055RNydjPC8FjTNPtwQr3+FLdbaKvArAOdDXs=
+Authentication-Results: iva8-34fb5df223d4.qloud-c.yandex.net;
+ dkim=pass header.i=@maquefel.me
+Received: by iva6-2d18925256a6.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA
+ id PIKatQa27D-qB2S8kdK; Mon, 26 Jul 2021 14:52:11 +0300
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+ (Client certificate not present)
+From: Nikita Shubin <nikita.shubin@maquefel.me>
+To: Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 6/8] ASoC: cirrus: i2s: Prepare clock before using it
+Date: Mon, 26 Jul 2021 14:50:50 +0300
+Message-Id: <20210726115058.23729-7-nikita.shubin@maquefel.me>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210726115058.23729-1-nikita.shubin@maquefel.me>
+References: <20210726115058.23729-1-nikita.shubin@maquefel.me>
 MIME-Version: 1.0
-X-Mailman-Approved-At: Tue, 27 Jul 2021 10:29:09 +0200
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Tue, 27 Jul 2021 10:29:05 +0200
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,46 +97,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Reply-To: Ryan McClue <re.mcclue@protonmail.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-SGksCkknbSB0cnlpbmcgdG8gcGxheSBhIHNpbXBsZSBQQ00gYnVmZmVyIHNpbmdsZSB0aHJlYWRl
-ZCB3aXRob3V0IGJ1ZmZlciB1bmRlcnJ1bi4KUHJvZ3JhbSBzb3VyY2U6aHR0cHM6Ly9naXN0Lmdp
-dGh1Yi5jb20vdGFrYXN3aWUvZDhhOTU1M2MyMzA5NzFkOTc0YTNkZmM3NTliMmZmNjcKKHN0cnVj
-dCBzbmRfcGNtX3N3X3BhcmFtcykuc3RhcnRfdGhyZXNob2xkaXMgYWx0ZXJlZCBzbyBhcyB0byBh
-bGxvdyBzcGVjaWZ5aW5nIHRoZSBzdGFydCBvZiBhdWRpbyBmcmFtZSB0cmFuc21pc3Npb24gYW5k
-IHByZXZlbnQgdW5kZXJydW4gaXNzdWVzLgpJbiBteSBhcHBsaWNhdGlvbiwgb25pb2N0bChmZCwg
-U05EUlZfUENNX0lPQ1RMX1NUQVRVUywgJnN0YXR1cyksIEkgcmVjZWl2ZTpGaWxlIGRlc2NyaXB0
-b3IgaW4gYmFkIHN0YXRlCk91dHB1dCBvZiQoZG1lc2cpaXM6WyA2OS4wMTMwODRdIHNuZF9oZGFf
-aW50ZWwgMDAwMDowMDoxZi4zOiBUb28gYmlnIGFkanVzdG1lbnQgMTI4CgpGcm9tIGEgcHJldmlv
-dXMgcmVzcG9uc2Ugb24gdGhlYWxzYS1kZXZlbG1haWxpbmcgbGlzdDoKCj4gVGhlIGRyaXZlciBo
-YXMgc29tZSBzbWFsbCBudW1iZXIgb2YgcGVyaW9kcyB0byBiZQo+IHB1dCBhdCB0aGUgYmVnaW5u
-aW5nIG9mIHRoZSBidWZmZXIgZm9yIGNvcnJlY3RpbmcgdGhlIHJlcG9ydGVkCj4gcG9zaXRpb24u
-IEp1ZGdpbmcgZnJvbSB0aGUgbWVzc2FnZSwgeW91IHNlZW0gdG8gaGF2ZSBzZXQgYSBxdWl0ZSBo
-aWdoCj4gcmF0ZSBhbmQgYSB2ZXJ5IHNob3QgbnVtYmVyLCBhbmQgdGhhdCdzIHBvc3NpYmx5IHRv
-byB0aWdodCB0byBvcGVyYXRlCj4gcHJvcGVybHkuCgpIb3dldmVyLCBJJ20gbm90IHN1cmUgd2hh
-dCB0byBjaGFuZ2UgaW4gdGhpcyBjb2RlIHRvIGFkZHJlc3MgdGhpcyBpc3N1ZSBhbmQgZ2V0IGl0
-IHRvIHdvcmsuIEkgdHJpZWQgYWx0ZXJpbmdNWV9QTEFZQkFDS19EVVJBVElPTmFuZHBhcmFtcy5z
-dGFydF90aHJlc2hvbGRidXQgZ2V0IHRoZSBzYW1lIGVycm9yLgoKVGhlIHByb2dyYW0gZHVtcHMg
-dGhlIGN1cnJlbnQgaGFyZHdhcmUgcGFyYW1ldGVyczoKCkN1cnJlbnQgaGFyZHdhcmUgcGFyYW1l
-dGVyczoKICBDaGFuZ2VkIHBhcmFtZXRlcnM6CiAgICBhY2Nlc3MKICAgIGZvcm1hdAogICAgc3Vi
-Zm9ybWF0CiAgICBzYW1wbGUtYml0cwogICAgZnJhbWUtYml0cwogICAgY2hhbm5lbHMKICAgIHJh
-dGUKICAgIHBlcmlvZC10aW1lCiAgICBwZXJpb2Qtc2l6ZQogICAgcGVyaW9kLWJ5dGVzCiAgICBw
-ZXJpb2RzCiAgICBidWZmZXItdGltZQogICAgYnVmZmVyLXNpemUKICAgIGJ1ZmZlci1ieXRlcwog
-ICAgdGljay10aW1lCiAgUnVudGltZSBwYXJhbWV0ZXJzOgogICAgYWNjZXNzOgogICAgICByZWFk
-d3JpdGUtaW50ZXJsZWF2ZWQKICAgIGZvcm1hdDoKICAgICAgczE2LWxlCiAgICBzdWJmb3JtYXQ6
-CiAgICAgIHN0ZAogICAgc2FtcGxlLWJpdHM6CiAgICAgIFsxNiwgMTZdLCBpbnRlZ2VyLAogICAg
-ZnJhbWUtYml0czoKICAgICAgWzMyLCAzMl0sIGludGVnZXIsCiAgICBjaGFubmVsczoKICAgICAg
-WzIsIDJdLCBpbnRlZ2VyLAogICAgcmF0ZToKICAgICAgWzQ4MDAwLCA0ODAwMF0sIGludGVnZXIs
-CiAgICBwZXJpb2QtdGltZToKICAgICAgKDY2NiwgNjY3KSwKICAgIHBlcmlvZC1zaXplOgogICAg
-ICBbMzIsIDMyXSwgaW50ZWdlciwKICAgIHBlcmlvZHM6CiAgICAgIFszMiwgMzJdLCBpbnRlZ2Vy
-LAogICAgYnVmZmVyLXRpbWU6CiAgICAgICgyMTMzMywgMjEzMzQpLAogICAgYnVmZmVyLXNpemU6
-CiAgICAgIFsxMDI0LCAxMDI0XSwgaW50ZWdlciwKICAgIGJ1ZmZlci1ieXRlczoKICAgICAgWzQw
-OTYsIDQwOTZdLCBpbnRlZ2VyLAogICAgdGljay10aW1lOgogICAgICBbMCwgMF0sIGludGVnZXIs
-CiAgICBpbmZvOgogICAgICBtbWFwCiAgICAgIG1tYXAtdmFsaWQKICAgICAgaW50ZXJsZWF2ZWQK
-ICAgICAgYmxvY2stdHJhbnNmZXIKICAgICAgcGF1c2UKICAgICAgc3luYy1zdGFydAogICAgICBu
-by1wZXJpb2Qtd2FrZXVwCiAgICAgIGhhcy13YWxsLWNsb2NrCiAgICAgIGhhcy1saW5rLWF0aW1l
-CiAgICAgIGhhcy1saW5rLXN5bmNocm9uaXplZC1hdGltZQogICAgICBtb3N0LXNpZ25pZmljYW50
-LWJpdHM6ICAgIDE2CiAgICAgIHJhdGVfbnVtOiA0ODAwMAogICAgICByYXRlX2RlbjogMQoKVGhh
-bmtz
+From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+
+Use clk_prepare_enable()/clk_disable_unprepare() in preparation for switch
+to Common Clock Framework, otherwise the following is visible:
+
+WARNING: CPU: 0 PID: 97 at drivers/clk/clk.c:1011 clk_core_enable+0x9c/0xbc
+Enabling unprepared mclk
+...
+Hardware name: Cirrus Logic EDB9302 Evaluation Board
+...
+clk_core_enable
+clk_core_enable_lock
+ep93xx_i2s_hw_params
+snd_soc_dai_hw_params
+soc_pcm_hw_params
+snd_pcm_hw_params
+snd_pcm_ioctl
+...
+
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+---
+ sound/soc/cirrus/ep93xx-i2s.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/cirrus/ep93xx-i2s.c b/sound/soc/cirrus/ep93xx-i2s.c
+index 0d26550d0df8..4d3179f03202 100644
+--- a/sound/soc/cirrus/ep93xx-i2s.c
++++ b/sound/soc/cirrus/ep93xx-i2s.c
+@@ -111,9 +111,9 @@ static void ep93xx_i2s_enable(struct ep93xx_i2s_info *info, int stream)
+ 	if ((ep93xx_i2s_read_reg(info, EP93XX_I2S_TX0EN) & 0x1) == 0 &&
+ 	    (ep93xx_i2s_read_reg(info, EP93XX_I2S_RX0EN) & 0x1) == 0) {
+ 		/* Enable clocks */
+-		clk_enable(info->mclk);
+-		clk_enable(info->sclk);
+-		clk_enable(info->lrclk);
++		clk_prepare_enable(info->mclk);
++		clk_prepare_enable(info->sclk);
++		clk_prepare_enable(info->lrclk);
+ 
+ 		/* Enable i2s */
+ 		ep93xx_i2s_write_reg(info, EP93XX_I2S_GLCTRL, 1);
+@@ -156,9 +156,9 @@ static void ep93xx_i2s_disable(struct ep93xx_i2s_info *info, int stream)
+ 		ep93xx_i2s_write_reg(info, EP93XX_I2S_GLCTRL, 0);
+ 
+ 		/* Disable clocks */
+-		clk_disable(info->lrclk);
+-		clk_disable(info->sclk);
+-		clk_disable(info->mclk);
++		clk_disable_unprepare(info->lrclk);
++		clk_disable_unprepare(info->sclk);
++		clk_disable_unprepare(info->mclk);
+ 	}
+ }
+ 
+-- 
+2.26.2
+
