@@ -2,75 +2,82 @@ Return-Path: <SRS0=yf6i=MS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A5D5C4338F
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jul 2021 16:09:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B334C4338F
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jul 2021 16:52:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B3DBC60F6E
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jul 2021 16:09:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B3DBC60F6E
+	by mail.kernel.org (Postfix) with ESMTPS id 45FFB60F57
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jul 2021 16:52:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 45FFB60F57
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D5BAB170D;
-	Mon, 26 Jul 2021 18:08:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5BAB170D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1037D171A;
+	Mon, 26 Jul 2021 18:51:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1037D171A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627315784;
-	bh=80wDvhw3TGp7yRC6GXcqnilfbx5rPUo09aB+d1Nu1xw=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1627318356;
+	bh=9wY+vK8pU8J7omIu+pjegU2qRU8KinU8TvumD7+FnYo=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bUQEN/0r86/f7BxWvbbk4yh3AeEHzz6J+65036tuSjneDNPP+zbhbJ4A5qy/t/Upl
-	 AwUPuYqHexEaeHCtqcQlf/tHavNT/rttf5ReknvdqTZsz7BYB9CDps1zNyRQbu2Pmj
-	 bcAQVay7KMPdl0us8iYXtl4keSEf2CyvEhwY4tXs=
+	b=ccx7wr93jQQ+5d6iXtxHfYIczMyO0tzHvwKPL6tkf6v3U5Tz5j9oT0bAGeEXwnfPc
+	 9IPB0nO06mmLh3xn5agjHS2J5DULE1N673XuztJdsiB/5fOdM4fGy0MjLGLYhZJLP0
+	 CQxs3ODCTXj+bRzzn/hQWkie8dBWf8owGrV7OYNI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68BE2F8020D;
-	Mon, 26 Jul 2021 18:08:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F3A8F8020D;
+	Mon, 26 Jul 2021 18:51:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 07DF4F8025A; Mon, 26 Jul 2021 18:08:53 +0200 (CEST)
+ id 525B9F8025A; Mon, 26 Jul 2021 18:51:43 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 77E5EF80130
- for <alsa-devel@alsa-project.org>; Mon, 26 Jul 2021 18:08:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77E5EF80130
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4B820F80132
+ for <alsa-devel@alsa-project.org>; Mon, 26 Jul 2021 18:51:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B820F80132
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="LGq9QA2V"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D24E60F6F;
- Mon, 26 Jul 2021 16:08:43 +0000 (UTC)
+ header.b="T1Upm1SM"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BC6B60EB2;
+ Mon, 26 Jul 2021 16:51:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1627315723;
- bh=80wDvhw3TGp7yRC6GXcqnilfbx5rPUo09aB+d1Nu1xw=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=LGq9QA2Vsdr4Ez3jXY/g+7NG6GuuXC+ZfEOiiIc7cyRpvLLPym+TqsbuGy3X9cnxO
- FegtMH7lx6TmwaEx/4z9q6MJgAAGRxGPCff9Cm3hDqlt9pr3/vKWaIo9FI3oiF8iLz
- zkwh7FbcSiEKwrkkZ2JjSY7lmwXYIwbzJqLhpe/cnn7tqxVpValzbOY/Qjh6V/LaZD
- opsq3UuwRX7k2yMA1Z66Ph4iHjSwf4zZPyJDOjBYuNPD78gSLvFH7S/IXjSxMUEVu6
- sxK4vgpqruJzPdNXAZ5rWgS69CcIb/hnkgyYqn9To7skq+CV1u81Wle6GTDSTElLwH
- 2A0AVsMNa9GJg==
+ s=k20201202; t=1627318293;
+ bh=9wY+vK8pU8J7omIu+pjegU2qRU8KinU8TvumD7+FnYo=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=T1Upm1SMxQcZG0iZgig5cay6fQ3MmbTYQGqCpn5tQk1HdV/AeHhn4Qj/ON9J3inyC
+ +Q3zJaZbfa6UWk031xegXgo3PQHyIwr1QzVQcrqj4vFlnm5wfsB0teOpk35ZEWF4lP
+ kmf/d/yEOTGV57ZSQWgAuzwAEp2lg+qZY3+dkcV7t3T/tcSsPBvwFbHQHVasBFNDcF
+ lCZ+BiODNMQuv5okFo3lRJdPZyaVL4UXbhQtN2j8mjck393jXIz0m/Za0iWdyuOVZH
+ Bh5RL3cuuV67VVTyWj4i6SYFkA3YlnntkAfMNgL2kGGuw4AK+AeIKhRRRaJJ27HvJm
+ t3Qlzi5sFt/Nw==
+Date: Mon, 26 Jul 2021 17:51:24 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: tlv320aic31xx: Fix jack detection after suspend
-Date: Mon, 26 Jul 2021 17:08:32 +0100
-Message-Id: <162730195369.27511.5506032869262329482.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210723180200.25105-1-broonie@kernel.org>
-References: <20210723180200.25105-1-broonie@kernel.org>
+To: Nikita Shubin <nikita.shubin@maquefel.me>
+Subject: Re: [PATCH v2 6/8] ASoC: cirrus: i2s: Prepare clock before using it
+Message-ID: <20210726165124.GJ4670@sirena.org.uk>
+References: <20210726115058.23729-1-nikita.shubin@maquefel.me>
+ <20210726140001.24820-1-nikita.shubin@maquefel.me>
+ <20210726140001.24820-7-nikita.shubin@maquefel.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="ONvqYzh+7ST5RsLk"
+Content-Disposition: inline
+In-Reply-To: <20210726140001.24820-7-nikita.shubin@maquefel.me>
+X-Cookie: Vini, vidi, Linux!
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Alexander Sverdlin <alexander.sverdlin@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,42 +93,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 23 Jul 2021 19:02:00 +0100, Mark Brown wrote:
-> The tlv320aic31xx driver relies on regcache_sync() to restore the register
-> contents after going to _BIAS_OFF, for example during system suspend. This
-> does not work for the jack detection configuration since that is configured
-> via the same register that status is read back from so the register is
-> volatile and not cached. This can also cause issues during init if the jack
-> detection ends up getting set up before the CODEC is initially brought out
-> of _BIAS_OFF, we will reset the CODEC and resync the cache as part of that
-> process.
-> 
-> [...]
 
-Applied to
+--ONvqYzh+7ST5RsLk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Mon, Jul 26, 2021 at 04:59:54PM +0300, Nikita Shubin wrote:
+> From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+>=20
+> Use clk_prepare_enable()/clk_disable_unprepare() in preparation for switch
+> to Common Clock Framework, otherwise the following is visible:
 
-Thanks!
+Acked-by: Mark Brown <broonie@kernel.org>
 
-[1/1] ASoC: tlv320aic31xx: Fix jack detection after suspend
-      commit: 2c39ca6885a2ec03e5c9e7c12a4da2aa8926605a
+--ONvqYzh+7ST5RsLk
+Content-Type: application/pgp-signature; name="signature.asc"
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+-----BEGIN PGP SIGNATURE-----
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD+6AwACgkQJNaLcl1U
+h9A6Dgf/Wm+8EbWA4QXnD1gSbW2Zlde8S4f+YIjYt2M+qV9LmDgwZP6bDSkRXepv
+s8ddt8h+D7mYcN4N82bEPlQVcPqzM3yi2DM8Ba6Vp6FWL7kLME2tRDhN2YH63Chv
+PDeAvO3ThrXmd2hOOy40WgiR+oRG7URiDCbUYxbU2Ce1l/MueeeRwJohgOfp4S5a
+SDt3IoRGZH7cfa92Sybcvrj4cs86jYEa+SzotUYElkr4X5pZISG24t3rchwZuM6+
+5vVbpkCSCIhCH+QH3OlRgf3GLxrI22ExJTBdaeGh/Mo8ZQ2eJFYDcmO8BJVOZmvk
+MPRriHL+0E+GfcG+2S7Rn6gaDmut4w==
+=5Q4y
+-----END PGP SIGNATURE-----
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+--ONvqYzh+7ST5RsLk--
