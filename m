@@ -2,74 +2,99 @@ Return-Path: <SRS0=yf6i=MS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-4.2 required=3.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3BBDC4320A
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jul 2021 23:15:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89264C4338F
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jul 2021 23:58:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A748C60F90
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jul 2021 23:15:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A748C60F90
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 223E260F90
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jul 2021 23:58:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 223E260F90
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 45DEF1AD0;
-	Tue, 27 Jul 2021 01:14:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45DEF1AD0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 37EA31B00;
+	Tue, 27 Jul 2021 01:57:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37EA31B00
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627341344;
-	bh=1WQlXz+YVjvaueOaaQdzDVCRtVWgHq5c09qX4KASeog=;
-	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
+	s=default; t=1627343917;
+	bh=Gn3RqZTx/eGY6X0euVWdmeh2aguTPteQFVb08w/gYpI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GQH5t4DW+YEyuGjSywB9p94YVmQHjLzqW1aTxvdrlRay+R9lVcTPn116ZeMex46to
-	 87+SaV2lM0LghncNIztkEP6YPMhRREKiiwnyF98XjwNIzCjUXd8XXU3M2ThvmmZPJn
-	 VeZyJrhJGgyh7Vl8OpvxEDLp+GQIzHPkKMB9jBU0=
+	b=Gm9mIzU/IQwnFosHSPjcJVhPXRj29qXAFnhq3YNiHRy8/slRUFyYFB/g1PNk7Cf2i
+	 x51MlHNMLhb6TqPgzng5jcnsFaLcXbV3j0fRaHfXyTiVhGYOTUzqBiL9jPlX3jrJp0
+	 /3YQM4HxUxnjTgyAVfP4+KZ9+SXKfV4HRsxwDmQg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86FE4F80130;
-	Tue, 27 Jul 2021 01:14:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BA8FAF80253;
+	Tue, 27 Jul 2021 01:57:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 065AAF8025A; Tue, 27 Jul 2021 01:14:52 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id B94A9F8025A; Tue, 27 Jul 2021 01:57:44 +0200 (CEST)
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com
+ [IPv6:2607:f8b0:4864:20::732])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2488DF80130
- for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 01:14:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2488DF80130
-X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="192609781"
-X-IronPort-AV: E=Sophos;i="5.84,272,1620716400"; d="scan'208";a="192609781"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Jul 2021 16:14:45 -0700
-X-IronPort-AV: E=Sophos;i="5.84,272,1620716400"; d="scan'208";a="579923614"
-Received: from tskelley-mobl.amr.corp.intel.com (HELO [10.212.14.236])
- ([10.212.14.236])
- by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Jul 2021 16:14:44 -0700
-Subject: Re: [PATCH v4 1/2] ASoC: cs35l41: CS35L41 Boosted Smart Amplifier
-To: David Rhodes <drhodes@opensource.cirrus.com>, broonie@kernel.org,
- robh@kernel.org, ckeepax@opensource.cirrus.com, brian.austin@cirrus.com,
- patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- david.rhodes@cirrus.com
-References: <20210726223438.1464333-1-drhodes@opensource.cirrus.com>
- <20210726223438.1464333-2-drhodes@opensource.cirrus.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <b6fd6522-3639-4452-1d8a-dc1b308cc846@linux.intel.com>
-Date: Mon, 26 Jul 2021 18:14:42 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2DB82F8020D
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 01:57:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DB82F8020D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="OwnYV9rl"
+Received: by mail-qk1-x732.google.com with SMTP id b20so10708195qkj.3
+ for <alsa-devel@alsa-project.org>; Mon, 26 Jul 2021 16:57:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=+c223BNKCjVr89i78fnlRgBQMhpUOGJDxxcmZA/6yCE=;
+ b=OwnYV9rlnUfJo2RkKot5+W+rdsLUN7+zWrFy/pz8wdfqaTIej2jOIu+LgE2i3AE2nf
+ wJ1xojtvCrbUirSLD83/obiHk9C0NaQJeHN84Jvf8rNF9IdC2bfeMHCV4XWuHaSVYrzn
+ Mf0g4AHDMwR19nzAkIKwpw/xksa2aupVpgwHzQVzd5/2A18a0DQzcSpL0ShCOPBLYxVB
+ sGy/zrevQ2P/oSF7X0G3mwfdXv5hq+PmtMBMMe12omsVY03LP7HoWRAj/hD9/rRbfCXh
+ foGUXykUrM0OvoCBuftU56SdJXlPp3be6Gs2ybNAIsDSFfIlanwbCXWzPUtECc8aQpMk
+ 7tJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=+c223BNKCjVr89i78fnlRgBQMhpUOGJDxxcmZA/6yCE=;
+ b=O5hNuS0Ob298KpFew8zIukutgSKjEYJBqI91ziLf41bu+daTNC69ZVMLZuHNyMmkFu
+ O+Bt2NL2RhurJR7whM35lxgEYzg8qYnZtUWrOoW6S4RIRQPoTg5aqwBbwBulghN5qcDq
+ 3coeDQoVjwmYwX4quX+0AXc4+UxCmHJ97lnnvQgnUnr6BjCswc2Rn2gksvIRJVLE3rQp
+ rKXA9pMHYuwOL4OzqxnIbMYX29utaJULboui6b6suUVgpv62oik8Y7PvSP8zDhpNcVUV
+ m5xJnmkeW8Ya4bTcpUxiQU5kLmz46GgHjCcXI+ROEHEDQUIQ6P4hzSDjYUfMJSeuJP1o
+ GN/Q==
+X-Gm-Message-State: AOAM533Kj3Iw+OdoiR+epPwKA/r+z4WLoTfgIE9JnizzrsLp/9Zgnskj
+ Tp4R1xwjoHLhoUSss8TEiCEujZwEQVROhD2cMwU=
+X-Google-Smtp-Source: ABdhPJy2JU1ynaciVOwS/iwo88bT89yMDXeJN4d1VYgvkEp69wZdpxn6I/9NlfOvGTmgOWQap/tbBlqfqfI1ksBQUCg=
+X-Received: by 2002:a05:620a:893:: with SMTP id
+ b19mr19600194qka.487.1627343855508; 
+ Mon, 26 Jul 2021 16:57:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210726223438.1464333-2-drhodes@opensource.cirrus.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1627100621-19225-1-git-send-email-chihhao.chen@mediatek.com>
+ <s5h7dhgi1e2.wl-tiwai@suse.de>
+ <CAEsQvcs3P+TqQFzQetPfRycpo66eJFwnzwhk2JyCXFaCLFHmFg@mail.gmail.com>
+ <s5hwnpehm7y.wl-tiwai@suse.de>
+ <CAEsQvcumEDOKgUB6h2-im5QabhPfaSaU63RF8pegPt5ZCPx+Pw@mail.gmail.com>
+ <2db5d44b88ace1c25af4a45b3469a425fe1d81a5.camel@mediatek.com>
+In-Reply-To: <2db5d44b88ace1c25af4a45b3469a425fe1d81a5.camel@mediatek.com>
+From: Geraldo Nascimento <geraldogabriel@gmail.com>
+Date: Mon, 26 Jul 2021 20:57:27 +0000
+Message-ID: <CAEsQvctJDnsaRTXAGAJ6==juKazoo2=AJrWabLzqE=jCfg5EEA@mail.gmail.com>
+Subject: Re: [PATCH] ALSA: usb-audio: fix incorrect clock source setting
+To: chihhao chen <chihhao.chen@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: alsa-devel@alsa-project.org, wsd_upstream@mediatek.com,
+ Takashi Iwai <tiwai@suse.de>, damien@zamaudio.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com,
+ linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,545 +110,137 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Couple of nit-picks and one issue with error handling, see below.
-
-> +static int cs35l41_otp_unpack(void *data)
-> +{
-> +	struct cs35l41_private *cs35l41 = data;
-> +	u32 *otp_mem = NULL;
-
-initialization is not necessary? Even a static analyzer would not
-complain here, would it?
-
-> +	int i;
-> +	int bit_offset, word_offset;
-> +	unsigned int bit_sum = 8;
-> +	u32 otp_val, otp_id_reg;
-> +	const struct cs35l41_otp_map_element_t *otp_map_match = NULL;
-
-same, this is directly assigned below.
-
-> +	const struct cs35l41_otp_packed_element_t *otp_map = NULL;
-
-same, you assign it with
-
-otp_map = otp_map_match->map;
-
-> +	unsigned int orig_spi_freq;
-> +	int ret;
-> +
-> +	otp_mem = kmalloc_array(CS35L41_OTP_SIZE_WORDS, sizeof(*otp_mem),
-> +							GFP_KERNEL);
-> +	if (!otp_mem)
-> +		return -ENOMEM;
-> +
-> +	ret = regmap_read(cs35l41->regmap, CS35L41_OTPID, &otp_id_reg);
-> +	if (ret < 0) {
-> +		dev_err(cs35l41->dev, "Read OTP ID failed\n");
-> +		ret = -EINVAL;
-> +		goto err_otp_unpack;
-> +	}
-> +
-> +	otp_map_match = cs35l41_find_otp_map(otp_id_reg);
-> +
-> +	if (otp_map_match == NULL) {
-
-if (!otp_map_match)
-
-> +		dev_err(cs35l41->dev, "OTP Map matching ID %d not found\n",
-> +				otp_id_reg);
-> +		ret = -EINVAL;
-> +		goto err_otp_unpack;
-> +	}
-> +
-> +	if (cs35l41->otp_setup)
-> +		cs35l41->otp_setup(cs35l41, true, &orig_spi_freq);
-> +
-> +	ret = regmap_bulk_read(cs35l41->regmap, CS35L41_OTP_MEM0, otp_mem,
-> +						CS35L41_OTP_SIZE_WORDS);
-> +	if (ret < 0) {
-> +		dev_err(cs35l41->dev, "Read OTP Mem failed\n");
-> +		ret = -EINVAL;
-> +		goto err_otp_unpack;
-> +	}
-> +
-> +	if (cs35l41->otp_setup)
-> +		cs35l41->otp_setup(cs35l41, false, &orig_spi_freq);
-> +
-> +	otp_map = otp_map_match->map;
-> +
-> +	bit_offset = otp_map_match->bit_offset;
-> +	word_offset = otp_map_match->word_offset;
-> +
-> +	ret = regmap_write(cs35l41->regmap, CS35L41_TEST_KEY_CTL, 0x00000055);
-> +	if (ret < 0) {
-> +		dev_err(cs35l41->dev, "Write Unlock key failed 1/2\n");
-> +		ret = -EINVAL;
-> +		goto err_otp_unpack;
-> +	}
-> +	ret = regmap_write(cs35l41->regmap, CS35L41_TEST_KEY_CTL, 0x000000AA);
-> +	if (ret < 0) {
-> +		dev_err(cs35l41->dev, "Write Unlock key failed 2/2\n");
-> +		ret = -EINVAL;
-> +		goto err_otp_unpack;
-> +	}
-> +
-> +	for (i = 0; i < otp_map_match->num_elements; i++) {
-> +		dev_dbg(cs35l41->dev,
-> +			   "bitoffset= %d, word_offset=%d, bit_sum mod 32=%d\n",
-> +					 bit_offset, word_offset, bit_sum % 32);
-> +		if (bit_offset + otp_map[i].size - 1 >= 32) {
-> +			otp_val = (otp_mem[word_offset] &
-> +					GENMASK(31, bit_offset)) >>
-> +					bit_offset;
-> +			otp_val |= (otp_mem[++word_offset] &
-> +					GENMASK(bit_offset +
-> +						otp_map[i].size - 33, 0)) <<
-> +					(32 - bit_offset);
-> +			bit_offset += otp_map[i].size - 32;
-> +		} else {
-> +
-> +			otp_val = (otp_mem[word_offset] &
-> +				GENMASK(bit_offset + otp_map[i].size - 1,
-> +					bit_offset)) >>	bit_offset;
-> +			bit_offset += otp_map[i].size;
-> +		}
-> +		bit_sum += otp_map[i].size;
-> +
-> +		if (bit_offset == 32) {
-> +			bit_offset = 0;
-> +			word_offset++;
-> +		}
-> +
-> +		if (otp_map[i].reg != 0) {
-> +			ret = regmap_update_bits(cs35l41->regmap,
-> +						otp_map[i].reg,
-> +						GENMASK(otp_map[i].shift +
-> +							otp_map[i].size - 1,
-> +						otp_map[i].shift),
-> +						otp_val << otp_map[i].shift);
-> +			if (ret < 0) {
-> +				dev_err(cs35l41->dev, "Write OTP val failed\n");
-> +				ret = -EINVAL;
-> +				goto err_otp_unpack;
-> +			}
-> +		}
-> +	}
-> +
-> +	ret = regmap_write(cs35l41->regmap, CS35L41_TEST_KEY_CTL, 0x000000CC);
-> +	if (ret < 0) {
-> +		dev_err(cs35l41->dev, "Write Lock key failed 1/2\n");
-> +		ret = -EINVAL;
-> +		goto err_otp_unpack;
-> +	}
-> +	ret = regmap_write(cs35l41->regmap, CS35L41_TEST_KEY_CTL, 0x00000033);
-> +	if (ret < 0) {
-> +		dev_err(cs35l41->dev, "Write Lock key failed 2/2\n");
-> +		ret = -EINVAL;
-> +		goto err_otp_unpack;
-> +	}
-> +	ret = 0;
-> +
-> +err_otp_unpack:
-> +	kfree(otp_mem);
-> +	return ret;
-> +}
-
-> +static int cs35l41_main_amp_event(struct snd_soc_dapm_widget *w,
-> +		struct snd_kcontrol *kcontrol, int event)
-> +{
-> +	struct snd_soc_component *component =
-> +		snd_soc_dapm_to_component(w->dapm);
-> +	struct cs35l41_private *cs35l41 =
-> +		snd_soc_component_get_drvdata(component);
-> +	int ret = 0;
-> +	int i;
-> +	bool pdn;
-> +	unsigned int val;
-
-reverse x-mas tree style for declarations?
-
-[...]
-
-> +static int cs35l41_pcm_hw_params(struct snd_pcm_substream *substream,
-> +				 struct snd_pcm_hw_params *params,
-> +				 struct snd_soc_dai *dai)
-> +{
-> +	struct cs35l41_private *cs35l41 =
-> +			snd_soc_component_get_drvdata(dai->component);
-> +	int i;
-> +	unsigned int rate = params_rate(params);
-> +	u8 asp_wl;
-
-reverse xmas-tree, move 'int i' to last line of declaration block?
-
-> +	for (i = 0; i < ARRAY_SIZE(cs35l41_fs_rates); i++) {
-> +		if (rate == cs35l41_fs_rates[i].rate)
-> +			break;
-> +	}
-> +
-> +	if (i >= ARRAY_SIZE(cs35l41_fs_rates)) {
-> +		dev_err(cs35l41->dev, "%s: Unsupported rate: %u\n",
-> +						__func__, rate);
-> +		return -EINVAL;
-> +	}
-> +
-> +	asp_wl = params_width(params);
-> +
-> +	if (i < ARRAY_SIZE(cs35l41_fs_rates))
-> +		regmap_update_bits(cs35l41->regmap, CS35L41_GLOBAL_CLK_CTRL,
-> +			CS35L41_GLOBAL_FS_MASK,
-> +			cs35l41_fs_rates[i].fs_cfg << CS35L41_GLOBAL_FS_SHIFT);
-> +
-> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-> +		regmap_update_bits(cs35l41->regmap, CS35L41_SP_FORMAT,
-> +				CS35L41_ASP_WIDTH_RX_MASK,
-> +				asp_wl << CS35L41_ASP_WIDTH_RX_SHIFT);
-> +		regmap_update_bits(cs35l41->regmap, CS35L41_SP_RX_WL,
-> +				CS35L41_ASP_RX_WL_MASK,
-> +				asp_wl << CS35L41_ASP_RX_WL_SHIFT);
-> +		if (cs35l41->i2s_mode) {
-> +			regmap_update_bits(cs35l41->regmap,
-> +					CS35L41_SP_FRAME_RX_SLOT,
-> +					CS35L41_ASP_RX1_SLOT_MASK,
-> +					((cs35l41->pdata.right_channel) ? 1 : 0)
-> +					 << CS35L41_ASP_RX1_SLOT_SHIFT);
-> +			regmap_update_bits(cs35l41->regmap,
-> +					CS35L41_SP_FRAME_RX_SLOT,
-> +					CS35L41_ASP_RX2_SLOT_MASK,
-> +					((cs35l41->pdata.right_channel) ? 0 : 1)
-> +					 << CS35L41_ASP_RX2_SLOT_SHIFT);
-> +		}
-> +	} else {
-> +		regmap_update_bits(cs35l41->regmap, CS35L41_SP_FORMAT,
-> +				CS35L41_ASP_WIDTH_TX_MASK,
-> +				asp_wl << CS35L41_ASP_WIDTH_TX_SHIFT);
-> +		regmap_update_bits(cs35l41->regmap, CS35L41_SP_TX_WL,
-> +				CS35L41_ASP_TX_WL_MASK,
-> +				asp_wl << CS35L41_ASP_TX_WL_SHIFT);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-
-> +static int cs35l41_boost_config(struct cs35l41_private *cs35l41,
-> +		int boost_ind, int boost_cap, int boost_ipk)
-> +{
-> +	int ret;
-
-move this last?
-
-> +	unsigned char bst_lbst_val, bst_cbst_range, bst_ipk_scaled;
-> +	struct regmap *regmap = cs35l41->regmap;
-> +	struct device *dev = cs35l41->dev;
-> +
-> +	switch (boost_ind) {
-> +	case 1000:	/* 1.0 uH */
-> +		bst_lbst_val = 0;
-> +		break;
-> +	case 1200:	/* 1.2 uH */
-> +		bst_lbst_val = 1;
-> +		break;
-> +	case 1500:	/* 1.5 uH */
-> +		bst_lbst_val = 2;
-> +		break;
-> +	case 2200:	/* 2.2 uH */
-> +		bst_lbst_val = 3;
-> +		break;
-> +	default:
-> +		dev_err(dev, "Invalid boost inductor value: %d nH\n",
-> +				boost_ind);
-> +		return -EINVAL;
-> +	}
-> +
-> +	switch (boost_cap) {
-> +	case 0 ... 19:
-> +		bst_cbst_range = 0;
-> +		break;
-> +	case 20 ... 50:
-> +		bst_cbst_range = 1;
-> +		break;
-> +	case 51 ... 100:
-> +		bst_cbst_range = 2;
-> +		break;
-> +	case 101 ... 200:
-> +		bst_cbst_range = 3;
-> +		break;
-> +	default:	/* 201 uF and greater */
-> +		bst_cbst_range = 4;
-> +	}
-> +
-> +	ret = regmap_update_bits(regmap, CS35L41_BSTCVRT_COEFF,
-> +			CS35L41_BST_K1_MASK,
-> +			cs35l41_bst_k1_table[bst_lbst_val][bst_cbst_range]
-> +				<< CS35L41_BST_K1_SHIFT);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to write boost K1 coefficient\n");
-> +		return ret;
-> +	}
-> +
-> +	ret = regmap_update_bits(regmap, CS35L41_BSTCVRT_COEFF,
-> +			CS35L41_BST_K2_MASK,
-> +			cs35l41_bst_k2_table[bst_lbst_val][bst_cbst_range]
-> +				<< CS35L41_BST_K2_SHIFT);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to write boost K2 coefficient\n");
-> +		return ret;
-> +	}
-> +
-> +	ret = regmap_update_bits(regmap, CS35L41_BSTCVRT_SLOPE_LBST,
-> +			CS35L41_BST_SLOPE_MASK,
-> +			cs35l41_bst_slope_table[bst_lbst_val]
-> +				<< CS35L41_BST_SLOPE_SHIFT);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to write boost slope coefficient\n");
-> +		return ret;
-> +	}
-> +
-> +	ret = regmap_update_bits(regmap, CS35L41_BSTCVRT_SLOPE_LBST,
-> +			CS35L41_BST_LBST_VAL_MASK,
-> +			bst_lbst_val << CS35L41_BST_LBST_VAL_SHIFT);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to write boost inductor value\n");
-> +		return ret;
-> +	}
-> +
-> +	if ((boost_ipk < 1600) || (boost_ipk > 4500)) {
-> +		dev_err(dev, "Invalid boost inductor peak current: %d mA\n",
-> +				boost_ipk);
-> +		return -EINVAL;
-> +	}
-> +	bst_ipk_scaled = ((boost_ipk - 1600) / 50) + 0x10;
-> +
-> +	ret = regmap_update_bits(regmap, CS35L41_BSTCVRT_PEAK_CUR,
-> +			CS35L41_BST_IPK_MASK,
-> +			bst_ipk_scaled << CS35L41_BST_IPK_SHIFT);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to write boost inductor peak current\n");
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-
-> +int cs35l41_probe(struct cs35l41_private *cs35l41,
-> +				struct cs35l41_platform_data *pdata)
-> +{
-> +	int ret;
-> +	u32 regid, reg_revid, i, mtl_revid, int_status, chipid_match;
-> +	int timeout;
-> +	int irq_pol = 0;
-> +
-> +
-> +	for (i = 0; i < CS35L41_NUM_SUPPLIES; i++)
-> +		cs35l41->supplies[i].supply = cs35l41_supplies[i];
-> +
-> +	ret = devm_regulator_bulk_get(cs35l41->dev, CS35L41_NUM_SUPPLIES,
-> +					cs35l41->supplies);
-> +	if (ret != 0) {
-> +		dev_err(cs35l41->dev,
-> +			"Failed to request core supplies: %d\n",
-> +			ret);
-> +		return ret;
-> +	}
-> +
-> +	if (pdata) {
-> +		cs35l41->pdata = *pdata;
-> +	} else {
-> +		ret = cs35l41_handle_pdata(cs35l41->dev, &cs35l41->pdata,
-> +					     cs35l41);
-> +		if (ret != 0) {
-> +			ret = -ENODEV;
-> +			goto err;
-
-so here you will disable regulators that have not been enabled, is it
-intentional?
-
-mixing gotos and returns is confusing...
-
-and in addition you will set the reset_gpio that you only get a couple
-of lines below, that will be a page fault?
-
-> +		}
-> +	}
-> +
-> +	ret = regulator_bulk_enable(CS35L41_NUM_SUPPLIES, cs35l41->supplies);
-> +	if (ret != 0) {
-> +		dev_err(cs35l41->dev,
-> +			"Failed to enable core supplies: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	/* returning NULL can be an option if in stereo mode */
-> +	cs35l41->reset_gpio = devm_gpiod_get_optional(cs35l41->dev, "reset",
-> +							GPIOD_OUT_LOW);
-> +	if (IS_ERR(cs35l41->reset_gpio)) {
-> +		ret = PTR_ERR(cs35l41->reset_gpio);
-> +		cs35l41->reset_gpio = NULL;
-> +		if (ret == -EBUSY) {
-> +			dev_info(cs35l41->dev,
-> +				 "Reset line busy, assuming shared reset\n");
-> +		} else {
-> +			dev_err(cs35l41->dev,
-> +				"Failed to get reset GPIO: %d\n", ret);
-> +			goto err;
-> +		}
-> +	}
-> +	if (cs35l41->reset_gpio) {
-> +		/* satisfy minimum reset pulse width spec */
-> +		usleep_range(2000, 2100);
-> +		gpiod_set_value_cansleep(cs35l41->reset_gpio, 1);
-> +	}
-> +
-> +	usleep_range(2000, 2100);
-> +
-> +	timeout = 100;
-> +	do {
-> +		if (timeout == 0) {
-> +			dev_err(cs35l41->dev,
-> +				"Timeout waiting for OTP_BOOT_DONE\n");
-> +			ret = -EBUSY;
-> +			goto err;
-> +		}
-> +		usleep_range(1000, 1100);
-> +		regmap_read(cs35l41->regmap, CS35L41_IRQ1_STATUS4, &int_status);
-> +		timeout--;
-> +	} while (!(int_status & CS35L41_OTP_BOOT_DONE));
-> +
-> +	regmap_read(cs35l41->regmap, CS35L41_IRQ1_STATUS3, &int_status);
-> +	if (int_status & CS35L41_OTP_BOOT_ERR) {
-> +		dev_err(cs35l41->dev, "OTP Boot error\n");
-> +		ret = -EINVAL;
-> +		goto err;
-> +	}
-> +
-> +	ret = regmap_read(cs35l41->regmap, CS35L41_DEVID, &regid);
-> +	if (ret < 0) {
-> +		dev_err(cs35l41->dev, "Get Device ID failed\n");
-> +		goto err;
-> +	}
-> +
-> +	ret = regmap_read(cs35l41->regmap, CS35L41_REVID, &reg_revid);
-> +	if (ret < 0) {
-> +		dev_err(cs35l41->dev, "Get Revision ID failed\n");
-> +		goto err;
-> +	}
-> +
-> +	mtl_revid = reg_revid & CS35L41_MTLREVID_MASK;
-> +
-> +	/* CS35L41 will have even MTLREVID
-> +	 * CS35L41R will have odd MTLREVID
-> +	 */
-> +	chipid_match = (mtl_revid % 2) ? CS35L41R_CHIP_ID : CS35L41_CHIP_ID;
-> +	if (regid != chipid_match) {
-> +		dev_err(cs35l41->dev, "CS35L41 Device ID (%X). Expected ID %X\n",
-> +			regid, chipid_match);
-> +		ret = -ENODEV;
-> +		goto err;
-> +	}
-> +
-> +	switch (reg_revid) {
-> +	case CS35L41_REVID_A0:
-> +		ret = regmap_register_patch(cs35l41->regmap,
-> +				cs35l41_reva0_errata_patch,
-> +				ARRAY_SIZE(cs35l41_reva0_errata_patch));
-> +		if (ret < 0) {
-> +			dev_err(cs35l41->dev,
-> +				"Failed to apply A0 errata patch %d\n", ret);
-> +			goto err;
-> +		}
-> +		break;
-> +	case CS35L41_REVID_B0:
-> +		ret = regmap_register_patch(cs35l41->regmap,
-> +				cs35l41_revb0_errata_patch,
-> +				ARRAY_SIZE(cs35l41_revb0_errata_patch));
-> +		if (ret < 0) {
-> +			dev_err(cs35l41->dev,
-> +				"Failed to apply B0 errata patch %d\n", ret);
-> +			goto err;
-> +		}
-> +		break;
-> +	case CS35L41_REVID_B2:
-> +		ret = regmap_register_patch(cs35l41->regmap,
-> +				cs35l41_revb2_errata_patch,
-> +				ARRAY_SIZE(cs35l41_revb2_errata_patch));
-> +		if (ret < 0) {
-> +			dev_err(cs35l41->dev,
-> +				"Failed to apply B2 errata patch %d\n", ret);
-> +			goto err;
-> +		}
-> +		break;
-> +	}
-> +
-> +	irq_pol = cs35l41_irq_gpio_config(cs35l41);
-> +
-> +	/* Set interrupt masks for critical errors */
-> +	regmap_write(cs35l41->regmap, CS35L41_IRQ1_MASK1,
-> +			CS35L41_INT1_MASK_DEFAULT);
-> +
-> +	ret = devm_request_threaded_irq(cs35l41->dev, cs35l41->irq, NULL,
-> +			cs35l41_irq, IRQF_ONESHOT | IRQF_SHARED | irq_pol,
-> +			"cs35l41", cs35l41);
-> +
-> +	/* CS35L41 needs INT for PDN_DONE */
-> +	if (ret != 0) {
-> +		dev_err(cs35l41->dev, "Failed to request IRQ: %d\n", ret);
-> +		ret = -ENODEV;
-> +		goto err;
-> +	}
-> +
-> +	ret = cs35l41_otp_unpack(cs35l41);
-> +	if (ret < 0) {
-> +		dev_err(cs35l41->dev, "OTP Unpack failed\n");
-> +		goto err;
-> +	}
-> +
-> +	ret = regmap_write(cs35l41->regmap, CS35L41_DSP1_CCM_CORE_CTRL, 0);
-> +	if (ret < 0) {
-> +		dev_err(cs35l41->dev, "Write CCM_CORE_CTRL failed\n");
-> +		goto err;
-> +	}
-> +
-> +	ret = regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
-> +				 CS35L41_AMP_EN_MASK, 0);
-> +	if (ret < 0) {
-> +		dev_err(cs35l41->dev, "Write CS35L41_PWR_CTRL2 failed\n");
-> +		goto err;
-> +	}
-> +
-> +	ret = devm_snd_soc_register_component(cs35l41->dev,
-> +					&soc_component_dev_cs35l41,
-> +					cs35l41_dai, ARRAY_SIZE(cs35l41_dai));
-> +	if (ret < 0) {
-> +		dev_err(cs35l41->dev, "%s: Register codec failed\n", __func__);
-> +		goto err;
-> +	}
-> +
-> +	ret = cs35l41_set_pdata(cs35l41);
-> +	if (ret < 0) {
-> +		dev_err(cs35l41->dev, "%s: Set pdata failed\n", __func__);
-> +		goto err;
-> +	}
-> +
-> +	dev_info(cs35l41->dev, "Cirrus Logic CS35L41 (%x), Revision: %02X\n",
-> +			regid, reg_revid);
-> +
-> +	return 0;
-> +
-> +err:
-> +	regulator_bulk_disable(CS35L41_NUM_SUPPLIES, cs35l41->supplies);
-> +	gpiod_set_value_cansleep(cs35l41->reset_gpio, 0);
-> +	return ret;
-> +}
-> +
-> +int cs35l41_remove(struct cs35l41_private *cs35l41)
-> +{
-> +	regmap_write(cs35l41->regmap, CS35L41_IRQ1_MASK1, 0xFFFFFFFF);
-> +	regulator_bulk_disable(CS35L41_NUM_SUPPLIES, cs35l41->supplies);
-> +	gpiod_set_value_cansleep(cs35l41->reset_gpio, 0);
-> +	return 0;
-> +}
-> +
+On Mon, Jul 26, 2021 at 8:42 AM chihhao chen <chihhao.chen@mediatek.com> wrote:
 >
+> Hello,
+>
+> Attach USB descriptor of clock source and selectior for this earphone.
+>
+> AC Clock Source Descriptor:
+> ------------------------------
+>
+> Value   Valuename
+> 0x08    bLength
+> 0x24    bDescriptorType
+> 0x0A    bDescriptorSubtype
+> 0x09    bClockID
+> 0x03    bmAttributes
+> 0x07    bmControls
+> 0x00    bAssocTerminal
+> 0x00    iClockSource
+> Hex dump:
+> 0x08 0x24 0x0A 0x09 0x03 0x07 0x00 0x00
+>
+> AC Clock Selector Descriptor:
+> ------------------------------
+>
+> Value   Valuename
+> 0x09    bLength
+> 0x24    bDescriptorType
+> 0x0B    bDescriptorSubtype
+> 0x0B    bClockID
+> 0x02    bNrInPins
+> 0x09    baCSourceID(1)
+> 0x0A    baCSourceID(2)
+> 0x03    bmControls
+> 0x00    iClockSelector
+> Hex dump:
+> 0x09 0x24 0x0B 0x0B 0x02 0x09 0x0A 0x03 0x00
+>
+> AC Clock Source Descriptor:
+> ------------------------------
+>
+> Value   Valuename
+> 0x08    bLength
+> 0x24    bDescriptorType
+> 0x0A    bDescriptorSubtype
+> 0x0A    bClockID
+> 0x03    bmAttributes
+> 0x07    bmControls
+> 0x00    bAssocTerminal
+> 0x00    iClockSource
+> Hex dump:
+> 0x08 0x24 0x0A 0x0A 0x03 0x07 0x00 0x00
+>
+> AC Clock Selector Descriptor:
+> ------------------------------
+>
+> Value   Valuename
+> 0x09    bLength
+> 0x24    bDescriptorType
+> 0x0B    bDescriptorSubtype
+> 0x0C    bClockID
+> 0x02    bNrInPins
+> 0x09    baCSourceID(1)
+> 0x0A    baCSourceID(2)
+> 0x03    bmControls
+> 0x00    iClockSelector
+> Hex dump:
+> 0x09 0x24 0x0B 0x0C 0x02 0x09 0x0A 0x03 0x00
+>
+> Thanks
+> Chihhao
+
+Thank you, Chihhao.
+
+So I was wrong about Samsung USBC Headset (AKG) with VID/PID
+(0x04e8/0xa051) having a Clock Multiplier.
+
+There are two Clock Sources, both linked to the USB SOF with fixed sample rate.
+
+Plus two Clock Selectors which are host-programmable and can be set to
+either of the two Clock Sources.
+
+
+I'm still at a loss to explain what is going wrong here.
+
+Would a printk() reveal the first explicit
+uac_clock_selector_set_val() on the Clock Selector associated with
+USB_IN sets Clock Source ID to pin 1 with Clock Source ID 0x9?
+
+Or is it the other way around, i.e. it sets the Clock Source ID to pin
+2 with Clock ID 0xA for the capture stream Clock Selector?
+
+
+Chihhao Chen, could you please try the following patch for debugging
+purposes and share what is printed in dmesg?
+
+Please try one time with your fix applied and one time without, i.e.
+with an otherwise unmodified vanilla kernel.
+
+Thank you,
+Geraldo Nascimento
+
+--- clock.c.orig    2021-07-17 12:15:06.416028360 -0000
++++ clock.c    2021-07-26 20:45:58.713881962 -0000
+@@ -300,6 +300,7 @@ static int __uac_clock_find_source(struc
+         /* the entity ID we are looking for is a selector.
+          * find out what it currently selects */
+         ret = uac_clock_selector_get_val(chip, clock_id);
++        printk(KERN_ERR "FOR EP %x: Clock Selector %x has pin %d for
+Clock Source ID %x selected\n", (unsigned int)fmt->endpoint, clock_id,
+ret, sources[ret - 1]);
+         if (ret < 0) {
+             if (!chip->autoclock)
+                 return ret;
+@@ -324,6 +325,7 @@ static int __uac_clock_find_source(struc
+                           sources[ret - 1],
+                           visited, validate);
+         if (ret > 0) {
++            printk(KERN_ERR "FOR EP %x: Found Source! Clock Selector
+%x has pin %d for Clock Source ID %x about to be reselected\n",
+(unsigned int)fmt->endpoint, entity_id, cur, sources[cur - 1]);
+             err = uac_clock_selector_set_val(chip, entity_id, cur);
+             if (err < 0)
+                 return err;
+@@ -344,6 +346,7 @@ static int __uac_clock_find_source(struc
+             if (ret < 0)
+                 continue;
+
++            printk(KERN_ERR "FOR EP %x: Found source by trial and
+error! Clock Selector %x has pin %d for Clock Source ID %x about to be
+selected\n", (unsigned int)fmt->endpoint, entity_id, i, sources[i -
+1]);
+             err = uac_clock_selector_set_val(chip, entity_id, i);
+             if (err < 0)
+                 continue;
