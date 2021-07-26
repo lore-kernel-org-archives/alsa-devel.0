@@ -2,72 +2,108 @@ Return-Path: <SRS0=TC80=MT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D489CC4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 08:30:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4001C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 08:31:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 64E8B611AD
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 08:30:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 64E8B611AD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=onet.eu
+	by mail.kernel.org (Postfix) with ESMTPS id 0C12560F59
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 08:31:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0C12560F59
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=maquefel.me
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B5A0E1AFA;
-	Tue, 27 Jul 2021 10:29:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5A0E1AFA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7199F1B0A;
+	Tue, 27 Jul 2021 10:30:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7199F1B0A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627374610;
-	bh=90u+wCNqC94Dqs72LcJ8Tsq4P2Ys2+bmuuVBACSJmuM=;
-	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1627374662;
+	bh=RZK6MkghXAgza+gEV8l5bRDCh5GjgBp+Po11vm+bers=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=Dfz0ALDpvF2n5XfC8lyGeZBw1MvkHehjqhWq99u/zErB3RYy1byzwNPMqvdiIHOob
-	 j8ORn/9mw/7yrGkdQy+vRE9oR5SxOJnNGVltFpFH/QKrqprzoFrZEiv/K681HFPKLy
-	 m3eawDiQ1f2NwNs9mLpZIK5hAZZ0CVupZKlBvn0c=
+	b=XPX188zTuIFdRTaQvReCZ+iwTZ0nKmlOG4JhlGpht9oha/6b755BN4BWBgKpyAZ0r
+	 G0vpAyFp44d6zVN8F1ywXGWHmwZQJwR8DfBqdhENsdHQ0AYAqGxkFzVKPj5FpRqk5h
+	 8a8cnKpGbU+vdy7g+ZgoHMsFa3rX52q17pFXTYNI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5374CF80258;
-	Tue, 27 Jul 2021 10:29:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32E39F80276;
+	Tue, 27 Jul 2021 10:29:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1D7E7F80227; Sat, 24 Jul 2021 12:07:24 +0200 (CEST)
-Received: from smtpo86.poczta.onet.pl (smtpo86.poczta.onet.pl
- [213.180.149.139])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 00DCCF8025A; Mon, 26 Jul 2021 13:51:40 +0200 (CEST)
+Received: from forward105o.mail.yandex.net (forward105o.mail.yandex.net
+ [37.140.190.183])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C9A23F800DA
- for <alsa-devel@alsa-project.org>; Sat, 24 Jul 2021 12:07:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9A23F800DA
+ by alsa1.perex.cz (Postfix) with ESMTPS id D76AAF8020D
+ for <alsa-devel@alsa-project.org>; Mon, 26 Jul 2021 13:51:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D76AAF8020D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=onet.eu header.i=@onet.eu
- header.b="iMbiHHx3"
-Received: from pmq1v.m5r2.onet (pmq1v.m5r2.onet [10.174.32.67])
- by smtp.poczta.onet.pl (Onet) with ESMTP id 4GX20z0VyVzlj8f1
- for <alsa-devel@alsa-project.org>; Sat, 24 Jul 2021 12:07:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=onet.eu; s=2011;
- t=1627121235; bh=90u+wCNqC94Dqs72LcJ8Tsq4P2Ys2+bmuuVBACSJmuM=;
- h=From:To:Date:Subject:From;
- b=iMbiHHx3Ll1x1pdppSbNB2BWOYShXsBoXiLhWwuLbdae9KySGO8OguDy9xU00YOqC
- /E7Svr7NnJMryqrk9yYSONDWmgItETKOeBn3tubcM/4T56TprHD2JLwTg5vIJy54NM
- czXadO5OgUfXTvN2aYGVVEiXqOwdROA3FtE9LDQs=
-Content-Type: text/plain; charset="utf-8"
+ dkim=pass (1024-bit key) header.d=maquefel.me header.i=@maquefel.me
+ header.b="E0wy+n4m"
+Received: from iva8-40f91c705526.qloud-c.yandex.net
+ (iva8-40f91c705526.qloud-c.yandex.net
+ [IPv6:2a02:6b8:c0c:b9a7:0:640:40f9:1c70])
+ by forward105o.mail.yandex.net (Yandex) with ESMTP id 57BEC4200B66;
+ Mon, 26 Jul 2021 14:51:31 +0300 (MSK)
+Received: from iva6-2d18925256a6.qloud-c.yandex.net
+ (iva6-2d18925256a6.qloud-c.yandex.net [2a02:6b8:c0c:7594:0:640:2d18:9252])
+ by iva8-40f91c705526.qloud-c.yandex.net (mxback/Yandex) with ESMTP id
+ lkre8hYrIW-pTH0Ga7j; Mon, 26 Jul 2021 14:51:31 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail;
+ t=1627300291; bh=syS++HTe1Cfn1grqGafzmOlSb2JtfOhz46f0mgWNJy4=;
+ h=Date:Subject:To:From:Message-Id:Cc;
+ b=E0wy+n4muSO1ZLMeBWliO0BhcyWs6KoSoeJWdqaCR52kWT6mHi7gxowiUFGY6irYT
+ be1AwLTE4dNL+xYTAkyBJYWgCXYptO8V83/LNeZFDp4RbyoGeo2C+M9Dr7oKoKzW4P
+ dZKZcvyhEJp7DS7GLat0LUjSneb5gTIb+hVwaHc8=
+Authentication-Results: iva8-40f91c705526.qloud-c.yandex.net;
+ dkim=pass header.i=@maquefel.me
+Received: by iva6-2d18925256a6.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA
+ id PIKatQa27D-pR2S8g73; Mon, 26 Jul 2021 14:51:28 +0300
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+ (Client certificate not present)
+From: Nikita Shubin <nikita.shubin@maquefel.me>
+To: Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 0/8] arm: ep93xx: CCF conversion
+Date: Mon, 26 Jul 2021 14:50:44 +0300
+Message-Id: <20210726115058.23729-1-nikita.shubin@maquefel.me>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Received: from [31.0.57.188] by pmq1v.m5r2.onet via HTTP id ;
- Sat, 24 Jul 2021 12:07:15 +0200
-From: rv71@onet.eu
-X-Priority: 3
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Date: Sat, 24 Jul 2021 12:07:14 +0200
-Message-Id: <138065115-be2ec115b2a48297ebd271870a774ed7@pmq1v.m5r2.onet>
-X-Mailer: onet.poczta
-Subject: MIDI Through Port Number in ALSA Sequencer
-X-Onet-PMQ: <rv71@onet.eu>;31.0.57.188;PL;1
-X-Mailman-Approved-At: Tue, 27 Jul 2021 10:29:08 +0200
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Tue, 27 Jul 2021 10:29:04 +0200
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
+ "open list:FRAMEBUFFER LAYER" <dri-devel@lists.freedesktop.org>,
+ "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
+ Ard Biesheuvel <ardb@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Nikita Shubin <nikita.shubin@maquefel.me>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+ YiFei Zhu <yifeifz2@illinois.edu>, Krzysztof Kozlowski <krzk@kernel.org>,
+ "open list:INPUT KEYBOARD, MOUSE, JOYSTICK,
+ TOUCHSCREEN..." <linux-input@vger.kernel.org>,
+ "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Anshuman Khandual <anshuman.khandual@arm.com>,
+ =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ Russell King <rmk+kernel@armlinux.org.uk>, Mark Brown <broonie@kernel.org>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ open list <linux-kernel@vger.kernel.org>,
+ Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+ "open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM" <dmaengine@vger.kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,15 +119,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello,=C2=A0
+This series series of patches converts ep93xx to Common Clock Framework.
 
-ALSA Sequencer always creates MIDI Through Port with the id 14:0. However, =
-I can't find where it is defined that this special port will have this part=
-icular id/number. I also don't see any definition in seq.h regarding this (=
- unlike the timer and announce special port, for example). Can you explain? =
+It consists of preparation patches to use clk_prepare_enable where it is 
+needed, instead of clk_enable used in ep93xx drivers prior to CCF and
+a patch converting mach-ep93xx/clock.c to CCF.
+
+Link: https://lore.kernel.org/patchwork/cover/1445563/
+Link: https://lore.kernel.org/patchwork/patch/1435884/
+
+Alexander Sverdlin (7):
+  iio: ep93xx: Prepare clock before using it
+  spi: spi-ep93xx: Prepare clock before using it
+  Input: ep93xx_keypad: Prepare clock before using it
+  video: ep93xx: Prepare clock before using it
+  dmaengine: ep93xx: Prepare clock before using it
+  ASoC: cirrus: i2s: Prepare clock before using it
+  pwm: ep93xx: Prepare clock before using it
+
+Nikita Shubin (1):
+  ep93xx: clock: convert in-place to COMMON_CLK
+
+ arch/arm/Kconfig                       |   2 +-
+ arch/arm/mach-ep93xx/clock.c           | 975 ++++++++++++++-----------
+ arch/arm/mach-ep93xx/core.c            |   2 +-
+ arch/arm/mach-ep93xx/soc.h             |  42 +-
+ drivers/dma/ep93xx_dma.c               |   6 +-
+ drivers/iio/adc/ep93xx_adc.c           |   6 +-
+ drivers/input/keyboard/ep93xx_keypad.c |   4 +-
+ drivers/pwm/pwm-ep93xx.c               |  12 +-
+ drivers/spi/spi-ep93xx.c               |   4 +-
+ drivers/video/fbdev/ep93xx-fb.c        |   4 +-
+ sound/soc/cirrus/ep93xx-i2s.c          |  12 +-
+ 11 files changed, 605 insertions(+), 464 deletions(-)
 
 
-Thanks =
+base-commit: 64376a981a0e2e57c46efa63197c2ebb7dab35df
+-- 
+2.26.2
 
-
-Robert
