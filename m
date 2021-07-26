@@ -2,55 +2,66 @@ Return-Path: <SRS0=yf6i=MS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC8ACC4338F
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jul 2021 02:04:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC732C4338F
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jul 2021 02:20:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2F9CC60720
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jul 2021 02:04:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2F9CC60720
-Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
+	by mail.kernel.org (Postfix) with ESMTPS id EFAC160E78
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jul 2021 02:20:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EFAC160E78
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9B36916FC;
-	Mon, 26 Jul 2021 04:03:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B36916FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id BC7EE1703;
+	Mon, 26 Jul 2021 04:19:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC7EE1703
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627265046;
-	bh=bgBZekTX7YTeObv2MT2W2hRxJOT3if1nXsYBNwbcFAo=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1627266020;
+	bh=QauBmABH7DutnUcoGsC9IUM9GMgCIRfTovL6yaEK5JQ=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uU6nh4u8DC4EgGvfdPYm18PFpPIFtxSj9JHrkvuKQJHRXLVsdZ7jr0fNCsdPssff3
-	 a5em0oynEHy5ErieC2a4bGeijMTq+RpeSO8iEJHmk34945hghn7MUJmCAX3dj6ki64
-	 AUd3fKOY0t6rBR+L8LLUky082UabQZxKVUw4xT6o=
+	b=Av2Qks+XRRAajqfzZB90wICxXgQN2MKFd0gPMxKlatdQWlIEEH8VPfl8knRo82Oe6
+	 0JEcQw2WlDHnO5IRG55jWd60+GZGv0bEZCrZG++q+X/hLvVfviyyYCArlm4NlyCptI
+	 JE4xPnRmWUTcDvz3pqcou9TiGM39tNvBv2WZspE0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 257AAF8020D;
-	Mon, 26 Jul 2021 04:03:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42EA1F80130;
+	Mon, 26 Jul 2021 04:19:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8754FF8025A; Mon, 26 Jul 2021 04:03:14 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 57B01F8020D
- for <alsa-devel@alsa-project.org>; Mon, 26 Jul 2021 04:03:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57B01F8020D
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1627264985082221031-webhooks-bot@alsa-project.org>
-References: <1627264985082221031-webhooks-bot@alsa-project.org>
-Subject: sof-soundwire: rt1316 - DAC L and R is replaced by DAC
-Message-Id: <20210726020314.8754FF8025A@alsa1.perex.cz>
-Date: Mon, 26 Jul 2021 04:03:14 +0200 (CEST)
+ id D034FF8025A; Mon, 26 Jul 2021 04:19:28 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 3ACD3F80130
+ for <alsa-devel@alsa-project.org>; Mon, 26 Jul 2021 04:19:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3ACD3F80130
+Date: 26 Jul 2021 11:19:20 +0900
+X-IronPort-AV: E=Sophos;i="5.84,269,1620658800"; d="scan'208";a="88727768"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 26 Jul 2021 11:19:20 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id D55CF4009BCA;
+ Mon, 26 Jul 2021 11:19:20 +0900 (JST)
+Message-ID: <87fsw124wn.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 09/14] ASoC: audio-graph-card2: add Yaml Document
+In-Reply-To: <20210721115433.GB4259@sirena.org.uk>
+References: <87a6mhwyqn.wl-kuninori.morimoto.gx@renesas.com>
+ <87wnplvk2a.wl-kuninori.morimoto.gx@renesas.com>
+ <CAL_JsqJKZ-sjbnihAkdXDk4tW8xVmyhwkHLHWouZg6da0cc99g@mail.gmail.com>
+ <87lf60v9xk.wl-kuninori.morimoto.gx@renesas.com>
+ <20210721115433.GB4259@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,17 +77,103 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #109 was opened from jason77-wang:
 
-In the latest codec driver rt1316-sdw.c, the DAC L and DAC R are
-replaced by DAC, so we change the ucm to add the condition checking,
-if 'DAC L' exists, will set those mixers in the old way, otherwise,
-set the mixers with new name.
+Hi Mark
 
-The codec rt1316 is used on a Dell TGL soundwire audio machine.
+Thank you for clearing the topics.
+I think I could understand Rob and your expectation.
 
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
+> It's more about making sure that new users that currently use
+> simple-card are using audio-graph-card instead - we need to keep
+> simple-card around for existing users (or at least the binding but
+> probably it's more effort than it's worth to merge the binding parsing
+> code elsewhere) but we should be avoiding adding new users of it.  I've
+> been pushing people to use audio-graph-card for a while, TBH we should
+> probably just go ahead and flag simple-card as deprecated in the binding
+> now since I don't think there's any reason anyone is forced to use it at
+> this point.
+(snip)
+> > > Why do we need these changes? I'm not wild about a new generic binding
+> > > replacing an existing one which only has 2 or 3 users IIRC. Plus
+> > > there's already the Renesas variant. (On the flip side, only a few
+> > > users, easier to deprecate the old binding.)
+> 
+> > Sorry I don't understand
+> > 	- Who is "2 or 3 users" ?
+> 
+> Just that there's not that many users of the existing audio-graph-card
+> (though it's a bit more than 2 or 3 and it's newer stuff rather than
+> old).
+(snip)
+> I think what Rob is looking for here is a more detailed description of
+> what the problems are with the existing binding that require a new
+> binding - what's driving these big changes?  TBH this is part of why
+> I've been holding off on review, I need to get my head round why we
+> can't fix the existing binding in place.
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/109
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/109.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+OK, let's cleanup the problem.
+
+O : supported
+- : not supported
+x : Annotated
+
+	simple-card
+	 O: Normal connection
+	 -: DPCM
+	 -: Multi CPU/Codec
+	 -: Codec2Codec
+
+	audio-graph-card
+(A)	 O: Normal connection
+(B)	 x: DPCM
+	 -: Multi CPU/Codec
+	 -: Codec2Codec
+
+	x: Tegra uses is as customize audio-graph-card
+
+	audio-graph-card2
+	 O: Normal connection
+	 O: DPCM
+	 O: Multi CPU/Codec
+	 O: Codec2Codec
+
+We need to keep simple-card, I think there is no discussion is needed here.
+
+About audio-graph-card vs audio-graph-card2,
+I think keeping (A) only on audio-graph-card2 is not super difficult
+(But some message will be indicated. see below).
+Supporting (B) on audio-graph-card2 is difficult.
+
+I'm not sure detail, but we can do like this ?
+
+	step 1)
+	- add audio-graph-card2 which have (A) compatibility.
+	- indicate "audio-graph-card will be deprecated" on audio-graph-card
+
+	step 2)
+	- Tegra switch to use audio-graph-card2
+	- confirm that all existing audio-graph-card user have no problem on
+	  audio-graph-card2 too.
+
+	step 3)
+	- remove audio-graph-card
+
+My concerns are...
+
+	- I'm not sure how DT is strict.
+	  If we removed audio-graph-card, but user uses old Tegra DT on it...
+	  We can't remove audio-graph-card forever if DT was super strict (?).
+
+	- The naming of audio-graph-card vs audio-graph-card2 driver file.
+	  because audio-graph-card will be removed later.
+
+	- audio-graph-card2 can keep (A) compatible, but some features
+	  are not recommended. Existing user will get such message.
+	  And because of this compatibility, audio-graph-card2 can't remove
+	  this "un-recommended" feature.
+
+Thank you for your help !!
+
+Best regards
+---
+Kuninori Morimoto
