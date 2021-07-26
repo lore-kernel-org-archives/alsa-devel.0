@@ -2,83 +2,74 @@ Return-Path: <SRS0=yf6i=MS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10721C4338F
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jul 2021 19:42:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DE0EC4338F
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jul 2021 21:02:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E86E560F8F
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jul 2021 19:42:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E86E560F8F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 2751E60F91
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jul 2021 21:02:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2751E60F91
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E65BF1AFC;
-	Mon, 26 Jul 2021 21:41:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E65BF1AFC
+	by alsa0.perex.cz (Postfix) with ESMTPS id D03011AEA;
+	Mon, 26 Jul 2021 23:01:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D03011AEA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627328563;
-	bh=VINjGzweadj7Pej23oHt7ClCQkkBGzsHvdty6NhwjWQ=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=gNmxmWWmL3FRy2osxXBsn5btpc7582fVA4chNy68ihZCehmsC5qRcbhwJ5wyVqf7+
-	 iPH3GJOjCbVDUwVQJC7twOOOAIr13OORESCpH/denKq7XIeXoeFbBEMunnhEAhdJZB
-	 yu7dEyn4YBmPsWpT8qFVnsFWLyxI/DzgXpNNsjeI=
+	s=default; t=1627333352;
+	bh=FWmCm3XBbToS9cEkqweOQlixriiLx8fEMqPxg2TW898=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=VR922I2clH5Ym0ITICKt+bSBj5x2ZuvGlFZ2jHMpoywEDXmg+acmwu1qaP0Y6g2al
+	 xzOcbYV1wDQGUiXwz0n/xvLJAU70kI0cF6/9pG2wW8l7fj/HMTL/8Q3i4irpV7PT3S
+	 NVWbriQ2oen1wgrWuu5tR0gW2mKHrL9aqp6TtcRI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77892F80253;
-	Mon, 26 Jul 2021 21:41:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 38947F80253;
+	Mon, 26 Jul 2021 23:01:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BF3BEF8025A; Mon, 26 Jul 2021 21:41:50 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id A17F5F8025A; Mon, 26 Jul 2021 23:01:40 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9591CF8020D
- for <alsa-devel@alsa-project.org>; Mon, 26 Jul 2021 21:41:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9591CF8020D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="V+SmUi6q"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E630660F6E;
- Mon, 26 Jul 2021 19:41:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1627328498;
- bh=VINjGzweadj7Pej23oHt7ClCQkkBGzsHvdty6NhwjWQ=;
- h=From:To:Cc:Subject:Date:From;
- b=V+SmUi6qNWN/fxx13864gDWrJU76TZSjoQ/nFvHOB9pqgEa3HK+X3x92soSSI7jSy
- KK5PJfDek0l4c7KuKTIR2ZaglAJLNnGXAb/YDV3qbpMWNrAKTQR0Lq3OlLIMdVEUds
- UQ4lnTWuumlxNWxqfbVIWeEHPAos0hHIqx6X7e3SjzncvXwUEBV6pA2dS4yKSFIVQ3
- we2ws5o3Vwy9oDkar/GEUvzRrE3lv0HUiC1SXaQCNOoXpV9yv+fpHdgMHQOvkkIIj9
- GETENAl1JjZUl7TY06NsPmroPAtvd8UH6dlgU7M4oiJyOUkuvYG5Q3YeM50GaprrTt
- L9dbg/S+SO3jg==
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH] ASoC: component: Remove misplaced prefix handling in pin
- control functions
-Date: Mon, 26 Jul 2021 20:41:23 +0100
-Message-Id: <20210726194123.54585-1-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 723B1F80130
+ for <alsa-devel@alsa-project.org>; Mon, 26 Jul 2021 23:01:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 723B1F80130
+X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="273398800"
+X-IronPort-AV: E=Sophos;i="5.84,270,1620716400"; d="scan'208";a="273398800"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Jul 2021 14:01:22 -0700
+X-IronPort-AV: E=Sophos;i="5.84,270,1620716400"; d="scan'208";a="464057612"
+Received: from tskelley-mobl.amr.corp.intel.com (HELO [10.212.14.236])
+ ([10.212.14.236])
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Jul 2021 14:01:21 -0700
+Subject: Re: [PATCH 0/7] ALSA/ASoC/SOF/SoundWire: fix Kconfig issues
+To: Arnd Bergmann <arnd@arndb.de>
+References: <20210302003125.1178419-1-pierre-louis.bossart@linux.intel.com>
+ <CAK8P3a38tizZh1z=iJQotL3Tv3z8iK0qq2WCSy853M-nfwt4mQ@mail.gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <9cbc71be-17b0-4a88-c8a1-a1e800894a56@linux.intel.com>
+Date: Mon, 26 Jul 2021 16:01:18 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5244; h=from:subject;
- bh=VINjGzweadj7Pej23oHt7ClCQkkBGzsHvdty6NhwjWQ=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBg/wg7/iA/a5aFZjKXyzVd095vOGGRv76lt5jCW4JU
- cDUNXeSJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYP8IOwAKCRAk1otyXVSH0JE1B/
- 4uO/X0D7PWihSxjc2ocLrsBQi5AoYpQs6oaPCCQbIARGPe1CcjjBYM/01/RTkQfqBCVRl4Eq2zfK66
- s7Hzlfa5xhKDfw7cgUQSUryjuYV/kzA/JBnAoxg/NFwBhQtNX7G/JF3Y/Y8hmYYWH3K/9xKYtjGyZa
- kRaWoVZhVoQ9VeT5IIcYSc4czcn+Qv8DLLlMvaFrIrKh2f0KWYeuF2hhYS5ssyTQzeiCc1/+0mya25
- PPS+2VeH+grG+ZfEvNDei3HsWeRDCAkywjETFfawoSoNaai7F82Vpg445O1tOTiQQtAM/ZZDylHqj8
- GS43DdPIW5VrZQ6bWdsI/6O3vx/Li/
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <CAK8P3a38tizZh1z=iJQotL3Tv3z8iK0qq2WCSy853M-nfwt4mQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Takashi Iwai <tiwai@suse.de>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,149 +85,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When the component level pin control functions were added they for some
-no longer obvious reason handled adding prefixing of widget names. This
-meant that when the lack of prefix handling in the DAPM level pin
-operations was fixed by ae4fc532244b3bb4d (ASoC: dapm: use component
-prefix when checking widget names) the one device using the component
-level API ended up with the prefix being applied twice, causing all
-lookups to fail.
 
-Fix this by removing the redundant prefixing from the component code,
-which has the nice side effect of also making that code much simpler.
 
-Reported-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-component.c | 63 +++++++++++++++++----------------------
- 1 file changed, 27 insertions(+), 36 deletions(-)
+> I have not done as much randconfig tested recently as I used to, but
+> since I ramped up the rate again after the merge window, I have unfortunately
+> once more run into a variation of this problem, with
+> CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE=m and
+> CONFIG_SND_SOC_SOF_HDA_COMMON=y:
+> 
+> x86_64-linux-ld: sound/soc/sof/intel/hda.o: in function
+> `hda_dsp_interrupt_thread':
+> hda.c:(.text+0x739): undefined reference to `sdw_intel_thread'
+> x86_64-linux-ld: hda.c:(.text+0x764): undefined reference to
+> `sdw_intel_process_wakeen_event'
+> x86_64-linux-ld: sound/soc/sof/intel/hda.o: in function `hda_sdw_int_enable':
+> hda.c:(.text+0x782): undefined reference to `sdw_intel_enable_irq'
+> x86_64-linux-ld: sound/soc/sof/intel/hda.o: in function `hda_sdw_startup':
+> hda.c:(.text+0x7ac): undefined reference to `sdw_intel_startup'
+> x86_64-linux-ld: sound/soc/sof/intel/hda.o: in function
+> `hda_sdw_process_wakeen':
+> hda.c:(.text+0x7dc): undefined reference to `sdw_intel_process_wakeen_event'
+> x86_64-linux-ld: sound/soc/sof/intel/hda.o: in function `hda_dsp_probe':
+> hda.c:(.text+0xee1): undefined reference to `sdw_intel_probe'
+> x86_64-linux-ld: sound/soc/sof/intel/hda.o: in function `hda_dsp_remove':
+> hda.c:(.text+0xf7f): undefined reference to `sdw_intel_enable_irq'
+> x86_64-linux-ld: hda.c:(.text+0xf8e): undefined reference to `sdw_intel_exit'
+> 
+> This only seems to appear very rarely, as I still did around 25000 randconfig
+> builds since you merged the series, but this config does show the problem
+> for any kernel version between the fix and the latest linux-next:
+> 
+> https://pastebin.com/raw/VCjcB3EU
+> 
+> I have only done the quick bisection but no analysis regarding what
+> we may have missed back in March. I hope you can figure this out.
 
-diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
-index 3a5e84e16a87..c8dfd0de30e4 100644
---- a/sound/soc/soc-component.c
-+++ b/sound/soc/soc-component.c
-@@ -148,86 +148,75 @@ int snd_soc_component_set_bias_level(struct snd_soc_component *component,
- 	return soc_component_ret(component, ret);
- }
- 
--static int soc_component_pin(struct snd_soc_component *component,
--			     const char *pin,
--			     int (*pin_func)(struct snd_soc_dapm_context *dapm,
--					     const char *pin))
--{
--	struct snd_soc_dapm_context *dapm =
--		snd_soc_component_get_dapm(component);
--	char *full_name;
--	int ret;
--
--	if (!component->name_prefix) {
--		ret = pin_func(dapm, pin);
--		goto end;
--	}
--
--	full_name = kasprintf(GFP_KERNEL, "%s %s", component->name_prefix, pin);
--	if (!full_name) {
--		ret = -ENOMEM;
--		goto end;
--	}
--
--	ret = pin_func(dapm, full_name);
--	kfree(full_name);
--end:
--	return soc_component_ret(component, ret);
--}
--
- int snd_soc_component_enable_pin(struct snd_soc_component *component,
- 				 const char *pin)
- {
--	return soc_component_pin(component, pin, snd_soc_dapm_enable_pin);
-+	struct snd_soc_dapm_context *dapm =
-+		snd_soc_component_get_dapm(component);
-+	return snd_soc_dapm_enable_pin(dapm, pin);
- }
- EXPORT_SYMBOL_GPL(snd_soc_component_enable_pin);
- 
- int snd_soc_component_enable_pin_unlocked(struct snd_soc_component *component,
- 					  const char *pin)
- {
--	return soc_component_pin(component, pin, snd_soc_dapm_enable_pin_unlocked);
-+	struct snd_soc_dapm_context *dapm =
-+		snd_soc_component_get_dapm(component);
-+	return snd_soc_dapm_enable_pin_unlocked(dapm, pin);
- }
- EXPORT_SYMBOL_GPL(snd_soc_component_enable_pin_unlocked);
- 
- int snd_soc_component_disable_pin(struct snd_soc_component *component,
- 				  const char *pin)
- {
--	return soc_component_pin(component, pin, snd_soc_dapm_disable_pin);
-+	struct snd_soc_dapm_context *dapm =
-+		snd_soc_component_get_dapm(component);
-+	return snd_soc_dapm_disable_pin(dapm, pin);
- }
- EXPORT_SYMBOL_GPL(snd_soc_component_disable_pin);
- 
- int snd_soc_component_disable_pin_unlocked(struct snd_soc_component *component,
- 					   const char *pin)
- {
--	return soc_component_pin(component, pin, snd_soc_dapm_disable_pin_unlocked);
-+	struct snd_soc_dapm_context *dapm = 
-+		snd_soc_component_get_dapm(component);
-+	return snd_soc_dapm_disable_pin_unlocked(dapm, pin);
- }
- EXPORT_SYMBOL_GPL(snd_soc_component_disable_pin_unlocked);
- 
- int snd_soc_component_nc_pin(struct snd_soc_component *component,
- 			     const char *pin)
- {
--	return soc_component_pin(component, pin, snd_soc_dapm_nc_pin);
-+	struct snd_soc_dapm_context *dapm =
-+		snd_soc_component_get_dapm(component);
-+	return snd_soc_dapm_nc_pin(dapm, pin);
- }
- EXPORT_SYMBOL_GPL(snd_soc_component_nc_pin);
- 
- int snd_soc_component_nc_pin_unlocked(struct snd_soc_component *component,
- 				      const char *pin)
- {
--	return soc_component_pin(component, pin, snd_soc_dapm_nc_pin_unlocked);
-+	struct snd_soc_dapm_context *dapm =
-+		snd_soc_component_get_dapm(component);
-+	return snd_soc_dapm_nc_pin_unlocked(dapm, pin);
- }
- EXPORT_SYMBOL_GPL(snd_soc_component_nc_pin_unlocked);
- 
- int snd_soc_component_get_pin_status(struct snd_soc_component *component,
- 				     const char *pin)
- {
--	return soc_component_pin(component, pin, snd_soc_dapm_get_pin_status);
-+	struct snd_soc_dapm_context *dapm =
-+		snd_soc_component_get_dapm(component);
-+	return snd_soc_dapm_get_pin_status(dapm, pin);
- }
- EXPORT_SYMBOL_GPL(snd_soc_component_get_pin_status);
- 
- int snd_soc_component_force_enable_pin(struct snd_soc_component *component,
- 				       const char *pin)
- {
--	return soc_component_pin(component, pin, snd_soc_dapm_force_enable_pin);
-+	struct snd_soc_dapm_context *dapm =
-+		snd_soc_component_get_dapm(component);
-+	return snd_soc_dapm_force_enable_pin(dapm, pin);
- }
- EXPORT_SYMBOL_GPL(snd_soc_component_force_enable_pin);
- 
-@@ -235,7 +224,9 @@ int snd_soc_component_force_enable_pin_unlocked(
- 	struct snd_soc_component *component,
- 	const char *pin)
- {
--	return soc_component_pin(component, pin, snd_soc_dapm_force_enable_pin_unlocked);
-+	struct snd_soc_dapm_context *dapm =
-+		snd_soc_component_get_dapm(component);
-+	return snd_soc_dapm_force_enable_pin_unlocked(dapm, pin);
- }
- EXPORT_SYMBOL_GPL(snd_soc_component_force_enable_pin_unlocked);
- 
--- 
-2.20.1
+Thanks for this report Arnd.
+
+I can reproduce the problem, the changes made 6 months back don't make
+too much sense to me any longer. I have really no idea why I moved the
+INTEL_SOUNDWIRE config to a boolean, that was asking for trouble.
+
+I have a tentative fix being tested at
+https://github.com/thesofproject/linux/pull/3066. I just moved the
+select operations to a different option and reverted the INTEL_SOUNDWIRE
+config to be an on/off switch from the user perspective, with
+dependencies on built-in v. module checked inside.
 
