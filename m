@@ -5,97 +5,64 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CEF40C4338F
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jul 2021 18:22:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CA99C4338F
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jul 2021 18:23:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3FCA860C51
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jul 2021 18:22:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3FCA860C51
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7581360C51
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jul 2021 18:23:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7581360C51
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A705C1AE9;
-	Mon, 26 Jul 2021 20:21:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A705C1AE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C4DA1AAC;
+	Mon, 26 Jul 2021 20:22:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C4DA1AAC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627323733;
-	bh=R+4Q6wOTa76k8H+iDtL5xul368yLCyn3YYmWKzYHilw=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=USkNY/QzSH/pTp4uHZd2oEBivrn8OOAX+c08T0czneI67L4rBHDa33vuRw605SGgF
-	 2fUq4eaHflV1zWQc/w4cjmrQRvK9Uz0MhWIcfnPS2yYpaEE6SLO6aJ1TJCEfbc7ryh
-	 QJBG+4wBVlWBST1yvyh3HQb6P/hSAX1KghreULzs=
+	s=default; t=1627323783;
+	bh=3A1DMzdFgpeN7PKddwa2N4GznH+KOHQP8HZdgO1B2V0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=d8n6iUUQUhOMGqgijJy5Iz7SE0rGrhVz69wZLHBBO9d568MBGFkPYV+iHGsBG/KAP
+	 FlukLKYu4wM4XdYlzK+Vy53nfzEmCo6kyeTTW2hUwjADWp6yoLo1XmNLmrsHD1yIZf
+	 GEdcJyxoIrgB/0k68gcBZH4w9oNXwkqqPVDaYQ0Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 29362F80506;
-	Mon, 26 Jul 2021 20:18:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AFA39F80253;
+	Mon, 26 Jul 2021 20:22:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A451CF8025E; Mon, 26 Jul 2021 20:18:32 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 5C72FF8025A; Mon, 26 Jul 2021 20:22:10 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 211CCF8028B
- for <alsa-devel@alsa-project.org>; Mon, 26 Jul 2021 20:18:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 211CCF8028B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="hGJADpYH"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16Q9Xco4002242; 
- Mon, 26 Jul 2021 13:18:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=unvVYHOUQ6GYzxTxh435V4ufadT3jDq28i7dvEIfH0o=;
- b=hGJADpYHHCouxwsPPV+CPQK7GzIcRVviKvxfcbOSiWMXPwDwC9ggck26Lg/K7MautDze
- 87mWf1dm7AJOlh9EIeNVUsHwt31gVwmwcM5t7RW6NCQ0z106gzbJVezrXzQLt//p50Oe
- mEfnVk9MrXBFSYRWguKu6zrYsiTsvNWx45HiuLyY4B/9EtzY1BQry+CyqNGmfVYF+8Nv
- l9O2zw8tgY14yhA36pjcVa3BKWT1+V9a4XbaDWKBHhtr8apJI5qOe6SFTisaZKNrX3/+
- MtpLzJkrl7CEXz9im5/uzLS5oMaJTs/hO1I/2JbP2kZB7soXxwB/yzW0KGdSupNZhx7A 9w== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 3a1th2rhbh-5
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Mon, 26 Jul 2021 13:18:18 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 26 Jul
- 2021 18:47:11 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Mon, 26 Jul 2021 18:47:11 +0100
-Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.32])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 48A022BA;
- Mon, 26 Jul 2021 17:47:11 +0000 (UTC)
-From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 23/27] ALSA: hda/cs8409: Set fixed sample rate of 48kHz for
- CS42L42
-Date: Mon, 26 Jul 2021 18:46:36 +0100
-Message-ID: <20210726174640.6390-24-vitalyr@opensource.cirrus.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B4139F8025E
+ for <alsa-devel@alsa-project.org>; Mon, 26 Jul 2021 20:22:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4139F8025E
+X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="210403780"
+X-IronPort-AV: E=Sophos;i="5.84,270,1620716400"; d="scan'208";a="210403780"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Jul 2021 11:21:57 -0700
+X-IronPort-AV: E=Sophos;i="5.84,270,1620716400"; d="scan'208";a="505128276"
+Received: from tskelley-mobl.amr.corp.intel.com (HELO
+ pbossart-mobl3.intel.com) ([10.212.14.236])
+ by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Jul 2021 11:21:56 -0700
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: topology: Select SND_DYNAMIC_MINORS
+Date: Mon, 26 Jul 2021 13:21:42 -0500
+Message-Id: <20210726182142.179604-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210726174640.6390-1-vitalyr@opensource.cirrus.com>
-References: <20210726174640.6390-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: EfBJjW-WvKKggXPYylH3zg8ie32iti_u
-X-Proofpoint-GUID: EfBJjW-WvKKggXPYylH3zg8ie32iti_u
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- priorityscore=1501 clxscore=1015
- suspectscore=0 impostorscore=0 mlxlogscore=999 lowpriorityscore=0
- spamscore=0 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107260105
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
+Cc: tiwai@suse.de, vkoul@kernel.org, broonie@kernel.org,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,74 +78,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-CS42L42 is configured to use a fixed sample rate of 48kHz.
+The indexes of the devices are described within the topology file, it is a
+possibility that the topology encodes invalid indexes when DYNAMIC_MINORS
+is not enabled in kernel:
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+ #define SNDRV_MINOR_COMPRESS		2	/* 2 - 3 */
+ #define SNDRV_MINOR_HWDEP		4	/* 4 - 7 */
+ #define SNDRV_MINOR_RAWMIDI		8	/* 8 - 15 */
+ #define SNDRV_MINOR_PCM_PLAYBACK	16	/* 16 - 23 */
+ #define SNDRV_MINOR_PCM_CAPTURE	24	/* 24 - 31 */
+
+If the topology assigns an index greater than 7 for PLAYBACK/CAPTURE PCM
+then there will be minor number collision.
+
+As an example:
+card0 creates a capture PCM with index 10 -> minor = 34
+card1 creates compress device with index 0 -> minor = 34
+
+Card1 will fail to instantiate because the minor for the compress stream is
+already taken.
+
+To avoid seemingly mysterious issues with card creation, select the
+DYNAMIC_MINORS when the topology is enabled.
+
+The other option would be to try to do out of bound index checks in case of
+DYNAMIC_MINOR is not enabled and do not even attempt to create the device
+with failing the topology load.
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/pci/hda/patch_cs8409-tables.c | 8 ++++++++
- sound/pci/hda/patch_cs8409.c        | 6 ++++++
- sound/pci/hda/patch_cs8409.h        | 2 ++
- 3 files changed, 16 insertions(+)
+ sound/soc/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/pci/hda/patch_cs8409-tables.c b/sound/pci/hda/patch_cs8409-tables.c
-index a39b2c20f61c..a9a0b8e3b2a9 100644
---- a/sound/pci/hda/patch_cs8409-tables.c
-+++ b/sound/pci/hda/patch_cs8409-tables.c
-@@ -45,6 +45,14 @@ const struct snd_kcontrol_new cs42l42_adc_volume_mixer = {
- 			 HDA_INPUT, CS42L42_VOL_ADC) | HDA_AMP_VAL_MIN_MUTE
- };
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 8a13462e1a63..5dcf77af07af 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -36,6 +36,7 @@ config SND_SOC_COMPRESS
  
-+const struct hda_pcm_stream cs42l42_48k_pcm_analog_playback = {
-+	.rates = SNDRV_PCM_RATE_48000, /* fixed rate */
-+};
-+
-+const struct hda_pcm_stream cs42l42_48k_pcm_analog_capture = {
-+	.rates = SNDRV_PCM_RATE_48000, /* fixed rate */
-+};
-+
- /******************************************************************************
-  *                   BULLSEYE / WARLOCK / CYBORG Specific Arrays
-  *                               CS8409/CS42L42
-diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
-index 566aa84dfe5b..1dd55bf66a06 100644
---- a/sound/pci/hda/patch_cs8409.c
-+++ b/sound/pci/hda/patch_cs8409.c
-@@ -873,6 +873,9 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
+ config SND_SOC_TOPOLOGY
+ 	bool
++	select SND_DYNAMIC_MINORS
  
- 		break;
- 	case HDA_FIXUP_ACT_PROBE:
-+		/* Fix Sample Rate to 48kHz */
-+		spec->gen.stream_analog_playback = &cs42l42_48k_pcm_analog_playback;
-+		spec->gen.stream_analog_capture = &cs42l42_48k_pcm_analog_capture;
- 		/* Set initial DMIC volume to -26 dB */
- 		snd_hda_codec_amp_init_stereo(codec, CS8409_CS42L42_DMIC_ADC_PIN_NID,
- 					      HDA_INPUT, 0, 0xff, 0x19);
-@@ -1066,6 +1069,9 @@ void dolphin_fixups(struct hda_codec *codec, const struct hda_fixup *fix, int ac
- 
- 		break;
- 	case HDA_FIXUP_ACT_PROBE:
-+		/* Fix Sample Rate to 48kHz */
-+		spec->gen.stream_analog_playback = &cs42l42_48k_pcm_analog_playback;
-+		spec->gen.stream_analog_capture = &cs42l42_48k_pcm_analog_capture;
- 		snd_hda_gen_add_kctl(&spec->gen, "Headphone Playback Volume",
- 				     &cs42l42_dac_volume_mixer);
- 		snd_hda_gen_add_kctl(&spec->gen, "Mic Capture Volume", &cs42l42_adc_volume_mixer);
-diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
-index 1b5a8d04ba0f..2208be2ffad1 100644
---- a/sound/pci/hda/patch_cs8409.h
-+++ b/sound/pci/hda/patch_cs8409.h
-@@ -335,6 +335,8 @@ int cs42l42_volume_info(struct snd_kcontrol *kctrl, struct snd_ctl_elem_info *ui
- int cs42l42_volume_get(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl);
- int cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl);
- 
-+extern const struct hda_pcm_stream cs42l42_48k_pcm_analog_playback;
-+extern const struct hda_pcm_stream cs42l42_48k_pcm_analog_capture;
- extern const struct snd_pci_quirk cs8409_fixup_tbl[];
- extern const struct hda_model_fixup cs8409_models[];
- extern const struct hda_fixup cs8409_fixups[];
+ config SND_SOC_TOPOLOGY_KUNIT_TEST
+ 	tristate "KUnit tests for SoC topology"
 -- 
 2.25.1
 
