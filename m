@@ -7,67 +7,67 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E110C432BE
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 13:23:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EE61C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 13:24:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC81861A3A
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 13:23:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EC81861A3A
+	by mail.kernel.org (Postfix) with ESMTPS id 0627661A0D
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 13:24:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0627661A0D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7EC441F1E;
-	Tue, 27 Jul 2021 15:22:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EC441F1E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9EA331F05;
+	Tue, 27 Jul 2021 15:23:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EA331F05
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627392222;
-	bh=bUScK7HYt7P6cLu4rd9N47IJvD80SgTtLcUsmsVepaE=;
+	s=default; t=1627392247;
+	bh=clXpkkKYs0rFca8LLDbeSbQ7rs6gT7Z2YGaHBpBxeRc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MDFW4WSdTpKVxSevk4KN7PNGbVsXnKiYbc3TqACB22yX8MuFRr19wBqPv5Lhmnd8L
-	 XxV89SJMM2G2Isqb8X7AW7Pn+uGMjuRpi7X4kxJoIOFb/I1kfEjxIFK6S5kHoSrXwB
-	 Ol0fvszfYacIxrZ79gTrFB+z/guWS+y7KJpBXsfM=
+	b=mcJHZAwx+RXjuKrMGEAPjW9w7JgtQtCWTm2DQ9chqwEBnLsOS3wodZyspSTVF3ngP
+	 /fpDQC/DJFcV/Ghd/sRJjk7aNpZhiBfZdrCP59kLAWrU71JTN9wEJ3XO8lROXsuspH
+	 TKXvO/t4DzsxE0DQ2irkdvr7jTbPbW27yXNtLoaw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1FC0F80516;
-	Tue, 27 Jul 2021 15:20:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AC345F8026C;
+	Tue, 27 Jul 2021 15:20:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16BF5F80517; Tue, 27 Jul 2021 15:20:12 +0200 (CEST)
+ id 4754DF8026C; Tue, 27 Jul 2021 15:20:27 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BA2A9F80515
- for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 15:20:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA2A9F80515
+ by alsa1.perex.cz (Postfix) with ESMTPS id ED622F80258
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 15:20:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED622F80258
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ABz+/HvE"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 06B8461A7F;
- Tue, 27 Jul 2021 13:20:05 +0000 (UTC)
+ header.b="HrbL2d0R"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D34C161A8C;
+ Tue, 27 Jul 2021 13:20:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1627392006;
- bh=bUScK7HYt7P6cLu4rd9N47IJvD80SgTtLcUsmsVepaE=;
+ s=k20201202; t=1627392018;
+ bh=clXpkkKYs0rFca8LLDbeSbQ7rs6gT7Z2YGaHBpBxeRc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ABz+/HvE63chtv4IjGT++tKDPkpd+OrcVCDl2u4SltEudbveF6w5DdyHbXaVLKPJg
- /a6OcTJL2BMYBKm6oyx3e1ZnRD+CCD8i5F00aS+lwnSGBaa0xU0jeC+WVC/n6i5XIi
- 6EepJUJbuUHqzPKX9JO0AbUj2wvYnCqQb1T4DFArBTAKf2nM2gNCMMz7klt4Db3sH0
- bD9S9EW3IxOyBdo5VLl2xTG5hyk5I51UC5EXcM7jv6s9629toS9iaHrRUawQOg2k2C
- FMeogSy2CZ2Vk5xBPe6pC2ufkVAFLKSRShLzcEfPwsAw7rOv0GuRh4YO1QVJkPCNWv
- 7OtNNcKe4MVDA==
+ b=HrbL2d0R6xsLqrXAGA/llhFB5fsUfNf2GXWuhkhYCiUHgjSy8fFKmj1QNgYcKTKic
+ cjV8FLmrP5qBDy24TuT6CjAFyDJI5xsY7ee7v+jcuRA//Zu817v+8DsYLVGMVvoJbS
+ 0nrM0gD1ga5R/lSZUYz6SLB76oofAPLl3GBeYoVpobEXrJ/oDzHq93XSdEU2nfTp9x
+ dNOy72F5L3lRX+f8szEoBSm0EyFYMJqYKBTTfmD+Jq5Pu4HdvXPsYq/NtWMa3xvNp8
+ +2vd6DjfytqlvZi5u0Zq//azxKa5lKjGuKCpXYBfSaC7JvVIYP8AjZmcHxJkFgl+fo
+ bHgKxhYviCZng==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 3/9] ASoC: tlv320aic31xx: fix reversed bclk/wclk
+Subject: [PATCH AUTOSEL 4.19 2/6] ASoC: tlv320aic31xx: fix reversed bclk/wclk
  master bits
-Date: Tue, 27 Jul 2021 09:19:55 -0400
-Message-Id: <20210727132002.835130-3-sashal@kernel.org>
+Date: Tue, 27 Jul 2021 09:20:11 -0400
+Message-Id: <20210727132015.835651-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210727132002.835130-1-sashal@kernel.org>
-References: <20210727132002.835130-1-sashal@kernel.org>
+In-Reply-To: <20210727132015.835651-1-sashal@kernel.org>
+References: <20210727132015.835651-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -116,10 +116,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
-index cb024955c978..73c5f6c8ed69 100644
+index 0b587585b38b..6071de5fca57 100644
 --- a/sound/soc/codecs/tlv320aic31xx.h
 +++ b/sound/soc/codecs/tlv320aic31xx.h
-@@ -151,8 +151,8 @@ struct aic31xx_pdata {
+@@ -147,8 +147,8 @@ struct aic31xx_pdata {
  #define AIC31XX_WORD_LEN_24BITS		0x02
  #define AIC31XX_WORD_LEN_32BITS		0x03
  #define AIC31XX_IFACE1_MASTER_MASK	GENMASK(3, 2)
