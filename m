@@ -2,94 +2,67 @@ Return-Path: <SRS0=TC80=MT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FBE0C4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 03:08:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31216C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 05:34:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 86BB960F9E
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 03:08:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 86BB960F9E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id C6853610D2
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 05:34:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C6853610D2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 968141B02;
-	Tue, 27 Jul 2021 05:07:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 968141B02
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6F4A21AEA;
+	Tue, 27 Jul 2021 07:33:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F4A21AEA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627355308;
-	bh=CrPx1yTpxBBnMS3wwGQfwDjedtDRLxbCcEXZ6i/I2Mo=;
+	s=default; t=1627364052;
+	bh=bM7buRkCZUBxra241Ll4g8wWOV2m3XW4UbSbzECfuIw=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=MzPMW/57bGVZgqgvt637o4t3Ck+9ZCS5MKLXm7zz6iG9cMvK1Mn9GSGiCoL2b2BYf
-	 qRf0B1V5Z3iA41XUcGi9Pz9XjQIdid3wnOG7lqu9bl/nTxyXQWXdb1mWo+6ag4AGe/
-	 xUSnSF13vW6SAuSYrtVdngX+9sEKyDk/mx1rXZXY=
+	b=kxon7wbCmkCKY6aql6HEIPxrvmaUdHyiM4x9gxQ3CeUrHGtHBrBIIBoaTYm3PFFR0
+	 //lkdqf69yy2qX3mxJHZ8EZARPfsECsLoIwIX8wxd5TZ+A98TDv0jLfTzesw8LzUIW
+	 KXPivqodn3YO3kPbvMvsEfUVZBQ64rPepFnbkFiM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 06369F80258;
-	Tue, 27 Jul 2021 05:07:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EABACF80258;
+	Tue, 27 Jul 2021 07:33:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C2085F8026C; Tue, 27 Jul 2021 05:07:35 +0200 (CEST)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
- [IPv6:2a00:1450:4864:20::329])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 0A2A5F8020D; Tue, 27 Jul 2021 07:33:20 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 59AF0F80212
- for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 05:07:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59AF0F80212
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="cEWrlrPE"
-Received: by mail-wm1-x329.google.com with SMTP id
- l11-20020a7bcf0b0000b0290253545c2997so1301042wmg.4
- for <alsa-devel@alsa-project.org>; Mon, 26 Jul 2021 20:07:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=Z+vhuPMi7v8JV5TwCD4wJFknXFCpdec7hF+rFYNv128=;
- b=cEWrlrPEght9YOFvG3cMoN5U5IOmV4GIKDDb/BurWVG29PzUWHTrz2tF2uO0sM9Knj
- FWYgwuR4ECgQGTbH9VJgVrmU5ZQtSZ7J0poGMD/0GcooXp1MQ3uRyCjXAuNEL5l/h7lm
- 4so5s5/4U+VDDTt0Jq8/mLjCapEFndu69xt4ZyOJELm1pgt3nnULO7J9gyVBS/4/jfSF
- CRbPqhZCpEAfexMteaWAZhAwA4OGhK5Nbzlu/noYbg6Lh7y10GoUFaSqyJO0t3UwBMqq
- 0B8JjghGewBt5mvT23kJ7YQ1h9Qb3TEcCSJchdo72s/tyD6Uwe5EHW55PSjXJ167IMCR
- EwHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=Z+vhuPMi7v8JV5TwCD4wJFknXFCpdec7hF+rFYNv128=;
- b=k9wgOVBlT2FpmsaHVjIufvg39sxoEKLnxNfJjUcJx54iqaBlGRvjj2CnSyQHyw8ogx
- ZQwm5bidS7ComV9n/9VE4fgZlqfGSk0qChQ8eydPfzvQY1pXsJjojSbs1uQvgFJgnEVa
- oFnFLvdV7tWmRi3W8Tsmd8jHE2CcRI7TjLhZDLyc6sIfmAvsXE5WjFBVqKnQ12uXuXd8
- JNobpZRuFoO7P7hk7gK6OcIbHsRNzbzQw+Z0n6VQqHAN83SzRzjgyZAQl/XaPGJ6e3if
- FGNoKSixRsJwklvBoMNcZisVXHSjN5aER2oJH2A24ezPQs7f/X6CUqf76Uc1pU/szz59
- JM3w==
-X-Gm-Message-State: AOAM532hN7R3ZEqtPJCX+vTNTvpumUldvxTqzmNLDQlBKasmTHI+rk7I
- Ex6NhzmMeLfKoqmUYzw1hbc=
-X-Google-Smtp-Source: ABdhPJyby0G1eHA9n1PWph8XZg5AugAwqCZNei2aE+3DxtcgqA4zvOf/dpUUCNLajxf8S0gq0ix1EA==
-X-Received: by 2002:a1c:a510:: with SMTP id o16mr1761195wme.162.1627355248335; 
- Mon, 26 Jul 2021 20:07:28 -0700 (PDT)
-Received: from mpompiras.. (ppp-94-66-57-252.home.otenet.gr. [94.66.57.252])
- by smtp.gmail.com with ESMTPSA id d18sm1929801wrp.54.2021.07.26.20.07.27
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 26 Jul 2021 20:07:27 -0700 (PDT)
-From: Nikos Liolios <liolios.nk@gmail.com>
-To: tiwai@suse.com
-Subject: [PATCH] ALSA: hda/realtek: Fix headset mic for Acer SWIFT SF314-56
- (ALC256)
-Date: Tue, 27 Jul 2021 06:05:10 +0300
-Message-Id: <20210727030510.36292-1-liolios.nk@gmail.com>
-X-Mailer: git-send-email 2.31.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0B384F8020D
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 07:33:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B384F8020D
+X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="212093944"
+X-IronPort-AV: E=Sophos;i="5.84,272,1620716400"; d="scan'208";a="212093944"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Jul 2021 22:33:06 -0700
+X-IronPort-AV: E=Sophos;i="5.84,272,1620716400"; d="scan'208";a="516656281"
+Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
+ by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Jul 2021 22:33:04 -0700
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
+To: broonie@kernel.org,
+	tiwai@suse.de
+Subject: [PATCH] soundwire: intel: trap TRIGGER_SUSPEND in .trigger callback
+Date: Tue, 27 Jul 2021 13:32:56 +0800
+Message-Id: <20210727053256.29949-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Nikos Liolios <liolios.nk@gmail.com>
+Cc: vkoul@kernel.org, alsa-devel@alsa-project.org,
+ pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,27 +78,137 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The issue on Acer SWIFT SF314-56 is that headset microphone doesn't work.
-The following quirk fixed headset microphone issue. The fixup was found by trial and error.
-Note that the fixup of SF314-54/55 (ALC256_FIXUP_ACER_HEADSET_MIC) was not successful on my SF314-56.
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-Signed-off-by: Nikos Liolios <liolios.nk@gmail.com>
+This patch provides both a simplification of the suspend flows and a
+better balanced operation during suspend/resume transition.
+
+The exiting code relies on a convoluted way of dealing with suspend
+signals. Since there is no .suspend DAI callback, we used the
+component .suspend and marked all the component DAI dmas as
+'suspended'. The information was used in the .prepare stage to
+differentiate resume operations from xrun handling, and only
+reinitialize SHIM registers and DMA in the former case.
+
+While this solution has been working reliably for about 2 years, there
+is a much better solution consisting in trapping the TRIGGER_SUSPEND
+in the .trigger DAI ops. The DMA is still marked in the same way for
+the .prepare op to run, but in addition the callbacks sent to DSP
+firmware are now balanced.
+
+Normal operation:
+hw_params -> intel_params_stream
+hw_free   -> intel_free_stream
+
+suspend    -> intel_free_stream
+prepare    -> intel_params_stream
+
+This balanced operation was not required with existing SOF firmware
+relying on static pipelines instantiated at every boot. With the
+on-going transition to dynamic pipelines, it's however a requirement
+to keep the use count for the DAI widget balanced across all
+transitions.
+
+Co-developed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/soundwire/intel.c | 53 +++++++++++++++++++++------------------
+ 1 file changed, 29 insertions(+), 24 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index caaf0e8aa..14e1ab7c7 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8274,6 +8274,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1025, 0x1290, "Acer Veriton Z4860G", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1025, 0x1291, "Acer Veriton Z4660G", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1025, 0x129c, "Acer SWIFT SF314-55", ALC256_FIXUP_ACER_HEADSET_MIC),
-+	SND_PCI_QUIRK(0x1025, 0x1300, "Acer SWIFT SF314-56", ALC256_FIXUP_ACER_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1025, 0x1308, "Acer Aspire Z24-890", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1025, 0x132a, "Acer TravelMate B114-21", ALC233_FIXUP_ACER_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1025, 0x1330, "Acer TravelMate X514-51T", ALC255_FIXUP_ACER_HEADSET_MIC),
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index fb9c23e13206..a0178779a5ba 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -1005,29 +1005,6 @@ static void intel_shutdown(struct snd_pcm_substream *substream,
+ 	pm_runtime_put_autosuspend(cdns->dev);
+ }
+ 
+-static int intel_component_dais_suspend(struct snd_soc_component *component)
+-{
+-	struct sdw_cdns_dma_data *dma;
+-	struct snd_soc_dai *dai;
+-
+-	for_each_component_dais(component, dai) {
+-		/*
+-		 * we don't have a .suspend dai_ops, and we don't have access
+-		 * to the substream, so let's mark both capture and playback
+-		 * DMA contexts as suspended
+-		 */
+-		dma = dai->playback_dma_data;
+-		if (dma)
+-			dma->suspended = true;
+-
+-		dma = dai->capture_dma_data;
+-		if (dma)
+-			dma->suspended = true;
+-	}
+-
+-	return 0;
+-}
+-
+ static int intel_pcm_set_sdw_stream(struct snd_soc_dai *dai,
+ 				    void *stream, int direction)
+ {
+@@ -1056,11 +1033,39 @@ static void *intel_get_sdw_stream(struct snd_soc_dai *dai,
+ 	return dma->stream;
+ }
+ 
++static int intel_trigger(struct snd_pcm_substream *substream, int cmd, struct snd_soc_dai *dai)
++{
++	struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
++	struct sdw_intel *sdw = cdns_to_intel(cdns);
++	struct sdw_cdns_dma_data *dma;
++
++	/*
++	 * The .prepare callback is used to deal with xruns and resume operations. In the case
++	 * of xruns, the DMAs and SHIM registers cannot be touched, but for resume operations the
++	 * DMAs and SHIM registers need to be initialized.
++	 * the .trigger callback is used to track the suspend case only.
++	 */
++	if (cmd != SNDRV_PCM_TRIGGER_SUSPEND)
++		return 0;
++
++	dma = snd_soc_dai_get_dma_data(dai, substream);
++	if (!dma) {
++		dev_err(dai->dev, "failed to get dma data in %s\n",
++			__func__);
++		return -EIO;
++	}
++
++	dma->suspended = true;
++
++	return intel_free_stream(sdw, substream, dai, sdw->instance);
++}
++
+ static const struct snd_soc_dai_ops intel_pcm_dai_ops = {
+ 	.startup = intel_startup,
+ 	.hw_params = intel_hw_params,
+ 	.prepare = intel_prepare,
+ 	.hw_free = intel_hw_free,
++	.trigger = intel_trigger,
+ 	.shutdown = intel_shutdown,
+ 	.set_sdw_stream = intel_pcm_set_sdw_stream,
+ 	.get_sdw_stream = intel_get_sdw_stream,
+@@ -1071,6 +1076,7 @@ static const struct snd_soc_dai_ops intel_pdm_dai_ops = {
+ 	.hw_params = intel_hw_params,
+ 	.prepare = intel_prepare,
+ 	.hw_free = intel_hw_free,
++	.trigger = intel_trigger,
+ 	.shutdown = intel_shutdown,
+ 	.set_sdw_stream = intel_pdm_set_sdw_stream,
+ 	.get_sdw_stream = intel_get_sdw_stream,
+@@ -1078,7 +1084,6 @@ static const struct snd_soc_dai_ops intel_pdm_dai_ops = {
+ 
+ static const struct snd_soc_component_driver dai_component = {
+ 	.name           = "soundwire",
+-	.suspend	= intel_component_dais_suspend
+ };
+ 
+ static int intel_create_dai(struct sdw_cdns *cdns,
 -- 
-2.31.1
+2.17.1
 
