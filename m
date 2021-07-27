@@ -3,87 +3,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EAB03C4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 06:32:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32544C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 06:40:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C494261108
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 06:32:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C494261108
+	by mail.kernel.org (Postfix) with ESMTPS id 04B4A60FC1
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 06:40:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 04B4A60FC1
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DD68C1AD0;
-	Tue, 27 Jul 2021 08:32:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD68C1AD0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 594991B13;
+	Tue, 27 Jul 2021 08:39:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 594991B13
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627367575;
-	bh=3AhEXrUT4xNC7ypFtGgnccFuoO2LBk+6NGfcyAohz9A=;
+	s=default; t=1627368038;
+	bh=Fo32S6fSPeXgrvjQj0q4q4+jSuslRxWfQju5wOVEVtY=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LZUWN6cWZq33sThcWP/O4qNXQXl/lOKJzbwQd+b87Ic67eaT9vxKJZFkog1lF6YAL
-	 w9WJhNQ+YcZWqELjVCfNUrmX+gwjrd4kLXruFy+W4byqW0iFWgAk/8Nks6b4/al5eF
-	 i1XpMaUPtY1DQIvBfXsTyi0VTAqWJoaDfm1AphaU=
+	b=dfPN1Xw3iv/NkrCcgF/2PaLHsx7z1rngiz+6aNeqSa8ST/K91jb/seyOASUSZ709m
+	 GWuniIgmplvgDjPbNU+0zXodPI2LYqzmvzCtuEjsS1rpWplMCjCegEIzeOEq4ct7jX
+	 XfKk82wBeK8RmZVi2h1z2ppghRCxadq9mieU0J0g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8AD35F80258;
-	Tue, 27 Jul 2021 08:32:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ABF38F80258;
+	Tue, 27 Jul 2021 08:39:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AEB13F8026C; Tue, 27 Jul 2021 08:32:04 +0200 (CEST)
+ id 9D484F80258; Tue, 27 Jul 2021 08:39:46 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 85883F80159
- for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 08:32:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85883F80159
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7CB86F80159
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 08:39:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CB86F80159
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="gCEfbSG6"; 
+ header.b="dg6h/H0m"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="8xcZZ7Po"
+ header.b="tMSJBPxY"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 64E5A200BC;
- Tue, 27 Jul 2021 06:32:02 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id B1415200BC;
+ Tue, 27 Jul 2021 06:39:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1627367522; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1627367982; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ZV2eki0hWNLtpsRzva1r9sdNQdqhfoLAqsxuVAPHstA=;
- b=gCEfbSG6mD5ff9CfPGOI1LfnTyVc3QIHYACwff03jQ7eZ2LIw48tAQQRmeA8h+ecKr5bDP
- Qctn5UyQXPj0kw+BoiaDgRW2+MZYACSRoZhsmMxtUhPvu6tAWrLEfFOaUwrX5s3vEgIFKl
- 1EzN+unLsWYBy26x9BhPAm2ebGZLizQ=
+ bh=fPoE+Kwuy2iglyI2lCAzcgm1oX7293RMnL2/UIlVTwg=;
+ b=dg6h/H0mU6+z+IwpEi2/sp7m34EnWEWDpQ5CqTJDEfvwlSuPfMsMHI1iM4OPd0FvQjh08J
+ uzpGQd7Ts3U4aX2ekGd0soLTCF7JeQUL4mGnT9KY6p170sBVF0+KvyS7f7KHy7ETj5eckC
+ URR8Jx2/TsH+ngJ+rKKr6BpU/4sZsS0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1627367522;
+ s=susede2_ed25519; t=1627367982;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ZV2eki0hWNLtpsRzva1r9sdNQdqhfoLAqsxuVAPHstA=;
- b=8xcZZ7PovBdIlcWd25NShfpO+40HKDe0L5ArjJUyA7vgTZUk8R+7Rvv2lwOm+I90f4DOap
- yK33dBCYm6W/grCw==
+ bh=fPoE+Kwuy2iglyI2lCAzcgm1oX7293RMnL2/UIlVTwg=;
+ b=tMSJBPxYoetG6PxAqHOSy3s6h80ZwRfZeFPs33/cswZcv/qlUi3293Nr6IMXCI/vhEI007
+ N9GlGgwBVd6/0eCA==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 54E86A3B84;
- Tue, 27 Jul 2021 06:32:02 +0000 (UTC)
-Date: Tue, 27 Jul 2021 08:32:02 +0200
-Message-ID: <s5h7dhcfesd.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id A30D2A3B81;
+ Tue, 27 Jul 2021 06:39:42 +0000 (UTC)
+Date: Tue, 27 Jul 2021 08:39:42 +0200
+Message-ID: <s5h5ywwfefl.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Nikos Liolios <liolios.nk@gmail.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Fix headset mic for Acer SWIFT
- SF314-56 (ALC256)
-In-Reply-To: <20210727030510.36292-1-liolios.nk@gmail.com>
-References: <20210727030510.36292-1-liolios.nk@gmail.com>
+To: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Subject: Re: [PATCH 01/27] ALSA: hda/cirrus: Move CS8409 HDA bridge to
+ separate module
+In-Reply-To: <20210726174640.6390-2-vitalyr@opensource.cirrus.com>
+References: <20210726174640.6390-1-vitalyr@opensource.cirrus.com>
+ <20210726174640.6390-2-vitalyr@opensource.cirrus.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
+ patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,16 +101,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 27 Jul 2021 05:05:10 +0200,
-Nikos Liolios wrote:
-> 
-> The issue on Acer SWIFT SF314-56 is that headset microphone doesn't work.
-> The following quirk fixed headset microphone issue. The fixup was found by trial and error.
-> Note that the fixup of SF314-54/55 (ALC256_FIXUP_ACER_HEADSET_MIC) was not successful on my SF314-56.
-> 
-> Signed-off-by: Nikos Liolios <liolios.nk@gmail.com>
+On Mon, 26 Jul 2021 19:46:14 +0200,
+Vitaly Rodionov wrote:
+> --- a/sound/pci/hda/Kconfig
+> +++ b/sound/pci/hda/Kconfig
+> @@ -150,6 +150,7 @@ comment "Set to Y if you want auto-loading the codec driver"
+>  config SND_HDA_CODEC_CIRRUS
+>  	tristate "Build Cirrus Logic codec support"
+>  	select SND_HDA_GENERIC
+> +	select SND_HDA_CODEC_CS8409
+>  	help
+>  	  Say Y or M here to include Cirrus Logic codec support in
+>  	  snd-hda-intel driver, such as CS4206.
 
-Thanks, applied.
+This reverse-selection doesn't make sense, as both modules should be
+completely individual.
 
+
+thanks,
 
 Takashi
