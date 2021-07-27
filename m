@@ -4,75 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EEADC4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 15:49:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5A04C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 15:49:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E5F3C61B67
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 15:49:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E5F3C61B67
+	by mail.kernel.org (Postfix) with ESMTPS id 2435961B67
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 15:49:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2435961B67
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 538D71AED;
-	Tue, 27 Jul 2021 17:48:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 538D71AED
+	by alsa0.perex.cz (Postfix) with ESMTPS id B24E41F2C;
+	Tue, 27 Jul 2021 17:48:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B24E41F2C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627400953;
-	bh=gNDe2AD217eY+BLutIfmYCRXWTQtHqU7/+jVAmZJtvo=;
+	s=default; t=1627400966;
+	bh=amQ7J8QFGOG4xab2fJlivijQYjsObT1nPCdsO16qYII=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MUeWe3RtcaIQsAac/DsB+me+fuE9vhdM3p3oZfnvqBBgwAvoF/Hw7UZ1F0MfEanOb
-	 uagU6Y4SaRCwEhUYPlHjSt6oOm9UtSLPbVRygNWwMV4zdiyCBTZI1Cg2rL9BmCiiJN
-	 7C6wrXkfd91quvI2ouvjhsgVlwoWI+c1RTfBV0Qk=
+	b=bYOiMmAxwWAuHvyI6usToOgyLfdp34r2JpBFcp0eRFWPbxy7UMEFlBYEYkbXnGj/D
+	 EDk46Gcz23QLhkplrALYqazKNTZSxHML5BWX9NCGofeAsZnmGsZTaLDO9PEIKKXr/1
+	 2ZhUEnJbrLbyyiUV5SyT4E8VXsA0+8/l3xtqx6Lk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 88430F804E4;
-	Tue, 27 Jul 2021 17:47:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6BEABF804EC;
+	Tue, 27 Jul 2021 17:47:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8F99DF804E4; Tue, 27 Jul 2021 17:47:18 +0200 (CEST)
+ id 1FCF1F804F2; Tue, 27 Jul 2021 17:47:26 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2AB82F804E0
- for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 17:47:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2AB82F804E0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 99C88F804EC
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 17:47:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99C88F804EC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="TzErxDDy"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3043261B5F;
- Tue, 27 Jul 2021 15:46:52 +0000 (UTC)
+ header.b="RRXXwHSl"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7763C61B60;
+ Tue, 27 Jul 2021 15:47:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1627400816;
- bh=gNDe2AD217eY+BLutIfmYCRXWTQtHqU7/+jVAmZJtvo=;
+ s=k20201202; t=1627400839;
+ bh=amQ7J8QFGOG4xab2fJlivijQYjsObT1nPCdsO16qYII=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=TzErxDDynVY2gGFuHeu7FrVXhiP76YSUIShsvVPF9ZKmVtUvoM/1ubkcqRk+Cv7+B
- QYWysoQLfleIsAhSB8GC1SH8OYQQo5mp6zZXlEUP0riR4HHTGN9lAD9mlkDr9B/SNx
- V+XMi+gUdq+fMoaeGF/43jpz6Ps3kMWZF1HKD0ZrDUI7Pw+TCgj1B9beWXJzFf40WF
- UTVx1tm4QqbBCJ3xNj+zQ1ydzRfuoFptvLaLB4YmicqxmhP8+8gXiXsG1mxcyE2w99
- LPySMjgNWZp/H75AwmV0NNbRhPsMeksj5LjHuE4zZX5TORjtIhGZIkU6M8sMaGq940
- juzrBxHeIfOXQ==
+ b=RRXXwHSlIL7B2qZqa16uDL0nLvin72y+x9FeqvKQ6UwkOEuHaz/V/n7xcuggJJTkI
+ JqeF3wUxKEG6pUFBi0lRMsUYsQ6hXRK/fvgDi8jREDqCG1GyI+9rBuuxrqrQJUx573
+ pjoT1oiPhMp0TrAJJwZGktxHRqIlu3M96jCIBzb6CK9ySj8CmvY4RlK2vQUHUa8KY6
+ T9V+kA6IQZft+5V+LQ3Vou5U5R8Vll0Hfpl2Bm1BYHnVKwlDEvmI21UZnjVEaOvQGK
+ hJI7DmwdD5st6iq9IimN132Z0ufYKb4bvDHRaxD1m+LKYZw9vw0K5ro+79cKdl9G2y
+ BFDiO+y7ObIlA==
 From: Mark Brown <broonie@kernel.org>
-To: shumingf@realtek.com,
-	lgirdwood@gmail.com
-Subject: Re: [PATCH] ASoC: rt5682: enable SAR ADC power saving mode during
- suspend
-Date: Tue, 27 Jul 2021 16:46:25 +0100
-Message-Id: <162739969149.18968.14001474581920968041.b4-ty@kernel.org>
+To: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: topology: Select SND_DYNAMIC_MINORS
+Date: Tue, 27 Jul 2021 16:46:27 +0100
+Message-Id: <162739969148.18968.9498267627877546344.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210727084846.9867-1-shumingf@realtek.com>
-References: <20210727084846.9867-1-shumingf@realtek.com>
+In-Reply-To: <20210726182142.179604-1-pierre-louis.bossart@linux.intel.com>
+References: <20210726182142.179604-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, albertchen@realtek.com, Mark Brown <broonie@kernel.org>,
- derek.fang@realtek.com, sathyanarayana.nujella@intel.com, flove@realtek.com
+Cc: tiwai@suse.de, vkoul@kernel.org, Mark Brown <broonie@kernel.org>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,9 +86,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 27 Jul 2021 16:48:46 +0800, shumingf@realtek.com wrote:
-> The SAR ADC power saving mode could reduce power consumption on MICVDD rail.
-> Therefore, this patch saves power consumption during suspend state if the headset was connected.
+On Mon, 26 Jul 2021 13:21:42 -0500, Pierre-Louis Bossart wrote:
+> The indexes of the devices are described within the topology file, it is a
+> possibility that the topology encodes invalid indexes when DYNAMIC_MINORS
+> is not enabled in kernel:
+> 
+>  #define SNDRV_MINOR_COMPRESS		2	/* 2 - 3 */
+>  #define SNDRV_MINOR_HWDEP		4	/* 4 - 7 */
+>  #define SNDRV_MINOR_RAWMIDI		8	/* 8 - 15 */
+>  #define SNDRV_MINOR_PCM_PLAYBACK	16	/* 16 - 23 */
+>  #define SNDRV_MINOR_PCM_CAPTURE	24	/* 24 - 31 */
+> 
+> [...]
 
 Applied to
 
@@ -98,8 +105,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rt5682: enable SAR ADC power saving mode during suspend
-      commit: 89d751d8f9dcfb69d1153070d5e5a86d36ac1b45
+[1/1] ASoC: topology: Select SND_DYNAMIC_MINORS
+      commit: 2635c226036c1bf44b86575d0bc721505c8201e3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
