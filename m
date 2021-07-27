@@ -2,63 +2,62 @@ Return-Path: <SRS0=TC80=MT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-21.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52629C4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 05:58:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B9F0C432BE
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 05:59:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B3B7560FE3
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 05:58:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B3B7560FE3
+	by mail.kernel.org (Postfix) with ESMTPS id 38C0561057
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 05:59:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 38C0561057
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7E8C41EF9;
-	Tue, 27 Jul 2021 07:58:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E8C41EF9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6DFF31EF6;
+	Tue, 27 Jul 2021 07:58:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DFF31EF6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627365531;
-	bh=RuBzuG8/EjmDuSelbknJJndCn700nyrXWZ2G8Fjzpqc=;
+	s=default; t=1627365544;
+	bh=AamyEww6d6EqbLvs7RcjbwORfe6zbnW0iL1B3trggU0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ADDhQsgQLHHfwicCCtGRbd/BJBSOk4hudKW6SGMmuS+hVLczg9DzpmkhOsvO+RmMb
-	 nz/5nVYsB19YrykoGxfOW7VOX0hYO2o7krT06djYTEf9uCsv5+t+DvNQ40vswa1WXf
-	 6aT9jfUDJReFaFq0Cogu1rJXXC/Z9p+bEgAT4t6o=
+	b=k+Ci2QAddVmhiA5TblBQvB0j9HIaWCAs516ZZrIJPElGp16ii2il5f/i/o34JTcR2
+	 LmKi91lgwIanNK7DMXHGYqzgHSPZdVtt87ycFTw/vnpMfzV0cnDhmC1DdqEBEB9aTA
+	 leFwgdsJRcFCfoNv2rNR7pWUl0fJtSxsYj7ustdA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A79CF804E2;
-	Tue, 27 Jul 2021 07:56:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22A50F804E5;
+	Tue, 27 Jul 2021 07:56:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4CC3BF8026C; Tue, 27 Jul 2021 07:56:37 +0200 (CEST)
+ id 922B7F804E5; Tue, 27 Jul 2021 07:56:39 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2E8B3F804AF
- for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 07:56:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E8B3F804AF
-X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="276163952"
-X-IronPort-AV: E=Sophos;i="5.84,272,1620716400"; d="scan'208";a="276163952"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8999DF8020D
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 07:56:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8999DF8020D
+X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="276163943"
+X-IronPort-AV: E=Sophos;i="5.84,272,1620716400"; d="scan'208";a="276163943"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Jul 2021 22:56:24 -0700
-X-IronPort-AV: E=Sophos;i="5.84,272,1620716400"; d="scan'208";a="474302633"
+ 26 Jul 2021 22:56:22 -0700
+X-IronPort-AV: E=Sophos;i="5.84,272,1620716400"; d="scan'208";a="474302624"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Jul 2021 22:56:23 -0700
+ 26 Jul 2021 22:56:21 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: broonie@kernel.org,
 	tiwai@suse.de
-Subject: [PATCH 4/4] soundwire: intel: simplify pm_runtime handling in
- suspend/resume
-Date: Tue, 27 Jul 2021 13:56:08 +0800
-Message-Id: <20210727055608.30247-5-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 3/4] soundwire: intel: exit clock stop mode on system suspend
+Date: Tue, 27 Jul 2021 13:56:07 +0800
+Message-Id: <20210727055608.30247-4-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210727055608.30247-1-yung-chuan.liao@linux.intel.com>
 References: <20210727055608.30247-1-yung-chuan.liao@linux.intel.com>
@@ -81,45 +80,114 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Since we've introduced a .prepare callback that brings all devices to
-full power on S state transitions if the clock-stop mode was used, we
-no longer need to special-case when the device was pm_runtime
-suspended.
+Intel validation reported an issue where the HW_RST self-clearing bit
+is not cleared in hardware, which as a ripple effect creates issues
+with the clock stop mode.
 
+This happens is a specific sequence where the Intel manager is
+pm_runtime suspended with the clock-stop mode enabled. During the
+system suspend, we currently do nothing, which can lead to potential
+issues on system resume and the following pm_runtime suspend,
+depending on the hardware state.
+
+This patch suggests a full resume (parent+child devices) if the
+clock-stop mode is used. This may require extra time but will make the
+suspend/resume flows completely symmetric. This also removes a race
+condition where we could not access SHIM registers if the parent was
+suspended as well. Resuming the link also resumes the parent by
+construction.
+
+BugLink: https://github.com/thesofproject/linux/issues/2606
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 16 +++-------------
- 1 file changed, 3 insertions(+), 13 deletions(-)
+ drivers/soundwire/intel.c | 65 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 65 insertions(+)
 
 diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 9d05e158fe0e..ec8d6fcbfc9e 100644
+index 46d1645cb7fe..9d05e158fe0e 100644
 --- a/drivers/soundwire/intel.c
 +++ b/drivers/soundwire/intel.c
-@@ -1610,19 +1610,9 @@ static int __maybe_unused intel_suspend(struct device *dev)
+@@ -1527,6 +1527,70 @@ int intel_link_process_wakeen_event(struct auxiliary_device *auxdev)
+  * PM calls
+  */
  
- 		clock_stop_quirks = sdw->link_res->clock_stop_quirks;
++static int intel_resume_child_device(struct device *dev, void *data)
++{
++	int ret;
++	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++
++	if (!slave->probed) {
++		dev_dbg(dev, "%s: skipping device, no probed driver\n", __func__);
++		return 0;
++	}
++	if (!slave->dev_num_sticky) {
++		dev_dbg(dev, "%s: skipping device, never detected on bus\n", __func__);
++		return 0;
++	}
++
++	ret = pm_request_resume(dev);
++	if (ret < 0)
++		dev_err(dev, "%s: pm_request_resume failed: %d\n", __func__, ret);
++
++	return ret;
++}
++
++static int __maybe_unused intel_pm_prepare(struct device *dev)
++{
++	struct sdw_cdns *cdns = dev_get_drvdata(dev);
++	struct sdw_intel *sdw = cdns_to_intel(cdns);
++	struct sdw_bus *bus = &cdns->bus;
++	u32 clock_stop_quirks;
++	int ret = 0;
++
++	if (bus->prop.hw_disabled || !sdw->startup_done) {
++		dev_dbg(dev, "SoundWire master %d is disabled or not-started, ignoring\n",
++			bus->link_id);
++		return 0;
++	}
++
++	clock_stop_quirks = sdw->link_res->clock_stop_quirks;
++
++	if ((clock_stop_quirks & SDW_INTEL_CLK_STOP_BUS_RESET) ||
++	    !clock_stop_quirks) {
++		/*
++		 * Try to resume the entire bus (parent + child devices) to exit
++		 * the clock stop mode. If this fails, we keep going since we don't want
++		 * to prevent system suspend from happening and errors should be recoverable
++		 * on resume.
++		 */
++		ret = device_for_each_child(bus->dev, NULL, intel_resume_child_device);
++
++		if (ret < 0)
++			dev_err(dev, "%s: intel_resume_child_device failed: %d\n", __func__, ret);
++
++		/*
++		 * in the case where a link was started but does not have anything connected,
++		 * we still need to resume to keep link power up/down sequences balanced.
++		 * This is a no-op if a child device was present, since resuming the child
++		 * device would also resume the parent
++		 */
++		ret = pm_request_resume(dev);
++		if (ret < 0)
++			dev_err(dev, "%s: pm_request_resume failed: %d\n", __func__, ret);
++	}
++
++	return 0;
++}
++
+ static int __maybe_unused intel_suspend(struct device *dev)
+ {
+ 	struct sdw_cdns *cdns = dev_get_drvdata(dev);
+@@ -1923,6 +1987,7 @@ static int __maybe_unused intel_resume_runtime(struct device *dev)
+ }
  
--		if ((clock_stop_quirks & SDW_INTEL_CLK_STOP_BUS_RESET ||
--		     !clock_stop_quirks) &&
--		    !pm_runtime_suspended(dev->parent)) {
--
--			/*
--			 * if we've enabled clock stop, and the parent
--			 * is still active, disable shim wake. The
--			 * SHIM registers are not accessible if the
--			 * parent is already pm_runtime suspended so
--			 * it's too late to change that configuration
--			 */
--
--			intel_shim_wake(sdw, false);
-+		if (clock_stop_quirks & SDW_INTEL_CLK_STOP_BUS_RESET || !clock_stop_quirks) {
-+			/* this should not happen but throw a log in case of a broken sequence */
-+			dev_err(dev, "%s: pm_runtime status is suspended with clock-stop mode\n", __func__);
- 		}
- 
- 		return 0;
+ static const struct dev_pm_ops intel_pm = {
++	.prepare = intel_pm_prepare,
+ 	SET_SYSTEM_SLEEP_PM_OPS(intel_suspend, intel_resume)
+ 	SET_RUNTIME_PM_OPS(intel_suspend_runtime, intel_resume_runtime, NULL)
+ };
 -- 
 2.17.1
 
