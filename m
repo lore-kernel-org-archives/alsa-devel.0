@@ -7,73 +7,73 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74152C4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 13:21:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41D09C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 13:22:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EF23D61A07
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 13:21:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EF23D61A07
+	by mail.kernel.org (Postfix) with ESMTPS id 1E88161A07
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 13:22:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1E88161A07
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7951C1F14;
-	Tue, 27 Jul 2021 15:21:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7951C1F14
+	by alsa0.perex.cz (Postfix) with ESMTPS id 94FFE1F11;
+	Tue, 27 Jul 2021 15:21:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94FFE1F11
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627392110;
-	bh=xq9vaZuEISXwGZ9amMGFnKhviWUhwICbRCBqRFA/CAw=;
+	s=default; t=1627392124;
+	bh=2r0Fhs8d3a9+YKMSBs+/2VBJgb52qadIj/04nLw/YKU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=R/lp5CI0K2uPRNd4q09NSiZL+L33hVQkEgCLFh4AR0KAqLiPiDdAPOG2fVMD9ZqTN
-	 bldlj0UmCzwEp98/yKToybUEgf7r1aUWMGaKjfDu9f1ZN5FuJXMaWIGE3Q21KDhuQU
-	 HEYra/3cLeLekDDs33ffvaEBMGAcz1lHFEP6ZneQ=
+	b=IPpmnq9+sC22C+05V45dkW2Q5/e8pYytbKF3ELckKVnXIuhLmdfE0a/iiD6V5nPlC
+	 4ly7wS62tzHKR8gORqLCbmNGuV2LcLsYs9GHNXTgM6TFIIMT5KtHJZ2DRm3JrJQUeD
+	 jfj+I/lODMFSRAT87f6NmEHAvFcca9SaTs1vPFq8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6AF2F804E1;
-	Tue, 27 Jul 2021 15:19:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AC795F804E4;
+	Tue, 27 Jul 2021 15:19:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 22BCFF804DA; Tue, 27 Jul 2021 15:19:38 +0200 (CEST)
+ id C2B32F804E3; Tue, 27 Jul 2021 15:19:49 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A961DF802E7
- for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 15:19:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A961DF802E7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5CD4FF804E4
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 15:19:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CD4FF804E4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="El7F25WM"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AE7061A88;
- Tue, 27 Jul 2021 13:19:22 +0000 (UTC)
+ header.b="tLY9JfFe"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7747F61AD1;
+ Tue, 27 Jul 2021 13:19:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1627391963;
- bh=xq9vaZuEISXwGZ9amMGFnKhviWUhwICbRCBqRFA/CAw=;
+ s=k20201202; t=1627391984;
+ bh=2r0Fhs8d3a9+YKMSBs+/2VBJgb52qadIj/04nLw/YKU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=El7F25WMiH3mAolJxRq23HeBldmoDmASlEYl3SQiP/SR7cxCpGLx2zgtd+FrCSp+r
- HG8bV78lwhs03Gc9iaACo5EgFZkN0j2KynEjWcbDKQsGuFWWnNrTxhhbq24HF4EnOt
- /mdqAMQw++S6veLCZskHqF9Zl6VqIwKngXG7k7znkrqTFFetsZQTxsUuZYuS9CBUQX
- ljb0VWn2QFcSCfxBJUkqwgXrwz9P+4HGhXwCN2PPk6UIhP7Y0N6PPLUo72CoZoLTgo
- lDh+r3vfelccxMuU115/uUKbV6zaJA8MDm2KR8DrRpLYlu2r5/+OsyOnPj5HLI7eLg
- p4qfk8nP/n3kQ==
+ b=tLY9JfFeq8UjEXwOkt1nQU4kHNbe4R67OLSsPXJZ1OpZZjbPCZ/cWA66HNkPAj5mX
+ kvwoy6pjrwo6qJXMUWCmMeVXSJaCC4dtG1dJzZIjia1HlOacsDfrIHIwBtbw6oC1yl
+ YaYX4KXMsuT7mpqOwg2szyMo/dKXucEr1Cg9x0AwYzaw1nb0jx6HQiVNNQk5RcDiE0
+ GM3A4jC7szBz7QfI28Ew+Kx2VNM5iXE1f//STBy2R9dy/YWHnlPcx3Nzxbxd+7Jiv2
+ D9mpNPna03j+UcDMchBi+DMg3ItjXequ9f3/acdG6/pbEBPsCH5FB9rreQDZqi9psI
+ DS74MnCVrMgNQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.13 10/21] ASoC: rt5682: Fix the issue of garbled
- recording after powerd_dbus_suspend
-Date: Tue, 27 Jul 2021 09:18:57 -0400
-Message-Id: <20210727131908.834086-10-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 04/17] ASoC: tlv320aic31xx: fix reversed
+ bclk/wclk master bits
+Date: Tue, 27 Jul 2021 09:19:25 -0400
+Message-Id: <20210727131938.834920-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210727131908.834086-1-sashal@kernel.org>
-References: <20210727131908.834086-1-sashal@kernel.org>
+In-Reply-To: <20210727131938.834920-1-sashal@kernel.org>
+References: <20210727131938.834920-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Oder Chiou <oder_chiou@realtek.com>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: Sasha Levin <sashal@kernel.org>, Kyle Russell <bkylerussell@gmail.com>,
+ Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,43 +89,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Oder Chiou <oder_chiou@realtek.com>
+From: Kyle Russell <bkylerussell@gmail.com>
 
-[ Upstream commit 6a503e1c455316fd0bfd8188c0a62cce7c5525ca ]
+[ Upstream commit 9cf76a72af6ab81030dea6481b1d7bdd814fbdaf ]
 
-While using the DMIC recording, the garbled data will be captured by the
-DMIC. It is caused by the critical power of PLL closed in the jack detect
-function.
+These are backwards from Table 7-71 of the TLV320AIC3100 spec [1].
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
-Link: https://lore.kernel.org/r/20210716085853.20170-1-oder_chiou@realtek.com
+This was broken in 12eb4d66ba2e when BCLK_MASTER and WCLK_MASTER
+were converted from 0x08 and 0x04 to BIT(2) and BIT(3), respectively.
+
+-#define AIC31XX_BCLK_MASTER		0x08
+-#define AIC31XX_WCLK_MASTER		0x04
++#define AIC31XX_BCLK_MASTER		BIT(2)
++#define AIC31XX_WCLK_MASTER		BIT(3)
+
+Probably just a typo since the defines were not listed in bit order.
+
+[1] https://www.ti.com/lit/gpn/tlv320aic3100
+
+Signed-off-by: Kyle Russell <bkylerussell@gmail.com>
+Link: https://lore.kernel.org/r/20210622010941.241386-1-bkylerussell@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5682.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/codecs/tlv320aic31xx.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index e4c91571abae..abcd6f483788 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -973,10 +973,14 @@ int rt5682_headset_detect(struct snd_soc_component *component, int jack_insert)
- 		rt5682_enable_push_button_irq(component, false);
- 		snd_soc_component_update_bits(component, RT5682_CBJ_CTRL_1,
- 			RT5682_TRIG_JD_MASK, RT5682_TRIG_JD_LOW);
--		if (!snd_soc_dapm_get_pin_status(dapm, "MICBIAS"))
-+		if (!snd_soc_dapm_get_pin_status(dapm, "MICBIAS") &&
-+			!snd_soc_dapm_get_pin_status(dapm, "PLL1") &&
-+			!snd_soc_dapm_get_pin_status(dapm, "PLL2B"))
- 			snd_soc_component_update_bits(component,
- 				RT5682_PWR_ANLG_1, RT5682_PWR_MB, 0);
--		if (!snd_soc_dapm_get_pin_status(dapm, "Vref2"))
-+		if (!snd_soc_dapm_get_pin_status(dapm, "Vref2") &&
-+			!snd_soc_dapm_get_pin_status(dapm, "PLL1") &&
-+			!snd_soc_dapm_get_pin_status(dapm, "PLL2B"))
- 			snd_soc_component_update_bits(component,
- 				RT5682_PWR_ANLG_1, RT5682_PWR_VREF2, 0);
- 		snd_soc_component_update_bits(component, RT5682_PWR_ANLG_3,
+diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
+index 81952984613d..2513922a0292 100644
+--- a/sound/soc/codecs/tlv320aic31xx.h
++++ b/sound/soc/codecs/tlv320aic31xx.h
+@@ -151,8 +151,8 @@ struct aic31xx_pdata {
+ #define AIC31XX_WORD_LEN_24BITS		0x02
+ #define AIC31XX_WORD_LEN_32BITS		0x03
+ #define AIC31XX_IFACE1_MASTER_MASK	GENMASK(3, 2)
+-#define AIC31XX_BCLK_MASTER		BIT(2)
+-#define AIC31XX_WCLK_MASTER		BIT(3)
++#define AIC31XX_BCLK_MASTER		BIT(3)
++#define AIC31XX_WCLK_MASTER		BIT(2)
+ 
+ /* AIC31XX_DATA_OFFSET */
+ #define AIC31XX_DATA_OFFSET_MASK	GENMASK(7, 0)
 -- 
 2.30.2
 
