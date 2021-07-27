@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B3D6C4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 14:26:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 422A6C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 14:27:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D964861A80
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 14:26:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D964861A80
+	by mail.kernel.org (Postfix) with ESMTPS id 156D761AEF
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 14:27:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 156D761AEF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9A6EC1AD2;
-	Tue, 27 Jul 2021 16:26:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A6EC1AD2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 521D61F05;
+	Tue, 27 Jul 2021 16:26:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 521D61F05
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627396012;
-	bh=1qyfoBucutD841N0qUjue3cFf0Pcjj+62jYOKQFZjmQ=;
+	s=default; t=1627396063;
+	bh=9jK8oHCQGaxPPjY82pbkwlekSWMg6PJmG6vxmwaoATI=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=k+xfeOHYMYzkzAxLLDEGfUHi8+mLklW6S+t0f6rOKyAZYCHkD5hy4vjSXphZv1QNe
-	 n/H8vnnohXDf/Z4Kn/PdeLXpgMgK9uo0QtHK0/ir6ZvHHloIJHV8iz4mlSS7T2c41x
-	 L8A1Pg5aSrgl2nKSOpPRtIMDRjB1+WpalRACK+0Y=
+	b=rtaGLa/Z3cxOSCkteagm6aemozeW12JtsOpOZT+Lgf//ZwqnHrJrCxuaCXdMAuQkO
+	 xD9nv786XsemKNU7GNoHogJjf5+RPgQ+/b9uE76EIgC3oFH0f+c4Lk33EsbzL3/fLx
+	 0c7d45iKSMqXY8barRR0ij03i3IhW3rgQmicN1bQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B400F80159;
-	Tue, 27 Jul 2021 16:26:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0EDF3F80212;
+	Tue, 27 Jul 2021 16:26:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6D14EF80276; Tue, 27 Jul 2021 16:26:01 +0200 (CEST)
+ id C2852F80212; Tue, 27 Jul 2021 16:26:02 +0200 (CEST)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F0D89F80159
- for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 16:25:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0D89F80159
-X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="192731864"
-X-IronPort-AV: E=Sophos;i="5.84,273,1620716400"; d="scan'208";a="192731864"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1C86FF80212
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 16:25:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C86FF80212
+X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="192731860"
+X-IronPort-AV: E=Sophos;i="5.84,273,1620716400"; d="scan'208";a="192731860"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jul 2021 07:25:47 -0700
-X-IronPort-AV: E=Sophos;i="5.84,273,1620716400"; d="scan'208";a="417429101"
+ 27 Jul 2021 07:25:45 -0700
+X-IronPort-AV: E=Sophos;i="5.84,273,1620716400"; d="scan'208";a="417429056"
 Received: from pmdeshpa-mobl1.amr.corp.intel.com (HELO [10.212.27.2])
  ([10.212.27.2])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jul 2021 07:25:46 -0700
-Subject: Re: [PATCH] soundwire: intel: trap TRIGGER_SUSPEND in .trigger
- callback
-To: Takashi Iwai <tiwai@suse.de>, Bard Liao <yung-chuan.liao@linux.intel.com>
-References: <20210727053256.29949-1-yung-chuan.liao@linux.intel.com>
- <s5h8s1sfevg.wl-tiwai@suse.de>
+ 27 Jul 2021 07:25:44 -0700
+Subject: Re: [PATCH 1/5] ASoC: soc-pcm: cleanup cppcheck warning at
+ soc_pcm_apply_msb()
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Mark Brown <broonie@kernel.org>
+References: <87v94wzf37.wl-kuninori.morimoto.gx@renesas.com>
+ <87tukgzf2p.wl-kuninori.morimoto.gx@renesas.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <a25d47a6-2599-7101-cd93-e5304b271948@linux.intel.com>
-Date: Tue, 27 Jul 2021 09:12:27 -0500
+Message-ID: <19dad670-090e-fd48-352b-e71635e66292@linux.intel.com>
+Date: Tue, 27 Jul 2021 08:33:05 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <s5h8s1sfevg.wl-tiwai@suse.de>
+In-Reply-To: <87tukgzf2p.wl-kuninori.morimoto.gx@renesas.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, vkoul@kernel.org,
- bard.liao@intel.com, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,85 +85,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Thanks Takashi for the review.
 
 
->> This patch provides both a simplification of the suspend flows and a
->> better balanced operation during suspend/resume transition.
->>
->> The exiting code relies on a convoluted way of dealing with suspend
->> signals. Since there is no .suspend DAI callback, we used the
->> component .suspend and marked all the component DAI dmas as
->> 'suspended'. The information was used in the .prepare stage to
->> differentiate resume operations from xrun handling, and only
->> reinitialize SHIM registers and DMA in the former case.
->>
->> While this solution has been working reliably for about 2 years, there
->> is a much better solution consisting in trapping the TRIGGER_SUSPEND
->> in the .trigger DAI ops. The DMA is still marked in the same way for
->> the .prepare op to run, but in addition the callbacks sent to DSP
->> firmware are now balanced.
->>
->> Normal operation:
->> hw_params -> intel_params_stream
->> hw_free   -> intel_free_stream
->>
->> suspend    -> intel_free_stream
->> prepare    -> intel_params_stream
->>
->> This balanced operation was not required with existing SOF firmware
->> relying on static pipelines instantiated at every boot. With the
->> on-going transition to dynamic pipelines, it's however a requirement
->> to keep the use count for the DAI widget balanced across all
->> transitions.
+On 7/26/21 9:05 PM, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > 
-> The trigger callback is handled in the stream lock atomically, and are
-> you sure that you want to operate a possibly heavy task there?
+> This patch cleanups below cppcheck warning.
+> 
+> sound/soc/soc-pcm.c:446:29: style: The scope of the variable 'pcm_codec' can be reduced. [variableScope]
+>  struct snd_soc_pcm_stream *pcm_codec, *pcm_cpu;
+>                             ^
+> sound/soc/soc-pcm.c:446:41: style: The scope of the variable 'pcm_cpu' can be reduced. [variableScope]
+>  struct snd_soc_pcm_stream *pcm_codec, *pcm_cpu;
+>                                         ^
 
-It's a good objection that we didn't think of.
+I personally ignore those warnings, there are hundreds of them and it'd
+be a relatively marginal improvement in code quality.
 
-I guess it depends on the definition of 'heavy' and what is acceptable
-in such a 'trigger' context.
+my scripts use the following options to focus on more important issues
+first.
 
-The intel_free_stream() routine only sends an IPC to the firmware to
-release the DMA resources. It doesn't perform any memory allocation
-tasks at the kernel level, it only sends information to the firmware
-that the DMA can be stopped/released. We could trace how much time that
-really means but I don't expect it to be 'long'. I also don't think the
-IPC waits for the DMA to be actually stopped/released, the IPC completes
-when the message is acknowledged with the doorbell registers (I will
-double-check this point).
+--suppress=variableScope --suppress=shiftTooManyBitsSigned
+--suppress=arithOperationsOnVoidPointer --suppress=bitwiseOnBoolean
 
-It's really similar to all the existing IPCs sent in trigger context, we
-already send an IPC for ALL trigger commands such as
-START/STOP/PAUSE_PUSH/PAUSE_RELEASE. see e.g. sof_pcm_trigger() in
-sound/soc/sof/pcm.c
-
-What is needed for dynamic pipelines is the ability to deal with
-suspend-resume, so we would send IPCs in those cases as well.
-
-That said, it's true that we marked all the FE dailinks as nonatomic
-precisely because they would involve IPCs, but here we are dealing with
-BE dailinks that are typically thought of as 'atomic'. Just thinking
-aloud, maybe we need to tag all those dailinks as 'nonatomic' as well?
-
-> If it's just for releasing before re-acquiring a stream, you can do it
-> in sync_stop PCM ops instead, too.  This is called in prior to prepare
-> and hw_params ops when a stream has been stopped or suspended
-> beforehand.
-
-Humm, I must admit I have never heard of this sync_stop routine :-)
-
-It's not exposed as a DAI callback, I only see this exposed at the
-component level. That wouldn't be too helpful, the existing solution was
-based on using the suspend at the component level, which was a bit of a
-hack - we marked all component DAIs as suspended, including the ones
-that were never started.
-
-The idea of using the DAI seems much better to me, we don't need to
-track which DAI is started or not, just use the pointer passed by higher
-layers.
-
-Anyways, thanks for the feedback, that gave us a lot of things to think
-about.
--Pierre
