@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FFC9C4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 02:07:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58AC7C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 02:07:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1A0F760F6E
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 02:07:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1A0F760F6E
+	by mail.kernel.org (Postfix) with ESMTPS id 736C560F6E
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 02:07:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 736C560F6E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BA2C51AF0;
-	Tue, 27 Jul 2021 04:06:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA2C51AF0
+	by alsa0.perex.cz (Postfix) with ESMTPS id EF9671EE2;
+	Tue, 27 Jul 2021 04:07:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF9671EE2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627351641;
-	bh=mrgPgahKII/jQFfX72UbYEXnm/L97FrjyjTlrsHNIvA=;
+	s=default; t=1627351677;
+	bh=4o/wUmeOOyiXO2i5yGTviBhORKGnNRoBqZ1dPKdJ/bM=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=irgAl0RfXFiIltYYUyTCuQurHldYLz+7bY4kngNQhnFZ1zoekbKeoNA15qzic0ww2
-	 NSYd8vUtI7vXoaPctxingAkpBy0nUTEVSJD0+bT+rEtvRbNrhy0HPjv8rx6JBwH7Ol
-	 ttAqY/zGJ676j2xeKFfG/y25pC22mbzQPjdbSPCc=
+	b=TRDoTaNbp/OT1PL/WVL4Gy3qRdOqMz3DzrKmEkShj1Fy6znHvdYJwkEEde2X7b9or
+	 ex0tNfA0ceteqS3umDqI3Nr4pGoFcSPxcJsf6qFSRH2zQnVA8G5BY9TZo2KOZQd7Io
+	 +81AjD9L0Z4wfhjLTlHw6ywHBo8LFBqrnmduH9cQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51A4BF804DA;
-	Tue, 27 Jul 2021 04:05:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8489CF804DF;
+	Tue, 27 Jul 2021 04:05:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C714CF8027C; Tue, 27 Jul 2021 04:05:49 +0200 (CEST)
+ id 78744F804DF; Tue, 27 Jul 2021 04:05:52 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 3BEE5F8027C
- for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 04:05:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BEE5F8027C
-Date: 27 Jul 2021 11:05:38 +0900
-X-IronPort-AV: E=Sophos;i="5.84,272,1620658800"; d="scan'208";a="88807454"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 27 Jul 2021 11:05:38 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 76EACF804BD
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 04:05:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76EACF804BD
+Date: 27 Jul 2021 11:05:47 +0900
+X-IronPort-AV: E=Sophos;i="5.84,272,1620658800"; d="scan'208";a="88807480"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 27 Jul 2021 11:05:47 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id EAC2D4164BFE;
- Tue, 27 Jul 2021 11:05:38 +0900 (JST)
-Message-ID: <87sg00zf2l.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 4D775400E8E0;
+ Tue, 27 Jul 2021 11:05:47 +0900 (JST)
+Message-ID: <87pmv4zf2c.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 2/5] ASoC: soc-pcm: cleanup cppcheck warning at
- soc_pcm_components_close()
+Subject: [PATCH 4/5] ASoC: soc-pcm: cleanup cppcheck warning at
+ dpcm_be_is_active()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87v94wzf37.wl-kuninori.morimoto.gx@renesas.com>
@@ -79,32 +79,34 @@ From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 This patch cleanups below cppcheck warning.
 
-sound/soc/soc-pcm.c:631:9: style: The scope of the variable 'r' can be reduced. [variableScope]
- int i, r, ret = 0;
-        ^
+sound/soc/soc-pcm.c:1305:30: style: The scope of the variable 'widget' can be reduced. [variableScope]
+ struct snd_soc_dapm_widget *widget;
+                             ^
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-pcm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/soc-pcm.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 69c1022885ed..c59d769ad039 100644
+index 33ddadafe3de..212660a5f583 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -633,10 +633,10 @@ static int soc_pcm_components_close(struct snd_pcm_substream *substream,
+@@ -1307,13 +1307,12 @@ void dpcm_path_put(struct snd_soc_dapm_widget_list **list)
+ static bool dpcm_be_is_active(struct snd_soc_dpcm *dpcm, int stream,
+ 			      struct snd_soc_dapm_widget_list *list)
  {
- 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_component *component;
--	int i, r, ret = 0;
-+	int i, ret = 0;
+-	struct snd_soc_dapm_widget *widget;
+ 	struct snd_soc_dai *dai;
+ 	unsigned int i;
  
- 	for_each_rtd_components(rtd, i, component) {
--		r = snd_soc_component_close(component, substream, rollback);
-+		int r = snd_soc_component_close(component, substream, rollback);
- 		if (r < 0)
- 			ret = r; /* use last ret */
+ 	/* is there a valid DAI widget for this BE */
+ 	for_each_rtd_dais(dpcm->be, i, dai) {
+-		widget = snd_soc_dai_get_widget(dai, stream);
++		struct snd_soc_dapm_widget *widget = snd_soc_dai_get_widget(dai, stream);
  
+ 		/*
+ 		 * The BE is pruned only if none of the dai
 -- 
 2.25.1
 
