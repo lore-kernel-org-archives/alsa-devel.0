@@ -2,73 +2,73 @@ Return-Path: <SRS0=TC80=MT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98F70C4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 15:32:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76261C4320A
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 15:47:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2A65261B3F
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 15:32:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2A65261B3F
+	by mail.kernel.org (Postfix) with ESMTPS id 12EA361B67
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 15:47:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 12EA361B67
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 314DF1F03;
-	Tue, 27 Jul 2021 17:31:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 314DF1F03
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2615A1AED;
+	Tue, 27 Jul 2021 17:46:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2615A1AED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627399942;
-	bh=qZESz2Li7SATc5n/S6HM1Gg3kMqcExVqNUr1UA+V4Wo=;
+	s=default; t=1627400861;
+	bh=HUIjHerzvYhlBigcQk821SL3p23LtIH8quEZTjLtn/Q=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oMqBly0R3kgGdKqs2YSlZAPzj+W8JSq+bySrLL3GgeS7QK0/eHLTg2OOX+rgdk4AJ
-	 nhEj+SUHnPfJzsjXOK9CSl7Uuhcvdjr8HBeFQ5As7dkbM5BDsbcuQCnYhmmG9RWgLM
-	 EyOJOSdAE8SI413iOXjHHb2IDwdLJkBP6/9m4Eyk=
+	b=a5uvQXO8t+q5L3ApIwXUqkxpE3JIQm013Bvq0wFSiVbZGxAJuhZHb/vhNxMYNhg1Y
+	 Rvcl35Ej0PmQUPDNcZOD3BgnSTm6JT4ZtsFcZydRpJstSF0CEN79MtU24fpJfl9thU
+	 v0HxnJntBJ5JIZ66Q1u5svU3qvf7iPMuXmkkcbfc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A97BEF80258;
-	Tue, 27 Jul 2021 17:31:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ABC9FF80258;
+	Tue, 27 Jul 2021 17:46:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A73B5F8026C; Tue, 27 Jul 2021 17:31:27 +0200 (CEST)
+ id 94C88F8026C; Tue, 27 Jul 2021 17:46:48 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 53C36F80212
- for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 17:31:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53C36F80212
+ by alsa1.perex.cz (Postfix) with ESMTPS id BCE96F80212
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 17:46:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCE96F80212
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="VkFAJMuI"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F61561AA9;
- Tue, 27 Jul 2021 15:31:17 +0000 (UTC)
+ header.b="F8uwt+we"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E33561B5F;
+ Tue, 27 Jul 2021 15:46:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1627399878;
- bh=qZESz2Li7SATc5n/S6HM1Gg3kMqcExVqNUr1UA+V4Wo=;
+ s=k20201202; t=1627400795;
+ bh=HUIjHerzvYhlBigcQk821SL3p23LtIH8quEZTjLtn/Q=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=VkFAJMuIuJRLYWiWzNvJz7VNxdeVQIPKMdoaG2qK9DXZlL04OqSIsQvVdd1XhWtFP
- cPCRA3jwLzDMfIOFaikQSGiUSgNAUN7MI5tR4yr5zA6sJuy1xKtfxNQypb+qroXjE9
- gFNbjaLP7Em2MwJeYh48cBo/QBmS/a+6ky7jPV8VbdkXHjsxquSPSn54X13ufM0uCS
- rFXE2McP4rVYhQVBrP3ZOwt4pagfPwNjmOq3GpkGlMUjfLLunnL8yqoNDvu+eALVSc
- fqyyrfmTh9HY7oVTZQfjlw6POrdb66EuTIwr2S8TwQQ+aFigmtKvJBp4c3o2JGzY/7
- MB/hhukbShm9Q==
-Date: Tue, 27 Jul 2021 16:31:08 +0100
+ b=F8uwt+weqYRfR3ssByqpuQf8Pwx3xu22ebe1m//Ryva0e7nKVmZ9PIbIj2DbrLaq5
+ RhQi1kKljpZyag5i9K4z2Y8wcSEfCNktBDvtH3m8hnmb6xoL3RCP8oIoJrbRHxAZjn
+ nDqKthPXDO9m6q3GRAc0oxlLA2kvhCddAmz1wSMn+mWXcy060MKSDDixzbhud97p7q
+ rTnfDnCAaYLHbj9nSi0QN44bO/tY13lgd7NjCUNGk1dVAm3JRpEz30oTfIwJvNowWa
+ 0xxyEeAE8xpzsyGu0FEo/RMsq49renOtfiC35J/8gNenEyrF0ajf1sdcC5H/SYxTO9
+ al19xRdzSlCHA==
+Date: Tue, 27 Jul 2021 16:46:07 +0100
 From: Mark Brown <broonie@kernel.org>
 To: David Rhodes <drhodes@opensource.cirrus.com>
-Subject: Re: [PATCH v4 2/2] ASoC: cs35l41: Add bindings for CS35L41
-Message-ID: <20210727153108.GU4670@sirena.org.uk>
+Subject: Re: [PATCH v4 1/2] ASoC: cs35l41: CS35L41 Boosted Smart Amplifier
+Message-ID: <20210727154607.GV4670@sirena.org.uk>
 References: <20210726223438.1464333-1-drhodes@opensource.cirrus.com>
- <20210726223438.1464333-3-drhodes@opensource.cirrus.com>
+ <20210726223438.1464333-2-drhodes@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="BrzieSmlpF6NDzIw"
+ protocol="application/pgp-signature"; boundary="Ou5B7nmexOOGXbzo"
 Content-Disposition: inline
-In-Reply-To: <20210726223438.1464333-3-drhodes@opensource.cirrus.com>
+In-Reply-To: <20210726223438.1464333-2-drhodes@opensource.cirrus.com>
 X-Cookie: Vini, vidi, Linux!
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: robh@kernel.org, brian.austin@cirrus.com, ckeepax@opensource.cirrus.com,
@@ -90,70 +90,67 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---BrzieSmlpF6NDzIw
+--Ou5B7nmexOOGXbzo
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jul 26, 2021 at 05:34:38PM -0500, David Rhodes wrote:
+On Mon, Jul 26, 2021 at 05:34:37PM -0500, David Rhodes wrote:
 
-> +  cirrus,right-channel-amp:
-> +    description:
-> +      Boolean to determine which channel
-> +      the amplifier is to receive the audio data on. If present the
-> +      amplifier receives data on the right channel of I2S data.
-> +      If not present the amplifier receives data on the left
-> +      channel of I2S data
-> +    type: boolean
+This looks mostly good, a few pretty small things below:
 
-Does this need to be in the DT or could it be a runtime control (eg, for
-a system that supports being rotated to adjust which speaker things go
-out of).
+> +++ b/sound/soc/codecs/cs35l41-i2c.c
+> @@ -0,0 +1,116 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
 
-> +  cirrus,amp-gain-zc:
-> +    description:
-> +      Boolean to determine whether to use the amplifier
-> +      gain-change zero-crossing feature. If the feature is enabled, any
-> +      user-controlled amplifier gain change will occur on a zero-crossing point.
-> +      (Default) Disabled
-> +    type: boolean
+C files need to have a C++ style SPDX header, please make the entire
+comment a C++ one so things look more consistent.
 
-This is usually a runtime control too.  This applies to a bunch of the
-properties TBH.
+> +static const struct snd_kcontrol_new cs35l41_aud_controls[] = {
+> +       SOC_SINGLE_SX_TLV("Digital PCM Volume", CS35L41_AMP_DIG_VOL_CTRL,
+> +                     3, 0x4CF, 0x391, dig_vol_tlv),
+> +       SOC_SINGLE_TLV("AMP PCM Gain", CS35L41_AMP_GAIN_CTRL, 5, 0x14, 0,
+> +                       amp_gain_tlv),
 
-> +  cirrus,classh-bst-overide:
-> +    description:
-> +      Boolean which will disable Class H tracking and
-> +      set Boost voltage to the value in the 'boost-ctl-millivolt' property
-> +    type: boolean
-> +  cirrus,classh-bst-max-limit:
-> +    description:
-> +      Value set to the BST_CTL_LIM_EN field.
+Volume controls need to end in Volume like the one immediately above,
+see control-names.rst.
 
-At some point in the file we stop having a blank line between the
-properties.
+> +	/* returning NULL can be an option if in stereo mode */
+> +	cs35l41->reset_gpio = devm_gpiod_get_optional(cs35l41->dev, "reset",
+> +							GPIOD_OUT_LOW);
 
-> +required:
-> +  - compatible
-> +  - cirrus,boost-peak-milliamp
-> +  - cirrus,boost-ind-nanohenry
-> +  - cirrus,boost-cap-microfarad
+Was this included in the DT binding?
 
-The driver has regulator support but there's no regulator properties
-documented anywhere in the binding document.
+> +	ret = devm_snd_soc_register_component(cs35l41->dev,
+> +					&soc_component_dev_cs35l41,
+> +					cs35l41_dai, ARRAY_SIZE(cs35l41_dai));
+> +	if (ret < 0) {
+> +		dev_err(cs35l41->dev, "%s: Register codec failed\n", __func__);
+> +		goto err;
+> +	}
+> +
+> +	ret = cs35l41_set_pdata(cs35l41);
+> +	if (ret < 0) {
+> +		dev_err(cs35l41->dev, "%s: Set pdata failed\n", __func__);
+> +		goto err;
+> +	}
 
---BrzieSmlpF6NDzIw
+Are you sure it's safe to register the device before applying the
+platform data configuration - as soon as the device is registered the
+sound card might become visible?
+
+--Ou5B7nmexOOGXbzo
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEAJrsACgkQJNaLcl1U
-h9D9bwf6AyJb60vLtROnnuA2F8E1uHDs9QP5lkZtDRlzW+71AdMvrk0fEG2OiMsZ
-gFyTzFwbEddKWWDdm0Io6yVmJgP5gl7eLWYD8J7rNfCGfAW9sl4yzDoEgfALlbe6
-TbN4/w3pX5VH2lr7PgF35SGGWf3guNprFw/o3Kv+UIq3lieGCxc7MX60QHY2QXh5
-EeMCRUIcJdKJ8llbujb0GiMjnm46gg2HHO9HwAOqpfl5enNhS/W7VnQ5YJlMEo7g
-xL7xkYxaN6AXP+g2JiiCjOlTMOiNTGdf6Rx7ShiSZf9HHDsQdQUyymuxtSk+WfrJ
-sOTnAKLhBewvm7Ftxs+NG4v2C7ylsg==
-=d14o
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEAKj4ACgkQJNaLcl1U
+h9CXOgf+KTHTvaJPGQbzIAfSKCWvXguPgBqmyHXl3g//JwE88a096BPkctg5xAMF
+lEoWsR6dogwTETPlZfISplGFxhAaob+lcCxTK+zcCqzPVrbqiwsvtRP5gAD4iqf6
+Ck5FHWi6x6GC9iyTuH30bRhvsfiktFs/7N2bNcQl0c0aMGfYw+E+KxbD1CpVU45o
+lrrWm6VFkUKcD1c8Ptwb1dHFihMnIkfMxIdeJ7r4l+1maiRcCKsoWmxrHp6RWYGu
+d3w9M206IEcArfmwsbSqLp404hsBZEe6kEqRpa6IiHSIewahVqvQmZQsEvcR80BG
+rfSSR6ABjRe3le3EsR7sMkrhTFm/iQ==
+=m1Cp
 -----END PGP SIGNATURE-----
 
---BrzieSmlpF6NDzIw--
+--Ou5B7nmexOOGXbzo--
