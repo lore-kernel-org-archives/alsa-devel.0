@@ -7,58 +7,58 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73F01C4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 05:58:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52629C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 05:58:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C3C66610E9
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 05:58:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C3C66610E9
+	by mail.kernel.org (Postfix) with ESMTPS id B3B7560FE3
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 05:58:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B3B7560FE3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6E3011EEE;
-	Tue, 27 Jul 2021 07:57:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E3011EEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7E8C41EF9;
+	Tue, 27 Jul 2021 07:58:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E8C41EF9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627365496;
-	bh=iGltmtret1uyU0jN9dWOkZziU2i5WhyACh+F2AtLiNs=;
+	s=default; t=1627365531;
+	bh=RuBzuG8/EjmDuSelbknJJndCn700nyrXWZ2G8Fjzpqc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a9ril8pI2OoIVkPrkzCJqPM10OVQUhZ1535X+XD6FrfYq/bMl7MdYN0aQrNHMCr5y
-	 bsJ9PjxRoD6Q+TBSYUN+H33VChwHzPzYD12bF/tKEXW8xq2dJx/pLHdCv9o9dfafHr
-	 gquRpdENxvjl/9ZtUAIlNoTCt7kNqZ47kIy9zn+4=
+	b=ADDhQsgQLHHfwicCCtGRbd/BJBSOk4hudKW6SGMmuS+hVLczg9DzpmkhOsvO+RmMb
+	 nz/5nVYsB19YrykoGxfOW7VOX0hYO2o7krT06djYTEf9uCsv5+t+DvNQ40vswa1WXf
+	 6aT9jfUDJReFaFq0Cogu1rJXXC/Z9p+bEgAT4t6o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 71F91F804DA;
-	Tue, 27 Jul 2021 07:56:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1A79CF804E2;
+	Tue, 27 Jul 2021 07:56:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 015E0F802E7; Tue, 27 Jul 2021 07:56:33 +0200 (CEST)
+ id 4CC3BF8026C; Tue, 27 Jul 2021 07:56:37 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 52E10F8026C
- for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 07:56:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52E10F8026C
-X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="276163941"
-X-IronPort-AV: E=Sophos;i="5.84,272,1620716400"; d="scan'208";a="276163941"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2E8B3F804AF
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 07:56:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E8B3F804AF
+X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="276163952"
+X-IronPort-AV: E=Sophos;i="5.84,272,1620716400"; d="scan'208";a="276163952"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Jul 2021 22:56:21 -0700
-X-IronPort-AV: E=Sophos;i="5.84,272,1620716400"; d="scan'208";a="474302618"
+ 26 Jul 2021 22:56:24 -0700
+X-IronPort-AV: E=Sophos;i="5.84,272,1620716400"; d="scan'208";a="474302633"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Jul 2021 22:56:19 -0700
+ 26 Jul 2021 22:56:23 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: broonie@kernel.org,
 	tiwai@suse.de
-Subject: [PATCH 2/4] soundwire: intel: skip suspend/resume/wake when link was
- not started
-Date: Tue, 27 Jul 2021 13:56:06 +0800
-Message-Id: <20210727055608.30247-3-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 4/4] soundwire: intel: simplify pm_runtime handling in
+ suspend/resume
+Date: Tue, 27 Jul 2021 13:56:08 +0800
+Message-Id: <20210727055608.30247-5-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210727055608.30247-1-yung-chuan.liao@linux.intel.com>
 References: <20210727055608.30247-1-yung-chuan.liao@linux.intel.com>
@@ -81,98 +81,45 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-On some HDaudio platforms, SoundWire devices are described in the
-DSDT but never used. This patch adds a boolean status flag to skip all
-suspend/resume/wake sequences for this configuration.
+Since we've introduced a .prepare callback that brings all devices to
+full power on S state transitions if the clock-stop mode was used, we
+no longer need to special-case when the device was pm_runtime
+suspended.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 22 ++++++++++++----------
- drivers/soundwire/intel.h |  1 +
- 2 files changed, 13 insertions(+), 10 deletions(-)
+ drivers/soundwire/intel.c | 16 +++-------------
+ 1 file changed, 3 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 3af922e20e64..46d1645cb7fe 100644
+index 9d05e158fe0e..ec8d6fcbfc9e 100644
 --- a/drivers/soundwire/intel.c
 +++ b/drivers/soundwire/intel.c
-@@ -1456,6 +1456,7 @@ int intel_link_startup(struct auxiliary_device *auxdev)
- 	if (!(link_flags & SDW_INTEL_MASTER_DISABLE_PM_RUNTIME_IDLE))
- 		pm_runtime_idle(dev);
+@@ -1610,19 +1610,9 @@ static int __maybe_unused intel_suspend(struct device *dev)
  
-+	sdw->startup_done = true;
- 	return 0;
+ 		clock_stop_quirks = sdw->link_res->clock_stop_quirks;
  
- err_interrupt:
-@@ -1495,8 +1496,9 @@ int intel_link_process_wakeen_event(struct auxiliary_device *auxdev)
- 	sdw = dev_get_drvdata(dev);
- 	bus = &sdw->cdns.bus;
+-		if ((clock_stop_quirks & SDW_INTEL_CLK_STOP_BUS_RESET ||
+-		     !clock_stop_quirks) &&
+-		    !pm_runtime_suspended(dev->parent)) {
+-
+-			/*
+-			 * if we've enabled clock stop, and the parent
+-			 * is still active, disable shim wake. The
+-			 * SHIM registers are not accessible if the
+-			 * parent is already pm_runtime suspended so
+-			 * it's too late to change that configuration
+-			 */
+-
+-			intel_shim_wake(sdw, false);
++		if (clock_stop_quirks & SDW_INTEL_CLK_STOP_BUS_RESET || !clock_stop_quirks) {
++			/* this should not happen but throw a log in case of a broken sequence */
++			dev_err(dev, "%s: pm_runtime status is suspended with clock-stop mode\n", __func__);
+ 		}
  
--	if (bus->prop.hw_disabled) {
--		dev_dbg(dev, "SoundWire master %d is disabled, ignoring\n", bus->link_id);
-+	if (bus->prop.hw_disabled || !sdw->startup_done) {
-+		dev_dbg(dev, "SoundWire master %d is disabled or not-started, ignoring\n",
-+			bus->link_id);
  		return 0;
- 	}
- 
-@@ -1533,8 +1535,8 @@ static int __maybe_unused intel_suspend(struct device *dev)
- 	u32 clock_stop_quirks;
- 	int ret;
- 
--	if (bus->prop.hw_disabled) {
--		dev_dbg(dev, "SoundWire master %d is disabled, ignoring\n",
-+	if (bus->prop.hw_disabled || !sdw->startup_done) {
-+		dev_dbg(dev, "SoundWire master %d is disabled or not-started, ignoring\n",
- 			bus->link_id);
- 		return 0;
- 	}
-@@ -1587,8 +1589,8 @@ static int __maybe_unused intel_suspend_runtime(struct device *dev)
- 	u32 clock_stop_quirks;
- 	int ret;
- 
--	if (bus->prop.hw_disabled) {
--		dev_dbg(dev, "SoundWire master %d is disabled, ignoring\n",
-+	if (bus->prop.hw_disabled || !sdw->startup_done) {
-+		dev_dbg(dev, "SoundWire master %d is disabled or not-started, ignoring\n",
- 			bus->link_id);
- 		return 0;
- 	}
-@@ -1652,8 +1654,8 @@ static int __maybe_unused intel_resume(struct device *dev)
- 	bool multi_link;
- 	int ret;
- 
--	if (bus->prop.hw_disabled) {
--		dev_dbg(dev, "SoundWire master %d is disabled, ignoring\n",
-+	if (bus->prop.hw_disabled || !sdw->startup_done) {
-+		dev_dbg(dev, "SoundWire master %d is disabled or not-started, ignoring\n",
- 			bus->link_id);
- 		return 0;
- 	}
-@@ -1750,8 +1752,8 @@ static int __maybe_unused intel_resume_runtime(struct device *dev)
- 	int status;
- 	int ret;
- 
--	if (bus->prop.hw_disabled) {
--		dev_dbg(dev, "SoundWire master %d is disabled, ignoring\n",
-+	if (bus->prop.hw_disabled || !sdw->startup_done) {
-+		dev_dbg(dev, "SoundWire master %d is disabled or not-started, ignoring\n",
- 			bus->link_id);
- 		return 0;
- 	}
-diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
-index 0b47b148da3f..cd93a44dba9a 100644
---- a/drivers/soundwire/intel.h
-+++ b/drivers/soundwire/intel.h
-@@ -41,6 +41,7 @@ struct sdw_intel {
- 	struct sdw_cdns cdns;
- 	int instance;
- 	struct sdw_intel_link_res *link_res;
-+	bool startup_done;
- #ifdef CONFIG_DEBUG_FS
- 	struct dentry *debugfs;
- #endif
 -- 
 2.17.1
 
