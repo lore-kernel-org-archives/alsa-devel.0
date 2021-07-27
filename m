@@ -4,71 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6096C4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 15:48:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82FA6C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 15:48:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A5D1E61B67
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 15:48:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A5D1E61B67
+	by mail.kernel.org (Postfix) with ESMTPS id AEBD261B66
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 15:48:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AEBD261B66
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0890F1F1E;
-	Tue, 27 Jul 2021 17:47:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0890F1F1E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A48B1F29;
+	Tue, 27 Jul 2021 17:47:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A48B1F29
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627400914;
-	bh=7pKKp0c9wj9oxWdXxNeGrJtMc8AaqmYFHD+qJ+yK0GI=;
+	s=default; t=1627400921;
+	bh=C91IOFLpn/xlTe/YVqK/AkLDbvPKJZILi/jlymQD7Mw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ffQM+ubPSahvH2We9WH2RpIR4elyME+PbrZDQc9CrR9CBKAzu9oDCZOclh/7dF7n3
-	 wdA9Olj/AnBRr2Z//SFIevOeIAZzRzJBclgD5yaKBU6aDHdS6trnxUV7+Z5Wv3bzD0
-	 Br3sTceezZoiVSahQVM/juG8Epg5LjxaTlvFUqds=
+	b=UFnjdyHvSqtTQ6QyyrZMjUV83v+NzGfurnSG6JLReOTtHLORMNGXtuONgf6bog4lt
+	 p54VUUJTNq5MBcPI0PgveRxTQsdYbJ6jnplIroNK4/ys2HE5K1P8KHRBRSqUtKgZ2A
+	 DcR2Zm+y3QtwPNEJl9PRoprP9UiYrvjs3LNbGdNg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 29BC7F804DA;
-	Tue, 27 Jul 2021 17:46:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CAABBF804E3;
+	Tue, 27 Jul 2021 17:47:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B9B80F804E0; Tue, 27 Jul 2021 17:46:54 +0200 (CEST)
+ id F3999F804E5; Tue, 27 Jul 2021 17:47:17 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A3192F802E7
- for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 17:46:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3192F802E7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 06294F804E2
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 17:47:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06294F804E2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="LswfajWB"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85BC461B4F;
- Tue, 27 Jul 2021 15:46:42 +0000 (UTC)
+ header.b="pZ66KAPY"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1242761B66;
+ Tue, 27 Jul 2021 15:47:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1627400804;
- bh=7pKKp0c9wj9oxWdXxNeGrJtMc8AaqmYFHD+qJ+yK0GI=;
+ s=k20201202; t=1627400824;
+ bh=C91IOFLpn/xlTe/YVqK/AkLDbvPKJZILi/jlymQD7Mw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=LswfajWBkPQCCvtlUF4tyMMUec6IrTnugvgqQfC4nElpFR5TLwjd9PuIQdkXb+95m
- SMy62BGicwXpz+etQtM7ythmWJZbadG1GB/WV1mX6CEmzxE2laf1tlyoTCsb0PqkFI
- cTOGgSSllOGaF3GjPPGPGmWLDMZXaYvFUR15/wwmdAY3S/A/hVAxxxTixEjSrYXyJr
- 1Yn8DjsLGQxPIpFOQGWnEGJL+UHRwWaujvXPM6xgkw+WA61c288ODicR5xmUxSgTit
- epVfJOnWENb9/MDEPkgiMdBc5/2sKSP3ERj1wLAdWDGZB54O09C9BnJ527bBC4XEfW
- qni5Q38q/XESw==
+ b=pZ66KAPYPX8myWetK+eJPLri9mdjl2h4JEvsee0o/ZItxGSCv7hxi3BnYY5yp3PcH
+ 4xQtaubLk9ii3LtvHgD1G7OkSPUMkXQ4O0TTdUnFADFRIIatGtkYr6C/LAVZDb5/6n
+ WBYRcd31vG8OhKBvBeCBXOkfhLfEBivie+ubJ/LmE00nyusreAktEH3Z/3Y79W+oIj
+ dmdMRsRntLWF8fbrLQu0QhyBe7XJikNiUeSma2MOIR+tSepeifCXiIEy9DWOjX0CsW
+ XPNcaywtzmNDnEPqfn0j2fwgDcAjoMxlSiwlKfTvE0/4Biamt38hKsE2/wWAKLztvk
+ riAhgcdKvBNdw==
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH 0/5] ASoC: soc-pcm: cleanup cppcheck warning
-Date: Tue, 27 Jul 2021 16:46:24 +0100
-Message-Id: <162739969149.18968.5244236513904812228.b4-ty@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>,
+ Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Subject: Re: [PATCH] ASoC: amd: fix an IS_ERR() vs NULL bug in probe
+Date: Tue, 27 Jul 2021 16:46:26 +0100
+Message-Id: <162739969149.18968.15163991241105613933.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <87v94wzf37.wl-kuninori.morimoto.gx@renesas.com>
-References: <87v94wzf37.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <20210727081756.GA19121@kili>
+References: <20210727081756.GA19121@kili>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,21 +88,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 27 Jul 2021 11:05:16 +0900, Kuninori Morimoto wrote:
-> Now I'm posting audio-graph-card2 patch-set, but it seems it needs longer
-> discussion. Thus I want to post more easy patch first, and reduce my
-> local patches.
-> 
-> These are cppcheck warning cleanup patches for soc-pcm.
-> 
-> Kuninori Morimoto (5):
->   ASoC: soc-pcm: cleanup cppcheck warning at soc_pcm_apply_msb()
->   ASoC: soc-pcm: cleanup cppcheck warning at soc_pcm_components_close()
->   ASoC: soc-pcm: cleanup cppcheck warning at soc_get_playback_capture()
->   ASoC: soc-pcm: cleanup cppcheck warning at dpcm_be_is_active()
->   ASoC: soc-pcm: cleanup cppcheck warning at dpcm_runtime_setup_be_chan()
-> 
-> [...]
+On Tue, 27 Jul 2021 11:17:56 +0300, Dan Carpenter wrote:
+> The devm_ioremap() function returns NULL on error, it doesn't return
+> error pointers.
 
 Applied to
 
@@ -106,16 +98,8 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: soc-pcm: cleanup cppcheck warning at soc_pcm_apply_msb()
-      commit: 2bc3e1f21b06802e70d9ccd5f8756099ffd04eb2
-[2/5] ASoC: soc-pcm: cleanup cppcheck warning at soc_pcm_components_close()
-      commit: 33be10b563dc56c33d28562ff83065a89647e443
-[3/5] ASoC: soc-pcm: cleanup cppcheck warning at soc_get_playback_capture()
-      commit: 940a1f43572316ba3320fea361db2a5200e2de0e
-[4/5] ASoC: soc-pcm: cleanup cppcheck warning at dpcm_be_is_active()
-      commit: 7931df9bf07bfe62831e559e5ffdca6f3657d92c
-[5/5] ASoC: soc-pcm: cleanup cppcheck warning at dpcm_runtime_setup_be_chan()
-      commit: 9bdc573d84d8fcfe50b223350598efe4fe1cad08
+[1/1] ASoC: amd: fix an IS_ERR() vs NULL bug in probe
+      commit: 37108ef45ae9021d23174ce89e76ad41443090bf
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
