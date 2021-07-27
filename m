@@ -2,74 +2,78 @@ Return-Path: <SRS0=TC80=MT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 422A6C4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 14:27:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98F70C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 15:32:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 156D761AEF
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 14:27:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 156D761AEF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 2A65261B3F
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 15:32:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2A65261B3F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 521D61F05;
-	Tue, 27 Jul 2021 16:26:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 521D61F05
+	by alsa0.perex.cz (Postfix) with ESMTPS id 314DF1F03;
+	Tue, 27 Jul 2021 17:31:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 314DF1F03
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627396063;
-	bh=9jK8oHCQGaxPPjY82pbkwlekSWMg6PJmG6vxmwaoATI=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1627399942;
+	bh=qZESz2Li7SATc5n/S6HM1Gg3kMqcExVqNUr1UA+V4Wo=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rtaGLa/Z3cxOSCkteagm6aemozeW12JtsOpOZT+Lgf//ZwqnHrJrCxuaCXdMAuQkO
-	 xD9nv786XsemKNU7GNoHogJjf5+RPgQ+/b9uE76EIgC3oFH0f+c4Lk33EsbzL3/fLx
-	 0c7d45iKSMqXY8barRR0ij03i3IhW3rgQmicN1bQ=
+	b=oMqBly0R3kgGdKqs2YSlZAPzj+W8JSq+bySrLL3GgeS7QK0/eHLTg2OOX+rgdk4AJ
+	 nhEj+SUHnPfJzsjXOK9CSl7Uuhcvdjr8HBeFQ5As7dkbM5BDsbcuQCnYhmmG9RWgLM
+	 EyOJOSdAE8SI413iOXjHHb2IDwdLJkBP6/9m4Eyk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0EDF3F80212;
-	Tue, 27 Jul 2021 16:26:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A97BEF80258;
+	Tue, 27 Jul 2021 17:31:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C2852F80212; Tue, 27 Jul 2021 16:26:02 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A73B5F8026C; Tue, 27 Jul 2021 17:31:27 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1C86FF80212
- for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 16:25:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C86FF80212
-X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="192731860"
-X-IronPort-AV: E=Sophos;i="5.84,273,1620716400"; d="scan'208";a="192731860"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jul 2021 07:25:45 -0700
-X-IronPort-AV: E=Sophos;i="5.84,273,1620716400"; d="scan'208";a="417429056"
-Received: from pmdeshpa-mobl1.amr.corp.intel.com (HELO [10.212.27.2])
- ([10.212.27.2])
- by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jul 2021 07:25:44 -0700
-Subject: Re: [PATCH 1/5] ASoC: soc-pcm: cleanup cppcheck warning at
- soc_pcm_apply_msb()
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Mark Brown <broonie@kernel.org>
-References: <87v94wzf37.wl-kuninori.morimoto.gx@renesas.com>
- <87tukgzf2p.wl-kuninori.morimoto.gx@renesas.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <19dad670-090e-fd48-352b-e71635e66292@linux.intel.com>
-Date: Tue, 27 Jul 2021 08:33:05 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 53C36F80212
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 17:31:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53C36F80212
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="VkFAJMuI"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F61561AA9;
+ Tue, 27 Jul 2021 15:31:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1627399878;
+ bh=qZESz2Li7SATc5n/S6HM1Gg3kMqcExVqNUr1UA+V4Wo=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=VkFAJMuIuJRLYWiWzNvJz7VNxdeVQIPKMdoaG2qK9DXZlL04OqSIsQvVdd1XhWtFP
+ cPCRA3jwLzDMfIOFaikQSGiUSgNAUN7MI5tR4yr5zA6sJuy1xKtfxNQypb+qroXjE9
+ gFNbjaLP7Em2MwJeYh48cBo/QBmS/a+6ky7jPV8VbdkXHjsxquSPSn54X13ufM0uCS
+ rFXE2McP4rVYhQVBrP3ZOwt4pagfPwNjmOq3GpkGlMUjfLLunnL8yqoNDvu+eALVSc
+ fqyyrfmTh9HY7oVTZQfjlw6POrdb66EuTIwr2S8TwQQ+aFigmtKvJBp4c3o2JGzY/7
+ MB/hhukbShm9Q==
+Date: Tue, 27 Jul 2021 16:31:08 +0100
+From: Mark Brown <broonie@kernel.org>
+To: David Rhodes <drhodes@opensource.cirrus.com>
+Subject: Re: [PATCH v4 2/2] ASoC: cs35l41: Add bindings for CS35L41
+Message-ID: <20210727153108.GU4670@sirena.org.uk>
+References: <20210726223438.1464333-1-drhodes@opensource.cirrus.com>
+ <20210726223438.1464333-3-drhodes@opensource.cirrus.com>
 MIME-Version: 1.0
-In-Reply-To: <87tukgzf2p.wl-kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="BrzieSmlpF6NDzIw"
+Content-Disposition: inline
+In-Reply-To: <20210726223438.1464333-3-drhodes@opensource.cirrus.com>
+X-Cookie: Vini, vidi, Linux!
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: robh@kernel.org, brian.austin@cirrus.com, ckeepax@opensource.cirrus.com,
+ patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ david.rhodes@cirrus.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,25 +90,70 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--BrzieSmlpF6NDzIw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 7/26/21 9:05 PM, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> This patch cleanups below cppcheck warning.
-> 
-> sound/soc/soc-pcm.c:446:29: style: The scope of the variable 'pcm_codec' can be reduced. [variableScope]
->  struct snd_soc_pcm_stream *pcm_codec, *pcm_cpu;
->                             ^
-> sound/soc/soc-pcm.c:446:41: style: The scope of the variable 'pcm_cpu' can be reduced. [variableScope]
->  struct snd_soc_pcm_stream *pcm_codec, *pcm_cpu;
->                                         ^
+On Mon, Jul 26, 2021 at 05:34:38PM -0500, David Rhodes wrote:
 
-I personally ignore those warnings, there are hundreds of them and it'd
-be a relatively marginal improvement in code quality.
+> +  cirrus,right-channel-amp:
+> +    description:
+> +      Boolean to determine which channel
+> +      the amplifier is to receive the audio data on. If present the
+> +      amplifier receives data on the right channel of I2S data.
+> +      If not present the amplifier receives data on the left
+> +      channel of I2S data
+> +    type: boolean
 
-my scripts use the following options to focus on more important issues
-first.
+Does this need to be in the DT or could it be a runtime control (eg, for
+a system that supports being rotated to adjust which speaker things go
+out of).
 
---suppress=variableScope --suppress=shiftTooManyBitsSigned
---suppress=arithOperationsOnVoidPointer --suppress=bitwiseOnBoolean
+> +  cirrus,amp-gain-zc:
+> +    description:
+> +      Boolean to determine whether to use the amplifier
+> +      gain-change zero-crossing feature. If the feature is enabled, any
+> +      user-controlled amplifier gain change will occur on a zero-crossing point.
+> +      (Default) Disabled
+> +    type: boolean
 
+This is usually a runtime control too.  This applies to a bunch of the
+properties TBH.
+
+> +  cirrus,classh-bst-overide:
+> +    description:
+> +      Boolean which will disable Class H tracking and
+> +      set Boost voltage to the value in the 'boost-ctl-millivolt' property
+> +    type: boolean
+> +  cirrus,classh-bst-max-limit:
+> +    description:
+> +      Value set to the BST_CTL_LIM_EN field.
+
+At some point in the file we stop having a blank line between the
+properties.
+
+> +required:
+> +  - compatible
+> +  - cirrus,boost-peak-milliamp
+> +  - cirrus,boost-ind-nanohenry
+> +  - cirrus,boost-cap-microfarad
+
+The driver has regulator support but there's no regulator properties
+documented anywhere in the binding document.
+
+--BrzieSmlpF6NDzIw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEAJrsACgkQJNaLcl1U
+h9D9bwf6AyJb60vLtROnnuA2F8E1uHDs9QP5lkZtDRlzW+71AdMvrk0fEG2OiMsZ
+gFyTzFwbEddKWWDdm0Io6yVmJgP5gl7eLWYD8J7rNfCGfAW9sl4yzDoEgfALlbe6
+TbN4/w3pX5VH2lr7PgF35SGGWf3guNprFw/o3Kv+UIq3lieGCxc7MX60QHY2QXh5
+EeMCRUIcJdKJ8llbujb0GiMjnm46gg2HHO9HwAOqpfl5enNhS/W7VnQ5YJlMEo7g
+xL7xkYxaN6AXP+g2JiiCjOlTMOiNTGdf6Rx7ShiSZf9HHDsQdQUyymuxtSk+WfrJ
+sOTnAKLhBewvm7Ftxs+NG4v2C7ylsg==
+=d14o
+-----END PGP SIGNATURE-----
+
+--BrzieSmlpF6NDzIw--
