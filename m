@@ -2,56 +2,61 @@ Return-Path: <SRS0=TC80=MT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A42CC4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 02:06:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 483E1C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 02:07:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CDCE460F91
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 02:06:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CDCE460F91
+	by mail.kernel.org (Postfix) with ESMTPS id BC6C860F6E
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 02:07:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BC6C860F6E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 609801AF4;
-	Tue, 27 Jul 2021 04:05:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 609801AF4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 51AA01ED5;
+	Tue, 27 Jul 2021 04:06:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51AA01ED5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627351586;
-	bh=htDqzM5tEYhMG6HcLXpTvmRwTVEnW7C+d7mpkJ6P/QU=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=L90KloeLWTYLpiZ9tvT1PBVDlX3UeDqzOf3NUL40HGm0NmNskTgOtNAsEvctqkE28
-	 uqqryN/INZxPN3e56eh3vOXO50UOHCCn/PIcmeXKOtwU+pz8EnxDzKwl/TmYgQ8te3
-	 3ECfyCTyyDtip/rrwf2U/0ZUirYC3OX0usTnLfcg=
+	s=default; t=1627351637;
+	bh=oKRRklZKsO/FX0FYFaR0b/FNqdIBKkwF1EeY2+alM3M=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=sBGAQYJ5HsoBmAnU1rsQz6vcLM+teK9b6mtdFfaz3/za0X6LW5FC8Q1Pie+i3pTNX
+	 31i1htr/5b6CNXtkkSB/vPGgf9KYvDgYJd8FGnPk3fsIyALGVU++Zkv5O96bRMhIRD
+	 ZHxxB2fPF9OdYnDqpxeRXl9NBVAnc1Helauj2ObU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A56AAF80258;
-	Tue, 27 Jul 2021 04:05:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C21CF8026C;
+	Tue, 27 Jul 2021 04:05:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F4A3F8026C; Tue, 27 Jul 2021 04:05:32 +0200 (CEST)
+ id 1FB7CF802E7; Tue, 27 Jul 2021 04:05:43 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 1EB52F80159
- for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 04:05:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EB52F80159
-Date: 27 Jul 2021 11:05:16 +0900
-X-IronPort-AV: E=Sophos;i="5.84,272,1620658800"; d="scan'208";a="88848844"
+ by alsa1.perex.cz (Postfix) with ESMTP id EF616F8026C
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 04:05:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF616F8026C
+Date: 27 Jul 2021 11:05:34 +0900
+X-IronPort-AV: E=Sophos;i="5.84,272,1620658800"; d="scan'208";a="88848883"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 27 Jul 2021 11:05:16 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 27 Jul 2021 11:05:34 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id D41BE400D0DF;
- Tue, 27 Jul 2021 11:05:16 +0900 (JST)
-Message-ID: <87v94wzf37.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 5858B400E8EA;
+ Tue, 27 Jul 2021 11:05:34 +0900 (JST)
+Message-ID: <87tukgzf2p.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 0/5] ASoC: soc-pcm: cleanup cppcheck warning
+Subject: [PATCH 1/5] ASoC: soc-pcm: cleanup cppcheck warning at
+ soc_pcm_apply_msb()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87v94wzf37.wl-kuninori.morimoto.gx@renesas.com>
+References: <87v94wzf37.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -70,34 +75,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Hi Mark
+This patch cleanups below cppcheck warning.
 
-Now I'm posting audio-graph-card2 patch-set, but it seems it needs longer
-discussion. Thus I want to post more easy patch first, and reduce my
-local patches.
+sound/soc/soc-pcm.c:446:29: style: The scope of the variable 'pcm_codec' can be reduced. [variableScope]
+ struct snd_soc_pcm_stream *pcm_codec, *pcm_cpu;
+                            ^
+sound/soc/soc-pcm.c:446:41: style: The scope of the variable 'pcm_cpu' can be reduced. [variableScope]
+ struct snd_soc_pcm_stream *pcm_codec, *pcm_cpu;
+                                        ^
 
-These are cppcheck warning cleanup patches for soc-pcm.
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/soc-pcm.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Kuninori Morimoto (5):
-  ASoC: soc-pcm: cleanup cppcheck warning at soc_pcm_apply_msb()
-  ASoC: soc-pcm: cleanup cppcheck warning at soc_pcm_components_close()
-  ASoC: soc-pcm: cleanup cppcheck warning at soc_get_playback_capture()
-  ASoC: soc-pcm: cleanup cppcheck warning at dpcm_be_is_active()
-  ASoC: soc-pcm: cleanup cppcheck warning at dpcm_runtime_setup_be_chan()
-
- sound/soc/soc-pcm.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
-
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index cd12ce14096d..69c1022885ed 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -449,13 +449,12 @@ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream)
+ 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_dai *cpu_dai;
+ 	struct snd_soc_dai *codec_dai;
+-	struct snd_soc_pcm_stream *pcm_codec, *pcm_cpu;
+ 	int stream = substream->stream;
+ 	int i;
+ 	unsigned int bits = 0, cpu_bits = 0;
+ 
+ 	for_each_rtd_codec_dais(rtd, i, codec_dai) {
+-		pcm_codec = snd_soc_dai_get_pcm_stream(codec_dai, stream);
++		struct snd_soc_pcm_stream *pcm_codec = snd_soc_dai_get_pcm_stream(codec_dai, stream);
+ 
+ 		if (pcm_codec->sig_bits == 0) {
+ 			bits = 0;
+@@ -465,7 +464,7 @@ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream)
+ 	}
+ 
+ 	for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
+-		pcm_cpu = snd_soc_dai_get_pcm_stream(cpu_dai, stream);
++		struct snd_soc_pcm_stream *pcm_cpu = snd_soc_dai_get_pcm_stream(cpu_dai, stream);
+ 
+ 		if (pcm_cpu->sig_bits == 0) {
+ 			cpu_bits = 0;
 -- 
 2.25.1
 
-
-
-
-
-Thank you for your help !!
-
-Best regards
----
-Kuninori Morimoto
