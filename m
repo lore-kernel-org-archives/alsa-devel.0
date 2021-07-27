@@ -2,57 +2,57 @@ Return-Path: <SRS0=TC80=MT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 382FDC4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 02:08:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3A11C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 02:08:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 58E9F60F6E
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 02:08:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 58E9F60F6E
+	by mail.kernel.org (Postfix) with ESMTPS id 764BA60F6E
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jul 2021 02:08:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 764BA60F6E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EB0251EE6;
-	Tue, 27 Jul 2021 04:07:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB0251EE6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 022861DF7;
+	Tue, 27 Jul 2021 04:07:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 022861DF7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627351690;
-	bh=vcOYT345VVEwwP8AslPq1Z7oNOPNHwGdxj0JDZqOZDw=;
+	s=default; t=1627351725;
+	bh=yC9s4CsvxEoNcnFlZHkuMiCaIvN3GNVek4Lh2WyEoiU=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ul3URlCEhXFhmf63q3aO7ipCyXftjnaETspFiTfHI6w5jyvk2Y0lnu3UnkMrupUw1
-	 5DTkAJ0soFRZ0i7MwhVnqPC9PWzHA3fP86UYg2bulsDcNumeH76duLba4Yn6HAzEQ3
-	 8p+rL6PrEJQmWZ4X+UjfinUbVbK7/aORsF5R3J2E=
+	b=F6tLe59VAOqHlyeR9p6nV0aNzfCCHe6y58t1HhfMuY2TULJeQclgZLeO7RZzVAMpg
+	 1+w/7N5B/Nfq+agT3z0eXgC/9UQrZoVC6Wp2KiH5TPX2hgtTtuNGHETcYG4HiZZwks
+	 qZEtdUzj+lCB6Lgs9dLO4CO1miLVCkF/xXkO+lkI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D05BEF804E5;
-	Tue, 27 Jul 2021 04:05:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C47E9F804EC;
+	Tue, 27 Jul 2021 04:06:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7D2AF804E0; Tue, 27 Jul 2021 04:05:53 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 75ACFF804B2
- for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 04:05:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75ACFF804B2
-Date: 27 Jul 2021 11:05:43 +0900
-X-IronPort-AV: E=Sophos;i="5.84,272,1620658800"; d="scan'208";a="88807472"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 27 Jul 2021 11:05:43 +0900
+ id BF177F804ED; Tue, 27 Jul 2021 04:06:02 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id F0071F804E3
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 04:05:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0071F804E3
+Date: 27 Jul 2021 11:05:51 +0900
+X-IronPort-AV: E=Sophos;i="5.84,272,1620658800"; d="scan'208";a="88848934"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 27 Jul 2021 11:05:51 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 5094E400D0DF;
- Tue, 27 Jul 2021 11:05:43 +0900 (JST)
-Message-ID: <87r1fkzf2g.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 89EE740B7795;
+ Tue, 27 Jul 2021 11:05:51 +0900 (JST)
+Message-ID: <87o8aozf28.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 3/5] ASoC: soc-pcm: cleanup cppcheck warning at
- soc_get_playback_capture()
+Subject: [PATCH 5/5] ASoC: soc-pcm: cleanup cppcheck warning at
+ dpcm_runtime_setup_be_chan()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87v94wzf37.wl-kuninori.morimoto.gx@renesas.com>
@@ -79,50 +79,37 @@ From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 This patch cleanups below cppcheck warning.
 
-sound/soc/soc-pcm.c:2578:22: style: The scope of the variable 'codec_dai' can be reduced. [variableScope]
- struct snd_soc_dai *codec_dai;
-                     ^
-sound/soc/soc-pcm.c:2580:6: style: The scope of the variable 'stream' can be reduced. [variableScope]
- int stream;
-     ^
+sound/soc/soc-pcm.c:1624:30: style: The scope of the variable 'codec_stream' can be reduced. [variableScope]
+  struct snd_soc_pcm_stream *codec_stream;
+                             ^
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-pcm.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/soc-pcm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index c59d769ad039..33ddadafe3de 100644
+index 212660a5f583..1e4423f62010 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -2580,9 +2580,7 @@ static int dpcm_fe_dai_open(struct snd_pcm_substream *fe_substream)
- static int soc_get_playback_capture(struct snd_soc_pcm_runtime *rtd,
- 				    int *playback, int *capture)
- {
--	struct snd_soc_dai *codec_dai;
- 	struct snd_soc_dai *cpu_dai;
--	int stream;
- 	int i;
+@@ -1625,7 +1625,6 @@ static void dpcm_runtime_setup_be_chan(struct snd_pcm_substream *substream)
  
- 	if (rtd->dai_link->dynamic && rtd->num_cpus > 1) {
-@@ -2592,6 +2590,8 @@ static int soc_get_playback_capture(struct snd_soc_pcm_runtime *rtd,
- 	}
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+ 		struct snd_soc_pcm_runtime *be = dpcm->be;
+-		struct snd_soc_pcm_stream *codec_stream;
+ 		struct snd_soc_pcm_stream *cpu_stream;
+ 		struct snd_soc_dai *dai;
+ 		int i;
+@@ -1648,7 +1647,8 @@ static void dpcm_runtime_setup_be_chan(struct snd_pcm_substream *substream)
+ 		 * DAIs connected to a single CPU DAI, use CPU DAI's directly
+ 		 */
+ 		if (be->num_codecs == 1) {
+-			codec_stream = snd_soc_dai_get_pcm_stream(asoc_rtd_to_codec(be, 0), stream);
++			struct snd_soc_pcm_stream *codec_stream = snd_soc_dai_get_pcm_stream(
++				asoc_rtd_to_codec(be, 0), stream);
  
- 	if (rtd->dai_link->dynamic || rtd->dai_link->no_pcm) {
-+		int stream;
-+
- 		if (rtd->dai_link->dpcm_playback) {
- 			stream = SNDRV_PCM_STREAM_PLAYBACK;
- 
-@@ -2626,6 +2626,8 @@ static int soc_get_playback_capture(struct snd_soc_pcm_runtime *rtd,
- 			}
+ 			soc_pcm_hw_update_chan(hw, codec_stream);
  		}
- 	} else {
-+		struct snd_soc_dai *codec_dai;
-+
- 		/* Adapt stream for codec2codec links */
- 		int cpu_capture = rtd->dai_link->params ?
- 			SNDRV_PCM_STREAM_PLAYBACK : SNDRV_PCM_STREAM_CAPTURE;
 -- 
 2.25.1
 
