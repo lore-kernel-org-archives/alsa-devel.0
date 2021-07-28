@@ -2,93 +2,91 @@ Return-Path: <SRS0=/xSo=MU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DE81C4338F
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:49:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 049FFC4338F
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:49:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8A97C60F5E
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:49:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8A97C60F5E
+	by mail.kernel.org (Postfix) with ESMTPS id 7800060F5E
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:49:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7800060F5E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2F070192B;
-	Wed, 28 Jul 2021 15:48:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F070192B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1FE901A3B;
+	Wed, 28 Jul 2021 15:48:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FE901A3B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627480160;
-	bh=iL91QqbRcH8rwLEWZc+5YGKWy1SS7SKOIqJt3oN7uvg=;
+	s=default; t=1627480179;
+	bh=/aw8/5Spi7aQIpJuAawFzqoH3F5HfB5NKUPTVqt0f5E=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jjneidCTpcp8loRQLQhIp0OYeuzR5KsNCM2mqEQvQAcgkh9Nr4c3YIUijzBAV0EnE
-	 U3PvsOTnL9AzNnmj6N3fThWcx3hx3MfuSb7gJ8gIzdp8GGi8Ivst0V+vcXUNtmet3x
-	 ekCSIc7LoWHs5qRlJ1Dyww1WHRLZ1CDmuzaQufy4=
+	b=sJWr2cQoTan2Zz1+FfUlHAYJF/0OC+Qj1POF+YSaFK5ot8b1zSfDfgLwzg0N/iVKr
+	 Fcs7LCdENkmM66UO+0fFx8GXCKJTqBz6o34pBanuvp5i8j1hUrIWO1TbDvLM3gHDGI
+	 D75B+pGFo/KJre5z5CGaX1d+nICRBK64zMb0iMlA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E7086F804E1;
-	Wed, 28 Jul 2021 15:45:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 89B15F8053D;
+	Wed, 28 Jul 2021 15:45:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6FC82F8051C; Wed, 28 Jul 2021 15:44:58 +0200 (CEST)
+ id 3F989F8051A; Wed, 28 Jul 2021 15:44:58 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 71850F804E0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 717AAF8049E
  for <alsa-devel@alsa-project.org>; Wed, 28 Jul 2021 15:44:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71850F804E0
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 717AAF8049E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="cPp/XAc5"
+ header.b="ncckKk32"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16S5XUqq014335; 
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16S5XUqr014335; 
  Wed, 28 Jul 2021 08:44:36 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=rccI2fZXbyE5Nn4pacHeTa5WebXke0XDJeBiH+OpYUs=;
- b=cPp/XAc5XtFSX5E0LDSnb9gCDWN/WMbc1ZyGq/WtNSBEMZHA988Iq5yO99OQ64+r3VM6
- F3lrOIUY9ns+Ph+pZc4jZUq76ocEnSeyFDnfwM3CmIb5ia0Pf/RHblfWd2Hmkra9WyLV
- iqxiK7wKroXSVE+IVZy0MIbIjFGzsLXuJ61XsjxZcog5nk/52ScxMqZJjmUMBA9Ke06t
- +SISOCkXE0Lxz0clbgxXe/ww/bDi1dYYoAha66MjbTngsdg7DWWxjtSUkvg++XugE92n
- wsqoajsizmqsh7TZoCMNag1hUuSMzh3c+uX74lXyonLiA1gHjbf7wwwoG0ty7LRVjrPB BQ== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 3a30q20fxa-5
+ bh=/DrhRLL4/bGYv3v1PfKrsPp9oTw0k4T6r1RIzNb4ly8=;
+ b=ncckKk32Tat1Ac6Oam0VUxLXddH+d1MUNPP9mM1NsqYLOcuQr+Yf7ODDHtheo6exi9gU
+ kRfNI/BmWeoV0T6BM3Sdf6eBwvl/5gLWs2M63hOTslQ3AjOBmFd46Jm8MmKpbhko5rKv
+ yHzOoLuEIrZ5EGfKVejn9aeaS56Ube1AyoET2WTp9nMLlgdFAa40iEe95Ae042yDCVw5
+ rVUTyawDmCqUz2/dBUbiRuWB4oUm68cnjj6pmPIN9SQw/47wryvcrKRwxKNcmuJfEAYC
+ FFuQ6vOYGYLT1tOQb4pKP1gQtzxvz9FgbWUn79YFpkNiJ5XSNEd8Duu33C4bRxe7QZw0 3g== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0b-001ae601.pphosted.com with ESMTP id 3a30q20fx9-7
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 28 Jul 2021 08:44:35 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Wed, 28 Jul 2021 08:44:36 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 28 Jul
- 2021 14:44:35 +0100
+ 2021 14:44:32 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Wed, 28 Jul 2021 14:44:35 +0100
+ Transport; Wed, 28 Jul 2021 14:44:32 +0100
 Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.32])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 30D8E46E;
- Wed, 28 Jul 2021 13:44:35 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 67A9F45D;
+ Wed, 28 Jul 2021 13:44:32 +0000 (UTC)
 From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v2 17/27] ALSA: hda/cs8409: Separate CS8409,
- CS42L42 and project functions
-Date: Wed, 28 Jul 2021 14:43:58 +0100
-Message-ID: <20210728134408.369396-18-vitalyr@opensource.cirrus.com>
+Subject: [PATCH v2 09/27] ALSA: hda/cs8409: Mask CS42L42 wake events
+Date: Wed, 28 Jul 2021 14:43:50 +0100
+Message-ID: <20210728134408.369396-10-vitalyr@opensource.cirrus.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210728134408.369396-1-vitalyr@opensource.cirrus.com>
 References: <20210728134408.369396-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: TlCiRg3vxqB_R3w8l-_eEyvyHcowXZct
-X-Proofpoint-GUID: TlCiRg3vxqB_R3w8l-_eEyvyHcowXZct
+X-Proofpoint-ORIG-GUID: V7yPL7qUiS9QTH1SH3S3JSsPKD_6vvWy
+X-Proofpoint-GUID: V7yPL7qUiS9QTH1SH3S3JSsPKD_6vvWy
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0
  bulkscore=0 mlxscore=0
  lowpriorityscore=0 priorityscore=1501 impostorscore=0 malwarescore=0
@@ -96,7 +94,7 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
  definitions=main-2107280077
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Lucas Tanure <tanureal@opensource.cirrus.com>
+ linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,638 +110,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Lucas Tanure <tanureal@opensource.cirrus.com>
+From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+Wake events are not needed for jack detect.
+
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 
 Changes in v2:
 - No changes
 
 ---
- sound/pci/hda/patch_cs8409-tables.c |  18 +-
- sound/pci/hda/patch_cs8409.c        | 329 +++++++++++++++-------------
- sound/pci/hda/patch_cs8409.h        |  24 +-
- 3 files changed, 194 insertions(+), 177 deletions(-)
+ sound/pci/hda/patch_cs8409.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/hda/patch_cs8409-tables.c b/sound/pci/hda/patch_cs8409-tables.c
-index 0f2fd8bb92bf..77a7b2f42128 100644
---- a/sound/pci/hda/patch_cs8409-tables.c
-+++ b/sound/pci/hda/patch_cs8409-tables.c
-@@ -15,20 +15,18 @@
-  *
-  ******************************************************************************/
- 
--static const DECLARE_TLV_DB_SCALE(cs42l42_dac_db_scale,
--	CS8409_CS42L42_HP_VOL_REAL_MIN * 100, 100, 1);
-+static const DECLARE_TLV_DB_SCALE(cs42l42_dac_db_scale, CS42L42_HP_VOL_REAL_MIN * 100, 100, 1);
- 
--static const DECLARE_TLV_DB_SCALE(cs42l42_adc_db_scale,
--	CS8409_CS42L42_AMIC_VOL_REAL_MIN * 100, 100, 1);
-+static const DECLARE_TLV_DB_SCALE(cs42l42_adc_db_scale, CS42L42_AMIC_VOL_REAL_MIN * 100, 100, 1);
- 
- const struct snd_kcontrol_new cs42l42_dac_volume_mixer = {
- 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	.index = 0,
- 	.subdevice = (HDA_SUBDEV_AMP_FLAG | HDA_SUBDEV_NID_FLAG),
- 	.access = (SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_TLV_READ),
--	.info = cs8409_cs42l42_volume_info,
--	.get = cs8409_cs42l42_volume_get,
--	.put = cs8409_cs42l42_volume_put,
-+	.info = cs42l42_volume_info,
-+	.get = cs42l42_volume_get,
-+	.put = cs42l42_volume_put,
- 	.tlv = { .p = cs42l42_dac_db_scale },
- 	.private_value = HDA_COMPOSE_AMP_VAL_OFS(CS8409_PIN_ASP1_TRANSMITTER_A, 3, 0,
- 			 HDA_OUTPUT, CS42L42_VOL_DAC) | HDA_AMP_VAL_MIN_MUTE
-@@ -39,9 +37,9 @@ const struct snd_kcontrol_new cs42l42_adc_volume_mixer = {
- 	.index = 0,
- 	.subdevice = (HDA_SUBDEV_AMP_FLAG | HDA_SUBDEV_NID_FLAG),
- 	.access = (SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_TLV_READ),
--	.info = cs8409_cs42l42_volume_info,
--	.get = cs8409_cs42l42_volume_get,
--	.put = cs8409_cs42l42_volume_put,
-+	.info = cs42l42_volume_info,
-+	.get = cs42l42_volume_get,
-+	.put = cs42l42_volume_put,
- 	.tlv = { .p = cs42l42_adc_db_scale },
- 	.private_value = HDA_COMPOSE_AMP_VAL_OFS(CS8409_PIN_ASP1_RECEIVER_A, 1, 0,
- 			 HDA_INPUT, CS42L42_VOL_ADC) | HDA_AMP_VAL_MIN_MUTE
 diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
-index d88b32816769..59cecbf1b54d 100644
+index 2ed07ab3f47e..f4401c1e8572 100644
 --- a/sound/pci/hda/patch_cs8409.c
 +++ b/sound/pci/hda/patch_cs8409.c
-@@ -14,6 +14,10 @@
+@@ -399,11 +399,11 @@ static void cs8409_cs42l42_enable_jack_detect(struct hda_codec *codec)
+ 		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1b70, 0x00a0, 1);
  
- #include "patch_cs8409.h"
- 
-+/******************************************************************************
-+ *                        CS8409 Specific Functions
-+ ******************************************************************************/
-+
- static int cs8409_parse_auto_config(struct hda_codec *codec)
- {
- 	struct cs8409_spec *spec = codec->spec;
-@@ -45,6 +49,8 @@ static int cs8409_parse_auto_config(struct hda_codec *codec)
- 	return 0;
- }
- 
-+static void cs8409_disable_i2c_clock(struct work_struct *work);
-+
- static struct cs8409_spec *cs8409_alloc_spec(struct hda_codec *codec)
- {
- 	struct cs8409_spec *spec;
-@@ -55,6 +61,7 @@ static struct cs8409_spec *cs8409_alloc_spec(struct hda_codec *codec)
- 	codec->spec = spec;
- 	spec->codec = codec;
- 	codec->power_save_node = 1;
-+	mutex_init(&spec->i2c_mux);
- 	INIT_DELAYED_WORK(&spec->i2c_clk_work, cs8409_disable_i2c_clock);
- 	snd_hda_gen_spec_init(&spec->gen);
- 
-@@ -346,7 +353,67 @@ static int cs8409_i2c_bulk_write(struct hda_codec *codec, unsigned int i2c_addre
- 	return -EIO;
- }
- 
--int cs8409_cs42l42_volume_info(struct snd_kcontrol *kctrl, struct snd_ctl_elem_info *uinfo)
-+static int cs8409_init(struct hda_codec *codec)
-+{
-+	int ret = snd_hda_gen_init(codec);
-+
-+	if (!ret)
-+		snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_INIT);
-+
-+	return ret;
-+}
-+
-+static int cs8409_build_controls(struct hda_codec *codec)
-+{
-+	int err;
-+
-+	err = snd_hda_gen_build_controls(codec);
-+	if (err < 0)
-+		return err;
-+	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_BUILD);
-+
-+	return 0;
-+}
-+
-+/* Enable/Disable Unsolicited Response for gpio(s) 3,4 */
-+static void cs8409_enable_ur(struct hda_codec *codec, int flag)
-+{
-+	/* GPIO4 INT# and GPIO3 WAKE# */
-+	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_UNSOLICITED_RSP_MASK,
-+			    flag ? CS8409_CS42L42_INT : 0);
-+
-+	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_UNSOLICITED_ENABLE,
-+			    flag ? AC_UNSOL_ENABLED : 0);
-+
-+}
-+
-+static void cs8409_fix_caps(struct hda_codec *codec, unsigned int nid)
-+{
-+	int caps;
-+
-+	/* CS8409 is simple HDA bridge and intended to be used with a remote
-+	 * companion codec. Most of input/output PIN(s) have only basic
-+	 * capabilities. Receive and Transmit NID(s) have only OUTC and INC
-+	 * capabilities and no presence detect capable (PDC) and call to
-+	 * snd_hda_gen_build_controls() will mark them as non detectable
-+	 * phantom jacks. However, a companion codec may be
-+	 * connected to these pins which supports jack detect
-+	 * capabilities. We have to override pin capabilities,
-+	 * otherwise they will not be created as input devices.
-+	 */
-+	caps = snd_hdac_read_parm(&codec->core, nid, AC_PAR_PIN_CAP);
-+	if (caps >= 0)
-+		snd_hdac_override_parm(&codec->core, nid, AC_PAR_PIN_CAP,
-+				       (caps | (AC_PINCAP_IMP_SENSE | AC_PINCAP_PRES_DETECT)));
-+
-+	snd_hda_override_wcaps(codec, nid, (get_wcaps(codec, nid) | AC_WCAP_UNSOL_CAP));
-+}
-+
-+/******************************************************************************
-+ *                        CS42L42 Specific Functions
-+ ******************************************************************************/
-+
-+int cs42l42_volume_info(struct snd_kcontrol *kctrl, struct snd_ctl_elem_info *uinfo)
- {
- 	unsigned int ofs = get_amp_offset(kctrl);
- 	u8 chs = get_amp_channels(kctrl);
-@@ -357,12 +424,12 @@ int cs8409_cs42l42_volume_info(struct snd_kcontrol *kctrl, struct snd_ctl_elem_i
- 
- 	switch (ofs) {
- 	case CS42L42_VOL_DAC:
--		uinfo->value.integer.min = CS8409_CS42L42_HP_VOL_REAL_MIN;
--		uinfo->value.integer.max = CS8409_CS42L42_HP_VOL_REAL_MAX;
-+		uinfo->value.integer.min = CS42L42_HP_VOL_REAL_MIN;
-+		uinfo->value.integer.max = CS42L42_HP_VOL_REAL_MAX;
- 		break;
- 	case CS42L42_VOL_ADC:
--		uinfo->value.integer.min = CS8409_CS42L42_AMIC_VOL_REAL_MIN;
--		uinfo->value.integer.max = CS8409_CS42L42_AMIC_VOL_REAL_MAX;
-+		uinfo->value.integer.min = CS42L42_AMIC_VOL_REAL_MIN;
-+		uinfo->value.integer.max = CS42L42_AMIC_VOL_REAL_MAX;
- 		break;
- 	default:
- 		break;
-@@ -371,7 +438,7 @@ int cs8409_cs42l42_volume_info(struct snd_kcontrol *kctrl, struct snd_ctl_elem_i
- 	return 0;
- }
- 
--int cs8409_cs42l42_volume_get(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl)
-+int cs42l42_volume_get(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl)
- {
- 	struct hda_codec *codec = snd_kcontrol_chip(kctrl);
- 	struct cs8409_spec *spec = codec->spec;
-@@ -397,7 +464,7 @@ int cs8409_cs42l42_volume_get(struct snd_kcontrol *kctrl, struct snd_ctl_elem_va
- 	return 0;
- }
- 
--int cs8409_cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl)
-+int cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl)
- {
- 	struct hda_codec *codec = snd_kcontrol_chip(kctrl);
- 	struct cs8409_spec *spec = codec->spec;
-@@ -409,22 +476,22 @@ int cs8409_cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_va
- 	case CS42L42_VOL_DAC:
- 		if (chs & BIT(0)) {
- 			spec->vol[ofs] = *valp;
--			cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOL_CHA,
--					 -(spec->vol[ofs]) & CS8409_CS42L42_REG_HS_VOL_MASK);
-+			cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS42L42_REG_HS_VOL_CHA,
-+					 -(spec->vol[ofs]) & CS42L42_REG_HS_VOL_MASK);
- 		}
- 		if (chs & BIT(1)) {
- 			ofs++;
- 			valp++;
- 			spec->vol[ofs] = *valp;
--			cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOL_CHB,
--					 -(spec->vol[ofs]) & CS8409_CS42L42_REG_HS_VOL_MASK);
-+			cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS42L42_REG_HS_VOL_CHB,
-+					 -(spec->vol[ofs]) & CS42L42_REG_HS_VOL_MASK);
- 		}
- 		break;
- 	case CS42L42_VOL_ADC:
- 		if (chs & BIT(0)) {
- 			spec->vol[ofs] = *valp;
--			cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_AMIC_VOL,
--					 spec->vol[ofs] & CS8409_CS42L42_REG_AMIC_VOL_MASK);
-+			cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS42L42_REG_AMIC_VOL,
-+					 spec->vol[ofs] & CS42L42_REG_AMIC_VOL_MASK);
- 		}
- 		break;
- 	default:
-@@ -434,35 +501,8 @@ int cs8409_cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_va
- 	return 0;
- }
- 
--/* Assert/release RTS# line to CS42L42 */
--static void cs8409_cs42l42_reset(struct hda_codec *codec)
--{
--	struct cs8409_spec *spec = codec->spec;
--	struct cs8409_i2c_param irq_regs[] = {
--		{ 0x1308, 0x00 },
--		{ 0x1309, 0x00 },
--		{ 0x130A, 0x00 },
--		{ 0x130F, 0x00 },
--	};
--
--	/* Assert RTS# line */
--	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DATA, 0);
--	/* wait ~10ms */
--	usleep_range(10000, 15000);
--	/* Release RTS# line */
--	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DATA, CS8409_CS42L42_RESET);
--	/* wait ~10ms */
--	usleep_range(10000, 15000);
--
--	spec->cs42l42_suspended = 0;
--	spec->last_page = 0;
--
--	/* Clear interrupts, by reading interrupt status registers */
--	cs8409_i2c_bulk_read(codec, CS42L42_I2C_ADDR, irq_regs, ARRAY_SIZE(irq_regs));
--}
--
- /* Configure CS42L42 slave codec for jack autodetect */
--static void cs8409_cs42l42_enable_jack_detect(struct hda_codec *codec)
-+static void cs42l42_enable_jack_detect(struct hda_codec *codec)
- {
- 	/* Set TIP_SENSE_EN for analog front-end of tip sense.
- 	 * Additionally set HSBIAS_SENSE_EN for some variants.
-@@ -485,7 +525,7 @@ static void cs8409_cs42l42_enable_jack_detect(struct hda_codec *codec)
- }
- 
- /* Enable and run CS42L42 slave codec jack auto detect */
--static void cs8409_cs42l42_run_jack_detect(struct hda_codec *codec)
-+static void cs42l42_run_jack_detect(struct hda_codec *codec)
- {
- 	/* Clear interrupts */
- 	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1308);
-@@ -507,14 +547,7 @@ static void cs8409_cs42l42_run_jack_detect(struct hda_codec *codec)
- 
- }
- 
--/*
-- * In the case of CS8409 we do not have unsolicited events from NID's 0x24
-- * and 0x34 where hs mic and hp are connected. Companion codec CS42L42 will
-- * generate interrupt via gpio 4 to notify jack events. We have to overwrite
-- * generic snd_hda_jack_unsol_event(), read CS42L42 jack detect status registers
-- * and then notify status via generic snd_hda_jack_unsol_event() call.
-- */
--static void cs8409_jack_unsol_event(struct hda_codec *codec, unsigned int res)
-+static int cs42l42_jack_unsol_event(struct hda_codec *codec)
- {
- 	struct cs8409_spec *spec = codec->spec;
- 	int status_changed = 0;
-@@ -522,15 +555,6 @@ static void cs8409_jack_unsol_event(struct hda_codec *codec, unsigned int res)
- 	int reg_hs_status;
- 	int reg_ts_status;
- 	int type;
--	struct hda_jack_tbl *jk;
--
--	/* jack_unsol_event() will be called every time gpio line changing state.
--	 * In this case gpio4 line goes up as a result of reading interrupt status
--	 * registers in previous cs8409_jack_unsol_event() call.
--	 * We don't need to handle this event, ignoring...
--	 */
--	if (res & CS8409_CS42L42_INT)
--		return;
- 
- 	/* Read jack detect status registers */
- 	reg_cdc_status = cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1308);
-@@ -539,7 +563,7 @@ static void cs8409_jack_unsol_event(struct hda_codec *codec, unsigned int res)
- 
- 	/* If status values are < 0, read error has occurred. */
- 	if (reg_cdc_status < 0 || reg_hs_status < 0 || reg_ts_status < 0)
--		return;
-+		return -EIO;
- 
- 	/* HSDET_AUTO_DONE */
- 	if (reg_cdc_status & CS42L42_HSDET_AUTO_DONE) {
-@@ -576,7 +600,7 @@ static void cs8409_jack_unsol_event(struct hda_codec *codec, unsigned int res)
- 		/* TIP_SENSE INSERT/REMOVE */
- 		switch (reg_ts_status) {
- 		case CS42L42_JACK_INSERTED:
--			cs8409_cs42l42_run_jack_detect(codec);
-+			cs42l42_run_jack_detect(codec);
- 			break;
- 
- 		case CS42L42_JACK_REMOVED:
-@@ -594,48 +618,102 @@ static void cs8409_jack_unsol_event(struct hda_codec *codec, unsigned int res)
- 		}
- 	}
- 
--	if (status_changed) {
-+	return status_changed;
-+}
- 
-+/* Assert/release RTS# line to CS42L42 */
-+static void cs42l42_reset(struct hda_codec *codec)
-+{
-+	struct cs8409_spec *spec = codec->spec;
-+	struct cs8409_i2c_param irq_regs[] = {
-+		{ 0x1308, 0x00 },
-+		{ 0x1309, 0x00 },
-+		{ 0x130A, 0x00 },
-+		{ 0x130F, 0x00 },
-+	};
-+
-+	/* Assert RTS# line */
-+	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DATA, 0);
-+	/* wait ~10ms */
-+	usleep_range(10000, 15000);
-+	/* Release RTS# line */
-+	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DATA, CS8409_CS42L42_RESET);
-+	/* wait ~10ms */
-+	usleep_range(10000, 15000);
-+
-+	spec->cs42l42_suspended = 0;
-+	spec->last_page = 0;
-+
-+	/* Clear interrupts, by reading interrupt status registers */
-+	cs8409_i2c_bulk_read(codec, CS42L42_I2C_ADDR, irq_regs, ARRAY_SIZE(irq_regs));
-+}
-+
-+#ifdef CONFIG_PM
-+static void cs42l42_suspend(struct hda_codec *codec)
-+{
-+	/* Power down CS42L42 ASP/EQ/MIX/HP */
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1101, 0xfe);
-+}
-+#endif
-+
-+static void cs8409_free(struct hda_codec *codec)
-+{
-+	struct cs8409_spec *spec = codec->spec;
-+
-+	cancel_delayed_work_sync(&spec->i2c_clk_work);
-+	snd_hda_gen_free(codec);
-+}
-+
-+/******************************************************************************
-+ *                   BULLSEYE / WARLOCK / CYBORG Specific Functions
-+ *                               CS8409/CS42L42
-+ ******************************************************************************/
-+
-+/*
-+ * In the case of CS8409 we do not have unsolicited events from NID's 0x24
-+ * and 0x34 where hs mic and hp are connected. Companion codec CS42L42 will
-+ * generate interrupt via gpio 4 to notify jack events. We have to overwrite
-+ * generic snd_hda_jack_unsol_event(), read CS42L42 jack detect status registers
-+ * and then notify status via generic snd_hda_jack_unsol_event() call.
-+ */
-+static void cs8409_jack_unsol_event(struct hda_codec *codec, unsigned int res)
-+{
-+	struct cs8409_spec *spec = codec->spec;
-+	struct hda_jack_tbl *jk;
-+
-+	/* jack_unsol_event() will be called every time gpio line changing state.
-+	 * In this case gpio4 line goes up as a result of reading interrupt status
-+	 * registers in previous cs8409_jack_unsol_event() call.
-+	 * We don't need to handle this event, ignoring...
-+	 */
-+	if (res & CS8409_CS42L42_INT)
-+		return;
-+
-+	if (cs42l42_jack_unsol_event(codec)) {
- 		snd_hda_set_pin_ctl(codec, CS8409_CS42L42_SPK_PIN_NID,
- 				    spec->cs42l42_hp_jack_in ? 0 : PIN_OUT);
--
- 		/* Report jack*/
- 		jk = snd_hda_jack_tbl_get_mst(codec, CS8409_CS42L42_HP_PIN_NID, 0);
--		if (jk) {
-+		if (jk)
- 			snd_hda_jack_unsol_event(codec, (jk->tag << AC_UNSOL_RES_TAG_SHIFT) &
- 							AC_UNSOL_RES_TAG);
--		}
- 		/* Report jack*/
- 		jk = snd_hda_jack_tbl_get_mst(codec, CS8409_CS42L42_AMIC_PIN_NID, 0);
--		if (jk) {
-+		if (jk)
- 			snd_hda_jack_unsol_event(codec, (jk->tag << AC_UNSOL_RES_TAG_SHIFT) &
- 							 AC_UNSOL_RES_TAG);
--		}
- 	}
- }
- 
--/* Enable/Disable Unsolicited Response for gpio(s) 3,4 */
--static void cs8409_enable_ur(struct hda_codec *codec, int flag)
--{
--	/* GPIO4 INT# and GPIO3 WAKE# */
--	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_UNSOLICITED_RSP_MASK,
--			    flag ? CS8409_CS42L42_INT : 0);
--
--	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_UNSOLICITED_ENABLE,
--			    flag ? AC_UNSOL_ENABLED : 0);
--
--}
--
- #ifdef CONFIG_PM
- /* Manage PDREF, when transition to D3hot */
--static int cs8409_suspend(struct hda_codec *codec)
-+static int cs8409_cs42l42_suspend(struct hda_codec *codec)
- {
- 	struct cs8409_spec *spec = codec->spec;
- 
- 	cs8409_enable_ur(codec, 0);
- 
--	/* Power down CS42L42 ASP/EQ/MIX/HP */
--	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1101, 0xfe);
-+	cs42l42_suspend(codec);
- 
- 	spec->cs42l42_suspended = 1;
- 
-@@ -648,14 +726,6 @@ static int cs8409_suspend(struct hda_codec *codec)
- }
- #endif
- 
--static void cs8409_free(struct hda_codec *codec)
--{
--	struct cs8409_spec *spec = codec->spec;
--
--	cancel_delayed_work_sync(&spec->i2c_clk_work);
--	snd_hda_gen_free(codec);
--}
--
- /* Vendor specific HW configuration
-  * PLL, ASP, I2C, SPI, GPIOs, DMIC etc...
-  */
-@@ -682,7 +752,7 @@ static void cs8409_cs42l42_hw_init(struct hda_codec *codec)
- 			cs8409_vendor_coef_set(codec, seq_bullseye->cir, seq_bullseye->coeff);
- 
- 	/* Reset CS42L42 */
--	cs8409_cs42l42_reset(codec);
-+	cs42l42_reset(codec);
- 
- 	/* Initialise CS42L42 companion codec */
- 	cs8409_i2c_bulk_write(codec, CS42L42_I2C_ADDR, cs42l42_init_reg_seq,
-@@ -696,49 +766,27 @@ static void cs8409_cs42l42_hw_init(struct hda_codec *codec)
- 	}
- 
- 	/* Restore Volumes after Resume */
--	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOL_CHA,
--			 -(spec->vol[1]) & CS8409_CS42L42_REG_HS_VOL_MASK);
--	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOL_CHB,
--			 -(spec->vol[2]) & CS8409_CS42L42_REG_HS_VOL_MASK);
--	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_AMIC_VOL,
--			 spec->vol[0] & CS8409_CS42L42_REG_AMIC_VOL_MASK);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS42L42_REG_HS_VOL_CHA,
-+			 -(spec->vol[1]) & CS42L42_REG_HS_VOL_MASK);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS42L42_REG_HS_VOL_CHB,
-+			 -(spec->vol[2]) & CS42L42_REG_HS_VOL_MASK);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS42L42_REG_AMIC_VOL,
-+			 spec->vol[0] & CS42L42_REG_AMIC_VOL_MASK);
- 
--	cs8409_cs42l42_enable_jack_detect(codec);
-+	cs42l42_enable_jack_detect(codec);
- 
- 	/* Enable Unsolicited Response */
- 	cs8409_enable_ur(codec, 1);
- }
- 
--static int cs8409_cs42l42_init(struct hda_codec *codec)
--{
--	int ret = snd_hda_gen_init(codec);
--
--	if (!ret)
--		snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_INIT);
--
--	return ret;
--}
--
--static int cs8409_build_controls(struct hda_codec *codec)
--{
--	int err;
--
--	err = snd_hda_gen_build_controls(codec);
--	if (err < 0)
--		return err;
--	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_BUILD);
--
--	return 0;
--}
--
- static const struct hda_codec_ops cs8409_cs42l42_patch_ops = {
- 	.build_controls = cs8409_build_controls,
- 	.build_pcms = snd_hda_gen_build_pcms,
--	.init = cs8409_cs42l42_init,
-+	.init = cs8409_init,
- 	.free = cs8409_free,
- 	.unsol_event = cs8409_jack_unsol_event,
- #ifdef CONFIG_PM
--	.suspend = cs8409_suspend,
-+	.suspend = cs8409_cs42l42_suspend,
- #endif
- };
- 
-@@ -781,7 +829,6 @@ static int cs8409_cs42l42_exec_verb(struct hdac_device *dev, unsigned int cmd, u
- void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix, int action)
- {
- 	struct cs8409_spec *spec = codec->spec;
--	int caps;
- 
- 	switch (action) {
- 	case HDA_FIXUP_ACT_PRE_PROBE:
-@@ -790,8 +837,6 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
- 		spec->exec_verb = codec->core.exec_verb;
- 		codec->core.exec_verb = cs8409_cs42l42_exec_verb;
- 
--		mutex_init(&spec->i2c_mux);
--
- 		codec->patch_ops = cs8409_cs42l42_patch_ops;
- 
- 		spec->gen.suppress_auto_mute = 1;
-@@ -811,35 +856,9 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
- 		/* Basic initial sequence for specific hw configuration */
- 		snd_hda_sequence_write(codec, cs8409_cs42l42_init_verbs);
- 
--		/* CS8409 is simple HDA bridge and intended to be used with a remote
--		 * companion codec. Most of input/output PIN(s) have only basic
--		 * capabilities. NID(s) 0x24 and 0x34 have only OUTC and INC
--		 * capabilities and no presence detect capable (PDC) and call to
--		 * snd_hda_gen_build_controls() will mark them as non detectable
--		 * phantom jacks. However, in this configuration companion codec
--		 * CS42L42 is connected to these pins and it has jack detect
--		 * capabilities. We have to override pin capabilities,
--		 * otherwise they will not be created as input devices.
--		 */
--		caps = snd_hdac_read_parm(&codec->core, CS8409_CS42L42_HP_PIN_NID,
--				AC_PAR_PIN_CAP);
--		if (caps >= 0)
--			snd_hdac_override_parm(&codec->core,
--				CS8409_CS42L42_HP_PIN_NID, AC_PAR_PIN_CAP,
--				(caps | (AC_PINCAP_IMP_SENSE | AC_PINCAP_PRES_DETECT)));
--
--		caps = snd_hdac_read_parm(&codec->core, CS8409_CS42L42_AMIC_PIN_NID,
--				AC_PAR_PIN_CAP);
--		if (caps >= 0)
--			snd_hdac_override_parm(&codec->core,
--				CS8409_CS42L42_AMIC_PIN_NID, AC_PAR_PIN_CAP,
--				(caps | (AC_PINCAP_IMP_SENSE | AC_PINCAP_PRES_DETECT)));
--
--		snd_hda_override_wcaps(codec, CS8409_CS42L42_HP_PIN_NID,
--			(get_wcaps(codec, CS8409_CS42L42_HP_PIN_NID) | AC_WCAP_UNSOL_CAP));
--
--		snd_hda_override_wcaps(codec, CS8409_CS42L42_AMIC_PIN_NID,
--			(get_wcaps(codec, CS8409_CS42L42_AMIC_PIN_NID) | AC_WCAP_UNSOL_CAP));
-+		cs8409_fix_caps(codec, CS8409_CS42L42_HP_PIN_NID);
-+		cs8409_fix_caps(codec, CS8409_CS42L42_AMIC_PIN_NID);
-+
- 		break;
- 	case HDA_FIXUP_ACT_PROBE:
- 		/* Set initial DMIC volume to -26 dB */
-@@ -863,7 +882,7 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
- 		 * been already plugged in.
- 		 * Run immediately after init.
- 		 */
--		cs8409_cs42l42_run_jack_detect(codec);
-+		cs42l42_run_jack_detect(codec);
- 		usleep_range(100000, 150000);
- 		break;
- 	default:
-diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
-index d84cda94dfb9..ac68cca2bc11 100644
---- a/sound/pci/hda/patch_cs8409.h
-+++ b/sound/pci/hda/patch_cs8409.h
-@@ -218,15 +218,15 @@ enum cs8409_coefficient_index_registers {
- 
- #define CS42L42_VOLUMES				(4U)
- 
--#define CS8409_CS42L42_HP_VOL_REAL_MIN		(-63)
--#define CS8409_CS42L42_HP_VOL_REAL_MAX		(0)
--#define CS8409_CS42L42_AMIC_VOL_REAL_MIN	(-97)
--#define CS8409_CS42L42_AMIC_VOL_REAL_MAX	(12)
--#define CS8409_CS42L42_REG_HS_VOL_CHA		(0x2301)
--#define CS8409_CS42L42_REG_HS_VOL_CHB		(0x2303)
--#define CS8409_CS42L42_REG_HS_VOL_MASK		(0x003F)
--#define CS8409_CS42L42_REG_AMIC_VOL		(0x1D03)
--#define CS8409_CS42L42_REG_AMIC_VOL_MASK	(0x00FF)
-+#define CS42L42_HP_VOL_REAL_MIN			(-63)
-+#define CS42L42_HP_VOL_REAL_MAX			(0)
-+#define CS42L42_AMIC_VOL_REAL_MIN		(-97)
-+#define CS42L42_AMIC_VOL_REAL_MAX		(12)
-+#define CS42L42_REG_HS_VOL_CHA			(0x2301)
-+#define CS42L42_REG_HS_VOL_CHB			(0x2303)
-+#define CS42L42_REG_HS_VOL_MASK			(0x003F)
-+#define CS42L42_REG_AMIC_VOL			(0x1D03)
-+#define CS42L42_REG_AMIC_VOL_MASK		(0x00FF)
- #define CS42L42_HSDET_AUTO_DONE			(0x02)
- #define CS42L42_HSTYPE_MASK			(0x03)
- #define CS42L42_JACK_INSERTED			(0x0C)
-@@ -296,9 +296,9 @@ struct cs8409_spec {
- extern const struct snd_kcontrol_new cs42l42_dac_volume_mixer;
- extern const struct snd_kcontrol_new cs42l42_adc_volume_mixer;
- 
--int cs8409_cs42l42_volume_info(struct snd_kcontrol *kctrl, struct snd_ctl_elem_info *uinfo);
--int cs8409_cs42l42_volume_get(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl);
--int cs8409_cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl);
-+int cs42l42_volume_info(struct snd_kcontrol *kctrl, struct snd_ctl_elem_info *uinfo);
-+int cs42l42_volume_get(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl);
-+int cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl);
- 
- extern const struct snd_pci_quirk cs8409_fixup_tbl[];
- extern const struct hda_model_fixup cs8409_models[];
+ 	/* Clear WAKE# */
+-	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1b71, 0x0001, 1);
++	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1b71, 0x00C1, 1);
+ 	/* Wait ~2.5ms */
+ 	usleep_range(2500, 3000);
+ 	/* Set mode WAKE# output follows the combination logic directly */
+-	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1b71, 0x0020, 1);
++	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1b71, 0x00C0, 1);
+ 	/* Clear interrupts status */
+ 	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130f, 1);
+ 	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1b7b, 1);
 -- 
 2.25.1
 
