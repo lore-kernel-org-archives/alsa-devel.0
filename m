@@ -2,92 +2,93 @@ Return-Path: <SRS0=/xSo=MU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3B8EC4338F
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:51:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65ED4C4338F
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:51:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 43191604DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:51:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 43191604DB
+	by mail.kernel.org (Postfix) with ESMTPS id DC4906023E
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:51:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DC4906023E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E19881B02;
-	Wed, 28 Jul 2021 15:50:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E19881B02
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8AB7B1ED5;
+	Wed, 28 Jul 2021 15:50:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8AB7B1ED5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627480271;
-	bh=eZH5AP6S/H/cCGdz1e2CB1v0k0cQwCk8OqbcJ6GmUfA=;
+	s=default; t=1627480295;
+	bh=036X0gZ+QFJgkfac3ZDux1yKVHPtuc6riCWgOXg0xOQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=K7wlsTlM4xo1jOS5gnChn85zxRR1j6I8AdTIk5vgUPfeugFCv/SIpOiVQfXNmOLoh
-	 8xXb/+3eFxwP8MbDbQTFm8KUHZe1yyNvcH7SpWXC2eKJbfN3oU0g03o6mz14h7qpKQ
-	 GPpMRKbZZS4ZQPccVAX0Vu9L5lrwgNKRCUcJLK7Q=
+	b=EvaUyHp4Ct8BSdx6AntLR3Ue+jR1M7fq88rzH7aCWGsBvIzjglNW9cPIPwhE1N3XR
+	 adJ2PfGeN6zp7FUJO4a+1HYo52Z+1ZmHQBt458z/GPyYKdu+wVHrZ3hQqf57W5/cZy
+	 Kx2idU+KE6okchORSiYzjeTZuuyKzOAj31BqKEqg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27C21F80566;
-	Wed, 28 Jul 2021 15:45:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23396F8056F;
+	Wed, 28 Jul 2021 15:45:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DF7A4F80543; Wed, 28 Jul 2021 15:45:08 +0200 (CEST)
+ id CE5B6F80553; Wed, 28 Jul 2021 15:45:09 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E4E5BF804E7
- for <alsa-devel@alsa-project.org>; Wed, 28 Jul 2021 15:44:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4E5BF804E7
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9BC6F804E2
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jul 2021 15:44:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9BC6F804E2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="C8pYZX7K"
+ header.b="KP98WmRq"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16S5XUqv014335; 
- Wed, 28 Jul 2021 08:44:39 -0500
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16S5XUqh014335; 
+ Wed, 28 Jul 2021 08:44:33 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=Izz3irDLw9ridFa0yxcyJ6oQcr6PnOZtkxVd2bTNjHg=;
- b=C8pYZX7KjY8GGool9Vvx+62uhmpgefc/1o1biSoyEnNZs8TIvvvb3m/iaNdEMXfiPdPM
- zOzriK4BMjjq/5fasTC/cpWTehGMx8UPaOOkQPiCd5eHuD2ePRX65Uu7H98f8YpGlzZ9
- U6tlRZx5bFBpWigIuTV6znLGsnx42RwZn5yGyvLGEIdLoEQNyZMmmwUu/rdrxGQ/ysj0
- ombXh8bTU1mqABKxMCCUnzJYEROlno8JspSYFbAjKUx1qWCqPFmHF8qfhqtzVBQfD2Vf
- 0tOfj4T+LeL+P0zTI1k1qCezOUy0g9bOG08lIqet5cDQO+bd9LqgJQWVKfKVekz1589/ ow== 
+ bh=Zia0kjdORR/kh1suTZbOoDQmikI0+TDOu1rJDVLknQc=;
+ b=KP98WmRqiLhdw+bHOMmC+xePVhFehdCG2iKEQ5PVPMJuWiQ8pl8ITbDoyQ4XMiFfcJuu
+ wXEo/dfAu5AUsUc1n+g3tlSGLQl2BC5zfuc3pUtN68VgXL6QDcr82IxHJpk1kFQXiTPG
+ sJOL3Liv8XCt6bZJt4USYR0G94w8VimRmmRLpU4L9nXGbJFPcBUTPskRBWJgrypjdDJH
+ 5kx3Z8xwgn0G+o0N2MQ8T/HI0/Iqko4/tZPgPHopZGmtfbEBGVyoXeNJ0AgaagnIo3Z8
+ hlsx2JY5d7Pm14A/msgmHKBXlm/gQ7rsWff5eQuPNAXiEtTfBRD/anV/hz9D+652Ieek 1w== 
 Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 3a30q20fx9-11
+ by mx0b-001ae601.pphosted.com with ESMTP id 3a30q20fx9-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 28 Jul 2021 08:44:39 -0500
+ Wed, 28 Jul 2021 08:44:32 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 28 Jul
- 2021 14:44:34 +0100
+ 2021 14:44:30 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Wed, 28 Jul 2021 14:44:34 +0100
+ Transport; Wed, 28 Jul 2021 14:44:30 +0100
 Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.32])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 856AF45D;
- Wed, 28 Jul 2021 13:44:34 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 16B132BA;
+ Wed, 28 Jul 2021 13:44:30 +0000 (UTC)
 From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v2 15/27] ALSA: hda/cs8409: Avoid re-setting the same page as
- the last access
-Date: Wed, 28 Jul 2021 14:43:56 +0100
-Message-ID: <20210728134408.369396-16-vitalyr@opensource.cirrus.com>
+Subject: [PATCH v2 02/27] ALSA: hda/cs8409: Move arrays of configuration to a
+ new file
+Date: Wed, 28 Jul 2021 14:43:43 +0100
+Message-ID: <20210728134408.369396-3-vitalyr@opensource.cirrus.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210728134408.369396-1-vitalyr@opensource.cirrus.com>
 References: <20210728134408.369396-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 8imKXchv3ZHRFLggP38sUx_7PxIzOdL2
-X-Proofpoint-GUID: 8imKXchv3ZHRFLggP38sUx_7PxIzOdL2
+X-Proofpoint-ORIG-GUID: TM_Ehtm2KBO1D0pmV4RAmbYLcD2aB_M0
+X-Proofpoint-GUID: TM_Ehtm2KBO1D0pmV4RAmbYLcD2aB_M0
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0
  bulkscore=0 mlxscore=0
  lowpriorityscore=0 priorityscore=1501 impostorscore=0 malwarescore=0
@@ -120,306 +121,544 @@ Changes in v2:
 - No changes
 
 ---
- sound/pci/hda/patch_cs8409.c | 124 +++++++++++++++++++----------------
- sound/pci/hda/patch_cs8409.h |   2 +
- 2 files changed, 71 insertions(+), 55 deletions(-)
+ sound/pci/hda/Makefile              |   2 +-
+ sound/pci/hda/patch_cs8409-tables.c | 220 ++++++++++++++++++++++++++++
+ sound/pci/hda/patch_cs8409.c        | 218 +--------------------------
+ sound/pci/hda/patch_cs8409.h        |  19 +++
+ 4 files changed, 241 insertions(+), 218 deletions(-)
+ create mode 100644 sound/pci/hda/patch_cs8409-tables.c
 
+diff --git a/sound/pci/hda/Makefile b/sound/pci/hda/Makefile
+index 1b73e08dc563..b8fa682ce66a 100644
+--- a/sound/pci/hda/Makefile
++++ b/sound/pci/hda/Makefile
+@@ -20,7 +20,7 @@ snd-hda-codec-analog-objs :=	patch_analog.o
+ snd-hda-codec-idt-objs :=	patch_sigmatel.o
+ snd-hda-codec-si3054-objs :=	patch_si3054.o
+ snd-hda-codec-cirrus-objs :=	patch_cirrus.o
+-snd-hda-codec-cs8409-objs :=	patch_cs8409.o
++snd-hda-codec-cs8409-objs :=	patch_cs8409.o patch_cs8409-tables.o
+ snd-hda-codec-ca0110-objs :=	patch_ca0110.o
+ snd-hda-codec-ca0132-objs :=	patch_ca0132.o
+ snd-hda-codec-conexant-objs :=	patch_conexant.o
+diff --git a/sound/pci/hda/patch_cs8409-tables.c b/sound/pci/hda/patch_cs8409-tables.c
+new file mode 100644
+index 000000000000..4adc7a4c4a25
+--- /dev/null
++++ b/sound/pci/hda/patch_cs8409-tables.c
+@@ -0,0 +1,220 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * patch_cs8409-tables.c  --  HD audio interface patch for Cirrus Logic CS8409 HDA bridge chip
++ *
++ * Copyright (C) 2021 Cirrus Logic, Inc. and
++ *                    Cirrus Logic International Semiconductor Ltd.
++ *
++ * Author: Lucas Tanure <tanureal@opensource.cirrus.com>
++ */
++
++#include "patch_cs8409.h"
++
++/* Dell Inspiron platforms
++ * with cs8409 bridge and cs42l42 codec
++ */
++const struct snd_pci_quirk cs8409_fixup_tbl[] = {
++	SND_PCI_QUIRK(0x1028, 0x0A11, "Bullseye", CS8409_BULLSEYE),
++	SND_PCI_QUIRK(0x1028, 0x0A12, "Bullseye", CS8409_BULLSEYE),
++	SND_PCI_QUIRK(0x1028, 0x0A23, "Bullseye", CS8409_BULLSEYE),
++	SND_PCI_QUIRK(0x1028, 0x0A24, "Bullseye", CS8409_BULLSEYE),
++	SND_PCI_QUIRK(0x1028, 0x0A25, "Bullseye", CS8409_BULLSEYE),
++	SND_PCI_QUIRK(0x1028, 0x0A29, "Bullseye", CS8409_BULLSEYE),
++	SND_PCI_QUIRK(0x1028, 0x0A2A, "Bullseye", CS8409_BULLSEYE),
++	SND_PCI_QUIRK(0x1028, 0x0A2B, "Bullseye", CS8409_BULLSEYE),
++	SND_PCI_QUIRK(0x1028, 0x0AB0, "Warlock", CS8409_WARLOCK),
++	SND_PCI_QUIRK(0x1028, 0x0AB2, "Warlock", CS8409_WARLOCK),
++	SND_PCI_QUIRK(0x1028, 0x0AB1, "Warlock", CS8409_WARLOCK),
++	SND_PCI_QUIRK(0x1028, 0x0AB3, "Warlock", CS8409_WARLOCK),
++	SND_PCI_QUIRK(0x1028, 0x0AB4, "Warlock", CS8409_WARLOCK),
++	SND_PCI_QUIRK(0x1028, 0x0AB5, "Warlock", CS8409_WARLOCK),
++	SND_PCI_QUIRK(0x1028, 0x0AD9, "Warlock", CS8409_WARLOCK),
++	SND_PCI_QUIRK(0x1028, 0x0ADA, "Warlock", CS8409_WARLOCK),
++	SND_PCI_QUIRK(0x1028, 0x0ADB, "Warlock", CS8409_WARLOCK),
++	SND_PCI_QUIRK(0x1028, 0x0ADC, "Warlock", CS8409_WARLOCK),
++	SND_PCI_QUIRK(0x1028, 0x0AF4, "Warlock", CS8409_WARLOCK),
++	SND_PCI_QUIRK(0x1028, 0x0AF5, "Warlock", CS8409_WARLOCK),
++	SND_PCI_QUIRK(0x1028, 0x0A77, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0A78, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0A79, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0A7A, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0A7D, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0A7E, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0A7F, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0A80, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0ADF, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0AE0, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0AE1, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0AE2, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0AE9, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0AEA, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0AEB, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0AEC, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0AED, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0AEE, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0AEF, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0AF0, "Cyborg", CS8409_CYBORG),
++	{} /* terminator */
++};
++
++/* Dell Inspiron models with cs8409/cs42l42 */
++const struct hda_model_fixup cs8409_models[] = {
++	{ .id = CS8409_BULLSEYE, .name = "bullseye" },
++	{ .id = CS8409_WARLOCK, .name = "warlock" },
++	{ .id = CS8409_CYBORG, .name = "cyborg" },
++	{}
++};
++
++const struct hda_fixup cs8409_fixups[] = {
++	[CS8409_BULLSEYE] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = cs8409_cs42l42_pincfgs,
++		.chained = true,
++		.chain_id = CS8409_FIXUPS,
++	},
++	[CS8409_WARLOCK] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = cs8409_cs42l42_pincfgs,
++		.chained = true,
++		.chain_id = CS8409_FIXUPS,
++	},
++	[CS8409_CYBORG] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = cs8409_cs42l42_pincfgs,
++		.chained = true,
++		.chain_id = CS8409_FIXUPS,
++	},
++	[CS8409_FIXUPS] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = cs8409_cs42l42_fixups,
++	},
++};
++
++const struct hda_verb cs8409_cs42l42_init_verbs[] = {
++	{ 0x01, AC_VERB_SET_GPIO_WAKE_MASK, 0x0018 }, /* WAKE from GPIO 3,4 */
++	{ 0x47, AC_VERB_SET_PROC_STATE, 0x0001 },     /* Enable VPW processing  */
++	{ 0x47, AC_VERB_SET_COEF_INDEX, 0x0002 },     /* Configure GPIO 6,7 */
++	{ 0x47, AC_VERB_SET_PROC_COEF,  0x0080 },     /* I2C mode */
++	{ 0x47, AC_VERB_SET_COEF_INDEX, 0x005b },     /* Set I2C bus speed */
++	{ 0x47, AC_VERB_SET_PROC_COEF,  0x0200 },     /* 100kHz I2C_STO = 2 */
++	{} /* terminator */
++};
++
++const struct hda_pintbl cs8409_cs42l42_pincfgs[] = {
++	{ 0x24, 0x042120f0 }, /* ASP-1-TX */
++	{ 0x34, 0x04a12050 }, /* ASP-1-RX */
++	{ 0x2c, 0x901000f0 }, /* ASP-2-TX */
++	{ 0x44, 0x90a00090 }, /* DMIC-1 */
++	{} /* terminator */
++};
++
++/* Vendor specific HW configuration for CS42L42 */
++const struct cs8409_i2c_param cs42l42_init_reg_seq[] = {
++	{ 0x1010, 0xB0 },
++	{ 0x1D01, 0x00 },
++	{ 0x1D02, 0x06 },
++	{ 0x1D03, 0x00 },
++	{ 0x1107, 0x01 },
++	{ 0x1009, 0x02 },
++	{ 0x1007, 0x03 },
++	{ 0x1201, 0x00 },
++	{ 0x1208, 0x13 },
++	{ 0x1205, 0xFF },
++	{ 0x1206, 0x00 },
++	{ 0x1207, 0x20 },
++	{ 0x1202, 0x0D },
++	{ 0x2A02, 0x02 },
++	{ 0x2A03, 0x00 },
++	{ 0x2A04, 0x00 },
++	{ 0x2A05, 0x02 },
++	{ 0x2A06, 0x00 },
++	{ 0x2A07, 0x20 },
++	{ 0x2A08, 0x02 },
++	{ 0x2A09, 0x00 },
++	{ 0x2A0A, 0x80 },
++	{ 0x2A0B, 0x02 },
++	{ 0x2A0C, 0x00 },
++	{ 0x2A0D, 0xA0 },
++	{ 0x2A01, 0x0C },
++	{ 0x2902, 0x01 },
++	{ 0x2903, 0x02 },
++	{ 0x2904, 0x00 },
++	{ 0x2905, 0x00 },
++	{ 0x2901, 0x01 },
++	{ 0x1101, 0x0A },
++	{ 0x1102, 0x84 },
++	{ 0x2301, 0x00 },
++	{ 0x2303, 0x00 },
++	{ 0x2302, 0x3f },
++	{ 0x2001, 0x03 },
++	{ 0x1B75, 0xB6 },
++	{ 0x1B73, 0xC2 },
++	{ 0x1129, 0x01 },
++	{ 0x1121, 0xF3 },
++	{ 0x1103, 0x20 },
++	{ 0x1105, 0x00 },
++	{ 0x1112, 0xC0 },
++	{ 0x1113, 0x80 },
++	{ 0x1C03, 0xC0 },
++	{ 0x1105, 0x00 },
++	{ 0x1112, 0xC0 },
++	{ 0x1101, 0x02 },
++	{} /* Terminator */
++};
++
++/* Vendor specific hw configuration for CS8409 */
++const struct cs8409_cir_param cs8409_cs42l42_hw_cfg[] = {
++	{ 0x47, 0x00, 0xb008 }, /* +PLL1/2_EN, +I2C_EN */
++	{ 0x47, 0x01, 0x0002 }, /* ASP1/2_EN=0, ASP1_STP=1 */
++	{ 0x47, 0x02, 0x0a80 }, /* ASP1/2_BUS_IDLE=10, +GPIO_I2C */
++	{ 0x47, 0x19, 0x0800 }, /* ASP1.A: TX.LAP=0, TX.LSZ=24 bits, TX.LCS=0 */
++	{ 0x47, 0x1a, 0x0820 }, /* ASP1.A: TX.RAP=0, TX.RSZ=24 bits, TX.RCS=32 */
++	{ 0x47, 0x29, 0x0800 }, /* ASP2.A: TX.LAP=0, TX.LSZ=24 bits, TX.LCS=0 */
++	{ 0x47, 0x2a, 0x2800 }, /* ASP2.A: TX.RAP=1, TX.RSZ=24 bits, TX.RCS=0 */
++	{ 0x47, 0x39, 0x0800 }, /* ASP1.A: RX.LAP=0, RX.LSZ=24 bits, RX.LCS=0 */
++	{ 0x47, 0x3a, 0x0800 }, /* ASP1.A: RX.RAP=0, RX.RSZ=24 bits, RX.RCS=0 */
++	{ 0x47, 0x03, 0x8000 }, /* ASP1: LCHI = 00h */
++	{ 0x47, 0x04, 0x28ff }, /* ASP1: MC/SC_SRCSEL=PLL1, LCPR=FFh */
++	{ 0x47, 0x05, 0x0062 }, /* ASP1: MCEN=0, FSD=011, SCPOL_IN/OUT=0, SCDIV=1:4 */
++	{ 0x47, 0x06, 0x801f }, /* ASP2: LCHI=1Fh */
++	{ 0x47, 0x07, 0x283f }, /* ASP2: MC/SC_SRCSEL=PLL1, LCPR=3Fh */
++	{ 0x47, 0x08, 0x805c }, /* ASP2: 5050=1, MCEN=0, FSD=010, SCPOL_IN/OUT=1, SCDIV=1:16 */
++	{ 0x47, 0x09, 0x0023 }, /* DMIC1_MO=10b, DMIC1/2_SR=1 */
++	{ 0x47, 0x0a, 0x0000 }, /* ASP1/2_BEEP=0 */
++	{ 0x47, 0x01, 0x0062 }, /* ASP1/2_EN=1, ASP1_STP=1 */
++	{ 0x47, 0x00, 0x9008 }, /* -PLL2_EN */
++	{ 0x47, 0x68, 0x0000 }, /* TX2.A: pre-scale att.=0 dB */
++	{ 0x47, 0x82, 0xfc03 }, /* ASP1/2_xxx_EN=1, ASP1/2_MCLK_EN=0, DMIC1_SCL_EN=1 */
++	{ 0x47, 0xc0, 0x9999 }, /* test mode on */
++	{ 0x47, 0xc5, 0x0000 }, /* GPIO hysteresis = 30 us */
++	{ 0x47, 0xc0, 0x0000 }, /* test mode off */
++	{} /* Terminator */
++};
++
++const struct cs8409_cir_param cs8409_cs42l42_bullseye_atn[] = {
++	{ 0x47, 0x65, 0x4000 }, /* EQ_SEL=1, EQ1/2_EN=0 */
++	{ 0x47, 0x64, 0x4000 }, /* +EQ_ACC */
++	{ 0x47, 0x65, 0x4010 }, /* +EQ2_EN */
++	{ 0x47, 0x63, 0x0647 }, /* EQ_DATA_HI=0x0647 */
++	{ 0x47, 0x64, 0xc0c7 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=0, EQ_DATA_LO=0x67 */
++	{ 0x47, 0x63, 0x0647 }, /* EQ_DATA_HI=0x0647 */
++	{ 0x47, 0x64, 0xc1c7 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=1, EQ_DATA_LO=0x67 */
++	{ 0x47, 0x63, 0xf370 }, /* EQ_DATA_HI=0xf370 */
++	{ 0x47, 0x64, 0xc271 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=2, EQ_DATA_LO=0x71 */
++	{ 0x47, 0x63, 0x1ef8 }, /* EQ_DATA_HI=0x1ef8 */
++	{ 0x47, 0x64, 0xc348 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=3, EQ_DATA_LO=0x48 */
++	{ 0x47, 0x63, 0xc110 }, /* EQ_DATA_HI=0xc110 */
++	{ 0x47, 0x64, 0xc45a }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=4, EQ_DATA_LO=0x5a */
++	{ 0x47, 0x63, 0x1f29 }, /* EQ_DATA_HI=0x1f29 */
++	{ 0x47, 0x64, 0xc574 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=5, EQ_DATA_LO=0x74 */
++	{ 0x47, 0x63, 0x1d7a }, /* EQ_DATA_HI=0x1d7a */
++	{ 0x47, 0x64, 0xc653 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=6, EQ_DATA_LO=0x53 */
++	{ 0x47, 0x63, 0xc38c }, /* EQ_DATA_HI=0xc38c */
++	{ 0x47, 0x64, 0xc714 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=7, EQ_DATA_LO=0x14 */
++	{ 0x47, 0x63, 0x1ca3 }, /* EQ_DATA_HI=0x1ca3 */
++	{ 0x47, 0x64, 0xc8c7 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=8, EQ_DATA_LO=0xc7 */
++	{ 0x47, 0x63, 0xc38c }, /* EQ_DATA_HI=0xc38c */
++	{ 0x47, 0x64, 0xc914 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=9, EQ_DATA_LO=0x14 */
++	{ 0x47, 0x64, 0x0000 }, /* -EQ_ACC, -EQ_WRT */
++	{} /* Terminator */
++};
 diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
-index bd43c42d5c74..31c9f1a3aeaa 100644
+index 9b16f1b5b828..b56fc89ad2cd 100644
 --- a/sound/pci/hda/patch_cs8409.c
 +++ b/sound/pci/hda/patch_cs8409.c
-@@ -147,18 +147,37 @@ static void cs8409_set_i2c_dev_addr(struct hda_codec *codec, unsigned int addr)
- 	}
+@@ -11,13 +11,6 @@
+ #include <linux/module.h>
+ #include <sound/core.h>
+ #include <linux/mutex.h>
+-#include <linux/pci.h>
+-#include <sound/tlv.h>
+-#include <sound/hda_codec.h>
+-#include "hda_local.h"
+-#include "hda_auto_parser.h"
+-#include "hda_jack.h"
+-#include "hda_generic.h"
+ 
+ #include "patch_cs8409.h"
+ 
+@@ -52,79 +45,6 @@ static int cs8409_parse_auto_config(struct hda_codec *codec)
+ 	return 0;
  }
  
-+/**
-+ * cs8409_i2c_set_page - CS8409 I2C set page register.
-+ * @codec: the codec instance
-+ * @i2c_reg: Page register
-+ *
-+ * Returns negative on error.
-+ */
-+static int cs8409_i2c_set_page(struct hda_codec *codec, unsigned int i2c_reg)
-+{
-+	struct cs8409_spec *spec = codec->spec;
-+
-+	if (spec->paged && (spec->last_page != (i2c_reg >> 8))) {
-+		cs8409_vendor_coef_set(codec, CS8409_I2C_QWRITE, i2c_reg >> 8);
-+		if (cs8409_i2c_wait_complete(codec) < 0)
-+			return -EIO;
-+		spec->last_page = i2c_reg >> 8;
-+	}
-+
-+	return 0;
-+}
-+
- /**
-  * cs8409_i2c_read - CS8409 I2C Read.
-  * @codec: the codec instance
-  * @i2c_address: I2C Address
-  * @i2c_reg: Register to read
-- * @paged: Is a paged transaction
-  *
-  * CS8409 I2C Read.
-  * Returns negative on error, otherwise returns read value in bits 0-7.
-  */
--static int cs8409_i2c_read(struct hda_codec *codec, unsigned int i2c_address, unsigned int i2c_reg,
--			   unsigned int paged)
-+static int cs8409_i2c_read(struct hda_codec *codec, unsigned int i2c_address, unsigned int i2c_reg)
- {
- 	struct cs8409_spec *spec = codec->spec;
- 	unsigned int i2c_reg_data;
-@@ -170,13 +189,10 @@ static int cs8409_i2c_read(struct hda_codec *codec, unsigned int i2c_address, un
- 	cs8409_enable_i2c_clock(codec);
- 	cs8409_set_i2c_dev_addr(codec, i2c_address);
- 
--	if (paged) {
--		cs8409_vendor_coef_set(codec, CS8409_I2C_QWRITE, i2c_reg >> 8);
--		if (cs8409_i2c_wait_complete(codec) < 0) {
--			codec_err(codec, "%s() Paged Transaction Failed 0x%02x : 0x%04x\n",
--				__func__, i2c_address, i2c_reg);
--			return -EIO;
--		}
-+	if (cs8409_i2c_set_page(codec, i2c_reg)) {
-+		codec_err(codec, "%s() Paged Transaction Failed 0x%02x : 0x%04x\n",
-+			__func__, i2c_address, i2c_reg);
-+		return -EIO;
- 	}
- 
- 	i2c_reg_data = (i2c_reg << 8) & 0x0ffff;
-@@ -199,13 +215,12 @@ static int cs8409_i2c_read(struct hda_codec *codec, unsigned int i2c_address, un
-  * @i2c_address: I2C Address
-  * @i2c_reg: Register to write to
-  * @i2c_data: Data to write
-- * @paged: Is a paged transaction
-  *
-  * CS8409 I2C Write.
-  * Returns negative on error, otherwise returns 0.
-  */
- static int cs8409_i2c_write(struct hda_codec *codec, unsigned int i2c_address, unsigned int i2c_reg,
--			    unsigned int i2c_data, unsigned int paged)
-+			    unsigned int i2c_data)
- {
- 	struct cs8409_spec *spec = codec->spec;
- 	unsigned int i2c_reg_data;
-@@ -216,13 +231,10 @@ static int cs8409_i2c_write(struct hda_codec *codec, unsigned int i2c_address, u
- 	cs8409_enable_i2c_clock(codec);
- 	cs8409_set_i2c_dev_addr(codec, i2c_address);
- 
--	if (paged) {
--		cs8409_vendor_coef_set(codec, CS8409_I2C_QWRITE, i2c_reg >> 8);
--		if (cs8409_i2c_wait_complete(codec) < 0) {
--			codec_err(codec, "%s() Paged Transaction Failed 0x%02x : 0x%04x\n",
--				__func__, i2c_address, i2c_reg);
--			return -EIO;
--		}
-+	if (cs8409_i2c_set_page(codec, i2c_reg)) {
-+		codec_err(codec, "%s() Paged Transaction Failed 0x%02x : 0x%04x\n",
-+			__func__, i2c_address, i2c_reg);
-+		return -EIO;
- 	}
- 
- 	i2c_reg_data = ((i2c_reg << 8) & 0x0ff00) | (i2c_data & 0x0ff);
-@@ -302,14 +314,14 @@ int cs8409_cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_va
- 		if (chs & BIT(0)) {
- 			spec->vol[ofs] = *valp;
- 			cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOL_CHA,
--					 -(spec->vol[ofs]) & CS8409_CS42L42_REG_HS_VOL_MASK, 1);
-+					 -(spec->vol[ofs]) & CS8409_CS42L42_REG_HS_VOL_MASK);
- 		}
- 		if (chs & BIT(1)) {
- 			ofs++;
- 			valp++;
- 			spec->vol[ofs] = *valp;
- 			cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOL_CHB,
--					 -(spec->vol[ofs]) & CS8409_CS42L42_REG_HS_VOL_MASK, 1);
-+					 -(spec->vol[ofs]) & CS8409_CS42L42_REG_HS_VOL_MASK);
- 		}
- 		mutex_unlock(&spec->cs8409_i2c_mux);
- 		break;
-@@ -318,7 +330,7 @@ int cs8409_cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_va
- 		if (chs & BIT(0)) {
- 			spec->vol[ofs] = *valp;
- 			cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_AMIC_VOL,
--					 spec->vol[ofs] & CS8409_CS42L42_REG_AMIC_VOL_MASK, 1);
-+					 spec->vol[ofs] & CS8409_CS42L42_REG_AMIC_VOL_MASK);
- 		}
- 		mutex_unlock(&spec->cs8409_i2c_mux);
- 		break;
-@@ -344,14 +356,15 @@ static void cs8409_cs42l42_reset(struct hda_codec *codec)
- 	usleep_range(10000, 15000);
- 
- 	spec->cs42l42_suspended = 0;
-+	spec->last_page = 0;
- 
- 	mutex_lock(&spec->cs8409_i2c_mux);
- 
- 	/* Clear interrupts, by reading interrupt status registers */
--	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1308, 1);
--	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1309, 1);
--	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130A, 1);
--	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130F, 1);
-+	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1308);
-+	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1309);
-+	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130A);
-+	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130F);
- 
- 	mutex_unlock(&spec->cs8409_i2c_mux);
- 
-@@ -368,20 +381,20 @@ static void cs8409_cs42l42_enable_jack_detect(struct hda_codec *codec)
- 	 * Additionally set HSBIAS_SENSE_EN for some variants.
- 	 */
- 	if (codec->fixup_id == CS8409_WARLOCK || codec->fixup_id == CS8409_BULLSEYE)
--		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1b70, 0x0020, 1);
-+		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1b70, 0x0020);
- 	else
--		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1b70, 0x00a0, 1);
-+		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1b70, 0x00a0);
- 
- 	/* Clear WAKE# */
--	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1b71, 0x00C1, 1);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1b71, 0x00C1);
- 	/* Wait ~2.5ms */
- 	usleep_range(2500, 3000);
- 	/* Set mode WAKE# output follows the combination logic directly */
--	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1b71, 0x00C0, 1);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1b71, 0x00C0);
- 	/* Clear interrupts status */
--	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130f, 1);
-+	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130f);
- 	/* Enable interrupt */
--	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1320, 0xF3, 1);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1320, 0xF3);
- 
- 	mutex_unlock(&spec->cs8409_i2c_mux);
- }
-@@ -394,20 +407,20 @@ static void cs8409_cs42l42_run_jack_detect(struct hda_codec *codec)
- 	mutex_lock(&spec->cs8409_i2c_mux);
- 
- 	/* Clear interrupts */
--	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1308, 1);
--	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1b77, 1);
--	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1320, 0xFF, 1);
--	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130f, 1);
+-/* Dell Inspiron models with cs8409/cs42l42 */
+-static const struct hda_model_fixup cs8409_models[] = {
+-	{ .id = CS8409_BULLSEYE, .name = "bullseye" },
+-	{ .id = CS8409_WARLOCK, .name = "warlock" },
+-	{ .id = CS8409_CYBORG, .name = "cyborg" },
+-	{}
+-};
 -
--	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1102, 0x87, 1);
--	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1f06, 0x86, 1);
--	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1b74, 0x07, 1);
--	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x131b, 0xFD, 1);
--	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1120, 0x80, 1);
-+	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1308);
-+	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1b77);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1320, 0xFF);
-+	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130f);
-+
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1102, 0x87);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1f06, 0x86);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1b74, 0x07);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x131b, 0xFD);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1120, 0x80);
- 	/* Wait ~110ms*/
- 	usleep_range(110000, 200000);
--	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x111f, 0x77, 1);
--	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1120, 0xc0, 1);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x111f, 0x77);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1120, 0xc0);
- 	/* Wait ~10ms */
- 	usleep_range(10000, 25000);
+-/* Dell Inspiron platforms
+- * with cs8409 bridge and cs42l42 codec
+- */
+-static const struct snd_pci_quirk cs8409_fixup_tbl[] = {
+-	SND_PCI_QUIRK(0x1028, 0x0A11, "Bullseye", CS8409_BULLSEYE),
+-	SND_PCI_QUIRK(0x1028, 0x0A12, "Bullseye", CS8409_BULLSEYE),
+-	SND_PCI_QUIRK(0x1028, 0x0A23, "Bullseye", CS8409_BULLSEYE),
+-	SND_PCI_QUIRK(0x1028, 0x0A24, "Bullseye", CS8409_BULLSEYE),
+-	SND_PCI_QUIRK(0x1028, 0x0A25, "Bullseye", CS8409_BULLSEYE),
+-	SND_PCI_QUIRK(0x1028, 0x0A29, "Bullseye", CS8409_BULLSEYE),
+-	SND_PCI_QUIRK(0x1028, 0x0A2A, "Bullseye", CS8409_BULLSEYE),
+-	SND_PCI_QUIRK(0x1028, 0x0A2B, "Bullseye", CS8409_BULLSEYE),
+-	SND_PCI_QUIRK(0x1028, 0x0AB0, "Warlock", CS8409_WARLOCK),
+-	SND_PCI_QUIRK(0x1028, 0x0AB2, "Warlock", CS8409_WARLOCK),
+-	SND_PCI_QUIRK(0x1028, 0x0AB1, "Warlock", CS8409_WARLOCK),
+-	SND_PCI_QUIRK(0x1028, 0x0AB3, "Warlock", CS8409_WARLOCK),
+-	SND_PCI_QUIRK(0x1028, 0x0AB4, "Warlock", CS8409_WARLOCK),
+-	SND_PCI_QUIRK(0x1028, 0x0AB5, "Warlock", CS8409_WARLOCK),
+-	SND_PCI_QUIRK(0x1028, 0x0AD9, "Warlock", CS8409_WARLOCK),
+-	SND_PCI_QUIRK(0x1028, 0x0ADA, "Warlock", CS8409_WARLOCK),
+-	SND_PCI_QUIRK(0x1028, 0x0ADB, "Warlock", CS8409_WARLOCK),
+-	SND_PCI_QUIRK(0x1028, 0x0ADC, "Warlock", CS8409_WARLOCK),
+-	SND_PCI_QUIRK(0x1028, 0x0AF4, "Warlock", CS8409_WARLOCK),
+-	SND_PCI_QUIRK(0x1028, 0x0AF5, "Warlock", CS8409_WARLOCK),
+-	SND_PCI_QUIRK(0x1028, 0x0A77, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0A78, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0A79, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0A7A, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0A7D, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0A7E, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0A7F, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0A80, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0ADF, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0AE0, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0AE1, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0AE2, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0AE9, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0AEA, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0AEB, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0AEC, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0AED, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0AEE, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0AEF, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0AF0, "Cyborg", CS8409_CYBORG),
+-	{} /* terminator */
+-};
+-
+-static const struct hda_verb cs8409_cs42l42_init_verbs[] = {
+-	{ 0x01, AC_VERB_SET_GPIO_WAKE_MASK, 0x0018 }, /* WAKE from GPIO 3,4 */
+-	{ 0x47, AC_VERB_SET_PROC_STATE, 0x0001 },     /* Enable VPW processing  */
+-	{ 0x47, AC_VERB_SET_COEF_INDEX, 0x0002 },     /* Configure GPIO 6,7 */
+-	{ 0x47, AC_VERB_SET_PROC_COEF,  0x0080 },     /* I2C mode */
+-	{ 0x47, AC_VERB_SET_COEF_INDEX, 0x005b },     /* Set I2C bus speed */
+-	{ 0x47, AC_VERB_SET_PROC_COEF,  0x0200 },     /* 100kHz I2C_STO = 2 */
+-	{} /* terminator */
+-};
+-
+-static const struct hda_pintbl cs8409_cs42l42_pincfgs[] = {
+-	{ 0x24, 0x042120f0 }, /* ASP-1-TX */
+-	{ 0x34, 0x04a12050 }, /* ASP-1-RX */
+-	{ 0x2c, 0x901000f0 }, /* ASP-2-TX */
+-	{ 0x44, 0x90a00090 }, /* DMIC-1 */
+-	{} /* terminator */
+-};
+-
+ static struct cs8409_spec *cs8409_alloc_spec(struct hda_codec *codec)
+ {
+ 	struct cs8409_spec *spec;
+@@ -139,117 +59,6 @@ static struct cs8409_spec *cs8409_alloc_spec(struct hda_codec *codec)
+ 	return spec;
+ }
  
-@@ -423,7 +436,7 @@ static void cs8409_cs42l42_reg_setup(struct hda_codec *codec)
- 	mutex_lock(&spec->cs8409_i2c_mux);
+-/* Vendor specific HW configuration for CS42L42 */
+-static const struct cs8409_i2c_param cs42l42_init_reg_seq[] = {
+-	{ 0x1010, 0xB0 },
+-	{ 0x1D01, 0x00 },
+-	{ 0x1D02, 0x06 },
+-	{ 0x1D03, 0x00 },
+-	{ 0x1107, 0x01 },
+-	{ 0x1009, 0x02 },
+-	{ 0x1007, 0x03 },
+-	{ 0x1201, 0x00 },
+-	{ 0x1208, 0x13 },
+-	{ 0x1205, 0xFF },
+-	{ 0x1206, 0x00 },
+-	{ 0x1207, 0x20 },
+-	{ 0x1202, 0x0D },
+-	{ 0x2A02, 0x02 },
+-	{ 0x2A03, 0x00 },
+-	{ 0x2A04, 0x00 },
+-	{ 0x2A05, 0x02 },
+-	{ 0x2A06, 0x00 },
+-	{ 0x2A07, 0x20 },
+-	{ 0x2A08, 0x02 },
+-	{ 0x2A09, 0x00 },
+-	{ 0x2A0A, 0x80 },
+-	{ 0x2A0B, 0x02 },
+-	{ 0x2A0C, 0x00 },
+-	{ 0x2A0D, 0xA0 },
+-	{ 0x2A01, 0x0C },
+-	{ 0x2902, 0x01 },
+-	{ 0x2903, 0x02 },
+-	{ 0x2904, 0x00 },
+-	{ 0x2905, 0x00 },
+-	{ 0x2901, 0x01 },
+-	{ 0x1101, 0x0A },
+-	{ 0x1102, 0x84 },
+-	{ 0x2301, 0x00 },
+-	{ 0x2303, 0x00 },
+-	{ 0x2302, 0x3f },
+-	{ 0x2001, 0x03 },
+-	{ 0x1B75, 0xB6 },
+-	{ 0x1B73, 0xC2 },
+-	{ 0x1129, 0x01 },
+-	{ 0x1121, 0xF3 },
+-	{ 0x1103, 0x20 },
+-	{ 0x1105, 0x00 },
+-	{ 0x1112, 0xC0 },
+-	{ 0x1113, 0x80 },
+-	{ 0x1C03, 0xC0 },
+-	{ 0x1105, 0x00 },
+-	{ 0x1112, 0xC0 },
+-	{ 0x1101, 0x02 },
+-	{} /* Terminator */
+-};
+-
+-/* Vendor specific hw configuration for CS8409 */
+-static const struct cs8409_cir_param cs8409_cs42l42_hw_cfg[] = {
+-	{ 0x47, 0x00, 0xb008 }, /* +PLL1/2_EN, +I2C_EN */
+-	{ 0x47, 0x01, 0x0002 }, /* ASP1/2_EN=0, ASP1_STP=1 */
+-	{ 0x47, 0x02, 0x0a80 }, /* ASP1/2_BUS_IDLE=10, +GPIO_I2C */
+-	{ 0x47, 0x19, 0x0800 }, /* ASP1.A: TX.LAP=0, TX.LSZ=24 bits, TX.LCS=0 */
+-	{ 0x47, 0x1a, 0x0820 }, /* ASP1.A: TX.RAP=0, TX.RSZ=24 bits, TX.RCS=32 */
+-	{ 0x47, 0x29, 0x0800 }, /* ASP2.A: TX.LAP=0, TX.LSZ=24 bits, TX.LCS=0 */
+-	{ 0x47, 0x2a, 0x2800 }, /* ASP2.A: TX.RAP=1, TX.RSZ=24 bits, TX.RCS=0 */
+-	{ 0x47, 0x39, 0x0800 }, /* ASP1.A: RX.LAP=0, RX.LSZ=24 bits, RX.LCS=0 */
+-	{ 0x47, 0x3a, 0x0800 }, /* ASP1.A: RX.RAP=0, RX.RSZ=24 bits, RX.RCS=0 */
+-	{ 0x47, 0x03, 0x8000 }, /* ASP1: LCHI = 00h */
+-	{ 0x47, 0x04, 0x28ff }, /* ASP1: MC/SC_SRCSEL=PLL1, LCPR=FFh */
+-	{ 0x47, 0x05, 0x0062 }, /* ASP1: MCEN=0, FSD=011, SCPOL_IN/OUT=0, SCDIV=1:4 */
+-	{ 0x47, 0x06, 0x801f }, /* ASP2: LCHI=1Fh */
+-	{ 0x47, 0x07, 0x283f }, /* ASP2: MC/SC_SRCSEL=PLL1, LCPR=3Fh */
+-	{ 0x47, 0x08, 0x805c }, /* ASP2: 5050=1, MCEN=0, FSD=010, SCPOL_IN/OUT=1, SCDIV=1:16 */
+-	{ 0x47, 0x09, 0x0023 }, /* DMIC1_MO=10b, DMIC1/2_SR=1 */
+-	{ 0x47, 0x0a, 0x0000 }, /* ASP1/2_BEEP=0 */
+-	{ 0x47, 0x01, 0x0062 }, /* ASP1/2_EN=1, ASP1_STP=1 */
+-	{ 0x47, 0x00, 0x9008 }, /* -PLL2_EN */
+-	{ 0x47, 0x68, 0x0000 }, /* TX2.A: pre-scale att.=0 dB */
+-	{ 0x47, 0x82, 0xfc03 }, /* ASP1/2_xxx_EN=1, ASP1/2_MCLK_EN=0, DMIC1_SCL_EN=1 */
+-	{ 0x47, 0xc0, 0x9999 }, /* test mode on */
+-	{ 0x47, 0xc5, 0x0000 }, /* GPIO hysteresis = 30 us */
+-	{ 0x47, 0xc0, 0x0000 }, /* test mode off */
+-	{} /* Terminator */
+-};
+-
+-static const struct cs8409_cir_param cs8409_cs42l42_bullseye_atn[] = {
+-	{ 0x47, 0x65, 0x4000 }, /* EQ_SEL=1, EQ1/2_EN=0 */
+-	{ 0x47, 0x64, 0x4000 }, /* +EQ_ACC */
+-	{ 0x47, 0x65, 0x4010 }, /* +EQ2_EN */
+-	{ 0x47, 0x63, 0x0647 }, /* EQ_DATA_HI=0x0647 */
+-	{ 0x47, 0x64, 0xc0c7 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=0, EQ_DATA_LO=0x67 */
+-	{ 0x47, 0x63, 0x0647 }, /* EQ_DATA_HI=0x0647 */
+-	{ 0x47, 0x64, 0xc1c7 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=1, EQ_DATA_LO=0x67 */
+-	{ 0x47, 0x63, 0xf370 }, /* EQ_DATA_HI=0xf370 */
+-	{ 0x47, 0x64, 0xc271 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=2, EQ_DATA_LO=0x71 */
+-	{ 0x47, 0x63, 0x1ef8 }, /* EQ_DATA_HI=0x1ef8 */
+-	{ 0x47, 0x64, 0xc348 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=3, EQ_DATA_LO=0x48 */
+-	{ 0x47, 0x63, 0xc110 }, /* EQ_DATA_HI=0xc110 */
+-	{ 0x47, 0x64, 0xc45a }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=4, EQ_DATA_LO=0x5a */
+-	{ 0x47, 0x63, 0x1f29 }, /* EQ_DATA_HI=0x1f29 */
+-	{ 0x47, 0x64, 0xc574 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=5, EQ_DATA_LO=0x74 */
+-	{ 0x47, 0x63, 0x1d7a }, /* EQ_DATA_HI=0x1d7a */
+-	{ 0x47, 0x64, 0xc653 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=6, EQ_DATA_LO=0x53 */
+-	{ 0x47, 0x63, 0xc38c }, /* EQ_DATA_HI=0xc38c */
+-	{ 0x47, 0x64, 0xc714 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=7, EQ_DATA_LO=0x14 */
+-	{ 0x47, 0x63, 0x1ca3 }, /* EQ_DATA_HI=0x1ca3 */
+-	{ 0x47, 0x64, 0xc8c7 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=8, EQ_DATA_LO=0xc7 */
+-	{ 0x47, 0x63, 0xc38c }, /* EQ_DATA_HI=0xc38c */
+-	{ 0x47, 0x64, 0xc914 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=9, EQ_DATA_LO=0x14 */
+-	{ 0x47, 0x64, 0x0000 }, /* -EQ_ACC, -EQ_WRT */
+-	{} /* Terminator */
+-};
+-
+ static inline int cs8409_vendor_coef_get(struct hda_codec *codec, unsigned int idx)
+ {
+ 	snd_hda_codec_write(codec, CS8409_VENDOR_NID, 0, AC_VERB_SET_COEF_INDEX, idx);
+@@ -908,7 +717,7 @@ static int cs8409_cs42l42_exec_verb(struct hdac_device *dev, unsigned int cmd, u
+ 	return spec->exec_verb(dev, cmd, flags, res);
+ }
  
- 	for (; seq->addr; seq++)
--		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, seq->addr, seq->reg, 1);
-+		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, seq->addr, seq->reg);
+-static void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix, int action)
++void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix, int action)
+ {
+ 	struct cs8409_spec *spec = codec->spec;
+ 	int caps;
+@@ -995,31 +804,6 @@ static void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixu
+ 	}
+ }
  
- 	mutex_unlock(&spec->cs8409_i2c_mux);
- 
-@@ -457,9 +470,9 @@ static void cs8409_jack_unsol_event(struct hda_codec *codec, unsigned int res)
- 	mutex_lock(&spec->cs8409_i2c_mux);
- 
- 	/* Read jack detect status registers */
--	reg_cdc_status = cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1308, 1);
--	reg_hs_status = cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1124, 1);
--	reg_ts_status = cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130f, 1);
-+	reg_cdc_status = cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1308);
-+	reg_hs_status = cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1124);
-+	reg_ts_status = cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130f);
- 
- 	mutex_unlock(&spec->cs8409_i2c_mux);
- 
-@@ -472,7 +485,7 @@ static void cs8409_jack_unsol_event(struct hda_codec *codec, unsigned int res)
- 
- 		mutex_lock(&spec->cs8409_i2c_mux);
- 		/* Disable HSDET_AUTO_DONE */
--		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x131b, 0xFF, 1);
-+		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x131b, 0xFF);
- 		mutex_unlock(&spec->cs8409_i2c_mux);
- 
- 		type = ((reg_hs_status & CS42L42_HSTYPE_MASK) + 1);
-@@ -499,7 +512,7 @@ static void cs8409_jack_unsol_event(struct hda_codec *codec, unsigned int res)
- 
- 		mutex_lock(&spec->cs8409_i2c_mux);
- 		/* Re-Enable Tip Sense Interrupt */
--		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1320, 0xF3, 1);
-+		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1320, 0xF3);
- 		mutex_unlock(&spec->cs8409_i2c_mux);
- 
- 	} else {
-@@ -566,7 +579,7 @@ static int cs8409_suspend(struct hda_codec *codec)
- 
- 	mutex_lock(&spec->cs8409_i2c_mux);
- 	/* Power down CS42L42 ASP/EQ/MIX/HP */
--	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1101, 0xfe, 1);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1101, 0xfe);
- 	mutex_unlock(&spec->cs8409_i2c_mux);
- 
- 	spec->cs42l42_suspended = 1;
-@@ -622,7 +635,7 @@ static void cs8409_cs42l42_hw_init(struct hda_codec *codec)
- 	if (codec->fixup_id == CS8409_WARLOCK || codec->fixup_id == CS8409_CYBORG) {
- 		/* FULL_SCALE_VOL = 0 for Warlock / Cyborg */
- 		mutex_lock(&spec->cs8409_i2c_mux);
--		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x2001, 0x01, 1);
-+		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x2001, 0x01);
- 		mutex_unlock(&spec->cs8409_i2c_mux);
- 		/* DMIC1_MO=00b, DMIC1/2_SR=1 */
- 		cs8409_vendor_coef_set(codec, 0x09, 0x0003);
-@@ -631,11 +644,11 @@ static void cs8409_cs42l42_hw_init(struct hda_codec *codec)
- 	/* Restore Volumes after Resume */
- 	mutex_lock(&spec->cs8409_i2c_mux);
- 	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOL_CHA,
--			 -(spec->vol[1]) & CS8409_CS42L42_REG_HS_VOL_MASK, 1);
-+			 -(spec->vol[1]) & CS8409_CS42L42_REG_HS_VOL_MASK);
- 	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOL_CHB,
--			 -(spec->vol[2]) & CS8409_CS42L42_REG_HS_VOL_MASK, 1);
-+			 -(spec->vol[2]) & CS8409_CS42L42_REG_HS_VOL_MASK);
- 	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_AMIC_VOL,
--			 spec->vol[0] & CS8409_CS42L42_REG_AMIC_VOL_MASK, 1);
-+			 spec->vol[0] & CS8409_CS42L42_REG_AMIC_VOL_MASK);
- 	mutex_unlock(&spec->cs8409_i2c_mux);
- 
- 	cs8409_cs42l42_enable_jack_detect(codec);
-@@ -741,6 +754,7 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
- 		spec->cs42l42_hp_jack_in = 0;
- 		spec->cs42l42_mic_jack_in = 0;
- 		spec->cs42l42_suspended = 1;
-+		spec->paged = 1;
- 
- 		/* Basic initial sequence for specific hw configuration */
- 		snd_hda_sequence_write(codec, cs8409_cs42l42_init_verbs);
+-static const struct hda_fixup cs8409_fixups[] = {
+-	[CS8409_BULLSEYE] = {
+-		.type = HDA_FIXUP_PINS,
+-		.v.pins = cs8409_cs42l42_pincfgs,
+-		.chained = true,
+-		.chain_id = CS8409_FIXUPS,
+-	},
+-	[CS8409_WARLOCK] = {
+-		.type = HDA_FIXUP_PINS,
+-		.v.pins = cs8409_cs42l42_pincfgs,
+-		.chained = true,
+-		.chain_id = CS8409_FIXUPS,
+-	},
+-	[CS8409_CYBORG] = {
+-		.type = HDA_FIXUP_PINS,
+-		.v.pins = cs8409_cs42l42_pincfgs,
+-		.chained = true,
+-		.chain_id = CS8409_FIXUPS,
+-	},
+-	[CS8409_FIXUPS] = {
+-		.type = HDA_FIXUP_FUNC,
+-		.v.func = cs8409_cs42l42_fixups,
+-	},
+-};
+-
+ static int patch_cs8409(struct hda_codec *codec)
+ {
+ 	int err;
 diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
-index c2c208218e34..ee66fd0c01dc 100644
+index 2ab02a520f5a..516123a411db 100644
 --- a/sound/pci/hda/patch_cs8409.h
 +++ b/sound/pci/hda/patch_cs8409.h
-@@ -283,6 +283,8 @@ struct cs8409_spec {
- 	unsigned int i2c_clck_enabled;
- 	unsigned int dev_addr;
- 	struct delayed_work i2c_clk_work;
-+	unsigned int paged;
-+	unsigned int last_page;
+@@ -9,6 +9,14 @@
+ #ifndef __CS8409_PATCH_H
+ #define __CS8409_PATCH_H
  
- 	/* verb exec op override */
- 	int (*exec_verb)(struct hdac_device *dev, unsigned int cmd, unsigned int flags,
++#include <linux/pci.h>
++#include <sound/tlv.h>
++#include <sound/hda_codec.h>
++#include "hda_local.h"
++#include "hda_auto_parser.h"
++#include "hda_jack.h"
++#include "hda_generic.h"
++
+ /* Cirrus Logic CS8409 HDA bridge with
+  * companion codec CS42L42
+  */
+@@ -88,4 +96,15 @@ struct cs8409_spec {
+ 			 unsigned int *res);
+ };
+ 
++extern const struct snd_pci_quirk cs8409_fixup_tbl[];
++extern const struct hda_model_fixup cs8409_models[];
++extern const struct hda_fixup cs8409_fixups[];
++extern const struct hda_verb cs8409_cs42l42_init_verbs[];
++extern const struct hda_pintbl cs8409_cs42l42_pincfgs[];
++extern const struct cs8409_i2c_param cs42l42_init_reg_seq[];
++extern const struct cs8409_cir_param cs8409_cs42l42_hw_cfg[];
++extern const struct cs8409_cir_param cs8409_cs42l42_bullseye_atn[];
++
++void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix, int action);
++
+ #endif
 -- 
 2.25.1
 
