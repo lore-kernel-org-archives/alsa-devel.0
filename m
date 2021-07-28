@@ -7,87 +7,87 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A5B9C4320A
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:52:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA53EC4338F
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:52:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D7B4760F45
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:52:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D7B4760F45
+	by mail.kernel.org (Postfix) with ESMTPS id 661B06101D
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:52:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 661B06101D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 771101F1C;
-	Wed, 28 Jul 2021 15:51:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 771101F1C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 057831EDD;
+	Wed, 28 Jul 2021 15:52:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 057831EDD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627480352;
-	bh=ZYQcw9X1U/m716CkebWUKFWVwXgqBfH+ZRj4GoqJqf0=;
+	s=default; t=1627480374;
+	bh=edU4LwCxIXEXJshG73Ycmz2zvI71RkezCRfDNXDdkHc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PUnWfi4LOe3Hp19MIXPtmooWBlnbrnkIkujHDodcjLWaUHQOoxP11m7KN9wcuKA8k
-	 macJzCJ1qmdQVYbQhqwQ7wHKEqqij4Ii0yYEuWhM0GvNmazWVNdRKNz0hzY0LukLVf
-	 nIClllchudt5beU2Rbhm/JD/VMWjyDoEREsTEA64=
+	b=Ak7XYXps86/7A1WAQQh5vYYr6WwL/AayDyXVqJT8aOrg2e7uMZzfs+rDEmS21xAHx
+	 opDtPozYA40xqCTJKVAshrEcRccRlfZhgUesu6DY92T1BMFBx3n0dsM8LbI1SRzszx
+	 ES9yGQ5QPAwMWRNx+jW9tgauiCzY9MOatETyWuB8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17253F804FB;
-	Wed, 28 Jul 2021 15:45:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F16DFF805A0;
+	Wed, 28 Jul 2021 15:45:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 499D1F80571; Wed, 28 Jul 2021 15:45:15 +0200 (CEST)
+ id 2200BF804E6; Wed, 28 Jul 2021 15:45:16 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3E1C3F804E6
- for <alsa-devel@alsa-project.org>; Wed, 28 Jul 2021 15:44:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E1C3F804E6
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4F947F804ED
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jul 2021 15:44:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F947F804ED
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="HVzM35D/"
+ header.b="HQZqNmtr"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16S674iT029982; 
- Wed, 28 Jul 2021 08:44:38 -0500
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16S674iU029982; 
+ Wed, 28 Jul 2021 08:44:39 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=ZGgnWVNrqqnhEmNf6UFCsoATb7uvc3qFnlWIgEoQFRI=;
- b=HVzM35D/8mLfVfHObIJK4m21MmWiAV49dBPi1iUNI7w9hF0bmpyZSp93+zL3DjFr2o7b
- tJtOLsGCoDn8IMk3Zzlid8jtyPRIkcL5KzeNsiBM5+Kut3FtVXf+TAIDKNAPOKYR7KuC
- 7eRiOmoOkN+bZDDzJinBWxQpXnEoODOZFgxsWYzP+LlckOxC5sR8lH/NB9SFqH5IKj0+
- cQWSmSTelLSPcUS2lIHVGJb6oXwQjZulIXZqvEP3iNsZTFZRu7Iq3z1M5oYQeJeRuY2P
- hxbj/fQVlQ/BHhriY0AnKhs/Wpl1T80xD84oLD/Y7fw4mLTyAaGMe3rxyMCafJDLvHwo 6A== 
+ bh=Cd8sZsyPFjub9SNh+fp/si6i8IHWZ4PqUCYMaY7jOhU=;
+ b=HQZqNmtrDYlRd5DVtaKekkNw1rxiJ0jD8avcx11n6ShamRGE3ym2vAqXTsvkZLXjAuLN
+ 2J9AZkHURJlfpUD5OH2FZJqyhsfEWsAlkymnbe9oYJDSfAlNquRU415cgfFR+kcaRXH8
+ VMQgE8cXWFG0OG8zjwSxW5XgK3hedaNdUW5jii3cQHZZaDMjW94tOTjyX1BoLXNz8xTL
+ T99tyTbcZ74y1akmZFaBW3jIQroW6GsYvuHEWg4VhvJzN+4aP/onFcSMj46DOI/Ac/pT
+ OCfLFuRXup3UwABD1X0s3Hu2VmAKKAs0rDeWf+L7NNVewtdFeO9tzis4YXHUAYpVLSD4 zA== 
 Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3a31m2resc-1
+ by mx0a-001ae601.pphosted.com with ESMTP id 3a31m2resc-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 28 Jul 2021 08:44:38 -0500
+ Wed, 28 Jul 2021 08:44:39 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 28 Jul
- 2021 14:44:36 +0100
+ 2021 14:44:37 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Wed, 28 Jul 2021 14:44:36 +0100
+ Transport; Wed, 28 Jul 2021 14:44:37 +0100
 Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.32])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2F51845D;
- Wed, 28 Jul 2021 13:44:36 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 42FB92BA;
+ Wed, 28 Jul 2021 13:44:37 +0000 (UTC)
 From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v2 20/27] ALSA: hda/cs8409: Add Support to disable jack type
- detection for CS42L42
-Date: Wed, 28 Jul 2021 14:44:01 +0100
-Message-ID: <20210728134408.369396-21-vitalyr@opensource.cirrus.com>
+Subject: [PATCH v2 23/27] ALSA: hda/cs8409: Set fixed sample rate of 48kHz for
+ CS42L42
+Date: Wed, 28 Jul 2021 14:44:04 +0100
+Message-ID: <20210728134408.369396-24-vitalyr@opensource.cirrus.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210728134408.369396-1-vitalyr@opensource.cirrus.com>
 References: <20210728134408.369396-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: 9NHHw5W_5nrs7lrDUYXYSgBTwXOrkyAv
-X-Proofpoint-ORIG-GUID: 9NHHw5W_5nrs7lrDUYXYSgBTwXOrkyAv
+X-Proofpoint-GUID: 7M38jdXwygA7qXgKEnmLkLkz4Krc7-HL
+X-Proofpoint-ORIG-GUID: 7M38jdXwygA7qXgKEnmLkLkz4Krc7-HL
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
  priorityscore=1501 impostorscore=0
  suspectscore=0 lowpriorityscore=0 mlxlogscore=999 phishscore=0 spamscore=0
@@ -113,8 +113,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-Some hardware configurations do not support jack type detection.
-Instead, for those configurations, only tip detection is supported.
+CS42L42 is configured to use a fixed sample rate of 48kHz.
 
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
@@ -123,136 +122,67 @@ Changes in v2:
 - No changes
 
 ---
- sound/pci/hda/patch_cs8409-tables.c |  1 +
- sound/pci/hda/patch_cs8409.c        | 72 ++++++++++++++++-------------
- sound/pci/hda/patch_cs8409.h        |  1 +
- 3 files changed, 43 insertions(+), 31 deletions(-)
+ sound/pci/hda/patch_cs8409-tables.c | 8 ++++++++
+ sound/pci/hda/patch_cs8409.c        | 6 ++++++
+ sound/pci/hda/patch_cs8409.h        | 2 ++
+ 3 files changed, 16 insertions(+)
 
 diff --git a/sound/pci/hda/patch_cs8409-tables.c b/sound/pci/hda/patch_cs8409-tables.c
-index 117c70536ff0..be9feb84aaa2 100644
+index a39b2c20f61c..a9a0b8e3b2a9 100644
 --- a/sound/pci/hda/patch_cs8409-tables.c
 +++ b/sound/pci/hda/patch_cs8409-tables.c
-@@ -246,6 +246,7 @@ struct sub_codec cs8409_cs42l42_codec = {
- 	.mic_jack_in = 0,
- 	.paged = 1,
- 	.suspended = 1,
-+	.no_type_dect = 0,
+@@ -45,6 +45,14 @@ const struct snd_kcontrol_new cs42l42_adc_volume_mixer = {
+ 			 HDA_INPUT, CS42L42_VOL_ADC) | HDA_AMP_VAL_MIN_MUTE
  };
  
++const struct hda_pcm_stream cs42l42_48k_pcm_analog_playback = {
++	.rates = SNDRV_PCM_RATE_48000, /* fixed rate */
++};
++
++const struct hda_pcm_stream cs42l42_48k_pcm_analog_capture = {
++	.rates = SNDRV_PCM_RATE_48000, /* fixed rate */
++};
++
  /******************************************************************************
+  *                   BULLSEYE / WARLOCK / CYBORG Specific Arrays
+  *                               CS8409/CS42L42
 diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
-index d5001f46224f..cee9d5c506ed 100644
+index 97649d35aefb..5b6d843ab7fb 100644
 --- a/sound/pci/hda/patch_cs8409.c
 +++ b/sound/pci/hda/patch_cs8409.c
-@@ -538,6 +538,39 @@ static void cs42l42_run_jack_detect(struct sub_codec *cs42l42)
- 	usleep_range(10000, 25000);
- }
+@@ -884,6 +884,9 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
  
-+static int cs42l42_handle_tip_sense(struct sub_codec *cs42l42, unsigned int reg_ts_status)
-+{
-+	int status_changed = 0;
-+
-+	/* TIP_SENSE INSERT/REMOVE */
-+	switch (reg_ts_status) {
-+	case CS42L42_JACK_INSERTED:
-+		if (!cs42l42->hp_jack_in) {
-+			if (cs42l42->no_type_dect) {
-+				status_changed = 1;
-+				cs42l42->hp_jack_in = 1;
-+				cs42l42->mic_jack_in = 0;
-+			} else {
-+				cs42l42_run_jack_detect(cs42l42);
-+			}
-+		}
-+		break;
-+
-+	case CS42L42_JACK_REMOVED:
-+		if (cs42l42->hp_jack_in || cs42l42->mic_jack_in) {
-+			status_changed = 1;
-+			cs42l42->hp_jack_in = 0;
-+			cs42l42->mic_jack_in = 0;
-+		}
-+		break;
-+	default:
-+		/* jack in transition */
-+		break;
-+	}
-+
-+	return status_changed;
-+}
-+
- static int cs42l42_jack_unsol_event(struct sub_codec *cs42l42)
- {
- 	int status_changed = 0;
-@@ -562,10 +595,13 @@ static int cs42l42_jack_unsol_event(struct sub_codec *cs42l42)
- 		cs8409_i2c_write(cs42l42, 0x131b, 0xFF);
+ 		break;
+ 	case HDA_FIXUP_ACT_PROBE:
++		/* Fix Sample Rate to 48kHz */
++		spec->gen.stream_analog_playback = &cs42l42_48k_pcm_analog_playback;
++		spec->gen.stream_analog_capture = &cs42l42_48k_pcm_analog_capture;
+ 		/* Set initial DMIC volume to -26 dB */
+ 		snd_hda_codec_amp_init_stereo(codec, CS8409_CS42L42_DMIC_ADC_PIN_NID,
+ 					      HDA_INPUT, 0, 0xff, 0x19);
+@@ -1077,6 +1080,9 @@ void dolphin_fixups(struct hda_codec *codec, const struct hda_fixup *fix, int ac
  
- 		type = ((reg_hs_status & CS42L42_HSTYPE_MASK) + 1);
--		/* CS42L42 reports optical jack as type 4
--		 * We don't handle optical jack
--		 */
--		if (type != 4) {
-+
-+		if (cs42l42->no_type_dect) {
-+			status_changed = cs42l42_handle_tip_sense(cs42l42, reg_ts_status);
-+		} else if (type == 4) {
-+			/* Type 4 not supported	*/
-+			status_changed = cs42l42_handle_tip_sense(cs42l42, CS42L42_JACK_REMOVED);
-+		} else {
- 			if (!cs42l42->hp_jack_in) {
- 				status_changed = 1;
- 				cs42l42->hp_jack_in = 1;
-@@ -575,37 +611,11 @@ static int cs42l42_jack_unsol_event(struct sub_codec *cs42l42)
- 				status_changed = 1;
- 				cs42l42->mic_jack_in = 1;
- 			}
--		} else {
--			if (cs42l42->hp_jack_in || cs42l42->mic_jack_in) {
--				status_changed = 1;
--				cs42l42->hp_jack_in = 0;
--				cs42l42->mic_jack_in = 0;
--			}
- 		}
--
- 		/* Re-Enable Tip Sense Interrupt */
- 		cs8409_i2c_write(cs42l42, 0x1320, 0xF3);
--
- 	} else {
--		/* TIP_SENSE INSERT/REMOVE */
--		switch (reg_ts_status) {
--		case CS42L42_JACK_INSERTED:
--			cs42l42_run_jack_detect(cs42l42);
--			break;
--
--		case CS42L42_JACK_REMOVED:
--			if (cs42l42->hp_jack_in || cs42l42->mic_jack_in) {
--				status_changed = 1;
--				cs42l42->hp_jack_in = 0;
--				cs42l42->mic_jack_in = 0;
--			}
--			break;
--
--		default:
--			/* jack in transition */
--			status_changed = 0;
--			break;
--		}
-+		status_changed = cs42l42_handle_tip_sense(cs42l42, reg_ts_status);
- 	}
- 
- 	return status_changed;
+ 		break;
+ 	case HDA_FIXUP_ACT_PROBE:
++		/* Fix Sample Rate to 48kHz */
++		spec->gen.stream_analog_playback = &cs42l42_48k_pcm_analog_playback;
++		spec->gen.stream_analog_capture = &cs42l42_48k_pcm_analog_capture;
+ 		snd_hda_gen_add_kctl(&spec->gen, "Headphone Playback Volume",
+ 				     &cs42l42_dac_volume_mixer);
+ 		snd_hda_gen_add_kctl(&spec->gen, "Mic Capture Volume", &cs42l42_adc_volume_mixer);
 diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
-index 817df295d594..a105c3c9023d 100644
+index 1b5a8d04ba0f..2208be2ffad1 100644
 --- a/sound/pci/hda/patch_cs8409.h
 +++ b/sound/pci/hda/patch_cs8409.h
-@@ -285,6 +285,7 @@ struct sub_codec {
- 	unsigned int last_page;
- 	unsigned int hsbias_hiz;
- 	unsigned int full_scale_vol:1;
-+	unsigned int no_type_dect:1;
+@@ -335,6 +335,8 @@ int cs42l42_volume_info(struct snd_kcontrol *kctrl, struct snd_ctl_elem_info *ui
+ int cs42l42_volume_get(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl);
+ int cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl);
  
- 	s8 vol[CS42L42_VOLUMES];
- };
++extern const struct hda_pcm_stream cs42l42_48k_pcm_analog_playback;
++extern const struct hda_pcm_stream cs42l42_48k_pcm_analog_capture;
+ extern const struct snd_pci_quirk cs8409_fixup_tbl[];
+ extern const struct hda_model_fixup cs8409_models[];
+ extern const struct hda_fixup cs8409_fixups[];
 -- 
 2.25.1
 
