@@ -2,94 +2,84 @@ Return-Path: <SRS0=/xSo=MU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=0.8 required=3.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 243D3C4338F
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jul 2021 04:20:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AF78C4338F
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jul 2021 06:52:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D952A600D1
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jul 2021 04:20:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D952A600D1
+	by mail.kernel.org (Postfix) with ESMTPS id DBE1C60EBB
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jul 2021 06:52:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DBE1C60EBB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9A6BB17C4;
-	Wed, 28 Jul 2021 06:19:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A6BB17C4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7CF3E17C0;
+	Wed, 28 Jul 2021 08:51:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CF3E17C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627446021;
-	bh=98gtSXDc7ZlTP8DOpD7xPPrbBz6KU/i+LtjlbzvHQbE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=KURA5fLWaY2mx/dm3CsEuttxvVixGX4X8nl7SSfnGaDqYDuSmhhYW1rFHa8YrOY6P
-	 bsilKy3N8/VlJi+xbjLq4s8URUcjJp5KGHLVbAC8ndAsxUHOLPXXvClc8M9aTzSAYa
-	 Tm+wKpF8gkoayPPT7bvXkBRe3bRLtRMKfY12bL1Y=
+	s=default; t=1627455144;
+	bh=15Kv8z4HkMavKpIRmHmEpq2L6YjnTSlt36+bRnQDLck=;
+	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=IsrOW6ESnWuYm6/fKtq4mWjJZP6BxqhiYRIYYw4vd5AJDgoUiTp1AUJ/TLN8lp7MB
+	 RBXfJOyDxm1ScTWGedcnOepdE0gJnygEjp0RB5XdQbVuWksX9Hz0odX21o2Yi9ndXI
+	 APJggmdJmi1J3gG7CMgOwxzC42THC8lXpF2BjWkg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 310EFF80253;
-	Wed, 28 Jul 2021 06:19:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06491F80253;
+	Wed, 28 Jul 2021 08:51:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B44ADF8025A; Wed, 28 Jul 2021 06:19:29 +0200 (CEST)
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com
- [IPv6:2607:f8b0:4864:20::831])
+ id B1AEFF8025A; Wed, 28 Jul 2021 08:51:32 +0200 (CEST)
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
+ [IPv6:2a00:1450:4864:20::42f])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CCA36F80212
- for <alsa-devel@alsa-project.org>; Wed, 28 Jul 2021 06:19:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCA36F80212
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0CBD3F80127
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jul 2021 08:51:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CBD3F80127
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="k0X6UEjk"
-Received: by mail-qt1-x831.google.com with SMTP id l24so484087qtj.4
- for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 21:19:24 -0700 (PDT)
+ header.b="IBtovHZP"
+Received: by mail-wr1-x42f.google.com with SMTP id h14so1141482wrx.10
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2021 23:51:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=98gtSXDc7ZlTP8DOpD7xPPrbBz6KU/i+LtjlbzvHQbE=;
- b=k0X6UEjkKBfbAFH6JYFJNMOfoQuDUk6MYWgifJN2pAnWZnEeGST5bE74ezH/a4Ew8m
- l7+Ha5ZJzvssBw6MkI6+vJItvzys74w8MoJNkyeBcDGKwsmKCY+QW8vmmd26oCSfTTJt
- AaJvOxs7IhcR+nfQJONeDTeW+x1tB+jLz2umb27g8Lv5R7R5wa2TySBJWuj/TmkwXGRP
- VpIhPpKFi4ws1+9QWtJ/4237wxnTJbmRpT4wolmwZclF9yYVJCqyIiY82cByYOx34VNl
- OUYMFTOTln5FSaElAUSKa/6uujrTsBgBpsPW2W6CWfScvptbn1fhKlsAOsHNe0Di95/I
- aVGQ==
+ h=mime-version:from:date:message-id:subject:to;
+ bh=BxlUZ67YEucKrtOdvCbWpWe0X/5mgBESCEFbksyUeJI=;
+ b=IBtovHZP/nmImSYnT13flCcC/DwMIhdbenLvagtteX7EesR5+POw0ydt7ntZsRWi+Z
+ 6+DULfjXQomsDF5EhIml5zpFAyKvHQ99lYFgh8eBd46Nec2VrC6Lfstk39zkesw4O7JS
+ VPhBbjNvL9mSWlGk2lXeV8c+KrqtOhZuEQ+AJAlkPop9kfqVlxKf/oZjgq/VocnwXt0C
+ pEek0osCM4WzvmhGovZjOfJ03SagWyaMRBbzTl5IBOy3pVT05sI3hCTaXNrZhzfGCy+t
+ 7IA0E/MYTJi2xCb4EPKtxS7B2Ftubn3QDG8sfk+WMzDclj1Wc17ha3nblnQol1Wwqzc8
+ BSlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=98gtSXDc7ZlTP8DOpD7xPPrbBz6KU/i+LtjlbzvHQbE=;
- b=rmJYXRiPS9g9EzGkJ9F4dn51yWJgtoefu+75M0oRaMicloUIBCcXLnKuLN2eTIGAfg
- 5QIfhq82mnE1MhX/sV8vc0ChYwG1TTfLl4Hbw2+ZCEaWODC8YPdV13A1LzWEczWJOYaW
- Pru3/zo7KVeFyrKEHR5W3hOkf3U0MdWXMvw8HeX4tsZSXPVyv+jsHBJabv/l3VF4fTLl
- jtReR71Gp7Bm/df0nhPrYs5DLyA9Vs42TEvpVRgulDKqgjBY+08J0YxSCLnvIEA7oBKT
- /q1pjXjIRXw5sJ1IpMnaISrDtNSJ7custSNrTd/7m0CHxn0CpIIqjdfT1PRLim2mWbB5
- p+ZA==
-X-Gm-Message-State: AOAM53254D+FRkbpX4vS76aOXwnObG9MNE/TravAwhmtiMjG/AHVx5T1
- aNJ960ZNg+r04baKpCrL7VRGVCng6JWjBbbEWG4=
-X-Google-Smtp-Source: ABdhPJzpRxaeYMeDLeO8zgqFYNb5J+g+FY8Gr9FLuWekwpckk/L7lwKzlbgsAza9R5n6NqJdrQnj4LbbOWpJUBlWZXs=
-X-Received: by 2002:ac8:7c54:: with SMTP id o20mr13378070qtv.142.1627445961649; 
- Tue, 27 Jul 2021 21:19:21 -0700 (PDT)
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=BxlUZ67YEucKrtOdvCbWpWe0X/5mgBESCEFbksyUeJI=;
+ b=gnlNDBBGRYJbjc1mJVw247W14fqakb5x8+xPq8a9JD2EZC9V8C/4+ajdM8dHL8FB1U
+ IvARswVRdAm2HDs2/WWBGvP9y00k7H/kWp7v2USmm9e9JA6e9WLEoAlN7q+9zCTLseH2
+ oUJBJskVhyBIShG6r1gTdcvf81aMYBHeDtz663dECxkj4JDSta92Y0LASnGjts/U0p5Q
+ y+KqvvmKdC+NgIDyrm4qRdnJBWz3Uv5+6GbKFrr7zEyfaU5dUoTNDJByZSZA095j+VGd
+ 3YdYUrS54j8INR/emx/uz+z4f2utzIXUEDdSXxjwk7on9ri+Hpo6bkSJh7s4I5ZS1Zrh
+ A2xg==
+X-Gm-Message-State: AOAM530vXVmG2jMegk7IKKEK0BdBjING2IimJXbRdvc1OMcLgpcnI8r+
+ O+gCVnrso77KUDhzRfoMD208cmTEYsA7Yc3Saxs2UPFJ
+X-Google-Smtp-Source: ABdhPJwAMRehutGcCsEMJbIjAmRxQfhGDgWUGbaPCPEnAwRBdkEHV9eMo2HkeiNlcS0iCcMnQllHnPbMYrPR9XfjEAg=
+X-Received: by 2002:a5d:64ac:: with SMTP id m12mr27565639wrp.89.1627455085980; 
+ Tue, 27 Jul 2021 23:51:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAEsQvctJDnsaRTXAGAJ6==juKazoo2=AJrWabLzqE=jCfg5EEA@mail.gmail.com>
- <20210727102744.30364-1-chihhao.chen@mediatek.com>
- <CAEsQvcuOQ_Tg0bRbsegECdBUsGxa61ei9-Z2bRbGvQ9FmEUPbA@mail.gmail.com>
-In-Reply-To: <CAEsQvcuOQ_Tg0bRbsegECdBUsGxa61ei9-Z2bRbGvQ9FmEUPbA@mail.gmail.com>
-From: Geraldo Nascimento <geraldogabriel@gmail.com>
-Date: Wed, 28 Jul 2021 01:19:13 +0000
-Message-ID: <CAEsQvcvMVCptNss0iSB1uk1vu7PNdyO5c3jzHbi3HvRELi5Jdw@mail.gmail.com>
-Subject: Re: [PATCH] ALSA: usb-audio: fix incorrect clock source setting
-To: chihhao chen <chihhao.chen@mediatek.com>
+From: Anton Nikolaev <anikol.159@gmail.com>
+Date: Wed, 28 Jul 2021 09:51:14 +0300
+Message-ID: <CAGh7KHRZcy0G=GFKvBZCXucbxozVk1ytX0jYCEch6gDYs4FLew@mail.gmail.com>
+Subject: Copy hw out to loop problem when recording started before playing
+To: alsa-devel@alsa-project.org
 Content-Type: text/plain; charset="UTF-8"
-Cc: alsa-devel@alsa-project.org, wsd_upstream@mediatek.com,
- Takashi Iwai <tiwai@suse.de>, damien@zamaudio.com,
- linux-kernel@vger.kernel.org, tiwai@suse.com,
- linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
- linux-arm-kernel@lists.infradead.org
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,32 +95,75 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-> Chihhao, please try the below patch and perform another echo test.
->
-> Let us know if the echo test works or if it still fails and please
-> remember to share with us the relevant dmesg logs.
->
+Hello everyone. Please help. Do not understand what is wrong
 
-Chihhao Chen,
+Chains is :
+Plug asym1 -
+  Out= Plug with multi (Copy hardware dmix output to dmix loopout)
+  IN= Dsnoop with hardware dev
 
-when I said echo test I meant just test the device and observe if
-there are noises related to incorrect clock setting.
+Plug asym2 -
+  Out= plug dmix loop
+  IN= plug dsnoop loop
 
+Work good if playing to plug asym1 started before recording from asym2.
+Not working play to asym1 if recording from asym2 started before playing to
+asym1.
 
-I then realized a bit too late that probably in your programming
-culture "echo test" refers to the whole technique you used to hook the
-kernel and debug the issue to produce the fix.
+/Etc/asound.conf is:
 
-If you call that technique "echo test" I'm sorry, I didn't know it was
-called that way.
+pcm.hwcard0 { type hw; card 0; device 0; }
 
+pcm.!default {
+  type plug;
+  slave.pcm { type asym; playback.pcm "devhwcopy"; capture.pcm "devhwin"; }
+}
 
-I just meant to briefly test to hear if there is noise even when the
-clock parameters are correctly hardcoded.
+pcm.devhwcopy {
+  type plug;
+  route_policy "duplicate";
+  slave.pcm {
+    type multi; slaves {
+      a { channels 2; pcm "devhwout"; }
+      b { channels 2; pcm "devloopout"; }
+    }
+    bindings { 0 { slave a channel 0 } 1 { slave a channel 1 } 2 { slave b
+channel 0 } 3 { slave b channel 1 } }
+  }
+  ttable [ [ 1 0 1 0 ] [ 0 1 0 1 ] ]
+}
 
-My intent with that patch is to try to prove there's a firmware bug in
-action just like Takashi Iwai suggested.
+pcm.devhwout {
+  type dmix; ipc_key 1024001; ipc_perm 0666; hw_ptr_alignment roundup;
+  slave { pcm "hwcard0"; channels 2; period_size 1024; buffer_size 8192; }
+  bindings { 0 0 1 1 }
+}
 
+pcm.devhwin {
+  type dsnoop; ipc_key 1024002; ipc_perm 0666;
+  slave { pcm "hwcard0"; channels 2; rate 44100; period_size 1024;
+buffer_size 8192; }
+  bindings { 0 0 1 1 }
+}
 
-My apologies,
-Geraldo Nascimento
+pcm.devloopout {
+  type dmix; ipc_key 1024011; ipc_perm 0666;
+  slave { pcm "hw:LOOPCARD,0,0"; channels 2; period_size 1024; buffer_size
+8192; }
+  bindings { 0 0 1 1 }
+}
+
+pcm.devloopin {
+  type dsnoop; ipc_key 1024012; ipc_perm 0666;
+  slave { pcm "hw:LOOPCARD,1,0"; channels 2; rate 44100; period_size 1024;
+buffer_size 8192; }
+  bindings { 0 0 1 1 }
+}
+
+pcm.devloop {
+  type plug;
+  slave.pcm { type asym; playback.pcm "devloopout"; capture.pcm
+"devloopin"; }
+}
+
+(English is not native for me, sorry)
