@@ -2,100 +2,101 @@ Return-Path: <SRS0=/xSo=MU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90A02C4338F
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:53:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A1C4C4320A
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:54:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1D3B260F5E
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:53:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1D3B260F5E
+	by mail.kernel.org (Postfix) with ESMTPS id D6E886103E
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jul 2021 13:54:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D6E886103E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ADCF71F43;
-	Wed, 28 Jul 2021 15:52:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ADCF71F43
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6F55D1F53;
+	Wed, 28 Jul 2021 15:53:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F55D1F53
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627480414;
-	bh=EJyiK1OLFdSLjPVbzOWCW7r9rpP4js68tHEzJl4jUOs=;
+	s=default; t=1627480446;
+	bh=HNemylcdSZ4eGEnljkAkyEoAkZdCkulwChTOlLs+3TU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=noe9u+R1kj0DR7Z6aTvbgOFUTGrI1fjlZCma/TSOb2QysAEIK6ilMZADZ6LMHzZE5
-	 WhGZrUpnPpSD2p7IQ2mrRk/aMFF/5I9pCzTrLkYXB7zo5pEQNwOFygdS/Nr0i6ejD8
-	 pO9PVBsaNxmJObWwsn4QBBsYGgxJziIy08RDBFKI=
+	b=CeBo3HMDj5auv6lLWPTyhurl72wrlbkRSr3we+mTPVYJ1zrUCAaT/rs2CkNU3M8DE
+	 5UcLT8PH7QruH50NOMT6c3erKNhUBSUFqqiPBYAqCsykwAegQKX6oZSTs3lv5bQvl2
+	 PQZsWB0uIMT+znY/JrslWWfX0Xi5jbgo2HzX9Uh0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4F9F7F805AD;
-	Wed, 28 Jul 2021 15:45:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 979C9F805BA;
+	Wed, 28 Jul 2021 15:45:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C0ACAF804F1; Wed, 28 Jul 2021 15:45:16 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 19C10F805A1; Wed, 28 Jul 2021 15:45:22 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BC48EF804F1
- for <alsa-devel@alsa-project.org>; Wed, 28 Jul 2021 15:44:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC48EF804F1
+ by alsa1.perex.cz (Postfix) with ESMTPS id D21C0F804FA
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jul 2021 15:44:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D21C0F804FA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="DVtcXOQw"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16S5XUqw014335; 
+ header.b="aRn+OhQZ"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16S674iW029982; 
  Wed, 28 Jul 2021 08:44:40 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=rRA5Z6IIIDMrXPw1HXC90paYF1ELT1IDE1t39NuCcLs=;
- b=DVtcXOQw9IYymbbRZw7XBJBDZy4KirkBG35XZRMjf/GnracHo9cwFkiSCxpwzwn7o+C1
- dqXL4ePmmOb9h5qFpJRuNaF/F+exTuI0DNjt8MWy5FxFCcIgZ0gRI4F0sdAd9uAx74eA
- Rb0Rci0Oar1FaIR/XqEcj00x5//rZ7BJ6OcNfOF00+H+dc/IRJXPH/0Py/JmBx1YN8wG
- Yr5ZIKddfAJjBfyXj3ghhcrDLV/3OaBj1K9mucw8WE8gCaRC1eecgcLzry7cb9Rytoji
- 95Nq5Q6HyP2M8ycGoeokbbslQdHIK5x8Vx5LuyAVuGG4no1TpoBhXNXszOjwn1Kd0evC aw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 3a30q20fx9-12
+ bh=eyP6h++2gOwhr+wnC1bIE5FbiFiAdnH3d/gCDZwEA64=;
+ b=aRn+OhQZ4NdSdXT7Y0Jl5i9VSd2fiCeQzUZ3F41EHLy9aMfwG1PvgUfPcPKequGwJD7Z
+ IQcc2CLeH/Ax4xERLc4f1O0Nn4rHkIXDXy7dRiYks+wxyBQk5vELclhDWWsk8kaxRRsk
+ DOKnk4prQ3+desTP5+3ZTlDJgOihA+5bGypghI7sZqkRgr0VenLjFThb7ZBuVlFV7XsT
+ Jj9OCjFA8r97VCALNngdtLelz/kypBPd/cHJl5e+qdNBzUQj6y2bD3ids0Ujr12f3vOt
+ jYU6mLpXDvDOms5xkXS6wHCKfe4rhuzX/Z+g6WbdqR4MYrPV5S+z83bFNhm0kzHI0u1q bg== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 3a31m2resc-4
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
  Wed, 28 Jul 2021 08:44:40 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 28 Jul
- 2021 14:44:35 +0100
+ 2021 14:44:38 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Wed, 28 Jul 2021 14:44:35 +0100
+ Transport; Wed, 28 Jul 2021 14:44:38 +0100
 Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.32])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D5AA52BA;
- Wed, 28 Jul 2021 13:44:34 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4116D2BA;
+ Wed, 28 Jul 2021 13:44:38 +0000 (UTC)
 From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v2 16/27] ALSA: hda/cs8409: Support i2c bulk read/write
- functions
-Date: Wed, 28 Jul 2021 14:43:57 +0100
-Message-ID: <20210728134408.369396-17-vitalyr@opensource.cirrus.com>
+Subject: [PATCH v2 26/27] ALSA: hda/cs8409: Follow correct CS42L42 power down
+ sequence for suspend
+Date: Wed, 28 Jul 2021 14:44:07 +0100
+Message-ID: <20210728134408.369396-27-vitalyr@opensource.cirrus.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210728134408.369396-1-vitalyr@opensource.cirrus.com>
 References: <20210728134408.369396-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: xVFV6fxWo2GmuU7zPUhKJlwIjRmvxC1S
-X-Proofpoint-GUID: xVFV6fxWo2GmuU7zPUhKJlwIjRmvxC1S
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0
- bulkscore=0 mlxscore=0
- lowpriorityscore=0 priorityscore=1501 impostorscore=0 malwarescore=0
- adultscore=0 clxscore=1015 spamscore=0 mlxlogscore=999 suspectscore=0
+X-Proofpoint-GUID: ySOGJnZ8qjlEBNnvN1Mpsh9UlcGK744w
+X-Proofpoint-ORIG-GUID: ySOGJnZ8qjlEBNnvN1Mpsh9UlcGK744w
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 impostorscore=0
+ suspectscore=0 lowpriorityscore=0 mlxlogscore=999 phishscore=0 spamscore=0
+ clxscore=1015 mlxscore=0 adultscore=0 bulkscore=0 malwarescore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
  definitions=main-2107280077
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Lucas Tanure <tanureal@opensource.cirrus.com>
+ linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,494 +112,81 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Lucas Tanure <tanureal@opensource.cirrus.com>
+From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-This allows mutex locks to be moved into i2c functions, as
-the bulk read/write functions can lock/unlock themselves to
-prevent interruption of sequence reads/writes.
-
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 
 Changes in v2:
 - No changes
 
 ---
- sound/pci/hda/patch_cs8409-tables.c |   3 +-
- sound/pci/hda/patch_cs8409.c        | 208 +++++++++++++++++-----------
- sound/pci/hda/patch_cs8409.h        |   8 +-
- 3 files changed, 136 insertions(+), 83 deletions(-)
+ sound/pci/hda/patch_cs8409.c | 23 ++++++++++++++++++++++-
+ sound/pci/hda/patch_cs8409.h |  2 ++
+ 2 files changed, 24 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/patch_cs8409-tables.c b/sound/pci/hda/patch_cs8409-tables.c
-index b03ddef2a25f..0f2fd8bb92bf 100644
---- a/sound/pci/hda/patch_cs8409-tables.c
-+++ b/sound/pci/hda/patch_cs8409-tables.c
-@@ -146,7 +146,7 @@ const struct hda_pintbl cs8409_cs42l42_pincfgs[] = {
- };
- 
- /* Vendor specific HW configuration for CS42L42 */
--const struct cs8409_i2c_param cs42l42_init_reg_seq[] = {
-+const struct cs8409_i2c_param cs42l42_init_reg_seq[CS42L42_INIT_REG_SEQ_SIZE] = {
- 	{ 0x1010, 0xB0 },
- 	{ 0x1D01, 0x00 },
- 	{ 0x1D02, 0x06 },
-@@ -206,7 +206,6 @@ const struct cs8409_i2c_param cs42l42_init_reg_seq[] = {
- 	{ 0x1320, 0xff },
- 	{ 0x1b79, 0xff },
- 	{ 0x1b7a, 0xff },
--	{} /* Terminator */
- };
- 
- /* Vendor specific hw configuration for CS8409 */
 diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
-index 31c9f1a3aeaa..d88b32816769 100644
+index 1e48337b782b..0baed8bebfbb 100644
 --- a/sound/pci/hda/patch_cs8409.c
 +++ b/sound/pci/hda/patch_cs8409.c
-@@ -81,11 +81,11 @@ static void cs8409_disable_i2c_clock(struct work_struct *work)
- {
- 	struct cs8409_spec *spec = container_of(work, struct cs8409_spec, i2c_clk_work.work);
+@@ -11,6 +11,7 @@
+ #include <linux/module.h>
+ #include <sound/core.h>
+ #include <linux/mutex.h>
++#include <linux/iopoll.h>
  
--	mutex_lock(&spec->cs8409_i2c_mux);
-+	mutex_lock(&spec->i2c_mux);
- 	cs8409_vendor_coef_set(spec->codec, 0x0,
- 			       cs8409_vendor_coef_get(spec->codec, 0x0) & 0xfffffff7);
- 	spec->i2c_clck_enabled = 0;
--	mutex_unlock(&spec->cs8409_i2c_mux);
-+	mutex_unlock(&spec->i2c_mux);
- }
+ #include "patch_cs8409.h"
  
- /*
-@@ -172,12 +172,12 @@ static int cs8409_i2c_set_page(struct hda_codec *codec, unsigned int i2c_reg)
-  * cs8409_i2c_read - CS8409 I2C Read.
-  * @codec: the codec instance
-  * @i2c_address: I2C Address
-- * @i2c_reg: Register to read
-+ * @addr: Register to read
-  *
-  * CS8409 I2C Read.
-  * Returns negative on error, otherwise returns read value in bits 0-7.
-  */
--static int cs8409_i2c_read(struct hda_codec *codec, unsigned int i2c_address, unsigned int i2c_reg)
-+static int cs8409_i2c_read(struct hda_codec *codec, unsigned int i2c_address, unsigned int addr)
- {
- 	struct cs8409_spec *spec = codec->spec;
- 	unsigned int i2c_reg_data;
-@@ -186,41 +186,90 @@ static int cs8409_i2c_read(struct hda_codec *codec, unsigned int i2c_address, un
- 	if (spec->cs42l42_suspended)
- 		return -EPERM;
- 
-+	mutex_lock(&spec->i2c_mux);
- 	cs8409_enable_i2c_clock(codec);
- 	cs8409_set_i2c_dev_addr(codec, i2c_address);
- 
--	if (cs8409_i2c_set_page(codec, i2c_reg)) {
-+	if (cs8409_i2c_set_page(codec, addr)) {
- 		codec_err(codec, "%s() Paged Transaction Failed 0x%02x : 0x%04x\n",
--			__func__, i2c_address, i2c_reg);
-+			__func__, i2c_address, addr);
- 		return -EIO;
- 	}
- 
--	i2c_reg_data = (i2c_reg << 8) & 0x0ffff;
-+	i2c_reg_data = (addr << 8) & 0x0ffff;
- 	cs8409_vendor_coef_set(codec, CS8409_I2C_QREAD, i2c_reg_data);
--	if (cs8409_i2c_wait_complete(codec) < 0) {
--		codec_err(codec, "%s() Transaction Failed 0x%02x : 0x%04x\n",
--			  __func__, i2c_address, i2c_reg);
--		return -EIO;
--	}
-+	if (cs8409_i2c_wait_complete(codec) < 0)
-+		goto error;
- 
- 	/* Register in bits 15-8 and the data in 7-0 */
+@@ -198,6 +199,7 @@ static int cs8409_i2c_read(struct sub_codec *scodec, unsigned int addr)
  	read_data = cs8409_vendor_coef_get(codec, CS8409_I2C_QREAD);
  
-+	mutex_unlock(&spec->i2c_mux);
+ 	mutex_unlock(&spec->i2c_mux);
++
  	return read_data & 0x0ff;
-+
-+error:
-+	mutex_unlock(&spec->i2c_mux);
-+	codec_err(codec, "%s() Failed 0x%02x : 0x%04x\n", __func__, i2c_address, addr);
-+	return -EIO;
-+}
-+
-+/**
-+ * cs8409_i2c_bulk_read - CS8409 I2C Read Sequence.
-+ * @codec: the codec instance
-+ * @seq: Register Sequence to read
-+ * @count: Number of registeres to read
-+ *
-+ * Returns negative on error, values are read into value element of cs8409_i2c_param sequence.
-+ */
-+static int cs8409_i2c_bulk_read(struct hda_codec *codec, unsigned int i2c_address,
-+				struct cs8409_i2c_param *seq, int count)
-+{
-+	struct cs8409_spec *spec = codec->spec;
-+	unsigned int i2c_reg_data;
-+	int i;
-+
-+	if (spec->cs42l42_suspended)
-+		return -EPERM;
-+
-+	mutex_lock(&spec->i2c_mux);
-+	cs8409_set_i2c_dev_addr(codec, i2c_address);
-+
-+	for (i = 0; i < count; i++) {
-+		cs8409_enable_i2c_clock(codec);
-+		if (cs8409_i2c_set_page(codec, seq[i].addr))
-+			goto error;
-+
-+		i2c_reg_data = (seq[i].addr << 8) & 0x0ffff;
-+		cs8409_vendor_coef_set(codec, CS8409_I2C_QREAD, i2c_reg_data);
-+
-+		if (cs8409_i2c_wait_complete(codec) < 0)
-+			goto error;
-+
-+		seq[i].value = cs8409_vendor_coef_get(codec, CS8409_I2C_QREAD) & 0xff;
-+	}
-+
-+	mutex_unlock(&spec->i2c_mux);
-+
-+	return 0;
-+
-+error:
-+	mutex_unlock(&spec->i2c_mux);
-+	codec_err(codec, "I2C Bulk Write Failed 0x%02x\n", i2c_address);
-+	return -EIO;
- }
  
- /**
-  * cs8409_i2c_write - CS8409 I2C Write.
-  * @codec: the codec instance
-  * @i2c_address: I2C Address
-- * @i2c_reg: Register to write to
-- * @i2c_data: Data to write
-+ * @addr: Register to write to
-+ * @value: Data to write
-  *
-  * CS8409 I2C Write.
-  * Returns negative on error, otherwise returns 0.
-  */
--static int cs8409_i2c_write(struct hda_codec *codec, unsigned int i2c_address, unsigned int i2c_reg,
--			    unsigned int i2c_data)
-+static int cs8409_i2c_write(struct hda_codec *codec, unsigned int i2c_address, unsigned int addr,
-+			    unsigned int value)
+ error:
+@@ -654,9 +656,28 @@ static void cs42l42_suspend(struct sub_codec *cs42l42)
  {
- 	struct cs8409_spec *spec = codec->spec;
- 	unsigned int i2c_reg_data;
-@@ -228,25 +277,73 @@ static int cs8409_i2c_write(struct hda_codec *codec, unsigned int i2c_address, u
- 	if (spec->cs42l42_suspended)
- 		return -EPERM;
- 
-+	mutex_lock(&spec->i2c_mux);
-+
- 	cs8409_enable_i2c_clock(codec);
- 	cs8409_set_i2c_dev_addr(codec, i2c_address);
- 
--	if (cs8409_i2c_set_page(codec, i2c_reg)) {
-+	if (cs8409_i2c_set_page(codec, addr)) {
- 		codec_err(codec, "%s() Paged Transaction Failed 0x%02x : 0x%04x\n",
--			__func__, i2c_address, i2c_reg);
-+			__func__, i2c_address, addr);
- 		return -EIO;
- 	}
- 
--	i2c_reg_data = ((i2c_reg << 8) & 0x0ff00) | (i2c_data & 0x0ff);
-+	i2c_reg_data = ((addr << 8) & 0x0ff00) | (value & 0x0ff);
- 	cs8409_vendor_coef_set(codec, CS8409_I2C_QWRITE, i2c_reg_data);
- 
--	if (cs8409_i2c_wait_complete(codec) < 0) {
--		codec_err(codec, "%s() Transaction Failed 0x%02x : 0x%04x\n",
--			__func__, i2c_address, i2c_reg);
--		return -EIO;
-+	if (cs8409_i2c_wait_complete(codec) < 0)
-+		goto error;
-+
-+	mutex_unlock(&spec->i2c_mux);
-+	return 0;
-+
-+error:
-+	mutex_unlock(&spec->i2c_mux);
-+	codec_err(codec, "%s() Failed 0x%02x : 0x%04x\n", __func__, i2c_address, addr);
-+	return -EIO;
-+}
-+
-+/**
-+ * cs8409_i2c_bulk_write - CS8409 I2C Write Sequence.
-+ * @codec: the codec instance
-+ * @seq: Register Sequence to write
-+ * @count: Number of registeres to write
-+ *
-+ * Returns negative on error.
-+ */
-+static int cs8409_i2c_bulk_write(struct hda_codec *codec, unsigned int i2c_address,
-+				 const struct cs8409_i2c_param *seq, int count)
-+{
-+	struct cs8409_spec *spec = codec->spec;
-+	unsigned int i2c_reg_data;
-+	int i;
-+
-+	if (spec->cs42l42_suspended)
-+		return -EPERM;
-+
-+	mutex_lock(&spec->i2c_mux);
-+	cs8409_set_i2c_dev_addr(codec, i2c_address);
-+
-+	for (i = 0; i < count; i++) {
-+		cs8409_enable_i2c_clock(codec);
-+		if (cs8409_i2c_set_page(codec, seq[i].addr))
-+			goto error;
-+
-+		i2c_reg_data = ((seq[i].addr << 8) & 0x0ff00) | (seq[i].value & 0x0ff);
-+		cs8409_vendor_coef_set(codec, CS8409_I2C_QWRITE, i2c_reg_data);
-+
-+		if (cs8409_i2c_wait_complete(codec) < 0)
-+			goto error;
- 	}
- 
-+	mutex_unlock(&spec->i2c_mux);
-+
- 	return 0;
-+
-+error:
-+	mutex_unlock(&spec->i2c_mux);
-+	codec_err(codec, "I2C Bulk Write Failed 0x%02x\n", i2c_address);
-+	return -EIO;
- }
- 
- int cs8409_cs42l42_volume_info(struct snd_kcontrol *kctrl, struct snd_ctl_elem_info *uinfo)
-@@ -310,7 +407,6 @@ int cs8409_cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_va
- 
- 	switch (ofs) {
- 	case CS42L42_VOL_DAC:
--		mutex_lock(&spec->cs8409_i2c_mux);
- 		if (chs & BIT(0)) {
- 			spec->vol[ofs] = *valp;
- 			cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOL_CHA,
-@@ -323,16 +419,13 @@ int cs8409_cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_va
- 			cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOL_CHB,
- 					 -(spec->vol[ofs]) & CS8409_CS42L42_REG_HS_VOL_MASK);
- 		}
--		mutex_unlock(&spec->cs8409_i2c_mux);
- 		break;
- 	case CS42L42_VOL_ADC:
--		mutex_lock(&spec->cs8409_i2c_mux);
- 		if (chs & BIT(0)) {
- 			spec->vol[ofs] = *valp;
- 			cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_AMIC_VOL,
- 					 spec->vol[ofs] & CS8409_CS42L42_REG_AMIC_VOL_MASK);
- 		}
--		mutex_unlock(&spec->cs8409_i2c_mux);
- 		break;
- 	default:
- 		break;
-@@ -345,6 +438,12 @@ int cs8409_cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_va
- static void cs8409_cs42l42_reset(struct hda_codec *codec)
- {
- 	struct cs8409_spec *spec = codec->spec;
-+	struct cs8409_i2c_param irq_regs[] = {
-+		{ 0x1308, 0x00 },
-+		{ 0x1309, 0x00 },
-+		{ 0x130A, 0x00 },
-+		{ 0x130F, 0x00 },
+ 	struct hda_codec *codec = cs42l42->codec;
+ 	unsigned int gpio_data;
++	int reg_cdc_status = 0;
++	const struct cs8409_i2c_param cs42l42_pwr_down_seq[] = {
++		{ 0x2301, 0x3F },
++		{ 0x2302, 0x3F },
++		{ 0x2303, 0x3F },
++		{ 0x2001, 0x0F },
++		{ 0x2A01, 0x00 },
++		{ 0x1207, 0x00 },
++		{ 0x1101, 0xFE },
++		{ 0x1102, 0x8C },
++		{ 0x1101, 0xFF },
 +	};
++
++	cs8409_i2c_bulk_write(cs42l42, cs42l42_pwr_down_seq, ARRAY_SIZE(cs42l42_pwr_down_seq));
++
++	if (read_poll_timeout(cs8409_i2c_read, reg_cdc_status,
++			(reg_cdc_status & 0x1), CS42L42_PDN_SLEEP_US, CS42L42_PDN_TIMEOUT_US,
++			true, cs42l42, 0x1308) < 0)
++		codec_warn(codec, "Timeout waiting for PDN_DONE for CS42L42\n");
  
- 	/* Assert RTS# line */
- 	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DATA, 0);
-@@ -358,25 +457,13 @@ static void cs8409_cs42l42_reset(struct hda_codec *codec)
- 	spec->cs42l42_suspended = 0;
- 	spec->last_page = 0;
- 
--	mutex_lock(&spec->cs8409_i2c_mux);
--
- 	/* Clear interrupts, by reading interrupt status registers */
--	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1308);
--	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1309);
--	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130A);
--	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130F);
--
--	mutex_unlock(&spec->cs8409_i2c_mux);
--
-+	cs8409_i2c_bulk_read(codec, CS42L42_I2C_ADDR, irq_regs, ARRAY_SIZE(irq_regs));
- }
- 
- /* Configure CS42L42 slave codec for jack autodetect */
- static void cs8409_cs42l42_enable_jack_detect(struct hda_codec *codec)
- {
--	struct cs8409_spec *spec = codec->spec;
--
--	mutex_lock(&spec->cs8409_i2c_mux);
--
- 	/* Set TIP_SENSE_EN for analog front-end of tip sense.
- 	 * Additionally set HSBIAS_SENSE_EN for some variants.
- 	 */
-@@ -395,17 +482,11 @@ static void cs8409_cs42l42_enable_jack_detect(struct hda_codec *codec)
- 	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130f);
- 	/* Enable interrupt */
- 	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1320, 0xF3);
--
--	mutex_unlock(&spec->cs8409_i2c_mux);
- }
- 
- /* Enable and run CS42L42 slave codec jack auto detect */
- static void cs8409_cs42l42_run_jack_detect(struct hda_codec *codec)
- {
--	struct cs8409_spec *spec = codec->spec;
--
--	mutex_lock(&spec->cs8409_i2c_mux);
--
- 	/* Clear interrupts */
- 	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1308);
- 	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1b77);
-@@ -424,22 +505,6 @@ static void cs8409_cs42l42_run_jack_detect(struct hda_codec *codec)
- 	/* Wait ~10ms */
- 	usleep_range(10000, 25000);
- 
--	mutex_unlock(&spec->cs8409_i2c_mux);
--
--}
--
--static void cs8409_cs42l42_reg_setup(struct hda_codec *codec)
--{
--	const struct cs8409_i2c_param *seq = cs42l42_init_reg_seq;
--	struct cs8409_spec *spec = codec->spec;
--
--	mutex_lock(&spec->cs8409_i2c_mux);
--
--	for (; seq->addr; seq++)
--		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, seq->addr, seq->reg);
--
--	mutex_unlock(&spec->cs8409_i2c_mux);
--
- }
- 
- /*
-@@ -467,15 +532,11 @@ static void cs8409_jack_unsol_event(struct hda_codec *codec, unsigned int res)
- 	if (res & CS8409_CS42L42_INT)
- 		return;
- 
--	mutex_lock(&spec->cs8409_i2c_mux);
--
- 	/* Read jack detect status registers */
- 	reg_cdc_status = cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1308);
- 	reg_hs_status = cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1124);
- 	reg_ts_status = cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130f);
- 
--	mutex_unlock(&spec->cs8409_i2c_mux);
--
- 	/* If status values are < 0, read error has occurred. */
- 	if (reg_cdc_status < 0 || reg_hs_status < 0 || reg_ts_status < 0)
- 		return;
-@@ -483,10 +544,8 @@ static void cs8409_jack_unsol_event(struct hda_codec *codec, unsigned int res)
- 	/* HSDET_AUTO_DONE */
- 	if (reg_cdc_status & CS42L42_HSDET_AUTO_DONE) {
- 
--		mutex_lock(&spec->cs8409_i2c_mux);
- 		/* Disable HSDET_AUTO_DONE */
- 		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x131b, 0xFF);
--		mutex_unlock(&spec->cs8409_i2c_mux);
- 
- 		type = ((reg_hs_status & CS42L42_HSTYPE_MASK) + 1);
- 		/* CS42L42 reports optical jack as type 4
-@@ -510,10 +569,8 @@ static void cs8409_jack_unsol_event(struct hda_codec *codec, unsigned int res)
- 			}
- 		}
- 
--		mutex_lock(&spec->cs8409_i2c_mux);
- 		/* Re-Enable Tip Sense Interrupt */
- 		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1320, 0xF3);
--		mutex_unlock(&spec->cs8409_i2c_mux);
- 
- 	} else {
- 		/* TIP_SENSE INSERT/REMOVE */
-@@ -577,10 +634,8 @@ static int cs8409_suspend(struct hda_codec *codec)
- 
- 	cs8409_enable_ur(codec, 0);
- 
--	mutex_lock(&spec->cs8409_i2c_mux);
  	/* Power down CS42L42 ASP/EQ/MIX/HP */
- 	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1101, 0xfe);
--	mutex_unlock(&spec->cs8409_i2c_mux);
- 
- 	spec->cs42l42_suspended = 1;
- 
-@@ -630,26 +685,23 @@ static void cs8409_cs42l42_hw_init(struct hda_codec *codec)
- 	cs8409_cs42l42_reset(codec);
- 
- 	/* Initialise CS42L42 companion codec */
--	cs8409_cs42l42_reg_setup(codec);
-+	cs8409_i2c_bulk_write(codec, CS42L42_I2C_ADDR, cs42l42_init_reg_seq,
-+			      CS42L42_INIT_REG_SEQ_SIZE);
- 
- 	if (codec->fixup_id == CS8409_WARLOCK || codec->fixup_id == CS8409_CYBORG) {
- 		/* FULL_SCALE_VOL = 0 for Warlock / Cyborg */
--		mutex_lock(&spec->cs8409_i2c_mux);
- 		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x2001, 0x01);
--		mutex_unlock(&spec->cs8409_i2c_mux);
- 		/* DMIC1_MO=00b, DMIC1/2_SR=1 */
- 		cs8409_vendor_coef_set(codec, 0x09, 0x0003);
- 	}
- 
- 	/* Restore Volumes after Resume */
--	mutex_lock(&spec->cs8409_i2c_mux);
- 	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOL_CHA,
- 			 -(spec->vol[1]) & CS8409_CS42L42_REG_HS_VOL_MASK);
- 	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOL_CHB,
- 			 -(spec->vol[2]) & CS8409_CS42L42_REG_HS_VOL_MASK);
- 	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_AMIC_VOL,
- 			 spec->vol[0] & CS8409_CS42L42_REG_AMIC_VOL_MASK);
--	mutex_unlock(&spec->cs8409_i2c_mux);
- 
- 	cs8409_cs42l42_enable_jack_detect(codec);
- 
-@@ -738,7 +790,7 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
- 		spec->exec_verb = codec->core.exec_verb;
- 		codec->core.exec_verb = cs8409_cs42l42_exec_verb;
- 
--		mutex_init(&spec->cs8409_i2c_mux);
-+		mutex_init(&spec->i2c_mux);
- 
- 		codec->patch_ops = cs8409_cs42l42_patch_ops;
+-	cs8409_i2c_write(cs42l42, 0x1101, 0xfe);
++	cs8409_i2c_write(cs42l42, 0x1102, 0x9C);
+ 	cs42l42->suspended = 1;
+ 	cs42l42->last_page = 0;
  
 diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
-index ee66fd0c01dc..d84cda94dfb9 100644
+index 71dbbd8e2f3b..09987daa9cbf 100644
 --- a/sound/pci/hda/patch_cs8409.h
 +++ b/sound/pci/hda/patch_cs8409.h
-@@ -243,6 +243,8 @@ enum cs8409_coefficient_index_registers {
- #define CS8409_CS42L42_DMIC_PIN_NID		CS8409_PIN_DMIC1_IN
- #define CS8409_CS42L42_DMIC_ADC_PIN_NID		CS8409_PIN_DMIC1
+@@ -233,6 +233,8 @@ enum cs8409_coefficient_index_registers {
+ #define CS42L42_JACK_REMOVED			(0x00)
+ #define CS42L42_I2C_TIMEOUT_US			(20000)
+ #define CS42L42_I2C_SLEEP_US			(2000)
++#define CS42L42_PDN_TIMEOUT_US			(250000)
++#define CS42L42_PDN_SLEEP_US			(2000)
  
-+#define CS42L42_INIT_REG_SEQ_SIZE		59
-+
- enum {
- 	CS8409_BULLSEYE,
- 	CS8409_WARLOCK,
-@@ -257,7 +259,7 @@ enum {
- 
- struct cs8409_i2c_param {
- 	unsigned int addr;
--	unsigned int reg;
-+	unsigned int value;
- };
- 
- struct cs8409_cir_param {
-@@ -279,7 +281,7 @@ struct cs8409_spec {
- 	unsigned int cs42l42_suspended:1;
- 	s8 vol[CS42L42_VOLUMES];
- 
--	struct mutex cs8409_i2c_mux;
-+	struct mutex i2c_mux;
- 	unsigned int i2c_clck_enabled;
- 	unsigned int dev_addr;
- 	struct delayed_work i2c_clk_work;
-@@ -303,7 +305,7 @@ extern const struct hda_model_fixup cs8409_models[];
- extern const struct hda_fixup cs8409_fixups[];
- extern const struct hda_verb cs8409_cs42l42_init_verbs[];
- extern const struct hda_pintbl cs8409_cs42l42_pincfgs[];
--extern const struct cs8409_i2c_param cs42l42_init_reg_seq[];
-+extern const struct cs8409_i2c_param cs42l42_init_reg_seq[CS42L42_INIT_REG_SEQ_SIZE];
- extern const struct cs8409_cir_param cs8409_cs42l42_hw_cfg[];
- extern const struct cs8409_cir_param cs8409_cs42l42_bullseye_atn[];
+ /* Dell BULLSEYE / WARLOCK / CYBORG Specific Definitions */
  
 -- 
 2.25.1
