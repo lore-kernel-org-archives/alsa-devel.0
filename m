@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A845CC4338F
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 01:17:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 698DBC4338F
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 01:18:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 32DC760ED4
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 01:17:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 32DC760ED4
+	by mail.kernel.org (Postfix) with ESMTPS id 910B860FED
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 01:18:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 910B860FED
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B98811F40;
-	Thu, 29 Jul 2021 03:17:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B98811F40
+	by alsa0.perex.cz (Postfix) with ESMTPS id 391751F3D;
+	Thu, 29 Jul 2021 03:17:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 391751F3D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627521476;
-	bh=G0kZIEnIGuZ8kkWQl13qDOspbfuhN9KlxZqnLL5ZQ98=;
+	s=default; t=1627521515;
+	bh=r21OsNBQ/mZtQQr5w+D7CCnRUQ9Zo2Jl3lxzeS66D0w=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FGP6MG2wFO/qH6zopBZhT9Zy8V6GdTkHCOwERfaUdS03JZ2VcTgKJj3Uev9DMdWpP
-	 KRIpWMmvDDQZ5XF1+e/2tNIRbqNlmGXF2NqWcOU5J/BSV5bhx2j88Y4O5X0u0vLvwS
-	 TBs2/l/C2WALJIQ7QOnhozTFvYurxPpRDHYmKiEs=
+	b=U+MgZ1kUQTlCy5RBhscFYz3keEYe1Z+ivTDgDBjvRLTiR3KHlbJAYlmVb9btV/5ed
+	 rU1KZWglFO00YDomGMEy4PX8UBGJNny0GwNy8m4xfOxmSp1ukrZDlG0CH3cG88/I3F
+	 gEKub8cFK6maz8Y1i3oC7EFZDNXk387FyhWcBfhg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A01DF804E5;
-	Thu, 29 Jul 2021 03:15:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 38EFCF804FC;
+	Thu, 29 Jul 2021 03:16:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1CA8DF804B1; Thu, 29 Jul 2021 03:15:53 +0200 (CEST)
+ id 3C769F804FD; Thu, 29 Jul 2021 03:16:01 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id C7A45F8025A
- for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2021 03:15:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7A45F8025A
-Date: 29 Jul 2021 10:15:42 +0900
-X-IronPort-AV: E=Sophos;i="5.84,276,1620658800"; d="scan'208";a="89052003"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 29 Jul 2021 10:15:42 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 69482F804E7
+ for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2021 03:15:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69482F804E7
+Date: 29 Jul 2021 10:15:52 +0900
+X-IronPort-AV: E=Sophos;i="5.84,276,1620658800"; d="scan'208";a="89052026"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 29 Jul 2021 10:15:52 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id EEFFE41555B0;
- Thu, 29 Jul 2021 10:15:42 +0900 (JST)
-Message-ID: <87tukdyl6p.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 7FF454012278;
+ Thu, 29 Jul 2021 10:15:52 +0900 (JST)
+Message-ID: <87r1fhyl6f.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 3/7] ASoC: soc-core: cleanup cppcheck warning at
- snd_soc_daifmt_parse_format()
+Subject: [PATCH 5/7] ASoC: soc-core: cleanup cppcheck warning at
+ snd_soc_add_controls()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87y29pyl7i.wl-kuninori.morimoto.gx@renesas.com>
@@ -79,37 +79,36 @@ From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 This patch cleanups below cppcheck warning.
 
-sound/soc/soc-core.c:3056:11: style: The scope of the variable 'i' can be reduced. [variableScope]
- int ret, i;
-          ^
+sound/soc/soc-core.c:2239:6: style: The scope of the variable 'err' can be reduced. [variableScope]
+ int err, i;
+     ^
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-core.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/soc-core.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 6889380a98fc..d4e3a6c5b5bb 100644
+index e8fc6e06efdb..34182e530877 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -3054,7 +3054,7 @@ EXPORT_SYMBOL_GPL(snd_soc_daifmt_clock_provider_from_bitmap);
- unsigned int snd_soc_daifmt_parse_format(struct device_node *np,
- 					 const char *prefix)
+@@ -2237,13 +2237,12 @@ static int snd_soc_add_controls(struct snd_card *card, struct device *dev,
+ 	const struct snd_kcontrol_new *controls, int num_controls,
+ 	const char *prefix, void *data)
  {
--	int ret, i;
-+	int ret;
- 	char prop[128];
- 	unsigned int format = 0;
- 	int bit, frame;
-@@ -3088,6 +3088,8 @@ unsigned int snd_soc_daifmt_parse_format(struct device_node *np,
- 		ret = of_property_read_string(np, prop, &str);
- 	}
- 	if (ret == 0) {
-+		int i;
-+
- 		for (i = 0; i < ARRAY_SIZE(of_fmt_table); i++) {
- 			if (strcmp(str, of_fmt_table[i].name) == 0) {
- 				format |= of_fmt_table[i].val;
+-	int err, i;
++	int i;
+ 
+ 	for (i = 0; i < num_controls; i++) {
+ 		const struct snd_kcontrol_new *control = &controls[i];
+-
+-		err = snd_ctl_add(card, snd_soc_cnew(control, data,
+-						     control->name, prefix));
++		int err = snd_ctl_add(card, snd_soc_cnew(control, data,
++							 control->name, prefix));
+ 		if (err < 0) {
+ 			dev_err(dev, "ASoC: Failed to add %s: %d\n",
+ 				control->name, err);
 -- 
 2.25.1
 
