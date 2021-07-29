@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CD65C4338F
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 10:07:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE5D7C4338F
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 10:07:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6298461054
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 10:07:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6298461054
+	by mail.kernel.org (Postfix) with ESMTPS id 41EA661040
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 10:07:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 41EA661040
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE2751B08;
-	Thu, 29 Jul 2021 12:06:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE2751B08
+	by alsa0.perex.cz (Postfix) with ESMTPS id D155D1F00;
+	Thu, 29 Jul 2021 12:07:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D155D1F00
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627553243;
-	bh=TpsC/UGv+Tu97+MrZbZzFZ3B+KbYQQOckiVCgy9W3Yo=;
+	s=default; t=1627553276;
+	bh=CPdtfVZzMRAvmQYpSuaKuyyE2E2wFXHlVwp26yEMrMk=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=H1cPcYIMehkj18u/p8TX/+Yepb9im+/uUqJAOTkKAR3fP3gSGgaCTK7d8cR3u4b5h
-	 Os/4+I/9/w0XNjZ5xew7QC+BFy5xw3OIB3rXgBKN97KHoNG1C5rVEbALmKenaCzIz1
-	 2DwjbOZ2ps+yAtCcgsmTqbKPVmNuniGJhXpb72p0=
+	b=DCtIFBmX41SNab7Bk0xC6oKz7vgrJkz47PSkkUczzqzCf4g+UNr1CdJEEH1Rcyvyy
+	 NzVLCj+E6YVlQrL4Zeshl1fn0iIa7fXLwQqZP1Gg1sq9fz1ydv9TmpXWU/yCTp+oU2
+	 TzOQtMaQD2vn0Vo+sVobKPAf/c6ultNP7fU1rTvE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2E619F80507;
-	Thu, 29 Jul 2021 12:04:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ADA5AF802E7;
+	Thu, 29 Jul 2021 12:04:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9F417F804E4; Thu, 29 Jul 2021 12:04:07 +0200 (CEST)
+ id 046E9F8051C; Thu, 29 Jul 2021 12:04:42 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 431F8F804E4
- for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2021 12:03:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 431F8F804E4
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0B1FF800EB
+ for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2021 12:03:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0B1FF800EB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="n6psEGQB"; 
+ header.b="lO2vmRXI"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="dQbKe+ok"
+ header.b="L7m3E6ZI"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id DAE5C201F8
+ by smtp-out2.suse.de (Postfix) with ESMTP id E3A1020200
  for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2021 10:03:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1627553025; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=NsZNzEUe2qW2iFrWxSYwr1bm9Rp3F3nbichFbX7Oz50=;
- b=n6psEGQB2FhY6qboLs2pQSordFzXBsQo7utLGEhLsPcxbPFeHE5I7enYmtL3JAhclJv1iB
- j9WXRnXQrJlwjveSSrZ6APiI6+Bq8piq24+043575Ol77Nn01T9aXneBRuXUKvqts3DpG4
- 61/FPjwPS5XX/KCkzOPOprZksAVasD4=
+ bh=m2h/i9Q0NX6D3h7H924Js3Wb8qtbOzcG3hjGZezJDeg=;
+ b=lO2vmRXIZZyzwWJ5RpGGryOdWQB7+xbG/2qFYRM1MGWQO65gGtY0XBte3IcRwH2n8dlUv2
+ Iuo9z7KEG3jaCsDewuigUjooMuII7RegFtfEmPozRjBzbcwDcfRsaP/XeLyXcLOTBWJa0s
+ PfCHeH16j1qRlj5cFZPRy+EFYq9XsI0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1627553025;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=NsZNzEUe2qW2iFrWxSYwr1bm9Rp3F3nbichFbX7Oz50=;
- b=dQbKe+okqrMtYvEAimK4LZvPqfU8gTLEXX2ybSeN94dhK6D5Kcp4uJ81FkNqfpCLYo/fOy
- oieuKRI29U/s2HAA==
+ bh=m2h/i9Q0NX6D3h7H924Js3Wb8qtbOzcG3hjGZezJDeg=;
+ b=L7m3E6ZIkpv9EYE//4cASmY4MfU+dHiPHtdkWO/zBdBPupBfiQV+DZrzH0b7gLSOgCkrbb
+ k50y7us7zQ8++2DQ==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 287D8A3BE6;
+ by relay2.suse.de (Postfix) with ESMTP id 15F19A3BE1;
  Thu, 29 Jul 2021 07:38:58 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 09/15] ALSA: usb-audio: Move interface setup delay into
+Subject: [PATCH 07/15] ALSA: usb-audio: Move ITF-USB DSD quirk handling into
  quirk_flags
-Date: Thu, 29 Jul 2021 09:38:55 +0200
-Message-Id: <20210729073855.19043-10-tiwai@suse.de>
+Date: Thu, 29 Jul 2021 09:38:53 +0200
+Message-Id: <20210729073855.19043-8-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210729073855.19043-1-tiwai@suse.de>
 References: <20210729073855.19043-1-tiwai@suse.de>
@@ -98,120 +98,123 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Yet another delay is applied at switching the interface.  This can be
-moved to quirk_flags, too.
+The devices with ITF-USB DSD type are listed in another function, and
+this can be integrated into the quirk_flags easily.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/endpoint.c |  3 ++-
- sound/usb/quirks.c   | 29 ++++++++---------------------
- sound/usb/quirks.h   |  1 -
- sound/usb/usbaudio.h |  3 +++
- 4 files changed, 13 insertions(+), 23 deletions(-)
+ sound/usb/quirks.c   | 41 +++++++++++++++++++----------------------
+ sound/usb/usbaudio.h |  4 ++++
+ 2 files changed, 23 insertions(+), 22 deletions(-)
 
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 6016e97faf69..d33685874a6b 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -808,7 +808,8 @@ static int endpoint_set_interface(struct snd_usb_audio *chip,
- 		return err;
- 	}
- 
--	snd_usb_set_interface_quirk(chip);
-+	if (chip->quirk_flags & QUIRK_FLAG_IFACE_DELAY)
-+		msleep(50);
- 	return 0;
- }
- 
 diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index a6b78cbf5089..f47078209bcc 100644
+index a9d8bde416ce..a0986e079a66 100644
 --- a/sound/usb/quirks.c
 +++ b/sound/usb/quirks.c
-@@ -1570,22 +1570,6 @@ void snd_usb_endpoint_start_quirk(struct snd_usb_endpoint *ep)
- 		ep->tenor_fb_quirk = 1;
+@@ -1501,32 +1501,13 @@ void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
+ 	}
  }
  
--void snd_usb_set_interface_quirk(struct snd_usb_audio *chip)
+-/* ITF-USB DSD based DACs need a vendor cmd to switch
+- * between PCM and native DSD mode
+- */
+-static bool is_itf_usb_dsd_dac(unsigned int id)
 -{
--	if (!chip)
--		return;
--	/*
--	 * "Playback Design" products need a 50ms delay after setting the
--	 * USB interface.
--	 */
--	switch (USB_ID_VENDOR(chip->usb_id)) {
--	case 0x23ba: /* Playback Design */
--	case 0x0644: /* TEAC Corp. */
--		msleep(50);
--		break;
+-	switch (id) {
+-	case USB_ID(0x154e, 0x1002): /* Denon DCD-1500RE */
+-	case USB_ID(0x154e, 0x1003): /* Denon DA-300USB */
+-	case USB_ID(0x154e, 0x3005): /* Marantz HD-DAC1 */
+-	case USB_ID(0x154e, 0x3006): /* Marantz SA-14S1 */
+-	case USB_ID(0x1852, 0x5065): /* Luxman DA-06 */
+-	case USB_ID(0x0644, 0x8043): /* TEAC UD-501/UD-501V2/UD-503/NT-503 */
+-	case USB_ID(0x0644, 0x8044): /* Esoteric D-05X */
+-	case USB_ID(0x0644, 0x804a): /* TEAC UD-301 */
+-		return true;
 -	}
+-	return false;
 -}
 -
- /* quirk applied after snd_usb_ctl_msg(); not applied during boot quirks */
- void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
- 			   __u8 request, __u8 requesttype, __u16 value,
-@@ -1841,11 +1825,14 @@ static const struct usb_audio_quirk_flags_table quirk_flags_table[] = {
+ int snd_usb_select_mode_quirk(struct snd_usb_audio *chip,
+ 			      const struct audioformat *fmt)
+ {
+ 	struct usb_device *dev = chip->dev;
+ 	int err;
+ 
+-	if (is_itf_usb_dsd_dac(chip->usb_id)) {
++	if (chip->quirk_flags & QUIRK_FLAG_ITF_USB_DSD_DAC) {
+ 		/* First switch to alt set 0, otherwise the mode switch cmd
+ 		 * will not be accepted by the DAC
+ 		 */
+@@ -1633,7 +1614,7 @@ void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
+ 	/* ITF-USB DSD based DACs functionality need a delay
+ 	 * after each class compliant request
+ 	 */
+-	if (is_itf_usb_dsd_dac(chip->usb_id)
++	if ((chip->quirk_flags & QUIRK_FLAG_ITF_USB_DSD_DAC)
+ 	    && (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
+ 		msleep(20);
+ 
+@@ -1749,7 +1730,7 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
+ 	}
+ 
+ 	/* ITF-USB DSD based DACs */
+-	if (is_itf_usb_dsd_dac(chip->usb_id)) {
++	if (chip->quirk_flags & QUIRK_FLAG_ITF_USB_DSD_DAC) {
+ 		iface = usb_ifnum_to_if(chip->dev, fp->iface);
+ 
+ 		/* Altsetting 2 support native DSD if the num of altsets is
+@@ -1902,16 +1883,32 @@ static const struct usb_audio_quirk_flags_table quirk_flags_table[] = {
+ 		   QUIRK_FLAG_ALIGN_TRANSFER),
  	DEVICE_FLG(0x05e1, 0x0480, /* Hauppauge Woodbury */
  		   QUIRK_FLAG_SHARE_MEDIA_DEVICE | QUIRK_FLAG_ALIGN_TRANSFER),
- 	DEVICE_FLG(0x0644, 0x8043, /* TEAC UD-501/UD-501V2/UD-503/NT-503 */
--		   QUIRK_FLAG_ITF_USB_DSD_DAC | QUIRK_FLAG_CTL_MSG_DELAY),
-+		   QUIRK_FLAG_ITF_USB_DSD_DAC | QUIRK_FLAG_CTL_MSG_DELAY |
-+		   QUIRK_FLAG_IFACE_DELAY),
- 	DEVICE_FLG(0x0644, 0x8044, /* Esoteric D-05X */
--		   QUIRK_FLAG_ITF_USB_DSD_DAC | QUIRK_FLAG_CTL_MSG_DELAY),
-+		   QUIRK_FLAG_ITF_USB_DSD_DAC | QUIRK_FLAG_CTL_MSG_DELAY |
-+		   QUIRK_FLAG_IFACE_DELAY),
- 	DEVICE_FLG(0x0644, 0x804a, /* TEAC UD-301 */
--		   QUIRK_FLAG_ITF_USB_DSD_DAC | QUIRK_FLAG_CTL_MSG_DELAY),
-+		   QUIRK_FLAG_ITF_USB_DSD_DAC | QUIRK_FLAG_CTL_MSG_DELAY |
-+		   QUIRK_FLAG_IFACE_DELAY),
++	DEVICE_FLG(0x0644, 0x8043, /* TEAC UD-501/UD-501V2/UD-503/NT-503 */
++		   QUIRK_FLAG_ITF_USB_DSD_DAC),
++	DEVICE_FLG(0x0644, 0x8044, /* Esoteric D-05X */
++		   QUIRK_FLAG_ITF_USB_DSD_DAC),
++	DEVICE_FLG(0x0644, 0x804a, /* TEAC UD-301 */
++		   QUIRK_FLAG_ITF_USB_DSD_DAC),
  	DEVICE_FLG(0x074d, 0x3553, /* Outlaw RR2150 (Micronas UAC3553B) */
  		   QUIRK_FLAG_GET_SAMPLE_RATE),
- 	DEVICE_FLG(0x0951, 0x16ad, /* Kingston HyperX */
-@@ -1919,11 +1906,11 @@ static const struct usb_audio_quirk_flags_table quirk_flags_table[] = {
- 	VENDOR_FLG(0x047f, /* Plantronics */
- 		   QUIRK_FLAG_GET_SAMPLE_RATE | QUIRK_FLAG_CTL_MSG_DELAY),
- 	VENDOR_FLG(0x0644, /* TEAC Corp. */
--		   QUIRK_FLAG_CTL_MSG_DELAY),
-+		   QUIRK_FLAG_CTL_MSG_DELAY | QUIRK_FLAG_IFACE_DELAY),
- 	VENDOR_FLG(0x1de7, /* Phoenix Audio */
+ 	DEVICE_FLG(0x0fd9, 0x0008, /* Hauppauge HVR-950Q */
+ 		   QUIRK_FLAG_SHARE_MEDIA_DEVICE | QUIRK_FLAG_ALIGN_TRANSFER),
+ 	DEVICE_FLG(0x1395, 0x740a, /* Sennheiser DECT */
  		   QUIRK_FLAG_GET_SAMPLE_RATE),
- 	VENDOR_FLG(0x23ba, /* Playback Design */
--		   QUIRK_FLAG_CTL_MSG_DELAY),
-+		   QUIRK_FLAG_CTL_MSG_DELAY | QUIRK_FLAG_IFACE_DELAY),
- 
- 	{} /* terminator */
- };
-diff --git a/sound/usb/quirks.h b/sound/usb/quirks.h
-index 0a49e074ae6a..31abb7cb01a5 100644
---- a/sound/usb/quirks.h
-+++ b/sound/usb/quirks.h
-@@ -33,7 +33,6 @@ int snd_usb_is_big_endian_format(struct snd_usb_audio *chip,
- 
- void snd_usb_endpoint_start_quirk(struct snd_usb_endpoint *ep);
- 
--void snd_usb_set_interface_quirk(struct snd_usb_audio *chip);
- void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
- 			   __u8 request, __u8 requesttype, __u16 value,
- 			   __u16 index, void *data, __u16 size);
++	DEVICE_FLG(0x154e, 0x1002, /* Denon DCD-1500RE */
++		   QUIRK_FLAG_ITF_USB_DSD_DAC),
++	DEVICE_FLG(0x154e, 0x1003, /* Denon DA-300USB */
++		   QUIRK_FLAG_ITF_USB_DSD_DAC),
++	DEVICE_FLG(0x154e, 0x3005, /* Marantz HD-DAC1 */
++		   QUIRK_FLAG_ITF_USB_DSD_DAC),
++	DEVICE_FLG(0x154e, 0x3006, /* Marantz SA-14S1 */
++		   QUIRK_FLAG_ITF_USB_DSD_DAC),
+ 	DEVICE_FLG(0x154e, 0x500e, /* Denon DN-X1600 */
+ 		   QUIRK_FLAG_IGNORE_CLOCK_SOURCE),
+ 	DEVICE_FLG(0x1686, 0x00dd, /* Zoom R16/24 */
+ 		   QUIRK_FLAG_TX_LENGTH),
++	DEVICE_FLG(0x1852, 0x5065, /* Luxman DA-06 */
++		   QUIRK_FLAG_ITF_USB_DSD_DAC),
+ 	DEVICE_FLG(0x1901, 0x0191, /* GE B850V3 CP2114 audio interface */
+ 		   QUIRK_FLAG_GET_SAMPLE_RATE),
+ 	DEVICE_FLG(0x2040, 0x7200, /* Hauppauge HVR-950Q */
 diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
-index 69fa81150f36..57b5dcf211d4 100644
+index 82073ebeac5b..7b41a95eadee 100644
 --- a/sound/usb/usbaudio.h
 +++ b/sound/usb/usbaudio.h
-@@ -153,6 +153,8 @@ extern bool snd_usb_skip_validation;
-  *  Add a delay of 1-2ms at each control message handling
-  * QUIRK_FLAG_CTL_MSG_DELAY_5M:
-  *  Add a delay of 5-6ms at each control message handling
-+ * QUIRK_FLAG_IFACE_DELAY:
-+ *  Add a delay of 50ms at each interface setup
+@@ -144,6 +144,9 @@ extern bool snd_usb_skip_validation;
+  *  Skip clock selector setup; the device may reset to invalid state
+  * QUIRK_FLAG_IGNORE_CLOCK_SOURCE:
+  *  Ignore errors from clock source search; i.e. hardcoded clock
++ * QUIRK_FLAG_ITF_USB_DSD_DAC:
++ *  Indicates the device is for ITF-USB DSD based DACs that need a vendor cmd
++ *  to switch between PCM and native DSD mode
   */
  
  #define QUIRK_FLAG_GET_SAMPLE_RATE	(1U << 0)
-@@ -166,5 +168,6 @@ extern bool snd_usb_skip_validation;
- #define QUIRK_FLAG_CTL_MSG_DELAY	(1U << 8)
- #define QUIRK_FLAG_CTL_MSG_DELAY_1M	(1U << 9)
- #define QUIRK_FLAG_CTL_MSG_DELAY_5M	(1U << 10)
-+#define QUIRK_FLAG_IFACE_DELAY		(1U << 11)
+@@ -153,5 +156,6 @@ extern bool snd_usb_skip_validation;
+ #define QUIRK_FLAG_PLAYBACK_FIRST	(1U << 4)
+ #define QUIRK_FLAG_SKIP_CLOCK_SELECTOR	(1U << 5)
+ #define QUIRK_FLAG_IGNORE_CLOCK_SOURCE	(1U << 6)
++#define QUIRK_FLAG_ITF_USB_DSD_DAC	(1U << 7)
  
  #endif /* __USBAUDIO_H */
 -- 
