@@ -7,76 +7,77 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E0E0C4338F
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 10:15:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1764FC4338F
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 10:15:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 82BA660E09
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 10:15:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 82BA660E09
+	by mail.kernel.org (Postfix) with ESMTPS id 45FA360E09
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 10:15:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 45FA360E09
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2C1781F19;
-	Thu, 29 Jul 2021 12:14:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C1781F19
+	by alsa0.perex.cz (Postfix) with ESMTPS id CF8671F38;
+	Thu, 29 Jul 2021 12:15:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF8671F38
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627553737;
-	bh=wfS8e2UyQAPemhfC6gdPzMLN8v74/DqMZhKh5Tirjuo=;
+	s=default; t=1627553750;
+	bh=O/XYhMv07wGIYGQIAOvBG2xyv8kVKqvDaM7cRuD7bTI=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mhUDmkCjPafczdoBNrnBjo5udgSZTKYxnRtoSQcvbi28VqHXIgJoNvNFseflLg56d
-	 4OtSqpU7J7JED/BQ1YLJOizi8vac2ID2ycW+7XUMeiYumu/0m8sNwVz2/JX2YHf47A
-	 OdYGw32+ElnfMXkeSRkU41yprzkz072M+57O3g4s=
+	b=KOrva124zf2a+CYuchfoQKThksuv1QPzgWMSc4UDta8LG/T4OctD084RACygDgzH7
+	 d1C2MKOIRV418ofvSkx/UAWzkzT4J0QW4xXrjrBE6xwkSIaIgFnXnzOtVAnuRfy6//
+	 QwmNMHTUljweEACrwbrW34eG3fxXuCg+fqAkziPw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20D0AF804E0;
-	Thu, 29 Jul 2021 12:13:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8D92BF804E7;
+	Thu, 29 Jul 2021 12:14:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1F75F804C1; Thu, 29 Jul 2021 12:13:53 +0200 (CEST)
+ id 5C7B6F804EB; Thu, 29 Jul 2021 12:13:59 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3DFA2F8026C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 40552F800EB
  for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2021 12:13:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3DFA2F8026C
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40552F800EB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="E3ufEODy"; 
+ header.b="OWqMiXGS"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="nhXXY8/Q"
+ header.b="Jgkop70B"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 417B42247B
+ by smtp-out1.suse.de (Postfix) with ESMTP id 48B3122482
  for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2021 10:13:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1627553626; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=eHdOP7R/rOkuKLOZV8yLUt0xEeeaNZf2T5yEMLnlvto=;
- b=E3ufEODyLKAhSSyOWIP5MYDxSNqmO3P3BSAfeXVR35tPOLb7LyKJLg5+iV3v91tUaFJpjN
- OOnzZyR9lIJD+lV2NMoNP2ajkIThQw5K8o7FMr4PqeBQpemqnsfMei0DuRhrUFCoydUizW
- X3+4B/RELW407LSNJI9cUNvaEM6dLRQ=
+ bh=oaoXcNEMZzOMvI84/JX59uVQbX+eIsMnZN0wPuCPQxA=;
+ b=OWqMiXGSIuRd1gi09XeOPB21YzsAScNUAM5Sbme/JMaqgZiDXu4SHbZGrEf/ckNpkj7Hqo
+ 2ogaWQz0GfCnvTKtYgkWB9vkE9O4r62gtSdqxzI4LaNkHw+96h/PPN9iUZSD99D65rPpw6
+ r4aOj1RwMfWto+nVTlPq+HfWi9aVSqg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1627553626;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=eHdOP7R/rOkuKLOZV8yLUt0xEeeaNZf2T5yEMLnlvto=;
- b=nhXXY8/QFo273Er+AV0Bzs4pNCeVQ4Ij5boTksUYFiVmCLUy8EY4wGVD5qi1UBGvksRl5G
- BQHisD0XJgL98IAw==
+ bh=oaoXcNEMZzOMvI84/JX59uVQbX+eIsMnZN0wPuCPQxA=;
+ b=Jgkop70B63iSjGcQcsk/4UWyQqHIfLGGO2EZqG0KK9Q2RrgvE/hTLcLFUGQp/MmKPlpf/p
+ ZzRemQYxaaMB2ZDQ==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 12F54A3C87;
- Thu, 29 Jul 2021 07:44:06 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id D932DA3C82;
+ Thu, 29 Jul 2021 07:44:05 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 14/15] ALSA: usb-audio: Add quirk_flags module option
-Date: Thu, 29 Jul 2021 09:44:03 +0200
-Message-Id: <20210729074404.19728-5-tiwai@suse.de>
+Subject: [PATCH 10/15] ALSA: usb-audio: Move rate validation quirk into
+ quirk_flags
+Date: Thu, 29 Jul 2021 09:43:59 +0200
+Message-Id: <20210729074404.19728-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210729073855.19043-1-tiwai@suse.de>
 References: <20210729073855.19043-1-tiwai@suse.de>
@@ -97,49 +98,68 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds a new module option, quirk_flags, for allowing user to
-try some additional device-specific quirk behavior more easily.
-When this option is set to non-zero, it overrides the quirk_flags, and
-the specific workaround is applied.
+The rate validation at the device probe is applied only to the
+specific devices (currently only for MOTU devices), and this check can
+be moved to quirk_flags gracefully, too.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/card.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/usb/format.c   | 6 +-----
+ sound/usb/quirks.c   | 2 ++
+ sound/usb/usbaudio.h | 3 +++
+ 3 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 9535df39c02f..cf8f3953f78f 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -71,6 +71,7 @@ static bool autoclock = true;
- static char *quirk_alias[SNDRV_CARDS];
- static char *delayed_register[SNDRV_CARDS];
- static bool implicit_fb[SNDRV_CARDS];
-+static unsigned int quirk_flags[SNDRV_CARDS];
+diff --git a/sound/usb/format.c b/sound/usb/format.c
+index eb216fef4ba7..50efccbffb8a 100644
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -472,12 +472,8 @@ static int validate_sample_rate_table_v2v3(struct snd_usb_audio *chip,
+ 	 * behavior afterwards by some unknown reason.  Do this only for the
+ 	 * known devices.
+ 	 */
+-	switch (USB_ID_VENDOR(chip->usb_id)) {
+-	case 0x07fd: /* MOTU */
+-		break;
+-	default:
++	if (!(chip->quirk_flags & QUIRK_FLAG_VALIDATE_RATES))
+ 		return 0; /* don't perform the validation as default */
+-	}
  
- bool snd_usb_use_vmalloc = true;
- bool snd_usb_skip_validation;
-@@ -98,6 +99,8 @@ module_param_array(delayed_register, charp, NULL, 0444);
- MODULE_PARM_DESC(delayed_register, "Quirk for delayed registration, given by id:iface, e.g. 0123abcd:4.");
- module_param_array(implicit_fb, bool, NULL, 0444);
- MODULE_PARM_DESC(implicit_fb, "Apply generic implicit feedback sync mode.");
-+module_param_array(quirk_flags, uint, NULL, 0444);
-+MODULE_PARM_DESC(quirk_flags, "Driver quirk bit flags.");
- module_param_named(use_vmalloc, snd_usb_use_vmalloc, bool, 0444);
- MODULE_PARM_DESC(use_vmalloc, "Use vmalloc for PCM intermediate buffers (default: yes).");
- module_param_named(skip_validation, snd_usb_skip_validation, bool, 0444);
-@@ -631,7 +634,10 @@ static int snd_usb_audio_create(struct usb_interface *intf,
- 	INIT_LIST_HEAD(&chip->midi_list);
- 	INIT_LIST_HEAD(&chip->mixer_list);
+ 	table = kcalloc(fp->nr_rates, sizeof(*table), GFP_KERNEL);
+ 	if (!table)
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index f47078209bcc..dc667b8c92f2 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1907,6 +1907,8 @@ static const struct usb_audio_quirk_flags_table quirk_flags_table[] = {
+ 		   QUIRK_FLAG_GET_SAMPLE_RATE | QUIRK_FLAG_CTL_MSG_DELAY),
+ 	VENDOR_FLG(0x0644, /* TEAC Corp. */
+ 		   QUIRK_FLAG_CTL_MSG_DELAY | QUIRK_FLAG_IFACE_DELAY),
++	VENDOR_FLG(0x07fd, /* MOTU */
++		   QUIRK_FLAG_VALIDATE_RATES),
+ 	VENDOR_FLG(0x1de7, /* Phoenix Audio */
+ 		   QUIRK_FLAG_GET_SAMPLE_RATE),
+ 	VENDOR_FLG(0x23ba, /* Playback Design */
+diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
+index 57b5dcf211d4..ea0e3deb2a23 100644
+--- a/sound/usb/usbaudio.h
++++ b/sound/usb/usbaudio.h
+@@ -155,6 +155,8 @@ extern bool snd_usb_skip_validation;
+  *  Add a delay of 5-6ms at each control message handling
+  * QUIRK_FLAG_IFACE_DELAY:
+  *  Add a delay of 50ms at each interface setup
++ * QUIRK_FLAG_VALIDATE_RATES:
++ *  Perform sample rate validations at probe
+  */
  
--	snd_usb_init_quirk_flags(chip);
-+	if (quirk_flags[idx])
-+		chip->quirk_flags = quirk_flags[idx];
-+	else
-+		snd_usb_init_quirk_flags(chip);
+ #define QUIRK_FLAG_GET_SAMPLE_RATE	(1U << 0)
+@@ -169,5 +171,6 @@ extern bool snd_usb_skip_validation;
+ #define QUIRK_FLAG_CTL_MSG_DELAY_1M	(1U << 9)
+ #define QUIRK_FLAG_CTL_MSG_DELAY_5M	(1U << 10)
+ #define QUIRK_FLAG_IFACE_DELAY		(1U << 11)
++#define QUIRK_FLAG_VALIDATE_RATES	(1U << 12)
  
- 	card->private_free = snd_usb_audio_free;
- 
+ #endif /* __USBAUDIO_H */
 -- 
 2.26.2
 
