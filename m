@@ -2,56 +2,61 @@ Return-Path: <SRS0=Qkbk=MV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 659F0C4338F
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 01:16:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57B21C4338F
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 01:17:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BE84F60FD7
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 01:16:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BE84F60FD7
+	by mail.kernel.org (Postfix) with ESMTPS id 9F031600D4
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 01:17:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9F031600D4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A9AD1F0C;
-	Thu, 29 Jul 2021 03:15:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A9AD1F0C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1AA081F3D;
+	Thu, 29 Jul 2021 03:16:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1AA081F3D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627521373;
-	bh=SAFj/54yxVUnqH3gDf2VGq2KrKWVw1kQ8J+/PFRnmJI=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=RRW+6QtCBF8pt60rN6c8LYb3RMW9v6srUyNsSh8Z2olrS1PKDViLOCpapqg201kaV
-	 05TWr7OPdNsRdGc1HrCpEqxUN1pGhRolxrANmzWv1HNPMD2Ez0ZxeKYHz8v+ynhvHS
-	 UDG46LiHN5pEXuSDQQ/gf07L8/289tAZOcKjJuYU=
+	s=default; t=1627521424;
+	bh=8c0BS5EQQzn3kIAvIp3P1q1oaKvczjWqUm/0kD3ThTA=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=pqgYSxmErPlP99w5ZtxIMcU8Jtmzf7zyjjADrJ9+UB06evkYI4e+JUAsKy15Ahn7c
+	 2FA9u+/cqeLsaD1i/1kDetxM2X7zYIRp4n+mitfEVDOaAdWouRZD4hX5lX6W+vBoks
+	 zyHcLEKfq3xX4fcTIiTB7EOGGZfdaxIpgapuBYI4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F200BF80253;
-	Thu, 29 Jul 2021 03:15:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BFF18F8028B;
+	Thu, 29 Jul 2021 03:15:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 878B6F8025A; Thu, 29 Jul 2021 03:15:21 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 0688BF80127
- for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2021 03:15:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0688BF80127
-Date: 29 Jul 2021 10:15:13 +0900
-X-IronPort-AV: E=Sophos;i="5.84,276,1620658800"; d="scan'208";a="89088593"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 29 Jul 2021 10:15:13 +0900
+ id E6E78F804CF; Thu, 29 Jul 2021 03:15:50 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 261FFF80212
+ for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2021 03:15:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 261FFF80212
+Date: 29 Jul 2021 10:15:33 +0900
+X-IronPort-AV: E=Sophos;i="5.84,276,1620658800"; d="scan'208";a="89051985"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 29 Jul 2021 10:15:33 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 73CDF415537F;
- Thu, 29 Jul 2021 10:15:13 +0900 (JST)
-Message-ID: <87y29pyl7i.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id B38F24013244;
+ Thu, 29 Jul 2021 10:15:33 +0900 (JST)
+Message-ID: <87wnp9yl6y.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 0/7] ASoC: soc-core: cleanup cppcheck warning
+Subject: [PATCH 1/7] ASoC: soc-core: cleanup cppcheck warning at
+ snd_soc_set_dmi_name()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87y29pyl7i.wl-kuninori.morimoto.gx@renesas.com>
+References: <87y29pyl7i.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -70,27 +75,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Hi Mark
+This patch cleanups below cppcheck warning.
 
-Now I'm posting audio-graph-card2 patch-set, but it seems it needs longer
-discussion. Thus I want to post more easy patch first, and reduce my
-local patches.
+sound/soc/soc-core.c:1721:33: style: The scope of the variable 'product_version' can be reduced. [variableScope]
+ const char *vendor, *product, *product_version, *board;
+                                ^
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/soc-core.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-These are cppcheck warning cleanup patches for soc-core.
-
-Kuninori Morimoto (7):
-  ASoC: soc-core: cleanup cppcheck warning at snd_soc_set_dmi_name()
-  ASoC: soc-core: cleanup cppcheck warning at snd_soc_get_dai_name()
-  ASoC: soc-core: cleanup cppcheck warning at snd_soc_daifmt_parse_format()
-  ASoC: soc-core: cleanup cppcheck warning at snd_soc_unregister_component()
-  ASoC: soc-core: cleanup cppcheck warning at snd_soc_add_controls()
-  ASoC: soc-core: cleanup cppcheck warning at snd_soc_of_parse_audio_simple_widgets()
-  ASoC: soc-core: cleanup cppcheck warning at snd_soc_of_parse_audio_routing()
-
- sound/soc/soc-core.c | 36 ++++++++++++++++++------------------
- 1 file changed, 18 insertions(+), 18 deletions(-)
-
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 583f2381cfc8..305b444c507a 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1718,7 +1718,7 @@ static void append_dmi_string(struct snd_soc_card *card, const char *str)
+  */
+ int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
+ {
+-	const char *vendor, *product, *product_version, *board;
++	const char *vendor, *product, *board;
+ 
+ 	if (card->long_name)
+ 		return 0; /* long name already set by driver or from DMI */
+@@ -1738,13 +1738,14 @@ int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
+ 
+ 	product = dmi_get_system_info(DMI_PRODUCT_NAME);
+ 	if (product && is_dmi_valid(product)) {
++		const char *product_version = dmi_get_system_info(DMI_PRODUCT_VERSION);
++
+ 		append_dmi_string(card, product);
+ 
+ 		/*
+ 		 * some vendors like Lenovo may only put a self-explanatory
+ 		 * name in the product version field
+ 		 */
+-		product_version = dmi_get_system_info(DMI_PRODUCT_VERSION);
+ 		if (product_version && is_dmi_valid(product_version))
+ 			append_dmi_string(card, product_version);
+ 	}
 -- 
 2.25.1
 
