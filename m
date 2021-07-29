@@ -2,79 +2,97 @@ Return-Path: <SRS0=Qkbk=MV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9CD4C4338F
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 16:41:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0A73C4338F
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 17:10:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1F5E860EFD
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 16:41:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1F5E860EFD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 2BA0160F23
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 17:10:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2BA0160F23
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9311217B2;
-	Thu, 29 Jul 2021 18:41:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9311217B2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00DF21AC2;
+	Thu, 29 Jul 2021 19:09:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00DF21AC2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627576917;
-	bh=U0R/r/foYlfwkOscqf6KiXDujDojG+Hqa8VkU2XkPDU=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=nYJBX0rhKy57jxegp4PIBLE+QhfHW7eKgC38l2NWjBM8WE9guwiUQM7ZJNQJJECph
-	 21jYWvKQgmY5fm3XwUmgGwyF0ElZLXj/S15lL23ohOJ/AVkxoiOyr1rHFl7ObUztaT
-	 vq870Fe8wUz5jK631fTRz8ASR2YjfwAgMK9CJIMo=
+	s=default; t=1627578637;
+	bh=C2N9hEZ8+p9o9VNhU4nXs0G9Hgy6uzE93JRZSI0AzCs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ij7Kq5z7qcLvvt3MPcSSSQuxpM2iAfmXOdYC6qCV1iNUE0PlEauhHTnFx1ENH0DwJ
+	 8SvgP1ccmr0CM4lahvl+hd9GszrrC2RSH4QNtymk6pfZPPr57iGAn0gpmqjruZ/CTt
+	 JPapKFdHmaUBO5zejAOa7Hvd0282EJG1LjOaTrqo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 424E8F800E9;
-	Thu, 29 Jul 2021 18:40:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84699F80276;
+	Thu, 29 Jul 2021 19:09:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 10DDFF80258; Thu, 29 Jul 2021 18:40:10 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 45A31F802E7; Thu, 29 Jul 2021 19:09:45 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E9499F80258
- for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2021 18:40:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9499F80258
+ by alsa1.perex.cz (Postfix) with ESMTPS id 12B22F800E9
+ for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2021 19:09:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12B22F800E9
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="byFuzIP5"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68FF760F0F;
- Thu, 29 Jul 2021 16:40:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1627576802;
- bh=U0R/r/foYlfwkOscqf6KiXDujDojG+Hqa8VkU2XkPDU=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=byFuzIP5Rp1XILovz8ekfTsshsx2cxMhVG4T5m6GGxdiahyujxq7JGuNmKLCWR2vd
- Uw7n40YXQK0sBfPEQT8ZwKsK6x+sgVvdhcpMpl+P5dFW9Wc7Ms61ZsZp7Vo+/1CQni
- 9/pJzSs4VvCfqjBijtSQLrdIXwUrE+rrx/zaJaccIh35yXZufiqxX4S8tHY4uIfRcB
- 3fB2Y/Qli77vhFxANN0kpHCq+IKV6ZH6k8rF3SVhdkk6i2sCWD0HNUvMO/rb5dWDrw
- CbRT+wmAZX1xT8QiEgcjpJCgPpAxY4swRziXNp13x/5i+2SptChfC7C71ihOvLsW2L
- ZwRj+zfpxTYSg==
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- Takashi Iwai <tiwai@suse.com>,
- Rikard Falkeborn <rikard.falkeborn@gmail.com>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ASoC: samsung: Constify static snd_soc_ops
-Date: Thu, 29 Jul 2021 17:39:46 +0100
-Message-Id: <162757633787.53168.13521018691964426558.b4-ty@kernel.org>
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="UZMaq1oU"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16T6K8ls018919; 
+ Thu, 29 Jul 2021 12:09:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=UeeA8HJNBJuHL3JDloEC88DdmSyhtbl+rgqLeCpvz1c=;
+ b=UZMaq1oUOogQYAEor29jINZBNrQrfVmbBKLf2CUpzXEv+5it+2hfOWsQ2BPGCh2wNYjK
+ fSl5nzUed8JgibrIKMaY2frlGYkRODCT7+fza7WZwlrFgjVc4kOBajv1wf6kko0wLzaU
+ i4ZKQJue93ZgV1WGVThFSG5I71CBAarWyfDHkLlCO1VMv7upsC2SMly7MW/L1B1MqCDj
+ r2WGKQkOir+lqQWTmDgdHRcJd/L+x2mz2OZepT2PCoeEReJcN1hG8RnbTg/WoPsOZroT
+ QfqqdrGPimTzUk35n4+yK1Nsf8k+FweH5G/p0HcpyBLBijWj/6vK5jgiNvW2p1zH/104 wg== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 3a31m2t69n-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Thu, 29 Jul 2021 12:09:34 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Thu, 29 Jul
+ 2021 18:09:32 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Thu, 29 Jul 2021 18:09:32 +0100
+Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
+ [198.61.65.56])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 08CBE2BA;
+ Thu, 29 Jul 2021 17:09:31 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <broonie@kernel.org>
+Subject: [PATCH 1/3] ASoC: cs42l42: Correct definition of ADC Volume control
+Date: Thu, 29 Jul 2021 18:09:27 +0100
+Message-ID: <20210729170929.6589-1-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210728172548.234943-1-rikard.falkeborn@gmail.com>
-References: <20210728172548.234943-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain
+X-Proofpoint-GUID: ovCb4bbfgpYhwz1KZuV46m-uKeXlOvbf
+X-Proofpoint-ORIG-GUID: ovCb4bbfgpYhwz1KZuV46m-uKeXlOvbf
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 impostorscore=0
+ suspectscore=0 lowpriorityscore=0 mlxlogscore=999 phishscore=0 spamscore=0
+ clxscore=1015 mlxscore=0 adultscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2107290101
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,35 +108,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 28 Jul 2021 19:25:48 +0200, Rikard Falkeborn wrote:
-> These are only assigned to the ops field in the snd_soc_dai_link struct
-> which is a pointer to const struct snd_soc_ops. Make them const to allow
-> the compiler to put them in read-only memory.
+The ADC volume is a signed 8-bit number with range -97 to +12,
+with -97 being mute. Use a SOC_SINGLE_S8_TLV() to define this
+and fix the DECLARE_TLV_DB_SCALE() to have the correct start and
+mute flag.
 
-Applied to
+Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs42l42.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
+index eff013f295be..2fd20511f246 100644
+--- a/sound/soc/codecs/cs42l42.c
++++ b/sound/soc/codecs/cs42l42.c
+@@ -405,7 +405,7 @@ static const struct regmap_config cs42l42_regmap = {
+ 	.use_single_write = true,
+ };
+ 
+-static DECLARE_TLV_DB_SCALE(adc_tlv, -9600, 100, false);
++static DECLARE_TLV_DB_SCALE(adc_tlv, -9700, 100, true);
+ static DECLARE_TLV_DB_SCALE(mixer_tlv, -6300, 100, true);
+ 
+ static const char * const cs42l42_hpf_freq_text[] = {
+@@ -444,8 +444,7 @@ static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
+ 				CS42L42_ADC_INV_SHIFT, true, false),
+ 	SOC_SINGLE("ADC Boost Switch", CS42L42_ADC_CTL,
+ 				CS42L42_ADC_DIG_BOOST_SHIFT, true, false),
+-	SOC_SINGLE_SX_TLV("ADC Volume", CS42L42_ADC_VOLUME,
+-				CS42L42_ADC_VOL_SHIFT, 0xA0, 0x6C, adc_tlv),
++	SOC_SINGLE_S8_TLV("ADC Volume", CS42L42_ADC_VOLUME, -97, 12, adc_tlv),
+ 	SOC_SINGLE("ADC WNF Switch", CS42L42_ADC_WNF_HPF_CTL,
+ 				CS42L42_ADC_WNF_EN_SHIFT, true, false),
+ 	SOC_SINGLE("ADC HPF Switch", CS42L42_ADC_WNF_HPF_CTL,
+-- 
+2.11.0
 
-Thanks!
-
-[1/1] ASoC: samsung: Constify static snd_soc_ops
-      commit: 2080acf3d18029ca52189a14b2ee462ea89c5d06
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
