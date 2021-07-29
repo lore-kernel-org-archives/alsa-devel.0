@@ -7,77 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 348D5C4338F
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 10:14:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E0E0C4338F
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 10:15:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 952C261055
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 10:14:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 952C261055
+	by mail.kernel.org (Postfix) with ESMTPS id 82BA660E09
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 10:15:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 82BA660E09
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E1E41EFD;
-	Thu, 29 Jul 2021 12:13:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E1E41EFD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2C1781F19;
+	Thu, 29 Jul 2021 12:14:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C1781F19
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627553686;
-	bh=/3P3CzHSKh6y0h7WP0w5r3XogpSNeRsNXKUYj5Ar/WM=;
+	s=default; t=1627553737;
+	bh=wfS8e2UyQAPemhfC6gdPzMLN8v74/DqMZhKh5Tirjuo=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=du9BT03S3uO3dY3xZa8Ug7p6yXKeSRj4U8dfjT5qB/NrPMD6/AXjoKSfT44LkSxAs
-	 VxNsqywnu1iFeCKv5YkgmAEClDMzLVT/wvc7Q3ARP+v4QeMMTvXN3iFxR7al4uZ/aQ
-	 xO557sGteRbAdFH+TUrFuAalVXxU9xu9+QMUpSTA=
+	b=mhUDmkCjPafczdoBNrnBjo5udgSZTKYxnRtoSQcvbi28VqHXIgJoNvNFseflLg56d
+	 4OtSqpU7J7JED/BQ1YLJOizi8vac2ID2ycW+7XUMeiYumu/0m8sNwVz2/JX2YHf47A
+	 OdYGw32+ElnfMXkeSRkU41yprzkz072M+57O3g4s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 76F0EF804B2;
-	Thu, 29 Jul 2021 12:13:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 20D0AF804E0;
+	Thu, 29 Jul 2021 12:13:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 90AEDF804DA; Thu, 29 Jul 2021 12:13:53 +0200 (CEST)
+ id C1F75F804C1; Thu, 29 Jul 2021 12:13:53 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 30B42F80258
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3DFA2F8026C
  for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2021 12:13:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30B42F80258
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3DFA2F8026C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="MAcYUkCp"; 
+ header.b="E3ufEODy"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="X7FyihHA"
+ header.b="nhXXY8/Q"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 8F5B7224DC
+ by smtp-out1.suse.de (Postfix) with ESMTP id 417B42247B
  for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2021 10:13:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1627553626; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=veiVB6mcS+AwMCxPIJMmloWIxN+vYD+3ripTPHLdfPA=;
- b=MAcYUkCpl/vRFPXfGjQn9i2dWQPZY50+B2A/kKyJ1Abmn7H/tYnM7TEuhmaYiYUB/irC7r
- LGQOxWEpwm0L+TvAahzoQ5PVzpa/e/+1h71bkVYtT51TFiTFCOrqTG+ez3uDkds7sY4o3J
- iKUUNtEXMlpzCvZmBXU63Gk+n8FgSto=
+ bh=eHdOP7R/rOkuKLOZV8yLUt0xEeeaNZf2T5yEMLnlvto=;
+ b=E3ufEODyLKAhSSyOWIP5MYDxSNqmO3P3BSAfeXVR35tPOLb7LyKJLg5+iV3v91tUaFJpjN
+ OOnzZyR9lIJD+lV2NMoNP2ajkIThQw5K8o7FMr4PqeBQpemqnsfMei0DuRhrUFCoydUizW
+ X3+4B/RELW407LSNJI9cUNvaEM6dLRQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1627553626;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=veiVB6mcS+AwMCxPIJMmloWIxN+vYD+3ripTPHLdfPA=;
- b=X7FyihHAcdii0OoFjbTovOOSvqkHGsFr2sD3ZoCVP/S/mMIZIuqFZ+VoPA3S4B7VJlo1n3
- t/oMsgIZUShuEiDA==
+ bh=eHdOP7R/rOkuKLOZV8yLUt0xEeeaNZf2T5yEMLnlvto=;
+ b=nhXXY8/QFo273Er+AV0Bzs4pNCeVQ4Ij5boTksUYFiVmCLUy8EY4wGVD5qi1UBGvksRl5G
+ BQHisD0XJgL98IAw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 019BEA3C85;
+ by relay2.suse.de (Postfix) with ESMTP id 12F54A3C87;
  Thu, 29 Jul 2021 07:44:06 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 12/15] ALSA: usb-audio: Move ignore_ctl_error check into
- quirk_flags
-Date: Thu, 29 Jul 2021 09:44:01 +0200
-Message-Id: <20210729074404.19728-3-tiwai@suse.de>
+Subject: [PATCH 14/15] ALSA: usb-audio: Add quirk_flags module option
+Date: Thu, 29 Jul 2021 09:44:03 +0200
+Message-Id: <20210729074404.19728-5-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210729073855.19043-1-tiwai@suse.de>
 References: <20210729073855.19043-1-tiwai@suse.de>
@@ -98,228 +97,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The mixer code has a flag ignore_ctl_error for ignoring the errors
-returned from the device wrt mixer accesses, and this is set from the
-entries in mixer_maps.c, as well as ignore_ctl_error module option.
-Those can be well integrated into the new quirk_flags field, too.
+This patch adds a new module option, quirk_flags, for allowing user to
+try some additional device-specific quirk behavior more easily.
+When this option is set to non-zero, it overrides the quirk_flags, and
+the specific workaround is applied.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/card.c       |  5 ++++-
- sound/usb/mixer.c      |  6 ++----
- sound/usb/mixer.h      |  3 +--
- sound/usb/mixer_maps.c | 22 ----------------------
- sound/usb/quirks.c     | 16 +++++++++++++++-
- sound/usb/usbaudio.h   |  3 +++
- 6 files changed, 25 insertions(+), 30 deletions(-)
+ sound/usb/card.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/sound/usb/card.c b/sound/usb/card.c
-index d66a3788111c..9535df39c02f 100644
+index 9535df39c02f..cf8f3953f78f 100644
 --- a/sound/usb/card.c
 +++ b/sound/usb/card.c
-@@ -804,6 +804,9 @@ static int usb_audio_probe(struct usb_interface *intf,
+@@ -71,6 +71,7 @@ static bool autoclock = true;
+ static char *quirk_alias[SNDRV_CARDS];
+ static char *delayed_register[SNDRV_CARDS];
+ static bool implicit_fb[SNDRV_CARDS];
++static unsigned int quirk_flags[SNDRV_CARDS];
  
- 	dev_set_drvdata(&dev->dev, chip);
+ bool snd_usb_use_vmalloc = true;
+ bool snd_usb_skip_validation;
+@@ -98,6 +99,8 @@ module_param_array(delayed_register, charp, NULL, 0444);
+ MODULE_PARM_DESC(delayed_register, "Quirk for delayed registration, given by id:iface, e.g. 0123abcd:4.");
+ module_param_array(implicit_fb, bool, NULL, 0444);
+ MODULE_PARM_DESC(implicit_fb, "Apply generic implicit feedback sync mode.");
++module_param_array(quirk_flags, uint, NULL, 0444);
++MODULE_PARM_DESC(quirk_flags, "Driver quirk bit flags.");
+ module_param_named(use_vmalloc, snd_usb_use_vmalloc, bool, 0444);
+ MODULE_PARM_DESC(use_vmalloc, "Use vmalloc for PCM intermediate buffers (default: yes).");
+ module_param_named(skip_validation, snd_usb_skip_validation, bool, 0444);
+@@ -631,7 +634,10 @@ static int snd_usb_audio_create(struct usb_interface *intf,
+ 	INIT_LIST_HEAD(&chip->midi_list);
+ 	INIT_LIST_HEAD(&chip->mixer_list);
  
-+	if (ignore_ctl_error)
-+		chip->quirk_flags |= QUIRK_FLAG_IGNORE_CTL_ERROR;
-+
- 	if (chip->quirk_flags & QUIRK_FLAG_DISABLE_AUTOSUSPEND)
- 		usb_disable_autosuspend(interface_to_usbdev(intf));
+-	snd_usb_init_quirk_flags(chip);
++	if (quirk_flags[idx])
++		chip->quirk_flags = quirk_flags[idx];
++	else
++		snd_usb_init_quirk_flags(chip);
  
-@@ -828,7 +831,7 @@ static int usb_audio_probe(struct usb_interface *intf,
- 		err = snd_usb_create_streams(chip, ifnum);
- 		if (err < 0)
- 			goto __error;
--		err = snd_usb_create_mixer(chip, ifnum, ignore_ctl_error);
-+		err = snd_usb_create_mixer(chip, ifnum);
- 		if (err < 0)
- 			goto __error;
- 	}
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index f4cdaf1ba44a..6cb5f4942ae2 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -3170,7 +3170,6 @@ static int snd_usb_mixer_controls(struct usb_mixer_interface *mixer)
- 			state.map = map->map;
- 			state.selector_map = map->selector_map;
- 			mixer->connector_map = map->connector_map;
--			mixer->ignore_ctl_error |= map->ignore_ctl_error;
- 			break;
- 		}
- 	}
-@@ -3495,8 +3494,7 @@ static int snd_usb_mixer_status_create(struct usb_mixer_interface *mixer)
- 	return 0;
- }
+ 	card->private_free = snd_usb_audio_free;
  
--int snd_usb_create_mixer(struct snd_usb_audio *chip, int ctrlif,
--			 int ignore_error)
-+int snd_usb_create_mixer(struct snd_usb_audio *chip, int ctrlif)
- {
- 	static const struct snd_device_ops dev_ops = {
- 		.dev_free = snd_usb_mixer_dev_free
-@@ -3510,7 +3508,7 @@ int snd_usb_create_mixer(struct snd_usb_audio *chip, int ctrlif,
- 	if (!mixer)
- 		return -ENOMEM;
- 	mixer->chip = chip;
--	mixer->ignore_ctl_error = ignore_error;
-+	mixer->ignore_ctl_error = !!(chip->quirk_flags & QUIRK_FLAG_IGNORE_CTL_ERROR);
- 	mixer->id_elems = kcalloc(MAX_ID_ELEMS, sizeof(*mixer->id_elems),
- 				  GFP_KERNEL);
- 	if (!mixer->id_elems) {
-diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
-index ea41e7a1f7bf..876bbc9a71ad 100644
---- a/sound/usb/mixer.h
-+++ b/sound/usb/mixer.h
-@@ -97,8 +97,7 @@ struct usb_mixer_elem_info {
- 	void *private_data;
- };
- 
--int snd_usb_create_mixer(struct snd_usb_audio *chip, int ctrlif,
--			 int ignore_error);
-+int snd_usb_create_mixer(struct snd_usb_audio *chip, int ctrlif);
- void snd_usb_mixer_disconnect(struct usb_mixer_interface *mixer);
- 
- void snd_usb_mixer_notify_id(struct usb_mixer_interface *mixer, int unitid);
-diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
-index c5794e83fd80..55eea90ee993 100644
---- a/sound/usb/mixer_maps.c
-+++ b/sound/usb/mixer_maps.c
-@@ -28,7 +28,6 @@ struct usbmix_ctl_map {
- 	const struct usbmix_name_map *map;
- 	const struct usbmix_selector_map *selector_map;
- 	const struct usbmix_connector_map *connector_map;
--	int ignore_ctl_error;
- };
- 
- /*
-@@ -432,7 +431,6 @@ static const struct usbmix_ctl_map usbmix_ctl_maps[] = {
- 	{
- 		.id = USB_ID(0x041e, 0x3000),
- 		.map = extigy_map,
--		.ignore_ctl_error = 1,
- 	},
- 	{
- 		.id = USB_ID(0x041e, 0x3010),
-@@ -452,28 +450,10 @@ static const struct usbmix_ctl_map usbmix_ctl_maps[] = {
- 		.map = audigy2nx_map,
- 		.selector_map = audigy2nx_selectors,
- 	},
--	{	/* Logitech, Inc. QuickCam Pro for Notebooks */
--		.id = USB_ID(0x046d, 0x0991),
--		.ignore_ctl_error = 1,
--	},
--	{	/* Logitech, Inc. QuickCam E 3500 */
--		.id = USB_ID(0x046d, 0x09a4),
--		.ignore_ctl_error = 1,
--	},
- 	{	/* Plantronics GameCom 780 */
- 		.id = USB_ID(0x047f, 0xc010),
- 		.map = gamecom780_map,
- 	},
--	{
--		/* Hercules DJ Console (Windows Edition) */
--		.id = USB_ID(0x06f8, 0xb000),
--		.ignore_ctl_error = 1,
--	},
--	{
--		/* Hercules DJ Console (Macintosh Edition) */
--		.id = USB_ID(0x06f8, 0xd002),
--		.ignore_ctl_error = 1,
--	},
- 	{
- 		/* Hercules Gamesurround Muse Pocket LT
- 		 * (USB 5.1 Channel Audio Adapter)
-@@ -492,7 +472,6 @@ static const struct usbmix_ctl_map usbmix_ctl_maps[] = {
- 	{
- 		.id = USB_ID(0x08bb, 0x2702),
- 		.map = linex_map,
--		.ignore_ctl_error = 1,
- 	},
- 	{
- 		.id = USB_ID(0x0a92, 0x0091),
-@@ -517,7 +496,6 @@ static const struct usbmix_ctl_map usbmix_ctl_maps[] = {
- 	{
- 		.id = USB_ID(0x13e5, 0x0001),
- 		.map = scratch_live_map,
--		.ignore_ctl_error = 1,
- 	},
- 	{
- 		.id = USB_ID(0x200c, 0x1018),
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 1cffb87e5026..fce3a341adc8 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -531,7 +531,7 @@ static int create_standard_mixer_quirk(struct snd_usb_audio *chip,
- 	if (quirk->ifnum < 0)
- 		return 0;
- 
--	return snd_usb_create_mixer(chip, quirk->ifnum, 0);
-+	return snd_usb_create_mixer(chip, quirk->ifnum);
- }
- 
- /*
-@@ -1796,10 +1796,16 @@ struct usb_audio_quirk_flags_table {
- 
- static const struct usb_audio_quirk_flags_table quirk_flags_table[] = {
- 	/* Device matches */
-+	DEVICE_FLG(0x041e, 0x3000, /* Creative SB Extigy */
-+		   QUIRK_FLAG_IGNORE_CTL_ERROR),
- 	DEVICE_FLG(0x041e, 0x4080, /* Creative Live Cam VF0610 */
- 		   QUIRK_FLAG_GET_SAMPLE_RATE),
- 	DEVICE_FLG(0x046d, 0x084c, /* Logitech ConferenceCam Connect */
- 		   QUIRK_FLAG_GET_SAMPLE_RATE | QUIRK_FLAG_CTL_MSG_DELAY_1M),
-+	DEVICE_FLG(0x046d, 0x0991, /* Logitech QuickCam Pro */
-+		   QUIRK_FLAG_CTL_MSG_DELAY_1M | QUIRK_FLAG_IGNORE_CTL_ERROR),
-+	DEVICE_FLG(0x046d, 0x09a4, /* Logitech QuickCam E 3500 */
-+		   QUIRK_FLAG_CTL_MSG_DELAY_1M | QUIRK_FLAG_IGNORE_CTL_ERROR),
- 	DEVICE_FLG(0x04d8, 0xfeea, /* Benchmark DAC1 Pre */
- 		   QUIRK_FLAG_GET_SAMPLE_RATE),
- 	DEVICE_FLG(0x04e8, 0xa051, /* Samsung USBC Headset (AKG) */
-@@ -1823,8 +1829,14 @@ static const struct usb_audio_quirk_flags_table quirk_flags_table[] = {
- 	DEVICE_FLG(0x0644, 0x804a, /* TEAC UD-301 */
- 		   QUIRK_FLAG_ITF_USB_DSD_DAC | QUIRK_FLAG_CTL_MSG_DELAY |
- 		   QUIRK_FLAG_IFACE_DELAY),
-+	DEVICE_FLG(0x06f8, 0xb000, /* Hercules DJ Console (Windows Edition) */
-+		   QUIRK_FLAG_IGNORE_CTL_ERROR),
-+	DEVICE_FLG(0x06f8, 0xd002, /* Hercules DJ Console (Macintosh Edition) */
-+		   QUIRK_FLAG_IGNORE_CTL_ERROR),
- 	DEVICE_FLG(0x074d, 0x3553, /* Outlaw RR2150 (Micronas UAC3553B) */
- 		   QUIRK_FLAG_GET_SAMPLE_RATE),
-+	DEVICE_FLG(0x08bb, 0x2702, /* LineX FM Transmitter */
-+		   QUIRK_FLAG_IGNORE_CTL_ERROR),
- 	DEVICE_FLG(0x0951, 0x16ad, /* Kingston HyperX */
- 		   QUIRK_FLAG_CTL_MSG_DELAY_1M),
- 	DEVICE_FLG(0x0b0e, 0x0349, /* Jabra 550a */
-@@ -1833,6 +1845,8 @@ static const struct usb_audio_quirk_flags_table quirk_flags_table[] = {
- 		   QUIRK_FLAG_SHARE_MEDIA_DEVICE | QUIRK_FLAG_ALIGN_TRANSFER),
- 	DEVICE_FLG(0x1395, 0x740a, /* Sennheiser DECT */
- 		   QUIRK_FLAG_GET_SAMPLE_RATE),
-+	DEVICE_FLG(0x13e5, 0x0001, /* Serato Phono */
-+		   QUIRK_FLAG_IGNORE_CTL_ERROR),
- 	DEVICE_FLG(0x154e, 0x1002, /* Denon DCD-1500RE */
- 		   QUIRK_FLAG_ITF_USB_DSD_DAC | QUIRK_FLAG_CTL_MSG_DELAY),
- 	DEVICE_FLG(0x154e, 0x1003, /* Denon DA-300USB */
-diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
-index ce31d58f810f..a152f5b08c7a 100644
---- a/sound/usb/usbaudio.h
-+++ b/sound/usb/usbaudio.h
-@@ -157,6 +157,8 @@ extern bool snd_usb_skip_validation;
-  *  Perform sample rate validations at probe
-  * QUIRK_FLAG_DISABLE_AUTOSUSPEND:
-  *  Disable runtime PM autosuspend
-+ * QUIRK_FLAG_IGNORE_CTL_ERROR:
-+ *  Ignore errors for mixer access
-  */
- 
- #define QUIRK_FLAG_GET_SAMPLE_RATE	(1U << 0)
-@@ -173,5 +175,6 @@ extern bool snd_usb_skip_validation;
- #define QUIRK_FLAG_IFACE_DELAY		(1U << 11)
- #define QUIRK_FLAG_VALIDATE_RATES	(1U << 12)
- #define QUIRK_FLAG_DISABLE_AUTOSUSPEND	(1U << 13)
-+#define QUIRK_FLAG_IGNORE_CTL_ERROR	(1U << 14)
- 
- #endif /* __USBAUDIO_H */
 -- 
 2.26.2
 
