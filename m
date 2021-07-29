@@ -2,100 +2,66 @@ Return-Path: <SRS0=Qkbk=MV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76738C4320A
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 17:11:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 381F9C4338F
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 17:24:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E99860F21
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 17:11:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5E99860F21
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id 620A960EE6
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 17:24:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 620A960EE6
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bp.renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E4BEA1B14;
-	Thu, 29 Jul 2021 19:10:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4BEA1B14
+	by alsa0.perex.cz (Postfix) with ESMTPS id E9BE41EF7;
+	Thu, 29 Jul 2021 19:23:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E9BE41EF7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627578702;
-	bh=me7V/0w4B30ntLRZzhKA8JpsSZQIag8g1O2quxzZEzk=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=P4zvnoOEKZEAXV+fb33nxJ2Hp5YBjFKNRitaYOMldr+kSkhwBwiw4lXZc/XCTqBnh
-	 bkuulKY7HQMC1Sgoqs0oLocYNMY2iR0BDJWUeh3fqwUZTfmyJlls265VhZUzqMuL81
-	 bhN4pf1C6bZCsDWkn4OFgbjhdbQwWdy/beR45T6k=
+	s=default; t=1627579459;
+	bh=XxrveWvgSChyj6KV8NJM9McYRqwS69zisxy/NSJl0t4=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=p+5WHbNTxO+6jflsEDQuAsxc62b3yRJEXsKgpGNh+6hPC43LdcatzKOuBz9JY2AXu
+	 CsCmxJeAwH/Q00YPxcqkjeDvkyVaHwaCVi5c56ncWXSORaTGB74J1H0iKUccyQz1z7
+	 CsKrKBK5YWIIAmaTw27bTZpsjYWIDNAKyUHKG2MU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F4072F804E4;
-	Thu, 29 Jul 2021 19:09:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 10BDBF8026C;
+	Thu, 29 Jul 2021 19:23:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0FEEBF804DA; Thu, 29 Jul 2021 19:09:50 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D37ACF800EB
- for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2021 19:09:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D37ACF800EB
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="aZ6K2UAO"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16T6K8lt018919; 
- Thu, 29 Jul 2021 12:09:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=Ww6B18qARdfihWYJjZN/A6kyrA9q9+jD6MjTKwlaLaU=;
- b=aZ6K2UAOWA9pA1oFTFgk1b9Tg13LlRqWegoy+WBU141qfl+/VMlgbhXxNXLfOsjLkKDg
- l/WD8SwOPbG/ChYND79kPeHXR2rZ3G4k3Nz1ZLIaYHt65UnhwZI+6GIgk4mugT7ewvfx
- KZotLLrsOunHnWG+Vge02F2e/GnRynFZYmJ2uP2Ownq1+70ARy//XZQWuG1KDnquwFMw
- yZtMg8d8aYwvXXC3kWTE8jOWbstwRdL2CHT4ap6PnlMgTWp/OVfv1lH2ehV/hy0qFcTy
- UXQmGiAHG4lJeJeKj3fgQ1TfILrrjhr0g3bfnfyZTx9UCTyAG7ETJLD8VJyy90u07ypd 1g== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3a31m2t69n-2
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 29 Jul 2021 12:09:35 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Thu, 29 Jul
- 2021 18:09:35 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Thu, 29 Jul 2021 18:09:34 +0100
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
- [198.61.65.56])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id BF7872BA;
- Thu, 29 Jul 2021 17:09:34 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>
-Subject: [PATCH 2/3] ASoC: cs42l42: Don't allow SND_SOC_DAIFMT_LEFT_J
-Date: Thu, 29 Jul 2021 18:09:28 +0100
-Message-ID: <20210729170929.6589-2-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210729170929.6589-1-rf@opensource.cirrus.com>
-References: <20210729170929.6589-1-rf@opensource.cirrus.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: VitUmnYvM_qaod4fvaAcZ6ZVNeLxUxE5
-X-Proofpoint-ORIG-GUID: VitUmnYvM_qaod4fvaAcZ6ZVNeLxUxE5
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- priorityscore=1501 impostorscore=0
- suspectscore=0 lowpriorityscore=0 mlxlogscore=730 phishscore=0 spamscore=0
- clxscore=1015 mlxscore=0 adultscore=0 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2107290101
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
+ id 7E2AFF80276; Thu, 29 Jul 2021 19:23:26 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 0C1B8F800EB
+ for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2021 19:23:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C1B8F800EB
+X-IronPort-AV: E=Sophos;i="5.84,279,1620658800"; d="scan'208";a="89179387"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 30 Jul 2021 02:23:17 +0900
+Received: from localhost.localdomain (unknown [10.226.92.2])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id B76AA40083F2;
+ Fri, 30 Jul 2021 02:23:13 +0900 (JST)
+From: Biju Das <biju.das.jz@bp.renesas.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH v3 0/3] Add RZ/G2L Sound support
+Date: Thu, 29 Jul 2021 18:23:08 +0100
+Message-Id: <20210729172311.31111-1-biju.das.jz@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
+Cc: alsa-devel@alsa-project.org, Geert Uytterhoeven <geert+renesas@glider.be>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Krzysztof Kozlowski <krzk@kernel.org>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ linux-renesas-soc@vger.kernel.org, Chris Brandt <chris.brandt@renesas.com>,
+ Mark Brown <broonie@kernel.org>, Chris Paterson <Chris.Paterson2@renesas.com>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Biju Das <biju.das.jz@bp.renesas.com>, Biju Das <biju.das@bp.renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,27 +77,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The driver has no support for left-justified protocol so it should
-not have been allowing this to be passed to cs42l42_set_dai_fmt().
+This patch series aims to add ASoC support on RZ/G2L SoC's.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
----
- sound/soc/codecs/cs42l42.c | 1 -
- 1 file changed, 1 deletion(-)
+It is based on the work done by Chris Brandt for RZ/A ASoC driver.
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 2fd20511f246..38e243a815b1 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -788,7 +788,6 @@ static int cs42l42_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 	/* interface format */
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
--	case SND_SOC_DAIFMT_LEFT_J:
- 		break;
- 	default:
- 		return -EINVAL;
+v2->v3:
+ * Fixed the dependency on KCONFIG
+ * Merged the binding patch with dma feature added
+ * Updated dt binding example with encoded #dma-cells value.
+ * Improved Error handling in probe function
+ * Removed the passing legacy channel configuration parameters from dmaengine_slave_config function
+ * started using dma_request_chan instead of deprecated dma_request_slave_channel
+ * Removed SoC dtsi and config patches from this series. Will send it later.
+v1->v2:
+ * Rebased to latest rc kernel
+
+Biju Das (3):
+  ASoC: dt-bindings: Document RZ/G2L bindings
+  sound: soc: sh: Add RZ/G2L SSIF-2 driver
+  sound: sh: rz-ssi: Add SSI DMAC support
+
+ .../bindings/sound/renesas,rz-ssi.yaml        |  100 ++
+ sound/soc/sh/Kconfig                          |    9 +
+ sound/soc/sh/Makefile                         |    4 +
+ sound/soc/sh/rz-ssi.c                         | 1062 +++++++++++++++++
+ 4 files changed, 1175 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/renesas,rz-ssi.yaml
+ create mode 100644 sound/soc/sh/rz-ssi.c
+
 -- 
-2.11.0
+2.17.1
 
