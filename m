@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A2CEC4338F
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 10:07:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CD65C4338F
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 10:07:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B5C0D61055
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 10:07:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B5C0D61055
+	by mail.kernel.org (Postfix) with ESMTPS id 6298461054
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jul 2021 10:07:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6298461054
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 617481F07;
-	Thu, 29 Jul 2021 12:06:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 617481F07
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE2751B08;
+	Thu, 29 Jul 2021 12:06:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE2751B08
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627553226;
-	bh=+8sBkXiEx/zPHAn5WCRNN7kDJOfqCSZY94uwIPvg/kM=;
+	s=default; t=1627553243;
+	bh=TpsC/UGv+Tu97+MrZbZzFZ3B+KbYQQOckiVCgy9W3Yo=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=k43YMTgZ4yEQyD2RKVxXQ2vm9JDguc7ERL+dMa2Idxdz8KnZarlQGXlP2XSRXoI06
-	 HTSkw4ryzZBFn/CZKKMft8lKoUToGfIrMX2rgS+Muo8T8Tw4ssgSvhW6Ja4GkMIgNn
-	 DzQ5zVy7fUsB4MvY6dbL4NlnXI6luZDKEuYB1kPI=
+	b=H1cPcYIMehkj18u/p8TX/+Yepb9im+/uUqJAOTkKAR3fP3gSGgaCTK7d8cR3u4b5h
+	 Os/4+I/9/w0XNjZ5xew7QC+BFy5xw3OIB3rXgBKN97KHoNG1C5rVEbALmKenaCzIz1
+	 2DwjbOZ2ps+yAtCcgsmTqbKPVmNuniGJhXpb72p0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4F7AAF804FF;
-	Thu, 29 Jul 2021 12:04:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2E619F80507;
+	Thu, 29 Jul 2021 12:04:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EDF3DF804FD; Thu, 29 Jul 2021 12:04:04 +0200 (CEST)
+ id 9F417F804E4; Thu, 29 Jul 2021 12:04:07 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 80022F804B2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 431F8F804E4
  for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2021 12:03:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80022F804B2
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 431F8F804E4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="i4FZ1H1z"; 
+ header.b="n6psEGQB"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="GsWeGfUM"
+ header.b="dQbKe+ok"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id E575020203
+ by smtp-out2.suse.de (Postfix) with ESMTP id DAE5C201F8
  for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2021 10:03:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1627553025; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5Cf2D9g0+6GuvLMcYtJLjMaJaSV0svwCNmB0umTKyKE=;
- b=i4FZ1H1zMyZLthcVYiFWNREGs07p50/CUXPQwePDo45nZu6f6Z3UTdVM3PFej2msi0iIPr
- gXtkQ//R5r5ndj8j6KG+l7k06AZqzZpxeRiSMHB2K4tBsZDzHvrzD6Q4RvVwI03d2uEXFa
- BFleJDU5DvltWOVA1Cngn169upg0QIU=
+ bh=NsZNzEUe2qW2iFrWxSYwr1bm9Rp3F3nbichFbX7Oz50=;
+ b=n6psEGQB2FhY6qboLs2pQSordFzXBsQo7utLGEhLsPcxbPFeHE5I7enYmtL3JAhclJv1iB
+ j9WXRnXQrJlwjveSSrZ6APiI6+Bq8piq24+043575Ol77Nn01T9aXneBRuXUKvqts3DpG4
+ 61/FPjwPS5XX/KCkzOPOprZksAVasD4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1627553025;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5Cf2D9g0+6GuvLMcYtJLjMaJaSV0svwCNmB0umTKyKE=;
- b=GsWeGfUMdxeCrsOMqZAnswZiz8omnOuhTh7OJBX/mzjv5+4TIsv+dbVhecB283wWHONpkj
- +x9/cc4ieaJ/O2DA==
+ bh=NsZNzEUe2qW2iFrWxSYwr1bm9Rp3F3nbichFbX7Oz50=;
+ b=dQbKe+okqrMtYvEAimK4LZvPqfU8gTLEXX2ybSeN94dhK6D5Kcp4uJ81FkNqfpCLYo/fOy
+ oieuKRI29U/s2HAA==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id D6B98A3BD5;
- Thu, 29 Jul 2021 07:38:57 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 287D8A3BE6;
+ Thu, 29 Jul 2021 07:38:58 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 02/15] ALSA: usb-audio: Move media-controller API quirk into
+Subject: [PATCH 09/15] ALSA: usb-audio: Move interface setup delay into
  quirk_flags
-Date: Thu, 29 Jul 2021 09:38:48 +0200
-Message-Id: <20210729073855.19043-3-tiwai@suse.de>
+Date: Thu, 29 Jul 2021 09:38:55 +0200
+Message-Id: <20210729073855.19043-10-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210729073855.19043-1-tiwai@suse.de>
 References: <20210729073855.19043-1-tiwai@suse.de>
@@ -98,117 +98,120 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The devices that can have media-controller API entries are currently
-specified via tables in quirks-table.h, as a part of descriptor
-override.  This can fit better to the new quirk_flags, as we just need
-a matching with the given ID and create the MC entries accordingly.
+Yet another delay is applied at switching the interface.  This can be
+moved to quirk_flags, too.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/card.c         |  2 +-
- sound/usb/quirks-table.h |  1 -
- sound/usb/quirks.c       | 34 ++++++++++++++++++++++++++++++++++
- sound/usb/usbaudio.h     |  4 +++-
- 4 files changed, 38 insertions(+), 3 deletions(-)
+ sound/usb/endpoint.c |  3 ++-
+ sound/usb/quirks.c   | 29 ++++++++---------------------
+ sound/usb/quirks.h   |  1 -
+ sound/usb/usbaudio.h |  3 +++
+ 4 files changed, 13 insertions(+), 23 deletions(-)
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 8fee90b9776e..5f5095890a29 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -826,7 +826,7 @@ static int usb_audio_probe(struct usb_interface *intf,
- 			goto __error;
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index 6016e97faf69..d33685874a6b 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -808,7 +808,8 @@ static int endpoint_set_interface(struct snd_usb_audio *chip,
+ 		return err;
  	}
  
--	if (quirk && quirk->shares_media_device) {
-+	if (chip->quirk_flags & QUIRK_FLAG_SHARE_MEDIA_DEVICE) {
- 		/* don't want to fail when snd_media_device_create() fails */
- 		snd_media_device_create(chip, intf);
- 	}
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 19bb499c17da..d644b31c4c7f 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -2816,7 +2816,6 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 		.product_name = pname, \
- 		.ifnum = QUIRK_ANY_INTERFACE, \
- 		.type = QUIRK_AUDIO_ALIGN_TRANSFER, \
--		.shares_media_device = 1, \
- 	} \
+-	snd_usb_set_interface_quirk(chip);
++	if (chip->quirk_flags & QUIRK_FLAG_IFACE_DELAY)
++		msleep(50);
+ 	return 0;
  }
  
 diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 9c3d234c8b32..798aec4298f4 100644
+index a6b78cbf5089..f47078209bcc 100644
 --- a/sound/usb/quirks.c
 +++ b/sound/usb/quirks.c
-@@ -1913,12 +1913,46 @@ static const struct usb_audio_quirk_flags_table quirk_flags_table[] = {
- 		   QUIRK_FLAG_GET_SAMPLE_RATE),
- 	DEVICE_FLG(0x05a7, 0x1020, /* Bose Companion 5 */
- 		   QUIRK_FLAG_GET_SAMPLE_RATE),
-+	DEVICE_FLG(0x05e1, 0x0480, /* Hauppauge Woodbury */
-+		   QUIRK_FLAG_SHARE_MEDIA_DEVICE),
+@@ -1570,22 +1570,6 @@ void snd_usb_endpoint_start_quirk(struct snd_usb_endpoint *ep)
+ 		ep->tenor_fb_quirk = 1;
+ }
+ 
+-void snd_usb_set_interface_quirk(struct snd_usb_audio *chip)
+-{
+-	if (!chip)
+-		return;
+-	/*
+-	 * "Playback Design" products need a 50ms delay after setting the
+-	 * USB interface.
+-	 */
+-	switch (USB_ID_VENDOR(chip->usb_id)) {
+-	case 0x23ba: /* Playback Design */
+-	case 0x0644: /* TEAC Corp. */
+-		msleep(50);
+-		break;
+-	}
+-}
+-
+ /* quirk applied after snd_usb_ctl_msg(); not applied during boot quirks */
+ void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
+ 			   __u8 request, __u8 requesttype, __u16 value,
+@@ -1841,11 +1825,14 @@ static const struct usb_audio_quirk_flags_table quirk_flags_table[] = {
+ 	DEVICE_FLG(0x05e1, 0x0480, /* Hauppauge Woodbury */
+ 		   QUIRK_FLAG_SHARE_MEDIA_DEVICE | QUIRK_FLAG_ALIGN_TRANSFER),
+ 	DEVICE_FLG(0x0644, 0x8043, /* TEAC UD-501/UD-501V2/UD-503/NT-503 */
+-		   QUIRK_FLAG_ITF_USB_DSD_DAC | QUIRK_FLAG_CTL_MSG_DELAY),
++		   QUIRK_FLAG_ITF_USB_DSD_DAC | QUIRK_FLAG_CTL_MSG_DELAY |
++		   QUIRK_FLAG_IFACE_DELAY),
+ 	DEVICE_FLG(0x0644, 0x8044, /* Esoteric D-05X */
+-		   QUIRK_FLAG_ITF_USB_DSD_DAC | QUIRK_FLAG_CTL_MSG_DELAY),
++		   QUIRK_FLAG_ITF_USB_DSD_DAC | QUIRK_FLAG_CTL_MSG_DELAY |
++		   QUIRK_FLAG_IFACE_DELAY),
+ 	DEVICE_FLG(0x0644, 0x804a, /* TEAC UD-301 */
+-		   QUIRK_FLAG_ITF_USB_DSD_DAC | QUIRK_FLAG_CTL_MSG_DELAY),
++		   QUIRK_FLAG_ITF_USB_DSD_DAC | QUIRK_FLAG_CTL_MSG_DELAY |
++		   QUIRK_FLAG_IFACE_DELAY),
  	DEVICE_FLG(0x074d, 0x3553, /* Outlaw RR2150 (Micronas UAC3553B) */
  		   QUIRK_FLAG_GET_SAMPLE_RATE),
-+	DEVICE_FLG(0x0fd9, 0x0008, /* Hauppauge HVR-950Q */
-+		   QUIRK_FLAG_SHARE_MEDIA_DEVICE),
- 	DEVICE_FLG(0x1395, 0x740a, /* Sennheiser DECT */
+ 	DEVICE_FLG(0x0951, 0x16ad, /* Kingston HyperX */
+@@ -1919,11 +1906,11 @@ static const struct usb_audio_quirk_flags_table quirk_flags_table[] = {
+ 	VENDOR_FLG(0x047f, /* Plantronics */
+ 		   QUIRK_FLAG_GET_SAMPLE_RATE | QUIRK_FLAG_CTL_MSG_DELAY),
+ 	VENDOR_FLG(0x0644, /* TEAC Corp. */
+-		   QUIRK_FLAG_CTL_MSG_DELAY),
++		   QUIRK_FLAG_CTL_MSG_DELAY | QUIRK_FLAG_IFACE_DELAY),
+ 	VENDOR_FLG(0x1de7, /* Phoenix Audio */
  		   QUIRK_FLAG_GET_SAMPLE_RATE),
- 	DEVICE_FLG(0x1901, 0x0191, /* GE B850V3 CP2114 audio interface */
- 		   QUIRK_FLAG_GET_SAMPLE_RATE),
-+	DEVICE_FLG(0x2040, 0x7200, /* Hauppauge HVR-950Q */
-+		   QUIRK_FLAG_SHARE_MEDIA_DEVICE),
-+	DEVICE_FLG(0x2040, 0x7201, /* Hauppauge HVR-950Q-MXL */
-+		   QUIRK_FLAG_SHARE_MEDIA_DEVICE),
-+	DEVICE_FLG(0x2040, 0x7210, /* Hauppauge HVR-950Q */
-+		   QUIRK_FLAG_SHARE_MEDIA_DEVICE),
-+	DEVICE_FLG(0x2040, 0x7211, /* Hauppauge HVR-950Q-MXL */
-+		   QUIRK_FLAG_SHARE_MEDIA_DEVICE),
-+	DEVICE_FLG(0x2040, 0x7213, /* Hauppauge HVR-950Q */
-+		   QUIRK_FLAG_SHARE_MEDIA_DEVICE),
-+	DEVICE_FLG(0x2040, 0x7217, /* Hauppauge HVR-950Q */
-+		   QUIRK_FLAG_SHARE_MEDIA_DEVICE),
-+	DEVICE_FLG(0x2040, 0x721b, /* Hauppauge HVR-950Q */
-+		   QUIRK_FLAG_SHARE_MEDIA_DEVICE),
-+	DEVICE_FLG(0x2040, 0x721e, /* Hauppauge HVR-950Q */
-+		   QUIRK_FLAG_SHARE_MEDIA_DEVICE),
-+	DEVICE_FLG(0x2040, 0x721f, /* Hauppauge HVR-950Q */
-+		   QUIRK_FLAG_SHARE_MEDIA_DEVICE),
-+	DEVICE_FLG(0x2040, 0x7240, /* Hauppauge HVR-850 */
-+		   QUIRK_FLAG_SHARE_MEDIA_DEVICE),
-+	DEVICE_FLG(0x2040, 0x7260, /* Hauppauge HVR-950Q */
-+		   QUIRK_FLAG_SHARE_MEDIA_DEVICE),
-+	DEVICE_FLG(0x2040, 0x7270, /* Hauppauge HVR-950Q */
-+		   QUIRK_FLAG_SHARE_MEDIA_DEVICE),
-+	DEVICE_FLG(0x2040, 0x7280, /* Hauppauge HVR-950Q */
-+		   QUIRK_FLAG_SHARE_MEDIA_DEVICE),
-+	DEVICE_FLG(0x2040, 0x7281, /* Hauppauge HVR-950Q-MXL */
-+		   QUIRK_FLAG_SHARE_MEDIA_DEVICE),
-+	DEVICE_FLG(0x2040, 0x8200, /* Hauppauge Woodbury */
-+		   QUIRK_FLAG_SHARE_MEDIA_DEVICE),
- 	DEVICE_FLG(0x21b4, 0x0081, /* AudioQuest DragonFly */
- 		   QUIRK_FLAG_GET_SAMPLE_RATE),
- 	DEVICE_FLG(0x2912, 0x30c8, /* Audioengine D1 */
+ 	VENDOR_FLG(0x23ba, /* Playback Design */
+-		   QUIRK_FLAG_CTL_MSG_DELAY),
++		   QUIRK_FLAG_CTL_MSG_DELAY | QUIRK_FLAG_IFACE_DELAY),
+ 
+ 	{} /* terminator */
+ };
+diff --git a/sound/usb/quirks.h b/sound/usb/quirks.h
+index 0a49e074ae6a..31abb7cb01a5 100644
+--- a/sound/usb/quirks.h
++++ b/sound/usb/quirks.h
+@@ -33,7 +33,6 @@ int snd_usb_is_big_endian_format(struct snd_usb_audio *chip,
+ 
+ void snd_usb_endpoint_start_quirk(struct snd_usb_endpoint *ep);
+ 
+-void snd_usb_set_interface_quirk(struct snd_usb_audio *chip);
+ void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
+ 			   __u8 request, __u8 requesttype, __u16 value,
+ 			   __u16 index, void *data, __u16 size);
 diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
-index 37195ac26ac9..ece244637798 100644
+index 69fa81150f36..57b5dcf211d4 100644
 --- a/sound/usb/usbaudio.h
 +++ b/sound/usb/usbaudio.h
-@@ -116,7 +116,6 @@ struct snd_usb_audio_quirk {
- 	const char *product_name;
- 	int16_t ifnum;
- 	uint16_t type;
--	bool shares_media_device;
- 	const void *data;
- };
- 
-@@ -136,8 +135,11 @@ extern bool snd_usb_skip_validation;
-  * QUIRK_FLAG_GET_SAMPLE_RATE:
-  *  Skip reading sample rate for devices, as some devices behave inconsistently
-  *  or return error
-+ * QUIRK_FLAG_SHARE_MEDIA_DEVICE:
-+ *  Create Media Controller API entries
+@@ -153,6 +153,8 @@ extern bool snd_usb_skip_validation;
+  *  Add a delay of 1-2ms at each control message handling
+  * QUIRK_FLAG_CTL_MSG_DELAY_5M:
+  *  Add a delay of 5-6ms at each control message handling
++ * QUIRK_FLAG_IFACE_DELAY:
++ *  Add a delay of 50ms at each interface setup
   */
  
  #define QUIRK_FLAG_GET_SAMPLE_RATE	(1U << 0)
-+#define QUIRK_FLAG_SHARE_MEDIA_DEVICE	(1U << 1)
+@@ -166,5 +168,6 @@ extern bool snd_usb_skip_validation;
+ #define QUIRK_FLAG_CTL_MSG_DELAY	(1U << 8)
+ #define QUIRK_FLAG_CTL_MSG_DELAY_1M	(1U << 9)
+ #define QUIRK_FLAG_CTL_MSG_DELAY_5M	(1U << 10)
++#define QUIRK_FLAG_IFACE_DELAY		(1U << 11)
  
  #endif /* __USBAUDIO_H */
 -- 
