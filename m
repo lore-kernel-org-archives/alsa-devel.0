@@ -7,87 +7,87 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66786C4338F
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 15:21:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FD9DC4320A
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 15:22:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D738260F4B
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 15:21:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D738260F4B
+	by mail.kernel.org (Postfix) with ESMTPS id EE2E460F46
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 15:22:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EE2E460F46
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6B2C71EF7;
-	Fri, 30 Jul 2021 17:21:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B2C71EF7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B8891F30;
+	Fri, 30 Jul 2021 17:21:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B8891F30
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627658511;
-	bh=MgFexWTudBMqmbAliQ5G3DDZl8OAYEmeJFKnn/UQzi4=;
+	s=default; t=1627658534;
+	bh=9nlbypjhBKGjS4xH3B0RCVMJz6vVyn5bXoUuPO8Qt6w=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iIbjJHDa4kFGLzLV2AyVCSwPFl3Kh8E2yJMq9xAOs0tMUrRqm2e9U+p0e+QdHu7NU
-	 aSrfoVaBtQZPcTx7yPH33ybjRnyDT9Sw+SlUkRzEscDjgZe2tGXm5vwtG3vZ7LSZ0d
-	 1x28Ly6foNqlVYKNuMmdpUi6LZ5KH3IYUC/+gfhk=
+	b=c4Vsr2JXkKG2US0y3WB7LSw6KXjHSgsUQQxaT3kc5/ivsxJiLBp6utiKEIAY6l/Nd
+	 vVXnc+aPFurXKGbc7TruL8TR6UARU2+xDu1j3gOz6M6XeCWV8dGKzBQLkgNJGXxYfu
+	 T7PCFaPJL32MFthIaZ13IwcfLMhwzU52wXbEF1QQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C12AF80517;
-	Fri, 30 Jul 2021 17:19:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5070AF8051C;
+	Fri, 30 Jul 2021 17:19:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 75225F80518; Fri, 30 Jul 2021 17:19:32 +0200 (CEST)
+ id 81ABCF80517; Fri, 30 Jul 2021 17:19:33 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6AFBAF8025E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 30FC4F80253
  for <alsa-devel@alsa-project.org>; Fri, 30 Jul 2021 17:19:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AFBAF8025E
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30FC4F80253
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="mEyNJ4Yc"
+ header.b="VBpuQ8FX"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16UELBKZ004490; 
- Fri, 30 Jul 2021 10:19:16 -0500
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16UEL0dc003614; 
+ Fri, 30 Jul 2021 10:19:15 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=K8OUVtkx5MXW4mcNUh8AurLTfJooQUkcdQjXzfU28n8=;
- b=mEyNJ4Yc+BNqcouwbkMid8c44Nta4I/3I8MudF3H7eAV7TPhwxi83Ta1t1OjUU7iNrl8
- 4k7NTqSKps00WSionNfNX7mN8Nng55/SU6dN1uIPZZJNAWXmUn52pRAng6ELttEj592p
- NUf2Rp4efqM+E/moQoZ2Runk/JyuS3ArgobWzVjWQWULBwk3Qg/CYVjUqkcOwkwu2yKf
- eCldjWAG48WHCUQDc81XWnSuaOW15AMPIlVk1/r73Gr1DZxcPMJUHBqqyr8+o2sgaUnx
- JpsPsHMBIvwSMX5INGfcXnxVq8My/QDWI4s6xQApHlhJ4kpCu8L0pVj/XXFQyAE3LYnO 2w== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3a41wd181m-3
+ bh=Zd/RDxP2XaDPsJNruJHbBUQdzVkYO4aWDGlyG9+WR3w=;
+ b=VBpuQ8FXBvkwOuaTZiFn+REWTmYrzPj48WNGv/A6ZdlWnCHKdXVBtxmDX3ycYzK4rvsB
+ if1HGSSNemB1WD1ybego341fvtXOZuSVLYyL71NVDaHDe67e5VJsCr4X5wrbx7KCPVWQ
+ sX8LpVPTATkPkioqyX2yJ4tye146Eb+bFhWc6QnsZP1YYO/mZgTHDM95iZX0pLYuyeBb
+ FKIYnavPCbJj+XJ8xJG2+cJXpNDxMA8464eRT7SVcFrp0GFXC7CqwNmaYExuXNRP4Z1j
+ rYp0aenBrpp7NHfDQfDMrP/ITQpqOv0wydRVMdxopgxuA+8nQ6RWgEB1juoShX2H+zuO Dg== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 3a41wd181n-3
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 30 Jul 2021 10:19:16 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Fri, 30 Jul 2021 10:19:15 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 30 Jul
- 2021 16:19:07 +0100
+ 2021 16:19:08 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Fri, 30 Jul 2021 16:19:07 +0100
+ Transport; Fri, 30 Jul 2021 16:19:08 +0100
 Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.32])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6FAF946E;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E67F62BA;
  Fri, 30 Jul 2021 15:19:07 +0000 (UTC)
 From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v3 04/27] ALSA: hda/cs8409: Mask all CS42L42 interrupts on
- initialization
-Date: Fri, 30 Jul 2021 16:18:21 +0100
-Message-ID: <20210730151844.7873-5-vitalyr@opensource.cirrus.com>
+Subject: [PATCH v3 06/27] ALSA: hda/cs8409: Disable unnecessary Ring Sense for
+ Cyborg/Warlock/Bullseye
+Date: Fri, 30 Jul 2021 16:18:23 +0100
+Message-ID: <20210730151844.7873-7-vitalyr@opensource.cirrus.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210730151844.7873-1-vitalyr@opensource.cirrus.com>
 References: <20210730151844.7873-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: a4WeqlZ1UxEqyI4eoutObzZxJRyIGkOJ
-X-Proofpoint-ORIG-GUID: a4WeqlZ1UxEqyI4eoutObzZxJRyIGkOJ
+X-Proofpoint-GUID: iRLKhLFLB28fYKSb43zMDf0mY4HhnM7w
+X-Proofpoint-ORIG-GUID: iRLKhLFLB28fYKSb43zMDf0mY4HhnM7w
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
  priorityscore=1501 impostorscore=0
  spamscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999 lowpriorityscore=0
@@ -113,6 +113,8 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 
+Also remove unnecessary repeated register writes.
+
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 ---
@@ -123,32 +125,26 @@ Changes in v2:
 Changes in v3:
 - No changes
 
- sound/pci/hda/patch_cs8409-tables.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/pci/hda/patch_cs8409-tables.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/sound/pci/hda/patch_cs8409-tables.c b/sound/pci/hda/patch_cs8409-tables.c
-index 5766433325a9..91b6a5b2824a 100644
+index 91b6a5b2824a..07d3ae28c105 100644
 --- a/sound/pci/hda/patch_cs8409-tables.c
 +++ b/sound/pci/hda/patch_cs8409-tables.c
-@@ -159,6 +159,18 @@ const struct cs8409_i2c_param cs42l42_init_reg_seq[] = {
+@@ -153,11 +153,9 @@ const struct cs8409_i2c_param cs42l42_init_reg_seq[] = {
+ 	{ 0x1121, 0xF3 },
+ 	{ 0x1103, 0x20 },
  	{ 0x1105, 0x00 },
- 	{ 0x1112, 0xC0 },
+-	{ 0x1112, 0xC0 },
++	{ 0x1112, 0x00 },
+ 	{ 0x1113, 0x80 },
+ 	{ 0x1C03, 0xC0 },
+-	{ 0x1105, 0x00 },
+-	{ 0x1112, 0xC0 },
  	{ 0x1101, 0x02 },
-+	{ 0x1316, 0xff },
-+	{ 0x1317, 0xff },
-+	{ 0x1318, 0xff },
-+	{ 0x1319, 0xff },
-+	{ 0x131a, 0xff },
-+	{ 0x131b, 0xff },
-+	{ 0x131c, 0xff },
-+	{ 0x131e, 0xff },
-+	{ 0x131f, 0xff },
-+	{ 0x1320, 0xff },
-+	{ 0x1b79, 0xff },
-+	{ 0x1b7a, 0xff },
- 	{} /* Terminator */
- };
- 
+ 	{ 0x1316, 0xff },
+ 	{ 0x1317, 0xff },
 -- 
 2.25.1
 
