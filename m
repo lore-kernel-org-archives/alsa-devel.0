@@ -2,75 +2,153 @@ Return-Path: <SRS0=QuHl=MW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6F39C4338F
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 19:06:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E17DC4338F
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 19:14:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E3A3F60F46
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 19:06:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E3A3F60F46
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 6554760F36
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 19:14:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6554760F36
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bp.renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B7B3210F;
-	Fri, 30 Jul 2021 21:05:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B7B3210F
+	by alsa0.perex.cz (Postfix) with ESMTPS id C4CDE20EC;
+	Fri, 30 Jul 2021 21:13:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4CDE20EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627672000;
-	bh=0PaVXE0fKAgciaSbmOSivXJdjAmAJWpo/tWUhvFqfzg=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1627672471;
+	bh=r6VTtHlPOpqErpplPFBRhTZhT5TAE+pkjUj7XmJQ+GI=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OhuNeJ17kNIFKUptoV+EwlGLxbfPxDxLCxwM/xbCk/d/5LgJu0cHZ0R4XuhLwRwnj
-	 yjv7kOlvTdvxBJviFfooY40gd9KqA/EmsYZEPFir1M+GjZk2xgipu9faV0HoIMYcQP
-	 Y77J/pFHfHcMhrOTTAfp2qB0wcxmjlvyhjSB6Clw=
+	b=XDoq+VN5aK1xkDUNbAprEdbL46p4kXUX/WCs9yV0apnM5cqZeN/fdaG5BfAcK5VxC
+	 YIYLRnUvtsiknbc4a85gwP/p6H+ZxJAYwZbXjXBdAlbK/SvEMjgKHKRT5wHyFAYH49
+	 YjxX6yEDMePYZiQ0eKaAMdrSgS2vRi0VXnJg2lLw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16DEFF804F2;
-	Fri, 30 Jul 2021 21:04:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64899F80212;
+	Fri, 30 Jul 2021 21:13:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9306CF804E3; Fri, 30 Jul 2021 21:04:08 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 756D8F80253; Fri, 30 Jul 2021 21:13:40 +0200 (CEST)
+Received: from JPN01-TY1-obe.outbound.protection.outlook.com
+ (mail-eopbgr1400135.outbound.protection.outlook.com [40.107.140.135])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D8465F804DF
- for <alsa-devel@alsa-project.org>; Fri, 30 Jul 2021 21:04:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8465F804DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9A68DF8019B
+ for <alsa-devel@alsa-project.org>; Fri, 30 Jul 2021 21:13:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A68DF8019B
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="s4dBVKR1"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DDEE760F46;
- Fri, 30 Jul 2021 19:03:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1627671837;
- bh=0PaVXE0fKAgciaSbmOSivXJdjAmAJWpo/tWUhvFqfzg=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=s4dBVKR1OVJLd82wB0inNF23HNMUe29NBFB3NHN4vosHJe0+YO9I7eDPcGx9TBi4X
- P2xS86Hiv3QxjELCsaEnMbZ7pLWJnKm6+DszmLHaxQoVUr8KGWVrH9kpI9oya3T+nF
- Tv2IoQbUe5hP1bOi1fw94Dnaul/ccc8gKnAZehLv+buyg9CwrnhFb1Z0FKgfOB56hE
- D2BARAq/B3jyIU82n1SOUS1Fu1QnkaWJP5N09qRHYsAIGXFKo07IpajARN7zhBwlEl
- sQC9QakzinfKZP3s3GvSa40Pvli3DjZSVrD5BuX28Nqc5HcEF9KxQKcqDpdtJwt8ZY
- uyy3YzEbjFZRA==
-From: Mark Brown <broonie@kernel.org>
-To: John Hsu <KCHSU0@nuvoton.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: nau8824: Fix open coded prefix handling
-Date: Fri, 30 Jul 2021 20:03:36 +0100
-Message-Id: <162767143674.56427.3667607260376022302.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210728234729.10135-1-broonie@kernel.org>
-References: <20210728234729.10135-1-broonie@kernel.org>
+ dkim=pass (1024-bit key) header.d=renesasgroup.onmicrosoft.com
+ header.i=@renesasgroup.onmicrosoft.com header.b="IDSeYc9e"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hWmy5lUmnS0xxe9goXikr4QD8M0610mSJLqZR96dRI/VcWuK2wGq7gPrRVlqmpH087KYSZMCC27rCcUYXcmzxSuzpIMelVpnQkz5sBMq4VP9njLZcwmijnmpNizAx2T9sHIY0GkAMgLRfkYJ953H1wbknjag7aQKZob0NlUEdz5uWoFgdm8ezW9qleYvltBZRDN9iBve2tY3WF8Nny9XV2ml9VNLo1YA1VQxyokZ23YNlSOOzSZj8jG6PaOOfqFfrFvjd5oT7N5aJ0Kzq2fHBWJ/oLAKTtOknZd1DOJXECKYnT4KCGwgQeY7q1I8in3+2D+wMkPXM2tnIA8Ngh2Mqg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0ORZVx3Iw1XvVyXomsORVVapco7qrFdsZp5K7qefhh0=;
+ b=GiI8w5ULCb8yxT4D5VtreSh8fC4aEz33UbzfD+ktjLCOHs8KL8Yr8ivOaftd3xucvZACkDgZ8iOooRohn0lhMUIeJ7/ROkjYm37oprtBBIq7ZcepuEpZnsF8sVEcw53Q7Ss5mXKMKvrpebzrsO3vJlx60m1FfNzGNKwWDZJiopt3ekMUkSe/uywLfx7g3eUhGQYJ6LhGjNqeQwC1hqhluhyU8MTYTDMHWhZ0qljVFK3H49+1U/+dyBzXpKNtgTkN4F5LzlmuAYtBf4E/Vv6uuU/NdnK26urxexbvN5YLFvoHUz0jzUNsW/GJ2s47hUHu8+u/J/43ALysaoJHcwwNug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
+ header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0ORZVx3Iw1XvVyXomsORVVapco7qrFdsZp5K7qefhh0=;
+ b=IDSeYc9eV+v7LqamYQQQ6Y+VovBCrCc9JZIYip0oDNXu1QZKfsJBIsd0zFl8mRWUBQaMl/JqVOnpoZ9xH9BCeufCmQ/0lqBMlGNKfgZc/hrf/5wntyNzNseSEGrPC8h7Hjt1LP+p2AAnebyuocRNF/SA1YJsu3fy17SCN3BTUjY=
+Received: from OSZPR01MB7019.jpnprd01.prod.outlook.com (2603:1096:604:13c::8)
+ by OSAPR01MB3122.jpnprd01.prod.outlook.com (2603:1096:603:39::22)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.25; Fri, 30 Jul
+ 2021 19:13:24 +0000
+Received: from OSZPR01MB7019.jpnprd01.prod.outlook.com
+ ([fe80::a058:9916:364a:1d1]) by OSZPR01MB7019.jpnprd01.prod.outlook.com
+ ([fe80::a058:9916:364a:1d1%8]) with mapi id 15.20.4373.026; Fri, 30 Jul 2021
+ 19:13:24 +0000
+From: Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam
+ Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Jaroslav
+ Kysela <perex@perex.cz>, Philipp Zabel <p.zabel@pengutronix.de>, Biju Das
+ <biju.das.jz@bp.renesas.com>
+Subject: RE: (subset) [PATCH v2 0/8] Add RZ/G2L Sound support
+Thread-Topic: (subset) [PATCH v2 0/8] Add RZ/G2L Sound support
+Thread-Index: AQHXfKOvQnBEY8n7zU2mwkwS8V7ieatb8e0AgAABDPA=
+Date: Fri, 30 Jul 2021 19:13:24 +0000
+Message-ID: <OSZPR01MB7019905B23FA514DB08987DDAAEC9@OSZPR01MB7019.jpnprd01.prod.outlook.com>
+References: <20210719134040.7964-1-biju.das.jz@bp.renesas.com>
+ <162767143674.56427.1812897829636885311.b4-ty@kernel.org>
+In-Reply-To: <162767143674.56427.1812897829636885311.b4-ty@kernel.org>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=bp.renesas.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a8a80f5a-cae0-4189-f8bf-08d9538e1a76
+x-ms-traffictypediagnostic: OSAPR01MB3122:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <OSAPR01MB312230EAEB282DF18348929AAAEC9@OSAPR01MB3122.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 88Gd9XcUpAiCJT4Sl3UdZ67+dq5cGlYwZax7NCkSbbMLafu8Z1EkiMxpyUv08Um7du9u9XkpVPuy7yHXNSVf5X6Rmt3XLQIE49+EjGcDXUMKJN8Rzqf3qqMCYryh2H/2Tq4FE6YzHeY8smJtdbOobC+dipGznXqbxvg4ZL/ZhfV+JYim+23aJI34r3LFHJjOrK9yttNBlTLbiCPzmGZnTAJsrZL8A3kYotBphx+EHEYwahkd2dR2dfOj7s9oZbOvOv3ULaa0/pfj0/TMOz3NA05g80U+hfYfJL5JCc1Hs6jeQfZYvUokKDzT8jlxkC98wVrcBN25jwwIndPUdQ6RJwkk65GAticuvGxG48ICEkqo4LW35mKUerbSEqRGixcKFy5D7cw3ynTxpcMy+Tao45gGA4dETKOOKH0NU9zpJQAMLfaF4Z4xW3yL8u2H/zN91ty8dIo5C17DYj6KQz3Smsajwit3AqWaNtWXG/4wzgib1spzOZsneVWleBRikqEJzDPKl/G7Hi4kxaS9OoRT+olnDBMpt/oszoYyOCO5b+SiAgA0w9JdufidfBXSylsN5oljBpE8C0ZipX8j+01zrK0zUBkTAIhDChKchj4xsHLx0ilpmPMn6OALMUarqMrGLI5+bEtUYico9SFVNDvVD4iVeCzeFu4jaWf7VaISSq+WjuObcRY6mEGa0ChdAZdKcDu1a2AI/HZ849O2BCFXCxCJXYoTjM84DUmUwn5D4Cj38v3lsZQY6AEBoK62WeKhOsBF9mMJ3F+BOde2cCDkAfqDVZiwy2l9InUGfhN+cNyrP45/hzYn95qEMwAb3VLA2ni5gpZKsJHlGLWLeQ4Bfg==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:OSZPR01MB7019.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(39850400004)(396003)(346002)(376002)(136003)(366004)(186003)(53546011)(6506007)(26005)(7696005)(33656002)(8676002)(8936002)(6636002)(5660300002)(122000001)(38100700002)(9686003)(7416002)(83380400001)(2906002)(4326008)(71200400001)(478600001)(38070700005)(66946007)(52536014)(64756008)(66476007)(110136005)(54906003)(45080400002)(316002)(66446008)(66556008)(966005)(86362001)(76116006)(55016002);
+ DIR:OUT; SFP:1102; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?doQaW1ytTNGfS5XXHHrGbQKd/hNXecxy6M1wky1NbCP4oAoO/If/SNKvkJok?=
+ =?us-ascii?Q?+4lN5JtC7O0fNdc3rK+A6hgCJu10CUwr9gJq6ZJxwiF/YUytTOcLowjnNWza?=
+ =?us-ascii?Q?JLM5J5ATfniAhr/ArBlUTFpw2zOdhcyLJF/bOtjf1GV44/mK2qur++aUxNmU?=
+ =?us-ascii?Q?iTnN5bk6Sdj60hQer6f0TlECiUT6f3XAz4wczOxZ/eeR7RfDdl+8wPPWL+eL?=
+ =?us-ascii?Q?2pmfyZSfYh7zkCaUZISgh4ZkNo2xOyLEZUW6Kh21a1sF225/NGr7RlljtmLe?=
+ =?us-ascii?Q?z4XkWQWFxKLwMoqqHwNsEydoLTaGoLi3uoAmwVdsKhuIHW/e+z4TJ26r4YEr?=
+ =?us-ascii?Q?cYyMb2z7VgZTJ5HAQO1OpQJQhIlEW2508yn/GRZtN34NLxtoTyRz5vg8hH98?=
+ =?us-ascii?Q?pdkCscpDW44TVy4bRwinkfa2D6/swXdK/3sZagdBulL3KGDeHm3mXVcV8S7F?=
+ =?us-ascii?Q?0P49ABQA1lB6g+XG5UaFJkv1rl2g8GaI1mr9XMLLd+vfT99y7gKD0KBlca4W?=
+ =?us-ascii?Q?TQ7XuOW7Isfu6qro8387CYYJunlA8TyDbfoGyMaTmU4lFxPHPlKk8S6O3qTo?=
+ =?us-ascii?Q?EJeIyTiR4Yi34vci/9Hg6gAoNQRemg+nUuBl8L+HjFnY+DmSE/XbJziPTVEt?=
+ =?us-ascii?Q?WRG08NTTet+rgs5JMUYEMtGin3281Sd6gA8C2exkTMpLpZ2tN8YydNtWZO7o?=
+ =?us-ascii?Q?i5MbuWCsscsy8GNTfBK2S2OSLb7esMTsTVCFMPlyKAneMK1L60pG/NW0bzmw?=
+ =?us-ascii?Q?AZu2pcmFAhipHQuW91ij0o2JMpJ0Qm32f/gX5P6y39CGZJRj6KfMeEnpSyXJ?=
+ =?us-ascii?Q?OHWD7HGYSYpLbLgVaknEdYltnYSgghKZav7aa/pKLvGwsxC5NHuzS4vlRVh7?=
+ =?us-ascii?Q?r+z9B4//gstSZEk0wSx8iuWLXTOn/HXW0GgYX1jqUb069/N5+jWiQxLXY6TQ?=
+ =?us-ascii?Q?5GTND/tY61UkFV337HKhT9TBg9pLmbpmcsZwDKRWK6Z4FxCTL8FUEUTkORho?=
+ =?us-ascii?Q?K9GIWFbEv2y/Ha6RZyqkHZQ6bXC/O8+sgxmAg13vqlnEwaLE1LgNMEWtlYsI?=
+ =?us-ascii?Q?cARNPeWk3bN84aGjygVEQnUKxvdWO55xKkpOEsRC4CFsH1djIEB7ohqIiD7L?=
+ =?us-ascii?Q?B8HevmG/4gBFnH+Lt3SdqmLDBfnz5Jn/KyF6WhKXnk5stAhsjEiwG3rTat+o?=
+ =?us-ascii?Q?iVuEK5Rj0Z4kTNIY3sH/cWgd8VCUzIF6C4U3xaAN5+7DLxkivf2n9GpjtnhR?=
+ =?us-ascii?Q?XUDleC9ivceUNWz+yoSLaV3P1nTwmH1RWKfZgNDOsxbduVmL7KNNPToEis9h?=
+ =?us-ascii?Q?Ol0geAq0BPwBnE2WM13mnYJA?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org
+X-OriginatorOrg: bp.renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OSZPR01MB7019.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a8a80f5a-cae0-4189-f8bf-08d9538e1a76
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jul 2021 19:13:24.0836 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: pQvrvsBH3cWlwF0AjzlcxUq/u+L//JNDe7B8IwTunffUBQb4wKuZ/Extwl3Bd4N29LtgdbROy+sjY561JPTosrkVLxoj3HDr5NPnpz7hz1+id2RlPlL8MeMgaWRFvzTN
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSAPR01MB3122
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Chris Paterson <Chris.Paterson2@renesas.com>,
+ Biju Das <biju.das@bp.renesas.com>,
+ "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
+ Chris Brandt <Chris.Brandt@renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,35 +164,95 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 29 Jul 2021 00:47:29 +0100, Mark Brown wrote:
-> As with the component layer code the nau8824 driver had been doing some
-> open coded pin manipulation which will have been broken now the core is
-> fixed to handle this properly, remove the open coding to avoid the issue.
+Hi Mark,
 
-Applied to
+> -----Original Message-----
+> From: Mark Brown <broonie@kernel.org>
+> Sent: 30 July 2021 20:04
+> To: Takashi Iwai <tiwai@suse.com>; Liam Girdwood <lgirdwood@gmail.com>; R=
+ob Herring
+> <robh+dt@kernel.org>; Jaroslav Kysela <perex@perex.cz>; Philipp Zabel <p.=
+zabel@pengutronix.de>; Biju
+> Das <biju.das.jz@bp.renesas.com>
+> Cc: Mark Brown <broonie@kernel.org>; Prabhakar Mahadev Lad <prabhakar.mah=
+adev-lad.rj@bp.renesas.com>;
+> Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>; Chris Brandt <Chris=
+.Brandt@renesas.com>; Chris
+> Paterson <Chris.Paterson2@renesas.com>; Geert Uytterhoeven <geert+renesas=
+@glider.be>; alsa-devel@alsa-
+> project.org; linux-renesas-soc@vger.kernel.org; Biju Das <biju.das@bp.ren=
+esas.com>;
+> devicetree@vger.kernel.org
+> Subject: Re: (subset) [PATCH v2 0/8] Add RZ/G2L Sound support
+>=20
+> On Mon, 19 Jul 2021 14:40:32 +0100, Biju Das wrote:
+> > This patch series aims to add ASoC support on RZ/G2L SoC's.
+> >
+> > It is based on the work done by Chris Brandt for RZ/A ASoC driver.
+> >
+> > Biju Das (8):
+> >   ASoC: dt-bindings: Document RZ/G2L bindings
+> >   sound: soc: sh: Add RZ/G2L SSIF-2 driver
+> >   arm64: dts: renesas: r9a07g044: Add external audio clock nodes
+> >   arm64: dts: renesas: r9a07g044: Add SSI support
+> >   arm64: defconfig: Enable ASoC sound support for RZ/G2L SoC
+> >   ASoC: dt-bindings: sound: renesas,rz-ssi: Document DMA support
+> >   sound: sh: rz-ssi: Add SSI DMAC support
+> >   arm64: dts: renesas: r9a07g044: Add SSI DMA support
+> >
+> > [...]
+>=20
+> Applied to
+>=20
+>=20
+> https://jpn01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fgit.k=
+ernel.org%2Fpub%2Fscm%2Flinux%2
+> Fkernel%2Fgit%2Fbroonie%2Fsound.git&amp;data=3D04%7C01%7Cprabhakar.mahade=
+v-
+> lad.rj%40bp.renesas.com%7C60c047db42e149eacdb808d9538ccc7e%7C53d82571da19=
+47e49cb4625a166a4a2a%7C0%7C0%
+> 7C637632686468564246%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoi=
+V2luMzIiLCJBTiI6Ik1haWwiLCJXV
+> CI6Mn0%3D%7C1000&amp;sdata=3DRdyi2vXY9i%2Fly%2FOTWVFmc8k0rVbpM75FthJn7rij=
+xwU%3D&amp;reserved=3D0 for-next
+>=20
+> Thanks!
+>=20
+> [1/8] ASoC: dt-bindings: Document RZ/G2L bindings
+>       commit: 2b761f476f3a6e0a212c8c88e7855f66edb177e0
+> [6/8] ASoC: dt-bindings: sound: renesas,rz-ssi: Document DMA support
+>       commit: 5df6dfbb6de815ba3a75c788a916865212fd5221
+>=20
+There is a updated version of the patch [1] which was posted yesterday due =
+to change in handling DMA slave channel configuration [2]. Both the queued =
+patches need to dropped.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+[1] https://patchwork.kernel.org/project/linux-renesas-soc/patch/2021072917=
+2311.31111-2-biju.das.jz@bp.renesas.com/
+[2] https://patchwork.kernel.org/project/linux-renesas-soc/patch/2021072908=
+2520.26186-2-biju.das.jz@bp.renesas.com/
 
-Thanks!
+Cheers,
+Prabhakar
 
-[1/1] ASoC: nau8824: Fix open coded prefix handling
-      commit: 1d25684e22516f1cff77176d288b1da02fff57bb
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+> All being well this means that it will be integrated into the linux-next =
+tree (usually sometime in the
+> next 24 hours) and sent to Linus during the next merge window (or sooner =
+if it is a bug fix), however
+> if problems are discovered then the patch may be dropped or reverted.
+>=20
+> You may get further e-mails resulting from automated or manual testing an=
+d review of the tree, please
+> engage with people reporting problems and send followup patches addressin=
+g any issues that are
+> reported if needed.
+>=20
+> If any updates are required or you are submitting further changes they sh=
+ould be sent as incremental
+> updates against current git, existing patches will not be replaced.
+>=20
+> Please add any relevant lists and maintainers to the CCs when replying to=
+ this mail.
+>=20
+> Thanks,
+> Mark
