@@ -2,88 +2,89 @@ Return-Path: <SRS0=QuHl=MW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8CDFC432BE
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 18:15:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CD3AC4338F
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 18:21:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 40BD660F6B
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 18:15:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 40BD660F6B
+	by mail.kernel.org (Postfix) with ESMTPS id 5E5EC60BD3
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 18:21:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5E5EC60BD3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4F6BC2041;
-	Fri, 30 Jul 2021 20:14:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F6BC2041
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9D4122084;
+	Fri, 30 Jul 2021 20:20:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D4122084
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627668904;
-	bh=/+B5FuYaYWx5y77wmQHxagrV73BwGGi8Sd2a0hyRPZs=;
+	s=default; t=1627669290;
+	bh=H2OswUUebj04YnhJC8pvzhEPJ7uVRqT+Gpe3ZiD1XgE=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PM7BiEU811YwTMdbvJBsbZA4VwuGJFZHefhcSdM5s6MOlDDSzrZR+/Z3uE4FmeA17
-	 LSSF5FHHdYLHqFCjM89uiDnnr00j7YqZW+ucaBs/rOGL+C+qYmwV/8oHKBxD8yvW13
-	 oJINEQQ1n9B9D+2UXkOt1FLGaUHEE6HMh2sRFP1A=
+	b=XCK7JjfNy7idrLOKJYYrrvL46s6u8JMHBx2MbqE/JPqnwV1xLKFQAQnDsqW4lawfl
+	 wJcFdgMV9KT4qYPJ+UEnSq8n12NfQcmxn2PZsIoiJm/0EDOe/tf5FNTegKAd+wOZLe
+	 QUNM0DAFPbiu6JoItCf7ok8eFxCd7HUJK9/9RPq8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D817EF80212;
-	Fri, 30 Jul 2021 20:14:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 10C95F80212;
+	Fri, 30 Jul 2021 20:20:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DE815F80253; Fri, 30 Jul 2021 20:14:12 +0200 (CEST)
+ id 025EDF80253; Fri, 30 Jul 2021 20:20:39 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A9BB8F8019B
- for <alsa-devel@alsa-project.org>; Fri, 30 Jul 2021 20:14:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9BB8F8019B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2B0D0F8019B
+ for <alsa-devel@alsa-project.org>; Fri, 30 Jul 2021 20:20:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B0D0F8019B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="njyF0EWE"; 
+ header.b="cez+ZxA8"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="EOHwbthk"
+ header.b="G6i89iUh"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id D05D51FE18;
- Fri, 30 Jul 2021 18:14:04 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id E58CF1FE1A;
+ Fri, 30 Jul 2021 18:20:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1627668844; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1627669225; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=idx3YgWYCV0+BlxRTpZYV7ghIt+Y0zRtysPXY1vhzOM=;
- b=njyF0EWEYUOoZoXKnFriXFx+NKF90A4AMUszVeqFp+WPuRStXgtLUI6ztymFrcjgNvnrr8
- g425JuQ6Re+W6kY0yUavSaby/ZZ8cyN15TmP/Es7t2E9FCjSF9yNvXwZAB/x6ufz+wxkC8
- xAVgBx9YKxMQyQCMS+ggTgjRrFX4Vtk=
+ bh=+65AWd2gF+8zuOy3sIWKISpq4WYsA6trgVR4Vv0dkjo=;
+ b=cez+ZxA8++ju/ubdkm9bRIir0m7fbfTQoZBbpxBHBvpng4sDDZEgYqOZ1yUUHVf1mDiRmn
+ dxoDhoRumXAFbkZ/V5c99Jixd3ngzww0WdSVwIngA0sd/R72n7zvSq1/N9XG2xO/XllJ+S
+ jDsN18V1QQkwE9JWfNxlMro8EhRfqjs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1627668844;
+ s=susede2_ed25519; t=1627669225;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=idx3YgWYCV0+BlxRTpZYV7ghIt+Y0zRtysPXY1vhzOM=;
- b=EOHwbthka2/gAiluGxqixTljzkoaBnaAAqi5rpiGINWMg1qO904zx9hjnwdDNppBpz4uDP
- 1BxtmalPfCvnvTBQ==
+ bh=+65AWd2gF+8zuOy3sIWKISpq4WYsA6trgVR4Vv0dkjo=;
+ b=G6i89iUh/5I4TYBCO075zWjC/vRdmQIF1Hk4DFnC7S5MSD1PnCqDUTm8kwZ1GQspxK8THy
+ F93lzLKQcpAzQOCQ==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id C374AA3B88;
- Fri, 30 Jul 2021 18:14:04 +0000 (UTC)
-Date: Fri, 30 Jul 2021 20:14:04 +0200
-Message-ID: <s5hczqz7jpv.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id D4CD5A3B87;
+ Fri, 30 Jul 2021 18:20:25 +0000 (UTC)
+Date: Fri, 30 Jul 2021 20:20:25 +0200
+Message-ID: <s5hbl6j7jfa.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/5] ASoC: amd: Fix reference to PCM buffer address
-In-Reply-To: <20210730162025.GB4670@sirena.org.uk>
-References: <20210728112353.6675-1-tiwai@suse.de>
- <20210728112353.6675-2-tiwai@suse.de>
- <20210730162025.GB4670@sirena.org.uk>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH] ASoC: intel: skylake: Drop superfluous mmap callback
+In-Reply-To: <0157301f-d0c1-a4a6-ad3f-4e4ad01441f6@intel.com>
+References: <20210728141930.17740-1-tiwai@suse.de>
+ <0157301f-d0c1-a4a6-ad3f-4e4ad01441f6@intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,27 +100,72 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 30 Jul 2021 18:20:25 +0200,
-Mark Brown wrote:
+On Fri, 30 Jul 2021 15:59:54 +0200,
+Cezary Rojewski wrote:
 > 
-> On Wed, Jul 28, 2021 at 01:23:49PM +0200, Takashi Iwai wrote:
-> > PCM buffers might be allocated dynamically when the buffer
-> > preallocation failed or a larger buffer is requested, and it's not
-> > guaranteed that substream->dma_buffer points to the actually used
-> > buffer.  The driver needs to refer to substream->runtime->dma_addr
-> > instead for the buffer address.
+> On 2021-07-28 4:19 PM, Takashi Iwai wrote:
+> > skl_platform_soc_mmap() just calls the standard mmap helper, hence
+> > it's superfluous.  Let's drop it.
+> >
+> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > ---
+> >   sound/soc/intel/skylake/skl-pcm.c | 8 --------
+> >   1 file changed, 8 deletions(-)
+> >
+> > diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+> > index b1ca64d2f7ea..c604200de80e 100644
+> > --- a/sound/soc/intel/skylake/skl-pcm.c
+> > +++ b/sound/soc/intel/skylake/skl-pcm.c
+> > @@ -1214,13 +1214,6 @@ static snd_pcm_uframes_t skl_platform_soc_pointer(
+> >   	return bytes_to_frames(substream->runtime, pos);
+> >   }
+> >   -static int skl_platform_soc_mmap(struct snd_soc_component
+> > *component,
+> > -				 struct snd_pcm_substream *substream,
+> > -				 struct vm_area_struct *area)
+> > -{
+> > -	return snd_pcm_lib_default_mmap(substream, area);
+> > -}
+> > -
+> >   static u64 skl_adjust_codec_delay(struct snd_pcm_substream *substream,
+> >   				u64 nsec)
+> >   {
+> > @@ -1460,7 +1453,6 @@ static const struct snd_soc_component_driver skl_component  = {
+> >   	.trigger	= skl_platform_soc_trigger,
+> >   	.pointer	= skl_platform_soc_pointer,
+> >   	.get_time_info	= skl_platform_soc_get_time_info,
+> > -	.mmap		= skl_platform_soc_mmap,
+> >   	.pcm_construct	= skl_platform_soc_new,
+> >   	.module_get_upon_open = 1, /* increment refcount when a pcm is opened */
+> >   };
+> >
 > 
-> This breaks the build for me on an x86-64 allmodconfig:
+> Thanks for the input, Takashi.
+> While I welcome the change, have two quick questions:
 > 
-> /mnt/kernel/sound/soc/amd/renoir/acp3x-pdm-dma.c: In function 'acp_pdm_dma_hw_params':
-> /mnt/kernel/sound/soc/amd/renoir/acp3x-pdm-dma.c:245:18: error: 'runtime' undeclared (first use in this function); did you mean 'vtime'?
->   rtd->dma_addr = runtime->dma_addr;
->                   ^~~~~~~
->                   vtime
+> 1) Does this impact hw_support_mmap() and its user behavior? i.e. is
+> there some implicit behavior change that skylake-users may experience
+> along the way?
 
-Oops, will resubmit the fixed patch set.
+hw_support_mmap() must return true for this case as long as you've set
+up the buffer in the right way (either preallocation or managed).
+
+> 2) Since snd_pcm_mmap_data() defaults to snd_pcm_lib_default_mmap()
+> why not update ops assignment - snd_pcm_set_ops() - in such a way that
+> if/else is no longer needed in the former?
+
+Simply put: when the buffer is allocated via
+snd_pcm_set_managed_buffer*(), you can omit the mmap callback.
+The only case you need the mmap callback is only when a special buffer
+is used or it needs a special way of mmap itself.
 
 
-thanks,
+> Pretty sure other drivers have been updated in similar fashion and my
+> two cents should not be blocking integration:
+> 
+> Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+
+Thanks!
+
 
 Takashi
