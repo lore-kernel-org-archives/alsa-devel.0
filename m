@@ -2,92 +2,91 @@ Return-Path: <SRS0=QuHl=MW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C9B6C4338F
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 15:27:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C60FC4338F
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 15:27:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D1A3D60EBB
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 15:27:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D1A3D60EBB
+	by mail.kernel.org (Postfix) with ESMTPS id 0DCFF6052B
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 15:27:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0DCFF6052B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 72C1E2061;
-	Fri, 30 Jul 2021 17:26:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72C1E2061
+	by alsa0.perex.cz (Postfix) with ESMTPS id 887642077;
+	Fri, 30 Jul 2021 17:26:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 887642077
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627658835;
-	bh=TEgif/ypjbU48okXspV60CqhkCT3fuCqORFHv5S3Mp4=;
+	s=default; t=1627658851;
+	bh=oLeMwDdXm7rCq6pB+9Iycp/Rdh7YuQrAWct4horZdoU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Zif3uxGuz3q2aItYk5iCB2WBxx8gDOXgCs6mC5jjpqtTADHyCchY+2yrP8AE0PeWt
-	 ot2kWq2DedR3LCZLGxlSdx2BV5sDq3gy5PjsMjmgKOdVV6WEqx+qVr1S13izprFSQb
-	 KPz2qkKW3x6lastiy7y+UKmiIrItrLYrOa6dN1xg=
+	b=Pe+zFaoNvk5K1dQpX39Ep6ZXBzZhjZseHhozsyV7PlPjQQ+mRuZDTGfduI3dKLj67
+	 l4V5fKcRs0FJpGq1MfTtxaGM1pNW0G14mzj+qc9YlAkNwmnLA6IuY84zN5nbipht10
+	 2pIFvsM6dmNpc02xwBAHiKnuO1nqIGhQ1uKkIiy8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F3D51F8019B;
-	Fri, 30 Jul 2021 17:20:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A0B35F805A0;
+	Fri, 30 Jul 2021 17:20:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0C957F80559; Fri, 30 Jul 2021 17:19:57 +0200 (CEST)
+ id AC6EEF80559; Fri, 30 Jul 2021 17:19:59 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4C450F804ED
- for <alsa-devel@alsa-project.org>; Fri, 30 Jul 2021 17:19:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C450F804ED
+ by alsa1.perex.cz (Postfix) with ESMTPS id BB968F804EB
+ for <alsa-devel@alsa-project.org>; Fri, 30 Jul 2021 17:19:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB968F804EB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="FWxl4IJ/"
+ header.b="j6xCuZJd"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16UELBKe004490; 
- Fri, 30 Jul 2021 10:19:19 -0500
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16UEL0dk003614; 
+ Fri, 30 Jul 2021 10:19:21 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=jcwnYwwAbgxy9esPuv1XX+/Ga/4UwxSjPTcSU4qpyIg=;
- b=FWxl4IJ/cu7Q9s5c1T24BoKYuUbtsfu55FfjOZaJBIrLDApqDuyUaXPYOZS6UN297pRZ
- 3z7gllcsJNf5JpFP3ESreV9u+Kf5ADd+0Nskv9NvSqIfSUQ4HE9Wd8Xe94Dea1fSGM4Y
- 7mxHjt+p6v+N95uiyv6oFjITnYCGfP9EErTUrXB9+zkWNvBbr5tgj87ywA8a2hiZ+i+B
- sbiy7SR9cGt8+YzgYA08HYuU8P4EA2dbZPULd6KneJDQ0ClcitTb5BbiceE1LfbeML3B
- Q53CHRdsXsQ8f/Rz8v9Hyea0QA3/sZc4/MMKi2tZeak5nyt7RkR/rEBT7lce+qPR6/Tx uw== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3a41wd181m-7
+ bh=e+0joj0ZY32l40Bv2P36YSWkXQwz9TbIMe/0rkB5JIw=;
+ b=j6xCuZJdEIZVaCtmqht+5YpPkTMnRpC1VLvd+oh/vh/NW7n4VB9nTzjezSUGqL2OPSAV
+ 9TkvLOacBoXOmTM1tzEE5hQDmP/H80wnaa9jsP86vbfiTRRFb+IL9c2lpfDyxBWljz6c
+ LaLSbaawYzRumJ7sQrRVMv+ENW5QS5Qwa2g/jh1J9qtQ0BBEgzZRYIC0uEyyOKUHqew1
+ dkDnTNdBdfOKhvkSU4JA6b6arpBgPnO4o1kmX/S7beB6hkKkpG2wSkFbdRT05tGWkzkl
+ lDEfQpS/9Ec23rpPpo6k+lx5Yl7PzYrDavl73aRM8a/9OpXwpTH5vIhbJjGGnxKYVPaB tQ== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 3a41wd181n-11
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 30 Jul 2021 10:19:19 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Fri, 30 Jul 2021 10:19:21 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 30 Jul
- 2021 16:19:09 +0100
+ 2021 16:19:12 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Fri, 30 Jul 2021 16:19:09 +0100
+ Transport; Fri, 30 Jul 2021 16:19:12 +0100
 Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.32])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 58D5F2BA;
- Fri, 30 Jul 2021 15:19:09 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C40852BA;
+ Fri, 30 Jul 2021 15:19:11 +0000 (UTC)
 From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v3 12/27] ALSA: hda/cs8409: Generalize volume controls
-Date: Fri, 30 Jul 2021 16:18:29 +0100
-Message-ID: <20210730151844.7873-13-vitalyr@opensource.cirrus.com>
+Subject: [PATCH v3 21/27] ALSA: hda/cs8409: Add support for dolphin
+Date: Fri, 30 Jul 2021 16:18:38 +0100
+Message-ID: <20210730151844.7873-22-vitalyr@opensource.cirrus.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210730151844.7873-1-vitalyr@opensource.cirrus.com>
 References: <20210730151844.7873-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: EpLTeiBCemHUKEkfsr92aDtPr_-5rccP
-X-Proofpoint-ORIG-GUID: EpLTeiBCemHUKEkfsr92aDtPr_-5rccP
+X-Proofpoint-GUID: iz6vEgeOO3EkrgNToVlRDGP1iGQnR-rB
+X-Proofpoint-ORIG-GUID: iz6vEgeOO3EkrgNToVlRDGP1iGQnR-rB
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
  priorityscore=1501 impostorscore=0
  spamscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999 lowpriorityscore=0
@@ -95,7 +94,8 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
  definitions=main-2107300102
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Lucas Tanure <tanureal@opensource.cirrus.com>
+ linux-kernel@vger.kernel.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
+ Stefan Binding <sbinding@opensource.cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,381 +113,542 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 
-Use amp offsets as indexes for saved volumes.
-Remove dependencies on NID inside volume control functions.
+Dolphin devices have CS8409 HDA Bridge connected to two CS42L42 codecs.
+Codec 1 supports Headphone and Headset Mic.
+Codec 2 supports Line Out.
 
+Features:
+ - Front and Read Jacks appear as separate jacks; Removal or connection
+   of on jack should not affect the connection of the other.
+ - Front Jack only shows up on jack detection.
+ - Rear Jack is Phantom Jack.
+ - Separate Volume Controls for each Jack
+
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 ---
 
 Changes in v2:
-- No changes
+- Fixed sparse warnings : Reported-by: kernel test robot <lkp@intel.com>
+ sound/pci/hda/patch_cs8409.c:1061:59: sparse: sparse: Using plain integer as NULL pointer
 
 Changes in v3:
 - No changes
 
- sound/pci/hda/patch_cs8409-tables.c |  37 +++++++
- sound/pci/hda/patch_cs8409.c        | 165 +++++++++-------------------
- sound/pci/hda/patch_cs8409.h        |  27 +++--
- 3 files changed, 105 insertions(+), 124 deletions(-)
+ sound/pci/hda/patch_cs8409-tables.c | 220 ++++++++++++++++++++++++++++
+ sound/pci/hda/patch_cs8409.c        | 196 +++++++++++++++++++++++++
+ sound/pci/hda/patch_cs8409.h        |  24 +++
+ 3 files changed, 440 insertions(+)
 
 diff --git a/sound/pci/hda/patch_cs8409-tables.c b/sound/pci/hda/patch_cs8409-tables.c
-index 07d3ae28c105..b03ddef2a25f 100644
+index be9feb84aaa2..6453a7ec3856 100644
 --- a/sound/pci/hda/patch_cs8409-tables.c
 +++ b/sound/pci/hda/patch_cs8409-tables.c
-@@ -10,6 +10,43 @@
- 
- #include "patch_cs8409.h"
+@@ -249,6 +249,210 @@ struct sub_codec cs8409_cs42l42_codec = {
+ 	.no_type_dect = 0,
+ };
  
 +/******************************************************************************
-+ *                          CS42L42 Specific Data
-+ *
++ *                          Dolphin Specific Arrays
++ *                            CS8409/ 2 X CS42L42
 + ******************************************************************************/
 +
-+static const DECLARE_TLV_DB_SCALE(cs42l42_dac_db_scale,
-+	CS8409_CS42L42_HP_VOL_REAL_MIN * 100, 100, 1);
-+
-+static const DECLARE_TLV_DB_SCALE(cs42l42_adc_db_scale,
-+	CS8409_CS42L42_AMIC_VOL_REAL_MIN * 100, 100, 1);
-+
-+const struct snd_kcontrol_new cs42l42_dac_volume_mixer = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.index = 0,
-+	.subdevice = (HDA_SUBDEV_AMP_FLAG | HDA_SUBDEV_NID_FLAG),
-+	.access = (SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_TLV_READ),
-+	.info = cs8409_cs42l42_volume_info,
-+	.get = cs8409_cs42l42_volume_get,
-+	.put = cs8409_cs42l42_volume_put,
-+	.tlv = { .p = cs42l42_dac_db_scale },
-+	.private_value = HDA_COMPOSE_AMP_VAL_OFS(CS8409_PIN_ASP1_TRANSMITTER_A, 3, 0,
-+			 HDA_OUTPUT, CS42L42_VOL_DAC) | HDA_AMP_VAL_MIN_MUTE
++const struct hda_verb dolphin_init_verbs[] = {
++	{ 0x01, AC_VERB_SET_GPIO_WAKE_MASK, DOLPHIN_WAKE }, /* WAKE from GPIO 0,4 */
++	{ CS8409_PIN_VENDOR_WIDGET, AC_VERB_SET_PROC_STATE, 0x0001 }, /* Enable VPW processing  */
++	{ CS8409_PIN_VENDOR_WIDGET, AC_VERB_SET_COEF_INDEX, 0x0002 }, /* Configure GPIO 6,7 */
++	{ CS8409_PIN_VENDOR_WIDGET, AC_VERB_SET_PROC_COEF,  0x0080 }, /* I2C mode */
++	{ CS8409_PIN_VENDOR_WIDGET, AC_VERB_SET_COEF_INDEX, 0x005b }, /* Set I2C bus speed */
++	{ CS8409_PIN_VENDOR_WIDGET, AC_VERB_SET_PROC_COEF,  0x0200 }, /* 100kHz I2C_STO = 2 */
++	{} /* terminator */
 +};
 +
-+const struct snd_kcontrol_new cs42l42_adc_volume_mixer = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.index = 0,
-+	.subdevice = (HDA_SUBDEV_AMP_FLAG | HDA_SUBDEV_NID_FLAG),
-+	.access = (SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_TLV_READ),
-+	.info = cs8409_cs42l42_volume_info,
-+	.get = cs8409_cs42l42_volume_get,
-+	.put = cs8409_cs42l42_volume_put,
-+	.tlv = { .p = cs42l42_adc_db_scale },
-+	.private_value = HDA_COMPOSE_AMP_VAL_OFS(CS8409_PIN_ASP1_RECEIVER_A, 1, 0,
-+			 HDA_INPUT, CS42L42_VOL_ADC) | HDA_AMP_VAL_MIN_MUTE
++const struct hda_pintbl dolphin_pincfgs[] = {
++	{ 0x24, 0x022210f0 }, /* ASP-1-TX-A */
++	{ 0x25, 0x010240f0 }, /* ASP-1-TX-B */
++	{ 0x34, 0x02a21050 }, /* ASP-1-RX */
++	{} /* terminator */
 +};
 +
- /* Dell Inspiron platforms
-  * with cs8409 bridge and cs42l42 codec
-  */
++/* Vendor specific HW configuration for CS42L42 */
++static const struct cs8409_i2c_param dolphin_c0_init_reg_seq[] = {
++	{ 0x1010, 0xB0 },
++	{ 0x1D01, 0x00 },
++	{ 0x1D02, 0x06 },
++	{ 0x1D03, 0x00 },
++	{ 0x1107, 0x01 },
++	{ 0x1009, 0x02 },
++	{ 0x1007, 0x03 },
++	{ 0x1201, 0x00 },
++	{ 0x1208, 0x13 },
++	{ 0x1205, 0xFF },
++	{ 0x1206, 0x00 },
++	{ 0x1207, 0x20 },
++	{ 0x1202, 0x0D },
++	{ 0x2A02, 0x02 },
++	{ 0x2A03, 0x00 },
++	{ 0x2A04, 0x00 },
++	{ 0x2A05, 0x02 },
++	{ 0x2A06, 0x00 },
++	{ 0x2A07, 0x20 },
++	{ 0x2A01, 0x0C },
++	{ 0x2902, 0x01 },
++	{ 0x2903, 0x02 },
++	{ 0x2904, 0x00 },
++	{ 0x2905, 0x00 },
++	{ 0x2901, 0x01 },
++	{ 0x1101, 0x0A },
++	{ 0x1102, 0x84 },
++	{ 0x2301, 0x00 },
++	{ 0x2303, 0x00 },
++	{ 0x2302, 0x3f },
++	{ 0x2001, 0x03 },
++	{ 0x1B75, 0xB6 },
++	{ 0x1B73, 0xC2 },
++	{ 0x1129, 0x01 },
++	{ 0x1121, 0xF3 },
++	{ 0x1103, 0x20 },
++	{ 0x1105, 0x00 },
++	{ 0x1112, 0x00 },
++	{ 0x1113, 0x80 },
++	{ 0x1C03, 0xC0 },
++	{ 0x1101, 0x02 },
++	{ 0x1316, 0xff },
++	{ 0x1317, 0xff },
++	{ 0x1318, 0xff },
++	{ 0x1319, 0xff },
++	{ 0x131a, 0xff },
++	{ 0x131b, 0xff },
++	{ 0x131c, 0xff },
++	{ 0x131e, 0xff },
++	{ 0x131f, 0xff },
++	{ 0x1320, 0xff },
++	{ 0x1b79, 0xff },
++	{ 0x1b7a, 0xff }
++};
++
++static const struct cs8409_i2c_param dolphin_c1_init_reg_seq[] = {
++	{ 0x1010, 0xB0 },
++	{ 0x1D01, 0x00 },
++	{ 0x1D02, 0x06 },
++	{ 0x1D03, 0x00 },
++	{ 0x1107, 0x01 },
++	{ 0x1009, 0x02 },
++	{ 0x1007, 0x03 },
++	{ 0x1201, 0x00 },
++	{ 0x1208, 0x13 },
++	{ 0x1205, 0xFF },
++	{ 0x1206, 0x00 },
++	{ 0x1207, 0x20 },
++	{ 0x1202, 0x0D },
++	{ 0x2A02, 0x02 },
++	{ 0x2A03, 0x00 },
++	{ 0x2A04, 0x80 },
++	{ 0x2A05, 0x02 },
++	{ 0x2A06, 0x00 },
++	{ 0x2A07, 0xA0 },
++	{ 0x2A01, 0x0C },
++	{ 0x2902, 0x00 },
++	{ 0x2903, 0x02 },
++	{ 0x2904, 0x00 },
++	{ 0x2905, 0x00 },
++	{ 0x2901, 0x00 },
++	{ 0x1101, 0x0E },
++	{ 0x1102, 0x84 },
++	{ 0x2301, 0x00 },
++	{ 0x2303, 0x00 },
++	{ 0x2302, 0x3f },
++	{ 0x2001, 0x03 },
++	{ 0x1B75, 0xB6 },
++	{ 0x1B73, 0xC2 },
++	{ 0x1129, 0x01 },
++	{ 0x1121, 0xF3 },
++	{ 0x1103, 0x20 },
++	{ 0x1105, 0x00 },
++	{ 0x1112, 0x00 },
++	{ 0x1113, 0x80 },
++	{ 0x1C03, 0xC0 },
++	{ 0x1101, 0x02 },
++	{ 0x1316, 0xff },
++	{ 0x1317, 0xff },
++	{ 0x1318, 0xff },
++	{ 0x1319, 0xff },
++	{ 0x131a, 0xff },
++	{ 0x131b, 0xff },
++	{ 0x131c, 0xff },
++	{ 0x131e, 0xff },
++	{ 0x131f, 0xff },
++	{ 0x1320, 0xff },
++	{ 0x1b79, 0xff },
++	{ 0x1b7a, 0xff }
++};
++
++/* Vendor specific hw configuration for CS8409 */
++const struct cs8409_cir_param dolphin_hw_cfg[] = {
++	/* +PLL1/2_EN, +I2C_EN */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_DEV_CFG1, 0xb008 },
++	/* ASP1_EN=0, ASP1_STP=1 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_DEV_CFG2, 0x0002 },
++	/* ASP1/2_BUS_IDLE=10, +GPIO_I2C */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_DEV_CFG3, 0x0a80 },
++	/* ASP1.A: TX.LAP=0, TX.LSZ=24 bits, TX.LCS=0 */
++	{ CS8409_PIN_VENDOR_WIDGET, ASP1_A_TX_CTRL1, 0x0800 },
++	/* ASP1.A: TX.RAP=0, TX.RSZ=24 bits, TX.RCS=32 */
++	{ CS8409_PIN_VENDOR_WIDGET, ASP1_A_TX_CTRL2, 0x0820 },
++	/* ASP1.B: TX.LAP=0, TX.LSZ=24 bits, TX.LCS=128 */
++	{ CS8409_PIN_VENDOR_WIDGET, ASP1_B_TX_CTRL1, 0x0880 },
++	/* ASP1.B: TX.RAP=0, TX.RSZ=24 bits, TX.RCS=160 */
++	{ CS8409_PIN_VENDOR_WIDGET, ASP1_B_TX_CTRL2, 0x08a0 },
++	/* ASP1.A: RX.LAP=0, RX.LSZ=24 bits, RX.LCS=0 */
++	{ CS8409_PIN_VENDOR_WIDGET, ASP1_A_RX_CTRL1, 0x0800 },
++	/* ASP1.A: RX.RAP=0, RX.RSZ=24 bits, RX.RCS=0 */
++	{ CS8409_PIN_VENDOR_WIDGET, ASP1_A_RX_CTRL2, 0x0800 },
++	/* ASP1: LCHI = 00h */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_ASP1_CLK_CTRL1, 0x8000 },
++	/* ASP1: MC/SC_SRCSEL=PLL1, LCPR=FFh */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_ASP1_CLK_CTRL2, 0x28ff },
++	/* ASP1: MCEN=0, FSD=011, SCPOL_IN/OUT=0, SCDIV=1:4 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_ASP1_CLK_CTRL3, 0x0062 },
++	/* ASP1/2_BEEP=0 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_BEEP_CFG, 0x0000 },
++	/* ASP1_EN=1, ASP1_STP=1 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_DEV_CFG2, 0x0022 },
++	/* -PLL2_EN */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_DEV_CFG1, 0x9008 },
++	/* ASP1_xxx_EN=1, ASP1_MCLK_EN=0 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PAD_CFG_SLW_RATE_CTRL, 0x5400 },
++	/* test mode on */
++	{ CS8409_PIN_VENDOR_WIDGET, 0xc0, 0x9999 },
++	/* GPIO hysteresis = 30 us */
++	{ CS8409_PIN_VENDOR_WIDGET, 0xc5, 0x0000 },
++	/* test mode off */
++	{ CS8409_PIN_VENDOR_WIDGET, 0xc0, 0x0000 },
++	{} /* Terminator */
++};
++
++struct sub_codec dolphin_cs42l42_0 = {
++	.addr = DOLPHIN_C0_I2C_ADDR,
++	.reset_gpio = DOLPHIN_C0_RESET,
++	.irq_mask = DOLPHIN_C0_INT,
++	.init_seq = dolphin_c0_init_reg_seq,
++	.init_seq_num = ARRAY_SIZE(dolphin_c0_init_reg_seq),
++	.hp_jack_in = 0,
++	.mic_jack_in = 0,
++	.paged = 1,
++	.suspended = 1,
++	.no_type_dect = 0,
++};
++
++struct sub_codec dolphin_cs42l42_1 = {
++	.addr = DOLPHIN_C1_I2C_ADDR,
++	.reset_gpio = DOLPHIN_C1_RESET,
++	.irq_mask = DOLPHIN_C1_INT,
++	.init_seq = dolphin_c1_init_reg_seq,
++	.init_seq_num = ARRAY_SIZE(dolphin_c1_init_reg_seq),
++	.hp_jack_in = 0,
++	.mic_jack_in = 0,
++	.paged = 1,
++	.suspended = 1,
++	.no_type_dect = 1,
++};
++
+ /******************************************************************************
+  *                         CS8409 Patch Driver Structs
+  *                    Arrays Used for all projects using CS8409
+@@ -295,6 +499,11 @@ const struct snd_pci_quirk cs8409_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0AEE, "Cyborg", CS8409_CYBORG),
+ 	SND_PCI_QUIRK(0x1028, 0x0AEF, "Cyborg", CS8409_CYBORG),
+ 	SND_PCI_QUIRK(0x1028, 0x0AF0, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0AD0, "Dolphin", CS8409_DOLPHIN),
++	SND_PCI_QUIRK(0x1028, 0x0AD1, "Dolphin", CS8409_DOLPHIN),
++	SND_PCI_QUIRK(0x1028, 0x0AD2, "Dolphin", CS8409_DOLPHIN),
++	SND_PCI_QUIRK(0x1028, 0x0AD3, "Dolphin", CS8409_DOLPHIN),
++	SND_PCI_QUIRK(0x1028, 0x0ACF, "Dolphin", CS8409_DOLPHIN),
+ 	{} /* terminator */
+ };
+ 
+@@ -303,6 +512,7 @@ const struct hda_model_fixup cs8409_models[] = {
+ 	{ .id = CS8409_BULLSEYE, .name = "bullseye" },
+ 	{ .id = CS8409_WARLOCK, .name = "warlock" },
+ 	{ .id = CS8409_CYBORG, .name = "cyborg" },
++	{ .id = CS8409_DOLPHIN, .name = "dolphin" },
+ 	{}
+ };
+ 
+@@ -329,4 +539,14 @@ const struct hda_fixup cs8409_fixups[] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = cs8409_cs42l42_fixups,
+ 	},
++	[CS8409_DOLPHIN] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = dolphin_pincfgs,
++		.chained = true,
++		.chain_id = CS8409_DOLPHIN_FIXUPS,
++	},
++	[CS8409_DOLPHIN_FIXUPS] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = dolphin_fixups,
++	},
+ };
 diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
-index 0b13bcecd778..08205c19698c 100644
+index 10903bcc3fcd..42192d83b361 100644
 --- a/sound/pci/hda/patch_cs8409.c
 +++ b/sound/pci/hda/patch_cs8409.c
-@@ -208,162 +208,97 @@ static int cs8409_i2c_write(struct hda_codec *codec, unsigned int i2c_address, u
- 	return 0;
+@@ -921,6 +921,202 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
+ 	}
  }
  
--static int cs8409_cs42l42_volume_info(struct snd_kcontrol *kctrl, struct snd_ctl_elem_info *uinfo)
-+int cs8409_cs42l42_volume_info(struct snd_kcontrol *kctrl, struct snd_ctl_elem_info *uinfo)
- {
--	u16 nid = get_amp_nid(kctrl);
-+	unsigned int ofs = get_amp_offset(kctrl);
- 	u8 chs = get_amp_channels(kctrl);
- 
--	switch (nid) {
--	case CS8409_CS42L42_HP_PIN_NID:
--		uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
--		uinfo->count = chs == 3 ? 2 : 1;
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->value.integer.step = 1;
-+	uinfo->count = chs == 3 ? 2 : 1;
++/******************************************************************************
++ *                          Dolphin Specific Functions
++ *                               CS8409/ 2 X CS42L42
++ ******************************************************************************/
 +
-+	switch (ofs) {
-+	case CS42L42_VOL_DAC:
- 		uinfo->value.integer.min = CS8409_CS42L42_HP_VOL_REAL_MIN;
- 		uinfo->value.integer.max = CS8409_CS42L42_HP_VOL_REAL_MAX;
- 		break;
--	case CS8409_CS42L42_AMIC_PIN_NID:
--		uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
--		uinfo->count = chs == 3 ? 2 : 1;
-+	case CS42L42_VOL_ADC:
- 		uinfo->value.integer.min = CS8409_CS42L42_AMIC_VOL_REAL_MIN;
- 		uinfo->value.integer.max = CS8409_CS42L42_AMIC_VOL_REAL_MAX;
- 		break;
- 	default:
- 		break;
- 	}
--	return 0;
--}
- 
--static void cs8409_cs42l42_update_volume(struct hda_codec *codec)
--{
--	struct cs8409_spec *spec = codec->spec;
--	int data;
--
--	mutex_lock(&spec->cs8409_i2c_mux);
--	data = cs8409_i2c_read(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOLUME_CHA, 1);
--	if (data >= 0)
--		spec->cs42l42_hp_volume[0] = -data;
--	else
--		spec->cs42l42_hp_volume[0] = CS8409_CS42L42_HP_VOL_REAL_MIN;
--	data = cs8409_i2c_read(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOLUME_CHB, 1);
--	if (data >= 0)
--		spec->cs42l42_hp_volume[1] = -data;
--	else
--		spec->cs42l42_hp_volume[1] = CS8409_CS42L42_HP_VOL_REAL_MIN;
--	data = cs8409_i2c_read(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_AMIC_VOLUME, 1);
--	if (data >= 0)
--		spec->cs42l42_hs_mic_volume[0] = -data;
--	else
--		spec->cs42l42_hs_mic_volume[0] = CS8409_CS42L42_AMIC_VOL_REAL_MIN;
--	mutex_unlock(&spec->cs8409_i2c_mux);
--	spec->cs42l42_volume_init = 1;
-+	return 0;
- }
- 
--static int cs8409_cs42l42_volume_get(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl)
-+int cs8409_cs42l42_volume_get(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl)
- {
- 	struct hda_codec *codec = snd_kcontrol_chip(kctrl);
- 	struct cs8409_spec *spec = codec->spec;
--	hda_nid_t nid = get_amp_nid(kctrl);
- 	int chs = get_amp_channels(kctrl);
-+	unsigned int ofs = get_amp_offset(kctrl);
- 	long *valp = uctrl->value.integer.value;
- 
--	if (!spec->cs42l42_volume_init) {
--		snd_hda_power_up(codec);
--		cs8409_cs42l42_update_volume(codec);
--		snd_hda_power_down(codec);
--	}
--	switch (nid) {
--	case CS8409_CS42L42_HP_PIN_NID:
-+	switch (ofs) {
-+	case CS42L42_VOL_DAC:
- 		if (chs & BIT(0))
--			*valp++ = spec->cs42l42_hp_volume[0];
-+			*valp++ = spec->vol[ofs];
- 		if (chs & BIT(1))
--			*valp++ = spec->cs42l42_hp_volume[1];
-+			*valp = spec->vol[ofs+1];
- 		break;
--	case CS8409_CS42L42_AMIC_PIN_NID:
-+	case CS42L42_VOL_ADC:
- 		if (chs & BIT(0))
--			*valp++ = spec->cs42l42_hs_mic_volume[0];
-+			*valp = spec->vol[ofs];
- 		break;
- 	default:
- 		break;
- 	}
++/*
++ * In the case of CS8409 we do not have unsolicited events when
++ * hs mic and hp are connected. Companion codec CS42L42 will
++ * generate interrupt via irq_mask to notify jack events. We have to overwrite
++ * generic snd_hda_jack_unsol_event(), read CS42L42 jack detect status registers
++ * and then notify status via generic snd_hda_jack_unsol_event() call.
++ */
++static void dolphin_jack_unsol_event(struct hda_codec *codec, unsigned int res)
++{
++	struct cs8409_spec *spec = codec->spec;
++	struct sub_codec *cs42l42;
++	struct hda_jack_tbl *jk;
 +
- 	return 0;
- }
- 
--static int cs8409_cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl)
-+int cs8409_cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl)
- {
- 	struct hda_codec *codec = snd_kcontrol_chip(kctrl);
- 	struct cs8409_spec *spec = codec->spec;
--	hda_nid_t nid = get_amp_nid(kctrl);
- 	int chs = get_amp_channels(kctrl);
-+	unsigned int ofs = get_amp_offset(kctrl);
- 	long *valp = uctrl->value.integer.value;
--	int change = 0;
--	char vol;
- 
--	snd_hda_power_up(codec);
--	switch (nid) {
--	case CS8409_CS42L42_HP_PIN_NID:
-+	switch (ofs) {
-+	case CS42L42_VOL_DAC:
- 		mutex_lock(&spec->cs8409_i2c_mux);
- 		if (chs & BIT(0)) {
--			vol = -(*valp);
--			change = cs8409_i2c_write(codec, CS42L42_I2C_ADDR,
--						  CS8409_CS42L42_REG_HS_VOLUME_CHA, vol, 1);
--			valp++;
-+			spec->vol[ofs] = *valp;
-+			cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOL_CHA,
-+					 -(spec->vol[ofs]) & CS8409_CS42L42_REG_HS_VOL_MASK, 1);
- 		}
- 		if (chs & BIT(1)) {
--			vol = -(*valp);
--			change |= cs8409_i2c_write(codec, CS42L42_I2C_ADDR,
--						   CS8409_CS42L42_REG_HS_VOLUME_CHB, vol, 1);
-+			ofs++;
-+			valp++;
-+			spec->vol[ofs] = *valp;
-+			cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOL_CHB,
-+					 -(spec->vol[ofs]) & CS8409_CS42L42_REG_HS_VOL_MASK, 1);
- 		}
- 		mutex_unlock(&spec->cs8409_i2c_mux);
- 		break;
--	case CS8409_CS42L42_AMIC_PIN_NID:
-+	case CS42L42_VOL_ADC:
- 		mutex_lock(&spec->cs8409_i2c_mux);
- 		if (chs & BIT(0)) {
--			change = cs8409_i2c_write(codec, CS42L42_I2C_ADDR,
--						  CS8409_CS42L42_REG_AMIC_VOLUME, (char)*valp, 1);
--			valp++;
-+			spec->vol[ofs] = *valp;
-+			cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_AMIC_VOL,
-+					 spec->vol[ofs] & CS8409_CS42L42_REG_AMIC_VOL_MASK, 1);
- 		}
- 		mutex_unlock(&spec->cs8409_i2c_mux);
- 		break;
- 	default:
- 		break;
- 	}
--	cs8409_cs42l42_update_volume(codec);
--	snd_hda_power_down(codec);
--	return change;
--}
--
--static const DECLARE_TLV_DB_SCALE(cs8409_cs42l42_hp_db_scale,
--				  CS8409_CS42L42_HP_VOL_REAL_MIN * 100, 100, 1);
--
--static const DECLARE_TLV_DB_SCALE(cs8409_cs42l42_amic_db_scale,
--				  CS8409_CS42L42_AMIC_VOL_REAL_MIN * 100, 100, 1);
--
--static const struct snd_kcontrol_new cs8409_cs42l42_hp_volume_mixer = {
--	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
--	.index = 0,
--	.name = "Headphone Playback Volume",
--	.subdevice = (HDA_SUBDEV_AMP_FLAG | HDA_SUBDEV_NID_FLAG),
--	.access = (SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_TLV_READ),
--	.info = cs8409_cs42l42_volume_info,
--	.get = cs8409_cs42l42_volume_get,
--	.put = cs8409_cs42l42_volume_put,
--	.tlv = { .p = cs8409_cs42l42_hp_db_scale },
--	.private_value = HDA_COMPOSE_AMP_VAL(CS8409_CS42L42_HP_PIN_NID, 3, 0, HDA_OUTPUT) |
--			 HDA_AMP_VAL_MIN_MUTE
--};
- 
--static const struct snd_kcontrol_new cs8409_cs42l42_amic_volume_mixer = {
--	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
--	.index = 0,
--	.name = "Mic Capture Volume",
--	.subdevice = (HDA_SUBDEV_AMP_FLAG | HDA_SUBDEV_NID_FLAG),
--	.access = (SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_TLV_READ),
--	.info = cs8409_cs42l42_volume_info,
--	.get = cs8409_cs42l42_volume_get,
--	.put = cs8409_cs42l42_volume_put,
--	.tlv = { .p = cs8409_cs42l42_amic_db_scale },
--	.private_value = HDA_COMPOSE_AMP_VAL(CS8409_CS42L42_AMIC_PIN_NID, 1, 0, HDA_INPUT) |
--			 HDA_AMP_VAL_MIN_MUTE
--};
-+	return 0;
++	cs42l42 = spec->scodecs[CS8409_CODEC0];
++	if (!cs42l42->suspended && (~res & cs42l42->irq_mask) &&
++	    cs42l42_jack_unsol_event(cs42l42)) {
++		jk = snd_hda_jack_tbl_get_mst(codec, DOLPHIN_HP_PIN_NID, 0);
++		if (jk)
++			snd_hda_jack_unsol_event(codec,
++						 (jk->tag << AC_UNSOL_RES_TAG_SHIFT) &
++						  AC_UNSOL_RES_TAG);
++
++		jk = snd_hda_jack_tbl_get_mst(codec, DOLPHIN_AMIC_PIN_NID, 0);
++		if (jk)
++			snd_hda_jack_unsol_event(codec,
++						 (jk->tag << AC_UNSOL_RES_TAG_SHIFT) &
++						  AC_UNSOL_RES_TAG);
++	}
++
++	cs42l42 = spec->scodecs[CS8409_CODEC1];
++	if (!cs42l42->suspended && (~res & cs42l42->irq_mask) &&
++	    cs42l42_jack_unsol_event(cs42l42)) {
++		jk = snd_hda_jack_tbl_get_mst(codec, DOLPHIN_LO_PIN_NID, 0);
++		if (jk)
++			snd_hda_jack_unsol_event(codec,
++						 (jk->tag << AC_UNSOL_RES_TAG_SHIFT) &
++						  AC_UNSOL_RES_TAG);
++	}
 +}
- 
- /* Assert/release RTS# line to CS42L42 */
- static void cs8409_cs42l42_reset(struct hda_codec *codec)
-@@ -657,18 +592,14 @@ static void cs8409_cs42l42_hw_init(struct hda_codec *codec)
- 	}
- 
- 	/* Restore Volumes after Resume */
--	if (spec->cs42l42_volume_init) {
--		mutex_lock(&spec->cs8409_i2c_mux);
--		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOLUME_CHA,
--				 -spec->cs42l42_hp_volume[0], 1);
--		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOLUME_CHB,
--				 -spec->cs42l42_hp_volume[1], 1);
--		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_AMIC_VOLUME,
--				 spec->cs42l42_hs_mic_volume[0], 1);
--		mutex_unlock(&spec->cs8409_i2c_mux);
--	}
--
--	cs8409_cs42l42_update_volume(codec);
-+	mutex_lock(&spec->cs8409_i2c_mux);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOL_CHA,
-+			 -(spec->vol[1]) & CS8409_CS42L42_REG_HS_VOL_MASK, 1);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOL_CHB,
-+			 -(spec->vol[2]) & CS8409_CS42L42_REG_HS_VOL_MASK, 1);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_AMIC_VOL,
-+			 spec->vol[0] & CS8409_CS42L42_REG_AMIC_VOL_MASK, 1);
-+	mutex_unlock(&spec->cs8409_i2c_mux);
- 
- 	cs8409_cs42l42_enable_jack_detect(codec);
- 
-@@ -811,8 +742,10 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
- 		/* Set initial DMIC volume to -26 dB */
- 		snd_hda_codec_amp_init_stereo(codec, CS8409_CS42L42_DMIC_ADC_PIN_NID,
- 					      HDA_INPUT, 0, 0xff, 0x19);
--		snd_hda_gen_add_kctl(&spec->gen, NULL, &cs8409_cs42l42_hp_volume_mixer);
--		snd_hda_gen_add_kctl(&spec->gen, NULL, &cs8409_cs42l42_amic_volume_mixer);
-+		snd_hda_gen_add_kctl(&spec->gen, "Headphone Playback Volume",
-+				&cs42l42_dac_volume_mixer);
-+		snd_hda_gen_add_kctl(&spec->gen, "Mic Capture Volume",
-+				&cs42l42_adc_volume_mixer);
- 		/* Disable Unsolicited Response during boot */
- 		cs8409_enable_ur(codec, 0);
- 		cs8409_cs42l42_hw_init(codec);
-diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
-index 0f2084b6ec8e..bf0e8a4cc4cc 100644
---- a/sound/pci/hda/patch_cs8409.h
-+++ b/sound/pci/hda/patch_cs8409.h
-@@ -215,16 +215,17 @@ enum cs8409_coefficient_index_registers {
- 
- /* CS42L42 Specific Definitions */
- 
--#define CS42L42_HP_CH				(2U)
--#define CS42L42_HS_MIC_CH			(1U)
-+#define CS42L42_VOLUMES				(4U)
- 
- #define CS8409_CS42L42_HP_VOL_REAL_MIN		(-63)
- #define CS8409_CS42L42_HP_VOL_REAL_MAX		(0)
- #define CS8409_CS42L42_AMIC_VOL_REAL_MIN	(-97)
- #define CS8409_CS42L42_AMIC_VOL_REAL_MAX	(12)
--#define CS8409_CS42L42_REG_HS_VOLUME_CHA	(0x2301)
--#define CS8409_CS42L42_REG_HS_VOLUME_CHB	(0x2303)
--#define CS8409_CS42L42_REG_AMIC_VOLUME		(0x1D03)
-+#define CS8409_CS42L42_REG_HS_VOL_CHA		(0x2301)
-+#define CS8409_CS42L42_REG_HS_VOL_CHB		(0x2303)
-+#define CS8409_CS42L42_REG_HS_VOL_MASK		(0x003F)
-+#define CS8409_CS42L42_REG_AMIC_VOL		(0x1D03)
-+#define CS8409_CS42L42_REG_AMIC_VOL_MASK	(0x00FF)
- #define CS42L42_HSDET_AUTO_DONE			(0x02)
- #define CS42L42_HSTYPE_MASK			(0x03)
- #define CS42L42_JACK_INSERTED			(0x0C)
-@@ -248,6 +249,11 @@ enum {
- 	CS8409_FIXUPS,
- };
- 
-+enum {
-+	CS42L42_VOL_ADC,
-+	CS42L42_VOL_DAC,
++
++/* Vendor specific HW configuration
++ * PLL, ASP, I2C, SPI, GPIOs, DMIC etc...
++ */
++static void dolphin_hw_init(struct hda_codec *codec)
++{
++	const struct cs8409_cir_param *seq = dolphin_hw_cfg;
++	struct cs8409_spec *spec = codec->spec;
++	struct sub_codec *cs42l42;
++	int i;
++
++	if (spec->gpio_mask) {
++		snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_MASK,
++				    spec->gpio_mask);
++		snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DIRECTION,
++				    spec->gpio_dir);
++		snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DATA,
++				    spec->gpio_data);
++	}
++
++	for (; seq->nid; seq++)
++		cs8409_vendor_coef_set(codec, seq->cir, seq->coeff);
++
++	for (i = 0; i < spec->num_scodecs; i++) {
++		cs42l42 = spec->scodecs[i];
++		cs42l42_resume(cs42l42);
++	}
++
++	/* Enable Unsolicited Response */
++	cs8409_enable_ur(codec, 1);
++}
++
++static const struct hda_codec_ops cs8409_dolphin_patch_ops = {
++	.build_controls = cs8409_build_controls,
++	.build_pcms = snd_hda_gen_build_pcms,
++	.init = cs8409_init,
++	.free = snd_hda_gen_free,
++	.unsol_event = dolphin_jack_unsol_event,
++#ifdef CONFIG_PM
++	.suspend = cs8409_cs42l42_suspend,
++#endif
 +};
 +
- struct cs8409_i2c_param {
- 	unsigned int addr;
- 	unsigned int reg;
-@@ -268,10 +274,8 @@ struct cs8409_spec {
++static int dolphin_exec_verb(struct hdac_device *dev, unsigned int cmd, unsigned int flags,
++			     unsigned int *res)
++{
++	struct hda_codec *codec = container_of(dev, struct hda_codec, core);
++	struct cs8409_spec *spec = codec->spec;
++	struct sub_codec *cs42l42 = spec->scodecs[CS8409_CODEC0];
++
++	unsigned int nid = ((cmd >> 20) & 0x07f);
++	unsigned int verb = ((cmd >> 8) & 0x0fff);
++
++	/* CS8409 pins have no AC_PINSENSE_PRESENCE
++	 * capabilities. We have to intercept calls for CS42L42 pins
++	 * and return correct pin sense values for read_pin_sense() call from
++	 * hda_jack based on CS42L42 jack detect status.
++	 */
++	switch (nid) {
++	case DOLPHIN_HP_PIN_NID:
++	case DOLPHIN_LO_PIN_NID:
++		if (nid == DOLPHIN_LO_PIN_NID)
++			cs42l42 = spec->scodecs[CS8409_CODEC1];
++		if (verb == AC_VERB_GET_PIN_SENSE) {
++			*res = (cs42l42->hp_jack_in) ? AC_PINSENSE_PRESENCE : 0;
++			return 0;
++		}
++		break;
++	case DOLPHIN_AMIC_PIN_NID:
++		if (verb == AC_VERB_GET_PIN_SENSE) {
++			*res = (cs42l42->mic_jack_in) ? AC_PINSENSE_PRESENCE : 0;
++			return 0;
++		}
++		break;
++	default:
++		break;
++	}
++
++	return spec->exec_verb(dev, cmd, flags, res);
++}
++
++void dolphin_fixups(struct hda_codec *codec, const struct hda_fixup *fix, int action)
++{
++	struct cs8409_spec *spec = codec->spec;
++	struct snd_kcontrol_new *kctrl;
++	int i;
++
++	switch (action) {
++	case HDA_FIXUP_ACT_PRE_PROBE:
++		snd_hda_add_verbs(codec, dolphin_init_verbs);
++		/* verb exec op override */
++		spec->exec_verb = codec->core.exec_verb;
++		codec->core.exec_verb = dolphin_exec_verb;
++
++		spec->scodecs[CS8409_CODEC0] = &dolphin_cs42l42_0;
++		spec->scodecs[CS8409_CODEC0]->codec = codec;
++		spec->scodecs[CS8409_CODEC1] = &dolphin_cs42l42_1;
++		spec->scodecs[CS8409_CODEC1]->codec = codec;
++		spec->num_scodecs = 2;
++
++		codec->patch_ops = cs8409_dolphin_patch_ops;
++
++		/* GPIO 1,5 out, 0,4 in */
++		spec->gpio_dir = spec->scodecs[CS8409_CODEC0]->reset_gpio |
++				 spec->scodecs[CS8409_CODEC1]->reset_gpio;
++		spec->gpio_data = 0;
++		spec->gpio_mask = 0x03f;
++
++		/* Basic initial sequence for specific hw configuration */
++		snd_hda_sequence_write(codec, dolphin_init_verbs);
++
++		snd_hda_jack_add_kctl(codec, DOLPHIN_LO_PIN_NID, "Line Out", true,
++				      SND_JACK_HEADPHONE, NULL);
++
++		cs8409_fix_caps(codec, DOLPHIN_HP_PIN_NID);
++		cs8409_fix_caps(codec, DOLPHIN_LO_PIN_NID);
++		cs8409_fix_caps(codec, DOLPHIN_AMIC_PIN_NID);
++
++		break;
++	case HDA_FIXUP_ACT_PROBE:
++		snd_hda_gen_add_kctl(&spec->gen, "Headphone Playback Volume",
++				     &cs42l42_dac_volume_mixer);
++		snd_hda_gen_add_kctl(&spec->gen, "Mic Capture Volume", &cs42l42_adc_volume_mixer);
++		kctrl = snd_hda_gen_add_kctl(&spec->gen, "Line Out Playback Volume",
++					     &cs42l42_dac_volume_mixer);
++		/* Update Line Out kcontrol template */
++		kctrl->private_value = HDA_COMPOSE_AMP_VAL_OFS(DOLPHIN_HP_PIN_NID, 3, CS8409_CODEC1,
++				       HDA_OUTPUT, CS42L42_VOL_DAC) | HDA_AMP_VAL_MIN_MUTE;
++		cs8409_enable_ur(codec, 0);
++		dolphin_hw_init(codec);
++		snd_hda_codec_set_name(codec, "CS8409/CS42L42");
++		break;
++	case HDA_FIXUP_ACT_INIT:
++		dolphin_hw_init(codec);
++		fallthrough;
++	case HDA_FIXUP_ACT_BUILD:
++		/* Run jack auto detect first time on boot
++		 * after controls have been added, to check if jack has
++		 * been already plugged in.
++		 * Run immediately after init.
++		 */
++		for (i = 0; i < spec->num_scodecs; i++) {
++			cs42l42_run_jack_detect(spec->scodecs[i]);
++			usleep_range(100000, 150000);
++		}
++
++		break;
++	default:
++		break;
++	}
++}
++
+ static int patch_cs8409(struct hda_codec *codec)
+ {
+ 	int err;
+diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
+index a105c3c9023d..1b5a8d04ba0f 100644
+--- a/sound/pci/hda/patch_cs8409.h
++++ b/sound/pci/hda/patch_cs8409.h
+@@ -243,15 +243,32 @@ enum cs8409_coefficient_index_registers {
+ #define CS8409_CS42L42_DMIC_PIN_NID		CS8409_PIN_DMIC1_IN
+ #define CS8409_CS42L42_DMIC_ADC_PIN_NID		CS8409_PIN_DMIC1
  
- 	unsigned int cs42l42_hp_jack_in:1;
- 	unsigned int cs42l42_mic_jack_in:1;
--	unsigned int cs42l42_volume_init:1;
- 	unsigned int cs42l42_suspended:1;
--	char cs42l42_hp_volume[CS42L42_HP_CH];
--	char cs42l42_hs_mic_volume[CS42L42_HS_MIC_CH];
-+	s8 vol[CS42L42_VOLUMES];
- 
- 	struct mutex cs8409_i2c_mux;
- 
-@@ -280,6 +284,13 @@ struct cs8409_spec {
- 			 unsigned int *res);
++/* Dolphin */
++
++#define DOLPHIN_C0_I2C_ADDR			(0x48 << 1)
++#define DOLPHIN_C1_I2C_ADDR			(0x49 << 1)
++#define DOLPHIN_HP_PIN_NID			CS8409_PIN_ASP1_TRANSMITTER_A
++#define DOLPHIN_LO_PIN_NID			CS8409_PIN_ASP1_TRANSMITTER_B
++#define DOLPHIN_AMIC_PIN_NID			CS8409_PIN_ASP1_RECEIVER_A
++
++#define DOLPHIN_C0_INT				GENMASK(4, 4)
++#define DOLPHIN_C1_INT				GENMASK(0, 0)
++#define DOLPHIN_C0_RESET			GENMASK(5, 5)
++#define DOLPHIN_C1_RESET			GENMASK(1, 1)
++#define DOLPHIN_WAKE				(DOLPHIN_C0_INT | DOLPHIN_C1_INT)
++
+ enum {
+ 	CS8409_BULLSEYE,
+ 	CS8409_WARLOCK,
+ 	CS8409_CYBORG,
+ 	CS8409_FIXUPS,
++	CS8409_DOLPHIN,
++	CS8409_DOLPHIN_FIXUPS,
  };
  
-+extern const struct snd_kcontrol_new cs42l42_dac_volume_mixer;
-+extern const struct snd_kcontrol_new cs42l42_adc_volume_mixer;
+ enum {
+ 	CS8409_CODEC0,
++	CS8409_CODEC1
+ };
+ 
+ enum {
+@@ -327,6 +344,13 @@ extern const struct cs8409_cir_param cs8409_cs42l42_hw_cfg[];
+ extern const struct cs8409_cir_param cs8409_cs42l42_bullseye_atn[];
+ extern struct sub_codec cs8409_cs42l42_codec;
+ 
++extern const struct hda_verb dolphin_init_verbs[];
++extern const struct hda_pintbl dolphin_pincfgs[];
++extern const struct cs8409_cir_param dolphin_hw_cfg[];
++extern struct sub_codec dolphin_cs42l42_0;
++extern struct sub_codec dolphin_cs42l42_1;
 +
-+int cs8409_cs42l42_volume_info(struct snd_kcontrol *kctrl, struct snd_ctl_elem_info *uinfo);
-+int cs8409_cs42l42_volume_get(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl);
-+int cs8409_cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl);
-+
- extern const struct snd_pci_quirk cs8409_fixup_tbl[];
- extern const struct hda_model_fixup cs8409_models[];
- extern const struct hda_fixup cs8409_fixups[];
+ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix, int action);
++void dolphin_fixups(struct hda_codec *codec, const struct hda_fixup *fix, int action);
+ 
+ #endif
 -- 
 2.25.1
 
