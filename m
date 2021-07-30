@@ -2,82 +2,75 @@ Return-Path: <SRS0=QuHl=MW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 029EDC4338F
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 19:06:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6F39C4338F
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 19:06:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 64AF660F00
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 19:06:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 64AF660F00
+	by mail.kernel.org (Postfix) with ESMTPS id E3A3F60F46
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 19:06:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E3A3F60F46
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D76AC17D0;
-	Fri, 30 Jul 2021 21:05:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D76AC17D0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B7B3210F;
+	Fri, 30 Jul 2021 21:05:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B7B3210F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627671987;
-	bh=zOGnjhKkN2kboqIf15L8awEjWTGdECV9Wk8eV4CT0iI=;
+	s=default; t=1627672000;
+	bh=0PaVXE0fKAgciaSbmOSivXJdjAmAJWpo/tWUhvFqfzg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uxGNhg+eWjsFY0ztb1yKdhc4mCden5Yb9UfV34MWmvL0XkUFi7ZDWgxusXqEGH7kj
-	 uYE/9QWch1npGtgEq7qXlp6YGR6o0TIRkNdLOpLqkMk+y5kPdLewCuadTbUWuNsorG
-	 xa34L0BzPQZ62o9qlhgaQ0OCaeZFf/XLkWCAbuz4=
+	b=OhuNeJ17kNIFKUptoV+EwlGLxbfPxDxLCxwM/xbCk/d/5LgJu0cHZ0R4XuhLwRwnj
+	 yjv7kOlvTdvxBJviFfooY40gd9KqA/EmsYZEPFir1M+GjZk2xgipu9faV0HoIMYcQP
+	 Y77J/pFHfHcMhrOTTAfp2qB0wcxmjlvyhjSB6Clw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 65842F804E5;
-	Fri, 30 Jul 2021 21:04:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16DEFF804F2;
+	Fri, 30 Jul 2021 21:04:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 91572F800E9; Fri, 30 Jul 2021 21:04:06 +0200 (CEST)
+ id 9306CF804E3; Fri, 30 Jul 2021 21:04:08 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 06446F800E9
- for <alsa-devel@alsa-project.org>; Fri, 30 Jul 2021 21:04:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06446F800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id D8465F804DF
+ for <alsa-devel@alsa-project.org>; Fri, 30 Jul 2021 21:04:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8465F804DF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BWbMtYdr"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2917660F4B;
- Fri, 30 Jul 2021 19:04:01 +0000 (UTC)
+ header.b="s4dBVKR1"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DDEE760F46;
+ Fri, 30 Jul 2021 19:03:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1627671842;
- bh=zOGnjhKkN2kboqIf15L8awEjWTGdECV9Wk8eV4CT0iI=;
+ s=k20201202; t=1627671837;
+ bh=0PaVXE0fKAgciaSbmOSivXJdjAmAJWpo/tWUhvFqfzg=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=BWbMtYdr1e4orAi0AhIfLxTzTikGp6jegSZuSDY79Ug88WoJbJTgXZOgFD75pqzen
- KeI/xW62UgsaqAtaUcE7wWClivboGItXaLcb+aSBDA5/DRqOEGpf5Hf2rfKj2xRQQd
- M28VsvlYzTrqJFMOQ0wOIwUQj9cq6DSdC0+TcPTdVZgG3wsABDFACT2s8yAJRsL87C
- V0xTa08UQkpW3UhsZ0XaybeBiOeT+Ai7P06twznG13PwvCcmr9RqHnoELnlA0BuM5t
- 8FGK5ymWlDXldBf8AVjdy8duPyxwF6UtWhK3LxzuaX+m+WjHdrQdgo2GNtFl0QlBhh
- BKL+F2SUREVfQ==
+ b=s4dBVKR1OVJLd82wB0inNF23HNMUe29NBFB3NHN4vosHJe0+YO9I7eDPcGx9TBi4X
+ P2xS86Hiv3QxjELCsaEnMbZ7pLWJnKm6+DszmLHaxQoVUr8KGWVrH9kpI9oya3T+nF
+ Tv2IoQbUe5hP1bOi1fw94Dnaul/ccc8gKnAZehLv+buyg9CwrnhFb1Z0FKgfOB56hE
+ D2BARAq/B3jyIU82n1SOUS1Fu1QnkaWJP5N09qRHYsAIGXFKo07IpajARN7zhBwlEl
+ sQC9QakzinfKZP3s3GvSa40Pvli3DjZSVrD5BuX28Nqc5HcEF9KxQKcqDpdtJwt8ZY
+ uyy3YzEbjFZRA==
 From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Biju Das <biju.das.jz@bp.renesas.com>
-Subject: Re: (subset) [PATCH v2 0/8] Add RZ/G2L Sound support
-Date: Fri, 30 Jul 2021 20:03:38 +0100
-Message-Id: <162767143674.56427.1812897829636885311.b4-ty@kernel.org>
+To: John Hsu <KCHSU0@nuvoton.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: nau8824: Fix open coded prefix handling
+Date: Fri, 30 Jul 2021 20:03:36 +0100
+Message-Id: <162767143674.56427.3667607260376022302.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210719134040.7964-1-biju.das.jz@bp.renesas.com>
-References: <20210719134040.7964-1-biju.das.jz@bp.renesas.com>
+In-Reply-To: <20210728234729.10135-1-broonie@kernel.org>
+References: <20210728234729.10135-1-broonie@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, Chris Paterson <Chris.Paterson2@renesas.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Biju Das <biju.das@bp.renesas.com>, linux-renesas-soc@vger.kernel.org,
- Chris Brandt <chris.brandt@renesas.com>, Mark Brown <broonie@kernel.org>,
- alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,22 +86,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 19 Jul 2021 14:40:32 +0100, Biju Das wrote:
-> This patch series aims to add ASoC support on RZ/G2L SoC's.
-> 
-> It is based on the work done by Chris Brandt for RZ/A ASoC driver.
-> 
-> Biju Das (8):
->   ASoC: dt-bindings: Document RZ/G2L bindings
->   sound: soc: sh: Add RZ/G2L SSIF-2 driver
->   arm64: dts: renesas: r9a07g044: Add external audio clock nodes
->   arm64: dts: renesas: r9a07g044: Add SSI support
->   arm64: defconfig: Enable ASoC sound support for RZ/G2L SoC
->   ASoC: dt-bindings: sound: renesas,rz-ssi: Document DMA support
->   sound: sh: rz-ssi: Add SSI DMAC support
->   arm64: dts: renesas: r9a07g044: Add SSI DMA support
-> 
-> [...]
+On Thu, 29 Jul 2021 00:47:29 +0100, Mark Brown wrote:
+> As with the component layer code the nau8824 driver had been doing some
+> open coded pin manipulation which will have been broken now the core is
+> fixed to handle this properly, remove the open coding to avoid the issue.
 
 Applied to
 
@@ -116,10 +97,8 @@ Applied to
 
 Thanks!
 
-[1/8] ASoC: dt-bindings: Document RZ/G2L bindings
-      commit: 2b761f476f3a6e0a212c8c88e7855f66edb177e0
-[6/8] ASoC: dt-bindings: sound: renesas,rz-ssi: Document DMA support
-      commit: 5df6dfbb6de815ba3a75c788a916865212fd5221
+[1/1] ASoC: nau8824: Fix open coded prefix handling
+      commit: 1d25684e22516f1cff77176d288b1da02fff57bb
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
