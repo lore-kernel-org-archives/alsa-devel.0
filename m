@@ -2,75 +2,100 @@ Return-Path: <SRS0=QuHl=MW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB1E8C4338F
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 14:13:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CA04C4320E
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 15:20:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0027560720
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 14:13:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0027560720
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id D79B760F94
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 15:20:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D79B760F94
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC24B1948;
-	Fri, 30 Jul 2021 16:12:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC24B1948
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0DF891928;
+	Fri, 30 Jul 2021 17:19:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DF891928
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627654422;
-	bh=/38O2QM9YEoABjvYXPEZQj0UbAFRIAxs/adCDhp/12Q=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1627658418;
+	bh=Ajt16E2ZZOvxpoYWsndEMbYhXBnYX79GwnjluE6DBAQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rx2n+vzDcie2ZndhstXy1FPTncMzCrA13blRqWFNBWqLqLuZX2I0LWayaB15fnEZp
-	 dR/6jXVQ+iyUo3FW1SEEtE4rfXpyfacba3+e2TE2cEGD6YqANKKezgY9X0nbhQoUdw
-	 os0TOwnXJ/hFROQUk59xd87vujnAXqLgA6LhGUCc=
+	b=jsaXZHf8PoymIqj2Eql0HoT706p011NG6Zcc/s/uVfKq1snErQj9ukXYzWbT3z45Q
+	 YqbzCiFv+eaiZXVzoE62Z75GEOeSv/Jw57/bFbtXSujHo4Dh8C8pcMTcNS8LojJNm8
+	 15VXQCg6zpkk8hPBxYANaLtemW+Rog+hvRToPRag=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56E34F80212;
-	Fri, 30 Jul 2021 16:12:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0860EF804EC;
+	Fri, 30 Jul 2021 17:19:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F144AF80253; Fri, 30 Jul 2021 16:12:50 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ id 7F152F804E3; Fri, 30 Jul 2021 17:19:24 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 24290F800ED
- for <alsa-devel@alsa-project.org>; Fri, 30 Jul 2021 16:12:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24290F800ED
-X-IronPort-AV: E=McAfee;i="6200,9189,10060"; a="200310678"
-X-IronPort-AV: E=Sophos;i="5.84,282,1620716400"; d="scan'208";a="200310678"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Jul 2021 07:12:40 -0700
-X-IronPort-AV: E=Sophos;i="5.84,282,1620716400"; d="scan'208";a="518961685"
-Received: from spichard-mobl1.amr.corp.intel.com (HELO [10.212.106.239])
- ([10.212.106.239])
- by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Jul 2021 07:12:39 -0700
-Subject: Re: [PATCH v1] ASoC: Intel: kbl_da7219_max98357a: fix drv_name
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- Lukasz Majczak <lma@semihalf.com>
-References: <20210730115906.144300-1-lma@semihalf.com>
- <58b46549-9b42-1832-b1e1-680d56c3f393@linux.intel.com>
- <c1fb1cd1-6d27-648a-ac9c-81e150505750@intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <6a0866a7-aec4-69d9-eb70-07931952b732@linux.intel.com>
-Date: Fri, 30 Jul 2021 09:12:36 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id D91C6F8019B
+ for <alsa-devel@alsa-project.org>; Fri, 30 Jul 2021 17:19:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D91C6F8019B
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="aGdluOju"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16UEL0db003614; 
+ Fri, 30 Jul 2021 10:19:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=2rB2V6jtYNh++iqGEApDiXcs+oA0wQB3mfg+9mbASRQ=;
+ b=aGdluOju4aLLyaFeBUaqAB/WThq67jmSNFQs2iVZ6LbouB1/kJ0GPZM7B2yBBU5mR3pL
+ xfr4R63tLk4m/9/MPaVTp1scaiPcGYgSbcAY1XwwibI0GXrzs2wZTFH0FWM/SXyP47FA
+ MpBTaXzgrbAwede6CRNLdokSlC3m2irefeiXt1weu/1ovQvUtw7IhPmmSgyYEBTT69oe
+ TpKY8bcpyuF76o/tqr7ZHHADWEUH0Di2/cw6mU4DIB7ZEQn65G1PxbhNYCcJbE8+OvrJ
+ o+H/1kBSEJ3Xl3vLhEDfaZpwuAuQUsjgTtLOnm5oZ1JZvLm+gi5l+aHJ4nkcdmCUzQSY Jg== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 3a41wd181n-2
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Fri, 30 Jul 2021 10:19:14 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 30 Jul
+ 2021 16:19:07 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Fri, 30 Jul 2021 16:19:07 +0100
+Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.32])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 3AE032BA;
+ Fri, 30 Jul 2021 15:19:07 +0000 (UTC)
+From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v3 03/27] ALSA: hda/cs8409: Use enums for register names and
+ coefficients
+Date: Fri, 30 Jul 2021 16:18:20 +0100
+Message-ID: <20210730151844.7873-4-vitalyr@opensource.cirrus.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210730151844.7873-1-vitalyr@opensource.cirrus.com>
+References: <20210730151844.7873-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
-In-Reply-To: <c1fb1cd1-6d27-648a-ac9c-81e150505750@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, upstream@semihalf.com,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain
+X-Proofpoint-GUID: L8DEocHvLVfzfKJBFAFmR0eFG-EeD5TR
+X-Proofpoint-ORIG-GUID: L8DEocHvLVfzfKJBFAFmR0eFG-EeD5TR
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 impostorscore=0
+ spamscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999 lowpriorityscore=0
+ malwarescore=0 phishscore=0 bulkscore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2107300102
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,44 +111,630 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Stefan Binding <sbinding@opensource.cirrus.com>
 
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+---
 
-On 7/30/21 9:05 AM, Cezary Rojewski wrote:
-> On 2021-07-30 3:55 PM, Pierre-Louis Bossart wrote:
->> On 7/30/21 6:59 AM, Lukasz Majczak wrote:
-> 
-> ...
-> 
->>> @@ -113,7 +113,7 @@ struct snd_soc_acpi_mach
->>> snd_soc_acpi_intel_kbl_machines[] = {
->>>       },
->>>       {
->>>           .id = "DLGS7219",
->>> -        .drv_name = "kbl_da7219_mx98373",
->>> +        .drv_name = "kbl_da7219_max98373",
->>
->> this one is wrong though? The correct name was already present, you're
->> reverting back to the wrong name.
->>
->> there's another one that I missed, do you mind changing this as well?
->>
->> soc-acpi-intel-cml-match.c:             .drv_name =
->> "cml_da7219_max98357a",
->>
->> Should be "cml_da7219_mx98357a"
->>
->>
-> 
-> Not saying 'nay' or 'yay' but why is configuration first available on
-> KBL platforms being renamed to 'cml_XXX'?
-The same bxt_da7219_max98357a.c machine driver is used for multiple devices.
+Changes in v2:
+- No changes
 
-static const struct platform_device_id bxt_board_ids[] = {
-	{ .name = "bxt_da7219_mx98357a" },
-	{ .name = "glk_da7219_mx98357a" },
-	{ .name = "cml_da7219_mx98357a" },
-	{ }
-};
-MODULE_DEVICE_TABLE(platform, bxt_board_ids);
+Changes in v3
+- No changes
 
-Why there are different drivers for KBL and BXT is probably lost in history.
+ sound/pci/hda/patch_cs8409-tables.c | 164 ++++++++++++-------
+ sound/pci/hda/patch_cs8409.c        |  49 +++---
+ sound/pci/hda/patch_cs8409.h        | 239 ++++++++++++++++++++++++----
+ 3 files changed, 343 insertions(+), 109 deletions(-)
+
+diff --git a/sound/pci/hda/patch_cs8409-tables.c b/sound/pci/hda/patch_cs8409-tables.c
+index 4adc7a4c4a25..5766433325a9 100644
+--- a/sound/pci/hda/patch_cs8409-tables.c
++++ b/sound/pci/hda/patch_cs8409-tables.c
+@@ -91,20 +91,20 @@ const struct hda_fixup cs8409_fixups[] = {
+ };
+ 
+ const struct hda_verb cs8409_cs42l42_init_verbs[] = {
+-	{ 0x01, AC_VERB_SET_GPIO_WAKE_MASK, 0x0018 }, /* WAKE from GPIO 3,4 */
+-	{ 0x47, AC_VERB_SET_PROC_STATE, 0x0001 },     /* Enable VPW processing  */
+-	{ 0x47, AC_VERB_SET_COEF_INDEX, 0x0002 },     /* Configure GPIO 6,7 */
+-	{ 0x47, AC_VERB_SET_PROC_COEF,  0x0080 },     /* I2C mode */
+-	{ 0x47, AC_VERB_SET_COEF_INDEX, 0x005b },     /* Set I2C bus speed */
+-	{ 0x47, AC_VERB_SET_PROC_COEF,  0x0200 },     /* 100kHz I2C_STO = 2 */
++	{ CS8409_PIN_AFG, AC_VERB_SET_GPIO_WAKE_MASK, 0x0018 },		/* WAKE from GPIO 3,4 */
++	{ CS8409_PIN_VENDOR_WIDGET, AC_VERB_SET_PROC_STATE, 0x0001 },	/* Enable VPW processing */
++	{ CS8409_PIN_VENDOR_WIDGET, AC_VERB_SET_COEF_INDEX, 0x0002 },	/* Configure GPIO 6,7 */
++	{ CS8409_PIN_VENDOR_WIDGET, AC_VERB_SET_PROC_COEF,  0x0080 },	/* I2C mode */
++	{ CS8409_PIN_VENDOR_WIDGET, AC_VERB_SET_COEF_INDEX, 0x005b },	/* Set I2C bus speed */
++	{ CS8409_PIN_VENDOR_WIDGET, AC_VERB_SET_PROC_COEF,  0x0200 },	/* 100kHz I2C_STO = 2 */
+ 	{} /* terminator */
+ };
+ 
+ const struct hda_pintbl cs8409_cs42l42_pincfgs[] = {
+-	{ 0x24, 0x042120f0 }, /* ASP-1-TX */
+-	{ 0x34, 0x04a12050 }, /* ASP-1-RX */
+-	{ 0x2c, 0x901000f0 }, /* ASP-2-TX */
+-	{ 0x44, 0x90a00090 }, /* DMIC-1 */
++	{ CS8409_PIN_ASP1_TRANSMITTER_A, 0x042120f0 },	/* ASP-1-TX */
++	{ CS8409_PIN_ASP1_RECEIVER_A, 0x04a12050 },	/* ASP-1-RX */
++	{ CS8409_PIN_ASP2_TRANSMITTER_A, 0x901000f0 },	/* ASP-2-TX */
++	{ CS8409_PIN_DMIC1_IN, 0x90a00090 },		/* DMIC-1 */
+ 	{} /* terminator */
+ };
+ 
+@@ -164,57 +164,105 @@ const struct cs8409_i2c_param cs42l42_init_reg_seq[] = {
+ 
+ /* Vendor specific hw configuration for CS8409 */
+ const struct cs8409_cir_param cs8409_cs42l42_hw_cfg[] = {
+-	{ 0x47, 0x00, 0xb008 }, /* +PLL1/2_EN, +I2C_EN */
+-	{ 0x47, 0x01, 0x0002 }, /* ASP1/2_EN=0, ASP1_STP=1 */
+-	{ 0x47, 0x02, 0x0a80 }, /* ASP1/2_BUS_IDLE=10, +GPIO_I2C */
+-	{ 0x47, 0x19, 0x0800 }, /* ASP1.A: TX.LAP=0, TX.LSZ=24 bits, TX.LCS=0 */
+-	{ 0x47, 0x1a, 0x0820 }, /* ASP1.A: TX.RAP=0, TX.RSZ=24 bits, TX.RCS=32 */
+-	{ 0x47, 0x29, 0x0800 }, /* ASP2.A: TX.LAP=0, TX.LSZ=24 bits, TX.LCS=0 */
+-	{ 0x47, 0x2a, 0x2800 }, /* ASP2.A: TX.RAP=1, TX.RSZ=24 bits, TX.RCS=0 */
+-	{ 0x47, 0x39, 0x0800 }, /* ASP1.A: RX.LAP=0, RX.LSZ=24 bits, RX.LCS=0 */
+-	{ 0x47, 0x3a, 0x0800 }, /* ASP1.A: RX.RAP=0, RX.RSZ=24 bits, RX.RCS=0 */
+-	{ 0x47, 0x03, 0x8000 }, /* ASP1: LCHI = 00h */
+-	{ 0x47, 0x04, 0x28ff }, /* ASP1: MC/SC_SRCSEL=PLL1, LCPR=FFh */
+-	{ 0x47, 0x05, 0x0062 }, /* ASP1: MCEN=0, FSD=011, SCPOL_IN/OUT=0, SCDIV=1:4 */
+-	{ 0x47, 0x06, 0x801f }, /* ASP2: LCHI=1Fh */
+-	{ 0x47, 0x07, 0x283f }, /* ASP2: MC/SC_SRCSEL=PLL1, LCPR=3Fh */
+-	{ 0x47, 0x08, 0x805c }, /* ASP2: 5050=1, MCEN=0, FSD=010, SCPOL_IN/OUT=1, SCDIV=1:16 */
+-	{ 0x47, 0x09, 0x0023 }, /* DMIC1_MO=10b, DMIC1/2_SR=1 */
+-	{ 0x47, 0x0a, 0x0000 }, /* ASP1/2_BEEP=0 */
+-	{ 0x47, 0x01, 0x0062 }, /* ASP1/2_EN=1, ASP1_STP=1 */
+-	{ 0x47, 0x00, 0x9008 }, /* -PLL2_EN */
+-	{ 0x47, 0x68, 0x0000 }, /* TX2.A: pre-scale att.=0 dB */
+-	{ 0x47, 0x82, 0xfc03 }, /* ASP1/2_xxx_EN=1, ASP1/2_MCLK_EN=0, DMIC1_SCL_EN=1 */
+-	{ 0x47, 0xc0, 0x9999 }, /* test mode on */
+-	{ 0x47, 0xc5, 0x0000 }, /* GPIO hysteresis = 30 us */
+-	{ 0x47, 0xc0, 0x0000 }, /* test mode off */
++	/* +PLL1/2_EN, +I2C_EN */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_DEV_CFG1, 0xb008 },
++	/* ASP1/2_EN=0, ASP1_STP=1 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_DEV_CFG2, 0x0002 },
++	/* ASP1/2_BUS_IDLE=10, +GPIO_I2C */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_DEV_CFG3, 0x0a80 },
++	/* ASP1.A: TX.LAP=0, TX.LSZ=24 bits, TX.LCS=0 */
++	{ CS8409_PIN_VENDOR_WIDGET, ASP1_A_TX_CTRL1, 0x0800 },
++	/* ASP1.A: TX.RAP=0, TX.RSZ=24 bits, TX.RCS=32 */
++	{ CS8409_PIN_VENDOR_WIDGET, ASP1_A_TX_CTRL2, 0x0820 },
++	/* ASP2.A: TX.LAP=0, TX.LSZ=24 bits, TX.LCS=0 */
++	{ CS8409_PIN_VENDOR_WIDGET, ASP2_A_TX_CTRL1, 0x0800 },
++	/* ASP2.A: TX.RAP=1, TX.RSZ=24 bits, TX.RCS=0 */
++	{ CS8409_PIN_VENDOR_WIDGET, ASP2_A_TX_CTRL2, 0x2800 },
++	/* ASP1.A: RX.LAP=0, RX.LSZ=24 bits, RX.LCS=0 */
++	{ CS8409_PIN_VENDOR_WIDGET, ASP1_A_RX_CTRL1, 0x0800 },
++	/* ASP1.A: RX.RAP=0, RX.RSZ=24 bits, RX.RCS=0 */
++	{ CS8409_PIN_VENDOR_WIDGET, ASP1_A_RX_CTRL2, 0x0800 },
++	/* ASP1: LCHI = 00h */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_ASP1_CLK_CTRL1, 0x8000 },
++	/* ASP1: MC/SC_SRCSEL=PLL1, LCPR=FFh */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_ASP1_CLK_CTRL2, 0x28ff },
++	/* ASP1: MCEN=0, FSD=011, SCPOL_IN/OUT=0, SCDIV=1:4 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_ASP1_CLK_CTRL3, 0x0062 },
++	/* ASP2: LCHI=1Fh */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_ASP2_CLK_CTRL1, 0x801f },
++	/* ASP2: MC/SC_SRCSEL=PLL1, LCPR=3Fh */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_ASP2_CLK_CTRL2, 0x283f },
++	/* ASP2: 5050=1, MCEN=0, FSD=010, SCPOL_IN/OUT=1, SCDIV=1:16 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_ASP2_CLK_CTRL3, 0x805c },
++	/* DMIC1_MO=10b, DMIC1/2_SR=1 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_DMIC_CFG, 0x0023 },
++	/* ASP1/2_BEEP=0 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_BEEP_CFG, 0x0000 },
++	/* ASP1/2_EN=1, ASP1_STP=1 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_DEV_CFG2, 0x0062 },
++	/* -PLL2_EN */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_DEV_CFG1, 0x9008 },
++	/* TX2.A: pre-scale att.=0 dB */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PRE_SCALE_ATTN2, 0x0000 },
++	/* ASP1/2_xxx_EN=1, ASP1/2_MCLK_EN=0, DMIC1_SCL_EN=1 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PAD_CFG_SLW_RATE_CTRL, 0xfc03 },
++	/* test mode on */
++	{ CS8409_PIN_VENDOR_WIDGET, 0xc0, 0x9999 },
++	/* GPIO hysteresis = 30 us */
++	{ CS8409_PIN_VENDOR_WIDGET, 0xc5, 0x0000 },
++	/* test mode off */
++	{ CS8409_PIN_VENDOR_WIDGET, 0xc0, 0x0000 },
+ 	{} /* Terminator */
+ };
+ 
+ const struct cs8409_cir_param cs8409_cs42l42_bullseye_atn[] = {
+-	{ 0x47, 0x65, 0x4000 }, /* EQ_SEL=1, EQ1/2_EN=0 */
+-	{ 0x47, 0x64, 0x4000 }, /* +EQ_ACC */
+-	{ 0x47, 0x65, 0x4010 }, /* +EQ2_EN */
+-	{ 0x47, 0x63, 0x0647 }, /* EQ_DATA_HI=0x0647 */
+-	{ 0x47, 0x64, 0xc0c7 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=0, EQ_DATA_LO=0x67 */
+-	{ 0x47, 0x63, 0x0647 }, /* EQ_DATA_HI=0x0647 */
+-	{ 0x47, 0x64, 0xc1c7 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=1, EQ_DATA_LO=0x67 */
+-	{ 0x47, 0x63, 0xf370 }, /* EQ_DATA_HI=0xf370 */
+-	{ 0x47, 0x64, 0xc271 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=2, EQ_DATA_LO=0x71 */
+-	{ 0x47, 0x63, 0x1ef8 }, /* EQ_DATA_HI=0x1ef8 */
+-	{ 0x47, 0x64, 0xc348 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=3, EQ_DATA_LO=0x48 */
+-	{ 0x47, 0x63, 0xc110 }, /* EQ_DATA_HI=0xc110 */
+-	{ 0x47, 0x64, 0xc45a }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=4, EQ_DATA_LO=0x5a */
+-	{ 0x47, 0x63, 0x1f29 }, /* EQ_DATA_HI=0x1f29 */
+-	{ 0x47, 0x64, 0xc574 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=5, EQ_DATA_LO=0x74 */
+-	{ 0x47, 0x63, 0x1d7a }, /* EQ_DATA_HI=0x1d7a */
+-	{ 0x47, 0x64, 0xc653 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=6, EQ_DATA_LO=0x53 */
+-	{ 0x47, 0x63, 0xc38c }, /* EQ_DATA_HI=0xc38c */
+-	{ 0x47, 0x64, 0xc714 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=7, EQ_DATA_LO=0x14 */
+-	{ 0x47, 0x63, 0x1ca3 }, /* EQ_DATA_HI=0x1ca3 */
+-	{ 0x47, 0x64, 0xc8c7 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=8, EQ_DATA_LO=0xc7 */
+-	{ 0x47, 0x63, 0xc38c }, /* EQ_DATA_HI=0xc38c */
+-	{ 0x47, 0x64, 0xc914 }, /* +EQ_WRT, +EQ_ACC, EQ_ADR=9, EQ_DATA_LO=0x14 */
+-	{ 0x47, 0x64, 0x0000 }, /* -EQ_ACC, -EQ_WRT */
++	/* EQ_SEL=1, EQ1/2_EN=0 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PFE_CTRL1, 0x4000 },
++	/* +EQ_ACC */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PFE_COEF_W2, 0x4000 },
++	/* +EQ2_EN */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PFE_CTRL1, 0x4010 },
++	/* EQ_DATA_HI=0x0647 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PFE_COEF_W1, 0x0647 },
++	/* +EQ_WRT, +EQ_ACC, EQ_ADR=0, EQ_DATA_LO=0x67 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PFE_COEF_W2, 0xc0c7 },
++	/* EQ_DATA_HI=0x0647 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PFE_COEF_W1, 0x0647 },
++	/* +EQ_WRT, +EQ_ACC, EQ_ADR=1, EQ_DATA_LO=0x67 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PFE_COEF_W2, 0xc1c7 },
++	/* EQ_DATA_HI=0xf370 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PFE_COEF_W1, 0xf370 },
++	/* +EQ_WRT, +EQ_ACC, EQ_ADR=2, EQ_DATA_LO=0x71 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PFE_COEF_W2, 0xc271 },
++	/* EQ_DATA_HI=0x1ef8 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PFE_COEF_W1, 0x1ef8 },
++	/* +EQ_WRT, +EQ_ACC, EQ_ADR=3, EQ_DATA_LO=0x48 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PFE_COEF_W2, 0xc348 },
++	/* EQ_DATA_HI=0xc110 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PFE_COEF_W1, 0xc110 },
++	/* +EQ_WRT, +EQ_ACC, EQ_ADR=4, EQ_DATA_LO=0x5a */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PFE_COEF_W2, 0xc45a },
++	/* EQ_DATA_HI=0x1f29 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PFE_COEF_W1, 0x1f29 },
++	/* +EQ_WRT, +EQ_ACC, EQ_ADR=5, EQ_DATA_LO=0x74 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PFE_COEF_W2, 0xc574 },
++	/* EQ_DATA_HI=0x1d7a */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PFE_COEF_W1, 0x1d7a },
++	/* +EQ_WRT, +EQ_ACC, EQ_ADR=6, EQ_DATA_LO=0x53 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PFE_COEF_W2, 0xc653 },
++	/* EQ_DATA_HI=0xc38c */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PFE_COEF_W1, 0xc38c },
++	/* +EQ_WRT, +EQ_ACC, EQ_ADR=7, EQ_DATA_LO=0x14 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PFE_COEF_W2, 0xc714 },
++	/* EQ_DATA_HI=0x1ca3 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PFE_COEF_W1, 0x1ca3 },
++	/* +EQ_WRT, +EQ_ACC, EQ_ADR=8, EQ_DATA_LO=0xc7 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PFE_COEF_W2, 0xc8c7 },
++	/* EQ_DATA_HI=0xc38c */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PFE_COEF_W1, 0xc38c },
++	/* +EQ_WRT, +EQ_ACC, EQ_ADR=9, EQ_DATA_LO=0x14 */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PFE_COEF_W2, 0xc914 },
++	/* -EQ_ACC, -EQ_WRT */
++	{ CS8409_PIN_VENDOR_WIDGET, CS8409_PFE_COEF_W2, 0x0000 },
+ 	{} /* Terminator */
+ };
+diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
+index b56fc89ad2cd..e4319a0b9cf6 100644
+--- a/sound/pci/hda/patch_cs8409.c
++++ b/sound/pci/hda/patch_cs8409.c
+@@ -61,15 +61,15 @@ static struct cs8409_spec *cs8409_alloc_spec(struct hda_codec *codec)
+ 
+ static inline int cs8409_vendor_coef_get(struct hda_codec *codec, unsigned int idx)
+ {
+-	snd_hda_codec_write(codec, CS8409_VENDOR_NID, 0, AC_VERB_SET_COEF_INDEX, idx);
+-	return snd_hda_codec_read(codec, CS8409_VENDOR_NID, 0, AC_VERB_GET_PROC_COEF, 0);
++	snd_hda_codec_write(codec, CS8409_PIN_VENDOR_WIDGET, 0, AC_VERB_SET_COEF_INDEX, idx);
++	return snd_hda_codec_read(codec, CS8409_PIN_VENDOR_WIDGET, 0, AC_VERB_GET_PROC_COEF, 0);
+ }
+ 
+ static inline void cs8409_vendor_coef_set(struct hda_codec *codec, unsigned int idx,
+ 					  unsigned int coef)
+ {
+-	snd_hda_codec_write(codec, CS8409_VENDOR_NID, 0, AC_VERB_SET_COEF_INDEX, idx);
+-	snd_hda_codec_write(codec, CS8409_VENDOR_NID, 0, AC_VERB_SET_PROC_COEF, coef);
++	snd_hda_codec_write(codec, CS8409_PIN_VENDOR_WIDGET, 0, AC_VERB_SET_COEF_INDEX, idx);
++	snd_hda_codec_write(codec, CS8409_PIN_VENDOR_WIDGET, 0, AC_VERB_SET_PROC_COEF, coef);
+ }
+ 
+ /**
+@@ -102,7 +102,7 @@ static int cs8409_i2c_wait_complete(struct hda_codec *codec)
+ 	unsigned int retval;
+ 
+ 	do {
+-		retval = cs8409_vendor_coef_get(codec, CIR_I2C_STATUS);
++		retval = cs8409_vendor_coef_get(codec, CS8409_I2C_STS);
+ 		if ((retval & 0x18) != 0x18) {
+ 			usleep_range(2000, 4000);
+ 			--repeat;
+@@ -131,10 +131,10 @@ static int cs8409_i2c_read(struct hda_codec *codec, unsigned int i2c_address, un
+ 	unsigned int read_data;
+ 
+ 	cs8409_enable_i2c_clock(codec, 1);
+-	cs8409_vendor_coef_set(codec, CIR_I2C_ADDR, i2c_address);
++	cs8409_vendor_coef_set(codec, CS8409_I2C_ADDR, i2c_address);
+ 
+ 	if (paged) {
+-		cs8409_vendor_coef_set(codec, CIR_I2C_QWRITE, i2c_reg >> 8);
++		cs8409_vendor_coef_set(codec, CS8409_I2C_QWRITE, i2c_reg >> 8);
+ 		if (cs8409_i2c_wait_complete(codec) < 0) {
+ 			codec_err(codec, "%s() Paged Transaction Failed 0x%02x : 0x%04x\n",
+ 				__func__, i2c_address, i2c_reg);
+@@ -143,7 +143,7 @@ static int cs8409_i2c_read(struct hda_codec *codec, unsigned int i2c_address, un
+ 	}
+ 
+ 	i2c_reg_data = (i2c_reg << 8) & 0x0ffff;
+-	cs8409_vendor_coef_set(codec, CIR_I2C_QREAD, i2c_reg_data);
++	cs8409_vendor_coef_set(codec, CS8409_I2C_QREAD, i2c_reg_data);
+ 	if (cs8409_i2c_wait_complete(codec) < 0) {
+ 		codec_err(codec, "%s() Transaction Failed 0x%02x : 0x%04x\n",
+ 			  __func__, i2c_address, i2c_reg);
+@@ -151,7 +151,7 @@ static int cs8409_i2c_read(struct hda_codec *codec, unsigned int i2c_address, un
+ 	}
+ 
+ 	/* Register in bits 15-8 and the data in 7-0 */
+-	read_data = cs8409_vendor_coef_get(codec, CIR_I2C_QREAD);
++	read_data = cs8409_vendor_coef_get(codec, CS8409_I2C_QREAD);
+ 
+ 	cs8409_enable_i2c_clock(codec, 0);
+ 
+@@ -175,10 +175,10 @@ static int cs8409_i2c_write(struct hda_codec *codec, unsigned int i2c_address, u
+ 	unsigned int i2c_reg_data;
+ 
+ 	cs8409_enable_i2c_clock(codec, 1);
+-	cs8409_vendor_coef_set(codec, CIR_I2C_ADDR, i2c_address);
++	cs8409_vendor_coef_set(codec, CS8409_I2C_ADDR, i2c_address);
+ 
+ 	if (paged) {
+-		cs8409_vendor_coef_set(codec, CIR_I2C_QWRITE, i2c_reg >> 8);
++		cs8409_vendor_coef_set(codec, CS8409_I2C_QWRITE, i2c_reg >> 8);
+ 		if (cs8409_i2c_wait_complete(codec) < 0) {
+ 			codec_err(codec, "%s() Paged Transaction Failed 0x%02x : 0x%04x\n",
+ 				__func__, i2c_address, i2c_reg);
+@@ -187,7 +187,7 @@ static int cs8409_i2c_write(struct hda_codec *codec, unsigned int i2c_address, u
+ 	}
+ 
+ 	i2c_reg_data = ((i2c_reg << 8) & 0x0ff00) | (i2c_data & 0x0ff);
+-	cs8409_vendor_coef_set(codec, CIR_I2C_QWRITE, i2c_reg_data);
++	cs8409_vendor_coef_set(codec, CS8409_I2C_QWRITE, i2c_reg_data);
+ 
+ 	if (cs8409_i2c_wait_complete(codec) < 0) {
+ 		codec_err(codec, "%s() Transaction Failed 0x%02x : 0x%04x\n",
+@@ -363,11 +363,11 @@ static void cs8409_cs42l42_reset(struct hda_codec *codec)
+ 	struct cs8409_spec *spec = codec->spec;
+ 
+ 	/* Assert RTS# line */
+-	snd_hda_codec_write(codec, codec->core.afg, 0, AC_VERB_SET_GPIO_DATA, 0);
++	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DATA, 0);
+ 	/* wait ~10ms */
+ 	usleep_range(10000, 15000);
+ 	/* Release RTS# line */
+-	snd_hda_codec_write(codec, codec->core.afg, 0, AC_VERB_SET_GPIO_DATA, GPIO5_INT);
++	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DATA, CS8409_CS42L42_RESET);
+ 	/* wait ~10ms */
+ 	usleep_range(10000, 15000);
+ 
+@@ -471,7 +471,7 @@ static void cs8409_jack_unsol_event(struct hda_codec *codec, unsigned int res)
+ 	 * registers in previous cs8409_jack_unsol_event() call.
+ 	 * We don't need to handle this event, ignoring...
+ 	 */
+-	if ((res & (1 << 4)))
++	if (res & CS8409_CS42L42_INT)
+ 		return;
+ 
+ 	mutex_lock(&spec->cs8409_i2c_mux);
+@@ -568,7 +568,7 @@ static int cs8409_suspend(struct hda_codec *codec)
+ 	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1101, 0xfe, 1);
+ 	mutex_unlock(&spec->cs8409_i2c_mux);
+ 	/* Assert CS42L42 RTS# line */
+-	snd_hda_codec_write(codec, codec->core.afg, 0, AC_VERB_SET_GPIO_DATA, 0);
++	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DATA, 0);
+ 
+ 	snd_hda_shutup_pins(codec);
+ 
+@@ -580,10 +580,10 @@ static int cs8409_suspend(struct hda_codec *codec)
+ static void cs8409_enable_ur(struct hda_codec *codec, int flag)
+ {
+ 	/* GPIO4 INT# and GPIO3 WAKE# */
+-	snd_hda_codec_write(codec, codec->core.afg, 0, AC_VERB_SET_GPIO_UNSOLICITED_RSP_MASK,
+-			    flag ? (GPIO3_INT | GPIO4_INT) : 0);
++	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_UNSOLICITED_RSP_MASK,
++			    flag ? CS8409_CS42L42_INT : 0);
+ 
+-	snd_hda_codec_write(codec, codec->core.afg, 0, AC_VERB_SET_UNSOLICITED_ENABLE,
++	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_UNSOLICITED_ENABLE,
+ 			    flag ? AC_UNSOL_ENABLED : 0);
+ 
+ }
+@@ -598,9 +598,12 @@ static void cs8409_cs42l42_hw_init(struct hda_codec *codec)
+ 	struct cs8409_spec *spec = codec->spec;
+ 
+ 	if (spec->gpio_mask) {
+-		snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_MASK, spec->gpio_mask);
+-		snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_DIRECTION, spec->gpio_dir);
+-		snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_DATA, spec->gpio_data);
++		snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_MASK,
++			spec->gpio_mask);
++		snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DIRECTION,
++			spec->gpio_dir);
++		snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DATA,
++			spec->gpio_data);
+ 	}
+ 
+ 	for (; seq->nid; seq++)
+@@ -738,7 +741,7 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
+ 		spec->gen.suppress_vmaster = 1;
+ 
+ 		/* GPIO 5 out, 3,4 in */
+-		spec->gpio_dir = GPIO5_INT;
++		spec->gpio_dir = CS8409_CS42L42_RESET;
+ 		spec->gpio_data = 0;
+ 		spec->gpio_mask = 0x03f;
+ 
+diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
+index 516123a411db..1d3ce28415fa 100644
+--- a/sound/pci/hda/patch_cs8409.h
++++ b/sound/pci/hda/patch_cs8409.h
+@@ -17,38 +17,206 @@
+ #include "hda_jack.h"
+ #include "hda_generic.h"
+ 
+-/* Cirrus Logic CS8409 HDA bridge with
+- * companion codec CS42L42
+- */
+-#define CS42L42_HP_CH				(2U)
+-#define CS42L42_HS_MIC_CH			(1U)
+-
+-#define CS8409_VENDOR_NID			0x47
++/* CS8409 Specific Definitions */
+ 
+-#define CS8409_CS42L42_HP_PIN_NID		0x24
+-#define CS8409_CS42L42_SPK_PIN_NID		0x2c
+-#define CS8409_CS42L42_AMIC_PIN_NID		0x34
+-#define CS8409_CS42L42_DMIC_PIN_NID		0x44
+-#define CS8409_CS42L42_DMIC_ADC_PIN_NID		0x22
+-
+-#define CS42L42_HSDET_AUTO_DONE			0x02
+-#define CS42L42_HSTYPE_MASK			0x03
+-
+-#define CS42L42_JACK_INSERTED			0x0C
+-#define CS42L42_JACK_REMOVED			0x00
++enum cs8409_pins {
++	CS8409_PIN_ROOT,
++	CS8409_PIN_AFG,
++	CS8409_PIN_ASP1_OUT_A,
++	CS8409_PIN_ASP1_OUT_B,
++	CS8409_PIN_ASP1_OUT_C,
++	CS8409_PIN_ASP1_OUT_D,
++	CS8409_PIN_ASP1_OUT_E,
++	CS8409_PIN_ASP1_OUT_F,
++	CS8409_PIN_ASP1_OUT_G,
++	CS8409_PIN_ASP1_OUT_H,
++	CS8409_PIN_ASP2_OUT_A,
++	CS8409_PIN_ASP2_OUT_B,
++	CS8409_PIN_ASP2_OUT_C,
++	CS8409_PIN_ASP2_OUT_D,
++	CS8409_PIN_ASP2_OUT_E,
++	CS8409_PIN_ASP2_OUT_F,
++	CS8409_PIN_ASP2_OUT_G,
++	CS8409_PIN_ASP2_OUT_H,
++	CS8409_PIN_ASP1_IN_A,
++	CS8409_PIN_ASP1_IN_B,
++	CS8409_PIN_ASP1_IN_C,
++	CS8409_PIN_ASP1_IN_D,
++	CS8409_PIN_ASP1_IN_E,
++	CS8409_PIN_ASP1_IN_F,
++	CS8409_PIN_ASP1_IN_G,
++	CS8409_PIN_ASP1_IN_H,
++	CS8409_PIN_ASP2_IN_A,
++	CS8409_PIN_ASP2_IN_B,
++	CS8409_PIN_ASP2_IN_C,
++	CS8409_PIN_ASP2_IN_D,
++	CS8409_PIN_ASP2_IN_E,
++	CS8409_PIN_ASP2_IN_F,
++	CS8409_PIN_ASP2_IN_G,
++	CS8409_PIN_ASP2_IN_H,
++	CS8409_PIN_DMIC1,
++	CS8409_PIN_DMIC2,
++	CS8409_PIN_ASP1_TRANSMITTER_A,
++	CS8409_PIN_ASP1_TRANSMITTER_B,
++	CS8409_PIN_ASP1_TRANSMITTER_C,
++	CS8409_PIN_ASP1_TRANSMITTER_D,
++	CS8409_PIN_ASP1_TRANSMITTER_E,
++	CS8409_PIN_ASP1_TRANSMITTER_F,
++	CS8409_PIN_ASP1_TRANSMITTER_G,
++	CS8409_PIN_ASP1_TRANSMITTER_H,
++	CS8409_PIN_ASP2_TRANSMITTER_A,
++	CS8409_PIN_ASP2_TRANSMITTER_B,
++	CS8409_PIN_ASP2_TRANSMITTER_C,
++	CS8409_PIN_ASP2_TRANSMITTER_D,
++	CS8409_PIN_ASP2_TRANSMITTER_E,
++	CS8409_PIN_ASP2_TRANSMITTER_F,
++	CS8409_PIN_ASP2_TRANSMITTER_G,
++	CS8409_PIN_ASP2_TRANSMITTER_H,
++	CS8409_PIN_ASP1_RECEIVER_A,
++	CS8409_PIN_ASP1_RECEIVER_B,
++	CS8409_PIN_ASP1_RECEIVER_C,
++	CS8409_PIN_ASP1_RECEIVER_D,
++	CS8409_PIN_ASP1_RECEIVER_E,
++	CS8409_PIN_ASP1_RECEIVER_F,
++	CS8409_PIN_ASP1_RECEIVER_G,
++	CS8409_PIN_ASP1_RECEIVER_H,
++	CS8409_PIN_ASP2_RECEIVER_A,
++	CS8409_PIN_ASP2_RECEIVER_B,
++	CS8409_PIN_ASP2_RECEIVER_C,
++	CS8409_PIN_ASP2_RECEIVER_D,
++	CS8409_PIN_ASP2_RECEIVER_E,
++	CS8409_PIN_ASP2_RECEIVER_F,
++	CS8409_PIN_ASP2_RECEIVER_G,
++	CS8409_PIN_ASP2_RECEIVER_H,
++	CS8409_PIN_DMIC1_IN,
++	CS8409_PIN_DMIC2_IN,
++	CS8409_PIN_BEEP_GEN,
++	CS8409_PIN_VENDOR_WIDGET
++};
+ 
+-#define GPIO3_INT				(1 << 3)
+-#define GPIO4_INT				(1 << 4)
+-#define GPIO5_INT				(1 << 5)
++enum cs8409_coefficient_index_registers {
++	CS8409_DEV_CFG1,
++	CS8409_DEV_CFG2,
++	CS8409_DEV_CFG3,
++	CS8409_ASP1_CLK_CTRL1,
++	CS8409_ASP1_CLK_CTRL2,
++	CS8409_ASP1_CLK_CTRL3,
++	CS8409_ASP2_CLK_CTRL1,
++	CS8409_ASP2_CLK_CTRL2,
++	CS8409_ASP2_CLK_CTRL3,
++	CS8409_DMIC_CFG,
++	CS8409_BEEP_CFG,
++	ASP1_RX_NULL_INS_RMV,
++	ASP1_Rx_RATE1,
++	ASP1_Rx_RATE2,
++	ASP1_Tx_NULL_INS_RMV,
++	ASP1_Tx_RATE1,
++	ASP1_Tx_RATE2,
++	ASP2_Rx_NULL_INS_RMV,
++	ASP2_Rx_RATE1,
++	ASP2_Rx_RATE2,
++	ASP2_Tx_NULL_INS_RMV,
++	ASP2_Tx_RATE1,
++	ASP2_Tx_RATE2,
++	ASP1_SYNC_CTRL,
++	ASP2_SYNC_CTRL,
++	ASP1_A_TX_CTRL1,
++	ASP1_A_TX_CTRL2,
++	ASP1_B_TX_CTRL1,
++	ASP1_B_TX_CTRL2,
++	ASP1_C_TX_CTRL1,
++	ASP1_C_TX_CTRL2,
++	ASP1_D_TX_CTRL1,
++	ASP1_D_TX_CTRL2,
++	ASP1_E_TX_CTRL1,
++	ASP1_E_TX_CTRL2,
++	ASP1_F_TX_CTRL1,
++	ASP1_F_TX_CTRL2,
++	ASP1_G_TX_CTRL1,
++	ASP1_G_TX_CTRL2,
++	ASP1_H_TX_CTRL1,
++	ASP1_H_TX_CTRL2,
++	ASP2_A_TX_CTRL1,
++	ASP2_A_TX_CTRL2,
++	ASP2_B_TX_CTRL1,
++	ASP2_B_TX_CTRL2,
++	ASP2_C_TX_CTRL1,
++	ASP2_C_TX_CTRL2,
++	ASP2_D_TX_CTRL1,
++	ASP2_D_TX_CTRL2,
++	ASP2_E_TX_CTRL1,
++	ASP2_E_TX_CTRL2,
++	ASP2_F_TX_CTRL1,
++	ASP2_F_TX_CTRL2,
++	ASP2_G_TX_CTRL1,
++	ASP2_G_TX_CTRL2,
++	ASP2_H_TX_CTRL1,
++	ASP2_H_TX_CTRL2,
++	ASP1_A_RX_CTRL1,
++	ASP1_A_RX_CTRL2,
++	ASP1_B_RX_CTRL1,
++	ASP1_B_RX_CTRL2,
++	ASP1_C_RX_CTRL1,
++	ASP1_C_RX_CTRL2,
++	ASP1_D_RX_CTRL1,
++	ASP1_D_RX_CTRL2,
++	ASP1_E_RX_CTRL1,
++	ASP1_E_RX_CTRL2,
++	ASP1_F_RX_CTRL1,
++	ASP1_F_RX_CTRL2,
++	ASP1_G_RX_CTRL1,
++	ASP1_G_RX_CTRL2,
++	ASP1_H_RX_CTRL1,
++	ASP1_H_RX_CTRL2,
++	ASP2_A_RX_CTRL1,
++	ASP2_A_RX_CTRL2,
++	ASP2_B_RX_CTRL1,
++	ASP2_B_RX_CTRL2,
++	ASP2_C_RX_CTRL1,
++	ASP2_C_RX_CTRL2,
++	ASP2_D_RX_CTRL1,
++	ASP2_D_RX_CTRL2,
++	ASP2_E_RX_CTRL1,
++	ASP2_E_RX_CTRL2,
++	ASP2_F_RX_CTRL1,
++	ASP2_F_RX_CTRL2,
++	ASP2_G_RX_CTRL1,
++	ASP2_G_RX_CTRL2,
++	ASP2_H_RX_CTRL1,
++	ASP2_H_RX_CTRL2,
++	CS8409_I2C_ADDR,
++	CS8409_I2C_DATA,
++	CS8409_I2C_CTRL,
++	CS8409_I2C_STS,
++	CS8409_I2C_QWRITE,
++	CS8409_I2C_QREAD,
++	CS8409_SPI_CTRL,
++	CS8409_SPI_TX_DATA,
++	CS8409_SPI_RX_DATA,
++	CS8409_SPI_STS,
++	CS8409_PFE_COEF_W1, /* Parametric filter engine coefficient write 1*/
++	CS8409_PFE_COEF_W2,
++	CS8409_PFE_CTRL1,
++	CS8409_PFE_CTRL2,
++	CS8409_PRE_SCALE_ATTN1,
++	CS8409_PRE_SCALE_ATTN2,
++	CS8409_PFE_COEF_MON1, /* Parametric filter engine coefficient monitor 1*/
++	CS8409_PFE_COEF_MON2,
++	CS8409_ASP1_INTRN_STS,
++	CS8409_ASP2_INTRN_STS,
++	CS8409_ASP1_RX_SCLK_COUNT,
++	CS8409_ASP1_TX_SCLK_COUNT,
++	CS8409_ASP2_RX_SCLK_COUNT,
++	CS8409_ASP2_TX_SCLK_COUNT,
++	CS8409_ASP_UNS_RESP_MASK,
++	CS8409_LOOPBACK_CTRL = 0x80,
++	CS8409_PAD_CFG_SLW_RATE_CTRL = 0x82, /* Pad Config and Slew Rate Control (CIR = 0x0082) */
++};
+ 
+-#define CS42L42_I2C_ADDR			(0x48 << 1)
++/* CS42L42 Specific Definitions */
+ 
+-#define CIR_I2C_ADDR				0x0059
+-#define CIR_I2C_DATA				0x005A
+-#define CIR_I2C_CTRL				0x005B
+-#define CIR_I2C_STATUS				0x005C
+-#define CIR_I2C_QWRITE				0x005D
+-#define CIR_I2C_QREAD				0x005E
++#define CS42L42_HP_CH				(2U)
++#define CS42L42_HS_MIC_CH			(1U)
+ 
+ #define CS8409_CS42L42_HP_VOL_REAL_MIN		(-63)
+ #define CS8409_CS42L42_HP_VOL_REAL_MAX		(0)
+@@ -57,6 +225,21 @@
+ #define CS8409_CS42L42_REG_HS_VOLUME_CHA	(0x2301)
+ #define CS8409_CS42L42_REG_HS_VOLUME_CHB	(0x2303)
+ #define CS8409_CS42L42_REG_AMIC_VOLUME		(0x1D03)
++#define CS42L42_HSDET_AUTO_DONE			(0x02)
++#define CS42L42_HSTYPE_MASK			(0x03)
++#define CS42L42_JACK_INSERTED			(0x0C)
++#define CS42L42_JACK_REMOVED			(0x00)
++
++/* Dell BULLSEYE / WARLOCK / CYBORG Specific Definitions */
++
++#define CS42L42_I2C_ADDR			(0x48 << 1)
++#define CS8409_CS42L42_RESET			GENMASK(5, 5) /* CS8409_GPIO5 */
++#define CS8409_CS42L42_INT			GENMASK(4, 4) /* CS8409_GPIO4 */
++#define CS8409_CS42L42_HP_PIN_NID		CS8409_PIN_ASP1_TRANSMITTER_A
++#define CS8409_CS42L42_SPK_PIN_NID		CS8409_PIN_ASP2_TRANSMITTER_A
++#define CS8409_CS42L42_AMIC_PIN_NID		CS8409_PIN_ASP1_RECEIVER_A
++#define CS8409_CS42L42_DMIC_PIN_NID		CS8409_PIN_DMIC1_IN
++#define CS8409_CS42L42_DMIC_ADC_PIN_NID		CS8409_PIN_DMIC1
+ 
+ enum {
+ 	CS8409_BULLSEYE,
+-- 
+2.25.1
+
