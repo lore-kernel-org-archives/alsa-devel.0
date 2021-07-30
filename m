@@ -7,87 +7,87 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB5E7C4320A
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 15:27:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3340C432BE
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 15:28:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 527A461076
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 15:27:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 527A461076
+	by mail.kernel.org (Postfix) with ESMTPS id 60A0F60F4A
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jul 2021 15:28:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 60A0F60F4A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E7EB52080;
-	Fri, 30 Jul 2021 17:27:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7EB52080
+	by alsa0.perex.cz (Postfix) with ESMTPS id 057732089;
+	Fri, 30 Jul 2021 17:27:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 057732089
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627658877;
-	bh=Iyr9fBqOF4H9OkYDfx2OccsU+CEhyJDiYd4AJoSXpLA=;
+	s=default; t=1627658894;
+	bh=2BGAKSQi6fglk+gfThQ3+FbDIzWTG9Q9QGpM+vJa0xU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=s56g8120m+dhL0jbCzjrT5fApsr/CJRA2etnlaM0CsLgoteen8XjTUFY+MuYfNWG4
-	 WhQGZk3gVjpPlchHHHguuTP+2GySgPYSkX4nqhin2SpZWlpdGUXw+vBw/w8ml26mOS
-	 tTyjRxRjGB+tcBxiAAw7QyYd4LBXB+MOGp3rpcvg=
+	b=G5Gg8KxBZPfSI+YCWtbJP3m6ob1mvqAXYX72ASCtp++QKrYkr9Ab4bj5X04KBPmpf
+	 Tp8GaR30ylYWxDcrxCW9XUjhSlXQ2Jtp4J1V8E/aQ6SoUhp3QTpNh3bo21WjiuAGfL
+	 aGBInQzpgT8H4YDuKe5u2vFcUnTHq2z5aUGLND8A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4C363F805A8;
+	by alsa1.perex.cz (Postfix) with ESMTP id D159AF805AE;
 	Fri, 30 Jul 2021 17:20:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0ECE2F80563; Fri, 30 Jul 2021 17:20:01 +0200 (CEST)
+ id 744A0F80564; Fri, 30 Jul 2021 17:20:02 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CC117F804FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 031D1F804FB
  for <alsa-devel@alsa-project.org>; Fri, 30 Jul 2021 17:19:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC117F804FA
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 031D1F804FB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="TddyXOOQ"
+ header.b="EJV4U3PT"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16UEL0dl003614; 
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16UELBKi004490; 
  Fri, 30 Jul 2021 10:19:22 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=kPMnYciWtAXu6NQ2BEZKqviuN9LILh+HOgCkEAJPCIs=;
- b=TddyXOOQjLCbYRYYIRcqr9UnBbpC0V8EkO2jE/G8KpmaT5IM/nmnUKehiuDmIyzsbAkh
- DBdvsmBe6t8EsrgyIqyjzhSvv96ucVl93LjTBE/j1wr2PGhNDLBzlYlKPtHUhj8pbu2x
- /V0hn980zONmXNG0LpJyMkHfhlbp7b3zFK2f9G//hfMoLztj6SV8/fkSExy3kzZ7quMz
- FeNdKO7KEo5JTZnNLUw7KisEFU7YIqDz1+vtMcbh7bKdpSz/H11j9NDKx1nOUNrg6+W1
- ZQWBZvgSL4V1X9EAy/cRFw5j8z8dvtOEQOHsNVmQovo7U3whdB7JSMbRqz2Djp7URShg tw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3a41wd181n-12
+ bh=SsFLSnzjZ1fMNZj2qyH1OFSOeebrqaHmwBP+1BvnjNY=;
+ b=EJV4U3PTruzcLTUsWDsvX008ZQYstnYQPVy+7on9os29EdSsJ8elUboP+a3nX151QVRp
+ ab8ypMcwx3SElgcMblSqobRFI3AEoFSIU+7nxPe1FLcndDn03t6Ya8GuEMW9dUwGUhM9
+ jOWEIJvi8p1My4vFgYb9NxApMxgi7Pw9FoQrvEwjPAVZYdjymiRPrIwSLZEb65QSkSu8
+ KkgACaq1hN07OxFbT28c3vASkwQkCw8mPHgxukgifFQVmO456WahCUnsQjXFqNMODmM3
+ cslZi476e6F3uyrZp98TjJ8x3DZ8AiEDUdGw0PCkdyuaaFfpJul59KgUU3NyyucmBEl5 1Q== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 3a41wd181m-11
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
  Fri, 30 Jul 2021 10:19:22 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 30 Jul
- 2021 16:19:12 +0100
+ 2021 16:19:11 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Fri, 30 Jul 2021 16:19:12 +0100
+ Transport; Fri, 30 Jul 2021 16:19:11 +0100
 Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.32])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 48E832BA;
- Fri, 30 Jul 2021 15:19:12 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5A6B32BA;
+ Fri, 30 Jul 2021 15:19:11 +0000 (UTC)
 From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v3 23/27] ALSA: hda/cs8409: Set fixed sample rate of 48kHz for
- CS42L42
-Date: Fri, 30 Jul 2021 16:18:40 +0100
-Message-ID: <20210730151844.7873-24-vitalyr@opensource.cirrus.com>
+Subject: [PATCH v3 19/27] ALSA: hda/cs8409: Support multiple sub_codecs for
+ Suspend/Resume/Unsol events
+Date: Fri, 30 Jul 2021 16:18:36 +0100
+Message-ID: <20210730151844.7873-20-vitalyr@opensource.cirrus.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210730151844.7873-1-vitalyr@opensource.cirrus.com>
 References: <20210730151844.7873-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: MljEXSRakZH9DWizqavwXNM8GidBFrjh
-X-Proofpoint-ORIG-GUID: MljEXSRakZH9DWizqavwXNM8GidBFrjh
+X-Proofpoint-GUID: L_3Mi8aOWv7Jp1Bo-vtN2NCpEgxf38c3
+X-Proofpoint-ORIG-GUID: L_3Mi8aOWv7Jp1Bo-vtN2NCpEgxf38c3
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
  priorityscore=1501 impostorscore=0
  spamscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999 lowpriorityscore=0
@@ -113,8 +113,6 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-CS42L42 is configured to use a fixed sample rate of 48kHz.
-
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 ---
@@ -125,67 +123,109 @@ Changes in v2:
 Changes in v3:
 - No changes
 
- sound/pci/hda/patch_cs8409-tables.c | 8 ++++++++
- sound/pci/hda/patch_cs8409.c        | 6 ++++++
- sound/pci/hda/patch_cs8409.h        | 2 ++
- 3 files changed, 16 insertions(+)
+ sound/pci/hda/patch_cs8409.c | 41 ++++++++++++++++++++++++------------
+ 1 file changed, 28 insertions(+), 13 deletions(-)
 
-diff --git a/sound/pci/hda/patch_cs8409-tables.c b/sound/pci/hda/patch_cs8409-tables.c
-index a39b2c20f61c..a9a0b8e3b2a9 100644
---- a/sound/pci/hda/patch_cs8409-tables.c
-+++ b/sound/pci/hda/patch_cs8409-tables.c
-@@ -45,6 +45,14 @@ const struct snd_kcontrol_new cs42l42_adc_volume_mixer = {
- 			 HDA_INPUT, CS42L42_VOL_ADC) | HDA_AMP_VAL_MIN_MUTE
- };
- 
-+const struct hda_pcm_stream cs42l42_48k_pcm_analog_playback = {
-+	.rates = SNDRV_PCM_RATE_48000, /* fixed rate */
-+};
-+
-+const struct hda_pcm_stream cs42l42_48k_pcm_analog_capture = {
-+	.rates = SNDRV_PCM_RATE_48000, /* fixed rate */
-+};
-+
- /******************************************************************************
-  *                   BULLSEYE / WARLOCK / CYBORG Specific Arrays
-  *                               CS8409/CS42L42
 diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
-index 42192d83b361..08e991a33344 100644
+index 4b4f4dc54617..8b048ff12eb7 100644
 --- a/sound/pci/hda/patch_cs8409.c
 +++ b/sound/pci/hda/patch_cs8409.c
-@@ -892,6 +892,9 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
+@@ -375,16 +375,21 @@ static int cs8409_build_controls(struct hda_codec *codec)
+ 	return 0;
+ }
  
- 		break;
- 	case HDA_FIXUP_ACT_PROBE:
-+		/* Fix Sample Rate to 48kHz */
-+		spec->gen.stream_analog_playback = &cs42l42_48k_pcm_analog_playback;
-+		spec->gen.stream_analog_capture = &cs42l42_48k_pcm_analog_capture;
- 		/* Set initial DMIC volume to -26 dB */
- 		snd_hda_codec_amp_init_stereo(codec, CS8409_CS42L42_DMIC_ADC_PIN_NID,
- 					      HDA_INPUT, 0, 0xff, 0x19);
-@@ -1085,6 +1088,9 @@ void dolphin_fixups(struct hda_codec *codec, const struct hda_fixup *fix, int ac
+-/* Enable/Disable Unsolicited Response for gpio(s) 3,4 */
++/* Enable/Disable Unsolicited Response */
+ static void cs8409_enable_ur(struct hda_codec *codec, int flag)
+ {
+-	/* GPIO4 INT# and GPIO3 WAKE# */
++	struct cs8409_spec *spec = codec->spec;
++	unsigned int ur_gpios = 0;
++	int i;
++
++	for (i = 0; i < spec->num_scodecs; i++)
++		ur_gpios |= spec->scodecs[i]->irq_mask;
++
+ 	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_UNSOLICITED_RSP_MASK,
+-			    flag ? CS8409_CS42L42_INT : 0);
++			    flag ? ur_gpios : 0);
  
- 		break;
- 	case HDA_FIXUP_ACT_PROBE:
-+		/* Fix Sample Rate to 48kHz */
-+		spec->gen.stream_analog_playback = &cs42l42_48k_pcm_analog_playback;
-+		spec->gen.stream_analog_capture = &cs42l42_48k_pcm_analog_capture;
- 		snd_hda_gen_add_kctl(&spec->gen, "Headphone Playback Volume",
- 				     &cs42l42_dac_volume_mixer);
- 		snd_hda_gen_add_kctl(&spec->gen, "Mic Capture Volume", &cs42l42_adc_volume_mixer);
-diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
-index 1b5a8d04ba0f..2208be2ffad1 100644
---- a/sound/pci/hda/patch_cs8409.h
-+++ b/sound/pci/hda/patch_cs8409.h
-@@ -335,6 +335,8 @@ int cs42l42_volume_info(struct snd_kcontrol *kctrl, struct snd_ctl_elem_info *ui
- int cs42l42_volume_get(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl);
- int cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl);
+ 	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_UNSOLICITED_ENABLE,
+ 			    flag ? AC_UNSOL_ENABLED : 0);
+-
+ }
  
-+extern const struct hda_pcm_stream cs42l42_48k_pcm_analog_playback;
-+extern const struct hda_pcm_stream cs42l42_48k_pcm_analog_capture;
- extern const struct snd_pci_quirk cs8409_fixup_tbl[];
- extern const struct hda_model_fixup cs8409_models[];
- extern const struct hda_fixup cs8409_fixups[];
+ static void cs8409_fix_caps(struct hda_codec *codec, unsigned int nid)
+@@ -616,6 +621,8 @@ static int cs42l42_jack_unsol_event(struct sub_codec *cs42l42)
+ 
+ static void cs42l42_resume(struct sub_codec *cs42l42)
+ {
++	struct hda_codec *codec = cs42l42->codec;
++	unsigned int gpio_data;
+ 	struct cs8409_i2c_param irq_regs[] = {
+ 		{ 0x1308, 0x00 },
+ 		{ 0x1309, 0x00 },
+@@ -623,6 +630,12 @@ static void cs42l42_resume(struct sub_codec *cs42l42)
+ 		{ 0x130F, 0x00 },
+ 	};
+ 
++	/* Bring CS42L42 out of Reset */
++	gpio_data = snd_hda_codec_read(codec, CS8409_PIN_AFG, 0, AC_VERB_GET_GPIO_DATA, 0);
++	gpio_data |= cs42l42->reset_gpio;
++	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DATA, gpio_data);
++	usleep_range(10000, 15000);
++
+ 	cs42l42->suspended = 0;
+ 
+ 	/* Initialize CS42L42 companion codec */
+@@ -648,10 +661,18 @@ static void cs42l42_resume(struct sub_codec *cs42l42)
+ #ifdef CONFIG_PM
+ static void cs42l42_suspend(struct sub_codec *cs42l42)
+ {
++	struct hda_codec *codec = cs42l42->codec;
++	unsigned int gpio_data;
++
+ 	/* Power down CS42L42 ASP/EQ/MIX/HP */
+ 	cs8409_i2c_write(cs42l42, 0x1101, 0xfe);
+ 	cs42l42->suspended = 1;
+ 	cs42l42->last_page = 0;
++
++	/* Put CS42L42 into Reset */
++	gpio_data = snd_hda_codec_read(codec, CS8409_PIN_AFG, 0, AC_VERB_GET_GPIO_DATA, 0);
++	gpio_data &= ~cs42l42->reset_gpio;
++	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DATA, gpio_data);
+ }
+ #endif
+ 
+@@ -710,13 +731,12 @@ static void cs8409_cs42l42_jack_unsol_event(struct hda_codec *codec, unsigned in
+ static int cs8409_cs42l42_suspend(struct hda_codec *codec)
+ {
+ 	struct cs8409_spec *spec = codec->spec;
++	int i;
+ 
+ 	cs8409_enable_ur(codec, 0);
+ 
+-	cs42l42_suspend(spec->scodecs[CS8409_CODEC0]);
+-
+-	/* Assert CS42L42 RTS# line */
+-	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DATA, 0);
++	for (i = 0; i < spec->num_scodecs; i++)
++		cs42l42_suspend(spec->scodecs[i]);
+ 
+ 	snd_hda_shutup_pins(codec);
+ 
+@@ -755,11 +775,6 @@ static void cs8409_cs42l42_hw_init(struct hda_codec *codec)
+ 	if (codec->fixup_id == CS8409_WARLOCK || codec->fixup_id == CS8409_CYBORG)
+ 		cs8409_vendor_coef_set(codec, 0x09, 0x0003);
+ 
+-	/* Release RTS# line */
+-	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DATA, CS8409_CS42L42_RESET);
+-	/* wait ~10ms */
+-	usleep_range(10000, 15000);
+-
+ 	cs42l42_resume(cs42l42);
+ 
+ 	/* Enable Unsolicited Response */
 -- 
 2.25.1
 
