@@ -2,72 +2,100 @@ Return-Path: <SRS0=Bf8Z=MX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED203C4338F
-	for <alsa-devel@archiver.kernel.org>; Sat, 31 Jul 2021 16:54:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52291C4338F
+	for <alsa-devel@archiver.kernel.org>; Sat, 31 Jul 2021 22:38:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 40EC860F3A
-	for <alsa-devel@archiver.kernel.org>; Sat, 31 Jul 2021 16:54:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 40EC860F3A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cdjrlc.com
+	by mail.kernel.org (Postfix) with ESMTPS id B29D760F56
+	for <alsa-devel@archiver.kernel.org>; Sat, 31 Jul 2021 22:38:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B29D760F56
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E008E1943;
-	Sat, 31 Jul 2021 18:54:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E008E1943
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7E6D5185A;
+	Sun,  1 Aug 2021 00:37:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E6D5185A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627750496;
-	bh=tkF9j2pSg2H+CVDZhhiCW/lHeCdvCBEDB/9pz64IsQA=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=WH08/o7Ao8vE/O7PAd+Rv6OWvQdleHlVZgJc4l20OqRCrd+qdCHmElfNbzgLXcWYm
-	 dWYLdFDuFuMIr/HtgGPL39BPuh1UFfftp8NCDfq68Q0/gJdmnjPCz4us+3u3n7KVM8
-	 rM4inopNuupczpojjn7YDF0Ub7MXGVydIxhs1bgw=
+	s=default; t=1627771120;
+	bh=OJWCLCt2G14rvFEiLnCN3rlRdE0CCGhjEd9CRexE3nE=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=aXCrX++zoScTvJx6tlOnkq7BxFBVulSdWJFMKHYuzaskuvgqGgOnOl3I8rISPS+5/
+	 b24BBlF6pta6cdTY0m8NSkV1dM56LwRurQZQtszMTNZBXykC0VxzPDw38bEvRWxcN0
+	 mr82NI1LnXUyecuCBHQb5z5zzURaiNho9XC4EOrY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16646F8026C;
-	Sat, 31 Jul 2021 18:54:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F20EEF8014D;
+	Sun,  1 Aug 2021 00:37:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BD75FF80276; Sat, 31 Jul 2021 07:27:48 +0200 (CEST)
-Received: from smtpbg519.qq.com (smtpbg516.qq.com [203.205.250.54])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 657BEF80276; Sun,  1 Aug 2021 00:37:47 +0200 (CEST)
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com
+ [IPv6:2a00:1450:4864:20::535])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C4E08F8014D
- for <alsa-devel@alsa-project.org>; Sat, 31 Jul 2021 07:27:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4E08F8014D
-X-QQ-mid: bizesmtp38t1627709210t835i70l
-Received: from ficus.lan (unknown [171.223.99.141])
- by esmtp6.qq.com (ESMTP) with 
- id ; Sat, 31 Jul 2021 13:26:48 +0800 (CST)
-X-QQ-SSF: 01000000002000B0C000B00A0000000
-X-QQ-FEAT: s7pJguWOSDAMFImT23sH0iw24VPXGJfxegD2ZKiEalCHy0MMfVGLOoIP/046a
- Ao3Du8N4vAZuxCxa7MtgTPx//64DMo9ih+6gQ8zO+RApdwPQ1JzqPXifOeWOkaWHlupCNCl
- C6KiBqj2UAV95IAHcvZ8APHe3UZwUo7ffjP/8nzq6/PDQ02/IlvluXjCB+RI9INv1VqYM/D
- QWomz7TzdcnGlerPvhdFlZ1+S4gH3pghYK9mQY27Oqpf+pRChmf5Cs7vMip8YyYOIskZjOD
- ngMTOi8BMN6dL55D1ZKrsKExXDFXg3qtWr2C7BOPSg0GdYSELK4C3K6JXb40PdhQEDqA==
-X-QQ-GoodBg: 0
-From: Jason Wang <wangborong@cdjrlc.com>
-To: tiwai@suse.com
-Subject: [PATCH] ALSA: pcxhr: use __func__ to get funcion's name in an output
- message
-Date: Sat, 31 Jul 2021 13:26:47 +0800
-Message-Id: <20210731052647.141046-1-wangborong@cdjrlc.com>
-X-Mailer: git-send-email 2.32.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 50EA6F80258
+ for <alsa-devel@alsa-project.org>; Sun,  1 Aug 2021 00:37:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50EA6F80258
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="WONB+z4H"
+Received: by mail-ed1-x535.google.com with SMTP id y12so18940452edo.6
+ for <alsa-devel@alsa-project.org>; Sat, 31 Jul 2021 15:37:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=subject:to:references:cc:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=6lLe+rHssWUcn5b/BXs6pZlUkRWK+G0oCsWSSKALWrQ=;
+ b=WONB+z4HuvpG76OJAWqoiGuVr7ThMQLQq4sDL+/UQf1CsTTfJ8bl6AnJ3sA+w4/tto
+ 7b5haPMUSwUCvxY5MK9KPS7FJPMqQf7bP+DTkJxoLxDrLx4GzAsE8LflX2VbiKAW57nS
+ BD+8ALMdHqgWwMs9TN8z7fH7upW3BrwpCMPEGkZzwhVgpSfAVAnIVuAmS+ONamk38ggy
+ /NDCLakTbY/bsY2UcyHbG8GU95USpBIkV4eUqAHni3JQbsKx1bNaMLd42+yXeJKlj/cG
+ r1NsRnVGziLWC0VtdyCA6XhT7zpQaQoJCNVjbssJf7geV3g9KujTx2MV96HUmmXweYrS
+ MCmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=6lLe+rHssWUcn5b/BXs6pZlUkRWK+G0oCsWSSKALWrQ=;
+ b=E/ndKhYuBb5nDDFtPRcZ+5J07nBploIy+EYFAliSGqMboFUdwkRAxsodSm+Zoi8pW6
+ Rhwk/F7bj8VzNwpgItt80iKxGa7qdl8mOlzQJJbvX5Y1+37cSaiBU2wqYH5W0UfNmwOW
+ sZ0BpMX23snxcuadjvEVODgQuo6JXvX8Q6FD6PrKqGjNMomK3min/p3hvvIyU82W7Eet
+ 0vndJHenjUh2EPCuuWEkVEzi0Gs2M+x0oNQE+aTeaicK2m2jOZDg7MHwzZC9mDKz4Tu7
+ da6kQyDNNPKa4FIBs6Ec/zzaFH542aXLi/EYl1QQdGHZ4/+KjYecdcGv3zYvpSVgTqUe
+ MPXQ==
+X-Gm-Message-State: AOAM532zw8rE6Hb4m+JFsH5ZeX0i+8JLP38n/5hRF7ODX3bFPTU/a454
+ oUuMA+t6PSAhytB5YBV9J0g=
+X-Google-Smtp-Source: ABdhPJxRpanT+2TmF7/YZB/GuNwYHhwjkV/RMWRcjcOH+UgWHU3rL+lye42x6n/vWFoyuNIM1X/x4g==
+X-Received: by 2002:aa7:d519:: with SMTP id y25mr10703842edq.191.1627771056993; 
+ Sat, 31 Jul 2021 15:37:36 -0700 (PDT)
+Received: from ?IPv6:2a02:587:9423:c0e9:c6ad:2aee:cdfd:c016?
+ ([2a02:587:9423:c0e9:c6ad:2aee:cdfd:c016])
+ by smtp.gmail.com with ESMTPSA id t10sm1375201edv.34.2021.07.31.15.37.35
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Sat, 31 Jul 2021 15:37:36 -0700 (PDT)
+Subject: Re: [PATCH] ALSA: hda/realtek: add mic quirk for Acer SF314-42
+To: Alexander Monakov <amonakov@ispras.ru>
+References: <20210721170141.24807-1-amonakov@ispras.ru>
+From: Nikos Liolios <liolios.nk@gmail.com>
+Message-ID: <d6f4a149-12f8-b0d6-477a-c16113511c4a@gmail.com>
+Date: Sun, 1 Aug 2021 01:37:34 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam3
-X-Mailman-Approved-At: Sat, 31 Jul 2021 18:54:03 +0200
-Cc: alsa-devel@alsa-project.org, Jason Wang <wangborong@cdjrlc.com>,
- linux-kernel@vger.kernel.org, leon@kernel.org
+In-Reply-To: <20210721170141.24807-1-amonakov@ispras.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,175 +111,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Prefer using '"%s...", __func__' to get current function's name in
-an output message.
+On Wed, 21 Jul 2021 20:01:41 +0300,
+Alexander Monakov <amonakov@ispras.ru> wrote:
+> The Acer Swift SF314-42 laptop is using Realtek ALC255 codec. Add a
+> quirk so microphone in a headset connected via the right-hand side jack
+> is usable.
+> 
+> 
+>  sound/pci/hda/patch_realtek.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index ab5113cccffa..87ad8469dbc5 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -8191,6 +8191,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+>  	SND_PCI_QUIRK(0x1025, 0x1308, "Acer Aspire Z24-890", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
+>  	SND_PCI_QUIRK(0x1025, 0x132a, "Acer TravelMate B114-21", ALC233_FIXUP_ACER_HEADSET_MIC),
+>  	SND_PCI_QUIRK(0x1025, 0x1330, "Acer TravelMate X514-51T", ALC255_FIXUP_ACER_HEADSET_MIC),
+> +	SND_PCI_QUIRK(0x1025, 0x142b, "Acer Swift SF314-42", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
+>  	SND_PCI_QUIRK(0x1025, 0x1430, "Acer TravelMate B311R-31", ALC256_FIXUP_ACER_MIC_NO_PRESENCE),
+>  	SND_PCI_QUIRK(0x1025, 0x1466, "Acer Aspire A515-56", ALC255_FIXUP_ACER_HEADPHONE_AND_MIC),
+>  	SND_PCI_QUIRK(0x1028, 0x0470, "Dell M101z", ALC269_FIXUP_DELL_M101Z),
+> 
+> base-commit: 62fb9874f5da54fdb243003b386128037319b219
 
-Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
----
- sound/pci/pcxhr/pcxhr.c | 47 ++++++++++++++++++++---------------------
- 1 file changed, 23 insertions(+), 24 deletions(-)
+Other quirks for Acer Swift (for Acer SWIFT SF314-54/55/56) they describe the model using capital letters ("SWIFT" instead of "Swift").
+I do think that "Swift" is better than (caps locked) "SWIFT". Thinking to create a patch for it since I helped to create this mess.
+From my understanding it only affects the dmesg of which quirk was used, nothing important, but lets keep code clean.
 
-diff --git a/sound/pci/pcxhr/pcxhr.c b/sound/pci/pcxhr/pcxhr.c
-index 96b9371c201a..242bd7e04b3e 100644
---- a/sound/pci/pcxhr/pcxhr.c
-+++ b/sound/pci/pcxhr/pcxhr.c
-@@ -366,7 +366,7 @@ static int pcxhr_sub_set_clock(struct pcxhr_mgr *mgr,
- 		mgr->codec_speed = speed;	/* save new codec speed */
- 	}
- 
--	dev_dbg(&mgr->pci->dev, "pcxhr_sub_set_clock to %dHz (realfreq=%d)\n",
-+	dev_dbg(&mgr->pci->dev, "%s to %dHz (realfreq=%d)\n", __func__,
- 		    rate, realfreq);
- 	return 0;
- }
-@@ -499,7 +499,7 @@ static int pcxhr_set_stream_state(struct snd_pcxhr *chip,
- 	else {
- 		if (stream->status != PCXHR_STREAM_STATUS_SCHEDULE_STOP) {
- 			dev_err(chip->card->dev,
--				"pcxhr_set_stream_state CANNOT be stopped\n");
-+				"%s CANNOT be stopped\n", __func__);
- 			return -EINVAL;
- 		}
- 		start = 0;
-@@ -524,7 +524,7 @@ static int pcxhr_set_stream_state(struct snd_pcxhr *chip,
- 	err = pcxhr_send_msg(chip->mgr, &rmh);
- 	if (err)
- 		dev_err(chip->card->dev,
--			"ERROR pcxhr_set_stream_state err=%x;\n", err);
-+			"ERROR %s err=%x;\n", __func__, err);
- 	stream->status =
- 	  start ? PCXHR_STREAM_STATUS_STARTED : PCXHR_STREAM_STATUS_STOPPED;
- 	return err;
-@@ -570,7 +570,7 @@ static int pcxhr_set_format(struct pcxhr_stream *stream)
- 		break;
- 	default:
- 		dev_err(chip->card->dev,
--			"error pcxhr_set_format() : unknown format\n");
-+			"error %s() : unknown format\n", __func__);
- 		return -EINVAL;
- 	}
- 
-@@ -615,7 +615,7 @@ static int pcxhr_set_format(struct pcxhr_stream *stream)
- 	err = pcxhr_send_msg(chip->mgr, &rmh);
- 	if (err)
- 		dev_err(chip->card->dev,
--			"ERROR pcxhr_set_format err=%x;\n", err);
-+			"ERROR %s err=%x;\n", __func__, err);
- 	return err;
- }
- 
-@@ -630,7 +630,7 @@ static int pcxhr_update_r_buffer(struct pcxhr_stream *stream)
- 	stream_num = is_capture ? 0 : subs->number;
- 
- 	dev_dbg(chip->card->dev,
--		"pcxhr_update_r_buffer(pcm%c%d) : addr(%p) bytes(%zx) subs(%d)\n",
-+		"%s(pcm%c%d) : addr(%p) bytes(%zx) subs(%d)\n", __func__,
- 		is_capture ? 'c' : 'p',
- 		chip->chip_idx, (void *)(long)subs->runtime->dma_addr,
- 		subs->runtime->dma_bytes, subs->number);
-@@ -721,21 +721,20 @@ static void pcxhr_start_linked_stream(struct pcxhr_mgr *mgr)
- 	}
- 	if (capture_mask == 0 && playback_mask == 0) {
- 		mutex_unlock(&mgr->setup_mutex);
--		dev_err(&mgr->pci->dev, "pcxhr_start_linked_stream : no pipes\n");
-+		dev_err(&mgr->pci->dev, "%s : no pipes\n", __func__);
- 		return;
- 	}
- 
--	dev_dbg(&mgr->pci->dev, "pcxhr_start_linked_stream : "
--		    "playback_mask=%x capture_mask=%x\n",
--		    playback_mask, capture_mask);
-+	dev_dbg(&mgr->pci->dev, "%s : playback_mask=%x capture_mask=%x\n",
-+		    __func__, playback_mask, capture_mask);
- 
- 	/* synchronous stop of all the pipes concerned */
- 	err = pcxhr_set_pipe_state(mgr,  playback_mask, capture_mask, 0);
- 	if (err) {
- 		mutex_unlock(&mgr->setup_mutex);
--		dev_err(&mgr->pci->dev, "pcxhr_start_linked_stream : "
-+		dev_err(&mgr->pci->dev, "%s : "
- 			   "error stop pipes (P%x C%x)\n",
--			   playback_mask, capture_mask);
-+			   __func__, playback_mask, capture_mask);
- 		return;
- 	}
- 
-@@ -778,9 +777,9 @@ static void pcxhr_start_linked_stream(struct pcxhr_mgr *mgr)
- 	err = pcxhr_set_pipe_state(mgr, playback_mask, capture_mask, 1);
- 	if (err) {
- 		mutex_unlock(&mgr->setup_mutex);
--		dev_err(&mgr->pci->dev, "pcxhr_start_linked_stream : "
-+		dev_err(&mgr->pci->dev, "%s : "
- 			   "error start pipes (P%x C%x)\n",
--			   playback_mask, capture_mask);
-+			   __func__, playback_mask, capture_mask);
- 		return;
- 	}
- 
-@@ -889,7 +888,7 @@ static int pcxhr_hardware_timer(struct pcxhr_mgr *mgr, int start)
- 	}
- 	err = pcxhr_send_msg(mgr, &rmh);
- 	if (err < 0)
--		dev_err(&mgr->pci->dev, "error pcxhr_hardware_timer err(%x)\n",
-+		dev_err(&mgr->pci->dev, "error %s err(%x)\n", __func__,
- 			   err);
- 	return err;
- }
-@@ -904,7 +903,7 @@ static int pcxhr_prepare(struct snd_pcm_substream *subs)
- 	int err = 0;
- 
- 	dev_dbg(chip->card->dev,
--		"pcxhr_prepare : period_size(%lx) periods(%x) buffer_size(%lx)\n",
-+		"%s : period_size(%lx) periods(%x) buffer_size(%lx)\n", __func__,
- 		    subs->runtime->period_size, subs->runtime->periods,
- 		    subs->runtime->buffer_size);
- 
-@@ -997,12 +996,12 @@ static int pcxhr_open(struct snd_pcm_substream *subs)
- 	runtime->hw = pcxhr_caps;
- 
- 	if( subs->stream == SNDRV_PCM_STREAM_PLAYBACK ) {
--		dev_dbg(chip->card->dev, "pcxhr_open playback chip%d subs%d\n",
--			    chip->chip_idx, subs->number);
-+		dev_dbg(chip->card->dev, "%s playback chip%d subs%d\n",
-+			    __func__, chip->chip_idx, subs->number);
- 		stream = &chip->playback_stream[subs->number];
- 	} else {
--		dev_dbg(chip->card->dev, "pcxhr_open capture chip%d subs%d\n",
--			    chip->chip_idx, subs->number);
-+		dev_dbg(chip->card->dev, "%s capture chip%d subs%d\n",
-+			    __func__, chip->chip_idx, subs->number);
- 		if (mgr->mono_capture)
- 			runtime->hw.channels_max = 1;
- 		else
-@@ -1011,8 +1010,8 @@ static int pcxhr_open(struct snd_pcm_substream *subs)
- 	}
- 	if (stream->status != PCXHR_STREAM_STATUS_FREE){
- 		/* streams in use */
--		dev_err(chip->card->dev, "pcxhr_open chip%d subs%d in use\n",
--			   chip->chip_idx, subs->number);
-+		dev_err(chip->card->dev, "%s chip%d subs%d in use\n",
-+			   __func__, chip->chip_idx, subs->number);
- 		mutex_unlock(&mgr->setup_mutex);
- 		return -EBUSY;
- 	}
-@@ -1077,7 +1076,7 @@ static int pcxhr_close(struct snd_pcm_substream *subs)
- 
- 	mutex_lock(&mgr->setup_mutex);
- 
--	dev_dbg(chip->card->dev, "pcxhr_close chip%d subs%d\n",
-+	dev_dbg(chip->card->dev, "%s chip%d subs%d\n", __func__,
- 		    chip->chip_idx, subs->number);
- 
- 	/* sample rate released */
-@@ -1572,7 +1571,7 @@ static int pcxhr_probe(struct pci_dev *pci,
- 	/* init setup mutex*/
- 	mutex_init(&mgr->setup_mutex);
- 
--	mgr->prmh = kmalloc(sizeof(*mgr->prmh) + 
-+	mgr->prmh = kmalloc(sizeof(*mgr->prmh) +
- 			    sizeof(u32) * (PCXHR_SIZE_MAX_LONG_STATUS -
- 					   PCXHR_SIZE_MAX_STATUS),
- 			    GFP_KERNEL);
--- 
-2.32.0
+What do you think? Rename "SWIFT"s to "Swift"s?
+If no disagreement or no reply I am doing it like tomorrow.
+
+
+
+
 
