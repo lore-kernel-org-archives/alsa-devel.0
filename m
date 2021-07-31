@@ -2,89 +2,113 @@ Return-Path: <SRS0=mFEw=MZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED614C4338F
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 07:35:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03B0FC4338F
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 07:35:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6A52060F6E
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 07:35:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6A52060F6E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 815CA60F5A
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 07:35:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 815CA60F5A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0898A16A3;
-	Mon,  2 Aug 2021 09:34:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0898A16A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1CE6C1817;
+	Mon,  2 Aug 2021 09:35:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CE6C1817
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627889742;
-	bh=eswuxo1W0i5PFWZAUUURjJvjkpw1DjGr+M4WxdwxYyQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1627889753;
+	bh=6TOszkUOMxKqMHQ6uy/Jdp6GEM++nCk3ST/dtYxR0sQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Nnbf74/tIXVV15b5zo29Dh0BRmJZt6SFzpcsS/7YAiapfTccPlDyXkfKn6MWkI+Ok
-	 fz74+ohH+Ej2Knxu3c6p/P35CvbNjtcZq2dVgK34XmgvQ2UOcRlNLmk1Qe9bbLHGl/
-	 YcsdmE1gnLNvtGy04+w73fXebbxBfCOS7F/HVNbI=
+	b=h5+hVeX3IDoFDSa3QkMqt/kzYbRvUTqPHieuNToSXnh5KRWzmLenQJP7yLNCrB5u4
+	 Gs1MXVsLqYs2RuYwvkJ+8R/Y5rFkwfWjGjjI2Kf+J8fwYxjcMW/slrBMXF/CkN60mA
+	 J+/0510T/kbucEC/J8w5mPx+vixi/hyytX3ua9UM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3EB79F80564;
-	Mon,  2 Aug 2021 09:29:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D508DF80567;
+	Mon,  2 Aug 2021 09:29:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AFE93F8054A; Mon,  2 Aug 2021 09:29:04 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 06239F80276; Sun,  1 Aug 2021 00:05:18 +0200 (CEST)
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com
+ [IPv6:2a00:1450:4864:20::22a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C7432F804E1
- for <alsa-devel@alsa-project.org>; Mon,  2 Aug 2021 09:28:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7432F804E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id E94A3F8014D
+ for <alsa-devel@alsa-project.org>; Sun,  1 Aug 2021 00:05:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E94A3F8014D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="kATXn2br"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="f4W+Jtk+"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 32CF721FDF;
- Mon,  2 Aug 2021 07:28:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1627889298; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=KhGlkJrcDMMTRRbAadaufuaM9yTH4rtTjIKubH+IHQQ=;
- b=kATXn2bru6zGMh26LRoOLg2wayUIOfa8CHI1xq/MJzUJf7exFW8lt4dTq7wCZflxIXZXC4
- 1KTo8/hF811oDLg5SuRczDgylehozkVgsKu5/oS8N+LOVHH/0nQlLINAfKp83UG9cJ08rN
- f6EeCS0O7O5xfuAF5keC2qV/IZy0Bds=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1627889298;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=KhGlkJrcDMMTRRbAadaufuaM9yTH4rtTjIKubH+IHQQ=;
- b=f4W+Jtk+zNGs/JiCTRTFkaSz5E7xQA7NGg31rFJcPiZ00sbxA/uLlajbP1oFra5WyUrGts
- kHnOyr1FOA4ZjxCw==
-Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 20284A3B83;
- Mon,  2 Aug 2021 07:28:18 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 08/15] ASoC: fsl: imx-pcm-rpmsg: Use managed buffer allocation
-Date: Mon,  2 Aug 2021 09:28:08 +0200
-Message-Id: <20210802072815.13551-9-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210802072815.13551-1-tiwai@suse.de>
-References: <20210802072815.13551-1-tiwai@suse.de>
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="oxTawDKt"
+Received: by mail-lj1-x22a.google.com with SMTP id n6so18296711ljp.9
+ for <alsa-devel@alsa-project.org>; Sat, 31 Jul 2021 15:05:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=eavS7+nVlKa3pE/nMERuVdSNOcLN0CSyw0CYPXJs2RE=;
+ b=oxTawDKtE7gUMCEZTGVhmlVv2Y3WYDP+FS3lOaHPAgoD7WcgQjYd0RzzaaCmE3977P
+ y2AZlp+prHKgerutQ7jx1R/cVL6lbK+WzauqEJucT+Izj+ziz0I0tc0O+XwvtPwksIj1
+ ukvPhZPy1rocK17IvtjWMFHZ1JmoIIqK4FLNFIt716WQ3Pie0UvlUCbiTbUjKG2RTcHV
+ 7aLptfufBWxUeUNmjY6/SgCFLiwOzAyRIGpCOm9JFIGiWEdzkbX1t7kvgcWoJlruvGQV
+ TNKC7K+DYoXaKkZDcceTWufkpcffdIMAe8eG+6751qHasEPk6w4m+/EI6Gd9NCUzZuvT
+ oxzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=eavS7+nVlKa3pE/nMERuVdSNOcLN0CSyw0CYPXJs2RE=;
+ b=S69Y8Vbd3qbtVTyMcDFUjShJ1gCn05roAHWAjoJ7aTjcSI9zj0n31W8B7309nume1m
+ 1hJaZcT4xhAQXuqK19AjbeJ0rgowaMiyxDS43IBcrrzvsNCdddaKZeX9OjEtocF9OKxF
+ /mnvv7Tg6W2DYKJYazR/GTeEdNiI6OSFyK3zFVdvah+MNrYXxF+c2EzMwzpOaT8GFoAh
+ X5jhrrJY9FNTx1Pw32SsPQrAPIo8jelD5hz95l28liY78I32brdnA6NVjeAsZvvc5Rqm
+ YS5fAlWrZSYeyDe6ra49V4jQ+mu9bQGijxuruJHXnRiS0jjbPyXN5dLJcuLZClP53ijF
+ d3pw==
+X-Gm-Message-State: AOAM530FHpiNrwVfp3ND7iO+ALuXR7Tl6PkunR+BECCF1K34BuW3EKZE
+ fN9Ow3dMEKo1I8yH3yOFN0ssPa3cVp+B3ewGEdOUGQ==
+X-Google-Smtp-Source: ABdhPJwTjpbUeZT+xrHLeSR/vD0UodSpw43lXDmx8pJiyALETra8HqJRQTMUGT7mTfcqIT7xDGsd2Eo06KRRqoQp1Bw=
+X-Received: by 2002:a2e:bc14:: with SMTP id b20mr6401323ljf.200.1627769110442; 
+ Sat, 31 Jul 2021 15:05:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>,
- Shengjiu Wang <shengjiu.wang@gmail.com>, Mark Brown <broonie@kernel.org>,
- Fabio Estevam <festevam@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>
+References: <20210726115058.23729-1-nikita.shubin@maquefel.me>
+In-Reply-To: <20210726115058.23729-1-nikita.shubin@maquefel.me>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Sun, 1 Aug 2021 00:04:59 +0200
+Message-ID: <CACRpkdYeqJFFwkc6pfSrz3-gaN_PjjV52jstqzR2sMa+bxbMuQ@mail.gmail.com>
+Subject: Re: [PATCH 0/8] arm: ep93xx: CCF conversion
+To: Nikita Shubin <nikita.shubin@maquefel.me>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailman-Approved-At: Mon, 02 Aug 2021 09:29:29 +0200
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
+ "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
+ "open list:FRAMEBUFFER LAYER" <dri-devel@lists.freedesktop.org>,
+ "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
+ Ard Biesheuvel <ardb@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+ YiFei Zhu <yifeifz2@illinois.edu>, Krzysztof Kozlowski <krzk@kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, "open list:INPUT \(KEYBOARD, MOUSE,
+ JOYSTICK, TOUCHSCREEN\)..." <linux-input@vger.kernel.org>,
+ "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Anshuman Khandual <anshuman.khandual@arm.com>,
+ =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ Russell King <rmk+kernel@armlinux.org.uk>, Mark Brown <broonie@kernel.org>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+ "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ open list <linux-kernel@vger.kernel.org>,
+ Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+ "open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM" <dmaengine@vger.kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,163 +124,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-As the standard buffer allocation helper supports WC pages now, we can
-convert imx-pcm-rpmsg driver to use that.  This allows us to remove
-lots of superfluous code.
+On Mon, Jul 26, 2021 at 1:51 PM Nikita Shubin <nikita.shubin@maquefel.me> wrote:
 
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Xiubo Li <Xiubo.Lee@gmail.com>
-Cc: Fabio Estevam <festevam@gmail.com>
-Cc: Shengjiu Wang <shengjiu.wang@gmail.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/soc/fsl/imx-pcm-rpmsg.c | 89 +----------------------------------
- 1 file changed, 2 insertions(+), 87 deletions(-)
+> This series series of patches converts ep93xx to Common Clock Framework.
+>
+> It consists of preparation patches to use clk_prepare_enable where it is
+> needed, instead of clk_enable used in ep93xx drivers prior to CCF and
+> a patch converting mach-ep93xx/clock.c to CCF.
+>
+> Link: https://lore.kernel.org/patchwork/cover/1445563/
+> Link: https://lore.kernel.org/patchwork/patch/1435884/
+>
+> Alexander Sverdlin (7):
+>   iio: ep93xx: Prepare clock before using it
+>   spi: spi-ep93xx: Prepare clock before using it
+>   Input: ep93xx_keypad: Prepare clock before using it
+>   video: ep93xx: Prepare clock before using it
+>   dmaengine: ep93xx: Prepare clock before using it
+>   ASoC: cirrus: i2s: Prepare clock before using it
+>   pwm: ep93xx: Prepare clock before using it
+>
+> Nikita Shubin (1):
+>   ep93xx: clock: convert in-place to COMMON_CLK
 
-diff --git a/sound/soc/fsl/imx-pcm-rpmsg.c b/sound/soc/fsl/imx-pcm-rpmsg.c
-index 6d6c44cf3451..35049043e532 100644
---- a/sound/soc/fsl/imx-pcm-rpmsg.c
-+++ b/sound/soc/fsl/imx-pcm-rpmsg.c
-@@ -139,7 +139,6 @@ static int imx_rpmsg_pcm_hw_params(struct snd_soc_component *component,
- 				   struct snd_pcm_hw_params *params)
- {
- 	struct rpmsg_info *info = dev_get_drvdata(component->dev);
--	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct rpmsg_msg *msg;
- 	int ret = 0;
- 
-@@ -183,21 +182,11 @@ static int imx_rpmsg_pcm_hw_params(struct snd_soc_component *component,
- 		break;
- 	}
- 
--	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
--	runtime->dma_bytes = params_buffer_bytes(params);
--
- 	info->send_message(msg, info);
- 
- 	return ret;
- }
- 
--static int imx_rpmsg_pcm_hw_free(struct snd_soc_component *component,
--				 struct snd_pcm_substream *substream)
--{
--	snd_pcm_set_runtime_buffer(substream, NULL);
--	return 0;
--}
--
- static snd_pcm_uframes_t imx_rpmsg_pcm_pointer(struct snd_soc_component *component,
- 					       struct snd_pcm_substream *substream)
- {
-@@ -347,18 +336,6 @@ static int imx_rpmsg_pcm_prepare(struct snd_soc_component *component,
- 	return 0;
- }
- 
--static int imx_rpmsg_pcm_mmap(struct snd_soc_component *component,
--			      struct snd_pcm_substream *substream,
--			      struct vm_area_struct *vma)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--
--	return dma_mmap_wc(substream->pcm->card->dev, vma,
--			   runtime->dma_area,
--			   runtime->dma_addr,
--			   runtime->dma_bytes);
--}
--
- static void imx_rpmsg_pcm_dma_complete(void *arg)
- {
- 	struct snd_pcm_substream *substream = arg;
-@@ -609,47 +586,6 @@ static int imx_rpmsg_pcm_ack(struct snd_soc_component *component,
- 	return 0;
- }
- 
--static int imx_rpmsg_pcm_preallocate_dma_buffer(struct snd_pcm *pcm,
--						int stream, int size)
--{
--	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
--	struct snd_dma_buffer *buf = &substream->dma_buffer;
--
--	buf->dev.type = SNDRV_DMA_TYPE_DEV;
--	buf->dev.dev = pcm->card->dev;
--	buf->private_data = NULL;
--	buf->area = dma_alloc_wc(pcm->card->dev, size,
--				 &buf->addr, GFP_KERNEL);
--	if (!buf->area)
--		return -ENOMEM;
--
--	buf->bytes = size;
--	return 0;
--}
--
--static void imx_rpmsg_pcm_free_dma_buffers(struct snd_soc_component *component,
--					   struct snd_pcm *pcm)
--{
--	struct snd_pcm_substream *substream;
--	struct snd_dma_buffer *buf;
--	int stream;
--
--	for (stream = SNDRV_PCM_STREAM_PLAYBACK;
--	     stream < SNDRV_PCM_STREAM_LAST; stream++) {
--		substream = pcm->streams[stream].substream;
--		if (!substream)
--			continue;
--
--		buf = &substream->dma_buffer;
--		if (!buf->area)
--			continue;
--
--		dma_free_wc(pcm->card->dev, buf->bytes,
--			    buf->area, buf->addr);
--		buf->area = NULL;
--	}
--}
--
- static int imx_rpmsg_pcm_new(struct snd_soc_component *component,
- 			     struct snd_soc_pcm_runtime *rtd)
- {
-@@ -663,40 +599,19 @@ static int imx_rpmsg_pcm_new(struct snd_soc_component *component,
- 	if (ret)
- 		return ret;
- 
--	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
--		ret = imx_rpmsg_pcm_preallocate_dma_buffer(pcm, SNDRV_PCM_STREAM_PLAYBACK,
--							   rpmsg->buffer_size);
--		if (ret)
--			goto out;
--	}
--
--	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
--		ret = imx_rpmsg_pcm_preallocate_dma_buffer(pcm, SNDRV_PCM_STREAM_CAPTURE,
--							   rpmsg->buffer_size);
--		if (ret)
--			goto out;
--	}
--
- 	imx_rpmsg_pcm_hardware.buffer_bytes_max = rpmsg->buffer_size;
--out:
--	/* free preallocated buffers in case of error */
--	if (ret)
--		imx_rpmsg_pcm_free_dma_buffers(component, pcm);
--
--	return ret;
-+	return snd_pcm_set_fixed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV_WC,
-+					    pcm->card->dev, rpmsg->buffer_size);
- }
- 
- static const struct snd_soc_component_driver imx_rpmsg_soc_component = {
- 	.name		= IMX_PCM_DRV_NAME,
- 	.pcm_construct	= imx_rpmsg_pcm_new,
--	.pcm_destruct	= imx_rpmsg_pcm_free_dma_buffers,
- 	.open		= imx_rpmsg_pcm_open,
- 	.close		= imx_rpmsg_pcm_close,
- 	.hw_params	= imx_rpmsg_pcm_hw_params,
--	.hw_free	= imx_rpmsg_pcm_hw_free,
- 	.trigger	= imx_rpmsg_pcm_trigger,
- 	.pointer	= imx_rpmsg_pcm_pointer,
--	.mmap		= imx_rpmsg_pcm_mmap,
- 	.ack		= imx_rpmsg_pcm_ack,
- 	.prepare	= imx_rpmsg_pcm_prepare,
- };
--- 
-2.26.2
+This series is looking very good.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
+I suppose the per-subsystem patches can be picked up by
+each subsystem maintainer and then you can send the "big patch"
+to the SoC tree.
+
+Yours,
+Linus Walleij
