@@ -2,79 +2,89 @@ Return-Path: <SRS0=Bf8Z=MX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42F32C4338F
-	for <alsa-devel@archiver.kernel.org>; Sat, 31 Jul 2021 08:35:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51E06C4338F
+	for <alsa-devel@archiver.kernel.org>; Sat, 31 Jul 2021 08:36:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 999F56103B
-	for <alsa-devel@archiver.kernel.org>; Sat, 31 Jul 2021 08:35:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 999F56103B
+	by mail.kernel.org (Postfix) with ESMTPS id 6539960C40
+	for <alsa-devel@archiver.kernel.org>; Sat, 31 Jul 2021 08:36:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6539960C40
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4484F1F1A;
-	Sat, 31 Jul 2021 10:34:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4484F1F1A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0761B1FDC;
+	Sat, 31 Jul 2021 10:35:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0761B1FDC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627720543;
-	bh=iolEdT0MaZ7+jAYhHUUk6qvDvpmMBEoI3WoUKhRFG+8=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=UHmDSL5lKgf2PS2FJ2qWlY7a6eLgFVxmEMrrciZSaZNp7vBwu0UaTGi3/76tuk4pp
-	 UuDpYePwxujmXNsDxGiQ6fcM7d7b7yf4sUhOZt8/age9Z/elDQiE8HOknadb6iniSf
-	 1D6Phhw8exF2DPihAlB6/nTnXY7uF29SW7Kr2DgE=
+	s=default; t=1627720598;
+	bh=olKF5LIZNyzRVgR5H0J8kPQ1hMeTxsSl0F1BRnsKfsY=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=C4PFtPQ7UVqkRIdWcI4lHGM2tmxTXEtuUsiS0P+BKdmsSVDDFikBjB1LAGmFoVj9g
+	 e8YTpC003tOfLUQoAqU0jIQT0xi/aSMja4FkzDUBzfrnIJ1mlAlP68u/BBHr7Che5J
+	 EAyPiFGAx5iaufnq3pIljdSn+1e4lE/3pEy58G54=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B8D92F8026C;
-	Sat, 31 Jul 2021 10:34:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70C95F80258;
+	Sat, 31 Jul 2021 10:35:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8EAC3F80276; Sat, 31 Jul 2021 10:34:51 +0200 (CEST)
+ id E71CEF804A9; Sat, 31 Jul 2021 10:35:31 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B83C6F80258
- for <alsa-devel@alsa-project.org>; Sat, 31 Jul 2021 10:34:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B83C6F80258
+ by alsa1.perex.cz (Postfix) with ESMTPS id D4E6CF80258
+ for <alsa-devel@alsa-project.org>; Sat, 31 Jul 2021 10:35:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4E6CF80258
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="hpCNre/G"; 
+ header.b="cxSDB1BL"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="zoN4Fkt4"
+ header.b="3/Y1Chiv"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 161FD2240F
- for <alsa-devel@alsa-project.org>; Sat, 31 Jul 2021 08:34:47 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id AF55B2240F;
+ Sat, 31 Jul 2021 08:35:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1627720487; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=tzql9YaQYOHKV65e9pTIvu+mlHPBNjKJEK08KMKiohI=;
- b=hpCNre/GZ55FNm6Lgm6dV5TruZKVZsycmCMKM/IFhzmNE/pASGubl9a0y0p1Q9SIWalQaf
- MS1lXAfhIq7BfK9h2hw20dK8Ett6E+0IPl+Gr8Vtum6KFd7+bm6yVPu8IgMxiHAX3MLemy
- Kk7E9yTGbSfS1a7REiVCHuCoDKckLWo=
+ t=1627720525; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=uRiOjcuKgV+KnOrSeF1S1b9u1WW3bNGe+4KlnA8JFbQ=;
+ b=cxSDB1BLcbu6cDY6C/jl3NPKWCZ5odqWf3l4taRApDKPSGER8fEFtxptxtd7FKJScNs4tt
+ 3jIPY6Ye0su+TDTlvkW5WovbqzcD6cpEUXBY0fmjj40e0y/9d++xOpdZ8hKPDpzjfM6DAY
+ CpS5GeC/HoSzab9lVZ+lI/b1v9q+Pb0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1627720487;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=tzql9YaQYOHKV65e9pTIvu+mlHPBNjKJEK08KMKiohI=;
- b=zoN4Fkt4UEtrBGe82oL9TWHVvMYdjZXSYPRbBnk7yTqcaaCAPgFUq3VMGmLI55IsrCXY+i
- 7Ez4EBJa4seZkKAw==
-Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 0CB9CA3B89;
- Sat, 31 Jul 2021 08:34:47 +0000 (UTC)
+ s=susede2_ed25519; t=1627720525;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=uRiOjcuKgV+KnOrSeF1S1b9u1WW3bNGe+4KlnA8JFbQ=;
+ b=3/Y1Chiv2qZ90NBtadmpz+CBIL+axbrsvnneZObof3TxSqjtNO+pw7fuLZYwB0Bukfh+1M
+ BNAodE+Z2xsrZcBw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 9A8A3A3B89;
+ Sat, 31 Jul 2021 08:35:25 +0000 (UTC)
+Date: Sat, 31 Jul 2021 10:35:25 +0200
+Message-ID: <s5hy29m6fua.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: core: Fix double calls of snd_card_free() via devres
-Date: Sat, 31 Jul 2021 10:34:46 +0200
-Message-Id: <20210731083446.26680-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+To: Jason Wang <wangborong@cdjrlc.com>
+Subject: Re: [PATCH] ALSA: pcxhr: use __func__ to get funcion's name in an
+ output message
+In-Reply-To: <20210731052647.141046-1-wangborong@cdjrlc.com>
+References: <20210731052647.141046-1-wangborong@cdjrlc.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com,
+ leon@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,56 +100,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-At the transition to the devres-managed card release, we've put the
-check of double-free at trigger_card_release().  But this wasn't
-enough, as the code path calls snd_card_free() again, and it would
-lead to the doubly snd_card_free() calls.
+On Sat, 31 Jul 2021 07:26:47 +0200,
+Jason Wang wrote:
+> 
+> Prefer using '"%s...", __func__' to get current function's name in
+> an output message.
+> 
+> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
 
-Actually the v1 patch was correct to handle this, but I forgot that
-corner case and moved the check to the more obvious place as I thought
-it's clearer.  But, as usual, devils live in details.
+Thanks, applied.
 
-This patch corrects the check of the double-free to the right place,
-with a bit more comments.
 
-Fixes: e8ad415b7a55 ("ALSA: core: Add managed card creation")
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/init.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
-
-diff --git a/sound/core/init.c b/sound/core/init.c
-index e985185ebc91..ac335f5906c6 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -605,6 +605,15 @@ int snd_card_free(struct snd_card *card)
- 	DECLARE_COMPLETION_ONSTACK(released);
- 	int ret;
- 
-+	/* The call of snd_card_free() is allowed from various code paths;
-+	 * a manual call from the driver and the call via devres_free, and
-+	 * we need to avoid double-free. Moreover, the release via devres
-+	 * may call snd_card_free() twice due to its nature, we need to have
-+	 * the check here at the beginning.
-+	 */
-+	if (card->releasing)
-+		return 0;
-+
- 	card->release_completion = &released;
- 	ret = snd_card_free_when_closed(card);
- 	if (ret)
-@@ -813,10 +822,7 @@ EXPORT_SYMBOL_GPL(snd_card_add_dev_attr);
- 
- static void trigger_card_free(void *data)
- {
--	struct snd_card *card = data;
--
--	if (!card->releasing)
--		snd_card_free(data);
-+	snd_card_free(data);
- }
- 
- /**
--- 
-2.26.2
-
+Takashi
