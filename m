@@ -2,89 +2,91 @@ Return-Path: <SRS0=FXXq=MY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2E2FC4338F
-	for <alsa-devel@archiver.kernel.org>; Sun,  1 Aug 2021 07:40:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 632C9C4338F
+	for <alsa-devel@archiver.kernel.org>; Sun,  1 Aug 2021 08:04:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4751D61042
-	for <alsa-devel@archiver.kernel.org>; Sun,  1 Aug 2021 07:40:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4751D61042
+	by mail.kernel.org (Postfix) with ESMTPS id 14F5B6108D
+	for <alsa-devel@archiver.kernel.org>; Sun,  1 Aug 2021 08:04:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 14F5B6108D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4374918AE;
-	Sun,  1 Aug 2021 09:39:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4374918AE
+	by alsa0.perex.cz (Postfix) with ESMTPS id A6F5B189B;
+	Sun,  1 Aug 2021 10:04:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6F5B189B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627803610;
-	bh=9F1VqoWBXSpS7L6hJtxY95BA2dga/0P1ExWGkbpKngY=;
+	s=default; t=1627805093;
+	bh=smSHSTxqhYWCy1d/h/Kq+AaF9/DiPB+CLBeVfJUOLmE=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=O3OfrSHhEFQoS/0MhNQbTzTpRRF1Z7UXf6Lsv5bZLtUsJdoYzx0JDF/dqV2w+Hf6k
-	 dpJ5Dzs2fwpmJjM5PLb1MT+7RXG304lU4CJiH2wpeNa+HfekurSqOo/RqgGKTreY3d
-	 EkSy0bVagxwLz8UlXH24uF9+fEhws7aAExmxNcq4=
+	b=QUAcqw5T+FASIFpNp5u3tqsO0bdp/1jEMT2xDej+KYn0AjrNbCv7cx1zxPlOAuleB
+	 25IZcnQ1qIzqNPG1fEjM9aeCv68yqALyI1HNmQY+Cbg8ExTd3EzqPA7/MH6io/WJUE
+	 YjNMM+6DrHEQbkCthAM+Ajiu+y3evu5AzkIY9pXw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C95F8F8012E;
-	Sun,  1 Aug 2021 09:39:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3AFA7F8016D;
+	Sun,  1 Aug 2021 10:04:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 58BA7F802E8; Sun,  1 Aug 2021 09:39:18 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 72224F802E8; Sun,  1 Aug 2021 10:04:01 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D93AAF8012E
- for <alsa-devel@alsa-project.org>; Sun,  1 Aug 2021 09:39:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D93AAF8012E
+ by alsa1.perex.cz (Postfix) with ESMTPS id C47CCF8012E
+ for <alsa-devel@alsa-project.org>; Sun,  1 Aug 2021 10:03:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C47CCF8012E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="EKBJ4V05"; 
+ header.b="Bz8m1F01"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="VEuEXi9D"
+ header.b="qjaqYRQ2"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 8BE841FEB5;
- Sun,  1 Aug 2021 07:39:13 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 1AD0421FF9;
+ Sun,  1 Aug 2021 08:03:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1627803553; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1627805036; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GS1k/+KLd6UXkQMtahglCC90D31kziwwPHjdLxyERE0=;
- b=EKBJ4V05t9EXzcKu6MwuRvq50O72KO8/JhHIl38CwQBs0iB5SQQwuNTPymO4xp3yWPiJn6
- hl9GuyBWdhTh1kvwi4PisNWgWRWRaWHsxBvE2S4m7/yzpovGLhx/bLNYLWJvyoWQuApAIC
- 2lYix+K2a4T8/s2LN2NelxGrsCM3QZQ=
+ bh=iUnvT3yBk3Ak2FNUwjA/dYWqqudAaqfeubdq+0me75I=;
+ b=Bz8m1F01OxpMp2gtaAHvBzOJRO0HAy73WEx9xUN92Y/V0shSQYitGik1zp0Pscj/82IJGD
+ wPRJF0usS7ouGAqkZzqy56xr1qh8JY4xXqwp2FQ6bVWRWukcVZONk6sknAXhBZDfazny/n
+ EjYPz12++B1KbP0pNi0DEsb6RjzvbsE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1627803553;
+ s=susede2_ed25519; t=1627805036;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GS1k/+KLd6UXkQMtahglCC90D31kziwwPHjdLxyERE0=;
- b=VEuEXi9D44igkFVVG2cLdrYSPqmzITUYhIQc1gO4FWQG6kNk8bFdXou6z8SfC7b02qStb7
- 5zgWPSX3449lbDCA==
+ bh=iUnvT3yBk3Ak2FNUwjA/dYWqqudAaqfeubdq+0me75I=;
+ b=qjaqYRQ2CFcwE1tIRHdsUZGIYL0YSKnwYCNppSWb1qukP9Heb67yHuL3zOWdxpIO0esjiA
+ 4SLzjXqMVShi38Bg==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 80B1DA3BAC;
- Sun,  1 Aug 2021 07:39:13 +0000 (UTC)
-Date: Sun, 01 Aug 2021 09:39:13 +0200
-Message-ID: <s5h8s1l1un2.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 0774FA3BA8;
+ Sun,  1 Aug 2021 08:03:56 +0000 (UTC)
+Date: Sun, 01 Aug 2021 10:03:55 +0200
+Message-ID: <s5h7dh51thw.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Alexander Monakov <amonakov@ispras.ru>
-Subject: Re: [PATCH] ALSA: hda/realtek: add mic quirk for Acer SF314-42
-In-Reply-To: <alpine.LNX.2.20.13.2108010950460.2011@monopod.intra.ispras.ru>
-References: <20210721170141.24807-1-amonakov@ispras.ru>
- <d6f4a149-12f8-b0d6-477a-c16113511c4a@gmail.com>
- <alpine.LNX.2.20.13.2108010950460.2011@monopod.intra.ispras.ru>
+To: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Subject: Re: [PATCH v3 13/27] ALSA: hda/cs8409: Dont disable I2C clock between
+ consecutive accesses
+In-Reply-To: <20210730151844.7873-14-vitalyr@opensource.cirrus.com>
+References: <20210730151844.7873-1-vitalyr@opensource.cirrus.com>
+ <20210730151844.7873-14-vitalyr@opensource.cirrus.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Nikos Liolios <liolios.nk@gmail.com>,
- Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
+ patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,27 +102,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 01 Aug 2021 09:00:48 +0200,
-Alexander Monakov wrote:
+On Fri, 30 Jul 2021 17:18:30 +0200,
+Vitaly Rodionov wrote:
 > 
-> On Sun, 1 Aug 2021, Nikos Liolios wrote:
+> From: Lucas Tanure <tanureal@opensource.cirrus.com>
 > 
-> > Other quirks for Acer Swift (for Acer SWIFT SF314-54/55/56) they describe the
-> > model using capital letters ("SWIFT" instead of "Swift").  I do think that
-> > "Swift" is better than (caps locked) "SWIFT". Thinking to create a patch for
-> > it since I helped to create this mess.  From my understanding it only affects
-> > the dmesg of which quirk was used, nothing important, but lets keep code
-> > clean.
-> > 
-> > What do you think? Rename "SWIFT"s to "Swift"s?
-> > If no disagreement or no reply I am doing it like tomorrow.
+> Only disable I2C clock 25 ms after not being used.
 > 
-> I agree "Swift" would be better: as far as I can tell, Acer mostly uses "Swift"
-> (both in marketing materials and DMI information). I would support the rename.
+> The current implementation enables and disables the I2C clock for each
+> I2C transaction. Each enable/disable call requires two verb transactions.
+> This means each I2C transaction requires a total of four verb transactions
+> to enable and disable the clock.
+> However, if there are multiple consecutive I2C transactions, it is not
+> necessary to enable and disable the clock each time, instead it is more
+> efficient to enable the clock for the first transaction, and disable it
+> after the final transaction, which would improve performance.
+> This is achieved by using a timeout which disables the clock if no request
+> to enable the clock has occurred for 25 ms.
+> 
+> Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+> ---
+> 
+> Changes in v2:
+> - Improved delayed work start/cancel implementation, and re-worked commit message
+>  adding more explanation why this was required. 
+> 
+> Changes in v3:
+> - Cancel the disable timer, but do not wait for any running disable functions to finish.
+>  If the disable timer runs out before cancel, the delayed work thread will be blocked,
+>  waiting for the mutex to become unlocked. This mutex will be locked for the duration of
+>  any i2c transaction, so the disable function will run to completion immediately
+>  afterwards in the scenario. The next enable call will re-enable the clock, regardless.
 
-That's a really bikeshed topic, and I don't think we need an extra
-patch to correct it.  The message is only for debug prints, usually
-you don't see it.
+This looks almost fine, but just a couple of thoughts:
+
+- cancel_delayed_work_sync() means to it might keep the i2c enabled
+  after that point (just cancel the pending work).
+  Would it cause a inconsistency afterwards?
+
+- A similar procedure is needed for suspend callback to cancel / flush
+  the work.
+  The shutdown is another question, but usually it's fine to without
+  any special handling as long as the resource is kept.
 
 
 thanks,
