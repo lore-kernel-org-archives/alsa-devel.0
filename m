@@ -2,95 +2,66 @@ Return-Path: <SRS0=FXXq=MY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F684C4338F
-	for <alsa-devel@archiver.kernel.org>; Sun,  1 Aug 2021 21:08:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AA1FC4338F
+	for <alsa-devel@archiver.kernel.org>; Sun,  1 Aug 2021 23:12:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8088E60FF2
-	for <alsa-devel@archiver.kernel.org>; Sun,  1 Aug 2021 21:08:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8088E60FF2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	by mail.kernel.org (Postfix) with ESMTPS id C18F360F8F
+	for <alsa-devel@archiver.kernel.org>; Sun,  1 Aug 2021 23:12:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C18F360F8F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1A62117EE;
-	Sun,  1 Aug 2021 23:07:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A62117EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D8A917DB;
+	Mon,  2 Aug 2021 01:11:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D8A917DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627852095;
-	bh=qlim0z/ks8sMFgBwgRg1vuM8Z+HUSpF1XQTbZzxKUuQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1627859548;
+	bh=PxlQcIix7vJd14AAikEmV3rPjcZwlM6XgjHbrDldi2E=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Uygd014ar24WwFLLXVeH10t6NxuF5i5nhMvO9V03fq4iQEnQEyvTQrtc7OwVTZ/8R
-	 fu31jS9FTkLwVR7GXz0X6HkV+VyYLg1mPnB3aGdywZjFKlCaaReUbzBBjcpErzi3r9
-	 7gbtHWNBqsRRBaxmy2dAMUkbsZYyoMX1tFdBUqdg=
+	b=tQAyqFYm8JusK+zvVFovwIamevtP2NtaivzeUTk1Q2zYXjSNbcssd/3t4TR1+rdSj
+	 0mZ0uxE2ugRhLGRMVqMrH6UAMVe1F38sTFZKd4Vzy42H93sHk9Xv1ia4RV6t3US281
+	 lTcgUdgMTlb5n7ocioDB/4WKAU8S5ZkV/a/mQiZo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D4EC1F804FD;
-	Sun,  1 Aug 2021 23:05:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22C7BF8016D;
+	Mon,  2 Aug 2021 01:11:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 574A7F8050F; Sun,  1 Aug 2021 23:05:00 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D9954F804FD
- for <alsa-devel@alsa-project.org>; Sun,  1 Aug 2021 23:04:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9954F804FD
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="SUIHqWmX"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1627851890;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=1p8ek8Mv5bmjZQVgIKvZ48Fo/zhk1QEgZ1h1aTgjX1Q=;
- b=SUIHqWmX4KFBM1W5qWSfGjMr0sPgV0oSbANU1z6mm+cEZHcFqGvvNR0DHG6kteGngCJ/6t
- UxJn26p8Ne+dyNv5mMee1fzXOXx7vqMUIhm/xgk3d1P1Amu+WD/gnKUxNo4dmLDri9nrLR
- e1TkTUVyRoKDm7qF87mhPlHUzQEqtTg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-586-ecoO_3qHNsaJDV7-k3PRtg-1; Sun, 01 Aug 2021 17:04:46 -0400
-X-MC-Unique: ecoO_3qHNsaJDV7-k3PRtg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com
- [10.5.11.13])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 486E83482F;
- Sun,  1 Aug 2021 21:04:45 +0000 (UTC)
-Received: from x1.localdomain.com (unknown [10.39.192.79])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 9EA2160C5A;
- Sun,  1 Aug 2021 21:04:43 +0000 (UTC)
-From: Hans de Goede <hdegoede@redhat.com>
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5/6] ASoC: Intel: bytcr_rt5640: Add support for a second
- headset mic input
-Date: Sun,  1 Aug 2021 23:04:30 +0200
-Message-Id: <20210801210431.161775-6-hdegoede@redhat.com>
-In-Reply-To: <20210801210431.161775-1-hdegoede@redhat.com>
-References: <20210801210431.161775-1-hdegoede@redhat.com>
-MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="US-ASCII"
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org,
- Bard Liao <bard.liao@intel.com>
+ id 3142AF802E8; Mon,  2 Aug 2021 01:11:36 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id B6C68F8014D
+ for <alsa-devel@alsa-project.org>; Mon,  2 Aug 2021 01:11:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6C68F8014D
+Date: 02 Aug 2021 08:11:22 +0900
+X-IronPort-AV: E=Sophos;i="5.84,287,1620658800"; d="scan'208";a="89441322"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 02 Aug 2021 08:11:22 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 7CB1C4002C17;
+ Mon,  2 Aug 2021 08:11:22 +0900 (JST)
+Message-ID: <877dh4yd45.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Colin King <colin.king@canonical.com>
+Subject: Re: [PATCH] ASoC: rsnd: make some arrays static const,
+ makes object smaller
+In-Reply-To: <20210801063237.137998-1-colin.king@canonical.com>
+References: <20210801063237.137998-1-colin.king@canonical.com>
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,77 +77,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Some devices (HP Elitepad 1000 G2) have 2 headset jacks (1 on the dock,
-2nd on the tablet itself). The 2nd headset mic input on these is
-connected to in1 (the internal mics on the HP Elitepad 1000 G2 use DMIC2).
 
-Add support for this through a new BYT_RT5640_HSMIC2_ON_IN1 quirk.
+Hi Colin
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Thank you for your patch
+
+> Don't populate arrays on the stack but instead them static const.
+> Makes the object code smaller by 242 bytes.
+> 
+> Before:
+>    text    data     bss     dec     hex filename
+>   23827    8764       0   32591    7f4f ./sound/soc/sh/rcar/ssi.o
+> 
+> After:
+>    text    data     bss     dec     hex filename
+>   23361    8988       0   32349    7e5d ./sound/soc/sh/rcar/ssi.o
+> 
+> gcc version 10.2.0)
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+
+Nice to know.
+
+	Reviewed-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+
+Do you think we need similar patch to below ?
+(In my quick check)
+
+	core.c	rsnd_get_busif_shift()
+		volume_ramp_rate[] // need static ?
+	adg.c	rsnd_adg_clk_query()
+		rsnd_adg_get_clkout()
+
+Thank you for your help !!
+
+Best regards
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 51fb44ad9b4b..7bf848a07553 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -75,6 +75,7 @@ enum {
- #define BYT_RT5640_NO_SPEAKERS		BIT(24)
- #define BYT_RT5640_LINEOUT		BIT(25)
- #define BYT_RT5640_LINEOUT_AS_HP2	BIT(26)
-+#define BYT_RT5640_HSMIC2_ON_IN1	BIT(27)
- 
- #define BYTCR_INPUT_DEFAULTS				\
- 	(BYT_RT5640_IN3_MAP |				\
-@@ -127,6 +128,8 @@ static void log_quirks(struct device *dev)
- 		dev_err(dev, "quirk map 0x%x is not supported, microphone input will not work\n", map);
- 		break;
- 	}
-+	if (byt_rt5640_quirk & BYT_RT5640_HSMIC2_ON_IN1)
-+		dev_info(dev, "quirk HSMIC2_ON_IN1 enabled\n");
- 	if (BYT_RT5640_JDSRC(byt_rt5640_quirk)) {
- 		dev_info(dev, "quirk realtek,jack-detect-source %ld\n",
- 			 BYT_RT5640_JDSRC(byt_rt5640_quirk));
-@@ -1072,6 +1075,14 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
- 	if (ret)
- 		return ret;
- 
-+	if (byt_rt5640_quirk & BYT_RT5640_HSMIC2_ON_IN1) {
-+		ret = snd_soc_dapm_add_routes(&card->dapm,
-+					byt_rt5640_intmic_in1_map,
-+					ARRAY_SIZE(byt_rt5640_intmic_in1_map));
-+		if (ret)
-+			return ret;
-+	}
-+
- 	if (byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) {
- 		ret = snd_soc_dapm_add_routes(&card->dapm,
- 					byt_rt5640_ssp2_aif2_map,
-@@ -1347,6 +1358,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	static const char * const map_name[] = { "dmic1", "dmic2", "in1", "in3", "none" };
- 	__maybe_unused const char *spk_type;
- 	const struct dmi_system_id *dmi_id;
-+	const char *headset2_string = "";
- 	const char *lineout_string = "";
- 	struct byt_rt5640_private *priv;
- 	struct snd_soc_acpi_mach *mach;
-@@ -1515,10 +1527,13 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	else if (byt_rt5640_quirk & BYT_RT5640_LINEOUT)
- 		lineout_string = " cfg-lineout:1";
- 
-+	if (byt_rt5640_quirk & BYT_RT5640_HSMIC2_ON_IN1)
-+		headset2_string = " cfg-hs2:in1";
-+
- 	snprintf(byt_rt5640_components, sizeof(byt_rt5640_components),
--		 "cfg-spk:%d cfg-mic:%s aif:%d%s", cfg_spk,
-+		 "cfg-spk:%d cfg-mic:%s aif:%d%s%s", cfg_spk,
- 		 map_name[BYT_RT5640_MAP(byt_rt5640_quirk)], aif,
--		 lineout_string);
-+		 lineout_string, headset2_string);
- 	byt_rt5640_card.components = byt_rt5640_components;
- #if !IS_ENABLED(CONFIG_SND_SOC_INTEL_USER_FRIENDLY_LONG_NAMES)
- 	snprintf(byt_rt5640_long_name, sizeof(byt_rt5640_long_name),
--- 
-2.31.1
-
+Kuninori Morimoto
