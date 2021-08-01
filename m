@@ -7,78 +7,77 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98E9AC4338F
-	for <alsa-devel@archiver.kernel.org>; Sun,  1 Aug 2021 21:07:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B58E3C4320A
+	for <alsa-devel@archiver.kernel.org>; Sun,  1 Aug 2021 21:07:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E439260FF2
-	for <alsa-devel@archiver.kernel.org>; Sun,  1 Aug 2021 21:07:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E439260FF2
+	by mail.kernel.org (Postfix) with ESMTPS id 33D8160FF2
+	for <alsa-devel@archiver.kernel.org>; Sun,  1 Aug 2021 21:07:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 33D8160FF2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 845E017F7;
-	Sun,  1 Aug 2021 23:06:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 845E017F7
+	by alsa0.perex.cz (Postfix) with ESMTPS id C6B2117BA;
+	Sun,  1 Aug 2021 23:07:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6B2117BA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627852057;
-	bh=EiDgn3Aaz+Z04VLjdo1ixo28DTSFX0cvgC7kZBSAi+A=;
+	s=default; t=1627852075;
+	bh=dEz5Y9wu3HlZQOcDvwcoD9f65tOds+pbMY6SGOgYM/k=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sjTnpzAU8DyY5nb4Xm2oVHtW5+++Q9xS1lHLzeswo48iLM/q0bIaYqKcVdw0gBWv0
-	 IF+qLBSK7EzfzjvcYoPqmMS6NOrfTnqkBDWmY6qHMWvBSTq8oS+GpqJLTOtH+xlQsI
-	 e1CfXZUgDXK7QP37oFN/WLv9PR7J+C8taA5rGh1A=
+	b=RhxqylcEov3pchpeU+z67NQhLXFE6srXYUhd1EBBcPxFu8mIS8dMD5sOm0qNj5YBg
+	 VlpBG90Rr3d7jVvzOpi11asLAKCmKjVp7/ZBbd1CMoKfGO8aCBxW7HJDXaOec2GML7
+	 AINutBohqQrpzgOPILp7PASENnYOWAEJ01qE3Kn4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 34AAEF804FA;
-	Sun,  1 Aug 2021 23:04:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D40C2F804FE;
+	Sun,  1 Aug 2021 23:04:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2C95CF804FB; Sun,  1 Aug 2021 23:04:53 +0200 (CEST)
+ id 67581F804FF; Sun,  1 Aug 2021 23:04:57 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8FDB3F804D0
- for <alsa-devel@alsa-project.org>; Sun,  1 Aug 2021 23:04:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FDB3F804D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1B0C0F804FD
+ for <alsa-devel@alsa-project.org>; Sun,  1 Aug 2021 23:04:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B0C0F804FD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="D3z+LZkC"
+ header.b="T0dUYWj0"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1627851888;
+ s=mimecast20190719; t=1627851890;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ay0paqEZzLI5r79berxAngpL8XFpvK2sGPodWNkNmvs=;
- b=D3z+LZkCKdoXkOj2aBHfTji7/n8re1wKT/VY+4t0i9wsGKGG7Z6vWgYGY7rtWTW7/Bog6t
- nBGhyYAl/Cr/YrLdoAG1cDFc97pI+5QetyAQs1cwu+Kz4Ym6onUhmk5ZjvQMgF4tshEWjS
- LwT0rxHAomNPDtpveUKWDN7nGgV0HPY=
+ bh=XmvorfxQlPiUKu74j7gCSj4Nq3j0U05mEAr1c2l+lEo=;
+ b=T0dUYWj0zpqP0aw1MvutKPLngYrjWnDxJ5v8a7yzBsXcJhaIOscaqSWWFDcVk8lZsa2Lvp
+ je2RLa6LbhnnUmylYVR9S0IlsCYnehdqwNvjcjabVi+P7EcgTB8x/pkI8Od4kXz9NfI8xf
+ q348junEAnwO++sc/noYjSkF0iogzZw=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-191-HkpgCh6zOzixX3NZQow6-g-1; Sun, 01 Aug 2021 17:04:45 -0400
-X-MC-Unique: HkpgCh6zOzixX3NZQow6-g-1
+ us-mta-542-buRfGC9OP_iVY82JwTXdvA-1; Sun, 01 Aug 2021 17:04:48 -0400
+X-MC-Unique: buRfGC9OP_iVY82JwTXdvA-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com
  [10.5.11.13])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5953E1853027;
- Sun,  1 Aug 2021 21:04:43 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 39C21107ACF5;
+ Sun,  1 Aug 2021 21:04:47 +0000 (UTC)
 Received: from x1.localdomain.com (unknown [10.39.192.79])
- by smtp.corp.redhat.com (Postfix) with ESMTP id ACF7E60C5A;
- Sun,  1 Aug 2021 21:04:41 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 8EA4E608BA;
+ Sun,  1 Aug 2021 21:04:45 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4/6] ASoC: Intel: bytcr_rt5640: Add support for a second
- headphones output
-Date: Sun,  1 Aug 2021 23:04:29 +0200
-Message-Id: <20210801210431.161775-5-hdegoede@redhat.com>
+Subject: [PATCH 6/6] ASoC: Intel: bytcr_rt5640: Fix HP ElitePad 1000 G2 quirk
+Date: Sun,  1 Aug 2021 23:04:31 +0200
+Message-Id: <20210801210431.161775-7-hdegoede@redhat.com>
 In-Reply-To: <20210801210431.161775-1-hdegoede@redhat.com>
 References: <20210801210431.161775-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -106,91 +105,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Some devices (HP Elitepad 1000 G2) have a second headphones output
-(1 on the dock, 2nd on the tablet itself) which is implemented through
-the line-out output of the codec combined with an external hp-amp
-which gets enabled through the codec's GPIO1 pin.
+The HP Elitepad 1000 G2 has 2 headset jacks:
 
-Add support for this through a new BYT_RT5640_LINEOUT_AS_HP2 quirk.
+1. on the dock which uses the output of the codecs built-in HP-amp +
+the standard IN2 input which is always used with the headset-jack.
 
+2. on the tablet itself, this uses the line-out of the codec, combined
+with an external HP-amp + IN1 for the headset-mic.
+
+Fix the HP ElitePad 1000 G2 to properly reflect this now that the
+machine-driver supports this setup.
+
+Note this also changes the mapping for the internal mic. from
+IN1 (which was pointing to the 2nd headset-jack mic) to DMIC2
+which is the actual input for the internal mics.
+
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=213415
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 36 +++++++++++++++++++++++++--
- 1 file changed, 34 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 70faba13450c..51fb44ad9b4b 100644
+index 7bf848a07553..32afeaf6056b 100644
 --- a/sound/soc/intel/boards/bytcr_rt5640.c
 +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -74,6 +74,7 @@ enum {
- #define BYT_RT5640_MCLK_25MHZ		BIT(23)
- #define BYT_RT5640_NO_SPEAKERS		BIT(24)
- #define BYT_RT5640_LINEOUT		BIT(25)
-+#define BYT_RT5640_LINEOUT_AS_HP2	BIT(26)
- 
- #define BYTCR_INPUT_DEFAULTS				\
- 	(BYT_RT5640_IN3_MAP |				\
-@@ -142,6 +143,8 @@ static void log_quirks(struct device *dev)
- 		dev_info(dev, "quirk NO_SPEAKERS enabled\n");
- 	if (byt_rt5640_quirk & BYT_RT5640_LINEOUT)
- 		dev_info(dev, "quirk LINEOUT enabled\n");
-+	if (byt_rt5640_quirk & BYT_RT5640_LINEOUT_AS_HP2)
-+		dev_info(dev, "quirk LINEOUT_AS_HP2 enabled\n");
- 	if (byt_rt5640_quirk & BYT_RT5640_DIFF_MIC)
- 		dev_info(dev, "quirk DIFF_MIC enabled\n");
- 	if (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) {
-@@ -287,12 +290,39 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
-+static int byt_rt5640_event_lineout(struct snd_soc_dapm_widget *w,
-+			struct snd_kcontrol *k, int event)
-+{
-+	unsigned int gpio_ctrl3_val = RT5640_GP1_PF_OUT;
-+	struct snd_soc_dai *codec_dai;
-+
-+	if (!(byt_rt5640_quirk & BYT_RT5640_LINEOUT_AS_HP2))
-+		return 0;
-+
-+	/*
-+	 * On devices which use line-out as a second headphones output,
-+	 * the codec's GPIO1 pin is used to enable an external HP-amp.
-+	 */
-+
-+	codec_dai = byt_rt5640_get_codec_dai(w->dapm);
-+	if (!codec_dai)
-+		return -EIO;
-+
-+	if (SND_SOC_DAPM_EVENT_ON(event))
-+		gpio_ctrl3_val |= RT5640_GP1_OUT_HI;
-+
-+	snd_soc_component_update_bits(codec_dai->component, RT5640_GPIO_CTRL3,
-+		RT5640_GP1_PF_MASK | RT5640_GP1_OUT_MASK, gpio_ctrl3_val);
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_dapm_widget byt_rt5640_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone", NULL),
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
- 	SND_SOC_DAPM_MIC("Internal Mic", NULL),
- 	SND_SOC_DAPM_SPK("Speaker", NULL),
--	SND_SOC_DAPM_LINE("Line Out", NULL),
-+	SND_SOC_DAPM_LINE("Line Out", byt_rt5640_event_lineout),
- 	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
- 			    platform_clock_control, SND_SOC_DAPM_PRE_PMU |
- 			    SND_SOC_DAPM_POST_PMD),
-@@ -1480,7 +1510,9 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 		spk_type = "stereo";
- 	}
- 
--	if (byt_rt5640_quirk & BYT_RT5640_LINEOUT)
-+	if (byt_rt5640_quirk & BYT_RT5640_LINEOUT_AS_HP2)
-+		lineout_string = " cfg-hp2:lineout";
-+	else if (byt_rt5640_quirk & BYT_RT5640_LINEOUT)
- 		lineout_string = " cfg-lineout:1";
- 
- 	snprintf(byt_rt5640_components, sizeof(byt_rt5640_components),
+@@ -644,8 +644,11 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "HP ElitePad 1000 G2"),
+ 		},
+-		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
+-					BYT_RT5640_MCLK_EN),
++		.driver_data = (void *)(BYT_RT5640_DMIC2_MAP |
++					BYT_RT5640_MCLK_EN |
++					BYT_RT5640_LINEOUT |
++					BYT_RT5640_LINEOUT_AS_HP2 |
++					BYT_RT5640_HSMIC2_ON_IN1),
+ 	},
+ 	{	/* HP Pavilion x2 10-k0XX, 10-n0XX */
+ 		.matches = {
 -- 
 2.31.1
 
