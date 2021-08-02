@@ -2,74 +2,74 @@ Return-Path: <SRS0=mFEw=MZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7779C4338F
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 04:03:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F333FC4338F
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 04:32:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A1AFD61050
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 04:03:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A1AFD61050
+	by mail.kernel.org (Postfix) with ESMTPS id A275A61050
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 04:32:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A275A61050
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D99AE1682;
-	Mon,  2 Aug 2021 06:02:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D99AE1682
+	by alsa0.perex.cz (Postfix) with ESMTPS id A926717BC;
+	Mon,  2 Aug 2021 06:31:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A926717BC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627877010;
-	bh=o2RpopBz6mriwSkHUyz4A5DXoiZu1wpfZ4NMHsuWe6A=;
+	s=default; t=1627878734;
+	bh=CMsRWaz1bnKTGMU4K1R1S5AEySTCQi+MPd7WgsSgR+U=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sTV1+A7n9knc97k/FjIpyjmycKvQEwjL3QbQf3VHdxICysmLlQLQML4szyaA2A8Xe
-	 fsMbvD5aYzF0A9t9bJDbp5SSeqpusZQriDcDuo49fz9tiWWZkXIoDTAQATBNYLVb6c
-	 Yxy+4S3IDfeEoSc/kXlBVJaZdEtEMMz2yZmpRTaM=
+	b=IhFN1Yyq4/hDIdvtRPBxJK5kQ8Q7xm36JaDshKuFIo+c9OLoGBCQW4SxvreRzBFN1
+	 l8IHTwdef5Dx5NlBMS+K4HTfHrhjFs1jOjAokaIpQTOpm1rG1CLLA9qGOF75CgC7UW
+	 JKyz1xA4FFmIcxaDQX7yfsRfcpQdIX7eT21YkQhY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 54BAAF801F7;
-	Mon,  2 Aug 2021 06:02:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 38D08F801F7;
+	Mon,  2 Aug 2021 06:31:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D8BFEF8025F; Mon,  2 Aug 2021 06:02:38 +0200 (CEST)
+ id 8C59CF8025F; Mon,  2 Aug 2021 06:31:22 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4C376F800BF
- for <alsa-devel@alsa-project.org>; Mon,  2 Aug 2021 06:02:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C376F800BF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 41FEEF800BF
+ for <alsa-devel@alsa-project.org>; Mon,  2 Aug 2021 06:31:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41FEEF800BF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="nKC/n0jo"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 316C860EB2;
- Mon,  2 Aug 2021 04:02:27 +0000 (UTC)
+ header.b="gP9XFLvj"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6A0360C41;
+ Mon,  2 Aug 2021 04:31:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1627876949;
- bh=o2RpopBz6mriwSkHUyz4A5DXoiZu1wpfZ4NMHsuWe6A=;
+ s=k20201202; t=1627878671;
+ bh=CMsRWaz1bnKTGMU4K1R1S5AEySTCQi+MPd7WgsSgR+U=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=nKC/n0joxjgVNxZKztMSxtLLi9QyVOk32L2RdoDmSAMDQ+clmHz5xen9I0lZvniaK
- NGWQ7PXdViI3KDwePC5XlCAjfreRhPcS0YkS6i1dPCPf8+jzOwnvI/GpzpffrozFmK
- tP4mk/t51o10RwtNUUWhxsRaWR+PhEaYJTLSPDg7sM4ooU7r9V2KAstGobRIjhu1w1
- TnQ4PdqWe/V7R3Q2TaMkEUJPJCYdKsJQrRmQwawv2O/7t6ysqq/IryEOhOFL8BjkYz
- Mq+28pUIAcZgxNGjQRSBvWRSnG7QwuvT4qurmTjrzDU0lknFtKndbsexGx05Mtwvx2
- UlZW6a+D0X2zg==
-Date: Mon, 2 Aug 2021 09:32:24 +0530
+ b=gP9XFLvjDRZCS8SGmpD64zqSZWBKvemGekjum+bgVvt2VGPd0an0Alg0vW8Vfx7gD
+ +8269wRTUlnaNdt7p5eaLjAudEahxYYjT2Kq6cYSM9yk+v8PvUHMigBI+t1+sSogoP
+ 3Ws8v8OhRD/mf3i+waPwAg13PrnXaYiMY6/BLu4MQz2CeuhINgUhQVjeiN6LInR9Lk
+ 5ct+jbyRyjW/pnFeDSochgg4Eg05g1+Oj84OMv+upBGBe05huUxQNoaz5XnyIKr/+G
+ 9Relp9DJHvTS81yamQdPHAqmvaDHc9iiPVaiWJ19vIIEa2ip6XfPXqMtT54g3P4qkt
+ AznkuypovGNvA==
+Date: Mon, 2 Aug 2021 10:01:07 +0530
 From: Vinod Koul <vkoul@kernel.org>
 To: Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH 2/4] soundwire: intel: skip suspend/resume/wake when link
- was not started
-Message-ID: <YQduUIXsoxlaDPsh@matsya>
+Subject: Re: [PATCH 3/4] soundwire: intel: exit clock stop mode on system
+ suspend
+Message-ID: <YQd1C0QQMDNtzfAq@matsya>
 References: <20210727055608.30247-1-yung-chuan.liao@linux.intel.com>
- <20210727055608.30247-3-yung-chuan.liao@linux.intel.com>
+ <20210727055608.30247-4-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210727055608.30247-3-yung-chuan.liao@linux.intel.com>
+In-Reply-To: <20210727055608.30247-4-yung-chuan.liao@linux.intel.com>
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org,
  pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
@@ -90,102 +90,124 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 On 27-07-21, 13:56, Bard Liao wrote:
 > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > 
-> On some HDaudio platforms, SoundWire devices are described in the
-> DSDT but never used. This patch adds a boolean status flag to skip all
-> suspend/resume/wake sequences for this configuration.
-
-Why are the sdw devices created in this case then? I would assume you
-are detecting this configuration and should skip device creation?
-
+> Intel validation reported an issue where the HW_RST self-clearing bit
+> is not cleared in hardware, which as a ripple effect creates issues
+> with the clock stop mode.
 > 
+> This happens is a specific sequence where the Intel manager is
+> pm_runtime suspended with the clock-stop mode enabled. During the
+> system suspend, we currently do nothing, which can lead to potential
+> issues on system resume and the following pm_runtime suspend,
+> depending on the hardware state.
+> 
+> This patch suggests a full resume (parent+child devices) if the
+> clock-stop mode is used. This may require extra time but will make the
+> suspend/resume flows completely symmetric. This also removes a race
+> condition where we could not access SHIM registers if the parent was
+> suspended as well. Resuming the link also resumes the parent by
+> construction.
+> 
+> BugLink: https://github.com/thesofproject/linux/issues/2606
 > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 > Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 > ---
->  drivers/soundwire/intel.c | 22 ++++++++++++----------
->  drivers/soundwire/intel.h |  1 +
->  2 files changed, 13 insertions(+), 10 deletions(-)
+>  drivers/soundwire/intel.c | 65 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 65 insertions(+)
 > 
 > diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-> index 3af922e20e64..46d1645cb7fe 100644
+> index 46d1645cb7fe..9d05e158fe0e 100644
 > --- a/drivers/soundwire/intel.c
 > +++ b/drivers/soundwire/intel.c
-> @@ -1456,6 +1456,7 @@ int intel_link_startup(struct auxiliary_device *auxdev)
->  	if (!(link_flags & SDW_INTEL_MASTER_DISABLE_PM_RUNTIME_IDLE))
->  		pm_runtime_idle(dev);
+> @@ -1527,6 +1527,70 @@ int intel_link_process_wakeen_event(struct auxiliary_device *auxdev)
+>   * PM calls
+>   */
 >  
-> +	sdw->startup_done = true;
->  	return 0;
->  
->  err_interrupt:
-> @@ -1495,8 +1496,9 @@ int intel_link_process_wakeen_event(struct auxiliary_device *auxdev)
->  	sdw = dev_get_drvdata(dev);
->  	bus = &sdw->cdns.bus;
->  
-> -	if (bus->prop.hw_disabled) {
-> -		dev_dbg(dev, "SoundWire master %d is disabled, ignoring\n", bus->link_id);
+> +static int intel_resume_child_device(struct device *dev, void *data)
+> +{
+> +	int ret;
+> +	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+> +
+> +	if (!slave->probed) {
+> +		dev_dbg(dev, "%s: skipping device, no probed driver\n", __func__);
+> +		return 0;
+> +	}
+> +	if (!slave->dev_num_sticky) {
+> +		dev_dbg(dev, "%s: skipping device, never detected on bus\n", __func__);
+> +		return 0;
+> +	}
+> +
+> +	ret = pm_request_resume(dev);
+> +	if (ret < 0)
+> +		dev_err(dev, "%s: pm_request_resume failed: %d\n", __func__, ret);
+> +
+> +	return ret;
+> +}
+> +
+> +static int __maybe_unused intel_pm_prepare(struct device *dev)
+> +{
+> +	struct sdw_cdns *cdns = dev_get_drvdata(dev);
+> +	struct sdw_intel *sdw = cdns_to_intel(cdns);
+> +	struct sdw_bus *bus = &cdns->bus;
+> +	u32 clock_stop_quirks;
+> +	int ret = 0;
+> +
 > +	if (bus->prop.hw_disabled || !sdw->startup_done) {
 > +		dev_dbg(dev, "SoundWire master %d is disabled or not-started, ignoring\n",
 > +			bus->link_id);
->  		return 0;
->  	}
+> +		return 0;
+> +	}
+> +
+> +	clock_stop_quirks = sdw->link_res->clock_stop_quirks;
+> +
+> +	if ((clock_stop_quirks & SDW_INTEL_CLK_STOP_BUS_RESET) ||
+> +	    !clock_stop_quirks) {
+> +		/*
+> +		 * Try to resume the entire bus (parent + child devices) to exit
+> +		 * the clock stop mode. If this fails, we keep going since we don't want
+> +		 * to prevent system suspend from happening and errors should be recoverable
+> +		 * on resume.
+> +		 */
+> +		ret = device_for_each_child(bus->dev, NULL, intel_resume_child_device);
+> +
+> +		if (ret < 0)
+> +			dev_err(dev, "%s: intel_resume_child_device failed: %d\n", __func__, ret);
+> +
+> +		/*
+> +		 * in the case where a link was started but does not have anything connected,
+> +		 * we still need to resume to keep link power up/down sequences balanced.
+> +		 * This is a no-op if a child device was present, since resuming the child
+> +		 * device would also resume the parent
+> +		 */
+> +		ret = pm_request_resume(dev);
+
+I am not sure of this patch yet, maybe I am comprehending it..
+
+1. In above you are calling resume of child devices first and then intel
+device, which sounds reverse, should you not resume intel device first
+and then child (codec devices) ?
+
+2. What about when resume is invoked by the core for the child devices.
+That would be called in the PM resume flow, so why do it here?
+
+> +		if (ret < 0)
+> +			dev_err(dev, "%s: pm_request_resume failed: %d\n", __func__, ret);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int __maybe_unused intel_suspend(struct device *dev)
+>  {
+>  	struct sdw_cdns *cdns = dev_get_drvdata(dev);
+> @@ -1923,6 +1987,7 @@ static int __maybe_unused intel_resume_runtime(struct device *dev)
+>  }
 >  
-> @@ -1533,8 +1535,8 @@ static int __maybe_unused intel_suspend(struct device *dev)
->  	u32 clock_stop_quirks;
->  	int ret;
->  
-> -	if (bus->prop.hw_disabled) {
-> -		dev_dbg(dev, "SoundWire master %d is disabled, ignoring\n",
-> +	if (bus->prop.hw_disabled || !sdw->startup_done) {
-> +		dev_dbg(dev, "SoundWire master %d is disabled or not-started, ignoring\n",
->  			bus->link_id);
->  		return 0;
->  	}
-> @@ -1587,8 +1589,8 @@ static int __maybe_unused intel_suspend_runtime(struct device *dev)
->  	u32 clock_stop_quirks;
->  	int ret;
->  
-> -	if (bus->prop.hw_disabled) {
-> -		dev_dbg(dev, "SoundWire master %d is disabled, ignoring\n",
-> +	if (bus->prop.hw_disabled || !sdw->startup_done) {
-> +		dev_dbg(dev, "SoundWire master %d is disabled or not-started, ignoring\n",
->  			bus->link_id);
->  		return 0;
->  	}
-> @@ -1652,8 +1654,8 @@ static int __maybe_unused intel_resume(struct device *dev)
->  	bool multi_link;
->  	int ret;
->  
-> -	if (bus->prop.hw_disabled) {
-> -		dev_dbg(dev, "SoundWire master %d is disabled, ignoring\n",
-> +	if (bus->prop.hw_disabled || !sdw->startup_done) {
-> +		dev_dbg(dev, "SoundWire master %d is disabled or not-started, ignoring\n",
->  			bus->link_id);
->  		return 0;
->  	}
-> @@ -1750,8 +1752,8 @@ static int __maybe_unused intel_resume_runtime(struct device *dev)
->  	int status;
->  	int ret;
->  
-> -	if (bus->prop.hw_disabled) {
-> -		dev_dbg(dev, "SoundWire master %d is disabled, ignoring\n",
-> +	if (bus->prop.hw_disabled || !sdw->startup_done) {
-> +		dev_dbg(dev, "SoundWire master %d is disabled or not-started, ignoring\n",
->  			bus->link_id);
->  		return 0;
->  	}
-> diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
-> index 0b47b148da3f..cd93a44dba9a 100644
-> --- a/drivers/soundwire/intel.h
-> +++ b/drivers/soundwire/intel.h
-> @@ -41,6 +41,7 @@ struct sdw_intel {
->  	struct sdw_cdns cdns;
->  	int instance;
->  	struct sdw_intel_link_res *link_res;
-> +	bool startup_done;
->  #ifdef CONFIG_DEBUG_FS
->  	struct dentry *debugfs;
->  #endif
+>  static const struct dev_pm_ops intel_pm = {
+> +	.prepare = intel_pm_prepare,
+>  	SET_SYSTEM_SLEEP_PM_OPS(intel_suspend, intel_resume)
+>  	SET_RUNTIME_PM_OPS(intel_suspend_runtime, intel_resume_runtime, NULL)
+>  };
 > -- 
 > 2.17.1
 
