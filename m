@@ -2,75 +2,120 @@ Return-Path: <SRS0=mFEw=MZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 20B8BC4320A
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 14:45:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65F46C4338F
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 15:03:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 22B8B60FF2
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 14:45:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 22B8B60FF2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 98A4E60FC4
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 15:03:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 98A4E60FC4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 22DB4172E;
-	Mon,  2 Aug 2021 16:44:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22DB4172E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E0A4172A;
+	Mon,  2 Aug 2021 17:02:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E0A4172A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627915541;
-	bh=ECJa5IMo++YDHoFuwruH/HxHgRkOQN/TrOhQF0zfi+A=;
+	s=default; t=1627916602;
+	bh=kyXJSBoXu42idd1yJgJsXu9d79+CmweetuDyZooJbUY=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=miaqmXxOgRS2hNtLF4WODV5U4wkKdP3uug6Iis6mu7qM0EZoX9TqyqKZk+/1kfOMc
-	 L9hB0rNoMvqsk9HRLtuPmCIhocaOui8KzaVXMQDHvPyhOZRCpftFCpu1n7dqnBrWzA
-	 SamnAA7DD50mG9rqkGTELebjwLduwhk1lFVjYSjA=
+	b=rD4157HvsFtRLZGcOUCkhkWe9wt/ny3+W1oW0hqDeX67HdKsrblNdth86qOuqc5lZ
+	 TiaBeRWnBQHu/MmfGGdcJH0EtR+CQuOKJRzVGGRmnKLFe5jWgp1ZTCOx8KH+etvWLV
+	 HrV89Mr9Rc4IAlSxah8XHBYRU9Q7BOv6x4riOmB4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B49D3F80271;
-	Mon,  2 Aug 2021 16:44:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB109F801F7;
+	Mon,  2 Aug 2021 17:02:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B404EF8026A; Mon,  2 Aug 2021 16:44:00 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ id ED567F8025F; Mon,  2 Aug 2021 17:02:30 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 85A28F800BF
- for <alsa-devel@alsa-project.org>; Mon,  2 Aug 2021 16:43:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85A28F800BF
-X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="200640130"
-X-IronPort-AV: E=Sophos;i="5.84,289,1620716400"; d="scan'208";a="200640130"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Aug 2021 07:43:52 -0700
-X-IronPort-AV: E=Sophos;i="5.84,289,1620716400"; d="scan'208";a="436685447"
-Received: from skshirsa-mobl1.amr.corp.intel.com (HELO [10.209.189.56])
- ([10.209.189.56])
- by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Aug 2021 07:43:51 -0700
-Subject: Re: [PATCH 3/4] soundwire: intel: exit clock stop mode on system
- suspend
-To: Vinod Koul <vkoul@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>
-References: <20210727055608.30247-1-yung-chuan.liao@linux.intel.com>
- <20210727055608.30247-4-yung-chuan.liao@linux.intel.com>
- <YQd1C0QQMDNtzfAq@matsya>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <792f70bd-b4ae-e3a1-c37e-ba2913018d0b@linux.intel.com>
-Date: Mon, 2 Aug 2021 09:24:12 -0500
+ by alsa1.perex.cz (Postfix) with ESMTPS id C805CF8014D
+ for <alsa-devel@alsa-project.org>; Mon,  2 Aug 2021 17:02:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C805CF8014D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="QBVi+Up4"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1627916546;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=IQn3lWKBIP82QpyroX3uD+kOwHQGWgUweHxb8LcCMQI=;
+ b=QBVi+Up4qLWkgLRJ/f+qD8NnNwA0x1uBsnqhjGlW2ckCnge9NW57sfpvHjrOA1dggKLxRP
+ w8ReNSLhwRdm3e9uCOWlLvPa/GcL02ghhEXJjnTWqzdgzQ4ogDQ+B/jVId02IPBW+rWQw5
+ KK3+RKrSplZ7dtBO1uaXX7TG7APxgV4=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-379-ypya3XWnMEm8feO44soYNA-1; Mon, 02 Aug 2021 11:02:22 -0400
+X-MC-Unique: ypya3XWnMEm8feO44soYNA-1
+Received: by mail-ej1-f72.google.com with SMTP id
+ e8-20020a1709060808b02904f7606bd58fso4804999ejd.11
+ for <alsa-devel@alsa-project.org>; Mon, 02 Aug 2021 08:02:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=IQn3lWKBIP82QpyroX3uD+kOwHQGWgUweHxb8LcCMQI=;
+ b=PI0lpuWkZjdS8bWa6OJLTCk03YdkQUHGF/Iomjv6jNXrrgYWrLvDzEsA+7w+CbRkI1
+ 2urIY363DJwH4E526TLw1DG1XXb8jJtsC9MOSxuBMGaoTGZZw7Gs3ac1myZsowLMpCN+
+ K5pZqB4UzRqbzEVM+owzLTkJvknzMGaWVpfYri+MdHWn07lwvaTJzCBCO9C8Vgh55vxK
+ zE9cx4cLEzmJlnJQyyrwbuenuEGH57yy+3jLiAPe1iJD8XxbscjdPS7EEadIdET63s1r
+ sS4CUzJi2McR5aRsm8w6zMzyvq0F/BI5G0tsvBgbVjBq8Y+ho9mvl6pr1hsuLqSXq3MY
+ S7GQ==
+X-Gm-Message-State: AOAM533DoHjiWWmZKY4YUS+0vJZD97tl0LxPF92XM49M4kjAy7feaqri
+ vKLTmw+dFGsuGUsC26qvAvL61kjuf9CdwUpwLBbeBXLHLHLo0cy25JKsBrv8/kqjHLD1H0/Z2Bx
+ fPCwUWd+frSgrHReT0mQmZUk=
+X-Received: by 2002:a05:6402:7d3:: with SMTP id
+ u19mr20379842edy.188.1627916541577; 
+ Mon, 02 Aug 2021 08:02:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz6RE7ktPpmN1lmsqySPYwqWoFuI2AZ3J1awe6WcE2hRCVneeoKRXtuOwJfMz8f4zNaqgGSYw==
+X-Received: by 2002:a05:6402:7d3:: with SMTP id
+ u19mr20379825edy.188.1627916541452; 
+ Mon, 02 Aug 2021 08:02:21 -0700 (PDT)
+Received: from x1.localdomain ([81.30.35.201])
+ by smtp.gmail.com with ESMTPSA id g23sm4678427ejm.26.2021.08.02.08.02.20
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 02 Aug 2021 08:02:21 -0700 (PDT)
+Subject: Re: [PATCH 4/6] ASoC: Intel: bytcr_rt5640: Add support for a second
+ headphones output
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
+References: <20210801210431.161775-1-hdegoede@redhat.com>
+ <20210801210431.161775-5-hdegoede@redhat.com>
+ <101f39fb-03e3-5512-a9fc-2c569fcb98fc@linux.intel.com>
+ <a373f102-fe2a-3f64-4023-497a072fc0d5@redhat.com>
+ <ae8cbdab-bc35-3245-ea52-45404451d1e8@linux.intel.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Message-ID: <eaef3178-2871-7085-d088-f84edb3a09a3@redhat.com>
+Date: Mon, 2 Aug 2021 17:02:20 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YQd1C0QQMDNtzfAq@matsya>
+In-Reply-To: <ae8cbdab-bc35-3245-ea52-45404451d1e8@linux.intel.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org,
- bard.liao@intel.com, "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: alsa-devel@alsa-project.org, Bard Liao <bard.liao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,103 +131,69 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi,
 
->> +static int __maybe_unused intel_pm_prepare(struct device *dev)
->> +{
->> +	struct sdw_cdns *cdns = dev_get_drvdata(dev);
->> +	struct sdw_intel *sdw = cdns_to_intel(cdns);
->> +	struct sdw_bus *bus = &cdns->bus;
->> +	u32 clock_stop_quirks;
->> +	int ret = 0;
->> +
->> +	if (bus->prop.hw_disabled || !sdw->startup_done) {
->> +		dev_dbg(dev, "SoundWire master %d is disabled or not-started, ignoring\n",
->> +			bus->link_id);
->> +		return 0;
->> +	}
->> +
->> +	clock_stop_quirks = sdw->link_res->clock_stop_quirks;
->> +
->> +	if ((clock_stop_quirks & SDW_INTEL_CLK_STOP_BUS_RESET) ||
->> +	    !clock_stop_quirks) {
->> +		/*
->> +		 * Try to resume the entire bus (parent + child devices) to exit
->> +		 * the clock stop mode. If this fails, we keep going since we don't want
->> +		 * to prevent system suspend from happening and errors should be recoverable
->> +		 * on resume.
->> +		 */
->> +		ret = device_for_each_child(bus->dev, NULL, intel_resume_child_device);
->> +
->> +		if (ret < 0)
->> +			dev_err(dev, "%s: intel_resume_child_device failed: %d\n", __func__, ret);
->> +
->> +		/*
->> +		 * in the case where a link was started but does not have anything connected,
->> +		 * we still need to resume to keep link power up/down sequences balanced.
->> +		 * This is a no-op if a child device was present, since resuming the child
->> +		 * device would also resume the parent
->> +		 */
->> +		ret = pm_request_resume(dev);
+On 8/2/21 4:35 PM, Pierre-Louis Bossart wrote:
 > 
-> I am not sure of this patch yet, maybe I am comprehending it..
 > 
-> 1. In above you are calling resume of child devices first and then intel
-> device, which sounds reverse, should you not resume intel device first
-> and then child (codec devices) ?
+>> I've also figured out how jack-detect works, since the codec's GPIO1 is used for the external-hp-amp enable, the jack-detect signals are directly connected to the Bay Trail SoC's GPIOs:
+>>
+>>   -gpioget 'INT33FC:02' 14 && gpioget 'INT33FC:00' 0 && gpioget 'INT33FC:00' 3
+>>    Nothing inserted: 1 1 0
+>>    Headset  in dock: 0 1 0
+>>    Headphon in dock: 0 1 1
+>>    Headset  in tabl: 1 0 0
+>>    Headphon in tabl: 1 0 0
+>>    Conclusion:
+>>    GPO2 pin 14: !jack in dock
+>>    GPO0 pin  0: !jack in tablet
+>>    GPO0 pin  3: 1 when jack in dock with no mic
 > 
-> 2. What about when resume is invoked by the core for the child devices.
-> That would be called in the PM resume flow, so why do it here?
+> I am a bit confused about the logic. Could you have a case with 1 1 1
+> (separate headphones in tablet and dock jacks)?
 
-I realize it's a complicated sequence, it took us multiple phases to get
-it right. There are multiple layers between power domain, bus and driver.
+1 1 1 is not possible since 1 in column 0 + 1 means nothing inserted, iow
+the jack-detect is active-low; and when nothing is inserted then the last
+column is always 0.
 
-The .prepare phase happens before the system suspend phase. Unlike
-suspend, which progresses from children to parents, the .prepare is
-handled parent first.
+With that said yes headphones in the dock + something in the tablet-jack should
+be detectable as a new combination not in the table, this should give us
+"0 0 x" (I did not test that yet, but the 2 jacks should be fully independent).
+IOW we will end up with 2 separate snd_soc_jack-s which together register
+4 pins. E.g. the declaration for the pins will look like this:
 
-When we do a request_resume of the child device, by construction that
-also resumes the parent. In other words, if we have multiple codecs on a
-link, the first iteration of device_for_each_child() will already resume
-the parent and the first device, and the second iteration will only
-resume the second device.
+static struct snd_soc_jack_pin rt5640_pins[] = {
+        {
+                .pin    = "Headphone",
+                .mask   = SND_JACK_HEADPHONE,
+        },
+        {
+                .pin    = "Headset Mic",
+                .mask   = SND_JACK_MICROPHONE,
+        },
+};
 
-What this step does is make sure than when the codec .suspend routine is
-invoked, the entire bus is already back to full power. I did check
-privately with Rafael (CC:ed) if this sequence was legit.
+static struct snd_soc_jack_pin rt5640_pins2[] = {
+        {
+                .pin    = "Headphone 2",
+                .mask   = SND_JACK_HEADPHONE,
+        },
+        {
+                .pin    = "Headset Mic 2",
+                .mask   = SND_JACK_MICROPHONE,
+        },
+};
 
-We did consider modifying the system suspend callback in codec drivers,
-so that we would do a pm_runtime resume(). This is functionally
-equivalent to what we are suggesting here, but we decided not to do so
-for two main reasons
+And there will be 2 snd_soc_jack_add_gpio calls each using
+1 of the set of pins (assuming I can use bias over-current
+detect to differentiate between headphones/headset on the
+jack on the tablet).
 
-a) lots of code changes across all codecs for an Intel-specific issue
+As you said in your other email "this is an interesting hardware setup"
+I hope I won't hit any userspace issues when I have the kernel code
+ready to register 2 jacks.
 
-b) we would need to add a flag so that codec drivers would know in which
-Intel-specific clock-stop mode the bus was configured. That's not so
-good either.
+Regards,
 
-It seemed simpler to use to add this .prepare step and test on the Intel
-clock stop mode before doing a pm_runtime_resume for all codecs.
+Hans
 
-> 
->> +		if (ret < 0)
->> +			dev_err(dev, "%s: pm_request_resume failed: %d\n", __func__, ret);
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->>  static int __maybe_unused intel_suspend(struct device *dev)
->>  {
->>  	struct sdw_cdns *cdns = dev_get_drvdata(dev);
->> @@ -1923,6 +1987,7 @@ static int __maybe_unused intel_resume_runtime(struct device *dev)
->>  }
->>  
->>  static const struct dev_pm_ops intel_pm = {
->> +	.prepare = intel_pm_prepare,
->>  	SET_SYSTEM_SLEEP_PM_OPS(intel_suspend, intel_resume)
->>  	SET_RUNTIME_PM_OPS(intel_suspend_runtime, intel_resume_runtime, NULL)
->>  };
->> -- 
->> 2.17.1
-> 
