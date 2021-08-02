@@ -2,76 +2,74 @@ Return-Path: <SRS0=mFEw=MZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53B3EC4338F
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 05:39:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8E7BC4338F
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 05:40:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DE7EC61050
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 05:39:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DE7EC61050
+	by mail.kernel.org (Postfix) with ESMTPS id 9EBF761050
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 05:40:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9EBF761050
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0277717B1;
-	Mon,  2 Aug 2021 07:39:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0277717B1
+	by alsa0.perex.cz (Postfix) with ESMTPS id BFD9117AF;
+	Mon,  2 Aug 2021 07:39:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFD9117AF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627882791;
-	bh=8kYtOC910tonNaoxEFanDJ02YW15Ud8VJlLqDfTOjYQ=;
+	s=default; t=1627882841;
+	bh=PUPqiGY1Lqs3wceq2cbTWPaFQYK7+AacH8oW093jjTc=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bBSOAe6qkd+5bS68wiHvi71pxi364zkG23W1xmhUxqbqEZDttqteNnol76YTgcIsw
-	 O93rbee6kKlUKOnL/AxuN3XEHIr/X+Gn2AV3EjdE3Y6tf72/pfmvYVmUROybKkCQk6
-	 vmP8GpHJBOk89MSpXJVOor6+guDw04dC+/eij1ZU=
+	b=ispiOs97AkXTe1pBjJrZ+jE8wphWpMx1YuGiPfyP/FbySv+h5uBg/OaMcl0gAfJv4
+	 /Sq5o4MA4pZU2pw663RuTkOSy22D9hIxWXl3WzQKuB7dIFPotsNMPq4fbfuyBvOrbw
+	 LFZj8RTicBp1IUTA0T66tCcuCCdIp63Lo3Jw+cOU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75FFCF801F7;
-	Mon,  2 Aug 2021 07:39:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 90D0BF8026A;
+	Mon,  2 Aug 2021 07:39:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 64EFEF8025F; Mon,  2 Aug 2021 07:38:58 +0200 (CEST)
+ id 2EC6BF80271; Mon,  2 Aug 2021 07:39:25 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5998F801F7
- for <alsa-devel@alsa-project.org>; Mon,  2 Aug 2021 07:38:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5998F801F7
+ by alsa1.perex.cz (Postfix) with ESMTPS id B2D6BF800BF
+ for <alsa-devel@alsa-project.org>; Mon,  2 Aug 2021 07:39:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2D6BF800BF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="G3YirZ0g"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBED361029;
- Mon,  2 Aug 2021 05:38:49 +0000 (UTC)
+ header.b="HokkQCmn"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D61561029;
+ Mon,  2 Aug 2021 05:39:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1627882730;
- bh=8kYtOC910tonNaoxEFanDJ02YW15Ud8VJlLqDfTOjYQ=;
+ s=k20201202; t=1627882760;
+ bh=PUPqiGY1Lqs3wceq2cbTWPaFQYK7+AacH8oW093jjTc=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=G3YirZ0gAEvXnSprr5kmvyjTFCANMy6cfPJ8P2PD5xWRhOQqlN8keijTJzG0oDMdG
- fMj4ah4bTfLEOQj4E0MG7y3RTzfI0rY9DJXoP3EObwA5ATMOuhHfRuzXXpV+S/6mBz
- XUwCyZIs2/BY113Djr1zaHEKU9meMhSbexFM/Z6thnJpx4w7jLNbXUyznkGSbv5Ld0
- Uf58rsCjrLUca02rI91rUsa0A7QRO9+YI4eEXolZXk/kmpMO6khPIP0DJoenNqaLmL
- sU8OlKdntKnwzmcbb+CiNWeZ/LZJt3lafGwNhTSEjMwXLyAfGypZsoXBPV1QgvMTxH
- J/IuphIZuvPJA==
-Date: Mon, 2 Aug 2021 11:08:46 +0530
+ b=HokkQCmnsDlrMTzwbz9oR8wymqUwjm8+08bU9fyRSBmadtgrKc4fBMe+jKa4FFmG7
+ wJPTl6m5lIJc7CBy1YyvdSd0VjnWCvIIPy42ax44SXGg3qzUOoa0xJPoLsa5wlDYCL
+ WeXbqXDRVzpAaTfO0wiSKxA/45hfOsShy/qzC/C/yNqfl2JulQpsfJYrz9/zZZhyJv
+ La1UL4girGVTgq/vuD5jXW2d5ivid4mC/ledo1U7IbWsmc8/47zcfF0PaLD/Czelco
+ izc6tAn8P07YPn4ILECDxK5GtFXtdblXlGpvSYE5crTdRGSOxCLEJ31duhLV8oWrhi
+ iZHumL7DOaC2w==
+Date: Mon, 2 Aug 2021 11:09:15 +0530
 From: Vinod Koul <vkoul@kernel.org>
-To: Mark Brown <broonie@kernel.org>
+To: Bard Liao <yung-chuan.liao@linux.intel.com>
 Subject: Re: [PATCH 00/10] soundwire/ASoC: add mockup codec support
-Message-ID: <YQeE5r8SCJV54TCK@matsya>
+Message-ID: <YQeFA9/+OfLEftB2@matsya>
 References: <20210714032209.11284-1-yung-chuan.liao@linux.intel.com>
- <20210714193315.GK4719@sirena.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210714193315.GK4719@sirena.org.uk>
+In-Reply-To: <20210714032209.11284-1-yung-chuan.liao@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
  linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
- sanyog.r.kale@intel.com, Bard Liao <yung-chuan.liao@linux.intel.com>,
- bard.liao@intel.com
+ broonie@kernel.org, sanyog.r.kale@intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,26 +85,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 14-07-21, 20:33, Mark Brown wrote:
-> On Wed, Jul 14, 2021 at 11:21:59AM +0800, Bard Liao wrote:
-> > Adding mockup SoundWire codec is useful to debug driver/topology changes
-> > without having any actual device connected.
-> 
-> The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
-> 
->   Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-sdw-mockup-codec
-> 
-> for you to fetch changes up to 0ccac3bcf3564cbcba483dec20c7550939873f59:
-> 
->   ASoC: Intel: boards: sof_sdw: add SoundWire mockup codecs for tests (2021-07-14 18:02:07 +0100)
+On 14-07-21, 11:21, Bard Liao wrote:
+> Adding mockup SoundWire codec is useful to debug driver/topology changes
+> without having any actual device connected.
 
-Thank You! Merged to sdw-next
-
-
+Applied sdw patches to sdw-next, thanks
 
 -- 
 ~Vinod
