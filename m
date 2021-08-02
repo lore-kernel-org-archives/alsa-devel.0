@@ -2,85 +2,88 @@ Return-Path: <SRS0=mFEw=MZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40EFBC4338F
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 07:31:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F2A4C4338F
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 07:31:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 955BF60F58
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 07:30:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 955BF60F58
+	by mail.kernel.org (Postfix) with ESMTPS id 84A3760F36
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 07:31:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 84A3760F36
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF14417E7;
-	Mon,  2 Aug 2021 09:30:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF14417E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 13E9917D1;
+	Mon,  2 Aug 2021 09:30:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13E9917D1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627889458;
-	bh=ZaOpVjhPP2p3OS1WT2K6NOnw9dVOEoE/rKrK/fI2Xtw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=HVViGEsdLWi45zJCWGJ1biFnbAY2drWdKwwiEodc5j97t77oKPUg7BV7AbyDJalXE
-	 qMvCmZP/TnYkYhLmWDnIa5PqOZKCNmZw3c8W/+IFwegLkoeuJsjiYZmIbBIHVcEF4D
-	 PO7LMXIkM5fQmvSl3meUsEOHQw1ovreI97OeiU4c=
+	s=default; t=1627889473;
+	bh=QCkb9Thxg6aiRKcLGRd1kI30tT6Pkui2TKzcs/ehPic=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=EOUfOfQUEtwsoVRRJv/OY4djoOqPPYUBlCoQu9hY3NVmiqIG4ArJvpH/rtsEYqEte
+	 59u8pEepa1+SMIfxEN2x9SpGhJHrbxk8oM5psVj5ITBg4t+jTvkHCfsT1HO+RlgUm4
+	 aEsw/ha5Af4PEF0qN8nzYQO07AFI6dPoMhrnH1vg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 69D7BF804F1;
-	Mon,  2 Aug 2021 09:28:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 72A09F804E3;
+	Mon,  2 Aug 2021 09:28:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 25B7EF804E7; Mon,  2 Aug 2021 09:28:32 +0200 (CEST)
+ id 742ABF80268; Mon,  2 Aug 2021 09:28:32 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8731FF80268
+ by alsa1.perex.cz (Postfix) with ESMTPS id AF8ECF8025F
  for <alsa-devel@alsa-project.org>; Mon,  2 Aug 2021 09:28:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8731FF80268
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF8ECF8025F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="rjZPib5z"; 
+ header.b="vQ70OCfP"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="WoOj+F3V"
+ header.b="EiAstPqD"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id B3D5F21FB6;
+ by smtp-out1.suse.de (Postfix) with ESMTP id E2B8921FDB;
  Mon,  2 Aug 2021 07:28:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1627889297; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=MLt9hWM/aWAAzoIXQKnea2DoJBhKXeFzq8jPIgaX2i4=;
- b=rjZPib5zP4TQCYudBWClQZlo4QCURAxsxnMqaIFgqlmxEGgWr3fenIA9qddtiKkYsPzk+8
- EebGeNLl0u7v3mh80T0fNoZyEeV8Bw2kBa1MvAK2NY4T1FZ0zSPpeZUlozFK5SBuvejTol
- 7bGzcmBlqxiGWwZbttohvP8wTDURS38=
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=FYVr0uSXiXP+MWXMEWmvegmjiXCIhCNLk0Q3Kd+Kcpc=;
+ b=vQ70OCfP/fMGWfYMqoOWJRt8UDnM2inpZtAxyeFOglJS07+Y6bxSBOVklrd5r1Z7SN4vcC
+ nqLKmETnWmmxeLvRWJ+8bAwEeenGN7YU3LoS+Nco2HkebGt1Uf91rfx8j0cH2sTZwz7+L7
+ dorUcL5+LZ4rtLrfofVd6Tj4R+Ho78k=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1627889297;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=MLt9hWM/aWAAzoIXQKnea2DoJBhKXeFzq8jPIgaX2i4=;
- b=WoOj+F3VHm59LOWshaTCKPm8bQiYpqyW8Shs/wgci3f8+6MQk411a2wiqUoHt2gpaDmALq
- trm4AOOUBc3dcgDw==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=FYVr0uSXiXP+MWXMEWmvegmjiXCIhCNLk0Q3Kd+Kcpc=;
+ b=EiAstPqDNpYg7w/Pj5FXnoamUt4obeV4kvfjoCz411zOyVbeWdhKKG887O/GGK4axJ7YYM
+ 6RCPBr5eefyU5QAQ==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 8F634A3B83;
+ by relay2.suse.de (Postfix) with ESMTP id D2F70A3B83;
  Mon,  2 Aug 2021 07:28:17 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 00/15] ALSA: Improved WC memory handling
-Date: Mon,  2 Aug 2021 09:28:00 +0200
-Message-Id: <20210802072815.13551-1-tiwai@suse.de>
+Subject: [PATCH 04/15] ALSA: memalloc: Support WC allocation on all
+ architectures
+Date: Mon,  2 Aug 2021 09:28:04 +0200
+Message-Id: <20210802072815.13551-5-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210802072815.13551-1-tiwai@suse.de>
+References: <20210802072815.13551-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Banajit Goswami <bgoswami@codeaurora.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Shengjiu Wang <shengjiu.wang@gmail.com>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>,
- Fabio Estevam <festevam@gmail.com>, Daniel Mack <daniel@zonque.org>
+Cc: Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,78 +99,94 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+There are the generic DMA API calls for allocating and managing the
+pages with the write-combined attribute.  Let's use them for all
+architectures but x86; x86 still needs the special handling to
+override the page attributes.
 
-this is a patchset to enhance the ALSA memory allocation helper to
-support the allocation of WC pages more generically as well as
-supporting the fixed size buffer allocation.  It allows us to reduce
-lots of redundant code in various ASoC drivers that still haven't used
-the standard preallocation.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/memalloc.c | 46 ++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 39 insertions(+), 7 deletions(-)
 
-Takashi
-
-===
-
-Takashi Iwai (15):
-  ALSA: memalloc: Minor refactoring
-  ALSA: memalloc: Correctly name as WC
-  ALSA: pcm: Allow exact buffer preallocation
-  ALSA: memalloc: Support WC allocation on all architectures
-  ALSA: pxa2xx: Use managed PCM buffer allocation
-  ASoC: bcm: Use managed PCM buffer allocation
-  ASoC: fsl: imx-pcm-fiq: Use managed buffer allocation
-  ASoC: fsl: imx-pcm-rpmsg: Use managed buffer allocation
-  ASoC: tegra: Use managed buffer allocation
-  ASoC: fsl_asrc_dma: Use managed buffer allocation
-  ASoC: fsl_dma: Use managed buffer allocation
-  ASoC: mpc5200: Use managed buffer allocation
-  ASoC: qcom: lpass: Use managed buffer allocation
-  ASoC: qcom: qdsp6: Use managed buffer allocation
-  ASoC: sprd: Use managed buffer allocation
-
- include/sound/memalloc.h             |  6 +-
- include/sound/pcm.h                  | 47 ++++++++++++--
- include/sound/pxa2xx-lib.h           | 13 +---
- sound/arm/pxa2xx-ac97.c              | 18 ++----
- sound/arm/pxa2xx-pcm-lib.c           | 90 ++------------------------
- sound/core/memalloc.c                | 94 +++++++++++++++++-----------
- sound/core/memalloc_local.h          |  2 +-
- sound/core/pcm_memory.c              | 67 +++++++++++++++-----
- sound/core/sgbuf.c                   | 21 ++++---
- sound/pci/hda/hda_controller.c       |  2 +-
- sound/pci/hda/hda_intel.c            |  2 +-
- sound/pci/intel8x0.c                 |  2 +-
- sound/soc/bcm/bcm63xx-pcm-whistler.c | 82 ++----------------------
- sound/soc/fsl/fsl_asrc_dma.c         | 47 +-------------
- sound/soc/fsl/fsl_dma.c              | 50 +--------------
- sound/soc/fsl/imx-pcm-fiq.c          | 75 +---------------------
- sound/soc/fsl/imx-pcm-rpmsg.c        | 89 +-------------------------
- sound/soc/fsl/mpc5200_dma.c          | 63 +------------------
- sound/soc/pxa/pxa-ssp.c              |  3 -
- sound/soc/pxa/pxa2xx-ac97.c          |  3 -
- sound/soc/pxa/pxa2xx-i2s.c           |  3 -
- sound/soc/pxa/pxa2xx-pcm.c           |  3 -
- sound/soc/qcom/lpass-platform.c      | 60 +-----------------
- sound/soc/qcom/qdsp6/q6asm-dai.c     | 63 +------------------
- sound/soc/sprd/sprd-pcm-dma.c        | 67 +-------------------
- sound/soc/tegra/tegra210_admaif.c    |  6 --
- sound/soc/tegra/tegra_pcm.c          | 93 +--------------------------
- sound/soc/tegra/tegra_pcm.h          |  7 ---
- sound/x86/intel_hdmi_audio.c         |  2 +-
- 29 files changed, 209 insertions(+), 871 deletions(-)
-
-===
-
-Cc: Banajit Goswami <bgoswami@codeaurora.org>
-Cc: Daniel Mack <daniel@zonque.org>
-Cc: Fabio Estevam <festevam@gmail.com>
-Cc: Haojian Zhuang <haojian.zhuang@gmail.com>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Shengjiu Wang <shengjiu.wang@gmail.com>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Xiubo Li <Xiubo.Lee@gmail.com>
-
+diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
+index fe8d834e9206..96cd607fcb42 100644
+--- a/sound/core/memalloc.c
++++ b/sound/core/memalloc.c
+@@ -327,19 +327,20 @@ static const struct snd_malloc_ops snd_dma_iram_ops = {
+ };
+ #endif /* CONFIG_GENERIC_ALLOCATOR */
+ 
++#define DEFAULT_GFP \
++	(GFP_KERNEL | \
++	 __GFP_COMP |    /* compound page lets parts be mapped */ \
++	 __GFP_NORETRY | /* don't trigger OOM-killer */ \
++	 __GFP_NOWARN)   /* no stack trace print - this call is non-critical */
++
+ /*
+  * Coherent device pages allocator
+  */
+ static void *snd_dma_dev_alloc(struct snd_dma_buffer *dmab, size_t size)
+ {
+-	gfp_t gfp_flags;
+ 	void *p;
+ 
+-	gfp_flags = GFP_KERNEL
+-		| __GFP_COMP	/* compound page lets parts be mapped */
+-		| __GFP_NORETRY /* don't trigger OOM-killer */
+-		| __GFP_NOWARN; /* no stack trace print - this call is non-critical */
+-	p = dma_alloc_coherent(dmab->dev.dev, size, &dmab->addr, gfp_flags);
++	p = dma_alloc_coherent(dmab->dev.dev, size, &dmab->addr, DEFAULT_GFP);
+ #ifdef CONFIG_X86
+ 	if (p && dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC)
+ 		set_memory_wc((unsigned long)p, PAGE_ALIGN(size) >> PAGE_SHIFT);
+@@ -369,6 +370,37 @@ static const struct snd_malloc_ops snd_dma_dev_ops = {
+ 	.free = snd_dma_dev_free,
+ 	.mmap = snd_dma_dev_mmap,
+ };
++
++/*
++ * Write-combined pages
++ */
++#ifdef CONFIG_X86
++/* On x86, share the same ops as the standard dev ops */
++#define snd_dma_wc_ops	snd_dma_dev_ops
++#else /* CONFIG_X86 */
++static void *snd_dma_wc_alloc(struct snd_dma_buffer *dmab, size_t size)
++{
++	return dma_alloc_wc(dmab->dev.dev, size, &dmab->addr, DEFAULT_GFP);
++}
++
++static void snd_dma_wc_free(struct snd_dma_buffer *dmab)
++{
++	dma_free_wc(dmab->dev.dev, dmab->bytes, dmab->area, dmab->addr);
++}
++
++static int snd_dma_wc_mmap(struct snd_dma_buffer *dmab,
++			   struct vm_area_struct *area)
++{
++	return dma_mmap_wc(dmab->dev.dev, area,
++			   dmab->area, dmab->addr, dmab->bytes);
++}
++
++static const struct snd_malloc_ops snd_dma_wc_ops = {
++	.alloc = snd_dma_wc_alloc,
++	.free = snd_dma_wc_free,
++	.mmap = snd_dma_wc_mmap,
++};
++#endif /* CONFIG_X86 */
+ #endif /* CONFIG_HAS_DMA */
+ 
+ /*
+@@ -379,7 +411,7 @@ static const struct snd_malloc_ops *dma_ops[] = {
+ 	[SNDRV_DMA_TYPE_VMALLOC] = &snd_dma_vmalloc_ops,
+ #ifdef CONFIG_HAS_DMA
+ 	[SNDRV_DMA_TYPE_DEV] = &snd_dma_dev_ops,
+-	[SNDRV_DMA_TYPE_DEV_WC] = &snd_dma_dev_ops,
++	[SNDRV_DMA_TYPE_DEV_WC] = &snd_dma_wc_ops,
+ #ifdef CONFIG_GENERIC_ALLOCATOR
+ 	[SNDRV_DMA_TYPE_DEV_IRAM] = &snd_dma_iram_ops,
+ #endif /* CONFIG_GENERIC_ALLOCATOR */
 -- 
 2.26.2
 
