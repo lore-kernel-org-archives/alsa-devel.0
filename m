@@ -2,57 +2,57 @@ Return-Path: <SRS0=mFEw=MZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A77BC4338F
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 06:03:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76D5EC4338F
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 06:03:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8094B60EFF
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 06:02:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8094B60EFF
+	by mail.kernel.org (Postfix) with ESMTPS id CE7F960F9F
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 06:03:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CE7F960F9F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 11EAD17E7;
-	Mon,  2 Aug 2021 08:02:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11EAD17E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4B7CC17DE;
+	Mon,  2 Aug 2021 08:02:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B7CC17DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627884178;
-	bh=j3wvlICTKXulsQx8y1mJ0QqEkY64xoPCki3ZA7Xzngo=;
+	s=default; t=1627884216;
+	bh=YvSFGA6Kguzd8ujdan0fUFCRr9z8T3VEnsxySR9OMzY=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XDFJ0kDU0St2TU2/zbuIeGe0I2DhvLVT3Q9pnvPLVPCt2TFHY6cTnvTL/BVA3lJon
-	 jT6BetWv3k8z6dH6fU3NSQfmjbINKq5ThOPShMQKolp5GUs8UCSLuj/Qh+djS+xPy/
-	 r2ODEbUvzsXib3t5QAEiJTf/8SMWj3POS79IppH4=
+	b=voJSdRzHzJckyiiK1Nequq9677UCWnWYYymVKFcjravvrMn/djYWkpZuXVw22fPZR
+	 AlPVsjte2A3lSEOBgTzozRtQcfejcXjS942UjeQzZBGjl1NQFw9wJJd61cMCOa2Dyl
+	 xA4Bf5+vIQi0vOGZy4FO9Skf48oDp9TTOmgD3MjA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 84FCFF804F3;
-	Mon,  2 Aug 2021 08:01:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 57A87F80507;
+	Mon,  2 Aug 2021 08:01:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E662CF804E1; Mon,  2 Aug 2021 08:01:11 +0200 (CEST)
+ id D2B9EF804F2; Mon,  2 Aug 2021 08:01:17 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 275DFF804E3
- for <alsa-devel@alsa-project.org>; Mon,  2 Aug 2021 08:01:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 275DFF804E3
-Date: 02 Aug 2021 15:01:04 +0900
-X-IronPort-AV: E=Sophos;i="5.84,287,1620658800"; d="scan'208";a="89491049"
+ by alsa1.perex.cz (Postfix) with ESMTP id 8D18AF804FF
+ for <alsa-devel@alsa-project.org>; Mon,  2 Aug 2021 08:01:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D18AF804FF
+Date: 02 Aug 2021 15:01:12 +0900
+X-IronPort-AV: E=Sophos;i="5.84,287,1620658800"; d="scan'208";a="89491072"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 02 Aug 2021 15:01:04 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 02 Aug 2021 15:01:12 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id A938841BCA46;
- Mon,  2 Aug 2021 15:01:04 +0900 (JST)
-Message-ID: <87o8agwfkv.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 4D1D541BCC64;
+ Mon,  2 Aug 2021 15:01:12 +0900 (JST)
+Message-ID: <87mtq0wfkn.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 4/5] ASoC: soc-topology: cleanup cppcheck warning at
- soc_tplg_kcontrol_elems_load()
+Subject: [PATCH 5/5] ASoC: soc-topology: cleanup cppcheck warning at
+ snd_soc_find_dai_link()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87tuk8wfme.wl-kuninori.morimoto.gx@renesas.com>
@@ -79,37 +79,31 @@ From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 This patch cleanups below cppcheck warning.
 
-sound/soc/soc-topology.c:1038:31: style: The scope of the variable 'control_hdr' can be reduced. [variableScope]
- struct snd_soc_tplg_ctl_hdr *control_hdr;
-                              ^
+sound/soc/soc-topology.c:2129:27: style: The scope of the variable 'link' can be reduced. [variableScope]
+ struct snd_soc_dai_link *link;
+                          ^
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-topology.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/soc/soc-topology.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 98e08afd8eb9..a052dfe5efb6 100644
+index a052dfe5efb6..f6e5ac3e0314 100644
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -1035,7 +1035,6 @@ static int soc_tplg_denum_create(struct soc_tplg *tplg, unsigned int count,
- static int soc_tplg_kcontrol_elems_load(struct soc_tplg *tplg,
- 	struct snd_soc_tplg_hdr *hdr)
+@@ -2124,10 +2124,9 @@ static struct snd_soc_dai_link *snd_soc_find_dai_link(struct snd_soc_card *card,
+ 						      const char *stream_name)
  {
--	struct snd_soc_tplg_ctl_hdr *control_hdr;
- 	int ret;
- 	int i;
+ 	struct snd_soc_pcm_runtime *rtd;
+-	struct snd_soc_dai_link *link;
  
-@@ -1043,8 +1042,7 @@ static int soc_tplg_kcontrol_elems_load(struct soc_tplg *tplg,
- 		soc_tplg_get_offset(tplg));
+ 	for_each_card_rtds(card, rtd) {
+-		link = rtd->dai_link;
++		struct snd_soc_dai_link *link = rtd->dai_link;
  
- 	for (i = 0; i < le32_to_cpu(hdr->count); i++) {
--
--		control_hdr = (struct snd_soc_tplg_ctl_hdr *)tplg->pos;
-+		struct snd_soc_tplg_ctl_hdr *control_hdr = (struct snd_soc_tplg_ctl_hdr *)tplg->pos;
- 
- 		if (le32_to_cpu(control_hdr->size) != sizeof(*control_hdr)) {
- 			dev_err(tplg->dev, "ASoC: invalid control size\n");
+ 		if (link->id != id)
+ 			continue;
 -- 
 2.25.1
 
