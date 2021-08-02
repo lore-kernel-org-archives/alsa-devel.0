@@ -2,88 +2,87 @@ Return-Path: <SRS0=mFEw=MZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B67DDC4338F
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 07:00:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB1BFC4338F
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 07:29:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3EE18610A6
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 07:00:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3EE18610A6
+	by mail.kernel.org (Postfix) with ESMTPS id 7677C60F58
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 07:29:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7677C60F58
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CA68D17CB;
-	Mon,  2 Aug 2021 09:00:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA68D17CB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 41E6B1773;
+	Mon,  2 Aug 2021 09:28:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41E6B1773
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627887651;
-	bh=A6YiSB6rw63ITm32ufSHJPnH7cF7vLUnp6nXmqIsqDY=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1627889369;
+	bh=Mqbc3GLPnvN28ClS34vP32ROCsJx5zVH4YSj2bvgI7A=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qRQFyaKZsm23O/Wd4B7SwCfuOpmLF8Zju5qmmuaiE/o8s3ZILsw4Ufx6ZNY/nhsaa
-	 PifHkq0QuIKSBeSLNEkLSQMx4azYEnxBaB6mdlSnOhH13pr3EHimAhIxyQXLmIrsYN
-	 UOa/cYXEW5iI0yulYOM9vlcz41pgGk8fx1Z8/AXw=
+	b=Cc5O4jtPc6phPmCvDP1Z48lv0oZjXYTMwc8dMpNdbKpNZCzMuKJcwjwtYNvBb9/gp
+	 rMZ540SwBmC0+lQeFSt63tabE2qv6vhbQPLrSWU/EmHC/rh8Ptf1XNeab4F3eF53Fu
+	 TrCU10/D0+h05KTJ7fFkEM1S7RNJMRwNEc2pjWPs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 418F4F801F7;
-	Mon,  2 Aug 2021 09:00:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4FADFF80268;
+	Mon,  2 Aug 2021 09:28:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 31BD2F8025F; Mon,  2 Aug 2021 09:00:00 +0200 (CEST)
+ id 6BCA5F804E6; Mon,  2 Aug 2021 09:28:27 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 78BDFF80095
- for <alsa-devel@alsa-project.org>; Mon,  2 Aug 2021 08:59:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78BDFF80095
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4E0C9F80095
+ for <alsa-devel@alsa-project.org>; Mon,  2 Aug 2021 09:28:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E0C9F80095
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="fLp3QiKV"; 
+ header.b="V6kXkwBg"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="hQDQX5ZG"
+ header.b="Cr6+mgJa"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 5B7781FF30;
- Mon,  2 Aug 2021 06:59:53 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id C66EC1FF35;
+ Mon,  2 Aug 2021 07:28:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1627887593; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1627889297; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=DoRuDskknSrogbmHndQw+WgYAHZ5miz4g/kh/Nqub/4=;
- b=fLp3QiKVC7Kdg1PUAhoAUojUplKVS2QqNDvAzTY46iNgBKS286/hJsgXYAaJTVN3o7E73l
- z5K64hF+cOhF2ca6wlyJLpDFq5B5kU9S6FqlkXF+Mkl2K+nGy47Ya182c7ku2kPp6xcEug
- a+pNldGcuVGXSbErtpygNkc2ZaQsdPQ=
+ bh=rJXqBas6W4m9KctxZ/QVWYzU2IvGP6vgGn2+AeiKQWQ=;
+ b=V6kXkwBgD3cbkAWFOMoV/mQjJajRKdk8NsJY2dTGk5BFR6Jb38Tdg9M7xj2bv0V9ZYsq0Q
+ u1FdGoretuL0TED1VdOlUhahR1wdS9AwEduWZPKun1nLCqzVmQCJvU+sOY2xU9T5q6I/bv
+ Vt+8XXE8xXpcTMhdXx0qarjF9QYIyP4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1627887593;
+ s=susede2_ed25519; t=1627889297;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=DoRuDskknSrogbmHndQw+WgYAHZ5miz4g/kh/Nqub/4=;
- b=hQDQX5ZGVkImmec43TzMW96LGOmjbYOMmA+fFYMAsCfnzY0ymvyZY2qVP7JQvWbai4fV7U
- cIxLCv97CE8AS9Aw==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 4C8B9A3B83;
- Mon,  2 Aug 2021 06:59:53 +0000 (UTC)
-Date: Mon, 02 Aug 2021 08:59:53 +0200
-Message-ID: <s5him0oz5zq.wl-tiwai@suse.de>
+ bh=rJXqBas6W4m9KctxZ/QVWYzU2IvGP6vgGn2+AeiKQWQ=;
+ b=Cr6+mgJadjqaXXffpvJFtAuyCOCQf+eK3K2IWqJBJvYguvqGukY24n09hO+vo/fC9S17+X
+ ANp9f4WXcRSVERCw==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id BE657A3B83;
+ Mon,  2 Aug 2021 07:28:17 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: folkert <folkert@vanheusden.com>
-Subject: Re: aconnect occasionally causes kernel oopses
-In-Reply-To: <20210802061845.GQ890690@belle.intranet.vanheusden.com>
-References: <20210801182754.GP890690@belle.intranet.vanheusden.com>
- <s5hlf5kz80e.wl-tiwai@suse.de>
- <20210802061845.GQ890690@belle.intranet.vanheusden.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 02/15] ALSA: memalloc: Correctly name as WC
+Date: Mon,  2 Aug 2021 09:28:02 +0200
+Message-Id: <20210802072815.13551-3-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210802072815.13551-1-tiwai@suse.de>
+References: <20210802072815.13551-1-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,38 +98,160 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 02 Aug 2021 08:18:45 +0200,
-folkert wrote:
-> 
-> > In which situation?
-> 
-> I was testing something that listens for alsa events and for that I ran
-> a continuous loop that did:
-> 
-> while true
-> do
-> 	aconnect 128:1 14:0
-> 	aconnect -d 128:1 14:0
-> 	aconnect -d 128:2 128:1
-> 	aconnect 128:2 128:1
-> done
-> 
-> I ran 5 instances in parallel.
-> 
-> 14 is midi through
-> 128 is rtpmidi
+SNDRV_DMA_TYPE_DEV_UC and SNDRV_DMA_TYPE_DEV_UC_SG are incorrectly
+named as if they were for the uncached memory, while actually we set
+the pages as write-combined.  Rename them to reflect the right
+attribute.
 
-So rtpmidi process keeps running during the loop, that is, it's only
-about connection and disconnection, right?
-Also, you're listening to an event during that -- but how?
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/sound/memalloc.h       | 6 +++---
+ sound/core/memalloc.c          | 8 ++++----
+ sound/core/sgbuf.c             | 8 ++++----
+ sound/pci/hda/hda_controller.c | 2 +-
+ sound/pci/hda/hda_intel.c      | 2 +-
+ sound/pci/intel8x0.c           | 2 +-
+ sound/x86/intel_hdmi_audio.c   | 2 +-
+ 7 files changed, 15 insertions(+), 15 deletions(-)
 
-In general when you report a bug, more detailed description about the
-test itself would be really helpful.  At best, provide a PoC, which
-makes the debug much easier.  Posting only the stack trace without any
-other information is, OTOH, almost pointless.  One can't decode the
-address for a binary built for a different system easily, either.
+diff --git a/include/sound/memalloc.h b/include/sound/memalloc.h
+index 44d87775b352..6ec40f9d5456 100644
+--- a/include/sound/memalloc.h
++++ b/include/sound/memalloc.h
+@@ -31,13 +31,13 @@ struct snd_dma_device {
+ #define SNDRV_DMA_TYPE_UNKNOWN		0	/* not defined */
+ #define SNDRV_DMA_TYPE_CONTINUOUS	1	/* continuous no-DMA memory */
+ #define SNDRV_DMA_TYPE_DEV		2	/* generic device continuous */
+-#define SNDRV_DMA_TYPE_DEV_UC		5	/* continuous non-cahced */
++#define SNDRV_DMA_TYPE_DEV_WC		5	/* continuous write-combined */
+ #ifdef CONFIG_SND_DMA_SGBUF
+ #define SNDRV_DMA_TYPE_DEV_SG		3	/* generic device SG-buffer */
+-#define SNDRV_DMA_TYPE_DEV_UC_SG	6	/* SG non-cached */
++#define SNDRV_DMA_TYPE_DEV_WC_SG	6	/* SG write-combined */
+ #else
+ #define SNDRV_DMA_TYPE_DEV_SG	SNDRV_DMA_TYPE_DEV /* no SG-buf support */
+-#define SNDRV_DMA_TYPE_DEV_UC_SG	SNDRV_DMA_TYPE_DEV_UC
++#define SNDRV_DMA_TYPE_DEV_WC_SG	SNDRV_DMA_TYPE_DEV_WC
+ #endif
+ #ifdef CONFIG_GENERIC_ALLOCATOR
+ #define SNDRV_DMA_TYPE_DEV_IRAM		4	/* generic device iram-buffer */
+diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
+index cb56414c0955..fe8d834e9206 100644
+--- a/sound/core/memalloc.c
++++ b/sound/core/memalloc.c
+@@ -341,7 +341,7 @@ static void *snd_dma_dev_alloc(struct snd_dma_buffer *dmab, size_t size)
+ 		| __GFP_NOWARN; /* no stack trace print - this call is non-critical */
+ 	p = dma_alloc_coherent(dmab->dev.dev, size, &dmab->addr, gfp_flags);
+ #ifdef CONFIG_X86
+-	if (p && dmab->dev.type == SNDRV_DMA_TYPE_DEV_UC)
++	if (p && dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC)
+ 		set_memory_wc((unsigned long)p, PAGE_ALIGN(size) >> PAGE_SHIFT);
+ #endif
+ 	return p;
+@@ -350,7 +350,7 @@ static void *snd_dma_dev_alloc(struct snd_dma_buffer *dmab, size_t size)
+ static void snd_dma_dev_free(struct snd_dma_buffer *dmab)
+ {
+ #ifdef CONFIG_X86
+-	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_UC)
++	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC)
+ 		set_memory_wb((unsigned long)dmab->area,
+ 			      PAGE_ALIGN(dmab->bytes) >> PAGE_SHIFT);
+ #endif
+@@ -379,14 +379,14 @@ static const struct snd_malloc_ops *dma_ops[] = {
+ 	[SNDRV_DMA_TYPE_VMALLOC] = &snd_dma_vmalloc_ops,
+ #ifdef CONFIG_HAS_DMA
+ 	[SNDRV_DMA_TYPE_DEV] = &snd_dma_dev_ops,
+-	[SNDRV_DMA_TYPE_DEV_UC] = &snd_dma_dev_ops,
++	[SNDRV_DMA_TYPE_DEV_WC] = &snd_dma_dev_ops,
+ #ifdef CONFIG_GENERIC_ALLOCATOR
+ 	[SNDRV_DMA_TYPE_DEV_IRAM] = &snd_dma_iram_ops,
+ #endif /* CONFIG_GENERIC_ALLOCATOR */
+ #endif /* CONFIG_HAS_DMA */
+ #ifdef CONFIG_SND_DMA_SGBUF
+ 	[SNDRV_DMA_TYPE_DEV_SG] = &snd_dma_sg_ops,
+-	[SNDRV_DMA_TYPE_DEV_UC_SG] = &snd_dma_sg_ops,
++	[SNDRV_DMA_TYPE_DEV_WC_SG] = &snd_dma_sg_ops,
+ #endif
+ };
+ 
+diff --git a/sound/core/sgbuf.c b/sound/core/sgbuf.c
+index a46129f3de12..9666a95f5a5c 100644
+--- a/sound/core/sgbuf.c
++++ b/sound/core/sgbuf.c
+@@ -43,8 +43,8 @@ static void snd_dma_sg_free(struct snd_dma_buffer *dmab)
+ 	dmab->area = NULL;
+ 
+ 	tmpb.dev.type = SNDRV_DMA_TYPE_DEV;
+-	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_UC_SG)
+-		tmpb.dev.type = SNDRV_DMA_TYPE_DEV_UC;
++	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC_SG)
++		tmpb.dev.type = SNDRV_DMA_TYPE_DEV_WC;
+ 	tmpb.dev.dev = sgbuf->dev;
+ 	for (i = 0; i < sgbuf->pages; i++) {
+ 		if (!(sgbuf->table[i].addr & ~PAGE_MASK))
+@@ -77,8 +77,8 @@ static void *snd_dma_sg_alloc(struct snd_dma_buffer *dmab, size_t size)
+ 	dmab->private_data = sgbuf = kzalloc(sizeof(*sgbuf), GFP_KERNEL);
+ 	if (!sgbuf)
+ 		return NULL;
+-	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_UC_SG) {
+-		type = SNDRV_DMA_TYPE_DEV_UC;
++	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC_SG) {
++		type = SNDRV_DMA_TYPE_DEV_WC;
+ #ifdef pgprot_noncached
+ 		prot = pgprot_noncached(PAGE_KERNEL);
+ #endif
+diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+index ca2f2ecd1488..ea85c714d1cf 100644
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -753,7 +753,7 @@ int snd_hda_attach_pcm_stream(struct hda_bus *_bus, struct hda_codec *codec,
+ 	if (size > MAX_PREALLOC_SIZE)
+ 		size = MAX_PREALLOC_SIZE;
+ 	if (chip->uc_buffer)
+-		type = SNDRV_DMA_TYPE_DEV_UC_SG;
++		type = SNDRV_DMA_TYPE_DEV_WC_SG;
+ 	snd_pcm_set_managed_buffer_all(pcm, type, chip->card->dev,
+ 				       size, MAX_PREALLOC_SIZE);
+ 	return 0;
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 0322b289505e..f1165b491581 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1818,7 +1818,7 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
+ 
+ 	/* use the non-cached pages in non-snoop mode */
+ 	if (!azx_snoop(chip))
+-		azx_bus(chip)->dma_type = SNDRV_DMA_TYPE_DEV_UC;
++		azx_bus(chip)->dma_type = SNDRV_DMA_TYPE_DEV_WC;
+ 
+ 	if (chip->driver_type == AZX_DRIVER_NVIDIA) {
+ 		dev_dbg(chip->card->dev, "Enable delay in RIRB handling\n");
+diff --git a/sound/pci/intel8x0.c b/sound/pci/intel8x0.c
+index df3ba5c70de9..a239af05d77d 100644
+--- a/sound/pci/intel8x0.c
++++ b/sound/pci/intel8x0.c
+@@ -1427,7 +1427,7 @@ struct ich_pcm_table {
+ };
+ 
+ #define intel8x0_dma_type(chip) \
+-	((chip)->fix_nocache ? SNDRV_DMA_TYPE_DEV_UC : SNDRV_DMA_TYPE_DEV)
++	((chip)->fix_nocache ? SNDRV_DMA_TYPE_DEV_WC : SNDRV_DMA_TYPE_DEV)
+ 
+ static int snd_intel8x0_pcm1(struct intel8x0 *chip, int device,
+ 			     const struct ich_pcm_table *rec)
+diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
+index a34d7d9c2a57..bf174c913f83 100644
+--- a/sound/x86/intel_hdmi_audio.c
++++ b/sound/x86/intel_hdmi_audio.c
+@@ -1796,7 +1796,7 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
+ 		/* allocate dma pages;
+ 		 * try to allocate 600k buffer as default which is large enough
+ 		 */
+-		snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV_UC,
++		snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV_WC,
+ 					       card->dev, HAD_DEFAULT_BUFFER,
+ 					       HAD_MAX_BUFFER);
+ 
+-- 
+2.26.2
 
-
-thanks,
-
-Takashi
