@@ -2,91 +2,87 @@ Return-Path: <SRS0=mFEw=MZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.2 required=3.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D84EEC432BE
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 19:28:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00E81C4338F
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 19:54:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B9DD9610FB
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 19:28:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B9DD9610FB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id D7D2B61037
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 19:54:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D7D2B61037
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=vanheusden.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8615C1707;
-	Mon,  2 Aug 2021 21:27:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8615C1707
+	by alsa0.perex.cz (Postfix) with ESMTPS id B7A731717;
+	Mon,  2 Aug 2021 21:54:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7A731717
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627932499;
-	bh=0qldWUKxnozqb0QFkRWl7uDnM1senBAA5Z7f4UzWOGY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1627934091;
+	bh=Pmg8m3m6pkXIGVGzF7wq6dyZ0Ect3/4E409w5gqvM9s=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vREC3pZyuN5QwXwPpbyZ+eqAJdY2griss/7G7Ayh66L1ltUmFDH6vt7/+nBmsHhTy
-	 vIW/bauG5cKKr17FQZNNuFMuRHFwqwHdSfVAbHVhrVsfj5xovqUnTL92tc+UoKYHID
-	 vkkOs+V+qwhLTxU+ltK+PUppBrBHoWuCxLO7L4fw=
+	b=KFFlI72jOW28WOGfOaAaExaoL6jbl2pxeWtjQ4oz+AvWxtC0ZjGP2fx/WuvsBcuW8
+	 OtCKOfFqsP1QO6gIpNLijYPNnHL1Ic7NReQ+xR3kpVqe5OL43u/sWlgo+W+RJoikq6
+	 X7DodHjwAnRVxePfVajJuiQbbiGlfVl0wZN2uwLk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B017F801F7;
-	Mon,  2 Aug 2021 21:27:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 466C1F8014D;
+	Mon,  2 Aug 2021 21:54:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 86CC1F8025F; Mon,  2 Aug 2021 21:27:27 +0200 (CEST)
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com
- [IPv6:2607:f8b0:4864:20::82f])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id AF39AF801F7; Mon,  2 Aug 2021 21:53:59 +0200 (CEST)
+Received: from lb2-smtp-cloud9.xs4all.net (lb2-smtp-cloud9.xs4all.net
+ [194.109.24.26])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7C261F800BF
- for <alsa-devel@alsa-project.org>; Mon,  2 Aug 2021 21:27:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C261F800BF
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="UJYtqIBG"
-Received: by mail-qt1-x82f.google.com with SMTP id g11so12408548qts.11
- for <alsa-devel@alsa-project.org>; Mon, 02 Aug 2021 12:27:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=HW3njuGv1KDBuf2BFHE9VIv7j8uLAl3w93h1YDLX4MM=;
- b=UJYtqIBGary2sEHwTCasO1g38aBnU0od1jtTVKg+/YuutvSXiCUvZuEsUzkYj7ZR1G
- 5phMk2MxhEXiWY2hcOuG/QpKcB2600lA03DjuKLOdpesDpAQpb8nOUAa+q7M9KKqXGsF
- lyVx/oBN4kWmq1s2U7ZUHC0h3mcOcjNBPR0prlDYoxzUwY1dgy9yd27AVeJZldKVPHX/
- tLIPT1uSrRbmbc7kc/nxUtqVWcjCjdTIyOKqKDg9UUB9vj/MM2dGzHKc3kwrNLUUV/zP
- L/Y4Yt4NgoP6pxMrN+0cF52PSSq4Hxcg3RAJ4f6naZtTmrS1Xauig8fk9WX1mwpbohKs
- zRAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=HW3njuGv1KDBuf2BFHE9VIv7j8uLAl3w93h1YDLX4MM=;
- b=hs9rL4XjscHIht7NTRs9wgILuBEj3DdZva1P0ilXwNacYJMZ1ynhaTd3zrwdfFQs7/
- ixoAu2qZDwtbsYm1vz/Jvw8uGCOm/8ObluCKZkBNZtSvCAx7g0uGilIVGXNy4xqBhtZ7
- rwuKl4I9rfWcBvSBcj/EPb+VPCdQ6j3oMgAHTLsZ+cBhUer71CFEQY6ROuMSPkzF0HpS
- mubhV/AwSZjIXKhOK9QoMWjurxmDjIiuiTfrG0L2/mlIKAQq342MLtLud9yun6bSQOUV
- ynNzhB273dLmcgnz7O7wgtvBRU/lqf/QhLulVt7R3rMfrJsiQmxy5hbeZS/sYRo3WX01
- QfrQ==
-X-Gm-Message-State: AOAM5316IM/3tAVeQNf3JAMrCNjq3ggYgxdce8GxuriN9ynOv2C8Wbm8
- nlj1MQe+uG3RgxmTqnsD7mOupWXoi+vTjVuZM98=
-X-Google-Smtp-Source: ABdhPJxY2ix9DZ0feo4442os4zftfFiOOj2fX7FixGlwtRMn7Fa2nI3vm3ArgIBtLTPyeYQiKoZAxWAw/q5D4zPiEI8=
-X-Received: by 2002:ac8:7c54:: with SMTP id o20mr15633671qtv.142.1627932438078; 
- Mon, 02 Aug 2021 12:27:18 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 921DDF80095
+ for <alsa-devel@alsa-project.org>; Mon,  2 Aug 2021 21:53:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 921DDF80095
+Received: from cust-b66e5d83 ([IPv6:fc0c:c157:b88d:62c6:5e3c:5f07:82d0:1b4])
+ by smtp-cloud9.xs4all.net with ESMTPA
+ id Ae0UmAxn24JsbAe0VmlA3K; Mon, 02 Aug 2021 21:53:52 +0200
+Received: from localhost (localhost [127.0.0.1])
+ by keetweej.vanheusden.com (Postfix) with ESMTP id A9FC41626F6;
+ Mon,  2 Aug 2021 21:53:50 +0200 (CEST)
+Received: from keetweej.vanheusden.com ([127.0.0.1])
+ by localhost (mauer.intranet.vanheusden.com [127.0.0.1]) (amavisd-new,
+ port 10024)
+ with ESMTP id Xt17fCfgE1-Q; Mon,  2 Aug 2021 21:53:49 +0200 (CEST)
+Received: from belle.intranet.vanheusden.com (belle.intranet.vanheusden.com
+ [192.168.64.100])
+ by keetweej.vanheusden.com (Postfix) with ESMTP id 8D85015F770;
+ Mon,  2 Aug 2021 21:53:49 +0200 (CEST)
+Received: by belle.intranet.vanheusden.com (Postfix, from userid 1000)
+ id 7EE3716063C; Mon,  2 Aug 2021 21:53:49 +0200 (CEST)
+Date: Mon, 2 Aug 2021 21:53:49 +0200
+From: folkert <folkert@vanheusden.com>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: aconnect occasionally causes kernel oopses
+Message-ID: <20210802195349.GV890690@belle.intranet.vanheusden.com>
+References: <20210801182754.GP890690@belle.intranet.vanheusden.com>
+ <s5hlf5kz80e.wl-tiwai@suse.de>
+ <20210802061845.GQ890690@belle.intranet.vanheusden.com>
+ <s5him0oz5zq.wl-tiwai@suse.de>
+ <20210802091012.GR890690@belle.intranet.vanheusden.com>
+ <s5hczqvyj8m.wl-tiwai@suse.de>
+ <20210802152117.GT890690@belle.intranet.vanheusden.com>
+ <s5h5ywnydlz.wl-tiwai@suse.de>
 MIME-Version: 1.0
-References: <DB9P192MB132193EF1C0E9DFA5161A298C5EF9@DB9P192MB1321.EURP192.PROD.OUTLOOK.COM>
-In-Reply-To: <DB9P192MB132193EF1C0E9DFA5161A298C5EF9@DB9P192MB1321.EURP192.PROD.OUTLOOK.COM>
-From: Geraldo Nascimento <geraldogabriel@gmail.com>
-Date: Mon, 2 Aug 2021 16:27:09 +0000
-Message-ID: <CAEsQvcvuWQ5FU4qGZb3Rw-BP_WNdtc7qAq69R2ZHLiA-WQmY5g@mail.gmail.com>
-Subject: Re: dmix optimization
-To: "Giuliano Zannetti - ART S.p.A." <giuliano.zannetti@artgroup-spa.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5h5ywnydlz.wl-tiwai@suse.de>
+Reply-By: Fri 16 Jul 2021 08:34:34 AM CEST
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CMAE-Envelope: MS4xfK+D070kTVgLqyMwF970IA2zSsYQV0FKRn3lNihV+5HI57wrHE+sbb6GWiF7NcXeW7h7nm917oWfG5IS6mD7GDcYMdO0La5VIb8qf51H8qoQZuNbaOoc
+ jRGSydXL7WzkWr1kx8Ye/kjWNp1y2h30C5X9Hf6mIFXCE8la4us3OZw2CxVt2ry/16YyQNpS7AW+nuc0R1L1ult+FFBlJsyAHlork2blRhZ6zmPY6x/YUT1+
+ YqTnLJXD/aAY5QTWZlJGIA==
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,103 +98,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello Giuliano,
+> > [ kernel bug if repeatingly aconnect'ing midi devices ]
+> > 
+> > > Does this happen if you do reconnect of kernel sequencer client?
+> > > You can use snd-virmidi as well as snd-dummy.
+> > > I'm asking it because it'll simplify the test a lot, which will be
+> > > almost self-contained.
+> > 
+> > Like this?
+> > 
+> > root@lappiemctopface:~# aplaymidi -l
+> >  Port    Client name                      Port name
+> >  14:0    Midi Through                     Midi Through Port-0
+> >  20:0    Virtual Raw MIDI 1-0             VirMIDI 1-0
+> >  21:0    Virtual Raw MIDI 1-1             VirMIDI 1-1
+> >  22:0    Virtual Raw MIDI 1-2             VirMIDI 1-2
+> >  23:0    Virtual Raw MIDI 1-3             VirMIDI 1-3
+> > 128:0    rtpmidi lappiemctopface          Network
+> > 128:1    rtpmidi lappiemctopface          metronoom
+> > 128:2    rtpmidi lappiemctopface          AppleMidi2IPMidiBridge
+> > 128:3    rtpmidi lappiemctopface          oensoens
+> > 130:0    FLUID Synth (11462)              Synth input port (11462:0)
+> > 
+> > and then:
+> > 
+> > root@lappiemctopface:~# cat test.sh 
+> > while true
+> > do
+> > 	aconnect 20:0 21:0
+> > 	aconnect -d 20:0 21:0
+> > done
+> > 
+> > root@lappiemctopface:~# for i in `seq 0 3` ; do (./test.sh &) ; done
+> > 
+> > This hard locks-up my laptop: it doesn't even respond to capslock (led
+> > on/off) anymore nor the ctrl+prtscr+alt+b combination.
+> 
+> Thanks, that's really helpful!
+> I see the possible race now.
 
-My suggestion is to repost your question with Cc: to Jaroslav Kysela
-and Takashi Iwai.
+> Could you try the quick fix below?
 
-I *think* Takashi Iwai deals more with kernelspace and Jaroslav Kysela
-is the one that can help you with alsa-lib.
+Something may have changed:
 
-This is a high volume list and sometimes mail will get ignored.
+folkert@oensoens:~$ aplaymidi -l
+ALSA lib seq_hw.c:466:(snd_seq_hw_open) open /dev/snd/seq failed: Permission denied
+Cannot open sequencer - Permission denied
 
-But Cc: the Maintainers and they will take notice and hopefully you'll
-have your optimization feedback.
+???
 
-Thanks,
-Geraldo Nascimento
-
-
-On Mon, Aug 2, 2021 at 9:26 AM Giuliano Zannetti - ART S.p.A.
-<giuliano.zannetti@artgroup-spa.com> wrote:
->
-> Hi,
->
-> I'm trying to optimize the dmix because I'm working with a big number of =
-channels (up to 16) and in this case the dmix has not a negligible impact o=
-n performance.
->
-> I'm working with ALSA 1.1.9. I gave my first look to the generic_mix_area=
-s_16_native function (https://github.com/alsa-project/alsa-lib/blob/v1.1.9/=
-src/pcm/pcm_dmix_generic.c#L130).
->
-> I would ask you if I can avoid to check, for each loop iteration, if the =
-current dst sample is not 0.
->
->     for (;;) {
->         sample =3D *src;
->         if (! *dst) {
->             *sum =3D sample;
->             *dst =3D *src;
->         } else {
->             sample +=3D *sum;
->             *sum =3D sample;
->             if (sample > 0x7fff)
->                 sample =3D 0x7fff;
->             else if (sample < -0x8000)
->                 sample =3D -0x8000;
->             *dst =3D sample;
->         }
->         if (!--size)
->             return;
->         src =3D (signed short *) ((char *)src + src_step);
->         dst =3D (signed short *) ((char *)dst + dst_step);
->         sum =3D (signed int *)   ((char *)sum + sum_step);
->     }
->
-> Could it be possible check for the first sample of the period only, as re=
-ported in the code below? My assumption is that if dst[0] is 0 also dst[1] =
-... dst[period-1] will be 0, and I don't need to check every time. This is =
-already an optimization, but it could be also a starting point for other op=
-timization based on my HW. But, first of all, I would ask to you if my assu=
-mption is right.
->
->     if (! *dst) {
->         for (;;) {
->             sample =3D *src;
->             *sum =3D sample;
->             *dst =3D *src;
->
->             if (!--size)
->                 return;
->
->             src =3D (signed short *) ((char *)src + src_step);
->             dst =3D (signed short *) ((char *)dst + dst_step);
->             sum =3D (signed int *)   ((char *)sum + sum_step);
->         }
->
->     } else {
->         for (;;) {
->             sample =3D *src;
->             sample +=3D *sum;
->             *sum =3D sample;
->
->             if (sample > 0x7fff)
->                 sample =3D 0x7fff;
->             else if (sample < -0x8000)
->                 sample =3D -0x8000;
->             *dst =3D sample;
->
->             if (!--size)
->                 return;
->
->             src =3D (signed short *) ((char *)src + src_step);
->             dst =3D (signed short *) ((char *)dst + dst_step);
->             sum =3D (signed int *)   ((char *)sum + sum_step);
->         }
->     }
->
-> Thank you!
->
-> Best Regards,
-> Giuliano
+Otoh it now runs fine from what I've could test.
