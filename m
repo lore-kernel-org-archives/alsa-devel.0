@@ -2,93 +2,59 @@ Return-Path: <SRS0=mFEw=MZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 905A3C4338F
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 05:50:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1CC5C4338F
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 06:01:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4A79E60C3F
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 05:50:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4A79E60C3F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id A5AFA60EFF
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 06:01:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A5AFA60EFF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8046E17BF;
-	Mon,  2 Aug 2021 07:49:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8046E17BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9CB8D17C0;
+	Mon,  2 Aug 2021 08:00:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CB8D17C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627883439;
-	bh=ZNUOHVOMTvNQKG7wc4NkZz2n3qd9Euu0whzRpsVwX+U=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=T4H8v/voHapfqREeZ7IwS+eXL7XGIhzKL3qEC3eg/K6K51oTL1uoOOhOp5B+F6iVm
-	 XabMNsXWDUyRvnUg1npnydiWkkGkkQ/HPSay84OHQDNywe7CgiDvxeI826CIx1vpcN
-	 J4XqUGR7nA3YN3r0OPfcA2Mr9C/uwYIUHSt4mXhw=
+	s=default; t=1627884074;
+	bh=i6phN60MilGdErg16wP9Zy50k0MFWN2UXLiTnvkoZqc=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=q56Nc+BxSEbVHJCersm51bIcFBNwOjdXVJw+jJlDXosfyYEg9WI6cs8MxwM5OsDdV
+	 txvY7uZDA3+YuNsT624Ev1lCS9Wb9rWQkMMY4FLnlr+q5mVlJwdpweqwrS0cQG/JNV
+	 nEkj/cXHCV1gpOCP2drW6Nj+qgtYDrLIqtg7xwWU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 18204F800BF;
-	Mon,  2 Aug 2021 07:49:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F324F801F7;
+	Mon,  2 Aug 2021 08:00:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BAACEF8025F; Mon,  2 Aug 2021 07:49:47 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 482FAF800BF
- for <alsa-devel@alsa-project.org>; Mon,  2 Aug 2021 07:49:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 482FAF800BF
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="CfxyEyOq"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="xUEAGwmI"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id D24B21FF22;
- Mon,  2 Aug 2021 05:49:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1627883383; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=u6oZSjcDEn8euq9JjXNB+EoE6FA+3PbTgZyitMPpz2M=;
- b=CfxyEyOqg3j1tS44Vj/LkIYXkC5+5P1E4Qm4+pn0ZEpWnbx/XFEyK0WLXx4zP01lCXv7Si
- yBe2GCfC6HLryXCntWE0YSLmG/ZzWaronMwSMm0RXdzoTEE5Y4JC7GcAjxerz7GbXo3wsW
- S1Y7QJrtXI/XcRiCeRdgtufGKgxZ2Tk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1627883383;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=u6oZSjcDEn8euq9JjXNB+EoE6FA+3PbTgZyitMPpz2M=;
- b=xUEAGwmI6qB55ht23AB/hDhTCmPwQlhhVKbFi/F4cbEq7q4WV5jECLWk+5XtwcShGM07DK
- qit7u2A7C0u9GyDg==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id C61CBA3B83;
- Mon,  2 Aug 2021 05:49:43 +0000 (UTC)
-Date: Mon, 02 Aug 2021 07:49:43 +0200
-Message-ID: <s5hpmuwz98o.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH] soundwire: intel: trap TRIGGER_SUSPEND in .trigger
- callback
-In-Reply-To: <YQd2BM3wGzKpfZn1@matsya>
-References: <20210727053256.29949-1-yung-chuan.liao@linux.intel.com>
- <s5h8s1sfevg.wl-tiwai@suse.de>
- <a25d47a6-2599-7101-cd93-e5304b271948@linux.intel.com>
- <YQd2BM3wGzKpfZn1@matsya>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+ id 5A15BF8025F; Mon,  2 Aug 2021 08:00:22 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id AD66DF8014D
+ for <alsa-devel@alsa-project.org>; Mon,  2 Aug 2021 08:00:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD66DF8014D
+Date: 02 Aug 2021 15:00:09 +0900
+X-IronPort-AV: E=Sophos;i="5.84,287,1620658800"; d="scan'208";a="89515960"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 02 Aug 2021 15:00:09 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 0460E4009BE2;
+ Mon,  2 Aug 2021 15:00:09 +0900 (JST)
+Message-ID: <87tuk8wfme.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 0/5] ASoC: soc-topology: cleanup cppcheck warning
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
- Bard Liao <yung-chuan.liao@linux.intel.com>, bard.liao@intel.com
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,51 +70,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 02 Aug 2021 06:35:16 +0200,
-Vinod Koul wrote:
-> 
-> On 27-07-21, 09:12, Pierre-Louis Bossart wrote:
-> > Thanks Takashi for the review.
-> > 
-> > 
-> > >> This patch provides both a simplification of the suspend flows and a
-> > >> better balanced operation during suspend/resume transition.
-> > >>
-> > >> The exiting code relies on a convoluted way of dealing with suspend
-> > >> signals. Since there is no .suspend DAI callback, we used the
-> > >> component .suspend and marked all the component DAI dmas as
-> > >> 'suspended'. The information was used in the .prepare stage to
-> > >> differentiate resume operations from xrun handling, and only
-> > >> reinitialize SHIM registers and DMA in the former case.
-> > >>
-> > >> While this solution has been working reliably for about 2 years, there
-> > >> is a much better solution consisting in trapping the TRIGGER_SUSPEND
-> > >> in the .trigger DAI ops. The DMA is still marked in the same way for
-> > >> the .prepare op to run, but in addition the callbacks sent to DSP
-> > >> firmware are now balanced.
-> > >>
-> > >> Normal operation:
-> > >> hw_params -> intel_params_stream
-> > >> hw_free   -> intel_free_stream
-> > >>
-> > >> suspend    -> intel_free_stream
-> > >> prepare    -> intel_params_stream
-> > >>
-> > >> This balanced operation was not required with existing SOF firmware
-> > >> relying on static pipelines instantiated at every boot. With the
-> > >> on-going transition to dynamic pipelines, it's however a requirement
-> > >> to keep the use count for the DAI widget balanced across all
-> > >> transitions.
-> > > 
-> > > The trigger callback is handled in the stream lock atomically, and are
-> > > you sure that you want to operate a possibly heavy task there?
-> > 
-> > It's a good objection that we didn't think of.
-> 
-> Doesn't Intel use non atomic trigger to send IPCs which anyway involve
-> code which can sleep..?
 
-sof_sdw.c doesn't seem setting it?
+Hi Mark
 
+Now I'm posting audio-graph-card2 patch-set, but it seems it needs longer
+discussion. Thus I want to post more easy patch first, and reduce my
+local patches.
 
-Takashi
+These are cppcheck warning cleanup patches for soc-topology.
+
+Kuninori Morimoto (5):
+  ASoC: soc-topology: cleanup cppcheck warning at soc_tplg_process_headers()
+  ASoC: soc-topology: cleanup cppcheck warning at soc_tplg_dai_elems_load()
+  ASoC: soc-topology: cleanup cppcheck warning at soc_tplg_dapm_widget_elems_load()
+  ASoC: soc-topology: cleanup cppcheck warning at soc_tplg_kcontrol_elems_load()
+  ASoC: soc-topology: cleanup cppcheck warning at snd_soc_find_dai_link()
+
+ sound/soc/soc-topology.c | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
+
+-- 
+2.25.1
+
