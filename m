@@ -2,95 +2,78 @@ Return-Path: <SRS0=mFEw=MZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80D13C4338F
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 14:28:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7411BC4338F
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 14:37:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EB7BF60F41
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 14:28:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EB7BF60F41
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	by mail.kernel.org (Postfix) with ESMTPS id C03BA60F50
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 14:37:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C03BA60F50
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8763616CE;
-	Mon,  2 Aug 2021 16:27:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8763616CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4DBCB16C3;
+	Mon,  2 Aug 2021 16:36:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DBCB16C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627914524;
-	bh=1MaxUSWqneGDNaGeouqqwBKCKu+6Rbs8ksKySnzqPM4=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1627915025;
+	bh=GNhJ0TESZX5tVwo7Nfrgmx0p+BEyAXzayroPEP+v1tw=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mLH7S2QgxtKrlWwxj/6cFKbJabjOTWDbVHSe8i8CuJttibZV+dhM/X2sbyawfcl5L
-	 4h/gx9WSLAUBv3zletQFPrhDptLLgIzrgKxbQFWFqh4AmzkI2Btoz4XM6UrAJQokKy
-	 XR/k8SxOYNT6YOlT6J5tpkOlEieZkyiw/anDkKm8=
+	b=Z6Y3q8lL8vzHK8sALfxXP3JmloGKbpSYjtXGzxvtmeFh37kFc7CbkRx0wJUvBIy6S
+	 WIgyJvJia0jfEJ/WuLHtJ3aKg/QHE0fcWPOzhJAHUhTdtk1tWlq+3VYwOK09i/Svv7
+	 iGgpmzzzgcyOQhkyqWcnsmqvn6wuYFdTV+XPzfow=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1FF23F80508;
-	Mon,  2 Aug 2021 16:25:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D82DBF801F7;
+	Mon,  2 Aug 2021 16:36:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C59FCF8050F; Mon,  2 Aug 2021 16:25:42 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ id 2C9F6F8025F; Mon,  2 Aug 2021 16:36:14 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 70C79F804FE
- for <alsa-devel@alsa-project.org>; Mon,  2 Aug 2021 16:25:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70C79F804FE
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="S90qdBYe"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1627914339;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=nxLMVP/CA2WGd/O5vFsTOShau05VR+/WVuOCTV6uXP8=;
- b=S90qdBYeiwNTJ6OF+PtkYsNsuEwqumJanqlWY/fsZgSJjxI7o+Q7RAHAOkR0aP0KnplqDk
- BNH+D3WbdrrkS2kPB3VmC5lBcmJvjbeXmfjuuwLAQNGNee50msVu2O4CUNYfd1TUeTImah
- b5+AONE25n2u02WbUMVTdbyZxvnH2Sg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-528-9ickkX_mPL2WL1rdqAERug-1; Mon, 02 Aug 2021 10:25:35 -0400
-X-MC-Unique: 9ickkX_mPL2WL1rdqAERug-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com
- [10.5.11.12])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C9588801B3C;
- Mon,  2 Aug 2021 14:25:33 +0000 (UTC)
-Received: from x1.localdomain.com (unknown [10.39.194.80])
- by smtp.corp.redhat.com (Postfix) with ESMTP id A5E9761093;
- Mon,  2 Aug 2021 14:25:28 +0000 (UTC)
-From: Hans de Goede <hdegoede@redhat.com>
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ by alsa1.perex.cz (Postfix) with ESMTPS id EBB44F8014D
+ for <alsa-devel@alsa-project.org>; Mon,  2 Aug 2021 16:36:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBB44F8014D
+X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="213499919"
+X-IronPort-AV: E=Sophos;i="5.84,289,1620716400"; d="scan'208";a="213499919"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Aug 2021 07:35:28 -0700
+X-IronPort-AV: E=Sophos;i="5.84,289,1620716400"; d="scan'208";a="436683193"
+Received: from skshirsa-mobl1.amr.corp.intel.com (HELO [10.209.189.56])
+ ([10.209.189.56])
+ by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Aug 2021 07:35:27 -0700
+Subject: Re: [PATCH 4/6] ASoC: Intel: bytcr_rt5640: Add support for a second
+ headphones output
+To: Hans de Goede <hdegoede@redhat.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH v2 6/6] ASoC: Intel: bytcr_rt5640: Fix HP ElitePad 1000 G2
- quirk
-Date: Mon,  2 Aug 2021 16:25:01 +0200
-Message-Id: <20210802142501.991985-7-hdegoede@redhat.com>
-In-Reply-To: <20210802142501.991985-1-hdegoede@redhat.com>
-References: <20210802142501.991985-1-hdegoede@redhat.com>
+References: <20210801210431.161775-1-hdegoede@redhat.com>
+ <20210801210431.161775-5-hdegoede@redhat.com>
+ <101f39fb-03e3-5512-a9fc-2c569fcb98fc@linux.intel.com>
+ <a373f102-fe2a-3f64-4023-497a072fc0d5@redhat.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <ae8cbdab-bc35-3245-ea52-45404451d1e8@linux.intel.com>
+Date: Mon, 2 Aug 2021 09:35:24 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="US-ASCII"
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org,
- Bard Liao <bard.liao@intel.com>
+In-Reply-To: <a373f102-fe2a-3f64-4023-497a072fc0d5@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, Bard Liao <bard.liao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,45 +89,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The HP Elitepad 1000 G2 has 2 headset jacks:
 
-1. on the dock which uses the output of the codecs built-in HP-amp +
-the standard IN2 input which is always used with the headset-jack.
 
-2. on the tablet itself, this uses the line-out of the codec, combined
-with an external HP-amp + IN1 for the headset-mic.
+> I've also figured out how jack-detect works, since the codec's GPIO1 is used for the external-hp-amp enable, the jack-detect signals are directly connected to the Bay Trail SoC's GPIOs:
+> 
+>   -gpioget 'INT33FC:02' 14 && gpioget 'INT33FC:00' 0 && gpioget 'INT33FC:00' 3
+>    Nothing inserted: 1 1 0
+>    Headset  in dock: 0 1 0
+>    Headphon in dock: 0 1 1
+>    Headset  in tabl: 1 0 0
+>    Headphon in tabl: 1 0 0
+>    Conclusion:
+>    GPO2 pin 14: !jack in dock
+>    GPO0 pin  0: !jack in tablet
+>    GPO0 pin  3: 1 when jack in dock with no mic
 
-Fix the HP ElitePad 1000 G2 to properly reflect this now that the
-machine-driver supports this setup.
+I am a bit confused about the logic. Could you have a case with 1 1 1
+(separate headphones in tablet and dock jacks)?
 
-Note this also changes the mapping for the internal mic. from
-IN1 (which was pointing to the 2nd headset-jack mic) to DMIC2
-which is the actual input for the internal mics.
+> 
+> And I believe that the mic on the tablet jack can be detected using the normal micBIAS over current detection which is normally also used.
+> 
+> This will require some special jack-detect handling inside the machine driver for this model. I plan to also add support for this when I have some time to work on this.
+> """
+> 
+> So ATM this requires an explicit user-choice, but I plan to add support for
+> jack-detect on both jacks when I've some more time to work on this.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=213415
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- sound/soc/intel/boards/bytcr_rt5640.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index f67bd6caec36..d51bd22073df 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -644,8 +644,11 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
- 			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "HP ElitePad 1000 G2"),
- 		},
--		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
--					BYT_RT5640_MCLK_EN),
-+		.driver_data = (void *)(BYT_RT5640_DMIC2_MAP |
-+					BYT_RT5640_MCLK_EN |
-+					BYT_RT5640_LINEOUT |
-+					BYT_RT5640_LINEOUT_AS_HP2 |
-+					BYT_RT5640_HSMIC2_ON_IN1),
- 	},
- 	{	/* HP Pavilion x2 10-k0XX, 10-n0XX */
- 		.matches = {
--- 
-2.31.1
-
+Thanks!
