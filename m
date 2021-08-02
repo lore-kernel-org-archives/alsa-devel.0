@@ -2,89 +2,81 @@ Return-Path: <SRS0=mFEw=MZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41143C4338F
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 15:27:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B00DC4338F
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 15:47:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 10E48604D7
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 15:27:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 10E48604D7
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
+	by mail.kernel.org (Postfix) with ESMTPS id 6D69960EE3
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 15:47:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6D69960EE3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9701D16B0;
-	Mon,  2 Aug 2021 17:26:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9701D16B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3366D16BB;
+	Mon,  2 Aug 2021 17:46:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3366D16BB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627918066;
-	bh=8RdGIPjJX9dGlPKqDevRek2R3/V3xruR0Jr0YW2/83c=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1627919257;
+	bh=IQ5KeYqjl0MoLUj7aVMw/KJz7s6f3eRE3kZ6kMcXRF4=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iQYxOggllgm0rrLH5G5NZBXY+OmUtKUXC44TvSv3RlZURblk8/t8xpKy/FiDuwBHQ
-	 ASiuPkiq/SQ6xbuB8Z4xItD4IWtvNlVVb097DJORS8saLR/OnhLVXyRBxJmXfqT/Ju
-	 K1TYcyDhwbK53pJnPWgM5ZHAeZ0zw/I3YTK9EjXk=
+	b=TrJMrEAgvUtvnxw9M3FPAcwvtbEVk2qkHd4NZci6e0sA8XqpKXSCovJHQANajyZMC
+	 EVR4twzWXMnh7lWEVq8RzfbxWx1GLeIhxXjovdHSzBwbcgdCTBReQ2pE8p5H0KUsMG
+	 8UUZclt99FuS3V4AcbT9l3B4fR0t7g4uwTiW+bzQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 377D5F801F7;
-	Mon,  2 Aug 2021 17:26:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B1D0BF801F7;
+	Mon,  2 Aug 2021 17:46:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 35806F8025F; Mon,  2 Aug 2021 17:26:55 +0200 (CEST)
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
+ id E2783F8025F; Mon,  2 Aug 2021 17:46:44 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 470ECF80095
- for <alsa-devel@alsa-project.org>; Mon,  2 Aug 2021 17:26:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 470ECF80095
-Received: from mail-wr1-f45.google.com ([209.85.221.45]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1M4rkF-1mCUqY2Oe7-0020MX for <alsa-devel@alsa-project.org>; Mon, 02 Aug 2021
- 17:26:45 +0200
-Received: by mail-wr1-f45.google.com with SMTP id c16so21907363wrp.13
- for <alsa-devel@alsa-project.org>; Mon, 02 Aug 2021 08:26:45 -0700 (PDT)
-X-Gm-Message-State: AOAM531yPMtChuYpQ333NkQndbiRLZeTtnAw3O6/62/JgX7Q6ImpUhrL
- 6/hfZ8kaeKA+QeWUpSptK19gJDikLVvSTxAjilw=
-X-Google-Smtp-Source: ABdhPJzZCo02qt85Wy7jyYxW3FRZi9cSM/bDjegl58lPJs2+HXyrFRxyfPQLbaf1L9rZEu8AEundQoeuslaBYiPtiZc=
-X-Received: by 2002:adf:f7c5:: with SMTP id a5mr18330881wrq.99.1627918005273; 
- Mon, 02 Aug 2021 08:26:45 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 32C09F8014D
+ for <alsa-devel@alsa-project.org>; Mon,  2 Aug 2021 17:46:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32C09F8014D
+X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="274543248"
+X-IronPort-AV: E=Sophos;i="5.84,289,1620716400"; d="scan'208";a="274543248"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Aug 2021 08:46:36 -0700
+X-IronPort-AV: E=Sophos;i="5.84,289,1620716400"; d="scan'208";a="501864399"
+Received: from skarumur-mobl.amr.corp.intel.com (HELO [10.212.72.192])
+ ([10.212.72.192])
+ by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Aug 2021 08:46:35 -0700
+Subject: Re: [PATCH] soundwire: intel: trap TRIGGER_SUSPEND in .trigger
+ callback
+To: "Liao, Bard" <bard.liao@intel.com>, Vinod Koul <vkoul@kernel.org>,
+ Takashi Iwai <tiwai@suse.de>
+References: <20210727053256.29949-1-yung-chuan.liao@linux.intel.com>
+ <s5h8s1sfevg.wl-tiwai@suse.de>
+ <a25d47a6-2599-7101-cd93-e5304b271948@linux.intel.com>
+ <YQd2BM3wGzKpfZn1@matsya> <s5hpmuwz98o.wl-tiwai@suse.de>
+ <YQeQxj7Ejh14jIoc@matsya>
+ <DM6PR11MB4074EF8726AA5ED297871225FFEF9@DM6PR11MB4074.namprd11.prod.outlook.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <9ef7e341-13f4-69f7-964d-8e6efdd57ca7@linux.intel.com>
+Date: Mon, 2 Aug 2021 10:46:33 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210802151628.15291-1-pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20210802151628.15291-1-pierre-louis.bossart@linux.intel.com>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 2 Aug 2021 17:26:29 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2+kaFs8cTVGdLQKfx=wDR4RMBcLdOAA3cHOew3=VpCaA@mail.gmail.com>
-Message-ID: <CAK8P3a2+kaFs8cTVGdLQKfx=wDR4RMBcLdOAA3cHOew3=VpCaA@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: SOF: Intel: Kconfig: fix SoundWire dependencies
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:Z424GqHPEkDEniEfGkiPAn7U8OPSCQwa1LE48gh4GO9bn76BL1B
- hFlUYDI29uxzW0ePen1M2yHbsggHoTAVUzrKFZlQQQJu+VGMr6v6c4M3pY8G186dHpUhl5c
- hoLBI9ThroIIqg0ScL4Sp2RFfepJabrkPF06a5mQHJEEfFMpqAaZAa+kAZS8/x3ro6s35mb
- D5Dr+yMxH1UiqelDXy6JQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Oi+IIYjLah8=:ZLoYA8XCBPrSkvYx68Ulni
- 8woApTjjXbExkJUzIpFM3ETt8VFCewPgOiMkFuIaMDhGvnTfldmB7qYZibPjCfiR7cfqgqEgO
- x6qs1IENragzfjlow7BVn34uTGv2q0Q2xx7p7yjOhoeQelZ7VZ6PInGUaMvzhRi0vA+6zZ485
- fdzhVARp3bDc6Nzt8WuS/wb7jmMe3YmZo/vXxeOYrwVSQpk00E2c9+v5sP3hExNSQs5PEQCcE
- puqKfpGUnABklFLXIImRm1GbEtQUAMyOYGGKIhKUPFqvU983IOxJxAGtpNpRaqHejk62sQT6R
- 6Pcogp9R9ooGaZkS4Y6dStQ78BGXZrsfLCfMbX53VtCm4DmpQ7Ue012bQ5QmjUzb6zFzF8U7D
- Htl4bB96UFXxFntqZ+4eHVioHWSt9E9ImsSqBtbfD572ynq3PAmUhckRzusgFMgiqfmOnURqT
- ZtGihMOZ+xpaJDgpZI6kVVk9x9n/p5uf0L8q3plmv16RyH1P1Cg4A82mDi7/rgz3M3ga1CUre
- 7FrJ8ifGTj8EFl7QBugRW0/PtnfxhTRgfp9BQ/R3jeDbgT2TbSnjNH9m2yIKFWQJP4so2RO9u
- 8d/aFzv6jT8evki00BCx88Oh+3kr+D0FYmMBouAHYyfDxhWmR1/PiL4g6EvKhxiu0PtAbwr++
- t0ywqauHn/xo1mKPyYdxF4CgtGHWq+xeK37wxPterJUop44L9yyoRx7pHXfMGPVPrqt3pSbJ+
- QgcdT+wwWBd1HLi9xsraBWZI8r+iiv2ysY3FCjavVC/w+yDLc+BhpM4/5nPcUniDNPejJKot5
- 3QqyUCWZ2xmuL/VnYgMo9Z4hUPrmRLF8msjsVE+jRjcRhNGQt/MKTSHjGE+9xCrhjIy/ycz
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Arnd Bergmann <arnd@arndb.de>, Takashi Iwai <tiwai@suse.de>,
- Rander Wang <rander.wang@intel.com>, Vinod Koul <vkoul@kernel.org>,
- Mark Brown <broonie@kernel.org>, Bard Liao <bard.liao@intel.com>
+In-Reply-To: <DM6PR11MB4074EF8726AA5ED297871225FFEF9@DM6PR11MB4074.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,25 +92,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Aug 2, 2021 at 5:16 PM Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
->
-> The previous Kconfig cleanup added simplifications but also introduced
-> a new one by moving a boolean to a tristate. This leads to randconfig
-> problems.
->
-> This patch moves the select operations in the SOUNDWIRE_LINK_BASELINE
-> option. The INTEL_SOUNDWIRE config remains a tristate for backwards
-> compatibility with older configurations but is essentially an on/off
-> switch.
->
-> Fixes: cf5807f5f814f ('ASoC: SOF: Intel: SoundWire: simplify Kconfig')
-> Reported-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Rander Wang <rander.wang@intel.com>
-> Reviewed-by: Bard Liao <bard.liao@intel.com>
 
-I've had this in my randconfig tree for a couple of days without seeing
-any further problems:
+>>>>>> The trigger callback is handled in the stream lock atomically,
+>>>>>> and are you sure that you want to operate a possibly heavy task there?
+>>>>>
+>>>>> It's a good objection that we didn't think of.
+>>>>
+>>>> Doesn't Intel use non atomic trigger to send IPCs which anyway
+>>>> involve code which can sleep..?
+>>>
+>>> sof_sdw.c doesn't seem setting it?
+>>
+>> Yes I think init_dai_link() should set it. Maybe Pierre/Bard would know why.
+> 
+> init_dai_link() is to assign dai link elements only. No IPC is needed.
 
-Tested-by: Arnd Bergmann <arnd@arndb.de>
+The 'nonatomic' concept is only used for an FE dailink which expose a
+PCM device:
+
+soc-pcm.c:	pcm->nonatomic = rtd->dai_link->nonatomic;
+
+Setting a BE dailink as 'nonatomic' would not accomplish much since BEs
+use the 'no_pcm' option.
+
+So the question is: is there any issue with sending an IPC in a DAI
+trigger callback? This is not very different from sending a command on a
+bus btw, I see a similar example for SLIMbus devices:
+
+wcd9335.c:      case SNDRV_PCM_TRIGGER_SUSPEND:
+wcd9335.c-      case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+wcd9335.c-              slim_stream_unprepare(dai_data->sruntime);
+wcd9335.c-              slim_stream_disable(dai_data->sruntime);
+
+int slim_stream_unprepare(struct slim_stream_runtime *stream)
+{
+	int i;
+
+	for (i = 0; i < stream->num_ports; i++)
+		slim_disconnect_port(stream, &stream->ports[i]);
+
+static int slim_disconnect_port(struct slim_stream_runtime *stream,
+				struct slim_port *port)
+{
+	struct slim_device *sdev = stream->dev;
+	u8 wbuf[1];
+	struct slim_val_inf msg = {0, 1, NULL, wbuf, NULL};
+	u8 mc = SLIM_MSG_MC_DISCONNECT_PORT;
+	DEFINE_SLIM_LDEST_TXN(txn, mc, 5, stream->dev->laddr, &msg);
+
+	wbuf[0] = port->id;
+	port->ch.state = SLIM_CH_STATE_DISCONNECTED;
+	port->state = SLIM_PORT_DISCONNECTED;
+
+	return slim_do_transfer(sdev->ctrl, &txn);
+}
+
+Such commands may take time...
