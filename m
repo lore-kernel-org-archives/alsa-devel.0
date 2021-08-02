@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DF55C4338F
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 07:35:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED614C4338F
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 07:35:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 22CEB60F5A
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 07:35:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 22CEB60F5A
+	by mail.kernel.org (Postfix) with ESMTPS id 6A52060F6E
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 07:35:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6A52060F6E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A46E4176D;
-	Mon,  2 Aug 2021 09:34:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A46E4176D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0898A16A3;
+	Mon,  2 Aug 2021 09:34:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0898A16A3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627889707;
-	bh=wKHvLjiKWIBZOLo/9fS7MsdTILFBc15noup0EYr/U8I=;
+	s=default; t=1627889742;
+	bh=eswuxo1W0i5PFWZAUUURjJvjkpw1DjGr+M4WxdwxYyQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=okbVDSWIjFgMuI4Laen4jWDMc2YUhMspoOUNyRFVqiOcqGx4EBlM4kBYspCVTOZ9P
-	 eXcUxYvJGblUym8AWsapYYGRRkKL+IZxcOhzKgdOtLq/RwiiQhGQ1AAbF+ivDzhlwS
-	 blYf/yoHTvQ2FAIrCsYswMCAQ2fcvyMpHcABDEAk=
+	b=Nnbf74/tIXVV15b5zo29Dh0BRmJZt6SFzpcsS/7YAiapfTccPlDyXkfKn6MWkI+Ok
+	 fz74+ohH+Ej2Knxu3c6p/P35CvbNjtcZq2dVgK34XmgvQ2UOcRlNLmk1Qe9bbLHGl/
+	 YcsdmE1gnLNvtGy04+w73fXebbxBfCOS7F/HVNbI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91692F80551;
-	Mon,  2 Aug 2021 09:29:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3EB79F80564;
+	Mon,  2 Aug 2021 09:29:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B4944F8053B; Mon,  2 Aug 2021 09:29:03 +0200 (CEST)
+ id AFE93F8054A; Mon,  2 Aug 2021 09:29:04 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A6318F80271
+ by alsa1.perex.cz (Postfix) with ESMTPS id C7432F804E1
  for <alsa-devel@alsa-project.org>; Mon,  2 Aug 2021 09:28:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6318F80271
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7432F804E1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="dYZ0kLU5"; 
+ header.b="kATXn2br"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="JVlC1eE8"
+ header.b="f4W+Jtk+"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 651AF21FE3;
+ by smtp-out1.suse.de (Postfix) with ESMTP id 32CF721FDF;
  Mon,  2 Aug 2021 07:28:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1627889298; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=M/WvhjUnCELc0LVjUlcabPo/7Rtp/A5ga8IO3Ub1nHw=;
- b=dYZ0kLU5TreYIlo8gPFpDau9azuYSYjUqU+4Fn68XMlvBTLYwjgCnXr0Qvjmlr4sWxGwHt
- PqWExTuZV73QgfaQV2WLxMHwSmDAUBHp5BYUC9I0Htg6oFMk10tH8KVU8Gjimgvf9ZJwkX
- lLnvvJqv25vEEXU/C/JjE/0cHTEUbco=
+ bh=KhGlkJrcDMMTRRbAadaufuaM9yTH4rtTjIKubH+IHQQ=;
+ b=kATXn2bru6zGMh26LRoOLg2wayUIOfa8CHI1xq/MJzUJf7exFW8lt4dTq7wCZflxIXZXC4
+ 1KTo8/hF811oDLg5SuRczDgylehozkVgsKu5/oS8N+LOVHH/0nQlLINAfKp83UG9cJ08rN
+ f6EeCS0O7O5xfuAF5keC2qV/IZy0Bds=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1627889298;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=M/WvhjUnCELc0LVjUlcabPo/7Rtp/A5ga8IO3Ub1nHw=;
- b=JVlC1eE8OEJ58ehC9NDcyIvgYM0wxOmc0maelRwduiwdwBVUUg5bN1KiJXkkIIb+a1LWPG
- UHLKDqUZ1Mw5FHDw==
+ bh=KhGlkJrcDMMTRRbAadaufuaM9yTH4rtTjIKubH+IHQQ=;
+ b=f4W+Jtk+zNGs/JiCTRTFkaSz5E7xQA7NGg31rFJcPiZ00sbxA/uLlajbP1oFra5WyUrGts
+ kHnOyr1FOA4ZjxCw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 533D5A3B85;
+ by relay2.suse.de (Postfix) with ESMTP id 20284A3B83;
  Mon,  2 Aug 2021 07:28:18 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 11/15] ASoC: fsl_dma: Use managed buffer allocation
-Date: Mon,  2 Aug 2021 09:28:11 +0200
-Message-Id: <20210802072815.13551-12-tiwai@suse.de>
+Subject: [PATCH 08/15] ASoC: fsl: imx-pcm-rpmsg: Use managed buffer allocation
+Date: Mon,  2 Aug 2021 09:28:08 +0200
+Message-Id: <20210802072815.13551-9-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210802072815.13551-1-tiwai@suse.de>
 References: <20210802072815.13551-1-tiwai@suse.de>
@@ -100,9 +100,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch simplifies the buffer pre-allocation code of fsl_dma
-driver with the standard managed buffer helper.  It uses the newly
-introduced fixed-size buffer allocation helper.
+As the standard buffer allocation helper supports WC pages now, we can
+convert imx-pcm-rpmsg driver to use that.  This allows us to remove
+lots of superfluous code.
 
 Cc: Nicolin Chen <nicoleotsuka@gmail.com>
 Cc: Xiubo Li <Xiubo.Lee@gmail.com>
@@ -110,91 +110,153 @@ Cc: Fabio Estevam <festevam@gmail.com>
 Cc: Shengjiu Wang <shengjiu.wang@gmail.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/fsl/fsl_dma.c | 50 +++--------------------------------------
- 1 file changed, 3 insertions(+), 47 deletions(-)
+ sound/soc/fsl/imx-pcm-rpmsg.c | 89 +----------------------------------
+ 1 file changed, 2 insertions(+), 87 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
-index 84bd8a5356eb..808fb61a7a0f 100644
---- a/sound/soc/fsl/fsl_dma.c
-+++ b/sound/soc/fsl/fsl_dma.c
-@@ -290,32 +290,9 @@ static int fsl_dma_new(struct snd_soc_component *component,
- 	if (ret)
- 		return ret;
+diff --git a/sound/soc/fsl/imx-pcm-rpmsg.c b/sound/soc/fsl/imx-pcm-rpmsg.c
+index 6d6c44cf3451..35049043e532 100644
+--- a/sound/soc/fsl/imx-pcm-rpmsg.c
++++ b/sound/soc/fsl/imx-pcm-rpmsg.c
+@@ -139,7 +139,6 @@ static int imx_rpmsg_pcm_hw_params(struct snd_soc_component *component,
+ 				   struct snd_pcm_hw_params *params)
+ {
+ 	struct rpmsg_info *info = dev_get_drvdata(component->dev);
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct rpmsg_msg *msg;
+ 	int ret = 0;
  
--	/* Some codecs have separate DAIs for playback and capture, so we
--	 * should allocate a DMA buffer only for the streams that are valid.
--	 */
--
--	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
--		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
--			fsl_dma_hardware.buffer_bytes_max,
--			&pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream->dma_buffer);
--		if (ret) {
--			dev_err(card->dev, "can't alloc playback dma buffer\n");
--			return ret;
--		}
--	}
--
--	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
--		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
--			fsl_dma_hardware.buffer_bytes_max,
--			&pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream->dma_buffer);
--		if (ret) {
--			dev_err(card->dev, "can't alloc capture dma buffer\n");
--			snd_dma_free_pages(&pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream->dma_buffer);
--			return ret;
--		}
--	}
--
--	return 0;
-+	return snd_pcm_set_fixed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV,
-+					    card->dev,
-+					    fsl_dma_hardware.buffer_bytes_max);
- }
- 
- /**
-@@ -442,7 +419,6 @@ static int fsl_dma_open(struct snd_soc_component *component,
- 
- 	dma->assigned = true;
+@@ -183,21 +182,11 @@ static int imx_rpmsg_pcm_hw_params(struct snd_soc_component *component,
+ 		break;
+ 	}
  
 -	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
- 	snd_soc_set_runtime_hwparams(substream, &fsl_dma_hardware);
- 	runtime->private_data = dma_private;
+-	runtime->dma_bytes = params_buffer_bytes(params);
+-
+ 	info->send_message(msg, info);
  
-@@ -815,25 +791,6 @@ static int fsl_dma_close(struct snd_soc_component *component,
+ 	return ret;
+ }
+ 
+-static int imx_rpmsg_pcm_hw_free(struct snd_soc_component *component,
+-				 struct snd_pcm_substream *substream)
+-{
+-	snd_pcm_set_runtime_buffer(substream, NULL);
+-	return 0;
+-}
+-
+ static snd_pcm_uframes_t imx_rpmsg_pcm_pointer(struct snd_soc_component *component,
+ 					       struct snd_pcm_substream *substream)
+ {
+@@ -347,18 +336,6 @@ static int imx_rpmsg_pcm_prepare(struct snd_soc_component *component,
  	return 0;
  }
  
--/*
-- * Remove this PCM driver.
-- */
--static void fsl_dma_free_dma_buffers(struct snd_soc_component *component,
--				     struct snd_pcm *pcm)
+-static int imx_rpmsg_pcm_mmap(struct snd_soc_component *component,
+-			      struct snd_pcm_substream *substream,
+-			      struct vm_area_struct *vma)
+-{
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-
+-	return dma_mmap_wc(substream->pcm->card->dev, vma,
+-			   runtime->dma_area,
+-			   runtime->dma_addr,
+-			   runtime->dma_bytes);
+-}
+-
+ static void imx_rpmsg_pcm_dma_complete(void *arg)
+ {
+ 	struct snd_pcm_substream *substream = arg;
+@@ -609,47 +586,6 @@ static int imx_rpmsg_pcm_ack(struct snd_soc_component *component,
+ 	return 0;
+ }
+ 
+-static int imx_rpmsg_pcm_preallocate_dma_buffer(struct snd_pcm *pcm,
+-						int stream, int size)
+-{
+-	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
+-	struct snd_dma_buffer *buf = &substream->dma_buffer;
+-
+-	buf->dev.type = SNDRV_DMA_TYPE_DEV;
+-	buf->dev.dev = pcm->card->dev;
+-	buf->private_data = NULL;
+-	buf->area = dma_alloc_wc(pcm->card->dev, size,
+-				 &buf->addr, GFP_KERNEL);
+-	if (!buf->area)
+-		return -ENOMEM;
+-
+-	buf->bytes = size;
+-	return 0;
+-}
+-
+-static void imx_rpmsg_pcm_free_dma_buffers(struct snd_soc_component *component,
+-					   struct snd_pcm *pcm)
 -{
 -	struct snd_pcm_substream *substream;
--	unsigned int i;
+-	struct snd_dma_buffer *buf;
+-	int stream;
 -
--	for (i = 0; i < ARRAY_SIZE(pcm->streams); i++) {
--		substream = pcm->streams[i].substream;
--		if (substream) {
--			snd_dma_free_pages(&substream->dma_buffer);
--			substream->dma_buffer.area = NULL;
--			substream->dma_buffer.addr = 0;
--		}
+-	for (stream = SNDRV_PCM_STREAM_PLAYBACK;
+-	     stream < SNDRV_PCM_STREAM_LAST; stream++) {
+-		substream = pcm->streams[stream].substream;
+-		if (!substream)
+-			continue;
+-
+-		buf = &substream->dma_buffer;
+-		if (!buf->area)
+-			continue;
+-
+-		dma_free_wc(pcm->card->dev, buf->bytes,
+-			    buf->area, buf->addr);
+-		buf->area = NULL;
 -	}
 -}
 -
- /**
-  * find_ssi_node -- returns the SSI node that points to its DMA channel node
-  *
-@@ -904,7 +861,6 @@ static int fsl_soc_dma_probe(struct platform_device *pdev)
- 	dma->dai.hw_free = fsl_dma_hw_free;
- 	dma->dai.pointer = fsl_dma_pointer;
- 	dma->dai.pcm_construct = fsl_dma_new;
--	dma->dai.pcm_destruct = fsl_dma_free_dma_buffers;
+ static int imx_rpmsg_pcm_new(struct snd_soc_component *component,
+ 			     struct snd_soc_pcm_runtime *rtd)
+ {
+@@ -663,40 +599,19 @@ static int imx_rpmsg_pcm_new(struct snd_soc_component *component,
+ 	if (ret)
+ 		return ret;
  
- 	/* Store the SSI-specific information that we need */
- 	dma->ssi_stx_phys = res.start + REG_SSI_STX0;
+-	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
+-		ret = imx_rpmsg_pcm_preallocate_dma_buffer(pcm, SNDRV_PCM_STREAM_PLAYBACK,
+-							   rpmsg->buffer_size);
+-		if (ret)
+-			goto out;
+-	}
+-
+-	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+-		ret = imx_rpmsg_pcm_preallocate_dma_buffer(pcm, SNDRV_PCM_STREAM_CAPTURE,
+-							   rpmsg->buffer_size);
+-		if (ret)
+-			goto out;
+-	}
+-
+ 	imx_rpmsg_pcm_hardware.buffer_bytes_max = rpmsg->buffer_size;
+-out:
+-	/* free preallocated buffers in case of error */
+-	if (ret)
+-		imx_rpmsg_pcm_free_dma_buffers(component, pcm);
+-
+-	return ret;
++	return snd_pcm_set_fixed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV_WC,
++					    pcm->card->dev, rpmsg->buffer_size);
+ }
+ 
+ static const struct snd_soc_component_driver imx_rpmsg_soc_component = {
+ 	.name		= IMX_PCM_DRV_NAME,
+ 	.pcm_construct	= imx_rpmsg_pcm_new,
+-	.pcm_destruct	= imx_rpmsg_pcm_free_dma_buffers,
+ 	.open		= imx_rpmsg_pcm_open,
+ 	.close		= imx_rpmsg_pcm_close,
+ 	.hw_params	= imx_rpmsg_pcm_hw_params,
+-	.hw_free	= imx_rpmsg_pcm_hw_free,
+ 	.trigger	= imx_rpmsg_pcm_trigger,
+ 	.pointer	= imx_rpmsg_pcm_pointer,
+-	.mmap		= imx_rpmsg_pcm_mmap,
+ 	.ack		= imx_rpmsg_pcm_ack,
+ 	.prepare	= imx_rpmsg_pcm_prepare,
+ };
 -- 
 2.26.2
 
