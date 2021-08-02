@@ -2,88 +2,85 @@ Return-Path: <SRS0=mFEw=MZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6454DC4320A
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 07:30:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40EFBC4338F
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 07:31:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BBD0360F58
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 07:30:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BBD0360F58
+	by mail.kernel.org (Postfix) with ESMTPS id 955BF60F58
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 07:30:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 955BF60F58
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5268917BC;
-	Mon,  2 Aug 2021 09:29:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5268917BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id EF14417E7;
+	Mon,  2 Aug 2021 09:30:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF14417E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627889425;
-	bh=V50JuiDbEvdSwHhifyRxaD0OCcNUG/ee+BUoACLLILY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=AMGdTuXuIKIb6EV4vIpj19XHb8ZszwMaACmardVSZX/7dzwGMSHv9E2+dvc4CLmdg
-	 MzPj8UacJhMMnE2R8IxoIZhfRMDqurjNxf80NVZaFcqOhwc1llEVbvycEmVyTMttO6
-	 va897zkLvV58HQsLiP2A7a+mTo/H4qpOoygvi220=
+	s=default; t=1627889458;
+	bh=ZaOpVjhPP2p3OS1WT2K6NOnw9dVOEoE/rKrK/fI2Xtw=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=HVViGEsdLWi45zJCWGJ1biFnbAY2drWdKwwiEodc5j97t77oKPUg7BV7AbyDJalXE
+	 qMvCmZP/TnYkYhLmWDnIa5PqOZKCNmZw3c8W/+IFwegLkoeuJsjiYZmIbBIHVcEF4D
+	 PO7LMXIkM5fQmvSl3meUsEOHQw1ovreI97OeiU4c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E131BF804E6;
-	Mon,  2 Aug 2021 09:28:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 69D7BF804F1;
+	Mon,  2 Aug 2021 09:28:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E4874F804EB; Mon,  2 Aug 2021 09:28:28 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 25B7EF804E7; Mon,  2 Aug 2021 09:28:32 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5CE28F800BF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8731FF80268
  for <alsa-devel@alsa-project.org>; Mon,  2 Aug 2021 09:28:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CE28F800BF
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8731FF80268
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="yNcUwrQT"; 
+ header.b="rjZPib5z"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="dcCSf0B0"
+ header.b="WoOj+F3V"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 023621FF36;
- Mon,  2 Aug 2021 07:28:18 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id B3D5F21FB6;
+ Mon,  2 Aug 2021 07:28:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1627889298; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=medMf15SqWRW+2TGgnDX55CtdJten4VcbwizfAEbFuE=;
- b=yNcUwrQTlg0NuyvGW7dmGxmaWy7RSjJ89RylbZeaQZfUXrhU89XTQK6R50ictVkTmMl9OU
- Bwj78BEwXHwOdbIBm3+ToWmrxbLXbKwHrE0V/75buTG6RIClyKj9XUd5VbXIQbVWGMgNvJ
- NXf+m5E1q8IeqMyaCb6+LTdc9epLJCM=
+ t=1627889297; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=MLt9hWM/aWAAzoIXQKnea2DoJBhKXeFzq8jPIgaX2i4=;
+ b=rjZPib5zP4TQCYudBWClQZlo4QCURAxsxnMqaIFgqlmxEGgWr3fenIA9qddtiKkYsPzk+8
+ EebGeNLl0u7v3mh80T0fNoZyEeV8Bw2kBa1MvAK2NY4T1FZ0zSPpeZUlozFK5SBuvejTol
+ 7bGzcmBlqxiGWwZbttohvP8wTDURS38=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1627889298;
+ s=susede2_ed25519; t=1627889297;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=medMf15SqWRW+2TGgnDX55CtdJten4VcbwizfAEbFuE=;
- b=dcCSf0B0Cg2Ek8ayNrtMyNsU2Z6KpyTnmroGUwArfbpcWenN/6m+2bbKmCYjBdBQ2bSoVa
- JCJER9KyFujsimAw==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=MLt9hWM/aWAAzoIXQKnea2DoJBhKXeFzq8jPIgaX2i4=;
+ b=WoOj+F3VHm59LOWshaTCKPm8bQiYpqyW8Shs/wgci3f8+6MQk411a2wiqUoHt2gpaDmALq
+ trm4AOOUBc3dcgDw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id E1CDEA3B85;
+ by relay2.suse.de (Postfix) with ESMTP id 8F634A3B83;
  Mon,  2 Aug 2021 07:28:17 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 05/15] ALSA: pxa2xx: Use managed PCM buffer allocation
-Date: Mon,  2 Aug 2021 09:28:05 +0200
-Message-Id: <20210802072815.13551-6-tiwai@suse.de>
+Subject: [PATCH 00/15] ALSA: Improved WC memory handling
+Date: Mon,  2 Aug 2021 09:28:00 +0200
+Message-Id: <20210802072815.13551-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210802072815.13551-1-tiwai@suse.de>
-References: <20210802072815.13551-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Mark Brown <broonie@kernel.org>, Robert Jarzmik <robert.jarzmik@free.fr>,
- Haojian Zhuang <haojian.zhuang@gmail.com>, Daniel Mack <daniel@zonque.org>
+Cc: Banajit Goswami <bgoswami@codeaurora.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Fabio Estevam <festevam@gmail.com>, Daniel Mack <daniel@zonque.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,331 +96,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Now with the recent addition of WC buffer allocation support, we can
-use the standard PCM buffer allocation helpers for pxa2xx drivers.
-This allows us to remove lots of superfluous code.
+Hi,
 
+this is a patchset to enhance the ALSA memory allocation helper to
+support the allocation of WC pages more generically as well as
+supporting the fixed size buffer allocation.  It allows us to reduce
+lots of redundant code in various ASoC drivers that still haven't used
+the standard preallocation.
+
+Takashi
+
+===
+
+Takashi Iwai (15):
+  ALSA: memalloc: Minor refactoring
+  ALSA: memalloc: Correctly name as WC
+  ALSA: pcm: Allow exact buffer preallocation
+  ALSA: memalloc: Support WC allocation on all architectures
+  ALSA: pxa2xx: Use managed PCM buffer allocation
+  ASoC: bcm: Use managed PCM buffer allocation
+  ASoC: fsl: imx-pcm-fiq: Use managed buffer allocation
+  ASoC: fsl: imx-pcm-rpmsg: Use managed buffer allocation
+  ASoC: tegra: Use managed buffer allocation
+  ASoC: fsl_asrc_dma: Use managed buffer allocation
+  ASoC: fsl_dma: Use managed buffer allocation
+  ASoC: mpc5200: Use managed buffer allocation
+  ASoC: qcom: lpass: Use managed buffer allocation
+  ASoC: qcom: qdsp6: Use managed buffer allocation
+  ASoC: sprd: Use managed buffer allocation
+
+ include/sound/memalloc.h             |  6 +-
+ include/sound/pcm.h                  | 47 ++++++++++++--
+ include/sound/pxa2xx-lib.h           | 13 +---
+ sound/arm/pxa2xx-ac97.c              | 18 ++----
+ sound/arm/pxa2xx-pcm-lib.c           | 90 ++------------------------
+ sound/core/memalloc.c                | 94 +++++++++++++++++-----------
+ sound/core/memalloc_local.h          |  2 +-
+ sound/core/pcm_memory.c              | 67 +++++++++++++++-----
+ sound/core/sgbuf.c                   | 21 ++++---
+ sound/pci/hda/hda_controller.c       |  2 +-
+ sound/pci/hda/hda_intel.c            |  2 +-
+ sound/pci/intel8x0.c                 |  2 +-
+ sound/soc/bcm/bcm63xx-pcm-whistler.c | 82 ++----------------------
+ sound/soc/fsl/fsl_asrc_dma.c         | 47 +-------------
+ sound/soc/fsl/fsl_dma.c              | 50 +--------------
+ sound/soc/fsl/imx-pcm-fiq.c          | 75 +---------------------
+ sound/soc/fsl/imx-pcm-rpmsg.c        | 89 +-------------------------
+ sound/soc/fsl/mpc5200_dma.c          | 63 +------------------
+ sound/soc/pxa/pxa-ssp.c              |  3 -
+ sound/soc/pxa/pxa2xx-ac97.c          |  3 -
+ sound/soc/pxa/pxa2xx-i2s.c           |  3 -
+ sound/soc/pxa/pxa2xx-pcm.c           |  3 -
+ sound/soc/qcom/lpass-platform.c      | 60 +-----------------
+ sound/soc/qcom/qdsp6/q6asm-dai.c     | 63 +------------------
+ sound/soc/sprd/sprd-pcm-dma.c        | 67 +-------------------
+ sound/soc/tegra/tegra210_admaif.c    |  6 --
+ sound/soc/tegra/tegra_pcm.c          | 93 +--------------------------
+ sound/soc/tegra/tegra_pcm.h          |  7 ---
+ sound/x86/intel_hdmi_audio.c         |  2 +-
+ 29 files changed, 209 insertions(+), 871 deletions(-)
+
+===
+
+Cc: Banajit Goswami <bgoswami@codeaurora.org>
 Cc: Daniel Mack <daniel@zonque.org>
+Cc: Fabio Estevam <festevam@gmail.com>
 Cc: Haojian Zhuang <haojian.zhuang@gmail.com>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>
 Cc: Robert Jarzmik <robert.jarzmik@free.fr>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- include/sound/pxa2xx-lib.h  | 13 +-----
- sound/arm/pxa2xx-ac97.c     | 18 ++------
- sound/arm/pxa2xx-pcm-lib.c  | 90 +++----------------------------------
- sound/soc/pxa/pxa-ssp.c     |  3 --
- sound/soc/pxa/pxa2xx-ac97.c |  3 --
- sound/soc/pxa/pxa2xx-i2s.c  |  3 --
- sound/soc/pxa/pxa2xx-pcm.c  |  3 --
- 7 files changed, 10 insertions(+), 123 deletions(-)
+Cc: Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>
 
-diff --git a/include/sound/pxa2xx-lib.h b/include/sound/pxa2xx-lib.h
-index 0feaf16e6ac0..95100cff25d1 100644
---- a/include/sound/pxa2xx-lib.h
-+++ b/include/sound/pxa2xx-lib.h
-@@ -14,18 +14,12 @@ struct snd_soc_component;
- 
- extern int pxa2xx_pcm_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params);
--extern int pxa2xx_pcm_hw_free(struct snd_pcm_substream *substream);
- extern int pxa2xx_pcm_trigger(struct snd_pcm_substream *substream, int cmd);
- extern snd_pcm_uframes_t pxa2xx_pcm_pointer(struct snd_pcm_substream *substream);
- extern int pxa2xx_pcm_prepare(struct snd_pcm_substream *substream);
- extern int pxa2xx_pcm_open(struct snd_pcm_substream *substream);
- extern int pxa2xx_pcm_close(struct snd_pcm_substream *substream);
--extern int pxa2xx_pcm_mmap(struct snd_pcm_substream *substream,
--	struct vm_area_struct *vma);
--extern int pxa2xx_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream);
--extern void pxa2xx_pcm_free_dma_buffers(struct snd_pcm *pcm);
--extern void pxa2xx_soc_pcm_free(struct snd_soc_component *component,
--				struct snd_pcm *pcm);
-+extern int pxa2xx_pcm_preallocate_dma_buffer(struct snd_pcm *pcm);
- extern int pxa2xx_soc_pcm_new(struct snd_soc_component *component,
- 			      struct snd_soc_pcm_runtime *rtd);
- extern int pxa2xx_soc_pcm_open(struct snd_soc_component *component,
-@@ -35,8 +29,6 @@ extern int pxa2xx_soc_pcm_close(struct snd_soc_component *component,
- extern int pxa2xx_soc_pcm_hw_params(struct snd_soc_component *component,
- 				    struct snd_pcm_substream *substream,
- 				    struct snd_pcm_hw_params *params);
--extern int pxa2xx_soc_pcm_hw_free(struct snd_soc_component *component,
--				  struct snd_pcm_substream *substream);
- extern int pxa2xx_soc_pcm_prepare(struct snd_soc_component *component,
- 				  struct snd_pcm_substream *substream);
- extern int pxa2xx_soc_pcm_trigger(struct snd_soc_component *component,
-@@ -44,9 +36,6 @@ extern int pxa2xx_soc_pcm_trigger(struct snd_soc_component *component,
- extern snd_pcm_uframes_t
- pxa2xx_soc_pcm_pointer(struct snd_soc_component *component,
- 		       struct snd_pcm_substream *substream);
--extern int pxa2xx_soc_pcm_mmap(struct snd_soc_component *component,
--			       struct snd_pcm_substream *substream,
--			       struct vm_area_struct *vma);
- 
- /* AC97 */
- 
-diff --git a/sound/arm/pxa2xx-ac97.c b/sound/arm/pxa2xx-ac97.c
-index a67e6685b00c..c17a19fe59ed 100644
---- a/sound/arm/pxa2xx-ac97.c
-+++ b/sound/arm/pxa2xx-ac97.c
-@@ -172,38 +172,28 @@ static const struct snd_pcm_ops pxa2xx_ac97_pcm_ops = {
- 	.open		= pxa2xx_ac97_pcm_open,
- 	.close		= pxa2xx_ac97_pcm_close,
- 	.hw_params	= pxa2xx_pcm_hw_params,
--	.hw_free	= pxa2xx_pcm_hw_free,
- 	.prepare	= pxa2xx_ac97_pcm_prepare,
- 	.trigger	= pxa2xx_pcm_trigger,
- 	.pointer	= pxa2xx_pcm_pointer,
--	.mmap		= pxa2xx_pcm_mmap,
- };
- 
- 
- static int pxa2xx_ac97_pcm_new(struct snd_card *card)
- {
- 	struct snd_pcm *pcm;
--	int stream, ret;
-+	int ret;
- 
- 	ret = snd_pcm_new(card, "PXA2xx-PCM", 0, 1, 1, &pcm);
- 	if (ret)
- 		goto out;
- 
--	pcm->private_free = pxa2xx_pcm_free_dma_buffers;
--
- 	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
- 	if (ret)
- 		goto out;
- 
--	stream = SNDRV_PCM_STREAM_PLAYBACK;
--	snd_pcm_set_ops(pcm, stream, &pxa2xx_ac97_pcm_ops);
--	ret = pxa2xx_pcm_preallocate_dma_buffer(pcm, stream);
--	if (ret)
--		goto out;
--
--	stream = SNDRV_PCM_STREAM_CAPTURE;
--	snd_pcm_set_ops(pcm, stream, &pxa2xx_ac97_pcm_ops);
--	ret = pxa2xx_pcm_preallocate_dma_buffer(pcm, stream);
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pxa2xx_ac97_pcm_ops);
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &pxa2xx_ac97_pcm_ops);
-+	ret = pxa2xx_pcm_preallocate_dma_buffer(pcm);
- 	if (ret)
- 		goto out;
- 
-diff --git a/sound/arm/pxa2xx-pcm-lib.c b/sound/arm/pxa2xx-pcm-lib.c
-index e81083e1bc68..0a48805e513a 100644
---- a/sound/arm/pxa2xx-pcm-lib.c
-+++ b/sound/arm/pxa2xx-pcm-lib.c
-@@ -54,19 +54,10 @@ int pxa2xx_pcm_hw_params(struct snd_pcm_substream *substream,
- 	if (ret)
- 		return ret;
- 
--	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
--
- 	return 0;
- }
- EXPORT_SYMBOL(pxa2xx_pcm_hw_params);
- 
--int pxa2xx_pcm_hw_free(struct snd_pcm_substream *substream)
--{
--	snd_pcm_set_runtime_buffer(substream, NULL);
--	return 0;
--}
--EXPORT_SYMBOL(pxa2xx_pcm_hw_free);
--
- int pxa2xx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- {
- 	return snd_dmaengine_pcm_trigger(substream, cmd);
-@@ -131,56 +122,14 @@ int pxa2xx_pcm_close(struct snd_pcm_substream *substream)
- }
- EXPORT_SYMBOL(pxa2xx_pcm_close);
- 
--int pxa2xx_pcm_mmap(struct snd_pcm_substream *substream,
--	struct vm_area_struct *vma)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	return dma_mmap_wc(substream->pcm->card->dev, vma, runtime->dma_area,
--			   runtime->dma_addr, runtime->dma_bytes);
--}
--EXPORT_SYMBOL(pxa2xx_pcm_mmap);
--
--int pxa2xx_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
-+int pxa2xx_pcm_preallocate_dma_buffer(struct snd_pcm *pcm)
- {
--	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
--	struct snd_dma_buffer *buf = &substream->dma_buffer;
- 	size_t size = pxa2xx_pcm_hardware.buffer_bytes_max;
--	buf->dev.type = SNDRV_DMA_TYPE_DEV;
--	buf->dev.dev = pcm->card->dev;
--	buf->private_data = NULL;
--	buf->area = dma_alloc_wc(pcm->card->dev, size, &buf->addr, GFP_KERNEL);
--	if (!buf->area)
--		return -ENOMEM;
--	buf->bytes = size;
--	return 0;
--}
--EXPORT_SYMBOL(pxa2xx_pcm_preallocate_dma_buffer);
- 
--void pxa2xx_pcm_free_dma_buffers(struct snd_pcm *pcm)
--{
--	struct snd_pcm_substream *substream;
--	struct snd_dma_buffer *buf;
--	int stream;
--
--	for (stream = 0; stream < 2; stream++) {
--		substream = pcm->streams[stream].substream;
--		if (!substream)
--			continue;
--		buf = &substream->dma_buffer;
--		if (!buf->area)
--			continue;
--		dma_free_wc(pcm->card->dev, buf->bytes, buf->area, buf->addr);
--		buf->area = NULL;
--	}
--}
--EXPORT_SYMBOL(pxa2xx_pcm_free_dma_buffers);
--
--void pxa2xx_soc_pcm_free(struct snd_soc_component *component,
--			 struct snd_pcm *pcm)
--{
--	pxa2xx_pcm_free_dma_buffers(pcm);
-+	return snd_pcm_set_fixed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV_WC,
-+					    pcm->card->dev, size);
- }
--EXPORT_SYMBOL(pxa2xx_soc_pcm_free);
-+EXPORT_SYMBOL(pxa2xx_pcm_preallocate_dma_buffer);
- 
- int pxa2xx_soc_pcm_new(struct snd_soc_component *component,
- 		       struct snd_soc_pcm_runtime *rtd)
-@@ -193,21 +142,7 @@ int pxa2xx_soc_pcm_new(struct snd_soc_component *component,
- 	if (ret)
- 		return ret;
- 
--	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
--		ret = pxa2xx_pcm_preallocate_dma_buffer(pcm,
--			SNDRV_PCM_STREAM_PLAYBACK);
--		if (ret)
--			goto out;
--	}
--
--	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
--		ret = pxa2xx_pcm_preallocate_dma_buffer(pcm,
--			SNDRV_PCM_STREAM_CAPTURE);
--		if (ret)
--			goto out;
--	}
-- out:
--	return ret;
-+	return pxa2xx_pcm_preallocate_dma_buffer(pcm);
- }
- EXPORT_SYMBOL(pxa2xx_soc_pcm_new);
- 
-@@ -233,13 +168,6 @@ int pxa2xx_soc_pcm_hw_params(struct snd_soc_component *component,
- }
- EXPORT_SYMBOL(pxa2xx_soc_pcm_hw_params);
- 
--int pxa2xx_soc_pcm_hw_free(struct snd_soc_component *component,
--			   struct snd_pcm_substream *substream)
--{
--	return pxa2xx_pcm_hw_free(substream);
--}
--EXPORT_SYMBOL(pxa2xx_soc_pcm_hw_free);
--
- int pxa2xx_soc_pcm_prepare(struct snd_soc_component *component,
- 			   struct snd_pcm_substream *substream)
- {
-@@ -262,14 +190,6 @@ pxa2xx_soc_pcm_pointer(struct snd_soc_component *component,
- }
- EXPORT_SYMBOL(pxa2xx_soc_pcm_pointer);
- 
--int pxa2xx_soc_pcm_mmap(struct snd_soc_component *component,
--			struct snd_pcm_substream *substream,
--			struct vm_area_struct *vma)
--{
--	return pxa2xx_pcm_mmap(substream, vma);
--}
--EXPORT_SYMBOL(pxa2xx_soc_pcm_mmap);
--
- MODULE_AUTHOR("Nicolas Pitre");
- MODULE_DESCRIPTION("Intel PXA2xx sound library");
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index 939e7e28486a..7f13a35e9cc1 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -850,15 +850,12 @@ static struct snd_soc_dai_driver pxa_ssp_dai = {
- static const struct snd_soc_component_driver pxa_ssp_component = {
- 	.name		= "pxa-ssp",
- 	.pcm_construct	= pxa2xx_soc_pcm_new,
--	.pcm_destruct	= pxa2xx_soc_pcm_free,
- 	.open		= pxa2xx_soc_pcm_open,
- 	.close		= pxa2xx_soc_pcm_close,
- 	.hw_params	= pxa2xx_soc_pcm_hw_params,
--	.hw_free	= pxa2xx_soc_pcm_hw_free,
- 	.prepare	= pxa2xx_soc_pcm_prepare,
- 	.trigger	= pxa2xx_soc_pcm_trigger,
- 	.pointer	= pxa2xx_soc_pcm_pointer,
--	.mmap		= pxa2xx_soc_pcm_mmap,
- 	.suspend	= pxa_ssp_suspend,
- 	.resume		= pxa_ssp_resume,
- };
-diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
-index 4240fde6aae8..58f8541ba55c 100644
---- a/sound/soc/pxa/pxa2xx-ac97.c
-+++ b/sound/soc/pxa/pxa2xx-ac97.c
-@@ -202,15 +202,12 @@ static struct snd_soc_dai_driver pxa_ac97_dai_driver[] = {
- static const struct snd_soc_component_driver pxa_ac97_component = {
- 	.name		= "pxa-ac97",
- 	.pcm_construct	= pxa2xx_soc_pcm_new,
--	.pcm_destruct	= pxa2xx_soc_pcm_free,
- 	.open		= pxa2xx_soc_pcm_open,
- 	.close		= pxa2xx_soc_pcm_close,
- 	.hw_params	= pxa2xx_soc_pcm_hw_params,
--	.hw_free	= pxa2xx_soc_pcm_hw_free,
- 	.prepare	= pxa2xx_soc_pcm_prepare,
- 	.trigger	= pxa2xx_soc_pcm_trigger,
- 	.pointer	= pxa2xx_soc_pcm_pointer,
--	.mmap		= pxa2xx_soc_pcm_mmap,
- };
- 
- #ifdef CONFIG_OF
-diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
-index bcde4a96c168..5bfc1a966532 100644
---- a/sound/soc/pxa/pxa2xx-i2s.c
-+++ b/sound/soc/pxa/pxa2xx-i2s.c
-@@ -359,15 +359,12 @@ static struct snd_soc_dai_driver pxa_i2s_dai = {
- static const struct snd_soc_component_driver pxa_i2s_component = {
- 	.name		= "pxa-i2s",
- 	.pcm_construct	= pxa2xx_soc_pcm_new,
--	.pcm_destruct	= pxa2xx_soc_pcm_free,
- 	.open		= pxa2xx_soc_pcm_open,
- 	.close		= pxa2xx_soc_pcm_close,
- 	.hw_params	= pxa2xx_soc_pcm_hw_params,
--	.hw_free	= pxa2xx_soc_pcm_hw_free,
- 	.prepare	= pxa2xx_soc_pcm_prepare,
- 	.trigger	= pxa2xx_soc_pcm_trigger,
- 	.pointer	= pxa2xx_soc_pcm_pointer,
--	.mmap		= pxa2xx_soc_pcm_mmap,
- 	.suspend	= pxa2xx_soc_pcm_suspend,
- 	.resume		= pxa2xx_soc_pcm_resume,
- };
-diff --git a/sound/soc/pxa/pxa2xx-pcm.c b/sound/soc/pxa/pxa2xx-pcm.c
-index 2b7839715dd5..9d6c41f775e5 100644
---- a/sound/soc/pxa/pxa2xx-pcm.c
-+++ b/sound/soc/pxa/pxa2xx-pcm.c
-@@ -19,15 +19,12 @@
- 
- static const struct snd_soc_component_driver pxa2xx_soc_platform = {
- 	.pcm_construct	= pxa2xx_soc_pcm_new,
--	.pcm_destruct	= pxa2xx_soc_pcm_free,
- 	.open		= pxa2xx_soc_pcm_open,
- 	.close		= pxa2xx_soc_pcm_close,
- 	.hw_params	= pxa2xx_soc_pcm_hw_params,
--	.hw_free	= pxa2xx_soc_pcm_hw_free,
- 	.prepare	= pxa2xx_soc_pcm_prepare,
- 	.trigger	= pxa2xx_soc_pcm_trigger,
- 	.pointer	= pxa2xx_soc_pcm_pointer,
--	.mmap		= pxa2xx_soc_pcm_mmap,
- };
- 
- static int pxa2xx_soc_platform_probe(struct platform_device *pdev)
 -- 
 2.26.2
 
