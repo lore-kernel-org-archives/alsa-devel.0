@@ -7,63 +7,65 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34832C4338F
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 12:39:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3C5DC43216
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 12:40:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 23A2060F50
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 12:39:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 23A2060F50
+	by mail.kernel.org (Postfix) with ESMTPS id 7FB2F60F41
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 12:40:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7FB2F60F41
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CB855178F;
-	Mon,  2 Aug 2021 14:38:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB855178F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 93D9E179D;
+	Mon,  2 Aug 2021 14:39:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93D9E179D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627907950;
-	bh=hNPTlNdpcorbvFwikvgrsQYcxYEw8WUbzAnqd8MyiH8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Qj1DjbiKsSIt438QCiD0xd4pXZJ756yuSEHOHVjQz3ew3Lnz2JgxIQHFW3kfmxT3M
-	 /w1/KGBDcH3SMng9S4TprkUsEvvb+QemQ7XNUwsy8FnMCgSHKTgwM5e7bTwRPOnZ3Q
-	 297DaLevcPJyZve2VCep9JiXUOv6LacQ2xVi52uY=
+	s=default; t=1627908001;
+	bh=2QEbGxdRnwlWDEnLCa0DBqGAhmR/nswi4u4TgQaTlWQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=qRdMElPTiXebcpow4b1m2wWPMi/7VpoWH0Ym2X4zxodvVKsdb7M9OkMjezow3xbtF
+	 G/6JQNR+zP2DNeLrDccR73Sn1gboD9hXvUEvvnmhfctiHhWK+mqvc9F6qBSpauf6KS
+	 ZupIVNaSeQpJ/e+ghaGqAypmB+jWoIGDD0jSnAUU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68A3AF801F7;
-	Mon,  2 Aug 2021 14:38:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 11718F80271;
+	Mon,  2 Aug 2021 14:38:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 032C9F80268; Mon,  2 Aug 2021 14:38:18 +0200 (CEST)
+ id 691B3F8025F; Mon,  2 Aug 2021 14:38:18 +0200 (CEST)
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 62D3BF80095
+ by alsa1.perex.cz (Postfix) with ESMTPS id E5090F800BF
  for <alsa-devel@alsa-project.org>; Mon,  2 Aug 2021 14:38:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62D3BF80095
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5090F800BF
 Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 172Cc5QC1018156,
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 172Cc57f9018160,
  This message is accepted by code: ctloc85258
 Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
- by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 172Cc5QC1018156
+ by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 172Cc57f9018160
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
  Mon, 2 Aug 2021 20:38:05 +0800
 Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
  RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 2 Aug 2021 20:38:04 +0800
+ 15.1.2106.2; Mon, 2 Aug 2021 20:38:05 +0800
 Received: from localhost.localdomain (172.16.18.80) by
  RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 2 Aug 2021 20:38:03 +0800
+ 15.1.2106.2; Mon, 2 Aug 2021 20:38:04 +0800
 From: <derek.fang@realtek.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH 1/2] Revert "ASoC: rt5682: Adjust headset volume button
- threshold"
-Date: Mon, 2 Aug 2021 20:37:52 +0800
-Message-ID: <20210802123753.11762-1-derek.fang@realtek.com>
+Subject: [PATCH 2/2] ASoC: rt5682: Adjust the headset volume button threshold
+Date: Mon, 2 Aug 2021 20:37:53 +0800
+Message-ID: <20210802123753.11762-2-derek.fang@realtek.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210802123753.11762-1-derek.fang@realtek.com>
+References: <20210802123753.11762-1-derek.fang@realtek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [172.16.18.80]
@@ -124,20 +126,20 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Derek Fang <derek.fang@realtek.com>
 
-This reverts commit 6d20bf7c020f417fdef1810a22da17c126603472.
-Since it may risk affecting other headset Vol- button.
+Set a safe threshold of headset button volume+ to fix
+the wrong button detection issue with some brand headsets.
 
 Signed-off-by: Derek Fang <derek.fang@realtek.com>
 
 diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index 7dc01ae6bb66..fcf442b8a732 100644
+index fcf442b8a732..fad827368c5e 100644
 --- a/sound/soc/codecs/rt5682.c
 +++ b/sound/soc/codecs/rt5682.c
-@@ -44,7 +44,6 @@ static const struct reg_sequence patch_list[] = {
+@@ -44,6 +44,7 @@ static const struct reg_sequence patch_list[] = {
  	{RT5682_I2C_CTRL, 0x000f},
  	{RT5682_PLL2_INTERNAL, 0x8266},
  	{RT5682_SAR_IL_CMD_3, 0x8365},
--	{RT5682_SAR_IL_CMD_6, 0x0180},
++	{RT5682_SAR_IL_CMD_6, 0x0110},
  };
  
  void rt5682_apply_patch_list(struct rt5682_priv *rt5682, struct device *dev)
