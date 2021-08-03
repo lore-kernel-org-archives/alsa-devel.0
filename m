@@ -2,123 +2,99 @@ Return-Path: <SRS0=EjE+=M2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.6 required=3.0 tests=BAYES_00,
-	CHARSET_FARAWAY_HEADER,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1977FC4338F
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 12:51:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12219C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 12:55:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8016A60F8F
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 12:51:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8016A60F8F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8E3E560F38
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 12:55:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8E3E560F38
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D4411772;
-	Tue,  3 Aug 2021 14:50:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D4411772
+	by alsa0.perex.cz (Postfix) with ESMTPS id D899E176C;
+	Tue,  3 Aug 2021 14:54:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D899E176C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627995075;
-	bh=htcJhqVQ5bfIDLsQOHn4/XeIRAuYpu6hDAnuoD7ZZ/k=;
-	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1627995322;
+	bh=qIrcVPEyfMZj5UrqZH5jm6gJcLVtsHpiC8HGBz8cSLo=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NS1EF5bgJdvlx7bemr8uYaVL3/MZuUA0Ylg3PGQUww4J8gswZj7w1RsYSCGWbvbXd
-	 KMnROP7d0fjuXmZVPm9/l6mZmxLFVPPFSJTaV2ScsGf3szO6BtmkIjiXGTgZvyPVLi
-	 YCr5qFxrxwBLJeG5vnVA3lZpPZYVekHgrkWjFzgU=
+	b=IfxQ5Fw9emK8w5v7IXgMGqylAjCr0ScwZPiGKLTRUDIO6x7J7EUsBpjERxIz4udxr
+	 UY3MroKEz5xaCBT4iLI759ieIE1JH2t1xIB+vkfUkbIK0qfKMIV1GwUWr3iroQmkuo
+	 pgH1vfu88Xnz6v0gRD9JlO7OYX4ktgCiWuvQXza0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ACBECF8016D;
-	Tue,  3 Aug 2021 14:50:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 54617F8032C;
+	Tue,  3 Aug 2021 14:54:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E03F0F802E8; Tue,  3 Aug 2021 14:50:22 +0200 (CEST)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 23AEEF804AB; Tue,  3 Aug 2021 14:54:31 +0200 (CEST)
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
+ [IPv6:2a00:1450:4864:20::42e])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9703DF80082
- for <alsa-devel@alsa-project.org>; Tue,  3 Aug 2021 14:50:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9703DF80082
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 173Co8ptD006771,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
- by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 173Co8ptD006771
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 3 Aug 2021 20:50:08 +0800
-Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
- RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 3 Aug 2021 20:50:07 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 3 Aug 2021 20:50:06 +0800
-Received: from RTEXMBS01.realtek.com.tw ([fe80::50bb:7602:98b5:697f]) by
- RTEXMBS01.realtek.com.tw ([fe80::50bb:7602:98b5:697f%5]) with mapi id
- 15.01.2106.013; Tue, 3 Aug 2021 20:50:06 +0800
-From: =?big5?B?RGVyZWsgW6TovHe4cV0=?= <derek.fang@realtek.com>
-To: "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com"
- <lgirdwood@gmail.com>
-Subject: RE: [PATCH 2/2] ASoC: rt5682: Adjust the headset volume button
- threshold
-Thread-Topic: [PATCH 2/2] ASoC: rt5682: Adjust the headset volume button
- threshold
-Thread-Index: AQHXh5s+fK0VyfnVaUm1zxXIMqEifathvGwS
-Date: Tue, 3 Aug 2021 12:50:06 +0000
-Message-ID: <bd0a523b242e40a298abe2431276e497@realtek.com>
-References: <20210802123753.11762-1-derek.fang@realtek.com>,
- <20210802123753.11762-2-derek.fang@realtek.com>
-In-Reply-To: <20210802123753.11762-2-derek.fang@realtek.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [114.27.10.140]
-x-kse-serverinfo: RTEXDAG01.realtek.com.tw, 9
-x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
- rules found
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzgvMyCkV6TIIDA5OjQ4OjAw?=
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
+ by alsa1.perex.cz (Postfix) with ESMTPS id 54E08F80082
+ for <alsa-devel@alsa-project.org>; Tue,  3 Aug 2021 14:54:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54E08F80082
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="QfPV8EjP"
+Received: by mail-wr1-x42e.google.com with SMTP id b11so19877295wrx.6
+ for <alsa-devel@alsa-project.org>; Tue, 03 Aug 2021 05:54:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=R63M4/FB38pewmBv4s/N5td47VGDDzMLbJRs6dsaRiY=;
+ b=QfPV8EjPppCafTLVUplYcb8Nlzr0zmuaN8uVB0pRSGhxmwR5jyitnRFk+vCYWxJWkt
+ SRib0cB+vVE49idQJuEriX5sqXsIufGlt2ICdmlCBQHO2vmWeTVeHvzSrPdtaW6NjkLX
+ 57wxHgTlKq2zckcnXZ8bb0Aa4oMFt5LQzEh9X92vVN1ApJNFgU8rab7HdZ/DkyoWTa67
+ XG4s4Vhha2mLio6XgzhAuCM5jL12XUifErq8+E7dUnZKEEXhyQTBpHsCzOyjyJ2tdrpY
+ yCcomYItFQAYGTPTp53xIelhu6ejXdxZCl2Et1NyhA4hTRA52WblBUedcNgLMilzokSA
+ ei8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=R63M4/FB38pewmBv4s/N5td47VGDDzMLbJRs6dsaRiY=;
+ b=U3ynG1H0scem78g0IeNn9gV+Wc5rL9nKmaU7v3OEBPE5MNKfALYTs2jTpzoVreUMn3
+ V2QIz6pbqOacre7BzvFFPXXVbyhVbWih89ON7pSV3gQk1gXIn+QIHyjZOQFZc3cwpWve
+ 4vqzV0Dh/NPcqwntTso8//TWK219Rf1JNXbPuQbjv9WXmsKrKqaiVaru0P/fOU47OVYI
+ bRHezsohXElSyUOSBSXlebbUNXyuwkQl+Lu6KZ6MxMpWkWbSjL+mxOfeZ198TI1QtZbS
+ qonlGC85TELVC6gzwuQ3ymWecBXnQeGElW8getCECvJH/PXaehAQBNNhsRv6iMqGrqXA
+ 55MA==
+X-Gm-Message-State: AOAM532WNKC7qeqUTcSPKYJKfAob3KGMa4JEpsDBKiiWWCmHYirSzHaY
+ fjTMmrl+nedfaPRwEPfWwIOEkw==
+X-Google-Smtp-Source: ABdhPJx30CZD4igDjJWM+LtF4zhAhZZXT45MHAffXZ9GnbI2INdffzUWYOlf5dtCTspuq+cfNAerAw==
+X-Received: by 2002:adf:ed50:: with SMTP id u16mr22854265wro.174.1627995264309; 
+ Tue, 03 Aug 2021 05:54:24 -0700 (PDT)
+Received: from srini-hackbox.lan
+ (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+ by smtp.gmail.com with ESMTPSA id h14sm14695574wrp.55.2021.08.03.05.54.23
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 03 Aug 2021 05:54:23 -0700 (PDT)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: bjorn.andersson@linaro.org,
+	broonie@kernel.org,
+	robh@kernel.org
+Subject: [PATCH v3 01/20] soc: dt-bindings: qcom: apr: convert to yaml
+Date: Tue,  3 Aug 2021 13:53:52 +0100
+Message-Id: <20210803125411.28066-2-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20210803125411.28066-1-srinivas.kandagatla@linaro.org>
+References: <20210803125411.28066-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 08/03/2021 12:33:27
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 165384 [Aug 03 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: derek.fang@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 449 449 5db59deca4a4f5e6ea34a93b13bc730e229092f4
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;
- d41d8cd98f00b204e9800998ecf8427e.com:7.1.1; realtek.com:7.1.1
-X-KSE-AntiSpam-Info: {Track_Chinese_Simplified, from}
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 08/03/2021 12:36:00
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "lars@metafoo.de" <lars@metafoo.de>, Albert Chen <albertchen@realtek.com>,
- =?big5?B?U2h1bWluZyBbrVOu0bvKXQ==?= <shumingf@realtek.com>,
- "Flove\(HsinFu\)" <flove@realtek.com>
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ bgoswami@codeaurora.org, tiwai@suse.de, plai@codeaurora.org,
+ lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -134,24 +110,292 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-SGkgTWFyaywNCg0KDQpQbGVhc2UgaWdub3JlIHRoaXMgcGF0Y2guDQoNClNvcnJ5Lg0KDQoNCg0K
-VGhhbmtzLA0KDQpEZXJlaw0KDQoNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQqx
-SKXzqsw6IERlcmVrIFuk6Lx3uHFdDQqxSKXzpOm0wTogMjAyMaZ+OKTrMqTpIKRVpMggMDg6MzcN
-CqaspfOqzDogYnJvb25pZUBrZXJuZWwub3JnOyBsZ2lyZHdvb2RAZ21haWwuY29tDQqwxqW7OiBh
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc7IGxhcnNAbWV0YWZvby5kZTsgRmxvdmUoSHNpbkZ1
-KTsgT2RlciBDaGlvdTsgSmFjayBZdTsgU2h1bWluZyBbrVOu0bvKXTsgQWxiZXJ0IENoZW47IERl
-cmVrIFuk6Lx3uHFdDQqlRKauOiBbUEFUQ0ggMi8yXSBBU29DOiBydDU2ODI6IEFkanVzdCB0aGUg
-aGVhZHNldCB2b2x1bWUgYnV0dG9uIHRocmVzaG9sZA0KDQpGcm9tOiBEZXJlayBGYW5nIDxkZXJl
-ay5mYW5nQHJlYWx0ZWsuY29tPg0KDQpTZXQgYSBzYWZlIHRocmVzaG9sZCBvZiBoZWFkc2V0IGJ1
-dHRvbiB2b2x1bWUrIHRvIGZpeA0KdGhlIHdyb25nIGJ1dHRvbiBkZXRlY3Rpb24gaXNzdWUgd2l0
-aCBzb21lIGJyYW5kIGhlYWRzZXRzLg0KDQpTaWduZWQtb2ZmLWJ5OiBEZXJlayBGYW5nIDxkZXJl
-ay5mYW5nQHJlYWx0ZWsuY29tPg0KDQpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2NvZGVjcy9ydDU2
-ODIuYyBiL3NvdW5kL3NvYy9jb2RlY3MvcnQ1NjgyLmMNCmluZGV4IGZjZjQ0MmI4YTczMi4uZmFk
-ODI3MzY4YzVlIDEwMDY0NA0KLS0tIGEvc291bmQvc29jL2NvZGVjcy9ydDU2ODIuYw0KKysrIGIv
-c291bmQvc29jL2NvZGVjcy9ydDU2ODIuYw0KQEAgLTQ0LDYgKzQ0LDcgQEAgc3RhdGljIGNvbnN0
-IHN0cnVjdCByZWdfc2VxdWVuY2UgcGF0Y2hfbGlzdFtdID0gew0KICAgICAgICAge1JUNTY4Ml9J
-MkNfQ1RSTCwgMHgwMDBmfSwNCiAgICAgICAgIHtSVDU2ODJfUExMMl9JTlRFUk5BTCwgMHg4MjY2
-fSwNCiAgICAgICAgIHtSVDU2ODJfU0FSX0lMX0NNRF8zLCAweDgzNjV9LA0KKyAgICAgICB7UlQ1
-NjgyX1NBUl9JTF9DTURfNiwgMHgwMTEwfSwNCiB9Ow0KDQogdm9pZCBydDU2ODJfYXBwbHlfcGF0
-Y2hfbGlzdChzdHJ1Y3QgcnQ1NjgyX3ByaXYgKnJ0NTY4Miwgc3RydWN0IGRldmljZSAqZGV2KQ0K
-LS0NCjIuMTcuMQ0KDQo=
+Convert APR bindings to yaml format so that we could add new bindings support.
+
+All the dsp services bindings are now part of apr bindings instead
+of adding them to audio bindings.
+
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ .../devicetree/bindings/soc/qcom/qcom,apr.txt | 134 ------------------
+ .../bindings/soc/qcom/qcom,apr.yaml           | 127 +++++++++++++++++
+ 2 files changed, 127 insertions(+), 134 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
+ create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
+
+diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
+deleted file mode 100644
+index 2e2f6dc351c0..000000000000
+--- a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
++++ /dev/null
+@@ -1,134 +0,0 @@
+-Qualcomm APR (Asynchronous Packet Router) binding
+-
+-This binding describes the Qualcomm APR. APR is a IPC protocol for
+-communication between Application processor and QDSP. APR is mainly
+-used for audio/voice services on the QDSP.
+-
+-- compatible:
+-	Usage: required
+-	Value type: <stringlist>
+-	Definition: must be "qcom,apr-v<VERSION-NUMBER>", example "qcom,apr-v2"
+-
+-- qcom,apr-domain
+-	Usage: required
+-	Value type: <u32>
+-	Definition: Destination processor ID.
+-	Possible values are :
+-			1 - APR simulator
+-			2 - PC
+-			3 - MODEM
+-			4 - ADSP
+-			5 - APPS
+-			6 - MODEM2
+-			7 - APPS2
+-
+-= APR SERVICES
+-Each subnode of the APR node represents service tied to this apr. The name
+-of the nodes are not important. The properties of these nodes are defined
+-by the individual bindings for the specific service
+-- All APR services MUST contain the following property:
+-
+-- reg
+-	Usage: required
+-	Value type: <u32>
+-	Definition: APR Service ID
+-	Possible values are :
+-			3 - DSP Core Service
+-			4 - Audio Front End Service.
+-			5 - Voice Stream Manager Service.
+-			6 - Voice processing manager.
+-			7 - Audio Stream Manager Service.
+-			8 - Audio Device Manager Service.
+-			9 - Multimode voice manager.
+-			10 - Core voice stream.
+-			11 - Core voice processor.
+-			12 - Ultrasound stream manager.
+-			13 - Listen stream manager.
+-
+-- qcom,protection-domain
+-	Usage: optional
+-	Value type: <stringlist>
+-	Definition: Must list the protection domain service name and path
+-		    that the particular apr service has a dependency on.
+-	Possible values are :
+-			"avs/audio", "msm/adsp/audio_pd".
+-			"kernel/elf_loader", "msm/modem/wlan_pd".
+-			"tms/servreg", "msm/adsp/audio_pd".
+-			"tms/servreg", "msm/modem/wlan_pd".
+-			"tms/servreg", "msm/slpi/sensor_pd".
+-
+-= EXAMPLE
+-The following example represents a QDSP based sound card on a MSM8996 device
+-which uses apr as communication between Apps and QDSP.
+-
+-	apr {
+-		compatible = "qcom,apr-v2";
+-		qcom,apr-domain = <APR_DOMAIN_ADSP>;
+-
+-		apr-service@3 {
+-			compatible = "qcom,q6core";
+-			reg = <APR_SVC_ADSP_CORE>;
+-		};
+-
+-		apr-service@4 {
+-			compatible = "qcom,q6afe";
+-			reg = <APR_SVC_AFE>;
+-
+-			dais {
+-				#sound-dai-cells = <1>;
+-				dai@1 {
+-					reg = <HDMI_RX>;
+-				};
+-			};
+-		};
+-
+-		apr-service@7 {
+-			compatible = "qcom,q6asm";
+-			reg = <APR_SVC_ASM>;
+-			...
+-		};
+-
+-		apr-service@8 {
+-			compatible = "qcom,q6adm";
+-			reg = <APR_SVC_ADM>;
+-			...
+-		};
+-	};
+-
+-= EXAMPLE 2
+-The following example represents a QDSP based sound card with protection domain
+-dependencies specified. Here some of the apr services are dependent on services
+-running on protection domain hosted on ADSP/SLPI remote processors while others
+-have no such dependency.
+-
+-	apr {
+-		compatible = "qcom,apr-v2";
+-		qcom,glink-channels = "apr_audio_svc";
+-		qcom,apr-domain = <APR_DOMAIN_ADSP>;
+-
+-		apr-service@3 {
+-			compatible = "qcom,q6core";
+-			reg = <APR_SVC_ADSP_CORE>;
+-		};
+-
+-		q6afe: apr-service@4 {
+-			compatible = "qcom,q6afe";
+-			reg = <APR_SVC_AFE>;
+-			qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
+-			...
+-		};
+-
+-		q6asm: apr-service@7 {
+-			compatible = "qcom,q6asm";
+-			reg = <APR_SVC_ASM>;
+-			qcom,protection-domain = "tms/servreg", "msm/slpi/sensor_pd";
+-			...
+-		};
+-
+-		q6adm: apr-service@8 {
+-			compatible = "qcom,q6adm";
+-			reg = <APR_SVC_ADM>;
+-			qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
+-			...
+-		};
+-	};
+diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
+new file mode 100644
+index 000000000000..12650f7084f4
+--- /dev/null
++++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
+@@ -0,0 +1,127 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/soc/qcom/qcom,apr.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Qualcomm APR (Asynchronous Packet Router) binding
++
++maintainers:
++  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
++
++description: |
++  This binding describes the Qualcomm APR, APR is a IPC protocol for
++  communication between Application processor and QDSP. APR is mainly
++  used for audio/voice services on the QDSP.
++
++properties:
++  compatible:
++    enum:
++      - qcom,apr
++      - qcom,apr-v2
++
++  qcom,apr-domain:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    enum: [1, 2, 3, 4, 5, 6, 7]
++    description:
++      Selects the processor domain for apr
++        1 = APR simulator
++        2 = PC Domain
++        3 = Modem Domain
++        4 = ADSP Domain
++        5 = Application processor Domain
++        6 = Modem2 Domain
++        7 = Application Processor2 Domain
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++#APR Services
++patternProperties:
++  "^apr-service@[0-9a-e]$":
++    type: object
++    description:
++      APR node's client devices use subnodes for desired static port services.
++
++    properties:
++      compatible:
++        enum:
++          - qcom,q6core
++          - qcom,q6asm
++          - qcom,q6afe
++          - qcom,q6adm
++
++      reg:
++        enum: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
++        description:
++          APR Service ID
++            3 = DSP Core Service
++            4 = Audio  Front End Service.
++            5 = Voice Stream Manager Service.
++            6 = Voice processing manager.
++            7 = Audio Stream Manager Service.
++            8 = Audio Device Manager Service.
++            9 = Multimode voice manager.
++            10 = Core voice stream.
++            11 = Core voice processor.
++            12 = Ultrasound stream manager.
++            13 = Listen stream manager.
++
++      qcom,protection-domain:
++        $ref: /schemas/types.yaml#/definitions/string-array
++        description: protection domain service name and path for apr service
++          has dependency on.
++        items:
++          - const: avs/audio
++          - const: msm/adsp/audio_pd
++
++      '#address-cells':
++        const: 1
++
++      '#size-cells':
++        const: 0
++
++    additionalProperties: false
++
++required:
++  - compatible
++  - qcom,apr-domain
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/soc/qcom,apr.h>
++    apr {
++        compatible = "qcom,apr-v2";
++        qcom,apr-domain = <APR_DOMAIN_ADSP>;
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        q6core: apr-service@3 {
++          compatible = "qcom,q6core";
++          reg = <APR_SVC_ADSP_CORE>;
++          qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
++        };
++
++        q6afe: apr-service@4 {
++          compatible = "qcom,q6afe";
++          reg = <APR_SVC_AFE>;
++          qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
++        };
++
++        q6asm: apr-service@7 {
++          compatible = "qcom,q6asm";
++          reg = <APR_SVC_ASM>;
++          qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
++        };
++
++        q6adm: apr-service@8 {
++          compatible = "qcom,q6adm";
++          reg = <APR_SVC_ADM>;
++          qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
++        };
++    };
+-- 
+2.21.0
+
