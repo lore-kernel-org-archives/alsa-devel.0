@@ -2,89 +2,77 @@ Return-Path: <SRS0=EjE+=M2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 660A3C4338F
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 14:06:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86D5DC432BE
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 14:21:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0BE0D60F46
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 14:06:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0BE0D60F46
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 8EB536103C
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 14:21:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8EB536103C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F11F71898;
-	Tue,  3 Aug 2021 16:05:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F11F71898
+	by alsa0.perex.cz (Postfix) with ESMTPS id D092C1884;
+	Tue,  3 Aug 2021 16:20:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D092C1884
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627999603;
-	bh=+cmEzDjZ9fcxBLMc2NPTBr6C6YaxJcjTptJfNQBdIG0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1628000467;
+	bh=p5oWSI8jtAK0r7RAo0aIcbN6x8QEcxZarEN3lIrfI3w=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Dv3JQMhBXNJiBSvnSWWGEhweWXsOs3DdBV4gOpOLZfuB4LVtRKwnNiwG+77MoYG/O
-	 ftyzfky1rU80s+UITfwX/9SsZXTbNmu7VKKg0C66Yg1Q65EBj7uD6rYa+lVn6fcHrB
-	 YCge2Q8B//dO3ChkCv4P9b7DKghEK07h/DRM6atk=
+	b=ry1u89H8FjBojFQ7OQIELQZvpMknVW7OtXKbtEpn64yj0qJNN2TeQkFi3xtxtXG/Q
+	 XxmdOg51wxOqvUHKFu125YryNXzeBjExQU0vLUXSQjZWY9O8rfypVsIPrtAYASM3+r
+	 gNcSvUh4sGzi8KWbBsVRBl+VlsJaQGVgkNvh8dOA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C69EF8014D;
-	Tue,  3 Aug 2021 16:05:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 71B65F8014D;
+	Tue,  3 Aug 2021 16:20:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E64BFF802E8; Tue,  3 Aug 2021 16:05:50 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id E0E27F802E8; Tue,  3 Aug 2021 16:20:15 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03313F80095
- for <alsa-devel@alsa-project.org>; Tue,  3 Aug 2021 16:05:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03313F80095
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="Ns3csEQP"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="+pFfeUa+"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 843672003F;
- Tue,  3 Aug 2021 14:05:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1627999543; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=KB9J6Yc/9eRj2qPkgvDqfREMnT7BDt/roGrjEKRDPyo=;
- b=Ns3csEQPJq7kDx9y1hp638rKj5iQdiKUKbipvtGsXi36DTY9Tng7AXFNNNPKqIPOmcY7Rg
- EmVjOd4BIHw7jgUXhh8bfwHE0V4p/icnEcpwqTgdsDLEfRoh9zPUaU+MtLFLl43EnFd3Z0
- owU2CtFhF+if90FpT6QCV5l/aWBvRLo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1627999543;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=KB9J6Yc/9eRj2qPkgvDqfREMnT7BDt/roGrjEKRDPyo=;
- b=+pFfeUa+Ix2NTtlc4wifs7o18heExOFldNIRWWN0dQplxACrjpjzhHdQKI2ghVAFTsHJzk
- 6cdoYIMxiQbcj4BA==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 72B92A3BD1;
- Tue,  3 Aug 2021 14:05:43 +0000 (UTC)
-Date: Tue, 03 Aug 2021 16:05:43 +0200
-Message-ID: <s5hmtpyvd1k.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Colin King <colin.king@canonical.com>
-Subject: Re: [PATCH][V2] ALSA: usb-audio: make array static const,
- makes object smaller
-In-Reply-To: <20210803122839.7143-1-colin.king@canonical.com>
-References: <20210803122839.7143-1-colin.king@canonical.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 35348F8014D
+ for <alsa-devel@alsa-project.org>; Tue,  3 Aug 2021 16:20:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35348F8014D
+X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="277462031"
+X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; d="scan'208";a="277462031"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Aug 2021 07:20:02 -0700
+X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; d="scan'208";a="521268925"
+Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.237.180.77])
+ ([10.237.180.77])
+ by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Aug 2021 07:19:59 -0700
+Subject: Re: [PATCH v3 13/20] ASoC: qdsp6: audioreach: add basic pkt alloc
+ support
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ bjorn.andersson@linaro.org, broonie@kernel.org, robh@kernel.org
+References: <20210803125411.28066-1-srinivas.kandagatla@linaro.org>
+ <20210803125411.28066-14-srinivas.kandagatla@linaro.org>
+From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+Message-ID: <3c97465c-356d-9989-c855-6eae325e8da6@linux.intel.com>
+Date: Tue, 3 Aug 2021 16:19:46 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210803125411.28066-14-srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ bgoswami@codeaurora.org, tiwai@suse.de, plai@codeaurora.org,
+ lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,33 +88,129 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 03 Aug 2021 14:28:39 +0200,
-Colin King wrote:
+On 8/3/2021 2:54 PM, Srinivas Kandagatla wrote:
+> Add basic helper functions for AudioReach.
 > 
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Don't populate array names_to_check on the stack but instead it
-> static.  Makes the object code smaller by 56 bytes.  Also clean
-> up checkpatch warning by adding extra const for names_to_check
-> and pointer s.
-> 
-> Before:
->     text    data     bss     dec     hex filename
->   103512   34380       0  137892   21aa4 ./sound/usb/mixer.o
-> 
-> After:
->     text    data     bss     dec     hex filename
->   103264   34572       0  137836   21a6c ./sound/usb/mixer.o
-> 
-> (gcc version 10.2.0)
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 > ---
-> 
-> V2: Clean up checkpatch warning on const-ness for names_to_check.
->     Add extra const to clean up build warning on pointer s.
 
-Thanks, applied.
+...
+
+> +
+> +#define APM_PARAM_ID_GAIN			0x08001006
+> +struct param_id_gain_cfg {
+> +	uint16_t gain;
+> +	uint16_t reserved;
+> +};
+> +
+> +#define PARAM_ID_PCM_OUTPUT_FORMAT_CFG		0x08001008
+> +struct param_id_pcm_output_format_cfg {
+> +	uint32_t data_format;
+> +	uint32_t fmt_id;
+> +	uint32_t payload_size;
+> +} __packed;
+> +
+> +struct payload_pcm_output_format_cfg {
+> +	uint16_t bit_width;
+> +	uint16_t alignment;
+> +	uint16_t bits_per_sample;
+> +	uint16_t q_factor;
+> +	uint16_t endianness;
+> +	uint16_t interleaved;
+> +	uint16_t reserved;
+> +	uint16_t num_channels;
+> +	uint8_t channel_mapping[0];
+
+Current kernel convention is to use something like:
+uint8_t channel_mapping[];
+for flexible arrays.
+I've pointed out few more later, but it would be best to run some kind 
+of search to find them all in all files in patchset.
+
+...
+
+> +
+> +struct apm_container_cfg {
+> +	uint32_t container_id;
+> +	uint32_t num_prop;
+> +} __packed;
+> +
+> +struct apm_cont_capablity  {
+> +	uint32_t capability_id;
+> +} __packed;
+> +
+> +#define APM_CONTAINER_PROP_ID_CAPABILITY_LIST	0x08001011
+> +#define APM_CONTAINER_PROP_ID_CAPABILITY_SIZE	8
+> +
+> +#define APM_PROP_ID_INVALID			0x0
+> +#define APM_CONTAINER_CAP_ID_PP			0x1
+> +#define APM_CONTAINER_CAP_ID_PP			0x1
+> +
+> +struct apm_cont_prop_id_cap_list  {
+> +	uint32_t num_capablity_id;
+num_capability_id
+
+...
+
+> +
+> +#define CONFIG_I2S_WS_SRC_EXTERNAL                          0x0
+> +#define CONFIG_I2S_WS_SRC_INTERNAL                          0x1
+> +
+> +#define PARAM_ID_I2S_INTF_CFG	0x08001019
+> +struct param_id_i2s_intf_cfg {
+> +	uint32_t lpaif_type;
+> +	uint32_t intf_idx;
+> +	uint16_t sd_line_idx;
+> +	uint16_t ws_src;
+> +} __packed;
+> +
+> +#define I2S_INTF_TYPE_PRIMARY		0
+> +#define I2S_INTF_TYPE_SECOINDARY	1
+SECONDARY
+
+> +#define I2S_INTF_TYPE_TERTINARY		2
+TERTIARY
+
+> +#define I2S_INTF_TYPE_QUATERNARY	3
+> +#define I2S_INTF_TYPE_QUINARY		4
+> +#define I2S_SD0				1
+> +#define I2S_SD1				2
+> +#define I2S_SD2				3
+> +#define I2S_SD3				4
+> +
+
+...
+
+> +#define DATA_LOGGING_MAX_INPUT_PORTS		0x1
+> +#define DATA_LOGGING_MAX_OUTPUT_PORTS		0x1
+> +#define DATA_LOGGING_STACK_SIZE			2048
+> +#define PARAM_ID_DATA_LOGGING_CONFIG		0x08001031
+> +struct data_logging_config {
+> +	uint32_t log_code;
+> +	uint32_t log_tap_point_id;
+> +	uint32_t mode;
+> +} __packed;
+> +
+> +#define PARAM_ID_MFC_OUTPUT_MEDIA_FORMAT	0x08001024
+> +struct param_id_mfc_media_format {
+> +	uint32_t sample_rate;
+> +	uint16_t bit_width;
+> +	uint16_t num_channels;
+> +	uint16_t channel_mapping[0];
+uint16_t channel_mapping[];
+
+...
+
+> +
+> +struct payload_media_fmt_pcm {
+> +	uint32_t sample_rate;
+> +	uint16_t bit_width;
+> +	uint16_t alignment;
+> +	uint16_t bits_per_sample;
+> +	uint16_t q_factor;
+> +	uint16_t endianness;
+> +	uint16_t num_channels;
+> +	uint8_t channel_mapping[0];
+uint8_t channel_mapping[];
 
 
-Takashi
