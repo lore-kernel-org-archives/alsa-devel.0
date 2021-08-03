@@ -7,88 +7,87 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08D75C4338F
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 12:58:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03567C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 12:58:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8313960F01
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 12:58:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8313960F01
+	by mail.kernel.org (Postfix) with ESMTPS id 78EA160F38
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 12:58:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 78EA160F38
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23836829;
-	Tue,  3 Aug 2021 14:57:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23836829
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1D0A3179D;
+	Tue,  3 Aug 2021 14:57:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D0A3179D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627995510;
-	bh=HHM8Uf8kXP/ddqNY0+HWiYQfCwwAd0Nrl+BTE+SHJ+w=;
+	s=default; t=1627995527;
+	bh=+dkgU52cVby4N69KEbOntoE9pwg/akwjaJElmBvfgMs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=g7i6LqgdDhKbFTwntQ31SIEnBFhRV33kBFPX2KwGJ6agydNvD49xbo8q4jeMAM1Ao
-	 DC9LwTuclk0W19NB+RkbCqAy8VO/WXeczQsrNz7ri4u+P8i6zP8jHq0Cxexoie98X7
-	 8tXVo1mcmisnxVs3//2M1uabHftYhGwBvVovWIwk=
+	b=f4zoplViyCqJrAzqeCcOaaB35wEsjWunEUK95n2pCFkqhvzPBHAW8n+j6LST1SrvO
+	 3rlt1WMzYZjGwWOOoMyZzUcdCadu8Z3f3AYWn/hz4X3Bl9I6polonkBsEjv9MolKx6
+	 7oWg7qjmNMTN4LVuKdS84BVfkzz3RSSOFKwJc1RI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E009F80526;
+	by alsa1.perex.cz (Postfix) with ESMTP id D2B09F8052D;
 	Tue,  3 Aug 2021 14:54:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8E1BEF8032D; Tue,  3 Aug 2021 14:54:41 +0200 (CEST)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
+ id 23965F80516; Tue,  3 Aug 2021 14:54:42 +0200 (CEST)
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com
+ [IPv6:2a00:1450:4864:20::433])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 833A9F8032D
+ by alsa1.perex.cz (Postfix) with ESMTPS id A68A9F804E6
  for <alsa-devel@alsa-project.org>; Tue,  3 Aug 2021 14:54:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 833A9F8032D
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A68A9F804E6
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="nY6LC9WW"
-Received: by mail-wm1-x335.google.com with SMTP id
- f9-20020a05600c1549b029025b0f5d8c6cso1662122wmg.4
+ header.b="nVyh6G47"
+Received: by mail-wr1-x433.google.com with SMTP id h13so11740348wrp.1
  for <alsa-devel@alsa-project.org>; Tue, 03 Aug 2021 05:54:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=0vcBsLXSl9GUubMz0AxOjIgAjQjLiU9UgPPaq+ZKA9A=;
- b=nY6LC9WWHb4QmP4lnvRYWOrIohoAzRi3LfX247PgNT6C/xu0rQJZ1w2W+BWyNCEEV0
- IdVBx+E+mTdT9z9fVvprki1PPqSjEQikS+Of8EhEycyQZBTgToxlgqS1qd15zdNjVtWA
- rGcLKOJOgkG/1FY04rAwiaYhem8kCoiQiv0ZDMfOFwHcok8s/UXlGrAzIuJUKquPjCl+
- d5f0JXaCmxcc20Y9el1Bi6L/ZL0EX06y5BT7JEy/JrAVrPGTkx5i5mtr3IelL5nhxt3Q
- 480X7NLpyc6ykYmcIthMPsjFYmXgwR2+FMtDjdrwCe7sagGVa8I7/3RA8e+B7T96Bq8D
- 7PZg==
+ bh=IlmDW4jjHYqf7npFSuyYq2N19CPmEjH+lYW7doFg1hM=;
+ b=nVyh6G47UYVGSE9L9QqWstwZFdNMZR+jq6FcKPWrcowYJRQdH50mxX6IPAkF+Kaero
+ +rgy/7MxhgAGS9b7gMW0/aOcD2rl8jvn+NETDRljOZk6OYYNL5l98rlaenUR1BSaBDUO
+ iDtSPUBamua35GpML1/iy+EYZlnWOvb/3gS6u2DBZQqr6h+wVhDeH06besXJt6xa8oVm
+ iP9OkyneXHaUw+uwutuIYYsDxW1kL9Dm6jLJZs8DV1uQH/NnutCxTiO5JZa3PJol26Uy
+ lik4Dh8k/p9YUQoxESXANq1yfmLVwhfs+TYf7igzAmgC1ff5O/ORul8wp5BKDmgXU347
+ YAQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=0vcBsLXSl9GUubMz0AxOjIgAjQjLiU9UgPPaq+ZKA9A=;
- b=AuIPshnGXwmR7VEmhQiReSWDwTRCTjQWxQ92ZFmdhQIn+e3mq1ffETo2yz83Y5oHEQ
- b6VbJRVerIJkZ2+aIdWshqqKL0unRP8wihVL42pSV2LuzIc8C5Kd69tdZvLd/ARXHKUW
- GZtm1HdgpBWcKratuWmKuOGw5LaOxGqIah6XxWNfeWj7ovNOXV2crZGJCWs03uumdGqx
- wC9GjKP06hZK8TUPADCwZWbL5P1kZrn9HkVEoknf09Uu3zTOQjX9BXxpzka1C9j2Uaor
- IBJI/bGvV39mUSmmzh6Fl1L0GxTVOGgvopr01qNpFRlj6mHIvsZI4KRPdtJKqzVaJTXF
- g1mg==
-X-Gm-Message-State: AOAM530vg5bL0ge6opfdX+/U2gSRBdY8cxh4nWAw0yXMS3ucitWXl2BG
- h7JD+6BgZpE49ox2t/6KddHspA==
-X-Google-Smtp-Source: ABdhPJzPsp6SrcIkfGNC94k7h8QerfdsLKRrN5rERNO9QIY6+88BVqDV5+qDrJtnAJ4mV4EkVkh9MA==
-X-Received: by 2002:a05:600c:35c1:: with SMTP id
- r1mr21884871wmq.101.1627995274273; 
- Tue, 03 Aug 2021 05:54:34 -0700 (PDT)
+ bh=IlmDW4jjHYqf7npFSuyYq2N19CPmEjH+lYW7doFg1hM=;
+ b=X3ZUqqy59lZVBH3GpiF/xZJSGUpVCPp4G7FGnaHsuGGI1dlNeU1iXnIRCO1VE67QkK
+ 9pS+5Av0UxtOH38uXd3cUGz0tHRmudZG0eyr6t8U9r10SvU9nw8MeU7/aDsscqM7VqeH
+ z0WAEDZWZnaKXUmNKt+aRBQ/aQQzDJLDPHfTiLjmBoTedjWk5PNGLDjkKGoZoQUNwux1
+ bRmObpVUr1Y+9B16X+jMDIO0GcE+wiDmCaAGUgKlbmRNSwhYfebkU6d85cXh0RrCmAwA
+ KNDgl8XX3LApH3wFEYg1sxOiPXwGKcz97y4MRjOmYeYY+PPfkbisp6g8iCvnDkAy62Cz
+ W+1Q==
+X-Gm-Message-State: AOAM533ti1qHrz5DeUQ6D0F/EC7XsIw1WsD+FPdUnZBfyEYrjxLxQpCs
+ veF8XJIfbAS+RXHO9NpHd+bbwA==
+X-Google-Smtp-Source: ABdhPJxs45mKUPPN4nXgD/va3gEMHh1SAfuQBQ4Bm5BBqAugpV9ll94j2e5GavFplgUWipuCnrrt/g==
+X-Received: by 2002:adf:ed50:: with SMTP id u16mr22855123wro.174.1627995276270; 
+ Tue, 03 Aug 2021 05:54:36 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id h14sm14695574wrp.55.2021.08.03.05.54.33
+ by smtp.gmail.com with ESMTPSA id h14sm14695574wrp.55.2021.08.03.05.54.35
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 03 Aug 2021 05:54:33 -0700 (PDT)
+ Tue, 03 Aug 2021 05:54:35 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: bjorn.andersson@linaro.org,
 	broonie@kernel.org,
 	robh@kernel.org
-Subject: [PATCH v3 10/20] ASoC: dt-bindings: q6dsp: add q6apm-dai compatible
-Date: Tue,  3 Aug 2021 13:54:01 +0100
-Message-Id: <20210803125411.28066-11-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 12/20] ASoC: dt-bindings: q6dsp-clocks: add q6prm clocks
+ compatible
+Date: Tue,  3 Aug 2021 13:54:03 +0100
+Message-Id: <20210803125411.28066-13-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210803125411.28066-1-srinivas.kandagatla@linaro.org>
 References: <20210803125411.28066-1-srinivas.kandagatla@linaro.org>
@@ -114,47 +113,42 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- .../sound/qcom,q6dsp-audio-stream.yaml        | 26 ++++++++++++++++++-
- 1 file changed, 25 insertions(+), 1 deletion(-)
+ .../sound/qcom,q6dsp-audio-clocks.yaml        | 21 ++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6dsp-audio-stream.yaml b/Documentation/devicetree/bindings/sound/qcom,q6dsp-audio-stream.yaml
-index 0e70b486b51a..8cba289bb068 100644
---- a/Documentation/devicetree/bindings/sound/qcom,q6dsp-audio-stream.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6dsp-audio-stream.yaml
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6dsp-audio-clocks.yaml b/Documentation/devicetree/bindings/sound/qcom,q6dsp-audio-clocks.yaml
+index 03ab7451eb1c..c4814ae00712 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,q6dsp-audio-clocks.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,q6dsp-audio-clocks.yaml
 @@ -14,7 +14,9 @@ description: |
  
  properties:
    compatible:
--    const: qcom,q6asm-dais
+-    const: qcom,q6afe-clocks
 +    enum:
-+      - qcom,q6asm-dais
-+      - qcom,q6apm-dais
++      - qcom,q6afe-clocks
++      - qcom,q6prm-clocks
  
    reg:
      maxItems: 1
-@@ -92,3 +94,25 @@ examples:
+@@ -53,3 +55,20 @@ examples:
              };
          };
        };
++
 +  - |
 +    #include <dt-bindings/soc/qcom,gpr.h>
 +    gpr {
 +        #address-cells = <1>;
 +        #size-cells = <0>;
-+        gpr-service@1 {
-+            reg = <GPR_APM_MODULE_IID>;
++        gpr-service@2 {
++            reg = <GPR_PRM_MODULE_IID>;
 +            #address-cells = <1>;
 +            #size-cells = <0>;
-+            q6apmdai@1 {
-+              compatible = "qcom,q6apm-dais";
-+              reg = <1>;
-+              #address-cells = <1>;
-+              #size-cells = <0>;
-+              #sound-dai-cells = <1>;
-+
-+              dai@1 {
-+                reg = <1>;
-+              };
++            q6prmcc@2 {
++              compatible = "qcom,q6prm-clocks";
++              reg = <2>;
++              #clock-cells = <2>;
 +            };
 +        };
 +      };
