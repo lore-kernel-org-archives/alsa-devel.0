@@ -1,96 +1,60 @@
-Return-Path: <SRS0=mFEw=MZ=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=EjE+=M2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F168C4338F
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 22:54:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14116C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 05:01:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BF1C960F36
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Aug 2021 22:54:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BF1C960F36
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7107960187
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 05:01:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7107960187
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6F3C6170C;
-	Tue,  3 Aug 2021 00:53:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F3C6170C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2FA93170F;
+	Tue,  3 Aug 2021 07:00:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FA93170F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627944884;
-	bh=D8kC3Y5B4St8HQAz8Z5ieygx8VNz8NbyIqq43x9CJaI=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1627966881;
+	bh=k0y2AOU3NQjgzNMekTZohMlJyRJnZRFUwh8+j4xzBTw=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=LrahIZYJRs4tn32+2mdtVdf62dDoHpAl6V8FID2AHzqgcg/QyAszodUyObbOqzn8O
-	 3sC5QnvdJ4ixmXeoTCyXbYU1MSg72cUYPkwap7qLEw5CDUJyedaGEaS5TI07k+hRrJ
-	 aoyc0bOy5wbpEAEJja15PxRHK6SPPaehO0AFG+tI=
+	b=trBN0xHuRpHsS0oBa4n5daXElLPLRPSCdTzqYu1MMc7+pDYQdUJEoc1WuOC2JkiW/
+	 V0G5cFFSuWb6J7/mLNt0fOSCFxarH7YANOErZeMEVShQ/ymf69M+farw0NaH+SbIKW
+	 gQN/1ECgwJRF2MxmGb2Sn2sPfdVPiUg21iqgy6mk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 05894F801F7;
-	Tue,  3 Aug 2021 00:53:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 990FDF8016D;
+	Tue,  3 Aug 2021 07:00:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0C1B3F8014D; Tue,  3 Aug 2021 00:53:52 +0200 (CEST)
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
- [IPv6:2a00:1450:4864:20::432])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5AD0F8014D
- for <alsa-devel@alsa-project.org>; Tue,  3 Aug 2021 00:53:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5AD0F8014D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="DB/uIBJx"
-Received: by mail-wr1-x432.google.com with SMTP id j2so23145130wrx.9
- for <alsa-devel@alsa-project.org>; Mon, 02 Aug 2021 15:53:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
- bh=f6XStbR+3/dZBpwh4Gq6VDFs804yZWcR+sdlfpTwgVg=;
- b=DB/uIBJxbYHzpEZKZgP6ZhrgdyPC3Hccy+ll+rrmSds7L65imoP40EcpAyDXUosmne
- MZuue7j8P8gqb17eElU6oSLukduvJWXPnfOXvUTZWmMXzwawxN9yVxw3WQ4Z4zIMnC31
- hI2yJe8iEi6ebrWTgPQtsU08knqS0CmNtfkm3ezBVnP2uL8GFUTRDQkC3ztv5adkFGCf
- aqB4yrh1a58HIzYJtUR+lA1VuBLAm/stpzBFDl32iAdABAaZC4Ah9qM7NSdPSomgmVks
- pGeoULAok6sqXYvQsAZEsMep/Ix1anjMGQWNx3TTxsMgA6PUh+xSv6KlEpG/Um/NRFCe
- Fq5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
- :content-disposition;
- bh=f6XStbR+3/dZBpwh4Gq6VDFs804yZWcR+sdlfpTwgVg=;
- b=aAswLWiiJDbP66LNTaQyOYyAVW1a5vhYGdiM/MuVRg6QurBRFfZJaSW/QDWOLtbpsN
- hOS5oEaCUlXJ1sO6r7hQ6ZYa4VEqjh+rL8PCtD6LmqpKqgEPL2j2C2zASVo3iYvaM/8h
- 7baWHUuCbid+IpF+6ixBBwL0lnUyL+/8416F2waQyT5PvwNw6mcxfuFq4rSrodbxweFq
- 9alNs/FEFeBPsmRNjtEGB1WujChaZ9d81qCwuPCf+yN5/2/QzfLnoMWWGGa7hs7S9pRA
- PsKF4pceJerLB7T/Q8evA0kcVsR4EsKRsy0bKgpSnpW5kzPB5rdkEixNkX2IWY7Tv6PD
- gFDQ==
-X-Gm-Message-State: AOAM533dUWC4LV5oPxfnBDKjhmCLZ3ykt/zcbh/vC247FuJICkUokHPt
- EoFwPn1TVGpFguvCJwJAPWM=
-X-Google-Smtp-Source: ABdhPJzFQ/L/4ZUaER8RmCQGH9ygBTjFjh2WilXQX9maipYmFA7RN7EDKhIQQ/rBmlXwTyJyPoiv0Q==
-X-Received: by 2002:a05:6000:10d0:: with SMTP id
- b16mr20183524wrx.332.1627944822237; 
- Mon, 02 Aug 2021 15:53:42 -0700 (PDT)
-Received: from pc ([196.235.140.151])
- by smtp.gmail.com with ESMTPSA id q14sm12520389wrs.8.2021.08.02.15.53.41
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 02 Aug 2021 15:53:41 -0700 (PDT)
-Date: Mon, 2 Aug 2021 23:53:39 +0100
-From: Salah Triki <salah.triki@gmail.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Pavel Skripkin <paskripkin@gmail.com>,
- Kai-Heng Feng <kai.heng.feng@canonical.com>,
- Mark Brown <broonie@kernel.org>, Joe Perches <joe@perches.com>
-Subject: [PATCH] sound: usb: get lock before calling usb_enable_autosuspend()
-Message-ID: <20210802225339.GA1461793@pc>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+ id 961C6F802E8; Tue,  3 Aug 2021 07:00:28 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id AF132F8014D
+ for <alsa-devel@alsa-project.org>; Tue,  3 Aug 2021 07:00:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF132F8014D
+Date: 03 Aug 2021 14:00:12 +0900
+X-IronPort-AV: E=Sophos;i="5.84,290,1620658800"; d="scan'208";a="89614703"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 03 Aug 2021 14:00:12 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 418E6400C73E;
+ Tue,  3 Aug 2021 14:00:12 +0900 (JST)
+Message-ID: <875ywnw2ar.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 0/4] ASoC: soc-ops: cleanup cppcheck warning
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,34 +70,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Based on the documentation of usb_enable_autosuspend(), the
-caller must hold udev's device lock.
 
-Signed-off-by: Salah Triki <salah.triki@gmail.com>
----
- sound/usb/card.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+Hi Mark
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 2f6a62416c05..9290ba0acd5f 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -907,8 +907,13 @@ static void usb_audio_disconnect(struct usb_interface *intf)
- 		}
- 	}
- 
--	if (chip->quirk_type & QUIRK_SETUP_DISABLE_AUTOSUSPEND)
--		usb_enable_autosuspend(interface_to_usbdev(intf));
-+	if (chip->quirk_type & QUIRK_SETUP_DISABLE_AUTOSUSPEND) {
-+		struct usb_device *udev = interface_to_usbdev(intf);
-+
-+		usb_lock_device(udev);
-+		usb_enable_autosuspend(udev);
-+		usb_unlock_device(udev);
-+	}
- 
- 	chip->num_interfaces--;
- 	if (chip->num_interfaces <= 0) {
+Now I'm posting audio-graph-card2 patch-set, but it seems it needs longer
+discussion. Thus I want to post more easy patch first, and reduce my
+local patches.
+
+These are cppcheck warning cleanup patches for soc-ops.
+
+Kuninori Morimoto (4):
+  ASoC: soc-ops: cleanup cppcheck warning at snd_soc_put_volsw_sx()
+  ASoC: soc-ops: cleanup cppcheck warning at snd_soc_limit_volume()
+  ASoC: soc-ops: cleanup cppcheck warning at snd_soc_get_xr_sx()
+  ASoC: soc-ops: cleanup cppcheck warning at snd_soc_put_xr_sx()
+
+ sound/soc/soc-ops.c | 21 ++++++++++-----------
+ 1 file changed, 10 insertions(+), 11 deletions(-)
+
 -- 
 2.25.1
 
