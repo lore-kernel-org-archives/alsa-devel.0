@@ -7,86 +7,87 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D0E6C4338F
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 12:56:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25DD0C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 12:57:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B16D360F38
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 12:56:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B16D360F38
+	by mail.kernel.org (Postfix) with ESMTPS id A172F60F01
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 12:57:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A172F60F01
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 552B0177E;
-	Tue,  3 Aug 2021 14:56:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 552B0177E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 40244179C;
+	Tue,  3 Aug 2021 14:56:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40244179C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627995417;
-	bh=o9/vcpx0mZFCrd2CXPMV0OGXddgLmM6Nb4TIfiT9ukE=;
+	s=default; t=1627995431;
+	bh=o2yfxFiErcbvZyFauRr4p4ScsN9iIaymKCa0QuGGHsI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Tz7xsQS0AVs+1ddnD72VXNLuAYsgewc1aeVwmUnL5aJDETGOTMJ8zfnfu2kwwiQMX
-	 UwXCZCX03p5L2Ik2b+IWvhq9Zu6eNACpocC+TLisBDD3ymH3fc/XfOKuXuYG9HEvpi
-	 KBVTOYVYa/g01YYV9wxFTox3dMuuv5gARlBz/dsY=
+	b=Eb/PBEw/TLiuPMGj+DQUydpcfMfVftHiAPwZ1niwFZS4OMo8SX1pcq2xEKcwbZ9XG
+	 PTnnUxL91ZWv/ET/X8AfDpqH7qVwPJg9xRN5tfRmtWStnRphaVgs8tmONd/F3ChZ5W
+	 lpGT5fS8pFXY9+L6wMoqi6de3tEu62W5nG44lKfM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 63EAEF804FC;
-	Tue,  3 Aug 2021 14:54:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40D51F80508;
+	Tue,  3 Aug 2021 14:54:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 392CEF804E7; Tue,  3 Aug 2021 14:54:37 +0200 (CEST)
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
- [IPv6:2a00:1450:4864:20::42e])
+ id 6FE38F8016D; Tue,  3 Aug 2021 14:54:37 +0200 (CEST)
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
+ [IPv6:2a00:1450:4864:20::429])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6DBEDF8016D
- for <alsa-devel@alsa-project.org>; Tue,  3 Aug 2021 14:54:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DBEDF8016D
+ by alsa1.perex.cz (Postfix) with ESMTPS id B62DDF8032D
+ for <alsa-devel@alsa-project.org>; Tue,  3 Aug 2021 14:54:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B62DDF8032D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="vBJgvkFb"
-Received: by mail-wr1-x42e.google.com with SMTP id p5so25224861wro.7
- for <alsa-devel@alsa-project.org>; Tue, 03 Aug 2021 05:54:25 -0700 (PDT)
+ header.b="kVllg/I9"
+Received: by mail-wr1-x429.google.com with SMTP id h14so25180107wrx.10
+ for <alsa-devel@alsa-project.org>; Tue, 03 Aug 2021 05:54:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=Mb/A8OAZr4+46r37MNQU/DLrZcqFJMwc4nAMj4//Jjc=;
- b=vBJgvkFb5xUGkeLdlWepkrHhZh/Ee9huf16I60QWXY200IMb+92Ux5hEW+kHPmwvzU
- 5fGKgAXAMyEN4kNMPb5kopRudsjDCzSQqYaGnVJEcyxXWACl3w/4JKMxjh92P6+vRb7t
- L89I+OoXkx9Gc/s0+PjiLopGqiNodKobuIMg1rbZ1M+6W78DngboOzFb42jB01MEVi+/
- r2Tz/ysEt5JYWkbWpA3mODcHM6I8WMyGKScxLbXWJOklhxX8QB7aCbNLyein1sCRCUaV
- qLp9hKDHsPDDfqdLc9vauc6c5NQ+g6ZDLnUrldLpCA618CrOXBgZQP9tgN4U4lyAUY/O
- KKKg==
+ bh=rF+MdgtoElGqqQbwkt0Nb+3lUlADUdvnBNPE5OP50+k=;
+ b=kVllg/I9ij2MOhw9xyeq2J2dplTKw4SpAhVZOf09K6S4/5buVxkcRdf4Dh4Hkk8Elt
+ PVcXGcIY+6v9Vgw01im5ab/Pd9jyo5LETUvIzbeHcGN/7/JlvSqMXN18KeC9XRMIZETJ
+ YK/R/Pr3i7+PF7ddvcTm/bnlUQLZSzIf1oLqkbeJnqfyEn13uPPyj0rNhFOzeYdY0G8m
+ ZgbyEpvx3NDXDdUFxNCGLLk1pM9c1DrUL0BYqEKEanRtPIMa8FjWDkbAGJg6W3jKmxoE
+ cVydDoRvkP475Q5wMbZQBWOSjngWdlkb5/Y9sdltyjWjz1BqQ8jgjwNV8dikCFov0kK/
+ RAHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=Mb/A8OAZr4+46r37MNQU/DLrZcqFJMwc4nAMj4//Jjc=;
- b=GJc8JoRaiZzphKg9/t6yLewXqVNV4pFFtIjq0u1eo2ppLFeSm16iMck7+sFjuJ5eYk
- bv6J+JMb2NcBi7jb3A0IJ8HF+K07n2um7aEF30vNuEYmbKi1mqD58NIMDughv4vgKKPy
- 9kCwMa6a71BGiNkCg6ZpUL7LlMH5YtC90pGg/ualqVV/LCce9/3XB040TIPNO6dDje0n
- /UU0M/D8SCFaVcriU39pi1WMCkxRu3EWzWCSj0Sy1LkgjeuZrTSp/QRtTKW8HeCH0QOR
- td32d9N80F9ixu5sOuHxTbGppC50Nm8tUAOJOhFzJhyclikKANBY0TeOY5VbAw3mP75n
- 58Lw==
-X-Gm-Message-State: AOAM530qL7++vYaH2/fTpRU48d7WAQ7BLeWqBuDYKPEI8fTqIeYO0KGr
- gEcJUZvgmPasdovYTpa9ujHLvw==
-X-Google-Smtp-Source: ABdhPJxldRr90PJTWGNKD2MmqIrfQ5XsGp1dseHV+ejn5W1RkuTm6cJYbndBbCR82YvEvz/lVqeOvg==
-X-Received: by 2002:a5d:4fd0:: with SMTP id h16mr23604815wrw.268.1627995265477; 
- Tue, 03 Aug 2021 05:54:25 -0700 (PDT)
+ bh=rF+MdgtoElGqqQbwkt0Nb+3lUlADUdvnBNPE5OP50+k=;
+ b=Dd0wn0f6sLID6P5JRSoPGuSjmhX3VRt29ijjeX5HFuK49xG+jOpGinFxrpGRQ6YG5B
+ CIcfyaqnR7oAWyKJP6ZpyQ1ttWVk3sJzGOWV7d6sDxgJKccRlu1EX1mE+E6ZG3m7TXtF
+ e/ftXk5++slImfaXg68wnmYbkc5JyTbMj/pvl6WQRoxQurMADCwpaRO6q7W7Imu1FSGN
+ W6aVnSjrQvH6m1P2QZv6Fj4M+I2CYClhCxeGxfECQR0NWS609bvs0I6gJ1t3vU9puIPb
+ Tjs4E/CrfOBlh0w/1OJup9Ib1CyiOI5ebUdRcHgPrDwjuImbGC0R8AWanNE67gIt9u/R
+ PSkw==
+X-Gm-Message-State: AOAM531d90gSBzIbVf268zKQhIrWjO78IFKWc8MKWrK4YjLNocGw6HZd
+ q0mfVg2GFcd2FlebMHuDrQAyvg==
+X-Google-Smtp-Source: ABdhPJzEjm3cRXrt3rjL4YrBHsNN1f2riRZQwKsDxNrMEKYFAECfjry9ITZc96JJvJVytP4V/oM0Zw==
+X-Received: by 2002:a5d:518a:: with SMTP id k10mr22922986wrv.400.1627995268709; 
+ Tue, 03 Aug 2021 05:54:28 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id h14sm14695574wrp.55.2021.08.03.05.54.24
+ by smtp.gmail.com with ESMTPSA id h14sm14695574wrp.55.2021.08.03.05.54.27
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 03 Aug 2021 05:54:25 -0700 (PDT)
+ Tue, 03 Aug 2021 05:54:28 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: bjorn.andersson@linaro.org,
 	broonie@kernel.org,
 	robh@kernel.org
-Subject: [PATCH v3 02/20] soc: qcom: apr: make code more reuseable
-Date: Tue,  3 Aug 2021 13:53:53 +0100
-Message-Id: <20210803125411.28066-3-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 05/20] ASoC: dt-bindings: replace q6afe bindings with
+ q6dsp-audio-ports
+Date: Tue,  3 Aug 2021 13:53:56 +0100
+Message-Id: <20210803125411.28066-6-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210803125411.28066-1-srinivas.kandagatla@linaro.org>
 References: <20210803125411.28066-1-srinivas.kandagatla@linaro.org>
@@ -110,398 +111,843 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-APR and other packet routers like GPR are pretty much same and
-interact with other drivers in similar way.
+DSP Audio Ports bindings have been documented with DSP services bindings
+which makes it difficult to reuse them, so pull them out in to a dedicated
+bindings.
+Also as part of this change convert them into yaml format.
 
-Ex: GPR ports can be considered as APR services, only difference
-is they are allocated dynamically.
-
-Other difference is packet layout, which should not matter
-with the apis abstracted. Apart from this the rest of the
-functionality is pretty much identical across APR and GPR.
-
-Make the apr code more reusable by abstracting it service level,
-rather than device level so that we do not need to write
-new drivers for other new packet routers like GPR.
-
-This patch is in preparation to add GPR support to this driver.
+This patch also removes q6afe bindings as dsp services are now documented in
+apr bindings.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/soc/qcom/apr.c       | 124 +++++++++++++++++++++--------------
- include/linux/soc/qcom/apr.h |  12 +++-
- 2 files changed, 86 insertions(+), 50 deletions(-)
+ .../devicetree/bindings/sound/qcom,q6afe.txt  | 201 -----------------
+ .../sound/qcom,q6dsp-audio-ports.yaml         | 177 +++++++++++++++
+ include/dt-bindings/sound/qcom,q6afe.h        | 204 +----------------
+ .../sound/qcom,q6dsp-audio-ports.h            | 208 ++++++++++++++++++
+ 4 files changed, 387 insertions(+), 403 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6dsp-audio-ports.yaml
+ create mode 100644 include/dt-bindings/sound/qcom,q6dsp-audio-ports.h
 
-diff --git a/drivers/soc/qcom/apr.c b/drivers/soc/qcom/apr.c
-index 7abfc8c4fdc7..1a81dcfc3ff3 100644
---- a/drivers/soc/qcom/apr.c
-+++ b/drivers/soc/qcom/apr.c
-@@ -15,13 +15,18 @@
- #include <linux/rpmsg.h>
- #include <linux/of.h>
- 
--struct apr {
-+enum {
-+	PR_TYPE_APR = 0,
-+};
-+
-+struct packet_router {
- 	struct rpmsg_endpoint *ch;
- 	struct device *dev;
- 	spinlock_t svcs_lock;
- 	spinlock_t rx_lock;
- 	struct idr svcs_idr;
- 	int dest_domain_id;
-+	int type;
- 	struct pdr_handle *pdr;
- 	struct workqueue_struct *rxwq;
- 	struct work_struct rx_work;
-@@ -44,21 +49,21 @@ struct apr_rx_buf {
-  */
- int apr_send_pkt(struct apr_device *adev, struct apr_pkt *pkt)
- {
--	struct apr *apr = dev_get_drvdata(adev->dev.parent);
-+	struct packet_router *apr = dev_get_drvdata(adev->dev.parent);
- 	struct apr_hdr *hdr;
- 	unsigned long flags;
- 	int ret;
- 
--	spin_lock_irqsave(&adev->lock, flags);
-+	spin_lock_irqsave(&adev->svc.lock, flags);
- 
- 	hdr = &pkt->hdr;
- 	hdr->src_domain = APR_DOMAIN_APPS;
--	hdr->src_svc = adev->svc_id;
-+	hdr->src_svc = adev->svc.id;
- 	hdr->dest_domain = adev->domain_id;
--	hdr->dest_svc = adev->svc_id;
-+	hdr->dest_svc = adev->svc.id;
- 
- 	ret = rpmsg_trysend(apr->ch, pkt, hdr->pkt_size);
--	spin_unlock_irqrestore(&adev->lock, flags);
-+	spin_unlock_irqrestore(&adev->svc.lock, flags);
- 
- 	return ret ? ret : hdr->pkt_size;
- }
-@@ -74,7 +79,7 @@ static void apr_dev_release(struct device *dev)
- static int apr_callback(struct rpmsg_device *rpdev, void *buf,
- 				  int len, void *priv, u32 addr)
- {
--	struct apr *apr = dev_get_drvdata(&rpdev->dev);
-+	struct packet_router *apr = dev_get_drvdata(&rpdev->dev);
- 	struct apr_rx_buf *abuf;
- 	unsigned long flags;
- 
-@@ -100,11 +105,11 @@ static int apr_callback(struct rpmsg_device *rpdev, void *buf,
- 	return 0;
- }
- 
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+deleted file mode 100644
+index 2d6fb2ea75a0..000000000000
+--- a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
++++ /dev/null
+@@ -1,201 +0,0 @@
+-Qualcomm Audio Front End (Q6AFE) binding
 -
--static int apr_do_rx_callback(struct apr *apr, struct apr_rx_buf *abuf)
-+static int apr_do_rx_callback(struct packet_router *apr, struct apr_rx_buf *abuf)
- {
- 	uint16_t hdr_size, msg_type, ver, svc_id;
--	struct apr_device *svc = NULL;
-+	struct pkt_router_svc *svc;
-+	struct apr_device *adev;
- 	struct apr_driver *adrv = NULL;
- 	struct apr_resp_pkt resp;
- 	struct apr_hdr *hdr;
-@@ -145,12 +150,15 @@ static int apr_do_rx_callback(struct apr *apr, struct apr_rx_buf *abuf)
- 	svc_id = hdr->dest_svc;
- 	spin_lock_irqsave(&apr->svcs_lock, flags);
- 	svc = idr_find(&apr->svcs_idr, svc_id);
--	if (svc && svc->dev.driver)
--		adrv = to_apr_driver(svc->dev.driver);
-+	if (svc && svc->dev->driver) {
-+		adev = svc_to_apr_device(svc);
-+		adrv = to_apr_driver(adev->dev.driver);
-+	}
- 	spin_unlock_irqrestore(&apr->svcs_lock, flags);
- 
--	if (!adrv) {
--		dev_err(apr->dev, "APR: service is not registered\n");
-+	if (!adrv || !adev) {
-+		dev_err(apr->dev, "APR: service is not registered (%d)\n",
-+			svc_id);
- 		return -EINVAL;
- 	}
- 
-@@ -164,20 +172,26 @@ static int apr_do_rx_callback(struct apr *apr, struct apr_rx_buf *abuf)
- 	if (resp.payload_size > 0)
- 		resp.payload = buf + hdr_size;
- 
--	adrv->callback(svc, &resp);
-+	adrv->callback(adev, &resp);
- 
- 	return 0;
- }
- 
- static void apr_rxwq(struct work_struct *work)
- {
--	struct apr *apr = container_of(work, struct apr, rx_work);
-+	struct packet_router *apr = container_of(work, struct packet_router, rx_work);
- 	struct apr_rx_buf *abuf, *b;
- 	unsigned long flags;
- 
- 	if (!list_empty(&apr->rx_list)) {
- 		list_for_each_entry_safe(abuf, b, &apr->rx_list, node) {
--			apr_do_rx_callback(apr, abuf);
-+			switch (apr->type) {
-+			case PR_TYPE_APR:
-+				apr_do_rx_callback(apr, abuf);
-+				break;
-+			default:
-+				break;
-+			}
- 			spin_lock_irqsave(&apr->rx_lock, flags);
- 			list_del(&abuf->node);
- 			spin_unlock_irqrestore(&apr->rx_lock, flags);
-@@ -201,7 +215,7 @@ static int apr_device_match(struct device *dev, struct device_driver *drv)
- 
- 	while (id->domain_id != 0 || id->svc_id != 0) {
- 		if (id->domain_id == adev->domain_id &&
--		    id->svc_id == adev->svc_id)
-+		    id->svc_id == adev->svc.id)
- 			return 1;
- 		id++;
- 	}
-@@ -221,14 +235,14 @@ static int apr_device_remove(struct device *dev)
- {
- 	struct apr_device *adev = to_apr_device(dev);
- 	struct apr_driver *adrv;
--	struct apr *apr = dev_get_drvdata(adev->dev.parent);
-+	struct packet_router *apr = dev_get_drvdata(adev->dev.parent);
- 
- 	if (dev->driver) {
- 		adrv = to_apr_driver(dev->driver);
- 		if (adrv->remove)
- 			adrv->remove(adev);
- 		spin_lock(&apr->svcs_lock);
--		idr_remove(&apr->svcs_idr, adev->svc_id);
-+		idr_remove(&apr->svcs_idr, adev->svc.id);
- 		spin_unlock(&apr->svcs_lock);
- 	}
- 
-@@ -257,28 +271,39 @@ struct bus_type aprbus = {
- EXPORT_SYMBOL_GPL(aprbus);
- 
- static int apr_add_device(struct device *dev, struct device_node *np,
--			  const struct apr_device_id *id)
-+			  u32 svc_id, u32 domain_id)
- {
--	struct apr *apr = dev_get_drvdata(dev);
-+	struct packet_router *apr = dev_get_drvdata(dev);
- 	struct apr_device *adev = NULL;
-+	struct pkt_router_svc *svc;
- 	int ret;
- 
- 	adev = kzalloc(sizeof(*adev), GFP_KERNEL);
- 	if (!adev)
- 		return -ENOMEM;
- 
--	spin_lock_init(&adev->lock);
-+	adev->svc_id = svc_id;
-+	svc = &adev->svc;
+-AFE is one of the APR audio service on Q6DSP
+-Please refer to qcom,apr.txt for details of the common apr service bindings
+-used by all apr services. Must contain the following properties.
+-
+-- compatible:
+-	Usage: required
+-	Value type: <stringlist>
+-	Definition: must be "qcom,q6afe-v<MAJOR-NUMBER>.<MINOR-NUMBER>"
+-		  Or "qcom,q6afe" where the version number can be queried
+-		  from DSP.
+-		  example "qcom,q6afe"
+-
+-= AFE DAIs (Digial Audio Interface)
+-"dais" subnode of the AFE node. It represents afe dais, each afe dai is a
+-subnode of "dais" representing board specific dai setup.
+-"dais" node should have following properties followed by dai children.
+-
+-- compatible:
+-	Usage: required
+-	Value type: <stringlist>
+-	Definition: must be "qcom,q6afe-dais"
+-
+-- #sound-dai-cells
+-	Usage: required
+-	Value type: <u32>
+-	Definition: Must be 1
+-
+-- #address-cells
+-	Usage: required
+-	Value type: <u32>
+-	Definition: Must be 1
+-
+-- #size-cells
+-	Usage: required
+-	Value type: <u32>
+-	Definition: Must be 0
+-
+-== AFE DAI is subnode of "dais" and represent a dai, it includes board specific
+-configuration of each dai. Must contain the following properties.
+-
+-- reg
+-	Usage: required
+-	Value type: <u32>
+-	Definition: Must be dai id
+-
+-- qcom,sd-lines
+-	Usage: required for mi2s interface
+-	Value type: <prop-encoded-array>
+-	Definition: Must be list of serial data lines used by this dai.
+-	should be one or more of the 0-3 sd lines.
+-
+- - qcom,tdm-sync-mode:
+-	Usage: required for tdm interface
+-	Value type: <prop-encoded-array>
+-	Definition: Synchronization mode.
+-		0 - Short sync bit mode
+-		1 - Long sync mode
+-		2 - Short sync slot mode
+-
+- - qcom,tdm-sync-src:
+-	Usage: required for tdm interface
+-	Value type: <prop-encoded-array>
+-	Definition: Synchronization source.
+-		0 - External source
+-		1 - Internal source
+-
+- - qcom,tdm-data-out:
+-	Usage: required for tdm interface
+-	Value type: <prop-encoded-array>
+-	Definition: Data out signal to drive with other masters.
+-		0 - Disable
+-		1 - Enable
+-
+- - qcom,tdm-invert-sync:
+-	Usage: required for tdm interface
+-	Value type: <prop-encoded-array>
+-	Definition: Invert the sync.
+-		0 - Normal
+-		1 - Invert
+-
+- - qcom,tdm-data-delay:
+-	Usage: required for tdm interface
+-	Value type: <prop-encoded-array>
+-	Definition: Number of bit clock to delay data
+-		with respect to sync edge.
+-		0 - 0 bit clock cycle
+-		1 - 1 bit clock cycle
+-		2 - 2 bit clock cycle
+-
+- - qcom,tdm-data-align:
+-	Usage: required for tdm interface
+-	Value type: <prop-encoded-array>
+-	Definition: Indicate how data is packed
+-		within the slot. For example, 32 slot width in case of
+-		sample bit width is 24.
+-		0 - MSB
+-		1 - LSB
+-
+-= AFE CLOCKSS
+-"clocks" subnode of the AFE node. It represents q6afe clocks
+-"clocks" node should have following properties.
+-- compatible:
+-	Usage: required
+-	Value type: <stringlist>
+-	Definition: must be "qcom,q6afe-clocks"
+-
+-- #clock-cells:
+-	Usage: required
+-	Value type: <u32>
+-	Definition: Must be 2. Clock Id followed by
+-		below valid clock coupling attributes.
+-		1 - for no coupled clock
+-		2 - for dividend of the coupled clock
+-		3 - for divisor of the coupled clock
+-		4 - for inverted and no couple clock
+-
+-= EXAMPLE
+-
+-apr-service@4 {
+-	compatible = "qcom,q6afe";
+-	reg = <APR_SVC_AFE>;
+-
+-	dais {
+-		compatible = "qcom,q6afe-dais";
+-		#sound-dai-cells = <1>;
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-
+-		dai@1 {
+-			reg = <HDMI_RX>;
+-		};
+-
+-		dai@24 {
+-			reg = <PRIMARY_TDM_RX_0>;
+-			qcom,tdm-sync-mode = <1>:
+-			qcom,tdm-sync-src = <1>;
+-			qcom,tdm-data-out = <0>;
+-			qcom,tdm-invert-sync = <1>;
+-			qcom,tdm-data-delay = <1>;
+-			qcom,tdm-data-align = <0>;
+-
+-		};
+-
+-		dai@25 {
+-			reg = <PRIMARY_TDM_TX_0>;
+-			qcom,tdm-sync-mode = <1>:
+-			qcom,tdm-sync-src = <1>;
+-			qcom,tdm-data-out = <0>;
+-			qcom,tdm-invert-sync = <1>;
+-			qcom,tdm-data-delay <1>:
+-			qcom,tdm-data-align = <0>;
+-		};
+-
+-		dai@16 {
+-			reg = <PRIMARY_MI2S_RX>;
+-			qcom,sd-lines = <0 2>;
+-		};
+-
+-		dai@17 {
+-			reg = <PRIMARY_MI2S_TX>;
+-			qcom,sd-lines = <1>;
+-		};
+-
+-		dai@18 {
+-			reg = <SECONDARY_MI2S_RX>;
+-			qcom,sd-lines = <0 3>;
+-		};
+-
+-		dai@19 {
+-			reg = <SECONDARY_MI2S_TX>;
+-			qcom,sd-lines = <1>;
+-		};
+-
+-		dai@20 {
+-			reg = <TERTIARY_MI2S_RX>;
+-			qcom,sd-lines = <1 3>;
+-		};
+-
+-		dai@21 {
+-			reg = <TERTIARY_MI2S_TX>;
+-			qcom,sd-lines = <0>;
+-		};
+-
+-		dai@22 {
+-			reg = <QUATERNARY_MI2S_RX>;
+-			qcom,sd-lines = <0>;
+-		};
+-
+-		dai@23 {
+-			reg = <QUATERNARY_MI2S_TX>;
+-			qcom,sd-lines = <1>;
+-		};
+-	};
+-
+-	clocks {
+-		compatible = "qcom,q6afe-clocks";
+-		#clock-cells = <2>;
+-	};
+-};
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6dsp-audio-ports.yaml b/Documentation/devicetree/bindings/sound/qcom,q6dsp-audio-ports.yaml
+new file mode 100644
+index 000000000000..6990295803a8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/qcom,q6dsp-audio-ports.yaml
+@@ -0,0 +1,177 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/sound/qcom,q6dsp-audio-ports.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 +
-+	svc->id = svc_id;
-+	svc->pr = apr;
-+	svc->priv = adev;
-+	svc->dev = dev;
-+	spin_lock_init(&svc->lock);
++title: Qualcomm DSP Audio Ports binding
 +
-+	adev->domain_id = domain_id;
- 
--	adev->svc_id = id->svc_id;
--	adev->domain_id = id->domain_id;
--	adev->version = id->svc_version;
- 	if (np)
- 		snprintf(adev->name, APR_NAME_SIZE, "%pOFn", np);
--	else
--		strscpy(adev->name, id->name, APR_NAME_SIZE);
- 
--	dev_set_name(&adev->dev, "aprsvc:%s:%x:%x", adev->name,
--		     id->domain_id, id->svc_id);
-+	switch (apr->type) {
-+	case PR_TYPE_APR:
-+		dev_set_name(&adev->dev, "aprsvc:%s:%x:%x", adev->name,
-+			     domain_id, svc_id);
-+		break;
-+	default:
-+		break;
-+	}
- 
- 	adev->dev.bus = &aprbus;
- 	adev->dev.parent = dev;
-@@ -287,8 +312,7 @@ static int apr_add_device(struct device *dev, struct device_node *np,
- 	adev->dev.driver = NULL;
- 
- 	spin_lock(&apr->svcs_lock);
--	idr_alloc(&apr->svcs_idr, adev, id->svc_id,
--		  id->svc_id + 1, GFP_ATOMIC);
-+	idr_alloc(&apr->svcs_idr, svc, svc_id, svc_id + 1, GFP_ATOMIC);
- 	spin_unlock(&apr->svcs_lock);
- 
- 	of_property_read_string_index(np, "qcom,protection-domain",
-@@ -308,7 +332,7 @@ static int apr_add_device(struct device *dev, struct device_node *np,
- static int of_apr_add_pd_lookups(struct device *dev)
- {
- 	const char *service_name, *service_path;
--	struct apr *apr = dev_get_drvdata(dev);
-+	struct packet_router *apr = dev_get_drvdata(dev);
- 	struct device_node *node;
- 	struct pdr_service *pds;
- 	int ret;
-@@ -338,13 +362,14 @@ static int of_apr_add_pd_lookups(struct device *dev)
- 
- static void of_register_apr_devices(struct device *dev, const char *svc_path)
- {
--	struct apr *apr = dev_get_drvdata(dev);
-+	struct packet_router *apr = dev_get_drvdata(dev);
- 	struct device_node *node;
- 	const char *service_path;
- 	int ret;
- 
- 	for_each_child_of_node(dev->of_node, node) {
--		struct apr_device_id id = { {0} };
-+		u32 svc_id;
-+		u32 domain_id;
- 
- 		/*
- 		 * This function is called with svc_path NULL during
-@@ -374,13 +399,13 @@ static void of_register_apr_devices(struct device *dev, const char *svc_path)
- 				continue;
- 		}
- 
--		if (of_property_read_u32(node, "reg", &id.svc_id))
-+		if (of_property_read_u32(node, "reg", &svc_id))
- 			continue;
- 
--		id.domain_id = apr->dest_domain_id;
-+		domain_id = apr->dest_domain_id;
- 
--		if (apr_add_device(dev, node, &id))
--			dev_err(dev, "Failed to add apr %d svc\n", id.svc_id);
-+		if (apr_add_device(dev, node, svc_id, domain_id))
-+			dev_err(dev, "Failed to add apr %d svc\n", svc_id);
- 	}
- }
- 
-@@ -400,7 +425,7 @@ static int apr_remove_device(struct device *dev, void *svc_path)
- 
- static void apr_pd_status(int state, char *svc_path, void *priv)
- {
--	struct apr *apr = (struct apr *)priv;
-+	struct packet_router *apr = (struct packet_router *)priv;
- 
- 	switch (state) {
- 	case SERVREG_SERVICE_STATE_UP:
-@@ -415,7 +440,7 @@ static void apr_pd_status(int state, char *svc_path, void *priv)
- static int apr_probe(struct rpmsg_device *rpdev)
- {
- 	struct device *dev = &rpdev->dev;
--	struct apr *apr;
-+	struct packet_router *apr;
- 	int ret;
- 
- 	apr = devm_kzalloc(dev, sizeof(*apr), GFP_KERNEL);
-@@ -423,8 +448,9 @@ static int apr_probe(struct rpmsg_device *rpdev)
- 		return -ENOMEM;
- 
- 	ret = of_property_read_u32(dev->of_node, "qcom,apr-domain", &apr->dest_domain_id);
-+	apr->type = PR_TYPE_APR;
- 	if (ret) {
--		dev_err(dev, "APR Domain ID not specified in DT\n");
-+		dev_err(dev, "Domain ID not specified in DT\n");
- 		return ret;
- 	}
- 
-@@ -467,7 +493,7 @@ static int apr_probe(struct rpmsg_device *rpdev)
- 
- static void apr_remove(struct rpmsg_device *rpdev)
- {
--	struct apr *apr = dev_get_drvdata(&rpdev->dev);
-+	struct packet_router *apr = dev_get_drvdata(&rpdev->dev);
- 
- 	pdr_handle_release(apr->pdr);
- 	device_for_each_child(&rpdev->dev, NULL, apr_remove_device);
-@@ -504,20 +530,20 @@ void apr_driver_unregister(struct apr_driver *drv)
- }
- EXPORT_SYMBOL_GPL(apr_driver_unregister);
- 
--static const struct of_device_id apr_of_match[] = {
-+static const struct of_device_id pkt_router_of_match[] = {
- 	{ .compatible = "qcom,apr"},
- 	{ .compatible = "qcom,apr-v2"},
- 	{}
- };
--MODULE_DEVICE_TABLE(of, apr_of_match);
-+MODULE_DEVICE_TABLE(of, pkt_router_of_match);
- 
--static struct rpmsg_driver apr_driver = {
-+static struct rpmsg_driver packet_router_driver = {
- 	.probe = apr_probe,
- 	.remove = apr_remove,
- 	.callback = apr_callback,
- 	.drv = {
- 		.name = "qcom,apr",
--		.of_match_table = apr_of_match,
-+		.of_match_table = pkt_router_of_match,
- 	},
- };
- 
-@@ -527,7 +553,7 @@ static int __init apr_init(void)
- 
- 	ret = bus_register(&aprbus);
- 	if (!ret)
--		ret = register_rpmsg_driver(&apr_driver);
-+		ret = register_rpmsg_driver(&packet_router_driver);
- 	else
- 		bus_unregister(&aprbus);
- 
-@@ -537,7 +563,7 @@ static int __init apr_init(void)
- static void __exit apr_exit(void)
- {
- 	bus_unregister(&aprbus);
--	unregister_rpmsg_driver(&apr_driver);
-+	unregister_rpmsg_driver(&packet_router_driver);
- }
- 
- subsys_initcall(apr_init);
-diff --git a/include/linux/soc/qcom/apr.h b/include/linux/soc/qcom/apr.h
-index 137f9f2ac4c3..7bca213a3f83 100644
---- a/include/linux/soc/qcom/apr.h
-+++ b/include/linux/soc/qcom/apr.h
-@@ -79,6 +79,15 @@ struct apr_resp_pkt {
- #define APR_SVC_MAJOR_VERSION(v)	((v >> 16) & 0xFF)
- #define APR_SVC_MINOR_VERSION(v)	(v & 0xFF)
- 
-+struct packet_router;
-+struct pkt_router_svc {
-+	struct device *dev;
-+	struct packet_router *pr;
-+	spinlock_t lock;
-+	int id;
-+	void *priv;
-+};
++maintainers:
++  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 +
- struct apr_device {
- 	struct device	dev;
- 	uint16_t	svc_id;
-@@ -86,11 +95,12 @@ struct apr_device {
- 	uint32_t	version;
- 	char name[APR_NAME_SIZE];
- 	const char *service_path;
--	spinlock_t	lock;
-+	struct pkt_router_svc svc;
- 	struct list_head node;
- };
++description: |
++  This binding describes the Qualcomm DSP Audio ports
++
++properties:
++  compatible:
++    const: qcom,q6afe-dais
++
++  reg:
++    maxItems: 1
++
++  '#sound-dai-cells':
++    const: 1
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++#Digital Audio Interfaces
++patternProperties:
++  '^dai@[0-9]+$':
++    type: object
++    description:
++      Q6DSP Digital Audio Interfaces.
++
++    properties:
++      reg:
++        description:
++          Digital Audio Interface ID
++
++      qcom,sd-lines:
++        $ref: /schemas/types.yaml#/definitions/uint32-array
++        description:
++          List of serial data lines used by this dai.should be one or more of the 0-3 sd lines.
++        minItems: 1
++        maxItems: 4
++        uniqueItems: true
++        items:
++          minimum: 0
++          maximum: 3
++
++      qcom,tdm-sync-mode:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [0, 1, 2]
++        description:
++          TDM Synchronization mode
++            0 = Short sync bit mode
++            1 = Long sync mode
++            2 = Short sync slot mode
++
++      qcom,tdm-sync-src:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [0, 1]
++        description:
++          TDM Synchronization source
++            0 = External source
++            1 = Internal source
++
++      qcom,tdm-data-out:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [0, 1]
++        description:
++          TDM Data out signal to drive with other masters
++            0 = Disable
++            1 = Enable
++
++      qcom,tdm-invert-sync:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [0, 1]
++        description:
++          TDM Invert the sync
++            0 = Normal
++            1 = Invert
++
++      qcom,tdm-data-delay:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [0, 1, 2]
++        description:
++          TDM Number of bit clock to delay data
++            0 = 0 bit clock cycle
++            1 = 1 bit clock cycle
++            2 = 2 bit clock cycle
++
++      qcom,tdm-data-align:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [0, 1]
++        description:
++          Indicate how data is packed within the slot. For example, 32 slot
++          width in case of sample bit width is 24TDM Invert the sync.
++            0 = MSB
++            1 = LSB
++
++    required:
++      - reg
++
++    allOf:
++      - if:
++          properties:
++            reg:
++              contains:
++                # TDM DAI ID range from PRIMARY_TDM_RX_0 - QUINARY_TDM_TX_7
++                items:
++                  minimum: 24
++                  maximum: 103
++        then:
++          required:
++            - qcom,tdm-sync-mode
++            - qcom,tdm-sync-src
++            - qcom,tdm-data-out
++            - qcom,tdm-invert-sync
++            - qcom,tdm-data-delay
++            - qcom,tdm-data-align
++
++      - if:
++          properties:
++            reg:
++              contains:
++                # MI2S DAI ID range PRIMARY_MI2S_RX - QUATERNARY_MI2S_TX and
++                # QUINARY_MI2S_RX - QUINARY_MI2S_TX
++                items:
++                  oneOf:
++                    - minimum: 16
++                      maximum: 23
++                    - minimum: 127
++                      maximum: 128
++        then:
++          required:
++            - qcom,sd-lines
++
++    additionalProperties: false
++
++required:
++  - compatible
++  - reg
++  - "#sound-dai-cells"
++  - "#address-cells"
++  - "#size-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/soc/qcom,apr.h>
++    #include <dt-bindings/sound/qcom,q6afe.h>
++    apr {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        apr-service@4 {
++            reg = <APR_SVC_AFE>;
++            #address-cells = <1>;
++            #size-cells = <0>;
++            q6afedai@1 {
++              compatible = "qcom,q6afe-dais";
++              reg = <1>;
++              #address-cells = <1>;
++              #size-cells = <0>;
++              #sound-dai-cells = <1>;
++
++              dai@22 {
++                reg = <QUATERNARY_MI2S_RX>;
++                qcom,sd-lines = <0 1 2 3>;
++              };
++            };
++        };
++      };
+diff --git a/include/dt-bindings/sound/qcom,q6afe.h b/include/dt-bindings/sound/qcom,q6afe.h
+index 66c21ab03eef..d4cf293e2b8f 100644
+--- a/include/dt-bindings/sound/qcom,q6afe.h
++++ b/include/dt-bindings/sound/qcom,q6afe.h
+@@ -2,207 +2,7 @@
+ #ifndef __DT_BINDINGS_Q6_AFE_H__
+ #define __DT_BINDINGS_Q6_AFE_H__
  
- #define to_apr_device(d) container_of(d, struct apr_device, dev)
-+#define svc_to_apr_device(d) container_of(d, struct apr_device, svc)
+-/* Audio Front End (AFE) virtual ports IDs */
+-#define HDMI_RX		1
+-#define SLIMBUS_0_RX    2
+-#define SLIMBUS_0_TX    3
+-#define SLIMBUS_1_RX    4
+-#define SLIMBUS_1_TX    5
+-#define SLIMBUS_2_RX    6
+-#define SLIMBUS_2_TX    7
+-#define SLIMBUS_3_RX    8
+-#define SLIMBUS_3_TX    9
+-#define SLIMBUS_4_RX    10
+-#define SLIMBUS_4_TX    11
+-#define SLIMBUS_5_RX    12
+-#define SLIMBUS_5_TX    13
+-#define SLIMBUS_6_RX    14
+-#define SLIMBUS_6_TX    15
+-#define PRIMARY_MI2S_RX		16
+-#define PRIMARY_MI2S_TX		17
+-#define SECONDARY_MI2S_RX	18
+-#define SECONDARY_MI2S_TX	19
+-#define TERTIARY_MI2S_RX	20
+-#define TERTIARY_MI2S_TX	21
+-#define QUATERNARY_MI2S_RX	22
+-#define QUATERNARY_MI2S_TX	23
+-#define PRIMARY_TDM_RX_0	24
+-#define PRIMARY_TDM_TX_0	25
+-#define PRIMARY_TDM_RX_1	26
+-#define PRIMARY_TDM_TX_1	27
+-#define PRIMARY_TDM_RX_2	28
+-#define PRIMARY_TDM_TX_2	29
+-#define PRIMARY_TDM_RX_3	30
+-#define PRIMARY_TDM_TX_3	31
+-#define PRIMARY_TDM_RX_4	32
+-#define PRIMARY_TDM_TX_4	33
+-#define PRIMARY_TDM_RX_5	34
+-#define PRIMARY_TDM_TX_5	35
+-#define PRIMARY_TDM_RX_6	36
+-#define PRIMARY_TDM_TX_6	37
+-#define PRIMARY_TDM_RX_7	38
+-#define PRIMARY_TDM_TX_7	39
+-#define SECONDARY_TDM_RX_0	40
+-#define SECONDARY_TDM_TX_0	41
+-#define SECONDARY_TDM_RX_1	42
+-#define SECONDARY_TDM_TX_1	43
+-#define SECONDARY_TDM_RX_2	44
+-#define SECONDARY_TDM_TX_2	45
+-#define SECONDARY_TDM_RX_3	46
+-#define SECONDARY_TDM_TX_3	47
+-#define SECONDARY_TDM_RX_4	48
+-#define SECONDARY_TDM_TX_4	49
+-#define SECONDARY_TDM_RX_5	50
+-#define SECONDARY_TDM_TX_5	51
+-#define SECONDARY_TDM_RX_6	52
+-#define SECONDARY_TDM_TX_6	53
+-#define SECONDARY_TDM_RX_7	54
+-#define SECONDARY_TDM_TX_7	55
+-#define TERTIARY_TDM_RX_0	56
+-#define TERTIARY_TDM_TX_0	57
+-#define TERTIARY_TDM_RX_1	58
+-#define TERTIARY_TDM_TX_1	59
+-#define TERTIARY_TDM_RX_2	60
+-#define TERTIARY_TDM_TX_2	61
+-#define TERTIARY_TDM_RX_3	62
+-#define TERTIARY_TDM_TX_3	63
+-#define TERTIARY_TDM_RX_4	64
+-#define TERTIARY_TDM_TX_4	65
+-#define TERTIARY_TDM_RX_5	66
+-#define TERTIARY_TDM_TX_5	67
+-#define TERTIARY_TDM_RX_6	68
+-#define TERTIARY_TDM_TX_6	69
+-#define TERTIARY_TDM_RX_7	70
+-#define TERTIARY_TDM_TX_7	71
+-#define QUATERNARY_TDM_RX_0	72
+-#define QUATERNARY_TDM_TX_0	73
+-#define QUATERNARY_TDM_RX_1	74
+-#define QUATERNARY_TDM_TX_1	75
+-#define QUATERNARY_TDM_RX_2	76
+-#define QUATERNARY_TDM_TX_2	77
+-#define QUATERNARY_TDM_RX_3	78
+-#define QUATERNARY_TDM_TX_3	79
+-#define QUATERNARY_TDM_RX_4	80
+-#define QUATERNARY_TDM_TX_4	81
+-#define QUATERNARY_TDM_RX_5	82
+-#define QUATERNARY_TDM_TX_5	83
+-#define QUATERNARY_TDM_RX_6	84
+-#define QUATERNARY_TDM_TX_6	85
+-#define QUATERNARY_TDM_RX_7	86
+-#define QUATERNARY_TDM_TX_7	87
+-#define QUINARY_TDM_RX_0	88
+-#define QUINARY_TDM_TX_0	89
+-#define QUINARY_TDM_RX_1	90
+-#define QUINARY_TDM_TX_1	91
+-#define QUINARY_TDM_RX_2	92
+-#define QUINARY_TDM_TX_2	93
+-#define QUINARY_TDM_RX_3	94
+-#define QUINARY_TDM_TX_3	95
+-#define QUINARY_TDM_RX_4	96
+-#define QUINARY_TDM_TX_4	97
+-#define QUINARY_TDM_RX_5	98
+-#define QUINARY_TDM_TX_5	99
+-#define QUINARY_TDM_RX_6	100
+-#define QUINARY_TDM_TX_6	101
+-#define QUINARY_TDM_RX_7	102
+-#define QUINARY_TDM_TX_7	103
+-#define DISPLAY_PORT_RX		104
+-#define WSA_CODEC_DMA_RX_0	105
+-#define WSA_CODEC_DMA_TX_0	106
+-#define WSA_CODEC_DMA_RX_1	107
+-#define WSA_CODEC_DMA_TX_1	108
+-#define WSA_CODEC_DMA_TX_2	109
+-#define VA_CODEC_DMA_TX_0	110
+-#define VA_CODEC_DMA_TX_1	111
+-#define VA_CODEC_DMA_TX_2	112
+-#define RX_CODEC_DMA_RX_0	113
+-#define TX_CODEC_DMA_TX_0	114
+-#define RX_CODEC_DMA_RX_1	115
+-#define TX_CODEC_DMA_TX_1	116
+-#define RX_CODEC_DMA_RX_2	117
+-#define TX_CODEC_DMA_TX_2	118
+-#define RX_CODEC_DMA_RX_3	119
+-#define TX_CODEC_DMA_TX_3	120
+-#define RX_CODEC_DMA_RX_4	121
+-#define TX_CODEC_DMA_TX_4	122
+-#define RX_CODEC_DMA_RX_5	123
+-#define TX_CODEC_DMA_TX_5	124
+-#define RX_CODEC_DMA_RX_6	125
+-#define RX_CODEC_DMA_RX_7	126
+-#define QUINARY_MI2S_RX		127
+-#define QUINARY_MI2S_TX		128
+-
+-#define LPASS_CLK_ID_PRI_MI2S_IBIT	1
+-#define LPASS_CLK_ID_PRI_MI2S_EBIT	2
+-#define LPASS_CLK_ID_SEC_MI2S_IBIT	3
+-#define LPASS_CLK_ID_SEC_MI2S_EBIT	4
+-#define LPASS_CLK_ID_TER_MI2S_IBIT	5
+-#define LPASS_CLK_ID_TER_MI2S_EBIT	6
+-#define LPASS_CLK_ID_QUAD_MI2S_IBIT	7
+-#define LPASS_CLK_ID_QUAD_MI2S_EBIT	8
+-#define LPASS_CLK_ID_SPEAKER_I2S_IBIT	9
+-#define LPASS_CLK_ID_SPEAKER_I2S_EBIT	10
+-#define LPASS_CLK_ID_SPEAKER_I2S_OSR	11
+-#define LPASS_CLK_ID_QUI_MI2S_IBIT	12
+-#define LPASS_CLK_ID_QUI_MI2S_EBIT	13
+-#define LPASS_CLK_ID_SEN_MI2S_IBIT	14
+-#define LPASS_CLK_ID_SEN_MI2S_EBIT	15
+-#define LPASS_CLK_ID_INT0_MI2S_IBIT	16
+-#define LPASS_CLK_ID_INT1_MI2S_IBIT	17
+-#define LPASS_CLK_ID_INT2_MI2S_IBIT	18
+-#define LPASS_CLK_ID_INT3_MI2S_IBIT	19
+-#define LPASS_CLK_ID_INT4_MI2S_IBIT	20
+-#define LPASS_CLK_ID_INT5_MI2S_IBIT	21
+-#define LPASS_CLK_ID_INT6_MI2S_IBIT	22
+-#define LPASS_CLK_ID_QUI_MI2S_OSR	23
+-#define LPASS_CLK_ID_PRI_PCM_IBIT	24
+-#define LPASS_CLK_ID_PRI_PCM_EBIT	25
+-#define LPASS_CLK_ID_SEC_PCM_IBIT	26
+-#define LPASS_CLK_ID_SEC_PCM_EBIT	27
+-#define LPASS_CLK_ID_TER_PCM_IBIT	28
+-#define LPASS_CLK_ID_TER_PCM_EBIT	29
+-#define LPASS_CLK_ID_QUAD_PCM_IBIT	30
+-#define LPASS_CLK_ID_QUAD_PCM_EBIT	31
+-#define LPASS_CLK_ID_QUIN_PCM_IBIT	32
+-#define LPASS_CLK_ID_QUIN_PCM_EBIT	33
+-#define LPASS_CLK_ID_QUI_PCM_OSR	34
+-#define LPASS_CLK_ID_PRI_TDM_IBIT	35
+-#define LPASS_CLK_ID_PRI_TDM_EBIT	36
+-#define LPASS_CLK_ID_SEC_TDM_IBIT	37
+-#define LPASS_CLK_ID_SEC_TDM_EBIT	38
+-#define LPASS_CLK_ID_TER_TDM_IBIT	39
+-#define LPASS_CLK_ID_TER_TDM_EBIT	40
+-#define LPASS_CLK_ID_QUAD_TDM_IBIT	41
+-#define LPASS_CLK_ID_QUAD_TDM_EBIT	42
+-#define LPASS_CLK_ID_QUIN_TDM_IBIT	43
+-#define LPASS_CLK_ID_QUIN_TDM_EBIT	44
+-#define LPASS_CLK_ID_QUIN_TDM_OSR	45
+-#define LPASS_CLK_ID_MCLK_1		46
+-#define LPASS_CLK_ID_MCLK_2		47
+-#define LPASS_CLK_ID_MCLK_3		48
+-#define LPASS_CLK_ID_MCLK_4		49
+-#define LPASS_CLK_ID_INTERNAL_DIGITAL_CODEC_CORE	50
+-#define LPASS_CLK_ID_INT_MCLK_0		51
+-#define LPASS_CLK_ID_INT_MCLK_1		52
+-#define LPASS_CLK_ID_MCLK_5		53
+-#define LPASS_CLK_ID_WSA_CORE_MCLK	54
+-#define LPASS_CLK_ID_WSA_CORE_NPL_MCLK	55
+-#define LPASS_CLK_ID_VA_CORE_MCLK	56
+-#define LPASS_CLK_ID_TX_CORE_MCLK	57
+-#define LPASS_CLK_ID_TX_CORE_NPL_MCLK	58
+-#define LPASS_CLK_ID_RX_CORE_MCLK	59
+-#define LPASS_CLK_ID_RX_CORE_NPL_MCLK	60
+-#define LPASS_CLK_ID_VA_CORE_2X_MCLK	61
+-
+-#define LPASS_HW_AVTIMER_VOTE		101
+-#define LPASS_HW_MACRO_VOTE		102
+-#define LPASS_HW_DCODEC_VOTE		103
+-
+-#define Q6AFE_MAX_CLK_ID			104
+-
+-#define LPASS_CLK_ATTRIBUTE_INVALID		0x0
+-#define LPASS_CLK_ATTRIBUTE_COUPLE_NO		0x1
+-#define LPASS_CLK_ATTRIBUTE_COUPLE_DIVIDEND	0x2
+-#define LPASS_CLK_ATTRIBUTE_COUPLE_DIVISOR	0x3
++/* This file exists due to backward compatibility reasons, Please do not DELETE! */
++#include <dt-bindings/sound/qcom,q6dsp-audio-ports.h>
  
- struct apr_driver {
- 	int	(*probe)(struct apr_device *sl);
+ #endif /* __DT_BINDINGS_Q6_AFE_H__ */
+diff --git a/include/dt-bindings/sound/qcom,q6dsp-audio-ports.h b/include/dt-bindings/sound/qcom,q6dsp-audio-ports.h
+new file mode 100644
+index 000000000000..cb242183ff1f
+--- /dev/null
++++ b/include/dt-bindings/sound/qcom,q6dsp-audio-ports.h
+@@ -0,0 +1,208 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __DT_BINDINGS_Q6DSP_AUDIO_PORTS_H__
++#define __DT_BINDINGS_Q6DSP_AUDIO_PORTS_H__
++
++/* Audio Front End (AFE) virtual ports IDs */
++#define HDMI_RX		1
++#define SLIMBUS_0_RX    2
++#define SLIMBUS_0_TX    3
++#define SLIMBUS_1_RX    4
++#define SLIMBUS_1_TX    5
++#define SLIMBUS_2_RX    6
++#define SLIMBUS_2_TX    7
++#define SLIMBUS_3_RX    8
++#define SLIMBUS_3_TX    9
++#define SLIMBUS_4_RX    10
++#define SLIMBUS_4_TX    11
++#define SLIMBUS_5_RX    12
++#define SLIMBUS_5_TX    13
++#define SLIMBUS_6_RX    14
++#define SLIMBUS_6_TX    15
++#define PRIMARY_MI2S_RX		16
++#define PRIMARY_MI2S_TX		17
++#define SECONDARY_MI2S_RX	18
++#define SECONDARY_MI2S_TX	19
++#define TERTIARY_MI2S_RX	20
++#define TERTIARY_MI2S_TX	21
++#define QUATERNARY_MI2S_RX	22
++#define QUATERNARY_MI2S_TX	23
++#define PRIMARY_TDM_RX_0	24
++#define PRIMARY_TDM_TX_0	25
++#define PRIMARY_TDM_RX_1	26
++#define PRIMARY_TDM_TX_1	27
++#define PRIMARY_TDM_RX_2	28
++#define PRIMARY_TDM_TX_2	29
++#define PRIMARY_TDM_RX_3	30
++#define PRIMARY_TDM_TX_3	31
++#define PRIMARY_TDM_RX_4	32
++#define PRIMARY_TDM_TX_4	33
++#define PRIMARY_TDM_RX_5	34
++#define PRIMARY_TDM_TX_5	35
++#define PRIMARY_TDM_RX_6	36
++#define PRIMARY_TDM_TX_6	37
++#define PRIMARY_TDM_RX_7	38
++#define PRIMARY_TDM_TX_7	39
++#define SECONDARY_TDM_RX_0	40
++#define SECONDARY_TDM_TX_0	41
++#define SECONDARY_TDM_RX_1	42
++#define SECONDARY_TDM_TX_1	43
++#define SECONDARY_TDM_RX_2	44
++#define SECONDARY_TDM_TX_2	45
++#define SECONDARY_TDM_RX_3	46
++#define SECONDARY_TDM_TX_3	47
++#define SECONDARY_TDM_RX_4	48
++#define SECONDARY_TDM_TX_4	49
++#define SECONDARY_TDM_RX_5	50
++#define SECONDARY_TDM_TX_5	51
++#define SECONDARY_TDM_RX_6	52
++#define SECONDARY_TDM_TX_6	53
++#define SECONDARY_TDM_RX_7	54
++#define SECONDARY_TDM_TX_7	55
++#define TERTIARY_TDM_RX_0	56
++#define TERTIARY_TDM_TX_0	57
++#define TERTIARY_TDM_RX_1	58
++#define TERTIARY_TDM_TX_1	59
++#define TERTIARY_TDM_RX_2	60
++#define TERTIARY_TDM_TX_2	61
++#define TERTIARY_TDM_RX_3	62
++#define TERTIARY_TDM_TX_3	63
++#define TERTIARY_TDM_RX_4	64
++#define TERTIARY_TDM_TX_4	65
++#define TERTIARY_TDM_RX_5	66
++#define TERTIARY_TDM_TX_5	67
++#define TERTIARY_TDM_RX_6	68
++#define TERTIARY_TDM_TX_6	69
++#define TERTIARY_TDM_RX_7	70
++#define TERTIARY_TDM_TX_7	71
++#define QUATERNARY_TDM_RX_0	72
++#define QUATERNARY_TDM_TX_0	73
++#define QUATERNARY_TDM_RX_1	74
++#define QUATERNARY_TDM_TX_1	75
++#define QUATERNARY_TDM_RX_2	76
++#define QUATERNARY_TDM_TX_2	77
++#define QUATERNARY_TDM_RX_3	78
++#define QUATERNARY_TDM_TX_3	79
++#define QUATERNARY_TDM_RX_4	80
++#define QUATERNARY_TDM_TX_4	81
++#define QUATERNARY_TDM_RX_5	82
++#define QUATERNARY_TDM_TX_5	83
++#define QUATERNARY_TDM_RX_6	84
++#define QUATERNARY_TDM_TX_6	85
++#define QUATERNARY_TDM_RX_7	86
++#define QUATERNARY_TDM_TX_7	87
++#define QUINARY_TDM_RX_0	88
++#define QUINARY_TDM_TX_0	89
++#define QUINARY_TDM_RX_1	90
++#define QUINARY_TDM_TX_1	91
++#define QUINARY_TDM_RX_2	92
++#define QUINARY_TDM_TX_2	93
++#define QUINARY_TDM_RX_3	94
++#define QUINARY_TDM_TX_3	95
++#define QUINARY_TDM_RX_4	96
++#define QUINARY_TDM_TX_4	97
++#define QUINARY_TDM_RX_5	98
++#define QUINARY_TDM_TX_5	99
++#define QUINARY_TDM_RX_6	100
++#define QUINARY_TDM_TX_6	101
++#define QUINARY_TDM_RX_7	102
++#define QUINARY_TDM_TX_7	103
++#define DISPLAY_PORT_RX		104
++#define WSA_CODEC_DMA_RX_0	105
++#define WSA_CODEC_DMA_TX_0	106
++#define WSA_CODEC_DMA_RX_1	107
++#define WSA_CODEC_DMA_TX_1	108
++#define WSA_CODEC_DMA_TX_2	109
++#define VA_CODEC_DMA_TX_0	110
++#define VA_CODEC_DMA_TX_1	111
++#define VA_CODEC_DMA_TX_2	112
++#define RX_CODEC_DMA_RX_0	113
++#define TX_CODEC_DMA_TX_0	114
++#define RX_CODEC_DMA_RX_1	115
++#define TX_CODEC_DMA_TX_1	116
++#define RX_CODEC_DMA_RX_2	117
++#define TX_CODEC_DMA_TX_2	118
++#define RX_CODEC_DMA_RX_3	119
++#define TX_CODEC_DMA_TX_3	120
++#define RX_CODEC_DMA_RX_4	121
++#define TX_CODEC_DMA_TX_4	122
++#define RX_CODEC_DMA_RX_5	123
++#define TX_CODEC_DMA_TX_5	124
++#define RX_CODEC_DMA_RX_6	125
++#define RX_CODEC_DMA_RX_7	126
++#define QUINARY_MI2S_RX		127
++#define QUINARY_MI2S_TX		128
++
++#define LPASS_CLK_ID_PRI_MI2S_IBIT	1
++#define LPASS_CLK_ID_PRI_MI2S_EBIT	2
++#define LPASS_CLK_ID_SEC_MI2S_IBIT	3
++#define LPASS_CLK_ID_SEC_MI2S_EBIT	4
++#define LPASS_CLK_ID_TER_MI2S_IBIT	5
++#define LPASS_CLK_ID_TER_MI2S_EBIT	6
++#define LPASS_CLK_ID_QUAD_MI2S_IBIT	7
++#define LPASS_CLK_ID_QUAD_MI2S_EBIT	8
++#define LPASS_CLK_ID_SPEAKER_I2S_IBIT	9
++#define LPASS_CLK_ID_SPEAKER_I2S_EBIT	10
++#define LPASS_CLK_ID_SPEAKER_I2S_OSR	11
++#define LPASS_CLK_ID_QUI_MI2S_IBIT	12
++#define LPASS_CLK_ID_QUI_MI2S_EBIT	13
++#define LPASS_CLK_ID_SEN_MI2S_IBIT	14
++#define LPASS_CLK_ID_SEN_MI2S_EBIT	15
++#define LPASS_CLK_ID_INT0_MI2S_IBIT	16
++#define LPASS_CLK_ID_INT1_MI2S_IBIT	17
++#define LPASS_CLK_ID_INT2_MI2S_IBIT	18
++#define LPASS_CLK_ID_INT3_MI2S_IBIT	19
++#define LPASS_CLK_ID_INT4_MI2S_IBIT	20
++#define LPASS_CLK_ID_INT5_MI2S_IBIT	21
++#define LPASS_CLK_ID_INT6_MI2S_IBIT	22
++#define LPASS_CLK_ID_QUI_MI2S_OSR	23
++#define LPASS_CLK_ID_PRI_PCM_IBIT	24
++#define LPASS_CLK_ID_PRI_PCM_EBIT	25
++#define LPASS_CLK_ID_SEC_PCM_IBIT	26
++#define LPASS_CLK_ID_SEC_PCM_EBIT	27
++#define LPASS_CLK_ID_TER_PCM_IBIT	28
++#define LPASS_CLK_ID_TER_PCM_EBIT	29
++#define LPASS_CLK_ID_QUAD_PCM_IBIT	30
++#define LPASS_CLK_ID_QUAD_PCM_EBIT	31
++#define LPASS_CLK_ID_QUIN_PCM_IBIT	32
++#define LPASS_CLK_ID_QUIN_PCM_EBIT	33
++#define LPASS_CLK_ID_QUI_PCM_OSR	34
++#define LPASS_CLK_ID_PRI_TDM_IBIT	35
++#define LPASS_CLK_ID_PRI_TDM_EBIT	36
++#define LPASS_CLK_ID_SEC_TDM_IBIT	37
++#define LPASS_CLK_ID_SEC_TDM_EBIT	38
++#define LPASS_CLK_ID_TER_TDM_IBIT	39
++#define LPASS_CLK_ID_TER_TDM_EBIT	40
++#define LPASS_CLK_ID_QUAD_TDM_IBIT	41
++#define LPASS_CLK_ID_QUAD_TDM_EBIT	42
++#define LPASS_CLK_ID_QUIN_TDM_IBIT	43
++#define LPASS_CLK_ID_QUIN_TDM_EBIT	44
++#define LPASS_CLK_ID_QUIN_TDM_OSR	45
++#define LPASS_CLK_ID_MCLK_1		46
++#define LPASS_CLK_ID_MCLK_2		47
++#define LPASS_CLK_ID_MCLK_3		48
++#define LPASS_CLK_ID_MCLK_4		49
++#define LPASS_CLK_ID_INTERNAL_DIGITAL_CODEC_CORE	50
++#define LPASS_CLK_ID_INT_MCLK_0		51
++#define LPASS_CLK_ID_INT_MCLK_1		52
++#define LPASS_CLK_ID_MCLK_5		53
++#define LPASS_CLK_ID_WSA_CORE_MCLK	54
++#define LPASS_CLK_ID_WSA_CORE_NPL_MCLK	55
++#define LPASS_CLK_ID_VA_CORE_MCLK	56
++#define LPASS_CLK_ID_TX_CORE_MCLK	57
++#define LPASS_CLK_ID_TX_CORE_NPL_MCLK	58
++#define LPASS_CLK_ID_RX_CORE_MCLK	59
++#define LPASS_CLK_ID_RX_CORE_NPL_MCLK	60
++#define LPASS_CLK_ID_VA_CORE_2X_MCLK	61
++
++#define LPASS_HW_AVTIMER_VOTE		101
++#define LPASS_HW_MACRO_VOTE		102
++#define LPASS_HW_DCODEC_VOTE		103
++
++#define Q6AFE_MAX_CLK_ID			104
++
++#define LPASS_CLK_ATTRIBUTE_INVALID		0x0
++#define LPASS_CLK_ATTRIBUTE_COUPLE_NO		0x1
++#define LPASS_CLK_ATTRIBUTE_COUPLE_DIVIDEND	0x2
++#define LPASS_CLK_ATTRIBUTE_COUPLE_DIVISOR	0x3
++
++#endif /* __DT_BINDINGS_Q6DSP_AUDIO_PORTS_H__ */
 -- 
 2.21.0
 
