@@ -2,99 +2,74 @@ Return-Path: <SRS0=EjE+=M2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.2 required=3.0 tests=BAYES_00,DATE_IN_PAST_12_24,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EBD9C4338F
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 13:04:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A4B5C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 13:21:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0CB0E60F8F
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 13:04:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0CB0E60F8F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id C5F4260EB9
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 13:21:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C5F4260EB9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 681C51840;
-	Tue,  3 Aug 2021 15:03:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 681C51840
+	by alsa0.perex.cz (Postfix) with ESMTPS id 93FAA1797;
+	Tue,  3 Aug 2021 15:20:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93FAA1797
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627995836;
-	bh=+VqHdNnNX9P4iSug8dcGsI0tvagcFwps0ytc5DF2KkQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1627996880;
+	bh=nev0SuVC38EM9PEepSTCBs6PScF4sxHdjQ2dLWociJw=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=H2z5GZ/B4etduCMy6L9U1QtUAe0sd7SCz7WLYmTJhbF/fNM1otMqj3PuQFNFlAVRY
-	 HhISJn321WY16IsvC3BR4i4yhCkhqhjjK5Np/XEPHd3F5VG65bf0NSfhtluUSy3QJW
-	 xAZVCz6m8zMKfBr8vLsCbygQ2TKEqO+/noVJmyNY=
+	b=r28miZ++RtEJz/1KpPxH6/udqraIBx9VUKGqEv4usRXSKwuKayfRRWjDPDjbwTWj8
+	 xOZabEsrQ+JP7CJcsmfbo1zHLxMr82BWQwTMMDa3eR/1w/TKoB26M2nsq0WGQI8Pxy
+	 MXEwjDX0jivu2XXq0CeGliWmIqo2s+3cz1KCGgS4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 84930F805D6;
-	Tue,  3 Aug 2021 14:55:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 26898F8014D;
+	Tue,  3 Aug 2021 15:20:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 65AB1F805C6; Tue,  3 Aug 2021 14:55:02 +0200 (CEST)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 05558F802E8; Tue,  3 Aug 2021 15:20:28 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 290DAF80534
- for <alsa-devel@alsa-project.org>; Tue,  3 Aug 2021 14:54:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 290DAF80534
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="wTC4URs0"
-Received: by mail-wm1-x335.google.com with SMTP id u15so12425614wmj.1
- for <alsa-devel@alsa-project.org>; Tue, 03 Aug 2021 05:54:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=UUGGZJCMAKfFitB6K+uct3FEjlEUtbLRoZJoo7gb/BY=;
- b=wTC4URs0FmmLs9IyzErhFUZ9z75PPHirY5yiwXbjAzNQP5DDlp4qvDN6NVIu67jlA9
- 9t1MTdcqO8coODAIoOaQwsZF3EngdmLrvxlGjVorZGWfWW+/hjQUQIXq/ISiHhTg0Rlx
- n7XW7oaVJCSpGfSAlpH4wwoidkhx9lJMSgkeT/8OVohC3CJD5M1prXpSk02C2PZ9oIGK
- OQHa0q6+xiFL/4DYcg16WT8r2l6rX5OaiaPM3Eff+WCSqmAEAhKBizZrUI0LdXIPvH4T
- JKiwC82/FelYNzYkxwwok6Mxd6d1mmXpnCcj9FGm+KayETLTLNIe9V0NwC0SYmcX39qF
- dIlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=UUGGZJCMAKfFitB6K+uct3FEjlEUtbLRoZJoo7gb/BY=;
- b=AX1m1/3R296/bNxwt95LPG2m+h/iBxnWMIOIPzdmjYta6U4YkjfMxWhMlN/DvuDAJW
- dWIr/c9Q5q9zmosxUfd81TJTWmBXEHIuXvoqMDWSmogXWM8p6SKzwBfqjZEPW+fS1KR1
- krG9lfI7ty0XR4Vf/4RYQdmoeTA1GD8zhC9W8MkQI05xOJh75ssxVpuJtm4wsuz+4qPI
- cw06HgBZf6YcEVBuC+BRJ+eojZVF3Db3t8xpHoqRcXHIE3bGXpd0XetPtas/2GNuUhm1
- S7bxGXcW7I/u4DGZ/ORk+0p+X46aB8K/9+0C4e7NcrYFWtxx8bCz7YDrEVDpUnryjrSh
- STqg==
-X-Gm-Message-State: AOAM530V8q9HuGAx0rdXWbwglX/9vxhA4v/8Zul67ZtPMoAPy7pcJrSL
- vzWHo7JfaJ6/SJuk+4gKVj1J+g==
-X-Google-Smtp-Source: ABdhPJzx8nr8EIdisiVkyBQvLL3jq5eiyg1Q4260BWcobHb7QuB1Yx03QGajmoRz/fA/3Au6hjwwiQ==
-X-Received: by 2002:a7b:cf2e:: with SMTP id m14mr4185307wmg.95.1627995285697; 
- Tue, 03 Aug 2021 05:54:45 -0700 (PDT)
-Received: from srini-hackbox.lan
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id h14sm14695574wrp.55.2021.08.03.05.54.44
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 03 Aug 2021 05:54:45 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: bjorn.andersson@linaro.org,
-	broonie@kernel.org,
-	robh@kernel.org
-Subject: [PATCH v3 20/20] ASoC: qdsp6: audioreach: add support for q6prm-clocks
-Date: Tue,  3 Aug 2021 13:54:11 +0100
-Message-Id: <20210803125411.28066-21-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210803125411.28066-1-srinivas.kandagatla@linaro.org>
-References: <20210803125411.28066-1-srinivas.kandagatla@linaro.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0AD15F80095
+ for <alsa-devel@alsa-project.org>; Tue,  3 Aug 2021 15:20:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0AD15F80095
+X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="299274390"
+X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; d="scan'208";a="299274390"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Aug 2021 06:20:20 -0700
+X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; d="scan'208";a="521246523"
+Received: from vmustya-mobl1.amr.corp.intel.com (HELO [10.213.171.71])
+ ([10.213.171.71])
+ by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Aug 2021 06:20:19 -0700
+Subject: Re: [PATCH v3 2/4] ASoC: codecs: wcd: add multi button Headset
+ detection support
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org
+References: <20210604115230.23259-1-srinivas.kandagatla@linaro.org>
+ <20210604115230.23259-3-srinivas.kandagatla@linaro.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <139e6867-2d29-09e0-d059-399917e5962d@linux.intel.com>
+Date: Mon, 2 Aug 2021 19:03:19 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, tiwai@suse.de, plai@codeaurora.org,
- lgirdwood@gmail.com
+In-Reply-To: <20210604115230.23259-3-srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: robh@kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,232 +85,68 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add q6prm clocks using existing qdsp6-audio-clock driver
+Hi Srinivas,
+cppcheck reports an issue with the use of 'hphpa_on' below
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/qcom/Kconfig              |  4 ++
- sound/soc/qcom/qdsp6/Makefile       |  2 +
- sound/soc/qcom/qdsp6/q6prm-clocks.c | 85 +++++++++++++++++++++++++++++
- sound/soc/qcom/qdsp6/q6prm.h        | 78 ++++++++++++++++++++++++++
- 4 files changed, 169 insertions(+)
- create mode 100644 sound/soc/qcom/qdsp6/q6prm-clocks.c
- create mode 100644 sound/soc/qcom/qdsp6/q6prm.h
+> +static irqreturn_t wcd_mbhc_adc_hs_rem_irq(int irq, void *data)
+> +{
+> +	struct wcd_mbhc *mbhc = data;
+> +	unsigned long timeout;
+> +	int adc_threshold, output_mv, retry = 0;
+> +	bool hphpa_on = false;
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index e9155c4022b4..817da5628fc0 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -112,6 +112,9 @@ config SND_SOC_QDSP6_APM_BEDAI
- config SND_SOC_QDSP6_PRM
- 	tristate
- 
-+config SND_SOC_QDSP6_PRM_CLOCKS
-+	tristate
-+
- config SND_SOC_QDSP6_AUDIOREACH
- 	tristate "SoC ALSA audio drives for Qualcomm QDSP AUDIOREACH Framework"
- 	depends on QCOM_GPR
-@@ -119,6 +122,7 @@ config SND_SOC_QDSP6_AUDIOREACH
- 	select SND_SOC_QDSP6_APM_DAI
- 	select SND_SOC_QDSP6_APM_BEDAI
- 	select SND_SOC_QDSP6_PRM
-+	select SND_SOC_QDSP6_PRM_CLOCKS
- 	help
- 	 To add support for Qualcomm QDSP6 AudioReach Audio Framework.
- 	 This will enable sound soc platform specific audio drivers.
-diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
-index 0388b1c10eb1..65ac31770051 100644
---- a/sound/soc/qcom/qdsp6/Makefile
-+++ b/sound/soc/qcom/qdsp6/Makefile
-@@ -3,6 +3,7 @@ snd-ar-objs := audioreach.o q6apm.o topology.o
- snd-apm-dai-objs := q6apm-dai.o
- snd-apm-bedai-objs := q6dsp-audio-ports.o q6apm-bedai.o
- snd-prm-objs := q6prm.o
-+snd-prm-clks-objs := q6dsp-audio-clocks.o q6prm-clocks.o
- 
- snd-afe-dai-objs += q6dsp-audio-ports.o q6afe-dai.o
- snd-afe-clks-objs := q6dsp-audio-clocks.o q6afe-clocks.o
-@@ -21,3 +22,4 @@ obj-$(CONFIG_SND_SOC_QDSP6_AUDIOREACH) += snd-ar.o
- obj-$(CONFIG_SND_SOC_QDSP6_APM_DAI) += snd-apm-dai.o
- obj-$(CONFIG_SND_SOC_QDSP6_APM_BEDAI) += snd-apm-bedai.o
- obj-$(CONFIG_SND_SOC_QDSP6_PRM) += snd-prm.o
-+obj-$(CONFIG_SND_SOC_QDSP6_PRM_CLOCKS) += snd-prm-clks.o
-diff --git a/sound/soc/qcom/qdsp6/q6prm-clocks.c b/sound/soc/qcom/qdsp6/q6prm-clocks.c
-new file mode 100644
-index 000000000000..1735d5c0c0af
---- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6prm-clocks.c
-@@ -0,0 +1,85 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2021, Linaro Limited
-+
-+#include <linux/err.h>
-+#include <linux/init.h>
-+#include <linux/clk-provider.h>
-+#include <linux/module.h>
-+#include <linux/device.h>
-+#include <linux/platform_device.h>
-+#include <dt-bindings/sound/qcom,q6dsp-audio-ports.h>
-+#include "q6dsp-audio-clocks.h"
-+#include "q6prm.h"
-+
-+#define Q6PRM_CLK(id) {					\
-+		.clk_id	= id,				\
-+		.q6dsp_clk_id	= Q6PRM_##id,		\
-+		.name = #id,				\
-+		.rate = 19200000,			\
-+	}
-+
-+static const struct q6dsp_clk_init q6prm_clks[] = {
-+	Q6PRM_CLK(LPASS_CLK_ID_PRI_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_PRI_MI2S_EBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_SEC_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_SEC_MI2S_EBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_TER_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_TER_MI2S_EBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_QUAD_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_QUAD_MI2S_EBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_SPEAKER_I2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_SPEAKER_I2S_EBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_SPEAKER_I2S_OSR),
-+	Q6PRM_CLK(LPASS_CLK_ID_QUI_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_QUI_MI2S_EBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_SEN_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_SEN_MI2S_EBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_INT0_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_INT1_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_INT2_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_INT3_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_INT4_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_INT5_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_INT6_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_QUI_MI2S_OSR),
-+	Q6PRM_CLK(LPASS_CLK_ID_WSA_CORE_MCLK),
-+	Q6PRM_CLK(LPASS_CLK_ID_WSA_CORE_NPL_MCLK),
-+	Q6PRM_CLK(LPASS_CLK_ID_VA_CORE_MCLK),
-+	Q6PRM_CLK(LPASS_CLK_ID_TX_CORE_MCLK),
-+	Q6PRM_CLK(LPASS_CLK_ID_TX_CORE_NPL_MCLK),
-+	Q6PRM_CLK(LPASS_CLK_ID_RX_CORE_MCLK),
-+	Q6PRM_CLK(LPASS_CLK_ID_RX_CORE_NPL_MCLK),
-+	Q6PRM_CLK(LPASS_CLK_ID_VA_CORE_2X_MCLK),
-+	Q6DSP_VOTE_CLK(LPASS_HW_MACRO_VOTE, Q6PRM_HW_CORE_ID_LPASS,
-+		       "LPASS_HW_MACRO"),
-+	Q6DSP_VOTE_CLK(LPASS_HW_DCODEC_VOTE, Q6PRM_HW_CORE_ID_DCODEC,
-+		       "LPASS_HW_DCODEC"),
-+};
-+
-+static const struct q6dsp_clk_desc q6dsp_clk_q6prm = {
-+	.clks = q6prm_clks,
-+	.num_clks = ARRAY_SIZE(q6prm_clks),
-+	.lpass_set_clk = q6prm_set_lpass_clock,
-+	.lpass_vote_clk = q6prm_vote_lpass_core_hw,
-+	.lpass_unvote_clk = q6prm_unvote_lpass_core_hw,
-+};
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id q6prm_clock_device_id[] = {
-+	{ .compatible = "qcom,q6prm-clocks", .data = &q6dsp_clk_q6prm },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, q6prm_clock_device_id);
-+#endif
-+
-+static struct platform_driver q6prm_clock_platform_driver = {
-+	.driver = {
-+		.name = "q6prm-clock",
-+		.of_match_table = of_match_ptr(q6prm_clock_device_id),
-+	},
-+	.probe = q6dsp_clock_dev_probe,
-+};
-+module_platform_driver(q6prm_clock_platform_driver);
-+
-+MODULE_DESCRIPTION("Q6 Proxy Resource Manager clock driver");
-+MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/qcom/qdsp6/q6prm.h b/sound/soc/qcom/qdsp6/q6prm.h
-new file mode 100644
-index 000000000000..91ec535e8564
---- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6prm.h
-@@ -0,0 +1,78 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef __Q6PRM_H__
-+#define __Q6PRM_H__
-+
-+/* Clock ID for Primary I2S IBIT */
-+#define Q6PRM_LPASS_CLK_ID_PRI_MI2S_IBIT                          0x100
-+/* Clock ID for Primary I2S EBIT */
-+#define Q6PRM_LPASS_CLK_ID_PRI_MI2S_EBIT                          0x101
-+/* Clock ID for Secondary I2S IBIT */
-+#define Q6PRM_LPASS_CLK_ID_SEC_MI2S_IBIT                          0x102
-+/* Clock ID for Secondary I2S EBIT */
-+#define Q6PRM_LPASS_CLK_ID_SEC_MI2S_EBIT                          0x103
-+/* Clock ID for Tertiary I2S IBIT */
-+#define Q6PRM_LPASS_CLK_ID_TER_MI2S_IBIT                          0x104
-+/* Clock ID for Tertiary I2S EBIT */
-+#define Q6PRM_LPASS_CLK_ID_TER_MI2S_EBIT                          0x105
-+/* Clock ID for Quartnery I2S IBIT */
-+#define Q6PRM_LPASS_CLK_ID_QUAD_MI2S_IBIT                         0x106
-+/* Clock ID for Quartnery I2S EBIT */
-+#define Q6PRM_LPASS_CLK_ID_QUAD_MI2S_EBIT                         0x107
-+/* Clock ID for Speaker I2S IBIT */
-+#define Q6PRM_LPASS_CLK_ID_SPEAKER_I2S_IBIT                       0x108
-+/* Clock ID for Speaker I2S EBIT */
-+#define Q6PRM_LPASS_CLK_ID_SPEAKER_I2S_EBIT                       0x109
-+/* Clock ID for Speaker I2S OSR */
-+#define Q6PRM_LPASS_CLK_ID_SPEAKER_I2S_OSR                        0x10A
-+
-+/* Clock ID for QUINARY  I2S IBIT */
-+#define Q6PRM_LPASS_CLK_ID_QUI_MI2S_IBIT			0x10B
-+/* Clock ID for QUINARY  I2S EBIT */
-+#define Q6PRM_LPASS_CLK_ID_QUI_MI2S_EBIT			0x10C
-+/* Clock ID for SENARY  I2S IBIT */
-+#define Q6PRM_LPASS_CLK_ID_SEN_MI2S_IBIT			0x10D
-+/* Clock ID for SENARY  I2S EBIT */
-+#define Q6PRM_LPASS_CLK_ID_SEN_MI2S_EBIT			0x10E
-+/* Clock ID for INT0 I2S IBIT  */
-+#define Q6PRM_LPASS_CLK_ID_INT0_MI2S_IBIT                       0x10F
-+/* Clock ID for INT1 I2S IBIT  */
-+#define Q6PRM_LPASS_CLK_ID_INT1_MI2S_IBIT                       0x110
-+/* Clock ID for INT2 I2S IBIT  */
-+#define Q6PRM_LPASS_CLK_ID_INT2_MI2S_IBIT                       0x111
-+/* Clock ID for INT3 I2S IBIT  */
-+#define Q6PRM_LPASS_CLK_ID_INT3_MI2S_IBIT                       0x112
-+/* Clock ID for INT4 I2S IBIT  */
-+#define Q6PRM_LPASS_CLK_ID_INT4_MI2S_IBIT                       0x113
-+/* Clock ID for INT5 I2S IBIT  */
-+#define Q6PRM_LPASS_CLK_ID_INT5_MI2S_IBIT                       0x114
-+/* Clock ID for INT6 I2S IBIT  */
-+#define Q6PRM_LPASS_CLK_ID_INT6_MI2S_IBIT                       0x115
-+
-+/* Clock ID for QUINARY MI2S OSR CLK  */
-+#define Q6PRM_LPASS_CLK_ID_QUI_MI2S_OSR                         0x116
-+
-+#define Q6PRM_LPASS_CLK_ID_WSA_CORE_MCLK			0x305
-+#define Q6PRM_LPASS_CLK_ID_WSA_CORE_NPL_MCLK			0x306
-+
-+#define Q6PRM_LPASS_CLK_ID_VA_CORE_MCLK				0x307
-+#define Q6PRM_LPASS_CLK_ID_VA_CORE_2X_MCLK			0x308
-+
-+#define Q6PRM_LPASS_CLK_ID_TX_CORE_MCLK				0x30c
-+#define Q6PRM_LPASS_CLK_ID_TX_CORE_NPL_MCLK			0x30d
-+
-+#define Q6PRM_LPASS_CLK_ID_RX_CORE_MCLK				0x30e
-+#define Q6PRM_LPASS_CLK_ID_RX_CORE_NPL_MCLK			0x30f
-+
-+#define Q6PRM_LPASS_CLK_SRC_INTERNAL	1
-+#define Q6PRM_LPASS_CLK_ROOT_DEFAULT	0
-+#define Q6PRM_HW_CORE_ID_LPASS		1
-+#define Q6PRM_HW_CORE_ID_DCODEC		2
-+
-+int q6prm_set_lpass_clock(struct device *dev, int clk_id, int attri,
-+			  int clk_root, unsigned int freq);
-+int q6prm_vote_lpass_core_hw(struct device *dev, uint32_t hw_block_id,
-+			     const char *client_name, uint32_t *client_handle);
-+int q6prm_unvote_lpass_core_hw(struct device *dev, uint32_t hw_block_id,
-+			       uint32_t client_handle);
-+#endif /* __Q6PRM_H__ */
--- 
-2.21.0
+assigned here
 
+> +
+> +	mutex_lock(&mbhc->lock);
+> +	timeout = jiffies + msecs_to_jiffies(WCD_FAKE_REMOVAL_MIN_PERIOD_MS);
+> +	adc_threshold = wcd_mbhc_adc_get_hs_thres(mbhc);
+> +
+> +	do {
+> +		retry++;
+> +		/*
+> +		 * read output_mv every 10ms to look for
+> +		 * any change in IN2_P
+> +		 */
+> +		usleep_range(10000, 10100);
+> +		output_mv = wcd_measure_adc_once(mbhc, MUX_CTL_IN2P);
+> +
+> +		/* Check for fake removal */
+> +		if ((output_mv <= adc_threshold) && retry > FAKE_REM_RETRY_ATTEMPTS)
+> +			goto exit;
+> +	} while (!time_after(jiffies, timeout));
+> +
+> +	/*
+> +	 * ADC COMPLETE and ELEC_REM interrupts are both enabled for
+> +	 * HEADPHONE, need to reject the ADC COMPLETE interrupt which
+> +	 * follows ELEC_REM one when HEADPHONE is removed.
+> +	 */
+> +	if (mbhc->current_plug == MBHC_PLUG_TYPE_HEADPHONE)
+> +		mbhc->extn_cable_hph_rem = true;
+> +
+> +	wcd_mbhc_write_field(mbhc, WCD_MBHC_DETECTION_DONE, 0);
+> +	wcd_mbhc_write_field(mbhc, WCD_MBHC_ADC_MODE, 0);
+> +	wcd_mbhc_write_field(mbhc, WCD_MBHC_ADC_EN, 0);
+> +	wcd_mbhc_elec_hs_report_unplug(mbhc);
+> +	wcd_mbhc_write_field(mbhc, WCD_MBHC_BTN_ISRC_CTL, 0);
+
+not used, so hphpa_on == false
+
+> +	if (hphpa_on) {
+> +		hphpa_on = false;
+> +		wcd_mbhc_write_field(mbhc, WCD_MBHC_HPH_PA_EN, 3);
+> +	}
+
+And this branch is never taken.
+
+Is there a missing hphpa = true assignment somewhere?
+
+
+There's an additional issue while I am at it:
+
+sound/soc/codecs/wcd-mbhc-v2.c:1225:17: style: Variable 'clamp_state' is
+assigned a value that is never used. [unreadVariable]
+ u8 clamp_state = 0;
+                ^
+
+-Pierre
