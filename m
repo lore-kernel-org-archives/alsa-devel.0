@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D31EEC4338F
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 05:02:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75D83C432BE
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 05:02:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2386460724
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 05:02:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2386460724
+	by mail.kernel.org (Postfix) with ESMTPS id E2E4B60F9C
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 05:02:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E2E4B60F9C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0CB08171C;
-	Tue,  3 Aug 2021 07:01:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CB08171C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 794031727;
+	Tue,  3 Aug 2021 07:01:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 794031727
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627966932;
-	bh=WEQhXNH/KN1hnfSIC621sS9cK7ljikYQx/vKHvu/PbI=;
+	s=default; t=1627966937;
+	bh=Ouca89L04goDap/ocla76uJ2bq2+7iH0AS/9GTg3bB0=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PPrtIzp9NILshVC8AYdU/k+cT9K8+s5TfLpu6lLZ4iA3g7aXdzhHNOSkfYR6g6uk2
-	 fHsHiDwGISXtuTh1Wk86K+k5KulUe4AmYO7gUlriTJTkDOuztMCy9s+RK23Xe+OyiV
-	 ex5CdjsbsuH5o6aJEWeEYkm3FQaOGu36+5lnkR04=
+	b=H3UGdXHXLWNIvaVbLz5Qg1ddb+W09xX18tA+42TIIavNXu8M+cG4uRcD0rywJBaWM
+	 aZ5s997AsNNLdjtwoGL7YnOysckVGm/kMVVqcBAsPJm1HPxbb94dwSi2h0fq8ZXfmI
+	 AJ8a247Ca5S4j2RiCm7K1N2pjsS7Lf6we+qnwYIM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BB716F8049E;
-	Tue,  3 Aug 2021 07:00:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9E187F804E2;
+	Tue,  3 Aug 2021 07:01:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B7A70F804AB; Tue,  3 Aug 2021 07:00:54 +0200 (CEST)
+ id 3A24AF804E3; Tue,  3 Aug 2021 07:01:03 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 7BA7FF8032C
- for <alsa-devel@alsa-project.org>; Tue,  3 Aug 2021 07:00:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7BA7FF8032C
-Date: 03 Aug 2021 14:00:37 +0900
-X-IronPort-AV: E=Sophos;i="5.84,290,1620658800"; d="scan'208";a="89637517"
+ by alsa1.perex.cz (Postfix) with ESMTP id 536C8F8032C
+ for <alsa-devel@alsa-project.org>; Tue,  3 Aug 2021 07:00:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 536C8F8032C
+Date: 03 Aug 2021 14:00:55 +0900
+X-IronPort-AV: E=Sophos;i="5.84,290,1620658800"; d="scan'208";a="89637544"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 03 Aug 2021 14:00:37 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 03 Aug 2021 14:00:55 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 241FA41CA0C1;
- Tue,  3 Aug 2021 14:00:37 +0900 (JST)
-Message-ID: <874kc7w2a2.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 97FE541CA0C1;
+ Tue,  3 Aug 2021 14:00:55 +0900 (JST)
+Message-ID: <871r7bw29k.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 1/4] ASoC: soc-ops: cleanup cppcheck warning at
- snd_soc_put_volsw_sx()
+Subject: [PATCH 3/4] ASoC: soc-ops: cleanup cppcheck warning at
+ snd_soc_get_xr_sx()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <875ywnw2ar.wl-kuninori.morimoto.gx@renesas.com>
@@ -79,37 +79,32 @@ From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 This patch cleanups below cppcheck warning.
 
-sound/soc/soc-ops.c:410:30: style: The scope of the variable 'val2' can be reduced. [variableScope]
- unsigned int val, val_mask, val2 = 0;
-                             ^
+sound/soc/soc-ops.c:814:15: style: The scope of the variable 'regval' can be reduced. [variableScope]
+ unsigned int regval;
+              ^
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-ops.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/soc-ops.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
-index 58527247df83..9742e3c345b6 100644
+index 11be75f25300..93bb8bc5ae33 100644
 --- a/sound/soc/soc-ops.c
 +++ b/sound/soc/soc-ops.c
-@@ -407,7 +407,7 @@ int snd_soc_put_volsw_sx(struct snd_kcontrol *kcontrol,
- 	int min = mc->min;
- 	unsigned int mask = (1U << (fls(min + max) - 1)) - 1;
- 	int err = 0;
--	unsigned int val, val_mask, val2;
-+	unsigned int val, val_mask;
+@@ -812,11 +812,10 @@ int snd_soc_get_xr_sx(struct snd_kcontrol *kcontrol,
+ 	long min = mc->min;
+ 	long max = mc->max;
+ 	long val = 0;
+-	unsigned int regval;
+ 	unsigned int i;
  
- 	val_mask = mask << shift;
- 	val = (ucontrol->value.integer.value[0] + min) & mask;
-@@ -418,6 +418,8 @@ int snd_soc_put_volsw_sx(struct snd_kcontrol *kcontrol,
- 		return err;
- 
- 	if (snd_soc_volsw_is_stereo(mc)) {
-+		unsigned int val2;
-+
- 		val_mask = mask << rshift;
- 		val2 = (ucontrol->value.integer.value[1] + min) & mask;
- 		val2 = val2 << rshift;
+ 	for (i = 0; i < regcount; i++) {
+-		regval = snd_soc_component_read(component, regbase+i);
++		unsigned int regval = snd_soc_component_read(component, regbase+i);
+ 		val |= (regval & regwmask) << (regwshift*(regcount-i-1));
+ 	}
+ 	val &= mask;
 -- 
 2.25.1
 
