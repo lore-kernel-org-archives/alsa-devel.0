@@ -2,88 +2,91 @@ Return-Path: <SRS0=EjE+=M2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D60ECC4338F
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 07:35:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07231C432BE
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 07:41:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 95EE560C3E
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 07:35:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 95EE560C3E
+	by mail.kernel.org (Postfix) with ESMTPS id C8F3D60F8F
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 07:41:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C8F3D60F8F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 32AA616FF;
-	Tue,  3 Aug 2021 09:34:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32AA616FF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 190FB1701;
+	Tue,  3 Aug 2021 09:40:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 190FB1701
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1627976103;
-	bh=ibpX4zPYipdXCW9DQYQKHt6h0N7Zbh0kgpLMnA+5TpE=;
+	s=default; t=1627976508;
+	bh=peYmz17I5HFABcu9ccTmycGWU8i4vj+GRQ4KeTUQeeA=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ggwQDqhvy7LpM1JTy+LNTSfb7OPaU1dSiSXD5BNYPfm/v4aovx3GBH5k9dsuvGDVg
-	 o2R+SNBjsVoXWdROrAvGQZF8z/5f2C2SE2PTXB/DKVtOWhwuAt+zkKyJKFEpES4j9X
-	 pzXOPIIHbg7xebzQkr667qACunBTMLFxSswceoec=
+	b=k0TvDAP2Rqx2od4sXglQAe3QesTu4ofGMuDSET696Kalnj4hyNHWaEzaJZ9cQ2lMc
+	 HtlPiF3R7botJ2IdXDzzQutTV5lyhlBQwkfcSXBHBmxI6HVCFOJ3DUU4cN/mKviENd
+	 HFgwHqIzLcH7IqG1CJwTnXwUF7iIFIz4pqeSNL5w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B61ABF80095;
-	Tue,  3 Aug 2021 09:34:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 91599F8016D;
+	Tue,  3 Aug 2021 09:40:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1AF4F802E8; Tue,  3 Aug 2021 09:34:10 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id B64E5F802E8; Tue,  3 Aug 2021 09:40:55 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7B86AF80095
- for <alsa-devel@alsa-project.org>; Tue,  3 Aug 2021 09:34:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B86AF80095
+ by alsa1.perex.cz (Postfix) with ESMTPS id 85B11F80082
+ for <alsa-devel@alsa-project.org>; Tue,  3 Aug 2021 09:40:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85B11F80082
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="cViNMVRu"; 
+ header.b="GWdBVFHt"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="8yGylLFG"
+ header.b="uIXpxfNL"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 0E1F92009F;
- Tue,  3 Aug 2021 07:34:06 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id B787E2207D;
+ Tue,  3 Aug 2021 07:40:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1627976046; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1627976450; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=rXdJtGLDQ+wBCmobp3Y0JiVh7UhX3DxLaqDqHYPgrck=;
- b=cViNMVRuHdVxqGe12qDQLe2n2XIbj/qmE0buY8vEzEdQtd3QmNAPX/hxwG7+dqxMoNsuN/
- r2dYW3LosKneoLrZZTfCsaV3tjusZfghjf3CjI/vcmzN2w49dPc6Daq88jje94NPDpQLba
- myqu6Fx/B5w6T34k3UFU9LaTBzL3lIc=
+ bh=cgOa2hYCzUhkzA5o+v8md7JL/JoOvkhgxW1hqHyI39s=;
+ b=GWdBVFHtdj6usslVn+rJCIORJC6ccdbjbaeT2m22sp47kU+JZZe8/Dx+2/rMPLdFkHt3MA
+ UuIzkhEnTOkudhwkxdsKVcbM9uFp0nl+UCTbfQbjzrxkqf46lxzN1CcoAgocoqC+eMTafM
+ /pYpsGZRTbpELwKLPAMWFwwPkl+YPwk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1627976046;
+ s=susede2_ed25519; t=1627976450;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=rXdJtGLDQ+wBCmobp3Y0JiVh7UhX3DxLaqDqHYPgrck=;
- b=8yGylLFGiyPpN7VTmEcpR1TjM6PLed1WYxfJYQswLr2cd2UGYER7u9IYIOMbeG1mJgE7hn
- GM8KKFZ4laW4YmBA==
+ bh=cgOa2hYCzUhkzA5o+v8md7JL/JoOvkhgxW1hqHyI39s=;
+ b=uIXpxfNLscdavhW0rkVpJ8hFabhjX7mE/eJ/z2P5b0Fzgxjv8vG2xF85S5qnSPsCdEKPxD
+ 8UTVCMIBzpL4KPAw==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 038F6A3BCA;
- Tue,  3 Aug 2021 07:34:06 +0000 (UTC)
-Date: Tue, 03 Aug 2021 09:34:05 +0200
-Message-ID: <s5hv94nvv6a.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 8F119A3BC9;
+ Tue,  3 Aug 2021 07:40:50 +0000 (UTC)
+Date: Tue, 03 Aug 2021 09:40:50 +0200
+Message-ID: <s5hsfzrvuv1.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Giuliano Zannetti - ART S.p.A. <giuliano.zannetti@artgroup-spa.com>
-Subject: Re: I: dmix optimization
-In-Reply-To: <DB9P192MB132136A569299BDE4E11AB90C5F09@DB9P192MB1321.EURP192.PROD.OUTLOOK.COM>
-References: <DB9P192MB132193EF1C0E9DFA5161A298C5EF9@DB9P192MB1321.EURP192.PROD.OUTLOOK.COM>
- <DB9P192MB132136A569299BDE4E11AB90C5F09@DB9P192MB1321.EURP192.PROD.OUTLOOK.COM>
+To: Salah Triki <salah.triki@gmail.com>
+Subject: Re: [PATCH] sound: usb: get lock before calling
+ usb_enable_autosuspend()
+In-Reply-To: <20210802225339.GA1461793@pc>
+References: <20210802225339.GA1461793@pc>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "tiwai@suse.com" <tiwai@suse.com>
+Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>, alsa-devel@alsa-project.org,
+ Pavel Skripkin <paskripkin@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Mark Brown <broonie@kernel.org>, Joe Perches <joe@perches.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,23 +102,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 03 Aug 2021 09:26:38 +0200,
-Giuliano Zannetti - ART S.p.A. wrote:
+On Tue, 03 Aug 2021 00:53:39 +0200,
+Salah Triki wrote:
 > 
-(snip) 
-> Could it be possible check for the first sample of the period only, as
-> reported in the code below?
+> Based on the documentation of usb_enable_autosuspend(), the
+> caller must hold udev's device lock.
 
-No, unfortunately your suggested optimization won't work reliably, I'm
-afraid.
-
-Each application may write samples partially, not always in period
-size.  Also, the hardware may clear the buffer right after the hwptr
-is updated, and again, it's not always in period size.  So, just
-checking the first sample doesn't guarantee the rest period size is
-also zero or non-zero.
+The device lock is already held in the caller side (in the driver
+core), hence this change will lead to a deadlock.
 
 
 thanks,
 
 Takashi
+
+> 
+> Signed-off-by: Salah Triki <salah.triki@gmail.com>
+> ---
+>  sound/usb/card.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/usb/card.c b/sound/usb/card.c
+> index 2f6a62416c05..9290ba0acd5f 100644
+> --- a/sound/usb/card.c
+> +++ b/sound/usb/card.c
+> @@ -907,8 +907,13 @@ static void usb_audio_disconnect(struct usb_interface *intf)
+>  		}
+>  	}
+>  
+> -	if (chip->quirk_type & QUIRK_SETUP_DISABLE_AUTOSUSPEND)
+> -		usb_enable_autosuspend(interface_to_usbdev(intf));
+> +	if (chip->quirk_type & QUIRK_SETUP_DISABLE_AUTOSUSPEND) {
+> +		struct usb_device *udev = interface_to_usbdev(intf);
+> +
+> +		usb_lock_device(udev);
+> +		usb_enable_autosuspend(udev);
+> +		usb_unlock_device(udev);
+> +	}
+>  
+>  	chip->num_interfaces--;
+>  	if (chip->num_interfaces <= 0) {
+> -- 
+> 2.25.1
+> 
