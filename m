@@ -1,4 +1,4 @@
-Return-Path: <SRS0=EjE+=M2=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=vE6Q=M3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -6,57 +6,60 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8193DC4338F
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 23:57:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 564D3C4338F
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Aug 2021 00:50:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E6C8460F45
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Aug 2021 23:57:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E6C8460F45
+	by mail.kernel.org (Postfix) with ESMTPS id 9D21260F01
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Aug 2021 00:50:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9D21260F01
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 64CBC170C;
-	Wed,  4 Aug 2021 01:56:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64CBC170C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4438D1700;
+	Wed,  4 Aug 2021 02:49:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4438D1700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628035024;
-	bh=kjTOFWyusu3kZK0x+oksmVUiWj2L2VGIwzJYkTBsX8s=;
+	s=default; t=1628038244;
+	bh=C4PVtF+pYAvGIqluQWMwtwgQNH/4EMB55itxVtd+Dxs=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bIxpafhxVTEL7qoLiJgrYuYW4P6C+VctETpxNi2WTUk1kPz9mPE5lBTvBjZu5yYki
-	 jcfZKYg39h3EewVkO2imsKAcwCdF2IrxQyDv09I0YdHmzFs1IslEdTfL2szroyaLpj
-	 bWp1SiDafRTqO4a/1L0Oo3n3u/OleN8YFu/5xER0=
+	b=aTXbFF9GoSzh51mfXz2yg3CBtKzZuaDwfthWnUjSMfKFaO+madFh6rVnU9HXwgV3W
+	 FmyBeyTp7uxqwKKwWacISgOsSQbiaD3UlT0D+Z6g1YkQI7AG0/V3uXNB+43iAU8gI3
+	 QYxTCornhR3bB2HGwytsMe4Nt+luVamQl/BNLE9U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8830F8016D;
-	Wed,  4 Aug 2021 01:56:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BABC5F80095;
+	Wed,  4 Aug 2021 02:49:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C7E09F802E8; Wed,  4 Aug 2021 01:56:11 +0200 (CEST)
+ id 44F46F802E8; Wed,  4 Aug 2021 02:49:52 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 79368F8014D
- for <alsa-devel@alsa-project.org>; Wed,  4 Aug 2021 01:56:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79368F8014D
-X-IronPort-AV: E=Sophos;i="5.84,292,1620658800"; d="scan'208";a="89713141"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 04 Aug 2021 08:55:58 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id C71E4F80095
+ for <alsa-devel@alsa-project.org>; Wed,  4 Aug 2021 02:49:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C71E4F80095
+Date: 04 Aug 2021 09:49:39 +0900
+X-IronPort-AV: E=Sophos;i="5.84,293,1620658800"; d="scan'208";a="89719593"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 04 Aug 2021 09:49:39 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id B529F400F787;
- Wed,  4 Aug 2021 08:55:58 +0900 (JST)
-Date: Wed, 04 Aug 2021 08:55:58 +0900
-Message-ID: <87o8aeulpt.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id CB6804151D67;
+ Wed,  4 Aug 2021 09:49:39 +0900 (JST)
+Message-ID: <87mtpyuj8c.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>, robh+dt@kernel.org
-Subject: Re: [PATCH v2 02/14] ASoC: test-component: add Test Component for
- Sound debug/test
-In-Reply-To: <20210803170817.GP4668@sirena.org.uk>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 09/14] ASoC: audio-graph-card2: add Yaml Document
+In-Reply-To: <20210803165328.GO4668@sirena.org.uk>
 References: <87a6mhwyqn.wl-kuninori.morimoto.gx@renesas.com>
- <877dhlwyoz.wl-kuninori.morimoto.gx@renesas.com>
- <20210803170817.GP4668@sirena.org.uk>
+ <87wnplvk2a.wl-kuninori.morimoto.gx@renesas.com>
+ <CAL_JsqJKZ-sjbnihAkdXDk4tW8xVmyhwkHLHWouZg6da0cc99g@mail.gmail.com>
+ <87lf60v9xk.wl-kuninori.morimoto.gx@renesas.com>
+ <20210721115433.GB4259@sirena.org.uk>
+ <87fsw124wn.wl-kuninori.morimoto.gx@renesas.com>
+ <20210803165328.GO4668@sirena.org.uk>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -77,30 +80,97 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark, Rob
+Hi Mark
 
-Thank you for your feedback
+Thank you for your review
 
-> > for example,
-> > 	test-cpu    : silent  Component, silent  DAI
-> > 	test-cpu-vn : verbose Component, silent  DAI
-> > 	test-cpu-nv : silent  Component, verbose DAI
-> > 	test-cpu-vv : verbose Component, verbose DAI
+> > 	audio-graph-card2
+> > 	 O: Normal connection
+> > 	 O: DPCM
+> > 	 O: Multi CPU/Codec
+> > 	 O: Codec2Codec
 > 
-> Should these be runtime rather than binding options?  Or at least
-> properties rather than something that's part of the compatible.  It
-> doesn't feel right to have flags like that in the compatible at any
-> rate, and if we're making fixed DTs for test purposes (eg, to run in
-> qemu as part of a testsuite) it's no more difficult to use properties.
+> OK, so if there's issues with multi CPU/CODEC due to the representation
+> of inter-device links not being good enough we definitely need to fix
+> that and I can see that being a binding change.  For the CODEC<->CODEC
+> stuff I'd have thought we'd be able to get things working but if we're
+> changing things anyway perhaps it's not worth it.  It'd probably be
+> helpful to spell out the specific issues with the multi-device links.
+
+Maybe I'm misunderstanding you, but the reason why we can't 100% merge
+audio-graph-card and audio-graph-card2 is that existing audio-graph-card
+was focusing only for "Normal" connection, and didn't mind expansion for
+advanced connections.
+
+DPCM connection was added for my local use case (= for both simple-card/audio-graph-card),
+but it was forcibly expansion, has limitation, no flexibility, etc, etc...
+I'm happy that someone is using it, but...
+Adding more connection variation (which needs flexibility) (with keeping compatibility)
+to existing audio-graph-card is impossible I thought.
+
+The issue is audio-graph-card's flexibility/compatibility, not ALSA SoC.
+
+> > 	step 1)
+> > 	- add audio-graph-card2 which have (A) compatibility.
+> > 	- indicate "audio-graph-card will be deprecated" on audio-graph-card
 > 
-> I'm not sure if Rob has thoughts on the base concept of such virtual for
-> test bindings but they do seem like something that might be useful.
+> > 	step 2)
+> > 	- Tegra switch to use audio-graph-card2
+> > 	- confirm that all existing audio-graph-card user have no problem on
+> > 	  audio-graph-card2 too.
+> 
+> > 	step 3)
+> > 	- remove audio-graph-card
+> 
+> I guess one other option is to just keep the two audio graph bindings in
+> parallel, having it as something like a simple links and rich links
+> variant?  We're going to have to maintain compatibility I think and it'd
+> make it clearer what's going on, it wouldn't just be a version number
+> for the binding that's changed but rather something more descriptive.
 
-I'm assuming that "verbose" version will be used for test/debug purpose,
-and it is needed for boot-time too.
-Thus, switching it runtime is unfortunately not good.
+OK, it is nice idea for me, "descriptive" is difficult,
+but for example...
 
-I'm OK to use flag property for it if DT rule/maintainer was OK.
+	- audio-link-card
+	- multi-graph-card
+	- link-graph-card
+	- audio-mf-graph-card (mf = multi functional)
+	...
+
+> Perhaps the approach above with a descriptive name for the new binding
+> and just keeping both around in parallel makes that all clearer/easier?
+
+Yes
+
+> > 	- audio-graph-card2 can keep (A) compatible, but some features
+> > 	  are not recommended. Existing user will get such message.
+> > 	  And because of this compatibility, audio-graph-card2 can't remove
+> > 	  this "un-recommended" feature.
+> 
+> Right, some of this depends on how actively bad those features are - if
+> they're more just not recommended than actively bad then perhaps it's
+> not worth bothering to deprecate them.
+
+In my quick check (not deep),
+for keeping (A) (= Normal) compatibility on new card point of view,
+one of not recommended I indicated is property naming (= "dai" vs "link").
+But, I noticed that it is not a *super* big deal.
+
+Other one is that new card is assuming that using auto format
+(= using .get_fmt on each driver), but we can use "format" property for it
+and possible to overwrite.
+So, I noticed that keeping Normal connection compatibility on new card
+is not super difficult, and "un-recommended" is very small (In my quick check).
+
+Ahh, new card is not supporting "platform" so far (it is supported on audio-graph-card),
+and maybe other options/property which I'm not using too.
+But it is not a big problem I think, we can add these later.
+
+I want to tell here is that, we can add new card (by new name), and
+I think we can keep audio-graph-card's *normal* compatibility on it, (not DPCM).
+Of cource we can keep existing audio-graph-card, but easy to switch to new card (?).
+
+I'm not sure it is OK for DT maintainer.
 
 Thank you for your help !!
 
