@@ -2,88 +2,74 @@ Return-Path: <SRS0=ibvm=M4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BC75C4338F
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 06:25:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62171C432BE
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 07:55:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EDAA8600CD
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 06:25:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EDAA8600CD
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id C2BB861040
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 07:55:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C2BB861040
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8C7131683;
-	Thu,  5 Aug 2021 08:24:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C7131683
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4EF4A1683;
+	Thu,  5 Aug 2021 09:54:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EF4A1683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628144701;
-	bh=ZSqxmuExnChWFxqwr4AFbkyD7El/1ie3BIGZYP9OrJc=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1628150113;
+	bh=miCaEGB806tdWPou9taWaDlX0V/cV3pSjkPZ8rZdBNM=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IQkJ6nH4JJrZ1J7mGLeRCQuxcVpJ2dxxD+8x+kK2cCLL7lss+lmpI+/YLr8FnMu/E
-	 Y5mQBsQB1robomTJdiFLcytRkKJzHgzVecdlDrrquRYT0gKaZmOE2RyKVN6ynOVMYY
-	 ZT4MxMV9pwGxmqC4zy2Qj2W53SbkWFU3co4ql36g=
+	b=SRpJVQaOSWwYhM3FLWfPENcieKwQMM0JtTKujRiz9qpeuxxjzl8v8q58k/rEDYH+6
+	 EOSa3It7k0M0NwUep1ECwFM9x1SYgvSHb9EdTKKliJSTp2unmrHkpWeT/+nYTr6Rnh
+	 CoBWsUsmtyu4eZLUQWxmkwAz5YPBCrKLpY5NQryU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3396DF8016D;
-	Thu,  5 Aug 2021 08:24:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CA1F6F8010A;
+	Thu,  5 Aug 2021 09:54:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 862EBF802E8; Thu,  5 Aug 2021 08:24:10 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1BC53F802E8; Thu,  5 Aug 2021 09:54:22 +0200 (CEST)
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4664EF8014D
- for <alsa-devel@alsa-project.org>; Thu,  5 Aug 2021 08:24:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4664EF8014D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="W8UXtv7w"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="GfSlmujp"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 6DD7B2232C;
- Thu,  5 Aug 2021 06:23:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1628144639; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=THrwUHCKrMBOOVNhVv/oKpHD+/SbLfFyntxOIJCrcp4=;
- b=W8UXtv7wX2jUpgQlkFAosgk5iuInLW3qeGfCAuSUlwoA1OEq5qqtT2VxZlbgCbsjHe7eud
- twWNjsSGOVkUAGvLQq1LZ1q0hF6gW9iDbI+OKhF60MjsrDdX0QYTZtDXDPOm+8DPb4qO4U
- XQbamMUAeAMx6B22sd4Cxwpp9Dtocxg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1628144639;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=THrwUHCKrMBOOVNhVv/oKpHD+/SbLfFyntxOIJCrcp4=;
- b=GfSlmujpS/NN2BtM91NS6YJAo/YcOb6Y010SZGbAAqLvaHktMD0wCJCKhoJ2BqKiuXWz8Q
- n+nLJ2kRua+mN6BA==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 5CDD4A3B8D;
- Thu,  5 Aug 2021 06:23:59 +0000 (UTC)
-Date: Thu, 05 Aug 2021 08:23:59 +0200
-Message-ID: <s5hbl6ctnnk.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ALSA: pci/korg1212: completely remove 'set but not used'
- warnings
-In-Reply-To: <20210804185442.274057-1-pierre-louis.bossart@linux.intel.com>
-References: <20210804185442.274057-1-pierre-louis.bossart@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2CB6EF8010A
+ for <alsa-devel@alsa-project.org>; Thu,  5 Aug 2021 09:54:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CB6EF8010A
+X-UUID: 831aadfcca6448ed92316f625e869ed5-20210805
+X-UUID: 831aadfcca6448ed92316f625e869ed5-20210805
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by
+ mailgw01.mediatek.com (envelope-from <chihhao.chen@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 917629391; Thu, 05 Aug 2021 15:54:07 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 5 Aug 2021 15:54:05 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
+ Frontend Transport; Thu, 5 Aug 2021 15:54:05 +0800
+From: <chihhao.chen@mediatek.com>
+To: <geraldogabriel@gmail.com>
+Subject: Re: [PATCH] ALSA: usb-audio: fix incorrect clock source setting
+Date: Thu, 5 Aug 2021 15:54:01 +0800
+Message-ID: <20210805075401.21170-1-chihhao.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <CAEsQvctJDnsaRTXAGAJ6==juKazoo2=AJrWabLzqE=jCfg5EEA@mail.gmail.com>
+References: <CAEsQvctJDnsaRTXAGAJ6==juKazoo2=AJrWabLzqE=jCfg5EEA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK: N
+Cc: alsa-devel@alsa-project.org, wsd_upstream@mediatek.com, tiwai@suse.de,
+ damien@zamaudio.com, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ chihhao.chen@mediatek.com, linux-mediatek@lists.infradead.org,
+ matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,16 +85,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 04 Aug 2021 20:54:42 +0200,
-Pierre-Louis Bossart wrote:
-> 
-> Commit 6cdc01ebdfb0 ("ALSA: pci/korg1212: remove 'set but not used'
-> warnings") missed one __maybe_unused, add to enable make W=1 sound/
-> compilation with x86_64 allmodconfig
-> 
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: chihhao chen <chihhao.chen@mediatek.com>
 
-Thanks, applied.
+Hi Geraldo Nascimento,
 
+For echo test, it means we use this earphone to receive and play sounds at the same time.
+We found in this case serious noise problem happens.
 
-Takashi
+Log as follows with your patch
+<6>[  175.960387][T401365] __uac_clock_find_source: Clock Selector 0xc has pin 2 selected
+<6>[  175.966980][T401365] __uac_clock_find_source: Clock Selector 0xb has pin 2 selected
+<6>[  176.026251][T400354] __uac_clock_find_source: Clock Selector 0xc has pin 1 selected
+<6>[  176.032406][T400354] __uac_clock_find_source: Clock Selector 0xb has pin 1 selected
+
+There is no noise and I think this should be a firmware bug.
+
+Thanks
+Chihhao
+
