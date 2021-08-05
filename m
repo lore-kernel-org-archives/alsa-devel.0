@@ -1,69 +1,57 @@
-Return-Path: <SRS0=vE6Q=M3=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=ibvm=M4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3666CC4338F
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Aug 2021 23:52:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9D87C4338F
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 01:11:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 02A5760EFD
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Aug 2021 23:52:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 02A5760EFD
+	by mail.kernel.org (Postfix) with ESMTPS id 2F93C610A8
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 01:11:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2F93C610A8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A9DF1685;
-	Thu,  5 Aug 2021 01:51:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A9DF1685
+	by alsa0.perex.cz (Postfix) with ESMTPS id 006321684;
+	Thu,  5 Aug 2021 03:10:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 006321684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628121169;
-	bh=7a9pEhQS3Zatmbd6XkxxOqQzu3ywSCKTqsEvb4dDfwg=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=MlGLfnkCF1jKFxqci60qp1zOdTXBH0uV3qEE8biBb5U0cRQzypqfSTwDgpOETo5LP
-	 aAZFajqHF0U1Ri9TQYK5gCX3Za5ck7v/v9yu3lVhN3nT3AVnhFykZ0IonpZ1kiBpM+
-	 RiaWvIEGOmuo8wKtNXeTGdjpOMlT/mk6CDITKpmE=
+	s=default; t=1628125898;
+	bh=br9WtZANBIlQGse4xyjfPwsZX21Id6l9oeNh0exbhtQ=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=hRGH4klyHtAN+ol6fj75kkFUtTqte86ZMwn77XjLcpZR2JU54+J/V943r41H9G0Fa
+	 wL4Kly0WNc150LMyEgWKjkDCk1H/1IqmU4aQI3dzWkF7m80WELl8j5af5I4z0L9+1q
+	 XPbbgNSrvqqlsyE8hUSzuf3FfqoR9anSlmLdssPk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EF156F801F7;
-	Thu,  5 Aug 2021 01:51:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F835F801F7;
+	Thu,  5 Aug 2021 03:10:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 789D9F8025F; Thu,  5 Aug 2021 01:51:57 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 10922F8016C
- for <alsa-devel@alsa-project.org>; Thu,  5 Aug 2021 01:51:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10922F8016C
-Date: 05 Aug 2021 08:51:50 +0900
-X-IronPort-AV: E=Sophos;i="5.84,295,1620658800"; d="scan'208";a="89856779"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 05 Aug 2021 08:51:50 +0900
+ id 6627AF8010A; Thu,  5 Aug 2021 03:10:43 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id D6B57F8010A
+ for <alsa-devel@alsa-project.org>; Thu,  5 Aug 2021 03:10:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6B57F8010A
+Date: 05 Aug 2021 10:10:35 +0900
+X-IronPort-AV: E=Sophos;i="5.84,296,1620658800"; d="scan'208";a="89847525"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 05 Aug 2021 10:10:35 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id BB994411777B;
- Thu,  5 Aug 2021 08:51:50 +0900 (JST)
-Message-ID: <874kc4vkdl.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 942C440116B2;
+ Thu,  5 Aug 2021 10:10:35 +0900 (JST)
+Message-ID: <87zgtwu25w.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 09/14] ASoC: audio-graph-card2: add Yaml Document
-In-Reply-To: <875ywkvkkd.wl-kuninori.morimoto.gx@renesas.com>
-References: <87a6mhwyqn.wl-kuninori.morimoto.gx@renesas.com>
- <87wnplvk2a.wl-kuninori.morimoto.gx@renesas.com>
- <CAL_JsqJKZ-sjbnihAkdXDk4tW8xVmyhwkHLHWouZg6da0cc99g@mail.gmail.com>
- <87lf60v9xk.wl-kuninori.morimoto.gx@renesas.com>
- <20210721115433.GB4259@sirena.org.uk>
- <87fsw124wn.wl-kuninori.morimoto.gx@renesas.com>
- <20210803165328.GO4668@sirena.org.uk>
- <87mtpyuj8c.wl-kuninori.morimoto.gx@renesas.com>
- <20210804171748.GC26252@sirena.org.uk>
- <875ywkvkkd.wl-kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 00/12] ASoC: soc-dapm: cleanup cppcheck warning
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -83,67 +71,31 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark again
+Hi Mark
 
-I will take Summer Vacation from tomorrow in 1 week.
-I'm sorry for my long term no respoce then.
+Now I'm posting audio-graph-card2 patch-set, but it seems it needs longer
+discussion. Thus I want to post more easy patch first, and reduce my
+local patches.
 
-> Thank you for your feedback
-> 
-> > The -mf- there reads unfortunately differently in English so we
-> > definitely don't want to go with that one I think.  I do agree that it's
-> > hard to come up with a name, possibly rich-link-graph-card or something?
-> 
-> Thanks. It is a little bit long name, so,
-> rich-graph-card, or rich-link-card is nice for me.
-> 
-> > Well, I think the big issue from a DT point of view is needing to add a
-> > new generic card at all - there's much less problem with keeping the old
-> > ones around than there is with keeping on adding new generic cards.
-> 
-> I guess/hope the DT issue will be disappear if new card can keep
-> existing binding...
-> 
-> > Actually, looking at the bindings documents I'm not 100% clear what the
-> > differences in the binding (as opposed to the code that parses it) are -
-> > this may just be the examples being too cut down to show them.  I'm not
-> > 100% clear why we have the three different compatibles in there, that
-> > feels like something that should just be in the graph description,
-> 
-> Ohhhh, yes, indeed. I didn't notice about that !
-> If my understanding was correct, it can be something like ...
-> 
-> 	card {
-> 		compatible = "rich-graph-card";
-> 		...
-> 		links = ...
-> 		
-> 		mix {
-> 			...
-> 		}
-> 		multi {
-> 			...
-> 		}
-> 		codec2codec {
-> 			...
-> 		}
-> 	}
-> 
-> Hmm, nice idea.
-> 
-> > especially codec2codec since we might have for example both a DSP and a
-> > codec2codec link in the same card.
-> 
-> It is possible in my understanding, but am I misunderstanding ?
-> 
-> ... is it naming issue ?
-> In my understanding, both "DSP" and "MIXer" are using "DPCM" connection,
-> but driver/sample is calling it as "DSP".
-> I think "MIXer" and "Codec2Codec" in same card is possible.
-> I'm not sure about "DSP" case...
-> 
-> Thank you for your help !!
-> 
-> Best regards
-> ---
-> Kuninori Morimoto
+These are cppcheck warning cleanup patches for soc-dapm.
+
+Kuninori Morimoto (12):
+  ASoC: soc-dapm: cleanup cppcheck warning at dapm_wcache_lookup()
+  ASoC: soc-dapm: cleanup cppcheck warning at dapm_connect_mux()
+  ASoC: soc-dapm: cleanup cppcheck warning at dapm_set_mixer_path_status()
+  ASoC: soc-dapm: cleanup cppcheck warning at dapm_new_pga()
+  ASoC: soc-dapm: cleanup cppcheck warning at dapm_new_dai_link()
+  ASoC: soc-dapm: cleanup cppcheck warning at dapm_seq_check_event()
+  ASoC: soc-dapm: cleanup cppcheck warning at dapm_seq_run()
+  ASoC: soc-dapm: cleanup cppcheck warning at snd_soc_dapm_del_route()
+  ASoC: soc-dapm: cleanup cppcheck warning at snd_soc_dapm_add_routes()
+  ASoC: soc-dapm: cleanup cppcheck warning at snd_soc_dapm_weak_routes()
+  ASoC: soc-dapm: cleanup cppcheck warning at snd_soc_dapm_new_controls()
+  ASoC: soc-dapm: cleanup cppcheck warning at soc_dapm_dai_stream_event()
+
+ sound/soc/soc-dapm.c | 65 ++++++++++++++++++++++----------------------
+ 1 file changed, 33 insertions(+), 32 deletions(-)
+
+-- 
+2.25.1
+
