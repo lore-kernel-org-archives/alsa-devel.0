@@ -2,57 +2,57 @@ Return-Path: <SRS0=ibvm=M4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C0E1C4338F
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 01:15:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64A79C4338F
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 01:15:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D202060F25
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 01:15:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D202060F25
+	by mail.kernel.org (Postfix) with ESMTPS id DAD5960F25
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 01:15:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DAD5960F25
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3762A1694;
-	Thu,  5 Aug 2021 03:14:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3762A1694
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A3D71690;
+	Thu,  5 Aug 2021 03:14:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A3D71690
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628126130;
-	bh=ZXnqPIC9Mmh/70CK48rndBemUzRZJBL1n7QfewnQCu8=;
+	s=default; t=1628126148;
+	bh=rLaAPeDuLUoPcyP6bMga0IJc91Fcv8e3m80ErdN8G/o=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MHLPD/psliEjn5gjDkdoJrZ5hL1PGoMbNhTw8o7YDbF9Y3mo0PRzZkPmxHE7QBNiy
-	 EO/e/4PQvNzt5E2RzN8oC7rhNKSOiJtB/XsjXIG8VDy8qOUl184EQ3yBBNHAcUcBdH
-	 TOeU10JmB7IBcJJGu0M8TtXy5j+oIN2S+3k/HZzE=
+	b=K7ERuTL1UTc7pba2qBts6claneOWyHaymn3srK1WR+xtyYWToOyuWX6T4R1bJ9bBO
+	 dalOirW8tQF8RNz7GiPndWfCLK29kS6wsifmlIfEODazn6yuF2ippkBrRbiXqk94dZ
+	 imV3z4X0K0WA5MTNaLz2E4aL8qXp2oW0AP0ROwEg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D79B0F8051C;
-	Thu,  5 Aug 2021 03:11:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C4E24F8016C;
+	Thu,  5 Aug 2021 03:11:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B68FBF8051D; Thu,  5 Aug 2021 03:11:42 +0200 (CEST)
+ id E6FA3F80525; Thu,  5 Aug 2021 03:11:44 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 10ACDF8051C
- for <alsa-devel@alsa-project.org>; Thu,  5 Aug 2021 03:11:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10ACDF8051C
-Date: 05 Aug 2021 10:11:37 +0900
-X-IronPort-AV: E=Sophos;i="5.84,296,1620658800"; d="scan'208";a="89847630"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 05 Aug 2021 10:11:37 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 06C20F804FC
+ for <alsa-devel@alsa-project.org>; Thu,  5 Aug 2021 03:11:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06C20F804FC
+Date: 05 Aug 2021 10:11:33 +0900
+X-IronPort-AV: E=Sophos;i="5.84,296,1620658800"; d="scan'208";a="89847628"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 05 Aug 2021 10:11:33 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 296C0413AA5A;
- Thu,  5 Aug 2021 10:11:37 +0900 (JST)
-Message-ID: <87lf5gu246.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 0613B40116B3;
+ Thu,  5 Aug 2021 10:11:33 +0900 (JST)
+Message-ID: <87mtpwu24b.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 10/12] ASoC: soc-dapm: cleanup cppcheck warning at
- snd_soc_dapm_weak_routes()
+Subject: [PATCH 09/12] ASoC: soc-dapm: cleanup cppcheck warning at
+ snd_soc_dapm_add_routes()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87zgtwu25w.wl-kuninori.morimoto.gx@renesas.com>
@@ -79,8 +79,8 @@ From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 This patch cleanups below cppcheck warning.
 
-sound/soc/soc-dapm.c:3190:9: style: The scope of the variable 'err' can be reduced. [variableScope]
- int i, err;
+sound/soc/soc-dapm.c:3082:9: style: The scope of the variable 'r' can be reduced. [variableScope]
+ int i, r, ret = 0;
         ^
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
@@ -89,24 +89,23 @@ Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 9dd50b4899e3..6e7fc8979f89 100644
+index c7fb142f3462..9dd50b4899e3 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -3188,12 +3188,12 @@ static int snd_soc_dapm_weak_route(struct snd_soc_dapm_context *dapm,
- int snd_soc_dapm_weak_routes(struct snd_soc_dapm_context *dapm,
- 			     const struct snd_soc_dapm_route *route, int num)
+@@ -3080,11 +3080,11 @@ static int snd_soc_dapm_del_route(struct snd_soc_dapm_context *dapm,
+ int snd_soc_dapm_add_routes(struct snd_soc_dapm_context *dapm,
+ 			    const struct snd_soc_dapm_route *route, int num)
  {
--	int i, err;
-+	int i;
- 	int ret = 0;
+-	int i, r, ret = 0;
++	int i, ret = 0;
  
- 	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_INIT);
+ 	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
  	for (i = 0; i < num; i++) {
--		err = snd_soc_dapm_weak_route(dapm, route);
-+		int err = snd_soc_dapm_weak_route(dapm, route);
- 		if (err)
- 			ret = err;
- 		route++;
+-		r = snd_soc_dapm_add_route(dapm, route);
++		int r = snd_soc_dapm_add_route(dapm, route);
+ 		if (r < 0) {
+ 			dev_err(dapm->dev, "ASoC: Failed to add route %s -> %s -> %s\n",
+ 				route->source,
 -- 
 2.25.1
 
