@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A191C4338F
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 01:12:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11E4DC4338F
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 01:13:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B0ED560F38
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 01:12:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B0ED560F38
+	by mail.kernel.org (Postfix) with ESMTPS id 80F7760F25
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 01:13:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 80F7760F25
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 878A11688;
-	Thu,  5 Aug 2021 03:11:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 878A11688
+	by alsa0.perex.cz (Postfix) with ESMTPS id EC9A41684;
+	Thu,  5 Aug 2021 03:12:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC9A41684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628125956;
-	bh=LsE/RJDbeNsu2dOPBee1JE8mYvaLhD2X6Ob8LJU4Yv4=;
+	s=default; t=1628125993;
+	bh=H+It2VhNlLTUrfQqAqBS82sj+g2BbZzgwZVMRUNM/us=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tdKweugVodn4dZa9Us1i9MeLGBgcvq5/vwTgvj69NI/Lcjk82GyAb2su+yHJII4Qe
-	 iThjdDXg/P/1bimeqPZhmHbjA1yHI9QTn/itDPXiGHMbEGOVJBOpv9nfUK/G1p0mz5
-	 T9qYdeDVeXpAZmNkVG1exoBCQyNYzfOhFmzQZzGM=
+	b=LoQT4jP7a8cwcpdmFAgEJ8nJRLSQSLOGh2RfJ1S2Mw36C0gDPrPGgr52BuxKmtaeR
+	 HbQvLT47LgQuXimKz0frtZO1L7ZNrZY5SGPB0f5ixubnYP1RyBRWYuB5LZwt1VtdP8
+	 dl7iw15heMEYa3WEs2nd2i7cAplmyl36B7AYxg2w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5F689F804E1;
-	Thu,  5 Aug 2021 03:11:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E20E0F804E5;
+	Thu,  5 Aug 2021 03:11:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4D394F804E3; Thu,  5 Aug 2021 03:11:12 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id A8FC7F8016C
+ id 2DF4FF804E2; Thu,  5 Aug 2021 03:11:13 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 33D4CF80279
  for <alsa-devel@alsa-project.org>; Thu,  5 Aug 2021 03:11:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8FC7F8016C
-Date: 05 Aug 2021 10:11:05 +0900
-X-IronPort-AV: E=Sophos;i="5.84,296,1620658800"; d="scan'208";a="89847590"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 05 Aug 2021 10:11:05 +0900
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33D4CF80279
+Date: 05 Aug 2021 10:11:00 +0900
+X-IronPort-AV: E=Sophos;i="5.84,296,1620658800"; d="scan'208";a="89866160"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 05 Aug 2021 10:11:00 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 4DEA44005161;
- Thu,  5 Aug 2021 10:11:05 +0900 (JST)
-Message-ID: <87v94ku252.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 581EF413A8E8;
+ Thu,  5 Aug 2021 10:11:00 +0900 (JST)
+Message-ID: <87wnp0u257.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 03/12] ASoC: soc-dapm: cleanup cppcheck warning at
- dapm_set_mixer_path_status()
+Subject: [PATCH 02/12] ASoC: soc-dapm: cleanup cppcheck warning at
+ dapm_connect_mux()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87zgtwu25w.wl-kuninori.morimoto.gx@renesas.com>
@@ -77,40 +77,34 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-This patch cleanups below cppcheck warning, and its related code.
+This patch cleanups below cppcheck warning.
 
-sound/soc/soc-dapm.c:789:15: style: The scope of the variable 'val' can be reduced. [variableScope]
- unsigned int val;
+sound/soc/soc-dapm.c:751:15: style: The scope of the variable 'val' can be reduced. [variableScope]
+ unsigned int val, item;
               ^
+
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-dapm.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/soc-dapm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 1c0457715008..0ccc59287513 100644
+index 92193e9e1084..1c0457715008 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -782,14 +782,14 @@ static void dapm_set_mixer_path_status(struct snd_soc_dapm_path *p, int i,
- 	struct soc_mixer_control *mc = (struct soc_mixer_control *)
- 		p->sink->kcontrol_news[i].private_value;
- 	unsigned int reg = mc->reg;
--	unsigned int shift = mc->shift;
--	unsigned int max = mc->max;
--	unsigned int mask = (1 << fls(max)) - 1;
- 	unsigned int invert = mc->invert;
--	unsigned int val;
+@@ -747,10 +747,11 @@ static int dapm_connect_mux(struct snd_soc_dapm_context *dapm,
+ {
+ 	const struct snd_kcontrol_new *kcontrol = &w->kcontrol_news[0];
+ 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+-	unsigned int val, item;
++	unsigned int item;
+ 	int i;
  
- 	if (reg != SND_SOC_NOPM) {
--		val = soc_dapm_read(p->sink->dapm, reg);
-+		unsigned int shift = mc->shift;
-+		unsigned int max = mc->max;
-+		unsigned int mask = (1 << fls(max)) - 1;
-+		unsigned int val = soc_dapm_read(p->sink->dapm, reg);
-+
- 		/*
- 		 * The nth_path argument allows this function to know
- 		 * which path of a kcontrol it is setting the initial
+ 	if (e->reg != SND_SOC_NOPM) {
++		unsigned int val;
+ 		val = soc_dapm_read(dapm, e->reg);
+ 		val = (val >> e->shift_l) & e->mask;
+ 		item = snd_soc_enum_val_to_item(e, val);
 -- 
 2.25.1
 
