@@ -2,75 +2,95 @@ Return-Path: <SRS0=sDoq=M5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=0.8 required=3.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6D29C4338F
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Aug 2021 00:57:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 135BEC4338F
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Aug 2021 01:04:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AF74C61176
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Aug 2021 00:57:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AF74C61176
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id EA22D61179
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Aug 2021 01:04:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EA22D61179
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CA099170F;
-	Fri,  6 Aug 2021 02:56:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA099170F
+	by alsa0.perex.cz (Postfix) with ESMTPS id DB482170C;
+	Fri,  6 Aug 2021 03:03:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB482170C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628211440;
-	bh=NGc/aeWRHl0yXsX3NxaKS5bqshbtpwJWMjuZn+arrpI=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1628211886;
+	bh=Zdjxi4Fa3+ypzllJ/AyX6+tXVRJghFv1IfDBReY0s4E=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aKpCaVmOVmPIpHYJX8jnpWhdjakp0F8pdcxNfHNgfWCaCHLPi4/6SLjDdd+4M//17
-	 UcQIWqWNEZ4rc1dcK2jvi4ny8SgOpnuCg/xDeuFwbjfv1ht+d1G5Y+uEAAIbdtdQHG
-	 lfmI89VsM3TDo8JAxOl3dgLcPWX/ZT+Qp9qB3NlY=
+	b=VEEhxtm6aYQ+R/x/PiOno1Vs/pUDFEwAZXBYBIcTHPrsaHvi9Ob0UItmfIjoWTpSa
+	 +NYPW15N9Ryho2NQNnt3J/jZ5HjP389oFk1AExZBd9A+eIl8gVH7KgC1tIDVQeaIAA
+	 uCGTrg4WYZAn+u1a/8Tfvyo5XS4pUEgK1uqLWhSk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 67110F8016D;
-	Fri,  6 Aug 2021 02:56:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7A9DCF8016D;
+	Fri,  6 Aug 2021 03:03:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E1F16F8027C; Fri,  6 Aug 2021 02:56:28 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id F2597F8027C; Fri,  6 Aug 2021 03:03:54 +0200 (CEST)
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com
+ [IPv6:2607:f8b0:4864:20::82a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 880AAF8014D
- for <alsa-devel@alsa-project.org>; Fri,  6 Aug 2021 02:56:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 880AAF8014D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 62F19F80169
+ for <alsa-devel@alsa-project.org>; Fri,  6 Aug 2021 03:03:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62F19F80169
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="is155Ob5"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F27561154;
- Fri,  6 Aug 2021 00:56:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1628211383;
- bh=NGc/aeWRHl0yXsX3NxaKS5bqshbtpwJWMjuZn+arrpI=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=is155Ob5rt7FOkC4H6GZiOYklWUEZThFILyWLiWcwqMM9lopduau78x8fecSw2s9d
- r4zLNzUyQuZJWib0+D8OZbdj4dPDnooep7uBARzBcTNNllQzEui6GB/iaTVL+k4FSv
- MYKJvmFh5dP7eul87j4zMqM4MtwJZR+6VhklKLcl1OHLTHXbl3vYzK5HXX7wO5ushd
- Brwq6X/0J2ajcpy3C+m9aJzrTFSwl08BYGEsS6fm7R4vu6nw61qlhorU30C++JW1yH
- 4LfaB2qb/SeN2yD2y5jzrnxlAQkmzvsc1mw973mzcMiPO6PVrmAxpFQrbnlz+WQwm7
- JndlM/M6TfrXQ==
-From: Mark Brown <broonie@kernel.org>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: Re: [PATCH 1/8] ASoC: cs42l42: PLL must be running when changing
- MCLK_SRC_SEL
-Date: Fri,  6 Aug 2021 01:56:07 +0100
-Message-Id: <162821106646.20290.11625697110600114933.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210805161111.10410-1-rf@opensource.cirrus.com>
-References: <20210805161111.10410-1-rf@opensource.cirrus.com>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="MjDYXRch"
+Received: by mail-qt1-x82a.google.com with SMTP id e15so2637211qtx.1
+ for <alsa-devel@alsa-project.org>; Thu, 05 Aug 2021 18:03:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=Zdjxi4Fa3+ypzllJ/AyX6+tXVRJghFv1IfDBReY0s4E=;
+ b=MjDYXRchkMHR1K5FB/rmmwE8O1/Ig0ZpF2+r6THxJtWckbXWrh8lBX57SAvayQHw/X
+ P84k1I9/gj+P+RSPgR/1FmAPof0p1wPjgKcWI34IJFAVrGO7V5ozPkk7vfPUqWi0yoO6
+ IS1uJtTDqV1jipDSFiGGs3hmV/khlOtPZGReZsrRiqrK78uWc8Ve46v5qGkAka8R+rD0
+ 0Xv8SirP0FGqBBDgr8CibvMdH/jCVQn65oStCqnGImutvKiu1l4VN+BwWWpumB7nONy4
+ lTpyew+8vYjn3VHcPR/PFegdxeKwHbyEhuCpEEg5OiZMhqUE/NZx1MB/9Jdb56zjLcGR
+ +w2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=Zdjxi4Fa3+ypzllJ/AyX6+tXVRJghFv1IfDBReY0s4E=;
+ b=SJoHGWOK5sEa1tvsZBnu4hYxeDGjDgVHd5WqmeCRrN3A/LfHq1xL0aNHm8ycg9k9Pt
+ QUoKN6UXOiGeE/V2g3x8bup58Rh8Tew1g+ngQgs3iFH+vj3E9x0MkIbY3Us5ODu7MzWW
+ J8PKGxwoavz8A9a+T2bBy2QPTkSZI3S9GPD/OCKubKYqybKP5bW7jxLD6M6eKehGbQ4t
+ M+ijgtLi4eDNT/kt7MBkRPiriIF4GaTG64S0IipfGhNtbKg/btGJB0oPLeNf2K6QtBpf
+ L9BquU0GSrgPp/kXgSN4pb1sObxbh4bn4wTzxNHeO7uNF+kff40v5+MNtWvyhfvrBmGI
+ HMkw==
+X-Gm-Message-State: AOAM531Ynq2cXEaayPGmfSt0JpwIzypGQPBr1JjQvM0/gFSCiqZhZ7QS
+ AOrDtGomwUWweCQBmQsLnMMvq4tHPkVgoasQDGc=
+X-Google-Smtp-Source: ABdhPJzYF7AHiMBuo/3+tXUl+VEji15oVKcEHzNU1d9kup9ThZgSbEolru+V7969gCh8x5het/lQclWXFd1jwExT/Ok=
+X-Received: by 2002:ac8:5a96:: with SMTP id c22mr6804098qtc.229.1628211828611; 
+ Thu, 05 Aug 2021 18:03:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+References: <CAEsQvctJDnsaRTXAGAJ6==juKazoo2=AJrWabLzqE=jCfg5EEA@mail.gmail.com>
+ <20210805075401.21170-1-chihhao.chen@mediatek.com>
+ <CAEsQvcsvbJdgvAOxkv_kbLohGi676Zrgz4XSFW2o3CWU3Q68Dg@mail.gmail.com>
+ <CAEsQvcvJeAXoVE9FE9vsKNvXMaQYgHZBoPyKfZLT=UA-4BMe_Q@mail.gmail.com>
+In-Reply-To: <CAEsQvcvJeAXoVE9FE9vsKNvXMaQYgHZBoPyKfZLT=UA-4BMe_Q@mail.gmail.com>
+From: Geraldo Nascimento <geraldogabriel@gmail.com>
+Date: Thu, 5 Aug 2021 22:03:39 +0000
+Message-ID: <CAEsQvcvArDwA9aeAm-FN6f9-G0HM0tNDRxXvX9roFQ1koqQKrg@mail.gmail.com>
+Subject: Re: [PATCH] ALSA: usb-audio: fix incorrect clock source setting
+To: chihhao chen <chihhao.chen@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: alsa-devel@alsa-project.org, wsd_upstream@mediatek.com,
+ Takashi Iwai <tiwai@suse.de>, damien@zamaudio.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com,
+ linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,55 +106,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 5 Aug 2021 17:11:04 +0100, Richard Fitzgerald wrote:
-> Both SCLK and PLL clocks must be running to drive the glitch-free mux
-> behind MCLK_SRC_SEL and complete the switchover.
-> 
-> This patch moves the writing of MCLK_SRC_SEL to when the PLL is started
-> and stopped, so that it only transitions while the PLL is running.
-> The unconditional write MCLK_SRC_SEL=0 in cs42l42_mute_stream() is safe
-> because if the PLL is not running MCLK_SRC_SEL is already 0.
-> 
-> [...]
+Chihhao Chen,
 
-Applied to
+Since you're the one with the hardware I believe the bug report for
+Samsung should be done by your side.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Maybe Takashi Iwai has somebody in mind that develops audio code for
+Samsung and has already contributed to ALSA?
 
-Thanks!
+It's best if Takashi Iwai helps you out, and you take the shortcut to
+the corporate structure, otherwise the importance of our findings may
+be underestimated.
 
-[1/8] ASoC: cs42l42: PLL must be running when changing MCLK_SRC_SEL
-      commit: f1040e86f83b0f7d5f45724500a6a441731ff4b7
-[2/8] ASoC: cs42l42: Fix LRCLK frame start edge
-      commit: 0c2f2ad4f16a58879463d0979a54293f8f296d6f
-[3/8] ASoC: cs42l42: Constrain sample rate to prevent illegal SCLK
-      commit: 3a5d89a9c6fe306d35dce4496abbb464c1454da0
-[4/8] ASoC: cs42l42: Fix mono playback
-      commit: e5ada3f6787a4d6234adc6f2f3ae35c6d5b71ba0
-[5/8] ASoC: cs42l42: Add PLL configuration for 44.1kHz/16-bit
-      commit: b962bae81fa40fcce7662edcb1e426fa37d32abb
-[6/8] ASoC: cs42l42: Validate dai_set_sysclk() frequency
-      commit: 24cdbb79bbfe690f7fe87507dd0489670eddb5b0
-[7/8] ASoC: cs42l42: Assume 24-bit samples are in 32-bit slots
-      commit: c76d572c1ec82e305c97219e28952966958bc31a
-[8/8] ASoC: cs42l42: Update module authors
-      commit: e2f6867299ac85ce227eee18be11ce2c4a568447
+Chihhao Chen, please include the following link in your bug report to
+Samsung: https://lore.kernel.org/patchwork/patch/1466711/
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+I'd politely remind them that the headset requires a very specific
+quirk to work with recent Linux, that the patch has entered Linux-Next
+however it's a workaround because the headset is apparently breaking
+UAC compliance when it sets both Clock Selectors at the same time,
+regardless of what Clock Selector we tell it to set via USB Control
+Message.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+But you're free to do as you wish. I'm sure you'll be fine.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Good luck,
+Geraldo Nascimento
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+On Thu, Aug 5, 2021 at 11:31 PM Geraldo Nascimento
+<geraldogabriel@gmail.com> wrote:
+>
+> Em Qui, 5 de ago de 2021 12:50, Geraldo Nascimento <geraldogabriel@gmail.com> escreveu:
+>>
+>> > There is no noise and I think this should be a firmware bug.
+>
+>
+> The fact that there's no noise during the echo test itself doesn't mean it's not a firmware bug.
+>
+> It may just mean the MIC is able to support both 48KHz and 96KHz.
+>
+> Because from the log we see both Clock Selectors end up selected to pin 1.
+>
+> Thank you,
+> Geraldo Nascimento
