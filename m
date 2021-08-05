@@ -4,90 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 563F4C4320A
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 16:14:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0313C4338F
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 16:14:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C708C61157
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 16:14:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C708C61157
+	by mail.kernel.org (Postfix) with ESMTPS id 242E661159
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 16:14:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 242E661159
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6908216E4;
-	Thu,  5 Aug 2021 18:13:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6908216E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9AF7616F4;
+	Thu,  5 Aug 2021 18:14:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9AF7616F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628180067;
-	bh=jcoIT9i7tX7Mmp0FB+AdlHkjLdL0FLg6x/SzBHVgowc=;
+	s=default; t=1628180091;
+	bh=a0AJkf/K/QRONY9A6+xtiL22mENfR2JzR/ayNlz97+U=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sYy99+dGJtjR9X4h2qD7ChJ1AJBmZZMtcbyyTDD22t5V+gzZmMm6c70danIXE/+j4
-	 gwVBUim64eCOrrezYE2JAQLJoMQGJUZYlCwFhlY+Dee8gdJKmmvQt4imVR7npiSSJ/
-	 hrzgPJfrEkVYLyiQ77PiJr3mpzebwLpT9NjmM190=
+	b=aOToFyCzkfKlIvB9kb0cSM6KifisddAYzA5uQTlXWjSd1dhpSe1Zg/vparfp+rY4H
+	 C1IjZ3Z/RV5UpWyw5JuxQF4zYcFqCRQyDH3gKw8iRnYcWnmEfT8wNfVhIlpRJ+Ztjc
+	 yhEqHmE+pI7QvOwdI2XTDpl3MLjWYuTjFZAntvDA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 45C85F804FE;
+	by alsa1.perex.cz (Postfix) with ESMTP id E0254F80506;
 	Thu,  5 Aug 2021 18:11:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C6C44F804F3; Thu,  5 Aug 2021 18:11:32 +0200 (CEST)
+ id 5978CF804F2; Thu,  5 Aug 2021 18:11:33 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 29ABCF802E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 13099F8010A
  for <alsa-devel@alsa-project.org>; Thu,  5 Aug 2021 18:11:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29ABCF802E8
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13099F8010A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="nIHjKxX4"
+ header.b="NkfVvFUT"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 175EPV3Y027692; 
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 175EPV3Z027692; 
  Thu, 5 Aug 2021 11:11:17 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=d3mPwDDSfaabebNz7Ge775dZvtX8lcNvZIXrc4dG88s=;
- b=nIHjKxX4LKdG+NVKHwFbXG2gg+aJbScXHz/Zgj9502KnGxhUokAg/YOJciU7fMD6LrJk
- izA+FeIWZ6K+rymOpgIEiSemY17adDfAi4if2PHAoySn3/VbFWFf40Ro8bDeCD1J/3sQ
- LdNVbzOJ+OJOzcgaSobQfwiWjCspWWDszqkjAOiPhR1Gno1xRWCHqE9XBwRNEejjFFSI
- 19iSQJBAtQO3kVyUsj84Au3wo/c+6D2NeD8PKn4lvoN5uxeN0k3ERFdSNcWHNLw5jhGs
- +KZ5c7te2ryZxRPJmb6pc2mqNhlfAOYp9xjK89cTp9EYQL52p6mA3rJlHqKYrRTjYqcp bA== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3a8c61rku6-2
+ bh=GUD4E4n576SurHs80HUJjNEjvNZkJsMXz5+9y1aMpmE=;
+ b=NkfVvFUTv5LaySxLsEpcQqGYyy3e0wmjFV2uA46D41piR0cnb9AXuoWoGKsLMvPU8gro
+ vXCU1977Ts8f6jlYUCnWKgmm/Nr9rzEoto8wRrO1SafLAIy/bJxfNQ+wV8INRg6igAi8
+ OPD+hSqaHooxVDgN1wUWpU48DUgGrJG7619BG0j59DaTDkSJxqMpfoInY879OE0JMNiH
+ nLzMETfGPQA4rUDOFSoknG/vcK972RXdqXNke4TzYJ3U6QjZh4T6OewMWeR1BsvD9tYS
+ 5ftQ0IIszEizASZMIXGWznmWd02NkwF2cgr7/LE7+clwUDxWlqEG+3tuZ9kDK2+ipMgg Mw== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 3a8c61rku5-3
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
  Thu, 05 Aug 2021 11:11:17 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Thu, 5 Aug
- 2021 17:11:15 +0100
+ 2021 17:11:14 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via
- Frontend Transport; Thu, 5 Aug 2021 17:11:15 +0100
+ Frontend Transport; Thu, 5 Aug 2021 17:11:14 +0100
 Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
  [198.61.65.37])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8D43A45D;
- Thu,  5 Aug 2021 16:11:15 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A4B5A45D;
+ Thu,  5 Aug 2021 16:11:14 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 7/8] ASoC: cs42l42: Assume 24-bit samples are in 32-bit slots
-Date: Thu, 5 Aug 2021 17:11:10 +0100
-Message-ID: <20210805161111.10410-7-rf@opensource.cirrus.com>
+Subject: [PATCH 4/8] ASoC: cs42l42: Fix mono playback
+Date: Thu, 5 Aug 2021 17:11:07 +0100
+Message-ID: <20210805161111.10410-4-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210805161111.10410-1-rf@opensource.cirrus.com>
 References: <20210805161111.10410-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: RFG3QrSB7Xl2CJSzzW90kCByKMC4N6lT
-X-Proofpoint-ORIG-GUID: RFG3QrSB7Xl2CJSzzW90kCByKMC4N6lT
+X-Proofpoint-GUID: yVfdxU6ZsutE4FHh5qAbt3ED9052nz_M
+X-Proofpoint-ORIG-GUID: yVfdxU6ZsutE4FHh5qAbt3ED9052nz_M
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0
  mlxscore=0 spamscore=0
  priorityscore=1501 bulkscore=0 clxscore=1015 suspectscore=0
@@ -111,44 +111,68 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-If the machine driver doesn't call snd_soc_dai_set_sysclk() the
-SCLK is assumed to be sample_rate * sample_bits * 2 (that is, the
-rate necessary for a standard I2S frame).
+I2S always has two LRCLK phases and both CH1 and CH2 of the RX
+must be enabled (corresponding to the low and high phases of LRCLK.)
+The selection of the valid data channels is done by setting the DAC
+CHA_SEL and CHB_SEL. CHA_SEL is always the first (left) channel,
+CHB_SEL depends on the number of active channels.
 
-But 24-bit samples can be sent in either a 24-bit slot or a 32-bit
-slot. If the PLL is configured for a 24-bit slot, but a 32-bit slot is
-used, cs42l42 will be overclocked.
-
-Ultimately it is the machine driver's responsibilty to call
-snd_soc_dai_set_sysclk() if SLK will be different from the standard
-I2S rate. However, it is convenient to assume 32-bit slots to allow
-this common case without needing special machine driver support. The
-machine driver then only has to set SCLK if the slots are 24-bit, but
-if it fails to do this cs42l42 won't be overclocked.
+Previously for mono ASP CH2 was not enabled, the result was playing
+mono data would not produce any audio output.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Fixes: 621d65f3b868 ("ASoC: cs42l42: Provide finer control on playback path")
 ---
- sound/soc/codecs/cs42l42.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/codecs/cs42l42.c | 15 +++++++++++++--
+ sound/soc/codecs/cs42l42.h |  2 ++
+ 2 files changed, 15 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index b2ee51443a22..3677ed4670d0 100644
+index 29e0c8dc8466..99c022be94a6 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -844,6 +844,13 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
- 	if (channels == 1)
- 		cs42l42->bclk *= 2;
+@@ -460,8 +460,8 @@ static const struct snd_soc_dapm_widget cs42l42_dapm_widgets[] = {
+ 	SND_SOC_DAPM_OUTPUT("HP"),
+ 	SND_SOC_DAPM_DAC("DAC", NULL, CS42L42_PWR_CTL1, CS42L42_HP_PDN_SHIFT, 1),
+ 	SND_SOC_DAPM_MIXER("MIXER", CS42L42_PWR_CTL1, CS42L42_MIXER_PDN_SHIFT, 1, NULL, 0),
+-	SND_SOC_DAPM_AIF_IN("SDIN1", NULL, 0, CS42L42_ASP_RX_DAI0_EN, CS42L42_ASP_RX0_CH1_SHIFT, 0),
+-	SND_SOC_DAPM_AIF_IN("SDIN2", NULL, 1, CS42L42_ASP_RX_DAI0_EN, CS42L42_ASP_RX0_CH2_SHIFT, 0),
++	SND_SOC_DAPM_AIF_IN("SDIN1", NULL, 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_IN("SDIN2", NULL, 1, SND_SOC_NOPM, 0, 0),
  
-+	/*
-+	 * Assume 24-bit samples are in 32-bit slots, to prevent SCLK being
-+	 * more than assumed (which would result in overclocking).
-+	 */
-+	if (params_width(params) == 24)
-+		cs42l42->bclk = (cs42l42->bclk / 3) * 4;
+ 	/* Playback Requirements */
+ 	SND_SOC_DAPM_SUPPLY("ASP DAI0", CS42L42_PWR_CTL1, CS42L42_ASP_DAI_PDN_SHIFT, 1, NULL, 0),
+@@ -866,6 +866,17 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		snd_soc_component_update_bits(component, CS42L42_ASP_RX_DAI0_CH2_AP_RES,
+ 							 CS42L42_ASP_RX_CH_AP_MASK |
+ 							 CS42L42_ASP_RX_CH_RES_MASK, val);
 +
- 	switch(substream->stream) {
- 	case SNDRV_PCM_STREAM_CAPTURE:
- 		if (channels == 2) {
++		/* Channel B comes from the last active channel */
++		snd_soc_component_update_bits(component, CS42L42_SP_RX_CH_SEL,
++					      CS42L42_SP_RX_CHB_SEL_MASK,
++					      (channels - 1) << CS42L42_SP_RX_CHB_SEL_SHIFT);
++
++		/* Both LRCLK slots must be enabled */
++		snd_soc_component_update_bits(component, CS42L42_ASP_RX_DAI0_EN,
++					      CS42L42_ASP_RX0_CH_EN_MASK,
++					      BIT(CS42L42_ASP_RX0_CH1_SHIFT) |
++					      BIT(CS42L42_ASP_RX0_CH2_SHIFT));
+ 		break;
+ 	default:
+ 		break;
+diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
+index b92c17be7f58..8734f6828f3e 100644
+--- a/sound/soc/codecs/cs42l42.h
++++ b/sound/soc/codecs/cs42l42.h
+@@ -653,6 +653,8 @@
+ 
+ /* Page 0x25 Audio Port Registers */
+ #define CS42L42_SP_RX_CH_SEL		(CS42L42_PAGE_25 + 0x01)
++#define CS42L42_SP_RX_CHB_SEL_SHIFT	2
++#define CS42L42_SP_RX_CHB_SEL_MASK	(3 << CS42L42_SP_RX_CHB_SEL_SHIFT)
+ 
+ #define CS42L42_SP_RX_ISOC_CTL		(CS42L42_PAGE_25 + 0x02)
+ #define CS42L42_SP_RX_RSYNC_SHIFT	6
 -- 
 2.11.0
 
