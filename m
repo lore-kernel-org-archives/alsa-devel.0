@@ -2,100 +2,93 @@ Return-Path: <SRS0=ibvm=M4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=0.8 required=3.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B12B6C432BE
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 16:15:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC56FC4338F
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 18:52:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DE90161159
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 16:15:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DE90161159
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id 5C05A60F01
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 18:52:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5C05A60F01
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8096E170E;
-	Thu,  5 Aug 2021 18:14:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8096E170E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 13754172D;
+	Thu,  5 Aug 2021 20:51:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13754172D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628180110;
-	bh=7jyI85YbVdvphEg+ILGB5KvngMa9RWf5xAxoRCLAGDI=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1628189531;
+	bh=S4uvklBWpWSw1uINJ3MgwtjKZVhhe7gXqWRSCnLmQ9A=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jno6Je0qB2Evq5Ul7DotQoMfQka/2MG2ju16/m/iKDLjbTKwnjiHpBVet7rHXYQ0H
-	 txr8wCX5QUOi9fH5bRdoR0qZQb8nX223wFV4ZMImle7vrAWJvcMiXsINfrQ+kTEqUO
-	 OmKjhKkxIJ4o8XQIpSY1Bay6E7ZyeIKYcCueuBHg=
+	b=rC1QXTzxOfFmTPyJGJowaTtP6Om4yJlXMer2scVg2JhzuARMk0mfmwd1P19doborO
+	 fXhoRBBXjTUZeo1UkgVc5JW+syidmFwj8a3PCKczDNNTzbYmOyRI/w2uFij5scc36r
+	 uCjk0VYxT75Mkao5hAGH4CkRmY1XS9Uc/d+umIj4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BD49DF80515;
-	Thu,  5 Aug 2021 18:11:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A075AF8016D;
+	Thu,  5 Aug 2021 20:51:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 82DF9F804AC; Thu,  5 Aug 2021 18:11:33 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 56524F8027C; Thu,  5 Aug 2021 20:51:19 +0200 (CEST)
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com
+ [IPv6:2607:f8b0:4864:20::833])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 168B8F8032C
- for <alsa-devel@alsa-project.org>; Thu,  5 Aug 2021 18:11:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 168B8F8032C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 022D6F8010A
+ for <alsa-devel@alsa-project.org>; Thu,  5 Aug 2021 20:51:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 022D6F8010A
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="S3cKzFWk"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 175EPV3a027692; 
- Thu, 5 Aug 2021 11:11:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=RIQV516tOG1MRugBfaq/BJmL3Umax6Mz8QrI+ZDqfo8=;
- b=S3cKzFWkMFrQQlF/drhaaGdJ7rKKQfruFXiTLSQHr+rFh01Zj1qTeMLQmXpIpXatKG95
- FTptxGYrRYa7MMuXOTjX+AXcuEno2PbFaHv6F4nclCR1rEaRw8K6qvcP3rzwjG8V88qW
- OO3nWDA03I3U3M8ghY7dzLl+FGkDGLKC3QsHP9iOs0aLvBNfroLmS79kIFEaGqXLbJjQ
- 13jzv4ITA1iJ4llixkOvJi8A+X6LlG5K9DD5D5u83V+S7dhkKjs64fRodIQ8k154bd02
- wkXs49S3cFtScK3H5DxQuz9I+dlXktZpU1BGJWs0V3QFDlqWMcdQtkXu+e5EmlxORCJq jA== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3a8c61rku6-3
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 05 Aug 2021 11:11:17 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Thu, 5 Aug
- 2021 17:11:16 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via
- Frontend Transport; Thu, 5 Aug 2021 17:11:16 +0100
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
- [198.61.65.37])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id DBFF046E;
- Thu,  5 Aug 2021 16:11:15 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>
-Subject: [PATCH 8/8] ASoC: cs42l42: Update module authors
-Date: Thu, 5 Aug 2021 17:11:11 +0100
-Message-ID: <20210805161111.10410-8-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210805161111.10410-1-rf@opensource.cirrus.com>
-References: <20210805161111.10410-1-rf@opensource.cirrus.com>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="jwbsiwne"
+Received: by mail-qt1-x833.google.com with SMTP id h27so4600201qtu.9
+ for <alsa-devel@alsa-project.org>; Thu, 05 Aug 2021 11:51:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=EZEunsTnaA1XzE54VnUD0YcTvntYvxdVoZOW+fPpXuY=;
+ b=jwbsiwneBJFd2Ig6fWCLzTscXOQBAlvphpkOrnXo5ln4b/cl4H84JzNrDvAcVuVS04
+ +Uix/Q7yD7sCFQhfpMWtshsEx2thnVuroO11Ye12H7cLNnOIvo/FiPnsWG+SFQk1lwcV
+ 3sEv24pAJMkGwqt9wGxdiFoeyMzMpupOtbBb0Qwy6pBrMiRdEymB2b2knQOYqGjPFgNr
+ E8DdbgAlkZrQqmqjZM0uoeQipY4C5YPDXm6UBtDqPrSHvBMJ83dSMElz7Fa3vWk6st0c
+ JwAJt9hDzH1Nn7gPakCOcQ/bsvw0Ub6O85EkbtxZ6rBTYCkWjaX1/1KiXp56WxWZO1bM
+ bq/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=EZEunsTnaA1XzE54VnUD0YcTvntYvxdVoZOW+fPpXuY=;
+ b=HMmuKc0/B3PBD257xrZqxB8dxb8RvInbEulRv4P3QONxBlrHEIE1gVdpCzE2VN0pz2
+ MQzswI6a9mUvchkY/RXNvqGghmnrbIIjVkwDT7G+yNSN3FPbL9hbidXOAqvwJkI0AI0T
+ G5hw7qdc2sgbjqKq6hnGbT+J7EMDqJwaB+InKQrhKAn6Xl61qrP5YoREf7MAiVKvxY3Y
+ slcpnF7LJbi3TGz+4sgZlr2Sz8+gWsK6kBt3TzSUq62mtwL7AyjIbT6WB/8mzPBX0qkJ
+ AnRCYgjCSt+hZXnu7bMffm33Hep24y80jt8qyblp4EzZu/etqZfbnk8DLoxeWA40ujnk
+ jGfQ==
+X-Gm-Message-State: AOAM533HxfhnJV6DSRxsJzpnOfpbaV4WhgM3K2A63Nj/39QWrQwEUUCQ
+ 0dsVtni4qvPkLjvf6jd5sitC5YrFjlqHxKqVQs4=
+X-Google-Smtp-Source: ABdhPJw01R3FsLE2EQNT7CIn9yocm0qu86fk/7OLpG7DKbhG2q6MJn/s0acJtp4DeG5ZfTa6LLUEBQbe0kohY2aFTRY=
+X-Received: by 2002:ac8:5b83:: with SMTP id a3mr5789733qta.210.1628189467046; 
+ Thu, 05 Aug 2021 11:51:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: ZWL5O3pFyeqyKkLqM4rgWYRuM5mBCIdU
-X-Proofpoint-ORIG-GUID: ZWL5O3pFyeqyKkLqM4rgWYRuM5mBCIdU
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0
- mlxscore=0 spamscore=0
- priorityscore=1501 bulkscore=0 clxscore=1015 suspectscore=0
- mlxlogscore=981 adultscore=0 malwarescore=0 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108050099
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
+References: <CAEsQvctJDnsaRTXAGAJ6==juKazoo2=AJrWabLzqE=jCfg5EEA@mail.gmail.com>
+ <20210805075401.21170-1-chihhao.chen@mediatek.com>
+In-Reply-To: <20210805075401.21170-1-chihhao.chen@mediatek.com>
+From: Geraldo Nascimento <geraldogabriel@gmail.com>
+Date: Thu, 5 Aug 2021 15:50:58 +0000
+Message-ID: <CAEsQvcsvbJdgvAOxkv_kbLohGi676Zrgz4XSFW2o3CWU3Q68Dg@mail.gmail.com>
+Subject: Re: [PATCH] ALSA: usb-audio: fix incorrect clock source setting
+To: chihhao chen <chihhao.chen@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: alsa-devel@alsa-project.org, wsd_upstream@mediatek.com,
+ Takashi Iwai <tiwai@suse.de>, damien@zamaudio.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com,
+ linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,25 +104,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add the current authors of this module.
+On Thu, Aug 5, 2021 at 7:54 AM <chihhao.chen@mediatek.com> wrote:
+>
+> From: chihhao chen <chihhao.chen@mediatek.com>
+>
+> Hi Geraldo Nascimento,
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/soc/codecs/cs42l42.c | 3 +++
- 1 file changed, 3 insertions(+)
+Hi Chihhao Chen!
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 3677ed4670d0..fb1e4c33e27d 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -2127,4 +2127,7 @@ MODULE_DESCRIPTION("ASoC CS42L42 driver");
- MODULE_AUTHOR("James Schulman, Cirrus Logic Inc, <james.schulman@cirrus.com>");
- MODULE_AUTHOR("Brian Austin, Cirrus Logic Inc, <brian.austin@cirrus.com>");
- MODULE_AUTHOR("Michael White, Cirrus Logic Inc, <michael.white@cirrus.com>");
-+MODULE_AUTHOR("Lucas Tanure <tanureal@opensource.cirrus.com>");
-+MODULE_AUTHOR("Richard Fitzgerald <rf@opensource.cirrus.com>");
-+MODULE_AUTHOR("Vitaly Rodionov <vitalyr@opensource.cirrus.com>");
- MODULE_LICENSE("GPL");
--- 
-2.11.0
+>
+> For echo test, it means we use this earphone to receive and play sounds at the same time.
+> We found in this case serious noise problem happens.
+>
 
+That's what I understood initially, and only a little later I became
+afraid echo test was the name of the debugging technique you used :)
+
+Thanks for the clarification.
+
+> Log as follows with your patch
+> <6>[  175.960387][T401365] __uac_clock_find_source: Clock Selector 0xc has pin 2 selected
+> <6>[  175.966980][T401365] __uac_clock_find_source: Clock Selector 0xb has pin 2 selected
+> <6>[  176.026251][T400354] __uac_clock_find_source: Clock Selector 0xc has pin 1 selected
+> <6>[  176.032406][T400354] __uac_clock_find_source: Clock Selector 0xb has pin 1 selected
+>
+> There is no noise and I think this should be a firmware bug.
+
+From the log I'm afraid my worst assumptions were right.
+
+Regardless of which Clock Selector we want to set, the firmware will
+always set them both.
+
+We should contact Samsung now that we have at least a sketch of a bug report...
+
+Thanks,
+Geraldo Nascimento
+
+>
+> Thanks
+> Chihhao
+>
