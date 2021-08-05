@@ -2,100 +2,80 @@ Return-Path: <SRS0=ibvm=M4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94A69C4338F
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 06:22:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3BD1C4338F
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 06:22:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0ABB561029
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 06:22:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0ABB561029
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id EAE3E600CD
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Aug 2021 06:22:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EAE3E600CD
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C0C901682;
-	Thu,  5 Aug 2021 08:21:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0C901682
+	by alsa0.perex.cz (Postfix) with ESMTPS id D5030169C;
+	Thu,  5 Aug 2021 08:22:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5030169C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628144520;
-	bh=VLQDPuYtppmqHTWikIAl/LlTeEVdU62YKptNtZBvwDM=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=WEGCoceig+NuQfwr/ysmTBBRzkfXocKxNPMq4QgWZWTWdvX7SOqfq+1C2Jf7tEe92
-	 huytVU3hR16Pc8TyR4ZTHRB1ggKOlszguLCtvxZVmgCmQs5pSEXLy8jCMaq9pwQW1v
-	 HffGBjYRdaJZwffxO+ckQYhkFrtPkor3eToK8U/8=
+	s=default; t=1628144573;
+	bh=wH8+kwaaWstm14133N0/0wtLclcrL0iSedMIZJ6wyk4=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=OEsqyfTuigA3udIhuWBx+JdEIVr6Yo9IdoVC+aZaSvx7nQEfPIqdSrWAkitdok+t5
+	 rxx+dRh6zC9pmLUutxWMz5fcgNetJPsOelGePilM1dsuZASWwUZWLDT/8W5/OlB3my
+	 hwXGRyMH8rfl4SQyRRysnA6Q0xT0uBbLHBZQRe5Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 587ABF8016D;
-	Thu,  5 Aug 2021 08:21:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 58EEFF804E2;
+	Thu,  5 Aug 2021 08:22:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EA812F802E8; Wed,  4 Aug 2021 00:36:08 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 3DBFFF804E3; Thu,  5 Aug 2021 08:21:59 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 63998F80095
- for <alsa-devel@alsa-project.org>; Wed,  4 Aug 2021 00:36:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63998F80095
+ by alsa1.perex.cz (Postfix) with ESMTPS id 040E8F804CB
+ for <alsa-devel@alsa-project.org>; Thu,  5 Aug 2021 08:21:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 040E8F804CB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="XiC4OcyA"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3C4560525;
- Tue,  3 Aug 2021 22:35:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1628030159;
- bh=VLQDPuYtppmqHTWikIAl/LlTeEVdU62YKptNtZBvwDM=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=XiC4OcyA9vPRScT+26U/MPHk/PLw7cfWKDzQmhm7L/2ifrhJ/zeydraOBFfSielel
- C9CoTPz9m8g5nHPqw5lV3cach9MFKoQo7P1BIrAUEWxt2n34NVbQ8Vq9y9Bk17olEn
- YwLObrlxabk//+7InLHI/JB3MrRVuc6CLmVXUNAItfsddCLQfVMIBm5OTMNUIr0d2j
- 6rr6MddHbqKXUpTXihj8VOyu+VpdlXivyHd+uCltwAZVIFEkOJPzox3KYwl2CflZxe
- PtulX27cIMv06Ar6mdPJO8Z5O1byM1L5d1FcFiP35VJWL3P8a4KAnMf4Mgm9Rzd4KU
- G6lou/vcPBEZA==
-From: Mark Brown <broonie@kernel.org>
-To: Alexander Sverdlin <alexander.sverdlin@gmail.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Nikita Shubin <nikita.shubin@maquefel.me>
-Subject: Re: (subset) [PATCH v2 0/8] arm: ep93xx: CCF conversion
-Date: Tue,  3 Aug 2021 23:35:30 +0100
-Message-Id: <162803013703.42391.16928190328940334025.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210726140001.24820-1-nikita.shubin@maquefel.me>
-References: <20210726115058.23729-1-nikita.shubin@maquefel.me>
- <20210726140001.24820-1-nikita.shubin@maquefel.me>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="2XwZWdQd"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="ZFEWK6ZX"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 247781FE2A
+ for <alsa-devel@alsa-project.org>; Thu,  5 Aug 2021 06:21:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1628144509; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=bo5ShIPOM8A3r5LNTmHdwu5YYIRvqHOxK5IomOaXrRU=;
+ b=2XwZWdQdxwhMJz8lqUt6KqrWnZGsfcsixRFgyTzyMHBYqPWZbalyGpEkzcCbqSzpA5mt8U
+ sOzlthY525Qzdsmwd6SXfr0E7YV1fF3LcHu7Ab29syno7cfLHP+Mv2PIDRZPw85/B660Jd
+ b1BBJY/swaSVAQ2dr/R5hiooNaVa2Bw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1628144509;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=bo5ShIPOM8A3r5LNTmHdwu5YYIRvqHOxK5IomOaXrRU=;
+ b=ZFEWK6ZX+CdOQ94cIogappQejKtUyM2YlMEuH9HCGPuL5plqHp560rm3eYMzzxL8NuM3F1
+ 2IMOiNZH9LDeCgDw==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 0F2A0A3B91;
+ Thu,  5 Aug 2021 06:21:49 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: es1688: Avoid devres management for es1688 object
+ creation
+Date: Thu,  5 Aug 2021 08:21:48 +0200
+Message-Id: <20210805062148.30951-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Thu, 05 Aug 2021 08:21:08 +0200
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>, Geert Uytterhoeven <geert+renesas@glider.be>,
- "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
- "open list:FRAMEBUFFER LAYER" <dri-devel@lists.freedesktop.org>,
- Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
- Ard Biesheuvel <ardb@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- YiFei Zhu <yifeifz2@illinois.edu>, Krzysztof Kozlowski <krzk@kernel.org>,
- "open list:INPUT KEYBOARD, MOUSE, JOYSTICK ,
- TOUCHSCREEN..." <linux-input@vger.kernel.org>,
- "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
- Arnd Bergmann <arnd@arndb.de>, Anshuman Khandual <anshuman.khandual@arm.com>,
- =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Russell King <rmk+kernel@armlinux.org.uk>, Mark Brown <broonie@kernel.org>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- open list <linux-kernel@vger.kernel.org>,
- "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
- "open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM" <dmaengine@vger.kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,42 +91,108 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 26 Jul 2021 16:59:48 +0300, Nikita Shubin wrote:
-> This series series of patches converts ep93xx to Common Clock Framework.
-> 
-> It consists of preparation patches to use clk_prepare_enable where it is
-> needed, instead of clk_enable used in ep93xx drivers prior to CCF and
-> a patch converting mach-ep93xx/clock.c to CCF.
-> 
-> Link: https://lore.kernel.org/patchwork/cover/1445563/
-> Link: https://lore.kernel.org/patchwork/patch/1435884/
-> 
-> [...]
+The recent refactoring of es1688 object creation with the use of
+devres caused a problem with the non-PnP probe of GUS driver, as it
+tries to probe multiple times with different parameters  That is, this
+object needs the immediate resource release and the devres doesn't fit
+for it.
 
-Applied to
+This patch reverts partially the commit for restoring the classic
+resource management for es1688 object.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+Fixes: 1bb11c1c7f6e ("ALSA: es1688: Allocate resources with device-managed APIs")
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Link: https://lore.kernel.org/r/20210805032513.GA30485@xsang-OptiPlex-9020
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/sound/es1688.h        |  1 +
+ sound/isa/es1688/es1688_lib.c | 29 ++++++++++++++++++++---------
+ 2 files changed, 21 insertions(+), 9 deletions(-)
 
-Thanks!
+diff --git a/include/sound/es1688.h b/include/sound/es1688.h
+index da577bbf9cc7..099569c31fbb 100644
+--- a/include/sound/es1688.h
++++ b/include/sound/es1688.h
+@@ -18,6 +18,7 @@
+ 
+ struct snd_es1688 {
+ 	unsigned long port;		/* port of ESS chip */
++	struct resource *res_port;
+ 	unsigned long mpu_port;		/* MPU-401 port of ESS chip */
+ 	int irq;			/* IRQ number of ESS chip */
+ 	int mpu_irq;			/* MPU IRQ */
+diff --git a/sound/isa/es1688/es1688_lib.c b/sound/isa/es1688/es1688_lib.c
+index 9cd66b236cef..8554cb2263c1 100644
+--- a/sound/isa/es1688/es1688_lib.c
++++ b/sound/isa/es1688/es1688_lib.c
+@@ -580,6 +580,13 @@ static int snd_es1688_free(struct snd_es1688 *chip)
+ {
+ 	if (chip->hardware != ES1688_HW_UNDEF)
+ 		snd_es1688_init(chip, 0);
++	release_and_free_resource(chip->res_port);
++	if (chip->irq >= 0)
++		free_irq(chip->irq, (void *) chip);
++	if (chip->dma8 >= 0) {
++		disable_dma(chip->dma8);
++		free_dma(chip->dma8);
++	}
+ 	return 0;
+ }
+ 
+@@ -617,25 +624,26 @@ int snd_es1688_create(struct snd_card *card,
+ 	chip->dma8 = -1;
+ 	chip->hardware = ES1688_HW_UNDEF;
+ 	
+-	if (!devm_request_region(card->dev, port + 4, 12, "ES1688")) {
++	chip->res_port = request_region(port + 4, 12, "ES1688");
++	if (chip->res_port == NULL) {
+ 		snd_printk(KERN_ERR "es1688: can't grab port 0x%lx\n", port + 4);
+-		return -EBUSY;
++		err = -EBUSY;
++		goto exit;
+ 	}
+ 
+-	err = devm_request_irq(card->dev, irq, snd_es1688_interrupt, 0,
+-			       "ES1688", (void *) chip);
++	err = request_irq(irq, snd_es1688_interrupt, 0, "ES1688", (void *) chip);
+ 	if (err < 0) {
+ 		snd_printk(KERN_ERR "es1688: can't grab IRQ %d\n", irq);
+-		return err;
++		goto exit;
+ 	}
+ 
+ 	chip->irq = irq;
+ 	card->sync_irq = chip->irq;
+-	err = snd_devm_request_dma(card->dev, dma8, "ES1688");
++	err = request_dma(dma8, "ES1688");
+ 
+ 	if (err < 0) {
+ 		snd_printk(KERN_ERR "es1688: can't grab DMA8 %d\n", dma8);
+-		return err;
++		goto exit;
+ 	}
+ 	chip->dma8 = dma8;
+ 
+@@ -651,14 +659,17 @@ int snd_es1688_create(struct snd_card *card,
+ 
+ 	err = snd_es1688_probe(chip);
+ 	if (err < 0)
+-		return err;
++		goto exit;
+ 
+ 	err = snd_es1688_init(chip, 1);
+ 	if (err < 0)
+-		return err;
++		goto exit;
+ 
+ 	/* Register device */
+ 	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
++exit:
++	if (err)
++		snd_es1688_free(chip);
+ 	return err;
+ }
+ 
+-- 
+2.26.2
 
-[2/8] spi: spi-ep93xx: Prepare clock before using it
-      commit: 7c72dc56a631b87043e3c5838f5094db30d8c58d
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
