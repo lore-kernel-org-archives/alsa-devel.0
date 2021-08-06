@@ -7,50 +7,50 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5123C4338F
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Aug 2021 22:43:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ADCA2C4338F
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Aug 2021 22:43:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BB81261184
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Aug 2021 22:43:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BB81261184
+	by mail.kernel.org (Postfix) with ESMTPS id 0458361181
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Aug 2021 22:43:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0458361181
 Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4656B16CB;
-	Sat,  7 Aug 2021 00:42:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4656B16CB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1500F16E0;
+	Sat,  7 Aug 2021 00:43:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1500F16E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628289782;
-	bh=Zx1Yj4ucnS33KRgDk+UjZH0DAgNrHWdjqumj+kIKIbE=;
+	s=default; t=1628289833;
+	bh=4dv6q0+nVX6g6J4kGdonGkVsdQ1CCrPjbXvrDLHIUJs=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Yr54+2Wqbhj91+T+2AoIzgh48KqRqB7+0xyZEIG5mOBQKtzYxc3OMSzPvYopX1quu
-	 tGIZ+hifnqkJc8Bbdwym0TZvnJIK+t3UlItww5ij0E7UP1LSfimLpjae8YVJUqCwZe
-	 /gdMxo2B1+XLEY9vlSfZ2cV/cJGxcOHEDU9sukZ0=
+	b=l9IuTNiUakmRERIaK/W8N/9g3UGQ+UBZPy68bfkUI+w9UhlA48G9U0DegY4M7wK2i
+	 H4n65XJcyPYYrrfuvdqzzg25tyLM82ItMDgKbgCQiv+/D6y3sKCMEoQQ/a1DyHjdJn
+	 Twb1G1jOjNgVINZOF2wtIASuWIYEM1sAf6lCPNBk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3E3EF80108;
-	Sat,  7 Aug 2021 00:42:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8FA01F8026A;
+	Sat,  7 Aug 2021 00:42:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 66D74F8025F; Sat,  7 Aug 2021 00:42:10 +0200 (CEST)
+ id 5D8E4F80271; Sat,  7 Aug 2021 00:42:38 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id DC336F80108
- for <alsa-devel@alsa-project.org>; Sat,  7 Aug 2021 00:42:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC336F80108
+ by alsa1.perex.cz (Postfix) with ESMTP id 27187F8010A
+ for <alsa-devel@alsa-project.org>; Sat,  7 Aug 2021 00:42:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27187F8010A
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1628289724952759027-webhooks-bot@alsa-project.org>
-References: <1628289724952759027-webhooks-bot@alsa-project.org>
+In-Reply-To: <1628289746917290926-webhooks-bot@alsa-project.org>
+References: <1628289746917290926-webhooks-bot@alsa-project.org>
 Subject: UCM SectionModifier doesn't like 'Comment'
-Message-Id: <20210806224210.66D74F8025F@alsa1.perex.cz>
-Date: Sat,  7 Aug 2021 00:42:10 +0200 (CEST)
+Message-Id: <20210806224238.5D8E4F80271@alsa1.perex.cz>
+Date: Sat,  7 Aug 2021 00:42:38 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,7 +66,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #167 was opened from plbossart:
+alsa-project/alsa-lib issue #167 was edited from plbossart:
 
 Adding the following patch generates a crash with alsaucm
 
@@ -94,6 +94,7 @@ index e780ea4..fbadb65 100644
 +       # this doesn't
 +       Comment "Play Radio"
 +}
+````
 
 I am not sure if anyone ever used the SectionModifier, if it's a bug in alsa-lib or alsaucm.
 
