@@ -2,96 +2,71 @@ Return-Path: <SRS0=sDoq=M5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9332C4320A
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Aug 2021 09:41:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F966C432BE
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Aug 2021 10:30:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 73D6F611B0
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Aug 2021 09:41:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 73D6F611B0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	by mail.kernel.org (Postfix) with ESMTPS id 9602560240
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Aug 2021 10:30:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9602560240
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bp.renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2E0F916D8;
-	Fri,  6 Aug 2021 11:40:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E0F916D8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 696FA16D8;
+	Fri,  6 Aug 2021 12:30:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 696FA16D8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628242895;
-	bh=h6QVZQqyb0aCGOoepcTTvbNwo462EJJwAL1VlF8wF20=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=hn3iXBAtITsCZgc+aBnaaESJCDNkxQVZ/2VGaumxxIgahW8JfW5MzAG4yMpO9qvVy
-	 erG/4w96WGAm8kHFlKsld1SkGmLRgMcv3pc5Mis6x9cod1qiysFc6Vy00UV3Lwkvlf
-	 t+eADKq7ZIg9sisB3Py22LrwkZp+RuWuNpr6SXBI=
+	s=default; t=1628245854;
+	bh=mhuT64KGbS2/tUpTU9qmW5iryIbRSNPvoHDfIXyvJKY=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=WANo380ueExY/i3qOX0D8WcZJy5NrCZ56Ze6swIx/BRRvlu3X+fXYzNVeCGxG89c+
+	 EYDLnuTMXsltmaQZv114PzNzebovFFnaKwiciwVrIuvJW7gex6Od1IHaJxgey+ePJq
+	 TTitn2ivOosYx2ui84CdP2Z++iQM7ynhesaE4/mc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE0F3F801F7;
-	Fri,  6 Aug 2021 11:40:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F099BF8025F;
+	Fri,  6 Aug 2021 12:30:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B3D1CF8025F; Fri,  6 Aug 2021 11:40:43 +0200 (CEST)
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4184DF80169
- for <alsa-devel@alsa-project.org>; Fri,  6 Aug 2021 11:40:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4184DF80169
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <ukl@pengutronix.de>)
- id 1mBwKQ-0002EX-4A; Fri, 06 Aug 2021 11:39:46 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
- by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
- (envelope-from <ukl@pengutronix.de>)
- id 1mBwKK-00055m-8Y; Fri, 06 Aug 2021 11:39:40 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
- (envelope-from <ukl@pengutronix.de>)
- id 1mBwKK-00045k-6o; Fri, 06 Aug 2021 11:39:40 +0200
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: Make struct parisc_driver::remove() return void
-Date: Fri,  6 Aug 2021 11:39:38 +0200
-Message-Id: <20210806093938.1950990-1-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Patch-Hashes: v=1; h=sha256; i=HLXgmV0qGpnDkwp+WuFBRiMxpahH8/d1S8XGx9ztOew=;
- m=/Xfiwv9Sgti2fAWM+CCGGuyEa+42WeTUsYSiavJEcp4=;
- p=LTinZqdEm+49N5fzpMRX/3KHEg6iSFKlQ37K2YsT/yw=;
- g=31eafea52988a1959a5f1e91faf2fa6fa1180f08
-X-Patch-Sig: m=pgp; i=u.kleine-koenig@pengutronix.de;
- s=0x0D2511F322BFAB1C1580266BE2DCDD9132669BD6;
- b=iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmENA1YACgkQwfwUeK3K7AmwFAf/QMo
- DCcLmUzOdVxwtZVUJeAeibE3hDSCOquffMEws3ZHebJbIY/48zK3qN9oNIE42DIGpbutke8RMTIL/
- YcpodRezDno0n23pIo8+CvrVJbbDSRRor8T/sjhwmgVQN6A3hrZNFPzeYJJE5s7aAIYHla2EyTPFu
- w0GwFqjSkyB/GbI31rrm0iVC1oyIa1vM7ka+QaY+VB04YlS6fkRjBJ/Lq8tkE/vkU9drpXWYC55OI
- TJsjvnfhCMBrq/Ni589VoNnb7/ulNssXgL3lmhPYlVSv2lq8JZa4Gcj/XeSf08R7PQ3gyEo5lFN3B
- cKYf44UYWGWu2PusacXlcxzVx0HjxpA==
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Cc: kernel@pengutronix.de, alsa-devel@alsa-project.org,
- Corey Minyard <minyard@acm.org>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Sudip Mukherjee <sudipm.mukherjee@gmail.com>, linux-scsi@vger.kernel.org,
- netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
- Jakub Kicinski <kuba@kernel.org>, openipmi-developer@lists.sourceforge.net,
- Jiri Slaby <jirislaby@kernel.org>, "David S. Miller" <davem@davemloft.net>
+ id CD9D3F801F7; Fri,  6 Aug 2021 12:29:56 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 4171EF801F7
+ for <alsa-devel@alsa-project.org>; Fri,  6 Aug 2021 12:29:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4171EF801F7
+X-IronPort-AV: E=Sophos;i="5.84,300,1620658800"; d="scan'208";a="90032328"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 06 Aug 2021 19:29:42 +0900
+Received: from localhost.localdomain (unknown [10.226.92.62])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id CD45742208EF;
+ Fri,  6 Aug 2021 19:29:37 +0900 (JST)
+From: Biju Das <biju.das.jz@bp.renesas.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>
+Subject: [PATCH v4 1/3] ASoC: sh: Add RZ/G2L SSIF-2 driver
+Date: Fri,  6 Aug 2021 11:29:28 +0100
+Message-Id: <20210806102930.3024-2-biju.das.jz@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210806102930.3024-1-biju.das.jz@bp.renesas.com>
+References: <20210806102930.3024-1-biju.das.jz@bp.renesas.com>
+Cc: alsa-devel@alsa-project.org, Geert Uytterhoeven <geert+renesas@glider.be>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ Randy Dunlap <rdunlap@infradead.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Krzysztof Kozlowski <krzk@kernel.org>, Biju Das <biju.das@bp.renesas.com>,
+ linux-renesas-soc@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+ Mark Brown <broonie@kernel.org>, Chris Paterson <Chris.Paterson2@renesas.com>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Biju Das <biju.das.jz@bp.renesas.com>, Chris Brandt <chris.brandt@renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,271 +82,946 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The caller of this function (parisc_driver_remove() in
-arch/parisc/kernel/drivers.c) ignores the return value, so better don't
-return any value at all to not wake wrong expectations in driver authors.
+Add serial sound interface(SSIF-2) driver support for
+RZ/G2L SoC.
 
-The only function that could return a non-zero value before was
-ipmi_parisc_remove() which returns the return value of
-ipmi_si_remove_by_dev(). Make this function return void, too, as for all
-other callers the value is ignored, too.
+Based on the work done by Chris Brandt for RZ/A SSI driver.
 
-Also fold in a small checkpatch fix for:
-
-WARNING: Unnecessary space before function pointer arguments
-+	void (*remove) (struct parisc_device *dev);
-
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 ---
- arch/parisc/include/asm/parisc-device.h  | 4 ++--
- drivers/char/ipmi/ipmi_si_intf.c         | 6 +-----
- drivers/char/ipmi/ipmi_si_parisc.c       | 4 ++--
- drivers/char/ipmi/ipmi_si_platform.c     | 4 +++-
- drivers/input/keyboard/hilkbd.c          | 4 +---
- drivers/input/serio/gscps2.c             | 3 +--
- drivers/net/ethernet/i825xx/lasi_82596.c | 3 +--
- drivers/parport/parport_gsc.c            | 3 +--
- drivers/scsi/lasi700.c                   | 4 +---
- drivers/scsi/zalon.c                     | 4 +---
- drivers/tty/serial/mux.c                 | 3 +--
- sound/parisc/harmony.c                   | 3 +--
- 12 files changed, 16 insertions(+), 29 deletions(-)
+v3->v4:
+ * Updated the subject line as per style for the subsystem.
+ * Removed select SND_SIMPLE_CARD from Kconfig
+ * Added C++ comments for copyright and driver description.
+ * Moved validation of channels in hw_params
+ * removed asm issue reported by bot as well as Mark
+ * replaced master/slave macros with provider/consumer macros
+ * Improved locking and added more null pointer checks.
+v2->v3:
+ * Fixed the dependency on KCONFIG
+ * Improved Error handling in probe function
+v1->v2:
+ * No change
+---
+ sound/soc/sh/Kconfig  |   6 +
+ sound/soc/sh/Makefile |   4 +
+ sound/soc/sh/rz-ssi.c | 877 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 887 insertions(+)
+ create mode 100644 sound/soc/sh/rz-ssi.c
 
-diff --git a/arch/parisc/include/asm/parisc-device.h b/arch/parisc/include/asm/parisc-device.h
-index d02d144c6012..4de3b391d812 100644
---- a/arch/parisc/include/asm/parisc-device.h
-+++ b/arch/parisc/include/asm/parisc-device.h
-@@ -34,8 +34,8 @@ struct parisc_driver {
- 	struct parisc_driver *next;
- 	char *name; 
- 	const struct parisc_device_id *id_table;
--	int (*probe) (struct parisc_device *dev); /* New device discovered */
--	int (*remove) (struct parisc_device *dev);
-+	int (*probe)(struct parisc_device *dev); /* New device discovered */
-+	void (*remove)(struct parisc_device *dev);
- 	struct device_driver drv;
- };
+diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
+index 346c806ba390..ae46f187cc2a 100644
+--- a/sound/soc/sh/Kconfig
++++ b/sound/soc/sh/Kconfig
+@@ -45,6 +45,12 @@ config SND_SOC_RCAR
+ 	help
+ 	  This option enables R-Car SRU/SCU/SSIU/SSI sound support
  
-diff --git a/drivers/char/ipmi/ipmi_si_intf.c b/drivers/char/ipmi/ipmi_si_intf.c
-index 62929a3e397e..bb466981dc1b 100644
---- a/drivers/char/ipmi/ipmi_si_intf.c
-+++ b/drivers/char/ipmi/ipmi_si_intf.c
-@@ -2228,22 +2228,18 @@ static void cleanup_one_si(struct smi_info *smi_info)
- 	kfree(smi_info);
- }
++config SND_SOC_RZ
++	tristate "RZ/G2L series SSIF-2 support"
++	depends on ARCH_R9A07G044 || COMPILE_TEST
++	help
++	  This option enables RZ/G2L SSIF-2 sound support.
++
+ ##
+ ## Boards
+ ##
+diff --git a/sound/soc/sh/Makefile b/sound/soc/sh/Makefile
+index 51bd7c81671c..f6fd79948f6a 100644
+--- a/sound/soc/sh/Makefile
++++ b/sound/soc/sh/Makefile
+@@ -22,3 +22,7 @@ snd-soc-migor-objs		:= migor.o
  
--int ipmi_si_remove_by_dev(struct device *dev)
-+void ipmi_si_remove_by_dev(struct device *dev)
- {
- 	struct smi_info *e;
--	int rv = -ENOENT;
- 
- 	mutex_lock(&smi_infos_lock);
- 	list_for_each_entry(e, &smi_infos, link) {
- 		if (e->io.dev == dev) {
- 			cleanup_one_si(e);
--			rv = 0;
- 			break;
- 		}
- 	}
- 	mutex_unlock(&smi_infos_lock);
--
--	return rv;
- }
- 
- struct device *ipmi_si_remove_by_data(int addr_space, enum si_type si_type,
-diff --git a/drivers/char/ipmi/ipmi_si_parisc.c b/drivers/char/ipmi/ipmi_si_parisc.c
-index 11c9160275df..2be2967f6b5f 100644
---- a/drivers/char/ipmi/ipmi_si_parisc.c
-+++ b/drivers/char/ipmi/ipmi_si_parisc.c
-@@ -29,9 +29,9 @@ static int __init ipmi_parisc_probe(struct parisc_device *dev)
- 	return ipmi_si_add_smi(&io);
- }
- 
--static int __exit ipmi_parisc_remove(struct parisc_device *dev)
-+static void __exit ipmi_parisc_remove(struct parisc_device *dev)
- {
--	return ipmi_si_remove_by_dev(&dev->dev);
-+	ipmi_si_remove_by_dev(&dev->dev);
- }
- 
- static const struct parisc_device_id ipmi_parisc_tbl[] __initconst = {
-diff --git a/drivers/char/ipmi/ipmi_si_platform.c b/drivers/char/ipmi/ipmi_si_platform.c
-index 380a6a542890..505cc978c97a 100644
---- a/drivers/char/ipmi/ipmi_si_platform.c
-+++ b/drivers/char/ipmi/ipmi_si_platform.c
-@@ -411,7 +411,9 @@ static int ipmi_probe(struct platform_device *pdev)
- 
- static int ipmi_remove(struct platform_device *pdev)
- {
--	return ipmi_si_remove_by_dev(&pdev->dev);
-+	ipmi_si_remove_by_dev(&pdev->dev);
+ obj-$(CONFIG_SND_SH7760_AC97)	+= snd-soc-sh7760-ac97.o
+ obj-$(CONFIG_SND_SIU_MIGOR)	+= snd-soc-migor.o
++
++# RZ/G2L
++snd-soc-rz-ssi-objs		:= rz-ssi.o
++obj-$(CONFIG_SND_SOC_RZ)	+= snd-soc-rz-ssi.o
+diff --git a/sound/soc/sh/rz-ssi.c b/sound/soc/sh/rz-ssi.c
+new file mode 100644
+index 000000000000..0809423a76fa
+--- /dev/null
++++ b/sound/soc/sh/rz-ssi.c
+@@ -0,0 +1,877 @@
++// SPDX-License-Identifier: GPL-2.0
++//
++// Renesas RZ/G2L ASoC Serial Sound Interface (SSIF-2) Driver
++//
++// Copyright (C) 2021 Renesas Electronics Corp.
++// Copyright (C) 2019 Chris Brandt.
++//
++
++#include <linux/clk.h>
++#include <linux/io.h>
++#include <linux/module.h>
++#include <linux/of_device.h>
++#include <linux/pm_runtime.h>
++#include <linux/reset.h>
++#include <sound/soc.h>
++
++/* REGISTER OFFSET */
++#define SSICR			0x000
++#define SSISR			0x004
++#define SSIFCR			0x010
++#define SSIFSR			0x014
++#define SSIFTDR			0x018
++#define SSIFRDR			0x01c
++#define SSIOFR			0x020
++#define SSISCR			0x024
++
++/* SSI REGISTER BITS */
++#define SSICR_DWL(x)		(((x) & 0x7) << 19)
++#define SSICR_SWL(x)		(((x) & 0x7) << 16)
++#define SSICR_MST		BIT(14)
++#define SSICR_CKDV(x)		(((x) & 0xf) << 4)
++
++#define SSICR_CKS		BIT(30)
++#define SSICR_TUIEN		BIT(29)
++#define SSICR_TOIEN		BIT(28)
++#define SSICR_RUIEN		BIT(27)
++#define SSICR_ROIEN		BIT(26)
++#define SSICR_MST		BIT(14)
++#define SSICR_BCKP		BIT(13)
++#define SSICR_LRCKP		BIT(12)
++#define SSICR_CKDV(x)		(((x) & 0xf) << 4)
++#define SSICR_TEN		BIT(1)
++#define SSICR_REN		BIT(0)
++
++#define SSISR_TUIRQ		BIT(29)
++#define SSISR_TOIRQ		BIT(28)
++#define SSISR_RUIRQ		BIT(27)
++#define SSISR_ROIRQ		BIT(26)
++#define SSISR_IIRQ		BIT(25)
++
++#define SSIFCR_AUCKE		BIT(31)
++#define SSIFCR_SSIRST		BIT(16)
++#define SSIFCR_TIE		BIT(3)
++#define SSIFCR_RIE		BIT(2)
++#define SSIFCR_TFRST		BIT(1)
++#define SSIFCR_RFRST		BIT(0)
++
++#define SSIFSR_TDC_MASK		0x3f
++#define SSIFSR_TDC_SHIFT	24
++#define SSIFSR_RDC_MASK		0x3f
++#define SSIFSR_RDC_SHIFT	8
++
++#define SSIFSR_TDC(x)		(((x) & 0x1f) << 24)
++#define SSIFSR_TDE		BIT(16)
++#define SSIFSR_RDC(x)		(((x) & 0x1f) << 8)
++#define SSIFSR_RDF		BIT(0)
++
++#define SSIOFR_LRCONT		BIT(8)
++
++#define SSISCR_TDES(x)		(((x) & 0x1f) << 8)
++#define SSISCR_RDFS(x)		(((x) & 0x1f) << 0)
++
++/* Pre allocated buffers sizes */
++#define PREALLOC_BUFFER		(SZ_32K)
++#define PREALLOC_BUFFER_MAX	(SZ_32K)
++
++#define SSI_RATES		SNDRV_PCM_RATE_8000_48000 /* 8k-44.1kHz */
++#define SSI_FMTS		SNDRV_PCM_FMTBIT_S16_LE
++#define SSI_CHAN_MIN		2
++#define SSI_CHAN_MAX		2
++#define SSI_FIFO_DEPTH		32
++
++struct rz_ssi_priv;
++
++struct rz_ssi_stream {
++	struct rz_ssi_priv *priv;
++	struct snd_pcm_substream *substream;
++	int fifo_sample_size;	/* sample capacity of SSI FIFO */
++	int period_counter;	/* for keeping track of periods transferred */
++	int sample_width;
++	int buffer_pos;		/* current frame position in the buffer */
++	int running;		/* 0=stopped, 1=running */
++
++	int uerr_num;
++	int oerr_num;
++
++	int (*transfer)(struct rz_ssi_priv *ssi, struct rz_ssi_stream *strm);
++};
++
++struct rz_ssi_priv {
++	void __iomem *base;
++	struct platform_device *pdev;
++	struct reset_control *rstc;
++	struct device *dev;
++	struct clk *sfr_clk;
++	struct clk *clk;
++
++	int irq_int;
++	int irq_tx;
++	int irq_rx;
++
++	spinlock_t lock;
++
++	/*
++	 * The SSI supports full-duplex transmission and reception.
++	 * However, if an error occurs, channel reset (both transmission
++	 * and reception reset) is required.
++	 * So it is better to use as half-duplex (playing and recording
++	 * should be done on separate channels).
++	 */
++	struct rz_ssi_stream playback;
++	struct rz_ssi_stream capture;
++
++	/* clock */
++	unsigned long audio_mck;
++	unsigned long audio_clk_1;
++	unsigned long audio_clk_2;
++
++	bool lrckp_fsync_fall;	/* LR clock polarity (SSICR.LRCKP) */
++	bool bckp_rise;	/* Bit clock polarity (SSICR.BCKP) */
++};
++
++static void rz_ssi_reg_writel(struct rz_ssi_priv *priv, uint reg, u32 data)
++{
++	writel(data, (priv->base + reg));
++}
++
++static u32 rz_ssi_reg_readl(struct rz_ssi_priv *priv, uint reg)
++{
++	return readl(priv->base + reg);
++}
++
++static void rz_ssi_reg_mask_setl(struct rz_ssi_priv __iomem *priv, uint reg,
++				 u32 bclr, u32 bset)
++{
++	u32 val;
++
++	val = readl(priv->base + reg);
++	val = (val & ~bclr) | bset;
++	writel(val, (priv->base + reg));
++}
++
++static inline struct snd_soc_dai *
++rz_ssi_get_dai(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++
++	return asoc_rtd_to_cpu(rtd, 0);
++}
++
++static inline bool rz_ssi_stream_is_play(struct rz_ssi_priv *ssi,
++					 struct snd_pcm_substream *substream)
++{
++	return substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
++}
++
++static inline struct rz_ssi_stream *
++rz_ssi_stream_get(struct rz_ssi_priv *ssi, struct snd_pcm_substream *substream)
++{
++	struct rz_ssi_stream *stream = &ssi->playback;
++
++	if (substream->stream != SNDRV_PCM_STREAM_PLAYBACK)
++		stream = &ssi->capture;
++
++	return stream;
++}
++
++static int rz_ssi_stream_is_valid(struct rz_ssi_priv *ssi,
++				  struct rz_ssi_stream *strm)
++{
++	unsigned long flags;
++	int ret;
++
++	spin_lock_irqsave(&ssi->lock, flags);
++	ret = !!(strm->substream && strm->substream->runtime);
++	spin_unlock_irqrestore(&ssi->lock, flags);
++
++	return ret;
++}
++
++static int rz_ssi_stream_init(struct rz_ssi_priv *ssi,
++			      struct rz_ssi_stream *strm,
++			      struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	if (runtime->sample_bits != 16) {
++		dev_err(ssi->dev, "Unsupported sample width: %d\n",
++			runtime->sample_bits);
++		return -EINVAL;
++	}
++
++	if (runtime->frame_bits != 32) {
++		dev_err(ssi->dev, "Unsupported frame width: %d\n",
++			runtime->sample_bits);
++		return -EINVAL;
++	}
++
++	strm->substream = substream;
++	strm->sample_width = samples_to_bytes(runtime, 1);
++	strm->period_counter = 0;
++	strm->buffer_pos = 0;
++
++	strm->oerr_num = 0;
++	strm->uerr_num = 0;
++	strm->running = 0;
++
++	/* fifo init */
++	strm->fifo_sample_size = SSI_FIFO_DEPTH;
 +
 +	return 0;
- }
- 
- static int pdev_match_name(struct device *dev, const void *data)
-diff --git a/drivers/input/keyboard/hilkbd.c b/drivers/input/keyboard/hilkbd.c
-index 62ccfebf2f60..c1a4d5055de6 100644
---- a/drivers/input/keyboard/hilkbd.c
-+++ b/drivers/input/keyboard/hilkbd.c
-@@ -316,11 +316,9 @@ static int __init hil_probe_chip(struct parisc_device *dev)
- 	return hil_keyb_init();
- }
- 
--static int __exit hil_remove_chip(struct parisc_device *dev)
-+static void __exit hil_remove_chip(struct parisc_device *dev)
- {
- 	hil_keyb_exit();
--
--	return 0;
- }
- 
- static const struct parisc_device_id hil_tbl[] __initconst = {
-diff --git a/drivers/input/serio/gscps2.c b/drivers/input/serio/gscps2.c
-index 2f9775de3c5b..a9065c6ab550 100644
---- a/drivers/input/serio/gscps2.c
-+++ b/drivers/input/serio/gscps2.c
-@@ -411,7 +411,7 @@ static int __init gscps2_probe(struct parisc_device *dev)
-  * @return: success/error report
-  */
- 
--static int __exit gscps2_remove(struct parisc_device *dev)
-+static void __exit gscps2_remove(struct parisc_device *dev)
- {
- 	struct gscps2port *ps2port = dev_get_drvdata(&dev->dev);
- 
-@@ -425,7 +425,6 @@ static int __exit gscps2_remove(struct parisc_device *dev)
- #endif
- 	dev_set_drvdata(&dev->dev, NULL);
- 	kfree(ps2port);
--	return 0;
- }
- 
- 
-diff --git a/drivers/net/ethernet/i825xx/lasi_82596.c b/drivers/net/ethernet/i825xx/lasi_82596.c
-index 96c6f4f36904..48e001881c75 100644
---- a/drivers/net/ethernet/i825xx/lasi_82596.c
-+++ b/drivers/net/ethernet/i825xx/lasi_82596.c
-@@ -196,7 +196,7 @@ lan_init_chip(struct parisc_device *dev)
- 	return retval;
- }
- 
--static int __exit lan_remove_chip(struct parisc_device *pdev)
-+static void __exit lan_remove_chip(struct parisc_device *pdev)
- {
- 	struct net_device *dev = parisc_get_drvdata(pdev);
- 	struct i596_private *lp = netdev_priv(dev);
-@@ -205,7 +205,6 @@ static int __exit lan_remove_chip(struct parisc_device *pdev)
- 	dma_free_noncoherent(&pdev->dev, sizeof(struct i596_private), lp->dma,
- 		       lp->dma_addr, DMA_BIDIRECTIONAL);
- 	free_netdev (dev);
--	return 0;
- }
- 
- static const struct parisc_device_id lan_tbl[] __initconst = {
-diff --git a/drivers/parport/parport_gsc.c b/drivers/parport/parport_gsc.c
-index 1e43b3f399a8..4332692ca4b8 100644
---- a/drivers/parport/parport_gsc.c
-+++ b/drivers/parport/parport_gsc.c
-@@ -378,7 +378,7 @@ static int __init parport_init_chip(struct parisc_device *dev)
- 	return 0;
- }
- 
--static int __exit parport_remove_chip(struct parisc_device *dev)
-+static void __exit parport_remove_chip(struct parisc_device *dev)
- {
- 	struct parport *p = dev_get_drvdata(&dev->dev);
- 	if (p) {
-@@ -397,7 +397,6 @@ static int __exit parport_remove_chip(struct parisc_device *dev)
- 		parport_put_port(p);
- 		kfree (ops); /* hope no-one cached it */
- 	}
--	return 0;
- }
- 
- static const struct parisc_device_id parport_tbl[] __initconst = {
-diff --git a/drivers/scsi/lasi700.c b/drivers/scsi/lasi700.c
-index 6d14a7a94d0b..86fe19e0468d 100644
---- a/drivers/scsi/lasi700.c
-+++ b/drivers/scsi/lasi700.c
-@@ -134,7 +134,7 @@ lasi700_probe(struct parisc_device *dev)
- 	return -ENODEV;
- }
- 
--static int __exit
-+static void __exit
- lasi700_driver_remove(struct parisc_device *dev)
- {
- 	struct Scsi_Host *host = dev_get_drvdata(&dev->dev);
-@@ -146,8 +146,6 @@ lasi700_driver_remove(struct parisc_device *dev)
- 	free_irq(host->irq, host);
- 	iounmap(hostdata->base);
- 	kfree(hostdata);
--
--	return 0;
- }
- 
- static struct parisc_driver lasi700_driver __refdata = {
-diff --git a/drivers/scsi/zalon.c b/drivers/scsi/zalon.c
-index 7eac76cccc4c..f1e5cf8a17d9 100644
---- a/drivers/scsi/zalon.c
-+++ b/drivers/scsi/zalon.c
-@@ -168,15 +168,13 @@ static const struct parisc_device_id zalon_tbl[] __initconst = {
- 
- MODULE_DEVICE_TABLE(parisc, zalon_tbl);
- 
--static int __exit zalon_remove(struct parisc_device *dev)
-+static void __exit zalon_remove(struct parisc_device *dev)
- {
- 	struct Scsi_Host *host = dev_get_drvdata(&dev->dev);
- 
- 	scsi_remove_host(host);
- 	ncr53c8xx_release(host);
- 	free_irq(dev->irq, host);
--
--	return 0;
- }
- 
- static struct parisc_driver zalon_driver __refdata = {
-diff --git a/drivers/tty/serial/mux.c b/drivers/tty/serial/mux.c
-index be640d9863cd..643dfbcc43f9 100644
---- a/drivers/tty/serial/mux.c
-+++ b/drivers/tty/serial/mux.c
-@@ -496,7 +496,7 @@ static int __init mux_probe(struct parisc_device *dev)
- 	return 0;
- }
- 
--static int __exit mux_remove(struct parisc_device *dev)
-+static void __exit mux_remove(struct parisc_device *dev)
- {
- 	int i, j;
- 	int port_count = (long)dev_get_drvdata(&dev->dev);
-@@ -518,7 +518,6 @@ static int __exit mux_remove(struct parisc_device *dev)
- 	}
- 
- 	release_mem_region(dev->hpa.start + MUX_OFFSET, port_count * MUX_LINE_OFFSET);
--	return 0;
- }
- 
- /* Hack.  This idea was taken from the 8250_gsc.c on how to properly order
-diff --git a/sound/parisc/harmony.c b/sound/parisc/harmony.c
-index 1440db8b4177..2e3e5aa47682 100644
---- a/sound/parisc/harmony.c
-+++ b/sound/parisc/harmony.c
-@@ -968,11 +968,10 @@ snd_harmony_probe(struct parisc_device *padev)
- 	return err;
- }
- 
--static int __exit
-+static void __exit
- snd_harmony_remove(struct parisc_device *padev)
- {
- 	snd_card_free(parisc_get_drvdata(padev));
--	return 0;
- }
- 
- static struct parisc_driver snd_harmony_driver __refdata = {
++}
++
++static void rz_ssi_stream_quit(struct rz_ssi_priv *ssi,
++			       struct rz_ssi_stream *strm)
++{
++	struct snd_soc_dai *dai = rz_ssi_get_dai(strm->substream);
++
++	strm->substream = NULL;
++
++	if (strm->oerr_num > 0)
++		dev_info(dai->dev, "overrun = %d\n", strm->oerr_num);
++
++	if (strm->uerr_num > 0)
++		dev_info(dai->dev, "underrun = %d\n", strm->uerr_num);
++}
++
++static int rz_ssi_clk_setup(struct rz_ssi_priv *ssi, unsigned int rate,
++			    unsigned int channels)
++{
++	static s8 ckdv[16] = { 1,  2,  4,  8, 16, 32, 64, 128,
++			       6, 12, 24, 48, 96, -1, -1, -1 };
++	unsigned int channel_bits = 32;	/* System Word Length */
++	unsigned long bclk_rate = rate * channels * channel_bits;
++	unsigned int div;
++	unsigned int i;
++	u32 ssicr = 0;
++	u32 clk_ckdv;
++
++	/* Clear AUCKE so we can set MST */
++	rz_ssi_reg_writel(ssi, SSIFCR, 0);
++
++	/* Continue to output LRCK pin even when idle */
++	rz_ssi_reg_writel(ssi, SSIOFR, SSIOFR_LRCONT);
++	if (ssi->audio_clk_1 && ssi->audio_clk_2) {
++		if (ssi->audio_clk_1 % bclk_rate)
++			ssi->audio_mck = ssi->audio_clk_2;
++		else
++			ssi->audio_mck = ssi->audio_clk_1;
++	}
++
++	/* Clock setting */
++	ssicr |= SSICR_MST;
++	if (ssi->audio_mck == ssi->audio_clk_1)
++		ssicr |= SSICR_CKS;
++	if (ssi->bckp_rise)
++		ssicr |= SSICR_BCKP;
++	if (ssi->lrckp_fsync_fall)
++		ssicr |= SSICR_LRCKP;
++
++	/* Determine the clock divider */
++	clk_ckdv = 0;
++	div = ssi->audio_mck / bclk_rate;
++	/* try to find an match */
++	for (i = 0; i < ARRAY_SIZE(ckdv); i++) {
++		if (ckdv[i] == div) {
++			clk_ckdv = i;
++			break;
++		}
++	}
++
++	if (i == ARRAY_SIZE(ckdv)) {
++		dev_err(ssi->dev, "Rate not divisible by audio clock source\n");
++		return -EINVAL;
++	}
++
++	/*
++	 * DWL: Data Word Length = 16 bits
++	 * SWL: System Word Length = 32 bits
++	 */
++	ssicr |= SSICR_CKDV(clk_ckdv);
++	ssicr |= SSICR_DWL(1) | SSICR_SWL(3);
++	rz_ssi_reg_writel(ssi, SSICR, ssicr);
++	rz_ssi_reg_writel(ssi, SSIFCR,
++			  (SSIFCR_AUCKE | SSIFCR_TFRST | SSIFCR_RFRST));
++
++	return 0;
++}
++
++static int rz_ssi_start_stop(struct rz_ssi_priv *ssi,
++			     struct rz_ssi_stream *strm,
++			     int start)
++{
++	struct snd_pcm_substream *substream = strm->substream;
++	u32 ssicr, ssifcr;
++	int timeout;
++
++	if (start) {
++		bool is_play = rz_ssi_stream_is_play(ssi, substream);
++
++		ssicr = rz_ssi_reg_readl(ssi, SSICR);
++		ssifcr = rz_ssi_reg_readl(ssi, SSIFCR) & ~0xF;
++
++		/* FIFO interrupt thresholds */
++		rz_ssi_reg_writel(ssi, SSISCR,
++				  SSISCR_TDES(strm->fifo_sample_size / 2 - 1) |
++				  SSISCR_RDFS(0));
++
++		/* enable IRQ */
++		if (is_play) {
++			ssicr |= SSICR_TUIEN | SSICR_TOIEN;
++			ssifcr |= SSIFCR_TIE | SSIFCR_RFRST;
++		} else {
++			ssicr |= SSICR_RUIEN | SSICR_ROIEN;
++			ssifcr |= SSIFCR_RIE | SSIFCR_TFRST;
++		}
++
++		rz_ssi_reg_writel(ssi, SSICR, ssicr);
++		rz_ssi_reg_writel(ssi, SSIFCR, ssifcr);
++
++		/* Clear all error flags */
++		rz_ssi_reg_mask_setl(ssi, SSISR,
++				     (SSISR_TOIRQ | SSISR_TUIRQ | SSISR_ROIRQ |
++				      SSISR_RUIRQ), 0);
++
++		strm->running = 1;
++		ssicr |= is_play ? SSICR_TEN : SSICR_REN;
++		rz_ssi_reg_writel(ssi, SSICR, ssicr);
++
++	} else {
++		strm->running = 0;
++
++		/* Disable TX/RX */
++		rz_ssi_reg_mask_setl(ssi, SSICR, SSICR_TEN | SSICR_REN, 0);
++
++		/* Disable irqs */
++		rz_ssi_reg_mask_setl(ssi, SSICR, SSICR_TUIEN | SSICR_TOIEN |
++				     SSICR_RUIEN | SSICR_ROIEN, 0);
++		rz_ssi_reg_mask_setl(ssi, SSIFCR, SSIFCR_TIE | SSIFCR_RIE, 0);
++
++		/* Clear all error flags */
++		rz_ssi_reg_mask_setl(ssi, SSISR,
++				     (SSISR_TOIRQ | SSISR_TUIRQ | SSISR_ROIRQ |
++				      SSISR_RUIRQ), 0);
++
++		/* Wait for idle */
++		timeout = 100;
++		while (--timeout) {
++			if (rz_ssi_reg_readl(ssi, SSISR) | SSISR_IIRQ)
++				break;
++			udelay(1);
++		}
++
++		if (!timeout)
++			dev_info(ssi->dev, "timeout waiting for SSI idle\n");
++
++		/* Hold FIFOs in reset */
++		rz_ssi_reg_mask_setl(ssi, SSIFCR, 0,
++				     SSIFCR_TFRST | SSIFCR_RFRST);
++	}
++
++	return 0;
++}
++
++static void rz_ssi_pointer_update(struct rz_ssi_stream *strm, int frames)
++{
++	struct snd_pcm_substream *substream = strm->substream;
++	struct snd_pcm_runtime *runtime;
++	int current_period;
++
++	if (!strm->running || !substream || !substream->runtime)
++		return;
++
++	runtime = substream->runtime;
++	strm->buffer_pos += frames;
++	WARN_ON(strm->buffer_pos > runtime->buffer_size);
++
++	/* ring buffer */
++	if (strm->buffer_pos == runtime->buffer_size)
++		strm->buffer_pos = 0;
++
++	current_period = strm->buffer_pos / runtime->period_size;
++	if (strm->period_counter != current_period) {
++		snd_pcm_period_elapsed(strm->substream);
++		strm->period_counter = current_period;
++	}
++}
++
++static int rz_ssi_pio_recv(struct rz_ssi_priv *ssi, struct rz_ssi_stream *strm)
++{
++	struct snd_pcm_substream *substream = strm->substream;
++	struct snd_pcm_runtime *runtime;
++	u16 *buf;
++	int fifo_samples;
++	int frames_left;
++	int samples = 0;
++	int i;
++
++	if (!rz_ssi_stream_is_valid(ssi, strm))
++		return -EINVAL;
++
++	runtime = substream->runtime;
++	/* frames left in this period */
++	frames_left = runtime->period_size - (strm->buffer_pos %
++					      runtime->period_size);
++	if (frames_left == 0)
++		frames_left = runtime->period_size;
++
++	/* Samples in RX FIFO */
++	fifo_samples = (rz_ssi_reg_readl(ssi, SSIFSR) >>
++			SSIFSR_RDC_SHIFT) & SSIFSR_RDC_MASK;
++
++	/* Only read full frames at a time */
++	while (frames_left && (fifo_samples >= runtime->channels)) {
++		samples += runtime->channels;
++		fifo_samples -= runtime->channels;
++		frames_left--;
++	}
++
++	/* not enough samples yet */
++	if (samples == 0)
++		return 0;
++
++	/* calculate new buffer index */
++	buf = (u16 *)(runtime->dma_area);
++	buf += strm->buffer_pos * runtime->channels;
++
++	/* Note, only supports 16-bit samples */
++	for (i = 0; i < samples; i++)
++		*buf++ = (u16)(rz_ssi_reg_readl(ssi, SSIFRDR) >> 16);
++
++	rz_ssi_reg_mask_setl(ssi, SSIFSR, SSIFSR_RDF, 0);
++	rz_ssi_pointer_update(strm, samples / runtime->channels);
++
++	/*
++	 * If we finished this period, but there are more samples in
++	 * the RX FIFO, call this function again
++	 */
++	if (frames_left == 0 && fifo_samples >= runtime->channels)
++		rz_ssi_pio_recv(ssi, strm);
++
++	return 0;
++}
++
++static int rz_ssi_pio_send(struct rz_ssi_priv *ssi, struct rz_ssi_stream *strm)
++{
++	struct snd_pcm_substream *substream = strm->substream;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int sample_space;
++	int samples = 0;
++	int frames_left;
++	int i;
++	u32 ssifsr;
++	u16 *buf;
++
++	if (!rz_ssi_stream_is_valid(ssi, strm))
++		return -EINVAL;
++
++	/* frames left in this period */
++	frames_left = runtime->period_size - (strm->buffer_pos %
++					      runtime->period_size);
++	if (frames_left == 0)
++		frames_left = runtime->period_size;
++
++	sample_space = strm->fifo_sample_size;
++	ssifsr = rz_ssi_reg_readl(ssi, SSIFSR);
++	sample_space -= (ssifsr >> SSIFSR_TDC_SHIFT) & SSIFSR_TDC_MASK;
++
++	/* Only add full frames at a time */
++	while (frames_left && (sample_space >= runtime->channels)) {
++		samples += runtime->channels;
++		sample_space -= runtime->channels;
++		frames_left--;
++	}
++
++	/* no space to send anything right now */
++	if (samples == 0)
++		return 0;
++
++	/* calculate new buffer index */
++	buf = (u16 *)(runtime->dma_area);
++	buf += strm->buffer_pos * runtime->channels;
++
++	/* Note, only supports 16-bit samples */
++	for (i = 0; i < samples; i++)
++		rz_ssi_reg_writel(ssi, SSIFTDR, ((u32)(*buf++) << 16));
++
++	rz_ssi_reg_mask_setl(ssi, SSIFSR, SSIFSR_TDE, 0);
++	rz_ssi_pointer_update(strm, samples / runtime->channels);
++
++	return 0;
++}
++
++static irqreturn_t rz_ssi_interrupt(int irq, void *data)
++{
++	struct rz_ssi_stream *strm = NULL;
++	struct rz_ssi_priv *ssi = data;
++	u32 ssisr = rz_ssi_reg_readl(ssi, SSISR);
++
++	if (ssi->playback.substream)
++		strm = &ssi->playback;
++	else if (ssi->capture.substream)
++		strm = &ssi->capture;
++	else
++		return IRQ_HANDLED; /* Left over TX/RX interrupt */
++
++	if (irq == ssi->irq_int) { /* error or idle */
++		if (ssisr & SSISR_TUIRQ)
++			strm->uerr_num++;
++		if (ssisr & SSISR_TOIRQ)
++			strm->oerr_num++;
++		if (ssisr & SSISR_RUIRQ)
++			strm->uerr_num++;
++		if (ssisr & SSISR_ROIRQ)
++			strm->oerr_num++;
++
++		if (ssisr & (SSISR_TUIRQ | SSISR_TOIRQ | SSISR_RUIRQ |
++			     SSISR_ROIRQ)) {
++			/* Error handling */
++			/* You must reset (stop/restart) after each interrupt */
++			rz_ssi_start_stop(ssi, strm, 0);
++
++			/* Clear all flags */
++			rz_ssi_reg_mask_setl(ssi, SSISR, SSISR_TOIRQ |
++					     SSISR_TUIRQ | SSISR_ROIRQ |
++					     SSISR_RUIRQ, 0);
++
++			/* Add/remove more data */
++			strm->transfer(ssi, strm);
++
++			/* Resume */
++			rz_ssi_start_stop(ssi, strm, 1);
++		}
++	}
++
++	if (!strm->running)
++		return IRQ_HANDLED;
++
++	/* tx data empty */
++	if (irq == ssi->irq_tx)
++		strm->transfer(ssi, &ssi->playback);
++
++	/* rx data full */
++	if (irq == ssi->irq_rx) {
++		strm->transfer(ssi, &ssi->capture);
++		rz_ssi_reg_mask_setl(ssi, SSIFSR, SSIFSR_RDF, 0);
++	}
++
++	return IRQ_HANDLED;
++}
++
++static int rz_ssi_dai_trigger(struct snd_pcm_substream *substream, int cmd,
++			      struct snd_soc_dai *dai)
++{
++	struct rz_ssi_priv *ssi = snd_soc_dai_get_drvdata(dai);
++	struct rz_ssi_stream *strm = rz_ssi_stream_get(ssi, substream);
++	int ret = 0;
++	unsigned long flags;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		/* Soft Reset */
++		rz_ssi_reg_mask_setl(ssi, SSIFCR, 0, SSIFCR_SSIRST);
++		rz_ssi_reg_mask_setl(ssi, SSIFCR, SSIFCR_SSIRST, 0);
++		udelay(5);
++
++		spin_lock_irqsave(&ssi->lock, flags);
++		ret = rz_ssi_stream_init(ssi, strm, substream);
++		spin_unlock_irqrestore(&ssi->lock, flags);
++		if (ret)
++			goto done;
++
++		ret = strm->transfer(ssi, strm);
++		if (ret)
++			goto done;
++
++		ret = rz_ssi_start_stop(ssi, strm, 1);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		rz_ssi_start_stop(ssi, strm, 0);
++		spin_lock_irqsave(&ssi->lock, flags);
++		rz_ssi_stream_quit(ssi, strm);
++		spin_unlock_irqrestore(&ssi->lock, flags);
++		break;
++	}
++
++done:
++	return ret;
++}
++
++static int rz_ssi_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++{
++	struct rz_ssi_priv *ssi = snd_soc_dai_get_drvdata(dai);
++
++	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
++	case SND_SOC_DAIFMT_CBC_CFC:
++		break;
++	default:
++		dev_err(ssi->dev, "Codec should be clk and frame consumer\n");
++		return -EINVAL;
++	}
++
++	/*
++	 * set clock polarity
++	 *
++	 * "normal" BCLK = Signal is available at rising edge of BCLK
++	 * "normal" FSYNC = (I2S) Left ch starts with falling FSYNC edge
++	 */
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_NB_NF:
++		ssi->bckp_rise = false;
++		ssi->lrckp_fsync_fall = false;
++		break;
++	case SND_SOC_DAIFMT_NB_IF:
++		ssi->bckp_rise = false;
++		ssi->lrckp_fsync_fall = true;
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		ssi->bckp_rise = true;
++		ssi->lrckp_fsync_fall = false;
++		break;
++	case SND_SOC_DAIFMT_IB_IF:
++		ssi->bckp_rise = true;
++		ssi->lrckp_fsync_fall = true;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	/* only i2s support */
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		break;
++	default:
++		dev_err(ssi->dev, "Only I2S mode is supported.\n");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int rz_ssi_dai_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params,
++				struct snd_soc_dai *dai)
++{
++	struct rz_ssi_priv *ssi = snd_soc_dai_get_drvdata(dai);
++	int channels = params_channels(params);
++
++	if (channels != 2) {
++		dev_err(ssi->dev, "Number of channels not matched\n");
++		return -EINVAL;
++	}
++
++	return rz_ssi_clk_setup(ssi, params_rate(params),
++				params_channels(params));
++}
++
++static const struct snd_soc_dai_ops rz_ssi_dai_ops = {
++	.trigger	= rz_ssi_dai_trigger,
++	.set_fmt	= rz_ssi_dai_set_fmt,
++	.hw_params	= rz_ssi_dai_hw_params,
++};
++
++static const struct snd_pcm_hardware rz_ssi_pcm_hardware = {
++	.info			= SNDRV_PCM_INFO_INTERLEAVED	|
++				  SNDRV_PCM_INFO_MMAP		|
++				  SNDRV_PCM_INFO_MMAP_VALID,
++	.buffer_bytes_max	= PREALLOC_BUFFER,
++	.period_bytes_min	= 32,
++	.period_bytes_max	= 8192,
++	.channels_min		= SSI_CHAN_MIN,
++	.channels_max		= SSI_CHAN_MAX,
++	.periods_min		= 1,
++	.periods_max		= 32,
++	.fifo_size		= 32 * 2,
++};
++
++static int rz_ssi_pcm_open(struct snd_soc_component *component,
++			   struct snd_pcm_substream *substream)
++{
++	snd_soc_set_runtime_hwparams(substream, &rz_ssi_pcm_hardware);
++
++	return snd_pcm_hw_constraint_integer(substream->runtime,
++					    SNDRV_PCM_HW_PARAM_PERIODS);
++}
++
++static snd_pcm_uframes_t rz_ssi_pcm_pointer(struct snd_soc_component *component,
++					    struct snd_pcm_substream *substream)
++{
++	struct snd_soc_dai *dai = rz_ssi_get_dai(substream);
++	struct rz_ssi_priv *ssi = snd_soc_dai_get_drvdata(dai);
++	struct rz_ssi_stream *strm = rz_ssi_stream_get(ssi, substream);
++
++	return strm->buffer_pos;
++}
++
++static int rz_ssi_pcm_new(struct snd_soc_component *component,
++			  struct snd_soc_pcm_runtime *rtd)
++{
++	snd_pcm_set_managed_buffer_all(rtd->pcm, SNDRV_DMA_TYPE_DEV,
++				       rtd->card->snd_card->dev,
++				       PREALLOC_BUFFER, PREALLOC_BUFFER_MAX);
++	return 0;
++}
++
++static struct snd_soc_dai_driver rz_ssi_soc_dai[] = {
++	{
++		.name			= "rz-ssi-dai",
++		.playback = {
++			.rates		= SSI_RATES,
++			.formats	= SSI_FMTS,
++			.channels_min	= SSI_CHAN_MIN,
++			.channels_max	= SSI_CHAN_MAX,
++		},
++		.capture = {
++			.rates		= SSI_RATES,
++			.formats	= SSI_FMTS,
++			.channels_min	= SSI_CHAN_MIN,
++			.channels_max	= SSI_CHAN_MAX,
++		},
++		.ops = &rz_ssi_dai_ops,
++	},
++};
++
++static const struct snd_soc_component_driver rz_ssi_soc_component = {
++	.name		= "rz-ssi",
++	.open		= rz_ssi_pcm_open,
++	.pointer	= rz_ssi_pcm_pointer,
++	.pcm_construct	= rz_ssi_pcm_new,
++};
++
++static int rz_ssi_probe(struct platform_device *pdev)
++{
++	struct rz_ssi_priv *ssi;
++	struct clk *audio_clk;
++	int ret;
++
++	ssi = devm_kzalloc(&pdev->dev, sizeof(*ssi), GFP_KERNEL);
++	if (!ssi)
++		return -ENOMEM;
++
++	ssi->pdev = pdev;
++	ssi->dev = &pdev->dev;
++	ssi->base = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(ssi->base))
++		return PTR_ERR(ssi->base);
++
++	ssi->clk = devm_clk_get(&pdev->dev, "ssi");
++	if (IS_ERR(ssi->clk))
++		return PTR_ERR(ssi->clk);
++
++	ssi->sfr_clk = devm_clk_get(&pdev->dev, "ssi_sfr");
++	if (IS_ERR(ssi->sfr_clk))
++		return PTR_ERR(ssi->sfr_clk);
++
++	audio_clk = devm_clk_get(&pdev->dev, "audio_clk1");
++	if (IS_ERR(audio_clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(audio_clk),
++				     "no audio clk1");
++
++	ssi->audio_clk_1 = clk_get_rate(audio_clk);
++	audio_clk = devm_clk_get(&pdev->dev, "audio_clk2");
++	if (IS_ERR(audio_clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(audio_clk),
++				     "no audio clk2");
++
++	ssi->audio_clk_2 = clk_get_rate(audio_clk);
++	if (!(ssi->audio_clk_1 || ssi->audio_clk_2))
++		return dev_err_probe(&pdev->dev, -EINVAL,
++				     "no audio clk1 or audio clk2");
++
++	ssi->audio_mck = ssi->audio_clk_1 ? ssi->audio_clk_1 : ssi->audio_clk_2;
++
++	ssi->playback.transfer = rz_ssi_pio_send;
++	ssi->capture.transfer = rz_ssi_pio_recv;
++	ssi->playback.priv = ssi;
++	ssi->capture.priv = ssi;
++
++	/* Error Interrupt */
++	ssi->irq_int = platform_get_irq_byname(pdev, "int_req");
++	if (ssi->irq_int < 0)
++		return dev_err_probe(&pdev->dev, -ENODEV,
++				     "Unable to get SSI int_req IRQ\n");
++
++	ret = devm_request_irq(&pdev->dev, ssi->irq_int, &rz_ssi_interrupt,
++			       0, dev_name(&pdev->dev), ssi);
++	if (ret < 0)
++		return dev_err_probe(&pdev->dev, ret,
++				     "irq request error (int_req)\n");
++
++	/* Tx and Rx interrupts (pio only) */
++	ssi->irq_tx = platform_get_irq_byname(pdev, "dma_tx");
++	if (ssi->irq_tx < 0)
++		return dev_err_probe(&pdev->dev, -ENODEV,
++				     "Unable to get SSI dma_tx IRQ\n");
++
++	ret = devm_request_irq(&pdev->dev, ssi->irq_tx, &rz_ssi_interrupt, 0,
++			       dev_name(&pdev->dev), ssi);
++	if (ret < 0)
++		return dev_err_probe(&pdev->dev, ret,
++				     "irq request error (dma_tx)\n");
++
++	ssi->irq_rx = platform_get_irq_byname(pdev, "dma_rx");
++	if (ssi->irq_rx < 0)
++		return dev_err_probe(&pdev->dev, -ENODEV,
++				     "Unable to get SSI dma_rx IRQ\n");
++
++	ret = devm_request_irq(&pdev->dev, ssi->irq_rx, &rz_ssi_interrupt, 0,
++			       dev_name(&pdev->dev), ssi);
++	if (ret < 0)
++		return dev_err_probe(&pdev->dev, ret,
++				     "irq request error (dma_rx)\n");
++
++	ssi->rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
++	if (IS_ERR(ssi->rstc))
++		return PTR_ERR(ssi->rstc);
++
++	reset_control_deassert(ssi->rstc);
++	pm_runtime_enable(&pdev->dev);
++	pm_runtime_resume_and_get(&pdev->dev);
++
++	spin_lock_init(&ssi->lock);
++	dev_set_drvdata(&pdev->dev, ssi);
++	ret = devm_snd_soc_register_component(&pdev->dev, &rz_ssi_soc_component,
++					      rz_ssi_soc_dai,
++					      ARRAY_SIZE(rz_ssi_soc_dai));
++	if (ret < 0) {
++		pm_runtime_put(ssi->dev);
++		pm_runtime_disable(ssi->dev);
++		reset_control_assert(ssi->rstc);
++		dev_err(&pdev->dev, "failed to register snd component\n");
++	}
++
++	return ret;
++}
++
++static int rz_ssi_remove(struct platform_device *pdev)
++{
++	struct rz_ssi_priv *ssi = dev_get_drvdata(&pdev->dev);
++
++	pm_runtime_put(ssi->dev);
++	pm_runtime_disable(ssi->dev);
++	reset_control_assert(ssi->rstc);
++
++	return 0;
++}
++
++static const struct of_device_id rz_ssi_of_match[] = {
++	{ .compatible = "renesas,rz-ssi", },
++	{/* Sentinel */},
++};
++MODULE_DEVICE_TABLE(of, rz_ssi_of_match);
++
++static struct platform_driver rz_ssi_driver = {
++	.driver	= {
++		.name	= "rz-ssi-pcm-audio",
++		.of_match_table = rz_ssi_of_match,
++	},
++	.probe		= rz_ssi_probe,
++	.remove		= rz_ssi_remove,
++};
++
++module_platform_driver(rz_ssi_driver);
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("Renesas RZ/G2L ASoC Serial Sound Interface Driver");
++MODULE_AUTHOR("Biju Das <biju.das.jz@bp.renesas.com>");
 -- 
-2.30.2
+2.17.1
 
