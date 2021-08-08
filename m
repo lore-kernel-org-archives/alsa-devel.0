@@ -1,102 +1,96 @@
-Return-Path: <SRS0=WmEX=M6=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=08+G=M7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3397CC4338F
-	for <alsa-devel@archiver.kernel.org>; Sat,  7 Aug 2021 12:01:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80B07C4338F
+	for <alsa-devel@archiver.kernel.org>; Sun,  8 Aug 2021 04:28:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A8437610FC
-	for <alsa-devel@archiver.kernel.org>; Sat,  7 Aug 2021 12:01:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A8437610FC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id A69A760FC1
+	for <alsa-devel@archiver.kernel.org>; Sun,  8 Aug 2021 04:28:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A69A760FC1
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=zamaudio.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C9D11686;
-	Sat,  7 Aug 2021 14:00:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C9D11686
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4763E16AC;
+	Sun,  8 Aug 2021 06:27:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4763E16AC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628337687;
-	bh=OilFXgzoWAful73M4fYDTQXrwb6IepswQl0qEidF5Gk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=BWBM9KB0Uimrb5/5iomiE0idZ91KtD4YuqACjCsFg7S9rskwhqa2An5VTyALAr1IX
-	 9FbA4P7U3GklrDUGIKL8yBuV8++yFtFCkz/AXfDwMIAJ4aq3/t50sPwwoPpbHWWxGA
-	 b5G9UxthUSX4ZoEsfkkvQMqogbCR0jqaKN2XBARQ=
+	s=default; t=1628396901;
+	bh=9Q6E/XK6mieO63EzERQ7XiH/BjrV6XpzAGB7aD0AN6s=;
+	h=To:From:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=u0pYFESwnuQX1LkXT0CfqMN6dXLdqbtLom0j9/S8afnvY3RtBhDKMu8gBuK6mzNx5
+	 ypkLPRtlJ5NybFGeomr3SAI10+CQCwp0j1b3/WZpolcMSt36GSNEtF0Zzqy86Ntxeh
+	 lmTxt3CzxzD8kvqAZAr04EGXoZPuUlzNOFwyelZ4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9094F8027C;
-	Sat,  7 Aug 2021 14:00:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7C6A0F801D5;
+	Sun,  8 Aug 2021 06:27:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 80B0FF802E8; Sat,  7 Aug 2021 14:00:34 +0200 (CEST)
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com
- [IPv6:2607:f8b0:4864:20::b2e])
+ id 85D76F801DB; Sun,  8 Aug 2021 06:27:27 +0200 (CEST)
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com
+ [IPv6:2607:f8b0:4864:20::62b])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3129BF800FD
- for <alsa-devel@alsa-project.org>; Sat,  7 Aug 2021 14:00:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3129BF800FD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 35863F8007E
+ for <alsa-devel@alsa-project.org>; Sun,  8 Aug 2021 06:27:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35863F8007E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="QOdR5x9J"
-Received: by mail-yb1-xb2e.google.com with SMTP id z18so20204767ybg.8
- for <alsa-devel@alsa-project.org>; Sat, 07 Aug 2021 05:00:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=WyWRBH02aF7TMZK2H9iKEqjuVSj2aT5mi1GkBNRCyKg=;
- b=QOdR5x9JTDfThKVhuyhEYPReV0+hyqKytp6bhrDU9jtJxybQG/OIAaA3oWXzAmhUeI
- OpdNdHL2cTWOdcoGJdjl6SMiapPShk5dqCtzePXNHkSDDTyDYEUVEMRWoeWDVMRgEvWT
- F3WsjtH95W2GEqcxmYbu5Nki6iHjaP/wAYl8B41Jx1LBzEzxM7r/El9yGNDidzRbvvqa
- Kmis+CIiKYZTjEfn/MyNVZZE/sJlnMzcMNu5e2sZtEh+M3pQUSfAAN/s+5gpulRT28gX
- WpDFxD9aYBck7JqESW1IHpFohPSZLTlNkFRqH4KUtyrj9Pxrh4lb4vBKQjKvBi3tS5E+
- KYxQ==
+ dkim=pass (2048-bit key) header.d=zamaudio-com.20150623.gappssmtp.com
+ header.i=@zamaudio-com.20150623.gappssmtp.com header.b="UObPbGoV"
+Received: by mail-pl1-x62b.google.com with SMTP id j3so12790614plx.4
+ for <alsa-devel@alsa-project.org>; Sat, 07 Aug 2021 21:27:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=zamaudio-com.20150623.gappssmtp.com; s=20150623;
+ h=to:from:subject:message-id:date:user-agent:mime-version
+ :content-language:content-transfer-encoding;
+ bh=9Q6E/XK6mieO63EzERQ7XiH/BjrV6XpzAGB7aD0AN6s=;
+ b=UObPbGoVnblilk+vEDTj0CQjkJbVfn6wPoMyd6x4nf+5Ri3/1i0/7hRcTX+y/8MWCa
+ WIxyyhaJz9pZlid5qiRqjtN0KgUW0txraAxuiNxb1kSn9stKQtiOSm2xDS82dX+fPiRc
+ w24WQAeRLlrsAk+k3PpKRh1DFAJzTlUjnKUBUZOZktHO8ejPUnwqmFbrEFvyHBeZEEhj
+ OMP16pp0wE8GxF84o7rFa/681H5/tTh/G8Cu505FbgmsPbPvOAhVMMxo40VGb1L7n6Ki
+ 5mry/Y/BRGYFEe7PEtRqPIfUnaR1jCIt+4k9vPsehNfnYb40Gpf4sR0do1nS5b5lvVIG
+ JxDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=WyWRBH02aF7TMZK2H9iKEqjuVSj2aT5mi1GkBNRCyKg=;
- b=HQT5S9fvai+Y6+IHF0ECDVC2UaON8lvDZfW71pCigFrfCK1Gr5f10W6d0qKS8y+HSS
- svWO9quaJRA4ofvmvWSeiFzA5jZXhhOoU3le6MBhjYOKWWze0wROyuxt8DPYsxzJn7zC
- DKjnQp0G+syMiGufjxrqQWW8PygXsYxTX0zU1afRU9mYgN6km5mU0WBVOoAxb9f0DUC+
- 4AsNoPejdCm0BkTYd9VRtFLHb9yKtm2rStE4KIumFHDlnq2Jha4PIE0jhe1I10EnSGwf
- l5m8hRKpZJtmGRpcwQbiVO5+7cjw9vOF95W8bdFoU5y3w6Q3hXb9qjlYMj4FiK7zg4pz
- +OVg==
-X-Gm-Message-State: AOAM5320lemiAPUcdpjM4lXy/Y7NXVZaDu3nzqf0vSMzJxl09XasWMOt
- MwkdKUpe+Psuw0IE3TVYO77C/vNg6c+XVwlisyQ=
-X-Google-Smtp-Source: ABdhPJxo9qHswzoJFxioC74Rd4uuv/McBZ+hRPGpGsGEvfuOE6rZWY4LuFWwzY6Vg59fOtg8kqf5oNFF1j4ZtwtEzDU=
-X-Received: by 2002:a25:1546:: with SMTP id 67mr19373700ybv.331.1628337626600; 
- Sat, 07 Aug 2021 05:00:26 -0700 (PDT)
+ h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+ :mime-version:content-language:content-transfer-encoding;
+ bh=9Q6E/XK6mieO63EzERQ7XiH/BjrV6XpzAGB7aD0AN6s=;
+ b=M52SjnWbbGqbHu0FFxNX0Sua/+6/9LKcHrP5Gx7xg4gNwtyZ2ZTjzS6dBqtk/rUcIh
+ CD9+/hf0h849hDaoACgfeQLWZ+DyjycGClzNze/o4Mqh2GI2KJlq3YPgm3it0ho4zXwv
+ ISCWabA1+JemFGC7CGqAOorY1EQ+AN/MugQzacVlnbz71k7Xey2O4Drt5KQkn7SDX7Tn
+ KdSQdY3ysFq1ewGSvGr3C42WfzyebNIScYCLyA4g49gru1tIWTZwG2PjCi3lJ+TO8MtN
+ Dz7vsEmAroTq1a1F2kQApdINkrmeKj4IH9TTZfvwiv4/QlrfDM9LLXPFVrIZRZhtemGF
+ Y/Zw==
+X-Gm-Message-State: AOAM531Uh0JVvWZRbPrP8PIRyTNDfmNiyA34QlxcLEQFa2NQ+JSrR0kJ
+ Ad9o2SJDs/ZsKb5IiZOmTMajRw==
+X-Google-Smtp-Source: ABdhPJz8YHWDOQqpICfpCXARWiTe9EgHwlFhzvawKz/1KoIvjBaFyHDhfqzhjL2G4S5NV/fDjhXeqg==
+X-Received: by 2002:a17:902:ab88:b029:12b:d2ee:c26f with SMTP id
+ f8-20020a170902ab88b029012bd2eec26fmr5425937plr.38.1628396834928; 
+ Sat, 07 Aug 2021 21:27:14 -0700 (PDT)
+Received: from [192.168.1.241] (119-18-22-20.771216.mel.static.aussiebb.net.
+ [119.18.22.20]) by smtp.googlemail.com with ESMTPSA id
+ l11sm16041749pfd.187.2021.08.07.21.27.13
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Sat, 07 Aug 2021 21:27:14 -0700 (PDT)
+To: alsa-devel <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+From: Damien Zammit <damien@zamaudio.com>
+Subject: usb-audio: New mixer control quirk for Digidesign Mbox
+Message-ID: <628b1c33-9900-a692-89c5-c58980e5858b@zamaudio.com>
+Date: Sun, 8 Aug 2021 14:27:10 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210807091927.1974404-1-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <20210807091927.1974404-1-u.kleine-koenig@pengutronix.de>
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date: Sat, 7 Aug 2021 12:59:50 +0100
-Message-ID: <CADVatmO7Wtc8+4mzorrmcwKv2QXg579avynK==9D1Dqz9PHaJw@mail.gmail.com>
-Subject: Re: [PATCH v2] parisc: Make struct parisc_driver::remove() return void
-To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-input@vger.kernel.org, alsa-devel@alsa-project.org,
- Corey Minyard <minyard@acm.org>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- linux-serial@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Helge Deller <deller@gmx.de>, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Takashi Iwai <tiwai@suse.com>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- netdev <netdev@vger.kernel.org>, linux-parisc <linux-parisc@vger.kernel.org>,
- Sascha Hauer <kernel@pengutronix.de>, linux-scsi@vger.kernel.org,
- Jakub Kicinski <kuba@kernel.org>, openipmi-developer@lists.sourceforge.net,
- Jiri Slaby <jirislaby@kernel.org>, "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,45 +106,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, Aug 7, 2021 at 10:19 AM Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de> wrote:
->
-> The caller of this function (parisc_driver_remove() in
-> arch/parisc/kernel/drivers.c) ignores the return value, so better don't
-> return any value at all to not wake wrong expectations in driver authors.
->
-> The only function that could return a non-zero value before was
-> ipmi_parisc_remove() which returns the return value of
-> ipmi_si_remove_by_dev(). Make this function return void, too, as for all
-> other callers the value is ignored, too.
->
-> Also fold in a small checkpatch fix for:
->
-> WARNING: Unnecessary space before function pointer arguments
-> +       void (*remove) (struct parisc_device *dev);
->
-> Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com> (for drivers/input)
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-> ---
-> changes since v1 sent with Message-Id:
-> 20210806093938.1950990-1-u.kleine-koenig@pengutronix.de:
->
->  - Fix a compiler error noticed by the kernel test robot
->  - Add Ack for Dmitry
->
->  arch/parisc/include/asm/parisc-device.h  | 4 ++--
->  drivers/char/ipmi/ipmi_si.h              | 2 +-
->  drivers/char/ipmi/ipmi_si_intf.c         | 6 +-----
->  drivers/char/ipmi/ipmi_si_parisc.c       | 4 ++--
->  drivers/char/ipmi/ipmi_si_platform.c     | 4 +++-
->  drivers/input/keyboard/hilkbd.c          | 4 +---
->  drivers/input/serio/gscps2.c             | 3 +--
->  drivers/net/ethernet/i825xx/lasi_82596.c | 3 +--
->  drivers/parport/parport_gsc.c            | 3 +--
+Hi all,
 
-Acked-by:  Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+I just figured out how to toggle the input source between analog/spdif on the digidesign mbox.
 
+The problem is, when I toggle the spdif source, the hardware auto-updates to spdif clock sync as well,
+so I need to update the other mixer control to reflect the new hardware state or force an update
+to revert the clock source, but I need to know the current state of the other mixer control.
 
---=20
-Regards
-Sudip
+How do I access a second mixer control from another one to synchronise the mixer states?
+
+Also, how would I access the current sample rate from inside a mixer control?
+
+Damien
