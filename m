@@ -2,86 +2,101 @@ Return-Path: <SRS0=CTIr=NA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DEF8C4320A
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Aug 2021 07:21:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 822B7C4338F
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Aug 2021 07:26:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D41B761057
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Aug 2021 07:21:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D41B761057
+	by mail.kernel.org (Postfix) with ESMTPS id 1962461019
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Aug 2021 07:25:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1962461019
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D3A4016AD;
-	Mon,  9 Aug 2021 09:20:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3A4016AD
+	by alsa0.perex.cz (Postfix) with ESMTPS id E6593950;
+	Mon,  9 Aug 2021 09:25:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6593950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628493659;
-	bh=eZz5UE4QDJlouH8ZmReUTtrwGskpOvomdBfa5611i2o=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1628493958;
+	bh=vO8xWt6aA77pd0HfmgnAcowTFwOKqSlQBHeqmF54uCs=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YQAXKT9/A8Ub4NlXJR8aV+3eM3yvQfudwYQ+SMjzLpQsg8pCG1NQNZYq4Lrzb1Hs2
-	 E4Ta0uooJS4csJbvGRPtACJYRFrRcMy5O4tKp2C3DCwX1Jo8cyi44lojvGiVultOWw
-	 9lAvukmp3AP9+QLgVFMmMMkbY2UHVswsCHbWYFrI=
+	b=lQk7IPMQMdhOk2u6fyM8zCtAUDj5X/pELzHnbWxwoA8R82oaQugcy2inEKM5hrJ2I
+	 400gCxNB+hxB5dhha6EuXtKqz+SIiyjgw7A7GfTNbHR5TKeGY1n8EQx2vLD6/GXHJi
+	 HRMxUza79mihRvnvqE4nNakc779lutLl4cckEfXM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52275F804E3;
-	Mon,  9 Aug 2021 09:19:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E3EFF800FD;
+	Mon,  9 Aug 2021 09:25:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0415DF8032D; Mon,  9 Aug 2021 09:19:26 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id EF917F802D2; Mon,  9 Aug 2021 09:25:05 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 53F1BF8032D
- for <alsa-devel@alsa-project.org>; Mon,  9 Aug 2021 09:18:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53F1BF8032D
+ by alsa1.perex.cz (Postfix) with ESMTPS id A5A3FF800FD
+ for <alsa-devel@alsa-project.org>; Mon,  9 Aug 2021 09:24:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5A3FF800FD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="cw1x/iqY"; 
+ header.b="groVSyog"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="lS11xGax"
+ header.b="LVeX3DcF"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id CD7C31FD98
- for <alsa-devel@alsa-project.org>; Mon,  9 Aug 2021 07:18:30 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 8A9F321F13;
+ Mon,  9 Aug 2021 07:24:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1628493510; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ t=1628493894; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=DWMB5noULf116aY9nZ0XBbz/CPmkpXZcNb6ydT2pm5s=;
- b=cw1x/iqYQtTljH0/CJcNLY73DrJApXU/Be9N5TFkPYuzlcub2yfJLs82bgOLp68TG6n6fT
- RbEndEP/LkG6nXr8VphSZj+XKz/LXvHOIRuDr2EMEifm+MQZN+xSLffvCoPxFwo6mgZ7HP
- QqzZDj4MpDY8MtJl4PT7ZyOnK96PNOQ=
+ bh=zgwzLo1pz+a4PSO9fAiq/SggKM+b9nLZlLr987GkDAc=;
+ b=groVSyogXlraiUvF2QrDF/PnFhyl6YthOeEB6SxeipogR09eR6yk5hq+d6Ko9SCpdpqbq1
+ LMnkfGfF2SvMukop7n9KmxSxjekkMgEnFHCHT9WpNnOroxId43KkdyljpKRbycAq+F358F
+ /RgVklM/pWSsy/6RdYEadrgs+bm5B+k=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1628493510;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1628493894;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=DWMB5noULf116aY9nZ0XBbz/CPmkpXZcNb6ydT2pm5s=;
- b=lS11xGaxhKO6dHeNz3XrnA2MYUzdj78eW/atKYGNRdbFTuUMRqTByZJYQtl5s9QKj+gY/5
- rC5E4UrvJRyEq2BA==
-Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id BE04CA3B81;
- Mon,  9 Aug 2021 07:18:30 +0000 (UTC)
+ bh=zgwzLo1pz+a4PSO9fAiq/SggKM+b9nLZlLr987GkDAc=;
+ b=LVeX3DcFxvonggimpT8x/p1lP+BpuNW9EJl/GmDu6U+T+VsdJS3gqDk12nJnfDOtXNeJoB
+ xM0AgmrFa4/A05DQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 738BAA3B88;
+ Mon,  9 Aug 2021 07:24:54 +0000 (UTC)
+Date: Mon, 09 Aug 2021 09:24:54 +0200
+Message-ID: <s5hy29bnkqh.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/3] ALSA: pci: rme: Set up buffer type properly
-Date: Mon,  9 Aug 2021 09:18:28 +0200
-Message-Id: <20210809071829.22238-3-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210809071829.22238-1-tiwai@suse.de>
-References: <20210809071829.22238-1-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+To: Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH] soundwire: intel: trap TRIGGER_SUSPEND in .trigger
+ callback
+In-Reply-To: <YRCozWNtypjnTp0b@matsya>
+References: <20210727053256.29949-1-yung-chuan.liao@linux.intel.com>
+ <s5h8s1sfevg.wl-tiwai@suse.de>
+ <a25d47a6-2599-7101-cd93-e5304b271948@linux.intel.com>
+ <YQd2BM3wGzKpfZn1@matsya> <s5hpmuwz98o.wl-tiwai@suse.de>
+ <YQeQxj7Ejh14jIoc@matsya>
+ <DM6PR11MB4074EF8726AA5ED297871225FFEF9@DM6PR11MB4074.namprd11.prod.outlook.com>
+ <9ef7e341-13f4-69f7-964d-8e6efdd57ca7@linux.intel.com>
+ <YQ07BVDyPD1Vb4R8@matsya>
+ <a40644ba-bee7-0fc2-93e5-b1746ecda938@linux.intel.com>
+ <YRCozWNtypjnTp0b@matsya>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, "Liao,
+ Bard" <bard.liao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,72 +112,88 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Although the regression of the mmap was fixed in the recent commit
-dc0dc8a73e8e ("ALSA: pcm: Fix mmap breakage without explicit buffer
-setup"), RME9652 and HDSP drivers have still potential issues with
-their mmap handling.  Namely, they use the default mmap handler
-without the standard buffer preallocation, and PCM core wouldn't use
-the coherent DMA mapping.  It's practically OK on x86, but on some
-exotic architectures, it wouldn't work.
+On Mon, 09 Aug 2021 06:02:21 +0200,
+Vinod Koul wrote:
+> 
+> On 06-08-21, 11:17, Pierre-Louis Bossart wrote:
+> > 
+> > 
+> > On 8/6/21 8:37 AM, Vinod Koul wrote:
+> > > On 02-08-21, 10:46, Pierre-Louis Bossart wrote:
+> > >>
+> > >>>>>>>> The trigger callback is handled in the stream lock atomically,
+> > >>>>>>>> and are you sure that you want to operate a possibly heavy task there?
+> > >>>>>>>
+> > >>>>>>> It's a good objection that we didn't think of.
+> > >>>>>>
+> > >>>>>> Doesn't Intel use non atomic trigger to send IPCs which anyway
+> > >>>>>> involve code which can sleep..?
+> > >>>>>
+> > >>>>> sof_sdw.c doesn't seem setting it?
+> > >>>>
+> > >>>> Yes I think init_dai_link() should set it. Maybe Pierre/Bard would know why.
+> > >>>
+> > >>> init_dai_link() is to assign dai link elements only. No IPC is needed.
+> > >>
+> > >> The 'nonatomic' concept is only used for an FE dailink which expose a
+> > >> PCM device:
+> > >>
+> > >> soc-pcm.c:	pcm->nonatomic = rtd->dai_link->nonatomic;
+> > >>
+> > >> Setting a BE dailink as 'nonatomic' would not accomplish much since BEs
+> > >> use the 'no_pcm' option.
+> > > 
+> > > are no_pcm & nonatomic supposed to be not used together? So if FE is
+> > > nonatomic would BE trigger be atomic or nonatomic?
+> > 
+> > I don't follow the multiple negations, so let me retry:
+> > 
+> > For Intel machine drivers, all BE dailinks use
+> > .no_pcm = 1 (explicit setting)
+> > .nonatomic = 0 (implicit).
+> 
+> that was my question, how is it implicit?
+> Should be explicitly set, right?
+> 
+> > 
+> > All FE dailinks use
+> > .no_pcm = 0 (implicit)
+> > .nonatomic = 1 (explicit setting)
+> > 
+> > >> So the question is: is there any issue with sending an IPC in a DAI
+> > >> trigger callback?
+> > > 
+> > > Sorry looks like we diverged, orignal question was can we do heavy tasks
+> > > in trigger, the answer is no, unless one uses nonatomic flag which was
+> > > added so that people can do that work with DSPs like sending IPCs..
+> > > Maybe we should add heavy slimbus/soundwire handling to it too...?
+> > 
+> > I don't think the answer is as clear as you describe it Vinod.
+> > 
+> > The .nonatomic field is at the BE dailink level.
+> > 
+> > Unless I am missing something, I don't see anything that lets me set a
+> > .nonatomic property at the *DAI* level.
+> 
+> I would say that was a miss in original design, it should have been set
+> at dai level or at least allowed to propagate from dai level setting.
+> 
+> Now we are allowed to set it at dai_link but it is governed by dai
+> behaviour (DSP based DAI etc...)
 
-This patch addresses the potential breakage by replacing the buffer
-setup with the proper macro.  It also simplifies the source code,
-too.
+Actually, there was one big piece I overlooked.  The whole DPCM BE
+operation is *always* tied with FE's.  That is, the nonatomic flag is
+completely ignored for BE, but just follows what FE sets up.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/rme9652/hdsp.c    | 6 ++----
- sound/pci/rme9652/rme9652.c | 6 ++----
- 2 files changed, 4 insertions(+), 8 deletions(-)
+And that's the very confusing point when reviewing the code.  You
+cannot know whether it's written for non-atomic context or not.  This
+means that it's also error-prone; the code that assumes the operation
+in a certain mode might mismatch with the bound FE.
 
-diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
-index 982278f8724d..75aa2ea733a5 100644
---- a/sound/pci/rme9652/hdsp.c
-+++ b/sound/pci/rme9652/hdsp.c
-@@ -4507,8 +4507,7 @@ static int snd_hdsp_playback_open(struct snd_pcm_substream *substream)
- 	snd_pcm_set_sync(substream);
- 
-         runtime->hw = snd_hdsp_playback_subinfo;
--	runtime->dma_area = hdsp->playback_buffer;
--	runtime->dma_bytes = HDSP_DMA_AREA_BYTES;
-+	snd_pcm_set_runtime_buffer(substream, hdsp->playback_dma_buf);
- 
- 	hdsp->playback_pid = current->pid;
- 	hdsp->playback_substream = substream;
-@@ -4584,8 +4583,7 @@ static int snd_hdsp_capture_open(struct snd_pcm_substream *substream)
- 	snd_pcm_set_sync(substream);
- 
- 	runtime->hw = snd_hdsp_capture_subinfo;
--	runtime->dma_area = hdsp->capture_buffer;
--	runtime->dma_bytes = HDSP_DMA_AREA_BYTES;
-+	snd_pcm_set_runtime_buffer(substream, hdsp->capture_dma_buf);
- 
- 	hdsp->capture_pid = current->pid;
- 	hdsp->capture_substream = substream;
-diff --git a/sound/pci/rme9652/rme9652.c b/sound/pci/rme9652/rme9652.c
-index 45448a97070c..e76f737ac9e8 100644
---- a/sound/pci/rme9652/rme9652.c
-+++ b/sound/pci/rme9652/rme9652.c
-@@ -2259,8 +2259,7 @@ static int snd_rme9652_playback_open(struct snd_pcm_substream *substream)
- 	snd_pcm_set_sync(substream);
- 
-         runtime->hw = snd_rme9652_playback_subinfo;
--	runtime->dma_area = rme9652->playback_buffer;
--	runtime->dma_bytes = RME9652_DMA_AREA_BYTES;
-+	snd_pcm_set_runtime_buffer(substream, rme9652->playback_dma_buf);
- 
- 	if (rme9652->capture_substream == NULL) {
- 		rme9652_stop(rme9652);
-@@ -2319,8 +2318,7 @@ static int snd_rme9652_capture_open(struct snd_pcm_substream *substream)
- 	snd_pcm_set_sync(substream);
- 
- 	runtime->hw = snd_rme9652_capture_subinfo;
--	runtime->dma_area = rme9652->capture_buffer;
--	runtime->dma_bytes = RME9652_DMA_AREA_BYTES;
-+	snd_pcm_set_runtime_buffer(substream, rme9652->capture_dma_buf);
- 
- 	if (rme9652->playback_substream == NULL) {
- 		rme9652_stop(rme9652);
--- 
-2.26.2
+So, ideally, both FE and BE should set the proper nonatomic flags, and
+have a consistency check with WARN_ON() at the run time.
 
+
+thanks,
+
+Takashi
