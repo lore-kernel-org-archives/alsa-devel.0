@@ -4,75 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4633BC4338F
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Aug 2021 15:55:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AAEEC4320E
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Aug 2021 15:56:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2527960234
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Aug 2021 15:55:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2527960234
+	by mail.kernel.org (Postfix) with ESMTPS id D045361052
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Aug 2021 15:56:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D045361052
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D8E721616;
-	Mon,  9 Aug 2021 17:55:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8E721616
+	by alsa0.perex.cz (Postfix) with ESMTPS id 92FA21683;
+	Mon,  9 Aug 2021 17:55:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92FA21683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628524553;
-	bh=0QkxDzqsUF7YVC0Z1evJykDt9DC/MHfDfmzv0D3EVUA=;
+	s=default; t=1628524604;
+	bh=vcdfpziR404S9Inxgldn37afl9+I3dbup99eK9aqxGo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ulJeRYrqWzGjYwxvAcKYnt8zdqEJckfI+AKLNQYelf6tib1fDNzTT34DMdCMaj+wL
-	 h0ZLftL7KLmLYJI1dSLFD/RD+Jfs49BB1UHHPDlGVbTFQqXi1Kkyq2Nxfkn0NYGscP
-	 fnhfKrvFS3tZSrOfVtOMYnu9hoA6zpdheHmlJs2s=
+	b=J5vsKc0Hy95F/UH5xKy7tn2E8zEgeFrx8g+7MPMd6uqJUtmXm7hwn0TETobYKFEmb
+	 rOKniWwWGmYcgdOTETVn4Tk+o60K3lSoeDvkM3npa8RhcN26PBEc1G5p3NEXltU50B
+	 5c2h08O2xhk+bpCi7+xZpqOJdXufnNLCjBgT/3EQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 28192F80105;
-	Mon,  9 Aug 2021 17:55:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 20454F8032D;
+	Mon,  9 Aug 2021 17:55:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2C20AF802D2; Mon,  9 Aug 2021 17:55:01 +0200 (CEST)
+ id BA179F804C3; Mon,  9 Aug 2021 17:55:04 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B7D46F800C8
- for <alsa-devel@alsa-project.org>; Mon,  9 Aug 2021 17:54:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7D46F800C8
+ by alsa1.perex.cz (Postfix) with ESMTPS id A5B31F800FD
+ for <alsa-devel@alsa-project.org>; Mon,  9 Aug 2021 17:55:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5B31F800FD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="SGf89fpY"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99D4D6101E;
- Mon,  9 Aug 2021 15:54:53 +0000 (UTC)
+ header.b="ZNhK56xU"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 585C161040;
+ Mon,  9 Aug 2021 15:54:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1628524494;
- bh=0QkxDzqsUF7YVC0Z1evJykDt9DC/MHfDfmzv0D3EVUA=;
+ s=k20201202; t=1628524496;
+ bh=vcdfpziR404S9Inxgldn37afl9+I3dbup99eK9aqxGo=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=SGf89fpYXEeogLPYP9VonbrJvlAqGONL8rOrzhF/FrxOq5AUwnhVOO3wNFSt/jhI3
- A+EpMH2v/7SKIEBGCggFPiq6dTPyYQ2NbmhpNScr1BGQVSPaYS0O7eEWfYhdemeoww
- C14rLinx0dmZNxuF1HQcHU+YPXIqc1avAym/xqTJ4vgPNnjOHlAg2SHJZZi1nCDofG
- 5ewuvh2JMC7ZI03TSwn3N/+WSuX/WTdO2bVgoHd7uQHY7AeVa1mhQx/xurZ92rTl1d
- kiOKyHkxYsoFixSMNnpRD2MEBlb224JSUh2Wp0D+BoUDkQv4RKsl7EUVdXsRrO8a1U
- PRp8qF4GvWETw==
+ b=ZNhK56xUZLtUfoniWZUVjzUT91PTJeFQugmf6HM4iT3EcyaJweL7JIqkzRS4cDohB
+ MAK2gigZ58SQ1tPT2yAWNLc6pg4KHpImDVAnhkKR7MssVjlgbBsCJ5FV36mKWSbHIe
+ MnO7kSgVeDkcs8YCd5pN8xfNOCzPpj8ZNDRbqoLeOEJ2P1ZQLWnNUbxcAV441Z3jQu
+ 97D/1eVQE8ieQsXURdwdb8dUda82TvM+KVhZeKEq0gdrVza7BQABaqqP0Y1h4UCbjq
+ rW3fjSKU5LA5xDEZxDiaa56Ra2e53/mEwAhRDeEczKs6uFvU8JorYiZA1zKMyc25Am
+ dhhN8G96dwWiQ==
 From: Mark Brown <broonie@kernel.org>
-To: Jack Yu <jack.yu@realtek.com>,
+To: robh@kernel.org,
+	Jack Yu <jack.yu@realtek.com>,
 	lgirdwood@gmail.com
-Subject: Re: [PATCH] ASoC: rt1015p: add new acpi id and comapatible id
-Date: Mon,  9 Aug 2021 16:54:33 +0100
-Message-Id: <162852418086.21716.3875772923924644880.b4-ty@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: dt-bindings: rt1015p: add new compatible id
+Date: Mon,  9 Aug 2021 16:54:34 +0100
+Message-Id: <162852418088.21716.5893582085716795538.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210317062309.14051-1-jack.yu@realtek.com>
-References: <20210317062309.14051-1-jack.yu@realtek.com>
+In-Reply-To: <ce9e2f298f0c4fc59f756c39736a297a@realtek.com>
+References: <ce9e2f298f0c4fc59f756c39736a297a@realtek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de,
- kent_chen@realtek.com, kenny_chen@realtek.com, tzungbi@google.com,
- Mark Brown <broonie@kernel.org>, derek.fang@realtek.com, shumingf@realtek.com,
- flove@realtek.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, lars@metafoo.de,
+ =?UTF-8?q?kent=5Fchen=20=40=20realtek=20=2E=20com=20=5B=E9=99=B3=E5=BB=BA=E5=AE=8F=5D?=
+ <kent_chen@realtek.com>, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>,
+ =?UTF-8?q?Derek=20=5B=E6=96=B9=E5=BE=B7=E7=BE=A9=5D?= <derek.fang@realtek.com>,
+ =?UTF-8?q?Shuming=20=5B=E8=8C=83=E6=9B=B8=E9=8A=98=5D?= <shumingf@realtek.com>,
+ "Flove\(HsinFu\)" <flove@realtek.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,8 +93,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 17 Mar 2021 14:23:09 +0800, Jack Yu wrote:
-> Add new acpi id and compatible id for rt1015p.
+On Mon, 9 Aug 2021 10:27:14 +0000, Jack Yu wrote:
+> Add new compatible ID for rt1015p in dt-bindings document.
+> 
+> 
+> 
+> 
 
 Applied to
 
@@ -97,8 +106,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rt1015p: add new acpi id and comapatible id
-      commit: 6d0a764d418fb508119e129c73f39ecc66826675
+[2/2] ASoC: dt-bindings: rt1015p: add new compatible id
+      commit: 064478e4877c76b0c1fd1155934f226f1561aab3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
