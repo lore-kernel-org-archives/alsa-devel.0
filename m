@@ -2,93 +2,98 @@ Return-Path: <SRS0=vr1N=NB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00FBDC4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Aug 2021 09:02:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95F08C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Aug 2021 09:02:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F7C560E9B
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Aug 2021 09:02:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8F7C560E9B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=fnordco.com
+	by mail.kernel.org (Postfix) with ESMTPS id 9C0EC60E9B
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Aug 2021 09:02:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9C0EC60E9B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8102684D;
-	Tue, 10 Aug 2021 11:01:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8102684D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 75628166E;
+	Tue, 10 Aug 2021 11:01:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75628166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628586149;
-	bh=dFz5SVRinIwJqOh9qb41yUdSfnQq3mR4VmwBHmJJwc4=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1628586154;
+	bh=AjpCIP5JcEXKwAqVhNV93E5jLruH2xXP7IQfE2G18JU=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Zmv3yjk0b5dK6HsdmC++F4coUFnwZUSsQ04j7emy9z3Y5hscTuyBU39IADfBdFUAE
-	 nTxpfh5bQtDRP/YOSz+Oz89ecYnZGw1f4XAj9o/4bSn2EBAGQZUi/lFOWvgaIFfuCz
-	 RHRmGuZBfx2bg0n1KUAJrmTSaTE6Z7LoNkRARZis=
+	b=qp0IJj0MkywFe2rOppGzItlm4vrllGKItnkTgwec9bL3isjArzjABY3TOrS3zl4fG
+	 6O6fjtqwzwSLV6INp1yvXc399TORMFtuJFKK9FjlIqvFmr+sqRgo3ht5sfzOJ14WIH
+	 uJ0SxnFEs2dq9Xlg7aufHznvx/HxyZ+yj3PXtJrg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9ABE0F804B1;
-	Tue, 10 Aug 2021 11:00:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A5602F804D2;
+	Tue, 10 Aug 2021 11:00:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 25795F801DB; Sun,  8 Aug 2021 21:10:08 +0200 (CEST)
-Received: from sender4-of-o58.zoho.com (sender4-of-o58.zoho.com
- [136.143.188.58])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id E683BF802D2; Mon,  9 Aug 2021 06:19:45 +0200 (CEST)
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com
+ [209.85.208.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 46DC2F8007E
- for <alsa-devel@alsa-project.org>; Sun,  8 Aug 2021 21:09:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46DC2F8007E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=fnordco.com header.i=jwoods@fnordco.com
- header.b="ObkVyKdS"
-ARC-Seal: i=1; a=rsa-sha256; t=1628449785; cv=none; 
- d=zohomail.com; s=zohoarc; 
- b=V/0g2zXgkcnEU7cZqd5oiW0yljfwQUgoFSMTLTOIL59AX6tHln+I9VfTWR4GMEhWQH7Q4RIbgT3xmNggxqBDEOpBusz9TiLuRw4jJIN1Tmcdt9r7H07qbC9/jYMLIBUYFJbZ/3YNCG14KO+9AVhaxD9lEzX7OuFbnGHB+zIHVz4=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com;
- s=zohoarc; t=1628449785;
- h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To;
- bh=gA8w0xb5eG5/2ysoihZoWJ6NWEiS8D1GIp2NAPTBvaQ=; 
- b=PPKrFfTDN2hou47rD8f9uAT91bBicSORfVOTjSxzCF/0KsvXuDIBBx55ipJeyVfyiR8fp0SKPh9NMx/fy71QAlJbvxPQmG6k0jO3a97nBXOvNYI2h7D3rG3C5T2EcpOU0gyOcsbVvWKXjBP7w/yCZgdvSq6LLMtVS4BBELUTgg4=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
- dkim=pass  header.i=fnordco.com;
- spf=pass  smtp.mailfrom=klaatu@fnordco.com;
- dmarc=pass header.from=<jwoods@fnordco.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1628449785; 
- s=zoho; d=fnordco.com; i=jwoods@fnordco.com;
- h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
- bh=gA8w0xb5eG5/2ysoihZoWJ6NWEiS8D1GIp2NAPTBvaQ=;
- b=ObkVyKdS3g9X6GA1Kx9n0D9LAixHVtrX/JfwMzlBA7rR4Y8kl9l46ya4iR3/4v1d
- PxCkhV6nW/hQ7H/UY/2kbOQhRp0zus/HbFxZuPId+H1CzMZrHLnPJ6EFfoikFq1X0Mu
- sSa7itZA8WDEOPpV8vy12xLAgQSdWMLN3JOHQdUM=
-Received: from mail.zoho.com by mx.zohomail.com
- with SMTP id 1628449778840774.0347226881267;
- Sun, 8 Aug 2021 12:09:38 -0700 (PDT)
-Date: Sun, 08 Aug 2021 12:09:38 -0700
-From: Jeff Woods <jwoods@fnordco.com>
-To: "Takashi Iwai" <tiwai@suse.de>
-Message-ID: <17b272bac81.10ac3bd0570099.4091761174182420511@fnordco.com>
-In-Reply-To: <s5him0gpghv.wl-tiwai@suse.de>
-References: <17b1f9647ee.1179b6a05461889.5940365952430364689@fnordco.com>
- <YQ5Bb+mPgPivLqvX@kroah.com> <s5htuk1ppvb.wl-tiwai@suse.de>
- <17b22d08355.f21da1f938057.6900412371441404465@fnordco.com>
- <s5him0gpghv.wl-tiwai@suse.de>
-Subject: Re: Kernel 5.13.6 breaks mmap with snd-hdsp module
+ by alsa1.perex.cz (Postfix) with ESMTPS id A11BFF800FD
+ for <alsa-devel@alsa-project.org>; Mon,  9 Aug 2021 06:19:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A11BFF800FD
+Received: by mail-ed1-f43.google.com with SMTP id k9so5325034edr.10
+ for <alsa-devel@alsa-project.org>; Sun, 08 Aug 2021 21:19:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=5hPnLfQOdhJ9VmhjHCFa74vmYcG7vey0A+Y6VMqc53E=;
+ b=KLYkneV6ZvLlNerqN4PhYUgiroHa4lizsK4E27LLcuaL5nnSuyVOW50V6AKz+w8TB5
+ 7RhntuT9kqGBLYH8PVO+GAUZegodJ3HrAkbD2heBBqM68KzvPvDML+iq+VCjj+5BxRe6
+ mGSroCrbut7dALGR3a7mGRmAIrIs2q8VOQcYS6KDQlP9Z6WL519QmwYpspvVEC6FtX+O
+ ITXxRNswBq+alnBagAqgfD20g8iDvZOUV5LnEV1tI6ZYr0r74cMKY5hO/6f0DKg/CjnB
+ kOCoGYK37FqMuMHRD2U9I4BCepALdkmQxRwkXWIWaaSL5kFOHQMNU4pkG3+CDAcXwL3y
+ bE0A==
+X-Gm-Message-State: AOAM532ACR8k56jnObKBfPjLhWwXTuw0fs8NZo07eHnqdJzd3rHUloAq
+ 5BUJDvQ7djNZDn2efP0SSJk=
+X-Google-Smtp-Source: ABdhPJxLBa4EXTSLKfWMi4nEZ8Wk8PrT9QK9XE4M+ir2fnBq9dIuQxK16aytPtIw8dDJgnbvoCv0Eg==
+X-Received: by 2002:a05:6402:5251:: with SMTP id
+ t17mr22730430edd.157.1628482776972; 
+ Sun, 08 Aug 2021 21:19:36 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+ by smtp.gmail.com with ESMTPSA id z70sm3240588ede.76.2021.08.08.21.19.35
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Sun, 08 Aug 2021 21:19:36 -0700 (PDT)
+Subject: Re: [PATCH v2] parisc: Make struct parisc_driver::remove() return void
+To: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ Helge Deller <deller@gmx.de>
+References: <20210807091927.1974404-1-u.kleine-koenig@pengutronix.de>
+From: Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <bef58281-91b3-b2d6-ace8-afe0d08221e1@kernel.org>
+Date: Mon, 9 Aug 2021 06:19:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Importance: Medium
-User-Agent: Zoho Mail
-X-Mailer: Zoho Mail
-X-Mailman-Approved-At: Tue, 10 Aug 2021 11:00:44 +0200
-Cc: Greg KH <gregkh@linuxfoundation.org>,
- alsa-devel <alsa-devel@alsa-project.org>,
- regressions <regressions@lists.linux.dev>, stable <stable@vger.kernel.org>
+In-Reply-To: <20210807091927.1974404-1-u.kleine-koenig@pengutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Tue, 10 Aug 2021 11:00:43 +0200
+Cc: linux-input@vger.kernel.org, alsa-devel@alsa-project.org,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Corey Minyard <minyard@acm.org>, linux-serial@vger.kernel.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "David S. Miller" <davem@davemloft.net>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ netdev@vger.kernel.org, linux-parisc@vger.kernel.org, kernel@pengutronix.de,
+ linux-scsi@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+ openipmi-developer@lists.sourceforge.net,
+ Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,176 +109,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
- ---- On Sun, 08 Aug 2021 00:01:16 -0700 Takashi Iwai <tiwai@suse.de> wrote ----
- > On Sun, 08 Aug 2021 00:51:35 +0200,
- > Jeff Woods wrote:
- > > 
- > >  ---- On Sat, 07 Aug 2021 02:26:32 -0700 Takashi Iwai <tiwai@suse.de> wrote ----
- > >  > On Sat, 07 Aug 2021 10:16:47 +0200,
- > >  > Greg KH wrote:
- > >  > > 
- > >  > > On Sat, Aug 07, 2021 at 12:49:07AM -0700, Jeff Woods wrote:
- > >  > > > Specifically, commit c4824ae7db418aee6f50f308a20b832e58e997fd triggers the problem. Reverting this change restores functionality.
- > >  > > > 
- > >  > > > The device is an RME Multiface II, using the snd-hdsp driver.
- > >  > > > 
- > >  > > > Expected behavior: Device plays sound normally
- > >  > > > 
- > >  > > > Exhibited behavior: When a program attempts to open the device, the following ALSA lib error happens:
- > >  > > > 
- > >  > > > ALSA lib pcm_direct.c:1169:(snd1_pcm_direct_initialize_slave) slave plugin does not support mmap interleaved or mmap noninterleaved access
- > >  > > > 
- > >  > > > This change hasn't affected my other computers with less esoteric hardware, so probably the problem lies with the snd-hdsp driver, but the device is unusable without reverting that commit.
- > >  > > > 
- > >  > > > I am available to test any patches for this issue.
- > >  > > 
- > >  > > Have you notified the developers involved in this change about this
- > >  > > issue?
- > >  > 
- > >  > No, it's a new report :)
- > >  > 
- > >  > > Adding them now...
- > >  > 
- > >  > Could you try the patch below?
- > >  > 
- > >  > 
- > >  > thanks,
- > >  > 
- > >  > Takashi
- > >  > 
- > >  > -- 8< --
- > >  > From: Takashi Iwai <tiwai@suse.de>
- > >  > Subject: [PATCH] ALSA: pci: rme: Fix mmap breakage
- > >  > 
- > >  > The recent change in the PCM core restricts the mmap of unknown buffer
- > >  > type, and this broke the mmap on RME9652 and HDSP drivers that didn't
- > >  > set up properly.  Actually those driver do use the buffers allocated
- > >  > in a standard way, and the proper calls should fix the breakage.
- > >  > 
- > >  > Fixes: c4824ae7db41 ("ALSA: pcm: Fix mmap capability check")
- > >  > Cc: <stable@vger.kernel.org>
- > >  > Signed-off-by: Takashi Iwai <tiwai@suse.de>
- > >  > ---
- > >  >  sound/pci/rme9652/hdsp.c    | 6 ++----
- > >  >  sound/pci/rme9652/rme9652.c | 6 ++----
- > >  >  2 files changed, 4 insertions(+), 8 deletions(-)
- > >  > 
- > >  > diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
- > >  > index 8457a4bbc3df..b32a72e28917 100644
- > >  > --- a/sound/pci/rme9652/hdsp.c
- > >  > +++ b/sound/pci/rme9652/hdsp.c
- > >  > @@ -4518,8 +4518,7 @@ static int snd_hdsp_playback_open(struct snd_pcm_substream *substream)
- > >  >      snd_pcm_set_sync(substream);
- > >  >  
- > >  >          runtime->hw = snd_hdsp_playback_subinfo;
- > >  > -    runtime->dma_area = hdsp->playback_buffer;
- > >  > -    runtime->dma_bytes = HDSP_DMA_AREA_BYTES;
- > >  > +    snd_pcm_set_runtime_buffer(substream, hdsp->playback_dma_buf);
- > >  >  
- > >  >      hdsp->playback_pid = current->pid;
- > >  >      hdsp->playback_substream = substream;
- > >  > @@ -4595,8 +4594,7 @@ static int snd_hdsp_capture_open(struct snd_pcm_substream *substream)
- > >  >      snd_pcm_set_sync(substream);
- > >  >  
- > >  >      runtime->hw = snd_hdsp_capture_subinfo;
- > >  > -    runtime->dma_area = hdsp->capture_buffer;
- > >  > -    runtime->dma_bytes = HDSP_DMA_AREA_BYTES;
- > >  > +    snd_pcm_set_runtime_buffer(substream, hdsp->capture_dma_buf);
- > >  >  
- > >  >      hdsp->capture_pid = current->pid;
- > >  >      hdsp->capture_substream = substream;
- > >  > diff --git a/sound/pci/rme9652/rme9652.c b/sound/pci/rme9652/rme9652.c
- > >  > index f1aad38760d6..8036ed761d53 100644
- > >  > --- a/sound/pci/rme9652/rme9652.c
- > >  > +++ b/sound/pci/rme9652/rme9652.c
- > >  > @@ -2279,8 +2279,7 @@ static int snd_rme9652_playback_open(struct snd_pcm_substream *substream)
- > >  >      snd_pcm_set_sync(substream);
- > >  >  
- > >  >          runtime->hw = snd_rme9652_playback_subinfo;
- > >  > -    runtime->dma_area = rme9652->playback_buffer;
- > >  > -    runtime->dma_bytes = RME9652_DMA_AREA_BYTES;
- > >  > +    snd_pcm_set_runtime_buffer(substream, rme9652->playback_dma_buf);
- > >  >  
- > >  >      if (rme9652->capture_substream == NULL) {
- > >  >          rme9652_stop(rme9652);
- > >  > @@ -2339,8 +2338,7 @@ static int snd_rme9652_capture_open(struct snd_pcm_substream *substream)
- > >  >      snd_pcm_set_sync(substream);
- > >  >  
- > >  >      runtime->hw = snd_rme9652_capture_subinfo;
- > >  > -    runtime->dma_area = rme9652->capture_buffer;
- > >  > -    runtime->dma_bytes = RME9652_DMA_AREA_BYTES;
- > >  > +    snd_pcm_set_runtime_buffer(substream, rme9652->capture_dma_buf);
- > >  >  
- > >  >      if (rme9652->playback_substream == NULL) {
- > >  >          rme9652_stop(rme9652);
- > >  > -- 
- > >  > 2.26.2
- > >  > 
- > >  
- > > I applied the patch to kernel 5.13.8, but compilation fails with these errors:
- > 
- > Oops, sorry, that was the patch for linux-next, and I forgot the
- > recent code change.  And it turned out not to be effective.
- > 
- > Below is another try.  Scratch the previous one (although it cannot
- > hurt), and try this one instead.
- > 
- > 
- > thanks,
- > 
- > Takashi
- > 
- > -- 8< --
- > From: Takashi Iwai <tiwai@suse.de>
- > Subject: [PATCH] ALSA: pcm: Fix mmap breakage without explicit buffer setup
- > 
- > The recent fix c4824ae7db41 ("ALSA: pcm: Fix mmap capability check")
- > restricts the mmap capability only to the drivers that properly set up
- > the buffers, but it caused a regression for a few drivers that manage
- > the buffer on its own way.
- > 
- > For those with UNKNOWN buffer type (i.e. the uninitialized / unused
- > substream->dma_buffer), just assume that the driver handles the mmap
- > properly and blindly trust the hardware info bit.
- > 
- > Fixes: c4824ae7db41 ("ALSA: pcm: Fix mmap capability check")
- > Cc: <stable@vger.kernel.org>
- > Signed-off-by: Takashi Iwai <tiwai@suse.de>
- > ---
- >  sound/core/pcm_native.c | 5 ++++-
- >  1 file changed, 4 insertions(+), 1 deletion(-)
- > 
- > diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
- > index 09c0e2a6489c..71323d807dbf 100644
- > --- a/sound/core/pcm_native.c
- > +++ b/sound/core/pcm_native.c
- > @@ -251,7 +251,10 @@ static bool hw_support_mmap(struct snd_pcm_substream *substream)
- >  
- >      switch (substream->dma_buffer.dev.type) {
- >      case SNDRV_DMA_TYPE_UNKNOWN:
- > -        return false;
- > +        /* we can't know the device, so just assume that the driver does
- > +         * everything right
- > +         */
- > +        return true;
- >      case SNDRV_DMA_TYPE_CONTINUOUS:
- >      case SNDRV_DMA_TYPE_VMALLOC:
- >          return true;
- > -- 
- > 2.26.2
- > 
- > 
+On 07. 08. 21, 11:19, Uwe Kleine-König wrote:
+> The caller of this function (parisc_driver_remove() in
+> arch/parisc/kernel/drivers.c) ignores the return value, so better don't
+> return any value at all to not wake wrong expectations in driver authors.
+> 
+> The only function that could return a non-zero value before was
+> ipmi_parisc_remove() which returns the return value of
+> ipmi_si_remove_by_dev(). Make this function return void, too, as for all
+> other callers the value is ignored, too.
+> 
+> Also fold in a small checkpatch fix for:
+> 
+> WARNING: Unnecessary space before function pointer arguments
+> +	void (*remove) (struct parisc_device *dev);
+> 
+> Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com> (for drivers/input)
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> ---
+> changes since v1 sent with Message-Id:
+> 20210806093938.1950990-1-u.kleine-koenig@pengutronix.de:
+> 
+>   - Fix a compiler error noticed by the kernel test robot
+>   - Add Ack for Dmitry
+> 
+>   arch/parisc/include/asm/parisc-device.h  | 4 ++--
+>   drivers/char/ipmi/ipmi_si.h              | 2 +-
+>   drivers/char/ipmi/ipmi_si_intf.c         | 6 +-----
+>   drivers/char/ipmi/ipmi_si_parisc.c       | 4 ++--
+>   drivers/char/ipmi/ipmi_si_platform.c     | 4 +++-
+>   drivers/input/keyboard/hilkbd.c          | 4 +---
+>   drivers/input/serio/gscps2.c             | 3 +--
+>   drivers/net/ethernet/i825xx/lasi_82596.c | 3 +--
+>   drivers/parport/parport_gsc.c            | 3 +--
+>   drivers/scsi/lasi700.c                   | 4 +---
+>   drivers/scsi/zalon.c                     | 4 +---
+>   drivers/tty/serial/mux.c                 | 3 +--
 
-I applied the patch to 5.13.9, and it did indeed solve the problem.
+For the TTY piece:
+Acked-by: Jiri Slaby <jirislaby@kernel.org>
 
-Thank you very much!
-
-For future reference, if I am reporting an issue with stable and I know the
-commit that caused it, should I contact the committer directly *and* cc the
-stable and regressions list?
-
-I'm trying to keep protocol and not spam things up too much.
-
-Thanks,
-Jeff
-
+thanks,
+-- 
+-- 
+js
+suse labs
