@@ -2,101 +2,75 @@ Return-Path: <SRS0=CTIr=NA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 822B7C4338F
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Aug 2021 07:26:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A933FC4338F
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Aug 2021 07:28:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1962461019
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Aug 2021 07:25:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1962461019
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 6D99D61055
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Aug 2021 07:28:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6D99D61055
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=vanheusden.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E6593950;
-	Mon,  9 Aug 2021 09:25:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6593950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 633C0165D;
+	Mon,  9 Aug 2021 09:27:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 633C0165D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628493958;
-	bh=vO8xWt6aA77pd0HfmgnAcowTFwOKqSlQBHeqmF54uCs=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=lQk7IPMQMdhOk2u6fyM8zCtAUDj5X/pELzHnbWxwoA8R82oaQugcy2inEKM5hrJ2I
-	 400gCxNB+hxB5dhha6EuXtKqz+SIiyjgw7A7GfTNbHR5TKeGY1n8EQx2vLD6/GXHJi
-	 HRMxUza79mihRvnvqE4nNakc779lutLl4cckEfXM=
+	s=default; t=1628494091;
+	bh=Oj+oap6iOGg1AaMSoSfhRZZRafqontokkcjiXJNyeJ8=;
+	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ZHnnTB1iDJL2+ru3eH48sSWEW1Zitpo6LZHPN5RguyOly5+0ph0EHkQcScy5LtsB8
+	 1mMSd5wC7/sVn4SRH+a3sxiLhAZIuewVj+v1e7KifTjfBzktIer6b4zoSpPld2HD9r
+	 BfEfqt7b7/MpxDvry/59//7ekeLD8+MCxf8+JMSs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7E3EFF800FD;
-	Mon,  9 Aug 2021 09:25:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0A63AF80105;
+	Mon,  9 Aug 2021 09:27:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF917F802D2; Mon,  9 Aug 2021 09:25:05 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id D66E9F802D2; Mon,  9 Aug 2021 09:27:18 +0200 (CEST)
+Received: from lb1-smtp-cloud7.xs4all.net (lb1-smtp-cloud7.xs4all.net
+ [194.109.24.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A5A3FF800FD
- for <alsa-devel@alsa-project.org>; Mon,  9 Aug 2021 09:24:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5A3FF800FD
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="groVSyog"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="LVeX3DcF"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 8A9F321F13;
- Mon,  9 Aug 2021 07:24:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1628493894; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=zgwzLo1pz+a4PSO9fAiq/SggKM+b9nLZlLr987GkDAc=;
- b=groVSyogXlraiUvF2QrDF/PnFhyl6YthOeEB6SxeipogR09eR6yk5hq+d6Ko9SCpdpqbq1
- LMnkfGfF2SvMukop7n9KmxSxjekkMgEnFHCHT9WpNnOroxId43KkdyljpKRbycAq+F358F
- /RgVklM/pWSsy/6RdYEadrgs+bm5B+k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1628493894;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=zgwzLo1pz+a4PSO9fAiq/SggKM+b9nLZlLr987GkDAc=;
- b=LVeX3DcFxvonggimpT8x/p1lP+BpuNW9EJl/GmDu6U+T+VsdJS3gqDk12nJnfDOtXNeJoB
- xM0AgmrFa4/A05DQ==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 738BAA3B88;
- Mon,  9 Aug 2021 07:24:54 +0000 (UTC)
-Date: Mon, 09 Aug 2021 09:24:54 +0200
-Message-ID: <s5hy29bnkqh.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH] soundwire: intel: trap TRIGGER_SUSPEND in .trigger
- callback
-In-Reply-To: <YRCozWNtypjnTp0b@matsya>
-References: <20210727053256.29949-1-yung-chuan.liao@linux.intel.com>
- <s5h8s1sfevg.wl-tiwai@suse.de>
- <a25d47a6-2599-7101-cd93-e5304b271948@linux.intel.com>
- <YQd2BM3wGzKpfZn1@matsya> <s5hpmuwz98o.wl-tiwai@suse.de>
- <YQeQxj7Ejh14jIoc@matsya>
- <DM6PR11MB4074EF8726AA5ED297871225FFEF9@DM6PR11MB4074.namprd11.prod.outlook.com>
- <9ef7e341-13f4-69f7-964d-8e6efdd57ca7@linux.intel.com>
- <YQ07BVDyPD1Vb4R8@matsya>
- <a40644ba-bee7-0fc2-93e5-b1746ecda938@linux.intel.com>
- <YRCozWNtypjnTp0b@matsya>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>, "Liao,
- Bard" <bard.liao@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9A0AF800FD
+ for <alsa-devel@alsa-project.org>; Mon,  9 Aug 2021 09:27:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9A0AF800FD
+Received: from cust-b66e5d83 ([IPv6:fc0c:c157:b88d:62c6:5e3c:5f07:82d0:1b4])
+ by smtp-cloud7.xs4all.net with ESMTPA
+ id CzgnmyiOl4SnACzgomlOb7; Mon, 09 Aug 2021 09:27:14 +0200
+Received: from localhost (localhost [127.0.0.1])
+ by keetweej.vanheusden.com (Postfix) with ESMTP id 2F7A9161E56
+ for <alsa-devel@alsa-project.org>; Mon,  9 Aug 2021 09:27:13 +0200 (CEST)
+Received: from keetweej.vanheusden.com ([127.0.0.1])
+ by localhost (mauer.intranet.vanheusden.com [127.0.0.1]) (amavisd-new,
+ port 10024)
+ with ESMTP id a-hVmoKe59eP for <alsa-devel@alsa-project.org>;
+ Mon,  9 Aug 2021 09:27:12 +0200 (CEST)
+Received: from belle.intranet.vanheusden.com (belle.intranet.vanheusden.com
+ [192.168.64.100])
+ by keetweej.vanheusden.com (Postfix) with ESMTP id 786BE15F96D
+ for <alsa-devel@alsa-project.org>; Mon,  9 Aug 2021 09:27:12 +0200 (CEST)
+Received: by belle.intranet.vanheusden.com (Postfix, from userid 1000)
+ id 6FB4D161820; Mon,  9 Aug 2021 09:27:12 +0200 (CEST)
+Date: Mon, 9 Aug 2021 09:27:12 +0200
+From: folkert <folkert@vanheusden.com>
+To: alsa-devel@alsa-project.org
+Subject: waiting for a connection
+Message-ID: <20210809072712.GL890690@belle.intranet.vanheusden.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Reply-By: Fri 16 Jul 2021 08:34:34 AM CEST
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CMAE-Envelope: MS4xfLaAsEkHHBycrs9eTufUYahlN8yujezqETK/CZs3BzbVhhoLSrV4I+DWgUzhOGi7xWyVxk3jdCPI3bBDaAVkD1LGw4MF5mlJL1/DTQDknjAGcxFxnMdN
+ 2jhIYB5kkH+O8kS9prTwaWoYvpfMaYt+CHy7MH5ccYDE+CaUvfu38mfynnCKTIazrzGL8jI8c1rhpy4ESlSGurTChqT+Q5QaboRuiyLyJqRbH5IyX5SgxhJo
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,88 +86,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 09 Aug 2021 06:02:21 +0200,
-Vinod Koul wrote:
-> 
-> On 06-08-21, 11:17, Pierre-Louis Bossart wrote:
-> > 
-> > 
-> > On 8/6/21 8:37 AM, Vinod Koul wrote:
-> > > On 02-08-21, 10:46, Pierre-Louis Bossart wrote:
-> > >>
-> > >>>>>>>> The trigger callback is handled in the stream lock atomically,
-> > >>>>>>>> and are you sure that you want to operate a possibly heavy task there?
-> > >>>>>>>
-> > >>>>>>> It's a good objection that we didn't think of.
-> > >>>>>>
-> > >>>>>> Doesn't Intel use non atomic trigger to send IPCs which anyway
-> > >>>>>> involve code which can sleep..?
-> > >>>>>
-> > >>>>> sof_sdw.c doesn't seem setting it?
-> > >>>>
-> > >>>> Yes I think init_dai_link() should set it. Maybe Pierre/Bard would know why.
-> > >>>
-> > >>> init_dai_link() is to assign dai link elements only. No IPC is needed.
-> > >>
-> > >> The 'nonatomic' concept is only used for an FE dailink which expose a
-> > >> PCM device:
-> > >>
-> > >> soc-pcm.c:	pcm->nonatomic = rtd->dai_link->nonatomic;
-> > >>
-> > >> Setting a BE dailink as 'nonatomic' would not accomplish much since BEs
-> > >> use the 'no_pcm' option.
-> > > 
-> > > are no_pcm & nonatomic supposed to be not used together? So if FE is
-> > > nonatomic would BE trigger be atomic or nonatomic?
-> > 
-> > I don't follow the multiple negations, so let me retry:
-> > 
-> > For Intel machine drivers, all BE dailinks use
-> > .no_pcm = 1 (explicit setting)
-> > .nonatomic = 0 (implicit).
-> 
-> that was my question, how is it implicit?
-> Should be explicitly set, right?
-> 
-> > 
-> > All FE dailinks use
-> > .no_pcm = 0 (implicit)
-> > .nonatomic = 1 (explicit setting)
-> > 
-> > >> So the question is: is there any issue with sending an IPC in a DAI
-> > >> trigger callback?
-> > > 
-> > > Sorry looks like we diverged, orignal question was can we do heavy tasks
-> > > in trigger, the answer is no, unless one uses nonatomic flag which was
-> > > added so that people can do that work with DSPs like sending IPCs..
-> > > Maybe we should add heavy slimbus/soundwire handling to it too...?
-> > 
-> > I don't think the answer is as clear as you describe it Vinod.
-> > 
-> > The .nonatomic field is at the BE dailink level.
-> > 
-> > Unless I am missing something, I don't see anything that lets me set a
-> > .nonatomic property at the *DAI* level.
-> 
-> I would say that was a miss in original design, it should have been set
-> at dai level or at least allowed to propagate from dai level setting.
-> 
-> Now we are allowed to set it at dai_link but it is governed by dai
-> behaviour (DSP based DAI etc...)
+Hi,
 
-Actually, there was one big piece I overlooked.  The whole DPCM BE
-operation is *always* tied with FE's.  That is, the nonatomic flag is
-completely ignored for BE, but just follows what FE sets up.
+When I create an ALSA MIDI port, is it possible (how?) to wait for
+someone to connect to it/map it to an other port?
 
-And that's the very confusing point when reviewing the code.  You
-cannot know whether it's written for non-atomic context or not.  This
-means that it's also error-prone; the code that assumes the operation
-in a certain mode might mismatch with the bound FE.
-
-So, ideally, both FE and BE should set the proper nonatomic flags, and
-have a consistency check with WARN_ON() at the run time.
+This would allow me to only allocate extra resources when needed (in my
+case: connect to ipmidi-peer (in unicast mode)).
 
 
-thanks,
-
-Takashi
+regards
