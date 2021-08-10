@@ -2,87 +2,94 @@ Return-Path: <SRS0=vr1N=NB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 991C8C4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Aug 2021 12:25:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED9EFC4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Aug 2021 12:25:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3E09361019
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Aug 2021 12:25:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3E09361019
+	by mail.kernel.org (Postfix) with ESMTPS id 7364C61051
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Aug 2021 12:25:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7364C61051
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B08D1167D;
-	Tue, 10 Aug 2021 14:24:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B08D1167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6E17C1684;
+	Tue, 10 Aug 2021 14:24:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E17C1684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628598321;
-	bh=4g48p8POQn+VxHuIaxiexhbIYzob/N8ivj1Cl1AUP/M=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1628598337;
+	bh=A2AuD7MZVobIQJ/ol7bbJEVTGbHrJz9ok2B8p3dT6TE=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=racsZz/CziG0AuLpM6wTpHQ6432KZ2ZZ2ZyC4nb4pbg76mQ0DZ5Ip3dtPB6kRUilS
-	 P5NAgXUguPcl4UEnK+qtuePkGme/CBwB4iLezOywbRYddYCZNlh5lC6LOKL/DZKYIQ
-	 KiFNWRztM3P1n8rNfBclb6LmoRtEAV2lwAthJCIc=
+	b=QaCAiIrrVfIidII7rEODKv4/vKb7rVKxSncTn8KM5LgMz+B550+q+dZakI6LDLQIB
+	 +M4Oz19tK/+oBA7SvkFZgdCuriBpwXmLtaihHkG+Mm02v8ox1punRVLVlh1X7kstYC
+	 GuUu/skC3vZoJy7V4OJuxkpGvMbCiJ0u1ElcK9EE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F07BF804FD;
-	Tue, 10 Aug 2021 14:22:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 497A0F8016B;
+	Tue, 10 Aug 2021 14:23:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4EF79F800FD; Tue, 10 Aug 2021 14:22:21 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 78C20F804B1; Tue, 10 Aug 2021 14:23:36 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C71F0F802A0
- for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2021 14:22:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C71F0F802A0
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9169F80245
+ for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2021 14:23:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9169F80245
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="cTAoK5jc"; 
+ header.b="jdFAwhwl"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="ZBtUlWy+"
+ header.b="5xH6FZM3"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id A746E22052
- for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2021 12:22:03 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 77306200A6;
+ Tue, 10 Aug 2021 12:23:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1628598123; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ t=1628598209; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=v0KcIkEv8SYFxGqlsKcX6RCLO/gjbURTyZnxpeSaOJw=;
- b=cTAoK5jcKaEAHPF8rO3rv+mnzArCtxh3C+ys3yVSboxfMzfeE479yE50J5pgVK/2xGL4Th
- r1XENR6wVI6PscOktrEWKGg2xyYYfIYvLe7siIdbQpAMPoXci1kc+BkP0XAhttCdOMC9qR
- rUBJUTYZekyEwUzJ4xPVCUa/MyJnm1c=
+ bh=iLhbeYdDAKdBDJgvdpTgy50dflOYMIbiXLmgcBaFyGg=;
+ b=jdFAwhwloiNZor/BN4lDhqE1M9ln8Tr+AeXGsKp2aHdQHHqobmKW6uIF6cw/CroyEn+pmh
+ cJcdFWUT5GNNrL0zePc4InbR6cu9XD9m1PMBGykX1yXFdIBsgalnnizVjc7D1OP/c5iPYF
+ wpraazwGS6GO8fHfmv4NCFeTWFZNYpc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1628598123;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1628598209;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=v0KcIkEv8SYFxGqlsKcX6RCLO/gjbURTyZnxpeSaOJw=;
- b=ZBtUlWy+T+mOkVbT/GFv8PTYcMJS1UHBrI7h4C4wBOO28R9lkVgk9srNXneqDzzBJysZI2
- YZKqBf9+Mp6WjaDQ==
-Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 96771A3B88;
- Tue, 10 Aug 2021 12:22:03 +0000 (UTC)
+ bh=iLhbeYdDAKdBDJgvdpTgy50dflOYMIbiXLmgcBaFyGg=;
+ b=5xH6FZM3bmEJ4Uc72TltUN9r3jauZuEB7hckb7zRHfA+EnhVtKYQfPR7S2hPgDcFMdwOgT
+ gXCGkX8vglrKF4Aw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id E4FEFA3B83;
+ Tue, 10 Aug 2021 12:23:28 +0000 (UTC)
+Date: Tue, 10 Aug 2021 14:23:28 +0200
+Message-ID: <s5hfsvhmqtb.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH RFC 1/5] ALSA: memalloc: Count continuous pages in vmalloc
- buffer handler
-Date: Tue, 10 Aug 2021 14:21:56 +0200
-Message-Id: <20210810122200.971-2-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210810122200.971-1-tiwai@suse.de>
-References: <20210810122200.971-1-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+To: Jeremy Szu <jeremy.szu@canonical.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: fix mute/micmute LEDs for HP ProBook
+ 650 G8 Notebook PC
+In-Reply-To: <20210810100846.65844-1-jeremy.szu@canonical.com>
+References: <20210810100846.65844-1-jeremy.szu@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Chris Chiu <chris.chiu@canonical.com>,
+ "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ Kailang Yang <kailang@realtek.com>, open list <linux-kernel@vger.kernel.org>,
+ Luke D Jones <luke@ljones.dev>, Jian-Hong Pan <jhp@endlessos.org>,
+ Werner Sembach <wse@tuxedocomputers.com>, tiwai@suse.com,
+ Hui Wang <hui.wang@canonical.com>, PeiSen Hou <pshou@realtek.com>,
+ Sami Loone <sami@loone.fi>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,77 +105,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This is an enhancement for the SG-style page handling in vmalloc
-buffer handler to calculate the continuous pages.
-When snd_sgbuf_get_chunk_size() is called for a vmalloc buffer,
-currently we return only the size that fits into a single page.
-However, this API call is rather supposed for obtaining the continuous
-pages and most of vmalloc or noncontig buffers do have lots of
-continuous pages indeed.  So, in this patch, the callback now
-calculates the possibly continuous pages up to the given size limit.
+On Tue, 10 Aug 2021 12:08:45 +0200,
+Jeremy Szu wrote:
+> 
+> The HP ProBook 650 G8 Notebook PC is using ALC236 codec which is
+> using 0x02 to control mute LED and 0x01 to control micmute LED.
+> Therefore, add a quirk to make it works.
+> 
+> Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
 
-Note that the end address in the function is calculated from the last
-byte, hence it's one byte shorter.  This is because ofs + size can be
-above the actual buffer size boundary.
+Thanks, applied.
 
-Until now, this feature isn't really used, but it'll become useful in
-a later patch that adds the non-contiguous buffer type that shares the
-same callback function as vmalloc.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/memalloc.c | 28 +++++++++++++++++++++-------
- 1 file changed, 21 insertions(+), 7 deletions(-)
-
-diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
-index 1cea8cb9668f..c7c943c661e6 100644
---- a/sound/core/memalloc.c
-+++ b/sound/core/memalloc.c
-@@ -290,11 +290,13 @@ static int snd_dma_vmalloc_mmap(struct snd_dma_buffer *dmab,
- 	return remap_vmalloc_range(area, dmab->area, 0);
- }
- 
-+#define get_vmalloc_page_addr(dmab, offset) \
-+	page_to_phys(vmalloc_to_page((dmab)->area + (offset)))
-+
- static dma_addr_t snd_dma_vmalloc_get_addr(struct snd_dma_buffer *dmab,
- 					   size_t offset)
- {
--	return page_to_phys(vmalloc_to_page(dmab->area + offset)) +
--		offset % PAGE_SIZE;
-+	return get_vmalloc_page_addr(dmab, offset) + offset % PAGE_SIZE;
- }
- 
- static struct page *snd_dma_vmalloc_get_page(struct snd_dma_buffer *dmab,
-@@ -307,11 +309,23 @@ static unsigned int
- snd_dma_vmalloc_get_chunk_size(struct snd_dma_buffer *dmab,
- 			       unsigned int ofs, unsigned int size)
- {
--	ofs %= PAGE_SIZE;
--	size += ofs;
--	if (size > PAGE_SIZE)
--		size = PAGE_SIZE;
--	return size - ofs;
-+	unsigned int start, end;
-+	unsigned long addr;
-+
-+	start = ALIGN_DOWN(ofs, PAGE_SIZE);
-+	end = ofs + size - 1; /* the last byte address */
-+	/* check page continuity */
-+	addr = get_vmalloc_page_addr(dmab, start);
-+	for (;;) {
-+		start += PAGE_SIZE;
-+		if (start > end)
-+			break;
-+		addr += PAGE_SIZE;
-+		if (get_vmalloc_page_addr(dmab, start) != addr)
-+			return start - ofs;
-+	}
-+	/* ok, all on continuous pages */
-+	return size;
- }
- 
- static const struct snd_malloc_ops snd_dma_vmalloc_ops = {
--- 
-2.26.2
-
+Takashi
