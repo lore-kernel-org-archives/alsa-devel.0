@@ -7,87 +7,87 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DE3FC4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Aug 2021 15:43:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4F95C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Aug 2021 15:43:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1812260E09
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Aug 2021 15:43:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1812260E09
+	by mail.kernel.org (Postfix) with ESMTPS id EBACB60E97
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Aug 2021 15:43:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EBACB60E97
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5EFC01742;
-	Tue, 10 Aug 2021 17:42:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5EFC01742
+	by alsa0.perex.cz (Postfix) with ESMTPS id 63CF41738;
+	Tue, 10 Aug 2021 17:42:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63CF41738
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628610194;
-	bh=apNUq5YOrFDyhDdZVSviDJiBYh86+bhy3ri6mohaYMU=;
+	s=default; t=1628610212;
+	bh=wIK3T/8tY8AT/dyhlNn4MQnll4PgUr0XUebdUztcbtE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZAfUUc4b/dkGNmNancj5ob7YJlXMy2zsImESrqGnWD1gllLpZlLhETnp5yihDPERf
-	 3WMnbf4atRhjuXIiMICqVSp+Bs8cduV0kPpc9JB/p8utrdp8U6S9JL0a85JYi41Kk8
-	 ui0bxhJJS22JPYLeEtZW1jqbt7XpZbyMo13xRBQ0=
+	b=Xel+XOGW6UGI3hak7BxjfDaLRrSlgYHRoyYVJ00QxSD11LR6csfszKcalMw4ivVST
+	 zd/0da62u+T9csSqPET0T0EO1bgYn1JLC0vu8KZKFti5y4d+XEgb38X933eh2TYbDz
+	 SlBjyO1VvjmzmY2rCb0zkD+DQ6lIUrPJRQx7bpok=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B840BF80529;
-	Tue, 10 Aug 2021 17:38:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B1AC4F80534;
+	Tue, 10 Aug 2021 17:38:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A8AC3F80511; Tue, 10 Aug 2021 17:38:25 +0200 (CEST)
+ id B8754F80519; Tue, 10 Aug 2021 17:38:26 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CD319F804E3
- for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2021 17:38:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD319F804E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id A7AB5F804E4
+ for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2021 17:38:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7AB5F804E4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="EZn9TekS"
+ header.b="C0nIKYR8"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17AAlVvD027584; 
- Tue, 10 Aug 2021 10:38:09 -0500
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17AAlVv7027584; 
+ Tue, 10 Aug 2021 10:38:05 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=irJBOBLhsE1mq0f5FXZVdYE91m99aLTThi9zgZpov0g=;
- b=EZn9TekSVFbcZIsVLPA9yL78I+dMvotCLiF5Vl02eE+gXSG/RnZL7FL4ayarRry2hlEc
- 2a/ZkfFSLiPOFZea/cECr0C6ainvOiPIuGcpbE455EX5hTEFTjAB7Z6lCXnZZtger5QL
- iTfoHC/ramGhsKjvVHF9Iku9Z4+QjxMWxyDlBPPC+F4J7g7goFtk1Zs0IpzI07RUVOQO
- 6BnRvwKPvtWSJoB5kV9+aIntm+WJXs49o9/z1wWLmw6K8/rwnxhi0vUxyrQvmzUCKGpv
- R8rlohXuqSsa29qzw8L5wOyT+9BQMQhiEm5W5gcTEqGXoLRDnAMUdFdYBuxwMY53cd+Z DQ== 
+ bh=M4NVOiS+8e9dy3UcC2jfG2nQmNP23NGdaJLXRG3jAcM=;
+ b=C0nIKYR8/f4l+EHOD5RSKesPlt7abjCcqV/KimekgtyhGlWfySYb1WY9K1dRIx/ce3K/
+ qSdUBeFrluF2cwB1AooDyqvlPxXeNWf/ZxAiYq7wNCJej3vFcL3D6iWzxj2JEGEvrWu+
+ vRzaW2v6jzErS9QpNOp7yX8+M98z/uRuYS4XwLmXM7xgaM1h+3V57Bpr7WIDozwGKzMw
+ 62wn+TBv1feseqxoMb9J4IWwCfN1WWCJSERM85nVIxcR2JYfhGUpTGCsnG0U2L9Y9481
+ 6Wq8ACQzKrgFwqSYb9rwrA1oJZN+POqRwmLFX1zxnEk1y/5AzhliaC9c/QPKGlleLx11 /Q== 
 Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3abr0u0e2c-7
+ by mx0a-001ae601.pphosted.com with ESMTP id 3abr0u0e2c-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 10 Aug 2021 10:38:09 -0500
+ Tue, 10 Aug 2021 10:38:05 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Tue, 10 Aug
- 2021 16:38:05 +0100
+ 2021 16:38:03 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via
- Frontend Transport; Tue, 10 Aug 2021 16:38:05 +0100
+ Frontend Transport; Tue, 10 Aug 2021 16:38:03 +0100
 Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
  [198.61.64.221])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id BAEFF46E;
- Tue, 10 Aug 2021 15:38:05 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 02E5845D;
+ Tue, 10 Aug 2021 15:38:02 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 12/12] ASoC: cs42l42: Add control for audio slow-start switch
-Date: Tue, 10 Aug 2021 16:37:59 +0100
-Message-ID: <20210810153759.24333-13-rf@opensource.cirrus.com>
+Subject: [PATCH 02/12] ASoC: cs42l42: Don't claim to support 192k
+Date: Tue, 10 Aug 2021 16:37:49 +0100
+Message-ID: <20210810153759.24333-3-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210810153759.24333-1-rf@opensource.cirrus.com>
 References: <20210810153759.24333-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: CAJRppaKcH18AbJAEtgdKiORnIPr60kI
-X-Proofpoint-GUID: CAJRppaKcH18AbJAEtgdKiORnIPr60kI
+X-Proofpoint-ORIG-GUID: Upagjle_tQt1edBaNOp6RJgsr7x6hArl
+X-Proofpoint-GUID: Upagjle_tQt1edBaNOp6RJgsr7x6hArl
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0
  phishscore=0
  clxscore=1015 priorityscore=1501 adultscore=0 mlxlogscore=999 mlxscore=0
@@ -111,94 +111,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This adds an ALSA control so that the slow-start audio ramp feature
-can be disabled. This is useful for high-definition audio applications.
+The driver currently only supports configuring for sample rates <= 96k
+and it isn't possible to setup a configuration that will support all
+sample rates up to 192k.
+
+For sample rates up to 96k MCLK is in the 12MHz group.
+However, although 192k only requires an I2S clock in the 12MHz group,
+the cs42l42 audio path is not natively 192k so the audio must be
+resampled. But for 192k the SRC requires a 24MHz MCLK.
+
+It is not possible to switch MCLK between 12MHz and 24MHz groups
+on-the-fly. The 12MHz group supports all sample rates up to 96k.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs42l42.c | 33 ++++++++++++++++++++++++++++++++-
- sound/soc/codecs/cs42l42.h |  3 +++
- 2 files changed, 35 insertions(+), 1 deletion(-)
+ sound/soc/codecs/cs42l42.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index b2632fdef9a0..ae9190720380 100644
+index 3c1609865440..a43cdfb6223b 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -43,6 +43,7 @@ static const struct reg_default cs42l42_reg_defaults[] = {
- 	{ CS42L42_MCLK_STATUS,			0x02 },
- 	{ CS42L42_MCLK_CTL,			0x02 },
- 	{ CS42L42_SFTRAMP_RATE,			0xA4 },
-+	{ CS42L42_SLOW_START_ENABLE,		0x70 },
- 	{ CS42L42_I2C_DEBOUNCE,			0x88 },
- 	{ CS42L42_I2C_STRETCH,			0x03 },
- 	{ CS42L42_I2C_TIMEOUT,			0xB7 },
-@@ -198,6 +199,7 @@ static bool cs42l42_readable_register(struct device *dev, unsigned int reg)
- 	case CS42L42_MCLK_STATUS:
- 	case CS42L42_MCLK_CTL:
- 	case CS42L42_SFTRAMP_RATE:
-+	case CS42L42_SLOW_START_ENABLE:
- 	case CS42L42_I2C_DEBOUNCE:
- 	case CS42L42_I2C_STRETCH:
- 	case CS42L42_I2C_TIMEOUT:
-@@ -408,6 +410,30 @@ static const struct regmap_config cs42l42_regmap = {
- static DECLARE_TLV_DB_SCALE(adc_tlv, -9700, 100, true);
- static DECLARE_TLV_DB_SCALE(mixer_tlv, -6300, 100, true);
+@@ -819,7 +819,7 @@ static int cs42l42_dai_startup(struct snd_pcm_substream *substream, struct snd_s
+ 	/* Machine driver has not set a SCLK, limit bottom end to 44.1 kHz */
+ 	return snd_pcm_hw_constraint_minmax(substream->runtime,
+ 					    SNDRV_PCM_HW_PARAM_RATE,
+-					    44100, 192000);
++					    44100, 96000);
+ }
  
-+static int cs42l42_slow_start_put(struct snd_kcontrol *kcontrol,
-+				  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	u8 val;
-+
-+	/* all bits of SLOW_START_EN must be 1 to enable */
-+	switch (ucontrol->value.integer.value[0]) {
-+	case 0:
-+		val = 0;
-+		break;
-+	case 1:
-+		val = CS42L42_SLOW_START_EN_MASK;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	snd_soc_component_update_bits(component, CS42L42_SLOW_START_ENABLE,
-+				      CS42L42_SLOW_START_EN_MASK, val);
-+
-+	return 0;
-+}
-+
- static const char * const cs42l42_hpf_freq_text[] = {
- 	"1.86Hz", "120Hz", "235Hz", "466Hz"
- };
-@@ -461,7 +487,12 @@ static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
- 	SOC_ENUM("HP Volume Scale", cs42l42_full_scale_vol_enum),
- 	SOC_DOUBLE_R_TLV("Mixer Volume", CS42L42_MIXER_CHA_VOL,
- 			 CS42L42_MIXER_CHB_VOL, CS42L42_MIXER_CH_VOL_SHIFT,
--				0x3f, 1, mixer_tlv)
-+				0x3f, 1, mixer_tlv),
-+
-+	/* Global */
-+	SOC_SINGLE_EXT("Slow Start Switch", CS42L42_SLOW_START_ENABLE,
-+			CS42L42_SLOW_START_EN_SHIFT, true, false,
-+			snd_soc_get_volsw, cs42l42_slow_start_put),
- };
- 
- static int cs42l42_hp_adc_ev(struct snd_soc_dapm_widget *w,
-diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index b10796d755ae..85ba1d846072 100644
---- a/sound/soc/codecs/cs42l42.h
-+++ b/sound/soc/codecs/cs42l42.h
-@@ -62,6 +62,9 @@
- #define CS42L42_INTERNAL_FS_MASK	(1 << CS42L42_INTERNAL_FS_SHIFT)
- 
- #define CS42L42_SFTRAMP_RATE		(CS42L42_PAGE_10 + 0x0A)
-+#define CS42L42_SLOW_START_ENABLE	(CS42L42_PAGE_10 + 0x0B)
-+#define CS42L42_SLOW_START_EN_MASK	GENMASK(6, 4)
-+#define CS42L42_SLOW_START_EN_SHIFT	4
- #define CS42L42_I2C_DEBOUNCE		(CS42L42_PAGE_10 + 0x0E)
- #define CS42L42_I2C_STRETCH		(CS42L42_PAGE_10 + 0x0F)
- #define CS42L42_I2C_TIMEOUT		(CS42L42_PAGE_10 + 0x10)
+ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
+@@ -1026,14 +1026,14 @@ static struct snd_soc_dai_driver cs42l42_dai = {
+ 			.stream_name = "Playback",
+ 			.channels_min = 1,
+ 			.channels_max = 2,
+-			.rates = SNDRV_PCM_RATE_8000_192000,
++			.rates = SNDRV_PCM_RATE_8000_96000,
+ 			.formats = CS42L42_FORMATS,
+ 		},
+ 		.capture = {
+ 			.stream_name = "Capture",
+ 			.channels_min = 1,
+ 			.channels_max = 2,
+-			.rates = SNDRV_PCM_RATE_8000_192000,
++			.rates = SNDRV_PCM_RATE_8000_96000,
+ 			.formats = CS42L42_FORMATS,
+ 		},
+ 		.symmetric_rate = 1,
 -- 
 2.11.0
 
