@@ -7,91 +7,91 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47528C4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Aug 2021 15:40:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07DC2C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Aug 2021 15:41:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4A04560462
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Aug 2021 15:40:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4A04560462
+	by mail.kernel.org (Postfix) with ESMTPS id F3FED60E09
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Aug 2021 15:41:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F3FED60E09
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ADF4E16BA;
-	Tue, 10 Aug 2021 17:39:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ADF4E16BA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2FB0916E4;
+	Tue, 10 Aug 2021 17:40:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FB0916E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628610047;
-	bh=GbIItSPQIirZ9Y7ibaIgKO9WmYc1ZPaTBnU22bfQZG0=;
+	s=default; t=1628610085;
+	bh=gHaXuThFAdevDPXOu2vIQODiBG6ZO9saLsFQdlJ+Duk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kzVvNlNE5tUXq8VcNGhlA6y3eFuLdkwnPJTDnZivJZRaDRmZGG2N2AhNof3HgDnNn
-	 jJMnwhX8QeBDZ0mfIewWuTjmunGbOefU+g8YpZLOf75OuUiVkG54g22JKt0bUbMrPA
-	 q+Lcxm7eWqUq7GGJZ0aXnhB5W6g2J7Y65gpBwbPE=
+	b=Go77v24YmC00lDdxY1/fYD23mMUgc6saPCFoLtJnasseeIpSKAXxUCI6whb19T4Ig
+	 adWH1/n8p+DKQE59sGV3cw4zLNvgubWyCsQmszqR08OGDp+JQwtVGAyt2ZlwZJ3+zZ
+	 o2G3cBtb2XmqmYPBgj4kuqDh8SznDypSWcZ0lRQA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B76BF804ED;
-	Tue, 10 Aug 2021 17:38:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2C40BF80506;
+	Tue, 10 Aug 2021 17:38:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 62CE3F804EB; Tue, 10 Aug 2021 17:38:18 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id B2D69F80279; Tue, 10 Aug 2021 17:38:18 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C9804F8025D
- for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2021 17:38:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9804F8025D
+ by alsa1.perex.cz (Postfix) with ESMTPS id DC069F80245
+ for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2021 17:38:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC069F80245
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="BeOW0IwV"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17A75fJT008310; 
- Tue, 10 Aug 2021 10:38:08 -0500
+ header.b="VtjgihuU"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17AAlVv9027584; 
+ Tue, 10 Aug 2021 10:38:06 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=vs+GgVL8y6YSHO6Y3i8EuRaH6f2En26Qpciz8MYoIC8=;
- b=BeOW0IwVJLZNkzz9SxYcONDvH/HMeXuIGc8CuZBuQUB5Ed7uVIxXLPaFHCv+Sg1w/7JN
- X61W7PKsqcyBSMDm3FmTd/YCwFreiqcy1ExdJYzAD89PWaqTMnj2yRJSL4IDFL/UQ1Mq
- +S5/3GfIuDyVBHhEyS5NQn4mhdi5u5uA2zRjEKGXyWBcBrWaskHccH3CXnfOV9lzbfAT
- VDljaiRm4adavqQBBf0vXkJFWLzLfystNBANKs5RATs6fF0uaBTuetty9McCkDUip+Qh
- B9T8hLdZbClJmNWEpVsktRyAoIA466+98sLPyt4plzmhI+g1F4vDcLN1ilJcBn0D/2zq pA== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 3abmrkgkf6-6
+ bh=aSYUEE0jZpyk028RRipO92c7iM0eaAioStDtPkIyM8Q=;
+ b=VtjgihuU1iQS9Xj48Kp48vNoM8yD6G4+ltz/tynYvSbcgEy+2iA/ksCGc45gay0lZA5k
+ CyK/QhUyr13K0UyapssFH2tYlcYZLZuLoDl7Tsv9IECxjgSEJgFm3XT+vpx7qbb7Bo3w
+ UUDj8ur2RfV/c/dDwubEPxw/weaGMyzlSQcMgnZlOVJVa+0Lq+l/o6K7yhfSHXm0XqhG
+ EHDoI5Bgs6IJcjeZWpLil4uUuj6DRK1Ugvi2Uct+q73Oq4/J2Qtei9X9JEaF+9XebhGj
+ bYNm6PCZHgFunkpiAT2GFNk66Lpj8iH5fDx7a1rJQ11S4CpG0KkDKsqfUWb32qrx6RIh JA== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 3abr0u0e2c-3
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 10 Aug 2021 10:38:08 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Tue, 10 Aug 2021 10:38:06 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Tue, 10 Aug
- 2021 16:38:05 +0100
+ 2021 16:38:04 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via
- Frontend Transport; Tue, 10 Aug 2021 16:38:05 +0100
+ Frontend Transport; Tue, 10 Aug 2021 16:38:04 +0100
 Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
  [198.61.64.221])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 771F22A9;
- Tue, 10 Aug 2021 15:38:05 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1E45B2A9;
+ Tue, 10 Aug 2021 15:38:04 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 11/12] ASoC: cs42l42: Add HP Volume Scale control
-Date: Tue, 10 Aug 2021 16:37:58 +0100
-Message-ID: <20210810153759.24333-12-rf@opensource.cirrus.com>
+Subject: [PATCH 06/12] ASoC: cs42l42: Mark OSC_SWITCH_STATUS register volatile
+Date: Tue, 10 Aug 2021 16:37:53 +0100
+Message-ID: <20210810153759.24333-7-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210810153759.24333-1-rf@opensource.cirrus.com>
 References: <20210810153759.24333-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: AdaUBLsroYHzEclsT76xFaOngPhS3IGR
-X-Proofpoint-ORIG-GUID: AdaUBLsroYHzEclsT76xFaOngPhS3IGR
+X-Proofpoint-ORIG-GUID: 7h1Q2ZWa94_mQXPP-BlUn6CXShQJxKxu
+X-Proofpoint-GUID: 7h1Q2ZWa94_mQXPP-BlUn6CXShQJxKxu
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0
- bulkscore=0 adultscore=0
- spamscore=0 lowpriorityscore=0 priorityscore=1501 malwarescore=0
- clxscore=1015 mlxlogscore=999 mlxscore=0 phishscore=0 impostorscore=0
+ phishscore=0
+ clxscore=1015 priorityscore=1501 adultscore=0 mlxlogscore=999 mlxscore=0
+ spamscore=0 bulkscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
  definitions=main-2108100099
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
@@ -111,79 +111,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-cs42l42 has a configurable scaling of the maximum volume. Add an
-ALSA control for this. Note that the datasheet name is "full scale
-volume" but this conflicts with ALSA naming convention so the control
-is named "HP Volume Scale".
-
-Before this change the FULL_SCALE_VOLUME was set based on the value in
-RLA_STAT, but as there isn't any load detection result this always set
-the scaling to -6dB instead of the default 0dB.
+OSC_SWITCH_STATUS is a volatile register indicating the current state
+of the clock switch logic.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs42l42.c | 25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
+ sound/soc/codecs/cs42l42.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 5c1a587af89e..b2632fdef9a0 100644
+index 14fd70c56891..dd677055a3c1 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -425,6 +425,14 @@ static SOC_ENUM_SINGLE_DECL(cs42l42_wnf3_freq_enum, CS42L42_ADC_WNF_HPF_CTL,
- 			    CS42L42_ADC_WNF_CF_SHIFT,
- 			    cs42l42_wnf3_freq_text);
- 
-+static const char * const cs42l42_full_scale_vol_text[] = {
-+	"0dB", "-6dB"
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(cs42l42_full_scale_vol_enum, CS42L42_HP_CTL,
-+			    CS42L42_HP_FULL_SCALE_VOL_SHIFT,
-+			    cs42l42_full_scale_vol_text);
-+
- static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
- 	/* ADC Volume and Filter Controls */
- 	SOC_SINGLE("ADC Notch Switch", CS42L42_ADC_CTL,
-@@ -450,6 +458,7 @@ static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
- 				CS42L42_DACB_INV_SHIFT, true, false),
- 	SOC_SINGLE("DAC HPF Switch", CS42L42_DAC_CTL2,
- 				CS42L42_DAC_HPF_EN_SHIFT, true, false),
-+	SOC_ENUM("HP Volume Scale", cs42l42_full_scale_vol_enum),
- 	SOC_DOUBLE_R_TLV("Mixer Volume", CS42L42_MIXER_CHA_VOL,
- 			 CS42L42_MIXER_CHB_VOL, CS42L42_MIXER_CH_VOL_SHIFT,
- 				0x3f, 1, mixer_tlv)
-@@ -951,7 +960,6 @@ static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- 	struct snd_soc_component *component = dai->component;
- 	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
- 	unsigned int regval;
--	u8 fullScaleVol;
- 	int ret;
- 
- 	if (mute) {
-@@ -1023,20 +1031,11 @@ static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- 		cs42l42->stream_use |= 1 << stream;
- 
- 		if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
--			/* Read the headphone load */
--			regval = snd_soc_component_read(component, CS42L42_LOAD_DET_RCSTAT);
--			if (((regval & CS42L42_RLA_STAT_MASK) >> CS42L42_RLA_STAT_SHIFT) ==
--			    CS42L42_RLA_STAT_15_OHM) {
--				fullScaleVol = CS42L42_HP_FULL_SCALE_VOL_MASK;
--			} else {
--				fullScaleVol = 0;
--			}
--
--			/* Un-mute the headphone, set the full scale volume flag */
-+			/* Un-mute the headphone */
- 			snd_soc_component_update_bits(component, CS42L42_HP_CTL,
- 						      CS42L42_HP_ANA_AMUTE_MASK |
--						      CS42L42_HP_ANA_BMUTE_MASK |
--						      CS42L42_HP_FULL_SCALE_VOL_MASK, fullScaleVol);
-+						      CS42L42_HP_ANA_BMUTE_MASK,
-+						      0);
- 		}
- 	}
- 
+@@ -351,6 +351,7 @@ static bool cs42l42_volatile_register(struct device *dev, unsigned int reg)
+ 	case CS42L42_DEVID_CD:
+ 	case CS42L42_DEVID_E:
+ 	case CS42L42_MCLK_STATUS:
++	case CS42L42_OSC_SWITCH_STATUS:
+ 	case CS42L42_TRSENSE_STATUS:
+ 	case CS42L42_HS_DET_STATUS:
+ 	case CS42L42_ADC_OVFL_STATUS:
 -- 
 2.11.0
 
