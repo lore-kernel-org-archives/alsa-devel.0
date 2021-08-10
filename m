@@ -7,63 +7,63 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B102AC4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Aug 2021 15:42:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DE3FC4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Aug 2021 15:43:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8C97160F35
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Aug 2021 15:42:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8C97160F35
+	by mail.kernel.org (Postfix) with ESMTPS id 1812260E09
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Aug 2021 15:43:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1812260E09
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C75C31727;
-	Tue, 10 Aug 2021 17:41:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C75C31727
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5EFC01742;
+	Tue, 10 Aug 2021 17:42:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5EFC01742
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628610162;
-	bh=FZ/9G0FPA987GkYN02vh9chj/Jz6vItG75c4TmvHYRU=;
+	s=default; t=1628610194;
+	bh=apNUq5YOrFDyhDdZVSviDJiBYh86+bhy3ri6mohaYMU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=E62uc8n8bRni/uAsWtqKTthGSZGV8z7EVzhPe7qFeOr+AwUgB84w2rRmOX5buvghr
-	 889HTgwSgY5wm7ZBin7AIv8l7nhomPR6TQwmLvyMvnr0ppevyFAFJ6wXXFIvot7v9w
-	 sowCt4xLbg7oTFQfi2L+8rNgmIs1oLvVENzeksws=
+	b=ZAfUUc4b/dkGNmNancj5ob7YJlXMy2zsImESrqGnWD1gllLpZlLhETnp5yihDPERf
+	 3WMnbf4atRhjuXIiMICqVSp+Bs8cduV0kPpc9JB/p8utrdp8U6S9JL0a85JYi41Kk8
+	 ui0bxhJJS22JPYLeEtZW1jqbt7XpZbyMo13xRBQ0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8D44CF8051B;
-	Tue, 10 Aug 2021 17:38:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B840BF80529;
+	Tue, 10 Aug 2021 17:38:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6B66DF804FE; Tue, 10 Aug 2021 17:38:24 +0200 (CEST)
+ id A8AC3F80511; Tue, 10 Aug 2021 17:38:25 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CD204F804E1
- for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2021 17:38:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD204F804E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id CD319F804E3
+ for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2021 17:38:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD319F804E3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="d6GswugV"
+ header.b="EZn9TekS"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17AAlVvC027584; 
- Tue, 10 Aug 2021 10:38:08 -0500
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17AAlVvD027584; 
+ Tue, 10 Aug 2021 10:38:09 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=7oKv+9b6tshIPwOXOVGxZ4H9DYz9zjTTyb8Hv227VWM=;
- b=d6GswugVG8Y/2zCsrPn6rGbHeZM9p6Qzrp8SroVK+9L8SGbT4i7EP6wjtb/PMmegHGcu
- KSexYSYQxzm8y9JrHDQeut0zbZG0zokRTqI6HZc4BcXnruDmZKgiqmS7Id0FQ1gjn6Jz
- izLbn37s4mp2BbCV/2c8z6M3lCMcOesYCRzHbCZgWa4tHuejG2F50RDo1z/TqF8TZnTE
- vjR3TWj64i6JaiACzRGasVtX3qKtjDPE3aBbyJnYzDIO13QPICnqNzfVx7h/UOe5na0o
- NGW2ysSIrNVeBN2nyHd4AVRsFUWfTwexh1HXIXvBa6J4QbrgGPlv46+slLYBjMPXDJ/I xg== 
+ bh=irJBOBLhsE1mq0f5FXZVdYE91m99aLTThi9zgZpov0g=;
+ b=EZn9TekSVFbcZIsVLPA9yL78I+dMvotCLiF5Vl02eE+gXSG/RnZL7FL4ayarRry2hlEc
+ 2a/ZkfFSLiPOFZea/cECr0C6ainvOiPIuGcpbE455EX5hTEFTjAB7Z6lCXnZZtger5QL
+ iTfoHC/ramGhsKjvVHF9Iku9Z4+QjxMWxyDlBPPC+F4J7g7goFtk1Zs0IpzI07RUVOQO
+ 6BnRvwKPvtWSJoB5kV9+aIntm+WJXs49o9/z1wWLmw6K8/rwnxhi0vUxyrQvmzUCKGpv
+ R8rlohXuqSsa29qzw8L5wOyT+9BQMQhiEm5W5gcTEqGXoLRDnAMUdFdYBuxwMY53cd+Z DQ== 
 Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3abr0u0e2c-6
+ by mx0a-001ae601.pphosted.com with ESMTP id 3abr0u0e2c-7
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 10 Aug 2021 10:38:08 -0500
+ Tue, 10 Aug 2021 10:38:09 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Tue, 10 Aug
@@ -73,21 +73,21 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  Frontend Transport; Tue, 10 Aug 2021 16:38:05 +0100
 Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
  [198.61.64.221])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 3347D45D;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id BAEFF46E;
  Tue, 10 Aug 2021 15:38:05 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 10/12] ASoC: cs42l42: Remove redundant pll_divout member
-Date: Tue, 10 Aug 2021 16:37:57 +0100
-Message-ID: <20210810153759.24333-11-rf@opensource.cirrus.com>
+Subject: [PATCH 12/12] ASoC: cs42l42: Add control for audio slow-start switch
+Date: Tue, 10 Aug 2021 16:37:59 +0100
+Message-ID: <20210810153759.24333-13-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210810153759.24333-1-rf@opensource.cirrus.com>
 References: <20210810153759.24333-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 7cpweXGc8ToqzY8PMprF_eCd7hTDr19G
-X-Proofpoint-GUID: 7cpweXGc8ToqzY8PMprF_eCd7hTDr19G
+X-Proofpoint-ORIG-GUID: CAJRppaKcH18AbJAEtgdKiORnIPr60kI
+X-Proofpoint-GUID: CAJRppaKcH18AbJAEtgdKiORnIPr60kI
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0
  phishscore=0
  clxscore=1015 priorityscore=1501 adultscore=0 mlxlogscore=999 mlxscore=0
@@ -111,60 +111,94 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Now that struct cs42l42_private has pll_config, the current PLL
-configuration can be looked up directly in pll_ratio_table. This
-makes the pll_divout member of cs42l42_private redundant since it
-was only a copy of the value from pll_ratio_table.
+This adds an ALSA control so that the slow-start audio ramp feature
+can be disabled. This is useful for high-definition audio applications.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs42l42.c | 9 +++------
- sound/soc/codecs/cs42l42.h | 1 -
- 2 files changed, 3 insertions(+), 7 deletions(-)
+ sound/soc/codecs/cs42l42.c | 33 ++++++++++++++++++++++++++++++++-
+ sound/soc/codecs/cs42l42.h |  3 +++
+ 2 files changed, 35 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 93a8fa290cb6..5c1a587af89e 100644
+index b2632fdef9a0..ae9190720380 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -725,10 +725,6 @@ static int cs42l42_pll_config(struct snd_soc_component *component)
- 					CS42L42_PLL_DIVOUT_MASK,
- 					(pll_ratio_table[i].pll_divout * pll_ratio_table[i].n)
- 					<< CS42L42_PLL_DIVOUT_SHIFT);
--				if (pll_ratio_table[i].n != 1)
--					cs42l42->pll_divout = pll_ratio_table[i].pll_divout;
--				else
--					cs42l42->pll_divout = 0;
- 				snd_soc_component_update_bits(component,
- 					CS42L42_PLL_CAL_RATIO,
- 					CS42L42_PLL_CAL_RATIO_MASK,
-@@ -994,12 +990,13 @@ static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- 				snd_soc_component_update_bits(component, CS42L42_PLL_CTL1,
- 							      CS42L42_PLL_START_MASK, 1);
+@@ -43,6 +43,7 @@ static const struct reg_default cs42l42_reg_defaults[] = {
+ 	{ CS42L42_MCLK_STATUS,			0x02 },
+ 	{ CS42L42_MCLK_CTL,			0x02 },
+ 	{ CS42L42_SFTRAMP_RATE,			0xA4 },
++	{ CS42L42_SLOW_START_ENABLE,		0x70 },
+ 	{ CS42L42_I2C_DEBOUNCE,			0x88 },
+ 	{ CS42L42_I2C_STRETCH,			0x03 },
+ 	{ CS42L42_I2C_TIMEOUT,			0xB7 },
+@@ -198,6 +199,7 @@ static bool cs42l42_readable_register(struct device *dev, unsigned int reg)
+ 	case CS42L42_MCLK_STATUS:
+ 	case CS42L42_MCLK_CTL:
+ 	case CS42L42_SFTRAMP_RATE:
++	case CS42L42_SLOW_START_ENABLE:
+ 	case CS42L42_I2C_DEBOUNCE:
+ 	case CS42L42_I2C_STRETCH:
+ 	case CS42L42_I2C_TIMEOUT:
+@@ -408,6 +410,30 @@ static const struct regmap_config cs42l42_regmap = {
+ static DECLARE_TLV_DB_SCALE(adc_tlv, -9700, 100, true);
+ static DECLARE_TLV_DB_SCALE(mixer_tlv, -6300, 100, true);
  
--				if (cs42l42->pll_divout) {
-+				if (pll_ratio_table[cs42l42->pll_config].n > 1) {
- 					usleep_range(CS42L42_PLL_DIVOUT_TIME_US,
- 						     CS42L42_PLL_DIVOUT_TIME_US * 2);
-+					regval = pll_ratio_table[cs42l42->pll_config].pll_divout;
- 					snd_soc_component_update_bits(component, CS42L42_PLL_CTL3,
- 								      CS42L42_PLL_DIVOUT_MASK,
--								      cs42l42->pll_divout <<
-+								      regval <<
- 								      CS42L42_PLL_DIVOUT_SHIFT);
- 				}
++static int cs42l42_slow_start_put(struct snd_kcontrol *kcontrol,
++				  struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	u8 val;
++
++	/* all bits of SLOW_START_EN must be 1 to enable */
++	switch (ucontrol->value.integer.value[0]) {
++	case 0:
++		val = 0;
++		break;
++	case 1:
++		val = CS42L42_SLOW_START_EN_MASK;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	snd_soc_component_update_bits(component, CS42L42_SLOW_START_ENABLE,
++				      CS42L42_SLOW_START_EN_MASK, val);
++
++	return 0;
++}
++
+ static const char * const cs42l42_hpf_freq_text[] = {
+ 	"1.86Hz", "120Hz", "235Hz", "466Hz"
+ };
+@@ -461,7 +487,12 @@ static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
+ 	SOC_ENUM("HP Volume Scale", cs42l42_full_scale_vol_enum),
+ 	SOC_DOUBLE_R_TLV("Mixer Volume", CS42L42_MIXER_CHA_VOL,
+ 			 CS42L42_MIXER_CHB_VOL, CS42L42_MIXER_CH_VOL_SHIFT,
+-				0x3f, 1, mixer_tlv)
++				0x3f, 1, mixer_tlv),
++
++	/* Global */
++	SOC_SINGLE_EXT("Slow Start Switch", CS42L42_SLOW_START_ENABLE,
++			CS42L42_SLOW_START_EN_SHIFT, true, false,
++			snd_soc_get_volsw, cs42l42_slow_start_put),
+ };
  
+ static int cs42l42_hp_adc_ev(struct snd_soc_dapm_widget *w,
 diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index a1e6d443b489..b10796d755ae 100644
+index b10796d755ae..85ba1d846072 100644
 --- a/sound/soc/codecs/cs42l42.h
 +++ b/sound/soc/codecs/cs42l42.h
-@@ -783,7 +783,6 @@ struct  cs42l42_private {
- 	int bclk;
- 	u32 sclk;
- 	u32 srate;
--	u8 pll_divout;
- 	u8 plug_state;
- 	u8 hs_type;
- 	u8 ts_inv;
+@@ -62,6 +62,9 @@
+ #define CS42L42_INTERNAL_FS_MASK	(1 << CS42L42_INTERNAL_FS_SHIFT)
+ 
+ #define CS42L42_SFTRAMP_RATE		(CS42L42_PAGE_10 + 0x0A)
++#define CS42L42_SLOW_START_ENABLE	(CS42L42_PAGE_10 + 0x0B)
++#define CS42L42_SLOW_START_EN_MASK	GENMASK(6, 4)
++#define CS42L42_SLOW_START_EN_SHIFT	4
+ #define CS42L42_I2C_DEBOUNCE		(CS42L42_PAGE_10 + 0x0E)
+ #define CS42L42_I2C_STRETCH		(CS42L42_PAGE_10 + 0x0F)
+ #define CS42L42_I2C_TIMEOUT		(CS42L42_PAGE_10 + 0x10)
 -- 
 2.11.0
 
