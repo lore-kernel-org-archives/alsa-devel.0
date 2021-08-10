@@ -7,90 +7,91 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07DC2C4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Aug 2021 15:41:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FBC5C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Aug 2021 15:41:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F3FED60E09
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Aug 2021 15:41:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F3FED60E09
+	by mail.kernel.org (Postfix) with ESMTPS id E0D1260E97
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Aug 2021 15:41:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E0D1260E97
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2FB0916E4;
-	Tue, 10 Aug 2021 17:40:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FB0916E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3A3A416EE;
+	Tue, 10 Aug 2021 17:40:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A3A416EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628610085;
-	bh=gHaXuThFAdevDPXOu2vIQODiBG6ZO9saLsFQdlJ+Duk=;
+	s=default; t=1628610098;
+	bh=g/XEPOHMhiOyENI8YThpHmYts5zt7jX6iM1geySU3oA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Go77v24YmC00lDdxY1/fYD23mMUgc6saPCFoLtJnasseeIpSKAXxUCI6whb19T4Ig
-	 adWH1/n8p+DKQE59sGV3cw4zLNvgubWyCsQmszqR08OGDp+JQwtVGAyt2ZlwZJ3+zZ
-	 o2G3cBtb2XmqmYPBgj4kuqDh8SznDypSWcZ0lRQA=
+	b=KCk9eXgqMmJxcwT8DS2vLmp0gssEPLPgEOS/0FtwcY+aEKdcogb6W92MXSOmwvlQs
+	 snBtyenG5yjPAmLE/k1cfNrISua0gW42xqgoRJqNEkWX3iqmU53Y1KXveFYxzq22tR
+	 e+nYQXMnAYkQvP2xBQiSLZGCpnASGn6JJ5lyYXdI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C40BF80506;
+	by alsa1.perex.cz (Postfix) with ESMTP id C49EBF8050F;
 	Tue, 10 Aug 2021 17:38:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B2D69F80279; Tue, 10 Aug 2021 17:38:18 +0200 (CEST)
+ id 9F61FF804EC; Tue, 10 Aug 2021 17:38:19 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DC069F80245
- for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2021 17:38:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC069F80245
+ by alsa1.perex.cz (Postfix) with ESMTPS id 344BFF804B1
+ for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2021 17:38:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 344BFF804B1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="VtjgihuU"
+ header.b="XlpFHYB4"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17AAlVv9027584; 
- Tue, 10 Aug 2021 10:38:06 -0500
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17AAlVvB027584; 
+ Tue, 10 Aug 2021 10:38:08 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=aSYUEE0jZpyk028RRipO92c7iM0eaAioStDtPkIyM8Q=;
- b=VtjgihuU1iQS9Xj48Kp48vNoM8yD6G4+ltz/tynYvSbcgEy+2iA/ksCGc45gay0lZA5k
- CyK/QhUyr13K0UyapssFH2tYlcYZLZuLoDl7Tsv9IECxjgSEJgFm3XT+vpx7qbb7Bo3w
- UUDj8ur2RfV/c/dDwubEPxw/weaGMyzlSQcMgnZlOVJVa+0Lq+l/o6K7yhfSHXm0XqhG
- EHDoI5Bgs6IJcjeZWpLil4uUuj6DRK1Ugvi2Uct+q73Oq4/J2Qtei9X9JEaF+9XebhGj
- bYNm6PCZHgFunkpiAT2GFNk66Lpj8iH5fDx7a1rJQ11S4CpG0KkDKsqfUWb32qrx6RIh JA== 
+ bh=gP0i53yT3qfs0wrMdXQHVjqCcdpnkbwnhZgmeA0RguM=;
+ b=XlpFHYB46f3HyZrHrQBNYqKWz7K/jMTb8zJ9Fy8JZ3Q+YmViRWSb/I6lslNXli5ztgdR
+ MkZbjpACvNCk60A+YE10NfLTtgRRLI6i4ap7lIyGrA+VcSb1yjqoM8/Rd0emBZzHkceL
+ P7agWx8OmGb+q/sV+VAza3GJPjRsjA0/Vrrk9SAiv03xlfLYTaj/qE/tlXAaPiC2JARR
+ YKbA82jAFH/pEdRA1srWpaEmTGWJ8MAArrFsrHKWoQIRdMfhQgnKFgb5gB9uoFlNS2x7
+ pGVM7pkywGWg5rIMNAzEQNoLSPAP7GlOnG0eVp6YFUhzfD1vCH7wLg0nWcKMdnJOkVlo EA== 
 Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3abr0u0e2c-3
+ by mx0a-001ae601.pphosted.com with ESMTP id 3abr0u0e2c-5
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 10 Aug 2021 10:38:06 -0500
+ Tue, 10 Aug 2021 10:38:07 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Tue, 10 Aug
- 2021 16:38:04 +0100
+ 2021 16:38:05 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via
- Frontend Transport; Tue, 10 Aug 2021 16:38:04 +0100
+ Frontend Transport; Tue, 10 Aug 2021 16:38:05 +0100
 Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
  [198.61.64.221])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1E45B2A9;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E569D46E;
  Tue, 10 Aug 2021 15:38:04 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 06/12] ASoC: cs42l42: Mark OSC_SWITCH_STATUS register volatile
-Date: Tue, 10 Aug 2021 16:37:53 +0100
-Message-ID: <20210810153759.24333-7-rf@opensource.cirrus.com>
+Subject: [PATCH 09/12] ASoC: cs42l42: Remove runtime_suspend/runtime_resume
+ callbacks
+Date: Tue, 10 Aug 2021 16:37:56 +0100
+Message-ID: <20210810153759.24333-10-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210810153759.24333-1-rf@opensource.cirrus.com>
 References: <20210810153759.24333-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 7h1Q2ZWa94_mQXPP-BlUn6CXShQJxKxu
-X-Proofpoint-GUID: 7h1Q2ZWa94_mQXPP-BlUn6CXShQJxKxu
+X-Proofpoint-ORIG-GUID: EnMbIdztKnvCslrgyjGYjbOurnm-2pub
+X-Proofpoint-GUID: EnMbIdztKnvCslrgyjGYjbOurnm-2pub
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0
  phishscore=0
- clxscore=1015 priorityscore=1501 adultscore=0 mlxlogscore=999 mlxscore=0
+ clxscore=1015 priorityscore=1501 adultscore=0 mlxlogscore=866 mlxscore=0
  spamscore=0 bulkscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
  definitions=main-2108100099
@@ -111,26 +112,93 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-OSC_SWITCH_STATUS is a volatile register indicating the current state
-of the clock switch logic.
+The driver has runtime_suspend and runtime_resume callbacks, but
+pm_runtime is never enabled so these functions won't be called, and
+the runtime_suspend would cause jack detect to stop working.
+
+These functions are unused - delete them.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs42l42.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/cs42l42.c | 44 --------------------------------------------
+ 1 file changed, 44 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 14fd70c56891..dd677055a3c1 100644
+index b7a1231add2d..93a8fa290cb6 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -351,6 +351,7 @@ static bool cs42l42_volatile_register(struct device *dev, unsigned int reg)
- 	case CS42L42_DEVID_CD:
- 	case CS42L42_DEVID_E:
- 	case CS42L42_MCLK_STATUS:
-+	case CS42L42_OSC_SWITCH_STATUS:
- 	case CS42L42_TRSENSE_STATUS:
- 	case CS42L42_HS_DET_STATUS:
- 	case CS42L42_ADC_OVFL_STATUS:
+@@ -25,7 +25,6 @@
+ #include <linux/regulator/consumer.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/of_device.h>
+-#include <linux/pm_runtime.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -2067,19 +2066,6 @@ static int cs42l42_i2c_remove(struct i2c_client *i2c_client)
+ 	struct cs42l42_private *cs42l42 = i2c_get_clientdata(i2c_client);
+ 
+ 	devm_free_irq(&i2c_client->dev, i2c_client->irq, cs42l42);
+-	pm_runtime_suspend(&i2c_client->dev);
+-	pm_runtime_disable(&i2c_client->dev);
+-
+-	return 0;
+-}
+-
+-#ifdef CONFIG_PM
+-static int cs42l42_runtime_suspend(struct device *dev)
+-{
+-	struct cs42l42_private *cs42l42 = dev_get_drvdata(dev);
+-
+-	regcache_cache_only(cs42l42->regmap, true);
+-	regcache_mark_dirty(cs42l42->regmap);
+ 
+ 	/* Hold down reset */
+ 	gpiod_set_value_cansleep(cs42l42->reset_gpio, 0);
+@@ -2091,35 +2077,6 @@ static int cs42l42_runtime_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int cs42l42_runtime_resume(struct device *dev)
+-{
+-	struct cs42l42_private *cs42l42 = dev_get_drvdata(dev);
+-	int ret;
+-
+-	/* Enable power */
+-	ret = regulator_bulk_enable(ARRAY_SIZE(cs42l42->supplies),
+-					cs42l42->supplies);
+-	if (ret != 0) {
+-		dev_err(dev, "Failed to enable supplies: %d\n",
+-			ret);
+-		return ret;
+-	}
+-
+-	gpiod_set_value_cansleep(cs42l42->reset_gpio, 1);
+-	usleep_range(CS42L42_BOOT_TIME_US, CS42L42_BOOT_TIME_US * 2);
+-
+-	regcache_cache_only(cs42l42->regmap, false);
+-	regcache_sync(cs42l42->regmap);
+-
+-	return 0;
+-}
+-#endif
+-
+-static const struct dev_pm_ops cs42l42_runtime_pm = {
+-	SET_RUNTIME_PM_OPS(cs42l42_runtime_suspend, cs42l42_runtime_resume,
+-			   NULL)
+-};
+-
+ #ifdef CONFIG_OF
+ static const struct of_device_id cs42l42_of_match[] = {
+ 	{ .compatible = "cirrus,cs42l42", },
+@@ -2146,7 +2103,6 @@ MODULE_DEVICE_TABLE(i2c, cs42l42_id);
+ static struct i2c_driver cs42l42_i2c_driver = {
+ 	.driver = {
+ 		.name = "cs42l42",
+-		.pm = &cs42l42_runtime_pm,
+ 		.of_match_table = of_match_ptr(cs42l42_of_match),
+ 		.acpi_match_table = ACPI_PTR(cs42l42_acpi_match),
+ 		},
 -- 
 2.11.0
 
