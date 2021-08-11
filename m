@@ -2,80 +2,94 @@ Return-Path: <SRS0=Pedv=NE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85E20C4320A
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 08:22:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 857B1C4338F
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 08:52:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A4BF96056B
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 08:22:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A4BF96056B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id D36CD610CC
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 08:52:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D36CD610CC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0071318AE;
-	Fri, 13 Aug 2021 10:21:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0071318AE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 87936184C;
+	Fri, 13 Aug 2021 10:51:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87936184C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628842967;
-	bh=4CziMZwI4dnwamUBWsY5I8ZdK92FTo9nX9LLCe8c9eM=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=e2nOhwf7wNQR6vIVA6ScODlN20kWKeRceIj7AEqfRq9fG7mhgh4bxEwUkO70Jasty
-	 9rkP7idydA3IQKkPPNHo2bstLng7qcKFOaL7f0wtHAAdI7znpD1J1ehVgJGUOI++rf
-	 U6DBAdKCpP2QSfRYNTlE0hdFCxxKHtiAeHYLwhUI=
+	s=default; t=1628844743;
+	bh=Uqwt4Q9L5x+M9THC59RJEIFGR1XoNby5gjlUe2bGqjo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=sxaoegqX2rEH+0d0u8KpszF4UkZ+IU1VgG4th0JGfKDNHNH+SgtvKrKVsEo5/OB/9
+	 gtDpU3InIlJYc0v0QbaUv2Uk94jZjDM+XfYAXQLuVQBkrCuoHROX4vytOV2TVay8Uw
+	 etzipz9Bg9yYXjltysSYlNyDn+yCcMDdOyTJwZ9Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 958D9F8020D;
-	Fri, 13 Aug 2021 10:21:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C3A2F8020D;
+	Fri, 13 Aug 2021 10:51:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E0D02F802D2; Fri, 13 Aug 2021 10:21:55 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 44754F802D2; Wed, 11 Aug 2021 14:43:21 +0200 (CEST)
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com
+ [IPv6:2607:f8b0:4864:20::102e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 39B43F800E5
- for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2021 10:21:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39B43F800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 96253F800F4
+ for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2021 14:43:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96253F800F4
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="lMFANcbG"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="dCgDpejd"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 9E1B22229B;
- Fri, 13 Aug 2021 08:21:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1628842903; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=8RoowNPJRN0w2H9F+De/nSstsefAJn9bGmwqlnipG0c=;
- b=lMFANcbGXmDoZoFi8CAHHLf0+0B/gSDP8pHX7GAw2p1C90cL5fcxDN/MGj0Q6pjcjgi6RW
- FURTehXyJwvpbKarymJb5jnq6ijhJ8bIlPYcDshrkYZW1qM8kRMqla2wjZ6mvpDA+jJ4nj
- ubeCTnSMDBj1u7nDnz3Bou9YXwoUj+g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1628842903;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=8RoowNPJRN0w2H9F+De/nSstsefAJn9bGmwqlnipG0c=;
- b=dCgDpejd/HKlNZG1vh6KObjKa+jQ21/4fp5EU/t6qMhLiz53nesIw3Yy0Pwlx6SEfWbVf6
- +SRSrTV38vzO9iDg==
-Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 8B99FA3B85;
- Fri, 13 Aug 2021 08:21:43 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: pcm: Add SNDRV_PCM_INFO_EXPLICIT_SYNC flag
-Date: Fri, 13 Aug 2021 10:21:42 +0200
-Message-Id: <20210813082142.5375-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="DB0iYLXu"
+Received: by mail-pj1-x102e.google.com with SMTP id
+ u21-20020a17090a8915b02901782c36f543so9297659pjn.4
+ for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2021 05:43:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=cOANcQIs9Ar+QX5NpzQhxFpOziOhNrP1h0WDxrVgheI=;
+ b=DB0iYLXuIEwwm5YwvrLlw2MuD58mpbtrBTT8ScPyeqA+ndPVqYjWjTu46Vb6KTsQfX
+ M2SzvhdudAbsDyDA5/Ypc2FPxYoIVMetI+Sea/k6YS8DwFOerjNCiqNDs8TT23D5eNt9
+ pR6atqyaxThOIZzQphBTlEStmrXxsIM9iaqDkC4mDpO7wivkMibNKsPWnZiwitbZymQ/
+ rb2+IFGn8boRShsJtljymlmZlCtG8jl5ehL+pyEEA9a6+3j6JcHtTe6abGEIqd5vx0h2
+ hCUAdWGG1Gi8MRNN+gwXCdtdAzhw/hSjQQmR9JlAKSNKzbRcf7Ikt0NFl4DZQ0JG0U6m
+ M/uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=cOANcQIs9Ar+QX5NpzQhxFpOziOhNrP1h0WDxrVgheI=;
+ b=EItVbGxYjfRTulpEXOSI+NgdAX8BB0bokrNEV8gPT9U7PU8LUBcF5scKIpI8FzyIaq
+ KSW0HtxTBUqjYnmbaEhkFlRQhyej3w/BjNdlJKE1Ct6+5mYpDVFiZrzF2aKDPmfdukE0
+ JWL8DF2xn17sjIiys6aU9L50zrsSIbZ9YFrE5gEFlOcpdfrMDwfy/UJsUXYz3C8Zx5Rw
+ WUmCc2s2VUxTcPcoxCnaO8mIt8ffp0tcSM5z35sxGVtreuNIzA7nBqs1685bSnhwZV8g
+ UBVtkWWvNREoYEIeFh2oBMrtL1cM5+YgZNR781IjcsJb7Ue5gsEdk/RWSj5IulVtU7S6
+ kSSA==
+X-Gm-Message-State: AOAM533DvmfiM2/stSKnTBhnzyw7rMTjvVn3msKSTS3miuxfmWyKyxtW
+ HJ0sYF0mdUJwLvwtDvu3Te+PePvgh7TKZ0ADT/s=
+X-Google-Smtp-Source: ABdhPJzE+sjikp72XXtYUufc1yc4N1KgY8GbaXGkC4mCJEVBVocoKSkuZVKRJaYTGwwYcOAX87vqLop4x4M/mfSNUKU=
+X-Received: by 2002:a17:90a:2c05:: with SMTP id
+ m5mr37855025pjd.32.1628685795924; 
+ Wed, 11 Aug 2021 05:43:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+References: <CAHhAz+hQBnUVWBnoQO6y44C-G5CnZdFLJ7v738_Y5Rt6AZSkrA@mail.gmail.com>
+In-Reply-To: <CAHhAz+hQBnUVWBnoQO6y44C-G5CnZdFLJ7v738_Y5Rt6AZSkrA@mail.gmail.com>
+From: vishnu <vardhanraj4143@gmail.com>
+Date: Wed, 11 Aug 2021 18:13:04 +0530
+Message-ID: <CACk2A5ZOhZwvoLR-+m8LMpmC5stFhAvcxLuZZ+7ad47gaiVfkg@mail.gmail.com>
+Subject: Re: USB-Audio: Device or resource busy (strace log)
+To: Muni Sekhar <munisekharrms@gmail.com>
+X-Mailman-Approved-At: Fri, 13 Aug 2021 10:51:31 +0200
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: alsa-devel <alsa-devel@alsa-project.org>, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org,
+ kernelnewbies <kernelnewbies@kernelnewbies.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,70 +105,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-ALSA PCM core has an optimized way to communicate with user-space for
-its control and status data via mmap on the supported architectures
-like x86.  Depending on the situation, however, we'd rather want to
-enforce user-space notifying the applptr or hwptr change explicitly
-via ioctl.  For example, the upcoming non-contig and non-coherent
-buffer handling would need an explicit sync, and this needs to catch
-the applptr and hwptr changes.  Also, ASoC SOF driver will have the
-SPIB support that has the similar requirement for the explicit control
-of the applptr and hwptr.
+can you paste output of
+arecord -l (list of capture devices).
+Which device you are using and os.
+Does this instance is already open by default? like any video playing or
+something like that?
 
-This patch adds the new PCM hardware info flag,
-SNDRV_PCM_INFO_EXPLICIT_SYNC.  When this flag is set, PCM core
-disables both the control and the status mmap, which enforces
-user-space to update via SYNC_PTR ioctl.  In that way, drivers can
-catch the applptr and hwptr update and apply the sync operation if
-needed.
+On Wed, Aug 11, 2021 at 6:06 PM Muni Sekhar <munisekharrms@gmail.com> wrote:
 
-Link: https://lore.kernel.org/r/20210812113818.6479-1-tiwai@suse.de
-Link: https://lore.kernel.org/r/20210610205326.1176400-1-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- include/uapi/sound/asound.h | 1 +
- sound/core/pcm_native.c     | 9 +++++++++
- 2 files changed, 10 insertions(+)
-
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index d17c061950df..1d84ec9db93b 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -299,6 +299,7 @@ typedef int __bitwise snd_pcm_subformat_t;
- #define SNDRV_PCM_INFO_HAS_LINK_ABSOLUTE_ATIME     0x02000000  /* report absolute hardware link audio time, not reset on startup */
- #define SNDRV_PCM_INFO_HAS_LINK_ESTIMATED_ATIME    0x04000000  /* report estimated link audio time */
- #define SNDRV_PCM_INFO_HAS_LINK_SYNCHRONIZED_ATIME 0x08000000  /* report synchronized audio/system time */
-+#define SNDRV_PCM_INFO_EXPLICIT_SYNC	0x10000000	/* needs explicit sync of pointers and data */
- 
- #define SNDRV_PCM_INFO_DRAIN_TRIGGER	0x40000000		/* internal kernel flag - trigger in drain */
- #define SNDRV_PCM_INFO_FIFO_IN_FRAMES	0x80000000	/* internal kernel flag - FIFO size is in frames */
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index dc9fa312fadd..d233cb3b41d8 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -3621,6 +3621,12 @@ static int snd_pcm_mmap_control(struct snd_pcm_substream *substream, struct file
- 
- static bool pcm_status_mmap_allowed(struct snd_pcm_file *pcm_file)
- {
-+	/* If drivers require the explicit sync (typically for non-coherent
-+	 * pages), we have to disable the mmap of status and control data
-+	 * to enforce the control via SYNC_PTR ioctl.
-+	 */
-+	if (pcm_file->substream->runtime->hw.info & SNDRV_PCM_INFO_EXPLICIT_SYNC)
-+		return false;
- 	/* See pcm_control_mmap_allowed() below.
- 	 * Since older alsa-lib requires both status and control mmaps to be
- 	 * coupled, we have to disable the status mmap for old alsa-lib, too.
-@@ -3635,6 +3641,9 @@ static bool pcm_control_mmap_allowed(struct snd_pcm_file *pcm_file)
- {
- 	if (pcm_file->no_compat_mmap)
- 		return false;
-+	/* see above */
-+	if (pcm_file->substream->runtime->hw.info & SNDRV_PCM_INFO_EXPLICIT_SYNC)
-+		return false;
- 	/* Disallow the control mmap when SYNC_APPLPTR flag is set;
- 	 * it enforces the user-space to fall back to snd_pcm_sync_ptr(),
- 	 * thus it effectively assures the manual update of appl_ptr.
--- 
-2.26.2
-
+> Hi All,
+>
+> $ cat /proc/asound/cards
+>  0 [USB            ]: USB-Audio - Plantronics .Audio 628 USB
+>                       Plantronics Plantronics .Audio 628 USB at
+> usb-0000:00:14.0-2, full speed
+>
+> I am using a Plantronics USB Audio headset.
+>
+> $ arecord --device hw:0,0 --channels 2 --format S16_LE --rate 44100Hz x.wav
+> arecord: main:722: audio open error: Device or resource busy
+>
+>
+> 'arecord' command always fails the first time after system boot in my
+> system. But subsequent execution of the 'arecord' command runs fine.
+>
+>
+> I've attached the strace log for the "audio open error: Device or
+> resource busy" failure. Is there any fix available for this issue?
+>
+> --
+> Thanks,
+> Sekhar
+>
