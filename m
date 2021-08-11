@@ -2,111 +2,104 @@ Return-Path: <SRS0=gvoF=NC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60F67C4338F
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Aug 2021 08:40:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F4DDC4338F
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Aug 2021 10:57:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CB9EA60FC0
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Aug 2021 08:40:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CB9EA60FC0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+	by mail.kernel.org (Postfix) with ESMTPS id B5A8360F38
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Aug 2021 10:57:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B5A8360F38
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E78DB1705;
-	Wed, 11 Aug 2021 10:39:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E78DB1705
+	by alsa0.perex.cz (Postfix) with ESMTPS id 77E871718;
+	Wed, 11 Aug 2021 12:56:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77E871718
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628671207;
-	bh=hNPTlNdpcorbvFwikvgrsQYcxYEw8WUbzAnqd8MyiH8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=rbvAtNDtGJzg6JUJW9P46OF5fobA7z3ZdNpTVSBsHd7QB7I/l0MrSgdIgZBuGSHAZ
-	 syHkkvidSI1Ez2X5aChZn8vlZvNOJwhXmFmMS94PynIiO+mnT+fPH3lh1I7S/fdhQ8
-	 NSNVp6CPcDVRenNk/VYsdCs6vJxycy1opSx1Ij6Q=
+	s=default; t=1628679458;
+	bh=THMnSCX94SGWwOJkC3VKv7aDXrD6muXjDbL3Xjv26uY=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=po1c0AuwdjM0ffhOzuJVrunXoRvLeH0p1dUmyNcxenGa90cj1lygP8SFyhtiunri5
+	 DUVv3QWEKbKbJjZ/vPlCgQbD0uegO8PDzQ2tjK4E4Jdbig4XYwY2wH5OFvqlWccKc6
+	 h/gC78xnja4uiNrNAC/DIxewiyNiiUL1KIJ+k3MU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 83082F804AE;
-	Wed, 11 Aug 2021 10:38:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EDE45F8020D;
+	Wed, 11 Aug 2021 12:56:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CD2A1F8032D; Wed, 11 Aug 2021 10:38:18 +0200 (CEST)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ id 8D856F802D2; Wed, 11 Aug 2021 12:56:46 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C32A9F8016B
- for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2021 10:38:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C32A9F8016B
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 17B8bx7V3004382,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
- by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 17B8bx7V3004382
+ by alsa1.perex.cz (Postfix) with ESMTPS id 56815F800F4
+ for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2021 12:56:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56815F800F4
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="Ps056BEO"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17B9h5dZ011878; 
+ Wed, 11 Aug 2021 05:56:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=YS0en2nvtImSykNobFR0zlreAx5eXIqh0Mq5Jty9FJ0=;
+ b=Ps056BEO0fECxG5FoU7iGZ6a0VBBchOQ7ScbnQP4hWfInQLzv3dfHvea8c/svFkq53Wi
+ WkGSKfVLAQeC8aYaqAL/pveP0ujyg+L47OY2KZ0p+DNmOpArRSr7E1MZn78fM13kmz6X
+ UqF6qAwP5LyZ+rS7hAqXhNjLDIRvzty5xcdHSn+2c5IhChIXi5+td/YYohQG1Oh7FPmJ
+ 3eGy5QGDiiQ5FrNya+n5tpOakrFPUq4Misiidy8RgTn9dKc5ADkSqT3OHs3gmX/vw31M
+ RmfuzFQKj3TRHiq3YsTCRh/rbT5qQGLV5/QRPyNdTuRxYCOm5UsBw6oiV8gZchRnqKH9 1Q== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0b-001ae601.pphosted.com with ESMTP id 3acc5ng2pu-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 11 Aug 2021 16:37:59 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 11 Aug 2021 16:37:58 +0800
-Received: from localhost.localdomain (172.16.20.48) by
- RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 11 Aug 2021 16:37:58 +0800
-From: <derek.fang@realtek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH 1/2] Revert "ASoC: rt5682: Adjust headset volume button
- threshold"
-Date: Wed, 11 Aug 2021 16:37:49 +0800
-Message-ID: <20210811083750.26680-1-derek.fang@realtek.com>
-X-Mailer: git-send-email 2.17.1
+ Wed, 11 Aug 2021 05:56:36 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Wed, 11 Aug
+ 2021 11:56:34 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via
+ Frontend Transport; Wed, 11 Aug 2021 11:56:34 +0100
+Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.221])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 929342A9;
+ Wed, 11 Aug 2021 10:56:34 +0000 (UTC)
+Subject: Re: [PATCH 04/12] ASoC: cs42l42: Don't reconfigure the PLL while it
+ is running
+To: Mark Brown <broonie@kernel.org>
+References: <20210810153759.24333-1-rf@opensource.cirrus.com>
+ <20210810153759.24333-5-rf@opensource.cirrus.com>
+ <20210810154959.GD4704@sirena.org.uk>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+Message-ID: <b244d737-ae0d-2566-d909-c2264a2668ec@opensource.cirrus.com>
+Date: Wed, 11 Aug 2021 11:56:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.16.20.48]
-X-ClientProxiedBy: RTEXMBS01.realtek.com.tw (172.21.6.94) To
- RTEXMBS01.realtek.com.tw (172.21.6.94)
-X-KSE-ServerInfo: RTEXMBS01.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: trusted connection
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 08/11/2021 08:25:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzgvMTEgpFekyCAwNjowMDowMA==?=
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 08/11/2021 08:23:50
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 165507 [Aug 11 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: derek.fang@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 454 454 39c6e442fd417993330528e7f9d13ac1bf7fdf8c
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: realtek.com:7.1.1;
- d41d8cd98f00b204e9800998ecf8427e.com:7.1.1; 127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 08/11/2021 08:25:00
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, albertchen@realtek.com, Derek Fang <derek.fang@realtek.com>,
- shumingf@realtek.com, flove@realtek.com
+In-Reply-To: <20210810154959.GD4704@sirena.org.uk>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-ORIG-GUID: uGPj_o87FZzFDBmyNqNdAnk0NPSKz_i7
+X-Proofpoint-GUID: uGPj_o87FZzFDBmyNqNdAnk0NPSKz_i7
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0
+ bulkscore=0 phishscore=0
+ clxscore=1015 priorityscore=1501 suspectscore=0 impostorscore=0
+ malwarescore=0 adultscore=0 mlxlogscore=876 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108110072
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -122,25 +115,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Derek Fang <derek.fang@realtek.com>
+On 10/08/2021 16:49, Mark Brown wrote:
+> On Tue, Aug 10, 2021 at 04:37:51PM +0100, Richard Fitzgerald wrote:
+>> cs42l42_pcm_hw_params() must only configure the PLL if this is the first
+>> stream to become active, otherwise it will be overwriting the registers
+>> while the PLL is running.
+> 
+> Shouldn't the PLL code be noticing problematic attempts to reconfigure
+> the PLL while it's active rather than the individual callers?
+> 
 
-This reverts commit 6d20bf7c020f417fdef1810a22da17c126603472.
-Since it may risk affecting other headset Vol- button.
-
-Signed-off-by: Derek Fang <derek.fang@realtek.com>
-
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index 7dc01ae6bb66..fcf442b8a732 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -44,7 +44,6 @@ static const struct reg_sequence patch_list[] = {
- 	{RT5682_I2C_CTRL, 0x000f},
- 	{RT5682_PLL2_INTERNAL, 0x8266},
- 	{RT5682_SAR_IL_CMD_3, 0x8365},
--	{RT5682_SAR_IL_CMD_6, 0x0180},
- };
- 
- void rt5682_apply_patch_list(struct rt5682_priv *rt5682, struct device *dev)
--- 
-2.17.1
-
+I'll push a new version with cs42l42_pll_config() doing the check.
