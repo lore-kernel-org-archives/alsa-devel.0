@@ -2,90 +2,88 @@ Return-Path: <SRS0=gvoF=NC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DE16C4338F
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Aug 2021 18:20:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F11DC4338F
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Aug 2021 18:26:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A90FE60FC0
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Aug 2021 18:20:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A90FE60FC0
+	by mail.kernel.org (Postfix) with ESMTPS id A13FB610F7
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Aug 2021 18:26:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A13FB610F7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C8E6172B;
-	Wed, 11 Aug 2021 20:19:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C8E6172B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 96778172B;
+	Wed, 11 Aug 2021 20:25:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96778172B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628706022;
-	bh=XLPjJRxp0bPAhY+csQxyDaBncYEBtOeQleoWOs1FFV4=;
+	s=default; t=1628706358;
+	bh=IAw/mA4lggiQovXp4hNUsxGrAs4WDvJ37fmSi4Jku6A=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AowTUjyioV+qnt3F9mAMCuZe2MONtUlEZGv/SbqsntivrGerP2SIxgerBEL9F6P85
-	 j3Ny0/EI47g1Fu3CJCLEKQBj6YNg4UygKZH/Lupff3WBfxospS/RqTuZQ/d59+fmYx
-	 sAUcApKBdSsK9eNRfpAWCgss/M067FxQDYlPhXIU=
+	b=nZLB0zM4aSEZDR8jSW5GqCcwGYyQUwMYJtOHd2v0bSI4eW+hC8Nm0/kWVnaNxRMtM
+	 GjO5xcTR5jnNXxFRCD+cqhdbMnGnVGB5uBk1VvKNMEsCK92L2GB3EvGi7dm29OEnXt
+	 ZQMBoSaq3UNIp4YVNsswvZaTwjZo5Kj+lEInkRq0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ECA63F8020D;
-	Wed, 11 Aug 2021 20:19:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 302BBF8020D;
+	Wed, 11 Aug 2021 20:25:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DBF70F8016B; Wed, 11 Aug 2021 20:19:29 +0200 (CEST)
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com
- [209.85.216.45])
+ id B1F2BF802D2; Wed, 11 Aug 2021 20:25:06 +0200 (CEST)
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com
+ [209.85.216.50])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 46F96F8016B
- for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2021 20:19:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46F96F8016B
-Received: by mail-pj1-f45.google.com with SMTP id
- u21-20020a17090a8915b02901782c36f543so10957695pjn.4
- for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2021 11:19:25 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 49D93F800F4
+ for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2021 20:24:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49D93F800F4
+Received: by mail-pj1-f50.google.com with SMTP id
+ u13-20020a17090abb0db0290177e1d9b3f7so11019452pjr.1
+ for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2021 11:24:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=ilpZFfh2W+CY8+HCSImTzYloCYVl2pqPpxQYj2d5QPI=;
- b=DVg9mZR+N3i/khOL8CE9VI+v/H3EVxEU63+xGfoavABaOJdqlqkYHqXMY3JDUu5+qp
- 3KTl6BDQqEw4sTGE0Z2KGImQU4G8QuCqfePfwJ5FkFDR9x9vY+68T7yDsFu8LgF6SKIo
- CutiO95xDScaJvOdVtKh4xf7HGSltomyHjwnAv4PgJVAwQyRwhwqCmnXr1DClm9nZKlU
- 09ev7JRozRx8ErQ+HQQzJ4J8o0z6VWQws0dnkTFMELyJnJbXRnk6gn4nQsttFcF/E97r
- FxzKJpeYge6NVMmKAHsOqtwrereQra+4oRV8HjD/Uw812tOgP4REso1U1dGsFUes3UgO
- +wRQ==
-X-Gm-Message-State: AOAM532L1emys5YaPir+d5TaKCiM4CJwbSpLPfLdE/vgClc7/ltjew2c
- sEXB1XBxpjlFjDw69Zd6yQ==
-X-Google-Smtp-Source: ABdhPJxUdAalxENdH6d6efbOmzxEgsbEVrYlNZ1GqZ+dtvFoyMVQkp9dVRHrCSA/A1CQgbuDZCz/iQ==
-X-Received: by 2002:a63:5002:: with SMTP id e2mr41094pgb.256.1628705963297;
- Wed, 11 Aug 2021 11:19:23 -0700 (PDT)
+ bh=uR0s0AU+M7YxxJS85wJoKJfjFhScm/FPYXJ1t4tDEUM=;
+ b=mEilV60D4LCmO03UNrq0KzAOyt+5WhBeKZeh0eGTohC87T7EpsixeGLtcCgkFIGMrj
+ Q/bRMAZ0y9HwxyPucgZpUPZLxTiwP5pvUeqq2BIXzY7Br9CeRWBZ4XnN5WCMOHmrD5Nw
+ EUlO/cqNrC8JO6sHt/vqFouH0zxlUMpFtV+em5pVvBOhK+G17cGmwjUnzYbVQj/g9yTO
+ g50ZAa7VRuB/vExEPxn2HcnNg8IxapBZmY7wUSXlbkV1SmXVvIiWnQCM/6bBaPPBVWzZ
+ MyAKtGPrqET4X25GoFwc6yYd5oGJlF8ysZmFjhzyhVPh+ePnKPCxij6K5d+l5bgwFKFj
+ jQEg==
+X-Gm-Message-State: AOAM532kvKdaZhB1XQ0rP+R67NmtHj6vuoENObp3TKFmDLopSUk6REP/
+ nqlhGfavGpi7v+5Rtx/zzQ==
+X-Google-Smtp-Source: ABdhPJyGrWyK5wGdhAncfGSofyVJ4NqhVg2p8ntFX0yjQ+DE10PUC1LDoID8zGN8l2MM9cl7QHpKiQ==
+X-Received: by 2002:a63:5b24:: with SMTP id p36mr40450pgb.91.1628706292194;
+ Wed, 11 Aug 2021 11:24:52 -0700 (PDT)
 Received: from robh.at.kernel.org ([208.184.162.215])
- by smtp.gmail.com with ESMTPSA id 15sm141463pgp.3.2021.08.11.11.19.19
+ by smtp.gmail.com with ESMTPSA id r3sm195193pff.119.2021.08.11.11.24.49
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 11 Aug 2021 11:19:22 -0700 (PDT)
-Received: (nullmailer pid 29882 invoked by uid 1000);
- Wed, 11 Aug 2021 18:19:17 -0000
-Date: Wed, 11 Aug 2021 12:19:17 -0600
+ Wed, 11 Aug 2021 11:24:51 -0700 (PDT)
+Received: (nullmailer pid 39491 invoked by uid 1000);
+ Wed, 11 Aug 2021 18:24:47 -0000
+Date: Wed, 11 Aug 2021 12:24:47 -0600
 From: Rob Herring <robh@kernel.org>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v3 05/20] ASoC: dt-bindings: replace q6afe bindings with
- q6dsp-audio-ports
-Message-ID: <YRQUpZeusOEA9aOM@robh.at.kernel.org>
+Subject: Re: [PATCH v3 06/20] ASoC: dt-bindings: replace q6afe-clk with q6dsp
+ audio clk bindings
+Message-ID: <YRQV74TApmx949vZ@robh.at.kernel.org>
 References: <20210803125411.28066-1-srinivas.kandagatla@linaro.org>
- <20210803125411.28066-6-srinivas.kandagatla@linaro.org>
- <20210804175334.GE26252@sirena.org.uk>
- <225bc8df-0d78-09d6-4dc9-8cc2145f095f@linaro.org>
+ <20210803125411.28066-7-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <225bc8df-0d78-09d6-4dc9-8cc2145f095f@linaro.org>
+In-Reply-To: <20210803125411.28066-7-srinivas.kandagatla@linaro.org>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  bgoswami@codeaurora.org, tiwai@suse.de, plai@codeaurora.org,
- lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
- bjorn.andersson@linaro.org
+ lgirdwood@gmail.com, broonie@kernel.org, bjorn.andersson@linaro.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,33 +99,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Aug 05, 2021 at 10:16:14AM +0100, Srinivas Kandagatla wrote:
-> Thanks Mark for the review,
+On Tue, 03 Aug 2021 13:53:57 +0100, Srinivas Kandagatla wrote:
+> DSP Audio clock bindings have been documented with DSP services bindings
+> which makes it difficult to reuse them, so pull them out in to a dedicated
+> bindings.
+> Also as part of this change convert them into yaml format.
 > 
-> On 04/08/2021 18:53, Mark Brown wrote:
-> > On Tue, Aug 03, 2021 at 01:53:56PM +0100, Srinivas Kandagatla wrote:
-> > > DSP Audio Ports bindings have been documented with DSP services bindings
-> > > which makes it difficult to reuse them, so pull them out in to a dedicated
-> > > bindings.
-> > > Also as part of this change convert them into yaml format.
-> > 
-> > > This patch also removes q6afe bindings as dsp services are now documented in
-> > > apr bindings.
-> > 
-> > This feels like it's multiple changes stuffed into one commit which
-> > makes it difficult to review, especially since I'm having a hard time
-> > connecting the code changes with the description.  For example this says
-> > it removes the "q6afe bindings" but we seem to be adding some in the
-> > newly added YAML file.  At the very least the commit message needs to be
-> > improved but I think this probably needs to be split out into separate
-> > changes each doing one thing.
-> This patch is doing yaml conversion + removing the "qcom,q6afe" compatible
-> from the existing bindings + header file renaming.
+> q6afe-clocks were part of q6afe bindings which are deleted in previous patch, this
+> patch just adds replacement bindings for clocks in yaml format.
 > 
-> I agree, will split the header file renaming and yaml conversions as two
-> patches, that should probably help. I will also update the commit message
-> with more details.
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  .../sound/qcom,q6dsp-audio-clocks.yaml        | 55 +++++++++++++++++++
+>  1 file changed, 55 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6dsp-audio-clocks.yaml
+> 
 
-Perhaps also relicense the header to include Qcom's preferred license.
-
-Rob
+Reviewed-by: Rob Herring <robh@kernel.org>
