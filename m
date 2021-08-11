@@ -2,92 +2,92 @@ Return-Path: <SRS0=gvoF=NC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E56A1C4338F
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Aug 2021 19:13:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB703C4338F
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Aug 2021 19:14:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 487B361008
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Aug 2021 19:13:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 487B361008
+	by mail.kernel.org (Postfix) with ESMTPS id 68B3D60F21
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Aug 2021 19:14:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 68B3D60F21
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2607E1919;
-	Wed, 11 Aug 2021 21:12:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2607E1919
+	by alsa0.perex.cz (Postfix) with ESMTPS id 919021937;
+	Wed, 11 Aug 2021 21:13:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 919021937
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628709219;
-	bh=o+0QcqfzsDg0iWyawVc/QESr2znTt5+op2gOxVDm7Dg=;
+	s=default; t=1628709270;
+	bh=TA0JC9f9sFbe86aMznLux6wa/YBvjCQvjHexei855sc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ho30NeRLYEPpRUvW3bxhrY9e1Tx5okihbEMYqDa5afqU0ZlDWafxB/JXQPxk+Odw1
-	 oW77VX5HCISvpEruRxlt5kbGGZhwakZyGzlvgeKDKpoa25SymFL1Eg+wImCWVMHHtw
-	 F8EUqmdQOdIRUeknH+wdDPIt9HVMhXAV++xGwV00=
+	b=IasKWH3g53qRFR0KkwwdDGFqXk9tsvVAzKe2sSKguKoyDAytuM81yF47LB/RIv03x
+	 bDmM1pAXGphgHDi8AiQTpyOp9C3scN9y953rug+eYwx0k/tUcFujFw/UK1ipEAi304
+	 cqZK0EfRa94bVrIqC9iKc/WPy8fow+NF+lp0vF44=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EC021F804CC;
-	Wed, 11 Aug 2021 21:12:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27BD6F804E3;
+	Wed, 11 Aug 2021 21:12:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D7662F804CC; Wed, 11 Aug 2021 21:12:45 +0200 (CEST)
+ id 23172F804B4; Wed, 11 Aug 2021 21:12:46 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EC8C6F800F4
+ by alsa1.perex.cz (Postfix) with ESMTPS id EF2B9F8020D
  for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2021 21:12:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC8C6F800F4
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF2B9F8020D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="B+ySmGej"
+ header.b="Hy69F5qD"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17B9hdxv013981; 
- Wed, 11 Aug 2021 14:12:36 -0500
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17B9hdxw013981; 
+ Wed, 11 Aug 2021 14:12:37 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=h/yohAcNEYaBMZnomHJsOTw4yGUccIoPWhb66gr6PNo=;
- b=B+ySmGejlWLT05i8qrCkGcSVBYdSTciWAJt03vC0nUsSK7IZoXuw9lEMBKOE8B5qZse2
- VtGeTweIsIj1ZarSzzTvIYiF9fbycWeG53A7/OsKUCOB5VXqqCFxLf6wtD8jyIrhdovB
- N3ITQGwpoqSuhdTp2OgQkAeUtUTKF1kjcLhJdfDuE6JCIW2pIa1i2SyZyUB5QBR2+jzq
- fPOl/H6Km6gkWR7us2GIO5jDOgX8taEZ2LqzD2wP6n2+Oz+RYQ6ALBtfDAyrc+ReJsGW
- 4rdnsp7ilOsOG4sfLLtmzqydrgW4nilPFhZCI48+MFKq8zOSswPtg6AsSu1iQQm+Ph7J aw== 
+ bh=4KIkoP2u0ZyoBkPyWp6RZOY6CPdWZhUFe+qKIvXgejQ=;
+ b=Hy69F5qDe+dyVxTiDoE24l7Xwxo/TvIlES0iKZtsiE1udNCd7yknHb3VlS6KNHSPOCRT
+ utIpaWOLXBZGxq+e3pPvxAHz0F1a682HaGyCARxxeGmUwid9ijv1dRS5nUmtHb4yAToB
+ EVhWOmLs2UEsHWi/kchNVUPbetdLgOWJbi66o04jJOy/TmGSjgiLTlON5mAzBbMDxN6L
+ 7Ach4a747d0gPaXY1z1py4YBsbMnrrh0UNyBqKd+xUCq8bIOgLS7wKirnS0oorG+cFbz
+ vI4L7BwLr05X7zwTYR1mWDAlOnVsjy+Xn9qcpRsePBf2c0Ug1bg3ZVUK73BMz4Rr5C6d eQ== 
 Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 3acc5ngpgw-1
+ by mx0b-001ae601.pphosted.com with ESMTP id 3acc5ngpgw-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 11 Aug 2021 14:12:34 -0500
+ Wed, 11 Aug 2021 14:12:36 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Wed, 11 Aug
- 2021 19:57:29 +0100
+ 2021 19:57:30 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via
- Frontend Transport; Wed, 11 Aug 2021 19:57:29 +0100
+ Frontend Transport; Wed, 11 Aug 2021 19:57:30 +0100
 Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.180])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id BE0D346E;
- Wed, 11 Aug 2021 18:57:28 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E8A7745D;
+ Wed, 11 Aug 2021 18:57:29 +0000 (UTC)
 From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v4 12/27] ALSA: hda/cs8409: Generalize volume controls
-Date: Wed, 11 Aug 2021 19:56:39 +0100
-Message-ID: <20210811185654.6837-13-vitalyr@opensource.cirrus.com>
+Subject: [PATCH v4 16/27] ALSA: hda/cs8409: Support i2c bulk read/write
+ functions
+Date: Wed, 11 Aug 2021 19:56:43 +0100
+Message-ID: <20210811185654.6837-17-vitalyr@opensource.cirrus.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210811185654.6837-1-vitalyr@opensource.cirrus.com>
 References: <20210811185654.6837-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 7_Z44obyMk0NMGpJFWSxkAsUCQhrFIVz
-X-Proofpoint-GUID: 7_Z44obyMk0NMGpJFWSxkAsUCQhrFIVz
+X-Proofpoint-ORIG-GUID: 0ERkoQxUiUZyGkF_2hNH_hg2-0Ch89dq
+X-Proofpoint-GUID: 0ERkoQxUiUZyGkF_2hNH_hg2-0Ch89dq
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0
  bulkscore=0 phishscore=0
  clxscore=1015 priorityscore=1501 suspectscore=0 impostorscore=0
@@ -113,8 +113,9 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 
-Use amp offsets as indexes for saved volumes.
-Remove dependencies on NID inside volume control functions.
+This allows mutex locks to be moved into i2c functions, as
+the bulk read/write functions can lock/unlock themselves to
+prevent interruption of sequence reads/writes.
 
 Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
@@ -129,368 +130,484 @@ Changes in v3:
 Changes in v4:
 - No changes
 
- sound/pci/hda/patch_cs8409-tables.c |  37 +++++++
- sound/pci/hda/patch_cs8409.c        | 165 +++++++++-------------------
- sound/pci/hda/patch_cs8409.h        |  27 +++--
- 3 files changed, 105 insertions(+), 124 deletions(-)
+ sound/pci/hda/patch_cs8409-tables.c |   3 +-
+ sound/pci/hda/patch_cs8409.c        | 208 +++++++++++++++++-----------
+ sound/pci/hda/patch_cs8409.h        |   8 +-
+ 3 files changed, 136 insertions(+), 83 deletions(-)
 
 diff --git a/sound/pci/hda/patch_cs8409-tables.c b/sound/pci/hda/patch_cs8409-tables.c
-index 07d3ae28c105..b03ddef2a25f 100644
+index b03ddef2a25f..0f2fd8bb92bf 100644
 --- a/sound/pci/hda/patch_cs8409-tables.c
 +++ b/sound/pci/hda/patch_cs8409-tables.c
-@@ -10,6 +10,43 @@
+@@ -146,7 +146,7 @@ const struct hda_pintbl cs8409_cs42l42_pincfgs[] = {
+ };
  
- #include "patch_cs8409.h"
+ /* Vendor specific HW configuration for CS42L42 */
+-const struct cs8409_i2c_param cs42l42_init_reg_seq[] = {
++const struct cs8409_i2c_param cs42l42_init_reg_seq[CS42L42_INIT_REG_SEQ_SIZE] = {
+ 	{ 0x1010, 0xB0 },
+ 	{ 0x1D01, 0x00 },
+ 	{ 0x1D02, 0x06 },
+@@ -206,7 +206,6 @@ const struct cs8409_i2c_param cs42l42_init_reg_seq[] = {
+ 	{ 0x1320, 0xff },
+ 	{ 0x1b79, 0xff },
+ 	{ 0x1b7a, 0xff },
+-	{} /* Terminator */
+ };
  
-+/******************************************************************************
-+ *                          CS42L42 Specific Data
-+ *
-+ ******************************************************************************/
-+
-+static const DECLARE_TLV_DB_SCALE(cs42l42_dac_db_scale,
-+	CS8409_CS42L42_HP_VOL_REAL_MIN * 100, 100, 1);
-+
-+static const DECLARE_TLV_DB_SCALE(cs42l42_adc_db_scale,
-+	CS8409_CS42L42_AMIC_VOL_REAL_MIN * 100, 100, 1);
-+
-+const struct snd_kcontrol_new cs42l42_dac_volume_mixer = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.index = 0,
-+	.subdevice = (HDA_SUBDEV_AMP_FLAG | HDA_SUBDEV_NID_FLAG),
-+	.access = (SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_TLV_READ),
-+	.info = cs8409_cs42l42_volume_info,
-+	.get = cs8409_cs42l42_volume_get,
-+	.put = cs8409_cs42l42_volume_put,
-+	.tlv = { .p = cs42l42_dac_db_scale },
-+	.private_value = HDA_COMPOSE_AMP_VAL_OFS(CS8409_PIN_ASP1_TRANSMITTER_A, 3, 0,
-+			 HDA_OUTPUT, CS42L42_VOL_DAC) | HDA_AMP_VAL_MIN_MUTE
-+};
-+
-+const struct snd_kcontrol_new cs42l42_adc_volume_mixer = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.index = 0,
-+	.subdevice = (HDA_SUBDEV_AMP_FLAG | HDA_SUBDEV_NID_FLAG),
-+	.access = (SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_TLV_READ),
-+	.info = cs8409_cs42l42_volume_info,
-+	.get = cs8409_cs42l42_volume_get,
-+	.put = cs8409_cs42l42_volume_put,
-+	.tlv = { .p = cs42l42_adc_db_scale },
-+	.private_value = HDA_COMPOSE_AMP_VAL_OFS(CS8409_PIN_ASP1_RECEIVER_A, 1, 0,
-+			 HDA_INPUT, CS42L42_VOL_ADC) | HDA_AMP_VAL_MIN_MUTE
-+};
-+
- /* Dell Inspiron platforms
-  * with cs8409 bridge and cs42l42 codec
-  */
+ /* Vendor specific hw configuration for CS8409 */
 diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
-index 0b13bcecd778..08205c19698c 100644
+index bb3c6ef5eab6..6c1dbff13aeb 100644
 --- a/sound/pci/hda/patch_cs8409.c
 +++ b/sound/pci/hda/patch_cs8409.c
-@@ -208,162 +208,97 @@ static int cs8409_i2c_write(struct hda_codec *codec, unsigned int i2c_address, u
- 	return 0;
+@@ -86,13 +86,13 @@ static void cs8409_disable_i2c_clock(struct hda_codec *codec)
+ {
+ 	struct cs8409_spec *spec = codec->spec;
+ 
+-	mutex_lock(&spec->cs8409_i2c_mux);
++	mutex_lock(&spec->i2c_mux);
+ 	if (spec->i2c_clck_enabled) {
+ 		cs8409_vendor_coef_set(spec->codec, 0x0,
+ 			       cs8409_vendor_coef_get(spec->codec, 0x0) & 0xfffffff7);
+ 		spec->i2c_clck_enabled = 0;
+ 	}
+-	mutex_unlock(&spec->cs8409_i2c_mux);
++	mutex_unlock(&spec->i2c_mux);
  }
  
--static int cs8409_cs42l42_volume_info(struct snd_kcontrol *kctrl, struct snd_ctl_elem_info *uinfo)
-+int cs8409_cs42l42_volume_info(struct snd_kcontrol *kctrl, struct snd_ctl_elem_info *uinfo)
+ /*
+@@ -195,12 +195,12 @@ static int cs8409_i2c_set_page(struct hda_codec *codec, unsigned int i2c_reg)
+  * cs8409_i2c_read - CS8409 I2C Read.
+  * @codec: the codec instance
+  * @i2c_address: I2C Address
+- * @i2c_reg: Register to read
++ * @addr: Register to read
+  *
+  * CS8409 I2C Read.
+  * Returns negative on error, otherwise returns read value in bits 0-7.
+  */
+-static int cs8409_i2c_read(struct hda_codec *codec, unsigned int i2c_address, unsigned int i2c_reg)
++static int cs8409_i2c_read(struct hda_codec *codec, unsigned int i2c_address, unsigned int addr)
  {
--	u16 nid = get_amp_nid(kctrl);
-+	unsigned int ofs = get_amp_offset(kctrl);
- 	u8 chs = get_amp_channels(kctrl);
+ 	struct cs8409_spec *spec = codec->spec;
+ 	unsigned int i2c_reg_data;
+@@ -209,41 +209,90 @@ static int cs8409_i2c_read(struct hda_codec *codec, unsigned int i2c_address, un
+ 	if (spec->cs42l42_suspended)
+ 		return -EPERM;
  
--	switch (nid) {
--	case CS8409_CS42L42_HP_PIN_NID:
--		uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
--		uinfo->count = chs == 3 ? 2 : 1;
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->value.integer.step = 1;
-+	uinfo->count = chs == 3 ? 2 : 1;
++	mutex_lock(&spec->i2c_mux);
+ 	cs8409_enable_i2c_clock(codec);
+ 	cs8409_set_i2c_dev_addr(codec, i2c_address);
+ 
+-	if (cs8409_i2c_set_page(codec, i2c_reg)) {
++	if (cs8409_i2c_set_page(codec, addr)) {
+ 		codec_err(codec, "%s() Paged Transaction Failed 0x%02x : 0x%04x\n",
+-			__func__, i2c_address, i2c_reg);
++			__func__, i2c_address, addr);
+ 		return -EIO;
+ 	}
+ 
+-	i2c_reg_data = (i2c_reg << 8) & 0x0ffff;
++	i2c_reg_data = (addr << 8) & 0x0ffff;
+ 	cs8409_vendor_coef_set(codec, CS8409_I2C_QREAD, i2c_reg_data);
+-	if (cs8409_i2c_wait_complete(codec) < 0) {
+-		codec_err(codec, "%s() Transaction Failed 0x%02x : 0x%04x\n",
+-			  __func__, i2c_address, i2c_reg);
+-		return -EIO;
+-	}
++	if (cs8409_i2c_wait_complete(codec) < 0)
++		goto error;
+ 
+ 	/* Register in bits 15-8 and the data in 7-0 */
+ 	read_data = cs8409_vendor_coef_get(codec, CS8409_I2C_QREAD);
+ 
++	mutex_unlock(&spec->i2c_mux);
+ 	return read_data & 0x0ff;
 +
-+	switch (ofs) {
-+	case CS42L42_VOL_DAC:
- 		uinfo->value.integer.min = CS8409_CS42L42_HP_VOL_REAL_MIN;
- 		uinfo->value.integer.max = CS8409_CS42L42_HP_VOL_REAL_MAX;
++error:
++	mutex_unlock(&spec->i2c_mux);
++	codec_err(codec, "%s() Failed 0x%02x : 0x%04x\n", __func__, i2c_address, addr);
++	return -EIO;
++}
++
++/**
++ * cs8409_i2c_bulk_read - CS8409 I2C Read Sequence.
++ * @codec: the codec instance
++ * @seq: Register Sequence to read
++ * @count: Number of registeres to read
++ *
++ * Returns negative on error, values are read into value element of cs8409_i2c_param sequence.
++ */
++static int cs8409_i2c_bulk_read(struct hda_codec *codec, unsigned int i2c_address,
++				struct cs8409_i2c_param *seq, int count)
++{
++	struct cs8409_spec *spec = codec->spec;
++	unsigned int i2c_reg_data;
++	int i;
++
++	if (spec->cs42l42_suspended)
++		return -EPERM;
++
++	mutex_lock(&spec->i2c_mux);
++	cs8409_set_i2c_dev_addr(codec, i2c_address);
++
++	for (i = 0; i < count; i++) {
++		cs8409_enable_i2c_clock(codec);
++		if (cs8409_i2c_set_page(codec, seq[i].addr))
++			goto error;
++
++		i2c_reg_data = (seq[i].addr << 8) & 0x0ffff;
++		cs8409_vendor_coef_set(codec, CS8409_I2C_QREAD, i2c_reg_data);
++
++		if (cs8409_i2c_wait_complete(codec) < 0)
++			goto error;
++
++		seq[i].value = cs8409_vendor_coef_get(codec, CS8409_I2C_QREAD) & 0xff;
++	}
++
++	mutex_unlock(&spec->i2c_mux);
++
++	return 0;
++
++error:
++	mutex_unlock(&spec->i2c_mux);
++	codec_err(codec, "I2C Bulk Write Failed 0x%02x\n", i2c_address);
++	return -EIO;
+ }
+ 
+ /**
+  * cs8409_i2c_write - CS8409 I2C Write.
+  * @codec: the codec instance
+  * @i2c_address: I2C Address
+- * @i2c_reg: Register to write to
+- * @i2c_data: Data to write
++ * @addr: Register to write to
++ * @value: Data to write
+  *
+  * CS8409 I2C Write.
+  * Returns negative on error, otherwise returns 0.
+  */
+-static int cs8409_i2c_write(struct hda_codec *codec, unsigned int i2c_address, unsigned int i2c_reg,
+-			    unsigned int i2c_data)
++static int cs8409_i2c_write(struct hda_codec *codec, unsigned int i2c_address, unsigned int addr,
++			    unsigned int value)
+ {
+ 	struct cs8409_spec *spec = codec->spec;
+ 	unsigned int i2c_reg_data;
+@@ -251,25 +300,73 @@ static int cs8409_i2c_write(struct hda_codec *codec, unsigned int i2c_address, u
+ 	if (spec->cs42l42_suspended)
+ 		return -EPERM;
+ 
++	mutex_lock(&spec->i2c_mux);
++
+ 	cs8409_enable_i2c_clock(codec);
+ 	cs8409_set_i2c_dev_addr(codec, i2c_address);
+ 
+-	if (cs8409_i2c_set_page(codec, i2c_reg)) {
++	if (cs8409_i2c_set_page(codec, addr)) {
+ 		codec_err(codec, "%s() Paged Transaction Failed 0x%02x : 0x%04x\n",
+-			__func__, i2c_address, i2c_reg);
++			__func__, i2c_address, addr);
+ 		return -EIO;
+ 	}
+ 
+-	i2c_reg_data = ((i2c_reg << 8) & 0x0ff00) | (i2c_data & 0x0ff);
++	i2c_reg_data = ((addr << 8) & 0x0ff00) | (value & 0x0ff);
+ 	cs8409_vendor_coef_set(codec, CS8409_I2C_QWRITE, i2c_reg_data);
+ 
+-	if (cs8409_i2c_wait_complete(codec) < 0) {
+-		codec_err(codec, "%s() Transaction Failed 0x%02x : 0x%04x\n",
+-			__func__, i2c_address, i2c_reg);
+-		return -EIO;
++	if (cs8409_i2c_wait_complete(codec) < 0)
++		goto error;
++
++	mutex_unlock(&spec->i2c_mux);
++	return 0;
++
++error:
++	mutex_unlock(&spec->i2c_mux);
++	codec_err(codec, "%s() Failed 0x%02x : 0x%04x\n", __func__, i2c_address, addr);
++	return -EIO;
++}
++
++/**
++ * cs8409_i2c_bulk_write - CS8409 I2C Write Sequence.
++ * @codec: the codec instance
++ * @seq: Register Sequence to write
++ * @count: Number of registeres to write
++ *
++ * Returns negative on error.
++ */
++static int cs8409_i2c_bulk_write(struct hda_codec *codec, unsigned int i2c_address,
++				 const struct cs8409_i2c_param *seq, int count)
++{
++	struct cs8409_spec *spec = codec->spec;
++	unsigned int i2c_reg_data;
++	int i;
++
++	if (spec->cs42l42_suspended)
++		return -EPERM;
++
++	mutex_lock(&spec->i2c_mux);
++	cs8409_set_i2c_dev_addr(codec, i2c_address);
++
++	for (i = 0; i < count; i++) {
++		cs8409_enable_i2c_clock(codec);
++		if (cs8409_i2c_set_page(codec, seq[i].addr))
++			goto error;
++
++		i2c_reg_data = ((seq[i].addr << 8) & 0x0ff00) | (seq[i].value & 0x0ff);
++		cs8409_vendor_coef_set(codec, CS8409_I2C_QWRITE, i2c_reg_data);
++
++		if (cs8409_i2c_wait_complete(codec) < 0)
++			goto error;
+ 	}
+ 
++	mutex_unlock(&spec->i2c_mux);
++
+ 	return 0;
++
++error:
++	mutex_unlock(&spec->i2c_mux);
++	codec_err(codec, "I2C Bulk Write Failed 0x%02x\n", i2c_address);
++	return -EIO;
+ }
+ 
+ int cs8409_cs42l42_volume_info(struct snd_kcontrol *kctrl, struct snd_ctl_elem_info *uinfo)
+@@ -333,7 +430,6 @@ int cs8409_cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_va
+ 
+ 	switch (ofs) {
+ 	case CS42L42_VOL_DAC:
+-		mutex_lock(&spec->cs8409_i2c_mux);
+ 		if (chs & BIT(0)) {
+ 			spec->vol[ofs] = *valp;
+ 			cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOL_CHA,
+@@ -346,16 +442,13 @@ int cs8409_cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_va
+ 			cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOL_CHB,
+ 					 -(spec->vol[ofs]) & CS8409_CS42L42_REG_HS_VOL_MASK);
+ 		}
+-		mutex_unlock(&spec->cs8409_i2c_mux);
  		break;
--	case CS8409_CS42L42_AMIC_PIN_NID:
--		uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
--		uinfo->count = chs == 3 ? 2 : 1;
-+	case CS42L42_VOL_ADC:
- 		uinfo->value.integer.min = CS8409_CS42L42_AMIC_VOL_REAL_MIN;
- 		uinfo->value.integer.max = CS8409_CS42L42_AMIC_VOL_REAL_MAX;
+ 	case CS42L42_VOL_ADC:
+-		mutex_lock(&spec->cs8409_i2c_mux);
+ 		if (chs & BIT(0)) {
+ 			spec->vol[ofs] = *valp;
+ 			cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_AMIC_VOL,
+ 					 spec->vol[ofs] & CS8409_CS42L42_REG_AMIC_VOL_MASK);
+ 		}
+-		mutex_unlock(&spec->cs8409_i2c_mux);
  		break;
  	default:
  		break;
- 	}
--	return 0;
--}
+@@ -368,6 +461,12 @@ int cs8409_cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_va
+ static void cs8409_cs42l42_reset(struct hda_codec *codec)
+ {
+ 	struct cs8409_spec *spec = codec->spec;
++	struct cs8409_i2c_param irq_regs[] = {
++		{ 0x1308, 0x00 },
++		{ 0x1309, 0x00 },
++		{ 0x130A, 0x00 },
++		{ 0x130F, 0x00 },
++	};
  
--static void cs8409_cs42l42_update_volume(struct hda_codec *codec)
--{
+ 	/* Assert RTS# line */
+ 	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DATA, 0);
+@@ -381,25 +480,13 @@ static void cs8409_cs42l42_reset(struct hda_codec *codec)
+ 	spec->cs42l42_suspended = 0;
+ 	spec->last_page = 0;
+ 
+-	mutex_lock(&spec->cs8409_i2c_mux);
+-
+ 	/* Clear interrupts, by reading interrupt status registers */
+-	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1308);
+-	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1309);
+-	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130A);
+-	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130F);
+-
+-	mutex_unlock(&spec->cs8409_i2c_mux);
+-
++	cs8409_i2c_bulk_read(codec, CS42L42_I2C_ADDR, irq_regs, ARRAY_SIZE(irq_regs));
+ }
+ 
+ /* Configure CS42L42 slave codec for jack autodetect */
+ static void cs8409_cs42l42_enable_jack_detect(struct hda_codec *codec)
+ {
 -	struct cs8409_spec *spec = codec->spec;
--	int data;
 -
 -	mutex_lock(&spec->cs8409_i2c_mux);
--	data = cs8409_i2c_read(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOLUME_CHA, 1);
--	if (data >= 0)
--		spec->cs42l42_hp_volume[0] = -data;
--	else
--		spec->cs42l42_hp_volume[0] = CS8409_CS42L42_HP_VOL_REAL_MIN;
--	data = cs8409_i2c_read(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOLUME_CHB, 1);
--	if (data >= 0)
--		spec->cs42l42_hp_volume[1] = -data;
--	else
--		spec->cs42l42_hp_volume[1] = CS8409_CS42L42_HP_VOL_REAL_MIN;
--	data = cs8409_i2c_read(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_AMIC_VOLUME, 1);
--	if (data >= 0)
--		spec->cs42l42_hs_mic_volume[0] = -data;
--	else
--		spec->cs42l42_hs_mic_volume[0] = CS8409_CS42L42_AMIC_VOL_REAL_MIN;
+-
+ 	/* Set TIP_SENSE_EN for analog front-end of tip sense.
+ 	 * Additionally set HSBIAS_SENSE_EN for some variants.
+ 	 */
+@@ -418,17 +505,11 @@ static void cs8409_cs42l42_enable_jack_detect(struct hda_codec *codec)
+ 	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130f);
+ 	/* Enable interrupt */
+ 	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1320, 0xF3);
+-
 -	mutex_unlock(&spec->cs8409_i2c_mux);
--	spec->cs42l42_volume_init = 1;
-+	return 0;
  }
  
--static int cs8409_cs42l42_volume_get(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl)
-+int cs8409_cs42l42_volume_get(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl)
+ /* Enable and run CS42L42 slave codec jack auto detect */
+ static void cs8409_cs42l42_run_jack_detect(struct hda_codec *codec)
  {
- 	struct hda_codec *codec = snd_kcontrol_chip(kctrl);
- 	struct cs8409_spec *spec = codec->spec;
--	hda_nid_t nid = get_amp_nid(kctrl);
- 	int chs = get_amp_channels(kctrl);
-+	unsigned int ofs = get_amp_offset(kctrl);
- 	long *valp = uctrl->value.integer.value;
+-	struct cs8409_spec *spec = codec->spec;
+-
+-	mutex_lock(&spec->cs8409_i2c_mux);
+-
+ 	/* Clear interrupts */
+ 	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1308);
+ 	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1b77);
+@@ -447,22 +528,6 @@ static void cs8409_cs42l42_run_jack_detect(struct hda_codec *codec)
+ 	/* Wait ~10ms */
+ 	usleep_range(10000, 25000);
  
--	if (!spec->cs42l42_volume_init) {
--		snd_hda_power_up(codec);
--		cs8409_cs42l42_update_volume(codec);
--		snd_hda_power_down(codec);
--	}
--	switch (nid) {
--	case CS8409_CS42L42_HP_PIN_NID:
-+	switch (ofs) {
-+	case CS42L42_VOL_DAC:
- 		if (chs & BIT(0))
--			*valp++ = spec->cs42l42_hp_volume[0];
-+			*valp++ = spec->vol[ofs];
- 		if (chs & BIT(1))
--			*valp++ = spec->cs42l42_hp_volume[1];
-+			*valp = spec->vol[ofs+1];
- 		break;
--	case CS8409_CS42L42_AMIC_PIN_NID:
-+	case CS42L42_VOL_ADC:
- 		if (chs & BIT(0))
--			*valp++ = spec->cs42l42_hs_mic_volume[0];
-+			*valp = spec->vol[ofs];
- 		break;
- 	default:
- 		break;
- 	}
-+
- 	return 0;
- }
- 
--static int cs8409_cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl)
-+int cs8409_cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl)
- {
- 	struct hda_codec *codec = snd_kcontrol_chip(kctrl);
- 	struct cs8409_spec *spec = codec->spec;
--	hda_nid_t nid = get_amp_nid(kctrl);
- 	int chs = get_amp_channels(kctrl);
-+	unsigned int ofs = get_amp_offset(kctrl);
- 	long *valp = uctrl->value.integer.value;
--	int change = 0;
--	char vol;
- 
--	snd_hda_power_up(codec);
--	switch (nid) {
--	case CS8409_CS42L42_HP_PIN_NID:
-+	switch (ofs) {
-+	case CS42L42_VOL_DAC:
- 		mutex_lock(&spec->cs8409_i2c_mux);
- 		if (chs & BIT(0)) {
--			vol = -(*valp);
--			change = cs8409_i2c_write(codec, CS42L42_I2C_ADDR,
--						  CS8409_CS42L42_REG_HS_VOLUME_CHA, vol, 1);
--			valp++;
-+			spec->vol[ofs] = *valp;
-+			cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOL_CHA,
-+					 -(spec->vol[ofs]) & CS8409_CS42L42_REG_HS_VOL_MASK, 1);
- 		}
- 		if (chs & BIT(1)) {
--			vol = -(*valp);
--			change |= cs8409_i2c_write(codec, CS42L42_I2C_ADDR,
--						   CS8409_CS42L42_REG_HS_VOLUME_CHB, vol, 1);
-+			ofs++;
-+			valp++;
-+			spec->vol[ofs] = *valp;
-+			cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOL_CHB,
-+					 -(spec->vol[ofs]) & CS8409_CS42L42_REG_HS_VOL_MASK, 1);
- 		}
- 		mutex_unlock(&spec->cs8409_i2c_mux);
- 		break;
--	case CS8409_CS42L42_AMIC_PIN_NID:
-+	case CS42L42_VOL_ADC:
- 		mutex_lock(&spec->cs8409_i2c_mux);
- 		if (chs & BIT(0)) {
--			change = cs8409_i2c_write(codec, CS42L42_I2C_ADDR,
--						  CS8409_CS42L42_REG_AMIC_VOLUME, (char)*valp, 1);
--			valp++;
-+			spec->vol[ofs] = *valp;
-+			cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_AMIC_VOL,
-+					 spec->vol[ofs] & CS8409_CS42L42_REG_AMIC_VOL_MASK, 1);
- 		}
- 		mutex_unlock(&spec->cs8409_i2c_mux);
- 		break;
- 	default:
- 		break;
- 	}
--	cs8409_cs42l42_update_volume(codec);
--	snd_hda_power_down(codec);
--	return change;
+-	mutex_unlock(&spec->cs8409_i2c_mux);
+-
 -}
 -
--static const DECLARE_TLV_DB_SCALE(cs8409_cs42l42_hp_db_scale,
--				  CS8409_CS42L42_HP_VOL_REAL_MIN * 100, 100, 1);
+-static void cs8409_cs42l42_reg_setup(struct hda_codec *codec)
+-{
+-	const struct cs8409_i2c_param *seq = cs42l42_init_reg_seq;
+-	struct cs8409_spec *spec = codec->spec;
 -
--static const DECLARE_TLV_DB_SCALE(cs8409_cs42l42_amic_db_scale,
--				  CS8409_CS42L42_AMIC_VOL_REAL_MIN * 100, 100, 1);
+-	mutex_lock(&spec->cs8409_i2c_mux);
 -
--static const struct snd_kcontrol_new cs8409_cs42l42_hp_volume_mixer = {
--	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
--	.index = 0,
--	.name = "Headphone Playback Volume",
--	.subdevice = (HDA_SUBDEV_AMP_FLAG | HDA_SUBDEV_NID_FLAG),
--	.access = (SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_TLV_READ),
--	.info = cs8409_cs42l42_volume_info,
--	.get = cs8409_cs42l42_volume_get,
--	.put = cs8409_cs42l42_volume_put,
--	.tlv = { .p = cs8409_cs42l42_hp_db_scale },
--	.private_value = HDA_COMPOSE_AMP_VAL(CS8409_CS42L42_HP_PIN_NID, 3, 0, HDA_OUTPUT) |
--			 HDA_AMP_VAL_MIN_MUTE
--};
+-	for (; seq->addr; seq++)
+-		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, seq->addr, seq->reg);
+-
+-	mutex_unlock(&spec->cs8409_i2c_mux);
+-
+ }
  
--static const struct snd_kcontrol_new cs8409_cs42l42_amic_volume_mixer = {
--	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
--	.index = 0,
--	.name = "Mic Capture Volume",
--	.subdevice = (HDA_SUBDEV_AMP_FLAG | HDA_SUBDEV_NID_FLAG),
--	.access = (SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_TLV_READ),
--	.info = cs8409_cs42l42_volume_info,
--	.get = cs8409_cs42l42_volume_get,
--	.put = cs8409_cs42l42_volume_put,
--	.tlv = { .p = cs8409_cs42l42_amic_db_scale },
--	.private_value = HDA_COMPOSE_AMP_VAL(CS8409_CS42L42_AMIC_PIN_NID, 1, 0, HDA_INPUT) |
--			 HDA_AMP_VAL_MIN_MUTE
--};
-+	return 0;
-+}
+ /*
+@@ -490,15 +555,11 @@ static void cs8409_jack_unsol_event(struct hda_codec *codec, unsigned int res)
+ 	if (res & CS8409_CS42L42_INT)
+ 		return;
  
- /* Assert/release RTS# line to CS42L42 */
- static void cs8409_cs42l42_reset(struct hda_codec *codec)
-@@ -657,18 +592,14 @@ static void cs8409_cs42l42_hw_init(struct hda_codec *codec)
+-	mutex_lock(&spec->cs8409_i2c_mux);
+-
+ 	/* Read jack detect status registers */
+ 	reg_cdc_status = cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1308);
+ 	reg_hs_status = cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1124);
+ 	reg_ts_status = cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130f);
+ 
+-	mutex_unlock(&spec->cs8409_i2c_mux);
+-
+ 	/* If status values are < 0, read error has occurred. */
+ 	if (reg_cdc_status < 0 || reg_hs_status < 0 || reg_ts_status < 0)
+ 		return;
+@@ -506,10 +567,8 @@ static void cs8409_jack_unsol_event(struct hda_codec *codec, unsigned int res)
+ 	/* HSDET_AUTO_DONE */
+ 	if (reg_cdc_status & CS42L42_HSDET_AUTO_DONE) {
+ 
+-		mutex_lock(&spec->cs8409_i2c_mux);
+ 		/* Disable HSDET_AUTO_DONE */
+ 		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x131b, 0xFF);
+-		mutex_unlock(&spec->cs8409_i2c_mux);
+ 
+ 		type = ((reg_hs_status & CS42L42_HSTYPE_MASK) + 1);
+ 		/* CS42L42 reports optical jack as type 4
+@@ -533,10 +592,8 @@ static void cs8409_jack_unsol_event(struct hda_codec *codec, unsigned int res)
+ 			}
+ 		}
+ 
+-		mutex_lock(&spec->cs8409_i2c_mux);
+ 		/* Re-Enable Tip Sense Interrupt */
+ 		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1320, 0xF3);
+-		mutex_unlock(&spec->cs8409_i2c_mux);
+ 
+ 	} else {
+ 		/* TIP_SENSE INSERT/REMOVE */
+@@ -600,10 +657,8 @@ static int cs8409_suspend(struct hda_codec *codec)
+ 
+ 	cs8409_enable_ur(codec, 0);
+ 
+-	mutex_lock(&spec->cs8409_i2c_mux);
+ 	/* Power down CS42L42 ASP/EQ/MIX/HP */
+ 	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1101, 0xfe);
+-	mutex_unlock(&spec->cs8409_i2c_mux);
+ 
+ 	spec->cs42l42_suspended = 1;
+ 
+@@ -660,26 +715,23 @@ static void cs8409_cs42l42_hw_init(struct hda_codec *codec)
+ 	cs8409_cs42l42_reset(codec);
+ 
+ 	/* Initialise CS42L42 companion codec */
+-	cs8409_cs42l42_reg_setup(codec);
++	cs8409_i2c_bulk_write(codec, CS42L42_I2C_ADDR, cs42l42_init_reg_seq,
++			      CS42L42_INIT_REG_SEQ_SIZE);
+ 
+ 	if (codec->fixup_id == CS8409_WARLOCK || codec->fixup_id == CS8409_CYBORG) {
+ 		/* FULL_SCALE_VOL = 0 for Warlock / Cyborg */
+-		mutex_lock(&spec->cs8409_i2c_mux);
+ 		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x2001, 0x01);
+-		mutex_unlock(&spec->cs8409_i2c_mux);
+ 		/* DMIC1_MO=00b, DMIC1/2_SR=1 */
+ 		cs8409_vendor_coef_set(codec, 0x09, 0x0003);
  	}
  
  	/* Restore Volumes after Resume */
--	if (spec->cs42l42_volume_init) {
--		mutex_lock(&spec->cs8409_i2c_mux);
--		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOLUME_CHA,
--				 -spec->cs42l42_hp_volume[0], 1);
--		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOLUME_CHB,
--				 -spec->cs42l42_hp_volume[1], 1);
--		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_AMIC_VOLUME,
--				 spec->cs42l42_hs_mic_volume[0], 1);
--		mutex_unlock(&spec->cs8409_i2c_mux);
--	}
--
--	cs8409_cs42l42_update_volume(codec);
-+	mutex_lock(&spec->cs8409_i2c_mux);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOL_CHA,
-+			 -(spec->vol[1]) & CS8409_CS42L42_REG_HS_VOL_MASK, 1);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOL_CHB,
-+			 -(spec->vol[2]) & CS8409_CS42L42_REG_HS_VOL_MASK, 1);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_AMIC_VOL,
-+			 spec->vol[0] & CS8409_CS42L42_REG_AMIC_VOL_MASK, 1);
-+	mutex_unlock(&spec->cs8409_i2c_mux);
+-	mutex_lock(&spec->cs8409_i2c_mux);
+ 	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOL_CHA,
+ 			 -(spec->vol[1]) & CS8409_CS42L42_REG_HS_VOL_MASK);
+ 	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_HS_VOL_CHB,
+ 			 -(spec->vol[2]) & CS8409_CS42L42_REG_HS_VOL_MASK);
+ 	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, CS8409_CS42L42_REG_AMIC_VOL,
+ 			 spec->vol[0] & CS8409_CS42L42_REG_AMIC_VOL_MASK);
+-	mutex_unlock(&spec->cs8409_i2c_mux);
  
  	cs8409_cs42l42_enable_jack_detect(codec);
  
-@@ -811,8 +742,10 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
- 		/* Set initial DMIC volume to -26 dB */
- 		snd_hda_codec_amp_init_stereo(codec, CS8409_CS42L42_DMIC_ADC_PIN_NID,
- 					      HDA_INPUT, 0, 0xff, 0x19);
--		snd_hda_gen_add_kctl(&spec->gen, NULL, &cs8409_cs42l42_hp_volume_mixer);
--		snd_hda_gen_add_kctl(&spec->gen, NULL, &cs8409_cs42l42_amic_volume_mixer);
-+		snd_hda_gen_add_kctl(&spec->gen, "Headphone Playback Volume",
-+				&cs42l42_dac_volume_mixer);
-+		snd_hda_gen_add_kctl(&spec->gen, "Mic Capture Volume",
-+				&cs42l42_adc_volume_mixer);
- 		/* Disable Unsolicited Response during boot */
- 		cs8409_enable_ur(codec, 0);
- 		cs8409_cs42l42_hw_init(codec);
+@@ -768,7 +820,7 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
+ 		spec->exec_verb = codec->core.exec_verb;
+ 		codec->core.exec_verb = cs8409_cs42l42_exec_verb;
+ 
+-		mutex_init(&spec->cs8409_i2c_mux);
++		mutex_init(&spec->i2c_mux);
+ 
+ 		codec->patch_ops = cs8409_cs42l42_patch_ops;
+ 
 diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
-index 0f2084b6ec8e..bf0e8a4cc4cc 100644
+index ee66fd0c01dc..d84cda94dfb9 100644
 --- a/sound/pci/hda/patch_cs8409.h
 +++ b/sound/pci/hda/patch_cs8409.h
-@@ -215,16 +215,17 @@ enum cs8409_coefficient_index_registers {
+@@ -243,6 +243,8 @@ enum cs8409_coefficient_index_registers {
+ #define CS8409_CS42L42_DMIC_PIN_NID		CS8409_PIN_DMIC1_IN
+ #define CS8409_CS42L42_DMIC_ADC_PIN_NID		CS8409_PIN_DMIC1
  
- /* CS42L42 Specific Definitions */
- 
--#define CS42L42_HP_CH				(2U)
--#define CS42L42_HS_MIC_CH			(1U)
-+#define CS42L42_VOLUMES				(4U)
- 
- #define CS8409_CS42L42_HP_VOL_REAL_MIN		(-63)
- #define CS8409_CS42L42_HP_VOL_REAL_MAX		(0)
- #define CS8409_CS42L42_AMIC_VOL_REAL_MIN	(-97)
- #define CS8409_CS42L42_AMIC_VOL_REAL_MAX	(12)
--#define CS8409_CS42L42_REG_HS_VOLUME_CHA	(0x2301)
--#define CS8409_CS42L42_REG_HS_VOLUME_CHB	(0x2303)
--#define CS8409_CS42L42_REG_AMIC_VOLUME		(0x1D03)
-+#define CS8409_CS42L42_REG_HS_VOL_CHA		(0x2301)
-+#define CS8409_CS42L42_REG_HS_VOL_CHB		(0x2303)
-+#define CS8409_CS42L42_REG_HS_VOL_MASK		(0x003F)
-+#define CS8409_CS42L42_REG_AMIC_VOL		(0x1D03)
-+#define CS8409_CS42L42_REG_AMIC_VOL_MASK	(0x00FF)
- #define CS42L42_HSDET_AUTO_DONE			(0x02)
- #define CS42L42_HSTYPE_MASK			(0x03)
- #define CS42L42_JACK_INSERTED			(0x0C)
-@@ -248,6 +249,11 @@ enum {
- 	CS8409_FIXUPS,
- };
- 
-+enum {
-+	CS42L42_VOL_ADC,
-+	CS42L42_VOL_DAC,
-+};
++#define CS42L42_INIT_REG_SEQ_SIZE		59
 +
+ enum {
+ 	CS8409_BULLSEYE,
+ 	CS8409_WARLOCK,
+@@ -257,7 +259,7 @@ enum {
+ 
  struct cs8409_i2c_param {
  	unsigned int addr;
- 	unsigned int reg;
-@@ -268,10 +274,8 @@ struct cs8409_spec {
- 
- 	unsigned int cs42l42_hp_jack_in:1;
- 	unsigned int cs42l42_mic_jack_in:1;
--	unsigned int cs42l42_volume_init:1;
- 	unsigned int cs42l42_suspended:1;
--	char cs42l42_hp_volume[CS42L42_HP_CH];
--	char cs42l42_hs_mic_volume[CS42L42_HS_MIC_CH];
-+	s8 vol[CS42L42_VOLUMES];
- 
- 	struct mutex cs8409_i2c_mux;
- 
-@@ -280,6 +284,13 @@ struct cs8409_spec {
- 			 unsigned int *res);
+-	unsigned int reg;
++	unsigned int value;
  };
  
-+extern const struct snd_kcontrol_new cs42l42_dac_volume_mixer;
-+extern const struct snd_kcontrol_new cs42l42_adc_volume_mixer;
-+
-+int cs8409_cs42l42_volume_info(struct snd_kcontrol *kctrl, struct snd_ctl_elem_info *uinfo);
-+int cs8409_cs42l42_volume_get(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl);
-+int cs8409_cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl);
-+
- extern const struct snd_pci_quirk cs8409_fixup_tbl[];
- extern const struct hda_model_fixup cs8409_models[];
+ struct cs8409_cir_param {
+@@ -279,7 +281,7 @@ struct cs8409_spec {
+ 	unsigned int cs42l42_suspended:1;
+ 	s8 vol[CS42L42_VOLUMES];
+ 
+-	struct mutex cs8409_i2c_mux;
++	struct mutex i2c_mux;
+ 	unsigned int i2c_clck_enabled;
+ 	unsigned int dev_addr;
+ 	struct delayed_work i2c_clk_work;
+@@ -303,7 +305,7 @@ extern const struct hda_model_fixup cs8409_models[];
  extern const struct hda_fixup cs8409_fixups[];
+ extern const struct hda_verb cs8409_cs42l42_init_verbs[];
+ extern const struct hda_pintbl cs8409_cs42l42_pincfgs[];
+-extern const struct cs8409_i2c_param cs42l42_init_reg_seq[];
++extern const struct cs8409_i2c_param cs42l42_init_reg_seq[CS42L42_INIT_REG_SEQ_SIZE];
+ extern const struct cs8409_cir_param cs8409_cs42l42_hw_cfg[];
+ extern const struct cs8409_cir_param cs8409_cs42l42_bullseye_atn[];
+ 
 -- 
 2.25.1
 
