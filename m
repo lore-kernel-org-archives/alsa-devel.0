@@ -7,58 +7,57 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A32CC432BE
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 22:49:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DDA0C4338F
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 22:49:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D224B6104F
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 22:49:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D224B6104F
+	by mail.kernel.org (Postfix) with ESMTPS id 7CBE56104F
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 22:49:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7CBE56104F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4D1FF1915;
-	Fri, 13 Aug 2021 00:48:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D1FF1915
+	by alsa0.perex.cz (Postfix) with ESMTPS id D020E193D;
+	Fri, 13 Aug 2021 00:48:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D020E193D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628808560;
-	bh=VaYSMc9OE+NExVhqATtGI9ZaidjqEE5qCbsJQGAwXSI=;
+	s=default; t=1628808576;
+	bh=DxdKR+nkV42B/ZuYXbhclHOT3aelIAyBubWS4frK464=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ElS1ILMIUXBv9pQY65ynr+D/kTNnO1sEToLdnFQTx0x0sPCZ6FaFpeG9i1W4UZMZ6
-	 issWOYod8zBH9874+jNKteJlGSkIuYoMrOHkJRn8fpG93qGGvkGhu7LHbYkz8KCRL4
-	 RhYyl3DaM+eABOOopNGprVcB947U/q+2Cj5BU8e4=
+	b=RBkQY/Uvr248gPiSmj3ggiJTEtWu4E/06Rf4RO1L9RkqrFHy0VPhhI4t9MCiZfJfb
+	 uSsy6FVNSzvmjJX8pJ3ukzvjzkvt3JJEkOzKsKKVx1EauLchtiRwO7VcHI2L8IPjUS
+	 SBTb8EBo+SROHh1di7r/eZZw11iHwmDj5NICNNoE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A134CF80517;
-	Fri, 13 Aug 2021 00:45:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32673F8051D;
+	Fri, 13 Aug 2021 00:45:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B2548F804FE; Fri, 13 Aug 2021 00:45:30 +0200 (CEST)
+ id A017DF80511; Fri, 13 Aug 2021 00:45:32 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 541AEF802A0
- for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2021 00:45:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 541AEF802A0
-X-IronPort-AV: E=McAfee;i="6200,9189,10074"; a="212349758"
-X-IronPort-AV: E=Sophos;i="5.84,317,1620716400"; d="scan'208";a="212349758"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 382C6F804E1
+ for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2021 00:45:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 382C6F804E1
+X-IronPort-AV: E=McAfee;i="6200,9189,10074"; a="212349765"
+X-IronPort-AV: E=Sophos;i="5.84,317,1620716400"; d="scan'208";a="212349765"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Aug 2021 15:45:11 -0700
-X-IronPort-AV: E=Sophos;i="5.84,317,1620716400"; d="scan'208";a="517647199"
+ 12 Aug 2021 15:45:13 -0700
+X-IronPort-AV: E=Sophos;i="5.84,317,1620716400"; d="scan'208";a="517647204"
 Received: from evanklei-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.77.110])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Aug 2021 15:45:11 -0700
+ 12 Aug 2021 15:45:12 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 5/8] ASoC: Intel: sof_sdw_rt711*: keep codec device
- reference until remove
-Date: Thu, 12 Aug 2021 17:44:40 -0500
-Message-Id: <20210812224443.170144-6-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 7/8] ASoC: Intel: remove device_properties for Atom boards
+Date: Thu, 12 Aug 2021 17:44:42 -0500
+Message-Id: <20210812224443.170144-8-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210812224443.170144-1-pierre-louis.bossart@linux.intel.com>
 References: <20210812224443.170144-1-pierre-louis.bossart@linux.intel.com>
@@ -83,184 +82,97 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Follow the example of Intel Atom drivers and keep a reference to the
-headset codec until the properties are removed.
-
-There is no guarantee that the module for the codec driver is loaded
-before the machine driver probe, the use of the deferred probe
-mechanism is required.
+Prepare the transition to the software node API by removing device
+properties in the probe error handling and .remove callback.
 
 Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw_rt711.c      | 44 +++++++++------------
- sound/soc/intel/boards/sof_sdw_rt711_sdca.c | 43 +++++++++-----------
- 2 files changed, 38 insertions(+), 49 deletions(-)
+ sound/soc/intel/boards/bytcht_es8316.c | 2 ++
+ sound/soc/intel/boards/bytcr_rt5640.c  | 5 ++++-
+ sound/soc/intel/boards/bytcr_rt5651.c  | 5 ++++-
+ 3 files changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_sdw_rt711.c b/sound/soc/intel/boards/sof_sdw_rt711.c
-index 8a6a17fe676e..510301e09b09 100644
---- a/sound/soc/intel/boards/sof_sdw_rt711.c
-+++ b/sound/soc/intel/boards/sof_sdw_rt711.c
-@@ -21,25 +21,15 @@
-  * Note this MUST be called before snd_soc_register_card(), so that the props
-  * are in place before the codec component driver's probe function parses them.
-  */
--static int rt711_add_codec_device_props(const char *sdw_dev_name)
-+static int rt711_add_codec_device_props(struct device *sdw_dev)
- {
- 	struct property_entry props[MAX_NO_PROPS] = {};
--	struct device *sdw_dev;
--	int ret;
--
--	sdw_dev = bus_find_device_by_name(&sdw_bus_type, NULL, sdw_dev_name);
--	if (!sdw_dev)
--		return -EPROBE_DEFER;
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index 34bdae45da73..5e1d30094250 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -615,6 +615,7 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 	return 0;
  
--	if (SOF_RT711_JDSRC(sof_sdw_quirk)) {
--		props[0] = PROPERTY_ENTRY_U32("realtek,jd-src",
--					      SOF_RT711_JDSRC(sof_sdw_quirk));
--	}
--
--	ret = device_add_properties(sdw_dev, props);
--	put_device(sdw_dev);
-+	if (!SOF_RT711_JDSRC(sof_sdw_quirk))
-+		return 0;
-+	props[0] = PROPERTY_ENTRY_U32("realtek,jd-src", SOF_RT711_JDSRC(sof_sdw_quirk));
- 
--	return ret;
-+	return device_add_properties(sdw_dev, props);
+ err:
++	device_remove_properties(priv->codec_dev);
+ 	put_device(priv->codec_dev);
+ 	return ret;
  }
+@@ -625,6 +626,7 @@ static int snd_byt_cht_es8316_mc_remove(struct platform_device *pdev)
+ 	struct byt_cht_es8316_private *priv = snd_soc_card_get_drvdata(card);
  
- static const struct snd_soc_dapm_widget rt711_widgets[] = {
-@@ -137,15 +127,10 @@ static int rt711_rtd_init(struct snd_soc_pcm_runtime *rtd)
- 
- int sof_sdw_rt711_exit(struct snd_soc_card *card, struct snd_soc_dai_link *dai_link)
- {
--	struct device *sdw_dev;
--
--	sdw_dev = bus_find_device_by_name(&sdw_bus_type, NULL,
--					  dai_link->codecs[0].name);
--	if (!sdw_dev)
--		return -EINVAL;
-+	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
- 
--	device_remove_properties(sdw_dev);
--	put_device(sdw_dev);
-+	device_remove_properties(ctx->headset_codec_dev);
-+	put_device(ctx->headset_codec_dev);
- 
+ 	gpiod_put(priv->speaker_en_gpio);
++	device_remove_properties(priv->codec_dev);
+ 	put_device(priv->codec_dev);
  	return 0;
  }
-@@ -156,6 +141,8 @@ int sof_sdw_rt711_init(struct snd_soc_card *card,
- 		       struct sof_sdw_codec_info *info,
- 		       bool playback)
- {
-+	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
-+	struct device *sdw_dev;
- 	int ret;
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index fbe75c77e4ca..08cc907adf8a 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -1483,7 +1483,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 	/* Must be called before register_card, also see declaration comment. */
+ 	ret_val = byt_rt5640_add_codec_device_props(codec_dev, priv);
+ 	if (ret_val)
+-		goto err;
++		goto err_device;
  
- 	/*
-@@ -165,9 +152,16 @@ int sof_sdw_rt711_init(struct snd_soc_card *card,
- 	if (!playback)
- 		return 0;
+ 	log_quirks(&pdev->dev);
  
--	ret = rt711_add_codec_device_props(dai_links->codecs[0].name);
--	if (ret < 0)
-+	sdw_dev = bus_find_device_by_name(&sdw_bus_type, NULL, dai_links->codecs[0].name);
-+	if (!sdw_dev)
-+		return -EPROBE_DEFER;
-+
-+	ret = rt711_add_codec_device_props(sdw_dev);
-+	if (ret < 0) {
-+		put_device(sdw_dev);
- 		return ret;
-+	}
-+	ctx->headset_codec_dev = sdw_dev;
+@@ -1586,6 +1586,8 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 	return ret_val;
  
- 	dai_links->init = rt711_rtd_init;
- 
-diff --git a/sound/soc/intel/boards/sof_sdw_rt711_sdca.c b/sound/soc/intel/boards/sof_sdw_rt711_sdca.c
-index 1ae66f266c6c..94af40e2beb0 100644
---- a/sound/soc/intel/boards/sof_sdw_rt711_sdca.c
-+++ b/sound/soc/intel/boards/sof_sdw_rt711_sdca.c
-@@ -21,25 +21,16 @@
-  * Note this MUST be called before snd_soc_register_card(), so that the props
-  * are in place before the codec component driver's probe function parses them.
-  */
--static int rt711_sdca_add_codec_device_props(const char *sdw_dev_name)
-+static int rt711_sdca_add_codec_device_props(struct device *sdw_dev)
- {
- 	struct property_entry props[MAX_NO_PROPS] = {};
--	struct device *sdw_dev;
--	int ret;
--
--	sdw_dev = bus_find_device_by_name(&sdw_bus_type, NULL, sdw_dev_name);
--	if (!sdw_dev)
--		return -EPROBE_DEFER;
- 
--	if (SOF_RT711_JDSRC(sof_sdw_quirk)) {
--		props[0] = PROPERTY_ENTRY_U32("realtek,jd-src",
--					      SOF_RT711_JDSRC(sof_sdw_quirk));
--	}
-+	if (!SOF_RT711_JDSRC(sof_sdw_quirk))
-+		return 0;
- 
--	ret = device_add_properties(sdw_dev, props);
--	put_device(sdw_dev);
-+	props[0] = PROPERTY_ENTRY_U32("realtek,jd-src", SOF_RT711_JDSRC(sof_sdw_quirk));
- 
--	return ret;
-+	return device_add_properties(sdw_dev, props);
+ err:
++	device_remove_properties(priv->codec_dev);
++err_device:
+ 	put_device(priv->codec_dev);
+ 	return ret_val;
  }
+@@ -1595,6 +1597,7 @@ static int snd_byt_rt5640_mc_remove(struct platform_device *pdev)
+ 	struct snd_soc_card *card = platform_get_drvdata(pdev);
+ 	struct byt_rt5640_private *priv = snd_soc_card_get_drvdata(card);
  
- static const struct snd_soc_dapm_widget rt711_sdca_widgets[] = {
-@@ -137,15 +128,10 @@ static int rt711_sdca_rtd_init(struct snd_soc_pcm_runtime *rtd)
- 
- int sof_sdw_rt711_sdca_exit(struct snd_soc_card *card, struct snd_soc_dai_link *dai_link)
- {
--	struct device *sdw_dev;
--
--	sdw_dev = bus_find_device_by_name(&sdw_bus_type, NULL,
--					  dai_link->codecs[0].name);
--	if (!sdw_dev)
--		return -EINVAL;
-+	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
- 
--	device_remove_properties(sdw_dev);
--	put_device(sdw_dev);
-+	device_remove_properties(ctx->headset_codec_dev);
-+	put_device(ctx->headset_codec_dev);
- 
++	device_remove_properties(priv->codec_dev);
+ 	put_device(priv->codec_dev);
  	return 0;
  }
-@@ -156,6 +142,8 @@ int sof_sdw_rt711_sdca_init(struct snd_soc_card *card,
- 			    struct sof_sdw_codec_info *info,
- 			    bool playback)
- {
-+	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
-+	struct device *sdw_dev;
- 	int ret;
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index c70dd729cdbb..cc1505e53b4f 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -997,7 +997,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 	/* Must be called before register_card, also see declaration comment. */
+ 	ret_val = byt_rt5651_add_codec_device_props(codec_dev);
+ 	if (ret_val)
+-		goto err;
++		goto err_device;
  
- 	/*
-@@ -165,9 +153,16 @@ int sof_sdw_rt711_sdca_init(struct snd_soc_card *card,
- 	if (!playback)
- 		return 0;
+ 	/* Cherry Trail devices use an external amplifier enable gpio */
+ 	if (soc_intel_is_cht() && !byt_rt5651_gpios)
+@@ -1125,6 +1125,8 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 	return ret_val;
  
--	ret = rt711_sdca_add_codec_device_props(dai_links->codecs[0].name);
--	if (ret < 0)
-+	sdw_dev = bus_find_device_by_name(&sdw_bus_type, NULL, dai_links->codecs[0].name);
-+	if (!sdw_dev)
-+		return -EPROBE_DEFER;
-+
-+	ret = rt711_sdca_add_codec_device_props(sdw_dev);
-+	if (ret < 0) {
-+		put_device(sdw_dev);
- 		return ret;
-+	}
-+	ctx->headset_codec_dev = sdw_dev;
+ err:
++	device_remove_properties(priv->codec_dev);
++err_device:
+ 	put_device(priv->codec_dev);
+ 	return ret_val;
+ }
+@@ -1134,6 +1136,7 @@ static int snd_byt_rt5651_mc_remove(struct platform_device *pdev)
+ 	struct snd_soc_card *card = platform_get_drvdata(pdev);
+ 	struct byt_rt5651_private *priv = snd_soc_card_get_drvdata(card);
  
- 	dai_links->init = rt711_sdca_rtd_init;
- 
++	device_remove_properties(priv->codec_dev);
+ 	put_device(priv->codec_dev);
+ 	return 0;
+ }
 -- 
 2.25.1
 
