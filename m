@@ -1,4 +1,4 @@
-Return-Path: <SRS0=gvoF=NC=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=v/9x=ND=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -7,95 +7,99 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2790C4338F
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Aug 2021 19:17:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2ADCFC4338F
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 02:30:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8231860F21
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Aug 2021 19:17:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8231860F21
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id BF8F66105A
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 02:30:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BF8F66105A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F10AC1AF8;
-	Wed, 11 Aug 2021 21:16:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F10AC1AF8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 502511AAE;
+	Thu, 12 Aug 2021 04:29:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 502511AAE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628709427;
-	bh=TkmGlLKrt8yNJEY2N9hGZJ+lOkJ1h//PW2iroZz9y3Y=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=X5tbD4iGF1bebV5VZngkKrbuW7x8yS0CZDLikWGJm0JxWZMJ+K9nAGqgq/zwEdQLw
-	 8e9ESyyBwFuaLnBaa3nmCGkVHEd2Stp1JjKuv4ZJHKtGSUaFLY5kXhHxJbCdlSeAv7
-	 ZCJzbgZvzI8FzlwrhjFekqds4FfZO+ZwdZhka71Y=
+	s=default; t=1628735417;
+	bh=S+Ckp/ReYeriTnvGdBBNBGJ2s2ExlJ4GA/Az+hulZY8=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=nyG6u8QExxT62sFt4/KeTi7dkHjOoujte5a7EeaKfc+WMCPuWaYoEJfuHfVJHkexe
+	 u/MdPYaabMqAKKrFXUGcErkSe47rIm4Vgv0nPxQy8zi1P7tp/R3gCOpqKzqOwvStGJ
+	 uNwBKpqRnheOYTqu+hXokCcZXc+jgP/hjS3e6Xtw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2227DF80525;
-	Wed, 11 Aug 2021 21:13:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A0EFF80245;
+	Thu, 12 Aug 2021 04:29:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C9B58F8051B; Wed, 11 Aug 2021 21:12:59 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id AAFB4F8025D; Thu, 12 Aug 2021 04:29:03 +0200 (CEST)
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 092EAF804E1
- for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2021 21:12:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 092EAF804E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 44A76F800E5
+ for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2021 04:28:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44A76F800E5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="NXnx8vlG"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17B9hd04013981; 
- Wed, 11 Aug 2021 14:12:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=W5yQLmZCTpE/L0nB3SnuFh8y1PcoLQ4rGuID/c2G9Lo=;
- b=NXnx8vlGr56nhE4O1EgwCwxRkvxFe7Hh6IdVFmv5inLBDbGrpM7lxiXkYXu5hWIv+dMv
- NUVVF59STPKF/1jVuyt8Ordv2vXzXV+ZTGTErlFTLqAFpFAQz0cFdCJoDdBk1K56zrsi
- KvBurdU+pizVNu9nERgVkRzz2sTGQ7EUCXo0qDejLu0SlvIkOykcuXu6E50EjgOqkjyE
- HT3P4xS13TmB845LskEmEkDz4WYGQ+MKxRcUhAcDM9w3VFba2s1sgx0UpmO5MbZSfE2o
- P+pqlx2k011pHDwZ0aDjnhK76Z48wUlZ6TTLFIwzhaw5f6RK8yTOcjn7hx1ks7jfMNJR Ug== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 3acc5ngpgw-8
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 11 Aug 2021 14:12:42 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Wed, 11 Aug
- 2021 19:57:32 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via
- Frontend Transport; Wed, 11 Aug 2021 19:57:32 +0100
-Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.180])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5CA3946E;
- Wed, 11 Aug 2021 18:57:32 +0000 (UTC)
-From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v4 24/27] ALSA: hda/cs8409: Use timeout rather than retries
- for I2C transaction waits
-Date: Wed, 11 Aug 2021 19:56:51 +0100
-Message-ID: <20210811185654.6837-25-vitalyr@opensource.cirrus.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210811185654.6837-1-vitalyr@opensource.cirrus.com>
-References: <20210811185654.6837-1-vitalyr@opensource.cirrus.com>
+ dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
+ header.b="8admbe+Q"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="s7yIU+df"
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+ by mailout.nyi.internal (Postfix) with ESMTP id 1A4005C0101;
+ Wed, 11 Aug 2021 22:28:47 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute4.internal (MEProxy); Wed, 11 Aug 2021 22:28:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding; s=fm2; bh=/oWlzCQSGq1c0EM5NJGe2/7uMs
+ 6/P30U6TsCK2RrOT0=; b=8admbe+QIFtWxWpaNxgysmaWAtRhpGhuLhDMPDdvdz
+ ZoPX38FwgSFQxRYynVKr/dw5Ve09rq59vRI/KTZgRIvtUHfkPvA0lgX4NiB+nmRt
+ ZyMh11qjIzoyqv/Xyc2QmbL2xxDbFSS3G1TSUx4I0YfMM68hjL20xN1mkzT0hQbD
+ oVfN7SfQjDCodbAxlF+mGnIwQzJZfehVOZIMBGNTiBXDuiH6I0Fvcq4ABPXYR+mL
+ 4nfLyDP05OQjNbMoRTqjHdyRrCLs6dKflR81lKAufDcD5zkhT/NRqb0iFs9mQXap
+ imOQmaIly81MxjyyGbr3dHzRuP3ttHdScWgAxcpAdWUg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-transfer-encoding:date:from
+ :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+ :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=/oWlzCQSGq1c0EM5N
+ JGe2/7uMs6/P30U6TsCK2RrOT0=; b=s7yIU+dfwiNZn95xUUJov9P6Qsxcsh6L4
+ v727GG7DeKXjuk+XXSb6auXNI0AUUf2wrbvASC3Tzk5TefwUPA1tvndHNoyFWKXV
+ 61XVdFRKfFyFQD6avx5HbdNrxR+1svn17A+Dw4JyT0gjY4dCfgFJ3ISHk1QQxCdp
+ qMxap8KTPX2Rv/O8jLjA96m/Z68yzd4W1PB8RAw8PwW+XUvfx1K7JkyWr+u0t2LI
+ BKI6NNaj7fDun4gR8j3428Zoe2WXPrt9ylV0okJc0nc0dF31mVpE43PKEkQbVK/D
+ XcPxwfp2JOwpo4eklESX0myuSzdsuhOSUaZHnkvaJgr5YPaSkImrA==
+X-ME-Sender: <xms:XYcUYUBRW8huNa7zhVu2VXJQWO988qtmsOVetq7wCIgMZR3THjGE4w>
+ <xme:XYcUYWg01wgA99yMRd3-fgzCrMvb668RRsmJ14X04H_Yur5YX9bKHHWE9F1htuekH
+ 0sSEhtfHQTERVRCILY>
+X-ME-Received: <xmr:XYcUYXkY95MTZk2w0WH6-Bj2hL35bt4Wlx-rNsJqjyHOypq6Eq_mguKZNLp5c-j-j8trBOy0cNfkpJst3-UD_-I1KcJuBEVqt9wrPjvnrjn1_A_Ng4UU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrkedvgdehjecutefuodetggdotefrodftvf
+ curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+ uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
+ dtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhi
+ sehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpedujeetlefhtddtke
+ fgtdeuieelhffgteejjeehkeegveduvdevgeeiheeuueekjeenucevlhhushhtvghrufhi
+ iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrg
+ hmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:XYcUYayNocILWVENkQ-4nriUPDMuoZ27H4MiifXaUPD6rtxCwzxmvg>
+ <xmx:XYcUYZSe5QIkXX1oOvFfXqC19aYzl-JRzt2mtqD8t3kVSqzzgkJVuw>
+ <xmx:XYcUYVYZlJH_O74lsf2SyFeClwl02KMncPdPdIOaeDaTXpHmviXN6g>
+ <xmx:X4cUYUdqRpG1rLgLmP5DNKtRQ2-lf_NSeMFVGPcjNo5L5bsjoH5c6A>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 11 Aug 2021 22:28:44 -0400 (EDT)
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: tiwai@suse.de
+Subject: [PATCH] ALSA: oxfw: fix functioal regression for silence in Apogee
+ Duet FireWire
+Date: Thu, 12 Aug 2021 11:28:39 +0900
+Message-Id: <20210812022839.42043-1-o-takashi@sakamocchi.jp>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: AaBnK1JW3IFpeGoo_jDhfYGK90bG7LPX
-X-Proofpoint-GUID: AaBnK1JW3IFpeGoo_jDhfYGK90bG7LPX
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0
- bulkscore=0 phishscore=0
- clxscore=1015 priorityscore=1501 suspectscore=0 impostorscore=0
- malwarescore=0 adultscore=0 mlxlogscore=999 mlxscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108110132
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,70 +115,88 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
+OXFW 971 has no function to use the value in syt field of received
+isochronous packet for playback timing generation. In kernel prepatch for
+v5.14, ALSA OXFW driver got change to send NO_INFO value in the field
+instead of actual timing value. The change brings Apogee Duet FireWire to
+generate no playback sound, while output meter moves.
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+As long as I investigate, _any_ value in the syt field takes the device to
+generate sound. It's reasonable to think that the device just ignores data
+blocks in packet with NO_INFO value in its syt field for audio data
+processing.
+
+This commit adds a new flag for the quirk to fix regression.
+
+Fixes: 029ffc429440 ("ALSA: oxfw: perform sequence replay for media clock recovery")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
+ sound/firewire/oxfw/oxfw-stream.c | 9 ++++++++-
+ sound/firewire/oxfw/oxfw.c        | 6 ++++--
+ sound/firewire/oxfw/oxfw.h        | 5 +++++
+ 3 files changed, 17 insertions(+), 3 deletions(-)
 
-Changes in v2:
-- No changes
-
-Changes in v3:
-- No changes
-
-Changes in v4:
-- No changes
-
- sound/pci/hda/patch_cs8409.c | 16 +++-------------
- sound/pci/hda/patch_cs8409.h |  2 ++
- 2 files changed, 5 insertions(+), 13 deletions(-)
-
-diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
-index 897c48140d8b..9f6c51a5835a 100644
---- a/sound/pci/hda/patch_cs8409.c
-+++ b/sound/pci/hda/patch_cs8409.c
-@@ -140,24 +140,14 @@ static void cs8409_enable_i2c_clock(struct hda_codec *codec)
-  * @codec: the codec instance
-  *
-  * Wait for I2C transaction to complete.
-- * Return -1 if transaction wait times out.
-+ * Return -ETIMEDOUT if transaction wait times out.
-  */
- static int cs8409_i2c_wait_complete(struct hda_codec *codec)
- {
--	int repeat = 5;
- 	unsigned int retval;
+diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
+index 0ef242fdd3bc..fff18b5d4e05 100644
+--- a/sound/firewire/oxfw/oxfw-stream.c
++++ b/sound/firewire/oxfw/oxfw-stream.c
+@@ -153,7 +153,7 @@ static int init_stream(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
+ 	struct cmp_connection *conn;
+ 	enum cmp_direction c_dir;
+ 	enum amdtp_stream_direction s_dir;
+-	unsigned int flags = CIP_UNAWARE_SYT;
++	unsigned int flags = 0;
+ 	int err;
  
--	do {
--		retval = cs8409_vendor_coef_get(codec, CS8409_I2C_STS);
--		if ((retval & 0x18) != 0x18) {
--			usleep_range(2000, 4000);
--			--repeat;
--		} else
--			return 0;
--
--	} while (repeat);
--
--	return -1;
-+	return read_poll_timeout(cs8409_vendor_coef_get, retval, retval & 0x18,
-+		CS42L42_I2C_SLEEP_US, CS42L42_I2C_TIMEOUT_US, false, codec, CS8409_I2C_STS);
- }
+ 	if (!(oxfw->quirks & SND_OXFW_QUIRK_BLOCKING_TRANSMISSION))
+@@ -161,6 +161,13 @@ static int init_stream(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
+ 	else
+ 		flags |= CIP_BLOCKING;
  
- /**
-diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
-index 2208be2ffad1..71dbbd8e2f3b 100644
---- a/sound/pci/hda/patch_cs8409.h
-+++ b/sound/pci/hda/patch_cs8409.h
-@@ -231,6 +231,8 @@ enum cs8409_coefficient_index_registers {
- #define CS42L42_HSTYPE_MASK			(0x03)
- #define CS42L42_JACK_INSERTED			(0x0C)
- #define CS42L42_JACK_REMOVED			(0x00)
-+#define CS42L42_I2C_TIMEOUT_US			(20000)
-+#define CS42L42_I2C_SLEEP_US			(2000)
++	// OXFW 970/971 has no function to generate playback timing according to the sequence
++	// of value in syt field, thus the packet should include NO_INFO value in the field.
++	// However, some models just ignore data blocks in packet with NO_INFO for audio data
++	// processing.
++	if (!(oxfw->quirks & SND_OXFW_QUIRK_IGNORE_NO_INFO_PACKET))
++		flags |= CIP_UNAWARE_SYT;
++
+ 	if (stream == &oxfw->tx_stream) {
+ 		conn = &oxfw->out_conn;
+ 		c_dir = CMP_OUTPUT;
+diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
+index 84971d78d152..cb5b5e3a481b 100644
+--- a/sound/firewire/oxfw/oxfw.c
++++ b/sound/firewire/oxfw/oxfw.c
+@@ -159,8 +159,10 @@ static int detect_quirks(struct snd_oxfw *oxfw, const struct ieee1394_device_id
+ 		return snd_oxfw_scs1x_add(oxfw);
+ 	}
  
- /* Dell BULLSEYE / WARLOCK / CYBORG Specific Definitions */
+-	if (entry->vendor_id == OUI_APOGEE && entry->model_id == MODEL_DUET_FW)
+-		oxfw->quirks |= SND_OXFW_QUIRK_BLOCKING_TRANSMISSION;
++	if (entry->vendor_id == OUI_APOGEE && entry->model_id == MODEL_DUET_FW) {
++		oxfw->quirks |= SND_OXFW_QUIRK_BLOCKING_TRANSMISSION |
++				SND_OXFW_QUIRK_IGNORE_NO_INFO_PACKET;
++	}
  
+ 	/*
+ 	 * TASCAM FireOne has physical control and requires a pair of additional
+diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
+index ee47abcb0c90..c13034f6c2ca 100644
+--- a/sound/firewire/oxfw/oxfw.h
++++ b/sound/firewire/oxfw/oxfw.h
+@@ -42,6 +42,11 @@ enum snd_oxfw_quirk {
+ 	SND_OXFW_QUIRK_BLOCKING_TRANSMISSION = 0x04,
+ 	// Stanton SCS1.d and SCS1.m support unique transaction.
+ 	SND_OXFW_QUIRK_SCS_TRANSACTION = 0x08,
++	// Apogee Duet FireWire ignores data blocks in packet with NO_INFO for audio data
++	// processing, while output level meter moves. Any value in syt field of packet takes
++	// the device to process audio data even if the value is invalid in a point of
++	// IEC 61883-1/6.
++	SND_OXFW_QUIRK_IGNORE_NO_INFO_PACKET = 0x10,
+ };
+ 
+ /* This is an arbitrary number for convinience. */
 -- 
-2.25.1
+2.30.2
 
