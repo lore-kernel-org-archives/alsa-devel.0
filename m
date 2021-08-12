@@ -2,78 +2,87 @@ Return-Path: <SRS0=v/9x=ND=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 020E3C4338F
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 11:20:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74D54C4338F
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 11:39:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 58F246103A
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 11:20:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 58F246103A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id C4AD36103E
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 11:39:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C4AD36103E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 948DE1A94;
-	Thu, 12 Aug 2021 13:19:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 948DE1A94
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9DDC11931;
+	Thu, 12 Aug 2021 13:38:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DDC11931
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628767228;
-	bh=XUJXqSUb66yuP6/NI70YfEAOmfUm+IOZzKo48swWWnk=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1628768360;
+	bh=Xr3zAIUNM0CIc+MUjQviWSkOOVS5ndF6k2EMn5MmEFQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mGl5XSMOTZwr5FXEK15M98l054aomB+coES+CO3cqVePFdxxcg140weZlyvnzjqPB
-	 rMAt+SSx3CqVOr+mWrJKxPyG4zISBuHdCAqJnnI9IT9siAxkIe8mj6kRm2IRnjmzEM
-	 kM/1ID4dHQnWr2cNy/3qO7sOLzUcN6xcvv2GNNJY=
+	b=YdjWpFhsGufgFX8rfgTiCyWZwwElnqUTGY9nw6B//DQu2IzTBl9pw260QY7Cwxf5B
+	 6sCs7SRb2cGTQqKDX+kkOBgC4sGFJXAdOXllkz2l+3UOi0YZEH5sGWlq5kj51h8XZk
+	 f46zHLR0KQcB+c0PhG+cKHhr0Fu6cAViMKZIKIF4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20243F800AF;
-	Thu, 12 Aug 2021 13:19:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 15DCBF80245;
+	Thu, 12 Aug 2021 13:38:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AA11EF8025D; Thu, 12 Aug 2021 13:19:35 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 475D1F804B1; Thu, 12 Aug 2021 13:38:28 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6511BF800AF
- for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2021 13:19:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6511BF800AF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8B58DF80245
+ for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2021 13:38:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B58DF80245
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="oB4TSJYW"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7F9060F91;
- Thu, 12 Aug 2021 11:19:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1628767164;
- bh=XUJXqSUb66yuP6/NI70YfEAOmfUm+IOZzKo48swWWnk=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=oB4TSJYW2WQPfeXEzqZrb/gC7rmb19YCeeuat2IURQN7oI9nrnWlLQZVHQ2v7cff4
- 0q9HjFJOcDf0zxvYW0ekgI0CazEJU+H2GiuWkK8j67v3HfUc+LFVb0XPRcglEYQgrD
- a79raoqYiT0mHoQMDIcsUX3bEk5nQvfcvkyP87DbaalV6a90nYms/3pGY/RahjClW4
- AIYb9C/VDeLZuLea4Y9yxj5+Tol2MKP215VQ0wRzJpuLYz5rYyoOvQNbUJoCxlnFAI
- ywKVSulUdy8MtKtjmK9RpSvzrjoNKE9Rc9q64LHM9S8kY4gc/dqZ3bZwRd8hEEuq4Q
- WmoffIHP7DY5A==
-Date: Thu, 12 Aug 2021 12:19:04 +0100
-From: Mark Brown <broonie@kernel.org>
-To: "derek.fang@realtek.com" <derek.fang@realtek.com>
-Subject: Re: [PATCH 2/2] ASoC: rt5682: Fix the vol+ button detection issue
-Message-ID: <20210812111904.GA55607@sirena.org.uk>
-References: <20210811083750.26680-1-derek.fang@realtek.com>
- <20210811083750.26680-2-derek.fang@realtek.com>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="FSdO2LaX"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="STgtkkK9"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 084D11FF3C
+ for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2021 11:38:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1628768300; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=BuK3qRLe/Cti3Q2WMkbvq39yEOfKnZiGoaNHlpV9Xdk=;
+ b=FSdO2LaXMyKP8vIcsosSj95GoxtN2Ja2em9VOb6jErMF8n9dlt/TVJBtkEwjn/nPdTJhcI
+ PLG+bOV0z4RbxwKtv0VMEXp9JyxYpen2CJDurkkPKa/il6kesw0Jw/H5F5R8EUYbI0CIED
+ DAGI65mdReKNfhDlZaPEdI0/sbvG2GE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1628768300;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=BuK3qRLe/Cti3Q2WMkbvq39yEOfKnZiGoaNHlpV9Xdk=;
+ b=STgtkkK9OCXPmh5Mx4li0cLDsHNAQ8dASy+vR29rgkwR4CjKlZNSkdIiF6lh8zbjgdFTsR
+ 3POEi4TE8njXFPAA==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id E908BA3EFD;
+ Thu, 12 Aug 2021 11:38:19 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH RFC v2 3/4] ALSA: memalloc: Support for non-contiguous page
+ allocation
+Date: Thu, 12 Aug 2021 13:38:17 +0200
+Message-Id: <20210812113818.6479-4-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210812113818.6479-1-tiwai@suse.de>
+References: <20210812113818.6479-1-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="wRRV7LY7NUeQGEoC"
-Content-Disposition: inline
-In-Reply-To: <20210811083750.26680-2-derek.fang@realtek.com>
-X-Cookie: See store for details.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, lgirdwood@gmail.com, albertchen@realtek.com,
- shumingf@realtek.com, flove@realtek.com
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,33 +98,480 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+This patch adds the support for allocation of non-contiguous DMA pages
+in the common memalloc helper.  It's another SG-buffer type, but
+unlike the existing one, this is directional and requires the explicit
+sync / invalidation of dirty pages on non-coherent architectures.
 
---wRRV7LY7NUeQGEoC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+For this enhancement, the following points are changed:
+- snd_dma_device stores the DMA direction.
+- A new variant, snd_dma_alloc_dir_pages() and *_all() are introduced;
+  snd_dma_alloc_pages() and *_all() just wrap with DMA_BIDIRECTIONAL.
+- A new helper snd_dma_buffer_sync() is introduced;
+  this gets called in the appropriate places.
+- A new allocation type, SNDRV_DMA_TYPE_NONCONTIG, is introduced.
 
-On Wed, Aug 11, 2021 at 04:37:50PM +0800, derek.fang@realtek.com wrote:
-> From: Derek Fang <derek.fang@realtek.com>
->=20
-> Fix the wrong button vol+ detection issue with some brand headsets
-> by fine tuning the threshold of button vol+ and SAR ADC button accuracy.
+The driver needs to call the allocation with the new type, and it
+likely needs to add SNDRV_PCM_INFO_EXPLICIT_SYNC flag to the PCM
+hardware.info for disabling the mmap of control and status data.
+Otherwise it'd miss explicit sync in the mmap mode.
 
-This doesn't apply against current code, please check and resend.
+The explicit sync is performed in  the points before and after
+read/write transfer as well as and applptr/hwptr syncptr ioctl.  In
+the case of mmap mode, user-space is supposed to call the syncptr
+ioctl with the hwptr flag to update and fetch the status at first.
+This corresponds to CPU-sync.  Then user-space advances the applptr
+via syncptr ioctl again with applptr flag, and this corresponds to the
+device sync with flushing.
 
---wRRV7LY7NUeQGEoC
-Content-Type: application/pgp-signature; name="signature.asc"
+Other than the DMA direction and the explicit sync, the usage of this
+buffer type is almost equivalent with the existing
+SNDRV_DMA_TYPE_DEV_SG; you can get the page and the address via
+snd_sgbuf_get_page() and snd_sgbuf_get_addr(), also calculate the
+continuous pages via snd_sgbuf_get_chunk_size().
 
------BEGIN PGP SIGNATURE-----
+For those SG-handling, the non-contig type shares the same ops with
+the vmalloc handler.  As we do always vmap the SG pages at first, the
+actual address can be deduced from the vmapped address easily without
+iterating the SG-list.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEVA6cACgkQJNaLcl1U
-h9CiTgf/Vo7b3UwlOsjKPdzq3zqy0a6mkp0u8Gwqo6tJlTl8bJvdEFl5vhb7zJ70
-aVxkxk1J8ft6cykV91I1OTPP3ijP/jqc/c6M3lAlcDrTK7eDLDzfi6uPptmngfPS
-LPqtu1401mcKo7tWwBXWyoue8B2s6Efoj1Qqu+Je/Q631tUqkPV8aRi/xVVics0Q
-itpIWiYFjTi4+6noWXZvpMDPM/DS46+G8eccSmiPr47/rCmTQgkQSL9zJGtX5D0R
-PNX9ViGt0ok85HDLyy3vvPAcrfRoAw3NoTjGqJGwNtEA5SXvqGOgJ2MgA/0tArSH
-lUpwmyGrnd8mubmpKMKHHb+PB8Jvig==
-=3e+9
------END PGP SIGNATURE-----
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/sound/memalloc.h    |  45 ++++++++++++++--
+ sound/core/memalloc.c       | 101 +++++++++++++++++++++++++++++++++---
+ sound/core/memalloc_local.h |   1 +
+ sound/core/pcm_lib.c        |   3 ++
+ sound/core/pcm_local.h      |   7 +++
+ sound/core/pcm_memory.c     |  13 +++--
+ sound/core/pcm_native.c     |   6 +++
+ 7 files changed, 161 insertions(+), 15 deletions(-)
 
---wRRV7LY7NUeQGEoC--
+diff --git a/include/sound/memalloc.h b/include/sound/memalloc.h
+index b197e3f431c1..30284985c8e9 100644
+--- a/include/sound/memalloc.h
++++ b/include/sound/memalloc.h
+@@ -9,16 +9,19 @@
+ #ifndef __SOUND_MEMALLOC_H
+ #define __SOUND_MEMALLOC_H
+ 
++#include <linux/dma-direction.h>
+ #include <asm/page.h>
+ 
+ struct device;
+ struct vm_area_struct;
++struct sg_table;
+ 
+ /*
+  * buffer device info
+  */
+ struct snd_dma_device {
+ 	int type;			/* SNDRV_DMA_TYPE_XXX */
++	enum dma_data_direction dir;	/* DMA direction */
+ 	struct device *dev;		/* generic device */
+ };
+ 
+@@ -45,6 +48,7 @@ struct snd_dma_device {
+ #define SNDRV_DMA_TYPE_DEV_IRAM	SNDRV_DMA_TYPE_DEV
+ #endif
+ #define SNDRV_DMA_TYPE_VMALLOC		7	/* vmalloc'ed buffer */
++#define SNDRV_DMA_TYPE_NONCONTIG	8	/* non-coherent SG buffer */
+ 
+ /*
+  * info for buffer allocation
+@@ -66,22 +70,55 @@ static inline unsigned int snd_sgbuf_aligned_pages(size_t size)
+ }
+ 
+ /* allocate/release a buffer */
+-int snd_dma_alloc_pages(int type, struct device *dev, size_t size,
+-			struct snd_dma_buffer *dmab);
++int snd_dma_alloc_dir_pages(int type, struct device *dev,
++			    enum dma_data_direction dir, size_t size,
++			    struct snd_dma_buffer *dmab);
++
++static inline int snd_dma_alloc_pages(int type, struct device *dev,
++				      size_t size, struct snd_dma_buffer *dmab)
++{
++	return snd_dma_alloc_dir_pages(type, dev, DMA_BIDIRECTIONAL, size, dmab);
++}
++
+ int snd_dma_alloc_pages_fallback(int type, struct device *dev, size_t size,
+                                  struct snd_dma_buffer *dmab);
+ void snd_dma_free_pages(struct snd_dma_buffer *dmab);
+ int snd_dma_buffer_mmap(struct snd_dma_buffer *dmab,
+ 			struct vm_area_struct *area);
+ 
++enum snd_dma_sync_mode { SNDRV_DMA_SYNC_CPU, SNDRV_DMA_SYNC_DEVICE };
++#ifdef CONFIG_HAS_DMA
++void snd_dma_buffer_sync(struct snd_dma_buffer *dmab,
++			 enum snd_dma_sync_mode mode);
++#else
++static inline void snd_dma_buffer_sync(struct snd_dma_buffer *dmab,
++				       enum snd_dma_sync_mode mode) {}
++#endif
++
++void snd_dma_buffer_sync(struct snd_dma_buffer *dmab,
++			 enum snd_dma_sync_mode mode);
++
+ dma_addr_t snd_sgbuf_get_addr(struct snd_dma_buffer *dmab, size_t offset);
+ struct page *snd_sgbuf_get_page(struct snd_dma_buffer *dmab, size_t offset);
+ unsigned int snd_sgbuf_get_chunk_size(struct snd_dma_buffer *dmab,
+ 				      unsigned int ofs, unsigned int size);
+ 
+ /* device-managed memory allocator */
+-struct snd_dma_buffer *snd_devm_alloc_pages(struct device *dev, int type,
+-					    size_t size);
++struct snd_dma_buffer *snd_devm_alloc_dir_pages(struct device *dev, int type,
++						enum dma_data_direction dir,
++						size_t size);
++
++static inline struct snd_dma_buffer *
++snd_devm_alloc_pages(struct device *dev, int type, size_t size)
++{
++	return snd_devm_alloc_dir_pages(dev, type, DMA_BIDIRECTIONAL, size);
++}
++
++static inline struct sg_table *
++snd_dma_noncontig_sg_table(struct snd_dma_buffer *dmab)
++{
++	return dmab->private_data;
++}
+ 
+ #endif /* __SOUND_MEMALLOC_H */
+ 
+diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
+index c7c943c661e6..ff8d5d59c9e7 100644
+--- a/sound/core/memalloc.c
++++ b/sound/core/memalloc.c
+@@ -10,6 +10,7 @@
+ #include <linux/mm.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/genalloc.h>
++#include <linux/highmem.h>
+ #include <linux/vmalloc.h>
+ #ifdef CONFIG_X86
+ #include <asm/set_memory.h>
+@@ -39,9 +40,11 @@ static void *__snd_dma_alloc_pages(struct snd_dma_buffer *dmab, size_t size)
+ }
+ 
+ /**
+- * snd_dma_alloc_pages - allocate the buffer area according to the given type
++ * snd_dma_alloc_dir_pages - allocate the buffer area according to the given
++ *	type and direction
+  * @type: the DMA buffer type
+  * @device: the device pointer
++ * @dir: DMA direction
+  * @size: the buffer size to allocate
+  * @dmab: buffer allocation record to store the allocated data
+  *
+@@ -51,8 +54,9 @@ static void *__snd_dma_alloc_pages(struct snd_dma_buffer *dmab, size_t size)
+  * Return: Zero if the buffer with the given size is allocated successfully,
+  * otherwise a negative value on error.
+  */
+-int snd_dma_alloc_pages(int type, struct device *device, size_t size,
+-			struct snd_dma_buffer *dmab)
++int snd_dma_alloc_dir_pages(int type, struct device *device,
++			    enum dma_data_direction dir, size_t size,
++			    struct snd_dma_buffer *dmab)
+ {
+ 	if (WARN_ON(!size))
+ 		return -ENXIO;
+@@ -62,6 +66,7 @@ int snd_dma_alloc_pages(int type, struct device *device, size_t size,
+ 	size = PAGE_ALIGN(size);
+ 	dmab->dev.type = type;
+ 	dmab->dev.dev = device;
++	dmab->dev.dir = dir;
+ 	dmab->bytes = 0;
+ 	dmab->addr = 0;
+ 	dmab->private_data = NULL;
+@@ -71,7 +76,7 @@ int snd_dma_alloc_pages(int type, struct device *device, size_t size,
+ 	dmab->bytes = size;
+ 	return 0;
+ }
+-EXPORT_SYMBOL(snd_dma_alloc_pages);
++EXPORT_SYMBOL(snd_dma_alloc_dir_pages);
+ 
+ /**
+  * snd_dma_alloc_pages_fallback - allocate the buffer area according to the given type with fallback
+@@ -129,9 +134,10 @@ static void __snd_release_pages(struct device *dev, void *res)
+ }
+ 
+ /**
+- * snd_devm_alloc_pages - allocate the buffer and manage with devres
++ * snd_devm_alloc_dir_pages - allocate the buffer and manage with devres
+  * @dev: the device pointer
+  * @type: the DMA buffer type
++ * @dir: DMA direction
+  * @size: the buffer size to allocate
+  *
+  * Allocate buffer pages depending on the given type and manage using devres.
+@@ -144,7 +150,8 @@ static void __snd_release_pages(struct device *dev, void *res)
+  * The function returns the snd_dma_buffer object at success, or NULL if failed.
+  */
+ struct snd_dma_buffer *
+-snd_devm_alloc_pages(struct device *dev, int type, size_t size)
++snd_devm_alloc_dir_pages(struct device *dev, int type,
++			 enum dma_data_direction dir, size_t size)
+ {
+ 	struct snd_dma_buffer *dmab;
+ 	int err;
+@@ -157,7 +164,7 @@ snd_devm_alloc_pages(struct device *dev, int type, size_t size)
+ 	if (!dmab)
+ 		return NULL;
+ 
+-	err = snd_dma_alloc_pages(type, dev, size, dmab);
++	err = snd_dma_alloc_dir_pages(type, dev, dir, size, dmab);
+ 	if (err < 0) {
+ 		devres_free(dmab);
+ 		return NULL;
+@@ -166,7 +173,7 @@ snd_devm_alloc_pages(struct device *dev, int type, size_t size)
+ 	devres_add(dev, dmab);
+ 	return dmab;
+ }
+-EXPORT_SYMBOL_GPL(snd_devm_alloc_pages);
++EXPORT_SYMBOL_GPL(snd_devm_alloc_dir_pages);
+ 
+ /**
+  * snd_dma_buffer_mmap - perform mmap of the given DMA buffer
+@@ -185,6 +192,23 @@ int snd_dma_buffer_mmap(struct snd_dma_buffer *dmab,
+ }
+ EXPORT_SYMBOL(snd_dma_buffer_mmap);
+ 
++#ifdef CONFIG_HAS_DMA
++/**
++ * snd_dma_buffer_sync - sync DMA buffer between CPU and device
++ * @dmab: buffer allocation information
++ * @mod: sync mode
++ */
++void snd_dma_buffer_sync(struct snd_dma_buffer *dmab,
++			 enum snd_dma_sync_mode mode)
++{
++	const struct snd_malloc_ops *ops = snd_dma_get_ops(dmab);
++
++	if (ops && ops->sync)
++		ops->sync(dmab, mode);
++}
++EXPORT_SYMBOL_GPL(snd_dma_buffer_sync);
++#endif /* CONFIG_HAS_DMA */
++
+ /**
+  * snd_sgbuf_get_addr - return the physical address at the corresponding offset
+  * @dmab: buffer allocation information
+@@ -468,6 +492,66 @@ static const struct snd_malloc_ops snd_dma_wc_ops = {
+ 	.mmap = snd_dma_wc_mmap,
+ };
+ #endif /* CONFIG_X86 */
++
++/*
++ * Non-contiguous pages allocator
++ */
++static void *snd_dma_noncontig_alloc(struct snd_dma_buffer *dmab, size_t size)
++{
++	struct sg_table *sgt;
++	void *p;
++
++	sgt = dma_alloc_noncontiguous(dmab->dev.dev, size, dmab->dev.dir,
++				      DEFAULT_GFP, 0);
++	if (!sgt)
++		return NULL;
++	p = dma_vmap_noncontiguous(dmab->dev.dev, size, sgt);
++	if (p)
++		dmab->private_data = sgt;
++	else
++		dma_free_noncontiguous(dmab->dev.dev, size, sgt, dmab->dev.dir);
++	return p;
++}
++
++static void snd_dma_noncontig_free(struct snd_dma_buffer *dmab)
++{
++	dma_vunmap_noncontiguous(dmab->dev.dev, dmab->area);
++	dma_free_noncontiguous(dmab->dev.dev, dmab->bytes, dmab->private_data,
++			       dmab->dev.dir);
++}
++
++static int snd_dma_noncontig_mmap(struct snd_dma_buffer *dmab,
++				  struct vm_area_struct *area)
++{
++	return dma_mmap_noncontiguous(dmab->dev.dev, area,
++				      dmab->bytes, dmab->private_data);
++}
++
++static void snd_dma_noncontig_sync(struct snd_dma_buffer *dmab,
++				   enum snd_dma_sync_mode mode)
++{
++	if (mode == SNDRV_DMA_SYNC_CPU) {
++		dma_sync_sgtable_for_cpu(dmab->dev.dev, dmab->private_data,
++					 dmab->dev.dir);
++		invalidate_kernel_vmap_range(dmab->area, dmab->bytes);
++	} else {
++		flush_kernel_vmap_range(dmab->area, dmab->bytes);
++		dma_sync_sgtable_for_device(dmab->dev.dev, dmab->private_data,
++					    dmab->dev.dir);
++	}
++}
++
++static const struct snd_malloc_ops snd_dma_noncontig_ops = {
++	.alloc = snd_dma_noncontig_alloc,
++	.free = snd_dma_noncontig_free,
++	.mmap = snd_dma_noncontig_mmap,
++	.sync = snd_dma_noncontig_sync,
++	/* re-use vmalloc helpers for get_* ops */
++	.get_addr = snd_dma_vmalloc_get_addr,
++	.get_page = snd_dma_vmalloc_get_page,
++	.get_chunk_size = snd_dma_vmalloc_get_chunk_size,
++};
++
+ #endif /* CONFIG_HAS_DMA */
+ 
+ /*
+@@ -479,6 +563,7 @@ static const struct snd_malloc_ops *dma_ops[] = {
+ #ifdef CONFIG_HAS_DMA
+ 	[SNDRV_DMA_TYPE_DEV] = &snd_dma_dev_ops,
+ 	[SNDRV_DMA_TYPE_DEV_WC] = &snd_dma_wc_ops,
++	[SNDRV_DMA_TYPE_NONCONTIG] = &snd_dma_noncontig_ops,
+ #ifdef CONFIG_GENERIC_ALLOCATOR
+ 	[SNDRV_DMA_TYPE_DEV_IRAM] = &snd_dma_iram_ops,
+ #endif /* CONFIG_GENERIC_ALLOCATOR */
+diff --git a/sound/core/memalloc_local.h b/sound/core/memalloc_local.h
+index 9f2e0a608b49..a6f3a87194da 100644
+--- a/sound/core/memalloc_local.h
++++ b/sound/core/memalloc_local.h
+@@ -10,6 +10,7 @@ struct snd_malloc_ops {
+ 	unsigned int (*get_chunk_size)(struct snd_dma_buffer *dmab,
+ 				       unsigned int ofs, unsigned int size);
+ 	int (*mmap)(struct snd_dma_buffer *dmab, struct vm_area_struct *area);
++	void (*sync)(struct snd_dma_buffer *dmab, enum snd_dma_sync_mode mode);
+ };
+ 
+ #ifdef CONFIG_SND_DMA_SGBUF
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index 7d5883432085..31160615a7ee 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -106,6 +106,7 @@ void snd_pcm_playback_silence(struct snd_pcm_substream *substream, snd_pcm_ufram
+ 		frames -= transfer;
+ 		ofs = 0;
+ 	}
++	snd_pcm_dma_buffer_sync(substream, SNDRV_DMA_SYNC_DEVICE);
+ }
+ 
+ #ifdef CONFIG_SND_DEBUG
+@@ -2256,8 +2257,10 @@ snd_pcm_sframes_t __snd_pcm_lib_xfer(struct snd_pcm_substream *substream,
+ 			goto _end_unlock;
+ 		}
+ 		snd_pcm_stream_unlock_irq(substream);
++		snd_pcm_dma_buffer_sync(substream, SNDRV_DMA_SYNC_CPU);
+ 		err = writer(substream, appl_ofs, data, offset, frames,
+ 			     transfer);
++		snd_pcm_dma_buffer_sync(substream, SNDRV_DMA_SYNC_DEVICE);
+ 		snd_pcm_stream_lock_irq(substream);
+ 		if (err < 0)
+ 			goto _end_unlock;
+diff --git a/sound/core/pcm_local.h b/sound/core/pcm_local.h
+index fe9689b8a6a6..ecb21697ae3a 100644
+--- a/sound/core/pcm_local.h
++++ b/sound/core/pcm_local.h
+@@ -73,4 +73,11 @@ void snd_pcm_sync_stop(struct snd_pcm_substream *substream, bool sync_irq);
+ 		for ((subs) = (pcm)->streams[str].substream; (subs); \
+ 		     (subs) = (subs)->next)
+ 
++static inline void snd_pcm_dma_buffer_sync(struct snd_pcm_substream *substream,
++					   enum snd_dma_sync_mode mode)
++{
++	if (substream->runtime->info & SNDRV_PCM_INFO_EXPLICIT_SYNC)
++		snd_dma_buffer_sync(snd_pcm_get_dma_buf(substream), mode);
++}
++
+ #endif	/* __SOUND_CORE_PCM_LOCAL_H */
+diff --git a/sound/core/pcm_memory.c b/sound/core/pcm_memory.c
+index 7fbd1ccbb5b0..b70ce3b69ab4 100644
+--- a/sound/core/pcm_memory.c
++++ b/sound/core/pcm_memory.c
+@@ -32,15 +32,20 @@ module_param(max_alloc_per_card, ulong, 0644);
+ MODULE_PARM_DESC(max_alloc_per_card, "Max total allocation bytes per card.");
+ 
+ static int do_alloc_pages(struct snd_card *card, int type, struct device *dev,
+-			  size_t size, struct snd_dma_buffer *dmab)
++			  int str, size_t size, struct snd_dma_buffer *dmab)
+ {
++	enum dma_data_direction dir;
+ 	int err;
+ 
+ 	if (max_alloc_per_card &&
+ 	    card->total_pcm_alloc_bytes + size > max_alloc_per_card)
+ 		return -ENOMEM;
+ 
+-	err = snd_dma_alloc_pages(type, dev, size, dmab);
++	if (str == SNDRV_PCM_STREAM_PLAYBACK)
++		dir = DMA_TO_DEVICE;
++	else
++		dir = DMA_FROM_DEVICE;
++	err = snd_dma_alloc_dir_pages(type, dev, dir, size, dmab);
+ 	if (!err) {
+ 		mutex_lock(&card->memory_mutex);
+ 		card->total_pcm_alloc_bytes += dmab->bytes;
+@@ -77,7 +82,7 @@ static int preallocate_pcm_pages(struct snd_pcm_substream *substream,
+ 
+ 	do {
+ 		err = do_alloc_pages(card, dmab->dev.type, dmab->dev.dev,
+-				     size, dmab);
++				     substream->stream, size, dmab);
+ 		if (err != -ENOMEM)
+ 			return err;
+ 		if (no_fallback)
+@@ -177,6 +182,7 @@ static void snd_pcm_lib_preallocate_proc_write(struct snd_info_entry *entry,
+ 			if (do_alloc_pages(card,
+ 					   substream->dma_buffer.dev.type,
+ 					   substream->dma_buffer.dev.dev,
++					   substream->stream,
+ 					   size, &new_dmab) < 0) {
+ 				buffer->error = -ENOMEM;
+ 				pr_debug("ALSA pcmC%dD%d%c,%d:%s: cannot preallocate for size %zu\n",
+@@ -418,6 +424,7 @@ int snd_pcm_lib_malloc_pages(struct snd_pcm_substream *substream, size_t size)
+ 		if (do_alloc_pages(card,
+ 				   substream->dma_buffer.dev.type,
+ 				   substream->dma_buffer.dev.dev,
++				   substream->stream,
+ 				   size, dmab) < 0) {
+ 			kfree(dmab);
+ 			pr_debug("ALSA pcmC%dD%d%c,%d:%s: cannot preallocate for size %zu\n",
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index d233cb3b41d8..b76adef37c15 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -2978,6 +2978,7 @@ static int snd_pcm_sync_ptr(struct snd_pcm_substream *substream,
+ 		err = snd_pcm_hwsync(substream);
+ 		if (err < 0)
+ 			return err;
++		snd_pcm_dma_buffer_sync(substream, SNDRV_DMA_SYNC_CPU);
+ 	}
+ 	snd_pcm_stream_lock_irq(substream);
+ 	if (!(sync_ptr.flags & SNDRV_PCM_SYNC_PTR_APPL)) {
+@@ -3000,6 +3001,8 @@ static int snd_pcm_sync_ptr(struct snd_pcm_substream *substream,
+ 	sync_ptr.s.status.suspended_state = status->suspended_state;
+ 	sync_ptr.s.status.audio_tstamp = status->audio_tstamp;
+ 	snd_pcm_stream_unlock_irq(substream);
++	if (!(sync_ptr.flags & SNDRV_PCM_SYNC_PTR_APPL))
++		snd_pcm_dma_buffer_sync(substream, SNDRV_DMA_SYNC_DEVICE);
+ 	if (copy_to_user(_sync_ptr, &sync_ptr, sizeof(sync_ptr)))
+ 		return -EFAULT;
+ 	return 0;
+@@ -3069,6 +3072,7 @@ static int snd_pcm_ioctl_sync_ptr_compat(struct snd_pcm_substream *substream,
+ 		err = snd_pcm_hwsync(substream);
+ 		if (err < 0)
+ 			return err;
++		snd_pcm_dma_buffer_sync(substream, SNDRV_DMA_SYNC_CPU);
+ 	}
+ 	status = runtime->status;
+ 	control = runtime->control;
+@@ -3096,6 +3100,8 @@ static int snd_pcm_ioctl_sync_ptr_compat(struct snd_pcm_substream *substream,
+ 	sstatus.suspended_state = status->suspended_state;
+ 	sstatus.audio_tstamp = status->audio_tstamp;
+ 	snd_pcm_stream_unlock_irq(substream);
++	if (!(sflags & SNDRV_PCM_SYNC_PTR_APPL))
++		snd_pcm_dma_buffer_sync(substream, SNDRV_DMA_SYNC_DEVICE);
+ 	if (put_user(sstatus.state, &src->s.status.state) ||
+ 	    put_user(sstatus.hw_ptr, &src->s.status.hw_ptr) ||
+ 	    put_user(sstatus.tstamp.tv_sec, &src->s.status.tstamp_sec) ||
+-- 
+2.26.2
+
