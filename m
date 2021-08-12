@@ -2,66 +2,73 @@ Return-Path: <SRS0=v/9x=ND=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7FB2C4338F
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 23:00:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80C0BC4338F
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 23:01:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2989A61038
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 23:00:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2989A61038
+	by mail.kernel.org (Postfix) with ESMTPS id 54B3360F91
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 23:01:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 54B3360F91
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0122718DB;
-	Fri, 13 Aug 2021 00:59:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0122718DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id C41AF191F;
+	Fri, 13 Aug 2021 01:00:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C41AF191F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628809217;
-	bh=vK9Z9Y2zW6mgdjLG1dBy419+9ulPOPOCl3i/UNxcAZY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=aI7jn1aLnTjfQjizpX1pAKXjgm7c87fMk+wrlHj7B71V7FRA+BcsmfGdsnQ+/SBTL
-	 1QXx6zH0dFbR3+n3Cwd6idcmklJhI48jHSI/so95fMd7ZmktX3tFsYXR6ZxWzW3TrK
-	 c7pP6Ld/nCnyFp5IQtH8Ow6A/krJsxxJvm6Mlkd4=
+	s=default; t=1628809267;
+	bh=5oqBJePjJqE9wW++ofeAphZbsvNIiqgDCcMvgUWGbqY=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=dhC29qRajUZkJ0ALekEJujDL2k3uzjbB8v4LucJRCnu7LHkw67ByBbhs0q0v+W7cz
+	 a9Lxkr7bypQEOFHiu8JXscTqeaHMdbkWrq43dcE25d1scIVMqNOajnUgf5GvhJRjfx
+	 HZqvdpmAbJvmQqFgE8RpZ+60iXHuYSs42sUTBAqs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91947F8025D;
-	Fri, 13 Aug 2021 00:59:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 49365F804B1;
+	Fri, 13 Aug 2021 00:59:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CC8B6F8025D; Fri, 13 Aug 2021 00:59:23 +0200 (CEST)
+ id B2C3DF804CF; Fri, 13 Aug 2021 00:59:27 +0200 (CEST)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2BFA6F800E5
- for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2021 00:59:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2BFA6F800E5
-X-IronPort-AV: E=McAfee;i="6200,9189,10074"; a="215456326"
-X-IronPort-AV: E=Sophos;i="5.84,317,1620716400"; d="scan'208";a="215456326"
+ by alsa1.perex.cz (Postfix) with ESMTPS id E1CC5F80245
+ for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2021 00:59:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1CC5F80245
+X-IronPort-AV: E=McAfee;i="6200,9189,10074"; a="215456336"
+X-IronPort-AV: E=Sophos;i="5.84,317,1620716400"; d="scan'208";a="215456336"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Aug 2021 15:59:15 -0700
-X-IronPort-AV: E=Sophos;i="5.84,317,1620716400"; d="scan'208";a="461223079"
+ 12 Aug 2021 15:59:17 -0700
+X-IronPort-AV: E=Sophos;i="5.84,317,1620716400"; d="scan'208";a="461223086"
 Received: from evanklei-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.77.110])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Aug 2021 15:59:15 -0700
+ 12 Aug 2021 15:59:17 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/2] ALSA: trivial corrections
-Date: Thu, 12 Aug 2021 17:59:02 -0500
-Message-Id: <20210812225904.171529-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/2] ALSA: hda_audio_ext: fix kernel-doc
+Date: Thu, 12 Aug 2021 17:59:04 -0500
+Message-Id: <20210812225904.171529-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210812225904.171529-1-pierre-louis.bossart@linux.intel.com>
+References: <20210812225904.171529-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de,
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,16 +84,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-One typo and one deprecated function to be replaced.
+Add missing @
 
-Pierre-Louis Bossart (2):
-  ALSA: core: control_led: use strscpy instead of strlcpy
-  ALSA: hda_audio_ext: fix kernel-doc
-
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+---
  include/sound/hdaudio_ext.h | 2 +-
- sound/core/control_led.c    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
+index a125e3814b58..375581634143 100644
+--- a/include/sound/hdaudio_ext.h
++++ b/include/sound/hdaudio_ext.h
+@@ -51,7 +51,7 @@ enum hdac_ext_stream_type {
+  * @decoupled: stream host and link is decoupled
+  * @link_locked: link is locked
+  * @link_prepared: link is prepared
+- * link_substream: link substream
++ * @link_substream: link substream
+  */
+ struct hdac_ext_stream {
+ 	struct hdac_stream hstream;
 -- 
 2.25.1
 
