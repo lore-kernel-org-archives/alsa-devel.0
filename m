@@ -2,88 +2,88 @@ Return-Path: <SRS0=v/9x=ND=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C4A6C4338F
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 11:41:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04314C4338F
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 11:41:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8933F60F57
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 11:41:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8933F60F57
+	by mail.kernel.org (Postfix) with ESMTPS id 03F6E61058
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 11:41:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 03F6E61058
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CB43D1934;
-	Thu, 12 Aug 2021 13:40:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB43D1934
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73A381AB5;
+	Thu, 12 Aug 2021 13:41:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73A381AB5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628768489;
-	bh=q77Dm3OQLEZjuqrA58sGbIFhjpikfQhYTVjBmC2qYNY=;
+	s=default; t=1628768513;
+	bh=UCIR4DKmzucS1Ux9l8Wf66xefc+DXW+e8tNOr2abEQw=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lamdTgSHzeozzT0CUrWTKAUZKrUGmnHstkB01yUFEWZIe0lh98l/opvmTpPlaTAE3
-	 AVs88rKDPUB8+/ziLWvNNEv9QzFjfQlSp7g7XWSwdHgOaSn8DUY8RWXRT3xT2P1OVS
-	 StieZ+1P+zTquhf0idcUQGJFbZng4RS/qYmPJ4mg=
+	b=WQ5pq16+tkLBlum+LPmCe6uZODoORWG8TduY1AQDqK5SgH8lUr4rHlzCFOekHBH7v
+	 FIdeEetVtQhmd4xl45rT8Ifwief6mfxbgLeV9S5uvH6tt3GkvYZ5hXZwZZtZH2ZOSD
+	 KcDWok6jqC4EHluZ2GE1ja3GPs2toBN41qkPmMJ8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D449F8025D;
-	Thu, 12 Aug 2021 13:40:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 867DAF80279;
+	Thu, 12 Aug 2021 13:41:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E47A5F802A0; Thu, 12 Aug 2021 13:39:59 +0200 (CEST)
+ id 90915F802E3; Thu, 12 Aug 2021 13:40:58 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F1FC2F800AF
- for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2021 13:39:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1FC2F800AF
+ by alsa1.perex.cz (Postfix) with ESMTPS id B00D5F80245
+ for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2021 13:40:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B00D5F80245
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="Q7LwdIH1"; 
+ header.b="fOIBwLzy"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="OGTM9Ryd"
+ header.b="BZeWaT82"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id AAD721FF38;
- Thu, 12 Aug 2021 11:39:51 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 801741FF36;
+ Thu, 12 Aug 2021 11:40:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1628768391; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1628768451; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1at5X5Q7QA621eCPzM5zTK4FmVX9D0ImenbPhFtGi9Q=;
- b=Q7LwdIH1CtMiL9JF10OUoJ1+d/n28yppBQ2hikQKwFujEc1iKOHovZSBA8i5hG0X4eQKUL
- lLArdkezKH5clHWR0O8zCrYy0F4qBDaTCfoYfux/dnmrSylsb2TtsqkUcm9O5Ir4QD7Iky
- NrAxcvF9pBBBS4MozOPR5m4hCcATdEg=
+ bh=YnHuWt0+f9SfIW9jTpudWKoPMyEwl0+rUfJY9MN6hKM=;
+ b=fOIBwLzykcgF4UY5YnxbALKzhKAAmfTLh+SsvNbnUfqcceuG0ba4pDxKnp8WFLmXrMAI4p
+ E1t89nwuMGLJRwk2rZFEvp2qHYZA4UzH6TIVe7SyqI3OpKpbjsoeYHGei9PabWJ6VBhDvO
+ Vt7z9GlG6T66c0dG+ITpyNMtQgdKh8Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1628768391;
+ s=susede2_ed25519; t=1628768451;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1at5X5Q7QA621eCPzM5zTK4FmVX9D0ImenbPhFtGi9Q=;
- b=OGTM9Rydw3W2kHSOvI+acvrHV89pogoKZJDu0H0IK7Ls+z+chPbv/8qd+zTjzIgYaYl4Yx
- XLfU55o9UdpXu4Dw==
+ bh=YnHuWt0+f9SfIW9jTpudWKoPMyEwl0+rUfJY9MN6hKM=;
+ b=BZeWaT82TN9eLpAAQpeYIOB7GoPzEEQ6EAPsOtma7sRZdi+wHsvg1g/xbDKUv9acqIJ5Io
+ W81TDteHFq5EyyDQ==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 99FD5A3EEE;
- Thu, 12 Aug 2021 11:39:51 +0000 (UTC)
-Date: Thu, 12 Aug 2021 13:39:51 +0200
-Message-ID: <s5hk0kqj3i0.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 577D4A3EF2;
+ Thu, 12 Aug 2021 11:40:51 +0000 (UTC)
+Date: Thu, 12 Aug 2021 13:40:51 +0200
+Message-ID: <s5him0aj3gc.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ALSA: hda - fix the 'Capture Switch' value change
- notifications
-In-Reply-To: <20210811161441.1325250-1-perex@perex.cz>
-References: <20210811161441.1325250-1-perex@perex.cz>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: oxfw: fix functioal regression for silence in
+ Apogee Duet FireWire
+In-Reply-To: <20210812022839.42043-1-o-takashi@sakamocchi.jp>
+References: <20210812022839.42043-1-o-takashi@sakamocchi.jp>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: ALSA development <alsa-devel@alsa-project.org>, stable@kernel.org
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,20 +99,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 11 Aug 2021 18:14:41 +0200,
-Jaroslav Kysela wrote:
+On Thu, 12 Aug 2021 04:28:39 +0200,
+Takashi Sakamoto wrote:
 > 
-> The original code in the cap_put_caller() function does not
-> handle correctly the positive values returned from the passed
-> function for multiple iterations. It means that the change
-> notifications may be lost.
+> OXFW 971 has no function to use the value in syt field of received
+> isochronous packet for playback timing generation. In kernel prepatch for
+> v5.14, ALSA OXFW driver got change to send NO_INFO value in the field
+> instead of actual timing value. The change brings Apogee Duet FireWire to
+> generate no playback sound, while output meter moves.
 > 
-> Fixes: 352f7f914ebb ("ALSA: hda - Merge Realtek parser code to generic parser")
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=213851
-> Cc: <stable@kernel.org>
-> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+> As long as I investigate, _any_ value in the syt field takes the device to
+> generate sound. It's reasonable to think that the device just ignores data
+> blocks in packet with NO_INFO value in its syt field for audio data
+> processing.
+> 
+> This commit adds a new flag for the quirk to fix regression.
+> 
+> Fixes: 029ffc429440 ("ALSA: oxfw: perform sequence replay for media clock recovery")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-Thanks, applied.
+Applied now.  Thanks.
 
 
 Takashi
