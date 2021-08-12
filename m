@@ -2,96 +2,72 @@ Return-Path: <SRS0=v/9x=ND=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-20.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 105CEC4338F
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 18:37:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B98C0C4338F
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 18:38:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D6CF06101E
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 18:37:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D6CF06101E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id 303066103A
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 18:38:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 303066103A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EDC791928;
-	Thu, 12 Aug 2021 20:36:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDC791928
+	by alsa0.perex.cz (Postfix) with ESMTPS id B24DD1945;
+	Thu, 12 Aug 2021 20:37:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B24DD1945
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628793426;
-	bh=pxLLZjc1ttgNEwwBJDPgk7zRpw3SnIdW0QXgtqx19Z4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=l8UwGQ8mbf22krTPYVyD94ghqz2U/zUaJyabB/nocRvKa761tvUyG6qCGaim25bmj
-	 KEJrj6nIlczrDU/5wPVvTt7OwrGs2/YNZ0mKeOM/6ofFMxRzLdkc4/lV8roRV/Attl
-	 PzTlejzuNAkyxXpdqdRQM/ABAljqsnnL4J/YEkyI=
+	s=default; t=1628793493;
+	bh=97E1UevClhDXPkKNm0LPKX5Eh6oTReZhd6FbnvwGAfk=;
+	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=UfKyIDlUlOUPjvBmAiNI+oGtehTlOHnOpHzjqXJh7UqQeLseaN0+zyDHq8fP72RDM
+	 yjjSIGmgOheIq4YW9P2G7wBbWYVYIozhmRWy2B+1nLY5zNQFbmP5G49S/xP6QzAG+p
+	 kwd+qxsgBZuF4Q9qUsxuWtIfnpYT2lwwsIPrnIpQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6FAA3F804E2;
-	Thu, 12 Aug 2021 20:35:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 46860F804B1;
+	Thu, 12 Aug 2021 20:37:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ED99DF80279; Thu, 12 Aug 2021 20:35:18 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id C8819F804CF; Thu, 12 Aug 2021 20:37:21 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 20CC2F80245
- for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2021 20:35:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20CC2F80245
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="N9q1WjNX"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17CG4uIo006578; 
- Thu, 12 Aug 2021 13:35:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=2qaNU/9SbdAwPAbu1s3M/VnkPHYwhQu8hZp0xILVN2M=;
- b=N9q1WjNXGMbN29PtmnKP7DVSHdobxG0Wr8SK/yu399Z/7TM9/VE6fyWCSe0OzhzyZ02g
- lx8vkqtpd5WOC+6itJmtKXv/9ydJi+rNG+C7VTrmH6gKC09kXayFAxJecrjqmsmL3TZw
- m9qBKKAdL1jgQKpfsmCTXnFao6D1bZXeHeUabwvMoI94sGD1Wxq1JH/V6C1pTMmBWtq/
- ftaC0LZh5zZy8YI9BfGN7LRp4NoYdt7VyedQGe5DXtasq0i6r33jIdSujp/mg0dc1F0B
- VwQvyYjNp+oeQg313RzGGPD6bguHFiyPoP8+j6yYKY3Sb5xS48WjVbZJufUjAlCioqS5 Sw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3ad6urg6vc-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 12 Aug 2021 13:35:06 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Thu, 12 Aug
- 2021 19:35:04 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via
- Frontend Transport; Thu, 12 Aug 2021 19:35:04 +0100
-Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.180])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 958EA45D;
- Thu, 12 Aug 2021 18:35:04 +0000 (UTC)
-From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 1/2] ALSA: hda/cs8409: Prevent pops and clicks during suspend
-Date: Thu, 12 Aug 2021 19:34:32 +0100
-Message-ID: <20210812183433.6330-1-vitalyr@opensource.cirrus.com>
-X-Mailer: git-send-email 2.25.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 88708F800AF
+ for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2021 20:37:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88708F800AF
+X-IronPort-AV: E=McAfee;i="6200,9189,10074"; a="213571602"
+X-IronPort-AV: E=Sophos;i="5.84,316,1620716400"; d="scan'208";a="213571602"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Aug 2021 11:37:09 -0700
+X-IronPort-AV: E=Sophos;i="5.84,316,1620716400"; d="scan'208";a="590808447"
+Received: from vzakhari-mobl.amr.corp.intel.com (HELO [10.212.126.215])
+ ([10.212.126.215])
+ by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Aug 2021 11:37:08 -0700
+Subject: Re: [PATCH RFC v2 2/4] ALSA: pcm: Add SNDRV_PCM_INFO_EXPLICIT_SYNC
+ flag
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+References: <20210812113818.6479-1-tiwai@suse.de>
+ <20210812113818.6479-3-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <0a2debee-439d-ebb8-2832-039074194d75@linux.intel.com>
+Date: Thu, 12 Aug 2021 13:37:06 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: zMKMBwW3dRiq2f0298hxpr9cRXiDEW5X
-X-Proofpoint-GUID: zMKMBwW3dRiq2f0298hxpr9cRXiDEW5X
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0
- priorityscore=1501
- malwarescore=0 suspectscore=0 impostorscore=0 lowpriorityscore=0
- mlxlogscore=999 clxscore=1015 phishscore=0 adultscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108120120
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
+In-Reply-To: <20210812113818.6479-3-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,42 +83,84 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-Some of the register values set for type detection cause pops during suspend,
-ensure these are cleaned up after type detection completes, as well
-ensuring that these are cleared when we suspend.
+Hi Takashi,
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
----
- sound/pci/hda/patch_cs8409.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+> ALSA PCM core has an optimized way to communicate with user-space for
+> its control and status data via mmap on the supported architectures
+> like x86.  Depending on the situation, however, we'd rather want to
+> enforce user-space notifying the applptr or hwptr change explicitly
+> via ioctl.  For example, the upcoming non-contig and non-coherent
+> buffer handling would need an explicit sync, and this needs to catch
+> the applptr and hwptr changes.
+> 
+> This patch adds the new PCM hardware info flag,
+> SNDRV_PCM_INFO_EXPLICIT_SYNC.  When this flag is set, PCM core
+> disables both the control and the status mmap, which enforces
+> user-space to update via SYNC_PTR ioctl.  In that way, drivers can
+> catch the applptr and hwptr update and apply the sync operation if
+> needed.
 
-diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
-index 272497b6cfcb..9db16b6292f4 100644
---- a/sound/pci/hda/patch_cs8409.c
-+++ b/sound/pci/hda/patch_cs8409.c
-@@ -708,6 +708,10 @@ static int cs42l42_jack_unsol_event(struct sub_codec *cs42l42)
- 				cs42l42->mic_jack_in = 1;
- 			}
- 		}
-+		/* Configure the HSDET mode. */
-+		cs8409_i2c_write(cs42l42, 0x1120, 0x80);
-+		/* Enable the HPOUT ground clamp and configure the HP pull-down */
-+		cs8409_i2c_write(cs42l42, 0x1F06, 0x02);
- 		/* Re-Enable Tip Sense Interrupt */
- 		cs8409_i2c_write(cs42l42, 0x1320, 0xF3);
- 	} else {
-@@ -756,6 +760,8 @@ static void cs42l42_suspend(struct sub_codec *cs42l42)
- 	unsigned int gpio_data;
- 	int reg_cdc_status = 0;
- 	const struct cs8409_i2c_param cs42l42_pwr_down_seq[] = {
-+		{ 0x1F06, 0x02 },
-+		{ 0x1129, 0x00 },
- 		{ 0x2301, 0x3F },
- 		{ 0x2302, 0x3F },
- 		{ 0x2303, 0x3F },
--- 
-2.25.1
+This looks like the same functionality as in the patch "ALSA: pcm:
+conditionally avoid mmap of control data" that we submitted for the SPIB
+support, no?
 
+I was about to resubmit a v2 based on my version (code was reviewed on
+GitHub in https://github.com/thesofproject/linux/pull/3076).
+
+If it's the same solution, could this patch be applied first so we are
+aligned regardless of the order in which memalloc and SPIB patches are
+merged? The renaming is fine, and that was your idea that I implemented
+anyways.
+
+I think there would be a need for a tag as well so that Mark's tree
+compiles when the SOF driver uses this.
+
+Thanks!
+
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  include/uapi/sound/asound.h | 1 +
+>  sound/core/pcm_native.c     | 9 +++++++++
+>  2 files changed, 10 insertions(+)
+> 
+> diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+> index d17c061950df..1d84ec9db93b 100644
+> --- a/include/uapi/sound/asound.h
+> +++ b/include/uapi/sound/asound.h
+> @@ -299,6 +299,7 @@ typedef int __bitwise snd_pcm_subformat_t;
+>  #define SNDRV_PCM_INFO_HAS_LINK_ABSOLUTE_ATIME     0x02000000  /* report absolute hardware link audio time, not reset on startup */
+>  #define SNDRV_PCM_INFO_HAS_LINK_ESTIMATED_ATIME    0x04000000  /* report estimated link audio time */
+>  #define SNDRV_PCM_INFO_HAS_LINK_SYNCHRONIZED_ATIME 0x08000000  /* report synchronized audio/system time */
+> +#define SNDRV_PCM_INFO_EXPLICIT_SYNC	0x10000000	/* needs explicit sync of pointers and data */
+>  
+>  #define SNDRV_PCM_INFO_DRAIN_TRIGGER	0x40000000		/* internal kernel flag - trigger in drain */
+>  #define SNDRV_PCM_INFO_FIFO_IN_FRAMES	0x80000000	/* internal kernel flag - FIFO size is in frames */
+> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+> index dc9fa312fadd..d233cb3b41d8 100644
+> --- a/sound/core/pcm_native.c
+> +++ b/sound/core/pcm_native.c
+> @@ -3621,6 +3621,12 @@ static int snd_pcm_mmap_control(struct snd_pcm_substream *substream, struct file
+>  
+>  static bool pcm_status_mmap_allowed(struct snd_pcm_file *pcm_file)
+>  {
+> +	/* If drivers require the explicit sync (typically for non-coherent
+> +	 * pages), we have to disable the mmap of status and control data
+> +	 * to enforce the control via SYNC_PTR ioctl.
+> +	 */
+> +	if (pcm_file->substream->runtime->hw.info & SNDRV_PCM_INFO_EXPLICIT_SYNC)
+> +		return false;
+>  	/* See pcm_control_mmap_allowed() below.
+>  	 * Since older alsa-lib requires both status and control mmaps to be
+>  	 * coupled, we have to disable the status mmap for old alsa-lib, too.
+> @@ -3635,6 +3641,9 @@ static bool pcm_control_mmap_allowed(struct snd_pcm_file *pcm_file)
+>  {
+>  	if (pcm_file->no_compat_mmap)
+>  		return false;
+> +	/* see above */
+> +	if (pcm_file->substream->runtime->hw.info & SNDRV_PCM_INFO_EXPLICIT_SYNC)
+> +		return false;
+>  	/* Disallow the control mmap when SYNC_APPLPTR flag is set;
+>  	 * it enforces the user-space to fall back to snd_pcm_sync_ptr(),
+>  	 * thus it effectively assures the manual update of appl_ptr.
+> 
