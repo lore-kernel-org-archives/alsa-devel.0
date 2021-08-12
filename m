@@ -7,58 +7,58 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB694C4338F
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 22:48:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D906C4338F
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 22:48:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CB75C6103E
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 22:48:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CB75C6103E
+	by mail.kernel.org (Postfix) with ESMTPS id EA6806109D
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 22:48:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EA6806109D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2DE9B1938;
-	Fri, 13 Aug 2021 00:47:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2DE9B1938
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5D7B5194A;
+	Fri, 13 Aug 2021 00:47:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D7B5194A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628808509;
-	bh=+NHDNYYwx2L4IFKd9m9GbRNZUb+ZEfavoiQ/9LlEz4w=;
+	s=default; t=1628808526;
+	bh=IroZM+E9sglpBDZXRMnh8IwcXNhYaWkKE/CGcxzy92Y=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=q093JqvCPMvFScZHnD3wLFprVLJq3skX6Ym9jK6cyMyj8wrvYX5kVAfZADbG9TxmX
-	 2KC5QVOUHj/fwMR+8WI4dAss8W2b9zgvzMpAnbeK5uTye28ICaMp9wP6lv/Mz0Hmms
-	 OiwSBuIIqrsrfhYxHG1GMU8hTpXvxkPz/FnOa/uo=
+	b=nm14aUGgN08mDX3sqjg5uI4n9H23122yoIrifsuZwmu6bTEs9CJ9M+vFStp2AAmaL
+	 I6jUDg3YegGrR5KZGQiCZEciSsvzPsrLQLKaSBfdrYYr+iV7oUF8F0MLkNnHKiM8GO
+	 2yLGB5+oW8XMso2YSEjb6VQuM1ePYXiUtGChIgdk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 40FDFF804FD;
-	Fri, 13 Aug 2021 00:45:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 128CDF80508;
+	Fri, 13 Aug 2021 00:45:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EE1E8F804E3; Fri, 13 Aug 2021 00:45:27 +0200 (CEST)
+ id B9EB2F804F1; Fri, 13 Aug 2021 00:45:29 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DC631F8025D
- for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2021 00:45:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC631F8025D
-X-IronPort-AV: E=McAfee;i="6200,9189,10074"; a="212349766"
-X-IronPort-AV: E=Sophos;i="5.84,317,1620716400"; d="scan'208";a="212349766"
+ by alsa1.perex.cz (Postfix) with ESMTPS id C4220F804B1
+ for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2021 00:45:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4220F804B1
+X-IronPort-AV: E=McAfee;i="6200,9189,10074"; a="212349762"
+X-IronPort-AV: E=Sophos;i="5.84,317,1620716400"; d="scan'208";a="212349762"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Aug 2021 15:45:14 -0700
-X-IronPort-AV: E=Sophos;i="5.84,317,1620716400"; d="scan'208";a="517647210"
+ 12 Aug 2021 15:45:12 -0700
+X-IronPort-AV: E=Sophos;i="5.84,317,1620716400"; d="scan'208";a="517647201"
 Received: from evanklei-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.77.110])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Aug 2021 15:45:13 -0700
+ 12 Aug 2021 15:45:12 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 8/8] ASoC: Intel: boards: use software node API in Atom
- boards
-Date: Thu, 12 Aug 2021 17:44:43 -0500
-Message-Id: <20210812224443.170144-9-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 6/8] ASoC: Intel: use software node API in SoundWire
+ machines
+Date: Thu, 12 Aug 2021 17:44:41 -0500
+Message-Id: <20210812224443.170144-7-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210812224443.170144-1-pierre-louis.bossart@linux.intel.com>
 References: <20210812224443.170144-1-pierre-louis.bossart@linux.intel.com>
@@ -83,181 +83,93 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-
 The function device_add_properties() is going to be removed.
 Replacing it with software node API equivalents.
 
 Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Co-developed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Co-developed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/bytcht_es8316.c | 16 +++++++++++++---
- sound/soc/intel/boards/bytcr_rt5640.c  | 15 ++++++++++++---
- sound/soc/intel/boards/bytcr_rt5651.c  | 23 ++++++++++++++++++-----
- 3 files changed, 43 insertions(+), 11 deletions(-)
+ sound/soc/intel/boards/sof_sdw_rt711.c      | 14 ++++++++++++--
+ sound/soc/intel/boards/sof_sdw_rt711_sdca.c | 14 ++++++++++++--
+ 2 files changed, 24 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index 5e1d30094250..aa45dd6e6f3e 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -462,6 +462,7 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- 	const struct dmi_system_id *dmi_id;
- 	struct device *dev = &pdev->dev;
- 	struct snd_soc_acpi_mach *mach;
-+	struct fwnode_handle *fwnode;
- 	const char *platform_name;
- 	struct acpi_device *adev;
- 	struct device *codec_dev;
-@@ -548,7 +549,16 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- 		props[cnt++] = PROPERTY_ENTRY_BOOL("everest,jack-detect-inverted");
- 
- 	if (cnt) {
--		ret = device_add_properties(codec_dev, props);
-+		fwnode = fwnode_create_software_node(props, NULL);
-+		if (IS_ERR(fwnode)) {
-+			put_device(codec_dev);
-+			return PTR_ERR(fwnode);
-+		}
-+
-+		ret = device_add_software_node(codec_dev, to_software_node(fwnode));
-+
-+		fwnode_handle_put(fwnode);
-+
- 		if (ret) {
- 			put_device(codec_dev);
- 			return ret;
-@@ -615,7 +625,7 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- 	return 0;
- 
- err:
--	device_remove_properties(priv->codec_dev);
-+	device_remove_software_node(priv->codec_dev);
- 	put_device(priv->codec_dev);
- 	return ret;
- }
-@@ -626,7 +636,7 @@ static int snd_byt_cht_es8316_mc_remove(struct platform_device *pdev)
- 	struct byt_cht_es8316_private *priv = snd_soc_card_get_drvdata(card);
- 
- 	gpiod_put(priv->speaker_en_gpio);
--	device_remove_properties(priv->codec_dev);
-+	device_remove_software_node(priv->codec_dev);
- 	put_device(priv->codec_dev);
- 	return 0;
- }
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 08cc907adf8a..3eda3b1eb169 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -974,6 +974,7 @@ static int byt_rt5640_add_codec_device_props(struct device *i2c_dev,
- 					     struct byt_rt5640_private *priv)
+diff --git a/sound/soc/intel/boards/sof_sdw_rt711.c b/sound/soc/intel/boards/sof_sdw_rt711.c
+index 510301e09b09..c38b70c9fac3 100644
+--- a/sound/soc/intel/boards/sof_sdw_rt711.c
++++ b/sound/soc/intel/boards/sof_sdw_rt711.c
+@@ -24,12 +24,22 @@
+ static int rt711_add_codec_device_props(struct device *sdw_dev)
  {
  	struct property_entry props[MAX_NO_PROPS] = {};
 +	struct fwnode_handle *fwnode;
- 	int ret, cnt = 0;
- 
- 	switch (BYT_RT5640_MAP(byt_rt5640_quirk)) {
-@@ -1014,7 +1015,15 @@ static int byt_rt5640_add_codec_device_props(struct device *i2c_dev,
- 	if (byt_rt5640_quirk & BYT_RT5640_JD_NOT_INV)
- 		props[cnt++] = PROPERTY_ENTRY_BOOL("realtek,jack-detect-not-inverted");
- 
--	ret = device_add_properties(i2c_dev, props);
-+	fwnode = fwnode_create_software_node(props, NULL);
-+	if (IS_ERR(fwnode)) {
-+		/* put_device() is handled in caller */
-+		return PTR_ERR(fwnode);
-+	}
-+
-+	ret = device_add_software_node(i2c_dev, to_software_node(fwnode));
-+
-+	fwnode_handle_put(fwnode);
- 
- 	return ret;
- }
-@@ -1586,7 +1595,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	return ret_val;
- 
- err:
--	device_remove_properties(priv->codec_dev);
-+	device_remove_software_node(priv->codec_dev);
- err_device:
- 	put_device(priv->codec_dev);
- 	return ret_val;
-@@ -1597,7 +1606,7 @@ static int snd_byt_rt5640_mc_remove(struct platform_device *pdev)
- 	struct snd_soc_card *card = platform_get_drvdata(pdev);
- 	struct byt_rt5640_private *priv = snd_soc_card_get_drvdata(card);
- 
--	device_remove_properties(priv->codec_dev);
-+	device_remove_software_node(priv->codec_dev);
- 	put_device(priv->codec_dev);
- 	return 0;
- }
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index cc1505e53b4f..e94c9124d4f4 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -528,10 +528,13 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
-  * Note this MUST be called before snd_soc_register_card(), so that the props
-  * are in place before the codec component driver's probe function parses them.
-  */
--static int byt_rt5651_add_codec_device_props(struct device *i2c_dev)
-+static int byt_rt5651_add_codec_device_props(struct device *i2c_dev,
-+					     struct byt_rt5651_private *priv)
- {
- 	struct property_entry props[MAX_NO_PROPS] = {};
-+	struct fwnode_handle *fwnode;
- 	int cnt = 0;
 +	int ret;
  
- 	props[cnt++] = PROPERTY_ENTRY_U32("realtek,jack-detect-source",
- 				BYT_RT5651_JDSRC(byt_rt5651_quirk));
-@@ -548,7 +551,17 @@ static int byt_rt5651_add_codec_device_props(struct device *i2c_dev)
- 	if (byt_rt5651_quirk & BYT_RT5651_JD_NOT_INV)
- 		props[cnt++] = PROPERTY_ENTRY_BOOL("realtek,jack-detect-not-inverted");
+ 	if (!SOF_RT711_JDSRC(sof_sdw_quirk))
+ 		return 0;
+ 	props[0] = PROPERTY_ENTRY_U32("realtek,jd-src", SOF_RT711_JDSRC(sof_sdw_quirk));
  
--	return device_add_properties(i2c_dev, props);
+-	return device_add_properties(sdw_dev, props);
 +	fwnode = fwnode_create_software_node(props, NULL);
-+	if (IS_ERR(fwnode)) {
-+		/* put_device(i2c_dev) is handled in caller */
++	if (IS_ERR(fwnode))
 +		return PTR_ERR(fwnode);
-+	}
 +
-+	ret = device_add_software_node(i2c_dev, to_software_node(fwnode));
++	ret = device_add_software_node(sdw_dev, to_software_node(fwnode));
 +
 +	fwnode_handle_put(fwnode);
 +
 +	return ret;
  }
  
- static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
-@@ -995,7 +1008,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 	}
+ static const struct snd_soc_dapm_widget rt711_widgets[] = {
+@@ -129,7 +139,7 @@ int sof_sdw_rt711_exit(struct snd_soc_card *card, struct snd_soc_dai_link *dai_l
+ {
+ 	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
  
- 	/* Must be called before register_card, also see declaration comment. */
--	ret_val = byt_rt5651_add_codec_device_props(codec_dev);
-+	ret_val = byt_rt5651_add_codec_device_props(codec_dev, priv);
- 	if (ret_val)
- 		goto err_device;
+-	device_remove_properties(ctx->headset_codec_dev);
++	device_remove_software_node(ctx->headset_codec_dev);
+ 	put_device(ctx->headset_codec_dev);
  
-@@ -1125,7 +1138,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 	return ret_val;
- 
- err:
--	device_remove_properties(priv->codec_dev);
-+	device_remove_software_node(priv->codec_dev);
- err_device:
- 	put_device(priv->codec_dev);
- 	return ret_val;
-@@ -1136,7 +1149,7 @@ static int snd_byt_rt5651_mc_remove(struct platform_device *pdev)
- 	struct snd_soc_card *card = platform_get_drvdata(pdev);
- 	struct byt_rt5651_private *priv = snd_soc_card_get_drvdata(card);
- 
--	device_remove_properties(priv->codec_dev);
-+	device_remove_software_node(priv->codec_dev);
- 	put_device(priv->codec_dev);
  	return 0;
+diff --git a/sound/soc/intel/boards/sof_sdw_rt711_sdca.c b/sound/soc/intel/boards/sof_sdw_rt711_sdca.c
+index 94af40e2beb0..4215ddc36419 100644
+--- a/sound/soc/intel/boards/sof_sdw_rt711_sdca.c
++++ b/sound/soc/intel/boards/sof_sdw_rt711_sdca.c
+@@ -24,13 +24,23 @@
+ static int rt711_sdca_add_codec_device_props(struct device *sdw_dev)
+ {
+ 	struct property_entry props[MAX_NO_PROPS] = {};
++	struct fwnode_handle *fwnode;
++	int ret;
+ 
+ 	if (!SOF_RT711_JDSRC(sof_sdw_quirk))
+ 		return 0;
+ 
+ 	props[0] = PROPERTY_ENTRY_U32("realtek,jd-src", SOF_RT711_JDSRC(sof_sdw_quirk));
+ 
+-	return device_add_properties(sdw_dev, props);
++	fwnode = fwnode_create_software_node(props, NULL);
++	if (IS_ERR(fwnode))
++		return PTR_ERR(fwnode);
++
++	ret = device_add_software_node(sdw_dev, to_software_node(fwnode));
++
++	fwnode_handle_put(fwnode);
++
++	return ret;
  }
+ 
+ static const struct snd_soc_dapm_widget rt711_sdca_widgets[] = {
+@@ -130,7 +140,7 @@ int sof_sdw_rt711_sdca_exit(struct snd_soc_card *card, struct snd_soc_dai_link *
+ {
+ 	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
+ 
+-	device_remove_properties(ctx->headset_codec_dev);
++	device_remove_software_node(ctx->headset_codec_dev);
+ 	put_device(ctx->headset_codec_dev);
+ 
+ 	return 0;
 -- 
 2.25.1
 
