@@ -2,55 +2,71 @@ Return-Path: <SRS0=v/9x=ND=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA914C4338F
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 15:00:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 481FBC4338F
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 15:55:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F1D866108C
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 15:00:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F1D866108C
-Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
+	by mail.kernel.org (Postfix) with ESMTPS id 58A676104F
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 15:54:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 58A676104F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=uvos.xyz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 761CE190E;
-	Thu, 12 Aug 2021 17:00:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 761CE190E
+	by alsa0.perex.cz (Postfix) with ESMTPS id E4D00191C;
+	Thu, 12 Aug 2021 17:54:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4D00191C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628780452;
-	bh=aRKNoV+jtL22hZ7nue0Gh7dUJNgcz7KFLyJNcb2mGFQ=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=kt5o8+4c3WwPwo7WwbIAr8oyKDwE3QnIQE40AoRgaSMJdsS7BYCOdLoFTf1TaxCIT
-	 IiDQWT3CeZY0gIZ3uID+egBEL+b+QUTSr9O3KGahSON8VRdFuUgX1QfrAIK8dLcy2b
-	 pwa4mf1nt/ouhBg3wZqAZs5SdoCvkaxlnogEF6hQ=
+	s=default; t=1628783697;
+	bh=FX1rRv7pqSgLGleg5/MNoYbT3U3sZwfdfSbcGvIzW1o=;
+	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=VJ8EX89MtY9tgRAF1bAt7wzisI3UYkmDAtPxQ7UBIjaUdeoYN7gVHrvusC2kexgie
+	 w69ch9LcmNhNngEBLyGARTf2yDWE6TpMnL00+//+LiwqRSyEvFuhp8YNlIakBWEOjL
+	 +stT/zAbpryQ42rrarc+vCaUyDEtJT8oupk5nrsw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF222F80245;
-	Thu, 12 Aug 2021 17:00:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 507F6F80245;
+	Thu, 12 Aug 2021 17:54:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F177DF8025D; Thu, 12 Aug 2021 16:59:59 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id A6EEEF800AF
- for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2021 16:59:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6EEEF800AF
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+ id 13A86F8025D; Thu, 12 Aug 2021 17:54:04 +0200 (CEST)
+Received: from sender11-of-o52.zoho.eu (sender11-of-o52.zoho.eu
+ [31.186.226.238])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6DB21F80148
+ for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2021 17:53:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DB21F80148
+ARC-Seal: i=1; a=rsa-sha256; t=1628783632; cv=none; d=zohomail.eu; s=zohoarc; 
+ b=Xj64sDJVoXGAykimUvRpC3EtXOkURq1n8hAHqYBcqaKtLIhmMtebfBTbvpoH6ac1D9FDOwaCuFTmslZ02j23E5k48EOSikrh9U5zjZBHMtL+MkzNr45GVCCil42TM5PjKPpltlWP3GhTnk+P+ULIBrs2ng1kImAdDM2myo88Ayw=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu;
+ s=zohoarc; t=1628783632;
+ h=Content-Type:Content-Transfer-Encoding:Date:From:MIME-Version:Message-ID:Subject:To;
+ bh=QNykV9Fc66Oo3LQ0uiSSO3Q3uGX2Jsb7RLwuojfsZc4=; 
+ b=hF4YlzqFaRVyaMzuKp7s7LTpBkrUWEr/y73a+305TIz4+LA0l7UN387SJJx9/B6C7BX8AelrCz8atcoWzdyg+OSkcqx88qd5rikuGAvjWPWUd9G5m9pTEn+P+9gLIdrhGZMqnuJlvmtjbC28lMnAEGxbrduoToSSpIZK1/5ZyL8=
+ARC-Authentication-Results: i=1; mx.zohomail.eu;
+ spf=pass  smtp.mailfrom=devnull@uvos.xyz;
+ dmarc=pass header.from=<devnull@uvos.xyz>
+Received: from UVOSLinux (aftr-37-201-192-117.unity-media.net
+ [37.201.192.117]) by mx.zoho.eu
+ with SMTPS id 1628783630140636.4421334327841;
+ Thu, 12 Aug 2021 17:53:50 +0200 (CEST)
+Date: Thu, 12 Aug 2021 17:53:48 +0200
+From: Dev Null <devnull@uvos.xyz>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1628780392718550920-webhooks-bot@alsa-project.org>
-References: <1628780392718550920-webhooks-bot@alsa-project.org>
-Subject: pulseaudio: a52 sink doesn't stream audio from bluez source
-Message-Id: <20210812145959.F177DF8025D@alsa1.perex.cz>
-Date: Thu, 12 Aug 2021 16:59:59 +0200 (CEST)
+Subject: ASoC: question about asoc and external modem used with mux
+Message-Id: <20210812175348.78eb56e3595c4b0cb0a60225@uvos.xyz>
+Organization: UVOS Organization
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-unknown-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-ZohoMailClient: External
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,19 +82,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-plugins issue #32 was opened from quequotion:
+Hi,
 
-Sorry to beat a dead horse, and double if this is in fact a pulseaudio issue.
+On the motorola droid 4 (xt894 rch/arm/boot/dts/omap4-droid4-xt894.dts)
+the cpcap asoc codec  is used for sound (sound/soc/codecs/cpcap.c). The
+codec contains a hifi and voice DAI and mixer controlls to connect the
+various outputs (headphones, internal speaker, earpiece etc) to these
+dai. The hardware setup looks like this
+https://lkml.org/lkml/2018/3/27/1225 with the cpcap chip acting as a
+mux for various other devices on the pcb. The modem is one of these
+devices. 
 
-I recently configured bluez and pulseaudio to receive streams from devices over bluetooth (eg, to play audio from a phone over the PC's speaker system).
+The problem is that the kernel has really no way of knowing if the
+modem is outputing anything or not and thus if the mixer is setup sutch
+that the modem is driving some output though dapm route (eg the
+earpiece), the entire dapm route chain will remain off and inactive
+causeing the kernel to disable the Earpiece PGA. Thus no output makes
+it out of the device and the voice call fails unless one messes with
+the registers to enable Earpiece PGA by hand.
 
-This works when the PC's sound card is set to profiles *other than* the A52 plugin (ie, pulseaudio's provided digital stereo output and also the [DTS alsa plugin](https://github.com/darealshinji/dcaenc)).
+Now i know of various ways to hack this problem away and have been
+looking at the asoc/ alsa documentation for some time now but i really
+cant seam to figure out how to solve this problem correctly. Really i
+would need a way to pin the voice dai to be considerd allways active by
+the kernel so that all downsteam devices get truned on when the mixer
+is setup sutch that they are conected in a route.  Or give userspace a
+mixer switch or other mechanisum to tell the kernel that the modem is
+currently actively playing sound.
 
-Only when set to use the AC3 output profile, audio from the bluez source is not produced.
+any help that can be given in this problem would me mutch appreciated.
 
-pavucontrol shows the bluez source is producing sound (the level bounces appropriately), but no audio comes out of the sink (no level bounce in pavucontrol either).
-
-Any ideas?
-
-Issue URL     : https://github.com/alsa-project/alsa-plugins/issues/32
-Repository URL: https://github.com/alsa-project/alsa-plugins
+-- 
+Dev Null <devnull@uvos.xyz>
