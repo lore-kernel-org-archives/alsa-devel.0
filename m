@@ -2,86 +2,90 @@ Return-Path: <SRS0=Pedv=NE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42E64C4338F
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 06:06:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B9A5C4338F
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 06:09:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B4BAE6109D
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 06:06:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B4BAE6109D
+	by mail.kernel.org (Postfix) with ESMTPS id 1B4566109D
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 06:09:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1B4566109D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CAF2918A0;
-	Fri, 13 Aug 2021 08:06:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CAF2918A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id A72D618D5;
+	Fri, 13 Aug 2021 08:08:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A72D618D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628834815;
-	bh=3AjdJJPPek2Go9IJETD/1yL9NHos3dp1GcPiLRYQfGU=;
+	s=default; t=1628834975;
+	bh=F2F8ljl7o0EReVyr1TURj4qRbp1rH3YP2gzZVa5SRug=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ibMLVqjMRBI0BuLEf8/VWTMajVjHcNGGa8Ht4ycT/5wWC35y+JFwBZO/PmLrdOtbO
-	 w7+fAhzhltom26WWG17Pm8/SmXl0VZ4Tq1dvfgONjI8ZpVDyUDoNd6OP03TBmd8zCy
-	 Zv/kI9+k5Q6+H7XOKDzcdnXPDlQwui+Um9hvrt6k=
+	b=tkvcAigbwTMvYfGkKxHmLEXenfPxNHBtJKL5uJyJQWrbrH3HRNWpiN5B+0Wu2y/qm
+	 CqlvBAd29t5jB1XFGheALO4c0ndC8ZIqsLSc1Vd8Kej7f92dXM7CUvsBnz02C8cYoQ
+	 7Om7W/7qsJkz3KmbMJoy+umxzXSFPoLYQ8Q5sF+M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 63550F800E5;
-	Fri, 13 Aug 2021 08:06:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4ACFEF8020D;
+	Fri, 13 Aug 2021 08:08:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 76957F802D2; Fri, 13 Aug 2021 08:06:03 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id ED2E4F802D2; Fri, 13 Aug 2021 08:08:43 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3C5ECF800E5
- for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2021 08:05:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C5ECF800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id B0650F800E5
+ for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2021 08:08:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0650F800E5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="waf+zpQd"; 
+ header.b="0eJYYo/S"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="ov68wU3Q"
+ header.b="P1d8fIq/"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 4EC081FF82;
- Fri, 13 Aug 2021 06:05:56 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 7770C22289;
+ Fri, 13 Aug 2021 06:08:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1628834756; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1628834917; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=eFBR02RwLmSEu5zu4yGpiRdEAvHtaAt19JuwTPfBy1Q=;
- b=waf+zpQd62hX0KxYJ/iIg9Fr/VLia9EG55Tq2d6NxEUayyPYsERva+3y+Ln8FcfofDBy/W
- saL0u7N165y2W7N1gXPVn5Ms416q7fjcMFoq5/iISU6i0D/WaxpnD6sDuk7w0zciYPCsdX
- KKVytNqLGgNRE8yVRwu2rD+oqOEdeE4=
+ bh=HY7ae7YfeKcuEgBl05A6jxr4wqMzwyFXelr+/lRWXDA=;
+ b=0eJYYo/SgEGE2hyACqZQTiCYJZYXPKqZO2TgjJ8vrxDf8V0twVdrpHRDvYw8MYumqnacYa
+ iQpFfcNAAZtHnntYObYhHS9Owt9j4YvTpN1wnx7VSP675Vkuh4LNvIIxaBU7vHZpm48Hig
+ 4I2Tb6DR/vXamQp/pi7mPk+KkmHuu5E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1628834756;
+ s=susede2_ed25519; t=1628834917;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=eFBR02RwLmSEu5zu4yGpiRdEAvHtaAt19JuwTPfBy1Q=;
- b=ov68wU3Q1d9bkWNAe1upsGWvc8m1b9nhBnjrc3oUe/l779zU0ELDUuq023h3s7HvznBewQ
- e9Loikn+3tKC+TBQ==
+ bh=HY7ae7YfeKcuEgBl05A6jxr4wqMzwyFXelr+/lRWXDA=;
+ b=P1d8fIq/Namc1PBRTvvjuVUOa0XcqaKaCjIqbx2sfUsqYh4uBIK7m5OsqpMXNw4ZmlmkWI
+ dzsx2wdMspnxedAA==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 3C544A3B8C;
- Fri, 13 Aug 2021 06:05:56 +0000 (UTC)
-Date: Fri, 13 Aug 2021 08:05:56 +0200
-Message-ID: <s5h5yw9lvzv.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 58FE3A3B88;
+ Fri, 13 Aug 2021 06:08:37 +0000 (UTC)
+Date: Fri, 13 Aug 2021 08:08:37 +0200
+Message-ID: <s5h35rdlvve.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/2] ALSA: trivial corrections
-In-Reply-To: <20210812225904.171529-1-pierre-louis.bossart@linux.intel.com>
-References: <20210812225904.171529-1-pierre-louis.bossart@linux.intel.com>
+To: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Subject: Re: [PATCH 1/2] ALSA: hda/cs8409: Prevent pops and clicks during
+ suspend
+In-Reply-To: <20210812183433.6330-1-vitalyr@opensource.cirrus.com>
+References: <20210812183433.6330-1-vitalyr@opensource.cirrus.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ Stefan Binding <sbinding@opensource.cirrus.com>, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,16 +101,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 13 Aug 2021 00:59:02 +0200,
-Pierre-Louis Bossart wrote:
+On Thu, 12 Aug 2021 20:34:32 +0200,
+Vitaly Rodionov wrote:
 > 
-> One typo and one deprecated function to be replaced.
+> From: Stefan Binding <sbinding@opensource.cirrus.com>
 > 
-> Pierre-Louis Bossart (2):
->   ALSA: core: control_led: use strscpy instead of strlcpy
->   ALSA: hda_audio_ext: fix kernel-doc
+> Some of the register values set for type detection cause pops during suspend,
+> ensure these are cleaned up after type detection completes, as well
+> ensuring that these are cleared when we suspend.
+> 
+> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 
-Applied both patches now.  Thanks.
+Thanks, this one is applied now.
 
 
 Takashi
