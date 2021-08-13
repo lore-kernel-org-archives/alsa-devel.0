@@ -2,84 +2,99 @@ Return-Path: <SRS0=Pedv=NE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04DEFC4338F
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 19:44:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12170C43214
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 20:13:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 531E76109E
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 19:44:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 531E76109E
+	by mail.kernel.org (Postfix) with ESMTPS id 6FA7D61042
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 20:13:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6FA7D61042
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE9DC17E4;
-	Fri, 13 Aug 2021 21:43:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE9DC17E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 31A3217F2;
+	Fri, 13 Aug 2021 22:12:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31A3217F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628883886;
-	bh=BQM7OXN/2UL+STIrqUiInZGjpsx6qajPpHnXFh5ZTJQ=;
+	s=default; t=1628885600;
+	bh=MYUzrejtEl7l9RwDqY0F5OpLgetekGe13y2OLZd+CNM=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=H3LMR2XULymXm8+evxrsFkLMYD6x9uEOBtGjj8KUBTYKKZMIun7zy7I18tC9gJMcP
-	 BoLVibno+RyMiGwFfNTe8LPv4fHRBLYFicYEUUIyk9voBeFbNMdxKzGzbWi+pYQ6fE
-	 6h+QYM9NovIh9uvoDPXNzlFPMcLPUz51eZfOJN5Y=
+	b=cnNjwfXScPU2nPFXT+QJCoeyYPkDgwLFlxZ3ATNtljkNE631gb5/RNDDdrontHwtL
+	 hY8NpS5PXQGnFAx9IsoZjrIqiJr8pLFhKasJgWmFTbEYemi4qAyttCEuL1a4tZ8Xnp
+	 0aZAHnQPko0MR8xs5BN/tXTPLYsyCb+8hN3IHiqw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7E426F8020D;
-	Fri, 13 Aug 2021 21:43:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B11AFF8020D;
+	Fri, 13 Aug 2021 22:12:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F2F4EF802D2; Fri, 13 Aug 2021 21:43:53 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 274A3F802D2; Fri, 13 Aug 2021 22:12:27 +0200 (CEST)
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com
+ [209.85.167.176])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D62CFF800AF
- for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2021 21:43:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D62CFF800AF
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="AFjkrEjN"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9311460F21;
- Fri, 13 Aug 2021 19:43:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1628883826;
- bh=BQM7OXN/2UL+STIrqUiInZGjpsx6qajPpHnXFh5ZTJQ=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=AFjkrEjN/Ek96kVEfmIg53xDYLM5DoadxtgsKiEQzHbGfodVWRR9SzMx1N3uTm7mF
- /T/ilnvnSgKyPpmbe2gXU3I8VqaFhiegp72ZjinQKRyW4vK9RrhYLMcEp88OAxh1CE
- yZvTQzLfZZtjMblxOfPLtoqMieSaktfpIOTay0vYpIJW5VLEjln3z04ldfKYEaw8xQ
- PK+iNHIorc8YDi4BowAOezrZzuBRnzhPm/wmwUUPVqzFhB6qswwCc4eA/towP++/wE
- GCcTOQ9cfPzesjVIuUG7xwtwputQ6cf1EN4BKuRGKjhWuTd5Um5qie3BKmrzbXWIxi
- fY5FgHB81Ed5g==
-Date: Fri, 13 Aug 2021 20:43:25 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH v2 09/14] ASoC: audio-graph-card2: add Yaml Document
-Message-ID: <20210813194325.GH5209@sirena.org.uk>
-References: <87a6mhwyqn.wl-kuninori.morimoto.gx@renesas.com>
- <87wnplvk2a.wl-kuninori.morimoto.gx@renesas.com>
- <CAL_JsqJKZ-sjbnihAkdXDk4tW8xVmyhwkHLHWouZg6da0cc99g@mail.gmail.com>
- <87lf60v9xk.wl-kuninori.morimoto.gx@renesas.com>
- <20210721115433.GB4259@sirena.org.uk>
- <87fsw124wn.wl-kuninori.morimoto.gx@renesas.com>
- <20210803165328.GO4668@sirena.org.uk>
- <87mtpyuj8c.wl-kuninori.morimoto.gx@renesas.com>
- <20210804171748.GC26252@sirena.org.uk>
- <875ywkvkkd.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4D145F80129
+ for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2021 22:12:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D145F80129
+Received: by mail-oi1-f176.google.com with SMTP id t128so17622708oig.1
+ for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2021 13:12:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=brjSAKvcG3w//6u1qpeaPj8Sen2eVcNEcaY+HnZUn+Q=;
+ b=gIbb/ajbab2AoZN73QnpBsMUPsbpt4Jg1Vg9hu52keFU/I8lONa6zimn0bGWZB0kq0
+ omJZMdKsuISlJRKI/Pc0c+P9HsykM2D0bNWURTkqQUxc0leB2wWPOI1J0cMUJzkcaFYn
+ WyeIbIFKnhM6WRH/GhWF1Nu+iVPzvW+fBcm8eCds5D2Fp0Rgpeqfdxavm5M0KR/ueVSW
+ EQflMDQRzdY9BeAb95MOfd3DHQhYPYxKyok16eStL34rY/ozDkVwMV1rY1KVQXynubbO
+ 5jHL2TSyMCloztVv3ZeXQMa4eK/hpKhkgpJOLQgSqPFBZpXRv7rsAr6gNOJYmA0yQgnH
+ V01A==
+X-Gm-Message-State: AOAM532o4Qe1fMx7ma2ykALddkUfKrdii8L5yCan5TmT18TyjKOvNuTo
+ d+25ME98zr44LPdb/2ycjg==
+X-Google-Smtp-Source: ABdhPJwGTSMtK+9NYP9pDRzcZrjvm0ClM2a1UqumCqT/+n4os3icmryyREvNZp/z5ivhq9qWazn64A==
+X-Received: by 2002:a05:6808:1906:: with SMTP id
+ bf6mr3371811oib.52.1628885537689; 
+ Fri, 13 Aug 2021 13:12:17 -0700 (PDT)
+Received: from robh.at.kernel.org
+ (2603-8080-2a06-ed00-7254-0b80-dd3c-00c6.res6.spectrum.com.
+ [2603:8080:2a06:ed00:7254:b80:dd3c:c6])
+ by smtp.gmail.com with ESMTPSA id t13sm453083oor.37.2021.08.13.13.12.16
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 13 Aug 2021 13:12:17 -0700 (PDT)
+Received: (nullmailer pid 3944256 invoked by uid 1000);
+ Fri, 13 Aug 2021 20:12:15 -0000
+Date: Fri, 13 Aug 2021 15:12:15 -0500
+From: Rob Herring <robh@kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH v4 2/3] ASoC: dt-bindings: sound: renesas,rz-ssi: Update
+ slave dma channel configuration parameters
+Message-ID: <YRbSHw9X51Nif/Sd@robh.at.kernel.org>
+References: <20210806102930.3024-1-biju.das.jz@bp.renesas.com>
+ <20210806102930.3024-3-biju.das.jz@bp.renesas.com>
+ <CAMuHMdVnU4HSXCr08WEiVmYCNoRBcdZGOfS7mwmS_euo2RZaEA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="nFBW6CQlri5Qm8JQ"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <875ywkvkkd.wl-kuninori.morimoto.gx@renesas.com>
-X-Cookie: E Pluribus Unix
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+In-Reply-To: <CAMuHMdVnU4HSXCr08WEiVmYCNoRBcdZGOfS7mwmS_euo2RZaEA@mail.gmail.com>
+Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Biju Das <biju.das@bp.renesas.com>,
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>,
+ Chris Paterson <Chris.Paterson2@renesas.com>,
+ Biju Das <biju.das.jz@bp.renesas.com>, Chris Brandt <chris.brandt@renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,85 +110,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Mon, Aug 09, 2021 at 02:57:33PM +0200, Geert Uytterhoeven wrote:
+> Hi Biju,
+> 
+> On Fri, Aug 6, 2021 at 12:29 PM Biju Das <biju.das.jz@bp.renesas.com> wrote:
+> > The DMAC driver on RZ/G2L expects the slave channel configuration
+> > to be passed in dmas property.
+> > This patch updates the example node to include the encoded slave
+> > channel configuration.
+> >
+> > Fixes: 5df6dfbb6de815ba3a("ASoC: dt-bindings: sound: renesas,rz-ssi: Document DMA support")
+> > Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> 
+> > v3->v4:
+> >  * Updated bindings as the DMAC driver on RZ/G2L expects the
+> >    slave channel configuration to be passed in dmas property.
+> 
+> Thanks for the update!
+> 
+> > --- a/Documentation/devicetree/bindings/sound/renesas,rz-ssi.yaml
+> > +++ b/Documentation/devicetree/bindings/sound/renesas,rz-ssi.yaml
+> > @@ -93,8 +93,8 @@ examples:
+> >              clock-names = "ssi", "ssi_sfr", "audio_clk1", "audio_clk2";
+> >              power-domains = <&cpg>;
+> >              resets = <&cpg R9A07G044_SSI0_RST_M2_REG>;
+> > -            dmas = <&dmac 0x255>,
+> > -                   <&dmac 0x256>;
+> > +            dmas = <&dmac 0x2655>,
+> > +                   <&dmac 0x2656>;
+> >              dma-names = "tx", "rx";
+> >              #sound-dai-cells = <0>;
+> >      };
+> 
+> I think it would be good to describe the expected format in the description
+> for the dmas property, so the DTS writer knows what the numerical
+> values in the example really mean.
 
---nFBW6CQlri5Qm8JQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, but that's a property of the DMA controller binding, not this one. 
+It could vary from chip to chip.
 
-On Thu, Aug 05, 2021 at 08:47:46AM +0900, Kuninori Morimoto wrote:
-
-> > The -mf- there reads unfortunately differently in English so we
-> > definitely don't want to go with that one I think.  I do agree that it's
-> > hard to come up with a name, possibly rich-link-graph-card or something?
-
-> Thanks. It is a little bit long name, so,
-> rich-graph-card, or rich-link-card is nice for me.
-
-Yeah, let's go with that for now.
-
->=20
-> > Actually, looking at the bindings documents I'm not 100% clear what the
-> > differences in the binding (as opposed to the code that parses it) are -
-> > this may just be the examples being too cut down to show them.  I'm not
-> > 100% clear why we have the three different compatibles in there, that
-> > feels like something that should just be in the graph description,
-
-> Ohhhh, yes, indeed. I didn't notice about that !
-> If my understanding was correct, it can be something like ...
-
-> 	card {
-> 		compatible =3D "rich-graph-card";
-> 		...
-> 		links =3D ...
-> 	=09
-> 		mix {
-> 			...
-> 		}
-> 		multi {
-> 			...
-> 		}
-> 		codec2codec {
-> 			...
-> 		}
-> 	}
->=20
-> Hmm, nice idea.
-
-Can we merge some of these types - for example what happens if we get a
-CODEC to CODEC link with TDM (eg, a DSP with a link to two mono speakers).
-I think we should at least be able to merge TDM with anything else, I
-guess we could have all three if we had a DPCM SoC with two CODECs on a
-single link though that feels a bit pathological.
-
-> > especially codec2codec since we might have for example both a DSP and a
-> > codec2codec link in the same card.
-
-> It is possible in my understanding, but am I misunderstanding ?
-
-> ... is it naming issue ?
-> In my understanding, both "DSP" and "MIXer" are using "DPCM" connection,
-> but driver/sample is calling it as "DSP".
-> I think "MIXer" and "Codec2Codec" in same card is possible.
-> I'm not sure about "DSP" case...
-
-I think you're understanding it right - I'm using DSP to mean a SoC
-needing DPCM because of the DSP here, sorry that wasn't the clearest way
-to describe things.
-
---nFBW6CQlri5Qm8JQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEWy1wACgkQJNaLcl1U
-h9B7UQf/ep+WMpE7AspjbAKovrm5JNw41JSzFQntHBgji5Qqea+1X5v9AeXhGtdi
-rjTdaTNWIID288gR5QROi6cEWJE4vi2+ZgBk4/zr16GjUGOSQXnKWS8wbUujUwrS
-SMt+2YhewfknIZ2ppryIt1h1x74bi5tRuVsl1xS0fxiwpXFO6x6WnLWvz9wWiMUi
-VaQ/bbPfydn9nBX16GOTvX+0LAgDrUccurTRLGhWfoATrPgtdww+uTKfb0rACH/9
-eO172ncTNOrhX8FJ0LX9xTgglsDHKMPJW8r3b1I6Bd/fEEsb7CORymtijNJp1S8e
-q8nvfVW3Xq+r4+S/HjcaZvXfur7mMA==
-=xZPG
------END PGP SIGNATURE-----
-
---nFBW6CQlri5Qm8JQ--
+Rob
