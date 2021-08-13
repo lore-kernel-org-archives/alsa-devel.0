@@ -7,77 +7,78 @@ X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B9A5C4338F
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 06:09:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81A81C4338F
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 06:11:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1B4566109D
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 06:09:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1B4566109D
+	by mail.kernel.org (Postfix) with ESMTPS id 62F7B6109D
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 06:11:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 62F7B6109D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A72D618D5;
-	Fri, 13 Aug 2021 08:08:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A72D618D5
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC00418C0;
+	Fri, 13 Aug 2021 08:10:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC00418C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628834975;
-	bh=F2F8ljl7o0EReVyr1TURj4qRbp1rH3YP2gzZVa5SRug=;
+	s=default; t=1628835109;
+	bh=OZnqWEmObutnH07UnWdDL1z8zeCgD+MlXGFS009GDn0=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tkvcAigbwTMvYfGkKxHmLEXenfPxNHBtJKL5uJyJQWrbrH3HRNWpiN5B+0Wu2y/qm
-	 CqlvBAd29t5jB1XFGheALO4c0ndC8ZIqsLSc1Vd8Kej7f92dXM7CUvsBnz02C8cYoQ
-	 7Om7W/7qsJkz3KmbMJoy+umxzXSFPoLYQ8Q5sF+M=
+	b=F7rkkhCNWUqPJiNreAtC65n2HPyQ0AxBCjEGqRlGfer/1DWzMxgKCp8DTkWar3NIj
+	 81TBH7Zan/kWk/9WxdbOrNDr7RTMBct2E7x4VADmJ6JSR2Uo/4g+CAipJKCyX5u5Yz
+	 Tg/Ly9yjUcYBUW24beOwJbGNfGGLZEojTHun2aD8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4ACFEF8020D;
-	Fri, 13 Aug 2021 08:08:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E41BF8020D;
+	Fri, 13 Aug 2021 08:10:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ED2E4F802D2; Fri, 13 Aug 2021 08:08:43 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 76939F802D2; Fri, 13 Aug 2021 08:10:57 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B0650F800E5
- for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2021 08:08:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0650F800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 389EDF800E5
+ for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2021 08:10:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 389EDF800E5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="0eJYYo/S"; 
+ header.b="gCyH+u89"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="P1d8fIq/"
+ header.b="Nf4AzfPJ"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 7770C22289;
- Fri, 13 Aug 2021 06:08:37 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id E810E1FD90;
+ Fri, 13 Aug 2021 06:10:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1628834917; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1628835047; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=HY7ae7YfeKcuEgBl05A6jxr4wqMzwyFXelr+/lRWXDA=;
- b=0eJYYo/SgEGE2hyACqZQTiCYJZYXPKqZO2TgjJ8vrxDf8V0twVdrpHRDvYw8MYumqnacYa
- iQpFfcNAAZtHnntYObYhHS9Owt9j4YvTpN1wnx7VSP675Vkuh4LNvIIxaBU7vHZpm48Hig
- 4I2Tb6DR/vXamQp/pi7mPk+KkmHuu5E=
+ bh=JtlNSEjo/aAGUyeOb1fWgW8Jo9JxLdbdVNlnrm++LWM=;
+ b=gCyH+u89wcAxHSXRzVLE7LRQGjVdUF5Yfbdr3Jc6BieHi2xbtch0JKriDS3ydz5lGfCs5O
+ XybX+4XM1Smk0bTcmFz1poRg9YAz7Irw6vd2tq2Z5s6A3OppzzBahz84AA8FTF2POjjyFF
+ l88HNwcR8Q8ZdinuZmipf/cj5wBPzPw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1628834917;
+ s=susede2_ed25519; t=1628835047;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=HY7ae7YfeKcuEgBl05A6jxr4wqMzwyFXelr+/lRWXDA=;
- b=P1d8fIq/Namc1PBRTvvjuVUOa0XcqaKaCjIqbx2sfUsqYh4uBIK7m5OsqpMXNw4ZmlmkWI
- dzsx2wdMspnxedAA==
+ bh=JtlNSEjo/aAGUyeOb1fWgW8Jo9JxLdbdVNlnrm++LWM=;
+ b=Nf4AzfPJJZhIe1hEDRIaJEVNBJRzlFvxuoPL1r+4ybXT3OISzpTb+nWwVGV3AZoalHjZz/
+ 8fPLFbsp/EtqHUAw==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 58FE3A3B88;
- Fri, 13 Aug 2021 06:08:37 +0000 (UTC)
-Date: Fri, 13 Aug 2021 08:08:37 +0200
-Message-ID: <s5h35rdlvve.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id DC400A3B84;
+ Fri, 13 Aug 2021 06:10:47 +0000 (UTC)
+Date: Fri, 13 Aug 2021 08:10:47 +0200
+Message-ID: <s5h1r6xlvrs.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-Subject: Re: [PATCH 1/2] ALSA: hda/cs8409: Prevent pops and clicks during
- suspend
-In-Reply-To: <20210812183433.6330-1-vitalyr@opensource.cirrus.com>
+Subject: Re: [PATCH 2/2] ALSA: hda/cs8409: Prevent pops and clicks during
+ reboot
+In-Reply-To: <20210812183433.6330-2-vitalyr@opensource.cirrus.com>
 References: <20210812183433.6330-1-vitalyr@opensource.cirrus.com>
+ <20210812183433.6330-2-vitalyr@opensource.cirrus.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -101,19 +102,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 12 Aug 2021 20:34:32 +0200,
+On Thu, 12 Aug 2021 20:34:33 +0200,
 Vitaly Rodionov wrote:
 > 
 > From: Stefan Binding <sbinding@opensource.cirrus.com>
 > 
-> Some of the register values set for type detection cause pops during suspend,
-> ensure these are cleaned up after type detection completes, as well
-> ensuring that these are cleared when we suspend.
+> During reboot, when the CS42L42 powers down, pops and clicks
+> may occur due to the codec not being shutdown gracefully.
+> This can be fixed by going through the suspend sequence,
+> which shuts down the codec cleanly inside the reboot_notify
+> hook, which is called on reboot.
 > 
 > Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 > Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 
-Thanks, this one is applied now.
+I hold this one for now, as there is a fix series that deprecates the
+reboot_notify callback of HD-audio by forcibly doing runtime-suspend
+at shutdown.  Please check the three patches in
+  https://bugzilla.kernel.org/show_bug.cgi?id=214045
 
+I'm going to submit those soon in anyway.
+
+
+thanks,
 
 Takashi
