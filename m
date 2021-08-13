@@ -6,73 +6,71 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35956C4338F
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 17:28:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFD97C4338F
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 17:28:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3BB5160F57
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 17:28:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3BB5160F57
+	by mail.kernel.org (Postfix) with ESMTPS id 35D2660F51
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 17:28:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 35D2660F51
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 231621820;
-	Fri, 13 Aug 2021 19:27:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 231621820
+	by alsa0.perex.cz (Postfix) with ESMTPS id B7F15188A;
+	Fri, 13 Aug 2021 19:28:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7F15188A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628875700;
-	bh=g0u5xuIwlbndrt3NBTxfX3qA3PDNBcMigkpyLBKohp0=;
+	s=default; t=1628875734;
+	bh=X9xb+srgjuPKAtDJ5/bKUFQSGy3Rv+wh5CECPkydDlY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=W+HXHlHl72EKBodGYDbCEV1LXKjrMwHNGQsbBTks8G6RyDk7EZQsDQb5hRrB5hlMX
-	 sf8bHCwYEuEhn1kQSg//AfjTzQrvA3/Gk+Ocn93S/dOs0nOwiU3QNo1ei0oheANFn1
-	 qgXAbSOqa45eA/GyXEdhvUBbPud9i6W8kQEJz2og=
+	b=vb+eEN3EFpuRES+1ExykWGBJJLBxwhHpRNxDR1dFhkAb6Yx1Qdakfwp0uDDeF+EK3
+	 i2UXRA5LbBZxAupXepUQd2fShUFkxecbsGAV9X55jTPghq0QtbuFJIF8zVrTroG7+a
+	 eqSE6Dwde614J5nKLo78HAnYNd2QZvJqd5ITn5E4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E76FFF80129;
-	Fri, 13 Aug 2021 19:26:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B768F804E3;
+	Fri, 13 Aug 2021 19:26:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 14354F802D2; Fri, 13 Aug 2021 19:26:33 +0200 (CEST)
+ id 647C1F804B4; Fri, 13 Aug 2021 19:26:38 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B49F1F800AF
- for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2021 19:26:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B49F1F800AF
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9765F802D2
+ for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2021 19:26:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9765F802D2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ggLMQR/A"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE53D60F36;
- Fri, 13 Aug 2021 17:26:27 +0000 (UTC)
+ header.b="h7Kghsdb"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB82860F51;
+ Fri, 13 Aug 2021 17:26:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1628875588;
- bh=g0u5xuIwlbndrt3NBTxfX3qA3PDNBcMigkpyLBKohp0=;
+ s=k20201202; t=1628875593;
+ bh=X9xb+srgjuPKAtDJ5/bKUFQSGy3Rv+wh5CECPkydDlY=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ggLMQR/AUonYNRarxEV87X8y9gm/9UNY5AjWoshzw2LIM+18sAoz8eZuLiteWHN0y
- W3uKVREkE3ccfIeIlQtnxJEpzrnRHT5ldHYBtDtBXZR1MpxsFH5H2PzEkjZeqK60Pz
- uyIhvHQ1b9NAAtQgmpCyBnylcuRzMKTGzY5pJoSdoiklIYvzU0kjf1M8EvYCfBSA26
- Hu6e67mJ2YL86aODvotSKCD4FzSntmdAoJQgRJPuENukFUkfLjVwwjRWi4Dd8aintG
- ZhktwsKB8wTDZlg0j3o6ZmwIQvdZ45HbflpJytHszDrfoYMVq6EEeazD7cRMIuWRpH
- 9xVKzrIRSbIYQ==
+ b=h7Kghsdb/NIatsLWDLD9RCuCKGPmX0EjBlq1iR6UdxokZ/+kFCBspuJQhzkkRGRWN
+ cYM8feeKcgqHBcPkZKE4Crw8NO1OfVw/fpfLACkXC0SG7OdzQOh6LGjTXXBnOuLTcZ
+ q3/7P74CwITSoDyMy0E7vSyhDs4KMS6wwGZaa/U7/Pj7FleGSzgUB0Tc6hhyzjic8t
+ iiNIpN9npBWtrp7/PODL9h8IU66/0zTzjaEJchkZdAdPF9D7s5Rv5meeQiCpt9hYTt
+ SzezYGslPayeuJAJBCRwb51vh6w0gCUiLpND2OktkKiaeco55pEp5AcUamb9aGY+Uc
+ wFlqDVLXF8Lmg==
 From: Mark Brown <broonie@kernel.org>
 To: alsa-devel@alsa-project.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v3 0/8] ASoC: Intel: boards: use software node API
-Date: Fri, 13 Aug 2021 18:26:01 +0100
-Message-Id: <162887455325.19744.17516860614733384686.b4-ty@kernel.org>
+Subject: Re: [PATCH v2 0/4] ASoC: SOF: Intel: DMI L1 power optimization for
+ HDaudio platforms
+Date: Fri, 13 Aug 2021 18:26:03 +0100
+Message-Id: <162887455324.19744.15113340723624817120.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210813151116.23931-1-pierre-louis.bossart@linux.intel.com>
-References: <20210813151116.23931-1-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20210812231940.172547-1-pierre-louis.bossart@linux.intel.com>
+References: <20210812231940.172547-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Hans de Goede <hdegoede@redhat.com>,
- Heikki Krogerus <heikki.krogerus@linux.intel.com>,
- Mark Brown <broonie@kernel.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: tiwai@suse.de, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,15 +86,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 13 Aug 2021 10:11:08 -0500, Pierre-Louis Bossart wrote:
-> This is an update on an earlier contribution from Heikki Krogerus
+On Thu, 12 Aug 2021 18:19:36 -0500, Pierre-Louis Bossart wrote:
+> This patchset provides an optimization that result in significant power
+> savings on Intel HDAudio platforms using SOF (Sound Open Firmware).
 > 
-> The function device_add_properties() is going to be removed.
-> Replacing it with software node API equivalents.
-> 
-> Thanks for Hans de Goede and Andy Shevchenko for their comments,
-> suggestions and Reviewed-by tags on GitHub. The review thread can be
-> found at https://github.com/thesofproject/linux/pull/3041)
+> We previously prevented the Intel DSP from enabling the DMI_L1
+> capability to work-around issues with pause on capture streams. It
+> turns out that this also prevented the platform from entering high C
+> states in full-duplex usages such as videoconferencing - a rather
+> basic use case since the start of the pandemic.
 > 
 > [...]
 
@@ -106,22 +104,14 @@ Applied to
 
 Thanks!
 
-[1/8] ASoC: Intel: boards: harden codec property handling
-      commit: c50f126b3c9ebb77585838726a3a490ad33b92cd
-[2/8] ASoC: Intel: boards: handle errors with acpi_dev_get_first_match_dev()
-      commit: 69efe3b834c0803d170ec8957021543963868e63
-[3/8] ASoC: Intel: boards: get codec device with ACPI instead of bus search
-      commit: d3409eb20d3ed7d9e021cd13243e9e63255a315f
-[4/8] ASoC: Intel: sof_sdw: pass card information to init/exit functions
-      commit: cdf99c9ab72161885d8670723a21699a384a5dbe
-[5/8] ASoC: Intel: sof_sdw_rt711*: keep codec device reference until remove
-      commit: 82027585fce0c5e78e666cfbd0066fe3c80070dd
-[6/8] ASoC: Intel: use software node API in SoundWire machines
-      commit: e5a292d39466ca1f45e185be713616f9389e6a4e
-[7/8] ASoC: Intel: remove device_properties for Atom boards
-      commit: f1f8a9615451ec3762a45b6985e072c44a995a45
-[8/8] ASoC: Intel: boards: use software node API in Atom boards
-      commit: 0bd3c071e6e7e140c8b39caab99b3b6f05cb5290
+[1/4] ASoC: SOF: Intel: Kconfig: clarify DMI L1 option description
+      commit: 6f28c883b7ba8c611a842b4701eb4fb8bd76b70b
+[2/4] ASoC: SOF: Intel: hda-stream: remove always true condition
+      commit: d2556edadbf2929dd7b04de59daeb0a571dc0349
+[3/4] ASoC: SOF: Intel: simplify logic for DMI_L1 handling
+      commit: 5503e938fef3f66240670d28f7d5db7f2dc8f35a
+[4/4] ASoC: SOF: Intel: make DMI L1 selection more robust
+      commit: 246dd4287dfbaaddc1511c744893621814618bc8
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
