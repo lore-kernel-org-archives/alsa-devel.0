@@ -1,74 +1,91 @@
-Return-Path: <SRS0=v/9x=ND=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=Pedv=NE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23927C4338F
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 23:22:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E176AC4338F
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 06:04:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1CBB061077
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Aug 2021 23:22:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1CBB061077
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4F2796109E
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 06:04:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4F2796109E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A7F718F1;
-	Fri, 13 Aug 2021 01:21:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A7F718F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0508718A0;
+	Fri, 13 Aug 2021 08:04:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0508718A0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628810564;
-	bh=wWS3K7ciyRjAYv3u/3fKWyWhfiLLTHRHWFt/8b6ns9o=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1628834694;
+	bh=dJvDtyU7VS7zQfEA1POZ4qavldJlxDWog5Jx5nFn2Ls=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=L1a8oK2v++4xIt96skzGIvIMRlFr4mC3zWvif0WWswj9AEWoIPDJUvdrfSpFrMA53
-	 e5N2ayBFR5QXJg3ltoqkpGvomhlLxfEAfdrwDi7E4eO6O5tn4ecaFyeyg5HmxJLpgY
-	 aAWvjjWMpxd0Fmbs/QdPaXDK0VF0InLuwhEGBDGc=
+	b=LPjvwrqTH2BLcouMqp8ipqHA5ed6r8Hw5D9Czdz0e46EoNmNCQF7fx8YEUInV9Vu0
+	 TS5q9E0diwfR98rdAc0FnDKpc0X4cm3h7nsNwpIebYOXj7KdszOTTnn4CVX7+8Hr1Q
+	 8BnSMHrTtcX2sXNJFW60XlXzdfWjnqFDYlfEhr0o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 309CCF804E4;
-	Fri, 13 Aug 2021 01:20:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 947C7F8020D;
+	Fri, 13 Aug 2021 08:04:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 61B14F804E4; Fri, 13 Aug 2021 01:20:22 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 4C053F802D2; Fri, 13 Aug 2021 08:04:02 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C9BA0F804B1
- for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2021 01:20:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9BA0F804B1
-X-IronPort-AV: E=McAfee;i="6200,9189,10074"; a="202629473"
-X-IronPort-AV: E=Sophos;i="5.84,317,1620716400"; d="scan'208";a="202629473"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Aug 2021 16:19:58 -0700
-X-IronPort-AV: E=Sophos;i="5.84,317,1620716400"; d="scan'208";a="507949890"
-Received: from evanklei-mobl1.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.212.77.110])
- by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Aug 2021 16:19:58 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 2/4] ASoC: SOF: Intel: hda-stream: remove always true
- condition
-Date: Thu, 12 Aug 2021 18:19:38 -0500
-Message-Id: <20210812231940.172547-3-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210812231940.172547-1-pierre-louis.bossart@linux.intel.com>
-References: <20210812231940.172547-1-pierre-louis.bossart@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 13474F800E5
+ for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2021 08:03:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13474F800E5
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="vpE3drXj"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="TIYaSpt7"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id F3B7522289;
+ Fri, 13 Aug 2021 06:03:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1628834632; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=jZDOegIlxdbZkg8N7zo2cwCahBOtWzugDRLGWu65XRk=;
+ b=vpE3drXjTgXkDa7DllG591U9QY6lugSNSQqSt6pZNNu5jwW6ex6CrT4gATQWUzNGz98IY+
+ Ij//EhIwJ4/+ptf12DIdqRLKMoY+subbT3lifRHhs0R9AfYo0QEfShIMIK7gK8VWAMALVD
+ V5cYX/lY4r6rIqtxaPrP/TkMrbNijWA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1628834632;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=jZDOegIlxdbZkg8N7zo2cwCahBOtWzugDRLGWu65XRk=;
+ b=TIYaSpt75y4nZFurSkhrIj0q0E7TY9IcFyCZL8jjuVoRxE8u7BfUVwsFDcN1orGdO+OeTt
+ 86IEIC5kV/OdtYAg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id EC2FAA3B87;
+ Fri, 13 Aug 2021 06:03:51 +0000 (UTC)
+Date: Fri, 13 Aug 2021 08:03:51 +0200
+Message-ID: <s5h7dgplw3c.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH RFC v2 2/4] ALSA: pcm: Add SNDRV_PCM_INFO_EXPLICIT_SYNC
+ flag
+In-Reply-To: <0a2debee-439d-ebb8-2832-039074194d75@linux.intel.com>
+References: <20210812113818.6479-1-tiwai@suse.de>
+ <20210812113818.6479-3-tiwai@suse.de>
+ <0a2debee-439d-ebb8-2832-039074194d75@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,32 +101,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We test if (!stream) and return and later on re-test for stream.
-The second test is always true.
+On Thu, 12 Aug 2021 20:37:06 +0200,
+Pierre-Louis Bossart wrote:
+> 
+> 
+> Hi Takashi,
+> 
+> > ALSA PCM core has an optimized way to communicate with user-space for
+> > its control and status data via mmap on the supported architectures
+> > like x86.  Depending on the situation, however, we'd rather want to
+> > enforce user-space notifying the applptr or hwptr change explicitly
+> > via ioctl.  For example, the upcoming non-contig and non-coherent
+> > buffer handling would need an explicit sync, and this needs to catch
+> > the applptr and hwptr changes.
+> > 
+> > This patch adds the new PCM hardware info flag,
+> > SNDRV_PCM_INFO_EXPLICIT_SYNC.  When this flag is set, PCM core
+> > disables both the control and the status mmap, which enforces
+> > user-space to update via SYNC_PTR ioctl.  In that way, drivers can
+> > catch the applptr and hwptr update and apply the sync operation if
+> > needed.
+> 
+> This looks like the same functionality as in the patch "ALSA: pcm:
+> conditionally avoid mmap of control data" that we submitted for the SPIB
+> support, no?
 
-This was detected by cppcheck but only after additional code changes.
+Yes, quite similar.  That's what I mentioned in the reply at that
+time.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
----
- sound/soc/sof/intel/hda-stream.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> I was about to resubmit a v2 based on my version (code was reviewed on
+> GitHub in https://github.com/thesofproject/linux/pull/3076).
+> 
+> If it's the same solution, could this patch be applied first so we are
+> aligned regardless of the order in which memalloc and SPIB patches are
+> merged? The renaming is fine, and that was your idea that I implemented
+> anyways.
+> 
+> I think there would be a need for a tag as well so that Mark's tree
+> compiles when the SOF driver uses this.
 
-diff --git a/sound/soc/sof/intel/hda-stream.c b/sound/soc/sof/intel/hda-stream.c
-index 40a3993ae2cb..5302464754f9 100644
---- a/sound/soc/sof/intel/hda-stream.c
-+++ b/sound/soc/sof/intel/hda-stream.c
-@@ -198,7 +198,7 @@ hda_dsp_stream_get(struct snd_sof_dev *sdev, int direction, u32 flags)
- 	 * in xruns during pause/release in capture scenarios.
- 	 */
- 	if (!IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_ALWAYS_ENABLE_DMI_L1))
--		if (stream && !(flags & SOF_HDA_STREAM_DMI_L1_COMPATIBLE))
-+		if (!(flags & SOF_HDA_STREAM_DMI_L1_COMPATIBLE))
- 			snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR,
- 						HDA_VS_INTEL_EM2,
- 						HDA_VS_INTEL_EM2_L1SEN, 0);
--- 
-2.25.1
+Sure, I can merge this one with a slight more rewording.
 
+
+thanks,
+
+Takashi
