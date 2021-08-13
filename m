@@ -7,94 +7,90 @@ X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12170C43214
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 20:13:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7DFBC4338F
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 20:14:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6FA7D61042
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 20:13:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6FA7D61042
+	by mail.kernel.org (Postfix) with ESMTPS id A12CD610F7
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 20:14:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A12CD610F7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 31A3217F2;
-	Fri, 13 Aug 2021 22:12:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31A3217F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id D90211817;
+	Fri, 13 Aug 2021 22:13:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D90211817
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628885600;
-	bh=MYUzrejtEl7l9RwDqY0F5OpLgetekGe13y2OLZd+CNM=;
+	s=default; t=1628885664;
+	bh=Qs2NF/w5evjrHypN01X+MZc6779EM2oLdkBOKRBcHQ0=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cnNjwfXScPU2nPFXT+QJCoeyYPkDgwLFlxZ3ATNtljkNE631gb5/RNDDdrontHwtL
-	 hY8NpS5PXQGnFAx9IsoZjrIqiJr8pLFhKasJgWmFTbEYemi4qAyttCEuL1a4tZ8Xnp
-	 0aZAHnQPko0MR8xs5BN/tXTPLYsyCb+8hN3IHiqw=
+	b=AisZamjv0vuds/X2xJuigR30cYhaFInwiIwfz4q7ypG66hg7DTPXRX89KI+8Pegm/
+	 R6bdUpfTZfzC9fSXby1Y4mxW0XEcM0SN2jbPoKq2wix7LugpKlqTtr8LxXe45t08Qr
+	 By8n+l1VUbLiHxwKQSnGFeDNlA+1gaBcqSAHaCOI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B11AFF8020D;
-	Fri, 13 Aug 2021 22:12:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 79C52F804AE;
+	Fri, 13 Aug 2021 22:13:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 274A3F802D2; Fri, 13 Aug 2021 22:12:27 +0200 (CEST)
-Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com
- [209.85.167.176])
+ id C699CF804B0; Fri, 13 Aug 2021 22:13:32 +0200 (CEST)
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com
+ [209.85.167.169])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4D145F80129
- for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2021 22:12:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D145F80129
-Received: by mail-oi1-f176.google.com with SMTP id t128so17622708oig.1
- for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2021 13:12:19 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A54FDF8020D
+ for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2021 22:13:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A54FDF8020D
+Received: by mail-oi1-f169.google.com with SMTP id h11so17706572oie.0
+ for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2021 13:13:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=brjSAKvcG3w//6u1qpeaPj8Sen2eVcNEcaY+HnZUn+Q=;
- b=gIbb/ajbab2AoZN73QnpBsMUPsbpt4Jg1Vg9hu52keFU/I8lONa6zimn0bGWZB0kq0
- omJZMdKsuISlJRKI/Pc0c+P9HsykM2D0bNWURTkqQUxc0leB2wWPOI1J0cMUJzkcaFYn
- WyeIbIFKnhM6WRH/GhWF1Nu+iVPzvW+fBcm8eCds5D2Fp0Rgpeqfdxavm5M0KR/ueVSW
- EQflMDQRzdY9BeAb95MOfd3DHQhYPYxKyok16eStL34rY/ozDkVwMV1rY1KVQXynubbO
- 5jHL2TSyMCloztVv3ZeXQMa4eK/hpKhkgpJOLQgSqPFBZpXRv7rsAr6gNOJYmA0yQgnH
- V01A==
-X-Gm-Message-State: AOAM532o4Qe1fMx7ma2ykALddkUfKrdii8L5yCan5TmT18TyjKOvNuTo
- d+25ME98zr44LPdb/2ycjg==
-X-Google-Smtp-Source: ABdhPJwGTSMtK+9NYP9pDRzcZrjvm0ClM2a1UqumCqT/+n4os3icmryyREvNZp/z5ivhq9qWazn64A==
-X-Received: by 2002:a05:6808:1906:: with SMTP id
- bf6mr3371811oib.52.1628885537689; 
- Fri, 13 Aug 2021 13:12:17 -0700 (PDT)
+ bh=OquAakahea26nEMMYnVSuFdMaOwT9nWOuEZ5pT1GDFg=;
+ b=BTBpQmohm8J1zyNet3QaAgbKDaC175c2b9VXftBFZ2r2NZFMs0UMB+AAwpteWfDalJ
+ m2pwSbvnA3YnHab0M6mVqC8fHXHdq2B+zvWLCSuUKI1BfhQ4mBw3WmT4x3oa1VXwyq3w
+ BhdgMqC3RfetDDQFrTRj6+bGgcgtiVegpsleJP9PUbCifeUbjJZdgXGmzbuNKC+hSlY/
+ biLuNR+Vw5KfuJalhYu/6HcScda9MXmMCxDyltk/VWCfTMM7RHBLttTOA+OxrdA1qJir
+ 2SZ3SJK/35Ctc7I2a9eVkuZjzCwk5t5Rcww5NYudJZzuI7OpvN03nDPVUiV741zsWZzY
+ YUAA==
+X-Gm-Message-State: AOAM532EW9TJfRyxcWN39DN7QqgvoC3bZ6NXNLFSXw//B4UYGCP/U8Vo
+ ImOMZFSJV7KxTKaTTP94mg==
+X-Google-Smtp-Source: ABdhPJz+sTeYclyG6tB76eUhdgMTPu4W3K1FCrw3tb0uxcBscFGu5U1dDPVVvXhkvpngfi+DznOqcA==
+X-Received: by 2002:a05:6808:1389:: with SMTP id
+ c9mr3468628oiw.89.1628885601554; 
+ Fri, 13 Aug 2021 13:13:21 -0700 (PDT)
 Received: from robh.at.kernel.org
  (2603-8080-2a06-ed00-7254-0b80-dd3c-00c6.res6.spectrum.com.
  [2603:8080:2a06:ed00:7254:b80:dd3c:c6])
- by smtp.gmail.com with ESMTPSA id t13sm453083oor.37.2021.08.13.13.12.16
+ by smtp.gmail.com with ESMTPSA id o18sm558321oiw.27.2021.08.13.13.13.20
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 13 Aug 2021 13:12:17 -0700 (PDT)
-Received: (nullmailer pid 3944256 invoked by uid 1000);
- Fri, 13 Aug 2021 20:12:15 -0000
-Date: Fri, 13 Aug 2021 15:12:15 -0500
+ Fri, 13 Aug 2021 13:13:20 -0700 (PDT)
+Received: (nullmailer pid 3945957 invoked by uid 1000);
+ Fri, 13 Aug 2021 20:13:18 -0000
+Date: Fri, 13 Aug 2021 15:13:18 -0500
 From: Rob Herring <robh@kernel.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Biju Das <biju.das.jz@bp.renesas.com>
 Subject: Re: [PATCH v4 2/3] ASoC: dt-bindings: sound: renesas,rz-ssi: Update
  slave dma channel configuration parameters
-Message-ID: <YRbSHw9X51Nif/Sd@robh.at.kernel.org>
+Message-ID: <YRbSXn9P41o28u32@robh.at.kernel.org>
 References: <20210806102930.3024-1-biju.das.jz@bp.renesas.com>
  <20210806102930.3024-3-biju.das.jz@bp.renesas.com>
- <CAMuHMdVnU4HSXCr08WEiVmYCNoRBcdZGOfS7mwmS_euo2RZaEA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdVnU4HSXCr08WEiVmYCNoRBcdZGOfS7mwmS_euo2RZaEA@mail.gmail.com>
-Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
+In-Reply-To: <20210806102930.3024-3-biju.das.jz@bp.renesas.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
  Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Biju Das <biju.das@bp.renesas.com>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>,
- Chris Paterson <Chris.Paterson2@renesas.com>,
- Biju Das <biju.das.jz@bp.renesas.com>, Chris Brandt <chris.brandt@renesas.com>
+ linux-renesas-soc@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>, Chris Paterson <Chris.Paterson2@renesas.com>,
+ Mark Brown <broonie@kernel.org>, Chris Brandt <chris.brandt@renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,44 +106,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Aug 09, 2021 at 02:57:33PM +0200, Geert Uytterhoeven wrote:
-> Hi Biju,
+On Fri, 06 Aug 2021 11:29:29 +0100, Biju Das wrote:
+> The DMAC driver on RZ/G2L expects the slave channel configuration
+> to be passed in dmas property.
+> This patch updates the example node to include the encoded slave
+> channel configuration.
 > 
-> On Fri, Aug 6, 2021 at 12:29 PM Biju Das <biju.das.jz@bp.renesas.com> wrote:
-> > The DMAC driver on RZ/G2L expects the slave channel configuration
-> > to be passed in dmas property.
-> > This patch updates the example node to include the encoded slave
-> > channel configuration.
-> >
-> > Fixes: 5df6dfbb6de815ba3a("ASoC: dt-bindings: sound: renesas,rz-ssi: Document DMA support")
-> > Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
-> > Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Fixes: 5df6dfbb6de815ba3a("ASoC: dt-bindings: sound: renesas,rz-ssi: Document DMA support")
+> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+> Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+> Note:-
+>  This patch is based on [1]
+>  [1]:- https://patchwork.kernel.org/project/linux-renesas-soc/patch/20210806095322.2326-2-biju.das.jz@bp.renesas.com/
 > 
-> > v3->v4:
-> >  * Updated bindings as the DMAC driver on RZ/G2L expects the
-> >    slave channel configuration to be passed in dmas property.
+> v3->v4:
+>  * Updated bindings as the DMAC driver on RZ/G2L expects the
+>    slave channel configuration to be passed in dmas property.
+> v2->v3:
+>  * Merged the binding patch with dmas added
+>  * Updated dt binding example with encoded #dma-cells value.
+> v1->v2:
+>  * Rebased on 5.14-rc2.
+> ---
+>  Documentation/devicetree/bindings/sound/renesas,rz-ssi.yaml | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> Thanks for the update!
-> 
-> > --- a/Documentation/devicetree/bindings/sound/renesas,rz-ssi.yaml
-> > +++ b/Documentation/devicetree/bindings/sound/renesas,rz-ssi.yaml
-> > @@ -93,8 +93,8 @@ examples:
-> >              clock-names = "ssi", "ssi_sfr", "audio_clk1", "audio_clk2";
-> >              power-domains = <&cpg>;
-> >              resets = <&cpg R9A07G044_SSI0_RST_M2_REG>;
-> > -            dmas = <&dmac 0x255>,
-> > -                   <&dmac 0x256>;
-> > +            dmas = <&dmac 0x2655>,
-> > +                   <&dmac 0x2656>;
-> >              dma-names = "tx", "rx";
-> >              #sound-dai-cells = <0>;
-> >      };
-> 
-> I think it would be good to describe the expected format in the description
-> for the dmas property, so the DTS writer knows what the numerical
-> values in the example really mean.
 
-Yes, but that's a property of the DMA controller binding, not this one. 
-It could vary from chip to chip.
-
-Rob
+Acked-by: Rob Herring <robh@kernel.org>
