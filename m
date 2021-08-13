@@ -2,91 +2,87 @@ Return-Path: <SRS0=Pedv=NE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81A81C4338F
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 06:11:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2AC6C4338F
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 08:13:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 62F7B6109D
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 06:11:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 62F7B6109D
+	by mail.kernel.org (Postfix) with ESMTPS id A23806109E
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Aug 2021 08:13:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A23806109E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC00418C0;
-	Fri, 13 Aug 2021 08:10:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC00418C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 685331840;
+	Fri, 13 Aug 2021 10:12:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 685331840
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628835109;
-	bh=OZnqWEmObutnH07UnWdDL1z8zeCgD+MlXGFS009GDn0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1628842414;
+	bh=UgvaUMvAevIEjFzqkuQdwCaUc3bAtLEAhUZTqMF1Xgw=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F7rkkhCNWUqPJiNreAtC65n2HPyQ0AxBCjEGqRlGfer/1DWzMxgKCp8DTkWar3NIj
-	 81TBH7Zan/kWk/9WxdbOrNDr7RTMBct2E7x4VADmJ6JSR2Uo/4g+CAipJKCyX5u5Yz
-	 Tg/Ly9yjUcYBUW24beOwJbGNfGGLZEojTHun2aD8=
+	b=X67nrhFsP5ZP35O91hcGuNceptAcAN/VCbLCxRr4yzNUrXd1UAaspMRy3ky6jaoni
+	 f3j6JE8Rz9E16wjI5PHlCQNAkMwsLvVqI7vmvWZ2i65lfuxXxJdUPRBusGczWSty1K
+	 XEpNxl9VuMCCHgFAgWEqUJj2TQyDLv59wUP7n/jk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6E41BF8020D;
-	Fri, 13 Aug 2021 08:10:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E7E9DF800E5;
+	Fri, 13 Aug 2021 10:12:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 76939F802D2; Fri, 13 Aug 2021 08:10:57 +0200 (CEST)
+ id 73F0AF804AE; Fri, 13 Aug 2021 10:12:41 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 389EDF800E5
- for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2021 08:10:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 389EDF800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 83792F80129
+ for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2021 10:12:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83792F80129
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="gCyH+u89"; 
+ header.b="TierabmI"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="Nf4AzfPJ"
+ header.b="KTHy3qsb"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id E810E1FD90;
- Fri, 13 Aug 2021 06:10:47 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id B887D1FF91;
+ Fri, 13 Aug 2021 08:12:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1628835047; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1628842353; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=JtlNSEjo/aAGUyeOb1fWgW8Jo9JxLdbdVNlnrm++LWM=;
- b=gCyH+u89wcAxHSXRzVLE7LRQGjVdUF5Yfbdr3Jc6BieHi2xbtch0JKriDS3ydz5lGfCs5O
- XybX+4XM1Smk0bTcmFz1poRg9YAz7Irw6vd2tq2Z5s6A3OppzzBahz84AA8FTF2POjjyFF
- l88HNwcR8Q8ZdinuZmipf/cj5wBPzPw=
+ bh=ecistz0P34c1ZnwoqgdwDCtvVgS9yvBwKzKIW6MuPLs=;
+ b=TierabmIMB9ccPYpD6IHjJpjAG4BkU82xKvG9G/ECzIkviny6ntfvSMsiXNNizHjf+NFbr
+ 7yTIRjkX6vvpkjHP9xi00nfX1G9teKJGF3/4tt9zZsKhEpYq7SITjdidJpfWr0grvNwjaK
+ VjjpiPJnFHNxsT5ser65WGwo0P66RxQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1628835047;
+ s=susede2_ed25519; t=1628842353;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=JtlNSEjo/aAGUyeOb1fWgW8Jo9JxLdbdVNlnrm++LWM=;
- b=Nf4AzfPJJZhIe1hEDRIaJEVNBJRzlFvxuoPL1r+4ybXT3OISzpTb+nWwVGV3AZoalHjZz/
- 8fPLFbsp/EtqHUAw==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id DC400A3B84;
- Fri, 13 Aug 2021 06:10:47 +0000 (UTC)
-Date: Fri, 13 Aug 2021 08:10:47 +0200
-Message-ID: <s5h1r6xlvrs.wl-tiwai@suse.de>
+ bh=ecistz0P34c1ZnwoqgdwDCtvVgS9yvBwKzKIW6MuPLs=;
+ b=KTHy3qsbIrvqupf1+bFLRRGGbhT4s8r2oIFhKoHhcYdRZ4p4qX1OVYVaPJPqc5D/zC08r6
+ U/Jr28igqvcj/wDw==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id B1B8CA3B85;
+ Fri, 13 Aug 2021 08:12:33 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-Subject: Re: [PATCH 2/2] ALSA: hda/cs8409: Prevent pops and clicks during
- reboot
-In-Reply-To: <20210812183433.6330-2-vitalyr@opensource.cirrus.com>
-References: <20210812183433.6330-1-vitalyr@opensource.cirrus.com>
- <20210812183433.6330-2-vitalyr@opensource.cirrus.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- Stefan Binding <sbinding@opensource.cirrus.com>, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 1/3] ALSA: hda: conexant: Turn off EAPD at suspend, too
+Date: Fri, 13 Aug 2021 10:12:28 +0200
+Message-Id: <20210813081230.4268-2-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210813081230.4268-1-tiwai@suse.de>
+References: <20210813081230.4268-1-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: youling257@gmail.com, Imre Deak <imre.deak@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,28 +98,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 12 Aug 2021 20:34:33 +0200,
-Vitaly Rodionov wrote:
-> 
-> From: Stefan Binding <sbinding@opensource.cirrus.com>
-> 
-> During reboot, when the CS42L42 powers down, pops and clicks
-> may occur due to the codec not being shutdown gracefully.
-> This can be fixed by going through the suspend sequence,
-> which shuts down the codec cleanly inside the reboot_notify
-> hook, which is called on reboot.
-> 
-> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Conexant codecs have a workaround for the noise at shutdown to turn
+off EAPD, but it wasn't applied at suspend.  In the later patch, we'll
+switch from reboot_notify callback to the general suspend-at-shutdown,
+so let's apply the workaround to the suspend case, too.
 
-I hold this one for now, as there is a fix series that deprecates the
-reboot_notify callback of HD-audio by forcibly doing runtime-suspend
-at shutdown.  Please check the three patches in
-  https://bugzilla.kernel.org/show_bug.cgi?id=214045
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=214045
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_conexant.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-I'm going to submit those soon in anyway.
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index d111258c6f45..6d2bdef7f017 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -177,13 +177,18 @@ static int cx_auto_init(struct hda_codec *codec)
+ 	return 0;
+ }
+ 
+-static void cx_auto_reboot_notify(struct hda_codec *codec)
++static void cx_auto_shutdown(struct hda_codec *codec)
+ {
+ 	struct conexant_spec *spec = codec->spec;
+ 
+ 	/* Turn the problematic codec into D3 to avoid spurious noises
+ 	   from the internal speaker during (and after) reboot */
+ 	cx_auto_turn_eapd(codec, spec->num_eapds, spec->eapds, false);
++}
++
++static void cx_auto_reboot_notify(struct hda_codec *codec)
++{
++	cx_auto_shutdown(codec);
+ 	snd_hda_gen_reboot_notify(codec);
+ }
+ 
+@@ -193,6 +198,14 @@ static void cx_auto_free(struct hda_codec *codec)
+ 	snd_hda_gen_free(codec);
+ }
+ 
++#ifdef CONFIG_PM
++static int cx_auto_suspend(struct hda_codec *codec)
++{
++	cx_auto_shutdown(codec);
++	return 0;
++}
++#endif
++
+ static const struct hda_codec_ops cx_auto_patch_ops = {
+ 	.build_controls = snd_hda_gen_build_controls,
+ 	.build_pcms = snd_hda_gen_build_pcms,
+@@ -201,6 +214,7 @@ static const struct hda_codec_ops cx_auto_patch_ops = {
+ 	.free = cx_auto_free,
+ 	.unsol_event = snd_hda_jack_unsol_event,
+ #ifdef CONFIG_PM
++	.suspend = cx_auto_suspend,
+ 	.check_power_status = snd_hda_gen_check_power_status,
+ #endif
+ };
+-- 
+2.26.2
 
-
-thanks,
-
-Takashi
