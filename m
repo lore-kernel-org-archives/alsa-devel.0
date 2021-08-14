@@ -2,92 +2,88 @@ Return-Path: <SRS0=RBkB=NF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E44ACC4338F
-	for <alsa-devel@archiver.kernel.org>; Sat, 14 Aug 2021 06:42:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ABC28C4338F
+	for <alsa-devel@archiver.kernel.org>; Sat, 14 Aug 2021 06:43:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0CFBF61028
-	for <alsa-devel@archiver.kernel.org>; Sat, 14 Aug 2021 06:42:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0CFBF61028
+	by mail.kernel.org (Postfix) with ESMTPS id 29ABD60EFE
+	for <alsa-devel@archiver.kernel.org>; Sat, 14 Aug 2021 06:43:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 29ABD60EFE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6AE6717AC;
-	Sat, 14 Aug 2021 08:41:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6AE6717AC
+	by alsa0.perex.cz (Postfix) with ESMTPS id ADB7417C3;
+	Sat, 14 Aug 2021 08:42:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ADB7417C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628923364;
-	bh=BoyF/hxJciB3sCgRLpGEfxrcMXbyX0mLYKQ4v1i1EHY=;
+	s=default; t=1628923415;
+	bh=096/3vIrkzGJ4P6/BT96g5hdNK5KfNMrpZ+R9llgpaQ=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OURI9gk6CIS1gVTloRvrQ7i24guKBXqM7Uy3tQUVAXTDzoKOvp1+TQH2N9ExQWn/M
-	 /BwsGN3VnA4C82vPNM5hZ24W8mH3RVyWXVamhIQYjFPKxeeH/hvWRtGQpQ/k9NvjFU
-	 o8+7XmPtQwrwSElBK7Y/ym7a9z1V5ct6VcwFPBok=
+	b=nqp2fa0m6ddCb3b9C/HWmZ7ga+h4s4IY2wUPxw8DyuWJV5qaruZzFtB7y9bCijUJt
+	 usSK7YDz1yeo+X8qzhJO/7JpQsyC+ZAKbghHX9oiw62Vv5UenODzfSH/oJLDa5dDaY
+	 38g/OD7MWJIj68hqkvv7Nwy8r/VM8y1hdqJ+sx8A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B20EDF80245;
-	Sat, 14 Aug 2021 08:41:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4692EF802A0;
+	Sat, 14 Aug 2021 08:42:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 97E87F8025D; Sat, 14 Aug 2021 08:41:51 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 32E2BF804B1; Sat, 14 Aug 2021 08:42:26 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 45EB4F80127
- for <alsa-devel@alsa-project.org>; Sat, 14 Aug 2021 08:41:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45EB4F80127
+ by alsa1.perex.cz (Postfix) with ESMTPS id ED96AF8025D
+ for <alsa-devel@alsa-project.org>; Sat, 14 Aug 2021 08:42:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED96AF8025D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="LnX+PgqV"; 
+ header.b="XWHifQsX"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="r0tiQSB/"
+ header.b="T1P1Usdw"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id B20AB1FD7A;
- Sat, 14 Aug 2021 06:41:40 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id EE35422147;
+ Sat, 14 Aug 2021 06:42:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1628923300; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1628923338; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=bY9UicE6suD1hc9Vf3ljsJVirNPAPxuBei1t88BMrLw=;
- b=LnX+PgqVW1Fpkwu+mHxfNA4GGhekKyUdjUhZMh5Cljnf1lM504am/QzskZHSdAHr59rVPS
- rLhyF1DuhR5K/3KvQWS728y6p/sm8p02nu5k8tbCStgowHb6Ql+fUEbqPbUxUBRGsH3f1l
- y3ivi/65KPnAD0p3SKOnPnouie4WGeU=
+ bh=VtCftruiwd82OTy1PtvwvobWVRHNnnQK3ux9AXqFyXo=;
+ b=XWHifQsXPE/Av1e/mtxtEJP5Pww3AFiioaOWVzWiPAUlOP+wG1f6FYADGm+ms2DXXzAMA0
+ H80L4o98kSz3JNwJhFlGFBrSLO8brd859OJIDc/5b83lsVvQQVwmXvzZKJpaAWNuDtgEJo
+ iUKO5l3fZ6Lrs37JoVtg53s7BR4bk74=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1628923300;
+ s=susede2_ed25519; t=1628923338;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=bY9UicE6suD1hc9Vf3ljsJVirNPAPxuBei1t88BMrLw=;
- b=r0tiQSB/ZjjwkaS9DfmzvpD0bFpOGxAosr4CLAyQmZpMdItcADSgM4cPVgn6u/wMevpZc3
- TjrP+fqhU0GX5bDg==
+ bh=VtCftruiwd82OTy1PtvwvobWVRHNnnQK3ux9AXqFyXo=;
+ b=T1P1UsdwggRcr4ROdsgQYb3Ks026jIxsnpLfg3pkRh7di2Ze9R41veLVPd7W/6Wu0FirFG
+ NPgJ5aLXFv6EcXCg==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 98B03A3B85;
- Sat, 14 Aug 2021 06:41:40 +0000 (UTC)
-Date: Sat, 14 Aug 2021 08:41:40 +0200
-Message-ID: <s5hczqgil3v.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id D4D21A3B85;
+ Sat, 14 Aug 2021 06:42:18 +0000 (UTC)
+Date: Sat, 14 Aug 2021 08:42:18 +0200
+Message-ID: <s5ha6lkil2t.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-Subject: Re: [PATCH 2/2] ALSA: hda/cs8409: Prevent pops and clicks during
- reboot
-In-Reply-To: <s5h1r6xlvrs.wl-tiwai@suse.de>
-References: <20210812183433.6330-1-vitalyr@opensource.cirrus.com>
- <20210812183433.6330-2-vitalyr@opensource.cirrus.com>
- <s5h1r6xlvrs.wl-tiwai@suse.de>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH] ALSA: pcm: Add SNDRV_PCM_INFO_EXPLICIT_SYNC flag
+In-Reply-To: <20210813082142.5375-1-tiwai@suse.de>
+References: <20210813082142.5375-1-tiwai@suse.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- Stefan Binding <sbinding@opensource.cirrus.com>, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,36 +99,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 13 Aug 2021 08:10:47 +0200,
+On Fri, 13 Aug 2021 10:21:42 +0200,
 Takashi Iwai wrote:
 > 
-> On Thu, 12 Aug 2021 20:34:33 +0200,
-> Vitaly Rodionov wrote:
-> > 
-> > From: Stefan Binding <sbinding@opensource.cirrus.com>
-> > 
-> > During reboot, when the CS42L42 powers down, pops and clicks
-> > may occur due to the codec not being shutdown gracefully.
-> > This can be fixed by going through the suspend sequence,
-> > which shuts down the codec cleanly inside the reboot_notify
-> > hook, which is called on reboot.
-> > 
-> > Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-> > Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+> ALSA PCM core has an optimized way to communicate with user-space for
+> its control and status data via mmap on the supported architectures
+> like x86.  Depending on the situation, however, we'd rather want to
+> enforce user-space notifying the applptr or hwptr change explicitly
+> via ioctl.  For example, the upcoming non-contig and non-coherent
+> buffer handling would need an explicit sync, and this needs to catch
+> the applptr and hwptr changes.  Also, ASoC SOF driver will have the
+> SPIB support that has the similar requirement for the explicit control
+> of the applptr and hwptr.
 > 
-> I hold this one for now, as there is a fix series that deprecates the
-> reboot_notify callback of HD-audio by forcibly doing runtime-suspend
-> at shutdown.  Please check the three patches in
->   https://bugzilla.kernel.org/show_bug.cgi?id=214045
+> This patch adds the new PCM hardware info flag,
+> SNDRV_PCM_INFO_EXPLICIT_SYNC.  When this flag is set, PCM core
+> disables both the control and the status mmap, which enforces
+> user-space to update via SYNC_PTR ioctl.  In that way, drivers can
+> catch the applptr and hwptr update and apply the sync operation if
+> needed.
 > 
-> I'm going to submit those soon in anyway.
+> Link: https://lore.kernel.org/r/20210812113818.6479-1-tiwai@suse.de
+> Link: https://lore.kernel.org/r/20210610205326.1176400-1-pierre-louis.bossart@linux.intel.com
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
-The removal of reboot_notifier landed in my for-next branch now.
-Please rebase and adapt the changes appropriately.  In short, the
-runtime suspend is applied at the shutdown, so the workaround is
-needed only for suspend.
+Now merged to for-next branch.
 
-
-thanks,
 
 Takashi
