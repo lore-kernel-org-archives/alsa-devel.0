@@ -8,96 +8,94 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DCA9C4338F
-	for <alsa-devel@archiver.kernel.org>; Sun, 15 Aug 2021 07:32:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95D5BC4338F
+	for <alsa-devel@archiver.kernel.org>; Sun, 15 Aug 2021 07:33:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9E03060F4B
-	for <alsa-devel@archiver.kernel.org>; Sun, 15 Aug 2021 07:32:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9E03060F4B
+	by mail.kernel.org (Postfix) with ESMTPS id D655960F4B
+	for <alsa-devel@archiver.kernel.org>; Sun, 15 Aug 2021 07:33:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D655960F4B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 42B3D1753;
-	Sun, 15 Aug 2021 09:32:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42B3D1753
+	by alsa0.perex.cz (Postfix) with ESMTPS id 50BBD175F;
+	Sun, 15 Aug 2021 09:32:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50BBD175F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629012771;
-	bh=JtYkOUlNY4RvSRR+0206aZpAI2AR5JFoyFxWFQsJQHc=;
+	s=default; t=1629012785;
+	bh=ELOrCrxxSvepq20ajWz0gXhUxw6h2FtUG4s1fnJY5G4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Gc5MOUjzXsrIwpccqnbbZ7cFteeWs6Zybf/VW+EjXG003LV15vrRVr0D+G9sL9ZTY
-	 11JQ0e+JCraLtgYUs6mqvDicXtELiZnRkZ2Ca1SV8RgXtGQ0Xo970rmGTqD7V2hrVb
-	 GOrAipeqd7+65hs4/dabl4K1nhqcnSp7t8LEVHp8=
+	b=frKJ7VEa6P2mJ/VniidJj3N1l/o+XzLSrP673AxbPDiRh6XO4aX5ZpLA8yWMIRXhJ
+	 YJTT6aAk3nG+atw9aJnNHgGjmxNNqtr9zATzYbyKF1m2TSVBmJxwbWLJMRQEP4vRwL
+	 tgnAWnnNIrAynQzVr/WwyeD46cxLNM2Df7aUPuCE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF8CCF804E3;
-	Sun, 15 Aug 2021 09:30:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB9ECF804E5;
+	Sun, 15 Aug 2021 09:30:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 30B98F8025D; Sat, 14 Aug 2021 22:12:44 +0200 (CEST)
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com
- [IPv6:2607:f8b0:4864:20::636])
+ id EB5F0F802A0; Sat, 14 Aug 2021 22:20:03 +0200 (CEST)
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com
+ [IPv6:2607:f8b0:4864:20::102c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A541AF800AF
- for <alsa-devel@alsa-project.org>; Sat, 14 Aug 2021 22:12:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A541AF800AF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 166A4F800AF
+ for <alsa-devel@alsa-project.org>; Sat, 14 Aug 2021 22:19:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 166A4F800AF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="sVw7hCV8"
-Received: by mail-pl1-x636.google.com with SMTP id q2so16181499plr.11
- for <alsa-devel@alsa-project.org>; Sat, 14 Aug 2021 13:12:40 -0700 (PDT)
+ header.b="kf1Tbb+9"
+Received: by mail-pj1-x102c.google.com with SMTP id
+ w13-20020a17090aea0db029017897a5f7bcso21087532pjy.5
+ for <alsa-devel@alsa-project.org>; Sat, 14 Aug 2021 13:19:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=lil9AoIO0pvXft/wgCoMRBl14pUNq2Bwl4VjQXc1qVI=;
- b=sVw7hCV8yRTqkPORb847X6o48bQC2n0dn45Eh7Lyqtd7a39t/SEH/EtoSSngFP82GN
- So162zopl0Mfj7ghGwdyPWKUnows5xRA/kDf5CHjikzrj1LwvaGtaO5hgmJ8LPri+Jas
- XWqJ25D+g6NCK+fpXa2ZML8Iw2F0W8825kuwgtwXZ7ymBhsNw3C/c79RqneE/yCvp1b2
- g1EOY1X70c+kZj+albuZp7XnUi8ODg0Qhd8EB2JT0Skz3ZvqGiDYW0WOwDrs01azprdA
- 0NdvaOxSuaaWQaFy79GEurrwCVQ2p/k29esGGmSFr9629L3YSMWxGXsXQClRsaUgeVOL
- QCbQ==
+ bh=ePTL3Kfj5FpJJV64v2XN6rOLtZyUMBX7KPr/SFojksg=;
+ b=kf1Tbb+9UkthXULcv3jhomGwS7YOaN93jx1dbvVp5WKHs3Q3VKpqI4KneToozvnGbn
+ xOUpiYJ2ZhfqJCf7B6/EMySTahTt7PSb3RfPqxvXdn0/PH/AQmpn6h3wZHUd1LmcRzlY
+ fZ5t7t7+HeDK3ZcU5qTbB2inVDgcrgl0/HEdR0evMk04U0oWHGh6Hc6aQvYFkavzeuJM
+ kGIzdqdFsx9RvpzGskzn5vGgTLHsBNQ46dn1w6SlNrxgCRRKlNwEflNAeFisqZJZTJML
+ XctKMJXM2JZ/QQCwBM2zKfpAFIQeTUE0emm4JIHA31wYN4yKZKbKjiyPgoAR4UqC3jzy
+ JgZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=lil9AoIO0pvXft/wgCoMRBl14pUNq2Bwl4VjQXc1qVI=;
- b=WA6kBYHJMik1l5NQzXUEJl6uAThphSqgG0dJ/zidICwhMZn9dHEya8b4N7eSo4Fm6F
- 4uV/gcOhBeN/Cew/xShpy9Z9MmCh2kdKgg1PWE/m66Kw752bWfgJ5SBXt9uucrbngxnw
- leYR7Ed8pSnrFNh2sxKaoeVVjdh28cOUwKDA/5BTGIlgiRtl0Jll19eIuJrXbhr3FHFv
- oOBKp8g/EaUaWPkMjo4bwTBJKQdsQtDTlpVd8JRmVr0dk0qGr+pvFWqTjHzI3E/Vlvmu
- CgvIIVK61GoNxp2mEmVTHQmhmXrKY9zNH6x0BhnGN1W2IsZceRY40hBq+3PybkGA9Lyw
- 9Z7g==
-X-Gm-Message-State: AOAM531HNQGbgLn0zuGwlGSeDiaJE/TZ3ghtDKuo7v0T2OPDj8jgv/1m
- vKA05Rv3A1TgFtHWgN2+ld0=
-X-Google-Smtp-Source: ABdhPJxHkBe/kNjoFSqi6fNUoIZJHki5U4Q7eFa+ruFr7SX7NFjotH1BFbtYN4tQAkwqY/jIvhFAnQ==
-X-Received: by 2002:a17:90b:395:: with SMTP id
- ga21mr8974448pjb.159.1628971956923; 
- Sat, 14 Aug 2021 13:12:36 -0700 (PDT)
+ bh=ePTL3Kfj5FpJJV64v2XN6rOLtZyUMBX7KPr/SFojksg=;
+ b=D7li3kcHYIk9DG6LoO+DL61EmoKb6l+YhIdC/HvQFd4z2D+S8uRYiHH6tGwL15+gjw
+ 3HU1UTKHNMvT1jx0DXu+y3WmQaysy90pLRjjYwMFQVSGyoOBWwLzZ4s2ZyZVjjkhiNvV
+ m+jm/5N4ovs9HlzFmN8XWZSuHZLTrcO0Lf/aQK1EUuCeXoQ/PG/GObjJKqFzedc7uBiF
+ UkiV23S9+Ip6jsG873O0Hp25PIRlMEWgSCCzGPdOEVpAxrxE2Y8tvpu+Fc+X5YPi/K0v
+ v9kNMevvG68OqPf+HFfEm7g5v4w3TS2As1v+w4oxjBbk7MnN5lTqvTuKoqXEis4KcWjQ
+ urmw==
+X-Gm-Message-State: AOAM532Pmf/QOe5JqSAj6Aex1TqPltH2IBbwYNL+sGttvDNZU37rcck4
+ /V1bN/3m5eNVzSUTD3iYwno=
+X-Google-Smtp-Source: ABdhPJyd/i/l/TfPZNQZDIBXG+aOMRplp4tSWMwKxKVFpTQcDZmEXsyQt7VWpnVqVcUm3RyklrgM/A==
+X-Received: by 2002:a63:1352:: with SMTP id 18mr8066688pgt.348.1628972396713; 
+ Sat, 14 Aug 2021 13:19:56 -0700 (PDT)
 Received: from xps.yggdrasil ([49.207.137.16])
- by smtp.gmail.com with ESMTPSA id u6sm7309420pgr.3.2021.08.14.13.12.33
+ by smtp.gmail.com with ESMTPSA id u13sm6413121pfi.51.2021.08.14.13.19.53
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 14 Aug 2021 13:12:36 -0700 (PDT)
+ Sat, 14 Aug 2021 13:19:56 -0700 (PDT)
 From: Aakash Hemadri <aakashhemadri123@gmail.com>
-To: Mark Brown <broonie@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH 2/2] ASoC: tegra30: i2s: Use of_device_get_match_data
-Date: Sun, 15 Aug 2021 01:42:19 +0530
-Message-Id: <f4e632e0023d90c43b2b927e752585142a9d9c26.1628971397.git.aakashhemadri123@gmail.com>
+To: Peter Ujfalusi <peter.ujfalusi@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>
+Subject: [PATCH 2/3] ASoC: ti: omap-mcbsp: Use of_device_get_match_data
+Date: Sun, 15 Aug 2021 01:49:40 +0530
+Message-Id: <44f3b21198dd1e40e1e5e783db2b3dd76505b562.1628972198.git.aakashhemadri123@gmail.com>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <cover.1628971397.git.aakashhemadri123@gmail.com>
-References: <cover.1628971397.git.aakashhemadri123@gmail.com>
+In-Reply-To: <cover.1628972198.git.aakashhemadri123@gmail.com>
+References: <cover.1628972198.git.aakashhemadri123@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Sun, 15 Aug 2021 09:30:27 +0200
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Jonathan Hunter <jonathanh@nvidia.com>,
- Bjorn Helgaas <bjorn@helgaas.com>, Thierry Reding <thierry.reding@gmail.com>,
- Philipp Zabel <p.zabel@pengutronix.de>, Shuah Khan <skhan@linuxfoundation.org>,
- linux-tegra@vger.kernel.org
+ Takashi Iwai <tiwai@suse.com>, Shuah Khan <skhan@linuxfoundation.org>,
+ Bjorn Helgaas <bjorn@helgaas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -120,22 +118,22 @@ and better expresses intent.
 
 Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
 ---
- sound/soc/tegra/tegra30_i2s.c | 2 +-
+ sound/soc/ti/omap-mcbsp.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-index 36344f0a64c1..d4c5594efaf1 100644
---- a/sound/soc/tegra/tegra30_i2s.c
-+++ b/sound/soc/tegra/tegra30_i2s.c
-@@ -418,7 +418,7 @@ static int tegra30_i2s_platform_probe(struct platform_device *pdev)
- 	}
- 	dev_set_drvdata(&pdev->dev, i2s);
+diff --git a/sound/soc/ti/omap-mcbsp.c b/sound/soc/ti/omap-mcbsp.c
+index 4479d74f0a45..fcb651487854 100644
+--- a/sound/soc/ti/omap-mcbsp.c
++++ b/sound/soc/ti/omap-mcbsp.c
+@@ -1373,7 +1373,7 @@ static int asoc_mcbsp_probe(struct platform_device *pdev)
+ 	const struct of_device_id *match;
+ 	int ret;
  
--	match = of_match_device(tegra30_i2s_of_match, &pdev->dev);
+-	match = of_match_device(omap_mcbsp_of_match, &pdev->dev);
 +	match = of_device_get_match_data(&pdev->dev);
- 	if (!match) {
- 		dev_err(&pdev->dev, "Error: No device match found\n");
- 		ret = -ENODEV;
+ 	if (match) {
+ 		struct device_node *node = pdev->dev.of_node;
+ 		struct omap_mcbsp_platform_data *pdata_quirk = pdata;
 -- 
 2.32.0
 
