@@ -2,90 +2,65 @@ Return-Path: <SRS0=RBkB=NF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D599C4338F
-	for <alsa-devel@archiver.kernel.org>; Sat, 14 Aug 2021 09:12:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3542BC4338F
+	for <alsa-devel@archiver.kernel.org>; Sat, 14 Aug 2021 13:42:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B59B560EFE
-	for <alsa-devel@archiver.kernel.org>; Sat, 14 Aug 2021 09:12:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B59B560EFE
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	by mail.kernel.org (Postfix) with ESMTPS id 3B8D660F4B
+	for <alsa-devel@archiver.kernel.org>; Sat, 14 Aug 2021 13:42:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3B8D660F4B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bp.renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6384917A1;
-	Sat, 14 Aug 2021 11:11:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6384917A1
+	by alsa0.perex.cz (Postfix) with ESMTPS id F05EF1783;
+	Sat, 14 Aug 2021 15:41:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F05EF1783
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1628932342;
-	bh=siHcT+7aC7YWPuDXHag/aUpnEMGtgoxRTOAnlbWoF2M=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=WI6LU0MpeakSVXJCMvvceyXFSRvBKA8T6J8/FpniHaa5nTM05TVSIcsPX7tBsyIzY
-	 MXi6a8+vJaxuC03Cz7YPQAszh7suF1xl1dteDQr3/+NmJt/3N8LXrOeHQ530IK7C1Y
-	 1SAxjCpPPEhzPo1OW30kz30PbM6yG9pgvOTdGXQg=
+	s=default; t=1628948544;
+	bh=5EWHMqVQV4YfFSIJKaCPbxb6mCMse21Ru3AIML8AIAQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Lg6ky9TnwBCSUolSp4Hn64lxVKeCBTQt+idSp6YtqaFCDzerK1UAq9v4R++V8cev9
+	 1T4vyuyQ/16im0teFawKqwtf8JsJFoYSqauTmT8HcZO8lK2hV2U8GiizEnZ8MhFgwv
+	 eAdYjOs3orw7HUwmxnf4XN2GUrfpmygDpwYuOYZc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2BE43F80245;
-	Sat, 14 Aug 2021 11:11:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 694E4F80245;
+	Sat, 14 Aug 2021 15:41:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5B8BFF8025D; Sat, 14 Aug 2021 11:11:27 +0200 (CEST)
-Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com
- [209.85.222.44])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3A660F800BB
- for <alsa-devel@alsa-project.org>; Sat, 14 Aug 2021 11:11:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A660F800BB
-Received: by mail-ua1-f44.google.com with SMTP id m39so5414795uad.9
- for <alsa-devel@alsa-project.org>; Sat, 14 Aug 2021 02:11:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=nS2GBUaZJqdSBV6ll8beKF35e+BRExfjUT6JLRFqePs=;
- b=JFcmK/rf0zSfrW2L4Kjv2QTOIWoDJ9JzX77YoSeW3VcoG+THex+fwYBf647FKW3fnU
- lnzGHoGdfIeLyl7A6QDZkjHb4g1DPrtsDIyA9FNnsy7tZwtOhWff9qybc6SrSZw8mjGm
- p7r7iImiGHc9F7o6ev6fcELExdHyTgPxINc+hb+aOmx1wrfWFcfl+Z37vm5xXIkxuhbf
- fFXDEOv8cC/s9lSTUlOnrwGoUHaCGrOpCtU/lDA40d+L4ZZswsNO96YoGZKIpJsBboth
- hgPo5+1nsB6muwWlGpjmRoJLg/UDc9vsgxAEo9vazk1EDJBN+DcrvmyTx0v10Sbhd2Af
- 3/9g==
-X-Gm-Message-State: AOAM533Bs19GB6Bc+1/WewVUbAnkPrDyL86giq4ST78W3T5i3b1LHD3f
- h1YZ2cBwjsaKSi3hobikmSbj2JuGJA9pbZpmRcE=
-X-Google-Smtp-Source: ABdhPJwDZ92lrh+CYuLTZSHlHS4ZHH7Rm08fcznOaAAqNrX88dRPlmVucjpDawgMaoLwq6WOgO2xuYqn0lpv41Vl01E=
-X-Received: by 2002:ab0:6887:: with SMTP id t7mr4505712uar.114.1628932275340; 
- Sat, 14 Aug 2021 02:11:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210806102930.3024-1-biju.das.jz@bp.renesas.com>
- <20210806102930.3024-3-biju.das.jz@bp.renesas.com>
- <CAMuHMdVnU4HSXCr08WEiVmYCNoRBcdZGOfS7mwmS_euo2RZaEA@mail.gmail.com>
- <YRbSHw9X51Nif/Sd@robh.at.kernel.org>
-In-Reply-To: <YRbSHw9X51Nif/Sd@robh.at.kernel.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Sat, 14 Aug 2021 11:11:03 +0200
-Message-ID: <CAMuHMdXipSxTTEtiAYrZNXz6POzB9C_qaRUv+KXYtUS+DeGzug@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] ASoC: dt-bindings: sound: renesas,rz-ssi: Update
- slave dma channel configuration parameters
-To: Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Biju Das <biju.das@bp.renesas.com>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>,
+ id 42708F8025D; Sat, 14 Aug 2021 15:41:27 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 2C711F80127
+ for <alsa-devel@alsa-project.org>; Sat, 14 Aug 2021 15:41:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C711F80127
+X-IronPort-AV: E=Sophos;i="5.84,321,1620658800"; d="scan'208";a="90626665"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 14 Aug 2021 22:41:12 +0900
+Received: from localhost.localdomain (unknown [10.226.92.7])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 7C01A4270487;
+ Sat, 14 Aug 2021 22:41:10 +0900 (JST)
+From: Biju Das <biju.das.jz@bp.renesas.com>
+To: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH] ASoC: sh: rz-ssi: Improve error handling in
+ rz_ssi_dma_request function
+Date: Sat, 14 Aug 2021 14:41:06 +0100
+Message-Id: <20210814134106.14275-1-biju.das.jz@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
+Cc: alsa-devel@alsa-project.org, Geert Uytterhoeven <geert+renesas@glider.be>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ linux-renesas-soc@vger.kernel.org, Mark Brown <broonie@kernel.org>,
  Chris Paterson <Chris.Paterson2@renesas.com>,
- Biju Das <biju.das.jz@bp.renesas.com>, Chris Brandt <chris.brandt@renesas.com>
+ Biju Das <biju.das.jz@bp.renesas.com>, Biju Das <biju.das@bp.renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,57 +76,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Rob,
+The rz_ssi_dma_request function only checks the NULL condition for
+the value returned by the dma_request_chan function, but this function
+can also return an error. If it happens, the subsequent function call to
+rz_ssi_dma_slave_config can lead to a kernel crash.
 
-On Fri, Aug 13, 2021 at 10:12 PM Rob Herring <robh@kernel.org> wrote:
-> On Mon, Aug 09, 2021 at 02:57:33PM +0200, Geert Uytterhoeven wrote:
-> > On Fri, Aug 6, 2021 at 12:29 PM Biju Das <biju.das.jz@bp.renesas.com> wrote:
-> > > The DMAC driver on RZ/G2L expects the slave channel configuration
-> > > to be passed in dmas property.
-> > > This patch updates the example node to include the encoded slave
-> > > channel configuration.
-> > >
-> > > Fixes: 5df6dfbb6de815ba3a("ASoC: dt-bindings: sound: renesas,rz-ssi: Document DMA support")
-> > > Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
-> > > Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >
-> > > v3->v4:
-> > >  * Updated bindings as the DMAC driver on RZ/G2L expects the
-> > >    slave channel configuration to be passed in dmas property.
-> >
-> > Thanks for the update!
-> >
-> > > --- a/Documentation/devicetree/bindings/sound/renesas,rz-ssi.yaml
-> > > +++ b/Documentation/devicetree/bindings/sound/renesas,rz-ssi.yaml
-> > > @@ -93,8 +93,8 @@ examples:
-> > >              clock-names = "ssi", "ssi_sfr", "audio_clk1", "audio_clk2";
-> > >              power-domains = <&cpg>;
-> > >              resets = <&cpg R9A07G044_SSI0_RST_M2_REG>;
-> > > -            dmas = <&dmac 0x255>,
-> > > -                   <&dmac 0x256>;
-> > > +            dmas = <&dmac 0x2655>,
-> > > +                   <&dmac 0x2656>;
-> > >              dma-names = "tx", "rx";
-> > >              #sound-dai-cells = <0>;
-> > >      };
-> >
-> > I think it would be good to describe the expected format in the description
-> > for the dmas property, so the DTS writer knows what the numerical
-> > values in the example really mean.
->
-> Yes, but that's a property of the DMA controller binding, not this one.
-> It could vary from chip to chip.
+This patch fixes the issue by checking both error and NULL condition
+returned by dma_request_chan.
 
-Right, unlike the other Renesas SoCs, RZ/G2L uses the normal DMAC for
-audio, not an audio-specific one.
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+---
+ sound/soc/sh/rz-ssi.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/sound/soc/sh/rz-ssi.c b/sound/soc/sh/rz-ssi.c
+index ea8d33ede5d2..3867e2efd3e0 100644
+--- a/sound/soc/sh/rz-ssi.c
++++ b/sound/soc/sh/rz-ssi.c
+@@ -676,11 +676,19 @@ static void rz_ssi_release_dma_channels(struct rz_ssi_priv *ssi)
+ static int rz_ssi_dma_request(struct rz_ssi_priv *ssi, struct device *dev)
+ {
+ 	ssi->playback.dma_ch = dma_request_chan(dev, "tx");
++	if (IS_ERR_OR_NULL(ssi->playback.dma_ch))
++		ssi->playback.dma_ch = NULL;
++
+ 	ssi->capture.dma_ch = dma_request_chan(dev, "rx");
++	if (IS_ERR_OR_NULL(ssi->capture.dma_ch))
++		ssi->capture.dma_ch = NULL;
++
+ 	if (!ssi->playback.dma_ch && !ssi->capture.dma_ch) {
+ 		ssi->playback.dma_ch = dma_request_chan(dev, "rt");
+-		if (!ssi->playback.dma_ch)
++		if (IS_ERR_OR_NULL(ssi->playback.dma_ch)) {
++			ssi->playback.dma_ch = NULL;
+ 			goto no_dma;
++		}
+ 
+ 		ssi->dma_rt = true;
+ 	}
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.17.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
