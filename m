@@ -2,99 +2,89 @@ Return-Path: <SRS0=5JY3=NG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26E58C4338F
-	for <alsa-devel@archiver.kernel.org>; Sun, 15 Aug 2021 07:34:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C05DC4338F
+	for <alsa-devel@archiver.kernel.org>; Sun, 15 Aug 2021 07:35:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 85D7560F4B
-	for <alsa-devel@archiver.kernel.org>; Sun, 15 Aug 2021 07:34:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 85D7560F4B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=tombom.co.uk
+	by mail.kernel.org (Postfix) with ESMTPS id 994DA60F4B
+	for <alsa-devel@archiver.kernel.org>; Sun, 15 Aug 2021 07:35:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 994DA60F4B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 25286178B;
-	Sun, 15 Aug 2021 09:33:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25286178B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1F65E179F;
+	Sun, 15 Aug 2021 09:34:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F65E179F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629012872;
-	bh=fKuJXTDXchW81ilDvOy/aJGiEjnWMBHKGkmxHRVYRfQ=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=LpenM8fhPKDYdQLIuNYxlOnNJWEjn+q34usVUijEbvM9YgV08OJZtFRtVNgEs743h
-	 zT1RACWw58H7PI9ktLPh4wFGahJtqBhoxJn0ZtYGDGMar6H8F6XcoxEpps17rG4ClO
-	 N6CalIY2oouSUB+FrPix81uXDJMH70G77onlHGvs=
+	s=default; t=1629012913;
+	bh=IoxXG1Gvclu4tMqIY3TSBjUOaqpriks1LzPDAsqN68E=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=RP/CsLbhKK+BFD0tlLsN4cEBU+yzBXLmCZ7oyNbkBMUIEFVwsLLFEuTI7FeW7TGy4
+	 WDmOO6ZhMlWKIFTOxPghJQPoh76hQZcgG3Xi363UIFPpACmEqQ+oMDalz79dy0nRzz
+	 DTI88VFGo8uM02xRlv/zdMBsQbfaQpNvCTxTq+No=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F124F8050F;
-	Sun, 15 Aug 2021 09:30:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AA068F8026D;
+	Sun, 15 Aug 2021 09:31:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F041DF80127; Sun, 15 Aug 2021 00:46:18 +0200 (CEST)
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com
- [IPv6:2607:f8b0:4864:20::636])
+ id D77C8F80272; Sun, 15 Aug 2021 09:31:55 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 51367F80127
- for <alsa-devel@alsa-project.org>; Sun, 15 Aug 2021 00:46:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51367F80127
+ by alsa1.perex.cz (Postfix) with ESMTPS id 02685F80524
+ for <alsa-devel@alsa-project.org>; Sun, 15 Aug 2021 09:30:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02685F80524
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=tombom-co-uk.20150623.gappssmtp.com
- header.i=@tombom-co-uk.20150623.gappssmtp.com header.b="ZiGmsYvH"
-Received: by mail-pl1-x636.google.com with SMTP id w6so9432102plg.9
- for <alsa-devel@alsa-project.org>; Sat, 14 Aug 2021 15:46:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=tombom-co-uk.20150623.gappssmtp.com; s=20150623;
- h=from:to:cc:subject:message-id:date:user-agent:mime-version
- :content-language:content-transfer-encoding;
- bh=/p/AlWyP8M9N5zLquf5wX/0RU+ZA4WWIHT28Ac+xSz8=;
- b=ZiGmsYvHMtYHgt0yZsNLW7miB2BWa5D5chQAgg2fFHeGBbnGB+RZ+sZA1hibY/NBMV
- VzrNdvgn013aTVdcLIau0QO0ttXEUCakD6oOS62my9Y6e8YwnBPCS7t2xPwDGiLhmY9V
- AP80w1VybUj8DFMKfWDbFF7SBcQeOzfG0pp4vLaLNuhSLRXu5N+c+ucDjTw0IsaJV3Ll
- 9jTaMgs0Xasz+IwauGYwzP1mGWIVuGCL1tER9bCo7WR1af4iu6lDq4etqDxYoEJ6WRAO
- WlLVOvP+z3dvpl4wKfp1xrjpUfq0eDa7LeJZZvP3FK61jXUT/vBBzR14npKW7UQE/XUD
- Tl5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:message-id:date:user-agent
- :mime-version:content-language:content-transfer-encoding;
- bh=/p/AlWyP8M9N5zLquf5wX/0RU+ZA4WWIHT28Ac+xSz8=;
- b=eR6OHqsYWsMm0saLnZqCblQOWhvBwAl5WhvfGbYyeyPgdutb1pd1A7td1QnuankqIZ
- wfsBvdT5EZyghKTmOOuMMGsGi72hdZejFIRIqJb4SCys9+vhDwgsHWZyF3XnOCt0hiNg
- p2yQouOslJO/zM5v51BKjs/CMwygb+T5G+Yft2MICnxOMBAe5ooWSHYlIIpCc3f7kKUK
- YaBMjo3bx+wWxXS6iclGHtSAsHwf9ChYsI+gTfOwuJ4zUvww2XR95rIpAtNiaDho/z1N
- hzpYSW6ure+JM0Jlt9qET0iCe38xv73kn64V7BeF3sq3wbg+0UDYiwUo/o5YB0GZYx3h
- nn0Q==
-X-Gm-Message-State: AOAM532V/3RGSSXlN7EzOYLxqOhgBGlg1aP47qkHOzaAEcC79XcIr7BW
- 4Tz2+7Sicf0fELfRmx4vGOBmOw==
-X-Google-Smtp-Source: ABdhPJyjXtG/QiK941IOluP82ln6hje+AKe/2/zb4wvPH42YlCrKyhfgQulJU+t03bYv1ujoKOkhqw==
-X-Received: by 2002:a17:902:8348:b029:12b:b2a0:941b with SMTP id
- z8-20020a1709028348b029012bb2a0941bmr7326770pln.62.1628981166822; 
- Sat, 14 Aug 2021 15:46:06 -0700 (PDT)
-Received: from [192.168.10.193] (c-69-181-163-252.hsd1.ca.comcast.net.
- [69.181.163.252])
- by smtp.googlemail.com with ESMTPSA id v10sm6561089pfu.100.2021.08.14.15.46.06
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sat, 14 Aug 2021 15:46:06 -0700 (PDT)
-From: Kristin Paget <kristin@tombom.co.uk>
-To: Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH] ALSA: hda/realtek: Enable 4-speaker output for Dell XPS 15
- 9510 laptop
-Message-ID: <e1fc95c5-c10a-1f98-a5c2-dd6e336157e1@tombom.co.uk>
-Date: Sat, 14 Aug 2021 15:46:05 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Mailman-Approved-At: Sun, 15 Aug 2021 09:30:27 +0200
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="yN9qjr74"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="VB0Z+o90"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id D443821FA2;
+ Sun, 15 Aug 2021 07:30:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1629012649; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=fQu1Y0kxtEnpxUwvGLssrYAMhEy0FrOA3iD90t/w9Zk=;
+ b=yN9qjr74IDs+wJ+QSTHaPbRVzlfR130BViKyGd6DNF9Sa29nJbtom/EV2M9Rmim1dVD1/a
+ giTOKoZEJwMvhXvopk9Iy+Hecv7C0nIbI/Qo32G1i8hmqaqlpGZ5F1RT/TtZjmaap/0dPm
+ 9yNsPTEYxEEEvUYBR4fIYlYQeim8CzA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1629012649;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=fQu1Y0kxtEnpxUwvGLssrYAMhEy0FrOA3iD90t/w9Zk=;
+ b=VB0Z+o90fU42qneGrVb0LKXG+fWNgB7XwLSsvGbw1a90qAx1XZSDt7ST2FCq7nfvZKGB0x
+ 41MsLULR9FttM/Aw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id B2F5FA3B83;
+ Sun, 15 Aug 2021 07:30:49 +0000 (UTC)
+Date: Sun, 15 Aug 2021 09:30:49 +0200
+Message-ID: <s5h1r6vi2qe.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kristin Paget <kristin@tombom.co.uk>
+Subject: Re: [PATCH] ALSA: hda/realtek: Enable 4-speaker output for Dell XPS
+ 15 9510 laptop
+In-Reply-To: <e1fc95c5-c10a-1f98-a5c2-dd6e336157e1@tombom.co.uk>
+References: <e1fc95c5-c10a-1f98-a5c2-dd6e336157e1@tombom.co.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,24 +100,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The 2021-model XPS 15 appears to use the same 4-speakers-on-ALC289 audio
-setup as the Precision models, so requires the same quirk to enable woofer
-output. Tested on my own 9510.
+On Sun, 15 Aug 2021 00:46:05 +0200,
+Kristin Paget wrote:
+> 
+> The 2021-model XPS 15 appears to use the same 4-speakers-on-ALC289 audio
+> setup as the Precision models, so requires the same quirk to enable woofer
+> output. Tested on my own 9510.
+> 
+> Signed-off-by: Kristin Paget <kristin@tombom.co.uk>
 
-Signed-off-by: Kristin Paget <kristin@tombom.co.uk>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+It seems that your MUA broken the patch (tabs converted to spaces).
+Since it's a trivial oneliner, I applied manually.  But for the next
+time, please try to fix your MUA setup.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 218d1aa0fd14..8b72064f8321 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8319,6 +8319,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-        SND_PCI_QUIRK(0x1028, 0x0a2e, "Dell", ALC236_FIXUP_DELL_AIO_HEADSET_MIC),
-        SND_PCI_QUIRK(0x1028, 0x0a30, "Dell", ALC236_FIXUP_DELL_AIO_HEADSET_MIC),
-        SND_PCI_QUIRK(0x1028, 0x0a58, "Dell", ALC255_FIXUP_DELL_HEADSET_MIC),
-+       SND_PCI_QUIRK(0x1028, 0x0a61, "Dell XPS 15 9510", ALC289_FIXUP_DUAL_SPK),
-        SND_PCI_QUIRK(0x1028, 0x164a, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
-        SND_PCI_QUIRK(0x1028, 0x164b, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
-        SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
+Thanks!
+
+Takashi
