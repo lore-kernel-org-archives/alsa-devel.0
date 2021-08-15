@@ -2,80 +2,85 @@ Return-Path: <SRS0=5JY3=NG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9DD5C4338F
-	for <alsa-devel@archiver.kernel.org>; Sun, 15 Aug 2021 15:53:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A133C4338F
+	for <alsa-devel@archiver.kernel.org>; Sun, 15 Aug 2021 15:53:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1146F61214
-	for <alsa-devel@archiver.kernel.org>; Sun, 15 Aug 2021 15:53:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1146F61214
+	by mail.kernel.org (Postfix) with ESMTPS id B380161214
+	for <alsa-devel@archiver.kernel.org>; Sun, 15 Aug 2021 15:53:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B380161214
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9FFD51725;
-	Sun, 15 Aug 2021 17:52:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FFD51725
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2F9F4170F;
+	Sun, 15 Aug 2021 17:53:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F9F4170F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629042821;
-	bh=0uJVMlwrOn8GpNBQepSCmTmGaUQwONgnnej/6xijOak=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=eZRSWmAxaF0vryRQbwl0Ip2hSMS79gz1lG+5XPNi1LBFvq8sUTo+epvDk54/M/bBm
-	 6HkSpUFjPco6aqAJ5Ll0lGDoa/LxGvVPD28oW10ADCaZho97Bd5xTKGjfI/9Vh/7RR
-	 /BsUn05zOHuyhvzfNM+AIPlbp4k9NLwtdds9XGWk=
+	s=default; t=1629042836;
+	bh=6DCPeHuMtC43QJ8fZymljJ8NScvgEyyeZFe41cFzlBk=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=qf8/VAf0BhRcLH3uc9RounnkfnnvGxrNHxawlTQeCM4Rr1w9TM1ZUYoQ4gUxSr5Xy
+	 Qcqh11ysO/2CwynMpNLjjJlNsLBzP8oGv/EdyL+iNEpdnzNhYt73G7gfEi4xhFBiwZ
+	 4M0DJUFJgMTbvwxXNTdtAKi56C+RHyz4BGgvaAbc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 72D1EF800F8;
-	Sun, 15 Aug 2021 17:51:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E6854F804E4;
+	Sun, 15 Aug 2021 17:51:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2010EF8026D; Sun, 15 Aug 2021 17:51:11 +0200 (CEST)
+ id 86F6CF8026D; Sun, 15 Aug 2021 17:51:11 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E760DF80301
- for <alsa-devel@alsa-project.org>; Sun, 15 Aug 2021 17:49:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E760DF80301
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1F3A9F80272
+ for <alsa-devel@alsa-project.org>; Sun, 15 Aug 2021 17:49:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F3A9F80272
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="NIfpyZq0"
+ header.b="KCDP/wJb"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1629042584;
+ s=mimecast20190719; t=1629042588;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=cIv7mto7K0oCtVLPCfzcb2rfaoAVLQfQfdk+mXsMgdw=;
- b=NIfpyZq0l99aHssTZGmLUeJ/n+wDY0lCe2tldBPe+JcY+AlueJMs3/cubm5eGBN2jIq6uk
- qhPHRhSnXfch+NEKtHeHEXi3sxAcPa988Y2AhLA3v5a69qXkvL5QRCOqN2CRtQuNvY2+EW
- SimJxuC+LxxwejD1KPeCAKvyp02Gl+E=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=FX/+lKu4bqHf/wD+R9LCFUcH5tJIzTsgj39zSFu2Rfs=;
+ b=KCDP/wJbUPxEEDuvnLoAGSHIexI3RGwU16sY/2ANMtOxIMmsOSki6rgauIIdWLfkoscrCz
+ 5+N77eUdI+9Ew+QW9BNvzhmbKr8MFKdVNOEypD7WDJScSDb9Kslykq9WPVmtebga+qY0V0
+ BBhlvHpqvUwXi6IjoQsNVid4dog3+KM=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-341-KVKfU4SINTWlOJb0m5f2uQ-1; Sun, 15 Aug 2021 11:49:41 -0400
-X-MC-Unique: KVKfU4SINTWlOJb0m5f2uQ-1
+ us-mta-379-g7icEE05Oeu_z7hkmxHcwA-1; Sun, 15 Aug 2021 11:49:45 -0400
+X-MC-Unique: g7icEE05Oeu_z7hkmxHcwA-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com
  [10.5.11.13])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 893F1185302F;
- Sun, 15 Aug 2021 15:49:39 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 92ECA1853029;
+ Sun, 15 Aug 2021 15:49:43 +0000 (UTC)
 Received: from x1.localdomain (unknown [10.39.192.57])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 0F98960871;
- Sun, 15 Aug 2021 15:49:36 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id EDD8360871;
+ Sun, 15 Aug 2021 15:49:41 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 0/5] ASoC: Intel/rt5640: Add support for HP Elite Pad 1000G2
- jack-detect
-Date: Sun, 15 Aug 2021 17:49:30 +0200
-Message-Id: <20210815154935.101178-1-hdegoede@redhat.com>
+Subject: [PATCH 2/5] ASoC: rt5640: Delay requesting IRQ until the machine-drv
+ calls set_jack
+Date: Sun, 15 Aug 2021 17:49:32 +0200
+Message-Id: <20210815154935.101178-3-hdegoede@redhat.com>
+In-Reply-To: <20210815154935.101178-1-hdegoede@redhat.com>
+References: <20210815154935.101178-1-hdegoede@redhat.com>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Authentication-Results: relay.mimecast.com;
@@ -101,46 +106,87 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The HP Elitepad 1000 G2 tablet has 2 headset jacks:
+Delay requesting the IRQ until the machine-drv calls set_jack.
 
-1. on the dock which uses the output of the codecs built-in HP-amp +
-the standard IN2 input which is always used with the headset-jack.
+The main reason for this is that the codec's IRQ is unused on some boards,
+in which case we really should not call request_irq at all.
 
-2. on the tablet itself, this uses the line-out of the codec + an external
-HP-amp, which gets enabled by the ALC5642 codec's GPIO1 pin; and IN1 for
-the headset-mic.
+On some boards there is an IRQ listed at index 0 for the codec, but
+this is not connected to the codec, but rather is directly connected
+to the jack's jack-detect pin. These special setups will be handled
+by the machine-driver, but the machine driver can only request the IRQ
+if it is not first requested by the codec driver. Moving the request_irq
+to the set_jack callback (which will not get called in this case) avoids
+the codec-driver clobbering the IRQ.
 
-The codec's GPIO1 is also its only IRQ output pin, so this means that
-the codec's IRQ cannot be used on this tablet. Instead the jack-detect
-is connected directly to GPIOs on the main SoC. The dock has a helper
-chip which also detects if a headset-mic is present or not, so there
-are 2 GPIOs for the jack-detect status of the dock. The tablet jack
-uses a single GPIO which indicates if a jack is present or not.
+Moving the request_irq also removes the need to disable the IRQ immediately
+after requesting it, avoiding a small race (this could also have been fixed
+by using the new IRQF_NO_AUTOEN flag when requesting the IRQ).
 
-Differentiating between between headphones vs a headset on the tablet jack
-is done by using the usual mic-bias over-current-detection mechanism.
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ sound/soc/codecs/rt5640.c | 27 +++++++++++++--------------
+ 1 file changed, 13 insertions(+), 14 deletions(-)
 
-Regards,
-
-Hans
-
-
-Hans de Goede (5):
-  ASoC: rt5640: Move rt5640_disable_jack_detect() up in the rt5640.c
-    file
-  ASoC: rt5640: Delay requesting IRQ until the machine-drv calls
-    set_jack
-  ASoC: rt5640: Add optional hp_det_gpio parameter to
-    rt5640_detect_headset()
-  ASoC: rt5640: Add rt5640_set_ovcd_params() helper
-  ASoC: Intel: bytcr_rt5640: Add support for HP Elite Pad 1000G2
-    jack-detect
-
- sound/soc/codecs/rt5640.c             | 133 ++++++++++++-----------
- sound/soc/codecs/rt5640.h             |   6 ++
- sound/soc/intel/boards/bytcr_rt5640.c | 146 +++++++++++++++++++++++++-
- 3 files changed, 225 insertions(+), 60 deletions(-)
-
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index a425e6b1687d..d32e9d69231c 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -2373,7 +2373,7 @@ static void rt5640_disable_jack_detect(struct snd_soc_component *component)
+ 	if (!rt5640->jack)
+ 		return;
+ 
+-	disable_irq(rt5640->irq);
++	free_irq(rt5640->irq, rt5640);
+ 	rt5640_cancel_work(rt5640);
+ 
+ 	if (rt5640->jack->status & SND_JACK_MICROPHONE) {
+@@ -2389,6 +2389,7 @@ static void rt5640_enable_jack_detect(struct snd_soc_component *component,
+ 				      struct snd_soc_jack *jack)
+ {
+ 	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
++	int ret;
+ 
+ 	/* Select JD-source */
+ 	snd_soc_component_update_bits(component, RT5640_JD_CTRL,
+@@ -2446,7 +2447,17 @@ static void rt5640_enable_jack_detect(struct snd_soc_component *component,
+ 		rt5640_enable_micbias1_ovcd_irq(component);
+ 	}
+ 
+-	enable_irq(rt5640->irq);
++	ret = request_irq(rt5640->irq, rt5640_irq,
++			  IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
++			  "rt5640", rt5640);
++	if (ret) {
++		dev_warn(component->dev, "Failed to reguest IRQ %d: %d\n", rt5640->irq, ret);
++		rt5640->irq = -ENXIO;
++		/* Undo above settings */
++		rt5640_disable_jack_detect(component);
++		return;
++	}
++
+ 	/* sync initial jack state */
+ 	queue_work(system_long_wq, &rt5640->jack_work);
+ }
+@@ -2836,18 +2847,6 @@ static int rt5640_i2c_probe(struct i2c_client *i2c,
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = devm_request_irq(&i2c->dev, rt5640->irq, rt5640_irq,
+-			       IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING
+-			       | IRQF_ONESHOT, "rt5640", rt5640);
+-	if (ret == 0) {
+-		/* Gets re-enabled by rt5640_set_jack() */
+-		disable_irq(rt5640->irq);
+-	} else {
+-		dev_warn(&i2c->dev, "Failed to reguest IRQ %d: %d\n",
+-			 rt5640->irq, ret);
+-		rt5640->irq = -ENXIO;
+-	}
+-
+ 	return devm_snd_soc_register_component(&i2c->dev,
+ 				      &soc_component_dev_rt5640,
+ 				      rt5640_dai, ARRAY_SIZE(rt5640_dai));
 -- 
 2.31.1
 
