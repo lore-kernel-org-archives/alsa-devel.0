@@ -4,78 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE509C432BE
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 17:06:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C230C4338F
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 17:06:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8384960560
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 17:06:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8384960560
+	by mail.kernel.org (Postfix) with ESMTPS id 611FE60F36
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 17:06:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 611FE60F36
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9B30D16AE;
-	Mon, 16 Aug 2021 19:05:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B30D16AE
+	by alsa0.perex.cz (Postfix) with ESMTPS id E69D216BA;
+	Mon, 16 Aug 2021 19:06:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E69D216BA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629133565;
-	bh=+z3+YzSUEPziONpahSudSFlJvPXb7i6H++q1llwpzAA=;
+	s=default; t=1629133617;
+	bh=HWHMqyb9p8a+GVX+Bg/1H1OW1JY3Ch7vjU0hoyVgMJs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=I0Bi47WMY8ftW75pSYXCn1yxW4MfwFoA9zdt1+stlonIOJ2KAiqpCwNHsGWc6rMvr
-	 COKt+g3zt6KNyTgkYpOKHr1rPssFZTysEOG7gUV4Fbh3NGph/c2yt1XxCvIolZRG0i
-	 sda9Y/RaOhez/c15iOWDAWj2PI5/AwfnzkobnWAw=
+	b=RsNSp4oM6tpCoJjOf3904JMnZO60PqL6UJ0gX8r2TsnZLUkMv9UlOquqf4wMdcnH2
+	 EUm8R6a0bCQ31aqcpy1jwjNFVddu4ajo1BbSKiGGEU3pp3KBBI38gfJoZI5+ahEGXO
+	 WA4sZH8SG1y1mi5SiyI7H/efYiU2kBBpvd48w7BY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D117F80246;
-	Mon, 16 Aug 2021 19:05:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8717AF80249;
+	Mon, 16 Aug 2021 19:05:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4621BF80249; Mon, 16 Aug 2021 19:05:13 +0200 (CEST)
+ id 393EAF80425; Mon, 16 Aug 2021 19:05:17 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DF5B7F80134
- for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 19:05:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF5B7F80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id E32A1F80134
+ for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 19:05:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E32A1F80134
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="PHSvv0gy"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8055F60F39;
- Mon, 16 Aug 2021 17:05:05 +0000 (UTC)
+ header.b="g3G3zmx9"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B681760F36;
+ Mon, 16 Aug 2021 17:05:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1629133506;
- bh=+z3+YzSUEPziONpahSudSFlJvPXb7i6H++q1llwpzAA=;
+ s=k20201202; t=1629133511;
+ bh=HWHMqyb9p8a+GVX+Bg/1H1OW1JY3Ch7vjU0hoyVgMJs=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=PHSvv0gy4WlvdLM6ttP4dohXm/C38wZ0kmv4SURd9IG6cK8zMfQ5KAmlub/AG0cC9
- RJkAMrV6OxsfKtzwD54DXXuyBlmyXgOTFjLdi3ukwxGKLotq/m56sTVmxrPnQCnKDc
- UHR6N/ry7IzOmE0pqnWuplPwh6b6rCMcmBl1gw1p13n+rvn+YT43YGf+UPxukLtZ55
- 7OMrOzMHkaQnIr+HZER+savLsGyf+m5b68prk8TwUWVlyoHU4KZ0TiD8klrRS7POFl
- dCcIwk4py2SeMYJ69rSkXT5F1RG17sHZceHME3kerXZMaQXSaTY0VjoazjweehfQLv
- izI24H4/FDiqw==
+ b=g3G3zmx9ePnrs6ccLN/NswmTF/qaGnph23JbwcKDnrbm6jCSXw3ONgPgNXXkNKfN7
+ nd3mS0CjqU90LwjDr8/outvFs7RjUqfPp0cQN710pkEdlAUZuJUL2eJ79Otu8AVndW
+ jDwZ0JanvGpDFYIj4aeaYUkpwgfJFZLP0//48vKw/BfIZPvoNfuCBysXMcbcZ3LISB
+ PS/iV0wOGfk/caMiA7G0OGhFetJsnS+HjwaMzTL1CvX9CFX90XYyY52JfG2akrO9mI
+ cM1MG7SeFGMaS5z/e/a8IwU9QJF5Seo5nK1xP6IuvTeIolGoxgqJea+SpbrrmzHgeW
+ 4Srbn/b0Tenog==
 From: Mark Brown <broonie@kernel.org>
-To: Biju Das <biju.das.jz@bp.renesas.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH] ASoC: sh: rz-ssi: Fix dereference of noderef expression
- warning
-Date: Mon, 16 Aug 2021 18:04:39 +0100
-Message-Id: <162913223313.13582.16813599087905835194.b4-ty@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 0/9] ASoC: soc-xxx: cleanup cppcheck warning
+Date: Mon, 16 Aug 2021 18:04:41 +0100
+Message-Id: <162913223313.13582.4677317494415350798.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210816132049.28128-1-biju.das.jz@bp.renesas.com>
-References: <20210816132049.28128-1-biju.das.jz@bp.renesas.com>
+In-Reply-To: <874kbq0z0p.wl-kuninori.morimoto.gx@renesas.com>
+References: <874kbq0z0p.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Chris Paterson <Chris.Paterson2@renesas.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Biju Das <biju.das@bp.renesas.com>, linux-renesas-soc@vger.kernel.org,
- Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,13 +84,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 16 Aug 2021 14:20:49 +0100, Biju Das wrote:
-> Fix following sparse warning:
-> sound/soc/sh/rz-ssi.c:156:15: sparse: warning: dereference of
-> noderef expression
+On 16 Aug 2021 13:55:18 +0900, Kuninori Morimoto wrote:
+> Now I'm posting audio-graph-card2 patch-set, but it seems it needs longer
+> discussion. Thus I want to post more easy patch first, and reduce my
+> local patches.
 > 
+> These are cppcheck warning cleanup patches for soc-xxx.
 > 
-> 
+> Kuninori Morimoto (9):
+>   ASoC: soc-generic-dmaengine-pcm: cleanup cppcheck warning at dmaengine_pcm_hw_params()
+>   ASoC: soc-generic-dmaengine-pcm: cleanup cppcheck warning at dmaengine_pcm_new()
+>   ASoC: soc-generic-dmaengine-pcm: cleanup cppcheck warning at dmaengine_copy_user()
+>   ASoC: soc-dai: cleanup cppcheck warning at snd_soc_dai_link_set_capabilities()
+>   ASoC: soc-dai: cleanup cppcheck warning at snd_soc_pcm_dai_new()
+>   ASoC: soc-jack: cleanup cppcheck warning at snd_soc_jack_report()
+>   ASoC: soc-jack: cleanup cppcheck warning for CONFIG_GPIOLIB
+>   ASoC: soc-component: cleanup cppcheck warning at snd_soc_pcm_component_pm_runtime_get()
+>   ASoC: soc-ac97: cleanup cppcheck warning
 > 
 > [...]
 
@@ -107,8 +110,24 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: sh: rz-ssi: Fix dereference of noderef expression warning
-      commit: d40dfb860ad72a32b9c2aeae739a2725f8ce011a
+[1/9] ASoC: soc-generic-dmaengine-pcm: cleanup cppcheck warning at dmaengine_pcm_hw_params()
+      commit: 0a1e5ac50de2185d6e50b0d09fbed3ef06950d90
+[2/9] ASoC: soc-generic-dmaengine-pcm: cleanup cppcheck warning at dmaengine_pcm_new()
+      commit: 9cec66fa702646b83ed970a91edd712d156c380f
+[3/9] ASoC: soc-generic-dmaengine-pcm: cleanup cppcheck warning at dmaengine_copy_user()
+      commit: a2659768893bd90be4a243472e8bd2ef614c9de7
+[4/9] ASoC: soc-dai: cleanup cppcheck warning at snd_soc_dai_link_set_capabilities()
+      commit: d490f4e73e3c0b217242d92a8f679e62dc657001
+[5/9] ASoC: soc-dai: cleanup cppcheck warning at snd_soc_pcm_dai_new()
+      commit: 454a7422fa287d38fbc433260932383ed70b8af0
+[6/9] ASoC: soc-jack: cleanup cppcheck warning at snd_soc_jack_report()
+      commit: c2dea1fba206b6e16940fb2bbf5209b30018833c
+[7/9] ASoC: soc-jack: cleanup cppcheck warning for CONFIG_GPIOLIB
+      commit: c7577906865c5da232c1eeabaa80129f4702290d
+[8/9] ASoC: soc-component: cleanup cppcheck warning at snd_soc_pcm_component_pm_runtime_get()
+      commit: 500b39da62499721ffd287994322a36440d1bb9c
+[9/9] ASoC: soc-ac97: cleanup cppcheck warning
+      commit: 834a36ddc6d276fce177fde6c994751aa40d498f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
