@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E49F2C4338F
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:10:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46D0AC4338F
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:20:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4BA93615E2
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:10:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4BA93615E2
+	by mail.kernel.org (Postfix) with ESMTPS id BB3FD619E5
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:20:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BB3FD619E5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 91E891712;
-	Mon, 16 Aug 2021 06:58:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91E891712
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8959516D7;
+	Mon, 16 Aug 2021 06:56:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8959516D7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629089966;
-	bh=hyrEaLuWOUJWQ98kn31b8n+jcB6+Mou3uma5nE0bAYQ=;
+	s=default; t=1629089833;
+	bh=3L6RNVVdYgLc3LPu4Pjz9RCx8JcYZQQKanswYab91sM=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BbU8FU9Rr5U3H/q/HdAxkxpwrXIAq10mAZyav/B2Tzr4gRcb0JMSZZa/XyrLJRJet
-	 H5vMyOgR2ahdjvz1L9U7qK88D78MEi2QxdhApCZU4nbDmTHuKZGiRFlQNPji6vQIOo
-	 uNnrYECIp9s1FL5xbvRidhntdwXsfV/EK9RyUbww=
+	b=CRfMdSRyGcE1QXEjzBXDtP5zqXiX+mVP9Y6FuqyZlrp1nRDyxIMRNZIGE16ZhWfan
+	 kuKyEdPQOhxqlV+TQa7Grxi21bhTsXa1GW33UqQhYdi+6vas0Ht+o/dhm80xVNWcFv
+	 zEc7nyzjR/n+s0Z01kBb8lk2fmBPEwU8t86b/wCg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 731B7F80508;
-	Mon, 16 Aug 2021 06:56:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E327F802BE;
+	Mon, 16 Aug 2021 06:55:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 84802F804FF; Mon, 16 Aug 2021 06:56:19 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 5EB76F804E5
- for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 06:56:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EB76F804E5
-Date: 16 Aug 2021 13:56:06 +0900
-X-IronPort-AV: E=Sophos;i="5.84,324,1620658800"; d="scan'208";a="90740492"
+ id 39FA0F802C8; Mon, 16 Aug 2021 06:55:58 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 23DA3F80259
+ for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 06:55:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23DA3F80259
+Date: 16 Aug 2021 13:55:44 +0900
+X-IronPort-AV: E=Sophos;i="5.84,324,1620658800"; d="scan'208";a="90751717"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 16 Aug 2021 13:56:06 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 16 Aug 2021 13:55:44 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 158384001948;
- Mon, 16 Aug 2021 13:56:06 +0900 (JST)
-Message-ID: <87wnomyom1.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 7971D4001948;
+ Mon, 16 Aug 2021 13:55:44 +0900 (JST)
+Message-ID: <8735ra0yzz.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 5/9] ASoC: soc-dai: cleanup cppcheck warning at
- snd_soc_pcm_dai_new()
+Subject: [PATCH 1/9] ASoC: soc-generic-dmaengine-pcm: cleanup cppcheck warning
+ at dmaengine_pcm_hw_params()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <874kbq0z0p.wl-kuninori.morimoto.gx@renesas.com>
@@ -79,33 +79,36 @@ From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 This patch cleanups below cppcheck warning.
 
-sound/soc/soc-dai.c:553:13: style: Variable 'ret' is assigned a value that is never used. [unreadVariable]
- int i, ret = 0;
-            ^
+sound/soc/soc-generic-dmaengine-pcm.c:82:6: style: The scope of the variable 'ret' can be reduced. [variableScope]
+ int ret;
+     ^
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-dai.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/soc-generic-dmaengine-pcm.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
-index a4e1c27a4ed2..3db0fcf24385 100644
---- a/sound/soc/soc-dai.c
-+++ b/sound/soc/soc-dai.c
-@@ -595,11 +595,11 @@ int snd_soc_pcm_dai_remove(struct snd_soc_pcm_runtime *rtd, int order)
- int snd_soc_pcm_dai_new(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_dai *dai;
--	int i, ret = 0;
-+	int i;
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+index 9ef80a48707e..9949db4649f4 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -79,7 +79,6 @@ static int dmaengine_pcm_hw_params(struct snd_soc_component *component,
+ 			struct snd_pcm_hw_params *params,
+ 			struct dma_slave_config *slave_config);
+ 	struct dma_slave_config slave_config;
+-	int ret;
  
- 	for_each_rtd_dais(rtd, i, dai) {
- 		if (dai->driver->pcm_new) {
--			ret = dai->driver->pcm_new(rtd, dai);
-+			int ret = dai->driver->pcm_new(rtd, dai);
- 			if (ret < 0)
- 				return soc_dai_ret(dai, ret);
- 		}
+ 	memset(&slave_config, 0, sizeof(slave_config));
+ 
+@@ -89,7 +88,7 @@ static int dmaengine_pcm_hw_params(struct snd_soc_component *component,
+ 		prepare_slave_config = pcm->config->prepare_slave_config;
+ 
+ 	if (prepare_slave_config) {
+-		ret = prepare_slave_config(substream, params, &slave_config);
++		int ret = prepare_slave_config(substream, params, &slave_config);
+ 		if (ret)
+ 			return ret;
+ 
 -- 
 2.25.1
 
