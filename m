@@ -2,99 +2,98 @@ Return-Path: <SRS0=rgkk=NH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.2 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,
 	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
 	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	UNWANTED_LANGUAGE_BODY,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3892DC4338F
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 18:34:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2258FC4338F
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 18:34:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BFA8D60EE0
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 18:34:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BFA8D60EE0
+	by mail.kernel.org (Postfix) with ESMTPS id 56B2760EE0
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 18:34:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 56B2760EE0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1184F16AB;
-	Mon, 16 Aug 2021 20:33:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1184F16AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id EAAA116B2;
+	Mon, 16 Aug 2021 20:34:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EAAA116B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629138841;
-	bh=Ol/DXO6ONW73XxV4vuKA21MjU5wx7W8rp6RKvJzUscc=;
+	s=default; t=1629138892;
+	bh=BL4B6QdVithncoszW1YveN748eT7e4DV+zPpkHOGw6s=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=triu61LycRkUP4SDlKb4zMCAhj3xUu0Si6QeOsW5VoeAQVYIJvaB+vJc20ilLNpJG
-	 /Kh8zeazMgOhHP1PVTlW1gSSFQuYIl7KLL/ckuOotaXENLXxH2NWKyBB/vmroRaIiq
-	 hB6NWwSknA9ePpaBdyicSv/pjnuOsJvixHF9ksCI=
+	b=eJB7ufJ00N7BCTmO6MOv5TVGSBQ9jvsObeiSyblBVkWbeSMTnw2FMUVB87xmueH/M
+	 91zCvQYb78QvzWH8w1toWhQOHksoJtMQrUDghgLOJNH2xhMxc/38Xa5KwN/2J/wu1m
+	 OUD8oNRfMATXGQZosLa1RpN2uh8PDi4HVJ1mSxkQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8288EF80246;
-	Mon, 16 Aug 2021 20:33:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97E8BF8028D;
+	Mon, 16 Aug 2021 20:33:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 408CCF80249; Mon, 16 Aug 2021 20:33:08 +0200 (CEST)
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com
- [IPv6:2a00:1450:4864:20::22d])
+ id 5762EF802BE; Mon, 16 Aug 2021 20:33:57 +0200 (CEST)
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com
+ [IPv6:2a00:1450:4864:20::22f])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1AE19F800AF
- for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 20:33:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AE19F800AF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 05EC2F80259
+ for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 20:33:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05EC2F80259
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="jaH1ZDMj"
-Received: by mail-lj1-x22d.google.com with SMTP id y6so11893848lje.2
- for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 11:33:00 -0700 (PDT)
+ header.b="NOitTu/4"
+Received: by mail-lj1-x22f.google.com with SMTP id n6so28618778ljp.9
+ for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 11:33:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=subject:to:cc:references:from:message-id:date:user-agent
  :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=W8Fy2zeilbZUVjVN0KITdsrqcookdRVPAeyuky/LCDY=;
- b=jaH1ZDMjfFdDMxDtK3oJHDLrrW56vNGTeqw5Jla+RgaOoJbEaJ8EeIssT7pOuAADIK
- BzhEFPFKiB/boC6GuYf/vBq+y/vKxcIItOV2gkHW2Zhi0SKtuHkTnrjONYA+lM3OVDy4
- MOdPR1aPYZ7Cippui03ZlspPPdDPMbwHvOYLhg7C5/VFvne6mHnGvMEXf2nWFATWUD+Y
- Hgt9JNM95Y3S+sHEYgcee1J++l0ffj5jEtLm9wMF6auCFGvm6xVd1CcPR0TpFaHZuW0b
- d5Yd3zj0CnDu2P3sO18IVGKy39s7TAig5sUxalbvyH++1TzaovWndJhCghw+wR4oSkM1
- K/pA==
+ bh=YTS8ZgXCuH1PuqQv5c9vfhOBKUsRFjCQLfWXK7K1MRc=;
+ b=NOitTu/47BOg5MpNdaYFQ7Dno4q6xm8dU1P6f5zjdlyVLEJ8Z/asMZW1XsBErQLaiI
+ cOXtgJcyR+jwpZT5F0TcFtw9iwUOPlSUr7Io61W6MFceIzXD8aBVYsrA+bluGOxkaKM2
+ G4w4cPffp1gWB3hmrS/ZBFxUG1g/wC2Sj4FjSUU0f1gAtWvCv6M3/IA2GbxVfGozrvgh
+ BpjM4HvFFTPAjwpza7nepEa+WvBPIkTSq4oh26QxYq779cFw7xtRfcQoB73jYIN3Ly6I
+ LDXwxxkLd543p2zDb0RKNLiL9W6TSO1i4inBO30ug4ynLBdenUjptPJfgdSb8hS0LOH8
+ IKDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:subject:to:cc:references:from:message-id:date
  :user-agent:mime-version:in-reply-to:content-language
  :content-transfer-encoding;
- bh=W8Fy2zeilbZUVjVN0KITdsrqcookdRVPAeyuky/LCDY=;
- b=Y9c0Xi89qXOz8VGwKkQcpfsWdaNu/Ha0A6bpSvkVE4az0h7/0rLx7VvL2uWtUyZ7Qe
- 4g+AlmOQwMRhShv7P2AZOTKklm+9kiMu6HYfNgQRRfHHizCgJzZt0LHa08j9pYsM+mcP
- 0bVH/P2NuXkdU8wqGjH8D80vN8MjPmxh2ASqqkOKwUBnFGHKDy9rlTrVKoeW7C3+T1j+
- zhRrk7IvVR6Dwv/qbMq+HiMcU4Hc3aeT+6qXrxUBlsk9/D7MHIbHeaOSNwXdmYOHq/MU
- 2EQWAzKlDYWjBVdaqo7CYM5gFOvKhFLLuBbFI5+h8Jj0+5KQ+JJ6uTYLoDmFOlYG3y+l
- VgFQ==
-X-Gm-Message-State: AOAM532+vCbObyLTJQt2BFJgV+NAdC5koqfsbtTYtkZpSGJcTWUuzlic
- FLodS5RaIjHkDISBpX/pL7g=
-X-Google-Smtp-Source: ABdhPJyW8Wdp2IzGFmH0NpyCmsmmSc1VdmUQWMBp+SRvcEDpura5qc+nvBSaPQLm7JOg/B0KbT6EeQ==
-X-Received: by 2002:a2e:b5d0:: with SMTP id g16mr13587913ljn.349.1629138777850; 
- Mon, 16 Aug 2021 11:32:57 -0700 (PDT)
+ bh=YTS8ZgXCuH1PuqQv5c9vfhOBKUsRFjCQLfWXK7K1MRc=;
+ b=ltRH6qssLx1J/EljBYXXnrSr9VwTvem8R8WKuLDRY5n1cO1LBlQ3+/mL35HMio2lmf
+ 5T/xDGMGrfptJKW9fztijAvHiBMCH8hSKK7dDBDEhOLuZRF1klE4+lZw87RirSCg5Af9
+ 5nUxNKrWiknpGVxtiY9GZhbaq5H0Ls8+rYZYhyll4gq9M2UIIfR/S4S3WzYcoPNc/w7B
+ TxVxc1dfs+z3Zz8Kf2PvbX+n6+ppPx1oL6TjyB+kE768b8O4nevydb8q84DuIxo2G8Dr
+ 7/Oj5dlQeQnrtgxB1/invG/N4l7A7An7xe3w28zZzzYCBHlyuokiewMjRa770GW07zFX
+ xscQ==
+X-Gm-Message-State: AOAM533NvTG/ianpg1MxKRmFfFf3KQpkqBFL8muK4/IoPYcQkBAq0xts
+ ETBqzXxFExI80e9qJNM2ro4=
+X-Google-Smtp-Source: ABdhPJw38xHx3nos1WlUP6JJqE+mD3b9t9CUEFVpmd6uX2c8AzflQM/WrxswEmPSISK7ZyrQC76u4w==
+X-Received: by 2002:a2e:8008:: with SMTP id j8mr4401ljg.233.1629138831261;
+ Mon, 16 Aug 2021 11:33:51 -0700 (PDT)
 Received: from [10.0.0.40] (91-155-111-71.elisa-laajakaista.fi.
  [91.155.111.71])
- by smtp.gmail.com with ESMTPSA id h22sm10645ljk.133.2021.08.16.11.32.56
+ by smtp.gmail.com with ESMTPSA id bu14sm3076lfb.6.2021.08.16.11.33.50
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 16 Aug 2021 11:32:57 -0700 (PDT)
-Subject: Re: [PATCH 1/3] ASoC: ti: davinci-mcasp: Use of_device_get_match_data
+ Mon, 16 Aug 2021 11:33:50 -0700 (PDT)
+Subject: Re: [PATCH 3/3] ASoC: ti: davinci-evm: Use of_device_get_match_data
 To: Aakash Hemadri <aakashhemadri123@gmail.com>,
  Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 References: <cover.1628972198.git.aakashhemadri123@gmail.com>
- <ffe9b568be52cc075df56bbf07f20a92cb54f07d.1628972198.git.aakashhemadri123@gmail.com>
+ <6ebb350fa8a960b8775ce324b7786dbaa865a1c8.1628972198.git.aakashhemadri123@gmail.com>
 From: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-Message-ID: <b7541f9c-8e21-300d-ed3c-ea5e610b7266@gmail.com>
-Date: Mon, 16 Aug 2021 21:33:16 +0300
+Message-ID: <b096a803-093a-b70f-2999-38bfe8978513@gmail.com>
+Date: Mon, 16 Aug 2021 21:34:10 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <ffe9b568be52cc075df56bbf07f20a92cb54f07d.1628972198.git.aakashhemadri123@gmail.com>
+In-Reply-To: <6ebb350fa8a960b8775ce324b7786dbaa865a1c8.1628972198.git.aakashhemadri123@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -126,26 +125,26 @@ On 14/08/2021 23:19, Aakash Hemadri wrote:
 > 
 > Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
 > ---
->  sound/soc/ti/davinci-mcasp.c | 2 +-
+>  sound/soc/ti/davinci-evm.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-> index 56a19eeec5c7..b26e8d324078 100644
-> --- a/sound/soc/ti/davinci-mcasp.c
-> +++ b/sound/soc/ti/davinci-mcasp.c
-> @@ -1881,7 +1881,7 @@ static bool davinci_mcasp_have_gpiochip(struct davinci_mcasp *mcasp)
->  static int davinci_mcasp_get_config(struct davinci_mcasp *mcasp,
->  				    struct platform_device *pdev)
->  {
-> -	const struct of_device_id *match = of_match_device(mcasp_dt_ids, &pdev->dev);
-> +	const struct of_device_id *match = of_device_get_match_data(&pdev->dev);
+> diff --git a/sound/soc/ti/davinci-evm.c b/sound/soc/ti/davinci-evm.c
+> index b043a0070d20..bf13f3d25cec 100644
+> --- a/sound/soc/ti/davinci-evm.c
+> +++ b/sound/soc/ti/davinci-evm.c
+> @@ -389,7 +389,7 @@ static int davinci_evm_probe(struct platform_device *pdev)
+>  	struct clk *mclk;
+>  	int ret = 0;
+>  
+> -	match = of_match_device(of_match_ptr(davinci_evm_dt_ids), &pdev->dev);
+> +	match = of_device_get_match_data(&pdev->dev);
 
-No.
-of_device_get_match_data() returns the match->data
+incorrect,
+of_device_get_match_data() is retrieving the match->data
 
->  	struct device_node *np = pdev->dev.of_node;
->  	struct davinci_mcasp_pdata *pdata = NULL;
->  	const u32 *of_serial_dir32;
+>  	if (!match) {
+>  		dev_err(&pdev->dev, "Error: No device match found\n");
+>  		return -ENODEV;
 > 
 
 -- 
