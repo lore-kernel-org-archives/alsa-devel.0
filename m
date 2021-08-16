@@ -2,101 +2,101 @@ Return-Path: <SRS0=rgkk=NH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17508C4338F
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 19:59:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11F52C4338F
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 21:16:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2973860F41
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 19:59:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2973860F41
+	by mail.kernel.org (Postfix) with ESMTPS id B83FE61042
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 21:16:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B83FE61042
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3DBC112;
-	Mon, 16 Aug 2021 21:58:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3DBC112
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7548B828;
+	Mon, 16 Aug 2021 23:15:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7548B828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629143968;
-	bh=s9l5IsedF/5S4SnJF4fAydWyt7KoVJCD7oSIXdqwVD0=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1629148568;
+	bh=LAlltrblAQLhRTKM8BleVl9I1O7pF9GkMhWkBkaUVkQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NjAo3lwpdc93bgi+/bLhoi72tW+cveOCy6i3rX6ltDvGpO9vJ4kyqCMCIJPpmZPoL
-	 aik7bicOkRT/nNRV0hkaX0zPlnv26rdqkqcQM2A7ou+r/3wEsHu54Xo9WjXxgPM5IH
-	 q0lTg0cdsEUTf5O4uWYjQrTOpYPz70GlY/kzNJ4c=
+	b=A+SrYOTsHpPpGOOK0wC7DV81FwokJRR5YZ3jE59mPQMSWFs9OpqZ0b5M/HMf0b/39
+	 RnYIcDGlz28xTk7v7LvT3eGw5A4iPsp0wXKdK4gRcpnyIngoCDb734jfvKwJzlnyWn
+	 r+Y8wr2XxoHAfnajxMY603t21goWicQw39KvYWtI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 604D2F80246;
-	Mon, 16 Aug 2021 21:58:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E8168F80246;
+	Mon, 16 Aug 2021 23:15:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 177F4F80249; Mon, 16 Aug 2021 21:58:37 +0200 (CEST)
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com
- [IPv6:2607:f8b0:4864:20::633])
+ id CBC7AF80259; Mon, 16 Aug 2021 23:15:15 +0200 (CEST)
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com
+ [IPv6:2607:f8b0:4864:20::102a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7D90CF80134
- for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 21:58:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D90CF80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2E8B7F800AF
+ for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 23:15:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E8B7F800AF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Ue/nsPau"
-Received: by mail-pl1-x633.google.com with SMTP id f3so21928580plg.3
- for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 12:58:32 -0700 (PDT)
+ header.b="QbhLCH3S"
+Received: by mail-pj1-x102a.google.com with SMTP id
+ w13-20020a17090aea0db029017897a5f7bcso2376363pjy.5
+ for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 14:15:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=s9l5IsedF/5S4SnJF4fAydWyt7KoVJCD7oSIXdqwVD0=;
- b=Ue/nsPauk7U6/n3kytH2QA63vMZ7hMlJ6o+jRyIO+TXAAn5Cfyd6nWdtYBbtA3J3Pt
- gGMXmjbTyBKeY9AzbTy4YzVaR9PQETDQGPWorPB6gHG3IG9zujI1tzKVBlFZwGelsnav
- of61ongXjhXr7f7H1Qk+p/jqWXgGnwRs59kpdQ1gV4Lix0lkWdjtCJF3URLF/Dr/Ps6G
- p7OJhTRksVzsrtxSpnUwzBOukJnVsGWpiPYN5iUBKKQ4ybPZDYEgoadJ1wEGvaxoTxti
- o++Om859MCxZz4jSnVxGTcYmItEURXy2BxxQxigQyKeVOVeSVOwfIbKMLVHssa/9d6wu
- 4UyA==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=Ti5ieSHy8bgHsKT/p42fBihkAPuECC+Byn0rag7Ilqg=;
+ b=QbhLCH3SR6H9ufXcqkC6oI4jMlMlgavieMvQovzBxvt35SoUs0p9AyJBI57DfhwNQV
+ 7qqPZ2WQtvg5jJpTprurs1f10RSBwq81MkFYnAKAqQLQleN0qHoeqmKStPUp+7ChDXNj
+ 5bqoHWxMOS7nLsrssLZPgtUFlmo4kfXoPxLCepuj2FpdUoBMs88InvmK4bMbXKtOa57Q
+ yJ5z50M1+WTsidQku2NEYeLed8/OzclW21ekSoCtjIVLBe+OQiSwNpnhf0e+evumT9d8
+ W9J1ArxmXszhvXIva2i1U7iGzIz85x2zUqY0bkuqo06tY9KGVkiLJOUQxtMH7cmy1jxe
+ hf7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=s9l5IsedF/5S4SnJF4fAydWyt7KoVJCD7oSIXdqwVD0=;
- b=VIR23IA02KXbgnGYhWqdKVbT5fvi8Xc374ye02rs0yfN+5xa4hbls/oaKry/EK0Iwg
- vc8m0427ajDGg50zEzUZ7HIdZt9zUcnkIcZeuECFt9iIyQ5vxSxUcMPciHoy8O6i1NMC
- YNAz5HY8kkX4wdrOh2Jc04OnJov9AOVw8yQ6g4tT0jA9Ps8acWwsPYGUuIm/eBhtRX3m
- qqCb7Ga3fjyBLQukdyI8/GG2No1t5C5kzCNB4lyhPfphrt8TpSwaZKytp5naflZ80AFO
- lMs6wVxkq/pFLI2o7cYidmngaM3tj2dRtsmNu7z9KB+3HkuEV6TphubzFBTXXq+bhoYS
- tgFA==
-X-Gm-Message-State: AOAM530+mBxmb3aSnMrp9g2UHdWakLnJ/XrszSwtS4wounLAtF7BQxpS
- q1KdpmUx2MbRRW9Gk7XWhFY=
-X-Google-Smtp-Source: ABdhPJy5BO8UPitxBJFGj9SnL787Ml47xibIqz1zp+gWTNa1A1DD/jzJ8/nvqsnSQnuQlY7WyZGZxQ==
-X-Received: by 2002:a17:90a:116:: with SMTP id b22mr239613pjb.97.1629143908577; 
- Mon, 16 Aug 2021 12:58:28 -0700 (PDT)
-Received: from localhost ([49.207.137.16])
- by smtp.gmail.com with ESMTPSA id l11sm119501pjg.22.2021.08.16.12.58.27
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=Ti5ieSHy8bgHsKT/p42fBihkAPuECC+Byn0rag7Ilqg=;
+ b=WkZN3cKq7ieet1lK5FME5UFPpOvIYs951gt1ZYePB2kuEqs1K/gxbojFDzUvpdEXPt
+ j/1V9Pis9tigZd9+gtWViRBYBHQz4q2fvJMcoxlwM+FJ6DMFMJyuLwIxH6hxR/v/Ibfb
+ 6WB6dGu6UaG+YJPq2aiVcXy+CP/AbUYRc4kLQehR7emukQDu0bwnp4g1pHMEbi43wL6v
+ BiKgm6QZByyCzlo+bDwlOaQZY04tgsIPjNWdyOkmFhtpGZRa/oTRCa1vom6h88BTrxVt
+ BYBU+RIJJHosERvKG49yzLN4ltNyaZ7mZtvLZR41pF+qKDrAnW+OQWObXpTiTPdY+uw+
+ XQOA==
+X-Gm-Message-State: AOAM532NvQAy2QM+TyPYhwAMMnOxhqnLfMv1K+p0otmRkyx6PYKnD4hs
+ r3zSG7uGMozoiSuGA3JPFm8=
+X-Google-Smtp-Source: ABdhPJwJZoEwj9uB4CQ5pwLcFobvwe7gSikogI6OOkXKzyMURtFG6MN6/a7qLfHoIesuQsL1YdH47w==
+X-Received: by 2002:a17:90a:ba16:: with SMTP id
+ s22mr639486pjr.28.1629148507053; 
+ Mon, 16 Aug 2021 14:15:07 -0700 (PDT)
+Received: from xps.yggdrasil ([49.207.137.16])
+ by smtp.gmail.com with ESMTPSA id b12sm103154pff.63.2021.08.16.14.15.01
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 16 Aug 2021 12:58:28 -0700 (PDT)
-Date: Tue, 17 Aug 2021 01:28:24 +0530
+ Mon, 16 Aug 2021 14:15:06 -0700 (PDT)
 From: Aakash Hemadri <aakashhemadri123@gmail.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: tegra30: ahub: Use of_device_get_match_data
-Message-ID: <20210816195824.ulvnb2kfas4rtpjt@xps.yggdrasil>
-References: <cover.1628971397.git.aakashhemadri123@gmail.com>
- <e568d621c9c05ee23732a6a6f9e3606a780b1707.1628971397.git.aakashhemadri123@gmail.com>
- <20210816183906.GC4253@sirena.org.uk>
- <20210816194621.mrudqykxvkbt3a2w@xps.yggdrasil>
- <20210816194934.GD4253@sirena.org.uk>
+To: Mark Brown <broonie@kernel.org>,
+	Liam Girdwood <lgirdwood@gmail.com>
+Subject: [PATCH 1/2] ASoC: tegra30: ahub: Fix incorrect usage of
+ of_device_get_match_data
+Date: Tue, 17 Aug 2021 02:44:51 +0530
+Message-Id: <bb61c41f2ee0cf0d85fecdfea05f23a7205992e6.1629148177.git.aakashhemadri123@gmail.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <cover.1629148177.git.aakashhemadri123@gmail.com>
+References: <cover.1629148177.git.aakashhemadri123@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210816194934.GD4253@sirena.org.uk>
+Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, Bjorn Helgaas <bjorn@helgaas.com>,
- Thierry Reding <thierry.reding@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>, Jonathan Hunter <jonathanh@nvidia.com>,
+ Bjorn Helgaas <bjorn@helgaas.com>, Thierry Reding <thierry.reding@gmail.com>,
  Philipp Zabel <p.zabel@pengutronix.de>, Shuah Khan <skhan@linuxfoundation.org>,
  linux-tegra@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
@@ -114,11 +114,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 21/08/16 08:49PM, Mark Brown wrote:
-> Since I applied the patches please send an incremental fix on top of
-> what's been applied rather than a v2.
+const struct of_device_id incorrectly assigned "match->data" using
+of_device_get_match_data()
 
-Will do Mark!
+Instead assign `const struct tegra30_ahub_soc_data *soc_data` with
+const void *of_device_get_match_data(...)
 
-Thank,
-Aakash Hemadri
+Fixes: 80165bb80433 ("ASoC: tegra30: ahub: Use of_device_get_match_data")
+
+Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
+---
+ sound/soc/tegra/tegra30_ahub.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
+index 0ac109b32329..ef011a488ceb 100644
+--- a/sound/soc/tegra/tegra30_ahub.c
++++ b/sound/soc/tegra/tegra30_ahub.c
+@@ -512,16 +512,14 @@ static const struct of_device_id tegra30_ahub_of_match[] = {
+ 
+ static int tegra30_ahub_probe(struct platform_device *pdev)
+ {
+-	const struct of_device_id *match;
+ 	const struct tegra30_ahub_soc_data *soc_data;
+ 	struct resource *res0;
+ 	void __iomem *regs_apbif, *regs_ahub;
+ 	int ret = 0;
+ 
+-	match = of_device_get_match_data(&pdev->dev);
+-	if (!match)
++	soc_data = of_device_get_match_data(&pdev->dev);
++	if (!soc_data)
+ 		return -EINVAL;
+-	soc_data = match->data;
+ 
+ 	ahub = devm_kzalloc(&pdev->dev, sizeof(struct tegra30_ahub),
+ 			    GFP_KERNEL);
+-- 
+2.32.0
+
