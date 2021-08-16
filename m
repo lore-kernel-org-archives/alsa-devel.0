@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3EE8C4338F
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 04:58:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BBB2CC4338F
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 04:58:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E0941619E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 04:58:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E0941619E0
+	by mail.kernel.org (Postfix) with ESMTPS id 39553619E2
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 04:58:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 39553619E2
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 727A216E4;
-	Mon, 16 Aug 2021 06:57:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 727A216E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8450816EA;
+	Mon, 16 Aug 2021 06:57:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8450816EA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629089872;
-	bh=nuJAsdhRU6GW/E8ThlqpZMJ7gA0fYB0WJcQtMOfvXEM=;
+	s=default; t=1629089892;
+	bh=sEAqrevb1X4UW7gM3UVfJE/SRcUbsBfOWT89noNyQd4=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=L0wFsRbpXlC3ZTM7is9XsrI+Ft8om5NNeAVXHf8iLeqNK+Y/98Z5lWBH/onA0CSdx
-	 GghrStm0khmlq7ViuJhaHF8FMjzeI/Cum/6Jcp8x2WyYPpWi8bDle67Zhltns5P5wH
-	 A2+Aq7IcB5+Yb7xwiY5fyFFFWBdBgkQkdXHlScqs=
+	b=qH6mZc71icmen/gkgebqK1pTywH01lZHwLGhyFJXYqD2MWeYmSMxUCZYnCDDBIwcq
+	 wZwW2FZVlKf/Pz4Sfqd87e2VCpaRtyp5kaElHkQJOVKqNF3mIqeU/C7iMlEV0STiHw
+	 i1oHoUG3oI3m19p0JFAaXMgHt12Uby6Orm4sSZM8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 82609F802C8;
-	Mon, 16 Aug 2021 06:56:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1D11F804E4;
+	Mon, 16 Aug 2021 06:56:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1D937F804E1; Mon, 16 Aug 2021 06:56:02 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 48A33F80134
- for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 06:55:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48A33F80134
-Date: 16 Aug 2021 13:55:51 +0900
-X-IronPort-AV: E=Sophos;i="5.84,324,1620658800"; d="scan'208";a="90740471"
+ id 60615F804E3; Mon, 16 Aug 2021 06:56:04 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 51B68F80259
+ for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 06:55:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51B68F80259
+Date: 16 Aug 2021 13:55:56 +0900
+X-IronPort-AV: E=Sophos;i="5.84,324,1620658800"; d="scan'208";a="90751743"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 16 Aug 2021 13:55:51 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 16 Aug 2021 13:55:56 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 742914001948;
- Mon, 16 Aug 2021 13:55:51 +0900 (JST)
-Message-ID: <871r6u0yzs.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 910164001948;
+ Mon, 16 Aug 2021 13:55:56 +0900 (JST)
+Message-ID: <87zgtiyomb.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 2/9] ASoC: soc-generic-dmaengine-pcm: cleanup cppcheck warning
- at dmaengine_pcm_new()
+Subject: [PATCH 3/9] ASoC: soc-generic-dmaengine-pcm: cleanup cppcheck warning
+ at dmaengine_copy_user()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <874kbq0z0p.wl-kuninori.morimoto.gx@renesas.com>
@@ -79,9 +79,9 @@ From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 This patch cleanups below cppcheck warning.
 
-sound/soc/soc-generic-dmaengine-pcm.c:233:28: style: The scope of the variable 'substream' can be reduced. [variableScope]
- struct snd_pcm_substream *substream;
-                           ^
+sound/soc/soc-generic-dmaengine-pcm.c:310:6: style: The scope of the variable 'ret' can be reduced. [variableScope]
+ int ret;
+     ^
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
@@ -89,26 +89,25 @@ Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index 9949db4649f4..24b240783cf1 100644
+index 24b240783cf1..4aa48c74f21a 100644
 --- a/sound/soc/soc-generic-dmaengine-pcm.c
 +++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -229,7 +229,6 @@ static int dmaengine_pcm_new(struct snd_soc_component *component,
- 	struct dmaengine_pcm *pcm = soc_component_to_pcm(component);
- 	const struct snd_dmaengine_pcm_config *config = pcm->config;
- 	struct device *dev = component->dev;
--	struct snd_pcm_substream *substream;
- 	size_t prealloc_buffer_size;
- 	size_t max_buffer_size;
- 	unsigned int i;
-@@ -243,7 +242,7 @@ static int dmaengine_pcm_new(struct snd_soc_component *component,
+@@ -305,14 +305,13 @@ static int dmaengine_copy_user(struct snd_soc_component *component,
+ 	bool is_playback = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+ 	void *dma_ptr = runtime->dma_area + hwoff +
+ 			channel * (runtime->dma_bytes / runtime->channels);
+-	int ret;
+ 
+ 	if (is_playback)
+ 		if (copy_from_user(dma_ptr, buf, bytes))
+ 			return -EFAULT;
+ 
+ 	if (process) {
+-		ret = process(substream, channel, hwoff, (__force void *)buf, bytes);
++		int ret = process(substream, channel, hwoff, (__force void *)buf, bytes);
+ 		if (ret < 0)
+ 			return ret;
  	}
- 
- 	for_each_pcm_streams(i) {
--		substream = rtd->pcm->streams[i].substream;
-+		struct snd_pcm_substream *substream = rtd->pcm->streams[i].substream;
- 		if (!substream)
- 			continue;
- 
 -- 
 2.25.1
 
