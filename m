@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00EA8C4338F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00ED7C432BE
 	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:54:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5EB84600CC
+	by mail.kernel.org (Postfix) with ESMTPS id 5E0F3619F6
 	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:54:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5EB84600CC
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5E0F3619F6
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0F03916A5;
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0A0D316A3;
 	Mon, 16 Aug 2021 07:53:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F03916A5
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A0D316A3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
 	s=default; t=1629093251;
-	bh=Ih38F/duR40nrm14B8UlMbSvOfXv6e++HJDGYIfZPio=;
+	bh=Bgo2d07SdWbKLR4HiUVkIPOJfdikpO7o6q+kWWJfxMk=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=J2nPXEkgI9hv4QW5wDvhbBDyjE23YsVp4xyVsMZfgC6kjBnRECyaywXwEMGkitaN5
-	 V5ZuE7bqpmObpDwCAkbJurEgxGFJ+qXNRFGtv47qhXM8opxLoh7jiqw0GrkAkJYT9K
-	 DlQV2kV148fCYFB5PxwCEcu9yBLVaG2T9k3aR/Sk=
+	b=PSnuX7L/F9WP1oev33RliU5UreVaCRwh06CVeeiCu+UBfCfGfBP0uEWCFFy+YoBpK
+	 5K8738EfjTqtTSI2iYExJsURYwH0KdBUEIE9syFS+AocqYmoosmi16dyu3V275GMe+
+	 qI1W2JTdwhQqwRcsCB4+yE8N14Tca/n1kV1ibRUw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46064F80516;
-	Mon, 16 Aug 2021 06:56:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 755DCF804E5;
+	Mon, 16 Aug 2021 06:56:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0A5C7F80515; Mon, 16 Aug 2021 06:56:28 +0200 (CEST)
+ id 65333F80506; Mon, 16 Aug 2021 06:56:19 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id E0AB0F80246
- for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 06:56:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0AB0F80246
-Date: 16 Aug 2021 13:56:19 +0900
-X-IronPort-AV: E=Sophos;i="5.84,324,1620658800"; d="scan'208";a="90751776"
+ by alsa1.perex.cz (Postfix) with ESMTP id 8A715F804FC
+ for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 06:56:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A715F804FC
+Date: 16 Aug 2021 13:56:10 +0900
+X-IronPort-AV: E=Sophos;i="5.84,324,1620658800"; d="scan'208";a="90751764"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 16 Aug 2021 13:56:19 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 16 Aug 2021 13:56:10 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 6CA8841B5BE7;
- Mon, 16 Aug 2021 13:56:19 +0900 (JST)
-Message-ID: <87sfzayolo.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 8F13541B5C0B;
+ Mon, 16 Aug 2021 13:56:10 +0900 (JST)
+Message-ID: <87v946yolx.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 8/9] ASoC: soc-component: cleanup cppcheck warning at
- snd_soc_pcm_component_pm_runtime_get()
+Subject: [PATCH 6/9] ASoC: soc-jack: cleanup cppcheck warning at
+ snd_soc_jack_report()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <874kbq0z0p.wl-kuninori.morimoto.gx@renesas.com>
@@ -79,32 +79,36 @@ From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 This patch cleanups below cppcheck warning.
 
-sound/soc/soc-component.c:1183:9: style: The scope of the variable 'ret' can be reduced. [variableScope]
- int i, ret;
-        ^
+sound/soc/soc-jack.c:45:6: style: The scope of the variable 'enable' can be reduced. [variableScope]
+ int enable;
+     ^
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-component.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/soc-jack.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
-index c8dfd0de30e4..8e8d917d22f8 100644
---- a/sound/soc/soc-component.c
-+++ b/sound/soc/soc-component.c
-@@ -1171,10 +1171,10 @@ int snd_soc_pcm_component_pm_runtime_get(struct snd_soc_pcm_runtime *rtd,
- 					 void *stream)
- {
- 	struct snd_soc_component *component;
--	int i, ret;
-+	int i;
+diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
+index 0f1820f36b4d..11961e35ad02 100644
+--- a/sound/soc/soc-jack.c
++++ b/sound/soc/soc-jack.c
+@@ -42,7 +42,6 @@ void snd_soc_jack_report(struct snd_soc_jack *jack, int status, int mask)
+ 	struct snd_soc_dapm_context *dapm;
+ 	struct snd_soc_jack_pin *pin;
+ 	unsigned int sync = 0;
+-	int enable;
  
- 	for_each_rtd_components(rtd, i, component) {
--		ret = pm_runtime_get_sync(component->dev);
-+		int ret = pm_runtime_get_sync(component->dev);
- 		if (ret < 0 && ret != -EACCES) {
- 			pm_runtime_put_noidle(component->dev);
- 			return soc_component_ret(component, ret);
+ 	if (!jack)
+ 		return;
+@@ -58,7 +57,7 @@ void snd_soc_jack_report(struct snd_soc_jack *jack, int status, int mask)
+ 	trace_snd_soc_jack_notify(jack, status);
+ 
+ 	list_for_each_entry(pin, &jack->pins, list) {
+-		enable = pin->mask & jack->status;
++		int enable = pin->mask & jack->status;
+ 
+ 		if (pin->invert)
+ 			enable = !enable;
 -- 
 2.25.1
 
