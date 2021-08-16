@@ -2,70 +2,64 @@ Return-Path: <SRS0=rgkk=NH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C8ABC4338F
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:34:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E8F2C4338F
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:35:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 90543615E2
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:34:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 90543615E2
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=wanadoo.fr
+	by mail.kernel.org (Postfix) with ESMTPS id 7E61B619EA
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:35:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7E61B619EA
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A40E170E;
-	Mon, 16 Aug 2021 07:34:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A40E170E
+	by alsa0.perex.cz (Postfix) with ESMTPS id E00CD1733;
+	Mon, 16 Aug 2021 07:09:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E00CD1733
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629092096;
-	bh=yKaKh9JJ8w7dnpnlUvzXocT9gZRpuQcFfnZAaoBGCGw=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1629090599;
+	bh=XCAA0+TFl29DV3XXBzOU2SxiMN7yMe9vLyBZR2Z1CGY=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=heTP4c6aHi5eEfiObNml90NJJP77rQSD22UEHorEDA6V4TRNDQMgbjoyRtLwPQE/2
-	 g/oqtnsiOMh/LAak4JSvU8M7NpsRADIJTWae3U4jy2fWdJyD2KBQjeNWO+MWsHmIGT
-	 MzxZ4D4liJ8qHiKmH8YVb/Ag9qYOCBmqb61B8FU0=
+	b=GcwJr4jkrsTLk0kg99XZAdwSYnTMYuH/FOIoEJTknAYRz7/a+3LfTHSucLsCz2Kol
+	 2B8ldyK6m/hrFa9lFGWS1x0thcUi+gf3BlXTnyidj4W7+vVBH/1yTjy5ym7ivpReat
+	 tDTnY+fdKV3E9uG5d0IcW/MmcAiRQnZ2k7kmXqaQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7D45FF802BE;
-	Mon, 16 Aug 2021 07:25:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6EE17F80507;
+	Mon, 16 Aug 2021 06:56:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B61ADF802C8; Mon, 16 Aug 2021 07:25:18 +0200 (CEST)
-Received: from smtp.smtpout.orange.fr (smtp11.smtpout.orange.fr
- [80.12.242.133])
- (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A4145F8028D
- for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 07:25:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4145F8028D
-Received: from pop-os.home ([90.126.253.178]) by mwinf5d03 with ME
- id i5RC250043riaq2035RCX0; Mon, 16 Aug 2021 07:25:12 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 16 Aug 2021 07:25:12 +0200
-X-ME-IP: 90.126.253.178
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: srinivas.kandagatla@linaro.org, bgoswami@codeaurora.org,
- lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- vkoul@kernel.org
-Subject: [PATCH 1/3] ASoC: wcd9335: Fix a double irq free in the remove
- function
-Date: Mon, 16 Aug 2021 07:25:10 +0200
-Message-Id: <0614d63bc00edd7e81dd367504128f3d84f72efa.1629091028.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1629091028.git.christophe.jaillet@wanadoo.fr>
-References: <cover.1629091028.git.christophe.jaillet@wanadoo.fr>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org
+ id 26F57F80516; Mon, 16 Aug 2021 06:56:26 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 867D7F804FD
+ for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 06:56:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 867D7F804FD
+Date: 16 Aug 2021 13:56:15 +0900
+X-IronPort-AV: E=Sophos;i="5.84,324,1620658800"; d="scan'208";a="90751769"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 16 Aug 2021 13:56:15 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 15B3041B5990;
+ Mon, 16 Aug 2021 13:56:15 +0900 (JST)
+Message-ID: <87tujqyols.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 7/9] ASoC: soc-jack: cleanup cppcheck warning for
+ CONFIG_GPIOLIB
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <874kbq0z0p.wl-kuninori.morimoto.gx@renesas.com>
+References: <874kbq0z0p.wl-kuninori.morimoto.gx@renesas.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,38 +75,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-There is no point in calling 'free_irq()' explicitly for
-'WCD9335_IRQ_SLIMBUS' in the remove function.
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-The irqs are requested in 'wcd9335_setup_irqs()' using a resource managed
-function (i.e. 'devm_request_threaded_irq()').
-'wcd9335_setup_irqs()' requests all what is defined in the 'wcd9335_irqs'
-structure.
-This structure has only one entry for 'WCD9335_IRQ_SLIMBUS'.
+This patch cleanups below cppcheck warning.
 
-So 'devm_request...irq()' + explicit 'free_irq()' would lead to a double
-free.
+sound/soc/soc-jack.c:21:6: style: struct member 'jack_gpio_tbl::count' is never used. [unusedStructMember]
+ int count;
+     ^
+sound/soc/soc-jack.c:23:28: style: struct member 'jack_gpio_tbl::gpios' is never used. [unusedStructMember]
+ struct snd_soc_jack_gpio *gpios;
+                           ^
 
-Remove the unneeded 'free_irq()' from the remove function.
-
-Fixes: 20aedafdf492 ("ASoC: wcd9335: add support to wcd9335 codec")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/codecs/wcd9335.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/soc-jack.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
-index 86c92e03ea5d..933f59e4e56f 100644
---- a/sound/soc/codecs/wcd9335.c
-+++ b/sound/soc/codecs/wcd9335.c
-@@ -4869,7 +4869,6 @@ static void wcd9335_codec_remove(struct snd_soc_component *comp)
- 	struct wcd9335_codec *wcd = dev_get_drvdata(comp->dev);
+diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
+index 11961e35ad02..d798765d168c 100644
+--- a/sound/soc/soc-jack.c
++++ b/sound/soc/soc-jack.c
+@@ -17,12 +17,6 @@
+ #include <linux/suspend.h>
+ #include <trace/events/asoc.h>
  
- 	wcd_clsh_ctrl_free(wcd->clsh_ctrl);
--	free_irq(regmap_irq_get_virq(wcd->irq_data, WCD9335_IRQ_SLIMBUS), wcd);
- }
+-struct jack_gpio_tbl {
+-	int count;
+-	struct snd_soc_jack *jack;
+-	struct snd_soc_jack_gpio *gpios;
+-};
+-
+ /**
+  * snd_soc_jack_report - Report the current status for a jack
+  *
+@@ -207,6 +201,12 @@ void snd_soc_jack_notifier_unregister(struct snd_soc_jack *jack,
+ EXPORT_SYMBOL_GPL(snd_soc_jack_notifier_unregister);
  
- static int wcd9335_codec_set_sysclk(struct snd_soc_component *comp,
+ #ifdef CONFIG_GPIOLIB
++struct jack_gpio_tbl {
++	int count;
++	struct snd_soc_jack *jack;
++	struct snd_soc_jack_gpio *gpios;
++};
++
+ /* gpio detect */
+ static void snd_soc_jack_gpio_detect(struct snd_soc_jack_gpio *gpio)
+ {
 -- 
-2.30.2
+2.25.1
 
