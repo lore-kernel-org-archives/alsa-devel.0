@@ -2,81 +2,76 @@ Return-Path: <SRS0=rgkk=NH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.4 required=3.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD439C432BE
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 18:40:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E7EDC4338F
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 18:41:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 83F6360F14
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 18:40:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 83F6360F14
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id C303060F14
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 18:41:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C303060F14
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9C48816AB;
-	Mon, 16 Aug 2021 20:39:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C48816AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 61FCC16B8;
+	Mon, 16 Aug 2021 20:40:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61FCC16B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629139227;
-	bh=zxs7PfDCzOg5/JKaFuj1ZRG3AUP94enAwR2htcd+f3M=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1629139278;
+	bh=aiX5AZ3RzXmqjrqvyt16zpZF1I7GHi6hFkhb4f60hhg=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rGpI58LHG/Rgyf2ZJzO2+yYjk9wQpB1vMFEkUsvQklef8a/K9ZV0IIxCB9907PeH7
-	 g4xEuzBCy+/gv250aQaXyXsxrvowpHxL/CN4TIzetipjMzHO0XwNlnZ1MfVevLFoXa
-	 y8OKl+737rRU8IxJDiysObCYTEH4xfphZj1x2aOQ=
+	b=io8sI7pLYyJDnE2Ljxr7LShBfC7Mir68/wpl6E2b7PGpV9BE5DUowJHZ9FAwcQ8kS
+	 TX1FpWpvgC+aTRI+EiwBYDS9ziXGZLQpKxGcBs4xCpzfzO3Atn74stoELpyiwa5jMQ
+	 NMMLqAI8GydjA7kcTFx18qB/dA2t7okqzFQcddns=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44AC0F80246;
-	Mon, 16 Aug 2021 20:39:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE845F80249;
+	Mon, 16 Aug 2021 20:39:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E649FF80249; Mon, 16 Aug 2021 20:39:36 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 41D63F802BE; Mon, 16 Aug 2021 20:39:48 +0200 (CEST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D468FF800AF
- for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 20:39:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D468FF800AF
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="J/m4g2Kc"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6F0760F22;
- Mon, 16 Aug 2021 18:39:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1629139169;
- bh=zxs7PfDCzOg5/JKaFuj1ZRG3AUP94enAwR2htcd+f3M=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=J/m4g2KcCGRuaPCzT4cJm8n8B2i7bDPFRLkN5v14dCq8JZs8fMZRV4ZgCvaeD4QUH
- ItI0vGPuAeIrPEI1PWlF4YY3+4BQUufG9Hry9UbIi9zLW0Gx8KMhGi9YiZrtg1JyHW
- BIymJ6PvjRJgX14Ye868QzaV3b0jGet8tYHCqCL7sObzEbeXalELIS0VuV9ckIpGoH
- FBS0/8VufzaZHf7wF8pHKGKiQQWIgOzy5jvySlJIe72+gsMSJ8bOd7HbAKTe4Agq98
- 9s8MyH6K13kgNJfPuQgYuWnA3ka4x6KFRJ+0875qxcItLnm+1UwQrWIUJySQfaqFg2
- 88PMFB6s2qIFw==
-Date: Mon, 16 Aug 2021 19:39:06 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Aakash Hemadri <aakashhemadri123@gmail.com>
-Subject: Re: [PATCH 1/2] ASoC: tegra30: ahub: Use of_device_get_match_data
-Message-ID: <20210816183906.GC4253@sirena.org.uk>
-References: <cover.1628971397.git.aakashhemadri123@gmail.com>
- <e568d621c9c05ee23732a6a6f9e3606a780b1707.1628971397.git.aakashhemadri123@gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 760B6F80249
+ for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 20:39:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 760B6F80249
+X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="195501386"
+X-IronPort-AV: E=Sophos;i="5.84,326,1620716400"; d="scan'208";a="195501386"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Aug 2021 11:39:41 -0700
+X-IronPort-AV: E=Sophos;i="5.84,326,1620716400"; d="scan'208";a="470893275"
+Received: from vmartin1-mobl1.amr.corp.intel.com (HELO [10.212.120.166])
+ ([10.212.120.166])
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Aug 2021 11:39:40 -0700
+Subject: Re: [PATCH 5/5] ASoC: Intel: bytcr_rt5640: Add support for HP Elite
+ Pad 1000G2 jack-detect
+To: Hans de Goede <hdegoede@redhat.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
+References: <20210815154935.101178-1-hdegoede@redhat.com>
+ <20210815154935.101178-6-hdegoede@redhat.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <f29d3c63-05ef-73f6-760c-e1b715d96651@linux.intel.com>
+Date: Mon, 16 Aug 2021 08:31:41 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="hHWLQfXTYDoKhP50"
-Content-Disposition: inline
-In-Reply-To: <e568d621c9c05ee23732a6a6f9e3606a780b1707.1628971397.git.aakashhemadri123@gmail.com>
-X-Cookie: Allow 6 to 8 weeks for delivery.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, Bjorn Helgaas <bjorn@helgaas.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Philipp Zabel <p.zabel@pengutronix.de>, Shuah Khan <skhan@linuxfoundation.org>,
- linux-tegra@vger.kernel.org
+In-Reply-To: <20210815154935.101178-6-hdegoede@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, Bard Liao <bard.liao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,34 +87,88 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Hans,
+I am a bit confused by the use of acpi_dev_add_driver_gpios(). You call
+it from the dailink .init function, and you call
+acpi_dev_remove_driver_gpios() from the .exit function.
 
---hHWLQfXTYDoKhP50
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> @@ -1172,9 +1250,60 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
+>  		snd_soc_component_set_jack(component, &priv->jack, NULL);
+>  	}
+>  
+> +	if (byt_rt5640_quirk & BYT_RT5640_JD_HP_ELITEP_1000G2) {
+> +		ret = snd_soc_card_jack_new(card, "Headset",
+> +					    SND_JACK_HEADSET,
+> +					    &priv->jack, rt5640_pins,
+> +					    ARRAY_SIZE(rt5640_pins));
+> +		if (ret)
+> +			return ret;
+> +
+> +		ret = snd_soc_card_jack_new(card, "Headset 2",
+> +					    SND_JACK_HEADSET,
+> +					    &priv->jack2, rt5640_pins2,
+> +					    ARRAY_SIZE(rt5640_pins2));
+> +		if (ret)
+> +			return ret;
+> +
+> +		acpi_dev_add_driver_gpios(ACPI_COMPANION(priv->codec_dev),
+> +					  byt_rt5640_hp_elitepad_1000g2_gpios);
+> +
+> +		rt5640_jack_gpio.data = priv;
+> +		rt5640_jack_gpio.gpiod_dev = priv->codec_dev;
+> +		rt5640_jack_gpio.jack_status_check = byt_rt5640_hp_elitepad_1000g2_jack1_check;
+> +		ret = snd_soc_jack_add_gpios(&priv->jack, 1, &rt5640_jack_gpio);
+> +		if (ret) {
+> +			acpi_dev_remove_driver_gpios(ACPI_COMPANION(priv->codec_dev));
+> +			return ret;
+> +		}
+> +
+> +		rt5640_set_ovcd_params(component);
+> +		rt5640_jack2_gpio.data = component;
+> +		rt5640_jack2_gpio.gpiod_dev = priv->codec_dev;
+> +		rt5640_jack2_gpio.jack_status_check = byt_rt5640_hp_elitepad_1000g2_jack2_check;
+> +		ret = snd_soc_jack_add_gpios(&priv->jack2, 1, &rt5640_jack2_gpio);
+> +		if (ret) {
+> +			snd_soc_jack_free_gpios(&priv->jack, 1, &rt5640_jack_gpio);
+> +			acpi_dev_remove_driver_gpios(ACPI_COMPANION(priv->codec_dev));
+> +			return ret;
+> +		}
+> +	}
+> +
+>  	return 0;
+>  }
+>  
+> +static void byt_rt5640_exit(struct snd_soc_pcm_runtime *runtime)
+> +{
+> +	struct snd_soc_card *card = runtime->card;
+> +	struct byt_rt5640_private *priv = snd_soc_card_get_drvdata(card);
+> +
+> +	if (byt_rt5640_quirk & BYT_RT5640_JD_HP_ELITEP_1000G2) {
+> +		snd_soc_jack_free_gpios(&priv->jack2, 1, &rt5640_jack2_gpio);
+> +		snd_soc_jack_free_gpios(&priv->jack, 1, &rt5640_jack_gpio);
+> +		acpi_dev_remove_driver_gpios(ACPI_COMPANION(priv->codec_dev));
+> +	}
+> +}
 
-On Sun, Aug 15, 2021 at 01:42:18AM +0530, Aakash Hemadri wrote:
+so far so good, but you also add/remove gpios in the machine driver probe
 
-> -	match = of_match_device(tegra30_ahub_of_match, &pdev->dev);
-> +	match = of_device_get_match_data(&pdev->dev);
->  	if (!match)
-
-Thierry, are you sure about your review here?  As others have been
-pointing out of_device_get_match_data() returns match->data while
-of_match_device() returns the device.
-
---hHWLQfXTYDoKhP50
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEasMoACgkQJNaLcl1U
-h9C+Iwf+J9Ygbk55AEmLiBKbA3H+0cbaMUPZPYozas8BV793kLwX6y7eYrFg+CVj
-6vDpzijY3mrdK6fVhJMjwsu/MzEel6qoLiB0EZF21JSUgMdrkCJ/lImAXyD8rh66
-IC9pQo2mnorWs8lEG3QJmnFOY7dH6YGBRwLk/kyffQHkHGzz0D/+kFLBi3Fuy7kP
-d3kBV91h3c11wiRzBe2dPC5/xyO+Gp9nFtLu6OoLCO32YssTPu32x9YUxRXWWsmf
-vEB1G8GNRt66HYr9D0V9LPOjlPGIJLs6Q+F2MRyBPbyzesDGKOzG81mGjPPGfnvU
-pUEDPwZlEw+VtfUzcVZIMhAmrKU29A==
-=//If
------END PGP SIGNATURE-----
-
---hHWLQfXTYDoKhP50--
+> @@ -1490,6 +1620,20 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+>  		return -EPROBE_DEFER;
+>  	priv->codec_dev = get_device(codec_dev);
+>  
+> +	if (byt_rt5640_quirk & BYT_RT5640_JD_HP_ELITEP_1000G2) {
+> +		acpi_dev_add_driver_gpios(ACPI_COMPANION(priv->codec_dev),
+> +					  byt_rt5640_hp_elitepad_1000g2_gpios);
+> +		priv->hsmic_detect = devm_fwnode_gpiod_get(&pdev->dev, codec_dev->fwnode,
+> +							   "headset-mic-detect", GPIOD_IN,
+> +							   "headset-mic-detect");
+> +		acpi_dev_remove_driver_gpios(ACPI_COMPANION(priv->codec_dev));
+> +		if (IS_ERR(priv->hsmic_detect)) {
+> +			ret_val = PTR_ERR(priv->hsmic_detect);
+> +			dev_err_probe(&pdev->dev, ret_val, "getting hsmic-detect GPIO\n");
+> +			goto err_device;
+> +		}
+> +	}
+Does this part need to be part of the machine driver probe, or could it
+be moved in the dailink .init function? Is this because you wanted to
+use devm_ function?
