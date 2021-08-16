@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00ED7C432BE
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:54:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C3C4C4338F
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:54:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E0F3619F6
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:54:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5E0F3619F6
+	by mail.kernel.org (Postfix) with ESMTPS id EB68F617E3
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:54:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EB68F617E3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A0D316A3;
-	Mon, 16 Aug 2021 07:53:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A0D316A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 91C5674C;
+	Mon, 16 Aug 2021 07:53:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91C5674C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629093251;
-	bh=Bgo2d07SdWbKLR4HiUVkIPOJfdikpO7o6q+kWWJfxMk=;
+	s=default; t=1629093282;
+	bh=wdzfLyo8a/18dOZx9nnJ7uFouvOcwJD28rY/kgDgmRU=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PSnuX7L/F9WP1oev33RliU5UreVaCRwh06CVeeiCu+UBfCfGfBP0uEWCFFy+YoBpK
-	 5K8738EfjTqtTSI2iYExJsURYwH0KdBUEIE9syFS+AocqYmoosmi16dyu3V275GMe+
-	 qI1W2JTdwhQqwRcsCB4+yE8N14Tca/n1kV1ibRUw=
+	b=XxiwgEHq6bKcljYP3C0+2cvsude/obe7G4uIuyQ3AwqUn68eK/HcLrdxibYVTYw1O
+	 AeUtxhwLBdpzP3M+Xr+z/jzwuf27yw0Asnh2IdDpFsK/ue0wsM8tP+73gbksIg0nsh
+	 YT3b049s+rGltpa0890cPXOLtQwSvJS6lk+d6QuA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 755DCF804E5;
-	Mon, 16 Aug 2021 06:56:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42F29F804FA;
+	Mon, 16 Aug 2021 06:56:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 65333F80506; Mon, 16 Aug 2021 06:56:19 +0200 (CEST)
+ id 40A69F804EB; Mon, 16 Aug 2021 06:56:09 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 8A715F804FC
- for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 06:56:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A715F804FC
-Date: 16 Aug 2021 13:56:10 +0900
-X-IronPort-AV: E=Sophos;i="5.84,324,1620658800"; d="scan'208";a="90751764"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 16 Aug 2021 13:56:10 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 45B2BF80134
+ for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 06:56:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45B2BF80134
+Date: 16 Aug 2021 13:56:01 +0900
+X-IronPort-AV: E=Sophos;i="5.84,324,1620658800"; d="scan'208";a="90751748"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 16 Aug 2021 13:56:01 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 8F13541B5C0B;
- Mon, 16 Aug 2021 13:56:10 +0900 (JST)
-Message-ID: <87v946yolx.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 82A2F40041AC;
+ Mon, 16 Aug 2021 13:56:01 +0900 (JST)
+Message-ID: <87y292yom6.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 6/9] ASoC: soc-jack: cleanup cppcheck warning at
- snd_soc_jack_report()
+Subject: [PATCH 4/9] ASoC: soc-dai: cleanup cppcheck warning at
+ snd_soc_dai_link_set_capabilities()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <874kbq0z0p.wl-kuninori.morimoto.gx@renesas.com>
@@ -79,36 +79,47 @@ From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 This patch cleanups below cppcheck warning.
 
-sound/soc/soc-jack.c:45:6: style: The scope of the variable 'enable' can be reduced. [variableScope]
- int enable;
-     ^
+sound/soc/soc-dai.c:454:7: style: The scope of the variable 'supported_cpu' can be reduced. [variableScope]
+ bool supported_cpu;
+      ^
+sound/soc/soc-dai.c:455:7: style: The scope of the variable 'supported_codec' can be reduced. [variableScope]
+ bool supported_codec;
+      ^
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-jack.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/soc-dai.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
-index 0f1820f36b4d..11961e35ad02 100644
---- a/sound/soc/soc-jack.c
-+++ b/sound/soc/soc-jack.c
-@@ -42,7 +42,6 @@ void snd_soc_jack_report(struct snd_soc_jack *jack, int status, int mask)
- 	struct snd_soc_dapm_context *dapm;
- 	struct snd_soc_jack_pin *pin;
- 	unsigned int sync = 0;
--	int enable;
+diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
+index a56dcc8d6fb7..a4e1c27a4ed2 100644
+--- a/sound/soc/soc-dai.c
++++ b/sound/soc/soc-dai.c
+@@ -492,18 +492,16 @@ bool snd_soc_dai_stream_valid(struct snd_soc_dai *dai, int dir)
+  */
+ void snd_soc_dai_link_set_capabilities(struct snd_soc_dai_link *dai_link)
+ {
+-	struct snd_soc_dai_link_component *cpu;
+-	struct snd_soc_dai_link_component *codec;
+-	struct snd_soc_dai *dai;
+ 	bool supported[SNDRV_PCM_STREAM_LAST + 1];
+-	bool supported_cpu;
+-	bool supported_codec;
+ 	int direction;
+-	int i;
  
- 	if (!jack)
- 		return;
-@@ -58,7 +57,7 @@ void snd_soc_jack_report(struct snd_soc_jack *jack, int status, int mask)
- 	trace_snd_soc_jack_notify(jack, status);
+ 	for_each_pcm_streams(direction) {
+-		supported_cpu = false;
+-		supported_codec = false;
++		struct snd_soc_dai_link_component *cpu;
++		struct snd_soc_dai_link_component *codec;
++		struct snd_soc_dai *dai;
++		bool supported_cpu = false;
++		bool supported_codec = false;
++		int i;
  
- 	list_for_each_entry(pin, &jack->pins, list) {
--		enable = pin->mask & jack->status;
-+		int enable = pin->mask & jack->status;
- 
- 		if (pin->invert)
- 			enable = !enable;
+ 		for_each_link_cpus(dai_link, i, cpu) {
+ 			dai = snd_soc_find_dai_with_mutex(cpu);
 -- 
 2.25.1
 
