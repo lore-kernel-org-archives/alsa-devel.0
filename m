@@ -2,67 +2,64 @@ Return-Path: <SRS0=rgkk=NH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A1B9C4338F
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:35:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00EA8C4338F
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:54:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 64ABE60230
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:35:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 64ABE60230
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=wanadoo.fr
+	by mail.kernel.org (Postfix) with ESMTPS id 5EB84600CC
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:54:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5EB84600CC
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EEA621737;
-	Mon, 16 Aug 2021 07:35:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EEA621737
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F03916A5;
+	Mon, 16 Aug 2021 07:53:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F03916A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629092156;
-	bh=TY6XfTrSr7L43m8v6gBpGd6nNZY6PU5t1W9naWC1+Io=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=gK8oq5zP/4IV2/6YbAxcHH7O6yGa5ya5Y0kpOSJruckSIHKdyrvInBH8dqw0tbD8v
-	 EQQGbKIjp6Ljqg+o56pZyLzGdpr6BCq2dTCq1FnKPOO2jpWHVfeTtoGNXfrC2weXA5
-	 RJ3Kr7THueR5A1Oz2GJIM6BXokCfrA6cjRQFUhic=
+	s=default; t=1629093251;
+	bh=Ih38F/duR40nrm14B8UlMbSvOfXv6e++HJDGYIfZPio=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=J2nPXEkgI9hv4QW5wDvhbBDyjE23YsVp4xyVsMZfgC6kjBnRECyaywXwEMGkitaN5
+	 V5ZuE7bqpmObpDwCAkbJurEgxGFJ+qXNRFGtv47qhXM8opxLoh7jiqw0GrkAkJYT9K
+	 DlQV2kV148fCYFB5PxwCEcu9yBLVaG2T9k3aR/Sk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A562EF80246;
-	Mon, 16 Aug 2021 07:25:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 46064F80516;
+	Mon, 16 Aug 2021 06:56:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E8056F80249; Mon, 16 Aug 2021 07:25:08 +0200 (CEST)
-Received: from smtp.smtpout.orange.fr (smtp11.smtpout.orange.fr
- [80.12.242.133])
- (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 83746F80134
- for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 07:25:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83746F80134
-Received: from pop-os.home ([90.126.253.178]) by mwinf5d03 with ME
- id i5R22500B3riaq2035R2Vr; Mon, 16 Aug 2021 07:25:04 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 16 Aug 2021 07:25:04 +0200
-X-ME-IP: 90.126.253.178
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: srinivas.kandagatla@linaro.org, bgoswami@codeaurora.org,
- lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- vkoul@kernel.org
-Subject: [PATCH 0/3] ASoC: wcd9335: Firx some resources leak in the probe and
- remove function
-Date: Mon, 16 Aug 2021 07:25:01 +0200
-Message-Id: <cover.1629091028.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org
+ id 0A5C7F80515; Mon, 16 Aug 2021 06:56:28 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id E0AB0F80246
+ for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 06:56:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0AB0F80246
+Date: 16 Aug 2021 13:56:19 +0900
+X-IronPort-AV: E=Sophos;i="5.84,324,1620658800"; d="scan'208";a="90751776"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 16 Aug 2021 13:56:19 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 6CA8841B5BE7;
+ Mon, 16 Aug 2021 13:56:19 +0900 (JST)
+Message-ID: <87sfzayolo.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 8/9] ASoC: soc-component: cleanup cppcheck warning at
+ snd_soc_pcm_component_pm_runtime_get()
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <874kbq0z0p.wl-kuninori.morimoto.gx@renesas.com>
+References: <874kbq0z0p.wl-kuninori.morimoto.gx@renesas.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,29 +75,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The first 2 patches are sraightforward and look logical to me.
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-However, the 3rd one in purely speculative. It is based on the fact that a
-comment states that we enable some irqs on some slave ports. That said, it writes
-0xFF in some registers.
+This patch cleanups below cppcheck warning.
 
-So, I guess that we should disable these irqs when the driver is removed. That
-said, writing 0x00 at the same place looks logical to me.
+sound/soc/soc-component.c:1183:9: style: The scope of the variable 'ret' can be reduced. [variableScope]
+ int i, ret;
+        ^
 
-This cis untested and NOT based on any documentation. Just a blind fix.
-Review with care.
-You'll be warned :)
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/soc-component.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-
-Christophe JAILLET (3):
-  ASoC: wcd9335: Fix a double irq free in the remove function
-  ASoC: wcd9335: Fix a memory leak in the error handling path of the
-    probe function
-  ASoC: wcd9335: Disable irq on slave ports in the remove function
-
- sound/soc/codecs/wcd9335.c | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
-
+diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
+index c8dfd0de30e4..8e8d917d22f8 100644
+--- a/sound/soc/soc-component.c
++++ b/sound/soc/soc-component.c
+@@ -1171,10 +1171,10 @@ int snd_soc_pcm_component_pm_runtime_get(struct snd_soc_pcm_runtime *rtd,
+ 					 void *stream)
+ {
+ 	struct snd_soc_component *component;
+-	int i, ret;
++	int i;
+ 
+ 	for_each_rtd_components(rtd, i, component) {
+-		ret = pm_runtime_get_sync(component->dev);
++		int ret = pm_runtime_get_sync(component->dev);
+ 		if (ret < 0 && ret != -EACCES) {
+ 			pm_runtime_put_noidle(component->dev);
+ 			return soc_component_ret(component, ret);
 -- 
-2.30.2
+2.25.1
 
