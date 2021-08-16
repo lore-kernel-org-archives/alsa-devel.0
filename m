@@ -2,61 +2,56 @@ Return-Path: <SRS0=rgkk=NH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46D0AC4338F
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:20:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E32E0C4338F
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:21:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BB3FD619E5
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:20:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BB3FD619E5
+	by mail.kernel.org (Postfix) with ESMTPS id A74CD615E2
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:21:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A74CD615E2
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8959516D7;
-	Mon, 16 Aug 2021 06:56:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8959516D7
+	by alsa0.perex.cz (Postfix) with ESMTPS id F097616C5;
+	Mon, 16 Aug 2021 06:55:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F097616C5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629089833;
-	bh=3L6RNVVdYgLc3LPu4Pjz9RCx8JcYZQQKanswYab91sM=;
-	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=CRfMdSRyGcE1QXEjzBXDtP5zqXiX+mVP9Y6FuqyZlrp1nRDyxIMRNZIGE16ZhWfan
-	 kuKyEdPQOhxqlV+TQa7Grxi21bhTsXa1GW33UqQhYdi+6vas0Ht+o/dhm80xVNWcFv
-	 zEc7nyzjR/n+s0Z01kBb8lk2fmBPEwU8t86b/wCg=
+	s=default; t=1629089780;
+	bh=0qnkchoEcLAV2jkf4s8Z6VVVkcGurjS80skHkp/YyAY=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=AAKoViHV0xbMnUFggKouG6+pvmExOCWGX1ofdeT1JbSF+QSB+cDXpmkdzwkSDUUhe
+	 pIUOc8dXyyvIz7wMpZP5AU2UPF4wyXlsE3fICo6HEsLIZtIcNp/S6BZuOt1f3KfHog
+	 RnwSJ/cjlhPrBjBVA9uSeOC5jI7hAURQn3iuzJ4w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3E327F802BE;
-	Mon, 16 Aug 2021 06:55:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 856E4F80246;
+	Mon, 16 Aug 2021 06:55:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 39FA0F802C8; Mon, 16 Aug 2021 06:55:58 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 23DA3F80259
- for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 06:55:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23DA3F80259
-Date: 16 Aug 2021 13:55:44 +0900
-X-IronPort-AV: E=Sophos;i="5.84,324,1620658800"; d="scan'208";a="90751717"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 16 Aug 2021 13:55:44 +0900
+ id 45D8FF80249; Mon, 16 Aug 2021 06:55:27 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 8A819F80154
+ for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 06:55:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A819F80154
+Date: 16 Aug 2021 13:55:18 +0900
+X-IronPort-AV: E=Sophos;i="5.84,324,1620658800"; d="scan'208";a="90740420"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 16 Aug 2021 13:55:18 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 7971D4001948;
- Mon, 16 Aug 2021 13:55:44 +0900 (JST)
-Message-ID: <8735ra0yzz.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 419A141B597E;
+ Mon, 16 Aug 2021 13:55:18 +0900 (JST)
+Message-ID: <874kbq0z0p.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 1/9] ASoC: soc-generic-dmaengine-pcm: cleanup cppcheck warning
- at dmaengine_pcm_hw_params()
+Subject: [PATCH 0/9] ASoC: soc-xxx: cleanup cppcheck warning
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
-In-Reply-To: <874kbq0z0p.wl-kuninori.morimoto.gx@renesas.com>
-References: <874kbq0z0p.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -75,40 +70,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-This patch cleanups below cppcheck warning.
+Hi Mark
 
-sound/soc/soc-generic-dmaengine-pcm.c:82:6: style: The scope of the variable 'ret' can be reduced. [variableScope]
- int ret;
-     ^
+Now I'm posting audio-graph-card2 patch-set, but it seems it needs longer
+discussion. Thus I want to post more easy patch first, and reduce my
+local patches.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
----
- sound/soc/soc-generic-dmaengine-pcm.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+These are cppcheck warning cleanup patches for soc-xxx.
 
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index 9ef80a48707e..9949db4649f4 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -79,7 +79,6 @@ static int dmaengine_pcm_hw_params(struct snd_soc_component *component,
- 			struct snd_pcm_hw_params *params,
- 			struct dma_slave_config *slave_config);
- 	struct dma_slave_config slave_config;
--	int ret;
- 
- 	memset(&slave_config, 0, sizeof(slave_config));
- 
-@@ -89,7 +88,7 @@ static int dmaengine_pcm_hw_params(struct snd_soc_component *component,
- 		prepare_slave_config = pcm->config->prepare_slave_config;
- 
- 	if (prepare_slave_config) {
--		ret = prepare_slave_config(substream, params, &slave_config);
-+		int ret = prepare_slave_config(substream, params, &slave_config);
- 		if (ret)
- 			return ret;
- 
+Kuninori Morimoto (9):
+  ASoC: soc-generic-dmaengine-pcm: cleanup cppcheck warning at dmaengine_pcm_hw_params()
+  ASoC: soc-generic-dmaengine-pcm: cleanup cppcheck warning at dmaengine_pcm_new()
+  ASoC: soc-generic-dmaengine-pcm: cleanup cppcheck warning at dmaengine_copy_user()
+  ASoC: soc-dai: cleanup cppcheck warning at snd_soc_dai_link_set_capabilities()
+  ASoC: soc-dai: cleanup cppcheck warning at snd_soc_pcm_dai_new()
+  ASoC: soc-jack: cleanup cppcheck warning at snd_soc_jack_report()
+  ASoC: soc-jack: cleanup cppcheck warning for CONFIG_GPIOLIB
+  ASoC: soc-component: cleanup cppcheck warning at snd_soc_pcm_component_pm_runtime_get()
+  ASoC: soc-ac97: cleanup cppcheck warning
+
+ sound/soc/soc-ac97.c                  | 14 ++++++--------
+ sound/soc/soc-component.c             |  4 ++--
+ sound/soc/soc-dai.c                   | 18 ++++++++----------
+ sound/soc/soc-generic-dmaengine-pcm.c |  9 +++------
+ sound/soc/soc-jack.c                  | 15 +++++++--------
+ 5 files changed, 26 insertions(+), 34 deletions(-)
+
 -- 
 2.25.1
 
