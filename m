@@ -7,51 +7,52 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6262CC4338F
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:01:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E49F2C4338F
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:10:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7E5C860FD8
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:01:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7E5C860FD8
+	by mail.kernel.org (Postfix) with ESMTPS id 4BA93615E2
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 05:10:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4BA93615E2
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E3D211736;
-	Mon, 16 Aug 2021 06:59:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3D211736
+	by alsa0.perex.cz (Postfix) with ESMTPS id 91E891712;
+	Mon, 16 Aug 2021 06:58:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91E891712
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629090028;
-	bh=apEs6HibL5RXzFybGOqF/ACZHVaDDA0E530dXp1wFPY=;
+	s=default; t=1629089966;
+	bh=hyrEaLuWOUJWQ98kn31b8n+jcB6+Mou3uma5nE0bAYQ=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jGdDEWLE0Ea0vl7TVo9XI4vZ0yEtrxdj9MAGNh81EDywpGVmK4u+JJt0Lx+6C5MI3
-	 4tZQ4kVOP7Bp+ZIzHksEFXX/ND4S5SoBsRDuhQEAq1ycQ+LUo/ZdHRyzKN1k7ffHqe
-	 Q5D24Q2AuS0C6lszCKr7TXvIEy42MATm7mSLFvKc=
+	b=BbU8FU9Rr5U3H/q/HdAxkxpwrXIAq10mAZyav/B2Tzr4gRcb0JMSZZa/XyrLJRJet
+	 H5vMyOgR2ahdjvz1L9U7qK88D78MEi2QxdhApCZU4nbDmTHuKZGiRFlQNPji6vQIOo
+	 uNnrYECIp9s1FL5xbvRidhntdwXsfV/EK9RyUbww=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 684B2F8051B;
-	Mon, 16 Aug 2021 06:56:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 731B7F80508;
+	Mon, 16 Aug 2021 06:56:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D32EAF8051C; Mon, 16 Aug 2021 06:56:32 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 573DDF80511
- for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 06:56:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 573DDF80511
-Date: 16 Aug 2021 13:56:23 +0900
-X-IronPort-AV: E=Sophos;i="5.84,324,1620658800"; d="scan'208";a="90751784"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 16 Aug 2021 13:56:23 +0900
+ id 84802F804FF; Mon, 16 Aug 2021 06:56:19 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 5EB76F804E5
+ for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 06:56:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EB76F804E5
+Date: 16 Aug 2021 13:56:06 +0900
+X-IronPort-AV: E=Sophos;i="5.84,324,1620658800"; d="scan'208";a="90740492"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 16 Aug 2021 13:56:06 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id D902241B5BE7;
- Mon, 16 Aug 2021 13:56:23 +0900 (JST)
-Message-ID: <87r1euyolk.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 158384001948;
+ Mon, 16 Aug 2021 13:56:06 +0900 (JST)
+Message-ID: <87wnomyom1.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 9/9] ASoC: soc-ac97: cleanup cppcheck warning
+Subject: [PATCH 5/9] ASoC: soc-dai: cleanup cppcheck warning at
+ snd_soc_pcm_dai_new()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <874kbq0z0p.wl-kuninori.morimoto.gx@renesas.com>
@@ -74,55 +75,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 This patch cleanups below cppcheck warning.
 
-sound/soc/soc-ac97.c:41:15: style: struct member 'snd_ac97_gpio_priv::gpios_set' is never used. [unusedStructMember]
- unsigned int gpios_set;
-              ^
-sound/soc/soc-ac97.c:42:28: style: struct member 'snd_ac97_gpio_priv::component' is never used. [unusedStructMember]
- struct snd_soc_component *component;
-                           ^
+sound/soc/soc-dai.c:553:13: style: Variable 'ret' is assigned a value that is never used. [unreadVariable]
+ int i, ret = 0;
+            ^
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-ac97.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ sound/soc/soc-dai.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-ac97.c b/sound/soc/soc-ac97.c
-index 65db083e242b..5f49e3dec3fc 100644
---- a/sound/soc/soc-ac97.c
-+++ b/sound/soc/soc-ac97.c
-@@ -34,14 +34,6 @@ struct snd_ac97_reset_cfg {
- 	int gpio_reset;
- };
- 
--struct snd_ac97_gpio_priv {
--#ifdef CONFIG_GPIOLIB
--	struct gpio_chip gpio_chip;
--#endif
--	unsigned int gpios_set;
--	struct snd_soc_component *component;
--};
--
- static struct snd_ac97_bus soc_ac97_bus = {
- 	.ops = NULL, /* Gets initialized in snd_soc_set_ac97_ops() */
- };
-@@ -52,6 +44,12 @@ static void soc_ac97_device_release(struct device *dev)
- }
- 
- #ifdef CONFIG_GPIOLIB
-+struct snd_ac97_gpio_priv {
-+	struct gpio_chip gpio_chip;
-+	unsigned int gpios_set;
-+	struct snd_soc_component *component;
-+};
-+
- static inline struct snd_soc_component *gpio_to_component(struct gpio_chip *chip)
+diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
+index a4e1c27a4ed2..3db0fcf24385 100644
+--- a/sound/soc/soc-dai.c
++++ b/sound/soc/soc-dai.c
+@@ -595,11 +595,11 @@ int snd_soc_pcm_dai_remove(struct snd_soc_pcm_runtime *rtd, int order)
+ int snd_soc_pcm_dai_new(struct snd_soc_pcm_runtime *rtd)
  {
- 	struct snd_ac97_gpio_priv *gpio_priv = gpiochip_get_data(chip);
+ 	struct snd_soc_dai *dai;
+-	int i, ret = 0;
++	int i;
+ 
+ 	for_each_rtd_dais(rtd, i, dai) {
+ 		if (dai->driver->pcm_new) {
+-			ret = dai->driver->pcm_new(rtd, dai);
++			int ret = dai->driver->pcm_new(rtd, dai);
+ 			if (ret < 0)
+ 				return soc_dai_ret(dai, ret);
+ 		}
 -- 
 2.25.1
 
