@@ -2,69 +2,61 @@ Return-Path: <SRS0=rgkk=NH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 704DAC4338F
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 04:34:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3EE8C4338F
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 04:58:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E6F0561458
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 04:34:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E6F0561458
+	by mail.kernel.org (Postfix) with ESMTPS id E0941619E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Aug 2021 04:58:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E0941619E0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2E1C716C2;
-	Mon, 16 Aug 2021 06:33:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E1C716C2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 727A216E4;
+	Mon, 16 Aug 2021 06:57:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 727A216E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629088472;
-	bh=rt8ijjUIfaCvw1EVT6ZsW4fFYMcdyq2hScRTUuBID+Y=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1629089872;
+	bh=nuJAsdhRU6GW/E8ThlqpZMJ7gA0fYB0WJcQtMOfvXEM=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=C/r1x2tAvB3hQj01bqsV2hgEHymXwawA0wOphtdYzWwKnOBQyA3SWxjOJGAvUm38Q
-	 lhG7v1ocU3wj6cdmQ25bQazPAPQIyL4MPuA7KUbFSUrfOyz9IxlP7vruJaP3lS6i6J
-	 IRFtkdikS1CulkYTHeUteKbLQVRdNSn4gKaWOIEk=
+	b=L0wFsRbpXlC3ZTM7is9XsrI+Ft8om5NNeAVXHf8iLeqNK+Y/98Z5lWBH/onA0CSdx
+	 GghrStm0khmlq7ViuJhaHF8FMjzeI/Cum/6Jcp8x2WyYPpWi8bDle67Zhltns5P5wH
+	 A2+Aq7IcB5+Yb7xwiY5fyFFFWBdBgkQkdXHlScqs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2E847F80246;
-	Mon, 16 Aug 2021 06:33:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 82609F802C8;
+	Mon, 16 Aug 2021 06:56:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1DA98F80249; Mon, 16 Aug 2021 06:33:35 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 7D407F80154
- for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 06:33:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D407F80154
-Date: 16 Aug 2021 13:33:22 +0900
-X-IronPort-AV: E=Sophos;i="5.84,324,1620658800"; d="scan'208";a="90749727"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 16 Aug 2021 13:33:22 +0900
+ id 1D937F804E1; Mon, 16 Aug 2021 06:56:02 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 48A33F80134
+ for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2021 06:55:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48A33F80134
+Date: 16 Aug 2021 13:55:51 +0900
+X-IronPort-AV: E=Sophos;i="5.84,324,1620658800"; d="scan'208";a="90740471"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 16 Aug 2021 13:55:51 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 12DD741AE7B8;
- Mon, 16 Aug 2021 13:33:22 +0900 (JST)
-Message-ID: <875yw61019.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 742914001948;
+ Mon, 16 Aug 2021 13:55:51 +0900 (JST)
+Message-ID: <871r6u0yzs.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 09/14] ASoC: audio-graph-card2: add Yaml Document
-In-Reply-To: <20210813194325.GH5209@sirena.org.uk>
-References: <87a6mhwyqn.wl-kuninori.morimoto.gx@renesas.com>
- <87wnplvk2a.wl-kuninori.morimoto.gx@renesas.com>
- <CAL_JsqJKZ-sjbnihAkdXDk4tW8xVmyhwkHLHWouZg6da0cc99g@mail.gmail.com>
- <87lf60v9xk.wl-kuninori.morimoto.gx@renesas.com>
- <20210721115433.GB4259@sirena.org.uk>
- <87fsw124wn.wl-kuninori.morimoto.gx@renesas.com>
- <20210803165328.GO4668@sirena.org.uk>
- <87mtpyuj8c.wl-kuninori.morimoto.gx@renesas.com>
- <20210804171748.GC26252@sirena.org.uk>
- <875ywkvkkd.wl-kuninori.morimoto.gx@renesas.com>
- <20210813194325.GH5209@sirena.org.uk>
+Subject: [PATCH 2/9] ASoC: soc-generic-dmaengine-pcm: cleanup cppcheck warning
+ at dmaengine_pcm_new()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <874kbq0z0p.wl-kuninori.morimoto.gx@renesas.com>
+References: <874kbq0z0p.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -83,36 +75,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Hi Mark
+This patch cleanups below cppcheck warning.
 
-Thank you for your feedback.
+sound/soc/soc-generic-dmaengine-pcm.c:233:28: style: The scope of the variable 'substream' can be reduced. [variableScope]
+ struct snd_pcm_substream *substream;
+                           ^
 
-> > rich-graph-card, or rich-link-card is nice for me.
-> Yeah, let's go with that for now.
-
-OK, thanks.
-
-> Can we merge some of these types - for example what happens if we get a
-> CODEC to CODEC link with TDM (eg, a DSP with a link to two mono speakers).
-> I think we should at least be able to merge TDM with anything else, I
-> guess we could have all three if we had a DPCM SoC with two CODECs on a
-> single link though that feels a bit pathological.
-
-Hmm... good question.
-I need to double-check it before posting v3.
-
-For this kind of "complex connection", "DT sample" which can be
-easily use/test is very helpful for user I hope.
-
-> I think you're understanding it right - I'm using DSP to mean a SoC
-> needing DPCM because of the DSP here, sorry that wasn't the clearest way
-> to describe things.
-
-OK, complex enough :)
-
-Thank you for your help !!
-
-Best regards
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
-Kuninori Morimoto
+ sound/soc/soc-generic-dmaengine-pcm.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+index 9949db4649f4..24b240783cf1 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -229,7 +229,6 @@ static int dmaengine_pcm_new(struct snd_soc_component *component,
+ 	struct dmaengine_pcm *pcm = soc_component_to_pcm(component);
+ 	const struct snd_dmaengine_pcm_config *config = pcm->config;
+ 	struct device *dev = component->dev;
+-	struct snd_pcm_substream *substream;
+ 	size_t prealloc_buffer_size;
+ 	size_t max_buffer_size;
+ 	unsigned int i;
+@@ -243,7 +242,7 @@ static int dmaengine_pcm_new(struct snd_soc_component *component,
+ 	}
+ 
+ 	for_each_pcm_streams(i) {
+-		substream = rtd->pcm->streams[i].substream;
++		struct snd_pcm_substream *substream = rtd->pcm->streams[i].substream;
+ 		if (!substream)
+ 			continue;
+ 
+-- 
+2.25.1
+
