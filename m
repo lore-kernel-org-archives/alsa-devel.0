@@ -7,63 +7,63 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42D9AC4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Aug 2021 00:39:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6BA4C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Aug 2021 00:39:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AE98360240
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Aug 2021 00:39:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AE98360240
+	by mail.kernel.org (Postfix) with ESMTPS id 443F560240
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Aug 2021 00:39:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 443F560240
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4B9D21664;
-	Tue, 17 Aug 2021 02:38:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B9D21664
+	by alsa0.perex.cz (Postfix) with ESMTPS id D7B28166E;
+	Tue, 17 Aug 2021 02:38:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D7B28166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629160768;
-	bh=fQjiYcuWvLF6FW+Y5XC25D4MUKcLwqTZf9pVCWMyCJ0=;
+	s=default; t=1629160787;
+	bh=e6bLwZ8VME/Bo1G8rIgHJWKioaurNGR8NfxrbFF0HS0=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=hOwkAMgizhRFnKbfAlzMt7zXCfjPzkQVT4tu+Cf5TZH2KNWrad85UlP0sm0PM43qM
-	 qg74OQyt0/Df1dh3CtBsmixFpRUwCruhNmOWJUY23+Lfatxh5+rQ7HtxFEzLHZWEUq
-	 pkle2pdP223E9mHKitQCuVYoNhWjz50P47f3p02I=
+	b=UVT9gI/MLeSeDdANsFvBdFJjjYWruxQkvlTl0p+CpfBFeUxns5VO4YzHOltj2NTsf
+	 A4abQ0BOkf3a+QoOAhACcNsTkY12T3RZIzKTnw/3/jFqs+F00iUAoj6TiXka85oZ2N
+	 j4e5b2nEnbUK1S4eB6VrvSkl1DMZc6cseIgOJ5R8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B35A4F80515;
-	Tue, 17 Aug 2021 02:36:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42115F8051A;
+	Tue, 17 Aug 2021 02:36:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8903CF80516; Tue, 17 Aug 2021 02:36:27 +0200 (CEST)
+ id 04631F8051A; Tue, 17 Aug 2021 02:36:33 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1242EF80508
- for <alsa-devel@alsa-project.org>; Tue, 17 Aug 2021 02:36:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1242EF80508
+ by alsa1.perex.cz (Postfix) with ESMTPS id DA0ECF80510
+ for <alsa-devel@alsa-project.org>; Tue, 17 Aug 2021 02:36:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA0ECF80510
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="g4BPdVxO"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7105F60F5C;
- Tue, 17 Aug 2021 00:36:16 +0000 (UTC)
+ header.b="Mw1V7xGn"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06E8F60F58;
+ Tue, 17 Aug 2021 00:36:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1629160577;
- bh=fQjiYcuWvLF6FW+Y5XC25D4MUKcLwqTZf9pVCWMyCJ0=;
+ s=k20201202; t=1629160583;
+ bh=e6bLwZ8VME/Bo1G8rIgHJWKioaurNGR8NfxrbFF0HS0=;
  h=From:To:Cc:Subject:Date:From;
- b=g4BPdVxOHFqk5SgEGbWA04rp4eLcMIJDfxikORwoRcfERlvWcu8pi+bu7Yr5LcN3a
- gtvE0pykXoupmWYv1QSpnqDeuqZ0LxXg7djKOs1/DYn2WBsKe1A9xJ8EXByzsfRDyO
- eLEdIIQWzDt+dUxGiR702W3XBLnvpUbmZcb1ocNWTiFaXR/01oTW0Gg7xTxPSa40zt
- 10Fo16nwknIVq6dSycwANNGnBCy/fkV2s6jpT/6RQe74iNfpbv1/EdL6nzI9xveayh
- jT8z3cxpGIpZ8/fA8J/8rg6hpxA0I2vs4WQbUlWg5m0EkjQOQLDaZo7ENC6MWurEa5
- tD1JfTuSMvDVQ==
+ b=Mw1V7xGnDFmoSGXs2lqCLsDIyk61qtYZCuECSHTCpvb75LN7VuBK5dUfu9OjFGCBG
+ VEyYwci45YdsdE1QfApUmeeJ8+lBBNgfn8+7fGbnYEIbddtgmeP5YnPtDW2af0nDRG
+ +3fFbNP2bYQcxUBDwz666+3zojFydxTn8uf01zt79KMtW0ZKmmgQyehCWGgbuMH69U
+ 8gL55wZUforSKLqAhllpa+UIIzUk5pV4WSsl7ocgfsxci6FbOFGTx2q7Am52czo5WT
+ Pq/1CKFAznb7W5MUpY247SJUEwlH51esNDInVZBfK4m0zZW152pogBux5PzwxAJ7sK
+ VJFF3Rxqj2m6Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 1/4] ASoC: wm_adsp: Let
+Subject: [PATCH AUTOSEL 4.14 1/2] ASoC: wm_adsp: Let
  soc_cleanup_component_debugfs remove debugfs
-Date: Mon, 16 Aug 2021 20:36:12 -0400
-Message-Id: <20210817003615.83434-1-sashal@kernel.org>
+Date: Mon, 16 Aug 2021 20:36:20 -0400
+Message-Id: <20210817003621.83520-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 X-stable: review
@@ -106,10 +106,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 deletion(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 02c557e1f779..47a4363ebde9 100644
+index 1516252aa0a5..7ed5f4ef7de0 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -651,7 +651,6 @@ static void wm_adsp2_init_debugfs(struct wm_adsp *dsp,
+@@ -658,7 +658,6 @@ static void wm_adsp2_init_debugfs(struct wm_adsp *dsp,
  static void wm_adsp2_cleanup_debugfs(struct wm_adsp *dsp)
  {
  	wm_adsp_debugfs_clear(dsp);
