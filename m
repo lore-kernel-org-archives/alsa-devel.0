@@ -2,78 +2,68 @@ Return-Path: <SRS0=htQG=NI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02336C4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Aug 2021 14:24:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A532C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Aug 2021 16:42:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 70BDC60F5C
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Aug 2021 14:24:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 70BDC60F5C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id DC0F560F5E
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Aug 2021 16:42:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DC0F560F5E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 97EA61679;
-	Tue, 17 Aug 2021 16:23:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 97EA61679
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D76C828;
+	Tue, 17 Aug 2021 18:41:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D76C828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629210279;
-	bh=R6w9f3DNaAwvzEWdkV1n2SQA2vQEt45LORZO+y06V+Y=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=sGZG/Ak6UqHVYAp74AATOcVKL5YcSOViGveYcVQYtdlu5jnfWFqkJutpOOnx4nCjR
-	 rA9aDTAAoqHBEZX/WD7uMIE0exiIBk96V0Mnx3TiCLfT3nOERGxWhlaR5tPo9NV+jd
-	 9eXdFmbd01jypuDIG8Oqq0zi3REyd8W2InLmLEsk=
+	s=default; t=1629218544;
+	bh=RaWSqPmz0JZTXwCs7ndfDPn8QpnlImCksR05Jdcj5qo=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=P1aTMwYwBvN8qlTbN9ZUzYzoLKuAinPnew+le7sjURkiJmLXW+CmNbEyjTfRX10Pm
+	 JSn4psWFlxQitRhsgMvNOr4s/PiYrLYybdZDOE1pWQkgcGCUUCxrHC5ydr65rzkpdP
+	 xkeZX3JAt6hSDnJzrCtAO+ZAPp/P9jzh2oso296c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6E50DF804EB;
-	Tue, 17 Aug 2021 16:23:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18C54F80163;
+	Tue, 17 Aug 2021 18:41:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0852DF804EC; Tue, 17 Aug 2021 16:23:15 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id AD0A3F802C4; Tue, 17 Aug 2021 18:41:26 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B024AF804E1
- for <alsa-devel@alsa-project.org>; Tue, 17 Aug 2021 16:23:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B024AF804E1
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="YS1wWj4c"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4269A60FA0;
- Tue, 17 Aug 2021 14:23:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1629210185;
- bh=R6w9f3DNaAwvzEWdkV1n2SQA2vQEt45LORZO+y06V+Y=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=YS1wWj4ceAAMHWuKUcRLm/+Xv6lot2Q/PulxXhIz2h7O7QVICDLy2RJqo06zk8S69
- Rk/w7tT5t0nJza7q2zUV0rcZd/GKzfhnGVr263FhjVVFxhm9i9yD3op6r7qmpYwpPY
- NR0JoXcpafteup7W+7E6dxz1YETYvSpXFDxtfSt7NijgVwlkbIy9V4QP5rrM6Y1fje
- AQ5ifhgjg9yfv7s9hnAE/SZII1FZpg0ns2DBYdkhxMI/lkH5A4VejpTcBMZF0a+eg+
- Xw+4i37q0PVtyoNyCcY5dRew7E5qqtTj3++qefRudXmGx7IHWeZhuias2tiPtuczn9
- IFiIEt+Uy7f/g==
-From: Mark Brown <broonie@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>, Biju Das <biju.das.jz@bp.renesas.com>,
- Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH] ASoC: sh: rz-ssi: Fix wrong operator used issue
-Date: Tue, 17 Aug 2021 15:22:35 +0100
-Message-Id: <162920984133.3104.6780936326749389022.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210816182336.29959-1-biju.das.jz@bp.renesas.com>
-References: <20210816182336.29959-1-biju.das.jz@bp.renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0B598F80163
+ for <alsa-devel@alsa-project.org>; Tue, 17 Aug 2021 18:41:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B598F80163
+X-IronPort-AV: E=McAfee;i="6200,9189,10079"; a="279884372"
+X-IronPort-AV: E=Sophos;i="5.84,329,1620716400"; d="scan'208";a="279884372"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Aug 2021 09:41:15 -0700
+X-IronPort-AV: E=Sophos;i="5.84,329,1620716400"; d="scan'208";a="449342692"
+Received: from aaadelek-mobl3.amr.corp.intel.com (HELO
+ pbossart-mobl3.intel.com) ([10.212.12.89])
+ by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Aug 2021 09:41:13 -0700
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [RFC PATCH 0/2] ASoC: soc-pcm: fix trigger race conditions with
+ shared BE
+Date: Tue, 17 Aug 2021 11:40:52 -0500
+Message-Id: <20210817164054.250028-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Geert Uytterhoeven <geert+renesas@glider.be>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Biju Das <biju.das@bp.renesas.com>,
- linux-renesas-soc@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Chris Paterson <Chris.Paterson2@renesas.com>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, tiwai@suse.de,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,38 +79,88 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 16 Aug 2021 19:23:36 +0100, Biju Das wrote:
-> Fix wrong operator used issue reported by Coverity by replacing |
-> operator with & operator.
-> 
-> 
-> 
-> 
+We've been adding a 'deep buffer' PCM device to several SOF topologies
+in order to reduce power consumption. The typical use-case would be
+music playback over a headset: this additional PCM device provides
+more buffering and longer latencies, leaving the rest of the system
+sleep for longer periods. Notifications and 'regular' low-latency
+audio playback would still use the 'normal' PCM device and be mixed
+with the 'deep buffer' before rendering on the headphone endpoint. The
+tentative direction would be to expose this alternate device to
+PulseAudio/PipeWire/CRAS via the UCM SectionModifier definitions.
 
-Applied to
+That seemed a straightforward topology change until our automated
+validation stress tests started reporting issues on SoundWire
+platforms, when e.g. two START triggers might be send and conversely
+the STOP trigger is never sent. The SoundWire stream state management
+flagged inconsistent states when the two 'normal' and 'deep buffer'
+devices are used concurrently with rapid play/stop/pause monkey
+testing.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Looking at the soc-pcm.c code, it seems that the BE state
+management needs a lot of love.
 
-Thanks!
+a) there is no consistent protection for the BE state. In some parts
+of the code, the state updates are protected by a spinlock but in the
+trigger they are not. When we open/play/close the two PCM devices in
+stress tests, we end-up testing a state that is being modified. That
+can't be good.
 
-[1/1] ASoC: sh: rz-ssi: Fix wrong operator used issue
-      commit: 1b5d1d3a2f77250707225509cadc17997bab4353
+b) there is a conceptual deadlock: on stop we check the FE states to
+see if a shared BE can be stopped, but since we trigger the BE first
+the FE states have not been modified yet, so the TRIGGER_STOP is never
+sent.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+This patchset suggests using the same spinlock used in other parts of
+soc-dpcm.c, and the use of a refcount to decide when to trigger the
+BE. With the two patches I am able to run our entire validation suite
+without any issues with this new 'deep buffer' topology.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+One might ask 'how come we didn't see this earlier'? The answer is
+probably that the .trigger callbacks in most implementations seems to
+perform DAPM operations, and sending the triggers multiple times is
+not an issue. In the case of SoundWire, we do use the .trigger
+callback to reconfigure the bus using the 'bank switch' mechanism. It
+could be acceptable to tolerate a trigger multiple times, but the
+deadlock on stop cannot be fixed at the SoundWire layer alone.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Opens:
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+1) is this the right solution? The DPCM code is far from simple, has
+notions such as SND_SOC_DPCM_UPDATE_NO and 'trigger_pending' that I
+have no background on.
 
-Thanks,
-Mark
+2) it's not clear if we need the full-blown spin_lock_irq_save()
+version or just the regular spin_lock()?
+
+3) is this universal? this might break platforms with other types of
+'POST' or 'BESPOKE' trigger.
+
+4) is this ok to proceed with such an incremental fix, or do we have
+to revisit (possibly rewrite) the entire FE-BE interaction?
+
+I chose to send this patchset as an RFC to gather feedback and make
+use others know about DPCM issues. We're going to spend more time on
+this but if others can provide feedback/test results it would be
+greatly appreciated.
+
+Note that these DPCM issues will add more complexity to our SOF
+distribution. We've never hit a case where even recent kernels do not
+support a minor topology change that isn't related to an ABI
+change. We might have to introduce the deep buffer PCM device in a new
+topology file, add a kernel patch to make use of this new file and
+keep the old (w/o deep buffer) and new file (w/ deep buffer) for a
+very long time (not sure when we can assume that all users of SOF
+would transition to 5.15+...)
+
+Pierre-Louis Bossart (2):
+  ASoC: soc-pcm: protect BE dailink state changes in trigger
+  ASoC: soc-pcm: test refcount before triggering
+
+ include/sound/soc-dpcm.h |   2 +
+ sound/soc/soc-pcm.c      | 151 +++++++++++++++++++++++++++++++++------
+ 2 files changed, 130 insertions(+), 23 deletions(-)
+
+-- 
+2.25.1
+
