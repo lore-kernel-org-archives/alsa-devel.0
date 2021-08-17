@@ -2,101 +2,84 @@ Return-Path: <SRS0=htQG=NI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F7A9C4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Aug 2021 09:32:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1ED78C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Aug 2021 10:08:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AF25C60FC3
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Aug 2021 09:32:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AF25C60FC3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id A718A60F58
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Aug 2021 10:08:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A718A60F58
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=diwic.se
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6519414E;
-	Tue, 17 Aug 2021 11:31:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6519414E
+	by alsa0.perex.cz (Postfix) with ESMTPS id A64F915F2;
+	Tue, 17 Aug 2021 12:07:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A64F915F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629192736;
-	bh=HLxdEp5Ymxl9RBPCfo3Bg6jsAaPXeSvhhmL/eIo0rx4=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1629194920;
+	bh=9qIjPnJn/4NCrX0uShFhBIEwAR/ebE7vAbczWCOCDx4=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AffQS6jGDzQbnjD+xmB57ehEz6Q/WZ8aFQcH20UY3wv53RRfTi0+fMjP/hZVGMq7C
-	 xJHEbSgWLsjsmISB5Qjm+u+Ha1PYBtqQMSykFXb4E5BX+bYhHqKY4w0OO9Kklik3rS
-	 81gmUTOZyt3m3qJmyAo3TdjKf+qzES0RAxIHTRnI=
+	b=MA0X+UqXoPrcb/+pja+OwbqfwsYeKcNgoXdDJYa5RvzdNdMaOUoOzE+XlF0Q+nYx6
+	 6mxQXFAtNLAMotf3rVX645eq5XcBUe/KKSJROHPu1Uw3qwtC3EI28LHpmtPv9HFGL8
+	 uDVN8HfVx/NH3Eure1Yj2/qYwzX8+xkjlej4TMpg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D6444F80111;
-	Tue, 17 Aug 2021 11:31:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3634CF8026D;
+	Tue, 17 Aug 2021 12:07:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1CD19F80272; Tue, 17 Aug 2021 11:31:25 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 9215FF80272; Tue, 17 Aug 2021 12:07:48 +0200 (CEST)
+Received: from ns4.inleed.net (mailout4.inleed.net
+ [IPv6:2a0b:dc80:cafe:104::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3029EF80111
- for <alsa-devel@alsa-project.org>; Tue, 17 Aug 2021 11:31:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3029EF80111
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0F4EBF80134
+ for <alsa-devel@alsa-project.org>; Tue, 17 Aug 2021 12:07:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F4EBF80134
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="RlHXwuv1"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17H6CUxx031408; 
- Tue, 17 Aug 2021 04:31:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=M/vJalDQHO5kVs2xF642zBPJzfMjHZE8JSxgabNU7Qk=;
- b=RlHXwuv1PUYv3EAbALAzXVA9u1ivLM7xdMRa4hxB/6voyr81mS/81GTNLl6Km8erEuaU
- 6DCKrcarOF0my/fo3LCj+ospNoXaCjGwxdaV++LP6iYhAq50DYOoJMhLDe4Ng+lHIk79
- Kjpu3RnMu5qDpfrdc+TjUEd5V6TVstNtWUzg/pCmwJcor6VjsRcnYHr2QqGjsuZzM/yc
- iSTtPG1/lOsUeEGkp8LZso8YLfd1Wg5pfQvxkrrFQwS1k1aJaagbhmG+zDUWyXWPEFsB
- CfJf1kIKUSK4bpcsmYg2Ai1s0dH7v0QbHGBniM0OUd905F2LOyy8SE4B9NosMXrTBtQv QA== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 3ag0gdrncc-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 17 Aug 2021 04:31:12 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Tue, 17 Aug
- 2021 10:31:11 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via
- Frontend Transport; Tue, 17 Aug 2021 10:31:11 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 27F7246E;
- Tue, 17 Aug 2021 09:31:10 +0000 (UTC)
-Date: Tue, 17 Aug 2021 09:31:10 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: David Rhodes <drhodes@opensource.cirrus.com>
-Subject: Re: [PATCH v5 1/2] ASoC: cs35l41: CS35L41 Boosted Smart Amplifier
-Message-ID: <20210817093110.GK9223@ediswmail.ad.cirrus.com>
-References: <20210816224310.344931-1-drhodes@opensource.cirrus.com>
- <20210816224310.344931-2-drhodes@opensource.cirrus.com>
+ dkim=pass (2048-bit key) header.d=diwic.se header.i=@diwic.se
+ header.b="RA8/ABIa"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=diwic.se;
+ s=x; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:
+ Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:Content-ID:
+ Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+ :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+ List-Post:List-Owner:List-Archive;
+ bh=R0O0nDozV/7eL+wWnwvl982I9qpYMOqZM0Clfq6kzV8=; b=RA8/ABIalwXfco/x2BX5iz13KI
+ BUksOoW8f6aBqo44QPGB3V97xLwSXTVmUgqJe0tl4/EcEFfFbDs1m1Paqv5ERSJP4Awqtzsta3QkI
+ sRiKWIBOvNz4AL4KJ9evJCmh/ufGtja8RgaVGhxufJMKOIJ2YtWp8Kq+H6hcJqGcU76wzPl/sEL+I
+ VjRheqrCUiebzIRJI7pHEpM/Wqsrqh1nkIqfWf5yElpQrGy5S+fY2MNR9pUP4c1fbl3ijYhwwt0Zn
+ zYg9wTroj0VU/fIoFCd8Tl0udwfdktfbcJHXQINCjS3M9iuDrLxKtZb6WTLBYhyG/8dmoGtZ2zTAS
+ pc9gNinA==;
+Received: from c83-254-143-147.bredband.tele2.se ([83.254.143.147]
+ helo=[192.168.5.6]) by ns4.inleed.net with esmtpsa (TLS1.2) tls
+ TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 (Exim 4.94.2)
+ (envelope-from <coding@diwic.se>)
+ id 1mFw0T-00C15D-F9; Tue, 17 Aug 2021 12:07:41 +0200
+Subject: Re: [PATCH 0/2] alsa-lib patches for rawmidi tstamp framing
+To: Takashi Iwai <tiwai@suse.de>
+References: <20210816160625.17796-1-coding@diwic.se>
+ <s5htujofxaw.wl-tiwai@suse.de>
+From: David Henningsson <coding@diwic.se>
+Message-ID: <458d04a3-5e99-d96f-b930-1b09044656d1@diwic.se>
+Date: Tue, 17 Aug 2021 12:07:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210816224310.344931-2-drhodes@opensource.cirrus.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: eRtlxwt8W2eHlGDtW1hu9e2dun_v9REA
-X-Proofpoint-ORIG-GUID: eRtlxwt8W2eHlGDtW1hu9e2dun_v9REA
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- priorityscore=1501 suspectscore=0
- spamscore=0 clxscore=1011 impostorscore=0 lowpriorityscore=0 phishscore=0
- malwarescore=0 bulkscore=0 mlxscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108170059
-Cc: robh@kernel.org, brian.austin@cirrus.com, patches@opensource.cirrus.com,
- alsa-devel@alsa-project.org, david.rhodes@cirrus.com, broonie@kernel.org,
- pierre-louis.bossart@linux.intel.com
+In-Reply-To: <s5htujofxaw.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Authenticated-Id: coding@diwic.se
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,171 +95,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Aug 16, 2021 at 05:43:09PM -0500, David Rhodes wrote:
-> SoC Audio driver for the Cirrus Logic CS35L41 amplifier
-> 
-> Signed-off-by: David Rhodes <drhodes@opensource.cirrus.com>
-> ---
-> +++ b/sound/soc/codecs/cs35l41-i2c.c
-> @@ -0,0 +1,115 @@
-> +/* SPDX-License-Identifier: GPL-2.0
-> + *
-> + * cs35l41-i2c.c -- CS35l41 I2C driver
-> + *
-> + * Copyright 2017-2021 Cirrus Logic, Inc.
-> + *
-> + * Author: David Rhodes <david.rhodes@cirrus.com>
-> + */
 
-SPDX headers in the C files need to be //, it's apparently some
-tooling thing somewhere that requires the C and H files to be
-different. I believe Mark was suggesting you changed this to look
-like:
+On 2021-08-17 07:35, Takashi Iwai wrote:
+> On Mon, 16 Aug 2021 18:06:23 +0200,
+> David Henningsson wrote:
+>> Well, now that we're about to release a kernel with support for rawmidi tstamp framing,
+>> how about some alsa-lib support for it as well?
+> Sure, that's the missing piece.
+> But, could you give a bit more description to each patch?
+Do you mean commit message?
 
-// SPDX-License-Identifier: GPL-2.0
-//
-// cs35l41-i2c.c -- CS35l41 I2C driver
-//
-// Copyright 2017-2021 Cirrus Logic, Inc.
-//
-// Author: David Rhodes <david.rhodes@cirrus.com>
+I could just write this for patch 1/2 (i e, copy the doc section added 
+in the patch):
 
-> +bool cs35l41_readable_reg(struct device *dev, unsigned int reg)
-> +{
-> +	switch (reg) {
-<snip>
-> +	case CS35L41_TIMER1_CONTROL:
-> +	case CS35L41_TIMER1_COUNT_PRESET:
-> +	case CS35L41_TIMER1_STATUS:
-> +	case CS35L41_TIMER1_COUNT_READBACK:
-> +	case CS35L41_TIMER1_DSP_CLK_CFG:
-> +	case CS35L41_TIMER1_DSP_CLK_STATUS:
-> +	case CS35L41_TIMER2_CONTROL:
-> +	case CS35L41_TIMER2_COUNT_PRESET:
-> +	case CS35L41_TIMER2_STATUS:
-> +	case CS35L41_TIMER2_COUNT_READBACK:
-> +	case CS35L41_TIMER2_DSP_CLK_CFG:
-> +	case CS35L41_TIMER2_DSP_CLK_STATUS:
-> +	case CS35L41_DFT_JTAG_CONTROL:
+Optionally, incoming rawmidi bytes can be put inside a frame of type snd_rawmidi_framing_tstamp_t.
+The main current benefit is that can enable in-kernel timestamping of incoming bytes, and that
+timestamp is likely to be more precise than what userspace can offer.
 
-These should be dropped, these are registers for the firmware
-peripherals and will never be used from the driver.
+Tstamp type framing requires a kernel >= 5.14 and a buffer size that is a multiple of
+sizeof(snd_rawmidi_framing_tstamp_t). It is only available on input streams.
 
-> +static const struct snd_kcontrol_new cs35l41_aud_controls[] = {
-> +	SOC_SINGLE_SX_TLV("Digital PCM Volume", CS35L41_AMP_DIG_VOL_CTRL,
-> +		      3, 0x4CF, 0x391, dig_vol_tlv),
-> +	SOC_SINGLE_TLV("Analog PCM Volume", CS35L41_AMP_GAIN_CTRL, 5, 0x14, 0,
-> +			amp_gain_tlv),
-> +	SOC_ENUM("PCM Soft Ramp", pcm_sft_ramp),
-> +	SOC_SINGLE("Boost Converter Enable", CS35L41_PWR_CTRL2, 4, 3, 0),
+And this for patch 2/2:
 
-Doesn't seem right to have an ALSA control to enable the boost
-converter. Controlling high voltages is definitely something that
-should be under kernel control.
+Adds a "clock type" parameter to the "rawmidi" test program, that when 
+used and combined with -i (and -v to be useful), activates tstamp type 
+framing with the specified clock type.
 
-> +	SOC_SINGLE("Boost Target Voltage", CS35L41_BSTCVRT_VCTRL1, 0, 0xAA, 0),
-
-Ditto here for the boost voltage.
-
-> +	SOC_SINGLE("Weak FET Threshold", CS35L41_WKFET_CFG,
-> +				CS35L41_CH_WKFET_THLD_SHIFT, 0xF, 0),
-> +	SOC_SINGLE("Weak FET Delay", CS35L41_WKFET_CFG,
-> +				CS35L41_CH_WKFET_DLY_SHIFT, 7, 0),
-
-Likewise this weak FET stuff, it looks hardware dependent and
-probably shouldn't be in userspace control, the datasheet states:
-
-  The strength of the output drivers is reduced when operating in a
-  Weak-FET Drive Mode and must not be used to drive a large load.
-
-Which strongly implies to me this should be in DT/driver control.
-
-> +	SOC_SINGLE("Temp Warn Threshold", CS35L41_DTEMP_WARN_THLD,
-> +				0, CS35L41_TEMP_THLD_MASK, 0),
-
-Again temperature warnings don't feel like they should be getting
-set through an ALSA control.
-
-> +static int cs35l41_component_probe(struct snd_soc_component *component)
-> +{
-> +	struct cs35l41_private *cs35l41 =
-> +		snd_soc_component_get_drvdata(component);
-> +
-> +	component->regmap = cs35l41->regmap;
-
-You sure this is necessary? The core should do this for us, its
-only necessary if the regmap is on a different struct device to
-the CODEC which isn't the case in this driver. Also if this is
-necessary it should be using snd_soc_component_init_regmap.
-
-> +static const struct snd_soc_component_driver soc_component_dev_cs35l41 = {
-> +	.name = "cs35l41-codec",
-> +	.probe = cs35l41_component_probe,
-> +
-> +	.dapm_widgets = cs35l41_dapm_widgets,
-> +	.num_dapm_widgets = ARRAY_SIZE(cs35l41_dapm_widgets),
-> +	.dapm_routes = cs35l41_audio_map,
-> +	.num_dapm_routes = ARRAY_SIZE(cs35l41_audio_map),
-> +
-> +	.controls = cs35l41_aud_controls,
-> +	.num_controls = ARRAY_SIZE(cs35l41_aud_controls),
-> +	.set_sysclk = cs35l41_component_set_sysclk,
-> +};
-> +
-> +
-> +
-
-Probably don't need quite so many blank lines here.
-
-> +int cs35l41_probe(struct cs35l41_private *cs35l41,
-> +				struct cs35l41_platform_data *pdata)
-> +{
-> +	u32 regid, reg_revid, i, mtl_revid, int_status, chipid_match;
-> +	int irq_pol = 0;
-> +	int timeout;
-> +	int ret;
-> +
-> +
-
-Extra blank line.
-
-> +	for (i = 0; i < CS35L41_NUM_SUPPLIES; i++)
-> +		cs35l41->supplies[i].supply = cs35l41_supplies[i];
-> +
-> +	ret = devm_regulator_bulk_get(cs35l41->dev, CS35L41_NUM_SUPPLIES,
-> +					cs35l41->supplies);
-> +	if (ret != 0) {
-> +		dev_err(cs35l41->dev,
-> +			"Failed to request core supplies: %d\n",
-> +			ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = regulator_bulk_enable(CS35L41_NUM_SUPPLIES, cs35l41->supplies);
-> +	if (ret != 0) {
-> +		dev_err(cs35l41->dev,
-> +			"Failed to enable core supplies: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	if (pdata) {
-> +		cs35l41->pdata = *pdata;
-> +	} else {
-> +		ret = cs35l41_handle_pdata(cs35l41->dev, &cs35l41->pdata,
-> +					     cs35l41);
-> +		if (ret != 0) {
-> +			ret = -ENODEV;
-> +			goto err;
-> +		}
-> +	}
-
-Any reason to not just parse this before enabling the supplies?
-Parsing the pdata shouldn't require the hardware to be enabled
-all the settings are being applied through set_pdata later on,
-means you can just return on an error as well rather than having
-to disable the supplies again. On the topic of errors any reason
-this sets all errors to ENODEV, why not return the error that
-cs35l41_handle_pdata returned? Seems more helpful.
+I hope this description makes it possible for you to review the patch 
+content as well.
 
 Thanks,
-Charles
+
+// David
+
