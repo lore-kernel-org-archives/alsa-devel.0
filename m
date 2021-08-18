@@ -2,101 +2,84 @@ Return-Path: <SRS0=kMQ4=NJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8358C4338F
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Aug 2021 15:19:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1917C4338F
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Aug 2021 15:28:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DA86E6104F
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Aug 2021 15:19:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DA86E6104F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=panokkel.be
+	by mail.kernel.org (Postfix) with ESMTPS id F3D8A610A1
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Aug 2021 15:28:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F3D8A610A1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 838AD1694;
-	Wed, 18 Aug 2021 17:18:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 838AD1694
+	by alsa0.perex.cz (Postfix) with ESMTPS id 39C8F1689;
+	Wed, 18 Aug 2021 17:27:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39C8F1689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629299973;
-	bh=iQgIItythd5DysvM/wzoV1WOmmN9QTgYHB+roZgovJI=;
-	h=From:Subject:Date:To:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Gd2mlcfSo8zCtjTIqIxyiTmcSyB3ODbdToQFFgKqL1o/I8xCknqJ1zDlqzAoPsco7
-	 5QpW8FZ3EHZyKOGDW4Vz16tKRi5ePZ6wLQXovVzkYO+1qs1pBdjT3Q4cUe/IOdntTS
-	 8aYLFua+Cnh0XKMYtAFo0Bk09+k4sWxfnmTzpxu8=
+	s=default; t=1629300508;
+	bh=pfia9gO0icSDW8FyaA6UM0W2C3cMTPYtsdLnMTmMHPI=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=B4ddApcbx8DGPGYbJq4OwyLGtP9/F/wDx/VYdnjt1GARfbIg/WtHyYcijJm7w7P1c
+	 5UHao2bh0lq075LWVR2uwXxR15feIqBiAImnUjpwaE/6vRVBcCRrWEmyGc9G+cE1mC
+	 Htb0aLco5r5b5FQifQrnn1xZJJUqd8F+YVZ2bCgc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 65B82F80425;
-	Wed, 18 Aug 2021 17:18:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AB4BAF80246;
+	Wed, 18 Aug 2021 17:27:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E3E0BF804E2; Wed, 18 Aug 2021 17:18:28 +0200 (CEST)
-Received: from com-out001.mailprotect.be (com-out001.mailprotect.be
- [83.217.72.83])
+ id 6887AF80249; Wed, 18 Aug 2021 17:27:36 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9F450F804DA
- for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2021 17:18:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F450F804DA
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=mailprotect.be header.i=@mailprotect.be
- header.b="jY5xNxOh"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=mailprotect.be; s=mail; h=To:Date:Message-Id:Subject:Mime-Version:
- Content-Transfer-Encoding:Content-Type:From:reply-to:sender:cc:bcc:
- in-reply-to:references; bh=iQgIItythd5DysvM/wzoV1WOmmN9QTgYHB+roZgovJI=; b=jY
- 5xNxOhoAxmlV4DneVbX5+Jw7gINOelJZMnTkjZkWk9p5TitqPwcvZWnOTFGqVES/Wd+qUMMmcsmhD
- NghlHJSlO+ORmOspFnaXGhYFDKsyYIM90mfB+05wPhLbJ5mjHr3owvSo2FxCjkElpaNe3oHI5yhO6
- uY3vc0cVIoQnq6JLIQ2B40VAMMqzk2X5Xydlolzhr0yFS9ZFwHDIbNhh0dUJTgvJXgmrHS9MTjSg6
- 9ZxBZVVGEUvUxKW233X0rDGvzsfScbwa9mxzQCrVfbRhU9q2qpGokIXZ5+0nrcd7JQpvQisuZyvfJ
- au/pw7vcWZxkz4louVMKZ3bFFY8pTiuQ==;
-Received: from smtp-auth.mailprotect.be ([178.208.39.159])
- by com-mpt-out001.mailprotect.be with esmtp (Exim 4.92)
- (envelope-from <linux@panokkel.be>) id 1mGNKb-000Bzh-BB
- for alsa-devel@alsa-project.org; Wed, 18 Aug 2021 17:18:17 +0200
-Received: from [192.168.0.48] (188.144-179-91.adsl-dyn.isp.belgacom.be
- [91.179.144.188])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by smtp-auth.mailprotect.be (Postfix) with ESMTPSA id 2208BC040F
- for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2021 17:16:27 +0200 (CEST)
-From: Philippe Bekaert <linux@panokkel.be>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: PCM channel names
-Message-Id: <8FD26792-0CE4-4E46-B2A5-E3780FC3B15B@panokkel.be>
-Date: Wed, 18 Aug 2021 17:16:24 +0200
-To: alsa-devel@alsa-project.org
-X-Mailer: Apple Mail (2.3273)
-X-Originating-IP: 178.208.39.159
-X-SpamExperts-Domain: mailprotect.be
-X-SpamExperts-Username: 178.208.39.128/27
-Authentication-Results: mailprotect.be;
- auth=pass smtp.auth=178.208.39.128/27@mailprotect.be
-X-SpamExperts-Outgoing-Class: unsure
-X-SpamExperts-Outgoing-Evidence: Combined (0.38)
-X-Recommended-Action: accept
-X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT/Q5H4Zvcmvl81aCYzOTZhePUtbdvnXkggZ
- 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5wI8D5AnkcPR12/sl/nlqnGQ20HGDJnwk8BgzAUpYTUGKvp
- k7Vp2UXVHEQMIct0liJdJW9puLtvUuoag78dzBFnswKQDamPN66SYe4XX4xmgBmNBHh5pvNozdjh
- iHhZmV6hiiPox9Yu1atsOeRdW0omz0d+/hdeAZZOrheiaMELaayFgolxSvX8PPuD51I4GcLonZtA
- vX1WzENHOSMGSyH29yQ3U0m75sPR68f+76r/Ud8cjIN3reG9z0FKKQ5m2Qooa20mCX0fi2bWQ7rT
- SQDxs5srTnb+Mu57A5wjlqYzGz24rQe9+/XtclLOTVMRq9W72rVlokj9CcZZe4NWxmYtUTBsIV2x
- qb9+rE9eAlaoqpphCjLoM3OhjV6kvTjjyvBdjx85xQq9VD42UbTRudBo31/E3ahF5MMcDI7KdpjQ
- Kb7VhVlAbuQohUsoMB8/9+IvP92yJqFDUMWgYkYfhC80Gwm1A8pCIdnIW9QdjDt5I4lSPGIn6LIh
- 6vfZt6Tuc+uVfVL7ygxIxIEhQBgsu7ia6J1fhOzjF0b4LXcjJZ5loorRYn0ZvHpcLl/OavUi/RGk
- 3lS1t6QdEPz08qMKOQH7sIbE4UiyqJdelX29TgsXf5+ZnvDDYbgvmGdEE1VWx8J8rh7h1s6DSh98
- 40yDjMKs5/gE7OC0au1m7aV/2lYNTueURvP7468+f+EGtWkSZL0nBy/PpUxgSFRPcWxJF+/bGKab
- 80xeVn/GOpnd9ZL3zxrHbsy2AzqLkuSV7xq9g7gUSunMfqfSQSJ4CoLIQdUnIbtf63VNbf0lrvss
- Y+k7AOMp68n5Mxe8trh3A6NtxGO8IkwAXSHU/VLEuRIRyzml0jXsax3qUOPIpGgqdLeqBjA0XAoG
- ECHs14pjPDDBgak9LF0rECLmIIcFbKgxie4a09PDcKZtfuSpOwk1tGwWvHPw17RyTo/iK8p1aZEn
- H6DUdQkQGCPtwXjXyPZWpNzWSy/3tDea9a84QNt8xrcOgd7mq705+GIFeYFzkUqu2/Y=
-X-Report-Abuse-To: spam@com-mpt-mgt001.mailprotect.be
+ by alsa1.perex.cz (Postfix) with ESMTPS id A33F1F80169;
+ Wed, 18 Aug 2021 17:27:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A33F1F80169
+X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="214502372"
+X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; d="scan'208";a="214502372"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Aug 2021 08:25:28 -0700
+X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; d="scan'208";a="449796910"
+Received: from ksawchu-mobl.amr.corp.intel.com (HELO [10.212.83.236])
+ ([10.212.83.236])
+ by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Aug 2021 08:25:26 -0700
+Subject: Re: [RFC PATCH 2/2] ASoC: SOF: trigger re-probing of deferred devices
+ from workqueue
+To: Mark Brown <broonie@kernel.org>
+References: <20210817190057.255264-1-pierre-louis.bossart@linux.intel.com>
+ <20210817190057.255264-3-pierre-louis.bossart@linux.intel.com>
+ <20210818120700.GB4177@sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <3985f754-a0a2-92f7-1585-3b177c172664@linux.intel.com>
+Date: Wed, 18 Aug 2021 10:25:19 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210818120700.GB4177@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ "Rafael J . Wysocki" <rafael@kernel.org>, tiwai@suse.de,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com,
+ vkoul@kernel.org, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Jason Gunthorpe <jgg@nvidia.com>, Dan Williams <dan.j.williams@intel.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>, Christoph Hellwig <hch@lst.de>,
+ "moderated list:SOUND - SOUND OPEN FIRMWARE \(SOF\) DRIVERS"
+ <sound-open-firmware@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,31 +95,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Same context as my previous mail =E2=80=A6
 
-The RME HDSPe cards have a large number of input and outputs for which =
-the standard ALSA channels names and mappings make little sense.=20
 
-Names depend on the card, e.g. Analog.L, Analog.R, AES.1/1 =E2=80=A6 =
-AES.1/8, ADAT.1 =E2=80=A6 ADAT.8 etc=E2=80=A6
+On 8/18/21 7:07 AM, Mark Brown wrote:
+> On Tue, Aug 17, 2021 at 02:00:57PM -0500, Pierre-Louis Bossart wrote:
+> 
+>> +++ b/sound/soc/sof/core.c
+>> @@ -251,6 +251,9 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
+>>  
+>>  	sdev->probe_completed = true;
+>>  
+>> +	/* kick-off re-probing of deferred devices */
+>> +	driver_deferred_probe_trigger();
+>> +
+> 
+> I think we should move this into snd_soc_register_component() - the same
+> issue could occur with any other component, the only other thing I can
+> see kicking in here is the machine driver registration but that ought to
+> kick probe itself anyway.  Or is there some other case here?
 
-Right now, the hdspm driver provides a ad-hoc virtual file in =
-/proc/asound/card<n> containing these names.=20
+Thanks for the suggestion Mark, it would be more consistent indeed to
+kick a re-evaluation of the deferred probe list when ASoC components are
+successfully registered with something like this:
 
-Isn=E2=80=99t there a more generic interface to communicate PCM channel =
-names from driver to user space
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index c830e96afba2..9d6feea7719c 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2677,7 +2677,14 @@ int snd_soc_register_component(struct device *dev,
+        if (ret < 0)
+                return ret;
 
-Same questions as before:
+-       return snd_soc_add_component(component, dai_drv, num_dai);
++       ret = snd_soc_add_component(component, dai_drv, num_dai);
++       if (ret < 0)
++               return ret;
++
++       /* kick-off re-probing of deferred devices */
++       driver_deferred_probe_trigger();
++
++       return 0;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_register_component);
 
-Has anyone been facing similar issues? How have you been solving it? Is =
-there any =E2=80=9Ccommon practice=E2=80=9D or =E2=80=9Chabits=E2=80=9D =
-in this community concerning this topic? Would it make sense to define a =
-kind of generic interface for PCM naming? Then, has anyone an idea or =
-preference how it should look like?
+In the case of this SOF driver, it'd be completely equivalent to what
+this patch suggested, the snd_soc_register_component() is what we do
+last in the workqueue.
 
-Again looking forward to your feedback.
+In the case of 'regular' drivers, the component registration is
+typically done last as well before the end of the probe. This would
+result in 2 evaluations (one on successful ASoC component registration
+and one on successful probe), and maybe on the second evaluation there's
+nothing to do.
 
-Best regards and thanks in advance,
-
-Philippe.
-
+I can't think of any negative side-effects.
