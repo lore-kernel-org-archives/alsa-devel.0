@@ -2,64 +2,67 @@ Return-Path: <SRS0=kMQ4=NJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08307C432BE
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Aug 2021 16:51:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34A1FC4338F
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Aug 2021 17:54:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7BE556023F
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Aug 2021 16:50:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7BE556023F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
+	by mail.kernel.org (Postfix) with ESMTPS id B6A5E61100
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Aug 2021 17:54:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B6A5E61100
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 137CC1697;
-	Wed, 18 Aug 2021 18:50:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 137CC1697
+	by alsa0.perex.cz (Postfix) with ESMTPS id 779CD1697;
+	Wed, 18 Aug 2021 19:53:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 779CD1697
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629305457;
-	bh=H+C5HRL1W26JYW1ePOo251FXVM78KF8792qIuWVToy4=;
+	s=default; t=1629309254;
+	bh=1PdxaWp06Zf1Xx0MXjBNoAEoceqXLG1oWGBvQ2KKlOc=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UNpZjutt25HTo/MTR52CoyKmczuqsuArzSPlLVY8SBu/REkpbV14dJqDDWABfzZoQ
-	 vLK8T84Kngo0KcUO9+YPugypVfvwWmRCA/WtYb5jf5YOojyDQv+3TpXAXkVTvhdDIQ
-	 O6uVfCR+jlzBQQm+wXtL+z/1fkkvcTFjpVA7Vmyg=
+	b=ZEJ3YjVn6NPa7SIZ+QJNkxiFCcjQe5R9PQPjsdI6E9+6Pxs2LuqFLrLeHUsSUQRKP
+	 t+21SH2uQ3pZq3taWJWENJOiEQfxOb3JYSo/jkaLBy46SDVbDbMH3vRwpvCVfGdqWS
+	 5mI34M+mmS2oGuY3aQo3MujxOEFDdlJJKanTul9U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E1EFF80246;
-	Wed, 18 Aug 2021 18:50:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1658F80246;
+	Wed, 18 Aug 2021 19:53:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 666FDF80249; Wed, 18 Aug 2021 18:50:04 +0200 (CEST)
+ id 3D7F5F80249; Wed, 18 Aug 2021 19:53:22 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CC26CF80169
- for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2021 18:49:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC26CF80169
+ by alsa1.perex.cz (Postfix) with ESMTPS id 570E0F800EC
+ for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2021 19:53:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 570E0F800EC
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="1W66Yyss"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BF90610CB;
- Wed, 18 Aug 2021 16:49:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1629305394;
- bh=H+C5HRL1W26JYW1ePOo251FXVM78KF8792qIuWVToy4=;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="SLd31OBj"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0707610FE;
+ Wed, 18 Aug 2021 17:53:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1629309192;
+ bh=1PdxaWp06Zf1Xx0MXjBNoAEoceqXLG1oWGBvQ2KKlOc=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=1W66YysskpVj4mdgZhCaD6Mpek43TxCCguqy7OGT+p4z5oGVaNbvG9dF0nxIHpaVc
- QMPKOl+gPm50Yf6LNwkdkRyk8If8SeoiQw6f9fd/bk3SNg3pLfA8WaL40lsp0f3BPx
- YlmnQlkXuvysNUuCPbBNqA5QiGYwJjoGLdAZ1AaY=
-Date: Wed, 18 Aug 2021 18:49:51 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+ b=SLd31OBjz0uHbH9KlXK8JfjhPgOz+fH3TPjxJpsFbRnXfcn7OiQ87tgPBI27jOhi0
+ +WrXL+xU+PO//dKLvHCTGnBxVmCl1SWh8Efs26bI9aOpHZVpczVpdmF8k5WrLp+QXM
+ 7XQgbPEjfwMVwWrZvP12m0WXRKYK7GSiCwvSnCkf4g0iyJ13REzyfK78DM/VZsonV2
+ 0LTs45/dt6pPeFqxrcrXFRqJpL6JLm3mlQyNkpAB6/wIo84cnCu8/KxryEo8jo4vjG
+ o/kep2w6uY4h+do1hGEi8mMMMziO89FDzVvcS8nBgagD63cSjdhF8bNPWepurPyrok
+ nOmYyfgtEZ4Cg==
+Date: Wed, 18 Aug 2021 18:52:48 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Subject: Re: [RFC PATCH 1/2] driver core: export
  driver_deferred_probe_trigger()
-Message-ID: <YR06L+gTzyiYY/rG@kroah.com>
+Message-ID: <20210818175248.GH4177@sirena.org.uk>
 References: <20210817190057.255264-1-pierre-louis.bossart@linux.intel.com>
  <20210817190057.255264-2-pierre-louis.bossart@linux.intel.com>
  <YRyeR6imvSwOOasQ@kroah.com> <20210818115736.GA4177@sirena.org.uk>
@@ -67,13 +70,18 @@ References: <20210817190057.255264-1-pierre-louis.bossart@linux.intel.com>
  <14235b8d-d375-6e2d-cae9-33adf9c48120@linux.intel.com>
  <YR0nAcC3wJd3b4Vu@kroah.com>
  <be1ea414-b2ad-162d-192a-7b55e40b3754@linux.intel.com>
+ <YR06L+gTzyiYY/rG@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="CNfT9TXqV7nd4cfk"
 Content-Disposition: inline
-In-Reply-To: <be1ea414-b2ad-162d-192a-7b55e40b3754@linux.intel.com>
+In-Reply-To: <YR06L+gTzyiYY/rG@kroah.com>
+X-Cookie: She sells cshs by the cshore.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: alsa-devel@alsa-project.org, "Rafael J . Wysocki" <rafael@kernel.org>,
- tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com,
- vkoul@kernel.org, Mark Brown <broonie@kernel.org>,
+ tiwai@suse.de, linux-kernel@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ liam.r.girdwood@linux.intel.com, vkoul@kernel.org,
  Geert Uytterhoeven <geert@linux-m68k.org>, Jason Gunthorpe <jgg@nvidia.com>,
  Dan Williams <dan.j.williams@intel.com>,
  Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -93,28 +101,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Aug 18, 2021 at 10:53:07AM -0500, Pierre-Louis Bossart wrote:
-> 
-> 
-> 
-> >> a) we have to use request_module()
-> > 
-> > Wait, why?
-> > 
-> > module loading is async, use auto-loading when the hardware/device is
-> > found and reported to userspace.  Forcing a module to load by the kernel
-> > is not always wise as the module is not always present in the filesystem
-> > at that point in time at boot (think modules on the filesystem, not in
-> > the initramfs).
-> > 
-> > Try fixing this issue and maybe it will resolve itself as you should be
-> > working async.
-> 
-> It's been that way for a very long time (2015?) for HDAudio support, see
-> sound/pci/hda/hda_bind.c. It's my understanding that it was a conscious
-> design decision to use vendor-specific modules, if available, and
-> fallback to generic modules if the first pass failed.
 
-If it has been this way for so long, what has caused the sudden change
-to need to export this and call this function?
+--CNfT9TXqV7nd4cfk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Wed, Aug 18, 2021 at 06:49:51PM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Aug 18, 2021 at 10:53:07AM -0500, Pierre-Louis Bossart wrote:
+
+> > It's been that way for a very long time (2015?) for HDAudio support, see
+> > sound/pci/hda/hda_bind.c. It's my understanding that it was a conscious
+> > design decision to use vendor-specific modules, if available, and
+> > fallback to generic modules if the first pass failed.
+
+> If it has been this way for so long, what has caused the sudden change
+> to need to export this and call this function?
+
+The usage predates the hardware that requires firmware downloads -
+that's very new.
+
+--CNfT9TXqV7nd4cfk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEdSPAACgkQJNaLcl1U
+h9DBxgf/amTh9hfO6aFUgwqDOv0qsAVXUkdiweHKmeTccre1+YQ2bhp2YsUM/gB4
+hUEYHxhRPUJcTiEN9dxicfru+l/6Rm0tMpdUok8KtpVa+x7NK87yy14ce02vpjiS
+G9G3k6IHU/R9xP9sXYLFTkY1+Odq1JJYNok+vgdsl39D1pXXOEDpOa0ynOOmAR0+
+/Hs6Rsr+D4SwEjpBHPPeW/xW4g+MnXNzoIh/WP+K+goZAvRXfBIFo60ZjzPf7aHv
+Taq3g9xwOdFXHHHFmTyrZ+4wSNxsEQokzq0O6qKLN79ITljb0hjiy43MN20yeDsG
+h6ygHH2+gfeAdDG2rcHpinneo56wLg==
+=69mB
+-----END PGP SIGNATURE-----
+
+--CNfT9TXqV7nd4cfk--
