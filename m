@@ -5,69 +5,62 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1B43C4338F
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Aug 2021 07:59:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25A63C4338F
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Aug 2021 10:16:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6663060ED5
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Aug 2021 07:59:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6663060ED5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 69B9860F35
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Aug 2021 10:16:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 69B9860F35
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bp.renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 077A91681;
-	Wed, 18 Aug 2021 09:58:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 077A91681
+	by alsa0.perex.cz (Postfix) with ESMTPS id 23256166E;
+	Wed, 18 Aug 2021 12:15:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23256166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629273589;
-	bh=dn29flncw23v5S1lvEnH2rHeW+198k4gg8gos2dwDVE=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=n69LR6rc0NOGDGsnD1SSD48exfeZOCuNTY0sVcdImomOvAWjmdaXTvtozUZKNbXU2
-	 R6yDz9C0NfbBYM/nfrrd4HLs4Ln3x92TfIOjgOaoP18m5dJ/dtCaIiQ8hx8K3hb5sD
-	 8T6iSy00Ay68cWUQH9Xiy49fLPSRDSbM4bNBlNz8=
+	s=default; t=1629281764;
+	bh=0M+yI1SdLihuaQ5BCtUcLSjJP76Le/uhgikfvFZZ+s4=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=m6kzy4JQFLCYsOTNpsxTXxR4a7FBc8UV6WLIKgMj1/hw20gKHQOFSlxtMSbECODSJ
+	 3YssiE4HjF2XUTZac3pSiS/RzTkphNUz/37MW76ylPTysy4xfhcJlTUIgTOTF3sm8F
+	 LnKpp4NI67eqoruQTeShxckDCA8jEASeg9Fxb0m0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4EB25F804E1;
-	Wed, 18 Aug 2021 09:56:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AD406F80169;
+	Wed, 18 Aug 2021 12:15:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3431EF8052E; Wed, 18 Aug 2021 09:56:10 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 33CE0F80425
- for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2021 09:55:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33CE0F80425
-X-IronPort-AV: E=McAfee;i="6200,9189,10079"; a="195855514"
-X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; d="scan'208";a="195855514"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Aug 2021 00:55:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; d="scan'208";a="676974798"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga006.fm.intel.com with ESMTP; 18 Aug 2021 00:55:05 -0700
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 04/11] ASoC: Intel: Skylake: Fix module resource and format
- selection
-Date: Wed, 18 Aug 2021 09:57:35 +0200
-Message-Id: <20210818075742.1515155-5-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210818075742.1515155-1-cezary.rojewski@intel.com>
-References: <20210818075742.1515155-1-cezary.rojewski@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, jairaj.arava@intel.com,
- upstream@semihalf.com, harshapriya.n@intel.com, cujomalainey@google.com,
- tiwai@suse.com, pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com,
- broonie@kernel.org, jenny.tc@intel.com, lma@semihalf.com,
- vamshi.krishna.gopal@intel.com
+ id ED761F80249; Wed, 18 Aug 2021 12:15:11 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 01CFCF80169
+ for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2021 12:15:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01CFCF80169
+X-IronPort-AV: E=Sophos;i="5.84,330,1620658800"; d="scan'208";a="91022020"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 18 Aug 2021 19:14:56 +0900
+Received: from localhost.localdomain (unknown [10.226.93.61])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 3B5D1400F783;
+ Wed, 18 Aug 2021 19:14:53 +0900 (JST)
+From: Biju Das <biju.das.jz@bp.renesas.com>
+To: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v3] ASoC: sh: rz-ssi: Improve error handling in
+ rz_ssi_dma_request function
+Date: Wed, 18 Aug 2021 11:14:50 +0100
+Message-Id: <20210818101450.15948-1-biju.das.jz@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
+Cc: alsa-devel@alsa-project.org, Geert Uytterhoeven <geert+renesas@glider.be>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ linux-renesas-soc@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ Chris Paterson <Chris.Paterson2@renesas.com>,
+ Biju Das <biju.das.jz@bp.renesas.com>, Biju Das <biju.das@bp.renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,86 +76,71 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Module configuration may differ between its instances depending on
-resources required and input and output audio format. Available
-parameters to select from are stored in module resource and interface
-(format) lists. These come from topology, together with description of
-each of pipe's modules.
+dma_request_chan() returns error pointer in case of failures, but
+the rz_ssi_dma_request() checked for NULL pointer instead.
 
-Ignoring index value provided by topology and relying always on 0th
-entry leads to unexpected module behavior due to under/overbudged
-resources assigned or impropper format selection. Fix by taking entry at
-index specified by topology.
+This patch fixes the issue by checking for ERR_PTR() instead of
+NULL and sets the DMA pointers to NULL in error case so that ssi
+can fallback to PIO mode.
 
-Fixes: f6fa56e22559 ("ASoC: Intel: Skylake: Parse and update module config structure")
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Fixes: 26ac471c5354 ("ASoC: sh: rz-ssi: Add SSI DMAC support")
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 ---
- sound/soc/intel/skylake/skl-topology.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+v2->v3:
+ * Added Fixes tag
+ * For SSI with with full-duplex transmission and reception, 
+   Add support for fallback to PIO mode, if both channels are
+   not available.
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 054c080b7289..a35ee9d47d6d 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -113,7 +113,7 @@ static int is_skl_dsp_widget_type(struct snd_soc_dapm_widget *w,
+v1->v2:
+ * Replaced IS_ERR_OR_NULL with IS_ERR for error pointer check, as the
+   dma_request_chan function never returns NULL pointer for error case.
+---
+ sound/soc/sh/rz-ssi.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/sh/rz-ssi.c b/sound/soc/sh/rz-ssi.c
+index f097c773d413..fa0cc08f70ec 100644
+--- a/sound/soc/sh/rz-ssi.c
++++ b/sound/soc/sh/rz-ssi.c
+@@ -185,7 +185,7 @@ rz_ssi_stream_get(struct rz_ssi_priv *ssi, struct snd_pcm_substream *substream)
  
- static void skl_dump_mconfig(struct skl_dev *skl, struct skl_module_cfg *mcfg)
+ static inline bool rz_ssi_is_dma_enabled(struct rz_ssi_priv *ssi)
  {
--	struct skl_module_iface *iface = &mcfg->module->formats[0];
-+	struct skl_module_iface *iface = &mcfg->module->formats[mcfg->fmt_idx];
+-	return (ssi->playback.dma_ch || ssi->capture.dma_ch);
++	return (ssi->playback.dma_ch && (ssi->dma_rt || ssi->capture.dma_ch));
+ }
  
- 	dev_dbg(skl->dev, "Dumping config\n");
- 	dev_dbg(skl->dev, "Input Format:\n");
-@@ -195,8 +195,8 @@ static void skl_tplg_update_params_fixup(struct skl_module_cfg *m_cfg,
- 	struct skl_module_fmt *in_fmt, *out_fmt;
- 
- 	/* Fixups will be applied to pin 0 only */
--	in_fmt = &m_cfg->module->formats[0].inputs[0].fmt;
--	out_fmt = &m_cfg->module->formats[0].outputs[0].fmt;
-+	in_fmt = &m_cfg->module->formats[m_cfg->fmt_idx].inputs[0].fmt;
-+	out_fmt = &m_cfg->module->formats[m_cfg->fmt_idx].outputs[0].fmt;
- 
- 	if (params->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		if (is_fe) {
-@@ -239,9 +239,9 @@ static void skl_tplg_update_buffer_size(struct skl_dev *skl,
- 	/* Since fixups is applied to pin 0 only, ibs, obs needs
- 	 * change for pin 0 only
- 	 */
--	res = &mcfg->module->resources[0];
--	in_fmt = &mcfg->module->formats[0].inputs[0].fmt;
--	out_fmt = &mcfg->module->formats[0].outputs[0].fmt;
-+	res = &mcfg->module->resources[mcfg->res_idx];
-+	in_fmt = &mcfg->module->formats[mcfg->fmt_idx].inputs[0].fmt;
-+	out_fmt = &mcfg->module->formats[mcfg->fmt_idx].outputs[0].fmt;
- 
- 	if (mcfg->m_type == SKL_MODULE_TYPE_SRCINT)
- 		multiplier = 5;
-@@ -1631,11 +1631,12 @@ int skl_tplg_update_pipe_params(struct device *dev,
- 			struct skl_module_cfg *mconfig,
- 			struct skl_pipe_params *params)
+ static int rz_ssi_stream_is_valid(struct rz_ssi_priv *ssi,
+@@ -676,15 +676,26 @@ static void rz_ssi_release_dma_channels(struct rz_ssi_priv *ssi)
+ static int rz_ssi_dma_request(struct rz_ssi_priv *ssi, struct device *dev)
  {
--	struct skl_module_res *res = &mconfig->module->resources[0];
-+	struct skl_module_res *res;
- 	struct skl_dev *skl = get_skl_ctx(dev);
- 	struct skl_module_fmt *format = NULL;
- 	u8 cfg_idx = mconfig->pipe->cur_config_idx;
+ 	ssi->playback.dma_ch = dma_request_chan(dev, "tx");
++	if (IS_ERR(ssi->playback.dma_ch))
++		ssi->playback.dma_ch = NULL;
++
+ 	ssi->capture.dma_ch = dma_request_chan(dev, "rx");
++	if (IS_ERR(ssi->capture.dma_ch))
++		ssi->capture.dma_ch = NULL;
++
+ 	if (!ssi->playback.dma_ch && !ssi->capture.dma_ch) {
+ 		ssi->playback.dma_ch = dma_request_chan(dev, "rt");
+-		if (!ssi->playback.dma_ch)
++		if (IS_ERR(ssi->playback.dma_ch)) {
++			ssi->playback.dma_ch = NULL;
+ 			goto no_dma;
++		}
  
-+	res = &mconfig->module->resources[mconfig->res_idx];
- 	skl_tplg_fill_dma_id(mconfig, params);
- 	mconfig->fmt_idx = mconfig->mod_cfg[cfg_idx].fmt_idx;
- 	mconfig->res_idx = mconfig->mod_cfg[cfg_idx].res_idx;
-@@ -1644,9 +1645,9 @@ int skl_tplg_update_pipe_params(struct device *dev,
- 		return 0;
+ 		ssi->dma_rt = true;
+ 	}
  
- 	if (params->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		format = &mconfig->module->formats[0].inputs[0].fmt;
-+		format = &mconfig->module->formats[mconfig->fmt_idx].inputs[0].fmt;
- 	else
--		format = &mconfig->module->formats[0].outputs[0].fmt;
-+		format = &mconfig->module->formats[mconfig->fmt_idx].outputs[0].fmt;
- 
- 	/* set the hw_params */
- 	format->s_freq = params->s_freq;
++	if (!rz_ssi_is_dma_enabled(ssi))
++		goto no_dma;
++
+ 	if (ssi->playback.dma_ch &&
+ 	    (rz_ssi_dma_slave_config(ssi, ssi->playback.dma_ch, true) < 0))
+ 		goto no_dma;
 -- 
-2.25.1
+2.17.1
 
