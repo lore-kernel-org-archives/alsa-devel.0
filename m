@@ -7,77 +7,78 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B429DC432BE
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Aug 2021 05:52:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4DEDC4338F
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Aug 2021 05:53:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3D5F8610E6
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Aug 2021 05:52:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3D5F8610E6
+	by mail.kernel.org (Postfix) with ESMTPS id 131A561076
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Aug 2021 05:53:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 131A561076
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 78073166D;
-	Wed, 18 Aug 2021 07:51:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78073166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F71D1662;
+	Wed, 18 Aug 2021 07:52:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F71D1662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629265959;
-	bh=Vof9rp4Xf5nmnFkcsd/nQQv/ppl4cjEL4t+6pG9S/Fo=;
+	s=default; t=1629265991;
+	bh=vOKsP1ydg12vPdtyARsaQM9QMJZjkx1FAPPjVqX0D+E=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oN9l51AMGratxd7Et6jt2dk2OO1MQ8N56fQOrSglyW5SVEp4onEWUK4LetrgmnYwD
-	 PYc3uX4xVceOcNicXO63gZYQ+uo39heSpF6JvCckrja4fmTEL00/Ns98j1Ku+dgiT1
-	 6zBBmH2Ce6kKSnhJHLWDaMBzZVqyC+DnOLdF+6mk=
+	b=shgC+rUVEGVf4oUTNPybatOPONL3Yw92X5b56dNe1Eg8hrvigKeMDlj3EoS6tFojd
+	 J0HQQNoHtOt1ZvEWxcRxuPEtwVj5OHGOCwcSCVYT2BB9lXkdCG0frWEVbnTUG2mSL1
+	 mpJLd7avUSZWnYppeFXwb5H1seWi0WjNir4QEsPY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 10FADF800EC;
-	Wed, 18 Aug 2021 07:51:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CA03BF8028D;
+	Wed, 18 Aug 2021 07:52:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B67D9F80249; Wed, 18 Aug 2021 07:51:46 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id BB212F802BE; Wed, 18 Aug 2021 07:51:58 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7591CF800EC
- for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2021 07:51:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7591CF800EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8ED58F80249
+ for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2021 07:51:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8ED58F80249
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="GAHoJJJD"; 
+ header.b="qzAdBGy5"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="nkJDNSlz"
+ header.b="rPqTmXMs"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id DC05E21FF9;
- Wed, 18 Aug 2021 05:51:40 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 3DA581FF84;
+ Wed, 18 Aug 2021 05:51:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1629265900; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1629265912; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=JDYguPju9/kPVOrdvj2ecQ6HV2Um3jbt5Pj+dMvZWls=;
- b=GAHoJJJDoygCHqXZ3aOczRyPolrBFhIQi7V4QXFEUoJgPT3qNv1yB8nTfGd7StoOjSMUrt
- bXeTJKa3fNhRbIsj+LYRi2++mK9lJhtaApZIM8nNIEHUoKHbUd7aXnJGNwx1X7ivm177bq
- 7uX9Ihqq14LRJ8OQ0q4W6vEb22U2DJE=
+ bh=gOBc9QdWJpbD5fpGkPq549vmg28skbux9e9YpodQJTk=;
+ b=qzAdBGy5rYkTSAlLyP4u4NM16KcDyZe2pS/M4qdRjm95dVo1gZXfcFcenf+4CMBtN4OQ7M
+ BirLcIzri6rhp/lWqaKok0Xm5uTddGhr7u+61+lKuU/mcYVwuurDvNhIafSESReMU8qH88
+ sYWdqVpTq3TlNiyVShw4gtRTMFD855M=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1629265900;
+ s=susede2_ed25519; t=1629265912;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=JDYguPju9/kPVOrdvj2ecQ6HV2Um3jbt5Pj+dMvZWls=;
- b=nkJDNSlzTnYWCUouxMfWcX6LbxFTPHHlTHazc1i7Rt/8GMTrECKa4d2Oh/PdqnjLry9IAL
- 3XQf/Dpvs0Pv1FBQ==
+ bh=gOBc9QdWJpbD5fpGkPq549vmg28skbux9e9YpodQJTk=;
+ b=rPqTmXMsZtZur8zJB+j40Z0K0F5HPKvext8Hzc0g/DGEEYOiGipIzbdE+ZMDwx+M+KNlHB
+ aE2qSV6Og6mJioCA==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id BEA82A3B91;
- Wed, 18 Aug 2021 05:51:40 +0000 (UTC)
-Date: Wed, 18 Aug 2021 07:51:40 +0200
-Message-ID: <s5hpmubcnbn.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 30BD2A3B91;
+ Wed, 18 Aug 2021 05:51:52 +0000 (UTC)
+Date: Wed, 18 Aug 2021 07:51:52 +0200
+Message-ID: <s5ho89vcnbb.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Nathan Chancellor <nathan@kernel.org>
-Subject: Re: [PATCH 1/2] ALSA: hda/sigmatel - Sink stac_shutup() into
- stac_suspend()
-In-Reply-To: <20210818012705.311963-1-nathan@kernel.org>
+Subject: Re: [PATCH 2/2] ALSA: hda/analog - Sink ad198x_shutup() and shuffle
+ CONFIG_PM guards
+In-Reply-To: <20210818012705.311963-2-nathan@kernel.org>
 References: <20210818012705.311963-1-nathan@kernel.org>
+ <20210818012705.311963-2-nathan@kernel.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -100,22 +101,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 18 Aug 2021 03:27:04 +0200,
+On Wed, 18 Aug 2021 03:27:05 +0200,
 Nathan Chancellor wrote:
 > 
 > When CONFIG_PM is not set, there is an unused function warning:
 > 
-> sound/pci/hda/patch_sigmatel.c:4383:13: warning: unused function
-> 'stac_shutup' [-Wunused-function]
-> static void stac_shutup(struct hda_codec *codec)
+> sound/pci/hda/patch_analog.c:115:13: warning: unused function
+> 'ad198x_shutup' [-Wunused-function]
+> static void ad198x_shutup(struct hda_codec *codec)
 >             ^
 > 1 warning generated.
 > 
-> Sink the contents of stac_shutup() into stac_suspend() since
-> stac_shutup() is only called in that one location now.
+> Sink ad198x_shutup() into ad198x_suspend(), as it is only called in that
+> one space. Move the CONFIG_PM guards above ad198x_power_eapd_write() as
+> it is only called in ad198x_power_eapd(), which is in turn only called
+> in ad198x_power_eapd(). Those two functions are large enough that they
+> are left alone.
 > 
 > Fixes: 327b34f2a97d ("ALSA: hda: Nuke unused reboot_notify callback")
 > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
 
 Thanks, applied.
 
