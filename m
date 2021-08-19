@@ -2,78 +2,89 @@ Return-Path: <SRS0=W9hU=NK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 638B6C4338F
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Aug 2021 18:35:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5F45C4338F
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Aug 2021 18:44:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6B04F60E76
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Aug 2021 18:35:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6B04F60E76
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=vanheusden.com
+	by mail.kernel.org (Postfix) with ESMTPS id 60F80610A5
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Aug 2021 18:44:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 60F80610A5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3F1C51678;
-	Thu, 19 Aug 2021 20:35:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F1C51678
+	by alsa0.perex.cz (Postfix) with ESMTPS id C39EB1678;
+	Thu, 19 Aug 2021 20:43:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C39EB1678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629398150;
-	bh=RYB1OWiATLy8nVP68r9qP+kO59GgKV6Y7AFx58xwnmw=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1629398664;
+	bh=JmnXvtA27f3HNWDeH3joOjOLqfHZmsqnbaeRmH4xmZw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uq259RhQ24QwgMPfrqGTrwm3jEGMz/NTaoGJPsbSxwpC9hd3QZnN15r+REJPkV/F0
-	 nEzb33Qvdhgp4XqMo81lO6ESe97V37xL+nN7JcKpbFAR6gFQTE3CGSGVgRF9kl88AC
-	 32WGdS+8IWCl5B1l29uxJeaAK2YI76pRFK30AZwU=
+	b=kHWD2IJ7B8v6Xu3k0b1vdIVsbcbMsCdZ28SiG9rSSOywlLABrWoyirOJTKuyazPhY
+	 eFfcmmGfr2AppIStgWpdf3vjT9E2td/UVOBg3uDNOqQMUN2ICfBVlrRqLMdOV0BMKI
+	 KOnkpPRjnwRRFsqZSp3fVxAZqJ0+28ojkbdbUNow=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C05D8F801EC;
-	Thu, 19 Aug 2021 20:34:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B1D2F800EC;
+	Thu, 19 Aug 2021 20:43:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 679ACF8026D; Thu, 19 Aug 2021 20:34:57 +0200 (CEST)
-Received: from lb1-smtp-cloud8.xs4all.net (lb1-smtp-cloud8.xs4all.net
- [194.109.24.21])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 55CC0F800CC; Thu, 19 Aug 2021 20:43:33 +0200 (CEST)
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com
+ [IPv6:2a00:1450:4864:20::12c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7CE67F800EC
- for <alsa-devel@alsa-project.org>; Thu, 19 Aug 2021 20:34:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CE67F800EC
-Received: from cust-b66e5d83 ([IPv6:fc0c:c157:b88d:62c6:5e3c:5f07:82d0:1b4])
- by smtp-cloud8.xs4all.net with ESMTPA
- id GmsNmI7dkUWyVGmsOmpaDg; Thu, 19 Aug 2021 20:34:53 +0200
-Received: from localhost (localhost [127.0.0.1])
- by keetweej.vanheusden.com (Postfix) with ESMTP id 8446D161E54;
- Thu, 19 Aug 2021 20:34:51 +0200 (CEST)
-Received: from keetweej.vanheusden.com ([127.0.0.1])
- by localhost (mauer.intranet.vanheusden.com [127.0.0.1]) (amavisd-new,
- port 10024)
- with ESMTP id aIEWfWhXja_Z; Thu, 19 Aug 2021 20:34:50 +0200 (CEST)
-Received: from belle.intranet.vanheusden.com (belle.intranet.vanheusden.com
- [192.168.64.100])
- by keetweej.vanheusden.com (Postfix) with ESMTP id B5C34161E6B;
- Thu, 19 Aug 2021 20:34:50 +0200 (CEST)
-Received: by belle.intranet.vanheusden.com (Postfix, from userid 1000)
- id A6DF7162DC6; Thu, 19 Aug 2021 20:34:50 +0200 (CEST)
-Date: Thu, 19 Aug 2021 20:34:50 +0200
-From: folkert <folkert@vanheusden.com>
-To: sujith kumar reddy <sujithreddy6192@gmail.com>
-Subject: Re: arecord is failing with -V stereo
-Message-ID: <20210819183450.GV890690@belle.intranet.vanheusden.com>
-References: <CAAd2w=btf3DZLbPuovAC9xo3rizmFeT4iAxJs6zNZwKxOnKT6A@mail.gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1023BF800CC
+ for <alsa-devel@alsa-project.org>; Thu, 19 Aug 2021 20:43:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1023BF800CC
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="WEgNjKT+"
+Received: by mail-lf1-x12c.google.com with SMTP id o10so14937902lfr.11
+ for <alsa-devel@alsa-project.org>; Thu, 19 Aug 2021 11:43:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=c5zVDBtjJvuw3n2j1usmurBdgybO6iB7zH3x0zJhcS4=;
+ b=WEgNjKT+jKwxfCEmWRVI5h0DSy7dl5DMhsaDoroFmJ3u/m9OVUvV++QiAIf/uv07Vx
+ UgCHHJM8/tzRBd64tdY1DHXg2J6YFyS9afWAXBshYv41dUDsCUOd3lyBEaMdu7RcmVXD
+ FyP9KM5+gO2z1y4lqewUHkpmMT4If8VElioNLlkJV6FJGON2XZD/ZNLUjZXGAS61VwtW
+ VRJssnpxugFHB8Gp0w4y4aujqlWGFzfFXZdGXcroXH8rOw2baF28ZY34ow1lyhvTdIq2
+ UkM2kHjYmI1bc3xRO7ONcylSmWRgAYEosO6j4dtIKelF4ECg/QYLN1uPWZJFDGfUBAV+
+ IrXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=c5zVDBtjJvuw3n2j1usmurBdgybO6iB7zH3x0zJhcS4=;
+ b=aYJwYURm8vOP7TiiFmFabCvzfZej1rD79Qu5dF72jsBR1xaZ7vtsOaWf1ANIs6FjZF
+ cZ9VRsqBcJnyJxLQn9sYpn+PcyGx3VVBinxqyl6OuYHp7ibOmIpcdCr0Qp55cZoivvnZ
+ HCKyq1cQ6XIS2ijqpDXOdyPxX1wGHfEKc953t5bo58j9K0cIMjKGOZQWf3k0HYaDtVUC
+ Xi8v+z8xRGLWM5YggtvOdcmcsxCN4xm0SUaLMOsmyCQvBHdLrpvYR3KQ1OWAk6IHpDzc
+ 62FltOhkXLnPRSz5Ip6pss6rqkdvDtRb9OEX5b3dnVV0GAnJ9nm6RbWmrnYLS5oDQ5es
+ ARIQ==
+X-Gm-Message-State: AOAM533epe3KR8/rfa8MyUvIgaGkj8rhygOOwnNqqRmqR1T0CI5zWCIY
+ ELQudo6QbAwbq01uQ6eHK3oupCMNTeBzwVkOMq0=
+X-Google-Smtp-Source: ABdhPJxUzOlnMgY2Xdmm/PplOzBYb7NTqWgZaPz2PooQD8gxWkgavsv8Or3bWWSGtbw0Tf1hGHj1DFX0KsURLA/wcGM=
+X-Received: by 2002:ac2:5470:: with SMTP id e16mr11552167lfn.399.1629398604609; 
+ Thu, 19 Aug 2021 11:43:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAd2w=btf3DZLbPuovAC9xo3rizmFeT4iAxJs6zNZwKxOnKT6A@mail.gmail.com>
-Reply-By: Fri 16 Jul 2021 08:34:34 AM CEST
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-CMAE-Envelope: MS4xfHWjS19mawIN8GoHiGcfMhq0MPssc0IWmjgrA6kysvhXzNZB/fujVcRgDbt9Vxu1Za34ZVb6wC4qLjnH2eVOROd9DBdStmCWTvybAPSjBs3AVIODM+Zt
- aYrxjSN0tg1+Dxsa9iejbaGV/BV+NQWpjLpG+wJrOqKVbfxOZn3vnkqF4/OlIxw3pS5D/FgwHjxixNZoOdq4jk+9G+OEbmM7wpwYSEGzk6FnlsL44OZ+oqNJ
- azDGW3YxutAaA94B4BWpCw==
+References: <CAAd2w=btf3DZLbPuovAC9xo3rizmFeT4iAxJs6zNZwKxOnKT6A@mail.gmail.com>
+ <20210819183450.GV890690@belle.intranet.vanheusden.com>
+In-Reply-To: <20210819183450.GV890690@belle.intranet.vanheusden.com>
+From: sujith kumar reddy <sujithreddy6192@gmail.com>
+Date: Fri, 20 Aug 2021 00:13:12 +0530
+Message-ID: <CAAd2w=YFhiJJ=4nqo7JfbrqdNWVxvSp06E=1XiHOXV8Kp2sgaQ@mail.gmail.com>
+Subject: Re: arecord is failing with -V stereo
+To: folkert <folkert@vanheusden.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
 Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -90,9 +101,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-> arecord is  failing vumeter option -V stereo only.
+1.2.1.2
 
-What version?
-Because the commandline you provide works fine here with 1.2.4-1ubuntu3.
+On Fri, 20 Aug, 2021, 12:04 AM folkert, <folkert@vanheusden.com> wrote:
 
-
+> > arecord is  failing vumeter option -V stereo only.
+>
+> What version?
+> Because the commandline you provide works fine here with 1.2.4-1ubuntu3.
+>
+>
+>
