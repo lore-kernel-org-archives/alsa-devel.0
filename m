@@ -2,65 +2,68 @@ Return-Path: <SRS0=W9hU=NK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C455C4338F
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Aug 2021 08:45:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6909C4338F
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Aug 2021 08:45:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B67C461101
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Aug 2021 08:45:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B67C461101
+	by mail.kernel.org (Postfix) with ESMTPS id 4D3376113E
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Aug 2021 08:45:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4D3376113E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BFE4E168A;
-	Thu, 19 Aug 2021 10:44:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFE4E168A
+	by alsa0.perex.cz (Postfix) with ESMTPS id D9D0A1678;
+	Thu, 19 Aug 2021 10:44:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9D0A1678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629362709;
-	bh=Yy8gPv/5S0CqdpFN6fDHsaFmJ/HeFGpSqP+f+YSNjbY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=UOOe1/C1+pMMgzCANFe2DqhuoJARfhx6IFviKVxS3wKjaLqEp7Z9/2zA8n++wy2b8
-	 XUILc23OBDAFVj2xM47em0NxbJ04oNFrvnSaK41WjOxOINW7ckVJFwnnd5EgMNGdmy
-	 kniAiqXOEeuWzOGCC7QKz8qlzOkpf+VdenDBuxRc=
+	s=default; t=1629362732;
+	bh=WE5kr48GkY1d8NyvUtM0FMlxVFjdI1fwcHOr94ioOds=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=rNXTuDhqi6ktEzz6T1S4dZXCRFv9tRECtZuYURTYb7gWftmQBgWARO79hJm5Muj55
+	 L3pGg9OkHXFZaLs9wucWHlG175pZH88+BAQnUPl4P2pV55cs+gg/9jEvxnjnIhYq12
+	 Dr4xBlNsUJ3fGhMO+6FfMpkOoXiZXyUtZkmeSicI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 763E1F802C4;
-	Thu, 19 Aug 2021 10:43:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C22B5F804EB;
+	Thu, 19 Aug 2021 10:43:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 65A66F804E5; Thu, 19 Aug 2021 10:43:29 +0200 (CEST)
+ id BC15CF804E7; Thu, 19 Aug 2021 10:43:30 +0200 (CEST)
 Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 05DB9F800CC
- for <alsa-devel@alsa-project.org>; Thu, 19 Aug 2021 10:43:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05DB9F800CC
-X-UUID: a441367bdd0d426180cbcfe9dab562bf-20210819
-X-UUID: a441367bdd0d426180cbcfe9dab562bf-20210819
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by
+ by alsa1.perex.cz (Postfix) with ESMTPS id E1E96F8026D
+ for <alsa-devel@alsa-project.org>; Thu, 19 Aug 2021 10:43:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1E96F8026D
+X-UUID: 9692af835df5425c8fa686c94e8177ad-20210819
+X-UUID: 9692af835df5425c8fa686c94e8177ad-20210819
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by
  mailgw01.mediatek.com (envelope-from <trevor.wu@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 2127302238; Thu, 19 Aug 2021 16:43:08 +0800
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+ with ESMTP id 221413215; Thu, 19 Aug 2021 16:43:11 +0800
 Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 19 Aug 2021 16:43:06 +0800
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 19 Aug 2021 16:43:09 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
- Frontend Transport; Thu, 19 Aug 2021 16:43:06 +0800
+ Frontend Transport; Thu, 19 Aug 2021 16:43:09 +0800
 From: Trevor Wu <trevor.wu@mediatek.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
  <robh+dt@kernel.org>, <matthias.bgg@gmail.com>
-Subject: [PATCH v5 00/11] ASoC: mediatek: Add support for MT8195 SoC
-Date: Thu, 19 Aug 2021 16:41:33 +0800
-Message-ID: <20210819084144.18483-1-trevor.wu@mediatek.com>
+Subject: [PATCH v5 07/11] dt-bindings: mediatek: mt8195: add audio afe document
+Date: Thu, 19 Aug 2021 16:41:40 +0800
+Message-ID: <20210819084144.18483-8-trevor.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210819084144.18483-1-trevor.wu@mediatek.com>
+References: <20210819084144.18483-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MTK: N
@@ -84,82 +87,219 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series of patches adds support for Mediatek AFE of MT8195 SoC.
-Patches are based on broonie tree "for-next" branch.
+This patch adds mt8195 audio afe document.
 
-Changes since v4:
-  - removed sof related code
+In order to support dynamic clock reparenting for ADDA and ETDM, PLL
+and MUX clocks are requested even though they are not consumed by afe
+directly.
 
-Changes since v3:
-  - fixed warnings found by kernel test robot
-  - removed unused critical section
-  - corrected the lock protected sections on etdm driver
-  - added DPTX and HDMITX audio support
+Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+---
+This patch depends on the following series that have not been accepted.
 
-Changes since v2:
-  - added audio clock gate control
-  - added 'mediatek' prefix to private dts properties
-  - added consumed clocks to dt-bindins and adopted suggestions from Rob
-  - refined clock usage and remove unused clock and control code
-  - fixed typos
+[1] Mediatek MT8195 clock support
+https://patchwork.kernel.org/project/linux-mediatek/list/?series=501923
+(dt-bindings/clock/mt8195-clk.h is included)
 
-Changes since v1:
-  - fixed some problems related to dt-bindings
-  - added some missing properties to dt-bindings
-  - added depency declaration on dt-bindings
-  - fixed some warnings found by kernel test robot
-
-Trevor Wu (11):
-  ASoC: mediatek: mt8195: update mediatek common driver
-  ASoC: mediatek: mt8195: support audsys clock control
-  ASoC: mediatek: mt8195: support etdm in platform driver
-  ASoC: mediatek: mt8195: support adda in platform driver
-  ASoC: mediatek: mt8195: support pcm in platform driver
-  ASoC: mediatek: mt8195: add platform driver
-  dt-bindings: mediatek: mt8195: add audio afe document
-  ASoC: mediatek: mt8195: add machine driver with mt6359, rt1019 and
-    rt5682
-  ASoC: mediatek: mt8195: add DPTX audio support
-  ASoC: mediatek: mt8195: add HDMITX audio support
-  dt-bindings: mediatek: mt8195: add mt8195-mt6359-rt1019-rt5682
-    document
-
- .../bindings/sound/mt8195-afe-pcm.yaml        |  184 +
- .../sound/mt8195-mt6359-rt1019-rt5682.yaml    |   47 +
- sound/soc/mediatek/Kconfig                    |   24 +
- sound/soc/mediatek/Makefile                   |    1 +
- sound/soc/mediatek/common/mtk-afe-fe-dai.c    |   22 +-
- sound/soc/mediatek/common/mtk-base-afe.h      |   10 +-
- sound/soc/mediatek/mt8195/Makefile            |   15 +
- sound/soc/mediatek/mt8195/mt8195-afe-clk.c    |  441 +++
- sound/soc/mediatek/mt8195/mt8195-afe-clk.h    |  109 +
- sound/soc/mediatek/mt8195/mt8195-afe-common.h |  158 +
- sound/soc/mediatek/mt8195/mt8195-afe-pcm.c    | 3281 +++++++++++++++++
- sound/soc/mediatek/mt8195/mt8195-audsys-clk.c |  214 ++
- sound/soc/mediatek/mt8195/mt8195-audsys-clk.h |   15 +
- .../soc/mediatek/mt8195/mt8195-audsys-clkid.h |   93 +
- sound/soc/mediatek/mt8195/mt8195-dai-adda.c   |  830 +++++
- sound/soc/mediatek/mt8195/mt8195-dai-etdm.c   | 2639 +++++++++++++
- sound/soc/mediatek/mt8195/mt8195-dai-pcm.c    |  389 ++
- .../mt8195/mt8195-mt6359-rt1019-rt5682.c      | 1087 ++++++
- sound/soc/mediatek/mt8195/mt8195-reg.h        | 2796 ++++++++++++++
- 19 files changed, 12350 insertions(+), 5 deletions(-)
+[2] Mediatek MT8195 power domain support
+https://patchwork.kernel.org/project/linux-mediatek/list/?series=500709
+(dt-bindings/power/mt8195-power.h is included)
+---
+---
+ .../bindings/sound/mt8195-afe-pcm.yaml        | 184 ++++++++++++++++++
+ 1 file changed, 184 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
- create mode 100644 Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml
- create mode 100644 sound/soc/mediatek/mt8195/Makefile
- create mode 100644 sound/soc/mediatek/mt8195/mt8195-afe-clk.c
- create mode 100644 sound/soc/mediatek/mt8195/mt8195-afe-clk.h
- create mode 100644 sound/soc/mediatek/mt8195/mt8195-afe-common.h
- create mode 100644 sound/soc/mediatek/mt8195/mt8195-afe-pcm.c
- create mode 100644 sound/soc/mediatek/mt8195/mt8195-audsys-clk.c
- create mode 100644 sound/soc/mediatek/mt8195/mt8195-audsys-clk.h
- create mode 100644 sound/soc/mediatek/mt8195/mt8195-audsys-clkid.h
- create mode 100644 sound/soc/mediatek/mt8195/mt8195-dai-adda.c
- create mode 100644 sound/soc/mediatek/mt8195/mt8195-dai-etdm.c
- create mode 100644 sound/soc/mediatek/mt8195/mt8195-dai-pcm.c
- create mode 100644 sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c
- create mode 100644 sound/soc/mediatek/mt8195/mt8195-reg.h
 
+diff --git a/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml b/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
+new file mode 100644
+index 000000000000..53e9434a6d9d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
+@@ -0,0 +1,184 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/mt8195-afe-pcm.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Mediatek AFE PCM controller for mt8195
++
++maintainers:
++  - Trevor Wu <trevor.wu@mediatek.com>
++
++properties:
++  compatible:
++    const: mediatek,mt8195-audio
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  mediatek,topckgen:
++    $ref: "/schemas/types.yaml#/definitions/phandle"
++    description: The phandle of the mediatek topckgen controller
++
++  power-domains:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: 26M clock
++      - description: audio pll1 clock
++      - description: audio pll2 clock
++      - description: clock divider for i2si1_mck
++      - description: clock divider for i2si2_mck
++      - description: clock divider for i2so1_mck
++      - description: clock divider for i2so2_mck
++      - description: clock divider for dptx_mck
++      - description: a1sys hoping clock
++      - description: audio intbus clock
++      - description: audio hires clock
++      - description: audio local bus clock
++      - description: mux for dptx_mck
++      - description: mux for i2so1_mck
++      - description: mux for i2so2_mck
++      - description: mux for i2si1_mck
++      - description: mux for i2si2_mck
++      - description: audio infra 26M clock
++      - description: infra bus clock
++
++  clock-names:
++    items:
++      - const: clk26m
++      - const: apll1_ck
++      - const: apll2_ck
++      - const: apll12_div0
++      - const: apll12_div1
++      - const: apll12_div2
++      - const: apll12_div3
++      - const: apll12_div9
++      - const: a1sys_hp_sel
++      - const: aud_intbus_sel
++      - const: audio_h_sel
++      - const: audio_local_bus_sel
++      - const: dptx_m_sel
++      - const: i2so1_m_sel
++      - const: i2so2_m_sel
++      - const: i2si1_m_sel
++      - const: i2si2_m_sel
++      - const: infra_ao_audio_26m_b
++      - const: scp_adsp_audiodsp
++
++  mediatek,etdm-in1-chn-disabled:
++    $ref: /schemas/types.yaml#/definitions/uint8-array
++    maxItems: 24
++    description: Specify which input channel should be disabled.
++
++  mediatek,etdm-in2-chn-disabled:
++    $ref: /schemas/types.yaml#/definitions/uint8-array
++    maxItems: 16
++    description: Specify which input channel should be disabled.
++
++patternProperties:
++  "^mediatek,etdm-in[1-2]-mclk-always-on-rate-hz$":
++    description: Specify etdm in mclk output rate for always on case.
++
++  "^mediatek,etdm-out[1-3]-mclk-always-on-rate-hz$":
++    description: Specify etdm out mclk output rate for always on case.
++
++  "^mediatek,etdm-in[1-2]-multi-pin-mode$":
++    type: boolean
++    description: if present, the etdm data mode is I2S.
++
++  "^mediatek,etdm-out[1-3]-multi-pin-mode$":
++    type: boolean
++    description: if present, the etdm data mode is I2S.
++
++  "^mediatek,etdm-in[1-2]-cowork-source$":
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: |
++      etdm modules can share the same external clock pin. Specify
++      which etdm clock source is required by this etdm in moudule.
++    enum:
++      - 0 # etdm1_in
++      - 1 # etdm2_in
++      - 2 # etdm1_out
++      - 3 # etdm2_out
++
++  "^mediatek,etdm-out[1-2]-cowork-source$":
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: |
++      etdm modules can share the same external clock pin. Specify
++      which etdm clock source is required by this etdm out moudule.
++    enum:
++      - 0 # etdm1_in
++      - 1 # etdm2_in
++      - 2 # etdm1_out
++      - 3 # etdm2_out
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - mediatek,topckgen
++  - power-domains
++  - clocks
++  - clock-names
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/mt8195-clk.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/power/mt8195-power.h>
++
++    afe: mt8195-afe-pcm@10890000 {
++        compatible = "mediatek,mt8195-audio";
++        reg = <0x10890000 0x10000>;
++        interrupts = <GIC_SPI 822 IRQ_TYPE_LEVEL_HIGH 0>;
++        mediatek,topckgen = <&topckgen>;
++        power-domains = <&spm MT8195_POWER_DOMAIN_AUDIO>;
++        clocks = <&clk26m>,
++                 <&topckgen CLK_TOP_APLL1>,
++                 <&topckgen CLK_TOP_APLL2>,
++                 <&topckgen CLK_TOP_APLL12_DIV0>,
++                 <&topckgen CLK_TOP_APLL12_DIV1>,
++                 <&topckgen CLK_TOP_APLL12_DIV2>,
++                 <&topckgen CLK_TOP_APLL12_DIV3>,
++                 <&topckgen CLK_TOP_APLL12_DIV9>,
++                 <&topckgen CLK_TOP_A1SYS_HP_SEL>,
++                 <&topckgen CLK_TOP_AUD_INTBUS_SEL>,
++                 <&topckgen CLK_TOP_AUDIO_H_SEL>,
++                 <&topckgen CLK_TOP_AUDIO_LOCAL_BUS_SEL>,
++                 <&topckgen CLK_TOP_DPTX_M_SEL>,
++                 <&topckgen CLK_TOP_I2SO1_M_SEL>,
++                 <&topckgen CLK_TOP_I2SO2_M_SEL>,
++                 <&topckgen CLK_TOP_I2SI1_M_SEL>,
++                 <&topckgen CLK_TOP_I2SI2_M_SEL>,
++                 <&infracfg_ao CLK_INFRA_AO_AUDIO_26M_B>,
++                 <&scp_adsp CLK_SCP_ADSP_AUDIODSP>;
++        clock-names = "clk26m",
++                      "apll1_ck",
++                      "apll2_ck",
++                      "apll12_div0",
++                      "apll12_div1",
++                      "apll12_div2",
++                      "apll12_div3",
++                      "apll12_div9",
++                      "a1sys_hp_sel",
++                      "aud_intbus_sel",
++                      "audio_h_sel",
++                      "audio_local_bus_sel",
++                      "dptx_m_sel",
++                      "i2so1_m_sel",
++                      "i2so2_m_sel",
++                      "i2si1_m_sel",
++                      "i2si2_m_sel",
++                      "infra_ao_audio_26m_b",
++                      "scp_adsp_audiodsp";
++    };
++
++...
 -- 
 2.18.0
 
