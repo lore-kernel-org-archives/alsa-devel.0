@@ -7,78 +7,77 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8289DC432BE
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Aug 2021 19:08:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F08DC4338F
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Aug 2021 19:08:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 06645610A0
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Aug 2021 19:08:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 06645610A0
+	by mail.kernel.org (Postfix) with ESMTPS id AB067610CF
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Aug 2021 19:08:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AB067610CF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9A0AF167B;
-	Thu, 19 Aug 2021 21:07:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A0AF167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3895A16A6;
+	Thu, 19 Aug 2021 21:07:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3895A16A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629400088;
-	bh=l2ZQImoqimhEHwzO1LRTVwpzqnpPAzToQByOdtL+iqY=;
+	s=default; t=1629400112;
+	bh=hvga+axJWJqW9+VOFG8Gzi85sLaYYZ0kCtX/hMc8M5A=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fJkG+yT+1en4yk6lPoMPkUA6Vp+rAR1CC2Im8LcrMF72DA1zqXnOxgIqVUmS7npm0
-	 QbyCQVn3o4Sj8HT9DWOt2IYBRfaoRAEZWdBsG2N0rYDeAIBkCbf7je02mLJzEwBau5
-	 45K+qRrpqbNZB5sXf9Vm5cV4AzqWRqez9wFVNkto=
+	b=s4UwWqORZ++ApG8i39bgfe+L6d8B3cIe8fFbIB4cci37bkQtSXu5T4x+nX9nDdHcm
+	 qMohbt/Yznv2FW7a/9/g25HRMbP635gwIY5KWneVDHYrQRMRgQUp8na/zgBbRummUH
+	 ICatdqprYzQROB0K+NXTs/lajcGhr/pJOM0DDvKo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8D756F804ED;
-	Thu, 19 Aug 2021 21:06:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1E909F804F3;
+	Thu, 19 Aug 2021 21:06:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3F875F804E7; Thu, 19 Aug 2021 21:06:03 +0200 (CEST)
+ id 86581F804EC; Thu, 19 Aug 2021 21:06:04 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 453FFF80302
- for <alsa-devel@alsa-project.org>; Thu, 19 Aug 2021 21:05:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 453FFF80302
+ by alsa1.perex.cz (Postfix) with ESMTPS id E2C57F804BC
+ for <alsa-devel@alsa-project.org>; Thu, 19 Aug 2021 21:06:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2C57F804BC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="jLcuQ6OG"
+ header.b="gWVwzkL0"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1629399956;
+ s=mimecast20190719; t=1629399959;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=q/wFSM5HUSlNuBm24c8q+JPAYgBJqsNR6+FFGNtZnXg=;
- b=jLcuQ6OGabwTwmsirmkK8j5y9V8ocjYYzDMEmCn50LIbaGOPydw4D+5SrqyaqTj61bPprM
- LpVs/cqcjkVapSFEI7r1VQtbMn4wpvQmTj9jxKfkIBffQpCwck7Zc4dS5OjclD3KbXRiiV
- w46CJmNXAfA/kgHilwu5OyiotyP3mqQ=
+ bh=9SHT6FFBsUwKLbgwGehf0AwT5WuSAIlWg7kSEwZuUP8=;
+ b=gWVwzkL0nSEf88MkgFtWOOWmeUsV5ecUdkvpXoSsJch+NK315Hf7naQ2lohEBxPX1DAm3F
+ JnecXDkZSqnVNJ0ys3KuDZRVfG5zi/hAcYdvxFb7iVj34LLx/jXJ99t0MuAPzP40E2WyBu
+ jzxYsrLjzED1reqcLO16ldG7Cohkcao=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-461-cP3epNkXOzSrDJtFZtvAYg-1; Thu, 19 Aug 2021 15:05:52 -0400
-X-MC-Unique: cP3epNkXOzSrDJtFZtvAYg-1
+ us-mta-408-xZOJJ0bePueW6EzKSMOtpw-1; Thu, 19 Aug 2021 15:05:56 -0400
+X-MC-Unique: xZOJJ0bePueW6EzKSMOtpw-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com
  [10.5.11.23])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5275493921;
- Thu, 19 Aug 2021 19:05:51 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3ACB8190B2A0;
+ Thu, 19 Aug 2021 19:05:55 +0000 (UTC)
 Received: from x1.localdomain.com (unknown [10.39.192.43])
- by smtp.corp.redhat.com (Postfix) with ESMTP id A3619163C9;
- Thu, 19 Aug 2021 19:05:49 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 8C8D61971B;
+ Thu, 19 Aug 2021 19:05:53 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH v2 2/6] ASoC: rt5640: Delay requesting IRQ until the
- machine-drv calls set_jack
-Date: Thu, 19 Aug 2021 21:05:39 +0200
-Message-Id: <20210819190543.784415-3-hdegoede@redhat.com>
+Subject: [PATCH v2 4/6] ASoC: rt5640: Add rt5640_set_ovcd_params() helper
+Date: Thu, 19 Aug 2021 21:05:41 +0200
+Message-Id: <20210819190543.784415-5-hdegoede@redhat.com>
 In-Reply-To: <20210819190543.784415-1-hdegoede@redhat.com>
 References: <20210819190543.784415-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -106,90 +105,125 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Delay requesting the IRQ until the machine-drv calls set_jack.
+Some devices don't use the builtin jack-detect but can still benefit
+from the mic-bias-current over-current-detection to differentiate
+between headphones vs a headset.
 
-The main reason for this is that the codec's IRQ is unused on some boards,
-in which case we really should not call request_irq at all.
-
-On some boards there is an IRQ listed at index 0 for the codec, but
-this is not connected to the codec, but rather is directly connected
-to the jack's jack-detect pin. These special setups will be handled
-by the machine-driver, but the machine driver can only request the IRQ
-if it is not first requested by the codec driver. Moving the request_irq
-to the set_jack callback (which will not get called in this case) avoids
-the codec-driver clobbering the IRQ.
-
-Moving the request_irq also removes the need to disable the IRQ immediately
-after requesting it, avoiding a small race (this could also have been fixed
-by using the new IRQF_NO_AUTOEN flag when requesting the IRQ).
+Move the ovcd init code from rt5640_enable_jack_detect() into a new
+rt5640_set_ovcd_params() helper and export this helper as well
+as a couple of related ovcd functions.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/codecs/rt5640.c | 30 +++++++++++++-----------------
- 1 file changed, 13 insertions(+), 17 deletions(-)
+ sound/soc/codecs/rt5640.c | 50 +++++++++++++++++++++++----------------
+ sound/soc/codecs/rt5640.h |  4 ++++
+ 2 files changed, 34 insertions(+), 20 deletions(-)
 
 diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index 5439f771eef5..d32e9d69231c 100644
+index 04820af03ae8..cd1db5caabad 100644
 --- a/sound/soc/codecs/rt5640.c
 +++ b/sound/soc/codecs/rt5640.c
-@@ -2373,7 +2373,7 @@ static void rt5640_disable_jack_detect(struct snd_soc_component *component)
- 	if (!rt5640->jack)
- 		return;
+@@ -2093,7 +2093,7 @@ int rt5640_sel_asrc_clk_src(struct snd_soc_component *component,
+ }
+ EXPORT_SYMBOL_GPL(rt5640_sel_asrc_clk_src);
  
--	disable_irq(rt5640->irq);
-+	free_irq(rt5640->irq, rt5640);
- 	rt5640_cancel_work(rt5640);
+-static void rt5640_enable_micbias1_for_ovcd(struct snd_soc_component *component)
++void rt5640_enable_micbias1_for_ovcd(struct snd_soc_component *component)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
  
- 	if (rt5640->jack->status & SND_JACK_MICROPHONE) {
-@@ -2389,6 +2389,7 @@ static void rt5640_enable_jack_detect(struct snd_soc_component *component,
- 				      struct snd_soc_jack *jack)
+@@ -2105,8 +2105,9 @@ static void rt5640_enable_micbias1_for_ovcd(struct snd_soc_component *component)
+ 	snd_soc_dapm_sync_unlocked(dapm);
+ 	snd_soc_dapm_mutex_unlock(dapm);
+ }
++EXPORT_SYMBOL_GPL(rt5640_enable_micbias1_for_ovcd);
+ 
+-static void rt5640_disable_micbias1_for_ovcd(struct snd_soc_component *component)
++void rt5640_disable_micbias1_for_ovcd(struct snd_soc_component *component)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
+ 
+@@ -2117,6 +2118,7 @@ static void rt5640_disable_micbias1_for_ovcd(struct snd_soc_component *component
+ 	snd_soc_dapm_sync_unlocked(dapm);
+ 	snd_soc_dapm_mutex_unlock(dapm);
+ }
++EXPORT_SYMBOL_GPL(rt5640_disable_micbias1_for_ovcd);
+ 
+ static void rt5640_enable_micbias1_ovcd_irq(struct snd_soc_component *component)
+ {
+@@ -2368,6 +2370,31 @@ static void rt5640_cancel_work(void *data)
+ 	cancel_delayed_work_sync(&rt5640->bp_work);
+ }
+ 
++void rt5640_set_ovcd_params(struct snd_soc_component *component)
++{
++	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
++
++	snd_soc_component_write(component, RT5640_PR_BASE + RT5640_BIAS_CUR4,
++		0xa800 | rt5640->ovcd_sf);
++
++	snd_soc_component_update_bits(component, RT5640_MICBIAS,
++		RT5640_MIC1_OVTH_MASK | RT5640_MIC1_OVCD_MASK,
++		rt5640->ovcd_th | RT5640_MIC1_OVCD_EN);
++
++	/*
++	 * The over-current-detect is only reliable in detecting the absence
++	 * of over-current, when the mic-contact in the jack is short-circuited,
++	 * the hardware periodically retries if it can apply the bias-current
++	 * leading to the ovcd status flip-flopping 1-0-1 with it being 0 about
++	 * 10% of the time, as we poll the ovcd status bit we might hit that
++	 * 10%, so we enable sticky mode and when checking OVCD we clear the
++	 * status, msleep() a bit and then check to get a reliable reading.
++	 */
++	snd_soc_component_update_bits(component, RT5640_IRQ_CTRL2,
++		RT5640_MB1_OC_STKY_MASK, RT5640_MB1_OC_STKY_EN);
++}
++EXPORT_SYMBOL_GPL(rt5640_set_ovcd_params);
++
+ static void rt5640_disable_jack_detect(struct snd_soc_component *component)
  {
  	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
-+	int ret;
+@@ -2415,24 +2442,7 @@ static void rt5640_enable_jack_detect(struct snd_soc_component *component,
+ 	/* Enabling jd2 in general control 2 */
+ 	snd_soc_component_write(component, RT5640_DUMMY2, 0x4001);
  
- 	/* Select JD-source */
- 	snd_soc_component_update_bits(component, RT5640_JD_CTRL,
-@@ -2446,7 +2447,17 @@ static void rt5640_enable_jack_detect(struct snd_soc_component *component,
- 		rt5640_enable_micbias1_ovcd_irq(component);
- 	}
- 
--	enable_irq(rt5640->irq);
-+	ret = request_irq(rt5640->irq, rt5640_irq,
-+			  IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
-+			  "rt5640", rt5640);
-+	if (ret) {
-+		dev_warn(component->dev, "Failed to reguest IRQ %d: %d\n", rt5640->irq, ret);
-+		rt5640->irq = -ENXIO;
-+		/* Undo above settings */
-+		rt5640_disable_jack_detect(component);
-+		return;
-+	}
-+
- 	/* sync initial jack state */
- 	queue_work(system_long_wq, &rt5640->jack_work);
- }
-@@ -2836,21 +2847,6 @@ static int rt5640_i2c_probe(struct i2c_client *i2c,
- 	if (ret)
- 		return ret;
- 
--	if (rt5640->irq) {
--		/* enabled by rt5640_set_jack() */
--		ret = devm_request_irq(&i2c->dev, rt5640->irq, rt5640_irq,
--				       IRQF_TRIGGER_RISING | IRQF_NO_AUTOEN |
--				       IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
--				       "rt5640", rt5640);
--		if (ret) {
--			dev_err(&i2c->dev, "Failed to request IRQ %d: %d\n",
--				rt5640->irq, ret);
--			return ret;
--		}
--	} else {
--		rt5640->irq = -ENXIO;
--	}
+-	snd_soc_component_write(component, RT5640_PR_BASE + RT5640_BIAS_CUR4,
+-		0xa800 | rt5640->ovcd_sf);
 -
- 	return devm_snd_soc_register_component(&i2c->dev,
- 				      &soc_component_dev_rt5640,
- 				      rt5640_dai, ARRAY_SIZE(rt5640_dai));
+-	snd_soc_component_update_bits(component, RT5640_MICBIAS,
+-		RT5640_MIC1_OVTH_MASK | RT5640_MIC1_OVCD_MASK,
+-		rt5640->ovcd_th | RT5640_MIC1_OVCD_EN);
+-
+-	/*
+-	 * The over-current-detect is only reliable in detecting the absence
+-	 * of over-current, when the mic-contact in the jack is short-circuited,
+-	 * the hardware periodically retries if it can apply the bias-current
+-	 * leading to the ovcd status flip-flopping 1-0-1 with it being 0 about
+-	 * 10% of the time, as we poll the ovcd status bit we might hit that
+-	 * 10%, so we enable sticky mode and when checking OVCD we clear the
+-	 * status, msleep() a bit and then check to get a reliable reading.
+-	 */
+-	snd_soc_component_update_bits(component, RT5640_IRQ_CTRL2,
+-		RT5640_MB1_OC_STKY_MASK, RT5640_MB1_OC_STKY_EN);
++	rt5640_set_ovcd_params(component);
+ 
+ 	/*
+ 	 * All IRQs get or-ed together, so we need the jack IRQ to report 0
+diff --git a/sound/soc/codecs/rt5640.h b/sound/soc/codecs/rt5640.h
+index 4d19997dd684..2c28f83e338a 100644
+--- a/sound/soc/codecs/rt5640.h
++++ b/sound/soc/codecs/rt5640.h
+@@ -2157,6 +2157,10 @@ int rt5640_dmic_enable(struct snd_soc_component *component,
+ 		       bool dmic1_data_pin, bool dmic2_data_pin);
+ int rt5640_sel_asrc_clk_src(struct snd_soc_component *component,
+ 		unsigned int filter_mask, unsigned int clk_src);
++
++void rt5640_set_ovcd_params(struct snd_soc_component *component);
++void rt5640_enable_micbias1_for_ovcd(struct snd_soc_component *component);
++void rt5640_disable_micbias1_for_ovcd(struct snd_soc_component *component);
+ int rt5640_detect_headset(struct snd_soc_component *component, struct gpio_desc *hp_det_gpio);
+ 
+ #endif
 -- 
 2.31.1
 
