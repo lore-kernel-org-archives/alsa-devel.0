@@ -2,87 +2,76 @@ Return-Path: <SRS0=W9hU=NK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C059FC4338F
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Aug 2021 15:36:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 807A5C4338F
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Aug 2021 15:41:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3678560FE8
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Aug 2021 15:36:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3678560FE8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id E05C660EB5
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Aug 2021 15:41:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E05C660EB5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 42F141681;
-	Thu, 19 Aug 2021 17:35:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42F141681
+	by alsa0.perex.cz (Postfix) with ESMTPS id 50CC41680;
+	Thu, 19 Aug 2021 17:41:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50CC41680
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629387378;
-	bh=PX/M5GwFL/ps4yxXkiOy3pWn8IHpoCeZWJnJdlZyTgk=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1629387713;
+	bh=uRbKPKMIQblTfmccfmfOhWBkZFNd05t+Bvhtw6A+1ww=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tuC95IfX/XvTWPrbl4kjfTbHE4nffI+XyfwayrjuFDcohCfEZD36E6+1B91o0SAdQ
-	 3OAXN4sNGt/LeZsLXeULbJ6fP13Ak2OI71Hs0iuAFzXQnUdhCiw8OVTI9X+ml8/dXu
-	 4BwRX9B494+yeskggJiQq/kA4b+rELIpUddtQKjU=
+	b=DvEw0WzQSRJ0Ug9K3bCBJYFvrLsmXnpv7hbYr8AIRT/9UAuFSWrpQ+7gNEmBSMP7e
+	 0leJEK5liY8rJufOfjglSn+AXcchwP4dcP2SPEQE01dIFHGk2YTCGcyaaoPDOL6GjE
+	 tDfppA2kATF9t9aO6276cpp/7ZoVqDnO2PD0cfwc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4A29F801EC;
-	Thu, 19 Aug 2021 17:35:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA745F801EC;
+	Thu, 19 Aug 2021 17:41:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 71D07F8026D; Thu, 19 Aug 2021 17:35:26 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id F1269F8026D; Thu, 19 Aug 2021 17:41:01 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 66CB0F800F8
- for <alsa-devel@alsa-project.org>; Thu, 19 Aug 2021 17:35:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66CB0F800F8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9B0E0F800EC
+ for <alsa-devel@alsa-project.org>; Thu, 19 Aug 2021 17:40:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B0E0F800EC
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="AniigXpg"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="4J8p8qlX"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 055E82208C;
- Thu, 19 Aug 2021 15:35:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1629387319; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=GKBJPHYcwt1CMc6DGWEqZMJftxY+mVm4KKjuocTeq84=;
- b=AniigXpgcqMWQEZJFnkFBQvVZvDtaI3+Ej3jyB7zn39S2dk/G28vEZhla14HGn1K/nCNCU
- fZ7P6mnzLzmHO3tQ60IoVgyaADfKoLNm2+GnuIG2+m9YBBXV3Uu5CygAC25ZbUYadmOYaW
- hWIwFZQC1AzmvNLIYmn0EImTpb+x0Yc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1629387319;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=GKBJPHYcwt1CMc6DGWEqZMJftxY+mVm4KKjuocTeq84=;
- b=4J8p8qlX9G8yW/gniQKy33P4a5AabVhz9NhfoqFOvEzlK5ZZIG7eJkUu+yWOCX+3ztLqv7
- 6gZNbnySDIb9aECA==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id F3A32A3B83;
- Thu, 19 Aug 2021 15:35:18 +0000 (UTC)
-Date: Thu, 19 Aug 2021 17:35:18 +0200
-Message-ID: <s5hwnoh8n2h.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="EWblrQ6r"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 805FD6101A;
+ Thu, 19 Aug 2021 15:40:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1629387655;
+ bh=uRbKPKMIQblTfmccfmfOhWBkZFNd05t+Bvhtw6A+1ww=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=EWblrQ6rB0+K2AlM09acBZ3aZJldyfKzjZ4SbGbUasuH+b+WdKSJgKhc6dgivm1T9
+ bV4Pb4WUPQQUIBoalqMiQ4CvJ5Ly+NGhL7oh0BR7nFjnW59S5SmH9ohVsBQPPMWJVT
+ HuRgZjQDUm/8w3wvNn4VBJq35phva9N2bwKYr+vOzUZZDHZcuYJixxV41rg6v+cOcq
+ 5i5g2yaC/b5js/u6WvCs1DfUmp+GEAi25JD8RBmp/XHD9lD8Jbx6BJ6Pru25kXFXQh
+ isU1NF9H5GxL+UeLUzPBfBS/kuckznWtR187r6n0EJSPDPkbxzl3SshRe6//V92y5L
+ iN8aLHPiDJPNQ==
+Date: Thu, 19 Aug 2021 16:40:30 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
 Subject: Re: [PATCH] ASoC: intel: atom: Fix breakage for PCM buffer address
  setup
-In-Reply-To: <20210819152945.8510-1-tiwai@suse.de>
+Message-ID: <20210819154030.GO4177@sirena.org.uk>
 References: <20210819152945.8510-1-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
+ <s5hwnoh8n2h.wl-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="S0GG+JvAI2G0KxBG"
+Content-Disposition: inline
+In-Reply-To: <s5hwnoh8n2h.wl-tiwai@suse.de>
+X-Cookie: She sells cshs by the cshore.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -99,35 +88,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 19 Aug 2021 17:29:45 +0200,
-Takashi Iwai wrote:
-> 
-> The commit 2e6b836312a4 ("ASoC: intel: atom: Fix reference to PCM
-> buffer address") changed the reference of PCM buffer address to
-> substream->runtime->dma_addr as the buffer address may change
-> dynamically.  However, I forgot that the dma_addr field is still not
-> set up for the CONTINUOUS buffer type (that this driver uses) yet in
-> 5.14 and earlier kernels, and it resulted in garbage I/O.  The problem
-> will be fixed in 5.15, but we need to address it quickly for now.
-> 
-> The fix is to deduce the address again from the DMA pointer with
-> virt_to_phys(), but from the right one, substream->runtime->dma_area.
-> 
-> Fixes: 2e6b836312a4 ("ASoC: intel: atom: Fix reference to PCM buffer address")
-> Reported-and-tested-by: Hans de Goede <hdegoede@redhat.com>
-> Cc: <stable@vger.kernel.org>
-> Link: https://lore.kernel.org/r/2048c6aa-2187-46bd-6772-36a4fb3c5aeb@redhat.com
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
 
-Mark, as it's close to the 5.14 final, exceptionally I'd like to merge
-this into my tree directly now, so that it can be certainly included
-in the next PR to Linus.
-(Also because the commit will be reverted on for-next again, too.)
+--S0GG+JvAI2G0KxBG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-After the merge, feel free to pull my for-linus branch into yours.
+On Thu, Aug 19, 2021 at 05:35:18PM +0200, Takashi Iwai wrote:
 
+> Mark, as it's close to the 5.14 final, exceptionally I'd like to merge
+> this into my tree directly now, so that it can be certainly included
+> in the next PR to Linus.
+> (Also because the commit will be reverted on for-next again, too.)
 
-thanks,
+> After the merge, feel free to pull my for-linus branch into yours.
 
-Takashi
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--S0GG+JvAI2G0KxBG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEee20ACgkQJNaLcl1U
+h9CPaQf+K+xZbgapW5EjnWkBR2Pi0bw1HjoaHdxb4aDodkuI7c7+Dpyr/9/KD2a4
+tsgCRvsuSWT7b4ybouVaHYVLODWvr33O1+LPRRVXyS9/zxW6zGUZiDi9IUWb8xrh
+9ENja6QXVs1QPPJhecXUsHc9qgwxB8Jz63u82253N5vpugeX+H3LJNgl3JM+PJB6
+vcqARBlsX6jtUtEv02DFX1e6R4a3BnPOsxA86LJU0cQ1SXSfamfN3rGguCvx1NG+
+oqZgT2PhVg8K7HOzUnNMs2rmy1jFzA5ZHoUBj+jPchUPfm8/eRLnAaETwQv4KWyT
+xc+e0yB0ZqbxK/I6sigHU3w1vOhfEg==
+=z6rd
+-----END PGP SIGNATURE-----
+
+--S0GG+JvAI2G0KxBG--
