@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD2F4C4338F
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Aug 2021 18:41:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B84CC4338F
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Aug 2021 18:41:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 964D060232
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Aug 2021 18:41:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 964D060232
+	by mail.kernel.org (Postfix) with ESMTPS id E356861051
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Aug 2021 18:41:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E356861051
 Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0F48D165E;
-	Fri, 20 Aug 2021 20:40:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F48D165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7A1B8167A;
+	Fri, 20 Aug 2021 20:40:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A1B8167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629484871;
-	bh=mhNg/uKLPouMcVdgXuvVkmH3+/DVabdWhxyPUdB2ubI=;
+	s=default; t=1629484908;
+	bh=+j/T3zbyFk//TFcgZlfW7RZg5JFCqZfQrccRwi97DmA=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ivzT37nYURQIwsW2HHNdFL5UXkbhybWKvb97S0SkXxlDaNwzzpFnXG3zm9vsvM5sB
-	 Yv3Xz91Ip1UU8VKZP4hN9RbXMio7UR7n66qNGWV4rNf8E5YtU4AX3tHrv2TL0Uuypk
-	 aSwJRaDD5TO4DwWV0O4aPsqf7P4ukWS/FAkMD5XY=
+	b=cqfgtFiQ84tFjYtwAs8RafouIuCiLQGq/Ur5wguc9dT84Oj+YBUP94xtBNVqXtkkc
+	 J+/4ADkOcGwvnIiDOar4YMoaLeINIycN1lqiGDbDogJ1rjGYHYa6WdXVCfdF82DZpO
+	 KLEUcuKJJTS4pOzo3zS5dZL22uuWgaYgfftYrTN4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A2107F80246;
-	Fri, 20 Aug 2021 20:40:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 33FC7F8028D;
+	Fri, 20 Aug 2021 20:40:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 02A9AF80249; Fri, 20 Aug 2021 20:40:20 +0200 (CEST)
+ id 7C342F802BE; Fri, 20 Aug 2021 20:40:37 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id B956AF800CC
- for <alsa-devel@alsa-project.org>; Fri, 20 Aug 2021 20:40:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B956AF800CC
+ by alsa1.perex.cz (Postfix) with ESMTP id 1AC0CF80249
+ for <alsa-devel@alsa-project.org>; Fri, 20 Aug 2021 20:40:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AC0CF80249
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1629484806165328979-webhooks-bot@alsa-project.org>
-References: <1629484806165328979-webhooks-bot@alsa-project.org>
+In-Reply-To: <1629484828999883890-webhooks-bot@alsa-project.org>
+References: <1629484828999883890-webhooks-bot@alsa-project.org>
 Subject: (.text+0x0): multiple definition of `__packed';
  .libs/conf.o (symbol from plugin):(.text+0x0): first defined here
-Message-Id: <20210820184020.02A9AF80249@alsa1.perex.cz>
-Date: Fri, 20 Aug 2021 20:40:20 +0200 (CEST)
+Message-Id: <20210820184037.7C342F802BE@alsa1.perex.cz>
+Date: Fri, 20 Aug 2021 20:40:37 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,9 +67,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #171 was opened from shoober420:
+alsa-project/alsa-lib issue #171 was edited from shoober420:
 
-Trying to compile alsa-lib from the latest two commits as of Aug 20th (https://github.com/alsa-project/alsa-lib/commit/868ecd509deb05938107faf66577c69e1702d6f3) (https://github.com/alsa-project/alsa-lib/commit/95eb312fade1908a2c944e9de4626c0ff60b2203), I get this error during build. Im using Gentoo Linux with GCC 11.2 version.
+Trying to compile alsa-lib from the latest two commits as of Aug 20th (https://github.com/alsa-project/alsa-lib/commit/868ecd509deb05938107faf66577c69e1702d6f3) (https://github.com/alsa-project/alsa-lib/commit/95eb312fade1908a2c944e9de4626c0ff60b2203), I get these errors during build. Im using Gentoo Linux with GCC 11.2 version.
 
 [buildalsalib.log](https://github.com/alsa-project/alsa-lib/files/7023522/buildalsalib.log)
 
