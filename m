@@ -2,80 +2,73 @@ Return-Path: <SRS0=b+Zg=NL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8400FC4338F
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Aug 2021 14:33:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 832A5C4338F
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Aug 2021 14:40:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4962861102
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Aug 2021 14:33:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4962861102
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 84F9A61131
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Aug 2021 14:40:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 84F9A61131
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 071951614;
-	Fri, 20 Aug 2021 16:32:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 071951614
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9806C1614;
+	Fri, 20 Aug 2021 16:39:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9806C1614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629469999;
-	bh=hb1FteaiFjxj4Sh/v3Gpg/D8bjLwvAALDku63DLHdm4=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=bPKd5zYSjHMWg6PH4IeYAAlm0+aL933wpzC1kKfy8Ju2CStv/cajQQEduHPS+KEZw
-	 hxJnoOUdjgOPU5vMwlE4qLofcldWJVUjAAEFQclU+ux7wBG5GVeMjIMscTvHCM6rej
-	 inqyKw2qPCaEj5GLLGJEcawlE+SxZlmGMhx+6igQ=
+	s=default; t=1629470448;
+	bh=0xLUIq3Z7VXfpnT7QH9mKB5yupvV+kR+aDBxMjCCqNU=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=MNoniSZ2ShhrSDwTd6JBm53/XB+OmBOQs9QVVKpqDzw7NTLyU3wbPL72hqG1GCiLT
+	 TlWDP4NRQD1v+8M6XqU8v3+wJJpCX+TJLEtXWwqQn8PPeZ7E8pfGKjP8QDmZZ6HmbJ
+	 4pEv85f/R/LJNitWOHS1jz4oAUiMUxSmKlN8yEgA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 83C4DF80246;
-	Fri, 20 Aug 2021 16:32:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34931F800CC;
+	Fri, 20 Aug 2021 16:39:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 19557F80249; Fri, 20 Aug 2021 16:32:26 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 78358F802BE; Fri, 20 Aug 2021 16:39:56 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ADA90F800EC
- for <alsa-devel@alsa-project.org>; Fri, 20 Aug 2021 16:32:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADA90F800EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5B336F80246
+ for <alsa-devel@alsa-project.org>; Fri, 20 Aug 2021 16:39:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B336F80246
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="zLW7tTdv"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="/l7q3CpQ"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 2CC731FE1C
- for <alsa-devel@alsa-project.org>; Fri, 20 Aug 2021 14:32:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1629469936; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=QDRgVCbD1a3ZlbdzEVPWKhSGGil4dGkYjGirqOoMBzs=;
- b=zLW7tTdvWXDGh6UTPeugMHXXiEscrKMQI5v2nZ0/LPADVn7lSCIxeH3X+xnlKTQUMOqKkZ
- pQXCpgqxKBkky9b04Y1XsFg/1ofGj6zT41PauEdEHeLCAuaNkOxpx8BDUp1ZjOpoVJfiCU
- 7hQTp00xUrY49xGU/mG/DJ/o1o9giSc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1629469936;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=QDRgVCbD1a3ZlbdzEVPWKhSGGil4dGkYjGirqOoMBzs=;
- b=/l7q3CpQTMK/c+Ow/C3pOEDHrgL9RxqslNbQmcy2WCk9mhrm8AruKmywsARu9Ek895SfHG
- +fYrndQ6oTc3pWBw==
-Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 25912A3B92;
- Fri, 20 Aug 2021 14:32:16 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: hda/realtek: Workaround for conflicting SSID on ASUS
- ROG Strix G17
-Date: Fri, 20 Aug 2021 16:32:14 +0200
-Message-Id: <20210820143214.3654-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="PbpbvYH3"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A52C66113D;
+ Fri, 20 Aug 2021 14:39:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1629470386;
+ bh=0xLUIq3Z7VXfpnT7QH9mKB5yupvV+kR+aDBxMjCCqNU=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=PbpbvYH3rzAt76mN9WgxKV5hK+gpmXXdqACUmVjOH1vjZzDUoj3awT9foU6EnhWhK
+ /OtL24RcL2YD/KyPc8ALVpIvdW0wIAqR0rfoWos9jB41MHmGIpgw8+0vlg5HHcKLX+
+ RcNggwNLuu2mR72rwE/3yx/lAB5QMp9eARp010xTypw4vwCJTsdGhgZweKT4QHmh7/
+ BBb6MzWrELj2F7rfbPqrxx1An9zAe9tO7YsuNI9M9OGUq2w39YvT/NmQm9edQyKc8m
+ vxJyBLq1n2G9yGmG1+VoGgm0+92GHHeN6vi4v78IOJ4rCcFVA32RdFVhyGEGBR5Iii
+ 0GLlkYu7VL+gw==
+From: Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: rsnd: adg: clearly handle clock error / NULL case
+Date: Fri, 20 Aug 2021 15:39:12 +0100
+Message-Id: <162947011160.28998.589558690156326062.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <87v940wyf9.wl-kuninori.morimoto.gx@renesas.com>
+References: <87v940wyf9.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,45 +84,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-ASUS ROG Strix G17 has the very same PCI and codec SSID (1043:103f) as
-ASUS TX300, and unfortunately, the existing quirk for TX300 is broken
-on ASUS ROG.  Actually the device works without the quirk, so we'll
-need to clear the quirk before applying for this device.
-Since ASUS ROG has a different codec (ALC294 - while TX300 has
-ALC282), this patch adds a workaround for the device, just clearing
-the codec->fixup_id by checking the codec vendor_id.
+On 20 Aug 2021 13:08:26 +0900, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> This driver is assuming that all adg->clk[i] is not NULL.
+> Because of this prerequisites, for_each_rsnd_clk() is possible to work
+> for all clk without checking NULL. In other words, all adg->clk[i]
+> should not NULL.
+> 
+> [...]
 
-It's a bit ugly to add such a workaround there, but it seems to be the
-simplest way.
+Applied to
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=214101
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 7ad689f991e7..3d525b79b848 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9521,6 +9521,16 @@ static int patch_alc269(struct hda_codec *codec)
- 
- 	snd_hda_pick_fixup(codec, alc269_fixup_models,
- 		       alc269_fixup_tbl, alc269_fixups);
-+	/* FIXME: both TX300 and ROG Strix G17 have the same SSID, and
-+	 * the quirk breaks the latter (bko#214101).
-+	 * Clear the wrong entry.
-+	 */
-+	if (codec->fixup_id == ALC282_FIXUP_ASUS_TX300 &&
-+	    codec->core.vendor_id == 0x10ec0294) {
-+		codec_dbg(codec, "Clear wrong fixup for ASUS ROG Strix G17\n");
-+		codec->fixup_id = HDA_FIXUP_ID_NOT_SET;
-+	}
-+
- 	snd_hda_pick_pin_fixup(codec, alc269_pin_fixup_tbl, alc269_fixups, true);
- 	snd_hda_pick_pin_fixup(codec, alc269_fallback_pin_fixup_tbl, alc269_fixups, false);
- 	snd_hda_pick_fixup(codec, NULL,	alc269_fixup_vendor_tbl,
--- 
-2.26.2
+Thanks!
 
+[1/1] ASoC: rsnd: adg: clearly handle clock error / NULL case
+      commit: cc64c390b215b404524725a94857d6fb58d9a62a
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
