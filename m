@@ -4,71 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 832A5C4338F
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Aug 2021 14:40:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02938C4338F
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Aug 2021 14:41:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 84F9A61131
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Aug 2021 14:40:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 84F9A61131
+	by mail.kernel.org (Postfix) with ESMTPS id 7B52860F39
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Aug 2021 14:41:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7B52860F39
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9806C1614;
-	Fri, 20 Aug 2021 16:39:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9806C1614
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1F613165E;
+	Fri, 20 Aug 2021 16:40:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F613165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629470448;
-	bh=0xLUIq3Z7VXfpnT7QH9mKB5yupvV+kR+aDBxMjCCqNU=;
+	s=default; t=1629470486;
+	bh=F32fCmxVJwHzZwoiAb4BAyJmdbuG0TKtKRRbOrhhKJc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MNoniSZ2ShhrSDwTd6JBm53/XB+OmBOQs9QVVKpqDzw7NTLyU3wbPL72hqG1GCiLT
-	 TlWDP4NRQD1v+8M6XqU8v3+wJJpCX+TJLEtXWwqQn8PPeZ7E8pfGKjP8QDmZZ6HmbJ
-	 4pEv85f/R/LJNitWOHS1jz4oAUiMUxSmKlN8yEgA=
+	b=iGDwKKNM1EQfXm8VzxwDfif14paVJSJfSLkBdKDEjfJyQvM7QW5XMGiHgWyMAHVKu
+	 oWvWhRYkZ0MV+bS1TLxRlxjCdMWbVlq2s6+DptccdR3PB4zOWdMLw8prJPKYA+cVq9
+	 gNGKdXO/k5MaeWAdxJhrJKsqMpL6ZodA9KTb3NxY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 34931F800CC;
+	by alsa1.perex.cz (Postfix) with ESMTP id E1C7CF8028D;
 	Fri, 20 Aug 2021 16:39:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 78358F802BE; Fri, 20 Aug 2021 16:39:56 +0200 (CEST)
+ id 4CD4BF8028D; Fri, 20 Aug 2021 16:39:57 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5B336F80246
- for <alsa-devel@alsa-project.org>; Fri, 20 Aug 2021 16:39:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B336F80246
+ by alsa1.perex.cz (Postfix) with ESMTPS id 96824F80249
+ for <alsa-devel@alsa-project.org>; Fri, 20 Aug 2021 16:39:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96824F80249
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="PbpbvYH3"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A52C66113D;
- Fri, 20 Aug 2021 14:39:45 +0000 (UTC)
+ header.b="noy9oCEs"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 850D860F39;
+ Fri, 20 Aug 2021 14:39:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1629470386;
- bh=0xLUIq3Z7VXfpnT7QH9mKB5yupvV+kR+aDBxMjCCqNU=;
+ s=k20201202; t=1629470381;
+ bh=F32fCmxVJwHzZwoiAb4BAyJmdbuG0TKtKRRbOrhhKJc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=PbpbvYH3rzAt76mN9WgxKV5hK+gpmXXdqACUmVjOH1vjZzDUoj3awT9foU6EnhWhK
- /OtL24RcL2YD/KyPc8ALVpIvdW0wIAqR0rfoWos9jB41MHmGIpgw8+0vlg5HHcKLX+
- RcNggwNLuu2mR72rwE/3yx/lAB5QMp9eARp010xTypw4vwCJTsdGhgZweKT4QHmh7/
- BBb6MzWrELj2F7rfbPqrxx1An9zAe9tO7YsuNI9M9OGUq2w39YvT/NmQm9edQyKc8m
- vxJyBLq1n2G9yGmG1+VoGgm0+92GHHeN6vi4v78IOJ4rCcFVA32RdFVhyGEGBR5Iii
- 0GLlkYu7VL+gw==
+ b=noy9oCEsp5wcdpo0GFm0RVPbid720PEICI9jtMEksr3WuBxycdXczJk19RaAyQXRE
+ pbAahyn2J72vP8Vwgt4T1t92fXiBY+7WFGltDoDh5fdCJTAHDoD/InPNtpvLfJJBJr
+ 7ukJxiuMcnqYBEpg0+VpO32EegACr99WFVCiyYZldNQad5epUwec+8L6CeS9PqC6JA
+ RBOErwTTaovvyoIEoxwqqczYGnKmk1zjX+K5CTNjCTjQ6WiSOA4jqtHFSuLj6pFfKn
+ UXuJwxFhSO/lm/DwCSQoSce462vMgz/wnh2Cxn8zG91t+s8Psxgwt4jojqgja3b7g1
+ CsZFFnWtP/fcQ==
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH] ASoC: rsnd: adg: clearly handle clock error / NULL case
-Date: Fri, 20 Aug 2021 15:39:12 +0100
-Message-Id: <162947011160.28998.589558690156326062.b4-ty@kernel.org>
+To: Hans de Goede <hdegoede@redhat.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Jie Yang <yang.jie@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [PATCH v2 0/6] ASoC: Intel/rt5640: Add support for HP Elite Pad
+ 1000G2 jack-detect
+Date: Fri, 20 Aug 2021 15:39:10 +0100
+Message-Id: <162947011160.28998.8816188684211303425.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <87v940wyf9.wl-kuninori.morimoto.gx@renesas.com>
-References: <87v940wyf9.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <20210819190543.784415-1-hdegoede@redhat.com>
+References: <20210819190543.784415-1-hdegoede@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Bard Liao <bard.liao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,13 +90,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 20 Aug 2021 13:08:26 +0900, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> This driver is assuming that all adg->clk[i] is not NULL.
-> Because of this prerequisites, for_each_rsnd_clk() is possible to work
-> for all clk without checking NULL. In other words, all adg->clk[i]
-> should not NULL.
+On Thu, 19 Aug 2021 21:05:37 +0200, Hans de Goede wrote:
+> Changes in v2:
+> - Rebase on asoc/for-next
+> - New patch: "ASoC: Intel: bytct_rt5640: Add a separate "Headset Mic 2"
+>   DAPM pin for the mic on the 2nd jack"
+> - Addressed Pierre-Louis' comments about calling
+>   acpi_dev_add_driver_gpios() twice
 > 
 > [...]
 
@@ -100,8 +106,18 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rsnd: adg: clearly handle clock error / NULL case
-      commit: cc64c390b215b404524725a94857d6fb58d9a62a
+[1/6] ASoC: rt5640: Move rt5640_disable_jack_detect() up in the rt5640.c file
+      commit: 5caab9f48b96f6998fb23d38a7b57fca91ef1653
+[2/6] ASoC: rt5640: Delay requesting IRQ until the machine-drv calls set_jack
+      commit: 15d54840ecf6f00061d03180394a0a21ff8ffa48
+[3/6] ASoC: rt5640: Add optional hp_det_gpio parameter to rt5640_detect_headset()
+      commit: d21213b4503ea66777313e4345e116cc8a5366bf
+[4/6] ASoC: rt5640: Add rt5640_set_ovcd_params() helper
+      commit: e3f2a6603a982467601e0831d706786ed1ade833
+[5/6] ASoC: Intel: bytct_rt5640: Add a separate "Headset Mic 2" DAPM pin for the mic on the 2nd jack
+      commit: 0a61bcbba8737fe6d43dc34070ffa84a2f12e990
+[6/6] ASoC: Intel: bytcr_rt5640: Add support for HP Elite Pad 1000G2 jack-detect
+      commit: 9ba00856686ade106afee2884b5e8ac1e09d137a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
