@@ -2,96 +2,93 @@ Return-Path: <SRS0=/cYh=NM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1163BC4338F
-	for <alsa-devel@archiver.kernel.org>; Sat, 21 Aug 2021 08:30:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66219C4338F
+	for <alsa-devel@archiver.kernel.org>; Sat, 21 Aug 2021 08:30:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1370B611EF
-	for <alsa-devel@archiver.kernel.org>; Sat, 21 Aug 2021 08:30:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1370B611EF
+	by mail.kernel.org (Postfix) with ESMTPS id 91580611EF
+	for <alsa-devel@archiver.kernel.org>; Sat, 21 Aug 2021 08:30:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 91580611EF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=timesys.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CFF45886;
-	Sat, 21 Aug 2021 10:29:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFF45886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2F9951662;
+	Sat, 21 Aug 2021 10:29:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F9951662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629534605;
-	bh=jZBn775/JDtPZkTlSM+vfKQAx5C9ObiQDo4tQJtoTPA=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=rCHNgKcZ2bvSWjbbFAD0B9UOcZ1xTtkeOGAnVqWu7/Sc5lagp5db5zk+zJZ+mOfPO
-	 i57LrHY3R7qqBOqKhYbHrZ58boosw4ldKmAiTPITdgCg5v4oJZvEftaE1rzXLfVgYa
-	 I5OkFjFWWuCw83COH6/Q78+ZGOZypsF26MrZQH9c=
+	s=default; t=1629534645;
+	bh=a3AIphFdRcocZMLCZHjn970G5CBNe6lF7QG9ePqsdsc=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=KgIUMDx/WDARKkCjwKZCClcGhaU7xSqKhlFKT9p/ggWDjLRFrT+GyTREAhoiEnATh
+	 mIDE1NnfKO0pZC7ZXOPCdp5I7pHSiJAgcjhAngDqCaWoHNJ9cdjzzFnsDKzg4oZw42
+	 5jNPOCGwfgmB1V/Kef2wU6meJmmjYecJekMx2bm4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6A50EF801D5;
-	Sat, 21 Aug 2021 10:29:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BBD50F802C4;
+	Sat, 21 Aug 2021 10:29:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DC481F8026D; Sat, 21 Aug 2021 10:29:08 +0200 (CEST)
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com
- [IPv6:2a00:1450:4864:20::52e])
+ id 5B5A9F80301; Sat, 21 Aug 2021 10:29:08 +0200 (CEST)
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com
+ [IPv6:2a00:1450:4864:20::62d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D1CB2F801D5
+ by alsa1.perex.cz (Postfix) with ESMTPS id C300AF8016B
  for <alsa-devel@alsa-project.org>; Sat, 21 Aug 2021 10:28:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1CB2F801D5
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C300AF8016B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=timesys-com.20150623.gappssmtp.com
- header.i=@timesys-com.20150623.gappssmtp.com header.b="1VJZZyoE"
-Received: by mail-ed1-x52e.google.com with SMTP id s3so5253215edd.11
+ header.i=@timesys-com.20150623.gappssmtp.com header.b="rpr5nwb/"
+Received: by mail-ej1-x62d.google.com with SMTP id d11so24977018eja.8
  for <alsa-devel@alsa-project.org>; Sat, 21 Aug 2021 01:28:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=timesys-com.20150623.gappssmtp.com; s=20150623;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=tm7ebvKIHJ7AeKUA9v8CHuxGhcPcPAtO1oMTAzgC4Ns=;
- b=1VJZZyoEzX0swA14PsTuYILkGaQf/rDMvzaQIOh8JEzUpW4ustLKwf94E3vnQ6cFsA
- 6sSPga5QDpivp4boiVHjHYTIi0CrIj9E4j2XV+3y6m92VyZ7PYB/OV6XHrDn4yL2CF0Y
- Hr69ZDGGhb+Bst1HMAXd10F1didC9wdTU9W4LVL7JlY4dZN0Ewwo/uGOaOfE7uXIBzir
- Q0YrJpoG3YLSUzboOkhdhI7vWYjnaWzby1g5KCiqTeza6+/c/FnQRMQmwCw6W/bOevvD
- Ogbgb081w0dXMlDNYBWdIQzQh60ulsS52VyZ0r5YZGiytnC+PxCLZecuHU6QR2RrBiHA
- 7Xmw==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=/y3dK7vojFLXCbamFDXBo8dMK9KukRjfR8aixPFIsGY=;
+ b=rpr5nwb/AClorHn+ztmsbcPt386tNSkXkADI+wymyermVpxTN9iYKrBoVyfHHPV0KQ
+ xwxXR46ztMoG+Hp6whjAGyyLWP3CGsbHLCqXDKi8kq5C4XB2Bmo11dr22t89YAvASd5C
+ 4S+HNxNs3IYXd5/i6Nv95RUUjGvLtO/U4qOc+6viPKVKwbwhR6wNb2JvPlzql6I70FXV
+ NTh978SrqXpXl448UyM77S8NfFkfQb1MTHN412EVDOV6axiBFWbuUW+HM+70AKgmmaEX
+ o4Gmjo1RWs0G7C1s1Kc/zx+FU8XGPX0QG7mJwmiJFRaSYAV4hTZ4TFtqozJw8ARcX0bH
+ KW5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=tm7ebvKIHJ7AeKUA9v8CHuxGhcPcPAtO1oMTAzgC4Ns=;
- b=CPx0JOGgmU8+oAs+FD0RNiYxsPriHyTgvmWzVCFSFDpOenaGAbjMQ/0sB+Ugkv85TO
- PZdbTUXLkJUrZ/MbJAHTwgeT0WsCupbujMpht/LInOgdFMV3l96mbgAPtySkoB1rgkoY
- P/WSVkfyF6APJ4tL5gmj89ks5ZTQ94+gGGkjeM9M7H173BaMAjXZpFGrvRJ4xpFMs+fb
- bT0jo6c+nwrXIrzaaeQ1Ko4gPOp5FBCbOe19v3ldRQGao5U2zS2oMICmcrgwh8BJBMRL
- jsA+b+UXfTRrkfc2JPdJrppi87u/0s1j94O/IAjEzCuKuOCjmi2qNDpXKL0yAfm5aLfs
- t5Sw==
-X-Gm-Message-State: AOAM532xuEVVVYiqGYf246vRiyt2sJhV4Y3U1SOEWzQ7OVENMEJj9ZQ1
- n4r8+ZMZMyiAO6kUKTVoI2JbUeSnOYUIMd83
-X-Google-Smtp-Source: ABdhPJx4ryiLv7FAxamj2yIcAWZq3gxzulXly6h4eWJwTVfxCk4prw1tGnMoT/N8wrG18xefjn3KGA==
-X-Received: by 2002:a05:6402:1642:: with SMTP id
- s2mr2047584edx.135.1629534535782; 
- Sat, 21 Aug 2021 01:28:55 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=/y3dK7vojFLXCbamFDXBo8dMK9KukRjfR8aixPFIsGY=;
+ b=tX3wDv2qK83yoBfHXWst7uSVcIF6jRC6TBRw9kjT9ZFyLdctACUF+/BoaCjojqM18A
+ 2PWRBYkt1g9BWjcnqiuQ9soe6DkWZ/ZTkY/U8KQxo8lN7xvMGqPCvzkJ+gO1hSo0qc3V
+ YaV4or2SbE92VJOCpw4B+93NrtlDmGnUXgaebTPY/r1S9cxZ59NR/nc9sIn/EPghEe0R
+ IfbgWcB7f33jwF+5guu5zSPNgSgMc9pll2M4ATrzfz8sF6VDNPAMV2IRURdeMbN5rh+B
+ cYcgYXNWPInZtLhhGlL/ea+fUN+9+fL14MUmh3LXrpPgBYkgfA/U22IUKHhiLhrWRY72
+ 9/sg==
+X-Gm-Message-State: AOAM530e49E6brQX4Jhs0jyDPJve+06dW5N9+gcWQBRrZbXlIio3oWGG
+ NfNioDPJlyTUXO3v2MW0F8G+WHyNgb7A/jkD
+X-Google-Smtp-Source: ABdhPJztfy4Hz8Tzy0ekLnUumAuHcZYy5S1M72kmsD23KFlUJ2+/0HRytWfhjJyHw7MuYdtWoXPTiw==
+X-Received: by 2002:a17:906:68c2:: with SMTP id
+ y2mr4215046ejr.18.1629534533952; 
+ Sat, 21 Aug 2021 01:28:53 -0700 (PDT)
 Received: from dfj.1.1.1.1 (host-95-246-39-126.retail.telecomitalia.it.
  [95.246.39.126])
- by smtp.gmail.com with ESMTPSA id a22sm3960296ejb.90.2021.08.21.01.28.54
+ by smtp.gmail.com with ESMTPSA id a22sm3960296ejb.90.2021.08.21.01.28.53
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 21 Aug 2021 01:28:55 -0700 (PDT)
+ Sat, 21 Aug 2021 01:28:53 -0700 (PDT)
 From: Angelo Dureghello <angelo.dureghello@timesys.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org,
 	lgirdwood@gmail.com
-Subject: [RESEND 2/3] dt-bindings: add compatible vendor prefix for CUI Devices
-Date: Sat, 21 Aug 2021 10:26:57 +0200
-Message-Id: <20210821082658.4147595-2-angelo.dureghello@timesys.com>
+Subject: [RESEND 1/3] ASoC: ics43432: add CMM-4030D-261 support
+Date: Sat, 21 Aug 2021 10:26:56 +0200
+Message-Id: <20210821082658.4147595-1-angelo.dureghello@timesys.com>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210821082658.4147595-1-angelo.dureghello@timesys.com>
-References: <20210821082658.4147595-1-angelo.dureghello@timesys.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: ricard.wanderlof@axis.com,
@@ -111,26 +108,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add vendor prefix for CUI Devices.
+Despite minimal datasheet differences, the driver seems
+perfectly compatible with CMM-4030D-261.
+
+Tested CMM-4030D-261 to work with this changes:
+
+/ {
+        cmm4030d: cmm4030d {
+                #sound-dai-cells = <0>;
+                compatible = "cui,cmm-4030d-261";
+        };
+
+        sound_mic {
+                compatible = "simple-audio-card";
+                simple-audio-card,name = "i2s mem mic";
+                simple-audio-card,format = "i2s";
+                simple-audio-card,bitclock-master = <&sound_master>;
+                simple-audio-card,frame-master = <&sound_master>;
+                sound_master: simple-audio-card,cpu {
+                        sound-dai = <&ssi2>;
+                        system-clock-frequency = <2822400>;
+                };
+                simple-audio-card,codec {
+                        sound-dai = <&cmm4030d>;
+                };
+        };
+};
+
+Audio has been captured and tested successfully by:
+
+arecord -D "hw:1,0" -f S24_LE > test.wav
+aplay test.wav
 
 Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/Kconfig    | 2 +-
+ sound/soc/codecs/ics43432.c | 4 +++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 07fb0d25fc15..ed4f66ec9a65 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -271,6 +271,8 @@ patternProperties:
-     description: Shenzen Chuangsiqi Technology Co.,Ltd.
-   "^cubietech,.*":
-     description: Cubietech, Ltd.
-+  "^cui,.*":
-+    description: CUI Devices
-   "^cypress,.*":
-     description: Cypress Semiconductor Corporation
-   "^cznic,.*":
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index db16071205ba..cd1976aae328 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -847,7 +847,7 @@ config SND_SOC_HDAC_HDA
+ 	select SND_HDA
+ 
+ config SND_SOC_ICS43432
+-	tristate
++	tristate "ICS43423 and compatible i2s microphones"
+ 
+ config SND_SOC_INNO_RK3036
+ 	tristate "Inno codec driver for RK3036 SoC"
+diff --git a/sound/soc/codecs/ics43432.c b/sound/soc/codecs/ics43432.c
+index 47e749f03940..de4c8460ab3d 100644
+--- a/sound/soc/codecs/ics43432.c
++++ b/sound/soc/codecs/ics43432.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+- * I2S MEMS microphone driver for InvenSense ICS-43432
++ * I2S MEMS microphone driver for InvenSense ICS-43432 and similar
++ * MEMS-based microphones.
+  *
+  * - Non configurable.
+  * - I2S interface, 64 BCLs per frame, 32 bits per channel, 24 bit data
+@@ -53,6 +54,7 @@ static int ics43432_probe(struct platform_device *pdev)
+ #ifdef CONFIG_OF
+ static const struct of_device_id ics43432_ids[] = {
+ 	{ .compatible = "invensense,ics43432", },
++	{ .compatible = "cui,cmm-4030d-261", },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, ics43432_ids);
 -- 
 2.32.0
 
