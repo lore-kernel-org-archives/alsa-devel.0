@@ -2,80 +2,57 @@ Return-Path: <SRS0=Wxof=NN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46022C4338F
-	for <alsa-devel@archiver.kernel.org>; Sun, 22 Aug 2021 07:22:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3100AC4338F
+	for <alsa-devel@archiver.kernel.org>; Sun, 22 Aug 2021 16:42:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A614D6127B
-	for <alsa-devel@archiver.kernel.org>; Sun, 22 Aug 2021 07:22:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A614D6127B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 72B9061267
+	for <alsa-devel@archiver.kernel.org>; Sun, 22 Aug 2021 16:42:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 72B9061267
+Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C0A11660;
-	Sun, 22 Aug 2021 09:21:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C0A11660
+	by alsa0.perex.cz (Postfix) with ESMTPS id 279E1828;
+	Sun, 22 Aug 2021 18:41:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 279E1828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629616948;
-	bh=dEzgceqMHRtK3l1qvm0hD9NUwSBHebnHEtrgEPNEo2c=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=M1udmGuahxHVuww2J3Uv4F0EarWRCvfwfWm/RsT8uoEbir5UzxMA3tQgEWnKhMGzp
-	 sl65GQ95GkEmctYFyU48eWyrJFjQES8F0On0VqzMA8bbeyOGrivNFfNsO2S0Pmczwa
-	 TLf5OyVekgMowRvJXvNsFHBWBLqrmSiloRG6zMQY=
+	s=default; t=1629650526;
+	bh=JP2nuIEjLa95WZbXw9SMQMhnWiLSfMqsYYj6uOFWdWE=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=VQUCYVSX/4/0W9dmiRwoUfXCxzvc1Elts9PMy+9YAAbj3d1+HL6sKv6+3WGz2l71Z
+	 qVy20XwiUam+pgzK5K0HuAodBznTtsyoDWH7tY8+mAw+4h+dAsYVYPQeJvyL4dKOzb
+	 TnILlrh3UuxUy1Hl4MWCi7ZugW2Uz5rosSejNV9g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DDE40F800EC;
-	Sun, 22 Aug 2021 09:21:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A4E3AF80171;
+	Sun, 22 Aug 2021 18:41:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E066FF801D5; Sun, 22 Aug 2021 09:21:35 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 40621F8016E
- for <alsa-devel@alsa-project.org>; Sun, 22 Aug 2021 09:21:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40621F8016E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="wPz/RMSd"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="e54nrLvP"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id A0EEF21EF8
- for <alsa-devel@alsa-project.org>; Sun, 22 Aug 2021 07:21:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1629616888; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=LT2tbvk+xJlrMn7fSjJ+lJCDSI020vqh7IWgHhFldo4=;
- b=wPz/RMSdbZenyRl2+C4OdYeg4XWnLS6wk1yOaFqVERtA3mVkLKYY7USBfsmao2lFqjhiab
- R4IQ2q3rAQFAKmNIOpGKKNmYC2t9mOFRoWN/7eHLJgQ0+0zZLBFjo+OxzQs9qaa/WOlGHR
- XJKVXbwKX1MmTgOxUa5RkS4UrttfpSQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1629616888;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=LT2tbvk+xJlrMn7fSjJ+lJCDSI020vqh7IWgHhFldo4=;
- b=e54nrLvP4mhr8lgFn9eKe+tczlmuE31LwAKyttLxOY3f9zyB1XGJIBxdZFU/fc5rHhaWE1
- UjU7s2UR3NjQjNAg==
-Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 8BA50A3BA2;
- Sun, 22 Aug 2021 07:21:28 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH for-5.15] ASoC: intel: atom: Revert PCM buffer address setup
- workaround again
-Date: Sun, 22 Aug 2021 09:21:27 +0200
-Message-Id: <20210822072127.9786-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
+ id B8190F801D5; Sun, 22 Aug 2021 18:41:13 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 6A2DEF800EC
+ for <alsa-devel@alsa-project.org>; Sun, 22 Aug 2021 18:41:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A2DEF800EC
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1629650464306662083-webhooks-bot@alsa-project.org>
+References: <1629650464306662083-webhooks-bot@alsa-project.org>
+Subject: OpenAL fails to build with
+ https://github.com/alsa-project/alsa-lib/commit/95eb312fade1908a2c944e9de4626c0ff60b2203
+ commit
+Message-Id: <20210822164113.B8190F801D5@alsa1.perex.cz>
+Date: Sun, 22 Aug 2021 18:41:13 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,35 +68,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We worked around the breakage of PCM buffer setup by the commit
-65ca89c2b12c ("ASoC: intel: atom: Fix breakage for PCM buffer address
-setup"), but this isn't necessary since the CONTINUOUS buffer type
-also sets runtime->dma_addr since commit f84ba106a018 ("ALSA:
-memalloc: Store snd_dma_buffer.addr for continuous pages, too").
-Let's revert the change again.
+alsa-project/alsa-lib issue #172 was opened from shoober420:
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
+The recent alsa-lib commit https://github.com/alsa-project/alsa-lib/commit/95eb312fade1908a2c944e9de4626c0ff60b2203 borks OpenAL from building. I thought it was an issue with OpenAL, but he mentions that its an issue with alsa-lib (https://github.com/kcat/openal-soft/issues/592#issuecomment-903211857). Here is the OpenAL build log just in case and a snippet of the OpenAL build error.
 
-The patch is to be applied on my for-next branch once after merging
-for-linus branch.
+https://github.com/kcat/openal-soft/files/7026546/buildopenal.log
 
- sound/soc/intel/atom/sst-mfld-platform-pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+OpenAL build error.
+```
+[84/97] /usr/bin/x86_64-pc-linux-gnu-g++ -m32 -DALC_API="__attribute__((visibility(\"protected\"))) __attribute__((force_align_arg_pointer))" -DAL_ALEXT_PROTOTYPES -DAL_API="__attribute__((visibility(\"protected\"))) __attribute__((force_align_arg_pointer))" -DAL_BUILD_LIBRARY -DOpenAL_EXPORTS -DRESTRICT=__restrict -I/var/tmp/portage/media-libs/openal-9999/work/openal-9999/include -I/usr/include/pipewire-0.3 -I/usr/include/spa-0.2 -I/var/tmp/portage/media-libs/openal-9999/work/openal-9999_build-abi_x86_32.x86 -I/var/tmp/portage/media-libs/openal-9999/work/openal-9999 -I/var/tmp/portage/media-libs/openal-9999/work/openal-9999/common  -march=native -Ofast -pipe -fno-plt -fno-common -fno-semantic-interposition -fipa-pta -falign-functions=32 -fdevirtualize-at-ltrans -fuse-linker-plugin -floop-nest-optimize -fgraphite-identity -fno-signed-zeros -fno-trapping-math -fassociative-math -freciprocal-math -fno-math-errno -ffinite-math-only -fno-rounding-math -fno-signaling-nans -fcx-limited-ran
+ ge -fexcess-precision=fast -w -flto=auto -fPIC -Winline -Wunused -Wall -Wextra -Wshadow -Wconversion -Wcast-align -Wpedantic -Wold-style-cast -Wnon-virtual-dtor -Woverloaded-virtual -fno-math-errno -fvisibility=hidden -msse2 -mfpmath=sse -pthread -std=gnu++14 -MD -MT CMakeFiles/OpenAL.dir/alc/backends/alsa.cpp.o -MF CMakeFiles/OpenAL.dir/alc/backends/alsa.cpp.o.d -o CMakeFiles/OpenAL.dir/alc/backends/alsa.cpp.o -c /var/tmp/portage/media-libs/openal-9999/work/openal-9999/alc/backends/alsa.cpp
+FAILED: CMakeFiles/OpenAL.dir/alc/backends/alsa.cpp.o 
+/usr/bin/x86_64-pc-linux-gnu-g++ -m32 -DALC_API="__attribute__((visibility(\"protected\"))) __attribute__((force_align_arg_pointer))" -DAL_ALEXT_PROTOTYPES -DAL_API="__attribute__((visibility(\"protected\"))) __attribute__((force_align_arg_pointer))" -DAL_BUILD_LIBRARY -DOpenAL_EXPORTS -DRESTRICT=__restrict -I/var/tmp/portage/media-libs/openal-9999/work/openal-9999/include -I/usr/include/pipewire-0.3 -I/usr/include/spa-0.2 -I/var/tmp/portage/media-libs/openal-9999/work/openal-9999_build-abi_x86_32.x86 -I/var/tmp/portage/media-libs/openal-9999/work/openal-9999 -I/var/tmp/portage/media-libs/openal-9999/work/openal-9999/common  -march=native -Ofast -pipe -fno-plt -fno-common -fno-semantic-interposition -fipa-pta -falign-functions=32 -fdevirtualize-at-ltrans -fuse-linker-plugin -floop-nest-optimize -fgraphite-identity -fno-signed-zeros -fno-trapping-math -fassociative-math -freciprocal-math -fno-math-errno -ffinite-math-only -fno-rounding-math -fno-signaling-nans -fcx-limited-range -fexc
+ ess-precision=fast -w -flto=auto -fPIC -Winline -Wunused -Wall -Wextra -Wshadow -Wconversion -Wcast-align -Wpedantic -Wold-style-cast -Wnon-virtual-dtor -Woverloaded-virtual -fno-math-errno -fvisibility=hidden -msse2 -mfpmath=sse -pthread -std=gnu++14 -MD -MT CMakeFiles/OpenAL.dir/alc/backends/alsa.cpp.o -MF CMakeFiles/OpenAL.dir/alc/backends/alsa.cpp.o.d -o CMakeFiles/OpenAL.dir/alc/backends/alsa.cpp.o -c /var/tmp/portage/media-libs/openal-9999/work/openal-9999/alc/backends/alsa.cpp
+In file included from /usr/include/alsa/asoundlib.h:55,
+                 from /var/tmp/portage/media-libs/openal-9999/work/openal-9999/alc/backends/alsa.cpp:51:
+/usr/include/alsa/rawmidi.h:107:9: error: '__u8' does not name a type
+  107 |         __u8 frame_type;
+      |         ^~~~
+/usr/include/alsa/rawmidi.h:108:9: error: '__u8' does not name a type
+  108 |         __u8 length; /* number of valid bytes in data field */
+      |         ^~~~
+/usr/include/alsa/rawmidi.h:109:9: error: '__u8' does not name a type
+  109 |         __u8 reserved[2];
+      |         ^~~~
+/usr/include/alsa/rawmidi.h:110:9: error: '__u32' does not name a type; did you mean '__m32'?
+  110 |         __u32 tv_nsec;          /* nanoseconds */
+      |         ^~~~~
+      |         __m32
+/usr/include/alsa/rawmidi.h:111:9: error: '__u64' does not name a type; did you mean '__m64'?
+  111 |         __u64 tv_sec;           /* seconds */
+      |         ^~~~~
+      |         __m64
+/usr/include/alsa/rawmidi.h:112:9: error: '__u8' does not name a type
+  112 |         __u8 data[SND_RAWMIDI_FRAMING_DATA_LENGTH];
+      |         ^~~~
+```
 
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-index 905c7965f653..5db2f4865bbb 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -127,7 +127,7 @@ static void sst_fill_alloc_params(struct snd_pcm_substream *substream,
- 	snd_pcm_uframes_t period_size;
- 	ssize_t periodbytes;
- 	ssize_t buffer_bytes = snd_pcm_lib_buffer_bytes(substream);
--	u32 buffer_addr = virt_to_phys(substream->runtime->dma_area);
-+	u32 buffer_addr = substream->runtime->dma_addr;
- 
- 	channels = substream->runtime->channels;
- 	period_size = substream->runtime->period_size;
--- 
-2.26.2
-
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/172
+Repository URL: https://github.com/alsa-project/alsa-lib
