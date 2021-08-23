@@ -2,87 +2,84 @@ Return-Path: <SRS0=lo3o=NO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A977C4338F
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Aug 2021 11:38:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 007EFC4338F
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Aug 2021 11:47:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3D3EF6124B
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Aug 2021 11:38:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3D3EF6124B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 05C6861373
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Aug 2021 11:47:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 05C6861373
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 67546112;
-	Mon, 23 Aug 2021 13:37:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67546112
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1B7594E;
+	Mon, 23 Aug 2021 13:46:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B7594E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629718693;
-	bh=QwJUe055bmez2mjY9fO4CR1iyfVsbjCZsTBgQs4g8f0=;
-	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=PmrOjjyhWp4ML0bzfmFgbMS23RwayczmO+Q0rlmx5nngRnND3RxtFkXBE8l97fwJC
-	 GjVQ9Z2Y2+g+kaLgtzUa5gWNZBnWoPaHMZytposXzjYBfsSJD4ywrhNXObVkJgcRXZ
-	 6VJI0lHOeIzfWyLkBGw4GWDLTkeGY4GZ7ihxbFI0=
+	s=default; t=1629719268;
+	bh=uf/bRxlMflMRbWGOYMw1BFi0GqTQZujLfnN9B+1eZKY=;
+	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=QfE3MeM+uEd4xBGpkFhsrVvEKQHycDkdYIAkiGIPZZd4QzFmy4Bt6i9zvw/OBEegy
+	 cmnbW+IRZtKIBsp9PQjSJO9OqHyZGYZPqOwIlEKnNT7JqBT8Nfd723LqF5X9VRhQ2d
+	 Sqneyhugf9GyGUzoBG2RhP5lXFjLMpciJ5xtVtkQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C7D9F80217;
-	Mon, 23 Aug 2021 13:37:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A33F4F8020C;
+	Mon, 23 Aug 2021 13:46:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EA371F80229; Mon, 23 Aug 2021 13:37:21 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 10320F80217; Mon, 23 Aug 2021 13:46:56 +0200 (CEST)
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com
+ [IPv6:2607:f8b0:4864:20::12e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DDC20F8016E
- for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2021 13:37:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DDC20F8016E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 86225F8016E
+ for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2021 13:46:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86225F8016E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="x78iCjF/"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="rJ6a92OK"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 0176221F76
- for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2021 11:37:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1629718630; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=frcZOIB20bmQ8jHKYz0ziTYC2AM1wUT79KESPa7brb8=;
- b=x78iCjF/XfU7q6yTzEwC+o3ZlHdwdVLsv9cR/kayzzSBnt92hMsG3lDxPdSuk2AjllNsD1
- smF2jGuZTWX5w6s/A8qudBoYEy2Z5KcqfPEvbDxhCtpnY5EhFoepErZc8+JfwbZ+FOeaaA
- tOEUWBRKGGSzzHZege6Zf9hQ7Qt94M0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1629718630;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=frcZOIB20bmQ8jHKYz0ziTYC2AM1wUT79KESPa7brb8=;
- b=rJ6a92OKXQN3lDqK6RHlHu6d81m/5qVSe2ToXRo1LLI6xOMNEsexq91i8Fow8XqcW0NH1X
- 8EjD/IhE4mi3cMCg==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id E60E7A3BBE
- for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2021 11:37:09 +0000 (UTC)
-Date: Mon, 23 Aug 2021 13:37:09 +0200
-Message-ID: <s5hmtp84cka.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="B0pfG5pB"
+Received: by mail-il1-x12e.google.com with SMTP id y3so16780788ilm.6
+ for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2021 04:46:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:from:date:message-id:subject:to;
+ bh=yy4pE1GOmOy9ogUg19qEnYHdTY0X4dKp77N6saqxSvA=;
+ b=B0pfG5pB25UV215r8g5FoDMPhITadc4t1NuapsT8r6gtdQBsKKPtKuUPfPlYAwZK84
+ c+B47+cfSB1u0lGfv/VDcll2dfxAT5gmichduTG9ggBDnxvCb+kIQjZiNEXOB/QgnM0E
+ fjFKvNK51uqmzrww5hZG+MVHXnsjPSk+7g+No5lvtMnZgruleJ3uj9vjBn9WCZpegv/8
+ HTPgOFooOM/oxNZPpghTClYJgBbk/ragG5U/wLfZcY3BrhH3KrafZr2rKo3pBsv4DIgd
+ FpPYZc2vF16sm4kUavbSPrAcPjr3v/2eqvXD0Y2HQLqjYGA7WF/DEBAT84gx0fI1m70p
+ mBeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=yy4pE1GOmOy9ogUg19qEnYHdTY0X4dKp77N6saqxSvA=;
+ b=l+NbEVIM4+y4kEgD4/DiK9KF7nBMUanokss51WBh6o0MjURycZdD4CxZTK+t5kn1sg
+ 90iIg/aIB8TuMlEDenRdhHiOZnfw2MzfGPtrv4+9J8T9UAi+3LC23b5qqqz0CidNHH4c
+ GdPJ/I6o9izgTRpSEwH4GZIfVk13bB6L/0SC3dAW3jkzzsxhimw2RTzNqHEbGL9TUNq6
+ s2Ul2D0POw0eKBEJxFIpcg72pwIgk8Whwf5wLnE8kdVvCGyw5MRepCGyZDdF5o5VDi3J
+ hTIwH0rLlpisUOuBzmieNfsi6qxWAtGMr+g+oYUllqKnWauIwwZWetrtcQDoQNM8PYdm
+ +m8A==
+X-Gm-Message-State: AOAM532MPFc7a0OUuAk7ni3/2U54/jH5z8kvEYgdWqMB92bKAjKrXTym
+ xeK2kn4oUZto+a5FfM51MrqAlFgw3MYGVqZhCOqBv62yGPo=
+X-Google-Smtp-Source: ABdhPJyQjikMfXUO2p643TEeVupCrPB0Ln/+oVrDjQqS1okMVz3UFxShfcF9piF2i+y9fs+A2K27s//jKC+PmC5N3bI=
+X-Received: by 2002:a92:d3c1:: with SMTP id c1mr22699041ilh.194.1629719208597; 
+ Mon, 23 Aug 2021 04:46:48 -0700 (PDT)
+MIME-Version: 1.0
+From: Arkadiusz Bokowy <arkadiusz.bokowy@gmail.com>
+Date: Mon, 23 Aug 2021 13:46:37 +0200
+Message-ID: <CAGFh027Yf8wQxsxNkMDcN8cSZGu38CviYN=KSLZWabrZsOaV6g@mail.gmail.com>
+Subject: [PATCH 1/2] ioplug: Check for callback error codes
 To: alsa-devel@alsa-project.org
-Subject: Re: [PATCH for-5.15] ASoC: intel: atom: Revert PCM buffer address
- setup workaround again
-In-Reply-To: <20210822072127.9786-1-tiwai@suse.de>
-References: <20210822072127.9786-1-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="UTF-8"
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,23 +95,89 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 22 Aug 2021 09:21:27 +0200,
-Takashi Iwai wrote:
-> 
-> We worked around the breakage of PCM buffer setup by the commit
-> 65ca89c2b12c ("ASoC: intel: atom: Fix breakage for PCM buffer address
-> setup"), but this isn't necessary since the CONTINUOUS buffer type
-> also sets runtime->dma_addr since commit f84ba106a018 ("ALSA:
-> memalloc: Store snd_dma_buffer.addr for continuous pages, too").
-> Let's revert the change again.
-> 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
-> 
-> The patch is to be applied on my for-next branch once after merging
-> for-linus branch.
+Signed-off-by: Arkadiusz Bokowy <arkadiusz.bokowy@gmail.com>
+---
+ src/pcm/pcm_ioplug.c | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
-Now merged to for-next branch.
+diff --git a/src/pcm/pcm_ioplug.c b/src/pcm/pcm_ioplug.c
+index 98184398..c96104e9 100644
+--- a/src/pcm/pcm_ioplug.c
++++ b/src/pcm/pcm_ioplug.c
+@@ -54,7 +54,7 @@ static int snd_pcm_ioplug_poll_revents(snd_pcm_t
+*pcm, struct pollfd *pfds, unsi
 
+ /* update the hw pointer */
+ /* called in lock */
+-static void snd_pcm_ioplug_hw_ptr_update(snd_pcm_t *pcm)
++static int snd_pcm_ioplug_hw_ptr_update(snd_pcm_t *pcm)
+ {
+  ioplug_priv_t *io = pcm->private_data;
+  snd_pcm_sframes_t hw;
+@@ -85,7 +85,9 @@ static void snd_pcm_ioplug_hw_ptr_update(snd_pcm_t *pcm)
+  snd_pcm_ioplug_drop(pcm);
+  else
+  io->data->state = SNDRV_PCM_STATE_XRUN;
++ return -EPIPE;
+  }
++ return 0;
+ }
 
-Takashi
+ static int snd_pcm_ioplug_info(snd_pcm_t *pcm, snd_pcm_info_t *info)
+@@ -115,7 +117,10 @@ static int snd_pcm_ioplug_delay(snd_pcm_t *pcm,
+snd_pcm_sframes_t *delayp)
+      io->data->callback->delay)
+  return io->data->callback->delay(io->data, delayp);
+  else {
+- snd_pcm_ioplug_hw_ptr_update(pcm);
++ int err;
++ err = snd_pcm_ioplug_hw_ptr_update(pcm);
++ if (err < 0)
++ return err;
+  *delayp = snd_pcm_mmap_delay(pcm);
+  }
+  return 0;
+@@ -499,11 +504,14 @@ static int snd_pcm_ioplug_start(snd_pcm_t *pcm)
+ static int snd_pcm_ioplug_drop(snd_pcm_t *pcm)
+ {
+  ioplug_priv_t *io = pcm->private_data;
++ int err;
+
+  if (io->data->state == SND_PCM_STATE_OPEN)
+  return -EBADFD;
+
+- io->data->callback->stop(io->data);
++ err = io->data->callback->stop(io->data);
++ if (err < 0)
++ return err;
+
+  gettimestamp(&io->trigger_tstamp, pcm->tstamp_type);
+  io->data->state = SND_PCM_STATE_SETUP;
+@@ -625,7 +633,7 @@ static int snd_pcm_ioplug_resume(snd_pcm_t *pcm)
+  ioplug_priv_t *io = pcm->private_data;
+
+  if (io->data->callback->resume)
+- io->data->callback->resume(io->data);
++ return io->data->callback->resume(io->data);
+  return 0;
+ }
+
+@@ -898,13 +906,14 @@ static void clear_io_params(ioplug_priv_t *io)
+ static int snd_pcm_ioplug_close(snd_pcm_t *pcm)
+ {
+  ioplug_priv_t *io = pcm->private_data;
++ int err = 0;
+
+  clear_io_params(io);
+  if (io->data->callback->close)
+- io->data->callback->close(io->data);
++ err = io->data->callback->close(io->data);
+  free(io);
+
+- return 0;
++ return err;
+ }
+
+ static const snd_pcm_ops_t snd_pcm_ioplug_ops = {
+-- 
+2.31.1
