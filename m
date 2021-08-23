@@ -2,91 +2,83 @@ Return-Path: <SRS0=lo3o=NO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 142FFC4338F
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Aug 2021 16:33:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A6DBC4338F
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Aug 2021 17:04:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E604C6101C
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Aug 2021 16:33:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E604C6101C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8BD1A61368
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Aug 2021 17:04:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8BD1A61368
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=vanheusden.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B0BBC10E;
-	Mon, 23 Aug 2021 18:32:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0BBC10E
+	by alsa0.perex.cz (Postfix) with ESMTPS id B320A74C;
+	Mon, 23 Aug 2021 19:03:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B320A74C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629736382;
-	bh=lJvhGaXGvd8WXptBMQSI3ZhWvf8j66qyNO4aDaPi6uQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1629738282;
+	bh=podLZavGuPLjdyUUzf8zXd3j+Wtud9rZJCmaTVVDG2U=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LeBQX9f+DgTfWtqn4An8OpAujnesN6IEhBksSBaCPfefeU0qK5U0eXgQ192Wd7Qci
-	 1OsNptL8JSts6FOJ634+s8JBmK5UN8EAzDBwBYVJHwekBFUvRTBm7h/031kyDS4Ic/
-	 1dRKBp9Oa3MujiIpRENXcCBeEGIWY6H0a3c33Xtg=
+	b=AW0hn20T8kP5Nhl7iGWSor4unpKilrFm4i/wpm1SAulQwZvBrZ4qKrWogC5956sAW
+	 in/puhSMLI/qniFJiFgajiJqux4qLpICSQAk0Aik5uOX0SYTeM0Lz3FXnnt1OljR5N
+	 uwV/Rsiy3in598ulEMkf4rMSzeWvM2fHUDirG0cQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4534BF8016E;
-	Mon, 23 Aug 2021 18:32:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2E0A2F8016E;
+	Mon, 23 Aug 2021 19:03:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 94345F8020C; Mon, 23 Aug 2021 18:32:07 +0200 (CEST)
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com
- [IPv6:2a00:1450:4864:20::132])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 46A09F800AE; Mon, 23 Aug 2021 19:03:50 +0200 (CEST)
+Received: from lb1-smtp-cloud8.xs4all.net (lb1-smtp-cloud8.xs4all.net
+ [194.109.24.21])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A0E53F800E7
- for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2021 18:31:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0E53F800E7
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Be3NzALA"
-Received: by mail-lf1-x132.google.com with SMTP id r9so39156218lfn.3
- for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2021 09:31:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=fnQv1MgXBg+b8w2Jbx1fNjCH8gCjXhSgvlwQZtj/FBM=;
- b=Be3NzALAzNhsz92au4WUCSCKWLR1H6XEseUDK4vc+vJuVpw+IMYXTJAQevHofS94jy
- O074KhsmL6h+cY1EZpP3FdQFfDvWI1qIyYQJKYb6k1ecnadUruTQop8+CrYQjfpAABon
- boX0s/8BpbDNedmh7vmbNk9x4yz6mFSD1yYQs4GIgZtC1N0smubY1XHoEfHlAYNSpEPB
- QoyZNYiklwpAYscnsilWm7YdghT40SBu4rdObcYNqxDUtQT+DvwhC2BSI+DH4nHgG/Ea
- bmxxqEQdkYz0/nzPTVJ8LQiSHW7xQX4KhbXsoKi1UBBgmnKiPITkquoqfGBQtGd3DWmm
- 3GbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=fnQv1MgXBg+b8w2Jbx1fNjCH8gCjXhSgvlwQZtj/FBM=;
- b=qvRBxlbB3vOeL+/rI27STtY6pFTf4KuddpcXD5Jsd/RORlPA1f84xiWFFxkT7h66YL
- DipoFqie/Gbw2klsZX5RdRZrGXCedQjgdmF6zZQBKcUJprTHoHJ9u4F7NQmN+TKefHIQ
- ZcxIFz6czuSILxM1XZ0YUU8V+A8Mi/IsCT3aUNItbzWIqAZecY8WUs89LU+Nyk5VXPkr
- ZKEjoeeFsPWpPNdDSAm9wGFUp8nfEvBgkZ+GXkgX6fbV3ud7jssU4jFPq2lYG4AtmasX
- vHlb8BogrOSOgP4wblEJfdWTa+9wQ/ClsaxiBtT/RwzwCszKxrpAVU21t92UAhXW8VdR
- +8iw==
-X-Gm-Message-State: AOAM53025Wrab0Tk2ErUKqODt6zQWQ8c0vH9z4I2ipf7VqKuPPsNN3H6
- vqZyjWRUNWFlXoJWm9zIUKDct0lV3oi6N0vTnpA=
-X-Google-Smtp-Source: ABdhPJwjp29bnQ8NZPUPo4Lxn2GIA2e51/e00wViBTyu+xz1J2mpJY0AwgYf4osB8zZXZr13u+FEhGEuFFLeBwLUZ+s=
-X-Received: by 2002:ac2:508d:: with SMTP id f13mr21789001lfm.576.1629736315746; 
- Mon, 23 Aug 2021 09:31:55 -0700 (PDT)
-MIME-Version: 1.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 261FCF800AE
+ for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2021 19:03:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 261FCF800AE
+Received: from cust-b66e5d83 ([IPv6:fc0c:c157:b88d:62c6:5e3c:5f07:82d0:1b4])
+ by smtp-cloud8.xs4all.net with ESMTPA
+ id IDMImbs1ZUWyVIDMJmw8Rh; Mon, 23 Aug 2021 19:03:40 +0200
+Received: from localhost (localhost [127.0.0.1])
+ by keetweej.vanheusden.com (Postfix) with ESMTP id C66D7161E7C;
+ Mon, 23 Aug 2021 19:03:38 +0200 (CEST)
+Received: from keetweej.vanheusden.com ([127.0.0.1])
+ by localhost (mauer.intranet.vanheusden.com [127.0.0.1]) (amavisd-new,
+ port 10024)
+ with ESMTP id C5LbdOb66xyj; Mon, 23 Aug 2021 19:03:32 +0200 (CEST)
+Received: from belle.intranet.vanheusden.com (belle.intranet.vanheusden.com
+ [192.168.64.100])
+ by keetweej.vanheusden.com (Postfix) with ESMTP id 4CE04161E77;
+ Mon, 23 Aug 2021 19:03:32 +0200 (CEST)
+Received: by belle.intranet.vanheusden.com (Postfix, from userid 1000)
+ id 3D744162DC6; Mon, 23 Aug 2021 19:03:32 +0200 (CEST)
+Date: Mon, 23 Aug 2021 19:03:32 +0200
+From: folkert <folkert@vanheusden.com>
+To: sujith kumar reddy <sujithreddy6192@gmail.com>
+Subject: Re: arecord is failing with -V stereo
+Message-ID: <20210823170332.GD890690@belle.intranet.vanheusden.com>
 References: <CAAd2w=btf3DZLbPuovAC9xo3rizmFeT4iAxJs6zNZwKxOnKT6A@mail.gmail.com>
  <20210819183450.GV890690@belle.intranet.vanheusden.com>
  <CAAd2w=YFhiJJ=4nqo7JfbrqdNWVxvSp06E=1XiHOXV8Kp2sgaQ@mail.gmail.com>
  <20210819190634.GW890690@belle.intranet.vanheusden.com>
-In-Reply-To: <20210819190634.GW890690@belle.intranet.vanheusden.com>
-From: sujith kumar reddy <sujithreddy6192@gmail.com>
-Date: Mon, 23 Aug 2021 22:01:44 +0530
-Message-ID: <CAAd2w=Z4rG1UwA6ELzqwr_0TXjQmD0T1izonAJk9-32TSzGchQ@mail.gmail.com>
-Subject: Re: arecord is failing with -V stereo
-To: folkert <folkert@vanheusden.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+ <CAAd2w=Z4rG1UwA6ELzqwr_0TXjQmD0T1izonAJk9-32TSzGchQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAd2w=Z4rG1UwA6ELzqwr_0TXjQmD0T1izonAJk9-32TSzGchQ@mail.gmail.com>
+Reply-By: Fri 16 Jul 2021 08:34:34 AM CEST
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CMAE-Envelope: MS4xfOdb6bO78RDAJIeIQohZ4BQBV5OBPT5iZ6PmJ+nry0Fmbwedi4qtfKKaz7fqrRhv5NSbFLT6vvQHAPj1/W2IcOqgP2MeLJmghwghlVSR/FMQOdqJoMYW
+ 9H1SOvtexRy989HfKeKVm8oWsnLcYcUTQVfxqGxCNz1kRABLBxXNZZHUwA9L8Rab6LnIpiqdh/aL3Fr8l6yMC21sCpM/vWthXaMOBhw0JwtlY/D0Z/tdP8aj
+ w080tA2UJSzGrPjVz61Kaa7KPLbWRzri/yvDmfPYZgU=
 Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -103,79 +95,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Folkert,
+>         const int bar_length = 35;
+>         char line[80];
+...
+>                 if (p > bar_length)
+>                         p = bar_length;
+>                 if (c)
+>                         memset(line + bar_length + 6 + 1, '#', p);
+> ----------------//this is the line where it is crashing.here p value is
+> becoming negative at c=1.As we see if we change the p value to bar_length
+> it works fine ..As it is a player issue not a driver issue.
 
-In all version it is crashing.
-when i debug these i found that p value is coming negative at memset.
-the function snippet is:
-in aplay.c file in alsa-utils.
+This is puzzling.
+bar_length + 6 + 1 + p and thus 35 + 6 + 1 + 35 is max 77, that fits
+easlity in 80.
 
-in  the below function for  c=0 it is working when c incremented to 1 the p
-value is becoming negative . so memset is crashing.
+But wait:
 
-static void print_vu_meter_stereo(int *perc, int *maxperc)
-{
-        const int bar_length = 35;
-        char line[80];
-        int c;
-
-        memset(line, ' ', sizeof(line) - 1);
-        line[bar_length + 3] = '|';
-
-        for (c = 0; c < 2; c++) {
-                int p = perc[c] * bar_length / 100;
-                char tmp[4];
-                if (p > bar_length)
-                        p = bar_length;
-                if (c)
-                        memset(line + bar_length + 6 + 1, '#', p);
-----------------//this is the line where it is crashing.here p value is
-becoming negative at c=1.As we see if we change the p value to bar_length
-it works fine ..As it is a player issue not a driver issue.
-
-
-                else
-                        memset(line + bar_length - p - 1, '#', p);
-                p = maxperc[c] * bar_length / 100;
-                if (p > bar_length)
-                        p = bar_length;
-                if (c)
-                        line[bar_length + 6 + 1 + p] = '+';
-                else
                         line[bar_length - p - 1] = '+';
-                if (maxperc[c] > 99)
-                        sprintf(tmp, "MAX");
-                else
-                        sprintf(tmp, "%02d%%", maxperc[c]);
-                if (c)
-                        memcpy(line + bar_length + 3 + 1, tmp, 3);
-                else
-                        memcpy(line + bar_length, tmp, 3);
-        }
-        line[bar_length * 2 + 6 + 2] = 0;
-        fputs(line, stderr);
-}
-Could you please help on this.As the driver data is fine when we keep p
-value to bar length and checked .
-.
+
+p is max bar_length, so we would end up putting '+' in line[-1]
+
+Can you try this?
 
 
-Thanks
-Sujith
-
-
-
-
-
-On Fri, Aug 20, 2021 at 12:36 AM folkert <folkert@vanheusden.com> wrote:
-
-> > > > arecord is  failing vumeter option -V stereo only.
-> > >
-> > > What version?
-> > > Because the commandline you provide works fine here with
-> 1.2.4-1ubuntu3.
-> >
-> > 1.2.1.2
->
-> See what happens if you upgrade to 1.2.4.
->
+diff --git a/aplay/aplay.c b/aplay/aplay.c
+index cc51dcb..9cfd52c 100644
+--- a/aplay/aplay.c
++++ b/aplay/aplay.c
+@@ -1764,7 +1764,7 @@ static void print_vu_meter_stereo(int *perc, int *maxperc)
+ 			p = bar_length;
+ 		if (c)
+ 			line[bar_length + 6 + 1 + p] = '+';
+-		else
++		else if (p < bar_length)
+ 			line[bar_length - p - 1] = '+';
+ 		if (ABS(maxperc[c]) > 99)
+ 			sprintf(tmp, "MAX");
