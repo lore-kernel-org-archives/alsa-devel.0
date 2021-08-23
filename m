@@ -2,90 +2,55 @@ Return-Path: <SRS0=lo3o=NO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1950C4338F
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Aug 2021 20:17:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EF88C4338F
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Aug 2021 20:18:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D2124613DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Aug 2021 20:17:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D2124613DB
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=vanheusden.com
+	by mail.kernel.org (Postfix) with ESMTPS id CA3F5613DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Aug 2021 20:18:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CA3F5613DB
+Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 39A8874C;
-	Mon, 23 Aug 2021 22:17:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39A8874C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 131A085D;
+	Mon, 23 Aug 2021 22:17:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 131A085D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629749870;
-	bh=W2h2rQhvyGum3L68sX+cisKxmoWkWgqmR76d982Pn1A=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1629749928;
+	bh=Oo1ylI+YGfnE8UptFzCfTBgAkknWcHjZeGRQeYhWlFs=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=o4DkJ5OALv8h+AlzclEuS64Z/xa2XqBY/nZop/MufOG8v9swq7bQdjGnzwTTmiORS
-	 5br/QYTEkk7LSDYKbN65kFzsOe81Ogz3pSUDgICXwnI2RmvOXCbJC3fQ+ngljTu6dm
-	 Sl0Cy69gDeBJnl6T63XWQOKQJEszoPSG8BYhG8RY=
+	b=pSj55lBVfHtj53kVIBbrY9ZI6b5ppX7lz6ayRyajzB7HcN+g5zcIrZ+BntAH9TGFP
+	 yW3fQMrWB1Et6VoTDmc2AGmWRPIzyYXoT8bu+0yJjogj1Uc+g5sLhGKJegjPVvFdI7
+	 QSvA33Lf57y5JXoV7Clz1Gq61uYRi7hseuogdqXE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CAF79F800E7;
-	Mon, 23 Aug 2021 22:16:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A5419F8016E;
+	Mon, 23 Aug 2021 22:17:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ED2B0F8020C; Mon, 23 Aug 2021 22:16:57 +0200 (CEST)
-Received: from lb1-smtp-cloud8.xs4all.net (lb1-smtp-cloud8.xs4all.net
- [194.109.24.21])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 423A8F800E7
- for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2021 22:16:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 423A8F800E7
-Received: from cust-b66e5d83 ([IPv6:fc0c:c157:b88d:62c6:5e3c:5f07:82d0:1b4])
- by smtp-cloud8.xs4all.net with ESMTPA
- id IGNCmcbNXUWyVIGNDmwQWt; Mon, 23 Aug 2021 22:16:48 +0200
-Received: from localhost (localhost [127.0.0.1])
- by keetweej.vanheusden.com (Postfix) with ESMTP id C29E0161E7C;
- Mon, 23 Aug 2021 22:16:46 +0200 (CEST)
-Received: from keetweej.vanheusden.com ([127.0.0.1])
- by localhost (mauer.intranet.vanheusden.com [127.0.0.1]) (amavisd-new,
- port 10024)
- with ESMTP id xWCnN3eQH5sA; Mon, 23 Aug 2021 22:16:41 +0200 (CEST)
-Received: from belle.intranet.vanheusden.com (belle.intranet.vanheusden.com
- [192.168.64.100])
- by keetweej.vanheusden.com (Postfix) with ESMTP id 1B535161E75;
- Mon, 23 Aug 2021 22:16:41 +0200 (CEST)
-Received: by belle.intranet.vanheusden.com (Postfix, from userid 1000)
- id 0BD07162DC6; Mon, 23 Aug 2021 22:16:40 +0200 (CEST)
-Date: Mon, 23 Aug 2021 22:16:40 +0200
-From: folkert <folkert@vanheusden.com>
-To: sujith kumar reddy <sujithreddy6192@gmail.com>
-Subject: Re: arecord is failing with -V stereo
-Message-ID: <20210823201640.GG890690@belle.intranet.vanheusden.com>
-References: <20210819183450.GV890690@belle.intranet.vanheusden.com>
- <CAAd2w=YFhiJJ=4nqo7JfbrqdNWVxvSp06E=1XiHOXV8Kp2sgaQ@mail.gmail.com>
- <20210819190634.GW890690@belle.intranet.vanheusden.com>
- <CAAd2w=Z4rG1UwA6ELzqwr_0TXjQmD0T1izonAJk9-32TSzGchQ@mail.gmail.com>
- <20210823170332.GD890690@belle.intranet.vanheusden.com>
- <CAAd2w=ag-Hk6COSJt5rg-+faz8FKYxTPig9AGhFWUFzGw1Ynvw@mail.gmail.com>
- <20210823184727.GE890690@belle.intranet.vanheusden.com>
- <CAAd2w=adJ3+Rw16ZVbkq72O7D0Dgo1ukHF1DLK6aaN3sGKu3DQ@mail.gmail.com>
- <20210823190853.GF890690@belle.intranet.vanheusden.com>
- <CAAd2w=YDc9O7keXFSo++_B51TKbiBABVDbbCW=Mst8-W1FcCqg@mail.gmail.com>
+ id 1B41FF8020C; Mon, 23 Aug 2021 22:17:56 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id D3E6EF800E7
+ for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2021 22:17:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3E6EF800E7
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAd2w=YDc9O7keXFSo++_B51TKbiBABVDbbCW=Mst8-W1FcCqg@mail.gmail.com>
-Reply-By: Fri 16 Jul 2021 08:34:34 AM CEST
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-CMAE-Envelope: MS4xfGQUZfD/mPRc+Rvktl8dSA7i77rX/D9HxL2XRvTMO8EvYaOQKlfrFkstFjdnEtJWI+81m9P72M5pU4x3sShrn1CS61ZIHuTLLaNmuDBwDNNhWi9Xar60
- w/UnqsL7O2XxHFnSAebn5CvufNBWu/xiQrtCvMExDyLuGQf046IJqqtI/CH8G3MXHkX5KjstrPK9nk3yqLOYijWlISDWY1kWo/eVgwxFLza7wfE8+cHWGS/j
- kxq76SuqYXxOgVSW1leJEg==
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1629749872162578106-webhooks-bot@alsa-project.org>
+References: <1629749872162578106-webhooks-bot@alsa-project.org>
+Subject: Out of bounds
+Message-Id: <20210823201756.1B41FF8020C@alsa1.perex.cz>
+Date: Mon, 23 Aug 2021 22:17:56 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,195 +66,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-p=0 is more correct I think
+alsa-project/alsa-utils pull request #107 was opened from folkertvanheusden:
 
-this is application only
+Drevent out-of-bounds writing in arecord during recording with high volume and vu-meter enabled.
 
-On Tue, Aug 24, 2021 at 01:03:27AM +0530, sujith kumar reddy wrote:
-> Hi folkert,
-> 
-> The above you suggested p=0 is  working .
-> i tried like
->  if (p > bar_length || p < 0)
->        p = bar_length;
-> This is also working.
-> 
-> Which is the perfect one we can use?
-> Is there any impact of p with driver data or this is just a
-> application calculated value.
-> 
-> Thanks
-> Sujith
-> 
-> 
-> On Tue, Aug 24, 2021 at 12:39 AM folkert <folkert@vanheusden.com> wrote:
-> 
-> > :-)
-> >
-> > If this also doesn't work, then I give up.
-> >
-> > diff --git a/aplay/aplay.c b/aplay/aplay.c
-> > index cc51dcb..03a4f73 100644
-> > --- a/aplay/aplay.c
-> > +++ b/aplay/aplay.c
-> > @@ -1753,8 +1753,10 @@ static void print_vu_meter_stereo(int *perc, int
-> > *maxperc)
-> >         for (c = 0; c < 2; c++) {
-> >                 int p = perc[c] * bar_length / 100;
-> >                 char tmp[4];
-> > -               if (p > bar_length)
-> > -                       p = bar_length;
-> > +               if (p >= bar_length)
-> > +                       p = bar_length - 1;
-> > +               if (p < 0)
-> > +                       p = 0;
-> >                 if (c)
-> >                         memset(line + bar_length + 6 + 1, '#', p);
-> >                 else
-> >
-> > On Tue, Aug 24, 2021 at 12:36:05AM +0530, sujith kumar reddy wrote:
-> > > Hi Folkert,
-> > >
-> > > Tried with the above code.This is also getting p value negative.
-> > >
-> > > My point is p is negative it doesn't go to
-> > >
-> > > if (p >= bar_length)
-> > >              p = bar_length - 1;
-> > > it is going to memset second argument p,that is negative so crashing.
-> > >
-> > >
-> > > logs:
-> > > localhost ~ # ./sujith/arecord -D hw:1,2 -f S32_LE -r 48000 -c 2 1.wav
-> > -V s
-> > > Sujith entry: main
-> > > Recording WAVE '1.wav' : Signed 32 bit Little Endian, Rate 48000 Hz,
-> > Stereo
-> > >
-> > >  print_vu_meter_stereo sujith 35  ////////////////////////// c=0 case
-> > >  print_vu_meter_stereo sujith* -9227433* /////////////////////c=1 case p
-> > > value negative which is going to memset second argument.
-> > >
-> > > Thanks
-> > > Sujith
-> > >
-> > >
-> > >
-> > > On Tue, Aug 24, 2021 at 12:17 AM folkert <folkert@vanheusden.com> wrote:
-> > >
-> > > > Ah same bug.
-> > > > Please try this.
-> > > > The idea is that in both cases the extra '-1' breaks it.
-> > > >
-> > > > diff --git a/aplay/aplay.c b/aplay/aplay.c
-> > > > index cc51dcb..47db7e7 100644
-> > > > --- a/aplay/aplay.c
-> > > > +++ b/aplay/aplay.c
-> > > > @@ -1753,8 +1753,8 @@ static void print_vu_meter_stereo(int *perc, int
-> > > > *maxperc)
-> > > >         for (c = 0; c < 2; c++) {
-> > > >                 int p = perc[c] * bar_length / 100;
-> > > >                 char tmp[4];
-> > > > -               if (p > bar_length)
-> > > > -                       p = bar_length;
-> > > > +               if (p >= bar_length)
-> > > > +                       p = bar_length - 1;
-> > > >                 if (c)
-> > > >                         memset(line + bar_length + 6 + 1, '#', p);
-> > > >                 else
-> > > >
-> > > >
-> > > > On Tue, Aug 24, 2021 at 12:14:00AM +0530, sujith kumar reddy wrote:
-> > > > > Tried with the above code.This is also getting p value negative.
-> > > > >
-> > > > > snippet code:
-> > > > >
-> > > > >    fprintf(stderr, _(" %s sujith %d \n"), __func__,p);
-> > > > >                 if (p > bar_length)
-> > > > >                         p = bar_length;
-> > > > >                 if (c)
-> > > > >                         memset(line + bar_length + 6 + 1, '#', p);
-> > > > >                 else
-> > > > >                         memset(line + bar_length - p - 1, '#', p);
-> > > > >
-> > > > >
-> > > > > logs....
-> > > > > //  c=0 case
-> > > > >
-> > > > > print_vu_meter_stereo sujith 35  ///value of p is 35
-> > > > > c =1 case
-> > > > >
-> > > > >  print_vu_meter_stereo sujith -9227433 ///value is negative//
-> > > > >
-> > > > > On Mon, Aug 23, 2021 at 10:33 PM folkert <folkert@vanheusden.com>
-> > wrote:
-> > > > >
-> > > > > > >         const int bar_length = 35;
-> > > > > > >         char line[80];
-> > > > > > ...
-> > > > > > >                 if (p > bar_length)
-> > > > > > >                         p = bar_length;
-> > > > > > >                 if (c)
-> > > > > > >                         memset(line + bar_length + 6 + 1, '#',
-> > p);
-> > > > > > > ----------------//this is the line where it is crashing.here p
-> > value
-> > > > is
-> > > > > > > becoming negative at c=1.As we see if we change the p value to
-> > > > bar_length
-> > > > > > > it works fine ..As it is a player issue not a driver issue.
-> > > > > >
-> > > > > > This is puzzling.
-> > > > > > bar_length + 6 + 1 + p and thus 35 + 6 + 1 + 35 is max 77, that
-> > fits
-> > > > > > easlity in 80.
-> > > > > >
-> > > > > > But wait:
-> > > > > >
-> > > > > >                         line[bar_length - p - 1] = '+';
-> > > > > >
-> > > > > > p is max bar_length, so we would end up putting '+' in line[-1]
-> > > > > >
-> > > > > > Can you try this?
-> > > > > >
-> > > > > >
-> > > > > > diff --git a/aplay/aplay.c b/aplay/aplay.c
-> > > > > > index cc51dcb..9cfd52c 100644
-> > > > > > --- a/aplay/aplay.c
-> > > > > > +++ b/aplay/aplay.c
-> > > > > > @@ -1764,7 +1764,7 @@ static void print_vu_meter_stereo(int *perc,
-> > int
-> > > > > > *maxperc)
-> > > > > >                         p = bar_length;
-> > > > > >                 if (c)
-> > > > > >                         line[bar_length + 6 + 1 + p] = '+';
-> > > > > > -               else
-> > > > > > +               else if (p < bar_length)
-> > > > > >                         line[bar_length - p - 1] = '+';
-> > > > > >                 if (ABS(maxperc[c]) > 99)
-> > > > > >                         sprintf(tmp, "MAX");
-> > > > > >
-> > > >
-> >
-> >
-> > Folkert van Heusden
-> >
-> > --
-> > Multitail es una herramienta flexible que permite visualizar los "log
-> > file" y seguir la ejecución de comandos. Permite filtrar, añadir
-> > colores, combinar archivos, la visualización de diferencias (diff-
-> > view), etc.  http://www.vanheusden.com/multitail/
-> > ----------------------------------------------------------------------
-> > Phone: +31-6-41278122, PGP-key: 1F28D8AE, www.vanheusden.com
-> >
-
-
-Folkert van Heusden
-
--- 
-Multitail es una herramienta flexible que permite visualizar los "log
-file" y seguir la ejecución de comandos. Permite filtrar, añadir
-colores, combinar archivos, la visualización de diferencias (diff-
-view), etc.  http://www.vanheusden.com/multitail/
-----------------------------------------------------------------------
-Phone: +31-6-41278122, PGP-key: 1F28D8AE, www.vanheusden.com
+Request URL   : https://github.com/alsa-project/alsa-utils/pull/107
+Patch URL     : https://github.com/alsa-project/alsa-utils/pull/107.patch
+Repository URL: https://github.com/alsa-project/alsa-utils
