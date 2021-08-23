@@ -7,77 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D1C8C4338F
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Aug 2021 07:39:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D816C4338F
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Aug 2021 07:39:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5866D61242
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Aug 2021 07:39:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5866D61242
+	by mail.kernel.org (Postfix) with ESMTPS id 970F06121E
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Aug 2021 07:39:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 970F06121E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E7C521655;
-	Mon, 23 Aug 2021 09:38:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7C521655
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D3571660;
+	Mon, 23 Aug 2021 09:38:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D3571660
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629704341;
-	bh=/QhqJJBIoQfrbct361szXBdqx3VlWmzZ13jKGtK4t4I=;
+	s=default; t=1629704354;
+	bh=zyTghKG8NAFs96bMg2Zxyun+K14x5NpU0q4RXxG6Juc=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Is/mnwpgU6+uplZ8NsePWVg1bYialgOAoIzrCbscEgslTsIBO2q6cfNklN4zqmLNO
-	 tPPuBJ2NDHBslHUlYfGbWyRNRaP1eNTbTPJDkuQqXK1Pf1IB4VRSerOtNIZoW5CW8N
-	 iTknFhRvFgeJaX8axiXqjOq5pQvjrYT/kLTLqCeA=
+	b=rjXrpaxK1oLkwroBBErLOhjWp07XoFGSPWmBepQxPaSe4cPPm/m5jlk1iUnTg5+SE
+	 bgrj68hjTVU5VOEcch6oST5jx8KIutv9p0lSEaDIxVm+EIa0K60iiiPyo6UrpIHe54
+	 RCNah7VMbYgXV9hs62ZEzcmEdqQRjbwv1GFLzdUY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6095F80424;
-	Mon, 23 Aug 2021 09:37:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56A72F804E5;
+	Mon, 23 Aug 2021 09:37:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B548AF80431; Mon, 23 Aug 2021 09:37:38 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id BFD3CF80430; Mon, 23 Aug 2021 09:37:39 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B396FF80240
- for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2021 09:37:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B396FF80240
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9C14EF8020C
+ for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2021 09:37:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C14EF8020C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="RS3yLl5a"; 
+ header.b="vJDm1X+V"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="M1YTk5Qf"
+ header.b="rXCndptV"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 7161C21F1E
- for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2021 07:37:30 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id DAE021FF7E
+ for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2021 07:37:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1629704250; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1629704248; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=uOcvhwMIjjR+H5ut7BLcluqbLwnOSFpUkWEnEBXf9g0=;
- b=RS3yLl5aax98+Cb9/4MGJa4dLN9roSPS/FAP/fRSy+ucQc1fkWLzXdNGXm7rxhqs09YfJ0
- sV8H7YNHBZPXpAU6YKt1dPexAiLROQiaYMR3fLCXOWv9uYwOsPv32Avv5N9g6HWvcXaAtZ
- PsCjd1sFw26bBUZIvlsL6wot1cLviZg=
+ bh=/hWMA697F2iS9+Er0toSJBgmPFJaKlMYY4uXEk4VWzA=;
+ b=vJDm1X+VNb0s4mblNaHzV6F9JcOyVzZDRLFnl3mfFJHVMxE+tNDiWkrM/+Sa2W29i4lxI6
+ 85dpW/hVqNv9XsARklIb9taP6cg+i1Dfjya98a8UCQfwe0jC30tUDTl7+ywzOvCJhTuX1f
+ cohKdp2qZXvoJB+jv6p0zD5NpaaZDck=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1629704250;
+ s=susede2_ed25519; t=1629704248;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=uOcvhwMIjjR+H5ut7BLcluqbLwnOSFpUkWEnEBXf9g0=;
- b=M1YTk5QfJf4aVz7zwNs4Ra2usoAEUiw7fBpJE+cjVSQP5Am8rTfvjzDwKgJ+65G0RO5P8M
- mP2zNdLJdHAo6sCg==
+ bh=/hWMA697F2iS9+Er0toSJBgmPFJaKlMYY4uXEk4VWzA=;
+ b=rXCndptV3NdjdsHr0E1lVzrIh0PkDeVp6yOrT2Gah2ucGg0vVOE0k9MvJRoFb+0f5q2RhE
+ xxyNaTyZ+f9mxTAg==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 616D1A3BAE;
- Mon, 23 Aug 2021 07:37:30 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id D4F35A3BB0;
+ Mon, 23 Aug 2021 07:37:28 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/3] ALSA: hda: Update documentation for aliasing via the
- model option
-Date: Mon, 23 Aug 2021 09:37:22 +0200
-Message-Id: <20210823073722.14873-4-tiwai@suse.de>
+Subject: [PATCH 1/3] ALSA: hda: Code refactoring snd_hda_pick_fixup()
+Date: Mon, 23 Aug 2021 09:37:20 +0200
+Message-Id: <20210823073722.14873-2-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210823073722.14873-1-tiwai@suse.de>
 References: <20210823073722.14873-1-tiwai@suse.de>
@@ -98,55 +97,127 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The previous patch allowed user to specify the aliasing of SSID via
-model option for applying a quirk.  Update the documentation
-accordingly.
+This contains a slight code refactoring of snd_hda_pick_fixup():
+- Unify the ID setup
+- Unify the debug print message
+- Use snd_pci_quirk_lookup_id() for the codec SSID matching
+
+Mostly for simplifying the code flow but also it makes easier to add
+the codec alias handling in the upcoming patch.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- Documentation/sound/alsa-configuration.rst |  6 ++++++
- Documentation/sound/hd-audio/notes.rst     | 11 +++++++++++
- 2 files changed, 17 insertions(+)
+ sound/pci/hda/hda_auto_parser.c | 75 +++++++++++++++++----------------
+ 1 file changed, 38 insertions(+), 37 deletions(-)
 
-diff --git a/Documentation/sound/alsa-configuration.rst b/Documentation/sound/alsa-configuration.rst
-index f148b58502c0..e61edd1295fc 100644
---- a/Documentation/sound/alsa-configuration.rst
-+++ b/Documentation/sound/alsa-configuration.rst
-@@ -1059,6 +1059,12 @@ The model name ``generic`` is treated as a special case.  When this
- model is given, the driver uses the generic codec parser without
- "codec-patch".  It's sometimes good for testing and debugging.
+diff --git a/sound/pci/hda/hda_auto_parser.c b/sound/pci/hda/hda_auto_parser.c
+index 1a001ecf7f63..dd050be7aefa 100644
+--- a/sound/pci/hda/hda_auto_parser.c
++++ b/sound/pci/hda/hda_auto_parser.c
+@@ -982,65 +982,66 @@ void snd_hda_pick_fixup(struct hda_codec *codec,
+ 	const struct snd_pci_quirk *q;
+ 	int id = HDA_FIXUP_ID_NOT_SET;
+ 	const char *name = NULL;
++	const char *type = NULL;
  
-+The model option can be used also for aliasing to another PCI or codec
-+SSID.  When it's passed in the form of ``model=XXXX:YYYY`` where XXXX
-+and YYYY are the sub-vendor and sub-device IDs in hex numbers,
-+respectively, the driver will refer to that SSID as a reference to the
-+quirk table.
+ 	if (codec->fixup_id != HDA_FIXUP_ID_NOT_SET)
+ 		return;
+ 
+ 	/* when model=nofixup is given, don't pick up any fixups */
+ 	if (codec->modelname && !strcmp(codec->modelname, "nofixup")) {
+-		codec->fixup_list = NULL;
+-		codec->fixup_name = NULL;
+-		codec->fixup_id = HDA_FIXUP_ID_NO_FIXUP;
++		id = HDA_FIXUP_ID_NO_FIXUP;
++		fixlist = NULL;
+ 		codec_dbg(codec, "%s: picked no fixup (nofixup specified)\n",
+ 			  codec->core.chip_name);
+-		return;
++		goto found;
+ 	}
+ 
++	/* match with the model name string */
+ 	if (codec->modelname && models) {
+ 		while (models->name) {
+ 			if (!strcmp(codec->modelname, models->name)) {
+-				codec->fixup_id = models->id;
+-				codec->fixup_name = models->name;
+-				codec->fixup_list = fixlist;
++				id = models->id;
++				name = models->name;
+ 				codec_dbg(codec, "%s: picked fixup %s (model specified)\n",
+ 					  codec->core.chip_name, codec->fixup_name);
+-				return;
++				goto found;
+ 			}
+ 			models++;
+ 		}
+ 	}
+-	if (quirk) {
+-		q = snd_pci_quirk_lookup(codec->bus->pci, quirk);
+-		if (q) {
+-			id = q->value;
+-#ifdef CONFIG_SND_DEBUG_VERBOSE
+-			name = q->name;
+-			codec_dbg(codec, "%s: picked fixup %s (PCI SSID%s)\n",
+-				  codec->core.chip_name, name, q->subdevice_mask ? "" : " - vendor generic");
+-#endif
+-		}
 +
- If the default configuration doesn't work and one of the above
- matches with your device, report it together with alsa-info.sh
- output (with ``--no-upload`` option) to kernel bugzilla or alsa-devel
-diff --git a/Documentation/sound/hd-audio/notes.rst b/Documentation/sound/hd-audio/notes.rst
-index cf4d7158af78..d118b6fe269b 100644
---- a/Documentation/sound/hd-audio/notes.rst
-+++ b/Documentation/sound/hd-audio/notes.rst
-@@ -215,6 +215,17 @@ There are a few special model option values:
- * when ``generic`` is passed, the codec-specific parser is skipped and
-   only the generic parser is used.
- 
-+A new style for the model option that was introduced since 5.15 kernel
-+is to pass the PCI or codec SSID in the form of ``model=XXXX:YYYY``
-+where XXXX and YYYY are the sub-vendor and sub-device IDs in hex
-+numbers, respectively.  This is a kind of aliasing to another device;
-+when this form is given, the driver will refer to that SSID as a
-+reference to the quirk table.  It'd be useful especially when the
-+target quirk isn't listed in the model table.  For example, passing
-+model=103c:8862 will apply the quirk for HP ProBook 445 G8 (which
-+isn't found in the model table as of writing) as long as the device is
-+handled equivalently by the same driver.
++	if (!quirk)
++		return;
 +
++	/* match with the PCI SSID */
++	q = snd_pci_quirk_lookup(codec->bus->pci, quirk);
++	if (q) {
++		type = "PCI SSID";
++		goto found_device;
+ 	}
+-	if (id < 0 && quirk) {
+-		for (q = quirk; q->subvendor || q->subdevice; q++) {
+-			unsigned int vendorid =
+-				q->subdevice | (q->subvendor << 16);
+-			unsigned int mask = 0xffff0000 | q->subdevice_mask;
+-			if ((codec->core.subsystem_id & mask) == (vendorid & mask)) {
+-				id = q->value;
+-#ifdef CONFIG_SND_DEBUG_VERBOSE
+-				name = q->name;
+-				codec_dbg(codec, "%s: picked fixup %s (codec SSID)\n",
+-					  codec->core.chip_name, name);
+-#endif
+-				break;
+-			}
+-		}
++
++	/* match with the codec SSID */
++	q = snd_pci_quirk_lookup_id(codec->core.subsystem_id >> 16,
++				    codec->core.subsystem_id & 0xffff,
++				    quirk);
++	if (q) {
++		type = "codec SSID";
++		goto found_device;
+ 	}
  
- Speaker and Headphone Output
- ----------------------------
++	return; /* no matching */
++
++ found_device:
++	id = q->value;
++#ifdef CONFIG_SND_DEBUG_VERBOSE
++	name = q->name;
++#endif
++	codec_dbg(codec, "%s: picked fixup %s for %s %04x:%04x\n",
++		  codec->core.chip_name, name ? name : "",
++		  type, q->subvendor, q->subdevice);
++ found:
+ 	codec->fixup_id = id;
+-	if (id >= 0) {
+-		codec->fixup_list = fixlist;
+-		codec->fixup_name = name;
+-	}
++	codec->fixup_list = fixlist;
++	codec->fixup_name = name;
+ }
+ EXPORT_SYMBOL_GPL(snd_hda_pick_fixup);
 -- 
 2.26.2
 
