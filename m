@@ -7,45 +7,45 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ECD9AC4338F
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Aug 2021 10:55:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF5EEC4338F
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Aug 2021 10:56:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C9FFD608FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Aug 2021 10:55:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C9FFD608FE
+	by mail.kernel.org (Postfix) with ESMTPS id D41B961186
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Aug 2021 10:56:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D41B961186
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rock-chips.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D7901658;
-	Mon, 23 Aug 2021 12:55:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D7901658
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6E47C167A;
+	Mon, 23 Aug 2021 12:55:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E47C167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629716155;
-	bh=7C2s01tuJIgnW59/fuyzV2T2i2DEcWQtutfCsntC8ls=;
+	s=default; t=1629716169;
+	bh=F1v0KJqe1miw68YlrI9px6GhghiX/DEPC6wu4gzLQAE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kp+BihBwqRkL2tfh8JWFvGDAwDxzBotslXB1uID1yyyw8HmarBbpqUUc5RIpK4my4
-	 wKIuZU3Jz0eBjZMXk86vLtsVUQLbw5ZyXYdI6GodMWrHslO7VqNi70K4sxRvH2DttZ
-	 f+9CQXFAHHKfR7Q3+gemXshGo7OmOjCQKN/thfFU=
+	b=KbxsSNCRsZcFXNH5ntZe5AcXs6eVdfBsS6pbwYqrPNsvQ8aL3CM8J+ng0Zh8tOqsM
+	 kDOdToDoB1JOZED7eQzbWKraMFx71mMvPCY/wqY/DNNh47xcFize3zIfDyB0cPpZ5e
+	 ggcn97geLJRRYYk03z8kD3pBqpXu5f1Ba1Wd5gRw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 340BCF804F2;
-	Mon, 23 Aug 2021 12:53:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9CAB8F80431;
+	Mon, 23 Aug 2021 12:54:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C8833F80217; Mon, 23 Aug 2021 12:53:30 +0200 (CEST)
-Received: from lucky1.263xmail.com (lucky1.263xmail.com [211.157.147.131])
+ id BFFB7F804E6; Mon, 23 Aug 2021 12:54:48 +0200 (CEST)
+Received: from lucky1.263xmail.com (lucky1.263xmail.com [211.157.147.132])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B404EF80217
- for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2021 12:53:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B404EF80217
-Received: from localhost (unknown [192.168.167.224])
- by lucky1.263xmail.com (Postfix) with ESMTP id 46BA0C2A50;
- Mon, 23 Aug 2021 18:53:15 +0800 (CST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 602CCF8020C
+ for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2021 12:54:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 602CCF8020C
+Received: from localhost (unknown [192.168.167.225])
+ by lucky1.263xmail.com (Postfix) with ESMTP id F36DBFB5F6;
+ Mon, 23 Aug 2021 18:54:38 +0800 (CST)
 X-MAIL-GRAY: 0
 X-MAIL-DELIVERY: 1
 X-ADDR-CHECKED4: 1
@@ -53,30 +53,30 @@ X-SKE-CHECKED: 1
 X-ANTISPAM-LEVEL: 2
 Received: from localhost.localdomain (unknown [58.22.7.114])
  by smtp.263.net (postfix) whith ESMTP id
- P22031T140205908551424S1629715992162978_; 
- Mon, 23 Aug 2021 18:53:14 +0800 (CST)
+ P10596T140297356953344S1629716077595046_; 
+ Mon, 23 Aug 2021 18:54:39 +0800 (CST)
 X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <efe8b1b0768500686fe1239aac6649c9>
+X-UNIQUE-TAG: <7744b2575fba8ab9f2f9be421384bba5>
 X-RL-SENDER: sugar.zhang@rock-chips.com
 X-SENDER: zxg@rock-chips.com
 X-LOGIN-NAME: sugar.zhang@rock-chips.com
 X-FST-TO: broonie@kernel.org
-X-RCPT-COUNT: 7
+X-RCPT-COUNT: 6
 X-SENDER-IP: 58.22.7.114
 X-ATTACHMENT-NUM: 0
 X-System-Flag: 0
 From: Sugar Zhang <sugar.zhang@rock-chips.com>
 To: broonie@kernel.org,
 	heiko@sntech.de
-Subject: [PATCH 08/15] ASoC: rockchip: i2s: Fixup config for DAIFMT_DSP_A/B
-Date: Mon, 23 Aug 2021 18:53:03 +0800
-Message-Id: <1629715990-21372-4-git-send-email-sugar.zhang@rock-chips.com>
+Subject: [PATCH 11/15] ASoC: rockchip: i2s: Add compatible for more SoCs
+Date: Mon, 23 Aug 2021 18:54:32 +0800
+Message-Id: <1629716076-21465-2-git-send-email-sugar.zhang@rock-chips.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1629715710-21137-1-git-send-email-sugar.zhang@rock-chips.com>
 References: <1629715710-21137-1-git-send-email-sugar.zhang@rock-chips.com>
 Cc: Sugar Zhang <sugar.zhang@rock-chips.com>,
  linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
- Xiaotan Luo <lxt@rock-chips.com>, devicetree@vger.kernel.org
+ devicetree@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,56 +92,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Xiaotan Luo <lxt@rock-chips.com>
+This patch adds more compatible strings for SoCs.
 
-- DSP_A: PCM delay 1 bit mode, L data MSB after FRM LRC
-- DSP_B: PCM no delay mode, L data MSB during FRM LRC
-
-Change-Id: I198519c431815de3ca1fc154da78773ca705f0e0
-Signed-off-by: Xiaotan Luo <lxt@rock-chips.com>
 Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
+Change-Id: I980a7c34a7f6c82a066a37e7f97fa4e69cbae583
 ---
- sound/soc/rockchip/rockchip_i2s.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/rockchip/rockchip_i2s.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
 diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index a91f874d..8a432ae 100644
+index cedfe47..a0f2778 100644
 --- a/sound/soc/rockchip/rockchip_i2s.c
 +++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -259,12 +259,12 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 	case SND_SOC_DAIFMT_I2S:
- 		val = I2S_TXCR_IBM_NORMAL;
- 		break;
--	case SND_SOC_DAIFMT_DSP_A: /* PCM no delay mode */
--		val = I2S_TXCR_TFS_PCM;
--		break;
--	case SND_SOC_DAIFMT_DSP_B: /* PCM delay 1 mode */
-+	case SND_SOC_DAIFMT_DSP_A: /* PCM delay 1 bit mode */
- 		val = I2S_TXCR_TFS_PCM | I2S_TXCR_PBM_MODE(1);
- 		break;
-+	case SND_SOC_DAIFMT_DSP_B: /* PCM no delay mode */
-+		val = I2S_TXCR_TFS_PCM;
-+		break;
- 	default:
- 		ret = -EINVAL;
- 		goto err_pm_put;
-@@ -283,12 +283,12 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 	case SND_SOC_DAIFMT_I2S:
- 		val = I2S_RXCR_IBM_NORMAL;
- 		break;
--	case SND_SOC_DAIFMT_DSP_A: /* PCM no delay mode */
--		val = I2S_RXCR_TFS_PCM;
--		break;
--	case SND_SOC_DAIFMT_DSP_B: /* PCM delay 1 mode */
-+	case SND_SOC_DAIFMT_DSP_A: /* PCM delay 1 bit mode */
- 		val = I2S_RXCR_TFS_PCM | I2S_RXCR_PBM_MODE(1);
- 		break;
-+	case SND_SOC_DAIFMT_DSP_B: /* PCM no delay mode */
-+		val = I2S_RXCR_TFS_PCM;
-+		break;
- 	default:
- 		ret = -EINVAL;
- 		goto err_pm_put;
+@@ -613,10 +613,20 @@ static const struct rk_i2s_pins rk3399_i2s_pins = {
+ };
+ 
+ static const struct of_device_id rockchip_i2s_match[] __maybe_unused = {
++	{ .compatible = "rockchip,px30-i2s", },
++	{ .compatible = "rockchip,rk1808-i2s", },
++	{ .compatible = "rockchip,rk3036-i2s", },
+ 	{ .compatible = "rockchip,rk3066-i2s", },
++	{ .compatible = "rockchip,rk3128-i2s", },
+ 	{ .compatible = "rockchip,rk3188-i2s", },
++	{ .compatible = "rockchip,rk3228-i2s", },
+ 	{ .compatible = "rockchip,rk3288-i2s", },
++	{ .compatible = "rockchip,rk3308-i2s", },
++	{ .compatible = "rockchip,rk3328-i2s", },
++	{ .compatible = "rockchip,rk3366-i2s", },
++	{ .compatible = "rockchip,rk3368-i2s", },
+ 	{ .compatible = "rockchip,rk3399-i2s", .data = &rk3399_i2s_pins },
++	{ .compatible = "rockchip,rv1126-i2s", },
+ 	{},
+ };
+ 
 -- 
 2.7.4
 
