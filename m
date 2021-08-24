@@ -7,63 +7,63 @@ X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2519C4320A
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Aug 2021 03:01:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AAB0C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Aug 2021 03:01:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7AE30600D1
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Aug 2021 03:01:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7AE30600D1
+	by mail.kernel.org (Postfix) with ESMTPS id 22028600D1
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Aug 2021 03:01:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 22028600D1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 15C5D1660;
-	Tue, 24 Aug 2021 05:00:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15C5D1660
+	by alsa0.perex.cz (Postfix) with ESMTPS id B9B8E166B;
+	Tue, 24 Aug 2021 05:01:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9B8E166B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629774096;
-	bh=05AyD2HAw57NY/tXoMn13DkLFf/ETc4tRXyQKjBHmQY=;
+	s=default; t=1629774114;
+	bh=7MSDeCCaoBEWQi/B1kB88gRU0pY5TVANXpo20PVWy9I=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=nu+N1+O94XG+6GcALtAKJ/7S4mHCkzpjR1ftPn3RPaMrLGDivA0d4QVAS5X1bzWzq
-	 J4HY+xfW0uqNuDDg83gsXCDb5Az6O9F+FEmhgECEMUwwK5tEp+/vjwhKeemYLMgebJ
-	 NYqr83TTtlE7E34G1fg7eKA1HHPibg6vMYYet7+k=
+	b=W5jjtqutn8ndrsfmNukDRrYVU059UILbB0yZwJ9bl65P3HEMJ2Yx3pZCHBJJUT/9V
+	 HPZ5MldNk2vsOZygYy6uvXuF6MFeLAWsgBmSeHv2FkW0wskUoXTpIPsiPvIPa0hTN6
+	 RYZOp+ZrEvdRY/Rxv2aN6Rdd9XpK1zTWiNCGQZ0I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60C91F80511;
-	Tue, 24 Aug 2021 04:58:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 704A4F80517;
+	Tue, 24 Aug 2021 04:58:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5292FF804FE; Tue, 24 Aug 2021 04:58:34 +0200 (CEST)
+ id 869E4F80519; Tue, 24 Aug 2021 04:58:46 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1CFE8F80430
- for <alsa-devel@alsa-project.org>; Tue, 24 Aug 2021 04:58:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CFE8F80430
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4CA7AF80517
+ for <alsa-devel@alsa-project.org>; Tue, 24 Aug 2021 04:58:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CA7AF80517
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="UpwaYs+E"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7A60611EF;
- Tue, 24 Aug 2021 02:58:23 +0000 (UTC)
+ header.b="BqCNDf7q"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62AE361374;
+ Tue, 24 Aug 2021 02:58:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1629773904;
- bh=05AyD2HAw57NY/tXoMn13DkLFf/ETc4tRXyQKjBHmQY=;
+ s=k20201202; t=1629773917;
+ bh=7MSDeCCaoBEWQi/B1kB88gRU0pY5TVANXpo20PVWy9I=;
  h=From:To:Cc:Subject:Date:From;
- b=UpwaYs+Em0sQvSOY9qsSQb05ensQBg7n8F+pcAHPBZQVmuuuzPpk0rcKV0DKFLF8T
- t78ZYZDdciwwh1Udb7a6bLfdUOc/pcL1wjfrqqlTKIGEF6Y9qAfjYL7T/WFmGNS0CR
- 1OC61WbfmL5sig8ifBXqf9jeuhV5iRLrzr42hU5g/vSOLf+/CpODgipGpjV9QDVHYj
- QZ0OLRDdCMh2cx8gZyZzRxbbETWqyfvWAhHjKR6FTdjIAKdcqGVpwvC900oKWtvZsd
- zojSePTQiIw+hlqUEfBS5+qNc5QK4AljYTTZCX6PQEeEaJkl9FI+2XIesFJt2MyPYs
- uT1sWCoNuhnvw==
+ b=BqCNDf7qt8OXmymDWplG32U3GWPxLeNdRsZEH3F1iALqelB2lmKuKSYcyIM9vuYR6
+ Brh/is3jBPq/IEJinlfv4FPD7m0ONYoV+ZfDbGeJqXKxfxmQ4w62S6SunEA0ihYmZf
+ lpLrBoWWqh48c77dGyySJdgDpZKv0o68MGE0TQ/S5+9ddPRAZFyhgKExhF410n4QaD
+ gIT+MMDUcX2dRUzgpWOi6vjaR8ecjVOBX08k2XqorZcbVu9g0meDa/jmuytNSGOt3f
+ tk0bufZI46FMF4uwufPVpcanpx50x6UVUAZRI+1QYk1ke89zz/kdvwUnjMohzDchCd
+ hVFQC54YmNYaQ==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
 	kai.heng.feng@canonical.com
 Subject: FAILED: Patch "ALSA: hda/realtek: Limit mic boost on HP ProBook 445
- G8" failed to apply to 4.19-stable tree
-Date: Mon, 23 Aug 2021 22:58:22 -0400
-Message-Id: <20210824025822.659194-1-sashal@kernel.org>
+ G8" failed to apply to 4.14-stable tree
+Date: Mon, 23 Aug 2021 22:58:35 -0400
+Message-Id: <20210824025835.659581-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 X-Patchwork-Hint: ignore
@@ -86,7 +86,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch below does not apply to the 4.19-stable tree.
+The patch below does not apply to the 4.14-stable tree.
 If someone wants it applied there, or to any other stable or longterm
 tree, then please email the backport, including the original git commit
 id to <stable@vger.kernel.org>.
