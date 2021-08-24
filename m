@@ -2,80 +2,98 @@ Return-Path: <SRS0=yNKw=NP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46BA5C4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Aug 2021 09:23:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 561FDC4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Aug 2021 09:23:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B991E6135F
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Aug 2021 09:23:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B991E6135F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rock-chips.com
+	by mail.kernel.org (Postfix) with ESMTPS id CAF2B61246
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Aug 2021 09:23:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CAF2B61246
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3E41D15E5;
-	Tue, 24 Aug 2021 11:22:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E41D15E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C6A315F2;
+	Tue, 24 Aug 2021 11:22:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C6A315F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629796983;
-	bh=hos/4fIiMBTgY1ws1f6s/KcwPtfZnYLCFoA79WfBSMc=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1629797002;
+	bh=VrTmhzRqhQN7FDGSChr3UBIlvK3tI+Ox6e9t+Z93kaU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pCVRVeFyExyaxMvCZlbeIcNNH/S5reA2YbdxIzUNG26wGQ7WPorBpp0JEwfu0yYk7
-	 oLfWbOVGtCCUJOwrLlXuL6d3DcajCtiWA/eBMQWX1s1b+79SU82nAB/ufRdl6HZrg+
-	 0HNUQv7KqSTYshxTbOfi1sKdvisTGlbRhK9B/qxU=
+	b=H3M+DmCHPQScVMYbQwZPzMKGLr3R0mQ7d2TXOjLGeWwJiTs5wITxZ2xHJvWesVIoA
+	 v53JR0RvJ6OhG3gN2u7HNh1ReXN5IJJ1/+s1d3CmGXzLUGUC5DXasGieFRyNi9tfKz
+	 y9cKhbfaNNGhGtBPF5YP92gkArgRmGyv/ua+vyF4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C3C27F804E6;
-	Tue, 24 Aug 2021 11:19:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B165F804E5;
+	Tue, 24 Aug 2021 11:20:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 88C68F804F2; Tue, 24 Aug 2021 11:19:28 +0200 (CEST)
-Received: from lucky1.263xmail.com (lucky1.263xmail.com [211.157.147.132])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id DBBC7F804FC; Tue, 24 Aug 2021 11:20:07 +0200 (CEST)
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com
+ [IPv6:2a00:1450:4864:20::12d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 42C9CF8052D
- for <alsa-devel@alsa-project.org>; Tue, 24 Aug 2021 11:19:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42C9CF8052D
-Received: from localhost (unknown [192.168.167.16])
- by lucky1.263xmail.com (Postfix) with ESMTP id 60C58FB89D;
- Tue, 24 Aug 2021 17:19:12 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [58.22.7.114])
- by smtp.263.net (postfix) whith ESMTP id
- P704T139881214887680S1629796736938922_; 
- Tue, 24 Aug 2021 17:19:02 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <6468d61e6fc0bf28c73c76649ed44478>
-X-RL-SENDER: sugar.zhang@rock-chips.com
-X-SENDER: zxg@rock-chips.com
-X-LOGIN-NAME: sugar.zhang@rock-chips.com
-X-FST-TO: broonie@kernel.org
-X-RCPT-COUNT: 6
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From: Sugar Zhang <sugar.zhang@rock-chips.com>
-To: broonie@kernel.org,
-	heiko@sntech.de
-Subject: [PATCH v2 13/15] ASoC: rockchip: i2s: Add support for frame inversion
-Date: Tue, 24 Aug 2021 17:18:52 +0800
-Message-Id: <1629796734-4243-3-git-send-email-sugar.zhang@rock-chips.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1629796561-4025-1-git-send-email-sugar.zhang@rock-chips.com>
-References: <1629796561-4025-1-git-send-email-sugar.zhang@rock-chips.com>
-Cc: Sugar Zhang <sugar.zhang@rock-chips.com>,
- linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 49D78F804EC
+ for <alsa-devel@alsa-project.org>; Tue, 24 Aug 2021 11:19:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49D78F804EC
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="nZVuSx8x"
+Received: by mail-lf1-x12d.google.com with SMTP id u22so43982635lfq.13
+ for <alsa-devel@alsa-project.org>; Tue, 24 Aug 2021 02:19:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=2qHor8hC28rZFjli0B0VuhOzO63SO3wlmVvXEzUNAZM=;
+ b=nZVuSx8xZQD3cutlxMyHiMft/jbEs/AfzEJb8quJB2sLpeKbXwfZ7w/eYEHxB5OibG
+ DKK2jPT3TsAaRXylNuFjNUkJkdwfO5zcKcNVHsml7Qj/zEPNgD3jyS/lgLnVQGw/1Y8S
+ BnSGqQ9SxnY7cXckJq517MdjJ9+RLDNW4oYpNKZWxlP3cC4KL3iCpFSgPgpzCKmAWKKx
+ DDJ+2QBrtcAANr7Vtx3pm2lkOtLmleqs/MPfd4GVQX8qRAIREPVemtlkOLNzlpThMQ6D
+ 0rVFTkirIkNSUELdeP4qGN2h1aCBdFs6wzeFg/X9d0rIOatMqhlKIH3/L+UwDRZDQVvl
+ rNoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=2qHor8hC28rZFjli0B0VuhOzO63SO3wlmVvXEzUNAZM=;
+ b=gerfDXDGRP2AhECgXs+DEpKBBmjCCp9/Ms4Er59+rGMnNZNNeJKqBYl4tH99w5pQKy
+ ObRr/H/N92EWQpPg+toGUHXR0cFt+aQoxG+3l2kaESgAqvU1LHRgeDkr8j+az/XDE74N
+ va5WNK9Tod2+pKqEWdQ1T93xe1vO64LzLiNWuXYsIeOOlb/sKS9YN4y05LTAqrK2CUGE
+ UZHzkNPTyF9vM1lDQ3IcLIq0fDrE7CPgOcRJhQsGErLGMWh4x+biJNp++9h2Z3krk7Sp
+ TbDbFJcgscr4jU5SF4Pa9ICuYMwLGi7PcXXxHqZDirJT7dSeRhJXeT7vLEN7ykP+O0Ws
+ GjUA==
+X-Gm-Message-State: AOAM533Qu/R7gACd+kzRWTNCnJ7+e9qlBaym0JPZ7c4lb1roqvi8X0y7
+ M5tfHRSV0SWW1PQdczf4E7KlTsWDGepB781Be0E=
+X-Google-Smtp-Source: ABdhPJwf9j6IGjlo1BTczTWnqsQEXTHVMhM3GekrV8YvuGSJUGEm/U9I9/LExm6yQnghKuDS6/w2fQg7m6bCZCQqzEY=
+X-Received: by 2002:a19:f819:: with SMTP id a25mr28137516lff.203.1629796797887; 
+ Tue, 24 Aug 2021 02:19:57 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAAd2w=btf3DZLbPuovAC9xo3rizmFeT4iAxJs6zNZwKxOnKT6A@mail.gmail.com>
+ <20210819183450.GV890690@belle.intranet.vanheusden.com>
+ <CAAd2w=YFhiJJ=4nqo7JfbrqdNWVxvSp06E=1XiHOXV8Kp2sgaQ@mail.gmail.com>
+ <20210819190634.GW890690@belle.intranet.vanheusden.com>
+ <CAAd2w=Z4rG1UwA6ELzqwr_0TXjQmD0T1izonAJk9-32TSzGchQ@mail.gmail.com>
+ <20210823170332.GD890690@belle.intranet.vanheusden.com>
+ <CAAd2w=ag-Hk6COSJt5rg-+faz8FKYxTPig9AGhFWUFzGw1Ynvw@mail.gmail.com>
+ <20210823184727.GE890690@belle.intranet.vanheusden.com>
+ <CAAd2w=adJ3+Rw16ZVbkq72O7D0Dgo1ukHF1DLK6aaN3sGKu3DQ@mail.gmail.com>
+ <s5heeaj2rcr.wl-tiwai@suse.de>
+In-Reply-To: <s5heeaj2rcr.wl-tiwai@suse.de>
+From: sujith kumar reddy <sujithreddy6192@gmail.com>
+Date: Tue, 24 Aug 2021 14:49:46 +0530
+Message-ID: <CAAd2w=ZEFrnwC0fdMKUUpaU1XhYztZD-RHECf88+u+H+MNU=hQ@mail.gmail.com>
+Subject: Re: arecord is failing with -V stereo
+To: Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: alsa-devel@alsa-project.org, folkert <folkert@vanheusden.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,80 +109,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds support for frame inversion.
+Hi Takashi,
 
-Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
----
+With the above patches -V stereo is working fine.
 
-Changes in v2: None
+Thanks
+sujith
 
- sound/soc/rockchip/rockchip_i2s.c | 20 +++++++++++++++++---
- sound/soc/rockchip/rockchip_i2s.h | 10 ++++++----
- 2 files changed, 23 insertions(+), 7 deletions(-)
+On Tue, Aug 24, 2021 at 1:42 PM Takashi Iwai <tiwai@suse.de> wrote:
 
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 8898ba4..84884ce 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -233,13 +233,27 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 
- 	regmap_update_bits(i2s->regmap, I2S_CKR, mask, val);
- 
--	mask = I2S_CKR_CKP_MASK;
-+	mask = I2S_CKR_CKP_MASK | I2S_CKR_TLP_MASK | I2S_CKR_RLP_MASK;
- 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
- 	case SND_SOC_DAIFMT_NB_NF:
--		val = I2S_CKR_CKP_NEG;
-+		val = I2S_CKR_CKP_NORMAL |
-+		      I2S_CKR_TLP_NORMAL |
-+		      I2S_CKR_RLP_NORMAL;
-+		break;
-+	case SND_SOC_DAIFMT_NB_IF:
-+		val = I2S_CKR_CKP_NORMAL |
-+		      I2S_CKR_TLP_INVERTED |
-+		      I2S_CKR_RLP_INVERTED;
- 		break;
- 	case SND_SOC_DAIFMT_IB_NF:
--		val = I2S_CKR_CKP_POS;
-+		val = I2S_CKR_CKP_INVERTED |
-+		      I2S_CKR_TLP_NORMAL |
-+		      I2S_CKR_RLP_NORMAL;
-+		break;
-+	case SND_SOC_DAIFMT_IB_IF:
-+		val = I2S_CKR_CKP_INVERTED |
-+		      I2S_CKR_TLP_INVERTED |
-+		      I2S_CKR_RLP_INVERTED;
- 		break;
- 	default:
- 		ret = -EINVAL;
-diff --git a/sound/soc/rockchip/rockchip_i2s.h b/sound/soc/rockchip/rockchip_i2s.h
-index fcaae24..251851b 100644
---- a/sound/soc/rockchip/rockchip_i2s.h
-+++ b/sound/soc/rockchip/rockchip_i2s.h
-@@ -88,15 +88,17 @@
- #define I2S_CKR_MSS_SLAVE	(1 << I2S_CKR_MSS_SHIFT)
- #define I2S_CKR_MSS_MASK	(1 << I2S_CKR_MSS_SHIFT)
- #define I2S_CKR_CKP_SHIFT	26
--#define I2S_CKR_CKP_NEG		(0 << I2S_CKR_CKP_SHIFT)
--#define I2S_CKR_CKP_POS		(1 << I2S_CKR_CKP_SHIFT)
-+#define I2S_CKR_CKP_NORMAL	(0 << I2S_CKR_CKP_SHIFT)
-+#define I2S_CKR_CKP_INVERTED	(1 << I2S_CKR_CKP_SHIFT)
- #define I2S_CKR_CKP_MASK	(1 << I2S_CKR_CKP_SHIFT)
- #define I2S_CKR_RLP_SHIFT	25
- #define I2S_CKR_RLP_NORMAL	(0 << I2S_CKR_RLP_SHIFT)
--#define I2S_CKR_RLP_OPPSITE	(1 << I2S_CKR_RLP_SHIFT)
-+#define I2S_CKR_RLP_INVERTED	(1 << I2S_CKR_RLP_SHIFT)
-+#define I2S_CKR_RLP_MASK	(1 << I2S_CKR_RLP_SHIFT)
- #define I2S_CKR_TLP_SHIFT	24
- #define I2S_CKR_TLP_NORMAL	(0 << I2S_CKR_TLP_SHIFT)
--#define I2S_CKR_TLP_OPPSITE	(1 << I2S_CKR_TLP_SHIFT)
-+#define I2S_CKR_TLP_INVERTED	(1 << I2S_CKR_TLP_SHIFT)
-+#define I2S_CKR_TLP_MASK	(1 << I2S_CKR_TLP_SHIFT)
- #define I2S_CKR_MDIV_SHIFT	16
- #define I2S_CKR_MDIV(x)		((x - 1) << I2S_CKR_MDIV_SHIFT)
- #define I2S_CKR_MDIV_MASK	(0xff << I2S_CKR_MDIV_SHIFT)
--- 
-2.7.4
-
-
-
+> On Mon, 23 Aug 2021 21:06:05 +0200,
+> sujith kumar reddy wrote:
+> >
+> > Hi Folkert,
+> >
+> > Tried with the above code.This is also getting p value negative.
+> >
+> > My point is p is negative it doesn't go to
+> >
+> > if (p >= bar_length)
+> >              p = bar_length - 1;
+> > it is going to memset second argument p,that is negative so crashing.
+>
+> Gah, the code there contains lots of craps.  A negative value must not
+> have been passed there.
+>
+> Below is a series of fixes.  Please give it a try.
+>
+>
+> thanks,
+>
+> Takashi
+>
