@@ -2,88 +2,79 @@ Return-Path: <SRS0=yNKw=NP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E766C4320A
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Aug 2021 17:09:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D97FEC4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Aug 2021 17:34:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CAF13611AF
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Aug 2021 17:09:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CAF13611AF
+	by mail.kernel.org (Postfix) with ESMTPS id 4E79860E93
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Aug 2021 17:34:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4E79860E93
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 655141679;
-	Tue, 24 Aug 2021 19:08:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 655141679
+	by alsa0.perex.cz (Postfix) with ESMTPS id 532EE1676;
+	Tue, 24 Aug 2021 19:33:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 532EE1676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629824976;
-	bh=V7xjlaDPfwwU5aS1geFUmkZd2v2TxhmtSJPvz8JWsZM=;
+	s=default; t=1629826443;
+	bh=mej/64pLiWPy5SBG4SNrzb7oaUPDF0mj87Idam/NBcI=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jlpGg2MTRrDQ9UFpaNQw+oEcguPSzHavffgMLi8Vr7XJqibW3WCBa8vTBRExCYTGw
-	 5iHaviHpF6gv9mY+Ogk6YsBcgiLfkiAWVLvHjfRNL2hX0yZHK8IX0fPw/auJ5VyuI0
-	 4IExQ+4qIHWJ1Cdl6ONmUPq/GNixXDXMxphq4vTM=
+	b=ocXfy/Qibp/rGuIHIETpOUoDUvCyD309nSI9Cw+jYF/09szyMHwYLsFJoPMB7zCRf
+	 mGH01XGxuRHgIDnUbJBUaC+UPTRySSWMWjbJ3c3xFUSuWRgJWwI6VcrppkvCoBT6bD
+	 mygNFOX7UgThuUeqrxditKLtRZMUvYIeV3xp+bcs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ED631F801D8;
-	Tue, 24 Aug 2021 19:08:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CEAD7F801D5;
+	Tue, 24 Aug 2021 19:33:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2ECD9F80224; Tue, 24 Aug 2021 19:08:44 +0200 (CEST)
-Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com
- [209.85.161.52])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 65807F801D8; Tue, 24 Aug 2021 19:33:11 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CE834F801D5
- for <alsa-devel@alsa-project.org>; Tue, 24 Aug 2021 19:08:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE834F801D5
-Received: by mail-oo1-f52.google.com with SMTP id
- z1-20020a4a2241000000b0028e8dfb83b4so3934331ooe.13
- for <alsa-devel@alsa-project.org>; Tue, 24 Aug 2021 10:08:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=zwubaYFj/lvlyUUP+l/btChNzFkq5suM9jrCNFdviZc=;
- b=MQfyB5y9zMLFmIYVqDZq4d5vetHPmFBBI6MeEvUSQECc5w+RHNIn77Xs9ZiJNXFJBj
- EHTLoZVZbrWKRK+4gLNsbOF9C3Duce3z3WarxX1r8fmDe8kQ+A0MX+GzDUuRlW+m5gS2
- 2z2hnN8BRtmTuq8qYlB8JNMG+t+8Kf4PvYFyjeCHV0RitMBLBtJZKh++C2LRvMV8VXfr
- 2ZFAaS+lp+LGHKAAw2AyrCrlsDBH7QUZhr0XXguIyzNLIL1DGGsX2GItzuJbLVIGGfpF
- 3nf01nstfkaGGTV0UwElzyFhxGHwRuKHhCIDRvSzl2cLnMIG+7HRpVP1xjl41Vfx+TT9
- RYvA==
-X-Gm-Message-State: AOAM530ILxUYrKw0m8UIgVx/D5vvvVzKsJYAY+5bG+iesAToiq3yZSmd
- YVjMFWvI+f0q2Sa8MzwGXQ==
-X-Google-Smtp-Source: ABdhPJzLMc7ooV0oFHNXxw248f+31EgtiyHafVjQcBW9XOazHhf59JoPDr8NJbnlA1QzydJ7uQsjNQ==
-X-Received: by 2002:a4a:5592:: with SMTP id e140mr20076850oob.59.1629824910169; 
- Tue, 24 Aug 2021 10:08:30 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
- [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id z26sm4515905oih.3.2021.08.24.10.08.28
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 24 Aug 2021 10:08:29 -0700 (PDT)
-Received: (nullmailer pid 641467 invoked by uid 1000);
- Tue, 24 Aug 2021 17:08:28 -0000
-Date: Tue, 24 Aug 2021 12:08:28 -0500
-From: Rob Herring <robh@kernel.org>
-To: Sugar Zhang <sugar.zhang@rock-chips.com>
-Subject: Re: [PATCH v2 15/15] ASoC: dt-bindings: rockchip: i2s: Document
- property TRCM
-Message-ID: <YSUnjLfcntDob/sT@robh.at.kernel.org>
-References: <1629796561-4025-1-git-send-email-sugar.zhang@rock-chips.com>
- <1629796734-4243-5-git-send-email-sugar.zhang@rock-chips.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 35128F800AE
+ for <alsa-devel@alsa-project.org>; Tue, 24 Aug 2021 19:33:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35128F800AE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="VoZT0Zr8"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06F28610E8;
+ Tue, 24 Aug 2021 17:33:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1629826384;
+ bh=mej/64pLiWPy5SBG4SNrzb7oaUPDF0mj87Idam/NBcI=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=VoZT0Zr8v3ZYy5iaPeJt5/5Nu1rKmJ5eFkvbh78HTWP4Y1O6PM5ihHVp34q638Tsn
+ 1DSAjy9xkz2snU8h3Cyl7yCQgU7dTbrjmzUeqS7aFw+KprZ0MSQy7UsqGKC/OLRT14
+ jarR0sHuraEB0J1C23s+M+Zr6j7RDrOBTk3HEE3SRcp7xDfWbagOu8l0DRAWQoV31S
+ Dbd7Qqs5HXwC7Edit2HeVgqVRShTRyICxQjm4J+oePVgQ35QdsOFG3+3kbVenH9rJo
+ ep8Bu/WKowkgyab7eL3zO/Ykf7JKRA63NUy6ivd04w897umnrrCTStrXFoeEliu4eO
+ On0IVkvLM1KZw==
+Date: Tue, 24 Aug 2021 18:32:37 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: nau8821: Add driver for Nuvoton codec NAU88L21
+Message-ID: <20210824173237.GM4393@sirena.org.uk>
+References: <20210824041647.1732378-1-wtli@nuvoton.com>
+ <1651f0ee-5667-c7ef-9cb0-a648e2ad7d02@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="KSyhVCl2eeZHT0Rn"
 Content-Disposition: inline
-In-Reply-To: <1629796734-4243-5-git-send-email-sugar.zhang@rock-chips.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org,
- heiko@sntech.de, linux-rockchip@lists.infradead.org
+In-Reply-To: <1651f0ee-5667-c7ef-9cb0-a648e2ad7d02@linux.intel.com>
+X-Cookie: Sentient plasmoids are a gas.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, scott6986@gmail.com,
+ Seven Lee <wtli@nuvoton.com>, KCHSU0@nuvoton.com, lgirdwood@gmail.com,
+ YHCHuang@nuvoton.com, CTLIN0@nuvoton.com, dardar923@gmail.com,
+ supercraig0719@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,20 +90,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 24 Aug 2021 17:18:54 +0800, Sugar Zhang wrote:
-> This patch documents property 'rockchip,trcm-sync-tx-only/rx-only'
-> which is used to specify the lrck.
-> 
-> Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
-> ---
-> 
-> Changes in v2:
-> - split property trcm into single 'trcm-sync-tx-only' and
->   'trcm-sync-rx-only' suggested by Nicolas.
-> - drop change-id
-> 
->  Documentation/devicetree/bindings/sound/rockchip-i2s.yaml | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+--KSyhVCl2eeZHT0Rn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Aug 24, 2021 at 11:02:57AM -0500, Pierre-Louis Bossart wrote:
+> On 8/23/21 11:16 PM, Seven Lee wrote:
+
+> > +static inline void nau8821_sema_release(struct nau8821 *nau8821)
+> > +{
+> > +	if (!nau8821->irq)
+> > +		return;
+> > +	up(&nau8821->jd_sem);
+> > +}
+
+> is there any specific reason why Nuvoton codec drivers use a semaphore?
+> isn't a mutex good enough?
+
+I've been asking for documentation of what's going on with the locking
+on every revision of this so far to no success.  As far as I can tell
+the driver is doing something weird where it needs to take and release
+the lock in different contexts which doesn't work with the kernel's
+mutex implementation where you need to take and release the mutex in the
+same context.
+
+> > +	switch (event) {
+> > +	case SND_SOC_DAPM_POST_PMU:
+> > +		msleep(125);
+>=20
+> use a define to keep track of sleep times in a header file?
+
+I'm never sure that moving the magic numbers for sleeps out of line is
+actually helpful, it's an extra barrier to figuring out the actual
+sequence of operations and unless there's multiple users of the same
+underlying delay it doesn't really buy anything.
+
+--KSyhVCl2eeZHT0Rn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmElLTQACgkQJNaLcl1U
+h9DeVgf/ZPAWKIU9Ieyhu/6m+oELrf3xt4JNro6T1EMPMCIdh1yItSgVDRI04nU4
+5BsSunkYHkCBF55Q9QCpoKoYKcWpf+ORX6OOY3t0hNNA9FgDwvjHDqSNYJ14MF/P
+h4P/SeQCpqNGNoe7pLVeEly+ROCcAnafNjKidluVrD9TbbrBe73SlX5buowbznvU
+/S9mPp3CYFTdoAeyVyvyJBTWnntnEwizeyigaHk3ResfK777wBVcGxjKP+rcslI3
+YRxbVtef6VtH7bBO8KQkhOa0U9GlCMNE4Xjsm1TeDKC5iY74jFARgBbd409+LVzy
+tfhu25GK5pl4u29sH1qm5vD+ATsNqg==
+=cEw/
+-----END PGP SIGNATURE-----
+
+--KSyhVCl2eeZHT0Rn--
