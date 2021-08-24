@@ -7,56 +7,55 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1988C4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Aug 2021 09:22:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46BA5C4338F
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Aug 2021 09:23:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E03966103E
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Aug 2021 09:22:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E03966103E
+	by mail.kernel.org (Postfix) with ESMTPS id B991E6135F
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Aug 2021 09:23:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B991E6135F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rock-chips.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7EE8A1679;
-	Tue, 24 Aug 2021 11:21:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EE8A1679
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E41D15E5;
+	Tue, 24 Aug 2021 11:22:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E41D15E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629796952;
-	bh=1M0rHpF528+76/ONq4z9BuvJshD/mnLObSH3VUiZR+g=;
+	s=default; t=1629796983;
+	bh=hos/4fIiMBTgY1ws1f6s/KcwPtfZnYLCFoA79WfBSMc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XUP7zpAsSe3uyQi4mmaqSeDfaEZ82I4IQ/Gjkt6H3Kyl7oT1df4TulQXfRVqqZFvI
-	 /aJHrgvH4zk/CDYwdEb85w3F9mxniXYx+5iD4JxIntF73L4+U1cta6NQgJx1IKWiX8
-	 aRyIYv7hnhErLJnSZqONQ+JZ5701C7IdvogOf0ag=
+	b=pCVRVeFyExyaxMvCZlbeIcNNH/S5reA2YbdxIzUNG26wGQ7WPorBpp0JEwfu0yYk7
+	 oLfWbOVGtCCUJOwrLlXuL6d3DcajCtiWA/eBMQWX1s1b+79SU82nAB/ufRdl6HZrg+
+	 0HNUQv7KqSTYshxTbOfi1sKdvisTGlbRhK9B/qxU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A4AF8F80520;
-	Tue, 24 Aug 2021 11:19:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C3C27F804E6;
+	Tue, 24 Aug 2021 11:19:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7DB09F80524; Tue, 24 Aug 2021 11:19:18 +0200 (CEST)
-Received: from lucky1.263xmail.com (lucky1.263xmail.com [211.157.147.135])
+ id 88C68F804F2; Tue, 24 Aug 2021 11:19:28 +0200 (CEST)
+Received: from lucky1.263xmail.com (lucky1.263xmail.com [211.157.147.132])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6EF77F804E1
- for <alsa-devel@alsa-project.org>; Tue, 24 Aug 2021 11:19:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EF77F804E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 42C9CF8052D
+ for <alsa-devel@alsa-project.org>; Tue, 24 Aug 2021 11:19:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42C9CF8052D
 Received: from localhost (unknown [192.168.167.16])
- by lucky1.263xmail.com (Postfix) with ESMTP id 710C5B31B8;
- Tue, 24 Aug 2021 17:19:07 +0800 (CST)
+ by lucky1.263xmail.com (Postfix) with ESMTP id 60C58FB89D;
+ Tue, 24 Aug 2021 17:19:12 +0800 (CST)
 X-MAIL-GRAY: 0
 X-MAIL-DELIVERY: 1
 X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
 X-ANTISPAM-LEVEL: 2
 Received: from localhost.localdomain (unknown [58.22.7.114])
  by smtp.263.net (postfix) whith ESMTP id
  P704T139881214887680S1629796736938922_; 
- Tue, 24 Aug 2021 17:19:08 +0800 (CST)
+ Tue, 24 Aug 2021 17:19:02 +0800 (CST)
 X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <661bf7a5df57aace27b27440a24d7546>
+X-UNIQUE-TAG: <6468d61e6fc0bf28c73c76649ed44478>
 X-RL-SENDER: sugar.zhang@rock-chips.com
 X-SENDER: zxg@rock-chips.com
 X-LOGIN-NAME: sugar.zhang@rock-chips.com
@@ -68,10 +67,9 @@ X-System-Flag: 0
 From: Sugar Zhang <sugar.zhang@rock-chips.com>
 To: broonie@kernel.org,
 	heiko@sntech.de
-Subject: [PATCH v2 15/15] ASoC: dt-bindings: rockchip: i2s: Document property
- TRCM
-Date: Tue, 24 Aug 2021 17:18:54 +0800
-Message-Id: <1629796734-4243-5-git-send-email-sugar.zhang@rock-chips.com>
+Subject: [PATCH v2 13/15] ASoC: rockchip: i2s: Add support for frame inversion
+Date: Tue, 24 Aug 2021 17:18:52 +0800
+Message-Id: <1629796734-4243-3-git-send-email-sugar.zhang@rock-chips.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1629796561-4025-1-git-send-email-sugar.zhang@rock-chips.com>
 References: <1629796561-4025-1-git-send-email-sugar.zhang@rock-chips.com>
@@ -93,39 +91,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch documents property 'rockchip,trcm-sync-tx-only/rx-only'
-which is used to specify the lrck.
+This patch adds support for frame inversion.
 
 Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
 ---
 
-Changes in v2:
-- split property trcm into single 'trcm-sync-tx-only' and
-  'trcm-sync-rx-only' suggested by Nicolas.
-- drop change-id
+Changes in v2: None
 
- Documentation/devicetree/bindings/sound/rockchip-i2s.yaml | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/rockchip/rockchip_i2s.c | 20 +++++++++++++++++---
+ sound/soc/rockchip/rockchip_i2s.h | 10 ++++++----
+ 2 files changed, 23 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.yaml b/Documentation/devicetree/bindings/sound/rockchip-i2s.yaml
-index 11e911a..20f3237 100644
---- a/Documentation/devicetree/bindings/sound/rockchip-i2s.yaml
-+++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.yaml
-@@ -101,6 +101,14 @@ properties:
-       Required property for controllers which support multi channel
-       playback/capture.
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 8898ba4..84884ce 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -233,13 +233,27 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
  
-+  rockchip,trcm-sync-tx-only:
-+    type: boolean
-+    description: Use TX LRCK for both TX and RX.
-+
-+  rockchip,trcm-sync-rx-only:
-+    type: boolean
-+    description: Use RX LRCK for both TX and RX.
-+
-   "#sound-dai-cells":
-     const: 0
+ 	regmap_update_bits(i2s->regmap, I2S_CKR, mask, val);
  
+-	mask = I2S_CKR_CKP_MASK;
++	mask = I2S_CKR_CKP_MASK | I2S_CKR_TLP_MASK | I2S_CKR_RLP_MASK;
+ 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+ 	case SND_SOC_DAIFMT_NB_NF:
+-		val = I2S_CKR_CKP_NEG;
++		val = I2S_CKR_CKP_NORMAL |
++		      I2S_CKR_TLP_NORMAL |
++		      I2S_CKR_RLP_NORMAL;
++		break;
++	case SND_SOC_DAIFMT_NB_IF:
++		val = I2S_CKR_CKP_NORMAL |
++		      I2S_CKR_TLP_INVERTED |
++		      I2S_CKR_RLP_INVERTED;
+ 		break;
+ 	case SND_SOC_DAIFMT_IB_NF:
+-		val = I2S_CKR_CKP_POS;
++		val = I2S_CKR_CKP_INVERTED |
++		      I2S_CKR_TLP_NORMAL |
++		      I2S_CKR_RLP_NORMAL;
++		break;
++	case SND_SOC_DAIFMT_IB_IF:
++		val = I2S_CKR_CKP_INVERTED |
++		      I2S_CKR_TLP_INVERTED |
++		      I2S_CKR_RLP_INVERTED;
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+diff --git a/sound/soc/rockchip/rockchip_i2s.h b/sound/soc/rockchip/rockchip_i2s.h
+index fcaae24..251851b 100644
+--- a/sound/soc/rockchip/rockchip_i2s.h
++++ b/sound/soc/rockchip/rockchip_i2s.h
+@@ -88,15 +88,17 @@
+ #define I2S_CKR_MSS_SLAVE	(1 << I2S_CKR_MSS_SHIFT)
+ #define I2S_CKR_MSS_MASK	(1 << I2S_CKR_MSS_SHIFT)
+ #define I2S_CKR_CKP_SHIFT	26
+-#define I2S_CKR_CKP_NEG		(0 << I2S_CKR_CKP_SHIFT)
+-#define I2S_CKR_CKP_POS		(1 << I2S_CKR_CKP_SHIFT)
++#define I2S_CKR_CKP_NORMAL	(0 << I2S_CKR_CKP_SHIFT)
++#define I2S_CKR_CKP_INVERTED	(1 << I2S_CKR_CKP_SHIFT)
+ #define I2S_CKR_CKP_MASK	(1 << I2S_CKR_CKP_SHIFT)
+ #define I2S_CKR_RLP_SHIFT	25
+ #define I2S_CKR_RLP_NORMAL	(0 << I2S_CKR_RLP_SHIFT)
+-#define I2S_CKR_RLP_OPPSITE	(1 << I2S_CKR_RLP_SHIFT)
++#define I2S_CKR_RLP_INVERTED	(1 << I2S_CKR_RLP_SHIFT)
++#define I2S_CKR_RLP_MASK	(1 << I2S_CKR_RLP_SHIFT)
+ #define I2S_CKR_TLP_SHIFT	24
+ #define I2S_CKR_TLP_NORMAL	(0 << I2S_CKR_TLP_SHIFT)
+-#define I2S_CKR_TLP_OPPSITE	(1 << I2S_CKR_TLP_SHIFT)
++#define I2S_CKR_TLP_INVERTED	(1 << I2S_CKR_TLP_SHIFT)
++#define I2S_CKR_TLP_MASK	(1 << I2S_CKR_TLP_SHIFT)
+ #define I2S_CKR_MDIV_SHIFT	16
+ #define I2S_CKR_MDIV(x)		((x - 1) << I2S_CKR_MDIV_SHIFT)
+ #define I2S_CKR_MDIV_MASK	(0xff << I2S_CKR_MDIV_SHIFT)
 -- 
 2.7.4
 
