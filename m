@@ -8,45 +8,45 @@ X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E53D2C4338F
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Aug 2021 09:19:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BBE33C4320A
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Aug 2021 09:20:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3366161178
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Aug 2021 09:19:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3366161178
+	by mail.kernel.org (Postfix) with ESMTPS id 3D6C361178
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Aug 2021 09:20:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3D6C361178
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rock-chips.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D6F541674;
-	Tue, 24 Aug 2021 11:18:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6F541674
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA902165E;
+	Tue, 24 Aug 2021 11:19:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA902165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629796770;
-	bh=G+o2UK35O/EmHoTu2EQWsnGDUvAFqT12vP1wQuSbU0s=;
+	s=default; t=1629796798;
+	bh=T7heleEhqQztQYZYITx+01EXhZaDv+lK0kHGFnAG4KI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oKRYzhAaUQKyT/s499U1yoE88xAwD12DBt5AsTYKl3b7Kx8XVu3d5e88B9ONtJmIz
-	 Kpsjjp/9rq3ppoyIgCJFthf+dzYO3VYhRYAvH82/OouWl6d0XJcjJl4TujUBHjZoRw
-	 NwvKklCYZuZBycVOCCuMM8M+Twro9mqkSsc8Fdcs=
+	b=Yxdk/h//NdsAWV6fwPqDRxFatENnnShGaRNdKiJ7UPCQGCFQnBHYaiFXJn86d//NZ
+	 +HIB6t4ccZ7pw5fEG977gLOPPw19nWU3mDCNWge/+gXjf7Kmb/mBO+gHcrt4SOMIhM
+	 QyACQ/8nHcv3KQAFveP1bc16oiAyrmq8TDqggrb4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17C20F804EB;
-	Tue, 24 Aug 2021 11:17:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B1978F804EC;
+	Tue, 24 Aug 2021 11:18:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3FA1AF804E5; Tue, 24 Aug 2021 11:17:45 +0200 (CEST)
-Received: from lucky1.263xmail.com (lucky1.263xmail.com [211.157.147.134])
+ id 9054EF804F1; Tue, 24 Aug 2021 11:18:15 +0200 (CEST)
+Received: from lucky1.263xmail.com (lucky1.263xmail.com [211.157.147.130])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DC0E3F8032D
- for <alsa-devel@alsa-project.org>; Tue, 24 Aug 2021 11:17:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC0E3F8032D
-Received: from localhost (unknown [192.168.167.16])
- by lucky1.263xmail.com (Postfix) with ESMTP id 653CBCFE25;
- Tue, 24 Aug 2021 17:17:27 +0800 (CST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A5914F80224
+ for <alsa-devel@alsa-project.org>; Tue, 24 Aug 2021 11:18:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5914F80224
+Received: from localhost (unknown [192.168.167.235])
+ by lucky1.263xmail.com (Postfix) with ESMTP id 40441D776E;
+ Tue, 24 Aug 2021 17:18:05 +0800 (CST)
 X-MAIL-GRAY: 0
 X-MAIL-DELIVERY: 1
 X-ADDR-CHECKED4: 1
@@ -54,10 +54,10 @@ X-SKE-CHECKED: 1
 X-ANTISPAM-LEVEL: 2
 Received: from localhost.localdomain (unknown [58.22.7.114])
  by smtp.263.net (postfix) whith ESMTP id
- P704T139881235867392S1629796642328500_; 
- Tue, 24 Aug 2021 17:17:28 +0800 (CST)
+ P32763T139760842565376S1629796684553502_; 
+ Tue, 24 Aug 2021 17:18:05 +0800 (CST)
 X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <d290f49953c4064eea4f53bce21f609b>
+X-UNIQUE-TAG: <0de78812ebb51f59dcfd9b7ef3b71c2a>
 X-RL-SENDER: sugar.zhang@rock-chips.com
 X-SENDER: zxg@rock-chips.com
 X-LOGIN-NAME: sugar.zhang@rock-chips.com
@@ -69,9 +69,10 @@ X-System-Flag: 0
 From: Sugar Zhang <sugar.zhang@rock-chips.com>
 To: broonie@kernel.org,
 	heiko@sntech.de
-Subject: [PATCH v2 04/15] ASoC: rockchip: i2s: Fix regmap_ops hang
-Date: Tue, 24 Aug 2021 17:17:03 +0800
-Message-Id: <1629796634-4095-4-git-send-email-sugar.zhang@rock-chips.com>
+Subject: [PATCH v2 06/15] ASoC: rockchip: i2s: Reset the controller if soft
+ reset failed
+Date: Tue, 24 Aug 2021 17:17:53 +0800
+Message-Id: <1629796682-4170-1-git-send-email-sugar.zhang@rock-chips.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1629796561-4025-1-git-send-email-sugar.zhang@rock-chips.com>
 References: <1629796561-4025-1-git-send-email-sugar.zhang@rock-chips.com>
@@ -93,81 +94,92 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-API 'set_fmt' maybe called when PD is off, in the situation,
-any register access will hang the system. so, enable PD
-before r/w register.
+This patch brings i2s back to normal by resetting i2s m/h
+when the soft reset failed.
 
 Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
 ---
 
 Changes in v2: None
 
- sound/soc/rockchip/rockchip_i2s.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+ sound/soc/rockchip/rockchip_i2s.c | 29 +++++++++++++++++++++++++++--
+ 1 file changed, 27 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 2e0047d..90877e8 100644
+index 0ba728f..78321ee 100644
 --- a/sound/soc/rockchip/rockchip_i2s.c
 +++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -187,7 +187,9 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- {
- 	struct rk_i2s_dev *i2s = to_info(cpu_dai);
- 	unsigned int mask = 0, val = 0;
-+	int ret = 0;
+@@ -15,6 +15,7 @@
+ #include <linux/clk.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
++#include <linux/reset.h>
+ #include <linux/spinlock.h>
+ #include <sound/pcm_params.h>
+ #include <sound/dmaengine_pcm.h>
+@@ -40,6 +41,8 @@ struct rk_i2s_dev {
  
-+	pm_runtime_get_sync(cpu_dai->dev);
- 	mask = I2S_CKR_MSS_MASK;
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBS_CFS:
-@@ -200,7 +202,8 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 		i2s->is_master_mode = false;
- 		break;
- 	default:
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_pm_put;
- 	}
+ 	struct regmap *regmap;
+ 	struct regmap *grf;
++	struct reset_control *reset_m;
++	struct reset_control *reset_h;
  
- 	regmap_update_bits(i2s->regmap, I2S_CKR, mask, val);
-@@ -214,7 +217,8 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 		val = I2S_CKR_CKP_POS;
- 		break;
- 	default:
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_pm_put;
- 	}
- 
- 	regmap_update_bits(i2s->regmap, I2S_CKR, mask, val);
-@@ -237,7 +241,8 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 		val = I2S_TXCR_TFS_PCM | I2S_TXCR_PBM_MODE(1);
- 		break;
- 	default:
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_pm_put;
- 	}
- 
- 	regmap_update_bits(i2s->regmap, I2S_TXCR, mask, val);
-@@ -260,12 +265,16 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 		val = I2S_RXCR_TFS_PCM | I2S_RXCR_PBM_MODE(1);
- 		break;
- 	default:
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_pm_put;
- 	}
- 
- 	regmap_update_bits(i2s->regmap, I2S_RXCR, mask, val);
- 
--	return 0;
-+err_pm_put:
-+	pm_runtime_put(cpu_dai->dev);
-+
-+	return ret;
+ /*
+  * Used to indicate the tx/rx status.
+@@ -92,6 +95,20 @@ static inline struct rk_i2s_dev *to_info(struct snd_soc_dai *dai)
+ 	return snd_soc_dai_get_drvdata(dai);
  }
  
- static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
++static void rockchip_i2s_reset(struct rk_i2s_dev *i2s)
++{
++	dev_warn(i2s->dev, "Reset controller.\n");
++
++	reset_control_assert(i2s->reset_m);
++	reset_control_assert(i2s->reset_h);
++	udelay(1);
++	reset_control_deassert(i2s->reset_m);
++	reset_control_deassert(i2s->reset_h);
++
++	regcache_mark_dirty(i2s->regmap);
++	regcache_sync(i2s->regmap);
++}
++
+ static void rockchip_snd_txctrl(struct rk_i2s_dev *i2s, int on)
+ {
+ 	unsigned int val = 0;
+@@ -132,7 +149,7 @@ static void rockchip_snd_txctrl(struct rk_i2s_dev *i2s, int on)
+ 				regmap_read(i2s->regmap, I2S_CLR, &val);
+ 				retry--;
+ 				if (!retry) {
+-					dev_warn(i2s->dev, "fail to clear\n");
++					rockchip_i2s_reset(i2s);
+ 					break;
+ 				}
+ 			}
+@@ -181,7 +198,7 @@ static void rockchip_snd_rxctrl(struct rk_i2s_dev *i2s, int on)
+ 				regmap_read(i2s->regmap, I2S_CLR, &val);
+ 				retry--;
+ 				if (!retry) {
+-					dev_warn(i2s->dev, "fail to clear\n");
++					rockchip_i2s_reset(i2s);
+ 					break;
+ 				}
+ 			}
+@@ -629,6 +646,14 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
+ 		i2s->pins = of_id->data;
+ 	}
+ 
++	i2s->reset_m = devm_reset_control_get_optional(&pdev->dev, "reset-m");
++	if (IS_ERR(i2s->reset_m))
++		return PTR_ERR(i2s->reset_m);
++
++	i2s->reset_h = devm_reset_control_get_optional(&pdev->dev, "reset-h");
++	if (IS_ERR(i2s->reset_h))
++		return PTR_ERR(i2s->reset_h);
++
+ 	/* try to prepare related clocks */
+ 	i2s->hclk = devm_clk_get(&pdev->dev, "i2s_hclk");
+ 	if (IS_ERR(i2s->hclk)) {
 -- 
 2.7.4
 
