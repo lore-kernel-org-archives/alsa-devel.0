@@ -2,80 +2,78 @@ Return-Path: <SRS0=JRP5=NQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D79FCC432BE
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Aug 2021 09:53:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CDE29C4338F
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Aug 2021 10:24:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4B3B561165
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Aug 2021 09:53:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4B3B561165
+	by mail.kernel.org (Postfix) with ESMTPS id D5B6361212
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Aug 2021 10:24:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D5B6361212
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23EB8166F;
-	Wed, 25 Aug 2021 11:52:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23EB8166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2557C166F;
+	Wed, 25 Aug 2021 12:23:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2557C166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629885222;
-	bh=k4qW2MGVv6lsjTMeqsBszx1sWAWurkEnyKnzQikbJaI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1629887055;
+	bh=aSw0cYg8pm1YpmSlIfShp0oFUe+o66pjQZD/ue8nx7U=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ke6iVGS+626HbQm56BoAI7Xt0tWWHw1eCPXYuOB9k4MAFrf16tY1PiLB8u1tL8WkP
-	 KdYZvvEr4Oyed/2Zh5VlKQQkzWDjdPIT5zUmHq4ACInnKKyy0NUSJFm4REuhZFNiXe
-	 WMA/eb6EqeHkArQxqBc3SugkVij65MBj0ALIFHDM=
+	b=LDmaV69jQWJn/tP4AZiyR29doZtIcc37Q7TJ0IodFcS3DhVAWboXY3uShaboI5e++
+	 gyUwoswacBTLKQdj3BUbq4+RJseowB2TFdu0xyP+iYbLAFO5QUqehjL3AQmCpyQIDl
+	 QbNiyj5tnAk95+8bw42Jik6+N+lkeLpe1WS4or+U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A82ADF800C9;
-	Wed, 25 Aug 2021 11:52:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2124F8020C;
+	Wed, 25 Aug 2021 12:23:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 80FCBF8020C; Wed, 25 Aug 2021 11:52:49 +0200 (CEST)
+ id 0E015F8020D; Wed, 25 Aug 2021 12:23:23 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2CCF0F800C9
- for <alsa-devel@alsa-project.org>; Wed, 25 Aug 2021 11:52:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CCF0F800C9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8405CF80171
+ for <alsa-devel@alsa-project.org>; Wed, 25 Aug 2021 12:23:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8405CF80171
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="fiSY+43j"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCBE561153;
- Wed, 25 Aug 2021 09:52:40 +0000 (UTC)
+ header.b="a6pCHwq+"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 988186120A;
+ Wed, 25 Aug 2021 10:23:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1629885161;
- bh=k4qW2MGVv6lsjTMeqsBszx1sWAWurkEnyKnzQikbJaI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=fiSY+43j4Yih7SIz3JeRfD7Rgrum1vl+IBCXizvIdRvKFNbHORmNquKph2O/mZFRh
- nfnkwO0kk+g94JiI/lke5bRCFWyWnrIK2d4F+V7PIa8e93uvD2jszET7/qYhjEfpdo
- 6RVHYPzGKhojaacCwIneU6t45qN5FSjx/KJ0r6uhLXYutK6/mb6n2iw/s5fKCVVIkJ
- 3t5qOjE/JSk0EW0Pu3xauaJjN5JX2mdk9BD9Md6HwFdcwryA36HC+f2ttCR0T4Sz2c
- 6zX+eNo+YOTQblU2vYu91g/NBewiko35f4e1YrxSY9K6jEkVvIFv7SueGGGs6gGvSf
- VxQUkq1/zAe6g==
-Date: Wed, 25 Aug 2021 10:52:14 +0100
+ s=k20201202; t=1629886996;
+ bh=aSw0cYg8pm1YpmSlIfShp0oFUe+o66pjQZD/ue8nx7U=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=a6pCHwq+W37Vca+6PO7MFagSCJAHN1FyCXp2CbRoMMSY2CFXOwiPxIPsXTiPXKXpC
+ 9qTnfQ6cknl3Sn4UfcAeMTCwEvzkwrWMDQ/QKCCUzoc56NIzdJghGyfUzxSXEy5NMv
+ JZ1G/81gDBZfh5MKewFvY82vbD1on2dOeBfAxwawW3GbpI68GRUCPhgi2WRqaCo4O9
+ XUpOkT+rFAOKA1ja7mMji9/vtQQsT8WvkbPI1Jk5yFzCfLpeyXmOPbcl9AH+sny/pH
+ WdvjU1HHWi/loFwSoxwPZGaxdd3oTCr4ErPGsKeR08YxfEt7jb8REj7Kw0pBPjnEct
+ sqFBCsg7K6i1g==
 From: Mark Brown <broonie@kernel.org>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH] kconfig: forbid symbols that end with '_MODULE'
-Message-ID: <20210825095214.GA5186@sirena.org.uk>
-References: <20210825041637.365171-1-masahiroy@kernel.org>
+To: tiwai@suse.com, matthias.bgg@gmail.com, Trevor Wu <trevor.wu@mediatek.com>,
+ robh+dt@kernel.org, lgirdwood@gmail.com
+Subject: Re: [PATCH v5 00/11] ASoC: mediatek: Add support for MT8195 SoC
+Date: Wed, 25 Aug 2021 11:22:39 +0100
+Message-Id: <162988521424.7213.9083414971201440076.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210819084144.18483-1-trevor.wu@mediatek.com>
+References: <20210819084144.18483-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="mYCpIKhGyMATD0i+"
-Content-Disposition: inline
-In-Reply-To: <20210825041637.365171-1-masahiroy@kernel.org>
-X-Cookie: MY income is ALL disposable!
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, linux-kbuild@vger.kernel.org,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- linux-wireless@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- Luca Coelho <luciano.coelho@intel.com>, netdev@vger.kernel.org,
- Jakub Kicinski <kuba@kernel.org>, Peter Ujfalusi <peter.ujfalusi@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ cychiang@google.com, bicycle.tsai@mediatek.com, linux-kernel@vger.kernel.org,
+ jiaxin.yu@mediatek.com, Mark Brown <broonie@kernel.org>,
+ linux-mediatek@lists.infradead.org, wenst@chromium.org, aaronyu@google.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,30 +89,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Thu, 19 Aug 2021 16:41:33 +0800, Trevor Wu wrote:
+> This series of patches adds support for Mediatek AFE of MT8195 SoC.
+> Patches are based on broonie tree "for-next" branch.
+> 
+> Changes since v4:
+>   - removed sof related code
+> 
+> Changes since v3:
+>   - fixed warnings found by kernel test robot
+>   - removed unused critical section
+>   - corrected the lock protected sections on etdm driver
+>   - added DPTX and HDMITX audio support
+> 
+> [...]
 
---mYCpIKhGyMATD0i+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Wed, Aug 25, 2021 at 01:16:37PM +0900, Masahiro Yamada wrote:
-> Kconfig (syncconfig) generates include/generated/autoconf.h to make
-> CONFIG options available to the pre-processor.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Acked-by: Mark Brown <broonie@kernel.org>
+Thanks!
 
---mYCpIKhGyMATD0i+
-Content-Type: application/pgp-signature; name="signature.asc"
+[01/11] ASoC: mediatek: mt8195: update mediatek common driver
+        commit: cab2b9e5fc0e868ed8453ef4f433c795bda8bf84
+[02/11] ASoC: mediatek: mt8195: support audsys clock control
+        commit: d62ad762f67585acfb5e03f71b28a52dc4604cf2
+[03/11] ASoC: mediatek: mt8195: support etdm in platform driver
+        commit: 1de9a54acafba2f0e3ea2856ad0b22556d59ec45
+[04/11] ASoC: mediatek: mt8195: support adda in platform driver
+        commit: 3de3eba588bb7f6c39bf12de5761ff75c53b9961
+[05/11] ASoC: mediatek: mt8195: support pcm in platform driver
+        commit: 1f95c019115cc503c4c47fd7108675a56cdb29b4
+[06/11] ASoC: mediatek: mt8195: add platform driver
+        commit: 6746cc858259985a945a07075a19ec4d24352407
+[07/11] dt-bindings: mediatek: mt8195: add audio afe document
+        commit: b5bac34fcfb444e33f532e291ad1394ca05887e8
+[08/11] ASoC: mediatek: mt8195: add machine driver with mt6359, rt1019 and rt5682
+        commit: 40d605df0a7bf7723ed690f502f364c5320de440
+[09/11] ASoC: mediatek: mt8195: add DPTX audio support
+        commit: e581e3014cc4acee9025aa5704cf85a36a572b95
+[10/11] ASoC: mediatek: mt8195: add HDMITX audio support
+        commit: ef46cd42ecf00f0468df3ad1bf0f30db9634a04a
+[11/11] dt-bindings: mediatek: mt8195: add mt8195-mt6359-rt1019-rt5682 document
+        commit: 5f8c991e8950971cd1f81b61f79c83a511ad9fc8
 
------BEGIN PGP SIGNATURE-----
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEmEs0ACgkQJNaLcl1U
-h9Aq4Af+OUuZSvmzbZyoTGGCofB/L+N5Ehn/9iHBJTZBr46S9ip0Zv7RZXiHqhtu
-yJO2Gq1P6j1xVYtqqPCDOvNgaeEghTvLtpukroOGR/uA/S21Xobqhy6F3Tb/jrPm
-KTrf5LWtRKS0I2sxbgteQRvOOjPIELQv8Lr0Y2ykO+yL+UEtNDJH4OsuNdXhdbh5
-t2jZ7OgZ/Ot/6AB78YWbaZTZZHqfGM/jzeUpWG6kCdItSPXam0Q5LyYheMGn7MBb
-6zAG6O+2Napi31AkH6Pyx18+hzh4XhnBLSX9ZPNP8ZM5iRQZjLHt1sYdukoFEATI
-zkcxGg7hM8LCp7KGuyMcTafl0ikf4A==
-=yeET
------END PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---mYCpIKhGyMATD0i+--
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
