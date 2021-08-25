@@ -2,78 +2,99 @@ Return-Path: <SRS0=0cRQ=NR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-19.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EEBBC432BE
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 12:53:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B994C432BE
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 12:57:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9BFD860184
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 12:53:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9BFD860184
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 7C9AC60F39
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 12:57:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7C9AC60F39
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=foss.st.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F255A16AB;
-	Thu, 26 Aug 2021 14:52:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F255A16AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id BDEA91695;
+	Thu, 26 Aug 2021 14:56:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDEA91695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629982415;
-	bh=k+jKDPMkrQDoBPL6bBTji+fg/yJH4WCO5skRGfORL90=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1629982623;
+	bh=Uaf+6VPcK/+1n1/6ghx8OsoHf1Qlc3Zzn6OiuRIbBeY=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pAX1V/CxfRBDyX9bBRRZnFCFo39pXs4JPoEp+7V0rjcX99TEM7jwCjk1iD6oSniQI
-	 bVyzDian/h6+mYp584AA81dHhIhIYDnWhGw9aYN4yEjmZDNdzu7PkzN+qv/SCM/JRr
-	 EVuA4yMcMKG2dGb7ls5i9IRVcpfHMkZ04/9DDRMk=
+	b=jH1Y/PpctZ/jXBvOqNqEFObYNC0Knvi8UIYhdli/UqS/J84OghRy8O96EC/dMHLM9
+	 NzSo2jr3vI+DNz3v9UMhpTEwuVxauA7tRQ56wQKaOhYFFQZvedkqZ6xCBiIM5AJ/Y+
+	 jOA8533tKuc8+9T49yLSfkuXS1geBtishIXZ0Ak0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 38696F8025C;
-	Thu, 26 Aug 2021 14:52:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32AD1F801D5;
+	Thu, 26 Aug 2021 14:56:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BFCADF8032D; Thu, 26 Aug 2021 14:52:41 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id B367EF8020C; Wed, 25 Aug 2021 09:18:25 +0200 (CEST)
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 70D2CF80224
- for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2021 14:52:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70D2CF80224
+ by alsa1.perex.cz (Postfix) with ESMTPS id 379B9F800AE
+ for <alsa-devel@alsa-project.org>; Wed, 25 Aug 2021 09:18:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 379B9F800AE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="R5ii20vj"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A07E60E0B;
- Thu, 26 Aug 2021 12:52:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1629982355;
- bh=k+jKDPMkrQDoBPL6bBTji+fg/yJH4WCO5skRGfORL90=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=R5ii20vj8IZkbZ2ySUYS1CHi5JAfY0HZFhupeuFGb6R8VxaE+14Didhpc0zKN8Mh6
- S0XUSNNx/0d/ALp90WOgZre9BuUtOk/HErVQd2Fa500wynIxd48Yx0mn0bdiPjmCe7
- DNJ0YSiKNKqqF6UQ1iqvuuadEQqASkrYYjNXnsAdiWG35aNNqWkZeGY4zCn9CBJXAg
- XvZIE77Wtw82mJz43QDq4vfYJCjkpr2HwpnUTGY1C+lIHlOurrlLaRC+9Uuef/UKJw
- eO+AuCuiUnnRA2xYBgnoLnr1t9afSlhm0auWKCGuT3zGf3kgdzhjtMmCbgQHEwhQlO
- CsZkFkBWO86hQ==
-Date: Thu, 26 Aug 2021 13:52:06 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Sugar Zhang <sugar.zhang@rock-chips.com>
-Subject: Re: [PATCH v3 05/14] ASoC: rockchip: i2s: Fix concurrency between
- tx/rx
-Message-ID: <20210826125206.GD4148@sirena.org.uk>
-References: <1629950441-14118-1-git-send-email-sugar.zhang@rock-chips.com>
- <1629950520-14190-5-git-send-email-sugar.zhang@rock-chips.com>
+ dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com
+ header.b="O6AhOMUC"
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+ by mx07-00178001.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17P06RWH020057;
+ Wed, 25 Aug 2021 09:18:15 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
+ h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=maUQzvvOkFz82xwKHUYLuPBuW4OzTUvm496H7RaoqwY=;
+ b=O6AhOMUClfkoQIcfSAL1GTu9j98x2UzjXysV+lEUPfOOklH3kjMXhk85ywIm21xUnmqJ
+ eveENb7zTJWfyfIjNWCAsunvNpLYLBj/OndoQcl2cGuL8mhMg5rLOKh1sK6DYfOIf3rl
+ esnOiG6dgAe1u7W6JC14QhPStmDTjI1Dv+flXgq0xC6b0GofMiRXSzsHG/EfHBYTaj7n
+ 1abWTRx4njvIWPvgUihGbKZ/DTpJWfLeJicfpowTl/eY4WhEVCkj8B3CCEthYAfctDed
+ S/QQ+lT1mpQgDDHqBIcWWQPmSvrkDwo82jzg9b08hwZVSjnakZS2RDQLFOU7YyuT/+OG bA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+ by mx07-00178001.pphosted.com with ESMTP id 3anb1d22kf-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 25 Aug 2021 09:18:15 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id BC1D6100034;
+ Wed, 25 Aug 2021 09:18:14 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 23E7221F136;
+ Wed, 25 Aug 2021 09:18:14 +0200 (CEST)
+Received: from lmecxl0577.lme.st.com (10.75.127.51) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 25 Aug
+ 2021 09:18:13 +0200
+Subject: Re: [PATCH 6/6] ASoC: audio-graph: remove Platform support
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+References: <871rb758x7.wl-kuninori.morimoto.gx@renesas.com>
+ <87sg3n3ubg.wl-kuninori.morimoto.gx@renesas.com>
+From: Olivier MOYSAN <olivier.moysan@foss.st.com>
+Message-ID: <bc95a045-b370-8d7f-1167-34bd68e39165@foss.st.com>
+Date: Wed, 25 Aug 2021 09:18:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="sgneBHv3152wZ8jf"
-Content-Disposition: inline
-In-Reply-To: <1629950520-14190-5-git-send-email-sugar.zhang@rock-chips.com>
-X-Cookie: /earth: file system full.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
- heiko@sntech.de, devicetree@vger.kernel.org
+In-Reply-To: <87sg3n3ubg.wl-kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-08-25_02,2021-08-25_01,2020-04-07_01
+X-Mailman-Approved-At: Thu, 26 Aug 2021 14:56:12 +0200
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,33 +110,105 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hello Kuninori,
 
---sgneBHv3152wZ8jf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I have seen that the STM32MP15 audio sound card is no more functional 
+with recent kernels (5.13 or 5.14)
+The sound card is registered, but the all devices are issuing an error 
+at runtime. These devices are using stm32_sai.c or stm32_i2s.c drivers.
 
-On Thu, Aug 26, 2021 at 12:01:51PM +0800, Sugar Zhang wrote:
+I found that the regression is linked to the commit 
+63f2f9cceb09f8e5f668e36c1cf764eea468ebed "ASoC: audio-graph: remove 
+Platform support", as reverting this commit fixes the issue.
 
-> +/* tx/rx ctrl lock */
-> +static DEFINE_SPINLOCK(lock);
-> +
+When the platform component is missing the pcm_construct ops in the pcm 
+dmaengine, is never called, resulting in an incomplete initialization of 
+the sound card.
+I can't figure out what is the right way to handle this change, however.
+Do I need to update the CPU drivers to work without a platform component
+or does the audio-graph card has to be changed in some way ?
+What do you mean "We can respawn it when we need it", in the commit 
+message ?
 
-Why is this a global and not part of the driver data?  It's also not
-clear to me why this is a spinlock and not a mutex.
+Thanks for your help
+regards
+Olivier
 
---sgneBHv3152wZ8jf
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEnjnUACgkQJNaLcl1U
-h9DhSgf+MgL/IQ9Mq6omKDRWYltsw14qyPu33shx7ZijOx+Opu9cYlPB75kmxRWv
-ylkwSG6o1RVEmHD/Y7XifgmrS7/pk9aqxCYTF7fdgfzA6Vj20AwJxcdRq5hXtGXg
-3rCgH6yqOL3qysd2VYiNOTO8jPNaq9wzeB4kwS8HC8DtBNvXXCtgID85w6Ihmqd+
-FNm9G7td36rGQWX2OFy/pGWAo77ZR55VtaLM/7WWBeC0oxZ6QXO/3xwFvbFqgXF/
-gLWxHGW5siQgtzqk1NDS/fmSjlQtQgTjKY3PxawKGwtTW/smMt6mp+Jz94YvbT8J
-JaZ90zWGfcxu9o8JkUqGN8YIbk8k/Q==
-=FFmq
------END PGP SIGNATURE-----
-
---sgneBHv3152wZ8jf--
+On 4/19/21 4:02 AM, Kuninori Morimoto wrote:
+> 
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> Platform was one of mandatory component on ASoC before,
+> and audio-graph-card was assuming that CPU and Platform were
+> same driver.
+> 
+> But it is no longer mandatory on ASoC.
+> Current ASoC will just ignore if Platform and CPU were same
+> or doplicated component.
+> 
+> Of course ASoC is supporting Platform, but current
+> audio-graph-card doesn't support detecting it from DT.
+> 
+> This means current audio-graph-card operation for Platform so far
+> is 100% useless. This patch removes it.
+> We can respawn it when we need it.
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+>   sound/soc/generic/audio-graph-card.c | 6 ------
+>   1 file changed, 6 deletions(-)
+> 
+> diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+> index 5594eab9902e..3c4915d1e528 100644
+> --- a/sound/soc/generic/audio-graph-card.c
+> +++ b/sound/soc/generic/audio-graph-card.c
+> @@ -223,7 +223,6 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+>   	struct asoc_simple_dai *dai;
+>   	struct snd_soc_dai_link_component *cpus = asoc_link_to_cpu(dai_link, 0);
+>   	struct snd_soc_dai_link_component *codecs = asoc_link_to_codec(dai_link, 0);
+> -	struct snd_soc_dai_link_component *platforms = asoc_link_to_platform(dai_link, 0);
+>   	int ret;
+>   
+>   	port	= of_get_parent(ep);
+> @@ -275,7 +274,6 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+>   
+>   		/* card->num_links includes Codec */
+>   		asoc_simple_canonicalize_cpu(cpus, is_single_links);
+> -		asoc_simple_canonicalize_platform(platforms, cpus);
+>   	} else {
+>   		struct snd_soc_codec_conf *cconf;
+>   
+> @@ -354,7 +352,6 @@ static int graph_dai_link_of(struct asoc_simple_priv *priv,
+>   	struct asoc_simple_dai *codec_dai = simple_props_to_dai_codec(dai_props, 0);
+>   	struct snd_soc_dai_link_component *cpus = asoc_link_to_cpu(dai_link, 0);
+>   	struct snd_soc_dai_link_component *codecs = asoc_link_to_codec(dai_link, 0);
+> -	struct snd_soc_dai_link_component *platforms = asoc_link_to_platform(dai_link, 0);
+>   	int ret, single_cpu = 0;
+>   
+>   	dev_dbg(dev, "link_of (%pOF)\n", cpu_ep);
+> @@ -405,7 +402,6 @@ static int graph_dai_link_of(struct asoc_simple_priv *priv,
+>   	dai_link->init = asoc_simple_dai_init;
+>   
+>   	asoc_simple_canonicalize_cpu(cpus, single_cpu);
+> -	asoc_simple_canonicalize_platform(platforms, cpus);
+>   
+>   	return 0;
+>   }
+> @@ -621,7 +617,6 @@ static int graph_count_noml(struct asoc_simple_priv *priv,
+>   
+>   	li->num[li->link].cpus		= 1;
+>   	li->num[li->link].codecs	= 1;
+> -	li->num[li->link].platforms	= 1;
+>   
+>   	li->link += 1; /* 1xCPU-Codec */
+>   
+> @@ -644,7 +639,6 @@ static int graph_count_dpcm(struct asoc_simple_priv *priv,
+>   
+>   	if (li->cpu) {
+>   		li->num[li->link].cpus		= 1;
+> -		li->num[li->link].platforms	= 1;
+>   
+>   		li->link++; /* 1xCPU-dummy */
+>   	} else {
+> 
