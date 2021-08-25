@@ -2,97 +2,192 @@ Return-Path: <SRS0=JRP5=NQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,FAKE_REPLY_C,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BC19C4338F
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Aug 2021 06:21:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A31FC4338F
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Aug 2021 07:04:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3D34361184
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Aug 2021 06:21:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3D34361184
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+	by mail.kernel.org (Postfix) with ESMTPS id AACDE610FB
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Aug 2021 07:04:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AACDE610FB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C2BED1682;
-	Wed, 25 Aug 2021 08:20:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2BED1682
+	by alsa0.perex.cz (Postfix) with ESMTPS id 32B501671;
+	Wed, 25 Aug 2021 09:03:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32B501671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629872484;
-	bh=b1CL/x6T3N/7S4yZIgyD6v8AQXO300eSVO4jjVfBhZ4=;
-	h=To:From:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=LO1pOvI9X3XUDvOagc/U1/Uw+5W/OeX3ekx3XHWpFUC7GeEzEYmaPyhME7uJwSg+m
-	 jnQhkUneEHP9xwiSCY+H40ZY+HWq+E9d1l8SvzUU1h+lGS4HtBcmLFOLJbbVCVsf+8
-	 Y3+OntUZvKVgJjD2N7CqaeBjE1TgeXMYp41ULcv4=
+	s=default; t=1629875086;
+	bh=6/1M/fpeuHjrAsfurcehd1HE6ZIAQVHcatB/zdGJ8aY=;
+	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=T7v5XuFdgTiATipSLPcx+8vdCRuyQh4bJ9Hn9gzv4syXtou6fmDqeKACMcGAp+efy
+	 8l8qdy7WcnoIdr3BVpkxsTdUL6jWH22wjGmQrAtP32aRZGsNMcPk4MuaWA41u+3ut7
+	 4csQuvvyXxkYc27XYZQ/PrlxTgBf5gkLpNK4nHfw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 45646F804EC;
-	Wed, 25 Aug 2021 08:18:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BD6A2F80171;
+	Wed, 25 Aug 2021 09:03:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5D1AEF801D8; Tue, 24 Aug 2021 19:38:19 +0200 (CEST)
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com
- [IPv6:2607:f8b0:4864:20::435])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 84012F8020C; Wed, 25 Aug 2021 09:03:54 +0200 (CEST)
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com
+ [205.220.177.32])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BAB2FF800AE
- for <alsa-devel@alsa-project.org>; Tue, 24 Aug 2021 19:38:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BAB2FF800AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id ECFF5F800AE
+ for <alsa-devel@alsa-project.org>; Wed, 25 Aug 2021 09:03:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ECFF5F800AE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel-dk.20150623.gappssmtp.com
- header.i=@kernel-dk.20150623.gappssmtp.com header.b="LjHsHmrK"
-Received: by mail-pf1-x435.google.com with SMTP id 2so4944117pfo.8
- for <alsa-devel@alsa-project.org>; Tue, 24 Aug 2021 10:38:14 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
+ header.b="yq8toqiM"; 
+ dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
+ header.b="jdljPEYm"; 
+ dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com
+ header.i=@oracle.onmicrosoft.com header.b="wRT1sC+T"
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+ by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17P6aw3k030398;
+ Wed, 25 Aug 2021 07:03:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : content-type : in-reply-to : mime-version;
+ s=corp-2021-07-09; bh=kGeQ6Vj267r2bdKScaHCXYRPX1mvrSL3256DxbIRaL0=;
+ b=yq8toqiM7VB+vL3VT4GGcoLqum/m7IQ5Hv1lGyB1ofCTdUGBWlw0QjKSQNxfU3U2DfI3
+ yDOvlg2R335bLExaVgWLI/kD4sswVx56QZv2UHpOWhZ9bdXeeRLIEEgmPXw3ZwWmOxhe
+ tbZ35A5V9RecYTWvAuK31lY6p9LQs6CuoD1yemgiNuSIlzyYxl+noR9RAreaQ08IqMiC
+ IX49fcBpQ6STvLVLQTZIssxH9ww9J6IaCqxOE3Lck/DqhQ1oiEjSUuH7FoKakbPwoPuH
+ qK3GBkiR6eT7s53jHB1W2o0C53QkxaoZt2O04GTbaHlwFKicJ7E0/kceWML3k8JB6BCo 6A== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : content-type : in-reply-to : mime-version;
+ s=corp-2020-01-29; bh=kGeQ6Vj267r2bdKScaHCXYRPX1mvrSL3256DxbIRaL0=;
+ b=jdljPEYmTxHUFYQqs4ffOxdwJvB5GswYK2w9dODZeVZApddrrcFV07NfKJjmscTQiNpp
+ h0Owx9p5ursHAj7Y96+dAC2u1nF/ioLSFk+Kds981HI+2QfAWeYF62pCMFk4UpXe4KnQ
+ vfUir3pBDrMZvvwTMXMP+5j7xSE0i6LYe0GzxstxK/pKcYRzTa5omXtz/ChDUCfg5rkx
+ qJNOS+HAVuVa/6w30rDs2/Q56WoU5QwRyEsB0Syw/fYQwgUIK0g/35Mq6KAhT6NXWo9L
+ DwI3VuPiRLG/C4jXsf/ashwNluzsXwU81HS+GQHx9WpqF2xUSgmjn1bUSbUDuiGgCfc1 lw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+ by mx0b-00069f02.pphosted.com with ESMTP id 3amv67avvn-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 25 Aug 2021 07:03:43 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+ by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17P71TkL035500;
+ Wed, 25 Aug 2021 07:03:42 GMT
+Received: from nam02-dm3-obe.outbound.protection.outlook.com
+ (mail-dm3nam07lp2040.outbound.protection.outlook.com [104.47.56.40])
+ by userp3020.oracle.com with ESMTP id 3akb8w9nj9-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 25 Aug 2021 07:03:42 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VsqpJIaxWcFHF6sDPYB9HlLiZ/PbsiQSkL/+4VvjR2Bq+wgRzEAE1K0pmXMdS4V9xcejxpwLl6vBEyq5AGuQyojJjay73oHUTYV/56YONIgs7c9XQ30Qf7YnwArnKomBY3fdFus7p6b474vrz95hLmR0lnhSBy1FZJ3kL9K3nQOqiMYoz9rDxZ4zuPgKKqIrCABL5NaiUcQjvPuQw3gRyTWe7TS8JjpCssJGmXouD6pXPEQpF2VVMmgFgRUuo/JXeRIP+McZkh6+qNcr+ee6qcd5SVm6QG+M3gbyKzyD2oTCp7modaBZjk3brfH9Zr3srMco0V23tOA5K2c680tssQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kGeQ6Vj267r2bdKScaHCXYRPX1mvrSL3256DxbIRaL0=;
+ b=P6j8SU9tjorvRVcbj7yLyG4kYvOLVBZ6TKLwfQ1biHkZ48G47wSYBQOGbENzUgWcmNdjaYDuaqd4dEzIUheI1s8uY96qd7dimx2dlrna5nATVwXGpqiqWBktUjfteLzxKedkSy3D10ezHNKdCKfxIt3WrI1uFEv6mHdvAgzbB/Z67rT4mAh27dKLoQDnvJn9O9qeMy2qX6dXsdHfBBr534X2Q4zfWyjcdK2iwa+m8k9Ot704m8KzEsHEkFxJs1EO2KjYHbxf0TpivHS1uU0+xeVZG+zhsNXTfYl9V5Wp9ShFCfV9thVwaL7USqhmRqSJHkirmM0IEuw1BFNqDVCJWg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=kernel-dk.20150623.gappssmtp.com; s=20150623;
- h=to:from:subject:message-id:date:user-agent:mime-version
- :content-language:content-transfer-encoding;
- bh=bTwPGiPrmmG9vkO1MvG9NW7lrY95iGeBIYpG7r1OLBE=;
- b=LjHsHmrKp5UosBxw8l7mYybkmczjicLWKytjHBeRT9dGo5OiaboFWUeGBkPI3lRKwz
- hphVfgvfY9bq62xbk/QT0oRUq9MC3ESI8fShW6bPGaICHWTU8xzD0LrSlnQUUz8/6etz
- F/k/zqzs6LC52v8P6jUdpkk9zkJSMHJOHdTh9FxDYLxsjCaS0T1K0UvdEecXnzF9tohL
- pPTh4s+2NHADwC6KCK9GzVHpqkD6+rXZenkkVW3iyxOex2+VZOQ1wLtM1DaofHslCVOf
- jTA27BsbjlUfnYBBYJJVzaVCCraYGEwigNVzLYrr4f08ZZ7w62IE4oO4l3BR/O4v3rIy
- 7saw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:to:from:subject:message-id:date:user-agent
- :mime-version:content-language:content-transfer-encoding;
- bh=bTwPGiPrmmG9vkO1MvG9NW7lrY95iGeBIYpG7r1OLBE=;
- b=ZHrEozk+qEIeMESqHHjqWjey7BxipmCvNVPx8LM8Pg5zOPPEI5vHHaqQ8IabfSXZJ+
- Wq2ZCzsJPZga9P/VT+mUpv9lhYavb2hCZ0M6iQvTFyGiqT/auD0VAx+ckFhUk1r6BjLQ
- 8XJQe+x5RiDZ4vliSINIs2WagQlY+djB76WiiaxioED3S55ZLtBiqwM6BwSp1gLwx6TH
- GoZLJK6PlpJ7mJJV9DhgJ2i990BSIikVHG1Edy4HIBwOvBGUmJzmQ7MoO9+O6AWVCGSE
- gfBpuXQ80tkuC74tA+U+yTkm60GEGNe4oLUtniq9KKzbOL+IcqieAdEpSK5M9cB1kndA
- O09w==
-X-Gm-Message-State: AOAM533AZjpyF6nD5uX/t7tNx96f8bs4B2W+yS9AKmRPpC9HoXtXYyQN
- xCVtCdbZCe3ir+ZMXn9/2bM2MADNOheu/NDN
-X-Google-Smtp-Source: ABdhPJw//PkDvfVfGMn4mMDdcZK10nEWh5zo+1KZzVKn4e+bPgzy2AcwUJ/w+y86qdF9mq39XtiKrQ==
-X-Received: by 2002:a63:3245:: with SMTP id y66mr37626941pgy.443.1629826690490; 
- Tue, 24 Aug 2021 10:38:10 -0700 (PDT)
-Received: from ?IPv6:2600:380:4960:2a4d:1b63:8a6c:25bc:6edc?
- ([2600:380:4960:2a4d:1b63:8a6c:25bc:6edc])
- by smtp.gmail.com with ESMTPSA id l11sm3090520pjg.22.2021.08.24.10.38.09
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 24 Aug 2021 10:38:10 -0700 (PDT)
-To: perex@perex.cz, tiwai@suse.com, kai.vehmanen@linux.intel.com,
- alsa-devel@alsa-project.org
-From: Jens Axboe <axboe@kernel.dk>
-Subject: azx_get_pos_skl() induced system slowness
-Message-ID: <402d5952-3bf6-5c0d-5276-8367bfe1542a@kernel.dk>
-Date: Tue, 24 Aug 2021 11:38:08 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kGeQ6Vj267r2bdKScaHCXYRPX1mvrSL3256DxbIRaL0=;
+ b=wRT1sC+TLywDr6Vm6qnnR8cEieDN3+K2a3eIu/mBL6IDsUuSJPMVbvQ2saugYehteTGEEhOS704uZk4F1sZHPK3ErUWeCOcoiW/5FcLjTNASkvy0i7+1sQ5M8qyhXm+gSdw8J3Exu6k7kM+P0uP4fU6x8H2cDew7ivqaJZ8ysKA=
+Authentication-Results: lists.01.org; dkim=none (message not signed)
+ header.d=none;lists.01.org; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MWHPR1001MB2096.namprd10.prod.outlook.com
+ (2603:10b6:301:2c::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17; Wed, 25 Aug
+ 2021 07:03:39 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4457.018; Wed, 25 Aug 2021
+ 07:03:39 +0000
+Date: Wed, 25 Aug 2021 10:03:12 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: kbuild@lists.01.org, Seven Lee <wtli@nuvoton.com>, broonie@kernel.org
+Subject: Re: [PATCH] ASoC: nau8821: Add driver for Nuvoton codec NAU88L21
+Message-ID: <202108250013.326roo2Z-lkp@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210824041647.1732378-1-wtli@nuvoton.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JN2P275CA0046.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::34)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Mailman-Approved-At: Wed, 25 Aug 2021 08:18:36 +0200
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kadam (62.8.83.99) by JN2P275CA0046.ZAFP275.PROD.OUTLOOK.COM
+ (2603:1086:0:2::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17 via Frontend
+ Transport; Wed, 25 Aug 2021 07:03:31 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 29b20147-74f6-4492-2ca1-08d9679676f9
+X-MS-TrafficTypeDiagnostic: MWHPR1001MB2096:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR1001MB2096FB5AAFAB23D6FA735FFA8EC69@MWHPR1001MB2096.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Qbu2L7/Hyqxty/lmW+qxVbbJR6ithY9dOkjT01aBzyGAQ2dL7e39NphtYH1sj5zB/xG35YnvDCF9YW2aUS8x8KPYqdrDDZkydMiI5TnUniZSHVaCtO62FxR4FJM9oGeflv8gJog0oO9UY8dYgv0sSzHKXwpfk6G6k3oPqeLOC/I7oQ5CSgCyI3pMThwh0UQdKpoN6x6CHMG8QsslnSWdZZkDWnej0uW8IxFk+c7Upg1tSW+F23/RxeZIfcc1mfUHDz4sjjYUHSWasNYDi5BIb2rKViGFsa1zOJYTzoaQRcEunW4+jXQHlqoTBU78xYUqeX3hg697JwKIzNYRnRuYc/M4SEoXNYGbs9l8BDlSAGNxIldjwurHzmiRBRQSBrSfupotS5utAlLBuuWc4tbF2FXc/+/IMkgJaWXnZGrRuw8NQdLZoTVNjqFvKI0R7zGmThFYn7iM3Yx4prAlpp73o7wRUZBOwWpj64pmtZkzdLv/fo4EccTREWMq8oMQFlQMD5kPV7Js71bj4EsYw4pBJZ4XCr6xOlwGc1K51/OGM3PA/yxIeG+3wI4hn7X5FYjYjwK/MMVNgFLQfGcWRfy5DEKMdr5LxyNcRzAnGZXdODru8+L2ajoCxoNar0GrhpgxtNwwpf3sPlTcxh8e9/aK1O/QCU3fpTPzAr9GuJrxuYpjPkiWaQ+pFriVQzNE9rrrZZMQ9iV429cIlxSkou1laweRkeYicpX3WKYee8RoOSeqcq+GqVBoJAiguY+tx6i8MyA5IRtZVu10lq56oxhXfZ27W7An1oldmd5XxUrbuypPLWGk4/ansgUmjZwv78On
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:MWHPR1001MB2365.namprd10.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(346002)(366004)(39860400002)(396003)(136003)(376002)(316002)(7416002)(44832011)(6496006)(4326008)(36756003)(6486002)(52116002)(2906002)(86362001)(6666004)(478600001)(66476007)(66556008)(956004)(38350700002)(186003)(66946007)(1076003)(26005)(8676002)(966005)(38100700002)(83380400001)(5660300002)(8936002)(9686003);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?DyOVMbe2zK18+Y7M9JwTAgt3JNyJK/XDXHI5LtCmnbaHkpTtQERusPWuZS/Q?=
+ =?us-ascii?Q?cfO+GiHk4nttNL7p935oI+jNqRddwevegfi0SHlS54eO8N4ZYl3PM/+Nr7pj?=
+ =?us-ascii?Q?peyBNjj+Y0VsrBQJk+iA5GsQRTjZACtAOL2hwxl/IVJHxmSduYEQ5dzSEuyQ?=
+ =?us-ascii?Q?dYjvYSG+G4MS4Q758a14II5mUkW+8auWsGk+kh8Yf4zJ4KdXuj+iZW9q4URb?=
+ =?us-ascii?Q?9rYP9D+234pLLOl0Sfdt/81Osxir7Leckv4sxd6rbzd1nxrrCzy26PLM9nKV?=
+ =?us-ascii?Q?tUa9TnvGvP40ZujsBi0OWWmM5ZgQe1caKYoIpgRQ4vvVaeusMv/Am1n4qFXZ?=
+ =?us-ascii?Q?+XHZ5mqiZ0y4p2ydhj3kdwJtKseMsDjm+Qg6H/pIjLuyS8WzpYUs23feCggV?=
+ =?us-ascii?Q?1oNB2cBVb7CH/5F1FDx5h4Hyks7dddQFG+ywpBADgeZneG3NV7JPSvmBEYqX?=
+ =?us-ascii?Q?/SBJcAQH0Yi0ftpoyZN1QUKLjkzF9vAa57mFqLgUi1MRSFGvfKTfFLgeLPvB?=
+ =?us-ascii?Q?eza16e5HH8CVWPF/qwVVo8jq38HOTqc02QOJ+fw/sLxEuIZguFtoLLqSzknj?=
+ =?us-ascii?Q?BOWrVsqahp4gBU4YQjsi1qyLaocT4uh9wyjDdK26UidlPEM983CIsL6/1Cmq?=
+ =?us-ascii?Q?8fg7Euqvatr+0On/1FoNqypm4EBi5B9rnPnCjGV3IvIidHDN8kTH3kUcvw7u?=
+ =?us-ascii?Q?WYh006wLJ9Q6dUSM05bdInCgYtCwgRUa1p1hgxbMfSzU1MBp/pBNpQGZ29VB?=
+ =?us-ascii?Q?5FMq3+INN5UBvO+MsFo5s7glQ8O4eC5ix0gFoF7sBb4qiLLzURIxuojmUCAH?=
+ =?us-ascii?Q?JnJli9X8rtCzTl7Ci+60S8kLS4Wckix0WFA33//b4t6yMzPp+7fuMptDUMs3?=
+ =?us-ascii?Q?yinowUG3GMLhl+3ULLM1A3yI1FcObHFQbS9q2SD2QP8QG6O9xXs2NF2ZRkSQ?=
+ =?us-ascii?Q?j7BXdhVPDFAfNj4rhBkPgHDRMEJ/MiXkkntTU6TWG5T+VKg3AsIfSk60+MaF?=
+ =?us-ascii?Q?u0t2yNPpB3ZTW3ueGeAM/W5qdxqJOAEbjCwltFYYleOr2ToBD2mb7jT3BUFM?=
+ =?us-ascii?Q?ZCjG3i9D2niuwqBxeHwhyodaikoZNorgyODZz+P8/7yP3Q9YsSFpTcKXN7n+?=
+ =?us-ascii?Q?Wv5BFBVUaaxAfXlsbpUm6rXVbCUBCyGlH0ZohaZ3v7pDKXEy8Xw0SYdcwEyn?=
+ =?us-ascii?Q?a9uusC8XL9aHkVqwGyFX6wwcgzXzlGUkVZlUXTgu6CCQzLmnNT5DigxAB6TO?=
+ =?us-ascii?Q?Qz0Ul9+gsMlnpCtcqWBOJU6cexPRx3Hwt+D2EUNlfKwCECnLmCHZT88zRgOt?=
+ =?us-ascii?Q?haf7KeltcEDlt1ZBWiqQCaTG?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 29b20147-74f6-4492-2ca1-08d9679676f9
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2021 07:03:39.4810 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aL/AmFISRcU8HUBhyb0nNIQfKrGD649UGckJvlP/r6NJjFIvl3uw21tjwbfu6BlYb1tv6rAUMlPdmocc/5KKxUxmq08EUw3q5Os405SSSjE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1001MB2096
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10086
+ signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0
+ phishscore=0 spamscore=0
+ bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108250041
+X-Proofpoint-ORIG-GUID: YjPfbxMS9Zjh-vn2o-VJmKl3a6BmP2xs
+X-Proofpoint-GUID: YjPfbxMS9Zjh-vn2o-VJmKl3a6BmP2xs
+Cc: alsa-devel@alsa-project.org, scott6986@gmail.com, lkp@intel.com,
+ Seven Lee <wtli@nuvoton.com>, KCHSU0@nuvoton.com, lgirdwood@gmail.com,
+ YHCHuang@nuvoton.com, CTLIN0@nuvoton.com, dardar923@gmail.com,
+ kbuild-all@lists.01.org, supercraig0719@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,38 +203,68 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+Hi Seven,
 
-Got a new notebook recently, it's a Lenovo X1 Carbon 9th gen. Sound
-works fine, but sometimes I get really stuttering playback from nestopia
-and I finally decided to look into it. When this happens,
-azx_get_pos_skl() is seemingly called a lot, at least it uses a ton of
-CPU cycles. This comes and goes, sometimes 1 minute in between,
-sometimes 2, and sometimes 30 seconds.
+url:    https://github.com/0day-ci/linux/commits/Seven-Lee/ASoC-nau8821-Add-driver-for-Nuvoton-codec-NAU88L21/20210824-121846
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+config: openrisc-randconfig-m031-20210824 (attached as .config)
+compiler: or1k-linux-gcc (GCC) 11.2.0
 
-If I comment out the udelay() in that function it does seems to be
-noticeably better, though it's not a complete fix. I guess it just
-reduces the pain of calling it so many times?
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-This is running 5.14-rc7, but it's not a recent regression.
+smatch warnings:
+sound/soc/codecs/nau8821.c:456 dmic_clock_control() error: uninitialized symbol 'speed_selection'.
 
-Any clues as to what this might be?
+vim +/speed_selection +456 sound/soc/codecs/nau8821.c
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 470753b36c8a..3c1f233e463f 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -878,7 +878,9 @@ static unsigned int azx_get_pos_skl(struct azx *chip, struct azx_dev *azx_dev)
- 	 * for the possible boundary overlap; the read of DPIB fetches the
- 	 * actual posbuf
- 	 */
-+#if 0
- 	udelay(20);
-+#endif
- 	azx_skl_get_dpib_pos(chip, azx_dev);
- 	return azx_get_pos_posbuf(chip, azx_dev);
- }
+429cd8c43255317 Seven Lee 2021-08-24  419  static const struct snd_kcontrol_new nau8821_adc_ch0_dmic =
+429cd8c43255317 Seven Lee 2021-08-24  420  	SOC_DAPM_SINGLE("Switch", NAU8821_R13_DMIC_CTRL,
+429cd8c43255317 Seven Lee 2021-08-24  421  		NAU8821_DMIC_EN_SFT, 1, 0);
+429cd8c43255317 Seven Lee 2021-08-24  422  
+429cd8c43255317 Seven Lee 2021-08-24  423  static int dmic_clock_control(struct snd_soc_dapm_widget *w,
+429cd8c43255317 Seven Lee 2021-08-24  424  		struct snd_kcontrol *k, int  event)
+429cd8c43255317 Seven Lee 2021-08-24  425  {
+429cd8c43255317 Seven Lee 2021-08-24  426  	struct snd_soc_component *component =
+429cd8c43255317 Seven Lee 2021-08-24  427  		snd_soc_dapm_to_component(w->dapm);
+429cd8c43255317 Seven Lee 2021-08-24  428  	struct nau8821 *nau8821 = snd_soc_component_get_drvdata(component);
+429cd8c43255317 Seven Lee 2021-08-24  429  	int i, speed_selection, clk_adc_src, clk_adc;
+429cd8c43255317 Seven Lee 2021-08-24  430  	unsigned int clk_divider_r03;
+429cd8c43255317 Seven Lee 2021-08-24  431  
+429cd8c43255317 Seven Lee 2021-08-24  432  	/* The DMIC clock is gotten from adc clock divided by
+429cd8c43255317 Seven Lee 2021-08-24  433  	 * CLK_DMIC_SRC (1, 2, 4, 8). The clock has to be equal or
+429cd8c43255317 Seven Lee 2021-08-24  434  	 * less than nau8821->dmic_clk_threshold.
+429cd8c43255317 Seven Lee 2021-08-24  435  	 */
+429cd8c43255317 Seven Lee 2021-08-24  436  	regmap_read(nau8821->regmap, NAU8821_R03_CLK_DIVIDER,
+429cd8c43255317 Seven Lee 2021-08-24  437  		&clk_divider_r03);
+429cd8c43255317 Seven Lee 2021-08-24  438  	clk_adc_src = (clk_divider_r03 & NAU8821_CLK_ADC_SRC_MASK)
+429cd8c43255317 Seven Lee 2021-08-24  439  		>> NAU8821_CLK_ADC_SRC_SFT;
+429cd8c43255317 Seven Lee 2021-08-24  440  	clk_adc = (nau8821->fs * 256) >> clk_adc_src;
+429cd8c43255317 Seven Lee 2021-08-24  441  
+429cd8c43255317 Seven Lee 2021-08-24  442  	for (i = 0 ; i < 4 ; i++) {
+429cd8c43255317 Seven Lee 2021-08-24  443  		if ((clk_adc >> dmic_speed_sel[i].param) <=
+429cd8c43255317 Seven Lee 2021-08-24  444  			nau8821->dmic_clk_threshold) {
+429cd8c43255317 Seven Lee 2021-08-24  445  			speed_selection = dmic_speed_sel[i].val;
+429cd8c43255317 Seven Lee 2021-08-24  446  			break;
+429cd8c43255317 Seven Lee 2021-08-24  447  		}
+429cd8c43255317 Seven Lee 2021-08-24  448  	}
 
--- 
-Jens Axboe
+speed_selection is not initialized if it exits the loop with i == 4.
+
+429cd8c43255317 Seven Lee 2021-08-24  449  
+429cd8c43255317 Seven Lee 2021-08-24  450  	dev_dbg(nau8821->dev,
+429cd8c43255317 Seven Lee 2021-08-24  451  		"clk_adc=%d, dmic_clk_threshold = %d, param=%d, val = %d\n",
+429cd8c43255317 Seven Lee 2021-08-24  452  		clk_adc, nau8821->dmic_clk_threshold,
+429cd8c43255317 Seven Lee 2021-08-24  453  		dmic_speed_sel[i].param, dmic_speed_sel[i].val);
+429cd8c43255317 Seven Lee 2021-08-24  454  	regmap_update_bits(nau8821->regmap, NAU8821_R13_DMIC_CTRL,
+429cd8c43255317 Seven Lee 2021-08-24  455  		NAU8821_DMIC_SRC_MASK,
+429cd8c43255317 Seven Lee 2021-08-24 @456  		(speed_selection << NAU8821_DMIC_SRC_SFT));
+429cd8c43255317 Seven Lee 2021-08-24  457  
+429cd8c43255317 Seven Lee 2021-08-24  458  	return 0;
+429cd8c43255317 Seven Lee 2021-08-24  459  }
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
