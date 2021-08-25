@@ -4,73 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF5F2C4338F
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Aug 2021 10:25:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 591A8C432BE
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Aug 2021 10:25:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 993876120A
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Aug 2021 10:25:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 993876120A
+	by mail.kernel.org (Postfix) with ESMTPS id 62AC160F58
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Aug 2021 10:25:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 62AC160F58
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D3BBF1679;
-	Wed, 25 Aug 2021 12:24:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3BBF1679
+	by alsa0.perex.cz (Postfix) with ESMTPS id D5F2B1686;
+	Wed, 25 Aug 2021 12:24:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5F2B1686
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629887105;
-	bh=I3aEAX98L/tGiOUO8s6Zg+dynK3AS2ijINI9SuNintQ=;
+	s=default; t=1629887108;
+	bh=tL7vzePFTdLCCmodujY/NanR9r8e1EVRA9OUWU++xVs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=m8LpjtZ3DYV7isW5KgZLxbTuT3FlXsztYZIJMgxvcvgfGrpp64VoQixy0QcsxQEVj
-	 +lOJGB2A0v9o2W6RibnEyDnBSmN9Ia4K7mt5ynY8jRIFD24F5vDMjvAbAdiDfkJfE5
-	 hIiCD1TsRCLWuJVrP1JBmq6cArC16pGmkuL6Z/fo=
+	b=o9zj7mFkvxg4Rjibx9zUVEvMYg4mGoEZ20zD08TtOnNYjvjqAPjDWgSQBIC47W1q/
+	 Yl4LmlHqrWcnIn/jhHOz/3jlVZ/8E/cGgaEdoERWqNQIDGLOXnH8htJRykO8DNVAuS
+	 P9djz3rouhw+gdc6K9qPbPofM+d5YRb8Fi+HfuDY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DA529F80431;
-	Wed, 25 Aug 2021 12:23:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19E0EF804D0;
+	Wed, 25 Aug 2021 12:23:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 77F49F8020D; Wed, 25 Aug 2021 12:23:26 +0200 (CEST)
+ id 4C473F802D2; Wed, 25 Aug 2021 12:23:26 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F31F3F80217
- for <alsa-devel@alsa-project.org>; Wed, 25 Aug 2021 12:23:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F31F3F80217
+ by alsa1.perex.cz (Postfix) with ESMTPS id B196CF8003C;
+ Wed, 25 Aug 2021 12:23:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B196CF8003C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="jlRFb+te"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B69F61212;
- Wed, 25 Aug 2021 10:23:18 +0000 (UTC)
+ header.b="DkMlb3x1"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C07EB60F58;
+ Wed, 25 Aug 2021 10:23:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1629886998;
- bh=I3aEAX98L/tGiOUO8s6Zg+dynK3AS2ijINI9SuNintQ=;
+ s=k20201202; t=1629886993;
+ bh=tL7vzePFTdLCCmodujY/NanR9r8e1EVRA9OUWU++xVs=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=jlRFb+te1emOp3ybRDCDHoXOaIwF7g7tpYw+8XtjswRNTqehbpJATOlfzLi/BRyQJ
- 4G/wwBmqqOADbmf49OkzY8Dz41iBd1MmVdCxM8en/fl33WFEzDCZG5S9rbjo4xMcj0
- BAi6L2atph0vZGDqLNv5D7VQl6ZX20RdwvOD9qLiW/9qS83k2hc42ZGeXLrbZiYzQi
- j82Sid8qnlNSZDVmCaLg1GP0XEQv25oinPoNvZ87weiWh/kSqO434Rs1NJL4CHRh5C
- 9Wy4BfwGPMWAq0eTno2v4c19KdC9u+/rwDiohy7lBp8M1H0WzbPKY21v73Rv0oPbKW
- 6EmJ5zNBb05lA==
+ b=DkMlb3x15kaHAS5yBC0QcWkok6jr2m8aKitWs2fJ1cynennGpTOdO2D9WyftZpOjN
+ 6DhBQhwiwnZ7PJ0Rul1S8KYYHiUaut07duUFPBxRn1BWZPaWmkXMoF2suZAO51jY+i
+ uM8I4cC1Vszj4WcPGx4NdzD7L7UTEbNxxcqEYMwd5HiNJv5ZbhljOkfMtcYDTwGFYe
+ e8jKZNZ5shMo9ntlEj/sfnJmTKI5C/wKo5tN6QNOqW3+GpNeOrvfLIFKLN7gNgzTBR
+ K1QwO6PVbIuD0H3nbOULPakzQ/q39tutsO3upYERzs6rj5c99dTczFtAJrHAQni8jt
+ xXZKJvSkRRxMw==
 From: Mark Brown <broonie@kernel.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: wm_adsp: Put debugfs_remove_recursive back in
-Date: Wed, 25 Aug 2021 11:22:40 +0100
-Message-Id: <162988521424.7213.9451728533872560143.b4-ty@kernel.org>
+To: CGEL <cgel.zte@gmail.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH linux-next] ASoC: SOF: intel: remove duplicate include
+Date: Wed, 25 Aug 2021 11:22:38 +0100
+Message-Id: <162988521424.7213.4488311947948918308.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210824101552.1119-1-ckeepax@opensource.cirrus.com>
-References: <20210824101552.1119-1-ckeepax@opensource.cirrus.com>
+In-Reply-To: <20210824030015.57267-1-deng.changcheng@zte.com.cn>
+References: <20210824030015.57267-1-deng.changcheng@zte.com.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com,
- tanureal@opensource.cirrus.com
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Zeal Robot <zealci@zte.com.cn>, Takashi Iwai <tiwai@suse.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, Changcheng Deng <deng.changcheng@zte.com.cn>,
+ Daniel Baluta <daniel.baluta@nxp.com>, Bard Liao <bard.liao@intel.com>,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,13 +92,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 24 Aug 2021 11:15:52 +0100, Charles Keepax wrote:
-> This patch reverts commit acbf58e53041 ("ASoC: wm_adsp: Let
-> soc_cleanup_component_debugfs remove debugfs"), and adds an
-> alternate solution to the issue. That patch removes the call to
-> debugfs_remove_recursive, which cleans up the DSPs debugfs. The
-> intention was to avoid an unbinding issue on an out of tree
-> driver/platform.
+On Mon, 23 Aug 2021 20:00:15 -0700, CGEL wrote:
+> From: Changcheng Deng <deng.changcheng@zte.com.cn>
+> 
+> Clean up the following includecheck warning:
+> 
+> ./sound/soc/sof/intel/pci-tng.c: shim.h is included more than once.
+> 
+> No functional change.
 > 
 > [...]
 
@@ -102,8 +109,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: wm_adsp: Put debugfs_remove_recursive back in
-      commit: e6d0b92ac00b53121a35b2a1ce8d393dc9179fdf
+[1/1] ASoC: SOF: intel: remove duplicate include
+      commit: 0be10d7122ceb8f322086283420a59ee89c1947f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
