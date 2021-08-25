@@ -2,74 +2,60 @@ Return-Path: <SRS0=JRP5=NQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33964C4338F
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Aug 2021 15:29:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BED8DC4338F
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Aug 2021 15:43:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 149D561027
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Aug 2021 15:29:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 149D561027
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id EC5B7610A0
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Aug 2021 15:43:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EC5B7610A0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=arm.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A13131682;
-	Wed, 25 Aug 2021 17:28:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A13131682
+	by alsa0.perex.cz (Postfix) with ESMTPS id C05201662;
+	Wed, 25 Aug 2021 17:42:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C05201662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629905382;
-	bh=ZlLQ2rNAFM5JfZGXLEck7tFHfMAbQvECPZqlGrmWsJY=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=mhcAnDmQYRX7oEh6P4yQ0SLZ/ZHeWPCwHUQXwxyAp5u/FypYwNUXPK6Qvs5vMcBlD
-	 YLu+WEPw5F4lSs7V6k61UHbk9NSXJKaezvZYVoqW1yCUKR4gRvveS9K94iaHTOXzL1
-	 lcT4nh+Wjd3HZ++iqAo2eZVfmqRvJD7VAHSxPtxE=
+	s=default; t=1629906195;
+	bh=Njghv69DoLQ8RVL597LqJGvRfo3Vrhqt39GqopeqXkg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=LMSpsRtUg2eKMjelwOxwXgRoAfEz1TvY0mpV4m+yb88NlqJQXJfTLYFPz6AhfLwGl
+	 23s7AxBIfW/cArEOOHDrcTICFlvqed8i1bk8dZPv4oyvLr3OQ4og4xTGz2yuiQkZqf
+	 e6KyU3qVdFh8qbE7CPhgSTWkGCcSCkO0C6Yd+nzQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7AD7BF804E6;
-	Wed, 25 Aug 2021 17:27:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 66E4EF80171;
+	Wed, 25 Aug 2021 17:42:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3D283F804D0; Wed, 25 Aug 2021 17:27:38 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E5A80F8020D
- for <alsa-devel@alsa-project.org>; Wed, 25 Aug 2021 17:27:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5A80F8020D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="q8+lVqwf"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C06AC61027;
- Wed, 25 Aug 2021 15:27:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1629905249;
- bh=ZlLQ2rNAFM5JfZGXLEck7tFHfMAbQvECPZqlGrmWsJY=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=q8+lVqwfQwAlYidEczh9LNURnTcIKk1VvrA5FR70mDZ16vvYy+a4XDj86CpfnDFJv
- 6UGf0AXEYPXX67tuxXlwj6wDKE25+RQvKTut4oKC8suAzp9K9YXDFpLSAel+lB+BLv
- BCvKmQamMtLmkXQQASymsZ3eb1XqcAetWavJAx+4tHnXhq33527QNdRxCXWHLN561K
- sGaFSG3mKqvnGDmL7GbCsLGo0nFBP2u3C4yfthVQTAoxGD5hdDQAFWH3sDKioP10M0
- 8nmlwMRLrIf+jajB0qVbQ4RIP+8K3+eiQjULbNMur9W5fTkIXegzP8ngxLPnrgoA+V
- 5PwZTVfWU/NBQ==
-From: Mark Brown <broonie@kernel.org>
-To: derek.fang@realtek.com, lgirdwood@gmail.com
-In-Reply-To: <20210825040346.28346-1-derek.fang@realtek.com>
-References: <20210825040346.28346-1-derek.fang@realtek.com>
-Subject: Re: [PATCH v2] ASoC: rt5682: Fix the vol+ button detection issue
-Message-Id: <162990401497.56501.13651116295284237595.b4-ty@kernel.org>
-Date: Wed, 25 Aug 2021 16:06:54 +0100
+ id 8B678F8020C; Wed, 25 Aug 2021 17:42:18 +0200 (CEST)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 286F6F800AE
+ for <alsa-devel@alsa-project.org>; Wed, 25 Aug 2021 17:42:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 286F6F800AE
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3B124D6E;
+ Wed, 25 Aug 2021 08:42:09 -0700 (PDT)
+Received: from 010265703453.arm.com (unknown [10.57.15.112])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 611423F5A1;
+ Wed, 25 Aug 2021 08:42:08 -0700 (PDT)
+From: Robin Murphy <robin.murphy@arm.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org
+Subject: [PATCH] ASoC: dwc: Get IRQ optionally
+Date: Wed, 25 Aug 2021 16:42:03 +0100
+Message-Id: <c857f334e3c9e651e088b675b3938cb5f798b133.1629906123.git.robin.murphy@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, albertchen@realtek.com, shumingf@realtek.com,
- flove@realtek.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,40 +71,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 25 Aug 2021 12:03:46 +0800, derek.fang@realtek.com wrote:
-> From: Derek Fang <derek.fang@realtek.com>
-> 
-> Fix the wrong button vol+ detection issue with some brand headsets
-> by fine tuning the threshold of button vol+ and SAR ADC button accuracy.
-> 
-> 
-> 
-> [...]
+The IRQ is explicitly optional, so use platform_get_irq_optional() and
+avoid platform_get_irq() logging a spurious error when trying to use the
+thing in DMA mode.
 
-Applied to
+Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+---
+ sound/soc/dwc/dwc-i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
+index 8ebf76e04702..33ce257ae198 100644
+--- a/sound/soc/dwc/dwc-i2s.c
++++ b/sound/soc/dwc/dwc-i2s.c
+@@ -642,7 +642,7 @@ static int dw_i2s_probe(struct platform_device *pdev)
+ 
+ 	dev->dev = &pdev->dev;
+ 
+-	irq = platform_get_irq(pdev, 0);
++	irq = platform_get_irq_optional(pdev, 0);
+ 	if (irq >= 0) {
+ 		ret = devm_request_irq(&pdev->dev, irq, i2s_irq_handler, 0,
+ 				pdev->name, dev);
+-- 
+2.25.1
 
-Thanks!
-
-[1/1] ASoC: rt5682: Fix the vol+ button detection issue
-      commit: 8d3019b63b3d92c9b5f1548f600485d39262bbe1
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
