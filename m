@@ -2,87 +2,90 @@ Return-Path: <SRS0=0cRQ=NR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E858CC432BE
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 12:57:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E9C13C432BE
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 12:57:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DA5FF60F5C
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 12:57:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DA5FF60F5C
+	by mail.kernel.org (Postfix) with ESMTPS id 35BCC60F39
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 12:57:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 35BCC60F39
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codesynthesis.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 71C82165E;
-	Thu, 26 Aug 2021 14:56:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71C82165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9F97516B3;
+	Thu, 26 Aug 2021 14:57:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F97516B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629982663;
-	bh=njRimGOIAbqbKx/5ZrZSGnm8dBTrS6TRY3ucp7C/bzU=;
+	s=default; t=1629982675;
+	bh=Wcp+spva27SDUMn5lh3p20Ss4YEIqbN0awnBME542Vc=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tylLDF8lfnMggt3oQhf6mPH708iJpRb+vPKqfeDxKv4w3CVIYLxncDwcoMUSZnPuO
-	 u9wlS2XoFV+ppjIFMxOtAcIOcheEe1tUZKBV1rEGqaHeKeuc5HR5XXaQurzUPBRq9X
-	 JfPvU35hPCT9q71DVR4WSb+EVvl38ADtFy24KHqU=
+	b=cZnKhXcJDSHebFuoZEpcohoe4tBEozmaCY5hiztrzfKC3dZLyCcreMpKEmMUkSNUI
+	 YU33ppvP9p98UEwJCmgI4H0UkiacatMuV1xSEEP/tjtJvEA2ixga3Ct4G+CQlWpUxU
+	 aBBXuN1aeRy2mtn1S5jVxR0KNb3Dn2LCt7+/5B94=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 02EA7F80224;
-	Thu, 26 Aug 2021 14:56:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E88ABF80054;
+	Thu, 26 Aug 2021 14:56:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 77094F800AE; Wed, 25 Aug 2021 17:34:46 +0200 (CEST)
+ id 49B25F801D8; Thu, 26 Aug 2021 14:16:27 +0200 (CEST)
 Received: from codesynthesis.com (codesynthesis.com [188.40.148.39])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 33E60F800C9
- for <alsa-devel@alsa-project.org>; Wed, 25 Aug 2021 17:34:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33E60F800C9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3453FF8013F
+ for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2021 14:16:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3453FF8013F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=codesynthesis.com
- header.i=@codesynthesis.com header.b="M4Zeq9iy"
+ header.i=@codesynthesis.com header.b="eaN58FnQ"
 Received: from brak.codesynthesis.com (197-255-152-207.static.adept.co.za
  [197.255.152.207])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by codesynthesis.com (Postfix) with ESMTPSA id EC3275F7CB;
- Wed, 25 Aug 2021 15:34:40 +0000 (UTC)
+ by codesynthesis.com (Postfix) with ESMTPSA id 4760D5F7CB;
+ Thu, 26 Aug 2021 12:16:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=codesynthesis.com;
- s=mail1; t=1629905681;
- bh=njRimGOIAbqbKx/5ZrZSGnm8dBTrS6TRY3ucp7C/bzU=;
+ s=mail1; t=1629980173;
+ bh=Wcp+spva27SDUMn5lh3p20Ss4YEIqbN0awnBME542Vc=;
  h=Date:From:To:Subject:Message-ID:MIME-Version:From;
- b=M4Zeq9iy/BsSsC3ucqhrc8i/ZaAxdzH10P5jgmpgL4PwLblF/Fp947GMfSBXeNsjq
- NuVIW50/nTWLqphqH0bmluRAxc0xwe2C4oPm8c3f82SB7NkwrgSfclPFXG73pD0L0h
- BXOpQO6Icl3wl7OePxAFtZ7q+2CMRU9b3Qt4+Lm1L2wJkxTOQ3DpJExmWuUMQyAheR
- kyHK+EDh37gLQ1jZZ8I0aj6iXvXQ9trqsiJeiZDTSWqktv5++p/YTyknMZMmxFNd7P
- pNCo5LQJUmP3rmiNyTGDZjJtNKJ5AnGpM3Qc/HQWkVB6YyRtxYHeF5BjZsSZXaAbiu
- PCHHvOofYHbwQ==
+ b=eaN58FnQWvzkHM296c9v+VrbfZQ49nAoJFz9UJX992sl6ORTlxe4hFsAr3kmjn3+t
+ t5lEvmW+IVk4jEzoiuoeNBve+Q7EZho2ZKqCc+YHWky+7OHD4gqhxts5aFcXdUu8m7
+ Dt/Fa1lmZldSU/4Yqq4NDO/p7NvA9IWQyisNDs0bNN4ANOx074wGDTokR0YA4ACnu2
+ LKLauFGA+Ax0Q5OAJ+yYB1fC8Ogp1vvo1YbNQpSHPEcDPcn3XCwUbCSe3FIFj2lsGJ
+ EeW5BL4FEolSf6EvSnLdd3szd8mf6pUEYEDBdaA+hzAiN9600nM1WcfKnNZT+FiZuc
+ hfcHt8oR5T2cw==
 Received: by brak.codesynthesis.com (Postfix, from userid 1000)
- id 1A3B11A800C4; Wed, 25 Aug 2021 17:34:37 +0200 (SAST)
-Date: Wed, 25 Aug 2021 17:34:37 +0200
+ id F0E911A800C4; Thu, 26 Aug 2021 14:16:09 +0200 (SAST)
+Date: Thu, 26 Aug 2021 14:16:09 +0200
 From: Boris Kolpackov <boris@codesynthesis.com>
 To: Masahiro Yamada <masahiroy@kernel.org>
 Subject: Re: [PATCH] kconfig: forbid symbols that end with '_MODULE'
-Message-ID: <boris.20210825172545@codesynthesis.com>
+Message-ID: <boris.20210826140701@codesynthesis.com>
 References: <20210825041637.365171-1-masahiroy@kernel.org>
+ <boris.20210825172545@codesynthesis.com>
+ <CAK7LNAS-NhR=94uHYcZUhRkdUEm=dYZSRbGKkB5zJJGNRw0z2A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210825041637.365171-1-masahiroy@kernel.org>
+In-Reply-To: <CAK7LNAS-NhR=94uHYcZUhRkdUEm=dYZSRbGKkB5zJJGNRw0z2A@mail.gmail.com>
 Organization: Code Synthesis
 User-Agent: Mutt/1.5.24 (2015-08-30)
 X-Mailman-Approved-At: Thu, 26 Aug 2021 14:56:12 +0200
-Cc: alsa-devel@alsa-project.org, linux-kbuild@vger.kernel.org,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- linux-wireless@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Luca Coelho <luciano.coelho@intel.com>,
- netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
- Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, linux-wireless@vger.kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Luca Coelho <luciano.coelho@intel.com>, Networking <netdev@vger.kernel.org>,
+ Jakub Kicinski <kuba@kernel.org>, Peter Ujfalusi <peter.ujfalusi@gmail.com>,
  "David S. Miller" <davem@davemloft.net>, Kalle Valo <kvalo@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -101,25 +104,49 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Masahiro Yamada <masahiroy@kernel.org> writes:
 
-> Kconfig (syncconfig) generates include/generated/autoconf.h to make
-> CONFIG options available to the pre-processor.
+> On Thu, Aug 26, 2021 at 12:42 AM Boris Kolpackov
+> <boris@codesynthesis.com> wrote:
+> >
+> > Masahiro Yamada <masahiroy@kernel.org> writes:
+> >
+> > > Kconfig (syncconfig) generates include/generated/autoconf.h to make
+> > > CONFIG options available to the pre-processor.
+> > >
+> > > The macros are suffixed with '_MODULE' for symbols with the value 'm'.
+> > >
+> > > Here is a conflict; CONFIG_FOO=m results in '#define CONFIG_FOO_MODULE 1',
+> > > but CONFIG_FOO_MODULE=y also results in the same define.
+> > >
+> > > fixdep always assumes CONFIG_FOO_MODULE comes from CONFIG_FOO=m, so the
+> > > dependency is not properly tracked for symbols that end with '_MODULE'.
+> >
+> > It seem to me the problem is in autoconf.h/fixdep, not in the Kconfig
+> > language.
 > 
-> The macros are suffixed with '_MODULE' for symbols with the value 'm'.
+> So, what is your suggestion for doing this correctly?
+> (of course without breaking the compatibility
+> because this is how the kernel is configured/built
+> for more than 20 years)
+
+Yes, I appreciate that fixing this properly may not be an option
+due to backwards-compatibility. How about then moving the check
+from the language closer to the place where it will actually be
+an issue. Specifically, can the error be triggered when we are
+about to write #define to autoconf.h and see that the name ends
+with _MODULE?
+
+
+> > I know you don't care, but I will voice my objection, for the record:
+> > Kconfig is used by projects other than the Linux kernel and some of
+> > them do not use the autoconf.h functionality. For such projects this
+> > restriction seems arbitrary and potentially backwards-incompatible.
 > 
-> Here is a conflict; CONFIG_FOO=m results in '#define CONFIG_FOO_MODULE 1',
-> but CONFIG_FOO_MODULE=y also results in the same define.
-> 
-> fixdep always assumes CONFIG_FOO_MODULE comes from CONFIG_FOO=m, so the
-> dependency is not properly tracked for symbols that end with '_MODULE'.
+> I am not sure what your worry is, but this check resides in
+> "if (modules_sym)" conditional, so projects using Kconfig but
+> not module functionality (e.g. buildroot) will not be  affected.
 
-It seem to me the problem is in autoconf.h/fixdep, not in the Kconfig
-language.
+The Kconfig module semantics is actually general enough that a
+project other than the Linux kernel could reuse it. (I've written
+more on this possibility here[1]).
 
-
-> This commit makes Kconfig error out if it finds a symbol suffixed with
-> '_MODULE'.
-
-I know you don't care, but I will voice my objection, for the record:
-Kconfig is used by projects other than the Linux kernel and some of
-them do not use the autoconf.h functionality. For such projects this
-restriction seems arbitrary and potentially backwards-incompatible.
+[1] https://build2.org/libbuild2-kconfig/doc/build2-kconfig-manual.xhtml#lang-mod
