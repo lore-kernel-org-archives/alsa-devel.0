@@ -2,82 +2,91 @@ Return-Path: <SRS0=0cRQ=NR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 124CBC432BE
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 15:20:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F8BEC432BE
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 15:29:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 858AF60F21
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 15:20:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 858AF60F21
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id D252E60E0B
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 15:29:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D252E60E0B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CDC2616BC;
-	Thu, 26 Aug 2021 17:19:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDC2616BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4DDCE16C1;
+	Thu, 26 Aug 2021 17:28:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DDCE16C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629991205;
-	bh=a2jZzUEbjZVXbA+cy+TfRCKZHYIX3mbus8lC77FvA9I=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1629991785;
+	bh=CLIuS4d0+PCorMuS5szJDIGXwDJQ+uPhsGJNwbFL/Vg=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lTqKQTRLNSEny3rlMKPqAof1j64AAi0eYrZDuds0bGR8vPKfU6mGvCj89PSYfSNCF
-	 Ph/CRXxJimOcWG+vtAwyfDHNRxaD/xdpihUe82uADH5VUIVTeN2Uc11ZhMtZNXMUbl
-	 y20oMr9cLJD3lR438LbdAuyMhXYXNKhPywaquCHc=
+	b=n5to6qtWFPtSvktyzRDA8ixTpVze41nahmzplU0bHl91GM7nzCY8W1pJL7OoSCrDe
+	 taIv7NzawWx4xu3cQrPN+UnX72vRx0UhQZThnQcBdHLK+Nr41+ja76oq5yZ6Ql6rqv
+	 FChE1zwl9xW1LhphSS3WfvVLfY2zrZcNWjXFpyKI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 57E23F801D5;
-	Thu, 26 Aug 2021 17:19:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6148BF80054;
+	Thu, 26 Aug 2021 17:28:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8A35EF801D8; Thu, 26 Aug 2021 17:19:14 +0200 (CEST)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 47797F801D8; Thu, 26 Aug 2021 17:28:36 +0200 (CEST)
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com
+ [IPv6:2607:f8b0:4864:20::d2c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3C502F8013F
- for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2021 17:19:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C502F8013F
+ by alsa1.perex.cz (Postfix) with ESMTPS id B867FF80054
+ for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2021 17:28:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B867FF80054
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="bMHA0Yhv"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=F3wLWK2f3zgkMtabw1PHf88uoy84ssAIxzwxp7+SL9Q=; b=bMHA0YhvUdYc5qzCUodAFUpkuG
- NY+rLvmCRbwyetqIvYaDoRRu3ODU12KqVQxxUORLc0xrfolFUCflYGP6IFElfdKK49C6UhKZ34k7z
- QkbTliMagbxVL7i/7lVwve3q3z7DZmapaRPi1L6R8rpmYl0gcjaCPFTMGe4t2/b8TW6w=;
-Received: from 94.196.67.80.threembb.co.uk ([94.196.67.80]
- helo=fitzroy.sirena.org.uk)
- by heliosphere.sirena.org.uk with esmtpsa (TLS1.3) tls
- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.94.2)
- (envelope-from <broonie@sirena.org.uk>)
- id 1mJH9q-00FTj4-2L; Thu, 26 Aug 2021 15:19:10 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id BA531D078FD; Thu, 26 Aug 2021 16:11:22 +0100 (BST)
-Date: Thu, 26 Aug 2021 16:11:22 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Tzung-Bi Shih <tzungbi@google.com>
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="hjDLqcmc"
+Received: by mail-io1-xd2c.google.com with SMTP id n24so4217487ion.10
+ for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2021 08:28:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=mipq3pfFW3pvFFZMO/fj0f+8W+eyXMtuOTC9xSNUupY=;
+ b=hjDLqcmcoxMrVZNaQzZ7DRr6kff2rilVixwd0QPZaJ6r5hycBaY9WUNxwMfmO5ikdF
+ lOYcgTVAAP+GZYVxSyNs2FqJ3oBk/6dbTXmkiPbcQYqALxb7D+ptJ2bN8/7x/1w2e+IE
+ XInqrRHoVv6V/ylVkOQx4+oHqLVtdkovxtd3cptYUep3x6djZbKlZ4wgh2mIAeSY4+pn
+ 8Es1I66oiYvVGAKX644XG2P2HkL8a2WIxVn++FTY4nNy2uHaC8rbWfAeUxBF6ZnYrcYD
+ fUAtnjMRHHGyqO6ZxSSmLSMNFlZwuERzdjfTTqfbcIqzZosghYuPo33ZU4bKf+DVA8Yk
+ TaIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=mipq3pfFW3pvFFZMO/fj0f+8W+eyXMtuOTC9xSNUupY=;
+ b=s4gWM70dM9ymke1B9Mr8Im3qKAl1OniA+p0AT8tusxxU5YhUYtuoN08011B/EKKn30
+ gTPPIK3k3AdCUOQ2jA3Yvf8hkTsmBhJwidKYH1FCXXe5ubR23JduCzz2jnDhex61U0hv
+ BKWgf7vYErYr6UBvuq9s31mrAcoV6HnFJSC56qwVzi8lc6oa6zhYkgjl54a5uItGel5A
+ 0jtSHtpK7HbGY7osmIWmDABah4m3WyAOQepJkRHrqCQD5Dy2ziWbXg4za3KgTHJmFzYm
+ 0IZeWRRSL4v9RwSoQk3mACIgfivNvILkrmhXGYyCPhlH10B0rl3hgzSj8ZgjXy+K7NRL
+ MsLw==
+X-Gm-Message-State: AOAM5304USb/NG98Qb+Yc9rhSZEcLVSt2hVINyaUaPnT0QEhWSYY/dEV
+ tWJ/Lz18GtT0ob1jrfAKaOWSQvbnO0BEqQsE7tC+Hg==
+X-Google-Smtp-Source: ABdhPJwlzY1MlK+7fpGYd2DHBc0ZWGLZDHVnc9K6uMkSfehD7RGnPhVUJobtfGP9MzUt7W84ftTlI6qlWAT5K7Qm3XU=
+X-Received: by 2002:a05:6602:2219:: with SMTP id
+ n25mr3410411ion.185.1629991705985; 
+ Thu, 26 Aug 2021 08:28:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210826141314.3720975-1-tzungbi@google.com>
+ <YSevGntb3mmYlZGE@sirena.org.uk>
+In-Reply-To: <YSevGntb3mmYlZGE@sirena.org.uk>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Thu, 26 Aug 2021 23:28:15 +0800
+Message-ID: <CA+Px+wWr99PxEz6qROhj7H8LXFiRZ1sxrn-BcB7ZODJA1Suh+A@mail.gmail.com>
 Subject: Re: [PATCH] ASoC: dt-bindings: mediatek: mt8192: re-add audio afe
  document
-Message-ID: <YSevGntb3mmYlZGE@sirena.org.uk>
-References: <20210826141314.3720975-1-tzungbi@google.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="4q4ccqmi5+se8Jc4"
-Content-Disposition: inline
-In-Reply-To: <20210826141314.3720975-1-tzungbi@google.com>
-X-Cookie: I can relate to that.
+To: Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org,
- jiaxin.yu@mediatek.com
+ Jiaxin.Yu@mediatek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,30 +102,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
---4q4ccqmi5+se8Jc4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Aug 26, 2021 at 10:13:14PM +0800, Tzung-Bi Shih wrote:
-
-> The dependency has merged.  Re-adds back the document.
-
-What is the dependency and where wsa it merged?
-
---4q4ccqmi5+se8Jc4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEnrwcACgkQJNaLcl1U
-h9AB7wgAge6zpGbqQxVERgYA6jszHXVf8Sr9SWJ3vANiDFbGS0fASDH5sndrryv7
-7/U+kLHaDkNfweo56uQnoVgh05ijmJCI1+1aatDkXJrAjoZtTJYGgsemxJlz05sM
-yj0fMCyNXvCpUHyfLlWx/At7xwm7IvVKeH2qz+wMFOTmJDVBHhSEaFa/ENNLyoyd
-+frEUkd6QfNqGPz7pISRMmSDCZ47pDzHqd9EWIDOblvwm3/RzvvHUrFZMxQehQEF
-+aJEfE8ZgOCMgFrS+KdcaKFPCUEdxWqH6lZkSTvyOdXGd53nrnB8b9x9BeQ4ypHU
-vioPVwZPouihI4sxnomLQ5gzbjjmLQ==
-=RMeP
------END PGP SIGNATURE-----
-
---4q4ccqmi5+se8Jc4--
+On Thu, Aug 26, 2021 at 11:19 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Thu, Aug 26, 2021 at 10:13:14PM +0800, Tzung-Bi Shih wrote:
+>
+> > The dependency has merged.  Re-adds back the document.
+>
+> What is the dependency and where wsa it merged?
+The context is in the original email after "---".  Do you think it
+needs to be part of the commit message?
