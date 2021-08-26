@@ -2,78 +2,92 @@ Return-Path: <SRS0=0cRQ=NR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61FD2C432BE
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 11:36:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A0D1C4320E
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 11:54:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8EA4860FDC
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 11:36:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8EA4860FDC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 31771610C8
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 11:54:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 31771610C8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D88221699;
-	Thu, 26 Aug 2021 13:35:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D88221699
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB21B1693;
+	Thu, 26 Aug 2021 13:53:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB21B1693
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629977775;
-	bh=6A2pl++IpZ7ZVR4S+PTDnbftjcy46QrlYcpSnvXhFLE=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1629978847;
+	bh=cAVEf3nsSKELJ8hkFTU7jLM7iWUlRHMEPqewsCztA1c=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YgRefgARAUTJja2PN2W91EWUXaRVLN9LDPB1SMnGPpW30AvRN2nm5QWu7yiYlQWMG
-	 0Qzfzdl+73L2tszKrA7x18z0RcqH4wMOSfzRdgekrmJPd4uWoSgNv27b+CHAAbxdap
-	 kTgFVIzj3VZ62Y6KeXRSIRYXT+wfCJo/OycHhynA=
+	b=CW7dQHxDbYAvU5p3zdwCmUxDx2NN5G0G5VoMt3HAgS10CxY4k7DWWCDuMEUIXzCpY
+	 iYvESKdxGzeX0dAvvpWSPa42kWEXwpJWmVhFYOSEllLRHb81/xBT/lWEVph4DYqC7V
+	 LpCk24kOpOSsfKGbYDotGEO7mK48/Rn6Sx8Csp9I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 63655F801D5;
-	Thu, 26 Aug 2021 13:35:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74CA6F801D5;
+	Thu, 26 Aug 2021 13:53:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BF016F801D8; Thu, 26 Aug 2021 13:35:23 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 1EDDDF801D8; Thu, 26 Aug 2021 13:53:14 +0200 (CEST)
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com
+ [IPv6:2a00:1450:4864:20::22d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 43556F80054
- for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2021 13:35:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43556F80054
+ by alsa1.perex.cz (Postfix) with ESMTPS id 98A87F80054
+ for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2021 13:53:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98A87F80054
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="c65jVXvn"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2730C610C8;
- Thu, 26 Aug 2021 11:35:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1629977710;
- bh=6A2pl++IpZ7ZVR4S+PTDnbftjcy46QrlYcpSnvXhFLE=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=c65jVXvn370zZs1CbyftXRz5dBb+9RTauV539gtwnU4VzUGRMi7riYRtK2GGWHb6D
- PPSKHHiM1sf78a+j/yMhlhPtGYobuwHzkqR4T53hhrJIZz93SI6YP0P1zaDTRlxZuO
- WM64qODfCaAfmmlzSoXCTAsxPf4PoOFM4qIoSv0y3ZsTfbs0dHuTP+G9kkhJahJ2Sm
- kkWm0o8vx9Rq4zoHgPB31BpYTkm/tYHnTc+rXhmPLeSfLSQu8pFa/l0Y03GXEi+MNW
- acP6MSKi1Gq4ou9vuwswfmTdFtUKPV9AnMfXCUCM4YtzLjjPDkSRcSjfAZHOMhU0y4
- timt/Sh0cTrEg==
-Date: Thu, 26 Aug 2021 12:34:41 +0100
-From: Mark Brown <broonie@kernel.org>
-To: derek.fang@realtek.com
-Subject: Re: [PATCH 2/2] ASoC: dt-bindings: rt5682s: add bindings for rt5682s
-Message-ID: <20210826113441.GA4148@sirena.org.uk>
-References: <20210826080938.14872-1-derek.fang@realtek.com>
- <20210826080938.14872-2-derek.fang@realtek.com>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="FB0fHEaV"
+Received: by mail-lj1-x22d.google.com with SMTP id w4so4542178ljh.13
+ for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2021 04:53:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=hBxBPr3Kmhx+gtlKVfwmBEiG03qJgZIhVmQgwh7w3cs=;
+ b=FB0fHEaVXvKluHgvDlnT+jczLkZlGErjJJcgRmo6eZQTf8xdHEvDAuWFcB/QkxF4am
+ 7sLfKCqAoC/rjaaZHeVT2p9sjEtnFNvrhixpDYcebthv5V3m1B5T6dFAzyInBteoOSNd
+ y9P1RkLqYOd5FxhAiqyQxxXLQBsMJMWpioS0KfxUkaik13asCvQy42uEp/vg36WtcETW
+ oHKYlfRq4qtHu5Lycp66zFgKzPZ7iorXB4UMbRosPksChFZByPmFLl8EsXkWmWG6hv6h
+ LImOeUz3lp8A2xT7OPoa+JpAxsfvM8+5SVf5hb3uUjEoDbQoU/rBuk342Bvys2IgoDKu
+ uZeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=hBxBPr3Kmhx+gtlKVfwmBEiG03qJgZIhVmQgwh7w3cs=;
+ b=goU4ULBIMWY4vI6UcQASyRWTifGcR2/DExUJ+iRC8JHy0BHStkbBnLxHvqAL4hqOY2
+ B7N3fgAeWKkCGIAoKU2HL4D/I9mSvBnbEAEipC0UUo4IzdMQQvzRXFIDW50kZGuTcz+p
+ aoGTYKVUri8peaOXSJJMu+Va0v+6GDpkqT1exp2CNcKtm/+4In7Uun5Xlzyqf8CaE/o2
+ QQ17QspdH3MLk9gcJaBKr8J1PaWTgRAomUv6rg8lE77Qs2DJhHz6rqhTT+b2XrYVY3vZ
+ gQrjEnS4V5LOZo12h2alHg4bHBBtM4wbetM8i90ON7RyhKC/r3fsU3Nt7Nx1RXh4BzqA
+ CUEg==
+X-Gm-Message-State: AOAM531naY86iQpwQmhIGjh7dI4I+x52Ws88aWVcbzm5ebOiSXBq20SC
+ NqBCEhXhHd3MyoKbkv+ctAIdDpttOSK++5+VaIgmpELHEkg=
+X-Google-Smtp-Source: ABdhPJz7/MeHPulwySfsZ/IqdizUu7xk9XmvlQXItyDL8PXG0Cim011tjNevkpfh3ADXQSZ3F7nxSBrSo9s72Oey3Go=
+X-Received: by 2002:a2e:a903:: with SMTP id j3mr2694040ljq.347.1629978784221; 
+ Thu, 26 Aug 2021 04:53:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="/9DWx/yDrRhgMJTb"
-Content-Disposition: inline
-In-Reply-To: <20210826080938.14872-2-derek.fang@realtek.com>
-X-Cookie: /earth: file system full.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, lgirdwood@gmail.com, albertchen@realtek.com,
- shumingf@realtek.com, flove@realtek.com
+References: <1629975460-17990-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <1629975460-17990-1-git-send-email-shengjiu.wang@nxp.com>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Thu, 26 Aug 2021 08:52:53 -0300
+Message-ID: <CAOMZO5BCsTMjJJPtLN6_seVcWb24A2ms11FP3HzR0i7t3GLSuA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: fsl_rpmsg: add soc specific data structure
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Timur Tabi <timur@kernel.org>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
+ Mark Brown <broonie@kernel.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,53 +103,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Shengjiu,
 
---/9DWx/yDrRhgMJTb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Thu, Aug 26, 2021 at 8:19 AM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
 
-On Thu, Aug 26, 2021 at 04:09:38PM +0800, derek.fang@realtek.com wrote:
+> +       rpmsg->soc_data = of_device_get_match_data(&pdev->dev);
+> +       if (rpmsg->soc_data) {
 
-> +  realtek,dmic1-data-pin:
-> +    enum:
-> +      - 0 # dmic1 is not used
-> +      - 1 # using GPIO2 pin as dmic1 data pin
-> +      - 2 # using GPIO5 pin as dmic1 data pin
-> +
-> +  realtek,dmic1-clk-pin:
-> +    enum:
-> +      - 0 #using GPIO1 pin as dmic1 clock pin
-> +      - 1 #using GPIO3 pin as dmic1 clock pin
+This check is not necessary, because rpmsg->soc_data is always non-NULL.
 
-It works but it's a bit weird that there's no unused option on the clock
-- I'd expect this to be symmetric.
+Other than that:
 
-> +  realtek,jd-src:
-> +    enum:
-> +      - 0 # No JD is used
-> +      - 1 # using JD1 as JD source
-
-Are there other possible JD sources which are not supported yet?
-
-> +  realtek,dmic-delay-ms:
-> +    description: |
-> +      Set the delay time (ms) for the requirement of the particular DMIC.
-
-Startup delay or some other delay?
-
---/9DWx/yDrRhgMJTb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEnfFAACgkQJNaLcl1U
-h9CRDgf+LqsD58u9NxgNavJIsappR3Fy1Os5lH7OjLVqNHAqfwfporHKLRkR2mwy
-mN20UqX5dGVE+r+VCqwGgyHbDMFQ+PoQbRvMEgkZ9XLMLLEz50ZNQuRMS56GLqkq
-D7aMKcepEqgZwJKtQciZrWcg8UxGNwz9arRoxjThOg2FtLj6/q7OexLgm4qJpQyB
-uC1EFMRGewjhvJc9Mjk3tK8t7+SAvseJryPe+LsRiGomhyXtnqyYo5IQ3QdQSIGP
-DCwy4cu1wIIO67Hm+OWG0hht+bpwJScoZHxLRBen+xWXzni6Zmy9/0DlX2py4J5c
-oF4Z6G/EfB5qcQlPh+c1WwgOGvCXVg==
-=Yor1
------END PGP SIGNATURE-----
-
---/9DWx/yDrRhgMJTb--
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
