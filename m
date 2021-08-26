@@ -2,82 +2,77 @@ Return-Path: <SRS0=0cRQ=NR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27014C432BE
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 11:58:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D393C432BE
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 12:15:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F37BB6102A
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 11:58:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F37BB6102A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
+	by mail.kernel.org (Postfix) with ESMTPS id E54DF61052
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 12:15:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E54DF61052
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EB6371696;
-	Thu, 26 Aug 2021 13:57:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB6371696
+	by alsa0.perex.cz (Postfix) with ESMTPS id E44CB1689;
+	Thu, 26 Aug 2021 14:14:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E44CB1689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629979130;
-	bh=VqrmZfvdySGGpRkZfJ9sTmMn3wWb3fwMDv/A6XRJ5g0=;
+	s=default; t=1629980145;
+	bh=9l/KR7zDYlM7tZSjZG2Lg4LCxFI11bs2/oaANzj+eHU=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=g54RRS4VDdAH5RB1uDt4s+TCfq9h2lWxpnOnzgEq8tZSY2qmhI9EF6qfpEzNrCKM4
-	 bATZAG3xnxX4Q8+E68cDM/qYyYAyNtTEu76WA4MOj7ISUONoWT/u15lbSFv3VBy9U/
-	 rONqJH1C7JMdU4OaO68RYn1TuP/56myr2KTYlb5Q=
+	b=ZMO33w96QinU9LG5g2a73PWJ12D7+4YIrAhJIMbkTrdkSD2kZ3EKgt60fmo8W+Kz3
+	 BjOatFhTnmux77wl4oz5W7B4J67YpcnLVF16hymFtGm3SPRoyq9uaarLwt48zZ/ZRf
+	 cKRVP/3XSpqDsYwWcy6wMusXr+Nwgi41c2W3CIco=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8CFFCF801D5;
-	Thu, 26 Aug 2021 13:57:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 789CBF801D5;
+	Thu, 26 Aug 2021 14:14:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 19E61F801D8; Thu, 26 Aug 2021 13:57:57 +0200 (CEST)
+ id 1887FF8013F; Thu, 26 Aug 2021 14:14:53 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 16E73F8013F
- for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2021 13:57:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16E73F8013F
+ by alsa1.perex.cz (Postfix) with ESMTPS id AC193F8013F
+ for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2021 14:14:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC193F8013F
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="lzvupKGm"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B82B6102A;
- Thu, 26 Aug 2021 11:57:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1629979068;
- bh=VqrmZfvdySGGpRkZfJ9sTmMn3wWb3fwMDv/A6XRJ5g0=;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="dxVHEeRE"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51B236108D;
+ Thu, 26 Aug 2021 12:14:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1629980080;
+ bh=9l/KR7zDYlM7tZSjZG2Lg4LCxFI11bs2/oaANzj+eHU=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=lzvupKGm6DHeJEI0TqRmS03OkixQqyNvn5fHICulBulOAdMBqEccYq8nc5D2E6XhM
- gWy/yQjptw7v0BYdQVMP3sXyUlMzJb2TDV9Ccg4Kg4G1aHaVRKNtLVfFwr83vd5wme
- FgPiaOq7JB0o7euja3GB3WosZG/JyuK67iUcwAk8=
-Date: Thu, 26 Aug 2021 13:57:44 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: Use 'enum' instead of 'oneOf' plus 'const'
- entries
-Message-ID: <YSeBuMtUa77AR7Tn@kroah.com>
-References: <20210824202014.978922-1-robh@kernel.org>
+ b=dxVHEeREzdpY6phsj8k63uK+P60kTYFJTrIO0M8DQn3vxE/ROzx11HFCQ30NV6v8z
+ BpWd4PEw4b7RaFQj7HGjhVaaN98tHY57xVQRje80mcMDIngkxHqt1QTG/GpK90QmuA
+ Wb1ckDfFr/wE3dWedtDs96LVQuKSRySRO2Izfonf8W3iKGJEeXb0HVp2s9P7Cvvn4N
+ oCrtxFth2fwp9Fb0TiNAi4eKJFjb9enJ+pxtphFefq/TlOqiFS42qHNNRQV+GigFOY
+ PoMZNR0Uek9u30k7Tl/fAc31P9WoM95UO9trT74Zh245cpOGtaydgYs9DcE/dzdxbo
+ OJIbP3n7CCrpQ==
+Date: Thu, 26 Aug 2021 13:14:12 +0100
+From: Mark Brown <broonie@kernel.org>
+To: derek.fang@realtek.com
+Subject: Re: [PATCH 1/2] ASoC: rt5682s: Add driver for ALC5682I-VS codec
+Message-ID: <20210826121412.GB4148@sirena.org.uk>
+References: <20210826080938.14872-1-derek.fang@realtek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="U+BazGySraz5kW0T"
 Content-Disposition: inline
-In-Reply-To: <20210824202014.978922-1-robh@kernel.org>
-Cc: alsa-devel@alsa-project.org, Vignesh R <vigneshr@ti.com>,
- linux-pci@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-phy@lists.infradead.org, Lee Jones <lee.jones@linaro.org>,
- Marc Zyngier <maz@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>,
- Kishon Vijay Abraham I <kishon@ti.com>, linux-serial@vger.kernel.org,
- Jakub Kicinski <kuba@kernel.org>, linux-media@vger.kernel.org,
- devicetree@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
- Mark Brown <broonie@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- Vinod Koul <vkoul@kernel.org>, Sakari Ailus <sakari.ailus@linux.intel.com>,
- dmaengine@vger.kernel.org, "David S. Miller" <davem@davemloft.net>
+In-Reply-To: <20210826080938.14872-1-derek.fang@realtek.com>
+X-Cookie: /earth: file system full.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, lgirdwood@gmail.com, albertchen@realtek.com,
+ shumingf@realtek.com, flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,33 +88,94 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Aug 24, 2021 at 03:20:14PM -0500, Rob Herring wrote:
-> 'enum' is equivalent to 'oneOf' with a list of 'const' entries, but 'enum'
-> is more concise and yields better error messages.
-> 
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Vignesh R <vigneshr@ti.com>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: Lee Jones <lee.jones@linaro.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: dmaengine@vger.kernel.org
-> Cc: linux-i2c@vger.kernel.org
-> Cc: linux-media@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: linux-pci@vger.kernel.org
-> Cc: linux-phy@lists.infradead.org
-> Cc: linux-serial@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-spi@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+--U+BazGySraz5kW0T
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Aug 26, 2021 at 04:09:37PM +0800, derek.fang@realtek.com wrote:
+
+This looks good, a few small mostly style comments below but nothing
+substantial:
+
+> +static int rt5682s_sar_power_mode(struct snd_soc_component *component,
+> +				int mode, int jd_step)
+> +{
+> +	struct rt5682s_priv *rt5682s =
+> +		snd_soc_component_get_drvdata(component);
+> +
+> +	mutex_lock(&rt5682s->sar_mutex);
+> +
+> +	switch (mode) {
+> +	case SAR_PWR_SAVING:
+> +		snd_soc_component_update_bits(component, RT5682S_CBJ_CTRL_3,
+> +			RT5682S_CBJ_IN_BUF_MASK, RT5682S_CBJ_IN_BUF_DIS);
+
+> +	default:
+> +		break;
+> +	}
+
+Shouldn't there be some sort of warning or error if we get an invalid
+mode here?
+
+> +static void rt5682s_enable_push_button_irq(struct snd_soc_component *component,
+> +		bool enable)
+> +{
+> +	if (enable) {
+> +		snd_soc_component_update_bits(component, RT5682S_SAR_IL_CMD_13,
+> +			RT5682S_SAR_SOUR_MASK, RT5682S_SAR_SOUR_BTN);
+> +		snd_soc_component_write(component, RT5682S_IL_CMD_1, 0x0040);
+> +		snd_soc_component_update_bits(component, RT5682S_4BTN_IL_CMD_2,
+> +			RT5682S_4BTN_IL_MASK | RT5682S_4BTN_IL_RST_MASK,
+> +			RT5682S_4BTN_IL_EN | RT5682S_4BTN_IL_NOR);
+> +		snd_soc_component_update_bits(component, RT5682S_IRQ_CTRL_3,
+> +			RT5682S_IL_IRQ_MASK, RT5682S_IL_IRQ_EN);
+> +	} else {
+
+Why not just have separate enable and disable functions, there's no
+shared code here and it avoids the boolean argument which tends to be
+unclear?
+
+> +static const char * const rt5682s_sar_mode[] = {
+> +	"Normal", "Saving"
+> +};
+> +
+> +static SOC_ENUM_SINGLE_DECL(rt5682s_sar_mode_enum, 0, 0,
+> +	rt5682s_sar_mode);
+
+Might be easier to make this a "SAR Power Saving Switch"?  Doesn't
+really matter.
+
+> +static int rt5682s_probe(struct snd_soc_component *component)
+> +{
+> +	struct rt5682s_priv *rt5682s = snd_soc_component_get_drvdata(component);
+> +	struct snd_soc_dapm_context *dapm = &component->dapm;
+> +
+> +#ifdef CONFIG_COMMON_CLK
+> +	int ret;
+> +#endif
+> +	rt5682s->component = component;
+> +
+> +#ifdef CONFIG_COMMON_CLK
+> +	/* Check if MCLK provided */
+> +	rt5682s->mclk = devm_clk_get(component->dev, "mclk");
+
+Perhaps factor the clock init out into a _probe_clks() function and then
+have a stub function rather than the two ifdefs?
+
+--U+BazGySraz5kW0T
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEnhZMACgkQJNaLcl1U
+h9BYigf+OH8AD88swL8gLAMbiaZtzx24a88vJctFdOjI5ItBzGfjK8v7Znl8LgsD
+xAGv/FlLxrzQax3NsyUm2Qv+tcc63TzcU+omT0mrRf00vBHhZ22U1kcbiEuSvkDl
+k4ISRHZHTb0OWCImRQYcn0bq0lV3hMDx417vv5h52toUBYlwC16njN8dCrWAYgpl
+F0M3EYSjzIbtvXQzh4Ow5A95JexlIYK0N2WPzRnHDKMDEnFM2SwWjB7FL7fBusFG
+NBVdaR2pflIA3o0zjfuMnW6DaPFqfwmuC7w3jcwXuR12dvhrqIGoQyREwvFfyEm4
+P27pfZuOeS1MxWX69TRI/P4mzfQX3Q==
+=6jFe
+-----END PGP SIGNATURE-----
+
+--U+BazGySraz5kW0T--
