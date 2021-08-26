@@ -2,82 +2,97 @@ Return-Path: <SRS0=0cRQ=NR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A9BEC432BE
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 04:06:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D2B4C432BE
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 06:04:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9FF626023F
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 04:06:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9FF626023F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rock-chips.com
+	by mail.kernel.org (Postfix) with ESMTPS id 63A07610CB
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 06:04:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 63A07610CB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A08D167F;
-	Thu, 26 Aug 2021 06:05:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A08D167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id DB8DE166D;
+	Thu, 26 Aug 2021 08:03:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB8DE166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1629950762;
-	bh=bJfvF34xFdvjSNjaX4GT9WVR5R+jttzU9v7N40dNtYc=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1629957887;
+	bh=NiTNDOZVy0ptnDbagM5FaD9GXF/022F1KUWhAC2sg+g=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hp3hWrtnHtBOgqjXESKGUkKx0GB6RmjQXTqNMtebcRBn5PYGmI9m0QNkqi8u1EVfb
-	 BTgzih/DjAAMVy1Q1lZLMYwgF3cw3zkLAYpEuwC2BoSmZl703JVwDJiWyhYEwMWSoo
-	 /jPmoe6yJkfLv3T3OIpIVEjCz/QkwIQjWijzOVcA=
+	b=OftA/AskVY59Lg0Txl7H+KigULByW66M1gKs1QP83adlYRdtpXvhUhJfBGyYqCK/B
+	 5VP0t5plKPUZCfNi3GKWmWb4xzV2W12PUyG3HqCxCEkem8du2FrsayGaQssXimqt9o
+	 E6+fU1NFPULMRvdV19EyUqIoIP9/D4vesU1AjqDc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2371F804E2;
-	Thu, 26 Aug 2021 06:03:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6AB48F8013F;
+	Thu, 26 Aug 2021 08:03:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2ED1AF804E6; Thu, 26 Aug 2021 06:03:36 +0200 (CEST)
-Received: from lucky1.263xmail.com (lucky1.263xmail.com [211.157.147.134])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id C6881F801D8; Thu, 26 Aug 2021 08:03:54 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 75EEDF80424
- for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2021 06:03:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75EEDF80424
-Received: from localhost (unknown [192.168.167.235])
- by lucky1.263xmail.com (Postfix) with ESMTP id DFD40CFCC9;
- Thu, 26 Aug 2021 12:03:16 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [58.22.7.114])
- by smtp.263.net (postfix) whith ESMTP id
- P32763T139760853055232S1629950596113927_; 
- Thu, 26 Aug 2021 12:03:17 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <b91674cd3eccff5bace9ca0b87a4b509>
-X-RL-SENDER: sugar.zhang@rock-chips.com
-X-SENDER: zxg@rock-chips.com
-X-LOGIN-NAME: sugar.zhang@rock-chips.com
-X-FST-TO: broonie@kernel.org
-X-RCPT-COUNT: 6
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From: Sugar Zhang <sugar.zhang@rock-chips.com>
-To: broonie@kernel.org,
-	heiko@sntech.de
-Subject: [PATCH v3 11/14] ASoC: dt-bindings: rockchip: Add compatible strings
- for more SoCs
-Date: Thu, 26 Aug 2021 12:03:11 +0800
-Message-Id: <1629950594-14345-1-git-send-email-sugar.zhang@rock-chips.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1629950441-14118-1-git-send-email-sugar.zhang@rock-chips.com>
-References: <1629950441-14118-1-git-send-email-sugar.zhang@rock-chips.com>
-Cc: Sugar Zhang <sugar.zhang@rock-chips.com>,
- linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id CECA6F8013F
+ for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2021 08:03:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CECA6F8013F
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="cu4eirSW"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="fm3uV55Q"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 36B7122275;
+ Thu, 26 Aug 2021 06:03:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1629957825; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=SNpBB1riqWMDgTE3zjGmFc2HQ/tL4Dep2J1e5XaBy04=;
+ b=cu4eirSW+5hHB/QGrqiL+5zPRaYHWNOMwV7XFP2NmbGdXIDu53pBC/7mSqABuvrPFRGQcd
+ ZRVpyRmtVKjx2P49Z7tasFLO9zoMCIc3+hADXSR+Zk3qmYnntAJrp6lxNb5vhs+5AbQ8qo
+ gv/Kk/IwqK3c1GIMa/EK6Dl73w34Yy0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1629957825;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=SNpBB1riqWMDgTE3zjGmFc2HQ/tL4Dep2J1e5XaBy04=;
+ b=fm3uV55QwT9JRwtq/R5RU6dPv33n4R+zjz9hNhqOzhymo8Ud1e0Ujta/UJ8Y/Wl6l78pQ/
+ 2V7uwIyOmXfCClDA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 2C0D6A3B89;
+ Thu, 26 Aug 2021 06:03:45 +0000 (UTC)
+Date: Thu, 26 Aug 2021 08:03:45 +0200
+Message-ID: <s5hczq0yc72.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Subject: Re: [PATCH 2/2] ALSA: hda/cs8409: Prevent pops and clicks during
+ reboot
+In-Reply-To: <e3df5f97-bf43-7eb8-e15d-4ab11dbae7ef@opensource.cirrus.com>
+References: <20210812183433.6330-1-vitalyr@opensource.cirrus.com>
+ <20210812183433.6330-2-vitalyr@opensource.cirrus.com>
+ <s5h1r6xlvrs.wl-tiwai@suse.de> <s5hczqgil3v.wl-tiwai@suse.de>
+ <6595e87d-1dae-b536-c17b-eafa07d04bbe@opensource.cirrus.com>
+ <s5hpmuce05m.wl-tiwai@suse.de>
+ <e3df5f97-bf43-7eb8-e15d-4ab11dbae7ef@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Stefan Binding <sbinding@opensource.cirrus.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,42 +108,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds compatible strings for more SoCs.
+On Wed, 25 Aug 2021 20:04:05 +0200,
+Vitaly Rodionov wrote:
+> Actually when codec is suspended and we do reboot from UI, then sometimes we
+> see suspend() calls in kernel log and no pops, but sometimes
+> 
+> we still have no suspend() on reboot and we hear pops. But when we do reboot
+> from command line: > sudo reboot  then we always have pops and no suspend()
+> called.
+> 
+> Then we have added extra logging and we can see that on reboot codec somehow
+> getting resume() call and we run jack detect on resume that causing pops.
 
-Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
-Acked-by: Rob Herring <robh@kernel.org>
----
+Hm, it's interesting who triggers the runtime resume.
 
-Changes in v3: None
-Changes in v2: None
+> We were thinking about possible solution for that and we would propose some
+> changes in generic code hda_bind.c:
+> 
+> static void hda_codec_driver_shutdown(struct device *dev) { +   if (codec->
+> patch_ops.suspend) +      codec->patch_ops.suspend(codec);   
+> snd_hda_codec_shutdown(dev_to_hda_codec(dev)); +  hda_codec_driver_remove
+> (dev_to_hda_codec(dev)); }
 
- Documentation/devicetree/bindings/sound/rockchip-i2s.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+Sorry, it's no-no.  The suspend can't be called unconditionally, and
+the driver unbind must not be called in the callback itself.
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.yaml b/Documentation/devicetree/bindings/sound/rockchip-i2s.yaml
-index 9f9cc48..5ea16b8 100644
---- a/Documentation/devicetree/bindings/sound/rockchip-i2s.yaml
-+++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.yaml
-@@ -20,7 +20,9 @@ properties:
-       - items:
-           - enum:
-               - rockchip,px30-i2s
-+              - rockchip,rk1808-i2s
-               - rockchip,rk3036-i2s
-+              - rockchip,rk3128-i2s
-               - rockchip,rk3188-i2s
-               - rockchip,rk3228-i2s
-               - rockchip,rk3288-i2s
-@@ -29,6 +31,7 @@ properties:
-               - rockchip,rk3366-i2s
-               - rockchip,rk3368-i2s
-               - rockchip,rk3399-i2s
-+              - rockchip,rv1126-i2s
-           - const: rockchip,rk3066-i2s
+Does the patch below work instead?
+
+
+thanks,
+
+Takashi
+
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2356,8 +2356,11 @@ static void azx_shutdown(struct pci_dev *pci)
+ 	if (!card)
+ 		return;
+ 	chip = card->private_data;
+-	if (chip && chip->running)
++	if (chip && chip->running) {
++		chip->bus.shutdown = 1;
++		cancel_work_sync(&bus->unsol_work);
+ 		azx_shutdown_chip(chip);
++	}
+ }
  
-   reg:
--- 
-2.7.4
-
-
-
+ /* PCI IDs */
