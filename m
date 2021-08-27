@@ -7,98 +7,97 @@ X-Spam-Status: No, score=-19.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF921C432BE
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 09:40:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F454C432BE
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 09:40:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0E15D60F6C
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 09:40:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0E15D60F6C
+	by mail.kernel.org (Postfix) with ESMTPS id 00FA360F6C
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 09:40:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 00FA360F6C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B214D16E5;
-	Fri, 27 Aug 2021 11:39:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B214D16E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5349D16C3;
+	Fri, 27 Aug 2021 11:40:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5349D16C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630057230;
-	bh=a0bQyLhXUgl9kC3iQf+uATVY5s/R39NaJff6/UWVEV0=;
+	s=default; t=1630057254;
+	bh=hfw5Zp0JgI2mabrCjmNJKsqL8LxvnMu+a3t+D7vOiFA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=u1BqyLza46tNpo5asgHVYKtK4wxKIfySjZMoag+fqlgn5PMPGuXnZkhApOilqBX4A
-	 yQKXqGP+2pDojg3Wh2IeCD3JV8BwKK5ndReT8zug3aF/JPfrpNM1ZKHeysmLb2yLzX
-	 4o2YalTVHytmt3uGl8qCUe0Xqnxopp8WsN0TlQaw=
+	b=IH2652pobe9dNySOjCh+zhnnUs2LGjjTSX3z/bSk5TCUYb0nlKin/6dPCawoJEVDB
+	 XLMRBX9rXijh1RBFuK4giG4wqAXY9Q5dukd6WTyqYjXjBJh4P87xBOJQxP65eCrtq5
+	 4GdrlTeT1peBKAnyXqOJwp2HziHVXV8B2jicn4yA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A0450F804EC;
-	Fri, 27 Aug 2021 11:38:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6CE72F804F3;
+	Fri, 27 Aug 2021 11:38:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CDE86F804E2; Fri, 27 Aug 2021 11:38:25 +0200 (CEST)
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com
- (mail-bn7nam10on2088.outbound.protection.outlook.com [40.107.92.88])
+ id 0414BF804FB; Fri, 27 Aug 2021 11:38:36 +0200 (CEST)
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com
+ (mail-co1nam11on2065.outbound.protection.outlook.com [40.107.220.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE1D7F80107
- for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2021 11:38:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE1D7F80107
+ by alsa1.perex.cz (Postfix) with ESMTPS id CC0A1F804F1
+ for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2021 11:38:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC0A1F804F1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com
- header.b="rL1vj7uz"
+ header.b="eVqa5aZU"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YuW/trfpKMD5K5h8E+xbpAQ2ILtXTum4d6zmrBJOSvqWG7iGICr6a2fOocKsEQNRrkwAhV3d95/yYQBsZKB2GT/8yPT8QVL9DTcdddDDpeUEH/8s8tit5nyT3ngOj7iRaLgruPtxGtTNONqHMMOPaT5qVbkZHB7lrgxMOYnZumwgJkbE1r19/sdiraO2PXwWJUdyToC22Hrh5Jdc9cp652mIP1lO7/jJ5uZIxoOlGdVttVNijAPql9e4pOJ4xQE1AB+qT6TWc90MiA1th8e9UvWGFro/RMJpAMUC6KIwQPwHfW/86ucwe7J8lZu4Rsq9yEvPLUCnc51sPVAT2WmKWA==
+ b=IlCrCXqZEbDpWYTnMf43+HvcevYGkV8DXwOSc4OzOaLcJikL+MAx8Ra0sd8ik027cLO67+yvAGFTdU4IqZXpRYxLK4NkcXDQPq8G8lYt9nWLUB5vw6DZMbFyfrjmdtB9yxoHyAZAVNMokhzNluFsJUtoG/1G9ZinbJ9B0RuiTBxrGFs1yuuQuhcK8BSiLl0t++f33XxFon3GrPDNQiRjdvkyzdqqP0+qLGTEQVopDRwwU+9tGGcBKTP3KNTX3NzGbtiOhUcU1LdvRGE+0JER4wMKZKDGEtcCXWajW50NNh5UAvzcsNZLCtA8coW2KSU2qQKnnkTPFTVh9mlE1wUkxQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OrSZKOWs4rdh5mBwsUT+O1TBA0O0LBuknJBdn/YJ/u0=;
- b=QChjLVSTVI+v+cwUpC0AyLoc3cNeIn2EB9cG3m+NugYAVVn7REXdjTZZ1FsOD6zN3RSxmsEUFVPyrWoUOgFvFNRQeVxCt/boj7ebZI2o20unnrXGU/sqTY9y5PbFzMIeofjh82/YBZ+nffOitmAv+y8ivIs7RprXxxYjCyJcTWZhWXMVuQp9gj7T9fUF1CquH41D3jq0257V4zWcUb5dxmnmcjP8VbtTGnjYjDMvyK2KM6jk36Bxu2fPqzwJNCyuWrRzZpc/nInnWFAGac9jqnPG/Dal6WPVUv6GA4spVK4Eumu4AC02pG/N9iZqWpwsL6EqtClm9aB51GfAnkY86g==
+ bh=ka7b6mTibxbbN92ri4CP9uNahSNgQouiMfGnwoofXyk=;
+ b=Bqby14+T8hclvRcSzKKpGj0OAibK04Mg8WeTJ2fvPq7My7NrGkIqClnL3X85xZE8SJgRZwTrReBblfK6Qf2mpX6xvnMhotv4/PHNxAxl5JyUtwSOAuUp7L35b0BGdDnKq9z3x3RUpUK0EKHkf1KvPxZnUDegIhbrmx16tfVg2JNCSFYmySeODXqKsuqiIsIXjD9nnsmMiqLx4ZlbL6kO8v733Rvn2O47KryjycMzq8oLeBnaeAi2c3DhapmkZxh/ZHNIFA0ItrGqbnmQXv6FuRue9dfW4/MGwNRAfubC0f/30+KwSx0/yRMFeSGM6Yo2aIYjxbOBX7AIi5NNUK4lIw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.35) smtp.rcpttodomain=alsa-project.org smtp.mailfrom=nvidia.com;
+ 216.228.112.36) smtp.rcpttodomain=alsa-project.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com; 
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OrSZKOWs4rdh5mBwsUT+O1TBA0O0LBuknJBdn/YJ/u0=;
- b=rL1vj7uzB5MH3SAKIQMABtM5ghwft8I+9tJHVzrABfPajdhtsjrSyrdCwMTUwZ1fNhnz2qS/WQJGzGrRkMr5Suku4jokMrO4XZY8REnZU+d1bFbQnXMmZVXtK9lABr1si9KG1edf8p0cSY8jSDhZVREQUqIrBrdaGyca6+PK/4atPj1S3f96tK2LCM2qSF0dlUfiv+vSOWyRtnDFPk7gj++AEgM5NcRV3r30OTMJretvPeGMOG/h302Y0gKQwRfy5Zm3dQAiHMSjZckfdZbsC7np7G0tTjDDhbrWnOmq7QwBU9Ct1bhavvAi87ZcSWXCtEQobERKIKo53V5Jz/CZ3w==
-Received: from DM6PR06CA0003.namprd06.prod.outlook.com (2603:10b6:5:120::16)
- by BL1PR12MB5062.namprd12.prod.outlook.com (2603:10b6:208:313::6) with
+ bh=ka7b6mTibxbbN92ri4CP9uNahSNgQouiMfGnwoofXyk=;
+ b=eVqa5aZU4IzzPC2qujzDwZqMMtMLyvbDpa3Bj6j2aWSxDy4SO+uuuQMgxI75eBnhEGcTpiek2izbcUWvGfgLwPKNl6ByWxKCXnb4wD7YgFNtSTM2zjidq7QExOS2CYyT7QmqsLXZqWnECU7CCl9VUHWH0QLbXlH1AYaBhbggadmVRnK3c0rW6xXPEF/jWCiRWPVFQh9j5OyOBJT7oQEWpA138PqchYV7/xHzsdFq4ZxTso8tp3YcgiuTU2q83IDy4dDufhejxva7YMqHH8Ee5hJRZMxKysSDRfZF+v7b1UmcG51o8udv5nzeiVdTsrJ8uuKlFJDZ+SFY7Fs6aybyoQ==
+Received: from DM5PR19CA0015.namprd19.prod.outlook.com (2603:10b6:3:151::25)
+ by BN6PR12MB1409.namprd12.prod.outlook.com (2603:10b6:404:1e::21) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.20; Fri, 27 Aug
- 2021 09:38:15 +0000
-Received: from DM6NAM11FT029.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:120:cafe::15) by DM6PR06CA0003.outlook.office365.com
- (2603:10b6:5:120::16) with Microsoft SMTP Server (version=TLS1_2,
+ 2021 09:38:23 +0000
+Received: from DM6NAM11FT031.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:151:cafe::55) by DM5PR19CA0015.outlook.office365.com
+ (2603:10b6:3:151::25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.18 via Frontend
- Transport; Fri, 27 Aug 2021 09:38:15 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
+ Transport; Fri, 27 Aug 2021 09:38:22 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.36)
  smtp.mailfrom=nvidia.com; alsa-project.org; dkim=none (message not signed)
  header.d=none;alsa-project.org; dmarc=pass action=none
  header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.35 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.35; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.35) by
- DM6NAM11FT029.mail.protection.outlook.com (10.13.173.23) with Microsoft SMTP
+ 216.228.112.36 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.36; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.36) by
+ DM6NAM11FT031.mail.protection.outlook.com (10.13.172.203) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4457.17 via Frontend Transport; Fri, 27 Aug 2021 09:38:13 +0000
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 27 Aug
- 2021 09:38:12 +0000
+ 15.20.4457.17 via Frontend Transport; Fri, 27 Aug 2021 09:38:21 +0000
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 27 Aug
+ 2021 09:38:20 +0000
 Received: from audio.nvidia.com (172.20.187.5) by mail.nvidia.com
  (172.20.187.10) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 27 Aug 2021 09:38:08 +0000
+ Transport; Fri, 27 Aug 2021 09:38:17 +0000
 From: Sameer Pujar <spujar@nvidia.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <robh+dt@kernel.org>,
  <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
  <catalin.marinas@arm.com>, <will@kernel.org>, <perex@perex.cz>,
  <tiwai@suse.com>, <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 02/13] ASoC: simple-card-utils: Increase maximum DAI links
- limit to 512
-Date: Fri, 27 Aug 2021 15:03:48 +0530
-Message-ID: <1630056839-6562-3-git-send-email-spujar@nvidia.com>
+Subject: [PATCH 04/13] ASoC: dt-bindings: tegra: Few more Tegra210 AHUB modules
+Date: Fri, 27 Aug 2021 15:03:50 +0530
+Message-ID: <1630056839-6562-5-git-send-email-spujar@nvidia.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1630056839-6562-1-git-send-email-spujar@nvidia.com>
 References: <1630056839-6562-1-git-send-email-spujar@nvidia.com>
@@ -106,28 +105,28 @@ MIME-Version: 1.0
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9e6c08b2-0c81-4f43-1f7f-08d9693e6402
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5062:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB50625591FBAD5522BDE31D50A7C89@BL1PR12MB5062.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Office365-Filtering-Correlation-Id: 6cd6953c-158b-4903-f37e-08d9693e68e5
+X-MS-TrafficTypeDiagnostic: BN6PR12MB1409:
+X-Microsoft-Antispam-PRVS: <BN6PR12MB14090CF2EE8226149D740FBAA7C89@BN6PR12MB1409.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xJiTrVvMPiCqrKXqrPwl5lk+0wiAzFLgXmHJvqSDmAiLPa9EUi//TcPTGMLE1KuVxn3dhY2gv5NmGzYA34XI8I0pfVDVDpa0qnXCv36APb/u1u0XPd1YBB3nBUhKDlQ/9g8HKZWwhxzIGDJTjYoGPpnr0KUylThyanxHbx7At6vZp1fsy39CHfQwA8nP7B3lMPxRZiIoJ9/ZGDmopxu42SW1XgrbIMl5xjdRwyR1dx2y0FrwgtsS6wqCtMyEQ+qZAYEHA0g8qc8AaPVAGlGPp+4g7KqEJR36xCLU3+L8vs4W7ne79zCBuA+O/VExgBERb19Wn1gCEz7LTlyTsYnxDgfJEg1C7OgsMpSYRLPyn1RF5r1v6mo9Di9MO9s2gdAfHcjhTi/mlp2+LqrXbG4h6lAZw/XnqV6LBu1anAkrVCzAORlItsgJnydiFBUW5PikBO2Hnc7aJTrmKhDszPTyshAAd1bg3wTSacL6Ljetl+oFh+TQYNzsy8WaooUmSpv8F/3xD9HOQJKu2OvEYCXo4bS4UXU/ryXMNU9lvDLoK8AoLSenYC6nsHtxQex3HLKiuYiRHueLXRkzuvRYqPUU6XJjOeS7bAoJZNS70929/8IchAru+adx988lxhUM3gTZQmxruZL+HVgRuT9kbLhCH2DuyBQahWGwRi/vjTI6RTw8ZLrozm3RuzZGMc9LsjnEEhvAiZNDgBwvy9f/iJPdq5iuu7kZIqJeJiDESPKyA9s=
-X-Forefront-Antispam-Report: CIP:216.228.112.35; CTRY:US; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:mail.nvidia.com; PTR:schybrid04.nvidia.com; CAT:NONE;
- SFS:(4636009)(346002)(376002)(396003)(136003)(39860400002)(36840700001)(46966006)(36860700001)(110136005)(54906003)(107886003)(86362001)(82740400003)(2616005)(4326008)(2906002)(36906005)(921005)(7416002)(316002)(36756003)(426003)(26005)(83380400001)(336012)(478600001)(6666004)(7696005)(5660300002)(8936002)(356005)(186003)(82310400003)(47076005)(8676002)(70206006)(70586007)(7636003);
+X-Microsoft-Antispam-Message-Info: 3aWYnrg+RSI10SEbHRrqhLmlAp3KXwiRCOShgVn/9h0QhInREBqyG0viI8onu3oCBwUAyTvTPF/RkT7tWPxO5pXjV2P5Sf5FLaoXWgRfg/m3/c7clEgeESagx0tWZv9A/4po7iStazdXEwaaI7leBkbgR8q8Buuo9B/CwKVESKV+qksBP7YXQ2jkxyTwSuNHBXdkQUwVLvJQXWaqO4+M6HDrhG6zTW6yoLiQvdwmjSul0oUDIVCW63QHbT3UxV4YPqPdJXilE4uOfSGUyoM0jpgnUk1pVcGWuzJLzS2VQZYnAxwOSyzPZqKM180UM03XJd67o/xZrKUK8nxzAApaQscXB6hnj8QkXmsNc9zFo7vERPct5RW5Ov9tPN18dXqXI1w69jEW3TbWf0+trm8+fB7AKMP2zHBnsvJ2n2L4SOpbDhV6SPwux13vCgkmiL//efv06j8ZPhSZmyLOhGiN3KB+GL5aZ8eIM45XOmLt/3OJSIbX99hDp6VS0/l6xN51KYLeaDasrp1K5CaO8dVWFPIa1na9PBEBQahohAXmhjT/SpLKm0IM/koan2HYC7DSTjC9ZkS4yZuJ5JtlXzrLctkWy8qam03Evq2jg0dybEoLREMRl4dOOjpOFaaxWa9DVCIFCWvqg7/QZF2vYRT1aJK8dy6FskxXNbuaSX6IK33DbqBMPGNBbgYLoIq2hZ+GKbC7EesIsVkKLOXl60UrhFfUhe67Qq+oxTpYTNR9gpuq53E1J2bnWwp0Fhz+K0gkGfqDiaZsevOFdD3qjIvFW174HcQfIRaF62ZqSFbqr7w=
+X-Forefront-Antispam-Report: CIP:216.228.112.36; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:mail.nvidia.com; PTR:schybrid05.nvidia.com; CAT:NONE;
+ SFS:(4636009)(346002)(396003)(376002)(39860400002)(136003)(46966006)(36840700001)(5660300002)(8676002)(7416002)(8936002)(478600001)(426003)(7696005)(82310400003)(921005)(2616005)(36756003)(70586007)(70206006)(6666004)(86362001)(54906003)(316002)(2906002)(110136005)(82740400003)(107886003)(36906005)(26005)(4326008)(83380400001)(186003)(336012)(356005)(7636003)(30864003)(36860700001)(966005)(47076005);
  DIR:OUT; SFP:1101; 
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Aug 2021 09:38:13.5116 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9e6c08b2-0c81-4f43-1f7f-08d9693e6402
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Aug 2021 09:38:21.6856 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6cd6953c-158b-4903-f37e-08d9693e68e5
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[216.228.112.35];
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[216.228.112.36];
  Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT029.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT031.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5062
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1409
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  Sameer Pujar <spujar@nvidia.com>, linux-kernel@vger.kernel.org,
  linux-tegra@vger.kernel.org, sharadg@nvidia.com,
@@ -147,35 +146,462 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The current limit of 128 is not sufficient when more components are
-added to the audio map on Tegra210 and later platforms. Thus it is
-resulting in probe failure.
+This patch adds YAML schema for DT bindings of few AHUB modules.
+These devices will be registered as ASoC components and bindings
+will be used on Tegra210 and later chips. The bindings for below
+mentioned modules are added:
 
-The requirement is of nearly ~200 DAI links. To give sufficient room
-for future additions the maximum limit is increased to 512 DAI links.
-This is a preparatory patch to add more components like resampler,
-mixer, multiplexers, demultiplexers and volume controllers to Tegra210
-and later platforms.
+ * SFC (Sampling Frequency Converter)
+ * MVC (Master Volume Control)
+ * AMX (Audio Multiplexer)
+ * ADX (Audio Demultiplexer)
+ * Mixer
 
 Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Rob Herring <robh+dt@kernel.org> 
 ---
- include/sound/simple_card_utils.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../bindings/sound/nvidia,tegra210-adx.yaml        | 74 ++++++++++++++++++++
+ .../bindings/sound/nvidia,tegra210-ahub.yaml       | 20 ++++++
+ .../bindings/sound/nvidia,tegra210-amx.yaml        | 72 ++++++++++++++++++++
+ .../bindings/sound/nvidia,tegra210-mixer.yaml      | 67 ++++++++++++++++++
+ .../bindings/sound/nvidia,tegra210-mvc.yaml        | 79 ++++++++++++++++++++++
+ .../bindings/sound/nvidia,tegra210-sfc.yaml        | 76 +++++++++++++++++++++
+ 6 files changed, 388 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-adx.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-amx.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-mixer.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-mvc.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-sfc.yaml
 
-diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index 51b3b48..6b78034 100644
---- a/include/sound/simple_card_utils.h
-+++ b/include/sound/simple_card_utils.h
-@@ -115,7 +115,7 @@ struct asoc_simple_priv {
- 		     ((codec) = simple_props_to_dai_codec(props, i));	\
- 	     (i)++)
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra210-adx.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra210-adx.yaml
+new file mode 100644
+index 0000000..9950585
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/nvidia,tegra210-adx.yaml
+@@ -0,0 +1,74 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/nvidia,tegra210-adx.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Tegra210 ADX Device Tree Bindings
++
++description: |
++  The Audio Demultiplexer (ADX) block takes an input stream with   up to
++  16 channels and demultiplexes it into four output streams of up to 16
++  channels each. A byte RAM helps to form output frames by any combination
++  of bytes from the input frame. Its design is identical to that of byte
++  RAM in the AMX except that the data flow direction is reversed.
++
++maintainers:
++  - Jon Hunter <jonathanh@nvidia.com>
++  - Mohan Kumar <mkumard@nvidia.com>
++  - Sameer Pujar <spujar@nvidia.com>
++
++properties:
++  $nodename:
++    pattern: "^adx@[0-9a-f]*$"
++
++  compatible:
++    oneOf:
++      - const: nvidia,tegra210-adx
++      - items:
++          - enum:
++              - nvidia,tegra194-adx
++              - nvidia,tegra186-adx
++          - const: nvidia,tegra210-adx
++
++  reg:
++    maxItems: 1
++
++  sound-name-prefix:
++    pattern: "^ADX[1-9]$"
++    $ref: /schemas/types.yaml#/definitions/string
++    description:
++      used as prefix for sink/source names of the component. Must be a
++      unique string among multiple instances of the same component.
++      The name can be "ADX1" or "ADX2" ... "ADXx", where x depends on
++      the maximum available instances on a Tegra SoC.
++
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++    description: |
++      ADX has one input and four output. Accordingly ACIF (Audio Client
++      Interface) RX and TX port nodes are defined to represent ADX inputs
++      and output respectively. These are connected to corresponding ports
++      on AHUB.
++
++    patternProperties:
++      '^port@[0-9]':
++        $ref: audio-graph-port.yaml#
++        unevaluatedProperties: false
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++
++    adx@702d3800 {
++        compatible = "nvidia,tegra210-adx";
++        reg = <0x702d3800 0x100>;
++        sound-name-prefix = "ADX1";
++    };
++
++...
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
+index 1118a94..4087eeb 100644
+--- a/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
++++ b/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
+@@ -85,6 +85,26 @@ patternProperties:
+     type: object
+     $ref: nvidia,tegra186-dspk.yaml#
  
--#define SNDRV_MAX_LINKS 128
-+#define SNDRV_MAX_LINKS 512
- 
- struct link_info {
- 	int link; /* number of link */
++  '^mvc@[0-9a-f]+$':
++    type: object
++    $ref: nvidia,tegra210-mvc.yaml#
++
++  '^sfc@[0-9a-f]+$':
++    type: object
++    $ref: nvidia,tegra210-sfc.yaml#
++
++  '^amx@[0-9a-f]+$':
++    type: object
++    $ref: nvidia,tegra210-amx.yaml#
++
++  '^adx@[0-9a-f]+$':
++    type: object
++    $ref: nvidia,tegra210-adx.yaml#
++
++  '^mixer@[0-9a-f]+$':
++    type: object
++    $ref: nvidia,tegra210-mixer.yaml#
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra210-amx.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra210-amx.yaml
+new file mode 100644
+index 0000000..e6b365b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/nvidia,tegra210-amx.yaml
+@@ -0,0 +1,72 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/nvidia,tegra210-amx.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Tegra210 AMX Device Tree Bindings
++
++description: |
++  The Audio Multiplexer (AMX) block can multiplex up to four input streams
++  each of which can have maximum 16 channels and generate an output stream
++  with maximum 16 channels. A byte RAM helps to form an output frame by
++  any combination of bytes from the input frames.
++
++maintainers:
++  - Jon Hunter <jonathanh@nvidia.com>
++  - Mohan Kumar <mkumard@nvidia.com>
++  - Sameer Pujar <spujar@nvidia.com>
++
++properties:
++  $nodename:
++    pattern: "^amx@[0-9a-f]*$"
++
++  compatible:
++    oneOf:
++      - const: nvidia,tegra210-amx
++      - items:
++          - const: nvidia,tegra186-amx
++          - const: nvidia,tegra210-amx
++      - const: nvidia,tegra194-amx
++
++  reg:
++    maxItems: 1
++
++  sound-name-prefix:
++    pattern: "^AMX[1-9]$"
++    $ref: /schemas/types.yaml#/definitions/string
++    description:
++      used as prefix for sink/source names of the component. Must be a
++      unique string among multiple instances of the same component.
++      The name can be "AMX1" or "AMX2" ... "AMXx", where x depends on
++      the maximum available instances on a Tegra SoC.
++
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++    description: |
++      AMX has four inputs and one output. Accordingly ACIF (Audio Client
++      Interfaces) RX and TX port nodes are defined to represent AMX inputs
++      and output respectively. These are connected to corresponding ports
++      on AHUB.
++
++    patternProperties:
++      '^port@[0-9]':
++        $ref: audio-graph-port.yaml#
++        unevaluatedProperties: false
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++
++    amx@702d3000 {
++        compatible = "nvidia,tegra210-amx";
++        reg = <0x702d3000 0x100>;
++        sound-name-prefix = "AMX1";
++    };
++
++...
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra210-mixer.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra210-mixer.yaml
+new file mode 100644
+index 0000000..0808355
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/nvidia,tegra210-mixer.yaml
+@@ -0,0 +1,67 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/nvidia,tegra210-mixer.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Tegra210 Mixer Device Tree Bindings
++
++description: |
++  The Mixer supports mixing of up to ten 7.1 audio input streams and
++  generate five outputs (each of which can be any combination of the
++  ten input streams).
++
++maintainers:
++  - Jon Hunter <jonathanh@nvidia.com>
++  - Mohan Kumar <mkumard@nvidia.com>
++  - Sameer Pujar <spujar@nvidia.com>
++
++properties:
++  $nodename:
++    pattern: "^mixer@[0-9a-f]*$"
++
++  compatible:
++    oneOf:
++      - const: nvidia,tegra210-amixer
++      - items:
++          - enum:
++              - nvidia,tegra194-amixer
++              - nvidia,tegra186-amixer
++          - const: nvidia,tegra210-amixer
++
++  reg:
++    maxItems: 1
++
++  sound-name-prefix:
++    const: "MIXER"
++    $ref: /schemas/types.yaml#/definitions/string
++
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++    description: |
++      Mixer has ten inputs and five outputs. Accordingly ACIF (Audio Client
++      Interfaces) RX and TX port nodes are defined to represent MIXER inputs
++      and outputs respectively. These are connected to corresponding ports
++      on AHUB.
++
++    patternProperties:
++      '^port@[0-9]':
++        $ref: audio-graph-port.yaml#
++        unevaluatedProperties: false
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++
++    mixer@702dbb00 {
++        compatible = "nvidia,tegra210-amixer";
++        reg = <0x702dbb00 0x800>;
++        sound-name-prefix = "MIXER";
++    };
++
++...
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra210-mvc.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra210-mvc.yaml
+new file mode 100644
+index 0000000..7d81b11
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/nvidia,tegra210-mvc.yaml
+@@ -0,0 +1,79 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/nvidia,tegra210-mvc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Tegra210 MVC Device Tree Bindings
++
++description: |
++  The Master Volume Control (MVC) provides gain or attenuation to a digital
++  signal path. It can be used in input or output signal path for per-stream
++  volume control or it can be used as master volume control. The MVC block
++  has one input and one output. The input digital stream can be mono or
++  multi-channel (up to 7.1 channels) stream. An independent mute control is
++  also included in the MVC block.
++
++maintainers:
++  - Jon Hunter <jonathanh@nvidia.com>
++  - Mohan Kumar <mkumard@nvidia.com>
++  - Sameer Pujar <spujar@nvidia.com>
++
++properties:
++  $nodename:
++    pattern: "^mvc@[0-9a-f]*$"
++
++  compatible:
++    oneOf:
++      - const: nvidia,tegra210-mvc
++      - items:
++          - enum:
++              - nvidia,tegra194-mvc
++              - nvidia,tegra186-mvc
++          - const: nvidia,tegra210-mvc
++
++  reg:
++    maxItems: 1
++
++  sound-name-prefix:
++    pattern: "^MVC[1-9]$"
++    $ref: /schemas/types.yaml#/definitions/string
++    description:
++      used as prefix for sink/source names of the component. Must be a
++      unique string among multiple instances of the same component.
++      The name can be "MVC1" or "MVC2" ... "MVCx", where x depends on
++      the maximum available instances on a Tegra SoC.
++
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++    properties:
++      port@0:
++        $ref: audio-graph-port.yaml#
++        unevaluatedProperties: false
++        description: |
++          ACIF (Audio Client Interface) acting as MVC input (RX) port.
++          This is connected to corresponding ACIF port on AHUB.
++
++      port@1:
++        $ref: audio-graph-port.yaml#
++        unevaluatedProperties: false
++        description: |
++          ACIF (Audio Client Interface) acting as MVC output (TX) port.
++          This is connected to corresponding ACIF port on AHUB.
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++
++    mvc@702da000 {
++        compatible = "nvidia,tegra210-mvc";
++        reg = <0x702da000 0x200>;
++        sound-name-prefix = "MVC1";
++    };
++
++...
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra210-sfc.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra210-sfc.yaml
+new file mode 100644
+index 0000000..5f05e2a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/nvidia,tegra210-sfc.yaml
+@@ -0,0 +1,76 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/nvidia,tegra210-sfc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Tegra210 SFC Device Tree Bindings
++
++description: |
++  The Sampling Frequency Converter (SFC) converts the sampling frequency
++  of the input signal from one frequency to another. It supports sampling
++  frequency conversions of streams of up to two channels (stereo).
++
++maintainers:
++  - Jon Hunter <jonathanh@nvidia.com>
++  - Mohan Kumar <mkumard@nvidia.com>
++  - Sameer Pujar <spujar@nvidia.com>
++
++properties:
++  $nodename:
++    pattern: "^sfc@[0-9a-f]*$"
++
++  compatible:
++    oneOf:
++      - const: nvidia,tegra210-sfc
++      - items:
++          - enum:
++              - nvidia,tegra194-sfc
++              - nvidia,tegra186-sfc
++          - const: nvidia,tegra210-sfc
++
++  reg:
++    maxItems: 1
++
++  sound-name-prefix:
++    pattern: "^SFC[1-9]$"
++    $ref: /schemas/types.yaml#/definitions/string
++    description:
++      used as prefix for sink/source names of the component. Must be a
++      unique string among multiple instances of the same component.
++      The name can be "SFC1" or "SFC2" ... "SFCx", where x depends on
++      the maximum available instances on a Tegra SoC.
++
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++    properties:
++      port@0:
++        $ref: audio-graph-port.yaml#
++        unevaluatedProperties: false
++        description: |
++          ACIF (Audio Client Interface) acting as SFC input (RX) port.
++          This is connected to corresponding ACIF port on AHUB.
++
++      port@1:
++        $ref: audio-graph-port.yaml#
++        unevaluatedProperties: false
++        description: |
++          ACIF (Audio Client Interface) acting as SFC output (TX) port.
++          This is connected to corresponding ACIF port on AHUB.
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++
++    sfc@702d2000 {
++        compatible = "nvidia,tegra210-sfc";
++        reg = <0x702d2000 0x200>;
++        sound-name-prefix = "SFC1";
++    };
++
++...
 -- 
 2.7.4
 
