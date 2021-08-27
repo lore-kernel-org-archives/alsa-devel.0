@@ -4,85 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4896C432BE
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 20:35:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16B8EC432BE
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 20:38:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 223C861004
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 20:35:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 223C861004
+	by mail.kernel.org (Postfix) with ESMTPS id 3949561004
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 20:38:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3949561004
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC1041716;
-	Fri, 27 Aug 2021 22:34:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC1041716
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7819B1710;
+	Fri, 27 Aug 2021 22:37:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7819B1710
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630096538;
-	bh=0xu7jyeIt828xzP9ZzamaA3UrNwvSCown6Y3QAf407A=;
+	s=default; t=1630096701;
+	bh=XoBO4El49E87nWgvsXM1AS51xtF9DuGPFfrZg7YDtHU=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Is0pBkF6hVeh7PuQTdCkswknSElpTi5Of/2Ev71Mojb5x+oS5tnp2tR92N2NKyTQY
-	 5IPZth8N9PBMoH6OYGnVYnr85QB+kSwtW/R35nnQVWQNwNfjhh+6qCUm+UbJt4344E
-	 NFnWOXxDr+kkzOl2dEBaVHtFaIpV+m5s2TaUBqj0=
+	b=njtqK660z/Fv/BcmPZwbJqwQDYe+rmphdx0tE2yDnihrP1xPmxPSOru0/cd6n1sck
+	 +iqtbNMJ9gtLAlCrugwXYtfWbOvEuKkz0xda41AfXWuWWsxyKQMsB31KyeqEWL8PYY
+	 LZyZoNmjER8SSyqg+HKIfoooOyJydpZI+SREa+XM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 419AAF80107;
-	Fri, 27 Aug 2021 22:34:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21F48F80107;
+	Fri, 27 Aug 2021 22:37:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 75546F80129; Fri, 27 Aug 2021 22:34:47 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 6FC8DF80129; Fri, 27 Aug 2021 22:37:29 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A4E6CF800FD
- for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2021 22:34:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4E6CF800FD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3EEF7F800FD
+ for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2021 22:37:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3EEF7F800FD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="1x9qbeF/"; 
+ header.b="nVTQiA1B"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="Gp5CD1p3"
+ header.b="J23zIWhQ"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id DCF3E1FF42;
- Fri, 27 Aug 2021 20:34:39 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 8CDA8223B5;
+ Fri, 27 Aug 2021 20:37:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1630096479; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1630096642; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=fnHx7NjngCtzLeZmv7+Af8y6ZSLR/AO7dTq0hnDGh7I=;
- b=1x9qbeF/McGpSTiTF/VMDXoVVOgUrAJNd9lHu0Roo4raPZ70WMziriVjkP3E50ic6H+kck
- teUKCg28UwIgDTV7S+IqtqiJ0DaYLlO15+XioTUYsX55QCbV8wISE0LlGYSV8DDPMfv5su
- ImS9qp9kaKinH34GPiQYc12rFvdQR7M=
+ bh=c+9stMSPxVOLjr1FrBDisvc+txwodDpkXc4LntWDO+k=;
+ b=nVTQiA1BoFK5W40HecCM3N30sjZgUDR/0cITByiIaQS7zY0ShT0EUrBkJ3shXvhhPFRyDo
+ tkCjhYrqkE1GSWAmOSveeW9CWRUW/OiJB1aOuJmBJuWNry5cFJ7xmOYXEJEjWxqIOkegta
+ VUyL4P2qG8FnDQrbiHtg3IfLDYcc4dI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1630096479;
+ s=susede2_ed25519; t=1630096642;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=fnHx7NjngCtzLeZmv7+Af8y6ZSLR/AO7dTq0hnDGh7I=;
- b=Gp5CD1p3AM2CumFTIghsyp2wuVq9xCErAgjH1HPzXiehmu7bCYV10jVV15izo0UOR3Cfpw
- rS7PxAd+YCwfDiCw==
+ bh=c+9stMSPxVOLjr1FrBDisvc+txwodDpkXc4LntWDO+k=;
+ b=J23zIWhQ+GzYvJC3aTSIm66a55yCtLcX7reKPJjjXlnb/gF1vTpYF3ZtevQ3QmK5OdqTUC
+ VmaqFhUOqNupqXAA==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id CA538A3B9E;
- Fri, 27 Aug 2021 20:34:39 +0000 (UTC)
-Date: Fri, 27 Aug 2021 22:34:39 +0200
-Message-ID: <s5hlf4msk2o.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 6ECDDA3B9C;
+ Fri, 27 Aug 2021 20:37:22 +0000 (UTC)
+Date: Fri, 27 Aug 2021 22:37:22 +0200
+Message-ID: <s5hk0k6sjy5.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Zubin Mithra <zsm@chromium.org>
-Subject: Re: [PATCH v2] ALSA: pcm: fix divide error in snd_pcm_lib_ioctl
-In-Reply-To: <20210827153735.789452-1-zsm@chromium.org>
-References: <20210827153735.789452-1-zsm@chromium.org>
+To: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Subject: Re: [PATCH 1/2] ALSA: hda/cs8409: Ensure Type Detection is only run
+ on startup when necessary
+In-Reply-To: <20210827110252.5361-1-vitalyr@opensource.cirrus.com>
+References: <20210827110252.5361-1-vitalyr@opensource.cirrus.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: groeck@chromium.org, alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ Stefan Binding <sbinding@opensource.cirrus.com>, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,15 +101,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 27 Aug 2021 17:37:35 +0200,
-Zubin Mithra wrote:
+On Fri, 27 Aug 2021 13:02:51 +0200,
+Vitaly Rodionov wrote:
 > 
-> Syzkaller reported a divide error in snd_pcm_lib_ioctl. fifo_size
-> is of type snd_pcm_uframes_t(unsigned long). If frame_size
-> is 0x100000000, the error occurs.
+> From: Stefan Binding <sbinding@opensource.cirrus.com>
 > 
-> Fixes: a9960e6a293e ("ALSA: pcm: fix fifo_size frame calculation")
-> Signed-off-by: Zubin Mithra <zsm@chromium.org>
+> Type Detection should only be run after init and when the controls have been
+> built. There is no need to run it multiple times.
+> 
+> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 
 Thanks, applied.
 
