@@ -2,55 +2,87 @@ Return-Path: <SRS0=XrcS=NS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38B9CC432BE
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 04:31:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7DEBC432BE
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 06:06:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 72B5060EAF
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 04:31:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 72B5060EAF
-Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
+	by mail.kernel.org (Postfix) with ESMTPS id 599F460295
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 06:06:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 599F460295
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3CB2716C0;
-	Fri, 27 Aug 2021 06:30:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3CB2716C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 075D516C1;
+	Fri, 27 Aug 2021 08:05:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 075D516C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630038693;
-	bh=rNchozNuilrT3olVmGaUMKW4IELn8N8SXq+zhL2DOuI=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1630044367;
+	bh=eAnsG5V5paWxdYVBkztLRRsCmWTErEPPWuFl4t8EGG0=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aQwKDb4LhCW7saJ0uBZ/ogS0J6wRQ7+6++IJwHU4x8tUpiGhUNRX1zf2alt9pMtW6
-	 iuJJzlD/tWobQrKdJURtOJRFwvLF9ed0yRbNxrSOaY8xckr4NTqWjn4G3rXhiGWOtK
-	 Iistb8OCg20wBi0QSa/YtXna3RILJSV/6eT24ivQ=
+	b=JcZTkdaHoMrw8wtlDGoTilu50ihNUpUCW6/Zd/hxeJahHM4pTErexnsmC9ZDDMe9J
+	 tQi+lnc/BRlgoJh5ofHchyvVZcyQ4bECOCgfyziYlwZR+efJyUTmYNVKTSdoPTfi3T
+	 aCAq9i/vSU9pDFEdX0UCFqhnMidsHTM7bKCWaKdU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF801F80107;
-	Fri, 27 Aug 2021 06:30:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8BB05F80107;
+	Fri, 27 Aug 2021 08:05:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 923C2F80129; Fri, 27 Aug 2021 06:30:35 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 33209F80054
- for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2021 06:30:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33209F80054
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1630038628002897024-webhooks-bot@alsa-project.org>
-References: <1630038628002897024-webhooks-bot@alsa-project.org>
-Subject: No cards found in 1.2.5
-Message-Id: <20210827043035.923C2F80129@alsa1.perex.cz>
-Date: Fri, 27 Aug 2021 06:30:35 +0200 (CEST)
+ id 008D4F80107; Fri, 27 Aug 2021 08:05:09 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id AFCD9F80054
+ for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2021 08:05:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AFCD9F80054
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="dEvuJrPY"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="cxDBAEAh"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 4CCFD22351;
+ Fri, 27 Aug 2021 06:05:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1630044300; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=GE7H1BebSgn36A66RQiYSkTdcbYRyfuC4hjsDPB8wrg=;
+ b=dEvuJrPYjq51q43BHkpavIg70fEjMC7SSrcgBSlbwfXcDcqOhReynq/PipEhG4va6Jz5u4
+ hF09IRCxWLAzdlZOLXoaBXcgaX/MvlDYUZs+MQWn06RbiVnPBajn+p78Az7kuWcx9tOsMB
+ qT0rkQiEu/ohy2P+ZkQJiq/tiRxnwZw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1630044300;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=GE7H1BebSgn36A66RQiYSkTdcbYRyfuC4hjsDPB8wrg=;
+ b=cxDBAEAhtz4fhxy+GieOHUkPfxPOc1fteDhFabYWINBSO5XNnLAp0WXxHxEKrxOm+dPFhO
+ wpjOHBDx1iz6xnCg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 45AF0A3B91;
+ Fri, 27 Aug 2021 06:05:00 +0000 (UTC)
+Date: Fri, 27 Aug 2021 08:05:00 +0200
+Message-ID: <s5hk0k7toc3.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Zubin Mithra <zsm@chromium.org>
+Subject: Re: [PATCH] ALSA: pcm: fix divide error in snd_pcm_lib_ioctl
+In-Reply-To: <20210827004821.3658015-1-zsm@chromium.org>
+References: <20210827004821.3658015-1-zsm@chromium.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: groeck@chromium.org, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,42 +98,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #111 was opened from Tooniis:
+On Fri, 27 Aug 2021 02:48:21 +0200,
+Zubin Mithra wrote:
+> 
+> Syzkaller reported a divide error in snd_pcm_lib_ioctl. fifo_size
+> is of type snd_pcm_uframes_t(unsigned long). If frame_size
+> is 0x100000000, the error occurs.
+> 
+> Fixes: a9960e6a293e ("ALSA: pcm: fix fifo_size frame calculation")
+> Signed-off-by: Zubin Mithra <zsm@chromium.org>
+> ---
+>  sound/core/pcm_lib.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+> index 7d5883432085..e41b4e01aa37 100644
+> --- a/sound/core/pcm_lib.c
+> +++ b/sound/core/pcm_lib.c
+> @@ -1746,7 +1746,7 @@ static int snd_pcm_lib_ioctl_fifo_size(struct snd_pcm_substream *substream,
+>  		channels = params_channels(params);
+>  		frame_size = snd_pcm_format_size(format, channels);
+>  		if (frame_size > 0)
+> -			params->fifo_size /= (unsigned)frame_size;
+> +			params->fifo_size /= (unsigned long)frame_size;
 
-On 1.2.4:
-```
-$ alsaucm listcards
-  0: HDA-Intel
-  1: SOF
-  2: bdw-rt5677
-  3: broadwell-rt286
-  4: broxton-rt298
-  5: bytcht-cx2072x
-  6: bytcht-es8316
-  7: bytcr-rt5640
-  8: bytcr-rt5651
-  9: cht-bsw-rt5672
-  10: chtmax98090
-  11: chtnau8824
-    chtnau8824 internal card
-  12: chtrt5645
-    Intel SoC Audio Device
-  13: chtrt5650
-    Intel SoC Audio Device
-  14: hda-dsp
-  15: kblrt5660
-  16: skylake-rt286
-  17: sof-hda-dsp
-  18: sof-soundwire
-```
-On 1.2.5:
-```
-$ alsaucm listcards
-  list is empty
-```
-My card's config (snd-soc-apq8096, using DB820c config) isn't being loaded on 1.2.5 as a result and I get no sound. Note that in both cases above, alsa-ucm-conf and alsa-lib are of the same version; as mixing versions causes some other errors (lack of conf.virt.d on alsa-lib 1.2.5 alsa-ucm-conf 1.2.4, and invalid syntax 4 on alsa-lib 1.2.4 with alsa-ucm-conf 1.2.5)
+I guess we can drop the cast completely, instead?
+It'd be less ugliness.
 
-Using Arch Linux ARM.
 
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/111
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+Thanks!
+
+Takashi
