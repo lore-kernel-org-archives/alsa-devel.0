@@ -2,92 +2,100 @@ Return-Path: <SRS0=XrcS=NS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CB08C4320A
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 11:34:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66B79C432BE
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 15:30:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C937260F44
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 11:34:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C937260F44
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id BCB7060FD9
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 15:30:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BCB7060FD9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=foss.st.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 66CEA16F5;
-	Fri, 27 Aug 2021 13:33:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66CEA16F5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5863F170D;
+	Fri, 27 Aug 2021 17:29:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5863F170D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630064089;
-	bh=uECC2qyjg/bxRybz0UecQgCUmTnXIPDbnvhIy53EbQE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=gqlJR3D0OygR+Rg/8G0uAbZbjmoyF/WAL+9GxPIpIo9yWZVqOxHHV8s/0yFrZmoPk
-	 zDa8ue1K/Znj6MCX3DthWSrJ65eEqO6OETUs9ZXb/A+bNFnp+zRykWjzrm9Qef6P2E
-	 1iAyzLwmg/ikt1vrdxL9H2QkgZWthOBFXWS4LalU=
+	s=default; t=1630078210;
+	bh=Z9YCxM19NTbHNIIyx/VhdPDuBCm5n/qvojvZGsNabQs=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=mmSbJNo85Ytckxs/3FO6QiSuo3xIjLPSQlIDQIILVlTm33wZoFcRg2v7l017M8xq9
+	 Hb5wWpSHuZb6BmYopMuCCI/8q5I7KB9uzw1mB+LxbGRPBgN0bKXLbr0qaP2a7JP671
+	 rU2H6e/ilwtzEVVCdzenXubffYdQkiyZlZ4Q1OOE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D7E2F801D5;
-	Fri, 27 Aug 2021 13:33:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5DFBBF80107;
+	Fri, 27 Aug 2021 17:29:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1EB6EF80054; Fri, 27 Aug 2021 13:33:19 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 47CCAF80129; Fri, 27 Aug 2021 17:28:51 +0200 (CEST)
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 51C38F80054
- for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2021 13:33:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51C38F80054
+ by alsa1.perex.cz (Postfix) with ESMTPS id 74096F80054
+ for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2021 17:28:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74096F80054
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="lp9H0Op8"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17R81B0B012251; 
- Fri, 27 Aug 2021 06:33:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=fgC7+0bMytPVb3Z8IsZAuaN8+WcXgaQVIeFmCMgmnaU=;
- b=lp9H0Op8oKZZ7B1t9PrcH85I+L69eIMazO9OF3NG5kvyJ//jzwqb7oIGkwf56fNFfjZ7
- TBI8um9cXaWpFGHjGSuQmcXVsU1ny4AIcvZ47kKnw46YrDNgvv50EongAfnOMDqczvsR
- tKoataG1+G3hyZ/fQuvPY0rrizmkFqlz56hp3xeH4DweJlFin+u14l6wpHil7fLfgBbv
- u+TyCZ+7VWaC2HI3g+JiU0IvZCJ4KlOvPL8F1AGCUsg8Eg4618Kj6ZgpzLSon64pZ2Ms
- EAKknzjvhLjSDeVR9wiptMnysTWbDQX9nt2ViqzcMeTFSi81Ds/fAGVgg1KTLWgJwP2P DA== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 3apv5sg7fa-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 27 Aug 2021 06:33:07 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Fri, 27 Aug
- 2021 12:03:01 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via
- Frontend Transport; Fri, 27 Aug 2021 12:03:01 +0100
-Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.186])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 464E32A9;
- Fri, 27 Aug 2021 11:03:00 +0000 (UTC)
-From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 1/2] ALSA: hda/cs8409: Ensure Type Detection is only run on
- startup when necessary
-Date: Fri, 27 Aug 2021 12:02:51 +0100
-Message-ID: <20210827110252.5361-1-vitalyr@opensource.cirrus.com>
-X-Mailer: git-send-email 2.25.1
+ dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com
+ header.b="yxixc4aH"
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+ by mx07-00178001.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17RAUIpe002666;
+ Fri, 27 Aug 2021 17:28:36 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
+ h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=LQt026cMUPGEhdGgKRHOAiE5md4Umql7XViI6VQ6s/U=;
+ b=yxixc4aHPR4KoPUgPgfq8E6GkwcF32s8WK12A/Wt6wqr+9JjnKBftH/ukdFYEYmHyWWX
+ hNUXNa8wbKgmKYVhNQKRGLNGFBb6WyAkpiNjqbKQzaGzCu6F8sVQsAf+PbkXQ1xhiYjc
+ nPV3dG39tcLIaJPxMDVB2fiPo0SgYfmYQM3fp78gGuxhJe5aoboq/Rgot0ijMkA7dVFZ
+ rUvgmY3BgQ21/4luLthdZkV1i1ai9kQnBUodZENHM2j8fhapHvmBcI7PKUYoj89tD5sj
+ 38LLhPDObUIH5NWi2jNYO+yK/K+EY76+XplSLiv25fe0VYmXK/MTU50V8XFfefOSpToC BA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+ by mx07-00178001.pphosted.com with ESMTP id 3apqmkv1nw-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 27 Aug 2021 17:28:36 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AB17110002A;
+ Fri, 27 Aug 2021 17:28:35 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 818CC239D64;
+ Fri, 27 Aug 2021 17:28:35 +0200 (CEST)
+Received: from lmecxl0577.lme.st.com (10.75.127.49) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 27 Aug
+ 2021 17:28:35 +0200
+Subject: Re: [PATCH 6/6] ASoC: audio-graph: remove Platform support
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+References: <871rb758x7.wl-kuninori.morimoto.gx@renesas.com>
+ <87sg3n3ubg.wl-kuninori.morimoto.gx@renesas.com>
+ <bc95a045-b370-8d7f-1167-34bd68e39165@foss.st.com>
+ <87k0k916pj.wl-kuninori.morimoto.gx@renesas.com>
+From: Olivier MOYSAN <olivier.moysan@foss.st.com>
+Message-ID: <e6987f60-5d1c-7e53-bd39-600e2e16aa15@foss.st.com>
+Date: Fri, 27 Aug 2021 17:28:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: -41n5sueXKnydCdamrnkG6EbQmwZ7-TS
-X-Proofpoint-GUID: -41n5sueXKnydCdamrnkG6EbQmwZ7-TS
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
+In-Reply-To: <87k0k916pj.wl-kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-08-27_04,2021-08-26_02,2020-04-07_01
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,109 +111,62 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
+Hi Kuninori,
 
-Type Detection should only be run after init and when the controls have been
-built. There is no need to run it multiple times.
+Thanks for your feedback
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
----
- sound/pci/hda/patch_cs8409.c | 34 ++++++++++++++++++++++++++++------
- sound/pci/hda/patch_cs8409.h |  2 ++
- 2 files changed, 30 insertions(+), 6 deletions(-)
+On 8/26/21 12:48 AM, Kuninori Morimoto wrote:
+> 
+> Hi Olivier
+> 
+> Thank you for conntacting me
+> 
+>> I have seen that the STM32MP15 audio sound card is no more functional
+>> with recent kernels (5.13 or 5.14)
+>> The sound card is registered, but the all devices are issuing an error
+>> at runtime. These devices are using stm32_sai.c or stm32_i2s.c
+>> drivers.
+>>
+>> I found that the regression is linked to the commit
+>> 63f2f9cceb09f8e5f668e36c1cf764eea468ebed "ASoC: audio-graph: remove
+>> Platform support", as reverting this commit fixes the issue.
+>>
+>> When the platform component is missing the pcm_construct ops in the
+>> pcm dmaengine, is never called, resulting in an incomplete
+>> initialization of the sound card.
+>> I can't figure out what is the right way to handle this change, however.
+>> Do I need to update the CPU drivers to work without a platform component
+>> or does the audio-graph card has to be changed in some way ?
+> 
+> Ahh, OK, I see.
+> Indeed the dev which is used for CPU is used at soc-generic-dmaengine as Platform,
+> without indicating it at DT (= simple-card has "plat" support for platform at DT,
+> but audio-graph doesn't ).
+> 
 
-diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
-index 9db16b6292f4..805441b7bf86 100644
---- a/sound/pci/hda/patch_cs8409.c
-+++ b/sound/pci/hda/patch_cs8409.c
-@@ -784,6 +784,8 @@ static void cs42l42_suspend(struct sub_codec *cs42l42)
- 	cs8409_i2c_write(cs42l42, 0x1102, 0x9C);
- 	cs42l42->suspended = 1;
- 	cs42l42->last_page = 0;
-+	cs42l42->hp_jack_in = 0;
-+	cs42l42->mic_jack_in = 0;
- 
- 	/* Put CS42L42 into Reset */
- 	gpio_data = snd_hda_codec_read(codec, CS8409_PIN_AFG, 0, AC_VERB_GET_GPIO_DATA, 0);
-@@ -852,6 +854,8 @@ static int cs8409_cs42l42_suspend(struct hda_codec *codec)
- 	struct cs8409_spec *spec = codec->spec;
- 	int i;
- 
-+	spec->init_done = 0;
-+
- 	cs8409_enable_ur(codec, 0);
- 
- 	for (i = 0; i < spec->num_scodecs; i++)
-@@ -1025,14 +1029,21 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
- 		break;
- 	case HDA_FIXUP_ACT_INIT:
- 		cs8409_cs42l42_hw_init(codec);
--		fallthrough;
-+		spec->init_done = 1;
-+		if (spec->init_done && spec->build_ctrl_done
-+			&& !spec->scodecs[CS8409_CODEC0]->hp_jack_in)
-+			cs42l42_run_jack_detect(spec->scodecs[CS8409_CODEC0]);
-+		break;
- 	case HDA_FIXUP_ACT_BUILD:
-+		spec->build_ctrl_done = 1;
- 		/* Run jack auto detect first time on boot
- 		 * after controls have been added, to check if jack has
- 		 * been already plugged in.
- 		 * Run immediately after init.
- 		 */
--		cs42l42_run_jack_detect(spec->scodecs[CS8409_CODEC0]);
-+		if (spec->init_done && spec->build_ctrl_done
-+			&& !spec->scodecs[CS8409_CODEC0]->hp_jack_in)
-+			cs42l42_run_jack_detect(spec->scodecs[CS8409_CODEC0]);
- 		break;
- 	default:
- 		break;
-@@ -1223,16 +1234,27 @@ void dolphin_fixups(struct hda_codec *codec, const struct hda_fixup *fix, int ac
- 		break;
- 	case HDA_FIXUP_ACT_INIT:
- 		dolphin_hw_init(codec);
--		fallthrough;
-+		spec->init_done = 1;
-+		if (spec->init_done && spec->build_ctrl_done) {
-+			for (i = 0; i < spec->num_scodecs; i++) {
-+				if (!spec->scodecs[i]->hp_jack_in)
-+					cs42l42_run_jack_detect(spec->scodecs[i]);
-+			}
-+		}
-+		break;
- 	case HDA_FIXUP_ACT_BUILD:
-+		spec->build_ctrl_done = 1;
- 		/* Run jack auto detect first time on boot
- 		 * after controls have been added, to check if jack has
- 		 * been already plugged in.
- 		 * Run immediately after init.
- 		 */
--		for (i = 0; i < spec->num_scodecs; i++)
--			cs42l42_run_jack_detect(spec->scodecs[i]);
--
-+		if (spec->init_done && spec->build_ctrl_done) {
-+			for (i = 0; i < spec->num_scodecs; i++) {
-+				if (!spec->scodecs[i]->hp_jack_in)
-+					cs42l42_run_jack_detect(spec->scodecs[i]);
-+			}
-+		}
- 		break;
- 	default:
- 		break;
-diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
-index 207315ad5bf6..ade2b838590c 100644
---- a/sound/pci/hda/patch_cs8409.h
-+++ b/sound/pci/hda/patch_cs8409.h
-@@ -333,6 +333,8 @@ struct cs8409_spec {
- 
- 	unsigned int playback_started:1;
- 	unsigned int capture_started:1;
-+	unsigned int init_done:1;
-+	unsigned int build_ctrl_done:1;
- 
- 	/* verb exec op override */
- 	int (*exec_verb)(struct hdac_device *dev, unsigned int cmd, unsigned int flags,
--- 
-2.25.1
+Yes, it seems that there is no way to force CPU to be used as platform 
+with audio-graph. so, asoc_simple_canonicalize_platform() is necessary 
+to do the job in this case.
 
+> I think key funciton is asoc_simple_canonicalize_platform().
+> 
+>> What do you mean "We can respawn it when we need it", in the commit
+>> message ?
+> 
+> This means we can revert this patch if needed, and yes it is needed :)
+> Could you please respawn the feature ? or I can do it if you want.
+> 
+
+I feel more confortable if you revert the commit, as you are the author 
+of the patch.
+Thanks.
+
+BRs
+Olivier
+
+> Thank you for your help !!
+> 
+> Best regards
+> ---
+> Kuninori Morimoto
+> 
