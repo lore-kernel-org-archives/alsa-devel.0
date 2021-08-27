@@ -1,56 +1,90 @@
-Return-Path: <SRS0=0cRQ=NR=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=XrcS=NS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-19.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36C97C432BE
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 23:02:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4F4EC432BE
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 00:49:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 48C6C60F5B
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Aug 2021 23:02:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 48C6C60F5B
-Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
+	by mail.kernel.org (Postfix) with ESMTPS id 25CFC60F91
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 00:49:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 25CFC60F91
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1AD08166C;
-	Fri, 27 Aug 2021 01:01:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1AD08166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id D091B16C3;
+	Fri, 27 Aug 2021 02:48:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D091B16C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630018955;
-	bh=qkleVXAKsGK3cXI3fv4tUxsZWblfyTsz4vp+O0W9nN0=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=gl05vXptVeUCwC7N7dYLZke+EAP+/m39LRh7TUEMttyFh+BwSOELQhG9i6+iz9JXX
-	 ucyD7j6iYN1toLLMPe0FZbsn7K2tUL/HSVn+CDEnCvRCAf1l3hUWMoPVRju4D1kjEW
-	 z0ZA8tYTjRn9v/K1nHxF4uWX6yQ+8TyiDXxYp/mo=
+	s=default; t=1630025381;
+	bh=jJhO5xr4jD4L5Fq2yS4IKTWH9i1/r3XD/SgbtwKuSp4=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=jbr6RVRE+83bygrvPi24zkttA3t+Hs3H3tLuzv/DMSUemyJ5rKMeczbxkXRP9SDux
+	 CPcgiGFqBAOWvD8NCP7sRN+Dmg7CsGI7EAzTTN/SXfDT7w1zVhpSE10qm4OtuwXovB
+	 P3AwSsqSjhwCm9Tr8N4PCWWX3/0AVjyXcJ3YxbzU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E15CF801D5;
-	Fri, 27 Aug 2021 01:01:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B341F801D5;
+	Fri, 27 Aug 2021 02:48:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F0C34F801D8; Fri, 27 Aug 2021 01:01:41 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id BA1EAF800FD
- for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2021 01:01:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA1EAF800FD
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+ id AD525F801D8; Fri, 27 Aug 2021 02:48:49 +0200 (CEST)
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com
+ [IPv6:2607:f8b0:4864:20::42a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B84D1F8013F
+ for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2021 02:48:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B84D1F8013F
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="hcGRC258"
+Received: by mail-pf1-x42a.google.com with SMTP id m26so4240654pff.3
+ for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2021 17:48:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=7P3yGvpBJYZTbfVO9vdp7nhv6sGS5hNUXHv3tavShLs=;
+ b=hcGRC258WWXv0Zn4leDw7HcTNFc/KUywLUZ6oOmkTHSjxWGvNQsVNZ40qm3oz5nKdZ
+ H3oJ7CUGndGqsx25Wvm1oAl2OHaPY5i1fiM20y8xbvqjrwW3Nctvj46OTIolvowrXWsq
+ RLHLgyqgWZP1hg88ur/aVfksvAnaGxjvBzcSo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=7P3yGvpBJYZTbfVO9vdp7nhv6sGS5hNUXHv3tavShLs=;
+ b=UR2PJ6+VDYEIH+4gIA/taaHJ+PYm0+kXGJ9oPrEHnbvxcWYCWhqchW1nKdx/Z06sWB
+ +UBjDlo3JXHS/e9uqVZgAvg29qbwhyG4hG1I7POTtO2Y8YePsPHwSePjTcZkhY8/8vFZ
+ lTUDemy4QzYLTg8DFpXVcTAyH5jXQ7e5j+IH0oeBLxCoLicGRGCGJrDmT8A63cyKIJX5
+ Nrmvlag43g79c2D8L9X5JBa6mc3iR56rGloBvJuQO62R7hSPopS9Fs99QQ074mqPDNDd
+ 0+V5tb8cIwxipaGCNZLXi7sFmQvlwQVXQ6uJ0J+bym/0N/nw7lEYNhPTKuQ4JbTrCl7g
+ GQGQ==
+X-Gm-Message-State: AOAM532PujqAvPNG8xBAnHZ8W7U1ofwMCy0eKbzOG01cQcQ6DJBrE8jG
+ 0fB7xeoTpf19bnGr1W/fy0NUAI64OE9sJA==
+X-Google-Smtp-Source: ABdhPJxQszY5/eViak38osQUCzxe1jUoCt4XOlaIPpdd6q63dJ1N2so1JtYxngv0wJ4+ptNmOovZvg==
+X-Received: by 2002:a63:d001:: with SMTP id z1mr5745239pgf.368.1630025316929; 
+ Thu, 26 Aug 2021 17:48:36 -0700 (PDT)
+Received: from zsm-linux.mtv.corp.google.com
+ ([2620:15c:202:201:515e:ea9f:fb49:198d])
+ by smtp.googlemail.com with ESMTPSA id z1sm8979258pjr.0.2021.08.26.17.48.35
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 26 Aug 2021 17:48:36 -0700 (PDT)
+From: Zubin Mithra <zsm@chromium.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1630018892825587034-webhooks-bot@alsa-project.org>
-References: <1630018892825587034-webhooks-bot@alsa-project.org>
-Subject: Error in recording and playing at the same time on raspberry pi
-Message-Id: <20210826230141.F0C34F801D8@alsa1.perex.cz>
-Date: Fri, 27 Aug 2021 01:01:41 +0200 (CEST)
+Subject: [PATCH] ALSA: pcm: fix divide error in snd_pcm_lib_ioctl
+Date: Thu, 26 Aug 2021 17:48:21 -0700
+Message-Id: <20210827004821.3658015-1-zsm@chromium.org>
+X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: groeck@chromium.org, tiwai@suse.com, Zubin Mithra <zsm@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,22 +100,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #174 was opened from amirush786:
+Syzkaller reported a divide error in snd_pcm_lib_ioctl. fifo_size
+is of type snd_pcm_uframes_t(unsigned long). If frame_size
+is 0x100000000, the error occurs.
 
-I am try to record and play at the same time. I have a speaker connected to pi via aux cable. I have to play a sound from the speaker and also re ord it at the same time from the tool which is seeed microphone tool which is connected to pi. 
-I am able to do that but the recorded file has some hissssshhhhhhhh sound in it don't know why it's coming out to that way. But when I do a individual record I can hear a bit proper noise and less of hisshy noise in it. 
-And also how can I check the capture sound is high or not. I followed the approach below.
- I did Alsamixer command and it's shows me this.
-So after that I typed in F6 to change my card to seeed card.
-Then is scroll down to seed card and hit enter. So I see this.
-Then I press f4 and I see this so I don't know where should I see that capture is high.
-This is the last thing that messing with me.
+Fixes: a9960e6a293e ("ALSA: pcm: fix fifo_size frame calculation")
+Signed-off-by: Zubin Mithra <zsm@chromium.org>
+---
+ sound/core/pcm_lib.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-![20210822_200619.jpg](https://user-images.githubusercontent.com/31735000/131046816-b77895b8-f6c8-4faa-b624-283100ad00f8.jpg)
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index 7d5883432085..e41b4e01aa37 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -1746,7 +1746,7 @@ static int snd_pcm_lib_ioctl_fifo_size(struct snd_pcm_substream *substream,
+ 		channels = params_channels(params);
+ 		frame_size = snd_pcm_format_size(format, channels);
+ 		if (frame_size > 0)
+-			params->fifo_size /= (unsigned)frame_size;
++			params->fifo_size /= (unsigned long)frame_size;
+ 	}
+ 	return 0;
+ }
+-- 
+2.33.0.259.gc128427fd7-goog
 
-![20210822_200626.jpg](https://user-images.githubusercontent.com/31735000/131046829-fab9edb3-d9b2-4938-be84-e7dcccfb4aaf.jpg)
-
-![20210822_200641.jpg](https://user-images.githubusercontent.com/31735000/131046851-631a8e34-33f3-4e88-b971-726b2fdd7756.jpg)
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/174
-Repository URL: https://github.com/alsa-project/alsa-lib
