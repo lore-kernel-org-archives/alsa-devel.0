@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16B8EC432BE
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 20:38:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0968C432BE
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 20:39:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3949561004
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 20:38:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3949561004
+	by mail.kernel.org (Postfix) with ESMTPS id 5F42560FF2
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 20:39:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5F42560FF2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7819B1710;
-	Fri, 27 Aug 2021 22:37:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7819B1710
+	by alsa0.perex.cz (Postfix) with ESMTPS id E62A3171E;
+	Fri, 27 Aug 2021 22:38:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E62A3171E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630096701;
-	bh=XoBO4El49E87nWgvsXM1AS51xtF9DuGPFfrZg7YDtHU=;
+	s=default; t=1630096741;
+	bh=HaWqJQCdXDNm/VPT29612N+zEl9D80xtteDHNV0dfHk=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=njtqK660z/Fv/BcmPZwbJqwQDYe+rmphdx0tE2yDnihrP1xPmxPSOru0/cd6n1sck
-	 +iqtbNMJ9gtLAlCrugwXYtfWbOvEuKkz0xda41AfXWuWWsxyKQMsB31KyeqEWL8PYY
-	 LZyZoNmjER8SSyqg+HKIfoooOyJydpZI+SREa+XM=
+	b=K4KmntAj3ppm0fLj2NMOTQHesfuvD3WkI57jwrOASsP5ule1RNqE/igg56q6fPb1h
+	 E3Sa0I6FOxAixv6I5beVdujwqYa3RD92A+5Ent9wGaxcXIf2DVxtWzzZyjM2/E8XVu
+	 Ndy4mdKNARBbKPe8zQnh7AHu82l+BeBextEZOOSE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 21F48F80107;
-	Fri, 27 Aug 2021 22:37:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2B99F80129;
+	Fri, 27 Aug 2021 22:37:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6FC8DF80129; Fri, 27 Aug 2021 22:37:29 +0200 (CEST)
+ id 32070F80129; Fri, 27 Aug 2021 22:37:42 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3EEF7F800FD
- for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2021 22:37:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3EEF7F800FD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2593FF80129
+ for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2021 22:37:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2593FF80129
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="nVTQiA1B"; 
+ header.b="cg87tP15"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="J23zIWhQ"
+ header.b="W7AOC59+"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 8CDA8223B5;
- Fri, 27 Aug 2021 20:37:22 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 6F7F0223E7;
+ Fri, 27 Aug 2021 20:37:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1630096642; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1630096654; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=c+9stMSPxVOLjr1FrBDisvc+txwodDpkXc4LntWDO+k=;
- b=nVTQiA1BoFK5W40HecCM3N30sjZgUDR/0cITByiIaQS7zY0ShT0EUrBkJ3shXvhhPFRyDo
- tkCjhYrqkE1GSWAmOSveeW9CWRUW/OiJB1aOuJmBJuWNry5cFJ7xmOYXEJEjWxqIOkegta
- VUyL4P2qG8FnDQrbiHtg3IfLDYcc4dI=
+ bh=UnO7twanOywhJsN7eVGpJZfv2gQvVghuop8JdfKFROo=;
+ b=cg87tP15BUgJ6jwm24ySWKRqgrG7rdhwKznv/qehNLCY7qLf80sRwBF6oQmMmdwm9atSXW
+ OrwR7rMDhzOFuZhcho7kCRriFTBJR1jYykTLUorHkly8jwWrNp+m9kU/HgJkKtfoShNZCa
+ MfgbZk+WGCTCD0SORHaSinFihDQzEvo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1630096642;
+ s=susede2_ed25519; t=1630096654;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=c+9stMSPxVOLjr1FrBDisvc+txwodDpkXc4LntWDO+k=;
- b=J23zIWhQ+GzYvJC3aTSIm66a55yCtLcX7reKPJjjXlnb/gF1vTpYF3ZtevQ3QmK5OdqTUC
- VmaqFhUOqNupqXAA==
+ bh=UnO7twanOywhJsN7eVGpJZfv2gQvVghuop8JdfKFROo=;
+ b=W7AOC59+c4F4r/JXOnhuyJp+UraDYfH9eD6+JElY0hRjuYP49/tya8bpW0MIv3m7YVJ4e6
+ 9Omrc9n+Zl+ehBAQ==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 6ECDDA3B9C;
- Fri, 27 Aug 2021 20:37:22 +0000 (UTC)
-Date: Fri, 27 Aug 2021 22:37:22 +0200
-Message-ID: <s5hk0k6sjy5.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 5ADAAA3B9E;
+ Fri, 27 Aug 2021 20:37:34 +0000 (UTC)
+Date: Fri, 27 Aug 2021 22:37:34 +0200
+Message-ID: <s5hilzqsjxt.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-Subject: Re: [PATCH 1/2] ALSA: hda/cs8409: Ensure Type Detection is only run
- on startup when necessary
-In-Reply-To: <20210827110252.5361-1-vitalyr@opensource.cirrus.com>
+Subject: Re: [PATCH 2/2] ALSA: hda/cs8409: Initialize Codec only in init fixup.
+In-Reply-To: <20210827110252.5361-2-vitalyr@opensource.cirrus.com>
 References: <20210827110252.5361-1-vitalyr@opensource.cirrus.com>
+ <20210827110252.5361-2-vitalyr@opensource.cirrus.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -101,18 +101,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 27 Aug 2021 13:02:51 +0200,
+On Fri, 27 Aug 2021 13:02:52 +0200,
 Vitaly Rodionov wrote:
 > 
 > From: Stefan Binding <sbinding@opensource.cirrus.com>
 > 
-> Type Detection should only be run after init and when the controls have been
-> built. There is no need to run it multiple times.
+> It is not necessary to initialize the codec during both probe and inside
+> the init fixup.
 > 
 > Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 > Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 
-Thanks, applied.
+Thanks, applied now.
 
 
 Takashi
