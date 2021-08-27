@@ -2,87 +2,93 @@ Return-Path: <SRS0=XrcS=NS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7DEBC432BE
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 06:06:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E958C432BE
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 06:15:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 599F460295
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 06:06:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 599F460295
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id E1E8760FD7
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 06:15:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E1E8760FD7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 075D516C1;
-	Fri, 27 Aug 2021 08:05:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 075D516C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7250516C0;
+	Fri, 27 Aug 2021 08:14:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7250516C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630044367;
-	bh=eAnsG5V5paWxdYVBkztLRRsCmWTErEPPWuFl4t8EGG0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1630044948;
+	bh=06U7WlKDfLudC8lliZ4jcC1t5yh0ujLxtLLI7dU4Pes=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JcZTkdaHoMrw8wtlDGoTilu50ihNUpUCW6/Zd/hxeJahHM4pTErexnsmC9ZDDMe9J
-	 tQi+lnc/BRlgoJh5ofHchyvVZcyQ4bECOCgfyziYlwZR+efJyUTmYNVKTSdoPTfi3T
-	 aCAq9i/vSU9pDFEdX0UCFqhnMidsHTM7bKCWaKdU=
+	b=GJhYEtsWeILg/T14yQO+OAFIRK1CDlIE5IDPn7idix4g1Oync4Gz8W741QkyOTp/k
+	 BpyaolBqcz7lbDq8h7nEEdz7T3Q0hrD8B1fWA7a2Tsb1q1Ex0KGblVUu1JGM5+0ceF
+	 JYppl2wibToPhMXBiGgPu1VQye6z+7AFmrkHP5R0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8BB05F80107;
-	Fri, 27 Aug 2021 08:05:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34298F80107;
+	Fri, 27 Aug 2021 08:14:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 008D4F80107; Fri, 27 Aug 2021 08:05:09 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id C4ECBF80129; Fri, 27 Aug 2021 08:14:53 +0200 (CEST)
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com
+ [IPv6:2607:f8b0:4864:20::831])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AFCD9F80054
- for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2021 08:05:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AFCD9F80054
+ by alsa1.perex.cz (Postfix) with ESMTPS id 12A20F800EE
+ for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2021 08:14:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12A20F800EE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="dEvuJrPY"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="cxDBAEAh"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 4CCFD22351;
- Fri, 27 Aug 2021 06:05:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1630044300; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=GE7H1BebSgn36A66RQiYSkTdcbYRyfuC4hjsDPB8wrg=;
- b=dEvuJrPYjq51q43BHkpavIg70fEjMC7SSrcgBSlbwfXcDcqOhReynq/PipEhG4va6Jz5u4
- hF09IRCxWLAzdlZOLXoaBXcgaX/MvlDYUZs+MQWn06RbiVnPBajn+p78Az7kuWcx9tOsMB
- qT0rkQiEu/ohy2P+ZkQJiq/tiRxnwZw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1630044300;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=GE7H1BebSgn36A66RQiYSkTdcbYRyfuC4hjsDPB8wrg=;
- b=cxDBAEAhtz4fhxy+GieOHUkPfxPOc1fteDhFabYWINBSO5XNnLAp0WXxHxEKrxOm+dPFhO
- wpjOHBDx1iz6xnCg==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 45AF0A3B91;
- Fri, 27 Aug 2021 06:05:00 +0000 (UTC)
-Date: Fri, 27 Aug 2021 08:05:00 +0200
-Message-ID: <s5hk0k7toc3.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Zubin Mithra <zsm@chromium.org>
-Subject: Re: [PATCH] ALSA: pcm: fix divide error in snd_pcm_lib_ioctl
-In-Reply-To: <20210827004821.3658015-1-zsm@chromium.org>
-References: <20210827004821.3658015-1-zsm@chromium.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: groeck@chromium.org, alsa-devel@alsa-project.org, tiwai@suse.com
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="NHZ1G+5i"
+Received: by mail-qt1-x831.google.com with SMTP id s32so4540869qtc.12
+ for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2021 23:14:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=J6wH6VQ81UagFZrBDuQfg5acAy2kFwSXlQ1BsRDUlyk=;
+ b=NHZ1G+5iMYP+XgOXH5UWH9rl5MgrCTsw24zUz0jzVVBz+Xmrufgkm+tVgv6ucD2UWG
+ S74VU3T8byNcrBZ2G9VlqPDsKNIlVcW/r7j+CkdQxc+++4BXjItHwYo0t3ILCKB/wnAp
+ CEKmr9AqAKKl9+MtHquG8IriOb8ywV+JJXsBmM4iUSnhM+hUfB9rj8osl8FsghWTCPB0
+ Ed0v7eB71ig5k51ZQTX8nfHtVuy+Qq6tE+lYQcDGYTg2vpU35rphOC1jKOIDR2H4eiDT
+ x2wJV28v4xylCa/M7SwI2380goxX5k+D7RH3VvD14mxt3AKl2gBkdxxTn6eiGYI3K//B
+ 0PEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=J6wH6VQ81UagFZrBDuQfg5acAy2kFwSXlQ1BsRDUlyk=;
+ b=rd4gvOglQwZ5kveTP08xC2LsGlb130PSNmKhpv/kqJH3pMgNwnRFm6fahFGEeXRY/A
+ TZAC1eRSBZoQYOB1iuLBQqptUdp8K9GKsQo3/QI1rhGxVvPGL9CFlGTf3aYXOy1VWUv8
+ MmPHlgWvozP+LIC/EprVUwY7O4AtqRwGixUsL1rfFa1+qtW/0nDO4SetdRhZ9isF5VjT
+ PU+Mtr3IN1xaeOsHJqlwc0e+RgHn237m5HmCSI9b2ToByoZwJuHzK/ExUarXXX1xwHn/
+ +ZKAxkiNze84wsfkhXKAGnGhnuG+wzCFbmnzCHWjPKM/wkr8ILCSyfd5HG7sWx7tINX4
+ a3Gw==
+X-Gm-Message-State: AOAM530d3rfJH9wELtZAHDT4bBuoviE7g1OysEd4digORRkXxeHa+isL
+ bWx1VGob/T/GmWHW2tnR51JRUGktm1p3yw+eZkg=
+X-Google-Smtp-Source: ABdhPJyrAdL7K8XPjqcwtnfWW1RsdpvIxn2uSbruNkxA69ge/iKoWUvnFJynkt+EtCBZhj7XUF4HWM80qKarwD1AKt8=
+X-Received: by 2002:ac8:5805:: with SMTP id g5mr6951210qtg.360.1630044880150; 
+ Thu, 26 Aug 2021 23:14:40 -0700 (PDT)
+MIME-Version: 1.0
+References: <1629975460-17990-1-git-send-email-shengjiu.wang@nxp.com>
+ <CAOMZO5BCsTMjJJPtLN6_seVcWb24A2ms11FP3HzR0i7t3GLSuA@mail.gmail.com>
+In-Reply-To: <CAOMZO5BCsTMjJJPtLN6_seVcWb24A2ms11FP3HzR0i7t3GLSuA@mail.gmail.com>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Fri, 27 Aug 2021 14:14:29 +0800
+Message-ID: <CAA+D8AOTAL9H8mr819v9VTQmJvNyKjnRNGPOX64LekjvXXGEcg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: fsl_rpmsg: add soc specific data structure
+To: Fabio Estevam <festevam@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Timur Tabi <timur@kernel.org>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, Shengjiu Wang <shengjiu.wang@nxp.com>,
+ linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,34 +104,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 27 Aug 2021 02:48:21 +0200,
-Zubin Mithra wrote:
-> 
-> Syzkaller reported a divide error in snd_pcm_lib_ioctl. fifo_size
-> is of type snd_pcm_uframes_t(unsigned long). If frame_size
-> is 0x100000000, the error occurs.
-> 
-> Fixes: a9960e6a293e ("ALSA: pcm: fix fifo_size frame calculation")
-> Signed-off-by: Zubin Mithra <zsm@chromium.org>
-> ---
->  sound/core/pcm_lib.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-> index 7d5883432085..e41b4e01aa37 100644
-> --- a/sound/core/pcm_lib.c
-> +++ b/sound/core/pcm_lib.c
-> @@ -1746,7 +1746,7 @@ static int snd_pcm_lib_ioctl_fifo_size(struct snd_pcm_substream *substream,
->  		channels = params_channels(params);
->  		frame_size = snd_pcm_format_size(format, channels);
->  		if (frame_size > 0)
-> -			params->fifo_size /= (unsigned)frame_size;
-> +			params->fifo_size /= (unsigned long)frame_size;
+On Thu, Aug 26, 2021 at 7:54 PM Fabio Estevam <festevam@gmail.com> wrote:
+>
+> Hi Shengjiu,
+>
+> On Thu, Aug 26, 2021 at 8:19 AM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
+>
+> > +       rpmsg->soc_data = of_device_get_match_data(&pdev->dev);
+> > +       if (rpmsg->soc_data) {
+>
+> This check is not necessary, because rpmsg->soc_data is always non-NULL.
+>
+> Other than that:
+>
+> Reviewed-by: Fabio Estevam <festevam@gmail.com>
 
-I guess we can drop the cast completely, instead?
-It'd be less ugliness.
+Thanks, I will update in v2.
 
-
-Thanks!
-
-Takashi
+Best regards
+wang shengjiu
