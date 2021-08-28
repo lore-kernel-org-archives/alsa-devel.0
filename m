@@ -1,91 +1,56 @@
-Return-Path: <SRS0=XrcS=NS=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=nf9P=NT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0968C432BE
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 20:39:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3854EC432BE
+	for <alsa-devel@archiver.kernel.org>; Sat, 28 Aug 2021 02:59:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5F42560FF2
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Aug 2021 20:39:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5F42560FF2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 8921460F45
+	for <alsa-devel@archiver.kernel.org>; Sat, 28 Aug 2021 02:59:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8921460F45
+Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E62A3171E;
-	Fri, 27 Aug 2021 22:38:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E62A3171E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7739D1708;
+	Sat, 28 Aug 2021 04:59:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7739D1708
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630096741;
-	bh=HaWqJQCdXDNm/VPT29612N+zEl9D80xtteDHNV0dfHk=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1630119595;
+	bh=iOa1MyDrhA9ekCwydrhBy4pFC9/WGwCeDUkKCVmW/SA=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=K4KmntAj3ppm0fLj2NMOTQHesfuvD3WkI57jwrOASsP5ule1RNqE/igg56q6fPb1h
-	 E3Sa0I6FOxAixv6I5beVdujwqYa3RD92A+5Ent9wGaxcXIf2DVxtWzzZyjM2/E8XVu
-	 Ndy4mdKNARBbKPe8zQnh7AHu82l+BeBextEZOOSE=
+	b=Df1i0LQYtFzm1zC2s4OR0dYq2plDj3hpH8WaggOIusUjXqlQBJQpYaJUZBD8kdPlt
+	 RXlV7AtOOYTBmO8dCZrMwoZs3GtBifExhzu8L9kGmzbpv9eORo9OH03W+PQ4hOBxip
+	 GWkYSA3dH5vmf73PqLVAckqJiaqqiMFiY0GQstkY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2B99F80129;
-	Fri, 27 Aug 2021 22:37:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BCBDFF80229;
+	Sat, 28 Aug 2021 04:59:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 32070F80129; Fri, 27 Aug 2021 22:37:42 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2593FF80129
- for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2021 22:37:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2593FF80129
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="cg87tP15"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="W7AOC59+"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 6F7F0223E7;
- Fri, 27 Aug 2021 20:37:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1630096654; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=UnO7twanOywhJsN7eVGpJZfv2gQvVghuop8JdfKFROo=;
- b=cg87tP15BUgJ6jwm24ySWKRqgrG7rdhwKznv/qehNLCY7qLf80sRwBF6oQmMmdwm9atSXW
- OrwR7rMDhzOFuZhcho7kCRriFTBJR1jYykTLUorHkly8jwWrNp+m9kU/HgJkKtfoShNZCa
- MfgbZk+WGCTCD0SORHaSinFihDQzEvo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1630096654;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=UnO7twanOywhJsN7eVGpJZfv2gQvVghuop8JdfKFROo=;
- b=W7AOC59+c4F4r/JXOnhuyJp+UraDYfH9eD6+JElY0hRjuYP49/tya8bpW0MIv3m7YVJ4e6
- 9Omrc9n+Zl+ehBAQ==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 5ADAAA3B9E;
- Fri, 27 Aug 2021 20:37:34 +0000 (UTC)
-Date: Fri, 27 Aug 2021 22:37:34 +0200
-Message-ID: <s5hilzqsjxt.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-Subject: Re: [PATCH 2/2] ALSA: hda/cs8409: Initialize Codec only in init fixup.
-In-Reply-To: <20210827110252.5361-2-vitalyr@opensource.cirrus.com>
-References: <20210827110252.5361-1-vitalyr@opensource.cirrus.com>
- <20210827110252.5361-2-vitalyr@opensource.cirrus.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- Stefan Binding <sbinding@opensource.cirrus.com>, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org
+ id 95F2FF80240; Sat, 28 Aug 2021 04:59:00 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 817DFF800EE
+ for <alsa-devel@alsa-project.org>; Sat, 28 Aug 2021 04:58:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 817DFF800EE
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1630119532786392927-webhooks-bot@alsa-project.org>
+References: <1630119532786392927-webhooks-bot@alsa-project.org>
+Subject: [PATCH 0/2] ctl/rawmidi/hwdep: fix trivial bugs
+Message-Id: <20210828025900.95F2FF80240@alsa1.perex.cz>
+Date: Sat, 28 Aug 2021 04:59:00 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,18 +66,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 27 Aug 2021 13:02:52 +0200,
-Vitaly Rodionov wrote:
-> 
-> From: Stefan Binding <sbinding@opensource.cirrus.com>
-> 
-> It is not necessary to initialize the codec during both probe and inside
-> the init fixup.
-> 
-> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+alsa-project/alsa-gobject pull request #62 was opened from takaswie:
 
-Thanks, applied now.
+Current implementation of libalsactl0, libalsarawmidi0, and libalsahwdep0 includes trivial bugs such as usage of uninitialized local variable. This patchset fixes the bugs.
 
+```
+Takashi Sakamoto (2):
+  ctl/rawmidi/hwdep: fix compiler warning due to uninitialized variables
+  seq: use safer way to copy strings
 
-Takashi
+ src/ctl/query.c       | 4 ++--
+ src/hwdep/query.c     | 4 ++--
+ src/rawmidi/query.c   | 4 ++--
+ src/seq/client-info.c | 2 +-
+ src/seq/port-info.c   | 2 +-
+ src/seq/query.c       | 2 +-
+ src/seq/queue-info.c  | 2 +-
+ 7 files changed, 10 insertions(+), 10 deletions(-)
+```
+
+Request URL   : https://github.com/alsa-project/alsa-gobject/pull/62
+Patch URL     : https://github.com/alsa-project/alsa-gobject/pull/62.patch
+Repository URL: https://github.com/alsa-project/alsa-gobject
