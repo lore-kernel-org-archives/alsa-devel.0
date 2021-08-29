@@ -2,82 +2,77 @@ Return-Path: <SRS0=HqWb=NX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF0F5C432BE
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 14:41:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1ACEC432BE
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 15:13:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 00FAB60724
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 14:41:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 00FAB60724
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id A18B861056
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 15:13:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A18B861056
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=dnyon.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 77DD51732;
-	Wed,  1 Sep 2021 16:40:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77DD51732
+	by alsa0.perex.cz (Postfix) with ESMTPS id 694961739;
+	Wed,  1 Sep 2021 17:12:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 694961739
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630507292;
-	bh=gW7gQRqtu48//sdUXUb60qqTbaW4Xb1X9H2hO7nOZ2w=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=BfAmJ6ZMJ7LzfUCosg+dGxspFP8f+/ifGJi7CjNYEsTfHLYBT87nyhqGyTJonaS/j
-	 BtFnA6/YYz9k2scxG5nhBwkwhtwIL9lsYcYIQjhF1+nJNawEyGl2bTqXpiecx0/gjY
-	 IPRWvTVoGHkVevQbMSnbW8fWb4htN50GFbdqm0UA=
+	s=default; t=1630509206;
+	bh=K7WOQRGdrSf+PbNjqY1YtmWTU3lNTVPtvBKbaWcq284=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=spRlSHihLnvLGmzJt4KfnMSpdsWVymWWpgbzYBLL6O1YO4B3g/cKYL5eDcUjw7IgF
+	 x+b9igoJrNXIhTtLHfOGZ60BTNzjRrFiOtGvPxs4jQ8JnHyay1imEErQTPjmrSEYQu
+	 eYcrhFVmXZHLqQiA4lGyRf/oPevGSnJeZuKPxFzg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1DD27F80227;
-	Wed,  1 Sep 2021 16:40:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E1D3AF8020D;
+	Wed,  1 Sep 2021 17:12:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4F0B1F8020D; Wed,  1 Sep 2021 16:40:35 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 70ACDF8025B; Sun, 29 Aug 2021 17:50:02 +0200 (CEST)
+Received: from dnyon.com (dnyon.com [82.223.165.189])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ECBAFF8020D
- for <alsa-devel@alsa-project.org>; Wed,  1 Sep 2021 16:40:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ECBAFF8020D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8861EF80143
+ for <alsa-devel@alsa-project.org>; Sun, 29 Aug 2021 17:49:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8861EF80143
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mO8SBRhB"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FD236103A;
- Wed,  1 Sep 2021 14:40:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1630507225;
- bh=gW7gQRqtu48//sdUXUb60qqTbaW4Xb1X9H2hO7nOZ2w=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=mO8SBRhBWVI0fL76IzyqQYUKgUOKn6KUgUUThnriQj5Nd97FL5zYL/YhqJCVha6s4
- zv18x+pUY/CcF+e6WRd2TJMbLxQuenGKiH78xj3BuA5ZxcIUSd2Z1FBTofmHdiySDV
- ZkmcrvtRsW3CB5Cg8HBIUg2oxi6HLLVhf0UaMjdxlQG58uQsK996ppMIr8aCsdxdGU
- 3ZIKJDYdAqmYtmuG4Im+lTBIb1RNbbXSoQfPUV574QQfVBM1lXrCr2XPEOQPCgAQi+
- HAw2kbpAkW7VB+n6sw+fnUR44Vu6o1gp9pWyvaB+chmbt5p/QfNcG6oPdc87F1jgpc
- 4REP9xj23chAw==
-Date: Wed, 1 Sep 2021 15:39:50 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Maxime Ripard <maxime@cerno.tech>
-Subject: Re: [PATCH v2 01/52] ASoC: dt-bindings: Add WM8978 Binding
-Message-ID: <20210901143950.GE5976@sirena.org.uk>
-References: <20210901091852.479202-1-maxime@cerno.tech>
- <20210901091852.479202-2-maxime@cerno.tech>
+ dkim=pass (2048-bit key) header.d=dnyon.com header.i=@dnyon.com
+ header.b="YomUul1y"
+Received: from dnyon.com (45.74.222.87.dynamic.jazztel.es [87.222.74.45])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by dnyon.com (Postfix) with ESMTPSA id A336040442;
+ Sun, 29 Aug 2021 15:49:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dnyon.com; s=mail;
+ t=1630252195; bh=K7WOQRGdrSf+PbNjqY1YtmWTU3lNTVPtvBKbaWcq284=;
+ h=From:To:Cc:Subject:Date:From;
+ b=YomUul1yURUkZT7vFN/EK4seETy+lbrdMjRM5XfjLve9o4BKbNKAOF4cGR27klIgv
+ 57uMLgbQPC9pRHImkHtpjvtgtajEg1Hl4S6b9VorG0w/opcJyirfUVlE9OzI7DJKFw
+ WyKnWDjackbOgKu5GaOsK38orAC8g1nHjBvQGbRxiFY5hW/fzOUFkWadBmkuKGmqhx
+ uJQ54ZV32NMNlPtNFMOIOIudQE4z08729sJRDoGSxzKyeLoYa71r5Wsam1us58ezzr
+ 7VxnfeW9/S42vguVYF0+p6BHQqr1GqQumyvAsE/mZU8K8BEwzlHSGf+mYEvmsXVenV
+ w6eR50DZYwfoQ==
+From: Alejandro Tafalla <atafalla@dnyon.com>
+To: 
+Subject: [PATCH 0/2] Add reset-gpios handling for max98927
+Date: Sun, 29 Aug 2021 17:45:42 +0200
+Message-Id: <20210829154545.383119-1-atafalla@dnyon.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="jho1yZJdad60DJr+"
-Content-Disposition: inline
-In-Reply-To: <20210901091852.479202-2-maxime@cerno.tech>
-X-Cookie: Who was that masked man?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Wed, 01 Sep 2021 17:12:33 +0200
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Rob Herring <robh@kernel.org>, patches@opensource.cirrus.com,
- linux-sunxi@googlegroups.com,
- Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
- Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>,
- linux-arm-kernel@lists.infradead.org
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>,
+ Mark Brown <broonie@kernel.org>, Alejandro Tafalla <atafalla@dnyon.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,33 +88,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The max98927 codec on some devices (i.e. Xiaomi Mi A2 Lite phone) require
+hardware-resetting the codec by driving a reset-gpio. This series add
+support for it through an optional reset-gpios property.
 
---jho1yZJdad60DJr+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Alejandro Tafalla (2):
+  ASoC: max98927: Handle reset gpio when probing i2c
+  dt-bindings: sound: max98927: Add reset-gpios optional property
 
-On Wed, Sep 01, 2021 at 11:18:01AM +0200, Maxime Ripard wrote:
-> Even though we had the wm8978 driver for some time and a number of
-> boards using it already, we never had a binding for it. Let's add it
-> based on what the driver expects and the boards are providing.
+ .../devicetree/bindings/sound/max9892x.txt       |  3 +++
+ sound/soc/codecs/max98927.c                      | 16 ++++++++++++++++
+ sound/soc/codecs/max98927.h                      |  1 +
+ 3 files changed, 20 insertions(+)
 
-What's the story with dependencies here?  I don't have a cover letter or
-anything and there seem to be a bunch of tangentially related patches in
-a series here.
+-- 
+2.32.0
 
---jho1yZJdad60DJr+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEvkLYACgkQJNaLcl1U
-h9COjgf/fijxSc6om+F3lPh/ILpcm5YNkeHiwuGd2TmlFOi6zDZeXDwiybEHRkbH
-ZmU32/tzm9PAR4yOJi4KNUojOtJTFF3leZ8aEsxzdHzcfIeYUabUIDQOaK/MhxvA
-3je7g87V/sSKnH42SWdWlXQRedNYqIsgldGiaG8yBqqK9RKoKv+GXUONjeMolCiq
-i7faNvg1DcfxdLGT7SOL42eQNNPUr7/Dn9hP+mDapYMQ644tY2/ShqzCOr1tMmvi
-ylN1/xe8BdIZCLKT8O8Swu5s6lYDCw+BFPA4ZBix0fds4G+ANU63U8XMDfE9qHKh
-aETbtlWwCRiqEAYQtlX2hvdmz6Sr+g==
-=Z6PP
------END PGP SIGNATURE-----
-
---jho1yZJdad60DJr+--
