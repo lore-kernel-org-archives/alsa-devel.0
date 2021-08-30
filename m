@@ -1,83 +1,62 @@
-Return-Path: <SRS0=jhkO=NU=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=+0+W=NV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF4BFC432BE
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Aug 2021 22:14:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31F33C432BE
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Aug 2021 00:45:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7593D60F46
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Aug 2021 22:14:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7593D60F46
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=dnyon.com
+	by mail.kernel.org (Postfix) with ESMTPS id 44E4660F51
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Aug 2021 00:45:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 44E4660F51
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A41716B5;
-	Mon, 30 Aug 2021 00:13:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A41716B5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3A46A16B6;
+	Mon, 30 Aug 2021 02:44:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A46A16B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630275283;
-	bh=aw1SvFqyWFMuJYWbD3SZOO+rClzP6Lw/Acya+RIY0Z4=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=tiFRT56ZicuPAHNP/4tExWihHw84fzfiUq0AecY9pDbwEYH2XEeDSLISIdM41pxVa
-	 r30sFNzykga9PP7vDuqUk53mkKEAzQWe7QsfU+c/mpEu+ZKpO4/JGFFmF88SDSz7I2
-	 wJeHLD7PFPVy2B8UOeHaqB8GoQY4rgTlV2rILs4E=
+	s=default; t=1630284349;
+	bh=GecObyQt5Tv49ks222EkGUqSuXfZs/ULsfQYAsJz2vo=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=FhNcdcoaqX21tLJBMX0/NExS6C94WkTVI5zwQ7xWATcmLSBu723ha1LlYOya7Of3H
+	 ps2cf/UNOS6pz0NfMMghKppd76lsTLJRrwPHZ5wBzAXnZOt255WvxZx4CHh74q0plB
+	 pV/aqtcsn2HhdLmEM05S1hSt/dIHlR906qLITpDE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB1ACF80254;
-	Mon, 30 Aug 2021 00:13:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9EBF0F80254;
+	Mon, 30 Aug 2021 02:44:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CDD9EF8025B; Mon, 30 Aug 2021 00:13:51 +0200 (CEST)
-Received: from dnyon.com (dnyon.com [82.223.165.189])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6EC17F80246
- for <alsa-devel@alsa-project.org>; Mon, 30 Aug 2021 00:13:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EC17F80246
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=dnyon.com header.i=@dnyon.com
- header.b="0Rm6SJJk"
-Received: from dnyon.com (45.74.222.87.dynamic.jazztel.es [87.222.74.45])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by dnyon.com (Postfix) with ESMTPSA id B9FFC40442;
- Sun, 29 Aug 2021 22:13:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dnyon.com; s=mail;
- t=1630275223; bh=aw1SvFqyWFMuJYWbD3SZOO+rClzP6Lw/Acya+RIY0Z4=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=0Rm6SJJkrMKPuF+qpFkge2kUEP2OnceG6Oj82j5mVk5rpJ5ifwekPM3xIcBdpVKax
- guOds/fzBIIN3+sEkB4s1Fp9HtUlr1/h4Uv08V2rinlaUaTJc8lL29/5Ha4F+dYDgx
- B4E7w15wun17uk/RXfxooBui4QdPCc60SOfzBdHIo1KCXqPLLFMbpQ+2y7hAMTWFLB
- iOTzEORaqZO9+ueEg+7vyGzdApzmR6Bk6ybW2A3J1ZTkk3eGxfslMVDbb0kY3y4g9w
- yOlJCrN23bjtoj0b8zE40rkjOmMtmAq5HPN7d7TbuLOyS3D+aQvDURkklfNeMu5IZu
- +xhjR9EBwcRbA==
-Date: Mon, 30 Aug 2021 00:13:41 +0200
-From: Alejandro Tafalla <atafalla@dnyon.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH RESEND 1/2] ASoC: max98927: Handle reset gpio when
- probing i2c
-Message-ID: <YSwGlXEFRuUvNGZ7@dnyon.com>
-References: <20210829170019.384632-1-atafalla@dnyon.com>
- <20210829170019.384632-2-atafalla@dnyon.com>
- <CAHp75VdY9uoTWeJEroi3iChnToUSxe+Henmg7Yux+UWkK59jQg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=mensaje
-In-Reply-To: <CAHp75VdY9uoTWeJEroi3iChnToUSxe+Henmg7Yux+UWkK59jQg@mail.gmail.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+ id 4E0D7F8025B; Mon, 30 Aug 2021 02:44:57 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 9730FF80246
+ for <alsa-devel@alsa-project.org>; Mon, 30 Aug 2021 02:44:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9730FF80246
+Date: 30 Aug 2021 09:44:44 +0900
+X-IronPort-AV: E=Sophos;i="5.84,362,1620658800"; d="scan'208";a="92263129"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 30 Aug 2021 09:44:44 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 89D644003866;
+ Mon, 30 Aug 2021 09:44:44 +0900 (JST)
+Message-ID: <878s0jzrpf.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH] ASoC: audio-graph: respawn Platform Support
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
+ Olivier MOYSAN <olivier.moysan@foss.st.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,57 +72,80 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello Andy,
 
-On Sun, Aug 29, 2021 at 11:22:35PM +0300, Andy Shevchenko wrote:
-> > +       max98927->reset_gpio
-> > +               = devm_gpiod_get_optional(&i2c->dev, "reset",
-> > GPIOD_OUT_HIGH);
-> > +       if (IS_ERR(max98927->reset_gpio)) {
-> > +               ret = PTR_ERR(max98927->reset_gpio);
-> > +               dev_err(&i2c->dev,
-> > +                       "Failed to request GPIO reset pin, error %d\n",
-> > ret);
-> > +               return ret;
-> 
-> 
-> 
-> Spamming logs is not good. Use
-> 
-> return dev_err_probe(...);
-Okay.
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+
+commit 63f2f9cceb09f8 ("ASoC: audio-graph: remove Platform support")
+removed Platform support from audio-graph, because it doesn't have
+"plat" support on DT (simple-card has).
+But, Platform support is needed if user is using
+snd_dmaengine_pcm_register() which adds generic DMA as Platform.
+And this Platform dev is using CPU dev.
+
+Without this patch, at least STM32MP15 audio sound card is no more
+functional (v5.13 or later). This patch respawn Platform Support on
+audio-graph again.
+
+Reported-by: Olivier MOYSAN <olivier.moysan@foss.st.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+This patch needs Olivier's Tested-by
+
+ sound/soc/generic/audio-graph-card.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+index 5e71382467e8..546f6fd0609e 100644
+--- a/sound/soc/generic/audio-graph-card.c
++++ b/sound/soc/generic/audio-graph-card.c
+@@ -285,6 +285,7 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 	if (li->cpu) {
+ 		struct snd_soc_card *card = simple_priv_to_card(priv);
+ 		struct snd_soc_dai_link_component *cpus = asoc_link_to_cpu(dai_link, 0);
++		struct snd_soc_dai_link_component *platforms = asoc_link_to_platform(dai_link, 0);
+ 		int is_single_links = 0;
  
-> > +       }
-> > +
-> > +       if (max98927->reset_gpio) {
-> > +               gpiod_set_value_cansleep(max98927->reset_gpio, 0);
-> 
-> 
-> 
-> You may request the pin in a proper state, also with current code you seems
-> mishandle the conception of the logical pin level vs. physical one.
-Right, i made the mistake of basing off an old driver that use legacy
-functions.
+ 		/* Codec is dummy */
+@@ -313,6 +314,7 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 			dai_link->no_pcm = 1;
  
-> > diff --git a/sound/soc/codecs/max98927.h b/sound/soc/codecs/max98927.h
-> > index 05f495db914d..5c04bf38e24a 100644
-> > --- a/sound/soc/codecs/max98927.h
-> > +++ b/sound/soc/codecs/max98927.h
-> > @@ -255,6 +255,7 @@ struct max98927_priv {
-> >         struct regmap *regmap;
-> >         struct snd_soc_component *component;
-> >         struct max98927_pdata *pdata;
-> 
-> 
-> 
-> > +       struct gpio_desc *reset_gpio;
-> 
-> 
-> Why? Are you using it outside of ->probe()?
-No, I'll delete it and use a local variable.
+ 		asoc_simple_canonicalize_cpu(cpus, is_single_links);
++		asoc_simple_canonicalize_platform(platforms, cpus);
+ 	} else {
+ 		struct snd_soc_codec_conf *cconf = simple_props_to_codec_conf(dai_props, 0);
+ 		struct snd_soc_dai_link_component *codecs = asoc_link_to_codec(dai_link, 0);
+@@ -366,6 +368,7 @@ static int graph_dai_link_of(struct asoc_simple_priv *priv,
+ 	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, li->link);
+ 	struct snd_soc_dai_link_component *cpus = asoc_link_to_cpu(dai_link, 0);
+ 	struct snd_soc_dai_link_component *codecs = asoc_link_to_codec(dai_link, 0);
++	struct snd_soc_dai_link_component *platforms = asoc_link_to_platform(dai_link, 0);
+ 	char dai_name[64];
+ 	int ret, is_single_links = 0;
+ 
+@@ -383,6 +386,7 @@ static int graph_dai_link_of(struct asoc_simple_priv *priv,
+ 		 "%s-%s", cpus->dai_name, codecs->dai_name);
+ 
+ 	asoc_simple_canonicalize_cpu(cpus, is_single_links);
++	asoc_simple_canonicalize_platform(platforms, cpus);
+ 
+ 	ret = graph_link_init(priv, cpu_ep, codec_ep, li, dai_name);
+ 	if (ret < 0)
+@@ -608,6 +612,7 @@ static int graph_count_noml(struct asoc_simple_priv *priv,
+ 
+ 	li->num[li->link].cpus		= 1;
+ 	li->num[li->link].codecs	= 1;
++	li->num[li->link].platforms     = 1;
+ 
+ 	li->link += 1; /* 1xCPU-Codec */
+ 
+@@ -630,6 +635,7 @@ static int graph_count_dpcm(struct asoc_simple_priv *priv,
+ 
+ 	if (li->cpu) {
+ 		li->num[li->link].cpus		= 1;
++		li->num[li->link].platforms     = 1;
+ 
+ 		li->link++; /* 1xCPU-dummy */
+ 	} else {
+-- 
+2.25.1
 
-> With Best Regards,
-> Andy Shevchenko
-Thank you for the feedback, I'll address all the issues in a V2.
-
-Alejandro Tafalla
