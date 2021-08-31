@@ -7,50 +7,50 @@ X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38A6EC432BE
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Aug 2021 18:16:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 505CAC432BE
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Aug 2021 18:19:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 475D660F46
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Aug 2021 18:16:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 475D660F46
+	by mail.kernel.org (Postfix) with ESMTPS id 9F479610F7
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Aug 2021 18:19:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9F479610F7
 Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0537216E3;
-	Tue, 31 Aug 2021 20:15:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0537216E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4E22616FA;
+	Tue, 31 Aug 2021 20:18:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E22616FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630433798;
-	bh=boKWFl8yXSI0mbiu6CqTmbzn7sZj4Qi6EakqOBgIWJs=;
+	s=default; t=1630433989;
+	bh=4Jsu7rrLk+5aC0lbz+W9L7qrwwMV5M4zJS6ATMlWpBg=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ATaZdDKrkOpIyDhOoH5R+Y48RYoA3tphzSdAcPH8siy9aAzOw2zPsI5v0UpYVQ3D3
-	 q1j20VeIfYmaAFpsJ+JwpxGhW5W8ivgjqIpKru1b4dCaAU8IKavSsCFYe1f4tzL4ry
-	 10fBIl+G8w/9GYHivaejphYjeOQbWkwI5PhoK7n0=
+	b=aVLQaE3Z+HeDuuFlXGcxjpwP6XM7qEan0N4m+HxuMZ9m73FFXv38tWICvhtPcu1mw
+	 pgR2nXPfNKCJ5Jh0NdlqXLfJUPBFB7hQA3sCzquZ4FuD+4ajbXeiyW9lyDga3IkHD0
+	 beW/TcvHGuX+KWTiGS96Oi3iThjbOf2N+SEEWZY4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 912CCF80254;
-	Tue, 31 Aug 2021 20:15:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C5EAEF80254;
+	Tue, 31 Aug 2021 20:18:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 41645F8025B; Tue, 31 Aug 2021 20:15:46 +0200 (CEST)
+ id 52231F8025B; Tue, 31 Aug 2021 20:18:57 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 5918AF800BE
- for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2021 20:15:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5918AF800BE
+ by alsa1.perex.cz (Postfix) with ESMTP id CFA52F80127
+ for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2021 20:18:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFA52F80127
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1630433736196546078-webhooks-bot@alsa-project.org>
-References: <1630433736196546078-webhooks-bot@alsa-project.org>
+In-Reply-To: <1630433929608411074-webhooks-bot@alsa-project.org>
+References: <1630433929608411074-webhooks-bot@alsa-project.org>
 Subject: Sample rate issues with M-Audio M-Track 2x2M
-Message-Id: <20210831181546.41645F8025B@alsa1.perex.cz>
-Date: Tue, 31 Aug 2021 20:15:46 +0200 (CEST)
+Message-Id: <20210831181857.52231F8025B@alsa1.perex.cz>
+Date: Tue, 31 Aug 2021 20:18:57 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,7 +66,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #176 was opened from powerjungle:
+alsa-project/alsa-lib issue #176 was edited from powerjungle:
 
 At random points the sample rate changes, but the applications continue to use the previous rate. This results in sound being lower/higher pitch then normal. My own voice when using the application [Mumble](https://github.com/mumble-voip/mumble) consistently becomes higher pitch and sounds pretty funny, friends had a good laugh. I have some diffs of ALSA dumps.
 
@@ -145,6 +145,8 @@ Afterwards at a random point the output gets fixed, but the sample rate that get
 > 		value.0 0
 > 		value.1 0
 ```
+
+Also sometimes when listening to music in Youtube using Firefox, the sound becomes higher pitch, but I cannot reproduce it, can't find the cause.
 
 I'm running OpenSUSE Tumbleweed 5.13.13-1-default.
 
