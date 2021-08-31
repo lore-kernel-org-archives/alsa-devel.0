@@ -2,80 +2,55 @@ Return-Path: <SRS0=fy3w=NW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70E35C432BE
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Aug 2021 02:59:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B75DCC432BE
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Aug 2021 05:14:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 541D56101C
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Aug 2021 02:59:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 541D56101C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	by mail.kernel.org (Postfix) with ESMTPS id E6AE66103E
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Aug 2021 05:14:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E6AE66103E
+Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1CE26172B;
-	Tue, 31 Aug 2021 04:58:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CE26172B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 68F04170C;
+	Tue, 31 Aug 2021 07:13:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68F04170C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630378742;
-	bh=Z14Qi8SHVgfiDWBUFzxIcbQXIF1ZoETaRiQ51tRlyeM=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1630386846;
+	bh=BHcH9gQLWBTmuRmksjY4kt28rFbdf57/0Ohm+htT8Cw=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HT5yT9JaGFrJEotr0E1HFYGhf1vnXCtEHsRe/VfIzviNUnaSXowIraZSGBiAFZYBX
-	 RPqPHHfbbMcmNhnLo4cVnU8W7K3tuzEqpaYOT5jXIl+vQW6YP/mfuXP8B7YbAvRzJk
-	 ldZwnijnjnnuEl5dP8pe/irrTFGwZ8XLL2B057fI=
+	b=emHiIjomVKsoksfZyhJfKY7ru1ypVDuLvMO8nvhyL9+0rovfDX3alfV5sT2YkvJl4
+	 uQZesxSEcs8xE1pnt+AhAY/LJTM9gTe0dm5O83zN6204pIvwQtbyXsfrl8ei5+/qjW
+	 6S3Cc9eRzrI4YrnkCBY/yb1AoKwQU5LpamOK41lY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7BFC5F80254;
-	Tue, 31 Aug 2021 04:58:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C194BF80254;
+	Tue, 31 Aug 2021 07:13:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 32DCDF8025B; Tue, 31 Aug 2021 04:58:09 +0200 (CEST)
-Received: from bombadil.infradead.org (bombadil.infradead.org
- [IPv6:2607:7c80:54:e::133])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E7AECF80127
- for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2021 04:58:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7AECF80127
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="vGqMtn6Y"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
- Subject:Sender:Reply-To:Content-ID:Content-Description;
- bh=6bWlZrjczUiP7EZOqide7LZDeaMc6AyGD2CmjTuWKWY=; b=vGqMtn6YJ7xkPoqIo6XDG75UYF
- jNnCxOkBlk3zRUx9esaU2FbGYJ4iMvQphHkgoNIFMohCar2nZ51uO8LLDS0IPR3e+je1m5k7hc2Z/
- xzkVmLblKIX5gv0KG8FazKFvNz9SE8FOKAovUv2gzVhr29CEJG08LAZ0F7zK/CZwYrOwFNy0Wa7C3
- Go8Pbcjs4iM2x4qE9FFesTuLkMlx1L9nlEroO7GN6N0gddid0OEe3CmBh6U737C/qWZNLDGCN61Lc
- QyJY6TvkusHCYgeTnw1eEsg/fgDsIESb6bOo3SqsFABhehond4c2IgDhEqpxZFyfwo+ykQq7kOHge
- 6CAua5Dg==;
-Received: from [2601:1c0:6280:3f0::aa0b]
- by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mKtyC-0011vi-EV; Tue, 31 Aug 2021 02:57:52 +0000
-Subject: Re: [PATCH] ASoC: mediatek: mt8195: add MTK_PMIC_WRAP dependency
-To: Trevor Wu <trevor.wu@mediatek.com>, broonie@kernel.org, tiwai@suse.com,
- matthias.bgg@gmail.com
-References: <20210831021303.5230-1-trevor.wu@mediatek.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <1630c5bd-7f9a-ef63-0476-74c6077adb7f@infradead.org>
-Date: Mon, 30 Aug 2021 19:57:51 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ id CCC91F8025B; Tue, 31 Aug 2021 07:13:13 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id D5E25F800BE
+ for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2021 07:13:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5E25F800BE
 MIME-Version: 1.0
-In-Reply-To: <20210831021303.5230-1-trevor.wu@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1630386782500263929-webhooks-bot@alsa-project.org>
+References: <1630386782500263929-webhooks-bot@alsa-project.org>
+Subject: Typo in alsamixer(1) manpage
+Message-Id: <20210831051313.CCC91F8025B@alsa1.perex.cz>
+Date: Tue, 31 Aug 2021 07:13:13 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,44 +66,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 8/30/21 7:13 PM, Trevor Wu wrote:
-> randconfig builds show the warning below,
-> 
-> WARNING: unmet direct dependencies detected for SND_SOC_MT6359
->     Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && MTK_PMIC_WRAP [=n]
->     Selected by [y]:
->     - SND_SOC_MT8195_MT6359_RT1019_RT5682 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && I2C [=y] && SND_SOC_MT8195 [=y]
-> 
-> Add a dependency to avoid it.
-> 
-> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+alsa-project/alsa-utils issue #110 was opened from climbTheStairs:
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+In the second paragraph of the "MIXER VIEWS" section, it says...
 
-Thanks.
+> The currently selected item is drawn in red and/of emphasized.
 
+...when it should say...
 
-> ---
->   sound/soc/mediatek/Kconfig | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
-> index cf567a89f421..f6bf0f9c91e3 100644
-> --- a/sound/soc/mediatek/Kconfig
-> +++ b/sound/soc/mediatek/Kconfig
-> @@ -197,7 +197,7 @@ config SND_SOC_MT8195
->   config SND_SOC_MT8195_MT6359_RT1019_RT5682
->   	tristate "ASoC Audio driver for MT8195 with MT6359 RT1019 RT5682 codec"
->   	depends on I2C
-> -	depends on SND_SOC_MT8195
-> +	depends on SND_SOC_MT8195 && MTK_PMIC_WRAP
->   	select SND_SOC_MT6359
->   	select SND_SOC_RT1015P
->   	select SND_SOC_RT5682_I2C
-> 
+> The currently selected item is drawn in red **and/or** emphasized.
 
-
--- 
-~Randy
-
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/110
+Repository URL: https://github.com/alsa-project/alsa-utils
