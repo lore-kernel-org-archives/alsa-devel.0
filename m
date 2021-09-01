@@ -2,98 +2,114 @@ Return-Path: <SRS0=HqWb=NX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95BB7C4320E
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 08:37:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93735C43216
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 09:20:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6F0ED610A2
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 08:37:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6F0ED610A2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=foss.st.com
+	by mail.kernel.org (Postfix) with ESMTPS id 76C4260462
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 09:20:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 76C4260462
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cerno.tech
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 494A8166F;
-	Wed,  1 Sep 2021 10:36:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 494A8166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7D9C1168D;
+	Wed,  1 Sep 2021 11:19:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D9C1168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630485448;
-	bh=nVuQUvoJEZbLulELeI+W+G9XG875NuDqoXfCdU7u6Gg=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1630488002;
+	bh=gxxk3mh7eTjYtp31Suc1eQFtLWYfeRd1Z0/3Duy486I=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=toC/B8LmL7XNi9rB4O2YUCqZaDPtvQL8FcsyyE6+QpaIHmlhEmzjPZViAYr7tz19s
-	 hqe6Q6s9J/BMBa2+5qfQVQJh4Vl2KmbrkNbGx/S3MFUgMTvNTSLi5Cbn4GHqYaqg19
-	 nwnk+UB6rNlllLbR+ZPQKZopa5QW4XUsG5OzE51s=
+	b=uwXOMSmLJu0sABYSITk9r58Y4y4V13awucauDINe14BlnAP+JbwcpoqfTbnSviG56
+	 tIrvhURJD3UVT4YOxoPggz+kLdkBgXeqyERHxNdeMrkLk++GfC7H8O+skBtlicvLp8
+	 f/i4Ckh8n3sJX4QWpVUksUP0SFm9pdSZ3U2ZxxLo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF8D0F80227;
-	Wed,  1 Sep 2021 10:36:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 195E2F80254;
+	Wed,  1 Sep 2021 11:19:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0343CF80254; Wed,  1 Sep 2021 10:36:32 +0200 (CEST)
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 5DAC8F8032B; Wed,  1 Sep 2021 11:19:10 +0200 (CEST)
+Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com
+ [66.111.4.221])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7867F80218
- for <alsa-devel@alsa-project.org>; Wed,  1 Sep 2021 10:36:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7867F80218
+ by alsa1.perex.cz (Postfix) with ESMTPS id 355FBF8020D
+ for <alsa-devel@alsa-project.org>; Wed,  1 Sep 2021 11:19:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 355FBF8020D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com
- header.b="z2bszKY/"
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 1818N5ed016055;
- Wed, 1 Sep 2021 10:36:22 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
- h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=+kxNwSoYJZaoXdObemRa8WapvytEjrgDxqS8VXukWQc=;
- b=z2bszKY/bO8Kl13Tl85B0E22+MlFAqxURKP1zelLnAOw4Wn5f2wu7WlORJ/XTlSc7kA/
- Zf4t6cRJe/PnkWdVdy061zzjqAbWyOpBP5OfzLKpMWZtIeYozGks2106DUUfy5nZBRMb
- gCPMtuAkoVAX7IYYldkjUPSLlL3G0l/C0lvkYtb3XleS1pAAwGYEVcubkZKnEZLzKIAA
- x0vcW6nogFpUAqcgDTQYocFCXhHdSMs2ILiBR9YH3wJvvRjI2RF6HVhB5FLVvgoUbJkc
- Z9vo21vxulHxkFWGC1EEZY4DDcHS8Bn9UfYaO8bbbfEZmVaeBTy4Ixl5kCizinU2mv5N vg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com with ESMTP id 3at5y9033n-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 01 Sep 2021 10:36:22 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4339A100034;
- Wed,  1 Sep 2021 10:36:21 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 177932171D6;
- Wed,  1 Sep 2021 10:36:21 +0200 (CEST)
-Received: from lmecxl0577.lme.st.com (10.75.127.48) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 1 Sep
- 2021 10:36:20 +0200
-Subject: Re: [PATCH] ASoC: audio-graph: respawn Platform Support
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown
- <broonie@kernel.org>
-References: <878s0jzrpf.wl-kuninori.morimoto.gx@renesas.com>
-From: Olivier MOYSAN <olivier.moysan@foss.st.com>
-Message-ID: <c4032e3c-f983-3a18-cbbc-e1afdfc1d26c@foss.st.com>
-Date: Wed, 1 Sep 2021 10:36:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
+ header.b="rmzn7uhW"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="aWKDEajc"
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+ by mailnew.nyi.internal (Postfix) with ESMTP id C8034580B15;
+ Wed,  1 Sep 2021 05:19:01 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute6.internal (MEProxy); Wed, 01 Sep 2021 05:19:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+ from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding; s=fm3; bh=LPit8wcoZO4dv
+ io5leaRKYe3Q9Z+NaV+MmDoHIcsCLg=; b=rmzn7uhWsmZKkqaq/gB7HPlw7NY3K
+ ua44uo8ZOp4NlNUgUrz410VIHVMtBqfe75Q16DsQ0yYFTJkmujUuerOwc2ad4hDr
+ /8YPCtz/OMKYjcQ/liZcCAx9yXfObbR713QMfU8FwipnHZxKl/Gpq6x55ZAsEaqk
+ 85w9Lt4El1VtsBsEurnoJa4NPJIlCmAdHTmWazSgQmDYIha6AhN0nF+UnicaWOk0
+ ksLE6Kk0ZZ3Puz9jfSk6R/DQB8oYzUGE1JjUcuinpw9Ps/EJz5TwWwbkqi0xj0Zl
+ fZTdOXj4GqWmojMmulhjvmRskTJIx9tRBPhfjLjCz0sWi3hKcD0YXI4dg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-transfer-encoding:date:from
+ :in-reply-to:message-id:mime-version:references:subject:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm3; bh=LPit8wcoZO4dvio5leaRKYe3Q9Z+NaV+MmDoHIcsCLg=; b=aWKDEajc
+ 8JwmukY+cVmpYsMMgF1Wy2oLQ6aJd//XcHzEfJe1OpQf6ompCIjEANLR042PiCiu
+ RJ7RwT7Ru5HTMXTTHj6jZFJ/hb/ULYN0+iAbE3EKbofi7mpYqr14i/7/yQX4CfSl
+ VlKDs8H4cO5cvDh7y9Y03V6J2qHFqofuV3NqWPWqR7vSxk4kPJsrD03aooPZKZxM
+ SyOsAjfOFp5VY/5FlRTMAAO0HdBHh1tz7EbQSNE9LmHFX2GZoLO682bNt86u/4qm
+ 1oF7q1HV0EP2nsoCHh1XGmN5ar7+fKJA5j1jO++3lV2Z/idzQ4oB8IzUO7pW04Te
+ kYlp5WdC2kpM1w==
+X-ME-Sender: <xms:hUUvYXc2zgTpSI5463nv5w0M25Q8ZagVBueJuZ-tYhcLC_QtfG1fSQ>
+ <xme:hUUvYdM2ZgAWP1K95tpm5u7mQS8tRbs6MH5hv4Xx9fKyGlNVPSBT30NZCW87abIjt
+ e-3j2xWan2hRx1fVRU>
+X-ME-Received: <xmr:hUUvYQhCq3xkBuCSY-89tVyiXrA7m0-Mw9jXcwUDO4PLm_pASHZY8JPUrV8F20z2Kyl-aH32Lm82yrm2FxpGEtf2owXE6WrVWxCA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvfedgudegucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ govehorghsthgrlhdqhfeguddvqddtvdculdduhedtmdenucfjughrpefhvffufffkofgj
+ fhgggfestdekredtredttdenucfhrhhomhepofgrgihimhgvucftihhprghrugcuoehmrg
+ igihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtthgvrhhnpeevjeeijedtvefg
+ fffgjeeugffguedtleetkeegteeufedtuddttdfgfffhgfeuffenucffohhmrghinhepug
+ gvvhhitggvthhrvggvrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
+ pehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:hUUvYY-5gQY4VDkb54X3ZN6iocababe40JGsLwqCuPWnKIupagEajg>
+ <xmx:hUUvYTtACqBZqy3mjMrgHrjTGMXSl_tcSmv02MSirSfrqzx-UP-LyQ>
+ <xmx:hUUvYXH3XDtla30eBRw7dNv-ZXznwdWwOOe6ZuDWioUowACWBzmRJA>
+ <xmx:hUUvYUlXPYJgky2qaVpc1b4nZxXm7yFjqN1xB1iCB4pYwh_Wb6uGfg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 1 Sep 2021 05:19:01 -0400 (EDT)
+From: Maxime Ripard <maxime@cerno.tech>
+To: devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ Frank Rowand <frowand.list@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
+ Maxime Ripard <maxime@cerno.tech>,
+ =?UTF-8?q?Jernej=20=C5=A0krabec?= <jernej.skrabec@gmail.com>
+Subject: [PATCH v2 03/52] ASoC: dt-bindings: Convert SPDIF Transmitter binding
+ to a schema
+Date: Wed,  1 Sep 2021 11:18:03 +0200
+Message-Id: <20210901091852.479202-4-maxime@cerno.tech>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210901091852.479202-1-maxime@cerno.tech>
+References: <20210901091852.479202-1-maxime@cerno.tech>
 MIME-Version: 1.0
-In-Reply-To: <878s0jzrpf.wl-kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-01_03,2021-08-31_01,2020-04-07_01
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Content-Transfer-Encoding: 8bit
+Cc: Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-sunxi@googlegroups.com,
+ Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,84 +125,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Thanks Kuninori
+The SPDIF Transmitter binding is used by Linux with a matching Device
+Tree binding.
 
-On 8/30/21 2:44 AM, Kuninori Morimoto wrote:
-> 
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> commit 63f2f9cceb09f8 ("ASoC: audio-graph: remove Platform support")
-> removed Platform support from audio-graph, because it doesn't have
-> "plat" support on DT (simple-card has).
-> But, Platform support is needed if user is using
-> snd_dmaengine_pcm_register() which adds generic DMA as Platform.
-> And this Platform dev is using CPU dev.
-> 
-> Without this patch, at least STM32MP15 audio sound card is no more
-> functional (v5.13 or later). This patch respawn Platform Support on
-> audio-graph again.
-> 
-> Reported-by: Olivier MOYSAN <olivier.moysan@foss.st.com>
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com
+Now that we have the DT validation in place, let's convert the device
+tree bindings for that driver over to a YAML schema.
 
-Tested-by: Olivier MOYSAN <olivier.moysan@foss.st.com>
+Cc: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+---
+ .../bindings/sound/linux,spdif-dit.yaml       | 32 +++++++++++++++++++
+ .../bindings/sound/spdif-transmitter.txt      | 10 ------
+ 2 files changed, 32 insertions(+), 10 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/linux,spdif-dit.yaml
+ delete mode 100644 Documentation/devicetree/bindings/sound/spdif-transmitter.txt
 
-> ---
-> This patch needs Olivier's Tested-by
-> 
->   sound/soc/generic/audio-graph-card.c | 6 ++++++
->   1 file changed, 6 insertions(+)
-> 
-> diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-> index 5e71382467e8..546f6fd0609e 100644
-> --- a/sound/soc/generic/audio-graph-card.c
-> +++ b/sound/soc/generic/audio-graph-card.c
-> @@ -285,6 +285,7 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
->   	if (li->cpu) {
->   		struct snd_soc_card *card = simple_priv_to_card(priv);
->   		struct snd_soc_dai_link_component *cpus = asoc_link_to_cpu(dai_link, 0);
-> +		struct snd_soc_dai_link_component *platforms = asoc_link_to_platform(dai_link, 0);
->   		int is_single_links = 0;
->   
->   		/* Codec is dummy */
-> @@ -313,6 +314,7 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
->   			dai_link->no_pcm = 1;
->   
->   		asoc_simple_canonicalize_cpu(cpus, is_single_links);
-> +		asoc_simple_canonicalize_platform(platforms, cpus);
->   	} else {
->   		struct snd_soc_codec_conf *cconf = simple_props_to_codec_conf(dai_props, 0);
->   		struct snd_soc_dai_link_component *codecs = asoc_link_to_codec(dai_link, 0);
-> @@ -366,6 +368,7 @@ static int graph_dai_link_of(struct asoc_simple_priv *priv,
->   	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, li->link);
->   	struct snd_soc_dai_link_component *cpus = asoc_link_to_cpu(dai_link, 0);
->   	struct snd_soc_dai_link_component *codecs = asoc_link_to_codec(dai_link, 0);
-> +	struct snd_soc_dai_link_component *platforms = asoc_link_to_platform(dai_link, 0);
->   	char dai_name[64];
->   	int ret, is_single_links = 0;
->   
-> @@ -383,6 +386,7 @@ static int graph_dai_link_of(struct asoc_simple_priv *priv,
->   		 "%s-%s", cpus->dai_name, codecs->dai_name);
->   
->   	asoc_simple_canonicalize_cpu(cpus, is_single_links);
-> +	asoc_simple_canonicalize_platform(platforms, cpus);
->   
->   	ret = graph_link_init(priv, cpu_ep, codec_ep, li, dai_name);
->   	if (ret < 0)
-> @@ -608,6 +612,7 @@ static int graph_count_noml(struct asoc_simple_priv *priv,
->   
->   	li->num[li->link].cpus		= 1;
->   	li->num[li->link].codecs	= 1;
-> +	li->num[li->link].platforms     = 1;
->   
->   	li->link += 1; /* 1xCPU-Codec */
->   
-> @@ -630,6 +635,7 @@ static int graph_count_dpcm(struct asoc_simple_priv *priv,
->   
->   	if (li->cpu) {
->   		li->num[li->link].cpus		= 1;
-> +		li->num[li->link].platforms     = 1;
->   
->   		li->link++; /* 1xCPU-dummy */
->   	} else {
-> 
+diff --git a/Documentation/devicetree/bindings/sound/linux,spdif-dit.yaml b/Documentation/devicetree/bindings/sound/linux,spdif-dit.yaml
+new file mode 100644
+index 000000000000..c6b070e1d014
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/linux,spdif-dit.yaml
+@@ -0,0 +1,32 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/linux,spdif-dit.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Dummy SPDIF Transmitter Device Tree Bindings
++
++maintainers:
++  - Mark Brown <broonie@kernel.org>
++
++properties:
++  compatible:
++    const: linux,spdif-dit
++
++  "#sound-dai-cells":
++    const: 0
++
++required:
++  - "#sound-dai-cells"
++  - compatible
++
++additionalProperties: false
++
++examples:
++  - |
++    spdif-out {
++        #sound-dai-cells = <0>;
++        compatible = "linux,spdif-dit";
++    };
++
++...
+diff --git a/Documentation/devicetree/bindings/sound/spdif-transmitter.txt b/Documentation/devicetree/bindings/sound/spdif-transmitter.txt
+deleted file mode 100644
+index 55a85841dd85..000000000000
+--- a/Documentation/devicetree/bindings/sound/spdif-transmitter.txt
++++ /dev/null
+@@ -1,10 +0,0 @@
+-Device-Tree bindings for dummy spdif transmitter
+-
+-Required properties:
+-	- compatible: should be "linux,spdif-dit".
+-
+-Example node:
+-
+-	codec: spdif-transmitter {
+-		compatible = "linux,spdif-dit";
+-	};
+-- 
+2.31.1
+
