@@ -4,74 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73D9DC432BE
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 18:17:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C40BC432BE
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 18:18:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ECF4F61053
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 18:17:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org ECF4F61053
+	by mail.kernel.org (Postfix) with ESMTPS id 5A01C60F6F
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 18:18:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5A01C60F6F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 13131179F;
-	Wed,  1 Sep 2021 20:16:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13131179F
+	by alsa0.perex.cz (Postfix) with ESMTPS id BB0AE1794;
+	Wed,  1 Sep 2021 20:17:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB0AE1794
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630520260;
-	bh=KlzFo2zJ7NhBhc9QV4PwhjlNPkGGI6TKBTxxQka9D2c=;
+	s=default; t=1630520283;
+	bh=F3PsqF8kI1YopDkw1jrsG80A5fXXJVkd7n6uEtryW9U=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YvHBpEtzyZ6hOIBS3+IR4uv1bXizZ7tV8EmQ7xqT54w1o9AsCWH/M11/Y+vp601z1
-	 +3qQsl6bt7K1ZYkPWKwyaN8mtgzuZZPgy1t9qx6uC4zp0MBq13+WRogG1Dh36ibLBj
-	 6klhLNmgFcH1uDKD7HwKzo1a0btve+KbxWHo2ixU=
+	b=bfV83lJ1lqPHNtUMya78Ns493exhH2XdrjmKyWy+HVdfwHGwAOYD5gryeQxZZ0ySE
+	 wdufca/ooqxhfKtli3lTC6hwFIW77yWaYuwAulSzLWfn5CqesO1EDtiMAFrnhPkwwW
+	 +YbWdSTq+62AeIpX9lPMlWX3JO5yWL9Fe89LaC2k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51098F804E5;
-	Wed,  1 Sep 2021 20:15:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D5C96F804C2;
+	Wed,  1 Sep 2021 20:15:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5FC2FF804EB; Wed,  1 Sep 2021 20:15:40 +0200 (CEST)
+ id 15649F804E7; Wed,  1 Sep 2021 20:15:41 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DAD68F8020D
- for <alsa-devel@alsa-project.org>; Wed,  1 Sep 2021 20:15:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DAD68F8020D
+ by alsa1.perex.cz (Postfix) with ESMTPS id ECE5BF804D9
+ for <alsa-devel@alsa-project.org>; Wed,  1 Sep 2021 20:15:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ECE5BF804D9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="td+0Ls7h"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D33B8610FF;
- Wed,  1 Sep 2021 18:15:29 +0000 (UTC)
+ header.b="mZgKgvjQ"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 139AE610CA;
+ Wed,  1 Sep 2021 18:15:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1630520130;
- bh=KlzFo2zJ7NhBhc9QV4PwhjlNPkGGI6TKBTxxQka9D2c=;
+ s=k20201202; t=1630520135;
+ bh=F3PsqF8kI1YopDkw1jrsG80A5fXXJVkd7n6uEtryW9U=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=td+0Ls7hAihHu5SrrX8RkJXcstpMehCWWuTyQ3Wi8Lru0k7YOrHRriSZyMC4iEUj9
- j9N2U8Lg6mP5eMgaTP4/hZlSDhnzcNpIAxuSQgxJvDASZggSXhMtFRNSk9Ao3rER3W
- zUWbGJpOk5borZ9bsvwPCJ438S7i5R041P8bcTpw+8NbWM6YEjAJIs5V+R/q7AA3sE
- Qaxrf0sEQpi18oZMjOR13haEMp/szJQv1YMrMebUd1iTZBS1w1R5tTevRf1rK8GNJf
- ordDqAj1bywlEtGAEkZjuVXTpiwo8FwtABY3sUys2w9ocZQaZbW09YH8SEEEUDc0VN
- AlO+8KC1q0SAA==
+ b=mZgKgvjQxxELJfFRNv8ApXFEG4ksWKr9Tfr1mg9T5x3awqaB/7OTXIneqIer7IJrt
+ BYg6f0CJAbffLI1fhSMN5dFH6YNjSnqrhPBetHlUjpqXls383MYDIMauBtnhMcz2YB
+ V8iOEe1Tib8zZYZIvGJBTl6UYEpaKOgrB6L1dZaWFx9ukY2zz9XZOWhwP83Ygyni5x
+ sLYnix6tC1keHVU/UKCj3ZZ1OWowQpbJHI+/M/RVmkGBTXGddFV+JpiMIbzP4J3kwI
+ ZTgdisv9fetcQiNr39m4ZBVXn0uTTy+/LoP3LHQzwD3y9C18Tt4kCpuPvjismuEk+V
+ ywQwwkHU6WOVQ==
 From: Mark Brown <broonie@kernel.org>
-To: shumingf@realtek.com,
-	lgirdwood@gmail.com
-Subject: Re: [PATCH] ASoC: rt5682: fix headset background noise when S3 state
-Date: Wed,  1 Sep 2021 19:14:45 +0100
-Message-Id: <163051912510.21630.7840903335943166080.b4-ty@kernel.org>
+To: tiwai@suse.com, matthias.bgg@gmail.com, Trevor Wu <trevor.wu@mediatek.com>
+Subject: Re: [PATCH] ASoC: mediatek: mt8195: add MTK_PMIC_WRAP dependency
+Date: Wed,  1 Sep 2021 19:14:47 +0100
+Message-Id: <163051912509.21630.1658074283329712845.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210901100754.21045-1-shumingf@realtek.com>
-References: <20210901100754.21045-1-shumingf@realtek.com>
+In-Reply-To: <20210831021303.5230-1-trevor.wu@mediatek.com>
+References: <20210831021303.5230-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, albertchen@realtek.com, Mark Brown <broonie@kernel.org>,
- derek.fang@realtek.com, flove@realtek.com
+Cc: alsa-devel@alsa-project.org, rdunlap@infradead.org,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,12 +86,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 1 Sep 2021 18:07:54 +0800, shumingf@realtek.com wrote:
-> From: Shuming Fan <shumingf@realtek.com>
+On Tue, 31 Aug 2021 10:13:03 +0800, Trevor Wu wrote:
+> randconfig builds show the warning below,
 > 
-> Remove CBJ power off setting to avoid floating state.
+> WARNING: unmet direct dependencies detected for SND_SOC_MT6359
+>    Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && MTK_PMIC_WRAP [=n]
+>    Selected by [y]:
+>    - SND_SOC_MT8195_MT6359_RT1019_RT5682 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && I2C [=y] && SND_SOC_MT8195 [=y]
 > 
-> 
+> [...]
 
 Applied to
 
@@ -100,8 +102,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rt5682: fix headset background noise when S3 state
-      commit: 0866d645b76d062b7d55091fd6fb80f058d0c384
+[1/1] ASoC: mediatek: mt8195: add MTK_PMIC_WRAP dependency
+      commit: cd5e4efde23ad8050921672ed777ec3f7aa310ec
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
