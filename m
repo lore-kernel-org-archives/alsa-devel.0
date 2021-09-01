@@ -7,67 +7,106 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A53DC432BE
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 09:54:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11339C432BE
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 10:09:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 10A5160F3A
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 09:54:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 10A5160F3A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id C455360F21
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 10:09:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C455360F21
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A933A177E;
-	Wed,  1 Sep 2021 11:54:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A933A177E
+	by alsa0.perex.cz (Postfix) with ESMTPS id CEE0A16BB;
+	Wed,  1 Sep 2021 12:08:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CEE0A16BB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630490095;
-	bh=oxz9yH06zzVTZInj9/Fy/BuipfVUX0Y/sVy9MFm83io=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=TM7oV2sxb0EB97qoe5y88FlhjE1AIpvd5EVkKEc77fSlANVrEW8kSXiazgBvihIoB
-	 FUY2pvvG7MGmqpCeySRsxwo8CyUfvT2jeQWoTbX2UPBgBbfjQREOZ74/83wdx1n0fx
-	 /BS2qfnVufUS52GCiLSM4vzUwN+l/+1lF9oGQ5+M=
+	s=default; t=1630490947;
+	bh=SNrR9EfiLTViCWStQ1793xM7KUHxHxLoW9WKZkLL7jw=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=UKLmAuN2OwnwGDoRBKLNnJnjGbzypo01Na6uJdcmHANAND1oE5J75JTuV4XzYtchz
+	 4+8qh01QVNyHVLChrhkP2DJQDZ2+IT9XvXt8ZIHjUI/tWXSZeWGcENpHV6ebBF2AUS
+	 UhsSgakzjDVsjmvDR3bZkLXVqQo7QAffmafo0UyE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E9229F804D6;
-	Wed,  1 Sep 2021 11:53:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5669CF80227;
+	Wed,  1 Sep 2021 12:08:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33D81F804D9; Wed,  1 Sep 2021 11:53:20 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ id 4CCE9F80254; Wed,  1 Sep 2021 12:08:16 +0200 (CEST)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9430CF80254
- for <alsa-devel@alsa-project.org>; Wed,  1 Sep 2021 11:53:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9430CF80254
-X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="304275904"
-X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; d="scan'208";a="304275904"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Sep 2021 02:53:09 -0700
-X-IronPort-AV: E=Sophos;i="5.84,369,1620716400"; d="scan'208";a="460674449"
-Received: from pujfalus-mobl.ger.corp.intel.com (HELO
- peter-virtualbox.ger.corp.intel.com) ([10.251.211.191])
- by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Sep 2021 02:53:06 -0700
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- vkoul@kernel.org
-Subject: [PATCH 2/2] ASoC: compress/component: Use
- module_get_when_open/put_when_close for cstream
-Date: Wed,  1 Sep 2021 12:52:55 +0300
-Message-Id: <20210901095255.3617-3-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901095255.3617-1-peter.ujfalusi@linux.intel.com>
-References: <20210901095255.3617-1-peter.ujfalusi@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D52F8F8020D
+ for <alsa-devel@alsa-project.org>; Wed,  1 Sep 2021 12:08:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D52F8F8020D
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 181A82T90009379,
+ This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36503.realtek.com.tw[172.21.6.25])
+ by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 181A82T90009379
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Wed, 1 Sep 2021 18:08:02 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXH36503.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Wed, 1 Sep 2021 18:08:01 +0800
+Received: from localhost.localdomain (172.22.102.1) by
+ RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 1 Sep 2021 18:08:01 +0800
+From: <shumingf@realtek.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>
+Subject: [PATCH] ASoC: rt5682: fix headset background noise when S3 state
+Date: Wed, 1 Sep 2021 18:07:54 +0800
+Message-ID: <20210901100754.21045-1-shumingf@realtek.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: kai.vehmanen@linux.intel.com, alsa-devel@alsa-project.org,
- daniel.baluta@nxp.com, pierre-louis.bossart@linux.intel.com,
- kuninori.morimoto.gx@renesas.com
+Content-Type: text/plain
+X-Originating-IP: [172.22.102.1]
+X-ClientProxiedBy: RTEXH36503.realtek.com.tw (172.21.6.25) To
+ RTEXMBS01.realtek.com.tw (172.21.6.94)
+X-KSE-ServerInfo: RTEXMBS01.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: trusted connection
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 09/01/2021 09:55:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzkvMSCkV6TIIDA2OjU2OjAw?=
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-ServerInfo: RTEXH36503.realtek.com.tw, 9
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 09/01/2021 09:52:04
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 165903 [Sep 01 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: shumingf@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 460 460 984a5b846aca9773080f7b1ec5049bf53f1b6f95
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;
+ realtek.com:7.1.1; 127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 09/01/2021 09:55:00
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, albertchen@realtek.com, derek.fang@realtek.com,
+ Shuming Fan <shumingf@realtek.com>, flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,198 +122,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Currently the try_module_get() and module_put() is not possible for
-compressed streams if the module_get_upon_open is set to 1 which means that\
-the components are not protected in a same way as components when normal
-audio is used.
+From: Shuming Fan <shumingf@realtek.com>
 
-SOF is setting module_get_upon_open to 1 for component drivers which works
-correctly for audio stream but when compressed stream is used then the
-module is not protected.
+Remove CBJ power off setting to avoid floating state.
 
-Convert the compress open and free operation to mimic the steps of it's
-pcm counterpart to fix this issue.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Signed-off-by: Jack Yu <jack.yu@realtek.com>
+Signed-off-by: Shuming Fan <shumingf@realtek.com>
 ---
- include/sound/soc-component.h |  6 +++--
- sound/soc/soc-component.c     | 45 +++++++++++++++--------------------
- sound/soc/soc-compress.c      | 43 +++++++++++++++++++++++++++++----
- 3 files changed, 61 insertions(+), 33 deletions(-)
+ sound/soc/codecs/rt5682.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
-index a393ac397eca..e09a2d108e8c 100644
---- a/include/sound/soc-component.h
-+++ b/include/sound/soc-component.h
-@@ -453,8 +453,10 @@ int snd_soc_component_of_xlate_dai_id(struct snd_soc_component *component,
- int snd_soc_component_of_xlate_dai_name(struct snd_soc_component *component,
- 					const struct of_phandle_args *args,
- 					const char **dai_name);
--int snd_soc_component_compr_open(struct snd_compr_stream *cstream);
--void snd_soc_component_compr_free(struct snd_compr_stream *cstream,
-+int snd_soc_component_compr_open(struct snd_soc_component *component,
-+				 struct snd_compr_stream *cstream);
-+void snd_soc_component_compr_free(struct snd_soc_component *component,
-+				  struct snd_compr_stream *cstream,
- 				  int rollback);
- int snd_soc_component_compr_trigger(struct snd_compr_stream *cstream, int cmd);
- int snd_soc_component_compr_set_params(struct snd_compr_stream *cstream,
-diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
-index 82a1430313dc..a08a897c5230 100644
---- a/sound/soc/soc-component.c
-+++ b/sound/soc/soc-component.c
-@@ -423,43 +423,36 @@ EXPORT_SYMBOL_GPL(snd_soc_component_exit_regmap);
+diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
+index e822fa1b9d4b..4a64cab99c55 100644
+--- a/sound/soc/codecs/rt5682.c
++++ b/sound/soc/codecs/rt5682.c
+@@ -2942,9 +2942,6 @@ static int rt5682_suspend(struct snd_soc_component *component)
+ 			break;
+ 		}
  
- #endif
- 
--int snd_soc_component_compr_open(struct snd_compr_stream *cstream)
-+int snd_soc_component_compr_open(struct snd_soc_component *component,
-+				 struct snd_compr_stream *cstream)
- {
--	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
--	struct snd_soc_component *component;
--	int i, ret;
-+	int ret = 0;
- 
--	for_each_rtd_components(rtd, i, component) {
--		if (component->driver->compress_ops &&
--		    component->driver->compress_ops->open) {
--			ret = component->driver->compress_ops->open(component, cstream);
--			if (ret < 0)
--				return soc_component_ret(component, ret);
--		}
-+	if (component->driver->compress_ops &&
-+	    component->driver->compress_ops->open)
-+		ret = component->driver->compress_ops->open(component, cstream);
-+
-+	/* mark substream if succeeded */
-+	if (ret == 0)
- 		soc_component_mark_push(component, cstream, compr_open);
--	}
- 
--	return 0;
-+	return soc_component_ret(component, ret);
- }
- EXPORT_SYMBOL_GPL(snd_soc_component_compr_open);
- 
--void snd_soc_component_compr_free(struct snd_compr_stream *cstream,
-+void snd_soc_component_compr_free(struct snd_soc_component *component,
-+				  struct snd_compr_stream *cstream,
- 				  int rollback)
- {
--	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
--	struct snd_soc_component *component;
--	int i;
+-		snd_soc_component_update_bits(component, RT5682_PWR_ANLG_3,
+-			RT5682_PWR_CBJ, 0);
 -
--	for_each_rtd_components(rtd, i, component) {
--		if (rollback && !soc_component_mark_match(component, cstream, compr_open))
--			continue;
-+	if (rollback && !soc_component_mark_match(component, cstream, compr_open))
-+		return;
- 
--		if (component->driver->compress_ops &&
--		    component->driver->compress_ops->free)
--			component->driver->compress_ops->free(component, cstream);
-+	if (component->driver->compress_ops &&
-+	    component->driver->compress_ops->free)
-+		component->driver->compress_ops->free(component, cstream);
- 
--		soc_component_mark_pop(component, cstream, compr_open);
--	}
-+	/* remove marked substream */
-+	soc_component_mark_pop(component, cstream, compr_open);
- }
- EXPORT_SYMBOL_GPL(snd_soc_component_compr_free);
- 
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 36060800e9bd..8e2494a9f3a7 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -22,6 +22,39 @@
- #include <sound/soc-link.h>
- #include <linux/pm_runtime.h>
- 
-+static int snd_soc_compr_components_open(struct snd_compr_stream *cstream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct snd_soc_component *component;
-+	int ret = 0;
-+	int i;
-+
-+	for_each_rtd_components(rtd, i, component) {
-+		ret = snd_soc_component_module_get_when_open(component, cstream);
-+		if (ret < 0)
-+			break;
-+
-+		ret = snd_soc_component_compr_open(component, cstream);
-+		if (ret < 0)
-+			break;
-+	}
-+
-+	return ret;
-+}
-+
-+static void snd_soc_compr_components_free(struct snd_compr_stream *cstream,
-+					  int rollback)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct snd_soc_component *component;
-+	int i;
-+
-+	for_each_rtd_components(rtd, i, component) {
-+		snd_soc_component_compr_free(component, cstream, rollback);
-+		snd_soc_component_module_put_when_close(component, cstream, rollback);
-+	}
-+}
-+
- static int soc_compr_clean(struct snd_compr_stream *cstream, int rollback)
- {
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-@@ -44,7 +77,7 @@ static int soc_compr_clean(struct snd_compr_stream *cstream, int rollback)
- 
- 	snd_soc_link_compr_shutdown(cstream, rollback);
- 
--	snd_soc_component_compr_free(cstream, rollback);
-+	snd_soc_compr_components_free(cstream, rollback);
- 
- 	snd_soc_dai_compr_shutdown(cpu_dai, cstream, rollback);
- 
-@@ -80,7 +113,7 @@ static int soc_compr_open(struct snd_compr_stream *cstream)
- 	if (ret < 0)
- 		goto err;
- 
--	ret = snd_soc_component_compr_open(cstream);
-+	ret = snd_soc_compr_components_open(cstream);
- 	if (ret < 0)
- 		goto err;
- 
-@@ -137,7 +170,7 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
- 	if (ret < 0)
- 		goto out;
- 
--	ret = snd_soc_component_compr_open(cstream);
-+	ret = snd_soc_compr_components_open(cstream);
- 	if (ret < 0)
- 		goto open_err;
- 
-@@ -160,7 +193,7 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
- 	return 0;
- 
- machine_err:
--	snd_soc_component_compr_free(cstream, 1);
-+	snd_soc_compr_components_free(cstream, 1);
- open_err:
- 	snd_soc_dai_compr_shutdown(cpu_dai, cstream, 1);
- out:
-@@ -205,7 +238,7 @@ static int soc_compr_free_fe(struct snd_compr_stream *cstream)
- 
- 	snd_soc_link_compr_shutdown(cstream, 0);
- 
--	snd_soc_component_compr_free(cstream, 0);
-+	snd_soc_compr_components_free(cstream, 0);
- 
- 	snd_soc_dai_compr_shutdown(cpu_dai, cstream, 0);
- 
+ 		/* enter SAR ADC power saving mode */
+ 		snd_soc_component_update_bits(component, RT5682_SAR_IL_CMD_1,
+ 			RT5682_SAR_BUTT_DET_MASK | RT5682_SAR_BUTDET_MODE_MASK |
 -- 
-2.33.0
+2.31.1
 
