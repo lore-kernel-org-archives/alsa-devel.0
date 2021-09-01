@@ -2,81 +2,85 @@ Return-Path: <SRS0=HqWb=NX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,
+	USER_AGENT_SANE_2 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35B07C432BE
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 03:50:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B93CAC432BE
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 03:50:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A652861053
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 03:49:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A652861053
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rock-chips.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4016F61053
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 03:50:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4016F61053
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 422DA1755;
-	Wed,  1 Sep 2021 05:49:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 422DA1755
+	by alsa0.perex.cz (Postfix) with ESMTPS id C55301762;
+	Wed,  1 Sep 2021 05:49:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C55301762
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630468198;
-	bh=hIpPkWOk3gLlKhU/W0gH/X/QhRDZH2YDweixlffkM/c=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1630468217;
+	bh=hGt1wc4kq8kljXgVH5HFAtVh2cBIgecvwIJfVOk/B78=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fb2YQFGf50Q+nX5aolX7If2W0Xo0bp1sLMA3ezF0CtvqOQ0hwwPo+qVtM1h6nmsCc
-	 O93DZwUhs/apFoApQPdoFYqHhPPCx5THcWdFmG7d1elX28WaSz9mjv7hn33Mq0Ew0R
-	 wu5dhtsxzEdJ2+ymnz6hmw5s3oWcgCT6kTA4cjWA=
+	b=MQAkNRiw7vJTb4T2XCVXSOfuIdXVf96KG5PcuYfkRJSTZN4JZjmR7xP1LJJo3hjlK
+	 eEdhuc+aYi7i6RMlx/BaTOORkLrrqG1VrqFZZavZ3G1bltLAAj6f07wyRwlCn/kYDj
+	 9SWmVpzZ/MV7hqShG5cD9QJwqeXCOtL6SXqxtVqk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A14FDF804F2;
-	Wed,  1 Sep 2021 05:48:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29039F804E3;
+	Wed,  1 Sep 2021 05:48:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BDFA2F8032B; Wed,  1 Sep 2021 05:48:32 +0200 (CEST)
-Received: from lucky1.263xmail.com (lucky1.263xmail.com [211.157.147.130])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 1C89DF804E5; Wed,  1 Sep 2021 05:48:48 +0200 (CEST)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CB3F9F8020D
- for <alsa-devel@alsa-project.org>; Wed,  1 Sep 2021 05:48:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB3F9F8020D
-Received: from localhost (unknown [192.168.167.172])
- by lucky1.263xmail.com (Postfix) with ESMTP id D9887D76B2;
- Wed,  1 Sep 2021 11:48:15 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [58.22.7.114])
- by smtp.263.net (postfix) whith ESMTP id
- P6276T140523079702272S1630468091356880_; 
- Wed, 01 Sep 2021 11:48:15 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <1089f13cff8a43af850fa072c95f538a>
-X-RL-SENDER: sugar.zhang@rock-chips.com
-X-SENDER: zxg@rock-chips.com
-X-LOGIN-NAME: sugar.zhang@rock-chips.com
-X-FST-TO: broonie@kernel.org
-X-RCPT-COUNT: 6
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From: Sugar Zhang <sugar.zhang@rock-chips.com>
-To: broonie@kernel.org,
-	heiko@sntech.de
-Subject: [PATCH v3 3/7] ASoC: rockchip: pdm: Add support for rk3568 pdm
-Date: Wed,  1 Sep 2021 11:47:59 +0800
-Message-Id: <1630468083-7248-3-git-send-email-sugar.zhang@rock-chips.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1630468039-7186-1-git-send-email-sugar.zhang@rock-chips.com>
-References: <1630468039-7186-1-git-send-email-sugar.zhang@rock-chips.com>
-Cc: Sugar Zhang <sugar.zhang@rock-chips.com>,
- linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id C203DF80227
+ for <alsa-devel@alsa-project.org>; Wed,  1 Sep 2021 05:48:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C203DF80227
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com
+ header.b="XGSc1ODA"
+X-UUID: d800d3cac50c4706b9b06b80dc798561-20210901
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
+ s=dk; 
+ h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID;
+ bh=hGt1wc4kq8kljXgVH5HFAtVh2cBIgecvwIJfVOk/B78=; 
+ b=XGSc1ODAjT0mV2s0iM2ZCN5ZLLFj97vqirnpITeZ4O7adYUA9512FZ4vcLrrq/5iuNcvvFZuG4v6OzeCUYPyZ/MbWvq0HK1YjUsUM32iw7cNLz2SZbKUDenOdIhQ4mLCVRgQLNcvmqgfpXdalXKXNIN/CP/0waxuPj+Z6x1gpj4=;
+X-UUID: d800d3cac50c4706b9b06b80dc798561-20210901
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by
+ mailgw02.mediatek.com (envelope-from <trevor.wu@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+ with ESMTP id 1611709793; Wed, 01 Sep 2021 11:48:28 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 1 Sep 2021 11:48:27 +0800
+Received: from mtksdccf07 (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 1 Sep 2021 11:48:27 +0800
+Message-ID: <535478691c3a9ed31b508f59dc897be57c4213c0.camel@mediatek.com>
+Subject: Re: [PATCH] ASoC: mediatek: SND_SOC_MT8195 should depend on
+ ARCH_MEDIATEK
+From: Trevor Wu <trevor.wu@mediatek.com>
+To: Geert Uytterhoeven <geert+renesas@glider.be>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Date: Wed, 1 Sep 2021 11:48:27 +0800
+In-Reply-To: <7e628e359bde04ceb9ddd74a45931059b4a4623c.1630415860.git.geert+renesas@glider.be>
+References: <7e628e359bde04ceb9ddd74a45931059b4a4623c.1630415860.git.geert+renesas@glider.be>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+MIME-Version: 1.0
+X-MTK: N
+Content-Transfer-Encoding: base64
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, linux-mediatek@lists.infradead.org,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,33 +96,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds compatible for rk3568 which is the same
-with rv1126.
-
-Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
----
-
-Changes in v3: None
-Changes in v2: None
-
- sound/soc/rockchip/rockchip_pdm.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/sound/soc/rockchip/rockchip_pdm.c b/sound/soc/rockchip/rockchip_pdm.c
-index 67634d1..f2bf023 100644
---- a/sound/soc/rockchip/rockchip_pdm.c
-+++ b/sound/soc/rockchip/rockchip_pdm.c
-@@ -531,6 +531,8 @@ static const struct of_device_id rockchip_pdm_match[] __maybe_unused = {
- 	  .data = (void *)RK_PDM_RK3308 },
- 	{ .compatible = "rockchip,rk3308-pdm",
- 	  .data = (void *)RK_PDM_RK3308 },
-+	{ .compatible = "rockchip,rk3568-pdm",
-+	  .data = (void *)RK_PDM_RV1126 },
- 	{ .compatible = "rockchip,rv1126-pdm",
- 	  .data = (void *)RK_PDM_RV1126 },
- 	{},
--- 
-2.7.4
-
-
+T24gVHVlLCAyMDIxLTA4LTMxIGF0IDE1OjE4ICswMjAwLCBHZWVydCBVeXR0ZXJob2V2ZW4gd3Jv
+dGU6DQo+IFRoZSBNZWRpYXRlayBNVDgxOTUgc291bmQgaGFyZHdhcmUgaXMgb25seSBwcmVzZW50
+IG9uIE1lZGlhdGVrIE1UODE5NQ0KPiBTb0NzLiAgSGVuY2UgYWRkIGEgZGVwZW5kZW5jeSBvbiBB
+UkNIX01FRElBVEVLLCB0byBwcmV2ZW50IGFza2luZyB0aGUNCj4gdXNlciBhYm91dCB0aGlzIGRy
+aXZlciB3aGVuIGNvbmZpZ3VyaW5nIGEga2VybmVsIHdpdGhvdXQgTWVkaWF0ZWsgU29DDQo+IHN1
+cHBvcnQuDQo+IA0KPiBGaXhlczogNjc0NmNjODU4MjU5OTg1YSAoIkFTb0M6IG1lZGlhdGVrOiBt
+dDgxOTU6IGFkZCBwbGF0Zm9ybQ0KPiBkcml2ZXIiKQ0KPiBTaWduZWQtb2ZmLWJ5OiBHZWVydCBV
+eXR0ZXJob2V2ZW4gPGdlZXJ0K3JlbmVzYXNAZ2xpZGVyLmJlPg0KPiAtLS0NCj4gIHNvdW5kL3Nv
+Yy9tZWRpYXRlay9LY29uZmlnIHwgMSArDQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24o
+KykNCj4gDQo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvbWVkaWF0ZWsvS2NvbmZpZyBiL3NvdW5k
+L3NvYy9tZWRpYXRlay9LY29uZmlnDQo+IGluZGV4IGNmNTY3YTg5ZjQyMWI0YzAuLmM4YzgxNWY1
+OTlkYTkwYmYgMTAwNjQ0DQo+IC0tLSBhL3NvdW5kL3NvYy9tZWRpYXRlay9LY29uZmlnDQo+ICsr
+KyBiL3NvdW5kL3NvYy9tZWRpYXRlay9LY29uZmlnDQo+IEBAIC0xODcsNiArMTg3LDcgQEAgY29u
+ZmlnIFNORF9TT0NfTVQ4MTkyX01UNjM1OV9SVDEwMTVfUlQ1NjgyDQo+ICANCj4gIGNvbmZpZyBT
+TkRfU09DX01UODE5NQ0KPiAgCXRyaXN0YXRlICJBU29DIHN1cHBvcnQgZm9yIE1lZGlhdGVrIE1U
+ODE5NSBjaGlwIg0KPiArCWRlcGVuZHMgb24gQVJDSF9NRURJQVRFSyB8fCBDT01QSUxFX1RFU1QN
+Cj4gIAlzZWxlY3QgU05EX1NPQ19NRURJQVRFSw0KPiAgCWhlbHANCj4gIAkgIFRoaXMgYWRkcyBB
+U29DIHBsYXRmb3JtIGRyaXZlciBzdXBwb3J0IGZvciBNZWRpYXRlayBNVDgxOTUNCj4gY2hpcA0K
+DQpIaSBHZWVydCwNCg0KVGhhbmtzIGZvciB5b3VyIHBhdGNoIGZpcnN0Lg0KSSByZWFsbHkgbWlz
+c2VkIHRoZSBkZXBlbmRlbmN5IGRlY2xhcmF0aW9uLg0KQnV0IHdlIG9ubHkgdGVzdCAiZGVwZW5k
+cyBvbiBBUkNIX01FRElBVEVLIiBpbnRlcm5hbGx5LCBtYXliZSByZW1vdmluZw0KIkNPTVBJTEVf
+VEVTVCIgbGlrZSBvdGhlciBNVEsgc2VyaWVzIGlzIGJldHRlciBmb3IgdGhlIG1haW50ZW5hbmNl
+IGluDQp0aGUgZnV0dXJlLg0KDQpUaGFua3MsDQpUcmV2b3INCg==
 
