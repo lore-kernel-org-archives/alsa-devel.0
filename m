@@ -7,78 +7,78 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D657C4320A
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 09:21:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5472C432BE
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 09:21:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 38A0E60238
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 09:21:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 38A0E60238
+	by mail.kernel.org (Postfix) with ESMTPS id D5C1660238
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 09:21:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D5C1660238
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cerno.tech
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CCE36177A;
-	Wed,  1 Sep 2021 11:20:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCE36177A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 53DCB175A;
+	Wed,  1 Sep 2021 11:20:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53DCB175A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630488061;
-	bh=FZCgYUCUJSRBWx7gnU5loyjLyxvPxwnbQuZr7PiY2EQ=;
+	s=default; t=1630488082;
+	bh=M5BtFuH8jccDsee25CQGs/U/Q3Luy+V/iW7g5FKGScY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lmUpXCWly5Uwn+2FrzYS/TmFwPRycfg1EYgGuqJbmNtUaR0YbjU5Y35TGMkKBE47l
-	 zqHosWWLEDPuDFpaNN+yFJM/u6wejiWeRp4ex73HHcSv49m8S4ltOM7Goks5ykT8HE
-	 MiXrMX1kk8xHrxLI9sdPdEIrLi93tBU1bkc6zxSI=
+	b=FFHf6eVegH4Q5YGOBuWEqiNi/S36LGG4ZQRLjENageOcUI0D6BUmNuSrRAY3n+8A9
+	 PWwtMX35Hqw+cCAtj3mXpZyJgrQ3ZpPs9pUaT/PsIicSGBg9LUEM+ToHXnwYtrFBJQ
+	 aT+XIEVu0SuA9RbJbAjPiS2NeTClbAUw5csSxgqI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B9FF0F804E6;
-	Wed,  1 Sep 2021 11:19:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53BD3F804F1;
+	Wed,  1 Sep 2021 11:19:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9CFC1F804EC; Wed,  1 Sep 2021 11:19:15 +0200 (CEST)
+ id 3533CF804F2; Wed,  1 Sep 2021 11:19:31 +0200 (CEST)
 Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com
  [66.111.4.221])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C1205F80227
- for <alsa-devel@alsa-project.org>; Wed,  1 Sep 2021 11:19:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1205F80227
+ by alsa1.perex.cz (Postfix) with ESMTPS id 31DA8F80256
+ for <alsa-devel@alsa-project.org>; Wed,  1 Sep 2021 11:19:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31DA8F80256
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
- header.b="oxXR4UEC"; 
+ header.b="baojiu4A"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="TJqzxIw8"
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
- by mailnew.nyi.internal (Postfix) with ESMTP id 38212580AF6;
- Wed,  1 Sep 2021 05:19:00 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute4.internal (MEProxy); Wed, 01 Sep 2021 05:19:00 -0400
+ header.i=@messagingengine.com header.b="RB4TrP19"
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+ by mailnew.nyi.internal (Postfix) with ESMTP id BD6AF580B22;
+ Wed,  1 Sep 2021 05:19:03 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute6.internal (MEProxy); Wed, 01 Sep 2021 05:19:03 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
  from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm3; bh=Nw1E3XUhXZl3E
- Vib6iKp0DgaQ2k4DNURT8dZMhvJBEc=; b=oxXR4UEChdHrgDprcepoqKGmrPtTJ
- FKM0HYR9JBUurzHrYQhmtPLkm5byi5r/SfHZVE4JSmR6l1DcK3yNIe+tpTWVQ682
- IecwW3iT9Eu0X+2wd3qoNFHAQpp2qRXcGTChMzkPjqUg+W3ZkDYvNx4ioamLndXZ
- thATHUzl3LLYdcYosTPmJrr8gS+flAWKk4Eg8a7GGqW11ibBWwd7UQJZ5a0iWHb3
- K01GudGUaBipZuvAVpe7H/6YrssQBd3HD18wWLdjPxCupT/sxILcXJvmYhKktQJu
- 93ma6xeQkwe7Tyzu3YWJzujoLEKMiGVY8QDW0Mqugg2Y54TwkV0w9sVSg==
+ :mime-version:content-transfer-encoding; s=fm3; bh=2Xz3Y6D/gyY7C
+ tqe9aITkYRRiC0YF/N0mmFuOUDcmxA=; b=baojiu4AXHb1/BOJ3XlZGTejFS3Rc
+ xs14ADrURj+MxS57S2SkW4OR6iHUE8ohOiq3HRldTwxc+KAuG7IPHCxs5EZWJ7YJ
+ hDfZSvl4XenH1mi42NRPi2PMME6u+1xcbqR3V3nZB3c/ZWYdJn3XmQhdjcZT/U/x
+ Ukt4YwdJVa4QiOSVwHYS7GfJvSafks+DRoBLOcYVifWZlB38tamRhi0sJ6LZGIl9
+ Df6v9WE6L7uK/wQ+1GhyuvYCoDYSiFKZs6KOWZoDvYZf4eMvxDwJv12fa4SGccQz
+ plw/TBWVBv6J4lX+PNAt+u78gLsM5YMKMLrdQPavgFL3pNe0xSYjvnx7A==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm3; bh=Nw1E3XUhXZl3EVib6iKp0DgaQ2k4DNURT8dZMhvJBEc=; b=TJqzxIw8
- IfUnYv9X4E5f+gzGWHmqWDyTHR6sHFt4beIUaAEcNfZqGghFkuejsXsUwIJEwH/r
- rep6yGhJB/Z/oMHL7SUhqPDpDQl03+P00APxqXdFLj8PieFeMWlc5vBHaKerXIVQ
- GuPMamPrKD2TjhOQK8nxhgPJ/lJPLOvhvs13yf95tu1BowmATncHnjMX+t4x1Thu
- W8d0IWoS+UFkKw/PjQO/CzBx8mIKM2rlZO4REAbSnGODNtkAooSuQCWBVq9AW9UK
- o45OgHW5VBl69w7IR9N74+hVEMCr20iySyBTOWyvsa9A59ShjQbcv7+brankxwMo
- 1NwtxoIvTzILFw==
-X-ME-Sender: <xms:g0UvYeFewQjgWg4Q5TQcdda4TCGaoKfGrDzXXX5xPDdgsZ35jbs-mg>
- <xme:g0UvYfWn9VJ3wAACd6N3GFJp9Qqj2cF6iBvaugrQJdVncM6aoYW5LBxUTNmIZuMuv
- m_lruMiwO_XdqH2O2w>
-X-ME-Received: <xmr:g0UvYYL5ukqemdO6EguosH4hsi7xrF6MMa7se0FzWe2PLdujnNdwCKC0OrDviLubHm4iZC2IOJ4E4O9FPQUnExykEegQ7KF_tdJA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvfedgudehucetufdoteggodetrfdotf
+ fm3; bh=2Xz3Y6D/gyY7Ctqe9aITkYRRiC0YF/N0mmFuOUDcmxA=; b=RB4TrP19
+ X5CzSK6LVt2FcwuDJ4ulKIk/ToFgqI2iMk8ir97ALJG6VbF9+Jk+BUK6Jr9n+s5Z
+ NUZfHQk39EAoX7VD+lW8u7Th0Xg8G/WBdAuHImD34YGdjZG/abvHiJidIQji6LsB
+ eOXWb8PITc5SmftKdtte9eajoCLzjQbOl4W5K9+gqHabM+LVbikixO7bHgpo1BOP
+ F85Qkc4qi13n05zhy7WroFknoORv5M68Incxz5lKrKX8XcY/Gv50SfXh7DIvZglx
+ e9LSfAdk6eEII1vtEp5satg371ucgQZhoGGDo2/8mRuDSRlGt6lJtiyHlTjBt5PA
+ NGPWrMzulRv0Zw==
+X-ME-Sender: <xms:h0UvYROSC-WnfPiTFu80dayoAyNzIbFAuyxH5ckWWqDaLWi8IZutpw>
+ <xme:h0UvYT9gpFZkgniApsZbZXdumxSec9AGw2t-2ovijLF0-YtdgUIm2HgJV78S1lygR
+ OBogv3CSIzbJfuYQa8>
+X-ME-Received: <xmr:h0UvYQTt6eWLfz0ocRh7oDZx88FAQNLm0OVPsYycKIK0eWjGlFdlGEJgYlncqeIaSlJonbbIdKov77kigQ1STR3YKVfb5TEsJ1ZW>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvfedgudegucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
  govehorghsthgrlhdqhfeguddvqddtvdculdduhedtmdenucfjughrpefhvffufffkofgj
@@ -87,29 +87,30 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvfedgudehucetufdoteggod
  fffgjeeugffguedtleetkeegteeufedtuddttdfgfffhgfeuffenucffohhmrghinhepug
  gvvhhitggvthhrvggvrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
  pehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:g0UvYYF0gtIusCOhao4tsvvqe4BQYUHOoapsFUv71UhGuIzDZZcNYg>
- <xmx:g0UvYUVFZ1dWT_rknCkalreXXTQol5qd3dSYKFkJC_GPZ8Yd8ZcwVA>
- <xmx:g0UvYbMYtzFrBs4IBU9164-zNoUEureCtbAJ1JIimWK1CJdKhSGVLg>
- <xmx:hEUvYdOybdO5nJ91dqTI4SrB3emNG3BWMZpByisdmpDGA-zoU7At6A>
+X-ME-Proxy: <xmx:h0UvYdvuHkxCDq0Dz7cdyHr7SnaczkPGMs5v-1_hAOIg5dI2LIbdIw>
+ <xmx:h0UvYZc57IszIUeYqHhDqWI4_-iKHxWNQvetRoYQpuZjrNiKPBRqgA>
+ <xmx:h0UvYZ3LbFkforw9NJBv6fn3lj_EPJBizkvAHPQlJw3nhEiMR5R9ew>
+ <xmx:h0UvYZ3_8O_5ZixSWwBw2doUztVQWrNm-zRtVFCZrkPMZzoVeIUMCg>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 1 Sep 2021 05:18:58 -0400 (EDT)
+ 1 Sep 2021 05:19:02 -0400 (EDT)
 From: Maxime Ripard <maxime@cerno.tech>
 To: devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
  Frank Rowand <frowand.list@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
  Maxime Ripard <maxime@cerno.tech>,
  =?UTF-8?q?Jernej=20=C5=A0krabec?= <jernej.skrabec@gmail.com>
-Subject: [PATCH v2 02/52] ASoC: dt-bindings: Convert Bluetooth SCO Link
- binding to a schema
-Date: Wed,  1 Sep 2021 11:18:02 +0200
-Message-Id: <20210901091852.479202-3-maxime@cerno.tech>
+Subject: [PATCH v2 04/52] ASoC: dt-bindings: Convert Simple Amplifier binding
+ to a schema
+Date: Wed,  1 Sep 2021 11:18:04 +0200
+Message-Id: <20210901091852.479202-5-maxime@cerno.tech>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210901091852.479202-1-maxime@cerno.tech>
 References: <20210901091852.479202-1-maxime@cerno.tech>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Samuel Holland <samuel@sholland.org>,
+Cc: Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org,
  Liam Girdwood <lgirdwood@gmail.com>, linux-sunxi@googlegroups.com,
- Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+ Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ Jerome Brunet <jbrunet@baylibre.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -125,90 +126,96 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Bluetooth SCO Link are supported by Linux with a matching device tree
-binding.
+Simple audio amplifiers are supported by Linux with a matching device
+tree binding.
 
 Now that we have the DT validation in place, let's convert the device
 tree bindings for that driver over to a YAML schema.
 
 Cc: alsa-devel@alsa-project.org
-Cc: devicetree@vger.kernel.org
+Cc: Jerome Brunet <jbrunet@baylibre.com>
 Cc: Liam Girdwood <lgirdwood@gmail.com>
 Cc: Mark Brown <broonie@kernel.org>
-Cc: Samuel Holland <samuel@sholland.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-
 ---
+ .../bindings/sound/simple-amplifier.txt       | 17 -------
+ .../sound/simple-audio-amplifier.yaml         | 45 +++++++++++++++++++
+ 2 files changed, 45 insertions(+), 17 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/simple-amplifier.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/simple-audio-amplifier.yaml
 
-Changes from v1:
-  - Accept either a 0 or 1 #sound-dai-cells
----
- .../devicetree/bindings/sound/bt-sco.txt      | 13 -------
- .../bindings/sound/linux,bt-sco.yaml          | 38 +++++++++++++++++++
- 2 files changed, 38 insertions(+), 13 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/bt-sco.txt
- create mode 100644 Documentation/devicetree/bindings/sound/linux,bt-sco.yaml
-
-diff --git a/Documentation/devicetree/bindings/sound/bt-sco.txt b/Documentation/devicetree/bindings/sound/bt-sco.txt
+diff --git a/Documentation/devicetree/bindings/sound/simple-amplifier.txt b/Documentation/devicetree/bindings/sound/simple-amplifier.txt
 deleted file mode 100644
-index 641edf75e184..000000000000
---- a/Documentation/devicetree/bindings/sound/bt-sco.txt
+index b1b097cc9b68..000000000000
+--- a/Documentation/devicetree/bindings/sound/simple-amplifier.txt
 +++ /dev/null
-@@ -1,13 +0,0 @@
--Bluetooth-SCO audio CODEC
--
--This device support generic Bluetooth SCO link.
+@@ -1,17 +0,0 @@
+-Simple Amplifier Audio Driver
 -
 -Required properties:
+-- compatible : "dioo,dio2125" or "simple-audio-amplifier"
 -
--  - compatible : "delta,dfbmcs320" or "linux,bt-sco"
+-Optional properties:
+-- enable-gpios : the gpio connected to the enable pin of the simple amplifier
+-- VCC-supply   : power supply for the device, as covered
+-                 in Documentation/devicetree/bindings/regulator/regulator.txt
 -
 -Example:
 -
--codec: bt_sco {
--	compatible = "delta,dfbmcs320";
+-amp: analog-amplifier {
+-	compatible = "simple-audio-amplifier";
+-	VCC-supply = <&regulator>;
+-	enable-gpios = <&gpio GPIOH_3 0>;
 -};
-diff --git a/Documentation/devicetree/bindings/sound/linux,bt-sco.yaml b/Documentation/devicetree/bindings/sound/linux,bt-sco.yaml
+diff --git a/Documentation/devicetree/bindings/sound/simple-audio-amplifier.yaml b/Documentation/devicetree/bindings/sound/simple-audio-amplifier.yaml
 new file mode 100644
-index 000000000000..e3a1f485f664
+index 000000000000..26379377a7ac
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/linux,bt-sco.yaml
-@@ -0,0 +1,38 @@
++++ b/Documentation/devicetree/bindings/sound/simple-audio-amplifier.yaml
+@@ -0,0 +1,45 @@
 +# SPDX-License-Identifier: GPL-2.0
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/sound/linux,bt-sco.yaml#
++$id: http://devicetree.org/schemas/sound/simple-audio-amplifier.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Bluetooth SCO Audio Codec Device Tree Bindings
++title: Simple Audio Amplifier Device Tree Bindings
 +
 +maintainers:
-+  - Mark Brown <broonie@kernel.org>
++  - Jerome Brunet <jbrunet@baylibre.com>
 +
 +properties:
-+  '#sound-dai-cells':
-+    enum:
-+      - 0
-+
-+      # For Wideband PCM
-+      - 1
-+
 +  compatible:
 +    enum:
-+      - delta,dfbmcs320
-+      - linux,bt-sco
++      - dioo,dio2125
++      - simple-audio-amplifier
++
++  enable-gpios:
++    maxItems: 1
++
++  VCC-supply:
++    description: >
++      power supply for the device
++
++  sound-name-prefix:
++    $ref: /schemas/types.yaml#/definitions/string
++    description: >
++      See ./name-prefix.txt
 +
 +required:
-+  - '#sound-dai-cells'
 +  - compatible
 +
 +additionalProperties: false
 +
 +examples:
 +  - |
-+    codec {
-+        #sound-dai-cells = <0>;
-+        compatible = "linux,bt-sco";
++    #include <dt-bindings/gpio/meson8-gpio.h>
++
++    analog-amplifier {
++        compatible = "simple-audio-amplifier";
++        VCC-supply = <&regulator>;
++        enable-gpios = <&gpio GPIOH_3 0>;
 +    };
 +
 +...
