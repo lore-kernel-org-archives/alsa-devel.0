@@ -7,45 +7,45 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48CDDC432BE
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 03:49:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35B07C432BE
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 03:50:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A025161053
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 03:49:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A025161053
+	by mail.kernel.org (Postfix) with ESMTPS id A652861053
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Sep 2021 03:49:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A652861053
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rock-chips.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 11D47176C;
-	Wed,  1 Sep 2021 05:48:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11D47176C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 422DA1755;
+	Wed,  1 Sep 2021 05:49:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 422DA1755
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630468175;
-	bh=iB7/BryZDQ4PDkrDo2s/XIoXqlwpd1WKX865IOKNVzY=;
+	s=default; t=1630468198;
+	bh=hIpPkWOk3gLlKhU/W0gH/X/QhRDZH2YDweixlffkM/c=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F44lv/Rw51VMH9dUYqdKHST40sHS+txnvkQC9DjHWyJGiFCH3B4O5qfU6D2jED98m
-	 84Pbupa2iaVve77ATiWGUXrVv23YaWMc3FVzziYWyTykrF/9EWKy7/wZu7b9RLPdvv
-	 cWTyY//7A+8ER53jPyzwTmWcjVNoN9AVID7jAhCA=
+	b=fb2YQFGf50Q+nX5aolX7If2W0Xo0bp1sLMA3ezF0CtvqOQ0hwwPo+qVtM1h6nmsCc
+	 O93DZwUhs/apFoApQPdoFYqHhPPCx5THcWdFmG7d1elX28WaSz9mjv7hn33Mq0Ew0R
+	 wu5dhtsxzEdJ2+ymnz6hmw5s3oWcgCT6kTA4cjWA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00B3BF8032B;
+	by alsa1.perex.cz (Postfix) with ESMTP id A14FDF804F2;
 	Wed,  1 Sep 2021 05:48:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1DAADF8032B; Wed,  1 Sep 2021 05:48:32 +0200 (CEST)
-Received: from lucky1.263xmail.com (lucky1.263xmail.com [211.157.147.131])
+ id BDFA2F8032B; Wed,  1 Sep 2021 05:48:32 +0200 (CEST)
+Received: from lucky1.263xmail.com (lucky1.263xmail.com [211.157.147.130])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E1F40F8032B
- for <alsa-devel@alsa-project.org>; Wed,  1 Sep 2021 05:48:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1F40F8032B
+ by alsa1.perex.cz (Postfix) with ESMTPS id CB3F9F8020D
+ for <alsa-devel@alsa-project.org>; Wed,  1 Sep 2021 05:48:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB3F9F8020D
 Received: from localhost (unknown [192.168.167.172])
- by lucky1.263xmail.com (Postfix) with ESMTP id 1F04BC2C0D;
- Wed,  1 Sep 2021 11:48:18 +0800 (CST)
+ by lucky1.263xmail.com (Postfix) with ESMTP id D9887D76B2;
+ Wed,  1 Sep 2021 11:48:15 +0800 (CST)
 X-MAIL-GRAY: 0
 X-MAIL-DELIVERY: 1
 X-ADDR-CHECKED4: 1
@@ -54,9 +54,9 @@ X-ANTISPAM-LEVEL: 2
 Received: from localhost.localdomain (unknown [58.22.7.114])
  by smtp.263.net (postfix) whith ESMTP id
  P6276T140523079702272S1630468091356880_; 
- Wed, 01 Sep 2021 11:48:17 +0800 (CST)
+ Wed, 01 Sep 2021 11:48:15 +0800 (CST)
 X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <486f3bb2b2333b201077128edda7fc47>
+X-UNIQUE-TAG: <1089f13cff8a43af850fa072c95f538a>
 X-RL-SENDER: sugar.zhang@rock-chips.com
 X-SENDER: zxg@rock-chips.com
 X-LOGIN-NAME: sugar.zhang@rock-chips.com
@@ -68,9 +68,9 @@ X-System-Flag: 0
 From: Sugar Zhang <sugar.zhang@rock-chips.com>
 To: broonie@kernel.org,
 	heiko@sntech.de
-Subject: [PATCH v3 5/7] ASoC: rockchip: pdm: Add support for path map
-Date: Wed,  1 Sep 2021 11:48:01 +0800
-Message-Id: <1630468083-7248-5-git-send-email-sugar.zhang@rock-chips.com>
+Subject: [PATCH v3 3/7] ASoC: rockchip: pdm: Add support for rk3568 pdm
+Date: Wed,  1 Sep 2021 11:47:59 +0800
+Message-Id: <1630468083-7248-3-git-send-email-sugar.zhang@rock-chips.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1630468039-7186-1-git-send-email-sugar.zhang@rock-chips.com>
 References: <1630468039-7186-1-git-send-email-sugar.zhang@rock-chips.com>
@@ -92,16 +92,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds property 'rockchip,path-map' for path mapping.
-
-e.g.
-
-"rockchip,path-map = <3 2 1 0>" means the mapping as follows:
-
-  path0 <-- sdi3
-  path1 <-- sdi2
-  path2 <-- sdi1
-  path3 <-- sdi0
+This patch adds compatible for rk3568 which is the same
+with rv1126.
 
 Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
 ---
@@ -109,85 +101,22 @@ Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
 Changes in v3: None
 Changes in v2: None
 
- sound/soc/rockchip/rockchip_pdm.c | 34 ++++++++++++++++++++++++++++++++++
- sound/soc/rockchip/rockchip_pdm.h |  3 +++
- 2 files changed, 37 insertions(+)
+ sound/soc/rockchip/rockchip_pdm.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/sound/soc/rockchip/rockchip_pdm.c b/sound/soc/rockchip/rockchip_pdm.c
-index f2bf023..64d9891 100644
+index 67634d1..f2bf023 100644
 --- a/sound/soc/rockchip/rockchip_pdm.c
 +++ b/sound/soc/rockchip/rockchip_pdm.c
-@@ -20,6 +20,7 @@
- 
- #define PDM_DMA_BURST_SIZE	(8) /* size * width: 8*4 = 32 bytes */
- #define PDM_SIGNOFF_CLK_RATE	(100000000)
-+#define PDM_PATH_MAX		(4)
- 
- enum rk_pdm_version {
- 	RK_PDM_RK3229,
-@@ -539,8 +540,36 @@ static const struct of_device_id rockchip_pdm_match[] __maybe_unused = {
- };
- MODULE_DEVICE_TABLE(of, rockchip_pdm_match);
- 
-+static int rockchip_pdm_path_parse(struct rk_pdm_dev *pdm, struct device_node *node)
-+{
-+	unsigned int path[PDM_PATH_MAX];
-+	int cnt = 0, ret = 0, i = 0, val = 0, msk = 0;
-+
-+	cnt = of_count_phandle_with_args(node, "rockchip,path-map",
-+					 NULL);
-+	if (cnt != PDM_PATH_MAX)
-+		return cnt;
-+
-+	ret = of_property_read_u32_array(node, "rockchip,path-map",
-+					 path, cnt);
-+	if (ret)
-+		return ret;
-+
-+	for (i = 0; i < cnt; i++) {
-+		if (path[i] >= PDM_PATH_MAX)
-+			return -EINVAL;
-+		msk |= PDM_PATH_MASK(i);
-+		val |= PDM_PATH(i, path[i]);
-+	}
-+
-+	regmap_update_bits(pdm->regmap, PDM_CLK_CTRL, msk, val);
-+
-+	return 0;
-+}
-+
- static int rockchip_pdm_probe(struct platform_device *pdev)
- {
-+	struct device_node *node = pdev->dev.of_node;
- 	const struct of_device_id *match;
- 	struct rk_pdm_dev *pdm;
- 	struct resource *res;
-@@ -606,6 +635,11 @@ static int rockchip_pdm_probe(struct platform_device *pdev)
- 	}
- 
- 	rockchip_pdm_rxctrl(pdm, 0);
-+
-+	ret = rockchip_pdm_path_parse(pdm, node);
-+	if (ret != 0 && ret != -ENOENT)
-+		goto err_suspend;
-+
- 	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
- 	if (ret) {
- 		dev_err(&pdev->dev, "could not register pcm: %d\n", ret);
-diff --git a/sound/soc/rockchip/rockchip_pdm.h b/sound/soc/rockchip/rockchip_pdm.h
-index 13bfbc2..cab9772 100644
---- a/sound/soc/rockchip/rockchip_pdm.h
-+++ b/sound/soc/rockchip/rockchip_pdm.h
-@@ -53,6 +53,9 @@
- #define PDM_FD_DENOMINATOR_MSK	GENMASK(15, 0)
- 
- /* PDM CLK CTRL */
-+#define PDM_PATH_SHIFT(x)	(8 + (x) * 2)
-+#define PDM_PATH_MASK(x)	(0x3 << PDM_PATH_SHIFT(x))
-+#define PDM_PATH(x, v)		((v) << PDM_PATH_SHIFT(x))
- #define PDM_CLK_FD_RATIO_MSK	BIT(6)
- #define PDM_CLK_FD_RATIO_40	(0X0 << 6)
- #define PDM_CLK_FD_RATIO_35	BIT(6)
+@@ -531,6 +531,8 @@ static const struct of_device_id rockchip_pdm_match[] __maybe_unused = {
+ 	  .data = (void *)RK_PDM_RK3308 },
+ 	{ .compatible = "rockchip,rk3308-pdm",
+ 	  .data = (void *)RK_PDM_RK3308 },
++	{ .compatible = "rockchip,rk3568-pdm",
++	  .data = (void *)RK_PDM_RV1126 },
+ 	{ .compatible = "rockchip,rv1126-pdm",
+ 	  .data = (void *)RK_PDM_RV1126 },
+ 	{},
 -- 
 2.7.4
 
