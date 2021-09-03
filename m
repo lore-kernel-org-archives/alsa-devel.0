@@ -6,77 +6,72 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C0B5C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 15:20:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6C8AC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 15:21:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6661C610D2
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 15:20:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6661C610D2
+	by mail.kernel.org (Postfix) with ESMTPS id C7F316023F
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 15:21:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C7F316023F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B48E41898;
-	Fri,  3 Sep 2021 17:19:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B48E41898
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2B19718B2;
+	Fri,  3 Sep 2021 17:20:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B19718B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630682420;
-	bh=HtASRRWKkNhLAcnhps8RwSDCZ3wFyaPgsokSOt8bdEI=;
+	s=default; t=1630682465;
+	bh=oYmN5T7sshaoWGSEc1MfWpgCjISXeg/z9xk1wh6OKJU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uoKh6cwR4Q45ViV/MVgj7HNR8/Mg+sXG1G/WnZK1RiSCEQV2KBwQEQjijYVzjdLcE
-	 TcPTDwVW17Cwqiv1HdjulCDUtfxg8MSdb90ublU0P7lD9HOyXNJQ/XcDjqxp3PiHrC
-	 Qw6c75owkbiXUKDRBlUgzAVCkchBB8PbtXBSGaEY=
+	b=ROiVaZaVZ6XnjUaLZKBffJQhijUebEmgx+SPUA0bqLQheT07CtLSS+QHAmDJOx9Eg
+	 Nyw1kzojXgK9ISdB1lnVNEtfa48mNAkC8wEL9ljAHVELKT4RlfZ1u/rRfp/5ksEmO5
+	 s8o2MK2rC5xUL5WU/c/wVGO1eXNc1+FjiveVlExo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A649F80227;
-	Fri,  3 Sep 2021 17:19:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BD4CCF802E3;
+	Fri,  3 Sep 2021 17:19:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1143FF80256; Fri,  3 Sep 2021 17:19:29 +0200 (CEST)
+ id D0532F80254; Fri,  3 Sep 2021 17:19:29 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A4F15F8020D
- for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2021 17:19:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4F15F8020D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6D0BAF80088
+ for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2021 17:19:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D0BAF80088
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="DrzVlW/4"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BCDCC610E5;
- Fri,  3 Sep 2021 15:19:20 +0000 (UTC)
+ header.b="UGlylsOL"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64FD8610E6;
+ Fri,  3 Sep 2021 15:19:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1630682361;
- bh=HtASRRWKkNhLAcnhps8RwSDCZ3wFyaPgsokSOt8bdEI=;
+ s=k20201202; t=1630682363;
+ bh=oYmN5T7sshaoWGSEc1MfWpgCjISXeg/z9xk1wh6OKJU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=DrzVlW/4sIbliM2WppPgTAw3Kod8WVGtqY18Yl//1HyvpIS/uRH2uVyoj3F10mZBA
- Aq6TmaUWuEnwPR2UApspQSFv9MOealNshBmNFZLSXQ2fy6C2znQC/D4xk2mJXDndlR
- /EFScGCvwGUZqGIq/UyNhsb/yhrQP73HgqS0U49BwZwE0b96HpgSxRbTel2RQhMReb
- rzNiyhIZY0WzaZbwToBWSvfFAJJzxzpwl12aZ6mIlE3FHYmAo75eFlI4Z/yVkDjbhk
- S2n/S62UfzSsQa9omsarbthCmg/MCSWx6TEppf98ePP1UGvpet3zl7oLGJbTVPht7j
- r+U1REJaWp/2Q==
+ b=UGlylsOLgVVOjPq+FLhiRA9ULl1yVvH89glH0h7EL/ekI34mqjOimsUgJ0We5A3rY
+ W8npyG3wt0agsSjxDzmCfz/nAG+myRyVTa5pPslo3rIdePH9VXUUC8wp2ZW6gsDVSq
+ Ym89RMSRrNkM6jKWi8D7b0RPaL050zDIRO7EL3fycbBuJITX7O6FRXM+qCu1ZmnaGA
+ MadMpzYWWovy3HHMsr42VW5biCBKEAMsqdHqSV6R+n7qvfH73Fd7SW4KiNlM64gt4h
+ NX1AhU1widThJS+yDh0c+IwnUDNE7KGmVz+E+KGa+gIimAUOK7PBGRd9C4FWUvLoNE
+ zM8BDsurg013g==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Nathan Chancellor <nathan@kernel.org>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Jie Yang <yang.jie@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH for-5.15 v3] ASoC: Intel: boards: Fix
- CONFIG_SND_SOC_SDW_MOCKUP select
-Date: Fri,  3 Sep 2021 16:18:44 +0100
-Message-Id: <163068203907.50844.10461290358793917859.b4-ty@kernel.org>
+To: matthias.bgg@gmail.com, Trevor Wu <trevor.wu@mediatek.com>, tiwai@suse.com
+Subject: Re: [PATCH] ASoC: mt8195: correct the dts parsing logic about DPTX
+ and HDMITX
+Date: Fri,  3 Sep 2021 16:18:45 +0100
+Message-Id: <163068203907.50844.7644629918689811156.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210902181217.2958966-1-nathan@kernel.org>
-References: <20210802212409.3207648-1-nathan@kernel.org>
- <20210902181217.2958966-1-nathan@kernel.org>
+In-Reply-To: <20210903060049.20764-1-trevor.wu@mediatek.com>
+References: <20210903060049.20764-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
- Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,15 +87,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 2 Sep 2021 11:12:18 -0700, Nathan Chancellor wrote:
-> When CONFIG_SND_SOC_INTEL_SOUNDWIRE_SOF_MACH is enabled without
-> CONFIG_EXPERT, there is a Kconfig warning about unmet dependencies:
+On Fri, 3 Sep 2021 14:00:49 +0800, Trevor Wu wrote:
+> According to the description in dt-bindings, phandle assignment of
+> HDMI TX and DP TX are not required properties, but driver regards them
+> as required properties.
+> In real use case, it's expected that DP TX and HDMI TX are optional
+> features, so correct the behavior in driver.
 > 
-> WARNING: unmet direct dependencies detected for SND_SOC_SDW_MOCKUP
->   Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] &&
-> EXPERT [=n] && SOUNDWIRE [=y]
->   Selected by [y]:
->   - SND_SOC_INTEL_SOUNDWIRE_SOF_MACH [=y] && ...
 > 
 > [...]
 
@@ -110,8 +103,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: boards: Fix CONFIG_SND_SOC_SDW_MOCKUP select
-      commit: b3dded7e2f98e2672deb9606514c0e13e3094640
+[1/1] ASoC: mt8195: correct the dts parsing logic about DPTX and HDMITX
+      commit: 7eac1e24fbf6c56c9e3be302748ae73104bb40bd
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
