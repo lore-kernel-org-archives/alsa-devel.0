@@ -7,61 +7,61 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6B14C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 10:55:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DC41C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 10:55:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 17A4C60698
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 10:55:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 17A4C60698
+	by mail.kernel.org (Postfix) with ESMTPS id C93D16108E
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 10:55:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C93D16108E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A6481181A;
-	Fri,  3 Sep 2021 12:54:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6481181A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 41ACD17ED;
+	Fri,  3 Sep 2021 12:54:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41ACD17ED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630666498;
-	bh=2kAkiDJmrb50nKOQbnvxFk5Rb6hls+DA8x5y4WOBK74=;
+	s=default; t=1630666524;
+	bh=zAWdLylQBVTj19g9rRYtcgqhiN4En1EksCpQyBZux3s=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LT0VFv0G9MjICwYqvVokDADAJU62PMZwfXQAO5X1AF3Qoq3dmEEu3LW5Oae5b9Uxl
-	 ydjvUwk6agsflviUMY5pzmjoa7pCMGstUuiOoDCVUrI+SCH91I+did697XmjU//RZv
-	 dez3gd7iIvLjwF4fMlCqWZikqeQObIYr0GGjgyS8=
+	b=nnzCi9mxy+oNhrxRmMxnZ4CdNSM8LxILZzQwklcUnZ/KFLV7WvU0Jct//jgDvDP83
+	 pNJCxGGccpNpRVEQ3afHXxEv2bGcDykiyLeNg82/o67TUl3uh76/fka0pS/mTkJCKc
+	 QDj7wco0oF/yyOCJqC+6WWqdzMciYIm0kgoTwt/U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 94F97F80088;
-	Fri,  3 Sep 2021 12:52:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DB054F80254;
+	Fri,  3 Sep 2021 12:53:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3DBC9F804EB; Fri,  3 Sep 2021 12:52:57 +0200 (CEST)
+ id 974A8F804E2; Fri,  3 Sep 2021 12:53:54 +0200 (CEST)
 Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E7C42F80088
- for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2021 12:52:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7C42F80088
+ by alsa1.perex.cz (Postfix) with ESMTPS id 902FEF80256
+ for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2021 12:52:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 902FEF80256
 Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A12FE2030E4;
- Fri,  3 Sep 2021 12:52:46 +0200 (CEST)
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D7BCA2030E1;
+ Fri,  3 Sep 2021 12:52:48 +0200 (CEST)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 699CD2030D4;
- Fri,  3 Sep 2021 12:52:46 +0200 (CEST)
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 9F69F2030D4;
+ Fri,  3 Sep 2021 12:52:48 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 59C99183AC89;
- Fri,  3 Sep 2021 18:52:45 +0800 (+08)
+ by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 3A3A7183AC89;
+ Fri,  3 Sep 2021 18:52:47 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
  festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
  alsa-devel@alsa-project.org
-Subject: [PATCH for-5.15 3/5] ASoC: fsl_micfil: register platform component
+Subject: [PATCH for-5.15 5/5] ASoC: fsl_xcvr: register platform component
  before registering cpu dai
-Date: Fri,  3 Sep 2021 18:30:04 +0800
-Message-Id: <1630665006-31437-4-git-send-email-shengjiu.wang@nxp.com>
+Date: Fri,  3 Sep 2021 18:30:06 +0800
+Message-Id: <1630665006-31437-6-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1630665006-31437-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1630665006-31437-1-git-send-email-shengjiu.wang@nxp.com>
@@ -99,41 +99,41 @@ is empty, the sound card can't be used.
 As there is defer probe checking for cpu dai component, then register
 platform component before cpu dai to avoid such issue.
 
-Fixes: 47a70e6fc9a8 ("ASoC: Add MICFIL SoC Digital Audio Interface driver.")
+Fixes: 28564486866f ("ASoC: fsl_xcvr: Add XCVR ASoC CPU DAI driver")
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- sound/soc/fsl/fsl_micfil.c | 15 ++++++++++-----
+ sound/soc/fsl/fsl_xcvr.c | 15 ++++++++++-----
  1 file changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index 8c0c75ce9490..9f90989ac59a 100644
---- a/sound/soc/fsl/fsl_micfil.c
-+++ b/sound/soc/fsl/fsl_micfil.c
-@@ -737,18 +737,23 @@ static int fsl_micfil_probe(struct platform_device *pdev)
- 	pm_runtime_enable(&pdev->dev);
- 	regcache_cache_only(micfil->regmap, true);
+diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
+index 31c5ee641fe7..7ba2fd15132d 100644
+--- a/sound/soc/fsl/fsl_xcvr.c
++++ b/sound/soc/fsl/fsl_xcvr.c
+@@ -1215,18 +1215,23 @@ static int fsl_xcvr_probe(struct platform_device *pdev)
+ 	pm_runtime_enable(dev);
+ 	regcache_cache_only(xcvr->regmap, true);
  
 +	/*
 +	 * Register platform component before registering cpu dai for there
 +	 * is not defer probe for platform component in snd_soc_add_pcm_runtime().
 +	 */
-+	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
++	ret = devm_snd_dmaengine_pcm_register(dev, NULL, 0);
 +	if (ret) {
-+		dev_err(&pdev->dev, "failed to pcm register\n");
++		dev_err(dev, "failed to pcm register\n");
 +		return ret;
 +	}
 +
- 	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_micfil_component,
- 					      &fsl_micfil_dai, 1);
+ 	ret = devm_snd_soc_register_component(dev, &fsl_xcvr_comp,
+ 					      &fsl_xcvr_dai, 1);
  	if (ret) {
- 		dev_err(&pdev->dev, "failed to register component %s\n",
- 			fsl_micfil_component.name);
+ 		dev_err(dev, "failed to register component %s\n",
+ 			fsl_xcvr_comp.name);
 -		return ret;
  	}
  
--	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+-	ret = devm_snd_dmaengine_pcm_register(dev, NULL, 0);
 -	if (ret)
--		dev_err(&pdev->dev, "failed to pcm register\n");
+-		dev_err(dev, "failed to pcm register\n");
 -
  	return ret;
  }
