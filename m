@@ -2,80 +2,83 @@ Return-Path: <SRS0=Q8D2=NZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34F77C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 11:50:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5060AC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 12:32:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC47561051
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 11:50:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EC47561051
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id 9BD4261058
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 12:32:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9BD4261058
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3619C17ED;
-	Fri,  3 Sep 2021 13:49:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3619C17ED
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4466017F4;
+	Fri,  3 Sep 2021 14:31:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4466017F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630669829;
-	bh=3at1ibZbtPC8r/w+jSt45l3Y4Z/Il14VGIEjpIjEWvs=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=FNb4dG9gYVbMcT32nYJzN0j4oNJyo+Vj0KvVAnCjAu7OYuWG4BfJnSiX3aOu/UZGs
-	 1dtd2xPXCF3QgOSPINfok3wiudGzSzljifTCUjlzy9vBSVEd58SJ4841Bj+HMG/yZX
-	 1yhiH8jm22zQ7yn+J9eZB0WX6Y4QG8WxT/s46KfY=
+	s=default; t=1630672357;
+	bh=hmbJgJwiNK+Qia20F9mGeaaWddLJV+HFpX0pUXYn/kY=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=tek8+KyZATpK65vB0WxiHJoMdHv0TxDQghA6hzEm7Bzdcr44+KxcjSb+vLcBjnWwa
+	 VCTK3m/+jUmrShWvgqTT1YuiN12OAV/alCwYw0q4kdxHa4ZP1MGgadxLudr3//RqcJ
+	 XuntHqZFeaH7YQCnt1W26yZKWe+RVDcUzH1dLqBc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8078F8020D;
-	Fri,  3 Sep 2021 13:49:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE8A1F80227;
+	Fri,  3 Sep 2021 14:31:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 88739F80254; Fri,  3 Sep 2021 13:49:37 +0200 (CEST)
-Received: from smtp-relay-canonical-0.canonical.com
- (smtp-relay-canonical-0.canonical.com [185.125.188.120])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id B0752F80254; Fri,  3 Sep 2021 14:31:39 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 49EF0F8020D
- for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2021 13:49:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49EF0F8020D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5644CF8020D
+ for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2021 14:31:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5644CF8020D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
- header.b="j+2I4zP+"
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 9DD213F09E; 
- Fri,  3 Sep 2021 11:49:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1630669768;
- bh=cY308Ok8pbsAlAgAmdVbKjTzNIY9q0Cqnz5SkkmxGdk=;
- h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
- b=j+2I4zP+/n4UObG3A2xBnhb7ei1OJ24PTYqJUHMCJv22TbfMRULUIjhZVU8hPuUg1
- 158qWcex1GrdacaaHpcPkRIsjo7u/YC4QrKcE2O4FJ5WFEyhIVVf9yITKhJIaCDxty
- xdE2MHyxeodC1uBA9Xo6hEOMZCRo4L7Nh88oYmXi512jWw1ukgjy2sFdOYkciqeNUH
- vP/A/qANY5AT2WitK1R/pinLDOAzw0xtFso7hn6CfBc7al1F3mJPdAujnKKBO1pEST
- 6dWsOTWN9/VzR1+ynXuSxRxqSpFp7cU5SVkrVh5tdVTsO1NrBso5NX2/Xk7DxlLaAl
- QfHdOAxyfKAZQ==
-From: Colin King <colin.king@canonical.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Matthias Brugger <matthias.bgg@gmail.com>, alsa-devel@alsa-project.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-Subject: [PATCH] ASoC: mediatek: mt8195: Fix unused initialization of pointer
- etdm_data
-Date: Fri,  3 Sep 2021 12:49:28 +0100
-Message-Id: <20210903114928.11743-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="aSOpcQOm"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C11A61057;
+ Fri,  3 Sep 2021 12:31:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1630672291;
+ bh=hmbJgJwiNK+Qia20F9mGeaaWddLJV+HFpX0pUXYn/kY=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=aSOpcQOmaJEPs6yk7I0kyH4oRVQ2A2kbVhvZXSqU9Z3EuMjmAL1h5kcnZ3Fn7L0vO
+ 6IVbUgHlHl6HMhrOW2HTVtqhc2xiemkjRoiN26m1VGAOdUmnRTU0Z+oF/LTnYIcKUM
+ FM5imUZ2Vbm/OmeGd5BVZ4ltHtkZze7h5YfwdVViDBAqQxdaZmDj0+mgKKdSGgOn2p
+ BYiwPKJfVWK0/rNSiVLh9nhtUDZ6i2HYzLfgQh4g/vvl/iYJPZ0VmxI9l5fh/bv6BS
+ IDutKel1ZSqT7KJWz++LN2wpfT6t89QaoozY6pG7Ejx5WtdSE6pecV5DBT5L4drbUw
+ 1MARZTEcGhuXg==
+Date: Fri, 3 Sep 2021 13:30:58 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Derek =?utf-8?B?W+aWueW+t+e+qV0=?= <derek.fang@realtek.com>
+Subject: Re: [PATCH 1/2] ASoC: rt5682s: Add driver for ALC5682I-VS codec
+Message-ID: <20210903123058.GI4932@sirena.org.uk>
+References: <20210826080938.14872-1-derek.fang@realtek.com>
+ <20210826121412.GB4148@sirena.org.uk>
+ <e2ad57c54ea0422d8083bbf2b116563c@realtek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="JIpyCmsTxyPLrmrM"
+Content-Disposition: inline
+In-Reply-To: <e2ad57c54ea0422d8083bbf2b116563c@realtek.com>
+X-Cookie: Darth Vader sleeps with a Teddywookie.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "lars@metafoo.de" <lars@metafoo.de>,
+ "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+ Albert Chen <albertchen@realtek.com>,
+ Shuming =?utf-8?B?W+iMg+abuOmKmF0=?= <shumingf@realtek.com>,
+ "Flove\(HsinFu\)" <flove@realtek.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,31 +94,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Colin Ian King <colin.king@canonical.com>
 
-The pointer etdm_data is being inintialized with a value that is never
-read, it is later being re-assigned a new value. Remove the redundant
-initialization.
+--JIpyCmsTxyPLrmrM
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/mediatek/mt8195/mt8195-dai-etdm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Fri, Aug 27, 2021 at 05:59:30AM +0000, Derek [=E6=96=B9=E5=BE=B7=E7=BE=
+=A9] wrote:
 
-diff --git a/sound/soc/mediatek/mt8195/mt8195-dai-etdm.c b/sound/soc/mediatek/mt8195/mt8195-dai-etdm.c
-index 7378e42f2766..ac591d453e1e 100644
---- a/sound/soc/mediatek/mt8195/mt8195-dai-etdm.c
-+++ b/sound/soc/mediatek/mt8195/mt8195-dai-etdm.c
-@@ -2094,7 +2094,7 @@ static int mtk_dai_etdm_set_sysclk(struct snd_soc_dai *dai,
- {
- 	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
- 	struct mt8195_afe_private *afe_priv = afe->platform_priv;
--	struct mtk_dai_etdm_priv *etdm_data = afe_priv->dai_priv[dai->id];
-+	struct mtk_dai_etdm_priv *etdm_data;
- 	int dai_id;
- 
- 	dev_dbg(dai->dev, "%s id %d freq %u, dir %d\n",
--- 
-2.32.0
+> > > +#ifdef CONFIG_COMMON_CLK
+> > > +	/* Check if MCLK provided */
+> > > +	rt5682s->mclk =3D devm_clk_get(component->dev, "mclk");
+> >=20
+> > Perhaps factor the clock init out into a _probe_clks() function and the=
+n have a
+> > stub function rather than the two ifdefs?
+> We want to factor the codes like below to reduce ifdefs.
+> Could you give any comments?
 
+That looks fine.
+
+--JIpyCmsTxyPLrmrM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEyFYEACgkQJNaLcl1U
+h9DwTAf9HHYgPfZDOSSJ6IwYCQdZLzxTTkVmR46N9gMLeapdzyNTcclDK6uNgRid
+HFBY6sCRzdNfv4YPXl9tPhwtprXHa0j7pQFIN34ekImErzxvAFbP10sJ6CKV2Rix
+wF5ETD6VNhVgYUk6MpGz/NFaJLpKIAjCcAECrHeKKBYVQS1ZRoa7tsqjyhjjwZgJ
+RTv1jCwgn/k50v9IR8w4uwqpnYssGoPHnnaHw22/6foqfskfBHZat6NV65XhUKRo
+UbgBIgTOGCDHZE1JMzxgjAxQuBB3r87ksLM0oXDuFcRxCLl6cq8hxm5yYqdVvGwy
+BAA2u/FYc3qWaWJ7mpNkfdJHtYkjgg==
+=SDOy
+-----END PGP SIGNATURE-----
+
+--JIpyCmsTxyPLrmrM--
