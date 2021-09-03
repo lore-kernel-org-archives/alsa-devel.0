@@ -2,77 +2,71 @@ Return-Path: <SRS0=Q8D2=NZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 569EDC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 01:53:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B96EC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 06:02:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9C66061074
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 01:53:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9C66061074
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=dnyon.com
+	by mail.kernel.org (Postfix) with ESMTPS id C707960FE6
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 06:02:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C707960FE6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2543E17E3;
-	Fri,  3 Sep 2021 03:52:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2543E17E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 65B0417CC;
+	Fri,  3 Sep 2021 08:01:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65B0417CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630634014;
-	bh=sf2pcCMT1IxNfnOeWrCGZ5xfAX63pMAjrAvTYJj8Qlg=;
+	s=default; t=1630648922;
+	bh=5vPY6qWmjvJN3cjDkGeRI42rVx0cggdmsA5dApm4unk=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=hPXkuG45pPXHX1C7G6ahWOsf4W98aL8UWjx2OnGoX6X27+aD+1pb8r90fDA89t8zD
-	 Qyie2TC8IOsRT/revh7Bntfp2uP5FwqLrl7Ho8H232EcHChDA/JT1quXdqmgMGGpT7
-	 3qmlWynxDEPw1A/CrdOQ1knFvIn/Vr/YJgj2zfGY=
+	b=fc448B6pm4U1R2wsxzeUlk+qaOXXs/2IjCWoYZAOSciCNqzU/5Pfzozavz9/rcpzg
+	 4BdlY97Nv425EuAWPZe4XQyrGwTiD2+usU4qpUEQINBTffCUeCYupuuOiQFdFGKfcj
+	 PYqGhn9vkIv3HKidWwBjtSEQ0cHLe4LwLLu3vv0c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F195F8032B;
-	Fri,  3 Sep 2021 03:51:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0559CF80227;
+	Fri,  3 Sep 2021 08:01:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9A59DF802E0; Fri,  3 Sep 2021 03:51:46 +0200 (CEST)
-Received: from dnyon.com (dnyon.com [82.223.165.189])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 261A0F80254; Fri,  3 Sep 2021 08:01:10 +0200 (CEST)
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B2F60F8020D
- for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2021 03:51:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2F60F8020D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=dnyon.com header.i=@dnyon.com
- header.b="YSOoieVI"
-Received: from dnyon.com (55.red-81-39-194.dynamicip.rima-tde.net
- [81.39.194.55])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by dnyon.com (Postfix) with ESMTPSA id EA1EF3FEB7;
- Fri,  3 Sep 2021 01:51:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dnyon.com; s=mail;
- t=1630633897; bh=sf2pcCMT1IxNfnOeWrCGZ5xfAX63pMAjrAvTYJj8Qlg=;
- h=From:To:Cc:Subject:Date:From;
- b=YSOoieVIDQI4TEiluzOeHfJJkwXXGBtvJuzWBk50seB3HZGBTJuVe3Q/Ym7MAmzc0
- ZmAD0FNBxf2MXvFrspHTW+KplwnDAnyC5l0xEFyNrThdbCxMZRglJOyMzYeFRoZ1Ww
- vMEpp19w0A5IhBGZ5h32sL+SQZqt3Xp3HAoGtGnOolQ4Axs3XgFqQckb2Ldx+hsr6H
- vs1RmEkgEPev9lJyQl4b76CG23Is8jdMX42f6hEyD7bMggiEy/P6RiEIyMJgUPTgk8
- Tq2NUBSOexpqgBIKPo8d+8ErZGV6WLyNsTcZi8DYuczJMiptuyxsT6HUTN40oCy1di
- HmuxMttpYvWcA==
-From: Alejandro <atafalla@dnyon.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v3 0/2] Add reset-gpios handling for max98927
-Date: Fri,  3 Sep 2021 03:49:49 +0200
-Message-Id: <cover.1630632805.git.atafalla@dnyon.com>
-X-Mailer: git-send-email 2.33.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id DCB0AF8020D
+ for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2021 08:01:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCB0AF8020D
+X-UUID: 45ec8858fcea4a23a0db6e31cc49a40a-20210903
+X-UUID: 45ec8858fcea4a23a0db6e31cc49a40a-20210903
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+ (envelope-from <trevor.wu@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 1630697288; Fri, 03 Sep 2021 14:00:51 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 3 Sep 2021 14:00:50 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
+ Frontend Transport; Fri, 3 Sep 2021 14:00:50 +0800
+From: Trevor Wu <trevor.wu@mediatek.com>
+To: <broonie@kernel.org>, <tiwai@suse.com>, <matthias.bgg@gmail.com>
+Subject: [PATCH] ASoC: mt8195: correct the dts parsing logic about DPTX and
+ HDMITX
+Date: Fri, 3 Sep 2021 14:00:49 +0800
+Message-ID: <20210903060049.20764-1-trevor.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Rob Herring <robh+dt@kernel.org>, Alejandro <atafalla@dnyon.com>
+Content-Type: text/plain
+X-MTK: N
+Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+ trevor.wu@mediatek.com, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,18 +82,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The max98927 codec on some devices (i.e. Xiaomi Mi A2 Lite phone) require
-hardware-resetting the codec by driving a reset-gpio. This series add
-support for it through an optional reset-gpios property.
+According to the description in dt-bindings, phandle assignment of
+HDMI TX and DP TX are not required properties, but driver regards them
+as required properties.
+In real use case, it's expected that DP TX and HDMI TX are optional
+features, so correct the behavior in driver.
 
-Alejandro Tafalla (2):
-  ASoC: max98927: Handle reset gpio when probing i2c
-  dt-bindings: sound: max98927: Add reset-gpios optional property
+Fixes: 40d605df0a7b ("ASoC: mediatek: mt8195: add machine driver with mt6359, rt1019 and rt5682")
+Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+---
+ .../mt8195/mt8195-mt6359-rt1019-rt5682.c      | 22 +++++++++----------
+ 1 file changed, 10 insertions(+), 12 deletions(-)
 
- .../devicetree/bindings/sound/max9892x.txt         |  3 +++
- sound/soc/codecs/max98927.c                        | 14 ++++++++++++++
- 2 files changed, 17 insertions(+)
-
+diff --git a/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c b/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c
+index 5dc217f59bd6..c97ace7387b4 100644
+--- a/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c
++++ b/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c
+@@ -1018,13 +1018,12 @@ static int mt8195_mt6359_rt1019_rt5682_dev_probe(struct platform_device *pdev)
+ 				of_parse_phandle(pdev->dev.of_node,
+ 						 "mediatek,dptx-codec", 0);
+ 			if (!dai_link->codecs->of_node) {
+-				dev_err(&pdev->dev, "Property 'dptx-codec' missing or invalid\n");
+-				return -EINVAL;
++				dev_dbg(&pdev->dev, "No property 'dptx-codec'\n");
++			} else {
++				dai_link->codecs->name = NULL;
++				dai_link->codecs->dai_name = "i2s-hifi";
++				dai_link->init = mt8195_dptx_codec_init;
+ 			}
+-
+-			dai_link->codecs->name = NULL;
+-			dai_link->codecs->dai_name = "i2s-hifi";
+-			dai_link->init = mt8195_dptx_codec_init;
+ 		}
+ 
+ 		if (strcmp(dai_link->name, "ETDM3_OUT_BE") == 0) {
+@@ -1032,13 +1031,12 @@ static int mt8195_mt6359_rt1019_rt5682_dev_probe(struct platform_device *pdev)
+ 				of_parse_phandle(pdev->dev.of_node,
+ 						 "mediatek,hdmi-codec", 0);
+ 			if (!dai_link->codecs->of_node) {
+-				dev_err(&pdev->dev, "Property 'hdmi-codec' missing or invalid\n");
+-				return -EINVAL;
++				dev_dbg(&pdev->dev, "No property 'hdmi-codec'\n");
++			} else {
++				dai_link->codecs->name = NULL;
++				dai_link->codecs->dai_name = "i2s-hifi";
++				dai_link->init = mt8195_hdmi_codec_init;
+ 			}
+-
+-			dai_link->codecs->name = NULL;
+-			dai_link->codecs->dai_name = "i2s-hifi";
+-			dai_link->init = mt8195_hdmi_codec_init;
+ 		}
+ 	}
+ 
 -- 
-2.33.0
+2.18.0
 
