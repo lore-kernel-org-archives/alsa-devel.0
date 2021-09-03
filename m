@@ -2,101 +2,81 @@ Return-Path: <SRS0=Q8D2=NZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B81BC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 23:17:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AD9FC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 23:23:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4DBE660F42
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 23:17:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4DBE660F42
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id D20A56108E
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 23:23:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D20A56108E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=dnyon.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DDD411907;
-	Sat,  4 Sep 2021 01:17:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDD411907
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5D69C18EF;
+	Sat,  4 Sep 2021 01:22:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D69C18EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630711076;
-	bh=wMtjPYcFmXqOA914Fkvw8dBlvaHqjOoscs5hqzi8nc8=;
+	s=default; t=1630711412;
+	bh=tchsqUj+OfPK4wG9xezTZ/SvhX1irYZ1qa7IOGO6KLM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AVg8RPsJHVUrDZiKHuJYBPor5efpJ3/SVi/IxrQLw0BRc3eUvgY/t++wRIT01PQxQ
-	 UKkdT3D6GCNtYZ3aj2Mk3o23OHSS5cdt0KuPFY66kmur/C8HwBcCjx65wa9sl8J0ol
-	 tD9q9B0y3NPYxSS/b7AotzWI8IfIBfrpAuVcaUg4=
+	b=NWYdwA6jWd1WrU32d1IsvKW9wmIrqVGXqEjtF9P1FvVi74bHbIHH7+DWNWwRKMLOi
+	 6Bnmbnzm5F373ulbyJ8a9xaLkhl9GbabmODTMCle3g1idxtrbiQPGLFHaJJuRFkVgM
+	 DMNe89wlOrHKD1fXGszka/GBA8c6vVx13L3zP/ao=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0559FF804E3;
-	Sat,  4 Sep 2021 01:16:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E8B7AF8020D;
+	Sat,  4 Sep 2021 01:22:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E2355F804EB; Sat,  4 Sep 2021 01:16:34 +0200 (CEST)
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com
- [IPv6:2a00:1450:4864:20::631])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 48595F80227; Sat,  4 Sep 2021 01:22:40 +0200 (CEST)
+Received: from dnyon.com (dnyon.com [82.223.165.189])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1ED97F804E3
- for <alsa-devel@alsa-project.org>; Sat,  4 Sep 2021 01:16:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1ED97F804E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id E67E9F80088
+ for <alsa-devel@alsa-project.org>; Sat,  4 Sep 2021 01:22:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E67E9F80088
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="HRyoltkQ"
-Received: by mail-ej1-x631.google.com with SMTP id me10so1053052ejb.11
- for <alsa-devel@alsa-project.org>; Fri, 03 Sep 2021 16:16:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=WulM8eNZLKuhXd9mwLv6uv8mQIKAxy1IdRr6VBOr1Kk=;
- b=HRyoltkQE2kR7ok3YNyUWSE6CzYaPHIzcQLv5FhlG9ZEZ5RO1XF2JP77A/uPRiIDuj
- kSKz/3r8bCoeZ9WxTAUVubbliW3KpkQJMrn3ATaJQHlOq46JoR+UY1rD1aGtoxMmMBs7
- hixD+J56qx77up94p129uWMn0olP0gEnvK8PuVKUtO2Kxzdw3gPZZeefHjaAFH9TWN84
- 426KZcs7StgtYjJ8pT9obKwWp+cUW4lTjVXR5SduyowZ90a7vwoR/Jxu5A6/6PffcEn4
- Ctp3INlgWuUHq9Q7i/H37DgnQLP9mB8HzibboZZiCGhguPYMJoEsblyGFoCGmfMDh+sU
- QbDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=WulM8eNZLKuhXd9mwLv6uv8mQIKAxy1IdRr6VBOr1Kk=;
- b=IGsSwHRaCTILwPZJYyPBtQSiPqdOj8JcSLhhb5hC5AQoeV2LKugnYw8Wbf8/IwwJRN
- UBr80Unh6XOlL1Aw427sLCrMJ6VNjXcDTWvVEYKxd/ECVB1WveDWfZxjaiIdkULscVNI
- fCaHTX6CO/C/QROZ775YIUq00gbsAX89GJIRO76QLbmniaWxnspMOAb2nw8PTCuN2TVX
- f6ss5+5IcE7BsnHwMY8dm7XhLcRVrcfpRT7B2PQmRs+Ll5WWUgoR/cGkUWvq5t2X8XKO
- 7LKEjnRDKB/shJtNi6gQBOy75+X3V/VKUeXfU73DCZR0U2u+eD/KX6ymafToaWaUmXIQ
- uTEg==
-X-Gm-Message-State: AOAM5315KHJJ83tq6akSVB7a2aGE1LUs94HhJfNQeBhJVj5CDiXxodJq
- pNYRtpV9/TbgQN1yggCgKThpUXaLNm6ycw==
-X-Google-Smtp-Source: ABdhPJxRtF+Ffonlcf/y5Q7y3zU3TGFtsTmn3HdmITAmk5DJQr6Z6GW3yCmOKYcrcBwlxK8mxke8QA==
-X-Received: by 2002:a17:907:77c5:: with SMTP id
- kz5mr1311529ejc.175.1630710984713; 
- Fri, 03 Sep 2021 16:16:24 -0700 (PDT)
-Received: from localhost.localdomain (84-72-105-84.dclient.hispeed.ch.
- [84.72.105.84])
- by smtp.gmail.com with ESMTPSA id r11sm214068ejy.71.2021.09.03.16.16.23
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 03 Sep 2021 16:16:24 -0700 (PDT)
-From: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-To: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
-Subject: [PATCH v4 2/4] dt-bindings: sound: add rockchip i2s-tdm binding
-Date: Sat,  4 Sep 2021 01:15:34 +0200
-Message-Id: <20210903231536.225540-3-frattaroli.nicolas@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210903231536.225540-1-frattaroli.nicolas@gmail.com>
-References: <20210903231536.225540-1-frattaroli.nicolas@gmail.com>
+ dkim=pass (2048-bit key) header.d=dnyon.com header.i=@dnyon.com
+ header.b="Mo89RMoN"
+Received: from dnyon.com (55.red-81-39-194.dynamicip.rima-tde.net
+ [81.39.194.55])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by dnyon.com (Postfix) with ESMTPSA id E27503FEB7;
+ Fri,  3 Sep 2021 23:22:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dnyon.com; s=mail;
+ t=1630711356; bh=tchsqUj+OfPK4wG9xezTZ/SvhX1irYZ1qa7IOGO6KLM=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=Mo89RMoN243CTz4Z3TSYPsPPR7+S9ZVK9v/JFPzAwQM1o0plDtLKp8OU7iYHaGCHH
+ WFYC6/GMynzNweAVzwbvbrbNgBlJcfAPnnGNljK8h6A6rROebEmrXWs9LywTmuETi8
+ J6qokAgPzwa+SOLlIbN9Qok1b/+y5/ClwBFQKP7xKlRKAmL8qbM3/jxyNaJ6XFtgy/
+ 2QY65Pc6Dpzu3jNjKQkdFUlxjQf0dpNU/Lhcu2W3gOeY09inbkdvTiSj5CwDg0V4dm
+ HNHkrapIghO84BULOW9Hz+yfVbxCsICJFNx4cnXqC3O5RMrKlOscpGMFcJ4uelyczH
+ U++nWCwdyuVyw==
+From: Alejandro Tafalla <atafalla@dnyon.com>
+To: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH v3 1/2] ASoC: max98927: Handle reset gpio when probing i2c
+Date: Sat, 04 Sep 2021 01:22:26 +0200
+Message-ID: <5503823.DvuYhMxLoT@alexpc>
+In-Reply-To: <80973391-4579-e14b-6def-ed81f367a4a5@linux.intel.com>
+References: <cover.1630632805.git.atafalla@dnyon.com>
+ <04a18f4115539752429da55fb857834cea0944e5.1630632805.git.atafalla@dnyon.com>
+ <80973391-4579-e14b-6def-ed81f367a4a5@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+ Andy Shevchenko <andy.shevchenko@gmail.com>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,251 +92,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This adds the YAML bindings for the Rockchip I2S/TDM audio driver.
+On 3/9/21 11:20 P=E9ter Ujfalusi wrote:
+>=20
+> If this is a 'reset' pin then it's ACTIVE state is when it places the
+> device to _reset_.
+> GPIOD_OUT_LOW =3D=3D Deasserted state of the GPIO line.
+>=20
+> If the reset pin should be pulled low for reset (GPIO_ACTIVE_LOW) and
+> you want the device initially  in reset then you need GPIOD_OUT_HIGH,
+> because:
+> GPIOD_OUT_HIGH =3D=3D Asserted state of the GPIO line.
+>=20
+> Same goes for the gpiod_set_value_cansleep():
+> 0 - deasserted
+> 1 =3D asserted
+>=20
+> and this all depends on how the gpio is defined in DT
+> (GPIO_ACTIVE_LOW/HIGH), which depends on how the documentation refers to
+> the pin...
+>=20
+> reset pin:
+> low to keep the device in reset, high to release it from reset:
+> GPIO_ACTIVE_LOW
+> gpiod_set_value_cansleep(0) to enable
+> gpiod_set_value_cansleep(1) to disable
+>=20
+>=20
+> enable pin:
+> high to enable the part, low to disable
+> GPIO_ACTIVE_HIGH
+> gpiod_set_value_cansleep(1) to enable
+> gpiod_set_value_cansleep(0) to disable
+>=20
+> In both cases
+> electrical 0: reset/disable
+> electrical 1: enable
+I'll change it to be consistent in the next version. Thank you for the=20
+explanation.
+=20
+> > +	if (IS_ERR(reset_gpio)) {
+> > +		ret =3D PTR_ERR(reset_gpio);
+> > +		return dev_err_probe(&i2c->dev, ret, "failed to request=20
+GPIO reset
+> > pin"); +	}
+> > +
+> > +	if (reset_gpio) {
+> > +		usleep_range(8000, 10000);
+> > +		gpiod_set_value_cansleep(reset_gpio, 1);
+> > +		usleep_range(1000, 5000);
+> > +	}
+> > +
+>=20
+> You might want to put the device to reset on remove at minimum.
+Okay, thanks.
 
-Signed-off-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
----
- .../bindings/sound/rockchip,i2s-tdm.yaml      | 218 ++++++++++++++++++
- MAINTAINERS                                   |   1 +
- 2 files changed, 219 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml
+=2D-=20
+Alejandro Tafalla
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml b/Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml
-new file mode 100644
-index 000000000000..a04267ccb0f6
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml
-@@ -0,0 +1,218 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/rockchip,i2s-tdm.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Rockchip I2S/TDM Controller
-+
-+description:
-+  The Rockchip I2S/TDM Controller is a Time Division Multiplexed
-+  audio interface found in various Rockchip SoCs, allowing up
-+  to 8 channels of audio over a serial interface.
-+
-+maintainers:
-+  - Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - rockchip,px30-i2s-tdm
-+      - rockchip,rk1808-i2s-tdm
-+      - rockchip,rk3308-i2s-tdm
-+      - rockchip,rk3568-i2s-tdm
-+      - rockchip,rv1126-i2s-tdm
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  dmas:
-+    minItems: 1
-+    maxItems: 2
-+
-+  dma-names:
-+    minItems: 1
-+    maxItems: 2
-+    items:
-+      enum:
-+        - rx
-+        - tx
-+
-+  clocks:
-+    minItems: 3
-+    items:
-+      - description: clock for TX
-+      - description: clock for RX
-+      - description: AHB clock driving the interface
-+      - description:
-+          Parent clock for mclk_tx (only required when using mclk-calibrate)
-+      - description:
-+          Parent clock for mclk_rx (only required when using mclk-calibrate)
-+      - description:
-+          Clock for sample rates that are an integer multiple of 8000
-+          (only required when using mclk-calibrate)
-+      - description:
-+          Clock for sample rates that are an integer multiple of 11025
-+          (only required when using mclk-calibrate)
-+
-+  clock-names:
-+    minItems: 3
-+    items:
-+      - const: mclk_tx
-+      - const: mclk_rx
-+      - const: hclk
-+      - const: mclk_tx_src
-+      - const: mclk_rx_src
-+      - const: mclk_root0
-+      - const: mclk_root1
-+
-+  rockchip,frame-width:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    default: 64
-+    minimum: 32
-+    maximum: 512
-+    description:
-+      Width of a frame, usually slot width multiplied by number of slots.
-+      Must be even.
-+
-+  resets:
-+    minItems: 1
-+    maxItems: 2
-+    description: resets for the tx and rx directions
-+
-+  reset-names:
-+    minItems: 1
-+    maxItems: 2
-+    items:
-+      enum:
-+        - tx-m
-+        - rx-m
-+
-+  rockchip,cru:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      The phandle of the cru.
-+      Required if neither trcm-sync-tx-only nor trcm-sync-rx-only are specified.
-+
-+  rockchip,grf:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      The phandle of the syscon node for the GRF register.
-+
-+  rockchip,mclk-calibrate:
-+    description:
-+      Switch between two root clocks depending on the audio sample rate.
-+      For integer multiples of 8000 (e.g. 48000 Hz), mclk_root0 is used.
-+      For integer multiples of 11025 (e.g. 44100 Hz), mclk_root1 is used.
-+    type: boolean
-+
-+  rockchip,trcm-sync-tx-only:
-+    type: boolean
-+    description: Use TX BCLK/LRCK for both TX and RX.
-+
-+  rockchip,trcm-sync-rx-only:
-+    type: boolean
-+    description: Use RX BCLK/LRCK for both TX and RX.
-+
-+  "#sound-dai-cells":
-+    const: 0
-+
-+  rockchip,i2s-rx-route:
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    description:
-+      Defines the mapping of I2S RX sdis to I2S data bus lines.
-+      By default, they are mapped one-to-one.
-+      rockchip,i2s-rx-route = <3> would mean sdi3 is receiving from data0.
-+    maxItems: 4
-+    items:
-+      - enum: [0, 1, 2, 3]
-+
-+  rockchip,i2s-tx-route:
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    description:
-+      Defines the mapping of I2S TX sdos to I2S data bus lines.
-+      By default, they are mapped one-to-one.
-+      rockchip,i2s-tx-route = <3> would mean sdo3 is sending to data0.
-+    maxItems: 4
-+    items:
-+      - enum: [0, 1, 2, 3]
-+
-+  rockchip,tdm-fsync-half-frame:
-+    description: Whether to use half frame fsync.
-+    type: boolean
-+
-+  rockchip,io-multiplex:
-+    description:
-+      Specify that the GPIO lines on the I2S bus are multiplexed such that
-+      the direction (input/output) needs to be dynamically adjusted.
-+    type: boolean
-+
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - dmas
-+  - dma-names
-+  - clocks
-+  - clock-names
-+  - resets
-+  - reset-names
-+  - rockchip,grf
-+  - "#sound-dai-cells"
-+
-+allOf:
-+  - if:
-+      properties:
-+        rockchip,trcm-sync-tx-only: false
-+        rockchip,trcm-sync-rx-only: false
-+    then:
-+      required:
-+        - rockchip,cru
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/rk3568-cru.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    #include <dt-bindings/pinctrl/rockchip.h>
-+
-+    bus {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
-+        i2s@fe410000 {
-+            compatible = "rockchip,rk3568-i2s-tdm";
-+            reg = <0x0 0xfe410000 0x0 0x1000>;
-+            interrupts = <GIC_SPI 53 IRQ_TYPE_LEVEL_HIGH>;
-+            clocks = <&cru MCLK_I2S1_8CH_TX>, <&cru MCLK_I2S1_8CH_RX>,
-+                     <&cru HCLK_I2S1_8CH>;
-+            clock-names = "mclk_tx", "mclk_rx", "hclk";
-+            dmas = <&dmac1 3>, <&dmac1 2>;
-+            dma-names = "rx", "tx";
-+            resets = <&cru SRST_M_I2S1_8CH_TX>, <&cru SRST_M_I2S1_8CH_RX>;
-+            reset-names = "tx-m", "rx-m";
-+            rockchip,trcm-sync-tx-only;
-+            rockchip,cru = <&cru>;
-+            rockchip,grf = <&grf>;
-+            #sound-dai-cells = <0>;
-+            pinctrl-names = "default";
-+            pinctrl-0 =
-+                <&i2s1m0_sclktx
-+                &i2s1m0_sclkrx
-+                &i2s1m0_lrcktx
-+                &i2s1m0_lrckrx
-+                &i2s1m0_sdi0
-+                &i2s1m0_sdi1
-+                &i2s1m0_sdi2
-+                &i2s1m0_sdi3
-+                &i2s1m0_sdo0
-+                &i2s1m0_sdo1
-+                &i2s1m0_sdo2
-+                &i2s1m0_sdo3>;
-+        };
-+    };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 106d448e660d..e2cc0357e2b7 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16119,6 +16119,7 @@ ROCKCHIP I2S TDM DRIVER
- M:	Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
- L:	linux-rockchip@lists.infradead.org
- S:	Maintained
-+F:	Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml
- F:	sound/soc/rockchip/rockchip_i2s_tdm.*
- 
- ROCKCHIP ISP V1 DRIVER
--- 
-2.33.0
 
