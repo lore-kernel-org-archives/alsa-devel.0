@@ -1,101 +1,82 @@
-Return-Path: <SRS0=0EZw=NY=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=Q8D2=NZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3DF0C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Sep 2021 23:41:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83728C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 01:52:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D440B61054
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Sep 2021 23:41:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D440B61054
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id 24DD261074
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 01:52:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 24DD261074
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=dnyon.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F35017A6;
-	Fri,  3 Sep 2021 01:40:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F35017A6
+	by alsa0.perex.cz (Postfix) with ESMTPS id E228A17CC;
+	Fri,  3 Sep 2021 03:51:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E228A17CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630626095;
-	bh=/MvppA2XMjVnRDSUYCyPKTXU1CJ2AElzphXryeOjsJc=;
-	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
+	s=default; t=1630633962;
+	bh=mcwX7Miz5TrtHPejHmXNGJzxpaa4beQjg0TVC4MXFPM=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OJO2LGsjePOlxkvew7+DSDIIQIG7KKsNNmmn12EnNSrcMK2rFSd45qkpTOtnNzg2R
-	 ZcQfcmCXqZt5lQWHdoJUOw/ZiKCVXPBTp+2Qpa9/laOXaBT2gn7ZKDHa/F4Z+xoE6M
-	 UKXMJYt1AmwVLce8tVOI1VJg7kVeqplGqufndaHE=
+	b=RUtdks+xMnJDTHlWHYlMRz8hmcn+Jo4oWRIqfh3loEe2fJID54hBQi6SHEBHVQwnw
+	 w/3ALBI8D0YbK4+nDppgz+Q5KILwO/FjktYjjfAiz3FWVBJI1v5sz4LUzJvx9nHD3s
+	 X9fTI2sKbvuZN7PvveIjcce8wqZhu1g9U/UAFEng=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2B2C8F8025B;
-	Fri,  3 Sep 2021 01:40:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40D17F80254;
+	Fri,  3 Sep 2021 03:51:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EA80DF80269; Fri,  3 Sep 2021 01:40:43 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 4D2E7F80256; Fri,  3 Sep 2021 03:51:49 +0200 (CEST)
+Received: from dnyon.com (unknown [IPv6:2001:ba0:1800:12f::1])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E99A3F800AF
- for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2021 01:40:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E99A3F800AF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 055ECF80227
+ for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2021 03:51:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 055ECF80227
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="jXWpP7I7"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 182McvMY021787; 
- Thu, 2 Sep 2021 18:40:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=2UP2Gs1kkLluI8rBPXuGcTotq9NZEpMoXKvgKbYVmkA=;
- b=jXWpP7I78kdSN08NDks7sj/Bzu6EZc9PJkAzRyvp9dXNP8KS4q/O9HMu4Au7fjNbSX6K
- XDP4tsA2vSjTuV3vMR2AQZfujDmUCCWOp4DGJiXR7VRtS/anshhhbQiAPKsHYFeyYUdI
- 0HRLww2GQ+f1wE+2eGQZyn6ngMSIYzFc0uTJ4xsVdMdB7is03+kwSSqZP3IA0luiVkm9
- sAJHf0Wt9DrlHqnSyxyNDmlAhR5utaQvEUfaxoiGztPNQLkQLpQvYwSAQAqnhfXER32W
- GdKXwAk/fM/iXMiMmFXE1XdQ2r/icd9S7O8VyrIS3iG1onJMfO9oW+CVIT36lfLjAUXp Ng== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3au1e08gxn-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 02 Sep 2021 18:40:37 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Fri, 3 Sep
- 2021 00:40:34 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via
- Frontend Transport; Fri, 3 Sep 2021 00:40:34 +0100
-Received: from [192.168.99.238] (macC02XQ1DJJG5K.ad.cirrus.com [141.131.65.54])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4AFA3B13;
- Thu,  2 Sep 2021 23:40:33 +0000 (UTC)
-Subject: Re: [PATCH v5 1/2] ASoC: cs35l41: CS35L41 Boosted Smart Amplifier
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- <broonie@kernel.org>, <robh@kernel.org>,
- <ckeepax@opensource.cirrus.com>, <brian.austin@cirrus.com>,
- <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
- <david.rhodes@cirrus.com>
-References: <20210816224310.344931-1-drhodes@opensource.cirrus.com>
- <20210816224310.344931-2-drhodes@opensource.cirrus.com>
- <a0be6858-0d98-7f26-9ba5-f290c9809b5c@linux.intel.com>
-From: David Rhodes <drhodes@opensource.cirrus.com>
-Message-ID: <cdabe1e9-5411-d2b6-d629-8ec87aa4c764@opensource.cirrus.com>
-Date: Thu, 2 Sep 2021 18:40:32 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ dkim=pass (2048-bit key) header.d=dnyon.com header.i=@dnyon.com
+ header.b="jJpeUgZw"
+Received: from dnyon.com (55.red-81-39-194.dynamicip.rima-tde.net
+ [81.39.194.55])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by dnyon.com (Postfix) with ESMTPSA id 32CCF40487;
+ Fri,  3 Sep 2021 01:51:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dnyon.com; s=mail;
+ t=1630633899; bh=mcwX7Miz5TrtHPejHmXNGJzxpaa4beQjg0TVC4MXFPM=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=jJpeUgZwzCOtQsHa8UiD74DoTmY7z1QKEpUoLkzfSNsQNPNIuQ6pwvPIZxmr6Z+Hv
+ SRQO6mteBd9vp2aLTtZ7cOUWXidwjZulAT+oQtFB6B8Uwz3r1zQ6+x0rFwk8ehfLVr
+ IjxR4pcbDjkcu6U5IKaFOnNR5hXQ4BRv/p/+k5TF6bNVVKBagHC1mwvs4HpHrtNpCg
+ pWFr8cVV4wXa3dQv+hqWPtQOb+v57lyonLZ6WsGC9JAygs0Glr8SdDg58sugOZFybp
+ QfmS/B98kN2EUAdWFCneAG7/nJ/mbbXQjZQFBi+MlndhHBMafi3GfNDeWKgypBqhHN
+ ZgfS9CSe2Yu3A==
+From: Alejandro <atafalla@dnyon.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH v3 2/2] dt-bindings: sound: max98927: Add reset-gpios optional
+ property
+Date: Fri,  3 Sep 2021 03:49:51 +0200
+Message-Id: <102ae6df3b5398e8c66b954ac5e13a9d565fab6f.1630632805.git.atafalla@dnyon.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <cover.1630632805.git.atafalla@dnyon.com>
+References: <cover.1630632805.git.atafalla@dnyon.com>
 MIME-Version: 1.0
-In-Reply-To: <a0be6858-0d98-7f26-9ba5-f290c9809b5c@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-GUID: QGwP7S9bTfDGyjSm8QwgbfWqCB75IWo_
-X-Proofpoint-ORIG-GUID: QGwP7S9bTfDGyjSm8QwgbfWqCB75IWo_
-X-Proofpoint-Spam-Reason: safe
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Rob Herring <robh+dt@kernel.org>, Alejandro Tafalla <atafalla@dnyon.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,20 +92,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 8/16/21 6:41 PM, Pierre-Louis Bossart wrote:
-> 
-> Is the ACPI probe smart enough to deal with two different drivers
-> registering for the *same* HID?
-> 
-> I haven't seen any precedent, e.g. the RT6777 uses a different ACPI HID
-> for its I2C and SPI modes.
-> 
-> 
+From: Alejandro Tafalla <atafalla@dnyon.com>
 
-I2C and SPI buses, when they are looking for a driver with an ID that 
-matches a device declared in ACPI, will iterate over drivers that belong 
-to the bus only (bus_for_each_drv()). It is not possible for an I2C 
-driver to be matched during SPI device enumeration or vice versa.
+Add the reset-gpios as an optional property because some devices might
+not need it to work properly.
 
-Thanks,
-David
+Signed-off-by: Alejandro Tafalla <atafalla@dnyon.com>
+---
+ Documentation/devicetree/bindings/sound/max9892x.txt | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/sound/max9892x.txt b/Documentation/devicetree/bindings/sound/max9892x.txt
+index f6171591ddc6..98cb9ba5b328 100644
+--- a/Documentation/devicetree/bindings/sound/max9892x.txt
++++ b/Documentation/devicetree/bindings/sound/max9892x.txt
+@@ -30,6 +30,9 @@ Required properties:
+ 
+   - reg : the I2C address of the device for I2C
+ 
++Optional properties:
++  - reset-gpios : GPIO to reset the device
++
+ Example:
+ 
+ codec: max98927@3a {
+-- 
+2.33.0
+
