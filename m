@@ -7,66 +7,94 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1777EC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 10:55:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EFD3AC433FE
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 11:22:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9303260698
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 10:55:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9303260698
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	by mail.kernel.org (Postfix) with ESMTPS id ACC35608FB
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 11:22:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org ACC35608FB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A4F617B5;
-	Fri,  3 Sep 2021 12:54:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A4F617B5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 70ECD167D;
+	Fri,  3 Sep 2021 13:21:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70ECD167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630666543;
-	bh=efy87yrAi50pHvtTlAbsvFd+NHNmEVyPN9y4Xexo3+g=;
+	s=default; t=1630668153;
+	bh=N/OOA2LkuA4I5cOjbe6sQO3hiTB+yrNhfbDjXjn7UWA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oLF1DKbW8bHRbA2EVxM4/MYLSzvQHkWo4pkLqVvN6yAxd3NMfC45CS/aO3+iMcJEr
-	 WdkBmZ+bV4fNYaf/drhfS29/CL0QclsLUkp6E9MkAZqOpH6zWhCI2Zy9ofnFP8TJ7d
-	 lxgFOXJeMtjYK+me+MJotjp4BkXLgBJZZLwQtReY=
+	b=kfWF5cdvWGyW5P+H+Q5MiD4jiN9dgUeWmdmdPFzOh0S0a48OyA8oKUEfq7PzGDBmu
+	 3nm1g7Km2/8nq1wslfFBjlVYDcMRCSQoKsLUlBf1ySMgKhNjbcyzrrks2UVpHsFYJ4
+	 oDAPZGB5QGOxOeaN5K/Kif98++OE1Oeyna0ZJSc8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE39DF804FC;
-	Fri,  3 Sep 2021 12:53:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0A2D9F802E0;
+	Fri,  3 Sep 2021 13:21:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9B056F80256; Fri,  3 Sep 2021 12:53:54 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 2C486F802E3; Fri,  3 Sep 2021 13:21:40 +0200 (CEST)
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com
+ [IPv6:2a00:1450:4864:20::431])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5EEBAF802E0
- for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2021 12:52:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EEBAF802E0
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E6BCB1A3029;
- Fri,  3 Sep 2021 12:52:47 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id AEB241A3022;
- Fri,  3 Sep 2021 12:52:47 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 49EE0183AD05;
- Fri,  3 Sep 2021 18:52:46 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
- festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org
-Subject: [PATCH for-5.15 4/5] ASoC: fsl_spdif: register platform component
- before registering cpu dai
-Date: Fri,  3 Sep 2021 18:30:05 +0800
-Message-Id: <1630665006-31437-5-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1630665006-31437-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1630665006-31437-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 479F0F800B5
+ for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2021 13:21:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 479F0F800B5
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="MZf9jgL4"
+Received: by mail-wr1-x431.google.com with SMTP id g18so7723083wrc.11
+ for <alsa-devel@alsa-project.org>; Fri, 03 Sep 2021 04:21:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=OdrRqNefaVNOxdAxmMezDhPAaaw5EYxGuh+OQAKyC64=;
+ b=MZf9jgL44KooCVu8mMN7VD6E1sqJrRR4Un6fBlmbXSgAkooyoNJIxfm2rLMbfZ45Bx
+ 1X4asN6/0tFW9Ii3P0KYRXheEEfgljB1ObgQAp5RGuxJpjIxKHH1IqDC/jkdZXJSsA4g
+ pV5bsYYARP9T18adRSZn4l03mwsVLe2JENWTwRWjvaI7puKxGAUY7iazmae4oHfvyVo8
+ KX5agr5iZSnoIt7bbvPfjPJ7TRLYudyvGViOu5ptcFWjun2iwi7RLtOaLJ4lrn+NP0GB
+ 0HHk+OQrJGo1IVsjlg6aUZPJLLZF1F33r4WPse5BzXn4JcS/ip0eY/p1QqeyWNXip/e+
+ AOsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=OdrRqNefaVNOxdAxmMezDhPAaaw5EYxGuh+OQAKyC64=;
+ b=VLESyPHVsGUnR4Ow8CPFxPVi2/wXi16tthr7Tw3DA6V5+EVD6B1LIqCd6gqJMtxhtc
+ Dkqf7CCD9NlBRhGeLZtSgTv62p3D/3RUKpYCuPAZkkw7X7hAyNBS8wosPwBca4H8ewIC
+ WlSxI8mtrnWZUd5NURYzqZzvP90cKIMcPAS6tgoKIfiS467rHHteuE9Cc3+/6TBOh+vV
+ hfe1V1SC/B/qhmYvWDTP2OcvlSorrzCHAd0aAWtRaDvUUYPnNUQR2iC54B6v32CoFI9d
+ 3u6jsoDtAqZKZgB2amYQEhQYkVWMwKChzsFTAKVOnu1cibyP2vW1LyAthG/+nqAz+ETI
+ pDzg==
+X-Gm-Message-State: AOAM530EchkLcGUFGS2Q/6EhfeE1xXDFJSAquLy5JMU55Tu/3f6VmvEE
+ f1/IAsfaIpT7i8nzar80Pbt91A==
+X-Google-Smtp-Source: ABdhPJyNXBTIOh0VizrOkpSTcSct2b2yUWXNmbx1TYEcCwIRb7Q5BMRHDbMa0FlLDwW17oRVHo6VXw==
+X-Received: by 2002:adf:eb8d:: with SMTP id t13mr3530333wrn.4.1630668092515;
+ Fri, 03 Sep 2021 04:21:32 -0700 (PDT)
+Received: from srini-hackbox.lan
+ (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+ by smtp.gmail.com with ESMTPSA id f20sm3881877wmb.32.2021.09.03.04.21.31
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 03 Sep 2021 04:21:31 -0700 (PDT)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: bjorn.andersson@linaro.org,
+	broonie@kernel.org,
+	robh@kernel.org
+Subject: [PATCH v5 01/21] soc: dt-bindings: qcom: apr: convert to yaml
+Date: Fri,  3 Sep 2021 12:20:12 +0100
+Message-Id: <20210903112032.25834-2-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20210903112032.25834-1-srinivas.kandagatla@linaro.org>
+References: <20210903112032.25834-1-srinivas.kandagatla@linaro.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ bgoswami@codeaurora.org, tiwai@suse.de, plai@codeaurora.org,
+ lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,59 +110,293 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-There is no defer probe when adding platform component to
-snd_soc_pcm_runtime(rtd), the code is in snd_soc_add_pcm_runtime()
+Convert APR bindings to yaml format so that we could add new bindings support.
 
-snd_soc_register_card()
-  -> snd_soc_bind_card()
-    -> snd_soc_add_pcm_runtime()
-      -> adding cpu dai
-      -> adding codec dai
-      -> adding platform component.
+All the dsp services bindings are now part of apr bindings instead
+of adding them to audio bindings.
 
-So if the platform component is not ready at that time, then the
-sound card still registered successfully, but platform component
-is empty, the sound card can't be used.
-
-As there is defer probe checking for cpu dai component, then register
-platform component before cpu dai to avoid such issue.
-
-Fixes: a2388a498ad2 ("ASoC: fsl: Add S/PDIF CPU DAI driver")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/fsl/fsl_spdif.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ .../devicetree/bindings/soc/qcom/qcom,apr.txt | 134 ------------------
+ .../bindings/soc/qcom/qcom,apr.yaml           | 128 +++++++++++++++++
+ 2 files changed, 128 insertions(+), 134 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
+ create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 8ffb1a6048d6..1c53719bb61e 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -1434,16 +1434,20 @@ static int fsl_spdif_probe(struct platform_device *pdev)
- 	pm_runtime_enable(&pdev->dev);
- 	regcache_cache_only(spdif_priv->regmap, true);
- 
--	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_spdif_component,
--					      &spdif_priv->cpu_dai_drv, 1);
-+	/*
-+	 * Register platform component before registering cpu dai for there
-+	 * is not defer probe for platform component in snd_soc_add_pcm_runtime().
-+	 */
-+	ret = imx_pcm_dma_init(pdev, IMX_SPDIF_DMABUF_SIZE);
- 	if (ret) {
--		dev_err(&pdev->dev, "failed to register DAI: %d\n", ret);
-+		dev_err_probe(&pdev->dev, ret, "imx_pcm_dma_init failed\n");
- 		goto err_pm_disable;
- 	}
- 
--	ret = imx_pcm_dma_init(pdev, IMX_SPDIF_DMABUF_SIZE);
-+	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_spdif_component,
-+					      &spdif_priv->cpu_dai_drv, 1);
- 	if (ret) {
--		dev_err_probe(&pdev->dev, ret, "imx_pcm_dma_init failed\n");
-+		dev_err(&pdev->dev, "failed to register DAI: %d\n", ret);
- 		goto err_pm_disable;
- 	}
- 
+diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
+deleted file mode 100644
+index 2e2f6dc351c0..000000000000
+--- a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
++++ /dev/null
+@@ -1,134 +0,0 @@
+-Qualcomm APR (Asynchronous Packet Router) binding
+-
+-This binding describes the Qualcomm APR. APR is a IPC protocol for
+-communication between Application processor and QDSP. APR is mainly
+-used for audio/voice services on the QDSP.
+-
+-- compatible:
+-	Usage: required
+-	Value type: <stringlist>
+-	Definition: must be "qcom,apr-v<VERSION-NUMBER>", example "qcom,apr-v2"
+-
+-- qcom,apr-domain
+-	Usage: required
+-	Value type: <u32>
+-	Definition: Destination processor ID.
+-	Possible values are :
+-			1 - APR simulator
+-			2 - PC
+-			3 - MODEM
+-			4 - ADSP
+-			5 - APPS
+-			6 - MODEM2
+-			7 - APPS2
+-
+-= APR SERVICES
+-Each subnode of the APR node represents service tied to this apr. The name
+-of the nodes are not important. The properties of these nodes are defined
+-by the individual bindings for the specific service
+-- All APR services MUST contain the following property:
+-
+-- reg
+-	Usage: required
+-	Value type: <u32>
+-	Definition: APR Service ID
+-	Possible values are :
+-			3 - DSP Core Service
+-			4 - Audio Front End Service.
+-			5 - Voice Stream Manager Service.
+-			6 - Voice processing manager.
+-			7 - Audio Stream Manager Service.
+-			8 - Audio Device Manager Service.
+-			9 - Multimode voice manager.
+-			10 - Core voice stream.
+-			11 - Core voice processor.
+-			12 - Ultrasound stream manager.
+-			13 - Listen stream manager.
+-
+-- qcom,protection-domain
+-	Usage: optional
+-	Value type: <stringlist>
+-	Definition: Must list the protection domain service name and path
+-		    that the particular apr service has a dependency on.
+-	Possible values are :
+-			"avs/audio", "msm/adsp/audio_pd".
+-			"kernel/elf_loader", "msm/modem/wlan_pd".
+-			"tms/servreg", "msm/adsp/audio_pd".
+-			"tms/servreg", "msm/modem/wlan_pd".
+-			"tms/servreg", "msm/slpi/sensor_pd".
+-
+-= EXAMPLE
+-The following example represents a QDSP based sound card on a MSM8996 device
+-which uses apr as communication between Apps and QDSP.
+-
+-	apr {
+-		compatible = "qcom,apr-v2";
+-		qcom,apr-domain = <APR_DOMAIN_ADSP>;
+-
+-		apr-service@3 {
+-			compatible = "qcom,q6core";
+-			reg = <APR_SVC_ADSP_CORE>;
+-		};
+-
+-		apr-service@4 {
+-			compatible = "qcom,q6afe";
+-			reg = <APR_SVC_AFE>;
+-
+-			dais {
+-				#sound-dai-cells = <1>;
+-				dai@1 {
+-					reg = <HDMI_RX>;
+-				};
+-			};
+-		};
+-
+-		apr-service@7 {
+-			compatible = "qcom,q6asm";
+-			reg = <APR_SVC_ASM>;
+-			...
+-		};
+-
+-		apr-service@8 {
+-			compatible = "qcom,q6adm";
+-			reg = <APR_SVC_ADM>;
+-			...
+-		};
+-	};
+-
+-= EXAMPLE 2
+-The following example represents a QDSP based sound card with protection domain
+-dependencies specified. Here some of the apr services are dependent on services
+-running on protection domain hosted on ADSP/SLPI remote processors while others
+-have no such dependency.
+-
+-	apr {
+-		compatible = "qcom,apr-v2";
+-		qcom,glink-channels = "apr_audio_svc";
+-		qcom,apr-domain = <APR_DOMAIN_ADSP>;
+-
+-		apr-service@3 {
+-			compatible = "qcom,q6core";
+-			reg = <APR_SVC_ADSP_CORE>;
+-		};
+-
+-		q6afe: apr-service@4 {
+-			compatible = "qcom,q6afe";
+-			reg = <APR_SVC_AFE>;
+-			qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
+-			...
+-		};
+-
+-		q6asm: apr-service@7 {
+-			compatible = "qcom,q6asm";
+-			reg = <APR_SVC_ASM>;
+-			qcom,protection-domain = "tms/servreg", "msm/slpi/sensor_pd";
+-			...
+-		};
+-
+-		q6adm: apr-service@8 {
+-			compatible = "qcom,q6adm";
+-			reg = <APR_SVC_ADM>;
+-			qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
+-			...
+-		};
+-	};
+diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
+new file mode 100644
+index 000000000000..133e9c6cd961
+--- /dev/null
++++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
+@@ -0,0 +1,128 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/soc/qcom/qcom,apr.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Qualcomm APR (Asynchronous Packet Router) binding
++
++maintainers:
++  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
++
++description: |
++  This binding describes the Qualcomm APR, APR is a IPC protocol for
++  communication between Application processor and QDSP. APR is mainly
++  used for audio/voice services on the QDSP.
++
++properties:
++  compatible:
++    enum:
++      - qcom,apr-v2
++
++  qcom,apr-domain:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    enum: [1, 2, 3, 4, 5, 6, 7]
++    description:
++      Selects the processor domain for apr
++        1 = APR simulator
++        2 = PC Domain
++        3 = Modem Domain
++        4 = ADSP Domain
++        5 = Application processor Domain
++        6 = Modem2 Domain
++        7 = Application Processor2 Domain
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++#APR Services
++patternProperties:
++  "^service@[3-9a-d]$":
++    type: object
++    description:
++      APR node's client devices use subnodes for desired static port services.
++
++    properties:
++      compatible:
++        enum:
++          - qcom,q6core
++          - qcom,q6asm
++          - qcom,q6afe
++          - qcom,q6adm
++
++      reg:
++        enum: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
++        description:
++          APR Service ID
++            3 = DSP Core Service
++            4 = Audio  Front End Service.
++            5 = Voice Stream Manager Service.
++            6 = Voice processing manager.
++            7 = Audio Stream Manager Service.
++            8 = Audio Device Manager Service.
++            9 = Multimode voice manager.
++            10 = Core voice stream.
++            11 = Core voice processor.
++            12 = Ultrasound stream manager.
++            13 = Listen stream manager.
++
++      qcom,protection-domain:
++        $ref: /schemas/types.yaml#/definitions/string-array
++        description: protection domain service name and path for apr service
++          possible values are
++          "avs/audio", "msm/adsp/audio_pd".
++          "kernel/elf_loader", "msm/modem/wlan_pd".
++          "tms/servreg", "msm/adsp/audio_pd".
++          "tms/servreg", "msm/modem/wlan_pd".
++          "tms/servreg", "msm/slpi/sensor_pd".
++
++      '#address-cells':
++        const: 1
++
++      '#size-cells':
++        const: 0
++
++    additionalProperties: false
++
++required:
++  - compatible
++  - qcom,apr-domain
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/soc/qcom,apr.h>
++    apr {
++        compatible = "qcom,apr-v2";
++        qcom,apr-domain = <APR_DOMAIN_ADSP>;
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        q6core: service@3 {
++          compatible = "qcom,q6core";
++          reg = <APR_SVC_ADSP_CORE>;
++          qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
++        };
++
++        q6afe: service@4 {
++          compatible = "qcom,q6afe";
++          reg = <APR_SVC_AFE>;
++          qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
++        };
++
++        q6asm: service@7 {
++          compatible = "qcom,q6asm";
++          reg = <APR_SVC_ASM>;
++          qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
++        };
++
++        q6adm: service@8 {
++          compatible = "qcom,q6adm";
++          reg = <APR_SVC_ADM>;
++          qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
++        };
++    };
 -- 
-2.17.1
+2.21.0
 
