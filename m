@@ -7,70 +7,74 @@ X-Spam-Status: No, score=-6.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C254C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 16:40:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61B48C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 16:40:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 01B0C61051
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 16:40:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 01B0C61051
+	by mail.kernel.org (Postfix) with ESMTPS id DCC5260F12
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 16:40:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DCC5260F12
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 70E9A18DE;
-	Fri,  3 Sep 2021 18:39:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70E9A18DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6B09418D5;
+	Fri,  3 Sep 2021 18:39:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B09418D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630687224;
-	bh=NW6qcChOSSCcuYEsj6tBHbcbaVXNsBbi8Xb3bP7RKXo=;
+	s=default; t=1630687248;
+	bh=OoKJKraLFJoa9JPXutMhGUjAKGF6glzoC6gJQ1k3ooo=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qVS0AwFRg6td3U5G7lWAGg9f1YDRoSw8yyocZcsU+Q2d+GGGF+kFbc7uuLs9a2J3q
-	 xr10GCHo9NklwwdXeC4pYLHR5tNPYiTPEocX8F8xlsnE/o6waw0EGmI0jRPe937OaW
-	 BTvM3GV4438u9+I/jiIQd04b39LrY2IaPDxNbYJ8=
+	b=R3BEaem+RmxkczqEfnFaI1wv4ArflKgNnMd6dOSCAsAEAeEkIhnZfecMx2NFH2T6I
+	 QBaaTY/muhkqtIrHz9PQE62gNSBnH7a44xXtEhmtKwu96vLYHflM6hboe0TkUGwNmX
+	 4llt2gu6raBkF2HWsMq8mXX9iXsoqpro+QVxWWqY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 491F5F804FF;
-	Fri,  3 Sep 2021 18:38:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CA706F80511;
+	Fri,  3 Sep 2021 18:38:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B8C87F804FB; Fri,  3 Sep 2021 18:38:11 +0200 (CEST)
+ id 41C40F804FA; Fri,  3 Sep 2021 18:38:13 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6FD9CF80254
- for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2021 18:38:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FD9CF80254
-X-IronPort-AV: E=McAfee;i="6200,9189,10096"; a="206687211"
-X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; d="scan'208";a="206687211"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 803AFF8032B
+ for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2021 18:38:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 803AFF8032B
+X-IronPort-AV: E=McAfee;i="6200,9189,10096"; a="206687216"
+X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; d="scan'208";a="206687216"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Sep 2021 09:37:59 -0700
-X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; d="scan'208";a="462453508"
+ 03 Sep 2021 09:38:00 -0700
+X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; d="scan'208";a="462453522"
 Received: from seangorm-mobl.amr.corp.intel.com (HELO [10.251.136.111])
  ([10.251.136.111])
  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Sep 2021 09:37:57 -0700
-Subject: Re: [PATCH v5 20/21] ASoC: qdsp6: audioreach: add q6prm support
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- bjorn.andersson@linaro.org, broonie@kernel.org, robh@kernel.org
-References: <20210903112032.25834-1-srinivas.kandagatla@linaro.org>
- <20210903112032.25834-21-srinivas.kandagatla@linaro.org>
+ 03 Sep 2021 09:37:59 -0700
+Subject: Re: [PATCH v5 1/2] ASoC: cs35l41: CS35L41 Boosted Smart Amplifier
+To: Mark Brown <broonie@kernel.org>
+References: <20210816224310.344931-1-drhodes@opensource.cirrus.com>
+ <20210816224310.344931-2-drhodes@opensource.cirrus.com>
+ <a0be6858-0d98-7f26-9ba5-f290c9809b5c@linux.intel.com>
+ <cdabe1e9-5411-d2b6-d629-8ec87aa4c764@opensource.cirrus.com>
+ <7c38ddb4-9ccc-130d-e977-4f39b01e2c9e@linux.intel.com>
+ <20210903150902.GJ4932@sirena.org.uk>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <8a38f2f2-d74d-53c6-a4f5-669fef1f7c05@linux.intel.com>
-Date: Fri, 3 Sep 2021 10:57:26 -0500
+Message-ID: <963c3703-245f-31ae-f714-90cf818900ee@linux.intel.com>
+Date: Fri, 3 Sep 2021 11:02:21 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210903112032.25834-21-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210903150902.GJ4932@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, tiwai@suse.de, plai@codeaurora.org,
- lgirdwood@gmail.com
+Cc: David Rhodes <drhodes@opensource.cirrus.com>, robh@kernel.org,
+ brian.austin@cirrus.com, ckeepax@opensource.cirrus.com,
+ patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ david.rhodes@cirrus.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,120 +91,43 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-> +struct prm_cmd_request_rsc {
-> +	struct apm_module_param_data param_data;
-> +	uint32_t num_clk_id;
-> +	struct audio_hw_clk_cfg clock_ids[1];
-> +} __packed;
-> +
-> +struct prm_cmd_release_rsc {
-> +	struct apm_module_param_data param_data;
-> +	uint32_t num_clk_id;
-> +	struct audio_hw_clk_cfg clock_ids[1];
 
-why do you need arrays of one element? I thought this was also frowned
-upon if not already deprecated?
+On 9/3/21 10:09 AM, Mark Brown wrote:
+> On Fri, Sep 03, 2021 at 08:58:17AM -0500, Pierre-Louis Bossart wrote:
+> 
+>>> I2C and SPI buses, when they are looking for a driver with an ID that
+>>> matches a device declared in ACPI, will iterate over drivers that belong
+>>> to the bus only (bus_for_each_drv()). It is not possible for an I2C
+>>> driver to be matched during SPI device enumeration or vice versa.
+> 
+>> That's good but that use of the same HID for two different solutions is
+>> still be problematic. On ACPI solutions, we use the HID as a key to
+>> identify what machine driver to load, see e.g. snd_soc_acpi_find_machine().
+>> By using the *same* HID, you will prevent that machine detection from
+>> uniquely identifying what mode is used, and force the machine detection
+>> to be expanded with e.g. DMI-based quirks. It's really far from ideal
+> 
+> You can always add the bus type as a key if you really need to?
 
+I could but this adds more work.
 
-> +} __packed;
-> +
-> +static int q6prm_send_cmd_sync(struct q6prm *prm, struct gpr_pkt *pkt,
-> +			uint32_t rsp_opcode)
-> +{
-> +	gpr_device_t *gdev = prm->gdev;
-> +	struct gpr_hdr *hdr = &pkt->hdr;
-> +	int rc;
-> +
-> +	mutex_lock(&prm->lock);
-> +	prm->result.opcode = 0;
-> +	prm->result.status = 0;
-> +
-> +	rc = gpr_send_pkt(prm->gdev, pkt);
-> +	if (rc < 0)
-> +		goto err;
-> +
-> +	if (rsp_opcode)
-> +		rc = wait_event_timeout(prm->wait,
-> +					(prm->result.opcode == hdr->opcode) ||
-> +					(prm->result.opcode == rsp_opcode),
-> +					5 * HZ);
-> +	else
-> +		rc = wait_event_timeout(prm->wait,
-> +					(prm->result.opcode == hdr->opcode),
-> +					5 * HZ);
-> +
-> +	if (!rc) {
-> +		dev_err(&gdev->dev, "CMD timeout for [%x] opcode\n",
-> +			hdr->opcode);
-> +		rc = -ETIMEDOUT;
-> +	} else if (prm->result.status > 0) {
-> +		dev_err(&gdev->dev, "DSP returned error[%x] %x\n", hdr->opcode,
-> +			prm->result.status);
-> +		rc = -EINVAL;
-> +	} else {
-> +		dev_err(&gdev->dev, "DSP returned [%x]\n",
-> +			prm->result.status);
-> +		rc = 0;
-> +	}
-> +
-> +err:
-> +	mutex_unlock(&prm->lock);
-> +	return rc;
-> +}
+>> for integrators. The only case where this would work with impacts on the
+>> machine selection would be if the choice of the SPI and I2C modes had no
+>> impact on the functionality of the device, but is this really the case?
+> 
+> Usually that's the case for CODECs, it's just going to be a question of
+> how fast the I/O is, physical design considerations and what interfaces
+> you have available.  It'll be limiting for some applications of course
+> (slow firmware downloads for example) but given the way these things are
+> built I'd be fairly surprised to see something actively gated off.  If
+> you look at the I2C and SPI bus handling for individual CODECs they're
+> usually extremely thin wrapper that just pass a regmap into common code
+> with nothing else done conditionally.
 
-this looks again like the same code we've seen twice already?
+In general yes, but the SPI can be used for faster upload of e.g.
+history data on capture, something I2C is not capable of. That would
+e.g. expose new dailinks in a machine driver. the RT5677 is the typical
+example of this.
 
-> +
-> +static int q6prm_set_hw_core_req(struct device *dev, uint32_t hw_block_id, bool enable)
-> +{
-> +	struct prm_cmd_request_hw_core *req;
-> +	struct apm_module_param_data *param_data;
-> +	struct gpr_pkt *pkt;
-> +	struct q6prm *prm = dev_get_drvdata(dev->parent);
-> +	gpr_device_t *gdev  = prm->gdev;
-> +	void *p;
-> +	int rc = 0;
-> +	uint32_t opcode, rsp_opcode;
-> +
-> +	if (enable) {
-> +		opcode = PRM_CMD_REQUEST_HW_RSC;
-> +		rsp_opcode = PRM_CMD_RSP_REQUEST_HW_RSC;
-> +	} else {
-> +		opcode = PRM_CMD_RELEASE_HW_RSC;
-> +		rsp_opcode = PRM_CMD_RSP_RELEASE_HW_RSC;
-> +	}
-> +
-> +	p = audioreach_alloc_cmd_pkt(sizeof(*req), opcode, 0, gdev->svc.id,
-> +				     GPR_PRM_MODULE_IID);
-> +	if (IS_ERR(p))
-> +		return -ENOMEM;
-> +
-> +	pkt = p;
-
-same comment as before for the rest of this file:
-
-pkt = audioreach_alloc_cmd_pkt(sizeof(*req), opcode, 0, gdev->svc.id,
-				     GPR_PRM_MODULE_IID);
-kfree(pkt);
-
-
-
-> +	req = p + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
-> +
-> +	param_data = &req->param_data;
-> +
-> +	param_data->module_instance_id = GPR_PRM_MODULE_IID;
-> +	param_data->error_code = 0;
-> +	param_data->param_id = PARAM_ID_RSC_HW_CORE;
-> +	param_data->param_size = sizeof(*req) - APM_MODULE_PARAM_DATA_SIZE;
-> +
-> +	req->hw_clk_id = hw_block_id;
-> +
-> +	q6prm_send_cmd_sync(prm, pkt, rsp_opcode);
-> +
-> +	kfree(pkt);
-> +
-> +	return rc;
-> +}
-> +
-
+Anyways, I am not going to lay on the tracks for an HID, BIOS folks
+usually get them wrong anyways.
