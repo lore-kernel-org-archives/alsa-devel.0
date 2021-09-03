@@ -2,66 +2,69 @@ Return-Path: <SRS0=Q8D2=NZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6396CC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 10:53:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8ACDC433FE
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 10:54:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 457B260F21
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 10:53:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 457B260F21
+	by mail.kernel.org (Postfix) with ESMTPS id 2844360698
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 10:54:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2844360698
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 082DB17E3;
-	Fri,  3 Sep 2021 12:52:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 082DB17E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 983F017EE;
+	Fri,  3 Sep 2021 12:53:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 983F017EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630666420;
-	bh=vRsPkS5ZlwYEGTuk39PEx3iXm4yDarIe4yir8DDWSBs=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Rhfc0ZyKFV0d6OUwp1QoUiEV0msvjl6pGdRZ4iNiEt0byCStHVxNyZKrRTaDgYDdE
-	 qSt01u/AOe+O8MUHY1VfME/NAeE+U0Shj7xftJ381QqFMUY36Su/8ayJze4Qro/HA0
-	 jlNhO1TP+5X7xg+XlyMsyxP+xz5bt63WhFgiy1MQ=
+	s=default; t=1630666464;
+	bh=s/n32y+65l2o1fK+MoIOFUYc4M7xhDHjo/Vi3ep2eIE=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=RyZMI5yfnn+ezf7rULIFCncOChxYX4kz3xlb0F8AbN3DBvGwhfOlIPySc5HVj2JYW
+	 TeXnBu5ERx89KE4BHExjaJP4taIlReBxsH8n74xal7bGAoeEgCBbZ2Ea+M8u4HfDoq
+	 4R/H8RHvT3TlV+eTyAGr3srTAgVqaxyivvZcbuqg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 79441F80254;
-	Fri,  3 Sep 2021 12:52:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74203F804C2;
+	Fri,  3 Sep 2021 12:52:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 10225F80256; Fri,  3 Sep 2021 12:52:48 +0200 (CEST)
+ id 28D7FF80423; Fri,  3 Sep 2021 12:52:52 +0200 (CEST)
 Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0D0A4F80088
- for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2021 12:52:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D0A4F80088
+ by alsa1.perex.cz (Postfix) with ESMTPS id F2325F800B5
+ for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2021 12:52:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2325F800B5
 Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 2FD5E1A301E;
- Fri,  3 Sep 2021 12:52:44 +0200 (CEST)
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 21C3F1A3028;
+ Fri,  3 Sep 2021 12:52:45 +0200 (CEST)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id ECEA21A3028;
- Fri,  3 Sep 2021 12:52:43 +0200 (CEST)
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id DE2561A301F;
+ Fri,  3 Sep 2021 12:52:44 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 87113183AC8B;
- Fri,  3 Sep 2021 18:52:42 +0800 (+08)
+ by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 79548183AC89;
+ Fri,  3 Sep 2021 18:52:43 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
  festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
  alsa-devel@alsa-project.org
-Subject: [PATCH for-5.15 0/5] ASoC: fsl: register platform component before
- registering cpu dai
-Date: Fri,  3 Sep 2021 18:30:01 +0800
-Message-Id: <1630665006-31437-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH for-5.15 1/5] ASoC: fsl_sai: register platform component
+ before registering cpu dai
+Date: Fri,  3 Sep 2021 18:30:02 +0800
+Message-Id: <1630665006-31437-2-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1630665006-31437-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1630665006-31437-1-git-send-email-shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
 Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
@@ -96,25 +99,44 @@ is empty, the sound card can't be used.
 As there is defer probe checking for cpu dai component, then register
 platform component before cpu dai to avoid such issue.
 
-This patch set is to fix this issue for SAI, ESAI, MICFIL, SPDIF,
-XCVR drivers.
+Fixes: 435508214942 ("ASoC: Add SAI SoC Digital Audio Interface driver")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl_sai.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-Shengjiu Wang (5):
-  ASoC: fsl_sai: register platform component before registering cpu dai
-  ASoC: fsl_esai: register platform component before registering cpu dai
-  ASoC: fsl_micfil: register platform component before registering cpu
-    dai
-  ASoC: fsl_spdif: register platform component before registering cpu
-    dai
-  ASoC: fsl_xcvr: register platform component before registering cpu dai
-
- sound/soc/fsl/fsl_esai.c   | 16 ++++++++++------
- sound/soc/fsl/fsl_micfil.c | 15 ++++++++++-----
- sound/soc/fsl/fsl_sai.c    | 14 +++++++++-----
- sound/soc/fsl/fsl_spdif.c  | 14 +++++++++-----
- sound/soc/fsl/fsl_xcvr.c   | 15 ++++++++++-----
- 5 files changed, 48 insertions(+), 26 deletions(-)
-
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 223fcd15bfcc..38f6362099d5 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -1152,11 +1152,10 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		goto err_pm_get_sync;
+ 
+-	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_component,
+-					      &sai->cpu_dai_drv, 1);
+-	if (ret)
+-		goto err_pm_get_sync;
+-
++	/*
++	 * Register platform component before registering cpu dai for there
++	 * is not defer probe for platform component in snd_soc_add_pcm_runtime().
++	 */
+ 	if (sai->soc_data->use_imx_pcm) {
+ 		ret = imx_pcm_dma_init(pdev, IMX_SAI_DMABUF_SIZE);
+ 		if (ret)
+@@ -1167,6 +1166,11 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 			goto err_pm_get_sync;
+ 	}
+ 
++	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_component,
++					      &sai->cpu_dai_drv, 1);
++	if (ret)
++		goto err_pm_get_sync;
++
+ 	return ret;
+ 
+ err_pm_get_sync:
 -- 
 2.17.1
 
