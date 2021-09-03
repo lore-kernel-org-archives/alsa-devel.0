@@ -2,97 +2,76 @@ Return-Path: <SRS0=Q8D2=NZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 430E6C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 21:30:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C4EAC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 21:48:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 18B2E60EE3
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 21:30:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 18B2E60EE3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id 6C16A61051
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 21:48:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6C16A61051
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 62F2318FC;
-	Fri,  3 Sep 2021 23:29:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62F2318FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4E5EF18EE;
+	Fri,  3 Sep 2021 23:48:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E5EF18EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630704646;
-	bh=wLLLCeg9q8YkQM/UenT79f7YwdUyf6SZ0Fn16L46Gu0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1630705733;
+	bh=rKG4kk/RlfRzwp/B7/f5yfC2wgM/oLgwXzjNnWE774M=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tUHZ0epcqtIFXY8t4ckNEI7QzmIqsRByJE/u7jTH9OBnWGp5BnSmP9Au8p0kaL24j
-	 c1zU/6kUI9yyqvRmCdtSP+C0xa0FflPrEI6jM6GQD6xlKI+xysB2rHJ/xXp19R9HoP
-	 PVguPFKrYX1kvGpnjXkvvoHKNig/dDbXQ6TOx8GY=
+	b=edmLp6otbbVd7LPERiUDYbh190Ay42jwZ1uzj+wBrOBHBgLmVh8EqVBDlZ3uKI+hF
+	 j/reS6jBvqiDrSesi6BgXA4B/eSV5p+ar344GCVZFHgk9ECSvmI32+zhgGvLPgj4kX
+	 XTSF7vboHIiReGgO/L6pyIm8FqT2BrWo5rWNUZB4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1978DF804C2;
-	Fri,  3 Sep 2021 23:29:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D672EF80227;
+	Fri,  3 Sep 2021 23:48:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0365AF80256; Fri,  3 Sep 2021 23:28:48 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 7A247F80254; Fri,  3 Sep 2021 23:48:01 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4ACA2F80088
- for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2021 23:28:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4ACA2F80088
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="R1amDZch"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 183CxGP2019091; 
- Fri, 3 Sep 2021 16:28:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=G0x1SdM8k7HD9XnjMbm4RaKTn4zttrhg9vCMP5LdKFE=;
- b=R1amDZch08VMUvW9eIh5rk6rgwoqHFrzuFjldLfgWVXUDNrajyysUjVL4MR1ca0ANUB5
- WwPd0vMrctuCUr14c381wyjN1OBm5v65eMbKz0vOPeRG6dk3MBx3bqdoM4Mto2SA/ShP
- lKrsk596mlqB8qrv6kS9PScgbzllDXmEluFBH8lSScfVk0/Kp9Usf6eu6CTdgPIkQR4j
- OLZ40y56/95WHOzAwrp6tjDM8WxzchtJziDHz1nHZPxHesJu74nfUOu/5MBwCPf1zjHQ
- zyvlLRkG/0EhvcoCNKX8dzbnKcq4ZaWIQMx9y10PQX4yJ89N9o2JbhKdqo559oty7ORM Lw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3aum6pggsq-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 03 Sep 2021 16:28:29 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Fri, 3 Sep
- 2021 22:28:26 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via
- Frontend Transport; Fri, 3 Sep 2021 22:28:26 +0100
-Received: from localhost.localdomain (macC02XQ1DJJG5K.ad.cirrus.com
- [141.131.64.124])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4B88F478;
- Fri,  3 Sep 2021 21:28:25 +0000 (UTC)
-From: David Rhodes <drhodes@opensource.cirrus.com>
-To: <broonie@kernel.org>, <robh@kernel.org>, <ckeepax@opensource.cirrus.com>, 
- <brian.austin@cirrus.com>, <patches@opensource.cirrus.com>,
- <alsa-devel@alsa-project.org>, <david.rhodes@cirrus.com>,
- <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v6 1/2] ASoC: cs35l41: CS35L41 Boosted Smart Amplifier
-Date: Fri, 3 Sep 2021 16:26:58 -0500
-Message-ID: <20210903212659.2011303-2-drhodes@opensource.cirrus.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210903212659.2011303-1-drhodes@opensource.cirrus.com>
-References: <20210903212659.2011303-1-drhodes@opensource.cirrus.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id DDB6CF800B5
+ for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2021 23:47:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DDB6CF800B5
+X-IronPort-AV: E=McAfee;i="6200,9189,10096"; a="206747696"
+X-IronPort-AV: E=Sophos;i="5.85,266,1624345200"; 
+ d="gz'50?scan'50,208,50";a="206747696"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Sep 2021 14:47:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,266,1624345200"; 
+ d="gz'50?scan'50,208,50";a="500624250"
+Received: from lkp-server01.sh.intel.com (HELO 2115029a3e5c) ([10.239.97.150])
+ by fmsmga008.fm.intel.com with ESMTP; 03 Sep 2021 14:47:39 -0700
+Received: from kbuild by 2115029a3e5c with local (Exim 4.92)
+ (envelope-from <lkp@intel.com>)
+ id 1mMH29-0000qR-Vg; Fri, 03 Sep 2021 21:47:37 +0000
+Date: Sat, 4 Sep 2021 05:47:32 +0800
+From: kernel test robot <lkp@intel.com>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ bjorn.andersson@linaro.org, broonie@kernel.org, robh@kernel.org
+Subject: Re: [PATCH v5 05/21] soc: qcom: apr: Add GPR support
+Message-ID: <202109040510.hCGhK1PH-lkp@intel.com>
+References: <20210903112032.25834-6-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: chmEir2L9GJlEO63XB8akOUfDT3Xk1NW
-X-Proofpoint-ORIG-GUID: chmEir2L9GJlEO63XB8akOUfDT3Xk1NW
-X-Proofpoint-Spam-Reason: safe
-Cc: David Rhodes <drhodes@opensource.cirrus.com>
+Content-Type: multipart/mixed; boundary="gKMricLos+KVdGMg"
+Content-Disposition: inline
+In-Reply-To: <20210903112032.25834-6-srinivas.kandagatla@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ bgoswami@codeaurora.org, kbuild-all@lists.01.org, tiwai@suse.de,
+ plai@codeaurora.org, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,3339 +87,603 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-SoC Audio driver for the Cirrus Logic CS35L41 amplifier
 
-Signed-off-by: David Rhodes <drhodes@opensource.cirrus.com>
+--gKMricLos+KVdGMg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi Srinivas,
+
+I love your patch! Yet something to improve:
+
+[auto build test ERROR on asoc/for-next]
+[also build test ERROR on robh/for-next sound/for-next linus/master v5.14 next-20210903]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
+
+url:    https://github.com/0day-ci/linux/commits/Srinivas-Kandagatla/ASoC-qcom-Add-AudioReach-support/20210903-192325
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+config: x86_64-randconfig-p001-20210904 (attached as .config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/0day-ci/linux/commit/5fc535c10b3786dd20814508ea97a08eb6d90578
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Srinivas-Kandagatla/ASoC-qcom-Add-AudioReach-support/20210903-192325
+        git checkout 5fc535c10b3786dd20814508ea97a08eb6d90578
+        # save the attached .config to linux build tree
+        mkdir build_dir
+        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   ld: drivers/soc/qcom/apr.o: in function `apr_remove':
+>> drivers/soc/qcom/apr.c:656: undefined reference to `pdr_handle_release'
+
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for QCOM_APR
+   Depends on (ARCH_QCOM || COMPILE_TEST && RPMSG && NET
+   Selected by
+   - QCOM_GPR
+
+
+vim +656 drivers/soc/qcom/apr.c
+
+6adba21eb434d8 Srinivas Kandagatla 2018-05-09  651  
+6adba21eb434d8 Srinivas Kandagatla 2018-05-09  652  static void apr_remove(struct rpmsg_device *rpdev)
+6adba21eb434d8 Srinivas Kandagatla 2018-05-09  653  {
+d1a98190cb35b1 Srinivas Kandagatla 2021-09-03  654  	struct packet_router *apr = dev_get_drvdata(&rpdev->dev);
+1ac19ad799f880 Srinivas Kandagatla 2019-02-08  655  
+83473566260288 Sibi Sankar         2020-03-12 @656  	pdr_handle_release(apr->pdr);
+6adba21eb434d8 Srinivas Kandagatla 2018-05-09  657  	device_for_each_child(&rpdev->dev, NULL, apr_remove_device);
+1ac19ad799f880 Srinivas Kandagatla 2019-02-08  658  	flush_workqueue(apr->rxwq);
+1ac19ad799f880 Srinivas Kandagatla 2019-02-08  659  	destroy_workqueue(apr->rxwq);
+6adba21eb434d8 Srinivas Kandagatla 2018-05-09  660  }
+6adba21eb434d8 Srinivas Kandagatla 2018-05-09  661  
+
 ---
- include/sound/cs35l41.h           |   35 +
- sound/soc/codecs/Kconfig          |   12 +
- sound/soc/codecs/Makefile         |    4 +
- sound/soc/codecs/cs35l41-i2c.c    |  114 +++
- sound/soc/codecs/cs35l41-spi.c    |  143 +++
- sound/soc/codecs/cs35l41-tables.c |  597 +++++++++++
- sound/soc/codecs/cs35l41.c        | 1561 +++++++++++++++++++++++++++++
- sound/soc/codecs/cs35l41.h        |  775 ++++++++++++++
- 8 files changed, 3241 insertions(+)
- create mode 100644 include/sound/cs35l41.h
- create mode 100644 sound/soc/codecs/cs35l41-i2c.c
- create mode 100644 sound/soc/codecs/cs35l41-spi.c
- create mode 100644 sound/soc/codecs/cs35l41-tables.c
- create mode 100644 sound/soc/codecs/cs35l41.c
- create mode 100644 sound/soc/codecs/cs35l41.h
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-diff --git a/include/sound/cs35l41.h b/include/sound/cs35l41.h
-new file mode 100644
-index 000000000000..22202f012e8e
---- /dev/null
-+++ b/include/sound/cs35l41.h
-@@ -0,0 +1,35 @@
-+/* SPDX-License-Identifier: GPL-2.0
-+ *
-+ * linux/sound/cs35l41.h -- Platform data for CS35L41
-+ *
-+ * Copyright (c) 2017-2021 Cirrus Logic Inc.
-+ *
-+ * Author: David Rhodes	<david.rhodes@cirrus.com>
-+ */
-+
-+#ifndef __CS35L41_H
-+#define __CS35L41_H
-+
-+enum cs35l41_clk_ids {
-+	CS35L41_CLKID_SCLK = 0,
-+	CS35L41_CLKID_LRCLK = 1,
-+	CS35L41_CLKID_MCLK = 4,
-+};
-+
-+struct cs35l41_irq_cfg {
-+	bool irq_pol_inv;
-+	bool irq_out_en;
-+	int irq_src_sel;
-+};
-+
-+struct cs35l41_platform_data {
-+	int bst_ind;
-+	int bst_ipk;
-+	int bst_cap;
-+	int dout_hiz;
-+	int classh_bst_max_limit;
-+	struct cs35l41_irq_cfg irq_config1;
-+	struct cs35l41_irq_cfg irq_config2;
-+};
-+
-+#endif /* __CS35L41_H */
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 82ee233a269d..53aa20bc7707 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -61,6 +61,8 @@ config SND_SOC_ALL_CODECS
- 	imply SND_SOC_CS35L34
- 	imply SND_SOC_CS35L35
- 	imply SND_SOC_CS35L36
-+	imply SND_SOC_CS35L41_SPI
-+	imply SND_SOC_CS35L41_I2C
- 	imply SND_SOC_CS42L42
- 	imply SND_SOC_CS42L51_I2C
- 	imply SND_SOC_CS42L52
-@@ -602,6 +604,16 @@ config SND_SOC_CS35L36
- 	tristate "Cirrus Logic CS35L36 CODEC"
- 	depends on I2C
- 
-+config SND_SOC_CS35L41_SPI
-+	tristate "Cirrus Logic CS35L41 CODEC (SPI)"
-+	depends on SPI_MASTER
-+	select REGMAP_SPI
-+
-+config SND_SOC_CS35L41_I2C
-+	tristate "Cirrus Logic CS35L41 CODEC (I2C)"
-+	depends on I2C
-+	select REGMAP_I2C
-+
- config SND_SOC_CS42L42
- 	tristate "Cirrus Logic CS42L42 CODEC"
- 	depends on I2C
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 8dcea2c4604a..8b580a9004ea 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -54,6 +54,8 @@ snd-soc-cs35l33-objs := cs35l33.o
- snd-soc-cs35l34-objs := cs35l34.o
- snd-soc-cs35l35-objs := cs35l35.o
- snd-soc-cs35l36-objs := cs35l36.o
-+snd-soc-cs35l41-spi-objs := cs35l41-spi.o cs35l41.o cs35l41-tables.o
-+snd-soc-cs35l41-i2c-objs := cs35l41-i2c.o cs35l41.o cs35l41-tables.o
- snd-soc-cs42l42-objs := cs42l42.o
- snd-soc-cs42l51-objs := cs42l51.o
- snd-soc-cs42l51-i2c-objs := cs42l51-i2c.o
-@@ -385,6 +387,8 @@ obj-$(CONFIG_SND_SOC_CS35L33)	+= snd-soc-cs35l33.o
- obj-$(CONFIG_SND_SOC_CS35L34)	+= snd-soc-cs35l34.o
- obj-$(CONFIG_SND_SOC_CS35L35)	+= snd-soc-cs35l35.o
- obj-$(CONFIG_SND_SOC_CS35L36)	+= snd-soc-cs35l36.o
-+obj-$(CONFIG_SND_SOC_CS35L41_SPI)	+= snd-soc-cs35l41-spi.o
-+obj-$(CONFIG_SND_SOC_CS35L41_I2C)	+= snd-soc-cs35l41-i2c.o
- obj-$(CONFIG_SND_SOC_CS42L42)	+= snd-soc-cs42l42.o
- obj-$(CONFIG_SND_SOC_CS42L51)	+= snd-soc-cs42l51.o
- obj-$(CONFIG_SND_SOC_CS42L51_I2C)	+= snd-soc-cs42l51-i2c.o
-diff --git a/sound/soc/codecs/cs35l41-i2c.c b/sound/soc/codecs/cs35l41-i2c.c
-new file mode 100644
-index 000000000000..dc9da78df412
---- /dev/null
-+++ b/sound/soc/codecs/cs35l41-i2c.c
-@@ -0,0 +1,114 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// cs35l41-i2c.c -- CS35l41 I2C driver
-+//
-+// Copyright 2017-2021 Cirrus Logic, Inc.
-+//
-+// Author: David Rhodes <david.rhodes@cirrus.com>
-+
-+#include <linux/acpi.h>
-+#include <linux/delay.h>
-+#include <linux/i2c.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+
-+#include <sound/cs35l41.h>
-+#include "cs35l41.h"
-+
-+static struct regmap_config cs35l41_regmap_i2c = {
-+	.reg_bits = 32,
-+	.val_bits = 32,
-+	.reg_stride = CS35L41_REGSTRIDE,
-+	.reg_format_endian = REGMAP_ENDIAN_BIG,
-+	.val_format_endian = REGMAP_ENDIAN_BIG,
-+	.max_register = CS35L41_LASTREG,
-+	.reg_defaults = cs35l41_reg,
-+	.num_reg_defaults = ARRAY_SIZE(cs35l41_reg),
-+	.volatile_reg = cs35l41_volatile_reg,
-+	.readable_reg = cs35l41_readable_reg,
-+	.precious_reg = cs35l41_precious_reg,
-+	.cache_type = REGCACHE_RBTREE,
-+};
-+
-+static const struct i2c_device_id cs35l41_id_i2c[] = {
-+	{ "cs35l40", 0 },
-+	{ "cs35l41", 0 },
-+	{}
-+};
-+
-+MODULE_DEVICE_TABLE(i2c, cs35l41_id_i2c);
-+
-+static int cs35l41_i2c_probe(struct i2c_client *client,
-+				const struct i2c_device_id *id)
-+{
-+	struct cs35l41_private *cs35l41;
-+	struct device *dev = &client->dev;
-+	struct cs35l41_platform_data *pdata = dev_get_platdata(dev);
-+	const struct regmap_config *regmap_config = &cs35l41_regmap_i2c;
-+	int ret;
-+
-+	cs35l41 = devm_kzalloc(dev, sizeof(struct cs35l41_private), GFP_KERNEL);
-+
-+	if (!cs35l41)
-+		return -ENOMEM;
-+
-+	cs35l41->dev = dev;
-+	cs35l41->irq = client->irq;
-+
-+	i2c_set_clientdata(client, cs35l41);
-+	cs35l41->regmap = devm_regmap_init_i2c(client, regmap_config);
-+	if (IS_ERR(cs35l41->regmap)) {
-+		ret = PTR_ERR(cs35l41->regmap);
-+		dev_err(cs35l41->dev, "Failed to allocate register map: %d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	return cs35l41_probe(cs35l41, pdata);
-+}
-+
-+static int cs35l41_i2c_remove(struct i2c_client *client)
-+{
-+	struct cs35l41_private *cs35l41 = i2c_get_clientdata(client);
-+
-+	return cs35l41_remove(cs35l41);
-+}
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id cs35l41_of_match[] = {
-+	{ .compatible = "cirrus,cs35l40" },
-+	{ .compatible = "cirrus,cs35l41" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, cs35l41_of_match);
-+#endif
-+
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id cs35l41_acpi_match[] = {
-+	{ "CSC3541", 0 }, /* Cirrus Logic PnP ID + part ID */
-+	{},
-+};
-+MODULE_DEVICE_TABLE(acpi, cs35l41_acpi_match);
-+#endif
-+
-+static struct i2c_driver cs35l41_i2c_driver = {
-+	.driver = {
-+		.name		= "cs35l41",
-+		.of_match_table = of_match_ptr(cs35l41_of_match),
-+		.acpi_match_table = ACPI_PTR(cs35l41_acpi_match),
-+	},
-+	.id_table	= cs35l41_id_i2c,
-+	.probe		= cs35l41_i2c_probe,
-+	.remove		= cs35l41_i2c_remove,
-+};
-+
-+module_i2c_driver(cs35l41_i2c_driver);
-+
-+MODULE_DESCRIPTION("I2C CS35L41 driver");
-+MODULE_AUTHOR("David Rhodes, Cirrus Logic Inc, <david.rhodes@cirrus.com>");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/cs35l41-spi.c b/sound/soc/codecs/cs35l41-spi.c
-new file mode 100644
-index 000000000000..e253c6d82ce8
---- /dev/null
-+++ b/sound/soc/codecs/cs35l41-spi.c
-@@ -0,0 +1,143 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// cs35l41-spi.c -- CS35l41 SPI driver
-+//
-+// Copyright 2017-2021 Cirrus Logic, Inc.
-+//
-+// Author: David Rhodes	<david.rhodes@cirrus.com>
-+
-+#include <linux/acpi.h>
-+#include <linux/delay.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/platform_device.h>
-+#include <linux/spi/spi.h>
-+
-+#include <sound/cs35l41.h>
-+#include "cs35l41.h"
-+
-+static struct regmap_config cs35l41_regmap_spi = {
-+	.reg_bits = 32,
-+	.val_bits = 32,
-+	.pad_bits = 16,
-+	.reg_stride = CS35L41_REGSTRIDE,
-+	.reg_format_endian = REGMAP_ENDIAN_BIG,
-+	.val_format_endian = REGMAP_ENDIAN_BIG,
-+	.max_register = CS35L41_LASTREG,
-+	.reg_defaults = cs35l41_reg,
-+	.num_reg_defaults = ARRAY_SIZE(cs35l41_reg),
-+	.volatile_reg = cs35l41_volatile_reg,
-+	.readable_reg = cs35l41_readable_reg,
-+	.precious_reg = cs35l41_precious_reg,
-+	.cache_type = REGCACHE_RBTREE,
-+};
-+
-+static const struct spi_device_id cs35l41_id_spi[] = {
-+	{ "cs35l40", 0 },
-+	{ "cs35l41", 0 },
-+	{}
-+};
-+
-+MODULE_DEVICE_TABLE(spi, cs35l41_id_spi);
-+
-+static void cs35l41_spi_otp_setup(struct cs35l41_private *cs35l41,
-+					bool is_pre_setup, unsigned int *freq)
-+{
-+	struct spi_device *spi;
-+	u32 orig_spi_freq;
-+
-+	spi = to_spi_device(cs35l41->dev);
-+
-+	if (!spi) {
-+		dev_err(cs35l41->dev, "%s: No SPI device\n", __func__);
-+		return;
-+	}
-+
-+	if (is_pre_setup) {
-+		orig_spi_freq = spi->max_speed_hz;
-+		if (orig_spi_freq > CS35L41_SPI_MAX_FREQ_OTP) {
-+			spi->max_speed_hz = CS35L41_SPI_MAX_FREQ_OTP;
-+			spi_setup(spi);
-+		}
-+		*freq = orig_spi_freq;
-+	} else {
-+		if (spi->max_speed_hz != *freq) {
-+			spi->max_speed_hz = *freq;
-+			spi_setup(spi);
-+		}
-+	}
-+}
-+
-+static int cs35l41_spi_probe(struct spi_device *spi)
-+{
-+	const struct regmap_config *regmap_config = &cs35l41_regmap_spi;
-+	struct cs35l41_platform_data *pdata =
-+					dev_get_platdata(&spi->dev);
-+	struct cs35l41_private *cs35l41;
-+	int ret;
-+
-+	cs35l41 = devm_kzalloc(&spi->dev,
-+			       sizeof(struct cs35l41_private),
-+			       GFP_KERNEL);
-+	if (!cs35l41)
-+		return -ENOMEM;
-+
-+
-+	spi_set_drvdata(spi, cs35l41);
-+	cs35l41->regmap = devm_regmap_init_spi(spi, regmap_config);
-+	if (IS_ERR(cs35l41->regmap)) {
-+		ret = PTR_ERR(cs35l41->regmap);
-+		dev_err(&spi->dev, "Failed to allocate register map: %d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	cs35l41->dev = &spi->dev;
-+	cs35l41->irq = spi->irq;
-+	cs35l41->otp_setup = cs35l41_spi_otp_setup;
-+
-+	return cs35l41_probe(cs35l41, pdata);
-+}
-+
-+static int cs35l41_spi_remove(struct spi_device *spi)
-+{
-+	struct cs35l41_private *cs35l41 = spi_get_drvdata(spi);
-+
-+	return cs35l41_remove(cs35l41);
-+}
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id cs35l41_of_match[] = {
-+	{ .compatible = "cirrus,cs35l40" },
-+	{ .compatible = "cirrus,cs35l41" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, cs35l41_of_match);
-+#endif
-+
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id cs35l41_acpi_match[] = {
-+	{ "CSC3541", 0 }, /* Cirrus Logic PnP ID + part ID */
-+	{},
-+};
-+MODULE_DEVICE_TABLE(acpi, cs35l41_acpi_match);
-+#endif
-+
-+static struct spi_driver cs35l41_spi_driver = {
-+	.driver = {
-+		.name		= "cs35l41",
-+		.of_match_table = of_match_ptr(cs35l41_of_match),
-+		.acpi_match_table = ACPI_PTR(cs35l41_acpi_match),
-+	},
-+	.id_table	= cs35l41_id_spi,
-+	.probe		= cs35l41_spi_probe,
-+	.remove		= cs35l41_spi_remove,
-+};
-+
-+module_spi_driver(cs35l41_spi_driver);
-+
-+MODULE_DESCRIPTION("SPI CS35L41 driver");
-+MODULE_AUTHOR("David Rhodes, Cirrus Logic Inc, <david.rhodes@cirrus.com>");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/cs35l41-tables.c b/sound/soc/codecs/cs35l41-tables.c
-new file mode 100644
-index 000000000000..155db0e6e3d8
---- /dev/null
-+++ b/sound/soc/codecs/cs35l41-tables.c
-@@ -0,0 +1,597 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// cs35l41-tables.c -- CS35L41 ALSA SoC audio driver
-+//
-+// Copyright 2017-2021 Cirrus Logic, Inc.
-+//
-+// Author: David Rhodes <david.rhodes@cirrus.com>
-+
-+#include "cs35l41.h"
-+
-+const struct reg_default cs35l41_reg[CS35L41_MAX_CACHE_REG] = {
-+	{CS35L41_PWR_CTRL1,			0x00000000},
-+	{CS35L41_PWR_CTRL3,			0x01000010},
-+	{CS35L41_GPIO_PAD_CONTROL,		0x00000000},
-+	{CS35L41_SP_ENABLES,			0x00000000},
-+	{CS35L41_SP_RATE_CTRL,			0x00000028},
-+	{CS35L41_SP_FORMAT,			0x18180200},
-+	{CS35L41_SP_HIZ_CTRL,			0x00000002},
-+	{CS35L41_SP_FRAME_TX_SLOT,		0x03020100},
-+	{CS35L41_SP_FRAME_RX_SLOT,		0x00000100},
-+	{CS35L41_SP_TX_WL,			0x00000018},
-+	{CS35L41_SP_RX_WL,			0x00000018},
-+	{CS35L41_DAC_PCM1_SRC,			0x00000008},
-+	{CS35L41_ASP_TX1_SRC,			0x00000018},
-+	{CS35L41_ASP_TX2_SRC,			0x00000019},
-+	{CS35L41_ASP_TX3_SRC,			0x00000020},
-+	{CS35L41_ASP_TX4_SRC,			0x00000021},
-+	{CS35L41_DSP1_RX1_SRC,			0x00000008},
-+	{CS35L41_DSP1_RX2_SRC,			0x00000009},
-+	{CS35L41_DSP1_RX3_SRC,			0x00000018},
-+	{CS35L41_DSP1_RX4_SRC,			0x00000019},
-+	{CS35L41_DSP1_RX5_SRC,			0x00000020},
-+	{CS35L41_DSP1_RX6_SRC,			0x00000021},
-+	{CS35L41_DSP1_RX7_SRC,			0x0000003A},
-+	{CS35L41_DSP1_RX8_SRC,			0x00000001},
-+	{CS35L41_NGATE1_SRC,			0x00000008},
-+	{CS35L41_NGATE2_SRC,			0x00000009},
-+	{CS35L41_AMP_DIG_VOL_CTRL,		0x00008000},
-+	{CS35L41_CLASSH_CFG,			0x000B0405},
-+	{CS35L41_WKFET_CFG,			0x00000111},
-+	{CS35L41_NG_CFG,			0x00000033},
-+	{CS35L41_AMP_GAIN_CTRL,			0x00000273},
-+	{CS35L41_GPIO1_CTRL1,			0xE1000001},
-+	{CS35L41_GPIO2_CTRL1,			0xE1000001},
-+	{CS35L41_MIXER_NGATE_CFG,		0x00000000},
-+	{CS35L41_MIXER_NGATE_CH1_CFG,		0x00000303},
-+	{CS35L41_MIXER_NGATE_CH2_CFG,		0x00000303},
-+};
-+
-+bool cs35l41_readable_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case CS35L41_DEVID:
-+	case CS35L41_REVID:
-+	case CS35L41_FABID:
-+	case CS35L41_RELID:
-+	case CS35L41_OTPID:
-+	case CS35L41_TEST_KEY_CTL:
-+	case CS35L41_USER_KEY_CTL:
-+	case CS35L41_OTP_CTRL0:
-+	case CS35L41_OTP_CTRL3:
-+	case CS35L41_OTP_CTRL4:
-+	case CS35L41_OTP_CTRL5:
-+	case CS35L41_OTP_CTRL6:
-+	case CS35L41_OTP_CTRL7:
-+	case CS35L41_OTP_CTRL8:
-+	case CS35L41_PWR_CTRL1:
-+	case CS35L41_PWR_CTRL2:
-+	case CS35L41_PWR_CTRL3:
-+	case CS35L41_CTRL_OVRRIDE:
-+	case CS35L41_AMP_OUT_MUTE:
-+	case CS35L41_PROTECT_REL_ERR_IGN:
-+	case CS35L41_GPIO_PAD_CONTROL:
-+	case CS35L41_JTAG_CONTROL:
-+	case CS35L41_PLL_CLK_CTRL:
-+	case CS35L41_DSP_CLK_CTRL:
-+	case CS35L41_GLOBAL_CLK_CTRL:
-+	case CS35L41_DATA_FS_SEL:
-+	case CS35L41_MDSYNC_EN:
-+	case CS35L41_MDSYNC_TX_ID:
-+	case CS35L41_MDSYNC_PWR_CTRL:
-+	case CS35L41_MDSYNC_DATA_TX:
-+	case CS35L41_MDSYNC_TX_STATUS:
-+	case CS35L41_MDSYNC_DATA_RX:
-+	case CS35L41_MDSYNC_RX_STATUS:
-+	case CS35L41_MDSYNC_ERR_STATUS:
-+	case CS35L41_MDSYNC_SYNC_PTE2:
-+	case CS35L41_MDSYNC_SYNC_PTE3:
-+	case CS35L41_MDSYNC_SYNC_MSM_STATUS:
-+	case CS35L41_BSTCVRT_VCTRL1:
-+	case CS35L41_BSTCVRT_VCTRL2:
-+	case CS35L41_BSTCVRT_PEAK_CUR:
-+	case CS35L41_BSTCVRT_SFT_RAMP:
-+	case CS35L41_BSTCVRT_COEFF:
-+	case CS35L41_BSTCVRT_SLOPE_LBST:
-+	case CS35L41_BSTCVRT_SW_FREQ:
-+	case CS35L41_BSTCVRT_DCM_CTRL:
-+	case CS35L41_BSTCVRT_DCM_MODE_FORCE:
-+	case CS35L41_BSTCVRT_OVERVOLT_CTRL:
-+	case CS35L41_VI_VOL_POL:
-+	case CS35L41_DTEMP_WARN_THLD:
-+	case CS35L41_DTEMP_CFG:
-+	case CS35L41_DTEMP_EN:
-+	case CS35L41_VPVBST_FS_SEL:
-+	case CS35L41_SP_ENABLES:
-+	case CS35L41_SP_RATE_CTRL:
-+	case CS35L41_SP_FORMAT:
-+	case CS35L41_SP_HIZ_CTRL:
-+	case CS35L41_SP_FRAME_TX_SLOT:
-+	case CS35L41_SP_FRAME_RX_SLOT:
-+	case CS35L41_SP_TX_WL:
-+	case CS35L41_SP_RX_WL:
-+	case CS35L41_DAC_PCM1_SRC:
-+	case CS35L41_ASP_TX1_SRC:
-+	case CS35L41_ASP_TX2_SRC:
-+	case CS35L41_ASP_TX3_SRC:
-+	case CS35L41_ASP_TX4_SRC:
-+	case CS35L41_DSP1_RX1_SRC:
-+	case CS35L41_DSP1_RX2_SRC:
-+	case CS35L41_DSP1_RX3_SRC:
-+	case CS35L41_DSP1_RX4_SRC:
-+	case CS35L41_DSP1_RX5_SRC:
-+	case CS35L41_DSP1_RX6_SRC:
-+	case CS35L41_DSP1_RX7_SRC:
-+	case CS35L41_DSP1_RX8_SRC:
-+	case CS35L41_NGATE1_SRC:
-+	case CS35L41_NGATE2_SRC:
-+	case CS35L41_AMP_DIG_VOL_CTRL:
-+	case CS35L41_VPBR_CFG:
-+	case CS35L41_VBBR_CFG:
-+	case CS35L41_VPBR_STATUS:
-+	case CS35L41_VBBR_STATUS:
-+	case CS35L41_OVERTEMP_CFG:
-+	case CS35L41_AMP_ERR_VOL:
-+	case CS35L41_VOL_STATUS_TO_DSP:
-+	case CS35L41_CLASSH_CFG:
-+	case CS35L41_WKFET_CFG:
-+	case CS35L41_NG_CFG:
-+	case CS35L41_AMP_GAIN_CTRL:
-+	case CS35L41_DAC_MSM_CFG:
-+	case CS35L41_IRQ1_CFG:
-+	case CS35L41_IRQ1_STATUS:
-+	case CS35L41_IRQ1_STATUS1:
-+	case CS35L41_IRQ1_STATUS2:
-+	case CS35L41_IRQ1_STATUS3:
-+	case CS35L41_IRQ1_STATUS4:
-+	case CS35L41_IRQ1_RAW_STATUS1:
-+	case CS35L41_IRQ1_RAW_STATUS2:
-+	case CS35L41_IRQ1_RAW_STATUS3:
-+	case CS35L41_IRQ1_RAW_STATUS4:
-+	case CS35L41_IRQ1_MASK1:
-+	case CS35L41_IRQ1_MASK2:
-+	case CS35L41_IRQ1_MASK3:
-+	case CS35L41_IRQ1_MASK4:
-+	case CS35L41_IRQ1_FRC1:
-+	case CS35L41_IRQ1_FRC2:
-+	case CS35L41_IRQ1_FRC3:
-+	case CS35L41_IRQ1_FRC4:
-+	case CS35L41_IRQ1_EDGE1:
-+	case CS35L41_IRQ1_EDGE4:
-+	case CS35L41_IRQ1_POL1:
-+	case CS35L41_IRQ1_POL2:
-+	case CS35L41_IRQ1_POL3:
-+	case CS35L41_IRQ1_POL4:
-+	case CS35L41_IRQ1_DB3:
-+	case CS35L41_IRQ2_CFG:
-+	case CS35L41_IRQ2_STATUS:
-+	case CS35L41_IRQ2_STATUS1:
-+	case CS35L41_IRQ2_STATUS2:
-+	case CS35L41_IRQ2_STATUS3:
-+	case CS35L41_IRQ2_STATUS4:
-+	case CS35L41_IRQ2_RAW_STATUS1:
-+	case CS35L41_IRQ2_RAW_STATUS2:
-+	case CS35L41_IRQ2_RAW_STATUS3:
-+	case CS35L41_IRQ2_RAW_STATUS4:
-+	case CS35L41_IRQ2_MASK1:
-+	case CS35L41_IRQ2_MASK2:
-+	case CS35L41_IRQ2_MASK3:
-+	case CS35L41_IRQ2_MASK4:
-+	case CS35L41_IRQ2_FRC1:
-+	case CS35L41_IRQ2_FRC2:
-+	case CS35L41_IRQ2_FRC3:
-+	case CS35L41_IRQ2_FRC4:
-+	case CS35L41_IRQ2_EDGE1:
-+	case CS35L41_IRQ2_EDGE4:
-+	case CS35L41_IRQ2_POL1:
-+	case CS35L41_IRQ2_POL2:
-+	case CS35L41_IRQ2_POL3:
-+	case CS35L41_IRQ2_POL4:
-+	case CS35L41_IRQ2_DB3:
-+	case CS35L41_GPIO_STATUS1:
-+	case CS35L41_GPIO1_CTRL1:
-+	case CS35L41_GPIO2_CTRL1:
-+	case CS35L41_MIXER_NGATE_CFG:
-+	case CS35L41_MIXER_NGATE_CH1_CFG:
-+	case CS35L41_MIXER_NGATE_CH2_CFG:
-+	case CS35L41_DSP_MBOX_1 ... CS35L41_DSP_VIRT2_MBOX_8:
-+	case CS35L41_CLOCK_DETECT_1:
-+	case CS35L41_DIE_STS1:
-+	case CS35L41_DIE_STS2:
-+	case CS35L41_TEMP_CAL1:
-+	case CS35L41_TEMP_CAL2:
-+	case CS35L41_OTP_TRIM_1:
-+	case CS35L41_OTP_TRIM_2:
-+	case CS35L41_OTP_TRIM_3:
-+	case CS35L41_OTP_TRIM_4:
-+	case CS35L41_OTP_TRIM_5:
-+	case CS35L41_OTP_TRIM_6:
-+	case CS35L41_OTP_TRIM_7:
-+	case CS35L41_OTP_TRIM_8:
-+	case CS35L41_OTP_TRIM_9:
-+	case CS35L41_OTP_TRIM_10:
-+	case CS35L41_OTP_TRIM_11:
-+	case CS35L41_OTP_TRIM_12:
-+	case CS35L41_OTP_TRIM_13:
-+	case CS35L41_OTP_TRIM_14:
-+	case CS35L41_OTP_TRIM_15:
-+	case CS35L41_OTP_TRIM_16:
-+	case CS35L41_OTP_TRIM_17:
-+	case CS35L41_OTP_TRIM_18:
-+	case CS35L41_OTP_TRIM_19:
-+	case CS35L41_OTP_TRIM_20:
-+	case CS35L41_OTP_TRIM_21:
-+	case CS35L41_OTP_TRIM_22:
-+	case CS35L41_OTP_TRIM_23:
-+	case CS35L41_OTP_TRIM_24:
-+	case CS35L41_OTP_TRIM_25:
-+	case CS35L41_OTP_TRIM_26:
-+	case CS35L41_OTP_TRIM_27:
-+	case CS35L41_OTP_TRIM_28:
-+	case CS35L41_OTP_TRIM_29:
-+	case CS35L41_OTP_TRIM_30:
-+	case CS35L41_OTP_TRIM_31:
-+	case CS35L41_OTP_TRIM_32:
-+	case CS35L41_OTP_TRIM_33:
-+	case CS35L41_OTP_TRIM_34:
-+	case CS35L41_OTP_TRIM_35:
-+	case CS35L41_OTP_TRIM_36:
-+	case CS35L41_OTP_MEM0 ... CS35L41_OTP_MEM31:
-+	/*test regs*/
-+	case CS35L41_PLL_OVR:
-+	case CS35L41_BST_TEST_DUTY:
-+	case CS35L41_DIGPWM_IOCTRL:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+bool cs35l41_precious_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case CS35L41_OTP_MEM0 ... CS35L41_OTP_MEM31:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+bool cs35l41_volatile_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case CS35L41_DEVID:
-+	case CS35L41_SFT_RESET:
-+	case CS35L41_FABID:
-+	case CS35L41_REVID:
-+	case CS35L41_DTEMP_EN:
-+	case CS35L41_IRQ1_STATUS:
-+	case CS35L41_IRQ1_STATUS1:
-+	case CS35L41_IRQ1_STATUS2:
-+	case CS35L41_IRQ1_STATUS3:
-+	case CS35L41_IRQ1_STATUS4:
-+	case CS35L41_IRQ1_RAW_STATUS1:
-+	case CS35L41_IRQ1_RAW_STATUS2:
-+	case CS35L41_IRQ1_RAW_STATUS3:
-+	case CS35L41_IRQ1_RAW_STATUS4:
-+	case CS35L41_IRQ1_FRC1:
-+	case CS35L41_IRQ1_FRC2:
-+	case CS35L41_IRQ1_FRC3:
-+	case CS35L41_IRQ1_FRC4:
-+	case CS35L41_IRQ1_EDGE1:
-+	case CS35L41_IRQ1_EDGE4:
-+	case CS35L41_IRQ1_POL1:
-+	case CS35L41_IRQ1_POL2:
-+	case CS35L41_IRQ1_POL3:
-+	case CS35L41_IRQ1_POL4:
-+	case CS35L41_IRQ1_DB3:
-+	case CS35L41_IRQ2_STATUS:
-+	case CS35L41_IRQ2_STATUS1:
-+	case CS35L41_IRQ2_STATUS2:
-+	case CS35L41_IRQ2_STATUS3:
-+	case CS35L41_IRQ2_STATUS4:
-+	case CS35L41_IRQ2_RAW_STATUS1:
-+	case CS35L41_IRQ2_RAW_STATUS2:
-+	case CS35L41_IRQ2_RAW_STATUS3:
-+	case CS35L41_IRQ2_RAW_STATUS4:
-+	case CS35L41_IRQ2_FRC1:
-+	case CS35L41_IRQ2_FRC2:
-+	case CS35L41_IRQ2_FRC3:
-+	case CS35L41_IRQ2_FRC4:
-+	case CS35L41_IRQ2_EDGE1:
-+	case CS35L41_IRQ2_EDGE4:
-+	case CS35L41_IRQ2_POL1:
-+	case CS35L41_IRQ2_POL2:
-+	case CS35L41_IRQ2_POL3:
-+	case CS35L41_IRQ2_POL4:
-+	case CS35L41_IRQ2_DB3:
-+	case CS35L41_GPIO_STATUS1:
-+	case CS35L41_OTP_TRIM_1:
-+	case CS35L41_OTP_TRIM_2:
-+	case CS35L41_OTP_TRIM_3:
-+	case CS35L41_OTP_TRIM_4:
-+	case CS35L41_OTP_TRIM_5:
-+	case CS35L41_OTP_TRIM_6:
-+	case CS35L41_OTP_TRIM_7:
-+	case CS35L41_OTP_TRIM_8:
-+	case CS35L41_OTP_TRIM_9:
-+	case CS35L41_OTP_TRIM_10:
-+	case CS35L41_OTP_TRIM_11:
-+	case CS35L41_OTP_TRIM_12:
-+	case CS35L41_OTP_TRIM_13:
-+	case CS35L41_OTP_TRIM_14:
-+	case CS35L41_OTP_TRIM_15:
-+	case CS35L41_OTP_TRIM_16:
-+	case CS35L41_OTP_TRIM_17:
-+	case CS35L41_OTP_TRIM_18:
-+	case CS35L41_OTP_TRIM_19:
-+	case CS35L41_OTP_TRIM_20:
-+	case CS35L41_OTP_TRIM_21:
-+	case CS35L41_OTP_TRIM_22:
-+	case CS35L41_OTP_TRIM_23:
-+	case CS35L41_OTP_TRIM_24:
-+	case CS35L41_OTP_TRIM_25:
-+	case CS35L41_OTP_TRIM_26:
-+	case CS35L41_OTP_TRIM_27:
-+	case CS35L41_OTP_TRIM_28:
-+	case CS35L41_OTP_TRIM_29:
-+	case CS35L41_OTP_TRIM_30:
-+	case CS35L41_OTP_TRIM_31:
-+	case CS35L41_OTP_TRIM_32:
-+	case CS35L41_OTP_TRIM_33:
-+	case CS35L41_OTP_TRIM_34:
-+	case CS35L41_OTP_TRIM_35:
-+	case CS35L41_OTP_TRIM_36:
-+	case CS35L41_OTP_MEM0 ... CS35L41_OTP_MEM31:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static const struct cs35l41_otp_packed_element_t
-+					otp_map_1[CS35L41_NUM_OTP_ELEM] = {
-+	/* addr         shift   size */
-+	{0x00002030,	0,	4}, /*TRIM_OSC_FREQ_TRIM*/
-+	{0x00002030,	7,	1}, /*TRIM_OSC_TRIM_DONE*/
-+	{0x0000208c,	24,	6}, /*TST_DIGREG_VREF_TRIM*/
-+	{0x00002090,	14,	4}, /*TST_REF_TRIM*/
-+	{0x00002090,	10,	4}, /*TST_REF_TEMPCO_TRIM*/
-+	{0x0000300C,	11,	4}, /*PLL_LDOA_TST_VREF_TRIM*/
-+	{0x0000394C,	23,	2}, /*BST_ATEST_CM_VOFF*/
-+	{0x00003950,	0,	7}, /*BST_ATRIM_IADC_OFFSET*/
-+	{0x00003950,	8,	7}, /*BST_ATRIM_IADC_GAIN1*/
-+	{0x00003950,	16,	8}, /*BST_ATRIM_IPKCOMP_OFFSET1*/
-+	{0x00003950,	24,	8}, /*BST_ATRIM_IPKCOMP_GAIN1*/
-+	{0x00003954,	0,	7}, /*BST_ATRIM_IADC_OFFSET2*/
-+	{0x00003954,	8,	7}, /*BST_ATRIM_IADC_GAIN2*/
-+	{0x00003954,	16,	8}, /*BST_ATRIM_IPKCOMP_OFFSET2*/
-+	{0x00003954,	24,	8}, /*BST_ATRIM_IPKCOMP_GAIN2*/
-+	{0x00003958,	0,	7}, /*BST_ATRIM_IADC_OFFSET3*/
-+	{0x00003958,	8,	7}, /*BST_ATRIM_IADC_GAIN3*/
-+	{0x00003958,	16,	8}, /*BST_ATRIM_IPKCOMP_OFFSET3*/
-+	{0x00003958,	24,	8}, /*BST_ATRIM_IPKCOMP_GAIN3*/
-+	{0x0000395C,	0,	7}, /*BST_ATRIM_IADC_OFFSET4*/
-+	{0x0000395C,	8,	7}, /*BST_ATRIM_IADC_GAIN4*/
-+	{0x0000395C,	16,	8}, /*BST_ATRIM_IPKCOMP_OFFSET4*/
-+	{0x0000395C,	24,	8}, /*BST_ATRIM_IPKCOMP_GAIN4*/
-+	{0x0000416C,	0,	8}, /*VMON_GAIN_OTP_VAL*/
-+	{0x00004160,	0,	7}, /*VMON_OFFSET_OTP_VAL*/
-+	{0x0000416C,	8,	8}, /*IMON_GAIN_OTP_VAL*/
-+	{0x00004160,	16,	10}, /*IMON_OFFSET_OTP_VAL*/
-+	{0x0000416C,	16,	12}, /*VMON_CM_GAIN_OTP_VAL*/
-+	{0x0000416C,	28,	1}, /*VMON_CM_GAIN_SIGN_OTP_VAL*/
-+	{0x00004170,	0,	6}, /*IMON_CAL_TEMPCO_OTP_VAL*/
-+	{0x00004170,	6,	1}, /*IMON_CAL_TEMPCO_SIGN_OTP*/
-+	{0x00004170,	8,	6}, /*IMON_CAL_TEMPCO2_OTP_VAL*/
-+	{0x00004170,	14,	1}, /*IMON_CAL_TEMPCO2_DN_UPB_OTP_VAL*/
-+	{0x00004170,	16,	9}, /*IMON_CAL_TEMPCO_TBASE_OTP_VAL*/
-+	{0x00004360,	0,	5}, /*TEMP_GAIN_OTP_VAL*/
-+	{0x00004360,	6,	9}, /*TEMP_OFFSET_OTP_VAL*/
-+	{0x00004448,	0,	8}, /*VP_SARADC_OFFSET*/
-+	{0x00004448,	8,	8}, /*VP_GAIN_INDEX*/
-+	{0x00004448,	16,	8}, /*VBST_SARADC_OFFSET*/
-+	{0x00004448,	24,	8}, /*VBST_GAIN_INDEX*/
-+	{0x0000444C,	0,	3}, /*ANA_SELINVREF*/
-+	{0x00006E30,	0,	5}, /*GAIN_ERR_COEFF_0*/
-+	{0x00006E30,	8,	5}, /*GAIN_ERR_COEFF_1*/
-+	{0x00006E30,	16,	5}, /*GAIN_ERR_COEFF_2*/
-+	{0x00006E30,	24,	5}, /*GAIN_ERR_COEFF_3*/
-+	{0x00006E34,	0,	5}, /*GAIN_ERR_COEFF_4*/
-+	{0x00006E34,	8,	5}, /*GAIN_ERR_COEFF_5*/
-+	{0x00006E34,	16,	5}, /*GAIN_ERR_COEFF_6*/
-+	{0x00006E34,	24,	5}, /*GAIN_ERR_COEFF_7*/
-+	{0x00006E38,	0,	5}, /*GAIN_ERR_COEFF_8*/
-+	{0x00006E38,	8,	5}, /*GAIN_ERR_COEFF_9*/
-+	{0x00006E38,	16,	5}, /*GAIN_ERR_COEFF_10*/
-+	{0x00006E38,	24,	5}, /*GAIN_ERR_COEFF_11*/
-+	{0x00006E3C,	0,	5}, /*GAIN_ERR_COEFF_12*/
-+	{0x00006E3C,	8,	5}, /*GAIN_ERR_COEFF_13*/
-+	{0x00006E3C,	16,	5}, /*GAIN_ERR_COEFF_14*/
-+	{0x00006E3C,	24,	5}, /*GAIN_ERR_COEFF_15*/
-+	{0x00006E40,	0,	5}, /*GAIN_ERR_COEFF_16*/
-+	{0x00006E40,	8,	5}, /*GAIN_ERR_COEFF_17*/
-+	{0x00006E40,	16,	5}, /*GAIN_ERR_COEFF_18*/
-+	{0x00006E40,	24,	5}, /*GAIN_ERR_COEFF_19*/
-+	{0x00006E44,	0,	5}, /*GAIN_ERR_COEFF_20*/
-+	{0x00006E48,	0,	10}, /*VOFF_GAIN_0*/
-+	{0x00006E48,	10,	10}, /*VOFF_GAIN_1*/
-+	{0x00006E48,	20,	10}, /*VOFF_GAIN_2*/
-+	{0x00006E4C,	0,	10}, /*VOFF_GAIN_3*/
-+	{0x00006E4C,	10,	10}, /*VOFF_GAIN_4*/
-+	{0x00006E4C,	20,	10}, /*VOFF_GAIN_5*/
-+	{0x00006E50,	0,	10}, /*VOFF_GAIN_6*/
-+	{0x00006E50,	10,	10}, /*VOFF_GAIN_7*/
-+	{0x00006E50,	20,	10}, /*VOFF_GAIN_8*/
-+	{0x00006E54,	0,	10}, /*VOFF_GAIN_9*/
-+	{0x00006E54,	10,	10}, /*VOFF_GAIN_10*/
-+	{0x00006E54,	20,	10}, /*VOFF_GAIN_11*/
-+	{0x00006E58,	0,	10}, /*VOFF_GAIN_12*/
-+	{0x00006E58,	10,	10}, /*VOFF_GAIN_13*/
-+	{0x00006E58,	20,	10}, /*VOFF_GAIN_14*/
-+	{0x00006E5C,	0,	10}, /*VOFF_GAIN_15*/
-+	{0x00006E5C,	10,	10}, /*VOFF_GAIN_16*/
-+	{0x00006E5C,	20,	10}, /*VOFF_GAIN_17*/
-+	{0x00006E60,	0,	10}, /*VOFF_GAIN_18*/
-+	{0x00006E60,	10,	10}, /*VOFF_GAIN_19*/
-+	{0x00006E60,	20,	10}, /*VOFF_GAIN_20*/
-+	{0x00006E64,	0,	10}, /*VOFF_INT1*/
-+	{0x00007418,	7,	5}, /*DS_SPK_INT1_CAP_TRIM*/
-+	{0x0000741C,	0,	5}, /*DS_SPK_INT2_CAP_TRIM*/
-+	{0x0000741C,	11,	4}, /*DS_SPK_LPF_CAP_TRIM*/
-+	{0x0000741C,	19,	4}, /*DS_SPK_QUAN_CAP_TRIM*/
-+	{0x00007434,	17,	1}, /*FORCE_CAL*/
-+	{0x00007434,	18,	7}, /*CAL_OVERRIDE*/
-+	{0x00007068,	0,	9}, /*MODIX*/
-+	{0x0000410C,	7,	1}, /*VIMON_DLY_NOT_COMB*/
-+	{0x0000400C,	0,	7}, /*VIMON_DLY*/
-+	{0x00000000,	0,	1}, /*extra bit*/
-+	{0x00017040,	0,	8}, /*X_COORDINATE*/
-+	{0x00017040,	8,	8}, /*Y_COORDINATE*/
-+	{0x00017040,	16,	8}, /*WAFER_ID*/
-+	{0x00017040,	24,	8}, /*DVS*/
-+	{0x00017044,	0,	24}, /*LOT_NUMBER*/
-+};
-+
-+static const struct cs35l41_otp_packed_element_t
-+					otp_map_2[CS35L41_NUM_OTP_ELEM] = {
-+	/* addr         shift   size */
-+	{0x00002030,	0,	4}, /*TRIM_OSC_FREQ_TRIM*/
-+	{0x00002030,	7,	1}, /*TRIM_OSC_TRIM_DONE*/
-+	{0x0000208c,	24,	6}, /*TST_DIGREG_VREF_TRIM*/
-+	{0x00002090,	14,	4}, /*TST_REF_TRIM*/
-+	{0x00002090,	10,	4}, /*TST_REF_TEMPCO_TRIM*/
-+	{0x0000300C,	11,	4}, /*PLL_LDOA_TST_VREF_TRIM*/
-+	{0x0000394C,	23,	2}, /*BST_ATEST_CM_VOFF*/
-+	{0x00003950,	0,	7}, /*BST_ATRIM_IADC_OFFSET*/
-+	{0x00003950,	8,	7}, /*BST_ATRIM_IADC_GAIN1*/
-+	{0x00003950,	16,	8}, /*BST_ATRIM_IPKCOMP_OFFSET1*/
-+	{0x00003950,	24,	8}, /*BST_ATRIM_IPKCOMP_GAIN1*/
-+	{0x00003954,	0,	7}, /*BST_ATRIM_IADC_OFFSET2*/
-+	{0x00003954,	8,	7}, /*BST_ATRIM_IADC_GAIN2*/
-+	{0x00003954,	16,	8}, /*BST_ATRIM_IPKCOMP_OFFSET2*/
-+	{0x00003954,	24,	8}, /*BST_ATRIM_IPKCOMP_GAIN2*/
-+	{0x00003958,	0,	7}, /*BST_ATRIM_IADC_OFFSET3*/
-+	{0x00003958,	8,	7}, /*BST_ATRIM_IADC_GAIN3*/
-+	{0x00003958,	16,	8}, /*BST_ATRIM_IPKCOMP_OFFSET3*/
-+	{0x00003958,	24,	8}, /*BST_ATRIM_IPKCOMP_GAIN3*/
-+	{0x0000395C,	0,	7}, /*BST_ATRIM_IADC_OFFSET4*/
-+	{0x0000395C,	8,	7}, /*BST_ATRIM_IADC_GAIN4*/
-+	{0x0000395C,	16,	8}, /*BST_ATRIM_IPKCOMP_OFFSET4*/
-+	{0x0000395C,	24,	8}, /*BST_ATRIM_IPKCOMP_GAIN4*/
-+	{0x0000416C,	0,	8}, /*VMON_GAIN_OTP_VAL*/
-+	{0x00004160,	0,	7}, /*VMON_OFFSET_OTP_VAL*/
-+	{0x0000416C,	8,	8}, /*IMON_GAIN_OTP_VAL*/
-+	{0x00004160,	16,	10}, /*IMON_OFFSET_OTP_VAL*/
-+	{0x0000416C,	16,	12}, /*VMON_CM_GAIN_OTP_VAL*/
-+	{0x0000416C,	28,	1}, /*VMON_CM_GAIN_SIGN_OTP_VAL*/
-+	{0x00004170,	0,	6}, /*IMON_CAL_TEMPCO_OTP_VAL*/
-+	{0x00004170,	6,	1}, /*IMON_CAL_TEMPCO_SIGN_OTP*/
-+	{0x00004170,	8,	6}, /*IMON_CAL_TEMPCO2_OTP_VAL*/
-+	{0x00004170,	14,	1}, /*IMON_CAL_TEMPCO2_DN_UPB_OTP_VAL*/
-+	{0x00004170,	16,	9}, /*IMON_CAL_TEMPCO_TBASE_OTP_VAL*/
-+	{0x00004360,	0,	5}, /*TEMP_GAIN_OTP_VAL*/
-+	{0x00004360,	6,	9}, /*TEMP_OFFSET_OTP_VAL*/
-+	{0x00004448,	0,	8}, /*VP_SARADC_OFFSET*/
-+	{0x00004448,	8,	8}, /*VP_GAIN_INDEX*/
-+	{0x00004448,	16,	8}, /*VBST_SARADC_OFFSET*/
-+	{0x00004448,	24,	8}, /*VBST_GAIN_INDEX*/
-+	{0x0000444C,	0,	3}, /*ANA_SELINVREF*/
-+	{0x00006E30,	0,	5}, /*GAIN_ERR_COEFF_0*/
-+	{0x00006E30,	8,	5}, /*GAIN_ERR_COEFF_1*/
-+	{0x00006E30,	16,	5}, /*GAIN_ERR_COEFF_2*/
-+	{0x00006E30,	24,	5}, /*GAIN_ERR_COEFF_3*/
-+	{0x00006E34,	0,	5}, /*GAIN_ERR_COEFF_4*/
-+	{0x00006E34,	8,	5}, /*GAIN_ERR_COEFF_5*/
-+	{0x00006E34,	16,	5}, /*GAIN_ERR_COEFF_6*/
-+	{0x00006E34,	24,	5}, /*GAIN_ERR_COEFF_7*/
-+	{0x00006E38,	0,	5}, /*GAIN_ERR_COEFF_8*/
-+	{0x00006E38,	8,	5}, /*GAIN_ERR_COEFF_9*/
-+	{0x00006E38,	16,	5}, /*GAIN_ERR_COEFF_10*/
-+	{0x00006E38,	24,	5}, /*GAIN_ERR_COEFF_11*/
-+	{0x00006E3C,	0,	5}, /*GAIN_ERR_COEFF_12*/
-+	{0x00006E3C,	8,	5}, /*GAIN_ERR_COEFF_13*/
-+	{0x00006E3C,	16,	5}, /*GAIN_ERR_COEFF_14*/
-+	{0x00006E3C,	24,	5}, /*GAIN_ERR_COEFF_15*/
-+	{0x00006E40,	0,	5}, /*GAIN_ERR_COEFF_16*/
-+	{0x00006E40,	8,	5}, /*GAIN_ERR_COEFF_17*/
-+	{0x00006E40,	16,	5}, /*GAIN_ERR_COEFF_18*/
-+	{0x00006E40,	24,	5}, /*GAIN_ERR_COEFF_19*/
-+	{0x00006E44,	0,	5}, /*GAIN_ERR_COEFF_20*/
-+	{0x00006E48,	0,	10}, /*VOFF_GAIN_0*/
-+	{0x00006E48,	10,	10}, /*VOFF_GAIN_1*/
-+	{0x00006E48,	20,	10}, /*VOFF_GAIN_2*/
-+	{0x00006E4C,	0,	10}, /*VOFF_GAIN_3*/
-+	{0x00006E4C,	10,	10}, /*VOFF_GAIN_4*/
-+	{0x00006E4C,	20,	10}, /*VOFF_GAIN_5*/
-+	{0x00006E50,	0,	10}, /*VOFF_GAIN_6*/
-+	{0x00006E50,	10,	10}, /*VOFF_GAIN_7*/
-+	{0x00006E50,	20,	10}, /*VOFF_GAIN_8*/
-+	{0x00006E54,	0,	10}, /*VOFF_GAIN_9*/
-+	{0x00006E54,	10,	10}, /*VOFF_GAIN_10*/
-+	{0x00006E54,	20,	10}, /*VOFF_GAIN_11*/
-+	{0x00006E58,	0,	10}, /*VOFF_GAIN_12*/
-+	{0x00006E58,	10,	10}, /*VOFF_GAIN_13*/
-+	{0x00006E58,	20,	10}, /*VOFF_GAIN_14*/
-+	{0x00006E5C,	0,	10}, /*VOFF_GAIN_15*/
-+	{0x00006E5C,	10,	10}, /*VOFF_GAIN_16*/
-+	{0x00006E5C,	20,	10}, /*VOFF_GAIN_17*/
-+	{0x00006E60,	0,	10}, /*VOFF_GAIN_18*/
-+	{0x00006E60,	10,	10}, /*VOFF_GAIN_19*/
-+	{0x00006E60,	20,	10}, /*VOFF_GAIN_20*/
-+	{0x00006E64,	0,	10}, /*VOFF_INT1*/
-+	{0x00007418,	7,	5}, /*DS_SPK_INT1_CAP_TRIM*/
-+	{0x0000741C,	0,	5}, /*DS_SPK_INT2_CAP_TRIM*/
-+	{0x0000741C,	11,	4}, /*DS_SPK_LPF_CAP_TRIM*/
-+	{0x0000741C,	19,	4}, /*DS_SPK_QUAN_CAP_TRIM*/
-+	{0x00007434,	17,	1}, /*FORCE_CAL*/
-+	{0x00007434,	18,	7}, /*CAL_OVERRIDE*/
-+	{0x00007068,	0,	9}, /*MODIX*/
-+	{0x0000410C,	7,	1}, /*VIMON_DLY_NOT_COMB*/
-+	{0x0000400C,	0,	7}, /*VIMON_DLY*/
-+	{0x00004000,	11,	1}, /*VMON_POL*/
-+	{0x00017040,	0,	8}, /*X_COORDINATE*/
-+	{0x00017040,	8,	8}, /*Y_COORDINATE*/
-+	{0x00017040,	16,	8}, /*WAFER_ID*/
-+	{0x00017040,	24,	8}, /*DVS*/
-+	{0x00017044,	0,	24}, /*LOT_NUMBER*/
-+};
-+
-+const struct cs35l41_otp_map_element_t
-+				cs35l41_otp_map_map[CS35L41_NUM_OTP_MAPS] = {
-+	{
-+		.id = 0x01,
-+		.map = otp_map_1,
-+		.num_elements = CS35L41_NUM_OTP_ELEM,
-+		.bit_offset = 16,
-+		.word_offset = 2,
-+	},
-+	{
-+		.id = 0x02,
-+		.map = otp_map_2,
-+		.num_elements = CS35L41_NUM_OTP_ELEM,
-+		.bit_offset = 16,
-+		.word_offset = 2,
-+	},
-+	{
-+		.id = 0x03,
-+		.map = otp_map_2,
-+		.num_elements = CS35L41_NUM_OTP_ELEM,
-+		.bit_offset = 16,
-+		.word_offset = 2,
-+	},
-+	{
-+		.id = 0x06,
-+		.map = otp_map_2,
-+		.num_elements = CS35L41_NUM_OTP_ELEM,
-+		.bit_offset = 16,
-+		.word_offset = 2,
-+	},
-+	{
-+		.id = 0x08,
-+		.map = otp_map_1,
-+		.num_elements = CS35L41_NUM_OTP_ELEM,
-+		.bit_offset = 16,
-+		.word_offset = 2,
-+	},
-+};
-diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
-new file mode 100644
-index 000000000000..720ccf365acf
---- /dev/null
-+++ b/sound/soc/codecs/cs35l41.c
-@@ -0,0 +1,1561 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// cs35l41.c -- CS35l41 ALSA SoC audio driver
-+//
-+// Copyright 2017-2021 Cirrus Logic, Inc.
-+//
-+// Author: David Rhodes <david.rhodes@cirrus.com>
-+
-+#include <linux/delay.h>
-+#include <linux/err.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/of_device.h>
-+#include <linux/property.h>
-+#include <linux/slab.h>
-+#include <sound/initval.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/tlv.h>
-+
-+#include "cs35l41.h"
-+
-+static const char * const cs35l41_supplies[CS35L41_NUM_SUPPLIES] = {
-+	"VA",
-+	"VP",
-+};
-+
-+struct cs35l41_pll_sysclk_config {
-+	int freq;
-+	int clk_cfg;
-+};
-+
-+static const struct cs35l41_pll_sysclk_config cs35l41_pll_sysclk[] = {
-+	{ 32768,	0x00 },
-+	{ 8000,		0x01 },
-+	{ 11025,	0x02 },
-+	{ 12000,	0x03 },
-+	{ 16000,	0x04 },
-+	{ 22050,	0x05 },
-+	{ 24000,	0x06 },
-+	{ 32000,	0x07 },
-+	{ 44100,	0x08 },
-+	{ 48000,	0x09 },
-+	{ 88200,	0x0A },
-+	{ 96000,	0x0B },
-+	{ 128000,	0x0C },
-+	{ 176400,	0x0D },
-+	{ 192000,	0x0E },
-+	{ 256000,	0x0F },
-+	{ 352800,	0x10 },
-+	{ 384000,	0x11 },
-+	{ 512000,	0x12 },
-+	{ 705600,	0x13 },
-+	{ 750000,	0x14 },
-+	{ 768000,	0x15 },
-+	{ 1000000,	0x16 },
-+	{ 1024000,	0x17 },
-+	{ 1200000,	0x18 },
-+	{ 1411200,	0x19 },
-+	{ 1500000,	0x1A },
-+	{ 1536000,	0x1B },
-+	{ 2000000,	0x1C },
-+	{ 2048000,	0x1D },
-+	{ 2400000,	0x1E },
-+	{ 2822400,	0x1F },
-+	{ 3000000,	0x20 },
-+	{ 3072000,	0x21 },
-+	{ 3200000,	0x22 },
-+	{ 4000000,	0x23 },
-+	{ 4096000,	0x24 },
-+	{ 4800000,	0x25 },
-+	{ 5644800,	0x26 },
-+	{ 6000000,	0x27 },
-+	{ 6144000,	0x28 },
-+	{ 6250000,	0x29 },
-+	{ 6400000,	0x2A },
-+	{ 6500000,	0x2B },
-+	{ 6750000,	0x2C },
-+	{ 7526400,	0x2D },
-+	{ 8000000,	0x2E },
-+	{ 8192000,	0x2F },
-+	{ 9600000,	0x30 },
-+	{ 11289600,	0x31 },
-+	{ 12000000,	0x32 },
-+	{ 12288000,	0x33 },
-+	{ 12500000,	0x34 },
-+	{ 12800000,	0x35 },
-+	{ 13000000,	0x36 },
-+	{ 13500000,	0x37 },
-+	{ 19200000,	0x38 },
-+	{ 22579200,	0x39 },
-+	{ 24000000,	0x3A },
-+	{ 24576000,	0x3B },
-+	{ 25000000,	0x3C },
-+	{ 25600000,	0x3D },
-+	{ 26000000,	0x3E },
-+	{ 27000000,	0x3F },
-+};
-+
-+struct cs35l41_fs_mon_config {
-+	int freq;
-+	unsigned int fs1;
-+	unsigned int fs2;
-+};
-+
-+static const struct cs35l41_fs_mon_config cs35l41_fs_mon[] = {
-+	{ 32768,	2254,	3754 },
-+	{ 8000,		9220,	15364 },
-+	{ 11025,	6148,	10244 },
-+	{ 12000,	6148,	10244 },
-+	{ 16000,	4612,	7684 },
-+	{ 22050,	3076,	5124 },
-+	{ 24000,	3076,	5124 },
-+	{ 32000,	2308,	3844 },
-+	{ 44100,	1540,	2564 },
-+	{ 48000,	1540,	2564 },
-+	{ 88200,	772,	1284 },
-+	{ 96000,	772,	1284 },
-+	{ 128000,	580,	964 },
-+	{ 176400,	388,	644 },
-+	{ 192000,	388,	644 },
-+	{ 256000,	292,	484 },
-+	{ 352800,	196,	324 },
-+	{ 384000,	196,	324 },
-+	{ 512000,	148,	244 },
-+	{ 705600,	100,	164 },
-+	{ 750000,	100,	164 },
-+	{ 768000,	100,	164 },
-+	{ 1000000,	76,	124 },
-+	{ 1024000,	76,	124 },
-+	{ 1200000,	64,	104 },
-+	{ 1411200,	52,	84 },
-+	{ 1500000,	52,	84 },
-+	{ 1536000,	52,	84 },
-+	{ 2000000,	40,	64 },
-+	{ 2048000,	40,	64 },
-+	{ 2400000,	34,	54 },
-+	{ 2822400,	28,	44 },
-+	{ 3000000,	28,	44 },
-+	{ 3072000,	28,	44 },
-+	{ 3200000,	27,	42 },
-+	{ 4000000,	22,	34 },
-+	{ 4096000,	22,	34 },
-+	{ 4800000,	19,	29 },
-+	{ 5644800,	16,	24 },
-+	{ 6000000,	16,	24 },
-+	{ 6144000,	16,	24 },
-+};
-+
-+static const unsigned char cs35l41_bst_k1_table[4][5] = {
-+	{ 0x24, 0x32, 0x32, 0x4F, 0x57 },
-+	{ 0x24, 0x32, 0x32, 0x4F, 0x57 },
-+	{ 0x40, 0x32, 0x32, 0x4F, 0x57 },
-+	{ 0x40, 0x32, 0x32, 0x4F, 0x57 }
-+};
-+
-+static const unsigned char cs35l41_bst_k2_table[4][5] = {
-+	{ 0x24, 0x49, 0x66, 0xA3, 0xEA },
-+	{ 0x24, 0x49, 0x66, 0xA3, 0xEA },
-+	{ 0x48, 0x49, 0x66, 0xA3, 0xEA },
-+	{ 0x48, 0x49, 0x66, 0xA3, 0xEA }
-+};
-+
-+static const unsigned char cs35l41_bst_slope_table[4] = {
-+					0x75, 0x6B, 0x3B, 0x28};
-+
-+static int cs35l41_get_fs_mon_config_index(int freq)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(cs35l41_fs_mon); i++) {
-+		if (cs35l41_fs_mon[i].freq == freq)
-+			return i;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static const DECLARE_TLV_DB_RANGE(dig_vol_tlv,
-+		0, 0, TLV_DB_SCALE_ITEM(TLV_DB_GAIN_MUTE, 0, 1),
-+		1, 913, TLV_DB_MINMAX_ITEM(-10200, 1200));
-+static DECLARE_TLV_DB_SCALE(amp_gain_tlv, 0, 1, 1);
-+
-+static const struct snd_kcontrol_new dre_ctrl =
-+	SOC_DAPM_SINGLE("Switch", CS35L41_PWR_CTRL3, 20, 1, 0);
-+
-+static const char * const cs35l41_pcm_sftramp_text[] =  {
-+	"Off", ".5ms", "1ms", "2ms", "4ms", "8ms", "15ms", "30ms"};
-+
-+static SOC_ENUM_SINGLE_DECL(pcm_sft_ramp,
-+			    CS35L41_AMP_DIG_VOL_CTRL, 0,
-+			    cs35l41_pcm_sftramp_text);
-+
-+static const char * const cs35l41_pcm_source_texts[] = {"ASP", "DSP"};
-+static const unsigned int cs35l41_pcm_source_values[] = {0x08, 0x32};
-+static SOC_VALUE_ENUM_SINGLE_DECL(cs35l41_pcm_source_enum,
-+				CS35L41_DAC_PCM1_SRC,
-+				0, CS35L41_ASP_SOURCE_MASK,
-+				cs35l41_pcm_source_texts,
-+				cs35l41_pcm_source_values);
-+
-+static const struct snd_kcontrol_new pcm_source_mux =
-+	SOC_DAPM_ENUM("PCM Source", cs35l41_pcm_source_enum);
-+
-+static const char * const cs35l41_tx_input_texts[] = {"Zero", "ASPRX1",
-+							"ASPRX2", "VMON",
-+							"IMON", "VPMON",
-+							"VBSTMON",
-+							"DSPTX1", "DSPTX2"};
-+static const unsigned int cs35l41_tx_input_values[] = {0x00,
-+						CS35L41_INPUT_SRC_ASPRX1,
-+						CS35L41_INPUT_SRC_ASPRX2,
-+						CS35L41_INPUT_SRC_VMON,
-+						CS35L41_INPUT_SRC_IMON,
-+						CS35L41_INPUT_SRC_VPMON,
-+						CS35L41_INPUT_SRC_VBSTMON,
-+						CS35L41_INPUT_DSP_TX1,
-+						CS35L41_INPUT_DSP_TX2};
-+
-+static SOC_VALUE_ENUM_SINGLE_DECL(cs35l41_asptx1_enum,
-+				CS35L41_ASP_TX1_SRC,
-+				0, CS35L41_ASP_SOURCE_MASK,
-+				cs35l41_tx_input_texts,
-+				cs35l41_tx_input_values);
-+
-+static const struct snd_kcontrol_new asp_tx1_mux =
-+	SOC_DAPM_ENUM("ASPTX1 SRC", cs35l41_asptx1_enum);
-+
-+static SOC_VALUE_ENUM_SINGLE_DECL(cs35l41_asptx2_enum,
-+				CS35L41_ASP_TX2_SRC,
-+				0, CS35L41_ASP_SOURCE_MASK,
-+				cs35l41_tx_input_texts,
-+				cs35l41_tx_input_values);
-+
-+static const struct snd_kcontrol_new asp_tx2_mux =
-+	SOC_DAPM_ENUM("ASPTX2 SRC", cs35l41_asptx2_enum);
-+
-+static SOC_VALUE_ENUM_SINGLE_DECL(cs35l41_asptx3_enum,
-+				CS35L41_ASP_TX3_SRC,
-+				0, CS35L41_ASP_SOURCE_MASK,
-+				cs35l41_tx_input_texts,
-+				cs35l41_tx_input_values);
-+
-+static const struct snd_kcontrol_new asp_tx3_mux =
-+	SOC_DAPM_ENUM("ASPTX3 SRC", cs35l41_asptx3_enum);
-+
-+static SOC_VALUE_ENUM_SINGLE_DECL(cs35l41_asptx4_enum,
-+				CS35L41_ASP_TX4_SRC,
-+				0, CS35L41_ASP_SOURCE_MASK,
-+				cs35l41_tx_input_texts,
-+				cs35l41_tx_input_values);
-+
-+static const struct snd_kcontrol_new asp_tx4_mux =
-+	SOC_DAPM_ENUM("ASPTX4 SRC", cs35l41_asptx4_enum);
-+
-+static const struct snd_kcontrol_new cs35l41_aud_controls[] = {
-+	SOC_SINGLE_SX_TLV("Digital PCM Volume", CS35L41_AMP_DIG_VOL_CTRL,
-+		      3, 0x4CF, 0x391, dig_vol_tlv),
-+	SOC_SINGLE_TLV("Analog PCM Volume", CS35L41_AMP_GAIN_CTRL, 5, 0x14, 0,
-+			amp_gain_tlv),
-+	SOC_ENUM("PCM Soft Ramp", pcm_sft_ramp),
-+	SOC_SINGLE("HW Noise Gate Enable", CS35L41_NG_CFG, 8, 63, 0),
-+	SOC_SINGLE("HW Noise Gate Delay", CS35L41_NG_CFG, 4, 7, 0),
-+	SOC_SINGLE("HW Noise Gate Threshold", CS35L41_NG_CFG, 0, 7, 0),
-+	SOC_SINGLE("Aux Noise Gate CH1 Enable",
-+				CS35L41_MIXER_NGATE_CH1_CFG, 16, 1, 0),
-+	SOC_SINGLE("Aux Noise Gate CH1 Entry Delay",
-+				CS35L41_MIXER_NGATE_CH1_CFG, 8, 15, 0),
-+	SOC_SINGLE("Aux Noise Gate CH1 Threshold",
-+				CS35L41_MIXER_NGATE_CH1_CFG, 0, 7, 0),
-+	SOC_SINGLE("Aux Noise Gate CH2 Entry Delay",
-+				CS35L41_MIXER_NGATE_CH2_CFG, 8, 15, 0),
-+	SOC_SINGLE("Aux Noise Gate CH2 Enable",
-+				CS35L41_MIXER_NGATE_CH2_CFG, 16, 1, 0),
-+	SOC_SINGLE("Aux Noise Gate CH2 Threshold",
-+				CS35L41_MIXER_NGATE_CH2_CFG, 0, 7, 0),
-+	SOC_SINGLE("SCLK Force", CS35L41_SP_FORMAT, CS35L41_SCLK_FRC_SHIFT, 1, 0),
-+	SOC_SINGLE("LRCLK Force", CS35L41_SP_FORMAT, CS35L41_LRCLK_FRC_SHIFT, 1, 0),
-+	SOC_SINGLE("Invert Class D", CS35L41_AMP_DIG_VOL_CTRL,
-+				CS35L41_AMP_INV_PCM_SHIFT, 1, 0),
-+	SOC_SINGLE("Amp Gain ZC", CS35L41_AMP_GAIN_CTRL,
-+				CS35L41_AMP_GAIN_ZC_SHIFT, 1, 0),
-+};
-+
-+static const struct cs35l41_otp_map_element_t *cs35l41_find_otp_map(u32 otp_id)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(cs35l41_otp_map_map); i++) {
-+		if (cs35l41_otp_map_map[i].id == otp_id)
-+			return &cs35l41_otp_map_map[i];
-+	}
-+
-+	return NULL;
-+}
-+
-+static int cs35l41_otp_unpack(void *data)
-+{
-+	const struct cs35l41_otp_map_element_t *otp_map_match;
-+	const struct cs35l41_otp_packed_element_t *otp_map;
-+	struct cs35l41_private *cs35l41 = data;
-+	int bit_offset, word_offset, ret, i;
-+	unsigned int orig_spi_freq;
-+	unsigned int bit_sum = 8;
-+	u32 otp_val, otp_id_reg;
-+	u32 *otp_mem;
-+
-+	otp_mem = kmalloc_array(CS35L41_OTP_SIZE_WORDS, sizeof(*otp_mem),
-+							GFP_KERNEL);
-+	if (!otp_mem)
-+		return -ENOMEM;
-+
-+	ret = regmap_read(cs35l41->regmap, CS35L41_OTPID, &otp_id_reg);
-+	if (ret < 0) {
-+		dev_err(cs35l41->dev, "Read OTP ID failed\n");
-+		ret = -EINVAL;
-+		goto err_otp_unpack;
-+	}
-+
-+	otp_map_match = cs35l41_find_otp_map(otp_id_reg);
-+
-+	if (!otp_map_match) {
-+		dev_err(cs35l41->dev, "OTP Map matching ID %d not found\n",
-+				otp_id_reg);
-+		ret = -EINVAL;
-+		goto err_otp_unpack;
-+	}
-+
-+	if (cs35l41->otp_setup)
-+		cs35l41->otp_setup(cs35l41, true, &orig_spi_freq);
-+
-+	ret = regmap_bulk_read(cs35l41->regmap, CS35L41_OTP_MEM0, otp_mem,
-+						CS35L41_OTP_SIZE_WORDS);
-+	if (ret < 0) {
-+		dev_err(cs35l41->dev, "Read OTP Mem failed\n");
-+		ret = -EINVAL;
-+		goto err_otp_unpack;
-+	}
-+
-+	if (cs35l41->otp_setup)
-+		cs35l41->otp_setup(cs35l41, false, &orig_spi_freq);
-+
-+	otp_map = otp_map_match->map;
-+
-+	bit_offset = otp_map_match->bit_offset;
-+	word_offset = otp_map_match->word_offset;
-+
-+	ret = regmap_write(cs35l41->regmap, CS35L41_TEST_KEY_CTL, 0x00000055);
-+	if (ret < 0) {
-+		dev_err(cs35l41->dev, "Write Unlock key failed 1/2\n");
-+		ret = -EINVAL;
-+		goto err_otp_unpack;
-+	}
-+	ret = regmap_write(cs35l41->regmap, CS35L41_TEST_KEY_CTL, 0x000000AA);
-+	if (ret < 0) {
-+		dev_err(cs35l41->dev, "Write Unlock key failed 2/2\n");
-+		ret = -EINVAL;
-+		goto err_otp_unpack;
-+	}
-+
-+	for (i = 0; i < otp_map_match->num_elements; i++) {
-+		dev_dbg(cs35l41->dev,
-+			   "bitoffset= %d, word_offset=%d, bit_sum mod 32=%d\n",
-+					 bit_offset, word_offset, bit_sum % 32);
-+		if (bit_offset + otp_map[i].size - 1 >= 32) {
-+			otp_val = (otp_mem[word_offset] &
-+					GENMASK(31, bit_offset)) >>
-+					bit_offset;
-+			otp_val |= (otp_mem[++word_offset] &
-+					GENMASK(bit_offset +
-+						otp_map[i].size - 33, 0)) <<
-+					(32 - bit_offset);
-+			bit_offset += otp_map[i].size - 32;
-+		} else {
-+
-+			otp_val = (otp_mem[word_offset] &
-+				GENMASK(bit_offset + otp_map[i].size - 1,
-+					bit_offset)) >>	bit_offset;
-+			bit_offset += otp_map[i].size;
-+		}
-+		bit_sum += otp_map[i].size;
-+
-+		if (bit_offset == 32) {
-+			bit_offset = 0;
-+			word_offset++;
-+		}
-+
-+		if (otp_map[i].reg != 0) {
-+			ret = regmap_update_bits(cs35l41->regmap,
-+						otp_map[i].reg,
-+						GENMASK(otp_map[i].shift +
-+							otp_map[i].size - 1,
-+						otp_map[i].shift),
-+						otp_val << otp_map[i].shift);
-+			if (ret < 0) {
-+				dev_err(cs35l41->dev, "Write OTP val failed\n");
-+				ret = -EINVAL;
-+				goto err_otp_unpack;
-+			}
-+		}
-+	}
-+
-+	ret = regmap_write(cs35l41->regmap, CS35L41_TEST_KEY_CTL, 0x000000CC);
-+	if (ret < 0) {
-+		dev_err(cs35l41->dev, "Write Lock key failed 1/2\n");
-+		ret = -EINVAL;
-+		goto err_otp_unpack;
-+	}
-+	ret = regmap_write(cs35l41->regmap, CS35L41_TEST_KEY_CTL, 0x00000033);
-+	if (ret < 0) {
-+		dev_err(cs35l41->dev, "Write Lock key failed 2/2\n");
-+		ret = -EINVAL;
-+		goto err_otp_unpack;
-+	}
-+	ret = 0;
-+
-+err_otp_unpack:
-+	kfree(otp_mem);
-+	return ret;
-+}
-+
-+static irqreturn_t cs35l41_irq(int irq, void *data)
-+{
-+	struct cs35l41_private *cs35l41 = data;
-+	unsigned int status[4] = { 0, 0, 0, 0 };
-+	unsigned int masks[4] = { 0, 0, 0, 0 };
-+	int ret = IRQ_NONE;
-+	unsigned int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(status); i++) {
-+		regmap_read(cs35l41->regmap,
-+			    CS35L41_IRQ1_STATUS1 + (i * CS35L41_REGSTRIDE),
-+			    &status[i]);
-+		regmap_read(cs35l41->regmap,
-+			    CS35L41_IRQ1_MASK1 + (i * CS35L41_REGSTRIDE),
-+			    &masks[i]);
-+	}
-+
-+	/* Check to see if unmasked bits are active */
-+	if (!(status[0] & ~masks[0]) && !(status[1] & ~masks[1]) &&
-+		!(status[2] & ~masks[2]) && !(status[3] & ~masks[3]))
-+		return IRQ_NONE;
-+
-+	if (status[3] & CS35L41_OTP_BOOT_DONE) {
-+		regmap_update_bits(cs35l41->regmap, CS35L41_IRQ1_MASK4,
-+				CS35L41_OTP_BOOT_DONE, CS35L41_OTP_BOOT_DONE);
-+	}
-+
-+	/*
-+	 * The following interrupts require a
-+	 * protection release cycle to get the
-+	 * speaker out of Safe-Mode.
-+	 */
-+	if (status[0] & CS35L41_AMP_SHORT_ERR) {
-+		dev_crit_ratelimited(cs35l41->dev, "Amp short error\n");
-+		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
-+					CS35L41_AMP_SHORT_ERR);
-+		regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
-+		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
-+					CS35L41_AMP_SHORT_ERR_RLS,
-+					CS35L41_AMP_SHORT_ERR_RLS);
-+		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
-+					CS35L41_AMP_SHORT_ERR_RLS, 0);
-+		ret = IRQ_HANDLED;
-+	}
-+
-+	if (status[0] & CS35L41_TEMP_WARN) {
-+		dev_crit_ratelimited(cs35l41->dev, "Over temperature warning\n");
-+		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
-+					CS35L41_TEMP_WARN);
-+		regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
-+		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
-+					CS35L41_TEMP_WARN_ERR_RLS,
-+					CS35L41_TEMP_WARN_ERR_RLS);
-+		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
-+					CS35L41_TEMP_WARN_ERR_RLS, 0);
-+		ret = IRQ_HANDLED;
-+	}
-+
-+	if (status[0] & CS35L41_TEMP_ERR) {
-+		dev_crit_ratelimited(cs35l41->dev, "Over temperature error\n");
-+		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
-+					CS35L41_TEMP_ERR);
-+		regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
-+		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
-+					CS35L41_TEMP_ERR_RLS,
-+					CS35L41_TEMP_ERR_RLS);
-+		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
-+					CS35L41_TEMP_ERR_RLS, 0);
-+		ret = IRQ_HANDLED;
-+	}
-+
-+	if (status[0] & CS35L41_BST_OVP_ERR) {
-+		dev_crit_ratelimited(cs35l41->dev, "VBST Over Voltage error\n");
-+		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
-+					CS35L41_BST_EN_MASK, 0);
-+		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
-+					CS35L41_BST_OVP_ERR);
-+		regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
-+		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
-+					CS35L41_BST_OVP_ERR_RLS,
-+					CS35L41_BST_OVP_ERR_RLS);
-+		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
-+					CS35L41_BST_OVP_ERR_RLS, 0);
-+		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
-+					CS35L41_BST_EN_MASK,
-+					CS35L41_BST_EN_DEFAULT <<
-+					CS35L41_BST_EN_SHIFT);
-+		ret = IRQ_HANDLED;
-+	}
-+
-+	if (status[0] & CS35L41_BST_DCM_UVP_ERR) {
-+		dev_crit_ratelimited(cs35l41->dev, "DCM VBST Under Voltage Error\n");
-+		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
-+					CS35L41_BST_EN_MASK, 0);
-+		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
-+					CS35L41_BST_DCM_UVP_ERR);
-+		regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
-+		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
-+					CS35L41_BST_UVP_ERR_RLS,
-+					CS35L41_BST_UVP_ERR_RLS);
-+		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
-+					CS35L41_BST_UVP_ERR_RLS, 0);
-+		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
-+					CS35L41_BST_EN_MASK,
-+					CS35L41_BST_EN_DEFAULT <<
-+					CS35L41_BST_EN_SHIFT);
-+		ret = IRQ_HANDLED;
-+	}
-+
-+	if (status[0] & CS35L41_BST_SHORT_ERR) {
-+		dev_crit_ratelimited(cs35l41->dev, "LBST error: powering off!\n");
-+		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
-+					CS35L41_BST_EN_MASK, 0);
-+		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
-+					CS35L41_BST_SHORT_ERR);
-+		regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
-+		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
-+					CS35L41_BST_SHORT_ERR_RLS,
-+					CS35L41_BST_SHORT_ERR_RLS);
-+		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
-+					CS35L41_BST_SHORT_ERR_RLS, 0);
-+		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
-+					CS35L41_BST_EN_MASK,
-+					CS35L41_BST_EN_DEFAULT <<
-+					CS35L41_BST_EN_SHIFT);
-+		ret = IRQ_HANDLED;
-+	}
-+
-+	return ret;
-+}
-+
-+static const struct reg_sequence cs35l41_pup_patch[] = {
-+	{ 0x00000040, 0x00000055 },
-+	{ 0x00000040, 0x000000AA },
-+	{ 0x00002084, 0x002F1AA0 },
-+	{ 0x00000040, 0x000000CC },
-+	{ 0x00000040, 0x00000033 },
-+};
-+
-+static const struct reg_sequence cs35l41_pdn_patch[] = {
-+	{ 0x00000040, 0x00000055 },
-+	{ 0x00000040, 0x000000AA },
-+	{ 0x00002084, 0x002F1AA3 },
-+	{ 0x00000040, 0x000000CC },
-+	{ 0x00000040, 0x00000033 },
-+};
-+
-+static int cs35l41_main_amp_event(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *component =
-+		snd_soc_dapm_to_component(w->dapm);
-+	struct cs35l41_private *cs35l41 =
-+		snd_soc_component_get_drvdata(component);
-+	unsigned int val;
-+	int ret = 0;
-+	bool pdn;
-+	int i;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		regmap_multi_reg_write_bypassed(cs35l41->regmap,
-+					cs35l41_pup_patch,
-+					ARRAY_SIZE(cs35l41_pup_patch));
-+
-+		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL1,
-+				CS35L41_GLOBAL_EN_MASK,
-+				1 << CS35L41_GLOBAL_EN_SHIFT);
-+
-+		usleep_range(1000, 1100);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL1,
-+				CS35L41_GLOBAL_EN_MASK, 0);
-+
-+		pdn = false;
-+		for (i = 0; i < 100; i++) {
-+			regmap_read(cs35l41->regmap,
-+				CS35L41_IRQ1_STATUS1,
-+				&val);
-+			if (val & CS35L41_PDN_DONE_MASK) {
-+				pdn = true;
-+				break;
-+			}
-+			usleep_range(1000, 1100);
-+		}
-+
-+		if (!pdn)
-+			dev_warn(cs35l41->dev, "PDN failed\n");
-+
-+		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
-+				CS35L41_PDN_DONE_MASK);
-+
-+		regmap_multi_reg_write_bypassed(cs35l41->regmap,
-+					cs35l41_pdn_patch,
-+					ARRAY_SIZE(cs35l41_pdn_patch));
-+		break;
-+	default:
-+		dev_err(cs35l41->dev, "Invalid event = 0x%x\n", event);
-+		ret = -EINVAL;
-+	}
-+	return ret;
-+}
-+
-+static const struct snd_soc_dapm_widget cs35l41_dapm_widgets[] = {
-+	SND_SOC_DAPM_OUTPUT("SPK"),
-+
-+	SND_SOC_DAPM_AIF_IN("ASPRX1", NULL, 0, CS35L41_SP_ENABLES, 16, 0),
-+	SND_SOC_DAPM_AIF_IN("ASPRX2", NULL, 0, CS35L41_SP_ENABLES, 17, 0),
-+	SND_SOC_DAPM_AIF_OUT("ASPTX1", NULL, 0, CS35L41_SP_ENABLES, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("ASPTX2", NULL, 0, CS35L41_SP_ENABLES, 1, 0),
-+	SND_SOC_DAPM_AIF_OUT("ASPTX3", NULL, 0, CS35L41_SP_ENABLES, 2, 0),
-+	SND_SOC_DAPM_AIF_OUT("ASPTX4", NULL, 0, CS35L41_SP_ENABLES, 3, 0),
-+
-+	SND_SOC_DAPM_ADC("VMON ADC", NULL, CS35L41_PWR_CTRL2, 12, 0),
-+	SND_SOC_DAPM_ADC("IMON ADC", NULL, CS35L41_PWR_CTRL2, 13, 0),
-+	SND_SOC_DAPM_ADC("VPMON ADC", NULL, CS35L41_PWR_CTRL2, 8, 0),
-+	SND_SOC_DAPM_ADC("VBSTMON ADC", NULL, CS35L41_PWR_CTRL2, 9, 0),
-+	SND_SOC_DAPM_ADC("TEMPMON ADC", NULL, CS35L41_PWR_CTRL2, 10, 0),
-+	SND_SOC_DAPM_ADC("CLASS H", NULL, CS35L41_PWR_CTRL3, 4, 0),
-+
-+	SND_SOC_DAPM_OUT_DRV_E("Main AMP", CS35L41_PWR_CTRL2, 0, 0, NULL, 0,
-+				cs35l41_main_amp_event,
-+				SND_SOC_DAPM_POST_PMD |	SND_SOC_DAPM_POST_PMU),
-+
-+	SND_SOC_DAPM_INPUT("VP"),
-+	SND_SOC_DAPM_INPUT("VBST"),
-+	SND_SOC_DAPM_INPUT("ISENSE"),
-+	SND_SOC_DAPM_INPUT("VSENSE"),
-+	SND_SOC_DAPM_INPUT("TEMP"),
-+
-+	SND_SOC_DAPM_MUX("ASP TX1 Source", SND_SOC_NOPM, 0, 0, &asp_tx1_mux),
-+	SND_SOC_DAPM_MUX("ASP TX2 Source", SND_SOC_NOPM, 0, 0, &asp_tx2_mux),
-+	SND_SOC_DAPM_MUX("ASP TX3 Source", SND_SOC_NOPM, 0, 0, &asp_tx3_mux),
-+	SND_SOC_DAPM_MUX("ASP TX4 Source", SND_SOC_NOPM, 0, 0, &asp_tx4_mux),
-+	SND_SOC_DAPM_MUX("PCM Source", SND_SOC_NOPM, 0, 0, &pcm_source_mux),
-+	SND_SOC_DAPM_SWITCH("DRE", SND_SOC_NOPM, 0, 0, &dre_ctrl),
-+};
-+
-+static const struct snd_soc_dapm_route cs35l41_audio_map[] = {
-+
-+	{"ASP TX1 Source", "VMON", "VMON ADC"},
-+	{"ASP TX1 Source", "IMON", "IMON ADC"},
-+	{"ASP TX1 Source", "VPMON", "VPMON ADC"},
-+	{"ASP TX1 Source", "VBSTMON", "VBSTMON ADC"},
-+	{"ASP TX1 Source", "ASPRX1", "ASPRX1" },
-+	{"ASP TX1 Source", "ASPRX2", "ASPRX2" },
-+	{"ASP TX2 Source", "VMON", "VMON ADC"},
-+	{"ASP TX2 Source", "IMON", "IMON ADC"},
-+	{"ASP TX2 Source", "VPMON", "VPMON ADC"},
-+	{"ASP TX2 Source", "VBSTMON", "VBSTMON ADC"},
-+	{"ASP TX2 Source", "ASPRX1", "ASPRX1" },
-+	{"ASP TX2 Source", "ASPRX2", "ASPRX2" },
-+	{"ASP TX3 Source", "VMON", "VMON ADC"},
-+	{"ASP TX3 Source", "IMON", "IMON ADC"},
-+	{"ASP TX3 Source", "VPMON", "VPMON ADC"},
-+	{"ASP TX3 Source", "VBSTMON", "VBSTMON ADC"},
-+	{"ASP TX3 Source", "ASPRX1", "ASPRX1" },
-+	{"ASP TX3 Source", "ASPRX2", "ASPRX2" },
-+	{"ASP TX4 Source", "VMON", "VMON ADC"},
-+	{"ASP TX4 Source", "IMON", "IMON ADC"},
-+	{"ASP TX4 Source", "VPMON", "VPMON ADC"},
-+	{"ASP TX4 Source", "VBSTMON", "VBSTMON ADC"},
-+	{"ASP TX4 Source", "ASPRX1", "ASPRX1" },
-+	{"ASP TX4 Source", "ASPRX2", "ASPRX2" },
-+	{"ASPTX1", NULL, "ASP TX1 Source"},
-+	{"ASPTX2", NULL, "ASP TX2 Source"},
-+	{"ASPTX3", NULL, "ASP TX3 Source"},
-+	{"ASPTX4", NULL, "ASP TX4 Source"},
-+	{"AMP Capture", NULL, "ASPTX1"},
-+	{"AMP Capture", NULL, "ASPTX2"},
-+	{"AMP Capture", NULL, "ASPTX3"},
-+	{"AMP Capture", NULL, "ASPTX4"},
-+
-+	{"VMON ADC", NULL, "VSENSE"},
-+	{"IMON ADC", NULL, "ISENSE"},
-+	{"VPMON ADC", NULL, "VP"},
-+	{"TEMPMON ADC", NULL, "TEMP"},
-+	{"VBSTMON ADC", NULL, "VBST"},
-+
-+	{"ASPRX1", NULL, "AMP Playback"},
-+	{"ASPRX2", NULL, "AMP Playback"},
-+	{"DRE", "Switch", "CLASS H"},
-+	{"Main AMP", NULL, "CLASS H"},
-+	{"Main AMP", NULL, "DRE"},
-+	{"SPK", NULL, "Main AMP"},
-+
-+	{"PCM Source", "ASP", "ASPRX1"},
-+	{"CLASS H", NULL, "PCM Source"},
-+
-+};
-+
-+static int cs35l41_set_channel_map(struct snd_soc_dai *dai, unsigned int tx_num,
-+				unsigned int *tx_slot, unsigned int rx_num,
-+				unsigned int *rx_slot)
-+{
-+	struct cs35l41_private *cs35l41 =
-+			snd_soc_component_get_drvdata(dai->component);
-+	int i;
-+
-+	if (tx_num > 4 || rx_num > 2)
-+		return -EINVAL;
-+
-+	for (i = 0; i < rx_num; i++) {
-+		dev_dbg(cs35l41->dev, "%s: rx slot %d position = %d\n",
-+				__func__, i, rx_slot[i]);
-+		regmap_update_bits(cs35l41->regmap, CS35L41_SP_FRAME_RX_SLOT,
-+				0x3F << (i * 8), rx_slot[i] << (i * 8));
-+	}
-+
-+	for (i = 0; i < tx_num; i++) {
-+		dev_dbg(cs35l41->dev, "%s: tx slot %d position = %d\n",
-+				__func__, i, tx_slot[i]);
-+		regmap_update_bits(cs35l41->regmap, CS35L41_SP_FRAME_TX_SLOT,
-+				0x3F << (i * 8), tx_slot[i] << (i * 8));
-+	}
-+
-+	return 0;
-+}
-+
-+static int cs35l41_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
-+{
-+	struct cs35l41_private *cs35l41 =
-+			snd_soc_component_get_drvdata(codec_dai->component);
-+	unsigned int asp_fmt, lrclk_fmt, sclk_fmt, clock_provider;
-+
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_CBP_CFP:
-+		clock_provider = 1;
-+		break;
-+	case SND_SOC_DAIFMT_CBC_CFC:
-+		clock_provider = 0;
-+		break;
-+	default:
-+		dev_warn(cs35l41->dev,
-+			"%s: Mixed provider/consumer mode unsupported\n",
-+								__func__);
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(cs35l41->regmap, CS35L41_SP_FORMAT,
-+				CS35L41_SCLK_MSTR_MASK,
-+				clock_provider << CS35L41_SCLK_MSTR_SHIFT);
-+	regmap_update_bits(cs35l41->regmap, CS35L41_SP_FORMAT,
-+				CS35L41_LRCLK_MSTR_MASK,
-+				clock_provider << CS35L41_LRCLK_MSTR_SHIFT);
-+
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_DSP_A:
-+		asp_fmt = 0;
-+		break;
-+	case SND_SOC_DAIFMT_I2S:
-+		asp_fmt = 2;
-+		break;
-+	default:
-+		dev_warn(cs35l41->dev,
-+			"%s: Invalid or unsupported DAI format\n", __func__);
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(cs35l41->regmap, CS35L41_SP_FORMAT,
-+					CS35L41_ASP_FMT_MASK,
-+					asp_fmt << CS35L41_ASP_FMT_SHIFT);
-+
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_IF:
-+		lrclk_fmt = 1;
-+		sclk_fmt = 0;
-+		break;
-+	case SND_SOC_DAIFMT_IB_NF:
-+		lrclk_fmt = 0;
-+		sclk_fmt = 1;
-+		break;
-+	case SND_SOC_DAIFMT_IB_IF:
-+		lrclk_fmt = 1;
-+		sclk_fmt = 1;
-+		break;
-+	case SND_SOC_DAIFMT_NB_NF:
-+		lrclk_fmt = 0;
-+		sclk_fmt = 0;
-+		break;
-+	default:
-+		dev_warn(cs35l41->dev,
-+			"%s: Invalid DAI clock INV\n", __func__);
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(cs35l41->regmap, CS35L41_SP_FORMAT,
-+				CS35L41_LRCLK_INV_MASK,
-+				lrclk_fmt << CS35L41_LRCLK_INV_SHIFT);
-+	regmap_update_bits(cs35l41->regmap, CS35L41_SP_FORMAT,
-+				CS35L41_SCLK_INV_MASK,
-+				sclk_fmt << CS35L41_SCLK_INV_SHIFT);
-+
-+	return 0;
-+}
-+
-+struct cs35l41_global_fs_config {
-+	int rate;
-+	int fs_cfg;
-+};
-+
-+static const struct cs35l41_global_fs_config cs35l41_fs_rates[] = {
-+	{ 12000,	0x01 },
-+	{ 24000,	0x02 },
-+	{ 48000,	0x03 },
-+	{ 96000,	0x04 },
-+	{ 192000,	0x05 },
-+	{ 11025,	0x09 },
-+	{ 22050,	0x0A },
-+	{ 44100,	0x0B },
-+	{ 88200,	0x0C },
-+	{ 176400,	0x0D },
-+	{ 8000,		0x11 },
-+	{ 16000,	0x12 },
-+	{ 32000,	0x13 },
-+};
-+
-+static int cs35l41_pcm_hw_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *params,
-+				 struct snd_soc_dai *dai)
-+{
-+	struct cs35l41_private *cs35l41 =
-+			snd_soc_component_get_drvdata(dai->component);
-+	unsigned int rate = params_rate(params);
-+	u8 asp_wl;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(cs35l41_fs_rates); i++) {
-+		if (rate == cs35l41_fs_rates[i].rate)
-+			break;
-+	}
-+
-+	if (i >= ARRAY_SIZE(cs35l41_fs_rates)) {
-+		dev_err(cs35l41->dev, "%s: Unsupported rate: %u\n",
-+						__func__, rate);
-+		return -EINVAL;
-+	}
-+
-+	asp_wl = params_width(params);
-+
-+	if (i < ARRAY_SIZE(cs35l41_fs_rates))
-+		regmap_update_bits(cs35l41->regmap, CS35L41_GLOBAL_CLK_CTRL,
-+			CS35L41_GLOBAL_FS_MASK,
-+			cs35l41_fs_rates[i].fs_cfg << CS35L41_GLOBAL_FS_SHIFT);
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		regmap_update_bits(cs35l41->regmap, CS35L41_SP_FORMAT,
-+				CS35L41_ASP_WIDTH_RX_MASK,
-+				asp_wl << CS35L41_ASP_WIDTH_RX_SHIFT);
-+		regmap_update_bits(cs35l41->regmap, CS35L41_SP_RX_WL,
-+				CS35L41_ASP_RX_WL_MASK,
-+				asp_wl << CS35L41_ASP_RX_WL_SHIFT);
-+	} else {
-+		regmap_update_bits(cs35l41->regmap, CS35L41_SP_FORMAT,
-+				CS35L41_ASP_WIDTH_TX_MASK,
-+				asp_wl << CS35L41_ASP_WIDTH_TX_SHIFT);
-+		regmap_update_bits(cs35l41->regmap, CS35L41_SP_TX_WL,
-+				CS35L41_ASP_TX_WL_MASK,
-+				asp_wl << CS35L41_ASP_TX_WL_SHIFT);
-+	}
-+
-+	return 0;
-+}
-+
-+static int cs35l41_get_clk_config(int freq)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(cs35l41_pll_sysclk); i++) {
-+		if (cs35l41_pll_sysclk[i].freq == freq)
-+			return cs35l41_pll_sysclk[i].clk_cfg;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static const unsigned int cs35l41_src_rates[] = {
-+	8000, 12000, 11025, 16000, 22050, 24000, 32000,
-+	44100, 48000, 88200, 96000, 176400, 192000
-+};
-+
-+static const struct snd_pcm_hw_constraint_list cs35l41_constraints = {
-+	.count = ARRAY_SIZE(cs35l41_src_rates),
-+	.list = cs35l41_src_rates,
-+};
-+
-+static int cs35l41_pcm_startup(struct snd_pcm_substream *substream,
-+			       struct snd_soc_dai *dai)
-+{
-+	if (substream->runtime)
-+		return snd_pcm_hw_constraint_list(substream->runtime, 0,
-+				SNDRV_PCM_HW_PARAM_RATE, &cs35l41_constraints);
-+	return 0;
-+}
-+
-+static int cs35l41_component_set_sysclk(struct snd_soc_component *component,
-+				int clk_id, int source, unsigned int freq,
-+				int dir)
-+{
-+	struct cs35l41_private *cs35l41 =
-+				       snd_soc_component_get_drvdata(component);
-+	int extclk_cfg, clksrc;
-+
-+	switch (clk_id) {
-+	case CS35L41_CLKID_SCLK:
-+		clksrc = CS35L41_PLLSRC_SCLK;
-+		break;
-+	case CS35L41_CLKID_LRCLK:
-+		clksrc = CS35L41_PLLSRC_LRCLK;
-+		break;
-+	case CS35L41_CLKID_MCLK:
-+		clksrc = CS35L41_PLLSRC_MCLK;
-+		break;
-+	default:
-+		dev_err(cs35l41->dev, "Invalid CLK Config\n");
-+		return -EINVAL;
-+	}
-+
-+	extclk_cfg = cs35l41_get_clk_config(freq);
-+
-+	if (extclk_cfg < 0) {
-+		dev_err(cs35l41->dev, "Invalid CLK Config: %d, freq: %u\n",
-+			extclk_cfg, freq);
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(cs35l41->regmap, CS35L41_PLL_CLK_CTRL,
-+			CS35L41_PLL_OPENLOOP_MASK,
-+			1 << CS35L41_PLL_OPENLOOP_SHIFT);
-+	regmap_update_bits(cs35l41->regmap, CS35L41_PLL_CLK_CTRL,
-+			CS35L41_REFCLK_FREQ_MASK,
-+			extclk_cfg << CS35L41_REFCLK_FREQ_SHIFT);
-+	regmap_update_bits(cs35l41->regmap, CS35L41_PLL_CLK_CTRL,
-+			CS35L41_PLL_CLK_EN_MASK,
-+			0 << CS35L41_PLL_CLK_EN_SHIFT);
-+	regmap_update_bits(cs35l41->regmap, CS35L41_PLL_CLK_CTRL,
-+			CS35L41_PLL_CLK_SEL_MASK, clksrc);
-+	regmap_update_bits(cs35l41->regmap, CS35L41_PLL_CLK_CTRL,
-+			CS35L41_PLL_OPENLOOP_MASK,
-+			0 << CS35L41_PLL_OPENLOOP_SHIFT);
-+	regmap_update_bits(cs35l41->regmap, CS35L41_PLL_CLK_CTRL,
-+			CS35L41_PLL_CLK_EN_MASK,
-+			1 << CS35L41_PLL_CLK_EN_SHIFT);
-+
-+	return 0;
-+}
-+
-+static int cs35l41_dai_set_sysclk(struct snd_soc_dai *dai,
-+					int clk_id, unsigned int freq, int dir)
-+{
-+	struct cs35l41_private *cs35l41 =
-+				  snd_soc_component_get_drvdata(dai->component);
-+	unsigned int fs1_val;
-+	unsigned int fs2_val;
-+	unsigned int val;
-+	int fsIndex;
-+
-+	fsIndex = cs35l41_get_fs_mon_config_index(freq);
-+	if (fsIndex < 0) {
-+		dev_err(cs35l41->dev, "Invalid CLK Config freq: %u\n", freq);
-+		return -EINVAL;
-+	}
-+
-+	dev_dbg(cs35l41->dev, "Set DAI sysclk %d\n", freq);
-+	if (freq <= 6144000) {
-+		/* Use the lookup table */
-+		fs1_val = cs35l41_fs_mon[fsIndex].fs1;
-+		fs2_val = cs35l41_fs_mon[fsIndex].fs2;
-+	} else {
-+		/* Use hard-coded values */
-+		fs1_val = 0x10;
-+		fs2_val = 0x24;
-+	}
-+
-+	val = fs1_val;
-+	val |= (fs2_val << CS35L41_FS2_WINDOW_SHIFT) & CS35L41_FS2_WINDOW_MASK;
-+	regmap_write(cs35l41->regmap, CS35L41_TST_FS_MON0, val);
-+
-+	return 0;
-+}
-+
-+static int cs35l41_boost_config(struct cs35l41_private *cs35l41,
-+		int boost_ind, int boost_cap, int boost_ipk)
-+{
-+	unsigned char bst_lbst_val, bst_cbst_range, bst_ipk_scaled;
-+	struct regmap *regmap = cs35l41->regmap;
-+	struct device *dev = cs35l41->dev;
-+	int ret;
-+
-+	switch (boost_ind) {
-+	case 1000:	/* 1.0 uH */
-+		bst_lbst_val = 0;
-+		break;
-+	case 1200:	/* 1.2 uH */
-+		bst_lbst_val = 1;
-+		break;
-+	case 1500:	/* 1.5 uH */
-+		bst_lbst_val = 2;
-+		break;
-+	case 2200:	/* 2.2 uH */
-+		bst_lbst_val = 3;
-+		break;
-+	default:
-+		dev_err(dev, "Invalid boost inductor value: %d nH\n",
-+				boost_ind);
-+		return -EINVAL;
-+	}
-+
-+	switch (boost_cap) {
-+	case 0 ... 19:
-+		bst_cbst_range = 0;
-+		break;
-+	case 20 ... 50:
-+		bst_cbst_range = 1;
-+		break;
-+	case 51 ... 100:
-+		bst_cbst_range = 2;
-+		break;
-+	case 101 ... 200:
-+		bst_cbst_range = 3;
-+		break;
-+	default:	/* 201 uF and greater */
-+		bst_cbst_range = 4;
-+	}
-+
-+	ret = regmap_update_bits(regmap, CS35L41_BSTCVRT_COEFF,
-+			CS35L41_BST_K1_MASK,
-+			cs35l41_bst_k1_table[bst_lbst_val][bst_cbst_range]
-+				<< CS35L41_BST_K1_SHIFT);
-+	if (ret) {
-+		dev_err(dev, "Failed to write boost K1 coefficient\n");
-+		return ret;
-+	}
-+
-+	ret = regmap_update_bits(regmap, CS35L41_BSTCVRT_COEFF,
-+			CS35L41_BST_K2_MASK,
-+			cs35l41_bst_k2_table[bst_lbst_val][bst_cbst_range]
-+				<< CS35L41_BST_K2_SHIFT);
-+	if (ret) {
-+		dev_err(dev, "Failed to write boost K2 coefficient\n");
-+		return ret;
-+	}
-+
-+	ret = regmap_update_bits(regmap, CS35L41_BSTCVRT_SLOPE_LBST,
-+			CS35L41_BST_SLOPE_MASK,
-+			cs35l41_bst_slope_table[bst_lbst_val]
-+				<< CS35L41_BST_SLOPE_SHIFT);
-+	if (ret) {
-+		dev_err(dev, "Failed to write boost slope coefficient\n");
-+		return ret;
-+	}
-+
-+	ret = regmap_update_bits(regmap, CS35L41_BSTCVRT_SLOPE_LBST,
-+			CS35L41_BST_LBST_VAL_MASK,
-+			bst_lbst_val << CS35L41_BST_LBST_VAL_SHIFT);
-+	if (ret) {
-+		dev_err(dev, "Failed to write boost inductor value\n");
-+		return ret;
-+	}
-+
-+	if ((boost_ipk < 1600) || (boost_ipk > 4500)) {
-+		dev_err(dev, "Invalid boost inductor peak current: %d mA\n",
-+				boost_ipk);
-+		return -EINVAL;
-+	}
-+	bst_ipk_scaled = ((boost_ipk - 1600) / 50) + 0x10;
-+
-+	ret = regmap_update_bits(regmap, CS35L41_BSTCVRT_PEAK_CUR,
-+			CS35L41_BST_IPK_MASK,
-+			bst_ipk_scaled << CS35L41_BST_IPK_SHIFT);
-+	if (ret) {
-+		dev_err(dev, "Failed to write boost inductor peak current\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int cs35l41_set_pdata(struct cs35l41_private *cs35l41)
-+{
-+	int ret;
-+
-+	/* Set Platform Data */
-+	/* Required */
-+	if (cs35l41->pdata.bst_ipk &&
-+	    cs35l41->pdata.bst_ind && cs35l41->pdata.bst_cap) {
-+		ret = cs35l41_boost_config(cs35l41, cs35l41->pdata.bst_ind,
-+					cs35l41->pdata.bst_cap,
-+					cs35l41->pdata.bst_ipk);
-+		if (ret) {
-+			dev_err(cs35l41->dev, "Error in Boost DT config\n");
-+			return ret;
-+		}
-+	} else {
-+		dev_err(cs35l41->dev, "Incomplete Boost component DT config\n");
-+		return -EINVAL;
-+	}
-+
-+	/* Optional */
-+	if (cs35l41->pdata.dout_hiz <= CS35L41_ASP_DOUT_HIZ_MASK &&
-+	    cs35l41->pdata.dout_hiz >= 0)
-+		regmap_update_bits(cs35l41->regmap, CS35L41_SP_HIZ_CTRL,
-+				CS35L41_ASP_DOUT_HIZ_MASK,
-+				cs35l41->pdata.dout_hiz);
-+
-+	if (cs35l41->pdata.classh_bst_max_limit)
-+		regmap_update_bits(cs35l41->regmap,
-+				CS35L41_BSTCVRT_VCTRL2,
-+				CS35L41_BST_LIM_MASK,
-+				cs35l41->pdata.classh_bst_max_limit <<
-+				CS35L41_BST_LIM_SHIFT);
-+
-+	return 0;
-+}
-+
-+static int cs35l41_irq_gpio_config(struct cs35l41_private *cs35l41)
-+{
-+	struct cs35l41_irq_cfg *irq_gpio_cfg1 = &cs35l41->pdata.irq_config1;
-+	struct cs35l41_irq_cfg *irq_gpio_cfg2 = &cs35l41->pdata.irq_config2;
-+	int irq_pol = IRQF_TRIGGER_NONE;
-+
-+	if (irq_gpio_cfg1->irq_pol_inv)
-+		regmap_update_bits(cs35l41->regmap,
-+					CS35L41_GPIO1_CTRL1,
-+					CS35L41_GPIO_POL_MASK,
-+					CS35L41_GPIO_POL_MASK);
-+	if (irq_gpio_cfg1->irq_out_en)
-+		regmap_update_bits(cs35l41->regmap,
-+					CS35L41_GPIO1_CTRL1,
-+					CS35L41_GPIO_DIR_MASK,
-+					0);
-+	if (irq_gpio_cfg1->irq_src_sel)
-+		regmap_update_bits(cs35l41->regmap,
-+					CS35L41_GPIO_PAD_CONTROL,
-+					CS35L41_GPIO1_CTRL_MASK,
-+					irq_gpio_cfg1->irq_src_sel <<
-+					CS35L41_GPIO1_CTRL_SHIFT);
-+
-+	if (irq_gpio_cfg2->irq_pol_inv)
-+		regmap_update_bits(cs35l41->regmap,
-+					CS35L41_GPIO2_CTRL1,
-+					CS35L41_GPIO_POL_MASK,
-+					CS35L41_GPIO_POL_MASK);
-+	if (irq_gpio_cfg2->irq_out_en)
-+		regmap_update_bits(cs35l41->regmap,
-+					CS35L41_GPIO2_CTRL1,
-+					CS35L41_GPIO_DIR_MASK,
-+					0);
-+	if (irq_gpio_cfg2->irq_src_sel)
-+		regmap_update_bits(cs35l41->regmap,
-+					CS35L41_GPIO_PAD_CONTROL,
-+					CS35L41_GPIO2_CTRL_MASK,
-+					irq_gpio_cfg2->irq_src_sel <<
-+					CS35L41_GPIO2_CTRL_SHIFT);
-+
-+	if ((irq_gpio_cfg2->irq_src_sel ==
-+			(CS35L41_GPIO_CTRL_ACTV_LO | CS35L41_VALID_PDATA)) ||
-+		(irq_gpio_cfg2->irq_src_sel ==
-+			(CS35L41_GPIO_CTRL_OPEN_INT | CS35L41_VALID_PDATA)))
-+		irq_pol = IRQF_TRIGGER_LOW;
-+	else if (irq_gpio_cfg2->irq_src_sel ==
-+			(CS35L41_GPIO_CTRL_ACTV_HI | CS35L41_VALID_PDATA))
-+		irq_pol = IRQF_TRIGGER_HIGH;
-+
-+	return irq_pol;
-+}
-+
-+static const struct snd_soc_dai_ops cs35l41_ops = {
-+	.startup = cs35l41_pcm_startup,
-+	.set_fmt = cs35l41_set_dai_fmt,
-+	.hw_params = cs35l41_pcm_hw_params,
-+	.set_sysclk = cs35l41_dai_set_sysclk,
-+	.set_channel_map = cs35l41_set_channel_map,
-+};
-+
-+static struct snd_soc_dai_driver cs35l41_dai[] = {
-+	{
-+		.name = "cs35l41-pcm",
-+		.id = 0,
-+		.playback = {
-+			.stream_name = "AMP Playback",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = SNDRV_PCM_RATE_KNOT,
-+			.formats = CS35L41_RX_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name = "AMP Capture",
-+			.channels_min = 1,
-+			.channels_max = 8,
-+			.rates = SNDRV_PCM_RATE_KNOT,
-+			.formats = CS35L41_TX_FORMATS,
-+		},
-+		.ops = &cs35l41_ops,
-+		.symmetric_rate = 1,
-+	},
-+};
-+
-+static const struct snd_soc_component_driver soc_component_dev_cs35l41 = {
-+	.name = "cs35l41-codec",
-+
-+	.dapm_widgets = cs35l41_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(cs35l41_dapm_widgets),
-+	.dapm_routes = cs35l41_audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(cs35l41_audio_map),
-+
-+	.controls = cs35l41_aud_controls,
-+	.num_controls = ARRAY_SIZE(cs35l41_aud_controls),
-+	.set_sysclk = cs35l41_component_set_sysclk,
-+};
-+
-+static int cs35l41_handle_pdata(struct device *dev,
-+				  struct cs35l41_platform_data *pdata,
-+				  struct cs35l41_private *cs35l41)
-+{
-+	struct cs35l41_irq_cfg *irq_gpio1_config = &pdata->irq_config1;
-+	struct cs35l41_irq_cfg *irq_gpio2_config = &pdata->irq_config2;
-+	unsigned int val;
-+	int ret;
-+
-+	ret = device_property_read_u32(dev, "cirrus,boost-peak-milliamp", &val);
-+	if (ret >= 0)
-+		pdata->bst_ipk = val;
-+
-+	ret = device_property_read_u32(dev, "cirrus,boost-ind-nanohenry", &val);
-+	if (ret >= 0)
-+		pdata->bst_ind = val;
-+
-+	ret = device_property_read_u32(dev, "cirrus,boost-cap-microfarad", &val);
-+	if (ret >= 0)
-+		pdata->bst_cap = val;
-+
-+	ret = device_property_read_u32(dev, "cirrus,asp-sdout-hiz", &val);
-+	if (ret >= 0)
-+		pdata->dout_hiz = val;
-+	else
-+		pdata->dout_hiz = -1;
-+
-+
-+	ret = device_property_read_u32(dev,
-+				   "cirrus,classh-bst-max-limit",
-+				   &val);
-+	if (ret >= 0) {
-+		val |= CS35L41_VALID_PDATA;
-+		pdata->classh_bst_max_limit = val;
-+	}
-+
-+	/* GPIO1 Pin Config */
-+	irq_gpio1_config->irq_pol_inv = device_property_read_bool(dev,
-+					"cirrus,gpio1-polarity-invert");
-+	irq_gpio1_config->irq_out_en = device_property_read_bool(dev,
-+					"cirrus,gpio1-output-enable");
-+	ret = device_property_read_u32(dev, "cirrus,gpio1-src-select",
-+				&val);
-+	if (ret >= 0) {
-+		val |= CS35L41_VALID_PDATA;
-+		irq_gpio1_config->irq_src_sel = val;
-+	}
-+
-+	/* GPIO2 Pin Config */
-+	irq_gpio2_config->irq_pol_inv = device_property_read_bool(dev,
-+					"cirrus,gpio2-polarity-invert");
-+	irq_gpio2_config->irq_out_en = device_property_read_bool(dev,
-+					"cirrus,gpio2-output-enable");
-+	ret = device_property_read_u32(dev, "cirrus,gpio2-src-select",
-+				&val);
-+	if (ret >= 0) {
-+		val |= CS35L41_VALID_PDATA;
-+		irq_gpio2_config->irq_src_sel = val;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct reg_sequence cs35l41_reva0_errata_patch[] = {
-+	{ 0x00000040,			 0x00005555 },
-+	{ 0x00000040,			 0x0000AAAA },
-+	{ 0x00003854,			 0x05180240 },
-+	{ CS35L41_VIMON_SPKMON_RESYNC,	 0x00000000 },
-+	{ 0x00004310,			 0x00000000 },
-+	{ CS35L41_VPVBST_FS_SEL,	 0x00000000 },
-+	{ CS35L41_OTP_TRIM_30,		 0x9091A1C8 },
-+	{ 0x00003014,			 0x0200EE0E },
-+	{ CS35L41_BSTCVRT_DCM_CTRL,	 0x00000051 },
-+	{ 0x00000054,			 0x00000004 },
-+	{ CS35L41_IRQ1_DB3,		 0x00000000 },
-+	{ CS35L41_IRQ2_DB3,		 0x00000000 },
-+	{ CS35L41_DSP1_YM_ACCEL_PL0_PRI, 0x00000000 },
-+	{ CS35L41_DSP1_XM_ACCEL_PL0_PRI, 0x00000000 },
-+	{ 0x00000040,			 0x0000CCCC },
-+	{ 0x00000040,			 0x00003333 },
-+};
-+
-+static const struct reg_sequence cs35l41_revb0_errata_patch[] = {
-+	{ 0x00000040,			 0x00005555 },
-+	{ 0x00000040,			 0x0000AAAA },
-+	{ CS35L41_VIMON_SPKMON_RESYNC,	 0x00000000 },
-+	{ 0x00004310,			 0x00000000 },
-+	{ CS35L41_VPVBST_FS_SEL,	 0x00000000 },
-+	{ CS35L41_BSTCVRT_DCM_CTRL,	 0x00000051 },
-+	{ CS35L41_DSP1_YM_ACCEL_PL0_PRI, 0x00000000 },
-+	{ CS35L41_DSP1_XM_ACCEL_PL0_PRI, 0x00000000 },
-+	{ 0x00000040,			 0x0000CCCC },
-+	{ 0x00000040,			 0x00003333 },
-+};
-+
-+static const struct reg_sequence cs35l41_revb2_errata_patch[] = {
-+	{ 0x00000040,			 0x00005555 },
-+	{ 0x00000040,			 0x0000AAAA },
-+	{ CS35L41_VIMON_SPKMON_RESYNC,	 0x00000000 },
-+	{ 0x00004310,			 0x00000000 },
-+	{ CS35L41_VPVBST_FS_SEL,	 0x00000000 },
-+	{ CS35L41_BSTCVRT_DCM_CTRL,	 0x00000051 },
-+	{ CS35L41_DSP1_YM_ACCEL_PL0_PRI, 0x00000000 },
-+	{ CS35L41_DSP1_XM_ACCEL_PL0_PRI, 0x00000000 },
-+	{ 0x00000040,			 0x0000CCCC },
-+	{ 0x00000040,			 0x00003333 },
-+};
-+
-+int cs35l41_probe(struct cs35l41_private *cs35l41,
-+				struct cs35l41_platform_data *pdata)
-+{
-+	u32 regid, reg_revid, i, mtl_revid, int_status, chipid_match;
-+	int irq_pol = 0;
-+	int timeout;
-+	int ret;
-+
-+	if (pdata) {
-+		cs35l41->pdata = *pdata;
-+	} else {
-+		ret = cs35l41_handle_pdata(cs35l41->dev, &cs35l41->pdata,
-+					     cs35l41);
-+		if (ret != 0)
-+			return ret;
-+	}
-+
-+	for (i = 0; i < CS35L41_NUM_SUPPLIES; i++)
-+		cs35l41->supplies[i].supply = cs35l41_supplies[i];
-+
-+	ret = devm_regulator_bulk_get(cs35l41->dev, CS35L41_NUM_SUPPLIES,
-+					cs35l41->supplies);
-+	if (ret != 0) {
-+		dev_err(cs35l41->dev,
-+			"Failed to request core supplies: %d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	ret = regulator_bulk_enable(CS35L41_NUM_SUPPLIES, cs35l41->supplies);
-+	if (ret != 0) {
-+		dev_err(cs35l41->dev,
-+			"Failed to enable core supplies: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* returning NULL can be an option if in stereo mode */
-+	cs35l41->reset_gpio = devm_gpiod_get_optional(cs35l41->dev, "reset",
-+							GPIOD_OUT_LOW);
-+	if (IS_ERR(cs35l41->reset_gpio)) {
-+		ret = PTR_ERR(cs35l41->reset_gpio);
-+		cs35l41->reset_gpio = NULL;
-+		if (ret == -EBUSY) {
-+			dev_info(cs35l41->dev,
-+				 "Reset line busy, assuming shared reset\n");
-+		} else {
-+			dev_err(cs35l41->dev,
-+				"Failed to get reset GPIO: %d\n", ret);
-+			goto err;
-+		}
-+	}
-+	if (cs35l41->reset_gpio) {
-+		/* satisfy minimum reset pulse width spec */
-+		usleep_range(2000, 2100);
-+		gpiod_set_value_cansleep(cs35l41->reset_gpio, 1);
-+	}
-+
-+	usleep_range(2000, 2100);
-+
-+	timeout = 100;
-+	do {
-+		if (timeout == 0) {
-+			dev_err(cs35l41->dev,
-+				"Timeout waiting for OTP_BOOT_DONE\n");
-+			ret = -EBUSY;
-+			goto err;
-+		}
-+		usleep_range(1000, 1100);
-+		regmap_read(cs35l41->regmap, CS35L41_IRQ1_STATUS4, &int_status);
-+		timeout--;
-+	} while (!(int_status & CS35L41_OTP_BOOT_DONE));
-+
-+	regmap_read(cs35l41->regmap, CS35L41_IRQ1_STATUS3, &int_status);
-+	if (int_status & CS35L41_OTP_BOOT_ERR) {
-+		dev_err(cs35l41->dev, "OTP Boot error\n");
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	ret = regmap_read(cs35l41->regmap, CS35L41_DEVID, &regid);
-+	if (ret < 0) {
-+		dev_err(cs35l41->dev, "Get Device ID failed\n");
-+		goto err;
-+	}
-+
-+	ret = regmap_read(cs35l41->regmap, CS35L41_REVID, &reg_revid);
-+	if (ret < 0) {
-+		dev_err(cs35l41->dev, "Get Revision ID failed\n");
-+		goto err;
-+	}
-+
-+	mtl_revid = reg_revid & CS35L41_MTLREVID_MASK;
-+
-+	/* CS35L41 will have even MTLREVID
-+	 * CS35L41R will have odd MTLREVID
-+	 */
-+	chipid_match = (mtl_revid % 2) ? CS35L41R_CHIP_ID : CS35L41_CHIP_ID;
-+	if (regid != chipid_match) {
-+		dev_err(cs35l41->dev, "CS35L41 Device ID (%X). Expected ID %X\n",
-+			regid, chipid_match);
-+		ret = -ENODEV;
-+		goto err;
-+	}
-+
-+	switch (reg_revid) {
-+	case CS35L41_REVID_A0:
-+		ret = regmap_register_patch(cs35l41->regmap,
-+				cs35l41_reva0_errata_patch,
-+				ARRAY_SIZE(cs35l41_reva0_errata_patch));
-+		if (ret < 0) {
-+			dev_err(cs35l41->dev,
-+				"Failed to apply A0 errata patch %d\n", ret);
-+			goto err;
-+		}
-+		break;
-+	case CS35L41_REVID_B0:
-+		ret = regmap_register_patch(cs35l41->regmap,
-+				cs35l41_revb0_errata_patch,
-+				ARRAY_SIZE(cs35l41_revb0_errata_patch));
-+		if (ret < 0) {
-+			dev_err(cs35l41->dev,
-+				"Failed to apply B0 errata patch %d\n", ret);
-+			goto err;
-+		}
-+		break;
-+	case CS35L41_REVID_B2:
-+		ret = regmap_register_patch(cs35l41->regmap,
-+				cs35l41_revb2_errata_patch,
-+				ARRAY_SIZE(cs35l41_revb2_errata_patch));
-+		if (ret < 0) {
-+			dev_err(cs35l41->dev,
-+				"Failed to apply B2 errata patch %d\n", ret);
-+			goto err;
-+		}
-+		break;
-+	}
-+
-+	irq_pol = cs35l41_irq_gpio_config(cs35l41);
-+
-+	/* Set interrupt masks for critical errors */
-+	regmap_write(cs35l41->regmap, CS35L41_IRQ1_MASK1,
-+			CS35L41_INT1_MASK_DEFAULT);
-+
-+	ret = devm_request_threaded_irq(cs35l41->dev, cs35l41->irq, NULL,
-+			cs35l41_irq, IRQF_ONESHOT | IRQF_SHARED | irq_pol,
-+			"cs35l41", cs35l41);
-+
-+	/* CS35L41 needs INT for PDN_DONE */
-+	if (ret != 0) {
-+		dev_err(cs35l41->dev, "Failed to request IRQ: %d\n", ret);
-+		ret = -ENODEV;
-+		goto err;
-+	}
-+
-+	ret = cs35l41_otp_unpack(cs35l41);
-+	if (ret < 0) {
-+		dev_err(cs35l41->dev, "OTP Unpack failed\n");
-+		goto err;
-+	}
-+
-+	ret = regmap_write(cs35l41->regmap, CS35L41_DSP1_CCM_CORE_CTRL, 0);
-+	if (ret < 0) {
-+		dev_err(cs35l41->dev, "Write CCM_CORE_CTRL failed\n");
-+		goto err;
-+	}
-+
-+	ret = regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
-+				 CS35L41_AMP_EN_MASK, 0);
-+	if (ret < 0) {
-+		dev_err(cs35l41->dev, "Write CS35L41_PWR_CTRL2 failed\n");
-+		goto err;
-+	}
-+
-+	ret = regmap_update_bits(cs35l41->regmap, CS35L41_AMP_GAIN_CTRL,
-+				 CS35L41_AMP_GAIN_PCM_MASK, 0);
-+	if (ret < 0) {
-+		dev_err(cs35l41->dev, "Write CS35L41_AMP_GAIN_CTRL failed\n");
-+		goto err;
-+	}
-+
-+	ret = cs35l41_set_pdata(cs35l41);
-+	if (ret < 0) {
-+		dev_err(cs35l41->dev, "%s: Set pdata failed\n", __func__);
-+		goto err;
-+	}
-+
-+	ret = devm_snd_soc_register_component(cs35l41->dev,
-+					&soc_component_dev_cs35l41,
-+					cs35l41_dai, ARRAY_SIZE(cs35l41_dai));
-+	if (ret < 0) {
-+		dev_err(cs35l41->dev, "%s: Register codec failed\n", __func__);
-+		goto err;
-+	}
-+
-+	dev_info(cs35l41->dev, "Cirrus Logic CS35L41 (%x), Revision: %02X\n",
-+			regid, reg_revid);
-+
-+	return 0;
-+
-+err:
-+	regulator_bulk_disable(CS35L41_NUM_SUPPLIES, cs35l41->supplies);
-+	gpiod_set_value_cansleep(cs35l41->reset_gpio, 0);
-+	return ret;
-+}
-+
-+int cs35l41_remove(struct cs35l41_private *cs35l41)
-+{
-+	regmap_write(cs35l41->regmap, CS35L41_IRQ1_MASK1, 0xFFFFFFFF);
-+	regulator_bulk_disable(CS35L41_NUM_SUPPLIES, cs35l41->supplies);
-+	gpiod_set_value_cansleep(cs35l41->reset_gpio, 0);
-+	return 0;
-+}
-+
-+MODULE_DESCRIPTION("ASoC CS35L41 driver");
-+MODULE_AUTHOR("David Rhodes, Cirrus Logic Inc, <david.rhodes@cirrus.com>");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/cs35l41.h b/sound/soc/codecs/cs35l41.h
-new file mode 100644
-index 000000000000..7a25430182f8
---- /dev/null
-+++ b/sound/soc/codecs/cs35l41.h
-@@ -0,0 +1,775 @@
-+/* SPDX-License-Identifier: GPL-2.0
-+ *
-+ * cs35l41.h -- CS35L41 ALSA SoC audio driver
-+ *
-+ * Copyright 2017-2021 Cirrus Logic, Inc.
-+ *
-+ * Author: David Rhodes <david.rhodes@cirrus.com>
-+ */
-+
-+#ifndef __CS35L41_H__
-+#define __CS35L41_H__
-+
-+#include <linux/gpio/consumer.h>
-+#include <linux/regmap.h>
-+#include <linux/regulator/consumer.h>
-+#include <sound/core.h>
-+#include <sound/cs35l41.h>
-+
-+#define CS35L41_FIRSTREG		0x00000000
-+#define CS35L41_LASTREG			0x03804FE8
-+#define CS35L41_DEVID			0x00000000
-+#define CS35L41_REVID			0x00000004
-+#define CS35L41_FABID			0x00000008
-+#define CS35L41_RELID			0x0000000C
-+#define CS35L41_OTPID			0x00000010
-+#define CS35L41_SFT_RESET		0x00000020
-+#define CS35L41_TEST_KEY_CTL		0x00000040
-+#define CS35L41_USER_KEY_CTL		0x00000044
-+#define CS35L41_OTP_MEM0		0x00000400
-+#define CS35L41_OTP_MEM31		0x0000047C
-+#define CS35L41_OTP_CTRL0		0x00000500
-+#define CS35L41_OTP_CTRL1		0x00000504
-+#define CS35L41_OTP_CTRL3		0x00000508
-+#define CS35L41_OTP_CTRL4		0x0000050C
-+#define CS35L41_OTP_CTRL5		0x00000510
-+#define CS35L41_OTP_CTRL6		0x00000514
-+#define CS35L41_OTP_CTRL7		0x00000518
-+#define CS35L41_OTP_CTRL8		0x0000051C
-+#define CS35L41_PWR_CTRL1		0x00002014
-+#define CS35L41_PWR_CTRL2		0x00002018
-+#define CS35L41_PWR_CTRL3		0x0000201C
-+#define CS35L41_CTRL_OVRRIDE		0x00002020
-+#define CS35L41_AMP_OUT_MUTE		0x00002024
-+#define CS35L41_PROTECT_REL_ERR_IGN	0x00002034
-+#define CS35L41_GPIO_PAD_CONTROL	0x0000242C
-+#define CS35L41_JTAG_CONTROL		0x00002438
-+#define CS35L41_PLL_CLK_CTRL		0x00002C04
-+#define CS35L41_DSP_CLK_CTRL		0x00002C08
-+#define CS35L41_GLOBAL_CLK_CTRL		0x00002C0C
-+#define CS35L41_DATA_FS_SEL		0x00002C10
-+#define CS35L41_TST_FS_MON0		0x00002D10
-+#define CS35L41_MDSYNC_EN		0x00003400
-+#define CS35L41_MDSYNC_TX_ID		0x00003408
-+#define CS35L41_MDSYNC_PWR_CTRL		0x0000340C
-+#define CS35L41_MDSYNC_DATA_TX		0x00003410
-+#define CS35L41_MDSYNC_TX_STATUS	0x00003414
-+#define CS35L41_MDSYNC_DATA_RX		0x0000341C
-+#define CS35L41_MDSYNC_RX_STATUS	0x00003420
-+#define CS35L41_MDSYNC_ERR_STATUS	0x00003424
-+#define CS35L41_MDSYNC_SYNC_PTE2	0x00003528
-+#define CS35L41_MDSYNC_SYNC_PTE3	0x0000352C
-+#define CS35L41_MDSYNC_SYNC_MSM_STATUS	0x0000353C
-+#define CS35L41_BSTCVRT_VCTRL1		0x00003800
-+#define CS35L41_BSTCVRT_VCTRL2		0x00003804
-+#define CS35L41_BSTCVRT_PEAK_CUR	0x00003808
-+#define CS35L41_BSTCVRT_SFT_RAMP	0x0000380C
-+#define CS35L41_BSTCVRT_COEFF		0x00003810
-+#define CS35L41_BSTCVRT_SLOPE_LBST	0x00003814
-+#define CS35L41_BSTCVRT_SW_FREQ		0x00003818
-+#define CS35L41_BSTCVRT_DCM_CTRL	0x0000381C
-+#define CS35L41_BSTCVRT_DCM_MODE_FORCE	0x00003820
-+#define CS35L41_BSTCVRT_OVERVOLT_CTRL	0x00003830
-+#define CS35L41_VI_VOL_POL		0x00004000
-+#define CS35L41_VIMON_SPKMON_RESYNC	0x00004100
-+#define CS35L41_DTEMP_WARN_THLD		0x00004220
-+#define CS35L41_DTEMP_CFG		0x00004224
-+#define CS35L41_DTEMP_EN		0x00004308
-+#define CS35L41_VPVBST_FS_SEL		0x00004400
-+#define CS35L41_SP_ENABLES		0x00004800
-+#define CS35L41_SP_RATE_CTRL		0x00004804
-+#define CS35L41_SP_FORMAT		0x00004808
-+#define CS35L41_SP_HIZ_CTRL		0x0000480C
-+#define CS35L41_SP_FRAME_TX_SLOT	0x00004810
-+#define CS35L41_SP_FRAME_RX_SLOT	0x00004820
-+#define CS35L41_SP_TX_WL		0x00004830
-+#define CS35L41_SP_RX_WL		0x00004840
-+#define CS35L41_ASP_CONTROL4		0x00004854
-+#define CS35L41_DAC_PCM1_SRC		0x00004C00
-+#define CS35L41_ASP_TX1_SRC		0x00004C20
-+#define CS35L41_ASP_TX2_SRC		0x00004C24
-+#define CS35L41_ASP_TX3_SRC		0x00004C28
-+#define CS35L41_ASP_TX4_SRC		0x00004C2C
-+#define CS35L41_DSP1_RX1_SRC		0x00004C40
-+#define CS35L41_DSP1_RX2_SRC		0x00004C44
-+#define CS35L41_DSP1_RX3_SRC		0x00004C48
-+#define CS35L41_DSP1_RX4_SRC		0x00004C4C
-+#define CS35L41_DSP1_RX5_SRC		0x00004C50
-+#define CS35L41_DSP1_RX6_SRC		0x00004C54
-+#define CS35L41_DSP1_RX7_SRC		0x00004C58
-+#define CS35L41_DSP1_RX8_SRC		0x00004C5C
-+#define CS35L41_NGATE1_SRC		0x00004C60
-+#define CS35L41_NGATE2_SRC		0x00004C64
-+#define CS35L41_AMP_DIG_VOL_CTRL	0x00006000
-+#define CS35L41_VPBR_CFG		0x00006404
-+#define CS35L41_VBBR_CFG		0x00006408
-+#define CS35L41_VPBR_STATUS		0x0000640C
-+#define CS35L41_VBBR_STATUS		0x00006410
-+#define CS35L41_OVERTEMP_CFG		0x00006414
-+#define CS35L41_AMP_ERR_VOL		0x00006418
-+#define CS35L41_VOL_STATUS_TO_DSP	0x00006450
-+#define CS35L41_CLASSH_CFG		0x00006800
-+#define CS35L41_WKFET_CFG		0x00006804
-+#define CS35L41_NG_CFG			0x00006808
-+#define CS35L41_AMP_GAIN_CTRL		0x00006C04
-+#define CS35L41_DAC_MSM_CFG		0x00007400
-+#define CS35L41_IRQ1_CFG		0x00010000
-+#define CS35L41_IRQ1_STATUS		0x00010004
-+#define CS35L41_IRQ1_STATUS1		0x00010010
-+#define CS35L41_IRQ1_STATUS2		0x00010014
-+#define CS35L41_IRQ1_STATUS3		0x00010018
-+#define CS35L41_IRQ1_STATUS4		0x0001001C
-+#define CS35L41_IRQ1_RAW_STATUS1	0x00010090
-+#define CS35L41_IRQ1_RAW_STATUS2	0x00010094
-+#define CS35L41_IRQ1_RAW_STATUS3	0x00010098
-+#define CS35L41_IRQ1_RAW_STATUS4	0x0001009C
-+#define CS35L41_IRQ1_MASK1		0x00010110
-+#define CS35L41_IRQ1_MASK2		0x00010114
-+#define CS35L41_IRQ1_MASK3		0x00010118
-+#define CS35L41_IRQ1_MASK4		0x0001011C
-+#define CS35L41_IRQ1_FRC1		0x00010190
-+#define CS35L41_IRQ1_FRC2		0x00010194
-+#define CS35L41_IRQ1_FRC3		0x00010198
-+#define CS35L41_IRQ1_FRC4		0x0001019C
-+#define CS35L41_IRQ1_EDGE1		0x00010210
-+#define CS35L41_IRQ1_EDGE4		0x0001021C
-+#define CS35L41_IRQ1_POL1		0x00010290
-+#define CS35L41_IRQ1_POL2		0x00010294
-+#define CS35L41_IRQ1_POL3		0x00010298
-+#define CS35L41_IRQ1_POL4		0x0001029C
-+#define CS35L41_IRQ1_DB3		0x00010318
-+#define CS35L41_IRQ2_CFG		0x00010800
-+#define CS35L41_IRQ2_STATUS		0x00010804
-+#define CS35L41_IRQ2_STATUS1		0x00010810
-+#define CS35L41_IRQ2_STATUS2		0x00010814
-+#define CS35L41_IRQ2_STATUS3		0x00010818
-+#define CS35L41_IRQ2_STATUS4		0x0001081C
-+#define CS35L41_IRQ2_RAW_STATUS1	0x00010890
-+#define CS35L41_IRQ2_RAW_STATUS2	0x00010894
-+#define CS35L41_IRQ2_RAW_STATUS3	0x00010898
-+#define CS35L41_IRQ2_RAW_STATUS4	0x0001089C
-+#define CS35L41_IRQ2_MASK1		0x00010910
-+#define CS35L41_IRQ2_MASK2		0x00010914
-+#define CS35L41_IRQ2_MASK3		0x00010918
-+#define CS35L41_IRQ2_MASK4		0x0001091C
-+#define CS35L41_IRQ2_FRC1		0x00010990
-+#define CS35L41_IRQ2_FRC2		0x00010994
-+#define CS35L41_IRQ2_FRC3		0x00010998
-+#define CS35L41_IRQ2_FRC4		0x0001099C
-+#define CS35L41_IRQ2_EDGE1		0x00010A10
-+#define CS35L41_IRQ2_EDGE4		0x00010A1C
-+#define CS35L41_IRQ2_POL1		0x00010A90
-+#define CS35L41_IRQ2_POL2		0x00010A94
-+#define CS35L41_IRQ2_POL3		0x00010A98
-+#define CS35L41_IRQ2_POL4		0x00010A9C
-+#define CS35L41_IRQ2_DB3		0x00010B18
-+#define CS35L41_GPIO_STATUS1		0x00011000
-+#define CS35L41_GPIO1_CTRL1		0x00011008
-+#define CS35L41_GPIO2_CTRL1		0x0001100C
-+#define CS35L41_MIXER_NGATE_CFG		0x00012000
-+#define CS35L41_MIXER_NGATE_CH1_CFG	0x00012004
-+#define CS35L41_MIXER_NGATE_CH2_CFG	0x00012008
-+#define CS35L41_DSP_MBOX_1		0x00013000
-+#define CS35L41_DSP_MBOX_2		0x00013004
-+#define CS35L41_DSP_MBOX_3		0x00013008
-+#define CS35L41_DSP_MBOX_4		0x0001300C
-+#define CS35L41_DSP_MBOX_5		0x00013010
-+#define CS35L41_DSP_MBOX_6		0x00013014
-+#define CS35L41_DSP_MBOX_7		0x00013018
-+#define CS35L41_DSP_MBOX_8		0x0001301C
-+#define CS35L41_DSP_VIRT1_MBOX_1	0x00013020
-+#define CS35L41_DSP_VIRT1_MBOX_2	0x00013024
-+#define CS35L41_DSP_VIRT1_MBOX_3	0x00013028
-+#define CS35L41_DSP_VIRT1_MBOX_4	0x0001302C
-+#define CS35L41_DSP_VIRT1_MBOX_5	0x00013030
-+#define CS35L41_DSP_VIRT1_MBOX_6	0x00013034
-+#define CS35L41_DSP_VIRT1_MBOX_7	0x00013038
-+#define CS35L41_DSP_VIRT1_MBOX_8	0x0001303C
-+#define CS35L41_DSP_VIRT2_MBOX_1	0x00013040
-+#define CS35L41_DSP_VIRT2_MBOX_2	0x00013044
-+#define CS35L41_DSP_VIRT2_MBOX_3	0x00013048
-+#define CS35L41_DSP_VIRT2_MBOX_4	0x0001304C
-+#define CS35L41_DSP_VIRT2_MBOX_5	0x00013050
-+#define CS35L41_DSP_VIRT2_MBOX_6	0x00013054
-+#define CS35L41_DSP_VIRT2_MBOX_7	0x00013058
-+#define CS35L41_DSP_VIRT2_MBOX_8	0x0001305C
-+#define CS35L41_CLOCK_DETECT_1		0x00014000
-+#define CS35L41_TIMER1_CONTROL		0x00015000
-+#define CS35L41_TIMER1_COUNT_PRESET	0x00015004
-+#define CS35L41_TIMER1_START_STOP	0x0001500C
-+#define CS35L41_TIMER1_STATUS		0x00015010
-+#define CS35L41_TIMER1_COUNT_READBACK	0x00015014
-+#define CS35L41_TIMER1_DSP_CLK_CFG	0x00015018
-+#define CS35L41_TIMER1_DSP_CLK_STATUS	0x0001501C
-+#define CS35L41_TIMER2_CONTROL		0x00015100
-+#define CS35L41_TIMER2_COUNT_PRESET	0x00015104
-+#define CS35L41_TIMER2_START_STOP	0x0001510C
-+#define CS35L41_TIMER2_STATUS		0x00015110
-+#define CS35L41_TIMER2_COUNT_READBACK	0x00015114
-+#define CS35L41_TIMER2_DSP_CLK_CFG	0x00015118
-+#define CS35L41_TIMER2_DSP_CLK_STATUS	0x0001511C
-+#define CS35L41_DFT_JTAG_CONTROL	0x00016000
-+#define CS35L41_DIE_STS1		0x00017040
-+#define CS35L41_DIE_STS2		0x00017044
-+#define CS35L41_TEMP_CAL1		0x00017048
-+#define CS35L41_TEMP_CAL2		0x0001704C
-+#define CS35L41_DSP1_XMEM_PACK_0	0x02000000
-+#define CS35L41_DSP1_XMEM_PACK_3068	0x02002FF0
-+#define CS35L41_DSP1_XMEM_UNPACK32_0	0x02400000
-+#define CS35L41_DSP1_XMEM_UNPACK32_2046	0x02401FF8
-+#define CS35L41_DSP1_TIMESTAMP_COUNT	0x025C0800
-+#define CS35L41_DSP1_SYS_ID		0x025E0000
-+#define CS35L41_DSP1_SYS_VERSION	0x025E0004
-+#define CS35L41_DSP1_SYS_CORE_ID	0x025E0008
-+#define CS35L41_DSP1_SYS_AHB_ADDR	0x025E000C
-+#define CS35L41_DSP1_SYS_XSRAM_SIZE	0x025E0010
-+#define CS35L41_DSP1_SYS_YSRAM_SIZE	0x025E0018
-+#define CS35L41_DSP1_SYS_PSRAM_SIZE	0x025E0020
-+#define CS35L41_DSP1_SYS_PM_BOOT_SIZE	0x025E0028
-+#define CS35L41_DSP1_SYS_FEATURES	0x025E002C
-+#define CS35L41_DSP1_SYS_FIR_FILTERS	0x025E0030
-+#define CS35L41_DSP1_SYS_LMS_FILTERS	0x025E0034
-+#define CS35L41_DSP1_SYS_XM_BANK_SIZE	0x025E0038
-+#define CS35L41_DSP1_SYS_YM_BANK_SIZE	0x025E003C
-+#define CS35L41_DSP1_SYS_PM_BANK_SIZE	0x025E0040
-+#define CS35L41_DSP1_AHBM_WIN0_CTRL0	0x025E2000
-+#define CS35L41_DSP1_AHBM_WIN0_CTRL1	0x025E2004
-+#define CS35L41_DSP1_AHBM_WIN1_CTRL0	0x025E2008
-+#define CS35L41_DSP1_AHBM_WIN1_CTRL1	0x025E200C
-+#define CS35L41_DSP1_AHBM_WIN2_CTRL0	0x025E2010
-+#define CS35L41_DSP1_AHBM_WIN2_CTRL1	0x025E2014
-+#define CS35L41_DSP1_AHBM_WIN3_CTRL0	0x025E2018
-+#define CS35L41_DSP1_AHBM_WIN3_CTRL1	0x025E201C
-+#define CS35L41_DSP1_AHBM_WIN4_CTRL0	0x025E2020
-+#define CS35L41_DSP1_AHBM_WIN4_CTRL1	0x025E2024
-+#define CS35L41_DSP1_AHBM_WIN5_CTRL0	0x025E2028
-+#define CS35L41_DSP1_AHBM_WIN5_CTRL1	0x025E202C
-+#define CS35L41_DSP1_AHBM_WIN6_CTRL0	0x025E2030
-+#define CS35L41_DSP1_AHBM_WIN6_CTRL1	0x025E2034
-+#define CS35L41_DSP1_AHBM_WIN7_CTRL0	0x025E2038
-+#define CS35L41_DSP1_AHBM_WIN7_CTRL1	0x025E203C
-+#define CS35L41_DSP1_AHBM_WIN_DBG_CTRL0	0x025E2040
-+#define CS35L41_DSP1_AHBM_WIN_DBG_CTRL1	0x025E2044
-+#define CS35L41_DSP1_XMEM_UNPACK24_0	0x02800000
-+#define CS35L41_DSP1_XMEM_UNPACK24_4093	0x02803FF4
-+#define CS35L41_DSP1_CTRL_BASE		0x02B80000
-+#define CS35L41_DSP1_CORE_SOFT_RESET	0x02B80010
-+#define CS35L41_DSP1_DEBUG		0x02B80040
-+#define CS35L41_DSP1_TIMER_CTRL		0x02B80048
-+#define CS35L41_DSP1_STREAM_ARB_CTRL	0x02B80050
-+#define CS35L41_DSP1_RX1_RATE		0x02B80080
-+#define CS35L41_DSP1_RX2_RATE		0x02B80088
-+#define CS35L41_DSP1_RX3_RATE		0x02B80090
-+#define CS35L41_DSP1_RX4_RATE		0x02B80098
-+#define CS35L41_DSP1_RX5_RATE		0x02B800A0
-+#define CS35L41_DSP1_RX6_RATE		0x02B800A8
-+#define CS35L41_DSP1_RX7_RATE		0x02B800B0
-+#define CS35L41_DSP1_RX8_RATE		0x02B800B8
-+#define CS35L41_DSP1_TX1_RATE		0x02B80280
-+#define CS35L41_DSP1_TX2_RATE		0x02B80288
-+#define CS35L41_DSP1_TX3_RATE		0x02B80290
-+#define CS35L41_DSP1_TX4_RATE		0x02B80298
-+#define CS35L41_DSP1_TX5_RATE		0x02B802A0
-+#define CS35L41_DSP1_TX6_RATE		0x02B802A8
-+#define CS35L41_DSP1_TX7_RATE		0x02B802B0
-+#define CS35L41_DSP1_TX8_RATE		0x02B802B8
-+#define CS35L41_DSP1_NMI_CTRL1		0x02B80480
-+#define CS35L41_DSP1_NMI_CTRL2		0x02B80488
-+#define CS35L41_DSP1_NMI_CTRL3		0x02B80490
-+#define CS35L41_DSP1_NMI_CTRL4		0x02B80498
-+#define CS35L41_DSP1_NMI_CTRL5		0x02B804A0
-+#define CS35L41_DSP1_NMI_CTRL6		0x02B804A8
-+#define CS35L41_DSP1_NMI_CTRL7		0x02B804B0
-+#define CS35L41_DSP1_NMI_CTRL8		0x02B804B8
-+#define CS35L41_DSP1_RESUME_CTRL	0x02B80500
-+#define CS35L41_DSP1_IRQ1_CTRL		0x02B80508
-+#define CS35L41_DSP1_IRQ2_CTRL		0x02B80510
-+#define CS35L41_DSP1_IRQ3_CTRL		0x02B80518
-+#define CS35L41_DSP1_IRQ4_CTRL		0x02B80520
-+#define CS35L41_DSP1_IRQ5_CTRL		0x02B80528
-+#define CS35L41_DSP1_IRQ6_CTRL		0x02B80530
-+#define CS35L41_DSP1_IRQ7_CTRL		0x02B80538
-+#define CS35L41_DSP1_IRQ8_CTRL		0x02B80540
-+#define CS35L41_DSP1_IRQ9_CTRL		0x02B80548
-+#define CS35L41_DSP1_IRQ10_CTRL		0x02B80550
-+#define CS35L41_DSP1_IRQ11_CTRL		0x02B80558
-+#define CS35L41_DSP1_IRQ12_CTRL		0x02B80560
-+#define CS35L41_DSP1_IRQ13_CTRL		0x02B80568
-+#define CS35L41_DSP1_IRQ14_CTRL		0x02B80570
-+#define CS35L41_DSP1_IRQ15_CTRL		0x02B80578
-+#define CS35L41_DSP1_IRQ16_CTRL		0x02B80580
-+#define CS35L41_DSP1_IRQ17_CTRL		0x02B80588
-+#define CS35L41_DSP1_IRQ18_CTRL		0x02B80590
-+#define CS35L41_DSP1_IRQ19_CTRL		0x02B80598
-+#define CS35L41_DSP1_IRQ20_CTRL		0x02B805A0
-+#define CS35L41_DSP1_IRQ21_CTRL		0x02B805A8
-+#define CS35L41_DSP1_IRQ22_CTRL		0x02B805B0
-+#define CS35L41_DSP1_IRQ23_CTRL		0x02B805B8
-+#define CS35L41_DSP1_SCRATCH1		0x02B805C0
-+#define CS35L41_DSP1_SCRATCH2		0x02B805C8
-+#define CS35L41_DSP1_SCRATCH3		0x02B805D0
-+#define CS35L41_DSP1_SCRATCH4		0x02B805D8
-+#define CS35L41_DSP1_CCM_CORE_CTRL	0x02BC1000
-+#define CS35L41_DSP1_CCM_CLK_OVERRIDE	0x02BC1008
-+#define CS35L41_DSP1_XM_MSTR_EN		0x02BC2000
-+#define CS35L41_DSP1_XM_CORE_PRI	0x02BC2008
-+#define CS35L41_DSP1_XM_AHB_PACK_PL_PRI	0x02BC2010
-+#define CS35L41_DSP1_XM_AHB_UP_PL_PRI	0x02BC2018
-+#define CS35L41_DSP1_XM_ACCEL_PL0_PRI	0x02BC2020
-+#define CS35L41_DSP1_XM_NPL0_PRI	0x02BC2078
-+#define CS35L41_DSP1_YM_MSTR_EN		0x02BC20C0
-+#define CS35L41_DSP1_YM_CORE_PRI	0x02BC20C8
-+#define CS35L41_DSP1_YM_AHB_PACK_PL_PRI	0x02BC20D0
-+#define CS35L41_DSP1_YM_AHB_UP_PL_PRI	0x02BC20D8
-+#define CS35L41_DSP1_YM_ACCEL_PL0_PRI	0x02BC20E0
-+#define CS35L41_DSP1_YM_NPL0_PRI	0x02BC2138
-+#define CS35L41_DSP1_PM_MSTR_EN		0x02BC2180
-+#define CS35L41_DSP1_PM_PATCH0_ADDR	0x02BC2188
-+#define CS35L41_DSP1_PM_PATCH0_EN	0x02BC218C
-+#define CS35L41_DSP1_PM_PATCH0_DATA_LO	0x02BC2190
-+#define CS35L41_DSP1_PM_PATCH0_DATA_HI	0x02BC2194
-+#define CS35L41_DSP1_PM_PATCH1_ADDR	0x02BC2198
-+#define CS35L41_DSP1_PM_PATCH1_EN	0x02BC219C
-+#define CS35L41_DSP1_PM_PATCH1_DATA_LO	0x02BC21A0
-+#define CS35L41_DSP1_PM_PATCH1_DATA_HI	0x02BC21A4
-+#define CS35L41_DSP1_PM_PATCH2_ADDR	0x02BC21A8
-+#define CS35L41_DSP1_PM_PATCH2_EN	0x02BC21AC
-+#define CS35L41_DSP1_PM_PATCH2_DATA_LO	0x02BC21B0
-+#define CS35L41_DSP1_PM_PATCH2_DATA_HI	0x02BC21B4
-+#define CS35L41_DSP1_PM_PATCH3_ADDR	0x02BC21B8
-+#define CS35L41_DSP1_PM_PATCH3_EN	0x02BC21BC
-+#define CS35L41_DSP1_PM_PATCH3_DATA_LO	0x02BC21C0
-+#define CS35L41_DSP1_PM_PATCH3_DATA_HI	0x02BC21C4
-+#define CS35L41_DSP1_PM_PATCH4_ADDR	0x02BC21C8
-+#define CS35L41_DSP1_PM_PATCH4_EN	0x02BC21CC
-+#define CS35L41_DSP1_PM_PATCH4_DATA_LO	0x02BC21D0
-+#define CS35L41_DSP1_PM_PATCH4_DATA_HI	0x02BC21D4
-+#define CS35L41_DSP1_PM_PATCH5_ADDR	0x02BC21D8
-+#define CS35L41_DSP1_PM_PATCH5_EN	0x02BC21DC
-+#define CS35L41_DSP1_PM_PATCH5_DATA_LO	0x02BC21E0
-+#define CS35L41_DSP1_PM_PATCH5_DATA_HI	0x02BC21E4
-+#define CS35L41_DSP1_PM_PATCH6_ADDR	0x02BC21E8
-+#define CS35L41_DSP1_PM_PATCH6_EN	0x02BC21EC
-+#define CS35L41_DSP1_PM_PATCH6_DATA_LO	0x02BC21F0
-+#define CS35L41_DSP1_PM_PATCH6_DATA_HI	0x02BC21F4
-+#define CS35L41_DSP1_PM_PATCH7_ADDR	0x02BC21F8
-+#define CS35L41_DSP1_PM_PATCH7_EN	0x02BC21FC
-+#define CS35L41_DSP1_PM_PATCH7_DATA_LO	0x02BC2200
-+#define CS35L41_DSP1_PM_PATCH7_DATA_HI	0x02BC2204
-+#define CS35L41_DSP1_MPU_XM_ACCESS0	0x02BC3000
-+#define CS35L41_DSP1_MPU_YM_ACCESS0	0x02BC3004
-+#define CS35L41_DSP1_MPU_WNDW_ACCESS0	0x02BC3008
-+#define CS35L41_DSP1_MPU_XREG_ACCESS0	0x02BC300C
-+#define CS35L41_DSP1_MPU_YREG_ACCESS0	0x02BC3014
-+#define CS35L41_DSP1_MPU_XM_ACCESS1	0x02BC3018
-+#define CS35L41_DSP1_MPU_YM_ACCESS1	0x02BC301C
-+#define CS35L41_DSP1_MPU_WNDW_ACCESS1	0x02BC3020
-+#define CS35L41_DSP1_MPU_XREG_ACCESS1	0x02BC3024
-+#define CS35L41_DSP1_MPU_YREG_ACCESS1	0x02BC302C
-+#define CS35L41_DSP1_MPU_XM_ACCESS2	0x02BC3030
-+#define CS35L41_DSP1_MPU_YM_ACCESS2	0x02BC3034
-+#define CS35L41_DSP1_MPU_WNDW_ACCESS2	0x02BC3038
-+#define CS35L41_DSP1_MPU_XREG_ACCESS2	0x02BC303C
-+#define CS35L41_DSP1_MPU_YREG_ACCESS2	0x02BC3044
-+#define CS35L41_DSP1_MPU_XM_ACCESS3	0x02BC3048
-+#define CS35L41_DSP1_MPU_YM_ACCESS3	0x02BC304C
-+#define CS35L41_DSP1_MPU_WNDW_ACCESS3	0x02BC3050
-+#define CS35L41_DSP1_MPU_XREG_ACCESS3	0x02BC3054
-+#define CS35L41_DSP1_MPU_YREG_ACCESS3	0x02BC305C
-+#define CS35L41_DSP1_MPU_XM_VIO_ADDR	0x02BC3100
-+#define CS35L41_DSP1_MPU_XM_VIO_STATUS	0x02BC3104
-+#define CS35L41_DSP1_MPU_YM_VIO_ADDR	0x02BC3108
-+#define CS35L41_DSP1_MPU_YM_VIO_STATUS	0x02BC310C
-+#define CS35L41_DSP1_MPU_PM_VIO_ADDR	0x02BC3110
-+#define CS35L41_DSP1_MPU_PM_VIO_STATUS	0x02BC3114
-+#define CS35L41_DSP1_MPU_LOCK_CONFIG	0x02BC3140
-+#define CS35L41_DSP1_MPU_WDT_RST_CTRL	0x02BC3180
-+#define CS35L41_DSP1_STRMARB_MSTR0_CFG0	0x02BC5000
-+#define CS35L41_DSP1_STRMARB_MSTR0_CFG1	0x02BC5004
-+#define CS35L41_DSP1_STRMARB_MSTR0_CFG2	0x02BC5008
-+#define CS35L41_DSP1_STRMARB_MSTR1_CFG0	0x02BC5010
-+#define CS35L41_DSP1_STRMARB_MSTR1_CFG1	0x02BC5014
-+#define CS35L41_DSP1_STRMARB_MSTR1_CFG2	0x02BC5018
-+#define CS35L41_DSP1_STRMARB_MSTR2_CFG0	0x02BC5020
-+#define CS35L41_DSP1_STRMARB_MSTR2_CFG1	0x02BC5024
-+#define CS35L41_DSP1_STRMARB_MSTR2_CFG2	0x02BC5028
-+#define CS35L41_DSP1_STRMARB_MSTR3_CFG0	0x02BC5030
-+#define CS35L41_DSP1_STRMARB_MSTR3_CFG1	0x02BC5034
-+#define CS35L41_DSP1_STRMARB_MSTR3_CFG2	0x02BC5038
-+#define CS35L41_DSP1_STRMARB_MSTR4_CFG0	0x02BC5040
-+#define CS35L41_DSP1_STRMARB_MSTR4_CFG1	0x02BC5044
-+#define CS35L41_DSP1_STRMARB_MSTR4_CFG2	0x02BC5048
-+#define CS35L41_DSP1_STRMARB_MSTR5_CFG0	0x02BC5050
-+#define CS35L41_DSP1_STRMARB_MSTR5_CFG1	0x02BC5054
-+#define CS35L41_DSP1_STRMARB_MSTR5_CFG2	0x02BC5058
-+#define CS35L41_DSP1_STRMARB_MSTR6_CFG0	0x02BC5060
-+#define CS35L41_DSP1_STRMARB_MSTR6_CFG1	0x02BC5064
-+#define CS35L41_DSP1_STRMARB_MSTR6_CFG2	0x02BC5068
-+#define CS35L41_DSP1_STRMARB_MSTR7_CFG0	0x02BC5070
-+#define CS35L41_DSP1_STRMARB_MSTR7_CFG1	0x02BC5074
-+#define CS35L41_DSP1_STRMARB_MSTR7_CFG2	0x02BC5078
-+#define CS35L41_DSP1_STRMARB_TX0_CFG0	0x02BC5200
-+#define CS35L41_DSP1_STRMARB_TX0_CFG1	0x02BC5204
-+#define CS35L41_DSP1_STRMARB_TX1_CFG0	0x02BC5208
-+#define CS35L41_DSP1_STRMARB_TX1_CFG1	0x02BC520C
-+#define CS35L41_DSP1_STRMARB_TX2_CFG0	0x02BC5210
-+#define CS35L41_DSP1_STRMARB_TX2_CFG1	0x02BC5214
-+#define CS35L41_DSP1_STRMARB_TX3_CFG0	0x02BC5218
-+#define CS35L41_DSP1_STRMARB_TX3_CFG1	0x02BC521C
-+#define CS35L41_DSP1_STRMARB_TX4_CFG0	0x02BC5220
-+#define CS35L41_DSP1_STRMARB_TX4_CFG1	0x02BC5224
-+#define CS35L41_DSP1_STRMARB_TX5_CFG0	0x02BC5228
-+#define CS35L41_DSP1_STRMARB_TX5_CFG1	0x02BC522C
-+#define CS35L41_DSP1_STRMARB_TX6_CFG0	0x02BC5230
-+#define CS35L41_DSP1_STRMARB_TX6_CFG1	0x02BC5234
-+#define CS35L41_DSP1_STRMARB_TX7_CFG0	0x02BC5238
-+#define CS35L41_DSP1_STRMARB_TX7_CFG1	0x02BC523C
-+#define CS35L41_DSP1_STRMARB_RX0_CFG0	0x02BC5400
-+#define CS35L41_DSP1_STRMARB_RX0_CFG1	0x02BC5404
-+#define CS35L41_DSP1_STRMARB_RX1_CFG0	0x02BC5408
-+#define CS35L41_DSP1_STRMARB_RX1_CFG1	0x02BC540C
-+#define CS35L41_DSP1_STRMARB_RX2_CFG0	0x02BC5410
-+#define CS35L41_DSP1_STRMARB_RX2_CFG1	0x02BC5414
-+#define CS35L41_DSP1_STRMARB_RX3_CFG0	0x02BC5418
-+#define CS35L41_DSP1_STRMARB_RX3_CFG1	0x02BC541C
-+#define CS35L41_DSP1_STRMARB_RX4_CFG0	0x02BC5420
-+#define CS35L41_DSP1_STRMARB_RX4_CFG1	0x02BC5424
-+#define CS35L41_DSP1_STRMARB_RX5_CFG0	0x02BC5428
-+#define CS35L41_DSP1_STRMARB_RX5_CFG1	0x02BC542C
-+#define CS35L41_DSP1_STRMARB_RX6_CFG0	0x02BC5430
-+#define CS35L41_DSP1_STRMARB_RX6_CFG1	0x02BC5434
-+#define CS35L41_DSP1_STRMARB_RX7_CFG0	0x02BC5438
-+#define CS35L41_DSP1_STRMARB_RX7_CFG1	0x02BC543C
-+#define CS35L41_DSP1_STRMARB_IRQ0_CFG0	0x02BC5600
-+#define CS35L41_DSP1_STRMARB_IRQ0_CFG1	0x02BC5604
-+#define CS35L41_DSP1_STRMARB_IRQ0_CFG2	0x02BC5608
-+#define CS35L41_DSP1_STRMARB_IRQ1_CFG0	0x02BC5610
-+#define CS35L41_DSP1_STRMARB_IRQ1_CFG1	0x02BC5614
-+#define CS35L41_DSP1_STRMARB_IRQ1_CFG2	0x02BC5618
-+#define CS35L41_DSP1_STRMARB_IRQ2_CFG0	0x02BC5620
-+#define CS35L41_DSP1_STRMARB_IRQ2_CFG1	0x02BC5624
-+#define CS35L41_DSP1_STRMARB_IRQ2_CFG2	0x02BC5628
-+#define CS35L41_DSP1_STRMARB_IRQ3_CFG0	0x02BC5630
-+#define CS35L41_DSP1_STRMARB_IRQ3_CFG1	0x02BC5634
-+#define CS35L41_DSP1_STRMARB_IRQ3_CFG2	0x02BC5638
-+#define CS35L41_DSP1_STRMARB_IRQ4_CFG0	0x02BC5640
-+#define CS35L41_DSP1_STRMARB_IRQ4_CFG1	0x02BC5644
-+#define CS35L41_DSP1_STRMARB_IRQ4_CFG2	0x02BC5648
-+#define CS35L41_DSP1_STRMARB_IRQ5_CFG0	0x02BC5650
-+#define CS35L41_DSP1_STRMARB_IRQ5_CFG1	0x02BC5654
-+#define CS35L41_DSP1_STRMARB_IRQ5_CFG2	0x02BC5658
-+#define CS35L41_DSP1_STRMARB_IRQ6_CFG0	0x02BC5660
-+#define CS35L41_DSP1_STRMARB_IRQ6_CFG1	0x02BC5664
-+#define CS35L41_DSP1_STRMARB_IRQ6_CFG2	0x02BC5668
-+#define CS35L41_DSP1_STRMARB_IRQ7_CFG0	0x02BC5670
-+#define CS35L41_DSP1_STRMARB_IRQ7_CFG1	0x02BC5674
-+#define CS35L41_DSP1_STRMARB_IRQ7_CFG2	0x02BC5678
-+#define CS35L41_DSP1_STRMARB_RESYNC_MSK	0x02BC5A00
-+#define CS35L41_DSP1_STRMARB_ERR_STATUS	0x02BC5A08
-+#define CS35L41_DSP1_INTPCTL_RES_STATIC	0x02BC6000
-+#define CS35L41_DSP1_INTPCTL_RES_DYN	0x02BC6004
-+#define CS35L41_DSP1_INTPCTL_NMI_CTRL	0x02BC6008
-+#define CS35L41_DSP1_INTPCTL_IRQ_INV	0x02BC6010
-+#define CS35L41_DSP1_INTPCTL_IRQ_MODE	0x02BC6014
-+#define CS35L41_DSP1_INTPCTL_IRQ_EN	0x02BC6018
-+#define CS35L41_DSP1_INTPCTL_IRQ_MSK	0x02BC601C
-+#define CS35L41_DSP1_INTPCTL_IRQ_FLUSH	0x02BC6020
-+#define CS35L41_DSP1_INTPCTL_IRQ_MSKCLR	0x02BC6024
-+#define CS35L41_DSP1_INTPCTL_IRQ_FRC	0x02BC6028
-+#define CS35L41_DSP1_INTPCTL_IRQ_MSKSET	0x02BC602C
-+#define CS35L41_DSP1_INTPCTL_IRQ_ERR	0x02BC6030
-+#define CS35L41_DSP1_INTPCTL_IRQ_PEND	0x02BC6034
-+#define CS35L41_DSP1_INTPCTL_IRQ_GEN	0x02BC6038
-+#define CS35L41_DSP1_INTPCTL_TESTBITS	0x02BC6040
-+#define CS35L41_DSP1_WDT_CONTROL	0x02BC7000
-+#define CS35L41_DSP1_WDT_STATUS		0x02BC7008
-+#define CS35L41_DSP1_YMEM_PACK_0	0x02C00000
-+#define CS35L41_DSP1_YMEM_PACK_1532	0x02C017F0
-+#define CS35L41_DSP1_YMEM_UNPACK32_0	0x03000000
-+#define CS35L41_DSP1_YMEM_UNPACK32_1022	0x03000FF8
-+#define CS35L41_DSP1_YMEM_UNPACK24_0	0x03400000
-+#define CS35L41_DSP1_YMEM_UNPACK24_2045	0x03401FF4
-+#define CS35L41_DSP1_PMEM_0		0x03800000
-+#define CS35L41_DSP1_PMEM_5114		0x03804FE8
-+
-+/*test regs for emulation bringup*/
-+#define CS35L41_PLL_OVR			0x00003018
-+#define CS35L41_BST_TEST_DUTY		0x00003900
-+#define CS35L41_DIGPWM_IOCTRL		0x0000706C
-+
-+/*registers populated by OTP*/
-+#define CS35L41_OTP_TRIM_1	0x0000208c
-+#define CS35L41_OTP_TRIM_2	0x00002090
-+#define CS35L41_OTP_TRIM_3	0x00003010
-+#define CS35L41_OTP_TRIM_4	0x0000300C
-+#define CS35L41_OTP_TRIM_5	0x0000394C
-+#define CS35L41_OTP_TRIM_6	0x00003950
-+#define CS35L41_OTP_TRIM_7	0x00003954
-+#define CS35L41_OTP_TRIM_8	0x00003958
-+#define CS35L41_OTP_TRIM_9	0x0000395C
-+#define CS35L41_OTP_TRIM_10	0x0000416C
-+#define CS35L41_OTP_TRIM_11	0x00004160
-+#define CS35L41_OTP_TRIM_12	0x00004170
-+#define CS35L41_OTP_TRIM_13	0x00004360
-+#define CS35L41_OTP_TRIM_14	0x00004448
-+#define CS35L41_OTP_TRIM_15	0x0000444C
-+#define CS35L41_OTP_TRIM_16	0x00006E30
-+#define CS35L41_OTP_TRIM_17	0x00006E34
-+#define CS35L41_OTP_TRIM_18	0x00006E38
-+#define CS35L41_OTP_TRIM_19	0x00006E3C
-+#define CS35L41_OTP_TRIM_20	0x00006E40
-+#define CS35L41_OTP_TRIM_21	0x00006E44
-+#define CS35L41_OTP_TRIM_22	0x00006E48
-+#define CS35L41_OTP_TRIM_23	0x00006E4C
-+#define CS35L41_OTP_TRIM_24	0x00006E50
-+#define CS35L41_OTP_TRIM_25	0x00006E54
-+#define CS35L41_OTP_TRIM_26	0x00006E58
-+#define CS35L41_OTP_TRIM_27	0x00006E5C
-+#define CS35L41_OTP_TRIM_28	0x00006E60
-+#define CS35L41_OTP_TRIM_29	0x00006E64
-+#define CS35L41_OTP_TRIM_30	0x00007418
-+#define CS35L41_OTP_TRIM_31	0x0000741C
-+#define CS35L41_OTP_TRIM_32	0x00007434
-+#define CS35L41_OTP_TRIM_33	0x00007068
-+#define CS35L41_OTP_TRIM_34	0x0000410C
-+#define CS35L41_OTP_TRIM_35	0x0000400C
-+#define CS35L41_OTP_TRIM_36	0x00002030
-+
-+#define CS35L41_MAX_CACHE_REG		36
-+#define CS35L41_OTP_SIZE_WORDS		32
-+#define CS35L41_NUM_OTP_ELEM		100
-+#define CS35L41_NUM_OTP_MAPS		5
-+
-+#define CS35L41_VALID_PDATA		0x80000000
-+#define CS35L41_NUM_SUPPLIES            2
-+
-+#define CS35L41_SCLK_MSTR_MASK		0x10
-+#define CS35L41_SCLK_MSTR_SHIFT		4
-+#define CS35L41_LRCLK_MSTR_MASK		0x01
-+#define CS35L41_LRCLK_MSTR_SHIFT	0
-+#define CS35L41_SCLK_INV_MASK		0x40
-+#define CS35L41_SCLK_INV_SHIFT		6
-+#define CS35L41_LRCLK_INV_MASK		0x04
-+#define CS35L41_LRCLK_INV_SHIFT		2
-+#define CS35L41_SCLK_FRC_MASK		0x20
-+#define CS35L41_SCLK_FRC_SHIFT		5
-+#define CS35L41_LRCLK_FRC_MASK		0x02
-+#define CS35L41_LRCLK_FRC_SHIFT		1
-+
-+#define CS35L41_AMP_GAIN_PCM_MASK	0x3E0
-+#define CS35L41_AMP_GAIN_ZC_MASK	0x0400
-+#define CS35L41_AMP_GAIN_ZC_SHIFT	10
-+
-+#define CS35L41_BST_CTL_MASK		0xFF
-+#define CS35L41_BST_CTL_SEL_MASK	0x03
-+#define CS35L41_BST_CTL_SEL_REG		0x00
-+#define CS35L41_BST_CTL_SEL_CLASSH	0x01
-+#define CS35L41_BST_IPK_MASK		0x7F
-+#define CS35L41_BST_IPK_SHIFT		0
-+#define CS35L41_BST_LIM_MASK		0x4
-+#define CS35L41_BST_LIM_SHIFT		2
-+#define CS35L41_BST_K1_MASK		0x000000FF
-+#define CS35L41_BST_K1_SHIFT		0
-+#define CS35L41_BST_K2_MASK		0x0000FF00
-+#define CS35L41_BST_K2_SHIFT		8
-+#define CS35L41_BST_SLOPE_MASK		0x0000FF00
-+#define CS35L41_BST_SLOPE_SHIFT		8
-+#define CS35L41_BST_LBST_VAL_MASK	0x00000003
-+#define CS35L41_BST_LBST_VAL_SHIFT	0
-+
-+#define CS35L41_TEMP_THLD_MASK		0x03
-+#define CS35L41_VMON_IMON_VOL_MASK	0x07FF07FF
-+#define CS35L41_PDM_MODE_MASK		0x01
-+#define CS35L41_PDM_MODE_SHIFT		0
-+
-+#define CS35L41_CH_MEM_DEPTH_MASK	0x07
-+#define CS35L41_CH_MEM_DEPTH_SHIFT	0
-+#define CS35L41_CH_HDRM_CTL_MASK	0x007F0000
-+#define CS35L41_CH_HDRM_CTL_SHIFT	16
-+#define CS35L41_CH_REL_RATE_MASK	0xFF00
-+#define CS35L41_CH_REL_RATE_SHIFT	8
-+#define CS35L41_CH_WKFET_DLY_MASK	0x001C
-+#define CS35L41_CH_WKFET_DLY_SHIFT	2
-+#define CS35L41_CH_WKFET_THLD_MASK	0x0F00
-+#define CS35L41_CH_WKFET_THLD_SHIFT	8
-+
-+#define CS35L41_HW_NG_SEL_MASK		0x3F00
-+#define CS35L41_HW_NG_SEL_SHIFT		8
-+#define CS35L41_HW_NG_DLY_MASK		0x0070
-+#define CS35L41_HW_NG_DLY_SHIFT		4
-+#define CS35L41_HW_NG_THLD_MASK		0x0007
-+#define CS35L41_HW_NG_THLD_SHIFT	0
-+
-+#define CS35L41_DSP_NG_ENABLE_MASK	0x00010000
-+#define CS35L41_DSP_NG_ENABLE_SHIFT	16
-+#define CS35L41_DSP_NG_THLD_MASK	0x7
-+#define CS35L41_DSP_NG_THLD_SHIFT	0
-+#define CS35L41_DSP_NG_DELAY_MASK	0x0F00
-+#define CS35L41_DSP_NG_DELAY_SHIFT	8
-+
-+#define CS35L41_ASP_FMT_MASK		0x0700
-+#define CS35L41_ASP_FMT_SHIFT		8
-+#define CS35L41_ASP_DOUT_HIZ_MASK	0x03
-+#define CS35L41_ASP_DOUT_HIZ_SHIFT	0
-+#define CS35L41_ASP_WIDTH_16		0x10
-+#define CS35L41_ASP_WIDTH_24		0x18
-+#define CS35L41_ASP_WIDTH_32		0x20
-+#define CS35L41_ASP_WIDTH_TX_MASK	0xFF0000
-+#define CS35L41_ASP_WIDTH_TX_SHIFT	16
-+#define CS35L41_ASP_WIDTH_RX_MASK	0xFF000000
-+#define CS35L41_ASP_WIDTH_RX_SHIFT	24
-+#define CS35L41_ASP_RX1_SLOT_MASK	0x3F
-+#define CS35L41_ASP_RX1_SLOT_SHIFT	0
-+#define CS35L41_ASP_RX2_SLOT_MASK	0x3F00
-+#define CS35L41_ASP_RX2_SLOT_SHIFT	8
-+#define CS35L41_ASP_RX_WL_MASK		0x3F
-+#define CS35L41_ASP_TX_WL_MASK		0x3F
-+#define CS35L41_ASP_RX_WL_SHIFT		0
-+#define CS35L41_ASP_TX_WL_SHIFT		0
-+#define CS35L41_ASP_SOURCE_MASK		0x7F
-+
-+#define CS35L41_INPUT_SRC_ASPRX1	0x08
-+#define CS35L41_INPUT_SRC_ASPRX2	0x09
-+#define CS35L41_INPUT_SRC_VMON		0x18
-+#define CS35L41_INPUT_SRC_IMON		0x19
-+#define CS35L41_INPUT_SRC_CLASSH	0x21
-+#define CS35L41_INPUT_SRC_VPMON		0x28
-+#define CS35L41_INPUT_SRC_VBSTMON	0x29
-+#define CS35L41_INPUT_SRC_TEMPMON	0x3A
-+#define CS35L41_INPUT_SRC_RSVD		0x3B
-+#define CS35L41_INPUT_DSP_TX1		0x32
-+#define CS35L41_INPUT_DSP_TX2		0x33
-+
-+#define CS35L41_PLL_CLK_SEL_MASK	0x07
-+#define CS35L41_PLL_CLK_SEL_SHIFT	0
-+#define CS35L41_PLL_CLK_EN_MASK		0x10
-+#define CS35L41_PLL_CLK_EN_SHIFT	4
-+#define CS35L41_PLL_OPENLOOP_MASK	0x0800
-+#define CS35L41_PLL_OPENLOOP_SHIFT	11
-+#define CS35L41_PLLSRC_SCLK		0
-+#define CS35L41_PLLSRC_LRCLK		1
-+#define CS35L41_PLLSRC_SELF		3
-+#define CS35L41_PLLSRC_PDMCLK		4
-+#define CS35L41_PLLSRC_MCLK		5
-+#define CS35L41_PLLSRC_SWIRE		7
-+#define CS35L41_REFCLK_FREQ_MASK	0x7E0
-+#define CS35L41_REFCLK_FREQ_SHIFT	5
-+
-+#define CS35L41_GLOBAL_FS_MASK		0x1F
-+#define CS35L41_GLOBAL_FS_SHIFT		0
-+
-+#define CS35L41_GLOBAL_EN_MASK		0x01
-+#define CS35L41_GLOBAL_EN_SHIFT		0
-+#define CS35L41_BST_EN_MASK		0x0030
-+#define CS35L41_BST_EN_SHIFT		4
-+#define CS35L41_BST_EN_DEFAULT		0x2
-+#define CS35L41_AMP_EN_SHIFT		0
-+#define CS35L41_AMP_EN_MASK		1
-+
-+#define CS35L41_PDN_DONE_MASK		0x00800000
-+#define CS35L41_PDN_DONE_SHIFT		23
-+#define CS35L41_PUP_DONE_MASK		0x01000000
-+#define CS35L41_PUP_DONE_SHIFT		24
-+
-+#define CS35L36_PUP_DONE_IRQ_UNMASK	0x5F
-+#define CS35L36_PUP_DONE_IRQ_MASK	0xBF
-+
-+#define CS35L41_AMP_SHORT_ERR		0x80000000
-+#define CS35L41_BST_SHORT_ERR		0x0100
-+#define CS35L41_TEMP_WARN		0x8000
-+#define CS35L41_TEMP_ERR		0x00020000
-+#define CS35L41_BST_OVP_ERR		0x40
-+#define CS35L41_BST_DCM_UVP_ERR		0x80
-+#define CS35L41_OTP_BOOT_DONE		0x02
-+#define CS35L41_PLL_UNLOCK		0x10
-+#define CS35L41_OTP_BOOT_ERR		0x80000000
-+
-+#define CS35L41_AMP_SHORT_ERR_RLS	0x02
-+#define CS35L41_BST_SHORT_ERR_RLS	0x04
-+#define CS35L41_BST_OVP_ERR_RLS		0x08
-+#define CS35L41_BST_UVP_ERR_RLS		0x10
-+#define CS35L41_TEMP_WARN_ERR_RLS	0x20
-+#define CS35L41_TEMP_ERR_RLS		0x40
-+
-+
-+#define CS35L41_INT1_MASK_DEFAULT	0x7FFCFE3F
-+#define CS35L41_INT1_UNMASK_PUP		0xFEFFFFFF
-+#define CS35L41_INT1_UNMASK_PDN		0xFF7FFFFF
-+
-+#define CS35L41_GPIO_DIR_MASK		0x80000000
-+#define CS35L41_GPIO1_CTRL_MASK		0x00030000
-+#define CS35L41_GPIO1_CTRL_SHIFT	16
-+#define CS35L41_GPIO2_CTRL_MASK		0x07000000
-+#define CS35L41_GPIO2_CTRL_SHIFT	24
-+#define CS35L41_GPIO_CTRL_OPEN_INT	2
-+#define CS35L41_GPIO_CTRL_ACTV_LO	4
-+#define CS35L41_GPIO_CTRL_ACTV_HI	5
-+#define CS35L41_GPIO_POL_MASK		0x1000
-+#define CS35L41_GPIO_POL_SHIFT		12
-+
-+#define CS35L41_AMP_INV_PCM_SHIFT	14
-+#define CS35L41_AMP_INV_PCM_MASK	(1 << CS35L41_AMP_INV_PCM_SHIFT)
-+#define CS35L41_AMP_PCM_VOL_SHIFT	3
-+#define CS35L41_AMP_PCM_VOL_MASK	(0x7FF << 3)
-+#define CS35L41_AMP_PCM_VOL_MUTE	0x4CF
-+
-+#define CS35L41_CHIP_ID			0x35a40
-+#define CS35L41R_CHIP_ID		0x35b40
-+#define CS35L41_MTLREVID_MASK		0x0F
-+#define CS35L41_REVID_A0		0xA0
-+#define CS35L41_REVID_B0		0xB0
-+#define CS35L41_REVID_B2		0xB2
-+
-+#define CS35L41_HALO_CORE_RESET		0x00000200
-+
-+#define CS35L41_FS1_WINDOW_MASK		0x000007FF
-+#define CS35L41_FS2_WINDOW_MASK		0x00FFF800
-+#define CS35L41_FS2_WINDOW_SHIFT	12
-+
-+#define CS35L41_SPI_MAX_FREQ_OTP	4000000
-+
-+#define CS35L41_RX_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
-+#define CS35L41_TX_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
-+
-+bool cs35l41_readable_reg(struct device *dev, unsigned int reg);
-+bool cs35l41_precious_reg(struct device *dev, unsigned int reg);
-+bool cs35l41_volatile_reg(struct device *dev, unsigned int reg);
-+
-+struct cs35l41_otp_packed_element_t {
-+	u32 reg;
-+	u8 shift;
-+	u8 size;
-+};
-+
-+struct cs35l41_otp_map_element_t {
-+	u32 id;
-+	u32 num_elements;
-+	const struct cs35l41_otp_packed_element_t *map;
-+	u32 bit_offset;
-+	u32 word_offset;
-+};
-+
-+extern const struct reg_default cs35l41_reg[CS35L41_MAX_CACHE_REG];
-+extern const struct cs35l41_otp_map_element_t
-+				cs35l41_otp_map_map[CS35L41_NUM_OTP_MAPS];
-+
-+#define CS35L41_REGSTRIDE			4
-+
-+struct cs35l41_private {
-+	struct snd_soc_codec *codec;
-+	struct cs35l41_platform_data pdata;
-+	struct device *dev;
-+	struct regmap *regmap;
-+	struct regulator_bulk_data supplies[CS35L41_NUM_SUPPLIES];
-+	int irq;
-+	/* GPIO for /RST */
-+	struct gpio_desc *reset_gpio;
-+	void (*otp_setup)(struct cs35l41_private *cs35l41, bool is_pre_setup,
-+				unsigned int *freq);
-+};
-+
-+int cs35l41_probe(struct cs35l41_private *cs35l41,
-+						struct cs35l41_platform_data *pdata);
-+int cs35l41_remove(struct cs35l41_private *cs35l41);
-+
-+#endif /*__CS35L41_H__*/
--- 
-2.25.1
+--gKMricLos+KVdGMg
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
+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
+/wNLzHU7iMABAA==
+
+--gKMricLos+KVdGMg--
