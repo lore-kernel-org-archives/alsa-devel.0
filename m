@@ -2,83 +2,77 @@ Return-Path: <SRS0=Q8D2=NZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A258C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 17:59:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C62B8C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 18:05:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1FD1B60EB7
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 17:59:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1FD1B60EB7
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=dnyon.com
+	by mail.kernel.org (Postfix) with ESMTPS id 14B6360F90
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 18:05:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 14B6360F90
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1845518BF;
-	Fri,  3 Sep 2021 19:58:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1845518BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73EE118CC;
+	Fri,  3 Sep 2021 20:05:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73EE118CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630691981;
-	bh=ErtwNa/frJs0yBr+aZbsmsBfg5pYbwl7hzB9MOn20n0=;
+	s=default; t=1630692350;
+	bh=1hAUx3R/bUDil8aAG0+n3xAXYLVRkV49z3VRYlAubGo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OyT2xfUC+cNi3sq7JYUZt0+HoEYXGr6Df5SWBdEHzOZTkx3if+feDF7oc4XWEk6QN
-	 F3M5arMTqjMp6oA/WJvhjdyHZokub7NlMhtz2YD5yf1ebq47qoqCirOI2CKjBGEz3f
-	 EHmanC6t/Dm0C+Bu7JoD23sGRFhMi9pku5L/imK8=
+	b=ZSZEE4v9xR3BXO8rWw+eXIt4ozqn6CMVPAVG/+rb21CMsG/P60/KeraCbc6L44GQE
+	 O5Sio2T75zmP1kDujYYMKuGDDl8ry22WvaN5JQVRzVMFAmpclut+ZgiB44/ZvV/Rlx
+	 mrLdysKFW9Svq+xjgd6S59mMApzue+8UcIF+01B0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A4CD2F80227;
-	Fri,  3 Sep 2021 19:58:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0ACA3F80227;
+	Fri,  3 Sep 2021 20:05:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0FA6CF80254; Fri,  3 Sep 2021 19:58:50 +0200 (CEST)
-Received: from dnyon.com (dnyon.com [82.223.165.189])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 1EC77F80254; Fri,  3 Sep 2021 20:04:58 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EAE74F80088
- for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2021 19:58:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAE74F80088
+ by alsa1.perex.cz (Postfix) with ESMTPS id C0CF7F80088
+ for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2021 20:04:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0CF7F80088
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=dnyon.com header.i=@dnyon.com
- header.b="TPS2lJvy"
-Received: from dnyon.com (55.red-81-39-194.dynamicip.rima-tde.net
- [81.39.194.55])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by dnyon.com (Postfix) with ESMTPSA id 3159E3FEB7;
- Fri,  3 Sep 2021 17:58:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dnyon.com; s=mail;
- t=1630691912; bh=ErtwNa/frJs0yBr+aZbsmsBfg5pYbwl7hzB9MOn20n0=;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="RnGv8n/5"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B771760EBA;
+ Fri,  3 Sep 2021 18:04:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1630692293;
+ bh=1hAUx3R/bUDil8aAG0+n3xAXYLVRkV49z3VRYlAubGo=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=TPS2lJvySiAaJLDIxC8jYRFF1OVe9bIBK1DyVVKTC5CK8YNSR/iciif60ega/XNU3
- odwuWx1FCt0IogCzaoLPaBU16oK5TWH3OCHQX0Zp5TE5KCejm9N4kgE+xnU4XIM5LR
- RlcA4Hvr+mv/CTunhAhZYtb1bPHE7Y1gE4BViItrPrNEY5k5/CAc2HyA3p06GsWiLc
- gelO9JLIFYTC956XumJiLlMnEI1rQyPop+7vcVTGtJJU0oXpVYWunrvjwc238LQNpw
- kO1+i2MArSuL4dXTHZE78b9l6LRpIgO57zXBmuBmvO/5cJklKroTA/1J5rF48p712M
- Gyq6cS/42t+Ww==
-From: Alejandro Tafalla <atafalla@dnyon.com>
-To: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 2/2] dt-bindings: sound: max98927: Add reset-gpios
- optional property
-Date: Fri, 03 Sep 2021 19:58:13 +0200
-Message-ID: <5749833.lOV4Wx5bFT@alexpc>
-In-Reply-To: <YTJeMGMAeRjmI5Mu@robh.at.kernel.org>
-References: <cover.1630632805.git.atafalla@dnyon.com>
- <102ae6df3b5398e8c66b954ac5e13a9d565fab6f.1630632805.git.atafalla@dnyon.com>
- <YTJeMGMAeRjmI5Mu@robh.at.kernel.org>
+ b=RnGv8n/5NW4KOC551he3pdvHYM9wgwABqJhAralXwejVa5BJMjEKqIp3IuEAyJBRj
+ r0o7yQjcFGeEH4UJOHbmeoKZsJFuJnpivcPUA5DR0w4DjNf2oxdTcg6YU69W0Dz7no
+ 6oNGaZzVo64R4MVPpAMMXdErQkjVnSj0B46KyVKO9fkMFoo55rhMROJQ+rzVWFpV/Q
+ Iwidt7aaqR3bdFnSRl6riALORxQn1SnC0Y44Ik6yhg2LEZ5fIcTHRfUUvqZ9GK4LGm
+ uS06UzgblqY6JDjAoi1sB/udZZ/nNqNLgnDLzm2ZJRz2nBd+1ijI55gacghrlEDSN0
+ 2P7UeND5xu8Eg==
+From: Mark Brown <broonie@kernel.org>
+To: Sugar Zhang <sugar.zhang@rock-chips.com>,
+	heiko@sntech.de
+Subject: Re: [PATCH v2] ASoC: rockchip: i2s: Fix concurrency between tx/rx
+Date: Fri,  3 Sep 2021 19:04:18 +0100
+Message-Id: <163069197835.35101.5282344182422395715.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <1630305525-65759-1-git-send-email-sugar.zhang@rock-chips.com>
+References: <1630305525-65759-1-git-send-email-sugar.zhang@rock-chips.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- Andy Shevchenko <andy.shevchenko@gmail.com>, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,27 +88,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 3/9/21 19:41 Rob Herring wrote:
-> On Fri, 03 Sep 2021 03:49:51 +0200, Alejandro wrote:
-> > From: Alejandro Tafalla <atafalla@dnyon.com>
-> > 
-> > Add the reset-gpios as an optional property because some devices might
-> > not need it to work properly.
-> > 
-> > Signed-off-by: Alejandro Tafalla <atafalla@dnyon.com>
-> > ---
-> > 
-> >  Documentation/devicetree/bindings/sound/max9892x.txt | 3 +++
-> >  1 file changed, 3 insertions(+)
+On Mon, 30 Aug 2021 14:38:45 +0800, Sugar Zhang wrote:
+> This patch adds lock to fix comcurrency between tx/rx
+> to fix 'rockchip-i2s ff070000.i2s; fail to clear'
 > 
-> Please add Acked-by/Reviewed-by tags when posting new versions. However,
-> there's no need to repost patches *only* to add the tags. The upstream
-> maintainer will do that for acks received on the version they apply.
+> Considering the situation;
 > 
-> If a tag was not added on purpose, please state why and what changed.
-Okay. I was gonna send another version so I'll add it there.
+>        tx stream              rx stream
+>            |                      |
+>            |                   disable
+>          enable                   |
+>            |                    reset
+> 
+> [...]
 
--- 
-Alejandro Tafalla
+Applied to
 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
+
+[1/1] ASoC: rockchip: i2s: Fix concurrency between tx/rx
+      commit: fcb958ee8e832e9cdf43408535207e15f14af755
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
