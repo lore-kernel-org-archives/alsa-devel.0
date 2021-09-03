@@ -6,70 +6,69 @@ X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9759AC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 15:53:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00DD3C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 16:04:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 29CDA6054E
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 15:53:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 29CDA6054E
+	by mail.kernel.org (Postfix) with ESMTPS id 1827E610CE
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Sep 2021 16:04:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1827E610CE
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=dnyon.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B963718A8;
-	Fri,  3 Sep 2021 17:53:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B963718A8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 75F5C18A9;
+	Fri,  3 Sep 2021 18:03:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75F5C18A9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630684433;
-	bh=N5ikRjsunM6u4Rj6jCsrMSVHxexBHAHR5BNCYYEhc5M=;
+	s=default; t=1630685041;
+	bh=VuoVMOLwXT0Lrus8Yp/9d+LE+TbVeNBkpQ5C8cJGLps=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=M8DPuL0LdZChwdYo+EM1AgWkNYogfD/xnXOqjj/uC14cQGr3Wu7LBiem3R8mBf94x
-	 dSuBMViaqQL+8XBAzq4y96NLNzB4tieXtWMsletoPfjku5a5S4YRIGyrYg/yOl3xxn
-	 N08K1yqQrEgDFcQe2gFDv5qsC5COHRwDiFCM+BK0=
+	b=kR6Mp1LdYjbgqNyvGY8bndUBynLtxC8JEVAhZPOkYEdovOPQoMKHZb4DP/6FzG17g
+	 0RDJJfK43h3kHk27ILErYHdLVf7k0CZtAEtgUWqBDUDiHb/0xQO8l8iuGL4cQFbJZa
+	 NUU350uBXVdrEPdlSc40h2QC6+No0Fbhd4ccF588=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 453C4F80227;
-	Fri,  3 Sep 2021 17:53:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0150FF80227;
+	Fri,  3 Sep 2021 18:03:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F2C2F80254; Fri,  3 Sep 2021 17:53:00 +0200 (CEST)
+ id B0A5FF80254; Fri,  3 Sep 2021 18:03:09 +0200 (CEST)
 Received: from dnyon.com (dnyon.com [82.223.165.189])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C427BF80088
- for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2021 17:52:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C427BF80088
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9BA7FF80088
+ for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2021 18:03:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BA7FF80088
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=dnyon.com header.i=@dnyon.com
- header.b="bhYZ4ZHs"
+ header.b="tHJSW7ZU"
 Received: from dnyon.com (55.red-81-39-194.dynamicip.rima-tde.net
  [81.39.194.55])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by dnyon.com (Postfix) with ESMTPSA id 04EC33FEB7;
- Fri,  3 Sep 2021 15:52:50 +0000 (UTC)
+ by dnyon.com (Postfix) with ESMTPSA id A26DF3FEB7;
+ Fri,  3 Sep 2021 16:02:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dnyon.com; s=mail;
- t=1630684371; bh=N5ikRjsunM6u4Rj6jCsrMSVHxexBHAHR5BNCYYEhc5M=;
+ t=1630684977; bh=VuoVMOLwXT0Lrus8Yp/9d+LE+TbVeNBkpQ5C8cJGLps=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=bhYZ4ZHs0crDvHNWVNKHa5OgtJANem0yfORE1sURs0+UvlLGMg9DI9c0AEdvttxDA
- YiOkxygYikSY8Nr2KdyOTsKKak2bAIpRmyUYLdvzODGserD1Nm5wbvwkFSfO0WQHKL
- ZscIYdheGAxRdtvF/PeF1J9w34KY6hrAU15GrXVTcbES05SD/FMU+ajYPEidgkIHfq
- t75BoUzrGROloy1Dn87itkJiErZu8BLhUAYxN+WXKl5S0dns8aYKChE3paBMbIhych
- QqD9Hs37aMskC9Md993M8U6PDKr6Nkb1Bo6G8Z8+di3ZgfyYvIO4miQ08WptNtpuJf
- +rNje2K2hT9Rg==
+ b=tHJSW7ZU6Fcphf5XNe2FSJmR6LOj0T/zjndyINcu+XJyJtUBy+tk/f3K4bx8jVDoB
+ LS6j6fXu4AX3jDsTZ1tEyoKbR7NBKXDfeLyDzbF9xpMXEyvsfkpMuE7fJHxINvChAd
+ 3dVDJwl2DDSRjjCs9sgk/KYq7ZtyZyv9HBpldJwjbMhqiu0E/IjU0ZFxCTke+Ve2Pc
+ g7Y4yeFgN9crDm+ftU5GR45/CUsH9BN8oY/5LTM3GBKJ9YErqYE+lC0hA5r0Wt9m4G
+ UKWAY6tvTScd87I7ubAfN8wvnLAbONCGnleZi1Chn4a97oBJe4Ixsp5YMmECwtNaeS
+ gyJ7UYI7erG+A==
 From: Alejandro Tafalla <atafalla@dnyon.com>
 To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v3 1/2] ASoC: max98927: Handle reset gpio when probing i2c
-Date: Fri, 03 Sep 2021 17:52:29 +0200
-Message-ID: <11848098.O9o76ZdvQC@alexpc>
-In-Reply-To: <CAHp75VeD8sbxcu==BF97yY4ZGtLbNAQSiTxq2cDvBSdCpXxsyw@mail.gmail.com>
+Subject: Re: [PATCH v3 0/2] Add reset-gpios handling for max98927
+Date: Fri, 03 Sep 2021 18:02:36 +0200
+Message-ID: <2103571.irdbgypaU6@alexpc>
+In-Reply-To: <CAHp75VdOw7fS055q9eccm9dP9nuAK8rcLXf4vuzA=-UnbqoUfQ@mail.gmail.com>
 References: <cover.1630632805.git.atafalla@dnyon.com>
- <04a18f4115539752429da55fb857834cea0944e5.1630632805.git.atafalla@dnyon.com>
- <CAHp75VeD8sbxcu==BF97yY4ZGtLbNAQSiTxq2cDvBSdCpXxsyw@mail.gmail.com>
+ <CAHp75VdOw7fS055q9eccm9dP9nuAK8rcLXf4vuzA=-UnbqoUfQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
@@ -93,29 +92,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On viernes, 3 de septiembre de 2021 10:18:14 (CEST) Andy Shevchenko wrote:
+On 3/9/21 10:16 Andy Shevchenko wrote:
 > On Fri, Sep 3, 2021 at 4:51 AM Alejandro <atafalla@dnyon.com> wrote:
-> > From: Alejandro Tafalla <atafalla@dnyon.com>
-> > 
-> > Drive the reset gpio if defined in the DTS node.
+> > The max98927 codec on some devices (i.e. Xiaomi Mi A2 Lite phone) require
 > 
-> ...
+> requires
 > 
-> > +       reset_gpio
-> > +               = devm_gpiod_get_optional(&i2c->dev, "reset",
-> > GPIOD_OUT_LOW); +       if (IS_ERR(reset_gpio)) {
-> > +               ret = PTR_ERR(reset_gpio);
-> > +               return dev_err_probe(&i2c->dev, ret, "failed to request
-> > GPIO reset pin");
-> Not sure why my comments have been ignored here.
+> > hardware-resetting the codec by driving a reset-gpio. This series add
 > 
-> > +       }
+> adds
 > 
-> --
-> With Best Regards,
-> Andy Shevchenko
-Sorry, I misread your suggestion and didn't notice PTR_ERR was also in the 
-same line.
+> > support for it through an optional reset-gpios property.
+> 
+> Where is the  changelog?
+I'll fix the typos and add previous changelogs in the next version.
+Thank you.
 
+-- 
+Alejandro Tafalla
 
 
