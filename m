@@ -1,4 +1,4 @@
-Return-Path: <SRS0=laVZ=N3=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=AHG6=N4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -7,50 +7,50 @@ X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 587AFC433F5
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Sep 2021 22:52:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02F63C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Sep 2021 07:13:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 62F4660F14
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Sep 2021 22:52:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 62F4660F14
+	by mail.kernel.org (Postfix) with ESMTPS id B30DF60F21
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Sep 2021 07:13:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B30DF60F21
 Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6AFCE17C3;
-	Mon,  6 Sep 2021 00:51:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6AFCE17C3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 28AB81748;
+	Mon,  6 Sep 2021 09:12:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28AB81748
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630882361;
-	bh=D/FCYb0mmxQIwJqeg2pJlRzdb2mmtfjJlzCUkFSAWng=;
+	s=default; t=1630912404;
+	bh=tRX8x1e1q+egkwrc9woGr8GLIDeXx+/8kuANoiYqC3c=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LR7LMT3sY7aiO53Xm+6RKOWeIX5IXMYcFGgjr04n0KVIcBfXCbP9iSMPlrWxhCR+z
-	 1cMHI3a8yYkzdSytAmteIMp9KxesWLRhdx4CGJPBCcEBdTiNJh5U7RK9ZjUKoB4LMY
-	 aZYQcxLfQngQDav04mEDyjP0YNvCNtCTiLc3gW2o=
+	b=c2POZYpqnG2P6L6RNlJePcIAB+MYAl6eIQluKJl88xSDEZKZy8gbknR3qZuqdZ4ue
+	 DZcV1USSyETwrP+6QrF3XsRWd8pfYd3dmfVBBsMOSBQaQ0XuffePe1PbBXrFWudo6E
+	 FEn0F+5UpxEoP4LjxmI/Pz5q6cWLwwhx4agRPMI0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E7516F80171;
-	Mon,  6 Sep 2021 00:51:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ABCDFF800B5;
+	Mon,  6 Sep 2021 09:12:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DC11EF80253; Mon,  6 Sep 2021 00:51:47 +0200 (CEST)
+ id F2326F802E7; Mon,  6 Sep 2021 09:12:31 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 1CDCBF800B5
- for <alsa-devel@alsa-project.org>; Mon,  6 Sep 2021 00:51:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CDCBF800B5
+ by alsa1.perex.cz (Postfix) with ESMTP id 7D347F800B5
+ for <alsa-devel@alsa-project.org>; Mon,  6 Sep 2021 09:12:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D347F800B5
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
+From: GitHub issues - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1630882295199177980-webhooks-bot@alsa-project.org>
-References: <1630882295199177980-webhooks-bot@alsa-project.org>
-Subject: alsa-lib 1.2.5 and 1.2.5.1 fail to build with --enable-static
-Message-Id: <20210905225147.DC11EF80253@alsa1.perex.cz>
-Date: Mon,  6 Sep 2021 00:51:47 +0200 (CEST)
+In-Reply-To: <1630912346745320082-webhooks-bot@alsa-project.org>
+References: <1630912346745320082-webhooks-bot@alsa-project.org>
+Subject: hdajackretask doesn't check for script's exit code
+Message-Id: <20210906071231.F2326F802E7@alsa1.perex.cz>
+Date: Mon,  6 Sep 2021 09:12:31 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,28 +66,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #177 was edited from pjbroad:
+alsa-project/alsa-tools issue #8 was opened from kroq-gar78:
 
-This build successfully:
-`./configure  && make clean && make`
+`hdajackretask` creates a script in `/tmp` before executing it. When `/tmp` is mounted with `noexec`, running that script will fail, but the GUI gives no indication that it failed.
 
-This fails to build:
-`./configure --enable-shared=no --enable-static=yes && make clean && make`
+The GUI should check for the exit code of the script, and notify the user appropriately if the script failed to execute.
 
-```
-make[1]: Entering directory '/home/paul/el/el-build-scripts/linux-static/libs/alsa-lib-1.2.5.1/aserver'
-  CC       aserver.o
-  CCLD     aserver
-/usr/bin/ld: ../src/.libs/libasound.a(control_symbols.o):(.data.rel+0x8): undefined reference to `_snd_module_control_empty'
-collect2: error: ld returned 1 exit status
-make[1]: *** [Makefile:398: aserver] Error 1
-make[1]: Leaving directory '/home/paul/el/el-build-scripts/linux-static/libs/alsa-lib-1.2.5.1/aserver'
-make: *** [Makefile:405: all-recursive] Error 1
-```
-`gcc (Ubuntu 11.2.0-3ubuntu1) 11.2.0`
+Also, if this isn't the appropriate place to report a bug, please let me know!
 
-
-Building static worked find for 1.2.4.  Hopefully someone can help resolve this.  Let me know if you want me to try anything.
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/177
-Repository URL: https://github.com/alsa-project/alsa-lib
+Issue URL     : https://github.com/alsa-project/alsa-tools/issues/8
+Repository URL: https://github.com/alsa-project/alsa-tools
