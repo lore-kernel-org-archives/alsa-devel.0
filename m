@@ -2,98 +2,77 @@ Return-Path: <SRS0=Gs4n=N5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-7.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C039C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Sep 2021 13:10:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7781DC433FE
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Sep 2021 16:10:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3E50860524
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Sep 2021 13:10:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3E50860524
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 3F40761108
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Sep 2021 16:10:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3F40761108
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F26391719;
-	Tue,  7 Sep 2021 15:09:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F26391719
+	by alsa0.perex.cz (Postfix) with ESMTPS id D228516F6;
+	Tue,  7 Sep 2021 18:09:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D228516F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631020226;
-	bh=EwAZ6xsh+B077xdiAiUPyl2HqmdVrDjC+5YWJzZ/NfU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1631030998;
+	bh=XOs/S843hXD22PzqcZw+IsIKyasZco2+ywtaZEvHngs=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ez8oGVEGGgz+qY3aYyxT+WQ8uEw8Q81FeGdg2i6T+5uhXnp+eB+ULTGC1QlpwfXna
-	 BsyCpIe7OBrPzD7PMtDeuv+LETQzjo2QkfZ3i/Zyzq7BopEz0MHjDa5JgWNZzuP5Yr
-	 0GufFBfRtiC9sTb4fztuyxP30rTkhZqvkbPiKq5I=
+	b=sTrhFhlRW4a52KjuWfkAviDKMqBYf63O+Pr03Z5XoZ9ayYfsUu0D/7HD5I89+nudF
+	 hhVWUJBjhFwzUbrVSIb16XkMv/7kJlG45ZnkoqEPBf+XBrv3dmm1Ed0xxM+ni4aH3W
+	 V3/Tlz3ekazJs6GQ3krF9/1bMtbvfXdHAkp3fyKk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8A4DFF80217;
-	Tue,  7 Sep 2021 15:09:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 61445F800C7;
+	Tue,  7 Sep 2021 18:09:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5EA81F80224; Tue,  7 Sep 2021 15:09:34 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 5A2CFF80253; Tue,  7 Sep 2021 18:09:07 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7FBDBF800BC
- for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2021 15:09:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FBDBF800BC
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Q/zlmlKm"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9259C61052
- for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2021 13:09:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631020161;
- bh=EwAZ6xsh+B077xdiAiUPyl2HqmdVrDjC+5YWJzZ/NfU=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=Q/zlmlKmY5yaK8vdBrwafAOfK+k7tAOK2PrHwh8Y7zubnXxcJNdNEK3MGJd7YYk8t
- sVl5Iu+QmwjsouHH6tILI1wa00lk2DaRqTAA5QfccE5pIVUom4M8sghvYRxsBkj2FH
- fu8HjQChFTdeBL09bWX+HBa4oYvDUhf0iKabh82sdWM1dtDS/4qAMSkAqSng5JuHj2
- 4h3AnJHki2aETz+rcuvDs0HiTdNEL5+UsvCFeXrlbc2lTl1lOSbnMGZu9fJxtrcO7j
- 3rSOF6EWvhoobW0F7JVSY7MaQGZzVM2UUtoW+vwTyvjnOA/L0fJzuYdmV7faaUqPM/
- jsXz/nziD5lXg==
-Received: by mail-ej1-f46.google.com with SMTP id me10so19543121ejb.11
- for <alsa-devel@alsa-project.org>; Tue, 07 Sep 2021 06:09:21 -0700 (PDT)
-X-Gm-Message-State: AOAM532wnPQyCZCbe5XuJ0M2P2m1uIu7JEyK1DeUBGDN37W9Ft6wN3UI
- +IpuOs9eQarAFsYFf3RrMr4aqXARx6S8yUSj8w==
-X-Google-Smtp-Source: ABdhPJxBSSSWDWXZKUa0KTwW8npz3Wes4pinOo+DiOg4l/HZ6ENDCXtawjSrYUBvQFdNIbIB14Rbld0CnFGz+MWKkhk=
-X-Received: by 2002:a17:906:2dcf:: with SMTP id
- h15mr18410957eji.320.1631020160188; 
- Tue, 07 Sep 2021 06:09:20 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3396FF800C7
+ for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2021 18:09:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3396FF800C7
+X-IronPort-AV: E=McAfee;i="6200,9189,10099"; a="217081433"
+X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; d="scan'208";a="217081433"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Sep 2021 09:06:09 -0700
+X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; d="scan'208";a="512893409"
+Received: from mrburno-mobl.amr.corp.intel.com (HELO [10.212.10.81])
+ ([10.212.10.81])
+ by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Sep 2021 09:06:07 -0700
+Subject: Re: [PATCH v5 15/21] ASoC: qdsp6: audioreach: add q6apm support
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ bjorn.andersson@linaro.org, broonie@kernel.org, robh@kernel.org
+References: <20210903112032.25834-1-srinivas.kandagatla@linaro.org>
+ <20210903112032.25834-16-srinivas.kandagatla@linaro.org>
+ <081e6734-a258-6d21-cf66-f00bfeb38b04@linux.intel.com>
+ <b1cfacb4-70b9-7146-00d5-9d680297d900@linaro.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <f8bd8b94-528d-bf6f-9e84-0e41e4c56382@linux.intel.com>
+Date: Tue, 7 Sep 2021 10:04:32 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210903145340.225511-1-daniel.baluta@oss.nxp.com>
- <20210903145340.225511-3-daniel.baluta@oss.nxp.com>
- <YTJTF5VMOyG2iZb0@robh.at.kernel.org>
- <CAEnQRZC-GN9iEPk6-A_oKPHcCYj8_WeQC0TT_NpK_QntkmAqiQ@mail.gmail.com>
-In-Reply-To: <CAEnQRZC-GN9iEPk6-A_oKPHcCYj8_WeQC0TT_NpK_QntkmAqiQ@mail.gmail.com>
-From: Rob Herring <robh@kernel.org>
-Date: Tue, 7 Sep 2021 08:09:08 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqK_DGqYQxKBHDS7PyviF35V-OP7__KRmmTePn9ZHhiz_w@mail.gmail.com>
-Message-ID: <CAL_JsqK_DGqYQxKBHDS7PyviF35V-OP7__KRmmTePn9ZHhiz_w@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] dt-bindings: dsp: fsl: Add DSP optional clocks
- documentation
-To: Daniel Baluta <daniel.baluta@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: Daniel Baluta <daniel.baluta@nxp.com>,
- Devicetree List <devicetree@vger.kernel.org>,
- Linux-ALSA <alsa-devel@alsa-project.org>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Fabio Estevam <festevam@gmail.com>,
- Shengjiu Wang <shengjiu.wang@nxp.com>,
- Daniel Baluta <daniel.baluta@oss.nxp.com>,
- =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, dl-linux-imx <linux-imx@nxp.com>,
- Pengutronix Kernel Team <kernel@pengutronix.de>, Suman Anna <s-anna@ti.com>,
- Shawn Guo <shawnguo@kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+In-Reply-To: <b1cfacb4-70b9-7146-00d5-9d680297d900@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ bgoswami@codeaurora.org, tiwai@suse.de, plai@codeaurora.org,
+ lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,85 +88,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, Sep 4, 2021 at 9:51 AM Daniel Baluta <daniel.baluta@gmail.com> wrote:
->
-> On Fri, Sep 3, 2021 at 8:11 PM Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Fri, Sep 03, 2021 at 05:53:40PM +0300, Daniel Baluta wrote:
-> > > From: Daniel Baluta <daniel.baluta@nxp.com>
-> > >
-> > > DSP node on the Linux kernel side must also take care of enabling
-> > > DAI/DMA related clocks.
-> > >
-> > > By design we choose to manage DAI/DMA clocks from the kernel side because of
-> > > the architecture of some i.MX8 boards.
-> > >
-> > > Clocks are handled by a special M4 core which runs a special firmware
-> > > called SCFW (System Controler firmware).
-> > >
-> > > This communicates with A cores running Linux via a special Messaging
-> > > Unit and implements a custom API which is already implemented by the
-> > > Linux kernel i.MX clocks implementation.
-> > >
-> > > Note that these clocks are optional. We can use the DSP without them.
-> > >
-> > > Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-> > > ---
-> > >  .../devicetree/bindings/dsp/fsl,dsp.yaml      | 33 +++++++++++++++++++
-> > >  1 file changed, 33 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-> > > index 7afc9f2be13a..1453668c0194 100644
-> > > --- a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-> > > +++ b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-> > > @@ -24,16 +24,49 @@ properties:
-> > >      maxItems: 1
-> > >
-> > >    clocks:
-> > > +    minItems: 3
-> > >      items:
-> > >        - description: ipg clock
-> > >        - description: ocram clock
-> > >        - description: core clock
-> > > +      - description: esai0 core clock for accessing registers
-> > > +      - description: esai0 baud clock
-> > > +      - description: esai0 system clock
-> > > +      - description: esai0 spba clock required when ESAI is placed in slave mode
-> > > +      - description: SAI1 bus clock
-> > > +      - description: SAI1 master clock 0
-> > > +      - description: SAI1 master clock 1
-> > > +      - description: SAI1 master clock 2
-> > > +      - description: SAI1 master clock 3
-> > > +      - description: SAI3 bus clock
-> > > +      - description: SAI3 master clock 0
-> > > +      - description: SAI3 master clock 1
-> > > +      - description: SAI3 master clock 2
-> > > +      - description: SAI3 master clock 3
-> > > +      - description: SDMA3 root clock used for accessing registers
-> >
-> > Sigh, I just rejected this kind of thing for the other i.MX8 DSP
-> > binding[1].
-> >
-> > Add a reference to the h/w block and then get the clocks (and other
-> > resources) from there.
->
-> The H/W block is controlled by the DSP firmware. So, we don't want
-> to use the Linux kernel driver (thus the H/W block device tree node).
 
-'status' is how you disable a device to not be used by the OS.
+>>> +    graph->graph = audioreach_alloc_graph_pkt(apm, &info->sg_list,
+>>> graph_id);
+>>> +    if (IS_ERR(graph->graph)) {
+>>> +        kfree(graph);
+>>> +        return ERR_PTR(-ENOMEM);
+>>> +    }
+>>> +
+>>> +    spin_lock(&apm->lock);
+>>> +    idr_alloc(&apm->graph_idr, graph, graph_id,
+>>> +          graph_id + 1, GFP_ATOMIC);
+>>
+>> does this need to be ATOMIC?
+> 
+> We are inside spinlock.
 
-The information about that device's resources are already in DT, we
-don't need to duplicate that here. If you want a list of devices
-assigned to the DSP here, that would be okay.
-
-> The only thing that we cannot control from the DSP firmware are the clocks
-> hence we handle them in the DSP node.
->
-> We moved the DAI clocks under the DSP node as I think you suggested here:
->
-> https://www.lkml.org/lkml/2020/3/12/969
-
-No, that's certainly not what I was suggesting. The resources in the
-DSP node should be the h/w resources of the DSP itself.
-
-Rob
+but this is not used in an interrupt handler or anything that isn't in a
+process context, is it?
