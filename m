@@ -2,92 +2,95 @@ Return-Path: <SRS0=Gs4n=N5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7218DC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Sep 2021 22:59:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BDB06C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Sep 2021 22:59:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D9E576112F
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Sep 2021 22:59:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D9E576112F
+	by mail.kernel.org (Postfix) with ESMTPS id 4823C61102
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Sep 2021 22:59:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4823C61102
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 704751726;
-	Wed,  8 Sep 2021 00:58:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 704751726
+	by alsa0.perex.cz (Postfix) with ESMTPS id DCD061733;
+	Wed,  8 Sep 2021 00:59:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCD061733
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631055582;
-	bh=fPmihyGoH95LHGrH/wGUGxTY+NfqUzSXGkEDxjl2yXk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=utX3wORLPbkISzT13QiydYk9KAoHdnbhdJb1bbPW0g8pfUuRl591sCAjP2l9NzlwQ
-	 dUux5PFJSt8wVO4dGGnJjZm84WN0IXith1T6OnEOeacuD+QNVKcOVnHWmfY8jzWnlE
-	 hfeVqMYPScdivwU9tY/KPivChABkw8qhWYy2NQOE=
+	s=default; t=1631055591;
+	bh=faHxez5H/UEY9YQEWYEfpnn8neYtYLG1uf778DMlSwU=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=tWEQGWBXPkvQ/qmr8vw8erOHYXJzeq10qmAyTqGSdiknvGBPQQHYpPcXK3COA7X4u
+	 mKcHmDaiPhBIt4DSvg4tVOxLiEi7bYrMBLpdIdTNtS+G+Y0n5VCK/aRkgdHqeaAAKE
+	 cFSsZKD1FwhVnkZOOPatbdGlSupB2tJC2APis0zI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B250F802A9;
-	Wed,  8 Sep 2021 00:58:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 00C29F804E2;
+	Wed,  8 Sep 2021 00:58:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4F2C6F802DF; Wed,  8 Sep 2021 00:58:40 +0200 (CEST)
+ id F209AF804E3; Wed,  8 Sep 2021 00:58:55 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AAC98F800C7
- for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2021 00:58:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AAC98F800C7
+ by alsa1.perex.cz (Postfix) with ESMTPS id CF76FF804B3
+ for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2021 00:58:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF76FF804B3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="dCcGtds/"
+ header.b="ZuK0Adea"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 187MOMom011127; 
- Tue, 7 Sep 2021 17:58:33 -0500
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 187Hdl4f014864; 
+ Tue, 7 Sep 2021 17:58:43 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=nnQSN31jtxHeO8603VLC465dKrlkvLcY+sGc3eMaxIw=;
- b=dCcGtds/w2xBOlyCIpzKnvIAEziABOSb22BLydtxeSZHMep3UjDtJFY6SDwkFo8KbOnI
- du4wriANU2tQj74+/ezEI3C0rYYnSxen87C1mhPqehhzwjCqtlwZm3Jn2wnoqKi2zbMQ
- giNX68ZvHK7U4B0jGvywRtLNSjOJ0UahdU/r1+G8tjhxNXAruSR3ery1afsjiUjyBw6E
- 9IBz8dBkIuD5c+ip9nW78X4Gyrfr0CgXmsvBsAb9BpD4ViGiiFD5UT5fEiiCwTMHdtd9
- IM9F19GiItqwfvv9bjI0PS29Jzcs9gxvo+Xai8cr5D3fcuUSKRquN9ccrVtQbC8FgPbV Ow== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3axcp60905-1
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=IZqiyTUHD2x360lWWpykFlvpq1SKN8+9hHWr45L/WIs=;
+ b=ZuK0AdeaYNrKDlsj4BQFi1pToJnxWB8zCLRpZ6Hrnx5/Htx9ofbqpFJXVV4H3l2LYetn
+ dheuU+5ecqVuVEWRksuhZvwtlRZg5XQXxWc0K2SBRJJqOanzeCHhrxRNiF/GPuv+m4Ma
+ yj5gVxxipu/2sxIULnep3QXkhSxVCSx5N0YfPzLG/l/zAXL0PRS6yX0SytPhNkoSXVQe
+ HoaE1kcsSrMYwmuqcDx32n5od7tRvAhOvPeh+k2FY3tWfERnhIkX2IEvah0iIeGe6gTf
+ rh3Uf8H1nVB9W1ott9PNi3LOhsUGkQnOmZ1+yCCJl7PSzH83tRwQKvWya8PfIXosKjMu iQ== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 3axcp6090g-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 07 Sep 2021 17:58:32 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ Tue, 07 Sep 2021 17:58:43 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Tue, 7 Sep
- 2021 23:58:31 +0100
+ 2021 23:58:42 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via
- Frontend Transport; Tue, 7 Sep 2021 23:58:30 +0100
+ Frontend Transport; Tue, 7 Sep 2021 23:58:42 +0100
 Received: from localhost.localdomain (macC02XQ1DJJG5K.ad.cirrus.com
  [141.131.65.38])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8D8D62BA;
- Tue,  7 Sep 2021 22:58:29 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0CAB12BA;
+ Tue,  7 Sep 2021 22:58:40 +0000 (UTC)
 From: David Rhodes <drhodes@opensource.cirrus.com>
 To: <broonie@kernel.org>, <robh@kernel.org>, <ckeepax@opensource.cirrus.com>, 
  <brian.austin@cirrus.com>, <patches@opensource.cirrus.com>,
  <alsa-devel@alsa-project.org>, <david.rhodes@cirrus.com>,
  <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v7 0/2] Cirrus Logic CS35L41 Amplifier
-Date: Tue, 7 Sep 2021 17:57:17 -0500
-Message-ID: <20210907225719.2018115-1-drhodes@opensource.cirrus.com>
+Subject: [PATCH v7 2/2] ASoC: cs35l41: Add bindings for CS35L41
+Date: Tue, 7 Sep 2021 17:57:19 -0500
+Message-ID: <20210907225719.2018115-3-drhodes@opensource.cirrus.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210907225719.2018115-1-drhodes@opensource.cirrus.com>
+References: <20210907225719.2018115-1-drhodes@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: -bk_K7S8xYwKJBiOGgvWkKDkjtHcatKx
-X-Proofpoint-GUID: -bk_K7S8xYwKJBiOGgvWkKDkjtHcatKx
+X-Proofpoint-ORIG-GUID: n3l3LultHtdlDcipl9qmbNmuR7nlNk1E
+X-Proofpoint-GUID: n3l3LultHtdlDcipl9qmbNmuR7nlNk1E
 X-Proofpoint-Spam-Reason: safe
 Cc: David Rhodes <drhodes@opensource.cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -105,34 +108,175 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-ASoC driver and devicetree documentation for a new
-Cirrus Logic amplifier CS35L41
+Devicetree binding documentation for CS35L41 driver
 
-v7 changes:
-Remove property 'classh-bst-max-limit'
+CS35L41 is a 11-V Boosted Mono Class D Amplifier with
+DSP Speaker Protection and Equalization
 
-David Rhodes (2):
-  ASoC: cs35l41: CS35L41 Boosted Smart Amplifier
-  ASoC: cs35l41: Add bindings for CS35L41
-
- .../devicetree/bindings/sound/cs35l41.yaml    |  151 ++
- include/sound/cs35l41.h                       |   34 +
- sound/soc/codecs/Kconfig                      |   12 +
- sound/soc/codecs/Makefile                     |    4 +
- sound/soc/codecs/cs35l41-i2c.c                |  114 ++
- sound/soc/codecs/cs35l41-spi.c                |  143 ++
- sound/soc/codecs/cs35l41-tables.c             |  597 +++++++
- sound/soc/codecs/cs35l41.c                    | 1545 +++++++++++++++++
- sound/soc/codecs/cs35l41.h                    |  775 +++++++++
- 9 files changed, 3375 insertions(+)
+Signed-off-by: David Rhodes <drhodes@opensource.cirrus.com>
+---
+ .../devicetree/bindings/sound/cs35l41.yaml    | 151 ++++++++++++++++++
+ 1 file changed, 151 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/sound/cs35l41.yaml
- create mode 100644 include/sound/cs35l41.h
- create mode 100644 sound/soc/codecs/cs35l41-i2c.c
- create mode 100644 sound/soc/codecs/cs35l41-spi.c
- create mode 100644 sound/soc/codecs/cs35l41-tables.c
- create mode 100644 sound/soc/codecs/cs35l41.c
- create mode 100644 sound/soc/codecs/cs35l41.h
 
+diff --git a/Documentation/devicetree/bindings/sound/cs35l41.yaml b/Documentation/devicetree/bindings/sound/cs35l41.yaml
+new file mode 100644
+index 000000000000..fde78c850286
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/cs35l41.yaml
+@@ -0,0 +1,151 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/cs35l41.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Cirrus Logic CS35L41 Speaker Amplifier
++
++maintainers:
++  - david.rhodes@cirrus.com
++
++description: |
++  CS35L41 is a boosted mono Class D amplifier with DSP
++  speaker protection and equalization
++
++properties:
++  compatible:
++    enum:
++      - cirrus,cs35l40
++      - cirrus,cs35l41
++
++  reg:
++    maxItems: 1
++
++  '#sound-dai-cells':
++    description:
++      The first cell indicating the audio interface.
++    const: 1
++
++  reset-gpios:
++    maxItems: 1
++
++  VA-supply:
++    description: voltage regulator phandle for the VA supply
++
++  VP-supply:
++    description: voltage regulator phandle for the VP supply
++
++  cirrus,boost-peak-milliamp:
++    description:
++      Boost-converter peak current limit in mA.
++      Configures the peak current by monitoring the current through the boost FET.
++      Range starts at 1600 mA and goes to a maximum of 4500 mA with increments
++      of 50 mA. See section 4.3.6 of the datasheet for details.
++    $ref: "/schemas/types.yaml#/definitions/uint32"
++    minimum: 1600
++    maximum: 4500
++    default: 4500
++
++  cirrus,boost-ind-nanohenry:
++    description:
++      Boost inductor value, expressed in nH. Valid
++      values include 1000, 1200, 1500 and 2200.
++    $ref: "/schemas/types.yaml#/definitions/uint32"
++    minimum: 1000
++    maximum: 2200
++
++  cirrus,boost-cap-microfarad:
++    description:
++      Total equivalent boost capacitance on the VBST
++      and VAMP pins, derated at 11 volts DC. The value must be rounded to the
++      nearest integer and expressed in uF.
++    $ref: "/schemas/types.yaml#/definitions/uint32"
++
++  cirrus,asp-sdout-hiz:
++    description:
++      Audio serial port SDOUT Hi-Z control. Sets the Hi-Z
++      configuration for SDOUT pin of amplifier.
++      0 = Logic 0 during unused slots, and while all transmit channels disabled
++      1 = Hi-Z during unused slots but logic 0 while all transmit channels disabled
++      2 = (Default) Logic 0 during unused slots, but Hi-Z while all transmit channels disabled
++      3 = Hi-Z during unused slots and while all transmit channels disabled
++    $ref: "/schemas/types.yaml#/definitions/uint32"
++    minimum: 0
++    maximum: 3
++    default: 2
++
++  cirrus,gpio1-polarity-invert:
++    description:
++      Boolean which specifies whether the GPIO1
++      level is inverted. If this property is not present the level is not inverted.
++    type: boolean
++
++  cirrus,gpio1-output-enable:
++    description:
++      Boolean which specifies whether the GPIO1 pin
++      is configured as an output. If this property is not present the
++      pin will be configured as an input.
++    type: boolean
++
++  cirrus,gpio1-src-select:
++    description:
++      Configures the function of the GPIO1 pin.
++      Note that the options are different from the GPIO2 pin
++      0 = High Impedance (Default)
++      1 = GPIO
++      2 = Sync
++      3 = MCLK input
++    $ref: "/schemas/types.yaml#/definitions/uint32"
++    minimum: 0
++    maximum: 3
++
++  cirrus,gpio2-polarity-invert:
++    description:
++      Boolean which specifies whether the GPIO2
++      level is inverted. If this property is not present the level is not inverted.
++    type: boolean
++
++  cirrus,gpio2-output-enable:
++    description:
++      Boolean which specifies whether the GPIO2 pin
++      is configured as an output. If this property is not present the
++      pin will be configured as an input.
++    type: boolean
++
++  cirrus,gpio2-src-select:
++    description:
++      Configures the function of the GPIO2 pin.
++      Note that the options are different from the GPIO1 pin.
++      0 = High Impedance (Default)
++      1 = GPIO
++      2 = Open Drain INTB
++      3 = MCLK input
++      4 = Push-pull INTB (active low)
++      5 = Push-pull INT (active high)
++    $ref: "/schemas/types.yaml#/definitions/uint32"
++    minimum: 0
++    maximum: 5
++
++required:
++  - compatible
++  - reg
++  - "#sound-dai-cells"
++  - cirrus,boost-peak-milliamp
++  - cirrus,boost-ind-nanohenry
++  - cirrus,boost-cap-microfarad
++
++unevaluatedProperties: false
++
++examples:
++  - |
++      cs35l41: cs35l41@2 {
++        compatible = "cirrus,cs35l41";
++        reg = <2>;
++        VA-supply = <&dummy_vreg>;
++        VP-supply = <&dummy_vreg>;
++        reset-gpios = <&gpio 110 0>;
++        cirrus,boost-peak-milliamp = <4500>;
++        cirrus,boost-ind-nanohenry = <1000>;
++        cirrus,boost-cap-microfarad = <15>;
++      };
+\ No newline at end of file
 -- 
 2.25.1
 
