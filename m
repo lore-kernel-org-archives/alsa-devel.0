@@ -2,85 +2,80 @@ Return-Path: <SRS0=Gs4n=N5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,
+	USER_AGENT_SANE_2 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86A52C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Sep 2021 07:04:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 968E6C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Sep 2021 08:01:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 421556103E
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Sep 2021 07:04:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 421556103E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 6734861102
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Sep 2021 08:01:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6734861102
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EDFD81713;
-	Tue,  7 Sep 2021 09:03:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDFD81713
+	by alsa0.perex.cz (Postfix) with ESMTPS id 65D2E1720;
+	Tue,  7 Sep 2021 10:00:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65D2E1720
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1630998245;
-	bh=lT/JTcz2tdYrvWI7JzAk+FVQ0XEB2/GOAPMuwh2GEGk=;
-	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Mu0UDnFMdKCdoclAUo0fRfgIdLUsTgvOZ5h1fDw75Vvt4tzs3cCikrOLwR9FkHMZ1
-	 iNFDHQzIjLLc7RtsAi1aNNQ/pZeu4Uskg7B+ncJoBjbwrx4y/+BxHpPvWt8seGU3VH
-	 OQ3Ua6ZoVf+k3RRoSNSrP6L1dd91KsL52fQwDcXw=
+	s=default; t=1631001708;
+	bh=WlkMT4XmOwNwUh4+R6ZRlMFJj6L4Tmm3xl8mgaZlTWk=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=fOwJYwoiuknH6AnG2TJdLigh93wsO7x3pHrz9uTjwQMHrF7cZuc83afGvvVouNonL
+	 pHEB5J0qTP+rVlLx6W8i9wU67Z/45UTkVtF6iQuPJSLRlRktphQtntiKH5tcVkIIxs
+	 lnI5+jte1hxVh4U0/aMCVjUa8+pmtTQh/l7AgHhY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8ACE0F80217;
-	Tue,  7 Sep 2021 09:03:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D69DBF80103;
+	Tue,  7 Sep 2021 10:00:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 235B0F80254; Fri,  3 Sep 2021 18:59:53 +0200 (CEST)
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com
- [IPv6:2607:f8b0:4864:20::734])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id C31F6F80224; Tue,  7 Sep 2021 10:00:55 +0200 (CEST)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B8467F800B5
- for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2021 18:59:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8467F800B5
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="JZnq7EUH"
-Received: by mail-qk1-x734.google.com with SMTP id t190so6447562qke.7
- for <alsa-devel@alsa-project.org>; Fri, 03 Sep 2021 09:59:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:from:date:message-id:subject:to;
- bh=9sFZYLEo3TxQslh9IrS4fDGxlEpnlHS9F7rmXdcJuxI=;
- b=JZnq7EUH1b6JvcYH0yiTWGnsvQzKHLkPliMWRfCxHa/pCKMZFcaca97tQpQwEGMLJ7
- gWUaQfzheyTo12CpehNND5FM0KSa6ZcwplV/UeXpWr32H8NKLZmccS7bHCTcwpQtwXVG
- IZcym8sURSEB2rP9m7Esr+8p0mvzEPQkaauCnqCXbvQ+4ZD7D3pJd5HHu+S7nIS9FHtS
- 2uZ40hHtFt7GuZGBezk7uitTkwQKoZjrC5adP+CZUQZEQEzUNfAu3aP+Ui9bo/Lz3wvW
- Cv469q+XeSTedDH0dbG6UMwe28zc6TcgPy3gGsauFcU9JfVbzv+sH+gk7vqZag0YT5jg
- Ow/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
- bh=9sFZYLEo3TxQslh9IrS4fDGxlEpnlHS9F7rmXdcJuxI=;
- b=fPdCzN+ZK6fBIp8mnosAGZWQF/QYPtNsVKtcoEMjWVFxaT9Dr6AFp0ZlSqtFy7N3f5
- ouk4sX85bsGEYGn9lFojBMb5ypi50YLMiy6kWBgRqWUqoeVAjc84pMyPxaIXrjCfUlei
- EyuCpB9MQmsikWQl6p5u0K3dOfN3ZEpek34TcxXJzmO0i4tXrxZC1h4LyQsaUP09GR2F
- lfKrfc9w76kSJyFore1UJ8EVm1GisH9YqZQHEBM2atM5BQVnaODwMqw5ePALXw3l2h8x
- ogpaOHpl6WE3gBWKLCPp52Pm/KETbhTHeQIVCKNKRbB+kW0fyTo+MYrAdHosYRMptmnj
- Eeow==
-X-Gm-Message-State: AOAM531kHhb0jP4f/wTGLRfBhpSi3iyhJqpzBBP0hz+FqjoTPDtc6XIX
- 00l0TQpaIzUuunv62zc/T+oBTvyqWkZ6v1PndxrCrzjQGxE=
-X-Google-Smtp-Source: ABdhPJyTzmixSPK70t7lPCtMoSyLGK1eXN80kMcYPOL5nLmjDgqSvFdSns1WgD/f9E2t/hu5ZdpEnTHKKIutn6804ks=
-X-Received: by 2002:a37:314:: with SMTP id 20mr4361417qkd.104.1630688386855;
- Fri, 03 Sep 2021 09:59:46 -0700 (PDT)
-MIME-Version: 1.0
-From: David Janello <djanello@gmail.com>
-Date: Fri, 3 Sep 2021 11:59:36 -0500
-Message-ID: <CAD=abyhLuq6ig0JXGvc75GjuvgH+CsPJg_io+Qf84H8Zkvs3YQ@mail.gmail.com>
-Subject: DSD Recording on RME 2-PRO FS/BE
-To: alsa-devel@alsa-project.org
-X-Mailman-Approved-At: Tue, 07 Sep 2021 09:03:12 +0200
+ by alsa1.perex.cz (Postfix) with ESMTPS id 30F42F80103
+ for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2021 10:00:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30F42F80103
+X-UUID: 289a8e123b5d49daab79ec2ce6a8031d-20210907
+X-UUID: 289a8e123b5d49daab79ec2ce6a8031d-20210907
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by
+ mailgw02.mediatek.com (envelope-from <trevor.wu@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 312245765; Tue, 07 Sep 2021 16:00:39 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 7 Sep 2021 16:00:37 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by mtkcas07.mediatek.inc
+ (172.21.101.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+ Tue, 7 Sep 2021 16:00:37 +0800
+Received: from mtksdccf07 (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 7 Sep 2021 16:00:37 +0800
+Message-ID: <27ca1a1e99193b543102df03f7c256063468f693.camel@mediatek.com>
+Subject: Re: [PATCH] ASoC: mediatek: mt8195: Fix unused initialization of
+ pointer etdm_data
+From: Trevor Wu <trevor.wu@mediatek.com>
+To: Colin King <colin.king@canonical.com>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela
+ <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Matthias Brugger
+ <matthias.bgg@gmail.com>, <alsa-devel@alsa-project.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
+Date: Tue, 7 Sep 2021 16:00:37 +0800
+In-Reply-To: <20210903114928.11743-1-colin.king@canonical.com>
+References: <20210903114928.11743-1-colin.king@canonical.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-MTK: N
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,35 +91,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Greetings,
+On Fri, 2021-09-03 at 12:49 +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The pointer etdm_data is being inintialized with a value that is
+> never
+> read, it is later being re-assigned a new value. Remove the redundant
+> initialization.
+> 
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  sound/soc/mediatek/mt8195/mt8195-dai-etdm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/mediatek/mt8195/mt8195-dai-etdm.c
+> b/sound/soc/mediatek/mt8195/mt8195-dai-etdm.c
+> index 7378e42f2766..ac591d453e1e 100644
+> --- a/sound/soc/mediatek/mt8195/mt8195-dai-etdm.c
+> +++ b/sound/soc/mediatek/mt8195/mt8195-dai-etdm.c
+> @@ -2094,7 +2094,7 @@ static int mtk_dai_etdm_set_sysclk(struct
+> snd_soc_dai *dai,
+>  {
+>  	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+>  	struct mt8195_afe_private *afe_priv = afe->platform_priv;
+> -	struct mtk_dai_etdm_priv *etdm_data = afe_priv->dai_priv[dai-
+> >id];
+> +	struct mtk_dai_etdm_priv *etdm_data;
+>  	int dai_id;
+>  
+>  	dev_dbg(dai->dev, "%s id %d freq %u, dir %d\n",
 
-I am testing native DSD recording using arecord with the RME 2-PRO FS/BE
-audio interface.
+Acked-by: Trevor Wu <trevor.wu@mediatek.com>
 
-using command line
+Thanks.
 
-arecord -c 2 -Dhw:CARD=Pro53791340 -r 176400 -f DSD_U32_BE audio.dsf
-
-gives output of:
-
-Recording WAVE 'audio.dsf' : Direct Stream Digital, 4-byte (x32), big
-endian, oldest bits in MSB, Rate 176400 Hz, Stereo
-arecord: set_params:1368: Sample format non available
-Available formats:
-- S32_LE
-
-Using S32_LE parameter
-arecord -c 2 -Dhw:CARD=Pro53791340 -r 176400 -f S32_LE audio.dsf
-
-gives output of
-
-Recording WAVE 'audio.dsf' : Signed 32 bit Little Endian, Rate 176400 Hz,
-Stereo
-
-Which appears to be a PCM recording and not DSD.  What is the correct
-command line to arecord to capture DSD audio streams and write them to a
-dsd file?
-
-Thanks
-
-David
