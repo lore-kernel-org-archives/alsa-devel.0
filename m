@@ -2,87 +2,88 @@ Return-Path: <SRS0=Rqaf=N7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DATE_IN_PAST_12_24,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51CC7C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 07:35:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05ED8C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 07:36:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2E5CD61132
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 07:35:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2E5CD61132
+	by mail.kernel.org (Postfix) with ESMTPS id 5453D60F11
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 07:36:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5453D60F11
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 633FF166E;
-	Thu,  9 Sep 2021 09:35:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 633FF166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB4CF1687;
+	Thu,  9 Sep 2021 09:35:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB4CF1687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631172956;
-	bh=o15zjnfuvdWCdQ5iAQ/0opfcAFZPbHgYaEus7Pv/zf0=;
+	s=default; t=1631173000;
+	bh=CS3fbPgTTWEckF7muCVJo1biw7wRGauQhIjyYXrmRD8=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uqxHklU82E/Ceppe3OcBVHYmMtE+uMmpYf2Ux3lREyZe6c8zP7WlgWaLave6Atg+U
-	 DO0zv7sfv662XCk7AKu+SEW7ydVf9O/FSYDSgqiHvHLBOn8DCjx1q+XpR1nPa7Ma2p
-	 M+RZVwhAYjHMZKCtc1dq/63qxEM2Py3C1BEbZ+j8=
+	b=kqbJBVfbbMY2KizjeiPRl/XZbDU+6J0gJlhJ27nMrWQdw6Se5b1IxiEngRgSHElk7
+	 OmANQh197os6uq6OOaK3nnDFFneuUY2gs44MLWaXkU2sNYrIDzTBM+JQNqXgzWQI9p
+	 tc4tDjsyduAyx2tStvD4fj31RsXV0Hj6ekPW6/Ko=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F3C92F80224;
-	Thu,  9 Sep 2021 09:35:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D6C61F800FC;
+	Thu,  9 Sep 2021 09:35:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 28B9BF80253; Thu,  9 Sep 2021 09:35:04 +0200 (CEST)
+ id 190F6F802DF; Thu,  9 Sep 2021 09:35:09 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 682ADF800FC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6CBA5F80217
  for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2021 09:34:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 682ADF800FC
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6CBA5F80217
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="1covRS/w"; 
+ header.b="GbyyMUoD"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="TKclrpIJ"
+ header.b="T7pmCS6r"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 91313201C2;
+ by smtp-out2.suse.de (Postfix) with ESMTP id 5AE04201C0;
  Thu,  9 Sep 2021 07:34:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1631172896; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Favyx7ToS2DsVl8Xx+7CoTQu3X4dfIJhRP3psiWNnbs=;
- b=1covRS/w/lyABLltAk7HgQFKOxPIrGMUZ/cyyugRYPi8qj5AM17pw/Id3a3aKwM3K5yFjy
- 4xvGn4Mc803LIF4VbcnaSbUIA7zOChtpHwQlQViBSWYleKI8hVB79Pq+FBgYhMe6tJOha1
- r/OUszxSbdxCoBUgap9LyKO0yC8mieg=
+ bh=93ENBNGr9bc7Gl7Ki4FE4D/A5edi5qVwM4LPjh0BVPc=;
+ b=GbyyMUoDfeBoPfWfzXhdlGXu7YVdDONVtpLetNbm8436j0ygOEuSWuHlR/ktwi95HFePoL
+ jdgNlx85nVOcY/zijxqDrVlDi96FIIkFfwZFExyT0ZUaNATfDGrY8Y16EnoMhydgh+XMQM
+ DY8ZZca3hIe1Y3u69OlB6O55BafRO38=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1631172896;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Favyx7ToS2DsVl8Xx+7CoTQu3X4dfIJhRP3psiWNnbs=;
- b=TKclrpIJSjFenACWWgDNJRvWZ1eZzvU79prqt3KxckESBS0IlrwdvvM0HAy42jH+IVLwsR
- Ifp8gQh2W9iHQaAw==
+ bh=93ENBNGr9bc7Gl7Ki4FE4D/A5edi5qVwM4LPjh0BVPc=;
+ b=T7pmCS6reb8Tv8W84aCEHUc3XflupMgpojPeWsbrrhH3OnaevMQL7uZc9Uou7zi8Z9e7gv
+ kFc9JFH+nQMJeOAQ==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 8BE5FA3B96;
+ by relay2.suse.de (Postfix) with ESMTP id 447DFA3B96;
  Thu,  9 Sep 2021 07:34:56 +0000 (UTC)
-Date: Wed, 08 Sep 2021 17:55:00 +0200
-Message-ID: <s5hpmtj9i5n.wl-tiwai@suse.de>
+Date: Tue, 07 Sep 2021 07:16:21 +0200
+Message-ID: <s5hmtopeziy.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [GIT PULL] ASoC fixes for v5.15-rc1
-In-Reply-To: <20210908154313.1A8C961132@mail.kernel.org>
-References: <20210908154313.1A8C961132@mail.kernel.org>
+To: Tong Zhang <ztong0001@gmail.com>
+Subject: Re: [PATCH v1] ALSA: vx222: fix null-ptr-deref
+In-Reply-To: <20210907014746.1445278-1-ztong0001@gmail.com>
+References: <20210907014746.1445278-1-ztong0001@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>, Leon Romanovsky <leon@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,28 +99,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 08 Sep 2021 17:42:25 +0200,
-Mark Brown wrote:
+On Tue, 07 Sep 2021 03:47:45 +0200,
+Tong Zhang wrote:
 > 
-> The following changes since commit 38b7673000949ca784fcb8a9feb70d2a802befa6:
+> a recent refactor created a null pointer vx in snd_vx222_probe().
+> The vx pointer should have been populated in snd_vx222_create() as
+> suggested in earlier version, otherwise vx->core.ibl.size will throw an
+> error.
 > 
->   Merge remote-tracking branch 'asoc/for-5.15' into asoc-linus (2021-08-30 12:30:33 +0100)
+> [    1.298398] BUG: kernel NULL pointer dereference, address: 00000000000001d8
+> [    1.316799] RIP: 0010:snd_vx222_probe+0x155/0x290 [snd_vx222]
 > 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.15-rc1
-> 
-> for you to fetch changes up to fcb958ee8e832e9cdf43408535207e15f14af755:
-> 
->   ASoC: rockchip: i2s: Fix concurrency between tx/rx (2021-09-03 16:19:01 +0100)
-> 
-> ----------------------------------------------------------------
-> ASoC: Fixes for v5.15
-> 
-> A collection of fixes that came in during the merge window, nothing too
-> remarkable but a reasonably large number of fixes.
+> Fixes: 3bde3359aa16 ("ALSA: vx222: Allocate resources with device-managed APIs")
+> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
 
-Thanks, pulled now.
+Thanks, applied.
 
 
 Takashi
