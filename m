@@ -2,83 +2,106 @@ Return-Path: <SRS0=cWdV=N6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39D2EC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Sep 2021 10:24:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78296C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Sep 2021 11:29:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D5C6061178
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Sep 2021 10:24:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D5C6061178
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id C718F60EE6
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Sep 2021 11:29:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C718F60EE6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D22B816E9;
-	Wed,  8 Sep 2021 12:23:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D22B816E9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6DB6616DD;
+	Wed,  8 Sep 2021 13:28:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DB6616DD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631096680;
-	bh=65QMXzF5Bvk24nU6duUdL3mKrm5mXPSa7dnF186YHww=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1631100554;
+	bh=jF77IiwaMrm7b+hVYWJhbH6WE8NCcm6o+ahh3EOxGgM=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MlLdbdiYMPi79GkXtArDd/h5BFKOR7uW9IAbbVZiK623yhJ/PxXwrwKCII/hFv9BL
-	 kdHn3CJh9cK26nG55WWjlTDGhZp4g4TrUUW3gLMsokPyy5qMimr8MQ5f+AzJgF809L
-	 BMkfZ/hMRRILBV2ksmGyUsiUYgGOfJ4I7BGaDMw0=
+	b=IVG7SG/JpVb4j2JR64lVyjOvL3pMOXorKWRxxdkss55iE8MPt8ZKKe+xTwHXTJitf
+	 Azov+FjWahnNBCPBFLOCP6wCtjMpAaP1Z9mXD8BGZGdyT4iUCdOXoZN0gmPcMuJ7ie
+	 YcRjSM+4w/g3eAXlBF5PqzKso5eNLEUROs2ulIPU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 69D08F8026C;
-	Wed,  8 Sep 2021 12:23:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93992F8026C;
+	Wed,  8 Sep 2021 13:28:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2C25EF802E7; Wed,  8 Sep 2021 12:23:48 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 4EABBF802E7; Wed,  8 Sep 2021 13:28:17 +0200 (CEST)
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com
+ [IPv6:2a00:1450:4864:20::42c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C0C0BF800C7
- for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2021 12:23:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0C0BF800C7
+ by alsa1.perex.cz (Postfix) with ESMTPS id DCA54F80166
+ for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2021 13:28:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCA54F80166
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="c9zDqRwY"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 725CB6113A;
- Wed,  8 Sep 2021 10:23:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631096617;
- bh=65QMXzF5Bvk24nU6duUdL3mKrm5mXPSa7dnF186YHww=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=c9zDqRwY+O9KjVcmp2SLPbQ5o5FikTMALXWNjOOVrbEzZk7VGnTW0bmDb7KyZDzjb
- gYuD0RQrXuTF2GR/Mzhf5DHFocLhU0X60+FBPShm2MEDcTdw+a7Vjfe4riFpKajZqg
- 9bW1E+IFEtTwUSpxC0acEPXuFpwyGQn9nZjc2MLtL1EPwds1/VpaXmTrovR4ICv6D5
- VqEgqfibEWt/M+h/Pb/IUg1w26VswhxIrYUvwWN92Bbtkd6xB5qdEajoToJTk74ZvT
- Gcd3iKAjyHfY8rKTi8KtHbl19Ho+eOHm/ntQ5W7NT3tNlexafp53qFtDLnl9OrcYTN
- pije68ZtmChXQ==
-Date: Wed, 8 Sep 2021 11:23:00 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Subject: Re: [PATCH] ASoC: dt-bindings: lpass: add binding headers for
- digital codecs
-Message-ID: <20210908102300.GA4112@sirena.org.uk>
-References: <1630934854-14086-1-git-send-email-srivasam@codeaurora.org>
- <CAE-0n53Zj3pp4EJ_f_kXhRm3EW=od83UO44qt91P37waEq-z4Q@mail.gmail.com>
- <755e99d3-4d72-3292-a5da-ad3d6045038e@codeaurora.org>
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="MmkKbYwn"
+Received: by mail-wr1-x42c.google.com with SMTP id d6so2713596wrc.11
+ for <alsa-devel@alsa-project.org>; Wed, 08 Sep 2021 04:28:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=pg66Yxo91om1NZRwVnciKYYajdbMErsJleQijC0sD+Y=;
+ b=MmkKbYwnEtT3WSJ4kZXt7pb3++P//jjvY13u+WW1OU84iUU6rd9qBT9epKmwyn48mC
+ Iz0IauHNVOMSZJuO/oaQ9B0cVPqEupA5t1r23/cxBenLoxW+V5BGgvUeN/cW/PF4nFUt
+ KefnkXeZoNLvVWLZnFArfHEnBHQ8Cy0qQD3AuPUGAWx2a+E9MpYvl6rNEevqfgFnywAl
+ Ke4OvXoKrkVAK0fjZHkIQvM5C39KNr9uF7eb4RHX86zy7Uy3DuxqSRYPUm8VCZmmvrRi
+ 82DWdiSDYhCsi+DzQaqaMBtuK9VstZMkcATxGhoa1xDcpur2xwM+3EgRtGAEUBns1H02
+ bmvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=pg66Yxo91om1NZRwVnciKYYajdbMErsJleQijC0sD+Y=;
+ b=WJIOvzyUV7+0otLyi3B26h8KXxaULztqZdXU8p1nE+Sry5a4dHLsN87qh+lz9NVVQ4
+ URSkQkig74V7zzWWJ5Dxa/w2M8rEpepVmhBxXyJ4yCwOgrQ9suHesnyBFJN8nwjr05xF
+ i5fIJ2ZG7KPynpigg+u2XADTyvKZPeasWFZcrWB5urDHb9FyW5lJrOe0Wxs8mRDsE6d0
+ E5onl+I3biBmvagGVv7KTF4z9CaZp5R4VSxZb04cV5strZd6T8gMe0xwm4mqutF+qzto
+ pO2FAERUVStsk1cL71DMxkfrC37XvtnQGPwqu9/Mppl01g1XgJmobKhLKJp3lSh9qzdh
+ 8uDg==
+X-Gm-Message-State: AOAM533ZBNnBsW22D9risMWbLBKWpgXJ2tyQcniOV7nY+aq1dJ23BB/5
+ WwF/kMPoiOw1RzbLmzKuoH8pjg==
+X-Google-Smtp-Source: ABdhPJzEkUTMbkWr1fV/ebaPj1K2OSgR3K0T2YrBI9bOIige02dw6GuELm44qoBD/F9EniXibH/WAA==
+X-Received: by 2002:a5d:61c1:: with SMTP id q1mr3636173wrv.87.1631100487640;
+ Wed, 08 Sep 2021 04:28:07 -0700 (PDT)
+Received: from [192.168.86.34]
+ (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+ by smtp.googlemail.com with ESMTPSA id n13sm1586753wmq.3.2021.09.08.04.28.06
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 08 Sep 2021 04:28:06 -0700 (PDT)
+Subject: Re: [PATCH v5 15/21] ASoC: qdsp6: audioreach: add q6apm support
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ bjorn.andersson@linaro.org, broonie@kernel.org, robh@kernel.org
+References: <20210903112032.25834-1-srinivas.kandagatla@linaro.org>
+ <20210903112032.25834-16-srinivas.kandagatla@linaro.org>
+ <081e6734-a258-6d21-cf66-f00bfeb38b04@linux.intel.com>
+ <b1cfacb4-70b9-7146-00d5-9d680297d900@linaro.org>
+ <f8bd8b94-528d-bf6f-9e84-0e41e4c56382@linux.intel.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <0840d2e3-c261-8d85-35ff-8388448ab7fc@linaro.org>
+Date: Wed, 8 Sep 2021 12:28:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="EeQfGwPcQSOJBaQU"
-Content-Disposition: inline
-In-Reply-To: <755e99d3-4d72-3292-a5da-ad3d6045038e@codeaurora.org>
-X-Cookie: Should I do my BOBBIE VINTON medley?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <f8bd8b94-528d-bf6f-9e84-0e41e4c56382@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, linux-arm-msm@vger.kernel.org, plai@codeaurora.org,
- tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org,
- bjorn.andersson@linaro.org, agross@kernel.org, rohitkr@codeaurora.org,
- Stephen Boyd <swboyd@chromium.org>, judyhsiao@chromium.org,
- linux-kernel@vger.kernel.org
+ bgoswami@codeaurora.org, tiwai@suse.de, plai@codeaurora.org,
+ lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,40 +118,27 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---EeQfGwPcQSOJBaQU
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 08, 2021 at 10:08:33AM +0530, Srinivasa Rao Mandadapu wrote:
-> On 9/8/2021 1:54 AM, Stephen Boyd wrote:
-> > Quoting Srinivasa Rao Mandadapu (2021-09-06 06:27:34)
+On 07/09/2021 16:04, Pierre-Louis Bossart wrote:
+> 
+>>>> +    graph->graph = audioreach_alloc_graph_pkt(apm, &info->sg_list,
+>>>> graph_id);
+>>>> +    if (IS_ERR(graph->graph)) {
+>>>> +        kfree(graph);
+>>>> +        return ERR_PTR(-ENOMEM);
+>>>> +    }
+>>>> +
+>>>> +    spin_lock(&apm->lock);
+>>>> +    idr_alloc(&apm->graph_idr, graph, graph_id,
+>>>> +          graph_id + 1, GFP_ATOMIC);
+>>>
+>>> does this need to be ATOMIC?
+>>
+>> We are inside spinlock.
+> 
+> but this is not used in an interrupt handler or anything that isn't in a
+> process context, is it?
+> 
+No, it is in process context only.
 
-> > > +#define LPASS_CDC_DMA_VA0 8
-> > > +#define LPASS_MAX_PORTS 9
-
-> > Do we need LPASS_MAX_PORTS in the binding?
-
-> Yes.=A0 based on this creating array of streams in machine driver. So to =
-make
-> upper limit introduced this macro.
-
-That's saying it's useful to have it in the code, do we need it in the
-binding itself though?
-
---EeQfGwPcQSOJBaQU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmE4jwMACgkQJNaLcl1U
-h9Bjmwf/YaSV9rxdXPdpDXlgsyTS/gQcTJBtNOBq5BxQcVcRXcq4GmFnz8V4vcQ4
-cTp1TOa0f/j3XMd0xQrmzpwJPjxNJSZ0bT2kNH0totGI/AQje1F/ecFw313x6yLO
-bzjAhAw3JyEK268J+QK4hzYS26+mP2t/a9itRGdKqG+zDkBCERK8Ydf14CH0i1pp
-x1s5hSyad+KTsBRj3shF1TyP0V+JouH9MycZ2dJKRsL8TswhtT1jBYFQ4/4wamZx
-7YLNbhh6tuvk2oWmZuSr84N30/3BAXS4ISZMl1hw8qTLe4AIJu16DPXuMlmkAFz8
-SRQMBAXIWvXWzzDhJlEGvMRXPjeEXQ==
-=cvim
------END PGP SIGNATURE-----
-
---EeQfGwPcQSOJBaQU--
+--srini
