@@ -2,87 +2,87 @@ Return-Path: <SRS0=Rqaf=N7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DATE_IN_PAST_12_24,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD526C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 07:23:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51CC7C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 07:35:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4228F6109F
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 07:23:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4228F6109F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	by mail.kernel.org (Postfix) with ESMTPS id 2E5CD61132
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 07:35:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2E5CD61132
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3AFFD166E;
-	Thu,  9 Sep 2021 09:22:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3AFFD166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 633FF166E;
+	Thu,  9 Sep 2021 09:35:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 633FF166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631172210;
-	bh=XKrCul/vaHJCITkRmEv74DWhcTY986q9e2pvYCdbmkY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1631172956;
+	bh=o15zjnfuvdWCdQ5iAQ/0opfcAFZPbHgYaEus7Pv/zf0=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZqyNY7Vvov7ZfQaXFmyA5A5cZ5ZOUidEovmG0JMTUko9xZcruXzI/ZE1eblkBhr3b
-	 4rFtipM4q6TrwRx2b7SwSdKrbUAU3ujDD0+dL1BTRdootx1f6xjLls2rIYlj7vPrg9
-	 GxeTixnAOyPhJ/PjBVy2v3Nm+zvN6t+Bwvq0x/t8=
+	b=uqxHklU82E/Ceppe3OcBVHYmMtE+uMmpYf2Ux3lREyZe6c8zP7WlgWaLave6Atg+U
+	 DO0zv7sfv662XCk7AKu+SEW7ydVf9O/FSYDSgqiHvHLBOn8DCjx1q+XpR1nPa7Ma2p
+	 M+RZVwhAYjHMZKCtc1dq/63qxEM2Py3C1BEbZ+j8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CCA7AF80217;
-	Thu,  9 Sep 2021 09:22:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F3C92F80224;
+	Thu,  9 Sep 2021 09:35:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47AF3F80253; Thu,  9 Sep 2021 09:22:37 +0200 (CEST)
-Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com
- [209.85.217.42])
+ id 28B9BF80253; Thu,  9 Sep 2021 09:35:04 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D141BF80166
- for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2021 09:22:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D141BF80166
-Received: by mail-vs1-f42.google.com with SMTP id a21so727987vsp.12
- for <alsa-devel@alsa-project.org>; Thu, 09 Sep 2021 00:22:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=H+v9d+F4bPXyUIm8JGEVsogxeJe3xHOqeC0XMGmz7YE=;
- b=3K3bMquoxqlHPRVfTBwxpy7Aga+5Wwr9kuYY1Mtc5yaZY1iohPyGQxFKSRXYr0pjLa
- rnbUPd3ArxKaMYpIVJwsX87IM5JUg7H1nfbR1AVAPEbeyXb/LWwqO/rpdt76kr6N9773
- cJJc5hdP+F8osrb13hajQ+3Inx3n6X4beAYohzz2xh7v3MThHoseI2ssrL3+ya5vjYWT
- cauhYz5wbK4rUPlgy2T+DGdohXw8gkvf5mjObcK6p4d4qDXLDrTuJJYS1ncJFZcjvjKp
- 1vICFj4J+DBuckOItIJ6pfdVlFOvcTV8SubzMbXJJ0e77EI3tQ9gWa542SWCKk5uFjPM
- Mclg==
-X-Gm-Message-State: AOAM533vXlMZN9w0N+i4EGQzhDx1Zn0EujATQrUO5NExteUlu+SgaOKf
- gj9kjX0GqrIaDDR6WqxSXuQpYKc2pywxOmFOV9E=
-X-Google-Smtp-Source: ABdhPJykTjIN3pE9TsAbMpbP3TTqT1MAxeOy9g6mTRjOzKkl8dmcBEB1NsgVKqbiG1dFvptnf51LnAoJDd9zdC/P1yI=
-X-Received: by 2002:a67:3289:: with SMTP id y131mr621870vsy.37.1631172151478; 
- Thu, 09 Sep 2021 00:22:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210707214752.3831-1-rdunlap@infradead.org>
- <fca8f952-2be0-5c57-d60d-5c4f025abc4d@microchip.com>
- <49495ab9-5039-f332-2895-1a79c034f58d@infradead.org>
- <CAMuHMdU=ODKZJ0OOsuCeJnTWuM3fP5DE7coSzB=fvAbxPQWDcg@mail.gmail.com>
- <a94c9788-0415-ffe3-9dd4-e6ed8d7ee96a@infradead.org>
- <CAMuHMdWUcaC-xiW0UiVdTpx-R=e_i8eHSNc8JF_wqbcO6FynWw@mail.gmail.com>
- <f5cf4155-785f-9ec7-1f59-be5c92911b0a@infradead.org>
-In-Reply-To: <f5cf4155-785f-9ec7-1f59-be5c92911b0a@infradead.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 9 Sep 2021 09:22:19 +0200
-Message-ID: <CAMuHMdXcmW27KhQEgxmVSDgR8GDnb_5mYNPYepa15F_tKqk9-A@mail.gmail.com>
-Subject: Re: [PATCH v3] ASoC: atmel: ATMEL drivers don't need HAS_DMA
-To: Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- mirq-linux@rere.qmqm.pl, Mark Brown <broonie@kernel.org>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Codrin.Ciubotariu@microchip.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 682ADF800FC
+ for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2021 09:34:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 682ADF800FC
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="1covRS/w"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="TKclrpIJ"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 91313201C2;
+ Thu,  9 Sep 2021 07:34:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1631172896; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Favyx7ToS2DsVl8Xx+7CoTQu3X4dfIJhRP3psiWNnbs=;
+ b=1covRS/w/lyABLltAk7HgQFKOxPIrGMUZ/cyyugRYPi8qj5AM17pw/Id3a3aKwM3K5yFjy
+ 4xvGn4Mc803LIF4VbcnaSbUIA7zOChtpHwQlQViBSWYleKI8hVB79Pq+FBgYhMe6tJOha1
+ r/OUszxSbdxCoBUgap9LyKO0yC8mieg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1631172896;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Favyx7ToS2DsVl8Xx+7CoTQu3X4dfIJhRP3psiWNnbs=;
+ b=TKclrpIJSjFenACWWgDNJRvWZ1eZzvU79prqt3KxckESBS0IlrwdvvM0HAy42jH+IVLwsR
+ Ifp8gQh2W9iHQaAw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 8BE5FA3B96;
+ Thu,  9 Sep 2021 07:34:56 +0000 (UTC)
+Date: Wed, 08 Sep 2021 17:55:00 +0200
+Message-ID: <s5hpmtj9i5n.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [GIT PULL] ASoC fixes for v5.15-rc1
+In-Reply-To: <20210908154313.1A8C961132@mail.kernel.org>
+References: <20210908154313.1A8C961132@mail.kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,107 +98,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Randy,
+On Wed, 08 Sep 2021 17:42:25 +0200,
+Mark Brown wrote:
+> 
+> The following changes since commit 38b7673000949ca784fcb8a9feb70d2a802befa6:
+> 
+>   Merge remote-tracking branch 'asoc/for-5.15' into asoc-linus (2021-08-30 12:30:33 +0100)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.15-rc1
+> 
+> for you to fetch changes up to fcb958ee8e832e9cdf43408535207e15f14af755:
+> 
+>   ASoC: rockchip: i2s: Fix concurrency between tx/rx (2021-09-03 16:19:01 +0100)
+> 
+> ----------------------------------------------------------------
+> ASoC: Fixes for v5.15
+> 
+> A collection of fixes that came in during the merge window, nothing too
+> remarkable but a reasonably large number of fixes.
 
-On Wed, Sep 8, 2021 at 10:14 PM Randy Dunlap <rdunlap@infradead.org> wrote:
-> On 9/6/21 12:14 AM, Geert Uytterhoeven wrote:
-> > On Fri, Sep 3, 2021 at 9:53 PM Randy Dunlap <rdunlap@infradead.org> wrote:
-> >> On 9/2/21 9:44 AM, Geert Uytterhoeven wrote:
-> >>> On Thu, Jul 8, 2021 at 6:51 PM Randy Dunlap <rdunlap@infradead.org> wrote:
-> >>>> On 7/8/21 1:19 AM, Codrin.Ciubotariu@microchip.com wrote:
-> >>>>> On 08.07.2021 00:47, Randy Dunlap wrote:
-> >>>>>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> >>>>>>
-> >>>>>> On a config (such as arch/sh/) which does not set HAS_DMA when MMU
-> >>>>>> is not set, several ATMEL ASoC drivers select symbols that cause
-> >>>>>> kconfig warnings. There is one "depends on HAS_DMA" which is no longer
-> >>>>>> needed. Dropping it eliminates the kconfig warnings and still builds
-> >>>>>> with no problems reported.
-> >>>>>>
-> >>>>>> Fix the following kconfig warnings:
-> >>>>>>
-> >>>>>> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_PDC
-> >>>>>>      Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
-> >>>>>>      Selected by [m]:
-> >>>>>>      - SND_ATMEL_SOC_SSC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m]
-> >>>>>>      - SND_ATMEL_SOC_SSC_PDC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
-> >>>>>>
-> >>>>>> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_PDC
-> >>>>>>      Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
-> >>>>>>      Selected by [m]:
-> >>>>>>      - SND_AT91_SOC_SAM9G20_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
-> >>>>>>
-> >>>>>> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC
-> >>>>>>      Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
-> >>>>>>      Selected by [m]:
-> >>>>>>      - SND_ATMEL_SOC_SSC_DMA [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
-> >>>>>>
-> >>>>>> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_DMA
-> >>>>>>      Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
-> >>>>>>      Selected by [m]:
-> >>>>>>      - SND_ATMEL_SOC_WM8904 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && I2C [=m]
-> >>>>>>      - SND_AT91_SOC_SAM9X5_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
-> >>>>>>
-> >>>>>> Fixes: 3951e4aae2ce ("ASoC: atmel-pcm: dma support based on pcm dmaengine")
-> >>>>>> Fixes: 18291410557f ("ASoC: atmel: enable SOC_SSC_PDC and SOC_SSC_DMA in Kconfig")
-> >>>>>> Fixes: 061981ff8cc8 ("ASoC: atmel: properly select dma driver state")
-> >>>>>
-> >>>>> I am not sure about these fixes tags. As Alexandre mentioned, it looks
-> >>>>> like the reason for HAS_DMA in the first place was the COMPILE_TEST with
-> >>>>> m32r arch. I dig a bit, and, if any, I think we should use:
-> >>>>> Fixes: eb17726b00b3 ("m32r: add simple dma")
-> >>>>> since this commit adds dummy DMA support for m32r and seems to fix the
-> >>>>> HAS_DMA dependency.
-> >>>>
-> >>>> Ah, I forgot to update the Fixes: tag(s).
-> >>>>
-> >>>> I won't disagree with your Fixes: suggestion (good digging) but
-> >>>> I would probably have used 8d7d11005e930:
-> >>>>     ASoC: atmel: fix build failure
-> >>>> which is the commit that added "depends on HAS_DMA".
-> >>>
-> >>> M32r was not the only platform NO_DMA, so I guess the build would
-> >>> have failed for the others, too (e.g. Sun-3).
-> >>>
-> >>> So the real fix was probably commit f29ab49b5388b2f8 ("dma-mapping:
-> >>> Convert NO_DMA get_dma_ops() into a real dummy"), or one of the
-> >>> related commits adding dummies to subsystems.
-> >>
-> >> Does this mean that some other actions are needed here?
-> >> E.g. revert + a different kind of fix?
-> >
-> > While we can now compile drivers using DMA features on NO_DMA
-> > platforms, thanks to the dummies, it does mean many of these drivers
-> > cannot work on such platforms.  So I think it makes sense to replace
-> > "depends on HAS_DMA" by "depends on HAS_DMA || COMPILE_TEST" if DMA
-> > is not optional to the driver.
->
-> Hi Geert,
->
-> Is this what you had in mind?  It seems to work with my (limited)
-> testing.
+Thanks, pulled now.
 
-Yes. And also for other symbols for drivers that now compile fine
-if !HAS_DMA, thanks to the dummies.
 
-> --- linux-next-20210907.orig/sound/soc/atmel/Kconfig
-> +++ linux-next-20210907/sound/soc/atmel/Kconfig
-> @@ -11,6 +11,7 @@ if SND_ATMEL_SOC
->
->   config SND_ATMEL_SOC_PDC
->         bool
-> +       depends on HAS_DMA || COMPILE_TEST
->
->   config SND_ATMEL_SOC_DMA
->         bool
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Takashi
