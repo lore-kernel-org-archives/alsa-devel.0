@@ -7,67 +7,68 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF6EBC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Sep 2021 14:05:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09BDAC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Sep 2021 14:27:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 75D816113A
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Sep 2021 14:05:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 75D816113A
+	by mail.kernel.org (Postfix) with ESMTPS id 855AF61154
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Sep 2021 14:27:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 855AF61154
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 46ADD16C3;
-	Wed,  8 Sep 2021 16:04:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46ADD16C3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D09C16A4;
+	Wed,  8 Sep 2021 16:26:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D09C16A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631109931;
-	bh=zSaO7mooCKfGaDncmPzx/3hux5B51NuTh6i9O2tFFbc=;
+	s=default; t=1631111221;
+	bh=UJ5AvN0khrohHBwa0FzCBwUxyg24qYfzzqw+TPK85kM=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=HabvAQW69/FwY7DO19DBUIAszpvaoz+KQfOEQBN0FXuiMAEo5nIxZYIMLAHr6t3g4
-	 hETgr/QptOMtxSR4kIkMp8gHdX+z1NcBIKSzEQSttEJWeDSDeEE+IyJLoMc/wn4NSS
-	 Uw4vasRL/DOhXnC3Jv/T7c4WGUWFfWRZ3vPi6s04=
+	b=Eb35WsWYDkplN3EbrK8z6VVmgGQm849hDVtYga1o2SiFCEe58C7obnoNPsyT5Hvcn
+	 5vUEwfDjS++vvz6acToh/v2crvrxSvPaqKEBz8i6j1lFNEx77/7SgMIWS8ubjpPDGE
+	 Mt0QVJ2lSWoUPFFV7okiJTU8ageFaQuVwOrLloKI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D303BF8026C;
-	Wed,  8 Sep 2021 16:04:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EDA5FF8026C;
+	Wed,  8 Sep 2021 16:26:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6CC76F802E7; Wed,  8 Sep 2021 16:04:39 +0200 (CEST)
-Received: from so254-9.mailgun.net (so254-9.mailgun.net [198.61.254.9])
+ id 9D51DF802E7; Wed,  8 Sep 2021 16:26:09 +0200 (CEST)
+Received: from m43-7.mailgun.net (m43-7.mailgun.net [69.72.43.7])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4AC35F80149
- for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2021 16:04:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AC35F80149
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8DF0BF800C7
+ for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2021 16:26:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8DF0BF800C7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="aR8+cQuG"
+ header.i=@mg.codeaurora.org header.b="RQ3L9aqT"
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
  q=dns/txt; 
- s=smtp; t=1631109874; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=7eNx0fhwCSF+xb+ymgZCfriGvUaN9NPGimpmZv0IsVw=;
- b=aR8+cQuGaFj1+sLrsdT9bf46dLjxe+9NWE24VEIMmWn6XB9i8Q50fJl5yNeZ1mZnZcup2r2W
- 8ryy7FLWG1ARY32FOWAKWcoIZGCqfuPFfpKYc7PIO5b2q3T7CCBKV8VJPzQXye9DCJ6d7KXA
- 1Oko8N+xwz5BkJlP1NOSfZO5pbo=
-X-Mailgun-Sending-Ip: 198.61.254.9
+ s=smtp; t=1631111164; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=C6lHs67nTzd74F8ZbiUGwTy6nz9NFd346v1mgtK8fzM=;
+ b=RQ3L9aqTTp42kqJ8PQkLc2DBC+R1Cwkhqq3uWeObUt3CFXvn8cdnajiN9rDDmqmpZSk0PkJh
+ /wP6CC5xAdPPjPe8w2HFDeC2A5jlwd+hBv6lYh2U79lRhbOnQpDoTgXGpNSWov+n1I/a9F2x
+ DpgBNAyPnxNdJm6RdV0duUCYcog=
+X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 6138c2dfc603a0154fd06f92 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 08 Sep 2021 14:04:15
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 6138c7f21567234b8cc66daa (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 08 Sep 2021 14:25:54
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 9C777C4360D; Wed,  8 Sep 2021 14:04:14 +0000 (UTC)
-Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
+ id 212C5C43460; Wed,  8 Sep 2021 14:25:54 +0000 (UTC)
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
  (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id A0060C4338F;
- Wed,  8 Sep 2021 14:04:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A0060C4338F
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 51650C4338F;
+ Wed,  8 Sep 2021 14:25:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 51650C4338F
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
  dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
@@ -80,11 +81,13 @@ To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
  linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  swboyd@chromium.org, judyhsiao@chromium.org
-Subject: [PATCH v2] ASoC: dt-bindings: lpass: add binding headers for digital
- codecs
-Date: Wed,  8 Sep 2021 19:33:51 +0530
-Message-Id: <1631109831-1360-1-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+Subject: [PATCH v2] ASoC: qcom: lpass-platform: Reset irq clear reg post
+ handling interrupts
+Date: Wed,  8 Sep 2021 19:55:35 +0530
+Message-Id: <20210908142535.31106-1-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -101,59 +104,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add header defining for lpass internal digital codecs rx,tx and va
-dai node id's.
+Update interrupt clear register with reset value after addressing
+all interrupts. This is to fix playback or capture hanging issue in
+simultaneous playback and capture usecase.
+
+Fixes: 4f629e4b8705f ("ASoC: qcom: Add ability to handle interrupts per dma channel")
 
 Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 ---
 Changes since v1:
-    -- Add missing dai node ID's
+    -- Update comments Header information with fixes tag
 
- include/dt-bindings/sound/qcom,lpass.h | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+ sound/soc/qcom/lpass-platform.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/include/dt-bindings/sound/qcom,lpass.h b/include/dt-bindings/sound/qcom,lpass.h
-index 7b0b80b..a9404c3 100644
---- a/include/dt-bindings/sound/qcom,lpass.h
-+++ b/include/dt-bindings/sound/qcom,lpass.h
-@@ -10,6 +10,37 @@
+diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+index f9df76d37858..1a0a4b0b1a03 100644
+--- a/sound/soc/qcom/lpass-platform.c
++++ b/sound/soc/qcom/lpass-platform.c
+@@ -749,6 +749,12 @@ static irqreturn_t lpass_platform_lpaif_irq(int irq, void *data)
+ 		}
+ 	}
  
- #define LPASS_DP_RX	5
++	rv = regmap_write(drvdata->lpaif_map, LPAIF_IRQCLEAR_REG(v, LPAIF_IRQ_PORT_HOST), 0x0);
++	if (rv) {
++		pr_err("error writing to irqstat reg: %d\n", rv);
++		return IRQ_NONE;
++	}
++
+ 	return IRQ_HANDLED;
+ }
  
-+#define LPASS_CDC_DMA_RX0 6
-+#define LPASS_CDC_DMA_RX1 7
-+#define LPASS_CDC_DMA_RX2 8
-+#define LPASS_CDC_DMA_RX3 9
-+#define LPASS_CDC_DMA_RX4 10
-+#define LPASS_CDC_DMA_RX5 11
-+#define LPASS_CDC_DMA_RX6 12
-+#define LPASS_CDC_DMA_RX7 13
-+#define LPASS_CDC_DMA_RX8 14
-+#define LPASS_CDC_DMA_RX9 15
-+
-+#define LPASS_CDC_DMA_TX0 16
-+#define LPASS_CDC_DMA_TX1 17
-+#define LPASS_CDC_DMA_TX2 18
-+#define LPASS_CDC_DMA_TX3 19
-+#define LPASS_CDC_DMA_TX4 20
-+#define LPASS_CDC_DMA_TX5 21
-+#define LPASS_CDC_DMA_TX6 22
-+#define LPASS_CDC_DMA_TX7 23
-+#define LPASS_CDC_DMA_TX8 24
-+
-+#define LPASS_CDC_DMA_VA_TX0 25
-+#define LPASS_CDC_DMA_VA_TX1 26
-+#define LPASS_CDC_DMA_VA_TX2 27
-+#define LPASS_CDC_DMA_VA_TX3 28
-+#define LPASS_CDC_DMA_VA_TX4 29
-+#define LPASS_CDC_DMA_VA_TX5 30
-+#define LPASS_CDC_DMA_VA_TX6 31
-+#define LPASS_CDC_DMA_VA_TX7 32
-+#define LPASS_CDC_DMA_VA_TX8 33
-+
- #define LPASS_MCLK0	0
- 
- #endif /* __DT_QCOM_LPASS_H */
 -- 
 Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
 is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
