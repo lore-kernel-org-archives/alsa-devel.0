@@ -2,81 +2,94 @@ Return-Path: <SRS0=cWdV=N6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9253C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Sep 2021 17:55:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9CF7C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Sep 2021 18:02:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 86C2D6113D
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Sep 2021 17:55:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 86C2D6113D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id E4A64610F8
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Sep 2021 18:02:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E4A64610F8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 87E5916A8;
-	Wed,  8 Sep 2021 19:54:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87E5916A8
+	by alsa0.perex.cz (Postfix) with ESMTPS id F2D7A1677;
+	Wed,  8 Sep 2021 20:01:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2D7A1677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631123744;
-	bh=AIZ4RSbR2Y4m8IDCdTQOkXLoBaQ495UgNtOybOO34B4=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1631124149;
+	bh=vtwCo656x7lSx0hIsLcgJ9QuTd0/+j8hG6YVnWfBMU8=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OyNzNoDxY63I1FXxwh0VfkWVfQLli92ckxh64PL29tab/UEJqMlwDS+ThCSrkf18c
-	 wTRrqNIWR8Y2uHCC7P5phlbtXpbO8NJW05ePvfGDZBOwCGQDWkJIQy4bVZo/kRnT+t
-	 //cSOJKF6OmHuJ/pR91qyn09+AYy6pWXSQqsH50s=
+	b=CnrAKr7QyQX4hvOuC3qA9Zh4od4FiWjS5V+98RDcvKrutzlEKv3pOzXJyL2rjfeuX
+	 KxKK8Uyzb9Rp2zVe6ECyyicaXpfnZsVLudhwhhwLhjtbrPAC5v/qJbsgVRAtKTF374
+	 Rn6w4KehccRtUKQBKuQX/hXCuWoaOs6Jb+xZ1QZI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 24812F804A9;
-	Wed,  8 Sep 2021 19:54:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7A03FF80149;
+	Wed,  8 Sep 2021 20:01:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1F736F802E7; Wed,  8 Sep 2021 19:54:10 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 60380F80149; Wed,  8 Sep 2021 20:01:37 +0200 (CEST)
+Received: from so254-9.mailgun.net (so254-9.mailgun.net [198.61.254.9])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DA65EF80149
- for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2021 19:54:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA65EF80149
-X-IronPort-AV: E=McAfee;i="6200,9189,10101"; a="207788596"
-X-IronPort-AV: E=Sophos;i="5.85,278,1624345200"; d="scan'208";a="207788596"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Sep 2021 10:53:58 -0700
-X-IronPort-AV: E=Sophos;i="5.85,278,1624345200"; d="scan'208";a="693503964"
-Received: from sgevirtz-mobl.amr.corp.intel.com (HELO [10.209.141.208])
- ([10.209.141.208])
- by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Sep 2021 10:53:57 -0700
-Subject: Re: [PATCH] ASoC: rt1011: add i2s reference control for rt1011
-To: Jack Yu <jack.yu@realtek.com>, "broonie@kernel.org" <broonie@kernel.org>, 
- "lgirdwood@gmail.com" <lgirdwood@gmail.com>
-References: <20210906101208.11585-1-jack.yu@realtek.com>
- <3062f5e5-d2d7-8150-ef89-989af3b4b1d6@linux.intel.com>
- <05e92a24b1c34daeb64e5b222a3ae337@realtek.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <9f76a420-44c6-ad6d-4442-275ba4459b40@linux.intel.com>
-Date: Wed, 8 Sep 2021 10:22:42 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <05e92a24b1c34daeb64e5b222a3ae337@realtek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Cc: Oder Chiou <oder_chiou@realtek.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "lars@metafoo.de" <lars@metafoo.de>,
- =?UTF-8?B?a2VudF9jaGVuQHJlYWx0ZWsuY29tIFvpmbPlu7rlro9d?=
- <kent_chen@realtek.com>,
- =?UTF-8?B?RGVyZWsgW+aWueW+t+e+qV0=?= <derek.fang@realtek.com>,
- =?UTF-8?B?U2h1bWluZyBb6IyD5pu46YqYXQ==?= <shumingf@realtek.com>,
- "Flove\(HsinFu\)" <flove@realtek.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 35250F80149
+ for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2021 20:01:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35250F80149
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=mg.codeaurora.org
+ header.i=@mg.codeaurora.org header.b="M93vfAvx"
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1631124087; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=hkmPzR4AsqPbpdZBU8exJOxSC6xP8uqgtO6otQQiW/A=;
+ b=M93vfAvxp1L8LNXdBAFoWLiVZwlhLgTjDqaAC1wx8BO6FITC+GGzt+ln0J3a2gOOWEo9iAZ1
+ SKx74gA5FswJBtUVy93Bffe47NpMbyzenSU9bNiz5fiUldfX2hNCLB+LEPfIdq0/G5S0M/Gi
+ lz5mPx03q3iBPmGAxdtKmhGZTKw=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 6138fa75506910c01b029f24 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 08 Sep 2021 18:01:25
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id 4BD71C43460; Wed,  8 Sep 2021 18:01:25 +0000 (UTC)
+Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: srivasam)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 82F79C4361B;
+ Wed,  8 Sep 2021 18:01:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 82F79C4361B
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ spf=fail smtp.mailfrom=codeaurora.org
+From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+ broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+ bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+ srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+ linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ swboyd@chromium.org, judyhsiao@chromium.org
+Subject: [PATCH 1/2] ASoC: google: dt-bindings: Add sc7280-herobrine machine
+ bindings
+Date: Wed,  8 Sep 2021 23:30:56 +0530
+Message-Id: <1631124057-17155-2-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1631124057-17155-1-git-send-email-srivasam@codeaurora.org>
+References: <1631124057-17155-1-git-send-email-srivasam@codeaurora.org>
+Cc: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,42 +105,191 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Add devicetree bindings documentation file for sc7280 sound card
+registration.
 
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+---
+ .../bindings/sound/google,sc7280-herobrine.yaml    | 169 +++++++++++++++++++++
+ 1 file changed, 169 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
 
-On 9/7/21 9:17 PM, Jack Yu wrote:
-> 
->> -----Original Message-----
->> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> Sent: Tuesday, September 7, 2021 10:54 PM
->> To: Jack Yu <jack.yu@realtek.com>; broonie@kernel.org;
->> lgirdwood@gmail.com
->> Cc: Oder Chiou <oder_chiou@realtek.com>; alsa-devel@alsa-project.org;
->> lars@metafoo.de; kent_chen@realtek.com [陳建宏]
->> <kent_chen@realtek.com>; Derek [方德義] <derek.fang@realtek.com>;
->> Shuming [范書銘] <shumingf@realtek.com>; Flove(HsinFu)
->> <flove@realtek.com>
->> Subject: Re: [PATCH] ASoC: rt1011: add i2s reference control for rt1011
->>
->> On 9/6/21 5:12 AM, Jack Yu wrote:
->>> Add i2s reference control for rt1011 amp.
->>>
->>> Signed-off-by: Jack Yu <jack.yu@realtek.com>
->>
->>> +static const char * const rt1011_i2s_ref[] = {
->>> +	"None", "Left Channel", "Right Channel"
->>> +};
->>
->>> +enum {
->>> +	RT1011_I2S_REF_NONE,
->>> +	RT1011_I2S_REF_LEFT_CH,
->>> +	RT1011_I2S_REF_RIGHT_CH,
->>> +};
->>
->> is it possible to get Left-Right-mix (mixed on rt1011) and Left-Right (two
->> channels, with the application selecting what they want)?
-> 
-> It's a mono amp, so there's no Left-Right-mix setting. 
-> And for the choice of Left-Right channel, it's already available with this patch.
+diff --git a/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml b/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
+new file mode 100644
+index 0000000..e0d705f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
+@@ -0,0 +1,169 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/google,sc7280-herobrine.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Google SC7280-Herobrine ASoC sound card driver
++
++maintainers:
++  - Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
++  - Judy Hsiao <judyhsiao@chromium.org>
++
++description:
++  This binding describes the SC7280 sound card which uses LPASS for audio.
++
++properties:
++  compatible:
++    enum:
++      - google,sc7280-herobrine
++
++  audio-routing:
++    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
++    description:
++      A list of the connections between audio components. Each entry is a
++      pair of strings, the first being the connection's sink, the second
++      being the connection's source.
++
++  model:
++    $ref: /schemas/types.yaml#/definitions/string
++    description: User specified audio sound card name
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 0
++
++patternProperties:
++  "^dai-link@[0-9a-f]$":
++    description:
++      Each subnode represents a dai link. Subnodes of each dai links would be
++      cpu/codec dais.
++
++    type: object
++
++    properties:
++      link-name:
++        description: Indicates dai-link name and PCM stream name.
++        $ref: /schemas/types.yaml#/definitions/string
++        maxItems: 1
++
++      reg:
++        maxItems: 1
++        description: dai link address.
++
++      cpu:
++        description: Holds subnode which indicates cpu dai.
++        type: object
++        properties:
++          sound-dai: true
++
++      codec:
++        description: Holds subnode which indicates codec dai.
++        type: object
++        properties:
++          sound-dai: true
++
++    required:
++      - link-name
++      - cpu
++      - codec
++
++    additionalProperties: false
++
++required:
++  - compatible
++  - model
++  - "#address-cells"
++  - "#size-cells"
++
++additionalProperties: false
++
++examples:
++
++  - |
++    #include <dt-bindings/sound/qcom,lpass.h>
++    sound {
++        compatible = "google,sc7280-herobrine";
++        model = "sc7280-wcd938x-max98360a-4dmic";
++
++        audio-routing =
++            "IN1_HPHL", "HPHL_OUT",
++            "IN2_HPHR", "HPHR_OUT",
++            "AMIC1", "MIC BIAS1",
++            "AMIC2", "MIC BIAS2",
++            "VA DMIC0", "MIC BIAS3",
++            "VA DMIC1", "MIC BIAS3",
++            "VA DMIC2", "MIC BIAS4",
++            "VA DMIC3", "MIC BIAS4",
++            "TX SWR_ADC0", "ADC1_OUTPUT",
++            "TX SWR_ADC1", "ADC2_OUTPUT",
++            "TX SWR_ADC2", "ADC3_OUTPUT",
++            "TX SWR_DMIC0", "DMIC1_OUTPUT",
++            "TX SWR_DMIC1", "DMIC2_OUTPUT",
++            "TX SWR_DMIC2", "DMIC3_OUTPUT",
++            "TX SWR_DMIC3", "DMIC4_OUTPUT";
++
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        dai-link@0 {
++            link-name = "WCD Playback";
++            reg = <LPASS_CDC_DMA_RX0>;
++            cpu {
++                sound-dai = <&lpass_cpu LPASS_CDC_DMA_RX0>;
++            };
++
++            codec {
++                sound-dai = <&wcd938x 0>, <&swr0 0>, <&rxmacro 0>;
++            };
++        };
++        dai-link@1 {
++            link-name = "WCD Capture";
++            reg = <LPASS_CDC_DMA_TX3>;
++            cpu {
++                sound-dai = <&lpass_cpu LPASS_CDC_DMA_TX3>;
++            };
++
++            codec {
++                sound-dai = <&wcd938x 1>, <&swr1 0>, <&txmacro 0>;
++            };
++        };
++
++        dai-link@2 {
++            link-name = "MI2S Playback";
++            reg = <MI2S_SECONDARY>;
++            cpu {
++                sound-dai = <&lpass_cpu MI2S_SECONDARY>;
++            };
++
++            codec {
++                sound-dai = <&max98360a>;
++            };
++        };
++
++        dai-link@3 {
++            link-name = "DMIC Capture";
++            reg = <LPASS_CDC_DMA_VA_TX0>;
++            cpu {
++                sound-dai = <&lpass_cpu LPASS_CDC_DMA_VA_TX0>;
++            };
++
++            codec {
++                sound-dai = <&vamacro 0>;
++            };
++        };
++
++        dai-link@5 {
++            link-name = "DP Playback";
++            reg = <LPASS_DP_RX>;
++            cpu {
++                sound-dai = <&lpass_cpu LPASS_DP_RX>;
++            };
++
++            codec {
++                sound-dai = <&mdss_dp>;
++            };
++        };
++    };
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-So it's just to place a mono reference in either left or right channel
-of the I2S link? Why not dual-mono as well then?
