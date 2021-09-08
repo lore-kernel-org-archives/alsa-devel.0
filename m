@@ -7,71 +7,71 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1A73C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Sep 2021 15:58:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1826C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Sep 2021 15:58:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0F84C6113C
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Sep 2021 15:58:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0F84C6113C
+	by mail.kernel.org (Postfix) with ESMTPS id E653F6113D
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Sep 2021 15:58:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E653F6113D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=foss.st.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ABCBF16D4;
-	Wed,  8 Sep 2021 17:57:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABCBF16D4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7161A16A4;
+	Wed,  8 Sep 2021 17:57:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7161A16A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631116679;
-	bh=FJ5QfNPsyIHfiB6Raaz/3NRe8Vg4vBtXHy7sdmBr58Q=;
+	s=default; t=1631116713;
+	bh=iYbm9KK4UhVt2gsU7FUvY58azsyyeZQbv4TwrxKSuFU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZoA6hqWrz8OStcKjAcWA8Eb0fhTmp8LN/ZLnM5XDGmQk9bMhvKIfhPBherZXIalgi
-	 GEqCUHxEYU5/ORV+N3nwLTYKwmLZ0R391vvbpSGfyvibkWB0ykkxSrmO1L/D9H/0D9
-	 ALEcwqGAz8aJY0EHuUoP+DRY9enKrukQozZJD+2c=
+	b=YouBQhgbX1Cq85w5QEpBjn0pkD0+flNjXs543QxDBZqIIwir/0KYTNr9dM/mZ/o0p
+	 6uH18O8sEJF3W5xAt8KZzXvaKuj7kfPjCZLcreOmv87L0ZbulWI1PT6zV2oH99vp09
+	 mNtPFPJ17Hxl/1qQis1Lxj+D/azzDrV0bWuMLCkI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CEE97F804FC;
-	Wed,  8 Sep 2021 17:55:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2769F80516;
+	Wed,  8 Sep 2021 17:55:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CC7FCF804FC; Wed,  8 Sep 2021 17:55:15 +0200 (CEST)
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [185.132.182.106])
+ id 864ACF8051A; Wed,  8 Sep 2021 17:55:32 +0200 (CEST)
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7A84EF80149
- for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2021 17:55:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A84EF80149
+ by alsa1.perex.cz (Postfix) with ESMTPS id 937DDF80516
+ for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2021 17:55:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 937DDF80516
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com
- header.b="geyj3Vm0"
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 188FpDvj017933;
- Wed, 8 Sep 2021 17:55:02 +0200
+ header.b="3+k4l0kt"
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+ by mx07-00178001.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 188FpQ8Z005816;
+ Wed, 8 Sep 2021 17:55:26 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=selector1;
- bh=e/oa1unCRWL4AroRZ8b6CGYEbaQjckTlJaMT/ZZmzuI=;
- b=geyj3Vm057r+eAGIcs/KMLLh259gGdN2hQBvWyMUxLBm/1JXRO0nXyoVf8LG5+YsZ5WR
- c938NpeKJYnBL8fGbCZ82tBj59jQ2e1Ux8t3WxiBSNMOD65zwJmJeaMvbGPNIGT/11TB
- wASZwqlD5Rsl0Go2JeVVDoJ1nGjBvcFCV+IpQC1dW/uQNP1FXF0HyQxGShKo8hlgwiFW
- 8oGq1OaZ7zpEGyn31fvtt6p6QO4PVDf4egE3PslL53mB4DoYEItfc6faAhJ7LoARWjbk
- pVJNflo70Nn9joggXcnN/0YykV4zwDZ4oghpVf20+S8hfb+gVEJ3yFPTlu0t19rUFjSj vw== 
+ bh=BG/Ki6ZeekgfBPE/MfIcKhxRwcZEyXIAfl11Ncp86lk=;
+ b=3+k4l0ktw1rfzTwgPPsVvtPLqfxnRWsjdSVy/exxCsaJE9YXbj7Yx2ajm2GbWjfmoXeP
+ q9y6JCzTfZJrnTY4++eY+g/szFU93Xp4zHb3RSnyHHXTLRxPMt9UvMrBoO3qlLOrPOzW
+ ctSgnchZ3IjE8gPoX11L6LFZ0bhndxw59aVBYKh+nF56vwfV8KjGzqJpELF6OcPjr2gm
+ SCli++QlCGWpxZNuXwM21SJ7XZrT65IUfZKSchIB7t9i9WmaLWfKu06oWy76fXbSazSu
+ 3VpuXcHvOOK1nYfCJU/jxey4LUUrrVZK1McynXaaWru3qs/dl5j1fQvXE7f2vOcGUYhK Zw== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com with ESMTP id 3axwtygupq-1
+ by mx07-00178001.pphosted.com with ESMTP id 3axtha2b9f-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 08 Sep 2021 17:55:02 +0200
+ Wed, 08 Sep 2021 17:55:26 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5F83F100034;
- Wed,  8 Sep 2021 17:55:02 +0200 (CEST)
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 43692100034;
+ Wed,  8 Sep 2021 17:55:25 +0200 (CEST)
 Received: from Webmail-eu.st.com (sfhdag1node3.st.com [10.75.127.3])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4CA8D2203A5;
- Wed,  8 Sep 2021 17:55:02 +0200 (CEST)
-Received: from localhost (10.75.127.51) by SFHDAG1NODE3.st.com (10.75.127.3)
- with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 8 Sep 2021 17:55:01
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 32E562203DE;
+ Wed,  8 Sep 2021 17:55:25 +0200 (CEST)
+Received: from localhost (10.75.127.48) by SFHDAG1NODE3.st.com (10.75.127.3)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 8 Sep 2021 17:55:24
  +0200
 From: Olivier Moysan <olivier.moysan@foss.st.com>
 To: Alexandre Torgue <alexandre.torgue@foss.st.com>, Arnaud Pouliquen
@@ -79,17 +79,16 @@ To: Alexandre Torgue <alexandre.torgue@foss.st.com>, Arnaud Pouliquen
  Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
  Maxime Coquelin <mcoquelin.stm32@gmail.com>, Olivier Moysan
  <olivier.moysan@foss.st.com>, Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH 4/7] iio: adc: stm32-adc: add support of generic channels
- binding
-Date: Wed, 8 Sep 2021 17:54:49 +0200
-Message-ID: <20210908155452.25458-5-olivier.moysan@foss.st.com>
+Subject: [PATCH 6/7] iio: adc: stm32-adc: add vrefint calibration support
+Date: Wed, 8 Sep 2021 17:54:51 +0200
+Message-ID: <20210908155452.25458-7-olivier.moysan@foss.st.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210908155452.25458-1-olivier.moysan@foss.st.com>
 References: <20210908155452.25458-1-olivier.moysan@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG1NODE3.st.com
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG1NODE3.st.com
  (10.75.127.3)
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
@@ -112,156 +111,208 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support of generic IIO channel binding:
-./devicetree/bindings/iio/adc/adc.yaml
-Keep support of st,adc-channels and st,adc-diff-channels
-for backward compatibility.
+Add support of vrefint calibration.
+If a channel is labeled as vrefint, get vrefint calibration
+from non volatile memory for this channel.
+A conversion on vrefint channel allows to update scale
+factor according to vrefint deviation, compared to vrefint
+calibration value.
 
 Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
 ---
- drivers/iio/adc/stm32-adc.c | 99 +++++++++++++++++++++++++++++++++----
- 1 file changed, 90 insertions(+), 9 deletions(-)
+ drivers/iio/adc/stm32-adc.c | 88 ++++++++++++++++++++++++++++++++++---
+ 1 file changed, 82 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
-index 2f137d14f141..ae4a314854f7 100644
+index ef3d2af98025..9e52a7de9b16 100644
 --- a/drivers/iio/adc/stm32-adc.c
 +++ b/drivers/iio/adc/stm32-adc.c
-@@ -35,7 +35,7 @@
- #define STM32H7_BOOST_CLKRATE		20000000UL
+@@ -21,6 +21,7 @@
+ #include <linux/io.h>
+ #include <linux/iopoll.h>
+ #include <linux/module.h>
++#include <linux/nvmem-consumer.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/of.h>
+@@ -42,6 +43,7 @@
+ #define STM32_ADC_TIMEOUT	(msecs_to_jiffies(STM32_ADC_TIMEOUT_US / 1000))
+ #define STM32_ADC_HW_STOP_DELAY_MS	100
+ #define STM32_ADC_CHAN_NONE		-1
++#define STM32_ADC_VREFINT_VOLTAGE	3300
  
- #define STM32_ADC_CH_MAX		20	/* max number of channels */
--#define STM32_ADC_CH_SZ			10	/* max channel name size */
-+#define STM32_ADC_CH_SZ			16	/* max channel name size */
- #define STM32_ADC_MAX_SQ		16	/* SQ1..SQ16 */
- #define STM32_ADC_MAX_SMP		7	/* SMPx range is [0..7] */
- #define STM32_ADC_TIMEOUT_US		100000
-@@ -1732,6 +1732,11 @@ static int stm32_adc_get_legacy_chan_count(struct iio_dev *indio_dev, struct stm
- 		num_channels += ret;
- 	}
+ #define STM32_DMA_BUFFER_SIZE		PAGE_SIZE
  
-+	if (!num_channels) {
-+		dev_err(indio_dev->dev.parent, "No channel found\n");
-+		return -ENODATA;
-+	}
+@@ -79,6 +81,7 @@ enum stm32_adc_extsel {
+ };
+ 
+ enum stm32_adc_int_ch {
++	STM32_ADC_INT_CH_NONE = -1,
+ 	STM32_ADC_INT_CH_VDDCORE,
+ 	STM32_ADC_INT_CH_VREFINT,
+ 	STM32_ADC_INT_CH_VBAT,
+@@ -137,6 +140,16 @@ struct stm32_adc_regs {
+ 	int shift;
+ };
+ 
++/**
++ * struct stm32_adc_vrefint - stm32 ADC internal reference voltage data
++ * @vrefint_cal:	vrefint calibration value from nvmem
++ * @vrefint_data:	vrefint actual value
++ */
++struct stm32_adc_vrefint {
++	u32 vrefint_cal;
++	u32 vrefint_data;
++};
 +
- 	return num_channels;
- }
+ /**
+  * struct stm32_adc_regspec - stm32 registers definition
+  * @dr:			data register offset
+@@ -186,6 +199,7 @@ struct stm32_adc;
+  * @unprepare:		optional unprepare routine (disable, power-down)
+  * @irq_clear:		routine to clear irqs
+  * @smp_cycles:		programmable sampling time (ADC clock cycles)
++ * @ts_vrefint_ns:	vrefint minimum sampling time in ns
+  */
+ struct stm32_adc_cfg {
+ 	const struct stm32_adc_regspec	*regs;
+@@ -199,6 +213,7 @@ struct stm32_adc_cfg {
+ 	void (*unprepare)(struct iio_dev *);
+ 	void (*irq_clear)(struct iio_dev *indio_dev, u32 msk);
+ 	const unsigned int *smp_cycles;
++	const unsigned int ts_vrefint_ns;
+ };
  
-@@ -1792,6 +1797,73 @@ static int stm32_adc_legacy_chan_init(struct iio_dev *indio_dev,
+ /**
+@@ -223,6 +238,7 @@ struct stm32_adc_cfg {
+  * @pcsel:		bitmask to preselect channels on some devices
+  * @smpr_val:		sampling time settings (e.g. smpr1 / smpr2)
+  * @cal:		optional calibration data on some devices
++ * @vrefint:		internal reference voltage data
+  * @chan_name:		channel name array
+  * @num_diff:		number of differential channels
+  * @int_ch:		internal channel indexes array
+@@ -248,6 +264,7 @@ struct stm32_adc {
+ 	u32			pcsel;
+ 	u32			smpr_val[2];
+ 	struct stm32_adc_calib	cal;
++	struct stm32_adc_vrefint vrefint;
+ 	char			chan_name[STM32_ADC_CH_MAX][STM32_ADC_CH_SZ];
+ 	u32			num_diff;
+ 	int			int_ch[STM32_ADC_INT_CH_NB];
+@@ -1331,15 +1348,35 @@ static int stm32_adc_read_raw(struct iio_dev *indio_dev,
+ 			ret = stm32_adc_single_conv(indio_dev, chan, val);
+ 		else
+ 			ret = -EINVAL;
++
++		/* If channel mask corresponds to vrefint, store data */
++		if (adc->int_ch[STM32_ADC_INT_CH_VREFINT] == chan->channel)
++			adc->vrefint.vrefint_data = *val;
++
+ 		iio_device_release_direct_mode(indio_dev);
+ 		return ret;
+ 
+ 	case IIO_CHAN_INFO_SCALE:
+ 		if (chan->differential) {
+-			*val = adc->common->vref_mv * 2;
++			if (adc->vrefint.vrefint_data &&
++			    adc->vrefint.vrefint_cal) {
++				*val = STM32_ADC_VREFINT_VOLTAGE * 2 *
++				       adc->vrefint.vrefint_cal /
++				       adc->vrefint.vrefint_data;
++			} else {
++				*val = adc->common->vref_mv * 2;
++			}
+ 			*val2 = chan->scan_type.realbits;
+ 		} else {
+-			*val = adc->common->vref_mv;
++			/* Use vrefint data if available */
++			if (adc->vrefint.vrefint_data &&
++			    adc->vrefint.vrefint_cal) {
++				*val = STM32_ADC_VREFINT_VOLTAGE *
++				       adc->vrefint.vrefint_cal /
++				       adc->vrefint.vrefint_data;
++			} else {
++				*val = adc->common->vref_mv;
++			}
+ 			*val2 = chan->scan_type.realbits;
+ 		}
+ 		return IIO_VAL_FRACTIONAL_LOG2;
+@@ -1907,6 +1944,35 @@ static int stm32_adc_legacy_chan_init(struct iio_dev *indio_dev,
  	return scan_index;
  }
  
-+static int stm32_adc_generic_chan_init(struct iio_dev *indio_dev,
-+				       struct stm32_adc *adc,
-+				       struct iio_chan_spec *channels)
++static int stm32_adc_get_int_ch(struct iio_dev *indio_dev, const char *ch_name,
++				int chan)
 +{
-+	struct device_node *node = indio_dev->dev.of_node;
-+	const struct stm32_adc_info *adc_info = adc->cfg->adc_info;
-+	struct device_node *child;
-+	const char *name;
-+	int val, scan_index = 0, ret;
-+	bool differential;
-+	u32 vin[2];
++	struct stm32_adc *adc = iio_priv(indio_dev);
++	u16 vrefint;
++	int i, ret;
 +
-+	for_each_available_child_of_node(node, child) {
-+		ret = of_property_read_u32(child, "reg", &val);
-+		if (ret) {
-+			dev_err(&indio_dev->dev, "Missing channel index %d\n", ret);
-+			goto err;
-+		}
-+
-+		ret = of_property_read_string(child, "label", &name);
-+		/* label is optional */
-+		if (!ret) {
-+			if (strlen(name) >= STM32_ADC_CH_SZ) {
-+				dev_err(&indio_dev->dev, "Label %s exceeds %d characters\n",
-+					name, STM32_ADC_CH_SZ);
-+				return -EINVAL;
++	for (i = 0; i < STM32_ADC_INT_CH_NB; i++) {
++		if (!strncmp(stm32_adc_ic[i].name, ch_name, STM32_ADC_CH_SZ)) {
++			adc->int_ch[i] = chan;
++			/* If channel is vrefint get calibration data. */
++			if (stm32_adc_ic[i].idx == STM32_ADC_INT_CH_VREFINT) {
++				ret = nvmem_cell_read_u16(&indio_dev->dev, "vrefint", &vrefint);
++				if (ret && ret != -ENOENT && ret != -EOPNOTSUPP) {
++					dev_err(&indio_dev->dev, "nvmem access error %d\n", ret);
++					return ret;
++				}
++				if (ret == -ENOENT)
++					dev_dbg(&indio_dev->dev,
++						"vrefint calibration not found\n");
++				else
++					adc->vrefint.vrefint_cal = vrefint;
 +			}
-+			strncpy(adc->chan_name[val], name, STM32_ADC_CH_SZ);
-+		} else if (ret != -EINVAL) {
-+			dev_err(&indio_dev->dev, "Invalid label %d\n", ret);
-+			goto err;
 +		}
-+
-+		if (val >= adc_info->max_channels) {
-+			dev_err(&indio_dev->dev, "Invalid channel %d\n", val);
-+			ret = -EINVAL;
-+			goto err;
-+		}
-+
-+		differential = false;
-+		ret = of_property_read_u32_array(child, "diff-channels", vin, 2);
-+		/* diff-channels is optional */
-+		if (!ret) {
-+			differential = true;
-+			if (vin[0] != val || vin[1] >= adc_info->max_channels) {
-+				dev_err(&indio_dev->dev, "Invalid channel in%d-in%d\n",
-+					vin[0], vin[1]);
-+				goto err;
-+			}
-+		} else if (ret != -EINVAL) {
-+			dev_err(&indio_dev->dev, "Invalid diff-channels property %d\n", ret);
-+			goto err;
-+		}
-+
-+		stm32_adc_chan_init_one(indio_dev, &channels[scan_index], val,
-+					vin[1], scan_index, differential);
-+		scan_index++;
 +	}
 +
-+	return scan_index;
-+
-+err:
-+	of_node_put(child);
-+
-+	return ret;
++	return 0;
 +}
 +
- static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
- {
- 	struct device_node *node = indio_dev->dev.of_node;
-@@ -1800,15 +1872,21 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
- 	struct iio_chan_spec *channels;
- 	int scan_index = 0, num_channels = 0, ret, i;
- 	u32 smp = 0;
-+	bool legacy = false;
- 
--	ret = stm32_adc_get_legacy_chan_count(indio_dev, adc);
--	if (ret < 0)
--		return ret;
--	num_channels = ret;
--
-+	num_channels = of_get_available_child_count(node);
-+	/*
-+	 * If no channels have been found, fallback to channels legacy properties.
-+	 * Legacy channel properties will be ignored, if some channels are
-+	 * already defined using the standard binding.
-+	 */
- 	if (!num_channels) {
--		dev_err(&indio_dev->dev, "No channels configured\n");
--		return -ENODATA;
-+		ret = stm32_adc_get_legacy_chan_count(indio_dev, adc);
-+		if (ret < 0)
-+			return ret;
+ static int stm32_adc_generic_chan_init(struct iio_dev *indio_dev,
+ 				       struct stm32_adc *adc,
+ 				       struct iio_chan_spec *channels)
+@@ -1938,10 +2004,9 @@ static int stm32_adc_generic_chan_init(struct iio_dev *indio_dev,
+ 				return -EINVAL;
+ 			}
+ 			strncpy(adc->chan_name[val], name, STM32_ADC_CH_SZ);
+-			for (i = 0; i < STM32_ADC_INT_CH_NB; i++) {
+-				if (!strncmp(stm32_adc_ic[i].name, name, STM32_ADC_CH_SZ))
+-					adc->int_ch[i] = val;
+-			}
++			ret = stm32_adc_get_int_ch(indio_dev, name, val);
++			if (ret)
++				goto err;
+ 		} else if (ret != -EINVAL) {
+ 			dev_err(&indio_dev->dev, "Invalid label %d\n", ret);
+ 			goto err;
+@@ -2044,6 +2109,16 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
+ 		 */
+ 		of_property_read_u32_index(node, "st,min-sample-time-nsecs",
+ 					   i, &smp);
 +
-+		legacy = true;
-+		num_channels = ret;
++		/*
++		 * For vrefint channel, ensure that the sampling time cannot
++		 * be lower than the one specified in the datasheet
++		 */
++		if (channels[i].channel == adc->int_ch[STM32_ADC_INT_CH_VREFINT] &&
++		    smp < adc->cfg->ts_vrefint_ns) {
++			smp = adc->cfg->ts_vrefint_ns;
++		}
++
+ 		/* Prepare sampling time settings */
+ 		stm32_adc_smpr_init(adc, channels[i].channel, smp);
  	}
+@@ -2350,6 +2425,7 @@ static const struct stm32_adc_cfg stm32mp1_adc_cfg = {
+ 	.unprepare = stm32h7_adc_unprepare,
+ 	.smp_cycles = stm32h7_adc_smp_cycles,
+ 	.irq_clear = stm32h7_adc_irq_clear,
++	.ts_vrefint_ns = 4300,
+ };
  
- 	if (num_channels > adc_info->max_channels) {
-@@ -1832,7 +1910,10 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
- 	if (!channels)
- 		return -ENOMEM;
- 
--	ret = stm32_adc_legacy_chan_init(indio_dev, adc, channels);
-+	if (legacy)
-+		ret = stm32_adc_legacy_chan_init(indio_dev, adc, channels);
-+	else
-+		ret = stm32_adc_generic_chan_init(indio_dev, adc, channels);
- 	if (ret < 0)
- 		return ret;
- 	scan_index = ret;
+ static const struct of_device_id stm32_adc_of_match[] = {
 -- 
 2.17.1
 
