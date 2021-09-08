@@ -7,71 +7,71 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6063C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Sep 2021 15:57:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19370C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Sep 2021 15:57:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CC39F6113C
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Sep 2021 15:57:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CC39F6113C
+	by mail.kernel.org (Postfix) with ESMTPS id 9679A6113D
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Sep 2021 15:57:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9679A6113D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=foss.st.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2A52716A9;
-	Wed,  8 Sep 2021 17:56:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A52716A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 37DD916D2;
+	Wed,  8 Sep 2021 17:56:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37DD916D2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631116646;
-	bh=1qkSKTokszjIElW20+PJ0aJdbn9qh9JmtbP+Qu7TQQk=;
+	s=default; t=1631116664;
+	bh=3tfFko3n4XxKjFsHm2ilt3CV/mnOJs0accibgslCQWo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OUFUbeTAgj/ZVzokUS4zK26F0b2J8MgjdZ75fUp0TbuDZEP/XugP6hMvsnOPlr6ft
-	 lDykO9e3OBcQ3KwS9nCO05aS5YkGoAJjtzKO53Pu3CAS/Iqiz/uWPi/Ksh1GUa1mg4
-	 3WgY4EwcwG3XSJpqItyOKdyKJbg0/XVCINmLVbbE=
-Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CDD39F804F2;
-	Wed,  8 Sep 2021 17:55:14 +0200 (CEST)
+	b=spqXOI0Gr/rerdbODAoKZ+I7TPw7lb0gBLyPfuBthptaWAFhKqFL3Gy4HLbofPZMe
+	 hAYZHwx1o4M5FVAzhjPeHJ1D6/I9Mef33CbXfg8epK29mPo+LxGPMy0XIYz3yb1Lwx
+	 4HKDj9eDiNNT/ToFAno3Lu1hlgDKTlg08niIuUrM=
+Received: from vmi242170.contaboserver.net (localhost.localdomain [127.0.0.1])
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F4F7F804FB;
+	Wed,  8 Sep 2021 17:55:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 306DEF804E6; Wed,  8 Sep 2021 17:55:13 +0200 (CEST)
+ id 84289F804F2; Wed,  8 Sep 2021 17:55:14 +0200 (CEST)
 Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
  [91.207.212.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E61ADF8026C
- for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2021 17:55:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E61ADF8026C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 212A6F800C7
+ for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2021 17:55:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 212A6F800C7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com
- header.b="v1jIBtQE"
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 188FpEW5005684;
- Wed, 8 Sep 2021 17:55:03 +0200
+ header.b="2L4kQ7mY"
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+ by mx07-00178001.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 188FpSjo007771;
+ Wed, 8 Sep 2021 17:55:02 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=selector1;
- bh=GCSSvY8XrvSItV3HUoBzc89zbZmgPgQTdQFSowWleSU=;
- b=v1jIBtQEtftF/ryoalfrxM6av1mz+AIVgC2mfMc3ec9Sf+5dqORJkeRkxY0O2N/F2YPz
- CESLcS0xbz4Wr4HfRYrk//wWvjljYF7HiD5ez/pqcZg/9HDc06OzGrk5eQE1Zvm0ZQRc
- kWBy7oqTc11t1ZG6MqKhBpX3rYcDser6gJgIkiDlKtWCI0Kach/6qQikXbsxXhWYbtjA
- ngSdug8IVF7gurdHKJSbi/H+fsFsnxChBNtPhgAlOFDrDeEu2lGylOWBUvU2XhBsMT6h
- 7t5LRdV2zq6xvIExtxV8JuCqwF729ksi+hPVa0/sxnbmVpCd2AWlNkFa2mr3C+hFR5e9 IA== 
+ bh=7c/a7QYZhvYe13U6jCTLYsPuBAp1wOiYKgfl2jIFVcY=;
+ b=2L4kQ7mYj7MML1t1SqDoRR7xgy4GFD2udLFnL1D0YnxoaMpHk0TrD27oPImi4aw9f+0z
+ VbnoyhaFQcM4nuRYtVTZFugUpiVZV0+uk2UJniqH9LwJdGnE4P5UIu/MMQxL0DCk81ci
+ BwicaVykyS7WRCNYaPxJN6cWfdNhqC9y/hh6SrJCUjoZ7zAaAYzazjtOFxSLwyuvKnbN
+ sgWoDaTreEWCK4pZm5EcXa90iRq4WpZHf3FIlNLHN+q7BjIrh/dgDjuwwWhzBgpglSHl
+ oMmhkhQ28QlpGRqssa71CXyIZp/9wizJcOr0EQzCrLQPVbyK9CByuedhuYFxyfZsVfpp Yw== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com with ESMTP id 3axtha2b80-1
+ by mx07-00178001.pphosted.com with ESMTP id 3axt4majgw-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 08 Sep 2021 17:55:03 +0200
+ Wed, 08 Sep 2021 17:55:02 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6001310002A;
- Wed,  8 Sep 2021 17:55:03 +0200 (CEST)
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8B06010002A;
+ Wed,  8 Sep 2021 17:55:01 +0200 (CEST)
 Received: from Webmail-eu.st.com (sfhdag1node3.st.com [10.75.127.3])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 44C15229A9E;
- Wed,  8 Sep 2021 17:55:03 +0200 (CEST)
-Received: from localhost (10.75.127.50) by SFHDAG1NODE3.st.com (10.75.127.3)
- with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 8 Sep 2021 17:55:02
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7869D2203A5;
+ Wed,  8 Sep 2021 17:55:01 +0200 (CEST)
+Received: from localhost (10.75.127.48) by SFHDAG1NODE3.st.com (10.75.127.3)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 8 Sep 2021 17:55:00
  +0200
 From: Olivier Moysan <olivier.moysan@foss.st.com>
 To: Alexandre Torgue <alexandre.torgue@foss.st.com>, Arnaud Pouliquen
@@ -79,15 +79,16 @@ To: Alexandre Torgue <alexandre.torgue@foss.st.com>, Arnaud Pouliquen
  Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
  Maxime Coquelin <mcoquelin.stm32@gmail.com>, Olivier Moysan
  <olivier.moysan@foss.st.com>, Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH 5/7] iio: adc: stm32-adc: add support of internal channels
-Date: Wed, 8 Sep 2021 17:54:50 +0200
-Message-ID: <20210908155452.25458-6-olivier.moysan@foss.st.com>
+Subject: [PATCH 3/7] iio: adc stm32-adc: split channel init into several
+ routines
+Date: Wed, 8 Sep 2021 17:54:48 +0200
+Message-ID: <20210908155452.25458-4-olivier.moysan@foss.st.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210908155452.25458-1-olivier.moysan@foss.st.com>
 References: <20210908155452.25458-1-olivier.moysan@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.50]
+X-Originating-IP: [10.75.127.48]
 X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG1NODE3.st.com
  (10.75.127.3)
 X-Proofpoint-Virus-Version: vendor=baseguard
@@ -111,283 +112,209 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support of ADC2 internal channels VDDCORE, VREFINT and VBAT.
-The reserved label name "vddcore", "vrefint" and "vbat" must
-be used in Device Tree channel node, to enable the corresponding
-internal channel.
-
-Note: This patch does not provide support of internal channels
-for F4 and H7.
+Split stm32_adc_chan_of_init channel initialization function into
+several routines to increase readability and prepare channel
+generic binding handling.
 
 Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
 ---
- drivers/iio/adc/stm32-adc-core.h |   8 ++
- drivers/iio/adc/stm32-adc.c      | 123 ++++++++++++++++++++++++++++++-
- 2 files changed, 128 insertions(+), 3 deletions(-)
+ drivers/iio/adc/stm32-adc.c | 131 ++++++++++++++++++++++++------------
+ 1 file changed, 87 insertions(+), 44 deletions(-)
 
-diff --git a/drivers/iio/adc/stm32-adc-core.h b/drivers/iio/adc/stm32-adc-core.h
-index 2322809bfd2f..7c924f463f67 100644
---- a/drivers/iio/adc/stm32-adc-core.h
-+++ b/drivers/iio/adc/stm32-adc-core.h
-@@ -102,6 +102,9 @@
- #define STM32H7_ADC_CALFACT		0xC4
- #define STM32H7_ADC_CALFACT2		0xC8
- 
-+/* STM32MP1 - ADC2 instance option register */
-+#define STM32MP1_ADC2_OR		0xD0
-+
- /* STM32H7 - common registers for all ADC instances */
- #define STM32H7_ADC_CSR			(STM32_ADCX_COMN_OFFSET + 0x00)
- #define STM32H7_ADC_CCR			(STM32_ADCX_COMN_OFFSET + 0x08)
-@@ -168,11 +171,16 @@ enum stm32h7_adc_dmngt {
- #define STM32H7_EOC_MST			BIT(2)
- 
- /* STM32H7_ADC_CCR - bit fields */
-+#define STM32H7_VBATEN			BIT(24)
-+#define STM32H7_VREFEN			BIT(22)
- #define STM32H7_PRESC_SHIFT		18
- #define STM32H7_PRESC_MASK		GENMASK(21, 18)
- #define STM32H7_CKMODE_SHIFT		16
- #define STM32H7_CKMODE_MASK		GENMASK(17, 16)
- 
-+/* STM32MP1_ADC2_OR - bit fields */
-+#define STM32MP1_VDDCOREEN		BIT(0)
-+
- /**
-  * struct stm32_adc_common - stm32 ADC driver common data (for all instances)
-  * @base:		control registers base cpu addr
 diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
-index ae4a314854f7..ef3d2af98025 100644
+index 5088de835bb1..2f137d14f141 100644
 --- a/drivers/iio/adc/stm32-adc.c
 +++ b/drivers/iio/adc/stm32-adc.c
-@@ -41,6 +41,7 @@
- #define STM32_ADC_TIMEOUT_US		100000
- #define STM32_ADC_TIMEOUT	(msecs_to_jiffies(STM32_ADC_TIMEOUT_US / 1000))
- #define STM32_ADC_HW_STOP_DELAY_MS	100
-+#define STM32_ADC_CHAN_NONE		-1
- 
- #define STM32_DMA_BUFFER_SIZE		PAGE_SIZE
- 
-@@ -77,6 +78,29 @@ enum stm32_adc_extsel {
- 	STM32_EXT20,
- };
- 
-+enum stm32_adc_int_ch {
-+	STM32_ADC_INT_CH_VDDCORE,
-+	STM32_ADC_INT_CH_VREFINT,
-+	STM32_ADC_INT_CH_VBAT,
-+	STM32_ADC_INT_CH_NB,
-+};
-+
-+/**
-+ * struct stm32_adc_ic - ADC internal channels
-+ * @name:	name of the internal channel
-+ * @idx:	internal channel enum index
-+ */
-+struct stm32_adc_ic {
-+	const char *name;
-+	u32 idx;
-+};
-+
-+static const struct stm32_adc_ic stm32_adc_ic[STM32_ADC_INT_CH_NB] = {
-+	{ "vddcore", STM32_ADC_INT_CH_VDDCORE },
-+	{ "vrefint", STM32_ADC_INT_CH_VREFINT },
-+	{ "vbat", STM32_ADC_INT_CH_VBAT },
-+};
-+
- /**
-  * struct stm32_adc_trig_info - ADC trigger info
-  * @name:		name of the trigger, corresponding to its source
-@@ -126,6 +150,9 @@ struct stm32_adc_regs {
-  * @res:		resolution selection register & bitfield
-  * @smpr:		smpr1 & smpr2 registers offset array
-  * @smp_bits:		smpr1 & smpr2 index and bitfields
-+ * @or_vdd:		option register & vddcore bitfield
-+ * @ccr_vbat:		common register & vbat bitfield
-+ * @ccr_vref:		common register & vrefint bitfield
-  */
- struct stm32_adc_regspec {
- 	const u32 dr;
-@@ -139,6 +166,9 @@ struct stm32_adc_regspec {
- 	const struct stm32_adc_regs res;
- 	const u32 smpr[2];
- 	const struct stm32_adc_regs *smp_bits;
-+	const struct stm32_adc_regs or_vdd;
-+	const struct stm32_adc_regs ccr_vbat;
-+	const struct stm32_adc_regs ccr_vref;
- };
- 
- struct stm32_adc;
-@@ -195,6 +225,7 @@ struct stm32_adc_cfg {
+@@ -194,6 +194,7 @@ struct stm32_adc_cfg {
+  * @smpr_val:		sampling time settings (e.g. smpr1 / smpr2)
   * @cal:		optional calibration data on some devices
   * @chan_name:		channel name array
-  * @num_diff:		number of differential channels
-+ * @int_ch:		internal channel indexes array
++ * @num_diff:		number of differential channels
   */
  struct stm32_adc {
  	struct stm32_adc_common	*common;
-@@ -219,6 +250,7 @@ struct stm32_adc {
+@@ -217,6 +218,7 @@ struct stm32_adc {
+ 	u32			smpr_val[2];
  	struct stm32_adc_calib	cal;
  	char			chan_name[STM32_ADC_CH_MAX][STM32_ADC_CH_SZ];
- 	u32			num_diff;
-+	int			int_ch[STM32_ADC_INT_CH_NB];
++	u32			num_diff;
  };
  
  struct stm32_adc_diff_channel {
-@@ -451,6 +483,24 @@ static const struct stm32_adc_regspec stm32h7_adc_regspec = {
- 	.smp_bits = stm32h7_smp_bits,
- };
- 
-+static const struct stm32_adc_regspec stm32mp1_adc_regspec = {
-+	.dr = STM32H7_ADC_DR,
-+	.ier_eoc = { STM32H7_ADC_IER, STM32H7_EOCIE },
-+	.ier_ovr = { STM32H7_ADC_IER, STM32H7_OVRIE },
-+	.isr_eoc = { STM32H7_ADC_ISR, STM32H7_EOC },
-+	.isr_ovr = { STM32H7_ADC_ISR, STM32H7_OVR },
-+	.sqr = stm32h7_sq,
-+	.exten = { STM32H7_ADC_CFGR, STM32H7_EXTEN_MASK, STM32H7_EXTEN_SHIFT },
-+	.extsel = { STM32H7_ADC_CFGR, STM32H7_EXTSEL_MASK,
-+		    STM32H7_EXTSEL_SHIFT },
-+	.res = { STM32H7_ADC_CFGR, STM32H7_RES_MASK, STM32H7_RES_SHIFT },
-+	.smpr = { STM32H7_ADC_SMPR1, STM32H7_ADC_SMPR2 },
-+	.smp_bits = stm32h7_smp_bits,
-+	.or_vdd = { STM32MP1_ADC2_OR, STM32MP1_VDDCOREEN },
-+	.ccr_vbat = { STM32H7_ADC_CCR, STM32H7_VBATEN },
-+	.ccr_vref = { STM32H7_ADC_CCR, STM32H7_VREFEN },
-+};
-+
- /*
-  * STM32 ADC registers access routines
-  * @adc: stm32 adc instance
-@@ -579,6 +629,61 @@ static int stm32_adc_hw_start(struct device *dev)
- 	return ret;
+@@ -1706,17 +1708,11 @@ static void stm32_adc_chan_init_one(struct iio_dev *indio_dev,
+ 	}
  }
  
-+static void stm32_adc_int_ch_enable(struct iio_dev *indio_dev)
-+{
-+	struct stm32_adc *adc = iio_priv(indio_dev);
-+	u32 i, val, bits = 0, offset = 0;
-+
-+	for (i = 0; i < STM32_ADC_INT_CH_NB; i++) {
-+		if (adc->int_ch[i] == STM32_ADC_CHAN_NONE)
-+			continue;
-+
-+		switch (i) {
-+		case STM32_ADC_INT_CH_VDDCORE:
-+			dev_dbg(&indio_dev->dev, "Enable VDDCore\n");
-+			stm32_adc_set_bits(adc, adc->cfg->regs->or_vdd.reg,
-+					   adc->cfg->regs->or_vdd.mask);
-+			break;
-+		case STM32_ADC_INT_CH_VREFINT:
-+			dev_dbg(&indio_dev->dev, "Enable VREFInt\n");
-+			offset = adc->cfg->regs->ccr_vref.reg;
-+			bits |= adc->cfg->regs->ccr_vref.mask;
-+			break;
-+		case STM32_ADC_INT_CH_VBAT:
-+			dev_dbg(&indio_dev->dev, "Enable VBAT\n");
-+			offset = adc->cfg->regs->ccr_vbat.reg;
-+			bits |= adc->cfg->regs->ccr_vbat.mask;
-+			break;
-+		}
-+	}
-+
-+	if (bits) {
-+		val = readl_relaxed(adc->common->base + offset);
-+		val |= bits;
-+		writel_relaxed(val, adc->common->base + offset);
-+	}
-+}
-+
-+static void stm32_adc_int_ch_disable(struct stm32_adc *adc)
-+{
-+	u32 val, bits, offset, i;
-+
-+	stm32_adc_clr_bits(adc, adc->cfg->regs->or_vdd.reg,
-+			   adc->cfg->regs->or_vdd.mask);
-+
-+	for (i = 0; i < STM32_ADC_INT_CH_NB; i++) {
-+		if (adc->int_ch[i] != STM32_ADC_CHAN_NONE) {
-+			offset = adc->cfg->regs->ccr_vref.reg;
-+			bits = adc->cfg->regs->ccr_vref.mask |
-+				adc->cfg->regs->ccr_vbat.mask;
-+			val = readl_relaxed(adc->common->base + offset);
-+			val &= ~bits;
-+			writel_relaxed(bits, adc->common->base + offset);
-+			break;
-+		}
-+	}
-+}
-+
- /**
-  * stm32f4_adc_start_conv() - Start conversions for regular channels.
-  * @indio_dev: IIO device instance
-@@ -947,11 +1052,13 @@ static int stm32h7_adc_prepare(struct iio_dev *indio_dev)
- 		goto pwr_dwn;
- 	calib = ret;
- 
-+	stm32_adc_int_ch_enable(indio_dev);
-+
- 	stm32_adc_writel(adc, STM32H7_ADC_DIFSEL, adc->difsel);
- 
- 	ret = stm32h7_adc_enable(indio_dev);
- 	if (ret)
--		goto pwr_dwn;
-+		goto ch_disable;
- 
- 	/* Either restore or read calibration result for future reference */
- 	if (calib)
-@@ -967,6 +1074,8 @@ static int stm32h7_adc_prepare(struct iio_dev *indio_dev)
- 
- disable:
- 	stm32h7_adc_disable(indio_dev);
-+ch_disable:
-+	stm32_adc_int_ch_disable(adc);
- pwr_dwn:
- 	stm32h7_adc_enter_pwr_down(adc);
- 
-@@ -978,6 +1087,7 @@ static void stm32h7_adc_unprepare(struct iio_dev *indio_dev)
- 	struct stm32_adc *adc = iio_priv(indio_dev);
- 
- 	stm32h7_adc_disable(indio_dev);
-+	stm32_adc_int_ch_disable(adc);
- 	stm32h7_adc_enter_pwr_down(adc);
- }
- 
-@@ -1805,10 +1915,13 @@ static int stm32_adc_generic_chan_init(struct iio_dev *indio_dev,
+-static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
++static int stm32_adc_get_legacy_chan_count(struct iio_dev *indio_dev, struct stm32_adc *adc)
+ {
+ 	struct device_node *node = indio_dev->dev.of_node;
+-	struct stm32_adc *adc = iio_priv(indio_dev);
  	const struct stm32_adc_info *adc_info = adc->cfg->adc_info;
- 	struct device_node *child;
- 	const char *name;
--	int val, scan_index = 0, ret;
-+	int val, scan_index = 0, ret, i;
- 	bool differential;
- 	u32 vin[2];
+-	struct stm32_adc_diff_channel diff[STM32_ADC_CH_MAX];
+-	struct property *prop;
+-	const __be32 *cur;
+-	struct iio_chan_spec *channels;
+-	int scan_index = 0, num_channels = 0, num_diff = 0, ret, i;
+-	u32 val, smp = 0;
++	int num_channels = 0, ret;
  
-+	for (i = 0; i < STM32_ADC_INT_CH_NB; i++)
-+		adc->int_ch[i] = STM32_ADC_CHAN_NONE;
+ 	ret = of_property_count_u32_elems(node, "st,adc-channels");
+ 	if (ret > adc_info->max_channels) {
+@@ -1727,41 +1723,54 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
+ 	}
+ 
+ 	ret = of_property_count_elems_of_size(node, "st,adc-diff-channels",
+-					      sizeof(*diff));
++					      sizeof(struct stm32_adc_diff_channel));
+ 	if (ret > adc_info->max_channels) {
+ 		dev_err(&indio_dev->dev, "Bad st,adc-diff-channels?\n");
+ 		return -EINVAL;
+ 	} else if (ret > 0) {
+-		int size = ret * sizeof(*diff) / sizeof(u32);
+-
+-		num_diff = ret;
++		adc->num_diff = ret;
+ 		num_channels += ret;
++	}
 +
- 	for_each_available_child_of_node(node, child) {
- 		ret = of_property_read_u32(child, "reg", &val);
- 		if (ret) {
-@@ -1825,6 +1938,10 @@ static int stm32_adc_generic_chan_init(struct iio_dev *indio_dev,
++	return num_channels;
++}
++
++static int stm32_adc_legacy_chan_init(struct iio_dev *indio_dev,
++				      struct stm32_adc *adc,
++				      struct iio_chan_spec *channels)
++{
++	struct device_node *node = indio_dev->dev.of_node;
++	const struct stm32_adc_info *adc_info = adc->cfg->adc_info;
++	struct stm32_adc_diff_channel diff[STM32_ADC_CH_MAX];
++	u32 num_diff = adc->num_diff;
++	int size = num_diff * sizeof(*diff) / sizeof(u32);
++	int scan_index = 0, val, ret, i;
++	struct property *prop;
++	const __be32 *cur;
++
++	if (num_diff) {
+ 		ret = of_property_read_u32_array(node, "st,adc-diff-channels",
+ 						 (u32 *)diff, size);
+-		if (ret)
++		if (ret) {
++			dev_err(&indio_dev->dev, "Failed to get diff channels %d\n", ret);
+ 			return ret;
+-	}
++		}
+ 
+-	if (!num_channels) {
+-		dev_err(&indio_dev->dev, "No channels configured\n");
+-		return -ENODATA;
+-	}
++		for (i = 0; i < num_diff; i++) {
++			if (diff[i].vinp >= adc_info->max_channels ||
++			    diff[i].vinn >= adc_info->max_channels) {
++				dev_err(&indio_dev->dev, "Invalid channel in%d-in%d\n",
++					diff[i].vinp, diff[i].vinn);
++				return -EINVAL;
++			}
+ 
+-	/* Optional sample time is provided either for each, or all channels */
+-	ret = of_property_count_u32_elems(node, "st,min-sample-time-nsecs");
+-	if (ret > 1 && ret != num_channels) {
+-		dev_err(&indio_dev->dev, "Invalid st,min-sample-time-nsecs\n");
+-		return -EINVAL;
++			stm32_adc_chan_init_one(indio_dev, &channels[scan_index],
++						diff[i].vinp, diff[i].vinn,
++						scan_index, true);
++			scan_index++;
++		}
+ 	}
+ 
+-	if (timestamping)
+-		num_channels++;
+-
+-	channels = devm_kcalloc(&indio_dev->dev, num_channels,
+-				sizeof(struct iio_chan_spec), GFP_KERNEL);
+-	if (!channels)
+-		return -ENOMEM;
+-
+ 	of_property_for_each_u32(node, "st,adc-channels", prop, cur, val) {
+ 		if (val >= adc_info->max_channels) {
+ 			dev_err(&indio_dev->dev, "Invalid channel %d\n", val);
+@@ -1771,8 +1780,7 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
+ 		/* Channel can't be configured both as single-ended & diff */
+ 		for (i = 0; i < num_diff; i++) {
+ 			if (val == diff[i].vinp) {
+-				dev_err(&indio_dev->dev,
+-					"channel %d miss-configured\n",	val);
++				dev_err(&indio_dev->dev, "channel %d misconfigured\n",	val);
  				return -EINVAL;
  			}
- 			strncpy(adc->chan_name[val], name, STM32_ADC_CH_SZ);
-+			for (i = 0; i < STM32_ADC_INT_CH_NB; i++) {
-+				if (!strncmp(stm32_adc_ic[i].name, name, STM32_ADC_CH_SZ))
-+					adc->int_ch[i] = val;
-+			}
- 		} else if (ret != -EINVAL) {
- 			dev_err(&indio_dev->dev, "Invalid label %d\n", ret);
- 			goto err;
-@@ -2223,7 +2340,7 @@ static const struct stm32_adc_cfg stm32h7_adc_cfg = {
- };
+ 		}
+@@ -1781,19 +1789,54 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
+ 		scan_index++;
+ 	}
  
- static const struct stm32_adc_cfg stm32mp1_adc_cfg = {
--	.regs = &stm32h7_adc_regspec,
-+	.regs = &stm32mp1_adc_regspec,
- 	.adc_info = &stm32h7_adc_info,
- 	.trigs = stm32h7_adc_trigs,
- 	.has_vregready = true,
+-	for (i = 0; i < num_diff; i++) {
+-		if (diff[i].vinp >= adc_info->max_channels ||
+-		    diff[i].vinn >= adc_info->max_channels) {
+-			dev_err(&indio_dev->dev, "Invalid channel in%d-in%d\n",
+-				diff[i].vinp, diff[i].vinn);
+-			return -EINVAL;
+-		}
+-		stm32_adc_chan_init_one(indio_dev, &channels[scan_index],
+-					diff[i].vinp, diff[i].vinn, scan_index,
+-					true);
+-		scan_index++;
++	return scan_index;
++}
++
++static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
++{
++	struct device_node *node = indio_dev->dev.of_node;
++	struct stm32_adc *adc = iio_priv(indio_dev);
++	const struct stm32_adc_info *adc_info = adc->cfg->adc_info;
++	struct iio_chan_spec *channels;
++	int scan_index = 0, num_channels = 0, ret, i;
++	u32 smp = 0;
++
++	ret = stm32_adc_get_legacy_chan_count(indio_dev, adc);
++	if (ret < 0)
++		return ret;
++	num_channels = ret;
++
++	if (!num_channels) {
++		dev_err(&indio_dev->dev, "No channels configured\n");
++		return -ENODATA;
+ 	}
+ 
++	if (num_channels > adc_info->max_channels) {
++		dev_err(&indio_dev->dev, "Channel number [%d] exceeds %d\n",
++			num_channels, adc_info->max_channels);
++		return -EINVAL;
++	}
++
++	/* Optional sample time is provided either for each, or all channels */
++	ret = of_property_count_u32_elems(node, "st,min-sample-time-nsecs");
++	if (ret > 1 && ret != num_channels) {
++		dev_err(&indio_dev->dev, "Invalid st,min-sample-time-nsecs\n");
++		return -EINVAL;
++	}
++
++	if (timestamping)
++		num_channels++;
++
++	channels = devm_kcalloc(&indio_dev->dev, num_channels,
++				sizeof(struct iio_chan_spec), GFP_KERNEL);
++	if (!channels)
++		return -ENOMEM;
++
++	ret = stm32_adc_legacy_chan_init(indio_dev, adc, channels);
++	if (ret < 0)
++		return ret;
++	scan_index = ret;
++
+ 	for (i = 0; i < scan_index; i++) {
+ 		/*
+ 		 * Using of_property_read_u32_index(), smp value will only be
 -- 
 2.17.1
 
