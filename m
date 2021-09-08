@@ -6,85 +6,84 @@ X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35D29C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Sep 2021 11:59:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FA93C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Sep 2021 12:00:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DE8D561100
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Sep 2021 11:59:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DE8D561100
+	by mail.kernel.org (Postfix) with ESMTPS id 70DB261108
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Sep 2021 12:00:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 70DB261108
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ABAC1844;
-	Wed,  8 Sep 2021 13:58:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABAC1844
+	by alsa0.perex.cz (Postfix) with ESMTPS id AECA91690;
+	Wed,  8 Sep 2021 13:59:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AECA91690
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631102376;
-	bh=zDRrMBN68aPNDe+773TWwQI1Xrr9fYbaBtcBuD+8XLE=;
+	s=default; t=1631102435;
+	bh=z8OOb3WIto+75XYgmM7DGmcQIVojmAat80MNOjgY+uo=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=B9+YYLTiP3qjyyq61USgWZsPgQPFLELBpmhVOM2207rusfAYFwnuOoXs8CylgCJrD
-	 W9qYXIbbBynUbuhm9nN84datIbr0ufVryc4hSgvZgyTQaGL5I1fZJX6Di9DMt7A5fG
-	 nRuGdkhX0mfdMlIzNBd8uWPwPeVwOT46K9xEpgf0=
+	b=MEVwZkRuE76x520b1bZxPYSkE3Vp7jZ1d9/CVzuAM9SsGCGDDXWFrqDRmfR8UEGtK
+	 uOrSmmYKy5LunwUUAJxDzeLN+jc1PJO/yORMvUAMd21YfjoymDU2uTY9BbEshtY02a
+	 7xdAA6HxkYuAHDyxJ0UHOQ0QpaNVWRlet0Vw7aQQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B1A0F8026C;
-	Wed,  8 Sep 2021 13:58:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5CC5EF802E7;
+	Wed,  8 Sep 2021 13:59:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8DF3EF80149; Wed,  8 Sep 2021 13:58:44 +0200 (CEST)
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com
- [209.85.210.48])
+ id C5EF1F8049C; Wed,  8 Sep 2021 13:59:43 +0200 (CEST)
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com
+ [209.85.167.179])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7EA5FF80149
- for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2021 13:58:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7EA5FF80149
-Received: by mail-ot1-f48.google.com with SMTP id
- v33-20020a0568300921b0290517cd06302dso2543766ott.13
- for <alsa-devel@alsa-project.org>; Wed, 08 Sep 2021 04:58:33 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A8B68F8026C
+ for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2021 13:59:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8B68F8026C
+Received: by mail-oi1-f179.google.com with SMTP id bd1so2758163oib.5
+ for <alsa-devel@alsa-project.org>; Wed, 08 Sep 2021 04:59:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=ekrKhUAapVQLGpaPmyUUbCRHL9+ABWjyycmWN96rdJs=;
- b=05j81p1Wpy1vred1Ve0WqCAJTHbCgGYAtzO+PGZ+bztGlbojdSo0kGytDS/3Y56FVc
- wnLRAs0Gro8Rh6aLE5/YfqLEaCnQhjP1rjdkikV0w/H1YUkZEu1pmJGltvV9fF6tGSdJ
- OFktzJhJsY3OBC9uWON8BHl+qVGWvv5Y/wWLG/Kl8305LQso9FjtxLjCGEFa8GESSnq6
- yUqppDVMAtQsp1mFytrGF302XUJ2C3NrqYlKoIABwzINUwAP0hvbJ6s8j3byNp7og6c2
- eh+6+iSzlFo+rocVttL3g0EG2nzT5NXHUwLiQzAI41+2w2mlP02ZFvOdtdsOHLMN7s6v
- Ud3w==
-X-Gm-Message-State: AOAM530DHV08v8WcgR39DP8QaHoNkQCbS+G5dqUAngAyqh9F0jaTedYc
- bM/1Tz9F2g8YN6mEnFiyFQ==
-X-Google-Smtp-Source: ABdhPJycXJ0u9QA4j0lrlZKBHFJrB1V1ZSxBH0NWyBQdl7YyQIjicbTn5la2rQPRTllWck6Ojg3Rtg==
-X-Received: by 2002:a05:6830:82c:: with SMTP id
- t12mr2696272ots.33.1631102311602; 
- Wed, 08 Sep 2021 04:58:31 -0700 (PDT)
+ bh=qTd+a1Qio1as5lF7tXUCdkWNQDx3y4a08StoE1WH8nY=;
+ b=EvOyYXYknATAQ/SykFCOIyawco3Uu7FoE3JF3zvcp6AlC2xXyw88GiXUiRejFABzGt
+ 9tRL/ntw9PGYi5e8wCE4K5n77eH/XtdsvGLDXDidVRith2sfJBBeoQL57HRuxLoNh84s
+ 4iaUWhu1aCnov6hW4WqSZDkX12YY40AJVJRblxIj14oLzGagokwEJ0iK/2MrR+7YUObt
+ BJmKMtjFoqoDJP0Vq0C5shr1N7vAjdgsDCqse0StpkHisOkigRAEae8DAkjbetPhewkE
+ h0z5FF0S0qafSHPz0FB9uzMYMfRmqlzDxw9OX6jY1UOSKdv0FHhntTi6BHWzeTVWvS4n
+ IEUA==
+X-Gm-Message-State: AOAM532wmI7WYeddTjbRJiU17FAuzonk8LQ14e58/wa1+WLubWh/dQc+
+ 9qlHGTywooYL5aTd18gXng==
+X-Google-Smtp-Source: ABdhPJxKNUhI9+Agn3GB0Nl3kb3amXTCSFswobafI/TLyTxPHHhVSmgznRhdlTbJ9qFQLvAOy5MwYw==
+X-Received: by 2002:a54:4f03:: with SMTP id e3mr2035018oiy.32.1631102375690;
+ Wed, 08 Sep 2021 04:59:35 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
  [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id e2sm378876ooh.40.2021.09.08.04.58.30
+ by smtp.gmail.com with ESMTPSA id l3sm388177otd.79.2021.09.08.04.59.33
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 08 Sep 2021 04:58:30 -0700 (PDT)
-Received: (nullmailer pid 1849807 invoked by uid 1000);
- Wed, 08 Sep 2021 11:58:29 -0000
-Date: Wed, 8 Sep 2021 06:58:29 -0500
+ Wed, 08 Sep 2021 04:59:34 -0700 (PDT)
+Received: (nullmailer pid 1851575 invoked by uid 1000);
+ Wed, 08 Sep 2021 11:59:32 -0000
+Date: Wed, 8 Sep 2021 06:59:32 -0500
 From: Rob Herring <robh@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v5 13/21] ASoC: dt-bindings: add q6apm digital audio
- stream bindings
-Message-ID: <YTilZXhtzVojg5bM@robh.at.kernel.org>
-References: <20210903112032.25834-1-srinivas.kandagatla@linaro.org>
- <20210903112032.25834-14-srinivas.kandagatla@linaro.org>
+To: Sameer Pujar <spujar@nvidia.com>
+Subject: Re: [PATCH v3 1/3] ASoC: Add json-schema documentation for
+ sound-name-prefix
+Message-ID: <YTilpGuVKifYfGTY@robh.at.kernel.org>
+References: <1630686919-19495-1-git-send-email-spujar@nvidia.com>
+ <1630686919-19495-2-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210903112032.25834-14-srinivas.kandagatla@linaro.org>
+In-Reply-To: <1630686919-19495-2-git-send-email-spujar@nvidia.com>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, tiwai@suse.de, plai@codeaurora.org,
- lgirdwood@gmail.com, broonie@kernel.org, bjorn.andersson@linaro.org
+ stephan@gerhold.net, lgirdwood@gmail.com, robh+dt@kernel.org,
+ linux-kernel@vger.kernel.org, broonie@kernel.org, thierry.reding@gmail.com,
+ linux-tegra@vger.kernel.org, jonathanh@nvidia.com, jbrunet@baylibre.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,79 +99,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Sep 03, 2021 at 12:20:24PM +0100, Srinivas Kandagatla wrote:
-> On AudioReach audio Framework, Audio Streams (PCM/Compressed) are managed by
-> Q6APM(Audio Process Manager) service. This patch adds bindings for this DAIs
-> exposed by the DSP.
+On Fri, 03 Sep 2021 22:05:17 +0530, Sameer Pujar wrote:
+> The 'sound-name-prefix' is used to prepend suitable strings to a
+> component widgets or controls. This is helpful when there are
+> multiple instances of the same component. Add relevant json-schema
+> and is inspired from sound-name-prefix.txt documentation.
 > 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> Cc: Jerome Brunet <jbrunet@baylibre.com>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
 > ---
->  .../bindings/sound/qcom,q6apm-dai.yaml        | 50 +++++++++++++++++++
->  1 file changed, 50 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml
+>  .../devicetree/bindings/sound/name-prefix.yaml      | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/name-prefix.yaml
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml b/Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml
-> new file mode 100644
-> index 000000000000..75431d1c0b2a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml
-> @@ -0,0 +1,50 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/sound/qcom,q6apm-dai.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Qualcomm Audio Process Manager Digital Audio Interfaces binding
-> +
-> +maintainers:
-> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> +
-> +description: |
-> +  This binding describes the Qualcomm APM DAIs in DSP
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,q6apm-dais
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  iommus:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - iommus
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    gpr {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +        gprservice@1 {
 
-service@1
-
-Might want to put a compatible in the gpr node so this is checked.
-
-> +          compatible = "qcom,q6apm";
-> +          reg = <1>;
-> +
-> +          #address-cells = <1>;
-> +          #size-cells = <0>;
-> +
-> +          apm@1 {
-> +            compatible = "qcom,q6apm-dais";
-> +            iommus = <&apps_smmu 0x1801 0x0>;
-> +            reg = <1>;
-> +          };
-> +        };
-> +    };
-> -- 
-> 2.21.0
-> 
-> 
+Reviewed-by: Rob Herring <robh@kernel.org>
