@@ -2,80 +2,79 @@ Return-Path: <SRS0=Rqaf=N7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DD64C43217
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 12:01:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54596C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 12:02:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DC31D632D7
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 12:01:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DC31D632D7
+	by mail.kernel.org (Postfix) with ESMTPS id CAB81632E3
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 12:02:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CAB81632E3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1767D1752;
-	Thu,  9 Sep 2021 14:00:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1767D1752
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73CE8174A;
+	Thu,  9 Sep 2021 14:01:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73CE8174A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631188905;
-	bh=fC6QYkKb0IHwHjrnEGhMbjdLvJ8CwfArCdiSRj6BIH4=;
+	s=default; t=1631188925;
+	bh=TEDtftrilDPpXxhuvXoNcnLYstHwkOz/LbsLVhnJRQM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eyoOz83xKZvPtixoTOYh1ivmMtWvELRgvT/ZES/17ApfY8ZMPytII4ctita2rhGYy
-	 aRfhz6pdNWh64tmUfXymJ3ofzV8qhqVI5xLmCpHLpylsKsaKcOszYBSE3fn6cnHDWf
-	 R7Oy5gv5WQte3p/uoBj7w2/IePu+sKaoTZSNMMfo=
+	b=u4r9YZceBskcsE09f2LtiPj26e1jfUS/fWo9bWqH3rNKw0Ji1k+/4rylwjiAG8nsd
+	 ByuwrpVW2YNz7GhxLuU08oW3XUrtaA3Z3wAewO0yoga78F0/droMOCTRCWjNOjbubF
+	 Z69UqFnCdX9GUZeGBYAVjbc6FC4b0iicRyG0ABrc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A084CF80518;
-	Thu,  9 Sep 2021 13:59:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A41ADF80253;
+	Thu,  9 Sep 2021 13:59:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 48AE7F804E4; Thu,  9 Sep 2021 13:59:01 +0200 (CEST)
+ id A6276F804EB; Thu,  9 Sep 2021 13:59:51 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EDBA9F80217
- for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2021 13:58:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDBA9F80217
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0C155F80253
+ for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2021 13:59:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C155F80253
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="GCFN4skZ"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA32C63271;
- Thu,  9 Sep 2021 11:58:51 +0000 (UTC)
+ header.b="rSH6f4HN"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD03C63292;
+ Thu,  9 Sep 2021 11:59:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631188732;
- bh=fC6QYkKb0IHwHjrnEGhMbjdLvJ8CwfArCdiSRj6BIH4=;
+ s=k20201202; t=1631188778;
+ bh=TEDtftrilDPpXxhuvXoNcnLYstHwkOz/LbsLVhnJRQM=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=GCFN4skZUqkhI6kqpd/tssXRuXCOZW07c2HxWde85xtEaCz6UKVF1vp8vqyCN6bps
- NTAfyFInJRDx1ijZFVmE4WGpXSKZKiC6z2FtBgU3t1t3twGp3sf0n1awCIQ+JkWSRH
- dN14WyqpLuK07yLH91/FhnaqJhfs1fTfV70AlbE02fIaP46x/3k7orCEkEUkx9b0rO
- NhZKJvBfwrylNuUsplVLUsWK9gUKFX6/WySMGkmI7xH+eBMNkTmEM4cfBfNGbI3XSg
- YZhvzHbDFc84QQtXvBNkZzvWZRVN6mwaZkm7LgYKwjreo+FYw4rDRUJT/efafLP+Sq
- 8hdgng/Ojw3NA==
+ b=rSH6f4HN5IfB/LBav1KRr+0zvfdXMI3dyI9qI8UFhyONhJoHEOVkC1roCY4APxWQ6
+ jgvHQ+0lFWLAN2XGyoZN8pdint5M+E5if4xviqdi0FfTNWaCqufQV0A8aU2+TElo5W
+ 1VoRF9U5q0j2fJKhk+xBgRuWXI5Co7kmfb8xtSvUFAV6ny13fR42UPdRX6e2SAQ8f2
+ hWHBInGIYELVbfq32Jrzt7ACpyqK9PKHTDNvoVF6IVU2qdmRlz5hlUj/DzUKucbo6T
+ E7PjClU6I+WQ7vznRB4RGkQIOV57cJe8xKQcPoXmpAWcLmo1XgwMnqJbvWpQ78WRwD
+ xYX1MUNEVnKdg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 69/74] ASoC: rockchip: i2s: Fixup config for
- DAIFMT_DSP_A/B
-Date: Thu,  9 Sep 2021 07:57:21 -0400
-Message-Id: <20210909115726.149004-69-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 30/59] ASoC: Intel: bytcr_rt5640: Move "Platform
+ Clock" routes to the maps for the matching in-/output
+Date: Thu,  9 Sep 2021 07:58:31 -0400
+Message-Id: <20210909115900.149795-30-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210909115726.149004-1-sashal@kernel.org>
-References: <20210909115726.149004-1-sashal@kernel.org>
+In-Reply-To: <20210909115900.149795-1-sashal@kernel.org>
+References: <20210909115900.149795-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Sugar Zhang <sugar.zhang@rock-chips.com>, linux-rockchip@lists.infradead.org,
- Xiaotan Luo <lxt@rock-chips.com>, Mark Brown <broonie@kernel.org>,
- linux-arm-kernel@lists.infradead.org
+Cc: Sasha Levin <sashal@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,60 +90,79 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Xiaotan Luo <lxt@rock-chips.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 1bf56843e664eef2525bdbfae6a561e98910f676 ]
+[ Upstream commit dccd1dfd0770bfd494b68d1135b4547b2c602c42 ]
 
-- DSP_A: PCM delay 1 bit mode, L data MSB after FRM LRC
-- DSP_B: PCM no delay mode, L data MSB during FRM LRC
+Move the "Platform Clock" routes for the "Internal Mic" and "Speaker"
+routes to the intmic_*_map[] / *_spk_map[] arrays.
 
-Signed-off-by: Xiaotan Luo <lxt@rock-chips.com>
-Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
-Link: https://lore.kernel.org/r/1629950562-14281-3-git-send-email-sugar.zhang@rock-chips.com
+This ensures that these "Platform Clock" routes do not get added when the
+BYT_RT5640_NO_INTERNAL_MIC_MAP / BYT_RT5640_NO_SPEAKERS quirks are used.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20210802142501.991985-2-hdegoede@redhat.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/rockchip/rockchip_i2s.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index cab381c9dea1..c6d11a59310f 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -236,12 +236,12 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 	case SND_SOC_DAIFMT_I2S:
- 		val = I2S_TXCR_IBM_NORMAL;
- 		break;
--	case SND_SOC_DAIFMT_DSP_A: /* PCM no delay mode */
--		val = I2S_TXCR_TFS_PCM;
--		break;
--	case SND_SOC_DAIFMT_DSP_B: /* PCM delay 1 mode */
-+	case SND_SOC_DAIFMT_DSP_A: /* PCM delay 1 bit mode */
- 		val = I2S_TXCR_TFS_PCM | I2S_TXCR_PBM_MODE(1);
- 		break;
-+	case SND_SOC_DAIFMT_DSP_B: /* PCM no delay mode */
-+		val = I2S_TXCR_TFS_PCM;
-+		break;
- 	default:
- 		ret = -EINVAL;
- 		goto err_pm_put;
-@@ -260,12 +260,12 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 	case SND_SOC_DAIFMT_I2S:
- 		val = I2S_RXCR_IBM_NORMAL;
- 		break;
--	case SND_SOC_DAIFMT_DSP_A: /* PCM no delay mode */
--		val = I2S_RXCR_TFS_PCM;
--		break;
--	case SND_SOC_DAIFMT_DSP_B: /* PCM delay 1 mode */
-+	case SND_SOC_DAIFMT_DSP_A: /* PCM delay 1 bit mode */
- 		val = I2S_RXCR_TFS_PCM | I2S_RXCR_PBM_MODE(1);
- 		break;
-+	case SND_SOC_DAIFMT_DSP_B: /* PCM no delay mode */
-+		val = I2S_RXCR_TFS_PCM;
-+		break;
- 	default:
- 		ret = -EINVAL;
- 		goto err_pm_put;
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 4a76b099a508..e389ecf06e63 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -226,9 +226,6 @@ static const struct snd_soc_dapm_widget byt_rt5640_widgets[] = {
+ static const struct snd_soc_dapm_route byt_rt5640_audio_map[] = {
+ 	{"Headphone", NULL, "Platform Clock"},
+ 	{"Headset Mic", NULL, "Platform Clock"},
+-	{"Internal Mic", NULL, "Platform Clock"},
+-	{"Speaker", NULL, "Platform Clock"},
+-
+ 	{"Headset Mic", NULL, "MICBIAS1"},
+ 	{"IN2P", NULL, "Headset Mic"},
+ 	{"Headphone", NULL, "HPOL"},
+@@ -236,19 +233,23 @@ static const struct snd_soc_dapm_route byt_rt5640_audio_map[] = {
+ };
+ 
+ static const struct snd_soc_dapm_route byt_rt5640_intmic_dmic1_map[] = {
++	{"Internal Mic", NULL, "Platform Clock"},
+ 	{"DMIC1", NULL, "Internal Mic"},
+ };
+ 
+ static const struct snd_soc_dapm_route byt_rt5640_intmic_dmic2_map[] = {
++	{"Internal Mic", NULL, "Platform Clock"},
+ 	{"DMIC2", NULL, "Internal Mic"},
+ };
+ 
+ static const struct snd_soc_dapm_route byt_rt5640_intmic_in1_map[] = {
++	{"Internal Mic", NULL, "Platform Clock"},
+ 	{"Internal Mic", NULL, "MICBIAS1"},
+ 	{"IN1P", NULL, "Internal Mic"},
+ };
+ 
+ static const struct snd_soc_dapm_route byt_rt5640_intmic_in3_map[] = {
++	{"Internal Mic", NULL, "Platform Clock"},
+ 	{"Internal Mic", NULL, "MICBIAS1"},
+ 	{"IN3P", NULL, "Internal Mic"},
+ };
+@@ -290,6 +291,7 @@ static const struct snd_soc_dapm_route byt_rt5640_ssp0_aif2_map[] = {
+ };
+ 
+ static const struct snd_soc_dapm_route byt_rt5640_stereo_spk_map[] = {
++	{"Speaker", NULL, "Platform Clock"},
+ 	{"Speaker", NULL, "SPOLP"},
+ 	{"Speaker", NULL, "SPOLN"},
+ 	{"Speaker", NULL, "SPORP"},
+@@ -297,6 +299,7 @@ static const struct snd_soc_dapm_route byt_rt5640_stereo_spk_map[] = {
+ };
+ 
+ static const struct snd_soc_dapm_route byt_rt5640_mono_spk_map[] = {
++	{"Speaker", NULL, "Platform Clock"},
+ 	{"Speaker", NULL, "SPOLP"},
+ 	{"Speaker", NULL, "SPOLN"},
+ };
 -- 
 2.30.2
 
