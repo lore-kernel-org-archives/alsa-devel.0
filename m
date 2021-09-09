@@ -2,90 +2,78 @@ Return-Path: <SRS0=Rqaf=N7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9318EC43219
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 11:51:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A48DC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 11:52:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1B4D46121E
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 11:51:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1B4D46121E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id B32CC61B27
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 11:52:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B32CC61B27
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A9DE916AC;
-	Thu,  9 Sep 2021 13:50:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9DE916AC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5C57A16E4;
+	Thu,  9 Sep 2021 13:51:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C57A16E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631188275;
-	bh=GwO/S45IlRLrxknzOmbP6L7PLfNCLA5p2SFKbZ72zWc=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1631188326;
+	bh=sQYVfnoL0J/WnRQewf8hj4OQQlqQpZwChqsObkIN0ic=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IacZge7d9noCL9HFBJ7ktZ7u1I9wx7Geknn36hBXq1wKJxDXfSIpSoYiQRtpFfS/P
-	 Ka7fkm+0/zi6tX9Mz56+G4fjrr5u4Og9UkwfYFXAmQDbAoUzj45AkkcVZ1kDrt4sfR
-	 rwDN1Z94H4zG1y0lBTAq87mtB6N4iPLli5BGNeEo=
+	b=GvPgcNkWeEXDIpYWV/XCOpj714NNEl4+0Eo8HBmfKM+/idNJ8nqG8EvZGjwMJUbxi
+	 u8v3/r8dhU1Cx71DOL5y29erefCsxlhS7L6EvHgtp15hntEe02/iFpV4IcK0cpud2Z
+	 Qy+Tss6DcDNAR3lHC+OagfreSU/z0A9tm/PNDp4g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4DF76F80217;
-	Thu,  9 Sep 2021 13:50:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AEFCFF804E5;
+	Thu,  9 Sep 2021 13:50:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 81E9AF80224; Thu,  9 Sep 2021 13:50:23 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id F2F1AF804E4; Thu,  9 Sep 2021 13:50:30 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 851F8F800FC
- for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2021 13:50:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 851F8F800FC
+ by alsa1.perex.cz (Postfix) with ESMTPS id C12CDF80224
+ for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2021 13:50:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C12CDF80224
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="cyqFGhpE"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="3GQqPmQx"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id D167A22379;
- Thu,  9 Sep 2021 11:50:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1631188215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=oMMzYgFomu2hzy4XldWLmrCH+2DxQolZBrOnMq3NMaM=;
- b=cyqFGhpECSHWqtUvsWZV/5lrWWrH8zR6sBwqGy5bVN/4fyJSS4gI10U0qIKr0j/r8FetLL
- Cvp0QS8otNt/SMDnDJc5V9hMp8YSPQXJV3LPXecYOLDK6QR0UyTTh0emB11per5FbndkvG
- O5dWYQI3A0jH0TskWBNR71FUAYwTfEU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1631188215;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=oMMzYgFomu2hzy4XldWLmrCH+2DxQolZBrOnMq3NMaM=;
- b=3GQqPmQxwLYIU4Xdtn24ECXbp16Kes+Bd1eoaCEinAynLXaJ19qmgsncrt66vsh0lqRS1r
- PqxknUoxO4QArUCQ==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id CAD70A3BC6;
- Thu,  9 Sep 2021 11:50:15 +0000 (UTC)
-Date: Thu, 09 Sep 2021 13:50:15 +0200
-Message-ID: <s5hr1dy7ytk.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH AUTOSEL 5.14 166/252] ALSA: hda: Drop workaround for a
- hang at shutdown again
-In-Reply-To: <20210909114106.141462-166-sashal@kernel.org>
-References: <20210909114106.141462-1-sashal@kernel.org>
- <20210909114106.141462-166-sashal@kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="uB/o08I0"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 029B161AAB;
+ Thu,  9 Sep 2021 11:50:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1631188222;
+ bh=sQYVfnoL0J/WnRQewf8hj4OQQlqQpZwChqsObkIN0ic=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=uB/o08I07TW2gdheqdleLenaVtr41WK3YpmOaapx0kD62AZt7fEqOfnIaoJkqFdcM
+ w9xCYhgd7rCanjbSj11zSGiYmlaOjjh2DJOuWkuJf4G7+PQuQic5WSb+Cepb4pJW00
+ R9ekJ8Ehd+akL61726Nx1K2ZoCibKIM3c32PI8GCrcIPuHL847PxorxIs2prvIPQ6q
+ 17+I5bUCg2zTjVJgDq4is5mYw0KF6uH7q3vFqnVYuaEMWaPYses61X6aEKb4Ntucgm
+ pj1u4/S1AppQMCpunEOlln7/4WQIYloxQz1w2DoOjBoKL6b6gJk8OGY2bLoymdfYQR
+ xOfUgQCTeCv6w==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.13 176/219] ASoC: intel: atom: Revert PCM buffer
+ address setup workaround again
+Date: Thu,  9 Sep 2021 07:45:52 -0400
+Message-Id: <20210909114635.143983-176-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210909114635.143983-1-sashal@kernel.org>
+References: <20210909114635.143983-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,35 +89,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 09 Sep 2021 13:39:40 +0200,
-Sasha Levin wrote:
-> 
-> From: Takashi Iwai <tiwai@suse.de>
-> 
-> [ Upstream commit 8fc8e903156f42c66245838441d03607e9067381 ]
-> 
-> The commit 0165c4e19f6e ("ALSA: hda: Fix hang during shutdown due to
-> link reset") modified the shutdown callback of the HD-audio controller
-> for working around a hang.  Meanwhile, the actual culprit of the hang
-> was identified to be the leftover active codecs that may interfere
-> with the powered down controller somehow, but we took a minimal fix
-> approach for 5.14, and that was the commit above.
-> 
-> Now, since the codec drivers go runtime-suspend at shutdown for 5.15,
-> we can revert the change and make sure that the full runtime-suspend
-> is performed at shutdown of HD-audio controller again.  This patch
-> essentially reverts the commit above to restore the behavior.
-> 
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=214045
-> Link: https://lore.kernel.org/r/20210817075630.7115-1-tiwai@suse.de
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+From: Takashi Iwai <tiwai@suse.de>
 
-Please drop this, it's not for 5.14.
-As stated in the commit log, the fundamental fix was merged in 5.15
-that obsoletes the workaround, but it isn't included in 5.14.
+[ Upstream commit e28ac04a705e946eddc5e7d2fc712dea3f20fe9e ]
 
+We worked around the breakage of PCM buffer setup by the commit
+65ca89c2b12c ("ASoC: intel: atom: Fix breakage for PCM buffer address
+setup"), but this isn't necessary since the CONTINUOUS buffer type
+also sets runtime->dma_addr since commit f84ba106a018 ("ALSA:
+memalloc: Store snd_dma_buffer.addr for continuous pages, too").
+Let's revert the change again.
 
-thanks,
+Link: https://lore.kernel.org/r/20210822072127.9786-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Takashi
+diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+index 905c7965f653..5db2f4865bbb 100644
+--- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+@@ -127,7 +127,7 @@ static void sst_fill_alloc_params(struct snd_pcm_substream *substream,
+ 	snd_pcm_uframes_t period_size;
+ 	ssize_t periodbytes;
+ 	ssize_t buffer_bytes = snd_pcm_lib_buffer_bytes(substream);
+-	u32 buffer_addr = virt_to_phys(substream->runtime->dma_area);
++	u32 buffer_addr = substream->runtime->dma_addr;
+ 
+ 	channels = substream->runtime->channels;
+ 	period_size = substream->runtime->period_size;
+-- 
+2.30.2
+
