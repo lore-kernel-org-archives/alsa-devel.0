@@ -2,68 +2,69 @@ Return-Path: <SRS0=Rqaf=N7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C81CC433FE
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 12:01:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DD64C43217
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 12:01:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BD132632D3
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 12:01:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BD132632D3
+	by mail.kernel.org (Postfix) with ESMTPS id DC31D632D7
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 12:01:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DC31D632D7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3CAEB176E;
-	Thu,  9 Sep 2021 14:00:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3CAEB176E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1767D1752;
+	Thu,  9 Sep 2021 14:00:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1767D1752
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631188886;
-	bh=AsS5IWO2I9ueUInU05sg4o6O+dRha59amT68ELM+6WQ=;
+	s=default; t=1631188905;
+	bh=fC6QYkKb0IHwHjrnEGhMbjdLvJ8CwfArCdiSRj6BIH4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EuwFkDdxAKIe2Q1xIZmdYa4TA5QJqoA53UZaKwoW2u4xJLLGz5RmMO62V16GuXN5R
-	 IvLN0djnRocoSqNUQincKpQiaCaP4x25/FRJkKdJbXcYCSeAczNPBm2dNXnFFrDEyP
-	 1TVkz0XmjBCOKfPG2enUPOLcT2IX75R2pVrq4NGM=
+	b=eyoOz83xKZvPtixoTOYh1ivmMtWvELRgvT/ZES/17ApfY8ZMPytII4ctita2rhGYy
+	 aRfhz6pdNWh64tmUfXymJ3ofzV8qhqVI5xLmCpHLpylsKsaKcOszYBSE3fn6cnHDWf
+	 R7Oy5gv5WQte3p/uoBj7w2/IePu+sKaoTZSNMMfo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 10EFFF804CF;
+	by alsa1.perex.cz (Postfix) with ESMTP id A084CF80518;
 	Thu,  9 Sep 2021 13:59:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 72C8BF804E6; Thu,  9 Sep 2021 13:59:00 +0200 (CEST)
+ id 48AE7F804E4; Thu,  9 Sep 2021 13:59:01 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 116F5F802DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id EDBA9F80217
  for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2021 13:58:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 116F5F802DF
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDBA9F80217
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="KeQO7icV"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8531C6326F;
- Thu,  9 Sep 2021 11:58:50 +0000 (UTC)
+ header.b="GCFN4skZ"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA32C63271;
+ Thu,  9 Sep 2021 11:58:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631188731;
- bh=AsS5IWO2I9ueUInU05sg4o6O+dRha59amT68ELM+6WQ=;
+ s=k20201202; t=1631188732;
+ bh=fC6QYkKb0IHwHjrnEGhMbjdLvJ8CwfArCdiSRj6BIH4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=KeQO7icV1LFuTGpSYRtRQS2Bh+jWCMq3JBHjKt3vQmyRLUwOj6eSw5FppkabXli/d
- +AkZZ7jiUJQL/nc7zRfJkBTivXZgskhAfxXYTwnasdA3n/+JcVERKgK5d5NhP2Trrc
- sNcMEE3tdJUw+YPwQB+749dp9Hz6zBVCEhANMS5TSSbugl1HJxavWIKJvCljAma5O3
- vaQLcU3M0UsVVyvd9HS6yQFwisEsTmApzEyHhvH61jjVEU7Oi1Ex5gHLEpyEs8ZMFD
- k2t28m/TIrs/CjOAOZDfIXgvRwXdZyVUcEXHL5H/mNoL+jx6KywsIeupcfH1OmHeUD
- M/DB/989f1vLQ==
+ b=GCFN4skZUqkhI6kqpd/tssXRuXCOZW07c2HxWde85xtEaCz6UKVF1vp8vqyCN6bps
+ NTAfyFInJRDx1ijZFVmE4WGpXSKZKiC6z2FtBgU3t1t3twGp3sf0n1awCIQ+JkWSRH
+ dN14WyqpLuK07yLH91/FhnaqJhfs1fTfV70AlbE02fIaP46x/3k7orCEkEUkx9b0rO
+ NhZKJvBfwrylNuUsplVLUsWK9gUKFX6/WySMGkmI7xH+eBMNkTmEM4cfBfNGbI3XSg
+ YZhvzHbDFc84QQtXvBNkZzvWZRVN6mwaZkm7LgYKwjreo+FYw4rDRUJT/efafLP+Sq
+ 8hdgng/Ojw3NA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 68/74] ASoC: rockchip: i2s: Fix regmap_ops hang
-Date: Thu,  9 Sep 2021 07:57:20 -0400
-Message-Id: <20210909115726.149004-68-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 69/74] ASoC: rockchip: i2s: Fixup config for
+ DAIFMT_DSP_A/B
+Date: Thu,  9 Sep 2021 07:57:21 -0400
+Message-Id: <20210909115726.149004-69-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210909115726.149004-1-sashal@kernel.org>
 References: <20210909115726.149004-1-sashal@kernel.org>
@@ -73,7 +74,8 @@ X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
  Sugar Zhang <sugar.zhang@rock-chips.com>, linux-rockchip@lists.infradead.org,
- Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+ Xiaotan Luo <lxt@rock-chips.com>, Mark Brown <broonie@kernel.org>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,85 +91,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Sugar Zhang <sugar.zhang@rock-chips.com>
+From: Xiaotan Luo <lxt@rock-chips.com>
 
-[ Upstream commit 53ca9b9777b95cdd689181d7c547e38dc79adad0 ]
+[ Upstream commit 1bf56843e664eef2525bdbfae6a561e98910f676 ]
 
-API 'set_fmt' maybe called when PD is off, in the situation,
-any register access will hang the system. so, enable PD
-before r/w register.
+- DSP_A: PCM delay 1 bit mode, L data MSB after FRM LRC
+- DSP_B: PCM no delay mode, L data MSB during FRM LRC
 
+Signed-off-by: Xiaotan Luo <lxt@rock-chips.com>
 Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
-Link: https://lore.kernel.org/r/1629950520-14190-4-git-send-email-sugar.zhang@rock-chips.com
+Link: https://lore.kernel.org/r/1629950562-14281-3-git-send-email-sugar.zhang@rock-chips.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/rockchip/rockchip_i2s.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+ sound/soc/rockchip/rockchip_i2s.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index b86f76c3598c..cab381c9dea1 100644
+index cab381c9dea1..c6d11a59310f 100644
 --- a/sound/soc/rockchip/rockchip_i2s.c
 +++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -189,7 +189,9 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- {
- 	struct rk_i2s_dev *i2s = to_info(cpu_dai);
- 	unsigned int mask = 0, val = 0;
-+	int ret = 0;
- 
-+	pm_runtime_get_sync(cpu_dai->dev);
- 	mask = I2S_CKR_MSS_MASK;
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBS_CFS:
-@@ -202,7 +204,8 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 		i2s->is_master_mode = false;
+@@ -236,12 +236,12 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 	case SND_SOC_DAIFMT_I2S:
+ 		val = I2S_TXCR_IBM_NORMAL;
  		break;
- 	default:
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_pm_put;
- 	}
- 
- 	regmap_update_bits(i2s->regmap, I2S_CKR, mask, val);
-@@ -216,7 +219,8 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 		val = I2S_CKR_CKP_POS;
- 		break;
- 	default:
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_pm_put;
- 	}
- 
- 	regmap_update_bits(i2s->regmap, I2S_CKR, mask, val);
-@@ -239,7 +243,8 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+-	case SND_SOC_DAIFMT_DSP_A: /* PCM no delay mode */
+-		val = I2S_TXCR_TFS_PCM;
+-		break;
+-	case SND_SOC_DAIFMT_DSP_B: /* PCM delay 1 mode */
++	case SND_SOC_DAIFMT_DSP_A: /* PCM delay 1 bit mode */
  		val = I2S_TXCR_TFS_PCM | I2S_TXCR_PBM_MODE(1);
  		break;
++	case SND_SOC_DAIFMT_DSP_B: /* PCM no delay mode */
++		val = I2S_TXCR_TFS_PCM;
++		break;
  	default:
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_pm_put;
- 	}
- 
- 	regmap_update_bits(i2s->regmap, I2S_TXCR, mask, val);
-@@ -262,12 +267,16 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 		ret = -EINVAL;
+ 		goto err_pm_put;
+@@ -260,12 +260,12 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 	case SND_SOC_DAIFMT_I2S:
+ 		val = I2S_RXCR_IBM_NORMAL;
+ 		break;
+-	case SND_SOC_DAIFMT_DSP_A: /* PCM no delay mode */
+-		val = I2S_RXCR_TFS_PCM;
+-		break;
+-	case SND_SOC_DAIFMT_DSP_B: /* PCM delay 1 mode */
++	case SND_SOC_DAIFMT_DSP_A: /* PCM delay 1 bit mode */
  		val = I2S_RXCR_TFS_PCM | I2S_RXCR_PBM_MODE(1);
  		break;
++	case SND_SOC_DAIFMT_DSP_B: /* PCM no delay mode */
++		val = I2S_RXCR_TFS_PCM;
++		break;
  	default:
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_pm_put;
- 	}
- 
- 	regmap_update_bits(i2s->regmap, I2S_RXCR, mask, val);
- 
--	return 0;
-+err_pm_put:
-+	pm_runtime_put(cpu_dai->dev);
-+
-+	return ret;
- }
- 
- static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
+ 		ret = -EINVAL;
+ 		goto err_pm_put;
 -- 
 2.30.2
 
