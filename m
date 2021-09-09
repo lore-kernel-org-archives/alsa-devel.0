@@ -7,77 +7,73 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7961DC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 11:54:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99D8DC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 11:54:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A867961B93
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 11:54:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A867961B93
+	by mail.kernel.org (Postfix) with ESMTPS id 2890C61BB1
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 11:54:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2890C61BB1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A1301706;
-	Thu,  9 Sep 2021 13:53:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A1301706
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9A8E416AC;
+	Thu,  9 Sep 2021 13:53:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A8E416AC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631188440;
-	bh=9apz7idIxDy+44QrOdSGvr+lOz8rYBuGfzSTpeH8J1o=;
+	s=default; t=1631188462;
+	bh=xfZs/7ynIYTGki5V/fp9QGYXgml9cT/LfLPmmf32TFQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HkBcBjORZ1zz/9hpC8q/lms4SrrXk7SLyKXz1ZfhxZn4urRKKXv2Y8S7Xrlv/h6oR
-	 U2Vz8zJRfyVguKoeGtZxaHWDLeUo90ei6abQ98DTrBQukwVZ7ABdrA6kfjk1qXNw5z
-	 nsa0l6lbQcat/9+8onCpy2vyfP4AAiRAEOkeINhc=
+	b=A0pfpkLclph+BeBeJBqlAkJ0tFLQ5mHUa1OdO4pk5FmQtg82jNWSbrbp979kRm6vc
+	 FoFe1/AmkpyJp2BTc+fW8YOeVLh5/E9hAFbrAkrL1VQ82iUPce2lUuC4DRRGbcPDVh
+	 4JEHPzhA6bccNCTfsjOb9Nqlir95itm0rM+EJNDA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 962FCF80516;
-	Thu,  9 Sep 2021 13:51:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27124F804FA;
+	Thu,  9 Sep 2021 13:51:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6B7CCF80517; Thu,  9 Sep 2021 13:51:33 +0200 (CEST)
+ id 2F1E7F80253; Thu,  9 Sep 2021 13:51:44 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D37F3F802DF
- for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2021 13:51:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D37F3F802DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id B4C5FF804FA
+ for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2021 13:50:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4C5FF804FA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="sXOARs8c"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35B5061AEE;
- Thu,  9 Sep 2021 11:51:22 +0000 (UTC)
+ header.b="HNvew5+o"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E078461ACF;
+ Thu,  9 Sep 2021 11:50:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631188283;
- bh=9apz7idIxDy+44QrOdSGvr+lOz8rYBuGfzSTpeH8J1o=;
+ s=k20201202; t=1631188246;
+ bh=xfZs/7ynIYTGki5V/fp9QGYXgml9cT/LfLPmmf32TFQ=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=sXOARs8cqZlKAVBteE5rE4IyxCZqyIbvWIQe5YVg8/CZBnnU4JCvnZqZYoN/bq2Qm
- 8kt5tuZl7pFaBnjazkbewlQliPJ1wU2S1jS/gAtc9osdcfXZ2cEgrxF7r2StxJcB1F
- tbuB1zTFP8TOSkj+hH1WfGoTmfnZwrRUzy55DTeaUft/QAYeRwqgPJR215Z8SHQhgJ
- RcSXDUi90CicI/Mx21Vqrtv8e3lZo/s4YQAlopkBpAofqwzL93OV5jm+qhKc9aYASw
- jNJEZgx0wKQ1/vEDWoJcMHZKtkmyRyfX5Vp7fyrgxso1bcFSqlK1yBCU7eWduMpXRH
- SZuuw8baVo8kw==
+ b=HNvew5+oevVkIhEiA2cORn2xyIWhBQ6FgKCwiHXuavwYXLQ69OtABt5NXZpszoqDm
+ xox6R/AQSm1zNp2xYAq0wQ7xGUh3wqNYZF1gLWRy9jNS2JKOIClDtSZHRyg4nlK92x
+ N5RN9vlrkhHb8rIzZcbwcJJxyvfKAxBbHfopM+mrlEA7kGP3HAJInNo3RsHGp48ift
+ CABvm9wpvA3g/idbK7QtAFuk/+8wKCNwExA0Xgo2wMB5+ryvOsLnQtB/8b4/Y1sdRg
+ 4zq1aerPvuTc7dyjXAKZ/IB8YxBQ/i5bKCCbaWYbtp2rsM3xV01pTRuS8Hipyr+U/w
+ VfD6YGt3M0xFg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 003/176] ASoC: atmel: ATMEL drivers don't need
- HAS_DMA
-Date: Thu,  9 Sep 2021 07:48:25 -0400
-Message-Id: <20210909115118.146181-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.13 195/219] ASoC: rockchip: i2s: Fix regmap_ops hang
+Date: Thu,  9 Sep 2021 07:46:11 -0400
+Message-Id: <20210909114635.143983-195-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210909115118.146181-1-sashal@kernel.org>
-References: <20210909115118.146181-1-sashal@kernel.org>
+In-Reply-To: <20210909114635.143983-1-sashal@kernel.org>
+References: <20210909114635.143983-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Randy Dunlap <rdunlap@infradead.org>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>,
- Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
- linux-arm-kernel@lists.infradead.org
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Sugar Zhang <sugar.zhang@rock-chips.com>, linux-rockchip@lists.infradead.org,
+ Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,62 +89,85 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Sugar Zhang <sugar.zhang@rock-chips.com>
 
-[ Upstream commit 6c5c659dfe3f02e08054a6c20019e3886618b512 ]
+[ Upstream commit 53ca9b9777b95cdd689181d7c547e38dc79adad0 ]
 
-On a config (such as arch/sh/) which does not set HAS_DMA when MMU
-is not set, several ATMEL ASoC drivers select symbols that cause
-kconfig warnings. There is one "depends on HAS_DMA" which is no longer
-needed. Dropping it eliminates the kconfig warnings and still builds
-with no problems reported.
+API 'set_fmt' maybe called when PD is off, in the situation,
+any register access will hang the system. so, enable PD
+before r/w register.
 
-Fix the following kconfig warnings:
-
-WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_PDC
-  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
-  Selected by [m]:
-  - SND_ATMEL_SOC_SSC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m]
-  - SND_ATMEL_SOC_SSC_PDC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
-
-WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_PDC
-  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
-  Selected by [m]:
-  - SND_AT91_SOC_SAM9G20_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
-
-WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC
-  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
-  Selected by [m]:
-  - SND_ATMEL_SOC_SSC_DMA [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
-
-WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_DMA
-  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
-  Selected by [m]:
-  - SND_ATMEL_SOC_WM8904 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && I2C [=m]
-  - SND_AT91_SOC_SAM9X5_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reviewed-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Link: https://lore.kernel.org/r/20210707214752.3831-1-rdunlap@infradead.org
+Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
+Link: https://lore.kernel.org/r/1629950520-14190-4-git-send-email-sugar.zhang@rock-chips.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/atmel/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/rockchip/rockchip_i2s.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-index 142373ec411a..89210048e6c2 100644
---- a/sound/soc/atmel/Kconfig
-+++ b/sound/soc/atmel/Kconfig
-@@ -11,7 +11,6 @@ if SND_ATMEL_SOC
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 0740764e7f71..d020cb2bdbc4 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -186,7 +186,9 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ {
+ 	struct rk_i2s_dev *i2s = to_info(cpu_dai);
+ 	unsigned int mask = 0, val = 0;
++	int ret = 0;
  
- config SND_ATMEL_SOC_PDC
- 	bool
--	depends on HAS_DMA
++	pm_runtime_get_sync(cpu_dai->dev);
+ 	mask = I2S_CKR_MSS_MASK;
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+@@ -199,7 +201,8 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 		i2s->is_master_mode = false;
+ 		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err_pm_put;
+ 	}
  
- config SND_ATMEL_SOC_DMA
- 	bool
+ 	regmap_update_bits(i2s->regmap, I2S_CKR, mask, val);
+@@ -213,7 +216,8 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 		val = I2S_CKR_CKP_POS;
+ 		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err_pm_put;
+ 	}
+ 
+ 	regmap_update_bits(i2s->regmap, I2S_CKR, mask, val);
+@@ -236,7 +240,8 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 		val = I2S_TXCR_TFS_PCM | I2S_TXCR_PBM_MODE(1);
+ 		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err_pm_put;
+ 	}
+ 
+ 	regmap_update_bits(i2s->regmap, I2S_TXCR, mask, val);
+@@ -259,12 +264,16 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 		val = I2S_RXCR_TFS_PCM | I2S_RXCR_PBM_MODE(1);
+ 		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err_pm_put;
+ 	}
+ 
+ 	regmap_update_bits(i2s->regmap, I2S_RXCR, mask, val);
+ 
+-	return 0;
++err_pm_put:
++	pm_runtime_put(cpu_dai->dev);
++
++	return ret;
+ }
+ 
+ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
 -- 
 2.30.2
 
