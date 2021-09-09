@@ -2,79 +2,90 @@ Return-Path: <SRS0=Rqaf=N7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A3C1C43217
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 11:49:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9318EC43219
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 11:51:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 630D361A7B
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 11:49:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 630D361A7B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 1B4D46121E
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 11:51:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1B4D46121E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6F6A216E1;
-	Thu,  9 Sep 2021 13:48:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F6A216E1
+	by alsa0.perex.cz (Postfix) with ESMTPS id A9DE916AC;
+	Thu,  9 Sep 2021 13:50:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9DE916AC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631188185;
-	bh=Lc4+sA1v5F/jes2Rb9XXiWEbIV278sT9/liBkcqxlbo=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1631188275;
+	bh=GwO/S45IlRLrxknzOmbP6L7PLfNCLA5p2SFKbZ72zWc=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uch5GoVnzIB8klGkDuYtipAGufscET+eU59eXh8RQU3eRfLpJoqfshgh35Na/KbC7
-	 BbgREg8Cy8IXCkEN7NmyUYIp3KRyFfi9PEpvo8avbdf7wD2YEwUOQfyVHsNcebp3oQ
-	 KltzICJNcQOEQH9Ga02DJ4MLNt8VwE6fSBKfHAmU=
+	b=IacZge7d9noCL9HFBJ7ktZ7u1I9wx7Geknn36hBXq1wKJxDXfSIpSoYiQRtpFfS/P
+	 Ka7fkm+0/zi6tX9Mz56+G4fjrr5u4Og9UkwfYFXAmQDbAoUzj45AkkcVZ1kDrt4sfR
+	 rwDN1Z94H4zG1y0lBTAq87mtB6N4iPLli5BGNeEo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47D84F802DF;
-	Thu,  9 Sep 2021 13:48:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4DF76F80217;
+	Thu,  9 Sep 2021 13:50:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E9303F800FC; Thu,  9 Sep 2021 13:48:34 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 81E9AF80224; Thu,  9 Sep 2021 13:50:23 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AE703F800FC
- for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2021 13:48:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE703F800FC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 851F8F800FC
+ for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2021 13:50:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 851F8F800FC
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="KWUIUEgX"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 197D36124B;
- Thu,  9 Sep 2021 11:48:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631188106;
- bh=Lc4+sA1v5F/jes2Rb9XXiWEbIV278sT9/liBkcqxlbo=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=KWUIUEgXOchCqIIgR1X8MSlujUjS7ihFL2RBwfS97h6FoHi0PmIfZ4vdAIrX4kf0z
- 6sRNg/Op71gszpcXxj2dbc6Fs8Azj1aQ+ZOnmkN4prmCR6ib3B6JdxQWF61cvuuhIM
- 7DOLzMBsrMZ4kdyBoKmii3NqW7G7yNFGrJDmWjyDhLBSNJJQB5U6AcriwQqTEbrL3c
- 45Xiln0PfFiX4Vx2l13RQySlmlPbNeoKlkNBp9ztiNVvCxIgB/7V2PZGcqkaSULbjz
- QXyELhv0vRn7WaucO0hFAMUd8DOB8zWutVuDjYlQ8KVnG5HHDcaRUVKaFapuZkiI7a
- htNtxLv6LR4tg==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.13 086/219] ASoC: Intel: bytcr_rt5640: Move
- "Platform Clock" routes to the maps for the matching in-/output
-Date: Thu,  9 Sep 2021 07:44:22 -0400
-Message-Id: <20210909114635.143983-86-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210909114635.143983-1-sashal@kernel.org>
-References: <20210909114635.143983-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="cyqFGhpE"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="3GQqPmQx"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id D167A22379;
+ Thu,  9 Sep 2021 11:50:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1631188215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=oMMzYgFomu2hzy4XldWLmrCH+2DxQolZBrOnMq3NMaM=;
+ b=cyqFGhpECSHWqtUvsWZV/5lrWWrH8zR6sBwqGy5bVN/4fyJSS4gI10U0qIKr0j/r8FetLL
+ Cvp0QS8otNt/SMDnDJc5V9hMp8YSPQXJV3LPXecYOLDK6QR0UyTTh0emB11per5FbndkvG
+ O5dWYQI3A0jH0TskWBNR71FUAYwTfEU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1631188215;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=oMMzYgFomu2hzy4XldWLmrCH+2DxQolZBrOnMq3NMaM=;
+ b=3GQqPmQxwLYIU4Xdtn24ECXbp16Kes+Bd1eoaCEinAynLXaJ19qmgsncrt66vsh0lqRS1r
+ PqxknUoxO4QArUCQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id CAD70A3BC6;
+ Thu,  9 Sep 2021 11:50:15 +0000 (UTC)
+Date: Thu, 09 Sep 2021 13:50:15 +0200
+Message-ID: <s5hr1dy7ytk.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH AUTOSEL 5.14 166/252] ALSA: hda: Drop workaround for a
+ hang at shutdown again
+In-Reply-To: <20210909114106.141462-166-sashal@kernel.org>
+References: <20210909114106.141462-1-sashal@kernel.org>
+ <20210909114106.141462-166-sashal@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,79 +101,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Hans de Goede <hdegoede@redhat.com>
+On Thu, 09 Sep 2021 13:39:40 +0200,
+Sasha Levin wrote:
+> 
+> From: Takashi Iwai <tiwai@suse.de>
+> 
+> [ Upstream commit 8fc8e903156f42c66245838441d03607e9067381 ]
+> 
+> The commit 0165c4e19f6e ("ALSA: hda: Fix hang during shutdown due to
+> link reset") modified the shutdown callback of the HD-audio controller
+> for working around a hang.  Meanwhile, the actual culprit of the hang
+> was identified to be the leftover active codecs that may interfere
+> with the powered down controller somehow, but we took a minimal fix
+> approach for 5.14, and that was the commit above.
+> 
+> Now, since the codec drivers go runtime-suspend at shutdown for 5.15,
+> we can revert the change and make sure that the full runtime-suspend
+> is performed at shutdown of HD-audio controller again.  This patch
+> essentially reverts the commit above to restore the behavior.
+> 
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=214045
+> Link: https://lore.kernel.org/r/20210817075630.7115-1-tiwai@suse.de
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-[ Upstream commit dccd1dfd0770bfd494b68d1135b4547b2c602c42 ]
+Please drop this, it's not for 5.14.
+As stated in the commit log, the fundamental fix was merged in 5.15
+that obsoletes the workaround, but it isn't included in 5.14.
 
-Move the "Platform Clock" routes for the "Internal Mic" and "Speaker"
-routes to the intmic_*_map[] / *_spk_map[] arrays.
 
-This ensures that these "Platform Clock" routes do not get added when the
-BYT_RT5640_NO_INTERNAL_MIC_MAP / BYT_RT5640_NO_SPEAKERS quirks are used.
+thanks,
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210802142501.991985-2-hdegoede@redhat.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/soc/intel/boards/bytcr_rt5640.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 22dbd9d93c1e..4bddb969176f 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -290,9 +290,6 @@ static const struct snd_soc_dapm_widget byt_rt5640_widgets[] = {
- static const struct snd_soc_dapm_route byt_rt5640_audio_map[] = {
- 	{"Headphone", NULL, "Platform Clock"},
- 	{"Headset Mic", NULL, "Platform Clock"},
--	{"Internal Mic", NULL, "Platform Clock"},
--	{"Speaker", NULL, "Platform Clock"},
--
- 	{"Headset Mic", NULL, "MICBIAS1"},
- 	{"IN2P", NULL, "Headset Mic"},
- 	{"Headphone", NULL, "HPOL"},
-@@ -300,19 +297,23 @@ static const struct snd_soc_dapm_route byt_rt5640_audio_map[] = {
- };
- 
- static const struct snd_soc_dapm_route byt_rt5640_intmic_dmic1_map[] = {
-+	{"Internal Mic", NULL, "Platform Clock"},
- 	{"DMIC1", NULL, "Internal Mic"},
- };
- 
- static const struct snd_soc_dapm_route byt_rt5640_intmic_dmic2_map[] = {
-+	{"Internal Mic", NULL, "Platform Clock"},
- 	{"DMIC2", NULL, "Internal Mic"},
- };
- 
- static const struct snd_soc_dapm_route byt_rt5640_intmic_in1_map[] = {
-+	{"Internal Mic", NULL, "Platform Clock"},
- 	{"Internal Mic", NULL, "MICBIAS1"},
- 	{"IN1P", NULL, "Internal Mic"},
- };
- 
- static const struct snd_soc_dapm_route byt_rt5640_intmic_in3_map[] = {
-+	{"Internal Mic", NULL, "Platform Clock"},
- 	{"Internal Mic", NULL, "MICBIAS1"},
- 	{"IN3P", NULL, "Internal Mic"},
- };
-@@ -354,6 +355,7 @@ static const struct snd_soc_dapm_route byt_rt5640_ssp0_aif2_map[] = {
- };
- 
- static const struct snd_soc_dapm_route byt_rt5640_stereo_spk_map[] = {
-+	{"Speaker", NULL, "Platform Clock"},
- 	{"Speaker", NULL, "SPOLP"},
- 	{"Speaker", NULL, "SPOLN"},
- 	{"Speaker", NULL, "SPORP"},
-@@ -361,6 +363,7 @@ static const struct snd_soc_dapm_route byt_rt5640_stereo_spk_map[] = {
- };
- 
- static const struct snd_soc_dapm_route byt_rt5640_mono_spk_map[] = {
-+	{"Speaker", NULL, "Platform Clock"},
- 	{"Speaker", NULL, "SPOLP"},
- 	{"Speaker", NULL, "SPOLN"},
- };
--- 
-2.30.2
-
+Takashi
