@@ -2,88 +2,96 @@ Return-Path: <SRS0=Rqaf=N7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05ED8C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 07:36:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE32BC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 10:28:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5453D60F11
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 07:36:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5453D60F11
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 66AAE61179
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 10:28:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 66AAE61179
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EB4CF1687;
-	Thu,  9 Sep 2021 09:35:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB4CF1687
+	by alsa0.perex.cz (Postfix) with ESMTPS id ACA311675;
+	Thu,  9 Sep 2021 12:27:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACA311675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631173000;
-	bh=CS3fbPgTTWEckF7muCVJo1biw7wRGauQhIjyYXrmRD8=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1631183315;
+	bh=ynVDuYh057PEPsdCa8vlXYlFyC7tjzxyt6uIQIEjuTA=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kqbJBVfbbMY2KizjeiPRl/XZbDU+6J0gJlhJ27nMrWQdw6Se5b1IxiEngRgSHElk7
-	 OmANQh197os6uq6OOaK3nnDFFneuUY2gs44MLWaXkU2sNYrIDzTBM+JQNqXgzWQI9p
-	 tc4tDjsyduAyx2tStvD4fj31RsXV0Hj6ekPW6/Ko=
+	b=tPF9gdqNvcorK2N9phreTjx5UJ+0iZODm2EnfnMDD2kCES/Bxc4WikGP0/xwrlGXM
+	 RGYGQrq3Nid7wZ4kNiD+5AiyOuF6S57Pzi1qfg6RQ6PHino1DcnEK6bsEHCnpURQfS
+	 p7Fjn+XLkjASzJ2elUWx2H+jmztsggrq1i4B/F3k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D6C61F800FC;
-	Thu,  9 Sep 2021 09:35:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 31A02F80217;
+	Thu,  9 Sep 2021 12:27:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 190F6F802DF; Thu,  9 Sep 2021 09:35:09 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 81143F80217; Thu,  9 Sep 2021 12:27:42 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6CBA5F80217
- for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2021 09:34:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6CBA5F80217
+ by alsa1.perex.cz (Postfix) with ESMTPS id 60521F800C7
+ for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2021 12:27:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60521F800C7
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="GbyyMUoD"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="T7pmCS6r"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 5AE04201C0;
- Thu,  9 Sep 2021 07:34:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1631172896; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=93ENBNGr9bc7Gl7Ki4FE4D/A5edi5qVwM4LPjh0BVPc=;
- b=GbyyMUoDfeBoPfWfzXhdlGXu7YVdDONVtpLetNbm8436j0ygOEuSWuHlR/ktwi95HFePoL
- jdgNlx85nVOcY/zijxqDrVlDi96FIIkFfwZFExyT0ZUaNATfDGrY8Y16EnoMhydgh+XMQM
- DY8ZZca3hIe1Y3u69OlB6O55BafRO38=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1631172896;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=93ENBNGr9bc7Gl7Ki4FE4D/A5edi5qVwM4LPjh0BVPc=;
- b=T7pmCS6reb8Tv8W84aCEHUc3XflupMgpojPeWsbrrhH3OnaevMQL7uZc9Uou7zi8Z9e7gv
- kFc9JFH+nQMJeOAQ==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 447DFA3B96;
- Thu,  9 Sep 2021 07:34:56 +0000 (UTC)
-Date: Tue, 07 Sep 2021 07:16:21 +0200
-Message-ID: <s5hmtopeziy.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Tong Zhang <ztong0001@gmail.com>
-Subject: Re: [PATCH v1] ALSA: vx222: fix null-ptr-deref
-In-Reply-To: <20210907014746.1445278-1-ztong0001@gmail.com>
-References: <20210907014746.1445278-1-ztong0001@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, Leon Romanovsky <leon@kernel.org>
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="YQJFIM0a"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1896onVT002355; 
+ Thu, 9 Sep 2021 05:27:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=2dij4fdqqNTWnpDU64jZ8EECsb2mTCgKMlL9Buf+1kA=;
+ b=YQJFIM0aMnQRSR1kKUBs1oOih1ZGUqkncBWrnWpkNm+phyo44MvLlrtcHVIyg68IOPOc
+ bA6WuQpcRW+1TUXceFHFuJc5xRkhKTozPzMIb8/gKo/6Bi/C39RXttivZk3jW82t7mem
+ IizvCLYVBW4K0LImEJf7EUk3YJQRaNdiIq10JW2pXhbbfjmtN8mEFFAVWQSDepeAU7ug
+ jO7Bb0Vv5nchnP19oO90BzLx5Gu0IbywQo7XfDo6cNTTI6FaamD/8XoibM9fKyecRlas
+ aCmN/OX9X8PNVQbTBzUePnENPt5Ek8chTaZYZdp6UWhFw8p7EeKGsC+6oECF0gFdC+CM Rw== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+ by mx0b-001ae601.pphosted.com with ESMTP id 3ay8n60d3a-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Thu, 09 Sep 2021 05:27:33 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Thu, 9 Sep
+ 2021 11:27:31 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via
+ Frontend Transport; Thu, 9 Sep 2021 11:27:31 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 91143B16;
+ Thu,  9 Sep 2021 10:27:31 +0000 (UTC)
+Date: Thu, 9 Sep 2021 10:27:31 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: David Rhodes <drhodes@opensource.cirrus.com>
+Subject: Re: [PATCH v7 1/2] ASoC: cs35l41: CS35L41 Boosted Smart Amplifier
+Message-ID: <20210909102731.GS9223@ediswmail.ad.cirrus.com>
+References: <20210907225719.2018115-1-drhodes@opensource.cirrus.com>
+ <20210907225719.2018115-2-drhodes@opensource.cirrus.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210907225719.2018115-2-drhodes@opensource.cirrus.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-ORIG-GUID: y8DZERnkIsTnfrF0VYltgg4e1kDeLXCh
+X-Proofpoint-GUID: y8DZERnkIsTnfrF0VYltgg4e1kDeLXCh
+X-Proofpoint-Spam-Reason: safe
+Cc: robh@kernel.org, brian.austin@cirrus.com, patches@opensource.cirrus.com,
+ alsa-devel@alsa-project.org, david.rhodes@cirrus.com, broonie@kernel.org,
+ pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,21 +107,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 07 Sep 2021 03:47:45 +0200,
-Tong Zhang wrote:
+On Tue, Sep 07, 2021 at 05:57:18PM -0500, David Rhodes wrote:
+> SoC Audio driver for the Cirrus Logic CS35L41 amplifier
 > 
-> a recent refactor created a null pointer vx in snd_vx222_probe().
-> The vx pointer should have been populated in snd_vx222_create() as
-> suggested in earlier version, otherwise vx->core.ibl.size will throw an
-> error.
-> 
-> [    1.298398] BUG: kernel NULL pointer dereference, address: 00000000000001d8
-> [    1.316799] RIP: 0010:snd_vx222_probe+0x155/0x290 [snd_vx222]
-> 
-> Fixes: 3bde3359aa16 ("ALSA: vx222: Allocate resources with device-managed APIs")
-> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+> Signed-off-by: David Rhodes <drhodes@opensource.cirrus.com>
+> ---
 
-Thanks, applied.
+Tested-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-
-Takashi
+Thanks,
+Charles
