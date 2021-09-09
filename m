@@ -2,69 +2,69 @@ Return-Path: <SRS0=Rqaf=N7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77B5BC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 11:45:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6B7EC433FE
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 11:46:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AFDB26140B
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 11:45:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AFDB26140B
+	by mail.kernel.org (Postfix) with ESMTPS id 1E2ED61458
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 11:46:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1E2ED61458
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2E2DC16B6;
-	Thu,  9 Sep 2021 13:44:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E2DC16B6
+	by alsa0.perex.cz (Postfix) with ESMTPS id B6F4516BD;
+	Thu,  9 Sep 2021 13:45:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6F4516BD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631187946;
-	bh=gMzlS6eZ1f/ByV3KBZmIrkiSw6UxTcu2UVXACyjKUw4=;
+	s=default; t=1631187961;
+	bh=AV9wRD9lEMp2Qb/zjeTJnb2M22/TDCzs8tAi3oi+/+Q=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IBXyVthr4/d93xt1FsbCkvXhXZNoeTut0t1F95xoXJocOI9vgp/fucYXkjnd6gRVS
-	 KJH+eXmIiodwALd/GFYqhHs4ThfYxMInq7rk/OkmgD5yMaB2x6H1zhcOkwTK2PZdc2
-	 WusBME6Jhq9JSBfuMYNwsb51NoG8xsnFHAUmlH0g=
+	b=S1PLBMSxeWAMF/hwm1bMtfP5ZMcmdEEbfgd0KseNwjkQE3pz2B5Zw3niVdctedKlI
+	 VWw97zJruR69ptxNNsguIkF6Fy9dPu3KZz6TN0GTDEIZsmR+g+VYtbGqvCCrvCF3Tm
+	 PCoPQBaOiWaRAuj5RP+PGHA74xdmkXDICKtkf02I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8599F80217;
-	Thu,  9 Sep 2021 13:44:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 52FC2F800FC;
+	Thu,  9 Sep 2021 13:45:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 00FFCF80224; Thu,  9 Sep 2021 13:44:53 +0200 (CEST)
+ id C5A56F802DF; Thu,  9 Sep 2021 13:45:09 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4CC91F80253
- for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2021 13:44:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CC91F80253
+ by alsa1.perex.cz (Postfix) with ESMTPS id 01C62F800FC
+ for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2021 13:45:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01C62F800FC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Wesw0w6t"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 08C846138E;
- Thu,  9 Sep 2021 11:44:42 +0000 (UTC)
+ header.b="nBNnfYx7"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B9F7613A7;
+ Thu,  9 Sep 2021 11:44:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631187883;
- bh=gMzlS6eZ1f/ByV3KBZmIrkiSw6UxTcu2UVXACyjKUw4=;
+ s=k20201202; t=1631187900;
+ bh=AV9wRD9lEMp2Qb/zjeTJnb2M22/TDCzs8tAi3oi+/+Q=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Wesw0w6tM8cQIj/SM+2L1+lcs8ODNqvh+eWS3qsHUb79uuup9MOJ+swzm9jdXnk9m
- cs2RFFkHI1ID4Y0hnaTea3lzymd3JZzLPopIu3PB5um6xDT6+qJDLlYxGeyULlz/lb
- ypInvHyZFaqOsFfgZlZ4D9KyPToviAIsLVRZVqQVx9933fSux0toxaBX9uz/cQKEbV
- vAJ25UrvIPzi8Z/+CYCnPl4dnjE8j/MAlwP0YAMbQd7QWC/GGqOysRuCDbMhUZz1/s
- Tp7JGxPn1KiaHFIG0QH7yL/gfJH+IEPU0fgKbDK16WCQGMedjDq4g/tJcsvC5q+DBy
- KVZkRybgyFVaA==
+ b=nBNnfYx74BMsC9aStgnCqbnoRWlxitjegf1CLbwOp0mwn+PxFVsSRJ0nVqOXo/Y7Y
+ RPSS8FaR2RznpAnEXrlp+0ak4376f4sws36iHYq07SU/53imA9EK5/8HDn7ooyUZFK
+ av4feSlSTMXNlTG/5RlBFwQNJMm7nVcRv/zhqS/1LWAb4Mro06rSDqAuTuDXx/v5VD
+ 6V4v4GMsThw/hrLKW6mfOw6Paicr2Tb7CCU1ypIzfluBPsdhj2womyiQa0AbQnjJw2
+ /TqHFCp5CUQ5AsPSUJiwL9GuKsnQzVDXDr7Zpbcpsb6AAGf9En9g4casx+zXDzAlEc
+ dUfLCmoSPFZSw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.14 166/252] ALSA: hda: Drop workaround for a hang at
- shutdown again
-Date: Thu,  9 Sep 2021 07:39:40 -0400
-Message-Id: <20210909114106.141462-166-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.14 179/252] ASoC: rsnd: adg: clearly handle clock
+ error / NULL case
+Date: Thu,  9 Sep 2021 07:39:53 -0400
+Message-Id: <20210909114106.141462-179-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210909114106.141462-1-sashal@kernel.org>
 References: <20210909114106.141462-1-sashal@kernel.org>
@@ -72,8 +72,9 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, Dan Carpenter <dan.carpenter@oracle.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,69 +90,90 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-[ Upstream commit 8fc8e903156f42c66245838441d03607e9067381 ]
+[ Upstream commit cc64c390b215b404524725a94857d6fb58d9a62a ]
 
-The commit 0165c4e19f6e ("ALSA: hda: Fix hang during shutdown due to
-link reset") modified the shutdown callback of the HD-audio controller
-for working around a hang.  Meanwhile, the actual culprit of the hang
-was identified to be the leftover active codecs that may interfere
-with the powered down controller somehow, but we took a minimal fix
-approach for 5.14, and that was the commit above.
+This driver is assuming that all adg->clk[i] is not NULL.
+Because of this prerequisites, for_each_rsnd_clk() is possible to work
+for all clk without checking NULL. In other words, all adg->clk[i]
+should not NULL.
 
-Now, since the codec drivers go runtime-suspend at shutdown for 5.15,
-we can revert the change and make sure that the full runtime-suspend
-is performed at shutdown of HD-audio controller again.  This patch
-essentially reverts the commit above to restore the behavior.
+Some SoC might doesn't have clk_a/b/c/i. devm_clk_get() returns error in
+such case. This driver calls rsnd_adg_null_clk_get() and use null_clk
+instead of NULL in such cases.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=214045
-Link: https://lore.kernel.org/r/20210817075630.7115-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+But devm_clk_get() might returns NULL even though such clocks exist, but
+it doesn't mean error (user deliberately chose to disable the feature).
+NULL clk itself is not error from clk point of view, but is error from
+this driver point of view because it is not assuming such case.
+
+But current code is using IS_ERR() which doesn't care NULL.
+This driver uses IS_ERR_OR_NULL() instead of IS_ERR() for clk check.
+And it uses ERR_CAST() to clarify null_clk error.
+
+One concern here is that it unconditionally uses null_clk if clk_a/b/c/i
+was error. It is correct if it doesn't exist, but is not correct if it
+returns error even though it exist.
+It needs to check "clock-names" from DT before calling devm_clk_get() to
+handling such case. But let's assume it is overkill so far.
+
+Link: https://lore.kernel.org/r/YMCmhfQUimHCSH/n@mwanda
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/87v940wyf9.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/hda_intel.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ sound/soc/sh/rcar/adg.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 0062c18b646a..0322b289505e 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -883,11 +883,10 @@ static unsigned int azx_get_pos_skl(struct azx *chip, struct azx_dev *azx_dev)
- 	return azx_get_pos_posbuf(chip, azx_dev);
- }
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index 0ebee1ed06a9..5f1e72edfee0 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -391,9 +391,9 @@ static struct clk *rsnd_adg_create_null_clk(struct rsnd_priv *priv,
+ 	struct clk *clk;
  
--static void __azx_shutdown_chip(struct azx *chip, bool skip_link_reset)
-+static void azx_shutdown_chip(struct azx *chip)
- {
- 	azx_stop_chip(chip);
--	if (!skip_link_reset)
--		azx_enter_link_reset(chip);
-+	azx_enter_link_reset(chip);
- 	azx_clear_irq_pending(chip);
- 	display_power(chip, false);
- }
-@@ -896,11 +895,6 @@ static void __azx_shutdown_chip(struct azx *chip, bool skip_link_reset)
- static DEFINE_MUTEX(card_list_lock);
- static LIST_HEAD(card_list);
+ 	clk = clk_register_fixed_rate(dev, name, parent, 0, 0);
+-	if (IS_ERR(clk)) {
++	if (IS_ERR_OR_NULL(clk)) {
+ 		dev_err(dev, "create null clk error\n");
+-		return NULL;
++		return ERR_CAST(clk);
+ 	}
  
--static void azx_shutdown_chip(struct azx *chip)
--{
--	__azx_shutdown_chip(chip, false);
--}
--
- static void azx_add_card_list(struct azx *chip)
- {
- 	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
-@@ -2391,7 +2385,7 @@ static void azx_shutdown(struct pci_dev *pci)
- 		return;
- 	chip = card->private_data;
- 	if (chip && chip->running)
--		__azx_shutdown_chip(chip, true);
-+		azx_shutdown_chip(chip);
- }
+ 	return clk;
+@@ -430,9 +430,9 @@ static int rsnd_adg_get_clkin(struct rsnd_priv *priv)
+ 	for (i = 0; i < CLKMAX; i++) {
+ 		clk = devm_clk_get(dev, clk_name[i]);
  
- /* PCI IDs */
+-		if (IS_ERR(clk))
++		if (IS_ERR_OR_NULL(clk))
+ 			clk = rsnd_adg_null_clk_get(priv);
+-		if (IS_ERR(clk))
++		if (IS_ERR_OR_NULL(clk))
+ 			goto err;
+ 
+ 		adg->clk[i] = clk;
+@@ -582,7 +582,7 @@ static int rsnd_adg_get_clkout(struct rsnd_priv *priv)
+ 	if (!count) {
+ 		clk = clk_register_fixed_rate(dev, clkout_name[CLKOUT],
+ 					      parent_clk_name, 0, req_rate[0]);
+-		if (IS_ERR(clk))
++		if (IS_ERR_OR_NULL(clk))
+ 			goto err;
+ 
+ 		adg->clkout[CLKOUT] = clk;
+@@ -596,7 +596,7 @@ static int rsnd_adg_get_clkout(struct rsnd_priv *priv)
+ 			clk = clk_register_fixed_rate(dev, clkout_name[i],
+ 						      parent_clk_name, 0,
+ 						      req_rate[0]);
+-			if (IS_ERR(clk))
++			if (IS_ERR_OR_NULL(clk))
+ 				goto err;
+ 
+ 			adg->clkout[i] = clk;
 -- 
 2.30.2
 
