@@ -2,101 +2,89 @@ Return-Path: <SRS0=Rqaf=N7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-22.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3C3CC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 12:13:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 407C3C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 12:34:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D2E016113E
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 12:13:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D2E016113E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	by mail.kernel.org (Postfix) with ESMTPS id E546F61100
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 12:34:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E546F61100
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 202EA172F;
-	Thu,  9 Sep 2021 14:12:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 202EA172F
+	by alsa0.perex.cz (Postfix) with ESMTPS id AC86916CD;
+	Thu,  9 Sep 2021 14:33:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC86916CD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631189580;
-	bh=ORO4bVSxzwS4lNMTbvTR3qgJSaToGrnT8w2lM1DXZj8=;
-	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
+	s=default; t=1631190841;
+	bh=zX5kZJi02mf1M+SlIAqEjNs1O3oDOJSkh5J+XG3zGDM=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mqWzsHiy3oeEER9OWHDQItzqFZMzgRG3DKIjfLeJGZBF7VF4yT9bIHU6BkPr3O4hW
-	 PDa6XhUcZdCU1iD1HwVbXzfIKW0xKyIBpJX/Z65uRAsqV5cxrjTquNZYBZic2CYuZ5
-	 CeF1ii0Sq9nn6qGPpP4IId3pDlomhYHjaNhBSKhY=
+	b=X4PB/lXOFNpZmAVaywxS6s7NgGwZDbsspwNyJ1Gl8jWrTw8aG+JGberfqm2zKd+z8
+	 jqxPsdmm1GDM0dh9NDM+D6foRWogz5uc//7655053GaIDlfQNRH6alI0bKQJBmvnTb
+	 PSDa9Z6MQZx4Y4vDWl0wpULZvegfpJAZ6KGJdG2Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BB3B5F80217;
-	Thu,  9 Sep 2021 14:12:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 322FDF80217;
+	Thu,  9 Sep 2021 14:33:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 39484F80224; Thu,  9 Sep 2021 14:12:08 +0200 (CEST)
-Received: from so254-9.mailgun.net (so254-9.mailgun.net [198.61.254.9])
+ id 3E9B7F80224; Thu,  9 Sep 2021 14:33:08 +0200 (CEST)
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com
+ [209.85.210.47])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EF972F80166
- for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2021 14:11:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF972F80166
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="CqeT3rwx"
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1631189523; h=Content-Type: In-Reply-To: MIME-Version: Date:
- Message-ID: From: References: To: Subject: Sender;
- bh=JrPiFQ0Lu/q/e1KmJ4BcrwDz3zgx+Iis+TUjPaND4l8=;
- b=CqeT3rwxtn6YUzQP/FNcB4LqGdqrvjrP+/64lIYIM/nxs/RrQvrVtfpqW4ll7iLrJOYIj5QW
- Pruw0GWb7QzxEIO/LE46lqEGB4nxWcLkbIYcBWfPKJUAFp8tvIa5wERgbnDAr2QNHxIuObtB
- YWReZ9P7eQBygPvmiB4PfpbeccA=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 6139f9f4de7dfad22f505958 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 09 Sep 2021 12:11:32
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 8335DC008F0; Thu,  9 Sep 2021 12:11:31 +0000 (UTC)
-Received: from [10.242.137.170] (unknown [202.46.23.19])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 282D0C0044B;
- Thu,  9 Sep 2021 12:11:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 282D0C0044B
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH v2] ASoC: qcom: lpass-platform: Reset irq clear reg post
- handling interrupts
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, agross@kernel.org,
- bjorn.andersson@linaro.org, lgirdwood@gmail.com, broonie@kernel.org,
- robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
- perex@perex.cz, tiwai@suse.com, rohitkr@codeaurora.org,
- linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- swboyd@chromium.org, judyhsiao@chromium.org
-References: <20210908142535.31106-1-srivasam@codeaurora.org>
- <c29802c9-4577-87bd-b843-8540588c6d06@linaro.org>
-From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Organization: Qualcomm India Private Limited.
-Message-ID: <49c8a61c-a0e3-3068-0f33-40eb18b56f79@codeaurora.org>
-Date: Thu, 9 Sep 2021 17:41:18 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <c29802c9-4577-87bd-b843-8540588c6d06@linaro.org>
-Content-Language: en-US
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+ by alsa1.perex.cz (Postfix) with ESMTPS id C0FB2F800C7
+ for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2021 14:32:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0FB2F800C7
+Received: by mail-ot1-f47.google.com with SMTP id
+ m7-20020a9d4c87000000b0051875f56b95so2252534otf.6
+ for <alsa-devel@alsa-project.org>; Thu, 09 Sep 2021 05:32:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+ :message-id;
+ bh=abEhaeOy2YSPN/FnaISQGKPeJ66igV5iFQgXJZSBBLU=;
+ b=ptW4AsUwSIFFGfv1rBG30Q8lhaKAWHYpntwqiK7KNDRC1CGkth+Uf/MbyfNu+6XbpC
+ b46eqjwfOCAbC8nWeCfWzzUu5O7HE13DIKHCnz7l8L5Q+H0Br9RwkaJE91/tIUlBDVSz
+ Zk3AJI1aqvz/0fANRMT9lcEpxxgOJhfbh1exuJxdjcMABAjY1coizZgCWVBAzq27LgAy
+ yEyzkSkYlP4qCh3bBnbCe/M2cmuFIhjm68jy4AT8G6YQexGcEsGUM/VuqBXPCIlbdgFG
+ KKQP/eGhnUCtd0KgT9ZWw0mvFfRUzvl5ii7tlDnTKL8eAJ3s2N5GqEKg+LZLWAW+8Jbf
+ 3STQ==
+X-Gm-Message-State: AOAM532BGe1onbOGVVTEhMoIkWfga9O7mCyWEtonIs6WsQbxcZ9JctZt
+ 8z/GctSXdKkXyhFw4kYN4w==
+X-Google-Smtp-Source: ABdhPJxcpJ9iZIIumS08m5EWjFkP5+Lg9n++RGx/6qUcAsMjiuJwc9M/jZdbHzbGyu4mT27btG7wgg==
+X-Received: by 2002:a9d:2053:: with SMTP id n77mr2273577ota.9.1631190777626;
+ Thu, 09 Sep 2021 05:32:57 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
+ [66.90.148.213])
+ by smtp.gmail.com with ESMTPSA id g23sm405642otl.23.2021.09.09.05.32.55
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 09 Sep 2021 05:32:56 -0700 (PDT)
+Received: (nullmailer pid 200340 invoked by uid 1000);
+ Thu, 09 Sep 2021 12:32:53 -0000
+From: Rob Herring <robh@kernel.org>
+To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+In-Reply-To: <1631124057-17155-2-git-send-email-srivasam@codeaurora.org>
+References: <1631124057-17155-1-git-send-email-srivasam@codeaurora.org>
+ <1631124057-17155-2-git-send-email-srivasam@codeaurora.org>
+Subject: Re: [PATCH 1/2] ASoC: google: dt-bindings: Add sc7280-herobrine
+ machine bindings
+Date: Thu, 09 Sep 2021 07:32:53 -0500
+Message-Id: <1631190773.288819.200339.nullmailer@robh.at.kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ bgoswami@codeaurora.org, lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org,
+ broonie@kernel.org, tiwai@suse.com, linux-kernel@vger.kernel.org,
+ robh+dt@kernel.org, bjorn.andersson@linaro.org, agross@kernel.org,
+ rohitkr@codeaurora.org, swboyd@chromium.org, judyhsiao@chromium.org,
+ plai@codeaurora.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,83 +100,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Thanks for Your time Srini!!
+On Wed, 08 Sep 2021 23:30:56 +0530, Srinivasa Rao Mandadapu wrote:
+> Add devicetree bindings documentation file for sc7280 sound card
+> registration.
+> 
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> ---
+>  .../bindings/sound/google,sc7280-herobrine.yaml    | 169 +++++++++++++++++++++
+>  1 file changed, 169 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
+> 
 
-On 9/8/2021 9:37 PM, Srinivas Kandagatla wrote:
->
->
-> On 08/09/2021 15:25, Srinivasa Rao Mandadapu wrote:
->> Update interrupt clear register with reset value after addressing
->> all interrupts. This is to fix playback or capture hanging issue in
->> simultaneous playback and capture usecase.
->
-> Could explain bit more about the issue.
-> Specifically which interrupt and which ports is this issue seen.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-The test case is repeated test of simultaneous playback and capture on 
-audio jack. i.e. 10 sec playback and 10 secs Capture.
+yamllint warnings/errors:
 
-i.e. sequence is Capture --> Playback, Capture -> Playback
+dtschema/dtc warnings/errors:
+Error: Documentation/devicetree/bindings/sound/google,sc7280-herobrine.example.dts:46.24-25 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:379: Documentation/devicetree/bindings/sound/google,sc7280-herobrine.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1438: dt_binding_check] Error 2
 
-In interrupt handler reading IRQ status reg and processing all the bits 
-in loop. By the time loop ends in handler,
+doc reference errors (make refcheckdocs):
 
-another capture interrupt is raised and it's never getting cleared and 
-whole test case is getting hanged.
+See https://patchwork.ozlabs.org/patch/1525980
 
->
->>
->> Fixes: 4f629e4b8705f ("ASoC: qcom: Add ability to handle interrupts 
->> per dma channel")
->>
->> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
->> ---
->> Changes since v1:
->>      -- Update comments Header information with fixes tag
->>
->>   sound/soc/qcom/lpass-platform.c | 6 ++++++
->>   1 file changed, 6 insertions(+)
->>
->> diff --git a/sound/soc/qcom/lpass-platform.c 
->> b/sound/soc/qcom/lpass-platform.c
->> index f9df76d37858..1a0a4b0b1a03 100644
->> --- a/sound/soc/qcom/lpass-platform.c
->> +++ b/sound/soc/qcom/lpass-platform.c
->> @@ -749,6 +749,12 @@ static irqreturn_t lpass_platform_lpaif_irq(int 
->> irq, void *data)
->>           }
->>       }
->>   +    rv = regmap_write(drvdata->lpaif_map, LPAIF_IRQCLEAR_REG(v, 
->> LPAIF_IRQ_PORT_HOST), 0x0);
->
-> Writing 1 to a bit of this register will clear the corresponding 
-> latched interrupt. So I don't really understand how writing 0 is 
-> really helping here?
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
 
-Yes. Your point is valid. But use-case passed with below patch and this 
-change. will revert this change and check again with only below patch .
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-https://patchwork.kernel.org/project/alsa-devel/patch/20210524142114.18676-1-srivasam@codeaurora.org/ 
-<https://www.google.com/url?q=https://patchwork.kernel.org/project/alsa-devel/patch/20210524142114.18676-1-srivasam@codeaurora.org/&sa=D&usg=AOvVaw3VEq8XuEI8cJkNpAxTm3d2>
+pip3 install dtschema --upgrade
 
->
-> Do you have this patch in your tree?
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/sound/soc/qcom/lpass-cpu.c?h=v5.14&id=6a7f5bd6185e1c86256d5e52c3bb7a4d390d6e19 
->
-yes. This patch is available.
-
-> --srini
->
->> +    if (rv) {
->> +        pr_err("error writing to irqstat reg: %d\n", rv);
->> +        return IRQ_NONE;
->> +    }
->> +
->>       return IRQ_HANDLED;
->>   }
->>
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+Please check and re-submit.
 
