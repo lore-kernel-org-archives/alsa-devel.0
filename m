@@ -2,69 +2,68 @@ Return-Path: <SRS0=Rqaf=N7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-22.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE140C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 11:44:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AD01C4332F
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 11:45:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A2E7961361
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 11:44:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A2E7961361
+	by mail.kernel.org (Postfix) with ESMTPS id 4EB856139D
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 11:45:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4EB856139D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2A10D16A3;
-	Thu,  9 Sep 2021 13:43:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A10D16A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9629E16AC;
+	Thu,  9 Sep 2021 13:44:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9629E16AC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631187856;
-	bh=6lulUNxDGiu42j/7vp+SGcWHeqNR2I22Yu3VZeFwd2w=;
+	s=default; t=1631187906;
+	bh=T+pyGVuoVHBZhTxcuYfPVs9mekt2VTw41BaXw7jkxoc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vuEVt44+sJgzfBmBbAMxxFcG9YpIslc2jF37wvhMvs33gecOvyAkTbqe6Lhx166ry
-	 fsiS6CUZM5NQqUw50tHavSMWzuQkLS9jF7DmvVR9OYvBoA9T5tvSSa90IRLw7lKLks
-	 hgOwf4c9yZNoI9Q8dydndifC5CrYZbJZ31DT0AV8=
+	b=jCMkXPATbuAEJ2NLW3uCD8suuRtRc/Z8D5MFJUegq7wYfE4d1pzLTSr9gz9Pqzw3r
+	 Ahn3xxxOiAEecfhTNTMI3F6fvAFnP0CjNUkrbqgFVh8uVQbhArAqfK8JEGxJ1O0NQ+
+	 K8mZjJee0oqcNRXpS8c51eJba06SJ9Q6o3mWOJ7Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AAD15F80224;
-	Thu,  9 Sep 2021 13:43:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59381F804E3;
+	Thu,  9 Sep 2021 13:43:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D70F0F80253; Thu,  9 Sep 2021 13:43:23 +0200 (CEST)
+ id 66168F804E4; Thu,  9 Sep 2021 13:43:28 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8873CF80217
- for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2021 13:43:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8873CF80217
+ by alsa1.perex.cz (Postfix) with ESMTPS id F07D3F80166
+ for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2021 13:43:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F07D3F80166
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="sVx2+A4c"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 551866124B;
- Thu,  9 Sep 2021 11:43:14 +0000 (UTC)
+ header.b="og0hKXgM"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D574561261;
+ Thu,  9 Sep 2021 11:43:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631187795;
- bh=6lulUNxDGiu42j/7vp+SGcWHeqNR2I22Yu3VZeFwd2w=;
+ s=k20201202; t=1631187797;
+ bh=T+pyGVuoVHBZhTxcuYfPVs9mekt2VTw41BaXw7jkxoc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=sVx2+A4cjrrKL53ZxmTbHl8PeS7n+nUolMhgzBwLRANGy3Z/M1ZUB+kgr7zZJkMIv
- 4QHPPloNlsGFDIqBKIzeqGg0KnZM8bxwKNMpszbaBzYU1nXzgbYvTrqkWlF2lRRa0x
- 25A6YXXlNJ8X3B1oJOHrOeKAD/xYzfWyFvHZCLcjaWd8GdT6b/1dC8x9Q7eosz+EjY
- dsL6hBQZn0JkIoG6SsMd6t3jLS//tXQ4URXlhIecCaFbQJX2E51CExnIb5/g0tnm0Q
- DQwDm7TcTJg230hcOmT2jvoEmsPZp8BJ9TWMyUpXi/SEtSAuOZZ0nVnPtpnvrI/uWU
- Az7maMq/h3UJw==
+ b=og0hKXgMKuUEVWYbZC6D1S9+6XwVZOEf+lMj6n4a6BDnJGOy+AgTzMcQgoiIqajg8
+ nN/ELCP31yWMNBtYRx+yKSdFSnv7DDrANBCx4PgE/49Li5eFLUiMIPyaen/WBogo7M
+ vtv1B0iVkA35JZu00QedL0Tl1k2s3ub7BrZ6VmyTmin8maSdvM759VdZ9LCtAbVv47
+ aMvh9lHcIxY5hFQ35wmtD4zxUDTEntgwU605oBkid62r4wtnOkm1bOX7d5GgT4yTi9
+ oe28Lbu3TiHpQnkqesrGApCOoIOWOnxJHrdlmh3hcMvOm2dLQGKRLd/5N5/ZQNtwxF
+ xUWlWGj6KMO+g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.14 100/252] ASoC: Intel: bytcr_rt5640: Move
- "Platform Clock" routes to the maps for the matching in-/output
-Date: Thu,  9 Sep 2021 07:38:34 -0400
-Message-Id: <20210909114106.141462-100-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.14 102/252] ASoC: Intel: update sof_pcm512x quirks
+Date: Thu,  9 Sep 2021 07:38:36 -0400
+Message-Id: <20210909114106.141462-102-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210909114106.141462-1-sashal@kernel.org>
 References: <20210909114106.141462-1-sashal@kernel.org>
@@ -72,7 +71,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
+Cc: Sasha Levin <sashal@kernel.org>,
+ Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
  alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -90,79 +90,74 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit dccd1dfd0770bfd494b68d1135b4547b2c602c42 ]
+[ Upstream commit 22414cade8dfec25ab94df52b3a4f7aa8edb6120 ]
 
-Move the "Platform Clock" routes for the "Internal Mic" and "Speaker"
-routes to the intmic_*_map[] / *_spk_map[] arrays.
+The default SOF topology enables SSP capture and DMICs, even though
+both of these hardware capabilities are not always available in
+hardware (specific versions of HiFiberry and DMIC kit needed).
 
-This ensures that these "Platform Clock" routes do not get added when the
-BYT_RT5640_NO_INTERNAL_MIC_MAP / BYT_RT5640_NO_SPEAKERS quirks are used.
+For the SSP capture, this leads to annoying "SP5-Codec: ASoC: no
+backend capture" and "streamSSP5-Codec: ASoC: no users capture at
+close - state 0" errors.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210802142501.991985-2-hdegoede@redhat.com
+Update the quirks to match what the topology needs, which also allows
+for the ability to remove SSP capture and DMIC support.
+
+BugLink: https://github.com/thesofproject/linux/issues/3061
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Link: https://lore.kernel.org/r/20210802152151.15832-4-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/sof_pcm512x.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 91a6d712eb58..c403fb672594 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -290,9 +290,6 @@ static const struct snd_soc_dapm_widget byt_rt5640_widgets[] = {
- static const struct snd_soc_dapm_route byt_rt5640_audio_map[] = {
- 	{"Headphone", NULL, "Platform Clock"},
- 	{"Headset Mic", NULL, "Platform Clock"},
--	{"Internal Mic", NULL, "Platform Clock"},
--	{"Speaker", NULL, "Platform Clock"},
--
- 	{"Headset Mic", NULL, "MICBIAS1"},
- 	{"IN2P", NULL, "Headset Mic"},
- 	{"Headphone", NULL, "HPOL"},
-@@ -300,19 +297,23 @@ static const struct snd_soc_dapm_route byt_rt5640_audio_map[] = {
- };
+diff --git a/sound/soc/intel/boards/sof_pcm512x.c b/sound/soc/intel/boards/sof_pcm512x.c
+index 2ec9c62366e2..6815204e58d5 100644
+--- a/sound/soc/intel/boards/sof_pcm512x.c
++++ b/sound/soc/intel/boards/sof_pcm512x.c
+@@ -26,11 +26,16 @@
  
- static const struct snd_soc_dapm_route byt_rt5640_intmic_dmic1_map[] = {
-+	{"Internal Mic", NULL, "Platform Clock"},
- 	{"DMIC1", NULL, "Internal Mic"},
- };
+ #define SOF_PCM512X_SSP_CODEC(quirk)		((quirk) & GENMASK(3, 0))
+ #define SOF_PCM512X_SSP_CODEC_MASK			(GENMASK(3, 0))
++#define SOF_PCM512X_ENABLE_SSP_CAPTURE		BIT(4)
++#define SOF_PCM512X_ENABLE_DMIC			BIT(5)
  
- static const struct snd_soc_dapm_route byt_rt5640_intmic_dmic2_map[] = {
-+	{"Internal Mic", NULL, "Platform Clock"},
- 	{"DMIC2", NULL, "Internal Mic"},
- };
+ #define IDISP_CODEC_MASK	0x4
  
- static const struct snd_soc_dapm_route byt_rt5640_intmic_in1_map[] = {
-+	{"Internal Mic", NULL, "Platform Clock"},
- 	{"Internal Mic", NULL, "MICBIAS1"},
- 	{"IN1P", NULL, "Internal Mic"},
- };
+ /* Default: SSP5 */
+-static unsigned long sof_pcm512x_quirk = SOF_PCM512X_SSP_CODEC(5);
++static unsigned long sof_pcm512x_quirk =
++	SOF_PCM512X_SSP_CODEC(5) |
++	SOF_PCM512X_ENABLE_SSP_CAPTURE |
++	SOF_PCM512X_ENABLE_DMIC;
  
- static const struct snd_soc_dapm_route byt_rt5640_intmic_in3_map[] = {
-+	{"Internal Mic", NULL, "Platform Clock"},
- 	{"Internal Mic", NULL, "MICBIAS1"},
- 	{"IN3P", NULL, "Internal Mic"},
- };
-@@ -354,6 +355,7 @@ static const struct snd_soc_dapm_route byt_rt5640_ssp0_aif2_map[] = {
- };
+ static bool is_legacy_cpu;
  
- static const struct snd_soc_dapm_route byt_rt5640_stereo_spk_map[] = {
-+	{"Speaker", NULL, "Platform Clock"},
- 	{"Speaker", NULL, "SPOLP"},
- 	{"Speaker", NULL, "SPOLN"},
- 	{"Speaker", NULL, "SPORP"},
-@@ -361,6 +363,7 @@ static const struct snd_soc_dapm_route byt_rt5640_stereo_spk_map[] = {
- };
+@@ -244,8 +249,9 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+ 	links[id].dpcm_playback = 1;
+ 	/*
+ 	 * capture only supported with specific versions of the Hifiberry DAC+
+-	 * links[id].dpcm_capture = 1;
+ 	 */
++	if (sof_pcm512x_quirk & SOF_PCM512X_ENABLE_SSP_CAPTURE)
++		links[id].dpcm_capture = 1;
+ 	links[id].no_pcm = 1;
+ 	links[id].cpus = &cpus[id];
+ 	links[id].num_cpus = 1;
+@@ -380,6 +386,9 @@ static int sof_audio_probe(struct platform_device *pdev)
  
- static const struct snd_soc_dapm_route byt_rt5640_mono_spk_map[] = {
-+	{"Speaker", NULL, "Platform Clock"},
- 	{"Speaker", NULL, "SPOLP"},
- 	{"Speaker", NULL, "SPOLN"},
- };
+ 	ssp_codec = sof_pcm512x_quirk & SOF_PCM512X_SSP_CODEC_MASK;
+ 
++	if (!(sof_pcm512x_quirk & SOF_PCM512X_ENABLE_DMIC))
++		dmic_be_num = 0;
++
+ 	/* compute number of dai links */
+ 	sof_audio_card_pcm512x.num_links = 1 + dmic_be_num + hdmi_num;
+ 
 -- 
 2.30.2
 
