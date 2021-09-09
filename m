@@ -2,107 +2,84 @@ Return-Path: <SRS0=Rqaf=N7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9627C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 14:01:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2030BC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 14:22:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2B7EF610FF
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 14:01:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2B7EF610FF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 19E38610E9
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 14:22:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 19E38610E9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BE18316AB;
-	Thu,  9 Sep 2021 16:00:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE18316AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id DBC8516AE;
+	Thu,  9 Sep 2021 16:21:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBC8516AE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631196058;
-	bh=boyHz0uurKLDf0rs+5Mtb8FIKhFhQqkLeE6SMQCQ7Mw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1631197329;
+	bh=heHynoj7FuQ/EekMQjdA/gQDFx7jHjFfbtl7ofgNyfk=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EPBITANaa+v4dTxJ1OqvJ1OAEpEyDNd8bQs+pQq0Kk8sqTfV/F2xLhfD7NlM5kH+D
-	 f7NIOX+N1cd6K7HT+PkuMfAKW8kHGzkiOBnCmHg36T3Y4yRdFZZX24pU8rtzPeRrfe
-	 X0SVwtmIs84IXHItDGw7L+KstqrgmmqeBBoPPvtI=
+	b=mn/78svMX9srqQQ52mYiy2bqH5Qy+2NkU9GpCHK1IwuueDMgozFEJmIocTLzXKHfq
+	 9PW0eD5k0loHhJ3I62nyApDnGVHRxEUHoAaN1q7+YMGNamg80KU3ufO4LSITVArqHt
+	 1d3STpU5/Rw2kJhTLTr2ePQLn6BnLh8YqbGNiUuY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0410AF802A9;
-	Thu,  9 Sep 2021 15:59:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E127F800FC;
+	Thu,  9 Sep 2021 16:21:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16E2EF80224; Thu,  9 Sep 2021 13:21:18 +0200 (CEST)
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
- [IPv6:2a00:1450:4864:20::42e])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id B2199F80224; Thu,  9 Sep 2021 16:21:17 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C28EFF800FC
- for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2021 13:21:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C28EFF800FC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 25ABDF800FC
+ for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2021 16:21:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25ABDF800FC
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="XnCBIstl"
-Received: by mail-wr1-x42e.google.com with SMTP id v10so2032926wrd.4
- for <alsa-devel@alsa-project.org>; Thu, 09 Sep 2021 04:21:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=boyHz0uurKLDf0rs+5Mtb8FIKhFhQqkLeE6SMQCQ7Mw=;
- b=XnCBIstlrTZ42iymgvoBMiytRwCAZOvCGFqcobFEjL6BQGw42EonvQXM5RgMH9LTJ7
- AYF9hLzT6IJOSg0HNMbCOr4NidieAAdYQyDATpCiOZ8aq9RLs4vJ0jIM7NdtcmqYLgmF
- CT7DnEwASSFwTDZ8t5c+SM9hH3SovzxrY8IhfdhBnlycryy+clKHd4XnIP1uEce5eYqL
- nNDBylJX6e+ass/kk2XEXn6HhL2W8vKn+zeqADxoRttdR32Mff3FzRko+qVD7wixQW2d
- l7ea+rb6xQ7n8p6VmUjo74NJqq/B4jTzOA+Qk5b7yicP/zHXg4bcLCO8GYmp1JBtiQtW
- JjTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=boyHz0uurKLDf0rs+5Mtb8FIKhFhQqkLeE6SMQCQ7Mw=;
- b=6HX8+8WnMpd2aeHgTxx3fPHc3nFopL8trwetxnvgEn41Ehqs/QRSR9QZE8cjAGd/e9
- 0N/R87Ph5lh3Gu2UkuShfpq5DLYmpElg+qthAGi88ixC0fRNnP5ZyaaMP4PX9nE1YRNA
- 3VV8906qX19vwy7wITtL35xyUVk/D1eIdlGxqFKHWpsTOtIJ6oSio4yJ/NWS6/8aet58
- qx1nLvSzYBQpQOY3KMSEF7kcrP2gh1k7QTZbQ6vIevDeM15iqkTZjTw/4rz3TQ572laZ
- ma+4cokADLngb/nAv/wNBS9+FHDYNn9a2a2t1nPtg20cDbLt3lNlx2PM7Zig640002Z6
- sWsg==
-X-Gm-Message-State: AOAM531O6H89Kz1y/4cNqsOCIZdVXvOgct7/nVquzXxzJ+crkw99Rz0u
- 2a8Zz799epfKCwX8hPPNyX7jrbmFPTx7X8pv7tc=
-X-Google-Smtp-Source: ABdhPJyWEp4sWX1UjZpYHyCBI2jXJGww22+s01hZJHFPIzOhSQ5OOQWblTaDxzYLJN7KUGOTHPIGmmBBAlGPubdqG9Y=
-X-Received: by 2002:adf:d20f:: with SMTP id j15mr2922294wrh.255.1631186463282; 
- Thu, 09 Sep 2021 04:21:03 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="eBTEsj9o"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 428C860F13;
+ Thu,  9 Sep 2021 14:21:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1631197269;
+ bh=heHynoj7FuQ/EekMQjdA/gQDFx7jHjFfbtl7ofgNyfk=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=eBTEsj9ocm33fRUCfeTHqJ7jhF1FKA1FvELYw096R4lHQxbyYe//yJgNUjSsPw3xG
+ wl1rDk9JmbEu2LmPE8I0d/+HfuZu5hHBPy+8WHeG5ot/9LSgV7gNfDDye4XD9+xUHb
+ GMSVjZb2EdgQm14Cz4QrFMToifK98NGmhUpFX4PvzH50e4wih02u3BnZqObb8u/0xK
+ 73KbmWXAMByGz+pz9Q1RrGvi1lGvgpuoK/WIwsAonPgZEtu2x0K1r9/loIyQsAhZuq
+ j8Jw+XQbU2GrYn5mTdFeoYkut4I0eo9/sE4j5+xeJKXb93Y50L9zmeuwMKQu0xiJB1
+ pdzX0PH+RbuVg==
+Date: Thu, 9 Sep 2021 15:20:33 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Sameer Pujar <spujar@nvidia.com>
+Subject: Re: [PATCH 06/13] ASoC: tegra: Add Tegra210 based MVC driver
+Message-ID: <20210909142033.GD5176@sirena.org.uk>
+References: <1630056839-6562-1-git-send-email-spujar@nvidia.com>
+ <1630056839-6562-7-git-send-email-spujar@nvidia.com>
+ <20210903181326.GP4932@sirena.org.uk>
+ <7b248062-9a62-524c-4c96-295685e211b1@nvidia.com>
+ <86fc49a3-4cac-78c7-2c0c-eaee8e49d387@nvidia.com>
 MIME-Version: 1.0
-References: <20210903145340.225511-1-daniel.baluta@oss.nxp.com>
- <20210903145340.225511-3-daniel.baluta@oss.nxp.com>
- <YTJTF5VMOyG2iZb0@robh.at.kernel.org>
- <CAEnQRZC-GN9iEPk6-A_oKPHcCYj8_WeQC0TT_NpK_QntkmAqiQ@mail.gmail.com>
- <CAL_JsqK_DGqYQxKBHDS7PyviF35V-OP7__KRmmTePn9ZHhiz_w@mail.gmail.com>
-In-Reply-To: <CAL_JsqK_DGqYQxKBHDS7PyviF35V-OP7__KRmmTePn9ZHhiz_w@mail.gmail.com>
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Date: Thu, 9 Sep 2021 14:20:51 +0300
-Message-ID: <CAEnQRZBmruc8GNfJTm99=0K7PyGrEiB1CxY3c2RSZhLFLR-nhQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] dt-bindings: dsp: fsl: Add DSP optional clocks
- documentation
-To: Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailman-Approved-At: Thu, 09 Sep 2021 15:59:24 +0200
-Cc: Daniel Baluta <daniel.baluta@nxp.com>,
- Devicetree List <devicetree@vger.kernel.org>,
- Linux-ALSA <alsa-devel@alsa-project.org>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Fabio Estevam <festevam@gmail.com>,
- Shengjiu Wang <shengjiu.wang@nxp.com>,
- Daniel Baluta <daniel.baluta@oss.nxp.com>,
- =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, dl-linux-imx <linux-imx@nxp.com>,
- Pengutronix Kernel Team <kernel@pengutronix.de>, Suman Anna <s-anna@ti.com>,
- Shawn Guo <shawnguo@kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="n2Pv11Ogg/Ox8ay5"
+Content-Disposition: inline
+In-Reply-To: <86fc49a3-4cac-78c7-2c0c-eaee8e49d387@nvidia.com>
+X-Cookie: I have become me without my consent.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ kuninori.morimoto.gx@renesas.com, catalin.marinas@arm.com, tiwai@suse.com,
+ lgirdwood@gmail.com, jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
+ robh+dt@kernel.org, thierry.reding@gmail.com,
+ linux-arm-kernel@lists.infradead.org, sharadg@nvidia.com, will@kernel.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -118,39 +95,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-> > The H/W block is controlled by the DSP firmware. So, we don't want
-> > to use the Linux kernel driver (thus the H/W block device tree node).
->
-> 'status' is how you disable a device to not be used by the OS.
->
-> The information about that device's resources are already in DT, we
-> don't need to duplicate that here. If you want a list of devices
-> assigned to the DSP here, that would be okay.
 
-Thanks! This is a very good idea. I was thinking at a totally different thing.
+--n2Pv11Ogg/Ox8ay5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-So having something like this:
+On Thu, Sep 09, 2021 at 06:33:33PM +0530, Sameer Pujar wrote:
+> On 9/7/2021 1:35 PM, Sameer Pujar wrote:
+> > On 9/3/2021 11:43 PM, Mark Brown wrote:
+> > > On Fri, Aug 27, 2021 at 03:03:52PM +0530, Sameer Pujar wrote:
 
-dsp {
+> > > > +	/* SW reset */
+> > > > +	regmap_write(mvc->regmap, TEGRA210_MVC_SOFT_RESET, 1);
+> > > What about all the cached values in the regmap, won't they get out of
+> > > sync?  Especially things like volume and mute, it looks like the mute
+> > > just gets written directly to the regmap and not otherwise saved.
 
+> > 1. I think original idea was to disable MVC (forcefully) before new
+> > configurations are applied and eventually it gets enabled via DAPM path.
+> > DAPM path handles disable also, but sometimes MVC may get stuck in
+> > enable state (due to a previous usage) when all the data in pipeline is
+> > not processed. My understanding is that reset is restricted to this
+> > alone. The volume/mute registers seem not to be affected by reset.
+> > However I will confirm with HW about the reset behavior and affected
+> > register map. Thanks for pointing this.
 
-hw-block-list = <&sai1>, <&sai2>;
+> I confirmed the behavior with HW folk here. The reset above clears all FSM,
+> flushes flow control of FIFO and resets the state registers. It also brings
+> module back to disabled state (without flushing the data in the pipe). There
+> is no impact on the register cache, as state registers are anyway volatile
+> and module disable is applicable only when it was hung in previous usage.
+> Otherwise DAPM would disable the module during session close.
 
-}
+This needs to be *much* clearer in the code, it looks like a bug at the
+minute.  It's very surprising that some of the registers wouldn't be
+affected by a reset.
 
-And then inside the DSP driver we can get access to sai1 clocks. Do
-you know of any standard property name?
+--n2Pv11Ogg/Ox8ay5
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
->
-> > The only thing that we cannot control from the DSP firmware are the clocks
-> > hence we handle them in the DSP node.
-> >
-> > We moved the DAI clocks under the DSP node as I think you suggested here:
-> >
-> > https://www.lkml.org/lkml/2020/3/12/969
->
-> No, that's certainly not what I was suggesting. The resources in the
-> DSP node should be the h/w resources of the DSP itself.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmE6GDAACgkQJNaLcl1U
+h9AErwf/dUIV5ky5V7rYG8vSOHqnakwsifmmMQZYE2LWJin2yMRUQ6KiIKeMw9FT
+wJLtCvmicBifDOZ38iM33eWFjmAT/HHZFDUA8hJXSxUJSProYTh/HDA9G8lA4I1j
+YyR+Rm54XbIbGozaWHJr0vCXb7WwfWemnPs9n5ce5TtTho/kfAg29M0qm5tCRyh3
+bfRNlPCrDbmRD/B2zweo1aMjXhKFMZ8gJl6t/N3b5qyEcdnsIrwWoYmblaPiC7e4
+2qHjPTsSvpuo0cA4qkOsa8MTrU5/TNPgo1G/5e7CBHmRP0Rg3/Ne5qRBThlEITUp
+PmpTI0J4XNF0rilJfwFWPD76dwl7tA==
+=cVFn
+-----END PGP SIGNATURE-----
 
-I see thanks!
+--n2Pv11Ogg/Ox8ay5--
