@@ -2,69 +2,69 @@ Return-Path: <SRS0=Rqaf=N7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 301C4C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 12:00:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64F32C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 12:01:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A8C436147F
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 12:00:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A8C436147F
+	by mail.kernel.org (Postfix) with ESMTPS id DC38E632CA
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Sep 2021 12:01:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DC38E632CA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B2B21734;
-	Thu,  9 Sep 2021 13:59:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B2B21734
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4CF85175E;
+	Thu,  9 Sep 2021 14:00:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CF85175E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631188848;
-	bh=PWLvZFVngULD41a0RLIMQjtTU8091EiKcOcAhOZ/YdA=;
+	s=default; t=1631188861;
+	bh=FRq+ITQ7cE3VDO3rLKqTjflgtQDvLrubnXxkMwr6glw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Xsg3P0wgvuub3WXlfIY3hufrlXhON3SEzrTEtkVQ1cqSKVs7ItvFIIoRJczlA3d5G
-	 PtGVkWFx9wLEltPfWB4p6SueRdaVhjCWiEyy5QlbJWUK1OjbRNzeVifieqTi/bzspz
-	 8YPl3R5yDLZmmp/7bB/tNPNMe4y0BzFrNGPSynrc=
+	b=beR0XXaN7QFhSkCZADqZKm6tYt7dBbR7DWN6BsyQs0JKWdAdf5G5GeoGx6eu/ViR3
+	 5FlLsTDYcNn/psRvSCNVtLiO9XYszSx7AbaIw9aqvi36xiavwsGLE5CCvvRhWWEF8n
+	 DWxlqJLOFjY/BSJQ0CB2EsmaJ/elfl2erWEEzwXk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 09AD2F80224;
-	Thu,  9 Sep 2021 13:58:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 976BEF804E2;
+	Thu,  9 Sep 2021 13:58:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 68302F804B2; Thu,  9 Sep 2021 13:58:17 +0200 (CEST)
+ id 1866EF804E7; Thu,  9 Sep 2021 13:58:47 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DA358F80224
- for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2021 13:58:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA358F80224
+ by alsa1.perex.cz (Postfix) with ESMTPS id BAE9DF804E6
+ for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2021 13:58:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BAE9DF804E6
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="GW5xD9GX"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 135DA6324D;
- Thu,  9 Sep 2021 11:58:07 +0000 (UTC)
+ header.b="D7Xt1EId"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0657863251;
+ Thu,  9 Sep 2021 11:58:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631188688;
- bh=PWLvZFVngULD41a0RLIMQjtTU8091EiKcOcAhOZ/YdA=;
+ s=k20201202; t=1631188717;
+ bh=FRq+ITQ7cE3VDO3rLKqTjflgtQDvLrubnXxkMwr6glw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=GW5xD9GXyEcLWsLAcEYSqFQNstPy4Bli9MAxGbvuGaDSUvexmz6fVbkV49YqWoQn8
- xo+BW9kw5NDtFRl1L8youq5XvtRiNZlKYR7C78FoLZzP6KfyrX3cAxQvsNBUlLjFIp
- LMTtg7U2zCjLjxV2KqQ2bFpDKgGSQMFN6t63jOEDlS5rAaetEIqDSmDMKXRi4Uy7nS
- x1RKTkYevTh08jQQZXj34Mt2KS1uFr8gqbTzGHRbvR/xSaLAppdSOwxiKYYp+vdjij
- A1i+q2V2wqDDATViTVNBDzKALBpEBu9elwhg3V4jr3suuOFAqmHRTym23Fl9L2Dm9v
- 6oYCuo+cVanng==
+ b=D7Xt1EIdZ5UQ6sBfjjqGC8hOz7Paz7LLsUdSkzCSdT76z/RuMmPJULcxHzynTItnY
+ 5RhFhpIpijiO35YXctDG+Epk71o615PUl5cO1RfmSUMOgPHelAny2dVoHR8iyYIvcj
+ fZPOx6E3ZEQ6sxb0OZGtMt+ND86mML1fKcpHeKQTmUW3G3PAPmJDD4/+FUKqmMBsan
+ yhO9Qisj3RUmyINIKgrXNA/XkncoCll9M36g8sWeCF41wvDEABotPCoGx8asPHxmLa
+ frTDbI883XBAxJqzMOGGVb/Vb4w/02jqhfalvG6/t5oGCy9ZuIp+aXpKwJJzMP6RIO
+ L40sxeQFROxuw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 34/74] ASoC: Intel: bytcr_rt5640: Move "Platform
- Clock" routes to the maps for the matching in-/output
-Date: Thu,  9 Sep 2021 07:56:46 -0400
-Message-Id: <20210909115726.149004-34-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 57/74] ASoC: intel: atom: Revert PCM buffer
+ address setup workaround again
+Date: Thu,  9 Sep 2021 07:57:09 -0400
+Message-Id: <20210909115726.149004-57-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210909115726.149004-1-sashal@kernel.org>
 References: <20210909115726.149004-1-sashal@kernel.org>
@@ -72,9 +72,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,79 +89,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit dccd1dfd0770bfd494b68d1135b4547b2c602c42 ]
+[ Upstream commit e28ac04a705e946eddc5e7d2fc712dea3f20fe9e ]
 
-Move the "Platform Clock" routes for the "Internal Mic" and "Speaker"
-routes to the intmic_*_map[] / *_spk_map[] arrays.
+We worked around the breakage of PCM buffer setup by the commit
+65ca89c2b12c ("ASoC: intel: atom: Fix breakage for PCM buffer address
+setup"), but this isn't necessary since the CONTINUOUS buffer type
+also sets runtime->dma_addr since commit f84ba106a018 ("ALSA:
+memalloc: Store snd_dma_buffer.addr for continuous pages, too").
+Let's revert the change again.
 
-This ensures that these "Platform Clock" routes do not get added when the
-BYT_RT5640_NO_INTERNAL_MIC_MAP / BYT_RT5640_NO_SPEAKERS quirks are used.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210802142501.991985-2-hdegoede@redhat.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20210822072127.9786-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 186c0ee059da..c4d19b88d17d 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -293,9 +293,6 @@ static const struct snd_soc_dapm_widget byt_rt5640_widgets[] = {
- static const struct snd_soc_dapm_route byt_rt5640_audio_map[] = {
- 	{"Headphone", NULL, "Platform Clock"},
- 	{"Headset Mic", NULL, "Platform Clock"},
--	{"Internal Mic", NULL, "Platform Clock"},
--	{"Speaker", NULL, "Platform Clock"},
--
- 	{"Headset Mic", NULL, "MICBIAS1"},
- 	{"IN2P", NULL, "Headset Mic"},
- 	{"Headphone", NULL, "HPOL"},
-@@ -303,19 +300,23 @@ static const struct snd_soc_dapm_route byt_rt5640_audio_map[] = {
- };
+diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+index 682ee41ec75c..501ac836777a 100644
+--- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+@@ -135,7 +135,7 @@ static void sst_fill_alloc_params(struct snd_pcm_substream *substream,
+ 	snd_pcm_uframes_t period_size;
+ 	ssize_t periodbytes;
+ 	ssize_t buffer_bytes = snd_pcm_lib_buffer_bytes(substream);
+-	u32 buffer_addr = virt_to_phys(substream->runtime->dma_area);
++	u32 buffer_addr = substream->runtime->dma_addr;
  
- static const struct snd_soc_dapm_route byt_rt5640_intmic_dmic1_map[] = {
-+	{"Internal Mic", NULL, "Platform Clock"},
- 	{"DMIC1", NULL, "Internal Mic"},
- };
- 
- static const struct snd_soc_dapm_route byt_rt5640_intmic_dmic2_map[] = {
-+	{"Internal Mic", NULL, "Platform Clock"},
- 	{"DMIC2", NULL, "Internal Mic"},
- };
- 
- static const struct snd_soc_dapm_route byt_rt5640_intmic_in1_map[] = {
-+	{"Internal Mic", NULL, "Platform Clock"},
- 	{"Internal Mic", NULL, "MICBIAS1"},
- 	{"IN1P", NULL, "Internal Mic"},
- };
- 
- static const struct snd_soc_dapm_route byt_rt5640_intmic_in3_map[] = {
-+	{"Internal Mic", NULL, "Platform Clock"},
- 	{"Internal Mic", NULL, "MICBIAS1"},
- 	{"IN3P", NULL, "Internal Mic"},
- };
-@@ -357,6 +358,7 @@ static const struct snd_soc_dapm_route byt_rt5640_ssp0_aif2_map[] = {
- };
- 
- static const struct snd_soc_dapm_route byt_rt5640_stereo_spk_map[] = {
-+	{"Speaker", NULL, "Platform Clock"},
- 	{"Speaker", NULL, "SPOLP"},
- 	{"Speaker", NULL, "SPOLN"},
- 	{"Speaker", NULL, "SPORP"},
-@@ -364,6 +366,7 @@ static const struct snd_soc_dapm_route byt_rt5640_stereo_spk_map[] = {
- };
- 
- static const struct snd_soc_dapm_route byt_rt5640_mono_spk_map[] = {
-+	{"Speaker", NULL, "Platform Clock"},
- 	{"Speaker", NULL, "SPOLP"},
- 	{"Speaker", NULL, "SPOLN"},
- };
+ 	channels = substream->runtime->channels;
+ 	period_size = substream->runtime->period_size;
 -- 
 2.30.2
 
