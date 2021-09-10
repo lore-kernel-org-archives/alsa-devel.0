@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC510C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 01:26:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25854C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 01:26:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 55227610C8
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 01:26:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 55227610C8
+	by mail.kernel.org (Postfix) with ESMTPS id 9F1D6610C8
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 01:26:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9F1D6610C8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E40EF16C7;
-	Fri, 10 Sep 2021 03:25:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E40EF16C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4204016BE;
+	Fri, 10 Sep 2021 03:25:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4204016BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631237169;
-	bh=VgIZGEqfswWwrR2YmdIkMvs7MNgDsw8neAKdWX3nRCQ=;
+	s=default; t=1631237189;
+	bh=TXeUaW+KZJhmuQpbcHjRbxMdX9mWqJ6gbKfXLFDGSCw=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Et1FW+oKMGDGoJ/B7DVT28YgrBAjQwCFv+YYg+RAsa2T3a8qzxksd8CoxGwnaD1P3
-	 eQTT+ZsJ60V7V6YCwU6u7xYiMnXHVhGA0a2ztfY4qDCE0Pi2HPLWK5U+LXd2lv5BDq
-	 I+CurtKjeWJJbieSJCz7vtOApF46OOxcRgDhp6BY=
+	b=X0xxY2BIGjPmN4l4amXZiwyjJgw5Cd9y2YDcDRBcuGRvgjXgGQJzyZCpJFnv4epIH
+	 B+e+QRH2Cswa3fglcJe1znGjBivOJssKZuWuUUoYhzSRwYbLVnSuM7LQ0A9+4J8QVw
+	 9weuMW/vXLL1QWWghKwrbwk6vF7gpdfQhRt0hvdU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 06809F802A9;
+	by alsa1.perex.cz (Postfix) with ESMTP id 8EF6CF804F1;
 	Fri, 10 Sep 2021 03:23:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4C552F80217; Fri, 10 Sep 2021 03:23:07 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id BF3B8F80217
- for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2021 03:22:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF3B8F80217
-Date: 10 Sep 2021 10:22:51 +0900
-X-IronPort-AV: E=Sophos;i="5.85,282,1624287600"; d="scan'208";a="93467568"
+ id 80834F802A9; Fri, 10 Sep 2021 03:23:07 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id AA9CFF80527
+ for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2021 03:23:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA9CFF80527
+Date: 10 Sep 2021 10:22:59 +0900
+X-IronPort-AV: E=Sophos;i="5.85,282,1624287600"; d="scan'208";a="93549160"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 10 Sep 2021 10:22:51 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 10 Sep 2021 10:22:59 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8230A4017D6F;
- Fri, 10 Sep 2021 10:22:51 +0900 (JST)
-Message-ID: <87ee9xusus.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 7917C4017D77;
+ Fri, 10 Sep 2021 10:22:59 +0900 (JST)
+Message-ID: <87bl51usuk.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v3 11/16] ASoC: rich-graph-card-sample.dtsi: add Sample DT for
- Normal (Single)
+Subject: [PATCH v3 13/16] ASoC: rich-graph-card-sample.dtsi: add DPCM sample
+ (Single)
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87tuitusy4.wl-kuninori.morimoto.gx@renesas.com>
@@ -77,116 +77,101 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Rich Graph Card settings is a little bit difficult for beginner,
-and Customizing it also difficult/confusable too.
-So, this patch adds sample for it.
+This patch adds DPCM link Single-CPU/Codec sample to
+rich-graph-card-sample.dtsi.
+This sample is assuming MIXer connection.
 
-You can easily use it by adding below line on your DT file,
-and select CONFIGs to your .config.
-
-	#include "../../../../../sound/soc/generic/rich-graph-card-sample.dtsi"
-
-	CONFIG_SND_RICH_GRAPH_CARD
-	CONFIG_SND_RICH_CUSTOM_CARD_SAMPLE
-	CONFIG_SND_TEST_COMPONENT
-
-This patch uses rich-graph-card base sample custom driver.
-You can directly use rich-graph-card instead of custom driver
-by modifing compatible.
-
-	- compatible = "rich-custom-card-sample";
-	+ compatible = "rich-graph-card";
-
-Sample custom driver will indicate customized print.
-
-It is using Test-Component driver for CPU/Codec.
-It can indicate more detail print of each behavior if user want to.
-In such case, you need to update compatible to "xxx-nv" or "xxx-vv".
-
-	- compatible = "test-cpu";
-	+ compatible = "test-cpu-nv";
+	FE		BE
+		****
+	CPU3 -- *  * -- Codec3
+	CPU4 -- *  *
+		****
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/generic/rich-graph-card-sample.dtsi | 69 +++++++++++++++++++
- 1 file changed, 69 insertions(+)
- create mode 100644 sound/soc/generic/rich-graph-card-sample.dtsi
+ sound/soc/generic/rich-graph-card-sample.dtsi | 36 +++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
 diff --git a/sound/soc/generic/rich-graph-card-sample.dtsi b/sound/soc/generic/rich-graph-card-sample.dtsi
-new file mode 100644
-index 000000000000..0b4fc71f581d
---- /dev/null
+index 7339d1999f99..2402827bbdaf 100644
+--- a/sound/soc/generic/rich-graph-card-sample.dtsi
 +++ b/sound/soc/generic/rich-graph-card-sample.dtsi
-@@ -0,0 +1,69 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * rich-graph-card-sample.dtsi
-+ *
-+ * Copyright (C) 2020 Renesas Electronics Corp.
-+ * Copyright (C) 2020 Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-+ *
-+ * This sample indicates how to use rich-graph-card and its
-+ * custom driver. "rich-custom-card-sample" is the custome driver
-+ * which is using rich-graph-card.
-+ *
-+ * You can easily use this sample by adding below line on your DT file,
-+ * and add new CONFIG to your .config.
-+ *
-+ *	#include "../../../../../sound/soc/generic/rich-graph-card-sample.dtsi"
-+ *
-+ *	CONFIG_SND_RICH_GRAPH_CARD
-+ *	CONFIG_SND_RICH_CUSTOM_CARD_SAMPLE
-+ *	CONFIG_SND_TEST_COMPONENT
-+ */
-+/ {
-+	/*
-+	 * @ : used at links
+@@ -30,6 +30,13 @@ / {
+ 	 *	cpu1 <--| |<-@--------->| |-> codec1
+ 	 *	cpu2 <--| |		| |-> codec2
+ 	 *		+-+		+-+
 +	 *
-+	 * [Normal]
-+	 *	cpu0 <-@-----------------> codec0
-+	 */
-+	rich-graph-card-sample {
-+		/*
-+		 * You can use rich-graph-card directly by using
-+		 *
-+		 * compatible = "rich-graph-card";
-+		 */
-+		compatible = "rich-custom-card-sample";
++	 * [DPCM]
++	 *	FE		BE
++	 *		  ****
++	 *	cpu3 <-@--*  *--@-> codec3
++	 *	cpu4 <-@--*  *
++	 *		  ****
+ 	 */
+ 	rich-graph-card-sample {
+ 		/*
+@@ -39,8 +46,16 @@ rich-graph-card-sample {
+ 		 */
+ 		compatible = "rich-custom-card-sample";
+ 
++			/* for [DPCM]		   */
++			/* BE			FE */
++		routing = "TC DAI3 Playback",	"DAI3 Playback",
++			  "TC DAI3 Playback",	"DAI4 Playback",
++			  "DAI3 Capture",	"TC DAI3 Capture",
++			  "DAI4 Capture",	"TC DAI3 Capture";
 +
-+		links = <&cpu0			/* normal: cpu side only */
-+		>;
-+	};
+ 		links = <&cpu0			/* normal: cpu side only */
+ 			 &mcpu0			/* multi:  cpu side only */
++			 &fe00 &fe01 &be0	/* dpcm:   both FE / BE  */
+ 		>;
+ 
+ 		multi {
+@@ -55,6 +70,18 @@ ports@1 {
+ 				port@2 { mcodec2_ep: endpoint { remote-endpoint = <&codec2_ep>; }; };
+ 			};
+ 		};
 +
-+	test_cpu {
-+		/*
-+		 * update compatible to indicate more detail behaviour
-+		 * if you want. see test-compatible for more detail.
-+		 *
-+		 *	- compatible = "test-cpu";
-+		 *	+ compatible = "test-cpu-nv";
-+		 */
-+		compatible = "test-cpu";
-+		ports {
-+			bitclock-master;
-+			frame-master;
-+			cpu0: port@0 { cpu0_ep: endpoint { remote-endpoint = <&codec0_ep>; }; };
++		dpcm {
++			/* FE */
++			ports@0 {
++			fe00:	port@0 { fe00_ep: endpoint { remote-endpoint = <&cpu3_ep>; }; };
++			fe01:	port@1 { fe01_ep: endpoint { remote-endpoint = <&cpu4_ep>; }; };
++			};
++			/* BE */
++			ports@1 {
++			be0:	port@0 { be00_ep: endpoint { remote-endpoint = <&codec3_ep>; }; };
++			};
 +		};
-+	};
+ 	};
+ 
+ 	test_cpu {
+@@ -72,6 +99,8 @@ ports {
+ 			cpu0: port@0 { cpu0_ep: endpoint { remote-endpoint = <&codec0_ep>; }; };
+ 			      port@1 { cpu1_ep: endpoint { remote-endpoint = <&mcpu1_ep>; }; };
+ 			      port@2 { cpu2_ep: endpoint { remote-endpoint = <&mcpu2_ep>; }; };
++			      port@3 { cpu3_ep: endpoint { remote-endpoint = <&fe00_ep>; }; };
++			      port@4 { cpu4_ep: endpoint { remote-endpoint = <&fe01_ep>; }; };
+ 		};
+ 	};
+ 
+@@ -85,9 +114,16 @@ test_codec {
+ 		 */
+ 		compatible = "test-codec";
+ 		ports {
++			/*
++			 * prefix can be added to *component*,
++			 * see rich-graph-card::routing
++			 */
++			prefix = "TC";
 +
-+	test_codec {
-+		/*
-+		 * update compatible to indicate more detail behaviour
-+		 * if you want. see test-compatible for more detail.
-+		 *
-+		 *	- compatible = "test-codec";
-+		 *	+ compatible = "test-codec-nv";
-+		 */
-+		compatible = "test-codec";
-+		ports {
-+			port@0  { codec0_ep:  endpoint { remote-endpoint = <&cpu0_ep>; }; };
-+		};
-+	};
-+};
+ 			port@0  { codec0_ep:  endpoint { remote-endpoint = <&cpu0_ep>; }; };
+ 			port@1  { codec1_ep:  endpoint { remote-endpoint = <&mcodec1_ep>; }; };
+ 			port@2  { codec2_ep:  endpoint { remote-endpoint = <&mcodec2_ep>; }; };
++			port@3  { codec3_ep:  endpoint { remote-endpoint = <&be00_ep>; }; };
+ 		};
+ 	};
+ };
 -- 
 2.25.1
 
