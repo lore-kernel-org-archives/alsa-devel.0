@@ -2,67 +2,83 @@ Return-Path: <SRS0=kM0A=OA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38488C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 09:42:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A7A2C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 09:49:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B7A376105A
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 09:42:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B7A376105A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	by mail.kernel.org (Postfix) with ESMTPS id A394061186
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 09:49:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A394061186
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linutronix.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 52B601687;
-	Fri, 10 Sep 2021 11:41:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52B601687
+	by alsa0.perex.cz (Postfix) with ESMTPS id C341F1687;
+	Fri, 10 Sep 2021 11:49:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C341F1687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631266962;
-	bh=WrfB2zltshoJJvb/6X9wNanMzI074T/nSZ+v//ivJ1o=;
+	s=default; t=1631267392;
+	bh=H7ci8eJbQzLGB1SHk3Ya/0ChyWTkyhne4JqjzBoP0kI=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=rnI5nLptBnA2wE4WUMGyrhHoZBcIfatSNTDsfNsN8mNH/Aac8FppoOjofBw0fdKzn
-	 msd6i/jbozapUsGfxnNfczDlle5AoASFkIpOIAZASJIocsAXb3AUt8GTDC6V5aI8Xx
-	 MoXtRg3odH4tv/vsqfKpIpXHRccXenAT3CoKXPzw=
+	b=GNsNkx7eT5B9abRBmzF4H0ir4WEIqPbWWPMKhdrJKi7shROnV76vMJ3kRHV9/zE+x
+	 +mbQq68jKKIhB1/VsqZZyeSgPDSMAJlellv/0hTZgzecW7x5BptTxjyL2BL1atn9kq
+	 qAgizy29xaZPcE/QJD0MYxDTJGXo4kPby9O8D+S4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CD68BF800FC;
-	Fri, 10 Sep 2021 11:41:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 48EAFF80143;
+	Fri, 10 Sep 2021 11:49:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E110BF802E7; Fri, 10 Sep 2021 11:41:50 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+ id 756DCF802E7; Fri, 10 Sep 2021 11:49:01 +0200 (CEST)
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B4716F800FC
- for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2021 11:41:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4716F800FC
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 1D5311A258D;
- Fri, 10 Sep 2021 11:41:39 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D95DA1A2591;
- Fri, 10 Sep 2021 11:41:38 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 649AB183AD26;
- Fri, 10 Sep 2021 17:41:37 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
- festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: fsl_xcvr: Fix channel swap issue with ARC
-Date: Fri, 10 Sep 2021 17:18:30 +0800
-Message-Id: <1631265510-27384-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 97ACEF80143
+ for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2021 11:48:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97ACEF80143
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de
+ header.b="IWXUQcgg"; 
+ dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de
+ header.b="7V3YOok7"
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+ s=2020; t=1631267333;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Rz3tGDgPBAXnGujrHD1zuoc/hzbCNasdjn/vbgjqVZc=;
+ b=IWXUQcggOUvVlNYQ0ipUwpR1IMWcLIw4NGD7l4EaZ0tn81gv+bURr4N24isCgrmgb9esQu
+ I5NgeP7u3R1Ds9R5XEjF0c0jA9IYATnKHVOBNsvsqHopgiDXNmPlB91p8Fp70VDRLKm339
+ r8RK0SkrFUO5pTRrTC3WPAMyqAoPdOKpUiVrFhXXz5K4pzpJIFIPPqx5qWC/A3UO5EuMjD
+ m0mfgqv5g+MtonTiWI8GoIXHQZ2DSKTlOqRXTcvaGTaNuJRwIvwpeCO2oAe13/ycF2IfW/
+ vpKApnmcNtTGdqoH8D6RiaIRnw5RGNfG4tyEVnz+e0WXS4zenc/0BBslRSabCw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+ s=2020e; t=1631267333;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Rz3tGDgPBAXnGujrHD1zuoc/hzbCNasdjn/vbgjqVZc=;
+ b=7V3YOok7yjsuyehPZ0LQi0YSZQnk8m5JfR/bGiu7fRG7aaCgmLkjnV+AQABPdnQCm3O7by
+ asB7vC1BL143otBw==
+To: alsa-devel@alsa-project.org,
+	linux-mediatek@lists.infradead.org
+Subject: [PATCH] ASoC: mediatek: mt8195: Remove unsued irqs_lock.
+Date: Fri, 10 Sep 2021 11:48:47 +0200
+Message-Id: <20210910094847.3430413-1-bigeasy@linutronix.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: Liam Girdwood <lgirdwood@gmail.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Thomas Gleixner <tglx@linutronix.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,63 +94,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-With pause and resume test for ARC, there is occasionally
-channel swap issue. The reason is that currently driver set
-the DPATH out of reset first, then start the DMA, the first
-data got from FIFO may not be the Left channel.
+irqs_lock is not used, never was.
 
-Moving DPATH out of reset operation after the dma enablement
-to fix this issue.
+Remove irqs_lock.
 
-Fixes: 28564486866f ("ASoC: fsl_xcvr: Add XCVR ASoC CPU DAI driver")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Fixes: 283b612429a27 ("ASoC: mediatek: implement mediatek common structure")
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- sound/soc/fsl/fsl_xcvr.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ sound/soc/mediatek/common/mtk-afe-fe-dai.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
-index 31c5ee641fe7..6e67033b6cde 100644
---- a/sound/soc/fsl/fsl_xcvr.c
-+++ b/sound/soc/fsl/fsl_xcvr.c
-@@ -487,8 +487,9 @@ static int fsl_xcvr_prepare(struct snd_pcm_substream *substream,
- 		return ret;
- 	}
- 
--	/* clear DPATH RESET */
-+	/* set DPATH RESET */
- 	m_ctl |= FSL_XCVR_EXT_CTRL_DPTH_RESET(tx);
-+	v_ctl |= FSL_XCVR_EXT_CTRL_DPTH_RESET(tx);
- 	ret = regmap_update_bits(xcvr->regmap, FSL_XCVR_EXT_CTRL, m_ctl, v_ctl);
- 	if (ret < 0) {
- 		dev_err(dai->dev, "Error while setting EXT_CTRL: %d\n", ret);
-@@ -590,10 +591,6 @@ static void fsl_xcvr_shutdown(struct snd_pcm_substream *substream,
- 		val  |= FSL_XCVR_EXT_CTRL_CMDC_RESET(tx);
- 	}
- 
--	/* set DPATH RESET */
--	mask |= FSL_XCVR_EXT_CTRL_DPTH_RESET(tx);
--	val  |= FSL_XCVR_EXT_CTRL_DPTH_RESET(tx);
--
- 	ret = regmap_update_bits(xcvr->regmap, FSL_XCVR_EXT_CTRL, mask, val);
- 	if (ret < 0) {
- 		dev_err(dai->dev, "Err setting DPATH RESET: %d\n", ret);
-@@ -643,6 +640,16 @@ static int fsl_xcvr_trigger(struct snd_pcm_substream *substream, int cmd,
- 			dev_err(dai->dev, "Failed to enable DMA: %d\n", ret);
- 			return ret;
- 		}
-+
-+		/* clear DPATH RESET */
-+		ret = regmap_update_bits(xcvr->regmap, FSL_XCVR_EXT_CTRL,
-+					 FSL_XCVR_EXT_CTRL_DPTH_RESET(tx),
-+					 0);
-+		if (ret < 0) {
-+			dev_err(dai->dev, "Failed to clear DPATH RESET: %d\n", ret);
-+			return ret;
-+		}
-+
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
--- 
-2.17.1
+diff --git a/sound/soc/mediatek/common/mtk-afe-fe-dai.c b/sound/soc/mediate=
+k/common/mtk-afe-fe-dai.c
+index baaa5881b1d48..0c2482b7ce584 100644
+--- a/sound/soc/mediatek/common/mtk-afe-fe-dai.c
++++ b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
+@@ -288,7 +288,6 @@ const struct snd_soc_dai_ops mtk_afe_fe_ops =3D {
+ };
+ EXPORT_SYMBOL_GPL(mtk_afe_fe_ops);
+=20
+-static DEFINE_MUTEX(irqs_lock);
+ int mtk_dynamic_irq_acquire(struct mtk_base_afe *afe)
+ {
+ 	int i;
+--=20
+2.33.0
 
