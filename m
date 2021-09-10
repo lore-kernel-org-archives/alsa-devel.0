@@ -6,73 +6,72 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0D94C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 16:11:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95E1EC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 16:11:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3289661221
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 16:11:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3289661221
+	by mail.kernel.org (Postfix) with ESMTPS id 1857D61207
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 16:11:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1857D61207
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 40E6B16A6;
-	Fri, 10 Sep 2021 18:10:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40E6B16A6
+	by alsa0.perex.cz (Postfix) with ESMTPS id B287216B5;
+	Fri, 10 Sep 2021 18:10:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B287216B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631290266;
-	bh=q4lntEh1mQD2RO96jVSsyccr0dssPljMXQSktMXKMNc=;
+	s=default; t=1631290281;
+	bh=6iwvSZ8jp5kA04e1JPK/6mq3OGC3NvF1BQ05VjMVO44=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WEoPStZq3yOxMPrT/c6ApBbcW/7QiDTIW3wo0Lebwg8JNq3ZGS/jSYUG2U7QMYZr7
-	 OSW8YCY++sBYxNd1ccCel25mN9tSV1xxzoLFbs8aLYJ9UbfzwbWmcFTKJqOiY/yKjt
-	 culU9lHxzgbrRh5iuSx6k5wc8Sxo2Dqqcasn7BEM=
+	b=ctYCco/1zi6+wfkGw5sGLTKF94A48RWAWO77PVGjLlWyfYQUqZ02PmIN0ni39Rok1
+	 bugBTow49P3iA1PjUlToc5J8iRwdnM9oNgM9PzD0H3/Zu18Wf9FJB3o3yXjn5J7ggZ
+	 ptZhcXqZDgnE9ob+Mrt00TrrG9hW7EbRPHBwYgTU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0690BF804AF;
-	Fri, 10 Sep 2021 18:09:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8D7AFF804E5;
+	Fri, 10 Sep 2021 18:09:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BD3C6F804AF; Fri, 10 Sep 2021 18:09:34 +0200 (CEST)
+ id F0A1AF804C1; Fri, 10 Sep 2021 18:09:36 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 58365F8026C
- for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2021 18:09:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58365F8026C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 87E20F800FC
+ for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2021 18:09:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87E20F800FC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="QOcnMIt0"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 122D0611F2;
- Fri, 10 Sep 2021 16:09:24 +0000 (UTC)
+ header.b="pcC5QJb8"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A12E6120E;
+ Fri, 10 Sep 2021 16:09:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631290165;
- bh=q4lntEh1mQD2RO96jVSsyccr0dssPljMXQSktMXKMNc=;
+ s=k20201202; t=1631290168;
+ bh=6iwvSZ8jp5kA04e1JPK/6mq3OGC3NvF1BQ05VjMVO44=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=QOcnMIt0OTAiSqdHD8c/NnC5iy1GiRQcQg1NOBMvW2Pc9SDuK7yJrpcr0aCvXsDjp
- 3pwr+3JbIa6stkeRAg7V0mbKqunNJIf0fMD8DdH9DLe2EaGtLBjYVIhFlxZTgja4+V
- XhWGGudG1L1ooV0mnhQivMluq+RVvS7e/5A7dfRETkYlizpaJgom0dYxhoqfI3YuBZ
- sf7tkYJZH+ft/WoUyKj2lIx/va1nYhwRPA5BGKVIa7veBJ1RE/bzqTprd9JNN/gXPj
- mFLPpp1jHfAqFCQkGkkh6RsPFBrH9EeUPPGoe+KL9TW2Pwb27Bd1ZYYgCAKEHHlIvx
- MQlezumKf13HQ==
+ b=pcC5QJb8RtxJmQaU4B5d5Mdkn6sEJg/KPx0G91ox3184J8N9EzSFWxk1eXPcICBee
+ 5lf5KiqJ4ZGpyLfB9y4kmS1RDe1WrgMXHcvTgNxxhK/efnCZlLHkJ3hIKBmQWcJEIq
+ rhW/CKt+6BNFS5Ag+AT3v2njZlt8s2Qq+w8uswkVawHiDsBYHyR7KI9yVvbR+HYWn0
+ 36TfFaWGnw9VSy83g2InmoTMWH+YX6o0/Y224ROLV844IKkTqdGfXcygRq7SrJQp+4
+ 9mTUQwhdbb/hUZkwEXUyiBcH6+eB+64m72ZG2vma4t0LBvc+/vTohNZPz+hMQ5f/Hu
+ x8AqofQYhapoA==
 From: Mark Brown <broonie@kernel.org>
 To: matthias.bgg@gmail.com, Trevor Wu <trevor.wu@mediatek.com>, tiwai@suse.com
-Subject: Re: [PATCH] ASoC: mediatek: common: handle NULL case in
+Subject: Re: [PATCH v2] ASoC: mediatek: common: handle NULL case in
  suspend/resume function
-Date: Fri, 10 Sep 2021 17:08:44 +0100
-Message-Id: <163128974013.2897.10752321808133485674.b4-ty@kernel.org>
+Date: Fri, 10 Sep 2021 17:08:45 +0100
+Message-Id: <163128974014.2897.15699318985041527361.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210902082111.9287-1-trevor.wu@mediatek.com>
-References: <20210902082111.9287-1-trevor.wu@mediatek.com>
+In-Reply-To: <20210910092613.30188-1-trevor.wu@mediatek.com>
+References: <20210910092613.30188-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, bicycle.tsai@mediatek.com,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dan.carpenter@oracle.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, dan.carpenter@oracle.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,7 +87,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 2 Sep 2021 16:21:11 +0800, Trevor Wu wrote:
+On Fri, 10 Sep 2021 17:26:13 +0800, Trevor Wu wrote:
 > When memory allocation for afe->reg_back_up fails, reg_back_up can't
 > be used.
 > Keep the suspend/resume flow but skip register backup when
