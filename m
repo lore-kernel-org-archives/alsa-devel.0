@@ -2,56 +2,57 @@ Return-Path: <SRS0=kM0A=OA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7A30C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 01:25:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC510C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 01:26:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 543A7610F8
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 01:25:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 543A7610F8
+	by mail.kernel.org (Postfix) with ESMTPS id 55227610C8
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 01:26:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 55227610C8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EDF0F16C6;
-	Fri, 10 Sep 2021 03:25:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDF0F16C6
+	by alsa0.perex.cz (Postfix) with ESMTPS id E40EF16C7;
+	Fri, 10 Sep 2021 03:25:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E40EF16C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631237151;
-	bh=G2veo45oDqfNF47lm21T/DC17CkfsDWgmLc43EZt+2g=;
+	s=default; t=1631237169;
+	bh=VgIZGEqfswWwrR2YmdIkMvs7MNgDsw8neAKdWX3nRCQ=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GzP7s98roFsTOmXJOWWAyWzu8AYhE9wyPJfyN31JLO+UuuLNsoz8J5hoYzCH2wrNA
-	 QmLVRXtyOVLSyicCwvKxf/iYntEZ0PxNnHmZcb/kJtq+HP6efMh2GH/Vv64u+jc6sg
-	 8dgu1AORp/4AiYQJUQTpa8H7CA4Er9y5gC4CsdWE=
+	b=Et1FW+oKMGDGoJ/B7DVT28YgrBAjQwCFv+YYg+RAsa2T3a8qzxksd8CoxGwnaD1P3
+	 eQTT+ZsJ60V7V6YCwU6u7xYiMnXHVhGA0a2ztfY4qDCE0Pi2HPLWK5U+LXd2lv5BDq
+	 I+CurtKjeWJJbieSJCz7vtOApF46OOxcRgDhp6BY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7016BF8051E;
-	Fri, 10 Sep 2021 03:22:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06809F802A9;
+	Fri, 10 Sep 2021 03:23:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 021CBF80525; Fri, 10 Sep 2021 03:22:47 +0200 (CEST)
+ id 4C552F80217; Fri, 10 Sep 2021 03:23:07 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 9C24CF8051E
- for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2021 03:22:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C24CF8051E
-Date: 10 Sep 2021 10:22:43 +0900
-X-IronPort-AV: E=Sophos;i="5.85,282,1624287600"; d="scan'208";a="93467549"
+ by alsa1.perex.cz (Postfix) with ESMTP id BF3B8F80217
+ for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2021 03:22:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF3B8F80217
+Date: 10 Sep 2021 10:22:51 +0900
+X-IronPort-AV: E=Sophos;i="5.85,282,1624287600"; d="scan'208";a="93467568"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 10 Sep 2021 10:22:43 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 10 Sep 2021 10:22:51 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id E68BA4017D79;
- Fri, 10 Sep 2021 10:22:43 +0900 (JST)
-Message-ID: <87fsudusv0.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8230A4017D6F;
+ Fri, 10 Sep 2021 10:22:51 +0900 (JST)
+Message-ID: <87ee9xusus.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v3 10/16] ASoC: add Rich Graph Card Custom Sample
+Subject: [PATCH v3 11/16] ASoC: rich-graph-card-sample.dtsi: add Sample DT for
+ Normal (Single)
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87tuitusy4.wl-kuninori.morimoto.gx@renesas.com>
@@ -74,239 +75,118 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-rich-graph-card has customizing support.
-This means user can re-use rich-graph-card DT parsing, and possible
-to expand to own special handling.
+Rich Graph Card settings is a little bit difficult for beginner,
+and Customizing it also difficult/confusable too.
+So, this patch adds sample for it.
 
-This patch adds Rich Graph Card's Customize Sample Driver.
-It can re-use rich-graph-card parsing by calling
-rich_graph_parse_of(...), and user can expand each functions by
-using hooks.
+You can easily use it by adding below line on your DT file,
+and select CONFIGs to your .config.
+
+	#include "../../../../../sound/soc/generic/rich-graph-card-sample.dtsi"
+
+	CONFIG_SND_RICH_GRAPH_CARD
+	CONFIG_SND_RICH_CUSTOM_CARD_SAMPLE
+	CONFIG_SND_TEST_COMPONENT
+
+This patch uses rich-graph-card base sample custom driver.
+You can directly use rich-graph-card instead of custom driver
+by modifing compatible.
+
+	- compatible = "rich-custom-card-sample";
+	+ compatible = "rich-graph-card";
+
+Sample custom driver will indicate customized print.
+
+It is using Test-Component driver for CPU/Codec.
+It can indicate more detail print of each behavior if user want to.
+In such case, you need to update compatible to "xxx-nv" or "xxx-vv".
+
+	- compatible = "test-cpu";
+	+ compatible = "test-cpu-nv";
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/generic/Kconfig                   |   6 +
- sound/soc/generic/Makefile                  |   2 +
- sound/soc/generic/rich-custom-card-sample.c | 174 ++++++++++++++++++++
- 3 files changed, 182 insertions(+)
- create mode 100644 sound/soc/generic/rich-custom-card-sample.c
+ sound/soc/generic/rich-graph-card-sample.dtsi | 69 +++++++++++++++++++
+ 1 file changed, 69 insertions(+)
+ create mode 100644 sound/soc/generic/rich-graph-card-sample.dtsi
 
-diff --git a/sound/soc/generic/Kconfig b/sound/soc/generic/Kconfig
-index 8af35415d162..4caf6c007752 100644
---- a/sound/soc/generic/Kconfig
-+++ b/sound/soc/generic/Kconfig
-@@ -26,6 +26,12 @@ config SND_RICH_GRAPH_CARD
- 	  This option enables generic rich graph card support
- 	  with OF-graph DT bindings.
- 
-+config SND_RICH_CUSTOM_CARD_SAMPLE
-+	tristate "ASoC Audio Rich Graph Card base custom card sample support"
-+	depends on SND_RICH_GRAPH_CARD
-+	help
-+	  This option enables Audio Rich Graph Card base custom card support
-+
- config SND_TEST_COMPONENT
- 	tristate "ASoC Test component sound support"
- 	depends on OF
-diff --git a/sound/soc/generic/Makefile b/sound/soc/generic/Makefile
-index 60a2e90a4a6b..030ab7e83483 100644
---- a/sound/soc/generic/Makefile
-+++ b/sound/soc/generic/Makefile
-@@ -4,9 +4,11 @@ snd-soc-simple-card-objs	:= simple-card.o
- snd-soc-audio-graph-card-objs	:= audio-graph-card.o
- snd-soc-rich-graph-card-objs	:= rich-graph-card.o
- snd-soc-test-component-objs	:= test-component.o
-+snd-soc-rich-custom-card-sample-objs := rich-custom-card-sample.o
- 
- obj-$(CONFIG_SND_SIMPLE_CARD_UTILS)	+= snd-soc-simple-card-utils.o
- obj-$(CONFIG_SND_SIMPLE_CARD)		+= snd-soc-simple-card.o
- obj-$(CONFIG_SND_AUDIO_GRAPH_CARD)	+= snd-soc-audio-graph-card.o
- obj-$(CONFIG_SND_RICH_GRAPH_CARD)	+= snd-soc-rich-graph-card.o
- obj-$(CONFIG_SND_TEST_COMPONENT)	+= snd-soc-test-component.o
-+obj-$(CONFIG_SND_RICH_CUSTOM_CARD_SAMPLE) += snd-soc-rich-custom-card-sample.o
-diff --git a/sound/soc/generic/rich-custom-card-sample.c b/sound/soc/generic/rich-custom-card-sample.c
+diff --git a/sound/soc/generic/rich-graph-card-sample.dtsi b/sound/soc/generic/rich-graph-card-sample.dtsi
 new file mode 100644
-index 000000000000..6b9bc0393f60
+index 000000000000..0b4fc71f581d
 --- /dev/null
-+++ b/sound/soc/generic/rich-custom-card-sample.c
-@@ -0,0 +1,174 @@
++++ b/sound/soc/generic/rich-graph-card-sample.dtsi
+@@ -0,0 +1,69 @@
 +// SPDX-License-Identifier: GPL-2.0
-+//
-+// rich-custom-card-sample.c
-+//
-+// Copyright (C) 2020 Renesas Electronics Corp.
-+// Copyright (C) 2020 Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-+//
-+#include <linux/module.h>
-+#include <linux/of_gpio.h>
-+#include <linux/platform_device.h>
-+#include <sound/graph_card.h>
-+
 +/*
-+ * Custom driver can have own priv
-+ * which includes asoc_simple_priv.
++ * rich-graph-card-sample.dtsi
++ *
++ * Copyright (C) 2020 Renesas Electronics Corp.
++ * Copyright (C) 2020 Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
++ *
++ * This sample indicates how to use rich-graph-card and its
++ * custom driver. "rich-custom-card-sample" is the custome driver
++ * which is using rich-graph-card.
++ *
++ * You can easily use this sample by adding below line on your DT file,
++ * and add new CONFIG to your .config.
++ *
++ *	#include "../../../../../sound/soc/generic/rich-graph-card-sample.dtsi"
++ *
++ *	CONFIG_SND_RICH_GRAPH_CARD
++ *	CONFIG_SND_RICH_CUSTOM_CARD_SAMPLE
++ *	CONFIG_SND_TEST_COMPONENT
 + */
-+struct custom_priv {
-+	struct asoc_simple_priv simple_priv;
++/ {
++	/*
++	 * @ : used at links
++	 *
++	 * [Normal]
++	 *	cpu0 <-@-----------------> codec0
++	 */
++	rich-graph-card-sample {
++		/*
++		 * You can use rich-graph-card directly by using
++		 *
++		 * compatible = "rich-graph-card";
++		 */
++		compatible = "rich-custom-card-sample";
 +
-+	/* custom driver's own params */
-+	int custom_params;
++		links = <&cpu0			/* normal: cpu side only */
++		>;
++	};
++
++	test_cpu {
++		/*
++		 * update compatible to indicate more detail behaviour
++		 * if you want. see test-compatible for more detail.
++		 *
++		 *	- compatible = "test-cpu";
++		 *	+ compatible = "test-cpu-nv";
++		 */
++		compatible = "test-cpu";
++		ports {
++			bitclock-master;
++			frame-master;
++			cpu0: port@0 { cpu0_ep: endpoint { remote-endpoint = <&codec0_ep>; }; };
++		};
++	};
++
++	test_codec {
++		/*
++		 * update compatible to indicate more detail behaviour
++		 * if you want. see test-compatible for more detail.
++		 *
++		 *	- compatible = "test-codec";
++		 *	+ compatible = "test-codec-nv";
++		 */
++		compatible = "test-codec";
++		ports {
++			port@0  { codec0_ep:  endpoint { remote-endpoint = <&cpu0_ep>; }; };
++		};
++	};
 +};
-+
-+/* You can get custom_priv from simple_priv */
-+#define simple_to_custom(simple) container_of((simple), struct custom_priv, simple_priv)
-+
-+static int custom_card_probe(struct snd_soc_card *card)
-+{
-+	struct asoc_simple_priv *simple_priv = snd_soc_card_get_drvdata(card);
-+	struct custom_priv *custom_priv = simple_to_custom(simple_priv);
-+	struct device *dev = simple_priv_to_dev(simple_priv);
-+
-+	dev_info(dev, "custom probe\n");
-+
-+	custom_priv->custom_params = 1;
-+
-+	/* you can use generic probe function */
-+	return asoc_graph_card_probe(card);
-+}
-+
-+static int custom_hook_pre(struct asoc_simple_priv *priv)
-+{
-+	struct device *dev = simple_priv_to_dev(priv);
-+
-+	/* You can custom before parsing */
-+	dev_info(dev, "hook : %s\n", __func__);
-+
-+	return 0;
-+}
-+
-+static int custom_hook_post(struct asoc_simple_priv *priv)
-+{
-+	struct device *dev = simple_priv_to_dev(priv);
-+	struct snd_soc_card *card;
-+
-+	/* You can custom after parsing */
-+	dev_info(dev, "hook : %s\n", __func__);
-+
-+	card = simple_priv_to_card(priv);
-+	card->probe = custom_card_probe; /* overwrite .probe */
-+
-+	return 0;
-+}
-+
-+static int custom_normal(struct asoc_simple_priv *priv,
-+			 struct device_node *lnk,
-+			 struct link_info *li)
-+{
-+	struct device *dev = simple_priv_to_dev(priv);
-+
-+	/* You can custom for DPCM parsing */
-+	dev_info(dev, "hook : %s\n", __func__);
-+
-+	return rich_graph_link_dpcm(priv, lnk, li);
-+}
-+
-+
-+static int custom_dpcm(struct asoc_simple_priv *priv,
-+		       struct device_node *lnk,
-+		       struct link_info *li)
-+{
-+	struct device *dev = simple_priv_to_dev(priv);
-+
-+	/* You can custom for DPCM parsing */
-+	dev_info(dev, "hook : %s\n", __func__);
-+
-+	return rich_graph_link_dpcm(priv, lnk, li);
-+}
-+
-+static int custom_c2c(struct asoc_simple_priv *priv,
-+		      struct device_node *lnk,
-+		      struct link_info *li)
-+{
-+	struct device *dev = simple_priv_to_dev(priv);
-+
-+	/* You can custom for Codec2Codec parsing */
-+	dev_info(dev, "hook : %s\n", __func__);
-+
-+	return rich_graph_link_c2c(priv, lnk, li);
-+}
-+
-+/*
-+ * rich-graph-card has many hooks for your customizing.
-+ */
-+static struct graph_custom_hooks custom_hooks = {
-+	.hook_pre	= custom_hook_pre,
-+	.hook_post	= custom_hook_post,
-+	.custom_normal	= custom_normal,
-+	.custom_dpcm	= custom_dpcm,
-+	.custom_c2c	= custom_c2c,
-+};
-+
-+static int custom_startup(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-+	struct asoc_simple_priv *priv = snd_soc_card_get_drvdata(rtd->card);
-+	struct device *dev = simple_priv_to_dev(priv);
-+
-+	dev_info(dev, "custom startup\n");
-+
-+	return asoc_simple_startup(substream);
-+}
-+
-+/* You can use custom ops */
-+static const struct snd_soc_ops custom_ops = {
-+	.startup	= custom_startup,
-+	.shutdown	= asoc_simple_shutdown,
-+	.hw_params	= asoc_simple_hw_params,
-+};
-+
-+static int custom_probe(struct platform_device *pdev)
-+{
-+	struct custom_priv *custom_priv;
-+	struct asoc_simple_priv *simple_priv;
-+	struct device *dev = &pdev->dev;
-+	int ret;
-+
-+	custom_priv = devm_kzalloc(dev, sizeof(*custom_priv), GFP_KERNEL);
-+	if (!custom_priv)
-+		return -ENOMEM;
-+
-+	simple_priv		= &custom_priv->simple_priv;
-+	simple_priv->ops	= &custom_ops; /* customize dai_link ops */
-+
-+	/* use rich-graph-card parsing with own custom hooks */
-+	ret = rich_graph_parse_of(simple_priv, dev, &custom_hooks);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* customize more if needed */
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id custom_of_match[] = {
-+	{ .compatible = "rich-custom-card-sample", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, custom_of_match);
-+
-+static struct platform_driver custom_card = {
-+	.driver = {
-+		.name = "rich-custom-card-sample",
-+		.of_match_table = custom_of_match,
-+	},
-+	.probe	= custom_probe,
-+	.remove	= asoc_simple_remove,
-+};
-+module_platform_driver(custom_card);
-+
-+MODULE_ALIAS("platform:asoc-rich-custom-card-sample");
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("ASoC Rich Custom Card Sample");
-+MODULE_AUTHOR("Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>");
 -- 
 2.25.1
 
