@@ -2,57 +2,62 @@ Return-Path: <SRS0=kM0A=OA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35784C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 01:22:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6313C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 01:22:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0DEB060F02
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 01:21:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0DEB060F02
+	by mail.kernel.org (Postfix) with ESMTPS id BBB7960F02
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 01:22:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BBB7960F02
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CA523825;
-	Fri, 10 Sep 2021 03:21:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA523825
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5780016AA;
+	Fri, 10 Sep 2021 03:21:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5780016AA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631236917;
-	bh=PgoUtDUVImAh/Pxgj66N6xM59fvGjEcSt0uOljDkLjM=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=IDtnP2ih8Ex2D2vt9bTFKR3qS7pdghR/y90vac3R1GnM1DOk96xjqrxJ+/Mqz7umR
-	 7KN8cd+F8paLDeNjM2xSIh4MMKXEazG2p5QKlClJB93LqF4hHxrLS1GjDeHQYshOxH
-	 8mrBk1mgggbqzG4ISC7qMn1Zx/lEJU/uKS2PeuWA=
+	s=default; t=1631236961;
+	bh=KZrrjKjpWMTh5+lF+xQhrxACK7Gbd/ckYdN8S79Ofwg=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=VXpQLJRLNwlh/RTNhyxkeze9SvVJsGiJ1iGF0R+7f5ZSP/dXuyV+DNA/MI+QU6lvH
+	 jXpCHOml2DpEUVMITckmKceFTau5I4xACV19Qjq1u3E+q0lYWYQDRm02pnWdtlmrwM
+	 lnc6/jWuyxvisRARp6dzObEkQoJyDRXNiZbbMFkk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 57A43F80217;
-	Fri, 10 Sep 2021 03:21:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21C4FF80253;
+	Fri, 10 Sep 2021 03:21:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DE597F80224; Fri, 10 Sep 2021 03:21:05 +0200 (CEST)
+ id C5FB2F802DF; Fri, 10 Sep 2021 03:21:46 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id E7E8CF80166
- for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2021 03:20:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7E8CF80166
-Date: 10 Sep 2021 10:20:51 +0900
-X-IronPort-AV: E=Sophos;i="5.85,282,1624287600"; d="scan'208";a="93467342"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 10 Sep 2021 10:20:51 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 867CEF800C7
+ for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2021 03:21:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 867CEF800C7
+Date: 10 Sep 2021 10:21:37 +0900
+X-IronPort-AV: E=Sophos;i="5.85,282,1624287600"; d="scan'208";a="93467435"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 10 Sep 2021 10:21:37 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id AD58140178DF;
- Fri, 10 Sep 2021 10:20:51 +0900 (JST)
-Message-ID: <87tuitusy4.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 38A434158A68;
+ Fri, 10 Sep 2021 10:21:37 +0900 (JST)
+Message-ID: <87sfyduswu.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v3 00/16] ASoC: Add Rich Graph Card support
+Subject: [PATCH v3 01/16] ASoC: test-component: add Test Component YAML
+ bindings
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87tuitusy4.wl-kuninori.morimoto.gx@renesas.com>
+References: <87tuitusy4.wl-kuninori.morimoto.gx@renesas.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -70,103 +75,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Hi Mark
+This patch adds test-component sound device YAML bindings.
+It can be used for Sound Test/Debug.
 
-We already have Audio-Graph-Card which is Of-Graph base general sound
-card driver. Basically it supports basic CPU-Codec connection, and is
-also supporting DPCM connection. Because it was forcibly expanded to
-DPCM, DT parsing is very limited and very difficult to add new features
-on it, for example Multi-CPU/Codec support, Codec2Codec support, etc.
-
-This patch adds more flexible new Rich-Graph-Card driver for it.
-Audio-Graph-Card and Rich-Graph-Card are similar, but don't have
-full compatibility.
-The reason why I need Rich-Graph-Card instead of updating Audio-Graph-Card
-is that it is very difficult to keep compatibility.
-
-Rich-Graph-Card supports Normal/DPCM/Codec2Codec Connection wich
-Single/Multi DAIs. And it is possible to Customizing.
-
-This patch-set adds Rich-Graph-Card driver and customized driver
-sample, and DT settings sample which can be used for testing.
-
-To enable testing/debuging, this patch-set also adds Test-Component
-driver. We already have Dummy Component and/or Dummy DAI on soc-utils,
-but 1) we can't use it from DT, 2) it do nothing.
-Added new Test-Component can be used from DT, and it can indicate called
-function name. We can use it to trace callback order, understanding
-ALSA SoC behavior, etc, etc...
-Sample DT settings of Rich Graph Card is using Test-Component as CPU/Codec DAI.
-
-You can easily try to use/test it if you added below line to your DT file.
-Your .config needs to have below CONFIGs to use/test it.
-It will probe sample Sound Card which has Normal/DPCM/Multi/Codec2Codec
-connections.
-
-	#include "../../../../../sound/soc/generic/rich-graph-card-sample.dtsi"
-
-	CONFIG_SND_RICH_GRAPH_CARD
-	CONFIG_SND_RICH_CUSTOM_CARD_SAMPLE
-	CONFIG_SND_TEST_COMPONENT
-
-Because Audio Graph Card2 is still under experimental stage, it will
-indicate such warning when probing, and the DT might be updated/exchanged.
-
-It can use Codec2Codec, but it will start automatically when probed,
-and can't stop it so far. It should be updated.
-
-Link: https://lore.kernel.org/r/87k0xszlep.wl-kuninori.morimoto.gx@renesas.com
-Link: https://lore.kernel.org/r/871r8u4s6q.wl-kuninori.morimoto.gx@renesas.com
-Link: https://lore.kernel.org/r/87a6mhwyqn.wl-kuninori.morimoto.gx@renesas.com
-
-v1 -> v2
-	- don't use "port" base for_each loop
-
-v2 -> v3
-	- Rename audio-graph-card2 to rich-graph-card
-	- Rename DSP to DPCM not to confuse
-	- Normal/DPCM/Codec2Codec can use Single/Multi DAIs.
-	- use dpcm/multi/codec2codec node instead of using extra compatible
-	- Sample DTSI patch is separated to Single/Multi.
-
-Kuninori Morimoto (16):
-  ASoC: test-component: add Test Component YAML bindings
-  ASoC: test-component: add Test Component for Sound debug/test
-  ASoC: simple-card-utils: add asoc_graph_is_ports0()
-  ASoC: simple-card-utils: add codec2codec support
-  ASoC: add Rich Graph Card driver
-  ASoC: rich-graph-card: add Multi CPU/Codec support
-  ASoC: rich-graph-card: add DPCM support
-  ASoC: rich-graph-card: add Codec2Codec support
-  ASoC: add Rich Graph Card Yaml Document
-  ASoC: add Rich Graph Card Custom Sample
-  ASoC: rich-graph-card-sample.dtsi: add Sample DT for Normal (Single)
-  ASoC: rich-graph-card-sample.dtsi: add Sample DT for Normal (Nulti)
-  ASoC: rich-graph-card-sample.dtsi: add DPCM sample (Single)
-  ASoC: rich-graph-card-sample.dtsi: add DPCM sample (Multi)
-  ASoC: rich-graph-card-sample.dtsi: add Codec2Codec sample (Single)
-  ASoC: rich-graph-card-sample.dtsi: add Codec2Codec sample (Multi)
-
- .../bindings/sound/rich-graph-card.yaml       |   57 +
- .../bindings/sound/test-component.yaml        |   33 +
- include/sound/graph_card.h                    |   21 +
- include/sound/simple_card_utils.h             |    4 +
- sound/soc/generic/Kconfig                     |   20 +
- sound/soc/generic/Makefile                    |    6 +
- sound/soc/generic/rich-custom-card-sample.c   |  174 +++
- sound/soc/generic/rich-graph-card-sample.dtsi |  225 +++
- sound/soc/generic/rich-graph-card.c           | 1277 +++++++++++++++++
- sound/soc/generic/simple-card-utils.c         |   46 +-
- sound/soc/generic/test-component.c            |  659 +++++++++
- 11 files changed, 2521 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/devicetree/bindings/sound/rich-graph-card.yaml
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ .../bindings/sound/test-component.yaml        | 33 +++++++++++++++++++
+ 1 file changed, 33 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/sound/test-component.yaml
- create mode 100644 sound/soc/generic/rich-custom-card-sample.c
- create mode 100644 sound/soc/generic/rich-graph-card-sample.dtsi
- create mode 100644 sound/soc/generic/rich-graph-card.c
- create mode 100644 sound/soc/generic/test-component.c
 
+diff --git a/Documentation/devicetree/bindings/sound/test-component.yaml b/Documentation/devicetree/bindings/sound/test-component.yaml
+new file mode 100644
+index 000000000000..62a6ecad0e88
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/test-component.yaml
+@@ -0,0 +1,33 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/test-component.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Test Component Device Tree Bindings
++
++maintainers:
++  - Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
++
++properties:
++  compatible:
++    enum:
++      - test-cpu
++      - test-cpu-vv
++      - test-cpu-vn
++      - test-cpu-nv
++      - test-codec
++      - test-codec-vv
++      - test-codec-vn
++      - test-codec-nv
++
++required:
++  - compatible
++
++additionalProperties: true
++
++examples:
++  - |
++    test_cpu {
++        compatible = "test-cpu";
++    };
 -- 
 2.25.1
 
