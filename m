@@ -2,67 +2,90 @@ Return-Path: <SRS0=kM0A=OA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 721CBC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 02:13:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 335D1C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 09:26:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E1FF7611C9
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 02:13:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E1FF7611C9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	by mail.kernel.org (Postfix) with ESMTPS id 9D8006101A
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 09:26:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9D8006101A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B70191691;
-	Fri, 10 Sep 2021 04:12:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B70191691
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2BF1E168B;
+	Fri, 10 Sep 2021 11:26:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BF1E168B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631240009;
-	bh=xPpW1clTMYZGQxG8LHeVaC0gc0uYKRBpHZbew/JseFw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=HCcAmw84O4bXPo7LUEolIYJShbL4H8h7IZi9iF4LBSDvKWqVPoxxsPXNb97UU6+Ck
-	 DPISKH3TFQ46IKxdofg0gv3zInhIQC1lVYBREXmY/5Cqet6Np4fbD8MSVy3skoPHyQ
-	 YXmCIXnSielROIqQCfFHGSgpNlzxQ7WIm939ix08=
+	s=default; t=1631266011;
+	bh=DVFS+eVz41agY/LHCK8rL4V7nJDyggFRtTLh4EVSn9c=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=FIVHdAdcX5uQ2OPxa35S6vGyrCoYAmovgFTLv1nNcfQ8kX9RfYP8rbU1OkVCZhL5m
+	 FBOFc/Oi2U/wNnMhtwdY1gRNubJ0Bn4jpyqQXflH0BEEIv78lAtB6MlZgh370xnJdq
+	 5wuRFtl0hUe27tYSivckPOZFcuEzkQliz5IlwSCE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3343BF8026C;
-	Fri, 10 Sep 2021 04:12:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6916F8026C;
+	Fri, 10 Sep 2021 11:26:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F0702F8026C; Fri, 10 Sep 2021 04:12:36 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 96AB6F80143; Fri, 10 Sep 2021 11:25:58 +0200 (CEST)
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com
+ [IPv6:2607:f8b0:4864:20::530])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 97C68F80143
- for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2021 04:12:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97C68F80143
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id CA1BE1A5FED;
- Fri, 10 Sep 2021 04:12:28 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 92D251A0AD8;
- Fri, 10 Sep 2021 04:12:28 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 22F50183AD05;
- Fri, 10 Sep 2021 10:12:27 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
- festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: fsl_spdif: Add support for i.MX8ULP
-Date: Fri, 10 Sep 2021 09:49:22 +0800
-Message-Id: <1631238562-27081-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id EF99DF80143
+ for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2021 11:25:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF99DF80143
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="i+sQegrD"
+Received: by mail-pg1-x530.google.com with SMTP id q68so1257325pga.9
+ for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2021 02:25:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=UGop0docc8B1GTvJpl+G3gqt2RijBgvBnLsR3KXqGLU=;
+ b=i+sQegrDeleL+EsqVBRnH6teWJyqBXEZWpTSs6BihLyoJfpoFCPKlTZkyKYuOVE/c0
+ vnTs3WgNTd1E4tLNobmBwvay+fYn0/V34Cq2YSv92uQ27pOzDszytMQ9ikclGQQTXf1o
+ M0qKKLmR52SAA2MBFtxvHh1VPuORAIO7Qjg5o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=UGop0docc8B1GTvJpl+G3gqt2RijBgvBnLsR3KXqGLU=;
+ b=xcDuyCxf4ZUoEvPayHzmjHrOZIo1dpGJVeG6RnatPeMGufpUZ4MvT+V6vM4/lWWac4
+ CvGuWpTojgdMTZacnnAeWtebI0Zt3vc2uedXurk8WSzTA8zSyXcUVYInmKR7EB6qdZH5
+ cgN6kalDqYrXeZadwmB5KmSDoqjovvbfM1VK2Xm2ep2O5HehP0pzjOZZOftnbHHCfZ9A
+ 4q6E4BpxbExcmnWtphQ7TiTNjoivrK/8tcS8uPsGbX0MIoyHDwt4jjAdnoPDXKL7WZdz
+ uIiwHy0omgZysZX4auz1oZj2Fft93+4Np0tzzVZA5WhgetcQTIfP+J7B8ApXOqwo+wIc
+ k5ew==
+X-Gm-Message-State: AOAM533iWMfSzK7rB09iCbGoZv6qUEkVIe6l0qJMJItNfou0cXdFF5Ni
+ BflKw5SwOBQWxJBOloQVaLp+KsUuTf7rSkLcFi7j6A==
+X-Google-Smtp-Source: ABdhPJzstRkDBXxYK9B9cnY4DMWTP023/mJF/td/1O40MZ2HMxJLQFIxIT7o2CcgzZdQ280pHhM4q86YIDwJCdxAfCA=
+X-Received: by 2002:aa7:8617:0:b0:3f2:3cb2:33bc with SMTP id
+ p23-20020aa78617000000b003f23cb233bcmr7386342pfn.36.1631265948700; Fri, 10
+ Sep 2021 02:25:48 -0700 (PDT)
+MIME-Version: 1.0
+References: <CADDZ45UPsbpAAqP6=ZkTT8BE-yLii4Y7xSDnjK550G2DhQsMew@mail.gmail.com>
+ <s5hfsudq3jx.wl-tiwai@suse.de>
+In-Reply-To: <s5hfsudq3jx.wl-tiwai@suse.de>
+From: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Date: Fri, 10 Sep 2021 17:25:37 +0800
+Message-ID: <CAGvk5Ppn2CK=GUgs+YoxoKLBm0zHUmSi4QrDk4ahO24_FPfqsg@mail.gmail.com>
+Subject: Re: A portion of USB Headsets loses previous sound volume setting
+ after a suspend resume
+To: Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ En-Shuo Hsu <enshuo@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,43 +101,81 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On i.MX8ULP the spdif works with EDMA, so add compatible
-string and soc specific data for i.MX8ULP.
+Takashi Iwai <tiwai@suse.de> =E6=96=BC 2021=E5=B9=B49=E6=9C=889=E6=97=A5 =
+=E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=889:30=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Thu, 09 Sep 2021 12:21:46 +0200,
+> En-Shuo Hsu wrote:
+> >
+> > Hi
+> >
+> > We recently found that some USB headsets may fall back to their full vo=
+lume
+> > after a suspend and resume. We think the issue is caused by the logic o=
+f
+> > mixer_ctl_feature_put in sound/usb/mixer.c:
+> >
+> > err =3D snd_usb_get_cur_mix_value(cval, c + 1, cnt, &oval);
+> > if (err < 0)
+> >   return filter_error(cval, err);
+> >   val =3D ucontrol->value.integer.value[cnt];
+> >   val =3D get_abs_value(cval, val);
+> > if (oval !=3D val) {
+> >   snd_usb_set_cur_mix_value(cval, c + 1, cnt, val);
+> >   changed =3D 1;
+> > }
+> >
+> > The existing codes get the existing mixer control value and ignore the =
+set if
+> > the val doesn't change. However, in the suspend and resume case, the US=
+B
+> > headset's control value is actually changed.
+> >
+> > Removing the cache logic is a potential fix, but a better solution may =
+be to
+> > properly handle the suspend resume scenario in snd_usb_get_cur_mix_valu=
+e. We
+> > may need to mark the cache in usb_mixer_elem_info to be dirty.
+> >
+> > The issue is verified to be reproduced with Dell WH3022 and Logitech US=
+B
+> > Headset H340 by:
+> > 1. Boot to OS.
+> > 2. Plug in the headset and check sound output.
+> > 3. Play an audio/video and keep with low volume.
+> > 4. Suspend.
+> > 5. Resume.
+> > 6. When audio/video is played, the headset's sound output can't keep th=
+e
+> > original volume. --> issue "
+> >
+> > Would like to know your thoughts on this issue.
+>
+> USB-audio driver has an assumption that the normal resume code
+> presumes the configuration while reset_resume needs the full
+> initialization, but this looks too naive, then.
+>
+> Could you check the following works?
+>
+>
+> Takashi
+>
+> --- a/sound/usb/card.c
+> +++ b/sound/usb/card.c
+> @@ -1080,7 +1080,7 @@ static int __usb_audio_resume(struct usb_interface =
+*intf, bool reset_resume)
+>          * we just notify and restart the mixers
+>          */
+>         list_for_each_entry(mixer, &chip->mixer_list, list) {
+> -               err =3D snd_usb_mixer_resume(mixer, reset_resume);
+> +               err =3D snd_usb_mixer_resume(mixer, true /*reset_resume*/=
+);
+>                 if (err < 0)
+>                         goto err_out;
+>         }
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_spdif.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Thanks! It works. Is it an appropriate fix to set the reset_resume to
+true in usb_audio_resume?
+If it's acceptable, we can send the patch.
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 8ffb1a6048d6..61ba08322f23 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -186,6 +186,16 @@ static struct fsl_spdif_soc_data fsl_spdif_imx8mm = {
- 	.tx_formats = FSL_SPDIF_FORMATS_PLAYBACK,
- };
- 
-+static struct fsl_spdif_soc_data fsl_spdif_imx8ulp = {
-+	.imx = true,
-+	.shared_root_clock = true,
-+	.raw_capture_mode = false,
-+	.interrupts = 1,
-+	.tx_burst = 2,		/* Applied for EDMA */
-+	.rx_burst = 2,		/* Applied for EDMA */
-+	.tx_formats = SNDRV_PCM_FMTBIT_S24_LE,	/* Applied for EDMA */
-+};
-+
- /* Check if clk is a root clock that does not share clock source with others */
- static inline bool fsl_spdif_can_set_clk_rate(struct fsl_spdif_priv *spdif, int clk)
- {
-@@ -1556,6 +1566,7 @@ static const struct of_device_id fsl_spdif_dt_ids[] = {
- 	{ .compatible = "fsl,imx6sx-spdif", .data = &fsl_spdif_imx6sx, },
- 	{ .compatible = "fsl,imx8qm-spdif", .data = &fsl_spdif_imx8qm, },
- 	{ .compatible = "fsl,imx8mm-spdif", .data = &fsl_spdif_imx8mm, },
-+	{ .compatible = "fsl,imx8ulp-spdif", .data = &fsl_spdif_imx8ulp, },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, fsl_spdif_dt_ids);
--- 
-2.17.1
-
+Yu-Hsuan
