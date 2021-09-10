@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AFCC3C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 01:27:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D59E8C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 01:27:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 320EA60F02
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 01:27:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 320EA60F02
+	by mail.kernel.org (Postfix) with ESMTPS id 50F4F60F02
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 01:27:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 50F4F60F02
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C6A2A16BA;
-	Fri, 10 Sep 2021 03:26:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6A2A16BA
+	by alsa0.perex.cz (Postfix) with ESMTPS id C42E516D5;
+	Fri, 10 Sep 2021 03:26:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C42E516D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631237229;
-	bh=MpGXSMSuOmlbQm4g5Of9gl1GvP8mEbFXDOmc4mghlLg=;
+	s=default; t=1631237256;
+	bh=Cl5djayFIntPurAoYglDugerl2TydDWY5O2aTpC96J0=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fGlCr8pHLIeFSO4HFxNW0+2tdTlL3wjdjXYesT64nwnaQBegksNf7eJ28NkoU1PrP
-	 Uuff3SCjZNrxxizx2386HiWCZnnEEuRkuJlYFLEnxXoaZsztt1wqx91H9VRH1GMDso
-	 lPh+BY1zjJ2Ilh3q16MQwemr0MIQCmxjdM82JdWw=
+	b=avOEmmiccmeccNPGuO/6xi1Xn2GoXVfh5/HrAqJMxtL9Sksc4v/7j5RYEqiQWigqR
+	 +F7MQGkVujX62Kj6M2iKw8Sk3vPTMQxyvRUFk+J2LN05OxugrqrsYPd8g5j4IY/aLt
+	 N1rjYqln6SAc6tySP/nvqmbGsOkMLEcw7UWZiXsw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DDC93F80525;
-	Fri, 10 Sep 2021 03:23:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F21A2F8053D;
+	Fri, 10 Sep 2021 03:23:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 10741F80535; Fri, 10 Sep 2021 03:23:22 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 4A59BF80528
- for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2021 03:23:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A59BF80528
-Date: 10 Sep 2021 10:23:14 +0900
-X-IronPort-AV: E=Sophos;i="5.85,282,1624287600"; d="scan'208";a="93549180"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 10 Sep 2021 10:23:14 +0900
+ id 3EB6EF80542; Fri, 10 Sep 2021 03:23:30 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 868EAF80538
+ for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2021 03:23:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 868EAF80538
+Date: 10 Sep 2021 10:23:22 +0900
+X-IronPort-AV: E=Sophos;i="5.85,282,1624287600"; d="scan'208";a="93467606"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 10 Sep 2021 10:23:22 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 1A25C4159066;
- Fri, 10 Sep 2021 10:23:14 +0900 (JST)
-Message-ID: <87a6klusu5.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 1B7014012BE5;
+ Fri, 10 Sep 2021 10:23:22 +0900 (JST)
+Message-ID: <877dfpustx.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v3 14/16] ASoC: rich-graph-card-sample.dtsi: add DPCM sample
- (Multi)
+Subject: [PATCH v3 16/16] ASoC: rich-graph-card-sample.dtsi: add Codec2Codec
+ sample (Multi)
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87tuitusy4.wl-kuninori.morimoto.gx@renesas.com>
@@ -77,111 +77,127 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-This patch adds DPCM link Multi-CPU/Codec sample to
-rich-graph-card-sample.dtsi.
-This sample is assuming MIXer connection.
-One note is that Multi-FE is not supported on ASoC
+This patch adds Codec2Codec-Multi sample to rich-graph-card-sample.dtsi.
+Because it can use very basic connection only for now,
+it can use only
 
-	FE		BE
-		****	+-+
-	CPU5 -- *  * -- | | -- Codec4
-	CPU6 -- *  *	| | -- Codec5
-		****	+-+
+	- 2channels
+	- S32_LE format
 
-This reverts commit 674bf04819aaf63b98c83e803ff920e35e315d08.
+Test-Component driver has "IN" and "OUT" widget. Thus the route is
+
+	+--+    +-+
+	|  |    | |- Codec8 <- IN
+	|  | <- | |- Codec9 <- IN
+	|  |    +-+
+	|  |
+	|  |    +-+
+	|  | -> | |- Codec10 -> OUT
+	|  |    | |- Codec11 -> OUT
+	+--+    +-+
+
+One note here is that it will start works when it boot.
+In other words we can't stop it so far.
+We need to update driver for it in the future.
+
+	...
+	asoc-rich-graph-card rich-graph-card-sample: multicodec <-> multicpu mapping ok
+	test-component test_codec: test_dai_startup() : test_codec.9
+	test-component test_codec: test_dai_startup() : test_codec.8
+	test-component test_codec: test_dai_startup() : test_codec.11
+	test-component test_codec: test_dai_startup() : test_codec.10
+	...
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/generic/rich-graph-card-sample.dtsi | 36 ++++++++++++++++++-
- 1 file changed, 35 insertions(+), 1 deletion(-)
+ sound/soc/generic/rich-graph-card-sample.dtsi | 43 ++++++++++++++++++-
+ 1 file changed, 42 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/generic/rich-graph-card-sample.dtsi b/sound/soc/generic/rich-graph-card-sample.dtsi
-index 2402827bbdaf..25b9c52cb072 100644
+index f67adae0322c..902642e61882 100644
 --- a/sound/soc/generic/rich-graph-card-sample.dtsi
 +++ b/sound/soc/generic/rich-graph-card-sample.dtsi
-@@ -37,6 +37,17 @@ / {
- 	 *	cpu3 <-@--*  *--@-> codec3
- 	 *	cpu4 <-@--*  *
- 	 *		  ****
+@@ -53,6 +53,20 @@ / {
+ 	 *			   +-@-> codec6
+ 	 *			   |
+ 	 *			   +---> codec7
 +	 *
-+	 * [DPCM-Multi]
++	 * [Codec2Codec-Multi]
 +	 *
 +	 * --NOTE--
-+	 * Multi-FE is not supported by ASoC.
++	 * Multi connect N:M is not supported by ASoC.
 +	 *
-+	 *	FE		BE
-+	 *		  ****	    +-+
-+	 *	cpu5 <-@--*  *--@-> | | -> codec4
-+	 *	cpu6 <-@--*  *	    | | -> codec5
-+	 *		  ****	    +-+
++	 *				+-+
++	 *			   +-@->| |-> codec8
++	 *			   |	| |-> codec9
++	 *			   |	+-+
++	 *			   |	+-+
++	 *			   +--->| |-> codec10
++	 *				| |-> codec11
++	 *				+-+
  	 */
  	rich-graph-card-sample {
  		/*
-@@ -51,11 +62,22 @@ rich-graph-card-sample {
- 		routing = "TC DAI3 Playback",	"DAI3 Playback",
- 			  "TC DAI3 Playback",	"DAI4 Playback",
- 			  "DAI3 Capture",	"TC DAI3 Capture",
--			  "DAI4 Capture",	"TC DAI3 Capture";
-+			  "DAI4 Capture",	"TC DAI3 Capture",
-+			/* for [DPCM-Multi]	   */
-+			/* BE			FE */
-+			  "TC DAI4 Playback",	"DAI5 Playback",
-+			  "TC DAI5 Playback",	"DAI5 Playback",
-+			  "TC DAI4 Playback",	"DAI6 Playback",
-+			  "TC DAI5 Playback",	"DAI6 Playback",
-+			  "DAI5 Capture",	"TC DAI4 Capture",
-+			  "DAI5 Capture",	"TC DAI5 Capture",
-+			  "DAI6 Capture",	"TC DAI4 Capture",
-+			  "DAI6 Capture",	"TC DAI5 Capture";
+@@ -80,13 +94,19 @@ rich-graph-card-sample {
+ 			  "DAI6 Capture",	"TC DAI5 Capture",
+ 			/* for [Codec2Codec] */
+ 			  "TC OUT",		"TC DAI7 Playback",
+-			  "TC DAI6 Capture",	"TC IN";
++			  "TC DAI6 Capture",	"TC IN",
++			/* for [Codec2Codec-Multi] */
++			  "TC OUT",		"TC DAI10 Playback",
++			  "TC DAI8 Capture",	"TC IN",
++			  "TC OUT",		"TC DAI11 Playback",
++			  "TC DAI9 Capture",	"TC IN";
  
  		links = <&cpu0			/* normal: cpu side only */
  			 &mcpu0			/* multi:  cpu side only */
  			 &fe00 &fe01 &be0	/* dpcm:   both FE / BE  */
-+			 &fe10 &fe11 &be1	/* dpcm-m: both FE / BE  */
+ 			 &fe10 &fe11 &be1	/* dpcm-m: both FE / BE  */
+ 			 &c2c			/* c2c:    cpu side only */
++			 &c2c_m			/* c2c:    cpu side only */
  		>;
  
  		multi {
-@@ -69,6 +91,11 @@ ports@1 {
- 				port@1 { mcodec1_ep: endpoint { remote-endpoint = <&codec1_ep>; }; };
- 				port@2 { mcodec2_ep: endpoint { remote-endpoint = <&codec2_ep>; }; };
+@@ -105,6 +125,16 @@ ports@2 {
+ 				port@1 { mbe1_ep: endpoint { remote-endpoint = <&codec4_ep>; }; };
+ 				port@2 { mbe2_ep: endpoint { remote-endpoint = <&codec5_ep>; }; };
  			};
-+			ports@2 {
-+				port@0 { mbe_ep:  endpoint { remote-endpoint = <&be10_ep>;  }; };
-+				port@1 { mbe1_ep: endpoint { remote-endpoint = <&codec4_ep>; }; };
-+				port@2 { mbe2_ep: endpoint { remote-endpoint = <&codec5_ep>; }; };
++			ports@3 {
++				port@0 { mc2c0_ep:  endpoint { remote-endpoint = <&c2cmf_ep>;  }; };
++				port@1 { mc2c00_ep: endpoint { remote-endpoint = <&codec8_ep>; }; };
++				port@2 { mc2c01_ep: endpoint { remote-endpoint = <&codec9_ep>; }; };
++			};
++			ports@4 {
++				port@0 { mc2c1_ep:  endpoint { remote-endpoint = <&c2cmb_ep>;  }; };
++				port@1 { mc2c10_ep: endpoint { remote-endpoint = <&codec10_ep>; }; };
++				port@2 { mc2c11_ep: endpoint { remote-endpoint = <&codec11_ep>; }; };
 +			};
  		};
  
  		dpcm {
-@@ -76,10 +103,13 @@ dpcm {
- 			ports@0 {
- 			fe00:	port@0 { fe00_ep: endpoint { remote-endpoint = <&cpu3_ep>; }; };
- 			fe01:	port@1 { fe01_ep: endpoint { remote-endpoint = <&cpu4_ep>; }; };
-+			fe10:	port@2 { fe10_ep: endpoint { remote-endpoint = <&cpu5_ep>; }; };
-+			fe11:	port@3 { fe11_ep: endpoint { remote-endpoint = <&cpu6_ep>; }; };
+@@ -128,6 +158,11 @@ ports@0 {
+ 			c2c:	port@0 { c2cf_ep: endpoint { remote-endpoint = <&codec6_ep>; }; };
+ 				port@1 { c2cb_ep: endpoint { remote-endpoint = <&codec7_ep>; }; };
  			};
- 			/* BE */
- 			ports@1 {
- 			be0:	port@0 { be00_ep: endpoint { remote-endpoint = <&codec3_ep>; }; };
-+			be1:	port@1 { be10_ep: endpoint { remote-endpoint = <&mbe_ep>; }; };
- 			};
- 		};
- 	};
-@@ -101,6 +131,8 @@ ports {
- 			      port@2 { cpu2_ep: endpoint { remote-endpoint = <&mcpu2_ep>; }; };
- 			      port@3 { cpu3_ep: endpoint { remote-endpoint = <&fe00_ep>; }; };
- 			      port@4 { cpu4_ep: endpoint { remote-endpoint = <&fe01_ep>; }; };
-+			      port@5 { cpu5_ep: endpoint { remote-endpoint = <&fe10_ep>; }; };
-+			      port@6 { cpu6_ep: endpoint { remote-endpoint = <&fe11_ep>; }; };
++			ports@1 {
++				rate = <48000>;
++			c2c_m:	port@0 { c2cmf_ep: endpoint { remote-endpoint = <&mc2c0_ep>; }; };
++				port@1 { c2cmb_ep: endpoint { remote-endpoint = <&mc2c1_ep>; }; };
++			};
  		};
  	};
  
-@@ -124,6 +156,8 @@ ports {
- 			port@1  { codec1_ep:  endpoint { remote-endpoint = <&mcodec1_ep>; }; };
- 			port@2  { codec2_ep:  endpoint { remote-endpoint = <&mcodec2_ep>; }; };
- 			port@3  { codec3_ep:  endpoint { remote-endpoint = <&be00_ep>; }; };
-+			port@4  { codec4_ep:  endpoint { remote-endpoint = <&mbe1_ep>; }; };
-+			port@5  { codec5_ep:  endpoint { remote-endpoint = <&mbe2_ep>; }; };
+@@ -179,6 +214,12 @@ ports {
+ 				  frame-master;
+ 				  codec6_ep:  endpoint { remote-endpoint = <&c2cf_ep>; }; };
+ 			port@7  { codec7_ep:  endpoint { remote-endpoint = <&c2cb_ep>; }; };
++			port@8  { bitclock-master;
++				  frame-master;
++				  codec8_ep:  endpoint { remote-endpoint = <&mc2c00_ep>; }; };
++			port@9  { codec9_ep:  endpoint { remote-endpoint = <&mc2c01_ep>; }; };
++			port@10 { codec10_ep: endpoint { remote-endpoint = <&mc2c10_ep>; }; };
++			port@11 { codec11_ep: endpoint { remote-endpoint = <&mc2c11_ep>; }; };
  		};
  	};
  };
