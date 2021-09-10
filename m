@@ -2,71 +2,67 @@ Return-Path: <SRS0=kM0A=OA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A0B9CC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 09:27:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38488C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 09:42:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1C42B6101A
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 09:27:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1C42B6101A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
+	by mail.kernel.org (Postfix) with ESMTPS id B7A376105A
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Sep 2021 09:42:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B7A376105A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9928F16A8;
-	Fri, 10 Sep 2021 11:26:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9928F16A8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 52B601687;
+	Fri, 10 Sep 2021 11:41:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52B601687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631266061;
-	bh=sN66snqGba5yT0Mn9bCXWvEjSBHDYvs/3VvjX67XUhA=;
+	s=default; t=1631266962;
+	bh=WrfB2zltshoJJvb/6X9wNanMzI074T/nSZ+v//ivJ1o=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=lfwb6aNhRMSJs/KCFOyiltwGVmuw57YpWnyTbz1fYZuaEmDy2pNVJ19yp9eNU8OT+
-	 U18TuuI+NsMGvIayF28mScPm2DBeO5WjTxHAmsUOltNovkv+FUtE8EsLq27QHJtMQv
-	 fo5GoB3VQUp2kZK0ywoRnrWA/tzx/d0UGUiZRhKE=
+	b=rnI5nLptBnA2wE4WUMGyrhHoZBcIfatSNTDsfNsN8mNH/Aac8FppoOjofBw0fdKzn
+	 msd6i/jbozapUsGfxnNfczDlle5AoASFkIpOIAZASJIocsAXb3AUt8GTDC6V5aI8Xx
+	 MoXtRg3odH4tv/vsqfKpIpXHRccXenAT3CoKXPzw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 93D4EF804B3;
-	Fri, 10 Sep 2021 11:26:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD68BF800FC;
+	Fri, 10 Sep 2021 11:41:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EB4E8F804E4; Fri, 10 Sep 2021 11:26:32 +0200 (CEST)
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+ id E110BF802E7; Fri, 10 Sep 2021 11:41:50 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0B9BBF804B3
- for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2021 11:26:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B9BBF804B3
-X-UUID: 30a0599609814a07a9fbc573b5fead1d-20210910
-X-UUID: 30a0599609814a07a9fbc573b5fead1d-20210910
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by
- mailgw01.mediatek.com (envelope-from <trevor.wu@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
- with ESMTP id 909894693; Fri, 10 Sep 2021 17:26:16 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 10 Sep 2021 17:26:15 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
- Frontend Transport; Fri, 10 Sep 2021 17:26:14 +0800
-From: Trevor Wu <trevor.wu@mediatek.com>
-To: <broonie@kernel.org>, <tiwai@suse.com>, <matthias.bgg@gmail.com>
-Subject: [PATCH v2] ASoC: mediatek: common: handle NULL case in suspend/resume
- function
-Date: Fri, 10 Sep 2021 17:26:13 +0800
-Message-ID: <20210910092613.30188-1-trevor.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK: N
-Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
- trevor.wu@mediatek.com, dan.carpenter@oracle.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id B4716F800FC
+ for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2021 11:41:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4716F800FC
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 1D5311A258D;
+ Fri, 10 Sep 2021 11:41:39 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com
+ (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D95DA1A2591;
+ Fri, 10 Sep 2021 11:41:38 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 649AB183AD26;
+ Fri, 10 Sep 2021 17:41:37 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: fsl_xcvr: Fix channel swap issue with ARC
+Date: Fri, 10 Sep 2021 17:18:30 +0800
+Message-Id: <1631265510-27384-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,59 +78,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When memory allocation for afe->reg_back_up fails, reg_back_up can't
-be used.
-Keep the suspend/resume flow but skip register backup when
-afe->reg_back_up is NULL, in case illegal memory access happens.
+With pause and resume test for ARC, there is occasionally
+channel swap issue. The reason is that currently driver set
+the DPATH out of reset first, then start the DMA, the first
+data got from FIFO may not be the Left channel.
 
-Fixes: 283b612429a2 ("ASoC: mediatek: implement mediatek common structure")
-Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-Change since v1:
-  add Reported-by tag
----
- sound/soc/mediatek/common/mtk-afe-fe-dai.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+Moving DPATH out of reset operation after the dma enablement
+to fix this issue.
 
-diff --git a/sound/soc/mediatek/common/mtk-afe-fe-dai.c b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
-index baaa5881b1d4..e95c7c018e7d 100644
---- a/sound/soc/mediatek/common/mtk-afe-fe-dai.c
-+++ b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
-@@ -334,9 +334,11 @@ int mtk_afe_suspend(struct snd_soc_component *component)
- 			devm_kcalloc(dev, afe->reg_back_up_list_num,
- 				     sizeof(unsigned int), GFP_KERNEL);
+Fixes: 28564486866f ("ASoC: fsl_xcvr: Add XCVR ASoC CPU DAI driver")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl_xcvr.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
+index 31c5ee641fe7..6e67033b6cde 100644
+--- a/sound/soc/fsl/fsl_xcvr.c
++++ b/sound/soc/fsl/fsl_xcvr.c
+@@ -487,8 +487,9 @@ static int fsl_xcvr_prepare(struct snd_pcm_substream *substream,
+ 		return ret;
+ 	}
  
--	for (i = 0; i < afe->reg_back_up_list_num; i++)
--		regmap_read(regmap, afe->reg_back_up_list[i],
--			    &afe->reg_back_up[i]);
-+	if (afe->reg_back_up) {
-+		for (i = 0; i < afe->reg_back_up_list_num; i++)
-+			regmap_read(regmap, afe->reg_back_up_list[i],
-+				    &afe->reg_back_up[i]);
-+	}
+-	/* clear DPATH RESET */
++	/* set DPATH RESET */
+ 	m_ctl |= FSL_XCVR_EXT_CTRL_DPTH_RESET(tx);
++	v_ctl |= FSL_XCVR_EXT_CTRL_DPTH_RESET(tx);
+ 	ret = regmap_update_bits(xcvr->regmap, FSL_XCVR_EXT_CTRL, m_ctl, v_ctl);
+ 	if (ret < 0) {
+ 		dev_err(dai->dev, "Error while setting EXT_CTRL: %d\n", ret);
+@@ -590,10 +591,6 @@ static void fsl_xcvr_shutdown(struct snd_pcm_substream *substream,
+ 		val  |= FSL_XCVR_EXT_CTRL_CMDC_RESET(tx);
+ 	}
  
- 	afe->suspended = true;
- 	afe->runtime_suspend(dev);
-@@ -356,12 +358,13 @@ int mtk_afe_resume(struct snd_soc_component *component)
- 
- 	afe->runtime_resume(dev);
- 
--	if (!afe->reg_back_up)
-+	if (!afe->reg_back_up) {
- 		dev_dbg(dev, "%s no reg_backup\n", __func__);
+-	/* set DPATH RESET */
+-	mask |= FSL_XCVR_EXT_CTRL_DPTH_RESET(tx);
+-	val  |= FSL_XCVR_EXT_CTRL_DPTH_RESET(tx);
 -
--	for (i = 0; i < afe->reg_back_up_list_num; i++)
--		mtk_regmap_write(regmap, afe->reg_back_up_list[i],
--				 afe->reg_back_up[i]);
-+	} else {
-+		for (i = 0; i < afe->reg_back_up_list_num; i++)
-+			mtk_regmap_write(regmap, afe->reg_back_up_list[i],
-+					 afe->reg_back_up[i]);
-+	}
- 
- 	afe->suspended = false;
- 	return 0;
+ 	ret = regmap_update_bits(xcvr->regmap, FSL_XCVR_EXT_CTRL, mask, val);
+ 	if (ret < 0) {
+ 		dev_err(dai->dev, "Err setting DPATH RESET: %d\n", ret);
+@@ -643,6 +640,16 @@ static int fsl_xcvr_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			dev_err(dai->dev, "Failed to enable DMA: %d\n", ret);
+ 			return ret;
+ 		}
++
++		/* clear DPATH RESET */
++		ret = regmap_update_bits(xcvr->regmap, FSL_XCVR_EXT_CTRL,
++					 FSL_XCVR_EXT_CTRL_DPTH_RESET(tx),
++					 0);
++		if (ret < 0) {
++			dev_err(dai->dev, "Failed to clear DPATH RESET: %d\n", ret);
++			return ret;
++		}
++
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
 -- 
-2.18.0
+2.17.1
 
