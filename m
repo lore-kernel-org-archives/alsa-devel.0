@@ -2,73 +2,101 @@ Return-Path: <SRS0=eqSS=OD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34562C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 16:49:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A775C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 17:11:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 51EA760F26
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 16:49:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 51EA760F26
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id AFA5561056
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 17:11:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AFA5561056
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=noisetron.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2126F17CE;
-	Mon, 13 Sep 2021 18:48:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2126F17CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7BB6A17A3;
+	Mon, 13 Sep 2021 19:11:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7BB6A17A3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631551779;
-	bh=HYfFSrCtqUgXfs6w2XV5j6yELbLuxqz/Rgv4dSTMNqg=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=i0qFmYf2OPHAc0i4mYsz3wBPiy+fhlcBhVzd0+wIx45Fce2nTu9NEsjoLfeAV7xq8
-	 Bn1UuSbNR6ETwNt9OCG+oRSGGbiXQfsH6MuPTpKIOP6wAyaeCWwTsJaFZmW6+KzBwb
-	 WrrLFdlHmHPteg7zgYRnI8o158kEVSoU8OQ7jHog=
+	s=default; t=1631553113;
+	bh=WFuNdmjN/xebRgOOrLkjnnPmQu0wMlJMC3L/Ndx808s=;
+	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=VVQQ4cgcl4FwDoAf6k6cSmBIg0Ctbt4NyUb0wW++c0yOcs6TyWPTzDLCeka4GcByh
+	 3+x1i9upHnSBwyKh8slp1D7TGP3yjTVitgJFbcek6q4Yy5CXC6MypBP5uGiSoVB54x
+	 1rhcvTahsUs67gv3cEgBDqnpFYaSEAostnshUPn4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8EC0F804D9;
-	Mon, 13 Sep 2021 18:47:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06E18F80227;
+	Mon, 13 Sep 2021 19:11:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 24B9CF804D9; Mon, 13 Sep 2021 18:47:28 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 52290F8027C; Mon, 13 Sep 2021 19:11:01 +0200 (CEST)
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
+ [66.111.4.29])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C8F2BF804E5
- for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 18:47:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8F2BF804E5
-X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="201905419"
-X-IronPort-AV: E=Sophos;i="5.85,290,1624345200"; d="scan'208";a="201905419"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Sep 2021 09:47:20 -0700
-X-IronPort-AV: E=Sophos;i="5.85,290,1624345200"; d="scan'208";a="543342240"
-Received: from rljames-mobl1.amr.corp.intel.com (HELO [10.255.78.21])
- ([10.255.78.21])
- by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Sep 2021 09:47:19 -0700
-Subject: Re: [PATCH] soundwire: export sdw_nwrite_no_pm and sdw_nread_no_pm
- functions
-To: Simon Trimmer <simont@opensource.cirrus.com>, alsa-devel@alsa-project.org
-References: <20210913143122.101428-1-simont@opensource.cirrus.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <a2ca13e5-2d31-3313-d2e1-cf3d1ab3f4e2@linux.intel.com>
-Date: Mon, 13 Sep 2021 11:27:54 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20210913143122.101428-1-simont@opensource.cirrus.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: patches@opensource.cirrus.com, vkoul@kernel.org,
- yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2F6D9F80132
+ for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 19:10:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F6D9F80132
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=noisetron.com header.i=@noisetron.com
+ header.b="HzlZ99Ek"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="lNSUm0N9"
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+ by mailout.nyi.internal (Postfix) with ESMTP id 711D95C00B1
+ for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 13:10:52 -0400 (EDT)
+Received: from imap45 ([10.202.2.95])
+ by compute3.internal (MEProxy); Mon, 13 Sep 2021 13:10:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=noisetron.com;
+ h=mime-version:message-id:date:from:to:subject:content-type; s=
+ fm1; bh=SwXPbmXO3MzDKGsEkn8AGQx2MZw9WFwQSh9oM54pB5E=; b=HzlZ99Ek
+ Eqdh8VbKO6G02D9qT9JKu5DwFC9ELBYFE/Y45LX1xXoctNyYGcjgW2sinuUiVlUX
+ tSaiJb3ndUOk8v505GK0lnRN1iZxDraOAuVgrEokTG1cFdK8a64Q2eJzfG/1yczS
+ HRFxuRmBrFzPGHtZKPWMguphEZc1yyfMywJo2TvD/D2Qv6ACLFX+iAkX71r+GPCH
+ zH1ax2qSBCMxnhofFryMXRdTNxcaum3Q3Rf7y9cyut8YWfqyxKTF91LGtMLdylAz
+ DE5JX6PaY79osGyS1VeIWoi1/WaiDDj6V3BERNaxrVBFYKQfx2Oz/i19y4B29qiC
+ YMq6X6c2NY0+WA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=content-type:date:from:message-id
+ :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
+ :x-me-sender:x-sasl-enc; s=fm3; bh=SwXPbmXO3MzDKGsEkn8AGQx2MZw9W
+ FwQSh9oM54pB5E=; b=lNSUm0N9mtr5kg+IMj5CiyZZN0CE3s1GVF5iqzNq4PUpp
+ rFxaOqLkXA1rphFdkoe/9tQmmseiFcM/1fatzSSoYMjAjdl0RTyRSSdfIfTJvVaK
+ k6bYu6dm/69bbSK/PhGl+su76RBpoKuhMtMFj0ccp9Do1PhZrvVmRatT5Gfygz59
+ Qe4QaagXf1BMCLF8ZigIjdIRzjdwZedfjFg28SmqRwegMviLZkYc9klnHx6XmotW
+ 6LoKoIbvRHmhZC+8xltsMkAIy/0sMdqhwDyOrApRqBlHJvW7zgIVx7t0oapsETwU
+ 49OkBMdOAr8/7aNbIZ6/70YaMqTtHPdRmSCgDoU9Q==
+X-ME-Sender: <xms:G4Y_Yb-aUzhbTqrNoJg-aaiDD8sGMxDHihCL1kvDA9wAK7UqQlnmJQ>
+ <xme:G4Y_YXuZqqrg9yYtVJagCeRN1hVNgtSx74LkG3HZVvbGBNlGXxaWL0t2RYhpZeSds
+ iJ2yLEKVdkTMSfc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegjedguddtjecutefuodetggdotefrod
+ ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+ necuuegrihhlohhuthemuceftddtnecunecujfgurhepofgfggfkfffhvffutgesthdtre
+ dtreertdenucfhrhhomhepfdeuvghrthcuufgthhhivghtthgvtggrthhtvgdfuceosggv
+ rhhtsehnohhishgvthhrohhnrdgtohhmqeenucggtffrrghtthgvrhhnpeekffevkeduff
+ elleduhefhhfelleektdehudefleejhefhleeigeevgeeifeegffenucevlhhushhtvghr
+ ufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsvghrthesnhhoihhsvghtrh
+ honhdrtghomh
+X-ME-Proxy: <xmx:G4Y_YZAzTA9k5LYG2jVU3D7x21nThFg23uhe6wfAXJfV747LpCUOkg>
+ <xmx:G4Y_YXfAaKeQdSz2-B8cDAm3WLRP-WleiFCLh19QXQmcszNhZsoBZQ>
+ <xmx:G4Y_YQOhfECLvVTcQdDKEuV-N885IVwxFYQjBIkKRP2AMI91jao6Kg>
+ <xmx:HIY_YWb-zro_wQ8TSlhrQsb0Y5WuUVsEu9D3iwExskxDBbwcNmcqiA>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+ id BD61124A0064; Mon, 13 Sep 2021 13:10:51 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1229-g7ca81dfce5-fm-20210908.005-g7ca81dfc
+Mime-Version: 1.0
+Message-Id: <2f007482-8a35-4923-8ddf-5b0d16c0acd9@www.fastmail.com>
+Date: Mon, 13 Sep 2021 10:10:31 -0700
+From: "Bert Schiettecatte" <bert@noisetron.com>
+To: alsa-devel@alsa-project.org
+Subject: kernel threads preventing wakeup of thread using snd_pcm_readi?
+Content-Type: text/plain
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,72 +112,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi all
 
+I am working on a realtime audio application on the rk3288 platform. I am using stable kernel 5.13.13. I'm using the open source tracy profiler to profile my application. My development PC receives trace data via ethernet from my platform. I have custom alsa drivers on my platform for my DACs and ADCs. 
 
-On 9/13/21 9:31 AM, Simon Trimmer wrote:
-> The patch "soundwire: export sdw_write/read_no_pm functions" exposed the
-> single byte no_pm versions of the IO functions that can be used without
-> touching PM, export the multi byte no_pm versions for the same reason.
-> 
-> Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+My application has a thread in which I use snd_pcm_readi which blocks until it can read enough samples.
+I have another thread in which I write the samples to disk (sandisk extreme SD card). I use a ring-buffer so the code is lock-free. 
 
-Makes sense to me, e.g. if a codec driver needs to read/write
-vendor-specific registers that are not managed with regmap - interrupts
-or masks.
+I've noticed that over a timespan of a few minutes I get a few clicks, which seem to come from the thread blocking on snd_pcm_readi not waking up in time. I am observing this in the traces I collect via tracy. 
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Right before this happens, I can see kworker/kblockd being scheduled on one of the cores many times and rapidly, or ocasionally ksoftirqd, mmc_complete, or events_highpri. From the trace I collect, i have the impression nothing is being scheduled on the other cores, so I do not see a reason why my thread should not be woken up and scheduled. 
 
-> ---
->  drivers/soundwire/bus.c       | 8 ++++----
->  include/linux/soundwire/sdw.h | 2 ++
->  2 files changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-> index 1b115734a8f6..859de302dee2 100644
-> --- a/drivers/soundwire/bus.c
-> +++ b/drivers/soundwire/bus.c
-> @@ -379,8 +379,7 @@ int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
->   * all clients need to use the pm versions
->   */
->  
-> -static int
-> -sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
-> +int sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
->  {
->  	struct sdw_msg msg;
->  	int ret;
-> @@ -395,9 +394,9 @@ sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
->  		ret = 0;
->  	return ret;
->  }
-> +EXPORT_SYMBOL(sdw_nread_no_pm);
->  
-> -static int
-> -sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val)
-> +int sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val)
->  {
->  	struct sdw_msg msg;
->  	int ret;
-> @@ -412,6 +411,7 @@ sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val)
->  		ret = 0;
->  	return ret;
->  }
-> +EXPORT_SYMBOL(sdw_nwrite_no_pm);
->  
->  int sdw_write_no_pm(struct sdw_slave *slave, u32 addr, u8 value)
->  {
-> diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-> index 76ce3f3ac0f2..2a5395f0dcf1 100644
-> --- a/include/linux/soundwire/sdw.h
-> +++ b/include/linux/soundwire/sdw.h
-> @@ -1042,7 +1042,9 @@ int sdw_write(struct sdw_slave *slave, u32 addr, u8 value);
->  int sdw_write_no_pm(struct sdw_slave *slave, u32 addr, u8 value);
->  int sdw_read_no_pm(struct sdw_slave *slave, u32 addr);
->  int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
-> +int sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
->  int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val);
-> +int sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val);
->  int sdw_update(struct sdw_slave *slave, u32 addr, u8 mask, u8 val);
->  int sdw_update_no_pm(struct sdw_slave *slave, u32 addr, u8 mask, u8 val);
->  
-> 
+Why is the thread blocking on snd_pcm_readi not waking up in time, and is it possible that the kworker threads are preventing this, and why? Any suggestions on how to debug this further are greatly appreciated. 
+
+Thanks
+Bert
