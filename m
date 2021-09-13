@@ -2,72 +2,134 @@ Return-Path: <SRS0=eqSS=OD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EAEA9C433FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 16:23:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87E86C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 16:43:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 788F260F6C
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 16:23:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 788F260F6C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 1BE8F60F3A
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 16:43:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1BE8F60F3A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4F7971758;
-	Mon, 13 Sep 2021 18:22:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F7971758
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC7FE1755;
+	Mon, 13 Sep 2021 18:42:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC7FE1755
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631550190;
-	bh=x3kFLQUpccqNk8OrX1YNcdQ8VsR2zMhWHpq0irChdKA=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=H8A2fg9FK2MK767nxRV5ClgOXjTCHyZ4MmYwfI7wYp7akcxKchrpPUpQZVFf+k9VZ
-	 0Vrknv7mXROHtaVajHUj3c6JEwf/NXPVs9/vJcSpa2FXQKKYPOrq7+aXmwtz4di17x
-	 eLAAO8eHB55VCBbbz/Jb2BxArOZGGVCiT5gwg2E4=
+	s=default; t=1631551428;
+	bh=dFsmG/qyvjRwRJF0fMT674H7hdeN4HZzMrmHLW50VwY=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=oDPOb7WVM8lWS1hd+wRi3Xrr7BBqA7nAdMClkSVzPmA8nIXQdH0oUPWoooiiP0jRU
+	 oOJ06aPTHGdmVYDUGhW4GG+QpnW0PDn1wErcOWAVdvm0bEyo2NnCHVVaz1X2Z4xqqX
+	 jgQfmRIMSVR8LS1yrshW+rgryZKJeO13DblQ50UU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D8EB4F80227;
-	Mon, 13 Sep 2021 18:22:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0F706F80169;
+	Mon, 13 Sep 2021 18:42:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 37385F8027C; Mon, 13 Sep 2021 18:22:18 +0200 (CEST)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ id 52C00F8027C; Mon, 13 Sep 2021 18:42:55 +0200 (CEST)
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com
+ (mail-dm6nam10on2055.outbound.protection.outlook.com [40.107.93.55])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 64E46F80169
- for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 18:22:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64E46F80169
-X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="221759423"
-X-IronPort-AV: E=Sophos;i="5.85,290,1624345200"; d="scan'208";a="221759423"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Sep 2021 09:22:02 -0700
-X-IronPort-AV: E=Sophos;i="5.85,290,1624345200"; d="scan'208";a="543334450"
-Received: from rljames-mobl1.amr.corp.intel.com (HELO [10.255.78.21])
- ([10.255.78.21])
- by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Sep 2021 09:22:01 -0700
-Subject: Re: [PATCH v2] ASoC: Intel: boards: add max98390 2/4 speakers support
-To: Mac Chiang <mac.chiang@intel.com>, alsa-devel@alsa-project.org
-References: <20210913100026.19393-1-mac.chiang@intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <06178b15-9ab2-4c8b-4354-17063ed0fe0d@linux.intel.com>
-Date: Mon, 13 Sep 2021 11:21:58 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id E4FD2F80169
+ for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 18:42:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4FD2F80169
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com
+ header.b="nb3xkboU"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QwwKtUHAfiZS+pu55/j6zepd2dC18A8dnZBha5iB/eAmBzSQOdU8jtaD5MWvBg8FcdC7HGQKyTvnf6QuFYSa5A22tD/yoozXgwuSeFFb74um3R+VIAoYvxwJbl5aUHDG7pKmzh6qsj6oCej+a9jAbThfSmbgU8u2p2e1Q+nWSQLVQw3+zdHJHFxvAEaGBXPINzPU0FhCdSlcj1P7NGKjtXmeSmVvEByUSn+zkNbarW6F+3DkiMuWC4+vMEBO70VJPvl/yKx1YsH/yjPbgk3fxE4BlhTz6Wr/LODqytg9vpCmM1hzY3Oy+jD7liYdBICsx34uNzrD8PuNUuruZyyBcA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version; 
+ bh=Y24GIzHycxe8CiX91vmuqVr/0cXOQ3faa/wvaD8XkpQ=;
+ b=gxz8qH0dxA0OxM5iwfVb2+yqyAQ2pJLjYnrMqniia9oQLVFcwhkzsrK9bZ9iDtfex72RI3zATzTdQ+IqEoJ7QxK+Oz3sQqzVeqRR439Ufnw3BHXKHjxyVGKgDvIj1cIPyp3ird2OK6ZndQ4pOb2WCm90r5WGvKYaqbdsE69af74XXe1J8zgSM9/Q43JHJWj8wYN35s++EgE6Uctxs4L60AxN2UVay04ImQbk7Yx6HBx3Kofgh9B3S0Oha0GY3478X15xN5WrAdyUYOm8uaDwAWH+4xRwoqaisSXpSw57yXMHNW6b6ZQB6s+d8kSZ+xihy9i82pSlEDRRvNYcs6zqKw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.32) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com; 
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y24GIzHycxe8CiX91vmuqVr/0cXOQ3faa/wvaD8XkpQ=;
+ b=nb3xkboUBC7WxeITQSVyldq+RoWAJ2npkGeL2MQ8MUPx64qHAjn3FkJczcEsnBj3Gl8HLye93NfWgPaptNvInC9iwgDpNZrpRx21YDYtZu6JM7w53BosYRQrODU1U+eVzG+YJqiHgjuVHGoY2q0WaQq0YktM/oHfaLr9UBJuaaUpnf6hkbe+iXtwJAwHRFbxGErkXqERXnzZZncjO1JiqkA87aEuGdvPRydvqbctqBYjtS8o2pZiAgdVDKYVLxeyTTGfQdT1AM/28XBQe8k5P3naOThdZ/T6lt5LOuE3E4zkrKwvs8I/uMvOT5ig/x3f6c9aKewxladXtzyhloYd+w==
+Received: from DM5PR21CA0022.namprd21.prod.outlook.com (2603:10b6:3:ac::32) by
+ BYAPR12MB2663.namprd12.prod.outlook.com (2603:10b6:a03:72::21) with
+ Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4478.20; Mon, 13 Sep 2021 16:42:43 +0000
+Received: from DM6NAM11FT032.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:ac:cafe::ef) by DM5PR21CA0022.outlook.office365.com
+ (2603:10b6:3:ac::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.1 via Frontend
+ Transport; Mon, 13 Sep 2021 16:42:43 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
+ smtp.mailfrom=nvidia.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ DM6NAM11FT032.mail.protection.outlook.com (10.13.173.93) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4500.14 via Frontend Transport; Mon, 13 Sep 2021 16:42:43 +0000
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 13 Sep
+ 2021 09:42:42 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 13 Sep
+ 2021 16:42:42 +0000
+Received: from audio.nvidia.com (172.20.187.6) by mail.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Mon, 13 Sep 2021 16:42:38 +0000
+From: Sameer Pujar <spujar@nvidia.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <robh+dt@kernel.org>,
+ <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+ <catalin.marinas@arm.com>, <will@kernel.org>, <perex@perex.cz>,
+ <tiwai@suse.com>, <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH v2 00/13] Extend AHUB audio support for Tegra210 and later
+Date: Mon, 13 Sep 2021 22:12:08 +0530
+Message-ID: <1631551342-25469-1-git-send-email-spujar@nvidia.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <20210913100026.19393-1-mac.chiang@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: jairaj.arava@intel.com, mark_hsieh@wistron.com, keith.tzeng@quantatw.com,
- broonie@kernel.org, sathyanarayana.nujella@intel.com, bard.liao@intel.com
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2ec0df9e-0139-43b5-61dc-08d976d58244
+X-MS-TrafficTypeDiagnostic: BYAPR12MB2663:
+X-Microsoft-Antispam-PRVS: <BYAPR12MB2663D989D838F68D5264A847A7D99@BYAPR12MB2663.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JRWORCnXtULT4Uiv+jSnxbLnvKMoMa3YDNHVpjqYfEvF6W1hCSP37r9gXDtzbM6VMRtfHPRyYFJFX3xX94ZvuWEFzu0QEHfSYRSXGPnmmNVWA+dW0nUgm517fdJbMNfdIxRbynoKVoZhibZXKRlRY84Mb0fFk/7l+ut13KtPu5iXuHNURnrZJAVQFScTNsj1xvLG2p2yY11jOiZVDPHTWb+7PEPMkXwbDPRrzE4CbgX36mlaYWDKHq60w8ITErfrDF9R4aEFDK8EPawze1Lz6pVzTnw++flZJ1GMbfSEy3J87zCKJ2hRGs04vNCm29UTVm4iu24Yzzkjpku8qTkl57yPVwqtqxrgEGt1w+hB1EMYvyCDsDD7irlw+Y/YxUpRhDGyhQ9t3bV9zEdrmLooYHMCMTruTKvyWgKG3DEs9MyI23bWuQ2KlKRFxf4cjpk72AQ3Qn/Nvj3Iy7C/keVEU/G6y+nzDy74o/VUhZy32splO5dUfpwhi8mxojtHQHWORZ+SrxYv80gbY+RCocUrp8EzDbCMrhA1mLCZgHpNtCYYA5Se2gx5S7Npapf3M/FbPDxIBKF1npuva53S4v9LU1NIpCpqVkV5mpxsxkFRS+0QdVL0mEH3MWYf+gllWtyI0NKwTyrInOfBWVksJu7hKUBCC4pylwJsJRJ+df0R8YCEmjSh6/vXR3qsrxiIaVBaA+A/KqTIDgRfvoqNr9y4kAmetvhL5q3TMRgJx9piDEdkwSKjMgrivxx7KM3jE5f8CfvLXQ4KGsCqVZA5YlhwLKU7IZDAQHf7JBKSSkexeCXoBVNbGJPMu7XtmMsBwQ1eseezy0zgFwdPUp9fpQopNQ==
+X-Forefront-Antispam-Report: CIP:216.228.112.32; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:mail.nvidia.com; PTR:schybrid01.nvidia.com; CAT:NONE;
+ SFS:(4636009)(46966006)(36840700001)(356005)(82310400003)(8676002)(70586007)(508600001)(107886003)(6666004)(86362001)(5660300002)(47076005)(316002)(110136005)(26005)(7696005)(2906002)(336012)(36860700001)(966005)(426003)(54906003)(36756003)(2616005)(921005)(186003)(83380400001)(7636003)(7416002)(70206006)(4326008)(8936002)(21314003);
+ DIR:OUT; SFP:1101; 
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2021 16:42:43.4027 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2ec0df9e-0139-43b5-61dc-08d976d58244
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[216.228.112.32];
+ Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT032.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2663
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Sameer Pujar <spujar@nvidia.com>, linux-kernel@vger.kernel.org,
+ linux-tegra@vger.kernel.org, sharadg@nvidia.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,181 +145,119 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Earlier as part of series [0], support for ADMAIF and I/O modules (such
+as I2S, DMIC and DSPK) was added. This series aims at exposing some of
+the AHUB internal modules (listed below), which can be used for audio
+pre or post processing.
 
-I don't quite follow the initialization part. In the 4-ch case, you will
-setup control and widgets but...
+  * SFC (Sampling Frequency Converter)
+  * MVC (Master Volume Control)
+  * AMX (Audio Multiplexer)
+  * ADX (Audio Demultiplexer)
+  * Mixer
 
-> +int max_98390_spk_codec_init(struct snd_soc_pcm_runtime *rtd)
-> +{
-> +	struct snd_soc_card *card = rtd->card;
-> +	int ret;
-> +
-> +	ret = snd_soc_dapm_new_controls(&card->dapm, max_98390_tt_dapm_widgets,
-> +						ARRAY_SIZE(max_98390_tt_dapm_widgets));
-> +	if (ret) {
-> +		dev_err(rtd->dev, "unable to add dapm controls, ret %d\n", ret);
-> +		/* Don't need to add routes if widget addition failed */
-> +		return ret;
-> +	}
-> +
-> +	ret = snd_soc_add_card_controls(card, max_98390_tt_kcontrols,
-> +						ARRAY_SIZE(max_98390_tt_kcontrols));
-> +	if (ret) {
-> +		dev_err(rtd->dev, "unable to add card controls, ret %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = snd_soc_dapm_add_routes(&card->dapm, max_98373_dapm_routes,
-> +					ARRAY_SIZE(max_98373_dapm_routes));
-> +	if (ret) {
-> +		dev_err(rtd->dev, "Speaker Left, Right  map addition failed: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = snd_soc_dapm_add_routes(&card->dapm, max_98390_tt_dapm_routes,
-> +						ARRAY_SIZE(max_98390_tt_dapm_routes));
-> +	if (ret)
-> +		dev_err(rtd->dev, "Tweeter Speaker Left, Right map addition failed: %d\n", ret);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_NS(max_98390_spk_codec_init, SND_SOC_INTEL_SOF_MAXIM_COMMON);
+These modules can be plugged into audio paths and relevant processing
+can be done. The MUX routes are extended to allow add or remove above
+modules in the path via mixer controls. This is similar to how specific
+ADMAIF channels are connected to relevant I/O module instances at the
+moment.
 
-> @@ -745,6 +778,21 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
->  		} else if (sof_rt5682_quirk &
->  				SOF_RT1011_SPEAKER_AMP_PRESENT) {
->  			sof_rt1011_dai_link(&links[id]);
-> +		} else if (sof_rt5682_quirk &
-> +				SOF_MAX98390_SPEAKER_AMP_PRESENT) {
-> +			if (sof_rt5682_quirk &
-> +				SOF_MAX98390_TWEETER_SPEAKER_PRESENT) {
-> +				links[id].codecs = max_98390_4spk_components;
-> +				links[id].num_codecs = ARRAY_SIZE(max_98390_4spk_components);
-> +				links[id].init = max_98390_spk_codec_init;
-> +			} else {
-> +				links[id].codecs = max_98390_components;
-> +				links[id].num_codecs = ARRAY_SIZE(max_98390_components);
-> +				links[id].init = max_98373_spk_codec_init;
-> +			}
+Some of these modules can alter PCM parameters. Consider example of
+resampler (44.1 -> 48 kHz) in the path.
 
-... in the 2 ch case you use this function
+  aplay(44.1 kHz) -> ADMAIF -> SFC -> (48 kHz) I2S -> (48kHz) Codec
 
-int max_98373_spk_codec_init(struct snd_soc_pcm_runtime *rtd)
-{
-	struct snd_soc_card *card = rtd->card;
-	int ret;
+The modules following SFC should be using converted sample rate and DAIs
+need to be configured accordingly. The audio-graph driver provides a
+mechanism to fixup the new parameters which can be specified in DT for a
+given DAI. Then core uses these new values via fixup callback and then
+pass it to respective DAIs hw_param() callback. The "convert-rate",
+described in [1], property can be used when there is rate conversion in
+the audio path. Similarly "convert-channels" can be used when there is
+channel conversion in the path. There is no "convert-xxx" property for
+sample size conversions. It can be added if necessary.
 
-	ret = snd_soc_dapm_add_routes(&card->dapm, max_98373_dapm_routes,
-				      ARRAY_SIZE(max_98373_dapm_routes));
-	if (ret)
-		dev_err(rtd->dev, "Speaker map addition failed: %d\n", ret);
-	return ret;
-}
+[0] https://www.lkml.org/lkml/2020/7/21/1357
+[1] Documentation/devicetree/bindings/sound/audio-graph-port.yaml
 
-which only adds routes. Isn't there a need for widgets/controls for the
-2 channel case as well?
 
-It's also not good practice to mix the initialization of max98090 with a
-function with an explicit 98373 prefix. it's hard to maintain and
-error-prone. You might as well duplicate the function, if it's not used
-it will be removed while linking.
+Changelog
+=========
 
-> +			links[id].ops = &max_98390_ops;
-> +			links[id].dpcm_capture = 1;
-> +
->  		} else {
->  			max_98357a_dai_link(&links[id]);
->  		}
-> @@ -881,6 +929,14 @@ static int sof_audio_probe(struct platform_device *pdev)
->  		sof_rt1011_codec_conf(&sof_audio_card_rt5682);
->  	else if (sof_rt5682_quirk & SOF_RT1015P_SPEAKER_AMP_PRESENT)
->  		sof_rt1015p_codec_conf(&sof_audio_card_rt5682);
-> +	else if (sof_rt5682_quirk & SOF_MAX98390_SPEAKER_AMP_PRESENT) {
-> +		if (sof_rt5682_quirk & SOF_MAX98390_TWEETER_SPEAKER_PRESENT)
-> +			max_98390_set_codec_conf(&sof_audio_card_rt5682,
-> +						ARRAY_SIZE(max_98390_4spk_components));
-> +		else
-> +			max_98390_set_codec_conf(&sof_audio_card_rt5682,
-> +						ARRAY_SIZE(max_98390_components));
-> +	}
->  
->  	if (sof_rt5682_quirk & SOF_SSP_BT_OFFLOAD_PRESENT)
->  		sof_audio_card_rt5682.num_links++;
-> @@ -1007,6 +1063,18 @@ static const struct platform_device_id board_ids[] = {
->  					SOF_RT5682_SSP_AMP(2) |
->  					SOF_RT5682_NUM_HDMIDEV(4)),
->  	},
-> +	{
-> +		.name = "adl_max98390_rt5682",
-> +		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
-> +					SOF_RT5682_SSP_CODEC(0) |
-> +					SOF_SPEAKER_AMP_PRESENT |
-> +					SOF_MAX98390_SPEAKER_AMP_PRESENT |
-> +					SOF_RT5682_SSP_AMP(1) |
-> +					SOF_RT5682_NUM_HDMIDEV(4) |
-> +					SOF_BT_OFFLOAD_SSP(2) |
-> +					SOF_SSP_BT_OFFLOAD_PRESENT),
-> +	},
-> +
->  	{ }
->  };
->  MODULE_DEVICE_TABLE(platform, board_ids);
-> @@ -1026,6 +1094,7 @@ MODULE_DESCRIPTION("SOF Audio Machine driver");
->  MODULE_AUTHOR("Bard Liao <bard.liao@intel.com>");
->  MODULE_AUTHOR("Sathya Prakash M R <sathya.prakash.m.r@intel.com>");
->  MODULE_AUTHOR("Brent Lu <brent.lu@intel.com>");
-> +MODULE_AUTHOR("Mac Chiang <mac.chiang@intel.com>");
->  MODULE_LICENSE("GPL v2");
->  MODULE_IMPORT_NS(SND_SOC_INTEL_HDA_DSP_COMMON);
->  MODULE_IMPORT_NS(SND_SOC_INTEL_SOF_MAXIM_COMMON);
-> diff --git a/sound/soc/intel/common/soc-acpi-intel-adl-match.c b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-> index a0f6a69c7038..2db152998e4a 100644
-> --- a/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-> +++ b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-> @@ -280,6 +280,11 @@ static const struct snd_soc_acpi_codecs adl_max98357a_amp = {
->  	.codecs = {"MX98357A"}
->  };
->  
-> +static const struct snd_soc_acpi_codecs adl_max98390_amp = {
-> +	.num_codecs = 1,
-> +	.codecs = {"MX98390"}
-> +};
-> +
->  struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
->  	{
->  		.id = "10EC5682",
-> @@ -297,6 +302,14 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
->  		.sof_fw_filename = "sof-adl.ri",
->  		.sof_tplg_filename = "sof-adl-max98357a-rt5682.tplg",
->  	},
-> +	{
-> +		.id = "10EC5682",
-> +		.drv_name = "adl_max98390_rt5682",
-> +		.machine_quirk = snd_soc_acpi_codec_list,
-> +		.quirk_data = &adl_max98390_amp,
-> +		.sof_fw_filename = "sof-adl.ri",
-> +		.sof_tplg_filename = "sof-adl-max98390-rt5682.tplg",
-> +	},
->  	{},
->  };
->  EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_adl_machines);
-> diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-> index bc9e70765678..be90a5f79766 100644
-> --- a/sound/soc/sof/sof-pci-dev.c
-> +++ b/sound/soc/sof/sof-pci-dev.c
-> @@ -59,6 +59,15 @@ static const struct dmi_system_id sof_tplg_table[] = {
->  		},
->  		.driver_data = "sof-adl-rt5682-ssp0-max98373-ssp2.tplg",
->  	},
-> +	{
-> +		.callback = sof_tplg_cb,
-> +		.matches = {
-> +			DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Brya"),
-> +			DMI_MATCH(DMI_OEM_STRING, "AUDIO-MAX98390_ALC5682I_I2S"),
-> +		},
-> +		.driver_data = "sof-adl-max98390-ssp2-rt5682-ssp0.tplg",
-> +	},
-> +
+v1 -> v2
+--------
+ * Put comments for soft reset application in the drivers.
+ * Split out mute/volume control logic in put() calls of MVC driver and
+   use separate callbacks for the respective kcontrols.
+ * Update kcontrol put() callback in MVC driver to return 1 whenever
+   there is change. Similar change is done in other drivers too.
+ * Use name-prefix.yaml reference for the driver documentation now.
+ * Add sound-name-prefix pattern for MIXER driver and use prefix
+   accordingly in DT.
 
-I am still relatively confused since you still have two alternatives for
-topology but you described three configurations.
+Sameer Pujar (13):
+  ASoC: soc-pcm: Don't reconnect an already active BE
+  ASoC: simple-card-utils: Increase maximum DAI links limit to 512
+  ASoC: audio-graph: Fixup CPU endpoint hw_params in a BE<->BE link
+  ASoC: dt-bindings: tegra: Few more Tegra210 AHUB modules
+  ASoC: tegra: Add routes for few AHUB modules
+  ASoC: tegra: Add Tegra210 based MVC driver
+  ASoC: tegra: Add Tegra210 based SFC driver
+  ASoC: tegra: Add Tegra210 based AMX driver
+  ASoC: tegra: Add Tegra210 based ADX driver
+  ASoC: tegra: Add Tegra210 based Mixer driver
+  arm64: defconfig: Enable few Tegra210 based AHUB drivers
+  arm64: tegra: Add few AHUB devices for Tegra210 and later
+  arm64: tegra: Extend APE audio support on Jetson platforms
+
+ .../bindings/sound/nvidia,tegra210-adx.yaml        |   76 +
+ .../bindings/sound/nvidia,tegra210-ahub.yaml       |   20 +
+ .../bindings/sound/nvidia,tegra210-amx.yaml        |   76 +
+ .../bindings/sound/nvidia,tegra210-mixer.yaml      |   74 +
+ .../bindings/sound/nvidia,tegra210-mvc.yaml        |   76 +
+ .../bindings/sound/nvidia,tegra210-sfc.yaml        |   73 +
+ arch/arm64/boot/dts/nvidia/tegra186-p2771-0000.dts | 1554 ++++++++-
+ arch/arm64/boot/dts/nvidia/tegra186.dtsi           |  120 +
+ arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dts | 1493 +++++++-
+ .../arm64/boot/dts/nvidia/tegra194-p3509-0000.dtsi | 1520 ++++++++-
+ arch/arm64/boot/dts/nvidia/tegra194.dtsi           |  116 +
+ arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts |  876 +++++
+ arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts |  876 +++++
+ arch/arm64/boot/dts/nvidia/tegra210.dtsi           |   77 +
+ arch/arm64/configs/defconfig                       |    5 +
+ include/sound/simple_card_utils.h                  |    2 +-
+ sound/soc/generic/audio-graph-card.c               |    4 +-
+ sound/soc/soc-pcm.c                                |    4 +
+ sound/soc/tegra/Kconfig                            |   48 +
+ sound/soc/tegra/Makefile                           |   10 +
+ sound/soc/tegra/tegra210_adx.c                     |  531 +++
+ sound/soc/tegra/tegra210_adx.h                     |   72 +
+ sound/soc/tegra/tegra210_ahub.c                    |  511 ++-
+ sound/soc/tegra/tegra210_amx.c                     |  600 ++++
+ sound/soc/tegra/tegra210_amx.h                     |   93 +
+ sound/soc/tegra/tegra210_mixer.c                   |  674 ++++
+ sound/soc/tegra/tegra210_mixer.h                   |  100 +
+ sound/soc/tegra/tegra210_mvc.c                     |  645 ++++
+ sound/soc/tegra/tegra210_mvc.h                     |  117 +
+ sound/soc/tegra/tegra210_sfc.c                     | 3549 ++++++++++++++++++++
+ sound/soc/tegra/tegra210_sfc.h                     |   78 +
+ 31 files changed, 13647 insertions(+), 423 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-adx.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-amx.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-mixer.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-mvc.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-sfc.yaml
+ create mode 100644 sound/soc/tegra/tegra210_adx.c
+ create mode 100644 sound/soc/tegra/tegra210_adx.h
+ create mode 100644 sound/soc/tegra/tegra210_amx.c
+ create mode 100644 sound/soc/tegra/tegra210_amx.h
+ create mode 100644 sound/soc/tegra/tegra210_mixer.c
+ create mode 100644 sound/soc/tegra/tegra210_mixer.h
+ create mode 100644 sound/soc/tegra/tegra210_mvc.c
+ create mode 100644 sound/soc/tegra/tegra210_mvc.h
+ create mode 100644 sound/soc/tegra/tegra210_sfc.c
+ create mode 100644 sound/soc/tegra/tegra210_sfc.h
+
+-- 
+2.7.4
+
