@@ -2,101 +2,80 @@ Return-Path: <SRS0=eqSS=OD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3565C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 15:34:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E5B2C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 15:35:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 325526103B
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 15:34:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 325526103B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id F1E4460249
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 15:35:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F1E4460249
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D5271166A;
-	Mon, 13 Sep 2021 17:33:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5271166A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 88E9C1674;
+	Mon, 13 Sep 2021 17:34:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88E9C1674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631547284;
-	bh=+wXVvbwR/M5DJfizy+XFoRoXkF/7eyowX7MF84oUjAw=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1631547328;
+	bh=BVrxRWHKyUrGv+35tc6x5b7RGSJFUHhIxAEhdcNdIKs=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fOXtuo1e9P8DCT/Rp/Z9LianzIT0ShOWeVjPAUgJmyKFM7Ak4/Ms2pEo+bw1lVBVQ
-	 U7VczuxjswD7Yk4GJVIXJv07dvwcQ6Vwzm6MlpL1qjZZl+5tAbLOCSP/aez1P19lxp
-	 WKRC3yuuUFZkFTOESWaVerE/6r6/arOGWJf+Y/LQ=
+	b=Ccfa9ircc3rEVitG0dHF7ssLgapD2BrdxpGGh953D+vHVtuUHEo4DLI9xm8GUC0qt
+	 HtC89JGqP3x7ntrPLTHRYBR9B+G4CMSXgEe0OOwUZsOpyCmnpM6u4Vbm3mk7t4286B
+	 R3rhZKwHn8DzL7oREKx1wZepQksHGRtoZmmaOO9M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3A0E7F80227;
-	Mon, 13 Sep 2021 17:33:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0CDDEF8049E;
+	Mon, 13 Sep 2021 17:33:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C053EF802E8; Mon, 13 Sep 2021 17:33:30 +0200 (CEST)
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
- [IPv6:2a00:1450:4864:20::42a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 152C8F802E8; Mon, 13 Sep 2021 17:33:39 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D92CEF80227
- for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 17:33:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D92CEF80227
+ by alsa1.perex.cz (Postfix) with ESMTPS id 16D5CF80132
+ for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 17:33:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16D5CF80132
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="gGydgc5W"
-Received: by mail-wr1-x42a.google.com with SMTP id x6so15339401wrv.13
- for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 08:33:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=fWXmDpZaWGj5j9E7Z1va6xEMGPrQKj28NZ3Lpex3gSk=;
- b=gGydgc5WG9qP+XafnPlnIhq4Jkw9gFS6cL+s0Fzpf6uH5jRxzSiQqq8dqkrP6P6X/x
- c1O/xlJAb6NhfoHusa2YEteHfrHqqASps2eCccwz8auVvk5OIQJq65Ola2TiK3vZFGZ5
- C7F9oUELGj6mfDRFYbDmwDRUvocDC0ggqoX10j7XjgICPH39qf1COPHiGy8ZTkGKti/B
- gw2WJ9/szdNEuw0Fnr79v8porIBjnnWl7J4SAX7GoVUOSudpdlfhWQZXy62d2cgDhdl4
- EmUtAL6kjerRSAl4Ka5MtdWDP/Gp8ZA8KX1ZkS5MvN3LgYRdLaDZF+0qh/a5LFXR2j/A
- Gw5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=fWXmDpZaWGj5j9E7Z1va6xEMGPrQKj28NZ3Lpex3gSk=;
- b=MNEb/QKxcslbIBLXer27eYt+0jqWwTNxEC7cbNBbqfCBH+HHti1dCHGq2F+403S7CK
- omMoaRZXTEwNKdrZOTL3tdKVXg5KADNuSJWEtk+I7zIQ7QYbrd4DWw54JWjzwKpfFDqr
- Y62Ik0YSd8ky/mZRTzfsAPmfAfo6/+2WzQ5Sk9CWkBmbNLyFFY5xpRQQcL+TbpO5umow
- oHh/XRX7qC+EvRz3HGhHignE9HegdQZA08HuuDyvbEIxfNInXgMPe6ZDOmVH9WSu0zHC
- Cnm0oz1xeaEccIH2eAVMiHA2YqxOAnmrT957D89FwOjZI7StiYMyODthkd1EK0Wl7n6x
- hJnw==
-X-Gm-Message-State: AOAM530Oth+yRxA81g9zwyR2ED3mUQ5JCQIoMX5VR1H/dWfjWnvHiXqG
- Rb3AOGGYBrFrYhMG7qHG2P0=
-X-Google-Smtp-Source: ABdhPJyj2q3U91trxKY3jdr7ZN8T4SItcT/Ai6azGMbEw3OJvXoU7wHS/d/cT3wdfi8N1XCC0mZ2tQ==
-X-Received: by 2002:adf:ed92:: with SMTP id c18mr4947352wro.86.1631547204293; 
- Mon, 13 Sep 2021 08:33:24 -0700 (PDT)
-Received: from kista.localnet (cpe-86-58-29-253.static.triera.net.
- [86.58.29.253])
- by smtp.gmail.com with ESMTPSA id w9sm6975406wmc.19.2021.09.13.08.33.23
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 13 Sep 2021 08:33:23 -0700 (PDT)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: Re: [PATCH 1/2] dt-bindings: sound: sun4i-i2s: add Allwinner R40
- I2S compatible
-Date: Mon, 13 Sep 2021 17:33:22 +0200
-Message-ID: <22661441.uYPlIyrNLm@kista>
-In-Reply-To: <20210913111117.GB4283@sirena.org.uk>
-References: <20210912072914.398419-1-jernej.skrabec@gmail.com>
- <20210912072914.398419-2-jernej.skrabec@gmail.com>
- <20210913111117.GB4283@sirena.org.uk>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="FakgeYfe"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C236F6103B;
+ Mon, 13 Sep 2021 15:33:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1631547206;
+ bh=BVrxRWHKyUrGv+35tc6x5b7RGSJFUHhIxAEhdcNdIKs=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=FakgeYfeGaCUOVDhuplPOuxzkueMRigaWZPbFMdFaWzXE1bGfIIOH1Mm6EF0NCgJX
+ Iluf7pmOjapb/XnI4+xibPLH3PNTzPQtwjQ1G+hkJcJfOmoWXgsYh9StzqKB3c5B0l
+ Z58aIJ3VTZ8ov0dWfyQjkfnEQ0+E5nZoZ68DRIznchEDUSgnv9OjoUdbDRw5mZzfLD
+ zYi7sK5wyxfa4wT+OBkNYTjBRRZVXRPio/dHjMwWBat9Aer4OgGDt55PZngQ0+SPUf
+ IfaLvfbRcezowcvk0kZoz1CaRIS40SwyTYzT6x0TImW6ksMk4RdDCn3AQARF/azmqn
+ gddnu7nozISGw==
+Date: Mon, 13 Sep 2021 16:32:46 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Trevor Wu <trevor.wu@mediatek.com>
+Subject: Re: [PATCH v2] ASoC: mediatek: common: handle NULL case in
+ suspend/resume function
+Message-ID: <20210913153246.GI4283@sirena.org.uk>
+References: <20210910092613.30188-1-trevor.wu@mediatek.com>
+ <20210910102358.GC4474@sirena.org.uk>
+ <5fa1e99f1b9097336a3e610dc383170f09036b14.camel@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, mripard@kernel.org, linux-kernel@vger.kernel.org,
- wens@csie.org, robh+dt@kernel.org, linux-sunxi@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="PWfwoUCx3AFJRUBq"
+Content-Disposition: inline
+In-Reply-To: <5fa1e99f1b9097336a3e610dc383170f09036b14.camel@mediatek.com>
+X-Cookie: Above all else -- sky.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, linux-kernel@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, dan.carpenter@oracle.com,
+ matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,35 +91,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi!
 
-Dne ponedeljek, 13. september 2021 ob 13:11:17 CEST je Mark Brown napisal(a):
-> On Sun, Sep 12, 2021 at 09:29:13AM +0200, Jernej Skrabec wrote:
-> > Allwinner R40 has 3 I2S controllers, compatible to those, found in H3.
-> > 
-> > Add R40/H3 compatible pair to DT bindings.
-> 
-> Please submit patches using subject lines reflecting the style for the
-> subsystem, this makes it easier for people to identify relevant patches.
-> Look at what existing commits in the area you're changing are doing and
-> make sure your subject lines visually resemble what they're doing.
-> There's no need to resubmit to fix this alone.
+--PWfwoUCx3AFJRUBq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I did exactly that. But history is not uniform:
+On Mon, Sep 13, 2021 at 01:55:38PM +0800, Trevor Wu wrote:
+> On Fri, 2021-09-10 at 11:23 +0100, Mark Brown wrote:
 
-$ git log Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
-ce09d1a6800d dt-bindings: sound: sun4i-i2s: add Allwinner V3 I2S compatible
-0bc1bf241de5 ASoC: sun4i-i2s: Document H3 with missing RX channel possibility
-e84f44ba4604 ASoC: sun4i-i2s: Add H6 compatible
-5c7404bb30bc dt-bindings: Change maintainer address
-eb5b12843b06 dt-bindings: sound: sun4i-i2s: Document that the RX channel can 
-be missing
-0a0ca8e94ca3 dt-bindings: sound: Convert Allwinner I2S binding to YAML
+> > It seems like it'd be better to just allocate the buffer at probe
+> > time
+> > and fail in case we can't get it, I'd be surprised if there's many
+> > platforms using this hardware that don't also end up suspending and
+> > resuming.
 
-Most subjects contain "dt-bindings: sound: " at the beginning. I selected 
-variant from latest commit (ce09d1a6800d).
+> Thanks for your suggestion.
+> I agree it's better to allocate the memory at probe time.
+> I think we can still keep the implementation in the suspend/resume
+> function as a fallback solution if user doesn't allocate the memory in
+> probe function.
 
-Best regards,
-Jernej
+If you can't allocate it at probe time you should probably just fail the
+probe.
 
+> In the new mediatek SOCs, regcache has been used to handle register
+> backup.
+> Do I need to add the buffer allocation on probe function to the
+> platform in which mtk_afe_suspend and mtk_afe_resume are used?
 
+I think you should have separate implementations if you have both regmap
+and non-regmap versions of this.
+
+--PWfwoUCx3AFJRUBq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmE/bx4ACgkQJNaLcl1U
+h9Arhgf/YT4zF+AifPO22fnvUWMW7ps029xRsDBaUGwyRl4XFu6O90vmI7jjaogy
+2fFfMzXc8EoOGWfhZhrhZqkIogzIol1wDrEnHtWLDpdnWBOgejqTG6jh3hbIU4EI
+PRKbvL3qTXlzfhz23Qb+BjG4SQaDbVfRbb+e+nE4Om9qw5b199MIDht8Mye8KMgE
+Wqt+y6alWGPcl/1RsdRJ8pVWASpQyYmwwbaHnVtGEarrdVOZzmiEL2offMAwiW4G
+NDRcFOJcCrpu5eECoF2RM5XeRwzwJ8CxIvKMtlbhbniPDRyBPaLZ2zPGEUfInaoe
+8lGIdpFSBHHvIq1QE7w6VAoqpmER4g==
+=eZc7
+-----END PGP SIGNATURE-----
+
+--PWfwoUCx3AFJRUBq--
