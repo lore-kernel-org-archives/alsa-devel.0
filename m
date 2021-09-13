@@ -6,76 +6,77 @@ X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E5B2C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 15:35:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 197F0C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 15:44:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F1E4460249
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 15:35:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F1E4460249
+	by mail.kernel.org (Postfix) with ESMTPS id 41814610D1
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 15:44:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 41814610D1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 88E9C1674;
-	Mon, 13 Sep 2021 17:34:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88E9C1674
+	by alsa0.perex.cz (Postfix) with ESMTPS id A00111669;
+	Mon, 13 Sep 2021 17:43:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A00111669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631547328;
-	bh=BVrxRWHKyUrGv+35tc6x5b7RGSJFUHhIxAEhdcNdIKs=;
+	s=default; t=1631547874;
+	bh=iE0HFH0NNPFgkof/k+GQAAQOhVg4zb9WvqBH1HY3xJc=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ccfa9ircc3rEVitG0dHF7ssLgapD2BrdxpGGh953D+vHVtuUHEo4DLI9xm8GUC0qt
-	 HtC89JGqP3x7ntrPLTHRYBR9B+G4CMSXgEe0OOwUZsOpyCmnpM6u4Vbm3mk7t4286B
-	 R3rhZKwHn8DzL7oREKx1wZepQksHGRtoZmmaOO9M=
+	b=MKtEcRZsa+CUz1+HfMMlzZarZTWNNsJ/8sODq+Lv7MF8RqB27yvYuY3sl89uYcn8O
+	 +0yTL8VOVKF7CS94UBvyHIt+4AwABQLUNGwLwNb9nebJM1Eelo+YSjfizQpw0jvjE9
+	 kAww1lJ0EAZZgpsAeZlchZUQgzqNpX80UsyaCg7U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0CDDEF8049E;
-	Mon, 13 Sep 2021 17:33:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3DF42F80227;
+	Mon, 13 Sep 2021 17:43:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 152C8F802E8; Mon, 13 Sep 2021 17:33:39 +0200 (CEST)
+ id 0BD42F8027C; Mon, 13 Sep 2021 17:43:43 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 16D5CF80132
- for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 17:33:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16D5CF80132
+ by alsa1.perex.cz (Postfix) with ESMTPS id 97348F80128
+ for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 17:43:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97348F80128
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="FakgeYfe"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C236F6103B;
- Mon, 13 Sep 2021 15:33:25 +0000 (UTC)
+ header.b="ImLrqL0B"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD78B60F6F;
+ Mon, 13 Sep 2021 15:43:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631547206;
- bh=BVrxRWHKyUrGv+35tc6x5b7RGSJFUHhIxAEhdcNdIKs=;
+ s=k20201202; t=1631547812;
+ bh=iE0HFH0NNPFgkof/k+GQAAQOhVg4zb9WvqBH1HY3xJc=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=FakgeYfeGaCUOVDhuplPOuxzkueMRigaWZPbFMdFaWzXE1bGfIIOH1Mm6EF0NCgJX
- Iluf7pmOjapb/XnI4+xibPLH3PNTzPQtwjQ1G+hkJcJfOmoWXgsYh9StzqKB3c5B0l
- Z58aIJ3VTZ8ov0dWfyQjkfnEQ0+E5nZoZ68DRIznchEDUSgnv9OjoUdbDRw5mZzfLD
- zYi7sK5wyxfa4wT+OBkNYTjBRRZVXRPio/dHjMwWBat9Aer4OgGDt55PZngQ0+SPUf
- IfaLvfbRcezowcvk0kZoz1CaRIS40SwyTYzT6x0TImW6ksMk4RdDCn3AQARF/azmqn
- gddnu7nozISGw==
-Date: Mon, 13 Sep 2021 16:32:46 +0100
+ b=ImLrqL0ByWQ5ab29nSi4j7UIJ3wlAyVn5OmPplWgc2aPveBGnx6uVkQ/WAwVaQHE+
+ 1bYm/d05gurtsREmPDH6Kz0M3DCDTlDzUp7oXj71jncBhhK6tQ+mGHMW2w3dDlrb0x
+ sPrTFeGUEp+CzeNBFYouohZtJCJxKdxlYIL7rYdZ7SQXDctkRWk662JOzl+4NQNdzv
+ LCs1enD408VCN2QqF88/6PauwkgUVo8IjmKzZVrZNy33ufBtGImfRpZHlhyp947VR/
+ 8WOYlFDtyXHt90RkTaYQ2qsJgWrBtycmpWG9g1Pw+uyYM6DCgx+6gyoEI2CnkMWEdI
+ AYXi3yfTm8vXQ==
+Date: Mon, 13 Sep 2021 16:42:53 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Trevor Wu <trevor.wu@mediatek.com>
-Subject: Re: [PATCH v2] ASoC: mediatek: common: handle NULL case in
- suspend/resume function
-Message-ID: <20210913153246.GI4283@sirena.org.uk>
-References: <20210910092613.30188-1-trevor.wu@mediatek.com>
- <20210910102358.GC4474@sirena.org.uk>
- <5fa1e99f1b9097336a3e610dc383170f09036b14.camel@mediatek.com>
+To: Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>
+Subject: Re: Re: [PATCH 1/2] dt-bindings: sound: sun4i-i2s: add Allwinner R40
+ I2S compatible
+Message-ID: <20210913154253.GJ4283@sirena.org.uk>
+References: <20210912072914.398419-1-jernej.skrabec@gmail.com>
+ <20210912072914.398419-2-jernej.skrabec@gmail.com>
+ <20210913111117.GB4283@sirena.org.uk> <22661441.uYPlIyrNLm@kista>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="PWfwoUCx3AFJRUBq"
+ protocol="application/pgp-signature"; boundary="pMCBjikF2xGw87uL"
 Content-Disposition: inline
-In-Reply-To: <5fa1e99f1b9097336a3e610dc383170f09036b14.camel@mediatek.com>
+In-Reply-To: <22661441.uYPlIyrNLm@kista>
 X-Cookie: Above all else -- sky.
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com, linux-kernel@vger.kernel.org,
- linux-mediatek@lists.infradead.org, dan.carpenter@oracle.com,
- matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ lgirdwood@gmail.com, mripard@kernel.org, linux-kernel@vger.kernel.org,
+ wens@csie.org, robh+dt@kernel.org, linux-sunxi@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,49 +93,52 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---PWfwoUCx3AFJRUBq
-Content-Type: text/plain; charset=us-ascii
+--pMCBjikF2xGw87uL
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 13, 2021 at 01:55:38PM +0800, Trevor Wu wrote:
-> On Fri, 2021-09-10 at 11:23 +0100, Mark Brown wrote:
+On Mon, Sep 13, 2021 at 05:33:22PM +0200, Jernej =C5=A0krabec wrote:
+> Dne ponedeljek, 13. september 2021 ob 13:11:17 CEST je Mark Brown napisal=
+(a):
+> > On Sun, Sep 12, 2021 at 09:29:13AM +0200, Jernej Skrabec wrote:
 
-> > It seems like it'd be better to just allocate the buffer at probe
-> > time
-> > and fail in case we can't get it, I'd be surprised if there's many
-> > platforms using this hardware that don't also end up suspending and
-> > resuming.
+> > Please submit patches using subject lines reflecting the style for the
+> > subsystem, this makes it easier for people to identify relevant patches.
+> > Look at what existing commits in the area you're changing are doing and
+> > make sure your subject lines visually resemble what they're doing.
+> > There's no need to resubmit to fix this alone.
 
-> Thanks for your suggestion.
-> I agree it's better to allocate the memory at probe time.
-> I think we can still keep the implementation in the suspend/resume
-> function as a fallback solution if user doesn't allocate the memory in
-> probe function.
+> I did exactly that. But history is not uniform:
 
-If you can't allocate it at probe time you should probably just fail the
-probe.
+=2E..
 
-> In the new mediatek SOCs, regcache has been used to handle register
-> backup.
-> Do I need to add the buffer allocation on probe function to the
-> platform in which mtk_afe_suspend and mtk_afe_resume are used?
+> Most subjects contain "dt-bindings: sound: " at the beginning. I selected=
+=20
+> variant from latest commit (ce09d1a6800d).
 
-I think you should have separate implementations if you have both regmap
-and non-regmap versions of this.
+If you look at more than just this one file the numbers look rather
+different there, I see I will have to start being super strict with the
+sunxi stuff here :( .  Other people messing up is not a good reason to
+follow them, nor is the occasional thing that's part of a larger series
+being let slide without a maintainer fixup.
 
---PWfwoUCx3AFJRUBq
+Nothing in this patch series had anything about ASoC in it meaning I
+very nearly deleted this unread.
+
+--pMCBjikF2xGw87uL
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmE/bx4ACgkQJNaLcl1U
-h9Arhgf/YT4zF+AifPO22fnvUWMW7ps029xRsDBaUGwyRl4XFu6O90vmI7jjaogy
-2fFfMzXc8EoOGWfhZhrhZqkIogzIol1wDrEnHtWLDpdnWBOgejqTG6jh3hbIU4EI
-PRKbvL3qTXlzfhz23Qb+BjG4SQaDbVfRbb+e+nE4Om9qw5b199MIDht8Mye8KMgE
-Wqt+y6alWGPcl/1RsdRJ8pVWASpQyYmwwbaHnVtGEarrdVOZzmiEL2offMAwiW4G
-NDRcFOJcCrpu5eECoF2RM5XeRwzwJ8CxIvKMtlbhbniPDRyBPaLZ2zPGEUfInaoe
-8lGIdpFSBHHvIq1QE7w6VAoqpmER4g==
-=eZc7
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmE/cXwACgkQJNaLcl1U
+h9B7yAf9GrjBcYYjoYmHk2ZHnH4FGIW1SIEuaNKaEJmJXHzcLzx4UAPNI2O4V+8g
+FZ9vrvXdgrL+oSe55PWGaZBsht4c2v4girmAbjzHR38nRCJLhERN/6R5wEPbVByW
+q4jCqRCp1NQ7QpRgz/2JguQEnyYkX0Yx3FJaH5T0O6Pj0XvkBVj1b1pSalwBcd64
+LJnF21d/xcGgamIxvtmTPKihdz7qn60UVNXT1NHbb7kVfpkS5WOyVQ7LX5rW5GRS
+yzMRhG0g94WnK2qpIjWTxIaTqjsC3mBnS48Y+zMVk53jmg1I/IzkTzz5ETNCD2i1
+2YIUG6UpDNc+IaUbEvVfu+VwDtTZyw==
+=5aW6
 -----END PGP SIGNATURE-----
 
---PWfwoUCx3AFJRUBq--
+--pMCBjikF2xGw87uL--
