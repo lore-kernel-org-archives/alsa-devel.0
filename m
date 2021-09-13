@@ -2,93 +2,80 @@ Return-Path: <SRS0=eqSS=OD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-18.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4727C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:28:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B428C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:44:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 21CBC60F0F
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:28:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 21CBC60F0F
+	by mail.kernel.org (Postfix) with ESMTPS id 2EA7360FF2
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 12:44:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2EA7360FF2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 79C2B1660;
-	Mon, 13 Sep 2021 14:27:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79C2B1660
+	by alsa0.perex.cz (Postfix) with ESMTPS id E925482B;
+	Mon, 13 Sep 2021 14:43:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E925482B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631536118;
-	bh=Z0Bp+ATwfreykNfRFd/X3NlzI5UTdEJ/J40+8FRiWd8=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=n3yQ7faTGcq1NfUBT9mQXVzo9WbbamAuRr/JYXag8gdWkDQ5B0suaCQJg1Eo2Yc8f
-	 hQLvYiWQ8V2GCqNs7XraLPzjT05WvVHeIbwz0G/3TEp8kivnXRFax+IeQ5uer0BF7b
-	 DBxpEr7gw5LaocbsC6wjT18WWQU4hcHs5O4v3vPA=
+	s=default; t=1631537076;
+	bh=XPoptLzVZXfTusuH5emFcquo/EpZ+re81OiCAtRLmuM=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ec76rQdKsIZsGlXqsmljYZsvGjLsAPBovvrOB/yFQNmzlITP5ssUP1M7trWLuyy+w
+	 6yS937j1OOkC6ofXw7WeoPAVZSyYDB50gbrAVm+o4jayPP2Uzs8h02IvdvnAT10APy
+	 9teFxhLKs74NvpQ4wCBZ1Yn/DWNZxsG9gOVPpWmM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16F9CF8049E;
-	Mon, 13 Sep 2021 14:27:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6ACDEF80227;
+	Mon, 13 Sep 2021 14:43:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3A326F8032C; Mon, 13 Sep 2021 14:27:46 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id C128BF8027C; Mon, 13 Sep 2021 14:43:43 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1B3ADF8027C
- for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 14:27:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B3ADF8027C
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9586F80128
+ for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 14:43:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9586F80128
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="XDHPhIgw"; 
+ header.b="iJM6Hfia"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="Z2mEn8PX"
+ header.b="u3DYddmL"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 9EEAC1FFD1;
- Mon, 13 Sep 2021 12:27:37 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id E8C8F21EA1
+ for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 12:43:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1631536057; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=8WJ0NLHUZMYf4qCCvm64Eu0yv8lmqZXT2LzxX78zP2o=;
- b=XDHPhIgwcjYcnvKrYNMu360Ojab8YqG7WuK3VkM9mc5nWU1IdOsGmRUXoPJrGiTTc5sdad
- q9tk6c+v1Q+pu827LUnVMfc1XYn9CuvwQu2UWydGEJhCZmoK9fR3R65JukI2vzZo9hg4Od
- PSDOzGwPEKyxnKEslNgqRsPUfrK1anU=
+ t=1631537011; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=EhpQcU7KRRNxxgRc7OTNU7DMEinAKyvxGoRvy9BVdgk=;
+ b=iJM6HfiapXC9MUqp/UmGeGwzFX3g7m+THfz1/ohsBisbian1MXEcz3Kasgpv63HSZ+OfJV
+ GoTD4OaOJm+hZOteu2jRme25ilq8sRXZKhHJkJorQOlrscX1cFlZo+Ce39NAItyKMVC5Ab
+ 2KUcRFYue/o3mvu+y5BnIR1z856xY3M=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1631536057;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=8WJ0NLHUZMYf4qCCvm64Eu0yv8lmqZXT2LzxX78zP2o=;
- b=Z2mEn8PXa9rhaQftxDWu1PLuYmOqikxXpR03BhpilYgI5dULgQZ/y5kL0H+/ijM2x4Vfyg
- tsprWUYFPimuTKAg==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 97E24A3B99;
- Mon, 13 Sep 2021 12:27:37 +0000 (UTC)
-Date: Mon, 13 Sep 2021 14:27:37 +0200
-Message-ID: <s5hzgsgirt2.wl-tiwai@suse.de>
+ s=susede2_ed25519; t=1631537011;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=EhpQcU7KRRNxxgRc7OTNU7DMEinAKyvxGoRvy9BVdgk=;
+ b=u3DYddmLl4oBP//AMa1a7AuRZMRFvfd6jtSB60s9OfmLMJNyLKP+5ul0ufGdE86oHtmCxo
+ EXcmx1Ph+saxHJCQ==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id E3B92A3B8E;
+ Mon, 13 Sep 2021 12:43:31 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Cameron Berkenpas <cam@neo-zeon.de>
-Subject: Re: [PATCH] ALSA: hda/realtek: Quirks to enable speaker output for
- Lenovo Legion 7i 15IMHG05, Yoga 7i 14ITL5/15ITL5, and 13s Gen2 laptops.
-In-Reply-To: <e1c633dc-570f-d06a-51cb-bdfd0c1a2549@neo-zeon.de>
-References: <20210912230715.156221-1-cam@neo-zeon.de>
- <s5hy281jb7l.wl-tiwai@suse.de>
- <e1c633dc-570f-d06a-51cb-bdfd0c1a2549@neo-zeon.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] Revert "ALSA: hda: Drop workaround for a hang at shutdown
+ again"
+Date: Mon, 13 Sep 2021 14:43:30 +0200
+Message-Id: <20210913124330.24530-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,59 +91,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 13 Sep 2021 13:59:08 +0200,
-Cameron Berkenpas wrote:
-> 
-> 
-> I'll test this  and re-submit today or tomorrow. Should I re-submit
-> the patch entirely? Ie, a new email thread with a [PATCH v2] subject?
+This reverts commit 8fc8e903156f42c66245838441d03607e9067381.
 
-Yes, a resubmission of a v2 patch would be appreciated.
+It was expected that the fixes in HD-audio codec side would make the
+workaround redundant, but unfortunately it doesn't seem sufficing.
+Resurrect the workaround for now.
 
-> Thanks for the fast response! It actually made it to my inbox this time.
+Fixes: 8fc8e903156f ("ALSA: hda: Drop workaround for a hang at shutdown again")
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=214045
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_intel.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-Heh :)
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 3aa432d814a2..47777439961c 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -883,10 +883,11 @@ static unsigned int azx_get_pos_skl(struct azx *chip, struct azx_dev *azx_dev)
+ 	return azx_get_pos_posbuf(chip, azx_dev);
+ }
+ 
+-static void azx_shutdown_chip(struct azx *chip)
++static void __azx_shutdown_chip(struct azx *chip, bool skip_link_reset)
+ {
+ 	azx_stop_chip(chip);
+-	azx_enter_link_reset(chip);
++	if (!skip_link_reset)
++		azx_enter_link_reset(chip);
+ 	azx_clear_irq_pending(chip);
+ 	display_power(chip, false);
+ }
+@@ -895,6 +896,11 @@ static void azx_shutdown_chip(struct azx *chip)
+ static DEFINE_MUTEX(card_list_lock);
+ static LIST_HEAD(card_list);
+ 
++static void azx_shutdown_chip(struct azx *chip)
++{
++	__azx_shutdown_chip(chip, false);
++}
++
+ static void azx_add_card_list(struct azx *chip)
+ {
+ 	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+@@ -2357,7 +2363,7 @@ static void azx_shutdown(struct pci_dev *pci)
+ 		return;
+ 	chip = card->private_data;
+ 	if (chip && chip->running)
+-		azx_shutdown_chip(chip);
++		__azx_shutdown_chip(chip, true);
+ }
+ 
+ /* PCI IDs */
+-- 
+2.26.2
 
-
-thanks,
-
-Takashi
-
-> 
-> -Cameron
-> 
-> On 9/12/21 10:28 PM, Takashi Iwai wrote:
-> > On Mon, 13 Sep 2021 01:07:16 +0200,
-> > Cameron Berkenpas wrote:
-> >> This patch initializes and enables speaker output on the Lenovo Legion 7i
-> >> 15IMHG05, Yoga 7i 14ITL5/15ITL5, and 13s Gen2 series of laptops using the
-> >> HDA verb sequence specific to each model.
-> >>
-> >> Speaker automute is disabled for the Lenovo Legion 7i 15IMHG05 to avoid
-> >> breaking speaker output on resume and when devices are unplugged from its
-> >> headphone jack.
-> >>
-> >> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=208555
-> >> Signed-off-by: Cameron Berkenpas <cam@neo-zeon.de>
-> > Thanks for the patch.  This version looks almost good, but just one
-> > thing:
-> >
-> >> +/* Fixup for Lenovo Legion 15IMHg05 speaker output on headset removal. */
-> >> +static void alc287_fixup_legion_15imhg05_speakers(struct hda_codec *codec,
-> >> +						  const struct hda_fixup *fix,
-> >> +						  int action)
-> >> +{
-> >> +	struct alc_spec *spec = codec->spec;
-> >> +
-> >> +	switch (action) {
-> >> +	case HDA_FIXUP_ACT_INIT:
-> >> +		spec->gen.automute_speaker = 0;
-> > This flag is effective only until "Auto-Mute Mode" mixer control is
-> > changed, so it's not persistent.  If you'd need to disable the
-> > auto-mute feature, set spec->gen.suppress_auto_mute=1 instead.
-> >
-> >
-> > thanks,
-> >
-> > Takashi
-> 
