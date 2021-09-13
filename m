@@ -4,74 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42F96C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 10:57:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E04AC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 10:57:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 92FF160EE5
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 10:57:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 92FF160EE5
+	by mail.kernel.org (Postfix) with ESMTPS id B7B2961004
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 10:57:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B7B2961004
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 231811658;
-	Mon, 13 Sep 2021 12:56:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 231811658
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4BEBD1654;
+	Mon, 13 Sep 2021 12:56:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BEBD1654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631530631;
-	bh=kUrQ92vP9h8EK13GVMQFGAIqVlRq6W60sm75uv3M5D8=;
+	s=default; t=1631530643;
+	bh=7l+vYectJVc2pcNJ1xmipSlZuJEZCOZ/t0TzVWfHOpQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=k+nnMiaiC5U0ZmT+SLYY4hykNwofLQKlPF64MfKMvfoNPYDYx3W4isBELWyWkTCXa
-	 217zLluO20DOuu4SxBJG26sQE/DsZLjq2UzYf6sLUVgMBT2S8GPvBPr3pLVehb29YU
-	 /1GhEDq+OxhmR53s7iTl0i7vt83NIVs5UVPy6mF4=
+	b=PngDHbpC4IdorgugC0BKt1/UQ65WUB6K1AtCbxZYHRzO1zfOWtvNITQ8BAO7NxFpA
+	 f1UdL89LHsA15geNrZGITsyWl3D8HjNmKoZ5rJEsnIiHvGiDlka4nV6WthiXgEbDfm
+	 lB1VFcDNLFv+rmNmDTlNdjCIDJtmNYMkYy9w8A+M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE306F804F1;
-	Mon, 13 Sep 2021 12:54:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 87F43F804F3;
+	Mon, 13 Sep 2021 12:54:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8E372F804E6; Mon, 13 Sep 2021 12:54:50 +0200 (CEST)
+ id 21510F804E7; Mon, 13 Sep 2021 12:54:53 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1ABF3F804AB
- for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 12:54:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1ABF3F804AB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 386C0F804D9
+ for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 12:54:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 386C0F804D9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mxIkQczK"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E014561004;
- Mon, 13 Sep 2021 10:54:38 +0000 (UTC)
+ header.b="kNOWPfSd"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 86CD861004;
+ Mon, 13 Sep 2021 10:54:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631530479;
- bh=kUrQ92vP9h8EK13GVMQFGAIqVlRq6W60sm75uv3M5D8=;
+ s=k20201202; t=1631530486;
+ bh=7l+vYectJVc2pcNJ1xmipSlZuJEZCOZ/t0TzVWfHOpQ=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=mxIkQczKp6wVjKtmuikBd6RWa0brAeO50bXYgqyRaQe8jjF5M6tKl5HeVT0ebBR2d
- cSplQI2glhjjESJ63HDCvxmaHfGUD43bmVCJ9CWl3UQ0gsnh5Tzykkb8Q8QpKCVCf+
- 32CUrPVeqpfZdwXqoh3dD7TK7gWs6O5ewr/nkRkFoBT4jw01EHZmjY/AckD2U4UoNa
- Iwb28NV4dWLRUhkJ7WEi3LqPZOLzoWMuiFb0hvU0QqOLhBCGu9DtIJP24+5xs9vpGm
- 78sofN+fq8i/xk0a/IO/wsXcEENz1qzEWoR0izSlFzr6dwu1GRBFJhT/2oE1xmGG6h
- IHBqyDKOfsXyQ==
+ b=kNOWPfSdeU4ol4rp4iIs1sStfO5f1aba6ThiI63sJDvw8W6/7tKCot+ftABjHK4H4
+ jxD+gIqQYBRvf2Pto3xU5Uv71cPnjg4F7RRUpaMjBHzeye8rKjtr0mXXQsLv8KwOhY
+ LhaAIdpg7Wsp4eZJobeR8gOAQs5UkrYkAoOnDoY0Va7oBPWYVq2nMiLuxKO8Q+JKpj
+ xaB0Cc5/caUQOLLelK523pe+pxzD+QEpoycUagWpPN6jAxB1VKWGWN7TJlshE8CmF2
+ ACulhOe9EiLjp7DAEbkCOnuX9bfGK3LbB+1ZeAHwTCpDb20vIlZsJwz64VUl+kF8Jg
+ yYnMtMIV9GgGw==
 From: Mark Brown <broonie@kernel.org>
-To: rander.wang@intel.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- lgirdwood@gmail.com
-Subject: Re: [PATCH] ASoC: SOF: control: fix a typo in put operations for
- kcontrol
-Date: Mon, 13 Sep 2021 11:53:16 +0100
-Message-Id: <163152996583.45703.7024459155619829972.b4-ty@kernel.org>
+To: robh+dt@kernel.org, lgirdwood@gmail.com, thierry.reding@gmail.com,
+ Sameer Pujar <spujar@nvidia.com>
+Subject: Re: [PATCH v3 0/3] Convert name-prefix doc to json-schema
+Date: Mon, 13 Sep 2021 11:53:18 +0100
+Message-Id: <163152996585.45703.9035282827838850495.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210902114744.27237-1-peter.ujfalusi@linux.intel.com>
-References: <20210902114744.27237-1-peter.ujfalusi@linux.intel.com>
+In-Reply-To: <1630686919-19495-1-git-send-email-spujar@nvidia.com>
+References: <1630686919-19495-1-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ stephan@gerhold.net, linux-kernel@vger.kernel.org, jonathanh@nvidia.com,
+ Mark Brown <broonie@kernel.org>, linux-tegra@vger.kernel.org,
+ jbrunet@baylibre.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,13 +88,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 2 Sep 2021 14:47:44 +0300, Peter Ujfalusi wrote:
-> From: Rander Wang <rander.wang@intel.com>
+On Fri, 3 Sep 2021 22:05:16 +0530, Sameer Pujar wrote:
+> Following are the changes:
+>   - Add json-schema for 'sound-name-prefix' documentation under
+>     'name-perfix.yaml'
+>   - Use schema references wherever needed.
+>   - Remove txt based doc
 > 
-> SOF_CTRL_TYPE_VALUE_CHAN_SET should be used for put operations
-> for consistency. The current use of _GET is obviously incorrect
-> but _GET and _SET result in the same action so there is no
-> functional change introduced by this patch.
 > 
 > [...]
 
@@ -103,8 +104,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: control: fix a typo in put operations for kcontrol
-      commit: 5767271861985887e342fa21c3638c29e8fdfeaf
+[1/3] ASoC: Add json-schema documentation for sound-name-prefix
+      commit: 7f826da8e924bae7dd56b99e3760514017ca51a3
+[2/3] ASoC: Use schema reference for sound-name-prefix
+      commit: 82d3ec1d89fa2750fdc74e2f29c6c7ff673a2768
+[3/3] ASoC: Remove name-prefix.txt
+      commit: 955cc3488e6d407bac3883be630cabbead0892f4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
