@@ -2,72 +2,103 @@ Return-Path: <SRS0=eqSS=OD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E0B8C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 21:33:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CAEE3C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 21:44:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0BDAD60F24
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 21:33:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0BDAD60F24
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=neo-zeon.de
+	by mail.kernel.org (Postfix) with ESMTPS id EEAFD60F4A
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 21:44:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EEAFD60F4A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9203F1785;
-	Mon, 13 Sep 2021 23:32:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9203F1785
+	by alsa0.perex.cz (Postfix) with ESMTPS id D2E68178F;
+	Mon, 13 Sep 2021 23:43:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2E68178F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631568821;
-	bh=Tuky+vsJQ6DHFmZ1qBGVg/1Ad/GL5ZaNsxg8zYJnaq4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=mfzErAnhc/Vt0elLbUnu4PrzLUoA1Z/Wtth1CArAYu+1uQKhXOW9skLklf8u7qsKe
-	 Ya4FvFDmduwetq3SId1ayMH8xtB0rvwcvEcO0pNeEGFr8yVEXMj3mtLMOdTnPhG/UH
-	 MN1AUnOcqA7TCtGN0wDumDc49ekJsyF9Y4gHVdJU=
+	s=default; t=1631569474;
+	bh=2AUfpURjFcGtHaYsGeixgaPIcT6nnM7qyKYPX8zES3Y=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=dofvSMqGVm5h1BagdRPNnDHlwKAr5u0WGpxOq/5wOoYj7V8JPPfRQszZDGpCdx1va
+	 d8HGxSxMZ3nTYZo9Gepm+Gg4ZdC2Yuy0SH4J1hGtahpBVPNTrcuOusfmDUmP79iSNJ
+	 cboFhOidZiN/Ju5vYZU3/5Srr+OwFIE4lu7+t1FU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98B85F8032C;
-	Mon, 13 Sep 2021 23:32:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5BE7DF80227;
+	Mon, 13 Sep 2021 23:43:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 346C5F8049E; Mon, 13 Sep 2021 23:32:34 +0200 (CEST)
-Received: from neo-zeon.de (neo-zeon.de [70.229.12.130])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 30841F8027C; Mon, 13 Sep 2021 23:43:42 +0200 (CEST)
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
+ [IPv6:2a00:1450:4864:20::42f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5CD8BF80128
- for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 23:32:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CD8BF80128
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9EBF2F80128
+ for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 23:43:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9EBF2F80128
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=neo-zeon.de header.i=@neo-zeon.de
- header.b="jaifbZ/X"
-Received: from neo-zeon.de (localhost [127.0.0.1])
- by neo-zeon.de (OpenSMTPD) with ESMTP id 30c02dcc;
- Mon, 13 Sep 2021 14:32:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=neo-zeon.de; h=from:to:cc
- :subject:date:message-id:mime-version:content-transfer-encoding;
- s=1; bh=Rg9IOvCi1PVUNF4CGcpnVY0Em90=; b=jaifbZ/X95B2+LAXB4uU628
- HwFmibc3eQibSwnA6lnwSdBc2reKHa5oNJvqLLyd1YPV8e4PA1TjUU9/AsNUd/vV
- aCj7HTO9UJBXG4Nm5xftWR+9OVCT/lO3slkRcqdUrzM1Lpq9sRqx3SeUxipciTdI
- l4T6ZZF+zGqEzeVh14Jo=
-Received: by neo-zeon.de (OpenSMTPD) with ESMTPSA id 7f4b2b5a
- (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO); 
- Mon, 13 Sep 2021 14:32:25 -0700 (PDT)
-From: Cameron Berkenpas <cam@neo-zeon.de>
-To: tiwai@suse.de,
-	alsa-devel@alsa-project.org
-Subject: [PATCH v2] ALSA: hda/realtek: Quirks to enable speaker output for
- Lenovo Legion 7i 15IMHG05, Yoga 7i 14ITL5/15ITL5, and 13s Gen2 laptops.
-Date: Mon, 13 Sep 2021 14:26:29 -0700
-Message-Id: <20210913212627.339362-1-cam@neo-zeon.de>
-X-Mailer: git-send-email 2.30.2
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="VJ5kK3gn"
+Received: by mail-wr1-x42f.google.com with SMTP id u15so10779040wru.6
+ for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 14:43:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=message-id:subject:from:to:cc:date:in-reply-to:references
+ :user-agent:mime-version:content-transfer-encoding;
+ bh=OmKpkwcJ/YE9wWezjvSXq5deQ9qPVPHvzIJumJjTABo=;
+ b=VJ5kK3gn4RfmIRlT7llJRz9GJuTGJVhpZHQG8Q9opCOZXKl6Vp2CZR/w7NeFB4sego
+ 1jY001DRuIAB5lEf+qUB8vrnKMiK5TRMRDHkorLyPwUi487CtgxBTByIDitg2zCllPxz
+ XffGizxWw3C1Hwx6Iz1mbRdYR3Pq9/Qd8daxvijBKGGf0ikAN8AFu+WmF1E6vK227hBY
+ IdC1a/thVUsbQf/DkNJJK72mcdoeE5JQOFz3eVIz+6Oj5UQjUSg7aBWFow9vZLvaovgr
+ IxATxJCuz5Pk745ioCzmRIZKF8+DLqlmYlv7gRBhZ0mNl5p//sNnaaOr3053+S6YMPyY
+ ZIQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+ :references:user-agent:mime-version:content-transfer-encoding;
+ bh=OmKpkwcJ/YE9wWezjvSXq5deQ9qPVPHvzIJumJjTABo=;
+ b=eF9dCnmCitOthJDX0M58fz+VWR55+2adg/BM19Va6kysVMtbTMUTcDhTiVGt2m4890
+ ETpaXT/lyoB5IzYLhXP3wBihRvgskgjdrnw2CVJZN739CVsTXYBdOhpT5Wi5nSxMxRga
+ 7eDXpFC/mBWoho2jvwNoJPK6Nndoz4MkFg6oSzJzt95mtVx2DTukfgLl5xnH1onmvsgj
+ K6FuLgihPfd1d7oHrz6jr5CRFk/PbXAOkBgEGGKlCtwTgrvBYOMnTIcqPyAl5lWSQluJ
+ p4MNc2XzNtNvEYfqH+qSnLV5SmtPdKnxSgyG17pb9GWQhWMMf78knUbs+ycBTOrC33dk
+ F3nQ==
+X-Gm-Message-State: AOAM533nUG3Dppy3ep2qGgJNdrs4pfjxA8AqMVmIaMNzBwk76IZnWgoQ
+ lMC72z7lnojXHZyyytKHtns=
+X-Google-Smtp-Source: ABdhPJwhheyzgkqdjCX+sH1wHgX7BoKIO1IfHrtLv9BwRFZK7RXmIHgtkQwKelqGxZHg0IL4MOK0GA==
+X-Received: by 2002:a05:6000:18c2:: with SMTP id
+ w2mr14816879wrq.282.1631569408749; 
+ Mon, 13 Sep 2021 14:43:28 -0700 (PDT)
+Received: from [192.168.1.21] ([195.245.16.219])
+ by smtp.gmail.com with ESMTPSA id 129sm7833393wmz.26.2021.09.13.14.43.27
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 13 Sep 2021 14:43:28 -0700 (PDT)
+Message-ID: <e23f7de1dbb02def413d721a3bf5759100380937.camel@gmail.com>
+Subject: Re: [PATCH v2 6/8] ASoC: cirrus: i2s: Prepare clock before using it
+From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+To: Mark Brown <broonie@kernel.org>, Nikita Shubin <nikita.shubin@maquefel.me>
+Date: Mon, 13 Sep 2021 23:43:27 +0200
+In-Reply-To: <20210726165124.GJ4670@sirena.org.uk>
+References: <20210726115058.23729-1-nikita.shubin@maquefel.me>
+ <20210726140001.24820-1-nikita.shubin@maquefel.me>
+ <20210726140001.24820-7-nikita.shubin@maquefel.me>
+ <20210726165124.GJ4670@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Cameron Berkenpas <cam@neo-zeon.de>
+Content-Transfer-Encoding: 7bit
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,184 +114,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch initializes and enables speaker output on the Lenovo Legion 7i
-15IMHG05, Yoga 7i 14ITL5/15ITL5, and 13s Gen2 series of laptops using the
-HDA verb sequence specific to each model.
+Hello Mark,
 
-Speaker automute is suppressed for the Lenovo Legion 7i 15IMHG05 to avoid
-breaking speaker output on resume and when devices are unplugged from its
-headphone jack.
+On Mon, 2021-07-26 at 17:51 +0100, Mark Brown wrote:
+> On Mon, Jul 26, 2021 at 04:59:54PM +0300, Nikita Shubin wrote:
+> > From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+> > 
+> > Use clk_prepare_enable()/clk_disable_unprepare() in preparation for switch
+> > to Common Clock Framework, otherwise the following is visible:
+> 
+> Acked-by: Mark Brown <broonie@kernel.org>
 
-Thanks to: Andreas Holzer, Vincent Morel, sycxyc, Max Christian Pohle and
-all others that helped.
+would you take the patch to a tree of yours, please?
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=208555
-Signed-off-by: Cameron Berkenpas <cam@neo-zeon.de>
----
- sound/pci/hda/patch_realtek.c | 129 ++++++++++++++++++++++++++++++++++
- 1 file changed, 129 insertions(+)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 8b7a389b6aed..89a6ed26b7b0 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6429,6 +6429,20 @@ static void alc_fixup_thinkpad_acpi(struct hda_codec *codec,
- 	hda_fixup_thinkpad_acpi(codec, fix, action);
- }
- 
-+/* Fixup for Lenovo Legion 15IMHg05 speaker output on headset removal. */
-+static void alc287_fixup_legion_15imhg05_speakers(struct hda_codec *codec,
-+						  const struct hda_fixup *fix,
-+						  int action)
-+{
-+	struct alc_spec *spec = codec->spec;
-+
-+	switch (action) {
-+	case HDA_FIXUP_ACT_PRE_PROBE:
-+		spec->gen.suppress_auto_mute = 1;
-+		break;
-+	}
-+}
-+
- /* for alc295_fixup_hp_top_speakers */
- #include "hp_x360_helper.c"
- 
-@@ -6646,6 +6660,10 @@ enum {
- 	ALC623_FIXUP_LENOVO_THINKSTATION_P340,
- 	ALC255_FIXUP_ACER_HEADPHONE_AND_MIC,
- 	ALC236_FIXUP_HP_LIMIT_INT_MIC_BOOST,
-+	ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS,
-+	ALC287_FIXUP_LEGION_15IMHG05_AUTOMUTE,
-+	ALC287_FIXUP_YOGA7_14ITL_SPEAKERS,
-+	ALC287_FIXUP_13S_GEN2_SPEAKERS
- };
- 
- static const struct hda_fixup alc269_fixups[] = {
-@@ -8236,6 +8254,113 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF,
- 	},
-+	[ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS] = {
-+		.type = HDA_FIXUP_VERBS,
-+		//.v.verbs = legion_15imhg05_coefs,
-+		.v.verbs = (const struct hda_verb[]) {
-+			 // set left speaker Legion 7i.
-+			 {0x20, AC_VERB_SET_COEF_INDEX, 0x24 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x41 },
-+
-+			 {0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0xc },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x1a },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+
-+			 {0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x2 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+
-+			 // set right speaker Legion 7i.
-+			 {0x20, AC_VERB_SET_COEF_INDEX, 0x24 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x42 },
-+
-+			 {0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0xc },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x2a },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+
-+			 {0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x2 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+			 {}
-+		},
-+		.chained = true,
-+		.chain_id = ALC287_FIXUP_LEGION_15IMHG05_AUTOMUTE,
-+	},
-+	[ALC287_FIXUP_LEGION_15IMHG05_AUTOMUTE] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc287_fixup_legion_15imhg05_speakers,
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_HEADSET_MODE,
-+	},
-+	[ALC287_FIXUP_YOGA7_14ITL_SPEAKERS] = {
-+		.type = HDA_FIXUP_VERBS,
-+		.v.verbs = (const struct hda_verb[]) {
-+			 // set left speaker Yoga 7i.
-+			 {0x20, AC_VERB_SET_COEF_INDEX, 0x24 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x41 },
-+
-+			 {0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0xc },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x1a },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+
-+			 {0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x2 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+
-+			 // set right speaker Yoga 7i.
-+			 {0x20, AC_VERB_SET_COEF_INDEX, 0x24 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x46 },
-+
-+			 {0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0xc },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x2a },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+
-+			 {0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x2 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+			 {}
-+		},
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_HEADSET_MODE,
-+	},
-+	[ALC287_FIXUP_13S_GEN2_SPEAKERS] = {
-+		.type = HDA_FIXUP_VERBS,
-+		.v.verbs = (const struct hda_verb[]) {
-+		         {0x20, AC_VERB_SET_COEF_INDEX, 0x24 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x41 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x2 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+			 {0x20, AC_VERB_SET_COEF_INDEX, 0x24 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x42 },
-+			 {0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x2 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0x0 },
-+			 {0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+			 {}
-+		},
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_HEADSET_MODE,
-+	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -8630,6 +8755,10 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x3818, "Lenovo C940", ALC298_FIXUP_LENOVO_SPK_VOLUME),
- 	SND_PCI_QUIRK(0x17aa, 0x3827, "Ideapad S740", ALC285_FIXUP_IDEAPAD_S740_COEF),
- 	SND_PCI_QUIRK(0x17aa, 0x3843, "Yoga 9i", ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP),
-+	SND_PCI_QUIRK(0x17aa, 0x3813, "Legion 7i 15IMHG05", ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS),
-+	SND_PCI_QUIRK(0x17aa, 0x3852, "Lenovo Yoga 7 14ITL5", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
-+	SND_PCI_QUIRK(0x17aa, 0x3853, "Lenovo Yoga 7 15ITL5", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
-+	SND_PCI_QUIRK(0x17aa, 0x3819, "Lenovo 13s Gen2 ITL", ALC287_FIXUP_13S_GEN2_SPEAKERS),
- 	SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo E50-80", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
- 	SND_PCI_QUIRK(0x17aa, 0x3977, "IdeaPad S210", ALC283_FIXUP_INT_MIC),
- 	SND_PCI_QUIRK(0x17aa, 0x3978, "Lenovo B50-70", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
 -- 
-2.30.2
+Alexander Sverdlin.
+
 
