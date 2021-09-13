@@ -4,74 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03C7BC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 10:56:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42F96C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 10:57:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 76AFE60EE5
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 10:56:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 76AFE60EE5
+	by mail.kernel.org (Postfix) with ESMTPS id 92FF160EE5
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 10:57:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 92FF160EE5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC13C82B;
-	Mon, 13 Sep 2021 12:55:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC13C82B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 231811658;
+	Mon, 13 Sep 2021 12:56:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 231811658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631530607;
-	bh=tKQWpIPTy4lxr6dSc2Ayo1QK0ohn61kDqZmLY/SLYgw=;
+	s=default; t=1631530631;
+	bh=kUrQ92vP9h8EK13GVMQFGAIqVlRq6W60sm75uv3M5D8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=i51bhmN9fzIf/QD0ETjnYe5O+ORp5h121Tz8r2c0+qCDKB9BnoCFR2l7/24+M+vbY
-	 OFbuRNvjIbCl5d0z6gIP8o0eWuh55z4u8e5B+YdRLKoprduixwhtIJbZduuEpntwcX
-	 Qkrwfa6wAVDob9nsiG4QjFIF+Yjo+dE5mSQ5JjiA=
+	b=k+nnMiaiC5U0ZmT+SLYY4hykNwofLQKlPF64MfKMvfoNPYDYx3W4isBELWyWkTCXa
+	 217zLluO20DOuu4SxBJG26sQE/DsZLjq2UzYf6sLUVgMBT2S8GPvBPr3pLVehb29YU
+	 /1GhEDq+OxhmR53s7iTl0i7vt83NIVs5UVPy6mF4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56F2EF804D9;
-	Mon, 13 Sep 2021 12:54:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DE306F804F1;
+	Mon, 13 Sep 2021 12:54:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BFECEF804E7; Mon, 13 Sep 2021 12:54:46 +0200 (CEST)
+ id 8E372F804E6; Mon, 13 Sep 2021 12:54:50 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 31B38F804D9
- for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 12:54:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31B38F804D9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1ABF3F804AB
+ for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 12:54:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1ABF3F804AB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="pcF50JiO"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E11196108B;
- Mon, 13 Sep 2021 10:54:41 +0000 (UTC)
+ header.b="mxIkQczK"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E014561004;
+ Mon, 13 Sep 2021 10:54:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631530482;
- bh=tKQWpIPTy4lxr6dSc2Ayo1QK0ohn61kDqZmLY/SLYgw=;
+ s=k20201202; t=1631530479;
+ bh=kUrQ92vP9h8EK13GVMQFGAIqVlRq6W60sm75uv3M5D8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=pcF50JiOIeSXy91rEQR5IOYcqzSFje/R8jm1I7bcU07pusM9DMuSNtyzwIwz8JsEb
- wkmPhy/JXr1ZxS/ViJAhA0mDRXiUcDSZOASkJ0Uug0HdmnS3oLEhatlzNLvcW++qvL
- xEoFsFwQ+IHbvldx98TSxRwr+0tHRqKxG8TQaCXlpXAhyKMZIqFMw7MbS26xPK5IQd
- vo1qUT21afTOE3wZMnBSbdSTYGNUpqFVmq19jGJtd20STbklC2jyK39f/yMyoWNHpm
- 1ifeJrzQ6TAtzO0QfZNC2FhTWjjLz3ldl04jmzTqqESMR+O6zPAdMf8LpYCLgdbYtG
- L/xZhlDI5yhTQ==
+ b=mxIkQczKp6wVjKtmuikBd6RWa0brAeO50bXYgqyRaQe8jjF5M6tKl5HeVT0ebBR2d
+ cSplQI2glhjjESJ63HDCvxmaHfGUD43bmVCJ9CWl3UQ0gsnh5Tzykkb8Q8QpKCVCf+
+ 32CUrPVeqpfZdwXqoh3dD7TK7gWs6O5ewr/nkRkFoBT4jw01EHZmjY/AckD2U4UoNa
+ Iwb28NV4dWLRUhkJ7WEi3LqPZOLzoWMuiFb0hvU0QqOLhBCGu9DtIJP24+5xs9vpGm
+ 78sofN+fq8i/xk0a/IO/wsXcEENz1qzEWoR0izSlFzr6dwu1GRBFJhT/2oE1xmGG6h
+ IHBqyDKOfsXyQ==
 From: Mark Brown <broonie@kernel.org>
-To: Jack Yu <jack.yu@realtek.com>,
-	lgirdwood@gmail.com
-Subject: Re: [PATCH] ASoC: rt1011: add i2s reference control for rt1011
-Date: Mon, 13 Sep 2021 11:53:17 +0100
-Message-Id: <163152996584.45703.5307076711708280854.b4-ty@kernel.org>
+To: rander.wang@intel.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ lgirdwood@gmail.com
+Subject: Re: [PATCH] ASoC: SOF: control: fix a typo in put operations for
+ kcontrol
+Date: Mon, 13 Sep 2021 11:53:16 +0100
+Message-Id: <163152996583.45703.7024459155619829972.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210906101208.11585-1-jack.yu@realtek.com>
-References: <20210906101208.11585-1-jack.yu@realtek.com>
+In-Reply-To: <20210902114744.27237-1-peter.ujfalusi@linux.intel.com>
+References: <20210902114744.27237-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de,
- kent_chen@realtek.com, Mark Brown <broonie@kernel.org>, derek.fang@realtek.com,
- shumingf@realtek.com, flove@realtek.com
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,10 +87,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 6 Sep 2021 18:12:08 +0800, Jack Yu wrote:
-> Add i2s reference control for rt1011 amp.
+On Thu, 2 Sep 2021 14:47:44 +0300, Peter Ujfalusi wrote:
+> From: Rander Wang <rander.wang@intel.com>
 > 
+> SOF_CTRL_TYPE_VALUE_CHAN_SET should be used for put operations
+> for consistency. The current use of _GET is obviously incorrect
+> but _GET and _SET result in the same action so there is no
+> functional change introduced by this patch.
 > 
+> [...]
 
 Applied to
 
@@ -98,8 +103,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rt1011: add i2s reference control for rt1011
-      commit: 87f40af26c26233b060767f3e7cff5e54647cf2b
+[1/1] ASoC: SOF: control: fix a typo in put operations for kcontrol
+      commit: 5767271861985887e342fa21c3638c29e8fdfeaf
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
