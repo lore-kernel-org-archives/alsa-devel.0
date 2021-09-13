@@ -4,78 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1283C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 10:56:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03C7BC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 10:56:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E24F161004
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 10:56:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E24F161004
+	by mail.kernel.org (Postfix) with ESMTPS id 76AFE60EE5
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 10:56:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 76AFE60EE5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 635711670;
-	Mon, 13 Sep 2021 12:55:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 635711670
+	by alsa0.perex.cz (Postfix) with ESMTPS id EC13C82B;
+	Mon, 13 Sep 2021 12:55:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC13C82B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631530581;
-	bh=Q5absrfI8fHZmSEfHakac+PXQAsMu32YZoq5qrmLeys=;
+	s=default; t=1631530607;
+	bh=tKQWpIPTy4lxr6dSc2Ayo1QK0ohn61kDqZmLY/SLYgw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nTcay4W8WRaq5zqnBa+U62dpe9BuepVYcgOxNPX7JX/kmB+EJNBqL7a7os5Fkglis
-	 LdkABAfBsOaG5RPvVIbQRTCoytHcmsDo6IAn7nyq61zKrwtm1jmOAx+oy0CHPqR/jJ
-	 VEcRvPon555qUkHe49m/TIw0ylMjey8VY6CWdnlo=
+	b=i51bhmN9fzIf/QD0ETjnYe5O+ORp5h121Tz8r2c0+qCDKB9BnoCFR2l7/24+M+vbY
+	 OFbuRNvjIbCl5d0z6gIP8o0eWuh55z4u8e5B+YdRLKoprduixwhtIJbZduuEpntwcX
+	 Qkrwfa6wAVDob9nsiG4QjFIF+Yjo+dE5mSQ5JjiA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 587CCF804E3;
-	Mon, 13 Sep 2021 12:54:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56F2EF804D9;
+	Mon, 13 Sep 2021 12:54:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3EE8CF804E3; Mon, 13 Sep 2021 12:54:43 +0200 (CEST)
+ id BFECEF804E7; Mon, 13 Sep 2021 12:54:46 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E59E6F80227
- for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 12:54:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E59E6F80227
+ by alsa1.perex.cz (Postfix) with ESMTPS id 31B38F804D9
+ for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 12:54:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31B38F804D9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="UDOepgP+"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43B4661029;
- Mon, 13 Sep 2021 10:54:36 +0000 (UTC)
+ header.b="pcF50JiO"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E11196108B;
+ Mon, 13 Sep 2021 10:54:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631530476;
- bh=Q5absrfI8fHZmSEfHakac+PXQAsMu32YZoq5qrmLeys=;
+ s=k20201202; t=1631530482;
+ bh=tKQWpIPTy4lxr6dSc2Ayo1QK0ohn61kDqZmLY/SLYgw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=UDOepgP+ODy7eZvGNENXCoQwDdGg6kheBSQPfhONr0B0b7QTw5Qz4Ocft1Ar4LYa4
- ROySD8uvn36VtEpTpVBh6gH26ysvWys/SpMQNAPfEOiS2xvd2QCX9hwjunkr1kPZEw
- HG0mS9A1jMwvwHhpQJGSptOLIL4hwAFGc6P4NA6el5Wr3no488LG+EQvM/597F9sV+
- LoL5zpNAaYzBlxPJJCWcVP6l0OPGyYbC9AAGDdCEw5wakWFjf5NUSXhLx9DuofLLh5
- UrfmBvTkepN0EO5YuQ90Fd+Zo5mfE0Jx1BE2CSNADe4QLlmSYNzeStZjnJfCzOPdfK
- GKUlC/DkInPwg==
+ b=pcF50JiOIeSXy91rEQR5IOYcqzSFje/R8jm1I7bcU07pusM9DMuSNtyzwIwz8JsEb
+ wkmPhy/JXr1ZxS/ViJAhA0mDRXiUcDSZOASkJ0Uug0HdmnS3oLEhatlzNLvcW++qvL
+ xEoFsFwQ+IHbvldx98TSxRwr+0tHRqKxG8TQaCXlpXAhyKMZIqFMw7MbS26xPK5IQd
+ vo1qUT21afTOE3wZMnBSbdSTYGNUpqFVmq19jGJtd20STbklC2jyK39f/yMyoWNHpm
+ 1ifeJrzQ6TAtzO0QfZNC2FhTWjjLz3ldl04jmzTqqESMR+O6zPAdMf8LpYCLgdbYtG
+ L/xZhlDI5yhTQ==
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ASoC: amd: acp: declare and add prefix to
- 'bt_uart_enable' symbol
-Date: Mon, 13 Sep 2021 11:53:15 +0100
-Message-Id: <163152996585.45703.10982811041582304324.b4-ty@kernel.org>
+To: Jack Yu <jack.yu@realtek.com>,
+	lgirdwood@gmail.com
+Subject: Re: [PATCH] ASoC: rt1011: add i2s reference control for rt1011
+Date: Mon, 13 Sep 2021 11:53:17 +0100
+Message-Id: <163152996584.45703.5307076711708280854.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210907184216.33067-1-pierre-louis.bossart@linux.intel.com>
-References: <20210907184216.33067-1-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20210906101208.11585-1-jack.yu@realtek.com>
+References: <20210906101208.11585-1-jack.yu@realtek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, open list <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Chuhong Yuan <hslester96@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Mario Limonciello <mario.limonciello@amd.com>,
- Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
- Gu Shengxian <gushengxian@yulong.com>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de,
+ kent_chen@realtek.com, Mark Brown <broonie@kernel.org>, derek.fang@realtek.com,
+ shumingf@realtek.com, flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,16 +87,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 7 Sep 2021 13:42:14 -0500, Pierre-Louis Bossart wrote:
-> Sparse reports the following warning:
+On Mon, 6 Sep 2021 18:12:08 +0800, Jack Yu wrote:
+> Add i2s reference control for rt1011 amp.
 > 
-> sound/soc/amd/acp-pcm-dma.c:39:6: error: symbol 'bt_uart_enable' was
-> not declared. Should it be static?
 > 
-> It's not very good practice to export such symbols that can easily
-> conflict, add the acp_ prefix and add declaration in header file.
-> 
-> [...]
 
 Applied to
 
@@ -108,8 +98,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: amd: acp: declare and add prefix to 'bt_uart_enable' symbol
-      commit: 198433023ef962b71f3d4274ca7a4c8f04e7ace1
+[1/1] ASoC: rt1011: add i2s reference control for rt1011
+      commit: 87f40af26c26233b060767f3e7cff5e54647cf2b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
