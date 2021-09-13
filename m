@@ -6,71 +6,71 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79DEBC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 11:02:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09E61C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 11:02:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0818160F4C
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 11:02:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0818160F4C
+	by mail.kernel.org (Postfix) with ESMTPS id 8518C61051
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 11:02:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8518C61051
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 982261698;
-	Mon, 13 Sep 2021 13:01:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 982261698
+	by alsa0.perex.cz (Postfix) with ESMTPS id 255F61670;
+	Mon, 13 Sep 2021 13:01:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 255F61670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631530927;
-	bh=B3WACOWaU5Afzv3Vm7VAdPhu0oyR6Yu45R6CaWCqSI0=;
+	s=default; t=1631530948;
+	bh=kGs+OZXsbrIogk6381WUNP6EKwqGTAnYr3RIhU3WhAc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rcmXlnKC00IJ0+Kiust6maPke1q9w6B1shTiz3hR46VnyKus84trEUPgvA+ezQZ2O
-	 MoJx5lUhAkwbHmlf4ZdxcVszIiKpVkY0rW10qsNsXa7yni/jgRGj4lSgu/9ZHCvh0z
-	 Mvb2D9bYbQ0Y9gcCKhJ2pzAIeQ88LA7B832Rxc+8=
+	b=h5BVP5E0kLzj5asnuMWDODKFPqI6jS7H6KUbbnp2VwgTuklFulow1IZBpJlyOBwy9
+	 YUY19iK0Ujgw1gcvw/hwwvVCYju63FY3MZPNut0xUN5cCtDGtItVK2yzQB1a/9LfEB
+	 JR2e06EP4lrS8M2g7LqftNWhOuRTjryrPkTgfCWo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E6E6F8056F;
-	Mon, 13 Sep 2021 12:55:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2AF06F80578;
+	Mon, 13 Sep 2021 12:55:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3EF07F8053E; Mon, 13 Sep 2021 12:55:31 +0200 (CEST)
+ id 1D071F80579; Mon, 13 Sep 2021 12:55:36 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B15B0F8027C
- for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 12:55:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B15B0F8027C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 98CD4F8055B
+ for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 12:55:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98CD4F8055B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="aH4zYEtK"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC46261029;
- Mon, 13 Sep 2021 10:55:26 +0000 (UTC)
+ header.b="hDXyV3lI"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B1C961051;
+ Mon, 13 Sep 2021 10:55:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631530527;
- bh=B3WACOWaU5Afzv3Vm7VAdPhu0oyR6Yu45R6CaWCqSI0=;
+ s=k20201202; t=1631530529;
+ bh=kGs+OZXsbrIogk6381WUNP6EKwqGTAnYr3RIhU3WhAc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=aH4zYEtKk8ayJHkzsUGqom6WuSU00WV6ODNFUSJ6nAxlHlOAkqN+abtsoXjKH7BOj
- 3HsHLkxoA/w+g7AOlHPC3KsTlBq+456/xyDBP463NeAIY1xrLlz0FPK3q/f/UWP3TM
- GFDNrZJ4Z0CQlMt6oH1aNtxaqiSVwndrOL3JHgF5fAAof51a8ehn7ZpXTAZ5y8vjSZ
- oaZlVIpMcWlj4DW1kIhzcZln4B449ONaqFIcIdMHlgwjslZ460undJtEbCVXhh9uo4
- 3o6OYw3BGiCvBa0Tn4kiQOyURacorH+zIVXVrs/zHpdvKcY0QByTSArr6AOkdWCrHD
- 48qAg4Z4/qAZg==
+ b=hDXyV3lIQc9EqHpNl20CDXwNBLMZImqhYXbqEmGkZMps+z+IpwxuijXlIyIk89VRN
+ EV+dmoyy1eFCrNoZIWXNsDmdmT7jUYrA/klAUrM0aqA6CSGNiMF/XkXRxGqDqdsLyc
+ xyXF1JIHbq+hcSd8z9FHrl9bH9KiSiWPS3YHVsJELy7EO1cns2uTeHT3CqADZgB0x4
+ XMEar/d/bThNBNx39gGXiMXaE61TzyWoGaT+zN08ziyJyWS00PLjc1ja1dVIHnAKEw
+ NNgj5uJjcYsEjE4ntf5tH4toXhq1yHs2nvxG/JS7/74FUUVo5LUZD6NgLDzEXMP3G7
+ kGnMVkmoweHgA==
 From: Mark Brown <broonie@kernel.org>
-To: Sugar Zhang <sugar.zhang@rock-chips.com>,
-	heiko@sntech.de
-Subject: Re: [PATCH v4 0/7] Patches to update for rockchip pdm
-Date: Mon, 13 Sep 2021 11:53:33 +0100
-Message-Id: <163152996585.45703.15904928941100821408.b4-ty@kernel.org>
+To: gearhead <ys3al35l@gmail.com>
+Subject: Re: [PATCH] ASoC: pcm5102a: increase rate from 192k to 384k
+Date: Mon, 13 Sep 2021 11:53:34 +0100
+Message-Id: <163152996585.45703.8666875215162171211.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1630675357-3286-1-git-send-email-sugar.zhang@rock-chips.com>
-References: <1630675357-3286-1-git-send-email-sugar.zhang@rock-chips.com>
+In-Reply-To: <20210907210130.116769-1-ys3al35l@gmail.com>
+References: <20210907210130.116769-1-ys3al35l@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,16 +86,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 3 Sep 2021 21:22:37 +0800, Sugar Zhang wrote:
-> These patches fixup or update for rockchip pdm.
+On Tue, 7 Sep 2021 16:01:25 -0500, gearhead wrote:
+> the pcm5102a is capable of 384k, but the current code limits it to 192k.
+> This commit extends to 384k
 > 
-> Changes in v4:
-> - Acked by Rob Herring
 > 
-> Changes in v3:
-> - Fix property 'path-map' suggested by Rob Herring.
-> 
-> [...]
 
 Applied to
 
@@ -103,20 +98,8 @@ Applied to
 
 Thanks!
 
-[1/7] ASoC: rockchip: Add support for rv1126 pdm
-      commit: d269aa2ab975807764dc2509e4156bb9b6bd0d34
-[2/7] ASoC: dt-bindings: rockchip: Add binding for rv1126 pdm
-      commit: 49a7a625ad79e5b995be313472743b278c90c853
-[3/7] ASoC: rockchip: pdm: Add support for rk3568 pdm
-      commit: d00d1cd4ab42f92d4d871deb9cdea1d7c262a213
-[4/7] ASoC: dt-bindings: rockchip: Add binding for rk3568 pdm
-      commit: f80e5a14ac2730b441c71d191e6538a74706cab3
-[5/7] ASoC: rockchip: pdm: Add support for path map
-      commit: 13e6e042a6f9c2be676f421935e026308de3303c
-[6/7] ASoC: dt-bindings: rockchip: pdm: Document property 'rockchip,path-map'
-      commit: b2527dcd65b3e141e9363af5b256aa484bd4c06f
-[7/7] ASoC: dt-bindings: rockchip: Convert pdm bindings to yaml
-      commit: 8ece5ef67edca06e54460b244f4043c237c90a21
+[1/1] ASoC: pcm5102a: increase rate from 192k to 384k
+      commit: 0beeb330300f082e8b6849a9f83d34efa2578edd
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
