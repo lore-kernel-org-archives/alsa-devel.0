@@ -7,90 +7,90 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C533C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 16:08:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25BD5C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 16:08:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D23CA60698
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 16:08:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D23CA60698
+	by mail.kernel.org (Postfix) with ESMTPS id A175E60698
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 16:08:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A175E60698
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 706AA178B;
-	Mon, 13 Sep 2021 18:07:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 706AA178B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 49B001746;
+	Mon, 13 Sep 2021 18:07:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49B001746
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631549298;
-	bh=JWxvtMh4E1FSZBcwMPdfMI5JdPHdGgEsXKyCJEyUaLU=;
+	s=default; t=1631549308;
+	bh=fXf+ywGS/cTyvlRPLN7R/+CI7HPu+fmRHuB11+JHXRQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mldSg4uhIL3eMbtv4IWfhwwb77rCCuyf2qzEQ738t0NQSQ8lwex2J9h+Jq7xoekRf
-	 6kXTpqdkLAq6hvymxcSGkQbXbhUXYOss0bDYOuX5A0BSA38QaEg/Ea9T0JhA2/ud/i
-	 slPXwYTK2Rd8PWW52WQxqbwxhMLtxv9sW8sNlnO8=
+	b=Ban7bFrucVnbLzFxeuP8x698+9mI69k2W/yiVtu4+GzdjOuR3XsAQjRgL7ughUVWx
+	 iknaqP69ZHm/UP86d+vFlkytvp2lrsjyQf8hEgRhOiwUrXLK8ljkm49s8EsPxxgOYY
+	 ehxEZ6kqmE38bK733RRB/jOrAW47VvkUHqJHiqVQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF59BF805AD;
-	Mon, 13 Sep 2021 18:02:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A85EAF805AF;
+	Mon, 13 Sep 2021 18:02:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DC810F8032C; Mon, 13 Sep 2021 18:02:40 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id E3259F8049E; Mon, 13 Sep 2021 18:02:40 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B0349F8027C
- for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 18:01:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0349F8027C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 58319F8049E
+ for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 18:01:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58319F8049E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="oKSrgmgc"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18DFp9L9002377; 
- Mon, 13 Sep 2021 11:01:22 -0500
+ header.b="awM3qDCX"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18DAEA6P014550; 
+ Mon, 13 Sep 2021 11:01:23 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=gAi6bsx98UZU8FZXLBW0SVx/jzJTeMZYBy0/3ptxLfc=;
- b=oKSrgmgcBIa/9DkNtAHwKS1tZBAcCbeaNFLfLiNmT2mudasV26PCLjK/0jhL+nY9oN2s
- 9/ECf2pDXCBOrI9SHWqU8pGaThG2Ii8aySGTZCnWhu0UpvGYEQDwSUq8mPtDbXSW0pqQ
- ww4W7fZfGJJW+jZvlyIFh6P4VX5g2aHcgY3HfDDDg8SnahxwCDtn9iSoAjVBSRNX+Wdi
- 86ERD2ZmDTXrfHJOOCQxG3zNn8+PbHhY7SSO6rsFizvhoMjaoOcyOs5cB3wtjHaS9ZeC
- isFxevrqILxLZ1P/Q+3ny7yFB3XgMoEX3Fufb2o3wG0VJpycibKiJhdwdgHo2jDCRe7q Xw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 3b29n3r0ag-3
+ bh=+1NyDGIefTKtV7GKKWali3tAZDM5tSn5uBEq25JwtI4=;
+ b=awM3qDCXc8SunP4jyt4uh8t4tvduuOtIhg8h/C3x+8IXJgcx+QtDOcvtoSbHZwx0r9Fe
+ DlfrmSd0ysdTIuNuhhbeSFKKx/Qt6gSkcKKLyJTxULdx5LCGxyJpmm7/y2vE3gNylfbS
+ 8TVf9exQ8q3Z4oGGxDnEjGUMkQp9NquXNRmZ1XrPAcveBLojOYZfeAvmYwwqoDWlBlHJ
+ WA0Nugw7JTw80RGdSZRoGLEVPAOE5XhytLj8o5JQMNcAbngVYD4Yft0jLnvoJ8DoPlFp
+ XHYl8AbIsmu7ulBGHGGAes3DKuALmDvhf+3CQwx1Bz1Nhv/CiQBN2uV9V1SzUCxEBwQu Gw== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 3b1n5drxkd-4
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Mon, 13 Sep 2021 11:01:21 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ Mon, 13 Sep 2021 11:01:22 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Mon, 13 Sep
- 2021 17:01:18 +0100
+ 2021 17:01:20 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via
- Frontend Transport; Mon, 13 Sep 2021 17:01:18 +0100
+ Frontend Transport; Mon, 13 Sep 2021 17:01:20 +0100
 Received: from simont-vb.lan?044ad.cirrus.com (unknown [198.90.238.152])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B6357B2F;
- Mon, 13 Sep 2021 16:01:18 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 87FD22A9;
+ Mon, 13 Sep 2021 16:01:20 +0000 (UTC)
 From: Simon Trimmer <simont@opensource.cirrus.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH 04/16] ASoC: wm_adsp: Cancel ongoing work when removing
- controls
-Date: Mon, 13 Sep 2021 17:00:45 +0100
-Message-ID: <20210913160057.103842-5-simont@opensource.cirrus.com>
+Subject: [PATCH 09/16] ASoC: wm_adsp: Move sys_config_size to wm_adsp
+Date: Mon, 13 Sep 2021 17:00:50 +0100
+Message-ID: <20210913160057.103842-10-simont@opensource.cirrus.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913160057.103842-1-simont@opensource.cirrus.com>
 References: <20210913160057.103842-1-simont@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: 9-IliWsje6IfdbC7PSjKOs1BrOHTRnfr
-X-Proofpoint-ORIG-GUID: 9-IliWsje6IfdbC7PSjKOs1BrOHTRnfr
+X-Proofpoint-GUID: IlkRT3F61XeeoV7lno96EhsdbC4IFea5
+X-Proofpoint-ORIG-GUID: IlkRT3F61XeeoV7lno96EhsdbC4IFea5
 X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Simon Trimmer <simont@opensource.cirrus.com>, linux-kernel@vger.kernel.org
+Cc: Simon Trimmer <simont@opensource.cirrus.com>, patches@opensource.cirrus.com,
+ alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,95 +106,103 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Removes wm_adsp_ctl_work and integrates the work_struct into
-wm_coeff_ctl so it may be referenced.
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
+sys_config_size is part of the compressed stream support, move it from
+what will become generic DSP code so that it remains in ASoC.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
 ---
- sound/soc/codecs/wm_adsp.c | 34 +++++++++-------------------------
- 1 file changed, 9 insertions(+), 25 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 10 +++++-----
+ sound/soc/codecs/wm_adsp.h |  4 ++--
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 9c3d4b96fd7c..c1b5ea3b5718 100644
+index 1bca3922a6b8..82038cac4286 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -613,6 +613,7 @@ struct wm_coeff_ctl {
- 	struct soc_bytes_ext bytes_ext;
- 	unsigned int flags;
- 	unsigned int type;
-+	struct work_struct work;
+@@ -3467,6 +3467,8 @@ int wm_adsp2_init(struct wm_adsp *dsp)
+ {
+ 	INIT_WORK(&dsp->boot_work, wm_adsp_boot_work);
+ 
++	dsp->sys_config_size = sizeof(struct wm_adsp_system_config_xm_hdr);
++
+ 	wm_adsp_common_init(dsp);
+ 
+ 	return cs_dsp_adsp2_init(dsp);
+@@ -3484,6 +3486,8 @@ int wm_halo_init(struct wm_adsp *dsp)
+ {
+ 	INIT_WORK(&dsp->boot_work, wm_adsp_boot_work);
+ 
++	dsp->sys_config_size = sizeof(struct wm_halo_system_config_xm_hdr);
++
+ 	wm_adsp_common_init(dsp);
+ 
+ 	return cs_dsp_halo_init(dsp);
+@@ -3895,7 +3899,7 @@ static int wm_adsp_buffer_parse_legacy(struct wm_adsp *dsp)
+ 	if (!buf)
+ 		return -ENOMEM;
+ 
+-	xmalg = dsp->ops->sys_config_size / sizeof(__be32);
++	xmalg = dsp->sys_config_size / sizeof(__be32);
+ 
+ 	addr = alg_region->base + xmalg + ALG_XM_FIELD(magic);
+ 	ret = cs_dsp_read_data_word(dsp, WMFW_ADSP2_XM, addr, &magic);
+@@ -4588,7 +4592,6 @@ static const struct cs_dsp_ops cs_dsp_adsp1_ops = {
+ 
+ static const struct cs_dsp_ops cs_dsp_adsp2_ops[] = {
+ 	{
+-		.sys_config_size = sizeof(struct wm_adsp_system_config_xm_hdr),
+ 		.parse_sizes = cs_dsp_adsp2_parse_sizes,
+ 		.validate_version = cs_dsp_validate_version,
+ 		.setup_algs = cs_dsp_adsp2_setup_algs,
+@@ -4607,7 +4610,6 @@ static const struct cs_dsp_ops cs_dsp_adsp2_ops[] = {
+ 
+ 	},
+ 	{
+-		.sys_config_size = sizeof(struct wm_adsp_system_config_xm_hdr),
+ 		.parse_sizes = cs_dsp_adsp2_parse_sizes,
+ 		.validate_version = cs_dsp_validate_version,
+ 		.setup_algs = cs_dsp_adsp2_setup_algs,
+@@ -4626,7 +4628,6 @@ static const struct cs_dsp_ops cs_dsp_adsp2_ops[] = {
+ 		.stop_core = cs_dsp_adsp2_stop_core,
+ 	},
+ 	{
+-		.sys_config_size = sizeof(struct wm_adsp_system_config_xm_hdr),
+ 		.parse_sizes = cs_dsp_adsp2_parse_sizes,
+ 		.validate_version = cs_dsp_validate_version,
+ 		.setup_algs = cs_dsp_adsp2_setup_algs,
+@@ -4648,7 +4649,6 @@ static const struct cs_dsp_ops cs_dsp_adsp2_ops[] = {
  };
  
- static const char *wm_adsp_mem_region_name(unsigned int type)
-@@ -1240,12 +1241,6 @@ static int wm_coeff_get_acked(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
+ static const struct cs_dsp_ops cs_dsp_halo_ops = {
+-	.sys_config_size = sizeof(struct wm_halo_system_config_xm_hdr),
+ 	.parse_sizes = cs_dsp_adsp2_parse_sizes,
+ 	.validate_version = cs_dsp_halo_validate_version,
+ 	.setup_algs = cs_dsp_halo_setup_algs,
+diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
+index 114bc41981ef..98b12b485916 100644
+--- a/sound/soc/codecs/wm_adsp.h
++++ b/sound/soc/codecs/wm_adsp.h
+@@ -81,6 +81,8 @@ struct wm_adsp {
+ 	const struct cs_dsp_region *mem;
+ 	int num_mems;
  
--struct wmfw_ctl_work {
--	struct wm_adsp *dsp;
--	struct wm_coeff_ctl *ctl;
--	struct work_struct work;
--};
--
- static unsigned int wmfw_convert_flags(unsigned int in, unsigned int len)
- {
- 	unsigned int out, rd, wr, vol;
-@@ -1394,16 +1389,17 @@ static void wm_adsp_signal_event_controls(struct wm_adsp *dsp,
- 
- static void wm_adsp_ctl_work(struct work_struct *work)
- {
--	struct wmfw_ctl_work *ctl_work = container_of(work,
--						      struct wmfw_ctl_work,
--						      work);
-+	struct wm_coeff_ctl *ctl = container_of(work,
-+						struct wm_coeff_ctl,
-+						work);
- 
--	wmfw_add_ctl(ctl_work->dsp, ctl_work->ctl);
--	kfree(ctl_work);
-+	wmfw_add_ctl(ctl->dsp, ctl);
- }
- 
- static void wm_adsp_free_ctl_blk(struct wm_coeff_ctl *ctl)
- {
-+	cancel_work_sync(&ctl->work);
++	unsigned int sys_config_size;
 +
- 	kfree(ctl->cache);
- 	kfree(ctl->name);
- 	kfree(ctl->subname);
-@@ -1417,7 +1413,6 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
- 				  unsigned int flags, unsigned int type)
- {
- 	struct wm_coeff_ctl *ctl;
--	struct wmfw_ctl_work *ctl_work;
- 	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
- 	const char *region_name;
- 	int ret;
-@@ -1513,22 +1508,11 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
- 	if (flags & WMFW_CTL_FLAG_SYS)
- 		return 0;
+ 	int fw;
+ 	int fw_ver;
  
--	ctl_work = kzalloc(sizeof(*ctl_work), GFP_KERNEL);
--	if (!ctl_work) {
--		ret = -ENOMEM;
--		goto err_list_del;
--	}
+@@ -109,8 +111,6 @@ struct wm_adsp {
+ };
+ 
+ struct cs_dsp_ops {
+-	unsigned int sys_config_size;
 -
--	ctl_work->dsp = dsp;
--	ctl_work->ctl = ctl;
--	INIT_WORK(&ctl_work->work, wm_adsp_ctl_work);
--	schedule_work(&ctl_work->work);
-+	INIT_WORK(&ctl->work, wm_adsp_ctl_work);
-+	schedule_work(&ctl->work);
- 
- 	return 0;
- 
--err_list_del:
--	list_del(&ctl->list);
--	kfree(ctl->cache);
- err_ctl_subname:
- 	kfree(ctl->subname);
- err_ctl_name:
+ 	bool (*validate_version)(struct wm_adsp *dsp, unsigned int version);
+ 	unsigned int (*parse_sizes)(struct wm_adsp *dsp,
+ 				    const char * const file,
 -- 
 2.33.0
 
