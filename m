@@ -2,80 +2,89 @@ Return-Path: <SRS0=eqSS=OD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83C16C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 21:24:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 23B07C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 21:33:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E1204610FB
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 21:24:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E1204610FB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=neo-zeon.de
+	by mail.kernel.org (Postfix) with ESMTPS id C712060EE5
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Sep 2021 21:32:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C712060EE5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9B9E2178F;
-	Mon, 13 Sep 2021 23:23:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B9E2178F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1F6FB178E;
+	Mon, 13 Sep 2021 23:32:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F6FB178E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631568282;
-	bh=ovD+6SvfTJlvwV9t85/63a+zM6oWq6+/XKwqEtpvvtY=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1631568778;
+	bh=T3g2bP3HpqnQvyVwogH85mi6KZdkz2xL5vsVakln8cY=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SWMPgbKO5x1W3uezUM4J5GzkDwrEvzlgxWJARTfiaVxPiYATkzil1iLCYkNVgiRj6
-	 09VrVY63M4SXVIPf55ipZcco+YOQPJUXOxzcPHNjZtIcIYTm+Wk4jS9Y6SuGfwjdeR
-	 ZuAraHVhuVdduM9oL378Tnj6nhsXaTDqFK0/T25w=
+	b=P66RJ/rvkIcwtPR2o8qyenbmc6YAc/0INiYNcAkHg8LbGDZ2H0Rs0DoDrQ9CYW9Y4
+	 nAtBipWhYvE9xZ6ygmiW8ERUPKJuoERKzJ2uabTkynR9YBOZN2eTZA2028rdkVwXVr
+	 QC5r2ljNBWkhAINey7WDIkxNMOlnijKGIww9cOpU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 25DE8F80227;
-	Mon, 13 Sep 2021 23:23:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 680A2F80169;
+	Mon, 13 Sep 2021 23:32:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 45090F8027C; Mon, 13 Sep 2021 23:23:50 +0200 (CEST)
-Received: from neo-zeon.de (neo-zeon.de [70.229.12.130])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 5FD8BF8027C; Mon, 13 Sep 2021 23:32:05 +0200 (CEST)
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com
+ [209.85.210.48])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 26505F80169
- for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 23:23:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26505F80169
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=neo-zeon.de header.i=@neo-zeon.de
- header.b="c684fhPq"
-Received: from neo-zeon.de (localhost [127.0.0.1])
- by neo-zeon.de (OpenSMTPD) with ESMTP id c880dfd6;
- Mon, 13 Sep 2021 14:23:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=neo-zeon.de; h=subject:to
- :cc:references:from:message-id:date:mime-version:in-reply-to
- :content-type:content-transfer-encoding; s=1; bh=beGOWorYaqXehgS
- 5qYxLxir5s0w=; b=c684fhPqRz4LVNTLY+Rw2Ii9aR4uUgB5t1cvGLMBVhhS65J
- 8v8OIQTAOc+bxMlblWjtybskkBlcz8VaQGec9X1t3P8sy5ELi4xTUi2l+02ch7zK
- 5q0Y6GexRYMGA+/88O1osuaUweNlpOlc1iI0xPgqxVtUdgHYncoDk4cbFiyY=
-Received: by neo-zeon.de (OpenSMTPD) with ESMTPSA id 820bce49
- (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO); 
- Mon, 13 Sep 2021 14:23:38 -0700 (PDT)
-Subject: Re: [PATCH] ALSA: hda/realtek: Quirks to enable speaker output for
- Lenovo Legion 7i 15IMHG05, Yoga 7i 14ITL5/15ITL5, and 13s Gen2 laptops.
-To: Takashi Iwai <tiwai@suse.de>
-References: <20210912230715.156221-1-cam@neo-zeon.de>
- <s5hy281jb7l.wl-tiwai@suse.de>
- <e1c633dc-570f-d06a-51cb-bdfd0c1a2549@neo-zeon.de>
- <s5hzgsgirt2.wl-tiwai@suse.de>
-From: Cameron Berkenpas <cam@neo-zeon.de>
-Message-ID: <e6f98910-777c-6c9b-e621-06a4dd85be63@neo-zeon.de>
-Date: Mon, 13 Sep 2021 14:23:38 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <s5hzgsgirt2.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B58E5F80169
+ for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 23:31:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B58E5F80169
+Received: by mail-ot1-f48.google.com with SMTP id
+ a20-20020a0568300b9400b0051b8ca82dfcso15368372otv.3
+ for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2021 14:31:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+ :message-id;
+ bh=XnVyvRrK1owG70oj9OBKMWq8slrlkz/+5/c6V4H3/gU=;
+ b=RENs5+2lLMT/30G6yPJDTBI+V/i8KMxjl3+lNV0sH6EDC5D2KiaEM4vGySEVHbbfxt
+ 4GOiJwr155JHZ40qKzkH6vKHtEfgZ17mnoBigXgEs1M0InqGJv1KFRuVslASbj+lyFPw
+ YRmEiHApYFRFBuFKMznVQeLTBmYnXmQ2d2eXmtio7SxuU3ugrHRbR4jIJmG1M8dHEljI
+ Z0AiDlPmBlrt5u4IHkeG0gxBDaKHg0CvjdaRKbMu0Dgds3hZ0Xvgrz1NfZqtLtmXsSbM
+ Gqb9062LCHBjwk45PJs/4ttuVXXnXzppcCHcHy3hr7/3Qx7kkJ17nO+jDT47BKl6N61r
+ 2WJw==
+X-Gm-Message-State: AOAM530C7IIgR3vbeMRstht1k3tkfhKyWAfTbKig+861X0uFNUmDhxqy
+ zGDkZ/1L+79RxmYf2uAmqQ==
+X-Google-Smtp-Source: ABdhPJyCDct3Ef1sAiH5at31Q3Pw/8cEU7uq1EmCixfb3ChclnbVNePBX4QBllaF2VGBKlennTyL3g==
+X-Received: by 2002:a9d:5a89:: with SMTP id w9mr11641935oth.91.1631568716465; 
+ Mon, 13 Sep 2021 14:31:56 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
+ [66.90.148.213])
+ by smtp.gmail.com with ESMTPSA id 67sm2142358ota.70.2021.09.13.14.31.55
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 13 Sep 2021 14:31:55 -0700 (PDT)
+Received: (nullmailer pid 1412997 invoked by uid 1000);
+ Mon, 13 Sep 2021 21:31:54 -0000
+From: Rob Herring <robh@kernel.org>
+To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+In-Reply-To: <1631539062-28577-2-git-send-email-srivasam@codeaurora.org>
+References: <1631539062-28577-1-git-send-email-srivasam@codeaurora.org>
+ <1631539062-28577-2-git-send-email-srivasam@codeaurora.org>
+Subject: Re: [PATCH v2 1/2] ASoC: google: dt-bindings: Add sc7280-herobrine
+ machine bindings
+Date: Mon, 13 Sep 2021 16:31:54 -0500
+Message-Id: <1631568714.639730.1412996.nullmailer@robh.at.kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ bgoswami@codeaurora.org, lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org,
+ plai@codeaurora.org, tiwai@suse.com, robh+dt@kernel.org,
+ linux-kernel@vger.kernel.org, agross@kernel.org, broonie@kernel.org,
+ rohitkr@codeaurora.org, swboyd@chromium.org, bjorn.andersson@linaro.org,
+ judyhsiao@chromium.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,67 +100,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-I figured out the problem. We need to this for HDA_FIXUP_ACT_PRE_PROBE 
-rather than HDA_FIXUP_ACT_INIT.
+On Mon, 13 Sep 2021 18:47:41 +0530, Srinivasa Rao Mandadapu wrote:
+> Add devicetree bindings documentation file for sc7280 sound card
+> registration.
+> 
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> ---
+>  .../bindings/sound/google,sc7280-herobrine.yaml    | 169 +++++++++++++++++++++
+>  1 file changed, 169 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
+> 
 
-v2 patching coming in soon. I've added a thanks section as a number of 
-people helped to test and/or fix up the verbs. I may want to update the 
-thank-you list if anyone requests to be added (since I don't remember 
-everyone who assisted).
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
--Cameron
+yamllint warnings/errors:
 
+dtschema/dtc warnings/errors:
+Error: Documentation/devicetree/bindings/sound/google,sc7280-herobrine.example.dts:46.24-25 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/sound/google,sc7280-herobrine.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1441: dt_binding_check] Error 2
 
-On 9/13/21 5:27 AM, Takashi Iwai wrote:
-> On Mon, 13 Sep 2021 13:59:08 +0200,
-> Cameron Berkenpas wrote:
->>
->> I'll test this  and re-submit today or tomorrow. Should I re-submit
->> the patch entirely? Ie, a new email thread with a [PATCH v2] subject?
-> Yes, a resubmission of a v2 patch would be appreciated.
->
->> Thanks for the fast response! It actually made it to my inbox this time.
-> Heh :)
->
->
-> thanks,
->
-> Takashi
->
->> -Cameron
->>
->> On 9/12/21 10:28 PM, Takashi Iwai wrote:
->>> On Mon, 13 Sep 2021 01:07:16 +0200,
->>> Cameron Berkenpas wrote:
->>>> This patch initializes and enables speaker output on the Lenovo Legion 7i
->>>> 15IMHG05, Yoga 7i 14ITL5/15ITL5, and 13s Gen2 series of laptops using the
->>>> HDA verb sequence specific to each model.
->>>>
->>>> Speaker automute is disabled for the Lenovo Legion 7i 15IMHG05 to avoid
->>>> breaking speaker output on resume and when devices are unplugged from its
->>>> headphone jack.
->>>>
->>>> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=208555
->>>> Signed-off-by: Cameron Berkenpas <cam@neo-zeon.de>
->>> Thanks for the patch.  This version looks almost good, but just one
->>> thing:
->>>
->>>> +/* Fixup for Lenovo Legion 15IMHg05 speaker output on headset removal. */
->>>> +static void alc287_fixup_legion_15imhg05_speakers(struct hda_codec *codec,
->>>> +						  const struct hda_fixup *fix,
->>>> +						  int action)
->>>> +{
->>>> +	struct alc_spec *spec = codec->spec;
->>>> +
->>>> +	switch (action) {
->>>> +	case HDA_FIXUP_ACT_INIT:
->>>> +		spec->gen.automute_speaker = 0;
->>> This flag is effective only until "Auto-Mute Mode" mixer control is
->>> changed, so it's not persistent.  If you'd need to disable the
->>> auto-mute feature, set spec->gen.suppress_auto_mute=1 instead.
->>>
->>>
->>> thanks,
->>>
->>> Takashi
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1527380
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
