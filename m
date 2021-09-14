@@ -2,98 +2,81 @@ Return-Path: <SRS0=quTn=OE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BFB0C43219
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Sep 2021 16:54:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B22CBC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Sep 2021 17:07:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 09B0A61159
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Sep 2021 16:54:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 09B0A61159
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id 890AE610E6
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Sep 2021 17:06:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 890AE610E6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 49469181F;
-	Tue, 14 Sep 2021 18:53:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49469181F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4F7F81848;
+	Tue, 14 Sep 2021 19:06:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F7F81848
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631638468;
-	bh=DgA5IyvFHLnRh5etnSR6s8GRrr+JVZ15ZfNtsM+HgEg=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1631639217;
+	bh=cK9jtjS6sGndb/tYO2Wm17SC/1VsCkyUP+bEtwppFPQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SWBfyV62jQxrfu8LhChuZquvPaZL+TNy8ryvL6hVLN+sITxpiPXG3FrqgoPRT2UsJ
-	 uunm16L3vLYwQCkuktwymLmY9+t4wK6/Aue2/WqvJooXEppkP2B/Z/jV9icAEniTnb
-	 W0iKp1sIEyan+vJmOZPSpTNT71CMkTj+vj46CSls=
+	b=Ifwp8ttixqaTeHgyGKzB4aYSUJQICHM60nGpPFsz8qdW8NuNs/WaJj5WnxHtjQ6QL
+	 T7c4VeeTR80W3qDsJ7YqFkazxiAzeFH89+OvG4CKX8yYkqQKp1Tnfuex/BSSve/nxi
+	 g50FdWd7CvFKYPLeic1tT/YB8pmXF4NUeowrZ1Z8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30E87F804B3;
-	Tue, 14 Sep 2021 18:52:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CCE42F8025A;
+	Tue, 14 Sep 2021 19:06:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A5598F804B3; Tue, 14 Sep 2021 18:52:47 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 28790F8025E; Tue, 14 Sep 2021 19:06:05 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5E53DF8025E
- for <alsa-devel@alsa-project.org>; Tue, 14 Sep 2021 18:52:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E53DF8025E
+ by alsa1.perex.cz (Postfix) with ESMTPS id D48D2F80117
+ for <alsa-devel@alsa-project.org>; Tue, 14 Sep 2021 19:05:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D48D2F80117
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="CtegOSoq"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18E6cAGU023919; 
- Tue, 14 Sep 2021 11:52:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=gCzzPt3/u/djsUDB7B0Tqho7J20/PY/Oaga6nTwOlOM=;
- b=CtegOSoqZJvhLoO+M9ytB4GZNiw03HI3gpu1KsJlVxdbMoMbjuLBsuT05Ah6S4i3VSnZ
- zHcegmlGbSi7VFHBCBz2onDZWq1JGUWnJTngPf2ySWT1ivUjacHJCKAhXCsZIM95yFZF
- 1QvxZgso3R+EvsG7rUg+Fr+oxIFw3xkajPpCoTENc55TvuhiDAVBopQLj3uK3WaqPSug
- tsSDdY2f9Xd6wqW5wEz0p8X3B2kzLhMAQV/3128NrjRCly50zNSTHxVY5pmieGzhpX2T
- 2+b6iOGZetFvpCrps77dSCaWXmpB+ikHMIPsipS2OZhrrPBTc6OnhjHtzATzSUgw8Wn6 CA== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 3b29n3sa0c-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 14 Sep 2021 11:52:35 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Tue, 14 Sep
- 2021 17:52:33 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via
- Frontend Transport; Tue, 14 Sep 2021 17:52:33 +0100
-Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.230])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 59530B2F;
- Tue, 14 Sep 2021 16:52:33 +0000 (UTC)
-From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-To: James Schulman <james.schulman@cirrus.com>, David Rhodes
- <david.rhodes@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
- <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
- <tiwai@suse.com>
-Subject: [PATCH 1/2] ASoC: cs42l42: Minor fix all errors reported by
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="QCHy3K7h"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 871E9610E6;
+ Tue, 14 Sep 2021 17:05:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1631639156;
+ bh=cK9jtjS6sGndb/tYO2Wm17SC/1VsCkyUP+bEtwppFPQ=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=QCHy3K7hqUJRnHjHLDdAeKJDSDxQPS5Ivqc9cIXglOKIydm1jTbhb0TbwksK+XgEu
+ TTBulmwC2NWmQ5rOVIT9weq8dtMXKYysBPb/usCVRFFY7V4Ic8+EUqje/hYrDtYBzA
+ 9xwqx8Miv+S3C5CYqlIOQ3Epjenhbfx7mSbQ61V4hNiRarwpvowTZ3zTQZKTM46tK4
+ vnPSHVQkeR7lDWM4qgb5ZkRWKNGtpTnH/dij1prUq2ksh89duZ+wNIGepnnL/ZFvSw
+ 4u0GFE6r9TVHa3rpDZcsy0s+vkvnU6goOuJE/Z56BiWyaIgCC5OEZkq2QHcUYYQY+l
+ rf9smhGKaEm8A==
+Date: Tue, 14 Sep 2021 18:05:16 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Subject: Re: [PATCH 1/2] ASoC: cs42l42: Minor fix all errors reported by
  checkpatch.pl script
-Date: Tue, 14 Sep 2021 17:52:19 +0100
-Message-ID: <20210914165220.752498-2-vitalyr@opensource.cirrus.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210914165220.752498-1-vitalyr@opensource.cirrus.com>
+Message-ID: <20210914170516.GG4434@sirena.org.uk>
 References: <20210914165220.752498-1-vitalyr@opensource.cirrus.com>
+ <20210914165220.752498-2-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: tnt3qF4nAPsVY_vd8NV3ffiEkUKc2cEP
-X-Proofpoint-ORIG-GUID: tnt3qF4nAPsVY_vd8NV3ffiEkUKc2cEP
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="GdbWtwDHkcXqP16f"
+Content-Disposition: inline
+In-Reply-To: <20210914165220.752498-2-vitalyr@opensource.cirrus.com>
+X-Cookie: This space intentionally left blank.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>,
+ James Schulman <james.schulman@cirrus.com>,
+ David Rhodes <david.rhodes@cirrus.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,60 +92,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
----
- sound/soc/codecs/cs42l42.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index fb1e4c33e27d..ca76d907da52 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -851,7 +851,7 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
- 	if (params_width(params) == 24)
- 		cs42l42->bclk = (cs42l42->bclk / 3) * 4;
- 
--	switch(substream->stream) {
-+	switch (substream->stream) {
- 	case SNDRV_PCM_STREAM_CAPTURE:
- 		if (channels == 2) {
- 			val |= CS42L42_ASP_TX_CH2_AP_MASK;
-@@ -935,7 +935,7 @@ static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- 						      CS42L42_HP_ANA_BMUTE_MASK);
- 
- 		cs42l42->stream_use &= ~(1 << stream);
--		if(!cs42l42->stream_use) {
-+		if (!cs42l42->stream_use) {
- 			/*
- 			 * Switch to the internal oscillator.
- 			 * SCLK must remain running until after this clock switch.
-@@ -1015,7 +1015,7 @@ static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- 
- #define CS42L42_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
- 			 SNDRV_PCM_FMTBIT_S24_LE |\
--			 SNDRV_PCM_FMTBIT_S32_LE )
-+			 SNDRV_PCM_FMTBIT_S32_LE)
- 
- static const struct snd_soc_dai_ops cs42l42_ops = {
- 	.startup	= cs42l42_dai_startup,
-@@ -1492,7 +1492,7 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
- 	if ((~masks[5]) & irq_params_table[5].mask) {
- 		if (stickies[5] & CS42L42_HSDET_AUTO_DONE_MASK) {
- 			cs42l42_process_hs_type_detect(cs42l42);
--			switch(cs42l42->hs_type){
-+			switch (cs42l42->hs_type) {
- 			case CS42L42_PLUG_CTIA:
- 			case CS42L42_PLUG_OMTP:
- 				snd_soc_jack_report(cs42l42->jack, SND_JACK_HEADSET,
-@@ -1524,7 +1524,7 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
- 				cs42l42->plug_state = CS42L42_TS_UNPLUG;
- 				cs42l42_cancel_hs_type_detect(cs42l42);
- 
--				switch(cs42l42->hs_type){
-+				switch (cs42l42->hs_type) {
- 				case CS42L42_PLUG_CTIA:
- 				case CS42L42_PLUG_OMTP:
- 					snd_soc_jack_report(cs42l42->jack, 0, SND_JACK_HEADSET);
--- 
-2.25.1
+--GdbWtwDHkcXqP16f
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Tue, Sep 14, 2021 at 05:52:19PM +0100, Vitaly Rodionov wrote:
+> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+> ---
+>  sound/soc/codecs/cs42l42.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+
+This sort of minor cleanup should go after any fixes so that there's no
+dependency created needlessly.
+
+--GdbWtwDHkcXqP16f
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFA1ksACgkQJNaLcl1U
+h9CgbQf+OuIKym2dMtISggsJRRA2ZOkGY410Vm+jkhqXhNSBIRtiJY2B4hSlx3Yf
+qJfA0NLH0p6T9Z5TDptaqRDit7nENLTUxl/sqrioYt9YQAsYUhVTL3y9qG2U8Xxx
+sNcqEdK2AbsxmEYE94QMpjsewYD9BwRZJRF2wa4siL4kmIRWLlg72S7eoubDg/ET
+gOqKzEVH95AjCFCSB7IMIERJE2LeE0QAyyZi7W4LqCAIe8XokfFIGOrXB05AwIqN
+4/CMqir3xjM7MSx6i732GAxGxKcV1qQRT3RfLMADDOxb75Ua/9KVXElZm35s9N9z
+zudNb7dDBRQVNiFZ3QTL5ASF6vz2Gw==
+=UiJW
+-----END PGP SIGNATURE-----
+
+--GdbWtwDHkcXqP16f--
