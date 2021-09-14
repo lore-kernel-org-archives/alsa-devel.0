@@ -2,94 +2,97 @@ Return-Path: <SRS0=quTn=OE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39A52C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Sep 2021 16:53:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7321C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Sep 2021 16:54:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 11E3961164
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Sep 2021 16:53:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 11E3961164
+	by mail.kernel.org (Postfix) with ESMTPS id 24DD061159
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Sep 2021 16:54:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 24DD061159
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3220017E0;
-	Tue, 14 Sep 2021 18:52:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3220017E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id A331C17F2;
+	Tue, 14 Sep 2021 18:53:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A331C17F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631638416;
-	bh=uzZoGJOJKIdwLMAfqIKSKKYLbMxygCPSjeBGOgtonNg=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Xlo++dTdrMdxGEZuANMxEzneKmRM9Cclz6o5UicV8piBxvINw0l6zDDRia0vZCls0
-	 yh8OkxBGoYVRWdOaLo84LH8q++WkdW2n9B0+DZ+j2/GY1xXQUsQI95eB1qSYj4fZ5B
-	 RFZzU6xIETKL9+x7gm8Ut8wHyzqbiH1+RT5vBKmY=
+	s=default; t=1631638460;
+	bh=JERs3F0dLs3k3omxK3tREkTqAvPBRig1cdoA3nP+HHA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=oF60SpT2dYQL6ynjDNuOBDzPofIocFiyrBg7ECzw0t7FaaU0unlxows1HM3sf9a7E
+	 0+3uxZrCY21envJXoesrcA/tYg/qSF4s4Hh1f8vSthEYrpf91eDT25KDr0IMfa6X7A
+	 6FOkadGUlGR0wDJtuaOEXDd/gUyodAE+f44Itg2I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BB2D3F80117;
-	Tue, 14 Sep 2021 18:52:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 818E4F8027B;
+	Tue, 14 Sep 2021 18:52:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 615B6F8027B; Tue, 14 Sep 2021 18:52:44 +0200 (CEST)
+ id 4BDFDF80271; Tue, 14 Sep 2021 18:52:45 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2F5BEF80117
- for <alsa-devel@alsa-project.org>; Tue, 14 Sep 2021 18:52:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F5BEF80117
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2450EF80132
+ for <alsa-devel@alsa-project.org>; Tue, 14 Sep 2021 18:52:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2450EF80132
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="PpnMEdel"
+ header.b="PsdLOxdb"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18E503l9016778; 
- Tue, 14 Sep 2021 11:52:35 -0500
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18E503lA016778; 
+ Tue, 14 Sep 2021 11:52:36 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=YkZHQj9k0tUUUprq2cdPeMN2UHIX44J1qBnShOtUP7U=;
- b=PpnMEdelvK7sUDdYt5wile+mmYipFsaYoHRLB0C95BMFNfgLmT3AlVPRnEv2kXsb5TTp
- Xl2VOqCzM1QYeYfbmiRFnhv8C2N2lOFqfuDKVK7SB70PnKgYlZ14FDVow9wHj8heMz5L
- 9bOghnxirizbkOYsdtZEpsMIKuSdbAtQC+EBmmGb2z0EatB1pRlExbRsfsxUKTwbh28Z
- POzEdnWdM5YKirKUt+tGmKGx36VVzf/DwSB0V+5CKLORkBBMAPsVUktrUYDQCorU21VD
- P99qKHEEiu4vntmWiblgtCn5R1uPD0CDzw26LJ5iKXc7SoTLLlgLrHr1CZzuumvwQJ1y Gg== 
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=RPUUNfkD77SxvTV4n4i6osbaFdwAR8+zqkgXsk/rY0s=;
+ b=PsdLOxdbulN9+fobLBit5yG98Blx/ushIc1SG03crgbaO93kvvYhyzaxrTvERmyrNVye
+ GKJzFVR1bfMTLbaftytJC5gz5ko1dtzcxWPFes3YZqoxqwWMFtcf7xX8R4YH5+ep+1jj
+ yJCqTza+AfhAqhAKYT9/JB52aliDfdu2wKabn/rTYB6JxfosCtGhvmrgrXjydRqIKkch
+ lSe5ppYHqbyfaOB03HOjH9uAFup11+uivYCsCNsvsLAf5q+3OT/NBi+FeM2wStAuJ4dB
+ JXPlOlOEtUTvs4nbOZGbnVvuMqwEXt//kHFVplvJvFH9AneQ2GfngvR0nR+3bkY2TABN Sw== 
 Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3b2gkx8xd0-1
+ by mx0a-001ae601.pphosted.com with ESMTP id 3b2gkx8xd0-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 14 Sep 2021 11:52:35 -0500
+ Tue, 14 Sep 2021 11:52:36 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Tue, 14 Sep
- 2021 17:52:33 +0100
+ 2021 17:52:34 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via
- Frontend Transport; Tue, 14 Sep 2021 17:52:33 +0100
+ Frontend Transport; Tue, 14 Sep 2021 17:52:34 +0100
 Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.230])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D29BEB10;
- Tue, 14 Sep 2021 16:52:32 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C0601478;
+ Tue, 14 Sep 2021 16:52:33 +0000 (UTC)
 From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 To: James Schulman <james.schulman@cirrus.com>, David Rhodes
  <david.rhodes@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
  <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
  <tiwai@suse.com>
-Subject: [PATCH 0/2] ASoC: cs42l42: Implement Manual Type detection as fallback
-Date: Tue, 14 Sep 2021 17:52:18 +0100
-Message-ID: <20210914165220.752498-1-vitalyr@opensource.cirrus.com>
+Subject: [PATCH 2/2] ASoC: cs42l42: Implement Manual Type detection as fallback
+Date: Tue, 14 Sep 2021 17:52:20 +0100
+Message-ID: <20210914165220.752498-3-vitalyr@opensource.cirrus.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210914165220.752498-1-vitalyr@opensource.cirrus.com>
+References: <20210914165220.752498-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 6YQcSsU3m-I6qvH5D-DuccFwtgawvVPB
-X-Proofpoint-GUID: 6YQcSsU3m-I6qvH5D-DuccFwtgawvVPB
+X-Proofpoint-ORIG-GUID: l6IFXDM3aRjwuP9jrmRYaYVvH_KjCmaP
+X-Proofpoint-GUID: l6IFXDM3aRjwuP9jrmRYaYVvH_KjCmaP
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+ linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,33 +108,218 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-For some headsets CS42L42 autodetect mode is not working correctly. 
-They will be detected as unknown types or as headphones. According 
-to the CS42L42 datasheet, if the headset autodetect failed,
-then the driver should switch to manual mode and perform a manual steps sequence.
-These steps were missing in the current driver code. This patch will add manual
-mode fallback steps in case autodetect failed. The default behavior is not affected,
-manual mode runs only when autodetect failed.
+From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-Tested for regression with autodetect with all known headsets - no regression.
-Tested with all headsets customers reported as false detected:
-Gumdrop DropTech B1 - detected as headset OK
-HUAWEI AM115 - detected as headset OK
-UGREEN EP103 - detected as headset OK
-HONOR AM116 - detected as headset OK
+Some headsets are not detected correctly by Automatic Type Detection
+on cs42l42. Instead, Manual Type Detection can be used to give a
+more accurate value.
 
-Also, fixes some errors reported by checkpatch.pl script.
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs42l42.c | 104 ++++++++++++++++++++++++++++++++-----
+ sound/soc/codecs/cs42l42.h |  54 +++++++++++++++++++
+ 2 files changed, 146 insertions(+), 12 deletions(-)
 
-Stefan Binding (1):
-  ASoC: cs42l42: Implement Manual Type detection as fallback
-
-Vitaly Rodionov (1):
-  ASoC: cs42l42: Minor fix all errors reported by checkpatch.pl script
-
- sound/soc/codecs/cs42l42.c | 114 +++++++++++++++++++++++++++++++------
- sound/soc/codecs/cs42l42.h |  54 ++++++++++++++++++
- 2 files changed, 151 insertions(+), 17 deletions(-)
-
+diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
+index ca76d907da52..d5e1e5228b5f 100644
+--- a/sound/soc/codecs/cs42l42.c
++++ b/sound/soc/codecs/cs42l42.c
+@@ -1046,37 +1046,117 @@ static struct snd_soc_dai_driver cs42l42_dai = {
+ 		.ops = &cs42l42_ops,
+ };
+ 
+-static void cs42l42_process_hs_type_detect(struct cs42l42_private *cs42l42)
++static void cs42l42_manual_hs_type_detect(struct cs42l42_private *cs42l42)
+ {
+ 	unsigned int hs_det_status;
+-	unsigned int int_status;
++	unsigned int hs_det_comp;
++	unsigned int hs_det_sw;
+ 
+-	/* Mask the auto detect interrupt */
++	/* Set hs detect to manual, active mode */
+ 	regmap_update_bits(cs42l42->regmap,
+-		CS42L42_CODEC_INT_MASK,
+-		CS42L42_PDN_DONE_MASK |
+-		CS42L42_HSDET_AUTO_DONE_MASK,
+-		(1 << CS42L42_PDN_DONE_SHIFT) |
+-		(1 << CS42L42_HSDET_AUTO_DONE_SHIFT));
++		CS42L42_HSDET_CTL2,
++		CS42L42_HSDET_CTRL_MASK |
++		CS42L42_HSDET_SET_MASK |
++		CS42L42_HSBIAS_REF_MASK |
++		CS42L42_HSDET_AUTO_TIME_MASK,
++		(1 << CS42L42_HSDET_CTRL_SHIFT) |
++		(0 << CS42L42_HSDET_SET_SHIFT) |
++		(0 << CS42L42_HSBIAS_REF_SHIFT) |
++		(0 << CS42L42_HSDET_AUTO_TIME_SHIFT));
++
++	/* Open the SW_HSB_HS3 switch and close SW_HSB_HS4 for a Type 1 headset. */
++	regmap_write(cs42l42->regmap, CS42L42_HS_SWITCH_CTL, CS42L42_HSDET_SW_COMP1);
++
++	regmap_read(cs42l42->regmap, CS42L42_HS_DET_STATUS, &hs_det_status);
++
++	hs_det_comp = (hs_det_status & CS42L42_HSDET_COMP1_OUT_MASK) >>
++			CS42L42_HSDET_COMP1_OUT_SHIFT;
++
++	/* Close the SW_HSB_HS3 switch for a Type 2 headset. */
++	regmap_write(cs42l42->regmap, CS42L42_HS_SWITCH_CTL, CS42L42_HSDET_SW_COMP2);
++
++	regmap_read(cs42l42->regmap, CS42L42_HS_DET_STATUS, &hs_det_status);
++
++	hs_det_comp |= ((hs_det_status & CS42L42_HSDET_COMP2_OUT_MASK) >>
++			CS42L42_HSDET_COMP2_OUT_SHIFT) << 1;
++
++	switch (hs_det_comp) {
++	case CS42L42_HSDET_COMP_TYPE1:
++		cs42l42->hs_type = CS42L42_PLUG_CTIA;
++		hs_det_sw = CS42L42_HSDET_SW_TYPE1;
++		break;
++	case CS42L42_HSDET_COMP_TYPE2:
++		cs42l42->hs_type = CS42L42_PLUG_OMTP;
++		hs_det_sw = CS42L42_HSDET_SW_TYPE2;
++		break;
++	case CS42L42_HSDET_COMP_TYPE3:
++		cs42l42->hs_type = CS42L42_PLUG_HEADPHONE;
++		hs_det_sw = CS42L42_HSDET_SW_TYPE3;
++		break;
++	default:
++		cs42l42->hs_type = CS42L42_PLUG_INVALID;
++		hs_det_sw = CS42L42_HSDET_SW_TYPE4;
++		break;
++	}
+ 
+-	/* Set hs detect to automatic, disabled mode */
++	/* Set Switches */
++	regmap_write(cs42l42->regmap, CS42L42_HS_SWITCH_CTL, hs_det_sw);
++
++	/* Set HSDET mode to Manual—Disabled */
+ 	regmap_update_bits(cs42l42->regmap,
+ 		CS42L42_HSDET_CTL2,
+ 		CS42L42_HSDET_CTRL_MASK |
+ 		CS42L42_HSDET_SET_MASK |
+ 		CS42L42_HSBIAS_REF_MASK |
+ 		CS42L42_HSDET_AUTO_TIME_MASK,
+-		(2 << CS42L42_HSDET_CTRL_SHIFT) |
+-		(2 << CS42L42_HSDET_SET_SHIFT) |
++		(0 << CS42L42_HSDET_CTRL_SHIFT) |
++		(0 << CS42L42_HSDET_SET_SHIFT) |
+ 		(0 << CS42L42_HSBIAS_REF_SHIFT) |
+-		(3 << CS42L42_HSDET_AUTO_TIME_SHIFT));
++		(0 << CS42L42_HSDET_AUTO_TIME_SHIFT));
++}
++
++static void cs42l42_process_hs_type_detect(struct cs42l42_private *cs42l42)
++{
++	unsigned int hs_det_status;
++	unsigned int int_status;
+ 
+ 	/* Read and save the hs detection result */
+ 	regmap_read(cs42l42->regmap, CS42L42_HS_DET_STATUS, &hs_det_status);
+ 
++	/* Mask the auto detect interrupt */
++	regmap_update_bits(cs42l42->regmap,
++		CS42L42_CODEC_INT_MASK,
++		CS42L42_PDN_DONE_MASK |
++		CS42L42_HSDET_AUTO_DONE_MASK,
++		(1 << CS42L42_PDN_DONE_SHIFT) |
++		(1 << CS42L42_HSDET_AUTO_DONE_SHIFT));
++
++
+ 	cs42l42->hs_type = (hs_det_status & CS42L42_HSDET_TYPE_MASK) >>
+ 				CS42L42_HSDET_TYPE_SHIFT;
+ 
++	/* Run Manual detection if auto detect has not found a headset.
++	 * We Re-Run with Manual Detection if the original detection was invalid or headphones,
++	 * to ensure that a headset mic is detected in all cases.
++	 */
++	if (cs42l42->hs_type == CS42L42_PLUG_INVALID ||
++		cs42l42->hs_type == CS42L42_PLUG_HEADPHONE) {
++		dev_dbg(cs42l42->component->dev, "Running Manual Detection Fallback\n");
++		cs42l42_manual_hs_type_detect(cs42l42);
++	} else {
++		/* Set hs detect to automatic, disabled mode */
++		regmap_update_bits(cs42l42->regmap,
++			CS42L42_HSDET_CTL2,
++			CS42L42_HSDET_CTRL_MASK |
++			CS42L42_HSDET_SET_MASK |
++			CS42L42_HSBIAS_REF_MASK |
++			CS42L42_HSDET_AUTO_TIME_MASK,
++			(2 << CS42L42_HSDET_CTRL_SHIFT) |
++			(2 << CS42L42_HSDET_SET_SHIFT) |
++			(0 << CS42L42_HSBIAS_REF_SHIFT) |
++			(3 << CS42L42_HSDET_AUTO_TIME_SHIFT));
++	}
++
+ 	/* Set up button detection */
+ 	if ((cs42l42->hs_type == CS42L42_PLUG_CTIA) ||
+ 	      (cs42l42->hs_type == CS42L42_PLUG_OMTP)) {
+diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
+index 8734f6828f3e..2aeabba73e05 100644
+--- a/sound/soc/codecs/cs42l42.h
++++ b/sound/soc/codecs/cs42l42.h
+@@ -228,6 +228,60 @@
+ #define CS42L42_PLUG_HEADPHONE		2
+ #define CS42L42_PLUG_INVALID		3
+ 
++#define CS42L42_HSDET_SW_COMP1		((0 << CS42L42_SW_GNDHS_HS4_SHIFT) | \
++					 (1 << CS42L42_SW_GNDHS_HS3_SHIFT) | \
++					 (1 << CS42L42_SW_HSB_HS4_SHIFT) | \
++					 (0 << CS42L42_SW_HSB_HS3_SHIFT) | \
++					 (0 << CS42L42_SW_HSB_FILT_HS4_SHIFT) | \
++					 (1 << CS42L42_SW_HSB_FILT_HS3_SHIFT) | \
++					 (0 << CS42L42_SW_REF_HS4_SHIFT) | \
++					 (1 << CS42L42_SW_REF_HS3_SHIFT))
++#define CS42L42_HSDET_SW_COMP2		((1 << CS42L42_SW_GNDHS_HS4_SHIFT) | \
++					 (0 << CS42L42_SW_GNDHS_HS3_SHIFT) | \
++					 (0 << CS42L42_SW_HSB_HS4_SHIFT) | \
++					 (1 << CS42L42_SW_HSB_HS3_SHIFT) | \
++					 (1 << CS42L42_SW_HSB_FILT_HS4_SHIFT) | \
++					 (0 << CS42L42_SW_HSB_FILT_HS3_SHIFT) | \
++					 (1 << CS42L42_SW_REF_HS4_SHIFT) | \
++					 (0 << CS42L42_SW_REF_HS3_SHIFT))
++#define CS42L42_HSDET_SW_TYPE1		((0 << CS42L42_SW_GNDHS_HS4_SHIFT) | \
++					 (1 << CS42L42_SW_GNDHS_HS3_SHIFT) | \
++					 (1 << CS42L42_SW_HSB_HS4_SHIFT) | \
++					 (0 << CS42L42_SW_HSB_HS3_SHIFT) | \
++					 (0 << CS42L42_SW_HSB_FILT_HS4_SHIFT) | \
++					 (1 << CS42L42_SW_HSB_FILT_HS3_SHIFT) | \
++					 (0 << CS42L42_SW_REF_HS4_SHIFT) | \
++					 (1 << CS42L42_SW_REF_HS3_SHIFT))
++#define CS42L42_HSDET_SW_TYPE2		((1 << CS42L42_SW_GNDHS_HS4_SHIFT) | \
++					 (0 << CS42L42_SW_GNDHS_HS3_SHIFT) | \
++					 (0 << CS42L42_SW_HSB_HS4_SHIFT) | \
++					 (1 << CS42L42_SW_HSB_HS3_SHIFT) | \
++					 (1 << CS42L42_SW_HSB_FILT_HS4_SHIFT) | \
++					 (0 << CS42L42_SW_HSB_FILT_HS3_SHIFT) | \
++					 (1 << CS42L42_SW_REF_HS4_SHIFT) | \
++					 (0 << CS42L42_SW_REF_HS3_SHIFT))
++#define CS42L42_HSDET_SW_TYPE3		((1 << CS42L42_SW_GNDHS_HS4_SHIFT) | \
++					 (1 << CS42L42_SW_GNDHS_HS3_SHIFT) | \
++					 (0 << CS42L42_SW_HSB_HS4_SHIFT) | \
++					 (0 << CS42L42_SW_HSB_HS3_SHIFT) | \
++					 (1 << CS42L42_SW_HSB_FILT_HS4_SHIFT) | \
++					 (1 << CS42L42_SW_HSB_FILT_HS3_SHIFT) | \
++					 (1 << CS42L42_SW_REF_HS4_SHIFT) | \
++					 (1 << CS42L42_SW_REF_HS3_SHIFT))
++#define CS42L42_HSDET_SW_TYPE4		((0 << CS42L42_SW_GNDHS_HS4_SHIFT) | \
++					 (1 << CS42L42_SW_GNDHS_HS3_SHIFT) | \
++					 (1 << CS42L42_SW_HSB_HS4_SHIFT) | \
++					 (0 << CS42L42_SW_HSB_HS3_SHIFT) | \
++					 (0 << CS42L42_SW_HSB_FILT_HS4_SHIFT) | \
++					 (1 << CS42L42_SW_HSB_FILT_HS3_SHIFT) | \
++					 (0 << CS42L42_SW_REF_HS4_SHIFT) | \
++					 (1 << CS42L42_SW_REF_HS3_SHIFT))
++
++#define CS42L42_HSDET_COMP_TYPE1	1
++#define CS42L42_HSDET_COMP_TYPE2	2
++#define CS42L42_HSDET_COMP_TYPE3	0
++#define CS42L42_HSDET_COMP_TYPE4	3
++
+ #define CS42L42_HS_CLAMP_DISABLE	(CS42L42_PAGE_11 + 0x29)
+ #define CS42L42_HS_CLAMP_DISABLE_SHIFT	0
+ #define CS42L42_HS_CLAMP_DISABLE_MASK	(1 << CS42L42_HS_CLAMP_DISABLE_SHIFT)
 -- 
 2.25.1
 
