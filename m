@@ -2,88 +2,89 @@ Return-Path: <SRS0=quTn=OE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 397ECC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Sep 2021 09:12:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ADD5BC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Sep 2021 09:13:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 98CEB61108
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Sep 2021 09:12:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 98CEB61108
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id ADF3860295
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Sep 2021 09:13:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org ADF3860295
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 736A4178F;
-	Tue, 14 Sep 2021 11:11:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 736A4178F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 698E4179D;
+	Tue, 14 Sep 2021 11:12:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 698E4179D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631610761;
-	bh=HnASciDHF/g7UVOBAoU9QUdaZ5Zr0hhYrdW65H9aT2w=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=N/Ez/fPh+ysp57PPjH+JkzPl8nlYBoDkliwItZ4cyY6TSzlOmWg0CPZq4IizIIfN2
-	 nNlnwqDFh3zb95Xb7gAffG0q3vCW7T8jmyExd458T/7axYJqQm3cnotkAqgD2de6mk
-	 K1S5YODwly0wIw5d2lT5pzMYsBZRd/uL7sK/Kydo=
+	s=default; t=1631610806;
+	bh=7JP8kqSCH6c1uIhR/ixbmGD+BCr+igr9n92aRObkOWs=;
+	h=Date:Subject:From:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=K8p1JvPTbrPsm4k0GxwVRrUf5Rw6tNhJkpoAVLjIr/w7JfcZFDPPRR4w5Lfx+oSqj
+	 1SxOgWZYmDIadGx7C7jhN7FG7Ggm0h76W559k1JSLD8Tx9IA7DPp9px5W7urbYBAQo
+	 I/TM9uRm1Ca70HWK4DJMhmyctTLOnRmRza38NAbo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BD8E7F8025A;
-	Tue, 14 Sep 2021 11:11:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9BB8CF8027B;
+	Tue, 14 Sep 2021 11:12:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B54C3F8025E; Tue, 14 Sep 2021 11:11:48 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id A0585F8032B; Tue, 14 Sep 2021 11:12:29 +0200 (CEST)
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com
+ [IPv6:2607:f8b0:4864:20::849])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7F99CF80169
- for <alsa-devel@alsa-project.org>; Tue, 14 Sep 2021 11:11:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F99CF80169
+ by alsa1.perex.cz (Postfix) with ESMTPS id 81C47F80169
+ for <alsa-devel@alsa-project.org>; Tue, 14 Sep 2021 11:12:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81C47F80169
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="J9lphqkb"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="lpX/0P2d"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 920111FDD8;
- Tue, 14 Sep 2021 09:11:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1631610699; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=yXWCMIOmgzwsk3kKU+jQY+zy/NVWx0Lz3AdQXzrACys=;
- b=J9lphqkblcqccGKcLexif77jCm9e39f6P8vceKrBWNn5HrMIdHu7bHvUtX8DazyY6oTsVJ
- 0vIK2Kvmc8N03F8/I9Bhyc9lugbcSETbbMwOC/B22HpQRrA/FFjFfemSzvqZ10vDciOeB/
- RneYOP54dRLI8NDz5Ir1C7GXm0Mmies=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1631610699;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=yXWCMIOmgzwsk3kKU+jQY+zy/NVWx0Lz3AdQXzrACys=;
- b=lpX/0P2dRCyjwITKWbu6TPTXeDKDHyiXpIqgjxlOq13yZE4HzOXH5VudLcT2H8tlVdOcne
- v0Z0iNB1UX/j93CA==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 89733A3B94;
- Tue, 14 Sep 2021 09:11:39 +0000 (UTC)
-Date: Tue, 14 Sep 2021 11:11:39 +0200
-Message-ID: <s5h8rzzh67o.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Cameron Berkenpas <cam@neo-zeon.de>
-Subject: Re: [PATCH v2] ALSA: hda/realtek: Quirks to enable speaker output for
- Lenovo Legion 7i 15IMHG05, Yoga 7i 14ITL5/15ITL5, and 13s Gen2 laptops.
-In-Reply-To: <20210913212627.339362-1-cam@neo-zeon.de>
-References: <20210913212627.339362-1-cam@neo-zeon.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="mvSW9aVG"
+Received: by mail-qt1-x849.google.com with SMTP id
+ f34-20020a05622a1a2200b0029c338949c1so59185007qtb.8
+ for <alsa-devel@alsa-project.org>; Tue, 14 Sep 2021 02:12:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
+ h=date:message-id:mime-version:subject:from:to:cc;
+ bh=JN3m/MpfuUecWmdVnxg//YZchm1bk52GTAi9/UcnHho=;
+ b=mvSW9aVGQkSnDPqgFlIEhRrskk/XsDMv7zGEJcmlMiMw3UIjbvjT3YHPheQwS3Ac84
+ crsyy0R1UgGQAte3/n81DQxS5NbbjZjwuNcHdQn0OUTE/AOaW45byfwYD/uY4BDNPdYd
+ N/yUnFsAmlB9jtokJLpGQFuE0SrgTFkR07HXH3hQopvcoilv9g8xzz04T9+9Djm73IBa
+ OiJcEEZ1xVQgj6jYbilktyqAJSd2DP2/JV6sylpSJrpbQzSzc6KaLp5maSGdJ+/PvupL
+ 0YZl9+47Q/HFd3X6zlvBCGlM6WJarV0u10q3Zvmysd8gzmz3fs7Sp0qhcOglZhzRYI6h
+ x5Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+ bh=JN3m/MpfuUecWmdVnxg//YZchm1bk52GTAi9/UcnHho=;
+ b=aBIfJmdveG6QEWjNkHCRsuLeia5FNhTnsyl5HOHc4X5qL1+jW2u5Ol2C41W+Z0IZ9L
+ WiukeqxZF3I9Riw8d+/EO8+59rfELKeL0XX65XiXmuC0pKpTbZ3aOdU4yJ9goNrH5wiC
+ c32IqGKKcGYSmHD4DDg5XHo/aWwaOkIAD417rhNscAGGOAHq0Mw+g076+NggAU5+6530
+ +pA/qSplN4iYX/1vMNgsMIhj/E8MzD7a4XwjT3+d3YGQJV9p7nhuyes8pclL2TUDyuJK
+ wCRGwoq6raC6/j8pAcWIwTBr3oxoFkC+PDmaoPcJSNvDoJC02eue7zSNiiPaoGf04PbC
+ DOUQ==
+X-Gm-Message-State: AOAM533LuMj7D9ys/hzqlnwyZ7HerhupSn5i2u7+Mbt4s9dJkhP6NhZK
+ wC5YaU/2CGRKVSRyn5/MfmFtjXF/t+OC
+X-Google-Smtp-Source: ABdhPJzazYfOZJLl/NCPeXGQ5GECIjOdSMhDfyy+2k7Lq6XVBHpCh8g4CHrfzAPXlC9v2GvJYAr8FqCEgbLc
+X-Received: from tzungbi-z840.tpe.corp.google.com
+ ([2401:fa00:1:10:1d24:4827:7125:1e19])
+ (user=tzungbi job=sendgmr) by 2002:a05:6214:1271:: with SMTP id
+ r17mr4114073qvv.48.1631610735139; Tue, 14 Sep 2021 02:12:15 -0700 (PDT)
+Date: Tue, 14 Sep 2021 17:12:04 +0800
+Message-Id: <20210914091204.2204278-1-tzungbi@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
+Subject: [PATCH v3] ASoC: dt-bindings: mediatek: mt8192: re-add audio afe
+ document
+From: Tzung-Bi Shih <tzungbi@google.com>
+To: broonie@kernel.org, robh+dt@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Cc: tzungbi@google.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,25 +100,140 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 13 Sep 2021 23:26:29 +0200,
-Cameron Berkenpas wrote:
-> 
-> This patch initializes and enables speaker output on the Lenovo Legion 7i
-> 15IMHG05, Yoga 7i 14ITL5/15ITL5, and 13s Gen2 series of laptops using the
-> HDA verb sequence specific to each model.
-> 
-> Speaker automute is suppressed for the Lenovo Legion 7i 15IMHG05 to avoid
-> breaking speaker output on resume and when devices are unplugged from its
-> headphone jack.
-> 
-> Thanks to: Andreas Holzer, Vincent Morel, sycxyc, Max Christian Pohle and
-> all others that helped.
-> 
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=208555
-> Signed-off-by: Cameron Berkenpas <cam@neo-zeon.de>
+The document was merged as commit 1afc60e00de3 ("dt-bindings:
+mediatek: mt8192: add audio afe document").
 
-Now I applied it with minor space fixes checkpatch complained, and
-added Cc to stable.  Thanks!
+However, [1] revealed that the commit 1afc60e00de3 breaks
+dt_binding_check due to dt-bindings/clock/mt8192-clk.h doesn't
+exist.
 
+As a temporary fix, commit 7d94ca3c8acd ("ASoC: mt8192: revert
+add audio afe document") reverted commit 1afc60e00de3.
 
-Takashi
+dt-bindings/clock/mt8192-clk.h is in mainline per commit
+f35f1a23e0e1 ("clk: mediatek: Add dt-bindings of MT8192 clocks").
+Re-adds the document back.
+
+[1]: https://mailman.alsa-project.org/pipermail/alsa-devel/2020-November/176873.html
+
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+---
+Changes from v2 (https://mailman.alsa-project.org/pipermail/alsa-devel/2021-August/189058.html):
+- Simplify the commit message.
+
+Changes from v1 (https://mailman.alsa-project.org/pipermail/alsa-devel/2021-August/189048.html):
+- Add more context to the commit message.
+
+ .../bindings/sound/mt8192-afe-pcm.yaml        | 100 ++++++++++++++++++
+ 1 file changed, 100 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mt8192-afe-pcm.yaml
+
+diff --git a/Documentation/devicetree/bindings/sound/mt8192-afe-pcm.yaml b/Documentation/devicetree/bindings/sound/mt8192-afe-pcm.yaml
+new file mode 100644
+index 000000000000..0170c93802d2
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/mt8192-afe-pcm.yaml
+@@ -0,0 +1,100 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/mt8192-afe-pcm.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Mediatek AFE PCM controller for mt8192
++
++maintainers:
++   - Jiaxin Yu <jiaxin.yu@mediatek.com>
++   - Shane Chien <shane.chien@mediatek.com>
++
++properties:
++  compatible:
++      const: mediatek,mt8192-audio
++
++  interrupts:
++    maxItems: 1
++
++  resets:
++    maxItems: 1
++
++  reset-names:
++    const: audiosys
++
++  mediatek,apmixedsys:
++    $ref: "/schemas/types.yaml#/definitions/phandle"
++    description: The phandle of the mediatek apmixedsys controller
++
++  mediatek,infracfg:
++    $ref: "/schemas/types.yaml#/definitions/phandle"
++    description: The phandle of the mediatek infracfg controller
++
++  mediatek,topckgen:
++    $ref: "/schemas/types.yaml#/definitions/phandle"
++    description: The phandle of the mediatek topckgen controller
++
++  power-domains:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: AFE clock
++      - description: ADDA DAC clock
++      - description: ADDA DAC pre-distortion clock
++      - description: audio infra sys clock
++      - description: audio infra 26M clock
++
++  clock-names:
++    items:
++      - const: aud_afe_clk
++      - const: aud_dac_clk
++      - const: aud_dac_predis_clk
++      - const: aud_infra_clk
++      - const: aud_infra_26m_clk
++
++required:
++  - compatible
++  - interrupts
++  - resets
++  - reset-names
++  - mediatek,apmixedsys
++  - mediatek,infracfg
++  - mediatek,topckgen
++  - power-domains
++  - clocks
++  - clock-names
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/mt8192-clk.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/power/mt8192-power.h>
++    #include <dt-bindings/reset-controller/mt8192-resets.h>
++
++    afe: mt8192-afe-pcm {
++        compatible = "mediatek,mt8192-audio";
++        interrupts = <GIC_SPI 202 IRQ_TYPE_LEVEL_HIGH>;
++        resets = <&watchdog MT8192_TOPRGU_AUDIO_SW_RST>;
++        reset-names = "audiosys";
++        mediatek,apmixedsys = <&apmixedsys>;
++        mediatek,infracfg = <&infracfg>;
++        mediatek,topckgen = <&topckgen>;
++        power-domains = <&scpsys MT8192_POWER_DOMAIN_AUDIO>;
++        clocks = <&audsys CLK_AUD_AFE>,
++                 <&audsys CLK_AUD_DAC>,
++                 <&audsys CLK_AUD_DAC_PREDIS>,
++                 <&infracfg CLK_INFRA_AUDIO>,
++                 <&infracfg CLK_INFRA_AUDIO_26M_B>;
++        clock-names = "aud_afe_clk",
++                      "aud_dac_clk",
++                      "aud_dac_predis_clk",
++                      "aud_infra_clk",
++                      "aud_infra_26m_clk";
++    };
++
++...
+-- 
+2.33.0.309.g3052b89438-goog
+
