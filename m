@@ -2,90 +2,79 @@ Return-Path: <SRS0=xeto=OF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.2 required=3.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7CF7C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 13:24:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 963A8C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 14:06:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4236261250
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 13:24:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4236261250
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 5651661165
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 14:06:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5651661165
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D6C58188F;
-	Wed, 15 Sep 2021 15:23:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6C58188F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5009517BE;
+	Wed, 15 Sep 2021 16:05:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5009517BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631712275;
-	bh=iG552K7GX0ywRbE+BXHd6Zz3qmphy1WP0rxjlBGoL24=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1631714805;
+	bh=Ws9yGIaeY4LwjCKo4SCOy48ayUoiS/Ue1HGfmbl/G/s=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JYEbJAVuCAiD727QgSbLHbx5FvWzUKOtK5IsYSrrR4G7E6gD2NVkM2voYA8I0KpgX
-	 8X4ZGIsjyPD8vYJfqrIZy1X5SZeXFWbWcVy7SfSBY6g5HWwDXOCiNHgrt2YVxVOYv9
-	 T2+nFXCbYARFEdh9lCd8mBNP0/FrKpH9L8doBynA=
+	b=rIh05LSjeRSCpir6hf7cGacIH8uCpH/URBQZlTPHjfNEx3UXZEkzkZshuH5gSxLKf
+	 Qdbp7lIRDDx8AArC9diIk/fQmqpMp/GArEqGsZ1EA7s2CPjWPsqOIPc1V9TYWlNyhi
+	 OkHMi6iLuRozcvqIM4bkpIVhgPNMyfWhnmvhQoNc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8926DF8027C;
-	Wed, 15 Sep 2021 15:19:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7A484F80227;
+	Wed, 15 Sep 2021 16:05:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4D712F8032C; Wed, 15 Sep 2021 15:19:10 +0200 (CEST)
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com
- [IPv6:2607:f8b0:4864:20::f33])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 9520DF8027C; Wed, 15 Sep 2021 16:05:52 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 58030F80227
- for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 15:19:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58030F80227
+ by alsa1.perex.cz (Postfix) with ESMTPS id 565E8F80132
+ for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 16:05:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 565E8F80132
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="j6cm7pyq"
-Received: by mail-qv1-xf33.google.com with SMTP id 93so1821010qva.7
- for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 06:19:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=iG552K7GX0ywRbE+BXHd6Zz3qmphy1WP0rxjlBGoL24=;
- b=j6cm7pyqPI7TB/gIxLbbFDeZc5MCyPvY4mTZlXPZtwWShllS/xzhnb87Yt8ZNtmt1X
- uVRYE+5mhgtQ1pUJDuj5evDuZt935Mhjnd0tzTDY3Aw4b9xZgYb4K+2YxJg8lHZtFoJ4
- Oc10fY1HoeA2woQtOT7aLvuDSUdFI1PAyPYd9/ZCxuobVmXT8RQx1zbkM9YxfAonKoc/
- WiIupZQHbUsbjD3IweREzEnOCLdxQQFThERRHu0xrm+BccmTKSui2ONMoe2vvSZvaPlH
- AZ9pbfaHv8HQVrZjBw7qAr8UNoJgenzxL3Vae4fTqU/MdghRCU8tadnH62tB7NVtYoQ9
- 3FIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=iG552K7GX0ywRbE+BXHd6Zz3qmphy1WP0rxjlBGoL24=;
- b=flkpf708PPLZIGF4fz6pCYH3XwBLxoSQck3EMBQOw1ZAgz3rVSPOakTDUAJuBbmpwh
- hz8TZJB4V3QED+TMTBvytJzF0ueYxCTQnnxFSIsH2YSkDZGItM+/03TryEdVqli5oLAX
- aK0fqVIWMiIH0fKKxCw7LGEJ6FKCW1ZFszaKVZM4zYPNz2v0RquKm9IY6rjPBVzQ1IC6
- uELE6E1c/kPGgsad0K0SaSVCZ9DUa35ImKcLYcpp9EqZK8f1GurXLBC0BjMXXhCW7ao+
- LoquF4NQCHECQB3Yzckp+k3jGmIRjrP3FDsAtKprqwyBoMsIOLs+TN0bZ9WpUdG3WvjA
- afyA==
-X-Gm-Message-State: AOAM5319xLHequq4j4FM6lIbkiEmXNF0aqfcwsFhWpRWmwTNWhxgqJg8
- ZT8qHqmlcyQ398pl98ZHHoWl9rLhH0uOfU7ZZf4=
-X-Google-Smtp-Source: ABdhPJzzRIucp5QOFzXRHep3ZYcPaR6RwUzCLjII1cKKBJo/6qkGjCtBZ6IcPeHA05DfabMaf5SFl59OpjAyzMr+TRY=
-X-Received: by 2002:a0c:e341:: with SMTP id a1mr10778937qvm.61.1631711939772; 
- Wed, 15 Sep 2021 06:18:59 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="AwCyOdY0"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D18A9611C1;
+ Wed, 15 Sep 2021 14:05:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1631714743;
+ bh=Ws9yGIaeY4LwjCKo4SCOy48ayUoiS/Ue1HGfmbl/G/s=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=AwCyOdY0bug+kZb37qkxGrSn09F80r7jrtyHZoOvfS8WY9+KV6ZJ3vn/N01LXXRyo
+ AE0/8tZE+ULn8n9nWNAfU8qdHwlrBx/9ySa+Chh96mA3HpaF5WxzF9Yq4yLOzOul8n
+ u0wPrzEFzeFAGuQenmebT0HFDH+Bjl1nQ43JrWELInXP5MfO3hphSWkeWJyJAIiBB9
+ VbdYpIB/5atHU23obtf9gc5oYdLoi5EV3umla/+DkQgPEtTfp7YP2874RE3UH5fjad
+ JwPsSZwtOvhBMSKf+WBcO4s3X1BWHOXbEUoN9whm8+0NDJrPmhHLgV6PnCGU3S6k4U
+ C4zKFMMbJiKKg==
+Date: Wed, 15 Sep 2021 15:05:02 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+Subject: Re: [PATCH v4 1/4] ASoC: rockchip: add support for i2s-tdm controller
+Message-ID: <20210915140502.GB12513@sirena.org.uk>
+References: <20210903231536.225540-1-frattaroli.nicolas@gmail.com>
+ <20210903231536.225540-2-frattaroli.nicolas@gmail.com>
 MIME-Version: 1.0
-References: <F8QtqhEtr7zd-TLTxx_4bX0GAXvq-griyYIyEpXrRybmRihHHpwt5nZUCn97mDEbJSW9TTesUMmwmFUukYEjWnGsCYi70LZhg6BA6iF9BMQ=@protonmail.com>
- <CAEsQvcuzPwkBWXfnJPe-xFGYHvvk-MiKijeXTUZ0KhBLtgR5sA@mail.gmail.com>
-In-Reply-To: <CAEsQvcuzPwkBWXfnJPe-xFGYHvvk-MiKijeXTUZ0KhBLtgR5sA@mail.gmail.com>
-From: Geraldo Nascimento <geraldogabriel@gmail.com>
-Date: Wed, 15 Sep 2021 10:18:48 +0000
-Message-ID: <CAEsQvcvRbP-sxjjG_Bn9dHRjEe9BXpQ_egVP=hgkQwWsj=EcOw@mail.gmail.com>
-Subject: Re: Location Of _snd_ctl_ops Definitions
-To: Ryan McClue <re.mcclue@protonmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="/WwmFnJnmDyWGHa4"
+Content-Disposition: inline
+In-Reply-To: <20210903231536.225540-2-frattaroli.nicolas@gmail.com>
+X-Cookie: The more the merrier.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, linux-rockchip@lists.infradead.org,
+ Philipp Zabel <p.zabel@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,30 +90,92 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello again, Ryan!
 
-Besides control_hw.c here are the relevant hits I could find:
-https://github.com/alsa-project/alsa-lib/search?q=snd_ctl_ops_t
+--/WwmFnJnmDyWGHa4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hope it helps,
-Geraldo Nasscimento
+On Sat, Sep 04, 2021 at 01:15:33AM +0200, Nicolas Frattaroli wrote:
 
-On Wed, Sep 15, 2021 at 1:11 PM Geraldo Nascimento
-<geraldogabriel@gmail.com> wrote:
->
-> Hi, Ryan!
->
-> Em Qua, 15 de set de 2021 05:45, Ryan McClue <re.mcclue@protonmail.com> escreveu:
->>
->> The struct _snd_ctl_ops contains a number of function pointers.
->> Where are these functions defined in the alsa-lib source tree, e.g int (*subscribe_events)(snd_ctl_t *handle, int subscribe)
->
->
-> Perhaps you are looking for src/control/control_hw.c specifically at line 341?
->
-> Thanks,
-> Geraldo Nascimento
->
->>
->> --
->> Ryan McClue, Sydney
+A few fairly small issues here, nothing too major:
+
+> @@ -0,0 +1,1832 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * ALSA SoC Audio Layer - Rockchip I2S/TDM Controller driver
+
+Please write the entire comment as a C++ one so it looks more
+itentional. =20
+
+> +	xfer_mask =3D (tx ? I2S_XFER_TXS_START : 0) |
+> +		    (rx ? I2S_XFER_RXS_START : 0);
+> +	xfer_val =3D (tx ? I2S_XFER_TXS_STOP : 0) |
+> +		   (rx ? I2S_XFER_RXS_STOP : 0);
+
+Please write normal conditional statements to improve legibility.
+
+> +	spin_lock_irqsave(&i2s_tdm->lock, flags);
+> +	if (on) {
+> +		if (substream->stream =3D=3D SNDRV_PCM_STREAM_PLAYBACK)
+> +			rockchip_enable_tde(i2s_tdm->regmap);
+> +		else
+> +			rockchip_enable_rde(i2s_tdm->regmap);
+> +
+> +		if (atomic_inc_return(&i2s_tdm->refcount) =3D=3D 1) {
+
+Why do we need to use atomics here given that we're inside a spinlock?
+Surely the spinlock is already providing adequate concurrency
+protection.  I can't see any other points where we don't have the
+spinlock already, and I'd be worried if we did.  This looks like it
+could just be regular variables.
+
+> +	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+> +	case SND_SOC_DAIFMT_CBS_CFS:
+
+Please use the modern SOF_DAI_FMT_CBC_CFC defines.
+
+> +	delta =3D (ppm < 0) ? -1 : 1;
+
+Again, please write normal condiditional statements for legibility.
+
+> +static int rockchip_i2s_tdm_clk_compensation_put(struct snd_kcontrol *kc=
+ontrol,
+> +						 struct snd_ctl_elem_value *ucontrol)
+> +{
+
+> +	return ret;
+> +}
+
+This should return 1 if the value changed.
+
+> +static int __maybe_unused rockchip_i2s_tdm_resume(struct device *dev)
+> +{
+> +	struct rk_i2s_tdm_dev *i2s_tdm =3D dev_get_drvdata(dev);
+> +	int ret;
+> +
+> +	ret =3D pm_runtime_get_sync(dev);
+> +	if (ret < 0)
+> +		return ret;
+> +	ret =3D regcache_sync(i2s_tdm->regmap);
+> +	pm_runtime_put(dev);
+
+Runtime resume also does a regcache sync so why are we doing another one
+here?
+
+--/WwmFnJnmDyWGHa4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFB/Y0ACgkQJNaLcl1U
+h9Ayxgf+JrmINVP/kRYs9tAdJd1AAk2R/J6FzgsqYkoGs1jumY4BJKwqI6hCOlZP
+1fl05QVBxFQwiYMCZpt4Rk/rCY43ZjcgmN78GEniVphrvsTMxBuU35HdFsmEehSp
+CxSXwX9Uvza+9IHrMV/G/HFFUpoCpGj8DSvOXsgcfiRI4fZ0es0j7MPxftXt5uvs
+dRzCtJDj/nXm5lcadR2TMJQ5GBQ9x8UyaEzG2E4bEJeKyARlx0NQAf2am3nArjWn
+l97mreV2jf+77Jy3IA9Y2eyaCQQHLIbL5F5JoxyZc4IX5fWxXdW/PWUzTw6sWAwo
+p2PZXOYxFwZY/TkFeZ9UkKROFucb4w==
+=kat+
+-----END PGP SIGNATURE-----
+
+--/WwmFnJnmDyWGHa4--
