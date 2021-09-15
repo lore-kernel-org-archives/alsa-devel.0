@@ -4,90 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7F5DC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 13:17:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81D01C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 13:18:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4A5B661263
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 13:17:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4A5B661263
+	by mail.kernel.org (Postfix) with ESMTPS id C74E561251
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 13:18:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C74E561251
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3CD10183A;
-	Wed, 15 Sep 2021 15:16:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3CD10183A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5552C1856;
+	Wed, 15 Sep 2021 15:17:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5552C1856
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631711851;
-	bh=6S4MMf0P9KUf4QLmZga52h7TMUJCzxWqw1kXeq7znlo=;
+	s=default; t=1631711885;
+	bh=4B1wsaYpvP9Q0nIMHRpLABqAQTF7xIuuvJzQbVvfdN4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JTvhfyI0T59zJdlrx883/OSDDYXJy/2yJRUUEMFlUkqkTiYIaHzCeYWxIUP6L1zXg
-	 TVNtdWwf30MAbtkX/8ukjHmTuc5pzhK1f6UtcawbJpwra6TwLqAiq7+cwAdDg8u/Vr
-	 9p+JzKWmoBDQ1VehOaeV1mqwbf0zbQzZrm0roP5c=
+	b=J80AylCg0OWntxDRh/hpQoURiEbeKKAq/ECZnhJVgOIhdGLUTSresK4k56gYLMlCY
+	 49kSRLsyivE/DmRNBVwOOPPWPtFKHiTTANQV/UF9I1MWxY6u2oBduQKIFde5q53D0b
+	 Fn9KVpX3OVtgXP1HzIpubqLXs8zFqOJEUOMBWtQc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3CF69F80510;
-	Wed, 15 Sep 2021 15:15:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D62C4F80525;
+	Wed, 15 Sep 2021 15:15:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C3DA9F80227; Wed, 15 Sep 2021 15:14:54 +0200 (CEST)
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
- [IPv6:2a00:1450:4864:20::330])
+ id AA4B8F804F3; Wed, 15 Sep 2021 15:14:57 +0200 (CEST)
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
+ [IPv6:2a00:1450:4864:20::332])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 67DADF80227
- for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 15:14:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67DADF80227
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4864FF804E2
+ for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 15:14:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4864FF804E2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="e+XMGdan"
-Received: by mail-wm1-x330.google.com with SMTP id 140so2178093wma.0
- for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 06:14:40 -0700 (PDT)
+ header.b="Z8ZeV0Ma"
+Received: by mail-wm1-x332.google.com with SMTP id y132so2150859wmc.1
+ for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 06:14:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=JXUzKXqyFK0FF7TuDfDOhSheb5jJRieIFIcaHFlaH0I=;
- b=e+XMGdanY0/eYMfrz4B3FQ9ISacQb6ccxeueJqMUhtHmyU9qA1kps040zqO18Wlvwr
- xx6kY8y70AbTje1rYu3Fo2KwmZR3QPH6W42JunwVLujhvnb/Rn0hC2tdB6mVRYMLniIc
- G0e6Tvpd6AY9wllU9deFQf0brVfPXYONteDNcbaWRCx/n9DYiTBdkLaeHzZj1QwS+/0V
- LM4dpJSfqT8mCrYxecywlTc4Jbv6f8mnp+lXCOMhxTGapvSC5926yOCrjEf3H/lwXbKE
- XQEJcM+AIJHws+0RnMYDQ3mmoTHOktxze/nzpHbUuqDe/p33WkbMKuD6eG0wcGYnr4+x
- bIng==
+ bh=1SYNXa9BSEU6BVfGZ3maNgsEM4Zr64CRywqKjDQaPHg=;
+ b=Z8ZeV0Ma+NxbY4hUHJSyTPrk/febnEycQdzkX6FTTHVF5v5NG8QEWXB9DRwsYdePql
+ 36Pu15rIsSkBtMtjfdOZlAMYDBH214orJEvEdwH4H+ouab05hkF1qUV9Dndf4CEnnhb2
+ n/q8Ks6IOxZ5FaVqTOtMZuNzXzsll1aHItuuwjVExvqq1WviwtGnwYuX65/WxL8rJH6h
+ hrhrOglg4ACw8LNRZrLy/93ipMPXTGGkIyFb8OJk8JlGWhSvbopQgTfD0JunDOwBLtfC
+ 0aTOQRTjFvRS+mFTtGMa9MR+IlQWGMeRbAl8d3zUJ6BsAs6WXrjfgGlGDyLcR48U1Dmc
+ YyLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=JXUzKXqyFK0FF7TuDfDOhSheb5jJRieIFIcaHFlaH0I=;
- b=w8Qwxb5tc58LoZk8QwyMfRasAIoL1kaLHiBwhgH/w1nrmdFFkE7pr8Mdy93yuQtC3s
- jJ+l8OfHKc6GFqttraVpkD1iiLOHoa8VsCv6y02EnwUI5p0qYchqiezcEdpeHqfzGAWN
- 4Zo+if2B8L3oDLrFxjcAMcR8n1TtPi8L/Qjjtd6xfr4jVIuYkTLqkKkpxhvrZhO2vZWL
- hqA7te1stSzykW0ppTUQEY5AZ+GgFgEEoNRAOLUxQn/OBBjBKGj0p0eJNK7tI67ryfwb
- wpzF9I5DExC3EAK4LAtf8xan58HzVuYoECXZLpirFq6HC5/lTrxMyZTq/Wans1sDAol2
- Rh0Q==
-X-Gm-Message-State: AOAM530t6/klmT5rRqhflue7elwR9WyYiOWEk/+/SRpMoEsi8+hmNCRA
- rgBIPi6FpX7QY6DI1h4N39rZWRcNB6EW9Q==
-X-Google-Smtp-Source: ABdhPJyHhGNdmGfTv9wtq6gJn80pNJ9SBtwDPfGsQybAYgtpi/0Bld6HttsqWC613iZsz2rWX+dseA==
-X-Received: by 2002:a7b:c3d4:: with SMTP id t20mr4382511wmj.27.1631711680290; 
- Wed, 15 Sep 2021 06:14:40 -0700 (PDT)
+ bh=1SYNXa9BSEU6BVfGZ3maNgsEM4Zr64CRywqKjDQaPHg=;
+ b=42+G/ZhUpE2x8xl6c8+DwtApUFlCkhxBkwcimBzUd3ukbuXY44H8uZAUV+V5kr8Tgl
+ 8GfUo1BZVeTKcBtfAqmmJ9NE6lPR0+osYsiEHp9e5cbkUVl704sZU1oDE7sxgpuv+cgq
+ jVS0V/LlGPgxekxNlH+f92dpj7d+79ghAvKkjO56+iq2HYlgrUwvRHk6SoB6K3mzjGFb
+ RmE5JqnIUKyS+JHWSqC2Y2KKOhsjna7O5PaDfsRzksfo+c71qCT2/P0MUQ28sq1zxmpt
+ WEizbblBOR9TBOgLDbNdynZ8PUwUIwIVrJtj0byw0xlyQ7VeX6WHOVUdt8PsbhqU87ms
+ 0HUw==
+X-Gm-Message-State: AOAM531TcemLEv3OkxErkme6tIEsa2/81/n0pium0rICEN3DFpKtUWWi
+ oAeXrzPkmBsy7KrsYRol/1KkwBuQlBGfRg==
+X-Google-Smtp-Source: ABdhPJwmPy5W/4Nr67u8dDm8szXbCy6lbIiuAfVbBuAhxwdxEOH4ruyqMiG3uB2eQrjP/rRRcm+sZQ==
+X-Received: by 2002:a7b:c947:: with SMTP id i7mr4317127wml.179.1631711689684; 
+ Wed, 15 Sep 2021 06:14:49 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id m29sm14501717wrb.89.2021.09.15.06.14.38
+ by smtp.gmail.com with ESMTPSA id m29sm14501717wrb.89.2021.09.15.06.14.48
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 15 Sep 2021 06:14:39 -0700 (PDT)
+ Wed, 15 Sep 2021 06:14:49 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: bjorn.andersson@linaro.org,
 	broonie@kernel.org,
 	robh@kernel.org
-Subject: [PATCH v6 02/22] soc: dt-bindings: qcom: apr: deprecate qcom,
- apr-domain property
-Date: Wed, 15 Sep 2021 14:13:13 +0100
-Message-Id: <20210915131333.19047-3-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v6 08/22] ASoC: dt-bindings: rename q6afe.h to
+ q6dsp-lpass-ports.h
+Date: Wed, 15 Sep 2021 14:13:19 +0100
+Message-Id: <20210915131333.19047-9-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210915131333.19047-1-srinivas.kandagatla@linaro.org>
 References: <20210915131333.19047-1-srinivas.kandagatla@linaro.org>
@@ -111,59 +111,449 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-replace usage of qcom,apr-domain property with qcom,domain property so
-that bindings and driver can be reused.
+move all LPASS audio ports defines from q6afe.h to q6dsp-lpass-ports.h
+as these belong to LPASS IP.
+Also this move helps in reusing this header across multiple audio
+frameworks on Qualcomm Audio DSP.
+
+This patch is split out of the dt-bindings patch to enable easy review.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
 ---
- .../bindings/soc/qcom/qcom,apr.yaml           | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+ include/dt-bindings/sound/qcom,q6afe.h        | 203 +----------------
+ .../sound/qcom,q6dsp-lpass-ports.h            | 208 ++++++++++++++++++
+ 2 files changed, 210 insertions(+), 201 deletions(-)
+ create mode 100644 include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h
 
-diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
-index a52b955b8b39..bfe04fca8aa3 100644
---- a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
-+++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
-@@ -31,6 +31,21 @@ properties:
-         5 = Application processor Domain
-         6 = Modem2 Domain
-         7 = Application Processor2 Domain
-+    deprecated: true
+diff --git a/include/dt-bindings/sound/qcom,q6afe.h b/include/dt-bindings/sound/qcom,q6afe.h
+index 66c21ab03eef..9d5d89cfabcf 100644
+--- a/include/dt-bindings/sound/qcom,q6afe.h
++++ b/include/dt-bindings/sound/qcom,q6afe.h
+@@ -2,207 +2,8 @@
+ #ifndef __DT_BINDINGS_Q6_AFE_H__
+ #define __DT_BINDINGS_Q6_AFE_H__
+ 
+-/* Audio Front End (AFE) virtual ports IDs */
+-#define HDMI_RX		1
+-#define SLIMBUS_0_RX    2
+-#define SLIMBUS_0_TX    3
+-#define SLIMBUS_1_RX    4
+-#define SLIMBUS_1_TX    5
+-#define SLIMBUS_2_RX    6
+-#define SLIMBUS_2_TX    7
+-#define SLIMBUS_3_RX    8
+-#define SLIMBUS_3_TX    9
+-#define SLIMBUS_4_RX    10
+-#define SLIMBUS_4_TX    11
+-#define SLIMBUS_5_RX    12
+-#define SLIMBUS_5_TX    13
+-#define SLIMBUS_6_RX    14
+-#define SLIMBUS_6_TX    15
+-#define PRIMARY_MI2S_RX		16
+-#define PRIMARY_MI2S_TX		17
+-#define SECONDARY_MI2S_RX	18
+-#define SECONDARY_MI2S_TX	19
+-#define TERTIARY_MI2S_RX	20
+-#define TERTIARY_MI2S_TX	21
+-#define QUATERNARY_MI2S_RX	22
+-#define QUATERNARY_MI2S_TX	23
+-#define PRIMARY_TDM_RX_0	24
+-#define PRIMARY_TDM_TX_0	25
+-#define PRIMARY_TDM_RX_1	26
+-#define PRIMARY_TDM_TX_1	27
+-#define PRIMARY_TDM_RX_2	28
+-#define PRIMARY_TDM_TX_2	29
+-#define PRIMARY_TDM_RX_3	30
+-#define PRIMARY_TDM_TX_3	31
+-#define PRIMARY_TDM_RX_4	32
+-#define PRIMARY_TDM_TX_4	33
+-#define PRIMARY_TDM_RX_5	34
+-#define PRIMARY_TDM_TX_5	35
+-#define PRIMARY_TDM_RX_6	36
+-#define PRIMARY_TDM_TX_6	37
+-#define PRIMARY_TDM_RX_7	38
+-#define PRIMARY_TDM_TX_7	39
+-#define SECONDARY_TDM_RX_0	40
+-#define SECONDARY_TDM_TX_0	41
+-#define SECONDARY_TDM_RX_1	42
+-#define SECONDARY_TDM_TX_1	43
+-#define SECONDARY_TDM_RX_2	44
+-#define SECONDARY_TDM_TX_2	45
+-#define SECONDARY_TDM_RX_3	46
+-#define SECONDARY_TDM_TX_3	47
+-#define SECONDARY_TDM_RX_4	48
+-#define SECONDARY_TDM_TX_4	49
+-#define SECONDARY_TDM_RX_5	50
+-#define SECONDARY_TDM_TX_5	51
+-#define SECONDARY_TDM_RX_6	52
+-#define SECONDARY_TDM_TX_6	53
+-#define SECONDARY_TDM_RX_7	54
+-#define SECONDARY_TDM_TX_7	55
+-#define TERTIARY_TDM_RX_0	56
+-#define TERTIARY_TDM_TX_0	57
+-#define TERTIARY_TDM_RX_1	58
+-#define TERTIARY_TDM_TX_1	59
+-#define TERTIARY_TDM_RX_2	60
+-#define TERTIARY_TDM_TX_2	61
+-#define TERTIARY_TDM_RX_3	62
+-#define TERTIARY_TDM_TX_3	63
+-#define TERTIARY_TDM_RX_4	64
+-#define TERTIARY_TDM_TX_4	65
+-#define TERTIARY_TDM_RX_5	66
+-#define TERTIARY_TDM_TX_5	67
+-#define TERTIARY_TDM_RX_6	68
+-#define TERTIARY_TDM_TX_6	69
+-#define TERTIARY_TDM_RX_7	70
+-#define TERTIARY_TDM_TX_7	71
+-#define QUATERNARY_TDM_RX_0	72
+-#define QUATERNARY_TDM_TX_0	73
+-#define QUATERNARY_TDM_RX_1	74
+-#define QUATERNARY_TDM_TX_1	75
+-#define QUATERNARY_TDM_RX_2	76
+-#define QUATERNARY_TDM_TX_2	77
+-#define QUATERNARY_TDM_RX_3	78
+-#define QUATERNARY_TDM_TX_3	79
+-#define QUATERNARY_TDM_RX_4	80
+-#define QUATERNARY_TDM_TX_4	81
+-#define QUATERNARY_TDM_RX_5	82
+-#define QUATERNARY_TDM_TX_5	83
+-#define QUATERNARY_TDM_RX_6	84
+-#define QUATERNARY_TDM_TX_6	85
+-#define QUATERNARY_TDM_RX_7	86
+-#define QUATERNARY_TDM_TX_7	87
+-#define QUINARY_TDM_RX_0	88
+-#define QUINARY_TDM_TX_0	89
+-#define QUINARY_TDM_RX_1	90
+-#define QUINARY_TDM_TX_1	91
+-#define QUINARY_TDM_RX_2	92
+-#define QUINARY_TDM_TX_2	93
+-#define QUINARY_TDM_RX_3	94
+-#define QUINARY_TDM_TX_3	95
+-#define QUINARY_TDM_RX_4	96
+-#define QUINARY_TDM_TX_4	97
+-#define QUINARY_TDM_RX_5	98
+-#define QUINARY_TDM_TX_5	99
+-#define QUINARY_TDM_RX_6	100
+-#define QUINARY_TDM_TX_6	101
+-#define QUINARY_TDM_RX_7	102
+-#define QUINARY_TDM_TX_7	103
+-#define DISPLAY_PORT_RX		104
+-#define WSA_CODEC_DMA_RX_0	105
+-#define WSA_CODEC_DMA_TX_0	106
+-#define WSA_CODEC_DMA_RX_1	107
+-#define WSA_CODEC_DMA_TX_1	108
+-#define WSA_CODEC_DMA_TX_2	109
+-#define VA_CODEC_DMA_TX_0	110
+-#define VA_CODEC_DMA_TX_1	111
+-#define VA_CODEC_DMA_TX_2	112
+-#define RX_CODEC_DMA_RX_0	113
+-#define TX_CODEC_DMA_TX_0	114
+-#define RX_CODEC_DMA_RX_1	115
+-#define TX_CODEC_DMA_TX_1	116
+-#define RX_CODEC_DMA_RX_2	117
+-#define TX_CODEC_DMA_TX_2	118
+-#define RX_CODEC_DMA_RX_3	119
+-#define TX_CODEC_DMA_TX_3	120
+-#define RX_CODEC_DMA_RX_4	121
+-#define TX_CODEC_DMA_TX_4	122
+-#define RX_CODEC_DMA_RX_5	123
+-#define TX_CODEC_DMA_TX_5	124
+-#define RX_CODEC_DMA_RX_6	125
+-#define RX_CODEC_DMA_RX_7	126
+-#define QUINARY_MI2S_RX		127
+-#define QUINARY_MI2S_TX		128
++/* This file exists due to backward compatibility reasons, Please do not DELETE! */
+ 
+-#define LPASS_CLK_ID_PRI_MI2S_IBIT	1
+-#define LPASS_CLK_ID_PRI_MI2S_EBIT	2
+-#define LPASS_CLK_ID_SEC_MI2S_IBIT	3
+-#define LPASS_CLK_ID_SEC_MI2S_EBIT	4
+-#define LPASS_CLK_ID_TER_MI2S_IBIT	5
+-#define LPASS_CLK_ID_TER_MI2S_EBIT	6
+-#define LPASS_CLK_ID_QUAD_MI2S_IBIT	7
+-#define LPASS_CLK_ID_QUAD_MI2S_EBIT	8
+-#define LPASS_CLK_ID_SPEAKER_I2S_IBIT	9
+-#define LPASS_CLK_ID_SPEAKER_I2S_EBIT	10
+-#define LPASS_CLK_ID_SPEAKER_I2S_OSR	11
+-#define LPASS_CLK_ID_QUI_MI2S_IBIT	12
+-#define LPASS_CLK_ID_QUI_MI2S_EBIT	13
+-#define LPASS_CLK_ID_SEN_MI2S_IBIT	14
+-#define LPASS_CLK_ID_SEN_MI2S_EBIT	15
+-#define LPASS_CLK_ID_INT0_MI2S_IBIT	16
+-#define LPASS_CLK_ID_INT1_MI2S_IBIT	17
+-#define LPASS_CLK_ID_INT2_MI2S_IBIT	18
+-#define LPASS_CLK_ID_INT3_MI2S_IBIT	19
+-#define LPASS_CLK_ID_INT4_MI2S_IBIT	20
+-#define LPASS_CLK_ID_INT5_MI2S_IBIT	21
+-#define LPASS_CLK_ID_INT6_MI2S_IBIT	22
+-#define LPASS_CLK_ID_QUI_MI2S_OSR	23
+-#define LPASS_CLK_ID_PRI_PCM_IBIT	24
+-#define LPASS_CLK_ID_PRI_PCM_EBIT	25
+-#define LPASS_CLK_ID_SEC_PCM_IBIT	26
+-#define LPASS_CLK_ID_SEC_PCM_EBIT	27
+-#define LPASS_CLK_ID_TER_PCM_IBIT	28
+-#define LPASS_CLK_ID_TER_PCM_EBIT	29
+-#define LPASS_CLK_ID_QUAD_PCM_IBIT	30
+-#define LPASS_CLK_ID_QUAD_PCM_EBIT	31
+-#define LPASS_CLK_ID_QUIN_PCM_IBIT	32
+-#define LPASS_CLK_ID_QUIN_PCM_EBIT	33
+-#define LPASS_CLK_ID_QUI_PCM_OSR	34
+-#define LPASS_CLK_ID_PRI_TDM_IBIT	35
+-#define LPASS_CLK_ID_PRI_TDM_EBIT	36
+-#define LPASS_CLK_ID_SEC_TDM_IBIT	37
+-#define LPASS_CLK_ID_SEC_TDM_EBIT	38
+-#define LPASS_CLK_ID_TER_TDM_IBIT	39
+-#define LPASS_CLK_ID_TER_TDM_EBIT	40
+-#define LPASS_CLK_ID_QUAD_TDM_IBIT	41
+-#define LPASS_CLK_ID_QUAD_TDM_EBIT	42
+-#define LPASS_CLK_ID_QUIN_TDM_IBIT	43
+-#define LPASS_CLK_ID_QUIN_TDM_EBIT	44
+-#define LPASS_CLK_ID_QUIN_TDM_OSR	45
+-#define LPASS_CLK_ID_MCLK_1		46
+-#define LPASS_CLK_ID_MCLK_2		47
+-#define LPASS_CLK_ID_MCLK_3		48
+-#define LPASS_CLK_ID_MCLK_4		49
+-#define LPASS_CLK_ID_INTERNAL_DIGITAL_CODEC_CORE	50
+-#define LPASS_CLK_ID_INT_MCLK_0		51
+-#define LPASS_CLK_ID_INT_MCLK_1		52
+-#define LPASS_CLK_ID_MCLK_5		53
+-#define LPASS_CLK_ID_WSA_CORE_MCLK	54
+-#define LPASS_CLK_ID_WSA_CORE_NPL_MCLK	55
+-#define LPASS_CLK_ID_VA_CORE_MCLK	56
+-#define LPASS_CLK_ID_TX_CORE_MCLK	57
+-#define LPASS_CLK_ID_TX_CORE_NPL_MCLK	58
+-#define LPASS_CLK_ID_RX_CORE_MCLK	59
+-#define LPASS_CLK_ID_RX_CORE_NPL_MCLK	60
+-#define LPASS_CLK_ID_VA_CORE_2X_MCLK	61
+-
+-#define LPASS_HW_AVTIMER_VOTE		101
+-#define LPASS_HW_MACRO_VOTE		102
+-#define LPASS_HW_DCODEC_VOTE		103
+-
+-#define Q6AFE_MAX_CLK_ID			104
+-
+-#define LPASS_CLK_ATTRIBUTE_INVALID		0x0
+-#define LPASS_CLK_ATTRIBUTE_COUPLE_NO		0x1
+-#define LPASS_CLK_ATTRIBUTE_COUPLE_DIVIDEND	0x2
+-#define LPASS_CLK_ATTRIBUTE_COUPLE_DIVISOR	0x3
++#include <dt-bindings/sound/qcom,q6dsp-lpass-ports.h>
+ 
+ #endif /* __DT_BINDINGS_Q6_AFE_H__ */
+diff --git a/include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h b/include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h
+new file mode 100644
+index 000000000000..0d3276c8fc11
+--- /dev/null
++++ b/include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h
+@@ -0,0 +1,208 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __DT_BINDINGS_Q6_AUDIO_PORTS_H__
++#define __DT_BINDINGS_Q6_AUDIO_PORTS_H__
 +
-+  qcom,domain:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    minimum: 1
-+    maximum: 7
-+    description:
-+      Selects the processor domain for apr
-+        1 = APR simulator
-+        2 = PC Domain
-+        3 = Modem Domain
-+        4 = ADSP Domain
-+        5 = Application processor Domain
-+        6 = Modem2 Domain
-+        7 = Application Processor2 Domain
- 
-   '#address-cells':
-     const: 1
-@@ -96,7 +111,7 @@ patternProperties:
- 
- required:
-   - compatible
--  - qcom,apr-domain
-+  - qcom,domain
- 
- additionalProperties: false
- 
-@@ -105,7 +120,7 @@ examples:
-     #include <dt-bindings/soc/qcom,apr.h>
-     apr {
-         compatible = "qcom,apr-v2";
--        qcom,apr-domain = <APR_DOMAIN_ADSP>;
-+        qcom,domain = <APR_DOMAIN_ADSP>;
-         #address-cells = <1>;
-         #size-cells = <0>;
- 
++/* LPASS Audio virtual ports IDs */
++#define HDMI_RX		1
++#define SLIMBUS_0_RX    2
++#define SLIMBUS_0_TX    3
++#define SLIMBUS_1_RX    4
++#define SLIMBUS_1_TX    5
++#define SLIMBUS_2_RX    6
++#define SLIMBUS_2_TX    7
++#define SLIMBUS_3_RX    8
++#define SLIMBUS_3_TX    9
++#define SLIMBUS_4_RX    10
++#define SLIMBUS_4_TX    11
++#define SLIMBUS_5_RX    12
++#define SLIMBUS_5_TX    13
++#define SLIMBUS_6_RX    14
++#define SLIMBUS_6_TX    15
++#define PRIMARY_MI2S_RX		16
++#define PRIMARY_MI2S_TX		17
++#define SECONDARY_MI2S_RX	18
++#define SECONDARY_MI2S_TX	19
++#define TERTIARY_MI2S_RX	20
++#define TERTIARY_MI2S_TX	21
++#define QUATERNARY_MI2S_RX	22
++#define QUATERNARY_MI2S_TX	23
++#define PRIMARY_TDM_RX_0	24
++#define PRIMARY_TDM_TX_0	25
++#define PRIMARY_TDM_RX_1	26
++#define PRIMARY_TDM_TX_1	27
++#define PRIMARY_TDM_RX_2	28
++#define PRIMARY_TDM_TX_2	29
++#define PRIMARY_TDM_RX_3	30
++#define PRIMARY_TDM_TX_3	31
++#define PRIMARY_TDM_RX_4	32
++#define PRIMARY_TDM_TX_4	33
++#define PRIMARY_TDM_RX_5	34
++#define PRIMARY_TDM_TX_5	35
++#define PRIMARY_TDM_RX_6	36
++#define PRIMARY_TDM_TX_6	37
++#define PRIMARY_TDM_RX_7	38
++#define PRIMARY_TDM_TX_7	39
++#define SECONDARY_TDM_RX_0	40
++#define SECONDARY_TDM_TX_0	41
++#define SECONDARY_TDM_RX_1	42
++#define SECONDARY_TDM_TX_1	43
++#define SECONDARY_TDM_RX_2	44
++#define SECONDARY_TDM_TX_2	45
++#define SECONDARY_TDM_RX_3	46
++#define SECONDARY_TDM_TX_3	47
++#define SECONDARY_TDM_RX_4	48
++#define SECONDARY_TDM_TX_4	49
++#define SECONDARY_TDM_RX_5	50
++#define SECONDARY_TDM_TX_5	51
++#define SECONDARY_TDM_RX_6	52
++#define SECONDARY_TDM_TX_6	53
++#define SECONDARY_TDM_RX_7	54
++#define SECONDARY_TDM_TX_7	55
++#define TERTIARY_TDM_RX_0	56
++#define TERTIARY_TDM_TX_0	57
++#define TERTIARY_TDM_RX_1	58
++#define TERTIARY_TDM_TX_1	59
++#define TERTIARY_TDM_RX_2	60
++#define TERTIARY_TDM_TX_2	61
++#define TERTIARY_TDM_RX_3	62
++#define TERTIARY_TDM_TX_3	63
++#define TERTIARY_TDM_RX_4	64
++#define TERTIARY_TDM_TX_4	65
++#define TERTIARY_TDM_RX_5	66
++#define TERTIARY_TDM_TX_5	67
++#define TERTIARY_TDM_RX_6	68
++#define TERTIARY_TDM_TX_6	69
++#define TERTIARY_TDM_RX_7	70
++#define TERTIARY_TDM_TX_7	71
++#define QUATERNARY_TDM_RX_0	72
++#define QUATERNARY_TDM_TX_0	73
++#define QUATERNARY_TDM_RX_1	74
++#define QUATERNARY_TDM_TX_1	75
++#define QUATERNARY_TDM_RX_2	76
++#define QUATERNARY_TDM_TX_2	77
++#define QUATERNARY_TDM_RX_3	78
++#define QUATERNARY_TDM_TX_3	79
++#define QUATERNARY_TDM_RX_4	80
++#define QUATERNARY_TDM_TX_4	81
++#define QUATERNARY_TDM_RX_5	82
++#define QUATERNARY_TDM_TX_5	83
++#define QUATERNARY_TDM_RX_6	84
++#define QUATERNARY_TDM_TX_6	85
++#define QUATERNARY_TDM_RX_7	86
++#define QUATERNARY_TDM_TX_7	87
++#define QUINARY_TDM_RX_0	88
++#define QUINARY_TDM_TX_0	89
++#define QUINARY_TDM_RX_1	90
++#define QUINARY_TDM_TX_1	91
++#define QUINARY_TDM_RX_2	92
++#define QUINARY_TDM_TX_2	93
++#define QUINARY_TDM_RX_3	94
++#define QUINARY_TDM_TX_3	95
++#define QUINARY_TDM_RX_4	96
++#define QUINARY_TDM_TX_4	97
++#define QUINARY_TDM_RX_5	98
++#define QUINARY_TDM_TX_5	99
++#define QUINARY_TDM_RX_6	100
++#define QUINARY_TDM_TX_6	101
++#define QUINARY_TDM_RX_7	102
++#define QUINARY_TDM_TX_7	103
++#define DISPLAY_PORT_RX		104
++#define WSA_CODEC_DMA_RX_0	105
++#define WSA_CODEC_DMA_TX_0	106
++#define WSA_CODEC_DMA_RX_1	107
++#define WSA_CODEC_DMA_TX_1	108
++#define WSA_CODEC_DMA_TX_2	109
++#define VA_CODEC_DMA_TX_0	110
++#define VA_CODEC_DMA_TX_1	111
++#define VA_CODEC_DMA_TX_2	112
++#define RX_CODEC_DMA_RX_0	113
++#define TX_CODEC_DMA_TX_0	114
++#define RX_CODEC_DMA_RX_1	115
++#define TX_CODEC_DMA_TX_1	116
++#define RX_CODEC_DMA_RX_2	117
++#define TX_CODEC_DMA_TX_2	118
++#define RX_CODEC_DMA_RX_3	119
++#define TX_CODEC_DMA_TX_3	120
++#define RX_CODEC_DMA_RX_4	121
++#define TX_CODEC_DMA_TX_4	122
++#define RX_CODEC_DMA_RX_5	123
++#define TX_CODEC_DMA_TX_5	124
++#define RX_CODEC_DMA_RX_6	125
++#define RX_CODEC_DMA_RX_7	126
++#define QUINARY_MI2S_RX		127
++#define QUINARY_MI2S_TX		128
++
++#define LPASS_CLK_ID_PRI_MI2S_IBIT	1
++#define LPASS_CLK_ID_PRI_MI2S_EBIT	2
++#define LPASS_CLK_ID_SEC_MI2S_IBIT	3
++#define LPASS_CLK_ID_SEC_MI2S_EBIT	4
++#define LPASS_CLK_ID_TER_MI2S_IBIT	5
++#define LPASS_CLK_ID_TER_MI2S_EBIT	6
++#define LPASS_CLK_ID_QUAD_MI2S_IBIT	7
++#define LPASS_CLK_ID_QUAD_MI2S_EBIT	8
++#define LPASS_CLK_ID_SPEAKER_I2S_IBIT	9
++#define LPASS_CLK_ID_SPEAKER_I2S_EBIT	10
++#define LPASS_CLK_ID_SPEAKER_I2S_OSR	11
++#define LPASS_CLK_ID_QUI_MI2S_IBIT	12
++#define LPASS_CLK_ID_QUI_MI2S_EBIT	13
++#define LPASS_CLK_ID_SEN_MI2S_IBIT	14
++#define LPASS_CLK_ID_SEN_MI2S_EBIT	15
++#define LPASS_CLK_ID_INT0_MI2S_IBIT	16
++#define LPASS_CLK_ID_INT1_MI2S_IBIT	17
++#define LPASS_CLK_ID_INT2_MI2S_IBIT	18
++#define LPASS_CLK_ID_INT3_MI2S_IBIT	19
++#define LPASS_CLK_ID_INT4_MI2S_IBIT	20
++#define LPASS_CLK_ID_INT5_MI2S_IBIT	21
++#define LPASS_CLK_ID_INT6_MI2S_IBIT	22
++#define LPASS_CLK_ID_QUI_MI2S_OSR	23
++#define LPASS_CLK_ID_PRI_PCM_IBIT	24
++#define LPASS_CLK_ID_PRI_PCM_EBIT	25
++#define LPASS_CLK_ID_SEC_PCM_IBIT	26
++#define LPASS_CLK_ID_SEC_PCM_EBIT	27
++#define LPASS_CLK_ID_TER_PCM_IBIT	28
++#define LPASS_CLK_ID_TER_PCM_EBIT	29
++#define LPASS_CLK_ID_QUAD_PCM_IBIT	30
++#define LPASS_CLK_ID_QUAD_PCM_EBIT	31
++#define LPASS_CLK_ID_QUIN_PCM_IBIT	32
++#define LPASS_CLK_ID_QUIN_PCM_EBIT	33
++#define LPASS_CLK_ID_QUI_PCM_OSR	34
++#define LPASS_CLK_ID_PRI_TDM_IBIT	35
++#define LPASS_CLK_ID_PRI_TDM_EBIT	36
++#define LPASS_CLK_ID_SEC_TDM_IBIT	37
++#define LPASS_CLK_ID_SEC_TDM_EBIT	38
++#define LPASS_CLK_ID_TER_TDM_IBIT	39
++#define LPASS_CLK_ID_TER_TDM_EBIT	40
++#define LPASS_CLK_ID_QUAD_TDM_IBIT	41
++#define LPASS_CLK_ID_QUAD_TDM_EBIT	42
++#define LPASS_CLK_ID_QUIN_TDM_IBIT	43
++#define LPASS_CLK_ID_QUIN_TDM_EBIT	44
++#define LPASS_CLK_ID_QUIN_TDM_OSR	45
++#define LPASS_CLK_ID_MCLK_1		46
++#define LPASS_CLK_ID_MCLK_2		47
++#define LPASS_CLK_ID_MCLK_3		48
++#define LPASS_CLK_ID_MCLK_4		49
++#define LPASS_CLK_ID_INTERNAL_DIGITAL_CODEC_CORE	50
++#define LPASS_CLK_ID_INT_MCLK_0		51
++#define LPASS_CLK_ID_INT_MCLK_1		52
++#define LPASS_CLK_ID_MCLK_5		53
++#define LPASS_CLK_ID_WSA_CORE_MCLK	54
++#define LPASS_CLK_ID_WSA_CORE_NPL_MCLK	55
++#define LPASS_CLK_ID_VA_CORE_MCLK	56
++#define LPASS_CLK_ID_TX_CORE_MCLK	57
++#define LPASS_CLK_ID_TX_CORE_NPL_MCLK	58
++#define LPASS_CLK_ID_RX_CORE_MCLK	59
++#define LPASS_CLK_ID_RX_CORE_NPL_MCLK	60
++#define LPASS_CLK_ID_VA_CORE_2X_MCLK	61
++
++#define LPASS_HW_AVTIMER_VOTE		101
++#define LPASS_HW_MACRO_VOTE		102
++#define LPASS_HW_DCODEC_VOTE		103
++
++#define Q6AFE_MAX_CLK_ID			104
++
++#define LPASS_CLK_ATTRIBUTE_INVALID		0x0
++#define LPASS_CLK_ATTRIBUTE_COUPLE_NO		0x1
++#define LPASS_CLK_ATTRIBUTE_COUPLE_DIVIDEND	0x2
++#define LPASS_CLK_ATTRIBUTE_COUPLE_DIVISOR	0x3
++
++#endif /* __DT_BINDINGS_Q6_AUDIO_PORTS_H__ */
 -- 
 2.21.0
 
