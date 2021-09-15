@@ -7,64 +7,65 @@ X-Spam-Status: No, score=-6.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81922C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 16:36:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A974C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 16:37:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A6C7661029
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 16:36:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A6C7661029
+	by mail.kernel.org (Postfix) with ESMTPS id B825760FA0
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 16:37:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B825760FA0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4AC14181A;
-	Wed, 15 Sep 2021 18:36:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4AC14181A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 475411856;
+	Wed, 15 Sep 2021 18:36:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 475411856
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631723816;
-	bh=l5TG2aZsbtqTeGnu+rXJzypl5GLHrRpaj/pgm8YOpd8=;
+	s=default; t=1631723839;
+	bh=jxiNyEjXza+tzwDi7Q9pVKbVKTbkekVbdKrc2/jjWrw=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nK4GEraEKuRlCHFJqbBztkPf1Fe7tgHL/nE8A7oqDQlZvm3eR/PXHgGBzw/pKwtYt
-	 W1jtIWpWBSmRCZ1Ui3HcJ6SlFdimSJ3LdQTzV5+rsQfi5p1rIiKvtIvyShwfFpEqO/
-	 9fT0NZnkSi1b93T5qY+Ms9xmpV3EMXMaE/hG/RLA=
+	b=aYQ9t5a5UrFH/LKGtBE9mc5pR/tzdkfnbBTy/bZL/XDvJa2REXPBxn2VLqy5i/BeM
+	 5GTsThjZvuiL4V85cexqcoQU9CbmJgVN90OgeS7QazsoAH0sS/LK/jsR47P+ZhnCU9
+	 IUUWVW/iX40SLMrlxer0j6ls9KlwKo6lq4ZLBNNQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7746F804ED;
-	Wed, 15 Sep 2021 18:34:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7BD0BF80227;
+	Wed, 15 Sep 2021 18:34:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 99F6DF804ED; Wed, 15 Sep 2021 18:34:49 +0200 (CEST)
+ id 8A1E5F8049E; Wed, 15 Sep 2021 18:34:50 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BF8DEF8027C
- for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 18:34:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF8DEF8027C
-X-IronPort-AV: E=McAfee;i="6200,9189,10108"; a="286060922"
-X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; d="scan'208";a="286060922"
+ by alsa1.perex.cz (Postfix) with ESMTPS id C886BF804BD
+ for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 18:34:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C886BF804BD
+X-IronPort-AV: E=McAfee;i="6200,9189,10108"; a="286060913"
+X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; d="scan'208";a="286060913"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Sep 2021 09:34:42 -0700
-X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; d="scan'208";a="583352209"
+ 15 Sep 2021 09:34:39 -0700
+X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; d="scan'208";a="583352205"
 Received: from mvetrive-mobl3.amr.corp.intel.com (HELO [10.212.69.198])
  ([10.212.69.198])
  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Sep 2021 09:34:40 -0700
-Subject: Re: [PATCH v6 18/22] ASoC: qdsp6: audioreach: add topology support
+ 15 Sep 2021 09:34:38 -0700
+Subject: Re: [PATCH v6 16/22] ASoC: qdsp6: audioreach: add module
+ configuration command helpers
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  bjorn.andersson@linaro.org, broonie@kernel.org, robh@kernel.org
 References: <20210915131333.19047-1-srinivas.kandagatla@linaro.org>
- <20210915131333.19047-19-srinivas.kandagatla@linaro.org>
+ <20210915131333.19047-17-srinivas.kandagatla@linaro.org>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <bc93c17e-b65d-5885-f151-243d259f40ff@linux.intel.com>
-Date: Wed, 15 Sep 2021 11:22:23 -0500
+Message-ID: <4cd0e63f-107b-d10a-11e9-bced83f487a5@linux.intel.com>
+Date: Wed, 15 Sep 2021 11:11:41 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210915131333.19047-19-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20210915131333.19047-17-srinivas.kandagatla@linaro.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -87,76 +88,159 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-> +static int audioreach_widget_load_buffer(struct snd_soc_component *component,
-> +					 int index, struct snd_soc_dapm_widget *w,
-> +					 struct snd_soc_tplg_dapm_widget *tplg_w)
+> +int q6apm_map_memory_regions(struct q6apm_graph *graph, unsigned int dir, phys_addr_t phys,
+> +			     size_t period_sz, unsigned int periods)
 > +{
-> +	struct snd_soc_tplg_vendor_array *mod_array;
-> +	struct audioreach_module *mod;
-> +	struct snd_soc_dobj *dobj;
-> +	int ret;
+> +	struct audioreach_graph_data *data;
+> +	struct audio_buffer *buf;
+> +	int cnt;
+> +	int rc;
 > +
-> +	ret = audioreach_widget_load_module_common(component, index, w, tplg_w);
-> +	if (ret)
-> +		return ret;
+> +	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
+> +		data = &graph->rx_data;
+> +	else
+> +		data = &graph->tx_data;
 > +
-> +	dobj = &w->dobj;
-> +	mod = dobj->private;
+> +	mutex_lock(&graph->lock);
 > +
-> +	mod_array = audioreach_get_module_array(&tplg_w->priv);
-> +
-> +	switch (mod->module_id) {
-> +	case MODULE_ID_CODEC_DMA_SINK:
-> +	case MODULE_ID_CODEC_DMA_SOURCE:
-> +		audioreach_widget_dma_module_load(mod, mod_array);
-> +		break;
-> +	case MODULE_ID_DATA_LOGGING:
-> +		audioreach_widget_log_module_load(mod, mod_array);
-> +		break;
-> +	case MODULE_ID_I2S_SINK:
-> +	case MODULE_ID_I2S_SOURCE:
-> +		audioreach_widget_i2s_module_load(mod, mod_array);
-> +		break;
+> +	if (data->buf) {
+> +		dev_err(graph->dev, "Buffer already allocated\n");
+> +		mutex_unlock(&graph->lock);
+> +		return 0;
 
-no default case?
+is this an error worth of dev_err() if you return 0?
 
 > +	}
 > +
-> +	return 0;
-> +}
+> +	buf = kzalloc(((sizeof(struct audio_buffer)) * periods), GFP_KERNEL);
+> +	if (!buf) {
+> +		mutex_unlock(&graph->lock);
+> +		return -ENOMEM;
+> +	}
 > +
+> +	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
+> +		data = &graph->rx_data;
+> +	else
+> +		data = &graph->tx_data;
+> +
+> +	data->buf = buf;
+> +
+> +	buf[0].phys = phys;
+> +	buf[0].size = period_sz;
+> +
+> +	for (cnt = 1; cnt < periods; cnt++) {
+> +		if (period_sz > 0) {
+> +			buf[cnt].phys = buf[0].phys + (cnt * period_sz);
+> +			buf[cnt].size = period_sz;
+> +		}
+> +	}
+> +	data->num_periods = periods;
+> +
+> +	mutex_unlock(&graph->lock);
+> +
+> +	rc = audioreach_map_memory_regions(graph, dir, period_sz, periods, 1);
+> +	if (rc < 0) {
+> +		dev_err(graph->dev, "Memory_map_regions failed\n");
+> +		audioreach_graph_free_buf(graph);
+> +	}
+> +
+> +	return rc;
+> +}
+> +EXPORT_SYMBOL_GPL(q6apm_map_memory_regions);
 
-> +int audioreach_tplg_init(struct snd_soc_component *component)
+> +int q6apm_write_async(struct q6apm_graph *graph, uint32_t len, uint32_t msw_ts,
+> +		      uint32_t lsw_ts, uint32_t wflags)
 > +{
-> +	struct device *dev = component->dev;
-> +	const struct firmware *fw;
-> +	int ret;
+> +	struct apm_data_cmd_wr_sh_mem_ep_data_buffer_v2 *write;
+> +	int rc, payload_size, iid;
+> +	struct audio_buffer *ab;
+> +	struct gpr_pkt *pkt;
 > +
-> +	ret = request_firmware(&fw, "audioreach.bin", dev);
-> +	if (ret < 0) {
-> +		dev_err(dev, "tplg fw audioreach.bin load failed with %d\n", ret);
-> +		return ret;
-> +	}
+> +	payload_size = sizeof(*write);
 
-How does this work if you want to change the topology, which will happen
-rather frequently if you have a framework precisely to change the DSP
-graph? You need to override a file in userspace?
-
-Shouldn't you have a means to identify what topology file you want on a
-platform-basis?
-
-Or at the very least a means to change the file name with a kernel
-parameter or something.
+nit-pick on variable-naming: I get confused between actions and objects.
 
 > +
-> +	ret = snd_soc_tplg_component_load(component, &audioreach_tplg_ops, fw);
-> +	if (ret < 0) {
-> +		dev_err(dev, "tplg component load failed%d\n", ret);
-> +		ret = -EINVAL;
-> +	}
+> +	iid = q6apm_graph_get_rx_shmem_module_iid(graph);
+> +	pkt = audioreach_alloc_pkt(payload_size, DATA_CMD_WR_SH_MEM_EP_DATA_BUFFER_V2,
+> +				 graph->rx_data.dsp_buf | (len << APM_WRITE_TOKEN_LEN_SHIFT),
+> +				 graph->port->id, iid);
+> +	if (IS_ERR(pkt))
+> +		return -ENOMEM;
 > +
-> +	release_firmware(fw);
-> +	return ret;
+> +	write = (void *)pkt + GPR_HDR_SIZE;
+> +
+> +	mutex_lock(&graph->lock);
+> +	ab = &graph->rx_data.buf[graph->rx_data.dsp_buf];
+> +
+> +	write->buf_addr_lsw = lower_32_bits(ab->phys);
+> +	write->buf_addr_msw = upper_32_bits(ab->phys);
+> +	write->buf_size = len;
+> +	write->timestamp_lsw = lsw_ts;
+> +	write->timestamp_msw = msw_ts;
+> +	write->mem_map_handle = graph->rx_data.mem_map_handle;
+> +	write->flags = wflags;
+> +
+> +	graph->rx_data.dsp_buf++;
+> +
+> +	if (graph->rx_data.dsp_buf >= graph->rx_data.num_periods)
+> +		graph->rx_data.dsp_buf = 0;
+> +
+> +	mutex_unlock(&graph->lock);
+> +
+> +	rc = gpr_send_port_pkt(graph->port, pkt);
+> +
+> +	kfree(pkt);
+> +
+> +	return rc;
 > +}
-> +EXPORT_SYMBOL_GPL(audioreach_tplg_init);
+> +EXPORT_SYMBOL_GPL(q6apm_write_async);
+> +
+> +int q6apm_read(struct q6apm_graph *graph)
+> +{
+> +	struct data_cmd_rd_sh_mem_ep_data_buffer_v2 *read;
+> +	struct audioreach_graph_data *port;
+> +	struct audio_buffer *ab;
+> +	struct gpr_pkt *pkt;
+> +	int rc, iid;
+> +
+> +	iid = q6apm_graph_get_tx_shmem_module_iid(graph);
+> +	pkt = audioreach_alloc_pkt(sizeof(*read), DATA_CMD_RD_SH_MEM_EP_DATA_BUFFER_V2,
+> +				 graph->tx_data.dsp_buf, graph->port->id, iid);
+> +	if (IS_ERR(pkt))
+> +		return -ENOMEM;
+> +
+> +	read = (void *)pkt + GPR_HDR_SIZE;
+
+same nit-pick on variable naming, with the additional present/past
+grammar issue that you don't know if it's a read buffer or a pointer to
+data read in the past.
+
+> +
+> +	mutex_lock(&graph->lock);
+> +	port = &graph->tx_data;
+> +	ab = &port->buf[port->dsp_buf];
+> +
+> +	read->buf_addr_lsw = lower_32_bits(ab->phys);
+> +	read->buf_addr_msw = upper_32_bits(ab->phys);
+> +	read->mem_map_handle = port->mem_map_handle;
+> +	read->buf_size = ab->size;
+> +
+> +	port->dsp_buf++;
+> +
+> +	if (port->dsp_buf >= port->num_periods)
+> +		port->dsp_buf = 0;
+> +
+> +	mutex_unlock(&graph->lock);
+> +
+> +	rc = gpr_send_port_pkt(graph->port, pkt);
+> +	kfree(pkt);
+> +
+> +	return rc;
+> +}
+> +EXPORT_SYMBOL_GPL(q6apm_read);
+> +
+>  static int graph_callback(struct gpr_resp_pkt *data, void *priv, int op)
+>  {
+>  	struct data_cmd_rsp_rd_sh_mem_ep_data_buffer_done_v2 *rd_done;
 > 
