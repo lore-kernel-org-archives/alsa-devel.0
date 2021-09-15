@@ -2,79 +2,97 @@ Return-Path: <SRS0=xeto=OF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 426E3C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 10:51:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37984C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 10:54:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BF40461284
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 10:51:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BF40461284
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id 0C95961279
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 10:54:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0C95961279
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8F48217DB;
-	Wed, 15 Sep 2021 12:50:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F48217DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6711517D8;
+	Wed, 15 Sep 2021 12:54:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6711517D8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631703089;
-	bh=M4UwPTS87ulCKrDyLeLW9sayu32P5G6iwk1TZ57MkgU=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=XHBHepV1ZUTHb5YDY4AjKJpJd4i5zi1Cf79TIYnObjYTInOe7NnJVPYyD8mNx2TtR
-	 FZ0h/xWKIUh0pUdfkTZmq9uEnV8MwM/QkXr2LtKAmhkRencGUfnYr1DJDeMHuYLSUI
-	 pLDSvS5GCisM95aJySaP5K3Mgowz2ooolsH/zWms=
+	s=default; t=1631703296;
+	bh=oJFobtIHormOKcwdLXPRLCws/Xmf9GNA4Ac3SMzNgnk=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=YlGqG336fRteOgpBaZNITorEDFVA+ayGNtaJyDZ1w0uw04deP2rFiCj8Bso7DG884
+	 Alg6WsuFzupftGKChK6XUlkiUBGP8qepe0SshNnpVl6veyJwbRqCKQCSsdAZr6QG6N
+	 /0JaMqheOVQz9AQuonOkEw380o7aNmJo4yXOIXFM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86B36F80227;
-	Wed, 15 Sep 2021 12:50:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EFDCFF800EF;
+	Wed, 15 Sep 2021 12:54:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 136BEF80227; Wed, 15 Sep 2021 12:50:36 +0200 (CEST)
-Received: from smtp-relay-canonical-0.canonical.com
- (smtp-relay-canonical-0.canonical.com [185.125.188.120])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 95998F8027C; Wed, 15 Sep 2021 12:54:03 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 76AEFF800EF
- for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 12:50:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76AEFF800EF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 794E2F800EF
+ for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 12:53:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 794E2F800EF
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
- header.b="nqkapOap"
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 6468A3F10B; 
- Wed, 15 Sep 2021 10:50:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1631703027;
- bh=xn+5nToJ2orf+Up6k7sn+oX06VsYAXKMy44e0Mtdtig=;
- h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
- b=nqkapOaphl4IBekkRVekUgd37nzYvqKGinzjKir5PmQxIcAmKmOtaLHBg6jHzKAAt
- n8i8+chi6FUvQXNlm40v+uCxQww727wSAFEEmzlLV7vw21OEgTvGU8cNw+eHfTINOc
- yBfSQIaNtaIIPWyLiMXQvLNK2dU7h9u1J9/xrMoL3gIkmhI5yKbLe5nR9R71c9JSzI
- bCggbYOi5eBMBwrtv5mmIVacvScO6Omkg0xllNLklR4HfvH+snXTU8veF9LaotvP/7
- 4duE7N1fALbqsEgNT+thVhYnL5iF957CHuieXykK9PzgXxnyDGJZUvLQOF7MJaLICm
- sqca0K7RMdZPg==
-From: Colin King <colin.king@canonical.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Matthias Brugger <matthias.bgg@gmail.com>, alsa-devel@alsa-project.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-Subject: [PATCH] ASoC: mediatek: mt8195: make array adda_dai_list static const
-Date: Wed, 15 Sep 2021 11:50:27 +0100
-Message-Id: <20210915105027.10805-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="KBMJY28D"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18F6ipNv027851; 
+ Wed, 15 Sep 2021 05:53:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=sYePhBIXuv6di4ai0k+SsAbkaG2l1XsoGF1RxxD3Sgk=;
+ b=KBMJY28DtfL1gxixdiH9wUezw0HDqzfjcmiP6Pcp5DyzL/6hvrgNlB9ZJmA4cg8klS1+
+ W27orDUH8+wTLa65WxcVrJYzxqLe4uiJvghDYRtWlUZAoplhyUqz8hSFkeBzq0HogZTr
+ BDng2pdCz8GeBYwUn5MeryG141rS9IN45kUpM1PeWVLNWS+G5/om4BfcNU/yVl/GZzay
+ Gbm8aFViBCkxEubuRhrPMt7wsx+e/kyoVVHchbPFv9pUr+lGDByFyYTYnRp3rj8rS1vf
+ osZBttynmnOH0DCpUU3qJ0fo3bcOwqmMOODj9uKPfgY7eGrEJvoBkjFh8WznMiHKL7gd /A== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0b-001ae601.pphosted.com with ESMTP id 3b3287gp84-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Wed, 15 Sep 2021 05:53:54 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Wed, 15 Sep
+ 2021 11:53:53 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via
+ Frontend Transport; Wed, 15 Sep 2021 11:53:53 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id F0F7DB2F;
+ Wed, 15 Sep 2021 10:53:52 +0000 (UTC)
+Date: Wed, 15 Sep 2021 10:53:52 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 6/6] ASoC: cs35l41: Fix a bunch of trivial code
+ formating/style issues
+Message-ID: <20210915105352.GC9223@ediswmail.ad.cirrus.com>
+References: <20210914141349.30218-1-ckeepax@opensource.cirrus.com>
+ <20210914141349.30218-6-ckeepax@opensource.cirrus.com>
+ <20210914142301.GF4434@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210914142301.GF4434@sirena.org.uk>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: LmbSnkzBGmBChBXSW0KbXJPSdOUODmWG
+X-Proofpoint-ORIG-GUID: LmbSnkzBGmBChBXSW0KbXJPSdOUODmWG
+X-Proofpoint-Spam-Reason: safe
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ james.schulman@cirrus.com, lgirdwood@gmail.com, david.rhodes@cirrus.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,45 +108,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Colin Ian King <colin.king@canonical.com>
+On Tue, Sep 14, 2021 at 03:23:01PM +0100, Mark Brown wrote:
+> On Tue, Sep 14, 2021 at 03:13:49PM +0100, Charles Keepax wrote:
+> > Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> > ---
+> >  sound/soc/codecs/cs35l41-i2c.c    |   5 +-
+> >  sound/soc/codecs/cs35l41-spi.c    |  13 +-
+> >  sound/soc/codecs/cs35l41-tables.c | 477 +++++++++++++++++++-------------------
+> >  sound/soc/codecs/cs35l41.c        | 387 +++++++++++++++----------------
+> >  sound/soc/codecs/cs35l41.h        |  81 ++++---
+> 
+> This was upstreamed with your review a week ago :/
 
-Don't populate the array adda_dai_list on the stack but instead it
-static const. Also makes the object code smaller by 33 bytes:
+Yeah sorry about that, they are all trivial patches (with the
+exception of the first patch which I did only notice whilst
+fixing up the other stuff) it didn't seem worth delaying the
+series for another couple of rounds for such trivial commments.
 
-Before:
-   text	   data	    bss	    dec	    hex	filename
-  28271	  11640	      0	  39911	   9be7	mt8195/mt8195-dai-adda.o
+Apologies if that was the wrong call.
 
-After:
-   text	   data	    bss	    dec	    hex	filename
-  28142	  11736	      0	  39878	   9bc6	mt8195/mt8195-dai-adda.o
-
-(gcc version 11.2.0)
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/mediatek/mt8195/mt8195-dai-adda.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/mediatek/mt8195/mt8195-dai-adda.c b/sound/soc/mediatek/mt8195/mt8195-dai-adda.c
-index 878dec0b69ed..f04bd1781356 100644
---- a/sound/soc/mediatek/mt8195/mt8195-dai-adda.c
-+++ b/sound/soc/mediatek/mt8195/mt8195-dai-adda.c
-@@ -788,9 +788,11 @@ static int init_adda_priv_data(struct mtk_base_afe *afe)
- {
- 	struct mt8195_afe_private *afe_priv = afe->platform_priv;
- 	struct mtk_dai_adda_priv *adda_priv;
--	int adda_dai_list[] = { MT8195_AFE_IO_DL_SRC,
--				MT8195_AFE_IO_UL_SRC1,
--				MT8195_AFE_IO_UL_SRC2};
-+	static const int adda_dai_list[] = {
-+		MT8195_AFE_IO_DL_SRC,
-+		MT8195_AFE_IO_UL_SRC1,
-+		MT8195_AFE_IO_UL_SRC2
-+	};
- 	int i;
- 
- 	for (i = 0; i < ARRAY_SIZE(adda_dai_list); i++) {
--- 
-2.32.0
-
+Thanks,
+Charles
