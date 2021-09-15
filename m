@@ -7,58 +7,59 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB8B0C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 12:23:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8B8CC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 12:23:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 281B361244
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 12:23:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 281B361244
+	by mail.kernel.org (Postfix) with ESMTPS id 1F3D361350
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 12:23:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1F3D361350
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9DD3F185B;
-	Wed, 15 Sep 2021 14:22:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DD3F185B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3DFF01848;
+	Wed, 15 Sep 2021 14:22:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DFF01848
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631708594;
-	bh=BH7TqCWyXk8H6MFJDKxX8wqM7FEhuyTuh2nLaa7rkbg=;
+	s=default; t=1631708629;
+	bh=ceqFAPubSS+hygLmtdljoG3COS76bbvIkyLSstU//PU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=k4YSQE8JrPT+B3PxCbxaAn67SbcIzvLsIOvKiy6jtf0kySkhrHrs5JVqvuUWDCfdi
-	 /5PfUqKdoHRxUcs3H1Ox52/9xEoKqKzthzVNSb4FFzRZzDO08TyBDNHKzaXzNHhcq/
-	 SRGyJNcOk0rTOj9p+6euS1ZKvbpnoS5pEWunBZpM=
+	b=nYK6xD0cgyHonCnGvlybBic/goINlJxJ2Ms42QD0TMPB1awkDF3vSLK7ptOG40vnI
+	 T7vGBvATl8VB/rI0m9LZOdHi9S3j73mM0UEv5RUC2pGCyO4vJVuiYqC2IfAYD1UqTF
+	 1w4Byb9tSDwtdE3kSGwALusisZOKdP5+bKK2yOG0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2A927F804E6;
-	Wed, 15 Sep 2021 14:21:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3268DF804FA;
+	Wed, 15 Sep 2021 14:21:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 21B94F804E2; Wed, 15 Sep 2021 14:21:37 +0200 (CEST)
+ id B4CD8F804E5; Wed, 15 Sep 2021 14:21:40 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8312BF802E8
- for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 14:21:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8312BF802E8
-X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="219117491"
-X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; d="scan'208";a="219117491"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 692E0F80132
+ for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 14:21:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 692E0F80132
+X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="219117503"
+X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; d="scan'208";a="219117503"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Sep 2021 05:21:25 -0700
-X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; d="scan'208";a="544901580"
+ 15 Sep 2021 05:21:32 -0700
+X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; d="scan'208";a="544901596"
 Received: from msavu-mobl1.ti.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.251.216.36])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Sep 2021 05:21:23 -0700
+ 15 Sep 2021 05:21:30 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com, broonie@kernel.org,
  pierre-louis.bossart@linux.intel.com
-Subject: [PATCH 02/12] ASoC: SOF: ipc: Remove snd_sof_dsp_mailbox_init()
-Date: Wed, 15 Sep 2021 15:21:06 +0300
-Message-Id: <20210915122116.18317-3-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 05/12] ASoC: SOF: imx: imx8m: Bar index is only valid for IRAM
+ and SRAM types
+Date: Wed, 15 Sep 2021 15:21:09 +0300
+Message-Id: <20210915122116.18317-6-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210915122116.18317-1-peter.ujfalusi@linux.intel.com>
 References: <20210915122116.18317-1-peter.ujfalusi@linux.intel.com>
@@ -82,83 +83,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The snd_sof_dsp_mailbox_init() is called only from sof_get_windows()
-to set the sdev->dsp_box.offset/size and sdev->host_box.offset/size
+i.MX8 only uses SOF_FW_BLK_TYPE_IRAM (1) and SOF_FW_BLK_TYPE_SRAM (3)
+bars, everything else is left as 0 in sdev->bar[] array.
 
-Instead of using a function, set the offsets and sizes like we do for the
-other boxes in sof_get_windows().
+If a broken or purposefully crafted firmware image is loaded with other
+types of FW_BLK_TYPE then a kernel crash can be triggered.
 
+Make sure that only IRAM/SRAM type is converted to bar index.
+
+Fixes: afb93d716533d ("ASoC: SOF: imx: Add i.MX8M HW support")
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Daniel Baluta <daniel.baluta@gmail.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 ---
- sound/soc/sof/ipc.c      | 16 ----------------
- sound/soc/sof/loader.c   |  8 ++++++--
- sound/soc/sof/sof-priv.h |  3 ---
- 3 files changed, 6 insertions(+), 21 deletions(-)
+ sound/soc/sof/imx/imx8m.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index a4fe007a0e4d..9ca3681d266d 100644
---- a/sound/soc/sof/ipc.c
-+++ b/sound/soc/sof/ipc.c
-@@ -790,22 +790,6 @@ int snd_sof_ipc_set_get_comp_data(struct snd_sof_control *scontrol,
- }
- EXPORT_SYMBOL(snd_sof_ipc_set_get_comp_data);
- 
--/*
-- * IPC layer enumeration.
-- */
--
--int snd_sof_dsp_mailbox_init(struct snd_sof_dev *sdev, u32 dspbox,
--			     size_t dspbox_size, u32 hostbox,
--			     size_t hostbox_size)
--{
--	sdev->dsp_box.offset = dspbox;
--	sdev->dsp_box.size = dspbox_size;
--	sdev->host_box.offset = hostbox;
--	sdev->host_box.size = hostbox_size;
--	return 0;
--}
--EXPORT_SYMBOL(snd_sof_dsp_mailbox_init);
--
- int snd_sof_ipc_valid(struct snd_sof_dev *sdev)
+diff --git a/sound/soc/sof/imx/imx8m.c b/sound/soc/sof/imx/imx8m.c
+index b5c739a5cbeb..be5ab9942fc8 100644
+--- a/sound/soc/sof/imx/imx8m.c
++++ b/sound/soc/sof/imx/imx8m.c
+@@ -228,7 +228,14 @@ static int imx8m_remove(struct snd_sof_dev *sdev)
+ /* on i.MX8 there is 1 to 1 match between type and BAR idx */
+ static int imx8m_get_bar_index(struct snd_sof_dev *sdev, u32 type)
  {
- 	struct sof_ipc_fw_ready *ready = &sdev->fw_ready;
-diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
-index 2b38a77cd594..5bedb81f6bfb 100644
---- a/sound/soc/sof/loader.c
-+++ b/sound/soc/sof/loader.c
-@@ -470,8 +470,12 @@ static void sof_get_windows(struct snd_sof_dev *sdev)
- 		return;
- 	}
+-	return type;
++	/* Only IRAM and SRAM bars are valid */
++	switch (type) {
++	case SOF_FW_BLK_TYPE_IRAM:
++	case SOF_FW_BLK_TYPE_SRAM:
++		return type;
++	default:
++		return -EINVAL;
++	}
+ }
  
--	snd_sof_dsp_mailbox_init(sdev, inbox_offset, inbox_size,
--				 outbox_offset, outbox_size);
-+	sdev->dsp_box.offset = inbox_offset;
-+	sdev->dsp_box.size = inbox_size;
-+
-+	sdev->host_box.offset = outbox_offset;
-+	sdev->host_box.size = outbox_size;
-+
- 	sdev->stream_box.offset = stream_offset;
- 	sdev->stream_box.size = stream_size;
- 
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index fd8423172d8f..b98fc9bf660b 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -503,9 +503,6 @@ void snd_sof_ipc_reply(struct snd_sof_dev *sdev, u32 msg_id);
- void snd_sof_ipc_msgs_rx(struct snd_sof_dev *sdev);
- int snd_sof_ipc_stream_pcm_params(struct snd_sof_dev *sdev,
- 				  struct sof_ipc_pcm_params *params);
--int snd_sof_dsp_mailbox_init(struct snd_sof_dev *sdev, u32 dspbox,
--			     size_t dspbox_size, u32 hostbox,
--			     size_t hostbox_size);
- int snd_sof_ipc_valid(struct snd_sof_dev *sdev);
- int sof_ipc_tx_message(struct snd_sof_ipc *ipc, u32 header,
- 		       void *msg_data, size_t msg_bytes, void *reply_data,
+ static void imx8m_ipc_msg_data(struct snd_sof_dev *sdev,
 -- 
 2.33.0
 
