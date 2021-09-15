@@ -7,59 +7,59 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D21D0C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 07:19:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 161FEC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 07:20:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E528261216
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 07:19:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E528261216
+	by mail.kernel.org (Postfix) with ESMTPS id 69AF461164
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 07:20:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 69AF461164
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6435A17E7;
-	Wed, 15 Sep 2021 09:19:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6435A17E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id EEA29182D;
+	Wed, 15 Sep 2021 09:19:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EEA29182D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631690395;
-	bh=AOwDkyr0b6jUoBrma1fO02csWfCDiKJ9GzlVEiWUk+E=;
+	s=default; t=1631690403;
+	bh=D56ACFGPJ3NodzVzKjVigmv5e8psK3YqoQcq20XDZOE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IGC7YvWm51mM5meMPDrG9yNe7ugjCUFaLIG2g/ax5dBDaovHDehSCy/zYANkWBNXP
-	 bA5q0Jp1szbmQJ1kvfZF4LRetsAeEc0koLaFsD5W/XLuI71mnDRgh5TRFe/Jlc4oI0
-	 55/c0UqCKszcCAaXe+yEDH3Dc3+pL86r+Kvm5OFs=
+	b=cMR5u44FxSD+K3ouW9TUpF+JEBt1Z6LXHvaURhP6+OhGU+lLkfWWScRn4jZaDUPq2
+	 R/DnLiV2C/2MGj4t3oS/z1g2BVo80vKm7jUTSfcFuwb3/IMn+NzrBE8fQ12evX8DAI
+	 WAXCYfwMisKPaRBPwpj2/wg4ESEIlNLuX7Djh/u8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6755EF804AB;
-	Wed, 15 Sep 2021 09:18:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4BA7FF804E2;
+	Wed, 15 Sep 2021 09:18:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4B267F804BD; Wed, 15 Sep 2021 09:18:24 +0200 (CEST)
+ id 049B4F804E3; Wed, 15 Sep 2021 09:18:26 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1B2FCF80227
- for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 09:18:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B2FCF80227
-X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="285934966"
-X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; d="scan'208";a="285934966"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1D3C1F80132
+ for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 09:18:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D3C1F80132
+X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="285934974"
+X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; d="scan'208";a="285934974"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Sep 2021 00:18:11 -0700
-X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; d="scan'208";a="544655153"
+ 15 Sep 2021 00:18:15 -0700
+X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; d="scan'208";a="544656295"
 Received: from msavu-mobl1.ti.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.251.216.36])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Sep 2021 00:18:09 -0700
+ 15 Sep 2021 00:18:13 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com, broonie@kernel.org,
  pierre-louis.bossart@linux.intel.com
-Subject: [PATCH 1/3] ASoC: SOF: Intel: hda-dsp: Declare locally used functions
- as static
-Date: Wed, 15 Sep 2021 10:18:03 +0300
-Message-Id: <20210915071805.5704-2-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 3/3] ASoC: SOF: Intel: hda: Relocate inline definitions from
+ hda.h to hda.c for sdw
+Date: Wed, 15 Sep 2021 10:18:05 +0300
+Message-Id: <20210915071805.5704-4-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210915071805.5704-1-peter.ujfalusi@linux.intel.com>
 References: <20210915071805.5704-1-peter.ujfalusi@linux.intel.com>
@@ -82,163 +82,113 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The following functions can be made static as they are only used locally:
-hda_dsp_core_reset_enter
-hda_dsp_core_reset_leave
-hda_dsp_core_stall_reset
-hda_dsp_core_power_up
-hda_dsp_core_power_down
-hda_dsp_core_is_enabled
-
-The hda_dsp_ipc_int_disable is also only used within hda-dsp.c, but for
-symmetry for hda_dsp_ipc_int_enable (used by hda-loader.c) leave it as it
-is.
+Move the only locally needed inline functions to hda.c when
+CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE is not enabled to make the header file
+less cluttered with information no needed to be there.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-dsp.c | 61 +++++++++++++++++------------------
- sound/soc/sof/intel/hda.h     |  9 ------
- 2 files changed, 30 insertions(+), 40 deletions(-)
+ sound/soc/sof/intel/hda.c | 33 ++++++++++++++++++++++++++++++++-
+ sound/soc/sof/intel/hda.h | 30 ------------------------------
+ 2 files changed, 32 insertions(+), 31 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
-index 623cf291e207..058baca2cd0e 100644
---- a/sound/soc/sof/intel/hda-dsp.c
-+++ b/sound/soc/sof/intel/hda-dsp.c
-@@ -34,7 +34,7 @@ MODULE_PARM_DESC(enable_trace_D0I3_S0,
-  * DSP Core control.
-  */
- 
--int hda_dsp_core_reset_enter(struct snd_sof_dev *sdev, unsigned int core_mask)
-+static int hda_dsp_core_reset_enter(struct snd_sof_dev *sdev, unsigned int core_mask)
- {
- 	u32 adspcs;
- 	u32 reset;
-@@ -73,7 +73,7 @@ int hda_dsp_core_reset_enter(struct snd_sof_dev *sdev, unsigned int core_mask)
- 	return ret;
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index f60e2c57d3d0..c11e4c14d875 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -294,7 +294,38 @@ void hda_sdw_process_wakeen(struct snd_sof_dev *sdev)
+ 	sdw_intel_process_wakeen_event(hdev->sdw);
  }
  
--int hda_dsp_core_reset_leave(struct snd_sof_dev *sdev, unsigned int core_mask)
-+static int hda_dsp_core_reset_leave(struct snd_sof_dev *sdev, unsigned int core_mask)
- {
- 	unsigned int crst;
- 	u32 adspcs;
-@@ -113,7 +113,7 @@ int hda_dsp_core_reset_leave(struct snd_sof_dev *sdev, unsigned int core_mask)
- 	return ret;
- }
- 
--int hda_dsp_core_stall_reset(struct snd_sof_dev *sdev, unsigned int core_mask)
-+static int hda_dsp_core_stall_reset(struct snd_sof_dev *sdev, unsigned int core_mask)
- {
- 	/* stall core */
- 	snd_sof_dsp_update_bits_unlocked(sdev, HDA_DSP_BAR,
-@@ -125,6 +125,31 @@ int hda_dsp_core_stall_reset(struct snd_sof_dev *sdev, unsigned int core_mask)
- 	return hda_dsp_core_reset_enter(sdev, core_mask);
- }
- 
-+static bool hda_dsp_core_is_enabled(struct snd_sof_dev *sdev, unsigned int core_mask)
+-#endif
++#else /* IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE) */
++static inline int hda_sdw_acpi_scan(struct snd_sof_dev *sdev)
 +{
-+	int val;
-+	bool is_enable;
-+
-+	val = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_ADSPCS);
-+
-+#define MASK_IS_EQUAL(v, m, field) ({	\
-+	u32 _m = field(m);		\
-+	((v) & _m) == _m;		\
-+})
-+
-+	is_enable = MASK_IS_EQUAL(val, core_mask, HDA_DSP_ADSPCS_CPA_MASK) &&
-+		MASK_IS_EQUAL(val, core_mask, HDA_DSP_ADSPCS_SPA_MASK) &&
-+		!(val & HDA_DSP_ADSPCS_CRST_MASK(core_mask)) &&
-+		!(val & HDA_DSP_ADSPCS_CSTALL_MASK(core_mask));
-+
-+#undef MASK_IS_EQUAL
-+
-+	dev_dbg(sdev->dev, "DSP core(s) enabled? %d : core_mask %x\n",
-+		is_enable, core_mask);
-+
-+	return is_enable;
++	return 0;
 +}
 +
- int hda_dsp_core_run(struct snd_sof_dev *sdev, unsigned int core_mask)
- {
- 	int ret;
-@@ -156,7 +181,7 @@ int hda_dsp_core_run(struct snd_sof_dev *sdev, unsigned int core_mask)
-  * Power Management.
-  */
++static inline int hda_sdw_probe(struct snd_sof_dev *sdev)
++{
++	return 0;
++}
++
++static inline int hda_sdw_exit(struct snd_sof_dev *sdev)
++{
++	return 0;
++}
++
++static inline bool hda_dsp_check_sdw_irq(struct snd_sof_dev *sdev)
++{
++	return false;
++}
++
++static inline irqreturn_t hda_dsp_sdw_thread(int irq, void *context)
++{
++	return IRQ_HANDLED;
++}
++
++static inline bool hda_sdw_check_wakeen_irq(struct snd_sof_dev *sdev)
++{
++	return false;
++}
++
++#endif /* IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE) */
  
--int hda_dsp_core_power_up(struct snd_sof_dev *sdev, unsigned int core_mask)
-+static int hda_dsp_core_power_up(struct snd_sof_dev *sdev, unsigned int core_mask)
- {
- 	unsigned int cpa;
- 	u32 adspcs;
-@@ -195,7 +220,7 @@ int hda_dsp_core_power_up(struct snd_sof_dev *sdev, unsigned int core_mask)
- 	return ret;
- }
- 
--int hda_dsp_core_power_down(struct snd_sof_dev *sdev, unsigned int core_mask)
-+static int hda_dsp_core_power_down(struct snd_sof_dev *sdev, unsigned int core_mask)
- {
- 	u32 adspcs;
- 	int ret;
-@@ -218,32 +243,6 @@ int hda_dsp_core_power_down(struct snd_sof_dev *sdev, unsigned int core_mask)
- 	return ret;
- }
- 
--bool hda_dsp_core_is_enabled(struct snd_sof_dev *sdev,
--			     unsigned int core_mask)
--{
--	int val;
--	bool is_enable;
--
--	val = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_ADSPCS);
--
--#define MASK_IS_EQUAL(v, m, field) ({	\
--	u32 _m = field(m);		\
--	((v) & _m) == _m;		\
--})
--
--	is_enable = MASK_IS_EQUAL(val, core_mask, HDA_DSP_ADSPCS_CPA_MASK) &&
--		MASK_IS_EQUAL(val, core_mask, HDA_DSP_ADSPCS_SPA_MASK) &&
--		!(val & HDA_DSP_ADSPCS_CRST_MASK(core_mask)) &&
--		!(val & HDA_DSP_ADSPCS_CSTALL_MASK(core_mask));
--
--#undef MASK_IS_EQUAL
--
--	dev_dbg(sdev->dev, "DSP core(s) enabled? %d : core_mask %x\n",
--		is_enable, core_mask);
--
--	return is_enable;
--}
--
- int hda_dsp_enable_core(struct snd_sof_dev *sdev, unsigned int core_mask)
- {
- 	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
+ /*
+  * Debug
 diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 4fdfb108645c..519547e65e93 100644
+index 4a2d1376c717..087fa06d5210 100644
 --- a/sound/soc/sof/intel/hda.h
 +++ b/sound/soc/sof/intel/hda.h
-@@ -492,17 +492,8 @@ struct sof_intel_hda_stream {
-  */
- int hda_dsp_probe(struct snd_sof_dev *sdev);
- int hda_dsp_remove(struct snd_sof_dev *sdev);
--int hda_dsp_core_reset_enter(struct snd_sof_dev *sdev,
--			     unsigned int core_mask);
--int hda_dsp_core_reset_leave(struct snd_sof_dev *sdev,
--			     unsigned int core_mask);
--int hda_dsp_core_stall_reset(struct snd_sof_dev *sdev, unsigned int core_mask);
- int hda_dsp_core_run(struct snd_sof_dev *sdev, unsigned int core_mask);
--int hda_dsp_core_power_up(struct snd_sof_dev *sdev, unsigned int core_mask);
- int hda_dsp_enable_core(struct snd_sof_dev *sdev, unsigned int core_mask);
--int hda_dsp_core_power_down(struct snd_sof_dev *sdev, unsigned int core_mask);
--bool hda_dsp_core_is_enabled(struct snd_sof_dev *sdev,
--			     unsigned int core_mask);
- int hda_dsp_core_reset_power_down(struct snd_sof_dev *sdev,
- 				  unsigned int core_mask);
- void hda_dsp_ipc_int_enable(struct snd_sof_dev *sdev);
+@@ -684,45 +684,15 @@ bool hda_common_check_sdw_irq(struct snd_sof_dev *sdev);
+ 
+ #else
+ 
+-static inline int hda_sdw_acpi_scan(struct snd_sof_dev *sdev)
+-{
+-	return 0;
+-}
+-
+-static inline int hda_sdw_probe(struct snd_sof_dev *sdev)
+-{
+-	return 0;
+-}
+-
+ static inline int hda_sdw_startup(struct snd_sof_dev *sdev)
+ {
+ 	return 0;
+ }
+ 
+-static inline int hda_sdw_exit(struct snd_sof_dev *sdev)
+-{
+-	return 0;
+-}
+-
+ static inline void hda_sdw_int_enable(struct snd_sof_dev *sdev, bool enable)
+ {
+ }
+ 
+-static inline bool hda_dsp_check_sdw_irq(struct snd_sof_dev *sdev)
+-{
+-	return false;
+-}
+-
+-static inline irqreturn_t hda_dsp_sdw_thread(int irq, void *context)
+-{
+-	return IRQ_HANDLED;
+-}
+-
+-static inline bool hda_sdw_check_wakeen_irq(struct snd_sof_dev *sdev)
+-{
+-	return false;
+-}
+-
+ static inline void hda_sdw_process_wakeen(struct snd_sof_dev *sdev)
+ {
+ }
 -- 
 2.33.0
 
