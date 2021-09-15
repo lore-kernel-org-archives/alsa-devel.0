@@ -2,74 +2,76 @@ Return-Path: <SRS0=xeto=OF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC675C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 16:37:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24F7EC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 16:39:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 14EC560FA0
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 16:37:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 14EC560FA0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 88EF86112E
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 16:39:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 88EF86112E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A91C11843;
-	Wed, 15 Sep 2021 18:36:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A91C11843
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0FED917BE;
+	Wed, 15 Sep 2021 18:38:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FED917BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631723849;
-	bh=M+RdjXeJf0x6moysoK8sITyhXdL2SwBkO0qgliMr2Rg=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1631723960;
+	bh=4Cl/48gLVRD9RL7IVgGCC94BTqjVc+I7CCa1ynd8ltw=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HeGZj/QsffvcR9cHR1nhG1H7W0nrnNkE+jBy7j+qzbZskl/lBVvSNQSJGVF4tK+qa
-	 qJZ6zrPapcs4YvezuvYEvAsNaB4yuc0358IQXg3MPfMeocp6ffBvQjWTr9xE9+pe+O
-	 kvWc5dkMOaViuGGwxARI+LP4p13buzZviAQN6Ksk=
+	b=IfyXCuZDxBk649ZezACBNEErtYEn7bJ3wXI4d3+dogw8HU5MRe0Yc4wGhLUlrE2Zx
+	 yRByeobwFBzhcoRFxtUa8jZeBxCZl0mgb+HhKupn2+l5fbMy7n+tpt70S5nzQEwT44
+	 M8119P70uMU2kbzN9WGq/dqf8vhYEtl2YLpHxY7Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 29158F804FF;
-	Wed, 15 Sep 2021 18:34:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6A7BF80227;
+	Wed, 15 Sep 2021 18:38:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7D5F2F804ED; Wed, 15 Sep 2021 18:34:50 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id E7C8EF802E8; Wed, 15 Sep 2021 18:38:27 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A9A96F8049E
- for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 18:34:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9A96F8049E
-X-IronPort-AV: E=McAfee;i="6200,9189,10108"; a="286060928"
-X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; d="scan'208";a="286060928"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Sep 2021 09:34:44 -0700
-X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; d="scan'208";a="583352215"
-Received: from mvetrive-mobl3.amr.corp.intel.com (HELO [10.212.69.198])
- ([10.212.69.198])
- by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Sep 2021 09:34:43 -0700
-Subject: Re: [PATCH v6 00/22] ASoC: qcom: Add AudioReach support
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- bjorn.andersson@linaro.org, broonie@kernel.org, robh@kernel.org
-References: <20210915131333.19047-1-srinivas.kandagatla@linaro.org>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <dd55eeae-0fd9-1faf-12b5-deaaf1a035b4@linux.intel.com>
-Date: Wed, 15 Sep 2021 11:32:29 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0DBBBF80117
+ for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 18:38:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0DBBBF80117
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="t6fj1im6"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2B356112E;
+ Wed, 15 Sep 2021 16:38:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1631723900;
+ bh=4Cl/48gLVRD9RL7IVgGCC94BTqjVc+I7CCa1ynd8ltw=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=t6fj1im6UqXlTIL0kCtZOu8yUFrv1p52Tj+G3k2d0cav2hDdYntTpSO2AkfmL/6ZN
+ 3seFCgYw4e7sy9PdDe6ig9wCKlM4FuYR6MN8l4dVpzSgKXNjFmmA1vN4cf5MHsLEbK
+ TWP4yjhugfLSGfYHIH5qB0zejR/gyGtd8lbIhCA9bUk25T6W09ZOWqBoyNi3WGnPOg
+ rrSsRalvLzRlEyYDvMv20RIh8zIapwOx3gD3HZ4FEJNol/dzV+8LpI7ENPUsD8JH54
+ TPeKE97mlI3oQLby2+kzsbtnT/pabPyHTDWKmZNOStIwpNYm8rPkaABjlPVylQ/gKZ
+ PVlKRFxdD1cBg==
+From: Mark Brown <broonie@kernel.org>
+To: lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH 00/12] ASoC: SOF: Abstract away the 'bar' usage (mostly)
+Date: Wed, 15 Sep 2021 17:37:38 +0100
+Message-Id: <163172362147.34846.17955355854539650418.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210915122116.18317-1-peter.ujfalusi@linux.intel.com>
+References: <20210915122116.18317-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210915131333.19047-1-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, tiwai@suse.de, plai@codeaurora.org,
- lgirdwood@gmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: guennadi.liakhovetski@linux.intel.com, alsa-devel@alsa-project.org,
+ kai.vehmanen@linux.intel.com, daniel.baluta@gmail.com,
+ ranjani.sridharan@linux.intel.com, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,127 +87,62 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Wed, 15 Sep 2021 15:21:04 +0300, Peter Ujfalusi wrote:
+> The direct use of 'bar' as address regions in SOF can limit portability and
+> makes assumption that all platforms are using memory mapped regions or BARs
+> to communicate with the DSP.
+> 
+> The core API should not use 'bar' in it's parameter lists or make assumption
+> that the platform needs to comply with this system integration.
+> 
+> [...]
 
+Applied to
 
-On 9/15/21 8:13 AM, Srinivas Kandagatla wrote:
-> Many thanks for reviewing v5. This version addresses all the comments
-> raised as part of v5 review.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Much improved indeed, but still a couple of issues and nit-picks.
+Thanks!
 
-The one thing I didn't see before is the use of an 'audioreach.bin'
-topology file, retrieved with request_firmware(). That hard-coded name
-seems problematic for a signal processing framework precisely geared to
-topology changes (I kept the description below for context), and will
-prevent the use of a common setup on different platforms, even when they
-only differ by the form-factor and processing graph. That doesn't seem
-to scale, does it? Or did I miss something?
+[01/12] ASoC: SOF: Intel: bdw: Set the mailbox offset directly in bdw_probe
+        commit: 6375dbdbde67725220f2a07e428259c944d4c42d
+[02/12] ASoC: SOF: ipc: Remove snd_sof_dsp_mailbox_init()
+        commit: b295818346aa7140dac865054a6c5efe8d4ec3ae
+[03/12] ASoC: SOF: imx: Do not initialize the snd_sof_dsp_ops.read64
+        commit: 098a68f2c5735b2fa8051ffe854b94b6d5b0a6a8
+[04/12] ASoC: SOF: imx: imx8: Bar index is only valid for IRAM and SRAM types
+        commit: 10d93a98190aec2c3ff98d9472ab1bf0543aa02c
+[05/12] ASoC: SOF: imx: imx8m: Bar index is only valid for IRAM and SRAM types
+        commit: d9be4a88c3627c270bbe032b623dc43f3b764565
+[06/12] ASoC: SOF: loader: No need to export snd_sof_fw_parse_ext_data()
+        commit: 4ff134e2f90ee2816ca5a8069802ff5cb602a2f1
+[07/12] ASoC: SOF: core: Do not use 'bar' as parameter for block_read/write
+        commit: 4624bb2f03d3c153e00d21c1baa1da34cfc19afd
+[08/12] ASoC: SOF: debug: Add generic API and ops for DSP regions
+        commit: 07e833b473e417f13c5a62aa6f63dbbd3028d277
+[09/12] ASoC: SOF: imx: Provide debugfs_add_region_item ops for core
+        commit: ff2f99b078a839c973434bcc9c1094814a38ae76
+[10/12] ASoC: SOF: Intel: Provide debugfs_add_region_item ops for core
+        commit: fe509b34b745d2284c3026abae8aaf02413a0594
+[11/12] ASoC: SOF: loader: Use the generic ops for region debugfs handling
+        commit: 55dfc2a74d8e8d34d6f562a1e4173e711bbd916d
+[12/12] ASoC: SOF: debug: No need to export the snd_sof_debugfs_io_item()
+        commit: bde4f08cff47632f0a52e15a613365e26608d003
 
-In the SOF example, we have an initial set of tables based on which
-codec/amps are used and DMI identifiers; the topology name is overridden
-at boot time to account for hardware variability and changes in processing.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-> This patchset adds ASoC driver support to configure signal processing
-> framework ("AudioReach") which is integral part of Qualcomm next
-> generation audio SDK and will be deployed on upcoming Qualcomm chipsets.
-> It makes use of ASoC Topology to load graphs on to the DSP which is then
-> managed by APM (Audio Processing Manager) service to prepare/start/stop.
-> 
-> Here is simplified high-level block diagram of AudioReach:
-> 
->  ___________________________________________________________
-> |                 CPU (Application Processor)               |
-> |  +---------+          +---------+         +----------+    |
-> |  |  q6apm  |          |  q6apm  |         |  q6apm   |    |
-> |  |   dais  | <------> |         | <-----> |lpass-dais|    |
-> |  +---------+          +---------+         +----------+    |
-> |                            ^  ^                           |
-> |                            |  |           +---------+     |
-> |  +---------+               v  +---------->|topology |     |
-> |  | q6prm   |          +---------+         |         |     |
-> |  |         |<-------->|   GPR   |         +---------+     |
-> |  +---------+          +---------+                         |
-> |       ^                    ^                              |
-> |       |                    |                              |
-> |  +----------+              |                              |
-> |  |   q6prm  |              |                              |
-> |  |lpass-clks|              |                              |
-> |  +----------+              |                              |
-> |____________________________|______________________________|
->                              |  
->                              | RPMSG (IPC over GLINK)              
->  ____________________________|______________________________
-> |                            |                              |
-> |    +-----------------------+                              |
-> |    |                       |                              |
-> |    v                       v              q6 (Audio DSP)  |
-> |+-----+    +----------------------------------+            |
-> || PRM |    | APM (Audio Processing Manager)   |            |
-> |+-----+    |  . Graph Management              |            |  
-> |           |  . Command Handing               |            |  
-> |           |  . Event Management              |            |  
-> |           |  ...                             |            |  
-> |           +----------------------------------+            |  
-> |                            ^                              |
-> |____________________________|______________________________|
->                              |  
->                              |   LPASS AIF
->  ____________________________|______________________________
-> |                            |            Audio I/O         |
-> |                            v                              |
-> |   +--------------------------------------------------+    |
-> |    |                Audio devices                     |   |
-> |    | CODEC | HDMI-TX | PCM  | SLIMBUS | I2S |MI2S |...|   |
-> |    |                                                  |   |
-> |    +--------------------------------------------------+   |
-> |___________________________________________________________|
-> 
-> AudioReach has constructs of sub-graph, container and modules.
-> Each sub-graph can have N containers and each Container can have N Modules
-> and connections between them can be linear or non-linear.
-> An audio function can be realized with one or many connected
-> sub-graphs. There are also control/event paths between modules that can
-> be wired up while building graph to achieve various control mechanism
-> between modules. These concepts of Sub-Graph, Containers and Modules
-> are represented in ASoC topology.
-> 
-> Here is simple I2S graph with a Write Shared Memory and a
-> Volume control module within a single Subgraph (1) with one Container (1)
-> and 5 modules.
-> 
->   ____________________________________________________________
->  |                        Sub-Graph [1]                       |
->  |  _______________________________________________________   |
->  | |                       Container [1]                   |  |
->  | | [WR_SH] -> [PCM DEC] -> [PCM CONV] -> [VOL]-> [I2S-EP]|  |
->  | |_______________________________________________________|  |
->  |____________________________________________________________|
-> 
-> For now this graph is split into two subgraphs to achieve dpcm like below:
->  ________________________________________________    _________________
-> |                Sub-Graph [1]                   |  |  Sub-Graph [2]  |
-> |  ____________________________________________  |  |  _____________  |
-> | |              Container [1]                 | |  | |Container [2]| |
-> | | [WR_SH] -> [PCM DEC] -> [PCM CONV] -> [VOL]| |  | |   [I2S-EP]  | |
-> | |____________________________________________| |  | |_____________| |
-> |________________________________________________|  |_________________|
-> 
->                                                       _________________
->                                                     |  Sub-Graph [3]  |
->                                                     |  _____________  |
->                                                     | |Container [3]| |
->                                                     | |  [DMA-EP]   | |
->                                                     | |_____________| |
->                                                     |_________________|
-> 
-> 
-> This patchset adds very minimal support for AudioReach which includes
-> supporting sub-graphs containing CODEC DMA ports and simple PCM
-> Decoder/Encoder and Logger Modules. Additional capabilities will
-> be built over time to expose features offered by AudioReach. 
-> 
-> This patchset is Tested on SM8250 SoC based Qualcomm Robotics Platform RB5
-> and SM9250 MTP with WSA881X Smart Speaker Amplifiers, DMICs connected via
-> VA Macro and WCD938x Codec connected via TX and RX Macro and HDMI audio
-> via I2S.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
