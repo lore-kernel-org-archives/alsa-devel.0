@@ -4,74 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86971C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 15:24:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 277DFC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 15:25:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D09CC60F5B
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 15:24:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D09CC60F5B
+	by mail.kernel.org (Postfix) with ESMTPS id 5127860F5B
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 15:25:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5127860F5B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 520341841;
-	Wed, 15 Sep 2021 17:23:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 520341841
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA192185B;
+	Wed, 15 Sep 2021 17:24:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA192185B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631719466;
-	bh=XWxiO2KlemLDS/JBHi+KKV0/3h/x2DPr6xTOQUt2t9k=;
+	s=default; t=1631719500;
+	bh=hYM/NKbgpLHVOai31dObwTbz9HfkGYUYeERzVv/RnrA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dH3/Zsd0kqvVZAs+PtKRWEcSNGAGWpjuKqpnQuUP0ns62/U7v+XASX9F3puWiAe2v
-	 fmujr+wIRm7QV3rf+VeV7GCUSN85stxgNixdoZiqFgYHHsQDhh6akaT+hKEhUclAuk
-	 v5lUptQ1gLarLK4b6vAdsmYHcFNt4aryaJg8I1bQ=
+	b=C4pNHHHJnArjg6A7w+Kv0fRAoJM156bzK7bNuPGLo8tQ8keewRJD+PRz7POTSWLyu
+	 7QFhFg0JRP2PxuB3jZzV/3o6B/9rYR/l/7I2dVeE9GN44C4rtvIO7mXFzmdEEb+5nG
+	 KLq0mWGWlsljosnaNIJKivxv7hsb4rsrwrCj4Dpo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AC4DAF804E2;
-	Wed, 15 Sep 2021 17:22:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 33A9AF804F1;
+	Wed, 15 Sep 2021 17:22:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CE3CEF800EF; Wed, 15 Sep 2021 17:22:43 +0200 (CEST)
+ id E703DF804E5; Wed, 15 Sep 2021 17:22:46 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 87157F800EF
- for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 17:22:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87157F800EF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1BDE0F80227
+ for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 17:22:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1BDE0F80227
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BCNXa/hJ"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BCACE61186;
- Wed, 15 Sep 2021 15:22:33 +0000 (UTC)
+ header.b="K6CooD4t"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9234D60F5B;
+ Wed, 15 Sep 2021 15:22:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631719354;
- bh=XWxiO2KlemLDS/JBHi+KKV0/3h/x2DPr6xTOQUt2t9k=;
+ s=k20201202; t=1631719362;
+ bh=hYM/NKbgpLHVOai31dObwTbz9HfkGYUYeERzVv/RnrA=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=BCNXa/hJkU0FXK1LD1GDQxtjT4tgxlIflXNOMzETmmGzxhheyf8Sy/fnsssTXE8uv
- mNXv9kmG8MSFmdm6PCil6NaTQAXaXpPzmUEYX3AwN1xNjvXe55laEqkC/4AVw4L3Wz
- wMi2NYwd/BGHyEluR9+4lehkZ+MgxdrCg2jo+6/jkgsbUEWpaYtha22f8ssozZN88I
- ThOKRpX0VsrhVKsEsXU29EQ1siiy/DzSMWG4dmFJF+L9ovaVJ2Fx/WBN6Q6/6nt5hf
- bjWS3XbFiWXerLHqfkusx1rfD8J3CijiziLILbgj6QLAyZ4pugpWJ2EgT2JlYZWOo7
- l3Gg88QYASSUg==
+ b=K6CooD4txBJwdU3E/Wzw1Mmq7WPyCs8iF109tipPbSLj5CDdw3TaoVoeSsFlGxWEa
+ H9OKKLlARcH6qpeDGc64txIPrdEBFqfB4L1tHmkkLnnFGc54P7FwZ0DQXG6lUw6VBL
+ 5l9zvbJo26C3eKoYBo5DtfYi1bY/Dfk9JJnTIagL/xjHSHf86uKn3oBf+W5I3RtXtO
+ cmeeCssJ5yDWgbsfRAXyTNyRChXLMIRKQ6N5okeoyim7ZOl7oWwD3HE1O/XgbTMqEY
+ mlyyLolTW7Yt9GF6npU/VPOlTaYB4FWXn0z04GNG52v5W7yo2H0xBOYclLIhbs2b6r
+ 1dpwiPAbq4KFA==
 From: Mark Brown <broonie@kernel.org>
-To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com
-Subject: Re: [PATCH] ASoC: SOF: Fix DSP oops stack dump output contents
-Date: Wed, 15 Sep 2021 16:21:42 +0100
-Message-Id: <163171901943.9674.14447227045564759721.b4-ty@kernel.org>
+To: pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH 0/2] ASoC: SOF: Remove unused members from struct
+ sof_dev_desc
+Date: Wed, 15 Sep 2021 16:21:45 +0100
+Message-Id: <163171901944.9674.10459698385534328374.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210915063230.29711-1-peter.ujfalusi@linux.intel.com>
-References: <20210915063230.29711-1-peter.ujfalusi@linux.intel.com>
+In-Reply-To: <20210915065541.1178-1-peter.ujfalusi@linux.intel.com>
+References: <20210915065541.1178-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, daniel.baluta@gmail.com,
- Mark Brown <broonie@kernel.org>, ranjani.sridharan@linux.intel.com,
- kai.vehmanen@linux.intel.com
+Cc: guennadi.liakhovetski@linux.intel.com, alsa-devel@alsa-project.org,
+ kai.vehmanen@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ Mark Brown <broonie@kernel.org>, daniel.baluta@nxp.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,13 +88,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 15 Sep 2021 09:32:30 +0300, Peter Ujfalusi wrote:
-> From: Yong Zhi <yong.zhi@intel.com>
+On Wed, 15 Sep 2021 09:55:39 +0300, Peter Ujfalusi wrote:
+> dma_engine, dma_size and resindex_dma_base is unused from sof_dev_desc, drop
+> them.
 > 
-> Fix @buf arg given to hex_dump_to_buffer() and stack address used
-> in dump error output.
+> resindex_dma_base is initialized to -1 for Intel platforms, but it is not used.
 > 
+> Regards,
+> Peter
 > 
+> [...]
 
 Applied to
 
@@ -101,8 +105,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: Fix DSP oops stack dump output contents
-      commit: ac4dfccb96571ca03af7cac64b7a0b2952c97f3a
+[1/2] ASoC: SOF: intel: Do no initialize resindex_dma_base
+      commit: 7e7d5ffa37e34ec2a6e8aa2e1fd846fb296fc8a1
+[2/2] ASoC: SOF: Drop resindex_dma_base, dma_engine, dma_size from sof_dev_desc
+      commit: 2395fea7ae7f0cf6dfd37a8bb3cd9dbcf2d0e492
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
