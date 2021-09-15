@@ -7,59 +7,59 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE74AC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 12:25:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91FF3C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 12:26:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2C46061244
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 12:25:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2C46061244
+	by mail.kernel.org (Postfix) with ESMTPS id 1B99F61244
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 12:26:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1B99F61244
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BB79C1852;
-	Wed, 15 Sep 2021 14:25:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB79C1852
+	by alsa0.perex.cz (Postfix) with ESMTPS id A89AA181A;
+	Wed, 15 Sep 2021 14:25:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A89AA181A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631708750;
-	bh=dSU3BkXAKHnMKvViAjlw+O2xJogkgiJSTTp5FJj7dH4=;
+	s=default; t=1631708768;
+	bh=hh1CW2Bg4+t/PtYpW7wBgve77Pla5GF4GPUzsYA2a+E=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=O6bGIyWwfmQ+ASTl86z3MBL1uWdvtTAJxNooLUgmehLhkh0zKwO9efsRrtOKuXRg7
-	 YkpbgP9a+F6m1MR8XvqP7SPIIO8yRpTtG2lWpofEvA1R18fMYLHWvsjDylX61i8dVE
-	 dtv/EAvvXAMUqIjRhm7b5fRrcEMIer2o9psLFwds=
+	b=JRbNIX10/LBiDbwcNpUT+QurbTE49QG7/aV6CD1jdKcJca+kH5BgoGEMl7h2i9I5R
+	 XDFCUJQFClZycSd34QtkkoCIuaytKM1ChN0QpRemtC+nwyJOhkxZA9AcNcyhpXkIhE
+	 5Vbzql8oFlxNueZSozfbihnnzegLEDTSxc6W2+iU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E3EBF80528;
-	Wed, 15 Sep 2021 14:21:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4C347F8052E;
+	Wed, 15 Sep 2021 14:21:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6DDABF80517; Wed, 15 Sep 2021 14:21:52 +0200 (CEST)
+ id B35FAF8051C; Wed, 15 Sep 2021 14:21:53 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 087E4F804F2
- for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 14:21:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 087E4F804F2
-X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="219117527"
-X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; d="scan'208";a="219117527"
+ by alsa1.perex.cz (Postfix) with ESMTPS id BE44FF8050F
+ for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 14:21:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE44FF8050F
+X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="219117539"
+X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; d="scan'208";a="219117539"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Sep 2021 05:21:44 -0700
-X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; d="scan'208";a="544901637"
+ 15 Sep 2021 05:21:49 -0700
+X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; d="scan'208";a="544901656"
 Received: from msavu-mobl1.ti.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.251.216.36])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Sep 2021 05:21:42 -0700
+ 15 Sep 2021 05:21:47 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com, broonie@kernel.org,
  pierre-louis.bossart@linux.intel.com
-Subject: [PATCH 10/12] ASoC: SOF: Intel: Provide debugfs_add_region_item ops
- for core
-Date: Wed, 15 Sep 2021 15:21:14 +0300
-Message-Id: <20210915122116.18317-11-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 12/12] ASoC: SOF: debug: No need to export the
+ snd_sof_debugfs_io_item()
+Date: Wed, 15 Sep 2021 15:21:16 +0300
+Message-Id: <20210915122116.18317-13-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210915122116.18317-1-peter.ujfalusi@linux.intel.com>
 References: <20210915122116.18317-1-peter.ujfalusi@linux.intel.com>
@@ -83,116 +83,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Set the generic iomem callback for debugfs_add_region_item to avoid
-regression when the core switches to use the generic interface for
-the regions.
+The snd_sof_debugfs_io_item() only used within debug.c, no need to export
+it.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Daniel Baluta <daniel.baluta@gmail.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 ---
- sound/soc/sof/intel/apl.c     | 1 +
- sound/soc/sof/intel/bdw.c     | 1 +
- sound/soc/sof/intel/byt.c     | 2 ++
- sound/soc/sof/intel/cnl.c     | 1 +
- sound/soc/sof/intel/icl.c     | 1 +
- sound/soc/sof/intel/pci-tng.c | 1 +
- sound/soc/sof/intel/tgl.c     | 1 +
- 7 files changed, 8 insertions(+)
+ sound/soc/sof/debug.c    | 9 ++++-----
+ sound/soc/sof/sof-priv.h | 4 ----
+ 2 files changed, 4 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/sof/intel/apl.c b/sound/soc/sof/intel/apl.c
-index c7ed2b3d6abc..0da6f3528269 100644
---- a/sound/soc/sof/intel/apl.c
-+++ b/sound/soc/sof/intel/apl.c
-@@ -65,6 +65,7 @@ const struct snd_sof_dsp_ops sof_apl_ops = {
- 	.debug_map_count	= ARRAY_SIZE(apl_dsp_debugfs),
- 	.dbg_dump	= hda_dsp_dump,
- 	.ipc_dump	= hda_ipc_dump,
-+	.debugfs_add_region_item = snd_sof_debugfs_add_region_item_iomem,
+diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
+index c536ea71630f..af92baacd23e 100644
+--- a/sound/soc/sof/debug.c
++++ b/sound/soc/sof/debug.c
+@@ -546,10 +546,10 @@ static const struct file_operations sof_dfs_fops = {
+ };
  
- 	/* stream callbacks */
- 	.pcm_open	= hda_dsp_pcm_open,
-diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
-index 37fa4f976a11..a8063e9b3e00 100644
---- a/sound/soc/sof/intel/bdw.c
-+++ b/sound/soc/sof/intel/bdw.c
-@@ -635,6 +635,7 @@ static const struct snd_sof_dsp_ops sof_bdw_ops = {
- 	.debug_map  = bdw_debugfs,
- 	.debug_map_count    = ARRAY_SIZE(bdw_debugfs),
- 	.dbg_dump   = bdw_dump,
-+	.debugfs_add_region_item = snd_sof_debugfs_add_region_item_iomem,
+ /* create FS entry for debug files that can expose DSP memories, registers */
+-int snd_sof_debugfs_io_item(struct snd_sof_dev *sdev,
+-			    void __iomem *base, size_t size,
+-			    const char *name,
+-			    enum sof_debugfs_access_type access_type)
++static int snd_sof_debugfs_io_item(struct snd_sof_dev *sdev,
++				   void __iomem *base, size_t size,
++				   const char *name,
++				   enum sof_debugfs_access_type access_type)
+ {
+ 	struct snd_sof_dfsentry *dfse;
  
- 	/* stream callbacks */
- 	.pcm_open	= intel_pcm_open,
-diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
-index 8edaf6fdd218..d4e86f847ae6 100644
---- a/sound/soc/sof/intel/byt.c
-+++ b/sound/soc/sof/intel/byt.c
-@@ -249,6 +249,7 @@ static const struct snd_sof_dsp_ops sof_byt_ops = {
- 	.debug_map	= byt_debugfs,
- 	.debug_map_count	= ARRAY_SIZE(byt_debugfs),
- 	.dbg_dump	= atom_dump,
-+	.debugfs_add_region_item = snd_sof_debugfs_add_region_item_iomem,
+@@ -586,7 +586,6 @@ int snd_sof_debugfs_io_item(struct snd_sof_dev *sdev,
  
- 	/* stream callbacks */
- 	.pcm_open	= intel_pcm_open,
-@@ -326,6 +327,7 @@ static const struct snd_sof_dsp_ops sof_cht_ops = {
- 	.debug_map	= cht_debugfs,
- 	.debug_map_count	= ARRAY_SIZE(cht_debugfs),
- 	.dbg_dump	= atom_dump,
-+	.debugfs_add_region_item = snd_sof_debugfs_add_region_item_iomem,
+ 	return 0;
+ }
+-EXPORT_SYMBOL_GPL(snd_sof_debugfs_io_item);
  
- 	/* stream callbacks */
- 	.pcm_open	= intel_pcm_open,
-diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index e115e12a856f..eeb95cbb77a1 100644
---- a/sound/soc/sof/intel/cnl.c
-+++ b/sound/soc/sof/intel/cnl.c
-@@ -270,6 +270,7 @@ const struct snd_sof_dsp_ops sof_cnl_ops = {
- 	.debug_map_count	= ARRAY_SIZE(cnl_dsp_debugfs),
- 	.dbg_dump	= hda_dsp_dump,
- 	.ipc_dump	= cnl_ipc_dump,
-+	.debugfs_add_region_item = snd_sof_debugfs_add_region_item_iomem,
- 
- 	/* stream callbacks */
- 	.pcm_open	= hda_dsp_pcm_open,
-diff --git a/sound/soc/sof/intel/icl.c b/sound/soc/sof/intel/icl.c
-index ee095b8f2d01..f5e370c13fed 100644
---- a/sound/soc/sof/intel/icl.c
-+++ b/sound/soc/sof/intel/icl.c
-@@ -64,6 +64,7 @@ const struct snd_sof_dsp_ops sof_icl_ops = {
- 	.debug_map_count	= ARRAY_SIZE(icl_dsp_debugfs),
- 	.dbg_dump	= hda_dsp_dump,
- 	.ipc_dump	= cnl_ipc_dump,
-+	.debugfs_add_region_item = snd_sof_debugfs_add_region_item_iomem,
- 
- 	/* stream callbacks */
- 	.pcm_open	= hda_dsp_pcm_open,
-diff --git a/sound/soc/sof/intel/pci-tng.c b/sound/soc/sof/intel/pci-tng.c
-index 4bded668b672..c7a64a11e4ae 100644
---- a/sound/soc/sof/intel/pci-tng.c
-+++ b/sound/soc/sof/intel/pci-tng.c
-@@ -165,6 +165,7 @@ const struct snd_sof_dsp_ops sof_tng_ops = {
- 	.debug_map	= tng_debugfs,
- 	.debug_map_count	= ARRAY_SIZE(tng_debugfs),
- 	.dbg_dump	= atom_dump,
-+	.debugfs_add_region_item = snd_sof_debugfs_add_region_item_iomem,
- 
- 	/* stream callbacks */
- 	.pcm_open	= intel_pcm_open,
-diff --git a/sound/soc/sof/intel/tgl.c b/sound/soc/sof/intel/tgl.c
-index 199d41a7dc9b..e91ea80f766f 100644
---- a/sound/soc/sof/intel/tgl.c
-+++ b/sound/soc/sof/intel/tgl.c
-@@ -60,6 +60,7 @@ const struct snd_sof_dsp_ops sof_tgl_ops = {
- 	.debug_map_count	= ARRAY_SIZE(tgl_dsp_debugfs),
- 	.dbg_dump	= hda_dsp_dump,
- 	.ipc_dump	= cnl_ipc_dump,
-+	.debugfs_add_region_item = snd_sof_debugfs_add_region_item_iomem,
- 
- 	/* stream callbacks */
- 	.pcm_open	= hda_dsp_pcm_open,
+ int snd_sof_debugfs_add_region_item_iomem(struct snd_sof_dev *sdev,
+ 					  enum snd_sof_fw_blk_type blk_type, u32 offset,
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index 4f1dcfe4a7ec..d391fff1e02c 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -522,10 +522,6 @@ void snd_sof_release_trace(struct snd_sof_dev *sdev);
+ void snd_sof_free_trace(struct snd_sof_dev *sdev);
+ int snd_sof_dbg_init(struct snd_sof_dev *sdev);
+ void snd_sof_free_debug(struct snd_sof_dev *sdev);
+-int snd_sof_debugfs_io_item(struct snd_sof_dev *sdev,
+-			    void __iomem *base, size_t size,
+-			    const char *name,
+-			    enum sof_debugfs_access_type access_type);
+ int snd_sof_debugfs_buf_item(struct snd_sof_dev *sdev,
+ 			     void *base, size_t size,
+ 			     const char *name, mode_t mode);
 -- 
 2.33.0
 
