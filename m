@@ -4,75 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 066B0C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 15:26:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 718B0C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 15:26:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1368C60FC0
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 15:26:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1368C60FC0
+	by mail.kernel.org (Postfix) with ESMTPS id E5B4960238
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 15:26:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E5B4960238
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8EFA71867;
-	Wed, 15 Sep 2021 17:25:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8EFA71867
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D0D61856;
+	Wed, 15 Sep 2021 17:25:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D0D61856
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631719570;
-	bh=eaHvPr4c64MUx/wA5kgL2ZalYjzQR3/RCff5rmUyQPg=;
+	s=default; t=1631719594;
+	bh=CFcne7+7qHsHstFKZ8q27i5a1vH58yXKDRbZpKDT3Og=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=E+Q4czV5tuj6Ho7CjFSLhdmsY4NVxX+hX70h5dXlXf4Eanz/yA23Eh9w9lGQCsDRy
-	 B6uqfeo+VRDbrZ2lh1HLApFgDBzMO+RrGn2Z9FZXwnCzxnCFh4XVs3WqM9hUOaheac
-	 6jVdjrWMIdu+eYI/iglPx0cNKLPUcI0ngsVcyYNs=
+	b=Q3HQnXcZIBvTbpNS5xymMW7qPsQ7030z2yd07grMc6/uuj9jhnYsGWExc9mN/YpnI
+	 43aWrpLqhLb+YO87QTI6nFFaLK+uReF9+SgZADMaoEBeGKhtmAsQu4dRD7T3LD9AEh
+	 ZOLiTUdzg9a3yKIrOZeJ8rEhZceceS/nAEY7M+Vs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 89E08F804FF;
-	Wed, 15 Sep 2021 17:23:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4BC9DF8051A;
+	Wed, 15 Sep 2021 17:23:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F20C7F80517; Wed, 15 Sep 2021 17:23:00 +0200 (CEST)
+ id 1D0BFF8051B; Wed, 15 Sep 2021 17:23:05 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 95CB7F804FF
- for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 17:22:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95CB7F804FF
+ by alsa1.perex.cz (Postfix) with ESMTPS id ADE20F80516
+ for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 17:22:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADE20F80516
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="DjupSuNN"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66C0A60FC0;
- Wed, 15 Sep 2021 15:22:49 +0000 (UTC)
+ header.b="Fh5j1qiG"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7458B60F5B;
+ Wed, 15 Sep 2021 15:22:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631719370;
- bh=eaHvPr4c64MUx/wA5kgL2ZalYjzQR3/RCff5rmUyQPg=;
+ s=k20201202; t=1631719375;
+ bh=CFcne7+7qHsHstFKZ8q27i5a1vH58yXKDRbZpKDT3Og=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=DjupSuNNUsZVf6cWkxBMQr+0CowYkhDTtzl7gVr3x6s6mQkVkleuJ7sPoeKxWop7u
- ULpp9EkNqfR89yp6MzoOTnDfsxXlzdSYz2ScEDyuwe6L4rAbEJqQGitO9QRm4/fvpW
- RgVpPJktTQlHfc/Kb8V63YTlpaJ8i5uTKrXuenpxZ7riW03aomdTpNZSltb5Xlszt/
- KyVAgwrK0DWUEkK3zHhfxl9NBB7CUgm/M6KKlTgkm1BVe33t6dCrJh/ssFTs1fkBuQ
- TDhIqE4BvZNZkF3jnueIy9olhUnF2S/qEpA2ehInb4WAX+UNQ/Imrzub0amWBlLXy8
- Tgu5DUh4+n4VQ==
+ b=Fh5j1qiGe4lhnNE63fc22HRgRVHmcrVUV4F+dgUD/xmJIWo+wee3Z1YvAqYdPMn+O
+ 43DpfimIewbGTUOWTGWZSBdm/u1LQhzknpmgvLwr7BQWCORbN7Ll7fISiK1VFpdjkR
+ khYfusxqh9SbOWWhu8mpPt98br62xOkNTF3zjBqxa6m5z41AI/akCFqAmb070LSX6J
+ YAVlE+rVhG6ERzVGGZ9UlqAbwEsFbJirULhQNeHxRt0g5io7jT55Y4GINmWrIumZIW
+ OYZoUNq+4ywDdjQzF1TarRoSX4uzA1PZ2QJHZd+5nS+8AxkhozNfRXUwdQCsP3/GSU
+ +qAeubGItaN3Q==
 From: Mark Brown <broonie@kernel.org>
-To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com
-Subject: Re: [PATCH 0/3] ASoC: SOF: Intel: hda: Cleanups for local function
- uses
-Date: Wed, 15 Sep 2021 16:21:48 +0100
-Message-Id: <163171901944.9674.16313885873236253079.b4-ty@kernel.org>
+To: tiwai@suse.com, Trevor Wu <trevor.wu@mediatek.com>, matthias.bgg@gmail.com
+Subject: Re: [PATCH] ASoC: mediatek: mt6359: Fix unexpected error in
+ bind/unbind flow
+Date: Wed, 15 Sep 2021 16:21:50 +0100
+Message-Id: <163171901944.9674.15745923942801327979.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210915071805.5704-1-peter.ujfalusi@linux.intel.com>
-References: <20210915071805.5704-1-peter.ujfalusi@linux.intel.com>
+In-Reply-To: <20210915034659.25044-1-trevor.wu@mediatek.com>
+References: <20210915034659.25044-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: guennadi.liakhovetski@linux.intel.com, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, ranjani.sridharan@linux.intel.com,
- kai.vehmanen@linux.intel.com
+Cc: alsa-devel@alsa-project.org, chipeng.chang@mediatek.com,
+ shane.chien@mediatek.com, linux-kernel@vger.kernel.org, jiaxin.yu@mediatek.com,
+ tzungbi@google.com, Mark Brown <broonie@kernel.org>,
+ linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,13 +88,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 15 Sep 2021 10:18:02 +0300, Peter Ujfalusi wrote:
-> Small cleanups regarding to HDA function locations and dropping of definitions
-> of not implemented functions.
+On Wed, 15 Sep 2021 11:46:59 +0800, Trevor Wu wrote:
+> mt6359-sound is a MFD driver. Because its regmap is retrieved from its
+> parent, it shouldn't be freed in mt6359-sound driver.
 > 
-> Regards,
-> Peter
+> snd_soc_component_exit_regmap() will do regmap_exit(), this results in
+> unexpected results if sound card unregister flow is invoked when users
+> try to bind/unbind audio codec.
 > 
+> [...]
 
 Applied to
 
@@ -102,12 +104,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: SOF: Intel: hda-dsp: Declare locally used functions as static
-      commit: 189bf1deee7a5715e0373de45a032f74d2be6272
-[2/3] ASoC: SOF: Intel: hda: Remove boot_firmware skl and iccmax_icl declarations
-      commit: cf813f679214abb2bfe2a0020c1b3551dfd304cb
-[3/3] ASoC: SOF: Intel: hda: Relocate inline definitions from hda.h to hda.c for sdw
-      commit: 3e9d5b0952fcaa32e9f73a22f56d200103209a8c
+[1/1] ASoC: mediatek: mt6359: Fix unexpected error in bind/unbind flow
+      commit: 6d66c5ccf5cb8af866fe2bb014098a3dd7bfa3cc
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
