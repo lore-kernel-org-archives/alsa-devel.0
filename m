@@ -7,87 +7,86 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84105C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 13:16:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8657C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 13:16:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0595B6121E
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 13:16:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0595B6121E
+	by mail.kernel.org (Postfix) with ESMTPS id 6A8386056B
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 13:16:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6A8386056B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 44B66182F;
-	Wed, 15 Sep 2021 15:15:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44B66182F
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE82C1861;
+	Wed, 15 Sep 2021 15:15:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE82C1861
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631711784;
-	bh=SlXlzk69IQpBie/NzsHKru3Rz6dB5u2ZrQXWqPLDPqI=;
+	s=default; t=1631711794;
+	bh=FuPcmlAIs7aGblI/lqrTsdaz1jIToboWYkZQ9P2/NvY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pkukvB0GGsuJDBTuW/p+Bkdkzy9/BE5Sv4lTFrh2tf1JQMiI3NWAyfsBiI3OTiPl7
-	 oAniRWHSikrjcovK+fGqwZCjQbh3HrK/vPXT2EkLgTvAR9FHR1kakuaeP3GmY7D21J
-	 /0OwRn/eC0NamHx0rw6RY2KGvx95MzLkOfUJ+3y4=
+	b=sP4NQEao/dECY9wVzJdbTMzGxKLlri7oNbVM8nCewivAdLvzjpxAVctzHqGr4mfFX
+	 NdUAqOlkcw+q1EkjG1QMg2IpALPdIUaIeKzpotFljflFkv63VG1izLXgDnyivq/InG
+	 NrY/cfGoW8hH7qjl7tIX3DvjZZkgm9oKoq+S5oW0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7F431F804E6;
-	Wed, 15 Sep 2021 15:14:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B5CFF804ED;
+	Wed, 15 Sep 2021 15:14:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9E2DEF804E6; Wed, 15 Sep 2021 15:14:52 +0200 (CEST)
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
- [IPv6:2a00:1450:4864:20::432])
+ id 0A7CFF804E5; Wed, 15 Sep 2021 15:14:54 +0200 (CEST)
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
+ [IPv6:2a00:1450:4864:20::42e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0635EF804BD
- for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 15:14:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0635EF804BD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0CECBF804AB
+ for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 15:14:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CECBF804AB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="Mp/JPWRd"
-Received: by mail-wr1-x432.google.com with SMTP id w29so3831799wra.8
- for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 06:14:47 -0700 (PDT)
+ header.b="fLqFc+pw"
+Received: by mail-wr1-x42e.google.com with SMTP id d21so3806523wra.12
+ for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 06:14:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=3Z5Vb1RSBflZ+7ZLNkpjt6NBAFfXXldbHtQ/st8v0lA=;
- b=Mp/JPWRdRv7zbHhkPt9k9Oruep2jr8BxX1Bw7e+JzHoa+xiZ3TrZNSP7dpHWSTxWsc
- qskoaBZeVNti0PpJ3pJRR9foR/EA1/QcMbY3Qwm4bH2koeAqkgYaCZRjfQbn+nzwJU2p
- vZRzm7L/i8xX6zYjybdLmjt98JZX8G1TCEZeTvEwH0+f6trMjD3c6cp9789P78efSno8
- SwIKc7P/5KXZ3BXtDW7yoYQEVP92x4APidFze3pCoPiMbTQcAUG2VEWqmSOwWw6E3Hgs
- JkaJ5FRGgnWI/8DRyxphU6kAabI30urPChsLyvY+upVyDJFoMHjZN0XV2cW4KfGiwFwm
- TbWw==
+ bh=2cJVr3hNa4aWAix71c9LGWt7oh/MR6uMc4joRHEDdJE=;
+ b=fLqFc+pwChdEB1eEWW6DrwmmxeQOoqgtyhP67svHaKG9IsRIysKhXUEBh/aoOIkfWM
+ etd48Bknu6OkOF6M4PlO2suSAmH32eNjKCA5OnZf41NcemNZfrB0v4BxErk9Rpg+p4tH
+ 5qhl8HU/f06PsUgHaCmc8a8Wez5lCqUHzD6vSU3hlmYKktB7Xsh9TCgkko7LvDHdVSxa
+ o3uuuGWp7xMpyIXBz/hYEdck5YnI3YF69gcbiecHbJTcVKZus0QStiEwVUJDOaJ98EHz
+ huEnyy5HOAxdTi3DAnFXTY3O1mu28/91CEhARzTnHodqJsepAntMhcYBldy5arN+o+JT
+ WhwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=3Z5Vb1RSBflZ+7ZLNkpjt6NBAFfXXldbHtQ/st8v0lA=;
- b=B+UOOUDu7JiFpHVixcoVT6aBQM8oXwRho9BcYpIedesrzRqXWTShY5McVw6NqABMB/
- cJXqFsCpm+Tvjr1nhK228kFuDfyybvc6ZzK3VTbbp2GW8TBwg/efeMVAQL4qzTekVR6O
- 7E/r+w/4+heo9HT39FXYgqzQ0YRvc26V2kqCQTUsFoqzaACcsP5X8jrErLunWgj/5836
- QfKpB7FFAHqHLKLwDqw99ywxnsnZeIujDFee8cujKuksUJv5rPeRgpSGE56ZT434eM/A
- U62jKvkaEEbH2lk0Hj5Atac2UZREiF9Gx5LcmkrpHsBO8YXMRsCfG58YTTOsr3kR9TZo
- wLLA==
-X-Gm-Message-State: AOAM532iimoLkLGTOM/sIL93rB4ncArWnufaR/Fh9r5hlrqWovMXtKz3
- Q6Kl4d7NyNEkmr0FKUe2lAZVSg==
-X-Google-Smtp-Source: ABdhPJxMONsp2CqyXZQeWpWBwSbfU8CcfSs6hp4Vk4hN3y93Dt8PWfxzmmPka2CG0on6AQe0MiKHvw==
-X-Received: by 2002:adf:e5c2:: with SMTP id a2mr4980718wrn.251.1631711686967; 
- Wed, 15 Sep 2021 06:14:46 -0700 (PDT)
+ bh=2cJVr3hNa4aWAix71c9LGWt7oh/MR6uMc4joRHEDdJE=;
+ b=Iy+TpT+rDA8R5WYZize8aZ8DIaoN+1mgZkrKBDTvHXhZWmO4Ry6mJEsmSRY+ED7Ily
+ ieSf3carSBV06PftOYpnFkQeOruQePmBBvp6F0axQHr88sawidTmKQaQqRnZSXrFOTF3
+ DZtmpwp8qLguqp43ZHVk0doHbe/sGOgLQsM613ASDq7z2XPO+FKMTVHV0ZZ/Nz+NdDih
+ shJnVwiLyjOjy57GvuhH/i+qtEZL3KXvgSmblmscMdOvDFQzGcJdtdXnDcrzzQl7zo1p
+ k6pv3BmveCqhMMPuBXtMsJAzR9T1j0opsyt+yPe3+BvlsEAKnN8tj9YtjxLs/OVwh/D6
+ DsPQ==
+X-Gm-Message-State: AOAM531s5s7G+/lGZrN6rOh6wSHMfb3Kg0fZTNVxi/n0xlDaQCbOMHVB
+ rXqbmdYgCSoDKpCcv4uMdj/KRw==
+X-Google-Smtp-Source: ABdhPJyleY05w2fL1sF+V9s1d+xDOwRlc6I7sHIl02RGmhP6F5aleoj5qoSNyLSgT64PyUzCwLiO1Q==
+X-Received: by 2002:adf:f612:: with SMTP id t18mr5177963wrp.16.1631711684254; 
+ Wed, 15 Sep 2021 06:14:44 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id m29sm14501717wrb.89.2021.09.15.06.14.45
+ by smtp.gmail.com with ESMTPSA id m29sm14501717wrb.89.2021.09.15.06.14.42
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 15 Sep 2021 06:14:46 -0700 (PDT)
+ Wed, 15 Sep 2021 06:14:43 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: bjorn.andersson@linaro.org,
 	broonie@kernel.org,
 	robh@kernel.org
-Subject: [PATCH v6 06/22] ASoC: dt-bindings: move LPASS dai related bindings
- out of q6afe
-Date: Wed, 15 Sep 2021 14:13:17 +0100
-Message-Id: <20210915131333.19047-7-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v6 04/22] soc: dt-bindings: qcom: add gpr bindings
+Date: Wed, 15 Sep 2021 14:13:15 +0100
+Message-Id: <20210915131333.19047-5-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210915131333.19047-1-srinivas.kandagatla@linaro.org>
 References: <20210915131333.19047-1-srinivas.kandagatla@linaro.org>
@@ -111,386 +110,152 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-q6afe (Audio Front End) is one of the DSP service that handles both
-LPASS (Low Power Audio SubSystem) Audio ports and LPASS clocks.
-As LPASS is a hardwware IP and commonly used by Qualcomm Audio DSP.
-In order to allow  multiple DSP frameworks to use these bindings
-its best to move it out from the dsp specific bindings.
+Qualcomm Generic Packet router aka GPR is the IPC mechanism found
+in AudioReach next generation signal processing framework to perform
+command and response messages between various processors.
 
-For compatibility reasons and not breaking which is already working
-we still maintain same compatible string "qcom,q6afe-dais"
+GPR has concepts of static and dynamic port, all static services like
+APM (Audio Processing Manager), PRM (Proxy resource manager) have
+fixed port numbers where as dynamic services like graphs have dynamic
+port numbers which are allocated at runtime. All GPR packet messages
+will have source and destination domain and port along with opcode
+and payload.
 
-Also as part of this change convert these LPASS dai related bindings
-into yaml format.
+This support is added using existing APR driver to reuse most of
+the code.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- .../devicetree/bindings/sound/qcom,q6afe.txt  | 158 ----------------
- .../sound/qcom,q6dsp-lpass-ports.yaml         | 178 ++++++++++++++++++
- 2 files changed, 178 insertions(+), 158 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml
+ .../bindings/soc/qcom/qcom,apr.yaml           | 41 +++++++++++++++----
+ include/dt-bindings/soc/qcom,gpr.h            | 19 +++++++++
+ 2 files changed, 53 insertions(+), 7 deletions(-)
+ create mode 100644 include/dt-bindings/soc/qcom,gpr.h
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
-index 2d6fb2ea75a0..fcf81058504c 100644
---- a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
-@@ -12,92 +12,6 @@ used by all apr services. Must contain the following properties.
- 		  from DSP.
- 		  example "qcom,q6afe"
+diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
+index bfe04fca8aa3..028c5d105adb 100644
+--- a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
++++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
+@@ -4,20 +4,21 @@
+ $id: "http://devicetree.org/schemas/soc/qcom/qcom,apr.yaml#"
+ $schema: "http://devicetree.org/meta-schemas/core.yaml#"
  
--= AFE DAIs (Digial Audio Interface)
--"dais" subnode of the AFE node. It represents afe dais, each afe dai is a
--subnode of "dais" representing board specific dai setup.
--"dais" node should have following properties followed by dai children.
--
--- compatible:
--	Usage: required
--	Value type: <stringlist>
--	Definition: must be "qcom,q6afe-dais"
--
--- #sound-dai-cells
--	Usage: required
--	Value type: <u32>
--	Definition: Must be 1
--
--- #address-cells
--	Usage: required
--	Value type: <u32>
--	Definition: Must be 1
--
--- #size-cells
--	Usage: required
--	Value type: <u32>
--	Definition: Must be 0
--
--== AFE DAI is subnode of "dais" and represent a dai, it includes board specific
--configuration of each dai. Must contain the following properties.
--
--- reg
--	Usage: required
--	Value type: <u32>
--	Definition: Must be dai id
--
--- qcom,sd-lines
--	Usage: required for mi2s interface
--	Value type: <prop-encoded-array>
--	Definition: Must be list of serial data lines used by this dai.
--	should be one or more of the 0-3 sd lines.
--
-- - qcom,tdm-sync-mode:
--	Usage: required for tdm interface
--	Value type: <prop-encoded-array>
--	Definition: Synchronization mode.
--		0 - Short sync bit mode
--		1 - Long sync mode
--		2 - Short sync slot mode
--
-- - qcom,tdm-sync-src:
--	Usage: required for tdm interface
--	Value type: <prop-encoded-array>
--	Definition: Synchronization source.
--		0 - External source
--		1 - Internal source
--
-- - qcom,tdm-data-out:
--	Usage: required for tdm interface
--	Value type: <prop-encoded-array>
--	Definition: Data out signal to drive with other masters.
--		0 - Disable
--		1 - Enable
--
-- - qcom,tdm-invert-sync:
--	Usage: required for tdm interface
--	Value type: <prop-encoded-array>
--	Definition: Invert the sync.
--		0 - Normal
--		1 - Invert
--
-- - qcom,tdm-data-delay:
--	Usage: required for tdm interface
--	Value type: <prop-encoded-array>
--	Definition: Number of bit clock to delay data
--		with respect to sync edge.
--		0 - 0 bit clock cycle
--		1 - 1 bit clock cycle
--		2 - 2 bit clock cycle
--
-- - qcom,tdm-data-align:
--	Usage: required for tdm interface
--	Value type: <prop-encoded-array>
--	Definition: Indicate how data is packed
--		within the slot. For example, 32 slot width in case of
--		sample bit width is 24.
--		0 - MSB
--		1 - LSB
--
- = AFE CLOCKSS
- "clocks" subnode of the AFE node. It represents q6afe clocks
- "clocks" node should have following properties.
-@@ -122,78 +36,6 @@ apr-service@4 {
- 	compatible = "qcom,q6afe";
- 	reg = <APR_SVC_AFE>;
+-title: Qualcomm APR (Asynchronous Packet Router) binding
++title: Qualcomm APR/GPR (Asynchronous/Generic Packet Router) binding
  
--	dais {
--		compatible = "qcom,q6afe-dais";
--		#sound-dai-cells = <1>;
--		#address-cells = <1>;
--		#size-cells = <0>;
--
--		dai@1 {
--			reg = <HDMI_RX>;
--		};
--
--		dai@24 {
--			reg = <PRIMARY_TDM_RX_0>;
--			qcom,tdm-sync-mode = <1>:
--			qcom,tdm-sync-src = <1>;
--			qcom,tdm-data-out = <0>;
--			qcom,tdm-invert-sync = <1>;
--			qcom,tdm-data-delay = <1>;
--			qcom,tdm-data-align = <0>;
--
--		};
--
--		dai@25 {
--			reg = <PRIMARY_TDM_TX_0>;
--			qcom,tdm-sync-mode = <1>:
--			qcom,tdm-sync-src = <1>;
--			qcom,tdm-data-out = <0>;
--			qcom,tdm-invert-sync = <1>;
--			qcom,tdm-data-delay <1>:
--			qcom,tdm-data-align = <0>;
--		};
--
--		dai@16 {
--			reg = <PRIMARY_MI2S_RX>;
--			qcom,sd-lines = <0 2>;
--		};
--
--		dai@17 {
--			reg = <PRIMARY_MI2S_TX>;
--			qcom,sd-lines = <1>;
--		};
--
--		dai@18 {
--			reg = <SECONDARY_MI2S_RX>;
--			qcom,sd-lines = <0 3>;
--		};
--
--		dai@19 {
--			reg = <SECONDARY_MI2S_TX>;
--			qcom,sd-lines = <1>;
--		};
--
--		dai@20 {
--			reg = <TERTIARY_MI2S_RX>;
--			qcom,sd-lines = <1 3>;
--		};
--
--		dai@21 {
--			reg = <TERTIARY_MI2S_TX>;
--			qcom,sd-lines = <0>;
--		};
--
--		dai@22 {
--			reg = <QUATERNARY_MI2S_RX>;
--			qcom,sd-lines = <0>;
--		};
--
--		dai@23 {
--			reg = <QUATERNARY_MI2S_TX>;
--			qcom,sd-lines = <1>;
--		};
--	};
--
- 	clocks {
- 		compatible = "qcom,q6afe-clocks";
- 		#clock-cells = <2>;
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml b/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml
-new file mode 100644
-index 000000000000..e6148c17419b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml
-@@ -0,0 +1,178 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/sound/qcom,q6dsp-lpass-ports.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+ maintainers:
+   - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+ 
+ description: |
+-  This binding describes the Qualcomm APR, APR is a IPC protocol for
+-  communication between Application processor and QDSP. APR is mainly
++  This binding describes the Qualcomm APR/GPR, APR/GPR is a IPC protocol for
++  communication between Application processor and QDSP. APR/GPR is mainly
+   used for audio/voice services on the QDSP.
+ 
+ properties:
+   compatible:
+     enum:
+       - qcom,apr-v2
++      - qcom,gpr
+ 
+   qcom,apr-domain:
+     $ref: /schemas/types.yaml#/definitions/uint32
+@@ -46,6 +47,10 @@ properties:
+         5 = Application processor Domain
+         6 = Modem2 Domain
+         7 = Application Processor2 Domain
++      Selects the processor domain for gpr
++        1 = Modem Domain
++        2 = Audio DSP Domain
++        3 = Application Processor Domain
+ 
+   '#address-cells':
+     const: 1
+@@ -53,12 +58,12 @@ properties:
+   '#size-cells':
+     const: 0
+ 
+-#APR Services
++#APR/GPR Services
+ patternProperties:
+-  "^service@[3-9a-d]$":
++  "^service@[1-9a-d]$":
+     type: object
+     description:
+-      APR node's client devices use subnodes for desired static port services.
++      APR/GPR node's client devices use subnodes for desired static port services.
+ 
+     properties:
+       compatible:
+@@ -67,9 +72,11 @@ patternProperties:
+           - qcom,q6asm
+           - qcom,q6afe
+           - qcom,q6adm
++          - qcom,q6apm
++          - qcom,q6prm
+ 
+       reg:
+-        minimum: 3
++        minimum: 1
+         maximum: 13
+         description:
+           APR Service ID
+@@ -84,6 +91,11 @@ patternProperties:
+             11 = Core voice processor.
+             12 = Ultrasound stream manager.
+             13 = Listen stream manager.
++          GPR Service ID
++            1 = Audio Process Manager Service
++            2 = Proxy Resource Manager Service.
++            3 = AMDB Service.
++            4 = Voice processing manager.
+ 
+       qcom,protection-domain:
+         $ref: /schemas/types.yaml#/definitions/string-array
+@@ -148,3 +160,18 @@ examples:
+           qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
+         };
+     };
 +
-+title: Qualcomm DSP LPASS(Low Power Audio SubSystem) Audio Ports binding
-+
-+maintainers:
-+  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-+
-+description: |
-+  This binding describes the Qualcomm DSP LPASS Audio ports
-+
-+properties:
-+  compatible:
-+    enum:
-+      - qcom,q6afe-dais
-+
-+  reg:
-+    maxItems: 1
-+
-+  '#sound-dai-cells':
-+    const: 1
-+
-+  '#address-cells':
-+    const: 1
-+
-+  '#size-cells':
-+    const: 0
-+
-+#Digital Audio Interfaces
-+patternProperties:
-+  '^dai@[0-9]+$':
-+    type: object
-+    description:
-+      Q6DSP Digital Audio Interfaces.
-+
-+    properties:
-+      reg:
-+        description:
-+          Digital Audio Interface ID
-+
-+      qcom,sd-lines:
-+        $ref: /schemas/types.yaml#/definitions/uint32-array
-+        description:
-+          List of serial data lines used by this dai.should be one or more of the 0-3 sd lines.
-+        minItems: 1
-+        maxItems: 4
-+        uniqueItems: true
-+        items:
-+          minimum: 0
-+          maximum: 3
-+
-+      qcom,tdm-sync-mode:
-+        $ref: /schemas/types.yaml#/definitions/uint32
-+        enum: [0, 1, 2]
-+        description:
-+          TDM Synchronization mode
-+            0 = Short sync bit mode
-+            1 = Long sync mode
-+            2 = Short sync slot mode
-+
-+      qcom,tdm-sync-src:
-+        $ref: /schemas/types.yaml#/definitions/uint32
-+        enum: [0, 1]
-+        description:
-+          TDM Synchronization source
-+            0 = External source
-+            1 = Internal source
-+
-+      qcom,tdm-data-out:
-+        $ref: /schemas/types.yaml#/definitions/uint32
-+        enum: [0, 1]
-+        description:
-+          TDM Data out signal to drive with other masters
-+            0 = Disable
-+            1 = Enable
-+
-+      qcom,tdm-invert-sync:
-+        $ref: /schemas/types.yaml#/definitions/uint32
-+        enum: [0, 1]
-+        description:
-+          TDM Invert the sync
-+            0 = Normal
-+            1 = Invert
-+
-+      qcom,tdm-data-delay:
-+        $ref: /schemas/types.yaml#/definitions/uint32
-+        enum: [0, 1, 2]
-+        description:
-+          TDM Number of bit clock to delay data
-+            0 = 0 bit clock cycle
-+            1 = 1 bit clock cycle
-+            2 = 2 bit clock cycle
-+
-+      qcom,tdm-data-align:
-+        $ref: /schemas/types.yaml#/definitions/uint32
-+        enum: [0, 1]
-+        description:
-+          Indicate how data is packed within the slot. For example, 32 slot
-+          width in case of sample bit width is 24TDM Invert the sync.
-+            0 = MSB
-+            1 = LSB
-+
-+    required:
-+      - reg
-+
-+    allOf:
-+      - if:
-+          properties:
-+            reg:
-+              contains:
-+                # TDM DAI ID range from PRIMARY_TDM_RX_0 - QUINARY_TDM_TX_7
-+                items:
-+                  minimum: 24
-+                  maximum: 103
-+        then:
-+          required:
-+            - qcom,tdm-sync-mode
-+            - qcom,tdm-sync-src
-+            - qcom,tdm-data-out
-+            - qcom,tdm-invert-sync
-+            - qcom,tdm-data-delay
-+            - qcom,tdm-data-align
-+
-+      - if:
-+          properties:
-+            reg:
-+              contains:
-+                # MI2S DAI ID range PRIMARY_MI2S_RX - QUATERNARY_MI2S_TX and
-+                # QUINARY_MI2S_RX - QUINARY_MI2S_TX
-+                items:
-+                  oneOf:
-+                    - minimum: 16
-+                      maximum: 23
-+                    - minimum: 127
-+                      maximum: 128
-+        then:
-+          required:
-+            - qcom,sd-lines
-+
-+    additionalProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - "#sound-dai-cells"
-+  - "#address-cells"
-+  - "#size-cells"
-+
-+additionalProperties: false
-+
-+examples:
 +  - |
-+    #include <dt-bindings/soc/qcom,apr.h>
-+    #include <dt-bindings/sound/qcom,q6afe.h>
-+    apr {
++    #include <dt-bindings/soc/qcom,gpr.h>
++    gpr {
++        compatible = "qcom,gpr";
++        qcom,domain = <GPR_DOMAIN_ID_ADSP>;
 +        #address-cells = <1>;
 +        #size-cells = <0>;
-+        apr-service@4 {
-+            reg = <APR_SVC_AFE>;
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+            q6afedai@1 {
-+              compatible = "qcom,q6afe-dais";
-+              reg = <1>;
-+              #address-cells = <1>;
-+              #size-cells = <0>;
-+              #sound-dai-cells = <1>;
 +
-+              dai@22 {
-+                reg = <QUATERNARY_MI2S_RX>;
-+                qcom,sd-lines = <0 1 2 3>;
-+              };
-+            };
++        service@1 {
++          compatible = "qcom,q6apm";
++          reg = <GPR_APM_MODULE_IID>;
++          qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
 +        };
-+      };
++    };
+diff --git a/include/dt-bindings/soc/qcom,gpr.h b/include/dt-bindings/soc/qcom,gpr.h
+new file mode 100644
+index 000000000000..3107da59319c
+--- /dev/null
++++ b/include/dt-bindings/soc/qcom,gpr.h
+@@ -0,0 +1,19 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
++
++#ifndef __DT_BINDINGS_QCOM_GPR_H
++#define __DT_BINDINGS_QCOM_GPR_H
++
++/* DOMAINS */
++
++#define GPR_DOMAIN_ID_MODEM	1
++#define GPR_DOMAIN_ID_ADSP	2
++#define GPR_DOMAIN_ID_APPS	3
++
++/* Static Services */
++
++#define GPR_APM_MODULE_IID		1
++#define GPR_PRM_MODULE_IID		2
++#define GPR_AMDB_MODULE_IID		3
++#define GPR_VCPM_MODULE_IID		4
++
++#endif /* __DT_BINDINGS_QCOM_GPR_H */
 -- 
 2.21.0
 
