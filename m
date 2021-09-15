@@ -2,72 +2,68 @@ Return-Path: <SRS0=xeto=OF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9C93C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 12:18:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F359C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 12:22:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 75E4B6134F
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 12:18:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 75E4B6134F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	by mail.kernel.org (Postfix) with ESMTPS id 9813961350
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 12:22:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9813961350
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4D30F181D;
-	Wed, 15 Sep 2021 14:17:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D30F181D
+	by alsa0.perex.cz (Postfix) with ESMTPS id B2AC2181A;
+	Wed, 15 Sep 2021 14:21:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2AC2181A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631708278;
-	bh=y30/xraOfow/hiwD8zaCw8ar78Nh6IqAeCuRMc0Mzcg=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=VWCYbalBwMOyarylURJyN51Oka1uVMrBanrRm4I1XEC8MKIXW6qQjqdxlbFzfoGZB
-	 KiBoJutGixXcegccxmY6AjwyJ2PyWRwdhYHXc5+UJcbYRJxskfHmoNpibJ6EdrkhKz
-	 9vXvzcnPrvI9TVhFA/tFeT5pMR+QXgwwvpJawEyk=
+	s=default; t=1631708542;
+	bh=6lvfXuUcUTTHiqN+H0JPa3IxrR2B/ivVnk16UtddFW0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=bUAeddfRJqL7RbD8aKln2XUoRgISsb6eCqxYjrQd6BrtoqNyEwRGzNCKGMTBkNgm+
+	 Gwbixzu9aQ5euPMaOy7aEGYckUrlPwRNuR3vhrdqXqHf3UUNG6p3WGY0ng9w2DFQwn
+	 i28iJ6fCAm+Qd9bZVnA4gY8so5ysi2alxsFD0Smc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C84BCF800EF;
-	Wed, 15 Sep 2021 14:17:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 25DE4F8032C;
+	Wed, 15 Sep 2021 14:21:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9E8D9F8027C; Wed, 15 Sep 2021 14:17:05 +0200 (CEST)
-Received: from michel.telenet-ops.be (michel.telenet-ops.be
- [IPv6:2a02:1800:110:4::f00:18])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 8FE77F80132; Wed, 15 Sep 2021 14:21:30 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C77ABF800EF
- for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 14:16:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C77ABF800EF
-Received: from ramsan.of.borg ([84.195.186.194])
- by michel.telenet-ops.be with bizsmtp
- id uCGq2500E4C55Sk06CGqVE; Wed, 15 Sep 2021 14:16:54 +0200
-Received: from geert (helo=localhost)
- by ramsan.of.borg with local-esmtp (Exim 4.93)
- (envelope-from <geert@linux-m68k.org>)
- id 1mQTm8-004dtW-F5; Wed, 15 Sep 2021 14:12:28 +0200
-Date: Wed, 15 Sep 2021 14:12:28 +0200 (CEST)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-X-X-Sender: geert@ramsan.of.borg
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/2] ASoC: rt5682s: Add driver for ALC5682I-VS codec
-In-Reply-To: <163152996584.45703.10295940257693172145.b4-ty@kernel.org>
-Message-ID: <alpine.DEB.2.22.394.2109151408390.1106350@ramsan.of.borg>
-References: <20210831130258.19286-1-derek.fang@realtek.com>
- <163152996584.45703.10295940257693172145.b4-ty@kernel.org>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4DDE1F80132
+ for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 14:21:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DDE1F80132
+X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="219117481"
+X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; d="scan'208";a="219117481"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Sep 2021 05:21:20 -0700
+X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; d="scan'208";a="544901564"
+Received: from msavu-mobl1.ti.intel.com (HELO
+ pujfalus-desk.ger.corp.intel.com) ([10.251.216.36])
+ by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Sep 2021 05:21:18 -0700
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To: lgirdwood@gmail.com, broonie@kernel.org,
+ pierre-louis.bossart@linux.intel.com
+Subject: [PATCH 00/12] ASoC: SOF: Abstract away the 'bar' usage (mostly)
+Date: Wed, 15 Sep 2021 15:21:04 +0300
+Message-Id: <20210915122116.18317-1-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, devicetree@vger.kernel.org, lgirdwood@gmail.com,
- albertchen@realtek.com, Rob Herring <robh+dt@kernel.org>,
- derek.fang@realtek.com, shumingf@realtek.com, albertwang@realtek.com,
- flove@realtek.com
+Content-Transfer-Encoding: 8bit
+Cc: guennadi.liakhovetski@linux.intel.com, alsa-devel@alsa-project.org,
+ daniel.baluta@gmail.com, ranjani.sridharan@linux.intel.com,
+ kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,108 +79,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-CC devicetree
+Hi,
 
-On Mon, 13 Sep 2021, Mark Brown wrote:
-> On Tue, 31 Aug 2021 21:02:57 +0800, derek.fang@realtek.com wrote:
->> From: Derek Fang <derek.fang@realtek.com>
->>
->> This is an initial codec driver for Realtek ALC5682I-VS codec.
->>
->>
->
-> Applied to
->
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
->
-> Thanks!
->
-> [1/2] ASoC: rt5682s: Add driver for ALC5682I-VS codec
->      commit: bdd229ab26be9aa3306d01787e1467db92df6603
-> [2/2] ASoC: dt-bindings: rt5682s: add bindings for rt5682s
->      commit: 50159fdb144b73984873bf2eeb9ff45d10a67f3a
+The direct use of 'bar' as address regions in SOF can limit portability and
+makes assumption that all platforms are using memory mapped regions or BARs
+to communicate with the DSP.
 
-This is now commit 50159fdb144b7398 ("ASoC: dt-bindings: rt5682s: add
-bindings for rt5682s") in broonie/sound#for-next, breaking "make
-dt_binding_check":
+The core API should not use 'bar' in it's parameter lists or make assumption
+that the platform needs to comply with this system integration.
 
-Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml: 'example' is not one of ['$id', '$schema', 'title', 'description', 'examples', 'required', 'allOf', 'anyOf', 'oneOf', 'definitions', '$defs', 'additionalProperties', 'dependencies', 'patternProperties', 'properties', 'if', 'then', 'else', 'unevaluatedProperties', 'deprecated', 'maintainers', 'select']
-         from schema $id: http://devicetree.org/meta-schemas/base.yaml#
-Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml: properties:clock-names:items: {'const': 'mclk'} is not of type 'array'
-         from schema $id: http://devicetree.org/meta-schemas/string-array.yaml#
-Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml: properties:clock-output-names:items: 'oneOf' conditional failed, one must be fixed:
-         [{'description': 'Name given for DAI word clock output.'}, {'description': 'Name given for DAI bit clock output.'}] is not of type 'object'
-         Additional properties are not allowed ('description' was unexpected)
-         from schema $id: http://devicetree.org/meta-schemas/string-array.yaml#
-Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml: properties:realtek,dmic1-data-pin: 'description' is a required property
-         hint: Vendor specific properties must have a type and description unless they have a defined, common suffix.
-         from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
-Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml: properties:realtek,dmic1-data-pin: 'oneOf' conditional failed, one must be fixed:
-         'type' is a required property
-                 hint: A vendor boolean property can use "type: boolean"
-         Additional properties are not allowed ('enum' was unexpected)
-                 hint: A vendor boolean property can use "type: boolean"
-         Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml: properties:realtek,dmic1-data-pin: 'oneOf' conditional failed, one must be fixed:
-                 '$ref' is a required property
-                 'allOf' is a required property
-                 hint: A vendor property needs a $ref to types.yaml
-                 from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
-         0 is not of type 'string'
-                 hint: A vendor string property with exact values has an implicit type
-         1 is not of type 'string'
-                 hint: A vendor string property with exact values has an implicit type
-         2 is not of type 'string'
-                 hint: A vendor string property with exact values has an implicit type
-         hint: Vendor specific properties must have a type and description unless they have a defined, common suffix.
-         from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
-Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml: properties:realtek,dmic1-clk-pin: 'description' is a required property
-         hint: Vendor specific properties must have a type and description unless they have a defined, common suffix.
-         from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
-Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml: properties:realtek,dmic1-clk-pin: 'oneOf' conditional failed, one must be fixed:
-         'type' is a required property
-                 hint: A vendor boolean property can use "type: boolean"
-         Additional properties are not allowed ('enum' was unexpected)
-                 hint: A vendor boolean property can use "type: boolean"
-         Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml: properties:realtek,dmic1-clk-pin: 'oneOf' conditional failed, one must be fixed:
-                 '$ref' is a required property
-                 'allOf' is a required property
-                 hint: A vendor property needs a $ref to types.yaml
-                 from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
-         0 is not of type 'string'
-                 hint: A vendor string property with exact values has an implicit type
-         1 is not of type 'string'
-                 hint: A vendor string property with exact values has an implicit type
-         2 is not of type 'string'
-                 hint: A vendor string property with exact values has an implicit type
-         hint: Vendor specific properties must have a type and description unless they have a defined, common suffix.
-         from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
-Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml: properties:realtek,jd-src: 'description' is a required property
-         hint: Vendor specific properties must have a type and description unless they have a defined, common suffix.
-         from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
-Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml: properties:realtek,jd-src: 'oneOf' conditional failed, one must be fixed:
-         'type' is a required property
-                 hint: A vendor boolean property can use "type: boolean"
-         Additional properties are not allowed ('enum' was unexpected)
-                 hint: A vendor boolean property can use "type: boolean"
-         Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml: properties:realtek,jd-src: 'oneOf' conditional failed, one must be fixed:
-                 '$ref' is a required property
-                 'allOf' is a required property
-                 hint: A vendor property needs a $ref to types.yaml
-                 from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
-         0 is not of type 'string'
-                 hint: A vendor string property with exact values has an implicit type
-         1 is not of type 'string'
-                 hint: A vendor string property with exact values has an implicit type
-         hint: Vendor specific properties must have a type and description unless they have a defined, common suffix.
-         from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+Use the region type as an ID in core and translate that in platform dependent
+code to a way to access registers, mailbox or DSP memory.
 
-Gr{oetje,eeting}s,
+Regards,
+Peter
+---
+Peter Ujfalusi (12):
+  ASoC: SOF: Intel: bdw: Set the mailbox offset directly in bdw_probe
+  ASoC: SOF: ipc: Remove snd_sof_dsp_mailbox_init()
+  ASoC: SOF: imx: Do not initialize the snd_sof_dsp_ops.read64
+  ASoC: SOF: imx: imx8: Bar index is only valid for IRAM and SRAM types
+  ASoC: SOF: imx: imx8m: Bar index is only valid for IRAM and SRAM types
+  ASoC: SOF: loader: No need to export snd_sof_fw_parse_ext_data()
+  ASoC: SOF: core: Do not use 'bar' as parameter for block_read/write
+  ASoC: SOF: debug: Add generic API and ops for DSP regions
+  ASoC: SOF: imx: Provide debugfs_add_region_item ops for core
+  ASoC: SOF: Intel: Provide debugfs_add_region_item ops for core
+  ASoC: SOF: loader: Use the generic ops for region debugfs handling
+  ASoC: SOF: debug: No need to export the snd_sof_debugfs_io_item()
 
- 						Geert
+ sound/soc/sof/debug.c         |  24 ++++--
+ sound/soc/sof/imx/imx8.c      |  17 +++--
+ sound/soc/sof/imx/imx8m.c     |  13 +++-
+ sound/soc/sof/intel/apl.c     |   1 +
+ sound/soc/sof/intel/bdw.c     |   5 +-
+ sound/soc/sof/intel/byt.c     |   2 +
+ sound/soc/sof/intel/cnl.c     |   1 +
+ sound/soc/sof/intel/icl.c     |   1 +
+ sound/soc/sof/intel/pci-tng.c |   1 +
+ sound/soc/sof/intel/tgl.c     |   1 +
+ sound/soc/sof/ipc.c           |  34 +++------
+ sound/soc/sof/loader.c        | 137 +++++++++++++++-------------------
+ sound/soc/sof/ops.h           |  25 +++++--
+ sound/soc/sof/sof-priv.h      |  55 +++++++-------
+ sound/soc/sof/utils.c         |  28 +++++--
+ 15 files changed, 187 insertions(+), 158 deletions(-)
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+-- 
+2.33.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
