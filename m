@@ -7,59 +7,59 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 879ABC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 12:26:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72054C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 12:26:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 097FE61350
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 12:26:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 097FE61350
+	by mail.kernel.org (Postfix) with ESMTPS id D7E8C60ED7
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 12:26:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D7E8C60ED7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A9AC2185B;
-	Wed, 15 Sep 2021 14:25:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9AC2185B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 791761878;
+	Wed, 15 Sep 2021 14:25:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 791761878
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631708784;
-	bh=K82YVBTC1adGRNqeYTy3PFSes4FOXrWx76ViHOqmy4k=;
+	s=default; t=1631708808;
+	bh=ME8arl/pgmUD5qvgYMQCZG/0zVpTzPDBaJPFvViEMmo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZpZLfH96Z/shIqQ1mqHAUYG02c6ZSAwybQKr3ERkckebQBFai7Iqsx2haN5N3Qm5v
-	 GFohw52h0puhFATrFXdZI9U6tcpxHY6SkW2j8jicHkns9HLef3DLreGjiCwo2kwNwU
-	 a0UHFrkY8M6nHgKCYfpf6Vgo4/T8cGCiam8gEzxo=
+	b=D74ToPTFfc52hTXP/HBZ02wikD2zsYKf14objRIj8P0yzojadJrdPSCNZ5SZNNXLf
+	 6r6LBh8ARlM/X+qH2LOMopOPsv+SJuAxKSGZO6H7cKUC0AJd9MW2nwmrugMjCH33c6
+	 6cCJAVXd5LAH746VEtdVcuN1+lunUhqOBNigycnk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0F280F80533;
+	by alsa1.perex.cz (Postfix) with ESMTP id CB93EF8053A;
 	Wed, 15 Sep 2021 14:21:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 018E4F80526; Wed, 15 Sep 2021 14:21:54 +0200 (CEST)
+ id 79C27F80533; Wed, 15 Sep 2021 14:21:56 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 64384F804FF
- for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 14:21:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64384F804FF
-X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="219117528"
-X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; d="scan'208";a="219117528"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9B595F804E7
+ for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 14:21:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B595F804E7
+X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="219117524"
+X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; d="scan'208";a="219117524"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Sep 2021 05:21:47 -0700
-X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; d="scan'208";a="544901648"
+ 15 Sep 2021 05:21:42 -0700
+X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; d="scan'208";a="544901622"
 Received: from msavu-mobl1.ti.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.251.216.36])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Sep 2021 05:21:44 -0700
+ 15 Sep 2021 05:21:39 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com, broonie@kernel.org,
  pierre-louis.bossart@linux.intel.com
-Subject: [PATCH 11/12] ASoC: SOF: loader: Use the generic ops for region
- debugfs handling
-Date: Wed, 15 Sep 2021 15:21:15 +0300
-Message-Id: <20210915122116.18317-12-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 09/12] ASoC: SOF: imx: Provide debugfs_add_region_item ops for
+ core
+Date: Wed, 15 Sep 2021 15:21:13 +0300
+Message-Id: <20210915122116.18317-10-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210915122116.18317-1-peter.ujfalusi@linux.intel.com>
 References: <20210915122116.18317-1-peter.ujfalusi@linux.intel.com>
@@ -83,122 +83,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Do not access the sdev->bar[] directly to make the code generic, use the
-new generic ops for handing the regions for debugfs.
+Set the generic iomem callback for debugfs_add_region_item to avoid
+regression when the core switches to use the generic interface for
+the regions.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Daniel Baluta <daniel.baluta@gmail.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 ---
- sound/soc/sof/loader.c | 68 +++++++++++++++++-------------------------
- 1 file changed, 28 insertions(+), 40 deletions(-)
+ sound/soc/sof/imx/imx8.c  | 2 ++
+ sound/soc/sof/imx/imx8m.c | 1 +
+ 2 files changed, 3 insertions(+)
 
-diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
-index 16d36249c181..1d6fdf8270f7 100644
---- a/sound/soc/sof/loader.c
-+++ b/sound/soc/sof/loader.c
-@@ -362,7 +362,6 @@ static int snd_sof_fw_ext_man_parse(struct snd_sof_dev *sdev,
-  */
- static void sof_get_windows(struct snd_sof_dev *sdev)
- {
--	int bar = snd_sof_dsp_get_bar_index(sdev, SOF_FW_BLK_TYPE_SRAM);
- 	struct sof_ipc_window_elem *elem;
- 	u32 outbox_offset = 0;
- 	u32 stream_offset = 0;
-@@ -394,64 +393,53 @@ static void sof_get_windows(struct snd_sof_dev *sdev)
- 		case SOF_IPC_REGION_UPBOX:
- 			inbox_offset = window_offset + elem->offset;
- 			inbox_size = elem->size;
--			snd_sof_debugfs_io_item(sdev,
--						sdev->bar[bar] +
--						inbox_offset,
--						elem->size, "inbox",
--						SOF_DEBUGFS_ACCESS_D0_ONLY);
-+			snd_sof_debugfs_add_region_item(sdev, SOF_FW_BLK_TYPE_SRAM,
-+							inbox_offset,
-+							elem->size, "inbox",
-+							SOF_DEBUGFS_ACCESS_D0_ONLY);
- 			break;
- 		case SOF_IPC_REGION_DOWNBOX:
- 			outbox_offset = window_offset + elem->offset;
- 			outbox_size = elem->size;
--			snd_sof_debugfs_io_item(sdev,
--						sdev->bar[bar] +
--						outbox_offset,
--						elem->size, "outbox",
--						SOF_DEBUGFS_ACCESS_D0_ONLY);
-+			snd_sof_debugfs_add_region_item(sdev, SOF_FW_BLK_TYPE_SRAM,
-+							outbox_offset,
-+							elem->size, "outbox",
-+							SOF_DEBUGFS_ACCESS_D0_ONLY);
- 			break;
- 		case SOF_IPC_REGION_TRACE:
--			snd_sof_debugfs_io_item(sdev,
--						sdev->bar[bar] +
--						window_offset +
--						elem->offset,
--						elem->size, "etrace",
--						SOF_DEBUGFS_ACCESS_D0_ONLY);
-+			snd_sof_debugfs_add_region_item(sdev, SOF_FW_BLK_TYPE_SRAM,
-+							window_offset + elem->offset,
-+							elem->size, "etrace",
-+							SOF_DEBUGFS_ACCESS_D0_ONLY);
- 			break;
- 		case SOF_IPC_REGION_DEBUG:
- 			debug_offset = window_offset + elem->offset;
- 			debug_size = elem->size;
--			snd_sof_debugfs_io_item(sdev,
--						sdev->bar[bar] +
--						window_offset +
--						elem->offset,
--						elem->size, "debug",
--						SOF_DEBUGFS_ACCESS_D0_ONLY);
-+			snd_sof_debugfs_add_region_item(sdev, SOF_FW_BLK_TYPE_SRAM,
-+							window_offset + elem->offset,
-+							elem->size, "debug",
-+							SOF_DEBUGFS_ACCESS_D0_ONLY);
- 			break;
- 		case SOF_IPC_REGION_STREAM:
- 			stream_offset = window_offset + elem->offset;
- 			stream_size = elem->size;
--			snd_sof_debugfs_io_item(sdev,
--						sdev->bar[bar] +
--						stream_offset,
--						elem->size, "stream",
--						SOF_DEBUGFS_ACCESS_D0_ONLY);
-+			snd_sof_debugfs_add_region_item(sdev, SOF_FW_BLK_TYPE_SRAM,
-+							stream_offset,
-+							elem->size, "stream",
-+							SOF_DEBUGFS_ACCESS_D0_ONLY);
- 			break;
- 		case SOF_IPC_REGION_REGS:
--			snd_sof_debugfs_io_item(sdev,
--						sdev->bar[bar] +
--						window_offset +
--						elem->offset,
--						elem->size, "regs",
--						SOF_DEBUGFS_ACCESS_D0_ONLY);
-+			snd_sof_debugfs_add_region_item(sdev, SOF_FW_BLK_TYPE_SRAM,
-+							window_offset + elem->offset,
-+							elem->size, "regs",
-+							SOF_DEBUGFS_ACCESS_D0_ONLY);
- 			break;
- 		case SOF_IPC_REGION_EXCEPTION:
- 			sdev->dsp_oops_offset = window_offset + elem->offset;
--			snd_sof_debugfs_io_item(sdev,
--						sdev->bar[bar] +
--						window_offset +
--						elem->offset,
--						elem->size, "exception",
--						SOF_DEBUGFS_ACCESS_D0_ONLY);
-+			snd_sof_debugfs_add_region_item(sdev, SOF_FW_BLK_TYPE_SRAM,
-+							window_offset + elem->offset,
-+							elem->size, "exception",
-+							SOF_DEBUGFS_ACCESS_D0_ONLY);
- 			break;
- 		default:
- 			dev_err(sdev->dev, "error: get illegal window info\n");
+diff --git a/sound/soc/sof/imx/imx8.c b/sound/soc/sof/imx/imx8.c
+index 150f1bc3fb95..4423e0b63d7b 100644
+--- a/sound/soc/sof/imx/imx8.c
++++ b/sound/soc/sof/imx/imx8.c
+@@ -443,6 +443,7 @@ struct snd_sof_dsp_ops sof_imx8_ops = {
+ 
+ 	/* Debug information */
+ 	.dbg_dump = imx8_dump,
++	.debugfs_add_region_item = snd_sof_debugfs_add_region_item_iomem,
+ 
+ 	/* Firmware ops */
+ 	.arch_ops = &sof_xtensa_arch_ops,
+@@ -489,6 +490,7 @@ struct snd_sof_dsp_ops sof_imx8x_ops = {
+ 
+ 	/* Debug information */
+ 	.dbg_dump = imx8_dump,
++	.debugfs_add_region_item = snd_sof_debugfs_add_region_item_iomem,
+ 
+ 	/* Firmware ops */
+ 	.arch_ops = &sof_xtensa_arch_ops,
+diff --git a/sound/soc/sof/imx/imx8m.c b/sound/soc/sof/imx/imx8m.c
+index be5ab9942fc8..b9f8a9e8cc3a 100644
+--- a/sound/soc/sof/imx/imx8m.c
++++ b/sound/soc/sof/imx/imx8m.c
+@@ -295,6 +295,7 @@ struct snd_sof_dsp_ops sof_imx8m_ops = {
+ 
+ 	/* Debug information */
+ 	.dbg_dump = imx8_dump,
++	.debugfs_add_region_item = snd_sof_debugfs_add_region_item_iomem,
+ 
+ 	/* Firmware ops */
+ 	.arch_ops = &sof_xtensa_arch_ops,
 -- 
 2.33.0
 
