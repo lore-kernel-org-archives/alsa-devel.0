@@ -6,73 +6,71 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 277DFC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 15:25:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BE6DC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 15:25:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5127860F5B
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 15:25:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5127860F5B
+	by mail.kernel.org (Postfix) with ESMTPS id 5AF5660F5B
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 15:25:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5AF5660F5B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DA192185B;
-	Wed, 15 Sep 2021 17:24:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA192185B
+	by alsa0.perex.cz (Postfix) with ESMTPS id ED96B1861;
+	Wed, 15 Sep 2021 17:24:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED96B1861
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631719500;
-	bh=hYM/NKbgpLHVOai31dObwTbz9HfkGYUYeERzVv/RnrA=;
+	s=default; t=1631719517;
+	bh=RZMWp46HzGUA8UW/blcNKPqDUhpcyxQH6zpAklpYtDo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=C4pNHHHJnArjg6A7w+Kv0fRAoJM156bzK7bNuPGLo8tQ8keewRJD+PRz7POTSWLyu
-	 7QFhFg0JRP2PxuB3jZzV/3o6B/9rYR/l/7I2dVeE9GN44C4rtvIO7mXFzmdEEb+5nG
-	 KLq0mWGWlsljosnaNIJKivxv7hsb4rsrwrCj4Dpo=
+	b=uj6/0aOpsWpY0jDpq/MO6ECLSEuTv42Fhq7XZJM71Je9FjtBctjv7+rG6UnwLaIlt
+	 Wsr2K0nwG66XKr0/zL0z8k4zkvsyf8vgA/bTk/wcDoyIg+Oqt/cNdYcnMskdK1Zc7E
+	 XRaw6Et6qHrB9Fhtlm+DOzhTFOIxoG91iTwUkZJc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 33A9AF804F1;
-	Wed, 15 Sep 2021 17:22:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D14E4F804FC;
+	Wed, 15 Sep 2021 17:22:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E703DF804E5; Wed, 15 Sep 2021 17:22:46 +0200 (CEST)
+ id A0C63F804F2; Wed, 15 Sep 2021 17:22:49 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1BDE0F80227
- for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 17:22:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1BDE0F80227
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2F44FF804E7
+ for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 17:22:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F44FF804E7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="K6CooD4t"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9234D60F5B;
- Wed, 15 Sep 2021 15:22:41 +0000 (UTC)
+ header.b="uV/IXOeT"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DDFE60FC0;
+ Wed, 15 Sep 2021 15:22:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631719362;
- bh=hYM/NKbgpLHVOai31dObwTbz9HfkGYUYeERzVv/RnrA=;
+ s=k20201202; t=1631719364;
+ bh=RZMWp46HzGUA8UW/blcNKPqDUhpcyxQH6zpAklpYtDo=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=K6CooD4txBJwdU3E/Wzw1Mmq7WPyCs8iF109tipPbSLj5CDdw3TaoVoeSsFlGxWEa
- H9OKKLlARcH6qpeDGc64txIPrdEBFqfB4L1tHmkkLnnFGc54P7FwZ0DQXG6lUw6VBL
- 5l9zvbJo26C3eKoYBo5DtfYi1bY/Dfk9JJnTIagL/xjHSHf86uKn3oBf+W5I3RtXtO
- cmeeCssJ5yDWgbsfRAXyTNyRChXLMIRKQ6N5okeoyim7ZOl7oWwD3HE1O/XgbTMqEY
- mlyyLolTW7Yt9GF6npU/VPOlTaYB4FWXn0z04GNG52v5W7yo2H0xBOYclLIhbs2b6r
- 1dpwiPAbq4KFA==
+ b=uV/IXOeT4W9EVJaFvrYdEG9S6g2zdfnQEHGyF/+DJXhdFAjVRZk2IN2xz1pKfnlOS
+ kuJHn0TErG4jGI1O4xADPskgoQF76/oneT/a7tZr3ST8InqY+QmhzRtQz7bxMQmf1p
+ WUUu37Kf0BtDcuTWsyPeoRTsVdW3/PUW5FiFT7j/3ZJMTR9FGphGPm2YC/K67VJhcL
+ EKyxaXFU0LHeaeuh+JYuNbfhWqTdvoylMXyPFYRvbvq3Xn+QVvw59ii2LZyr96DGsG
+ hr7Dt9Q8bGMVK11mglIyxuFBiF8/KvQ2hNgrrNiBr6H6g4PVDAyarlInaa+GYyHkRo
+ ccck4v9CsczXg==
 From: Mark Brown <broonie@kernel.org>
-To: pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH 0/2] ASoC: SOF: Remove unused members from struct
- sof_dev_desc
-Date: Wed, 15 Sep 2021 16:21:45 +0100
-Message-Id: <163171901944.9674.10459698385534328374.b4-ty@kernel.org>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH 1/6] ASoC: cs35l41: Fix use of an uninitialised variable
+Date: Wed, 15 Sep 2021 16:21:46 +0100
+Message-Id: <163171901943.9674.2959464194056507984.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210915065541.1178-1-peter.ujfalusi@linux.intel.com>
-References: <20210915065541.1178-1-peter.ujfalusi@linux.intel.com>
+In-Reply-To: <20210914141349.30218-1-ckeepax@opensource.cirrus.com>
+References: <20210914141349.30218-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: guennadi.liakhovetski@linux.intel.com, alsa-devel@alsa-project.org,
- kai.vehmanen@linux.intel.com, ranjani.sridharan@linux.intel.com,
- Mark Brown <broonie@kernel.org>, daniel.baluta@nxp.com
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ lgirdwood@gmail.com, james.schulman@cirrus.com,
+ Mark Brown <broonie@kernel.org>, david.rhodes@cirrus.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,14 +86,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 15 Sep 2021 09:55:39 +0300, Peter Ujfalusi wrote:
-> dma_engine, dma_size and resindex_dma_base is unused from sof_dev_desc, drop
-> them.
+On Tue, 14 Sep 2021 15:13:44 +0100, Charles Keepax wrote:
+> The loop checking PDN_DONE doesn't check the return value from
+> regmap_read, nor does it initialise val. This means if regmap_read fails
+> val will be checked for the PDN_DONE bit whilst being uninitialised.
 > 
-> resindex_dma_base is initialized to -1 for Intel platforms, but it is not used.
-> 
-> Regards,
-> Peter
+> Fix this up by switching to regmap_read_poll_timeout which tidies up the
+> code and avoids the uninitialised variable.
 > 
 > [...]
 
@@ -105,10 +102,18 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: SOF: intel: Do no initialize resindex_dma_base
-      commit: 7e7d5ffa37e34ec2a6e8aa2e1fd846fb296fc8a1
-[2/2] ASoC: SOF: Drop resindex_dma_base, dma_engine, dma_size from sof_dev_desc
-      commit: 2395fea7ae7f0cf6dfd37a8bb3cd9dbcf2d0e492
+[1/6] ASoC: cs35l41: Fix use of an uninitialised variable
+      commit: c2f14cc2bcdd532f8a18450407ffc27bbbff2319
+[2/6] ASoC: cs35l41: Use regmap_read_poll_timeout to wait for OTP boot
+      commit: 3a2eb0b4b02060340af10a1db3c452472471be2f
+[3/6] ASoC: cs35l41: Combine adjacent register writes
+      commit: fe1024d50477becf35128f3ef03bf3525a2cd140
+[4/6] ASoC: cs35l41: Don't overwrite returned error code
+      commit: e371eadf2a93a653211331b66beaac3b1bcbc931
+[5/6] ASoC: cs35l41: Fixup the error messages
+      commit: 3e60abeb5cb51bccc8bcc6808eef2037ab412334
+[6/6] ASoC: cs35l41: Fix a bunch of trivial code formating/style issues
+      commit: 4295c8cc17481e0d7d4c3a404eaf87dc8dfc26be
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
