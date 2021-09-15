@@ -2,93 +2,97 @@ Return-Path: <SRS0=xeto=OF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+X-Spam-Status: No, score=-11.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FB8CC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 19:17:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F5B1C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 19:27:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AC62361165
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 19:17:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AC62361165
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id 63B9E61186
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Sep 2021 19:27:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 63B9E61186
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6F3BA17C7;
-	Wed, 15 Sep 2021 21:16:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F3BA17C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C77E17C5;
+	Wed, 15 Sep 2021 21:27:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C77E17C5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631733430;
-	bh=DWXqcj82HXi2h1qtK8ain7gHBcw7sYnLqoAKSG2uIcI=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ZI4dTJJpjmceuXpO6puhFt3D1mSzP1/oAAKVo23qLFqKo0Jam8tnTKU0cfXqwhzOe
-	 BD031D04NQ1K0UaGm6XO2e1kPmRiIByA+ibasgMFx+mfWsNNo1IPzOA/igBp/1FSch
-	 2XaNi/fvq1MRt2+f/7sIJ7gGxKujI+DRC+K5JLrA=
+	s=default; t=1631734076;
+	bh=/hh/qBOXXmlcSuUzBq1gnMEj7F7DXuAqTXQJyZuXbKo=;
+	h=In-Reply-To:References:From:Date:Subject:To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=pw+tQLteaDXQ+K9l7441M4/lWnsZx2DegY7cy6BT6TtDk6W5/Ypw9jB3sGmnmFgp1
+	 8CmMkCaD8TF+NOyrCslh4jBmkEqmjfKgrUPFUvjJDMeOTRA5G+viNV61vkZunAKj9k
+	 vyCzQBR3z1znPY5d9FtL692CeJ9aIkoj4RLUcteE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1DBFF80227;
-	Wed, 15 Sep 2021 21:16:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B78FDF80227;
+	Wed, 15 Sep 2021 21:27:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6BB06F8027C; Wed, 15 Sep 2021 21:16:18 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 325ADF80132; Wed, 15 Sep 2021 21:27:03 +0200 (CEST)
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com
+ [IPv6:2607:f8b0:4864:20::235])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6000DF80132
- for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 21:16:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6000DF80132
+ by alsa1.perex.cz (Postfix) with ESMTPS id 84E07F80132
+ for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 21:26:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84E07F80132
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="daLNMkQ9"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18F5eGcZ026124; 
- Wed, 15 Sep 2021 14:16:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=Z8ib6lB8KbLTkwjVRcR7h5XbX7gB8drrTq0rGeKBV64=;
- b=daLNMkQ9/xFoKHHF8t7xKuzTVozAjOdkaMcGIFxwYl6+ZCGfOy1ZfyoFhv/2/uf3FWKF
- rRuJvc3OQdL2lphAjH9K5G1LssdcRi69PhNACNon6yQ8KBYQANegGiWO/HzyTb+q/Vgh
- dflKuT107sCqitrw4hAMjQW6zXwVmDLiNYyQds9gOfUO3T06U9OUc63BpFfjTWTzoIrH
- d6uqnd8ANVP3oWAPY6tAaT9JeNZtGhvbZqaV4FMrxoRBi+YZea5LukS42JxkGB3Ary6E
- GYOFjHPhRIIi7YgdEjZaoLeSwa/JtJQhsNIK4Zij2CkKBlLfmfgzIUUrGZDC7adFPTJi 3g== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 3b3287h8qw-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 15 Sep 2021 14:16:06 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Wed, 15 Sep
- 2021 20:14:45 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via
- Frontend Transport; Wed, 15 Sep 2021 20:14:45 +0100
-Received: from david-ubuntu20.crystal.cirrus.com
- (macC02XQ1DJJG5K.ad.cirrus.com [141.131.65.58])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 19AADB2F;
- Wed, 15 Sep 2021 19:14:31 +0000 (UTC)
-From: David Rhodes <drhodes@opensource.cirrus.com>
-To: <broonie@kernel.org>, <robh@kernel.org>, <ckeepax@opensource.cirrus.com>, 
- <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
- <david.rhodes@cirrus.com>, <devicetree@vger.kernel.org>
-Subject: [PATCH] ASoC: cs35l41: Binding fixes
-Date: Wed, 15 Sep 2021 14:14:22 -0500
-Message-ID: <20210915191422.2371623-1-drhodes@opensource.cirrus.com>
-X-Mailer: git-send-email 2.25.1
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="AvsLqD+I"
+Received: by mail-oi1-x235.google.com with SMTP id p2so5676088oif.1
+ for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2021 12:26:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+ :subject:to; bh=o/xLkGlhrSnpCqv+HEwTNRKoItyS4LasgozuRU4ni1o=;
+ b=AvsLqD+ImZ3uG21Z85q9lNII8aPV/FqVgO1IUBdXtaed29+o/L4jPx8h2xxrNvZPNZ
+ /AqAaoUsRfDPKhJegTmB5uaHM+phiDSUEtA9+4ewEGnBJfLTz6+DfPPN7KFy0S+kZvTH
+ xt6LBjfee3cPZwN1+ScwgNDTcJbEx0PfLPLi4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from
+ :user-agent:date:message-id:subject:to;
+ bh=o/xLkGlhrSnpCqv+HEwTNRKoItyS4LasgozuRU4ni1o=;
+ b=bPFa2ZaXisr4RmhcaMKusx9nrbPmfKxHlThFGKnKM2N++Usf+avJ/+zDV5ZfeRWMoe
+ md5+illomVo66IsV4kvw3xOuRW7J0532mqHtH9sALT35+Ox9JPYw64oleuK9SgSlv90d
+ MJCejptLjlfb/3K3EPQgIrFCqiR9X2u+EG8zK7bE6QxFb5q3uLdysKVMiuiod/8v9m6v
+ iurZ1+XmYfEF9K8iiBL514OPRudkvnvR2/0mPdlmDN9XOERA/ZU8QwqIFrlpLBQDmm0K
+ 8rf7CyHOIA+HQX11dFd72GtRqPAu6/OmWHlIclcEP4TNudvqbKaW4TT0yCE/D+zgLSND
+ qazw==
+X-Gm-Message-State: AOAM53030TzvVBsXvhsOx35sADvvKu3m4l7qa0MJOM2zRrBmQfjbnZzW
+ HeI4HPVlknLpz4doSpB+dqJM0dGYxO1WKt/aoJj/3Q==
+X-Google-Smtp-Source: ABdhPJwFkrl8F6Ej21HTUvXwucYyETWWwd0o6RXQlIIKy4y8Ocqoi0zQx97NR+cpDDHoED2PMDRevSzOS/rZyXj3qnQ=
+X-Received: by 2002:aca:2310:: with SMTP id e16mr1006542oie.64.1631734016098; 
+ Wed, 15 Sep 2021 12:26:56 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 15 Sep 2021 12:26:55 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: CIhnUgtVIHg3DyDhhuJTP042U3bvzEXE
-X-Proofpoint-ORIG-GUID: CIhnUgtVIHg3DyDhhuJTP042U3bvzEXE
-X-Proofpoint-Spam-Reason: safe
-Cc: David Rhodes <drhodes@opensource.cirrus.com>
+In-Reply-To: <e1e84488-2af5-2272-010a-474788a498a3@codeaurora.org>
+References: <1631539062-28577-1-git-send-email-srivasam@codeaurora.org>
+ <1631539062-28577-2-git-send-email-srivasam@codeaurora.org>
+ <CAE-0n50=ABP+fs1U3JjiqMSKphfxFsZBqQQYwVH2o_iOE1Wu_g@mail.gmail.com>
+ <e1e84488-2af5-2272-010a-474788a498a3@codeaurora.org>
+From: Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date: Wed, 15 Sep 2021 12:26:55 -0700
+Message-ID: <CAE-0n50wVDvL+f19abt9o9d0GvuAD+AanCwHozoyGfEFWKWz_g@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] ASoC: google: dt-bindings: Add sc7280-herobrine
+ machine bindings
+To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>, agross@kernel.org,
+ alsa-devel@alsa-project.org, 
+ bgoswami@codeaurora.org, bjorn.andersson@linaro.org, broonie@kernel.org, 
+ devicetree@vger.kernel.org, judyhsiao@chromium.org, lgirdwood@gmail.com, 
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, perex@perex.cz, 
+ plai@codeaurora.org, robh+dt@kernel.org, rohitkr@codeaurora.org, 
+ srinivas.kandagatla@linaro.org, tiwai@suse.com
+Content-Type: text/plain; charset="UTF-8"
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,72 +108,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix warnings and errors in DT bindings
+Quoting Srinivasa Rao Mandadapu (2021-09-15 04:15:43)
+>
+> On 9/14/2021 1:21 AM, Stephen Boyd wrote:
+> > Quoting Srinivasa Rao Mandadapu (2021-09-13 06:17:41)
+> >> diff --git a/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml b/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
+> >> new file mode 100644
+> >> index 0000000..e0d705f
+> >> --- /dev/null
+> >> +++ b/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
+> >> +patternProperties:
+> >> +  "^dai-link@[0-9a-f]$":
+> >> +    description:
+> >> +      Each subnode represents a dai link. Subnodes of each dai links would be
+> >> +      cpu/codec dais.
+> >> +
+> >> +    type: object
+> >> +
+> >> +    properties:
+> >> +      link-name:
+> >> +        description: Indicates dai-link name and PCM stream name.
+> >> +        $ref: /schemas/types.yaml#/definitions/string
+> >> +        maxItems: 1
+> >> +
+> >> +      reg:
+> >> +        maxItems: 1
+> >> +        description: dai link address.
+> >> +
+> >> +      cpu:
+> >> +        description: Holds subnode which indicates cpu dai.
+> >> +        type: object
+> >> +        properties:
+> >> +          sound-dai: true
+> > Shouldn't sound-dai be required?
+> Sorry. I didn't get your Query. You mean in below "required:" properties
+> need to add sound-dai also?
 
-Add newline at end of file
-Replace 'unevaluatedProperties' with 'additionalProperties'
-Add spi context to DT example
-Add #sound-dai-cells to DT example
-Rename to 'cirrus,cs35l41.yaml'
-
-Signed-off-by: David Rhodes <drhodes@opensource.cirrus.com>
----
- .../{cs35l41.yaml => cirrus,cs35l41.yaml}     | 30 +++++++++++--------
- 1 file changed, 18 insertions(+), 12 deletions(-)
- rename Documentation/devicetree/bindings/sound/{cs35l41.yaml => cirrus,cs35l41.yaml} (87%)
-
-diff --git a/Documentation/devicetree/bindings/sound/cs35l41.yaml b/Documentation/devicetree/bindings/sound/cirrus,cs35l41.yaml
-similarity index 87%
-rename from Documentation/devicetree/bindings/sound/cs35l41.yaml
-rename to Documentation/devicetree/bindings/sound/cirrus,cs35l41.yaml
-index fde78c850286..3235702ce402 100644
---- a/Documentation/devicetree/bindings/sound/cs35l41.yaml
-+++ b/Documentation/devicetree/bindings/sound/cirrus,cs35l41.yaml
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
- %YAML 1.2
- ---
--$id: http://devicetree.org/schemas/sound/cs35l41.yaml#
-+$id: http://devicetree.org/schemas/sound/cirrus,cs35l41.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
- title: Cirrus Logic CS35L41 Speaker Amplifier
-@@ -135,17 +135,23 @@ required:
-   - cirrus,boost-ind-nanohenry
-   - cirrus,boost-cap-microfarad
- 
--unevaluatedProperties: false
-+additionalProperties: false
- 
- examples:
-   - |
--      cs35l41: cs35l41@2 {
--        compatible = "cirrus,cs35l41";
--        reg = <2>;
--        VA-supply = <&dummy_vreg>;
--        VP-supply = <&dummy_vreg>;
--        reset-gpios = <&gpio 110 0>;
--        cirrus,boost-peak-milliamp = <4500>;
--        cirrus,boost-ind-nanohenry = <1000>;
--        cirrus,boost-cap-microfarad = <15>;
--      };
-\ No newline at end of file
-+    spi {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        cs35l41: cs35l41@2 {
-+          #sound-dai-cells = <1>;
-+          compatible = "cirrus,cs35l41";
-+          reg = <2>;
-+          VA-supply = <&dummy_vreg>;
-+          VP-supply = <&dummy_vreg>;
-+          reset-gpios = <&gpio 110 0>;
-+          cirrus,boost-peak-milliamp = <4500>;
-+          cirrus,boost-ind-nanohenry = <1000>;
-+          cirrus,boost-cap-microfarad = <15>;
-+        };
-+    };
--- 
-2.25.1
-
+I'd expect there to be a required: list for the 'cpu' and 'codec'
+objects that says sound-dai, unless that is implicit somehow. I'm
+definitely not an expert in the DT yaml, but I suspect two more
+'required:' sections are needed so that 'sound-dai' isn't an optional
+property.
