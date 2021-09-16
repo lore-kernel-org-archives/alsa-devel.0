@@ -2,83 +2,85 @@ Return-Path: <SRS0=oBF5=OG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62C66C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 14:24:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 107C7C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 14:36:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 819F561207
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 14:24:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 819F561207
+	by mail.kernel.org (Postfix) with ESMTPS id 8C4BB61241
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 14:36:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8C4BB61241
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D875188B;
-	Thu, 16 Sep 2021 16:23:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D875188B
+	by alsa0.perex.cz (Postfix) with ESMTPS id A834117D2;
+	Thu, 16 Sep 2021 16:35:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A834117D2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631802255;
-	bh=tR5BN6pgzVJCIm9MS564ZUOdzytE4hVR/sjg3FzV7Hs=;
+	s=default; t=1631802970;
+	bh=ZLFNblNZGUk3xAUdXx0zvs4DcAzoMhDmOg/8iz8daj8=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=NA5cQNuj0qnsgP+Uw+GuSwqMMd+ATIDntkd9p++oAGk9SIFxHs1PlcBxiseLxnuvO
-	 wKiQMdGrVwfRnVX69nihWXlSc73oNJrmFcScp70YTVU/jCAw7KAcgStJyYPveQwPrz
-	 kCH6umclTQHMGh5RBzRumKL2FZdAluN2ztoVU3RQ=
+	b=f8bcq7NA5ZHFp97hoHJWonwk3DGCesSEptMGnMQeLeFJ5NpKkK3GPUtqdKM2x1wpq
+	 bXzxwkqFe/un4Ktk0Y4lWPPliNMikechFs3R6qGD6hUu2/ysZ52pFaBWghtZv+FhYy
+	 IAc/4digR1GEu0aA/FdEjf+OEr/aJt+S59XHM3pg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17E71F8025A;
-	Thu, 16 Sep 2021 16:23:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 267CBF8025A;
+	Thu, 16 Sep 2021 16:35:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A12CAF8025E; Thu, 16 Sep 2021 16:23:23 +0200 (CEST)
+ id 87F47F8025E; Thu, 16 Sep 2021 16:35:18 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 44DF5F80113
- for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 16:23:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44DF5F80113
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0B73F80113
+ for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 16:35:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0B73F80113
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Z936YNBg"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89AF961207;
- Thu, 16 Sep 2021 14:23:14 +0000 (UTC)
+ header.b="tYnD1+TZ"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D548C6120C;
+ Thu, 16 Sep 2021 14:35:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631802195;
- bh=tR5BN6pgzVJCIm9MS564ZUOdzytE4hVR/sjg3FzV7Hs=;
+ s=k20201202; t=1631802908;
+ bh=ZLFNblNZGUk3xAUdXx0zvs4DcAzoMhDmOg/8iz8daj8=;
  h=From:To:Cc:Subject:Date:From;
- b=Z936YNBgXnlY8U1NiGZgOB+wwboLqye8TnsgTVpKEwRmeYq0KxXAQ2gssAC6AogLr
- KvUFNlEGdLenYPtdBkC2M1BufFRzEDtNYnfayPwshCsLe0qivX/y5vTQxkhUhEWDdz
- 6/+lynlTa6fjEGVL/PyqUBeDIuI+BM3lljsugeqAMjKp1yKRys2PRD1lRjhBsHGpVy
- PmE1lDdPR1lGRDOjWExIi2bCSMU0cO3WEGlxkQw1p5SsoyUnBTNMEn0tWVrWBG2RnX
- R7DWKgePYOEGPeY2w+N7Th7amP0C66JmUCSC2JJKZLABQ5XEaB2RM2GbBI/WfxPobB
- h8qOrKpO2Bp4A==
+ b=tYnD1+TZo8+X0SqDU+ARGGKkk0g78LFcjqOBnjMhOuM8ntgr0zUOt/zVH1qi7S5E/
+ SI++eLwiNsO3l9FWvLyyAgXJoIFUYvoSmZTrRWk+vPUEsII513JTI8mVRK0gWUjPAB
+ QalZXLbq79+IDY5F1hjgBko5f6SuY/2xjfsM7koFq+cMmx23bV7LooWPx4GZOvV7ke
+ jpIHOjQgIgtQ18A07DO/S9E5XCktnssdAa4Oq3kmn13lRdDBitPthnVeRXXKd9h7xq
+ DhMsGAECTGS2IcW9cgLRRLVzOTVO4ZVqwcyY+Oq2I2pwaW/rcWJ93kZd4NOoZRFjbZ
+ TDtKSrw/5gLFQ==
 From: Mark Brown <broonie@kernel.org>
-To: Lars-Peter Clausen <lars@metafoo.de>,
- =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
- Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH] ASoC: ad193x: Update to modern clocking terminology
-Date: Thu, 16 Sep 2021 15:22:32 +0100
-Message-Id: <20210916142232.33914-1-broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+ Florian Fainelli <f.fainelli@gmail.com>, Ray Jui <rjui@broadcom.com>,
+ Scott Branden <sbranden@broadcom.com>,
+ Nicolas Saenz Julienne <nsaenz@kernel.org>
+Subject: [PATCH] ASoC: bcm: Convert to modern clocking terminology
+Date: Thu, 16 Sep 2021 15:34:23 +0100
+Message-Id: <20210916143423.24025-1-broonie@kernel.org>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1510; h=from:subject;
- bh=tR5BN6pgzVJCIm9MS564ZUOdzytE4hVR/sjg3FzV7Hs=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBhQ1L/YUv/9rWl/SbQrMzWsDTV3D4EJ3bxIu5nOCxd
- nYjUziyJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYUNS/wAKCRAk1otyXVSH0MIZB/
- 92kfM18EFQ4U66F9P8Ln8quwrwmSDU18dWeoYV4CBGAs7CQft2phLZf0dqtfS9gd8NWt2ErcGWMbXe
- PhOBAdeKFpU5u0t5yI1epNjmHLviyS1qfx2/aaW1j9oSubI9ybK8ZD/PPKN06VaLyWjIbWVv9rFobm
- HetW2NC6hBCTfUfrgr/5QZFz6czo19j8zGQZ6NnVIj81hQMk95QWYvQ/iRsFH8THaAsTB2l+U2pXjP
- NSHlYs+Rkh9uOeI0vsosLysakdWEK/1yK8T+oHtmQxOB3DiFU1h57LGOZXW2Y8KKzOqzmpzEK1aA+R
- ztxPA8t65j5xV8sJRu7sUG9AmazLMY
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5019; h=from:subject;
+ bh=ZLFNblNZGUk3xAUdXx0zvs4DcAzoMhDmOg/8iz8daj8=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBhQ1VR7f/CnAZyrrH1GGrUWHHCEyS82ye41J40E//t
+ H0pwJ8yJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYUNVUQAKCRAk1otyXVSH0MHvB/
+ wPYTuujkNia+d3qMwz+ZCaBCynJmHkXaMlgr/j34GbjxqFoz7L8rthXSgNJbg9B8tNpUTjdeJtUSsQ
+ p381UAogHIwT4W05Ks96rVet7ApaJj2MvFQ+rlwASVSdgXcRW/huzshJIoOlRliYPsBi+OTdTyhqlv
+ 4ynjDacNv4KPgwhHbjhC6uTfLVT7ZD0jwGTR6Z0jG7CXt6Z8N54Imw/kQ08P7U2ehT4Z/GX2D/84w+
+ ulid9IYzVwDfze74mbDmQm1Z4zCFb6qMkxGi1QDv8seWCpDLJZrGW4Ie+Y97snRlF3moeYhNR6DgZg
+ HWHfiANhH/Fc9YTIjkSh3seSKKZsLL
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ linux-rpi-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,46 +96,152 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-As part of moving to remove the old style defines for the bus clocks update
-the ad193x driver to use more modern terminology for clocking.
+As part of the effort to remove our old APIs based on outdated terminology
+update the Broadcom drivers to use modern terminology.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ad193x.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/bcm/bcm2835-i2s.c | 56 ++++++++++++++++++-------------------
+ sound/soc/bcm/cygnus-ssp.c  |  6 ++--
+ 2 files changed, 31 insertions(+), 31 deletions(-)
 
-diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
-index 278a55af158b..30b98b4267e1 100644
---- a/sound/soc/codecs/ad193x.c
-+++ b/sound/soc/codecs/ad193x.c
-@@ -243,22 +243,22 @@ static int ad193x_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	if (fmt & SND_SOC_DAIFMT_DSP_A)
- 		dac_fmt ^= AD193X_DAC_LEFT_HIGH;
+diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
+index 3d668f449bc1..e3fc4bee8cfd 100644
+--- a/sound/soc/bcm/bcm2835-i2s.c
++++ b/sound/soc/bcm/bcm2835-i2s.c
+@@ -127,14 +127,14 @@ struct bcm2835_i2s_dev {
  
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBM_CFM: /* codec clk & frm master */
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_CBP_CFP:
- 		adc_fmt |= AD193X_ADC_LCR_MASTER;
- 		adc_fmt |= AD193X_ADC_BCLK_MASTER;
- 		dac_fmt |= AD193X_DAC_LCR_MASTER;
- 		dac_fmt |= AD193X_DAC_BCLK_MASTER;
- 		break;
--	case SND_SOC_DAIFMT_CBS_CFM: /* codec clk slave & frm master */
-+	case SND_SOC_DAIFMT_CBC_CFP:
- 		adc_fmt |= AD193X_ADC_LCR_MASTER;
- 		dac_fmt |= AD193X_DAC_LCR_MASTER;
- 		break;
--	case SND_SOC_DAIFMT_CBM_CFS: /* codec clk master & frame slave */
-+	case SND_SOC_DAIFMT_CBP_CFC:
- 		adc_fmt |= AD193X_ADC_BCLK_MASTER;
- 		dac_fmt |= AD193X_DAC_BCLK_MASTER;
- 		break;
--	case SND_SOC_DAIFMT_CBS_CFS: /* codec clk & frm slave */
+ static void bcm2835_i2s_start_clock(struct bcm2835_i2s_dev *dev)
+ {
+-	unsigned int master = dev->fmt & SND_SOC_DAIFMT_MASTER_MASK;
++	unsigned int provider = dev->fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK;
+ 
+ 	if (dev->clk_prepared)
+ 		return;
+ 
+-	switch (master) {
+-	case SND_SOC_DAIFMT_CBS_CFS:
+-	case SND_SOC_DAIFMT_CBS_CFM:
++	switch (provider) {
 +	case SND_SOC_DAIFMT_CBC_CFC:
++	case SND_SOC_DAIFMT_CBC_CFP:
+ 		clk_prepare_enable(dev->clk);
+ 		dev->clk_prepared = true;
+ 		break;
+@@ -337,8 +337,8 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	unsigned int rx_mask, tx_mask;
+ 	unsigned int rx_ch1_pos, rx_ch2_pos, tx_ch1_pos, tx_ch2_pos;
+ 	unsigned int mode, format;
+-	bool bit_clock_master = false;
+-	bool frame_sync_master = false;
++	bool bit_clock_provider = false;
++	bool frame_sync_provider = false;
+ 	bool frame_start_falling_edge = false;
+ 	uint32_t csreg;
+ 	int ret = 0;
+@@ -383,36 +383,36 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	if (data_length > slot_width)
+ 		return -EINVAL;
+ 
+-	/* Check if CPU is bit clock master */
+-	switch (dev->fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBS_CFS:
+-	case SND_SOC_DAIFMT_CBS_CFM:
+-		bit_clock_master = true;
++	/* Check if CPU is bit clock provider */
++	switch (dev->fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
++	case SND_SOC_DAIFMT_CBC_CFC:
++	case SND_SOC_DAIFMT_CBC_CFP:
++		bit_clock_provider = true;
+ 		break;
+-	case SND_SOC_DAIFMT_CBM_CFS:
+-	case SND_SOC_DAIFMT_CBM_CFM:
+-		bit_clock_master = false;
++	case SND_SOC_DAIFMT_CBP_CFC:
++	case SND_SOC_DAIFMT_CBP_CFP:
++		bit_clock_provider = false;
  		break;
  	default:
  		return -EINVAL;
+ 	}
+ 
+-	/* Check if CPU is frame sync master */
+-	switch (dev->fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBS_CFS:
+-	case SND_SOC_DAIFMT_CBM_CFS:
+-		frame_sync_master = true;
++	/* Check if CPU is frame sync provider */
++	switch (dev->fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
++	case SND_SOC_DAIFMT_CBC_CFC:
++	case SND_SOC_DAIFMT_CBP_CFC:
++		frame_sync_provider = true;
+ 		break;
+-	case SND_SOC_DAIFMT_CBS_CFM:
+-	case SND_SOC_DAIFMT_CBM_CFM:
+-		frame_sync_master = false;
++	case SND_SOC_DAIFMT_CBC_CFP:
++	case SND_SOC_DAIFMT_CBP_CFP:
++		frame_sync_provider = false;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+ 
+ 	/* Clock should only be set up here if CPU is clock master */
+-	if (bit_clock_master &&
++	if (bit_clock_provider &&
+ 	    (!dev->clk_prepared || dev->clk_rate != bclk_rate)) {
+ 		if (dev->clk_prepared)
+ 			bcm2835_i2s_stop_clock(dev);
+@@ -501,11 +501,11 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	/*
+ 	 * Transmitting data immediately after frame start, eg
+ 	 * in left-justified or DSP mode A, only works stable
+-	 * if bcm2835 is the frame clock master.
++	 * if bcm2835 is the frame clock provider.
+ 	 */
+-	if ((!rx_ch1_pos || !tx_ch1_pos) && !frame_sync_master)
++	if ((!rx_ch1_pos || !tx_ch1_pos) && !frame_sync_provider)
+ 		dev_warn(dev->dev,
+-			"Unstable slave config detected, L/R may be swapped");
++			"Unstable consumer config detected, L/R may be swapped");
+ 
+ 	/*
+ 	 * Set format for both streams.
+@@ -538,11 +538,11 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	mode |= BCM2835_I2S_FSLEN(framesync_length);
+ 
+ 	/* CLKM selects bcm2835 clock slave mode */
+-	if (!bit_clock_master)
++	if (!bit_clock_provider)
+ 		mode |= BCM2835_I2S_CLKM;
+ 
+ 	/* FSM selects bcm2835 frame sync slave mode */
+-	if (!frame_sync_master)
++	if (!frame_sync_provider)
+ 		mode |= BCM2835_I2S_FSM;
+ 
+ 	/* CLKI selects normal clocking mode, sampling on rising edge */
+diff --git a/sound/soc/bcm/cygnus-ssp.c b/sound/soc/bcm/cygnus-ssp.c
+index fca5a3f2eec5..9698f4531c90 100644
+--- a/sound/soc/bcm/cygnus-ssp.c
++++ b/sound/soc/bcm/cygnus-ssp.c
+@@ -848,12 +848,12 @@ static int cygnus_ssp_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
+ 
+ 	ssp_newcfg = 0;
+ 
+-	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBM_CFM:
++	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
++	case SND_SOC_DAIFMT_CBP_CFP:
+ 		ssp_newcfg |= BIT(I2S_OUT_CFGX_SLAVE_MODE);
+ 		aio->is_slave = 1;
+ 		break;
+-	case SND_SOC_DAIFMT_CBS_CFS:
++	case SND_SOC_DAIFMT_CBC_CFC:
+ 		ssp_newcfg &= ~BIT(I2S_OUT_CFGX_SLAVE_MODE);
+ 		aio->is_slave = 0;
+ 		break;
 -- 
 2.20.1
 
