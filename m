@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1217C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 15:21:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FD11C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 15:21:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5242F60F4A
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 15:21:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5242F60F4A
+	by mail.kernel.org (Postfix) with ESMTPS id E7D3B6113E
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 15:21:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E7D3B6113E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E75CF189B;
-	Thu, 16 Sep 2021 17:20:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E75CF189B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 887A518CC;
+	Thu, 16 Sep 2021 17:20:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 887A518CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631805667;
-	bh=1fPbhNGEhbIFx/+HnHGtY6R/Py/p+36DF/HypOidaOM=;
+	s=default; t=1631805683;
+	bh=7ND8+x5ohSVv865HcZjPNRfhInmEqN3znp6iMFLRZzo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=N5OlNVIgJfSZ+S6y1VXQQrzb60s2OBDLW7LVsfjOLnleVUx8E2wKT9ljltSIEDEWO
-	 8Mh64rd2nQYNWHFN/zdys4t2qK9Gyd3zhCz/iqRQAzlLMOAujPz4TTd3G8n8lyAdux
-	 /gLzVEjm5Y4PFofcn2b8Exx3oobL3JgFOEV1zHgI=
+	b=N/PSoeq7CXU09W1PU5kkVPQ/X90KE4z+DUm7FMNw+FVrRyjXbgrV6ZBRo74yfxCKK
+	 ZwPbwKqnyqslOawRR0sc0j34mBw9oMRCSi2hSLXJPLDaiMmaDnvW8Vbu+r5ScaLNcE
+	 zkAvmymxJcvT3pdjl7TT3n/nV/pGzy3mNZJu5hug=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 093A4F804EC;
+	by alsa1.perex.cz (Postfix) with ESMTP id 8AC71F804CA;
 	Thu, 16 Sep 2021 17:19:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D09A2F804E7; Thu, 16 Sep 2021 17:19:02 +0200 (CEST)
+ id 5DCD7F804ED; Thu, 16 Sep 2021 17:19:04 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 156DCF804E5
- for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 17:18:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 156DCF804E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 374FEF804E2
+ for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 17:19:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 374FEF804E2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="W1okENj2"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14F8C6113E;
- Thu, 16 Sep 2021 15:18:53 +0000 (UTC)
+ header.b="Mo+KgcMz"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35F0861246;
+ Thu, 16 Sep 2021 15:18:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631805534;
- bh=1fPbhNGEhbIFx/+HnHGtY6R/Py/p+36DF/HypOidaOM=;
+ s=k20201202; t=1631805539;
+ bh=7ND8+x5ohSVv865HcZjPNRfhInmEqN3znp6iMFLRZzo=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=W1okENj2fMlPoKyC9UZ/n+/f9PS0iMSUJpLprei6U56QjjJsf8P+GGxVqGLyANVzg
- 5JQhC7H+ykMIQZQexQtiDPRdZVjwN62t1i4ov3tRn1OPwjU6SwM3A5tG5lzQZIG1Ka
- p9PoB55gADfGFd2GppM7Cxxqh9FFgDUrcPZncJgaI5j12zlOqeq7xUAgUHV3lEZNpD
- Sve07/XVqXUzTvT5j28zARO7dTVWm8BsT06eg9lexe5CCPJmND+G75e2XKjR0zCYm1
- 8FaXMcjabUrMHNKoYXvnkW+FnmZhdWGHH177XVDVOcCH3yawgDzI7ucq7zhQtdu4n3
- bVbpqHA/Ibmsg==
+ b=Mo+KgcMzwS/LhpKhiQCaoxvxv2uxhpJycIcLPm7EkKwyF009+hMgpAclUMwZp+/bS
+ WDpCceVlknI945ompauv/XPLFGJZ8KbbctHEfir8oFnOlSexVPqB3Qnpy/c26g2OIK
+ vbR+e0fACIkAW2lZ1LIdNSQs85r2TP2DzYGGLc6AueBICN3mNnjdCqjYiSD9y9Fx+R
+ oykNxv6aw8MnXWnF1BtHFuNOpsBiV7M1XFUXmJe9TI0xcvqGmsCCtth2W7n6Ctn4JZ
+ 4/HywtuCsfzgeIB08QLpuEzyoWJ8g+RK1lAB3/dHi/+vsSrCtnAc1DKVtUXAI71amx
+ NKVLTHcmcfV+g==
 From: Mark Brown <broonie@kernel.org>
 To: Lars-Peter Clausen <lars@metafoo.de>,
  =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
  Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH 2/6] ASoC: adau1373: Update to modern clocking terminology
-Date: Thu, 16 Sep 2021 16:18:02 +0100
-Message-Id: <20210916151806.20756-2-broonie@kernel.org>
+Subject: [PATCH 4/6] ASoC: adau17x1: Update to modern clocking terminology
+Date: Thu, 16 Sep 2021 16:18:04 +0100
+Message-Id: <20210916151806.20756-4-broonie@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210916151806.20756-1-broonie@kernel.org>
 References: <20210916151806.20756-1-broonie@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1629; h=from:subject;
- bh=1fPbhNGEhbIFx/+HnHGtY6R/Py/p+36DF/HypOidaOM=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBhQ1+pXnDMnKrHY6ZSA2XB4MqQEJ4PuVC0gJgZ9R5q
- qevKTUaJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYUNfqQAKCRAk1otyXVSH0E9oB/
- 4gWEzSXoPerbcroJ2DDWWFu3lrloRjf1yKoAdfdfQ2cxLhOoy0FJssRsfs23BGj6UiEyc8mR+FejLy
- oeBfZDn2Gj8jtuoYn9tbeNGaFLShRHu1WHWbiEhWVe7QtM0juF7HcF3Onpy1GnATlt2raY9Pg0Ayb+
- n0XNLkaZojvxfYKCI7YeEbxHPDLTlzCHpVCs7EbR3ku7H4GZf6rEIeeecivv+E6iSOg5zizrI+Ohr8
- Wa0yozJPh1Ydaoxmau6HgRjeYA5V06RinVWcSNxPSAbjRgrPcyj92McuQg4GoLa0NTgbPkqmzDeXDu
- DjhQ6YjH+++pe0PfIO6VGbgLbhoWDY
+X-Developer-Signature: v=1; a=openpgp-sha256; l=976; h=from:subject;
+ bh=7ND8+x5ohSVv865HcZjPNRfhInmEqN3znp6iMFLRZzo=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBhQ1+qTlVGaM86FSVIWJi/QOpu9/4c/iemRtjFZ9h6
+ CA+L0VmJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYUNfqgAKCRAk1otyXVSH0OciB/
+ 9Imfey9ng7taRlCbz36xMCyurLzZH5M++qlUaglYQwQMBpf0yOFHRD/mBZBiAKlxxliGQFHtikJ/1H
+ Wcfb1N3f5ldivGgaDrLLHmaCcOYCSB28PDT69LrGMB/JWydF3mar53BQxxgIv90Ug17vy2TvPIEw6L
+ C6RLzMaFISwfyaMbF8aJzDhWiCgXXXNMgjEm/KTQY01LbRKx0VrMzf2/DNDYE4NYN+QBKEWytvf7pP
+ O1rLega+ExI7uoY8YNjYiIGkIGpCaJYxoM7V6Vr2pZsUXWeNueiA0B7dDfFV8JL+VIvJFjMGCgdkkI
+ UOWDYXNeq0C/y9+2xKY2iOJ3qOppJ8
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Content-Transfer-Encoding: 8bit
@@ -98,55 +98,33 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 As part of moving to remove the old style defines for the bus clocks update
-the adau1373 driver to use more modern terminology for clocking.
+the adau17x1 driver to use more modern terminology for clocking.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/adau1373.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/codecs/adau17x1.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
-index 9887aa6f0be5..46128aaceae9 100644
---- a/sound/soc/codecs/adau1373.c
-+++ b/sound/soc/codecs/adau1373.c
-@@ -28,7 +28,7 @@ struct adau1373_dai {
- 	unsigned int clk_src;
- 	unsigned int sysclk;
- 	bool enable_src;
--	bool master;
-+	bool clock_provider;
- };
- 
- struct adau1373 {
-@@ -827,7 +827,7 @@ static int adau1373_check_aif_clk(struct snd_soc_dapm_widget *source,
- 
- 	dai = sink->name[3] - '1';
- 
--	if (!adau1373->dais[dai].master)
-+	if (!adau1373->dais[dai].clock_provider)
- 		return 0;
- 
- 	if (adau1373->dais[dai].clk_src == ADAU1373_CLK_SRC_PLL1)
-@@ -1102,14 +1102,14 @@ static int adau1373_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	struct adau1373_dai *adau1373_dai = &adau1373->dais[dai->id];
- 	unsigned int ctrl;
+diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
+index 8aae7ab74091..af05463af4ac 100644
+--- a/sound/soc/codecs/adau17x1.c
++++ b/sound/soc/codecs/adau17x1.c
+@@ -556,12 +556,12 @@ static int adau17x1_set_dai_fmt(struct snd_soc_dai *dai,
+ 	unsigned int ctrl0_mask;
+ 	int lrclk_pol;
  
 -	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
 -	case SND_SOC_DAIFMT_CBM_CFM:
 +	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
 +	case SND_SOC_DAIFMT_CBP_CFP:
- 		ctrl = ADAU1373_DAI_MASTER;
--		adau1373_dai->master = true;
-+		adau1373_dai->clock_provider = true;
+ 		ctrl0 = ADAU17X1_SERIAL_PORT0_MASTER;
+ 		adau->master = true;
  		break;
 -	case SND_SOC_DAIFMT_CBS_CFS:
 +	case SND_SOC_DAIFMT_CBC_CFC:
- 		ctrl = 0;
--		adau1373_dai->master = false;
-+		adau1373_dai->clock_provider = false;
+ 		ctrl0 = 0;
+ 		adau->master = false;
  		break;
- 	default:
- 		return -EINVAL;
 -- 
 2.20.1
 
