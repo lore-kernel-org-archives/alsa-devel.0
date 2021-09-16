@@ -2,98 +2,98 @@ Return-Path: <SRS0=oBF5=OG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9849CC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 15:03:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 666F1C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 15:04:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC35160F6B
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 15:03:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EC35160F6B
+	by mail.kernel.org (Postfix) with ESMTPS id DB737610D1
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 15:04:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DB737610D1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2315C18A0;
-	Thu, 16 Sep 2021 17:03:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2315C18A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7785218A5;
+	Thu, 16 Sep 2021 17:03:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7785218A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631804637;
-	bh=C+7Lcudi7SZbwNey9j+1MCCihc+kibSCcm/s+tOl0WM=;
+	s=default; t=1631804662;
+	bh=tVAlQIEooMFtJKrUikPPdawGId4dgf2lg5vCdZgBobI=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eCUZxkNTk6ftpsv+ki2fkM6XxHyjiyHHElTELoVlkOSwVbFNnw7rDIckaByD55Lxp
-	 1yLc5Mr9kXhB2X9/WwrFNXeQgC0hjOx+ZE1awpC6M5xjMT6OBWIK3IgY4jdkWPGDBm
-	 cHMOiB83EV+CWPoUtvnETyQSLADl8MHrW83DhNik=
+	b=PoXmL0qYlPXFX3wZ9MFsSJmh/l+yjwdTp/8fqahTp3UbNYgXJWShG2aryuFAv2LyF
+	 vORaOd9gl9K0olsPOKvGxf9bWxAG6ZeMDj9IV2gh0b2czeKYA+D/0Hg68Kffdg/LmU
+	 Ddhgi1ZGBU77x7ouZIevx0xtC4OqOWIA6S6DgmBE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1723CF804CA;
-	Thu, 16 Sep 2021 17:02:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B94A4F804E3;
+	Thu, 16 Sep 2021 17:02:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1A630F8032B; Thu, 16 Sep 2021 17:02:24 +0200 (CEST)
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com
- [IPv6:2a00:1450:4864:20::431])
+ id 35ACEF804E7; Thu, 16 Sep 2021 17:02:35 +0200 (CEST)
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
+ [IPv6:2a00:1450:4864:20::429])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 75751F80117
- for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 17:02:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75751F80117
+ by alsa1.perex.cz (Postfix) with ESMTPS id DD269F804E3
+ for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 17:02:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD269F804E3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="jt/5tWIT"
-Received: by mail-wr1-x431.google.com with SMTP id d21so9963469wra.12
- for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 08:02:20 -0700 (PDT)
+ header.b="h6fESi2h"
+Received: by mail-wr1-x429.google.com with SMTP id u18so8260597wrg.5
+ for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 08:02:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=subject:to:cc:references:from:message-id:date:user-agent
  :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=YIIiNZ1N2SOMMX7Uq/ij5mF3RLXqeUCzPbsrlrJuR74=;
- b=jt/5tWITWXCzx9TuxJKlc/4ci7MWX1d5XSJEosH7mEdxVHMgiJmIS+GpcgYOrjTTys
- liC5dOyHjJgXUb7WZxSKFCFHL0EdBWnw5anzuLoQGCIQD2hnaFSPayFdwVxBtMgLAo/3
- 4rP8tAvjgUbtwCtV16AQDUj3I9Ui4kWa7WE34tnTI3aJtvshY1AxZOS/i6fGPfBoeBJ9
- caIwYFHgXHNpuuHhqYvInn0WTiRIU7wS42tih6bLLPfyDbBmy3dRKUDjHCl8sLhHs3HB
- KorpmD7IMAr0EuQc++UuAzXTZwBCtVN/Zfheh2LD9NG4CdLl1oSgRl6MUyPNABO2601c
- GgsA==
+ bh=dSgHedLjzf+f2rTJK3kZU0KWVdsOwbxIVOfdR15sHOM=;
+ b=h6fESi2hIwSa+szyFIzV+yyW7VKuG7EV9Qyl+Eqe7NT9DAzSpbOR8bBkYbVOtijLzG
+ BPwznn97wAnKiDsi6nJLJbhAHRdpKDwIlI057FelyFgk7oBbEffN7XLI1Td0m1beLB2V
+ smnWrfxEKnw23hKp/tKv6zw/QhkzEG4x0XCJB6ES/YyCmuUoSIGSDncuFCI+VvW/tM9/
+ GGZiMnt0QsEXYKNWDv04KV0uTQCmXSn2XigFFDx8WfKfL/DPEnfE3JXugvfUfntcygBc
+ 6tWfWDA6erk7rMt2CafWW3h8c9f+PDHIdxIlrKNn5xfpzKuhOnvVl57lg90WzQ37JYOC
+ lTog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:subject:to:cc:references:from:message-id:date
  :user-agent:mime-version:in-reply-to:content-language
  :content-transfer-encoding;
- bh=YIIiNZ1N2SOMMX7Uq/ij5mF3RLXqeUCzPbsrlrJuR74=;
- b=7oEilqSDwZicQBpyPfbq6l12zYGsRLrL8TrKzbcvSRsvVXE8/wBbHnB957P2T1G3/p
- gQOIm7OFiO6iIROr9/AY1kzVd9g1yyb7E05ZIQ8ITzWsSUdR7dXUxCdeTXI2IyJptulu
- nr0+rBEtGCIvARK4OdI6wKBiM8bhKgJDNxynvwXUCyf2JjzYA9S7c2DZVN8xC7AXfm5f
- Vb8U3T1g8ZRK7XVas4HIobQs3VRwdTMB8UuHRqAp9Ajx5TnCLExDIOOGm9lZcbqXgkRt
- 2buW6P3hk0ZXYR3y/KMjB0zAk+W/TIbJMVzJGDMfjG7USope+Hl+YF6HGGsoCs7SLH4m
- v5Tg==
-X-Gm-Message-State: AOAM5307zqLi32E27TeQ33oHhK+f6mJPvTiOnXHzki1l7/rli4jsGd1P
- 9gi1Yi+XLdyGpNIGRIaAzSJJhg==
-X-Google-Smtp-Source: ABdhPJxlcORnlxuErR9hc2YbkqoJnbdb3QRiu5wa7dRIyegpk7J0bufluMi21B4MZ11Ja6aCC376zg==
-X-Received: by 2002:adf:e5c5:: with SMTP id a5mr6546246wrn.290.1631804540284; 
- Thu, 16 Sep 2021 08:02:20 -0700 (PDT)
+ bh=dSgHedLjzf+f2rTJK3kZU0KWVdsOwbxIVOfdR15sHOM=;
+ b=YTg2I2u+ZugInPb2gQnUqGlcqOh8N86+rYS6dUFd81VxhSgoRwdopd0HS6+zhGH24U
+ 4iBnQ0N23WKx9Nx5pLd9c84TPVREK8ZiXETzJn/GQurxeZrYOHjHOXoNmGeMnApC4clp
+ OtOV5xw5iSnfLZwcvLwUww/101ju9LNUI+IFrkAtunfS1QdXVaBq8Xe6ZU6r7WtZH2zi
+ FkaGy/N8Ot54dJicvWwNrDbYajGz4kkyhF0ROUEZdaExNmUnYpE76kEoBmqPp81AorTn
+ gk/y8GG9Gh/8JZKGUcasYuBcNP7wr7WP7CoL/d2kKS9rCOXwLPnqhHHCggw3ce5wpJvG
+ so6g==
+X-Gm-Message-State: AOAM532n0dSzrMnqG6D1XdIvblFRg6L48MnjRTll6aBdY+EicmzUU6lc
+ Ypr62AVs2ZCv0hXSPVCxPkzRlQ==
+X-Google-Smtp-Source: ABdhPJzqLpnHO/KWZL5nlsyJVJOE8FaDqAmJmi1qSMMbwOIQirjc26qr0OeKJEsY4UuBqvpWyFUxuA==
+X-Received: by 2002:adf:f084:: with SMTP id n4mr6770289wro.362.1631804551728; 
+ Thu, 16 Sep 2021 08:02:31 -0700 (PDT)
 Received: from [192.168.86.34]
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.googlemail.com with ESMTPSA id u2sm3573509wmj.29.2021.09.16.08.02.19
+ by smtp.googlemail.com with ESMTPSA id s15sm3806235wrb.22.2021.09.16.08.02.30
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 16 Sep 2021 08:02:19 -0700 (PDT)
-Subject: Re: [PATCH v6 15/22] ASoC: qdsp6: audioreach: add q6apm support
+ Thu, 16 Sep 2021 08:02:31 -0700 (PDT)
+Subject: Re: [PATCH v6 18/22] ASoC: qdsp6: audioreach: add topology support
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  bjorn.andersson@linaro.org, broonie@kernel.org, robh@kernel.org
 References: <20210915131333.19047-1-srinivas.kandagatla@linaro.org>
- <20210915131333.19047-16-srinivas.kandagatla@linaro.org>
- <f4c9702d-72a4-f602-71ce-006e6588190f@linux.intel.com>
+ <20210915131333.19047-19-srinivas.kandagatla@linaro.org>
+ <bc93c17e-b65d-5885-f151-243d259f40ff@linux.intel.com>
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <0938083f-debd-6ab1-b5fc-fc3335e0d9dd@linaro.org>
-Date: Thu, 16 Sep 2021 16:02:18 +0100
+Message-ID: <3c5f75f9-8ee2-6da2-b7ec-7854759e2647@linaro.org>
+Date: Thu, 16 Sep 2021 16:02:30 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <f4c9702d-72a4-f602-71ce-006e6588190f@linux.intel.com>
+In-Reply-To: <bc93c17e-b65d-5885-f151-243d259f40ff@linux.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -115,185 +115,88 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Thanks Pierre for review,
+Thanks Pierre for such quick review,
 
-On 15/09/2021 17:02, Pierre-Louis Bossart wrote:
+On 15/09/2021 17:22, Pierre-Louis Bossart wrote:
 > 
->> +static void audioreach_populate_graph(struct apm_graph_open_params *open,
->> +				      struct list_head *sg_list,
->> +				      int num_sub_graphs)
+>> +static int audioreach_widget_load_buffer(struct snd_soc_component *component,
+>> +					 int index, struct snd_soc_dapm_widget *w,
+>> +					 struct snd_soc_tplg_dapm_widget *tplg_w)
 >> +{
->> +	struct apm_mod_conn_list_params *mc_data = open->mod_conn_list_data;
->> +	struct apm_module_list_params *ml_data = open->mod_list_data;
->> +	struct apm_prop_list_params *mp_data = open->mod_prop_data;
->> +	struct apm_container_params *c_data = open->cont_data;
->> +	struct apm_sub_graph_params *sg_data = open->sg_data;
->> +	int ncontainer = 0, nmodule = 0, nconn = 0;
->> +	struct apm_mod_prop_obj *module_prop_obj;
->> +	struct audioreach_container *container;
->> +	struct apm_module_conn_obj *conn_obj;
->> +	struct audioreach_module *module;
->> +	struct audioreach_sub_graph *sg;
->> +	struct apm_container_obj *cobj;
->> +	struct apm_mod_list_obj *mlobj;
->> +	int i = 0;
+>> +	struct snd_soc_tplg_vendor_array *mod_array;
+>> +	struct audioreach_module *mod;
+>> +	struct snd_soc_dobj *dobj;
+>> +	int ret;
 >> +
->> +	mlobj = &ml_data->mod_list_obj[0];
+>> +	ret = audioreach_widget_load_module_common(component, index, w, tplg_w);
+>> +	if (ret)
+>> +		return ret;
 >> +
->> +	list_for_each_entry(sg, sg_list, node) {
->> +		struct apm_sub_graph_data *sg_cfg = &sg_data->sg_cfg[i++];
+>> +	dobj = &w->dobj;
+>> +	mod = dobj->private;
 >> +
->> +		apm_populate_sub_graph_config(sg_cfg, sg);
+>> +	mod_array = audioreach_get_module_array(&tplg_w->priv);
 >> +
->> +		list_for_each_entry(container, &sg->container_list, node) {
->> +			cobj = &c_data->cont_obj[ncontainer];
->> +
->> +			apm_populate_container_config(cobj, container);
->> +			apm_populate_module_list_obj(mlobj, container, sg->sub_graph_id);
->> +
->> +			list_for_each_container_module(module, container) {
->> +				uint32_t src_mod_inst_id;
->> +
->> +				src_mod_inst_id = module->src_mod_inst_id;
->> +
->> +				module_prop_obj = &mp_data->mod_prop_obj[nmodule];
->> +				apm_populate_module_prop_obj(module_prop_obj, module);
->> +
->> +				if (src_mod_inst_id /*&& dst_mod_inst_id*/) {
-> 
-> remove left-over code or uncomment required condition?
-
-Yes, this can be removed.
-
-> 
->> +					conn_obj = &mc_data->conn_obj[nconn];
->> +					apm_populate_connection_obj(conn_obj, module);
->> +					nconn++;
->> +				}
->> +
->> +				nmodule++;
->> +			}
->> +			mlobj = (void *) mlobj + APM_MOD_LIST_OBJ_PSIZE(container->num_modules);
->> +
->> +			ncontainer++;
->> +		}
->> +	}
->> +}
-> 
->> +static struct audioreach_graph *q6apm_get_audioreach_graph(struct q6apm *apm, uint32_t graph_id)
->> +{
->> +	struct audioreach_graph_info *info;
->> +	struct audioreach_graph *graph;
->> +
->> +	mutex_lock(&apm->lock);
->> +	graph = idr_find(&apm->graph_idr, graph_id);
->> +	mutex_unlock(&apm->lock);
->> +
->> +	if (graph) {
->> +		kref_get(&graph->refcount);
->> +		return graph;
->> +	}
->> +
->> +	info = idr_find(&apm->graph_info_idr, graph_id);
->> +
->> +	if (!info)
->> +		return ERR_PTR(-ENODEV);
->> +
->> +	graph = kzalloc(sizeof(*graph), GFP_KERNEL);
->> +	if (!graph)
->> +		return ERR_PTR(-ENOMEM);
->> +
->> +	graph->apm = apm;
->> +	graph->info = info;
->> +	graph->id = graph_id;
->> +
->> +	graph->graph = audioreach_alloc_graph_pkt(apm, &info->sg_list, graph_id);
->> +	if (IS_ERR(graph->graph)) {
->> +		kfree(graph);
->> +		return ERR_PTR(-ENOMEM);
->> +	}
->> +
->> +	mutex_lock(&apm->lock);
->> +	idr_alloc(&apm->graph_idr, graph, graph_id, graph_id + 1, GFP_KERNEL);
-> 
-> test for idr_alloc() success? You have error checks for idr_find() but
-> not for the _alloc() case.
-
-Yes, error handing is missing in this case, fixed in next version.
-
-> 
->> +	mutex_unlock(&apm->lock);
->> +
->> +	kref_init(&graph->refcount);
->> +
->> +	q6apm_send_cmd_sync(apm, graph->graph, 0);
->> +
->> +	return graph;
->> +}
->> +
-
->> +static int apm_callback(struct gpr_resp_pkt *data, void *priv, int op)
->> +{
->> +	gpr_device_t *gdev = priv;
->> +	struct q6apm *apm = dev_get_drvdata(&gdev->dev);
->> +	struct device *dev = &gdev->dev;
->> +	struct gpr_ibasic_rsp_result_t *result;
->> +	struct gpr_hdr *hdr = &data->hdr;
->> +	int ret = -EINVAL;
->> +
->> +	result = data->payload;
->> +
->> +	switch (hdr->opcode) {
->> +	case APM_CMD_RSP_GET_SPF_STATE:
->> +		apm->result.opcode = hdr->opcode;
->> +		apm->result.status = 0;
->> +		/* First word of result it state */
->> +		apm->state = result->opcode;
->> +		wake_up(&apm->wait);
+>> +	switch (mod->module_id) {
+>> +	case MODULE_ID_CODEC_DMA_SINK:
+>> +	case MODULE_ID_CODEC_DMA_SOURCE:
+>> +		audioreach_widget_dma_module_load(mod, mod_array);
+>> +		break;
+>> +	case MODULE_ID_DATA_LOGGING:
+>> +		audioreach_widget_log_module_load(mod, mod_array);
+>> +		break;
+>> +	case MODULE_ID_I2S_SINK:
+>> +	case MODULE_ID_I2S_SOURCE:
+>> +		audioreach_widget_i2s_module_load(mod, mod_array);
 >> +		break;
 > 
-> this would keep ret = -EINVAL and return it, that seems suspicious since
-> this doesn't look as an error case?
-> 
->> +	case GPR_BASIC_RSP_RESULT:
->> +		switch (result->opcode) {
->> +		case APM_CMD_GRAPH_START:
->> +		case APM_CMD_GRAPH_OPEN:
->> +		case APM_CMD_GRAPH_PREPARE:
->> +		case APM_CMD_GRAPH_CLOSE:
->> +		case APM_CMD_GRAPH_FLUSH:
->> +		case APM_CMD_GRAPH_STOP:
->> +		case APM_CMD_SET_CFG:
->> +			apm->result.opcode = result->opcode;
->> +			apm->result.status = result->status;
->> +			if (result->status) {
->> +				dev_err(dev, "Error (%d) Processing 0x%08x cmd\n",
->> +					result->status, result->opcode);
->> +				ret = -EINVAL;
->> +			} else {
->> +				ret = 0;
-> 
-> That's also weird, maybe initialize to zero and return an error code in
-> error cases, or fix the case APM_CMD_RSP_GET_SPF_STATE above.
+> no default case?
 
-this is now fixed by initializing the ret to 0 and setting it in error path.
+Thanks for spotting this, its fixed now in next version.
+> 
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+> 
+>> +int audioreach_tplg_init(struct snd_soc_component *component)
+>> +{
+>> +	struct device *dev = component->dev;
+>> +	const struct firmware *fw;
+>> +	int ret;
+>> +
+>> +	ret = request_firmware(&fw, "audioreach.bin", dev);
+>> +	if (ret < 0) {
+>> +		dev_err(dev, "tplg fw audioreach.bin load failed with %d\n", ret);
+>> +		return ret;
+>> +	}
+> 
+> How does this work if you want to change the topology, which will happen
+> rather frequently if you have a framework precisely to change the DSP
+> graph? You need to override a file in userspace?
+> 
+> Shouldn't you have a means to identify what topology file you want on a
+> platform-basis?
+> 
+> Or at the very least a means to change the file name with a kernel
+> parameter or something.
+
+I totally agree, I was planning to do that as a next step. But now that 
+you pointed it out, I can take a look at SOF for some ideas and add it 
+in next version.
 
 --srini
-
 > 
->> +			}
->> +			wake_up(&apm->wait);
->> +			break;
->> +		default:
->> +			break;
->> +		}
->> +		break;
->> +	default:
->> +		break;
-> 
-> so all the defaults are errors?
-> 
+>> +
+>> +	ret = snd_soc_tplg_component_load(component, &audioreach_tplg_ops, fw);
+>> +	if (ret < 0) {
+>> +		dev_err(dev, "tplg component load failed%d\n", ret);
+>> +		ret = -EINVAL;
 >> +	}
 >> +
+>> +	release_firmware(fw);
 >> +	return ret;
 >> +}
+>> +EXPORT_SYMBOL_GPL(audioreach_tplg_init);
+>>
