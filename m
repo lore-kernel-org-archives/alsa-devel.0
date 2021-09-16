@@ -7,77 +7,78 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0F4DC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 11:21:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6C02C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 11:22:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 30F3A6103B
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 11:21:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 30F3A6103B
+	by mail.kernel.org (Postfix) with ESMTPS id 2C20F61185
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 11:22:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2C20F61185
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oss.nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D1C0F18BB;
-	Thu, 16 Sep 2021 13:20:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1C0F18BB
+	by alsa0.perex.cz (Postfix) with ESMTPS id BAC4A18C2;
+	Thu, 16 Sep 2021 13:21:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAC4A18C2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631791280;
-	bh=vGAgxNWqrfK4/j0MTVECMPwvHW43ZfhnaYd9QZrOkg4=;
+	s=default; t=1631791325;
+	bh=Wmuy1RcELX3LRvha9F0iKq5B+aTkqw7qMSGi66PqFZ8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=o9wshyrYLuFg6pdK6Tv4NKxMpQ4Os80gVqzVvHpqvcRYfXXgyuUyhO0pNVzLzwvrj
-	 5dxrXfPZeD4GRcoceraxqVcd/mnQX99aGfEscHdoPITOQBd0OhQXkr/bF5nPAXBHLo
-	 HwwWihLvhu8Q2VmamVlfLQ++XehhlVx9gDm4/SG0=
+	b=ivWJp7K+HMJTt/yYGo1a50TGAayxXoSV5dvbgMsV0q/tmhtJYOQgizhiFpcywsipH
+	 eBkUlJgTqaeYj8Gv0Q0RtSpLzd6QHSNqJ0kcaB6DRX9Gj0HOnD5fnSoYkkKbSHuH5J
+	 /jiq+5WwNSCG8lV0UaHoMT8orNUc4Lp7s96GSj14=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7483EF80524;
-	Thu, 16 Sep 2021 13:17:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AF607F80542;
+	Thu, 16 Sep 2021 13:17:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5B19FF80518; Thu, 16 Sep 2021 13:17:35 +0200 (CEST)
+ id 1A4D8F80536; Thu, 16 Sep 2021 13:17:40 +0200 (CEST)
 Received: from EUR03-VE1-obe.outbound.protection.outlook.com
  (mail-eopbgr50050.outbound.protection.outlook.com [40.107.5.50])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F05B5F804E3
- for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 13:17:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F05B5F804E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 43E0FF804EB
+ for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 13:17:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43E0FF804EB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com
- header.i=@NXP1.onmicrosoft.com header.b="BGw6/Lu1"
+ header.i=@NXP1.onmicrosoft.com header.b="iabjGb7c"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gmornN+6ieDGm5Og1A3qx/lzukNT7tIA6TJdYRHaEk7bSaoNkv6lncxR66r8bpw1LfQ2H9nOozv6Pf6IXRAAqXii71le8/zJLOWzB1ufPMw47ewBeR4j9OZ6K47d5xbtyqkRaQwXLXwyk21Rp2pxmsjsQrbYQW8Le+OV8BZxGbvkDDgHk9tWSwUf3E4vwc9K1Px/oFzXCsSsxNwr2C14z5CQPQFomqMjaaP2c5Uakk5Itc45Ty6trnOlDAWUe8UmdEQJRbMzcnJ8g3QKPjByO4FiPFMPaZyZZE9EjUasJ1AuSFSimmnxNJHLyxQImxGxkO40yefuQ5dUP+qHqMzU8w==
+ b=LAHMeblbOJKvCPIo2vMr59M7IVnAgUSKDUpAUhIUxqVSIJoyINvtGddqGG4SEfLba6/ZTa/HedsK/Pal51hr6mUQWMPa4gOJAzoMSeXyeBi+KjIZYHkzS6I30mB11UIdDVI8laSrg/9rEyQQXq1HDzjBAMkSldmnTskBrmFmA4HeygEq0ADdaS5LsOCESpskKuSmhkr946Hpa5LV5MU3LfZWJmVUg5y7cWTZDTp1ptXcu6EhaUdGPJcjGu1V8hhp7JEdWzbgQOjcMcQpga4yWkzpo7I/pYGTkPz4hpUU4oAK/JbkO8HX4m3v92SlrXFCPFLrdzJnQYW595ZMdRf4Gw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version; 
- bh=zKidOw5pr7Z2gD9CecNVZHqnBlv8Y0SLirBrQmqtvag=;
- b=NYvpNNQgEBfshotsolBXVDEI+ADsg7X5Ze0zQWNKvnza2XhgywE3FdSKaai3iHeYgVtogLiuOAJ389wek1s/X9dmCCrnWLJOo+ey7qwtUh37gW8It8fGnVwX73eleAFaW2eArxcdrX7fzQQEgOvbfHqksABE1RGoNkIzYc2sNwGhTzhrBIGsMdWGVIeJmKxFsTguUclzPN2bYAeIFYzHZ2JL1NtrEyZ34EKn4EwNjy0C/zBeA1f81IoqL6fcg7jcVdCzBJ06JL/jyIaFCkfcvofuhcYoAkQeaLIgLImk0WkxspJUvECZiizgjAYbtSaXBaRKwnre2P5vPj5OmzIg8Q==
+ bh=r33LpVf5TasNOfyqMtcxuG9Sf+2Ff/371JeRpRovvoA=;
+ b=mItNc2pTgmfnePn6qnoC34YEQZsFs5EB5fqir1nM1RLJ/E9Czyx97r5p3FE160KPGr+XCNSiUyHv6bVtexPB8mzqxI9laxl5uwY6HKL8Yf9wLcWpk+JpWRq4AbyobA0C0auqalYK9tn+HBpBJVCxkdxYFDc9EzaKQgnVRHj1iXSi5bzUCGg5b6eoMxIkA8HG2fG1TkkpocpE25gOBpuBzJX5m0pLCYeKTjl/vOtAbbBZJkgcBsjJqTSMgVnCHRenK7KJUSxD3+iiY8sA9HNNzl910yI0N1PQ1Sj7yi5s0t+T0xqQ1A8Vq0+k/gTawaIdvZzYjIpG5xOhUGY43x0YRw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com; 
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zKidOw5pr7Z2gD9CecNVZHqnBlv8Y0SLirBrQmqtvag=;
- b=BGw6/Lu1lYtZnxwkfYrHm7/eYrFfunDvJFqPC7Dp8wdSPHUlqQ5rqbeHrGLv59qAoTO5yzvc95euzd8d6VUxbDV2KkMqf2Nqns18mTTcafeJvztoMLdPPm0I7lkfN4p2yNCigCu61rDdjIlCcgICC9p/RhNqOxv7m7sYQ9xPGk8=
+ bh=r33LpVf5TasNOfyqMtcxuG9Sf+2Ff/371JeRpRovvoA=;
+ b=iabjGb7cZ6OSfpkJnEBjvTpdzsB3b85vN50FxG9zzHcjd3Za2J/YE7riiHv5/3ibi0jYCJIeOINinMGrkVuSUPWs5OQzUGkGWJwA1NddgyvtcdVRLKS0/vLWFZk572K/R3ymt1jadt0V+hnlODvYwXTiLLKsksMg4DduiHOmNMs=
 Authentication-Results: kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
 Received: from VI1PR04MB5151.eurprd04.prod.outlook.com (2603:10a6:803:61::28)
  by VI1PR04MB4926.eurprd04.prod.outlook.com (2603:10a6:803:51::16)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.18; Thu, 16 Sep
- 2021 11:17:17 +0000
+ 2021 11:17:21 +0000
 Received: from VI1PR04MB5151.eurprd04.prod.outlook.com
  ([fe80::499b:ba92:db2e:3f28]) by VI1PR04MB5151.eurprd04.prod.outlook.com
  ([fe80::499b:ba92:db2e:3f28%7]) with mapi id 15.20.4500.020; Thu, 16 Sep 2021
- 11:17:17 +0000
+ 11:17:20 +0000
 From: Daniel Baluta <daniel.baluta@oss.nxp.com>
 To: broonie@kernel.org
-Subject: [PATCH 09/12] ASoC: SOF: Introduce widget use_count
-Date: Thu, 16 Sep 2021 14:16:43 +0300
-Message-Id: <20210916111646.367133-10-daniel.baluta@oss.nxp.com>
+Subject: [PATCH 12/12] ASoC: SOF: topology: Add kernel parameter for topology
+ verification
+Date: Thu, 16 Sep 2021 14:16:46 +0300
+Message-Id: <20210916111646.367133-13-daniel.baluta@oss.nxp.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210916111646.367133-1-daniel.baluta@oss.nxp.com>
 References: <20210916111646.367133-1-daniel.baluta@oss.nxp.com>
@@ -92,56 +93,56 @@ Received: from localhost.localdomain (2a02:2f08:5708:8600:b29c:ccfa:a961:8ebd)
  by AM0PR04CA0037.eurprd04.prod.outlook.com (2603:10a6:208:1::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend
- Transport; Thu, 16 Sep 2021 11:17:15 +0000
+ Transport; Thu, 16 Sep 2021 11:17:19 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 08bf1355-7789-4a9f-5f36-08d979038a9c
+X-MS-Office365-Filtering-Correlation-Id: da409bb6-8407-430b-87c3-08d979038cf5
 X-MS-TrafficTypeDiagnostic: VI1PR04MB4926:
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB49267E65F0A5761D054876D9B8DC9@VI1PR04MB4926.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
+X-Microsoft-Antispam-PRVS: <VI1PR04MB49269AA72BF7725DA068F612B8DC9@VI1PR04MB4926.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ku+e7NSe+CwFyS17lLvcLgE+z6opwUi4EZH91vEboislFFIwhbGE2refDi7Vvj99AtKl6qJQwOROT3ZfG2gGyLpmHtQEqtDZHlwnFk5QkFmstaZEVZXnH2mLPEAK/WxfTsLnF4ADOcjDtNbrHbDPFgTnOEqXcfVT1jV8t7S7IZ0G9zIVPi2QPvumhwI3JJ5rBc68kVkniS7Iq5jJR48in6OeGj7POnZ86b/XvcU7Q4G4KtOyp4ZkJVh0Kj8iDSGamfzFOGr8SZzuLK5dd/SBUJlURJHpbg7SNk40F/MEw5GjvpYCaZ9OmAeFFuPInVm/CAgpjEn3sRln2K/J3YCEf/d9iz/f9Wojw1w9/HA1em4+WRKjEQCRGFgGhTYfJh3ZAT42t1KykDXVldjFczkiYT/Un3ricusuxaHhfV9PCAEIJfOw5jDN7MvxPEbf86KadtCzzInF6qSlV8O2HclMUJk/aM1PaZcDZgP7wTbYoDY5JnJraIYS/mBoJatcZggIvx0ZmOFJJyEkhSm1tQCtLIWkzHkM6o3fB29oPEvX4w3GFDDZ3YphaUZvQAk9I4pQz0N1aiZl5bb+FWW2Wd59HFEKgChgDq/Sys8fbWWRm098fWrxeIXtpU175osV1KJvWNrXKCYaH8B5UtNw+BppJg==
+X-Microsoft-Antispam-Message-Info: tjAfh6V47/dSUC3sA+tByyKaE5hRNGCB4e0JUqw6wNuPThs07BS9aLTTnutUdLPbA0TPFz/NUksxoxQ9OnblJ25EU9ERP+4R4wEQVSIWUCTG8SFHju88h0E/GUI1xNoMgZAoY2BoG1CipdZduwEfVR9d7Y2Dxw3P/qULcFZoJy69aOGmiM3YPhRNNXL9ibavSWo3mLCgrIuMIP+7gVMhbeI8Oe4wu1xBaoHbqlzPWjNwLMQGz0Ueo5bzpGCP3FCCXumT39Wed0OpgRf+ouA2M3FSmze4QIvou4bdjpL4QpXj7b9j34hv5UH2YKm20FdtUGx7QiphBowEhQL62n/nGbpRwGR3BMWcoXMCgzkyw3ssKvikKn3Zd6e3BNN419C9QVpF7oHcE+BhFgOsGtSmSLRdYHoamSH3EK1NSkGIVdml+QO4dtrb6VJcNmWZP0o5Ae0U6kFdLbfceiaWdJbe/uxqcEdaDeojvb6ImOFemm92l5MNuaVHkCOk1xbK+XTkKxNCEMAS57UKvKlR1ii5pkWYNerQwTOeMMk853eHUHJ0L3V9FB9RK46zRxrkG6q5vCDKjCAQBXDUgsYgLJXtHkGwxU0is9ldW12tKkOZ0XWJKpCzA4taDtz5piFasdEjW5I8IlvlI0h3NlJQB4H9Xw==
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:VI1PR04MB5151.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(39860400002)(366004)(136003)(376002)(346002)(396003)(4326008)(8936002)(6486002)(186003)(83380400001)(6916009)(2616005)(5660300002)(66946007)(52116002)(478600001)(8676002)(6512007)(6506007)(86362001)(2906002)(44832011)(66476007)(66556008)(316002)(1076003)(38100700002)(6666004);
+ SFS:(4636009)(39860400002)(366004)(136003)(376002)(346002)(396003)(4326008)(8936002)(15650500001)(6486002)(186003)(83380400001)(6916009)(2616005)(5660300002)(66946007)(52116002)(478600001)(8676002)(6512007)(6506007)(86362001)(2906002)(44832011)(66476007)(66556008)(316002)(1076003)(38100700002)(6666004);
  DIR:OUT; SFP:1101; 
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?CkH5K2EJ1bWt0tBKxTdS7pe79h8+dNEn5is21Q4z+kaRzEh3xApjGiUb7/n4?=
- =?us-ascii?Q?TgfsKbW9dvtbbwl8acpSJLQ587SHTxk535XXNN5BFDa0VFOSJZD7JY67TJKC?=
- =?us-ascii?Q?j4AWJc3nsXCwAYOHxUZ/k8JfH9dEjTjUl7MuFP66ezTlHF0kQ646rT1syAPQ?=
- =?us-ascii?Q?uU0BLPsbI8O55IAonJ4LLpqDdtNPvfASx7fNer7evkdQwtmQR7SPGIEtL5QO?=
- =?us-ascii?Q?Ndwhlk+TmBWla4l13NNfCsHvaXTHl6xZBVbfvz6plEUgoEPwl2sdhcJESG9i?=
- =?us-ascii?Q?4pej9lwM5UfjFtm3UCcpY2FVRuVSdqhWuVD4+xWfFd4R8LrSb3qkSMv8n02v?=
- =?us-ascii?Q?wqzU9OAtobxLvOID1FzY828FWoprY51dIacXpvTAcpLkpRUkshddwfBCNUal?=
- =?us-ascii?Q?fZuja4W3XnRokJFgMCIdyPIHR7pxwXXXAisX77dmxJDbfUPGDEzWtCIz5CTj?=
- =?us-ascii?Q?tK37D6C/SYL6xv/CwWjAFUanRI3wGMZZMX542mjfMTNteOkVXYXulXjZuR3X?=
- =?us-ascii?Q?mTBVKP6F0MqOcryehD/WnNrAkooZbMT70PYEuRZjRcQbfcLBHi81MpYOgADL?=
- =?us-ascii?Q?5W7DhXJt1VHMDwUkiA8h5l5rPqMkxFoMCPiSbFeKfHR6frdk6bm9txK5W+2P?=
- =?us-ascii?Q?fDy9WWDOQw2oGM8SGJa6hyu07EZSkAzQoYJ2IhdlSWBtp/GsgF1lzQSnb1/U?=
- =?us-ascii?Q?BoVydDc+5BdzZmdjtaFONymT2u1uPiTtFbJHyABiPv1caTI41Gv4/uiQtMRs?=
- =?us-ascii?Q?fpS/DJ1tt3qR8UcqCyghR9UOkYUzIjH2+UoPLwdHOi597Dsi932mMv9d+nBV?=
- =?us-ascii?Q?7ceVMJ/y2MNXDG65Z54H/VZRMFzO0igeS9Xuft2asuoFnVPpVJsqQ8yKflIe?=
- =?us-ascii?Q?Xr7HxtmhC6q4oEgAVhKl/WdtzmF1QTAqjj6fHSQUCg3BlE++U+SSq60Ya3WV?=
- =?us-ascii?Q?R7B1ROqkr1ZHyVQnfHY+RIC2+FPF0sM3bFrDzlw2e//KNjFs1Ih0AxCcHbEo?=
- =?us-ascii?Q?XmRKHNQwxcRKYVwJ8uku1AElfB6bK8nrOJk4BtiTb7Z+/Wavyq1HXX4W7l4i?=
- =?us-ascii?Q?lrj39A+OwPvZPoMDxr6hjaIYf6xLwoxZWcmem3I8DvVjb2VpLRFPkeh8Hcq6?=
- =?us-ascii?Q?K0k6agCHp0wUG19e3ejR+SFa4rC0aFfFoBdfmQBIISQx4deIJfIZXAnk8TGU?=
- =?us-ascii?Q?XZQY1toj8a9QV8v/XlCQrgQlPIC8R7dMBh8eXMVZ46T9NoUxvmlRbDTfCNaz?=
- =?us-ascii?Q?GJw2RuzWOk8f4V45L/fBmgUC8WT1MfXF95Ft+RBuwEMkKgTz2fXMyEFCXQgI?=
- =?us-ascii?Q?tV3zPTvVGvB7Grq3ZoJCZj9CKf4fXqAXYsDjNwMmOkaF9JBjN2BC++Um+/P2?=
- =?us-ascii?Q?KesSJt/pX0BwlepICuk3b0Ib/pPB/lTI6HdhMj1gaoUOt0bzhg=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qNZl2AwUlY83h6VY26ZjLsyzPSsUt083DxnKVyDWOKXhJ+J/23RS0wz+nYSD?=
+ =?us-ascii?Q?UFvqgMnNm0emaihAyAn/BVmHjL2RxQnSFignNKQtuymiCFcRzzr2LXOC4vLx?=
+ =?us-ascii?Q?NQYrErzFdcXdDyildWrufBPgxyYi0+10Pp7gTuaG+Zv4tO0AjDkcVuosW9+S?=
+ =?us-ascii?Q?gm6Hy6FIFU8I8GDoiuOzoj4AUymkryCv+SCHP3XCo7JayltO+7I9TvRxm9Uy?=
+ =?us-ascii?Q?5uVfor+nVG06FsRA/5FfcieYEO9YZiccYrPqwbDDBy8NCgY7RBSWQ+/FWJ1b?=
+ =?us-ascii?Q?kXpKqzGL/Rt+MgXffYaaU9zGDc9PKGO/FF6T1MkZ+q9Ytyulb3B71R9NTvQK?=
+ =?us-ascii?Q?0otsJ+PCF/Ab4eUDjhMJXpTX3n1IMaXbEFAslpSBfJqiHuLEWUmT6ezNHtjD?=
+ =?us-ascii?Q?cpvGj8r46vqF3BbBDN7m5M3CrZ0DKxqKlLPi3TMCpJG0laCUqBP4rH6oTMiO?=
+ =?us-ascii?Q?tBcQj0yHRTrrB6Rdiz5TMo79qyoRWY3xfKp394VxndZlG22/2zNwVgV1tBLo?=
+ =?us-ascii?Q?c3hjMwmozcejZgBbiSTIo2wbr8ln4LK7pnS8jk1WBKsmuw/yvc9X5gOIi+Ot?=
+ =?us-ascii?Q?Msb0UKM4RUYdnGK+v7LiFwxFk3TN1+0SjrW73iFdSsgj0HvpHIHteBGoPUle?=
+ =?us-ascii?Q?AQ96jZBG6fytH8Hs7gO1oFGjQ0sIbiYUWic42vmgblY/Qj+cl+k+LMHFBjXI?=
+ =?us-ascii?Q?N2WHvTIaJIm0wj3u71iuFnpx6E5NJlkFM+lsbMVZ4BD2tH8waKylYcRi6Uu6?=
+ =?us-ascii?Q?TMTvwjaxGv+lRqHmWxrxjEWRhZ0WLgMZKO8n0wPv+X1SRALKpO7eJT9y2+rt?=
+ =?us-ascii?Q?EZz5qwe7v+aFz8n2x0w/05c2VesMJhXkdQ/AGi1qcWUVBhZynnFKaRVO/Kbq?=
+ =?us-ascii?Q?JeQlkBN0T4kh/AqO7K7limZNttAHMdx0PIJZXgnvzEbgKqEDez+eh0lJgApy?=
+ =?us-ascii?Q?VaQBPuorEdgs8/WA0FHZwv+536AbBAxisPy5pJbC04oKudj/JhvSnwiURjJz?=
+ =?us-ascii?Q?LDaCSFPhB/JLgw3iidQ0b50AzDQpCmV6Kqn9ZSpAcBxv9ZHc296PCGkPgnne?=
+ =?us-ascii?Q?lbJ7Gdvsndx1y6WYekk2wQt2n/drSwG9776eibxUUAxTgyjOpm2H91ZaN2Bh?=
+ =?us-ascii?Q?PyrCoh0wi0/4wfN7bXQHDjDIlUaoi5P6vDdPgtn4it5SDHv3FPzWlfGzFwSb?=
+ =?us-ascii?Q?wUnirKzsaC2Cgt1Nfh4hESP5jXFejHu3Vb9EYHh6eo4/aSfW3SqPnijxF5h5?=
+ =?us-ascii?Q?LdsxG2fLk2SDoi2kJPfQY9nBQtCvp1s06mLyjapvsVKt0eTyLYL6GsaySCw3?=
+ =?us-ascii?Q?G2qC2YKfDgEtcgJIgi8CFTgEMzYwLZ6r6tyjfgGvXf3TIHQD23Unfa48eAQB?=
+ =?us-ascii?Q?//cSLtc5ZZgDRYGlo+JUWe8JAZvfgfv4CcVKzOMuswXlLmLG5A=3D=3D?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 08bf1355-7789-4a9f-5f36-08d979038a9c
+X-MS-Exchange-CrossTenant-Network-Message-Id: da409bb6-8407-430b-87c3-08d979038cf5
 X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5151.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 11:17:16.8551 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 11:17:20.8039 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4M33SwcJYp8OxiUIpLTh/dGXJ9gG5ge9vR3yfmdCZy0+EDfGnyD3h4i0Lrr+3rskJay5Mn614VEsCxDusSnkSA==
+X-MS-Exchange-CrossTenant-UserPrincipalName: sOD0spoJ6fTzZKEdwmHEZfxvFD+6B8EAKeOeM2PtDj07e0TRlROIY56DKp56OZnAPnQmUXn/MmjAKduM8lsDSw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4926
 Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
  kai.vehmanen@linux.intel.com, lgirdwood@gmail.com, daniel.baluta@nxp.com,
@@ -165,218 +166,189 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-Add a new field, use_count to struct snd_sof_widget to keep track
-of the usage count for each widget. Since widgets can belong to
-multiple pipelines, this field will ensure that the widget
-is setup only when the first pipeline that needs it is started
-and freed when the last pipeline that needs it is stopped. There is
-no need to protect the widget use_count access as the core already
-handles mutual exclusion at the PCM level.
-Add a new helper sof_widget_free() to handle freeing the SOF
-widgets and export the sof_widget_setup/free() functions.
+Add a kernel debug flag to enable a one-shot topology
+verification for all pipelines including the dynamic
+ones. If the debug flag is set, all the topology
+component loading will be verified during the complete
+callback.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/ipc.c       | 22 +++++++++++
- sound/soc/sof/sof-audio.c | 77 ++++++++++++++++++++++++++++++++++++---
- sound/soc/sof/sof-audio.h |  4 ++
- 3 files changed, 97 insertions(+), 6 deletions(-)
+ sound/soc/sof/pm.c        |  4 ++--
+ sound/soc/sof/sof-audio.c | 37 +++++++++++++++++++++++++------------
+ sound/soc/sof/sof-audio.h |  4 ++--
+ sound/soc/sof/sof-priv.h  |  1 +
+ sound/soc/sof/topology.c  | 17 ++++++++++++++++-
+ 5 files changed, 46 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index 18e0bfc1d8a9..33c94c7a5913 100644
---- a/sound/soc/sof/ipc.c
-+++ b/sound/soc/sof/ipc.c
-@@ -700,9 +700,31 @@ int snd_sof_ipc_set_get_comp_data(struct snd_sof_control *scontrol,
- 	struct sof_ipc_fw_ready *ready = &sdev->fw_ready;
- 	struct sof_ipc_fw_version *v = &ready->version;
- 	struct sof_ipc_ctrl_data_params sparams;
-+	struct snd_sof_widget *swidget;
-+	bool widget_found = false;
- 	size_t send_bytes;
- 	int err;
+diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
+index ea27567d2fe4..9ec091130323 100644
+--- a/sound/soc/sof/pm.c
++++ b/sound/soc/sof/pm.c
+@@ -157,7 +157,7 @@ static int sof_resume(struct device *dev, bool runtime_resume)
+ 	}
  
-+	list_for_each_entry(swidget, &sdev->widget_list, list) {
-+		if (swidget->comp_id == scontrol->comp_id) {
-+			widget_found = true;
-+			break;
+ 	/* restore pipelines */
+-	ret = sof_set_up_pipelines(sdev->dev);
++	ret = sof_set_up_pipelines(sdev->dev, false);
+ 	if (ret < 0) {
+ 		dev_err(sdev->dev,
+ 			"error: failed to restore pipeline after resume %d\n",
+@@ -208,7 +208,7 @@ static int sof_suspend(struct device *dev, bool runtime_suspend)
+ 	if (target_state == SOF_DSP_PM_D0)
+ 		goto suspend;
+ 
+-	sof_tear_down_pipelines(dev);
++	sof_tear_down_pipelines(dev, false);
+ 
+ 	/* release trace */
+ 	snd_sof_release_trace(sdev);
+diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
+index 7b4dd64576fa..c4cabe26b157 100644
+--- a/sound/soc/sof/sof-audio.c
++++ b/sound/soc/sof/sof-audio.c
+@@ -589,7 +589,7 @@ const struct sof_ipc_pipe_new *snd_sof_pipeline_find(struct snd_sof_dev *sdev,
+ 	return NULL;
+ }
+ 
+-int sof_set_up_pipelines(struct device *dev)
++int sof_set_up_pipelines(struct device *dev, bool verify)
+ {
+ 	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
+ 	struct snd_sof_widget *swidget;
+@@ -599,7 +599,7 @@ int sof_set_up_pipelines(struct device *dev)
+ 	/* restore pipeline components */
+ 	list_for_each_entry_reverse(swidget, &sdev->widget_list, list) {
+ 		/* only set up the widgets belonging to static pipelines */
+-		if (swidget->dynamic_pipeline_widget)
++		if (!verify && swidget->dynamic_pipeline_widget)
+ 			continue;
+ 
+ 		/* update DAI config. The IPC will be sent in sof_widget_setup() */
+@@ -630,8 +630,8 @@ int sof_set_up_pipelines(struct device *dev)
+ 	list_for_each_entry(sroute, &sdev->route_list, list) {
+ 
+ 		/* only set up routes belonging to static pipelines */
+-		if (sroute->src_widget->dynamic_pipeline_widget ||
+-		    sroute->sink_widget->dynamic_pipeline_widget)
++		if (!verify && (sroute->src_widget->dynamic_pipeline_widget ||
++				sroute->sink_widget->dynamic_pipeline_widget))
+ 			continue;
+ 
+ 		ret = sof_route_setup_ipc(sdev, sroute);
+@@ -646,7 +646,7 @@ int sof_set_up_pipelines(struct device *dev)
+ 		switch (swidget->id) {
+ 		case snd_soc_dapm_scheduler:
+ 			/* only complete static pipelines */
+-			if (swidget->dynamic_pipeline_widget)
++			if (!verify && swidget->dynamic_pipeline_widget)
+ 				continue;
+ 
+ 			swidget->complete =
+@@ -661,24 +661,37 @@ int sof_set_up_pipelines(struct device *dev)
+ }
+ 
+ /*
+- * This function doesn't free widgets. It only resets the set up status for all routes and
+- * use_count for all widgets.
++ * This function doesn't free widgets during suspend. It only resets the set up status for all
++ * routes and use_count for all widgets.
+  */
+-void sof_tear_down_pipelines(struct device *dev)
++int sof_tear_down_pipelines(struct device *dev, bool verify)
+ {
+ 	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
+ 	struct snd_sof_widget *swidget;
+ 	struct snd_sof_route *sroute;
++	int ret;
+ 
+ 	/*
+-	 * No need to protect swidget->use_count and sroute->setup as this function is called only
+-	 * during the suspend callback and all streams should be suspended by then
++	 * This function is called during suspend and for one-time topology verification during
++	 * first boot. In both cases, there is no need to protect swidget->use_count and
++	 * sroute->setup because during suspend all streams are suspended and during topology
++	 * loading the sound card unavailable to open PCMs.
+ 	 */
+-	list_for_each_entry(swidget, &sdev->widget_list, list)
+-		swidget->use_count = 0;
++	list_for_each_entry_reverse(swidget, &sdev->widget_list, list) {
++		if (!verify) {
++			swidget->use_count = 0;
++			continue;
++		}
++
++		ret = sof_widget_free(sdev, swidget);
++		if (ret < 0)
++			return ret;
++	}
+ 
+ 	list_for_each_entry(sroute, &sdev->route_list, list)
+ 		sroute->setup = false;
++
++	return 0;
+ }
+ 
+ /*
+diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
+index 8d1fc6a8d7d0..149b3dbcddd1 100644
+--- a/sound/soc/sof/sof-audio.h
++++ b/sound/soc/sof/sof-audio.h
+@@ -246,8 +246,8 @@ int snd_sof_ipc_set_get_comp_data(struct snd_sof_control *scontrol,
+ int sof_pcm_dai_link_fixup(struct snd_soc_pcm_runtime *rtd, struct snd_pcm_hw_params *params);
+ 
+ /* PM */
+-int sof_set_up_pipelines(struct device *dev);
+-void sof_tear_down_pipelines(struct device *dev);
++int sof_set_up_pipelines(struct device *dev, bool verify);
++int sof_tear_down_pipelines(struct device *dev, bool verify);
+ int sof_set_hw_params_upon_resume(struct device *dev);
+ bool snd_sof_stream_suspend_ignored(struct snd_sof_dev *sdev);
+ bool snd_sof_dsp_only_d0i3_compatible_stream_active(struct snd_sof_dev *sdev);
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index 80e4a8c29280..d950157feebe 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -23,6 +23,7 @@
+ /* debug flags */
+ #define SOF_DBG_ENABLE_TRACE	BIT(0)
+ #define SOF_DBG_RETAIN_CTX	BIT(1)	/* prevent DSP D3 on FW exception */
++#define SOF_DBG_VERIFY_TPLG	BIT(2) /* verify topology during load */
+ 
+ #define SOF_DBG_DUMP_REGS		BIT(0)
+ #define SOF_DBG_DUMP_MBOX		BIT(1)
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index d8eb238e5229..44d60081bc26 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -3452,8 +3452,23 @@ static int sof_complete(struct snd_soc_component *scomp)
+ 		}
+ 	}
+ 
++	/* verify topology components loading including dynamic pipelines */
++	if (sof_core_debug & SOF_DBG_VERIFY_TPLG) {
++		ret = sof_set_up_pipelines(scomp->dev, true);
++		if (ret < 0) {
++			dev_err(sdev->dev, "error: topology verification failed %d\n", ret);
++			return ret;
++		}
++
++		ret = sof_tear_down_pipelines(scomp->dev, true);
++		if (ret < 0) {
++			dev_err(sdev->dev, "error: topology tear down pipelines failed %d\n", ret);
++			return ret;
 +		}
 +	}
 +
-+	if (!widget_found) {
-+		dev_err(sdev->dev, "error: can't find widget with id %d\n", scontrol->comp_id);
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * Volatile controls should always be part of static pipelines and the widget use_count
-+	 * would always be > 0 in this case. For the others, just return the cached value if the
-+	 * widget is not set up.
-+	 */
-+	if (!swidget->use_count)
-+		return 0;
-+
- 	/* read or write firmware volume */
- 	if (scontrol->readback_offset != 0) {
- 		/* write/read value header via mmaped region */
-diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
-index 4bed50847f1d..7a4aaabf091e 100644
---- a/sound/soc/sof/sof-audio.c
-+++ b/sound/soc/sof/sof-audio.c
-@@ -83,7 +83,53 @@ static int sof_widget_kcontrol_setup(struct snd_sof_dev *sdev, struct snd_sof_wi
- 	return 0;
+ 	/* set up static pipelines */
+-	return sof_set_up_pipelines(scomp->dev);
++	return sof_set_up_pipelines(scomp->dev, false);
  }
  
--static int sof_widget_setup(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
-+int sof_widget_free(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
-+{
-+	struct sof_ipc_free ipc_free = {
-+		.hdr = {
-+			.size = sizeof(ipc_free),
-+			.cmd = SOF_IPC_GLB_TPLG_MSG,
-+		},
-+		.id = swidget->comp_id,
-+	};
-+	struct sof_ipc_reply reply;
-+	int ret;
-+
-+	if (!swidget->private)
-+		return 0;
-+
-+	/* only free when use_count is 0 */
-+	if (--swidget->use_count)
-+		return 0;
-+
-+	switch (swidget->id) {
-+	case snd_soc_dapm_scheduler:
-+		ipc_free.hdr.cmd |= SOF_IPC_TPLG_PIPE_FREE;
-+		break;
-+	case snd_soc_dapm_buffer:
-+		ipc_free.hdr.cmd |= SOF_IPC_TPLG_BUFFER_FREE;
-+		break;
-+	default:
-+		ipc_free.hdr.cmd |= SOF_IPC_TPLG_COMP_FREE;
-+		break;
-+	}
-+
-+	ret = sof_ipc_tx_message(sdev->ipc, ipc_free.hdr.cmd, &ipc_free, sizeof(ipc_free),
-+				 &reply, sizeof(reply));
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: failed to free widget %s\n", swidget->widget->name);
-+		swidget->use_count++;
-+		return ret;
-+	}
-+
-+	swidget->complete = 0;
-+	dev_dbg(sdev->dev, "widget %s freed\n", swidget->widget->name);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(sof_widget_free);
-+
-+int sof_widget_setup(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
- {
- 	struct sof_ipc_pipe_new *pipeline;
- 	struct sof_ipc_comp_reply r;
-@@ -97,11 +143,15 @@ static int sof_widget_setup(struct snd_sof_dev *sdev, struct snd_sof_widget *swi
- 	if (!swidget->private)
- 		return 0;
- 
-+	/* widget already set up */
-+	if (++swidget->use_count > 1)
-+		return 0;
-+
- 	ret = sof_pipeline_core_enable(sdev, swidget);
- 	if (ret < 0) {
- 		dev_err(sdev->dev, "error: failed to enable target core: %d for widget %s\n",
- 			ret, swidget->widget->name);
--		return ret;
-+		goto use_count_dec;
- 	}
- 
- 	switch (swidget->id) {
-@@ -134,7 +184,7 @@ static int sof_widget_setup(struct snd_sof_dev *sdev, struct snd_sof_widget *swi
- 	}
- 	if (ret < 0) {
- 		dev_err(sdev->dev, "error: failed to load widget %s\n", swidget->widget->name);
--		return ret;
-+		goto use_count_dec;
- 	}
- 
- 	/* restore kcontrols for widget */
-@@ -147,8 +197,13 @@ static int sof_widget_setup(struct snd_sof_dev *sdev, struct snd_sof_widget *swi
- 
- 	dev_dbg(sdev->dev, "widget %s setup complete\n", swidget->widget->name);
- 
-+	return 0;
-+
-+use_count_dec:
-+	swidget->use_count--;
- 	return ret;
- }
-+EXPORT_SYMBOL(sof_widget_setup);
- 
- /*
-  * helper to determine if there are only D0i3 compatible
-@@ -258,6 +313,9 @@ int sof_set_up_pipelines(struct device *dev)
- 
- 	/* restore pipeline components */
- 	list_for_each_entry_reverse(swidget, &sdev->widget_list, list) {
-+		/* reset widget use_count after resuming */
-+		swidget->use_count = 0;
-+
- 		ret = sof_widget_setup(sdev, swidget);
- 		if (ret < 0)
- 			return ret;
-@@ -325,16 +383,23 @@ int sof_set_up_pipelines(struct device *dev)
- 	return 0;
- }
- 
--/* This function doesn't free widgets. It only resets the set up status for all routes */
-+/*
-+ * This function doesn't free widgets. It only resets the set up status for all routes and
-+ * use_count for all widgets.
-+ */
- void sof_tear_down_pipelines(struct device *dev)
- {
- 	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
-+	struct snd_sof_widget *swidget;
- 	struct snd_sof_route *sroute;
- 
- 	/*
--	 * No need to protect sroute->setup as this function is called only during the suspend
--	 * callback and all streams should be suspended by then
-+	 * No need to protect swidget->use_count and sroute->setup as this function is called only
-+	 * during the suspend callback and all streams should be suspended by then
- 	 */
-+	list_for_each_entry(swidget, &sdev->widget_list, list)
-+		swidget->use_count = 0;
-+
- 	list_for_each_entry(sroute, &sdev->route_list, list)
- 		sroute->setup = false;
- }
-diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index f1f630028c21..6ac623137026 100644
---- a/sound/soc/sof/sof-audio.h
-+++ b/sound/soc/sof/sof-audio.h
-@@ -89,6 +89,7 @@ struct snd_sof_widget {
- 	int comp_id;
- 	int pipeline_id;
- 	int complete;
-+	int use_count; /* use_count will be protected by the PCM mutex held by the core */
- 	int core;
- 	int id;
- 
-@@ -252,4 +253,7 @@ bool snd_sof_dsp_only_d0i3_compatible_stream_active(struct snd_sof_dev *sdev);
- int sof_machine_register(struct snd_sof_dev *sdev, void *pdata);
- void sof_machine_unregister(struct snd_sof_dev *sdev, void *pdata);
- 
-+int sof_widget_setup(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget);
-+int sof_widget_free(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget);
-+
- #endif
+ /* manifest - optional to inform component of manifest */
 -- 
 2.27.0
 
