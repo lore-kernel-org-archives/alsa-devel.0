@@ -7,78 +7,77 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC198C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 11:19:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 602C0C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 11:20:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 443AE60F6D
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 11:19:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 443AE60F6D
+	by mail.kernel.org (Postfix) with ESMTPS id 9479A60F6D
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 11:20:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9479A60F6D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oss.nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D4E1118B8;
-	Thu, 16 Sep 2021 13:18:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4E1118B8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 336D318A7;
+	Thu, 16 Sep 2021 13:19:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 336D318A7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631791186;
-	bh=eTYh75Ca/iGrss1wJxEMBwswT0B7XbGQFdS1/U7zUww=;
+	s=default; t=1631791202;
+	bh=v1KjnTzl4qOxoIUsNGgtzOD/w/VVMQ+fz3ojAe7AIU4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EuM1FSNa7rU767XdUFDji0lBhXnPWqfueiIyDWx36nnMUPBenYqdXS5J3GfY+CaA7
-	 LZ00k+31KfQKSKWGcukN+9c1I9yJoWVnbybaXBsF5/gydd+wSEfpUVK4iE6zI1cu22
-	 7ulTAtLhUbnNkP8VdTrhzSjWgXfu5OS/rsNveE3A=
+	b=eU+pv+aBmqb7MwPpHntk81kVcHkjYXcKkKpa4GcLdKDWBmb4tDFQRH7OByJRT5KGf
+	 I0oOxuj/Zq+XT/bsl+ac//4mDOL9u3gY0aw5f8Yn+Ha+6YzzzMau8F3goF1tiJugwP
+	 rnLfi3HbPoBr6ZcaKNUoW4ysDWIIxDY6d59MG8uE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DCCE4F80117;
-	Thu, 16 Sep 2021 13:17:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C869F804FB;
+	Thu, 16 Sep 2021 13:17:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 76D94F80506; Thu, 16 Sep 2021 13:17:28 +0200 (CEST)
+ id 5ECDEF80508; Thu, 16 Sep 2021 13:17:29 +0200 (CEST)
 Received: from EUR03-VE1-obe.outbound.protection.outlook.com
- (mail-eopbgr50058.outbound.protection.outlook.com [40.107.5.58])
+ (mail-eopbgr50050.outbound.protection.outlook.com [40.107.5.50])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 051C4F8032B
- for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 13:17:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 051C4F8032B
+ by alsa1.perex.cz (Postfix) with ESMTPS id B0DCFF804AE
+ for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 13:17:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0DCFF804AE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com
- header.i=@NXP1.onmicrosoft.com header.b="LFsPTf+s"
+ header.i=@NXP1.onmicrosoft.com header.b="R7khKUrC"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d5GDMwWuP8JDaOCaoJ0PIGLCCMSujfVspdMzdYbCCCbi/HSummpEOFVZVMsTd2AF5n1ZWg0oN4Xa845kXpR0ekd/O8V3yOmaYn7f1sou/5T+ohHtX39luomQMbPxWq74IjRt6VXQ4BDrn1R3E2iihsNAQM2DjH6+8Fpk9DkxumCpWRkO+cLqtFQS3GoQ5TN6j9OotBTUcDM6GMX0du3MOgMJcGBH8zr+ijw+l5urfrULmPmnrisI86roIYMUtGFdkb+GJl/rkKVrAPMgE3DuMo1SmLx7J9QXmZM2DElLiXqulPOTeMbNvY1+8BojVouzS7SY6jrKCu0LQVJZmG1D/Q==
+ b=jJ72Dr2lHI/a8CkMh5nzMg9BTGaeOBDG8cbGsXQmJCahONBwod13oEuq3pIIQUsyeBBrnpbZZNC2OjXMsRjLu1m5peUTpCrZ6lVJDS01kjySDND2dqDZzCcJVjemVJPIy+V/nK4P3wlfGaVgkUT0r0X8H/8rasmkHuDiSFwL+kQushwnr5zA9TbhGtUC4FcLeCyHXWOPQp8y7Au7cJW7FTkwH5ldZIpUDr2YuIpIpeimxmcXKLh2UuHj/YBUzwXcsuftFc6DnElEthT0VScA308qYk/Cnh3vnKx59QVWJ0XWW8hpTykjxwKJx3ECBomFL76A2AFzIS76Ar7NiqKYWw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version; 
- bh=csW/yYh/r6kn83Zw6ySLSt1MgRqzlApyNL6RclkmXCE=;
- b=EvdclVVOMY3xxRn8zxDiIMj2ZjvzNdIH2B+BHK9kC9W8K2NxtJi8az0rCOQpVrmpZAEZjW2dA5MXhxWUsmsIir6R909wRTlEtuqqqtgTnmCZhGAzHMcoEWVWJ0jB1RE59O1pjzWOXDZ+De50wxFNo0fd6NNAgL/H2FTqwFTUwW78Zs952mmiYRWRUYHNGmurQD4PwgHRayMyxXEhXVJu4ImbaDe4vmejRcotKwE2ayM1H7NSgKvTT7GsEl5kCwi1+1/pCoNzV21WwfOCZ0C8GQ/RSRJQULVFQm17KhCuLSXmu1mpUWTmlT0N/ya740+MMr/s+h7B8//cKqU5OSbY4w==
+ bh=s4gSGFdBQikU5ekOST9Axn3JdIYo1AnQE4w5NId+WHM=;
+ b=oIYShRrbbIaTkUMSmIBU0rX+D/03tK6mbtGU4fwQR4Lpww6VdMN3onPWICHUS8s6dgf6Zba9EQli5qVHpjSflKKJ1cDOIIIABFJBUimqHcm1S33xAPtaBEkZgIr1hceZjX/8K3sNi2BDlDQHovqKlUyESnCNYXS2d2iUEo+sKk3n/kpVus2bB6FvF6DrztZR1+66MMznrI4DbApsCmG8X0Si1Tk+V8YGhDOfTQaiA1AB0hugIaHdWvGPCeh6AFlsNB9eQDRKt3FlPLI/IGMsFOdj2BbksGXzXeksxF5ZEKOmGxNGtexoYgJXSE7RU7LaLtiEUHeb9010DYKfzEtaOA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com; 
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=csW/yYh/r6kn83Zw6ySLSt1MgRqzlApyNL6RclkmXCE=;
- b=LFsPTf+sqRWhF1GYtY+A0GrcAuSpfMHwx4O1ljzxAktVnG9qoZkHPc5Q52xW0mq2gi6GeCw3iGmXDw5SAbsjEI7ai/LMjvn0eTmIjymZ4YaMNHd1wNv9oyYm1gEU4+0SVVKcxG6dj4O/key/sqUct8n4aKx+NWKMjHji1JL31+c=
+ bh=s4gSGFdBQikU5ekOST9Axn3JdIYo1AnQE4w5NId+WHM=;
+ b=R7khKUrCzdEFptFn2WF5mjct2Znr4pN3+NZpzXPu02KAKxvXCBZyoILKRS+0TYz7VUuZcKYgjooyUi+z8zHYG5r1CVs4FdGbsQCzQwLS1cAEHllBzss+on8QWpvd1d9G7gIGXJb6LAF2bp2c4aaLCbEGlgHuJOAxruGPZLEb0v4=
 Authentication-Results: kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
 Received: from VI1PR04MB5151.eurprd04.prod.outlook.com (2603:10a6:803:61::28)
  by VI1PR04MB4926.eurprd04.prod.outlook.com (2603:10a6:803:51::16)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.18; Thu, 16 Sep
- 2021 11:17:07 +0000
+ 2021 11:17:11 +0000
 Received: from VI1PR04MB5151.eurprd04.prod.outlook.com
  ([fe80::499b:ba92:db2e:3f28]) by VI1PR04MB5151.eurprd04.prod.outlook.com
  ([fe80::499b:ba92:db2e:3f28%7]) with mapi id 15.20.4500.020; Thu, 16 Sep 2021
- 11:17:07 +0000
+ 11:17:11 +0000
 From: Daniel Baluta <daniel.baluta@oss.nxp.com>
 To: broonie@kernel.org
-Subject: [PATCH 02/12] ASoC: SOF: control: Add access field in struct
- snd_sof_control
-Date: Thu, 16 Sep 2021 14:16:36 +0300
-Message-Id: <20210916111646.367133-3-daniel.baluta@oss.nxp.com>
+Subject: [PATCH 05/12] AsoC: dapm: export a couple of functions
+Date: Thu, 16 Sep 2021 14:16:39 +0300
+Message-Id: <20210916111646.367133-6-daniel.baluta@oss.nxp.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210916111646.367133-1-daniel.baluta@oss.nxp.com>
 References: <20210916111646.367133-1-daniel.baluta@oss.nxp.com>
@@ -93,56 +92,56 @@ Received: from localhost.localdomain (2a02:2f08:5708:8600:b29c:ccfa:a961:8ebd)
  by AM0PR04CA0037.eurprd04.prod.outlook.com (2603:10a6:208:1::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend
- Transport; Thu, 16 Sep 2021 11:17:06 +0000
+ Transport; Thu, 16 Sep 2021 11:17:10 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9462247e-ba0a-4cb8-56af-08d9790384c4
+X-MS-Office365-Filtering-Correlation-Id: ef094a39-6457-4cfa-21d2-08d97903873e
 X-MS-TrafficTypeDiagnostic: VI1PR04MB4926:
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB49268FB1185DC07D216B0CD0B8DC9@VI1PR04MB4926.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-Microsoft-Antispam-PRVS: <VI1PR04MB4926ACCEA0F8A0E15E20E335B8DC9@VI1PR04MB4926.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2512;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: USDaUA/ZcLB8Bw0EflkB+SPywQm5LnuOsHsk2bciom03p5P1aUImMGdh7RKTQnwmwcPR5Iqz3txi+MjUD0ZvAyP1KNiC+uQzhHW19KWO/7icIEtPiId6o7bKsRW/0Sao8H4VDv2fdC7Fqs5Xh6B9fQKcYXSd4I0soxwcwmDfxth+5Msk+EEjGdThcPivLZ75TenZLnXNSKAjXXZN7Kveo5OiSQ42Qwm+NOJCoUO3WcgdZvzKLjEu4L4FFVGQrAcMdpQCfsBqRykuj/cb6+mEFdGo7buz+RW5Mcstv3AsYPqz1SHd17zuswwVkrCaGLytpXBElaB5wIk7qvBIp7O6EvgG6X0fKqyMgfDjKdayMfSbIzYKoRI8k2TXovi3CflPFnUATxcw6r4j0jdyjpH/+1SJeFq7VsBtZXUvAvtbRjileqLc/FY3J00j7LManqYIQ21Ii4yYfwXOorDhfaYSNy3d2bvgartP3XhCBzejPyRkC/PSvY6R41SPSJtL5d7tAcNOlVBqbp0vDgHBH3urxRlWihx+cE1Rkaemt1tzPoUhCa/fgrsvZ0v4j5YIKAqXA1HehcPakIkXsjeSouBr1o4fk7y/zlkeG6fnK+NV9IQ/Qt/o0whOXRmHlwijt/ViuMMXdNqAP1TZGTf74UtkGg==
+X-Microsoft-Antispam-Message-Info: v1xzJeisueNgJhlZ82tMibSdrwAvj3VvUivnyAV+a+P9R9c53lfpybPK4QLk1ayt3R/mDrCBERlzxz/XahiLnMByxZFQXc3/IdOLNInJLklO/TmwTpfYeqe95JPFndTF8A0tr8YVkDmG2R6AIxw8GP7ujjkueBIVpEzZqzUs1bIxfJUDiGYFoiuKTxaAJz8i2EgfPr090mggGw5DVFpbUrBO8E8Gg4JbSgrJRl74TAtpGj8qgDLGUqdIknkvXGkiWa7AWesSmtJJIDTDMcdTzVQ4wxiazb54Ulf9JpAxmR/CjqC7Z55Cetbyb/3KlkWHEc189sijBFrXW187jjLvEl8ITJNqJW4Z9IMl7hIBdB2M1RtoImWLh6289xPqEopjBdjQdul8FHoO8vmtF+bM6b78k9qmD1TdJcTOj/uxvS1fDk8UZL130zCUNW5YrktJ7YUUpUdGaVNyvDezpEidpg36e6zFk3LK47YgfUIm+atWsax1iVOzEeHQEO2lgVN29x6yWnmvknDXZlybJiI1En5+uV2xCp9OT3FQAhLb3yzRE+xwiAeRIeFBGU7XGECamgeMCs5qdjI27SfWZsUDlr+Kwlp6ccmI43QLqg0BfcAhNWkIoSRiw/uLdOgt4ldwu+L9zr0Tlw9hhToX4Em6dA==
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:VI1PR04MB5151.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
  SFS:(4636009)(39860400002)(366004)(136003)(376002)(346002)(396003)(4326008)(8936002)(6486002)(186003)(83380400001)(6916009)(2616005)(5660300002)(66946007)(52116002)(478600001)(8676002)(6512007)(6506007)(86362001)(2906002)(44832011)(66476007)(66556008)(316002)(1076003)(38100700002)(6666004);
  DIR:OUT; SFP:1101; 
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1J5CV7Up3IDIjLP36QAZlgaE37P5wyxkb49aZQiIojde/F+9UptPiuO+iUgX?=
- =?us-ascii?Q?lv0hzqHUfpkxRhzmXWleodckrX9stroTd/IHRU9iqpqW36zShE3YWvFNdwvl?=
- =?us-ascii?Q?9RHrpm2b2GTstuenNw74I+2dsunC9Pjnyy25W9rpZKLL9xJkP4XqwoTSoCdb?=
- =?us-ascii?Q?kimRS5afzgJCed4U/jbYaY6cz6HvJeANfUXrYXoHRf2j90/T2/hhHOCygjNE?=
- =?us-ascii?Q?Vk9kBC2rWKBY/ZJSgl1Yh2gn/t9tVZ3xK0cFMFF5qY0og40M8Nbo2SCCx07n?=
- =?us-ascii?Q?pWwRbaRV5VLkMosO7Z1prtIUUXLlTAjX9CXSyvGFPI+RH6uuwsJAwAHSEq8W?=
- =?us-ascii?Q?o6CMqY4IDypFHO+YyDPs86x8bD5K+n0t02xLXoUPf/3Mahecob2qQeZQk0s0?=
- =?us-ascii?Q?MiX2z1Rq/DHuwf/c9C9PDCtjeLQJuocIFistkrO5CRRMH5/x7YEp4sHsfYqK?=
- =?us-ascii?Q?BbFmB/TrV3c7PFktPtyV38IoPuMafyjeNBXiEAGUrz4kHShq0HlqB4dCjCOM?=
- =?us-ascii?Q?s4S7aebezEEKrioiySwQqOKty2+fH053CJFeVfYVgYxDIlujazl8nWQC388N?=
- =?us-ascii?Q?RjGH8LJ/gDJDebFIC25PEJ1F6tRf3ld7v5WClXVUrQPwBNlqLQdCBH8cffvg?=
- =?us-ascii?Q?+zeI0CzouGZ2Kug3UKrskon7Lwkg/OBBWcnah+TMQKQqztkua5Zppu+uFeUY?=
- =?us-ascii?Q?NkKvAW+vUFaOqcfV9WImoXDPK4sKXwJ1PZp/3XrnOaSxxKX1y0CNRdhbaI6v?=
- =?us-ascii?Q?q5a9sH49zB6Shes8rf2C5Lr5mdBm6/LaEFH2cM5Jrh64K0oNxl/2yaUpZS4j?=
- =?us-ascii?Q?oUYiXxrFMcUubUNgNEq1D/p80QcSmsHuaQxlaUDZWQISA6Xa/KJW3ZqrRpf7?=
- =?us-ascii?Q?9sSYX8QXhYuHDtqNzM8JoEen6/QWHeJdzVF+yjyAtjsaRj6NqHIOg7/doZGk?=
- =?us-ascii?Q?CsSnELf1iUp4Lfbv2Syq1vgkfPW7EYpw7dNkd9nzUO2yJWmvO+wO5upACTsS?=
- =?us-ascii?Q?RTTUVVJABsnyDQr7k5lMSp16RVagj+Wh5DxWChK1WaKtnvWxTnNKfCUlSTw7?=
- =?us-ascii?Q?N/FzNvjsFAeBOfBBjd/m3UjAc7eEy76YEW90PcA3ttC6vsFh0eVyMoie4Ayo?=
- =?us-ascii?Q?fGpItTtpizkFMTJ/Wn6JFtkmcuxWHRwBbT3mffvc2dc4uhNOdPceIGW5PQ2U?=
- =?us-ascii?Q?bDGfZeK1eIimJ8Pp6KZfkdw75b6DrPMQLDHk2fz0ZWxbgwuTiLJnljNC/iRb?=
- =?us-ascii?Q?GtIqnGiiwqB8qLVGZtQF8u0vf1biaglgA2Ptn75hcghbThvNKH4mMyMy59t6?=
- =?us-ascii?Q?6uKVa9ZFK6TBnHi6b5DGGXwsJJ9FIGqib9X3X4IBsIjWFdD1LMBbybdLx0c5?=
- =?us-ascii?Q?V5rR8JKmTBLN6o1IO24QWXF6BZrN?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?csUrKDvwkv/kdTcc8YibPSfOGPcSgIBIhp/wJ2NEhSEE664Iu+f3H15Od49F?=
+ =?us-ascii?Q?sXLRSwhM7snzOBCADC0oH6AqYy2POVaNsHlynnyE9RDaRyugLYAQmYpY+9Ze?=
+ =?us-ascii?Q?RjPtCB3MTbUNpyfGuvcmiOApKv8zD2b3xDfevBwGrF+uTCZzlSDLzZ4uuc+H?=
+ =?us-ascii?Q?nSuEDD9LbJo7hypq11aQAeW6QTcR5HGYFp+5eQ3SznattftStiT4/xwNHyNg?=
+ =?us-ascii?Q?AeB9fYpzz1roSGowuPAs6RYoJZ/IDzJPBqOHErLp/FSwvJiCMAusdhrMCbYl?=
+ =?us-ascii?Q?aEnPdhSs9Pz5PlXNgqKorvAcucp8KR0hRvuPYrlNl0MPcy3FC9IYs+YDxQeQ?=
+ =?us-ascii?Q?LvyUiubZI/EGIVigNduf0PVbwkGlnoOXCLFxPtfmnwRIh0pAk0XyxDb76T1W?=
+ =?us-ascii?Q?8Wh9Q1s/xTUnElTdQHoM00S0VQTIGBOYOOfhPcE2q/cJ3TadOtgLJ23LzZFR?=
+ =?us-ascii?Q?a9CuSYglEbjx9eHhtYcW/Dvxit7JqO3DxzpjaAVQzeaO2Y2tHPSb1ukx+XfD?=
+ =?us-ascii?Q?ziwZ/IbiN4AohBys6c/JeKzY7fvQRpHMHRdihWEH+t05lOANC7hHULYESHA5?=
+ =?us-ascii?Q?3mQIvc8XnHH+FLmzeJncFcXT4tkA2wM4H2EislTTB9zipJHRIMktp8/IhOin?=
+ =?us-ascii?Q?/EGhO09oUI6g7A/ZmjB+n+XPsY9u1jH8gUpHcIkMqlzz6VNXH/LGuAnvqsEa?=
+ =?us-ascii?Q?V2ijWdOnGKU5Jt19RR/cj10xQFRUfo+V5D9fMBNRavnj/xOgpT2Zx8kKcL5u?=
+ =?us-ascii?Q?WWkmrvs91SIDpsZqhOBVnEBU4c851ZX0cHP06/sg7GBNMqWhrdpPRQLkCTTr?=
+ =?us-ascii?Q?3L39wyslO0W6ZT865kPozPxomMuxeWxVY/10LZDQKi5uddByMCGFtRfqZoZq?=
+ =?us-ascii?Q?8JltJKKPYaUYtLeRtXHxRjRD/HlzYTQ4YfjpYrrVq2zYHaVZeAeSCqvp2/RQ?=
+ =?us-ascii?Q?ofBvKL+2HyJcBad1MwCTsRqQcIPdWejl5TY9vitOXc/mAOeTAocbF4tel9o/?=
+ =?us-ascii?Q?W8yLvaesz/c94VmquJuBcVAdqis4/+od9djqlm6TvelUrGrUc8PZX97BUPF3?=
+ =?us-ascii?Q?LAbOjuOSWQd3DQVD/eh9/Yi7SzOQ8WPCGp8c17WnTAQAa2XYf99rqSX6zMqA?=
+ =?us-ascii?Q?/ytWkngYWwwzXBYl19/oSc5qjef08/ugML22XH6mp9rqOxC5DUXMrv69gSCJ?=
+ =?us-ascii?Q?qgKE23H2NzS01IvWE4eHZlcv4pantfUgxrtfg+HOM8o9faonR4ac82MU5dBY?=
+ =?us-ascii?Q?Q5hyJQkz9MJTvqbNKIcA1vaOyQsDGQSW3AeVdXcdSQm35+cf6h8W7BXPY/gM?=
+ =?us-ascii?Q?9oi/x2yFYC+xNP46EWGmtxWRlyQtPXrtl21mpBQjZTp+rUj4f3iAo7bib1DI?=
+ =?us-ascii?Q?HSJQkPp6/afRYDfxrSREv39NaQsd?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9462247e-ba0a-4cb8-56af-08d9790384c4
+X-MS-Exchange-CrossTenant-Network-Message-Id: ef094a39-6457-4cfa-21d2-08d97903873e
 X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5151.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 11:17:07.1067 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 11:17:11.1993 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uysVH6W3g5QWlN9if3xBuTQg1I5Qlto3vDgBgW/YJwEnsrpXf6+TIeA4l+u8OKjZYvb8BW61SnnaMXBcHBZqtg==
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8J6UT7qz3mCk90j5hPqAhapQH1+yd1sGO5PUeGEc1LtY6HPt9R1xET+szzncqU72xxVAieIUlzucnpdTfEOv/A==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4926
 Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
  kai.vehmanen@linux.intel.com, lgirdwood@gmail.com, daniel.baluta@nxp.com,
@@ -166,44 +165,72 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-Add a new field to save the access setting for all controls
-in struct snd_sof_control. This will be used to ensure that
-only widgets belonging to static pipelines have volatile
-controls.
+Export a couple of DAPM functions that can be used by
+ASoC drivers to determine connected widgets when a PCM
+is started.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/sof-audio.h | 1 +
- sound/soc/sof/topology.c  | 1 +
- 2 files changed, 2 insertions(+)
+ include/sound/soc-dpcm.h | 1 +
+ sound/soc/soc-dapm.c     | 2 ++
+ sound/soc/soc-pcm.c      | 4 ++--
+ 3 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index 9a8d005e75a0..78a4a0c90a29 100644
---- a/sound/soc/sof/sof-audio.h
-+++ b/sound/soc/sof/sof-audio.h
-@@ -66,6 +66,7 @@ struct snd_sof_control {
- 	int min_volume_step; /* min volume step for volume_table */
- 	int max_volume_step; /* max volume step for volume_table */
- 	int num_channels;
-+	unsigned int access;
- 	u32 readback_offset; /* offset to mmapped data if used */
- 	struct sof_ipc_ctrl_data *control_data;
- 	u32 size;	/* cdata size */
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 96b8791f7cc1..d8f7b1edefc3 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -1250,6 +1250,7 @@ static int sof_control_load(struct snd_soc_component *scomp, int index,
- 		return -ENOMEM;
+diff --git a/include/sound/soc-dpcm.h b/include/sound/soc-dpcm.h
+index e296a3949b18..bc7af90099a8 100644
+--- a/include/sound/soc-dpcm.h
++++ b/include/sound/soc-dpcm.h
+@@ -159,6 +159,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream, int cmd);
+ int dpcm_be_dai_prepare(struct snd_soc_pcm_runtime *fe, int stream);
+ int dpcm_dapm_stream_event(struct snd_soc_pcm_runtime *fe, int dir,
+ 	int event);
++bool dpcm_end_walk_at_be(struct snd_soc_dapm_widget *widget, enum snd_soc_dapm_direction dir);
  
- 	scontrol->scomp = scomp;
-+	scontrol->access = kc->access;
+ #define dpcm_be_dai_startup_rollback(fe, stream, last)	\
+ 						dpcm_be_dai_stop(fe, stream, 0, last)
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 7b67f1e19ae9..44c4d105ffdb 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1331,11 +1331,13 @@ int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
  
- 	switch (le32_to_cpu(hdr->ops.info)) {
- 	case SND_SOC_TPLG_CTL_VOLSW:
+ 	return paths;
+ }
++EXPORT_SYMBOL_GPL(snd_soc_dapm_dai_get_connected_widgets);
+ 
+ void snd_soc_dapm_dai_free_widgets(struct snd_soc_dapm_widget_list **list)
+ {
+ 	dapm_widget_list_free(list);
+ }
++EXPORT_SYMBOL_GPL(snd_soc_dapm_dai_free_widgets);
+ 
+ /*
+  * Handler for regulator supply widget.
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 48f71bb81a2f..fc1854e3e43f 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1262,8 +1262,7 @@ static int widget_in_list(struct snd_soc_dapm_widget_list *list,
+ 	return 0;
+ }
+ 
+-static bool dpcm_end_walk_at_be(struct snd_soc_dapm_widget *widget,
+-		enum snd_soc_dapm_direction dir)
++bool dpcm_end_walk_at_be(struct snd_soc_dapm_widget *widget, enum snd_soc_dapm_direction dir)
+ {
+ 	struct snd_soc_card *card = widget->dapm->card;
+ 	struct snd_soc_pcm_runtime *rtd;
+@@ -1281,6 +1280,7 @@ static bool dpcm_end_walk_at_be(struct snd_soc_dapm_widget *widget,
+ 
+ 	return false;
+ }
++EXPORT_SYMBOL_GPL(dpcm_end_walk_at_be);
+ 
+ int dpcm_path_get(struct snd_soc_pcm_runtime *fe,
+ 	int stream, struct snd_soc_dapm_widget_list **list)
 -- 
 2.27.0
 
