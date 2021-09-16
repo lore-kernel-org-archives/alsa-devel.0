@@ -7,78 +7,77 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AE61C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 11:18:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 106FEC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 11:19:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1198061130
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 11:18:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1198061130
+	by mail.kernel.org (Postfix) with ESMTPS id 88C966103B
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 11:19:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 88C966103B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oss.nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9830B18A4;
-	Thu, 16 Sep 2021 13:17:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9830B18A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 272DB18AC;
+	Thu, 16 Sep 2021 13:18:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 272DB18AC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631791128;
-	bh=x6276OcAilao5zmcu2v3C8YCyELle0sGhB7npKVTCq0=;
+	s=default; t=1631791144;
+	bh=p0bmxiDjoLX+FFsnMPt6ZhPkbosmWKqugGFN2Yfmtfw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UoLp+714EHcyiWOir0eQ8nFJtCcDTXtQg3vaRFVknumdxzMXabWZfh+3haRpXpzMw
-	 bTbvufuLpaA9C43/UHPeZASOjp5zo8jiDhdJx8pNnH/sYl126PMGgk7ygP6ZR0bWTO
-	 oARMO2XRbrfbrEg2Tcr7YnbtbSI1tSPDpf03EBQk=
+	b=fi2fIpqqYyhRgwMqeWS6NqlXkKmWTaDOcBTuRk8rd0JYCAXnBj0SnBygtp+yTCcj7
+	 fHpEnB+IoB1XU62eNW0jYQsmnMO18ijwkDbKsB/mYKrA/1+BrJ6g3ir61NLfnejX8l
+	 AKP+twQFxnUmPxGlYgGnTas/UAfoCmjwHGbmobqQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2485FF804E6;
-	Thu, 16 Sep 2021 13:17:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7B4CDF804FD;
+	Thu, 16 Sep 2021 13:17:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 41476F804E4; Thu, 16 Sep 2021 13:17:20 +0200 (CEST)
+ id 36D82F804E5; Thu, 16 Sep 2021 13:17:21 +0200 (CEST)
 Received: from EUR03-VE1-obe.outbound.protection.outlook.com
  (mail-eopbgr50050.outbound.protection.outlook.com [40.107.5.50])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 05C76F80271
- for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 13:17:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05C76F80271
+ by alsa1.perex.cz (Postfix) with ESMTPS id 42B89F8025E
+ for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 13:17:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42B89F8025E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com
- header.i=@NXP1.onmicrosoft.com header.b="hd6PB/zN"
+ header.i=@NXP1.onmicrosoft.com header.b="A0Evo2wt"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hC9KUFnu9wlFgRH7gfYXOv8ypg6z/oLtFGFavaX94Seb5I4tffGmoZjNy9dVSevYoSeJlFoGZbmTraAUFI/d2ToYOs+iqEFQVC493sPyH2EjTBZWttWNtKYBRunRt9j6rzeCTC1/Se+M/4gg4DM6jdtpCoRyo/xwy0RN1E734JhojWTWRUt1YpLrRBD0VMWmyjudhUucgEf0SGvTFvWNdfGRrzEpqAtQaOsqtmHP0RTHvXIpb0rw7jq6HRQMDJvFk3x3afrFU7NYujofatryCfZA6dMKX720qWWRC5b5PpdtkZ77A1EeQFh62R1vM0twgHCvdMRB1A2nkiZRjhfSKQ==
+ b=WfmJ87fOyMAazo/rvrGl5oEkC4T5AirECQirGXq+AqJvuHuC7ak2p0qoqGMpBhFvSAb4blfAtspvCoMRUzcmlu3bnSyvFsXvK88wgvp6qDQkEpvd0TDQV3wV+xe9tW0bpyY6XVS7Q29PbKyEeN/ntkSVazneQT6gU7iEY35RUvc498UhcZQpG4UiILqTKkKOOPDnIC7cez0kdbGNFoiB6aN1SWcseQKbKQM7H7JucsScle3/k19APsXIGQKuyW3EVs7Be0T3Ji9NCzGBuTtrr0A/HvEH6r7TqXYwY2D7f0wFH/bBAR+DrUjY8+NDUhp0nBFqP0c5G6hLypxOOTd9Ig==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version; 
- bh=sONQX65mjIEZ+QiPOFwwnnYmBdbhC1Ic1kXlU3cxiWM=;
- b=CahXxO1978DZOSfZWMbGS2c+SRESFg2xUY3JRMkleM8sMafcp7Zs3wuP7IUJEJjsBhE+J48sQYOh3IaZWAZW4PX/WxVwulHHy54RJ5zBq/YkgXt1hn7TGFE4Tzz52b1j/FJSjrwivKKon7sOHBE5QFz9sAUWMdn7TVzG+TbXCKqA6G2T6/8J7tHNV2hvhow2i4KnBkINg2jj+YSQoQgVeBGeyJDw2CLSneM9fBQEcfhAMo7UyDHgRWSkD7vBuBKVwQ4gmu+LCkE8ZCKCN5rNxf1oJ4P9LYBoMhEF5VyzlIgVQBPxJmM6SiHQKK3Y6sQw0cdnrLW7gtOpsp+vHuX4PA==
+ bh=gyQXmCoYlPRtflYEvYyHscr0QIizGnIzCCCDHf3TuTo=;
+ b=n5tgDoC0K+gkGln3O4nQBTtvroORqnvw2CWf6G+PyBDK+mF+kUZ+UjPvgHBKeWL0mzlqB61oiXSxMLrrZnyEnWlbAW7Zq59z1bFeDPvYrQLwE2TE1BhZ4xLtpHUVkYUiKz+0YNsXSVnxrGkglz0ORTcpWjNS3OxOa7GBybcdH4r6F9YGDKgtrJD6sDPXpZyVLw7O5LmjAgsq2O1q3gUhr/yXBomQM97g0zdoKed53QmbyNIs+rCI2100w3efAPNLDG9TQqlctosj70VKQ0JnaGRt/eMHOi1RBHlN3Ze4wSLJiM2d1fV1wUHq6W0Ew9PNk3bMifivhdrbNskCQnTWUg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com; 
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sONQX65mjIEZ+QiPOFwwnnYmBdbhC1Ic1kXlU3cxiWM=;
- b=hd6PB/zNyXUA2c9lJp8xA1u+P9X/4FXeEvtCSsXtBWUtJJLJSMc8hRpYN2tQsyOagm+11EuAGC6heuxn4n0X+xf3mT14L/MZQCnZ8CTTJ4emuwsNLELGABCUUJAIqlRXDFBFeD3dAzxtmAYLHmHGO3dK0/VyCbldAOcghX9Py00=
+ bh=gyQXmCoYlPRtflYEvYyHscr0QIizGnIzCCCDHf3TuTo=;
+ b=A0Evo2wttVaGbukPTVm/mUtYN4zchQknHuFg7mPnbyeVQ//2HfpaqgmJaxjdU6x++PbcuHSBP2gc2UGHHq/ltDoK6WkjiIGQ1ziIXcMggZlrofskB46BRRJUMcydRhhktP969ZasinfEFn8UFYZ4T+TcdqfEc+pS19VxP/oKaAU=
 Authentication-Results: kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
 Received: from VI1PR04MB5151.eurprd04.prod.outlook.com (2603:10a6:803:61::28)
  by VI1PR04MB4926.eurprd04.prod.outlook.com (2603:10a6:803:51::16)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.18; Thu, 16 Sep
- 2021 11:17:06 +0000
+ 2021 11:17:08 +0000
 Received: from VI1PR04MB5151.eurprd04.prod.outlook.com
  ([fe80::499b:ba92:db2e:3f28]) by VI1PR04MB5151.eurprd04.prod.outlook.com
  ([fe80::499b:ba92:db2e:3f28%7]) with mapi id 15.20.4500.020; Thu, 16 Sep 2021
- 11:17:05 +0000
+ 11:17:08 +0000
 From: Daniel Baluta <daniel.baluta@oss.nxp.com>
 To: broonie@kernel.org
-Subject: [PATCH 01/12] ASoC: topology: change the complete op in
- snd_soc_tplg_ops to return int
-Date: Thu, 16 Sep 2021 14:16:35 +0300
-Message-Id: <20210916111646.367133-2-daniel.baluta@oss.nxp.com>
+Subject: [PATCH 03/12] ASoC: SOF: topology: Add new token for dynamic pipeline
+Date: Thu, 16 Sep 2021 14:16:37 +0300
+Message-Id: <20210916111646.367133-4-daniel.baluta@oss.nxp.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210916111646.367133-1-daniel.baluta@oss.nxp.com>
 References: <20210916111646.367133-1-daniel.baluta@oss.nxp.com>
@@ -93,56 +92,56 @@ Received: from localhost.localdomain (2a02:2f08:5708:8600:b29c:ccfa:a961:8ebd)
  by AM0PR04CA0037.eurprd04.prod.outlook.com (2603:10a6:208:1::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend
- Transport; Thu, 16 Sep 2021 11:17:04 +0000
+ Transport; Thu, 16 Sep 2021 11:17:07 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7c19b68e-7be5-4698-bf66-08d979038401
+X-MS-Office365-Filtering-Correlation-Id: b07b3132-e285-4d6d-5091-08d979038598
 X-MS-TrafficTypeDiagnostic: VI1PR04MB4926:
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB49267D8DAEDFCC07EFD0EB87B8DC9@VI1PR04MB4926.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Microsoft-Antispam-PRVS: <VI1PR04MB49264365AF7185FBCC238349B8DC9@VI1PR04MB4926.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:826;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mAywM+ltEo91jmwa+PjliRW9hviLZCuiwiUZvPgGgSE0GMuOwqBKwxU+w9MlkY+P2v0XLAU7jtC6xsC8vHyIrv3qHr+rOxs1FHOgriw+lIwvJzJ7FjoCEeS6egtDUokaBP/OctUlVaXb9hVeYXOSuRafm0BFnhT4UlBsUcT4aUk6HjcRpbCcsWLlyznKI9rrWMq5xSnEjUYEXtIJHsYxDEF4+Jl8134R4OGZ9AJp3jdSMk+gC9vuW19tIKdDfB8A6RzNi2NjyI1PgT47lS/tSK8aIOdrfOQrl1SHwpKmrjCOdVmbuAEjoFd6oIc2YWBSaTJvn0w8Hj8aRyvJDEua0Uzb/kUZ5UoKMhGreALCH2ZkhX21Px81FHkRbjvKH4ThSHVaG1qWi+mErD4ulOHh61+bzU0tX6ZxobUUIxHOfwvJcHzB8f0ZV5THNDssfhnolVMLyuc9BGY52lXicVWCYAs26KSgsLsXyJx7JE8iVytkRyoAnTEoOWUBioVa4QiDedk1PHepgoDSh1SizY/yLkp5IxuGycrqKGWHjtG8oKqNiBqq/gscZS45AeQ0Fm1R6ET+19XwEnBFKIniD0Qh1Ykj+if19ZlmEpb0ptMVBVJREwelQ8k/oJZIEumwHa0JGZ11zyN9erSqM+uymD8n+w==
+X-Microsoft-Antispam-Message-Info: QifbsPsf3t6YlUC13VobwEaLOjq8dKzphsG2uO/vm/qGWk+Ri90YHcfRgTK/Qh6KKhlItrgiXTd+k5LUMJjG6fzSIAelUmPu9QAb5lOiwBnK/hnqTfNvHnTLyRtG1PodSVLcLCVKnC5LxF+vaI8rfqAdLtpJJv7D8yUqNCL0eL8Wid5L/co4RGgagLnPQ41YMLsM+r/iTTAT5b6dGBzdSLzluqKpq9Pj3OpUXZeNtTOs9ZdgdLcoGyFawOEV+jY7dVHINMnSZrdfq4fsE7kNujvGXfdwWifN6f4lYeI9iEQTMdlrBmNYWw7BBOIVwykJykZUvz66c0MpltH9weGS+KIoCvN/W7b9uUiXY1D0TUPmePv7rdmZONlvsE7fTu8u2wubrVCuC/sp7d8lcNHqBR4bJ6XRIhgNtCLkfN/NCUhbjSS0G51XfaEF6ZsytLd0mGST9n80VqFgGaP4kCoUy6gYOMFqPKkLg4M0vdM7AaPsT8vddEDHYqpj1fc+rzo66CBrbFOUhjJ+9zlJgu6rmEIIVhmHGBMKCp9QmenPbOReAnX9ByVTxBU30vHnPcgbnKzJ1cgzgaQSSl0QjwLn5ZHJPumY+kYWspJeDqLqmYjZS8kZNbDTE0evnQ/oWZOrmq3DDrUmXv1kqT0QqcTBpA==
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:VI1PR04MB5151.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
  SFS:(4636009)(39860400002)(366004)(136003)(376002)(346002)(396003)(4326008)(8936002)(6486002)(186003)(83380400001)(6916009)(2616005)(5660300002)(66946007)(52116002)(478600001)(8676002)(6512007)(6506007)(86362001)(2906002)(44832011)(66476007)(66556008)(316002)(1076003)(38100700002)(6666004);
  DIR:OUT; SFP:1101; 
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?SjRm2Ds/9QEMOjaAVQt7ik2yfXzHMkmLmOhBcV5kqMvllh6O6/8t6wXXPbEz?=
- =?us-ascii?Q?cy2/yOOyMgoI2BcgS+8QxXLHKdSgYJ5sCfanhGQr6hIfZVozsKo1PoQH/Isk?=
- =?us-ascii?Q?4BEwuHm0VKbMGzWG0ihf+UtE7u7tUrga2D6y2JQxcZeZrnqJtUmVYaOekt4p?=
- =?us-ascii?Q?Z1JFbiZcoBg9cwwnLZr3SgkxNAg5RDEPu5KVBfAb6TJ4XR46xpWwfFTUd8Bd?=
- =?us-ascii?Q?d0ET7O10s/wBgRCVQWCcoKlIcvtPaVKIsJ9CTFRCQIeYTmLwJ97XHo3shyza?=
- =?us-ascii?Q?vREAVOvC1FxcJrn7ZXZB+17Ym91B4RlaO7yWYJ6plS2WKTE0UgyfK3h+UMJ8?=
- =?us-ascii?Q?MVl3EPoHqonG6vZGHmnF57GYg7mi30/4732toRck6tNhggR5oFehZOzgCikL?=
- =?us-ascii?Q?M2YLH9s1XDGmvliA6Rmdl5JzS9Lll+rcG95f4Vb8RnHq31m8OZpTLCkbkgb6?=
- =?us-ascii?Q?pclxSRawvL2vAG+jSKuu0hfAAQuv6z+hOWGt65sKCSeWiVB/G8sr2++K+HxO?=
- =?us-ascii?Q?dn2kJ73SkUmfcNXrM0FL59yIazrxwTxLhBz+/3yW2ZESP4vOkJTReOuS9khY?=
- =?us-ascii?Q?a8/yOjDWH4ve7tl6AArwcN1Bz6J4OMypM5Wruac6m5AkkerPxQJZVADSW8XW?=
- =?us-ascii?Q?lhQ5jn/E9/ocQ72oaU7+gWu37rC5X/nAvoiF9CZVSHFY9AyGTgeN7gPb6pKw?=
- =?us-ascii?Q?R1f0eWA2t4OGKeYHJRSqyTXNihMRDP5zlO+NqokRE41ir/hJ2zFqe2PbeS4r?=
- =?us-ascii?Q?VSs0u3fmPOv5yhfyKbHG+sovK/3VjVzPPM32wDfarMCwZeDNEa/0vXzoec/u?=
- =?us-ascii?Q?9qqIwDig6YZUGgHiXThQ0lq1+PpIRklioT4bpSbBnfZ+AaBWXDSFaa67dZlF?=
- =?us-ascii?Q?+JTYJyRDpDLiYTb62O4i6Ehvbtbm76NHTvHDzAo9Ux4iXg8IirkbMN10TNvN?=
- =?us-ascii?Q?qb6q2RCbHJH7ih6NQdmBV5To0qhPb4V0YXNXM01OeLwtkV0zkEXFJKsthuC7?=
- =?us-ascii?Q?kI8QF8vm0ZCizu+UZ94JfANmUy1YM95afUIU/RzZ6T6w5NmYIF7VpVnOqbHF?=
- =?us-ascii?Q?95nOzIugdLciBCq7KdjtxGkJz1IAQXn6n3tgqX7YzkDlIe5J/nB6POv3OAyW?=
- =?us-ascii?Q?+ewCkPluOjd7f3AqGmYJDRgLgfkd3qhq+KsRgrc3khryvwP3xh5xshdpeqgQ?=
- =?us-ascii?Q?POuIchGBPWlSDWNIpWzL20EjKP145qogef7le/HyIPplmLGWx6PpFTkKONe0?=
- =?us-ascii?Q?WWLltjetkki5XUniUmXojtItYvbFqUU9ksxioFHrgpDIF4QPxVpmaCvXKIHL?=
- =?us-ascii?Q?B87JPxUR61SrvoL+CQzf6kXema9bfGFvX7lm7ol21XQSgnPwodFB7Elggezx?=
- =?us-ascii?Q?VKQy457GxoHuR2+DOLqK0wJ2nIyj?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FFMiHrruEi3nbuY/oK3hvGVK8kj/nJmTnqdL8CHwPchRSmJIIkdc/X43EsPz?=
+ =?us-ascii?Q?qk03KFRbXD/d7xBHUxCm9zXq8RGeCK4WxNJjsSt7uuBVApRzg/BaLxU+Ciek?=
+ =?us-ascii?Q?OoHH/fgsrNAb41o8tlkDGi2mV5mZ+KlCFkPh0fvhA6lfQXLqPv4R9Vrf77PF?=
+ =?us-ascii?Q?86/COwmE7d9ugkKNS+GAPbsbjKWnGsvJe2OObnCgDj+LW/O3M3Mj9FSIEVAc?=
+ =?us-ascii?Q?q/CBegpPWKWDCfGCnia34MxMaKqRlW2gB46Fv4+OpErZsjMeQX6d/EooTpv7?=
+ =?us-ascii?Q?HeHgOZqQ6y0H93mvq55tnFy8ci22LRF5UQTMlXs4uzRMYGPvwVfZMZMdVF5a?=
+ =?us-ascii?Q?Y7rxWIvQ/pFqRsv17g7bU7mrYX2zAclsFlkVm73arc+g0kTA/Nx+NMTTf3Hu?=
+ =?us-ascii?Q?s3nIcHigA/UfhGYf0vmlSQXvL+7557jWL+ZDjB+nssCypu4/hEgfbP1Cis6g?=
+ =?us-ascii?Q?b93PUqao1yL8tDeJO8RC9gpU0IuW1f6BilsISRMprBqiMEJPJy5JmFGgokHU?=
+ =?us-ascii?Q?xHUelkcmh6NEL+P4gy1ko5vLAY3MM6Ehc23xasuckNiwXoGbbPyUKPqkNcwR?=
+ =?us-ascii?Q?rzxuJCyYz1ECfr0K7/sv5aA7D6mPrK5biC9eQeSzLtKyTRM6WW7+Oz+UzfVv?=
+ =?us-ascii?Q?MAITkQqBWQArkjFvOkSWF2rpEUSJXX96QK0ZRJEgYOLXf/EgxiCHyDuVRNyz?=
+ =?us-ascii?Q?ZBFHWsHondefRzTSEfvnRNE+QgiFaIKm5+Vq1D4qrgZC13YXa+DRDgcEATK+?=
+ =?us-ascii?Q?XL6ISWxJK9IJ12twWOoAwr7/LndxuBIIIGtIzyyaOjk0to4rqe2EHxKxby4A?=
+ =?us-ascii?Q?y/EvLpe5YMy29pKZ6s6AHiTbHvBaj2ZUoeHM0286U75vvj2zlQ5umtyi+0i9?=
+ =?us-ascii?Q?Km2bAbEgyy0VBe7DpYrD/9XIz7UK8wjuz5yQgFZEpxfGtDVApvNUOHcHl4En?=
+ =?us-ascii?Q?CcG36cVz/SBUVaykTVP4Ofb+FCwgrLf7HdC+Wp3/ESdznQFQgUQxQu4kcuRJ?=
+ =?us-ascii?Q?rVDEiE6DNxke2IJeznNV/WFFF4f1qgBqit7P3D3NlnLzWnw/CMhHVgVVqtKo?=
+ =?us-ascii?Q?i9crxqnt59UWeOlfH5ga0mJ0sIgCpjf5pMn3wBuLcKxq7Jc276Haw5UBFKLs?=
+ =?us-ascii?Q?WxNqDlIyYT12KJn2bQ9cWbQM/2ZpcpFizrAiTWl2ZEVRljpkhYIiCGV07mxP?=
+ =?us-ascii?Q?zro5l483g+swrFusnC9e0kZwANQ9ZpkuMD2yyUPqYH0auwM7F9J/bzm8whMa?=
+ =?us-ascii?Q?c+t7FhuXscyFPkpLAakqZh8dM49T3yqxXQ9Uf3EXeMwrDAtRpZDAO2didwz4?=
+ =?us-ascii?Q?gn68SwYlbSLwcIjHDYjaqspuiMaUl91/onulgMsQJdHFR5kIQ36EWPwKN6AW?=
+ =?us-ascii?Q?yLmvzeI97Uh0Uqzgd0xQmKWuDR5J?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7c19b68e-7be5-4698-bf66-08d979038401
+X-MS-Exchange-CrossTenant-Network-Message-Id: b07b3132-e285-4d6d-5091-08d979038598
 X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5151.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 11:17:05.7924 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 11:17:08.4579 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: baU2tlfjI8B2QgXZRakwdgj7C7VrsxgKBvyr1rsU01LG1PChtuk67FwjdtK6H8aOhwq+fxV9eafHZqaSDm19KQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: nwsQtZaEPOkYCWgLcHhp64vtmYwRgxDsD6TdspUNmY5IoEfPzmbrfKpiEzkEHirEptkBKjJU0WGdO70/iVnhag==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4926
 Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
  kai.vehmanen@linux.intel.com, lgirdwood@gmail.com, daniel.baluta@nxp.com,
@@ -166,147 +165,182 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-In the SOF driver, the operations performed in the complete callback
-can fail and therefore topology loading should return an error in
-such cases. So, change the signature of the complete op
-in struct snd_soc_tplg_ops to return an int to return the error.
+Today, we set up all widgets required for all PCM streams
+at the time of topology parsing even if they are not
+used. An optimization would be to only set up the widgets
+required for currently active PCM streams. This would give
+the FW the opportunity to power gate unused memory blocks,
+thereby saving power.
 
-Also, amend the complete callback functions in the SOF driver and
-the SKL driver to conform with the new signature.
+For dynamic pipelines, the widgets in the connected DAPM path
+for each PCM will need to be set up at runtime. This patch
+introduces a new token, DYNAMIC_PIPELINE, for scheduler type
+widgets that indicate whether a pipeline should be set up
+statically during topology load or at runtime when the PCM is
+opened. Introduce a new field called dynamic_pipeline_widget
+in struct snd_sof_widget to save the value of the parsed token.
+
+The token is set only for the pipeline (scheduler type)
+widget and must be propagated to all widgets in the same
+pipeline during topology load. Introduce another field called
+pipe_widget in struct snd_sof_widget that saves the pointer to
+the scheduler widget with the same pipeline ID as that of the
+widget. This field is populated when the pipeline completion
+callback is invoked during topology loading.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- include/sound/soc-topology.h           |  2 +-
- sound/soc/intel/skylake/skl-topology.c |  6 ++++--
- sound/soc/soc-topology.c               | 10 ++++++----
- sound/soc/sof/topology.c               | 12 ++++++++----
- 4 files changed, 19 insertions(+), 11 deletions(-)
+ include/uapi/sound/sof/tokens.h |  1 +
+ sound/soc/sof/sof-audio.h       | 13 +++++++
+ sound/soc/sof/topology.c        | 62 ++++++++++++++++++++++++++++++++-
+ 3 files changed, 75 insertions(+), 1 deletion(-)
 
-diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
-index 4afd667e124c..7f33de8ffd95 100644
---- a/include/sound/soc-topology.h
-+++ b/include/sound/soc-topology.h
-@@ -151,7 +151,7 @@ struct snd_soc_tplg_ops {
- 		struct snd_soc_tplg_hdr *);
+diff --git a/include/uapi/sound/sof/tokens.h b/include/uapi/sound/sof/tokens.h
+index a642bf30c027..02b71a8deea4 100644
+--- a/include/uapi/sound/sof/tokens.h
++++ b/include/uapi/sound/sof/tokens.h
+@@ -51,6 +51,7 @@
+ #define SOF_TKN_SCHED_CORE			203
+ #define SOF_TKN_SCHED_FRAMES			204
+ #define SOF_TKN_SCHED_TIME_DOMAIN		205
++#define SOF_TKN_SCHED_DYNAMIC_PIPELINE		206
  
- 	/* completion - called at completion of firmware loading */
--	void (*complete)(struct snd_soc_component *);
-+	int (*complete)(struct snd_soc_component *comp);
- 
- 	/* manifest - optional to inform component of manifest */
- 	int (*manifest)(struct snd_soc_component *, int index,
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index b036852d6889..89e4231304dd 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -3637,7 +3637,7 @@ static int skl_manifest_load(struct snd_soc_component *cmpnt, int index,
- 	return 0;
- }
- 
--static void skl_tplg_complete(struct snd_soc_component *component)
-+static int skl_tplg_complete(struct snd_soc_component *component)
- {
- 	struct snd_soc_dobj *dobj;
- 	struct snd_soc_acpi_mach *mach;
-@@ -3646,7 +3646,7 @@ static void skl_tplg_complete(struct snd_soc_component *component)
- 
- 	val = kmalloc(sizeof(*val), GFP_KERNEL);
- 	if (!val)
--		return;
-+		return -ENOMEM;
- 
- 	mach = dev_get_platdata(component->card->dev);
- 	list_for_each_entry(dobj, &component->dobj_list, list) {
-@@ -3671,7 +3671,9 @@ static void skl_tplg_complete(struct snd_soc_component *component)
- 			}
- 		}
- 	}
-+
- 	kfree(val);
-+	return 0;
- }
- 
- static struct snd_soc_tplg_ops skl_tplg_ops  = {
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 73e1b7b48ce9..88f849b119da 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -78,7 +78,7 @@ struct soc_tplg {
+ /* volume */
+ #define SOF_TKN_VOLUME_RAMP_STEP_TYPE		250
+diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
+index 78a4a0c90a29..4a1c38c5618d 100644
+--- a/sound/soc/sof/sof-audio.h
++++ b/sound/soc/sof/sof-audio.h
+@@ -81,6 +81,8 @@ struct snd_sof_control {
+ 	bool comp_data_dirty;
  };
  
- static int soc_tplg_process_headers(struct soc_tplg *tplg);
--static void soc_tplg_complete(struct soc_tplg *tplg);
-+static int soc_tplg_complete(struct soc_tplg *tplg);
- 
- /* check we dont overflow the data for this control chunk */
- static int soc_tplg_check_elem_count(struct soc_tplg *tplg, size_t elem_size,
-@@ -312,10 +312,12 @@ static int soc_tplg_dai_link_load(struct soc_tplg *tplg,
- }
- 
- /* tell the component driver that all firmware has been loaded in this request */
--static void soc_tplg_complete(struct soc_tplg *tplg)
-+static int soc_tplg_complete(struct soc_tplg *tplg)
- {
- 	if (tplg->ops && tplg->ops->complete)
--		tplg->ops->complete(tplg->comp);
-+		return tplg->ops->complete(tplg->comp);
++struct snd_sof_widget;
 +
-+	return 0;
- }
+ /* ASoC SOF DAPM widget */
+ struct snd_sof_widget {
+ 	struct snd_soc_component *scomp;
+@@ -90,8 +92,19 @@ struct snd_sof_widget {
+ 	int core;
+ 	int id;
  
- /* add a dynamic kcontrol */
-@@ -2625,7 +2627,7 @@ static int soc_tplg_load(struct soc_tplg *tplg)
++	/*
++	 * Flag indicating if the widget should be set up dynamically when a PCM is opened.
++	 * This flag is only set for the scheduler type widget in topology. During topology
++	 * loading, this flag is propagated to all the widgets belonging to the same pipeline.
++	 * When this flag is not set, a widget is set up at the time of topology loading
++	 * and retained until the DSP enters D3. It will need to be set up again when resuming
++	 * from D3.
++	 */
++	bool dynamic_pipeline_widget;
++
+ 	struct snd_soc_dapm_widget *widget;
+ 	struct list_head list;	/* list in sdev widget list */
++	struct snd_sof_widget *pipe_widget;
  
- 	ret = soc_tplg_process_headers(tplg);
- 	if (ret == 0)
--		soc_tplg_complete(tplg);
-+		return soc_tplg_complete(tplg);
- 
- 	return ret;
- }
+ 	/* extended data for UUID components */
+ 	struct sof_ipc_comp_ext comp_ext;
 diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index cc9585bfa4e9..96b8791f7cc1 100644
+index d8f7b1edefc3..60d1db6a9193 100644
 --- a/sound/soc/sof/topology.c
 +++ b/sound/soc/sof/topology.c
-@@ -3567,10 +3567,11 @@ int snd_sof_complete_pipeline(struct device *dev,
+@@ -572,6 +572,12 @@ static const struct sof_topology_token sched_tokens[] = {
+ 		offsetof(struct sof_ipc_pipe_new, time_domain), 0},
+ };
+ 
++static const struct sof_topology_token pipeline_tokens[] = {
++	{SOF_TKN_SCHED_DYNAMIC_PIPELINE, SND_SOC_TPLG_TUPLE_TYPE_BOOL, get_token_u16,
++		offsetof(struct snd_sof_widget, dynamic_pipeline_widget), 0},
++
++};
++
+ /* volume */
+ static const struct sof_topology_token volume_tokens[] = {
+ 	{SOF_TKN_VOLUME_RAMP_STEP_TYPE, SND_SOC_TPLG_TUPLE_TYPE_WORD,
+@@ -1765,6 +1771,15 @@ static int sof_widget_load_pipeline(struct snd_soc_component *scomp, int index,
+ 		goto err;
+ 	}
+ 
++	ret = sof_parse_tokens(scomp, swidget, pipeline_tokens,
++			       ARRAY_SIZE(pipeline_tokens), private->array,
++			       le32_to_cpu(private->size));
++	if (ret != 0) {
++		dev_err(scomp->dev, "error: parse dynamic pipeline token failed %d\n",
++			private->size);
++		goto err;
++	}
++
+ 	dev_dbg(scomp->dev, "pipeline %s: period %d pri %d mips %d core %d frames %d\n",
+ 		swidget->widget->name, pipeline->period, pipeline->priority,
+ 		pipeline->period_mips, pipeline->core, pipeline->frames_per_sched);
+@@ -3567,11 +3582,45 @@ int snd_sof_complete_pipeline(struct device *dev,
+ 	return 1;
  }
  
++/**
++ * sof_set_pipe_widget - Set pipe_widget for a component
++ * @sdev: pointer to struct snd_sof_dev
++ * @pipe_widget: pointer to struct snd_sof_widget of type snd_soc_dapm_scheduler
++ * @swidget: pointer to struct snd_sof_widget that has the same pipeline ID as @pipe_widget
++ *
++ * Return: 0 if successful, -EINVAL on error.
++ * The function checks if @swidget is associated with any volatile controls. If so, setting
++ * the dynamic_pipeline_widget is disallowed.
++ */
++static int sof_set_pipe_widget(struct snd_sof_dev *sdev, struct snd_sof_widget *pipe_widget,
++			       struct snd_sof_widget *swidget)
++{
++	struct snd_sof_control *scontrol;
++
++	if (pipe_widget->dynamic_pipeline_widget) {
++		/* dynamic widgets cannot have volatile kcontrols */
++		list_for_each_entry(scontrol, &sdev->kcontrol_list, list)
++			if (scontrol->comp_id == swidget->comp_id &&
++			    (scontrol->access & SNDRV_CTL_ELEM_ACCESS_VOLATILE)) {
++				dev_err(sdev->dev,
++					"error: volatile control found for dynamic widget %s\n",
++					swidget->widget->name);
++				return -EINVAL;
++			}
++	}
++
++	/* set the pipe_widget and apply the dynamic_pipeline_widget_flag */
++	swidget->pipe_widget = pipe_widget;
++	swidget->dynamic_pipeline_widget = pipe_widget->dynamic_pipeline_widget;
++
++	return 0;
++}
++
  /* completion - called at completion of firmware loading */
--static void sof_complete(struct snd_soc_component *scomp)
-+static int sof_complete(struct snd_soc_component *scomp)
+ static int sof_complete(struct snd_soc_component *scomp)
  {
  	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
- 	struct snd_sof_widget *swidget;
-+	int ret;
+-	struct snd_sof_widget *swidget;
++	struct snd_sof_widget *swidget, *comp_swidget;
+ 	int ret;
  
  	/* some widget types require completion notificattion */
- 	list_for_each_entry(swidget, &sdev->widget_list, list) {
-@@ -3579,8 +3580,11 @@ static void sof_complete(struct snd_soc_component *scomp)
+@@ -3586,6 +3635,17 @@ static int sof_complete(struct snd_soc_component *scomp)
+ 				return ret;
  
- 		switch (swidget->id) {
- 		case snd_soc_dapm_scheduler:
--			swidget->complete =
--				snd_sof_complete_pipeline(scomp->dev, swidget);
-+			ret = snd_sof_complete_pipeline(scomp->dev, swidget);
-+			if (ret < 0)
-+				return ret;
+ 			swidget->complete = ret;
 +
-+			swidget->complete = ret;
++			/*
++			 * Apply the dynamic_pipeline_widget flag and set the pipe_widget field
++			 * for all widgets that have the same pipeline ID as the scheduler widget
++			 */
++			list_for_each_entry_reverse(comp_swidget, &sdev->widget_list, list)
++				if (comp_swidget->pipeline_id == swidget->pipeline_id) {
++					ret = sof_set_pipe_widget(sdev, swidget, comp_swidget);
++					if (ret < 0)
++						return ret;
++				}
  			break;
  		default:
  			break;
-@@ -3590,7 +3594,7 @@ static void sof_complete(struct snd_soc_component *scomp)
- 	 * cache initial values of SOF kcontrols by reading DSP value over
- 	 * IPC. It may be overwritten by alsa-mixer after booting up
- 	 */
--	snd_sof_cache_kcontrol_val(scomp);
-+	return snd_sof_cache_kcontrol_val(scomp);
- }
- 
- /* manifest - optional to inform component of manifest */
 -- 
 2.27.0
 
