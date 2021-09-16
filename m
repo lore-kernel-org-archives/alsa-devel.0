@@ -2,86 +2,78 @@ Return-Path: <SRS0=oBF5=OG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 653A4C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 15:22:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF641C433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 17:05:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CF8BE6121F
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 15:22:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CF8BE6121F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id D4A806103C
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 17:05:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D4A806103C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6C6D218D5;
-	Thu, 16 Sep 2021 17:21:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C6D218D5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 92D4A187D;
+	Thu, 16 Sep 2021 19:04:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92D4A187D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631805724;
-	bh=eDXzELLedHL1Rq69xdJyLrhmmCJYQrmfdmd4yJBB9LE=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1631811899;
+	bh=q4RqtIRntVMa6Rg/TYwJDrSsxHezNXjx5lMa5ZlXjv0=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VLp98gmMCcN97ELzT8Eo6qZhe93dwgusWKmBtuwY48GqOR4/shVi9sm+cFxRWCJKH
-	 Ok+FKCDkBJC5+kxGe37wPOLDFJlK3MfnQndru6PWONSA5Y0T09LKAuhTytYJEn4WW/
-	 6SFbjCMHKVlFeqRENqrkX3YWJ/CEkYyHLPSYmTwI=
+	b=T2tUfWMNwsESNFLQJTjROGofF5S4AwmIHfKsar+7zAXHmISBOsdE+wTEUrnKUrsCq
+	 pDM1PE0dhKTQYNIMB3uzQonpkvI7Yn+ClsCCQoet4pM0VghFoWWCp/rwiNE4e82KpZ
+	 kZ9eCdst5y7b/erVLfPn3igpnNlAtr6oitVXJ6hA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1C5AAF80506;
-	Thu, 16 Sep 2021 17:19:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E01F0F80117;
+	Thu, 16 Sep 2021 19:04:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 14600F804FB; Thu, 16 Sep 2021 17:19:10 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 4A5E7F800D3; Thu, 16 Sep 2021 19:04:07 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 54D94F804FB
- for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 17:19:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54D94F804FB
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="B8qqIRyR"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FCD761248;
- Thu, 16 Sep 2021 15:19:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631805544;
- bh=eDXzELLedHL1Rq69xdJyLrhmmCJYQrmfdmd4yJBB9LE=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=B8qqIRyRkswmmaTgHEEd/uDlXHFabOsTC7yjpuP9ibwswyecHLOBYBnJpKwpxve9C
- JkuxKqQNsXPMvQWJg//ak1TPGVuc+Sjxf+c8oNZht8vHhrsWZ3cBdh2GufwxRq9pSR
- BLKs7IQfYqbaAcY/bzHuo4TALT5GcfLg3AMX9W0ASjRGQIAVG90U/+z7hNl3FJnsKU
- h9Tri2vDRKnVC2sT1Yoel6qNLY3bpsYj8FgNQo4rIVE+XgFmiqe6DzK1hV4naafwDR
- gDNi9JAGAVXufrIWcOxVXWtI87Yq4y4HZ1g5JY1dxrRkUwkLF26taVL37wIn9XY5K6
- dzwvELQRofVfw==
-From: Mark Brown <broonie@kernel.org>
-To: Lars-Peter Clausen <lars@metafoo.de>,
- =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
- Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH 6/6] ASoC: adav80x: Update to modern clocking terminology
-Date: Thu, 16 Sep 2021 16:18:06 +0100
-Message-Id: <20210916151806.20756-6-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210916151806.20756-1-broonie@kernel.org>
-References: <20210916151806.20756-1-broonie@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 21057F80117
+ for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 19:04:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21057F80117
+X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="222666959"
+X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; d="scan'208";a="222666959"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Sep 2021 10:03:57 -0700
+X-IronPort-AV: E=Sophos;i="5.85,299,1624345200"; d="scan'208";a="554167905"
+Received: from xuanguan-mobl.amr.corp.intel.com (HELO [10.213.180.84])
+ ([10.213.180.84])
+ by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Sep 2021 10:03:56 -0700
+Subject: Re: [PATCH v6 16/22] ASoC: qdsp6: audioreach: add module
+ configuration command helpers
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ bjorn.andersson@linaro.org, broonie@kernel.org, robh@kernel.org
+References: <20210915131333.19047-1-srinivas.kandagatla@linaro.org>
+ <20210915131333.19047-17-srinivas.kandagatla@linaro.org>
+ <4cd0e63f-107b-d10a-11e9-bced83f487a5@linux.intel.com>
+ <00472b83-f02d-70cc-7c6e-cf414dc17754@linaro.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <dbe12aeb-3200-e7d3-7530-39e2d3aa990c@linux.intel.com>
+Date: Thu, 16 Sep 2021 10:40:11 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1020; h=from:subject;
- bh=eDXzELLedHL1Rq69xdJyLrhmmCJYQrmfdmd4yJBB9LE=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBhQ1+sjWzsvq4K2hc77B5GuMyqH52WZBlRqQaNGil6
- ZWNtt36JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYUNfrAAKCRAk1otyXVSH0EbAB/
- 9XoaRelhc2L3sQQWyAqfId+VaAG5XEtVtzVkYiIs/6HKsWQL9Frnl2D28XWJPiy3Muhdo5Xef9mqFN
- fNf4+GO/ItDBBBtPBk5O7wEbmhjj+hJo6PEpxBPpstQtU2dyCPrfw5rYabRs6F2llCXl4YZ/IJKIqd
- 8LyYL7t61bwsH/3o5p0zkh/j1tCAjbkx7365c85cr8jU4oQnDZCJcD5/iu7hezgow0sShBIcDTa/+z
- TO/213oiY5UfAIOA4fUG7D8GNc10wFy4WVvrbC7vlimoOrlHHaUWFPoTh8KqnTHSQf26j1PPVD2yel
- SFGVdNeydQmfx7Sg/Ao7OZ9V79v2xC
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+In-Reply-To: <00472b83-f02d-70cc-7c6e-cf414dc17754@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ bgoswami@codeaurora.org, tiwai@suse.de, plai@codeaurora.org,
+ lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,34 +89,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-As part of moving to remove the old style defines for the bus clocks update
-the adav80x driver to use more modern terminology for clocking.
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/adav80x.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+>>> +int q6apm_read(struct q6apm_graph *graph)
+>>> +{
+>>> +    struct data_cmd_rd_sh_mem_ep_data_buffer_v2 *read;
+>>> +    struct audioreach_graph_data *port;
+>>> +    struct audio_buffer *ab;
+>>> +    struct gpr_pkt *pkt;
+>>> +    int rc, iid;
+>>> +
+>>> +    iid = q6apm_graph_get_tx_shmem_module_iid(graph);
+>>> +    pkt = audioreach_alloc_pkt(sizeof(*read),
+>>> DATA_CMD_RD_SH_MEM_EP_DATA_BUFFER_V2,
+>>> +                 graph->tx_data.dsp_buf, graph->port->id, iid);
+>>> +    if (IS_ERR(pkt))
+>>> +        return -ENOMEM;
+>>> +
+>>> +    read = (void *)pkt + GPR_HDR_SIZE;
+>>
+>> same nit-pick on variable naming, with the additional present/past
+>> grammar issue that you don't know if it's a read buffer or a pointer to
+>> data read in the past.
+>>
+> 
+> do you think adding "_cmd" suffix like read_cmd would make more sense?
 
-diff --git a/sound/soc/codecs/adav80x.c b/sound/soc/codecs/adav80x.c
-index 75a649108106..90f3a5e9e31f 100644
---- a/sound/soc/codecs/adav80x.c
-+++ b/sound/soc/codecs/adav80x.c
-@@ -369,12 +369,12 @@ static int adav80x_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	unsigned int capture = 0x00;
- 	unsigned int playback = 0x00;
- 
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBM_CFM:
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_CBP_CFP:
- 		capture |= ADAV80X_CAPTURE_MODE_MASTER;
- 		playback |= ADAV80X_PLAYBACK_MODE_MASTER;
- 		break;
--	case SND_SOC_DAIFMT_CBS_CFS:
-+	case SND_SOC_DAIFMT_CBC_CFC:
- 		break;
- 	default:
- 		return -EINVAL;
--- 
-2.20.1
+My personal preference is read_buffer or write_buffer, less ambiguous
+than 'read' or 'write'.
 
+I've started cracking down on the use of 'stream' for a similar reason,
+at some point no one know what the code/variables represent.
