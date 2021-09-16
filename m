@@ -2,81 +2,82 @@ Return-Path: <SRS0=oBF5=OG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2F3CC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 14:10:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DFFBC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 14:15:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 36F0861214
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 14:10:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 36F0861214
+	by mail.kernel.org (Postfix) with ESMTPS id C3A3A61212
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 14:15:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C3A3A61212
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DC0EE1872;
-	Thu, 16 Sep 2021 16:09:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC0EE1872
+	by alsa0.perex.cz (Postfix) with ESMTPS id 326E7188F;
+	Thu, 16 Sep 2021 16:14:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 326E7188F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631801430;
-	bh=C88hX+FGK/alul/N+3AtiDY/zUXu3XjpnSMlgvWGN1c=;
+	s=default; t=1631801718;
+	bh=Nb1vFDiuTk6CWhu18ieOgR/Jj0Ejh0bkZNiEyZkjhqw=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=a8APM3hdw29QQURHVgH0CAwN+tgZrvVIyipPu9raVLneVCVK48iRpgaY/z6p8bik0
-	 RTHyC5GeyTwkGPYAs+rRFDKirUml47LHld/KKciACB9jmNbGknTfIIbNFCf2nTsMHN
-	 iQAUoaPnK+/lZ1RHWfbnrQahuHgHuSZ1YJcL1rTQ=
+	b=i0zXSR/j5CUcEKzwqUFRgNDaFQikm+NhflaBMxS2nAwoMGUBqYmqC1LpS8ZCYGKdD
+	 WYYivs1AMTOezN+E/fxvDrubwB8wy46Fj+YqOjm9t3DnzXrlhHi9/gXJKslTeZFF/X
+	 rOE/3u87bYZmpvoSbvwBkGj0MSZdwJFbymsZBBKQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C7F2F80117;
-	Thu, 16 Sep 2021 16:09:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B1305F8025A;
+	Thu, 16 Sep 2021 16:14:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 66E21F8025E; Thu, 16 Sep 2021 16:09:38 +0200 (CEST)
+ id 0B6EEF8025E; Thu, 16 Sep 2021 16:14:26 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D4FA3F80117
- for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 16:09:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4FA3F80117
+ by alsa1.perex.cz (Postfix) with ESMTPS id 89A67F80113
+ for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 16:14:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89A67F80113
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="FQrgnvXI"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36FFC60238;
- Thu, 16 Sep 2021 14:09:30 +0000 (UTC)
+ header.b="R0JCgk1d"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EDCF61212;
+ Thu, 16 Sep 2021 14:14:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631801370;
- bh=C88hX+FGK/alul/N+3AtiDY/zUXu3XjpnSMlgvWGN1c=;
+ s=k20201202; t=1631801660;
+ bh=Nb1vFDiuTk6CWhu18ieOgR/Jj0Ejh0bkZNiEyZkjhqw=;
  h=From:To:Cc:Subject:Date:From;
- b=FQrgnvXIo8ezbM9ocFoQXrw9RT12KQ0d82oeZ7Ug+SDSxOAwN5xtKpQ7qpyaZto4p
- 30FRWjkQmcLvqCgLKUAhdWoQA6sVhKCSyXVUaDdGGOx4zFq3H7Y/HlPoAoJZPJrLm0
- SXtPRT5J85lzH1pN7h5QDVtakBWzGGW+Nwm3nOfrbPEbiOZ6SOFW+3phYZ5qzAtJsx
- CEGIcYXyaX1YKbJrhbj7s+EYbmZUW35vVtPBJGefHb9cMniqVGgMSb0CUBLUFHirsK
- JEYLlu+09TWhlcTmMo8LjdNUY5Ld0G/AcVlvutodThvyl98nWGLyYPKdeITAmZ6kGz
- cmAO7RgJouidQ==
+ b=R0JCgk1ddwf51cS+9rRW6t0R5GCP+CntQKL5bOVuC0T1g8kc7nzYkKdN7SaxVpS5V
+ jVnXlCbElp30JEEr8ySkt4r3syeZH8NzCU6MiORyetVONOV6wSunlqBSdoDHxZblra
+ mml4Ujef4EtBmjtLS4b1TI/LTrZ0fkZWLZgfbSv8eDzhavmWkJsSqa1y9utlXWLnKZ
+ LIMqUN0yy8OtnjHFxqiEUGDKqMQ+S4XG30MUgLEsofwRHWcTl7kfopvXkBu0IkuBY0
+ 2SFMPw89cOctjj88w0hAX08ptA73V46MyqH3VTG/VBOanFkm4WfqbYyPdrFtToINBS
+ SaBAzEvr5v2Rw==
 From: Mark Brown <broonie@kernel.org>
 To: Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH] ASoC: 88pm860x: Update to modern clocking terminology
-Date: Thu, 16 Sep 2021 15:08:47 +0100
-Message-Id: <20210916140847.50900-1-broonie@kernel.org>
+Subject: [PATCH] ASoC: ab8500: Update to modern clocking terminology
+Date: Thu, 16 Sep 2021 15:13:35 +0100
+Message-Id: <20210916141335.43818-1-broonie@kernel.org>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1907; h=from:subject;
- bh=C88hX+FGK/alul/N+3AtiDY/zUXu3XjpnSMlgvWGN1c=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBhQ0+Oca6lWRBTmDhCPuLIpET6ybxLuDzjOzY2i7x9
- 9d4444+JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYUNPjgAKCRAk1otyXVSH0KeAB/
- 94vmAr9BjiVhrosL38OMl/0bYjsBDkzDLjPyt2hKu9bIHzFcZ03XbKx1d+o5Cr/LZvIG3VoFADAIm0
- V4PrGsAVQ+qZu/3aIJNnQnz4lhuSaMmQAUYTZZvYguPxu9NvhN3Lx2u8tn78gADl5AbzAsIqvlVTA5
- O7cAPx2DCc/OjdOJHEntxBaJQ8tmr++BK9f9Mt5vHJwla59jej4yh5H1vgk7vv4tbd7qGO5eA7XKxu
- 5YAv2cfYJwzuMfu8Gihhh6jhhV2zVf+HApAk+u9edH5QVofsoMcFH6cAucM4Bt75HxT0av1TKqcTCs
- KpI6mMBGgfI9Dyok6qGSLcKzgr0U89
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2011; h=from:subject;
+ bh=Nb1vFDiuTk6CWhu18ieOgR/Jj0Ejh0bkZNiEyZkjhqw=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBhQ1AzZaBeEyR+Hhja2rBo0Jjk67tSxJ+lT4SGXdOc
+ NawR7s6JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYUNQMwAKCRAk1otyXVSH0MYtB/
+ 9aeKaxGSwAkbHD/7IbB4fs2jB55LNaEaNe4pqYptJP/dZ4QopCDKDBs/9gg4o3mZoKlEmc9cGzqWLa
+ EtAbxPTjvyelT/xdxIZ2+WBQvEBhpQuUPw67QDNzaHHscWtWOj/kmHFQRchguiirqoUw3YZzEHii53
+ yvy2GQEfsTCbaMjyxTxcTnSiCSOxMes92AOgJ3dq0itKl/XGfQKdf1AV+nOhQKXvC9rlN4OJvXUKDE
+ goAntqq6z0R1N0sTB5klEXJE3Szrd5Rc2gqSo0kuBZHenGI3SlRg1lsRrdnfLqueXTuYTtv5afA9vx
+ ub96ILJqIDlwSn1pibXKNHzYMr16Di
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Mark Brown <broonie@kernel.org>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,59 +94,54 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 As part of moving to remove the old style defines for the bus clocks update
-the 88pm860x driver to use more modern terminology for clocking.
+the ab8500 driver to use more modern terminology for clocking.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/88pm860x-codec.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ sound/soc/codecs/ab8500-codec.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/88pm860x-codec.c b/sound/soc/codecs/88pm860x-codec.c
-index cac7e557edc8..c6043fa58c74 100644
---- a/sound/soc/codecs/88pm860x-codec.c
-+++ b/sound/soc/codecs/88pm860x-codec.c
-@@ -968,16 +968,16 @@ static int pm860x_pcm_set_dai_fmt(struct snd_soc_dai *codec_dai,
+diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
+index 5525e1ccab76..aefafb0b7b97 100644
+--- a/sound/soc/codecs/ab8500-codec.c
++++ b/sound/soc/codecs/ab8500-codec.c
+@@ -2104,26 +2104,26 @@ static int ab8500_codec_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 			BIT(AB8500_DIGIFCONF3_IF0MASTER);
+ 	val = 0;
  
- 	mask |= PCM_INF2_BCLK | PCM_INF2_FS | PCM_INF2_MASTER;
- 
--	/* set master/slave audio interface */
 -	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBM_CFM:
--	case SND_SOC_DAIFMT_CBM_CFS:
-+	/* set audio interface clocking */
+-	case SND_SOC_DAIFMT_CBM_CFM: /* codec clk & FRM master */
 +	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
 +	case SND_SOC_DAIFMT_CBP_CFP:
+ 		dev_dbg(dai->component->dev,
+-			"%s: IF0 Master-mode: AB8500 master.\n", __func__);
++			"%s: IF0 Master-mode: AB8500 provider.\n", __func__);
+ 		val |= BIT(AB8500_DIGIFCONF3_IF0MASTER);
+ 		break;
+-	case SND_SOC_DAIFMT_CBS_CFS: /* codec clk & FRM slave */
++	case SND_SOC_DAIFMT_CBC_CFC:
+ 		dev_dbg(dai->component->dev,
+-			"%s: IF0 Master-mode: AB8500 slave.\n", __func__);
++			"%s: IF0 Master-mode: AB8500 consumer.\n", __func__);
+ 		break;
+-	case SND_SOC_DAIFMT_CBS_CFM: /* codec clk slave & FRM master */
+-	case SND_SOC_DAIFMT_CBM_CFS: /* codec clk master & frame slave */
++	case SND_SOC_DAIFMT_CBC_CFP:
 +	case SND_SOC_DAIFMT_CBP_CFC:
- 		if (pm860x->dir == PM860X_CLK_DIR_OUT) {
- 			inf |= PCM_INF2_MASTER;
- 			ret = 0;
- 		}
- 		break;
--	case SND_SOC_DAIFMT_CBS_CFS:
-+	case SND_SOC_DAIFMT_CBC_CFC:
- 		if (pm860x->dir == PM860X_CLK_DIR_IN) {
- 			inf &= ~PCM_INF2_MASTER;
- 			ret = 0;
-@@ -1072,15 +1072,15 @@ static int pm860x_i2s_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 		dev_err(dai->component->dev,
+-			"%s: ERROR: The device is either a master or a slave.\n",
++			"%s: ERROR: The device is either a provider or a consumer.\n",
+ 			__func__);
+ 		fallthrough;
+ 	default:
+ 		dev_err(dai->component->dev,
+-			"%s: ERROR: Unsupporter master mask 0x%x\n",
+-			__func__, fmt & SND_SOC_DAIFMT_MASTER_MASK);
++			"%s: ERROR: Unsupporter clocking mask 0x%x\n",
++			__func__, fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK);
+ 		return -EINVAL;
+ 	}
  
- 	mask |= PCM_INF2_BCLK | PCM_INF2_FS | PCM_INF2_MASTER;
- 
--	/* set master/slave audio interface */
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBM_CFM:
-+	/* set audio interface clocking */
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_CBP_CFP:
- 		if (pm860x->dir == PM860X_CLK_DIR_OUT)
- 			inf |= PCM_INF2_MASTER;
- 		else
- 			return -EINVAL;
- 		break;
--	case SND_SOC_DAIFMT_CBS_CFS:
-+	case SND_SOC_DAIFMT_CBC_CFC:
- 		if (pm860x->dir == PM860X_CLK_DIR_IN)
- 			inf &= ~PCM_INF2_MASTER;
- 		else
 -- 
 2.20.1
 
