@@ -2,91 +2,90 @@ Return-Path: <SRS0=oBF5=OG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6ACF3C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 09:58:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7E23C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 10:29:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E84BC61185
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 09:58:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E84BC61185
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id 84F976120E
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 10:29:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 84F976120E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9D8C017AF;
-	Thu, 16 Sep 2021 11:57:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D8C017AF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7123B17D2;
+	Thu, 16 Sep 2021 12:28:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7123B17D2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631786286;
-	bh=ys4+G8SsMqHAsgXepmiz/gGwsac1jDhRkOvVkYKNyt0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=IBM3D5bdWumY7Bl0WSI19Wkadr/wvoe9kmJARjEihf4l8NnpYzdrns+v0E2VAjHHv
-	 VqEA/5SIMFc4tSfnYfN+01VjtUaQo2bqCJKp4EYT/DvLdqlP4rNWENc/Eh9e4+y5FT
-	 etzkMav+UdJGJ8Edafesy8IFUDynZZvrntUiba6Q=
+	s=default; t=1631788152;
+	bh=y6PI/ptq+uL+dZvrpJWhMln+J8lm84p3sKRWiXFZq0M=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=lio6PM8K9CHJD5QlqqhS6pbXigPAFRjmMDtCJYhVElSXDfjFSG26grrCR30swWghC
+	 PUQJhUdqBD4V1+B4nQSkeBuM9ayBNm8ulSmadH4Chwl4FD6gG+musdi3YNliMmgKJ7
+	 8blTHS4ppAhpTfXW+HDPN0un07E2cjOdM0uWof38=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 03D0FF8025A;
-	Thu, 16 Sep 2021 11:57:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F195DF8025E;
+	Thu, 16 Sep 2021 12:28:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E50A6F8025E; Thu, 16 Sep 2021 11:57:13 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 359E7F80117; Thu, 16 Sep 2021 12:28:18 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 45276F80117
- for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 11:57:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45276F80117
+ by alsa1.perex.cz (Postfix) with ESMTPS id 51389F80117
+ for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 12:28:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51389F80117
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="U42uK82d"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18G6UqLC017886; 
- Thu, 16 Sep 2021 04:57:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=ha17yogEQU4qUFAR7cWFbPaW839EX045J1Xb9CypQhc=;
- b=U42uK82d138PV2FiMjHB6SQYsz7P0lo0o6uQCs/khVjit7ufPu780IaTutRJFJkj4BDa
- cbqZN86wAxKnY6XZdqQ8r/M6ViuyYD7kbbba83Oi9F1+xSg5UNzHEy7rG2n77R6xZWwg
- k4GoVerwuGm3jZz2Ncvj6HoXxQfnTFwH2gbNKjwmq9th5CwdkKV7xFeAD/YR5ov6nhzX
- bDVTr3hd031wa90RiyBQstmuHT2NQ23Kpleu1Bvhwk7Omnvzjw5DIZ54//NTceE2Ssl9
- 1pXyzA2bp9jChVMW0kOGO+PkSzRbqcoZCJQr8PCFpex4Dx6T1a0GyoTlmaoljyVV27kI Yw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 3b3wfv0b8u-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 16 Sep 2021 04:57:02 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Thu, 16 Sep
- 2021 10:57:01 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via
- Frontend Transport; Thu, 16 Sep 2021 10:57:01 +0100
-Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.230])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 19C96B15;
- Thu, 16 Sep 2021 09:57:00 +0000 (UTC)
-From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH] ALSA: hda/cs8409: Setup Dolphin Headset Mic as Phantom Jack
-Date: Thu, 16 Sep 2021 10:56:46 +0100
-Message-ID: <20210916095646.7631-1-vitalyr@opensource.cirrus.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 9eaEMjPcBWfdvc6H-_2mCOrYJ3a9_56S
-X-Proofpoint-ORIG-GUID: 9eaEMjPcBWfdvc6H-_2mCOrYJ3a9_56S
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="CPe9jRyQ"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="kTZo//WN"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 325A92006F;
+ Thu, 16 Sep 2021 10:28:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1631788087; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=JKlbWEkGTZDUHhdZQqmD396ZxH4V9h5dVi2ETYvk4Ro=;
+ b=CPe9jRyQUbw77owJxnyMX0dEzI6U7Q2sViYo66wuO2z5+m4hMQmgxWH96lTrk4aMKaAb9a
+ RVaDyAytCydAxP2fPk6p2s7ViqVCcE4mUcfgFTWC1yH9hK6GYIP+oEa0WAR/sPhdw2he6P
+ Pn35xWdg4Doiv/6a55rYx8I++Em6oro=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1631788087;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=JKlbWEkGTZDUHhdZQqmD396ZxH4V9h5dVi2ETYvk4Ro=;
+ b=kTZo//WNQghx7en8oDO3hCDx9PCgSvm5J4BdY8wEfCLK5ddfmVyKjfCzfPwl22U92cPec0
+ xGt4MPfL5ZURBvBw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 85750A3B91;
+ Thu, 16 Sep 2021 10:28:02 +0000 (UTC)
+Date: Thu, 16 Sep 2021 12:28:07 +0200
+Message-ID: <s5h8rzwbyrs.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Subject: Re: [PATCH] ALSA: hda/cs8409: Setup Dolphin Headset Mic as Phantom
+ Jack
+In-Reply-To: <20210916095646.7631-1-vitalyr@opensource.cirrus.com>
+References: <20210916095646.7631-1-vitalyr@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ Stefan Binding <sbinding@opensource.cirrus.com>, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,31 +101,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
+On Thu, 16 Sep 2021 11:56:46 +0200,
+Vitaly Rodionov wrote:
+> 
+> From: Stefan Binding <sbinding@opensource.cirrus.com>
+> 
+> Dell's requirement to have headset mic as phantom jack on this
+> specific dolphin hardware platform.
+> 
+> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 
-Dell's requirement to have headset mic as phantom jack on this
-specific dolphin hardware platform.
+Thanks, applied.
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
----
- sound/pci/hda/patch_cs8409.c | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
-index 3c7ef55d016e..31ff11ab868e 100644
---- a/sound/pci/hda/patch_cs8409.c
-+++ b/sound/pci/hda/patch_cs8409.c
-@@ -1207,6 +1207,9 @@ void dolphin_fixups(struct hda_codec *codec, const struct hda_fixup *fix, int ac
- 		snd_hda_jack_add_kctl(codec, DOLPHIN_LO_PIN_NID, "Line Out", true,
- 				      SND_JACK_HEADPHONE, NULL);
- 
-+		snd_hda_jack_add_kctl(codec, DOLPHIN_AMIC_PIN_NID, "Microphone", true,
-+				      SND_JACK_MICROPHONE, NULL);
-+
- 		cs8409_fix_caps(codec, DOLPHIN_HP_PIN_NID);
- 		cs8409_fix_caps(codec, DOLPHIN_LO_PIN_NID);
- 		cs8409_fix_caps(codec, DOLPHIN_AMIC_PIN_NID);
--- 
-2.25.1
-
+Takashi
