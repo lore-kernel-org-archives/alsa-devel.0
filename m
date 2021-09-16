@@ -2,81 +2,104 @@ Return-Path: <SRS0=oBF5=OG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EE35C433FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 14:40:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F864C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 15:03:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 29C0A611F2
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 14:40:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 29C0A611F2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 3F92561216
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 15:03:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3F92561216
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C6B0417E1;
-	Thu, 16 Sep 2021 16:39:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6B0417E1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B8761884;
+	Thu, 16 Sep 2021 17:02:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B8761884
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631803218;
-	bh=0X3kpnizMEqpdAGwiy3i6bfLojY5A0w5gROUO13B+RE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=XbgFEbjWR2LlZN3AUeSr1n3DKJ+K6WFZ9CwvyQyKQ/mqoeFWbUbWPtsfEPClsWSXN
-	 lM0DkA4DDuNdoHqrVjuh5LHV0+vY3TSlSaWU/DNlv8n48Cl4K/t3xB8I+ZjjDBebRF
-	 NxihdoOEyUSwfopFkOcGq9m5sikZBMvB3T2+UQcA=
+	s=default; t=1631804585;
+	bh=4oakNQtciC9ApNawPDuJs2rgf9ryqlbEczwtIupyVzw=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=EVoeIPj/q6aLiCO8JIJkarZd6tit20qSSDFWtGPbbIazV4hhSh45JTkBP5cS761lt
+	 wxFPwDGdZSfBPpSmIsRU+M4njXrvdqd0Rwo8QEVu76B1yoCIGOw1+bfuxzHSydTlsb
+	 Hu1s40Uizc+bb7qmEIYW5GhXPBn12Yf4dTT6EKek=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59970F8025A;
-	Thu, 16 Sep 2021 16:39:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9885FF8025A;
+	Thu, 16 Sep 2021 17:02:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2AF54F8025E; Thu, 16 Sep 2021 16:39:27 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 2B1A1F8025E; Thu, 16 Sep 2021 17:02:13 +0200 (CEST)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
+ [IPv6:2a00:1450:4864:20::42a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9D54CF80117
- for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 16:39:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D54CF80117
+ by alsa1.perex.cz (Postfix) with ESMTPS id B9716F80113
+ for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 17:02:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9716F80113
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="tdwJu+qw"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFB53611F2;
- Thu, 16 Sep 2021 14:39:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631803161;
- bh=0X3kpnizMEqpdAGwiy3i6bfLojY5A0w5gROUO13B+RE=;
- h=From:To:Cc:Subject:Date:From;
- b=tdwJu+qwpNAAK3yUECc88nkXXaLqLKDKzPIFBc1xI1fRCe+iVP3fdDiuX5tlCuFQJ
- nFebeMao9C2ANYT/U9U1SkiyUGoy+5GbXoAZfoR8RiKe9g7MEc8OBVaT0WP7v7iTCT
- EdtUMUSS8bHqxATWpvbdMZTgNtDzVkBuNXf9cETtoqULhjgLr02NxZRPO9b8uZCLXI
- CISazn+Z+eqrg7OnVrKm/dQtteq6LJ88sR7/d0Xeu1DyZmqGr1t5dNrmmypWNbUMH6
- g/0DTKQ8MTe+xAf25rxQ6matPPfvPVuGWLqWkveLOdoXywgoR3zWEIr0bLLwnXvcFU
- qBpbTnKxQxSYg==
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH] ASoC: ep93xx: Convert to modern clocking terminology
-Date: Thu, 16 Sep 2021 15:38:28 +0100
-Message-Id: <20210916143828.36215-1-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="LYPGj0po"
+Received: by mail-wr1-x42a.google.com with SMTP id q11so9993713wrr.9
+ for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 08:02:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=csQ1MWc5sV0qhfV6R4T1gxw/hYapqEzRXs9dv7ZLsGQ=;
+ b=LYPGj0poWIctsfOuBHXwVqe8+7faAzwKMZkHv8w/oBHTuxFYsuDi/WTO1vYXzcLhMB
+ K6Wdiaswd88e0undEeQLqPzp1lzE/JaRg2Dk6JJWOxbi6ZJg5XlVREThmdUzuFes9DIk
+ PbjY+q8R2GBTg8YswrbFJvLEiLyw+mTGj+Q6n78/jowXZeMNRgG6V7KsDr7lt8uN2NL8
+ z/zl6nJiqeqmKLMC/4Iwd4X85As5F/FBKTFf5fI+OCNnRXDLANYVOAqr8JI3VpTajms6
+ V2MOUpNUFLBT1yMBZCTK84tT3aYhJVQ9Th5k3fyKVshAR25CWEdVkpDe2bJnea3JXE4Y
+ urEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=csQ1MWc5sV0qhfV6R4T1gxw/hYapqEzRXs9dv7ZLsGQ=;
+ b=k4awc24UhDbmlZUsdRN3MZlYvnkV1HjLwDj1IstIJLIgOkL0zjPN0z5R2jddl6EfEv
+ qKi72GzAPBwQfZpsXjF2KZ2PS9fedWh7GV3V6FCfIyzoRG7uWOl1jOwci+cptIAyGdoS
+ oVQYps1rOuIubwqW3j9ZZFcvSf9ppcEWiaGg35Es2zXT/3XLFKOzBte7LCwXuEmphsax
+ IyWbdt/W+XulKa7UGRDVOD/R8S0RCXEfL34m2al9saDZ+XXAFJ5qwDOUHYEN1bPNZ2DN
+ zpQnXS2ItDGySAsvAKU4ZMJuGJxcuXh7ejvdAie1+8vz8XET1zZTRSJxcLVQvmN/3t62
+ XVVg==
+X-Gm-Message-State: AOAM5329kYD/XO5s7xjqO2clPB+Ier5Q1R/Korhbt4TQrzp0sJcitUBM
+ TVg5UTPik5aUS/Y/EcsWO9JlCA==
+X-Google-Smtp-Source: ABdhPJyytYPgs97uBMV0kIWC2G4lKa6lnjW2JayT2BL8liWzxGpiTeW5ACLrmyPYxEeCjzEC2i+Bmw==
+X-Received: by 2002:a5d:5541:: with SMTP id g1mr6792001wrw.402.1631804529677; 
+ Thu, 16 Sep 2021 08:02:09 -0700 (PDT)
+Received: from [192.168.86.34]
+ (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+ by smtp.googlemail.com with ESMTPSA id d7sm3771387wrf.3.2021.09.16.08.02.08
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 16 Sep 2021 08:02:09 -0700 (PDT)
+Subject: Re: [PATCH v6 05/22] soc: qcom: apr: Add GPR support
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ bjorn.andersson@linaro.org, broonie@kernel.org, robh@kernel.org
+References: <20210915131333.19047-1-srinivas.kandagatla@linaro.org>
+ <20210915131333.19047-6-srinivas.kandagatla@linaro.org>
+ <83c503aa-7cb2-e6fa-e22a-b359a9cb9059@linux.intel.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <4f71f5c7-42c4-6419-5f79-26ed83695793@linaro.org>
+Date: Thu, 16 Sep 2021 16:02:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2116; h=from:subject;
- bh=0X3kpnizMEqpdAGwiy3i6bfLojY5A0w5gROUO13B+RE=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBhQ1YcMvWuIRFFbL5ZA7ccCvndS0uAnDejwNEqFxv6
- HXPDE/mJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYUNWHAAKCRAk1otyXVSH0BKkB/
- 45E3Zf3godjmyaVcRHABUbBMVYeYaqiupUEenZFFGNZOfekqjSVkPNwpdTGHIvmdNP0hut3e7vWk6R
- j3w6jdwmohRSdkN7+Ld6HxX46K6QflQ0LxRHVJ+nunuFThNH1aE1tL1c+EXWNwl1D9+6uHgG90NSb/
- GNJiaAPxlhmXgx13TcFCDmADlJBe/K6IoNy6ukTx+fNQXc4rYZBA2Ut/Zeboiy7AjhP+3LYMEzAK+k
- M/5XNdZjsz7D1oWZoh7k0ET6+0cNzO8TBs8TrVsP6b/hu0L6W25ugrWgnx4aOcZZ3+b6GqpNvD/5FS
- 1FQETfNbs4Uy79M1lIsYq0u6lZmiN+
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+In-Reply-To: <83c503aa-7cb2-e6fa-e22a-b359a9cb9059@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ bgoswami@codeaurora.org, tiwai@suse.de, plai@codeaurora.org,
+ lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,66 +115,70 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-As part of the effort to remove our old APIs based on outdated terminology
-update the EP93xx drivers to use modern terminology.
+Thanks Pierre,
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/cirrus/edb93xx.c     |  2 +-
- sound/soc/cirrus/ep93xx-i2s.c  | 10 +++++-----
- sound/soc/cirrus/snappercl15.c |  2 +-
- 3 files changed, 7 insertions(+), 7 deletions(-)
+On 15/09/2021 16:47, Pierre-Louis Bossart wrote:
+> 
+>> +gpr_port_t *gpr_alloc_port(struct apr_device *gdev, struct device *dev,
+>> +				gpr_port_cb cb,	void *priv)
+>> +{
+>> +	struct packet_router *pr = dev_get_drvdata(gdev->dev.parent);
+>> +	gpr_port_t *port;
+>> +	struct pkt_router_svc *svc;
+>> +	int id;
+>> +
+>> +	port = kzalloc(sizeof(*port), GFP_KERNEL);
+>> +	if (!port)
+>> +		return ERR_PTR(-ENOMEM);
+>> +
+>> +	svc = port;
+>> +	svc->callback = cb;
+>> +	svc->pr = pr;
+>> +	svc->priv = priv;
+>> +	svc->dev = dev;
+>> +	spin_lock_init(&svc->lock);
+>> +
+>> +	spin_lock(&pr->svcs_lock);
+>> +	id = idr_alloc_cyclic(&pr->svcs_idr, svc, GPR_DYNAMIC_PORT_START,
+>> +			      GPR_DYNAMIC_PORT_END, GFP_ATOMIC);
+>> +	if (id < 0) {
+>> +		dev_err(dev, "Unable to allocate dynamic GPR src port\n");
+>> +		kfree(port);
+>> +		spin_unlock(&pr->svcs_lock);
+>> +		return ERR_PTR(-ENOMEM);
+>> +	}
+>> +
+>> +	svc->id = id;
+>> +	spin_unlock(&pr->svcs_lock);
+>> +
+>> +	dev_info(dev, "Adding GPR src port (%x)\n", svc->id);
+> 
+> nit-pick: isn't this a bit verbose?
 
-diff --git a/sound/soc/cirrus/edb93xx.c b/sound/soc/cirrus/edb93xx.c
-index 7b6cdc9c8a23..385290202912 100644
---- a/sound/soc/cirrus/edb93xx.c
-+++ b/sound/soc/cirrus/edb93xx.c
-@@ -60,7 +60,7 @@ static struct snd_soc_dai_link edb93xx_dai = {
- 	.name		= "CS4271",
- 	.stream_name	= "CS4271 HiFi",
- 	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
--			  SND_SOC_DAIFMT_CBS_CFS,
-+			  SND_SOC_DAIFMT_CBC_CFC,
- 	.ops		= &edb93xx_ops,
- 	SND_SOC_DAILINK_REG(hifi),
- };
-diff --git a/sound/soc/cirrus/ep93xx-i2s.c b/sound/soc/cirrus/ep93xx-i2s.c
-index 0d26550d0df8..06c315a4d20a 100644
---- a/sound/soc/cirrus/ep93xx-i2s.c
-+++ b/sound/soc/cirrus/ep93xx-i2s.c
-@@ -245,14 +245,14 @@ static int ep93xx_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 		return -EINVAL;
- 	}
- 
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBS_CFS:
--		/* CPU is master */
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_CBC_CFC:
-+		/* CPU is provider */
- 		clk_cfg |= EP93XX_I2S_CLKCFG_MASTER;
- 		break;
- 
--	case SND_SOC_DAIFMT_CBM_CFM:
--		/* Codec is master */
-+	case SND_SOC_DAIFMT_CBP_CFP:
-+		/* Codec is provider */
- 		clk_cfg &= ~EP93XX_I2S_CLKCFG_MASTER;
- 		break;
- 
-diff --git a/sound/soc/cirrus/snappercl15.c b/sound/soc/cirrus/snappercl15.c
-index c4b112921661..a286f5beeaeb 100644
---- a/sound/soc/cirrus/snappercl15.c
-+++ b/sound/soc/cirrus/snappercl15.c
-@@ -70,7 +70,7 @@ static struct snd_soc_dai_link snappercl15_dai = {
- 	.name		= "tlv320aic23",
- 	.stream_name	= "AIC23",
- 	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
--			  SND_SOC_DAIFMT_CBS_CFS,
-+			  SND_SOC_DAIFMT_CBC_CFC,
- 	.ops		= &snappercl15_ops,
- 	SND_SOC_DAILINK_REG(aic23),
- };
--- 
-2.20.1
+Yes, Its now removed.
 
+> 
+>> +
+>> +	return port;
+>> +}
+>> +EXPORT_SYMBOL_GPL(gpr_alloc_port);
+> 
+>> +struct gpr_pkt {
+>> +	struct gpr_hdr hdr;
+>> +	uint32_t payload[0];
+>> +};
+> 
+> looks like a zero-length array?
+> 
+looks like I missed this one, its fixed now.
+
+--srini
+> should this be
+> 
+> struct gpr_pkt {
+>      struct gpr_hdr hdr;
+>      uint32_t payload[];
+> };
+> 
+> ?
+> 
