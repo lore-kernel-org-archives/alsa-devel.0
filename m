@@ -4,68 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 543B1C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 10:35:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B8C5C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 11:10:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BBC1761108
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 10:35:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BBC1761108
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 15DE061130
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 11:10:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 15DE061130
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5CB371899;
-	Thu, 16 Sep 2021 12:35:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CB371899
+	by alsa0.perex.cz (Postfix) with ESMTPS id C05A61868;
+	Thu, 16 Sep 2021 13:10:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C05A61868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631788550;
-	bh=AbW5tNOKNITnWaVPP1Rle8ehXez24pjRyTLuOgdWDak=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=mCRy1tZhgGnqXjDUjwVUYXjiyWifPJoxiYqK3KbNOBXA9yQR5/pnlLE8TMSbwVdLc
-	 5X7IGfUuteTb1/UjngHUP1g7QpYMKbLaStpFa5PMX6sTeBM90m1R+RKqfACBLkA8YC
-	 xim2bn3oB6OeE5rq7ALfi8aq7sXXj+o2Ly1Sm/ss=
+	s=default; t=1631790650;
+	bh=qkcZzBfqYD/ibyDoYNCGiSJ0n/kwxcXKRCFSTTsV4uQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=LrjoZ0qXThZDcl5hOZg6J7PsLa4wn86qQj/55yOnSrS4scEQsZC6mTA2wW6PHFHJE
+	 rmXlRffRj64g2TGTnGiuGHAwQLo/0iIKsy/yNxRxHg6poSEKrwk263agzeX/zQIWQG
+	 oRROsxuUqgaKRbkH4Cqcoi73UWHs+YjIPUz7hyFs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4DD03F80511;
-	Thu, 16 Sep 2021 12:33:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40940F8025A;
+	Thu, 16 Sep 2021 13:10:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A1B15F8032B; Thu, 16 Sep 2021 12:33:38 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ id 2C39CF8025E; Thu, 16 Sep 2021 13:09:59 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E58BCF8025E
- for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 12:32:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E58BCF8025E
-X-IronPort-AV: E=McAfee;i="6200,9189,10108"; a="202031868"
-X-IronPort-AV: E=Sophos;i="5.85,298,1624345200"; d="scan'208";a="202031868"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Sep 2021 03:32:26 -0700
-X-IronPort-AV: E=Sophos;i="5.85,298,1624345200"; d="scan'208";a="545473539"
-Received: from gkapusti-mobl.ccr.corp.intel.com (HELO
- pujfalus-desk.ger.corp.intel.com) ([10.249.35.152])
- by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Sep 2021 03:32:24 -0700
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: lgirdwood@gmail.com, broonie@kernel.org,
- pierre-louis.bossart@linux.intel.com
-Subject: [PATCH 5/6] ASoC: SOF: Intel: Rename hda-compress.c to hda-probes.c
-Date: Thu, 16 Sep 2021 13:32:10 +0300
-Message-Id: <20210916103211.1573-6-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210916103211.1573-1-peter.ujfalusi@linux.intel.com>
-References: <20210916103211.1573-1-peter.ujfalusi@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 228C4F80117
+ for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 13:09:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 228C4F80117
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="cNK5xIVp"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18G8MpLU022854; 
+ Thu, 16 Sep 2021 06:09:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=mFi19XvaUko6t2jE/3cXw+dmfQOl+cAX8w3Eh3SXVLI=;
+ b=cNK5xIVpUYTAN4lPVng+rG1fjX6r99Co1P/v69M8Vv+IFd5LKJMKkLZaJsTt5WyWzhTX
+ 7anXHhQ80kaF7s1SghC3/q/NPw6tjUU9xYyEHEhh7VIZr4A674wlETDf5cldOvZsCs4V
+ QZSqW6OQWi6+/NuV+4a7tQgh40rI4YzcIN1ZQcQWCXllNioHsa5ZKUpxlezCFhuLEHmN
+ X7mHkxY9/NdPcUeui1YM8HS2vn2ZfxllNiQNDuiCXsc6UYU6Z15xvBzm5mlMSaIA4bix
+ 2MIHTQSi4jCTvNtcxhVFYPEY75VtrD/qZnLcAXD1wEK4HoFKQeuxjjSBxLxsgsT8N2A2 UA== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 3b42c3g55h-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Thu, 16 Sep 2021 06:09:48 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Thu, 16 Sep
+ 2021 12:09:46 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via
+ Frontend Transport; Thu, 16 Sep 2021 12:09:46 +0100
+Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.230])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 88961B15;
+ Thu, 16 Sep 2021 11:09:46 +0000 (UTC)
+From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+To: James Schulman <james.schulman@cirrus.com>, David Rhodes
+ <david.rhodes@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
+ <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
+ <tiwai@suse.com>
+Subject: [PATCH] ASoC: cs42l42: Minor fix all errors reported by checkpatch.pl
+ script
+Date: Thu, 16 Sep 2021 12:09:32 +0100
+Message-ID: <20210916110932.10293-1-vitalyr@opensource.cirrus.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, daniel.baluta@nxp.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com
+Content-Type: text/plain
+X-Proofpoint-GUID: RFJnzexq69DN1V7fEWUT_fyrWmZroRwF
+X-Proofpoint-ORIG-GUID: RFJnzexq69DN1V7fEWUT_fyrWmZroRwF
+X-Proofpoint-Spam-Reason: safe
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,38 +106,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The hda-compress.c is implementing the SOF probe support for intel HDA
-platforms using compress API.
-
-To avoid the confusion, rename it to reflect this.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 ---
- sound/soc/sof/intel/Makefile                         | 2 +-
- sound/soc/sof/intel/{hda-compress.c => hda-probes.c} | 0
- 2 files changed, 1 insertion(+), 1 deletion(-)
- rename sound/soc/sof/intel/{hda-compress.c => hda-probes.c} (100%)
+ sound/soc/codecs/cs42l42.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/sof/intel/Makefile b/sound/soc/sof/intel/Makefile
-index feae487f0227..9635dd47a17d 100644
---- a/sound/soc/sof/intel/Makefile
-+++ b/sound/soc/sof/intel/Makefile
-@@ -9,7 +9,7 @@ snd-sof-intel-hda-common-objs := hda.o hda-loader.o hda-stream.o hda-trace.o \
- 				 hda-dsp.o hda-ipc.o hda-ctrl.o hda-pcm.o \
- 				 hda-dai.o hda-bus.o \
- 				 apl.o cnl.o tgl.o icl.o
--snd-sof-intel-hda-common-$(CONFIG_SND_SOC_SOF_HDA_PROBES) += hda-compress.o
-+snd-sof-intel-hda-common-$(CONFIG_SND_SOC_SOF_HDA_PROBES) += hda-probes.o
+diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
+index c586ebff45f7..d5e1e5228b5f 100644
+--- a/sound/soc/codecs/cs42l42.c
++++ b/sound/soc/codecs/cs42l42.c
+@@ -851,7 +851,7 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	if (params_width(params) == 24)
+ 		cs42l42->bclk = (cs42l42->bclk / 3) * 4;
  
- snd-sof-intel-hda-objs := hda-codec.o
+-	switch(substream->stream) {
++	switch (substream->stream) {
+ 	case SNDRV_PCM_STREAM_CAPTURE:
+ 		if (channels == 2) {
+ 			val |= CS42L42_ASP_TX_CH2_AP_MASK;
+@@ -935,7 +935,7 @@ static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
+ 						      CS42L42_HP_ANA_BMUTE_MASK);
  
-diff --git a/sound/soc/sof/intel/hda-compress.c b/sound/soc/sof/intel/hda-probes.c
-similarity index 100%
-rename from sound/soc/sof/intel/hda-compress.c
-rename to sound/soc/sof/intel/hda-probes.c
+ 		cs42l42->stream_use &= ~(1 << stream);
+-		if(!cs42l42->stream_use) {
++		if (!cs42l42->stream_use) {
+ 			/*
+ 			 * Switch to the internal oscillator.
+ 			 * SCLK must remain running until after this clock switch.
+@@ -1015,7 +1015,7 @@ static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
+ 
+ #define CS42L42_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
+ 			 SNDRV_PCM_FMTBIT_S24_LE |\
+-			 SNDRV_PCM_FMTBIT_S32_LE )
++			 SNDRV_PCM_FMTBIT_S32_LE)
+ 
+ static const struct snd_soc_dai_ops cs42l42_ops = {
+ 	.startup	= cs42l42_dai_startup,
+@@ -1572,7 +1572,7 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
+ 	if ((~masks[5]) & irq_params_table[5].mask) {
+ 		if (stickies[5] & CS42L42_HSDET_AUTO_DONE_MASK) {
+ 			cs42l42_process_hs_type_detect(cs42l42);
+-			switch(cs42l42->hs_type){
++			switch (cs42l42->hs_type) {
+ 			case CS42L42_PLUG_CTIA:
+ 			case CS42L42_PLUG_OMTP:
+ 				snd_soc_jack_report(cs42l42->jack, SND_JACK_HEADSET,
+@@ -1604,7 +1604,7 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
+ 				cs42l42->plug_state = CS42L42_TS_UNPLUG;
+ 				cs42l42_cancel_hs_type_detect(cs42l42);
+ 
+-				switch(cs42l42->hs_type){
++				switch (cs42l42->hs_type) {
+ 				case CS42L42_PLUG_CTIA:
+ 				case CS42L42_PLUG_OMTP:
+ 					snd_soc_jack_report(cs42l42->jack, 0, SND_JACK_HEADSET);
 -- 
-2.33.0
+2.25.1
 
