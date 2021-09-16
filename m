@@ -2,76 +2,79 @@ Return-Path: <SRS0=oBF5=OG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF6E4C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 15:16:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12B7FC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 15:17:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1E9C461216
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 15:16:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1E9C461216
+	by mail.kernel.org (Postfix) with ESMTPS id 84BD361246
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Sep 2021 15:17:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 84BD361246
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A96FB1884;
-	Thu, 16 Sep 2021 17:15:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A96FB1884
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2078F187D;
+	Thu, 16 Sep 2021 17:16:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2078F187D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631805383;
-	bh=nisdCjxx8h3smoc19yNYbMFQO1k/T8CrbliHaeUAbaI=;
+	s=default; t=1631805427;
+	bh=/AKMHzTSPVI/qO/ETd5TIGSPS0Fx+JquISeWLW/PHP4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kDRivykFE2UmZYnvp1yp0T5TME8Q6W12DJOo6aRlgKrwdtkEQZz7ERw0GhA2SlcZ1
-	 YnIuuaAvk+uIzg8l0FAYxwhH0g5dHR/+s4oJ51N6p7t9ku/MSJogUCMU0pFFy7u25U
-	 j4cKbPoc3yS0mInoilkXFo8not6dTC0qXc4rDjns=
+	b=IOohv8KSZmG4lqeCpwxmHUnpUhOTPlErHtqKY8ogrNfgJ8OWa/kOnUpFyVFbERCKv
+	 OUdqJWDnCUlueG26yJ61YSiF5PkPGYMqaMRAAq5wykTKSUMD+L+P35hmyDShnQ6Aae
+	 /Qc6RtVWT5k0zQVMf2JUVtj2zG0SRSJTPqWX3KeE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0FFA7F8025E;
-	Thu, 16 Sep 2021 17:15:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05E9BF804AE;
+	Thu, 16 Sep 2021 17:15:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 04340F8027B; Thu, 16 Sep 2021 17:15:31 +0200 (CEST)
+ id 59244F80271; Thu, 16 Sep 2021 17:15:32 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 60C7FF80113
- for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 17:15:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60C7FF80113
+ by alsa1.perex.cz (Postfix) with ESMTPS id 27FC6F8025E
+ for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2021 17:15:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27FC6F8025E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="tyeGe50n"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F10D6112E;
- Thu, 16 Sep 2021 15:15:19 +0000 (UTC)
+ header.b="QoQUKAAQ"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5722861216;
+ Thu, 16 Sep 2021 15:15:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631805320;
- bh=nisdCjxx8h3smoc19yNYbMFQO1k/T8CrbliHaeUAbaI=;
+ s=k20201202; t=1631805325;
+ bh=/AKMHzTSPVI/qO/ETd5TIGSPS0Fx+JquISeWLW/PHP4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=tyeGe50nEUbpewuTBOCJP4oosBn1Bq+QL6hGL6dKJrG2DaQc6OKL8DS70HAMAuKYt
- J2vvuJIljOjNLus2Tz4SAfww92Ymufy6rTajcER1movniMZ1xkC1sB2INffZmi4AsQ
- PPrMxBNgD4Nz7eijkg9qpmlw9+tt8rvOWpfHzCnNuFaNo69Yn6bOxk+umbNVQCqHJw
- AApVp6l0xJyoqcV13FnV01CjoriHMSGFMF1CAPLOT8h20sLzP1buOlZHqX+ZCt9y9B
- GytohIK0it7RnWkP/YCmAankyp0neJlJPhl+HW2+79qsLvWIPePtUaCNkW7zqLKzk5
- STuPM4+cGZQTg==
+ b=QoQUKAAQnGEPoA54WXjwVRuEdCxBnpTVrOEsmGt6u4qR0Vu33efC6J647/slHeE75
+ 3VRh6X7z2qDJpZ/jUsey/XPj1mesb2MwQNm6vXIRzHH6X/T+sfXVDu6fDKwkkA4ydz
+ BWI2ac0+uYEAp6lbPQmX4sztj12H3LH01K8bOv6e/k+UT/bPGrmBgF0Vs7Mn2QzW2v
+ w3nSzPlERfMqsMEtK4iQFKAWjbzMQgNRT3xND2Dc4k0/mlyxEwZDc52Wua1jTJcuYe
+ b7ds1d/bs1z3SAs4xIi0Kt7JIECKhMeFgQhaGtNh27eNMrxA/l3qu0eW8cxcQZ33pi
+ s0z3E/8/cLu2w==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, David Rhodes <drhodes@opensource.cirrus.com>,
- patches@opensource.cirrus.com, david.rhodes@cirrus.com,
- devicetree@vger.kernel.org, robh@kernel.org, ckeepax@opensource.cirrus.com
-Subject: Re: [PATCH] ASoC: cs35l41: Binding fixes
-Date: Thu, 16 Sep 2021 16:14:29 +0100
-Message-Id: <163180495857.19842.15753133396233565359.b4-ty@kernel.org>
+To: James Schulman <james.schulman@cirrus.com>,
+ Vitaly Rodionov <vitalyr@opensource.cirrus.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ David Rhodes <david.rhodes@cirrus.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH v1 0/1] ASoC: cs42l42: Implement Manual Type detection as
+ fallback
+Date: Thu, 16 Sep 2021 16:14:31 +0100
+Message-Id: <163180495858.19842.9757319545626804609.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210915191422.2371623-1-drhodes@opensource.cirrus.com>
-References: <20210915191422.2371623-1-drhodes@opensource.cirrus.com>
+In-Reply-To: <20210916102750.9212-1-vitalyr@opensource.cirrus.com>
+References: <20210916102750.9212-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Mark Brown <broonie@kernel.org>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,14 +90,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 15 Sep 2021 14:14:22 -0500, David Rhodes wrote:
-> Fix warnings and errors in DT bindings
-> 
-> Add newline at end of file
-> Replace 'unevaluatedProperties' with 'additionalProperties'
-> Add spi context to DT example
-> Add #sound-dai-cells to DT example
-> Rename to 'cirrus,cs35l41.yaml'
+On Thu, 16 Sep 2021 11:27:49 +0100, Vitaly Rodionov wrote:
+> For some headsets CS42L42 autodetect mode is not working correctly.
+> They will be detected as unknown types or as headphones. According
+> to the CS42L42 datasheet, if the headset autodetect failed,
+> then the driver should switch to manual mode and perform a manual steps sequence.
+> These steps were missing in the current driver code. This patch will add manual
+> mode fallback steps in case autodetect failed. The default behavior is not affected,
+> manual mode runs only when autodetect failed.
 > 
 > [...]
 
@@ -104,8 +107,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: cs35l41: Binding fixes
-      commit: 6116df7fafabbd9b2b09bfd8d568cd5fad656125
+[1/1] ASoC: cs42l42: Implement Manual Type detection as fallback
+      commit: 12451814496a5433f41843ca4e3d9961d69304f7
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
