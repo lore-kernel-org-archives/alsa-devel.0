@@ -3,84 +3,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD5C2C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Sep 2021 14:38:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0633C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Sep 2021 14:39:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 981EC60F6B
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Sep 2021 14:38:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 981EC60F6B
+	by mail.kernel.org (Postfix) with ESMTPS id 5C6CB60F5B
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Sep 2021 14:39:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5C6CB60F5B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oss.nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6B1DF1769;
-	Fri, 17 Sep 2021 16:37:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B1DF1769
+	by alsa0.perex.cz (Postfix) with ESMTPS id F3D92176D;
+	Fri, 17 Sep 2021 16:38:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3D92176D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631889504;
-	bh=cGHcE5YDLvy2AxWutbfBWiK1jpHBOBDGkpLAWf/SJ5I=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=JYDhlR+H2yAGdrv8ysbq9h7OUtCPL9jUn99uIzmgxZ06B2Zl3WgM4+y6vnPZSn7ip
-	 Al6R1Z8Ag8E8K8P/7ratpgmWmyjYaXJZTf3428ur7SPnap/AC7lWMjzapbE4mTDFgm
-	 5UrGslcM7Z0llu+TqW1GNdF7GaFLt/YfSqbx9n2w=
+	s=default; t=1631889548;
+	bh=UrPxQt+jmWAQVogc6GjJqQTGdQvZiMuBjz1lxXfvkgg=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=sVCGz3p8cOEFrnr2wmCVp8J7Rj7TSGf4QbOfCINXgz/CVNrTpvATBR8fid6vh7GvE
+	 mGSAA+o83bnbEfKUAEyyWcvWycFIvM0QtXk21XJjv7XLk3kRxX+SsQSWy2bvaeIdSK
+	 D5XtH+85vIdtllGFdnXq12fHb6dwEY2+M2QfPOeE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE7B1F804AB;
-	Fri, 17 Sep 2021 16:37:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6637AF804E5;
+	Fri, 17 Sep 2021 16:37:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16692F804BD; Fri, 17 Sep 2021 16:37:32 +0200 (CEST)
+ id 55382F804AB; Fri, 17 Sep 2021 16:37:33 +0200 (CEST)
 Received: from EUR01-VE1-obe.outbound.protection.outlook.com
  (mail-eopbgr140047.outbound.protection.outlook.com [40.107.14.47])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 93FF8F80152
- for <alsa-devel@alsa-project.org>; Fri, 17 Sep 2021 16:37:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93FF8F80152
+ by alsa1.perex.cz (Postfix) with ESMTPS id 18292F80227
+ for <alsa-devel@alsa-project.org>; Fri, 17 Sep 2021 16:37:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18292F80227
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com
- header.i=@NXP1.onmicrosoft.com header.b="H03Ct+uP"
+ header.i=@NXP1.onmicrosoft.com header.b="kTPVPw3D"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FRSy/i83sybYh1OWduRby0S2MpTIZc4git0F1YW5hi7tVT32PiE5wMnQ/ZCwCHn69Z5rc4m1aNnjbxtCS+vUoZH3OkB3Hcsb9CGK+VzVo8EKuffXQEejzrM4BGwxk8HKHrEA8QAt0V3QZjZ1b/6tHXKe9L5dEofFEqPpTLB0SCo149CT0bxXgCBxVp9H0PbtoYTwCL1n1ydbbKx8aATJX+vctlN/5sd/hgt3hPERruVKamkNT/1hqoA7KAekij4bhovm2pxOwXU++CPSTnweygctw50XLI6tYGXKY1PZ/ffbmTebHMcHISCbAtoPH/rzZV/3pUCWMXL0CYrNMOSuXA==
+ b=aEY8IJyct2TyZfWrgesCr6wDBmjZUWA3oGUqDjgt5X5wSOdAUw2KhhSkWYOtv5v2gHQHmYs97+vRNc9CMjlxrRmey1hG8YaxNi3HeKpFmCMuUZRVuCmB8omQQlVJhveHtHmV99+A2//aX7vCGs1u15mWS1NXRkL7twn+8IQqWsq7vyixt68yGKgCLA7oYL1GNHWuEopH02t69fNNqCNnwG4z7UEYM+MW1G9dIiikYsHulc44XcZmk/KxOyyOlsL0mSJ5WTIVihjHPfroiO9cynSbIy2b2+y3qym1UpOjdXQpu6X4AGzVqm6vMfcRfRfqcPGEVzzETCLnGBaQvs5GrA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version; 
- bh=DBJdF652ocpAkUSwlKtxkK5ACiD3lYEIu2RMRT1uUGU=;
- b=WwfHbLD2T7NZzL7BWuPhKOHYJF0KvQZRez1k7DmZXfdqNG5xAUqLSpN9gwdsyir7nFRhVrPrSq8FDfxCtvl4K4cTdyxeIFo7yIF/VTeUZHSKv1T+PsS9ek7jH+wU1SemsXL/u3HqrUuKKNGTwddnVE+lgS3cFkNBXiFPo6QuOFyrA4UH+7HVfHDZKOaWu/o528GFsLBOfPE8EjBYlQmbOVrkIVN1HKh2S0gRd+WV3nQe53sihLUEnHTHStvNRRIxeGXtPJCU7h4LMMAl9M5v96xXamWp4JdRgV98epXWWAMbbZ9nElFjk5PZ/N8oNwbfPE0O/EEsrAEXsZXns5Gs3w==
+ bh=8gLGWve3UvVd8jvC9XczASUE2rKrgol1jb5xFi620Vk=;
+ b=VWNDiY0/u38ySHyq/wO/MdlangeoeTg5IotlmTxrFGMfKyH9wb7+jMESlPtSnmrdzeCUIwxkG2A6WSufzuJTgEcO8bUfX46zqS1Goy06Mjil4bxvqDZdCgQDisL8fnvO5W+bGrDFgRM8Z5uessfzX7ae4nQBteMTQf/SckmWaPnL8iFxLwZ+FnjyI0ahQP6fkBqFBfKx11o7BiBkgrcYAz8p5uqRxh3QmxODulQtX3omRF8a9it6bAOeE0rX6lyZh5CvH3lOq/oKsDCLNAvkvM5yYkNbc+gvi6ebjwYnfj6SS1sRPQl9vgEmmRoMUFaHZDkisA71c6dtz68R/1ZjJA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com; 
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DBJdF652ocpAkUSwlKtxkK5ACiD3lYEIu2RMRT1uUGU=;
- b=H03Ct+uP86YK7lCYgCP2+LsYWn0mrB6iOLi3ucIIcWdtcIOo9FTf9wCSRoDfqXhB07Wnf13la08d/p3GM0AGMKN7iXs9thSbc+HSRlgYym3awJCmVkbPZ0zTenAYpeeUViVNgJBtxEKpUGNwS55k1k3O2SwDeQlYz87WfigXSWA=
+ bh=8gLGWve3UvVd8jvC9XczASUE2rKrgol1jb5xFi620Vk=;
+ b=kTPVPw3DwVLTvXaX6v+aXkk72rRdN68kHCTDS9k1jl5jcy4nTabVRT8vboLVo475lixj2OupgfJBRvjwssiBe9YiEI1cxvLXYsvN4iQb9e0OFQNiSnpcYgnbY11YyRh4CERvycXkso8bNnHB70M7da07Yxe1wh0rPtwmvjRlD/A=
 Authentication-Results: kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
 Received: from AM0PR04MB5140.eurprd04.prod.outlook.com (2603:10a6:208:ca::21)
  by AM8PR04MB7409.eurprd04.prod.outlook.com (2603:10a6:20b:1c5::12)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.16; Fri, 17 Sep
- 2021 14:37:19 +0000
+ 2021 14:37:21 +0000
 Received: from AM0PR04MB5140.eurprd04.prod.outlook.com
  ([fe80::dd84:b996:1c8:705]) by AM0PR04MB5140.eurprd04.prod.outlook.com
  ([fe80::dd84:b996:1c8:705%6]) with mapi id 15.20.4523.016; Fri, 17 Sep 2021
- 14:37:19 +0000
+ 14:37:21 +0000
 From: Daniel Baluta <daniel.baluta@oss.nxp.com>
 To: broonie@kernel.org
-Subject: [PATCH v2 00/12] Add support for on demand pipeline setup/destroy
-Date: Fri, 17 Sep 2021 17:36:47 +0300
-Message-Id: <20210917143659.401102-1-daniel.baluta@oss.nxp.com>
+Subject: [PATCH v2 02/12] ASoC: SOF: control: Add access field in struct
+ snd_sof_control
+Date: Fri, 17 Sep 2021 17:36:49 +0300
+Message-Id: <20210917143659.401102-3-daniel.baluta@oss.nxp.com>
 X-Mailer: git-send-email 2.27.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20210917143659.401102-1-daniel.baluta@oss.nxp.com>
+References: <20210917143659.401102-1-daniel.baluta@oss.nxp.com>
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-ClientProxiedBy: VI1P193CA0022.EURP193.PROD.OUTLOOK.COM
  (2603:10a6:800:bd::32) To AM0PR04MB5140.eurprd04.prod.outlook.com
  (2603:10a6:208:ca::21)
@@ -90,68 +93,61 @@ Received: from localhost.localdomain (2a02:2f08:5708:8600:8372:c747:541d:bbc9)
  by VI1P193CA0022.EURP193.PROD.OUTLOOK.COM (2603:10a6:800:bd::32) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend
- Transport; Fri, 17 Sep 2021 14:37:18 +0000
+ Transport; Fri, 17 Sep 2021 14:37:20 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 85981e5b-f3a3-487b-0b91-08d979e8a6fd
+X-MS-Office365-Filtering-Correlation-Id: 78449ff7-341e-4d0b-f7dd-08d979e8a850
 X-MS-TrafficTypeDiagnostic: AM8PR04MB7409:
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM8PR04MB74093A3DDD8F92D427123DA4B8DD9@AM8PR04MB7409.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-Microsoft-Antispam-PRVS: <AM8PR04MB7409E8116CC0F13C9BE61503B8DD9@AM8PR04MB7409.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5fMQqzdezgBLWiu+d+kzybzzwJVxW1hMxouhbLtkUTLSISVSr4R3QsK5MaS0FsPY0llLAzGudS/QT7QL6dtpd5yM5/349nzH5C6gOzi56XNrrog0VE2sEsfnqogJC2SGUbniEMDvSkr37v4LTHMXtSY3e1DTLvvozHrvt7trgMlfTClJI+VPH2I0T3h1RtAN+nKILjZmve07EkRrl49D+Ga9wcWU1QJTl8xR779wDgNN+wnrKi/oEWWpqJavl6DYuk2zPSKUiDFJJ/C8oNc5rfrLJyZUrWKdwUmo2mcDd1bqCI2tSRJY5Gs7DIknmDVRn4+DyOyHab1c0+Z6f/v+g1UySmojD/bEgM3xD9AalXG9WBNb31zsJvVCjPSITXpRFwUmLUYAWoBhmhmo+hn+omF5N7/b/Z3Uhny4JjaM2Mo+nW6H0Lr7yc4t2j7vdIwBTp1ARXb0vkqDlCtiFR923+PaKCtl03NC5HW8B1T2YF4kEthZiaCIGdbh5NcWZJN0m4guEusweG99INiJRwLRmxuTp+6zr7dZLSKT4yMKxbJ7JEIAs487uOPMRcBhcHC2Kz11+V24teroZsp48g159yynUAKzJSGiZf5Mux5x03ECY2jeUuvpB6jULudT3TVDWj1tNtNVuCiPVaPFrxPt+j25aPw6SfLrOj4G0ExhE1sKWMq2sihMIWoX1vjXv+vpOOXS8dOA0ZubAjztaMyrdC5ADPzNo8nYls9saIyOeSE=
+X-Microsoft-Antispam-Message-Info: +oQXWWRKgQzGtC5GYEbIZzr+M2stQ3xiTSQ4hfmV9UuZBhTBCutUjAkzmwVw37Q4N98Lh3NptPRrgb1d9nt+m8184mJ4w6cl6IqSffvgMzZFWOGeQr6TRBXxoR3E5QLEeFqB/aWoCblmA8WOkMmml56CkLoPn8O5Tzkee7hG8uxwQJemtXR2gTWMa0jckLLjvVtvp5W1Qcq1uUpfeG//PrK4hu0xSD+cz6uvr2RtQByo8Vh4VbNTbmLKDEksTpkFWm5JgxowcPHbe7pte9d/FKJR16awinmEnXXMkbxFoE3V7kyx3iAhbNxhKGF/fCdWXyvGok4Pvrp5ByAyW0RNG7pzm2ADcQHRqOGlJS2N2g94KdC6XjhpHb6LZ9cNUlp1hGawRSAVNdrjgISlhTvJyQ9ti35CiQD3AzwiTKTnS9c7ez2DEn5/ztcXCBEuPds56wxGed1fDplozTvdk+wgklbXn1MZ60l5PwRl7UP8rFR9268oJIKTfO9nn4tBX+LvFfBERjeuaXf+YPAyhmXnWPd6D7KvRkrq6nioj45/Zulb3yuScxQtk2VFKijUhSUCZanl/9psdM/FkpMiIO4DXIjMHEkLWFg1yX+GVWYHILZPO020pgtoVehaWIw1F/yT2xRrY+2/gOjODuIGcTDy8Q==
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:AM0PR04MB5140.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(346002)(376002)(136003)(366004)(396003)(39860400002)(5660300002)(8676002)(2906002)(4326008)(38100700002)(8936002)(66476007)(44832011)(1076003)(6666004)(86362001)(66556008)(6512007)(186003)(478600001)(316002)(966005)(6486002)(2616005)(6506007)(52116002)(6916009)(66946007)(83380400001);
+ SFS:(4636009)(346002)(376002)(136003)(366004)(396003)(39860400002)(5660300002)(8676002)(2906002)(4326008)(38100700002)(8936002)(66476007)(44832011)(1076003)(6666004)(86362001)(66556008)(6512007)(186003)(478600001)(316002)(6486002)(2616005)(6506007)(52116002)(6916009)(66946007)(83380400001);
  DIR:OUT; SFP:1101; 
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aGZYQmI2REdwdmNBNXVySkMxSHpWWlZKNHd3WGpIai9MNFN5MW5EZytaVmho?=
- =?utf-8?B?T3RmTWVzZ1VUd3BuV1Z2NlZ1MTh3M3FjNGNQaUtjdHBPQ0RjUExtM29JaE1n?=
- =?utf-8?B?eEQ3VDZmZDQvZ1BWZ2RyZFVNVkVReW9sNkpzWFJIdWZHbnE0OE8rTWJUTno5?=
- =?utf-8?B?UFZWOFlHYkl6TjZoRjNUWU81MkNiZUx2bGEyZXRrdmM0LzdBN2J5b0xsVVQv?=
- =?utf-8?B?Q09aQzZjVXdRekFIditUYzd2VllVZFZRS3hPb0UxOTc2ZXI0NnFKOUxHZU1r?=
- =?utf-8?B?aDl4MTVBMlVDcHVlYmpJdFJUd1JUYnRwU1R3ZXBqdGlxMmhlMmFTQ1lveGNI?=
- =?utf-8?B?SHNPb0UzSDFUQXM4T1R4clRVc3I1ejFRK0ZiNGRRV0xFKzJrbkJ6cFNLR0c5?=
- =?utf-8?B?MHVCY2Jva3dpd0w4ZlVOMGZQS2xReGRLeTgrN1VheXhVRHl1dVY5dDYweUNS?=
- =?utf-8?B?K0R4VDVPMzREZEliSFBOSWk0bzRna2M2N0s0WG1iTUdsYWkzcjB3RVlqUHFL?=
- =?utf-8?B?Q0FPNkM2cFVuVnk4Z3N5OGRzUVRrd2txQ0t0YTFuRFJsRG9PN0E3K2R1Zm5o?=
- =?utf-8?B?N1JKVzlMT29KWDlTdUIwYStobk1xWm9aWVI0Y2pwNVV5dFR3ZEliQndzdlgr?=
- =?utf-8?B?SHdqNFdYeGdUeTV1YmZvNmYzZ3VVVWFraTl1aG9jdmJZSDZQZk55S2w1aG1n?=
- =?utf-8?B?RVpVeVh4bERQd0hpalA4OTV4akNPYk1TWFhiUWN6ckVmdTg3elAyQXRIaCtl?=
- =?utf-8?B?Z2x5OTlvckRwYXg5ZkRPejNheGdPVEZyOFhSa0xTQk9zME1pZFZWaU1BSmhn?=
- =?utf-8?B?bFRwbFhJM0ZqYTFGL05ZalVCam5LV092enBrc211ZjAwa1cvNTRSNW1RaGNJ?=
- =?utf-8?B?UjQrUXFCME9aR2hNY29BYkswemJQWDIyd09KS2xlNU9rVmxKaVVSVENYMFhx?=
- =?utf-8?B?RXdnY01aazB1T09wVnJEVkFQMi83Y0ZnSjNsVCsvTU9vTGVJUHpObSs1dUNE?=
- =?utf-8?B?UlljOTQ2T1g0a0hoc1dwa3RzUEhVL2dXSDczc2J4bEhUaDR1TE91VFp2Mmxw?=
- =?utf-8?B?RkhzVXJ2RHlyTjZZWSszUVRycDRrY0d6d2NVcUNSS0p5WFdVbUtDNFE2MUhq?=
- =?utf-8?B?UkVHWWVzb1hMbnN6RFJobnN1dzJ0MjR6THRtZTVkOTN0ZENGZlByYTFLVVpG?=
- =?utf-8?B?dzJub2VGd2JMcVk3eFViWE5oZ2FDK0JqTit6bFFiMkpUelRMaWJBdzVWNlhm?=
- =?utf-8?B?SFY1T1pqN21NblR5VFhyRVdpYkZEdkg0b3ZtWVVFQnJtMVd5VGI4T0NxbGtQ?=
- =?utf-8?B?TGRXbDl3eGYyejVBMFVNWW5YbzF3R0RCK0dWQzNrU0FwV1E0YUxpVERlbTFS?=
- =?utf-8?B?ZDgvUjdJU2NYK0dLSTViZXJ6cDg2ZFcveURPaVk0b1loaU9WbXZWZnJRWlVP?=
- =?utf-8?B?bi9jaGtZMm1XYUE5dit1YkFKNkNkYWpIWHY5RkJpd05lK01VSU82dS9uREJn?=
- =?utf-8?B?RENEb0Q1N1R0K1NIREtJNmczWTZXUHF5NVV1UTcrVkNSTzRHNVFaYy96SzJB?=
- =?utf-8?B?MnJ3NEoyVGpDOC9tbzBKUmV0NUpaS3NHY2I0aEdoZU5HeUdDYjJrMnIxcExK?=
- =?utf-8?B?WHJHVFNpZXRJdEVOdG9YVWZYbCtPajVTQXN4dDdyWFpzUzc4ay8wZTMvUThY?=
- =?utf-8?B?bTBRZHJWSnBDV2VZY2FoeWdxeDlDUnA3R1Y5dHorL0owU3JYSUJKMllGYS9l?=
- =?utf-8?B?YmljTEMrdE92WWt0ZlpNdGVZS3QySllad1pjcEtYb0puTFFFWXRZOFhJRjBs?=
- =?utf-8?B?QXY2Y2NNYlJlOXNKQkVheDNKTWE4SHlWOHYxd01DMHZaQVZoUlA0dVVBWFJY?=
- =?utf-8?Q?wcb+gLYhSSrWX?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?5vIxmjOKrQnf7dvjgWclkmp2hfse8HvRJb0GHP6Pln2IR76ZDN3SOLckG2Mu?=
+ =?us-ascii?Q?3miCLFN3X+TZ+ya7JjaCPsHGpeGVi9PbihyWQds+vNDXEikU6E6MB60RIVA6?=
+ =?us-ascii?Q?l1WLZEmQbLxYz3hdQrs/ffKCcazMIXqEh1gJU4+0qmcQ9JEsqNGRoYrtfeCT?=
+ =?us-ascii?Q?KUDBftgVtFFstkEVme3aDlz/9af1+5N5Z0U5GKwkg0GGBjlv/KttGfkTHdkV?=
+ =?us-ascii?Q?l32m6Ddhnco3/3kBECFvMu8BmvSRW/i0slIEbzmJG/nSjNKeENj44tc4SsUh?=
+ =?us-ascii?Q?esdlS4cpFHc+ZnPg7RUI4mtVyeA9A+CB9GF7xgOyPvLLmTc8r08JckBw19ne?=
+ =?us-ascii?Q?qU3Pc+s1fGXhVPCjsOs0vastkiNpO0nLzk8ObRJjIXulcEXTUM0j57Jet2VV?=
+ =?us-ascii?Q?ywhA/XffLF0mGgaUdU5Iw7C8Fv6z6JGrAW43nS9HyIaq5TAcNMbLXTkd/In2?=
+ =?us-ascii?Q?a4OSLiJFPFdNM3gqvgby7HVFlK7IzHwSJv5YCIKXrpyk7pf9P3mo+L0iH87T?=
+ =?us-ascii?Q?WlEPji99dlWm+ZRW2frRlYGNctp3u4JAjFLJA/1PkdYWVhISmmM+I+0EoMGd?=
+ =?us-ascii?Q?6nKK1VfaIqpzJOcghGdaX93HHPiLLqnwVwr2/SqAa9A/dffvQl6ae9kXK8Aj?=
+ =?us-ascii?Q?yS1IC4rWwEmHT1Bqh8HGCKGCyBFRomAqrIJH/PKdNgGYwWsot+aIDq0/T6Nm?=
+ =?us-ascii?Q?ms9oN0obOgAl90VpWaGN0y0vBDi+Yu0x7JGKpLYxnAnaCnfEl2xN111ehGzd?=
+ =?us-ascii?Q?bJRV5MHM/JQ5DhgGnquA+iRFSSag4/tLHVecZH1J+kgdCflkQ4MfKCdOSglp?=
+ =?us-ascii?Q?GAS1zpXtLhlXvQskpG14CksW2c0WSvu4uxbOnerYzkF130iNSfylFalWb5b/?=
+ =?us-ascii?Q?IEOW63Sgp9GWcrgePZUZqm38gpDP+FYeFOKtjSsIFyLCHqLCZtlO/zzqiScN?=
+ =?us-ascii?Q?nMh/XhmiFTUxR/ME0bL/8bQuVHmcapMtAILEI07z1EihrInXJJJAqTyfUqG4?=
+ =?us-ascii?Q?x6twBufIzGvaOKAoiPq3PCeTKViu0LlMVU2ZrQ6+DbZLzhMzDrwvsweI2VZW?=
+ =?us-ascii?Q?tKf9uKLVfRDbIMIjoFJccgG6OrJvFxF66IyahP84zcUL3r2shXuHtwkrh642?=
+ =?us-ascii?Q?vTBXVE++eyXrF3QC4n3s2FKrztoRWF+nokKjXqxZbeoCULjjZzOrugSVPeYL?=
+ =?us-ascii?Q?WDxgo8La+7aO7rt5QjhhxdtwgFn4XoebwFB2phukTV1d8r/krEUQHHYo3cPx?=
+ =?us-ascii?Q?op6gP28ZVWgWDHrXMCngNMKCpB67AFv9vlcKYw52dMqPKEldcwjIxqJwQ/K/?=
+ =?us-ascii?Q?mGrUU3VQ/to/SuTriHBdFlfIBK+1mJJRjRmdzhgIgt6LVAhX0fClhGcg0nE6?=
+ =?us-ascii?Q?rXWlEbAIz103gKypOfkUpual1K/X?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 85981e5b-f3a3-487b-0b91-08d979e8a6fd
+X-MS-Exchange-CrossTenant-Network-Message-Id: 78449ff7-341e-4d0b-f7dd-08d979e8a850
 X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5140.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 14:37:19.3019 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 14:37:21.4517 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: l+lFgKAs38zluBy2+3hK5DFhGnJRrKVNZ8i5p2NNBoKpYPsYTpacGRLPjbhtJYn5LAriYutmrFpsAzu+WRLGCw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: wqzc4/Qvpe7UNhMFUfWiCfW5hLtlrNKgnPQB2WCWjtgJ1WmeOQaB8+t8WHmTpBwIm8H662JXp184lrWzX4T6Sw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7409
 Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
  kai.vehmanen@linux.intel.com, lgirdwood@gmail.com,
  linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
+ Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
  daniel.baluta@nxp.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -168,55 +164,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Daniel Baluta <daniel.baluta@nxp.com>
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-This patchseries implements the new feature to setup/teardown pipeline
-as needed when a PCM is open/closed.
+Add a new field to save the access setting for all controls
+in struct snd_sof_control. This will be used to ensure that
+only widgets belonging to static pipelines have volatile
+controls.
 
-This only only support single cores, with support for multicore arriving
-with a future patchseries.
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+---
+ sound/soc/sof/sof-audio.h | 1 +
+ sound/soc/sof/topology.c  | 1 +
+ 2 files changed, 2 insertions(+)
 
-Review with SOF community at
-https://github.com/thesofproject/linux/pull/2794  
-
-Changes since v1:
-- added my own Signed-off-by tag.
-
-Ranjani Sridharan (12):
-  ASoC: topology: change the complete op in snd_soc_tplg_ops to return
-    int
-  ASoC: SOF: control: Add access field in struct snd_sof_control
-  ASoC: SOF: topology: Add new token for dynamic pipeline
-  ASoC: SOF: sof-audio: add helpers for widgets, kcontrols and dai
-    config set up
-  AsoC: dapm: export a couple of functions
-  ASoC: SOF: Add new fields to snd_sof_route
-  ASoC: SOF: restore kcontrols for widget during set up
-  ASoC: SOF: Don't set up widgets during topology parsing
-  ASoC: SOF: Introduce widget use_count
-  ASoC: SOF: Intel: hda: make sure DAI widget is set up before IPC
-  ASoC: SOF: Add support for dynamic pipelines
-  ASoC: SOF: topology: Add kernel parameter for topology verification
-
- include/sound/soc-dpcm.h               |   1 +
- include/sound/soc-topology.h           |   2 +-
- include/uapi/sound/sof/tokens.h        |   1 +
- sound/soc/intel/skylake/skl-topology.c |   6 +-
- sound/soc/soc-dapm.c                   |   2 +
- sound/soc/soc-pcm.c                    |   4 +-
- sound/soc/soc-topology.c               |  10 +-
- sound/soc/sof/intel/hda-dai.c          | 176 +++---
- sound/soc/sof/intel/hda.c              | 177 ++++--
- sound/soc/sof/intel/hda.h              |   5 +
- sound/soc/sof/ipc.c                    |  22 +
- sound/soc/sof/pcm.c                    |  58 +-
- sound/soc/sof/pm.c                     |   4 +-
- sound/soc/sof/sof-audio.c              | 709 +++++++++++++++++++------
- sound/soc/sof/sof-audio.h              |  32 +-
- sound/soc/sof/sof-priv.h               |   1 +
- sound/soc/sof/topology.c               | 362 +++++--------
- 17 files changed, 1034 insertions(+), 538 deletions(-)
-
+diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
+index 9a8d005e75a0..78a4a0c90a29 100644
+--- a/sound/soc/sof/sof-audio.h
++++ b/sound/soc/sof/sof-audio.h
+@@ -66,6 +66,7 @@ struct snd_sof_control {
+ 	int min_volume_step; /* min volume step for volume_table */
+ 	int max_volume_step; /* max volume step for volume_table */
+ 	int num_channels;
++	unsigned int access;
+ 	u32 readback_offset; /* offset to mmapped data if used */
+ 	struct sof_ipc_ctrl_data *control_data;
+ 	u32 size;	/* cdata size */
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index 96b8791f7cc1..d8f7b1edefc3 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -1250,6 +1250,7 @@ static int sof_control_load(struct snd_soc_component *scomp, int index,
+ 		return -ENOMEM;
+ 
+ 	scontrol->scomp = scomp;
++	scontrol->access = kc->access;
+ 
+ 	switch (le32_to_cpu(hdr->ops.info)) {
+ 	case SND_SOC_TPLG_CTL_VOLSW:
 -- 
 2.27.0
 
