@@ -5,69 +5,91 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6260BC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Sep 2021 09:00:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D803C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Sep 2021 10:04:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 310BB6113A
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Sep 2021 09:00:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 310BB6113A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id A9D9B60FA0
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Sep 2021 10:04:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A9D9B60FA0
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C312317D2;
-	Fri, 17 Sep 2021 10:59:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C312317D2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 71FF71758;
+	Fri, 17 Sep 2021 12:03:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71FF71758
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631869235;
-	bh=CVKK4udkRyCjKgYJxXTSEkWZlH4l+5Ch+57Ia635+QM=;
+	s=default; t=1631873038;
+	bh=uhn9Cb3WE19BOmTrxm/F2qbGNhXLLdoewf4TXnDEeD4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eUoqPv7StFO+ykCzZ4LGK1Zv6AuqyuRgi1HSBUvQW76Ym2syLQVO+NXWPs2in5hrg
-	 zO3YAuzUlN1MdTNgykWMOqc2QRRzEpVu5BGuubayQ5gzcAnhPdVMKE/cLa5cdqGFNa
-	 cxg1EVaZsDh/+YfppcJYlmsJ8O1cACgl+v0Nvl0U=
+	b=WMvXUUaOkH5xyDtIypzCqMsALnLqjvTnxyhzbwHGm1uduIX4e0xavQS5K1pkMTcrf
+	 lEckeoHMSV//fDuAsfTHqAUSu2aUCEDj9gFqzsMxLAWSPvgTfshRT81OZ39iDxZOCW
+	 E2U3cf3I5s2HwPXEuBXdTmv2Mom43CMdLGE8xQDw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A565CF804E5;
-	Fri, 17 Sep 2021 10:58:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EAD8CF8027C;
+	Fri, 17 Sep 2021 12:03:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CC955F804E1; Fri, 17 Sep 2021 10:58:52 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 365AEF804AB; Fri, 17 Sep 2021 12:03:05 +0200 (CEST)
+Received: from m43-7.mailgun.net (m43-7.mailgun.net [69.72.43.7])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C6A5EF8032C
- for <alsa-devel@alsa-project.org>; Fri, 17 Sep 2021 10:58:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6A5EF8032C
-X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="308300250"
-X-IronPort-AV: E=Sophos;i="5.85,300,1624345200"; d="scan'208";a="308300250"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Sep 2021 01:58:32 -0700
-X-IronPort-AV: E=Sophos;i="5.85,300,1624345200"; d="scan'208";a="473064391"
-Received: from akostadi-mobl2.ger.corp.intel.com (HELO
- pujfalus-desk.ger.corp.intel.com) ([10.251.216.45])
- by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Sep 2021 01:58:30 -0700
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: lgirdwood@gmail.com, broonie@kernel.org,
- pierre-louis.bossart@linux.intel.com
-Subject: [PATCH 2/2] ASoC: SOF: ipc: Print 0x prefix for errors in
- ipc_trace/stream_message()
-Date: Fri, 17 Sep 2021 11:58:23 +0300
-Message-Id: <20210917085823.27222-3-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210917085823.27222-1-peter.ujfalusi@linux.intel.com>
-References: <20210917085823.27222-1-peter.ujfalusi@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: guennadi.liakhovetski@linux.intel.com, alsa-devel@alsa-project.org,
- kai.vehmanen@linux.intel.com, ranjani.sridharan@linux.intel.com,
- daniel.baluta@nxp.com, bard.liao@intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 997A1F800E3
+ for <alsa-devel@alsa-project.org>; Fri, 17 Sep 2021 12:02:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 997A1F800E3
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=mg.codeaurora.org
+ header.i=@mg.codeaurora.org header.b="luejZ29B"
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1631872938; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=anv+1QAatg41bGNsQDBxohEAzUWfuNq4bW7YN6m58sw=;
+ b=luejZ29BIFknYE+Fc9mrOR+OE/LhCbIobmVPmkqX4/f9naOTso4XyUcaJg38vEck5+0wSwuW
+ dEACWBfrB0o23ernjx+lsqbUtIOZfblC24y3hJLTH681BqfqzSCsnx71F3IxFqX5VyjNF4Xr
+ wJws4DTcPYusMzxa0GLu+ZpJyFU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 61446794c1b30e2f02eeefd2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 17 Sep 2021 10:01:56
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id 95661C4360C; Fri, 17 Sep 2021 10:01:55 +0000 (UTC)
+Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: srivasam)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id C77B8C43618;
+ Fri, 17 Sep 2021 10:01:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org C77B8C43618
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ spf=fail smtp.mailfrom=codeaurora.org
+From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+ broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+ bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+ srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+ linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ swboyd@chromium.org, judyhsiao@chromium.org
+Subject: [PATCH v3 1/2] ASoC: google: dt-bindings: Add sc7280-herobrine
+ machine bindings
+Date: Fri, 17 Sep 2021 15:31:31 +0530
+Message-Id: <1631872892-1821-2-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1631872892-1821-1-git-send-email-srivasam@codeaurora.org>
+References: <1631872892-1821-1-git-send-email-srivasam@codeaurora.org>
+Cc: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,39 +105,194 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The dev_err() in ipc_trace_message() and ipc_stream_message() is missing
-the 0x prefix for the hexadecimal number when printed.
+Add devicetree bindings documentation file for sc7280 sound card
+registration.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 ---
- sound/soc/sof/ipc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This patch depends on the dt-bindings header patch
+  -- https://patchwork.kernel.org/project/alsa-devel/list/?series=543829
+ .../bindings/sound/google,sc7280-herobrine.yaml    | 170 +++++++++++++++++++++
+ 1 file changed, 170 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
 
-diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index 2d7e942a3c70..a916812a0f64 100644
---- a/sound/soc/sof/ipc.c
-+++ b/sound/soc/sof/ipc.c
-@@ -465,7 +465,7 @@ static void ipc_trace_message(struct snd_sof_dev *sdev, u32 msg_type)
- 		snd_sof_trace_update_pos(sdev, &posn);
- 		break;
- 	default:
--		dev_err(sdev->dev, "error: unhandled trace message %x\n", msg_type);
-+		dev_err(sdev->dev, "error: unhandled trace message %#x\n", msg_type);
- 		break;
- 	}
- }
-@@ -547,7 +547,7 @@ static void ipc_stream_message(struct snd_sof_dev *sdev, u32 msg_cmd)
- 		ipc_xrun(sdev, msg_id);
- 		break;
- 	default:
--		dev_err(sdev->dev, "error: unhandled stream message %x\n",
-+		dev_err(sdev->dev, "error: unhandled stream message %#x\n",
- 			msg_id);
- 		break;
- 	}
+diff --git a/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml b/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
+new file mode 100644
+index 0000000..3a781c8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
+@@ -0,0 +1,170 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/google,sc7280-herobrine.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Google SC7280-Herobrine ASoC sound card driver
++
++maintainers:
++  - Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
++  - Judy Hsiao <judyhsiao@chromium.org>
++
++description:
++  This binding describes the SC7280 sound card which uses LPASS for audio.
++
++properties:
++  compatible:
++    enum:
++      - google,sc7280-herobrine
++
++  audio-routing:
++    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
++    description:
++      A list of the connections between audio components. Each entry is a
++      pair of strings, the first being the connection's sink, the second
++      being the connection's source.
++
++  model:
++    $ref: /schemas/types.yaml#/definitions/string
++    description: User specified audio sound card name
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 0
++
++patternProperties:
++  "^dai-link@[0-9a-f]$":
++    description:
++      Each subnode represents a dai link. Subnodes of each dai links would be
++      cpu/codec dais.
++
++    type: object
++
++    properties:
++      link-name:
++        description: Indicates dai-link name and PCM stream name.
++        $ref: /schemas/types.yaml#/definitions/string
++        maxItems: 1
++
++      reg:
++        maxItems: 1
++        description: dai link address.
++
++      cpu:
++        description: Holds subnode which indicates cpu dai.
++        type: object
++        properties:
++          sound-dai: true
++
++      codec:
++        description: Holds subnode which indicates codec dai.
++        type: object
++        properties:
++          sound-dai: true
++
++    required:
++      - link-name
++      - cpu
++      - codec
++      - reg
++
++    additionalProperties: false
++
++required:
++  - compatible
++  - model
++  - "#address-cells"
++  - "#size-cells"
++
++additionalProperties: false
++
++examples:
++
++  - |
++    #include <dt-bindings/sound/qcom,lpass.h>
++    sound {
++        compatible = "google,sc7280-herobrine";
++        model = "sc7280-wcd938x-max98360a-4dmic";
++
++        audio-routing =
++            "IN1_HPHL", "HPHL_OUT",
++            "IN2_HPHR", "HPHR_OUT",
++            "AMIC1", "MIC BIAS1",
++            "AMIC2", "MIC BIAS2",
++            "VA DMIC0", "MIC BIAS3",
++            "VA DMIC1", "MIC BIAS3",
++            "VA DMIC2", "MIC BIAS4",
++            "VA DMIC3", "MIC BIAS4",
++            "TX SWR_ADC0", "ADC1_OUTPUT",
++            "TX SWR_ADC1", "ADC2_OUTPUT",
++            "TX SWR_ADC2", "ADC3_OUTPUT",
++            "TX SWR_DMIC0", "DMIC1_OUTPUT",
++            "TX SWR_DMIC1", "DMIC2_OUTPUT",
++            "TX SWR_DMIC2", "DMIC3_OUTPUT",
++            "TX SWR_DMIC3", "DMIC4_OUTPUT";
++
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        dai-link@0 {
++            link-name = "WCD Playback";
++            reg = <LPASS_CDC_DMA_RX0>;
++            cpu {
++                sound-dai = <&lpass_cpu LPASS_CDC_DMA_RX0>;
++            };
++
++            codec {
++                sound-dai = <&wcd938x 0>, <&swr0 0>, <&rxmacro 0>;
++            };
++        };
++        dai-link@1 {
++            link-name = "WCD Capture";
++            reg = <LPASS_CDC_DMA_TX3>;
++            cpu {
++                sound-dai = <&lpass_cpu LPASS_CDC_DMA_TX3>;
++            };
++
++            codec {
++                sound-dai = <&wcd938x 1>, <&swr1 0>, <&txmacro 0>;
++            };
++        };
++
++        dai-link@2 {
++            link-name = "MI2S Playback";
++            reg = <MI2S_SECONDARY>;
++            cpu {
++                sound-dai = <&lpass_cpu MI2S_SECONDARY>;
++            };
++
++            codec {
++                sound-dai = <&max98360a>;
++            };
++        };
++
++        dai-link@3 {
++            link-name = "DMIC Capture";
++            reg = <LPASS_CDC_DMA_VA_TX0>;
++            cpu {
++                sound-dai = <&lpass_cpu LPASS_CDC_DMA_VA_TX0>;
++            };
++
++            codec {
++                sound-dai = <&vamacro 0>;
++            };
++        };
++
++        dai-link@5 {
++            link-name = "DP Playback";
++            reg = <LPASS_DP_RX>;
++            cpu {
++                sound-dai = <&lpass_cpu LPASS_DP_RX>;
++            };
++
++            codec {
++                sound-dai = <&mdss_dp>;
++            };
++        };
++    };
 -- 
-2.33.0
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
