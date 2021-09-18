@@ -2,65 +2,76 @@ Return-Path: <SRS0=DKfg=OI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C10C0C433F5
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Sep 2021 09:03:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67BEAC433F5
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Sep 2021 21:37:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7E42A60FED
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Sep 2021 09:03:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7E42A60FED
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.alibaba.com
+	by mail.kernel.org (Postfix) with ESMTPS id 20C39610C7
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Sep 2021 21:37:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 20C39610C7
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2EF191755;
-	Sat, 18 Sep 2021 11:03:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EF191755
+	by alsa0.perex.cz (Postfix) with ESMTPS id C4FC4168D;
+	Sat, 18 Sep 2021 23:36:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4FC4168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1631955831;
-	bh=pjj1ypj+FrNnG/MjgiroKjU4ifzH3Tjae9nb7z/kwFU=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=VvwHa8IwYxfaoAxWPM7UG9pZu7d+bUvNy72FNC4lGpZFDsxeyDB/n35FCSZm90qly
-	 esIKt6ajXbvz0sRCVbumRooAlqc4p3VMJheMbPETMoLcisUrpu+kUr0ae8vR+k/qmx
-	 /Dy0M8nZZmYEeNn1HEkiI1fX8uc1UzE8MmhzCHrc=
+	s=default; t=1632001026;
+	bh=Kwpp0Fj2x26Eg78Ja7Z4hycUKbPpkJLdheziTeB1Zi8=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=K3/b4QuzIPAptIEYpeJq9aq5yqm/39kFCOS8T3s/J3b0hYJUZQ4tvY9BL8ofg0A64
+	 /p64vW6xlv/I2xqdMU3bZN5niXkU7OMSA5KiTaOUtnTxY1ZUPvUQQRZbp3QVuETVWk
+	 +ykxD8tZN793h0HR4H79IEYEBYF0XfW9zGycQnMI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B63D1F8025A;
-	Sat, 18 Sep 2021 11:03:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4EFBBF8025A;
+	Sat, 18 Sep 2021 23:36:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1EC70F8025E; Sat, 18 Sep 2021 11:02:58 +0200 (CEST)
-Received: from out30-44.freemail.mail.aliyun.com
- (out30-44.freemail.mail.aliyun.com [115.124.30.44])
+ id ED13AF8025E; Sat, 18 Sep 2021 23:36:11 +0200 (CEST)
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D772EF80218
- for <alsa-devel@alsa-project.org>; Sat, 18 Sep 2021 11:02:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D772EF80218
-X-Alimail-AntiSpam: AC=PASS; BC=-1|-1; BR=01201311R151e4; CH=green; DM=||false|;
- DS=||; FP=0|-1|-1|-1|0|-1|-1|-1; HT=e01e04394;
- MF=jiapeng.chong@linux.alibaba.com; NM=1; PH=DS; RN=8; SR=0;
- TI=SMTPD_---0UomJtwg_1631955766; 
-Received: from
- j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com
- fp:SMTPD_---0UomJtwg_1631955766) by smtp.aliyun-inc.com(127.0.0.1);
- Sat, 18 Sep 2021 17:02:49 +0800
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To: oder_chiou@realtek.com
-Subject: [PATCH] ASoC: rt5682s: make rt5682s_aif2_dai_ops and
- rt5682s_soc_component_dev
-Date: Sat, 18 Sep 2021 17:02:06 +0800
-Message-Id: <1631955726-77693-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-Cc: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
- alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
- tiwai@suse.com, broonie@kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1D1D1F80137
+ for <alsa-devel@alsa-project.org>; Sat, 18 Sep 2021 23:36:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D1D1F80137
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=sang-engineering.com
+ header.i=@sang-engineering.com header.b="y+DWnL+r"
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+ from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding; s=k1; bh=Kwpp0Fj2x26Eg7
+ 8Ja7Z4hycUKbPpkJLdheziTeB1Zi8=; b=y+DWnL+rlbKwj54YmFiewuQaS11s/E
+ +D/GrBAn071zxivs29KhJvwpb+29pXGJ3EIGZZL0KWXmTNVZ2JYXXzt3gGpVBrA2
+ /GHF77p+5u4/ZDMJ11BdMS1+bHcTKifbbr6nRBb2c10eqvYmXSLZ7PymDcoUygwk
+ Riu67C9lfpUnE=
+Received: (qmail 1967036 invoked from network); 18 Sep 2021 23:36:03 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted,
+ authenticated); 18 Sep 2021 23:36:03 +0200
+X-UD-Smtp-Session: l3s3148p1@BrCw1UvM0JMgAwDPXyF2AO3QmsoMF7XN
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] ASoC: codecs: max98390: simplify getting the adapter of a
+ client
+Date: Sat, 18 Sep 2021 23:35:52 +0200
+Message-Id: <20210918213553.14514-2-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210918213553.14514-1-wsa+renesas@sang-engineering.com>
+References: <20210918213553.14514-1-wsa+renesas@sang-engineering.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,42 +87,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This symbol is not used outside of rt5682s.c, so marks it static.
+We have a dedicated pointer for that, so use it. Much easier to read and
+less computation involved.
 
-Fix the following sparse warning:
-
-sound/soc/codecs/rt5682s.c:2848:39: warning: symbol
-'rt5682s_soc_component_dev' was not declared. Should it be static?
-
-sound/soc/codecs/rt5682s.c:2842:30: warning: symbol
-'rt5682s_aif2_dai_ops' was not declared. Should it be static?
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 ---
- sound/soc/codecs/rt5682s.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5682s.c b/sound/soc/codecs/rt5682s.c
-index d878a20..d3e965b 100644
---- a/sound/soc/codecs/rt5682s.c
-+++ b/sound/soc/codecs/rt5682s.c
-@@ -2839,13 +2839,13 @@ static int rt5682s_resume(struct snd_soc_component *component)
- 	.set_bclk_ratio = rt5682s_set_bclk1_ratio,
- };
+Please apply to your subsystem tree.
+
+ sound/soc/codecs/max98390.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/max98390.c b/sound/soc/codecs/max98390.c
+index b392567c2b3e..d1882cbc9381 100644
+--- a/sound/soc/codecs/max98390.c
++++ b/sound/soc/codecs/max98390.c
+@@ -1021,7 +1021,7 @@ static int max98390_i2c_probe(struct i2c_client *i2c,
+ 	int reg = 0;
  
--const struct snd_soc_dai_ops rt5682s_aif2_dai_ops = {
-+static const struct snd_soc_dai_ops rt5682s_aif2_dai_ops = {
- 	.hw_params = rt5682s_hw_params,
- 	.set_fmt = rt5682s_set_dai_fmt,
- 	.set_bclk_ratio = rt5682s_set_bclk2_ratio,
- };
+ 	struct max98390_priv *max98390 = NULL;
+-	struct i2c_adapter *adapter = to_i2c_adapter(i2c->dev.parent);
++	struct i2c_adapter *adapter = i2c->adapter;
  
--const struct snd_soc_component_driver rt5682s_soc_component_dev = {
-+static const struct snd_soc_component_driver rt5682s_soc_component_dev = {
- 	.probe = rt5682s_probe,
- 	.remove = rt5682s_remove,
- 	.suspend = rt5682s_suspend,
+ 	ret = i2c_check_functionality(adapter,
+ 		I2C_FUNC_SMBUS_BYTE
 -- 
-1.8.3.1
+2.30.2
 
