@@ -2,80 +2,77 @@ Return-Path: <SRS0=8ObE=OK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 668D7C433FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Sep 2021 15:33:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BC2DC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Sep 2021 15:34:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BA2E560F58
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Sep 2021 15:33:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BA2E560F58
+	by mail.kernel.org (Postfix) with ESMTPS id B7ADC60F58
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Sep 2021 15:34:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B7ADC60F58
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 664BD16CC;
-	Mon, 20 Sep 2021 17:32:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 664BD16CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5C96116BF;
+	Mon, 20 Sep 2021 17:33:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C96116BF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632152019;
-	bh=WuJaW14p30CONeviIi8PVh2hp7lvuyYTd8An3xHCrc0=;
+	s=default; t=1632152045;
+	bh=kW5h4Wp87ZySDniC1nxTtzJqO7Y1LElsVScvvjvZqWM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ANoi3syQqZ0vyBEeTap8zZTwT7+yenbhDTIR5B865XVCJNdxmNqTJ/rROeiZYqD7s
-	 WqDMZzoViH5svCaxmOwdIogOKVkPkjwX0LRYnJruhiO/Tk4dFn/WNo6eRzu4Mn3QdI
-	 iQXmxxdJnfH2GH3GhNQuGrIKUl0p2245tO/FjZ9A=
+	b=mPBrYgbH32RrY2j59Vwflk2Fkx6ZYL8Pfg8QmozTQ2FMbBJi637Br6/DjZ5vTzGz2
+	 PcPfsqHEn5kDPJryRzYk++v4Y53oIszErywuNH7WoxHX0Q1i+naq3K2oJGtqTMLgu6
+	 hMtCgkqExfD6RjAUaFuho8oLl0IlNJX6ENLa2SVA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A343F804E7;
-	Mon, 20 Sep 2021 17:32:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1C9D3F804F1;
+	Mon, 20 Sep 2021 17:32:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7C1B3F804E3; Mon, 20 Sep 2021 17:31:57 +0200 (CEST)
+ id D1919F804E6; Mon, 20 Sep 2021 17:31:58 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 30F7BF80124
- for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2021 17:31:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30F7BF80124
+ by alsa1.perex.cz (Postfix) with ESMTPS id 482E7F8025D
+ for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2021 17:31:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 482E7F8025D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="lrTJiQ9I"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FD9C60F58;
- Mon, 20 Sep 2021 15:31:49 +0000 (UTC)
+ header.b="g/h5ImWa"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08B3A61107;
+ Mon, 20 Sep 2021 15:31:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1632151910;
- bh=WuJaW14p30CONeviIi8PVh2hp7lvuyYTd8An3xHCrc0=;
+ s=k20201202; t=1632151912;
+ bh=kW5h4Wp87ZySDniC1nxTtzJqO7Y1LElsVScvvjvZqWM=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=lrTJiQ9IsLIexvDtk4XoAIlGqX/6GEqAFb2y81bpFrM8MAMzj4XnaEYtp7sm5MMBh
- KwBJcX019F6NODhE6hUZNt/WXCnVrLoiNuGidO9qbQuL6seDtkUldotb4kU2fBud8I
- fg20Jz6uDiS959RTKQxwcjdontSmHoQWU94wN7uG0fgyp7lNLTjWSPbctROM1khiNC
- aDpqAIscgdGY+WqOtDS0spF2ZZNQMIupLk1MpLsMPpYw7NXXSPo/9eqqbIX6DX5jVZ
- NGN+GdL9QgMbHHjnM+pex2UI57y2qCW//Zc4HINmrFut/zzhSkthfdU3VPub6KfCLP
- b3ladC51bLKkA==
+ b=g/h5ImWaDriQyw1F6OxleG+ut1hQLVNC9avWfgfw6oWKtcC8Q+MdFWKr4q80PXpFN
+ bXU3gfXst8amN4xAFcfIh3P0k+ossMuvxriMTdNwrLuNZkc5E7klPkIXMIvBnrmoIn
+ f5Xnj+dYq+0uRH9c/9RyGOQzkPvfLZWemiQXYL1ZK5CgCegz5MiJAkI0jYeEPs6tIV
+ MeYHHPDettiCGGo8jV1X6kUmU723lau+S4QK88JK+x5EHYf2Dl/tFsB8X+Wkh+jojK
+ eb+9aw1XyYlwasdsbWUD7ieC8R+v2Yhp6YcCBwMAJ2zIN+FXKf0nsFNZvJEN5vk15w
+ ZzOVQnupicfiw==
 From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.com, Sameer Pujar <spujar@nvidia.com>, lgirdwood@gmail.com,
- will@kernel.org, kuninori.morimoto.gx@renesas.com, catalin.marinas@arm.com,
- jonathanh@nvidia.com, thierry.reding@gmail.com, perex@perex.cz,
- robh+dt@kernel.org
-Subject: Re: (subset) [PATCH v2 00/13] Extend AHUB audio support for Tegra210
- and later
-Date: Mon, 20 Sep 2021 16:30:48 +0100
-Message-Id: <163215150719.38322.16495204170646582113.b4-ty@kernel.org>
+To: Derek Fang <derek.fang@realtek.com>, devicetree@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+ linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ASoC: dt-bindings: rt5682s: correct several errors
+Date: Mon, 20 Sep 2021 16:30:49 +0100
+Message-Id: <163215150720.38322.16264774156845282309.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1631551342-25469-1-git-send-email-spujar@nvidia.com>
-References: <1631551342-25469-1-git-send-email-spujar@nvidia.com>
+In-Reply-To: <20210920112106.140918-1-krzysztof.kozlowski@canonical.com>
+References: <20210920112106.140918-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, sharadg@nvidia.com,
- Mark Brown <broonie@kernel.org>, linux-tegra@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
+Cc: Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,17 +88,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 13 Sep 2021 22:12:08 +0530, Sameer Pujar wrote:
-> Earlier as part of series [0], support for ADMAIF and I/O modules (such
-> as I2S, DMIC and DSPK) was added. This series aims at exposing some of
-> the AHUB internal modules (listed below), which can be used for audio
-> pre or post processing.
+On Mon, 20 Sep 2021 13:21:06 +0200, Krzysztof Kozlowski wrote:
+> Correct several errors in rt5682s dtschema:
+> 1. The examples should be under "examples":
+>     'example' is not one of ['$id', '$schema', 'title', 'description', 'examples', ...
 > 
->   * SFC (Sampling Frequency Converter)
->   * MVC (Master Volume Control)
->   * AMX (Audio Multiplexer)
->   * ADX (Audio Demultiplexer)
->   * Mixer
+> 2. Missing type for vendor properties
+> 
+> 3. clock-names should be an array:
+>     properties:clock-names:items: {'const': 'mclk'} is not of type 'array'
 > 
 > [...]
 
@@ -111,26 +106,8 @@ Applied to
 
 Thanks!
 
-[01/13] ASoC: soc-pcm: Don't reconnect an already active BE
-        commit: 0c25db3f7621ce39e959e95b8fea240ea2bfff6a
-[02/13] ASoC: simple-card-utils: Increase maximum DAI links limit to 512
-        commit: 7a226f2eabdc2e839d8f07c5ce087136f9c0f35c
-[03/13] ASoC: audio-graph: Fixup CPU endpoint hw_params in a BE<->BE link
-        commit: 30b428d02cbc9888d84407306d54dce8c2b8bfbf
-[04/13] ASoC: dt-bindings: tegra: Few more Tegra210 AHUB modules
-        commit: aa56a9dedf9940a85fcfcc09d838334b2f219424
-[05/13] ASoC: tegra: Add routes for few AHUB modules
-        commit: 94d486c2e5e72f62b4320288c0e69393326e14a9
-[06/13] ASoC: tegra: Add Tegra210 based MVC driver
-        commit: e539891f968722d632234ac942c4749ad8ca189a
-[07/13] ASoC: tegra: Add Tegra210 based SFC driver
-        commit: b2f74ec53a6cc0f2bb6cdb61d430828337d0e069
-[08/13] ASoC: tegra: Add Tegra210 based AMX driver
-        commit: 77f7df346c4533b91d0dcc2b549eb7c98abd198b
-[09/13] ASoC: tegra: Add Tegra210 based ADX driver
-        commit: a99ab6f395a9e45ca3f9047e9b88d6e02737419f
-[10/13] ASoC: tegra: Add Tegra210 based Mixer driver
-        commit: 05bb3d5ec64a632acebdb62779dd4c9d7dc495d2
+[1/1] ASoC: dt-bindings: rt5682s: correct several errors
+      commit: a7a18abbd26caf22e40165eb734e67d338735f5b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
