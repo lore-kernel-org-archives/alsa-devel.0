@@ -2,104 +2,106 @@ Return-Path: <SRS0=8ObE=OK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E2C2C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Sep 2021 11:08:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3257CC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Sep 2021 11:22:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9F6E960F56
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Sep 2021 11:08:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9F6E960F56
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
+	by mail.kernel.org (Postfix) with ESMTPS id 999B460F56
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Sep 2021 11:22:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 999B460F56
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 50DB81688;
-	Mon, 20 Sep 2021 13:07:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50DB81688
+	by alsa0.perex.cz (Postfix) with ESMTPS id 14F3E1688;
+	Mon, 20 Sep 2021 13:21:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14F3E1688
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632136124;
-	bh=PgUGc1SWyn7yYZ6Jp8nV2BbeuCrYklqp4q6fwnROAHw=;
+	s=default; t=1632136937;
+	bh=V+0Ydy4XABqa0Dafxn2oK2O6VFS8B0r2iiKl4enw4gI=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=VKdSOcOzd6OtMekO84pBm/Ryz1hUDOLrKXhFGOMT+8LUnEqIclTNtYM6L7FuTACxg
-	 eNqEWO9zOs71veGWEMXtjr5GYi2wzipcx8a4uwTQ6QvsNBrgR7w2cSJgCAnQ0SpAr4
-	 X79us8G0aEqecTa89WK6i2ETqGH1mv4jgpevQDvg=
+	b=jui3PZnNLkDicN/acyGqtvHYn4PBbPBlqPTU36k+DcwA6K1rYTcxFaYfrT5c9PcB8
+	 okkGH8UzSh7lGfchZ4AlLWBa17ZDpQllV+/L4Dm2hwHFyEajs1CHIomK6cjCn/nIm4
+	 Bh3atg0wL2Ecyk94Rliiki/b0XEavrg8KIps9FCQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE131F80129;
-	Mon, 20 Sep 2021 13:07:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8D3B9F80246;
+	Mon, 20 Sep 2021 13:21:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CF585F8025D; Mon, 20 Sep 2021 13:07:52 +0200 (CEST)
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27])
+ id 68658F8025D; Mon, 20 Sep 2021 13:21:24 +0200 (CEST)
+Received: from smtp-relay-internal-0.canonical.com
+ (smtp-relay-internal-0.canonical.com [185.125.188.122])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 41A45F80129
- for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2021 13:07:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41A45F80129
+ by alsa1.perex.cz (Postfix) with ESMTPS id 343F4F80129
+ for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2021 13:21:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 343F4F80129
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="giIS6sDg"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="NFpRM1F1"
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailout.nyi.internal (Postfix) with ESMTP id 076615C0048;
- Mon, 20 Sep 2021 07:07:40 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute3.internal (MEProxy); Mon, 20 Sep 2021 07:07:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding; s=fm2; bh=1MCndy9cLnlMIcCifBnqzwJc/+
- Zfm3QLxX/qfshnxIM=; b=giIS6sDgRzSwSn+8t9vSyp8FA8blvOcarGEp41GDea
- XOLUI3hsP0s6mIRKJDlqB0f1Tt04RjEZ7UcHnQcT8p1HMTlzPKwnxUZCucXTZqj2
- ILAt+LOBBUrD1xTngkTnmClXReSKinylePKK9GXOC0kFDqOWkkW097bMcY9XzBIo
- XgvGqLzivMFGlZR860eDWb9r0AouLgeKKwCrPC/0uh6vbRKNW7aMwmjwW9Bx8Nbg
- k3XfB6ndPAlqaXvEEPI4wjSEKZoP8B+YLvE9sicfreSmunDdyAQCGibos6YR1Onj
- WvTAUbxpOxNP/+hd0QGwToIX63OzPmD5LMagxSBC9zWA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-transfer-encoding:date:from
- :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
- :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=1MCndy9cLnlMIcCif
- BnqzwJc/+Zfm3QLxX/qfshnxIM=; b=NFpRM1F1ztT+Hv6+pKC4XEP2TEkhPdpqN
- vBusmnHVP+qj2l9bb3cRZFspHcKxSeJRXDXnsPQM3BDKgyzCdedeVGpmZ0El0JGu
- CXiVQG+5qkPN86wZ6SCOY8x4tyCPwWwEGNaIxXNe50vjltgAFrGLH3yFgZjqD6j/
- nfxUSneRqfAhoHJyXXk1pV4QrRBOFRe/rLi1Sqalu3mqAbuuV3n8EkdhN1Tk2mcO
- ItU1n29AwV9KVJP/aOYycHvx94nOXfCwFnZnUeUZzpec5lM6tmcg9S5M9NH+jAFv
- HIt5chMAbQopMwLwoRfZdFk4OBC/6waP5cCDWM0FcT9fbSEnfJXAA==
-X-ME-Sender: <xms:e2tIYVvDmFINcuJiFK2d_MRyk0XC2Lx8iuxgSyfl7ZZ4A1iXch1CUw>
- <xme:e2tIYecLabQswtpiWAoEUeRLX5qEy5QLRl2rTuJnNBqNl35czPzl-7-fkfnLGZ-0E
- xZGXP6cf_e2wwcBj70>
-X-ME-Received: <xmr:e2tIYYzzv3OwSkch2C1p7gC-0CAUD2to6WsgJQI2fvVx37UdWwN2Fkx8j6CFPdxFbJrNtzGPxnHERfTyslyRG_wKRgFhZo5m09c-H0yrlw6InYwtcJ55>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeivddgfeeiucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
- dttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhh
- ihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepudejteelhfdttd
- ekgfdtueeilefhgfetjeejheekgeevuddvveegieehueeukeejnecuvehluhhsthgvrhfu
- ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkh
- grmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:e2tIYcPmfe_Bww4c149BsVcW6oDPm6Mb1MZnP8VUBFgAnpAZE5W-Nw>
- <xmx:e2tIYV839ie9qBygWjakTWzEUgu90N9k40C65cFW1TNFbkny788zDg>
- <xmx:e2tIYcWJDyi_YJAFMo2ccN5TQZjjjXqietw9jgw9aqG5tGJxj4TpYA>
- <xmx:fGtIYXIxp9H9wO4Ldz6JEAjqXRTVDA5_7DDyCbsSLC0zHOJEgskEnA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 20 Sep 2021 07:07:37 -0400 (EDT)
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: tiwai@suse.de
-Subject: [PATCH] ALSA: firewire-motu: fix truncated bytes in message
- tracepoints
-Date: Mon, 20 Sep 2021 20:07:34 +0900
-Message-Id: <20210920110734.27161-1-o-takashi@sakamocchi.jp>
+ dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
+ header.b="lk5VAaJP"
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id DE81E3F32A
+ for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2021 11:21:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20210705; t=1632136870;
+ bh=I2Bl07vONbEfi9yEVzej1wYQPepaUboDztwjIRW5t6c=;
+ h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+ b=lk5VAaJPKUVU/saksmecmXNTBzXFLxfgVm6qVmu89g6oAX8RRvj9lrKleSlBtK6MJ
+ 9eA2zFs4GGwxY9aLP/2QoeRe5/NlTOu29WueIl4aC2ZaztRT6RtoRwSKcKVkJPcVpX
+ ZXDtwPx6FLmSCAFT1fLLocFh3wEOOzX9ipdhTeKSPcPnF+Cft46t8Q8PqK98rLemKS
+ U+yeosYxnG9ADuRwSpGnG19FU0DIUNanuiRbSD6BGuw65Wtn12PalJpGaEihF9BUu6
+ httj/NXiLmRokInL7m443UsV4ASMZJX6/mxvAzMpdrzqQp3fxydUrAtQLIk52R/Dyc
+ N/9l1heIhilkw==
+Received: by mail-wr1-f71.google.com with SMTP id
+ v1-20020adfc401000000b0015e11f71e65so5809898wrf.2
+ for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2021 04:21:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=I2Bl07vONbEfi9yEVzej1wYQPepaUboDztwjIRW5t6c=;
+ b=7+oAFIgsyV0guK71qJiCJ3SvSwVrOwJfmUtVdTjKoexXof24ufH54nejaecKC0FwxD
+ ARUnrqGTnT6mNtH1RpwRLZgIoMBbFHS0WkNatto1j/KYyCHfg3qro3YWKe4PhDUi0iNR
+ WJN1qwdDktnyrXhzqirgCzfrah9jZgyGikPAm1wG6Y0DErL5ufpc1D6JTWn9u+/vil/t
+ OWGA7zKfxTNAY6aIzrwtqXJkix3AUEcXKOmnxX7NMRIEOpAtzE4+7ymrHQhf1KGZptqc
+ NAC7yc4f9R0HJw8nBbtAOxAXMV5NAeuuNFULahIwlqPKLk7rXSBo6rL2b499Jp2KXOZJ
+ fhyQ==
+X-Gm-Message-State: AOAM531JT3kGWfPi0xeKWWe3EGDEpQmvYXCGG3z6Z70wH8ft6m3lL7XQ
+ xY16u+kPeBefSEH+6isPcEZhPMHyo6c2hFZzVoIf493dETViHn/Jyr++DWH6BX7jWr89g97fM9B
+ PqWNTlRiprnnO+ELVnGXorJR/ylrjlUPEq/Xd3H1H
+X-Received: by 2002:a7b:c848:: with SMTP id c8mr20697842wml.187.1632136870501; 
+ Mon, 20 Sep 2021 04:21:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxKn0jNRJmIN+QLyVPFE4JlcLmEfhs0lY57DrjExIxaCNsxu3GXc7ms5w5ZEe76lcszwT1Ntw==
+X-Received: by 2002:a7b:c848:: with SMTP id c8mr20697831wml.187.1632136870345; 
+ Mon, 20 Sep 2021 04:21:10 -0700 (PDT)
+Received: from kozik-lap.lan (lk.84.20.244.219.dc.cable.static.lj-kabel.net.
+ [84.20.244.219])
+ by smtp.gmail.com with ESMTPSA id u25sm17199453wmm.5.2021.09.20.04.21.09
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 20 Sep 2021 04:21:09 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>, Derek Fang <derek.fang@realtek.com>,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: dt-bindings: rt5682s: correct several errors
+Date: Mon, 20 Sep 2021 13:21:06 +0200
+Message-Id: <20210920112106.140918-1-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, stable@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -115,44 +117,114 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In MOTU protocol v2/v3, first two data chunks across 2nd and 3rd data
-channels includes message bytes from device. The total size of message
-is 48 bits per data block.
+Correct several errors in rt5682s dtschema:
+1. The examples should be under "examples":
+    'example' is not one of ['$id', '$schema', 'title', 'description', 'examples', ...
 
-The 'data_block_message' tracepoints event produced by ALSA firewire-motu
-driver exposes the sequence of messages to userspace in 64 bit storage,
-however lower 32 bits are actually available since current implementation
-truncates 16 bits in upper of the message as a result of bit shift
-operation within 32 bit storage.
+2. Missing type for vendor properties
 
-This commit fixes the bug by perform the bit shift in 64 bit storage.
+3. clock-names should be an array:
+    properties:clock-names:items: {'const': 'mclk'} is not of type 'array'
 
-Fixes: c6b0b9e65f09 ("ALSA: firewire-motu: add tracepoints for messages for unique protocol")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+4. Example DTS should include headers:
+    [scripts/Makefile.lib:386: Documentation/devicetree/bindings/sound/realtek,rt5682s.example.dt.yaml] Error 1
+
+5. Node name in example DTS misses unit address and does not match DT
+   convention (generic name):
+    Warning (reg_format): /example-0/rt5682s:reg: property has invalid length (4 bytes) (#address-cells == 1, #size-cells == 1)
+
+6. Node address should be in size-cells:0 block in example DTS:
+    Warning (reg_format): /example-0/codec@1a:reg: property has invalid length (4 bytes) (#address-cells == 1, #size-cells == 1)
+
+Fixes: 50159fdb144b ("ASoC: dt-bindings: rt5682s: add bindings for rt5682s")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- sound/firewire/motu/amdtp-motu.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ .../bindings/sound/realtek,rt5682s.yaml       | 47 ++++++++++++-------
+ 1 file changed, 29 insertions(+), 18 deletions(-)
 
-diff --git a/sound/firewire/motu/amdtp-motu.c b/sound/firewire/motu/amdtp-motu.c
-index 5388b85fb60e..a18c2c033e83 100644
---- a/sound/firewire/motu/amdtp-motu.c
-+++ b/sound/firewire/motu/amdtp-motu.c
-@@ -276,10 +276,11 @@ static void __maybe_unused copy_message(u64 *frames, __be32 *buffer,
+diff --git a/Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml b/Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml
+index fbf23696f1a7..7a5f1d0fd3e2 100644
+--- a/Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml
++++ b/Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml
+@@ -24,18 +24,21 @@ properties:
+     description: The CODEC's interrupt output.
  
- 	/* This is just for v2/v3 protocol. */
- 	for (i = 0; i < data_blocks; ++i) {
--		*frames = (be32_to_cpu(buffer[1]) << 16) |
--			  (be32_to_cpu(buffer[2]) >> 16);
-+		*frames = be32_to_cpu(buffer[1]);
-+		*frames <<= 16;
-+		*frames |= be32_to_cpu(buffer[2]) >> 16;
-+		++frames;
- 		buffer += data_block_quadlets;
--		frames++;
- 	}
- }
+   realtek,dmic1-data-pin:
++    $ref: /schemas/types.yaml#/definitions/uint32
+     enum:
+       - 0 # dmic1 data is not used
+       - 1 # using GPIO2 pin as dmic1 data pin
+       - 2 # using GPIO5 pin as dmic1 data pin
  
+   realtek,dmic1-clk-pin:
++    $ref: /schemas/types.yaml#/definitions/uint32
+     enum:
+       - 0 # dmic1 clk is not used
+       - 1 # using GPIO1 pin as dmic1 clock pin
+       - 2 # using GPIO3 pin as dmic1 clock pin
+ 
+   realtek,jd-src:
++    $ref: /schemas/types.yaml#/definitions/uint32
+     enum:
+       - 0 # No JD is used
+       - 1 # using JD1 as JD source
+@@ -63,7 +66,7 @@ properties:
+ 
+   clock-names:
+     items:
+-      const: mclk
++      - const: mclk
+ 
+   "#clock-cells":
+     const: 1
+@@ -79,22 +82,30 @@ required:
+   - compatible
+   - reg
+ 
+-example:
++examples:
+   - |
+-    rt5682s {
+-        compatible = "realtek,rt5682s";
+-        reg = <0x1a>;
+-        interrupt-parent = <&gpio>;
+-        interrupts = <TEGRA_GPIO(U, 6) IRQ_TYPE_LEVEL_HIGH>;
+-        realtek,ldo1-en-gpios =
+-            <&gpio TEGRA_GPIO(R, 2) GPIO_ACTIVE_HIGH>;
+-        realtek,dmic1-data-pin = <1>;
+-        realtek,dmic1-clk-pin = <1>;
+-        realtek,jd-src = <1>;
+-
+-        #clock-cells = <1>;
+-        clock-output-names = "rt5682-dai-wclk", "rt5682-dai-bclk";
+-
+-        clocks = <&osc>;
+-        clock-names = "mclk";
++    #include <dt-bindings/gpio/tegra-gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        codec@1a {
++            compatible = "realtek,rt5682s";
++            reg = <0x1a>;
++            interrupt-parent = <&gpio>;
++            interrupts = <TEGRA_GPIO(U, 6) IRQ_TYPE_LEVEL_HIGH>;
++            realtek,ldo1-en-gpios =
++                <&gpio TEGRA_GPIO(R, 2) GPIO_ACTIVE_HIGH>;
++            realtek,dmic1-data-pin = <1>;
++            realtek,dmic1-clk-pin = <1>;
++            realtek,jd-src = <1>;
++
++            #clock-cells = <1>;
++            clock-output-names = "rt5682-dai-wclk", "rt5682-dai-bclk";
++
++            clocks = <&osc>;
++            clock-names = "mclk";
++        };
+     };
 -- 
 2.30.2
 
