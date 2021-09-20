@@ -2,77 +2,77 @@ Return-Path: <SRS0=8ObE=OK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BC2DC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Sep 2021 15:34:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A658C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Sep 2021 15:34:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B7ADC60F58
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Sep 2021 15:34:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B7ADC60F58
+	by mail.kernel.org (Postfix) with ESMTPS id CD45B60F58
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Sep 2021 15:34:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CD45B60F58
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C96116BF;
-	Mon, 20 Sep 2021 17:33:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C96116BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 64EB716C8;
+	Mon, 20 Sep 2021 17:33:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64EB716C8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632152045;
-	bh=kW5h4Wp87ZySDniC1nxTtzJqO7Y1LElsVScvvjvZqWM=;
+	s=default; t=1632152068;
+	bh=P+V/VfVqBTpDDzHM7WoqK4yIUKovVB6PEtgQJaHuhJU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mPBrYgbH32RrY2j59Vwflk2Fkx6ZYL8Pfg8QmozTQ2FMbBJi637Br6/DjZ5vTzGz2
-	 PcPfsqHEn5kDPJryRzYk++v4Y53oIszErywuNH7WoxHX0Q1i+naq3K2oJGtqTMLgu6
-	 hMtCgkqExfD6RjAUaFuho8oLl0IlNJX6ENLa2SVA=
+	b=WphOMuGnOHzNIL4JjT8LvXKGPsyzkyozH19RpP7H0V0SjNx3nNrRJRclWRKQUqzPS
+	 VRK7kxcavSVVAsa7rN2VvfOcOCArfDIzo6p1RNruTabUO7WqVfRBVqLRefPWtjmcMX
+	 bJTqlqmfnFOJLE+6UMdZKT249nBAKNbxOLiJ/NE0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1C9D3F804F1;
-	Mon, 20 Sep 2021 17:32:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1F609F804FB;
+	Mon, 20 Sep 2021 17:32:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D1919F804E6; Mon, 20 Sep 2021 17:31:58 +0200 (CEST)
+ id 316F6F804E6; Mon, 20 Sep 2021 17:32:00 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 482E7F8025D
- for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2021 17:31:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 482E7F8025D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0F3D2F80246
+ for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2021 17:31:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F3D2F80246
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="g/h5ImWa"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 08B3A61107;
- Mon, 20 Sep 2021 15:31:51 +0000 (UTC)
+ header.b="DA+Ew7Oa"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B33C6109E;
+ Mon, 20 Sep 2021 15:31:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1632151912;
- bh=kW5h4Wp87ZySDniC1nxTtzJqO7Y1LElsVScvvjvZqWM=;
+ s=k20201202; t=1632151904;
+ bh=P+V/VfVqBTpDDzHM7WoqK4yIUKovVB6PEtgQJaHuhJU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=g/h5ImWaDriQyw1F6OxleG+ut1hQLVNC9avWfgfw6oWKtcC8Q+MdFWKr4q80PXpFN
- bXU3gfXst8amN4xAFcfIh3P0k+ossMuvxriMTdNwrLuNZkc5E7klPkIXMIvBnrmoIn
- f5Xnj+dYq+0uRH9c/9RyGOQzkPvfLZWemiQXYL1ZK5CgCegz5MiJAkI0jYeEPs6tIV
- MeYHHPDettiCGGo8jV1X6kUmU723lau+S4QK88JK+x5EHYf2Dl/tFsB8X+Wkh+jojK
- eb+9aw1XyYlwasdsbWUD7ieC8R+v2Yhp6YcCBwMAJ2zIN+FXKf0nsFNZvJEN5vk15w
- ZzOVQnupicfiw==
+ b=DA+Ew7OaGkr+DlanrbPvue3O4HNEyWwkwH0By5QK58ZyVx4ZeDBvJWfStS9jDKWyr
+ PMLAw/A27UENFvglxrM1nwmUbALbmlSi0wJwDoiQyABodeXC8ixPGMQCHU2C4bFvIw
+ wBpGk+RNykDjYRhGIV0UFY5ykZKKKXtM8tEGZ1hv/36LeuHT5wRjwQR14xotrRf0ve
+ WioF/4IoygiwK9GjoRY1Zq873p09g0jDdcAe5ot4x4E8a6BdBjvoRL9J9D6bxjHf3k
+ jxEgAtc0MANj5Xw99Kr1kH7+FIFNAQqFaiqQlYeuoFrsl0gURn8BDZFgpB7GHlcTjP
+ 2i4mxX/Frxpdg==
 From: Mark Brown <broonie@kernel.org>
-To: Derek Fang <derek.fang@realtek.com>, devicetree@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ASoC: dt-bindings: rt5682s: correct several errors
-Date: Mon, 20 Sep 2021 16:30:49 +0100
-Message-Id: <163215150720.38322.16264774156845282309.b4-ty@kernel.org>
+To: yang.jie@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+ liam.r.girdwood@linux.intel.com,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, cezary.rojewski@intel.com
+Subject: Re: [PATCH] ASoC: Intel: boards: Update to modern clocking terminology
+Date: Mon, 20 Sep 2021 16:30:46 +0100
+Message-Id: <163215150720.38322.5289613756835517197.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210920112106.140918-1-krzysztof.kozlowski@canonical.com>
-References: <20210920112106.140918-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210920065508.7854-1-peter.ujfalusi@linux.intel.com>
+References: <20210920065508.7854-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,17 +88,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 20 Sep 2021 13:21:06 +0200, Krzysztof Kozlowski wrote:
-> Correct several errors in rt5682s dtschema:
-> 1. The examples should be under "examples":
->     'example' is not one of ['$id', '$schema', 'title', 'description', 'examples', ...
+On Mon, 20 Sep 2021 09:55:08 +0300, Peter Ujfalusi wrote:
+> As part of the effort to remove our old APIs based on outdated terminology
+> update the Intel board drivers to use modern terminology.
 > 
-> 2. Missing type for vendor properties
 > 
-> 3. clock-names should be an array:
->     properties:clock-names:items: {'const': 'mclk'} is not of type 'array'
-> 
-> [...]
 
 Applied to
 
@@ -106,8 +100,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: dt-bindings: rt5682s: correct several errors
-      commit: a7a18abbd26caf22e40165eb734e67d338735f5b
+[1/1] ASoC: Intel: boards: Update to modern clocking terminology
+      commit: 5374b9215dbe93e22a0f51b111ca3e83f9b58e1a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
