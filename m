@@ -7,72 +7,72 @@ X-Spam-Status: No, score=-20.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DDF9C433FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Sep 2021 16:40:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE80CC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Sep 2021 16:42:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E88D6611C2
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Sep 2021 16:40:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E88D6611C2
+	by mail.kernel.org (Postfix) with ESMTPS id CF48C611AE
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Sep 2021 16:42:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CF48C611AE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9E86216B9;
-	Mon, 20 Sep 2021 18:39:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E86216B9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3990716B9;
+	Mon, 20 Sep 2021 18:41:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3990716B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632156002;
-	bh=FQKFccFzow0kBDfbUYgf/KA/p8poX/a/6qMo3Cy4Dks=;
+	s=default; t=1632156147;
+	bh=aVl+NbEMmJVNnO17s3LthMneV4uJAT+YB0L0mfCgaa8=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=mOcxxakkgPVafjpQ1uZ3rn8aloCDBoeQQj7Cw+bzQU44+DREF2I2YLQfyqidNiPkZ
-	 DQtKE/9C/0Zi2h2saLH7rEHZCg7IqrnMR/vleQFs4upbXi4nkri2ZvO73POgZu748d
-	 Jw55v6GydNeYktDwTltfcvARwJJQewsyY8OZnG8U=
+	b=a/P/C09XaltyPy3iviDVP+59zOMT+ZrUWegREReZgl427ikAG9EqLUkUVi7x3HNuB
+	 KOHpvcr+YYIxIULKZaVFDt6nlazlRpUe/Txb+UnbinRDSYnqKLcugs4rx+9eaVVufn
+	 nhgxw0bjLjsA05Uu9TpPGFRMd8Jl4SqmsRPkiwLk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26E16F80152;
-	Mon, 20 Sep 2021 18:39:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D44E4F80246;
+	Mon, 20 Sep 2021 18:41:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 748E9F8025D; Mon, 20 Sep 2021 18:39:10 +0200 (CEST)
+ id E76C2F80152; Mon, 20 Sep 2021 18:41:34 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C229FF80152
- for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2021 18:39:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C229FF80152
+ by alsa1.perex.cz (Postfix) with ESMTPS id B3D61F80152
+ for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2021 18:41:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3D61F80152
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="tF3/wHtR"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB9D9611AE;
- Mon, 20 Sep 2021 16:39:01 +0000 (UTC)
+ header.b="jFN2IvxM"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AAAF61177;
+ Mon, 20 Sep 2021 16:41:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1632155942;
- bh=FQKFccFzow0kBDfbUYgf/KA/p8poX/a/6qMo3Cy4Dks=;
+ s=k20201202; t=1632156086;
+ bh=aVl+NbEMmJVNnO17s3LthMneV4uJAT+YB0L0mfCgaa8=;
  h=From:To:Cc:Subject:Date:From;
- b=tF3/wHtR+RHOq3lXS7sFXzBbq0LRREYLZZMxcEWWMNlX1WnQzcvO8qP/SRWxd1AIu
- t3buAYJQ+X38wODiwEktvbRyq5nuCGll9Eeu099b/gfCLkfJifZGlsjIgVmoIvGHya
- d5e+++oG83um1RmbM52qIYb6WLd3CxQK7oMK8XxjEapB9YY2nek0H85goVGF35nta+
- PgTg3QpYedCGT7Tmg+2i6LaNqfREzWUnWb2LXUB5Ye/IEb3wDDMHxxvecVki4/5bxj
- G7FG6bbWz7DGns+/7xNXwSLO5vtaL03+Nd0rJX6BUZU7WthKRaAuyVlyI3fnM01AxN
- BMG+B2qlRKHgg==
+ b=jFN2IvxMFi8V6hMZDTcH09SaX/Elg77lZ89idE83ohl+aR6ksbWnohvwfPzZBWa9L
+ iBuJ3IbbFqB3KzTPZFy7JxvVrv18YSAC1ggididA/9DAz2K1tuw9F0K3gTHpFDSqIC
+ NY51sdfaG6uCydeP3MHZtqCEq6UQ4O2vqyxIm+Vy5ePAww23jylHrV737+gPqoZHqU
+ P//xcDFtqd++LWshS2Xp+PMmZcIfVSzhXGaR+dCL9V6WO1TtNzG1ExgW6K9C716Ry2
+ mu90xMZP0sB0GgE9/Qghob9wMf95gH6tiK2Y4oinITGK9YSx5TlrxUN1nA8kUWvgUD
+ zwLNcC8bTviCw==
 From: Mark Brown <broonie@kernel.org>
 To: Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH] ASoC: ak4458: Use modern ASoC DAI format terminology
-Date: Mon, 20 Sep 2021 17:38:17 +0100
-Message-Id: <20210920163817.16490-1-broonie@kernel.org>
+Subject: [PATCH] ASoC: ak4642: Use modern ASoC DAI format terminology
+Date: Mon, 20 Sep 2021 17:40:42 +0100
+Message-Id: <20210920164042.16624-1-broonie@kernel.org>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1309; h=from:subject;
- bh=FQKFccFzow0kBDfbUYgf/KA/p8poX/a/6qMo3Cy4Dks=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBhSLjWz9Ai0B1saAe5SasWkkmaKklZJ2P8+7umX2qU
- EP5r5ICJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYUi41gAKCRAk1otyXVSH0ARNB/
- 9bOV1ueaP5AIWtCGIw93eoJAHQ0h06vXGbCh5UGK0MQ9019flFkJJ0rpKknxtbZYhK+uFsq1+PSsQG
- zK0YJk3Mjy0zX22lmhoXDApHfj+u+/33kq36fdXGTRWNnmhvS/7AVkpmSMmPyDk8cB/4KdnuOxUh/P
- K5pggjlv2ZNQiFsbkSXJRUtpj/p0rQuqvik5CdU7qN4oKbLb5cNm5/31wIA5dyPdXwSOehQtipHEqx
- nMp2C0gqK6w8OKjk5IcC5IBU1UUzaz8ndd8dTp9TPhdpgj9qYS5FIsQm0/TcZwvA3V40U1XF58rwaw
- olScBqybLVSwQtMlkwJ0UoecIgBDvM
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1032; h=from:subject;
+ bh=aVl+NbEMmJVNnO17s3LthMneV4uJAT+YB0L0mfCgaa8=;
+ b=owGbwMvMwMWocq27KDak/QLjabUkhkSPnWUPaux1p051TBBcXcpUPUNux8LuWf09kcVfvgVtFOt3
+ mnSik9GYhYGRi0FWTJFl7bOMVenhElvnP5r/CmYQKxPIFAYuTgGYiG4o+z9lqw9LCgJYX0n4sH+6Zr
+ i7UkXu3KrzTveNJW7keR45bqCl2fvF6OHujuOLE6pOXmXhUS7fyh/wqmeqydng8Pp3ZV5O5cee7LI7
+ tIJLJOt53+EW9Q2RT9qami6pS3Idcc8WCH1990RSj/22yYWCh/SVvjr23hH9Ji1X43Kx0jjkaF6JyY
+ EwvazQ619EWbZedQ7cfsKg0vrWvm+LT1rOXdtT25rWaiRQlRmz/96+nCklVp0pqcfy9CXtq6ZpNMke
+ X6powW9+L9CkWeNfms/PwNyiAMvLbK82qFhrTLWeaODS9DPEckOyfd/VWAc/H6u/e5rUe0Xvd5den3
+ 5ho61E9vJv808luk7am/J0x+ODAA==
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Content-Transfer-Encoding: 8bit
@@ -93,38 +93,35 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 As part of moving to remove the old style defines for the bus clocks update
-the ak4458 driver to use more modern terminology for clocking.
+the ak4642 driver to use more modern terminology for clocking.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ak4458.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/codecs/ak4642.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
-index 29eb78702bf3..baa9ff5d0ce5 100644
---- a/sound/soc/codecs/ak4458.c
-+++ b/sound/soc/codecs/ak4458.c
-@@ -464,14 +464,14 @@ static int ak4458_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	struct ak4458_priv *ak4458 = snd_soc_component_get_drvdata(component);
- 	int ret;
+diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
+index c49c58eeb476..c284dcc5af76 100644
+--- a/sound/soc/codecs/ak4642.c
++++ b/sound/soc/codecs/ak4642.c
+@@ -392,13 +392,13 @@ static int ak4642_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	data = MCKO | PMPLL; /* use MCKO */
+ 	bcko = 0;
  
+-	/* set master/slave audio interface */
 -	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBS_CFS: /* Slave Mode */
+-	case SND_SOC_DAIFMT_CBM_CFM:
++	/* set clocking for audio interface */
 +	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_CBC_CFC: /* Consumer Mode */
++	case SND_SOC_DAIFMT_CBP_CFP:
+ 		data |= MS;
+ 		bcko = BCKO_64;
  		break;
--	case SND_SOC_DAIFMT_CBM_CFM: /* Master Mode is not supported */
--	case SND_SOC_DAIFMT_CBS_CFM:
--	case SND_SOC_DAIFMT_CBM_CFS:
-+	case SND_SOC_DAIFMT_CBP_CFP: /* Provider Mode is not supported */
-+	case SND_SOC_DAIFMT_CBC_CFP:
-+	case SND_SOC_DAIFMT_CBP_CFC:
+-	case SND_SOC_DAIFMT_CBS_CFS:
++	case SND_SOC_DAIFMT_CBC_CFC:
+ 		break;
  	default:
--		dev_err(component->dev, "Master mode unsupported\n");
-+		dev_err(component->dev, "Clock provider mode unsupported\n");
  		return -EINVAL;
- 	}
- 
 -- 
 2.20.1
 
