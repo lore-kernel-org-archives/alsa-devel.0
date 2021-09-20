@@ -2,84 +2,70 @@ Return-Path: <SRS0=8ObE=OK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FB43C433FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Sep 2021 17:07:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FDB5C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Sep 2021 17:20:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C37A161B3D
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Sep 2021 17:06:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C37A161B3D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 9F0DD63276
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Sep 2021 17:20:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9F0DD63276
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AE02316CE;
-	Mon, 20 Sep 2021 19:06:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE02316CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id B9E1516D0;
+	Mon, 20 Sep 2021 19:19:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9E1516D0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632157616;
-	bh=ea1vH0c1ywhVgw8kmnXuQG9RDFKi5XQmU9T+PZNTVbM=;
+	s=default; t=1632158414;
+	bh=U5nWWXgpvdeVHJSwPY/H4Xj9ud7K605pCDhCejVMIA4=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=gR43AM9RGLkQmPEG2M4It1m99XpgvtKn2F5BFRKaKPJ0HcqtdyBJ/AW7ZLsrHgUaJ
-	 eU8Unjh8pgdFkgJsAZ+wWTZRMBaQzCujphjo6ah4+AMUafimtiH27MiXa3gqEAU87i
-	 BWDSqrHuE3nf9Va+h+cD7ON0WfbtDISXCJL8W1os=
+	b=aH2Ut0nJJRU0992A1JKVdKvCGvZgxJFglg9+FWK8EFLQ+8clUGZiRReH0tioN0fum
+	 AfRnEhQ7dqebsQ6nYeNGTtQITqISZpjaQG1H2zHW1v2M0rDqXR6lMevP6ewb/u5f4n
+	 BN8HZwB2hkHRyiwzd+EvzhqUVvihOLzvMSG7RNOY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 43AC2F80246;
-	Mon, 20 Sep 2021 19:06:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4408EF80246;
+	Mon, 20 Sep 2021 19:19:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AC328F8025D; Mon, 20 Sep 2021 19:06:03 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 234C0F8025D; Mon, 20 Sep 2021 19:19:22 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7D619F80129
- for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2021 19:05:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D619F80129
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="PQHPrFbA"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1773661B1E;
- Mon, 20 Sep 2021 17:05:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1632157552;
- bh=ea1vH0c1ywhVgw8kmnXuQG9RDFKi5XQmU9T+PZNTVbM=;
+ by alsa1.perex.cz (Postfix) with ESMTPS id 842EBF80124
+ for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2021 19:19:10 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id A0D26A003F;
+ Mon, 20 Sep 2021 19:19:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz A0D26A003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1632158349; bh=XmUVQPaOBC1QAFDDKkeAwE2fGcNGPc+yCSGpokeuGsM=;
  h=From:To:Cc:Subject:Date:From;
- b=PQHPrFbAYlNNj6PxXbURW5V8xqEjP+QRZda8w63ZblYiieevCUYmiv+Ak8R005tjI
- /MhrqwfXmODeC+1oENU+CH7U9e185d/8jyg3QuQiUFg+9GSXL8JjjIs4HJ6VpEStPb
- 9bGZ6In+pEB9rq/YqygEF5tQxeIpxgGQe00ek0UcvRDB9Iu+pforeRXFgQSMEzlc/q
- FHsNybM8NrwWZvu3HUUAtmy7mvL1e/PxV+leO3zn2nAROx7SisaBl7ffhR2HIVtoXK
- Vp/K2hzpIdY/NDjfd4ct4UyrecuW9/SjfBUbiaBjzN4YmG0SFJZFX0YfxIQgBg0vBb
- PxZYtbIyc2yLQ==
-From: Mark Brown <broonie@kernel.org>
-To: Cheng-Yi Chiang <cychiang@chromium.org>,
- Enric Balletbo i Serra <enric.balletbo@collabora.com>,
- Guenter Roeck <groeck@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Benson Leung <bleung@chromium.org>
-Subject: [PATCH] ASoC: cros_ec_codec: Use modern ASoC DAI format terminology
-Date: Mon, 20 Sep 2021 18:04:14 +0100
-Message-Id: <20210920170414.17903-1-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
+ b=3VMBBkBUGZqH2aMKVTdfpyVYR25V7/furf0ZyOqvbIb3Y3Or4E0f6ck6FdoZI9SF2
+ DD9VAu0S2pMhi8aJB6Q96OtzBXb4VY6r1K4mSWUaPiqJ8l16lcL0Om+yJyL+eKV1C0
+ vG6+m2O3HLofUcsdznLOp8+Zj3vfjCX98lv7S7Ic=
+Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Mon, 20 Sep 2021 19:19:04 +0200 (CEST)
+From: Jaroslav Kysela <perex@perex.cz>
+To: ALSA development <alsa-devel@alsa-project.org>
+Subject: [PATCH v2] ALSA: rawmidi: introduce SNDRV_RAWMIDI_IOCTL_USER_PVERSION
+Date: Mon, 20 Sep 2021 19:18:50 +0200
+Message-Id: <20210920171850.154186-1-perex@perex.cz>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=894; h=from:subject;
- bh=ea1vH0c1ywhVgw8kmnXuQG9RDFKi5XQmU9T+PZNTVbM=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBhSL7dDRzPPOw2DlnhQ2NH5tVBvN2Mwgp2tCbyT0hK
- GtEfdGyJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYUi+3QAKCRAk1otyXVSH0GtJB/
- 4rtfCzQ8pZEWBz+Um3mTh24xJBTiPWJTY3NMbNhDCUpWdz6LxXHml2mbMKE9BOvsezllEJb1RDAsgc
- XW7cbYkkYd3Wxi8WnyxJlX9sv0zTruz6K5byVyJ6XAC6KCHO2MLk/9L84reDiRCk4YngxDcOyKJz5m
- MKXIiaGF+ES5AVgZg5J22NxD7avAKJRT+Hyz5SkZK1x4HhNGVdtZ6ty3QTFahc4U+yEUciOo8ssR4O
- q/T0EvdGj6Bvzy03O1SPKj8wSnc0DjIXVpdWKPhwSogZKgda+rD39FQ1XhtAdXYd2xkOVxe7dBbvyL
- LmT+KlXXTgrhOFslC8imoIDpDTWbNa
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, David Henningsson <coding@diwic.se>,
+ stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,29 +81,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-As part of moving to remove the old style defines for the bus clocks update
-the cros_ec_codec driver to use more modern terminology for clocking.
+The new framing mode causes the user space regression, because
+the alsa-lib code does not initialize the reserved space in
+the params structure when the device is opened.
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
+This change adds SNDRV_RAWMIDI_IOCTL_USER_PVERSION like we
+do for the PCM interface for the protocol acknowledgment.
+
+Cc: David Henningsson <coding@diwic.se>
+Cc: <stable@vger.kernel.org>
+Fixes: 08fdced60ca0 ("ALSA: rawmidi: Add framing mode")
+BugLink: https://github.com/alsa-project/alsa-lib/issues/178
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 ---
- sound/soc/codecs/cros_ec_codec.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/sound/rawmidi.h     | 1 +
+ include/uapi/sound/asound.h | 1 +
+ sound/core/rawmidi.c        | 9 +++++++++
+ 3 files changed, 11 insertions(+)
 
-diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
-index a201d652aca2..9b92e1a0d1a3 100644
---- a/sound/soc/codecs/cros_ec_codec.c
-+++ b/sound/soc/codecs/cros_ec_codec.c
-@@ -283,8 +283,8 @@ static int i2s_rx_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	struct ec_param_ec_codec_i2s_rx p;
- 	enum ec_codec_i2s_rx_daifmt daifmt;
+diff --git a/include/sound/rawmidi.h b/include/sound/rawmidi.h
+index 989e1517332d..7a08ed2acd60 100644
+--- a/include/sound/rawmidi.h
++++ b/include/sound/rawmidi.h
+@@ -98,6 +98,7 @@ struct snd_rawmidi_file {
+ 	struct snd_rawmidi *rmidi;
+ 	struct snd_rawmidi_substream *input;
+ 	struct snd_rawmidi_substream *output;
++	unsigned int user_pversion;	/* supported protocol version */
+ };
  
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBS_CFS:
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_CBC_CFC:
- 		break;
- 	default:
- 		return -EINVAL;
+ struct snd_rawmidi_str {
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index 1d84ec9db93b..5859ca0a1439 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -784,6 +784,7 @@ struct snd_rawmidi_status {
+ 
+ #define SNDRV_RAWMIDI_IOCTL_PVERSION	_IOR('W', 0x00, int)
+ #define SNDRV_RAWMIDI_IOCTL_INFO	_IOR('W', 0x01, struct snd_rawmidi_info)
++#define SNDRV_RAWMIDI_IOCTL_USER_PVERSION _IOW('W', 0x02, int)
+ #define SNDRV_RAWMIDI_IOCTL_PARAMS	_IOWR('W', 0x10, struct snd_rawmidi_params)
+ #define SNDRV_RAWMIDI_IOCTL_STATUS	_IOWR('W', 0x20, struct snd_rawmidi_status)
+ #define SNDRV_RAWMIDI_IOCTL_DROP	_IOW('W', 0x30, int)
+diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
+index 6c0a4a67ad2e..6f30231bdb88 100644
+--- a/sound/core/rawmidi.c
++++ b/sound/core/rawmidi.c
+@@ -873,12 +873,21 @@ static long snd_rawmidi_ioctl(struct file *file, unsigned int cmd, unsigned long
+ 			return -EINVAL;
+ 		}
+ 	}
++	case SNDRV_RAWMIDI_IOCTL_USER_PVERSION:
++		if (get_user(rfile->user_pversion, (unsigned int __user *)arg))
++			return -EFAULT;
++		return 0;
++
+ 	case SNDRV_RAWMIDI_IOCTL_PARAMS:
+ 	{
+ 		struct snd_rawmidi_params params;
+ 
+ 		if (copy_from_user(&params, argp, sizeof(struct snd_rawmidi_params)))
+ 			return -EFAULT;
++		if (rfile->user_pversion < SNDRV_PROTOCOL_VERSION(2, 0, 2)) {
++			params.mode = 0;
++			memset(params.reserved, 0, sizeof(params.reserved));
++		}
+ 		switch (params.stream) {
+ 		case SNDRV_RAWMIDI_STREAM_OUTPUT:
+ 			if (rfile->output == NULL)
 -- 
-2.20.1
-
+2.31.1
