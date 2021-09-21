@@ -2,88 +2,87 @@ Return-Path: <SRS0=+sGq=OL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BE49C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 21:43:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72D2CC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 21:50:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1270B60240
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 21:43:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1270B60240
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id C8CFF60F44
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 21:50:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C8CFF60F44
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=armlinux.org.uk
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3B2416BA;
-	Tue, 21 Sep 2021 23:42:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3B2416BA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 67DC816B9;
+	Tue, 21 Sep 2021 23:49:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67DC816B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632260583;
-	bh=tBTmSySfLPKEPabaMellE/V522O8P+h67TeK2y/iQkY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1632261037;
+	bh=XV7dBonNmaZqXBcm4hpq1bZNmCp2uoo7TNd54CYVMDQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ms28nP0yUpbj2uQlVuGGPdk0cLv+A4FoSZOOrDi1sHaND9AGroDXEan763GDYjOwp
-	 aSeC6QyJNYyQHWo1xvIRkWPBCMjrln0qHIWorgOFDDdHQGhY3Y4XxGMHwXUyykggk2
-	 ZR4xtdFTv4y5o7+efsJK9IQFTLPOGKbM7oTEUe/8=
+	b=vEohxTS/qbXtNS7lBPjt0+MP6/eDlswYTeNL68qpLKp3yzOBi+eTg5VPCJJxIaCVt
+	 yu2/7j3DwgDOpjtDTAUdbpQ4VIGFTAbHSxhR1BSKwCE9A0aZLSDY/vpa1pLtcIl61z
+	 1bJMEIp/VRochRLpvB2FgcPzWhD80823AC6tG5gA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A18D2F80551;
-	Tue, 21 Sep 2021 23:37:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EF2E1F8016E;
+	Tue, 21 Sep 2021 23:49:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0D248F80552; Tue, 21 Sep 2021 23:37:33 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 45C79F80268; Tue, 21 Sep 2021 23:49:45 +0200 (CEST)
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk
+ [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AA1EAF8053B
- for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 23:37:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA1EAF8053B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 08343F80124
+ for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 23:49:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08343F80124
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="lGLPyysB"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 185A261019;
- Tue, 21 Sep 2021 21:37:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1632260244;
- bh=tBTmSySfLPKEPabaMellE/V522O8P+h67TeK2y/iQkY=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=lGLPyysBCGU1zepwlNZzaX5AauEv5DcFvwEB/5WPHoPH24pVbrDT8akdjyHVnkSyG
- fwEg2u4kcQvLaQIPT81xKUd39rDmP/qowmo5KBqf+06YX781ZuvlUJl3OexBKY9OfU
- eiZd/DaM+pGhQe/cfLdkep/lo+8fX/wK2eAuAebhco+bj1FyN9SwtfIuM7bWzgaFur
- wHuFRKdBJtTpIVnNABdChT0PR24cTBmHiJInuXkDERCI1EVSZ63cnQCaOizp13+zca
- DOZTL9DXAoPiXYRQHNt5WwPJ28ckcHXFAF4Yzarbwk+N7AeEfyxqVEbbwFWvUlUvz5
- pofDJtGOHRq/w==
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
- Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
- Shengjiu Wang <shengjiu.wang@gmail.com>
-Subject: [PATCH v2 15/16] ASoC: pl1022_ds: Update to modern clocking
- terminology
-Date: Tue, 21 Sep 2021 22:35:41 +0100
-Message-Id: <20210921213542.31688-15-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210921213542.31688-1-broonie@kernel.org>
-References: <20210921213542.31688-1-broonie@kernel.org>
+ dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk
+ header.b="IBzt4v0O"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+ MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=ORMq0lCOy2f9In4z9KGT4J4GdZq0ZWa+fw9HsTMzwD0=; b=IBzt4v0OuH2RwrGBN43RfFewU/
+ WUF2wyY5WQgxm8CzDRqgS54Qh7C+q2mStC4AzdtYc74ENV3a73OrXMMlFnXP8JphSix+WU4jgnroR
+ UmpLjKCvOdNJ/yqLRdtS0aLGGWJy7OBBJRxkSrKZ+fz1LfdXH/wnbnc7M9p2rIvkoEfZdtM6TNeaE
+ O02+aRt0z6QW+t5BaCKIqmRICeiGWEPnnSdJuRTQuAwc72fYoJOeSCxg2Zh5bjHvO9hr+rjAvJD9+
+ IvCDQnWw0iDWQ/xeaSegHgwDoGfIM26dBbOOzLa+e8rGvcL5AepCt4krAqqqjzCjNrgD22JE2GQ6R
+ JMF8pS/A==;
+Received: from shell.armlinux.org.uk
+ ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54720)
+ by pandora.armlinux.org.uk with esmtpsa (TLS1.3) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.94.2)
+ (envelope-from <linux@armlinux.org.uk>)
+ id 1mSndt-00037y-4Y; Tue, 21 Sep 2021 22:49:33 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+ (envelope-from <linux@shell.armlinux.org.uk>)
+ id 1mSndq-0003eE-Fp; Tue, 21 Sep 2021 22:49:30 +0100
+Date: Tue, 21 Sep 2021 22:49:30 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [RFC PATCH] component: do not leave master devres group open
+ after bind
+Message-ID: <YUpTamg3qSe9XmNa@shell.armlinux.org.uk>
+References: <20210921111810.2766726-1-kai.vehmanen@linux.intel.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3141; h=from:subject;
- bh=tBTmSySfLPKEPabaMellE/V522O8P+h67TeK2y/iQkY=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBhSk8eraBkqj0wEwEH9n/wZXSoslC7ytCzj5bPJuG2
- iiO9U+uJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYUpPHgAKCRAk1otyXVSH0Fr3B/
- wK8fSgybKNjVM+xJHjb6+L2EDuvGrI3VzlhLgI/HK0LcX9s9mKjRnCY9ABRJwdS7SER6Vo6bgjLMi3
- pzNTx7LbJ+vOmmlBF6Cc2ZRi7TqwVFV1JRsMUfdiXhqQoBFPwVjMzVWTJEKbYPjQe+ZK8fwOhm1jzE
- Eu27tYyDxLMvsTBsmsaA6hoCoK4/pwHhw/ob6IZ7arSmHtCPY0irKEW9W/N2M3RUbSyX8FHNnuWAXT
- YJjc/6MvlaVjZ3SZmbIsUDSlCKh+Dv/o8gnB5bW8y6lRp+PkMtOz/Cp1hHjZcnON5gTzUR7S2AXEK/
- xtQzclLbjUMG3YxwHJ0JISbaj6YEGP
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210921111810.2766726-1-kai.vehmanen@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, "Rafael J . Wysocki" <rafael@kernel.org>,
+ tiwai@suse.de, gregkh@linuxfoundation.org, Imre Deak <imre.deak@intel.com>,
+ dri-devel@lists.freedesktop.org, jani.nikula@intel.com,
+ intel-gfx@lists.freedesktop.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,72 +98,67 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-As part of moving to remove the old style defines for the bus clocks update
-the pl1022_ds driver to use more modern terminology for clocking.
+On Tue, Sep 21, 2021 at 02:18:10PM +0300, Kai Vehmanen wrote:
+> In current code, the devres group for aggregate master is left open
+> after call to component_master_add_*(). This leads to problems when the
+> master does further managed allocations on its own. When any
+> participating driver calls component_del(), this leads to immediate
+> release of resources.
+> 
+> This came up when investigating a page fault occurring with i915 DRM
+> driver unbind with 5.15-rc1 kernel. The following sequence occurs:
+> 
+>  i915_pci_remove()
+>    -> intel_display_driver_unregister()
+>      -> i915_audio_component_cleanup()
+>        -> component_del()
+>          -> component.c:take_down_master()
+>            -> hdac_component_master_unbind() [via master->ops->unbind()]
+>            -> devres_release_group(master->parent, NULL)
+> 
+> With older kernels this has not caused issues, but with audio driver
+> moving to use managed interfaces for more of its allocations, this no
+> longer works. Devres log shows following to occur:
+> 
+> component_master_add_with_match()
+> [  126.886032] snd_hda_intel 0000:00:1f.3: DEVRES ADD 00000000323ccdc5 devm_component_match_release (24 bytes)
+> [  126.886045] snd_hda_intel 0000:00:1f.3: DEVRES ADD 00000000865cdb29 grp< (0 bytes)
+> [  126.886049] snd_hda_intel 0000:00:1f.3: DEVRES ADD 000000001b480725 grp< (0 bytes)
+> 
+> audio driver completes its PCI probe()
+> [  126.892238] snd_hda_intel 0000:00:1f.3: DEVRES ADD 000000001b480725 pcim_iomap_release (48 bytes)
+> 
+> component_del() called() at DRM/i915 unbind()
+> [  137.579422] i915 0000:00:02.0: DEVRES REL 00000000ef44c293 grp< (0 bytes)
+> [  137.579445] snd_hda_intel 0000:00:1f.3: DEVRES REL 00000000865cdb29 grp< (0 bytes)
+> [  137.579458] snd_hda_intel 0000:00:1f.3: DEVRES REL 000000001b480725 pcim_iomap_release (48 bytes)
+> 
+> So the "devres_release_group(master->parent, NULL)" ends up freeing the
+> pcim_iomap allocation. Upon next runtime resume, the audio driver will
+> cause a page fault as the iomap alloc was released without the driver
+> knowing about it.
+> 
+> Fix this issue by using the "struct master" pointer as identifier for
+> the devres group, and by closing the devres group after the master->ops->bind()
+> call is done. This allows devres allocations done by the driver acting as
+> master to be isolated from the binding state of the aggregate driver. This
+> modifies the logic originally introduced in commit 9e1ccb4a7700
+> ("drivers/base: fix devres handling for master device").
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/fsl/p1022_ds.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+Yes, this is the right fix - I did not expect people to be claiming
+resources after adding the component master, since that is the point
+at which the master can become active. Hence all resources that may
+be used should either already be claimed, or (preferred) be claimed
+when the master gets the bind call.
 
-diff --git a/sound/soc/fsl/p1022_ds.c b/sound/soc/fsl/p1022_ds.c
-index 317c767b0099..b45742931b0d 100644
---- a/sound/soc/fsl/p1022_ds.c
-+++ b/sound/soc/fsl/p1022_ds.c
-@@ -275,7 +275,7 @@ static int p1022_ds_probe(struct platform_device *pdev)
- 
- 	if (strcasecmp(sprop, "i2s-slave") == 0) {
- 		mdata->dai_format = SND_SOC_DAIFMT_NB_NF |
--			SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM;
-+			SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBP_CFP;
- 		mdata->codec_clk_direction = SND_SOC_CLOCK_OUT;
- 		mdata->cpu_clk_direction = SND_SOC_CLOCK_IN;
- 
-@@ -293,37 +293,37 @@ static int p1022_ds_probe(struct platform_device *pdev)
- 		mdata->clk_frequency = be32_to_cpup(iprop);
- 	} else if (strcasecmp(sprop, "i2s-master") == 0) {
- 		mdata->dai_format = SND_SOC_DAIFMT_NB_NF |
--			SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS;
-+			SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBC_CFC;
- 		mdata->codec_clk_direction = SND_SOC_CLOCK_IN;
- 		mdata->cpu_clk_direction = SND_SOC_CLOCK_OUT;
- 	} else if (strcasecmp(sprop, "lj-slave") == 0) {
- 		mdata->dai_format = SND_SOC_DAIFMT_NB_NF |
--			SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_CBM_CFM;
-+			SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_CBP_CFP;
- 		mdata->codec_clk_direction = SND_SOC_CLOCK_OUT;
- 		mdata->cpu_clk_direction = SND_SOC_CLOCK_IN;
- 	} else if (strcasecmp(sprop, "lj-master") == 0) {
- 		mdata->dai_format = SND_SOC_DAIFMT_NB_NF |
--			SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_CBS_CFS;
-+			SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_CBC_CFC;
- 		mdata->codec_clk_direction = SND_SOC_CLOCK_IN;
- 		mdata->cpu_clk_direction = SND_SOC_CLOCK_OUT;
- 	} else if (strcasecmp(sprop, "rj-slave") == 0) {
- 		mdata->dai_format = SND_SOC_DAIFMT_NB_NF |
--			SND_SOC_DAIFMT_RIGHT_J | SND_SOC_DAIFMT_CBM_CFM;
-+			SND_SOC_DAIFMT_RIGHT_J | SND_SOC_DAIFMT_CBP_CFP;
- 		mdata->codec_clk_direction = SND_SOC_CLOCK_OUT;
- 		mdata->cpu_clk_direction = SND_SOC_CLOCK_IN;
- 	} else if (strcasecmp(sprop, "rj-master") == 0) {
- 		mdata->dai_format = SND_SOC_DAIFMT_NB_NF |
--			SND_SOC_DAIFMT_RIGHT_J | SND_SOC_DAIFMT_CBS_CFS;
-+			SND_SOC_DAIFMT_RIGHT_J | SND_SOC_DAIFMT_CBC_CFC;
- 		mdata->codec_clk_direction = SND_SOC_CLOCK_IN;
- 		mdata->cpu_clk_direction = SND_SOC_CLOCK_OUT;
- 	} else if (strcasecmp(sprop, "ac97-slave") == 0) {
- 		mdata->dai_format = SND_SOC_DAIFMT_NB_NF |
--			SND_SOC_DAIFMT_AC97 | SND_SOC_DAIFMT_CBM_CFM;
-+			SND_SOC_DAIFMT_AC97 | SND_SOC_DAIFMT_CBP_CFP;
- 		mdata->codec_clk_direction = SND_SOC_CLOCK_OUT;
- 		mdata->cpu_clk_direction = SND_SOC_CLOCK_IN;
- 	} else if (strcasecmp(sprop, "ac97-master") == 0) {
- 		mdata->dai_format = SND_SOC_DAIFMT_NB_NF |
--			SND_SOC_DAIFMT_AC97 | SND_SOC_DAIFMT_CBS_CFS;
-+			SND_SOC_DAIFMT_AC97 | SND_SOC_DAIFMT_CBC_CFC;
- 		mdata->codec_clk_direction = SND_SOC_CLOCK_IN;
- 		mdata->cpu_clk_direction = SND_SOC_CLOCK_OUT;
- 	} else {
+However, I think the i915 bits are more complex than that simple view,
+so putting the component stuff inside its own devres group and closing
+it at the end of try_to_bring_up_master() makes sense.
+
+Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+
+Thanks.
+
 -- 
-2.20.1
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
