@@ -4,81 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DB3AC433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 21:38:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DB30C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 21:39:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C8DEA61159
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 21:38:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C8DEA61159
+	by mail.kernel.org (Postfix) with ESMTPS id DEEA861168
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 21:39:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DEEA861168
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2B20C1698;
-	Tue, 21 Sep 2021 23:37:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B20C1698
+	by alsa0.perex.cz (Postfix) with ESMTPS id 69359167C;
+	Tue, 21 Sep 2021 23:38:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69359167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632260314;
-	bh=evwtHaqewT61+NJNkmCXsCr8nBgCt9Hpo4tKkvvXJg8=;
+	s=default; t=1632260339;
+	bh=uMj9Yoh6CUT/R5lukGLiO6qATz85EOJ3O0N05idRBV8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gUxeMaDmHmzmR+4xZYfxKeO4ISJeWzQNButLBAc7mcsCIwf8tTHGjHV97V0DCGka4
-	 eTiI8kqAibv4E2jcSOJn0K6Jty0111B4mpe7JhPUP+rDBjjgCXOujC23TglMrYx6tj
-	 wR5csycUS+YDotI2uhX5dzPaq8Vdz3ot0wXHzEMY=
+	b=L3C9wowKZhRwGHWrj2IE/cA7Y4lj7AEWxXdIFd+gWgrXtovM8SRjCY4H+xMU5tdSR
+	 2OQusPGNL4h1XRV5zPd1Xdjz2m3irNC8NerYjIGK8gMKpwxSEK4RiRoVuFyETTXT34
+	 Ajz9Xr6GuXtnuT9KaqaoYOdGJHVdqntykPEfhKaw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 764CEF804E2;
-	Tue, 21 Sep 2021 23:36:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7B4F2F804E5;
+	Tue, 21 Sep 2021 23:37:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6DF50F804A9; Tue, 21 Sep 2021 23:36:56 +0200 (CEST)
+ id B7082F80124; Tue, 21 Sep 2021 23:36:58 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 23F57F80268
- for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 23:36:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23F57F80268
+ by alsa1.perex.cz (Postfix) with ESMTPS id 01A3CF80124
+ for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 23:36:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01A3CF80124
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="I254vOYM"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0530361131;
- Tue, 21 Sep 2021 21:36:46 +0000 (UTC)
+ header.b="tqjvZBuD"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA1E161165;
+ Tue, 21 Sep 2021 21:36:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1632260207;
- bh=evwtHaqewT61+NJNkmCXsCr8nBgCt9Hpo4tKkvvXJg8=;
+ s=k20201202; t=1632260213;
+ bh=uMj9Yoh6CUT/R5lukGLiO6qATz85EOJ3O0N05idRBV8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=I254vOYMOQqaS9WZEBgQzs4cOgSYvumYiD0vaamMfRL0vBiW82xamfdumK/IK0vUn
- mjN0Z6dekn9LmL+Ed9JBIlmij8W6e/7U0kcyDSFF/pUsouT/OUn51nkjMb+JsJ1Z8Q
- /XQNO83PWZrHqQPIgxigF3HdAA57gg2z6vm3iGYQKCjUyBw6eXTs9ss1GhaOWBA6Fu
- au8abMmcZRXkq3DmvyNm3BpWJakTp6X3iZgys2zr4yPq6IZu1atQXGiHoBL5MSPIaT
- VaZG5hry1ZwU315MwgqChxmHn0Uo5U/nZ3kyv3ALa+zL8OzUpBq3DKV0DNe8SHkFUN
- K4qDr8N7pHZBQ==
+ b=tqjvZBuDNE3AQUqLGvlxRWjUbryGsc68CTuppAikNFp0+iY5CWEKcYfo10PHQch8y
+ zF7bEYnN9Ku7gH2P5+m1WMzCxAY0tah8ARn03fK3/7zwdv7hZUIRAGvd56KGDwX+1A
+ FLhYouUVIpGN0NLIjhy0ldFdW5qYJADTkrIPJQADiOuVKzKo6FvoMPSfsXJ6HYYQCa
+ UU10lGMMsEV/bH/dsNHG8i/liZZCq5kodkHCeeqdqUCXPhEEKILsQ87mky5VNJjzDY
+ JD1TRcHE/MNI9QxuYDQQUCpQBv6QnU62ZFql689YBZqL/w3cTYjM6Ze8u41uYmhBa7
+ DjyXKCw2De8cQ==
 From: Mark Brown <broonie@kernel.org>
 To: Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
  Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
  Shengjiu Wang <shengjiu.wang@gmail.com>
-Subject: [PATCH v2 02/16] ASoC: fsl-asoc-card: Update to modern clocking
- terminology
-Date: Tue, 21 Sep 2021 22:35:28 +0100
-Message-Id: <20210921213542.31688-2-broonie@kernel.org>
+Subject: [PATCH v2 04/16] ASoC: fsl-esai: Update to modern clocking terminology
+Date: Tue, 21 Sep 2021 22:35:30 +0100
+Message-Id: <20210921213542.31688-4-broonie@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210921213542.31688-1-broonie@kernel.org>
 References: <20210921213542.31688-1-broonie@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7627; h=from:subject;
- bh=evwtHaqewT61+NJNkmCXsCr8nBgCt9Hpo4tKkvvXJg8=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBhSk8USuJHLkz99Z41ssGWE3jXs4XYevIFctTYUtoT
- 8j8W9SSJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYUpPFAAKCRAk1otyXVSH0OfKB/
- 0cMu7Kua/7H0cxoJkc1w7HdaHARSS1DM5MBsdOS6WqYrvP37E+hP/QMq48iRfQ/epTBe4qihdI+/uR
- M8h9sLK/bdiixaf3FqtCAxQpPtULeNO0v/ROgA/5xRPp7ltAVCyk9dNiDF1kJkHJtDWQ2/OkGVaKOM
- ayda1kGxxHA5p8IJvmt2w4pXchY9xQDk3zoDoD1YgSU1A9JSE75+4vhtNAPxjiaoWS7IzuECuWBlUw
- 2Fs1Maj7f8JwcAa3mUCwI9oN5OFUNnP9jMcVXUk6nyQY1JaX7BTEw7Rl31IGK+9GyJXJC2cKdCsQwC
- jQc/R/BG33aTnc13lEFl/krq/JWtyK
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2755; h=from:subject;
+ bh=uMj9Yoh6CUT/R5lukGLiO6qATz85EOJ3O0N05idRBV8=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBhSk8V5GCkDdvG7GRD8CbzywYtb1V7yAJYV3zbSkaL
+ E0KV0yeJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYUpPFQAKCRAk1otyXVSH0D5CB/
+ 469q8NpbuqDI/s0fQ8LN6BINyy699D7QaYxRYmegp3vWOr0XSonhQm3/EJ17cUaQzVqbzwXiXw+scc
+ wA2DZ1zk+UxBkHXtLWBvTDa8VCAyhdxBmKB8ST/wWPa+P4tOdaRBgdAKWLR/TykYl460CiEj5fhkRc
+ PnqZOYP5JWknor3PYKwwt3DieS3Kn1Xuf7ryqXhw2jVEd3whnEs0qgE17k1LXBWY3MLo07L934zY90
+ B7e4UBwkD/aPz19j9K2wsRnJmNguCaor7YQT+pORJBLc1A6jpBkPg3c0uPewWsv/5TIU/2phnaLEFe
+ 0vfX34hvVTLmL+IWVbhpi2QEguB29N
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Content-Transfer-Encoding: 8bit
@@ -100,175 +99,86 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 As part of moving to remove the old style defines for the bus clocks update
-the fsl-asoc-card driver to use more modern terminology for clocking.
+the fsl-esai driver to use more modern terminology for clocking.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl-asoc-card.c | 54 +++++++++++++++++------------------
- 1 file changed, 27 insertions(+), 27 deletions(-)
+ sound/soc/fsl/fsl_esai.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 06107ae46e20..6e6494f9f399 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -356,8 +356,8 @@ static int fsl_asoc_card_audmux_init(struct device_node *np,
- 	 * If only 4 wires are needed, just set SSI into
- 	 * synchronous mode and enable 4 PADs in IOMUX.
- 	 */
--	switch (priv->dai_fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index bda66b30e063..3a9e2df4e16f 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -52,7 +52,7 @@ struct fsl_esai_soc_data {
+  * @sck_rate: clock rate of desired SCKx clock
+  * @hck_dir: the direction of HCKx pads
+  * @sck_div: if using PSR/PM dividers for SCKx clock
+- * @slave_mode: if fully using DAI slave mode
++ * @consumer_mode: if fully using DAI clock consumer mode
+  * @synchronous: if using tx/rx synchronous mode
+  * @name: driver name
+  */
+@@ -78,7 +78,7 @@ struct fsl_esai {
+ 	u32 sck_rate[2];
+ 	bool hck_dir[2];
+ 	bool sck_div[2];
+-	bool slave_mode;
++	bool consumer_mode;
+ 	bool synchronous;
+ 	char name[32];
+ };
+@@ -366,8 +366,8 @@ static int fsl_esai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
+ 	u32 sub, ratio = hck_rate / freq;
+ 	int ret;
+ 
+-	/* Don't apply for fully slave mode or unchanged bclk */
+-	if (esai_priv->slave_mode || esai_priv->sck_rate[tx] == freq)
++	/* Don't apply for fully consumer mode or unchanged bclk */
++	if (esai_priv->consumer_mode || esai_priv->sck_rate[tx] == freq)
+ 		return 0;
+ 
+ 	if (ratio * freq > hck_rate)
+@@ -476,20 +476,20 @@ static int fsl_esai_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		return -EINVAL;
+ 	}
+ 
+-	esai_priv->slave_mode = false;
++	esai_priv->consumer_mode = false;
+ 
+-	/* DAI clock master masks */
+-	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
 -	case SND_SOC_DAIFMT_CBM_CFM:
-+	switch (priv->dai_fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
+-		esai_priv->slave_mode = true;
++	/* DAI clock provider masks */
++	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
 +	case SND_SOC_DAIFMT_CBP_CFP:
- 		int_ptcr = IMX_AUDMUX_V2_PTCR_RFSEL(8 | ext_port) |
- 			   IMX_AUDMUX_V2_PTCR_RCSEL(8 | ext_port) |
- 			   IMX_AUDMUX_V2_PTCR_TFSEL(ext_port) |
-@@ -367,7 +367,7 @@ static int fsl_asoc_card_audmux_init(struct device_node *np,
- 			   IMX_AUDMUX_V2_PTCR_TFSDIR |
- 			   IMX_AUDMUX_V2_PTCR_TCLKDIR;
- 		break;
--	case SND_SOC_DAIFMT_CBM_CFS:
-+	case SND_SOC_DAIFMT_CBP_CFC:
- 		int_ptcr = IMX_AUDMUX_V2_PTCR_RCSEL(8 | ext_port) |
- 			   IMX_AUDMUX_V2_PTCR_TCSEL(ext_port) |
- 			   IMX_AUDMUX_V2_PTCR_RCLKDIR |
-@@ -377,7 +377,7 @@ static int fsl_asoc_card_audmux_init(struct device_node *np,
- 			   IMX_AUDMUX_V2_PTCR_RFSDIR |
- 			   IMX_AUDMUX_V2_PTCR_TFSDIR;
++		esai_priv->consumer_mode = true;
  		break;
 -	case SND_SOC_DAIFMT_CBS_CFM:
 +	case SND_SOC_DAIFMT_CBC_CFP:
- 		int_ptcr = IMX_AUDMUX_V2_PTCR_RFSEL(8 | ext_port) |
- 			   IMX_AUDMUX_V2_PTCR_TFSEL(ext_port) |
- 			   IMX_AUDMUX_V2_PTCR_RFSDIR |
-@@ -387,7 +387,7 @@ static int fsl_asoc_card_audmux_init(struct device_node *np,
- 			   IMX_AUDMUX_V2_PTCR_RCLKDIR |
- 			   IMX_AUDMUX_V2_PTCR_TCLKDIR;
+ 		xccr |= ESAI_xCCR_xCKD;
+ 		break;
+-	case SND_SOC_DAIFMT_CBM_CFS:
++	case SND_SOC_DAIFMT_CBP_CFC:
+ 		xccr |= ESAI_xCCR_xFSD;
  		break;
 -	case SND_SOC_DAIFMT_CBS_CFS:
 +	case SND_SOC_DAIFMT_CBC_CFC:
- 		ext_ptcr = IMX_AUDMUX_V2_PTCR_RFSEL(8 | int_port) |
- 			   IMX_AUDMUX_V2_PTCR_RCSEL(8 | int_port) |
- 			   IMX_AUDMUX_V2_PTCR_TFSEL(int_port) |
-@@ -533,8 +533,8 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 	struct device_node *cpu_np, *codec_np, *asrc_np;
- 	struct device_node *np = pdev->dev.of_node;
- 	struct platform_device *asrc_pdev = NULL;
--	struct device_node *bitclkmaster = NULL;
--	struct device_node *framemaster = NULL;
-+	struct device_node *bitclkprovider = NULL;
-+	struct device_node *frameprovider = NULL;
- 	struct platform_device *cpu_pdev;
- 	struct fsl_asoc_card_priv *priv;
- 	struct device *codec_dev = NULL;
-@@ -617,29 +617,29 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 		priv->cpu_priv.sysclk_dir[TX] = SND_SOC_CLOCK_OUT;
- 		priv->cpu_priv.sysclk_dir[RX] = SND_SOC_CLOCK_OUT;
- 		priv->cpu_priv.slot_width = 32;
--		priv->dai_fmt |= SND_SOC_DAIFMT_CBS_CFS;
-+		priv->dai_fmt |= SND_SOC_DAIFMT_CBC_CFC;
- 	} else if (of_device_is_compatible(np, "fsl,imx-audio-cs427x")) {
- 		codec_dai_name = "cs4271-hifi";
- 		priv->codec_priv.mclk_id = CS427x_SYSCLK_MCLK;
--		priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
-+		priv->dai_fmt |= SND_SOC_DAIFMT_CBP_CFP;
- 	} else if (of_device_is_compatible(np, "fsl,imx-audio-sgtl5000")) {
- 		codec_dai_name = "sgtl5000";
- 		priv->codec_priv.mclk_id = SGTL5000_SYSCLK;
--		priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
-+		priv->dai_fmt |= SND_SOC_DAIFMT_CBP_CFP;
- 	} else if (of_device_is_compatible(np, "fsl,imx-audio-tlv320aic32x4")) {
- 		codec_dai_name = "tlv320aic32x4-hifi";
--		priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
-+		priv->dai_fmt |= SND_SOC_DAIFMT_CBP_CFP;
- 	} else if (of_device_is_compatible(np, "fsl,imx-audio-wm8962")) {
- 		codec_dai_name = "wm8962";
- 		priv->codec_priv.mclk_id = WM8962_SYSCLK_MCLK;
- 		priv->codec_priv.fll_id = WM8962_SYSCLK_FLL;
- 		priv->codec_priv.pll_id = WM8962_FLL;
--		priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
-+		priv->dai_fmt |= SND_SOC_DAIFMT_CBP_CFP;
- 	} else if (of_device_is_compatible(np, "fsl,imx-audio-wm8960")) {
- 		codec_dai_name = "wm8960-hifi";
- 		priv->codec_priv.fll_id = WM8960_SYSCLK_AUTO;
- 		priv->codec_priv.pll_id = WM8960_SYSCLK_AUTO;
--		priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
-+		priv->dai_fmt |= SND_SOC_DAIFMT_CBP_CFP;
- 	} else if (of_device_is_compatible(np, "fsl,imx-audio-ac97")) {
- 		codec_dai_name = "ac97-hifi";
- 		priv->dai_fmt = SND_SOC_DAIFMT_AC97;
-@@ -648,7 +648,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 	} else if (of_device_is_compatible(np, "fsl,imx-audio-mqs")) {
- 		codec_dai_name = "fsl-mqs-dai";
- 		priv->dai_fmt = SND_SOC_DAIFMT_LEFT_J |
--				SND_SOC_DAIFMT_CBS_CFS |
-+				SND_SOC_DAIFMT_CBC_CFC |
- 				SND_SOC_DAIFMT_NB_NF;
- 		priv->dai_link[1].dpcm_capture = 0;
- 		priv->dai_link[2].dpcm_capture = 0;
-@@ -656,7 +656,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 		priv->card.num_dapm_routes = ARRAY_SIZE(audio_map_tx);
- 	} else if (of_device_is_compatible(np, "fsl,imx-audio-wm8524")) {
- 		codec_dai_name = "wm8524-hifi";
--		priv->dai_fmt |= SND_SOC_DAIFMT_CBS_CFS;
-+		priv->dai_fmt |= SND_SOC_DAIFMT_CBC_CFC;
- 		priv->dai_link[1].dpcm_capture = 0;
- 		priv->dai_link[2].dpcm_capture = 0;
- 		priv->cpu_priv.slot_width = 32;
-@@ -664,12 +664,12 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 		priv->card.num_dapm_routes = ARRAY_SIZE(audio_map_tx);
- 	} else if (of_device_is_compatible(np, "fsl,imx-audio-si476x")) {
- 		codec_dai_name = "si476x-codec";
--		priv->dai_fmt |= SND_SOC_DAIFMT_CBS_CFS;
-+		priv->dai_fmt |= SND_SOC_DAIFMT_CBC_CFC;
- 		priv->card.dapm_routes = audio_map_rx;
- 		priv->card.num_dapm_routes = ARRAY_SIZE(audio_map_rx);
- 	} else if (of_device_is_compatible(np, "fsl,imx-audio-wm8958")) {
- 		codec_dai_name = "wm8994-aif1";
--		priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
-+		priv->dai_fmt |= SND_SOC_DAIFMT_CBP_CFP;
- 		priv->codec_priv.mclk_id = WM8994_FLL_SRC_MCLK1;
- 		priv->codec_priv.fll_id = WM8994_SYSCLK_FLL1;
- 		priv->codec_priv.pll_id = WM8994_FLL1;
-@@ -683,29 +683,29 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 	}
+ 		xccr |= ESAI_xCCR_xFSD | ESAI_xCCR_xCKD;
+ 		break;
+ 	default:
+@@ -1016,8 +1016,8 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 	/* Set a default slot number */
+ 	esai_priv->slots = 2;
  
- 	/* Format info from DT is optional. */
--	snd_soc_daifmt_parse_clock_provider_as_phandle(np, NULL, &bitclkmaster, &framemaster);
--	if (bitclkmaster || framemaster) {
-+	snd_soc_daifmt_parse_clock_provider_as_phandle(np, NULL, &bitclkprovider, &frameprovider);
-+	if (bitclkprovider || frameprovider) {
- 		unsigned int daifmt = snd_soc_daifmt_parse_format(np, NULL);
+-	/* Set a default master/slave state */
+-	esai_priv->slave_mode = true;
++	/* Set a default clock provider state */
++	esai_priv->consumer_mode = true;
  
--		if (codec_np == bitclkmaster)
--			daifmt |= (codec_np == framemaster) ?
--				SND_SOC_DAIFMT_CBM_CFM : SND_SOC_DAIFMT_CBM_CFS;
-+		if (codec_np == bitclkprovider)
-+			daifmt |= (codec_np == frameprovider) ?
-+				SND_SOC_DAIFMT_CBP_CFP : SND_SOC_DAIFMT_CBP_CFC;
- 		else
--			daifmt |= (codec_np == framemaster) ?
--				SND_SOC_DAIFMT_CBS_CFM : SND_SOC_DAIFMT_CBS_CFS;
-+			daifmt |= (codec_np == frameprovider) ?
-+				SND_SOC_DAIFMT_CBC_CFP : SND_SOC_DAIFMT_CBC_CFC;
- 
- 		/* Override dai_fmt with value from DT */
- 		priv->dai_fmt = daifmt;
- 	}
- 
- 	/* Change direction according to format */
--	if (priv->dai_fmt & SND_SOC_DAIFMT_CBM_CFM) {
-+	if (priv->dai_fmt & SND_SOC_DAIFMT_CBP_CFP) {
- 		priv->cpu_priv.sysclk_dir[TX] = SND_SOC_CLOCK_IN;
- 		priv->cpu_priv.sysclk_dir[RX] = SND_SOC_CLOCK_IN;
- 	}
- 
--	of_node_put(bitclkmaster);
--	of_node_put(framemaster);
-+	of_node_put(bitclkprovider);
-+	of_node_put(frameprovider);
- 
- 	if (!fsl_asoc_card_is_ac97(priv) && !codec_dev) {
- 		dev_dbg(&pdev->dev, "failed to find codec device\n");
+ 	/* Determine the FIFO depth */
+ 	iprop = of_get_property(np, "fsl,fifo-depth", NULL);
 -- 
 2.20.1
 
