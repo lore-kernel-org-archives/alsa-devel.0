@@ -2,92 +2,93 @@ Return-Path: <SRS0=+sGq=OL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13418C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 13:42:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E28DFC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 13:42:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8E68361131
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 13:42:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8E68361131
+	by mail.kernel.org (Postfix) with ESMTPS id 6E3BE61131
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 13:42:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6E3BE61131
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3655F166F;
-	Tue, 21 Sep 2021 15:41:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3655F166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F4B91607;
+	Tue, 21 Sep 2021 15:41:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F4B91607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632231723;
-	bh=eDCuhw+KKBfUlbojscktz4sgiQO0/BDCCeZmg8bN/WU=;
+	s=default; t=1632231738;
+	bh=NNGZLSPMXzi6kjT8OZXIuDTG5ps+KX9K8WyEkjZJrD8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tciJJ2xrKpr/9+5mM83yPnVPiitqtbHrSJWPpvgfHxREV5z9CETypCZtheOd9M00O
-	 fMGtfWQABeeiNlQUOMt2k5LWprbyZ2rUak5rXyQuF6vDG7SpMqiQqELBS3uQrOQHku
-	 pD67hd5D22OPKeJqMrchCr3GgWExz9R9QM7y1W3I=
+	b=meV7SiBW8n9ztOaw9+wGl95BdVagbw+bFFYgQs5gR6M87w887DxUCcrrJ9idQL3fR
+	 ox++iBwvavdi4VC+vojimtZY+a20eE0CViOcd+5jcOi1ZpN0tw3Jx3RPKP8qyRMv4S
+	 VrEWF6G4fhSTkomn2mOL9jkbPE3nE8vq4B1uSX80=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 36BF3F8051D;
-	Tue, 21 Sep 2021 15:39:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B031F8051F;
+	Tue, 21 Sep 2021 15:39:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DFC50F80518; Tue, 21 Sep 2021 15:39:02 +0200 (CEST)
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com
- [IPv6:2a00:1450:4864:20::52d])
+ id 7CB8FF8051A; Tue, 21 Sep 2021 15:39:03 +0200 (CEST)
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com
+ [IPv6:2a00:1450:4864:20::532])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6BF1FF804FB
- for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 15:38:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6BF1FF804FB
+ by alsa1.perex.cz (Postfix) with ESMTPS id AF200F804F1
+ for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 15:38:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF200F804F1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="K8z4s/hx"
-Received: by mail-ed1-x52d.google.com with SMTP id eg28so51860474edb.1
- for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 06:38:49 -0700 (PDT)
+ header.b="m81yhTij"
+Received: by mail-ed1-x532.google.com with SMTP id bx4so30043608edb.4
+ for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 06:38:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=50ywJClKYNNJHw0EgAp8tDQ4aKzqvCPyiDhqvFv6IHQ=;
- b=K8z4s/hxqNne4QZooFk5O6RA/iRYgRlWPyox2mPUcYb/UG+OQBntG2ZA8d1OIwt/LG
- ODGUZeOpBCewuNZk/w2Fvh8kZtzY9vFRkQ98ZrZz4oAYQEvGJDn/DQ0t4NOgYiDzYP1P
- b88QqFfZ7tJW4RH00pZgydAn7IHFW2jUtMP9Vl5MFGlPMsIhT+GLImsQ2Cav6TiZ7JhU
- 5xrx+mOwHf+AeF6v3is1X2CrW+xy+9b4L+drYnHiH8gwK5Vvq+tb/d9xN9UvuxuaRSoq
- hyYTGFGsPgsMz8uqaN4quiyzTqF8OjhRUsoCLntWrXujyCRfBiaWvGoFGYmZonjwWEjo
- joaQ==
+ bh=pyC0f5gaxJzBJgDwCC1ngp1Qx6HSiM2kRzb09fUKRas=;
+ b=m81yhTij5unRrCJ27Gi9/bjJuVag3Udu+9Qipes42Xj/KO8/MfDK4PqyMOjed1psrm
+ sS+34hs7nCy5Ls14Z2nUdzapcxGhuMm/0GvOUrV0bI/wZ2m2AoJuCUeB/mIeFSIQ5hhU
+ wOvKPxHRW2NpTnxxT1SufcF6ZaymA0Se50/otZNKCZOCVqKjJmtDlctHUUAqMqrrB/Q0
+ Vht8BPDm+kEjHBDD0h9lBZ4SIwrAVe1m+uRR7Y5syWq/rqOyvPf2sx+YDP2clPdlzoNF
+ wU6SFnn3ULrpi4WXxPRLXi0zKY9HpI3/TDz7Mnu+9SWEtv4wheKKp5wAAtHY8UytoqYC
+ W+bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=50ywJClKYNNJHw0EgAp8tDQ4aKzqvCPyiDhqvFv6IHQ=;
- b=vU8rVQvXq4Hj7TklIG4JA0UdtU2N9mVjeqLk+Kuz/v/ruWwnKpmBMcxiiw2oiSKma9
- XkVC+igILj5Y1k1rUs8Bj8hQkzEvfoFjyqioSizu0i0Fy28nasd3G41SiwivkSifoYF4
- mJDOPn++l8Zasy0UM6GJMfZ7X6R0U/vt31zR1UUuymwMZGD4NdzwZDS2hZ4HrmL2RJLI
- TfE/hs+Ge/KzRAulaXFqsQxdLUAGZ/8TL0ppmd1jmKHMNxr+qBxKvLek/tMGwEHywOtK
- GJIz5zWhh5MGs1dq4EJQLu8HiD7ekCty8kkq+WMoS5R6gLtyhtWysGjveGxwajDhhVTl
- wuTw==
-X-Gm-Message-State: AOAM532aqUtzZT1ZdBrVPOHVOjMBosNDA4OmrT0OxmFFmvJpQfTx2201
- 58yZmrFjjtSMnsa5wMx4HP1CRg==
-X-Google-Smtp-Source: ABdhPJxxleRPGs6xayLmhgiEEaDF9xTV7dSrhHJjW0fGFl4SZiuptOv5FHIVxYFFYPaUeE/ljZan+A==
-X-Received: by 2002:a17:906:e1a:: with SMTP id
- l26mr34388704eji.231.1632231450847; 
- Tue, 21 Sep 2021 06:37:30 -0700 (PDT)
+ bh=pyC0f5gaxJzBJgDwCC1ngp1Qx6HSiM2kRzb09fUKRas=;
+ b=nV+xUT2peMctyeXH4eRz5mIqvUGMe3fNlNBdHlmEXDG6aC5dpUkd64uKCzqLrXHhCA
+ pnk9azL+mvzCjmIDPHTIVXZHOijxeRgY/4H0Cf4vCNvwsgUoQYe+ss6IaeDK3mJ6c4Ya
+ UlzjylXf6hkWX9em8nuJojCYy/u/rs6iJXYD1BF+rd1unYRSOHUvfbpjMytrMDWK+CMH
+ pUz49ppUd+JUHq+FDP76xfKcAQLJvgRAAwden2yCh646QLjYq+4GGhrtZjgGtdUka0Ht
+ yiG5MS+bTF8Azj1lUyjDS/J4CPa3NkqdmDledBV26CwjXRtb1hLe3RA8mGOc3+Q9qOeq
+ I3Bg==
+X-Gm-Message-State: AOAM532rKLCB7n4wJnRLDc2rVbRM1+BubT0H3SfrTs/ARuHuHmSxocz4
+ upO0ei0gh8tsdZRVtG233PGmvg==
+X-Google-Smtp-Source: ABdhPJyZi8wk6Gne3niTWb88Pv4I4rMVXgtqhachbhk0iLjE54ffcCkxG6muELQmv0GekQg146nuHg==
+X-Received: by 2002:a05:6402:386:: with SMTP id
+ o6mr36195110edv.110.1632231475229; 
+ Tue, 21 Sep 2021 06:37:55 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id b3sm7915799edx.55.2021.09.21.06.37.29
+ by smtp.gmail.com with ESMTPSA id b3sm7915799edx.55.2021.09.21.06.37.53
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 21 Sep 2021 06:37:30 -0700 (PDT)
+ Tue, 21 Sep 2021 06:37:54 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: bjorn.andersson@linaro.org,
 	broonie@kernel.org,
 	robh@kernel.org
-Subject: [PATCH v7 05/22] soc: qcom: apr: Add GPR support
-Date: Tue, 21 Sep 2021 14:36:52 +0100
-Message-Id: <20210921133709.4973-6-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v7 20/22] ASoC: qdsp6: audioreach: add q6apm lpass dai support
+Date: Tue, 21 Sep 2021 14:37:07 +0100
+Message-Id: <20210921133709.4973-21-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210921133709.4973-1-srinivas.kandagatla@linaro.org>
 References: <20210921133709.4973-1-srinivas.kandagatla@linaro.org>
@@ -111,388 +112,310 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Qualcomm Generic Packet router aka GPR is the IPC mechanism found
-in AudioReach next generation signal processing framework to perform
-command and response messages between various processors.
-
-GPR has concepts of static and dynamic port, all static services like
-APM (Audio Processing Manager), PRM (Proxy resource manager) have
-fixed port numbers where as dynamic services like graphs have dynamic
-port numbers which are allocated at runtime. All GPR packet messages
-will have source and destination domain and port along with opcode
-and payload.
+Add support to Audio port dais on LPASS Audio IP using
+existing common q6dsp-lpass-ports.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/soc/qcom/Kconfig     |   2 +-
- drivers/soc/qcom/apr.c       | 166 +++++++++++++++++++++++++++++++++--
- include/linux/soc/qcom/apr.h |  58 ++++++++++++
- 3 files changed, 219 insertions(+), 7 deletions(-)
+ sound/soc/qcom/Kconfig                  |   4 +
+ sound/soc/qcom/qdsp6/Makefile           |   1 +
+ sound/soc/qcom/qdsp6/q6apm-lpass-dais.c | 260 ++++++++++++++++++++++++
+ 3 files changed, 265 insertions(+)
+ create mode 100644 sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
 
-diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
-index 79b568f82a1c..bfa2ab5772cf 100644
---- a/drivers/soc/qcom/Kconfig
-+++ b/drivers/soc/qcom/Kconfig
-@@ -199,7 +199,7 @@ config QCOM_WCNSS_CTRL
- 	  firmware to a newly booted WCNSS chip.
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+index 2e5625b93b38..d1132c4174db 100644
+--- a/sound/soc/qcom/Kconfig
++++ b/sound/soc/qcom/Kconfig
+@@ -88,9 +88,13 @@ config SND_SOC_QDSP6_APM_DAI
+ 	tristate
+ 	select SND_SOC_COMPRESS
  
- config QCOM_APR
--	tristate "Qualcomm APR Bus (Asynchronous Packet Router)"
-+	tristate "Qualcomm APR/GPR Bus (Asynchronous/Generic Packet Router)"
- 	depends on ARCH_QCOM || COMPILE_TEST
- 	depends on RPMSG
- 	depends on NET
-diff --git a/drivers/soc/qcom/apr.c b/drivers/soc/qcom/apr.c
-index bfad71e540ad..d9e22e78ab59 100644
---- a/drivers/soc/qcom/apr.c
-+++ b/drivers/soc/qcom/apr.c
-@@ -17,8 +17,13 @@
++config SND_SOC_QDSP6_APM_LPASS_DAI
++	tristate
++
+ config SND_SOC_QDSP6_APM
+ 	tristate
+ 	select SND_SOC_QDSP6_APM_DAI
++	select SND_SOC_QDSP6_APM_LPASS_DAI
  
- enum {
- 	PR_TYPE_APR = 0,
-+	PR_TYPE_GPR,
- };
+ config SND_SOC_QDSP6
+ 	tristate "SoC ALSA audio driver for QDSP6"
+diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
+index a4ec7c4d0e48..bdcbfdfa9bd0 100644
+--- a/sound/soc/qcom/qdsp6/Makefile
++++ b/sound/soc/qcom/qdsp6/Makefile
+@@ -14,3 +14,4 @@ obj-$(CONFIG_SND_SOC_QDSP6_ASM_DAI) += q6asm-dai.o
  
-+/* Some random values tbh which does not collide with static modules */
-+#define GPR_DYNAMIC_PORT_START	0x10000000
-+#define GPR_DYNAMIC_PORT_END	0x20000000
+ obj-$(CONFIG_SND_SOC_QDSP6_APM) += snd-q6apm.o
+ obj-$(CONFIG_SND_SOC_QDSP6_APM_DAI) += q6apm-dai.o
++obj-$(CONFIG_SND_SOC_QDSP6_APM_LPASS_DAI) += q6apm-lpass-dais.o
+diff --git a/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c b/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
+new file mode 100644
+index 000000000000..ce9e5646d8f3
+--- /dev/null
++++ b/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
+@@ -0,0 +1,260 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2021, Linaro Limited
 +
- struct packet_router {
- 	struct rpmsg_endpoint *ch;
- 	struct device *dev;
-@@ -69,6 +74,83 @@ int apr_send_pkt(struct apr_device *adev, struct apr_pkt *pkt)
- }
- EXPORT_SYMBOL_GPL(apr_send_pkt);
- 
-+void gpr_free_port(gpr_port_t *port)
++#include <linux/err.h>
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/device.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <sound/pcm.h>
++#include <sound/soc.h>
++#include <sound/pcm_params.h>
++#include "q6dsp-lpass-ports.h"
++#include "audioreach.h"
++#include "q6apm.h"
++
++#define AUDIOREACH_BE_PCM_BASE	16
++
++struct q6apm_lpass_dai_data {
++	struct q6apm_graph *graph[APM_PORT_MAX];
++	bool is_port_started[APM_PORT_MAX];
++	struct audioreach_module_config module_config[APM_PORT_MAX];
++};
++
++static int q6dma_set_channel_map(struct snd_soc_dai *dai,
++				 unsigned int tx_num, unsigned int *tx_ch_mask,
++				 unsigned int rx_num, unsigned int *rx_ch_mask)
 +{
-+	struct packet_router *gpr = port->pr;
-+	unsigned long flags;
 +
-+	spin_lock_irqsave(&gpr->svcs_lock, flags);
-+	idr_remove(&gpr->svcs_idr, port->id);
-+	spin_unlock_irqrestore(&gpr->svcs_lock, flags);
++	struct q6apm_lpass_dai_data *dai_data = dev_get_drvdata(dai->dev);
++	struct audioreach_module_config *cfg = &dai_data->module_config[dai->id];
++	int ch_mask;
 +
-+	kfree(port);
-+}
-+EXPORT_SYMBOL_GPL(gpr_free_port);
++	switch (dai->id) {
++	case WSA_CODEC_DMA_TX_0:
++	case WSA_CODEC_DMA_TX_1:
++	case WSA_CODEC_DMA_TX_2:
++	case VA_CODEC_DMA_TX_0:
++	case VA_CODEC_DMA_TX_1:
++	case VA_CODEC_DMA_TX_2:
++	case TX_CODEC_DMA_TX_0:
++	case TX_CODEC_DMA_TX_1:
++	case TX_CODEC_DMA_TX_2:
++	case TX_CODEC_DMA_TX_3:
++	case TX_CODEC_DMA_TX_4:
++	case TX_CODEC_DMA_TX_5:
++		if (!tx_ch_mask) {
++			dev_err(dai->dev, "tx slot not found\n");
++			return -EINVAL;
++		}
 +
-+gpr_port_t *gpr_alloc_port(struct apr_device *gdev, struct device *dev,
-+				gpr_port_cb cb,	void *priv)
-+{
-+	struct packet_router *pr = dev_get_drvdata(gdev->dev.parent);
-+	gpr_port_t *port;
-+	struct pkt_router_svc *svc;
-+	int id;
++		if (tx_num > AR_PCM_MAX_NUM_CHANNEL) {
++			dev_err(dai->dev, "invalid tx num %d\n",
++				tx_num);
++			return -EINVAL;
++		}
++		ch_mask = *tx_ch_mask;
 +
-+	port = kzalloc(sizeof(*port), GFP_KERNEL);
-+	if (!port)
-+		return ERR_PTR(-ENOMEM);
++		break;
++	case WSA_CODEC_DMA_RX_0:
++	case WSA_CODEC_DMA_RX_1:
++	case RX_CODEC_DMA_RX_0:
++	case RX_CODEC_DMA_RX_1:
++	case RX_CODEC_DMA_RX_2:
++	case RX_CODEC_DMA_RX_3:
++	case RX_CODEC_DMA_RX_4:
++	case RX_CODEC_DMA_RX_5:
++	case RX_CODEC_DMA_RX_6:
++	case RX_CODEC_DMA_RX_7:
++		/* rx */
++		if (!rx_ch_mask) {
++			dev_err(dai->dev, "rx slot not found\n");
++			return -EINVAL;
++		}
++		if (rx_num > APM_PORT_MAX_AUDIO_CHAN_CNT) {
++			dev_err(dai->dev, "invalid rx num %d\n",
++				rx_num);
++			return -EINVAL;
++		}
++		ch_mask = *rx_ch_mask;
 +
-+	svc = port;
-+	svc->callback = cb;
-+	svc->pr = pr;
-+	svc->priv = priv;
-+	svc->dev = dev;
-+	spin_lock_init(&svc->lock);
-+
-+	spin_lock(&pr->svcs_lock);
-+	id = idr_alloc_cyclic(&pr->svcs_idr, svc, GPR_DYNAMIC_PORT_START,
-+			      GPR_DYNAMIC_PORT_END, GFP_ATOMIC);
-+	if (id < 0) {
-+		dev_err(dev, "Unable to allocate dynamic GPR src port\n");
-+		kfree(port);
-+		spin_unlock(&pr->svcs_lock);
-+		return ERR_PTR(-ENOMEM);
-+	}
-+
-+	svc->id = id;
-+	spin_unlock(&pr->svcs_lock);
-+
-+	return port;
-+}
-+EXPORT_SYMBOL_GPL(gpr_alloc_port);
-+
-+static int pkt_router_send_svc_pkt(struct pkt_router_svc *svc, struct gpr_pkt *pkt)
-+{
-+	struct packet_router *pr = svc->pr;
-+	struct gpr_hdr *hdr;
-+	unsigned long flags;
-+	int ret;
-+
-+	hdr = &pkt->hdr;
-+
-+	spin_lock_irqsave(&svc->lock, flags);
-+	ret = rpmsg_trysend(pr->ch, pkt, hdr->pkt_size);
-+	spin_unlock_irqrestore(&svc->lock, flags);
-+
-+	return ret ? ret : hdr->pkt_size;
-+}
-+
-+int gpr_send_pkt(struct apr_device *gdev, struct gpr_pkt *pkt)
-+{
-+	return pkt_router_send_svc_pkt(&gdev->svc, pkt);
-+}
-+EXPORT_SYMBOL_GPL(gpr_send_pkt);
-+
-+int gpr_send_port_pkt(gpr_port_t *port, struct gpr_pkt *pkt)
-+{
-+	return pkt_router_send_svc_pkt(port, pkt);
-+}
-+EXPORT_SYMBOL_GPL(gpr_send_port_pkt);
-+
- static void apr_dev_release(struct device *dev)
- {
- 	struct apr_device *adev = to_apr_device(dev);
-@@ -177,6 +259,59 @@ static int apr_do_rx_callback(struct packet_router *apr, struct apr_rx_buf *abuf
- 	return 0;
- }
- 
-+static int gpr_do_rx_callback(struct packet_router *gpr, struct apr_rx_buf *abuf)
-+{
-+	uint16_t hdr_size, ver;
-+	struct pkt_router_svc *svc = NULL;
-+	struct gpr_resp_pkt resp;
-+	struct gpr_hdr *hdr;
-+	unsigned long flags;
-+	void *buf = abuf->buf;
-+	int len = abuf->len;
-+
-+	hdr = buf;
-+	ver = hdr->version;
-+	if (ver > GPR_PKT_VER + 1)
-+		return -EINVAL;
-+
-+	hdr_size = hdr->hdr_size;
-+	if (hdr_size < GPR_PKT_HEADER_WORD_SIZE) {
-+		dev_err(gpr->dev, "GPR: Wrong hdr size:%d\n", hdr_size);
++		break;
++	default:
++		dev_err(dai->dev, "%s: invalid dai id 0x%x\n",
++			__func__, dai->id);
 +		return -EINVAL;
 +	}
 +
-+	if (hdr->pkt_size < GPR_PKT_HEADER_BYTE_SIZE || hdr->pkt_size != len) {
-+		dev_err(gpr->dev, "GPR: Wrong packet size\n");
-+		return -EINVAL;
-+	}
-+
-+	resp.hdr = *hdr;
-+	resp.payload_size = hdr->pkt_size - (hdr_size * 4);
-+
-+	/*
-+	 * NOTE: hdr_size is not same as GPR_HDR_SIZE as remote can include
-+	 * optional headers in to gpr_hdr which should be ignored
-+	 */
-+	if (resp.payload_size > 0)
-+		resp.payload = buf + (hdr_size *  4);
-+
-+
-+	spin_lock_irqsave(&gpr->svcs_lock, flags);
-+	svc = idr_find(&gpr->svcs_idr, hdr->dest_port);
-+	spin_unlock_irqrestore(&gpr->svcs_lock, flags);
-+
-+	if (!svc) {
-+		dev_err(gpr->dev, "GPR: Port(%x) is not registered\n",
-+			hdr->dest_port);
-+		return -EINVAL;
-+	}
-+
-+	if (svc->callback)
-+		svc->callback(&resp, svc->priv, 0);
++	cfg->active_channels_mask = ch_mask;
 +
 +	return 0;
 +}
 +
- static void apr_rxwq(struct work_struct *work)
- {
- 	struct packet_router *apr = container_of(work, struct packet_router, rx_work);
-@@ -189,6 +324,9 @@ static void apr_rxwq(struct work_struct *work)
- 			case PR_TYPE_APR:
- 				apr_do_rx_callback(apr, abuf);
- 				break;
-+			case PR_TYPE_GPR:
-+				gpr_do_rx_callback(apr, abuf);
-+				break;
- 			default:
- 				break;
- 			}
-@@ -227,8 +365,13 @@ static int apr_device_probe(struct device *dev)
- {
- 	struct apr_device *adev = to_apr_device(dev);
- 	struct apr_driver *adrv = to_apr_driver(dev->driver);
-+	int ret;
- 
--	return adrv->probe(adev);
-+	ret = adrv->probe(adev);
-+	if (!ret)
-+		adev->svc.callback = adrv->gpr_callback;
++static int q6dma_hw_params(struct snd_pcm_substream *substream,
++			   struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
++{
++	struct q6apm_lpass_dai_data *dai_data = dev_get_drvdata(dai->dev);
++	struct audioreach_module_config *cfg = &dai_data->module_config[dai->id];
 +
-+	return ret;
- }
- 
- static void apr_device_remove(struct device *dev)
-@@ -299,6 +442,10 @@ static int apr_add_device(struct device *dev, struct device_node *np,
- 		dev_set_name(&adev->dev, "aprsvc:%s:%x:%x", adev->name,
- 			     domain_id, svc_id);
- 		break;
-+	case PR_TYPE_GPR:
-+		dev_set_name(&adev->dev, "gprsvc:%s:%x:%x", adev->name,
-+			     domain_id, svc_id);
-+		break;
- 	default:
- 		break;
- 	}
-@@ -316,7 +463,7 @@ static int apr_add_device(struct device *dev, struct device_node *np,
- 	of_property_read_string_index(np, "qcom,protection-domain",
- 				      1, &adev->service_path);
- 
--	dev_info(dev, "Adding APR dev: %s\n", dev_name(&adev->dev));
-+	dev_info(dev, "Adding APR/GPR dev: %s\n", dev_name(&adev->dev));
- 
- 	ret = device_register(&adev->dev);
- 	if (ret) {
-@@ -446,10 +593,16 @@ static int apr_probe(struct rpmsg_device *rpdev)
- 		return -ENOMEM;
- 
- 	ret = of_property_read_u32(dev->of_node, "qcom,domain", &apr->dest_domain_id);
--	if (ret) /* try deprecated apr-domain property */
--		ret = of_property_read_u32(dev->of_node, "qcom,apr-domain",
--					   &apr->dest_domain_id);
--	apr->type = PR_TYPE_APR;
++	cfg->bit_width = params_width(params);
++	cfg->sample_rate = params_rate(params);
++	cfg->num_channels = params_channels(params);
 +
-+	if (of_device_is_compatible(dev->of_node, "qcom,gpr")) {
-+		apr->type = PR_TYPE_GPR;
-+	} else {
-+		if (ret) /* try deprecated apr-domain property */
-+			ret = of_property_read_u32(dev->of_node, "qcom,apr-domain",
-+						   &apr->dest_domain_id);
-+		apr->type = PR_TYPE_APR;
++	return 0;
++}
++
++static void q6apm_lpass_dai_shutdown(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
++{
++	struct q6apm_lpass_dai_data *dai_data = dev_get_drvdata(dai->dev);
++	int rc;
++
++	if (!dai_data->is_port_started[dai->id])
++		return;
++	rc = q6apm_graph_stop(dai_data->graph[dai->id]);
++	if (rc < 0)
++		dev_err(dai->dev, "fail to close APM port (%d)\n", rc);
++
++	q6apm_graph_close(dai_data->graph[dai->id]);
++	dai_data->is_port_started[dai->id] = false;
++}
++
++static int q6apm_lpass_dai_prepare(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
++{
++	struct q6apm_lpass_dai_data *dai_data = dev_get_drvdata(dai->dev);
++	struct audioreach_module_config *cfg = &dai_data->module_config[dai->id];
++	struct q6apm_graph *graph;
++	int graph_id = dai->id;
++	int rc;
++
++	/**
++	 * It is recommend to load DSP with source graph first and then sink
++	 * graph, so sequence for playback and capture will be different
++	 */
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		graph = q6apm_graph_open(dai->dev, NULL, dai->dev, graph_id);
++		if (IS_ERR(graph)) {
++			dev_err(dai->dev, "Failed to open graph (%d)\n", graph_id);
++			rc = PTR_ERR(graph);
++			return rc;
++		}
++		dai_data->graph[graph_id] = graph;
 +	}
 +
- 	if (ret) {
- 		dev_err(dev, "Domain ID not specified in DT\n");
- 		return ret;
-@@ -534,6 +687,7 @@ EXPORT_SYMBOL_GPL(apr_driver_unregister);
- static const struct of_device_id pkt_router_of_match[] = {
- 	{ .compatible = "qcom,apr"},
- 	{ .compatible = "qcom,apr-v2"},
-+	{ .compatible = "qcom,gpr"},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, pkt_router_of_match);
-diff --git a/include/linux/soc/qcom/apr.h b/include/linux/soc/qcom/apr.h
-index 7bca213a3f83..23c5b30f3511 100644
---- a/include/linux/soc/qcom/apr.h
-+++ b/include/linux/soc/qcom/apr.h
-@@ -7,6 +7,7 @@
- #include <linux/device.h>
- #include <linux/mod_devicetable.h>
- #include <dt-bindings/soc/qcom,apr.h>
-+#include <dt-bindings/soc/qcom,gpr.h>
- 
- extern struct bus_type aprbus;
- 
-@@ -75,19 +76,65 @@ struct apr_resp_pkt {
- 	int payload_size;
- };
- 
-+struct gpr_hdr {
-+	uint32_t version:4;
-+	uint32_t hdr_size:4;
-+	uint32_t pkt_size:24;
-+	uint32_t dest_domain:8;
-+	uint32_t src_domain:8;
-+	uint32_t reserved:16;
-+	uint32_t src_port;
-+	uint32_t dest_port;
-+	uint32_t token;
-+	uint32_t opcode;
-+} __packed;
++	cfg->direction = substream->stream;
++	rc = q6apm_graph_media_format_pcm(dai_data->graph[dai->id], cfg);
 +
-+struct gpr_pkt {
-+	struct gpr_hdr hdr;
-+	uint32_t payload[];
++	if (rc) {
++		dev_err(dai->dev, "Failed to set media format %d\n", rc);
++		return rc;
++	}
++
++	rc = q6apm_graph_prepare(dai_data->graph[dai->id]);
++	if (rc) {
++		dev_err(dai->dev, "Failed to prepare Graph %d\n", rc);
++		return rc;
++	}
++
++	rc = q6apm_graph_start(dai_data->graph[dai->id]);
++	if (rc < 0) {
++		dev_err(dai->dev, "fail to start APM port %x\n", dai->id);
++		return rc;
++	}
++	dai_data->is_port_started[dai->id] = true;
++
++	return 0;
++}
++
++static int q6apm_lpass_dai_startup(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
++{
++	struct q6apm_lpass_dai_data *dai_data = dev_get_drvdata(dai->dev);
++	struct q6apm_graph *graph;
++	int graph_id = dai->id;
++
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		graph = q6apm_graph_open(dai->dev, NULL, dai->dev, graph_id);
++		if (IS_ERR(graph)) {
++			dev_err(dai->dev, "Failed to open graph (%d)\n", graph_id);
++			return PTR_ERR(graph);
++		}
++		dai_data->graph[graph_id] = graph;
++	}
++
++	return 0;
++}
++
++static int q6i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++{
++	struct q6apm_lpass_dai_data *dai_data = dev_get_drvdata(dai->dev);
++	struct audioreach_module_config *cfg = &dai_data->module_config[dai->id];
++
++	cfg->fmt = fmt;
++
++	return 0;
++}
++
++static const struct snd_soc_dai_ops q6dma_ops = {
++	.prepare	= q6apm_lpass_dai_prepare,
++	.startup	= q6apm_lpass_dai_startup,
++	.shutdown	= q6apm_lpass_dai_shutdown,
++	.set_channel_map  = q6dma_set_channel_map,
++	.hw_params        = q6dma_hw_params,
 +};
 +
-+struct gpr_resp_pkt {
-+	struct gpr_hdr hdr;
-+	void *payload;
-+	int payload_size;
++static const struct snd_soc_dai_ops q6i2s_ops = {
++	.prepare	= q6apm_lpass_dai_prepare,
++	.startup	= q6apm_lpass_dai_startup,
++	.shutdown	= q6apm_lpass_dai_shutdown,
++	.set_channel_map  = q6dma_set_channel_map,
++	.hw_params        = q6dma_hw_params,
++	.set_fmt	= q6i2s_set_fmt,
 +};
 +
-+#define GPR_HDR_SIZE			sizeof(struct gpr_hdr)
-+#define GPR_PKT_VER			0x0
-+#define GPR_PKT_HEADER_WORD_SIZE	((sizeof(struct gpr_pkt) + 3) >> 2)
-+#define GPR_PKT_HEADER_BYTE_SIZE	(GPR_PKT_HEADER_WORD_SIZE << 2)
-+
-+#define GPR_BASIC_RSP_RESULT		0x02001005
-+
-+struct gpr_ibasic_rsp_result_t {
-+	uint32_t opcode;
-+	uint32_t status;
++static const struct snd_soc_component_driver q6apm_lpass_dai_component = {
++	.name = "q6apm-be-dai-component",
++	.of_xlate_dai_name = q6dsp_audio_ports_of_xlate_dai_name,
++	.be_pcm_base = AUDIOREACH_BE_PCM_BASE,
++	.use_dai_pcm_id = true,
 +};
 +
-+#define GPR_BASIC_EVT_ACCEPTED		0x02001006
++static int q6apm_lpass_dai_dev_probe(struct platform_device *pdev)
++{
++	struct q6dsp_audio_port_dai_driver_config cfg;
++	struct q6apm_lpass_dai_data *dai_data;
++	struct snd_soc_dai_driver *dais;
++	struct device *dev = &pdev->dev;
++	int num_dais;
 +
-+struct gpr_ibasic_rsp_accepted_t {
-+	uint32_t opcode;
++	dai_data = devm_kzalloc(dev, sizeof(*dai_data), GFP_KERNEL);
++	if (!dai_data)
++		return -ENOMEM;
++
++	dev_set_drvdata(dev, dai_data);
++
++	memset(&cfg, 0, sizeof(cfg));
++	cfg.q6i2s_ops = &q6i2s_ops;
++	cfg.q6dma_ops = &q6dma_ops;
++	dais = q6dsp_audio_ports_set_config(dev, &cfg, &num_dais);
++
++	return devm_snd_soc_register_component(dev, &q6apm_lpass_dai_component, dais, num_dais);
++}
++
++#ifdef CONFIG_OF
++static const struct of_device_id q6apm_lpass_dai_device_id[] = {
++	{ .compatible = "qcom,q6apm-lpass-dais" },
++	{},
 +};
++MODULE_DEVICE_TABLE(of, q6apm_lpass_dai_device_id);
++#endif
 +
- /* Bits 0 to 15 -- Minor version,  Bits 16 to 31 -- Major version */
- #define APR_SVC_MAJOR_VERSION(v)	((v >> 16) & 0xFF)
- #define APR_SVC_MINOR_VERSION(v)	(v & 0xFF)
- 
-+typedef int (*gpr_port_cb) (struct gpr_resp_pkt *d, void *priv, int op);
- struct packet_router;
- struct pkt_router_svc {
- 	struct device *dev;
-+	gpr_port_cb callback;
- 	struct packet_router *pr;
- 	spinlock_t lock;
- 	int id;
- 	void *priv;
- };
- 
-+typedef struct pkt_router_svc gpr_port_t;
++static struct platform_driver q6apm_lpass_dai_platform_driver = {
++	.driver = {
++		.name = "q6apm-lpass-dais",
++		.of_match_table = of_match_ptr(q6apm_lpass_dai_device_id),
++	},
++	.probe = q6apm_lpass_dai_dev_probe,
++};
++module_platform_driver(q6apm_lpass_dai_platform_driver);
 +
- struct apr_device {
- 	struct device	dev;
- 	uint16_t	svc_id;
-@@ -99,6 +146,8 @@ struct apr_device {
- 	struct list_head node;
- };
- 
-+typedef struct apr_device gpr_device_t;
-+
- #define to_apr_device(d) container_of(d, struct apr_device, dev)
- #define svc_to_apr_device(d) container_of(d, struct apr_device, svc)
- 
-@@ -107,10 +156,12 @@ struct apr_driver {
- 	int	(*remove)(struct apr_device *sl);
- 	int	(*callback)(struct apr_device *a,
- 			    struct apr_resp_pkt *d);
-+	int	(*gpr_callback)(struct gpr_resp_pkt *d, void *data, int op);
- 	struct device_driver		driver;
- 	const struct apr_device_id	*id_table;
- };
- 
-+typedef struct apr_driver gpr_driver_t;
- #define to_apr_driver(d) container_of(d, struct apr_driver, driver)
- 
- /*
-@@ -133,7 +184,14 @@ void apr_driver_unregister(struct apr_driver *drv);
- #define module_apr_driver(__apr_driver) \
- 	module_driver(__apr_driver, apr_driver_register, \
- 			apr_driver_unregister)
-+#define module_gpr_driver(__gpr_driver) module_apr_driver(__gpr_driver)
- 
- int apr_send_pkt(struct apr_device *adev, struct apr_pkt *pkt);
- 
-+gpr_port_t *gpr_alloc_port(gpr_device_t *gdev, struct device *dev,
-+				gpr_port_cb cb, void *priv);
-+void gpr_free_port(gpr_port_t *port);
-+int gpr_send_port_pkt(gpr_port_t *port, struct gpr_pkt *pkt);
-+int gpr_send_pkt(gpr_device_t *gdev, struct gpr_pkt *pkt);
-+
- #endif /* __QCOM_APR_H_ */
++MODULE_DESCRIPTION("AUDIOREACH APM LPASS dai driver");
++MODULE_LICENSE("GPL");
 -- 
 2.21.0
 
