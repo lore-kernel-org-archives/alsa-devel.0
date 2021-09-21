@@ -2,93 +2,92 @@ Return-Path: <SRS0=+sGq=OL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E28DFC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 13:42:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DFCBC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 13:42:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6E3BE61131
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 13:42:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6E3BE61131
+	by mail.kernel.org (Postfix) with ESMTPS id 1D89A61159
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 13:42:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1D89A61159
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0F4B91607;
-	Tue, 21 Sep 2021 15:41:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F4B91607
+	by alsa0.perex.cz (Postfix) with ESMTPS id B5E591662;
+	Tue, 21 Sep 2021 15:41:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5E591662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632231738;
-	bh=NNGZLSPMXzi6kjT8OZXIuDTG5ps+KX9K8WyEkjZJrD8=;
+	s=default; t=1632231753;
+	bh=+e8dvEgXvMvi1kon22tMa51uyw/ukVGI/s19D5VXDhg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=meV7SiBW8n9ztOaw9+wGl95BdVagbw+bFFYgQs5gR6M87w887DxUCcrrJ9idQL3fR
-	 ox++iBwvavdi4VC+vojimtZY+a20eE0CViOcd+5jcOi1ZpN0tw3Jx3RPKP8qyRMv4S
-	 VrEWF6G4fhSTkomn2mOL9jkbPE3nE8vq4B1uSX80=
+	b=RXhej0iu4cK1QgF2TKwYDEfUYzWTJ8G4x6M9jz3/HxUpWaN/BR1v0IbTphSEut5wY
+	 GrplSniC88caonoZ1HUUVtpNlHPKO+yqkJf5Fv1bAFAcALv6INr+hbnK5oAwPP/0r+
+	 /mE3RAbtPSdcnyKcrXGk5vIdu7gxWPJw3eQr42uY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B031F8051F;
-	Tue, 21 Sep 2021 15:39:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1208EF804FE;
+	Tue, 21 Sep 2021 15:39:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7CB8FF8051A; Tue, 21 Sep 2021 15:39:03 +0200 (CEST)
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com
- [IPv6:2a00:1450:4864:20::532])
+ id CDFEFF8051D; Tue, 21 Sep 2021 15:39:05 +0200 (CEST)
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com
+ [IPv6:2a00:1450:4864:20::52e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AF200F804F1
- for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 15:38:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF200F804F1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2C273F80268
+ for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 15:38:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C273F80268
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="m81yhTij"
-Received: by mail-ed1-x532.google.com with SMTP id bx4so30043608edb.4
- for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 06:38:47 -0700 (PDT)
+ header.b="z3KkpCkZ"
+Received: by mail-ed1-x52e.google.com with SMTP id h17so74564031edj.6
+ for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 06:38:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=pyC0f5gaxJzBJgDwCC1ngp1Qx6HSiM2kRzb09fUKRas=;
- b=m81yhTij5unRrCJ27Gi9/bjJuVag3Udu+9Qipes42Xj/KO8/MfDK4PqyMOjed1psrm
- sS+34hs7nCy5Ls14Z2nUdzapcxGhuMm/0GvOUrV0bI/wZ2m2AoJuCUeB/mIeFSIQ5hhU
- wOvKPxHRW2NpTnxxT1SufcF6ZaymA0Se50/otZNKCZOCVqKjJmtDlctHUUAqMqrrB/Q0
- Vht8BPDm+kEjHBDD0h9lBZ4SIwrAVe1m+uRR7Y5syWq/rqOyvPf2sx+YDP2clPdlzoNF
- wU6SFnn3ULrpi4WXxPRLXi0zKY9HpI3/TDz7Mnu+9SWEtv4wheKKp5wAAtHY8UytoqYC
- W+bA==
+ bh=kwISwd5A9r+96Ga/POOsImhvVy//AhRYwgp/dJ/hQjg=;
+ b=z3KkpCkZQfQRbI9pDEtxTrKQyMNvLm7FVYe7f2CWiW3A3aXXzsP9lWCn23faCeN/Kt
+ GeOfjctpeWrTQd5iyCnsnNWGAAal/aVhkrtuJV+SerPdqAEPGsdt9tDG4UtNSUlENO8H
+ 8ZMfOLA5sJmNlrcSlBJRNKnew3DXmQ0hSfVQ7c59SJJEVKlMuIcEc2JFPS0c1MCaI82X
+ y9It06glRcHF9aA62rJ+cd3d5sxLkc4lhA4Jp1LGcNagfVZhOvu1br9VoyvejRM85HR6
+ eVbyvY8T4Y2/veRRa+euFqH3+Ikt+1onBB2zwk0/6muElbyggYQcsdZdl4QRBciL5KKY
+ 4aYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=pyC0f5gaxJzBJgDwCC1ngp1Qx6HSiM2kRzb09fUKRas=;
- b=nV+xUT2peMctyeXH4eRz5mIqvUGMe3fNlNBdHlmEXDG6aC5dpUkd64uKCzqLrXHhCA
- pnk9azL+mvzCjmIDPHTIVXZHOijxeRgY/4H0Cf4vCNvwsgUoQYe+ss6IaeDK3mJ6c4Ya
- UlzjylXf6hkWX9em8nuJojCYy/u/rs6iJXYD1BF+rd1unYRSOHUvfbpjMytrMDWK+CMH
- pUz49ppUd+JUHq+FDP76xfKcAQLJvgRAAwden2yCh646QLjYq+4GGhrtZjgGtdUka0Ht
- yiG5MS+bTF8Azj1lUyjDS/J4CPa3NkqdmDledBV26CwjXRtb1hLe3RA8mGOc3+Q9qOeq
- I3Bg==
-X-Gm-Message-State: AOAM532rKLCB7n4wJnRLDc2rVbRM1+BubT0H3SfrTs/ARuHuHmSxocz4
- upO0ei0gh8tsdZRVtG233PGmvg==
-X-Google-Smtp-Source: ABdhPJyZi8wk6Gne3niTWb88Pv4I4rMVXgtqhachbhk0iLjE54ffcCkxG6muELQmv0GekQg146nuHg==
-X-Received: by 2002:a05:6402:386:: with SMTP id
- o6mr36195110edv.110.1632231475229; 
- Tue, 21 Sep 2021 06:37:55 -0700 (PDT)
+ bh=kwISwd5A9r+96Ga/POOsImhvVy//AhRYwgp/dJ/hQjg=;
+ b=wL4LvD0UoV7J+KVz+AfY72x/+PmDnXF2iSgyYjAbuS10VpVplV3CSh6QKkmseZMYBo
+ 3ibLHHn1DtSlzjqIr0KyslsEcedyoWor/xHKTRB74yHcWVfuGA0m4uYFnr1GO3KNj/mS
+ FSwaRkHzuIZdU0Tay8kvRHDofZmUEzQf8ciU8b5q+hMsoxqxH2zxveFXrTIM1GOw2EJ6
+ xUEn+uR6z2clv5iywo04OLxB6DR1TYWm4Mw+TFlb51vVFBvczB7WPS1anXOPwc/ipgRn
+ XeWqwJ+RQlmefn9pJqMyjt9wiU7wDUeS/2f9cUCWM35SdbZkyN6RNgNloCdrYs+6dLu4
+ BDGQ==
+X-Gm-Message-State: AOAM532eaH352BbcOg1HRlwB9KbE4DVOAvyW1HA/YhLArEqt2/kGylmY
+ MhmwAkmW3EhR+iSvRcb3QfRncw==
+X-Google-Smtp-Source: ABdhPJz+wtek4aATVG1fizILW3QoHHUZo5pFL4YsOa4VncXXvvHw9Qt+E8R7ko7xqTEfiq7b/b6agQ==
+X-Received: by 2002:a50:e188:: with SMTP id k8mr14841401edl.119.1632231463354; 
+ Tue, 21 Sep 2021 06:37:43 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id b3sm7915799edx.55.2021.09.21.06.37.53
+ by smtp.gmail.com with ESMTPSA id b3sm7915799edx.55.2021.09.21.06.37.42
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 21 Sep 2021 06:37:54 -0700 (PDT)
+ Tue, 21 Sep 2021 06:37:42 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: bjorn.andersson@linaro.org,
 	broonie@kernel.org,
 	robh@kernel.org
-Subject: [PATCH v7 20/22] ASoC: qdsp6: audioreach: add q6apm lpass dai support
-Date: Tue, 21 Sep 2021 14:37:07 +0100
-Message-Id: <20210921133709.4973-21-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v7 13/22] ASoC: dt-bindings: add q6apm digital audio stream
+ bindings
+Date: Tue, 21 Sep 2021 14:37:00 +0100
+Message-Id: <20210921133709.4973-14-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210921133709.4973-1-srinivas.kandagatla@linaro.org>
 References: <20210921133709.4973-1-srinivas.kandagatla@linaro.org>
@@ -112,310 +111,76 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support to Audio port dais on LPASS Audio IP using
-existing common q6dsp-lpass-ports.
+On AudioReach audio Framework, Audio Streams (PCM/Compressed) are managed by
+Q6APM(Audio Process Manager) service. This patch adds bindings for this DAIs
+exposed by the DSP.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- sound/soc/qcom/Kconfig                  |   4 +
- sound/soc/qcom/qdsp6/Makefile           |   1 +
- sound/soc/qcom/qdsp6/q6apm-lpass-dais.c | 260 ++++++++++++++++++++++++
- 3 files changed, 265 insertions(+)
- create mode 100644 sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
+ .../bindings/sound/qcom,q6apm-dai.yaml        | 53 +++++++++++++++++++
+ 1 file changed, 53 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 2e5625b93b38..d1132c4174db 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -88,9 +88,13 @@ config SND_SOC_QDSP6_APM_DAI
- 	tristate
- 	select SND_SOC_COMPRESS
- 
-+config SND_SOC_QDSP6_APM_LPASS_DAI
-+	tristate
-+
- config SND_SOC_QDSP6_APM
- 	tristate
- 	select SND_SOC_QDSP6_APM_DAI
-+	select SND_SOC_QDSP6_APM_LPASS_DAI
- 
- config SND_SOC_QDSP6
- 	tristate "SoC ALSA audio driver for QDSP6"
-diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
-index a4ec7c4d0e48..bdcbfdfa9bd0 100644
---- a/sound/soc/qcom/qdsp6/Makefile
-+++ b/sound/soc/qcom/qdsp6/Makefile
-@@ -14,3 +14,4 @@ obj-$(CONFIG_SND_SOC_QDSP6_ASM_DAI) += q6asm-dai.o
- 
- obj-$(CONFIG_SND_SOC_QDSP6_APM) += snd-q6apm.o
- obj-$(CONFIG_SND_SOC_QDSP6_APM_DAI) += q6apm-dai.o
-+obj-$(CONFIG_SND_SOC_QDSP6_APM_LPASS_DAI) += q6apm-lpass-dais.o
-diff --git a/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c b/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml b/Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml
 new file mode 100644
-index 000000000000..ce9e5646d8f3
+index 000000000000..5d972784321d
 --- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
-@@ -0,0 +1,260 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2021, Linaro Limited
++++ b/Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml
+@@ -0,0 +1,53 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/sound/qcom,q6apm-dai.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 +
-+#include <linux/err.h>
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <linux/device.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/pcm_params.h>
-+#include "q6dsp-lpass-ports.h"
-+#include "audioreach.h"
-+#include "q6apm.h"
++title: Qualcomm Audio Process Manager Digital Audio Interfaces binding
 +
-+#define AUDIOREACH_BE_PCM_BASE	16
++maintainers:
++  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 +
-+struct q6apm_lpass_dai_data {
-+	struct q6apm_graph *graph[APM_PORT_MAX];
-+	bool is_port_started[APM_PORT_MAX];
-+	struct audioreach_module_config module_config[APM_PORT_MAX];
-+};
++description: |
++  This binding describes the Qualcomm APM DAIs in DSP
 +
-+static int q6dma_set_channel_map(struct snd_soc_dai *dai,
-+				 unsigned int tx_num, unsigned int *tx_ch_mask,
-+				 unsigned int rx_num, unsigned int *rx_ch_mask)
-+{
++properties:
++  compatible:
++    const: qcom,q6apm-dais
 +
-+	struct q6apm_lpass_dai_data *dai_data = dev_get_drvdata(dai->dev);
-+	struct audioreach_module_config *cfg = &dai_data->module_config[dai->id];
-+	int ch_mask;
++  reg:
++    maxItems: 1
 +
-+	switch (dai->id) {
-+	case WSA_CODEC_DMA_TX_0:
-+	case WSA_CODEC_DMA_TX_1:
-+	case WSA_CODEC_DMA_TX_2:
-+	case VA_CODEC_DMA_TX_0:
-+	case VA_CODEC_DMA_TX_1:
-+	case VA_CODEC_DMA_TX_2:
-+	case TX_CODEC_DMA_TX_0:
-+	case TX_CODEC_DMA_TX_1:
-+	case TX_CODEC_DMA_TX_2:
-+	case TX_CODEC_DMA_TX_3:
-+	case TX_CODEC_DMA_TX_4:
-+	case TX_CODEC_DMA_TX_5:
-+		if (!tx_ch_mask) {
-+			dev_err(dai->dev, "tx slot not found\n");
-+			return -EINVAL;
-+		}
++  iommus:
++    maxItems: 1
 +
-+		if (tx_num > AR_PCM_MAX_NUM_CHANNEL) {
-+			dev_err(dai->dev, "invalid tx num %d\n",
-+				tx_num);
-+			return -EINVAL;
-+		}
-+		ch_mask = *tx_ch_mask;
++required:
++  - compatible
++  - iommus
++  - reg
 +
-+		break;
-+	case WSA_CODEC_DMA_RX_0:
-+	case WSA_CODEC_DMA_RX_1:
-+	case RX_CODEC_DMA_RX_0:
-+	case RX_CODEC_DMA_RX_1:
-+	case RX_CODEC_DMA_RX_2:
-+	case RX_CODEC_DMA_RX_3:
-+	case RX_CODEC_DMA_RX_4:
-+	case RX_CODEC_DMA_RX_5:
-+	case RX_CODEC_DMA_RX_6:
-+	case RX_CODEC_DMA_RX_7:
-+		/* rx */
-+		if (!rx_ch_mask) {
-+			dev_err(dai->dev, "rx slot not found\n");
-+			return -EINVAL;
-+		}
-+		if (rx_num > APM_PORT_MAX_AUDIO_CHAN_CNT) {
-+			dev_err(dai->dev, "invalid rx num %d\n",
-+				rx_num);
-+			return -EINVAL;
-+		}
-+		ch_mask = *rx_ch_mask;
++additionalProperties: false
 +
-+		break;
-+	default:
-+		dev_err(dai->dev, "%s: invalid dai id 0x%x\n",
-+			__func__, dai->id);
-+		return -EINVAL;
-+	}
++examples:
++  - |
++    #include <dt-bindings/soc/qcom,gpr.h>
++    gpr {
++        compatible = "qcom,gpr";
++        #address-cells = <1>;
++        #size-cells = <0>;
++        qcom,domain = <GPR_DOMAIN_ID_ADSP>;
++        service@1 {
++          compatible = "qcom,q6apm";
++          reg = <1>;
 +
-+	cfg->active_channels_mask = ch_mask;
++          #address-cells = <1>;
++          #size-cells = <0>;
 +
-+	return 0;
-+}
-+
-+static int q6dma_hw_params(struct snd_pcm_substream *substream,
-+			   struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
-+{
-+	struct q6apm_lpass_dai_data *dai_data = dev_get_drvdata(dai->dev);
-+	struct audioreach_module_config *cfg = &dai_data->module_config[dai->id];
-+
-+	cfg->bit_width = params_width(params);
-+	cfg->sample_rate = params_rate(params);
-+	cfg->num_channels = params_channels(params);
-+
-+	return 0;
-+}
-+
-+static void q6apm_lpass_dai_shutdown(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
-+{
-+	struct q6apm_lpass_dai_data *dai_data = dev_get_drvdata(dai->dev);
-+	int rc;
-+
-+	if (!dai_data->is_port_started[dai->id])
-+		return;
-+	rc = q6apm_graph_stop(dai_data->graph[dai->id]);
-+	if (rc < 0)
-+		dev_err(dai->dev, "fail to close APM port (%d)\n", rc);
-+
-+	q6apm_graph_close(dai_data->graph[dai->id]);
-+	dai_data->is_port_started[dai->id] = false;
-+}
-+
-+static int q6apm_lpass_dai_prepare(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
-+{
-+	struct q6apm_lpass_dai_data *dai_data = dev_get_drvdata(dai->dev);
-+	struct audioreach_module_config *cfg = &dai_data->module_config[dai->id];
-+	struct q6apm_graph *graph;
-+	int graph_id = dai->id;
-+	int rc;
-+
-+	/**
-+	 * It is recommend to load DSP with source graph first and then sink
-+	 * graph, so sequence for playback and capture will be different
-+	 */
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		graph = q6apm_graph_open(dai->dev, NULL, dai->dev, graph_id);
-+		if (IS_ERR(graph)) {
-+			dev_err(dai->dev, "Failed to open graph (%d)\n", graph_id);
-+			rc = PTR_ERR(graph);
-+			return rc;
-+		}
-+		dai_data->graph[graph_id] = graph;
-+	}
-+
-+	cfg->direction = substream->stream;
-+	rc = q6apm_graph_media_format_pcm(dai_data->graph[dai->id], cfg);
-+
-+	if (rc) {
-+		dev_err(dai->dev, "Failed to set media format %d\n", rc);
-+		return rc;
-+	}
-+
-+	rc = q6apm_graph_prepare(dai_data->graph[dai->id]);
-+	if (rc) {
-+		dev_err(dai->dev, "Failed to prepare Graph %d\n", rc);
-+		return rc;
-+	}
-+
-+	rc = q6apm_graph_start(dai_data->graph[dai->id]);
-+	if (rc < 0) {
-+		dev_err(dai->dev, "fail to start APM port %x\n", dai->id);
-+		return rc;
-+	}
-+	dai_data->is_port_started[dai->id] = true;
-+
-+	return 0;
-+}
-+
-+static int q6apm_lpass_dai_startup(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
-+{
-+	struct q6apm_lpass_dai_data *dai_data = dev_get_drvdata(dai->dev);
-+	struct q6apm_graph *graph;
-+	int graph_id = dai->id;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-+		graph = q6apm_graph_open(dai->dev, NULL, dai->dev, graph_id);
-+		if (IS_ERR(graph)) {
-+			dev_err(dai->dev, "Failed to open graph (%d)\n", graph_id);
-+			return PTR_ERR(graph);
-+		}
-+		dai_data->graph[graph_id] = graph;
-+	}
-+
-+	return 0;
-+}
-+
-+static int q6i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-+{
-+	struct q6apm_lpass_dai_data *dai_data = dev_get_drvdata(dai->dev);
-+	struct audioreach_module_config *cfg = &dai_data->module_config[dai->id];
-+
-+	cfg->fmt = fmt;
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dai_ops q6dma_ops = {
-+	.prepare	= q6apm_lpass_dai_prepare,
-+	.startup	= q6apm_lpass_dai_startup,
-+	.shutdown	= q6apm_lpass_dai_shutdown,
-+	.set_channel_map  = q6dma_set_channel_map,
-+	.hw_params        = q6dma_hw_params,
-+};
-+
-+static const struct snd_soc_dai_ops q6i2s_ops = {
-+	.prepare	= q6apm_lpass_dai_prepare,
-+	.startup	= q6apm_lpass_dai_startup,
-+	.shutdown	= q6apm_lpass_dai_shutdown,
-+	.set_channel_map  = q6dma_set_channel_map,
-+	.hw_params        = q6dma_hw_params,
-+	.set_fmt	= q6i2s_set_fmt,
-+};
-+
-+static const struct snd_soc_component_driver q6apm_lpass_dai_component = {
-+	.name = "q6apm-be-dai-component",
-+	.of_xlate_dai_name = q6dsp_audio_ports_of_xlate_dai_name,
-+	.be_pcm_base = AUDIOREACH_BE_PCM_BASE,
-+	.use_dai_pcm_id = true,
-+};
-+
-+static int q6apm_lpass_dai_dev_probe(struct platform_device *pdev)
-+{
-+	struct q6dsp_audio_port_dai_driver_config cfg;
-+	struct q6apm_lpass_dai_data *dai_data;
-+	struct snd_soc_dai_driver *dais;
-+	struct device *dev = &pdev->dev;
-+	int num_dais;
-+
-+	dai_data = devm_kzalloc(dev, sizeof(*dai_data), GFP_KERNEL);
-+	if (!dai_data)
-+		return -ENOMEM;
-+
-+	dev_set_drvdata(dev, dai_data);
-+
-+	memset(&cfg, 0, sizeof(cfg));
-+	cfg.q6i2s_ops = &q6i2s_ops;
-+	cfg.q6dma_ops = &q6dma_ops;
-+	dais = q6dsp_audio_ports_set_config(dev, &cfg, &num_dais);
-+
-+	return devm_snd_soc_register_component(dev, &q6apm_lpass_dai_component, dais, num_dais);
-+}
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id q6apm_lpass_dai_device_id[] = {
-+	{ .compatible = "qcom,q6apm-lpass-dais" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, q6apm_lpass_dai_device_id);
-+#endif
-+
-+static struct platform_driver q6apm_lpass_dai_platform_driver = {
-+	.driver = {
-+		.name = "q6apm-lpass-dais",
-+		.of_match_table = of_match_ptr(q6apm_lpass_dai_device_id),
-+	},
-+	.probe = q6apm_lpass_dai_dev_probe,
-+};
-+module_platform_driver(q6apm_lpass_dai_platform_driver);
-+
-+MODULE_DESCRIPTION("AUDIOREACH APM LPASS dai driver");
-+MODULE_LICENSE("GPL");
++          apm-dai@1 {
++            compatible = "qcom,q6apm-dais";
++            iommus = <&apps_smmu 0x1801 0x0>;
++            reg = <1>;
++          };
++        };
++    };
 -- 
 2.21.0
 
