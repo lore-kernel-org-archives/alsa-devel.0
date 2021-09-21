@@ -2,87 +2,88 @@ Return-Path: <SRS0=+sGq=OL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B866C43217
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 16:45:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0DCAC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 16:50:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1453960E52
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 16:45:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1453960E52
+	by mail.kernel.org (Postfix) with ESMTPS id 109B161168
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 16:50:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 109B161168
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D106826;
-	Tue, 21 Sep 2021 18:44:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D106826
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC4CA826;
+	Tue, 21 Sep 2021 18:49:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC4CA826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632242727;
-	bh=jniIcfRa3QPDaNVOQ/xGTFEaR8xG7x3wcYdotok2Nls=;
+	s=default; t=1632243034;
+	bh=Ov2X6Onq9bR3JvAmrNrOOxdZHdU+JzrAg5h/t392jK0=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XzOURe899Aty1j5neMDEXUDcqNKb6+IQQE1vfSNj4vSopCOiW7A27pDKBOWHL3ZqI
-	 u8IRopjolXejAXfaTfZ1LPviPGddO6fZb/0hZ9JWlz9HwusYzsxD6vyzm4g5KmbPfz
-	 0GO3VZEJtQzZkaK70quKkZ9jf/TzO2bD5UvTWH3U=
+	b=jsQJhaR13IlDlinbFs6iYYyUWkcDzzK86wj+QNcwF5NySJ1r5Z3cwAKYz7vXM6ZiF
+	 3Ns09AzUI0iabGjlM2aJwDHde/Hr0Jdofcr6PHLMtJq/eQkPsp8urOtwcB50KjrFbf
+	 s5MDtawxaINwluPhQQ6mzSh+f2s1xKV9DFEIBGNU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0968EF8025F;
-	Tue, 21 Sep 2021 18:44:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74B8DF8025F;
+	Tue, 21 Sep 2021 18:49:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 26579F80268; Tue, 21 Sep 2021 18:44:35 +0200 (CEST)
+ id ECDF7F80268; Tue, 21 Sep 2021 18:49:37 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C4B82F8016E
- for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 18:44:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4B82F8016E
+ by alsa1.perex.cz (Postfix) with ESMTPS id DE8DDF80124
+ for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 18:49:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE8DDF80124
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="wgwdqq7D"; 
+ header.b="L9PEqq/S"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="sfyYe734"
+ header.b="nn6++43A"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id DA3EB2217E;
- Tue, 21 Sep 2021 16:44:30 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 2B6362217F;
+ Tue, 21 Sep 2021 16:49:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1632242670; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1632242964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=CvlsYm4S2K8yQ6F5nqbB7LQaAKGyDcQ957f9Ds4JVwc=;
- b=wgwdqq7D1DgFS/wjNyzIptRvW1Sj+NPQqzTziqr6uOE5AVVYOob97V71xN2loom0rNjncf
- hQyqyMFaXBUS8PJFm4WmzOAl7l/QGwdtKpp4igklWC6nco9xRMoJO8X1rFaCV9ya/f55u1
- GX2J7FbG/sy1SLZvBg9QyHUil362HFQ=
+ bh=qGKRZob8WZRXJB+hGNQus4Q+tJYPxiGKiHW+ZkV3Qlw=;
+ b=L9PEqq/Scz1ExNVFwhgzQeaLtA05CymerTxfCvLpPkQcKuYWFlBMZmXyFOciAQEby7L/Su
+ W6GNAb57llt0jYQjtTfdzlxykGrXV+zXbleDtLFQL+dU7UTddPIEZ+hFbmLAaRBW/EaPJj
+ Gb0MTYyWJ1sIUtv1hV/Asn4Q8KRHwk8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1632242670;
+ s=susede2_ed25519; t=1632242964;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=CvlsYm4S2K8yQ6F5nqbB7LQaAKGyDcQ957f9Ds4JVwc=;
- b=sfyYe734fInK+/DxhkfHmC4rWTJoJQdCeO5U0exUP2ZZ2sQjyWcSwtmC1ajTj/FkKliewW
- +Dl6WLYC/gLHVgBg==
+ bh=qGKRZob8WZRXJB+hGNQus4Q+tJYPxiGKiHW+ZkV3Qlw=;
+ b=nn6++43AUp+NCg5GtdhejAAZJAKRleB57CAdILcHRy97fFZYNi/ZcwvcQ05VNmQdqPTS84
+ J/fFiDHVNSdE0tAw==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id D24B0A3BFA;
- Tue, 21 Sep 2021 16:44:30 +0000 (UTC)
-Date: Tue, 21 Sep 2021 18:44:30 +0200
-Message-ID: <s5h1r5h98up.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 20F36A3D96;
+ Tue, 21 Sep 2021 16:49:24 +0000 (UTC)
+Date: Tue, 21 Sep 2021 18:49:24 +0200
+Message-ID: <s5hwnn97u23.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [GIT PULL] ASoC fixes for v5.15-rc2
-In-Reply-To: <20210920121917.A6F8560EB2@mail.kernel.org>
-References: <20210920121917.A6F8560EB2@mail.kernel.org>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: firewire-motu: fix truncated bytes in message
+ tracepoints
+In-Reply-To: <20210920110734.27161-1-o-takashi@sakamocchi.jp>
+References: <20210920110734.27161-1-o-takashi@sakamocchi.jp>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,31 +99,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 20 Sep 2021 14:18:19 +0200,
-Mark Brown wrote:
+On Mon, 20 Sep 2021 13:07:34 +0200,
+Takashi Sakamoto wrote:
 > 
-> The following changes since commit fcb958ee8e832e9cdf43408535207e15f14af755:
+> In MOTU protocol v2/v3, first two data chunks across 2nd and 3rd data
+> channels includes message bytes from device. The total size of message
+> is 48 bits per data block.
 > 
->   ASoC: rockchip: i2s: Fix concurrency between tx/rx (2021-09-03 16:19:01 +0100)
+> The 'data_block_message' tracepoints event produced by ALSA firewire-motu
+> driver exposes the sequence of messages to userspace in 64 bit storage,
+> however lower 32 bits are actually available since current implementation
+> truncates 16 bits in upper of the message as a result of bit shift
+> operation within 32 bit storage.
 > 
-> are available in the Git repository at:
+> This commit fixes the bug by perform the bit shift in 64 bit storage.
 > 
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.15-rc2
-> 
-> for you to fetch changes up to cfacfefd382af3b42905108b54f02820dca225c4:
-> 
->   ASoC: SOF: trace: Omit error print when waking up trace sleepers (2021-09-17 13:16:36 +0100)
-> 
-> ----------------------------------------------------------------
-> ASoC: Fixes for v5.15
-> 
-> A crop of mostly device specific fixes that have been applied since
-> the merge window, nothing particularly standout here.
+> Fixes: c6b0b9e65f09 ("ALSA: firewire-motu: add tracepoints for messages for unique protocol")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-Pulled now, thanks.
-
-Note that, as I'm currently traveling, the PR to Linus will be delayed
-in the next week.
+Thanks, applied.
 
 
 Takashi
