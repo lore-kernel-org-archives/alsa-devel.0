@@ -7,87 +7,86 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83C37C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 13:44:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E80EDC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 13:44:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 09345610CA
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 13:44:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 09345610CA
+	by mail.kernel.org (Postfix) with ESMTPS id 72A15610CA
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 13:44:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 72A15610CA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A20DE1660;
-	Tue, 21 Sep 2021 15:43:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A20DE1660
+	by alsa0.perex.cz (Postfix) with ESMTPS id 09E70167F;
+	Tue, 21 Sep 2021 15:43:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09E70167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632231852;
-	bh=N4uxF4Qf6vygGrAKvSBAdcgMrz5f2Xmmyf4nhhJ+nqM=;
+	s=default; t=1632231869;
+	bh=9K+E+SK+vqoojgaPu5KBpOFt1eYjOH0PyEpX/wx2YH8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QcnkTPKUhilXRjezR2+WkssFpH9VVBybXM49dhfuTta/+fPGMly1n7tdEQv192T8i
-	 AIXzQdsa75T7JmoBYm69e9jiNWnxchlXUkDE76QY/WmIwzvb48NCYBQuRpE11wPNi1
-	 MByqdXiUi7qRH/LhyL/tg8m9Pb4RLfk4HHDnDegg=
+	b=tgGk+FqDv5+NxcBrKPsQG/RB1c5RlnIOuVFpI48LwEgTYEaSIlc3pt7qIonMOUtWv
+	 srWHlaWV8T3BJ24XcF8byqxMrYHvzEk0pDGaeNYAGj4Y7kn+mCYrv0FpfPacVDHECm
+	 bxPclBnChro0sh5tMKPF3bkkiIBnRLKpWtFtdVO4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3C63CF80557;
-	Tue, 21 Sep 2021 15:39:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DF943F8055A;
+	Tue, 21 Sep 2021 15:39:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8CE11F80538; Tue, 21 Sep 2021 15:39:13 +0200 (CEST)
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com
- [IPv6:2a00:1450:4864:20::530])
+ id 05F0BF80534; Tue, 21 Sep 2021 15:39:13 +0200 (CEST)
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com
+ [IPv6:2a00:1450:4864:20::532])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ED2A7F804FB
- for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 15:39:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED2A7F804FB
+ by alsa1.perex.cz (Postfix) with ESMTPS id A5AB1F80510
+ for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 15:38:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5AB1F80510
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="qIx63ch3"
-Received: by mail-ed1-x530.google.com with SMTP id v24so74374292eda.3
- for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 06:39:00 -0700 (PDT)
+ header.b="ILXEIm+K"
+Received: by mail-ed1-x532.google.com with SMTP id v24so74372699eda.3
+ for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 06:38:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=oA13aWw/vBigvq7sNCk3NCQoESUEmWiPzPnMa1c1hkI=;
- b=qIx63ch3Glgs0g6AxWOIjp9zAskJ8PnPAZemHNeQSm6jpzR4E2iVFKlj4if187mrLL
- oapX10kgvPMe+Tkk+UmnkM84JDrjLYnz1/zpimZVnPHajSz5wsv2HD6MCU3H+Ya3pbeU
- rxgM0KT3E6xfwsT2Z7xbmvOQus7wJgF7nbUWVYx6R4lNtuiKfdTuT4ZY+59ofY/jdZzb
- W8jP6RRGDmPmJ2MJYrmTzfRHQgwfH6pdOqaKlXa7BfaCeENABy9fRRvnVFIMI0ORAlv9
- eVhCk6SUjnf6ZwwjvPa03ak+WJP8GCyZmcXacIsjUOD/WZyQ1nwmIOxnP8W9S1zaM8Fv
- ga4w==
+ bh=ZbocYYAT3Bv95I3T0qjmMa3P6s7bL467iC3FMXh3uYY=;
+ b=ILXEIm+KrfglysXOb1TqJtXNsNT5TVIFiLikFLJP9SrbeP56zoVxnAgPeeh3j2yec/
+ 7hQ4WmdrZKFi2CaYBUamwFmjVA5wafqaj8Q9zqTEpxq0N5Hp8mtDhNhzSCc9G+C6IEKK
+ Y1/JXJwCFTx0H05i39TTUImTnc1MUigme0tW3HiNB0vNkZsHLe212GNXbOk+9gPYIs2U
+ XhsFHNfb8wxeNg1sEadZTC9zn9WuLPx21YHYM03RXW+hTzuB9E6tF+9ab2c09U/VAoFH
+ CYsqAFiAfAozU71LVDegOsgdSWFxyWvPo/527tgZ0bQYf2YmrIdqlCP8K9TcMO7qPs8g
+ BoTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=oA13aWw/vBigvq7sNCk3NCQoESUEmWiPzPnMa1c1hkI=;
- b=jpCALGKceBi0XXPS6RLgOhjZlxWetfFS+jt9AjDPzuoWI/a5GnJI6SaCcI6D0SY6rZ
- tu7aYwKsn1LmltPBKYXqLHfVgmI0rsW79yh0vkN4ZxDkr8NOxGiW87L+rUl1HGKfkilD
- /GKsHA58QR19EDnpxoN/lEVWnjPuzK+kcA3Zr0voWxphi8w7dZUNBCjalarsmYVVfJnc
- lftoU+dFVMqjYu0TidMqjcfw/7cGBrFSWQwTBuBZcmsbpgRxQOhI0rSiqyWBkZMokTEb
- TJ8ObXT3rs6fa7eMzNkAhHkK2mU9je6hXRMr5tu8fWjYU3/767DsgpIdxOLDb21H2lmr
- fZ3g==
-X-Gm-Message-State: AOAM53028CJkn2qy0oG0dJyPOx+XoC91BqkeABojItj2DohEoYtNtpix
- Ipd71eu9nvu4uFkhijrLAmRwxw==
-X-Google-Smtp-Source: ABdhPJxhM7XLlVqxw5L5SH5IO7sKHTKrRHaZM1fNmkqB7/45rrcSGZI4Q87fpbD3/u5ht6IpTLdM9A==
-X-Received: by 2002:a05:6402:203:: with SMTP id
- t3mr36298416edv.69.1632231477716; 
- Tue, 21 Sep 2021 06:37:57 -0700 (PDT)
+ bh=ZbocYYAT3Bv95I3T0qjmMa3P6s7bL467iC3FMXh3uYY=;
+ b=MCeH96qfTe7MykxmDuFL6Vv53Da6J/q4ToTN5m/XrDb7rplgz3gNXkL4PGzPvKa4NY
+ 25hHR5nqGxhSpVnF+cmAaePWMCBpGEJS98AEmo3XYqmWc+FQ34/uJYvNYhTCM3f65MfX
+ k+XaQY62OtJOA+hj0cypVEdEZD8rLtyBYcKY3XUsnXO7Jnz7YCKMC7Jra1Xsbwr6U31r
+ yMWSEt9EPD/3n6vGBC/0yzzIyzuWVwX1X9CYhvZy9otLGyohVp29cXLcRECeATMwv4Ch
+ ZnMb4uJVY5OVrYJN4kagOz24XmpL6rvPAMUMz3H7mDkCNKxgZiQt998RCXH75GlkcT6+
+ YM5Q==
+X-Gm-Message-State: AOAM530cRxykHmDBQGtscQAyzaZbAPWOvmDZo8u/zNTr3gd3ZbmgjUsT
+ K3IEWwFnLNJPfdeq7qU1pwkpPg==
+X-Google-Smtp-Source: ABdhPJx3d9E2uufVxn9gHvDuUHlA2POxPxAM0cN8i8evynQurD59C4qGgX0pWLDpIIihjPUJOfO2zA==
+X-Received: by 2002:a50:be8f:: with SMTP id b15mr36069466edk.200.1632231469870; 
+ Tue, 21 Sep 2021 06:37:49 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id b3sm7915799edx.55.2021.09.21.06.37.56
+ by smtp.gmail.com with ESMTPSA id b3sm7915799edx.55.2021.09.21.06.37.48
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 21 Sep 2021 06:37:57 -0700 (PDT)
+ Tue, 21 Sep 2021 06:37:49 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: bjorn.andersson@linaro.org,
 	broonie@kernel.org,
 	robh@kernel.org
-Subject: [PATCH v7 22/22] ASoC: qdsp6: audioreach: add support for q6prm-clocks
-Date: Tue, 21 Sep 2021 14:37:09 +0100
-Message-Id: <20210921133709.4973-23-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v7 17/22] ASoC: qdsp6: audioreach: add Kconfig and Makefile
+Date: Tue, 21 Sep 2021 14:37:04 +0100
+Message-Id: <20210921133709.4973-18-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210921133709.4973-1-srinivas.kandagatla@linaro.org>
 References: <20210921133709.4973-1-srinivas.kandagatla@linaro.org>
@@ -111,133 +110,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add q6prm clocks using existing qdsp6-audio-clock driver
+Now that all the code for audioreach and q6apm are in at this point to be
+able to compile, start adding Kconfig and Makefile changes.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/Kconfig              |  4 ++
- sound/soc/qcom/qdsp6/Makefile       |  1 +
- sound/soc/qcom/qdsp6/q6prm-clocks.c | 85 +++++++++++++++++++++++++++++
- 3 files changed, 90 insertions(+)
- create mode 100644 sound/soc/qcom/qdsp6/q6prm-clocks.c
+ sound/soc/qcom/Kconfig        | 4 ++++
+ sound/soc/qcom/qdsp6/Makefile | 3 +++
+ 2 files changed, 7 insertions(+)
 
 diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 465a2a603401..5b74c5bcc47f 100644
+index cc7c1de2f1d9..5a693f83fd6c 100644
 --- a/sound/soc/qcom/Kconfig
 +++ b/sound/soc/qcom/Kconfig
-@@ -96,8 +96,12 @@ config SND_SOC_QDSP6_APM
- 	select SND_SOC_QDSP6_APM_DAI
- 	select SND_SOC_QDSP6_APM_LPASS_DAI
+@@ -84,6 +84,9 @@ config SND_SOC_QDSP6_ASM_DAI
+ 	select SND_SOC_COMPRESS
+ 	tristate
  
-+config SND_SOC_QDSP6_PRM_LPASS_CLOCKS
++config SND_SOC_QDSP6_APM
 +	tristate
 +
- config SND_SOC_QDSP6_PRM
- 	tristate
-+	select SND_SOC_QDSP6_PRM_LPASS_CLOCKS
- 
  config SND_SOC_QDSP6
  	tristate "SoC ALSA audio driver for QDSP6"
+ 	depends on QCOM_APR
+@@ -97,6 +100,7 @@ config SND_SOC_QDSP6
+ 	select SND_SOC_QDSP6_ROUTING
+ 	select SND_SOC_QDSP6_ASM
+ 	select SND_SOC_QDSP6_ASM_DAI
++	select SND_SOC_QDSP6_APM
+ 	help
+ 	 To add support for MSM QDSP6 Soc Audio.
+ 	 This will enable sound soc platform specific
 diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
-index c932f8e24b32..3963bf234664 100644
+index a4191d395557..1a0803d97eec 100644
 --- a/sound/soc/qcom/qdsp6/Makefile
 +++ b/sound/soc/qcom/qdsp6/Makefile
-@@ -16,3 +16,4 @@ obj-$(CONFIG_SND_SOC_QDSP6_APM) += snd-q6apm.o
- obj-$(CONFIG_SND_SOC_QDSP6_APM_DAI) += q6apm-dai.o
- obj-$(CONFIG_SND_SOC_QDSP6_APM_LPASS_DAI) += q6apm-lpass-dais.o
- obj-$(CONFIG_SND_SOC_QDSP6_PRM) += q6prm.o
-+obj-$(CONFIG_SND_SOC_QDSP6_PRM_LPASS_CLOCKS) += q6prm-clocks.o
-diff --git a/sound/soc/qcom/qdsp6/q6prm-clocks.c b/sound/soc/qcom/qdsp6/q6prm-clocks.c
-new file mode 100644
-index 000000000000..a26cda5140c1
---- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6prm-clocks.c
-@@ -0,0 +1,85 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2021, Linaro Limited
+@@ -1,5 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ snd-q6dsp-common-objs := q6dsp-common.o q6dsp-lpass-ports.o q6dsp-lpass-clocks.o
++snd-q6apm-objs := q6apm.o audioreach.o
+ 
+ obj-$(CONFIG_SND_SOC_QDSP6_COMMON) += snd-q6dsp-common.o
+ obj-$(CONFIG_SND_SOC_QDSP6_CORE) += q6core.o
+@@ -10,3 +11,5 @@ obj-$(CONFIG_SND_SOC_QDSP6_ADM) += q6adm.o
+ obj-$(CONFIG_SND_SOC_QDSP6_ROUTING) += q6routing.o
+ obj-$(CONFIG_SND_SOC_QDSP6_ASM) += q6asm.o
+ obj-$(CONFIG_SND_SOC_QDSP6_ASM_DAI) += q6asm-dai.o
 +
-+#include <linux/err.h>
-+#include <linux/init.h>
-+#include <linux/clk-provider.h>
-+#include <linux/module.h>
-+#include <linux/device.h>
-+#include <linux/platform_device.h>
-+#include <dt-bindings/sound/qcom,q6dsp-lpass-ports.h>
-+#include "q6dsp-lpass-clocks.h"
-+#include "q6prm.h"
-+
-+#define Q6PRM_CLK(id) {					\
-+		.clk_id	= id,				\
-+		.q6dsp_clk_id	= Q6PRM_##id,		\
-+		.name = #id,				\
-+		.rate = 19200000,			\
-+	}
-+
-+static const struct q6dsp_clk_init q6prm_clks[] = {
-+	Q6PRM_CLK(LPASS_CLK_ID_PRI_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_PRI_MI2S_EBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_SEC_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_SEC_MI2S_EBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_TER_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_TER_MI2S_EBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_QUAD_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_QUAD_MI2S_EBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_SPEAKER_I2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_SPEAKER_I2S_EBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_SPEAKER_I2S_OSR),
-+	Q6PRM_CLK(LPASS_CLK_ID_QUI_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_QUI_MI2S_EBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_SEN_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_SEN_MI2S_EBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_INT0_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_INT1_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_INT2_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_INT3_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_INT4_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_INT5_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_INT6_MI2S_IBIT),
-+	Q6PRM_CLK(LPASS_CLK_ID_QUI_MI2S_OSR),
-+	Q6PRM_CLK(LPASS_CLK_ID_WSA_CORE_MCLK),
-+	Q6PRM_CLK(LPASS_CLK_ID_WSA_CORE_NPL_MCLK),
-+	Q6PRM_CLK(LPASS_CLK_ID_VA_CORE_MCLK),
-+	Q6PRM_CLK(LPASS_CLK_ID_TX_CORE_MCLK),
-+	Q6PRM_CLK(LPASS_CLK_ID_TX_CORE_NPL_MCLK),
-+	Q6PRM_CLK(LPASS_CLK_ID_RX_CORE_MCLK),
-+	Q6PRM_CLK(LPASS_CLK_ID_RX_CORE_NPL_MCLK),
-+	Q6PRM_CLK(LPASS_CLK_ID_VA_CORE_2X_MCLK),
-+	Q6DSP_VOTE_CLK(LPASS_HW_MACRO_VOTE, Q6PRM_HW_CORE_ID_LPASS,
-+		       "LPASS_HW_MACRO"),
-+	Q6DSP_VOTE_CLK(LPASS_HW_DCODEC_VOTE, Q6PRM_HW_CORE_ID_DCODEC,
-+		       "LPASS_HW_DCODEC"),
-+};
-+
-+static const struct q6dsp_clk_desc q6dsp_clk_q6prm __maybe_unused = {
-+	.clks = q6prm_clks,
-+	.num_clks = ARRAY_SIZE(q6prm_clks),
-+	.lpass_set_clk = q6prm_set_lpass_clock,
-+	.lpass_vote_clk = q6prm_vote_lpass_core_hw,
-+	.lpass_unvote_clk = q6prm_unvote_lpass_core_hw,
-+};
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id q6prm_clock_device_id[] = {
-+	{ .compatible = "qcom,q6prm-lpass-clocks", .data = &q6dsp_clk_q6prm },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, q6prm_clock_device_id);
-+#endif
-+
-+static struct platform_driver q6prm_clock_platform_driver = {
-+	.driver = {
-+		.name = "q6prm-lpass-clock",
-+		.of_match_table = of_match_ptr(q6prm_clock_device_id),
-+	},
-+	.probe = q6dsp_clock_dev_probe,
-+};
-+module_platform_driver(q6prm_clock_platform_driver);
-+
-+MODULE_DESCRIPTION("Q6 Proxy Resource Manager LPASS clock driver");
-+MODULE_LICENSE("GPL");
++obj-$(CONFIG_SND_SOC_QDSP6_APM) += snd-q6apm.o
 -- 
 2.21.0
 
