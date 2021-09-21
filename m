@@ -7,87 +7,87 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9A5AC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 13:40:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A803C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 13:40:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E9C14610E8
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 13:40:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E9C14610E8
+	by mail.kernel.org (Postfix) with ESMTPS id 56581610E8
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 13:40:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 56581610E8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5AED9165E;
-	Tue, 21 Sep 2021 15:39:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AED9165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB3A11654;
+	Tue, 21 Sep 2021 15:39:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB3A11654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632231632;
-	bh=RrS/YC9yrka5UPSznR9amblm2X0hN9a4tClp4dX1oN4=;
+	s=default; t=1632231650;
+	bh=rGnpjmDFV1wmhq/brOeQrLyWCt8iJXrJL9MieP0na84=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MT8xMrnAoUDUu6bfSD8ffGYhkNvI9svHLG4PhSMEluVedK+KFE5tptrYtlFhVT9ax
-	 x5uMqwx7K92dNsKaFex9WG/k0afz7gfeXi/kALp1g27Y69UF89M6byYKLb43oeJOUF
-	 S+kF+kqSUn9L7m3XKlVhE5tuw12JpQkQgI+p9258=
+	b=iNrUjdkGga9+GX9tX+/inm+E9thCEtag0VGaVYSc+b46xKYCeVpMfOur7diwyb7C0
+	 0VLTb3+OvH5fTBFW0qUoCsYs/9w7sSykZYXsC2YQqzNbjJiZ9XodeLXFRmXkcosbnN
+	 2a0A3MV/sJrlN8PH8eIV1mnKMkGcn3BDo/1fHhpw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD80CF8025F;
-	Tue, 21 Sep 2021 15:38:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 90A9CF804F3;
+	Tue, 21 Sep 2021 15:38:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9D567F804ED; Tue, 21 Sep 2021 15:38:47 +0200 (CEST)
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com
- [IPv6:2a00:1450:4864:20::52d])
+ id 67A25F804EC; Tue, 21 Sep 2021 15:38:49 +0200 (CEST)
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com
+ [IPv6:2a00:1450:4864:20::533])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 02952F80124
+ by alsa1.perex.cz (Postfix) with ESMTPS id BD305F8025F
  for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 15:38:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02952F80124
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD305F8025F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="SDEr3Bi9"
-Received: by mail-ed1-x52d.google.com with SMTP id bx4so30040355edb.4
+ header.b="gV9Hy9Wz"
+Received: by mail-ed1-x533.google.com with SMTP id h17so74560874edj.6
  for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 06:38:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=2dEl9+MXeU9ILc1heZjgbaev2CRPnvoQ4/YvbAvAmQM=;
- b=SDEr3Bi9dVZx9skbxdTqk0uD2XtPonJtAcv4IiO8crFBs26M4k9/T+cr87ziHrIpv/
- uDAqCXuQBSvqMOxTJ0Fv5CeB5Ywzg804K9omERfJjMVVU+MZYLYOjYMA6UyGkm6BUWaB
- cZAk+IqKkv4aTODD33lz2dp9hshuU8zWQWDJLyFuddS15ql+EZPtH2pouSLvwHJByDvC
- saD1L77XRBMWrVP1lDJXrDmbHZlp6uerqh+X9kk8ZBnrrxL6YrphmhROFA69ud4NHQRl
- 6P0IWdlmfhBL5x25cl+eeW/Hlw05sCBdnAFRciNaLEIE50Jb+ptPBgF0Fyay54W2HHB6
- WjTg==
+ bh=9h1xMEiV0P0T+5NxtCB5k6xQoY2x3NNYvUmlcG7EV4s=;
+ b=gV9Hy9Wzz18Zk9xzayAO6Qwv1zz5f0BSPLh2v7NtY1+pErcSf8ifM1g4E5ISw2+QQs
+ igyYMWmVaNhUKE+1vPcA2t2hnobsjaAjDHXKvG0/CY65TsZLXPJe7Rj9blQJdLe5cIWs
+ 4ZIy3ULh7PG5eNdVpkqhGiJXsCfNuNzq35MyUPpwMThVBZ+RbRwlrJLh7m4ydlXixdSU
+ C8c2hyV3VlZma1+7mzEd6NzDO2Kt7ofHcnAt1nL3Tvx6TeX4LjwPeh8L2TxKE/UcivGN
+ ALa240x9V9HFM+0w6KA5965Kk6+jhuohexZDJdE6/Crt9ABzzgPwTcOIZhLVgN+yccq+
+ heIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=2dEl9+MXeU9ILc1heZjgbaev2CRPnvoQ4/YvbAvAmQM=;
- b=JWZTVtQQTVG2mPChejkor+VcN/JTxaXRH6LNTHL0ZZiyu9DTaBi6/6UBO09IzDauvu
- 7zw79RKUPqu7jOETFgtg9+Cdrbg5UZKXEsF3M+v/KEkpZFb4GmTWYMfV42/mw185lXDn
- 1m1HcfV6OByHwCLI07VXAr80ksQTCk/MhbrUFLwJ0qWdnSmYIifhqmM7kjJA+mMJq9zf
- 5WfUgV52aGpX/c+xAsF1NZ1lSo7v9uMIY9v/0riBeReYIO08GmpRl1Jwx4/rDXIXLEBs
- 18HGSMl6vYI/UsnpkqJJ5wjOQ8wjHwigrVMNGA7MrzRJuTMG12PleqhN390ypXBEzkx6
- VWdA==
-X-Gm-Message-State: AOAM5326/IVikH0Yp8SFw36ot3hCp9oFZS4XShz1tdBgXDAgJJC92uZx
- Lj4k6oPofZMeKLM0jc076ninXg==
-X-Google-Smtp-Source: ABdhPJy8QERP2z05nE5jCT86ONGDjLl8u++2AlMH+ZVUj5DZAZp03r9yrJt5OUlGt74opVkc/mJZcg==
-X-Received: by 2002:a50:d80f:: with SMTP id o15mr35291392edj.52.1632231462075; 
- Tue, 21 Sep 2021 06:37:42 -0700 (PDT)
+ bh=9h1xMEiV0P0T+5NxtCB5k6xQoY2x3NNYvUmlcG7EV4s=;
+ b=FmlIRhJdD3G/awlClcX1a5NUCGF8rora66vz3e5343qhtv+fTZuEMEVEbVTVby8Jcj
+ ZnYb8ZyvpU3OWiJfWY/lFe+g+rmkPNSGMg64q8S++UBKXruSCTh7eMHHHp3yjJPprNhd
+ eY9FBYWSfdPtEgmkmcXOZ9Fu+OmShWnclTHmnU/uWCZgddZFqjr4NYVGGNel8rPKYDNg
+ ocpRcUogGlMclFpkr0IYkvlxFDQlDgENGngBLWePSO8Ldo6ZrOrLuRk86uRzyjKfpaNi
+ +iLpnZ07GU8O+8+MBeW0xX8pyDrKPTqrNoMzFV9e+/zYxFD4+gF2rySRZ7eSpeXx7mv1
+ aibw==
+X-Gm-Message-State: AOAM533x2+zdDhELTXf5Zg0GiCaEOhgBbpujGZPWB8TShfhPriuoEMFD
+ Q+CUYVaAy54H3vaJvb0oKcbbHA==
+X-Google-Smtp-Source: ABdhPJyLOM4RhikT3hoSmqkkuebCsb1AALv5R6RGvk9J4fE/ArGD8/topGzss01SGnvab8kAM5ZoCw==
+X-Received: by 2002:a17:907:11c2:: with SMTP id
+ va2mr14250678ejb.160.1632231449372; 
+ Tue, 21 Sep 2021 06:37:29 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id b3sm7915799edx.55.2021.09.21.06.37.40
+ by smtp.gmail.com with ESMTPSA id b3sm7915799edx.55.2021.09.21.06.37.28
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 21 Sep 2021 06:37:41 -0700 (PDT)
+ Tue, 21 Sep 2021 06:37:28 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: bjorn.andersson@linaro.org,
 	broonie@kernel.org,
 	robh@kernel.org
-Subject: [PATCH v7 12/22] ASoC: dt-bindings: lpass-clocks: add q6prm clocks
- compatible
-Date: Tue, 21 Sep 2021 14:36:59 +0100
-Message-Id: <20210921133709.4973-13-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v7 04/22] soc: dt-bindings: qcom: add gpr bindings
+Date: Tue, 21 Sep 2021 14:36:51 +0100
+Message-Id: <20210921133709.4973-5-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210921133709.4973-1-srinivas.kandagatla@linaro.org>
 References: <20210921133709.4973-1-srinivas.kandagatla@linaro.org>
@@ -111,32 +111,113 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On AudioReach audio Framework access to LPASS ports is via Q6PRM
-(Proxy Resource Manager) service, so add a dedicated lpass-clock compatible
-string for this.
+Qualcomm Generic Packet router aka GPR is the IPC mechanism found
+in AudioReach next generation signal processing framework to perform
+command and response messages between various processors.
+
+GPR has concepts of static and dynamic port, all static services like
+APM (Audio Processing Manager), PRM (Proxy resource manager) have
+fixed port numbers where as dynamic services like graphs have dynamic
+port numbers which are allocated at runtime. All GPR packet messages
+will have source and destination domain and port along with opcode
+and payload.
+
+This support is added using existing APR driver to reuse most of
+the code.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- .../sound/qcom,q6dsp-lpass-clocks.yaml        | 21 +++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ .../bindings/soc/qcom/qcom,apr.yaml           | 41 +++++++++++++++----
+ include/dt-bindings/soc/qcom,gpr.h            | 19 +++++++++
+ 2 files changed, 53 insertions(+), 7 deletions(-)
+ create mode 100644 include/dt-bindings/soc/qcom,gpr.h
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-clocks.yaml b/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-clocks.yaml
-index c686164732aa..f83f00737a2f 100644
---- a/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-clocks.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-clocks.yaml
-@@ -16,6 +16,7 @@ properties:
+diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
+index bfe04fca8aa3..028c5d105adb 100644
+--- a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
++++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
+@@ -4,20 +4,21 @@
+ $id: "http://devicetree.org/schemas/soc/qcom/qcom,apr.yaml#"
+ $schema: "http://devicetree.org/meta-schemas/core.yaml#"
+ 
+-title: Qualcomm APR (Asynchronous Packet Router) binding
++title: Qualcomm APR/GPR (Asynchronous/Generic Packet Router) binding
+ 
+ maintainers:
+   - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+ 
+ description: |
+-  This binding describes the Qualcomm APR, APR is a IPC protocol for
+-  communication between Application processor and QDSP. APR is mainly
++  This binding describes the Qualcomm APR/GPR, APR/GPR is a IPC protocol for
++  communication between Application processor and QDSP. APR/GPR is mainly
+   used for audio/voice services on the QDSP.
+ 
+ properties:
    compatible:
      enum:
-       - qcom,q6afe-clocks
-+      - qcom,q6prm-lpass-clocks
+       - qcom,apr-v2
++      - qcom,gpr
  
-   reg:
-     maxItems: 1
-@@ -54,3 +55,23 @@ examples:
-             };
+   qcom,apr-domain:
+     $ref: /schemas/types.yaml#/definitions/uint32
+@@ -46,6 +47,10 @@ properties:
+         5 = Application processor Domain
+         6 = Modem2 Domain
+         7 = Application Processor2 Domain
++      Selects the processor domain for gpr
++        1 = Modem Domain
++        2 = Audio DSP Domain
++        3 = Application Processor Domain
+ 
+   '#address-cells':
+     const: 1
+@@ -53,12 +58,12 @@ properties:
+   '#size-cells':
+     const: 0
+ 
+-#APR Services
++#APR/GPR Services
+ patternProperties:
+-  "^service@[3-9a-d]$":
++  "^service@[1-9a-d]$":
+     type: object
+     description:
+-      APR node's client devices use subnodes for desired static port services.
++      APR/GPR node's client devices use subnodes for desired static port services.
+ 
+     properties:
+       compatible:
+@@ -67,9 +72,11 @@ patternProperties:
+           - qcom,q6asm
+           - qcom,q6afe
+           - qcom,q6adm
++          - qcom,q6apm
++          - qcom,q6prm
+ 
+       reg:
+-        minimum: 3
++        minimum: 1
+         maximum: 13
+         description:
+           APR Service ID
+@@ -84,6 +91,11 @@ patternProperties:
+             11 = Core voice processor.
+             12 = Ultrasound stream manager.
+             13 = Listen stream manager.
++          GPR Service ID
++            1 = Audio Process Manager Service
++            2 = Proxy Resource Manager Service.
++            3 = AMDB Service.
++            4 = Voice processing manager.
+ 
+       qcom,protection-domain:
+         $ref: /schemas/types.yaml#/definitions/string-array
+@@ -148,3 +160,18 @@ examples:
+           qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
          };
-       };
+     };
 +
 +  - |
 +    #include <dt-bindings/soc/qcom,gpr.h>
@@ -145,18 +226,38 @@ index c686164732aa..f83f00737a2f 100644
 +        qcom,domain = <GPR_DOMAIN_ID_ADSP>;
 +        #address-cells = <1>;
 +        #size-cells = <0>;
-+        service@2 {
-+            reg = <GPR_PRM_MODULE_IID>;
-+            compatible = "qcom,q6prm";
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+            clock-controller@2 {
-+              compatible = "qcom,q6prm-lpass-clocks";
-+              reg = <2>;
-+              #clock-cells = <2>;
-+            };
++
++        service@1 {
++          compatible = "qcom,q6apm";
++          reg = <GPR_APM_MODULE_IID>;
++          qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
 +        };
-+      };
++    };
+diff --git a/include/dt-bindings/soc/qcom,gpr.h b/include/dt-bindings/soc/qcom,gpr.h
+new file mode 100644
+index 000000000000..3107da59319c
+--- /dev/null
++++ b/include/dt-bindings/soc/qcom,gpr.h
+@@ -0,0 +1,19 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
++
++#ifndef __DT_BINDINGS_QCOM_GPR_H
++#define __DT_BINDINGS_QCOM_GPR_H
++
++/* DOMAINS */
++
++#define GPR_DOMAIN_ID_MODEM	1
++#define GPR_DOMAIN_ID_ADSP	2
++#define GPR_DOMAIN_ID_APPS	3
++
++/* Static Services */
++
++#define GPR_APM_MODULE_IID		1
++#define GPR_PRM_MODULE_IID		2
++#define GPR_AMDB_MODULE_IID		3
++#define GPR_VCPM_MODULE_IID		4
++
++#endif /* __DT_BINDINGS_QCOM_GPR_H */
 -- 
 2.21.0
 
