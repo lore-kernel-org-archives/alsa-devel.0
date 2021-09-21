@@ -7,65 +7,65 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CD64C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 18:51:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EDB8C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 18:51:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7F92A6023B
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 18:51:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7F92A6023B
+	by mail.kernel.org (Postfix) with ESMTPS id 01AC5611BD
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 18:51:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 01AC5611BD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 195FD15E2;
-	Tue, 21 Sep 2021 20:51:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 195FD15E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 582661660;
+	Tue, 21 Sep 2021 20:51:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 582661660
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632250311;
-	bh=rtoIGP0BpZDSxN66H9g1btbqi1J0yyvbw1o+nlhPiwc=;
+	s=default; t=1632250314;
+	bh=lxISZFCll32YxYkJqaoMSimku3AzuQFluH4e8o4tO1M=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HICmhgk3qKS6u9PYH7p69PjGphMvN2d8uYLQjS8pAdsTAZ2dWEkS2aKkks3UL630f
-	 PvyU6nRfgW3bUeesG6mEt98zbmtAAxN0g9hF0NEsDIyb6jwzOfoD9FgKGN09+MtP0a
-	 mJnrOQuHBvLa5GtAkkgtdhPqaz24yYlj9nAIqkjo=
+	b=lpAGFQ7Fb2fp+5v2XQHpXAsCP0dznxXJEeaR968Pz3OOeYamZOj1JYhQ8VkVMnbSI
+	 lIDP364sbdzqMiy6DIxdYlVloF0PCLQKlDO0uW/chUSnOt3GqPmo/JYGm4rKFMjNU9
+	 jDL/x+k2dgyEIaqt3HHPkycr/GXI7FfHTwQHHD2M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7A0B0F804E4;
-	Tue, 21 Sep 2021 20:50:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 253D2F804EB;
+	Tue, 21 Sep 2021 20:50:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6B955F8026A; Tue, 21 Sep 2021 20:50:07 +0200 (CEST)
+ id 403FCF8026A; Tue, 21 Sep 2021 20:50:14 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 992F5F8016E
- for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 20:50:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 992F5F8016E
-X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="210521535"
-X-IronPort-AV: E=Sophos;i="5.85,311,1624345200"; d="scan'208";a="210521535"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1FA42F8016E
+ for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 20:50:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FA42F8016E
+X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="210521544"
+X-IronPort-AV: E=Sophos;i="5.85,311,1624345200"; d="scan'208";a="210521544"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Sep 2021 11:49:57 -0700
-X-IronPort-AV: E=Sophos;i="5.85,311,1624345200"; d="scan'208";a="512431677"
+ 21 Sep 2021 11:50:01 -0700
+X-IronPort-AV: E=Sophos;i="5.85,311,1624345200"; d="scan'208";a="512431690"
 Received: from rudymgal-mobl1.amr.corp.intel.com (HELO [10.212.82.111])
  ([10.212.82.111])
  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Sep 2021 11:49:56 -0700
-Subject: Re: [PATCH v7 09/22] ASoC: qdsp6: q6afe-dai: move lpass audio ports
- to common file
+ 21 Sep 2021 11:50:00 -0700
+Subject: Re: [PATCH v7 16/22] ASoC: qdsp6: audioreach: add module
+ configuration command helpers
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  bjorn.andersson@linaro.org, broonie@kernel.org, robh@kernel.org
 References: <20210921133709.4973-1-srinivas.kandagatla@linaro.org>
- <20210921133709.4973-10-srinivas.kandagatla@linaro.org>
+ <20210921133709.4973-17-srinivas.kandagatla@linaro.org>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <767aebb5-9aa2-8d6c-2569-eaa03f47379f@linux.intel.com>
-Date: Tue, 21 Sep 2021 11:51:56 -0500
+Message-ID: <b2d677c6-db3b-1b4b-9121-dabdf56cb137@linux.intel.com>
+Date: Tue, 21 Sep 2021 12:09:45 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210921133709.4973-10-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20210921133709.4973-17-srinivas.kandagatla@linaro.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -89,17 +89,288 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 9/21/21 8:36 AM, Srinivas Kandagatla wrote:
-> Various Q6DSP frameworks will use LPASS Audio IP, so move all the hardware
-> specific details to a common file so that they could be reused across
-> multiple Q6DSP frameworks.
-> 
-> In this case all the audio ports definations can be moved to a common file
+> +static int audioreach_i2s_set_media_format(struct q6apm_graph *graph,
+> +					   struct audioreach_module *module,
+> +					   struct audioreach_module_config *cfg)
+> +{
+> +	struct apm_module_frame_size_factor_cfg *fs_cfg;
+> +	struct apm_module_param_data *param_data;
+> +	struct apm_i2s_module_intf_cfg *intf_cfg;
+> +	struct apm_module_hw_ep_mf_cfg *hw_cfg;
+> +	int ic_sz, ep_sz, fs_sz;
+> +	int rc, payload_size;
+> +	struct gpr_pkt *pkt;
+> +	void *p;
+> +
+> +	ic_sz = APM_I2S_INTF_CFG_PSIZE;
+> +	ep_sz = APM_HW_EP_CFG_PSIZE;
+> +	fs_sz = APM_FS_CFG_PSIZE;
+> +
+> +	payload_size = ic_sz + ep_sz + fs_sz;
+> +
+> +	pkt = audioreach_alloc_apm_cmd_pkt(payload_size, APM_CMD_SET_CFG, 0);
+> +	if (IS_ERR(pkt))
+> +		return -ENOMEM;
+> +
+> +	p = (void *)pkt + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
+> +	intf_cfg = p;
+> +
+> +	param_data = &intf_cfg->param_data;
+> +	param_data->module_instance_id = module->instance_id;
+> +	param_data->error_code = 0;
+> +	param_data->param_id = PARAM_ID_I2S_INTF_CFG;
+> +	param_data->param_size = ic_sz - APM_MODULE_PARAM_DATA_SIZE;
+> +
+> +	intf_cfg->cfg.intf_idx = module->hw_interface_idx;
+> +	intf_cfg->cfg.sd_line_idx = module->sd_line_idx;
+> +
+> +	switch (cfg->fmt & SND_SOC_DAIFMT_MASTER_MASK) {
 
-definitions
+SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK
 
-> so that AudioReach and Elite Framework can reuse this.
+> +	case SND_SOC_DAIFMT_CBC_CFC:
+> +		intf_cfg->cfg.ws_src = CONFIG_I2S_WS_SRC_INTERNAL;
+> +		break;
+> +	case SND_SOC_DAIFMT_CBP_CFP:
+> +		/* CPU is slave */
+> +		intf_cfg->cfg.ws_src = CONFIG_I2S_WS_SRC_EXTERNAL;
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	p += ic_sz;
+> +	hw_cfg = p;
+> +	param_data = &hw_cfg->param_data;
+> +	param_data->module_instance_id = module->instance_id;
+> +	param_data->error_code = 0;
+> +	param_data->param_id = PARAM_ID_HW_EP_MF_CFG;
+> +	param_data->param_size = ep_sz - APM_MODULE_PARAM_DATA_SIZE;
+> +
+> +	hw_cfg->mf.sample_rate = cfg->sample_rate;
+> +	hw_cfg->mf.bit_width = cfg->bit_width;
+> +	hw_cfg->mf.num_channels = cfg->num_channels;
+> +	hw_cfg->mf.data_format = module->data_format;
+> +
+> +	p += ep_sz;
+> +	fs_cfg = p;
+> +	param_data = &fs_cfg->param_data;
+> +	param_data->module_instance_id = module->instance_id;
+> +	param_data->error_code = 0;
+> +	param_data->param_id = PARAM_ID_HW_EP_FRAME_SIZE_FACTOR;
+> +	param_data->param_size = fs_sz - APM_MODULE_PARAM_DATA_SIZE;
+> +	fs_cfg->frame_size_factor = 1;
+> +
+> +	rc = q6apm_send_cmd_sync(graph->apm, pkt, 0);
+> +
+> +	kfree(pkt);
+> +
+> +	return rc;
+> +}
 
-What is 'Elite'? It's the only mention of this framework in this entire
-series. It was present in previous versions, I just noticed this today.
+> +int audioreach_map_memory_regions(struct q6apm_graph *graph, unsigned int dir, size_t period_sz,
+> +				  unsigned int periods, bool is_contiguous)
+> +{
+> +	struct apm_shared_map_region_payload *mregions;
+> +	struct apm_cmd_shared_mem_map_regions *cmd;
+> +	uint32_t num_regions, buf_sz, payload_size;
+> +	struct audioreach_graph_data *data;
+> +	struct gpr_pkt *pkt;
+> +	void *p;
+> +	int rc, i;
+> +
+> +	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
+> +		data = &graph->rx_data;
+> +	else
+> +		data = &graph->tx_data;
+> +
+> +	if (is_contiguous) {
+> +		num_regions = 1;
+> +		buf_sz = period_sz * periods;
+> +	} else {
+> +		buf_sz = period_sz;
+> +		num_regions = periods;
+> +	}
+> +
+> +	/* DSP expects size should be aligned to 4K */
+> +	buf_sz = ALIGN(buf_sz, 4096);
+> +
+> +	payload_size = sizeof(*cmd) + (sizeof(*mregions) * num_regions);
+> +
+> +	pkt = audioreach_alloc_apm_pkt(payload_size, APM_CMD_SHARED_MEM_MAP_REGIONS, dir,
+> +				     graph->port->id);
+> +	if (IS_ERR(pkt))
+> +		return -ENOMEM;
 
+return PTR_ERR(pkt) ?
+
+
+> +int audioreach_shared_memory_send_eos(struct q6apm_graph *graph)
+> +{
+> +	struct data_cmd_wr_sh_mem_ep_eos *eos;
+> +	struct gpr_pkt *pkt;
+> +	int rc = 0, iid;
+> +
+> +	iid = q6apm_graph_get_rx_shmem_module_iid(graph);
+> +	pkt = audioreach_alloc_cmd_pkt(sizeof(*eos), DATA_CMD_WR_SH_MEM_EP_EOS, 0,
+> +				       graph->port->id, iid);
+> +	if (IS_ERR(pkt))
+> +		return -ENOMEM;
+
+return PTR_ERR(pkt) ?
+
+> +
+> +	eos = (void *)pkt + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
+> +
+> +	eos->policy = WR_SH_MEM_EP_EOS_POLICY_LAST;
+> +
+> +	rc = gpr_send_port_pkt(graph->port, pkt);
+> +	kfree(pkt);
+> +
+> +	return rc;
+> +}
+
+> +int q6apm_unmap_memory_regions(struct q6apm_graph *graph, unsigned int dir)
+> +{
+> +	struct apm_cmd_shared_mem_unmap_regions *cmd;
+> +	struct audioreach_graph_data *data;
+> +	struct gpr_pkt *pkt;
+> +	int rc;
+> +
+> +	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
+> +		data = &graph->rx_data;
+> +	else
+> +		data = &graph->tx_data;
+> +
+> +	if (!data->mem_map_handle)
+> +		return 0;
+> +
+> +	pkt = audioreach_alloc_apm_pkt(sizeof(*cmd), APM_CMD_SHARED_MEM_UNMAP_REGIONS, dir,
+> +				     graph->port->id);
+> +	if (IS_ERR(pkt))
+> +		return -ENOMEM;
+
+return PTR_ERR(pkt) ?
+
+> +
+> +	cmd = (void *)pkt + GPR_HDR_SIZE;
+> +	cmd->mem_map_handle = data->mem_map_handle;
+> +
+> +	rc = audioreach_graph_send_cmd_sync(graph, pkt, APM_CMD_SHARED_MEM_UNMAP_REGIONS);
+> +	kfree(pkt);
+> +
+> +	audioreach_graph_free_buf(graph);
+> +
+> +	return rc;
+> +}
+> +EXPORT_SYMBOL_GPL(q6apm_unmap_memory_regions);
+> +
+> +int q6apm_graph_media_format_pcm(struct q6apm_graph *graph, struct audioreach_module_config *cfg)
+> +{
+> +	struct audioreach_graph_info *info = graph->info;
+> +	struct audioreach_sub_graph *sgs;
+> +	struct audioreach_container *container;
+> +	struct audioreach_module *module;
+> +
+> +	list_for_each_entry(sgs, &info->sg_list, node) {
+> +		list_for_each_entry(container, &sgs->container_list, node) {
+> +			list_for_each_entry(module, &container->modules_list, node) {
+> +				if ((module->module_id == MODULE_ID_WR_SHARED_MEM_EP) ||
+> +					(module->module_id == MODULE_ID_RD_SHARED_MEM_EP))
+> +					continue;
+> +
+> +				audioreach_set_media_format(graph, module, cfg);
+> +			}
+> +		}
+> +	}
+> +
+> +	return 0;
+> +
+> +}
+
+> +int q6apm_write_async(struct q6apm_graph *graph, uint32_t len, uint32_t msw_ts,
+> +		      uint32_t lsw_ts, uint32_t wflags)
+> +{
+> +	struct apm_data_cmd_wr_sh_mem_ep_data_buffer_v2 *write_buffer;
+> +	struct audio_buffer *ab;
+> +	struct gpr_pkt *pkt;
+> +	int rc, iid;
+> +
+> +	iid = q6apm_graph_get_rx_shmem_module_iid(graph);
+> +	pkt = audioreach_alloc_pkt(sizeof(*write_buffer), DATA_CMD_WR_SH_MEM_EP_DATA_BUFFER_V2,
+> +				   graph->rx_data.dsp_buf | (len << APM_WRITE_TOKEN_LEN_SHIFT),
+> +				   graph->port->id, iid);
+> +	if (IS_ERR(pkt))
+> +		return -ENOMEM;
+
+return PTR_ERR(pkt) ?
+
+> +
+> +	write_buffer = (void *)pkt + GPR_HDR_SIZE;
+> +
+> +	mutex_lock(&graph->lock);
+> +	ab = &graph->rx_data.buf[graph->rx_data.dsp_buf];
+> +
+> +	write_buffer->buf_addr_lsw = lower_32_bits(ab->phys);
+> +	write_buffer->buf_addr_msw = upper_32_bits(ab->phys);
+> +	write_buffer->buf_size = len;
+> +	write_buffer->timestamp_lsw = lsw_ts;
+> +	write_buffer->timestamp_msw = msw_ts;
+> +	write_buffer->mem_map_handle = graph->rx_data.mem_map_handle;
+> +	write_buffer->flags = wflags;
+> +
+> +	graph->rx_data.dsp_buf++;
+> +
+> +	if (graph->rx_data.dsp_buf >= graph->rx_data.num_periods)
+> +		graph->rx_data.dsp_buf = 0;
+> +
+> +	mutex_unlock(&graph->lock);
+> +
+> +	rc = gpr_send_port_pkt(graph->port, pkt);
+> +
+> +	kfree(pkt);
+> +
+> +	return rc;
+> +}
+> +EXPORT_SYMBOL_GPL(q6apm_write_async);
+> +
+> +int q6apm_read(struct q6apm_graph *graph)
+> +{
+> +	struct data_cmd_rd_sh_mem_ep_data_buffer_v2 *read_buffer;
+> +	struct audioreach_graph_data *port;
+> +	struct audio_buffer *ab;
+> +	struct gpr_pkt *pkt;
+> +	int rc, iid;
+> +
+> +	iid = q6apm_graph_get_tx_shmem_module_iid(graph);
+> +	pkt = audioreach_alloc_pkt(sizeof(*read_buffer), DATA_CMD_RD_SH_MEM_EP_DATA_BUFFER_V2,
+> +				   graph->tx_data.dsp_buf, graph->port->id, iid);
+> +	if (IS_ERR(pkt))
+> +		return -ENOMEM;
+
+return PTR_ERR(pkt) ?
+
+> +
+> +	read_buffer = (void *)pkt + GPR_HDR_SIZE;
+> +
+> +	mutex_lock(&graph->lock);
+> +	port = &graph->tx_data;
+> +	ab = &port->buf[port->dsp_buf];
+> +
+> +	read_buffer->buf_addr_lsw = lower_32_bits(ab->phys);
+> +	read_buffer->buf_addr_msw = upper_32_bits(ab->phys);
+> +	read_buffer->mem_map_handle = port->mem_map_handle;
+> +	read_buffer->buf_size = ab->size;
+> +
+> +	port->dsp_buf++;
+> +
+> +	if (port->dsp_buf >= port->num_periods)
+> +		port->dsp_buf = 0;
+> +
+> +	mutex_unlock(&graph->lock);
+> +
+> +	rc = gpr_send_port_pkt(graph->port, pkt);
+> +	kfree(pkt);
+> +
+> +	return rc;
+> +}
