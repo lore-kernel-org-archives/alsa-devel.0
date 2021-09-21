@@ -2,88 +2,96 @@ Return-Path: <SRS0=+sGq=OL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDFA7C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 21:17:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C2FCC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 21:24:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 683DE60F41
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 21:17:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 683DE60F41
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 1BAFE610A1
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Sep 2021 21:24:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1BAFE610A1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 17CB416AB;
-	Tue, 21 Sep 2021 23:16:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17CB416AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id B88341661;
+	Tue, 21 Sep 2021 23:23:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B88341661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632259065;
-	bh=+31WT2YpLY1PNFXYWVUJANX+51GF0audki7RRoE2ToY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1632259443;
+	bh=NyTR9Q2AmZwKC9gtmONDlhJRvDD9ALEm9Hy8ULvgYeo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=E0jgb/cIX10xgn4Uq0Ac44j9CD38fdJRAfzQvQhxoFeGhCG4HVIyhOPdSeT9r1jTF
-	 m7AKe05iEsU68fwlzne/KxiqC2fjArpqYe4XFwPccr9mPg24kZUnhCsaRCeblclPGc
-	 mF7GZyPczAsLBWComs36ttglvgNjNJ3XV0Z2SxDQ=
+	b=h8NVcG6izU3cdT8S6FkFuiq2rzybvMkFUa8050d3hmZhGJ5j/gC/0f4PdiizdjbIa
+	 ornKtO3Lenq/38NSxzf2skrlgRx1COPEx3o4SyuXKtjecRnd/Pi9fmZAhM+Z3VuYif
+	 5vYn8JC2K+KhtaM/l9LfyC9AG5vbCB75nqIs/PSE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C32A4F80552;
-	Tue, 21 Sep 2021 23:12:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4D514F8016E;
+	Tue, 21 Sep 2021 23:23:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B11B9F80519; Tue, 21 Sep 2021 23:12:14 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 298DAF80268; Tue, 21 Sep 2021 23:23:12 +0200 (CEST)
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com
+ [IPv6:2a00:1450:4864:20::12a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1B170F80519
- for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 23:11:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B170F80519
+ by alsa1.perex.cz (Postfix) with ESMTPS id 42648F8016E
+ for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 23:23:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42648F8016E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="jU4XvWbo"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A724C60F38;
- Tue, 21 Sep 2021 21:11:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1632258717;
- bh=+31WT2YpLY1PNFXYWVUJANX+51GF0audki7RRoE2ToY=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=jU4XvWboZSzRPKhb/vn1o8OuJnTe2Ny0E2jx4Tf53rwm256N9xgl+zasRtk8ZroZJ
- 11qElLnYgEg297JHkJJSYr/LEMmrCMSWx4Dc1M55boV+oLSKKx+FnP4ty9R9dhTXGV
- TooIeChgV28w/kaYBdSnisNZTQMyYYag+of+sPy2H0Vp3lWg1RmQMY2oxSU3IpjpMy
- 41OcvZxyOzjubg5J3BVAjRsMWNhf2fTIeUBCKLBs5TFq2vbLUIQKYvag9ZunLs/YzW
- qo7lRKFGJPFaCAFnmRC930iqc/mACDbUzXKZNFgXbqJ50TbontS94/3iN/caL+aOuS
- 3sdpip5mvkVbw==
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
- Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
- Shengjiu Wang <shengjiu.wang@gmail.com>
-Subject: [PATCH 13/16] ASoC: imx-sgtl5000: Update to modern clocking
- terminology
-Date: Tue, 21 Sep 2021 22:10:37 +0100
-Message-Id: <20210921211040.11624-13-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210921211040.11624-1-broonie@kernel.org>
-References: <20210921211040.11624-1-broonie@kernel.org>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="lI3L7AvT"
+Received: by mail-lf1-x12a.google.com with SMTP id e15so2871162lfr.10
+ for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2021 14:23:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=yMGBZJhgLdjiD4sy6cvbQdtvYs//rHG8iQfh3SyGQf8=;
+ b=lI3L7AvTi8Iwun3OAtga1QWsPwv819yMUHiXdIjyijYaXbZGLRJdlBdPWNnhc/W+CP
+ GtHqPnf6DG/G+NmbIGEOxKIELz32liqbbzAHUW4HlqGaqQ65VHFcYKCOfIJrDTVKHaDi
+ nKkB2LWkAtVz0b3mjluoh3WtLbSVOxCB4012SXFWbrlrnjl9cAj0wL8pSbswY9HUAMb0
+ p2GtI7koz10lmy87cAztrXAFKzLJJNJoCdbeewQCwGL+2Or3EARVRV4Qlkdncywzom65
+ Aaw8Q2IDjRq2yQgOefyOkSG0NuyrXsLaAdILz82GXpcZQhvR4/OnRZdoW5D8/ivXT4ud
+ 0gnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=yMGBZJhgLdjiD4sy6cvbQdtvYs//rHG8iQfh3SyGQf8=;
+ b=6veRILkimGD8KNsuQf73cT8gM9Ny+T1xkg0m5uFSdYRIFO79ST3UItG4Khupr8z52n
+ p21Zd6wnS0tOezSFBh8N16haeBiyCwXI8TdDJhgg6T6LLCBMrToj6qMK+TUVTWndId4f
+ jTcr4+oE8O4CBOtgi67lEpcFOWRmgRRwb4fxQrVCtM5rJPE8uhSInXAJ2OVWdXQFze+w
+ KQo5RiHn9tsZe2ZHfHgJ8VdT4aoIrO/CoCwIQpc3e9yNoYQSqEhGRipMiq8MXDpQ6Gwk
+ S4AIVT5gueB54Bk7GWVpy+xBl4y8GNXCfSqjRWXiRN8dL56Zo8IQs+o3beDInSlYgdqY
+ GVbw==
+X-Gm-Message-State: AOAM530qS1NVcCV9h1uixplEXiJhDglGEpI7wnwbB/m4Daw54vY7ZeV0
+ DS78CuXZUgqPiBebEmEDfv62xRNrHPLp+pIxU60=
+X-Google-Smtp-Source: ABdhPJxh9a81q0IGJIP/0g9LetfBcvltXmBhzVLEXSEszysh/R+YS6sunrAf1NcvezczNUoT95Ngg/cgfPC3kf6k6sE=
+X-Received: by 2002:ac2:4bc1:: with SMTP id o1mr24597919lfq.113.1632259382841; 
+ Tue, 21 Sep 2021 14:23:02 -0700 (PDT)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=884; h=from:subject;
- bh=+31WT2YpLY1PNFXYWVUJANX+51GF0audki7RRoE2ToY=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBhSknlajJbtErs5M2JHhrPL9v3ObE8KSKu2qOqnXTt
- /WwinpCJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYUpJ5QAKCRAk1otyXVSH0KjUB/
- 4v2feYY34VgPgN0A1XUuH5RRkA+dqcx4F9O7LxEN2O7Ip/BGUMaDASCQpHTMyALpQUA1XNLGcrSono
- Cl8g6ZYK8//R87uzsiBBxgzPJOlDLYabFjDgwB8/o2R/U0Q9P0OowPjZ0BUMVulOeogPZ0G5vuCXIi
- juVLZ/8n/xHzcU/ANZ4IT4wlDYNk8+2RflNIVDMwEpnhYBy7azn0/0lTtGMNItGPMz8nUXis/BB6I1
- 5ZdA0CA/EoPtdnyplRNJ+IvRl66nVw7af0KicT/eNoaQLqiBbpSpJQtV5B/6ZM2boFNqhGx5090Zax
- wErUjnSY0/++1GIG1VweYi/sBz29ao
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+References: <20210921211040.11624-1-broonie@kernel.org>
+ <20210921211040.11624-3-broonie@kernel.org>
+In-Reply-To: <20210921211040.11624-3-broonie@kernel.org>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Tue, 21 Sep 2021 18:22:51 -0300
+Message-ID: <CAOMZO5DFBPXb9LEGtGHCxgKR81iD8Kr0TTxZ5dmnwWCbMThG0g@mail.gmail.com>
+Subject: Re: [PATCH 03/16] ASoC: fsl-audmix: Update to modern clocking
+ terminology
+To: Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+ "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE"
+ <linux-arm-kernel@lists.infradead.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,27 +107,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-As part of moving to remove the old style defines for the bus clocks update
-the imx-sgtl5000 driver to use more modern terminology for clocking.
+On Tue, Sep 21, 2021 at 6:11 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> As part of moving to remove the old style defines for the bus clocks update
+> the fsl-audmix driver to use more modern terminology for clocking.
+>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> ---
+>  sound/soc/fsl/fsl_audmix.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/sound/soc/fsl/fsl_audmix.c b/sound/soc/fsl/fsl_audmix.c
+> index f931288e256c..db2dde597edc 100644
+> --- a/sound/soc/fsl/fsl_audmix.c
+> +++ b/sound/soc/fsl/fsl_audmix.c
+> @@ -257,10 +257,10 @@ static int fsl_audmix_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+>                 return -EINVAL;
+>         }
+>
+> -       /* For playback the AUDMIX is slave, and for record is master */
+> -       switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+> -       case SND_SOC_DAIFMT_CBM_CFM:
+> -       case SND_SOC_DAIFMT_CBS_CFS:
+> +       /* For playback the AUDMIX is provider, and for record is consumer */
+> +       switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/fsl/imx-sgtl5000.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think the comment should be the other way around:
 
-diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
-index f45cb4bbb6c4..2f1acd011042 100644
---- a/sound/soc/fsl/imx-sgtl5000.c
-+++ b/sound/soc/fsl/imx-sgtl5000.c
-@@ -153,7 +153,7 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
- 	data->dai.platforms->of_node = ssi_np;
- 	data->dai.init = &imx_sgtl5000_dai_init;
- 	data->dai.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
--			    SND_SOC_DAIFMT_CBM_CFM;
-+			    SND_SOC_DAIFMT_CBP_CFP;
- 
- 	data->card.dev = &pdev->dev;
- 	ret = snd_soc_of_parse_card_name(&data->card, "model");
--- 
-2.20.1
+       /* For playback the AUDMIX is consumer, and for record is provider */
 
+Other than that, the series looks good.
