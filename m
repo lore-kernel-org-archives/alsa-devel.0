@@ -2,73 +2,72 @@ Return-Path: <SRS0=ED1W=OM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AE6FC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Sep 2021 14:24:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95FB0C4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Sep 2021 14:24:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2D81360F56
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Sep 2021 14:24:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2D81360F56
+	by mail.kernel.org (Postfix) with ESMTPS id DF61960F56
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Sep 2021 14:24:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DF61960F56
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 925CC15E2;
-	Wed, 22 Sep 2021 16:23:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 925CC15E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1AD381655;
+	Wed, 22 Sep 2021 16:23:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1AD381655
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632320657;
-	bh=I4JaBMBq3FqO33IuXZhnzeFZjFe/WGM1WxBSLHEcIv4=;
+	s=default; t=1632320668;
+	bh=LonW076zV+ZmHH0/C7TgTIc7SC65dCJvPzK9G/Gby3U=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Fnr8+lCw1GEv/2QE7YK+37Pn1nwebolISOpYNFGILmriHpwaax3ECZaLXLFZrGvmh
-	 ISyqc8S5fnNI0L5mjpYzYN4c1R0+mGU5AmHGa9UEBTjD6z48a4M/32Ze6ZHBW5rg3A
-	 Ei9YpQGHrRY7AbUkiAWkbpCgKmnIHrEDFC8ag0dw=
+	b=Q4nds0aI2tgn1jflEvRwg6rTVUdBSCPJReI567o9SAOCGMh8znxMvXzGUCthP1pzd
+	 aGJMchCt1KXdBbheVTjiFZwN4gRDY4sr/O82JSogtcUsMk15EaKr2GoP8IFtUt4o7V
+	 t8nykqCdyaK+IOVsEA1X5SnQlZeKubzMENZd/bGU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E7F5FF802A0;
-	Wed, 22 Sep 2021 16:22:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 95C72F804D8;
+	Wed, 22 Sep 2021 16:22:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5E68CF80279; Wed, 22 Sep 2021 16:22:43 +0200 (CEST)
+ id CDA15F80246; Wed, 22 Sep 2021 16:22:44 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 005BCF8014E
- for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2021 16:22:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 005BCF8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id EA701F8025D
+ for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2021 16:22:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA701F8025D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="vG5Z5JUR"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A1786120E;
- Wed, 22 Sep 2021 14:22:31 +0000 (UTC)
+ header.b="gMbcjzNu"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AAEEB611C9;
+ Wed, 22 Sep 2021 14:22:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1632320552;
- bh=I4JaBMBq3FqO33IuXZhnzeFZjFe/WGM1WxBSLHEcIv4=;
+ s=k20201202; t=1632320557;
+ bh=LonW076zV+ZmHH0/C7TgTIc7SC65dCJvPzK9G/Gby3U=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=vG5Z5JUR3JXwVWJidPdZVATV2PLkwziiPrgSwrRijnbeGIz1083V2GWZehJeBLReL
- p++eH240id5321byVFgX1hilQ9Z7XPu7n5LejE8atc/FiGD097sIAq0RmaPgNatY/N
- bOfeIUHInmlfWTwgC0zNRJ3qi0FzRnpL18LWCjADt5kRmhPQy65n8lUH9TY0r+BNoy
- O0KueQQviBmRvTOBMTL5SpDpz5E5prWo9KFi6IWz1pGN2mb43XxmK25PiOZzXIze7P
- XIj0X8LXeu5Y8mycOhTwTWAn3a/c4aY2Lu3gbOwUV4//byyd0V0uv7JbRMxWLWcDOi
- 2NmjXAp8qVI4A==
+ b=gMbcjzNu4FHJOK0rM+DzjX6Pg+XPTbuTN1x44tvD4+vzQnKBWpak8IugfmZjMIPLz
+ HUXREFxvBVVw28NcJUD52DIjkPaTpFgLTkTYAmmHpczWayJoQHwILX7bBSts2AmJsb
+ ZDQMGJQXJZ16JSG7LUdWzzycsC70Ys4M1WFkK4VHZHKNJxwbM9z0YF3/GFQrdyUPmR
+ ZpcrsFvMZRwYbC0T15YDokawxhlJ+xIKCGnyT+QUgN54mDCf/mUhaudVBjDQZzlSa0
+ iNqGl1icVYsd7fTSGp0ntMrV2MhViw2C5OVLS6LDWsKGlRV0HItv16cVRyumChwG0X
+ NdrgGLavYh+lw==
 From: Mark Brown <broonie@kernel.org>
 To: Fabio Estevam <festevam@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
  Mark Brown <broonie@kernel.org>, Shengjiu Wang <shengjiu.wang@gmail.com>,
  Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>
-Subject: Re: [PATCH v2 01/16] ASoC: eureka-tlv320: Update to modern clocking
+Subject: Re: [PATCH 01/16] ASoC: eureka-tlv320: Update to modern clocking
  terminology
-Date: Wed, 22 Sep 2021 15:21:39 +0100
-Message-Id: <163232020287.53242.69105803133049993.b4-ty@kernel.org>
+Date: Wed, 22 Sep 2021 15:21:41 +0100
+Message-Id: <163232020286.53242.17461329936887711763.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210921213542.31688-1-broonie@kernel.org>
-References: <20210921213542.31688-1-broonie@kernel.org>
+In-Reply-To: <20210921211040.11624-1-broonie@kernel.org>
+References: <20210921211040.11624-1-broonie@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -89,7 +88,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 21 Sep 2021 22:35:27 +0100, Mark Brown wrote:
+On Tue, 21 Sep 2021 22:10:25 +0100, Mark Brown wrote:
 > As part of moving to remove the old style defines for the bus clocks update
 > the eureka-tlv320 driver to use more modern terminology for clocking.
 > 
