@@ -2,70 +2,79 @@ Return-Path: <SRS0=ED1W=OM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E588C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Sep 2021 12:48:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E3AEC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Sep 2021 14:23:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2A612600D4
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Sep 2021 12:47:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2A612600D4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 356F4611C9
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Sep 2021 14:23:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 356F4611C9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E6DCD826;
-	Wed, 22 Sep 2021 14:47:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6DCD826
+	by alsa0.perex.cz (Postfix) with ESMTPS id CAA65826;
+	Wed, 22 Sep 2021 16:22:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CAA65826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632314877;
-	bh=rFGozPr+54uyJZJqRRbM2Rf9/Cs4yd4PpAh1PsYjm4Y=;
-	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=TaiSubdMR2pCdim6M9+z5FZM282GaiwHlfQUBSnY0prWiGGJshYYWB2J4b2Kw/O9t
-	 qrpVX2hRDioQ1JKX9K96CozX+87Qg+ZwxFhUvMuzAOOGP9e1kFR2dvOok5Ng1WKeUb
-	 FGqvXhIZFf9WYHdNmNXnsWdBFDh4s5pr8k+LkRYs=
+	s=default; t=1632320615;
+	bh=3znKXZEw69RZVO7GNKBBy2vVDp1Qy2/xtsvfwgxbMVE=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=H1qSJ/V6YLkMF5Td+0Mc4ZkDrQKF1byGMO9i0vs8na1hMqu8pZ4NKvKBtJhzYsbF/
+	 dCe0+JFOSfEEg1MXXmc6R0H2BtTjr6DKcbHNPf6z0fQym9TlrqFIn1ikdSgZO3IWcY
+	 LbrPrSRyNQMgFy04OyrgUvxl3V690r8oI/D0iR1M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 79C26F80246;
-	Wed, 22 Sep 2021 14:47:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53B73F8025D;
+	Wed, 22 Sep 2021 16:22:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D9E40F8025D; Wed, 22 Sep 2021 14:47:05 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 4A536F802A0; Wed, 22 Sep 2021 16:22:43 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7E98CF8014E
- for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2021 14:47:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E98CF8014E
-X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="203738024"
-X-IronPort-AV: E=Sophos;i="5.85,314,1624345200"; d="scan'208";a="203738024"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Sep 2021 05:46:58 -0700
-X-IronPort-AV: E=Sophos;i="5.85,314,1624345200"; d="scan'208";a="550232696"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Sep 2021 05:46:56 -0700
-Date: Wed, 22 Sep 2021 15:40:19 +0300 (EEST)
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-X-X-Sender: kvehmane@eliteleevi.tm.intel.com
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, 
- Chris Wilson <chris@chris-wilson.co.uk>, 
- Daniel Vetter <daniel.vetter@ffwll.ch>, 
- Jani Nikula <jani.nikula@linux.intel.com>
-Subject: hda: how to implement component master_unbind?
-Message-ID: <alpine.DEB.2.22.394.2109221456080.3554566@eliteleevi.tm.intel.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0B005F80246
+ for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2021 16:22:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B005F80246
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="JhHuo6oc"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 093D3611EE;
+ Wed, 22 Sep 2021 14:22:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1632320554;
+ bh=3znKXZEw69RZVO7GNKBBy2vVDp1Qy2/xtsvfwgxbMVE=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=JhHuo6ocGb4Ot7QOPLuqBUNr/NH6ObSg3cO8+Ip3BLpXy1DMItfF20E6lv69OM/pl
+ qCwvf/2si716QToqPMHbTm6C1ZZPXi6CbhCiedJ7vaF3/2HURb4JrFjgxd3OX+P5Ps
+ MdxtJ6uyogMyExBSZsNUjTZI02E8arUdp0Lg3L5GpPngZjm8kn3ZhM+vBBb4CrLw16
+ PFIViryKkxAP+tXd0wBUd0BQm9Y6Df1Nrn942eb0dIFBITDUL876xRrRYpKpbVuo8W
+ BwldfpN8FYB6oBpdxKrtAB3X3Q6myBnrl/DdRR+GrE+YiF3eeFcHW9uHUmpSQ7Dtna
+ Jg8oQkTriSiKQ==
+From: Mark Brown <broonie@kernel.org>
+To: Benson Leung <bleung@chromium.org>,
+ Cheng-Yi Chiang <cychiang@chromium.org>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+ Guenter Roeck <groeck@chromium.org>, Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: cros_ec_codec: Use modern ASoC DAI format
+ terminology
+Date: Wed, 22 Sep 2021 15:21:40 +0100
+Message-Id: <163232020287.53242.3096961203697456839.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210920170414.17903-1-broonie@kernel.org>
+References: <20210920170414.17903-1-broonie@kernel.org>
 MIME-Version: 1.0
-Content-ID: <alpine.DEB.2.22.394.2109221526520.3554566@eliteleevi.tm.intel.com>
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,81 +90,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Takashi et al,
+On Mon, 20 Sep 2021 18:04:14 +0100, Mark Brown wrote:
+> As part of moving to remove the old style defines for the bus clocks update
+> the cros_ec_codec driver to use more modern terminology for clocking.
+> 
+> 
 
-I've been having multiple discussions with our i915 team w.r.t. audio 
-driver behaviour when the aggregate component is unbound, triggered by 
-i915 unbind. This came up again in the recent regression with devres 
-allocations and I now dug into the topic again.
+Applied to
 
-In short, I'm puzzled how to really implement this. ALSA (or ASoC) don't 
-really have support for individual components of a card disappearing in a 
-hotplug fashion. At card level, we do have such support (USB, firewire and 
-recent work for PCI hotplug). But not individual components of a card 
-getting unplugged.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-In current code we have this:
-static void hdac_component_master_unbind(struct device *dev)
-{
-»       struct drm_audio_component *acomp = hdac_get_acomp(dev);
+Thanks!
 
-»       if (acomp->audio_ops && acomp->audio_ops->master_unbind)
-»       »       acomp->audio_ops->master_unbind(dev, acomp);
-»       module_put(acomp->ops->owner);   
-»       component_unbind_all(dev, acomp);
-»       WARN_ON(acomp->ops || acomp->dev);
-}
+[1/1] ASoC: cros_ec_codec: Use modern ASoC DAI format terminology
+      commit: 94767044f0c5b66de79a03f1ed02e2515da4fab5
 
-... when e.g. i915 driver is unbound (but could be any driver using the 
-component framework, not jus Intel hw), i915 calls component_del() and HDA
-gets call to the above. After this, acomp ops are null are audio no longer
-has ability to talk to i915 driver (which makes sense given it's unbound).
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-If audio was runtime suspended, this kind of works (but relies on some 
-good luck). Upon HDA controller resume, we note acomp ops are NULL and 
-HDMI/DP operations (like snd_hdac_display_power()) silently become no-ops.
-PCM streaming will go to /dev/null, but this is ok'ish since no monitor
-can be connected anyways.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-If audio was active, we start to get warnings or worse. Audio expects hw 
-display codec to be powered and programmed, but suddenly it mey lose 
-state. If the audio controller is actually part of the display hardware 
-(e.g. discrete GPUs), then controller registers can stop functioning (they
-should be still available, but given the main diplay driver is unbound,
-odds of suprising behaviour are high).
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-So this is less than ideal. I've been looking at options:
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-1) prevent/block the unbind if audio device is busy
-
-The component framework does not allow individual components to return 
--EBUSY, so there's no way to let others know that unbind is not possible 
-now.
-
-This would force anyone testing DRM driver unbind to first unbind
-the audio driver and stop any active audio use-cases if needed.
-
-2) unbind the ALSA card
-
-I've experimented doing a device_unregister() from the above callback, but 
-this has not really worked (onion peeling exercise of new probelms). The 
-code is shared by multiple controllers, so getting a handle to an snd_card 
-object is not straighforward (drvdata is differnet for SOF and 
-snd-hda-intel for instance). But with some new work, maybe we could call
-snd_card_disconnect() to detach the card and inform user-space.
-
-3) continue as-is and try to fix bugs
-
-If audio is active, maybe we could force a acomp->put_power() to ensure
-a clean unregister of the display part. But this leaves a big chunk of 
-issues especially with HDA controllers that require the display to
-be powered on, to function.
-
-..
-
-Any ideas, and/or has there been prior work? It seems Takashi it's been 
-mostly you who has been active working on the acomp integration recently. 
-I also included Chris, Daniel and Jani who've had patches to 
-hdac_component.c.
-
-Br, Kai
+Thanks,
+Mark
