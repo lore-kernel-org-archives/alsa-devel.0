@@ -2,110 +2,90 @@ Return-Path: <SRS0=duqq=OS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B4ADC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Sep 2021 08:32:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E43BC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Sep 2021 08:40:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CBD2F61052
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Sep 2021 08:32:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CBD2F61052
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 8CF73611CA
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Sep 2021 08:40:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8CF73611CA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 32572168E;
-	Tue, 28 Sep 2021 10:31:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32572168E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8348516A0;
+	Tue, 28 Sep 2021 10:39:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8348516A0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632817942;
-	bh=MMMzR5cLQW+1lGaPMJH9qXVocUgo0KB5fgvMQ0YWPkA=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1632818418;
+	bh=4vgPHoLHR5J37aB8fN3PEmi+MFUiyS2Zs84VroVwYpY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qqcW9HoyRBv7d7CnJCA+rQMxix1+icBk/EyiKFxpD5vik9ACV1QkYk8hGdEgOyv5z
-	 pJnarWvi1cqRmxZpXQZfJ6Lv+L6lPu5MCIWW+oAu7F9MUhLD8GWr3R45gvyzdyXVEU
-	 +vuZcUnTVBc/S6ksM5IpdgFC36qyktCYqdO1PI7w=
+	b=O7MvB8+PPJKFcc2rdy0s1Hoyb/yEy4nvLWmNjbwdnzrpEd/u+vag+ZKJzUyhDOHGZ
+	 B4X4sVeUg7eMqneKCbIUOHmUJToat8V9zjeArvLdy0jqSOFAIp2tCGT7wes4QUa2IN
+	 1A/HEFv0xGh8sDVbOTvGtH+Wwt5FikC3yWFZRjrU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BACEAF8032C;
-	Tue, 28 Sep 2021 10:31:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 11BC9F80161;
+	Tue, 28 Sep 2021 10:39:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DD082F80105; Tue, 28 Sep 2021 10:31:29 +0200 (CEST)
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
- [IPv6:2a00:1450:4864:20::32f])
+ id 302BCF802A0; Fri, 24 Sep 2021 19:16:10 +0200 (CEST)
+Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com
+ [IPv6:2607:f8b0:4864:20::a32])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8B877F80105
- for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2021 10:31:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B877F80105
+ by alsa1.perex.cz (Postfix) with ESMTPS id DEA62F80246
+ for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2021 19:16:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DEA62F80246
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="Iw9B8dZq"
-Received: by mail-wm1-x32f.google.com with SMTP id v127so2762664wme.5
- for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2021 01:31:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=YmNYTNBGpZvwgNJ/3llhM6f6fKai+uXQmO5CueqZOHU=;
- b=Iw9B8dZqcRBTDvMkHFJwYFI6cS196dXNMLcqp+SpVn27CUxZ72207rqrBMBRVmYSdS
- AKWkGAC2ASDfYg9nsHaSeou/w02RfowYKr6/Gp1KOQIHNdF1fO1dg4V31ml4gDZR5sSy
- AMYRXIPaD0TMoab+JHxtXFwVrIOM8pbq6D4xrYqSIOeUR9p2IyYWMxORLxroadaJE/6b
- Ez9W1dY2gAzaIlhNdM5yest9yeGSsAMEUBOtpTnbqa7I6XxchvtgadxlX7g7s9iNvyWk
- 9Ka0VxbN4MHmEH/gYfJXb6u4O1dj2O67RwNsYiiMNy0zV+oSCeEh2QV1uiO0YjsHGNLQ
- JStw==
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="IoKp49xY"
+Received: by mail-vk1-xa32.google.com with SMTP id h132so4219336vke.8
+ for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2021 10:16:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=4vgPHoLHR5J37aB8fN3PEmi+MFUiyS2Zs84VroVwYpY=;
+ b=IoKp49xYcO4/EuZ6e+bWpkjtqdsq1u1517lGUS1Ew229StFsXk+mSJAO4UEwL3DvC6
+ KHY7bvmYxHVEFDRyA7v1LpyxOX0LgioEaMVBMpKrDZjaDFPkoCCpj4N61g/MHAFFpUFZ
+ ir75v4cbVjvrz68RqZv2VndWHOSP1C5F2ou3jbl+uU0Jg1tDoP0k0Its9A47eOunTtdO
+ LkvtVlCxfSl5jwJ9QCxAEtnpUkOS1jmojoLIe+At9Qu/RLaVj9UGRF6jagDRdlWBBeVA
+ UAd/5Ya63QdVJMaW3hp89CB9TwnN294pRmnwjiCrEltFNJuQ/yaz0o6apDqC0HhwKIJv
+ 0aoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=YmNYTNBGpZvwgNJ/3llhM6f6fKai+uXQmO5CueqZOHU=;
- b=6AsKAyyWGqP7/QMODM3ksE0simj5fH6FPDiQS4odN+R8WCNtuC4Qn5dufrPVoPw3Mq
- 7XdrvEDigp0eUpy9hqrWvh+bW9SSL2k59A9jvPygcA6TTytQkIKzgm/6qHCD9epntBc+
- KH+IM+l6WP9AwuIZHmEkrYEsI0NaTiVbubnzdUx5NSaIsa03c5IqO79n9pURTzPurZop
- zi9Yc3qi/umPSUmHOq0BjK3YnckKq7QyA8wwtmNKiI+19+WtkCRLN1+7AM2cO8SJGkv+
- QWeNGU76feAT3Wl3bj9MiOp69V/vy94FTh0+IRkSDsmwvlQ4Y91kjaNsA41RPsPIeWX0
- V8WQ==
-X-Gm-Message-State: AOAM5317SjjCP+zvbB8ao7YYeSg0NLC1kkTNjsfD6OIGsCaOVQwXG0vA
- ffqI3MwVo5HbNFVW+7KlsjCFaQ==
-X-Google-Smtp-Source: ABdhPJz6fv4dVDrrADbMFfj+UPr/oF1PoftGT0gkA4xkC1zU4drUe8tTSfrMzDQxXRS90YiKxN0lKA==
-X-Received: by 2002:a1c:28b:: with SMTP id 133mr2103589wmc.15.1632817881868;
- Tue, 28 Sep 2021 01:31:21 -0700 (PDT)
-Received: from [192.168.86.34]
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.googlemail.com with ESMTPSA id y13sm1331454wrm.48.2021.09.28.01.31.20
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 28 Sep 2021 01:31:21 -0700 (PDT)
-Subject: Re: [PATCH v2 4/5] ASoC: codecs: tx-macro: Update tx default values
-To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>, agross@kernel.org,
- bjorn.andersson@linaro.org, lgirdwood@gmail.com, broonie@kernel.org,
- robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
- perex@perex.cz, tiwai@suse.com, rohitkr@codeaurora.org,
- linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- swboyd@chromium.org, judyhsiao@chromium.org
-References: <agross@kernel.org; bjorn.andersson@linaro.org;
- lgirdwood@gmail.com; broonie@kernel.org;robh+dt@kernel.org;
- plai@codeaurora.org; bgoswami@codeaurora.org; perex@perex.cz;
- tiwai@suse.com;srinivas.kandagatla@linaro.org; rohitkr@codeaurora.org;
- linux-arm-msm@vger.kernel.org; alsa-devel@alsa-project.org;
- devicetree@vger.kernel.org; linux-kernel@vger.kernel.org;
- swboyd@chromium.org; judyhsiao@chromium.org;>
- <1632313878-12089-1-git-send-email-srivasam@codeaurora.org>
- <1632313878-12089-5-git-send-email-srivasam@codeaurora.org>
- <e65c77f4-766c-a5ce-9cbd-f1697c1be28c@linaro.org>
- <20ddc4ea-e99c-5492-1931-be1999655563@codeaurora.org>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <da23bfce-23cd-0869-d752-b0713136072a@linaro.org>
-Date: Tue, 28 Sep 2021 09:31:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=4vgPHoLHR5J37aB8fN3PEmi+MFUiyS2Zs84VroVwYpY=;
+ b=mZKS7RDSuleq//GD9ByL31B35RQzqVUa08NMr+v0iHkuSGgUX/LPwBQWHdLYGEBmbk
+ d/OwJLRnBZPkPI7/c+vHGg88PZVszVXqlrjBarFu6N5mxWhINRl70x2NmBReyC1v1Y73
+ RfPZ/566bSprbwKlLAEPs2yTkuUS3SvuQpnkN8og8gJBgwvVHS5Th5jyAxugSo+gGpMR
+ 0np9Ejf1CHbM+PdPf6dxX8nhfKXTUNcaOiuiwVLfhwUK5Y1d9dkPPT4mK0eBHdkBTbJy
+ G+7d5FFYtlCWGHAPvXdlQSJiY3OeNkL74dxw3/rANCqU6PPpsCz6j1pg9v8Nu2ZW+GAu
+ 8fgw==
+X-Gm-Message-State: AOAM532L57DED8C9LPql628991ObI3BPm3Rl7IKMPTnfEA467BPp2K0j
+ JpqvTKULaKjwUfy4hxWWyZDKnwGGGZohGvPST08=
+X-Google-Smtp-Source: ABdhPJyEOKkE+EZT+y+of+PkcwSf0fYp6EMqhRuv+NoPy8EO/0ay7VM8BXMSo/MXmdWEWXzA1M1B8SWi6pNS9wUU3Kc=
+X-Received: by 2002:a1f:2e57:: with SMTP id u84mr9299393vku.16.1632503761741; 
+ Fri, 24 Sep 2021 10:16:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20ddc4ea-e99c-5492-1931-be1999655563@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Cc: Venkata Prasad Potturu <potturu@codeaurora.org>
+References: <CAHhAz+i=3NDuxK2rZZY6N18=OTbkna3VMVpx4nNgF0vyq3JmQA@mail.gmail.com>
+ <324112.1632501120@turing-police>
+ <CAHhAz+jNCd=cw-bohcoiAA2UhNZYSFLX07qEV-T2p+KAsVHhAQ@mail.gmail.com>
+In-Reply-To: <CAHhAz+jNCd=cw-bohcoiAA2UhNZYSFLX07qEV-T2p+KAsVHhAQ@mail.gmail.com>
+From: jim.cromie@gmail.com
+Date: Fri, 24 Sep 2021 11:15:35 -0600
+Message-ID: <CAJfuBxxAEXnPxY-nx4JEe+fzH7J+nLYzD9zLCSzgjViBHsQbPA@mail.gmail.com>
+Subject: Re: ALSA kernel projects - for academic purposes
+To: Muni Sekhar <munisekharrms@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailman-Approved-At: Tue, 28 Sep 2021 10:39:26 +0200
+Cc: alsa-devel <alsa-devel@alsa-project.org>,
+ =?UTF-8?Q?Valdis_Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+ linux-sound@vger.kernel.org, kernelnewbies <kernelnewbies@kernelnewbies.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -121,82 +101,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Fri, Sep 24, 2021 at 10:58 AM Muni Sekhar <munisekharrms@gmail.com> wrot=
+e:
+>
+> On Fri, Sep 24, 2021 at 10:02 PM Valdis Kl=C4=93tnieks
+> <valdis.kletnieks@vt.edu> wrote:
+> >
+> > On Fri, 24 Sep 2021 19:34:59 +0530, Muni Sekhar said:
+> > > What small projects would you suggest to a novice with the ALSA
+> > > kernel. The aim is to develop a familiarity with the ALSA kernel
+> > > source code, and also to submit it for academic purposes.
+> >
+> > A good place to start is getting a good handle on what the phrase "the =
+ALSA
+> > kernel" even means.
+> Basically looking for kernel space audio subsystem projects rather
+> than its user-space library(alsa-lib) and utilities(alsa-utils).
+
+why ?
+if your interest is better sound, then improving user-space is going
+to be more productive.
+
+also, theres now pipewire, which is new, and all the buzz.
+its apparently the future of linux audio
 
 
-On 27/09/2021 17:42, Srinivasa Rao Mandadapu wrote:
-> 
-> On 9/27/2021 4:12 PM, Srinivas Kandagatla wrote:
-> Thanks for your time Srini!!
->>
->> On 22/09/2021 13:31, Srinivasa Rao Mandadapu wrote:
->>> Update mic control register default values to hardware reset values
->>>
->>> Fixes: c39667ddcfc5 (ASoC: codecs: lpass-tx-macro: add support for 
->>> lpass tx macro)
->>>
->>> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
->>> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
->>> ---
->>>   sound/soc/codecs/lpass-tx-macro.c | 6 +++---
->>>   1 file changed, 3 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/sound/soc/codecs/lpass-tx-macro.c 
->>> b/sound/soc/codecs/lpass-tx-macro.c
->>> index e980b2e..66c39fb 100644
->>> --- a/sound/soc/codecs/lpass-tx-macro.c
->>> +++ b/sound/soc/codecs/lpass-tx-macro.c
->>> @@ -279,7 +279,7 @@ static const struct reg_default tx_defaults[] = {
->>>       { CDC_TX_CLK_RST_CTRL_SWR_CONTROL, 0x00},
->>>       { CDC_TX_TOP_CSR_TOP_CFG0, 0x00},
->>>       { CDC_TX_TOP_CSR_ANC_CFG, 0x00},
->>> -    { CDC_TX_TOP_CSR_SWR_CTRL, 0x00},
->>> +    { CDC_TX_TOP_CSR_SWR_CTRL, 0x60},
->>
->> This does not make sense as this register only has one bit to control.
->> Why do we even need to change this, can you please explain what 
->> happens if we do not change this?
-> 
-> This register change is not making any impact. But when verified , reset 
-> state of this register is 0x60. so is the reason for change.
-> 
-> Will revert it and post again.
-> 
->>
->>>       { CDC_TX_TOP_CSR_FREQ_MCLK, 0x00},
->>>       { CDC_TX_TOP_CSR_DEBUG_BUS, 0x00},
->>>       { CDC_TX_TOP_CSR_DEBUG_EN, 0x00},
->>> @@ -290,8 +290,8 @@ static const struct reg_default tx_defaults[] = {
->>>       { CDC_TX_TOP_CSR_SWR_DMIC1_CTL, 0x00},
->>>       { CDC_TX_TOP_CSR_SWR_DMIC2_CTL, 0x00},
->>>       { CDC_TX_TOP_CSR_SWR_DMIC3_CTL, 0x00},
->>> -    { CDC_TX_TOP_CSR_SWR_AMIC0_CTL, 0x00},
->>> -    { CDC_TX_TOP_CSR_SWR_AMIC1_CTL, 0x00},
->>> +    { CDC_TX_TOP_CSR_SWR_AMIC0_CTL, 0x0E},
->>> +    { CDC_TX_TOP_CSR_SWR_AMIC1_CTL, 0x0E},
->>
->> These two registers should have default value of 0x06 as this has only 
->> one clk selection field with bits 2:1.
-> 
-> In Kodiak document reset state 0x0E and clk selection field is with bits 3:1
-> 
-> *LPASS_TX_TX_TOP_CSR_SWR_MIC1_CTL*|0x32200D4
-> Offset: 	0x54 	Reset State: 	0x0000000E 
-
-In that case you should probably consider using regmap_register_patch() 
-for corrections to the default registers in sm8250 case.
-
---srini
-
-> 
->>
->> -srini
->>
->>
->>>       { CDC_TX_INP_MUX_ADC_MUX0_CFG0, 0x00},
->>>       { CDC_TX_INP_MUX_ADC_MUX0_CFG1, 0x00},
->>>       { CDC_TX_INP_MUX_ADC_MUX1_CFG0, 0x00},
->>>
-> -- 
-> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-> is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-> 
+> >
+> > There's the Linux kernel, a small corner of which is the ALSA subsystem=
+ for
+> > sound.
+> >
+>
+>
+> --
+> Thanks,
+> Sekhar
+>
+> _______________________________________________
+> Kernelnewbies mailing list
+> Kernelnewbies@kernelnewbies.org
+> https://lists.kernelnewbies.org/mailman/listinfo/kernelnewbies
