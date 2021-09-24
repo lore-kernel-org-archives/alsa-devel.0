@@ -2,66 +2,77 @@ Return-Path: <SRS0=QEGn=OO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B56DAC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Sep 2021 19:27:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6F1EC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Sep 2021 19:50:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 351606054E
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Sep 2021 19:27:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 351606054E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id A8BE961250
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Sep 2021 19:50:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A8BE961250
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 94603166E;
-	Fri, 24 Sep 2021 21:26:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94603166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id E94AD15F2;
+	Fri, 24 Sep 2021 21:49:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E94AD15F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632511643;
-	bh=F0zrMSjbExXLomQxU3Tj7Rz7WLaZuT3QEKEiYprk0C4=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=QZ/ze8Uol7YUeoLrjaF+6IUmJyc6N8dGsBdPZc7R3jNJtF1kJ28m5HcDw7zqo5rKl
-	 hFFHYv+85LACLxJ2Siw/UX5rauEwAgwrfmTxQ1Iv2gJ270U7y+oi79AhGL5+y8z6lV
-	 YSxU5RAzkKg0xKZ7KvXXXeVOR/T2ZYRmXvXk310M=
+	s=default; t=1632513045;
+	bh=v7ieSj0Y85uULigQ/mnWZxrU+Mlx1o2M/QOrkRUBwhE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=otbwAKaQUhRzSRvMSz+u3yk6UWuFA6fo4eyoL6zQiOOkzghBOXV8dCpnNcTXxPvpi
+	 tDPl02P1juCWjAdlASgwJHbF2jiwH0QiproHDQjISRBHBiGZL4kwIxC7C4f0t+P2Jt
+	 lr4HbMw5xyo+OUq7brHux2yL3SmmoaDcLlOLQHH4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5558FF804F3;
-	Fri, 24 Sep 2021 21:25:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5F804F80246;
+	Fri, 24 Sep 2021 21:49:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3F05CF800BC; Fri, 24 Sep 2021 21:24:59 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 9F4A9F802A0; Fri, 24 Sep 2021 21:49:52 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B61C0F800BC
- for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2021 21:24:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B61C0F800BC
-X-IronPort-AV: E=McAfee;i="6200,9189,10117"; a="203643412"
-X-IronPort-AV: E=Sophos;i="5.85,320,1624345200"; d="scan'208";a="203643412"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Sep 2021 12:24:39 -0700
-X-IronPort-AV: E=Sophos;i="5.85,320,1624345200"; d="scan'208";a="551922500"
-Received: from bordone-mobl1.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.209.164.235])
- by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Sep 2021 12:24:38 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [RFC PATCH 3/4] ALSA: hda: hdac_ext_stream: fix potential locking
- issues
-Date: Fri, 24 Sep 2021 14:24:16 -0500
-Message-Id: <20210924192417.169243-4-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210924192417.169243-1-pierre-louis.bossart@linux.intel.com>
-References: <20210924192417.169243-1-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1A191F8013F
+ for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2021 21:49:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A191F8013F
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Y/DTRmM0"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9038B61039;
+ Fri, 24 Sep 2021 19:49:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1632512981;
+ bh=v7ieSj0Y85uULigQ/mnWZxrU+Mlx1o2M/QOrkRUBwhE=;
+ h=From:To:Cc:Subject:Date:From;
+ b=Y/DTRmM0jOidhevzuMO1/4oyJvPqSQ+sfBV734LDALJy6CFQ0ck7SbMtaRc2Ngmu8
+ CXljZKeJnG8R/4+qluSGTkdycDpH5AgzRUwoSwVf1UitWUekc+BaNsI4ggi0s1W5uZ
+ nddO0M0Yy/mmXURKif8T2emNns2aST5r72vf1EAVSTZn9H4Hk9rSYdQkMpjQGWv1um
+ lUKLj4tq6eQQ2kTozhbs4QNtpoln5h591Zm0QcrLem2RcNLU+YJm15XMje7WntAia0
+ kYw1bbnKkwvh78CNUOZl5WyLMElZCbf6Yb/SdwzSXqNNgoEEcnBvbSsM8nNTBcr2Ei
+ 70KLyYDtH2iPg==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>
+Subject: [PATCH] ASoC: cs4341: Add SPI device ID table
+Date: Fri, 24 Sep 2021 20:48:44 +0100
+Message-Id: <20210924194844.45974-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1212; h=from:subject;
+ bh=v7ieSj0Y85uULigQ/mnWZxrU+Mlx1o2M/QOrkRUBwhE=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBhTiuBuXHW4oPS7HZ93B8oyCJe10b2q8eeDkL19D5E
+ 4R0UwKiJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYU4rgQAKCRAk1otyXVSH0IJDB/
+ 4un4Hv/9i6ecZaxI0rft0ewSrIfkPtG4UG3VwlzQcS6awXBZ8QLCpEz67getA4fsX1s7laLkDfXCxW
+ 7yvc99OG4yu+9M2ibctrZUeOy9lI2YdIdvG/xqBGoN6pDnR9neZQXKKcvDbHozbR45b5E2Hyo/t/bc
+ CZ9U1Sx7FUFudkRWmAUDfHzNleSYEUUoS2C77eRFfQdMFaUNgRnwcnfvDytfhwvlZlyFLJvgSN9rYH
+ PwR/r0Y6UwDw3kvoh0XUuTReKkJlv1S8JdZ3FTA9MaoCEY/B6uk1AB/ARzNJsNQQI9HHqUQof60QNN
+ dKwHWib7l7v1pgQ/xLce4n/vcQRv4J
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, vkoul@kernel.org, broonie@kernel.org,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,162 +88,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The code for hdac_ext_stream seems inherited from hdac_stream, and
-similar locking issues are present: the use of the bus->reg_lock
-spinlock is inconsistent, with only writes to specific fields being
-protected.
+Currently autoloading for SPI devices does not use the DT ID table, it uses
+SPI modalises. Supporting OF modalises is going to be difficult if not
+impractical, an attempt was made but has been reverted, so ensure that
+module autoloading works for this driver by adding SPI IDs for parts that
+only have a compatible listed.
 
-Apply similar fix as in hdac_stream by protecting all accesses to
-'link_locked' and 'decoupled' fields, with a new helper
-snd_hdac_ext_stream_decouple_locked() added to simplify code
-changes.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Fixes: 96c8395e2166 ("spi: Revert modalias changes")
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: patches@opensource.cirrus.com
 ---
- include/sound/hdaudio_ext.h     |  2 ++
- sound/hda/ext/hdac_ext_stream.c | 46 ++++++++++++++++++++-------------
- 2 files changed, 30 insertions(+), 18 deletions(-)
+ sound/soc/codecs/cs4341.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
-index 375581634143..d4e31ea16aba 100644
---- a/include/sound/hdaudio_ext.h
-+++ b/include/sound/hdaudio_ext.h
-@@ -88,6 +88,8 @@ struct hdac_ext_stream *snd_hdac_ext_stream_assign(struct hdac_bus *bus,
- 					   struct snd_pcm_substream *substream,
- 					   int type);
- void snd_hdac_ext_stream_release(struct hdac_ext_stream *azx_dev, int type);
-+void snd_hdac_ext_stream_decouple_locked(struct hdac_bus *bus,
-+				  struct hdac_ext_stream *azx_dev, bool decouple);
- void snd_hdac_ext_stream_decouple(struct hdac_bus *bus,
- 				struct hdac_ext_stream *azx_dev, bool decouple);
- void snd_hdac_ext_stop_streams(struct hdac_bus *bus);
-diff --git a/sound/hda/ext/hdac_ext_stream.c b/sound/hda/ext/hdac_ext_stream.c
-index 0c005d67fa89..37154ed43bd5 100644
---- a/sound/hda/ext/hdac_ext_stream.c
-+++ b/sound/hda/ext/hdac_ext_stream.c
-@@ -106,20 +106,14 @@ void snd_hdac_stream_free_all(struct hdac_bus *bus)
+diff --git a/sound/soc/codecs/cs4341.c b/sound/soc/codecs/cs4341.c
+index 7d3e54d8eef3..29d05e32d341 100644
+--- a/sound/soc/codecs/cs4341.c
++++ b/sound/soc/codecs/cs4341.c
+@@ -305,12 +305,19 @@ static int cs4341_spi_probe(struct spi_device *spi)
+ 	return cs4341_probe(&spi->dev);
  }
- EXPORT_SYMBOL_GPL(snd_hdac_stream_free_all);
  
--/**
-- * snd_hdac_ext_stream_decouple - decouple the hdac stream
-- * @bus: HD-audio core bus
-- * @stream: HD-audio ext core stream object to initialize
-- * @decouple: flag to decouple
-- */
--void snd_hdac_ext_stream_decouple(struct hdac_bus *bus,
--				struct hdac_ext_stream *stream, bool decouple)
-+void snd_hdac_ext_stream_decouple_locked(struct hdac_bus *bus,
-+					 struct hdac_ext_stream *stream,
-+					 bool decouple)
- {
- 	struct hdac_stream *hstream = &stream->hstream;
- 	u32 val;
- 	int mask = AZX_PPCTL_PROCEN(hstream->index);
- 
--	spin_lock_irq(&bus->reg_lock);
- 	val = readw(bus->ppcap + AZX_REG_PP_PPCTL) & mask;
- 
- 	if (decouple && !val)
-@@ -128,6 +122,20 @@ void snd_hdac_ext_stream_decouple(struct hdac_bus *bus,
- 		snd_hdac_updatel(bus->ppcap, AZX_REG_PP_PPCTL, mask, 0);
- 
- 	stream->decoupled = decouple;
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_decouple_locked);
++static const struct spi_device_id cs4341_spi_ids[] = {
++	{ "cs4341a" },
++	{ }
++};
++MODULE_DEVICE_TABLE(spi, cs4341_spi_ids);
 +
-+/**
-+ * snd_hdac_ext_stream_decouple - decouple the hdac stream
-+ * @bus: HD-audio core bus
-+ * @stream: HD-audio ext core stream object to initialize
-+ * @decouple: flag to decouple
-+ */
-+void snd_hdac_ext_stream_decouple(struct hdac_bus *bus,
-+				  struct hdac_ext_stream *stream, bool decouple)
-+{
-+	spin_lock_irq(&bus->reg_lock);
-+	snd_hdac_ext_stream_decouple_locked(bus, stream, decouple);
- 	spin_unlock_irq(&bus->reg_lock);
- }
- EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_decouple);
-@@ -252,6 +260,7 @@ hdac_ext_link_stream_assign(struct hdac_bus *bus,
- 		return NULL;
- 	}
+ static struct spi_driver cs4341_spi_driver = {
+ 	.driver = {
+ 		.name = "cs4341-spi",
+ 		.of_match_table = of_match_ptr(cs4341_dt_ids),
+ 	},
+ 	.probe = cs4341_spi_probe,
++	.id_table = cs4341_spi_ids,
+ };
+ #endif
  
-+	spin_lock_irq(&bus->reg_lock);
- 	list_for_each_entry(stream, &bus->stream_list, list) {
- 		struct hdac_ext_stream *hstream = container_of(stream,
- 						struct hdac_ext_stream,
-@@ -266,17 +275,16 @@ hdac_ext_link_stream_assign(struct hdac_bus *bus,
- 		}
- 
- 		if (!hstream->link_locked) {
--			snd_hdac_ext_stream_decouple(bus, hstream, true);
-+			snd_hdac_ext_stream_decouple_locked(bus, hstream, true);
- 			res = hstream;
- 			break;
- 		}
- 	}
- 	if (res) {
--		spin_lock_irq(&bus->reg_lock);
- 		res->link_locked = 1;
- 		res->link_substream = substream;
--		spin_unlock_irq(&bus->reg_lock);
- 	}
-+	spin_unlock_irq(&bus->reg_lock);
- 	return res;
- }
- 
-@@ -292,6 +300,7 @@ hdac_ext_host_stream_assign(struct hdac_bus *bus,
- 		return NULL;
- 	}
- 
-+	spin_lock_irq(&bus->reg_lock);
- 	list_for_each_entry(stream, &bus->stream_list, list) {
- 		struct hdac_ext_stream *hstream = container_of(stream,
- 						struct hdac_ext_stream,
-@@ -301,18 +310,17 @@ hdac_ext_host_stream_assign(struct hdac_bus *bus,
- 
- 		if (!stream->opened) {
- 			if (!hstream->decoupled)
--				snd_hdac_ext_stream_decouple(bus, hstream, true);
-+				snd_hdac_ext_stream_decouple_locked(bus, hstream, true);
- 			res = hstream;
- 			break;
- 		}
- 	}
- 	if (res) {
--		spin_lock_irq(&bus->reg_lock);
- 		res->hstream.opened = 1;
- 		res->hstream.running = 0;
- 		res->hstream.substream = substream;
--		spin_unlock_irq(&bus->reg_lock);
- 	}
-+	spin_unlock_irq(&bus->reg_lock);
- 
- 	return res;
- }
-@@ -378,15 +386,17 @@ void snd_hdac_ext_stream_release(struct hdac_ext_stream *stream, int type)
- 		break;
- 
- 	case HDAC_EXT_STREAM_TYPE_HOST:
-+		spin_lock_irq(&bus->reg_lock);
- 		if (stream->decoupled && !stream->link_locked)
--			snd_hdac_ext_stream_decouple(bus, stream, false);
-+			snd_hdac_ext_stream_decouple_locked(bus, stream, false);
-+		spin_unlock_irq(&bus->reg_lock);
- 		snd_hdac_stream_release(&stream->hstream);
- 		break;
- 
- 	case HDAC_EXT_STREAM_TYPE_LINK:
--		if (stream->decoupled && !stream->hstream.opened)
--			snd_hdac_ext_stream_decouple(bus, stream, false);
- 		spin_lock_irq(&bus->reg_lock);
-+		if (stream->decoupled && !stream->hstream.opened)
-+			snd_hdac_ext_stream_decouple_locked(bus, stream, false);
- 		stream->link_locked = 0;
- 		stream->link_substream = NULL;
- 		spin_unlock_irq(&bus->reg_lock);
 -- 
-2.25.1
+2.20.1
 
