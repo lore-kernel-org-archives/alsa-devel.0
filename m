@@ -2,88 +2,91 @@ Return-Path: <SRS0=QEGn=OO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E872C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Sep 2021 16:59:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BFBAC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Sep 2021 17:54:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F2F7161251
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Sep 2021 16:59:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F2F7161251
+	by mail.kernel.org (Postfix) with ESMTPS id E6E01610C7
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Sep 2021 17:54:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E6E01610C7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA497112;
-	Fri, 24 Sep 2021 18:58:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA497112
+	by alsa0.perex.cz (Postfix) with ESMTPS id BE0E615E5;
+	Fri, 24 Sep 2021 19:53:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE0E615E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632502751;
-	bh=lYRkqc9XXjasI0NhtoQeZ0yzasxb/iuAHAZUZjyyUCY=;
+	s=default; t=1632506062;
+	bh=OCrSKaoxn7+h/YEX2SAkAPa0QvVM30uVoaGnA/5yw9w=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kWFAYgD0r0QVXMAIjV3j6IHoilao2EnuVXbheE3on4bl+f1fdlvYzNHLAeOeIzSlx
-	 aJRFG8qlOnODPEN6DO/fXaobtVKcGuRvCsSTZKqD6pmno+64sSvU83t5SSSD2PfLy2
-	 6PcSFEov2bWO7JDtfXVmFPakbka6ss2lu8fgAMJc=
+	b=JiqtB8EbfowL+R/OzUloobp8Agkpagk9MZW0l2Q60FLORrUC71qeykEZb4k9NpCg5
+	 OFe4O4tkTmt53bQdUtxBv8CH6cpW62b1A6GT17gVJsRfX6oxDH0TZ/mHE7x9CLT85m
+	 z6PeNQUNhMYdjeiYgox7b1WH2UuLfuImpPVk4ihM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3DFD3F8025D;
-	Fri, 24 Sep 2021 18:58:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50D51F800BC;
+	Fri, 24 Sep 2021 19:53:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BEA92F802A0; Fri, 24 Sep 2021 18:58:20 +0200 (CEST)
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com
- [IPv6:2a00:1450:4864:20::12c])
+ id 5255FF802A0; Fri, 24 Sep 2021 19:53:30 +0200 (CEST)
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com
+ [IPv6:2a00:1450:4864:20::136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 59030F800BC
- for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2021 18:58:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59030F800BC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 01D57F800BC
+ for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2021 19:53:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01D57F800BC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="hxU2GvOg"
-Received: by mail-lf1-x12c.google.com with SMTP id y28so42438969lfb.0
- for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2021 09:58:13 -0700 (PDT)
+ header.b="LJGp1JRR"
+Received: by mail-lf1-x136.google.com with SMTP id x27so43583767lfu.5
+ for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2021 10:53:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
  :cc:content-transfer-encoding;
- bh=lYRkqc9XXjasI0NhtoQeZ0yzasxb/iuAHAZUZjyyUCY=;
- b=hxU2GvOga022gDA3IYR8NnxBCuhDV7AciobbgQZSRZv5eJcfL7KTdHR4iSlqhYjhTY
- +HhNCihYVW1/TPAoyQXArhFRDTE4oTwZmEHBJjcvdKTEBpuzcD2vg+TUfBZnPDvpHhmC
- kXEEvtcF3RI6a8uYaitRpBpRK0vW6fDNys+Dz3iXVYdIG9sXvLlyENNZ4kWpPbIRFWqg
- dFaIqZ8vxgd3DDkh3Cv/HNKvwARjQJ1lNkwkVedR/tAbrk0r9oXagFUs47NUWFPRSH+0
- Xt4ecTCYv/fEfMY3kk9LjyjK+iL8L7kiJjT9AsE0qrcfczMZdg+/343tEfEa3wE+gqY2
- Qvlg==
+ bh=OCrSKaoxn7+h/YEX2SAkAPa0QvVM30uVoaGnA/5yw9w=;
+ b=LJGp1JRRJd52sfAnzqEzskxZcBvzNQYvMCTPzBH6rzc7yDcfMeai6i4zusAOasK4g1
+ CwrCa3wRHN25B/02Y5j0keNrRZPEyYp1kQHpNRzlu7dB4o2EMA6UpMwQJ2/zAbwKpL8P
+ MqhTfH8IFp5a45+i3DAUv9k69NEO4RV0s0fsC+huzwyzkPZgwEtO8tqsWRIcOIEJ5l/l
+ j2n1pOMb0ta239n9FdOy5bSpYYqK7OiDXOQAOS3au48dXAIkrUFYqON/TgukiEvTd0jY
+ DlNwLkTVAz2E02ZT1b1kogwXhwHSV70EOqH4VVpoRgZUEzier3sbgPgq2nva5Lfjkr/Y
+ 6oPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc:content-transfer-encoding;
- bh=lYRkqc9XXjasI0NhtoQeZ0yzasxb/iuAHAZUZjyyUCY=;
- b=pwUsX18HvHB/H+INC0on06/ob9GlUu54Lam/N2eocVxIGhAWZ0oN4FCW2D7zohfvao
- NmweiZqvfMDTWJF9Pa7ujjxi3aBd5xLBZUgxQvfWXuoqWpZzRe7YRjSlibjw/XZJfGM9
- vBlzcedwmPMD3vAEuwSAuPKOu9cloGOJn9FU2W6woYGv87xUcUQv7Nkac/qvK/WHfjAJ
- z82I0kERm9YjOYar3QeHN8Ld2XGaopmVLktMccTAneA5MQSI0zaowjazv/eg4scMR5i+
- 707Mpl2AoxCsDSuANvhdzc5FyomOhs8EK9XjIuGrgQ5bupT22QrE1jSZdeMJaXUbKZCV
- 5vTA==
-X-Gm-Message-State: AOAM531R6psFl240keRUONjCbB8THe6KC5OjwN7Eht4uHYZuCfZhic3k
- 5Go9Uqd0YG6DbeXuuYrknb9iAQbynvW23+nv0v4=
-X-Google-Smtp-Source: ABdhPJy8iNodtBNkS/YlNB19XVbKjUSiplC8swBWr6+/pMC8q2DsHwZCPq3RtKg8Wha1SAiR57L55MaoDlTalw6D3WA=
-X-Received: by 2002:a05:6512:3a83:: with SMTP id
- q3mr10044353lfu.215.1632502692633; 
- Fri, 24 Sep 2021 09:58:12 -0700 (PDT)
+ bh=OCrSKaoxn7+h/YEX2SAkAPa0QvVM30uVoaGnA/5yw9w=;
+ b=kJhHHYGdiuTWMOYlXd/0ir8ot+HVQX7lDYGRsxeMA2JneFl/NzCp0rvvpxHm4w2P9O
+ pN166myNWhnZFk5xXrv/8ZE/mG5MWJbPm4L5WbXlrMSSFlL2IlULcbINGpjQMWt/P2vu
+ jZjz+Ul31nKPym0tezqQIahE/AN02Du1sacMLK2L8SUVtesQ6lP2152sDBAA2i99voYg
+ 8Y3H2mtkMN7u/v60gkgKUA8RLs2MOVTUIXWyQKKLD7HLmnXPl9DPbBTS5wkX1Mf+7oL+
+ rDEGVpFPPlkJMtpZ5EjLDceKYGj8U57KMF7qyHeGqjpZg/fQeDXeNTZoV+Ffsx+pE7Sf
+ 1x1A==
+X-Gm-Message-State: AOAM530gB1or+b9U9ymEJ/ADhLAYB183oPNLLVk/Pw1N/bKiA5Emln4b
+ UQbqh4oixKPotWeutHRo+6mgxaeWPm7Byg/QMLc=
+X-Google-Smtp-Source: ABdhPJz4EcLzFgdQs0vIsPdTg8bdcV5AppV8KyZEhA33YwhLyUzuMeF+yKZ0ty+JxxfX8Aityt3JWnndd1ss8e265wo=
+X-Received: by 2002:a05:651c:54d:: with SMTP id
+ q13mr12454423ljp.526.1632505996857; 
+ Fri, 24 Sep 2021 10:53:16 -0700 (PDT)
 MIME-Version: 1.0
 References: <CAHhAz+i=3NDuxK2rZZY6N18=OTbkna3VMVpx4nNgF0vyq3JmQA@mail.gmail.com>
  <324112.1632501120@turing-police>
-In-Reply-To: <324112.1632501120@turing-police>
+ <CAHhAz+jNCd=cw-bohcoiAA2UhNZYSFLX07qEV-T2p+KAsVHhAQ@mail.gmail.com>
+ <CAJfuBxxAEXnPxY-nx4JEe+fzH7J+nLYzD9zLCSzgjViBHsQbPA@mail.gmail.com>
+In-Reply-To: <CAJfuBxxAEXnPxY-nx4JEe+fzH7J+nLYzD9zLCSzgjViBHsQbPA@mail.gmail.com>
 From: Muni Sekhar <munisekharrms@gmail.com>
-Date: Fri, 24 Sep 2021 22:28:01 +0530
-Message-ID: <CAHhAz+jNCd=cw-bohcoiAA2UhNZYSFLX07qEV-T2p+KAsVHhAQ@mail.gmail.com>
+Date: Fri, 24 Sep 2021 23:23:05 +0530
+Message-ID: <CAHhAz+i48QEecqQ16u2s_Y_iw6V6dJzTDzEJO+w-eTYs6rYB7Q@mail.gmail.com>
 Subject: Re: ALSA kernel projects - for academic purposes
-To: =?UTF-8?Q?Valdis_Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>
+To: jim.cromie@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Cc: alsa-devel <alsa-devel@alsa-project.org>, linux-sound@vger.kernel.org,
- kernelnewbies <kernelnewbies@kernelnewbies.org>
+Cc: alsa-devel <alsa-devel@alsa-project.org>,
+ =?UTF-8?Q?Valdis_Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+ linux-sound@vger.kernel.org, kernelnewbies <kernelnewbies@kernelnewbies.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,24 +102,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Sep 24, 2021 at 10:02 PM Valdis Kl=C4=93tnieks
-<valdis.kletnieks@vt.edu> wrote:
+On Fri, Sep 24, 2021 at 10:46 PM <jim.cromie@gmail.com> wrote:
 >
-> On Fri, 24 Sep 2021 19:34:59 +0530, Muni Sekhar said:
-> > What small projects would you suggest to a novice with the ALSA
-> > kernel. The aim is to develop a familiarity with the ALSA kernel
-> > source code, and also to submit it for academic purposes.
+> On Fri, Sep 24, 2021 at 10:58 AM Muni Sekhar <munisekharrms@gmail.com> wr=
+ote:
+> >
+> > On Fri, Sep 24, 2021 at 10:02 PM Valdis Kl=C4=93tnieks
+> > <valdis.kletnieks@vt.edu> wrote:
+> > >
+> > > On Fri, 24 Sep 2021 19:34:59 +0530, Muni Sekhar said:
+> > > > What small projects would you suggest to a novice with the ALSA
+> > > > kernel. The aim is to develop a familiarity with the ALSA kernel
+> > > > source code, and also to submit it for academic purposes.
+> > >
+> > > A good place to start is getting a good handle on what the phrase "th=
+e ALSA
+> > > kernel" even means.
+> > Basically looking for kernel space audio subsystem projects rather
+> > than its user-space library(alsa-lib) and utilities(alsa-utils).
 >
-> A good place to start is getting a good handle on what the phrase "the AL=
-SA
-> kernel" even means.
-Basically looking for kernel space audio subsystem projects rather
-than its user-space library(alsa-lib) and utilities(alsa-utils).
+> why ?
+> if your interest is better sound, then improving user-space is going
+> to be more productive.
 >
-> There's the Linux kernel, a small corner of which is the ALSA subsystem f=
-or
-> sound.
+> also, theres now pipewire, which is new, and all the buzz.
+> its apparently the future of linux audio
+Sounds interesting. Could you please give few more pointers on how to
+start on pipewire project.
 >
+>
+> > >
+> > > There's the Linux kernel, a small corner of which is the ALSA subsyst=
+em for
+> > > sound.
+> > >
+> >
+> >
+> > --
+> > Thanks,
+> > Sekhar
+> >
+> > _______________________________________________
+> > Kernelnewbies mailing list
+> > Kernelnewbies@kernelnewbies.org
+> > https://lists.kernelnewbies.org/mailman/listinfo/kernelnewbies
+
 
 
 --=20
