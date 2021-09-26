@@ -1,92 +1,62 @@
-Return-Path: <SRS0=Jhkg=OP=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=qvQ0=OQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C6FDC433F5
-	for <alsa-devel@archiver.kernel.org>; Sat, 25 Sep 2021 17:07:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8073C433F5
+	for <alsa-devel@archiver.kernel.org>; Sun, 26 Sep 2021 09:02:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E4E0F6105A
-	for <alsa-devel@archiver.kernel.org>; Sat, 25 Sep 2021 17:07:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E4E0F6105A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=googlemail.com
+	by mail.kernel.org (Postfix) with ESMTPS id ECB7560FDA
+	for <alsa-devel@archiver.kernel.org>; Sun, 26 Sep 2021 09:02:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org ECB7560FDA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=protonmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 82E6815F2;
-	Sat, 25 Sep 2021 19:06:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82E6815F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9822F15E2;
+	Sun, 26 Sep 2021 11:01:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9822F15E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632589652;
-	bh=Kmui+08NXbFT0nLrvdY1BcuEpj6U8FJtaRHyjNLMkbA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=VtJlmO6lmkV5PnW676+fNc9rmIIcK0aXS5rK9ifdTQjqNTcIT5G0Pl5Jx73h6YYYk
-	 wYtcjoozSlp61F/mSMKJOXcRKSu9qZkvE7JOiYFDWu6azDrkOlm4fepMWo9ttGMaCR
-	 qMj7DfID/PkQG5CXwnd8lcUpJyeSxuS9ado+kWgM=
+	s=default; t=1632646945;
+	bh=RSpSK6nEhWHKB1o9ULb18cQ3dFX9NlSG7I0wRFukbo0=;
+	h=Date:To:From:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Reply-To:From;
+	b=fr2Ba75iWh1MNDN6wvpi5rIg27itOCvSgxP9JriQ93C5rxOPDoYHqEq5nFiR9p/Vf
+	 oKhxd0UpQcx1nEyg82su1daMHWP7f2WAjZgz9Qe5lhhDQwPmfiGQL0xvqJj1Hnf3n7
+	 lWIjgUMqg+BX5mg5/VOBCqAAQxgXsdIXconwQOKM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5707F8025F;
-	Sat, 25 Sep 2021 19:06:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16D63F8032C;
+	Sun, 26 Sep 2021 11:01:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C39F9F80268; Sat, 25 Sep 2021 19:06:39 +0200 (CEST)
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com
- [IPv6:2a00:1450:4864:20::52b])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 3F872F804AD; Sun, 26 Sep 2021 11:01:32 +0200 (CEST)
+Received: from mail-40141.protonmail.ch (mail-40141.protonmail.ch
+ [185.70.40.141])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4C4CCF8013D
- for <alsa-devel@alsa-project.org>; Sat, 25 Sep 2021 19:06:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C4CCF8013D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3944EF80246
+ for <alsa-devel@alsa-project.org>; Sun, 26 Sep 2021 11:01:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3944EF80246
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com
- header.b="X1vU2O/f"
-Received: by mail-ed1-x52b.google.com with SMTP id v10so44709364edj.10
- for <alsa-devel@alsa-project.org>; Sat, 25 Sep 2021 10:06:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=googlemail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=Kmui+08NXbFT0nLrvdY1BcuEpj6U8FJtaRHyjNLMkbA=;
- b=X1vU2O/fMuGWIQr8sO60x4m4WHXkW0GxW5txZsHtd/Zx4KqWWIefwro5FAX5CkHJYm
- 7hdMkOC5kLrAlY1xk8W6Qo7v8w0rjyiq7WGw5Lijh/oM5AnWHsfhfXsBCkov91zV8fIz
- +MEqh1mqE3iINMKCl6SJwktVYwIh9CQZVRGXO603RrbLr0ygp5RSfgA61CQ1FdmPGNjc
- 8sY6G/mJy/s6J2Dk4jAlsFExUc8cfGXQRnZmZ7rIXpr9L2Z6cTPz5i7z3Gfq1OgyQVH2
- sWRoGkf/BT7d8dz06/ygAK895NwboYDW02SkHm9b9JQSSSv+Ip+EMja4v8jqR0EVYQCo
- SBCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=Kmui+08NXbFT0nLrvdY1BcuEpj6U8FJtaRHyjNLMkbA=;
- b=LA6L1MGwHyY9p4yzWZYQ/Fww5vZ5RnKU68V1r1qSMvxzr/GHiswp6T6xOzm5d/JCzR
- Wd7s6aEj3r4JFQvw5SXAvdJUKzehHXAc/WmorkY9gj1owucuy+64glsnQtxYBQQZZ4aW
- iMUmDtSzfdgBMTPdCZlDo3eCFlmjBeRnc6VpqhWG25Y1OS97bqWMvEKw6wLZSVLCXOUK
- thpv+4D1jOBsq2pwTFr2yz8/8JdW5V57Tc3B6xyox3lKFNhDc0dLZv+TgP48UQBGWQ4C
- pBo5+i60Iw+wj9W8jEWE4z8zVNEbIVtwWajrVjND/McLa/0NU3ZrnF2aExKt/pS3LBx7
- z8Fw==
-X-Gm-Message-State: AOAM533/tweBLJD9JRlV4V64sRqrU825M0mIPsqUax/T4P5REzYaLHyT
- u9hHSRkoLlxOHsuA2/fyK52UPOF1POfM02kP9a0=
-X-Google-Smtp-Source: ABdhPJzrY8tMFPHNGE75+mTiVvTPrwW84zeV3b5rRuTKD9rGRN+lbs2VxC0jPhBb0dkobrhLqii4p1oNJfeFWWGh+Ig=
-X-Received: by 2002:a05:6402:493:: with SMTP id
- k19mr12301396edv.386.1632589587538; 
- Sat, 25 Sep 2021 10:06:27 -0700 (PDT)
+ dkim=pass (1024-bit key) header.d=protonmail.com header.i=@protonmail.com
+ header.b="VwR+FwwO"
+Date: Sun, 26 Sep 2021 09:01:24 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+ s=protonmail; t=1632646886;
+ bh=48SXfbuSxIxB5ZiopItMqlr7LupBf78oe1Wraa13QyI=;
+ h=Date:To:From:Reply-To:Subject:From;
+ b=VwR+FwwOJW1xOzPjJVKcGrjgYXU1Efarj4b7G/IPUQ1zGVzZPpxDyPlSPHkH134fS
+ C9tlChWe2qKC8iRC+1l3AA+ta9CkgTXRv2hUM0NpR1KNQumg7AejMHZYvHhYT//NIz
+ NmfyQ7ZcOBO0NYzELOCBVyqMUkuYOW/S2M+SpTno=
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: Ryan McClue <re.mcclue@protonmail.com>
+Subject: Broken Pipe with SNDRV_PCM_IOCTL_WRITEI_FRAMES
+Message-ID: <aMjqrUVYYlPC6M_ZW7GlV0WUwUzJimDuTXi2mWq62PH9GbMUmTMK0ECdR837FlWMPQd8sP57TNh3Coq19l0gm75NBOh7oqPGpl7ARwjF-u0=@protonmail.com>
 MIME-Version: 1.0
-References: <20210924231242.144692-1-colin.king@canonical.com>
-In-Reply-To: <20210924231242.144692-1-colin.king@canonical.com>
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date: Sat, 25 Sep 2021 19:06:16 +0200
-Message-ID: <CAFBinCB0LOJvCuhtX7EFk55a7-gUJ_P43iuOLB8qeTkZGgEmBQ@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: meson: aiu: Fix spelling mistake "Unsupport" ->
- "Unsupported"
-To: Colin King <colin.king@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Neil Armstrong <narmstrong@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>,
- kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Mark Brown <broonie@kernel.org>, Kevin Hilman <khilman@baylibre.com>,
- linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- Jerome Brunet <jbrunet@baylibre.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,14 +69,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Reply-To: Ryan McClue <re.mcclue@protonmail.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, Sep 25, 2021 at 1:12 AM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> There is a spelling mistake in a dev_err error message. Fix it.
->
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+SGVsbG8gYWdhaW4uCkknbSB1c2luZyBhbHNhLWtlcm5lbC4KTXkgY29uZmlndXJhdGlvbjoKU05E
+UlZfUENNX0hXX1BBUkFNX0FDQ0VTUyA9IFNORFJWX1BDTV9BQ0NFU1NfUldfSU5URVJMRUFWRUQK
+U05EUlZfUENNX0hXX1BBUkFNX0ZPUk1BVCA9IFNORFJWX1BDTV9GT1JNQVRfUzE2X0xFClNORFJW
+X1BDTV9IV19QQVJBTV9TVUJGT1JNQVQgPSBTTkRSVl9QQ01fU1VCRk9STUFUX1NURApTTkRSVl9Q
+Q01fSFdfUEFSQU1fQ0hBTk5FTFMgPSAyClNORFJWX1BDTV9IV19QQVJBTV9SQVRFID0gNDgwMDAK
+CkkgaGF2ZSBhIHZzeW5jZWQgZ2FtZSBsb29wIHRoYXQgaXMgcnVubmluZyBhdCA2MGZwczoKCj4g
+aW50IG51bV9iYXNlX3NhbXBsZXMgPSA0ODAwMCAqICgxIC8gNjApOwo+IGludCBudW1fc2FtcGxl
+cyA9ICBudW1fYmFzZV9zYW1wbGVzICogMjsKPiBpbnQxNl90IGJ1ZmZlcltudW1fc2FtcGxlc10g
+PSB7fTsKPgo+IHdoaWxlICh0cnVlKSB7Cj4gICBpbnQxNl90ICpzYW1wbGVzID0gYnVmZmVyOwo+
+ICAgZm9yIChpbnQgc2FtcGxlX2kgPSAwOyBzYW1wbGVfaSA8IG51bV9iYXNlX3NhbXBsZXM7IHNh
+bXBsZV9pKyspIHsKPiAgICAgKnNhbXBsZXMrKyA9IDB4MzM7Cj4gICAgICpzYW1wbGVzKysgPSAw
+eDMzOwo+ICAgfQo+Cj4gICBzdHJ1Y3Qgc25kX3hmZXJpIHRyYW5zZmVyID0ge307Cj4gICB0cmFu
+c2Zlci5idWYgPSBidWZmZXI7Cj4gICB0cmFuc2Zlci5mcmFtZXMgPSBudW1fYmFzZV9zYW1wbGVz
+Owo+ICAgaW9jdGwoZmQsIFNORFJWX1BDTV9JT0NUTF9XUklURUlfRlJBTUVTLCAmdHJhbnNmZXIp
+Owo+Cj4gICAvLyBpb2N0bChmZCwgU05EUlZfUENNX0lPQ1RMX0RSQUlOKTsgIC0tPiBORUNFU1NB
+Ulk/Pz8KPiAgIC8vIGlvY3RsKGZkLCBTTkRSVl9QQ01fSU9DVExfUFJFUEFSRSk7ICAtLT4gTkVD
+RVNTQVJZPz8/Cj4gfQoKT24gdGhlIGZpcnN0IGl0ZXJhdGlvbiBvZiBTTkRSVl9QQ01fSU9DVExf
+V1JJVEVJX0ZSQU1FUyBJIGdldCBubyBlcnJvci4KQWxsIHN1YnNlcXVlbnQgaXRlcmF0aW9ucywg
+SSBnZXQgQnJva2VuIFBpcGUgZXJyb3IuClNvLCB0byBjb3VudGVyYWN0IHRoaXMgYXQgdGhlIGVu
+ZCBvZiBlYWNoIGZyYW1lIEkgY2FsbCBTTkRSVl9QQ01fSU9DVExfRFJBSU4gYW5kIFNORFJWX1BD
+TV9JT0NUTF9QUkVQQVJFLgpUaGlzIHJlbW92ZXMgdGhlIEJyb2tlbiBQaXBlIGVycm9yIGhvd2V2
+ZXIgc2xvd3MgdGhlIHByb2dyYW0gZG93biBieSBoYWxmIGFuZCBubyBzb3VuZCBpcyBoZWFyZC4K
+SG93IGJlc3QgdG8gc29sdmUgdGhpcyBpc3N1ZT8KClRoYW5rcyBhZ2FpbgotLQpSeWFuIE1jQ2x1
+ZSwgU3lkbmV5
