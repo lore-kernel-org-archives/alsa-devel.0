@@ -2,89 +2,77 @@ Return-Path: <SRS0=nO8j=OR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D39EFC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 10:31:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF744C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 10:34:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5F69061027
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 10:31:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5F69061027
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id 331F561056
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 10:34:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 331F561056
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9C9241662;
-	Mon, 27 Sep 2021 12:30:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C9241662
+	by alsa0.perex.cz (Postfix) with ESMTPS id 534DF1687;
+	Mon, 27 Sep 2021 12:33:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 534DF1687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632738685;
-	bh=TC/UWkHIZmg3a1d7UnMvZIon/9VJpd8xqODBMercj/4=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1632738881;
+	bh=DpgfTU/8N0gTE7R+MVArhChyyOvY/6IJCvxMokBuDGc=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MxQuWHDZftcXr9KeBqlF8ZuOEfLH8UZJgvG1eRsafjYl4uHlFTF2Jn8O8lBCiqvvY
-	 EUU9689egY++pyDRl6xuS210tzga4qQeyNvm0QJkiugjmyg2QnHkiww3NBEZaG6gAk
-	 fNiZySMEIZzkB8ar+55FWo8E+hOA5UYhQpo/Dgjc=
+	b=Vq/SwgwfJWV4loC/St+/xUkhcb8o6Wf7oP4LKxjQ92/GbC+9iBFrANTGVZC6Ig+Pe
+	 r9Axr+1epyXk+TCix/69+hUicX+OMEPfDh28ypWJhfioT9eTeFd7WDSAGA6lU9APZY
+	 C+t/OsDF6gN9v63toJvjwks5O0lcBaX++V7NCqr8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ABCFFF801F7;
-	Mon, 27 Sep 2021 12:30:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 149A3F80161;
+	Mon, 27 Sep 2021 12:33:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 26AB3F8026D; Mon, 27 Sep 2021 12:30:04 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id E284DF80227; Mon, 27 Sep 2021 12:33:37 +0200 (CEST)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 97F93F802C4
- for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2021 12:29:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97F93F802C4
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="Nc1ZCD+Q"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18R5VmC8014488; 
- Mon, 27 Sep 2021 05:29:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=FRJouVbd/qqTQZ9lTF/sMzBW1B4pIoOYcLmRmUZMPBE=;
- b=Nc1ZCD+QGRW5WKlonXa4WG5ZYP6sOeI4N7RkIF5hfMqFMkc2wFr1IriL7shGR6idgILm
- cgp8UkflVVQ6vpMevGDwlqEwYzm3k+kZ28DTY4T8R7zf+xQpszpRLl5+znELIsjre76D
- N8DiY8tT29RmnqrsVcdmVTQmwBVrOmGf9IrSey/UEyJOiFwuA/IR0uAQM38CQHr7dDoG
- 0E56FMaRKPWTpoklu+CDu4MCKmEt3AzoTkg1y69MCt/ZJOJijzfs4bC9ofrELZnJ8Srq
- /l9wrRy/4MXnMjXOcChOQs5UTUNZdn7oOnoRAQQ8R56OVOJP+aAanCRUxpZbdWhpN4A0 nw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 3barbh8t6m-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Mon, 27 Sep 2021 05:29:51 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Mon, 27 Sep
- 2021 11:29:50 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via
- Frontend Transport; Mon, 27 Sep 2021 11:29:50 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 11B13B10;
- Mon, 27 Sep 2021 10:29:50 +0000 (UTC)
-Date: Mon, 27 Sep 2021 10:29:50 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: cs4341: Add SPI device ID table
-Message-ID: <20210927102950.GF9223@ediswmail.ad.cirrus.com>
-References: <20210924194844.45974-1-broonie@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7F1EAF801EC
+ for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2021 12:33:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F1EAF801EC
+X-UUID: 98fe2ad69e914c89ae096200ea39a7dc-20210927
+X-UUID: 98fe2ad69e914c89ae096200ea39a7dc-20210927
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+ (envelope-from <trevor.wu@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 1472071810; Mon, 27 Sep 2021 18:33:17 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 27 Sep 2021 18:33:16 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 27 Sep 2021 18:33:16 +0800
+Message-ID: <03494ad08689e43358d554bbc48936118a63fd45.camel@mediatek.com>
+Subject: Re: [PATCH 1/2] ASoC: mediatek: mt8195: add machine driver with
+ mt6359, rt1011 and rt5682
+From: Trevor Wu <trevor.wu@mediatek.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+ <matthias.bgg@gmail.com>
+Date: Mon, 27 Sep 2021 18:33:16 +0800
+In-Reply-To: <c34d03ff-f349-724e-0dcf-7893f3622cd9@linux.intel.com>
+References: <20210910104405.11420-1-trevor.wu@mediatek.com>
+ <20210910104405.11420-2-trevor.wu@mediatek.com>
+ <10fc49fa-9791-0225-365d-e3074680596c@linux.intel.com>
+ <4d703c5f7cf27ddc8b9886b111ffeeba0c4aa08b.camel@mediatek.com>
+ <1d7fe7455a054819daf05d41ab3658afdc1caced.camel@mediatek.com>
+ <c34d03ff-f349-724e-0dcf-7893f3622cd9@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210924194844.45974-1-broonie@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: 6sbBsaRO8EoHJZSBGJItRc4Rotf4q0Gg
-X-Proofpoint-ORIG-GUID: 6sbBsaRO8EoHJZSBGJItRc4Rotf4q0Gg
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Liam Girdwood <lgirdwood@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-MTK: N
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+ aaronyu@google.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,19 +88,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Sep 24, 2021 at 08:48:44PM +0100, Mark Brown wrote:
-> Currently autoloading for SPI devices does not use the DT ID table, it uses
-> SPI modalises. Supporting OF modalises is going to be difficult if not
-> impractical, an attempt was made but has been reverted, so ensure that
-> module autoloading works for this driver by adding SPI IDs for parts that
-> only have a compatible listed.
+On Fri, 2021-09-24 at 09:46 -0500, Pierre-Louis Bossart wrote:
+> > > > > +/* Module information */
+> > > > > +MODULE_DESCRIPTION("MT8195-MT6359-RT1011-RT5682 ALSA SoC
+> > > > > machine
+> > > > > driver");
+> > > > > +MODULE_AUTHOR("Trevor Wu <trevor.wu@mediatek.com>");
+> > > > > +MODULE_LICENSE("GPL v2");
+> > > > 
+> > > > "GPL" is enough
+> > > > 
+> > > 
+> > > I see many projects use GPL v2 here, and all mediatek projects
+> > > use
+> > > GPL
+> > > v2, too.
+> > > I'm not sure which one is better.
+> > > Do I need to modify this?
 > 
-> Fixes: 96c8395e2166 ("spi: Revert modalias changes")
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> Cc: patches@opensource.cirrus.com
-> ---
+> See
+> 
+https://urldefense.com/v3/__https://www.kernel.org/doc/html/latest/process/license-rules.html?highlight=module_license*id1__;Iw!!CTRNKA9wMg0ARbw!0xwqsodizM7jFI4lwpT7_h2bk6xHtdNb32YDo2lneZ9u-cs5hAqqdqTci89qK8FwLg$
+>  
+> 
+> Loadable kernel modules also require a MODULE_LICENSE() tag. This tag
+> is
+> neither a replacement for proper source code license information
+> (SPDX-License-Identifier) nor in any way relevant for expressing or
+> determining the exact license under which the source code of the
+> module
+> is provided.
+> 
+> “GPL”
+> 
+> Module is licensed under GPL version 2. This does not express any
+> distinction between GPL-2.0-only or GPL-2.0-or-later. The exact
+> license
+> information can only be determined via the license information in the
+> corresponding source files.
+> 
+> “GPL v2”
+> 
+> Same as “GPL”. It exists for historic reasons.
+> 
+> So "GPL v2" is not incorrect but for new contributions you might as
+> well
+> use the recommended tag.
 
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Thanks,
-Charles
+Got it.
+Thanks for your detailed explanation.
+I will correct it in V2.
+
+Trevor
+
