@@ -2,96 +2,74 @@ Return-Path: <SRS0=nO8j=OR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10120C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 14:05:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 572EEC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 14:35:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 858BE60F94
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 14:05:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 858BE60F94
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id DAF8B60FC2
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 14:35:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DAF8B60FC2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23AD1170C;
-	Mon, 27 Sep 2021 16:04:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23AD1170C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 96ABB1686;
+	Mon, 27 Sep 2021 16:34:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96ABB1686
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632751525;
-	bh=V8AJToxy31oiyblEcv3nyo7tzvPAaQ358LxyXtKHRkQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ZmUNF2uXOHC1diqLgrN85Z91dLUac+OgE4nPqstX3OV2e0VICb/urXBSAF3raghv1
-	 pjb0XdWxuFUOQUi+1mt/iRwKQ/gyB9a+kShK74woRb1XuSAHSXbgXcg78l09Fyijtj
-	 8fAkbZptqwn5hE+5QXt7j2ENCaNWaYZLq/PjlQEc=
+	s=default; t=1632753328;
+	bh=HzFvfE9yzhn8XmUQpHHuE1Xqne7omGjVP3nFem5iqdg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=UYyJ2LoVLh8NWVvRfwpuoRwYei08WysfJN1YV9B/nm7TbGHRoedayjL0EwrKOkegg
+	 6rIsdbCmCcZQZQXqFTe+2wpez7iuju3JqufHH4DMlpocrIasXmgN4LIyOCZuUrhHam
+	 6oJpZypYbXWTseTeFT+cITSbX+E1x2/HMgJSI7Ow=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E1829F805B5;
-	Mon, 27 Sep 2021 15:57:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F01AAF801F7;
+	Mon, 27 Sep 2021 16:34:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7B2ACF80589; Mon, 27 Sep 2021 15:57:14 +0200 (CEST)
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
- [IPv6:2a00:1450:4864:20::333])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 49FE3F80227; Mon, 27 Sep 2021 16:34:35 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A1830F8054A
- for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2021 15:56:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1830F8054A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="jMdKMaY6"
-Received: by mail-wm1-x333.google.com with SMTP id
- r11-20020a1c440b000000b0030cf0f01fbaso31596wma.1
- for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2021 06:56:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=wXISqI9BkUPm40hgDwDecP+rPrhF8dC2fG9NLly6Tx0=;
- b=jMdKMaY6FPuHdA+73IMVyk9Xbfjj3Y7LDMUjNIjIkyQqpdKc9DtKtYJfecC9uxv/Jp
- H5nzHhGKNP2biBzJ4qnzmKbwbpWc7XcRzPdrYGiujMW7uM4X2O7wV2wN1OjVQYEn5a6B
- ybFn4t3ysChXAMPye26mCaA5KLZOPq4iejidiR9pdTImTDrKRxoUxGnpUN3fuIPa61LM
- M8veZFuzpUZYeh1O+m+otDCUy0hWhdhcqIuosAayX+8F6C0WXnNNi/TLfSbDZYc8t4R8
- Bl+KVnfWfI1D+ychvYrjACi2spGlmwfOnewsJxLgTPOR5xdmikUFnZH3qKzFFktyGC2X
- OZSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=wXISqI9BkUPm40hgDwDecP+rPrhF8dC2fG9NLly6Tx0=;
- b=CQHwVr4IKLmyMvcJhzB7r/EmlBjQ6ZnfHNyIp7Gu0VG0NC500n5U3un2DQCD9z/SBN
- 7Y0cTn5B3LoVMFA7JXCGhKNPfKjJBx94ZO+pNXMBqp7jxWKlqX5SbslrYoh84D41XpzS
- ozvqdipo5RxIb3lYEPeiGOCk2UmgvJYppHJafzHKz0aJfk9oVoDnnJBU6FzG99mOATnT
- DJId6HnhQtmc5cqRwU2DrAqjOvvr/E32uj9oEaBa7ICZ85DEQSfKahxg1Acf3c16/Z+q
- RrUSGzV3AFAw0SwWXKTtYrYEsltNyEVxvfrpImsQZKmiHck+fJsGPqHWpgSLiyGmZWCq
- jwoA==
-X-Gm-Message-State: AOAM533djIPh3TrvaGR4VXqOQiyeikLE6eeSU1InrTI6mFp2+m7Vn9YZ
- /olOmx92UlSMAJjI63vId7AIvg==
-X-Google-Smtp-Source: ABdhPJyQ3RvMZirG5FSn1MmXld5l45IOxtSH4A4gmqC2lMm2jiiBFvwXz1cMe6Ngjhw/0XRFfosCnw==
-X-Received: by 2002:a1c:3b87:: with SMTP id
- i129mr15980839wma.115.1632751012482; 
- Mon, 27 Sep 2021 06:56:52 -0700 (PDT)
-Received: from srini-hackbox.lan
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id b7sm20485606wrm.9.2021.09.27.06.56.51
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 27 Sep 2021 06:56:52 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: bjorn.andersson@linaro.org,
-	broonie@kernel.org,
-	robh@kernel.org
-Subject: [PATCH v8 21/22] ASoC: qdsp6: audioreach: add q6prm support
-Date: Mon, 27 Sep 2021 14:55:58 +0100
-Message-Id: <20210927135559.738-22-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210927135559.738-1-srinivas.kandagatla@linaro.org>
-References: <20210927135559.738-1-srinivas.kandagatla@linaro.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id CB123F801EC
+ for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2021 16:34:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB123F801EC
+X-IronPort-AV: E=McAfee;i="6200,9189,10120"; a="211734775"
+X-IronPort-AV: E=Sophos;i="5.85,326,1624345200"; d="scan'208";a="211734775"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Sep 2021 07:34:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,326,1624345200"; d="scan'208";a="518615348"
+Received: from brentlu-brix.itwn.intel.com ([10.5.253.10])
+ by fmsmga008.fm.intel.com with ESMTP; 27 Sep 2021 07:34:14 -0700
+From: Brent Lu <brent.lu@intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: intel: sof_rt5682: update platform device name for
+ Maxim amplifier
+Date: Mon, 27 Sep 2021 22:32:49 +0800
+Message-Id: <20210927143249.439129-1-brent.lu@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.de,
- plai@codeaurora.org, pierre-louis.bossart@linux.intel.com
+Cc: Libin Yang <libin.yang@intel.com>,
+ Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Jie Yang <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Tzung-Bi Shih <tzungbi@google.com>, Mark Brown <broonie@kernel.org>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ Bard Liao <bard.liao@intel.com>, Paul Olaru <paul.olaru@oss.nxp.com>,
+ Rander Wang <rander.wang@intel.com>, Gongjun Song <gongjun.song@intel.com>,
+ Brent Lu <brent.lu@intel.com>,
+ Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
+ Yong Zhi <yong.zhi@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,341 +85,106 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support to q6prm (Proxy Resource Manager) module used for clock resources
+To follow 20-character length limitation of platform device name, we
+have only 7 character space for amplifier. Therefore, the last
+character of mx98357a and mx98360a is removed to save space.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Brent Lu <brent.lu@intel.com>
 ---
- sound/soc/qcom/Kconfig        |   4 +
- sound/soc/qcom/qdsp6/Makefile |   1 +
- sound/soc/qcom/qdsp6/q6prm.c  | 202 ++++++++++++++++++++++++++++++++++
- sound/soc/qcom/qdsp6/q6prm.h  |  78 +++++++++++++
- 4 files changed, 285 insertions(+)
- create mode 100644 sound/soc/qcom/qdsp6/q6prm.c
- create mode 100644 sound/soc/qcom/qdsp6/q6prm.h
+ sound/soc/intel/boards/sof_rt5682.c               | 8 ++++----
+ sound/soc/intel/common/soc-acpi-intel-adl-match.c | 2 +-
+ sound/soc/intel/common/soc-acpi-intel-jsl-match.c | 4 ++--
+ sound/soc/intel/common/soc-acpi-intel-tgl-match.c | 2 +-
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index d1132c4174db..465a2a603401 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -96,6 +96,9 @@ config SND_SOC_QDSP6_APM
- 	select SND_SOC_QDSP6_APM_DAI
- 	select SND_SOC_QDSP6_APM_LPASS_DAI
- 
-+config SND_SOC_QDSP6_PRM
-+	tristate
-+
- config SND_SOC_QDSP6
- 	tristate "SoC ALSA audio driver for QDSP6"
- 	depends on QCOM_APR
-@@ -111,6 +114,7 @@ config SND_SOC_QDSP6
- 	select SND_SOC_QDSP6_ASM_DAI
- 	select SND_SOC_TOPOLOGY
- 	select SND_SOC_QDSP6_APM
-+	select SND_SOC_QDSP6_PRM
- 	help
- 	 To add support for MSM QDSP6 Soc Audio.
- 	 This will enable sound soc platform specific
-diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
-index bdcbfdfa9bd0..c932f8e24b32 100644
---- a/sound/soc/qcom/qdsp6/Makefile
-+++ b/sound/soc/qcom/qdsp6/Makefile
-@@ -15,3 +15,4 @@ obj-$(CONFIG_SND_SOC_QDSP6_ASM_DAI) += q6asm-dai.o
- obj-$(CONFIG_SND_SOC_QDSP6_APM) += snd-q6apm.o
- obj-$(CONFIG_SND_SOC_QDSP6_APM_DAI) += q6apm-dai.o
- obj-$(CONFIG_SND_SOC_QDSP6_APM_LPASS_DAI) += q6apm-lpass-dais.o
-+obj-$(CONFIG_SND_SOC_QDSP6_PRM) += q6prm.o
-diff --git a/sound/soc/qcom/qdsp6/q6prm.c b/sound/soc/qcom/qdsp6/q6prm.c
-new file mode 100644
-index 000000000000..82c40f2d4e1d
---- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6prm.c
-@@ -0,0 +1,202 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2021, Linaro Limited
-+
-+#include <linux/slab.h>
-+#include <linux/wait.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/delay.h>
-+#include <linux/of_platform.h>
-+#include <linux/jiffies.h>
-+#include <linux/soc/qcom/apr.h>
-+#include <dt-bindings/soc/qcom,gpr.h>
-+#include <dt-bindings/sound/qcom,q6dsp-lpass-ports.h>
-+#include "q6prm.h"
-+#include "audioreach.h"
-+
-+struct q6prm {
-+	struct device *dev;
-+	gpr_device_t *gdev;
-+	wait_queue_head_t wait;
-+	struct gpr_ibasic_rsp_result_t result;
-+	struct mutex lock;
-+};
-+
-+#define PRM_CMD_REQUEST_HW_RSC		0x0100100F
-+#define PRM_CMD_RSP_REQUEST_HW_RSC	0x02001002
-+#define PRM_CMD_RELEASE_HW_RSC		0x01001010
-+#define PRM_CMD_RSP_RELEASE_HW_RSC	0x02001003
-+#define PARAM_ID_RSC_HW_CORE		0x08001032
-+#define PARAM_ID_RSC_LPASS_CORE		0x0800102B
-+#define PARAM_ID_RSC_AUDIO_HW_CLK	0x0800102C
-+
-+struct prm_cmd_request_hw_core {
-+	struct apm_module_param_data param_data;
-+	uint32_t hw_clk_id;
-+} __packed;
-+
-+struct prm_cmd_request_rsc {
-+	struct apm_module_param_data param_data;
-+	uint32_t num_clk_id;
-+	struct audio_hw_clk_cfg clock_id;
-+} __packed;
-+
-+static int q6prm_send_cmd_sync(struct q6prm *prm, struct gpr_pkt *pkt, uint32_t rsp_opcode)
-+{
-+	return audioreach_send_cmd_sync(prm->dev, prm->gdev, &prm->result, &prm->lock,
-+					NULL, &prm->wait, pkt, rsp_opcode);
-+}
-+
-+static int q6prm_set_hw_core_req(struct device *dev, uint32_t hw_block_id, bool enable)
-+{
-+	struct q6prm *prm = dev_get_drvdata(dev->parent);
-+	struct apm_module_param_data *param_data;
-+	struct prm_cmd_request_hw_core *req;
-+	gpr_device_t *gdev = prm->gdev;
-+	uint32_t opcode, rsp_opcode;
-+	struct gpr_pkt *pkt;
-+	int rc;
-+
-+	if (enable) {
-+		opcode = PRM_CMD_REQUEST_HW_RSC;
-+		rsp_opcode = PRM_CMD_RSP_REQUEST_HW_RSC;
-+	} else {
-+		opcode = PRM_CMD_RELEASE_HW_RSC;
-+		rsp_opcode = PRM_CMD_RSP_RELEASE_HW_RSC;
-+	}
-+
-+	pkt = audioreach_alloc_cmd_pkt(sizeof(*req), opcode, 0, gdev->svc.id, GPR_PRM_MODULE_IID);
-+	if (IS_ERR(pkt))
-+		return PTR_ERR(pkt);
-+
-+	req = (void *)pkt + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
-+
-+	param_data = &req->param_data;
-+
-+	param_data->module_instance_id = GPR_PRM_MODULE_IID;
-+	param_data->error_code = 0;
-+	param_data->param_id = PARAM_ID_RSC_HW_CORE;
-+	param_data->param_size = sizeof(*req) - APM_MODULE_PARAM_DATA_SIZE;
-+
-+	req->hw_clk_id = hw_block_id;
-+
-+	rc = q6prm_send_cmd_sync(prm, pkt, rsp_opcode);
-+
-+	kfree(pkt);
-+
-+	return rc;
-+}
-+
-+int q6prm_vote_lpass_core_hw(struct device *dev, uint32_t hw_block_id,
-+			     const char *client_name, uint32_t *client_handle)
-+{
-+	return q6prm_set_hw_core_req(dev, hw_block_id, true);
-+
-+}
-+EXPORT_SYMBOL_GPL(q6prm_vote_lpass_core_hw);
-+
-+int q6prm_unvote_lpass_core_hw(struct device *dev, uint32_t hw_block_id, uint32_t client_handle)
-+{
-+	return q6prm_set_hw_core_req(dev, hw_block_id, false);
-+}
-+EXPORT_SYMBOL_GPL(q6prm_unvote_lpass_core_hw);
-+
-+int q6prm_set_lpass_clock(struct device *dev, int clk_id, int clk_attr, int clk_root,
-+			  unsigned int freq)
-+{
-+	struct q6prm *prm = dev_get_drvdata(dev->parent);
-+	struct apm_module_param_data *param_data;
-+	struct prm_cmd_request_rsc *req;
-+	gpr_device_t *gdev = prm->gdev;
-+	struct gpr_pkt *pkt;
-+	int rc;
-+
-+	pkt = audioreach_alloc_cmd_pkt(sizeof(*req), PRM_CMD_REQUEST_HW_RSC, 0, gdev->svc.id,
-+				       GPR_PRM_MODULE_IID);
-+	if (IS_ERR(pkt))
-+		return PTR_ERR(pkt);
-+
-+	req = (void *)pkt + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
-+
-+	param_data = &req->param_data;
-+
-+	param_data->module_instance_id = GPR_PRM_MODULE_IID;
-+	param_data->error_code = 0;
-+	param_data->param_id = PARAM_ID_RSC_AUDIO_HW_CLK;
-+	param_data->param_size = sizeof(*req) - APM_MODULE_PARAM_DATA_SIZE;
-+
-+	req->num_clk_id = 1;
-+	req->clock_id.clock_id = clk_id;
-+	req->clock_id.clock_freq = freq;
-+	req->clock_id.clock_attri = clk_attr;
-+	req->clock_id.clock_root = clk_root;
-+
-+	rc = q6prm_send_cmd_sync(prm, pkt, PRM_CMD_RSP_REQUEST_HW_RSC);
-+
-+	kfree(pkt);
-+
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(q6prm_set_lpass_clock);
-+
-+static int prm_callback(struct gpr_resp_pkt *data, void *priv, int op)
-+{
-+	gpr_device_t *gdev = priv;
-+	struct q6prm *prm = dev_get_drvdata(&gdev->dev);
-+	struct gpr_ibasic_rsp_result_t *result;
-+	struct gpr_hdr *hdr = &data->hdr;
-+
-+	switch (hdr->opcode) {
-+	case PRM_CMD_RSP_REQUEST_HW_RSC:
-+	case PRM_CMD_RSP_RELEASE_HW_RSC:
-+		result = data->payload;
-+		prm->result.opcode = hdr->opcode;
-+		prm->result.status = result->status;
-+		wake_up(&prm->wait);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int prm_probe(gpr_device_t *gdev)
-+{
-+	struct device *dev = &gdev->dev;
-+	struct q6prm *cc;
-+
-+	cc = devm_kzalloc(dev, sizeof(*cc), GFP_KERNEL);
-+	if (!cc)
-+		return -ENOMEM;
-+
-+	cc->dev = dev;
-+	cc->gdev = gdev;
-+	mutex_init(&cc->lock);
-+	init_waitqueue_head(&cc->wait);
-+	dev_set_drvdata(dev, cc);
-+
-+	return devm_of_platform_populate(dev);
-+}
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id prm_device_id[]  = {
-+	{ .compatible = "qcom,q6prm" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, prm_device_id);
-+#endif
-+
-+static gpr_driver_t prm_driver = {
-+	.probe = prm_probe,
-+	.gpr_callback = prm_callback,
-+	.driver = {
-+		.name = "qcom-prm",
-+		.of_match_table = of_match_ptr(prm_device_id),
-+	},
-+};
-+
-+module_gpr_driver(prm_driver);
-+MODULE_DESCRIPTION("Audio Process Manager");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/qcom/qdsp6/q6prm.h b/sound/soc/qcom/qdsp6/q6prm.h
-new file mode 100644
-index 000000000000..fea4d1954bc1
---- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6prm.h
-@@ -0,0 +1,78 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef __Q6PRM_H__
-+#define __Q6PRM_H__
-+
-+/* Clock ID for Primary I2S IBIT */
-+#define Q6PRM_LPASS_CLK_ID_PRI_MI2S_IBIT                          0x100
-+/* Clock ID for Primary I2S EBIT */
-+#define Q6PRM_LPASS_CLK_ID_PRI_MI2S_EBIT                          0x101
-+/* Clock ID for Secondary I2S IBIT */
-+#define Q6PRM_LPASS_CLK_ID_SEC_MI2S_IBIT                          0x102
-+/* Clock ID for Secondary I2S EBIT */
-+#define Q6PRM_LPASS_CLK_ID_SEC_MI2S_EBIT                          0x103
-+/* Clock ID for Tertiary I2S IBIT */
-+#define Q6PRM_LPASS_CLK_ID_TER_MI2S_IBIT                          0x104
-+/* Clock ID for Tertiary I2S EBIT */
-+#define Q6PRM_LPASS_CLK_ID_TER_MI2S_EBIT                          0x105
-+/* Clock ID for Quartnery I2S IBIT */
-+#define Q6PRM_LPASS_CLK_ID_QUAD_MI2S_IBIT                         0x106
-+/* Clock ID for Quartnery I2S EBIT */
-+#define Q6PRM_LPASS_CLK_ID_QUAD_MI2S_EBIT                         0x107
-+/* Clock ID for Speaker I2S IBIT */
-+#define Q6PRM_LPASS_CLK_ID_SPEAKER_I2S_IBIT                       0x108
-+/* Clock ID for Speaker I2S EBIT */
-+#define Q6PRM_LPASS_CLK_ID_SPEAKER_I2S_EBIT                       0x109
-+/* Clock ID for Speaker I2S OSR */
-+#define Q6PRM_LPASS_CLK_ID_SPEAKER_I2S_OSR                        0x10A
-+
-+/* Clock ID for QUINARY  I2S IBIT */
-+#define Q6PRM_LPASS_CLK_ID_QUI_MI2S_IBIT			0x10B
-+/* Clock ID for QUINARY  I2S EBIT */
-+#define Q6PRM_LPASS_CLK_ID_QUI_MI2S_EBIT			0x10C
-+/* Clock ID for SENARY  I2S IBIT */
-+#define Q6PRM_LPASS_CLK_ID_SEN_MI2S_IBIT			0x10D
-+/* Clock ID for SENARY  I2S EBIT */
-+#define Q6PRM_LPASS_CLK_ID_SEN_MI2S_EBIT			0x10E
-+/* Clock ID for INT0 I2S IBIT  */
-+#define Q6PRM_LPASS_CLK_ID_INT0_MI2S_IBIT                       0x10F
-+/* Clock ID for INT1 I2S IBIT  */
-+#define Q6PRM_LPASS_CLK_ID_INT1_MI2S_IBIT                       0x110
-+/* Clock ID for INT2 I2S IBIT  */
-+#define Q6PRM_LPASS_CLK_ID_INT2_MI2S_IBIT                       0x111
-+/* Clock ID for INT3 I2S IBIT  */
-+#define Q6PRM_LPASS_CLK_ID_INT3_MI2S_IBIT                       0x112
-+/* Clock ID for INT4 I2S IBIT  */
-+#define Q6PRM_LPASS_CLK_ID_INT4_MI2S_IBIT                       0x113
-+/* Clock ID for INT5 I2S IBIT  */
-+#define Q6PRM_LPASS_CLK_ID_INT5_MI2S_IBIT                       0x114
-+/* Clock ID for INT6 I2S IBIT  */
-+#define Q6PRM_LPASS_CLK_ID_INT6_MI2S_IBIT                       0x115
-+
-+/* Clock ID for QUINARY MI2S OSR CLK  */
-+#define Q6PRM_LPASS_CLK_ID_QUI_MI2S_OSR                         0x116
-+
-+#define Q6PRM_LPASS_CLK_ID_WSA_CORE_MCLK			0x305
-+#define Q6PRM_LPASS_CLK_ID_WSA_CORE_NPL_MCLK			0x306
-+
-+#define Q6PRM_LPASS_CLK_ID_VA_CORE_MCLK				0x307
-+#define Q6PRM_LPASS_CLK_ID_VA_CORE_2X_MCLK			0x308
-+
-+#define Q6PRM_LPASS_CLK_ID_TX_CORE_MCLK				0x30c
-+#define Q6PRM_LPASS_CLK_ID_TX_CORE_NPL_MCLK			0x30d
-+
-+#define Q6PRM_LPASS_CLK_ID_RX_CORE_MCLK				0x30e
-+#define Q6PRM_LPASS_CLK_ID_RX_CORE_NPL_MCLK			0x30f
-+
-+#define Q6PRM_LPASS_CLK_SRC_INTERNAL	1
-+#define Q6PRM_LPASS_CLK_ROOT_DEFAULT	0
-+#define Q6PRM_HW_CORE_ID_LPASS		1
-+#define Q6PRM_HW_CORE_ID_DCODEC		2
-+
-+int q6prm_set_lpass_clock(struct device *dev, int clk_id, int clk_attr,
-+			  int clk_root, unsigned int freq);
-+int q6prm_vote_lpass_core_hw(struct device *dev, uint32_t hw_block_id,
-+			     const char *client_name, uint32_t *client_handle);
-+int q6prm_unvote_lpass_core_hw(struct device *dev, uint32_t hw_block_id,
-+			       uint32_t client_handle);
-+#endif /* __Q6PRM_H__ */
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index 3f6f19d9b19e..ad42d4c7ade5 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -959,7 +959,7 @@ static const struct platform_device_id board_ids[] = {
+ 		.name = "sof_rt5682",
+ 	},
+ 	{
+-		.name = "tgl_mx98357a_rt5682",
++		.name = "tgl_mx98357_rt5682",
+ 		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+ 					SOF_RT5682_SSP_CODEC(0) |
+ 					SOF_SPEAKER_AMP_PRESENT |
+@@ -989,7 +989,7 @@ static const struct platform_device_id board_ids[] = {
+ 					SOF_SSP_BT_OFFLOAD_PRESENT),
+ 	},
+ 	{
+-		.name = "jsl_rt5682_mx98360a",
++		.name = "jsl_rt5682_mx98360",
+ 		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+ 					SOF_RT5682_MCLK_24MHZ |
+ 					SOF_RT5682_SSP_CODEC(0) |
+@@ -1039,7 +1039,7 @@ static const struct platform_device_id board_ids[] = {
+ 					SOF_SSP_BT_OFFLOAD_PRESENT),
+ 	},
+ 	{
+-		.name = "adl_mx98357a_rt5682",
++		.name = "adl_mx98357_rt5682",
+ 		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+ 					SOF_RT5682_SSP_CODEC(0) |
+ 					SOF_SPEAKER_AMP_PRESENT |
+@@ -1067,7 +1067,7 @@ static const struct platform_device_id board_ids[] = {
+ 					SOF_RT5682_SSP_AMP(1)),
+ 	},
+ 	{
+-		.name = "jsl_rt5682s_mx98360a",
++		.name = "jsl_rt5682s_mx98360",
+ 		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+ 					SOF_RT5682_MCLK_24MHZ |
+ 					SOF_RT5682_SSP_CODEC(0) |
+diff --git a/sound/soc/intel/common/soc-acpi-intel-adl-match.c b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
+index a0f6a69c7038..e4ff280eac23 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-adl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
+@@ -291,7 +291,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
+ 	},
+ 	{
+ 		.id = "10EC5682",
+-		.drv_name = "adl_mx98357a_rt5682",
++		.drv_name = "adl_mx98357_rt5682",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &adl_max98357a_amp,
+ 		.sof_fw_filename = "sof-adl.ri",
+diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+index cfd6bf756215..20fd9dcc74af 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+@@ -67,7 +67,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
+ 	},
+ 	{
+ 		.id = "10EC5682",
+-		.drv_name = "jsl_rt5682_mx98360a",
++		.drv_name = "jsl_rt5682_mx98360",
+ 		.sof_fw_filename = "sof-jsl.ri",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &mx98360a_spk,
+@@ -99,7 +99,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
+ 	},
+ 	{
+ 		.id = "RTL5682",
+-		.drv_name = "jsl_rt5682s_mx98360a",
++		.drv_name = "jsl_rt5682s_mx98360",
+ 		.sof_fw_filename = "sof-jsl.ri",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &mx98360a_spk,
+diff --git a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+index 785d5f5f8a9c..91ef71c2535d 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+@@ -333,7 +333,7 @@ static const struct snd_soc_acpi_codecs tgl_rt1011_amp = {
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
+ 	{
+ 		.id = "10EC5682",
+-		.drv_name = "tgl_mx98357a_rt5682",
++		.drv_name = "tgl_mx98357_rt5682",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &tgl_codecs,
+ 		.sof_fw_filename = "sof-tgl.ri",
 -- 
-2.21.0
+2.25.1
 
