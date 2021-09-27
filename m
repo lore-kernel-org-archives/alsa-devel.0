@@ -2,59 +2,58 @@ Return-Path: <SRS0=nO8j=OR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50D11C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 12:10:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7B62C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 12:11:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C6E5B60F94
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 12:10:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C6E5B60F94
+	by mail.kernel.org (Postfix) with ESMTPS id 2CA156101A
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 12:11:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2CA156101A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 53A1116C7;
-	Mon, 27 Sep 2021 14:09:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53A1116C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id C526E16C3;
+	Mon, 27 Sep 2021 14:10:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C526E16C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632744642;
-	bh=rkEjWsnDwSM5SvEJp1PZ4vslEB39U82UHE/3rzFoKj0=;
+	s=default; t=1632744665;
+	bh=zTtNKYYNKknASlm4MENv7cnvgMsIKcADBU0AgKhBbjc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=B3EOQhDtfJpFCovV+6dxatBxHz8sUMJtYLH3yc1LRHpFC49LpvD6TxUEBDWoHILhr
-	 MfNs+2sRliwYPb7/GnOB0UCPDbL3gTDQB/1xa4UMkpk9RSpP8JsozIxXlJt0OFu2Bu
-	 nzFjnsRF7W3geEcF6+dh997puC8ivTDCmJqQLcC8=
+	b=hhACD2bjTdwIzayqMHqPD7+AtneVBddtK0XE84PqpT8UQKVRGK64TxTmqsix2pMVy
+	 Y+P730OoeikBwMcrFKiX09nlwW7Xvk9d+eD3gS7zaJPw7GCBiKwDxTSy3/y5+gnvih
+	 JNV5U1G3dbZc0IWfVj3dR4YY0cs0uyxvow2/Kn9s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 439ACF801F7;
-	Mon, 27 Sep 2021 14:07:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3A938F80227;
+	Mon, 27 Sep 2021 14:07:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 24E33F804CA; Mon, 27 Sep 2021 14:07:04 +0200 (CEST)
+ id 29A25F80147; Mon, 27 Sep 2021 14:07:04 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CF3A7F80227
- for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2021 14:05:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF3A7F80227
-X-IronPort-AV: E=McAfee;i="6200,9189,10119"; a="221260462"
-X-IronPort-AV: E=Sophos;i="5.85,326,1624345200"; d="scan'208";a="221260462"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2F3A5F80272
+ for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2021 14:05:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F3A5F80272
+X-IronPort-AV: E=McAfee;i="6200,9189,10119"; a="221260478"
+X-IronPort-AV: E=Sophos;i="5.85,326,1624345200"; d="scan'208";a="221260478"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Sep 2021 05:05:25 -0700
-X-IronPort-AV: E=Sophos;i="5.85,326,1624345200"; d="scan'208";a="553164374"
+ 27 Sep 2021 05:05:31 -0700
+X-IronPort-AV: E=Sophos;i="5.85,326,1624345200"; d="scan'208";a="553164412"
 Received: from unknown (HELO pujfalus-desk.ger.corp.intel.com)
  ([10.251.220.221])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Sep 2021 05:05:22 -0700
+ 27 Sep 2021 05:05:28 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com, broonie@kernel.org,
  pierre-louis.bossart@linux.intel.com, daniel.baluta@nxp.com
-Subject: [PATCH v3 03/12] ASoC: SOF: topology: Add new token for dynamic
- pipeline
-Date: Mon, 27 Sep 2021 15:05:08 +0300
-Message-Id: <20210927120517.20505-4-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH v3 05/12] AsoC: dapm: export a couple of functions
+Date: Mon, 27 Sep 2021 15:05:10 +0300
+Message-Id: <20210927120517.20505-6-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210927120517.20505-1-peter.ujfalusi@linux.intel.com>
 References: <20210927120517.20505-1-peter.ujfalusi@linux.intel.com>
@@ -80,28 +79,9 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-Today, we set up all widgets required for all PCM streams
-at the time of topology parsing even if they are not
-used. An optimization would be to only set up the widgets
-required for currently active PCM streams. This would give
-the FW the opportunity to power gate unused memory blocks,
-thereby saving power.
-
-For dynamic pipelines, the widgets in the connected DAPM path
-for each PCM will need to be set up at runtime. This patch
-introduces a new token, DYNAMIC_PIPELINE, for scheduler type
-widgets that indicate whether a pipeline should be set up
-statically during topology load or at runtime when the PCM is
-opened. Introduce a new field called dynamic_pipeline_widget
-in struct snd_sof_widget to save the value of the parsed token.
-
-The token is set only for the pipeline (scheduler type)
-widget and must be propagated to all widgets in the same
-pipeline during topology load. Introduce another field called
-pipe_widget in struct snd_sof_widget that saves the pointer to
-the scheduler widget with the same pipeline ID as that of the
-widget. This field is populated when the pipeline completion
-callback is invoked during topology loading.
+Export a couple of DAPM functions that can be used by
+ASoC drivers to determine connected widgets when a PCM
+is started.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
@@ -110,154 +90,63 @@ Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- include/uapi/sound/sof/tokens.h |  1 +
- sound/soc/sof/sof-audio.h       | 13 +++++++
- sound/soc/sof/topology.c        | 62 ++++++++++++++++++++++++++++++++-
- 3 files changed, 75 insertions(+), 1 deletion(-)
+ include/sound/soc-dpcm.h | 1 +
+ sound/soc/soc-dapm.c     | 2 ++
+ sound/soc/soc-pcm.c      | 4 ++--
+ 3 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/sound/sof/tokens.h b/include/uapi/sound/sof/tokens.h
-index a642bf30c027..02b71a8deea4 100644
---- a/include/uapi/sound/sof/tokens.h
-+++ b/include/uapi/sound/sof/tokens.h
-@@ -51,6 +51,7 @@
- #define SOF_TKN_SCHED_CORE			203
- #define SOF_TKN_SCHED_FRAMES			204
- #define SOF_TKN_SCHED_TIME_DOMAIN		205
-+#define SOF_TKN_SCHED_DYNAMIC_PIPELINE		206
+diff --git a/include/sound/soc-dpcm.h b/include/sound/soc-dpcm.h
+index e296a3949b18..bc7af90099a8 100644
+--- a/include/sound/soc-dpcm.h
++++ b/include/sound/soc-dpcm.h
+@@ -159,6 +159,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream, int cmd);
+ int dpcm_be_dai_prepare(struct snd_soc_pcm_runtime *fe, int stream);
+ int dpcm_dapm_stream_event(struct snd_soc_pcm_runtime *fe, int dir,
+ 	int event);
++bool dpcm_end_walk_at_be(struct snd_soc_dapm_widget *widget, enum snd_soc_dapm_direction dir);
  
- /* volume */
- #define SOF_TKN_VOLUME_RAMP_STEP_TYPE		250
-diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index 78a4a0c90a29..4a1c38c5618d 100644
---- a/sound/soc/sof/sof-audio.h
-+++ b/sound/soc/sof/sof-audio.h
-@@ -81,6 +81,8 @@ struct snd_sof_control {
- 	bool comp_data_dirty;
- };
+ #define dpcm_be_dai_startup_rollback(fe, stream, last)	\
+ 						dpcm_be_dai_stop(fe, stream, 0, last)
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 7b67f1e19ae9..44c4d105ffdb 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1331,11 +1331,13 @@ int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
  
-+struct snd_sof_widget;
-+
- /* ASoC SOF DAPM widget */
- struct snd_sof_widget {
- 	struct snd_soc_component *scomp;
-@@ -90,8 +92,19 @@ struct snd_sof_widget {
- 	int core;
- 	int id;
+ 	return paths;
+ }
++EXPORT_SYMBOL_GPL(snd_soc_dapm_dai_get_connected_widgets);
  
-+	/*
-+	 * Flag indicating if the widget should be set up dynamically when a PCM is opened.
-+	 * This flag is only set for the scheduler type widget in topology. During topology
-+	 * loading, this flag is propagated to all the widgets belonging to the same pipeline.
-+	 * When this flag is not set, a widget is set up at the time of topology loading
-+	 * and retained until the DSP enters D3. It will need to be set up again when resuming
-+	 * from D3.
-+	 */
-+	bool dynamic_pipeline_widget;
-+
- 	struct snd_soc_dapm_widget *widget;
- 	struct list_head list;	/* list in sdev widget list */
-+	struct snd_sof_widget *pipe_widget;
+ void snd_soc_dapm_dai_free_widgets(struct snd_soc_dapm_widget_list **list)
+ {
+ 	dapm_widget_list_free(list);
+ }
++EXPORT_SYMBOL_GPL(snd_soc_dapm_dai_free_widgets);
  
- 	/* extended data for UUID components */
- 	struct sof_ipc_comp_ext comp_ext;
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index d8f7b1edefc3..60d1db6a9193 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -572,6 +572,12 @@ static const struct sof_topology_token sched_tokens[] = {
- 		offsetof(struct sof_ipc_pipe_new, time_domain), 0},
- };
- 
-+static const struct sof_topology_token pipeline_tokens[] = {
-+	{SOF_TKN_SCHED_DYNAMIC_PIPELINE, SND_SOC_TPLG_TUPLE_TYPE_BOOL, get_token_u16,
-+		offsetof(struct snd_sof_widget, dynamic_pipeline_widget), 0},
-+
-+};
-+
- /* volume */
- static const struct sof_topology_token volume_tokens[] = {
- 	{SOF_TKN_VOLUME_RAMP_STEP_TYPE, SND_SOC_TPLG_TUPLE_TYPE_WORD,
-@@ -1765,6 +1771,15 @@ static int sof_widget_load_pipeline(struct snd_soc_component *scomp, int index,
- 		goto err;
- 	}
- 
-+	ret = sof_parse_tokens(scomp, swidget, pipeline_tokens,
-+			       ARRAY_SIZE(pipeline_tokens), private->array,
-+			       le32_to_cpu(private->size));
-+	if (ret != 0) {
-+		dev_err(scomp->dev, "error: parse dynamic pipeline token failed %d\n",
-+			private->size);
-+		goto err;
-+	}
-+
- 	dev_dbg(scomp->dev, "pipeline %s: period %d pri %d mips %d core %d frames %d\n",
- 		swidget->widget->name, pipeline->period, pipeline->priority,
- 		pipeline->period_mips, pipeline->core, pipeline->frames_per_sched);
-@@ -3567,11 +3582,45 @@ int snd_sof_complete_pipeline(struct device *dev,
- 	return 1;
+ /*
+  * Handler for regulator supply widget.
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index e30cb5abaf7a..b5825d8d6caa 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1262,8 +1262,7 @@ static int widget_in_list(struct snd_soc_dapm_widget_list *list,
+ 	return 0;
  }
  
-+/**
-+ * sof_set_pipe_widget - Set pipe_widget for a component
-+ * @sdev: pointer to struct snd_sof_dev
-+ * @pipe_widget: pointer to struct snd_sof_widget of type snd_soc_dapm_scheduler
-+ * @swidget: pointer to struct snd_sof_widget that has the same pipeline ID as @pipe_widget
-+ *
-+ * Return: 0 if successful, -EINVAL on error.
-+ * The function checks if @swidget is associated with any volatile controls. If so, setting
-+ * the dynamic_pipeline_widget is disallowed.
-+ */
-+static int sof_set_pipe_widget(struct snd_sof_dev *sdev, struct snd_sof_widget *pipe_widget,
-+			       struct snd_sof_widget *swidget)
-+{
-+	struct snd_sof_control *scontrol;
-+
-+	if (pipe_widget->dynamic_pipeline_widget) {
-+		/* dynamic widgets cannot have volatile kcontrols */
-+		list_for_each_entry(scontrol, &sdev->kcontrol_list, list)
-+			if (scontrol->comp_id == swidget->comp_id &&
-+			    (scontrol->access & SNDRV_CTL_ELEM_ACCESS_VOLATILE)) {
-+				dev_err(sdev->dev,
-+					"error: volatile control found for dynamic widget %s\n",
-+					swidget->widget->name);
-+				return -EINVAL;
-+			}
-+	}
-+
-+	/* set the pipe_widget and apply the dynamic_pipeline_widget_flag */
-+	swidget->pipe_widget = pipe_widget;
-+	swidget->dynamic_pipeline_widget = pipe_widget->dynamic_pipeline_widget;
-+
-+	return 0;
-+}
-+
- /* completion - called at completion of firmware loading */
- static int sof_complete(struct snd_soc_component *scomp)
+-static bool dpcm_end_walk_at_be(struct snd_soc_dapm_widget *widget,
+-		enum snd_soc_dapm_direction dir)
++bool dpcm_end_walk_at_be(struct snd_soc_dapm_widget *widget, enum snd_soc_dapm_direction dir)
  {
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
--	struct snd_sof_widget *swidget;
-+	struct snd_sof_widget *swidget, *comp_swidget;
- 	int ret;
+ 	struct snd_soc_card *card = widget->dapm->card;
+ 	struct snd_soc_pcm_runtime *rtd;
+@@ -1281,6 +1280,7 @@ static bool dpcm_end_walk_at_be(struct snd_soc_dapm_widget *widget,
  
- 	/* some widget types require completion notificattion */
-@@ -3586,6 +3635,17 @@ static int sof_complete(struct snd_soc_component *scomp)
- 				return ret;
+ 	return false;
+ }
++EXPORT_SYMBOL_GPL(dpcm_end_walk_at_be);
  
- 			swidget->complete = ret;
-+
-+			/*
-+			 * Apply the dynamic_pipeline_widget flag and set the pipe_widget field
-+			 * for all widgets that have the same pipeline ID as the scheduler widget
-+			 */
-+			list_for_each_entry_reverse(comp_swidget, &sdev->widget_list, list)
-+				if (comp_swidget->pipeline_id == swidget->pipeline_id) {
-+					ret = sof_set_pipe_widget(sdev, swidget, comp_swidget);
-+					if (ret < 0)
-+						return ret;
-+				}
- 			break;
- 		default:
- 			break;
+ int dpcm_path_get(struct snd_soc_pcm_runtime *fe,
+ 	int stream, struct snd_soc_dapm_widget_list **list)
 -- 
 2.33.0
 
