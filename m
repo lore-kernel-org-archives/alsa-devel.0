@@ -2,59 +2,58 @@ Return-Path: <SRS0=nO8j=OR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1FBCC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 12:07:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5976FC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 12:07:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 27ACF60FF2
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 12:07:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 27ACF60FF2
+	by mail.kernel.org (Postfix) with ESMTPS id D7E0360F94
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 12:07:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D7E0360F94
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C76916C2;
-	Mon, 27 Sep 2021 14:06:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C76916C2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3ED1A16BE;
+	Mon, 27 Sep 2021 14:06:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3ED1A16BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632744443;
-	bh=H8WkfszTsBbu2dLrYyIZ+mlXR07nAVNkBaLbWcT/J2w=;
+	s=default; t=1632744468;
+	bh=qsb8GF/KQguxNXgREHh/MpfvMz3gXNFHEQK9Quql2Zg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fSUKE69NypnPvr9iA3A5vAIKcZFROfFWfrOD9ATGo8+vSqBFjE9NDHBSwu4uk6ApP
-	 kgIDKIlz8T97gpfuRJlvkuD04DDfc8m7XmYYYrsh6QexxqYGCilwSKLBkcz+/p9GoI
-	 4+i9MoXWj3BTNLW2hUJxD8cRdpO44gNqw6qSYHkk=
+	b=Wnx8ehGSCOzFgiM9FUvtbdqVbHWjopdt9YTUPoX9ivVPqSoQqAnuC/nyKZ5K2FKDV
+	 vIueTBNt4GFFGdeHx+81Bj5NJzvHoD8Rij3GbRqm6TDP2b29M/flvnHzb1cb+6TYMm
+	 oKFcaEw80HzbLMMOm9vw7PhZ1ONNErvtFRXc9MFo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 72827F804E6;
-	Mon, 27 Sep 2021 14:05:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18F65F804E7;
+	Mon, 27 Sep 2021 14:05:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E5780F804E3; Mon, 27 Sep 2021 14:05:41 +0200 (CEST)
+ id 4BE11F804E7; Mon, 27 Sep 2021 14:05:44 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2B258F80161
- for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2021 14:05:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B258F80161
-X-IronPort-AV: E=McAfee;i="6200,9189,10119"; a="221260448"
-X-IronPort-AV: E=Sophos;i="5.85,326,1624345200"; d="scan'208";a="221260448"
+ by alsa1.perex.cz (Postfix) with ESMTPS id E84F8F801F7
+ for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2021 14:05:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E84F8F801F7
+X-IronPort-AV: E=McAfee;i="6200,9189,10119"; a="221260486"
+X-IronPort-AV: E=Sophos;i="5.85,326,1624345200"; d="scan'208";a="221260486"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Sep 2021 05:05:20 -0700
-X-IronPort-AV: E=Sophos;i="5.85,326,1624345200"; d="scan'208";a="553164352"
+ 27 Sep 2021 05:05:34 -0700
+X-IronPort-AV: E=Sophos;i="5.85,326,1624345200"; d="scan'208";a="553164425"
 Received: from unknown (HELO pujfalus-desk.ger.corp.intel.com)
  ([10.251.220.221])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Sep 2021 05:05:17 -0700
+ 27 Sep 2021 05:05:31 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com, broonie@kernel.org,
  pierre-louis.bossart@linux.intel.com, daniel.baluta@nxp.com
-Subject: [PATCH v3 01/12] ASoC: topology: change the complete op in
- snd_soc_tplg_ops to return int
-Date: Mon, 27 Sep 2021 15:05:06 +0300
-Message-Id: <20210927120517.20505-2-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH v3 06/12] ASoC: SOF: Add new fields to snd_sof_route
+Date: Mon, 27 Sep 2021 15:05:11 +0300
+Message-Id: <20210927120517.20505-7-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210927120517.20505-1-peter.ujfalusi@linux.intel.com>
 References: <20210927120517.20505-1-peter.ujfalusi@linux.intel.com>
@@ -80,13 +79,15 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-In the SOF driver, the operations performed in the complete callback
-can fail and therefore topology loading should return an error in
-such cases. So, change the signature of the complete op
-in struct snd_soc_tplg_ops to return an int to return the error.
+Add two new fields to save the source widget and sink widget
+pointers in struct snd_sof_route to make it easier to look up
+routes by source/sink widget. Also, add a flag to indicate
+if the route has been set up in the DSP. These will be used
+when the dynamic pipeline feature is implemented and routes
+will have to be set up at run time.
 
-Also, amend the complete callback functions in the SOF driver and
-the SKL driver to conform with the new signature.
+Also, add a new sof_tear_down_pipelines() callback, that will
+used to reset the set up status for all routes during suspend.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
@@ -95,134 +96,94 @@ Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- include/sound/soc-topology.h           |  2 +-
- sound/soc/intel/skylake/skl-topology.c |  6 ++++--
- sound/soc/soc-topology.c               | 10 ++++++----
- sound/soc/sof/topology.c               | 12 ++++++++----
- 4 files changed, 19 insertions(+), 11 deletions(-)
+ sound/soc/sof/pm.c        |  2 ++
+ sound/soc/sof/sof-audio.c | 15 +++++++++++++++
+ sound/soc/sof/sof-audio.h |  4 ++++
+ sound/soc/sof/topology.c  |  3 +++
+ 4 files changed, 24 insertions(+)
 
-diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
-index 4afd667e124c..7f33de8ffd95 100644
---- a/include/sound/soc-topology.h
-+++ b/include/sound/soc-topology.h
-@@ -151,7 +151,7 @@ struct snd_soc_tplg_ops {
- 		struct snd_soc_tplg_hdr *);
+diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
+index c83fb6255961..ce922227c4c6 100644
+--- a/sound/soc/sof/pm.c
++++ b/sound/soc/sof/pm.c
+@@ -208,6 +208,8 @@ static int sof_suspend(struct device *dev, bool runtime_suspend)
+ 	if (target_state == SOF_DSP_PM_D0)
+ 		goto suspend;
  
- 	/* completion - called at completion of firmware loading */
--	void (*complete)(struct snd_soc_component *);
-+	int (*complete)(struct snd_soc_component *comp);
++	sof_tear_down_pipelines(dev);
++
+ 	/* release trace */
+ 	snd_sof_release_trace(sdev);
  
- 	/* manifest - optional to inform component of manifest */
- 	int (*manifest)(struct snd_soc_component *, int index,
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index b036852d6889..89e4231304dd 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -3637,7 +3637,7 @@ static int skl_manifest_load(struct snd_soc_component *cmpnt, int index,
- 	return 0;
- }
+diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
+index a4b9bb99bced..b52a453ae9d7 100644
+--- a/sound/soc/sof/sof-audio.c
++++ b/sound/soc/sof/sof-audio.c
+@@ -276,6 +276,7 @@ int sof_restore_pipelines(struct device *dev)
  
--static void skl_tplg_complete(struct snd_soc_component *component)
-+static int skl_tplg_complete(struct snd_soc_component *component)
- {
- 	struct snd_soc_dobj *dobj;
- 	struct snd_soc_acpi_mach *mach;
-@@ -3646,7 +3646,7 @@ static void skl_tplg_complete(struct snd_soc_component *component)
- 
- 	val = kmalloc(sizeof(*val), GFP_KERNEL);
- 	if (!val)
--		return;
-+		return -ENOMEM;
- 
- 	mach = dev_get_platdata(component->card->dev);
- 	list_for_each_entry(dobj, &component->dobj_list, list) {
-@@ -3671,7 +3671,9 @@ static void skl_tplg_complete(struct snd_soc_component *component)
- 			}
+ 			return ret;
  		}
++		sroute->setup = true;
  	}
-+
- 	kfree(val);
-+	return 0;
- }
  
- static struct snd_soc_tplg_ops skl_tplg_ops  = {
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 73e1b7b48ce9..88f849b119da 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -78,7 +78,7 @@ struct soc_tplg {
- };
- 
- static int soc_tplg_process_headers(struct soc_tplg *tplg);
--static void soc_tplg_complete(struct soc_tplg *tplg);
-+static int soc_tplg_complete(struct soc_tplg *tplg);
- 
- /* check we dont overflow the data for this control chunk */
- static int soc_tplg_check_elem_count(struct soc_tplg *tplg, size_t elem_size,
-@@ -312,10 +312,12 @@ static int soc_tplg_dai_link_load(struct soc_tplg *tplg,
- }
- 
- /* tell the component driver that all firmware has been loaded in this request */
--static void soc_tplg_complete(struct soc_tplg *tplg)
-+static int soc_tplg_complete(struct soc_tplg *tplg)
- {
- 	if (tplg->ops && tplg->ops->complete)
--		tplg->ops->complete(tplg->comp);
-+		return tplg->ops->complete(tplg->comp);
-+
-+	return 0;
- }
- 
- /* add a dynamic kcontrol */
-@@ -2625,7 +2627,7 @@ static int soc_tplg_load(struct soc_tplg *tplg)
- 
- 	ret = soc_tplg_process_headers(tplg);
- 	if (ret == 0)
--		soc_tplg_complete(tplg);
-+		return soc_tplg_complete(tplg);
- 
+ 	/* restore dai links */
+@@ -317,6 +318,20 @@ int sof_restore_pipelines(struct device *dev)
  	return ret;
  }
+ 
++/* This function doesn't free widgets. It only resets the set up status for all routes */
++void sof_tear_down_pipelines(struct device *dev)
++{
++	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
++	struct snd_sof_route *sroute;
++
++	/*
++	 * No need to protect sroute->setup as this function is called only during the suspend
++	 * callback and all streams should be suspended by then
++	 */
++	list_for_each_entry(sroute, &sdev->route_list, list)
++		sroute->setup = false;
++}
++
+ /*
+  * Generic object lookup APIs.
+  */
+diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
+index 4a1c38c5618d..fe997a80a847 100644
+--- a/sound/soc/sof/sof-audio.h
++++ b/sound/soc/sof/sof-audio.h
+@@ -118,6 +118,9 @@ struct snd_sof_route {
+ 
+ 	struct snd_soc_dapm_route *route;
+ 	struct list_head list;	/* list in sdev route list */
++	struct snd_sof_widget *src_widget;
++	struct snd_sof_widget *sink_widget;
++	bool setup;
+ 
+ 	void *private;
+ };
+@@ -240,6 +243,7 @@ int sof_pcm_dai_link_fixup(struct snd_soc_pcm_runtime *rtd, struct snd_pcm_hw_pa
+ 
+ /* PM */
+ int sof_restore_pipelines(struct device *dev);
++void sof_tear_down_pipelines(struct device *dev);
+ int sof_set_hw_params_upon_resume(struct device *dev);
+ bool snd_sof_stream_suspend_ignored(struct snd_sof_dev *sdev);
+ bool snd_sof_dsp_only_d0i3_compatible_stream_active(struct snd_sof_dev *sdev);
 diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index cc9585bfa4e9..96b8791f7cc1 100644
+index 60d1db6a9193..58f966ab2e81 100644
 --- a/sound/soc/sof/topology.c
 +++ b/sound/soc/sof/topology.c
-@@ -3567,10 +3567,11 @@ int snd_sof_complete_pipeline(struct device *dev,
- }
+@@ -3501,6 +3501,9 @@ static int sof_route_load(struct snd_soc_component *scomp, int index,
+ 		sroute->route = route;
+ 		dobj->private = sroute;
+ 		sroute->private = connect;
++		sroute->src_widget = source_swidget;
++		sroute->sink_widget = sink_swidget;
++		sroute->setup = true;
  
- /* completion - called at completion of firmware loading */
--static void sof_complete(struct snd_soc_component *scomp)
-+static int sof_complete(struct snd_soc_component *scomp)
- {
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
- 	struct snd_sof_widget *swidget;
-+	int ret;
- 
- 	/* some widget types require completion notificattion */
- 	list_for_each_entry(swidget, &sdev->widget_list, list) {
-@@ -3579,8 +3580,11 @@ static void sof_complete(struct snd_soc_component *scomp)
- 
- 		switch (swidget->id) {
- 		case snd_soc_dapm_scheduler:
--			swidget->complete =
--				snd_sof_complete_pipeline(scomp->dev, swidget);
-+			ret = snd_sof_complete_pipeline(scomp->dev, swidget);
-+			if (ret < 0)
-+				return ret;
-+
-+			swidget->complete = ret;
- 			break;
- 		default:
- 			break;
-@@ -3590,7 +3594,7 @@ static void sof_complete(struct snd_soc_component *scomp)
- 	 * cache initial values of SOF kcontrols by reading DSP value over
- 	 * IPC. It may be overwritten by alsa-mixer after booting up
- 	 */
--	snd_sof_cache_kcontrol_val(scomp);
-+	return snd_sof_cache_kcontrol_val(scomp);
- }
- 
- /* manifest - optional to inform component of manifest */
+ 		/* add route to route list */
+ 		list_add(&sroute->list, &sdev->route_list);
 -- 
 2.33.0
 
