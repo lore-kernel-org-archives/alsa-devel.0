@@ -2,58 +2,59 @@ Return-Path: <SRS0=nO8j=OR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7B62C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 12:11:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BEDAC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 12:11:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2CA156101A
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 12:11:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2CA156101A
+	by mail.kernel.org (Postfix) with ESMTPS id 03C2D60EE4
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 12:11:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 03C2D60EE4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C526E16C3;
-	Mon, 27 Sep 2021 14:10:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C526E16C3
+	by alsa0.perex.cz (Postfix) with ESMTPS id A03F816BE;
+	Mon, 27 Sep 2021 14:10:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A03F816BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632744665;
-	bh=zTtNKYYNKknASlm4MENv7cnvgMsIKcADBU0AgKhBbjc=;
+	s=default; t=1632744682;
+	bh=Eg93b53qC81C4tYPvsg/nK4Dauvk/rUg6Wr16nbQEd8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hhACD2bjTdwIzayqMHqPD7+AtneVBddtK0XE84PqpT8UQKVRGK64TxTmqsix2pMVy
-	 Y+P730OoeikBwMcrFKiX09nlwW7Xvk9d+eD3gS7zaJPw7GCBiKwDxTSy3/y5+gnvih
-	 JNV5U1G3dbZc0IWfVj3dR4YY0cs0uyxvow2/Kn9s=
+	b=CKYZOtsa5N0SlynDhlSRsO18K1eC9GlgJbV53HOHT+PIauK75Lg7DubZtudEGkgBG
+	 Z3P8DpEL3L1g6gF8q2vdW7gyioTB2/nSI53D8RWbfyjixEikcuRrOEm82qJnEiW8eS
+	 77W/lOjZw/gSOlWuol669BT/zvG/OoegPvu6HNtU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3A938F80227;
-	Mon, 27 Sep 2021 14:07:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3D262F80543;
+	Mon, 27 Sep 2021 14:07:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 29A25F80147; Mon, 27 Sep 2021 14:07:04 +0200 (CEST)
+ id 2EFB5F801F7; Mon, 27 Sep 2021 14:07:04 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2F3A5F80272
- for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2021 14:05:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F3A5F80272
-X-IronPort-AV: E=McAfee;i="6200,9189,10119"; a="221260478"
-X-IronPort-AV: E=Sophos;i="5.85,326,1624345200"; d="scan'208";a="221260478"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2784CF8026D
+ for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2021 14:05:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2784CF8026D
+X-IronPort-AV: E=McAfee;i="6200,9189,10119"; a="221260473"
+X-IronPort-AV: E=Sophos;i="5.85,326,1624345200"; d="scan'208";a="221260473"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Sep 2021 05:05:31 -0700
-X-IronPort-AV: E=Sophos;i="5.85,326,1624345200"; d="scan'208";a="553164412"
+ 27 Sep 2021 05:05:28 -0700
+X-IronPort-AV: E=Sophos;i="5.85,326,1624345200"; d="scan'208";a="553164389"
 Received: from unknown (HELO pujfalus-desk.ger.corp.intel.com)
  ([10.251.220.221])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Sep 2021 05:05:28 -0700
+ 27 Sep 2021 05:05:25 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com, broonie@kernel.org,
  pierre-louis.bossart@linux.intel.com, daniel.baluta@nxp.com
-Subject: [PATCH v3 05/12] AsoC: dapm: export a couple of functions
-Date: Mon, 27 Sep 2021 15:05:10 +0300
-Message-Id: <20210927120517.20505-6-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH v3 04/12] ASoC: SOF: sof-audio: add helpers for widgets,
+ kcontrols and dai config set up
+Date: Mon, 27 Sep 2021 15:05:09 +0300
+Message-Id: <20210927120517.20505-5-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210927120517.20505-1-peter.ujfalusi@linux.intel.com>
 References: <20210927120517.20505-1-peter.ujfalusi@linux.intel.com>
@@ -79,9 +80,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-Export a couple of DAPM functions that can be used by
-ASoC drivers to determine connected widgets when a PCM
-is started.
+Refactor the existing code to use helper functions to
+set up/free widgets, send dai config and set up kcontrols for
+widgets. These will be reused later on for setting up widgets in
+the connected DAPM widgets list for a particular PCM when the
+dynamic pipeline feature is implemented.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
@@ -90,63 +93,296 @@ Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- include/sound/soc-dpcm.h | 1 +
- sound/soc/soc-dapm.c     | 2 ++
- sound/soc/soc-pcm.c      | 4 ++--
- 3 files changed, 5 insertions(+), 2 deletions(-)
+ sound/soc/sof/sof-audio.c | 234 +++++++++++++++++++-------------------
+ 1 file changed, 116 insertions(+), 118 deletions(-)
 
-diff --git a/include/sound/soc-dpcm.h b/include/sound/soc-dpcm.h
-index e296a3949b18..bc7af90099a8 100644
---- a/include/sound/soc-dpcm.h
-+++ b/include/sound/soc-dpcm.h
-@@ -159,6 +159,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream, int cmd);
- int dpcm_be_dai_prepare(struct snd_soc_pcm_runtime *fe, int stream);
- int dpcm_dapm_stream_event(struct snd_soc_pcm_runtime *fe, int dir,
- 	int event);
-+bool dpcm_end_walk_at_be(struct snd_soc_dapm_widget *widget, enum snd_soc_dapm_direction dir);
+diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
+index 989912f2b739..a4b9bb99bced 100644
+--- a/sound/soc/sof/sof-audio.c
++++ b/sound/soc/sof/sof-audio.c
+@@ -11,6 +11,116 @@
+ #include "sof-audio.h"
+ #include "ops.h"
  
- #define dpcm_be_dai_startup_rollback(fe, stream, last)	\
- 						dpcm_be_dai_stop(fe, stream, 0, last)
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 7b67f1e19ae9..44c4d105ffdb 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1331,11 +1331,13 @@ int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
- 
- 	return paths;
- }
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_dai_get_connected_widgets);
- 
- void snd_soc_dapm_dai_free_widgets(struct snd_soc_dapm_widget_list **list)
- {
- 	dapm_widget_list_free(list);
- }
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_dai_free_widgets);
- 
++static int sof_kcontrol_setup(struct snd_sof_dev *sdev, struct snd_sof_control *scontrol)
++{
++	int ipc_cmd, ctrl_type;
++	int ret;
++
++	/* reset readback offset for scontrol */
++	scontrol->readback_offset = 0;
++
++	/* notify DSP of kcontrol values */
++	switch (scontrol->cmd) {
++	case SOF_CTRL_CMD_VOLUME:
++	case SOF_CTRL_CMD_ENUM:
++	case SOF_CTRL_CMD_SWITCH:
++		ipc_cmd = SOF_IPC_COMP_SET_VALUE;
++		ctrl_type = SOF_CTRL_TYPE_VALUE_CHAN_SET;
++		break;
++	case SOF_CTRL_CMD_BINARY:
++		ipc_cmd = SOF_IPC_COMP_SET_DATA;
++		ctrl_type = SOF_CTRL_TYPE_DATA_SET;
++		break;
++	default:
++		return 0;
++	}
++
++	ret = snd_sof_ipc_set_get_comp_data(scontrol, ipc_cmd, ctrl_type, scontrol->cmd, true);
++	if (ret < 0)
++		dev_err(sdev->dev, "error: failed kcontrol value set for widget: %d\n",
++			scontrol->comp_id);
++
++	return ret;
++}
++
++static int sof_dai_config_setup(struct snd_sof_dev *sdev, struct snd_sof_dai *dai)
++{
++	struct sof_ipc_dai_config *config;
++	struct sof_ipc_reply reply;
++	int ret;
++
++	config = &dai->dai_config[dai->current_config];
++	if (!config) {
++		dev_err(sdev->dev, "error: no config for DAI %s\n", dai->name);
++		return -EINVAL;
++	}
++
++	ret = sof_ipc_tx_message(sdev->ipc, config->hdr.cmd, config, config->hdr.size,
++				 &reply, sizeof(reply));
++
++	if (ret < 0)
++		dev_err(sdev->dev, "error: failed to set dai config for %s\n", dai->name);
++
++	return ret;
++}
++
++static int sof_widget_setup(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
++{
++	struct sof_ipc_pipe_new *pipeline;
++	struct sof_ipc_comp_reply r;
++	struct sof_ipc_cmd_hdr *hdr;
++	struct sof_ipc_comp *comp;
++	struct snd_sof_dai *dai;
++	size_t ipc_size;
++	int ret;
++
++	/* skip if there is no private data */
++	if (!swidget->private)
++		return 0;
++
++	ret = sof_pipeline_core_enable(sdev, swidget);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: failed to enable target core: %d for widget %s\n",
++			ret, swidget->widget->name);
++		return ret;
++	}
++
++	switch (swidget->id) {
++	case snd_soc_dapm_dai_in:
++	case snd_soc_dapm_dai_out:
++		ipc_size = sizeof(struct sof_ipc_comp_dai) + sizeof(struct sof_ipc_comp_ext);
++		comp = kzalloc(ipc_size, GFP_KERNEL);
++		if (!comp)
++			return -ENOMEM;
++
++		dai = swidget->private;
++		memcpy(comp, &dai->comp_dai, sizeof(struct sof_ipc_comp_dai));
++
++		/* append extended data to the end of the component */
++		memcpy((u8 *)comp + sizeof(struct sof_ipc_comp_dai), &swidget->comp_ext,
++		       sizeof(swidget->comp_ext));
++
++		ret = sof_ipc_tx_message(sdev->ipc, comp->hdr.cmd, comp, ipc_size, &r, sizeof(r));
++		kfree(comp);
++		break;
++	case snd_soc_dapm_scheduler:
++		pipeline = swidget->private;
++		ret = sof_load_pipeline_ipc(sdev->dev, pipeline, &r);
++		break;
++	default:
++		hdr = swidget->private;
++		ret = sof_ipc_tx_message(sdev->ipc, hdr->cmd, swidget->private, hdr->size,
++					 &r, sizeof(r));
++		break;
++	}
++	if (ret < 0)
++		dev_err(sdev->dev, "error: failed to load widget %s\n", swidget->widget->name);
++	else
++		dev_dbg(sdev->dev, "widget %s setup complete\n", swidget->widget->name);
++
++	return ret;
++}
++
  /*
-  * Handler for regulator supply widget.
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index e30cb5abaf7a..b5825d8d6caa 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1262,8 +1262,7 @@ static int widget_in_list(struct snd_soc_dapm_widget_list *list,
- 	return 0;
- }
- 
--static bool dpcm_end_walk_at_be(struct snd_soc_dapm_widget *widget,
--		enum snd_soc_dapm_direction dir)
-+bool dpcm_end_walk_at_be(struct snd_soc_dapm_widget *widget, enum snd_soc_dapm_direction dir)
+  * helper to determine if there are only D0i3 compatible
+  * streams active
+@@ -97,46 +207,13 @@ static int sof_restore_kcontrols(struct device *dev)
  {
- 	struct snd_soc_card *card = widget->dapm->card;
- 	struct snd_soc_pcm_runtime *rtd;
-@@ -1281,6 +1280,7 @@ static bool dpcm_end_walk_at_be(struct snd_soc_dapm_widget *widget,
+ 	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
+ 	struct snd_sof_control *scontrol;
+-	int ipc_cmd, ctrl_type;
+ 	int ret = 0;
  
- 	return false;
- }
-+EXPORT_SYMBOL_GPL(dpcm_end_walk_at_be);
+ 	/* restore kcontrol values */
+ 	list_for_each_entry(scontrol, &sdev->kcontrol_list, list) {
+-		/* reset readback offset for scontrol after resuming */
+-		scontrol->readback_offset = 0;
+-
+-		/* notify DSP of kcontrol values */
+-		switch (scontrol->cmd) {
+-		case SOF_CTRL_CMD_VOLUME:
+-		case SOF_CTRL_CMD_ENUM:
+-		case SOF_CTRL_CMD_SWITCH:
+-			ipc_cmd = SOF_IPC_COMP_SET_VALUE;
+-			ctrl_type = SOF_CTRL_TYPE_VALUE_CHAN_SET;
+-			ret = snd_sof_ipc_set_get_comp_data(scontrol,
+-							    ipc_cmd, ctrl_type,
+-							    scontrol->cmd,
+-							    true);
+-			break;
+-		case SOF_CTRL_CMD_BINARY:
+-			ipc_cmd = SOF_IPC_COMP_SET_DATA;
+-			ctrl_type = SOF_CTRL_TYPE_DATA_SET;
+-			ret = snd_sof_ipc_set_get_comp_data(scontrol,
+-							    ipc_cmd, ctrl_type,
+-							    scontrol->cmd,
+-							    true);
+-			break;
+-
+-		default:
+-			break;
+-		}
+-
+-		if (ret < 0) {
+-			dev_err(dev,
+-				"error: failed kcontrol value set for widget: %d\n",
+-				scontrol->comp_id);
+-
++		ret = sof_kcontrol_setup(sdev, scontrol);
++		if (ret < 0)
+ 			return ret;
+-		}
+ 	}
  
- int dpcm_path_get(struct snd_soc_pcm_runtime *fe,
- 	int stream, struct snd_soc_dapm_widget_list **list)
+ 	return 0;
+@@ -163,77 +240,14 @@ int sof_restore_pipelines(struct device *dev)
+ 	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
+ 	struct snd_sof_widget *swidget;
+ 	struct snd_sof_route *sroute;
+-	struct sof_ipc_pipe_new *pipeline;
+ 	struct snd_sof_dai *dai;
+-	struct sof_ipc_cmd_hdr *hdr;
+-	struct sof_ipc_comp *comp;
+-	size_t ipc_size;
+ 	int ret;
+ 
+ 	/* restore pipeline components */
+ 	list_for_each_entry_reverse(swidget, &sdev->widget_list, list) {
+-		struct sof_ipc_comp_reply r;
+-
+-		/* skip if there is no private data */
+-		if (!swidget->private)
+-			continue;
+-
+-		ret = sof_pipeline_core_enable(sdev, swidget);
+-		if (ret < 0) {
+-			dev_err(dev,
+-				"error: failed to enable target core: %d\n",
+-				ret);
+-
+-			return ret;
+-		}
+-
+-		switch (swidget->id) {
+-		case snd_soc_dapm_dai_in:
+-		case snd_soc_dapm_dai_out:
+-			ipc_size = sizeof(struct sof_ipc_comp_dai) +
+-				   sizeof(struct sof_ipc_comp_ext);
+-			comp = kzalloc(ipc_size, GFP_KERNEL);
+-			if (!comp)
+-				return -ENOMEM;
+-
+-			dai = swidget->private;
+-			memcpy(comp, &dai->comp_dai,
+-			       sizeof(struct sof_ipc_comp_dai));
+-
+-			/* append extended data to the end of the component */
+-			memcpy((u8 *)comp + sizeof(struct sof_ipc_comp_dai),
+-			       &swidget->comp_ext, sizeof(swidget->comp_ext));
+-
+-			ret = sof_ipc_tx_message(sdev->ipc, comp->hdr.cmd,
+-						 comp, ipc_size,
+-						 &r, sizeof(r));
+-			kfree(comp);
+-			break;
+-		case snd_soc_dapm_scheduler:
+-
+-			/*
+-			 * During suspend, all DSP cores are powered off.
+-			 * Therefore upon resume, create the pipeline comp
+-			 * and power up the core that the pipeline is
+-			 * scheduled on.
+-			 */
+-			pipeline = swidget->private;
+-			ret = sof_load_pipeline_ipc(dev, pipeline, &r);
+-			break;
+-		default:
+-			hdr = swidget->private;
+-			ret = sof_ipc_tx_message(sdev->ipc, hdr->cmd,
+-						 swidget->private, hdr->size,
+-						 &r, sizeof(r));
+-			break;
+-		}
+-		if (ret < 0) {
+-			dev_err(dev,
+-				"error: failed to load widget type %d with ID: %d\n",
+-				swidget->widget->id, swidget->comp_id);
+-
++		ret = sof_widget_setup(sdev, swidget);
++		if (ret < 0)
+ 			return ret;
+-		}
+ 	}
+ 
+ 	/* restore pipeline connections */
+@@ -266,15 +280,8 @@ int sof_restore_pipelines(struct device *dev)
+ 
+ 	/* restore dai links */
+ 	list_for_each_entry_reverse(dai, &sdev->dai_list, list) {
+-		struct sof_ipc_reply reply;
+ 		struct sof_ipc_dai_config *config = &dai->dai_config[dai->current_config];
+ 
+-		if (!config) {
+-			dev_err(dev, "error: no config for DAI %s\n",
+-				dai->name);
+-			continue;
+-		}
+-
+ 		/*
+ 		 * The link DMA channel would be invalidated for running
+ 		 * streams but not for streams that were in the PAUSED
+@@ -284,18 +291,9 @@ int sof_restore_pipelines(struct device *dev)
+ 		if (config->type == SOF_DAI_INTEL_HDA)
+ 			config->hda.link_dma_ch = DMA_CHAN_INVALID;
+ 
+-		ret = sof_ipc_tx_message(sdev->ipc,
+-					 config->hdr.cmd, config,
+-					 config->hdr.size,
+-					 &reply, sizeof(reply));
+-
+-		if (ret < 0) {
+-			dev_err(dev,
+-				"error: failed to set dai config for %s\n",
+-				dai->name);
+-
++		ret = sof_dai_config_setup(sdev, dai);
++		if (ret < 0)
+ 			return ret;
+-		}
+ 	}
+ 
+ 	/* complete pipeline */
 -- 
 2.33.0
 
