@@ -2,71 +2,77 @@ Return-Path: <SRS0=nO8j=OR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C358C433FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 17:26:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93F9BC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 17:31:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4DE4461222
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 17:26:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4DE4461222
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 539AB60F4A
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 17:31:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 539AB60F4A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8463416A4;
-	Mon, 27 Sep 2021 19:25:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8463416A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 601721696;
+	Mon, 27 Sep 2021 19:30:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 601721696
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632763566;
-	bh=n3pcYp/DcyyZuHkqSMKrhOn84OpbfzwCrysq16Pl5ag=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1632763890;
+	bh=sWthEd8thvF+XGkVYUkeFMxlWcXd1BhPEpZoeT80pWI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KFQv+7YGFAtBavxDdfN1H9qRLs2x+d9uTuvH/Tkr+ERM+m46ir+5l/1UAX+4xyLf5
-	 8L/QOm4FEnjTxJCIO5wKvxM8oHqL7cSlbfjQIyh8XZrVKf4VXC5o82UfRPZuCdYXCi
-	 CG+PDz5SjSgiNik13IqZNpTMAaAkwcBpXG8EcVBo=
+	b=BVgNlWMrNx5GV2ZmK4v4YYAy+Q5E1g263u/nSmbaeGZc8tiIxvrCb2mF3dZbT9U/2
+	 1oirLrriulTdouLk+j8vU9gHQ+TYfVWbPYvg7DWNoy3kE4sSCVy2j65isvrSIZtvXR
+	 HPknt1MTWstvYPI2U/WzXw3gnH4kTmvnv9vCl4os=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3EDFF801F7;
-	Mon, 27 Sep 2021 19:25:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BA656F80147;
+	Mon, 27 Sep 2021 19:30:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8A91AF80227; Mon, 27 Sep 2021 19:25:14 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 517A3F80227; Mon, 27 Sep 2021 19:30:36 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ECFDFF801EC
- for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2021 19:25:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ECFDFF801EC
-X-IronPort-AV: E=McAfee;i="6200,9189,10120"; a="247017906"
-X-IronPort-AV: E=Sophos;i="5.85,327,1624345200"; d="scan'208";a="247017906"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Sep 2021 10:23:11 -0700
-X-IronPort-AV: E=Sophos;i="5.85,327,1624345200"; d="scan'208";a="486218694"
-Received: from asen4-mobl2.amr.corp.intel.com (HELO [10.212.27.2])
- ([10.212.27.2])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Sep 2021 10:23:08 -0700
+ by alsa1.perex.cz (Postfix) with ESMTPS id 512D1F80147
+ for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2021 19:30:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 512D1F80147
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Yj9QDrwh"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1077460FC2;
+ Mon, 27 Sep 2021 17:30:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1632763828;
+ bh=sWthEd8thvF+XGkVYUkeFMxlWcXd1BhPEpZoeT80pWI=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=Yj9QDrwhkQBZSYAsOsJBGq9Bs62/LBNlL9bIz12/+OpRqNgkiDGQddJVl34MckGmw
+ hetcjddDSGIMNkUTFPku0iGvxUApsEkE0V3M9lJ6WsGiRc5qo3b0GPHJKl64xZjc77
+ Q6QbQzt8/j7qLWs7gF7CLXfGsObT0BCH2dJpjcy2BQbNQ4f3F7s2bDYAoVC1FP8t6K
+ sWsI32VaGlnB23kxsY/ODXVkEyGTbOob1WGekA+v4+KpsA0IMnb/SBp1Mtx5L6OCrm
+ MRONKGJ9ANY8FQ9hbtnyXxMY+wO+w+P63c2JDPkIWG095BvGfWMDpoX/Fu2kcM3l4t
+ 9/wHzy6aCAysw==
+Date: Mon, 27 Sep 2021 18:29:40 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [EXTERNAL] Re: [PATCH] ASoC: max98373: Mark cache dirty before
  entering sleep
-To: Mark Brown <broonie@kernel.org>
+Message-ID: <20210927172940.GH4199@sirena.org.uk>
 References: <20210924221305.17886-1-ryans.lee@maximintegrated.com>
  <1b21bbf1-12c7-726d-bff8-76ec88ff8635@linux.intel.com>
  <SJ0PR11MB566107A6AB3D18ABDEDCF245E7A79@SJ0PR11MB5661.namprd11.prod.outlook.com>
  <20210927160622.GE4199@sirena.org.uk>
  <7b8c3875-3f12-f3cb-7da8-4e850e59ee2b@linux.intel.com>
  <20210927171033.GF4199@sirena.org.uk>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <0af258d4-e33c-15ec-5dcc-a1c9961c0740@linux.intel.com>
-Date: Mon, 27 Sep 2021 12:23:06 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+ <0af258d4-e33c-15ec-5dcc-a1c9961c0740@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210927171033.GF4199@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="xHbokkKX1kTiQeDC"
+Content-Disposition: inline
+In-Reply-To: <0af258d4-e33c-15ec-5dcc-a1c9961c0740@linux.intel.com>
+X-Cookie: 98% lean.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: "guennadi.liakhovetski@linux.intel.com"
  <guennadi.liakhovetski@linux.intel.com>,
  "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
@@ -93,85 +99,37 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--xHbokkKX1kTiQeDC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 9/27/21 12:10 PM, Mark Brown wrote:
-> On Mon, Sep 27, 2021 at 11:48:56AM -0500, Pierre-Louis Bossart wrote:
->> On 9/27/21 11:06 AM, Mark Brown wrote:
-> 
->>> More specifically what it does is make the invalidation of the register
->>> cache unconditional.  It doesn't really matter if the invalidation is
->>> done on suspend or resume, so long as it happens before we attempt to
->>> resync - this could also be done by deleting the first_hw_init check.
-> 
->> Mark, that's exactly my point: if the amp rejoins the bus, we will
->> *always* mark the cache as dirty, before the resync is done in the
->> resume sequence.
-> 
-> Ah, yes - I see.
-> 
->> I am really trying to figure out if we have a major flaw in the resume
->> sequence and why things are different in the case of the Maxim amp.
-> 
->> Instead of changing the suspend sequence, can we please try to modify
->> the max98373_io_init() routine to unconditionally flag the cache as
->> dirty, maybe this points to a problem with the management of the
->> max98373->first_hw_init flag.
-> 
-> A quick survey of other drivers suggests that this pattern should be
-> factored out into some helpers as it looks like there's several ways of
-> implementing it that look very similar but not quite the same...
+On Mon, Sep 27, 2021 at 12:23:06PM -0500, Pierre-Louis Bossart wrote:
+> On 9/27/21 12:10 PM, Mark Brown wrote:
 
-No disagreement here, we tried really hard to enforce a common pattern
-for suspend-resume, but i just noticed that the maxim amp driver is
-different on suspend (resume is consistent with the rest).
+> > A quick survey of other drivers suggests that this pattern should be
+> > factored out into some helpers as it looks like there's several ways of
+> > implementing it that look very similar but not quite the same...
 
+> No disagreement here, we tried really hard to enforce a common pattern
+> for suspend-resume, but i just noticed that the maxim amp driver is
+> different on suspend (resume is consistent with the rest).
 
-static int __maybe_unused rt711_dev_suspend(struct device *dev)
-{
-	struct rt711_priv *rt711 = dev_get_drvdata(dev);
+There seem to be several slightly different ways of writing what I think
+is supposed to be the same thing in _io_init() too.
 
-	if (!rt711->hw_init)
-		return 0;
+--xHbokkKX1kTiQeDC
+Content-Type: application/pgp-signature; name="signature.asc"
 
-	cancel_delayed_work_sync(&rt711->jack_detect_work);
-	cancel_delayed_work_sync(&rt711->jack_btn_check_work);
-	cancel_work_sync(&rt711->calibration_work);
+-----BEGIN PGP SIGNATURE-----
 
-	regcache_cache_only(rt711->regmap, true);
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFR/4MACgkQJNaLcl1U
+h9CnLQf+I7rNZH7/UAxm+ygPqR5wyC07ln6SF8HTbd4RVPRcbgoUpr/zRLV0AdET
+WF6koeLuHvqZ4HyJhvBcPNacTCBldtRTa/cWQzhV85mVLHWIeHfTBk6ySO860z4o
+S9cjLuFi9upjkRBL7L1P40vl1Ti9gq7vUltipE4AVNfea697+lSy9C/H3Dyvlgig
+8hKLejhr3ZcM5l8eQSZ1E878xyCNGRP3M4K5OoHydJeKBBAO3OiOyaNjlhgetsb/
+8dELrjAtM9NsedKLfNBm6jAqcJ3zFJsjoMKfVB54FOBOdfMFoYPC1PoNWnj8vZQQ
+Dw/6qpGr4yVYpZNqUqVNCtzlsHm5VQ==
+=Q6Xg
+-----END PGP SIGNATURE-----
 
-	return 0;
-}
-
-static int __maybe_unused rt1308_dev_suspend(struct device *dev)
-{
-	struct rt1308_sdw_priv *rt1308 = dev_get_drvdata(dev);
-
-	if (!rt1308->hw_init)
-		return 0;
-
-	regcache_cache_only(rt1308->regmap, true);
-
-	return 0;
-}
-
-static __maybe_unused int max98373_suspend(struct device *dev)
-{
-	struct max98373_priv *max98373 = dev_get_drvdata(dev);
-	int i;
-
-<<<< missing test
-
-	/* cache feedback register values before suspend */
-	for (i = 0; i < max98373->cache_num; i++)
-		regmap_read(max98373->regmap, max98373->cache[i].reg,
-&max98373->cache[i].val);
-
-<<<< why is this needed???
-
-	regcache_cache_only(max98373->regmap, true);
-
-	return 0;
-}
-
-
-
+--xHbokkKX1kTiQeDC--
