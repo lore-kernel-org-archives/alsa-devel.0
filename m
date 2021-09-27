@@ -2,69 +2,69 @@ Return-Path: <SRS0=nO8j=OR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4E50C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 16:47:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B67CC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 16:49:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9BBBF60F91
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 16:47:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9BBBF60F91
+	by mail.kernel.org (Postfix) with ESMTPS id F201A60F58
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 16:49:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F201A60F58
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8572D1686;
-	Mon, 27 Sep 2021 18:46:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8572D1686
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8858A16A2;
+	Mon, 27 Sep 2021 18:48:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8858A16A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632761243;
-	bh=nw+vJ+jBmnahKwKFk1vtC5624qDiqOMvJWfd39R3+cU=;
+	s=default; t=1632761364;
+	bh=9G7yQPGmok5wvJMyVM8Pz1T6mmAydoqFePzsrpU0Jrs=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NoVKwCnMx4eFC9fieAoc2F2dsOIYfZL7d4FqoCbR8+G67o+0aAE224EmBc66hFl5K
-	 Mutbaxtqv8RCTNMAM4LlCF8vN0fS7yes7QR2bKpQbVwpWjjqJKtFNcx2EDKjKygGlH
-	 FlEF6brj1G40c5bTCtfcfGfKJ2ZrLBGQJ6AZ5GXQ=
+	b=aWXHsa5jQEt+TZIyUFeWyisyKHIZc6MM7aZzJyRLf6Ulg9UVIlImffJ9sXmQnfVaN
+	 5vGWOOCdKRU0cvBYd6/Ln1VymKtEF4qw0+P793VFrXn2AqyzrroMBOuW0yTDMVYNbk
+	 PFevUEAiOS8LwIaWUFT/VgaPAaeiST2yXov1zY/E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F41A0F801F7;
-	Mon, 27 Sep 2021 18:46:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 15F5BF801F7;
+	Mon, 27 Sep 2021 18:48:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2BD34F80227; Mon, 27 Sep 2021 18:46:31 +0200 (CEST)
+ id A938FF80227; Mon, 27 Sep 2021 18:48:32 +0200 (CEST)
 Received: from m43-7.mailgun.net (m43-7.mailgun.net [69.72.43.7])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 797BDF80147
- for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2021 18:46:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 797BDF80147
+ by alsa1.perex.cz (Postfix) with ESMTPS id 51731F801EC
+ for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2021 18:48:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51731F801EC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="HM7quEOq"
+ header.i=@mg.codeaurora.org header.b="aZp9QuLF"
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
  q=dns/txt; 
- s=smtp; t=1632761186; h=Content-Transfer-Encoding: Content-Type:
+ s=smtp; t=1632761307; h=Content-Transfer-Encoding: Content-Type:
  In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=VG/bDB9PbQ6QQCnpxvlrkvtqGcPt0xRxSbSG/rYF9kY=;
- b=HM7quEOqFfTbrKhtRxJJMlEOFH0LuaAdTEz8PGruLibitQLsRSqmzA9eTGdKUpnTXkBUy6xM
- 7RhDYeBax1YyRFDRbCgM9SiDFA9oN3GbpziAmvoDRMPF0NVU3+G2nYcyUv7qRV250uiKaO7L
- i2lkEaPzHUXhoCSJnQHBKkHpRBE=
+ Subject: Sender; bh=fblYSmlJg3v1/K9Wc+iQX7C7OT939c5R18PSUSeDZU0=;
+ b=aZp9QuLF+UJ7fUP1/jIiCkkzBs35BSxXClx613YlFoLOHB/o6U23LIkHEbJ5UPx0Za+zajH3
+ iNKf1SE0D0CeeGq2FydK1yMsM7YiINsjwuWUMYsDvtL6YP8ouowC202t8CZaTkd79PasRbRN
+ 6oVrz3LZWJB7XlrMJNA/oCOI+5A=
 X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 6151f53ba5a9bab6e89d4bcd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 27 Sep 2021 16:45:47
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 6151f5c6519bd8dcf07f685c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 27 Sep 2021 16:48:06
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 67591C4363F; Mon, 27 Sep 2021 16:45:47 +0000 (UTC)
+ id 2B0D4C43460; Mon, 27 Sep 2021 16:48:06 +0000 (UTC)
 Received: from [192.168.239.90] (unknown [157.47.14.236])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 0F0EFC4363B;
- Mon, 27 Sep 2021 16:45:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 0F0EFC4363B
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 68156C4338F;
+ Mon, 27 Sep 2021 16:47:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 68156C4338F
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
  dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
@@ -90,8 +90,8 @@ References: <agross@kernel.org; bjorn.andersson@linaro.org;
  <1e176dd1-fc8b-09dc-eb73-35b7d268e89a@linaro.org>
 From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 Organization: Qualcomm India Private Limited.
-Message-ID: <64903d82-c7ce-b533-e6f6-daf1d16a1d11@codeaurora.org>
-Date: Mon, 27 Sep 2021 22:15:33 +0530
+Message-ID: <39b035a5-0f5c-7ddb-d7a3-d6c42684e3e8@codeaurora.org>
+Date: Mon, 27 Sep 2021 22:17:56 +0530
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.14.0
 MIME-Version: 1.0
@@ -119,7 +119,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 On 9/27/2021 5:51 PM, Srinivas Kandagatla wrote:
 >
 >
-Thanks Srini for You time!!!
+Thanks for your time Srini!!!
 > On 22/09/2021 13:31, Srinivasa Rao Mandadapu wrote:
 >> Enable tx path soundwire mic0 and mic1 clock.
 >>
@@ -144,6 +144,7 @@ Thanks Srini for You time!!!
 >> CDC_TX_TOP_CSR_SWR_AMIC1_CTL, 0xFF, 0x00);
 >
 > This needs a comment for more clarity to readers.
+Okay! Will add comment and resend it.
 >
 > --srini
 >>         return 0;
