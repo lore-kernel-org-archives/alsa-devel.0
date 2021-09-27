@@ -2,76 +2,75 @@ Return-Path: <SRS0=nO8j=OR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31273C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 17:49:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FE8DC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 17:50:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AA1E560F92
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 17:49:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AA1E560F92
+	by mail.kernel.org (Postfix) with ESMTPS id EEF2B60F44
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 17:50:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EEF2B60F44
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 40DA716BF;
-	Mon, 27 Sep 2021 19:49:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40DA716BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8F53516C0;
+	Mon, 27 Sep 2021 19:49:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F53516C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632764994;
-	bh=vaAGDWdMM7DnyyWXxtxSddAQ5DUocd9iZv+90xzItsI=;
+	s=default; t=1632765014;
+	bh=2YGyL+hXBkGHE1pwjNYrXFcwqsXr+FHDD0uurCfgPHE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=folTvJkUslXTowqw6dAgWf4vgIGP+mf0Pt2i1CICC6d2FVc46fuy818vWKYVfZmvF
-	 0aVo86RDkNOvRh66KyZh4dYrjBKSpfNdlLts5hqgtfj2tzufe8uOQ5CPpX47hpumBL
-	 pmzjr9ad0XWqf6ijLdwR/0SDyQK9Q6bWWhyU1Blg=
+	b=X3pPz3B/YsFOta6UFST67wD6IEIe00cL9SzpC/Nu4R3pRoVZXIPjbf24/2SjUIRl4
+	 22WnXkDarXahkEg9TXkvhsiAmVpQBLRhWbrDTLC2+PjSGvy59QnKcnqmFbm456l9s4
+	 VFflB5WEvVw+gmzc7HQSaQm5b0/W5yU7b8rB8k6U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15FA4F804FC;
-	Mon, 27 Sep 2021 19:47:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 03F74F804FA;
+	Mon, 27 Sep 2021 19:47:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D1967F804FB; Mon, 27 Sep 2021 19:47:23 +0200 (CEST)
+ id 03F1FF80507; Mon, 27 Sep 2021 19:47:27 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 57434F804E3
- for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2021 19:47:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57434F804E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7BDD7F804EC
+ for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2021 19:47:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7BDD7F804EC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="PiFQVEkT"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E3D560F4F;
- Mon, 27 Sep 2021 17:47:13 +0000 (UTC)
+ header.b="lLDqq0vS"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62DE860F92;
+ Mon, 27 Sep 2021 17:47:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1632764833;
- bh=vaAGDWdMM7DnyyWXxtxSddAQ5DUocd9iZv+90xzItsI=;
+ s=k20201202; t=1632764838;
+ bh=2YGyL+hXBkGHE1pwjNYrXFcwqsXr+FHDD0uurCfgPHE=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=PiFQVEkTlYZsjWIqN83tvpAeQS66u7BaiLdsgKY23NVT37ltIo5A/J757P2ckRcXX
- LAby4ZotutVpi4NN8g8T7JJupJPfdmbQRlQJMwukYoW3LsYvF7lWlwmMljrK914qym
- lE3moP1tt0iBiich7SPzrlbeKgclai6zoN456Gq7/Ow1QJJe/CB9ihDPOArQJZAeWa
- DE7aIz+zwTRqQatXZ7erRpkshQbFmDbj56SCyRFc5wUA1/boF0adClXp86FQOmbRtH
- mnDhlauYAFfkrHwA91ENcqwbk2yZq+dL4RUnNcG0yLYwpq/eggvl3sL+Nl2gUwaz/0
- 9iwf+2T1zRDRA==
+ b=lLDqq0vSUhxyIzWIeYveRYQFxU/sG2mYtbx1oQmFjwe16srp3N34OKNOeDbW7oSFp
+ RX6u9hV4V7ChymScJNE7LfSWA+gH5B22J3U1nvhlbV4+G6pQAxbx5qqV4GOVDO78/4
+ itJmcnPVyp6EfLxhYRvb/kf62rHgAUJRdc7vDxAFV+eeXvUwDEPI+iDG5e5DowEvRZ
+ Ah196uWO3TJ1woklg7crYKdie35jRIG4JQuoCYyS8vj5o7XZvld/R48fcAatNHZiSg
+ rJafketEnONqD9SlbrSpMgebFX4HXdwdKnjg9LgBxUNE7Hwow6tz02hp+6MyIguUCV
+ QvAu7OUwTrvOw==
 From: Mark Brown <broonie@kernel.org>
-To: linux-arm-kernel@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>,
- alsa-devel@alsa-project.org, Neil Armstrong <narmstrong@baylibre.com>,
- Jerome Brunet <jbrunet@baylibre.com>, Takashi Iwai <tiwai@suse.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- Colin King <colin.king@canonical.com>, Kevin Hilman <khilman@baylibre.com>,
- linux-amlogic@lists.infradead.org, Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ASoC: meson: aiu: Fix spelling mistake "Unsupport" ->
- "Unsupported"
-Date: Mon, 27 Sep 2021 18:45:27 +0100
-Message-Id: <163276442024.18200.9710161748366724709.b4-ty@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+ James Schulman <james.schulman@cirrus.com>, Takashi Iwai <tiwai@suse.com>,
+ Vitaly Rodionov <vitalyr@opensource.cirrus.com>,
+ David Rhodes <david.rhodes@cirrus.com>, Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ASoC: cs42l42: Use two thresholds and increased wait time
+ for manual type detection
+Date: Mon, 27 Sep 2021 18:45:29 +0100
+Message-Id: <163276442024.18200.9987078305118050259.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210924231242.144692-1-colin.king@canonical.com>
-References: <20210924231242.144692-1-colin.king@canonical.com>
+In-Reply-To: <20210927111437.18113-1-vitalyr@opensource.cirrus.com>
+References: <20210927111437.18113-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+ Stefan Binding <sbinding@opensource.cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,12 +86,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 25 Sep 2021 00:12:42 +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Mon, 27 Sep 2021 12:14:37 +0100, Vitaly Rodionov wrote:
+> From: Stefan Binding <sbinding@opensource.cirrus.com>
 > 
-> There is a spelling mistake in a dev_err error message. Fix it.
+> Some headsets require very different comparator thresholds for type detection,
+> as well as longer settling times. In order to detect a larger number of headsets,
+> use 2 thresholds to give maximum coverage (1.25V and 1.75V), as well as a longer
+> settling time of 100ms. This will not affect default audotodetect mode
+> and applies to manual mode type detection only.
 > 
-> 
+> [...]
 
 Applied to
 
@@ -100,8 +103,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: meson: aiu: Fix spelling mistake "Unsupport" -> "Unsupported"
-      commit: 9929265f2a7b5fa15d460dbbaa7f388c303411da
+[1/1] ASoC: cs42l42: Use two thresholds and increased wait time for manual type detection
+      commit: edd6dffdc6670836909972b32a324dbf6c150757
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
