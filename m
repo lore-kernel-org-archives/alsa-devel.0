@@ -2,66 +2,67 @@ Return-Path: <SRS0=nO8j=OR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3294EC433FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 17:52:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0CFBC433FE
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 17:52:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 971AE604AC
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 17:52:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 971AE604AC
+	by mail.kernel.org (Postfix) with ESMTPS id 237AC60EE2
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Sep 2021 17:52:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 237AC60EE2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2E84016C3;
-	Mon, 27 Sep 2021 19:51:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E84016C3
+	by alsa0.perex.cz (Postfix) with ESMTPS id AC67F16C2;
+	Mon, 27 Sep 2021 19:52:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC67F16C2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632765156;
-	bh=IR4B6aYnMXTGnB/crg9w4tGGrD3fv788HScxhhvhhPM=;
+	s=default; t=1632765176;
+	bh=gRCt++gqse5ikCiwAvmY/ll89sAusYeaYsgVJ6/bFXk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dMRfQoVNHkeeAZODc5OqiT8HQGCD27LlIoB8mWMiDKuuJGV4gMAgvqWZogBhY6iGs
-	 IrDGtUZTeLXRCPZB9sGO20K1rkdaF7Y8l+Ske3f9F7VvDAu+1tmV4JO4JOP68ZDbbU
-	 sUQQGGV2POIfSjm4RRYzJqml0d5J7begkJm5Gt2U=
+	b=jzyo2EcNs6si5qnWmHWV3MqV4xMm6xbe3KFc7ZJgXgTVZs7/jBr/hVWqukJoTEafD
+	 hWmBlejW4R43wcRKUX9n/m3gqev0/xBmp3DPCjmtGQmedPrP0phSZSsOIGk0OaxzgZ
+	 TZ1hvVq0WBNdlVOetqfQ94JP/zJCHn/HfIVQQmCY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4573F80539;
-	Mon, 27 Sep 2021 19:47:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9E185F8053C;
+	Mon, 27 Sep 2021 19:47:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2F68FF8052E; Mon, 27 Sep 2021 19:47:42 +0200 (CEST)
+ id 80F33F8052D; Mon, 27 Sep 2021 19:47:43 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8663DF80527
- for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2021 19:47:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8663DF80527
+ by alsa1.perex.cz (Postfix) with ESMTPS id D72B7F80529
+ for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2021 19:47:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D72B7F80529
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="K7yBdRQt"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6803B6113D;
- Mon, 27 Sep 2021 17:47:36 +0000 (UTC)
+ header.b="GRJ+LCTV"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9FF5610E8;
+ Mon, 27 Sep 2021 17:47:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1632764856;
- bh=IR4B6aYnMXTGnB/crg9w4tGGrD3fv788HScxhhvhhPM=;
+ s=k20201202; t=1632764859;
+ bh=gRCt++gqse5ikCiwAvmY/ll89sAusYeaYsgVJ6/bFXk=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=K7yBdRQtUuaX4uucNKIkzT/zgCumDut+qkfVoLi4FuQbQD7RtYYvU5U4Q6B2gPjw1
- Wx4VammlEEb+C9cxIOHwBsehmXORQM+a8gM9+EMdL0RXb+p8sSyCx6IU/KDxZsVfie
- yRRfGj/d7Iz+Y03d9OvcUa/rfYc3BBxcrG22u6ukVkAi9bj3BjJQJPw9niufto5nTr
- 30IywusZM8f3hkWznFFcOHnsuT6bUZ9cm9+qxV9LFonRiP2kL3qTTAgTpwHz9m5rMQ
- 2irgAFMGD0tcDLj0fEUhJmpB2UYIhbsjZ3jX46F464dd8Qg+RMelBu44GCnCUISnuR
- miQcQMvOHTP8Q==
+ b=GRJ+LCTVeYXqup6ncTREQN13vd6Jibmr5UhRx87cG+F9SnVX2GuR+qoma5QZZCaSV
+ yVLGYZIfZ9zcNAphjmNaQ0eCZHAAQSdcF0K6VR/1KzLyYwOhTk3DNYZjdrRVpG+5Y2
+ yPoFY4PDoG2CTz2Zmn1woWy6N2eaWMAj/XmvG2o/NC8D5UuYuog5nWAs36hpT5D0ID
+ 35QRJ0zYzzm7rlIoGhHiOqTWBBVCHlFq9XRrjlCqQndux/rAQ4Pt1C9pVXErlrMdBR
+ PE7e+C5qznzi79C2YTpaFVL477WSWIKa4gR2s7NxODf9oTj6DnQKbtvsqUoZTcjHtj
+ nVWUh4U8/U9YA==
 From: Mark Brown <broonie@kernel.org>
-To: Mark Brown <broonie@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>
-Subject: Re: [PATCH] ASoC: ak4642: Use modern ASoC DAI format terminology
-Date: Mon, 27 Sep 2021 18:45:36 +0100
-Message-Id: <163276442022.18200.6006217883014724535.b4-ty@kernel.org>
+To: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>
+Subject: Re: [PATCH] ASoC: ad1836: Update to modern clocking terminology
+Date: Mon, 27 Sep 2021 18:45:37 +0100
+Message-Id: <163276442019.18200.494013229074378288.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210920164042.16624-1-broonie@kernel.org>
-References: <20210920164042.16624-1-broonie@kernel.org>
+In-Reply-To: <20210916142125.7226-1-broonie@kernel.org>
+References: <20210916142125.7226-1-broonie@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -81,9 +82,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 20 Sep 2021 17:40:42 +0100, Mark Brown wrote:
+On Thu, 16 Sep 2021 15:21:25 +0100, Mark Brown wrote:
 > As part of moving to remove the old style defines for the bus clocks update
-> the ak4642 driver to use more modern terminology for clocking.
+> the ad1836 driver to use more modern terminology for clocking.
 > 
 > 
 
@@ -93,8 +94,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: ak4642: Use modern ASoC DAI format terminology
-      commit: 3e8908fbfd9c0dc588e99c1c4d81a5fe43516f0f
+[1/1] ASoC: ad1836: Update to modern clocking terminology
+      commit: 88e5cdddb50abbe8be7570e9bc524791d7ff7dd6
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
