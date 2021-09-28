@@ -2,93 +2,95 @@ Return-Path: <SRS0=duqq=OS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8669CC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Sep 2021 09:34:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04DA4C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Sep 2021 09:35:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ACE5661130
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Sep 2021 09:34:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org ACE5661130
+	by mail.kernel.org (Postfix) with ESMTPS id 7A9D360F9B
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Sep 2021 09:35:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7A9D360F9B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 258961694;
-	Tue, 28 Sep 2021 11:33:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 258961694
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0EB0A15E5;
+	Tue, 28 Sep 2021 11:34:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EB0A15E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632821657;
-	bh=jytklEDQ95fyDdpuYEPVqn2welwfEmiIVUI9Da7MNUQ=;
+	s=default; t=1632821749;
+	bh=7lpQXa7LqD5rkl4CG1rjcI8Z/EdtffNO/uv5aA6ajVI=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ikQW6PBOUSHvG/IUE4azCK6vAGUTfjxeIMC2XiubEmb2XShj6Jfs/74V4ft/wiDQX
-	 zGQ6D3Ag5jD6QRZhxCjOuLEjF+hLj2QFHfH7JkzPHEQkPE95MrXIDLjYu7zC1X3mJj
-	 sB9ImVwTVJ6t+hVhQYN63dSdB3GHaSXgjYgiMYf4=
+	b=kBv8Vynl0/eMhL4sLBRwScvTGiC+tFhzehN1s0go25ZU3BbSLtRKLmjAmC6U2h7aw
+	 iHUtJbyzuMtWtgFY+Rw7U4pqlmpEokRpB0Vw1HTOnGeNT6IYkrW11yYjCwZvnKOVos
+	 6tyQO3Lao4VtA0CfKMMaduf3H6QqpFoeR6bTPfIA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 39433F8032C;
-	Tue, 28 Sep 2021 11:33:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6C20F8032C;
+	Tue, 28 Sep 2021 11:34:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 82C50F804AD; Tue, 28 Sep 2021 11:33:24 +0200 (CEST)
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
- [IPv6:2a00:1450:4864:20::42e])
+ id 25241F804AD; Tue, 28 Sep 2021 11:34:57 +0200 (CEST)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
+ [IPv6:2a00:1450:4864:20::335])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04777F80161
- for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2021 11:33:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04777F80161
+ by alsa1.perex.cz (Postfix) with ESMTPS id DBBB8F80105
+ for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2021 11:34:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBBB8F80105
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="vVUBSuUm"
-Received: by mail-wr1-x42e.google.com with SMTP id u18so56906308wrg.5
- for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2021 02:33:21 -0700 (PDT)
+ header.b="U3gK7RNa"
+Received: by mail-wm1-x335.google.com with SMTP id
+ r11-20020a1c440b000000b0030cf0f01fbaso1552581wma.1
+ for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2021 02:34:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=subject:to:cc:references:from:message-id:date:user-agent
  :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=UFWLjB0W2jsMi2ZnH6ymwZl3bjSBnAe186vh+OeB0WU=;
- b=vVUBSuUmwZNQZQMQuWoFG0MCX8iygaH4nDSZ3bBuoSYm1eryM+fPHk3LPc3yJRifM6
- cnhmlP4XWb1o1y0ABTaQxGumsQqdxeUefWzlLCMhGcOQG1JLgPKoEBOqZpOMZIWdWgLt
- 9jpiUMtY8jt4fXiH9uEf/9wkkBv3f9LzszdJL6HAhhrbJcm3yWP/Dd+PkK/Bl9qOqaSt
- zkFrKOcNJQ5GW+GMx/MgteKtzTIagHxmlCOhAexpCjBo2y3vXaVR5idqUxLwr+lfrgIx
- mWpYq5iRY9ptJd7TqHnRL6h1LxOvJknBqfhj1tTSQmfoS1SmYS/YrmTcUbYIa10pGKah
- gB7w==
+ bh=+W9aJf0EmxrO92oeUCfttwGgO8htvC8XeZ6ScNOCkEQ=;
+ b=U3gK7RNaFxd9qMHOrid8Eo5TlzU4hKRvBpUW0w80ekspMBdigx3bYRC8Q0empgjQQ7
+ b+EVONDhbBQmp19A9p/BJlwxPqYZne/vMvUjjvjtn0px51e2cwQVPAoNFe0sRoHcAMp3
+ TdwQCRlPz5uxqUqDK+MHip+NH9rse9QASm91gsButbn7OFAnFLQPux7uY559RU2/Z5bN
+ BjGpIHd8vwuwGZCRvOX+nsTCtYN4q9GGJ3RobhXOBEFwSlcJCaHQwVieOcg/0u5imGuq
+ yIXxTGizCokKXaCvpZDUdqImsW5F6pBjA6YH3rPI3nyRrekD2Gu8tcIVAZNDo1P6xn94
+ XtZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:subject:to:cc:references:from:message-id:date
  :user-agent:mime-version:in-reply-to:content-language
  :content-transfer-encoding;
- bh=UFWLjB0W2jsMi2ZnH6ymwZl3bjSBnAe186vh+OeB0WU=;
- b=EU4EVzc/TowOmhoGoN8SpVhJf1bpmZGR2k6yu8/kj26Cqj/ua/RvnQgSNChp+zyLXq
- V1N3EFfGQfkfpkJvo4wtnPzsJtmm7fAXS8XvfAUX8utBKHCdpPG6oth9BXZXipHpPJ2L
- upNou5L/QSGw0boKdmFSWXDSkhmWAtv/eF0bl4TvUAD8FGXSIjF7qtXmQbErRI5sWOJB
- wHwypNJwFaq+2g7GIDE7EuzKjkpzMxtqRHZutvoQSiGFKZs4ing8tPjXtTBQY7ukVrCG
- XD2zL8M+07rk+0skTolXRk/k8l2MMKFaf1j+dU7aVPGc7VjHxa8KQ1fhHfzF9OyPZEcA
- My+Q==
-X-Gm-Message-State: AOAM532t71ZpC68nlGzsSKn8F0/9GzC6ZUQlwXNCNVjhfahLtyQ2ZoU4
- mpiX8xGbIwqDayMbiuVha35fGg==
-X-Google-Smtp-Source: ABdhPJyv/THNOKdhlB1LmnC9UxX4hlZiTSiUuFLuzeCFWMaqw7PSUijQmKwiWgKSY9IOP4ZWuehsXw==
-X-Received: by 2002:a5d:6c67:: with SMTP id r7mr5202503wrz.29.1632821600565;
- Tue, 28 Sep 2021 02:33:20 -0700 (PDT)
+ bh=+W9aJf0EmxrO92oeUCfttwGgO8htvC8XeZ6ScNOCkEQ=;
+ b=g3bcczXuzu6dDC0rpMImiZgpYMx/pJxMw8MN/iC6sZfQA/+nzKhVTOIQ80psjYxOAd
+ VGfYe+8yMLCRjnNc5/qQhmq0r7BVJ+wMMyhu019SwXjBIZosynm+QRuSPYzUlkbULscE
+ 7koXVLYyUVhvQJVfMDyCzCVN2C04js+PQ5rqrnUjZhvstE7CWu+LPkoGqNV3OL8Ux7Zx
+ 1V5ENX2pxc8I8xLlMtJ+BccIL9OT2d2s8xtgEKVLk/j9RQ6dLXDEfdURChzR9Nl/CFHv
+ kVsYlsj3dQQIDHtNqPatSvc13gbh9eCv49ZJmw5OBgeS+hedQVXLoUJZf163KI7PbBvQ
+ bgnw==
+X-Gm-Message-State: AOAM533OT/EzkEQ7GS6vj2SnlM1YbqIXQagDxSY0cE74EGUZYWupyy05
+ PJ2oLkxKqfwHE7AUuei8n/qL3A==
+X-Google-Smtp-Source: ABdhPJwvCIHs/V58eqkhRPAnECcR0pGi+za099CKWU3IQiPQFqDp1szchuKGBBVy1BMdxR7gq4LGtg==
+X-Received: by 2002:a05:600c:3646:: with SMTP id
+ y6mr3612017wmq.61.1632821689003; 
+ Tue, 28 Sep 2021 02:34:49 -0700 (PDT)
 Received: from [192.168.86.34]
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.googlemail.com with ESMTPSA id w14sm18892145wro.8.2021.09.28.02.33.19
+ by smtp.googlemail.com with ESMTPSA id u5sm20508832wrg.57.2021.09.28.02.34.47
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 28 Sep 2021 02:33:20 -0700 (PDT)
-Subject: Re: [PATCH v8 19/22] ASoC: qdsp6: audioreach: add q6apm-dai support
+ Tue, 28 Sep 2021 02:34:48 -0700 (PDT)
+Subject: Re: [PATCH v8 18/22] ASoC: qdsp6: audioreach: add topology support
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  bjorn.andersson@linaro.org, broonie@kernel.org, robh@kernel.org
 References: <20210927135559.738-1-srinivas.kandagatla@linaro.org>
- <20210927135559.738-20-srinivas.kandagatla@linaro.org>
- <20605122-e6b4-1b5f-003a-96a74306f984@linux.intel.com>
+ <20210927135559.738-19-srinivas.kandagatla@linaro.org>
+ <f2009225-22b5-97ed-9cb5-87a43b2c3039@linux.intel.com>
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <c12ac2f5-bc53-ac0c-6ed0-f748a62015ac@linaro.org>
-Date: Tue, 28 Sep 2021 10:33:19 +0100
+Message-ID: <535723fb-d354-4d90-ae5a-8981ed6c3fde@linaro.org>
+Date: Tue, 28 Sep 2021 10:34:47 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20605122-e6b4-1b5f-003a-96a74306f984@linux.intel.com>
+In-Reply-To: <f2009225-22b5-97ed-9cb5-87a43b2c3039@linux.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -112,113 +114,44 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 27/09/2021 17:25, Pierre-Louis Bossart wrote:
+On 27/09/2021 17:21, Pierre-Louis Bossart wrote:
 > 
->> +static int q6apm_dai_prepare(struct snd_soc_component *component,
->> +			     struct snd_pcm_substream *substream)
+>> +static int audioreach_control_load_mix(struct snd_soc_component *scomp,
+>> +				       struct snd_ar_control *scontrol,
+>> +				       struct snd_kcontrol_new *kc,
+>> +				       struct snd_soc_tplg_ctl_hdr *hdr)
 >> +{
->> +	struct snd_pcm_runtime *runtime = substream->runtime;
->> +	struct q6apm_dai_rtd *prtd = runtime->private_data;
->> +	struct audioreach_module_config cfg;
->> +	struct device *dev = component->dev;
->> +	struct q6apm_dai_data *pdata;
->> +	int ret;
+>> +	struct snd_soc_tplg_vendor_value_elem *c_elem;
+>> +	struct snd_soc_tplg_vendor_array *c_array;
+>> +	struct snd_soc_tplg_mixer_control *mc;
+>> +	int tkn_count = 0;
 >> +
->> +	pdata = snd_soc_component_get_drvdata(component);
->> +	if (!pdata)
->> +		return -EINVAL;
+>> +	mc = container_of(hdr, struct snd_soc_tplg_mixer_control, hdr);
+>> +	c_array = (struct snd_soc_tplg_vendor_array *)mc->priv.data;
 >> +
->> +	if (!prtd || !prtd->graph) {
->> +		dev_err(dev, "%s: private data null or audio client freed\n", __func__);
->> +		return -EINVAL;
->> +	}
+>> +	c_elem = c_array->value;
 >> +
->> +	cfg.direction = substream->stream;
->> +	cfg.sample_rate = runtime->rate;
->> +	cfg.num_channels = runtime->channels;
->> +	cfg.bit_width = prtd->bits_per_sample;
->> +
->> +	prtd->pcm_count = snd_pcm_lib_period_bytes(substream);
->> +	prtd->pos = 0;
->> +	/* rate and channels are sent to audio driver */
->> +	ret = q6apm_graph_media_format_shmem(prtd->graph, &cfg);
->> +	if (ret < 0) {
->> +		dev_err(dev, "%s: q6apm_open_write failed\n", __func__);
->> +		return ret;
->> +	}
->> +
->> +	ret = q6apm_graph_media_format_pcm(prtd->graph, &cfg);
->> +	if (ret < 0)
->> +		dev_err(dev, "%s: CMD Format block failed\n", __func__);
->> +
->> +	ret = q6apm_map_memory_regions(prtd->graph, substream->stream, prtd->phys,
->> +				       (prtd->pcm_size / prtd->periods), prtd->periods);
->> +
->> +	if (ret < 0) {
->> +		dev_err(dev, "Audio Start: Buffer Allocation failed rc = %d\n",	ret);
->> +		return -ENOMEM;
->> +	}
->> +
->> +	ret = q6apm_graph_prepare(prtd->graph);
->> +	if (ret) {
->> +		dev_err(dev, "Failed to prepare Graph %d\n", ret);
->> +		return ret;
->> +	}
->> +
->> +	ret = q6apm_graph_start(prtd->graph);
->> +	if (ret) {
->> +		dev_err(dev, "Failed to Start Graph %d\n", ret);
->> +		return ret;
->> +	}
->> +
->> +	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
->> +		int i;
->> +		/* Queue the buffers for Capture ONLY after graph is started */
->> +		for (i = 0; i < runtime->periods; i++)
->> +			q6apm_read(prtd->graph);
->> +
->> +	}
->> +
->> +	prtd->state = Q6APM_STREAM_RUNNING;
+>> +	while (tkn_count <= (le32_to_cpu(c_array->num_elems) - 1)) {
+>> +		switch (le32_to_cpu(c_elem->token)) {
+>> +		case AR_TKN_U32_SUB_GRAPH_INSTANCE_ID:
+>> +			scontrol->sgid = le32_to_cpu(c_elem->value);
+>> +			break;
+>> +		default:
+>> +			/* Ignore other tokens */
+>> +		break;
 > 
-> you should probably explain why a stream moves to the 'RUNNING' state in
-> a .prepare() callback, instead of TRIGGER_START?
+> indentation still off
+> 
 
-Sure, will add a comment,
+its fixed now
+
 
 --srini
-> 
+>> +
+>> +		}
+>> +		c_elem++;
+>> +		tkn_count++;
+>> +	}
 >> +
 >> +	return 0;
 >> +}
->> +
->> +static int q6apm_dai_trigger(struct snd_soc_component *component,
->> +			     struct snd_pcm_substream *substream, int cmd)
->> +{
->> +	struct snd_pcm_runtime *runtime = substream->runtime;
->> +	struct q6apm_dai_rtd *prtd = runtime->private_data;
->> +	int ret = 0;
->> +
->> +	switch (cmd) {
->> +	case SNDRV_PCM_TRIGGER_START:
->> +	case SNDRV_PCM_TRIGGER_RESUME:
->> +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
->> +		 /* start writing buffers for playback only as we already queued capture buffers */
->> +		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
->> +			ret = q6apm_write_async(prtd->graph, prtd->pcm_count, 0, 0, 0);
->> +		break;
->> +	case SNDRV_PCM_TRIGGER_STOP:
->> +		/* TODO support be handled via SoftPause Module */
->> +		prtd->state = Q6APM_STREAM_STOPPED;
->> +		break;
->> +	case SNDRV_PCM_TRIGGER_SUSPEND:
->> +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
->> +		break;
->> +	default:
->> +		ret = -EINVAL;
->> +		break;
->> +	}
->> +
->> +	return ret;
->> +}
-> 
