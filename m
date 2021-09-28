@@ -2,94 +2,85 @@ Return-Path: <SRS0=duqq=OS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00F79C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Sep 2021 03:21:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7D61C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Sep 2021 06:12:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 27EE4611C3
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Sep 2021 03:21:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 27EE4611C3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 3574061058
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Sep 2021 06:12:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3574061058
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BD4FF16B0;
-	Tue, 28 Sep 2021 05:20:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD4FF16B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id E58F2168F;
+	Tue, 28 Sep 2021 08:11:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E58F2168F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632799271;
-	bh=uBD1n1LtjCDRPysIqzZRgbwDKg/TMeDHw+kp9VClabc=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1632809521;
+	bh=Pvoue6xFOvC3MfaXnDqLdDzy9t4DWnb+GUh9TRndNqc=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BcX0DZmP3mzRaVeNoyeAdPKXNHvXjEorqUDaYCCnt4MFBpuoaAyq+9ppIC6abVnxi
-	 sYPvZ0Cr2bVgs2nDRHZqbRs0ed8DHQAcwvRhxgP/LfmfMthSMRckYIniiJs9XOU6N8
-	 UymnhCkOrrPCC0Iwv9h2R3xKSlR2/xubymbdgoAA=
+	b=HnRXhd/p7n8Mv1kJgQYHb+A4MNOnsLliSylmu28Ccseb+tJX8J8eqPnammoVcD+sI
+	 9sloEA3lI30R6lpI775GgpkURPlL1iEjFGM/rJdMqYH+lBsWtIT8B5e2n3sf//88XZ
+	 SNyUr08RyC+TjxMA4QOmYHvdt4Jg6GT8QKsiu+P4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1018DF804D1;
-	Tue, 28 Sep 2021 05:20:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 47BADF8032C;
+	Tue, 28 Sep 2021 08:11:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 48FF3F804D2; Tue, 28 Sep 2021 05:20:14 +0200 (CEST)
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com
- [IPv6:2607:f8b0:4864:20::233])
+ id A62DDF804AD; Tue, 28 Sep 2021 08:11:08 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D1667F80161
- for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2021 05:20:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1667F80161
+ by alsa1.perex.cz (Postfix) with ESMTPS id A55CCF800DE
+ for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2021 08:11:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A55CCF800DE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="t26S2A58"
-Received: by mail-oi1-x233.google.com with SMTP id s69so28241684oie.13
- for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2021 20:20:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=BY/5t7wTdvjVpwDuXNWwZUvcg5QReOgiRCNTnTuZFk4=;
- b=t26S2A58lxtJb9UOtXoX9vpowEkNqr/uJlCSIcATShVMnKQQA0kmcRpGwQLBylFYQr
- uI4O+4NO9B5Fvsc042saoaMWF8ioD7QoDlgUQDtFlhCl1AD4JaBkuN9PWJ+vrhq05JUA
- EcGFbwil4Tkzs9efuM9sbTivp3pZeLdgxIDQ8ID3U4M2m97HZjIwvfV9Z0B+YU4CVX0K
- zKmxZrbJ2VWjHqWJmo6XtlLLE/wCRyDAWhFnJwqVoXpqVLmP0cemFKTP/3fJ/e6CjRDg
- N1TFS+dRU/Xh+pGLAGtvx6w8oOz4c1orXLyXdz4HZ31eCtc8frZ9biktfs+SxX4oWlL+
- FctQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=BY/5t7wTdvjVpwDuXNWwZUvcg5QReOgiRCNTnTuZFk4=;
- b=XLh0xFbrywAm/BqjoLYUmKeESNmE6QojCwD/kxJoETSjO2SvSLPb68sP6+1ianXNjB
- N5Z9r4dmwEwSpvxmzIlH0g/Wqyz6d0bAR9LZCfN0+hmkYjCn1b++BKPs53chHfxXRZTD
- x6Bu/+4/ioy0nJ+AlKYHRzkEz2uC2DONFzVzARxu05IWsxLAo2BZwGcpqvejMMIuDErG
- vG0+ibjLk6sGA0HXBv0y8wY3II9pfYimIlSSGew55wJ520u/LdtLoozWCJKibRrNc9wf
- kTh9APqhwwRDR4bVJlwdCYLUqHnd6+a2+1Ita5YrIbnXaZn5r0Cf+lJzoxTGQ3TwFLZ/
- QbSA==
-X-Gm-Message-State: AOAM530GdHDZDxfwEnMzh1ntNZ5VeM4FkyToV6jEqh3Jp4wWUOXJwIDB
- dOQH+++RdF1tzCfEcaQFmXNgcg==
-X-Google-Smtp-Source: ABdhPJwJXFE0iZAc424TD5Oabs5g+Dkyl1gE/Lj29AkoYGBfNGoI9TTSCkcjF+anL6oKIDo8Ev9qOg==
-X-Received: by 2002:a05:6808:f:: with SMTP id u15mr1951100oic.86.1632799204470; 
- Mon, 27 Sep 2021 20:20:04 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net.
- [104.57.184.186])
- by smtp.gmail.com with ESMTPSA id t29sm280137otd.7.2021.09.27.20.20.03
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 27 Sep 2021 20:20:04 -0700 (PDT)
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
-To: robh@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- broonie@kernel.org
-Subject: Re: (subset) [PATCH v8 00/22] ASoC: qcom: Add AudioReach support
-Date: Mon, 27 Sep 2021 22:20:03 -0500
-Message-Id: <163279918313.1542640.4435970499489136227.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210927135559.738-1-srinivas.kandagatla@linaro.org>
-References: <20210927135559.738-1-srinivas.kandagatla@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, tiwai@suse.de, plai@codeaurora.org,
- pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="1Hx2fsst"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="vgBO3rzI"
+Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
+ by smtp-out1.suse.de (Postfix) with ESMTP id BC7BB22212;
+ Tue, 28 Sep 2021 06:10:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1632809459; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=1VxJULCAkXo/zkFHIm4mcuZhVch/z+Y2yH1ju/bkrMs=;
+ b=1Hx2fsstp0UBPI8gO+tQzdKPyF144CV72UEHYqKD3uHVi7QW7d/IsUT7PDm2NT0nRMAPOb
+ +Vk7GwAQ6evJVtdSQQLcKNXs/7c8sKZ+yEr8Xd2rs8ZUuip45B8Hkw6ExsYPGUI2h4IuEp
+ g8/sQtyy1mkKqtD5kwlZ+rjKCWtgL28=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1632809459;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=1VxJULCAkXo/zkFHIm4mcuZhVch/z+Y2yH1ju/bkrMs=;
+ b=vgBO3rzIsVcU8i/fZVy9wmm4hWc/PWt9eW6UblbtWcm9jzqGD/noJTIpkJl9WPN6yMXLzV
+ PnQO7zNmlPXU00BQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay1.suse.de (Postfix) with ESMTP id B56AA25D93;
+ Tue, 28 Sep 2021 06:10:59 +0000 (UTC)
+Date: Tue, 28 Sep 2021 08:10:59 +0200
+Message-ID: <s5hpmst6xho.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC PATCH 2/4] ALSA: hda: hdac_stream: reset assigned_key in
+ stream_release()
+In-Reply-To: <20210924192417.169243-3-pierre-louis.bossart@linux.intel.com>
+References: <20210924192417.169243-1-pierre-louis.bossart@linux.intel.com>
+ <20210924192417.169243-3-pierre-louis.bossart@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
+ broonie@kernel.org, vkoul@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,31 +96,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 27 Sep 2021 14:55:37 +0100, Srinivas Kandagatla wrote:
-> Many thanks for reviewing v7 This version addresses all the comments
-> raised as part of v8 review.
+On Fri, 24 Sep 2021 21:24:15 +0200,
+Pierre-Louis Bossart wrote:
 > 
-> This patchset adds ASoC driver support to configure signal processing
-> framework ("AudioReach") which is integral part of Qualcomm next
-> generation audio SDK and will be deployed on upcoming Qualcomm chipsets.
-> It makes use of ASoC Topology to load graphs on to the DSP which is then
-> managed by APM (Audio Processing Manager) service to prepare/start/stop.
+> The 'assigned_key' field is set in assign() and never reset. For
+> symmetry set to zero in release().
+
+This is intentional behavior.  We want to assign to the same stream
+persistently unless it has to be reassigned to another.
+
+
+thanks,
+
+Takashi
+
 > 
-> [...]
-
-Applied, thanks!
-
-[01/22] soc: dt-bindings: qcom: apr: convert to yaml
-        commit: 985f62a9a13175217978a797cd8f1f26216b2c87
-[02/22] soc: dt-bindings: qcom: apr: deprecate qcom,apr-domain property
-        commit: 1ff63d5465d0b0bf4e69562096b2d3ec9ff1a116
-[03/22] soc: qcom: apr: make code more reuseable
-        commit: 99139b80c1b3d73026ed8be2de42c52e2976ab64
-[04/22] soc: dt-bindings: qcom: add gpr bindings
-        commit: 974c6faf7667e551d202712470ca210c14ca249d
-[05/22] soc: qcom: apr: Add GPR support
-        commit: ec1471a898cca38af6b8956a83ebc1297214546f
-
-Best regards,
--- 
-Bjorn Andersson <bjorn.andersson@linaro.org>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  sound/hda/hdac_stream.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/sound/hda/hdac_stream.c b/sound/hda/hdac_stream.c
+> index 9867555883c3..3ae23c50d505 100644
+> --- a/sound/hda/hdac_stream.c
+> +++ b/sound/hda/hdac_stream.c
+> @@ -333,6 +333,7 @@ void snd_hdac_stream_release(struct hdac_stream *azx_dev)
+>  	spin_lock_irq(&bus->reg_lock);
+>  	azx_dev->opened = 0;
+>  	azx_dev->running = 0;
+> +	azx_dev->assigned_key = 0;
+>  	azx_dev->substream = NULL;
+>  	spin_unlock_irq(&bus->reg_lock);
+>  }
+> -- 
+> 2.25.1
+> 
