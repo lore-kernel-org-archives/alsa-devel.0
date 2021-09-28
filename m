@@ -2,62 +2,61 @@ Return-Path: <SRS0=duqq=OS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EB95C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Sep 2021 07:37:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED772C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Sep 2021 07:41:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1DB5B601FA
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Sep 2021 07:37:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1DB5B601FA
+	by mail.kernel.org (Postfix) with ESMTPS id 01C7160720
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Sep 2021 07:41:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 01C7160720
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7452F1696;
-	Tue, 28 Sep 2021 09:36:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7452F1696
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5E8EB1696;
+	Tue, 28 Sep 2021 09:40:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E8EB1696
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632814640;
-	bh=lZTMBcv+X4Bihnd/SWLCip09NSLQW0M9MEiAwotnDF8=;
+	s=default; t=1632814892;
+	bh=3OTwUyMxttCTReOLN1jM2Ol60OM8NRE4OVZPYXM1p4s=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=OPMUu/xeO6XdxSzNLaev9P/bqZ91TS3a3dQDK2yKkYzNR4jxzTbJ3K7dq8MNnCk0b
-	 a9e7HGn0agOZoAgPq7Tk4tiEVky6V7YkA7UmGXRqp4s+L14Spwekhw1jYVPgrgPlmF
-	 xjTZ7cB6poiA0nOZU8HDGf23UdAm0brr2sZUK3LA=
+	b=a+tb0bNa0P+3C0OXdbk04I/CP6GLm+U/vRFnMoLfph8ny1BON3xlK6V2YETyyK6k5
+	 CGCbw6gXh8K6uM0/XQEHhl3E8IxR8sWYi3000/sCP3Yq4K2aXKkIf9UtVUXOleNH7h
+	 JpXeo6zdTqcSq97WuhhuSOCfTPmVD5OsdiQ4v3SA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DC641F8032C;
-	Tue, 28 Sep 2021 09:36:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA718F8032C;
+	Tue, 28 Sep 2021 09:40:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7AD0BF804AD; Tue, 28 Sep 2021 09:36:28 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ id 95113F804AD; Tue, 28 Sep 2021 09:40:40 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D0DEBF80161
- for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2021 09:36:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0DEBF80161
-X-IronPort-AV: E=McAfee;i="6200,9189,10120"; a="310187399"
-X-IronPort-AV: E=Sophos;i="5.85,328,1624345200"; d="scan'208";a="310187399"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Sep 2021 00:36:14 -0700
-X-IronPort-AV: E=Sophos;i="5.85,328,1624345200"; d="scan'208";a="476192196"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5B0ACF80161
+ for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2021 09:40:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B0ACF80161
+X-IronPort-AV: E=McAfee;i="6200,9189,10120"; a="204791730"
+X-IronPort-AV: E=Sophos;i="5.85,328,1624345200"; d="scan'208";a="204791730"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 28 Sep 2021 00:40:29 -0700
+X-IronPort-AV: E=Sophos;i="5.85,328,1624345200"; d="scan'208";a="553850539"
 Received: from elisabal-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.251.220.25])
- by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Sep 2021 00:36:11 -0700
+ by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 28 Sep 2021 00:40:26 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com, broonie@kernel.org,
- pierre-louis.bossart@linux.intel.com, daniel.baluta@nxp.com
-Subject: [PATCH] ASoC: SOF: ipc: Make the error prints consistent in
- tx_wait_done()
-Date: Tue, 28 Sep 2021 10:36:15 +0300
-Message-Id: <20210928073615.29574-1-peter.ujfalusi@linux.intel.com>
+ pierre-louis.bossart@linux.intel.com, ranjani.sridharan@linux.intel.com
+Subject: [PATCH] ASoC: SOF: pm: fix a stale comment
+Date: Tue, 28 Sep 2021 10:40:30 +0300
+Message-Id: <20210928074030.30553-1-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
+Cc: alsa-devel@alsa-project.org, daniel.baluta@nxp.com, bard.liao@intel.com,
  kai.vehmanen@linux.intel.com, paul.olaru@oss.nxp.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -74,46 +73,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-If we get an error on reply (msg->reply_error) then we should print the
-error value out.
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-At the same time extend the print to include the message size as well and
-do the same in case of a timeout.
+There is no restore_stream flag anymmore.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Daniel Baluta <daniel.baluta@gmail.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Paul Olaru <paul.olaru@oss.nxp.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Bard Liao <bard.liao@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/ipc.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/sof/pm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index 5d41924f37a6..95b1d875c3c0 100644
---- a/sound/soc/sof/ipc.c
-+++ b/sound/soc/sof/ipc.c
-@@ -249,15 +249,17 @@ static int tx_wait_done(struct snd_sof_ipc *ipc, struct snd_sof_ipc_msg *msg,
- 				 msecs_to_jiffies(sdev->ipc_timeout));
+diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
+index c83fb6255961..89b4b3d76539 100644
+--- a/sound/soc/sof/pm.c
++++ b/sound/soc/sof/pm.c
+@@ -191,7 +191,7 @@ static int sof_suspend(struct device *dev, bool runtime_suspend)
+ 	if (sdev->fw_state != SOF_FW_BOOT_COMPLETE)
+ 		goto suspend;
  
- 	if (ret == 0) {
--		dev_err(sdev->dev, "error: ipc timed out for 0x%x size %d\n",
--			hdr->cmd, hdr->size);
-+		dev_err(sdev->dev,
-+			"ipc tx timed out for %#x (msg/reply size: %d/%zu)\n",
-+			hdr->cmd, hdr->size, msg->reply_size);
- 		snd_sof_handle_fw_exception(ipc->sdev);
- 		ret = -ETIMEDOUT;
- 	} else {
- 		ret = msg->reply_error;
+-	/* set restore_stream for all streams during system suspend */
++	/* prepare for streams to be resumed properly upon resume */
+ 	if (!runtime_suspend) {
+ 		ret = sof_set_hw_params_upon_resume(sdev->dev);
  		if (ret < 0) {
--			dev_err(sdev->dev, "error: ipc error for 0x%x size %zu\n",
--				hdr->cmd, msg->reply_size);
-+			dev_err(sdev->dev,
-+				"ipc tx error for %#x (msg/reply size: %d/%zu): %d\n",
-+				hdr->cmd, hdr->size, msg->reply_size, ret);
- 		} else {
- 			ipc_log_header(sdev->dev, "ipc tx succeeded", hdr->cmd);
- 			if (msg->reply_size)
 -- 
 2.33.0
 
