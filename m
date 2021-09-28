@@ -2,87 +2,73 @@ Return-Path: <SRS0=duqq=OS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CDB90C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Sep 2021 11:08:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FCF3C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Sep 2021 15:12:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A4BB96108F
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Sep 2021 11:08:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A4BB96108F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id AF0F56101E
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Sep 2021 15:12:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AF0F56101E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DE9211690;
-	Tue, 28 Sep 2021 13:07:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE9211690
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2F1741695;
+	Tue, 28 Sep 2021 17:11:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F1741695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632827318;
-	bh=/yzii8Z9eN49rYqvSzAg756cyB+/4h91PPZ9l1FaSi8=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1632841924;
+	bh=eDeH6QdApN+3eXN8ZlrWpKh7GCEOmiZnxABrGRFK4/s=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FiTvHNfrof8DVcrGKwdFw6hMb/CIgCoOxx6BcdLRSQWUAFGc+5UOWjVkqy9KzgWUC
-	 05D+6k2RjzWiX+ZnXlSLVjanzf7huzSVlfAuKHbGIFSavhpNLuug8k5bOMx8h9Xm8X
-	 ifPHg5DKaiZRYl8nlm/3SsHGkNFknp87/qip9Xq0=
+	b=uN5rDIYx3fA214K4OHX68cBqrgkbaQrjdTvU4JHhbPV4WKdwY8/vRG5zGO1B2C8+K
+	 u8xswBiBRjwwr67HggA6M2i6CDQ/kiPAMYtk0TRg8/HMLNLU9DFpDdCYon4EGltsfg
+	 5tpm5ABEP2n9ZIqwtMGTGqYw1XKklmGZBypEXKRc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7821EF8032C;
-	Tue, 28 Sep 2021 13:07:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 742CBF800DE;
+	Tue, 28 Sep 2021 17:11:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 67376F804AD; Tue, 28 Sep 2021 13:07:41 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 7F1F9F804AD; Tue, 28 Sep 2021 17:11:12 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C563EF800DE
- for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2021 13:07:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C563EF800DE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 325F8F80161
+ for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2021 17:11:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 325F8F80161
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="q25vnfMq"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="LueHzJS2"
-Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
- by smtp-out1.suse.de (Postfix) with ESMTP id F2C4A22281;
- Tue, 28 Sep 2021 11:07:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1632827255; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=lDTuJ+QMnNsTzqZNRODrOw2VL5ehhKL0p0RAl/uZ36Y=;
- b=q25vnfMq89IZ4TvZnWyy4wSWNfV422nmi/FoZ2FhSy2hZGhnm2rQjOtjTG2LYHbA3XYWT7
- xhV9xwV3esbrfpYBTvYtc1LZ1loBa7UJN4z8dZ42wiiBpZP7RvtSsjVaZJrocJU+exn2PO
- NPQf2WfWT8/cVqC/UrSL2WOxZGXj4GU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1632827255;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=lDTuJ+QMnNsTzqZNRODrOw2VL5ehhKL0p0RAl/uZ36Y=;
- b=LueHzJS2Hmqj4r0mn/JPg5zfSa5u4cGMrfKOtcKktkF1ze14F71OrfvYTQC33TlY3xKzVC
- eHThSFhwDz3fIzAQ==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay1.suse.de (Postfix) with ESMTP id BE52C25D44;
- Tue, 28 Sep 2021 11:07:34 +0000 (UTC)
-Date: Tue, 28 Sep 2021 13:07:34 +0200
-Message-ID: <s5ha6jxnekp.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: hda: how to implement component master_unbind?
-In-Reply-To: <alpine.DEB.2.22.394.2109221456080.3554566@eliteleevi.tm.intel.com>
-References: <alpine.DEB.2.22.394.2109221456080.3554566@eliteleevi.tm.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Daniel Vetter <daniel.vetter@ffwll.ch>, alsa-devel@alsa-project.org,
- Jani Nikula <jani.nikula@linux.intel.com>,
- Chris Wilson <chris@chris-wilson.co.uk>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Ju4dhP79"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78BE160E54;
+ Tue, 28 Sep 2021 15:11:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1632841862;
+ bh=eDeH6QdApN+3eXN8ZlrWpKh7GCEOmiZnxABrGRFK4/s=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=Ju4dhP79Eq/OuNB8kfRciibs5XmCctKNNYAupfKjz/jlOc9mAZyo/WM+vZVbKxhUi
+ 2h/GWOEeLV9GOleyCLKNVg8J+lyCVkiYOPkXMTa0RaS/AbSFI7mmS0p3qf+DdI+iJA
+ r8cKcocpeiGwdhMvV7fhDrQNggIMXH+DZcndnzdKIbBeWVN693pCfM+Uljgew9NiaS
+ Abe9WWhFLQhPa2lTDf5uvpnjm1gm+46o+SL0N6d9+K54DOu+Y3QZ6yTvzJstXLehad
+ MEhnr5jtUS9xDP2jf3Ylj7fmUA2EMqZQsN7WSQpgCmilZGImD0ZbW1l09zgl09HQ9M
+ MhKq79a9L8oTw==
+Date: Tue, 28 Sep 2021 16:10:12 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: Intel: hda-stream: limit PROCEN workaround
+Message-ID: <20210928151012.GA25932@sirena.org.uk>
+References: <20210928082248.6081-1-peter.ujfalusi@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="17pEHd4RhPHOinZp"
+Content-Disposition: inline
+In-Reply-To: <20210928082248.6081-1-peter.ujfalusi@linux.intel.com>
+X-Cookie: Beam me up, Scotty!
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+ kai.vehmanen@linux.intel.com, lgirdwood@gmail.com,
+ ranjani.sridharan@linux.intel.com, rander.wang@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,95 +84,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 22 Sep 2021 14:40:19 +0200,
-Kai Vehmanen wrote:
-> 
-> Hi Takashi et al,
-> 
-> I've been having multiple discussions with our i915 team w.r.t. audio 
-> driver behaviour when the aggregate component is unbound, triggered by 
-> i915 unbind. This came up again in the recent regression with devres 
-> allocations and I now dug into the topic again.
-> 
-> In short, I'm puzzled how to really implement this. ALSA (or ASoC) don't 
-> really have support for individual components of a card disappearing in a 
-> hotplug fashion. At card level, we do have such support (USB, firewire and 
-> recent work for PCI hotplug). But not individual components of a card 
-> getting unplugged.
-> 
-> In current code we have this:
-> static void hdac_component_master_unbind(struct device *dev)
-> {
-> »       struct drm_audio_component *acomp = hdac_get_acomp(dev);
-> 
-> »       if (acomp->audio_ops && acomp->audio_ops->master_unbind)
-> »       »       acomp->audio_ops->master_unbind(dev, acomp);
-> »       module_put(acomp->ops->owner);   
-> »       component_unbind_all(dev, acomp);
-> »       WARN_ON(acomp->ops || acomp->dev);
-> }
-> 
-> ... when e.g. i915 driver is unbound (but could be any driver using the 
-> component framework, not jus Intel hw), i915 calls component_del() and HDA
-> gets call to the above. After this, acomp ops are null are audio no longer
-> has ability to talk to i915 driver (which makes sense given it's unbound).
-> 
-> If audio was runtime suspended, this kind of works (but relies on some 
-> good luck). Upon HDA controller resume, we note acomp ops are NULL and 
-> HDMI/DP operations (like snd_hdac_display_power()) silently become no-ops.
-> PCM streaming will go to /dev/null, but this is ok'ish since no monitor
-> can be connected anyways.
-> 
-> If audio was active, we start to get warnings or worse. Audio expects hw 
-> display codec to be powered and programmed, but suddenly it mey lose 
-> state. If the audio controller is actually part of the display hardware 
-> (e.g. discrete GPUs), then controller registers can stop functioning (they
-> should be still available, but given the main diplay driver is unbound,
-> odds of suprising behaviour are high).
-> 
-> So this is less than ideal. I've been looking at options:
-> 
-> 1) prevent/block the unbind if audio device is busy
-> 
-> The component framework does not allow individual components to return 
-> -EBUSY, so there's no way to let others know that unbind is not possible 
-> now.
-> 
-> This would force anyone testing DRM driver unbind to first unbind
-> the audio driver and stop any active audio use-cases if needed.
-> 
-> 2) unbind the ALSA card
-> 
-> I've experimented doing a device_unregister() from the above callback, but 
-> this has not really worked (onion peeling exercise of new probelms). The 
-> code is shared by multiple controllers, so getting a handle to an snd_card 
-> object is not straighforward (drvdata is differnet for SOF and 
-> snd-hda-intel for instance). But with some new work, maybe we could call
-> snd_card_disconnect() to detach the card and inform user-space.
-> 
-> 3) continue as-is and try to fix bugs
-> 
-> If audio is active, maybe we could force a acomp->put_power() to ensure
-> a clean unregister of the display part. But this leaves a big chunk of 
-> issues especially with HDA controllers that require the display to
-> be powered on, to function.
-> 
-> ..
-> 
-> Any ideas, and/or has there been prior work? It seems Takashi it's been 
-> mostly you who has been active working on the acomp integration recently. 
-> I also included Chris, Daniel and Jani who've had patches to 
-> hdac_component.c.
 
-Removing a component from the card is a PITA for now, indeed,
-especially when its influence is over different APIs (PCM, control,
-whatever)...
+--17pEHd4RhPHOinZp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-One thing I can think of is to perform like the vga_switcheroo
-handling in hda_intel.c; it's essentially a forced runtime suspend,
-and disable the whole card.  But in the case of audio-component
-unbind, we need to think about re-binding -- or completely ignore
-re-binding until the whole driver gets unloaded. 
+On Tue, Sep 28, 2021 at 11:22:48AM +0300, Peter Ujfalusi wrote:
+> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>=20
+> The work-around enabled in hda-stream.c is only required on earlier
+> versions of SOCs/PCH (Skylake, KabyLake, ApolloLake,
+> GeminiLake). Before setting the format on the host DMA, it is required
+> to couple the host and link DMA - which as a consequence shall use the
+> same format.
 
+This breaks the build for me:
 
-Takashi
+/mnt/kernel/sound/soc/sof/intel/hda-stream.c: In function 'hda_dsp_stream_h=
+w_params':
+/mnt/kernel/sound/soc/sof/intel/hda-stream.c:436:42: error: implicit declar=
+ation of function 'get_chip_info'; did you mean 'get_group_info'? [-Werror=
+=3Dimplicit-function-declaration]
+
+--17pEHd4RhPHOinZp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFTMFMACgkQJNaLcl1U
+h9AkwAf/TU5L1yUKluhQpZkkXnCFP8ds2ODfo1wifPyrNFEUd9H6O3kegvBEV154
+/hXzzrLoJWrz7UmZNtSmSrTuGbE0nwcuG1b8kToYsMvTXEYzMSM0Kwb6Ymwt0+7T
+P0eazsGdf/UX3e7h2rzyGd3NPEELNeaaElVB96HBSchZ6704TY40Co7IOGuWsT9e
+QcHYDRK3iY7MUNbKRyVfvfHawlAPzI1a3bFi9ULxST9Hg6aMgRgu7Pcvlj3X403P
+xAcV5RXwM7L1QVNmr2rUkD5VL7tXfoWgX5+sk+ECwVpCO4ylY4xUBplmHygP9N/C
+nHGSeA1PmOfeNgurTsukftwddtV1vQ==
+=304u
+-----END PGP SIGNATURE-----
+
+--17pEHd4RhPHOinZp--
