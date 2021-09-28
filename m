@@ -2,73 +2,70 @@ Return-Path: <SRS0=duqq=OS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FCF3C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Sep 2021 15:12:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B3B7C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Sep 2021 15:12:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AF0F56101E
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Sep 2021 15:12:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AF0F56101E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 2393A6120C
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Sep 2021 15:12:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2393A6120C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2F1741695;
-	Tue, 28 Sep 2021 17:11:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F1741695
+	by alsa0.perex.cz (Postfix) with ESMTPS id BCCDA16A9;
+	Tue, 28 Sep 2021 17:11:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCCDA16A9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632841924;
-	bh=eDeH6QdApN+3eXN8ZlrWpKh7GCEOmiZnxABrGRFK4/s=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1632841967;
+	bh=CnlKBndL1d+fl/hFiaBex7m2s76m6BDVgC15VxSbedE=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uN5rDIYx3fA214K4OHX68cBqrgkbaQrjdTvU4JHhbPV4WKdwY8/vRG5zGO1B2C8+K
-	 u8xswBiBRjwwr67HggA6M2i6CDQ/kiPAMYtk0TRg8/HMLNLU9DFpDdCYon4EGltsfg
-	 5tpm5ABEP2n9ZIqwtMGTGqYw1XKklmGZBypEXKRc=
+	b=aMCsX+L0H5EdtKeS5ZIHzga7I+z/fvwewEhGx5rTc3NK8bWn0y0AE6Yheq7eEjzMQ
+	 o1YHWDA4GqkNmTZD/mgM7ggdtqM2BZAeY3gLEZ+HYEjWSaOZtYSFUkHC/i8kbmw11F
+	 gX4jbxi5fAUtBg1C7l6tr6HYaruRk+4kd96mHBVU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 742CBF800DE;
-	Tue, 28 Sep 2021 17:11:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59A88F8032C;
+	Tue, 28 Sep 2021 17:11:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7F1F9F804AD; Tue, 28 Sep 2021 17:11:12 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 30209F804D2; Tue, 28 Sep 2021 17:11:26 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 325F8F80161
- for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2021 17:11:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 325F8F80161
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Ju4dhP79"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78BE160E54;
- Tue, 28 Sep 2021 15:11:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1632841862;
- bh=eDeH6QdApN+3eXN8ZlrWpKh7GCEOmiZnxABrGRFK4/s=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=Ju4dhP79Eq/OuNB8kfRciibs5XmCctKNNYAupfKjz/jlOc9mAZyo/WM+vZVbKxhUi
- 2h/GWOEeLV9GOleyCLKNVg8J+lyCVkiYOPkXMTa0RaS/AbSFI7mmS0p3qf+DdI+iJA
- r8cKcocpeiGwdhMvV7fhDrQNggIMXH+DZcndnzdKIbBeWVN693pCfM+Uljgew9NiaS
- Abe9WWhFLQhPa2lTDf5uvpnjm1gm+46o+SL0N6d9+K54DOu+Y3QZ6yTvzJstXLehad
- MEhnr5jtUS9xDP2jf3Ylj7fmUA2EMqZQsN7WSQpgCmilZGImD0ZbW1l09zgl09HQ9M
- MhKq79a9L8oTw==
-Date: Tue, 28 Sep 2021 16:10:12 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: Intel: hda-stream: limit PROCEN workaround
-Message-ID: <20210928151012.GA25932@sirena.org.uk>
-References: <20210928082248.6081-1-peter.ujfalusi@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 42476F8032C
+ for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2021 17:11:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42476F8032C
+X-IronPort-AV: E=McAfee;i="6200,9189,10120"; a="222832453"
+X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; d="scan'208";a="222832453"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 28 Sep 2021 08:00:35 -0700
+X-IronPort-AV: E=Sophos;i="5.85,329,1624345200"; d="scan'208";a="438102624"
+Received: from ppahwa-mobl1.amr.corp.intel.com (HELO [10.212.48.236])
+ ([10.212.48.236])
+ by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 28 Sep 2021 08:00:34 -0700
+Subject: Re: [PATCH] ALSA: hda: Reduce udelay() at SKL+ position reporting
+To: Takashi Iwai <tiwai@suse.de>
+References: <20210910141002.32749-1-tiwai@suse.de>
+ <db973c6d-3fb3-6c1b-f4cd-3e77baf8bd31@linux.intel.com>
+ <s5htuipjaak.wl-tiwai@suse.de>
+ <203381d5-b3ce-c5ab-b96e-bd38d27cf813@linux.intel.com>
+ <s5hmtnxnkea.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <a5fa93e1-189f-df83-c1b4-deed4d3f29be@linux.intel.com>
+Date: Tue, 28 Sep 2021 10:00:32 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="17pEHd4RhPHOinZp"
-Content-Disposition: inline
-In-Reply-To: <20210928082248.6081-1-peter.ujfalusi@linux.intel.com>
-X-Cookie: Beam me up, Scotty!
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- kai.vehmanen@linux.intel.com, lgirdwood@gmail.com,
- ranjani.sridharan@linux.intel.com, rander.wang@intel.com
+In-Reply-To: <s5hmtnxnkea.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Jens Axboe <axboe@kernel.dk>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,41 +82,18 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---17pEHd4RhPHOinZp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>> I think what you need to use is use azx_get_pos_posbuf(chip, azx_dev);
+>> unconditionally, both for capture and playback, and remove the use of
+>> the skylake specific stuff and the delay.
+> 
+> When I measured, I saw a slight difference between values in DPIB and
+> posbuf, so I wonder which is actually more accurate.  The latter is
+> sometimes a bit behind the former.
+> 
+> If the posbuf is more correct in the sense for the PCM pointer, we can
+> simply move back to the posbuf like other platforms.
 
-On Tue, Sep 28, 2021 at 11:22:48AM +0300, Peter Ujfalusi wrote:
-> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->=20
-> The work-around enabled in hda-stream.c is only required on earlier
-> versions of SOCs/PCH (Skylake, KabyLake, ApolloLake,
-> GeminiLake). Before setting the format on the host DMA, it is required
-> to couple the host and link DMA - which as a consequence shall use the
-> same format.
-
-This breaks the build for me:
-
-/mnt/kernel/sound/soc/sof/intel/hda-stream.c: In function 'hda_dsp_stream_h=
-w_params':
-/mnt/kernel/sound/soc/sof/intel/hda-stream.c:436:42: error: implicit declar=
-ation of function 'get_chip_info'; did you mean 'get_group_info'? [-Werror=
-=3Dimplicit-function-declaration]
-
---17pEHd4RhPHOinZp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFTMFMACgkQJNaLcl1U
-h9AkwAf/TU5L1yUKluhQpZkkXnCFP8ds2ODfo1wifPyrNFEUd9H6O3kegvBEV154
-/hXzzrLoJWrz7UmZNtSmSrTuGbE0nwcuG1b8kToYsMvTXEYzMSM0Kwb6Ymwt0+7T
-P0eazsGdf/UX3e7h2rzyGd3NPEELNeaaElVB96HBSchZ6704TY40Co7IOGuWsT9e
-QcHYDRK3iY7MUNbKRyVfvfHawlAPzI1a3bFi9ULxST9Hg6aMgRgu7Pcvlj3X403P
-xAcV5RXwM7L1QVNmr2rUkD5VL7tXfoWgX5+sk+ECwVpCO4ylY4xUBplmHygP9N/C
-nHGSeA1PmOfeNgurTsukftwddtV1vQ==
-=304u
------END PGP SIGNATURE-----
-
---17pEHd4RhPHOinZp--
+DPIB registers are known to be updated 'too early' in the case of VC1
+traffic, the recommendation is to use posbuf as a 'safer' alternative.
+And it's certainly 'more correct' that the current work-arounds which
+apply different solutions on capture and playback for no apparent reason.
