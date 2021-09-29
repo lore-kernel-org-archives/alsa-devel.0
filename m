@@ -2,70 +2,76 @@ Return-Path: <SRS0=CfAr=OT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40B95C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 15:31:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4F83C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 15:31:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 663F961462
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 15:31:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 663F961462
+	by mail.kernel.org (Postfix) with ESMTPS id E387A61462
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 15:31:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E387A61462
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CA91116EC;
-	Wed, 29 Sep 2021 17:30:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA91116EC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7F95916FD;
+	Wed, 29 Sep 2021 17:30:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F95916FD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632929470;
-	bh=t3MtYp2LBJvyxGBbxSvlODKPa3A5zidD7nPJNix+GAo=;
+	s=default; t=1632929483;
+	bh=olYYJCTYRHazulX/HjqWqdH1HhxCByVaNF4TlL8BmQQ=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=g0ZsiutTy/9KTnEqhhnGjKu9ucn5wkjtlsnmFLrZlWM89pBRzYtuGTAaysl5LFVyh
-	 UcalzGWhCVfiuHEOqXG1TExGbzZs7y0Udj8+Kab8N5VeJHVBkUsLiJv3jomnhsTRJY
-	 8ks6bUOCbRMy2uVq8hLHakt9gUE6gG/LWF6FpsWw=
+	b=sBEG8FC9Br14Zh7yFm04Faj4Lw7zzhm44X0DESZwCopvYG5UsrZEfuym0Uu1sjXI+
+	 Xc7PJDX0oGlV4mDzD8OyWahWXNYwHTYv3Oc1ho/bhHXRHxvGVC/eA3R2TrSdP3ToQj
+	 JhFpK8riwlLF9Wbtq0tmrXOCjU1ggwpWmmnJCHRU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 25734F802C4;
-	Wed, 29 Sep 2021 17:30:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 813C2F80227;
+	Wed, 29 Sep 2021 17:30:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D4F0AF80301; Wed, 29 Sep 2021 17:30:17 +0200 (CEST)
+ id D1E79F804B0; Wed, 29 Sep 2021 17:30:24 +0200 (CEST)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AE2DCF801F7
- for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2021 17:30:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE2DCF801F7
-X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="225036975"
-X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; d="scan'208";a="225036975"
+ by alsa1.perex.cz (Postfix) with ESMTPS id A7759F80227
+ for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2021 17:30:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7759F80227
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="225036995"
+X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; d="scan'208";a="225036995"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Sep 2021 08:30:07 -0700
-X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; d="scan'208";a="588091570"
+ 29 Sep 2021 08:30:10 -0700
+X-IronPort-AV: E=Sophos;i="5.85,332,1624345200"; d="scan'208";a="588091592"
 Received: from ibarchen-mobl.amr.corp.intel.com (HELO [10.209.150.234])
  ([10.209.150.234])
  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Sep 2021 08:30:06 -0700
-Subject: Re: [PATCH] ASoC: dpcm: fix race condition to dpcm links in
- dpcm_be_dai_trigger
-To: Gyeongtaek Lee <gt82.lee@samsung.com>, 'Takashi Iwai' <tiwai@suse.de>
-References: <CGME20210929054921epcas2p2fbe35a6262405e064aac3bd92b22b1aa@epcas2p2.samsung.com>
- <002f01d7b4f5$c030f4a0$4092dde0$@samsung.com>
+ 29 Sep 2021 08:30:09 -0700
+Subject: Re: [PATCH 01/13] ASoC: soc-pcm: Don't reconnect an already active BE
+To: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ Sameer Pujar <spujar@nvidia.com>, broonie@kernel.org, lgirdwood@gmail.com,
+ robh+dt@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com,
+ catalin.marinas@arm.com, will@kernel.org, perex@perex.cz, tiwai@suse.com,
+ kuninori.morimoto.gx@renesas.com
+References: <1630056839-6562-1-git-send-email-spujar@nvidia.com>
+ <1630056839-6562-2-git-send-email-spujar@nvidia.com>
+ <be6290d1-0682-3d93-98a6-ad0be3ca42c1@linux.intel.com>
+ <70422e52-89d2-d926-b3f9-be59780d464e@nvidia.com>
+ <2f96f1aa-74f2-8ea8-3f43-e4da97400fde@linux.intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <27786697-1309-8336-6f53-abff32e0b6c2@linux.intel.com>
-Date: Wed, 29 Sep 2021 09:11:35 -0500
+Message-ID: <647b1d54-dbd7-ce91-291d-d677ce908398@linux.intel.com>
+Date: Wed, 29 Sep 2021 09:52:17 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <002f01d7b4f5$c030f4a0$4092dde0$@samsung.com>
+In-Reply-To: <2f96f1aa-74f2-8ea8-3f43-e4da97400fde@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, kimty@samsung.com, lgirdwood@gmail.com,
- senius.park@samsung.com, donggyun.ko@samsung.com, hmseo@samsung.com,
- seungbin.lee@samsung.com, s47.kang@samsung.com, pilsun.jang@samsung.com
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, sharadg@nvidia.com, linux-tegra@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,129 +89,128 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 9/29/21 12:49 AM, Gyeongtaek Lee wrote:
-> If routing change and underrun stop is run at the same time,
-> data abort can be occurred by the following sequence.
-> 
-> CPU0: Processing underrun 	CPU1: Processing routing change
-> dpcm_be_dai_trigger():		dpcm_be_disconnect():
-> 
-> for_each_dpcm_be(fe, stream, dpcm) {
-> 
-> 				spin_lock_irqsave(&fe->card->dpcm_lock, flags);
-> 				list_del(&dpcm->list_be);
-> 				list_del(&dpcm->list_fe);
-> 				spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
-> 				kfree(dpcm);
-> 
-> struct snd_soc_pcm_runtime *be = dpcm->be; <-- Accessing freed memory
-> 
-> To prevent this situation, dpcm_lock is needed during accessing
-> the lists for dpcm links.
 
-Isn't there still a possible inconsistency here introduced by the
-duplication of the BE list?
+>>> But in addition we'd need to agree on what an 'active BE' is. Why can't
+>>> we connect a second stream while the first one is already in HW_PARAMS
+>>> or PAUSED or STOP? It's perfectly legal in ALSA/ASoC to have multiple
+>>> HW_PARAMS calls, and when we reach STOP we have to do a prepare again.
+>>>
+>>> And more fundamentally, the ability to add a second FE on a 'active' BE
+>>> in START state is a basic requirement for a mixer, e.g. to play a
+>>> notification on one FE while listening to music on another. What needs
+>>> to happen is only to make sure that the FE and BE are compatible in
+>>> terms of HW_PARAMS and not sending a second TRIGGER_STOP, only checking
+>>> the BE NEW or CLOSE state is way too restrictive.
+>>
+>> Sorry for the trouble to your system.
+>>
+>> Idea was to avoid reconfiguration of the same BE DAI again, but not to
+>> stop the provision to add a subsequent FE. In fact I had tested mixing
+>> of streams coming from 10 different FEs.
 
-You protect the list creation, but before you use it in
-dpcm_be_dai_trigger(), there's a time window where the function could be
-pre-empted and a disconnect event might have happened. As a result you
-could trigger a BE that's no longer connected.
+Can you describe the sequence that you used to start them? That may be
+useful to understand the criteria you used?
 
-What you identified as a race is likely valid, but how to fix it isn't
-clear to me - the DPCM code isn't self-explanatory at all with its use
-in various places of the dpcm_lock spinlock, the pcm mutex, the card mutex.
+>> In your case, because of this patch, looks like the subsequent FE is not
+>> finding a BE DAI since it is already active due to a prior FE. The
+>> reason it works at my end is because the mixer input and output DAIs are
+>> separated. Any new FE would just configure the mixer input DAI to which
+>> it is attached and skip already running/configured output DAI. 
 
-Ideally we would need to find a way to prevent changes in connections
-while we are doing the triggers, but triggers can take a bit of time if
-they involve any sort of communication over a bus. I really wonder if
-this dpcm_lock should be a mutex and if the model for DPCM really
-involves interrupt contexts as the irqsave/irqrestore mentions hint at.
+If you want to visualize the topology we're using in our 'nocodec'
+tests, see
 
-> Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
-> Cc: stable@vger.kernel.org
-> ---
->  sound/soc/soc-pcm.c | 53 ++++++++++++++++++++++++++++++++++++++++++---
->  1 file changed, 50 insertions(+), 3 deletions(-)
+https://sof-ci.01.org/linuxpr/PR3177/build6440/devicetest/?model=ADLP_RVP_NOCODEC&testcase=verify-kernel-boot-log
+
+and use the sof-adl-nocodec.
+
+it's a bog-standard topology with processing entities connected by buffers.
+
+I don't fully understand the notion of mixer input DAI, in our case we
+have a bunch of PCM devices connected to a mixer. The mixer is not
+directly connected to a DAI.
+
+> The problem as I see is that with this patch one can not connect a new
+> FE to a BE which is _not_ in NEW or CLOSE state.
 > 
-> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> index 48f71bb81a2f..df2cd4c0dabe 100644
-> --- a/sound/soc/soc-pcm.c
-> +++ b/sound/soc/soc-pcm.c
-> @@ -1993,17 +1993,63 @@ static int dpcm_fe_dai_hw_params(struct snd_pcm_substream *substream,
->  	return ret;
->  }
->  
-> +struct dpcm_be_list {
-> +	unsigned int num;
-> +	struct snd_soc_pcm_runtime *be[];
-> +};
-> +
-> +static int dpcm_create_be_list(struct snd_soc_pcm_runtime *fe, int stream,
-> +		struct dpcm_be_list **be_list)
-> +{
-> +	struct snd_soc_dpcm *dpcm;
-> +	struct dpcm_be_list *be;
-> +	int size = 0;
-> +	int ret = 0;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
-> +
-> +	for_each_dpcm_be(fe, stream, dpcm)
-> +		size++;
-> +
-> +	be = kzalloc(struct_size(be, be, size), GFP_ATOMIC);
-> +	if (!be) {
-> +		ret = -ENOMEM;
-> +	} else {
-> +		unsigned int i = 0;
-> +
-> +		for_each_dpcm_be(fe, stream, dpcm)
-> +			be->be[i++] = dpcm->be;
-> +
-> +		*be_list = be;
-> +	}
-> +
-> +	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
-> +
-> +	return ret;
-> +}
-> +
-> +static void dpcm_free_be_list(struct dpcm_be_list *be_list)
-> +{
-> +	kfree(be_list);
-> +}
-> +
->  int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
->  			       int cmd)
->  {
->  	struct snd_soc_pcm_runtime *be;
-> -	struct snd_soc_dpcm *dpcm;
-> +	struct dpcm_be_list *be_list;
->  	int ret = 0;
-> +	int i;
->  
-> -	for_each_dpcm_be(fe, stream, dpcm) {
-> +	ret = dpcm_create_be_list(fe, stream, &be_list);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	for(i = 0; i < be_list->num; i++) {
->  		struct snd_pcm_substream *be_substream;
->  
-> -		be = dpcm->be;
-> +		be = be_list->be[i];
->  		be_substream = snd_soc_dpcm_get_substream(be, stream);
->  
->  		/* is this op for this BE ? */
-> @@ -2092,6 +2138,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
->  	if (ret < 0)
->  		dev_err(fe->dev, "ASoC: %s() failed at %s (%d)\n",
->  			__func__, be->dai_link->name, ret);
-> +	dpcm_free_be_list(be_list);
->  	return ret;
->  }
->  EXPORT_SYMBOL_GPL(dpcm_be_dai_trigger);
+> The FE and BE needs to be connected to have DPCM working and this patch
+> makes the code to skip the dpcm_be_connect().
 > 
-> base-commit: 4ac6d90867a4de2e12117e755dbd76e08d88697f
+> Consider this simple setup:
 > 
+> FE1 -->|
+>        | --> BE -->
+> FE2- ->|
+> 
+> First we start FE1, dpcm_be_connect(FE1, BE, stream) is made.
+> 
+> Later FE2 is started but dpcm_be_connect(FE2, BE, stream) would be not
+> made because BE is no longer in NEW/CLOSE state.
+
+I share Peter's analysis, there cannot be any restrictions on
+connections - at any time. A mixer input might become active and be
+added to the mix. We might have a temporary lock to delay new
+connections but cannot not reject them outright based on BE state.
+
+>> I am just
+>> curious to know, if originally you were reconfiguring the BE DAI again
+>> with same parameters (for a second FE) or some additional configuration
+>> is done?
+
+That's a different question - and a good one.
+
+In the case of a mixer, the propagation of hw_params is a broken
+concept. It leads to the first FE configuring the BE to define its
+preferred parameters, e.g. S16_LE format. If later on a second FE is
+started which could play S24_LE, the mixer and BE are already configured
+to a lower resolution. A mixer should really have its own parameters and
+be the start of a new 'domain' - as Lars described it several years ago
+at the audio miniconference.
+
+For now, the only restriction that we could enforce is that the BE
+cannot be reconfigured after the prepare step.
+
+Note that our DAIs tolerate multiple calls to hw_params. If you have a
+case where the hw_params allocates resources, maybe you should consider
+moving that allocation to the prepare step, or free them if you detect a
+reconfiguration. That would be something needed even outside of the DPCM
+scope. Similarly you need to support the case where the DAI hw_free is
+called without hw_params ever being called, it's a known sequence that
+can happen if the FE hw-params fails.
+
+>>> I can send a revert with the explanations in the commit message if there
+>>> is a consensus that this patch needs to be revisited.
+>>
+>> May be this can be revisited since it appears to be a critical problem
+>> for your system. But I hope this discussion can be alive on following
+>> points for a better fix.
+>>
+>> 1. The original issue at my end was not just a configuration redundancy.
+>> I realize now that with more stream addition following error print is seen.
+>>    "ASoC: too many users playback at open 4"
+>>
+>>    This is because the max DPCM users is capped at 8. Increasing this
+>> may help (need to see what number is better), but does not address the
+>> redundancy problem.
+
+we haven't used more than 2 users, but it's already broken at 2 with
+race conditions left and right. I am really surprised you managed to
+have more than 2 without hitting inconsistent states - our automated
+play/stop/pause monkey tests reliably break DPCM in less than 20s.
+
+>> 2. If reconfiguration of the same BE is not necessary for a subsequent
+>> FE run, shouldn't we avoid the reconfig itself and somehow avoid FE
+>> failure?
+> 
+> I'm not sure, but it might be possible to just skip the
+> dpcm_set_be_update_state(be, stream, SND_SOC_DPCM_UPDATE_BE);
+> call at the end of the loop, but the question is under which condition?
+> Can a BE asked to be reconfigured when STOP/OPEN/HW_PARAMS?
+> 
+> Skipping the connect does not sound right for a new FE-BE connection.
+
+The reconfiguration is one problem, but what also happens is that the BE
+dailink will see multiple triggers. I've been playing with refcounts to
+force consistency and make sure there is only one TRIGGER_START send to
+the dailink, and conversely there are cases where the TRIGGER_STOP is
+never sent...
