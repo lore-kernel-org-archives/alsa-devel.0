@@ -2,112 +2,81 @@ Return-Path: <SRS0=CfAr=OT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74D24C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 09:08:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D37EC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 09:12:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 56FCF613A7
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 09:08:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 56FCF613A7
+	by mail.kernel.org (Postfix) with ESMTPS id 5036061407
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 09:12:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5036061407
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F1BAF1689;
-	Wed, 29 Sep 2021 11:07:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1BAF1689
+	by alsa0.perex.cz (Postfix) with ESMTPS id 469881690;
+	Wed, 29 Sep 2021 11:11:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 469881690
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632906520;
-	bh=br9/vVUqMQCdjM12t2zntuidrHjVV5LVKelG/DxYifQ=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=fd0FM23nnmaudOfphYSSPU+TD+67Momd3d4QP++HSP5LWJBpgz5b/tc+/Bkna1VG+
-	 cmn6xcc940cpqwprpynWB9234iKSle0V4fty2h4Bqr2ro8/t24W2K2YRYcTV9WXbel
-	 0AKzD8ivY1PYDwxzVjuxq1slRvsqnbyojDAxo+IM=
+	s=default; t=1632906769;
+	bh=TCBJgBc6BPU2GchKm4rYKtspIxdJJctyTZ4TzXk8r9Q=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=F+/BsGDlVuU4aP6KYfXqeLVIRFHGJ4w2/UgqTnF4SQzQrelB60e1ayOukX2x7ECGT
+	 O1rf3znTz89C37vq7eNvgBCbWIpsesO42wptNM5I6Wgg5yJSKAfQDWSmpP5J4FTVrY
+	 8gPFnkoexYwFT4i/n5XIlT3kMh327SBGc+PjNgoo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75265F801F7;
-	Wed, 29 Sep 2021 11:07:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ACBA9F80105;
+	Wed, 29 Sep 2021 11:11:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0E6CEF80227; Wed, 29 Sep 2021 11:07:48 +0200 (CEST)
+ id F0B70F801F7; Wed, 29 Sep 2021 11:11:56 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 087F0F80105
- for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2021 11:07:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 087F0F80105
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6A773F80161
+ for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2021 11:11:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A773F80161
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="LFZC9Uo5"
+ header.b="RWzhXZsM"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1632906461;
+ s=mimecast20190719; t=1632906710;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=n++xCjf25lsydxl4FEJyLD2EoHAbGbCE0fDyv+KGuUk=;
- b=LFZC9Uo5eI+Rc/WKe7XsJSqcHYuY0RuGQqVqBjF7Nc1NLpVekaFPcovoaR8Su5kBbSwrsD
- //eZU+IE7maNkjodSUsgHfDb5KwPr67cbDpnqpQexqRZ72b5gz+4v93Y8Pq4vrMd7Pdnvj
- iVzISSQ/dQs1uSuxtkiIpTvfUQNNTlc=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-159-3ZyuaMquOa636P97dcXxhg-1; Wed, 29 Sep 2021 05:07:40 -0400
-X-MC-Unique: 3ZyuaMquOa636P97dcXxhg-1
-Received: by mail-ed1-f70.google.com with SMTP id
- a7-20020a509e87000000b003da71d1b065so1733174edf.4
- for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2021 02:07:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=n++xCjf25lsydxl4FEJyLD2EoHAbGbCE0fDyv+KGuUk=;
- b=61YIGmeIaRAOZlACbQOqhYfsXjt73v4vzbBgKKtyE0yf73vOGkFEJiTW+y9dHS6kM7
- +xCc+wsSxGF/UZElw9i/CAsje/NAtvhGQmcg9WZueuoCmrSZDd+6au0TINZIiF54/ZR/
- eJFxzyIDtQVN6djy30bJv+6xz79BCJHATeeXPxXKbnxcTXZWbVi3XLUMpUp1H3WQpOe1
- wROLjeZgEhEt3gWqIWa/tq3xUV72vncTtPyiS+rra2HuBuYpnR9pAEBDLCajHatGdd3n
- 2x8/zvYYAp8Jn7n+vNTMC+s60zgmwWiyiinbkh6bpVFcTW4XCnihQecLssYwp3UbVlS6
- VFXg==
-X-Gm-Message-State: AOAM5335BqncxCVxc44Qf1BHkJNt5SwY46KzRHn8JzlHWiTp1fsk6Ij8
- I9BOKpLwyW7v7T/GR4lQBqdR+PEqSRn5M0mWsLQ+hJXl2CXpX8S+mr+zWvb/VvK3kT3ZQPpAbEm
- dDgHxeESUCI+5GQEU+cODK8pUFc46pUbXlrBvTYcBzbebDi35DwACEqvKXU+XPsN6zyQhZegoS+
- M=
-X-Received: by 2002:a05:6402:705:: with SMTP id
- w5mr13713824edx.366.1632906459022; 
- Wed, 29 Sep 2021 02:07:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzxoP/EAbjTGcIzIAQAsJBHhLVTH71K/mvfdFNBIIFcSdXE9gzwJAPRbWAQu1F62y2fSO9t+g==
-X-Received: by 2002:a05:6402:705:: with SMTP id
- w5mr13713796edx.366.1632906458768; 
- Wed, 29 Sep 2021 02:07:38 -0700 (PDT)
-Received: from x1.localdomain
- (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl.
- [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
- by smtp.gmail.com with ESMTPSA id l10sm1090717edr.14.2021.09.29.02.07.38
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 29 Sep 2021 02:07:38 -0700 (PDT)
-Subject: Re: [PATCH alsa-ucm-conf 1/2] bytcr-rt5640: Fix 'Headphone Switch' /
- 'Headset Mic Switch' no longer getting set
-To: Dmitry Osipenko <digetx@gmail.com>, Jaroslav Kysela <perex@perex.cz>
-References: <20210718175750.12353-1-hdegoede@redhat.com>
- <1dfbddfb-e93d-112f-d787-aa27c88a3b80@gmail.com>
+ content-transfer-encoding:content-transfer-encoding;
+ bh=TCBJgBc6BPU2GchKm4rYKtspIxdJJctyTZ4TzXk8r9Q=;
+ b=RWzhXZsMkwlc8VBsQ4Y4TXcSDbWkaWmwQ8zuu2MnMA6YofmkFI9f97PLwA8a/nc7bcjdIY
+ LzURUVwncmvUnfW/wtF412WtOxF43YeG+iXpCOUFeCoMvpcKjSDuHVy7WtVvHCZNQqjoMy
+ oUw+542xJjFk40dAlwgjGAiGTQ5Rvd8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-517-cz03vND1NKanDpyrQDzj3g-1; Wed, 29 Sep 2021 05:11:48 -0400
+X-MC-Unique: cz03vND1NKanDpyrQDzj3g-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com
+ [10.5.11.22])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6E3A2802936;
+ Wed, 29 Sep 2021 09:11:47 +0000 (UTC)
+Received: from x1.localdomain (unknown [10.39.194.254])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 16DB81017CE3;
+ Wed, 29 Sep 2021 09:11:45 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
-Message-ID: <e092ab94-6b30-5285-bd7f-dbabe4c7f83f@redhat.com>
-Date: Wed, 29 Sep 2021 11:07:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: [PATCH alsa-ucm-conf 0/5] bytcr-rt5640: Fixes and improvements
+Date: Wed, 29 Sep 2021 11:11:39 +0200
+Message-Id: <20210929091144.4778-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <1dfbddfb-e93d-112f-d787-aa27c88a3b80@gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org,
+Content-Type: text/plain; charset="US-ASCII"
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Bard Liao <bard.liao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -125,35 +94,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+Hi Jaroslav,
 
-On 9/28/21 10:15 PM, Dmitry Osipenko wrote:
-> 18.07.2021 20:57, Hans de Goede пишет:
->> Commit 446d0a71b47f ("codecs/rt5640: Move out BayTrail-specific pin switches")
->> moved the setting of the 'Headphone Switch' / 'Headset Mic Switch' into
->> "If.hp" resp "If.hsmic" blocks. But instead of making them part of the
->> True {} block inside that If, the statements where added add the top-level
->> of the If {} block where they are no-ops.
->>
->> Move them to inside the True blocks so that these Switches again get
->> properly turned on/off. This fixes the Headphones and Headset-mic no longer
->> working on bytcr-rt5640 devices.
->>
->> Cc: Dmitry Osipenko <digetx@gmail.com>
->> Fixes: 446d0a71b47f ("codecs/rt5640: Move out BayTrail-specific pin switches")
->> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
->> ---
->>  ucm2/bytcr-rt5640/HiFi.conf | 36 ++++++++++++++++++++----------------
->>  1 file changed, 20 insertions(+), 16 deletions(-)
-> 
-> Hi,
-> 
-> I don't see this patch in upstream alsa-ucm, is it still actual?
+Here is a patch series with 2 bug-fixes for X86 devices with a rt5640
+codec (these 2 are a resend) + 3 patches adding support for the second
+headset-jack (on the dock) found on the HP elitepad 1000 G2.
 
-Yes this patch series is still actual. I also have 3 other patches
-pending where I was waiting for the mathcing kernel parts to land
-first. Those have landed now, so I'll send out those now too,
-including a resend of these 2.
+The new kernel-bits for the second headset-jack have already landed,
+so this is ready for merging.
 
 Regards,
 
