@@ -2,76 +2,77 @@ Return-Path: <SRS0=CfAr=OT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E52BC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 08:10:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98614C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 08:10:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 85390613DA
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 08:10:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 85390613DA
+	by mail.kernel.org (Postfix) with ESMTPS id E9055613DA
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 08:10:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E9055613DA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2429016AA;
-	Wed, 29 Sep 2021 10:09:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2429016AA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 925B716B0;
+	Wed, 29 Sep 2021 10:09:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 925B716B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632903034;
-	bh=Fm2y+r727FB6oEwp11xrkqALGQYwOs/ZX/V4FimMV28=;
+	s=default; t=1632903048;
+	bh=DDmTN8mpcudd5apv0mX+JJVxmmzchMauTNyYAZ7cQ3o=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=e8M/XijT5eqI8mEke7knhcG4lpSZ1ygZ5BqcqL/bjSKoojIdg4MATJhhfz/UMi/aC
-	 mUw3Hjpw23UY7CFTQPAHRtoWxB5MnlMvoxxf3JDlkmUww5K04W7dbJIndedZoLWmW1
-	 07Dr+MicFjp2NvFIf/NCU7Hmg0j/e18Ej2TkeXIY=
+	b=c5DkovSa1SiOTzXMtD6spbC6j6g0lIt9o1JI878+GaXHIMnuCOl8kS8N6aJqk+sIr
+	 ZzIxE3o/+doGgsnSuBk0Gl+/7EW7478NBOWXYnNogenBCT6ryp5Pl9w2oD26YcQd0e
+	 HrdwFfZYLJOKCA19IR8Igjh8R9aCxIUVQE25uOaY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6DAC0F804E4;
-	Wed, 29 Sep 2021 10:09:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6524CF804F1;
+	Wed, 29 Sep 2021 10:09:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7D06FF80161; Wed, 29 Sep 2021 10:08:57 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 73C2BF804EC; Wed, 29 Sep 2021 10:09:04 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A2C60F80113
+ by alsa1.perex.cz (Postfix) with ESMTPS id 35DECF80227
  for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2021 10:08:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2C60F80113
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35DECF80227
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="hBg6u3L4"; 
+ header.b="Z8lGC/3u"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="bQj6YtnT"
+ header.b="1N0CI9Y5"
 Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
- by smtp-out2.suse.de (Postfix) with ESMTP id 0C05E202FB
- for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2021 08:08:49 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id DFADF22531
+ for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2021 08:08:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1632902929; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1632902928; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=4RxMp1KfDjGVjWGw+Fek65cIMFl6j48k/ZeTrbRxPaw=;
- b=hBg6u3L4IzIytxoaG+Mdr586a63MFfVIprrtosIAKRc3X5F0jMNwDFFwui1ZERiSa/iLwV
- KYjl5ho1jsCTGp9BWiNyZ4Gpg5NNFqC0SmNDTeD5RIgquwhZe+cCTrVHCVL0BThogtKxq3
- 1Jp5TVq92B+mG4tbratSdqvDRXvgmSQ=
+ bh=44i3fBlABMfkpKFb1FRDRrVSWyiqiWPJD3tF2CZ3Kno=;
+ b=Z8lGC/3umxUkmaQxOQrSLsYi5ELvPz670cP776PXmdQx+R3pEtVJRAmAGGFMo4lrtF7WL5
+ r5onJuRblJ43mJoRqQUYL97Okz8wCp4SLr21ynB5J6LQ8TbZbcRhayaHZWVm3z15kFxFvR
+ 9ccDq6kShlSrLBtEry3VHU2gve+few0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1632902929;
+ s=susede2_ed25519; t=1632902928;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=4RxMp1KfDjGVjWGw+Fek65cIMFl6j48k/ZeTrbRxPaw=;
- b=bQj6YtnTRd1d37jmdBN22LNZILj+fo900hzv7RGZXs1q+s1aw5RWX/7WmHdlymLlUmKLzr
- giRm/1uND8KImQBg==
+ bh=44i3fBlABMfkpKFb1FRDRrVSWyiqiWPJD3tF2CZ3Kno=;
+ b=1N0CI9Y52bCqyr4sSe+ZyKWFw+zYDra2lF9G8RBeCX0pg4gVC7/HGNRfyM47JCVIxiGBS3
+ cxwDw1nvTB4FxCDw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay1.suse.de (Postfix) with ESMTP id EC7CD25D65;
+ by relay1.suse.de (Postfix) with ESMTP id CF03225D65;
  Wed, 29 Sep 2021 08:08:48 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 8/9] ALSA: usb-audio: Improved lowlatency playback support
-Date: Wed, 29 Sep 2021 10:08:43 +0200
-Message-Id: <20210929080844.11583-9-tiwai@suse.de>
+Subject: [PATCH 6/9] ALSA: usb-audio: Check available frames for the next
+ packet size
+Date: Wed, 29 Sep 2021 10:08:41 +0200
+Message-Id: <20210929080844.11583-7-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210929080844.11583-1-tiwai@suse.de>
 References: <20210929080844.11583-1-tiwai@suse.de>
@@ -92,585 +93,154 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This is another attempt to improve further the handling of playback
-stream in the low latency mode.  The latest workaround in commit
-4267c5a8f313 ("ALSA: usb-audio: Work around for XRUN with low latency
-playback") revealed that submitting URBs forcibly in advance may
-trigger XRUN easily.  In the classical mode, this problem was avoided
-by practically delaying the submission of the actual data with the
-pre-submissions of silent data before triggering the stream start.
-But that is exactly what we want to avoid.
+This is yet more preparation for the upcoming changes.
 
-Now, in this patch, instead of the previous workaround, we take a
-similar approach as used in the implicit feedback mode.  The URBs are
-queued at the PCM trigger start like before, but we check whether the
-buffer has been already filled enough before each submission, and
-stop queuing if the data overcomes the threshold.  The remaining URBs
-are kept in the ready list, and they will be retrieved in the URB
-complete callback of other (already queued) URBs.  In the complete
-callback, we try to fill the data and submit as much as possible
-again.  When there is no more available in-flight URBs that may handle
-the pending data, we'll check in PCM ack callback and submit and
-process URBs there in addition.  In this way, the amount of in-flight
-URBs may vary dynamically and flexibly depending on the available data
-without hitting XRUN.
+Extend snd_usb_endpoint_next_packet_size() to check the available
+frames and return -EAGAIN if the next packet size is equal or exceeds
+the given size.  This will be needed for avoiding XRUN during the low
+latency operation.
 
-The following things are changed to achieve the behavior above:
+As of this patch, avail=0 is passed, i.e. the check is skipped and no
+behavior change.
 
-* The endpoint prepare callback is changed to return an error code;
-  when there is no enough data available, it may return -EAGAIN.
-  Currently only prepare_playback_urb() returns the error.
-
-  The evaluation of the available data is a bit messy here; we can't
-  check with snd_pcm_avail() at the point of prepare callback (as
-  runtime->status->hwptr hasn't been updated yet), hence we manually
-  estimate the appl_ptr and compare with the internal hwptr_done to
-  calculate the available frames.
-
-* snd_usb_endpoint_start() doesn't submit full URBs if the prepare
-  callback returns -EAGAIN, and puts the remaining URBs to the ready
-  list for the later submission.
-
-* snd_complete_urb() treats the URBs in the low-latency mode similarly
-  like the implicit feedback mode, and submissions are done in
-  (now exported) snd_usb_queue_pending_output_urbs().
-
-* snd_usb_queue_pending_output_urbs() again checks the error value
-  from the prepare callback.  If it's -EAGAIN for the normal stream
-  (i.e. not implicit feedback mode), we push it back to the ready list
-  again.
-
-* PCM ack callback is introduced for the playback stream, and it calls
-  snd_usb_queue_pending_output_urbs() if there is no in-flight URB
-  while the stream is running.  This corresponds to the case where the
-  system needs the appl_ptr update for re-submitting a new URB.
-
-* snd_usb_queue_pending_output_urbs() and the prepare EP callback
-  receive in_stream_lock argument, which is a bool flag indicating the
-  call path from PCM ack.  It's needed for avoiding the deadlock of
-  snd_pcm_period_elapsed() calls.
-
-* Set the new SNDRV_PCM_INFO_EXPLICIT_SYNC flag when the new
-  low-latency mode is deployed.  This assures catching each applptr
-  update even in the mmap mode.
-
-Fixes: 4267c5a8f313 ("ALSA: usb-audio: Work around for XRUN with low latency playback")
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/card.h     |   6 +-
- sound/usb/endpoint.c | 130 +++++++++++++++++++++++++++++--------------
- sound/usb/endpoint.h |   7 ++-
- sound/usb/pcm.c      | 102 ++++++++++++++++++++++++++-------
- 4 files changed, 177 insertions(+), 68 deletions(-)
+ sound/usb/endpoint.c | 51 +++++++++++++++++++++++++++++++-------------
+ sound/usb/endpoint.h |  3 ++-
+ sound/usb/pcm.c      |  2 +-
+ 3 files changed, 39 insertions(+), 17 deletions(-)
 
-diff --git a/sound/usb/card.h b/sound/usb/card.h
-index a00caa1db37e..87f042d06ce0 100644
---- a/sound/usb/card.h
-+++ b/sound/usb/card.h
-@@ -74,8 +74,9 @@ struct snd_usb_endpoint {
- 
- 	atomic_t state;		/* running state */
- 
--	void (*prepare_data_urb) (struct snd_usb_substream *subs,
--				  struct urb *urb);
-+	int (*prepare_data_urb) (struct snd_usb_substream *subs,
-+				 struct urb *urb,
-+				 bool in_stream_lock);
- 	void (*retire_data_urb) (struct snd_usb_substream *subs,
- 				 struct urb *urb);
- 
-@@ -94,7 +95,6 @@ struct snd_usb_endpoint {
- 	struct list_head ready_playback_urbs; /* playback URB FIFO for implicit fb */
- 
- 	unsigned int nurbs;		/* # urbs */
--	unsigned int nominal_queue_size; /* total buffer sizes in URBs */
- 	unsigned long active_mask;	/* bitmask of active urbs */
- 	unsigned long unlink_mask;	/* bitmask of unlinked urbs */
- 	atomic_t submitted_urbs;	/* currently submitted urbs */
 diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index c32022672319..0b336876e36d 100644
+index 8e164d71d9ac..1f757a7eeafe 100644
 --- a/sound/usb/endpoint.c
 +++ b/sound/usb/endpoint.c
-@@ -307,8 +307,9 @@ static void prepare_silent_urb(struct snd_usb_endpoint *ep,
- /*
-  * Prepare a PLAYBACK urb for submission to the bus.
+@@ -148,18 +148,23 @@ int snd_usb_endpoint_implicit_feedback_sink(struct snd_usb_endpoint *ep)
+  * This won't be used for implicit feedback which takes the packet size
+  * returned from the sync source
   */
--static void prepare_outbound_urb(struct snd_usb_endpoint *ep,
--				 struct snd_urb_ctx *ctx)
-+static int prepare_outbound_urb(struct snd_usb_endpoint *ep,
-+				struct snd_urb_ctx *ctx,
-+				bool in_stream_lock)
+-static int slave_next_packet_size(struct snd_usb_endpoint *ep)
++static int slave_next_packet_size(struct snd_usb_endpoint *ep,
++				  unsigned int avail)
  {
- 	struct urb *urb = ctx->urb;
- 	unsigned char *cp = urb->transfer_buffer;
-@@ -320,9 +321,9 @@ static void prepare_outbound_urb(struct snd_usb_endpoint *ep,
- 	case SND_USB_ENDPOINT_TYPE_DATA:
- 		data_subs = READ_ONCE(ep->data_subs);
- 		if (data_subs && ep->prepare_data_urb)
--			ep->prepare_data_urb(data_subs, urb);
--		else /* no data provider, so send silence */
--			prepare_silent_urb(ep, ctx);
-+			return ep->prepare_data_urb(data_subs, urb, in_stream_lock);
-+		/* no data provider, so send silence */
-+		prepare_silent_urb(ep, ctx);
- 		break;
+ 	unsigned long flags;
++	unsigned int phase;
+ 	int ret;
  
- 	case SND_USB_ENDPOINT_TYPE_SYNC:
-@@ -351,13 +352,14 @@ static void prepare_outbound_urb(struct snd_usb_endpoint *ep,
+ 	if (ep->fill_max)
+ 		return ep->maxframesize;
  
- 		break;
+ 	spin_lock_irqsave(&ep->lock, flags);
+-	ep->phase = (ep->phase & 0xffff)
+-		+ (ep->freqm << ep->datainterval);
+-	ret = min(ep->phase >> 16, ep->maxframesize);
++	phase = (ep->phase & 0xffff) + (ep->freqm << ep->datainterval);
++	ret = min(phase >> 16, ep->maxframesize);
++	if (avail && ret >= avail)
++		ret = -EAGAIN;
++	else
++		ep->phase = phase;
+ 	spin_unlock_irqrestore(&ep->lock, flags);
+ 
+ 	return ret;
+@@ -169,20 +174,25 @@ static int slave_next_packet_size(struct snd_usb_endpoint *ep)
+  * Return the number of samples to be sent in the next packet
+  * for adaptive and synchronous endpoints
+  */
+-static int next_packet_size(struct snd_usb_endpoint *ep)
++static int next_packet_size(struct snd_usb_endpoint *ep, unsigned int avail)
+ {
++	unsigned int sample_accum;
+ 	int ret;
+ 
+ 	if (ep->fill_max)
+ 		return ep->maxframesize;
+ 
+-	ep->sample_accum += ep->sample_rem;
+-	if (ep->sample_accum >= ep->pps) {
+-		ep->sample_accum -= ep->pps;
++	sample_accum += ep->sample_rem;
++	if (sample_accum >= ep->pps) {
++		sample_accum -= ep->pps;
+ 		ret = ep->packsize[1];
+ 	} else {
+ 		ret = ep->packsize[0];
  	}
-+	return 0;
++	if (avail && ret >= avail)
++		ret = -EAGAIN;
++	else
++		ep->sample_accum = sample_accum;
+ 
+ 	return ret;
  }
- 
+@@ -190,16 +200,27 @@ static int next_packet_size(struct snd_usb_endpoint *ep)
  /*
-  * Prepare a CAPTURE or SYNC urb for submission to the bus.
+  * snd_usb_endpoint_next_packet_size: Return the number of samples to be sent
+  * in the next packet
++ *
++ * If the size is equal or exceeds @avail, don't proceed but return -EAGAIN
++ * Exception: @avail = 0 for skipping the check.
   */
--static inline void prepare_inbound_urb(struct snd_usb_endpoint *ep,
--				       struct snd_urb_ctx *urb_ctx)
-+static int prepare_inbound_urb(struct snd_usb_endpoint *ep,
-+			       struct snd_urb_ctx *urb_ctx)
+ int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep,
+-				      struct snd_urb_ctx *ctx, int idx)
++				      struct snd_urb_ctx *ctx, int idx,
++				      unsigned int avail)
  {
- 	int i, offs;
- 	struct urb *urb = urb_ctx->urb;
-@@ -382,6 +384,7 @@ static inline void prepare_inbound_urb(struct snd_usb_endpoint *ep,
- 		urb->iso_frame_desc[0].offset = 0;
- 		break;
- 	}
-+	return 0;
- }
- 
- /* notify an error as XRUN to the assigned PCM data substream */
-@@ -417,6 +420,16 @@ next_packet_fifo_dequeue(struct snd_usb_endpoint *ep)
- 	return p;
- }
- 
-+static void push_back_to_ready_list(struct snd_usb_endpoint *ep,
-+				    struct snd_urb_ctx *ctx)
-+{
-+	unsigned long flags;
+-	if (ctx->packet_size[idx])
+-		return ctx->packet_size[idx];
+-	else if (ep->sync_source)
+-		return slave_next_packet_size(ep);
++	unsigned int packet;
 +
-+	spin_lock_irqsave(&ep->lock, flags);
-+	list_add_tail(&ctx->ready_list, &ep->ready_playback_urbs);
-+	spin_unlock_irqrestore(&ep->lock, flags);
-+}
-+
- /*
-  * Send output urbs that have been prepared previously. URBs are dequeued
-  * from ep->ready_playback_urbs and in case there aren't any available
-@@ -427,12 +440,14 @@ next_packet_fifo_dequeue(struct snd_usb_endpoint *ep)
-  * is that host controllers don't guarantee the order in which they return
-  * inbound and outbound packets to their submitters.
-  *
-- * This function is only used for implicit feedback endpoints. For endpoints
-- * driven by dedicated sync endpoints, URBs are immediately re-submitted
-- * from their completion handler.
-+ * This function is used both for implicit feedback endpoints and in low-
-+ * latency playback mode.
-  */
--static void queue_pending_output_urbs(struct snd_usb_endpoint *ep)
-+void snd_usb_queue_pending_output_urbs(struct snd_usb_endpoint *ep,
-+				       bool in_stream_lock)
- {
-+	bool implicit_fb = snd_usb_endpoint_implicit_feedback_sink(ep);
-+
- 	while (ep_state_running(ep)) {
- 
- 		unsigned long flags;
-@@ -441,14 +456,14 @@ static void queue_pending_output_urbs(struct snd_usb_endpoint *ep)
- 		int err, i;
- 
- 		spin_lock_irqsave(&ep->lock, flags);
--		if (ep->next_packet_queued > 0 &&
-+		if ((!implicit_fb || ep->next_packet_queued > 0) &&
- 		    !list_empty(&ep->ready_playback_urbs)) {
- 			/* take URB out of FIFO */
- 			ctx = list_first_entry(&ep->ready_playback_urbs,
- 					       struct snd_urb_ctx, ready_list);
- 			list_del_init(&ctx->ready_list);
--
--			packet = next_packet_fifo_dequeue(ep);
-+			if (implicit_fb)
-+				packet = next_packet_fifo_dequeue(ep);
- 		}
- 		spin_unlock_irqrestore(&ep->lock, flags);
- 
-@@ -456,11 +471,24 @@ static void queue_pending_output_urbs(struct snd_usb_endpoint *ep)
- 			return;
- 
- 		/* copy over the length information */
--		for (i = 0; i < packet->packets; i++)
--			ctx->packet_size[i] = packet->packet_size[i];
-+		if (implicit_fb) {
-+			for (i = 0; i < packet->packets; i++)
-+				ctx->packet_size[i] = packet->packet_size[i];
-+		}
- 
- 		/* call the data handler to fill in playback data */
--		prepare_outbound_urb(ep, ctx);
-+		err = prepare_outbound_urb(ep, ctx, in_stream_lock);
-+		/* can be stopped during prepare callback */
-+		if (unlikely(!ep_state_running(ep)))
-+			break;
-+		if (err < 0) {
-+			/* push back to ready list again for -EAGAIN */
-+			if (err == -EAGAIN)
-+				push_back_to_ready_list(ep, ctx);
-+			else
-+				notify_xrun(ep);
-+			return;
-+		}
- 
- 		err = usb_submit_urb(ctx->urb, GFP_ATOMIC);
- 		if (err < 0) {
-@@ -483,7 +511,6 @@ static void snd_complete_urb(struct urb *urb)
- {
- 	struct snd_urb_ctx *ctx = urb->context;
- 	struct snd_usb_endpoint *ep = ctx->ep;
--	unsigned long flags;
- 	int err;
- 
- 	if (unlikely(urb->status == -ENOENT ||		/* unlinked */
-@@ -504,17 +531,20 @@ static void snd_complete_urb(struct urb *urb)
- 		if (unlikely(!ep_state_running(ep)))
- 			goto exit_clear;
- 
--		if (snd_usb_endpoint_implicit_feedback_sink(ep)) {
--			spin_lock_irqsave(&ep->lock, flags);
--			list_add_tail(&ctx->ready_list, &ep->ready_playback_urbs);
-+		/* in low-latency and implicit-feedback modes, push back the
-+		 * URB to ready list at first, then process as much as possible
-+		 */
-+		if (ep->lowlatency_playback ||
-+		     snd_usb_endpoint_implicit_feedback_sink(ep)) {
-+			push_back_to_ready_list(ep, ctx);
- 			clear_bit(ctx->index, &ep->active_mask);
--			spin_unlock_irqrestore(&ep->lock, flags);
--			queue_pending_output_urbs(ep);
-+			snd_usb_queue_pending_output_urbs(ep, false);
- 			atomic_dec(&ep->submitted_urbs); /* decrement at last */
- 			return;
- 		}
- 
--		prepare_outbound_urb(ep, ctx);
-+		/* in non-lowlatency mode, no error handling for prepare */
-+		prepare_outbound_urb(ep, ctx, false);
- 		/* can be stopped during prepare callback */
- 		if (unlikely(!ep_state_running(ep)))
- 			goto exit_clear;
-@@ -807,8 +837,9 @@ void snd_usb_endpoint_set_sync(struct snd_usb_audio *chip,
-  * Pass NULL to deactivate each callback.
-  */
- void snd_usb_endpoint_set_callback(struct snd_usb_endpoint *ep,
--				   void (*prepare)(struct snd_usb_substream *subs,
--						   struct urb *urb),
-+				   int (*prepare)(struct snd_usb_substream *subs,
-+						  struct urb *urb,
-+						  bool in_stream_lock),
- 				   void (*retire)(struct snd_usb_substream *subs,
- 						  struct urb *urb),
- 				   struct snd_usb_substream *data_subs)
-@@ -1166,10 +1197,6 @@ static int data_ep_set_params(struct snd_usb_endpoint *ep)
- 		INIT_LIST_HEAD(&u->ready_list);
- 	}
- 
--	/* total buffer bytes of all URBs plus the next queue;
--	 * referred in pcm.c
--	 */
--	ep->nominal_queue_size = maxsize * urb_packs * (ep->nurbs + 1);
- 	return 0;
- 
- out_of_memory:
-@@ -1408,6 +1435,7 @@ int snd_usb_endpoint_get_clock_rate(struct snd_usb_audio *chip, int clock)
-  */
- int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
- {
-+	bool is_playback = usb_pipeout(ep->pipe);
- 	int err;
- 	unsigned int i;
- 
-@@ -1444,13 +1472,9 @@ int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
- 
- 	if (snd_usb_endpoint_implicit_feedback_sink(ep) &&
- 	    !(ep->chip->quirk_flags & QUIRK_FLAG_PLAYBACK_FIRST)) {
--		for (i = 0; i < ep->nurbs; i++) {
--			struct snd_urb_ctx *ctx = ep->urb + i;
--			list_add_tail(&ctx->ready_list, &ep->ready_playback_urbs);
--		}
--
- 		usb_audio_dbg(ep->chip, "No URB submission due to implicit fb sync\n");
--		return 0;
-+		i = 0;
-+		goto fill_rest;
- 	}
- 
- 	for (i = 0; i < ep->nurbs; i++) {
-@@ -1459,10 +1483,18 @@ int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
- 		if (snd_BUG_ON(!urb))
- 			goto __error;
- 
--		if (usb_pipeout(ep->pipe)) {
--			prepare_outbound_urb(ep, urb->context);
--		} else {
--			prepare_inbound_urb(ep, urb->context);
-+		if (is_playback)
-+			err = prepare_outbound_urb(ep, urb->context, true);
-+		else
-+			err = prepare_inbound_urb(ep, urb->context);
-+		if (err < 0) {
-+			/* stop filling at applptr */
-+			if (err == -EAGAIN)
-+				break;
-+			usb_audio_dbg(ep->chip,
-+				      "EP 0x%x: failed to prepare urb: %d\n",
-+				      ep->ep_num, err);
-+			goto __error;
- 		}
- 
- 		err = usb_submit_urb(urb, GFP_ATOMIC);
-@@ -1476,8 +1508,22 @@ int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
- 		atomic_inc(&ep->submitted_urbs);
- 	}
- 
-+	if (!i) {
-+		usb_audio_dbg(ep->chip, "XRUN at starting EP 0x%x\n",
-+			      ep->ep_num);
-+		goto __error;
++	packet = ctx->packet_size[idx];
++	if (packet) {
++		if (avail && packet >= avail)
++			return -EAGAIN;
++		return packet;
 +	}
 +
- 	usb_audio_dbg(ep->chip, "%d URBs submitted for EP 0x%x\n",
--		      ep->nurbs, ep->ep_num);
-+		      i, ep->ep_num);
-+
-+ fill_rest:
-+	/* put the remaining URBs to ready list */
-+	if (is_playback) {
-+		for (; i < ep->nurbs; i++)
-+			push_back_to_ready_list(ep, ep->urb + i);
-+	}
-+
- 	return 0;
++	if (ep->sync_source)
++		return slave_next_packet_size(ep, avail);
+ 	else
+-		return next_packet_size(ep);
++		return next_packet_size(ep, avail);
+ }
  
- __error:
-@@ -1629,7 +1675,7 @@ static void snd_usb_handle_sync_urb(struct snd_usb_endpoint *ep,
- 		}
+ static void call_retire_callback(struct snd_usb_endpoint *ep,
+@@ -263,7 +284,7 @@ static void prepare_silent_urb(struct snd_usb_endpoint *ep,
+ 		unsigned int length;
+ 		int counts;
  
- 		spin_unlock_irqrestore(&ep->lock, flags);
--		queue_pending_output_urbs(ep);
-+		snd_usb_queue_pending_output_urbs(ep, false);
- 
- 		return;
- 	}
+-		counts = snd_usb_endpoint_next_packet_size(ep, ctx, i);
++		counts = snd_usb_endpoint_next_packet_size(ep, ctx, i, 0);
+ 		length = counts * ep->stride; /* number of silent bytes */
+ 		offset = offs * ep->stride + extra * i;
+ 		urb->iso_frame_desc[i].offset = offset;
 diff --git a/sound/usb/endpoint.h b/sound/usb/endpoint.h
-index 1f1a72535a64..6895d50d14d1 100644
+index a1099ec37e1c..1f1a72535a64 100644
 --- a/sound/usb/endpoint.h
 +++ b/sound/usb/endpoint.h
-@@ -30,8 +30,9 @@ void snd_usb_endpoint_set_sync(struct snd_usb_audio *chip,
- 			       struct snd_usb_endpoint *data_ep,
- 			       struct snd_usb_endpoint *sync_ep);
- void snd_usb_endpoint_set_callback(struct snd_usb_endpoint *ep,
--				   void (*prepare)(struct snd_usb_substream *subs,
--						   struct urb *urb),
-+				   int (*prepare)(struct snd_usb_substream *subs,
-+						  struct urb *urb,
-+						  bool in_stream_lock),
- 				   void (*retire)(struct snd_usb_substream *subs,
- 						  struct urb *urb),
- 				   struct snd_usb_substream *data_subs);
-@@ -48,5 +49,7 @@ int snd_usb_endpoint_implicit_feedback_sink(struct snd_usb_endpoint *ep);
+@@ -46,6 +46,7 @@ void snd_usb_endpoint_free_all(struct snd_usb_audio *chip);
+ 
+ int snd_usb_endpoint_implicit_feedback_sink(struct snd_usb_endpoint *ep);
  int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep,
- 				      struct snd_urb_ctx *ctx, int idx,
- 				      unsigned int avail);
-+void snd_usb_queue_pending_output_urbs(struct snd_usb_endpoint *ep,
-+				       bool in_stream_lock);
+-				      struct snd_urb_ctx *ctx, int idx);
++				      struct snd_urb_ctx *ctx, int idx,
++				      unsigned int avail);
  
  #endif /* __USBAUDIO_ENDPOINT_H */
 diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 8ad48c35c559..d5a14e5b9ad3 100644
+index ec7eeb1b82b8..8ad48c35c559 100644
 --- a/sound/usb/pcm.c
 +++ b/sound/usb/pcm.c
-@@ -598,9 +598,6 @@ static int lowlatency_playback_available(struct snd_pcm_runtime *runtime,
- 	/* implicit feedback mode has own operation mode */
- 	if (snd_usb_endpoint_implicit_feedback_sink(subs->data_endpoint))
- 		return false;
--	/* too short periods? */
--	if (subs->data_endpoint->nominal_queue_size >= subs->buffer_bytes)
--		return false;
- 	return true;
- }
- 
-@@ -1095,6 +1092,10 @@ static int snd_usb_pcm_open(struct snd_pcm_substream *substream)
- 	int ret;
- 
- 	runtime->hw = snd_usb_hardware;
-+	/* need an explicit sync to catch applptr update in low-latency mode */
-+	if (direction == SNDRV_PCM_STREAM_PLAYBACK &&
-+	    as->chip->lowlatency)
-+		runtime->hw.info |= SNDRV_PCM_INFO_EXPLICIT_SYNC;
- 	runtime->private_data = subs;
- 	subs->pcm_substream = substream;
- 	/* runtime PM is also done there */
-@@ -1347,44 +1348,66 @@ static unsigned int copy_to_urb_quirk(struct snd_usb_substream *subs,
- 	return bytes;
- }
- 
--static void prepare_playback_urb(struct snd_usb_substream *subs,
--				 struct urb *urb)
-+static int prepare_playback_urb(struct snd_usb_substream *subs,
-+				struct urb *urb,
-+				bool in_stream_lock)
- {
- 	struct snd_pcm_runtime *runtime = subs->pcm_substream->runtime;
- 	struct snd_usb_endpoint *ep = subs->data_endpoint;
- 	struct snd_urb_ctx *ctx = urb->context;
--	unsigned int counts, frames, bytes;
-+	unsigned int frames, bytes;
-+	int counts;
-+	unsigned int transfer_done, frame_limit, avail = 0;
- 	int i, stride, period_elapsed = 0;
- 	unsigned long flags;
-+	int err = 0;
- 
- 	stride = ep->stride;
- 
- 	frames = 0;
- 	ctx->queued = 0;
- 	urb->number_of_packets = 0;
-+
+@@ -1365,7 +1365,7 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
  	spin_lock_irqsave(&subs->lock, flags);
--	subs->frame_limit += ep->max_urb_frames;
-+	frame_limit = subs->frame_limit + ep->max_urb_frames;
-+	transfer_done = subs->transfer_done;
-+
-+	if (subs->lowlatency_playback &&
-+	    runtime->status->state != SNDRV_PCM_STATE_DRAINING) {
-+		unsigned int hwptr = subs->hwptr_done / stride;
-+
-+		/* calculate the byte offset-in-buffer of the appl_ptr */
-+		avail = (runtime->control->appl_ptr - runtime->hw_ptr_base)
-+			% runtime->buffer_size;
-+		if (avail <= hwptr)
-+			avail += runtime->buffer_size;
-+		avail -= hwptr;
-+	}
-+
+ 	subs->frame_limit += ep->max_urb_frames;
  	for (i = 0; i < ctx->packets; i++) {
--		counts = snd_usb_endpoint_next_packet_size(ep, ctx, i, 0);
-+		counts = snd_usb_endpoint_next_packet_size(ep, ctx, i, avail);
-+		if (counts < 0)
-+			break;
+-		counts = snd_usb_endpoint_next_packet_size(ep, ctx, i);
++		counts = snd_usb_endpoint_next_packet_size(ep, ctx, i, 0);
  		/* set up descriptor */
  		urb->iso_frame_desc[i].offset = frames * stride;
  		urb->iso_frame_desc[i].length = counts * stride;
- 		frames += counts;
-+		avail -= counts;
- 		urb->number_of_packets++;
--		subs->transfer_done += counts;
--		if (subs->transfer_done >= runtime->period_size) {
--			subs->transfer_done -= runtime->period_size;
--			subs->frame_limit = 0;
-+		transfer_done += counts;
-+		if (transfer_done >= runtime->period_size) {
-+			transfer_done -= runtime->period_size;
-+			frame_limit = 0;
- 			period_elapsed = 1;
- 			if (subs->fmt_type == UAC_FORMAT_TYPE_II) {
--				if (subs->transfer_done > 0) {
-+				if (transfer_done > 0) {
- 					/* FIXME: fill-max mode is not
- 					 * supported yet */
--					frames -= subs->transfer_done;
--					counts -= subs->transfer_done;
-+					frames -= transfer_done;
-+					counts -= transfer_done;
- 					urb->iso_frame_desc[i].length =
- 						counts * stride;
--					subs->transfer_done = 0;
-+					transfer_done = 0;
- 				}
- 				i++;
- 				if (i < ctx->packets) {
-@@ -1398,13 +1421,19 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
- 			}
- 		}
- 		/* finish at the period boundary or after enough frames */
--		if ((period_elapsed ||
--				subs->transfer_done >= subs->frame_limit) &&
-+		if ((period_elapsed || transfer_done >= frame_limit) &&
- 		    !snd_usb_endpoint_implicit_feedback_sink(ep))
- 			break;
- 	}
--	bytes = frames * stride;
- 
-+	if (!frames) {
-+		err = -EAGAIN;
-+		goto unlock;
-+	}
-+
-+	bytes = frames * stride;
-+	subs->transfer_done = transfer_done;
-+	subs->frame_limit = frame_limit;
- 	if (unlikely(ep->cur_format == SNDRV_PCM_FORMAT_DSD_U16_LE &&
- 		     subs->cur_audiofmt->dsd_dop)) {
- 		fill_playback_urb_dsd_dop(subs, urb, bytes);
-@@ -1434,10 +1463,19 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
- 		subs->period_elapsed_pending = 1;
- 		period_elapsed = 0;
- 	}
-+
-+ unlock:
- 	spin_unlock_irqrestore(&subs->lock, flags);
-+	if (err < 0)
-+		return err;
- 	urb->transfer_buffer_length = bytes;
--	if (period_elapsed)
--		snd_pcm_period_elapsed(subs->pcm_substream);
-+	if (period_elapsed) {
-+		if (in_stream_lock)
-+			snd_pcm_period_elapsed_under_stream_lock(subs->pcm_substream);
-+		else
-+			snd_pcm_period_elapsed(subs->pcm_substream);
-+	}
-+	return 0;
- }
- 
- /*
-@@ -1469,6 +1507,27 @@ static void retire_playback_urb(struct snd_usb_substream *subs,
- 		snd_pcm_period_elapsed(subs->pcm_substream);
- }
- 
-+/* PCM ack callback for the playback stream;
-+ * this plays a role only when the stream is running in low-latency mode.
-+ */
-+static int snd_usb_pcm_playback_ack(struct snd_pcm_substream *substream)
-+{
-+	struct snd_usb_substream *subs = substream->runtime->private_data;
-+	struct snd_usb_endpoint *ep;
-+
-+	if (!subs->lowlatency_playback || !subs->running)
-+		return 0;
-+	ep = subs->data_endpoint;
-+	if (!ep)
-+		return 0;
-+	/* When no more in-flight URBs available, try to process the pending
-+	 * outputs here
-+	 */
-+	if (!ep->active_mask)
-+		snd_usb_queue_pending_output_urbs(ep, true);
-+	return 0;
-+}
-+
- static int snd_usb_substream_playback_trigger(struct snd_pcm_substream *substream,
- 					      int cmd)
- {
-@@ -1572,6 +1631,7 @@ static const struct snd_pcm_ops snd_usb_playback_ops = {
- 	.trigger =	snd_usb_substream_playback_trigger,
- 	.sync_stop =	snd_usb_pcm_sync_stop,
- 	.pointer =	snd_usb_pcm_pointer,
-+	.ack =		snd_usb_pcm_playback_ack,
- };
- 
- static const struct snd_pcm_ops snd_usb_capture_ops = {
 -- 
 2.26.2
 
