@@ -2,77 +2,77 @@ Return-Path: <SRS0=CfAr=OT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E157CC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 08:11:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 813AEC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 08:11:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DF25B613DA
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 08:11:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DF25B613DA
+	by mail.kernel.org (Postfix) with ESMTPS id D7749613DA
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 08:11:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D7749613DA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B7021694;
-	Wed, 29 Sep 2021 10:10:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B7021694
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6B57016C0;
+	Wed, 29 Sep 2021 10:10:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B57016C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632903068;
-	bh=jMbSngIBAClmnQKDtIlcv8K6P5TIOUOr1aiWxbvcrx8=;
+	s=default; t=1632903091;
+	bh=X9aoVKlMIHGlsF/H/NOy0ibYdx9KaNRtY5hP9zfdtWk=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=d05dGuu2OhJBdSEiRU3e2FZgiZdCLgX9hKbiWnytp/B96VO+XzbotLxt3ltSkCfhp
-	 GEla4qa3SyzHu4FI9Eer9Uz2S+31TSDVpupS5LBsD9cVORpKlKASoHTjQQK7aubwyL
-	 FtW8Z8Gi39aPkFxZZAWAs1Vlh9enAkpW6p95Q3vA=
+	b=dSVRr1QxD29OliuaEXwUSqpCLH9/IPOGJRbmiT90q6DucZ2v1QUlKOctu/9wtNJA+
+	 aCba7Cnz0qx9hVQk3es4eblJhGsHqF2DRTN07sxYVeQVRe2qTSBJgE/hB7/GSQkhoS
+	 QTdV/o3T+OoWb/FV+lUIzPI3C1hnuR4vyePzt/ik=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3FE4CF804FA;
+	by alsa1.perex.cz (Postfix) with ESMTP id E4047F804FE;
 	Wed, 29 Sep 2021 10:09:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E32FDF804EB; Wed, 29 Sep 2021 10:09:04 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id B5359F804E7; Wed, 29 Sep 2021 10:09:06 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 90B3FF80272
- for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2021 10:08:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90B3FF80272
+ by alsa1.perex.cz (Postfix) with ESMTPS id 99CE3F802C4
+ for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2021 10:08:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99CE3F802C4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="TfkDYAL7"; 
+ header.b="X9zRcqvA"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="J4pslpme"
+ header.b="3sVYwhSc"
 Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
- by smtp-out2.suse.de (Postfix) with ESMTP id D03B5202F8
+ by smtp-out1.suse.de (Postfix) with ESMTP id C52E722530
  for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2021 08:08:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1632902928; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=UKFlCKij3O5xs6xf2iFC6xI20txKPD+yz9t3uOl7W5w=;
- b=TfkDYAL7MPwhU8AUBA0NnlR2xEH6PWW558+J9PAxdt7MP5Q/GnIPxjdbxK1HMG//QHOLM4
- 7FmVqYPdF9iDLVXfG9eu3ixMiM+Ox25fcN+wmLfm1ffu9A/Rz12rdUhX9vKPhC57aCvHrx
- Ak1nDHV5iLlChXGCkzv9RkFyHlkNSyk=
+ bh=cIBPFV2aEE77SlvNFfA2KBn6FPxbLpPR7eEYkv8V2W4=;
+ b=X9zRcqvApnc//CKFl/KSDw9lpqrpajypdzqzdujllhpqOFy+O8dxEVzH1tDGP1EwwbHAtI
+ lZogysBWvbW2jduAW0vPiNh+bmrud87YeqVmi+c+fYsez1E0FOlOpWhlOfkDxD2QAD1fk5
+ SUfQTFzKlRPjPKr0gjJBmaWLOjEXPss=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1632902928;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=UKFlCKij3O5xs6xf2iFC6xI20txKPD+yz9t3uOl7W5w=;
- b=J4pslpme8WMnti1zG8kZCq1N3D+WNgx+FknqwomvzsvBzcIKWNY14637h1YmRvD0deMw/5
- XjjX/wS4SC1G8eBw==
+ bh=cIBPFV2aEE77SlvNFfA2KBn6FPxbLpPR7eEYkv8V2W4=;
+ b=3sVYwhScTSm1MG7vDWaQHlUu3T+gYqq1Q0lvaOmecA5dhh0cEhhMDss+jTUOS6t1X6xH46
+ /a8uv0WhxpmlOqAA==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay1.suse.de (Postfix) with ESMTP id C159E25D6F;
+ by relay1.suse.de (Postfix) with ESMTP id BE9F025D65;
  Wed, 29 Sep 2021 08:08:48 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 5/9] ALSA: usb-audio: Disable low-latency mode for implicit
- feedback sync
-Date: Wed, 29 Sep 2021 10:08:40 +0200
-Message-Id: <20210929080844.11583-6-tiwai@suse.de>
+Subject: [PATCH 4/9] ALSA: usb-audio: Disable low-latency playback for
+ free-wheel mode
+Date: Wed, 29 Sep 2021 10:08:39 +0200
+Message-Id: <20210929080844.11583-5-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210929080844.11583-1-tiwai@suse.de>
 References: <20210929080844.11583-1-tiwai@suse.de>
@@ -93,34 +93,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When a playback stream runs in the implicit feedback mode, its
-operation is passive and won't start unless the capture packet is
-received.  This behavior contradicts with the low-latency playback
-mode, and we should turn off lowlatency_playback flag accordingly.
-
-In theory, we may take the low-latency mode when the playback-first
-quirk is set, but it still conflicts with the later operation with the
-fixed packet numbers, so it's disabled all together for now.
+The free-wheel stream operation like dmix may not update the appl_ptr
+appropriately, and it doesn't fit with the low-latency playback mode.
+Disable the low-latency playback operation when the stream is set up
+in such a mode.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/pcm.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/usb/pcm.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 84b03a32ee23..ec7eeb1b82b8 100644
+index 4dd7f1c9e2af..84b03a32ee23 100644
 --- a/sound/usb/pcm.c
 +++ b/sound/usb/pcm.c
-@@ -595,6 +595,9 @@ static int lowlatency_playback_available(struct snd_pcm_runtime *runtime,
- 	/* free-wheeling mode? (e.g. dmix) */
- 	if (runtime->stop_threshold > runtime->buffer_size)
+@@ -582,7 +582,8 @@ static int snd_usb_hw_free(struct snd_pcm_substream *substream)
+ }
+ 
+ /* check whether early start is needed for playback stream */
+-static int lowlatency_playback_available(struct snd_usb_substream *subs)
++static int lowlatency_playback_available(struct snd_pcm_runtime *runtime,
++					 struct snd_usb_substream *subs)
+ {
+ 	struct snd_usb_audio *chip = subs->stream->chip;
+ 
+@@ -591,6 +592,9 @@ static int lowlatency_playback_available(struct snd_usb_substream *subs)
+ 	/* disabled via module option? */
+ 	if (!chip->lowlatency)
  		return false;
-+	/* implicit feedback mode has own operation mode */
-+	if (snd_usb_endpoint_implicit_feedback_sink(subs->data_endpoint))
++	/* free-wheeling mode? (e.g. dmix) */
++	if (runtime->stop_threshold > runtime->buffer_size)
 +		return false;
  	/* too short periods? */
  	if (subs->data_endpoint->nominal_queue_size >= subs->buffer_bytes)
  		return false;
+@@ -630,7 +634,7 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
+ 	subs->period_elapsed_pending = 0;
+ 	runtime->delay = 0;
+ 
+-	subs->lowlatency_playback = lowlatency_playback_available(subs);
++	subs->lowlatency_playback = lowlatency_playback_available(runtime, subs);
+ 	if (!subs->lowlatency_playback)
+ 		ret = start_endpoints(subs);
+ 
 -- 
 2.26.2
 
