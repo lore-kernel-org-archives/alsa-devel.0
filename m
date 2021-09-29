@@ -2,83 +2,75 @@ Return-Path: <SRS0=CfAr=OT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4A7CC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 07:31:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57805C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 07:36:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 37DDE6101E
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 07:31:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 37DDE6101E
+	by mail.kernel.org (Postfix) with ESMTPS id 7C6FE60230
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 07:36:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7C6FE60230
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 89E3A16AD;
-	Wed, 29 Sep 2021 09:30:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89E3A16AD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C46C1687;
+	Wed, 29 Sep 2021 09:35:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C46C1687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632900708;
-	bh=dVVFzWR0q9jcsFIp8DEzDh3gMV1UVweQU6++XmpgyDI=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=gYgXQ6O9RfRzesEcOtTLo7UkMdwBY9c3T4O4W0Y3UWx9XKcN1DrpBB0DuWnFZNmt7
-	 NbuM045qIu2v0mMF8fEU5gBpSS28vrXAtvIr1RWluetdI+gu8kyQe7wQY1FNLBO2aK
-	 DraHB0m2qhkmJ5H5n35fem5SQCul0RfrIrqVIE9k=
+	s=default; t=1632901005;
+	bh=N8sWb18dTAZswvb9UMmUBJ9wyL6TJjG8IeEVDVSa1zA=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=fiHaTHVzxjg7bECHDd7oGz31qbz+MAyP4q8fUiI4rHIXnnKqPstPAABgEcQwXF9K0
+	 yKcLvsqhEf41/ZsabvPrLWKPueBhOC6uWuUfocu/735n6Q1dDg77nFSayi70MyNU9D
+	 SWVIbmWhqMyJsTX5KXqAvqVsg1erbnvoWSPq8FTg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EBC0AF804CC;
-	Wed, 29 Sep 2021 09:30:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9FF08F80161;
+	Wed, 29 Sep 2021 09:35:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A0869F80105; Wed, 29 Sep 2021 09:29:55 +0200 (CEST)
+ id E1524F80227; Wed, 29 Sep 2021 09:35:53 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 458FDF80227
- for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2021 09:29:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 458FDF80227
+ by alsa1.perex.cz (Postfix) with ESMTPS id DF149F80161
+ for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2021 09:35:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF149F80161
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="d+TjNMv7"; 
+ header.b="0pxTt1Zn"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="DgIxZiN2"
+ header.b="ZsKZZ3cQ"
 Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
- by smtp-out1.suse.de (Postfix) with ESMTP id AFA39224EC;
- Wed, 29 Sep 2021 07:29:37 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id AF73A22504
+ for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2021 07:35:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1632900577; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=d9vriSXr0uYTC7qEdXYhx70imaN8sZwMiLoedNHUyDY=;
- b=d+TjNMv7nID7c+ESFSEBbiR6acicZ2+PqDQGLaGVOzwgK5BfNAFrFS9LsBFuGGZRyFKpbY
- AulouytuAWgibzeijKbfN/3whPa/wQzy4UMoyicHek/cgzykAzpEyxoo2izS123lYqwj7J
- JhT86izRPf6ysrvXwEqXaqvShRtSvQs=
+ t=1632900942; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=dWOLdNsp85WhCyp/IHJR7PbN2dnf1IUJP3caQiJLzlY=;
+ b=0pxTt1ZnZBe0aPer0AkrXFctgrfKqu4MC9LPOgtmatqSwGES0vNOrEpaNUXtx+InvHtnem
+ i0Z843knoAzQz8Va8h3hGTrYvFGd6Sn/f4zUscEYb4IRw5C32hldYd67d7s5so+jcII+hw
+ ZbyPNFL7+Oec4vsvqr/15H7EC3q2GOM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1632900577;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=d9vriSXr0uYTC7qEdXYhx70imaN8sZwMiLoedNHUyDY=;
- b=DgIxZiN2al0gjMirdsLMC7HCuMuwwhTamQgvYzAQBEfK0KWj9IbEi1vii4RWBsBFoiLTjH
- uF7kQelMXgKb1mDA==
+ s=susede2_ed25519; t=1632900942;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=dWOLdNsp85WhCyp/IHJR7PbN2dnf1IUJP3caQiJLzlY=;
+ b=ZsKZZ3cQmBEQKVEo43EesflzSXwalrDVUMbaF0yUFJxiNr8ywbamjr6KRDCT8ONe7sXDPv
+ AxLu2H2Buc1jL4Aw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay1.suse.de (Postfix) with ESMTP id 9ED7F25D50;
- Wed, 29 Sep 2021 07:29:37 +0000 (UTC)
+ by relay1.suse.de (Postfix) with ESMTP id 9F6A525D4F;
+ Wed, 29 Sep 2021 07:35:42 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 2/2] ALSA: hda: Use position buffer for SKL+ again
-Date: Wed, 29 Sep 2021 09:29:34 +0200
-Message-Id: <20210929072934.6809-3-tiwai@suse.de>
+Subject: [PATCH] ALSA: usb-audio: Fix a missing error check in scarlett gen2
+ mixer
+Date: Wed, 29 Sep 2021 09:35:40 +0200
+Message-Id: <20210929073540.9611-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210929072934.6809-1-tiwai@suse.de>
-References: <20210929072934.6809-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Jens Axboe <axboe@kernel.dk>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,63 +86,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The commit f87e7f25893d ("ALSA: hda - Improved position reporting on
-SKL+") changed the PCM position report for SKL+ chips to use DPIB, but
-according to Pierre, DPIB is no best choice for the accurate position
-reports and it often reports too early.  The recommended method is
-rather the classical position buffer.
+The check of the returned error code is missing in
+scarlett2_update_monitor_other().  Let's fix it.
 
-This patch makes the PCM position reporting on SKL+ back to the
-position buffer again.
-
-Fixes: f87e7f25893d ("ALSA: hda - Improved position reporting on SKL+")
-Suggested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Fixes: d5bda7e03982 ("ALSA: usb-audio: scarlett2: Add support for the talkback feature")
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/202109131831.9IodEzRx-lkp@intel.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_intel.c | 23 +----------------------
- 1 file changed, 1 insertion(+), 22 deletions(-)
+ sound/usb/mixer_scarlett_gen2.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 9989ec4dc324..14298f015fba 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -880,27 +880,6 @@ static int azx_get_delay_from_fifo(struct azx *chip, struct azx_dev *azx_dev,
- 	return substream->runtime->delay;
- }
- 
--static unsigned int azx_skl_get_dpib_pos(struct azx *chip,
--					 struct azx_dev *azx_dev)
--{
--	return _snd_hdac_chip_readl(azx_bus(chip),
--				    AZX_REG_VS_SDXDPIB_XBASE +
--				    (AZX_REG_VS_SDXDPIB_XINTERVAL *
--				     azx_dev->core.index));
--}
--
--/* get the current DMA position with correction on SKL+ chips */
--static unsigned int azx_get_pos_skl(struct azx *chip, struct azx_dev *azx_dev)
--{
--	/* DPIB register gives a more accurate position for playback */
--	if (azx_dev->core.substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		return azx_skl_get_dpib_pos(chip, azx_dev);
--
--	/* read of DPIB fetches the actual posbuf */
--	azx_skl_get_dpib_pos(chip, azx_dev);
--	return azx_get_pos_posbuf(chip, azx_dev);
--}
--
- static void __azx_shutdown_chip(struct azx *chip, bool skip_link_reset)
- {
- 	azx_stop_chip(chip);
-@@ -1590,7 +1569,7 @@ static void assign_position_fix(struct azx *chip, int fix)
- 		[POS_FIX_POSBUF] = azx_get_pos_posbuf,
- 		[POS_FIX_VIACOMBO] = azx_via_get_position,
- 		[POS_FIX_COMBO] = azx_get_pos_lpib,
--		[POS_FIX_SKL] = azx_get_pos_skl,
-+		[POS_FIX_SKL] = azx_get_pos_posbuf,
- 		[POS_FIX_FIFO] = azx_get_pos_fifo,
- 	};
- 
+diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
+index 3d5848d5481b..53ebabf42472 100644
+--- a/sound/usb/mixer_scarlett_gen2.c
++++ b/sound/usb/mixer_scarlett_gen2.c
+@@ -2450,6 +2450,8 @@ static int scarlett2_update_monitor_other(struct usb_mixer_interface *mixer)
+ 		err = scarlett2_usb_get_config(mixer,
+ 					       SCARLETT2_CONFIG_TALKBACK_MAP,
+ 					       1, &bitmap);
++		if (err < 0)
++			return err;
+ 		for (i = 0; i < num_mixes; i++, bitmap >>= 1)
+ 			private->talkback_map[i] = bitmap & 1;
+ 	}
 -- 
 2.26.2
 
