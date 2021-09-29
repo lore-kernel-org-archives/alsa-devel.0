@@ -2,71 +2,85 @@ Return-Path: <SRS0=CfAr=OT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75E9EC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 19:12:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF7B5C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 19:28:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 53669613D3
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 19:12:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 53669613D3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 6D26161527
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 19:28:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6D26161527
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 616C316DE;
-	Wed, 29 Sep 2021 21:11:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 616C316DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 30FA316CE;
+	Wed, 29 Sep 2021 21:27:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30FA316CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632942725;
-	bh=g/8s55Jc9bqt8ZNNteEuzgrzOaKJ/elKL6Rcokeb5XM=;
+	s=default; t=1632943681;
+	bh=BINxv4Ro8InLMoDxPtIX0UAWq4JRTRC8Sj2m/yRL2Es=;
 	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=H7lgY9EoLrpgjsLhc1hJFYeasjKyCxJ/4aBh0V6rw44kcI1cTYAs2UTDKXTJJXy5L
-	 DjiJffB2wKDa0Hlesrj1c4JX2We/y+vMTrYrzKe6UE2MfKdduX5zaXTMe8DlXpba1s
-	 PJ5Bllr8gM6piwNXkOoJHAibHWG72/w1BNQQm1F8=
+	b=pYwKIRnFBN/HQkB6r4OAzymdOxkr93vDdBYd+1Wtoc7dTxUqZ9RpYd7eLjGKTT6U3
+	 orNQNpF51NfoxZaE4nbfCB+hszRPwOC1+0RZlK2LhMxASxf2p0gOnUlQbs6De8MpQu
+	 BgrSRFcaWbZT9esExE4YjiJm+Gfk9IJ95obbzUHo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D8D10F801F7;
-	Wed, 29 Sep 2021 21:11:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C0B17F801F7;
+	Wed, 29 Sep 2021 21:27:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DB5C5F80227; Wed, 29 Sep 2021 21:11:12 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 8BB38F80227; Wed, 29 Sep 2021 21:27:07 +0200 (CEST)
+Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com
+ [IPv6:2607:f8b0:4864:20::92f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 43F20F80105
- for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2021 21:11:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43F20F80105
+ by alsa1.perex.cz (Postfix) with ESMTPS id 01951F80113
+ for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2021 21:26:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01951F80113
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="nXFeiZPS"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4F8461526;
- Wed, 29 Sep 2021 19:10:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1632942660;
- bh=g/8s55Jc9bqt8ZNNteEuzgrzOaKJ/elKL6Rcokeb5XM=;
- h=Date:From:To:Cc:Subject:From;
- b=nXFeiZPSW79r4UtpWMpAj+sFQtFDItw0Azdkv+bcgqAhlqsNY1rIMFzeJg0E7AOSL
- GGu092Vwb+B8Zt66Dd9akCOdAQvl3OY6aYceGqV3pxbJuAGIkSdxbV/MNqD2KFhu3T
- /7NbpFrr3sVtXygweNooeksB8BgKwFl5i9ggQhKmF7iWNj6jC9yjwHkRG/tzHnLdNx
- K4Xv8A8njMCu+Idbn8Qw3uojter5eeOMewy7T24AH+8FsPdwDK8As8WQalcTgI2CUo
- dDvWtlydXy2hkheMpF31hBm/d5sop6hyYl6WolfVTVwbkDyYm+995y/SnXJbN4pNh3
- ZHTzk8/g/jVpA==
-Date: Wed, 29 Sep 2021 14:15:04 -0500
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To: Anton Yakovlev <anton.yakovlev@opensynergy.com>,
- "Michael S. Tsirkin" <mst@redhat.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH][next] ALSA: virtio: Replace zero-length array with
- flexible-array member
-Message-ID: <20210929191504.GA337268@embeddedor>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="E8sAPz/5"
+Received: by mail-ua1-x92f.google.com with SMTP id c33so2375930uae.9
+ for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2021 12:26:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+ bh=BINxv4Ro8InLMoDxPtIX0UAWq4JRTRC8Sj2m/yRL2Es=;
+ b=E8sAPz/5KnQ9/D/0qqnNBXhi4A0wvll35YtOfn7fMx/wW2mkg/dtNVlew76wNjFqNn
+ g7zd/m9woK8h1wZ3CJRfMTWk3xytaBWS5Ln71f5vhaCmLlDDQ50B7MwEvMxzSerkhTmb
+ 4ZRDuB+s5ceRcStktsv3VHiNsRGJJ2hCwe2J8X/Oi0jnKkNDYLTAAazLDudqNDj6qbve
+ BIbBJ++ebjIjD+Azy52cdITsmvhafPQelMta5BV7jbZvkAvQhN32M/DJuP8C21x8aEIh
+ BO3oCEQlc0reffmBmjbW+EzPxlCzWGQhuP9G3AINAs6p95ECHnth3QiJ38x/FhzRxGov
+ wSMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+ :content-disposition;
+ bh=BINxv4Ro8InLMoDxPtIX0UAWq4JRTRC8Sj2m/yRL2Es=;
+ b=WqjR2pIlXjllSH3Vszr0Ai94fiH1wpPqqiEQpMdM0TiuJsWKC71bwAaXBNRVyAWgSU
+ dzx8bx9KjpfJVl0nX5WdS177Y6dEujp75QFFauclTTATsZoXYX4bYcEaFpOO80RxeGGn
+ YxuQSLU3Vc4fsVdpyc1yJ4a/vbyvDZjuBG5Y0O3Lpkcpq3wUEkiTWffoR4F7a7aJFhY+
+ 73hQ1DEuLxrmVQhvsoryqR+q2G/w8/PZSlLhS1yiw30lUiOquTKsSfmxj1NPI1Ml7jMb
+ wPL22UMz8+nqQMQ3eZWDeTqM8dxnMWcpIZZQg+Y9NXy0Jze99+mhHtqsGHBkUYWkcXai
+ Pv4w==
+X-Gm-Message-State: AOAM5318rCLj1CFcf23h91vEaqgjU9EL1AY1FCo22ItklQWfIx3VgVki
+ 39O1eZqXyvOFdXg9GVJsvRc=
+X-Google-Smtp-Source: ABdhPJxzGrOiSNWJPCMJTT5Y7LJpHwEj1TQycv3m9lmqJFBugj3xgYVrQOMbvjsdmOlnZT0489AzlQ==
+X-Received: by 2002:a9f:315a:: with SMTP id n26mr2063225uab.15.1632943618127; 
+ Wed, 29 Sep 2021 12:26:58 -0700 (PDT)
+Received: from geday ([2804:7f2:8280:7522:98f0:31ff:fe93:2dc7])
+ by smtp.gmail.com with ESMTPSA id f21sm448439vke.39.2021.09.29.12.26.57
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 29 Sep 2021 12:26:57 -0700 (PDT)
+Date: Wed, 29 Sep 2021 16:26:58 -0300
+From: Geraldo Nascimento <geraldogabriel@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Behringer UFX1604 and UFX1204 unneeded implicit feedback
+Message-ID: <YVS+AsiTRt1FqMn0@geday>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
- virtualization@lists.linux-foundation.org
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,46 +96,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-There is a regular need in the kernel to provide a way to declare
-having a dynamically sized set of trailing elements in a structure.
-Kernel code should always use “flexible array members”[1] for these
-cases. The older style of one-element or zero-length arrays should
-no longer be used[2].
+Hello Takashi and everyone,
 
-Also, make use of the struct_size() helper in kzalloc().
+Behringer UFX1204 and UFX1604 have sync endpoints and we set up
+implicit feedback sync on them. This is against the UAC spec.
+We've already fixed a major source of noise by explictly setting up
+the Clock Selector. Therefore in my humble opinion we should now
+disable implicit feedback sync for those two devices.
 
-[1] https://en.wikipedia.org/wiki/Flexible_array_member
-[2] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
+What do you think?
 
-Link: https://github.com/KSPP/linux/issues/78
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- sound/virtio/virtio_pcm_msg.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/sound/virtio/virtio_pcm_msg.c b/sound/virtio/virtio_pcm_msg.c
-index f88c8f29cbd8..aca2dc1989ba 100644
---- a/sound/virtio/virtio_pcm_msg.c
-+++ b/sound/virtio/virtio_pcm_msg.c
-@@ -20,7 +20,7 @@ struct virtio_pcm_msg {
- 	struct virtio_snd_pcm_xfer xfer;
- 	struct virtio_snd_pcm_status status;
- 	size_t length;
--	struct scatterlist sgs[0];
-+	struct scatterlist sgs[];
- };
- 
- /**
-@@ -146,8 +146,7 @@ int virtsnd_pcm_msg_alloc(struct virtio_pcm_substream *vss,
- 		int sg_num = virtsnd_pcm_sg_num(data, period_bytes);
- 		struct virtio_pcm_msg *msg;
- 
--		msg = kzalloc(sizeof(*msg) + sizeof(*msg->sgs) * (sg_num + 2),
--			      GFP_KERNEL);
-+		msg = kzalloc(struct_size(msg, sgs, sg_num + 2), GFP_KERNEL);
- 		if (!msg)
- 			return -ENOMEM;
- 
--- 
-2.27.0
-
+Thank you,
+Geraldo Nascimento
