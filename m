@@ -2,138 +2,81 @@ Return-Path: <SRS0=CfAr=OT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0662C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 07:44:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5754CC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 08:09:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 67F9F613A0
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 07:44:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 67F9F613A0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=nvidia.com
+	by mail.kernel.org (Postfix) with ESMTPS id CD8EA613C8
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 08:09:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CD8EA613C8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D17981687;
-	Wed, 29 Sep 2021 09:43:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D17981687
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E5D71678;
+	Wed, 29 Sep 2021 10:08:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E5D71678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632901468;
-	bh=FthjNE3sldnI62L+KpNbHt7RkpZjZEn8VWJbwie6K0c=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1632902989;
+	bh=9+AxtvFrm1ylIF74u1VI7svDV95jOUHinEr0VV6PatU=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vecYhh+qdQJVFTgAFjc4woHnbMwZ4xRLZcbk7bMshHDPXWRoiNohAnYwpMAT2Ibe+
-	 NnIYEucDWqAZiLL1FMZWYnHmKhUrNIwvLnFAOyc8HrComTMmlOJHuGTYXAVF9ucmM0
-	 yV4IJaciL8iTa2TLIa4Ets/3rRAT2n8KGN39NoSg=
+	b=TIkJGwB0BYkZEqYcvE/JB3HbKCtZU5uIYhxahL1NOAo4gcYPJ7qn6Th1+Eww1lSZ9
+	 xPAnUP1NO1iHxt+oSlYcgomKQLZ6acwaHHPyYFWUifoBayao4zd7N1vNvVRkaVTvgc
+	 gbGFFWyrTlKzjulhxVH/HHiggwV8nLFnIkNcgdNA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E3CDF801F7;
-	Wed, 29 Sep 2021 09:43:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1D440F804E2;
+	Wed, 29 Sep 2021 10:08:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EB39AF80227; Wed, 29 Sep 2021 09:43:36 +0200 (CEST)
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com
- (mail-dm6nam11on2086.outbound.protection.outlook.com [40.107.223.86])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 656FCF804E4; Wed, 29 Sep 2021 10:08:57 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 19880F80105
- for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2021 09:43:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19880F80105
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1D21DF80161
+ for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2021 10:08:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D21DF80161
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com
- header.b="MY5UGHaG"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oWspvIjuNodJ3guQKiF+r1fVuSMHDYCahBwMvRzhOwXeKqiXAXTjVcLNy1pEJK5v38tgXvfXrXHHBgJtCjuBnWWKA1lzwsr1YLMdhAvnNp2SBLsZY6xDt+skTGHk4RrOpc61MwJUwxHmSiWT7OibUuJvN/m+FBjMwKTXPcL4AANUomqP0Sa4cdMyE4G8JbbBxCi9hgble+7yPShdH90nDDR8tl074GhiQU00USKBPlyYf1sh2Ojz7J2E4eIG2X9ogNzWmr91VDoQWy/Ev8A+BrhEiFbhvs3LdABivl5t9d8mbr0nZuD/U6LCpx6Msqi+UJRQh4tGuxsTKHSmN3/KIQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version; 
- bh=JRgW6tpG1ufXex/XtDOEJsOCf3pNHD4BhIX3F6yGQFA=;
- b=b9GmkAWy5Dpi8Ka48mB+Qe7nCybVjcDkOA60p+FUgrSv8lNvh+wV/30/nFnxZElvHahjNbAuzarM5OOMSio6WzwnMjZMe1qifNDcsix2Hde8heVBlYobsxAZA209KnOBNexuCf0DVMe3SgVJzUJRtdUKtN0EzBL3OWnAL0LpSTS6Ph+H3YpBkB8PgRMfvSm52DXBLeZXGIk9lUyZ9usNBAKpIFOPr+2gBLsTgOB1Gs0n8d114cox8K6DKM/hOPnUo7hXIUix0EJKTfCyO52NeZVTscuKe6ydbj+HCa4gRIoliToezsr4AbAo4dZzjXOPkO3IyThrSi3xN5nuDK1nSg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.35) smtp.rcpttodomain=lists.infradead.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=quarantine sp=none pct=100)
- action=none header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JRgW6tpG1ufXex/XtDOEJsOCf3pNHD4BhIX3F6yGQFA=;
- b=MY5UGHaG02v39lxKcwjsiwFIwTlctLCs4rAYYpAraPSAuUyqS5Z3woXDm8b+rX8E62nUNslrSVYPRpC4af3TyxAJzF/Y+aR8RDsc9MAHF985OmUwmD50q+ZLNVd4vC7+TgzxWbqyE9iNJxfYY7yPqn1kJEUp8K6w9EmjU7fDF6G0TqMm1YuF2QG6WaWDbU3ZKrVEwqZOvO9VTOmvSOem/OHjl/0TsgJ5UNEfIkkMqsdBxX6jSbMTN1uSB8qLLblHm4dnQeeYLNmM3DY/rre2kE+Why2E6VYCPO/B91ZmAL1YE9mFCwrBimMD/UyyoqguqhwdCIZtpDgKFqAKbp1f4A==
-Received: from CO1PR15CA0085.namprd15.prod.outlook.com (2603:10b6:101:20::29)
- by DM8PR12MB5399.namprd12.prod.outlook.com (2603:10b6:8:34::5) with
- Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4566.14; Wed, 29 Sep 2021 07:43:28 +0000
-Received: from CO1NAM11FT051.eop-nam11.prod.protection.outlook.com
- (2603:10b6:101:20:cafe::8c) by CO1PR15CA0085.outlook.office365.com
- (2603:10b6:101:20::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.13 via Frontend
- Transport; Wed, 29 Sep 2021 07:43:28 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
- smtp.mailfrom=nvidia.com; lists.infradead.org; dkim=none (message not signed)
- header.d=none;lists.infradead.org; dmarc=pass action=none
- header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.35 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.35; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.35) by
- CO1NAM11FT051.mail.protection.outlook.com (10.13.174.114) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4566.14 via Frontend Transport; Wed, 29 Sep 2021 07:43:27 +0000
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 29 Sep
- 2021 07:43:27 +0000
-Received: from [10.25.99.231] (172.20.187.6) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 29 Sep
- 2021 07:43:22 +0000
-Subject: Re: [PATCH 01/13] ASoC: soc-pcm: Don't reconnect an already active BE
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- <broonie@kernel.org>, <lgirdwood@gmail.com>, <robh+dt@kernel.org>,
- <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
- <catalin.marinas@arm.com>, <will@kernel.org>, <perex@perex.cz>,
- <tiwai@suse.com>, <kuninori.morimoto.gx@renesas.com>
-References: <1630056839-6562-1-git-send-email-spujar@nvidia.com>
- <1630056839-6562-2-git-send-email-spujar@nvidia.com>
- <be6290d1-0682-3d93-98a6-ad0be3ca42c1@linux.intel.com>
-From: Sameer Pujar <spujar@nvidia.com>
-Message-ID: <70422e52-89d2-d926-b3f9-be59780d464e@nvidia.com>
-Date: Wed, 29 Sep 2021 13:13:19 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="pV1m2HTS"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="X0Ue0gOF"
+Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
+ by smtp-out1.suse.de (Postfix) with ESMTP id A33AE22520
+ for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2021 08:08:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1632902928; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=EpZYT20j9QKfwqhKg5DP2+ewT3SCG+N6M9+kUy36u+w=;
+ b=pV1m2HTSpkEd597+cG2uZG2w3NB3qHTcsmPqZ/3DFbdhGn23pUacU9nAIY6v1BqoPi0miQ
+ yelTrZjsrw4U6zj/4buxLg8TEOMRB0O9vrSIHt9Fj3fZDDsF9yn1KGcPjmi3nq+1o8eSyz
+ cPMiRqEXbdDM6eVI3+owTg1pUYJzldk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1632902928;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=EpZYT20j9QKfwqhKg5DP2+ewT3SCG+N6M9+kUy36u+w=;
+ b=X0Ue0gOFHQMj3GByW0tvTucmuqdOo4UHZI+gwY2MfZ1bNoYC7gJraUB4a5t33DMxRW6pmz
+ /JNxXrZkvCUHayAA==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+ by relay1.suse.de (Postfix) with ESMTP id 9319725D6E;
+ Wed, 29 Sep 2021 08:08:48 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 1/9] ALSA: usb-audio: Restrict rates for the shared clocks
+Date: Wed, 29 Sep 2021 10:08:36 +0200
+Message-Id: <20210929080844.11583-2-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210929080844.11583-1-tiwai@suse.de>
+References: <20210929080844.11583-1-tiwai@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <be6290d1-0682-3d93-98a6-ad0be3ca42c1@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bd6ae3ec-5093-4aad-9366-08d9831cd36a
-X-MS-TrafficTypeDiagnostic: DM8PR12MB5399:
-X-Microsoft-Antispam-PRVS: <DM8PR12MB5399E291591ACC1320354493A7A99@DM8PR12MB5399.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ELPoJionqhUIrWNjEfQ2Jyjsel5Apr2qE492pZUguaxqw72ObFXln5rjJR7Xqtyxy8OI4bkLOX4ux6ZdjTvAX8Q2fVIcV9Ek0+tLJ6r2+Za4uD23oUXuupvjWnLg1S63i8vHB7oNBFdh4DzL+iGKLd4ssTPDfUF5kUBSiM4YP/dPJiOXiP/vsAhjk20RELI03M6aJIzorTRNWc0ED/tNEYv2VhIVbfvzhLB3eOo9j+MTPZq6WUsDUxLFyeu+jQC2KhhLlRNtpE3WSndtlGmHj8D+w5wCTGMhitEzhYA+JM7uwb0ffpkbKDSHPt3yPnRT0361mC9aZDEukN3P1FsPA/RtasRx+ta0l97KxQjZzdSQ28mMaNCxAZfan/fz6BQyWocLWIskZkOkfm7HxqM7zPwiRqB78YBINgLiskUtQumX1APJBGpvPtaMdmma17gEOYg77+JiPB5iCAMbakBb6JkkBKSDHGftmU4IVXT+oESMPgE/7qmxMWVvcQfLDlmOElH/i1b7lI9Hsf31PD0WQsBIYXXK8UzG4FCmP96EZvRG8ajOSZdvS3kXJDLrVpwMCdlIr+hAzgrsoeESbEUopaixDMv0TTkmOyIWMZCxTWgLOXKDvoZuzmMj9ucFOwO4c4Qqvabr1RXQ9J/2M5RtM6E3KKclx4xn9uwHKeyskT8UfTVXZlpQAJ+FQNBkje+PpzQeWMtMVeaiA0eKsGSSUri/e1u++ltjPUUy9GQKuxwhn0UHHQ5TVRqw7YqQsuEO
-X-Forefront-Antispam-Report: CIP:216.228.112.35; CTRY:US; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:mail.nvidia.com; PTR:schybrid02.nvidia.com; CAT:NONE;
- SFS:(4636009)(46966006)(36840700001)(5660300002)(83380400001)(426003)(36860700001)(31696002)(70586007)(70206006)(47076005)(6666004)(31686004)(86362001)(8936002)(54906003)(186003)(508600001)(8676002)(16526019)(36756003)(2616005)(4326008)(7416002)(336012)(26005)(921005)(316002)(53546011)(16576012)(110136005)(82310400003)(356005)(2906002)(7636003)(43740500002);
- DIR:OUT; SFP:1101; 
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2021 07:43:27.7778 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: bd6ae3ec-5093-4aad-9366-08d9831cd36a
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[216.228.112.35];
- Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT051.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5399
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, sharadg@nvidia.com, linux-tegra@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -149,56 +92,119 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+When a single clock source is shared among several endpoints, we have
+to keep the same rate on all active endpoints as long as the clock is
+being used.  For dealing with such a case, this patch adds one more
+check in the hw params constraint for the rate to take the shared
+clocks into account.  The current rate is evaluated from the endpoint
+list that applies the same clock source.
 
+BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1190418
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/card.h     |  1 +
+ sound/usb/endpoint.c | 21 +++++++++++++++++++++
+ sound/usb/endpoint.h |  1 +
+ sound/usb/pcm.c      |  9 +++++++++
+ 4 files changed, 32 insertions(+)
 
-On 9/29/2021 2:55 AM, Pierre-Louis Bossart wrote:
-> On 8/27/21 4:33 AM, Sameer Pujar wrote:
-
-[...]
-
-> But in addition we'd need to agree on what an 'active BE' is. Why can't
-> we connect a second stream while the first one is already in HW_PARAMS
-> or PAUSED or STOP? It's perfectly legal in ALSA/ASoC to have multiple
-> HW_PARAMS calls, and when we reach STOP we have to do a prepare again.
->
-> And more fundamentally, the ability to add a second FE on a 'active' BE
-> in START state is a basic requirement for a mixer, e.g. to play a
-> notification on one FE while listening to music on another. What needs
-> to happen is only to make sure that the FE and BE are compatible in
-> terms of HW_PARAMS and not sending a second TRIGGER_STOP, only checking
-> the BE NEW or CLOSE state is way too restrictive.
-
-Sorry for the trouble to your system.
-
-Idea was to avoid reconfiguration of the same BE DAI again, but not to 
-stop the provision to add a subsequent FE. In fact I had tested mixing 
-of streams coming from 10 different FEs.
-
-In your case, because of this patch, looks like the subsequent FE is not 
-finding a BE DAI since it is already active due to a prior FE. The 
-reason it works at my end is because the mixer input and output DAIs are 
-separated. Any new FE would just configure the mixer input DAI to which 
-it is attached and skip already running/configured output DAI. I am just 
-curious to know, if originally you were reconfiguring the BE DAI again 
-with same parameters (for a second FE) or some additional configuration 
-is done?
-
-
-> I can send a revert with the explanations in the commit message if there
-> is a consensus that this patch needs to be revisited.
-
-May be this can be revisited since it appears to be a critical problem 
-for your system. But I hope this discussion can be alive on following 
-points for a better fix.
-
-1. The original issue at my end was not just a configuration redundancy. 
-I realize now that with more stream addition following error print is seen.
-    "ASoC: too many users playback at open 4"
-
-    This is because the max DPCM users is capped at 8. Increasing this 
-may help (need to see what number is better), but does not address the 
-redundancy problem.
-
-2. If reconfiguration of the same BE is not necessary for a subsequent 
-FE run, shouldn't we avoid the reconfig itself and somehow avoid FE failure?
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index 5b19901f305a..3329ce710cb9 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -136,6 +136,7 @@ struct snd_usb_endpoint {
+ 	unsigned int cur_period_frames;
+ 	unsigned int cur_period_bytes;
+ 	unsigned int cur_buffer_periods;
++	unsigned char cur_clock;
+ 
+ 	spinlock_t lock;
+ 	struct list_head list;
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index 533919a28856..29c4865966f5 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -722,6 +722,7 @@ snd_usb_endpoint_open(struct snd_usb_audio *chip,
+ 		ep->cur_period_frames = params_period_size(params);
+ 		ep->cur_period_bytes = ep->cur_period_frames * ep->cur_frame_bytes;
+ 		ep->cur_buffer_periods = params_periods(params);
++		ep->cur_clock = fp->clock;
+ 
+ 		if (ep->type == SND_USB_ENDPOINT_TYPE_SYNC)
+ 			endpoint_set_syncinterval(chip, ep);
+@@ -833,6 +834,7 @@ void snd_usb_endpoint_close(struct snd_usb_audio *chip,
+ 		ep->altsetting = 0;
+ 		ep->cur_audiofmt = NULL;
+ 		ep->cur_rate = 0;
++		ep->cur_clock = 0;
+ 		ep->iface_ref = NULL;
+ 		usb_audio_dbg(chip, "EP 0x%x closed\n", ep->ep_num);
+ 	}
+@@ -1340,6 +1342,25 @@ int snd_usb_endpoint_configure(struct snd_usb_audio *chip,
+ 	return err;
+ }
+ 
++/* get the current rate set to the given clock by any endpoint */
++int snd_usb_endpoint_get_clock_rate(struct snd_usb_audio *chip, int clock)
++{
++	struct snd_usb_endpoint *ep;
++	int rate = 0;
++
++	if (!clock)
++		return 0;
++	mutex_lock(&chip->mutex);
++	list_for_each_entry(ep, &chip->ep_list, list) {
++		if (ep->cur_clock == clock && ep->cur_rate) {
++			rate = ep->cur_rate;
++			break;
++		}
++	}
++	mutex_unlock(&chip->mutex);
++	return rate;
++}
++
+ /**
+  * snd_usb_endpoint_start: start an snd_usb_endpoint
+  *
+diff --git a/sound/usb/endpoint.h b/sound/usb/endpoint.h
+index a668f675b52b..a1099ec37e1c 100644
+--- a/sound/usb/endpoint.h
++++ b/sound/usb/endpoint.h
+@@ -19,6 +19,7 @@ void snd_usb_endpoint_close(struct snd_usb_audio *chip,
+ 			    struct snd_usb_endpoint *ep);
+ int snd_usb_endpoint_configure(struct snd_usb_audio *chip,
+ 			       struct snd_usb_endpoint *ep);
++int snd_usb_endpoint_get_clock_rate(struct snd_usb_audio *chip, int clock);
+ 
+ bool snd_usb_endpoint_compatible(struct snd_usb_audio *chip,
+ 				 struct snd_usb_endpoint *ep,
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 5dc9266180e3..19392117de9e 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -734,6 +734,7 @@ static int hw_rule_rate(struct snd_pcm_hw_params *params,
+ 			struct snd_pcm_hw_rule *rule)
+ {
+ 	struct snd_usb_substream *subs = rule->private;
++	struct snd_usb_audio *chip = subs->stream->chip;
+ 	const struct audioformat *fp;
+ 	struct snd_interval *it = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
+ 	unsigned int rmin, rmax, r;
+@@ -745,6 +746,14 @@ static int hw_rule_rate(struct snd_pcm_hw_params *params,
+ 	list_for_each_entry(fp, &subs->fmt_list, list) {
+ 		if (!hw_check_valid_format(subs, params, fp))
+ 			continue;
++		r = snd_usb_endpoint_get_clock_rate(chip, fp->clock);
++		if (r > 0) {
++			if (!snd_interval_test(it, r))
++				continue;
++			rmin = min(rmin, r);
++			rmax = max(rmax, r);
++			continue;
++		}
+ 		if (fp->rate_table && fp->nr_rates) {
+ 			for (i = 0; i < fp->nr_rates; i++) {
+ 				r = fp->rate_table[i];
+-- 
+2.26.2
 
