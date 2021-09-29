@@ -2,77 +2,77 @@ Return-Path: <SRS0=CfAr=OT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98614C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 08:10:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E157CC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 08:11:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E9055613DA
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 08:10:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E9055613DA
+	by mail.kernel.org (Postfix) with ESMTPS id DF25B613DA
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Sep 2021 08:11:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DF25B613DA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 925B716B0;
-	Wed, 29 Sep 2021 10:09:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 925B716B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B7021694;
+	Wed, 29 Sep 2021 10:10:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B7021694
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632903048;
-	bh=DDmTN8mpcudd5apv0mX+JJVxmmzchMauTNyYAZ7cQ3o=;
+	s=default; t=1632903068;
+	bh=jMbSngIBAClmnQKDtIlcv8K6P5TIOUOr1aiWxbvcrx8=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=c5DkovSa1SiOTzXMtD6spbC6j6g0lIt9o1JI878+GaXHIMnuCOl8kS8N6aJqk+sIr
-	 ZzIxE3o/+doGgsnSuBk0Gl+/7EW7478NBOWXYnNogenBCT6ryp5Pl9w2oD26YcQd0e
-	 HrdwFfZYLJOKCA19IR8Igjh8R9aCxIUVQE25uOaY=
+	b=d05dGuu2OhJBdSEiRU3e2FZgiZdCLgX9hKbiWnytp/B96VO+XzbotLxt3ltSkCfhp
+	 GEla4qa3SyzHu4FI9Eer9Uz2S+31TSDVpupS5LBsD9cVORpKlKASoHTjQQK7aubwyL
+	 FtW8Z8Gi39aPkFxZZAWAs1Vlh9enAkpW6p95Q3vA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6524CF804F1;
-	Wed, 29 Sep 2021 10:09:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3FE4CF804FA;
+	Wed, 29 Sep 2021 10:09:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 73C2BF804EC; Wed, 29 Sep 2021 10:09:04 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id E32FDF804EB; Wed, 29 Sep 2021 10:09:04 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 35DECF80227
+ by alsa1.perex.cz (Postfix) with ESMTPS id 90B3FF80272
  for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2021 10:08:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35DECF80227
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90B3FF80272
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="Z8lGC/3u"; 
+ header.b="TfkDYAL7"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="1N0CI9Y5"
+ header.b="J4pslpme"
 Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
- by smtp-out1.suse.de (Postfix) with ESMTP id DFADF22531
+ by smtp-out2.suse.de (Postfix) with ESMTP id D03B5202F8
  for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2021 08:08:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1632902928; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=44i3fBlABMfkpKFb1FRDRrVSWyiqiWPJD3tF2CZ3Kno=;
- b=Z8lGC/3umxUkmaQxOQrSLsYi5ELvPz670cP776PXmdQx+R3pEtVJRAmAGGFMo4lrtF7WL5
- r5onJuRblJ43mJoRqQUYL97Okz8wCp4SLr21ynB5J6LQ8TbZbcRhayaHZWVm3z15kFxFvR
- 9ccDq6kShlSrLBtEry3VHU2gve+few0=
+ bh=UKFlCKij3O5xs6xf2iFC6xI20txKPD+yz9t3uOl7W5w=;
+ b=TfkDYAL7MPwhU8AUBA0NnlR2xEH6PWW558+J9PAxdt7MP5Q/GnIPxjdbxK1HMG//QHOLM4
+ 7FmVqYPdF9iDLVXfG9eu3ixMiM+Ox25fcN+wmLfm1ffu9A/Rz12rdUhX9vKPhC57aCvHrx
+ Ak1nDHV5iLlChXGCkzv9RkFyHlkNSyk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1632902928;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=44i3fBlABMfkpKFb1FRDRrVSWyiqiWPJD3tF2CZ3Kno=;
- b=1N0CI9Y52bCqyr4sSe+ZyKWFw+zYDra2lF9G8RBeCX0pg4gVC7/HGNRfyM47JCVIxiGBS3
- cxwDw1nvTB4FxCDw==
+ bh=UKFlCKij3O5xs6xf2iFC6xI20txKPD+yz9t3uOl7W5w=;
+ b=J4pslpme8WMnti1zG8kZCq1N3D+WNgx+FknqwomvzsvBzcIKWNY14637h1YmRvD0deMw/5
+ XjjX/wS4SC1G8eBw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay1.suse.de (Postfix) with ESMTP id CF03225D65;
+ by relay1.suse.de (Postfix) with ESMTP id C159E25D6F;
  Wed, 29 Sep 2021 08:08:48 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 6/9] ALSA: usb-audio: Check available frames for the next
- packet size
-Date: Wed, 29 Sep 2021 10:08:41 +0200
-Message-Id: <20210929080844.11583-7-tiwai@suse.de>
+Subject: [PATCH 5/9] ALSA: usb-audio: Disable low-latency mode for implicit
+ feedback sync
+Date: Wed, 29 Sep 2021 10:08:40 +0200
+Message-Id: <20210929080844.11583-6-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210929080844.11583-1-tiwai@suse.de>
 References: <20210929080844.11583-1-tiwai@suse.de>
@@ -93,154 +93,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This is yet more preparation for the upcoming changes.
+When a playback stream runs in the implicit feedback mode, its
+operation is passive and won't start unless the capture packet is
+received.  This behavior contradicts with the low-latency playback
+mode, and we should turn off lowlatency_playback flag accordingly.
 
-Extend snd_usb_endpoint_next_packet_size() to check the available
-frames and return -EAGAIN if the next packet size is equal or exceeds
-the given size.  This will be needed for avoiding XRUN during the low
-latency operation.
-
-As of this patch, avail=0 is passed, i.e. the check is skipped and no
-behavior change.
+In theory, we may take the low-latency mode when the playback-first
+quirk is set, but it still conflicts with the later operation with the
+fixed packet numbers, so it's disabled all together for now.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/endpoint.c | 51 +++++++++++++++++++++++++++++++-------------
- sound/usb/endpoint.h |  3 ++-
- sound/usb/pcm.c      |  2 +-
- 3 files changed, 39 insertions(+), 17 deletions(-)
+ sound/usb/pcm.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 8e164d71d9ac..1f757a7eeafe 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -148,18 +148,23 @@ int snd_usb_endpoint_implicit_feedback_sink(struct snd_usb_endpoint *ep)
-  * This won't be used for implicit feedback which takes the packet size
-  * returned from the sync source
-  */
--static int slave_next_packet_size(struct snd_usb_endpoint *ep)
-+static int slave_next_packet_size(struct snd_usb_endpoint *ep,
-+				  unsigned int avail)
- {
- 	unsigned long flags;
-+	unsigned int phase;
- 	int ret;
- 
- 	if (ep->fill_max)
- 		return ep->maxframesize;
- 
- 	spin_lock_irqsave(&ep->lock, flags);
--	ep->phase = (ep->phase & 0xffff)
--		+ (ep->freqm << ep->datainterval);
--	ret = min(ep->phase >> 16, ep->maxframesize);
-+	phase = (ep->phase & 0xffff) + (ep->freqm << ep->datainterval);
-+	ret = min(phase >> 16, ep->maxframesize);
-+	if (avail && ret >= avail)
-+		ret = -EAGAIN;
-+	else
-+		ep->phase = phase;
- 	spin_unlock_irqrestore(&ep->lock, flags);
- 
- 	return ret;
-@@ -169,20 +174,25 @@ static int slave_next_packet_size(struct snd_usb_endpoint *ep)
-  * Return the number of samples to be sent in the next packet
-  * for adaptive and synchronous endpoints
-  */
--static int next_packet_size(struct snd_usb_endpoint *ep)
-+static int next_packet_size(struct snd_usb_endpoint *ep, unsigned int avail)
- {
-+	unsigned int sample_accum;
- 	int ret;
- 
- 	if (ep->fill_max)
- 		return ep->maxframesize;
- 
--	ep->sample_accum += ep->sample_rem;
--	if (ep->sample_accum >= ep->pps) {
--		ep->sample_accum -= ep->pps;
-+	sample_accum += ep->sample_rem;
-+	if (sample_accum >= ep->pps) {
-+		sample_accum -= ep->pps;
- 		ret = ep->packsize[1];
- 	} else {
- 		ret = ep->packsize[0];
- 	}
-+	if (avail && ret >= avail)
-+		ret = -EAGAIN;
-+	else
-+		ep->sample_accum = sample_accum;
- 
- 	return ret;
- }
-@@ -190,16 +200,27 @@ static int next_packet_size(struct snd_usb_endpoint *ep)
- /*
-  * snd_usb_endpoint_next_packet_size: Return the number of samples to be sent
-  * in the next packet
-+ *
-+ * If the size is equal or exceeds @avail, don't proceed but return -EAGAIN
-+ * Exception: @avail = 0 for skipping the check.
-  */
- int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep,
--				      struct snd_urb_ctx *ctx, int idx)
-+				      struct snd_urb_ctx *ctx, int idx,
-+				      unsigned int avail)
- {
--	if (ctx->packet_size[idx])
--		return ctx->packet_size[idx];
--	else if (ep->sync_source)
--		return slave_next_packet_size(ep);
-+	unsigned int packet;
-+
-+	packet = ctx->packet_size[idx];
-+	if (packet) {
-+		if (avail && packet >= avail)
-+			return -EAGAIN;
-+		return packet;
-+	}
-+
-+	if (ep->sync_source)
-+		return slave_next_packet_size(ep, avail);
- 	else
--		return next_packet_size(ep);
-+		return next_packet_size(ep, avail);
- }
- 
- static void call_retire_callback(struct snd_usb_endpoint *ep,
-@@ -263,7 +284,7 @@ static void prepare_silent_urb(struct snd_usb_endpoint *ep,
- 		unsigned int length;
- 		int counts;
- 
--		counts = snd_usb_endpoint_next_packet_size(ep, ctx, i);
-+		counts = snd_usb_endpoint_next_packet_size(ep, ctx, i, 0);
- 		length = counts * ep->stride; /* number of silent bytes */
- 		offset = offs * ep->stride + extra * i;
- 		urb->iso_frame_desc[i].offset = offset;
-diff --git a/sound/usb/endpoint.h b/sound/usb/endpoint.h
-index a1099ec37e1c..1f1a72535a64 100644
---- a/sound/usb/endpoint.h
-+++ b/sound/usb/endpoint.h
-@@ -46,6 +46,7 @@ void snd_usb_endpoint_free_all(struct snd_usb_audio *chip);
- 
- int snd_usb_endpoint_implicit_feedback_sink(struct snd_usb_endpoint *ep);
- int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep,
--				      struct snd_urb_ctx *ctx, int idx);
-+				      struct snd_urb_ctx *ctx, int idx,
-+				      unsigned int avail);
- 
- #endif /* __USBAUDIO_ENDPOINT_H */
 diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index ec7eeb1b82b8..8ad48c35c559 100644
+index 84b03a32ee23..ec7eeb1b82b8 100644
 --- a/sound/usb/pcm.c
 +++ b/sound/usb/pcm.c
-@@ -1365,7 +1365,7 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
- 	spin_lock_irqsave(&subs->lock, flags);
- 	subs->frame_limit += ep->max_urb_frames;
- 	for (i = 0; i < ctx->packets; i++) {
--		counts = snd_usb_endpoint_next_packet_size(ep, ctx, i);
-+		counts = snd_usb_endpoint_next_packet_size(ep, ctx, i, 0);
- 		/* set up descriptor */
- 		urb->iso_frame_desc[i].offset = frames * stride;
- 		urb->iso_frame_desc[i].length = counts * stride;
+@@ -595,6 +595,9 @@ static int lowlatency_playback_available(struct snd_pcm_runtime *runtime,
+ 	/* free-wheeling mode? (e.g. dmix) */
+ 	if (runtime->stop_threshold > runtime->buffer_size)
+ 		return false;
++	/* implicit feedback mode has own operation mode */
++	if (snd_usb_endpoint_implicit_feedback_sink(subs->data_endpoint))
++		return false;
+ 	/* too short periods? */
+ 	if (subs->data_endpoint->nominal_queue_size >= subs->buffer_bytes)
+ 		return false;
 -- 
 2.26.2
 
