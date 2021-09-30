@@ -2,84 +2,75 @@ Return-Path: <SRS0=pl6R=OU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89AABC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Sep 2021 11:51:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E9445C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Sep 2021 11:54:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ABB1A619BB
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Sep 2021 11:51:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org ABB1A619BB
+	by mail.kernel.org (Postfix) with ESMTPS id 11A18619EA
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Sep 2021 11:54:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 11A18619EA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 40D15169C;
-	Thu, 30 Sep 2021 13:50:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40D15169C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 98DB31691;
+	Thu, 30 Sep 2021 13:53:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98DB31691
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633002695;
-	bh=rF64Y7ztdX48+tBEavwQb9R1oVhdrQCC6o1C15oTvWM=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=hfwakhsJOR677q03yrq7jd2D6NhN83BAYgA+xDcjVTtzBZcPuXUSvsqOMEV6l0y8U
-	 vxCntGwVoAOHgeRMOnkbQO1b+rF4uxbNeimizs48OEX1z6T2gG09K+4CTW6BVbpBR+
-	 rou4swuRstUoj7BqHe+W/oMI3fjv27Gvml1RXnkA=
+	s=default; t=1633002874;
+	bh=Se+UIpv39a+292cKNbIYfp0bybdm3t9KNThx10lQq1M=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=MDxGh38NjOWPg/SYes+T2prxXo9A6BxlG+YxY9XDXHHSFa/l0FlynTwRqD8Pu/mg7
+	 p7cbJwxIKtJu+7WH3xPtV5bo5g5VTGB3AS3G7FdXMYAlDdUqJlLOUk51L+ERoLYJCA
+	 AqDln9I7FJIR+uF1bkGvkPh+KFU/ZtVbNkQv8pWo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9CEA8F8032C;
-	Thu, 30 Sep 2021 13:50:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21650F8032C;
+	Thu, 30 Sep 2021 13:53:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B319BF804AD; Thu, 30 Sep 2021 13:50:42 +0200 (CEST)
+ id 4D641F804AD; Thu, 30 Sep 2021 13:53:42 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B1038F80218
- for <alsa-devel@alsa-project.org>; Thu, 30 Sep 2021 13:50:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1038F80218
+ by alsa1.perex.cz (Postfix) with ESMTPS id B3860F80218
+ for <alsa-devel@alsa-project.org>; Thu, 30 Sep 2021 13:53:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3860F80218
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="WV25gftv"; 
+ header.b="qTlNs9uI"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="+Rzn8sMr"
+ header.b="sgWyWAAW"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id DABD21FE47;
- Thu, 30 Sep 2021 11:50:36 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 70EBD1FE47
+ for <alsa-devel@alsa-project.org>; Thu, 30 Sep 2021 11:53:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1633002636; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=IgRn7aKSErDo6kMO2beqj7Emk0zRUsaDfbu8H3OvkKc=;
- b=WV25gftvHjj2f+nxzH51ybaKVbe038gMMayUwC9OcD2pUXkz7/oNo2OQXY1L8xL2YW69c3
- WKm0G7fXdOgsvi0+nAQMEwgFzAP5paE+iBvLw8SYzyPM9dob1lb++zdfvNQ369MD8sJbf8
- 65+LhhWDT1sb122vZbFqRJpHpPScXb8=
+ t=1633002810; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=vesisrUpMRY23dkeCD0GB06G4ySn5POLcBJJFI3dhgI=;
+ b=qTlNs9uIv5CcdQ704sp4MNJmaMWkWOxgEh+rW7DmvWhc7VAfNpKd4IAHwUN21rbO8E7R//
+ O3uhbsMfVhMD1/yIlEJKuUK/KtSYkXun34fg2i1pvm9sa95WOSgL3rASsSf2VdT63t15qz
+ P51UdYfM2SqHUeufBN7hxS03lqhhdZ4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1633002636;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=IgRn7aKSErDo6kMO2beqj7Emk0zRUsaDfbu8H3OvkKc=;
- b=+Rzn8sMrWrwouHmTeyby9P9eELWirKajUZQdC8/s3Ep+N/EEgI3Lv4JI2vizYmRedKdgD3
- k3sMoGh5bxMSBBDQ==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id D33F3A3B88;
- Thu, 30 Sep 2021 11:50:36 +0000 (UTC)
-Date: Thu, 30 Sep 2021 13:50:36 +0200
-Message-ID: <s5hr1d6jn8z.wl-tiwai@suse.de>
+ s=susede2_ed25519; t=1633002810;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=vesisrUpMRY23dkeCD0GB06G4ySn5POLcBJJFI3dhgI=;
+ b=sgWyWAAWj2Wj7uva+RGOnTApxN0vqJiCCiL6b/oRt2fLk2+d6Uhuso4rol/6B4qX66kM3b
+ UJ3eYi1l0cZQCNCg==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 6BC5AA3B89;
+ Thu, 30 Sep 2021 11:53:30 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: Re: [PATCH v2 0/2] ALSA: hda: Reduce CPU hog with SKL+ position
- reporting
-In-Reply-To: <20210929072934.6809-1-tiwai@suse.de>
-References: <20210929072934.6809-1-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Jens Axboe <axboe@kernel.dk>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] ALSA: hda/realtek: Enable 4-speaker output for Dell Precision
+ 5560 laptop
+Date: Thu, 30 Sep 2021 13:53:16 +0200
+Message-Id: <20210930115316.659-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,28 +86,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 29 Sep 2021 09:29:32 +0200,
-Takashi Iwai wrote:
-> 
-> Hi,
-> 
-> this is a v2 patch set for reducing the CPU hog with the HD-audio PCM
-> position reporting.  The first patch is almost same, while the second
-> patch is added to take back to the position buffer as suggested by
-> Pierre.
-> 
-> 
-> Takashi
-> 
-> v1: https://lore.kernel.org/r/20210910141002.32749-1-tiwai@suse.de
-> 
-> ===
-> 
-> Takashi Iwai (2):
->   ALSA: hda: Reduce udelay() at SKL+ position reporting
->   ALSA: hda: Use position buffer for SKL+ again
+From: John Liu <johnliu55tw@gmail.com>
 
-Now applied both patches to for-next branch.
+The Dell Precision 5560 laptop appears to use the 4-speakers-on-ALC289
+audio just like its sibling product XPS 9510, so it requires the same
+quirk to enable woofer output. Tested on my Dell Precision 5560.
 
+Signed-off-by: John Liu <johnliu55tw@gmail.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Takashi
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 4407f7da57c4..f17bfc6007d3 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8452,6 +8452,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0a30, "Dell", ALC236_FIXUP_DELL_AIO_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1028, 0x0a58, "Dell", ALC255_FIXUP_DELL_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1028, 0x0a61, "Dell XPS 15 9510", ALC289_FIXUP_DUAL_SPK),
++	SND_PCI_QUIRK(0x1028, 0x0a62, "Dell Precision 5560", ALC289_FIXUP_DUAL_SPK),
+ 	SND_PCI_QUIRK(0x1028, 0x164a, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x164b, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
+-- 
+2.26.2
+
