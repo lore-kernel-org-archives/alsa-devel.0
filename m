@@ -2,88 +2,90 @@ Return-Path: <SRS0=pl6R=OU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2438FC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Sep 2021 10:31:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E79FC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Sep 2021 11:41:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1B739610A4
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Sep 2021 10:31:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1B739610A4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+	by mail.kernel.org (Postfix) with ESMTPS id 1B1CC610A4
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Sep 2021 11:41:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1B1CC610A4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 17C9016C1;
-	Thu, 30 Sep 2021 12:30:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17C9016C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB3E01699;
+	Thu, 30 Sep 2021 13:40:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB3E01699
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632997894;
-	bh=uymOlrruQauPeHUvVK1wfieFujSDsLEUylhAAgkrUhE=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1633002102;
+	bh=O9T2jPpzM2l/NdKPv2qjNIB9lZsYC0EovUTA78xSKUw=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dJ0a8MnmWK5NVgivk3e2vnp45VDHjI1fp6KsWsX58ALdSFIhh0NuErR0nn3CHGieh
-	 rrlIgfzLdldpP/lIM6ERtQ4elzKNCsDPAwDm/eGvZ7s2SdFrByItWTpJnhdz/9u3Xg
-	 r+99PA5pli9YUchAcFHniKBrKK2qeRs3VfpO1sRg=
+	b=EeIB1/rFYit03HmpPgm/xrFIjshUjhpD1EYXI13GR1B1+loy1tVFbH1I1hJq4jNT8
+	 UazOWcXRXExxJNU3yIuV7WN8QuxywE3TGms6jqZRgNZpHlqVnrl5L31tK3h3iHtPq8
+	 jyLodRZG7MnVB5TpN8GUxAfWr9Ly7Uur9fD2v0NY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00E97F804DF;
-	Thu, 30 Sep 2021 12:29:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 39BD7F800F3;
+	Thu, 30 Sep 2021 13:40:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C3DCFF804D6; Thu, 30 Sep 2021 12:29:54 +0200 (CEST)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 780E3F804AD; Thu, 30 Sep 2021 13:40:50 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3A7F3F80113
- for <alsa-devel@alsa-project.org>; Thu, 30 Sep 2021 12:29:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A7F3F80113
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 18UATYdiC000748,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36503.realtek.com.tw[172.21.6.25])
- by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 18UATYdiC000748
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 30 Sep 2021 18:29:34 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXH36503.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Thu, 30 Sep 2021 18:29:34 +0800
-Received: from localhost.localdomain (172.22.234.227) by
- RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 30 Sep 2021 18:29:33 +0800
-From: <derek.fang@realtek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH 2/3] ASoC: rt5682s: Use dev_dbg instead of pr_debug
-Date: Thu, 30 Sep 2021 18:29:27 +0800
-Message-ID: <20210930102928.28628-2-derek.fang@realtek.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210930102928.28628-1-derek.fang@realtek.com>
-References: <20210930102928.28628-1-derek.fang@realtek.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.22.234.227]
-X-ClientProxiedBy: RTEXH36503.realtek.com.tw (172.21.6.25) To
- RTEXMBS01.realtek.com.tw (172.21.6.94)
-X-KSE-ServerInfo: RTEXMBS01.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: trusted connection
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 09/30/2021 10:12:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzkvMzAgpFekyCAwODo1MjowMA==?=
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-ServerInfo: RTEXH36503.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, Derek Fang <derek.fang@realtek.com>, shumingf@realtek.com,
- flove@realtek.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id E7516F800F3
+ for <alsa-devel@alsa-project.org>; Thu, 30 Sep 2021 13:40:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7516F800F3
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="NHIdLWq1"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="way9GvNv"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id E9B5F21D91;
+ Thu, 30 Sep 2021 11:40:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1633002035; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=bw/BZPrppPZ0tpkoU0dPMVMi9G/hLMWqA9GjNFb/BHM=;
+ b=NHIdLWq1UwEqqCNx/gQWqOo3X7FZZCP0db2FY4ok+CP/MDAXltJiEvY3g5a1rqaj1ujzRU
+ v5k7QeK+xo2kZ/QviopmC4zECezZZyrBR6Xzg6dbQJ6+0n4Z1Hc/bhsKacXFESlxbwgey3
+ lR4XhbXdb2+r/KlEOHiVEW+eSmPqvjI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1633002035;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=bw/BZPrppPZ0tpkoU0dPMVMi9G/hLMWqA9GjNFb/BHM=;
+ b=way9GvNv59CgFgaXbF4o2Lh7B5m5tNEujJriBXcxktkBXigWR2O07RpLyrmBc6rr4uIR+8
+ E7vjM2HHkK+S1fAA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 24177A3B81;
+ Thu, 30 Sep 2021 11:40:35 +0000 (UTC)
+Date: Thu, 30 Sep 2021 13:40:35 +0200
+Message-ID: <s5hy27ejnpo.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: John Keeping <john@metanate.com>
+Subject: Re: [PATCH] ALSA: rawmidi: Fix potential UAF from sequencer
+ destruction
+In-Reply-To: <20210930112753.40e1efa6.john@metanate.com>
+References: <20210929113620.2194847-1-john@metanate.com>
+ <s5hzgrvl9j0.wl-tiwai@suse.de>
+ <20210929161758.49ce947f.john@metanate.com>
+ <s5hv92jl7t2.wl-tiwai@suse.de>
+ <20210929175632.50b78be8.john@metanate.com>
+ <s5hfstmlgkj.wl-tiwai@suse.de> <s5hczoqlfgn.wl-tiwai@suse.de>
+ <20210930112753.40e1efa6.john@metanate.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,28 +101,99 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Derek Fang <derek.fang@realtek.com>
+On Thu, 30 Sep 2021 12:27:53 +0200,
+John Keeping wrote:
+> 
+> On Thu, 30 Sep 2021 08:55:52 +0200
+> Takashi Iwai <tiwai@suse.de> wrote:
+> 
+> > On Thu, 30 Sep 2021 08:31:56 +0200,
+> > Takashi Iwai wrote:
+> > > 
+> > > On Wed, 29 Sep 2021 18:56:32 +0200,
+> > > John Keeping wrote:
+> > > > 
+> > > > On Wed, 29 Sep 2021 17:28:57 +0200
+> > > > Takashi Iwai <tiwai@suse.de> wrote:
+> > > > 
+> > > > > On Wed, 29 Sep 2021 17:17:58 +0200,
+> > > > > John Keeping wrote:
+> > > > > > 
+> > > > > > On Wed, 29 Sep 2021 16:51:47 +0200
+> > > > > > Takashi Iwai <tiwai@suse.de> wrote:
+> > > > > >   
+> > > > > > > On Wed, 29 Sep 2021 13:36:20 +0200,
+> > > > > > > John Keeping wrote:  
+> > > > > > > > 
+> > > > > > > > If the sequencer device outlives the rawmidi device, then
+> > > > > > > > snd_rawmidi_dev_seq_free() will run after release_rawmidi_device() has
+> > > > > > > > freed the snd_rawmidi structure.
+> > > > > > > > 
+> > > > > > > > This can easily be reproduced with CONFIG_DEBUG_KOBJECT_RELEASE.
+> > > > > > > > 
+> > > > > > > > Keep a reference to the rawmidi device until the sequencer has been
+> > > > > > > > destroyed in order to avoid this.
+> > > > > > > > 
+> > > > > > > > Signed-off-by: John Keeping <john@metanate.com>    
+> > > > > > > 
+> > > > > > > Thanks for the patch.  I wonder, though, how this could be triggered.
+> > > > > > > Is this the case where the connected sequencer device is being used
+> > > > > > > while the sound card gets released?  Or is it something else?  
+> > > > > > 
+> > > > > > I'm not sure if it's possible to trigger via the ALSA API; I haven't
+> > > > > > found a route that can trigger it, but that doesn't mean there isn't
+> > > > > > one :-)
+> > > > > > 
+> > > > > > Mostly this is useful to make CONFIG_DEBUG_KOBJECT_RELEASE cleaner.  
+> > > > > 
+> > > > > Hm, then could you check whether the patch below papers over it
+> > > > > instead?
+> > > > 
+> > > > No, this patch doesn't solve it.  The issue is that the effect of the
+> > > > final device_put() is delayed from the time it is called and there is no
+> > > > way to guarantee the ordering without ensuring the sequencer has been
+> > > > destroyed before the final reference to the rawmidi device is put.
+> > > > 
+> > > > Both of the functions involved are called from the core
+> > > > device::release() hook.
+> > > > 
+> > > > I'm using the patch below to easily check that the sequencer has been
+> > > > freed before the rawmidi data.  This can easily be triggered by
+> > > > unplugging a USB MIDI device (it's not 100% since the kobject release
+> > > > delays are random).
+> > > 
+> > > Hm, it's strange.  I suppose you're *not* using the MIDI device,
+> > > right?
+> > > 
+> > > The release path for the USB-audio driver is:
+> > >   usb_audio_disconnect() ->
+> > >     snd_card_free_when_closed() ->
+> > >       release_card_device() (via put_device(&card->card_dev)) ->
+> > >         snd_card_do_free()
+> > > 
+> > > And here in snd_card_do_free(), the snd_device free-callback chains
+> > > are called at the beginning (snd_device_free_all()).
+> > > As it's executed in a reverse loop, snd_rawmidi_dev_seq_free() shall
+> > > be called before snd_rawmidi_dev_free().  Since the final put_device()
+> > > for the rawmidi device is called in the latter function, the device
+> > > release must not happen before snd_rawmidi_dev_seq_free()...
+> > 
+> > Correction: now I finally understood what I misunderstood.
+> > Although the snd_device call chain mentioned above itself is correct,
+> > the snd_rawmidi_dev_seq_free() function isn't called directly from the
+> > snd_device chain, but it's rater the own private_free of
+> > snd_seq_device object.  That is, the call of snd_seq_device
+> > private_free is done in a wrong place; it should be called in the
+> > snd_device call chain instead of the device release.
+> > 
+> > A fix patch is something like below.  Could you check whether this
+> > fixes the problem?
+> 
+> Yes, this fixes it!
 
-It could observe the debug messages more clearly by using dev_dbg.
+Great, I'll submit a proper patch.
 
-Signed-off-by: Derek Fang <derek.fang@realtek.com>
----
- sound/soc/codecs/rt5682s.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks!
 
-diff --git a/sound/soc/codecs/rt5682s.c b/sound/soc/codecs/rt5682s.c
-index 2b229c074a31..122adeb7beb1 100644
---- a/sound/soc/codecs/rt5682s.c
-+++ b/sound/soc/codecs/rt5682s.c
-@@ -768,7 +768,7 @@ static int rt5682s_headset_detect(struct snd_soc_component *component, int jack_
- 			count++;
- 		} while (val == 0 && count < 50);
- 
--		pr_debug("%s, val=%d, count=%d\n", __func__, val, count);
-+		dev_dbg(component->dev, "%s, val=%d, count=%d\n", __func__, val, count);
- 
- 		switch (val) {
- 		case 0x1:
--- 
-2.17.1
 
+Takashi
