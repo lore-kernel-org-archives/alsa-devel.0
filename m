@@ -2,47 +2,47 @@ Return-Path: <SRS0=pl6R=OU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1EE8C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Sep 2021 10:31:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2438FC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Sep 2021 10:31:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1B67261882
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Sep 2021 10:31:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1B67261882
+	by mail.kernel.org (Postfix) with ESMTPS id 1B739610A4
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Sep 2021 10:31:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1B739610A4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A9AC516A0;
-	Thu, 30 Sep 2021 12:30:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9AC516A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 17C9016C1;
+	Thu, 30 Sep 2021 12:30:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17C9016C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1632997886;
-	bh=8WgeZN0jSvD9EG9AQGrRMDA3rUK/cG+FHcFtsl9CUdo=;
+	s=default; t=1632997894;
+	bh=uymOlrruQauPeHUvVK1wfieFujSDsLEUylhAAgkrUhE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=T5xh4DveuHT1JFohsaONaHjvxwYazpi2dGJPULFMCiYuI2gq28yCmMUAGMKKHVTaa
-	 /BTtbj8oHUSN91w8YgsZMTBGiGZlwJ5YjWX0elq5NyK6U7pPY46UQ6XEA8H0Ymkn15
-	 U5D5TVC2RS5StHlnOD/iVWs1zeZpjal7PzexKiv0=
+	b=dJ0a8MnmWK5NVgivk3e2vnp45VDHjI1fp6KsWsX58ALdSFIhh0NuErR0nn3CHGieh
+	 rrlIgfzLdldpP/lIM6ERtQ4elzKNCsDPAwDm/eGvZ7s2SdFrByItWTpJnhdz/9u3Xg
+	 r+99PA5pli9YUchAcFHniKBrKK2qeRs3VfpO1sRg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D7E8CF804AD;
-	Thu, 30 Sep 2021 12:29:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 00E97F804DF;
+	Thu, 30 Sep 2021 12:29:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 37307F804D6; Thu, 30 Sep 2021 12:29:52 +0200 (CEST)
+ id C3DCFF804D6; Thu, 30 Sep 2021 12:29:54 +0200 (CEST)
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3D36CF8032C
- for <alsa-devel@alsa-project.org>; Thu, 30 Sep 2021 12:29:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D36CF8032C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3A7F3F80113
+ for <alsa-devel@alsa-project.org>; Thu, 30 Sep 2021 12:29:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A7F3F80113
 Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 18UATYR50000752,
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 18UATYdiC000748,
  This message is accepted by code: ctloc85258
 Received: from mail.realtek.com (rtexh36503.realtek.com.tw[172.21.6.25])
- by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 18UATYR50000752
+ by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 18UATYdiC000748
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
  Thu, 30 Sep 2021 18:29:34 +0800
 Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
@@ -52,12 +52,12 @@ Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
 Received: from localhost.localdomain (172.22.234.227) by
  RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 30 Sep 2021 18:29:34 +0800
+ 15.1.2106.2; Thu, 30 Sep 2021 18:29:33 +0800
 From: <derek.fang@realtek.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH 3/3] ASoC: rt5682s: Revise the macro RT5682S_PLLB_SRC_MASK
-Date: Thu, 30 Sep 2021 18:29:28 +0800
-Message-ID: <20210930102928.28628-3-derek.fang@realtek.com>
+Subject: [PATCH 2/3] ASoC: rt5682s: Use dev_dbg instead of pr_debug
+Date: Thu, 30 Sep 2021 18:29:27 +0800
+Message-ID: <20210930102928.28628-2-derek.fang@realtek.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210930102928.28628-1-derek.fang@realtek.com>
 References: <20210930102928.28628-1-derek.fang@realtek.com>
@@ -101,27 +101,26 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Derek Fang <derek.fang@realtek.com>
 
-Revise the macro RT5682S_PLLB_SRC_MASK to 0x1
-because the mux is only two-source.
+It could observe the debug messages more clearly by using dev_dbg.
 
 Signed-off-by: Derek Fang <derek.fang@realtek.com>
 ---
- sound/soc/codecs/rt5682s.h | 2 +-
+ sound/soc/codecs/rt5682s.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5682s.h b/sound/soc/codecs/rt5682s.h
-index 7c755e5efb81..55f1febb81e9 100644
---- a/sound/soc/codecs/rt5682s.h
-+++ b/sound/soc/codecs/rt5682s.h
-@@ -1094,7 +1094,7 @@
- #define RT5682S_PLLA_K_BP_SFT			6
+diff --git a/sound/soc/codecs/rt5682s.c b/sound/soc/codecs/rt5682s.c
+index 2b229c074a31..122adeb7beb1 100644
+--- a/sound/soc/codecs/rt5682s.c
++++ b/sound/soc/codecs/rt5682s.c
+@@ -768,7 +768,7 @@ static int rt5682s_headset_detect(struct snd_soc_component *component, int jack_
+ 			count++;
+ 		} while (val == 0 && count < 50);
  
- /* PLL M/N/K Code Control 7 (0x009e) */
--#define RT5682S_PLLB_SRC_MASK			(0x3 << 0)
-+#define RT5682S_PLLB_SRC_MASK			(0x1)
- #define RT5682S_PLLB_SRC_DFIN			(0x1)
- #define RT5682S_PLLB_SRC_PLLA			(0x0)
+-		pr_debug("%s, val=%d, count=%d\n", __func__, val, count);
++		dev_dbg(component->dev, "%s, val=%d, count=%d\n", __func__, val, count);
  
+ 		switch (val) {
+ 		case 0x1:
 -- 
 2.17.1
 
