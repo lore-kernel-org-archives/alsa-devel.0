@@ -2,72 +2,62 @@ Return-Path: <SRS0=pl6R=OU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96AF1C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Sep 2021 15:13:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4ABAEC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Sep 2021 15:13:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A80A3615E5
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Sep 2021 15:13:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A80A3615E5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=ixit.cz
+	by mail.kernel.org (Postfix) with ESMTPS id D23416159A
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Sep 2021 15:13:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D23416159A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mrbrklyn.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A2B516AF;
-	Thu, 30 Sep 2021 17:12:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A2B516AF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 850E816C1;
+	Thu, 30 Sep 2021 17:12:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 850E816C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633014816;
-	bh=XdD4z8tJzQeXmWMRITRvTyCwu8N9yjjNeHgeazkXRqY=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=sPOtiHAgEwUgBVHfaL1pjt1xzXR3GTWS+NepmFr7E1kI9Y5W1fhW7JnwJ3LAvCipY
-	 qtNEu59V71Y1JKa6GREZdast4m5LC9gknAMiJMJZwX4vy0aaxcnISuLhFtmFt+y11X
-	 peE+4Fu/D9J5YmF28elyV+C+cleO4sw8QP8BYaI4=
+	s=default; t=1633014827;
+	bh=E49/YDydmu7YC8tHzY4jcu3na/sy3MEa7bzQ0eHan1o=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=rFAi5p2b1IXBiC5Y4WNJu9AOdWvLJ6Vi8Q7wsjJyDz3Q9cI/QlWMDIbmOVtoiyrei
+	 wvfU32MBFsQbZh7mB4TL0dbDEwW84yEXP20bfNqjvheIZk/P8P5KBsjOwFD0JSBE3b
+	 8UCmlC8DvmBqzdgowyP13cryd61CUoKG4QMa9+5Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7DD53F804EC;
-	Thu, 30 Sep 2021 17:11:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 623C0F804F3;
+	Thu, 30 Sep 2021 17:11:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C36EFF80227; Wed, 29 Sep 2021 23:19:57 +0200 (CEST)
-Received: from ixit.cz (ixit.cz [94.230.151.217])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 54A26F80113
- for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2021 23:19:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54A26F80113
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ixit.cz header.i=@ixit.cz
- header.b="Itr0+U1W"
-Received: from [192.168.43.127] (78-80-97-115.customers.tmcz.cz [78.80.97.115])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- by ixit.cz (Postfix) with ESMTPSA id BFB3623B26;
- Wed, 29 Sep 2021 23:19:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
- t=1632950386;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type;
- bh=XdD4z8tJzQeXmWMRITRvTyCwu8N9yjjNeHgeazkXRqY=;
- b=Itr0+U1WJl97CkalbLnh9Feq2GYAgCM5MQ3nDBEPtOWFyJS0ypZ/w+jOl8ajH8oR6zmSwZ
- 6o8yVIv2Q4LKam65BRWMGPQXl8oS672Dv7KXiEz7xiy/y6b+IItuB1Sw9hvl24pN8Qzl8n
- YQhfyLSJKQ+ZNdHeGRqBvQNt6PtUzDY=
-Date: Wed, 29 Sep 2021 23:18:21 +0200
-From: David Heidelberg <david@ixit.cz>
-Subject: Re: [PATCH] ASoC: dt-bindings: rt5682s: fix the device-tree schema
- errors
-To: derek.fang@realtek.com
-Message-Id: <LIS70R.CEFK42MUM5NG1@ixit.cz>
-X-Mailer: geary/40.0
+ id 33910F80227; Thu, 30 Sep 2021 03:46:07 +0200 (CEST)
+Received: from mrbrklyn.com (www2.mrbrklyn.com [96.57.23.82])
+ by alsa1.perex.cz (Postfix) with ESMTP id ACCA9F80161
+ for <alsa-devel@alsa-project.org>; Thu, 30 Sep 2021 03:46:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ACCA9F80161
+Received: by mrbrklyn.com (Postfix, from userid 1000)
+ id 23F86163FB8; Wed, 29 Sep 2021 21:46:00 -0400 (EDT)
+Date: Wed, 29 Sep 2021 21:46:00 -0400
+From: Ruben Safir <ruben@mrbrklyn.com>
+To: Geraldo Nascimento <geraldogabriel@gmail.com>
+Subject: Re: ALSA kernel projects - for academic purposes
+Message-ID: <20210930014559.GA23321@www2.mrbrklyn.com>
+References: <CAHhAz+i=3NDuxK2rZZY6N18=OTbkna3VMVpx4nNgF0vyq3JmQA@mail.gmail.com>
+ <324112.1632501120@turing-police>
+ <CAHhAz+jNCd=cw-bohcoiAA2UhNZYSFLX07qEV-T2p+KAsVHhAQ@mail.gmail.com>
+ <YU5QgPwYDB2XnaVP@geday> <20210929150715.GC15841@www2.mrbrklyn.com>
+ <YVSzqfgqWEoju4Xw@geday>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVSzqfgqWEoju4Xw@geday>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 X-Mailman-Approved-At: Thu, 30 Sep 2021 17:11:01 +0200
-Cc: oder_chiou@realtek.com, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, lars@metafoo.de, jack.yu@realtek.com,
- lgirdwood@gmail.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org,
- broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
+Cc: Muni Sekhar <munisekharrms@gmail.com>,
+ alsa-devel <alsa-devel@alsa-project.org>, Ruben Safir <ruben@mrbrklyn.com>,
+ kernelnewbies <kernelnewbies@kernelnewbies.org>, linux-sound@vger.kernel.org,
+ Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,10 +73,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Our CI seems to be happy again. Thanks
+> I don't see your point here. 
 
-Reviewed-by: David Heidelberg <david@ixit.cz>
-Best regards
-David Heidelberg
+
+I know that.  So read what I wrote again and think about the original
+poster sitting in a CLASSROOM and working on a thesis due in 2 months
+
+
+Just try to place yourslef in another persons shoes for 15 minutes.
+
+
+This guy gets assigned this task and is trying to figure out an
+approach.  He is not trying to satisfy YOUR needs,  but the requirments
+of is grade so he can graduate.
 
 
