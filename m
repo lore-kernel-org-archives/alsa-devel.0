@@ -2,82 +2,89 @@ Return-Path: <SRS0=pl6R=OU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7211BC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Sep 2021 11:48:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CC19C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Sep 2021 11:49:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 986D5615E2
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Sep 2021 11:48:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 986D5615E2
+	by mail.kernel.org (Postfix) with ESMTPS id 0DFD16162E
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Sep 2021 11:49:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0DFD16162E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1191B169C;
-	Thu, 30 Sep 2021 13:47:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1191B169C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7394F1695;
+	Thu, 30 Sep 2021 13:48:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7394F1695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633002498;
-	bh=6SjO4uBoLJIHuCDHcHvkC81unD/HH4A+7vpYwwkcEcY=;
+	s=default; t=1633002557;
+	bh=GYD0ulTbt/g3qX2pqLkxMLDSXqI6bFg1iOCPLKmBXhU=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fVFdVX5c/CefhnzydOcAdk9KIeoPaQLmI0/9Nwq3Xt0cI+K0bM4NeKKUmZnbc9jOw
-	 TZJZC9z3KzVFBU51wjo9aGhEVYL9+POwGQlBzn2vLN5Pls5U3svzVyzg01+Fwqa61X
-	 IC8K4gClYla1lIErdLjPI7CauxJIN/zQdoGUxGZI=
+	b=TV1/+AyI3RWWpCH7CMUDqmvB54KVEG+XoASQg1GvoLpKsa7LQm9SBgbgOcXb8aOI6
+	 zmr16xODrlX+ElLynb/uWVG9ScML15gzz5u9tNHkIo3pX/Eal8zCdHbeFDalP4ZlUx
+	 o/5TgSraQiMpckOqVgd+kWNo1nbBTcU+ahZe6rkY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EFDC2F804BC;
-	Thu, 30 Sep 2021 13:47:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CF1F4F804AD;
+	Thu, 30 Sep 2021 13:48:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2452EF804D2; Thu, 30 Sep 2021 13:47:03 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 0E7E0F804BC; Thu, 30 Sep 2021 13:48:25 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 69919F804BC
- for <alsa-devel@alsa-project.org>; Thu, 30 Sep 2021 13:47:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69919F804BC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 025B7F8032C
+ for <alsa-devel@alsa-project.org>; Thu, 30 Sep 2021 13:48:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 025B7F8032C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="XouqW8P8"; 
+ header.b="Q5XUM5/8"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="eykXDuFL"
+ header.b="HJC7FgSz"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 3F51920018;
- Thu, 30 Sep 2021 11:47:00 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id F2C7A2247F;
+ Thu, 30 Sep 2021 11:48:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1633002420; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1633002496; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=YpCtfc0ieHmVC06Rzis/aUI7TwjGKPoc5uDfAICt91A=;
- b=XouqW8P8HcDzr58K9yWxJhuBIWpTR5eH12a4XqTHxpKkJkrhYf24wbmrizKv1VtfgxDseL
- gzkogsFrpZh+YfZ+09OGlBhKb0F/n94H+g9Av4t1t01mGz9ZD7NH8Nqiu4G9vyMm44OPmZ
- oNl9tfFbnu2E85HKckerysbNeqOKJLE=
+ bh=ODCAoKormRMtsWMKmm9fOWai9zDZSbllUaXvae+Mu9A=;
+ b=Q5XUM5/8K8nVicS+NqiAuTRhwfflSUGx82yCKJOFw3KAB8txn61CdplSvuiNUhbsEHjenK
+ X0ZVOqLAdK5H/Hiv87KmPH7r5Qf91pHjM+M80TabVHhjuV/Hdus6XvUUMXMQt/Fza3vIUI
+ laz22shLmoeHBy50vnbXrzgs1nh74Z4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1633002420;
+ s=susede2_ed25519; t=1633002496;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=YpCtfc0ieHmVC06Rzis/aUI7TwjGKPoc5uDfAICt91A=;
- b=eykXDuFLUbemFVVgpOa7+/0GCXcVADE65gaVPVsy8RUfRNThipM7q0sbvgKBlyG/coBq8M
- XfPymQ8RSUrNG/AQ==
+ bh=ODCAoKormRMtsWMKmm9fOWai9zDZSbllUaXvae+Mu9A=;
+ b=HJC7FgSzY9LlldTNKeChZ0JmUqI1pfI3d4ZSSGpzRuA1aRBC55Mrr8CLDNs5eGKwciAc2L
+ 7/C7CtHnLrhDY2AQ==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 3D1E2A3B8C;
- Thu, 30 Sep 2021 11:47:00 +0000 (UTC)
-Date: Thu, 30 Sep 2021 13:47:00 +0200
-Message-ID: <s5htui2jnez.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id E9FDBA3B93;
+ Thu, 30 Sep 2021 11:48:15 +0000 (UTC)
+Date: Thu, 30 Sep 2021 13:48:15 +0200
+Message-ID: <s5hsfxmjncw.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Geraldo Nascimento <geraldogabriel@gmail.com>
-Subject: Re: Behringer UFX1604 and UFX1204 unneeded implicit feedback
-In-Reply-To: <YVS+AsiTRt1FqMn0@geday>
-References: <YVS+AsiTRt1FqMn0@geday>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: Re: [PATCH][next] ALSA: virtio: Replace zero-length array with
+ flexible-array member
+In-Reply-To: <20210929191504.GA337268@embeddedor>
+References: <20210929191504.GA337268@embeddedor>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, "Michael S. Tsirkin" <mst@redhat.com>,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Anton Yakovlev <anton.yakovlev@opensynergy.com>,
+ virtualization@lists.linux-foundation.org, linux-hardening@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,24 +100,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 29 Sep 2021 21:26:58 +0200,
-Geraldo Nascimento wrote:
+On Wed, 29 Sep 2021 21:15:04 +0200,
+Gustavo A. R. Silva wrote:
 > 
-> Hello Takashi and everyone,
+> There is a regular need in the kernel to provide a way to declare
+> having a dynamically sized set of trailing elements in a structure.
+> Kernel code should always use “flexible array members”[1] for these
+> cases. The older style of one-element or zero-length arrays should
+> no longer be used[2].
 > 
-> Behringer UFX1204 and UFX1604 have sync endpoints and we set up
-> implicit feedback sync on them. This is against the UAC spec.
-> We've already fixed a major source of noise by explictly setting up
-> the Clock Selector. Therefore in my humble opinion we should now
-> disable implicit feedback sync for those two devices.
+> Also, make use of the struct_size() helper in kzalloc().
 > 
-> What do you think?
+> [1] https://en.wikipedia.org/wiki/Flexible_array_member
+> [2] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
+> 
+> Link: https://github.com/KSPP/linux/issues/78
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Yes, as long as it works, we should get rid of the unnecessary
-implicit-fb quirks.  Care to submit a patch?
+Thanks, applied.
 
-
-thanks,
 
 Takashi
-
