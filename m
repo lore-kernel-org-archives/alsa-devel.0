@@ -2,70 +2,69 @@ Return-Path: <SRS0=FVIg=OV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4759C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 20:13:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40B65C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 21:08:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9B1AD61268
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 20:13:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9B1AD61268
+	by mail.kernel.org (Postfix) with ESMTPS id 91CA461AED
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 21:08:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 91CA461AED
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1668016C2;
-	Fri,  1 Oct 2021 22:12:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1668016C2
+	by alsa0.perex.cz (Postfix) with ESMTPS id A8E1F16C2;
+	Fri,  1 Oct 2021 23:07:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8E1F16C2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633119212;
-	bh=ravcRnwLo3DWLVPSU8uzwKbeH8sA+3UEVqRo90J/4Ag=;
+	s=default; t=1633122515;
+	bh=mXVaTxsfvOAUOQFQGEpk2x+XfOp0w09cQnTkUuM5EsE=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=V+gahjY6z8reVfzIOlMnmLDW9sbQduP1cbQzzXYSMUrFVFuuBlqn8/y1HA1IOAtop
-	 LZf8e+yaU2lXP2sah69ej55xeEifL9L+F8WtRsG1w/IqQyaJx0FQ7DdKx2+4gnsO4o
-	 jXTxCI/rWZhzWEww8BOphU0y+DqBRK/n0s4quYVw=
+	b=MrJZ78ZWLUyiYzNbJ8zUpwhwx/KzSW8wzkr0psJHn7yjhBdcnAf6mmf01SdZDJfrK
+	 LcuLvgGUUplYRmQpitdstBQgeiqqb8rFuNy3TewEI5OTZKsQs7uwHlvFjnsiTItSsm
+	 jfJ5ijLdEH9PPmxZnMFT3jHE1N9KMlGvS0qVuuCU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 82EE2F80227;
-	Fri,  1 Oct 2021 22:12:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2E818F80227;
+	Fri,  1 Oct 2021 23:07:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B6A5AF80245; Fri,  1 Oct 2021 22:12:40 +0200 (CEST)
+ id 8A2D4F80245; Fri,  1 Oct 2021 23:07:41 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C9D4BF800F3
- for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2021 22:12:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9D4BF800F3
+ by alsa1.perex.cz (Postfix) with ESMTPS id C87CEF801F7
+ for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2021 23:07:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C87CEF801F7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="N+yFyL+A"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D62E61268;
- Fri,  1 Oct 2021 20:12:31 +0000 (UTC)
+ header.b="d5cCyXx7"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8C7B61ABF;
+ Fri,  1 Oct 2021 21:07:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1633119152;
- bh=ravcRnwLo3DWLVPSU8uzwKbeH8sA+3UEVqRo90J/4Ag=;
+ s=k20201202; t=1633122453;
+ bh=mXVaTxsfvOAUOQFQGEpk2x+XfOp0w09cQnTkUuM5EsE=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=N+yFyL+AU4bEJj/oFTks2v18zfpXMraC/i3cNCgAHOYQmUkEawSu4USqb08TwvqgM
- Vsu1OMA8ouTBFHgPPf4YFQ8KwtHIo1FTJO1CnMQg8TbWf30hwJ+ZtJXL5ApyhoKU0L
- EPMUa0kOls5D4JDHF68a7z6FfjHZsEGJOF6jF0uhi7PEeYWA2Zqk9+Ca8HPmvwiJVS
- dDrv2scNHhfqt4PUuwPhWT4zTnRTOasJK5Je4M10JVHCL0SXonMEUq8aqFE4FBrEa/
- BGThYu4nPwqmTHtuqOLtQmgwJ3CbNFxkVKlvkpFIGv/Dio8tLmrdjo6GBwxEK2izs2
- f8zUAJfN3SNDQ==
-Date: Fri, 1 Oct 2021 21:11:41 +0100
+ b=d5cCyXx7B8LI8ZI7WwJztYBfC/FT1QBSOqdrq8zy2cKkKSV8ZqLoZecop1raM6yKI
+ uCCMFyKBmV428jW9V5TBJj3v7I4UflEgPvBaLnwuyYjB6mOAsjS2DYpCyJvcEvExwW
+ K18asF6i9rgPBFfr0Sg5TcWYbc63AgIUZiRzuOgaYXiaPlI8zoVRvR7aBk7YibF8kl
+ BQHQAQW3aEJIW4ZZuZuQzHESBXs8lCMAEoElw/okJcxaMrtg94zppqJL/IOGfReBrk
+ sa9JuebnLN6XGEZPvdnXEJeF5fiS2c7JBLnq9VjXcyhmaHnguwIKCYk3Ytfd2zx6iJ
+ xhLOAclbeFOWA==
+Date: Fri, 1 Oct 2021 22:06:42 +0100
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH v3 01/16] ASoC: test-component: add Test Component YAML
- bindings
-Message-ID: <20211001201141.GD5080@sirena.org.uk>
+Subject: Re: [PATCH v3 09/16] ASoC: add Rich Graph Card Yaml Document
+Message-ID: <20211001210642.GF5080@sirena.org.uk>
 References: <87tuitusy4.wl-kuninori.morimoto.gx@renesas.com>
- <87sfyduswu.wl-kuninori.morimoto.gx@renesas.com>
+ <87h7etusv4.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="11Y7aswkeuHtSBEs"
+ protocol="application/pgp-signature"; boundary="nYySOmuH/HDX6pKp"
 Content-Disposition: inline
-In-Reply-To: <87sfyduswu.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87h7etusv4.wl-kuninori.morimoto.gx@renesas.com>
 X-Cookie: "Pok pok pok, P'kok!"
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -85,38 +84,42 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---11Y7aswkeuHtSBEs
+--nYySOmuH/HDX6pKp
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Sep 10, 2021 at 10:21:37AM +0900, Kuninori Morimoto wrote:
+On Fri, Sep 10, 2021 at 10:22:39AM +0900, Kuninori Morimoto wrote:
 
-> +    enum:
-> +      - test-cpu
-> +      - test-cpu-vv
-> +      - test-cpu-vn
-> +      - test-cpu-nv
-> +      - test-codec
-> +      - test-codec-vv
-> +      - test-codec-vn
-> +      - test-codec-nv
+> +  multi:
+> +    description: Multi-CPU/Codec node
+> +  dpcm:
+> +    description: DPCM node
+> +  codec2codec:
+> +    description: Codec to Codec node
 
-I do think we need some words in the binding document about what these
-are.
+I think I need to have another look through this sometime next week but
+other than the naming thing discussed in the other subthread I think the
+only issues I see at a high level are the standard concern about putting
+DPCM into an ABI which I think we're stuck with having to do right now,
+and also if we can merge multi and CODEC-CODEC links more.  There's bits
+you've called out in your changelog as needing further work but I think
+it's OK to add things incrementally.
 
---11Y7aswkeuHtSBEs
+Overall it's looking pretty good, thanks for working on this.
+
+--nYySOmuH/HDX6pKp
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFXa3wACgkQJNaLcl1U
-h9AtOQf9FHbnpGqMZTnGe+Y1RrejQceYQV9ZWBSDf3PbjARAlJKON38Nt3cBONIe
-BEcpVMf/ooGvQJoz6wcRVNWuDqvg0vNJB4weGxf98GmVfq+r8R4MQ/EBtjf76EIh
-4MS/gY4FUCrVjPJ0xxSwTd1hT11WGdTUrS47YR0v7+kZJlGovWB/nSboPT3lMug0
-zXGrrC27WTajFSRDw+4vSJ+XuZqqdp+99Q9l0wBUnm/a8s1uREuW1Wmpm0dixiMg
-g6cap7eCMeh7phgoOR619gZH1Xw6AFvoMzI3zEY+1xY9uPef4kPoLGOPGAAiMu77
-QOwm98qlBIqNgVFLMOjnrWTZGsifhg==
-=hKhF
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFXeGEACgkQJNaLcl1U
+h9A0cAf+IV9hzaWF+L7aFmf/7tWk0y+zP/9GLxAdMYf5IcFgEOg5+bkCt05WujEp
+rbPIkazUhm8kxtADsibqGANt880l3McuIaZVFWEC3R0IkLcuiWAhLZw9KHpTEd3x
+NmEcyrbXOMp87cvE8p8IzM8rnazRhirBejk+pcBVUi5adLFOr0GiT4FQPhyl+5Bf
+H6xkz2pVKGHGX3UT4YmRG8aPeuJohsCenf37XjaC6YgWMuPT3f/2pWg/Q4zS2LPh
+dKjJC45ihV7v6d3irBNvWhPhGp5nwkBslFn9SskYYhTQ13kvi1IUTg7ouwYr7Yce
+kccuourrPWSSDnbg9uUbHqrYZRDJWw==
+=s8AN
 -----END PGP SIGNATURE-----
 
---11Y7aswkeuHtSBEs--
+--nYySOmuH/HDX6pKp--
