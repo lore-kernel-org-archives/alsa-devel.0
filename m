@@ -2,75 +2,81 @@ Return-Path: <SRS0=FVIg=OV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2071AC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 10:55:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91A84C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 11:08:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0C3E861A82
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 10:55:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0C3E861A82
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id B82D661A3A
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 11:08:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B82D661A3A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A164D16CA;
-	Fri,  1 Oct 2021 12:54:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A164D16CA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9DEA616CC;
+	Fri,  1 Oct 2021 13:07:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DEA616CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633085728;
-	bh=Dqq0rskC9BOz8OP3SfKzfvP4Qshg2ezBrezTXNVud4o=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=fJmOvP94rXlaZ6dWB5S08YACebxcznZSN5wyjFVD+0B4oK/7RPh5yZWj09O5MPFWq
-	 KkMhU7ThAOTjw2E8O/TMfHAlThvFo7s+Jp6BNrzZxOVP+KPldIN87MmnI3Oq/hLvgs
-	 jNHE4O6gYMTyjdmyJEHBiMlmi6BTk51Lv0f+W8J4=
+	s=default; t=1633086485;
+	bh=YgXe006fkeJaZiAKQyjxPFv2tWpHi/PeOmIuZXZMIKc=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Q6iSXprjtlWeQfM47RkmEKv576D+0GxeueCXhT+kPTFilOgUV0KikZB5a7Txkp1Xi
+	 8V6aG8DEGg7YVi7lWCdZRvR6hERBCSJ3mBv58SjOrrMWKVxsCqMpB2a9ecnQb1n+0t
+	 KPKneVOZ7KtfdNnaTeJMCuywSvwz3N+hOIKGPm2Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1DE47F80227;
-	Fri,  1 Oct 2021 12:54:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 28D7DF80227;
+	Fri,  1 Oct 2021 13:07:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8275CF80245; Fri,  1 Oct 2021 12:54:36 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 3DFFCF80245; Fri,  1 Oct 2021 13:07:14 +0200 (CEST)
+Received: from smtp-relay-canonical-1.canonical.com
+ (smtp-relay-canonical-1.canonical.com [185.125.188.121])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 32C44F800F3
- for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2021 12:54:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32C44F800F3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 948D8F801F7
+ for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2021 13:07:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 948D8F801F7
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="wqjbN4WV"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="ogFbZly+"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 08A85226A7;
- Fri,  1 Oct 2021 10:54:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1633085667; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=66XDwMO5ev1fjAgNxaw0HcPY116LHDxZgh7wpBi1mYs=;
- b=wqjbN4WVnmJzGsvODOH8XTzISwcjgBKZCX69EnCdYg9ZMJb+EttaivnyhtL4m9bymwgeS7
- FGNArSzxYJDVXKDWL9rSxDMYz2cGyM4GeltxGsdcjMoWp2uERY90f6AJik5I9xoeqfvUzD
- aqHbP2oMHnVpC8CEZb65FRt4YubiKcw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1633085667;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=66XDwMO5ev1fjAgNxaw0HcPY116LHDxZgh7wpBi1mYs=;
- b=ogFbZly+KgXFi7WvOWLmjJuXqQaINXG+ZpoFJkWdehjEujSmOocM6r9bqwcCGt77ycEL4c
- vrnunBqgXH/GM6AA==
-Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id EA9A7A3B87;
- Fri,  1 Oct 2021 10:54:26 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: usb-audio: Fix packet size calculation regression
-Date: Fri,  1 Oct 2021 12:54:25 +0200
-Message-Id: <20211001105425.16191-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
+ dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
+ header.b="pI0I4TTo"
+Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 6C30E4199E; 
+ Fri,  1 Oct 2021 11:07:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20210705; t=1633086423;
+ bh=MKQMNrTSMw8rMSA9wt8sZInaKcQhtrgdLt8Y5PCva+M=;
+ h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+ In-Reply-To:Content-Type;
+ b=pI0I4TTo8596Mi+AGA//j25xo3txLmpXOKVAwJoCZusJxSxjyEb+m5DZ8uvFIqLRB
+ 17Qbc0xIE3OFDfdYDtb+gdqEy0snRSjseYEQvBA2nNLx1RYyBoEyrFBLjln+5Mqf6n
+ kJRIF0yByasuj2cAGZqxkuB+GLqWUK108djbnu4HKVZzhILA9UBzkQ80JJ6S0kDxXa
+ kxf6QTn7KE/rWczv7IspF9eJfHFZEVrypiMkYnsi1uXCc1R/BHOkH7lyTYKSfUAWI7
+ ma7QgBqlj3gYjKyodCcUp9GlPq4+uNSw86FsaW+B1hQTsafcggK72q6ki2yf2tufkg
+ kxqzSE/JiEPrw==
+Message-ID: <0bce4268-cac5-4dee-451d-cfafb5efdb8b@canonical.com>
+Date: Fri, 1 Oct 2021 12:07:03 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Colin Ian King <colin.king@canonical.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH][next] ALSA: usb-audio: Fix sum of uninitialized variable
+ sample_accum
+Content-Language: en-US
+To: Takashi Iwai <tiwai@suse.de>
+References: <20211001104417.14291-1-colin.king@canonical.com>
+ <s5htui1hvgi.wl-tiwai@suse.de>
+From: Colin Ian King <colin.king@canonical.com>
+In-Reply-To: <s5htui1hvgi.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Alexander Tsoy <alexander@tsoy.me>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,32 +92,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The commit d215f63d49da ("ALSA: usb-audio: Check available frames for
-the next packet size") introduced the available frame size check, but
-the conversion forgot to initialize the temporary variable properly,
-and it resulted in a bogus calculation.  This patch fixes it.
+On 01/10/2021 11:48, Takashi Iwai wrote:
+> On Fri, 01 Oct 2021 12:44:17 +0200,
+> Colin King wrote:
+>>
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> Variable sample_accum is not being intialized and then has
+>> ep->sample_rem added to it, leading to a bogus value. One solution
+>> is to initialize it to zero at declaration time, but it is probably
+>> best to just assign it to ep->sample_rem on first use.
+>>
+>> Addresses-Coveriry: ("Uninitialized scalar variable")
+>> Fixes: f0bd62b64016 ("ALSA: usb-audio: Improve frames size computation")
+>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> 
+> Thanks for the patch, but it's no right fix.  The Fixes tag points to
+> a wrong commit, it was d215f63d49da9a8803af3e81acd6cad743686573
+>      ALSA: usb-audio: Check available frames for the next packet size
+>    
+> And sample_accum has to be initialized from ep->sample_accum instead.
+> I'll post the proper fix.
 
-Fixes: d215f63d49da ("ALSA: usb-audio: Check available frames for the next packet size")
-Reported-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20211001104417.14291-1-colin.king@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/endpoint.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks Takshi.
 
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 42c0d2db8ba8..743b8287cfcd 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -182,7 +182,7 @@ static int next_packet_size(struct snd_usb_endpoint *ep, unsigned int avail)
- 	if (ep->fill_max)
- 		return ep->maxframesize;
- 
--	sample_accum += ep->sample_rem;
-+	sample_accum = ep->sample_accum + ep->sample_rem;
- 	if (sample_accum >= ep->pps) {
- 		sample_accum -= ep->pps;
- 		ret = ep->packsize[1];
--- 
-2.26.2
+Colin
+
+> 
+> 
+> Takashi
+> 
+> 
+>> ---
+>>   sound/usb/endpoint.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+>> index 42c0d2db8ba8..c6a33732db3f 100644
+>> --- a/sound/usb/endpoint.c
+>> +++ b/sound/usb/endpoint.c
+>> @@ -182,7 +182,7 @@ static int next_packet_size(struct snd_usb_endpoint *ep, unsigned int avail)
+>>   	if (ep->fill_max)
+>>   		return ep->maxframesize;
+>>   
+>> -	sample_accum += ep->sample_rem;
+>> +	sample_accum = ep->sample_rem;
+>>   	if (sample_accum >= ep->pps) {
+>>   		sample_accum -= ep->pps;
+>>   		ret = ep->packsize[1];
+>> -- 
+>> 2.32.0
+>>
 
