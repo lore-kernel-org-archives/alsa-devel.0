@@ -2,81 +2,89 @@ Return-Path: <SRS0=FVIg=OV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91A84C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 11:08:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B79BC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 11:23:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B82D661A3A
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 11:08:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B82D661A3A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id 01B1361A81
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 11:23:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 01B1361A81
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9DEA616CC;
-	Fri,  1 Oct 2021 13:07:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DEA616CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5E79E16CE;
+	Fri,  1 Oct 2021 13:22:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E79E16CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633086485;
-	bh=YgXe006fkeJaZiAKQyjxPFv2tWpHi/PeOmIuZXZMIKc=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1633087380;
+	bh=pC037Qvv/LJciOXE6j7S48SIxR5WaH1k5vSD+dbF3xA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Q6iSXprjtlWeQfM47RkmEKv576D+0GxeueCXhT+kPTFilOgUV0KikZB5a7Txkp1Xi
-	 8V6aG8DEGg7YVi7lWCdZRvR6hERBCSJ3mBv58SjOrrMWKVxsCqMpB2a9ecnQb1n+0t
-	 KPKneVOZ7KtfdNnaTeJMCuywSvwz3N+hOIKGPm2Q=
+	b=m8CLFpU+sIzC+jddB/HhLntQTzh6NIWpdou/W/LzOjni9/5DFo/BD6AfdWo28N93R
+	 8TzHysV4AuLVjk6D1OlEfFbqou81CryCdjTcnD80VN2FeT5EMm1hSMFXNjZa3F761i
+	 CbczxlVa9dbTTK07ul4DGNr9+91lW4Z5GsyryKDw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 28D7DF80227;
-	Fri,  1 Oct 2021 13:07:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97121F80245;
+	Fri,  1 Oct 2021 13:22:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3DFFCF80245; Fri,  1 Oct 2021 13:07:14 +0200 (CEST)
-Received: from smtp-relay-canonical-1.canonical.com
- (smtp-relay-canonical-1.canonical.com [185.125.188.121])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 98648F800F3; Fri,  1 Oct 2021 13:22:08 +0200 (CEST)
+Received: from m43-7.mailgun.net (m43-7.mailgun.net [69.72.43.7])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 948D8F801F7
- for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2021 13:07:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 948D8F801F7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 22E1FF800F3
+ for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2021 13:22:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22E1FF800F3
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
- header.b="pI0I4TTo"
-Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 6C30E4199E; 
- Fri,  1 Oct 2021 11:07:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1633086423;
- bh=MKQMNrTSMw8rMSA9wt8sZInaKcQhtrgdLt8Y5PCva+M=;
- h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
- In-Reply-To:Content-Type;
- b=pI0I4TTo8596Mi+AGA//j25xo3txLmpXOKVAwJoCZusJxSxjyEb+m5DZ8uvFIqLRB
- 17Qbc0xIE3OFDfdYDtb+gdqEy0snRSjseYEQvBA2nNLx1RYyBoEyrFBLjln+5Mqf6n
- kJRIF0yByasuj2cAGZqxkuB+GLqWUK108djbnu4HKVZzhILA9UBzkQ80JJ6S0kDxXa
- kxf6QTn7KE/rWczv7IspF9eJfHFZEVrypiMkYnsi1uXCc1R/BHOkH7lyTYKSfUAWI7
- ma7QgBqlj3gYjKyodCcUp9GlPq4+uNSw86FsaW+B1hQTsafcggK72q6ki2yf2tufkg
- kxqzSE/JiEPrw==
-Message-ID: <0bce4268-cac5-4dee-451d-cfafb5efdb8b@canonical.com>
-Date: Fri, 1 Oct 2021 12:07:03 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH][next] ALSA: usb-audio: Fix sum of uninitialized variable
- sample_accum
-Content-Language: en-US
-To: Takashi Iwai <tiwai@suse.de>
-References: <20211001104417.14291-1-colin.king@canonical.com>
- <s5htui1hvgi.wl-tiwai@suse.de>
-From: Colin Ian King <colin.king@canonical.com>
-In-Reply-To: <s5htui1hvgi.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Alexander Tsoy <alexander@tsoy.me>
+ dkim=pass (1024-bit key) header.d=mg.codeaurora.org
+ header.i=@mg.codeaurora.org header.b="JkmOMGXm"
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1633087321; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=8mpveRNPjV/0Z3Yn2/as+vy9ABcNLLBYiQyNmWDa52A=;
+ b=JkmOMGXmKawNqzF1wbHPtmOP553+woXS6cNu1N/O/BiF8SXkgrGmx5RJgOYbVBTZsd6ceMpB
+ o5S9iVZhclgXP3dKxxoHT6IsB96J+zqpMrUE9odQzGqNb+donHwJFMNoYMlMmUQHYuRpV+oz
+ CcC33xkAi3UaIuGWulFZpnjqtHU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 6156ef54605ecf100ba01300 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 01 Oct 2021 11:21:56
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id 46B80C4360C; Fri,  1 Oct 2021 11:21:56 +0000 (UTC)
+Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: srivasam)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 4054AC4360C;
+ Fri,  1 Oct 2021 11:21:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 4054AC4360C
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ spf=fail smtp.mailfrom=codeaurora.org
+From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+ broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+ bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+ srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+ linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ swboyd@chromium.org, judyhsiao@chromium.org
+Subject: [PATCH 1/8] ASoC: qcom: Move lpass_pcm_data structure to lpass header
+Date: Fri,  1 Oct 2021 16:51:25 +0530
+Message-Id: <1633087292-1378-2-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1633087292-1378-1-git-send-email-srivasam@codeaurora.org>
+References: <1633087292-1378-1-git-send-email-srivasam@codeaurora.org>
+Cc: Venkata Prasad Potturu <potturu@codeaurora.org>,
+ Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,55 +100,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 01/10/2021 11:48, Takashi Iwai wrote:
-> On Fri, 01 Oct 2021 12:44:17 +0200,
-> Colin King wrote:
->>
->> From: Colin Ian King <colin.king@canonical.com>
->>
->> Variable sample_accum is not being intialized and then has
->> ep->sample_rem added to it, leading to a bogus value. One solution
->> is to initialize it to zero at declaration time, but it is probably
->> best to just assign it to ep->sample_rem on first use.
->>
->> Addresses-Coveriry: ("Uninitialized scalar variable")
->> Fixes: f0bd62b64016 ("ALSA: usb-audio: Improve frames size computation")
->> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> 
-> Thanks for the patch, but it's no right fix.  The Fixes tag points to
-> a wrong commit, it was d215f63d49da9a8803af3e81acd6cad743686573
->      ALSA: usb-audio: Check available frames for the next packet size
->    
-> And sample_accum has to be initialized from ep->sample_accum instead.
-> I'll post the proper fix.
+Declare lpass_pcm_data structure in lpass header file instead of
+platform source file to make common use of it by other drivers
 
-Thanks Takshi.
+Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+---
+ sound/soc/qcom/lpass-platform.c | 5 -----
+ sound/soc/qcom/lpass.h          | 5 +++++
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-Colin
-
-> 
-> 
-> Takashi
-> 
-> 
->> ---
->>   sound/usb/endpoint.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
->> index 42c0d2db8ba8..c6a33732db3f 100644
->> --- a/sound/usb/endpoint.c
->> +++ b/sound/usb/endpoint.c
->> @@ -182,7 +182,7 @@ static int next_packet_size(struct snd_usb_endpoint *ep, unsigned int avail)
->>   	if (ep->fill_max)
->>   		return ep->maxframesize;
->>   
->> -	sample_accum += ep->sample_rem;
->> +	sample_accum = ep->sample_rem;
->>   	if (sample_accum >= ep->pps) {
->>   		sample_accum -= ep->pps;
->>   		ret = ep->packsize[1];
->> -- 
->> 2.32.0
->>
+diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+index f9df76d..a000041 100644
+--- a/sound/soc/qcom/lpass-platform.c
++++ b/sound/soc/qcom/lpass-platform.c
+@@ -18,11 +18,6 @@
+ 
+ #define DRV_NAME "lpass-platform"
+ 
+-struct lpass_pcm_data {
+-	int dma_ch;
+-	int i2s_port;
+-};
+-
+ #define LPASS_PLATFORM_BUFFER_SIZE	(24 *  2 * 1024)
+ #define LPASS_PLATFORM_PERIODS		2
+ 
+diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
+index 67ef497..63aaa6f 100644
+--- a/sound/soc/qcom/lpass.h
++++ b/sound/soc/qcom/lpass.h
+@@ -256,6 +256,11 @@ struct lpass_variant {
+ 	int num_clks;
+ };
+ 
++struct lpass_pcm_data {
++	int dma_ch;
++	int i2s_port;
++};
++
+ /* register the platform driver from the CPU DAI driver */
+ int asoc_qcom_lpass_platform_register(struct platform_device *);
+ int asoc_qcom_lpass_cpu_platform_remove(struct platform_device *pdev);
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
