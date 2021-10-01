@@ -2,90 +2,93 @@ Return-Path: <SRS0=FVIg=OV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00B51C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 11:26:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DA7FC433FE
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 11:46:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 81D516103C
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 11:26:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 81D516103C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	by mail.kernel.org (Postfix) with ESMTPS id 576D661A8D
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 11:46:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 576D661A8D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F077C16FD;
-	Fri,  1 Oct 2021 13:25:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F077C16FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 14A32112;
+	Fri,  1 Oct 2021 13:45:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14A32112
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633087578;
-	bh=qTc4tn4wCVpD/dQ0iQoReEcAw0LtqTeGKSZ6CKmpxSI=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=EK7t/2t552lhzWX2la2gT0cYoJr9TXqR4a7M1s2iYou2FFkVKUBRFSL77c/QGZ0ZI
-	 6Z++XbAiwaqc9m/FoH6WXxJmdXseNlRdY2QQayT9Jch2zrzdGtAfl/gTMMfnq6sz5S
-	 ETLROvbyqJbmx7M+svcnQ+io1WWKwf97ym1SsW7s=
+	s=default; t=1633088785;
+	bh=TwDt/uMovFpDutf/7j3ylcJP9uuVF4YXHj/o57Iljl4=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=i9mbllb2EUXVAJbWsOvVpri6UagKPmbOPHdKFldLzlJXhYG0jDT9K/vICJiDky6kr
+	 2+Csci87Ools7u2vMfVqgLZNQRfCazkKLSxm28gJQz27ZJqas1nKPJaqmJmQl0abdg
+	 icjl2Ehe7zm9Vc+Hwmw/1N+bLqcdrQ9ekbpQzm04=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8444CF8052D;
-	Fri,  1 Oct 2021 13:22:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E4B9F801F7;
+	Fri,  1 Oct 2021 13:45:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D43EFF8051F; Fri,  1 Oct 2021 13:22:52 +0200 (CEST)
-Received: from so254-9.mailgun.net (so254-9.mailgun.net [198.61.254.9])
+ id 60D04F80245; Fri,  1 Oct 2021 13:45:32 +0200 (CEST)
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com
+ [IPv6:2a00:1450:4864:20::12b])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9529BF8051A
- for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2021 13:22:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9529BF8051A
+ by alsa1.perex.cz (Postfix) with ESMTPS id D4490F801F7
+ for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2021 13:45:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4490F801F7
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="K5rIf7LP"
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1633087366; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=40ApUzuvtbwbH4t5Gb3Ts0gs6DJSioSNyNBn2+OJZQc=;
- b=K5rIf7LP/aQJv0XJkJllhhNP2IZg7mEKm9tgt8rXEWX/tcNaNewzT1gGvmGFJCZ2Vb7sYbOI
- nQOapuAM583cUeUHbS/XWZdsatBJ84qiN3i4g1gcsQVaUJR+8DdH2C02GFXKTIYoTqC10eD1
- ui2pMmqAjqPE3/TIVI6qsCciwr8=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 6156ef809ffb4131495874c2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 01 Oct 2021 11:22:40
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 46000C4338F; Fri,  1 Oct 2021 11:22:39 +0000 (UTC)
-Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 0FADBC4338F;
- Fri,  1 Oct 2021 11:22:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 0FADBC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- spf=fail smtp.mailfrom=codeaurora.org
-From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
- broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
- bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
- srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
- linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- swboyd@chromium.org, judyhsiao@chromium.org
-Subject: [PATCH 8/8] ASoc: qcom: lpass: Add suspend and resume for sc7280
- platform
-Date: Fri,  1 Oct 2021 16:51:32 +0530
-Message-Id: <1633087292-1378-9-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1633087292-1378-1-git-send-email-srivasam@codeaurora.org>
-References: <1633087292-1378-1-git-send-email-srivasam@codeaurora.org>
-Cc: Venkata Prasad Potturu <potturu@codeaurora.org>,
- Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="c5pnifb8"
+Received: by mail-lf1-x12b.google.com with SMTP id m3so37194132lfu.2
+ for <alsa-devel@alsa-project.org>; Fri, 01 Oct 2021 04:45:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=teiDv15/wzLe/Wf0K1qlBSWOTN//zgsH/sxmryk5zmo=;
+ b=c5pnifb84S3cmH+v6CwyiCpgvnYoIn2qTma9lJrQG/5u3N4pvO/6mEaebzk5ODZ+8/
+ T5ilDAGNMAarZMJBsPb0WzWmZqiz6zrVP8amb0v4FjmPuU7Ya5IStGoAevd3FiveOQRo
+ fFqfxGUkJyhDiibsC7NzARCE5ReDri7f5s1F2f9uZEMsSAuxtWBRCwX/iH9GGq2gP1JM
+ bSQ51+djagI9hzzhdLbhcMD+HUszZEknVeZAuPP4ZFIK5sX8SEC5Ro99S8ptusxHouBQ
+ VtkDE/8uC3hQ6CcT3wb4xeAiq+hugvd8gonTzORNtgrfLEoUPoqxvRhYN/K/Yr14CW79
+ akkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=teiDv15/wzLe/Wf0K1qlBSWOTN//zgsH/sxmryk5zmo=;
+ b=pwbBfIJUP3SL5yiVRfU2qO9ZVtZX9NgVE738IxxpVE/xg7acqW3ZtwwZGBiGaliOq+
+ gM9Kx/9ncNCWkrOeKl1anC61agyJbaPmXv+nfbgPvzZRFcG7MA1M+UB9Xsi7ow/aQqkY
+ 2fSyRQgn+NIv1r1YMPGG83BOlgWbY8Ho0KF4q/h/V/dFd5GAKbw4eeqFafEL709FweB4
+ rrm0zDEY74fuZ5TtejuEafE60E3x3T/eMwfrIY9O3TrDX8beUgIKF7aJYiUCEoarOF5N
+ jm/KKnZFH49RbOMXhaIoJVT8R08AKjfFaVDfLSye1LD3MGZp6K99QUolzFzWgB+ctQ/g
+ sLoQ==
+X-Gm-Message-State: AOAM531xR0UCI19Mv0VVkD6szx9UMP3Pji7vxSECrvzqLUoZXdbWvleQ
+ Ab+28DHlt9XbHL9B3lAsKG0=
+X-Google-Smtp-Source: ABdhPJxtcbH1EXrolybxconjeDFwJnpNlfjqcarbu5zs4BQ+iGKIMEQhjRDzclxuvWBcQ7oOU6nNSw==
+X-Received: by 2002:a2e:bf0d:: with SMTP id c13mr11747222ljr.150.1633088727328; 
+ Fri, 01 Oct 2021 04:45:27 -0700 (PDT)
+Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se.
+ [98.128.228.193])
+ by smtp.gmail.com with ESMTPSA id v27sm710990lfd.127.2021.10.01.04.45.26
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 01 Oct 2021 04:45:26 -0700 (PDT)
+From: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: tegra: Constify static snd_soc_ops
+Date: Fri,  1 Oct 2021 13:45:17 +0200
+Message-Id: <20211001114517.6752-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Svyatoslav Ryhel <clamor95@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Thierry Reding <thierry.reding@gmail.com>, Ion Agorria <ion@agorria.com>,
+ linux-tegra@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,75 +104,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Adds device suspend and resume callbacks for sc7280 platform driver ops.
+The struct tegra_machine_snd_ops is only assigned to the ops field in the
+snd_soc_dai_link struct which is a pointer to const struct snd_soc_ops.
+Make it const to allow the compiler to put it in read-only memory.
 
-Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 ---
- sound/soc/qcom/lpass-cpu.c    | 22 ++++++++++++++++++++++
- sound/soc/qcom/lpass-sc7280.c |  2 ++
- sound/soc/qcom/lpass.h        |  2 ++
- 3 files changed, 26 insertions(+)
+ sound/soc/tegra/tegra_asoc_machine.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index c8dec52..5aa5630 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -1307,6 +1307,28 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
+diff --git a/sound/soc/tegra/tegra_asoc_machine.c b/sound/soc/tegra/tegra_asoc_machine.c
+index 735909310a26..3cbe6ef1cf9f 100644
+--- a/sound/soc/tegra/tegra_asoc_machine.c
++++ b/sound/soc/tegra/tegra_asoc_machine.c
+@@ -313,7 +313,7 @@ static int tegra_machine_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
  }
- EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cpu_platform_probe);
  
-+int asoc_qcom_lpass_cpu_platform_resume(struct platform_device *pdev)
-+{
-+	struct lpass_data *drvdata = platform_get_drvdata(pdev);
-+
-+	if (drvdata->variant->init)
-+		drvdata->variant->init(pdev);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cpu_platform_resume);
-+
-+int asoc_qcom_lpass_cpu_platform_suspend(struct platform_device *pdev, pm_message_t state)
-+{
-+	struct lpass_data *drvdata = platform_get_drvdata(pdev);
-+
-+	if (drvdata->variant->exit)
-+		drvdata->variant->exit(pdev);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cpu_platform_suspend);
-+
- int asoc_qcom_lpass_cpu_platform_remove(struct platform_device *pdev)
- {
- 	struct lpass_data *drvdata = platform_get_drvdata(pdev);
-diff --git a/sound/soc/qcom/lpass-sc7280.c b/sound/soc/qcom/lpass-sc7280.c
-index 983a61b..6fdf111 100644
---- a/sound/soc/qcom/lpass-sc7280.c
-+++ b/sound/soc/qcom/lpass-sc7280.c
-@@ -591,6 +591,8 @@ static struct platform_driver sc7280_lpass_cpu_platform_driver = {
- 	.probe = asoc_qcom_lpass_cpu_platform_probe,
- 	.remove = asoc_qcom_lpass_cpu_platform_remove,
- 	.shutdown = asoc_qcom_lpass_cpu_platform_shutdown,
-+	.resume = asoc_qcom_lpass_cpu_platform_resume,
-+	.suspend = asoc_qcom_lpass_cpu_platform_suspend,
+-static struct snd_soc_ops tegra_machine_snd_ops = {
++static const struct snd_soc_ops tegra_machine_snd_ops = {
+ 	.hw_params = tegra_machine_hw_params,
  };
  
- module_platform_driver(sc7280_lpass_cpu_platform_driver);
-diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-index e0ea698..53d9b5d 100644
---- a/sound/soc/qcom/lpass.h
-+++ b/sound/soc/qcom/lpass.h
-@@ -419,5 +419,7 @@ extern const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops;
- int lpass_cpu_pcm_new(struct snd_soc_pcm_runtime *rtd,
- 				struct snd_soc_dai *dai);
- extern const struct snd_soc_dai_ops asoc_qcom_lpass_wcd_dai_ops;
-+int asoc_qcom_lpass_cpu_platform_suspend(struct platform_device *pdev, pm_message_t state);
-+int asoc_qcom_lpass_cpu_platform_resume(struct platform_device *pdev);
- 
- #endif /* __LPASS_H__ */
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.33.0
 
