@@ -2,85 +2,71 @@ Return-Path: <SRS0=FVIg=OV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AE23C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 07:01:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38BEFC433FE
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 07:03:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A0A9B615A4
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 07:01:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A0A9B615A4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 14566619F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 07:03:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 14566619F5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 10C6916CE;
-	Fri,  1 Oct 2021 09:01:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10C6916CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D77316A1;
+	Fri,  1 Oct 2021 09:02:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D77316A1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633071711;
-	bh=p7czJ44vvMzy/hc5Aox3HyxBmultBM6iHzXnCPzT2Ec=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=t2CiDP+0vr09WDbNn5qKl6ssozxgni9ma8co/4hibDw2vNnPASX8ACzkEzbCLdcFJ
-	 Q3P7yc/3/vbiaxmHhbmd9CGeG6hzvZ5D6O6GOPLMWwWWULwxq20i/yY6feh3SnSL50
-	 bouXxE2Q35zazvFj4cuqvEzupBeiggcuGz2wua2I=
+	s=default; t=1633071788;
+	bh=fRyqGIHgLPl5ADW9CXuiFhIGM29DpIcwIrL211rDfL4=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=L8BXZuaizBmKmGs+7t1aRhaCPKn0VrjvyFbRBxUhaHHMFwpw1C7juOo5kpiKSAVmr
+	 W7DIVjDx743w6LjNKnDb1RcKxxmIQLGZTJz+k4oRnykzcTl83KK6ZmiO7w8jqyTvs0
+	 Fby3kvEiqrMQtWc+jx1XAu5sEwgfsLidldMlQ2l0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87F51F80227;
-	Fri,  1 Oct 2021 09:01:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05A2CF80272;
+	Fri,  1 Oct 2021 09:02:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 75B4EF800F3; Fri,  1 Oct 2021 09:00:58 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 8B54DF802C4; Fri,  1 Oct 2021 09:02:15 +0200 (CEST)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B757AF800F3
- for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2021 09:00:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B757AF800F3
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="GiyiDXVo"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="EMHf1xsx"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id D11462267C;
- Fri,  1 Oct 2021 07:00:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1633071648; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=HOnbS8C3a7wH7Ijze98c0zkjmfGHCYHlq5aeM6MfImI=;
- b=GiyiDXVoN/RgwdfBPSgqFtewvECTmiW4BNbV67nBwCYCNtsqfukuT7a0UBct00dKBybz2I
- B7JSErUBQws8WGFtc4BKWp9T3vC6z+h34yrN5rLrzzzQZoREdRw8qE0phSrnyECVERkpx2
- NtHNAo3Y4V878OQ2DzV4QtDqvbd4poY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1633071648;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=HOnbS8C3a7wH7Ijze98c0zkjmfGHCYHlq5aeM6MfImI=;
- b=EMHf1xsxbzHt/ipLrcWVWvZgj1s/y0HPmQbnskCUti8gKOdxzwK0lb/D9pg2HYS/RfTbG8
- CYeDX+goDouaXuAw==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 80380A3B88;
- Fri,  1 Oct 2021 07:00:48 +0000 (UTC)
-Date: Fri, 01 Oct 2021 09:00:48 +0200
-Message-ID: <s5h8rzdjkkf.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Chris Chiu <chris.chiu@canonical.com>
-Subject: Re: [PATCH] ALSA: hda - Enable headphone mic on Dell Latitude laptops
- with ALC3254
-In-Reply-To: <20211001062856.1037901-1-chris.chiu@canonical.com>
-References: <20211001062856.1037901-1-chris.chiu@canonical.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, kailang@realtek.com,
- linux-kernel@vger.kernel.org, tiwai@suse.com, hui.wang@canonical.com,
- jhp@endlessos.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4B2A0F800F3
+ for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2021 09:02:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B2A0F800F3
+X-UUID: 8c816a91e3554216bd73298a65a528cb-20211001
+X-UUID: 8c816a91e3554216bd73298a65a528cb-20211001
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by
+ mailgw02.mediatek.com (envelope-from <trevor.wu@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 804888100; Fri, 01 Oct 2021 15:01:56 +0800
+Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 1 Oct 2021 15:01:55 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by mtkexhb02.mediatek.inc
+ (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+ Fri, 1 Oct 2021 15:01:55 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
+ Frontend Transport; Fri, 1 Oct 2021 15:01:55 +0800
+From: Trevor Wu <trevor.wu@mediatek.com>
+To: <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+ <matthias.bgg@gmail.com>
+Subject: [PATCH v2 0/2] ASoC: mediatek: Add support for MT8195 sound card with
+ rt1011 and rt5682
+Date: Fri, 1 Oct 2021 15:01:51 +0800
+Message-ID: <20211001070153.6609-1-trevor.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK: N
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
+ linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com, aaronyu@google.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,22 +82,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 01 Oct 2021 08:28:56 +0200,
-Chris Chiu wrote:
-> 
-> The headphone mic is not working on Dell Latitude laptops with ALC3254.
-> The codec vendor id is 0x10ec0295 and share the same pincfg as defined
-> in ALC295_STANDARD_PINS. So the ALC269_FIXUP_DELL1_MIC_NO_PRESENCE will
-> be applied per alc269_pin_fixup_tbl[] but actually the headphone mic is
-> using NID 0x1b instead of 0x1a. The ALC269_FIXUP_DELL4_MIC_NO_PRESENCE
-> need to be applied instead.
-> 
-> Use ALC269_FIXUP_DELL4_MIC_NO_PRESENCE for particular models before
-> a generic fixup comes out.
-> 
-> Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
+This series of patches adds support for mt8195 board with mt6359, rt1011
+and rt5682.
+Patches are based on broonie tree "for-next" branch.
 
-Thanks, applied.
+Changes since v1:
+  - refined code based on Pierre-Louis's suggestions
+  - added missing of_node_put
+  - fixed wrong fixup assignment on HDMITX
 
+Trevor Wu (2):
+  ASoC: mediatek: mt8195: add machine driver with mt6359, rt1011 and
+    rt5682
+  dt-bindings: mediatek: mt8195: add mt8195-mt6359-rt1011-rt5682
+    document
 
-Takashi
+ .../sound/mt8195-mt6359-rt1011-rt5682.yaml    |   47 +
+ sound/soc/mediatek/Kconfig                    |   15 +
+ sound/soc/mediatek/mt8195/Makefile            |    1 +
+ .../mt8195/mt8195-mt6359-rt1011-rt5682.c      | 1155 +++++++++++++++++
+ 4 files changed, 1218 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1011-rt5682.yaml
+ create mode 100644 sound/soc/mediatek/mt8195/mt8195-mt6359-rt1011-rt5682.c
+
+-- 
+2.18.0
+
