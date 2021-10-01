@@ -2,93 +2,70 @@ Return-Path: <SRS0=FVIg=OV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DA7FC433FE
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 11:46:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B021C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 11:51:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 576D661A8D
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 11:46:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 576D661A8D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 69F4461AA4
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 11:51:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 69F4461AA4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 14A32112;
-	Fri,  1 Oct 2021 13:45:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14A32112
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8B7D316CC;
+	Fri,  1 Oct 2021 13:50:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B7D316CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633088785;
-	bh=TwDt/uMovFpDutf/7j3ylcJP9uuVF4YXHj/o57Iljl4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=i9mbllb2EUXVAJbWsOvVpri6UagKPmbOPHdKFldLzlJXhYG0jDT9K/vICJiDky6kr
-	 2+Csci87Ools7u2vMfVqgLZNQRfCazkKLSxm28gJQz27ZJqas1nKPJaqmJmQl0abdg
-	 icjl2Ehe7zm9Vc+Hwmw/1N+bLqcdrQ9ekbpQzm04=
+	s=default; t=1633089087;
+	bh=ipigCtRkqUL75m2LsB73y0+V99tBh1RdVLej7145hCc=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=huzwmF2lQbZLe9HVX2KI3MW2cHqYQk9eD6/8opv2Wb696N643/3Lylciu9zi+gFmk
+	 AXHerb0sr2KjAFiaVMJYZXo81rlVzsyxcgm+SPA2tfTeIvcUrWBo79OYHzgzu8WQMd
+	 N3W/j0I5qR56U6RezuIaxalVStjksDJnYXKlEDbo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7E4B9F801F7;
-	Fri,  1 Oct 2021 13:45:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0CD6DF80165;
+	Fri,  1 Oct 2021 13:50:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 60D04F80245; Fri,  1 Oct 2021 13:45:32 +0200 (CEST)
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com
- [IPv6:2a00:1450:4864:20::12b])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id C9343F80245; Fri,  1 Oct 2021 13:50:35 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D4490F801F7
- for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2021 13:45:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4490F801F7
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="c5pnifb8"
-Received: by mail-lf1-x12b.google.com with SMTP id m3so37194132lfu.2
- for <alsa-devel@alsa-project.org>; Fri, 01 Oct 2021 04:45:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=teiDv15/wzLe/Wf0K1qlBSWOTN//zgsH/sxmryk5zmo=;
- b=c5pnifb84S3cmH+v6CwyiCpgvnYoIn2qTma9lJrQG/5u3N4pvO/6mEaebzk5ODZ+8/
- T5ilDAGNMAarZMJBsPb0WzWmZqiz6zrVP8amb0v4FjmPuU7Ya5IStGoAevd3FiveOQRo
- fFqfxGUkJyhDiibsC7NzARCE5ReDri7f5s1F2f9uZEMsSAuxtWBRCwX/iH9GGq2gP1JM
- bSQ51+djagI9hzzhdLbhcMD+HUszZEknVeZAuPP4ZFIK5sX8SEC5Ro99S8ptusxHouBQ
- VtkDE/8uC3hQ6CcT3wb4xeAiq+hugvd8gonTzORNtgrfLEoUPoqxvRhYN/K/Yr14CW79
- akkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=teiDv15/wzLe/Wf0K1qlBSWOTN//zgsH/sxmryk5zmo=;
- b=pwbBfIJUP3SL5yiVRfU2qO9ZVtZX9NgVE738IxxpVE/xg7acqW3ZtwwZGBiGaliOq+
- gM9Kx/9ncNCWkrOeKl1anC61agyJbaPmXv+nfbgPvzZRFcG7MA1M+UB9Xsi7ow/aQqkY
- 2fSyRQgn+NIv1r1YMPGG83BOlgWbY8Ho0KF4q/h/V/dFd5GAKbw4eeqFafEL709FweB4
- rrm0zDEY74fuZ5TtejuEafE60E3x3T/eMwfrIY9O3TrDX8beUgIKF7aJYiUCEoarOF5N
- jm/KKnZFH49RbOMXhaIoJVT8R08AKjfFaVDfLSye1LD3MGZp6K99QUolzFzWgB+ctQ/g
- sLoQ==
-X-Gm-Message-State: AOAM531xR0UCI19Mv0VVkD6szx9UMP3Pji7vxSECrvzqLUoZXdbWvleQ
- Ab+28DHlt9XbHL9B3lAsKG0=
-X-Google-Smtp-Source: ABdhPJxtcbH1EXrolybxconjeDFwJnpNlfjqcarbu5zs4BQ+iGKIMEQhjRDzclxuvWBcQ7oOU6nNSw==
-X-Received: by 2002:a2e:bf0d:: with SMTP id c13mr11747222ljr.150.1633088727328; 
- Fri, 01 Oct 2021 04:45:27 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se.
- [98.128.228.193])
- by smtp.gmail.com with ESMTPSA id v27sm710990lfd.127.2021.10.01.04.45.26
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 01 Oct 2021 04:45:26 -0700 (PDT)
-From: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: tegra: Constify static snd_soc_ops
-Date: Fri,  1 Oct 2021 13:45:17 +0200
-Message-Id: <20211001114517.6752-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.33.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 65791F801F7
+ for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2021 13:50:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65791F801F7
+X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="223509443"
+X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; d="scan'208";a="223509443"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Oct 2021 04:49:54 -0700
+X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; d="scan'208";a="540047578"
+Received: from pwhela2-mobl1.ger.corp.intel.com (HELO [10.213.160.166])
+ ([10.213.160.166])
+ by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Oct 2021 04:49:54 -0700
+Subject: Re: [PATCH] soundwire: qcom: add debugfs entry for soundwire register
+ dump
+To: Vinod Koul <vkoul@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+References: <20210907105636.3171-1-srinivas.kandagatla@linaro.org>
+ <YVaMlSbmFnrQyb0u@matsya>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <ada6763f-7821-6388-2c7a-3a771450c7bf@linux.intel.com>
+Date: Fri, 1 Oct 2021 06:45:43 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Svyatoslav Ryhel <clamor95@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Rikard Falkeborn <rikard.falkeborn@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>,
- Thierry Reding <thierry.reding@gmail.com>, Ion Agorria <ion@agorria.com>,
- linux-tegra@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>
+In-Reply-To: <YVaMlSbmFnrQyb0u@matsya>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,28 +81,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The struct tegra_machine_snd_ops is only assigned to the ops field in the
-snd_soc_dai_link struct which is a pointer to const struct snd_soc_ops.
-Make it const to allow the compiler to put it in read-only memory.
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- sound/soc/tegra/tegra_asoc_machine.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/tegra/tegra_asoc_machine.c b/sound/soc/tegra/tegra_asoc_machine.c
-index 735909310a26..3cbe6ef1cf9f 100644
---- a/sound/soc/tegra/tegra_asoc_machine.c
-+++ b/sound/soc/tegra/tegra_asoc_machine.c
-@@ -313,7 +313,7 @@ static int tegra_machine_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static struct snd_soc_ops tegra_machine_snd_ops = {
-+static const struct snd_soc_ops tegra_machine_snd_ops = {
- 	.hw_params = tegra_machine_hw_params,
- };
- 
--- 
-2.33.0
+On 9/30/21 11:20 PM, Vinod Koul wrote:
+> HI Srini,
+> 
+> On 07-09-21, 11:56, Srinivas Kandagatla wrote:
+>> +#ifdef CONFIG_DEBUG_FS
+>> +static int swrm_reg_show(struct seq_file *s_file, void *data)
+>> +{
+>> +	struct qcom_swrm_ctrl *swrm = s_file->private;
+>> +	int reg, reg_val;
+>> +
+>> +	for (reg = 0; reg <= SWR_MSTR_MAX_REG_ADDR; reg += 4) {
+>> +		swrm->reg_read(swrm, reg, &reg_val);
+> 
+> Why not use regmap_read here, that would avoid reading from the bus when
+> we already have the values...
 
+It's an indirect read based on regmap.
+
+	ctrl->reg_read = qcom_swrm_ahb_reg_read;
+	ctrl->reg_write = qcom_swrm_ahb_reg_write;
+
+static int qcom_swrm_ahb_reg_read(struct qcom_swrm_ctrl *ctrl, int reg,
+				  u32 *val)
+{
+	struct regmap *wcd_regmap = ctrl->regmap;
+	int ret;
+
+	/* pg register + offset */
+	ret = regmap_bulk_write(wcd_regmap, SWRM_AHB_BRIDGE_RD_ADDR_0,
+			  (u8 *)&reg, 4);
+	if (ret < 0)
+		return SDW_CMD_FAIL;
+
+	ret = regmap_bulk_read(wcd_regmap, SWRM_AHB_BRIDGE_RD_DATA_0,
+			       val, 4);
+	if (ret < 0)
+		return SDW_CMD_FAIL;
+
+	return SDW_CMD_OK;
+}
+
+> Second make sure later when pm_runtime support is added, this take a
+> reference ..
+
+Yes indeed, the SoundWire regmap doesn't change the pm_runtime status.
