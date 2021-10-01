@@ -2,69 +2,69 @@ Return-Path: <SRS0=FVIg=OV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FF64C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 11:24:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39830C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 11:24:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7AA6E61A81
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 11:24:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7AA6E61A81
+	by mail.kernel.org (Postfix) with ESMTPS id B51C16134F
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 11:24:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B51C16134F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EB53B16D0;
-	Fri,  1 Oct 2021 13:23:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB53B16D0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1CD191703;
+	Fri,  1 Oct 2021 13:23:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CD191703
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633087465;
-	bh=LKXFul5GTkPWlYcIg+Kn7QnAYfimOL9bLAC8Qekv0Yg=;
+	s=default; t=1633087483;
+	bh=Y22uA0sf/qZE20Cz4EXcslHixgdb37pJys3Rhifibtg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cKcksPZ8Ta4P8nAhCDKH9d88s/Xmtf7Aiyi8xiXOSQmi2X8q69Xvu//W+UPE6z0KF
-	 akC0JKlEyWzaMhjrlJUe4FbhwYQPxix93l1cMWmN3w1CrYwPNIJsCThUqkNGzmpfVW
-	 idekolL2N0VNeAGAAspphui/P4VTArBG+aDg6EtA=
+	b=dR0XBNs0OUTuUyrdO8fbDE751hE7/SZqJnP9NKcoLrLGGckGlft12zGVaUKOiajum
+	 kQOawIxY6UD0pLWMhs2QPK5neawx3Ru0Xd9WGPY2Qs0CY4ZYiy3RQTA7t4NYxY/nFN
+	 vKvKiIA+JPQmQBt0N+r8nvcfHXeszXkZM4eVOVx4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 306FCF804FA;
-	Fri,  1 Oct 2021 13:22:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E8047F804FD;
+	Fri,  1 Oct 2021 13:22:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3A37DF804FB; Fri,  1 Oct 2021 13:22:22 +0200 (CEST)
-Received: from so254-9.mailgun.net (so254-9.mailgun.net [198.61.254.9])
+ id AE018F804FE; Fri,  1 Oct 2021 13:22:26 +0200 (CEST)
+Received: from m43-7.mailgun.net (m43-7.mailgun.net [69.72.43.7])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0D292F804E5
- for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2021 13:22:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D292F804E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id AC362F804F1
+ for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2021 13:22:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC362F804F1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="mLN7U1un"
+ header.i=@mg.codeaurora.org header.b="gXO/radh"
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
  q=dns/txt; 
- s=smtp; t=1633087339; h=References: In-Reply-To: Message-Id: Date:
+ s=smtp; t=1633087340; h=References: In-Reply-To: Message-Id: Date:
  Subject: Cc: To: From: Sender;
- bh=NdWWkBh4ji37EVAWjyADSRNd2Va8xGTCJgZDIwdHORE=;
- b=mLN7U1unHx8KyzMEF5PSc9ODDsIvEPUKNP5NWG5SIaTQjfJh+tvjg8P0PSWNigB7F4t/r6wS
- z8FHwFxoY5sbzCGmMekq4w9uZsndgCcoSd3jCHSUtBHlVby338C7xwBKDac8frqmn5IdSfwU
- gAcPXZSQSeuolddU7zNXWgUTKnc=
-X-Mailgun-Sending-Ip: 198.61.254.9
+ bh=rME+nC0m199ZmuTpRVmVeo/Ci0Dmiq/V1rCel24i118=;
+ b=gXO/radh/qFfTve4P/pCS2yOjMlQjSU/Eg4cXFBxiJNnGlPXJfwCXOSw2AE09GGcz02JmhGG
+ cMV7KqNnOFZ0yUWYWpcxZLblk89IFWdvo1KQumgIjz0e96Ottqfur9M5G20aBM202VAtBPxl
+ 17el0LtNZou50wQndLJYZ7XIKh0=
+X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 6156ef5afc6e34f8cda4624e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 01 Oct 2021 11:22:02
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 6156ef6747d64efb6d230c52 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 01 Oct 2021 11:22:15
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 77FE7C43616; Fri,  1 Oct 2021 11:22:02 +0000 (UTC)
+ id 7B40EC4361B; Fri,  1 Oct 2021 11:22:15 +0000 (UTC)
 Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
  (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id F0A91C4338F;
- Fri,  1 Oct 2021 11:21:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org F0A91C4338F
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 76998C4338F;
+ Fri,  1 Oct 2021 11:22:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 76998C4338F
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
  dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
@@ -77,10 +77,9 @@ To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
  linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  swboyd@chromium.org, judyhsiao@chromium.org
-Subject: [PATCH 2/8] ASoC: qcom: lpass: Add dma fields for codec dma lpass
- interface
-Date: Fri,  1 Oct 2021 16:51:26 +0530
-Message-Id: <1633087292-1378-3-git-send-email-srivasam@codeaurora.org>
+Subject: [PATCH 4/8] ASoC: qcom: Add lapss CPU driver for codec dma control
+Date: Fri,  1 Oct 2021 16:51:28 +0530
+Message-Id: <1633087292-1378-5-git-send-email-srivasam@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1633087292-1378-1-git-send-email-srivasam@codeaurora.org>
 References: <1633087292-1378-1-git-send-email-srivasam@codeaurora.org>
@@ -101,257 +100,297 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add lpass interface memebers to support audio path over codec dma.
+Add lpass cpu driver to support audio over codec dma for
+ADSP bypass usecase.
 
 Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
 Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 ---
- sound/soc/qcom/lpass.h | 148 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 148 insertions(+)
+ sound/soc/qcom/lpass-cdc-dma.c | 263 +++++++++++++++++++++++++++++++++++++++++
+ sound/soc/qcom/lpass.h         |   1 +
+ 2 files changed, 264 insertions(+)
+ create mode 100644 sound/soc/qcom/lpass-cdc-dma.c
 
+diff --git a/sound/soc/qcom/lpass-cdc-dma.c b/sound/soc/qcom/lpass-cdc-dma.c
+new file mode 100644
+index 0000000..56b3791
+--- /dev/null
++++ b/sound/soc/qcom/lpass-cdc-dma.c
+@@ -0,0 +1,263 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2021 The Linux Foundation. All rights reserved.
++ *
++ * lpass-cdc-dma.c -- ALSA SoC WCD -CPU DAI driver for QTi LPASS WCD
++ */
++
++#include <linux/module.h>
++#include <sound/soc.h>
++#include <sound/soc-dai.h>
++
++#include "lpass-lpaif-reg.h"
++#include "lpass.h"
++
++static int __lpass_platform_codec_intf_init(struct snd_soc_dai *dai,
++					 struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *soc_runtime = asoc_substream_to_rtd(substream);
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(soc_runtime, 0);
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	struct snd_pcm_runtime *rt = substream->runtime;
++	struct lpass_pcm_data *pcm_data = rt->private_data;
++	struct lpass_variant *v = drvdata->variant;
++	struct lpaif_dmactl *dmactl;
++	struct regmap *map;
++	int dir = substream->stream;
++	int ret, id;
++	unsigned int dai_id = cpu_dai->driver->id;
++
++	if (dir ==  SNDRV_PCM_STREAM_PLAYBACK) {
++		dmactl = drvdata->rxtx_rd_dmactl;
++		map = drvdata->rxtx_lpaif_map;
++		id = pcm_data->dma_ch;
++	} else {
++		if (dai_id == LPASS_CDC_DMA_TX3) {
++			dmactl = drvdata->rxtx_wr_dmactl;
++			map = drvdata->rxtx_lpaif_map;
++			id = pcm_data->dma_ch - v->rxtx_wrdma_channel_start;
++		} else if (dai_id == LPASS_CDC_DMA_VA_TX0) {
++			dmactl = drvdata->va_wr_dmactl;
++			map = drvdata->va_lpaif_map;
++			id = pcm_data->dma_ch - v->va_wrdma_channel_start;
++		}
++	}
++
++	if (dir ==  SNDRV_PCM_STREAM_PLAYBACK) {
++		ret = regmap_fields_write(dmactl->codec_intf, id, LPASS_CDC_DMA_RX0_INTERFACE);
++		if (ret) {
++			dev_err(soc_runtime->dev,
++				"error writing to rdmactl reg: %d\n", ret);
++			return ret;
++		}
++	    ret = regmap_fields_write(dmactl->codec_fs_sel, id, 0x0);
++		if (ret) {
++			dev_err(soc_runtime->dev,
++				"error writing to rdmactl reg: %d\n", ret);
++			return ret;
++		}
++		ret = regmap_fields_write(dmactl->codec_fs_delay, id, 0x0);
++		if (ret) {
++			dev_err(soc_runtime->dev,
++				"error writing to rdmactl codec_fs_delay reg field: %d\n", ret);
++			return ret;
++		}
++		ret = regmap_fields_write(dmactl->codec_pack, id, 0x1);
++		if (ret) {
++			dev_err(soc_runtime->dev,
++				"error writing to rdmactl codec_pack reg field: %d\n", ret);
++			return ret;
++		}
++		ret = regmap_fields_write(dmactl->codec_enable, id, LPAIF_DMACTL_ENABLE_ON);
++		if (ret) {
++			dev_err(soc_runtime->dev,
++				"error writing to rdmactl reg: %d\n", ret);
++			return ret;
++		}
++
++	} else {
++		ret = regmap_fields_write(dmactl->codec_intf, id, LPASS_CDC_DMA_INTERFACE(dai_id));
++		if (ret) {
++			dev_err(soc_runtime->dev,
++				"error writing to wrdmactl codec_intf reg field: %d\n", ret);
++			return ret;
++		}
++	    ret = regmap_fields_write(dmactl->codec_fs_sel, id, 0x0);
++		if (ret) {
++			dev_err(soc_runtime->dev,
++				"error writing to wrdmactl codec_fs_sel reg field: %d\n", ret);
++			return ret;
++		}
++		ret = regmap_fields_write(dmactl->codec_fs_delay, id, 0x0);
++		if (ret) {
++			dev_err(soc_runtime->dev,
++				"error writing to wrdmactl codec_fs_delay reg field: %d\n", ret);
++			return ret;
++		}
++		ret = regmap_fields_write(dmactl->codec_pack, id, 0x1);
++		if (ret) {
++			dev_err(soc_runtime->dev,
++				"error writing to wrdmactl codec_pack reg field: %d\n", ret);
++			return ret;
++		}
++		ret = regmap_fields_write(dmactl->codec_enable, id, LPAIF_DMACTL_ENABLE_ON);
++		if (ret) {
++			dev_err(soc_runtime->dev,
++				"error writing to wrdmactl codec_enable reg field: %d\n", ret);
++			return ret;
++		}
++	}
++	return 0;
++}
++
++static int lpass_wcd_daiops_startup(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
++{
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	int ret, i;
++
++	for (i = 0; i < drvdata->cdc_num_clks; i++) {
++		ret = clk_prepare_enable(drvdata->cdc_dma_clks[i]);
++		if (ret) {
++			dev_err(dai->dev, "error in enabling cdc dma clks: %d\n", ret);
++			return ret;
++		}
++	}
++
++	return 0;
++}
++
++static void lpass_wcd_daiops_shutdown(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
++{
++	int i;
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++
++	for (i = 0; i < drvdata->cdc_num_clks; i++)
++		clk_disable_unprepare(drvdata->cdc_dma_clks[i]);
++}
++
++static int lpass_wcd_daiops_hw_params(struct snd_pcm_substream *substream,
++		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
++{
++	struct snd_soc_pcm_runtime *soc_runtime = asoc_substream_to_rtd(substream);
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(soc_runtime, 0);
++	struct lpaif_dmactl *dmactl;
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	struct snd_pcm_runtime *rt = substream->runtime;
++	struct lpass_pcm_data *pcm_data = rt->private_data;
++	struct lpass_variant *v = drvdata->variant;
++	struct regmap *map;
++	int dir = substream->stream;
++	unsigned int ret, regval;
++	unsigned int channels = params_channels(params);
++	int id;
++	unsigned int dai_id = cpu_dai->driver->id;
++
++	if (dir == SNDRV_PCM_STREAM_PLAYBACK) {
++		dmactl = drvdata->rxtx_rd_dmactl;
++		map = drvdata->rxtx_lpaif_map;
++		id = pcm_data->dma_ch;
++	} else {
++		if (dai_id == LPASS_CDC_DMA_TX3) {
++			dmactl = drvdata->rxtx_wr_dmactl;
++			map = drvdata->rxtx_lpaif_map;
++			id = pcm_data->dma_ch - v->rxtx_wrdma_channel_start;
++		} else if (dai_id == LPASS_CDC_DMA_VA_TX0) {
++			dmactl = drvdata->va_wr_dmactl;
++			map = drvdata->va_lpaif_map;
++			id = pcm_data->dma_ch - v->va_wrdma_channel_start;
++		}
++	}
++
++	switch (channels) {
++	case 1:
++		regval = LPASS_CDC_DMA_INTF_ONE_CHANNEL;
++		break;
++	case 2:
++		regval = LPASS_CDC_DMA_INTF_TWO_CHANNEL;
++		break;
++	case 4:
++		regval = LPASS_CDC_DMA_INTF_FOUR_CHANNEL;
++		break;
++	case 6:
++		regval = LPASS_CDC_DMA_INTF_SIX_CHANNEL;
++		break;
++	case 8:
++		regval = LPASS_CDC_DMA_INTF_EIGHT_CHANNEL;
++		break;
++	default:
++		dev_err(soc_runtime->dev, "invalid PCM config\n");
++		return -EINVAL;
++	}
++
++	ret = regmap_fields_write(dmactl->codec_channel, id, regval);
++	if (ret) {
++		dev_err(soc_runtime->dev,
++			"error writing to rdmactl codec_channel reg field: %d\n", ret);
++		return ret;
++	}
++	return ret;
++}
++
++static int lpass_wcd_daiops_trigger(struct snd_pcm_substream *substream,
++		int cmd, struct snd_soc_dai *dai)
++{
++	struct snd_soc_pcm_runtime *soc_runtime = asoc_substream_to_rtd(substream);
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(soc_runtime, 0);
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	struct snd_pcm_runtime *rt = substream->runtime;
++	struct lpass_pcm_data *pcm_data = rt->private_data;
++	struct lpass_variant *v = drvdata->variant;
++	int dir = substream->stream;
++	struct lpaif_dmactl *dmactl;
++	struct regmap *map;
++	unsigned int dai_id = cpu_dai->driver->id;
++	int ret = 0, id;
++
++	if (dir == SNDRV_PCM_STREAM_PLAYBACK) {
++		dmactl = drvdata->rxtx_rd_dmactl;
++		map = drvdata->rxtx_lpaif_map;
++		id = pcm_data->dma_ch;
++	} else {
++		if (dai_id == LPASS_CDC_DMA_TX3) {
++			dmactl = drvdata->rxtx_wr_dmactl;
++			map = drvdata->rxtx_lpaif_map;
++			id = pcm_data->dma_ch - v->rxtx_wrdma_channel_start;
++		} else if (dai_id == LPASS_CDC_DMA_VA_TX0) {
++			dmactl = drvdata->va_wr_dmactl;
++			map = drvdata->va_lpaif_map;
++			id = pcm_data->dma_ch - v->va_wrdma_channel_start;
++		}
++	}
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		__lpass_platform_codec_intf_init(dai, substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		ret = regmap_fields_write(dmactl->codec_enable, id, LPAIF_DMACTL_ENABLE_OFF);
++		if (ret) {
++			dev_err(soc_runtime->dev,
++				"error writing to rdmactl reg: %d\n", ret);
++			return ret;
++		}
++
++		break;
++	}
++	return ret;
++}
++
++const struct snd_soc_dai_ops asoc_qcom_lpass_wcd_dai_ops = {
++	.startup	= lpass_wcd_daiops_startup,
++	.shutdown	= lpass_wcd_daiops_shutdown,
++	.hw_params	= lpass_wcd_daiops_hw_params,
++	.trigger	= lpass_wcd_daiops_trigger,
++};
++EXPORT_SYMBOL_GPL(asoc_qcom_lpass_wcd_dai_ops);
++
++MODULE_DESCRIPTION("QTi LPASS CDC DMA Driver");
++MODULE_LICENSE("GPL v2");
 diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-index 63aaa6f..058b42d 100644
+index 058b42d..e0ea698 100644
 --- a/sound/soc/qcom/lpass.h
 +++ b/sound/soc/qcom/lpass.h
-@@ -19,6 +19,28 @@
- #define LPASS_MAX_MI2S_PORTS			(8)
- #define LPASS_MAX_DMA_CHANNELS			(8)
- #define LPASS_MAX_HDMI_DMA_CHANNELS		(4)
-+#define LPASS_MAX_CDC_DMA_CHANNELS		(8)
-+#define LPASS_MAX_VA_CDC_DMA_CHANNELS		(8)
-+#define LPASS_CDC_DMA_INTF_ONE_CHANNEL		(0x01)
-+#define LPASS_CDC_DMA_INTF_TWO_CHANNEL		(0x03)
-+#define LPASS_CDC_DMA_INTF_FOUR_CHANNEL		(0x0F)
-+#define LPASS_CDC_DMA_INTF_SIX_CHANNEL		(0x3F)
-+#define LPASS_CDC_DMA_INTF_EIGHT_CHANNEL	(0xFF)
-+#define LPASS_CDC_DMA_RX0_INTERFACE		(0x1)
-+#define LPASS_CDC_DMA_TX0_INTERFACE		(0x1)
-+#define LPASS_CDC_DMA_TX1_INTERFACE		(0x2)
-+#define LPASS_CDC_DMA_TX2_INTERFACE		(0x3)
-+#define LPASS_CDC_DMA_TX3_INTERFACE		(0x4)
-+#define LPASS_CDC_DMA_VA0_INTERFACE		(0x1)
-+
-+#define LPASS_CDC_DMA_INTERFACE(dai_id)	\
-+	((dai_id == LPASS_CDC_DMA_TX3) ? \
-+	LPASS_CDC_DMA_TX3_INTERFACE : \
-+	LPASS_CDC_DMA_VA0_INTERFACE)
-+
-+#define LPASS_MAX_CDC_CLKS			(9)
-+#define LPASS_ACTIVE_PDS			(4)
-+#define LPASS_PROXY_PDS			(8)
+@@ -418,5 +418,6 @@ int asoc_qcom_lpass_cpu_dai_probe(struct snd_soc_dai *dai);
+ extern const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops;
+ int lpass_cpu_pcm_new(struct snd_soc_pcm_runtime *rtd,
+ 				struct snd_soc_dai *dai);
++extern const struct snd_soc_dai_ops asoc_qcom_lpass_wcd_dai_ops;
  
- #define QCOM_REGMAP_FIELD_ALLOC(d, m, f, mf)    \
- 	do { \
-@@ -50,6 +72,12 @@ struct lpaif_dmactl {
- 	struct regmap_field *burst8;
- 	struct regmap_field *burst16;
- 	struct regmap_field *dynburst;
-+	struct regmap_field *codec_enable;
-+	struct regmap_field *codec_pack;
-+	struct regmap_field *codec_intf;
-+	struct regmap_field *codec_fs_sel;
-+	struct regmap_field *codec_channel;
-+	struct regmap_field *codec_fs_delay;
- };
- 
- /* Both the CPU DAI and platform drivers will access this data */
-@@ -64,6 +92,25 @@ struct lpass_data {
- 	/* MI2S bit clock (derived from system clock by a divider */
- 	struct clk *mi2s_bit_clk[LPASS_MAX_MI2S_PORTS];
- 
-+	struct clk *cdc_dma_clks[LPASS_MAX_CDC_CLKS];
-+
-+	struct clk *xo;
-+	struct clk *gcc_cfg_noc_lpass;
-+	struct clk *core_cc_core;
-+	struct clk *aon_cc_audio_hm_h;
-+	struct clk *core_cc_sysnoc_mport_core;
-+	struct clk *audio_cc_ext_mclk0;
-+	struct clk *audio_cc_ext_mclk1;
-+	struct clk *core_cc_lpm_core;
-+	struct clk *core_cc_lpm_mem0_core;
-+	struct clk *audio_cc_codec_mem;
-+	struct clk *audio_cc_codec_mem0;
-+	struct clk *audio_cc_codec_mem1;
-+	struct clk *audio_cc_codec_mem2;
-+	struct clk *audio_cc_rx_mclk_2x;
-+	struct clk *audio_cc_rx_mclk;
-+	struct clk *aon_cc_va_mem0;
-+
- 	/* MI2S SD lines to use for playback/capture */
- 	unsigned int mi2s_playback_sd_mode[LPASS_MAX_MI2S_PORTS];
- 	unsigned int mi2s_capture_sd_mode[LPASS_MAX_MI2S_PORTS];
-@@ -72,38 +119,58 @@ struct lpass_data {
- 	bool mi2s_was_prepared[LPASS_MAX_MI2S_PORTS];
- 
- 	int hdmi_port_enable;
-+	int wcd_codec_enable;
- 
- 	/* low-power audio interface (LPAIF) registers */
- 	void __iomem *lpaif;
- 	void __iomem *hdmiif;
-+	void __iomem *rxtx_lpaif;
-+	void __iomem *va_lpaif;
- 
- 	/* regmap backed by the low-power audio interface (LPAIF) registers */
- 	struct regmap *lpaif_map;
- 	struct regmap *hdmiif_map;
-+	struct regmap *rxtx_lpaif_map;
-+	struct regmap *va_lpaif_map;
- 
- 	/* interrupts from the low-power audio interface (LPAIF) */
- 	int lpaif_irq;
- 	int hdmiif_irq;
-+	int rxtxif_irq;
-+	int vaif_irq;
-+
- 	/* SOC specific variations in the LPASS IP integration */
- 	struct lpass_variant *variant;
- 
- 	/* bit map to keep track of static channel allocations */
- 	unsigned long dma_ch_bit_map;
- 	unsigned long hdmi_dma_ch_bit_map;
-+	unsigned long rxtx_dma_ch_bit_map;
-+	unsigned long va_dma_ch_bit_map;
- 
- 	/* used it for handling interrupt per dma channel */
- 	struct snd_pcm_substream *substream[LPASS_MAX_DMA_CHANNELS];
- 	struct snd_pcm_substream *hdmi_substream[LPASS_MAX_HDMI_DMA_CHANNELS];
-+	struct snd_pcm_substream *rxtx_substream[LPASS_MAX_CDC_DMA_CHANNELS];
-+	struct snd_pcm_substream *va_substream[LPASS_MAX_CDC_DMA_CHANNELS];
- 
- 	/* SOC specific clock list */
- 	struct clk_bulk_data *clks;
- 	int num_clks;
-+	struct clk_bulk_data *cdc_clks;
-+	int cdc_num_clks;
- 
- 	/* Regmap fields of I2SCTL & DMACTL registers bitfields */
- 	struct lpaif_i2sctl *i2sctl;
- 	struct lpaif_dmactl *rd_dmactl;
- 	struct lpaif_dmactl *wr_dmactl;
- 	struct lpaif_dmactl *hdmi_rd_dmactl;
-+
-+	/* Regmap fields of CODEC DMA CTRL registers*/
-+	struct lpaif_dmactl *rxtx_rd_dmactl;
-+	struct lpaif_dmactl *rxtx_wr_dmactl;
-+	struct lpaif_dmactl *va_wr_dmactl;
-+
- 	/* Regmap fields of HDMI_CTRL registers*/
- 	struct regmap_field *hdmitx_legacy_en;
- 	struct regmap_field *hdmitx_parity_calc_en;
-@@ -130,6 +197,24 @@ struct lpass_variant {
- 	u32	wrdma_reg_base;
- 	u32	wrdma_reg_stride;
- 	u32	wrdma_channels;
-+	u32	rxtx_irq_reg_base;
-+	u32	rxtx_irq_reg_stride;
-+	u32	rxtx_irq_ports;
-+	u32	rxtx_rdma_reg_base;
-+	u32	rxtx_rdma_reg_stride;
-+	u32	rxtx_rdma_channels;
-+	u32	rxtx_wrdma_reg_base;
-+	u32	rxtx_wrdma_reg_stride;
-+	u32	rxtx_wrdma_channels;
-+	u32	va_irq_reg_base;
-+	u32	va_irq_reg_stride;
-+	u32	va_irq_ports;
-+	u32	va_rdma_reg_base;
-+	u32	va_rdma_reg_stride;
-+	u32	va_rdma_channels;
-+	u32	va_wrdma_reg_base;
-+	u32	va_wrdma_reg_stride;
-+	u32	va_wrdma_channels;
- 	u32	i2sctrl_reg_base;
- 	u32	i2sctrl_reg_stride;
- 	u32	i2s_ports;
-@@ -233,12 +318,66 @@ struct lpass_variant {
- 	struct reg_field wrdma_enable;
- 	struct reg_field wrdma_dyncclk;
- 
-+	/*CDC RXTX RD_DMA */
-+	struct reg_field rxtx_rdma_intf;
-+	struct reg_field rxtx_rdma_bursten;
-+	struct reg_field rxtx_rdma_wpscnt;
-+	struct reg_field rxtx_rdma_fifowm;
-+	struct reg_field rxtx_rdma_enable;
-+	struct reg_field rxtx_rdma_dyncclk;
-+	struct reg_field rxtx_rdma_burst8;
-+	struct reg_field rxtx_rdma_burst16;
-+	struct reg_field rxtx_rdma_dynburst;
-+	struct reg_field rxtx_rdma_codec_enable;
-+	struct reg_field rxtx_rdma_codec_pack;
-+	struct reg_field rxtx_rdma_codec_intf;
-+	struct reg_field rxtx_rdma_codec_fs_sel;
-+	struct reg_field rxtx_rdma_codec_ch;
-+	struct reg_field rxtx_rdma_codec_fs_delay;
-+
-+	/*CDC RXTX WR_DMA */
-+	struct reg_field rxtx_wrdma_intf;
-+	struct reg_field rxtx_wrdma_bursten;
-+	struct reg_field rxtx_wrdma_wpscnt;
-+	struct reg_field rxtx_wrdma_fifowm;
-+	struct reg_field rxtx_wrdma_enable;
-+	struct reg_field rxtx_wrdma_dyncclk;
-+	struct reg_field rxtx_wrdma_burst8;
-+	struct reg_field rxtx_wrdma_burst16;
-+	struct reg_field rxtx_wrdma_dynburst;
-+	struct reg_field rxtx_wrdma_codec_enable;
-+	struct reg_field rxtx_wrdma_codec_pack;
-+	struct reg_field rxtx_wrdma_codec_intf;
-+	struct reg_field rxtx_wrdma_codec_fs_sel;
-+	struct reg_field rxtx_wrdma_codec_ch;
-+	struct reg_field rxtx_wrdma_codec_fs_delay;
-+
-+	/*CDC VA WR_DMA */
-+	struct reg_field va_wrdma_intf;
-+	struct reg_field va_wrdma_bursten;
-+	struct reg_field va_wrdma_wpscnt;
-+	struct reg_field va_wrdma_fifowm;
-+	struct reg_field va_wrdma_enable;
-+	struct reg_field va_wrdma_dyncclk;
-+	struct reg_field va_wrdma_burst8;
-+	struct reg_field va_wrdma_burst16;
-+	struct reg_field va_wrdma_dynburst;
-+	struct reg_field va_wrdma_codec_enable;
-+	struct reg_field va_wrdma_codec_pack;
-+	struct reg_field va_wrdma_codec_intf;
-+	struct reg_field va_wrdma_codec_fs_sel;
-+	struct reg_field va_wrdma_codec_ch;
-+	struct reg_field va_wrdma_codec_fs_delay;
-+
- 	/**
- 	 * on SOCs like APQ8016 the channel control bits start
- 	 * at different offset to ipq806x
- 	 **/
- 	u32	dmactl_audif_start;
- 	u32	wrdma_channel_start;
-+	u32	rxtx_wrdma_channel_start;
-+	u32	va_wrdma_channel_start;
-+
- 	/* SOC specific initialization like clocks */
- 	int (*init)(struct platform_device *pdev);
- 	int (*exit)(struct platform_device *pdev);
-@@ -250,10 +389,19 @@ struct lpass_variant {
- 	int num_dai;
- 	const char * const *dai_osr_clk_names;
- 	const char * const *dai_bit_clk_names;
-+	const char * const *cdc_dma_clk_names;
-+
-+	const char * const *active_pd_names;
-+	const char * const *proxy_pd_names;
-+	struct device *active_pds[LPASS_ACTIVE_PDS];
-+	struct device *proxy_pds[LPASS_ACTIVE_PDS];
-+	int active_pd_count;
-+	int proxy_pd_count;
- 
- 	/* SOC specific clocks configuration */
- 	const char **clk_name;
- 	int num_clks;
-+	int cdc_dma_num_clks;
- };
- 
- struct lpass_pcm_data {
+ #endif /* __LPASS_H__ */
 -- 
 Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
 is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
