@@ -2,80 +2,68 @@ Return-Path: <SRS0=FVIg=OV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 927B7C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 08:55:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EDC8C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 09:54:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 087E861A81
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 08:55:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 087E861A81
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=axis.com
+	by mail.kernel.org (Postfix) with ESMTPS id BA2EE61A08
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 09:54:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BA2EE61A08
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E823016CC;
-	Fri,  1 Oct 2021 10:54:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E823016CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6F4A416CB;
+	Fri,  1 Oct 2021 11:53:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F4A416CB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633078515;
-	bh=o2HB66C3g4SzXN8zqp4zMkYQK6CIGBScoZD0qgX0XH8=;
+	s=default; t=1633082062;
+	bh=U8zAJCxBg1krB/fvwpClEGGvIBz5l1rainTNWvCWniY=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gagecRvzYuJwi9CVcGpE41HGN6PQ3j5f6QfsdFvhMRZj+sSID/bavEsltRHz2UcC2
-	 zoHV05ExSi4veur+TlyN6lr7s1LFO6WVs+hm0wVAHfCbL9K4oTLtmat3Cy/Ds5Kerv
-	 EIzyy0Mn0SBSqIRgDZKgBnF14+iwD3gaORF7O424=
+	b=dh6zWidLBn3Ymbj5/mBTvXdO42Fa6MJB3eTqKhQy3VC7IkEeEW2nxTj1uyVr0wVNz
+	 UDRL8K9I984mgbwWbXQDcucG5SbgvB6TA77zTyZD36Vhk4Y/RnFVO9cjmXPtzyS6eK
+	 iiUNV+qoSo+sy4orcwUurTmB4VkIkb/yLRUJ7TFw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 63B6EF80227;
-	Fri,  1 Oct 2021 10:54:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D8244F80227;
+	Fri,  1 Oct 2021 11:53:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 72D7CF800F3; Fri,  1 Oct 2021 10:54:21 +0200 (CEST)
-Received: from smtp2.axis.com (smtp2.axis.com [195.60.68.18])
+ id EC23AF80245; Fri,  1 Oct 2021 11:53:29 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9F4E5F800F3
- for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2021 10:54:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F4E5F800F3
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com
- header.b="e1YK3l7a"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=axis.com; q=dns/txt; s=axis-central1; t=1633078455;
- x=1664614455; h=date:from:to:cc:subject:in-reply-to:message-id:
- references:mime-version;
- bh=BYMzdOXdW8poC8ZYU2YOj/H9iLW7aISPiVVJ6ze7PwU=;
- b=e1YK3l7at5VZzVJkBSdlEm1QQKbDD3SvqGXLes9aqrVYRU433H+B0vhX
- N8tnKb8EkAjfX4D4SiuJaIUtxdgvGpJCEbuUPcWQB3cd8jNfJcbMWckVF
- ujZZkbug9eMD50ihOkpMJVTE8fngh+Sat8Ljn9KhpAcKCFUzgKxdxdJWQ
- O8sj76ry2LyRK25IL1VhBJ2yLSE6UF4UzbN3TLLmqIF6j/QcyRX5Chdja
- rcmJ1A4mXmGHmNWRx1H1qzCZsCfGe2SyzaJcnho/qQA6v5dFomarsSxPI
- 39oP3Rylibbk/vqLgZeDsO1qvaTq0PkS4EKreE5oNFctxpl1UjEPkYoI8 g==;
-Date: Fri, 1 Oct 2021 10:54:07 +0200
-From: Ricard Wanderlof <ricardw@axis.com>
-X-X-Sender: ricardw@lnxricardw1.se.axis.com
-To: Ruben Safir <ruben@mrbrklyn.com>
-Subject: Re: ALSA kernel projects - for academic purposes
-In-Reply-To: <20210929150052.GB15841@www2.mrbrklyn.com>
-Message-ID: <alpine.DEB.2.21.2110011046540.20945@lnxricardw1.se.axis.com>
-References: <CAHhAz+i=3NDuxK2rZZY6N18=OTbkna3VMVpx4nNgF0vyq3JmQA@mail.gmail.com>
- <324112.1632501120@turing-police>
- <CAHhAz+jNCd=cw-bohcoiAA2UhNZYSFLX07qEV-T2p+KAsVHhAQ@mail.gmail.com>
- <CAJfuBxxAEXnPxY-nx4JEe+fzH7J+nLYzD9zLCSzgjViBHsQbPA@mail.gmail.com>
- <20210929150052.GB15841@www2.mrbrklyn.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+ by alsa1.perex.cz (Postfix) with ESMTPS id ED143F801F7
+ for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2021 11:53:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED143F801F7
+X-IronPort-AV: E=McAfee;i="6200,9189,10123"; a="225041219"
+X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; d="scan'208";a="225041219"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Oct 2021 02:53:19 -0700
+X-IronPort-AV: E=Sophos;i="5.85,337,1624345200"; d="scan'208";a="618986914"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Oct 2021 02:53:17 -0700
+Date: Fri, 1 Oct 2021 12:46:26 +0300 (EEST)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: hda: how to implement component master_unbind?
+In-Reply-To: <s5ha6jxnekp.wl-tiwai@suse.de>
+Message-ID: <alpine.DEB.2.22.394.2110011129450.3554566@eliteleevi.tm.intel.com>
+References: <alpine.DEB.2.22.394.2109221456080.3554566@eliteleevi.tm.intel.com>
+ <s5ha6jxnekp.wl-tiwai@suse.de>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: se-mail08w.axis.com (10.20.40.14) To se-mail07w.axis.com
- (10.20.40.13)
-Cc: Muni Sekhar <munisekharrms@gmail.com>,
- alsa-devel <alsa-devel@alsa-project.org>,
- =?UTF-8?Q?Valdis_Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
- kernelnewbies <kernelnewbies@kernelnewbies.org>,
- "jim.cromie@gmail.com" <jim.cromie@gmail.com>,
- "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>, alsa-devel@alsa-project.org,
+ Jani Nikula <jani.nikula@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Chris Wilson <chris@chris-wilson.co.uk>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,30 +79,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi,
 
-On Wed, 29 Sep 2021, Ruben Safir wrote:
+On Tue, 28 Sep 2021, Takashi Iwai wrote:
 
-> > also, theres now pipewire, which is new, and all the buzz.
-> > its apparently the future of linux audio
->
-> BTW - we hear the BS every month, and yet, ALSA is still here and the
-> backbone of Linux sound...
+> Removing a component from the card is a PITA for now, indeed,
+> especially when its influence is over different APIs (PCM, control,
+> whatever)...
+> 
+> One thing I can think of is to perform like the vga_switcheroo
+> handling in hda_intel.c; it's essentially a forced runtime suspend,
+> and disable the whole card.  But in the case of audio-component
+> unbind, we need to think about re-binding -- or completely ignore
+> re-binding until the whole driver gets unloaded. 
 
-PipeWire is not really a replacement for ALSA, if by ALSA mean the Linux 
-kernel audio subsystem, as it still needs to access audio hardware via 
-ALSA kernel drivers.
+thanks for the feedback! The switcheroo approach doesn't work too well for 
+integrated HDA controllers that will typically have other codecs connected 
+as well (and may have a DSP -> e.g. SOF/SST used as controller driver 
+which would all need to implement this separately), but for the discrete 
+GPU case this might be a workable approach (and makes sense as this is 
+what switcheroo is meant for). I think gracefully handling the unbind is 
+priority, but re-binding should be possible as well. We could do a 
+switcheroo-enable type of flow in hdac_component_master_bind() and have 
+the controller back up.
 
-If we include alsa-lib in ALSA, then, with proper configuration, not 
-really out of the box, PipeWire can replace the plugin hierarchy that is 
-normally set up in /etc/asound.conf etc.
+Of course it's not perfect still. I'd guess at least attempt to reach the 
+codec#x procfs entry would hit timeouts if the controller is disabled this 
+way.
 
-But PipeWire is purely userspace, and is really more of a replacement for 
-JACK and PulseAudio at the same time. It does seem to be the future in the 
-sense that although it's still in development, it's here now, and it works 
-out of the box at least in some distributions.
-
-/Ricard
--- 
-Ricard Wolf Wanderlof                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Br, Kai
