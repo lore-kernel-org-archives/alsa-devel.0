@@ -2,77 +2,77 @@ Return-Path: <SRS0=qlOX=OW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91B8BC433EF
-	for <alsa-devel@archiver.kernel.org>; Sat,  2 Oct 2021 21:17:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2600C433EF
+	for <alsa-devel@archiver.kernel.org>; Sat,  2 Oct 2021 21:17:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 91B3F61881
-	for <alsa-devel@archiver.kernel.org>; Sat,  2 Oct 2021 21:17:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 91B3F61881
+	by mail.kernel.org (Postfix) with ESMTPS id 794F261B26
+	for <alsa-devel@archiver.kernel.org>; Sat,  2 Oct 2021 21:17:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 794F261B26
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F218F1694;
-	Sat,  2 Oct 2021 23:16:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F218F1694
+	by alsa0.perex.cz (Postfix) with ESMTPS id E416C169E;
+	Sat,  2 Oct 2021 23:16:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E416C169E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633209420;
-	bh=PvDsp/Clgyv93KRtcheWaiM69IfOHJfePsFVeEdx7AY=;
+	s=default; t=1633209446;
+	bh=HKd06WKb+phTGsxu50B8UVQiI9QmsswkY6G5CHbKk4I=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IxP4ak7R99+ttoPXnZ6fLqTwVBljSCuF4uaw7jQCqxgoChfUVy/DtGfIVr0vGAZ9X
-	 MOZK+F6LQUl9rs/7v9u9tGY0Jd51zyq7mpHxgKClP4ey8fiGAxh8GF654MKMNBt/7p
-	 OMbC0FxnmYnRCLj7vqgBpbDRyPcuz5iTVWxLiOLs=
+	b=qHS4KN2nYH1uFBRHF4n11iViwOI3r3RkTsxzM8m4ogn52cscXR15y+AbK7vpJBce2
+	 OauLnWSCqrH+MGPG8C4R8LYp5SWKZgROyVAu1jymwlh+oMjdGojlrnys+6cecbySHb
+	 q3gBl5l/LG6xWHvNZb/X7hgWNEBfxxaeXhQBinVI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F881F804D1;
-	Sat,  2 Oct 2021 23:15:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AEECBF804E7;
+	Sat,  2 Oct 2021 23:15:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 32232F804E2; Sat,  2 Oct 2021 23:15:30 +0200 (CEST)
+ id BEC2BF804E2; Sat,  2 Oct 2021 23:15:30 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2EDC9F804D2
- for <alsa-devel@alsa-project.org>; Sat,  2 Oct 2021 23:15:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2EDC9F804D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id B9EA5F804D1
+ for <alsa-devel@alsa-project.org>; Sat,  2 Oct 2021 23:15:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9EA5F804D1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="c/RaDppU"
+ header.b="EAuwM/uz"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1633209324;
+ s=mimecast20190719; t=1633209321;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=R0HnbzWj0GETEpOsre2eA7tFqFo8kw57gjTy6BNLrWk=;
- b=c/RaDppUPgdVcCaCnvjd+0HIzPq/IZO/5322b69lkXp+jgkxbZFsL22YwfLuzxpXwRyu+V
- nfJZfUhEXDxxAatIAtRDgQrdaqkrIIa09lz6uQau+kXF77R3iUfdolOUifDVPiUa5AgxzQ
- VHFxGdPtk5qIhQmHaC3i9QWFFUPpmCw=
+ bh=8H4RGbc1PY/o5AbH/UlLmwvrMCppTL+3VeAA3V/3jzo=;
+ b=EAuwM/uzmmRcESW+5So39+9ueghxcTNbdQGO6A63DpJUm1fcxKYOr6xzeEvztYbaDb3p3W
+ c8ZT4MFUYc+N/S+JdGXqP5yvSp7PhWv9/X7WDpsBoWOa8ZX9gwDCq1aD3QOpIcJjSlB5vz
+ 5EPuEbrF3zfjM0IuircWGpUJX7Ll2+s=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-237-qCOYuLlVPDqwcVkTZ-hdNg-1; Sat, 02 Oct 2021 17:15:23 -0400
-X-MC-Unique: qCOYuLlVPDqwcVkTZ-hdNg-1
+ us-mta-553-TKpMGoBKO4GSTYjIIIs5Qg-1; Sat, 02 Oct 2021 17:15:20 -0400
+X-MC-Unique: TKpMGoBKO4GSTYjIIIs5Qg-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com
  [10.5.11.16])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 47CC4362F9;
- Sat,  2 Oct 2021 21:15:21 +0000 (UTC)
-Received: from x1.localdomain (unknown [10.39.192.31])
- by smtp.corp.redhat.com (Postfix) with ESMTP id E9C1E5C1CF;
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A6AD8362F8;
  Sat,  2 Oct 2021 21:15:19 +0000 (UTC)
+Received: from x1.localdomain (unknown [10.39.192.31])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 524535C1CF;
+ Sat,  2 Oct 2021 21:15:18 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>,
  Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4/4] ASoC: Intel: cht_bsw_nau8824: Set card.components string
-Date: Sat,  2 Oct 2021 23:14:59 +0200
-Message-Id: <20211002211459.110124-4-hdegoede@redhat.com>
+Subject: [PATCH 3/4] ASoC: nau8824: Add a nau8824_components() helper
+Date: Sat,  2 Oct 2021 23:14:58 +0200
+Message-Id: <20211002211459.110124-3-hdegoede@redhat.com>
 In-Reply-To: <20211002211459.110124-1-hdegoede@redhat.com>
 References: <20211002211459.110124-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -99,28 +99,93 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Set the card.components string using the new nau8824_components() helper
-which returns a components string based on the DMI quirks inside the
-nau8824 codec driver.
+Some devices using the NAU8824 have only one speaker. To still have things
+working properly this requires the left + right channels to both be mixed
+to the left speaker output.
+
+This mixer setup is done by userspace based on UCM profiles. But this
+requires userspace to know that there is a mono-speaker. Add a helper
+function (for the machine driver) to get a components string providing
+this info.
+
+This is done inside the codec driver because the codec driver already
+has a DMI quirk table.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/intel/boards/cht_bsw_nau8824.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/nau8824.c | 32 +++++++++++++++++++++++++++++++-
+ sound/soc/codecs/nau8824.h |  1 +
+ 2 files changed, 32 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_nau8824.c b/sound/soc/intel/boards/cht_bsw_nau8824.c
-index da5a5cbc8759..7e6b68186db1 100644
---- a/sound/soc/intel/boards/cht_bsw_nau8824.c
-+++ b/sound/soc/intel/boards/cht_bsw_nau8824.c
-@@ -278,6 +278,8 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 		snd_soc_card_cht.driver_name = DRIVER_NAME;
- 	}
+diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
+index f7018f2dd21f..d0dd1542f78a 100644
+--- a/sound/soc/codecs/nau8824.c
++++ b/sound/soc/codecs/nau8824.c
+@@ -29,6 +29,7 @@
+ #include "nau8824.h"
  
-+	snd_soc_card_cht.components = nau8824_components();
+ #define NAU8824_JD_ACTIVE_HIGH			BIT(0)
++#define NAU8824_MONO_SPEAKER			BIT(1)
+ 
+ static int nau8824_quirk;
+ static int quirk_override = -1;
+@@ -1861,7 +1862,25 @@ static const struct dmi_system_id nau8824_quirk_table[] = {
+ 			DMI_EXACT_MATCH(DMI_BOARD_NAME, "Cherry Trail CR"),
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "20170531"),
+ 		},
+-		.driver_data = (void *)(NAU8824_JD_ACTIVE_HIGH),
++		.driver_data = (void *)(NAU8824_JD_ACTIVE_HIGH |
++					NAU8824_MONO_SPEAKER),
++	},
++	{
++		/* CUBE iwork8 Air */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "cube"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "i1-TF"),
++			DMI_MATCH(DMI_BOARD_NAME, "Cherry Trail CR"),
++		},
++		.driver_data = (void *)(NAU8824_MONO_SPEAKER),
++	},
++	{
++		/* Pipo W2S */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "PIPO"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "W2S"),
++		},
++		.driver_data = (void *)(NAU8824_MONO_SPEAKER),
+ 	},
+ 	{}
+ };
+@@ -1880,6 +1899,17 @@ static void nau8824_check_quirks(void)
+ 		nau8824_quirk = (unsigned long)dmi_id->driver_data;
+ }
+ 
++const char *nau8824_components(void)
++{
++	nau8824_check_quirks();
 +
- 	/* set pm ops */
- 	if (sof_parent)
- 		pdev->dev.driver->pm = &snd_soc_pm_ops;
++	if (nau8824_quirk & NAU8824_MONO_SPEAKER)
++		return "cfg-spk:1";
++	else
++		return "cfg-spk:2";
++}
++EXPORT_SYMBOL_GPL(nau8824_components);
++
+ static int nau8824_i2c_probe(struct i2c_client *i2c,
+ 	const struct i2c_device_id *id)
+ {
+diff --git a/sound/soc/codecs/nau8824.h b/sound/soc/codecs/nau8824.h
+index 6e61405f623b..de4bae8281d0 100644
+--- a/sound/soc/codecs/nau8824.h
++++ b/sound/soc/codecs/nau8824.h
+@@ -470,6 +470,7 @@ struct nau8824_osr_attr {
+ 
+ int nau8824_enable_jack_detect(struct snd_soc_component *component,
+ 	struct snd_soc_jack *jack);
++const char *nau8824_components(void);
+ 
+ #endif				/* _NAU8824_H */
+ 
 -- 
 2.31.1
 
