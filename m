@@ -2,73 +2,72 @@ Return-Path: <SRS0=qlOX=OW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BC6DC433F5
-	for <alsa-devel@archiver.kernel.org>; Sat,  2 Oct 2021 00:20:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F54BC433F5
+	for <alsa-devel@archiver.kernel.org>; Sat,  2 Oct 2021 00:20:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B08EC61B1F
-	for <alsa-devel@archiver.kernel.org>; Sat,  2 Oct 2021 00:20:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B08EC61B1F
+	by mail.kernel.org (Postfix) with ESMTPS id 9AD8C61AFA
+	for <alsa-devel@archiver.kernel.org>; Sat,  2 Oct 2021 00:20:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9AD8C61AFA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5229116A3;
-	Sat,  2 Oct 2021 02:19:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5229116A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3BCEA1704;
+	Sat,  2 Oct 2021 02:19:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BCEA1704
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633134020;
-	bh=GALxv5IAcLz97zH6Fr9l+G9iCwlzBZ9eBOi7+kM0a+I=;
+	s=default; t=1633134031;
+	bh=kcJKuC0wkvfILqJ9qCwz2Ct/sDna6hfeZwqpy5GIkao=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=L0KybMS/i0FlmrmHpkXi9XXDBqfzhCU6kgfxbMuy4qZEz7i15z1qwqEjIa0mZrOyE
-	 G2P+VZh8OejFjY6H8FEi8ZIbRTICCY1oqeOqZCEa4wEqkDHi0UvCyxKbIBWGeln4gZ
-	 8VOJWRaQs1+xPqnWlEz6arCsbmVxE8xlhrk2iN5w=
+	b=hrHnh5XJTXebgcn7Tyh/2jGMLK6ZimqF7k3QKofIpUoNB1jPTGee0eKTwO2aI0Kom
+	 xUkKEZ0WjMRWqEBdBJQI33uc1E1X3eC4JOfDTxYjbjaye44w4kJ+MWBx3M7LeenHtD
+	 7pGVAv0HA0UQIUDvKeiNTWZaxLpTuiRxE7aqa308=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 11314F80515;
-	Sat,  2 Oct 2021 02:17:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13321F80516;
+	Sat,  2 Oct 2021 02:17:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 971C4F8050F; Sat,  2 Oct 2021 02:17:16 +0200 (CEST)
+ id A7134F80518; Sat,  2 Oct 2021 02:17:20 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3C221F80301
- for <alsa-devel@alsa-project.org>; Sat,  2 Oct 2021 02:17:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C221F80301
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8621DF804FD
+ for <alsa-devel@alsa-project.org>; Sat,  2 Oct 2021 02:17:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8621DF804FD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="arF/np9H"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8BE961ACD;
- Sat,  2 Oct 2021 00:17:00 +0000 (UTC)
+ header.b="hIYJ7rVW"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57C8561A50;
+ Sat,  2 Oct 2021 00:17:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1633133821;
- bh=GALxv5IAcLz97zH6Fr9l+G9iCwlzBZ9eBOi7+kM0a+I=;
+ s=k20201202; t=1633133831;
+ bh=kcJKuC0wkvfILqJ9qCwz2Ct/sDna6hfeZwqpy5GIkao=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=arF/np9HzAkIV+idcv+OKiT4JFXUG1UBNP418klNHEg1G2Mppvf2GRzgAM9Ynu8mZ
- MH6/ee/HYtq3AaPJp68KWzUM+vHnexHu2KaJkcM1Hl3zcGaASLyqxr0TthwyMo0dde
- y5QC0k0hpbNYYqTOCxHr4+yFcRvV82xNUTxIAqeD8n2A2FHnrm+PR+2jWFcwLUxZjS
- Mi71UhfTCM5RLUOlAzpkx2h+F7WiuZuobAO2eZwvOmgBkYY+0NK+vb50o5j+Mff92z
- Nwm0WuYGReASE1yOUsB1jd29/YWlDviJGRpxeFucFQpU0c6ZmM530j4UOnMSabM7i4
- xzdw0gDqrIvBw==
+ b=hIYJ7rVWkNABVcCbGiHIsO+b18+sNtUvD/mG8R7uv9KMIdo9ntAw+DW5vJlNBaIBZ
+ KZtCyzdd4AQBG9Sa/OHPAnPdZ/wycdqi+XNwgBdvBn4wQG7Bwt9exO5qs52pJd45D1
+ 1pPYvbmzR6b9R0Y3WAOGq76kFQnIp57D3JZZLEfNcUiEGZSLBxLai3+oCAfWT82OOY
+ d5uDt+NQv/SGN2hwSDtzzLMtNJLhhnacxNmGkCh0CkbM74TZ8NDIWNzXtckzE86zSS
+ IP7HNe2E7Ox07Sf/MYQbUPKI6LKvaydplKZvRaUhnZX7AVjdCs6BznzLdFqAMaOuAW
+ UAY0Chk4DRLTg==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com,
-	derek.fang@realtek.com
-Subject: Re: [PATCH 1/2] ASoC: rt5682s: Enable ASRC auto-disable to fix pop
- during jack plug-in while playback
-Date: Sat,  2 Oct 2021 01:16:30 +0100
-Message-Id: <163313339132.45396.2733773513246500808.b4-ty@kernel.org>
+To: festevam@gmail.com, tiwai@suse.com, alsa-devel@alsa-project.org,
+ perex@perex.cz, timur@kernel.org, Xiubo.Lee@gmail.com,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, nicoleotsuka@gmail.com
+Subject: Re: [PATCH] ASoC: fsl_spdif: implement bypass mode from in to out
+Date: Sat,  2 Oct 2021 01:16:34 +0100
+Message-Id: <163313339132.45396.13488907784155100500.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211001074113.2223-1-derek.fang@realtek.com>
-References: <20211001074113.2223-1-derek.fang@realtek.com>
+In-Reply-To: <1632649760-1651-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1632649760-1651-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, albertchen@realtek.com, Mark Brown <broonie@kernel.org>,
- kevin_chen_ym@realtek.com, shumingf@realtek.com, flove@realtek.com
+Cc: Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,16 +83,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 1 Oct 2021 15:41:12 +0800, derek.fang@realtek.com wrote:
-> From: Derek Fang <derek.fang@realtek.com>
+On Sun, 26 Sep 2021 17:49:20 +0800, Shengjiu Wang wrote:
+> From: Viorel Suman <viorel.suman@nxp.com>
 > 
-> When codec's ASRC was enabled, the DA and AD filters use
-> the reference clk which tracks the I2S clks.
-> And if the I2S clks' timing of open and close are not expected,
-> this patch allows the filters to switch to use sysclk if
-> ASRC's ref clks disappeared and could fix the below possible issues:
-> 1. Avoid DA filter to keep surplus samples.
-> 2. Avoid that AD filter works failed during dapm's power on.
+> Implement SPDIF bypass mode. It implies internal SoC
+> routing of SPDIF input signal to SPDIF output signal. The
+> test bed requires two boards: B1 configured in bypass mode,
+> and B2 to feed B1 SPDIF RX port and read B1 SPDIF TX port:
+>    B2 TX -> B1 RX,
+>    B2 RX <- B1 TX.
+> The test procedure:
+>  a) Boot both boards
+>  b) B2: start "arecord <spdifcard> -r 48kHz | aplay <local DAC>"
+>  c) B2: start "aplay <spdifcard> -r 48kHz <2ch 48kHz audio file>"
+>  d) B1: enable bypass mode:
+> 	amixer -cimxspdif cset numid=8,iface=PCM,name='Bypass Mode' on
+>  e) B2: check DAC audio, make sure the same sample rate is used at
+> 	steps b) and c), in example above the rate is 48kHz.
+>  f) B1: try to run "aplay" or "arecord" on imxspdif card while in
+> 	bypass mode - both must fail until bypass mode is disabled
+>  g) B1: disable bypass mode:
+> 	amixer -cimxspdif cset numid=8,iface=PCM,name='Bypass Mode' off
+>  h) B1: check the usual playback and capture on imxspdif card.
+> 	During this test try to set bypass mode - must not be allowed
+> 	while playback or capture is running.
 > 
 > [...]
 
@@ -103,10 +116,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: rt5682s: Enable ASRC auto-disable to fix pop during jack plug-in while playback
-      commit: 04a8374c321db55834d5a9f3a9ceecb04b3cfbf5
-[2/2] ASoC: rt5682s: Fix HP noise caused by SAR mode switch when the system resumes
-      commit: 0b26ca1725fa16a2d28a86f89173f9df2a3fe8d7
+[1/1] ASoC: fsl_spdif: implement bypass mode from in to out
+      commit: 83bea088f976a289bc2efe4e404af47ab79d6639
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
