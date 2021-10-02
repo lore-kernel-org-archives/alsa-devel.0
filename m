@@ -1,91 +1,74 @@
-Return-Path: <SRS0=FVIg=OV=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=qlOX=OW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB08DC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 23:34:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22948C433EF
+	for <alsa-devel@archiver.kernel.org>; Sat,  2 Oct 2021 00:17:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0CEC061A6F
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Oct 2021 23:34:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0CEC061A6F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 9CD5361B1F
+	for <alsa-devel@archiver.kernel.org>; Sat,  2 Oct 2021 00:17:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9CD5361B1F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA4DD16D0;
-	Sat,  2 Oct 2021 01:33:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA4DD16D0
+	by alsa0.perex.cz (Postfix) with ESMTPS id BDB1E16CF;
+	Sat,  2 Oct 2021 02:17:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDB1E16CF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633131261;
-	bh=5pEDyMIfetgnWBcRM+8nPbVQWwiy1VJWa3OoNpcnepo=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1633133874;
+	bh=nsc2fpMzsGtZeukbSHUUyuCKpxx+JA+JABw8eC1Wmg8=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vuulV2immLEUk1fxipHUZPBx0NlHGVH9ZsIZiwafkxDY082gJzTn0t/XD+qi0MgJA
-	 waUkLt3ZlzUZ7NxnZbeq6/DYkcSHe9VZZmBcv6zjG/S4WqGDrTDPWz9DXzZY+cz2bU
-	 A9WbFoC+pPvc9ZGoPrZ1HGPPM1gSCS+2Hs2xlaTU=
+	b=SJ1Tf0PTKU83JCnt13RIgMcy2/XpN2WpoV8upXQaCNhwG2ElqDCVD6g5CqbMw1Hrf
+	 BrTY0kggRku5c4gKp/Ehog3JhYLXoYsXU+S5F4LK4CGTRXbNyjI4rrZuFyYer7YApK
+	 QSnckqGsPOnpktb1Q7A566gHOibJ/yWTm8qKIsGU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C6A2F801F7;
-	Sat,  2 Oct 2021 01:33:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 103C6F8026D;
+	Sat,  2 Oct 2021 02:17:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 79F2EF80245; Sat,  2 Oct 2021 01:33:28 +0200 (CEST)
-Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com
- [IPv6:2607:f8b0:4864:20::933])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id CC967F8026D; Sat,  2 Oct 2021 02:17:02 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0A5D5F801F7
- for <alsa-devel@alsa-project.org>; Sat,  2 Oct 2021 01:33:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A5D5F801F7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 65877F80165
+ for <alsa-devel@alsa-project.org>; Sat,  2 Oct 2021 02:16:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65877F80165
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="M21Spffx"
-Received: by mail-ua1-x933.google.com with SMTP id 64so7783153uab.12
- for <alsa-devel@alsa-project.org>; Fri, 01 Oct 2021 16:33:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=Az2ZwLEgAe0ltkXib0Rl0Z43gR7D/6GVhGgAnp8gRjQ=;
- b=M21SpffxV7j8xsLxu4LJA4ckJ6JZH4GDJDiKl/YZNfGmAt3cxOAe2nz/v0uZLYwBt5
- YYsi1fZC9Q593imWRcj0uCjPCPZa8MXXJIcjI254O5l3o7yodaROlHqSx1jaVCCIN8JK
- /Tm8w8YOEAYgItU51BgUMC9mYBvTijx5e+IvtYUv5Ng5lSZaSeDWP843bA17FjdlqJeG
- l6ivitpbfhHocfrO1yJ9jjAMMhTmBNEHF6me3CNIqJ4YZi2sDvT+wRuAfCMWAlpVo5eo
- TIocOwjtKE9Tu6TOm+ZRLl2oQmsJiJu/BokEFgboRbZO5uigSUituc9xS1Qt87zeoQEQ
- +UXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=Az2ZwLEgAe0ltkXib0Rl0Z43gR7D/6GVhGgAnp8gRjQ=;
- b=mqsk3HyJamUHjOUhN6o9vRwaQUI2vVDG2Uq+OdMXTNElApDeGm7WIiVzmCGZvqbX4j
- ZtS0UbEBWs9IPhKDdY5IT6XB6thFGuDl2EiMXWGXKpdqvfdtxoEZI40RDcH3YAHtEDjQ
- Vz29bHwfZtY9W9vNQEZbGCwA8V/a+P35poPqQL6Oh2Fnd0pDrNWifrVq/mDX+8nTxGi/
- Yqh1gutri3Awe5/Zh+ADq3576t3skd0kxGgYM1/iscp/3DxwNoZWIo8NDYBcqO8pl2c6
- 3x7CvLYFInh8wOetC/1U5ZRF9eVYc9oo4RXqzg/L0Zk4ngpi8ODdFMbFtTfHivYvTZSl
- s1Ow==
-X-Gm-Message-State: AOAM532RdZq1hd2OGKGfKkO9V7kwgH0sTozJMTIahpsW7H1rP/djtlsb
- 4IyCJEWiILMPVDKxpTzrTbw=
-X-Google-Smtp-Source: ABdhPJzvRP+AZs2DIqeY9owx/R4OCS6m0XDYjxYxnmgzdYfHIc08qqttPxDvi0KGOyvSOxFtWBoELg==
-X-Received: by 2002:ab0:3d99:: with SMTP id l25mr545585uac.83.1633131202665;
- Fri, 01 Oct 2021 16:33:22 -0700 (PDT)
-Received: from geday ([2804:7f2:8280:6c81:98f0:31ff:fe93:2dc7])
- by smtp.gmail.com with ESMTPSA id r21sm3903379vso.22.2021.10.01.16.33.21
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 01 Oct 2021 16:33:22 -0700 (PDT)
-Date: Fri, 1 Oct 2021 20:33:20 -0300
-From: Geraldo Nascimento <geraldogabriel@gmail.com>
-To: Zhang Boyang <zhangboyang.id@gmail.com>
-Subject: Re: [BUG?] Setting (start_threshold > stop_threshold) makes
- snd_pcm_writei(a_small_buffer) XRUN immediately
-Message-ID: <YVeawIksIf1wKa2s@geday>
-References: <0b00ad37-41a3-f078-6600-d3580ad903a1@gmail.com>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="nFt15lP3"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE26061A02;
+ Sat,  2 Oct 2021 00:16:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1633133815;
+ bh=nsc2fpMzsGtZeukbSHUUyuCKpxx+JA+JABw8eC1Wmg8=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=nFt15lP34RVnJFmjDkn7gD/T3yx7WhE/u9AZT6sYCeAoZKAu929L7+Oe1NeNNO5/m
+ wGmuZFWRJKFDoHSe6CQR2F2U8xyhhyN7cDDK8RfPO6W+MlMkSV5JxISZYRRmm5K/B/
+ jy9+hTweIqEeWHnWxoaJs8+x1GBQc5qg2csRsn179YK2RWhH+CHbblsphE76dStjXf
+ 0Ky6H0V9gBpMJJVi6G2SmwFxn+BHaehoLSvheZz9KjezeaC/AaLtmtWQdCXbrllG1W
+ UoiRjlyXZumCBsZQMUrnwHWYLnI2S7ao6YPE2jQ2KwRK1ac4buZXjz6kLBXtJ27n8Q
+ 7Ty48dyEqdW9Q==
+From: Mark Brown <broonie@kernel.org>
+To: Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+ Banajit Goswami <bgoswami@codeaurora.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] ASoC: qcom: apq8096: Constify static snd_soc_ops
+Date: Sat,  2 Oct 2021 01:16:28 +0100
+Message-Id: <163313339131.45396.15118766100261477417.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211001115030.10402-1-rikard.falkeborn@gmail.com>
+References: <20211001115030.10402-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0b00ad37-41a3-f078-6600-d3580ad903a1@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,42 +84,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, Oct 02, 2021 at 01:31:12AM +0800, Zhang Boyang wrote:
-> Hello,
-
-Hello, Zhang!
-
+On Fri, 1 Oct 2021 13:50:30 +0200, Rikard Falkeborn wrote:
+> The struct iapq8096_ops is only assigned to the ops field in the
+> snd_soc_dai_link struct which is a pointer to const struct snd_soc_ops.
+> Make it const to allow the compiler to put it in read-only memory.
 > 
->    I'm using ALSA to develop an audio-streaming application. I try to 
-> use start_threshold and stop_threshold in combination with small 
-> buffers. However, I think I probably found a bug about this.
->    I'm setting start_threshold=100 and stop_threshold=50. I'm also using 
-> a buffer of 44 frames. When I call 
-> snd_pcm_writei(the_small_44_frames_buffer), pcm state came to XRUN from 
-> PREPARED directly. I think this is a bug because the stream hasn't 
-> started. It's hard to say a xrun occurred while stream not started.
->    I'm wondering if this is a ALSA-bug or a misuse of ALSA. A simple bug 
-> test program is attached.
+> 
 
-No, I don't think it's a bug. You're bound to run into problems with a
-period size of only 44 frames.
+Applied to
 
-Moreover, working with the code you provided, I was able to get a RUNNING
-state without XRUNs with a period size of 4410 frames (100 milliseconds of
-audio) but I had to comment out snd_pcm_sw_params_set_stop_threshold() for
-it to work or I'd have those instant XRUNs.
-
-That's how snd_pcm_sw_params_set_stop_threshold() is supposed to work by
-the way. It creates a XRUN once the threshold is hit.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
-Geraldo Nascimento
 
->    Thank you very much!
-> 
-> Zhang Boyang
-> 
-> p.s.
->    I dug into kernel code. After writting hardware buffer, 
-> __snd_pcm_lib_xfer() called snd_pcm_update_state(), which set the XRUN 
-> state.
+[1/1] ASoC: qcom: apq8096: Constify static snd_soc_ops
+      commit: cd96663bc27e1c94210b5b737de4d7cf233d90f8
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
