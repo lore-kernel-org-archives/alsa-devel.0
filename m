@@ -2,73 +2,72 @@ Return-Path: <SRS0=qlOX=OW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22948C433EF
-	for <alsa-devel@archiver.kernel.org>; Sat,  2 Oct 2021 00:17:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A71AC433F5
+	for <alsa-devel@archiver.kernel.org>; Sat,  2 Oct 2021 00:18:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9CD5361B1F
-	for <alsa-devel@archiver.kernel.org>; Sat,  2 Oct 2021 00:17:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9CD5361B1F
+	by mail.kernel.org (Postfix) with ESMTPS id 1517861B2A
+	for <alsa-devel@archiver.kernel.org>; Sat,  2 Oct 2021 00:18:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1517861B2A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BDB1E16CF;
-	Sat,  2 Oct 2021 02:17:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDB1E16CF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 60A2E16E2;
+	Sat,  2 Oct 2021 02:17:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60A2E16E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633133874;
-	bh=nsc2fpMzsGtZeukbSHUUyuCKpxx+JA+JABw8eC1Wmg8=;
+	s=default; t=1633133919;
+	bh=SqkMJsnkHZDT+eZzsrisFKTL2JeLsdSMMioQ/miBr24=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SJ1Tf0PTKU83JCnt13RIgMcy2/XpN2WpoV8upXQaCNhwG2ElqDCVD6g5CqbMw1Hrf
-	 BrTY0kggRku5c4gKp/Ehog3JhYLXoYsXU+S5F4LK4CGTRXbNyjI4rrZuFyYer7YApK
-	 QSnckqGsPOnpktb1Q7A566gHOibJ/yWTm8qKIsGU=
+	b=ThTG5ZFErW/E844klBLPbOSWgaqetmnt4+iAoW7jYYLUmGQetfYvnr8DNgSQmbwYd
+	 anULc4LL4REj/CBMyfWAWhlegQwlhvXuI7MDMeBKV3S0wQkOBUtPaUcHqJSbpJisSr
+	 mmmG/0eRdd5AR5cKsQezLXyQ5C0jaGzuboAJbXEI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 103C6F8026D;
-	Sat,  2 Oct 2021 02:17:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9442CF80272;
+	Sat,  2 Oct 2021 02:17:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CC967F8026D; Sat,  2 Oct 2021 02:17:02 +0200 (CEST)
+ id 57424F80301; Sat,  2 Oct 2021 02:17:06 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 65877F80165
- for <alsa-devel@alsa-project.org>; Sat,  2 Oct 2021 02:16:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65877F80165
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5AE1DF80227
+ for <alsa-devel@alsa-project.org>; Sat,  2 Oct 2021 02:16:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AE1DF80227
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="nFt15lP3"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE26061A02;
- Sat,  2 Oct 2021 00:16:54 +0000 (UTC)
+ header.b="V+GLco18"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6CEE61ACE;
+ Sat,  2 Oct 2021 00:16:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1633133815;
- bh=nsc2fpMzsGtZeukbSHUUyuCKpxx+JA+JABw8eC1Wmg8=;
+ s=k20201202; t=1633133812;
+ bh=SqkMJsnkHZDT+eZzsrisFKTL2JeLsdSMMioQ/miBr24=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=nFt15lP34RVnJFmjDkn7gD/T3yx7WhE/u9AZT6sYCeAoZKAu929L7+Oe1NeNNO5/m
- wGmuZFWRJKFDoHSe6CQR2F2U8xyhhyN7cDDK8RfPO6W+MlMkSV5JxISZYRRmm5K/B/
- jy9+hTweIqEeWHnWxoaJs8+x1GBQc5qg2csRsn179YK2RWhH+CHbblsphE76dStjXf
- 0Ky6H0V9gBpMJJVi6G2SmwFxn+BHaehoLSvheZz9KjezeaC/AaLtmtWQdCXbrllG1W
- UoiRjlyXZumCBsZQMUrnwHWYLnI2S7ao6YPE2jQ2KwRK1ac4buZXjz6kLBXtJ27n8Q
- 7Ty48dyEqdW9Q==
+ b=V+GLco18UbSCDYlixqfJ9E5tda0Fa/sW5GEE6hFZwJnfxEfOUVMC9i5tm3nE8tW5d
+ de6aoIagpe8OLsXHUlTfV1lYmvS1rvszVC8BP6oHp7XDwF4T+XMEOQPOI79Y/lpf//
+ 2+EFtyujN+k52GqtZ03Vd4uo4KfWYJKf8++qJeiaMvrfQ5attEOXoocz3R9BcEGYRw
+ k2pWIh7XAvSVUPO3qbywCECoobcJGiSSZBz4Lzy6WhruFBjFg/guTQb/Fj5b14tJ6X
+ C5XpJzVz/WsO7HF8nUIXbQYNWa0MvSPqiC+Ha+1PYliM/ox9LCx4hoyZXiJ6J6/vOW
+ Zdt+3LfuHF89Q==
 From: Mark Brown <broonie@kernel.org>
-To: Rikard Falkeborn <rikard.falkeborn@gmail.com>,
- Banajit Goswami <bgoswami@codeaurora.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH] ASoC: qcom: apq8096: Constify static snd_soc_ops
-Date: Sat,  2 Oct 2021 01:16:28 +0100
-Message-Id: <163313339131.45396.15118766100261477417.b4-ty@kernel.org>
+To: tiwai@suse.com, Trevor Wu <trevor.wu@mediatek.com>, matthias.bgg@gmail.com
+Subject: Re: [PATCH] ASoC: mediatek: mt8195: move of_node_put to remove
+ function
+Date: Sat,  2 Oct 2021 01:16:27 +0100
+Message-Id: <163313339131.45396.13424331817826400710.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211001115030.10402-1-rikard.falkeborn@gmail.com>
-References: <20211001115030.10402-1-rikard.falkeborn@gmail.com>
+In-Reply-To: <20211001031601.3953-1-trevor.wu@mediatek.com>
+References: <20211001031601.3953-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, bicycle.tsai@mediatek.com,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,12 +83,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 1 Oct 2021 13:50:30 +0200, Rikard Falkeborn wrote:
-> The struct iapq8096_ops is only assigned to the ops field in the
-> snd_soc_dai_link struct which is a pointer to const struct snd_soc_ops.
-> Make it const to allow the compiler to put it in read-only memory.
+On Fri, 1 Oct 2021 11:16:01 +0800, Trevor Wu wrote:
+> platforms->of_node and codes->of_node are assigned in probe function,
+> and of_node_put is called at the end of probe function, because of_node
+> seems to be not used after probe functon
 > 
+> In this patch, of_node_put is moved to platform remove function in case
+> of_node is used at any occasions after probe function in the future.
 > 
+> [...]
 
 Applied to
 
@@ -97,8 +99,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: qcom: apq8096: Constify static snd_soc_ops
-      commit: cd96663bc27e1c94210b5b737de4d7cf233d90f8
+[1/1] ASoC: mediatek: mt8195: move of_node_put to remove function
+      commit: bd8bec1408ab2336939bd69d93897bf19d0325ed
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
