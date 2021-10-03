@@ -2,71 +2,70 @@ Return-Path: <SRS0=D1rU=OX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24D2EC433F5
-	for <alsa-devel@archiver.kernel.org>; Sun,  3 Oct 2021 03:05:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E450C433F5
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 Oct 2021 03:05:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AA7CF6109F
-	for <alsa-devel@archiver.kernel.org>; Sun,  3 Oct 2021 03:05:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AA7CF6109F
+	by mail.kernel.org (Postfix) with ESMTPS id C2F1461A05
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 Oct 2021 03:05:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C2F1461A05
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8FD49167D;
-	Sun,  3 Oct 2021 05:04:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FD49167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6292E1693;
+	Sun,  3 Oct 2021 05:05:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6292E1693
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633230310;
-	bh=/WRaeqQXW8Qr+OqzTHHwCPuWiB3wv8AaXMzk5fTKZHk=;
+	s=default; t=1633230356;
+	bh=FR+CLu0gl6DIXX8mgPY8RPSVgsj5A4EF3MsIkAEn1xU=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=qg/noCxtZuUkqB1rm2zqpFd/X9Wo/5GCQ0iBkDLDM4DVgooh+rTVHZy/Vt+NOFG1x
-	 3PCQOzBwzAuurBbkUaeULaKXy0LWSbTNFEiX6Ktl7FgWPBzClRICZRo5BOUmRrDGVv
-	 0feLDiXeY0X+zDE/H8eFNht2g0ov2ysun4j7LJ+E=
+	b=BNspriILvQYA2yeZyG0TrAs+5vFXuINBjDBo1+1TIfvHV4+bGJgfMJZs58ixBEtBl
+	 ckHT9ACdSrC0/wREei5Mp30zswJTl8oQ3AyQl6Bz7n+LyWfAivHjeKdNrOlQguPCj+
+	 /3TP0qJVtdFHZpw5n6n07F4aaq5d67si3ttInG6s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9FCB1F80259;
-	Sun,  3 Oct 2021 05:04:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 01E86F802A0;
+	Sun,  3 Oct 2021 05:04:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1AB1FF8027D; Sun,  3 Oct 2021 05:04:16 +0200 (CEST)
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+ id BA9F9F800ED; Sun,  3 Oct 2021 05:04:14 +0200 (CEST)
+Received: from bombadil.infradead.org (bombadil.infradead.org
+ [IPv6:2607:7c80:54:e::133])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8F0C0F80259
- for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2021 05:04:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F0C0F80259
+ by alsa1.perex.cz (Postfix) with ESMTPS id 31AFCF800ED
+ for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2021 05:04:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31AFCF800ED
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="dsSyZPPI"
+ header.b="wyjSaBqM"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
  MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
  Content-ID:Content-Description:In-Reply-To:References;
- bh=V2oLactPpE5eJWgOLN3Dhq4j/4VC1w7xQGXAdA2EUAA=; b=dsSyZPPISXb3VZpr7E4zsjPCYm
- Rdwbph+1+lOthfEY7StkeMW/KId/D8kKDxpXjV/ogYGSBxj2js+NEUBfsaU2HU1UUAphnlTbwNpVu
- g/SASSf37tG2LRI4uZqq1X48WVkWJZZR2dwbnnsyw7l7XojZtj7JGaEt4r2evyyw43wmi9iWSmLLj
- qYdmcR5KQq+L0PnDsUA4SMF1JdtEMGDvNbpXu1gQRRAY8R4bQkiMftDj/hhQYLvITws+08P04+0p0
- zTTZCWaw9YAWKD63qCLgipjHS2vEJiCwjWQjQpJ6KKyN8WN4d8Khd8azf7HKa6uFWEzlfO7MIBawr
- OPZhwgXw==;
+ bh=4YvURUzfuR+b0ciJbjJBoAaKlNBhJh9slT7j92oq2ws=; b=wyjSaBqMLdq3AWlScqXPahhc8+
+ DJR3rBpOwDkvd5yGt614xQcqLNgeAtcYsuVU4dCWz1X38P/8USRS1P3OK/2lx8uvTUa3ONEjnNhFq
+ J/7SefOAPKbf/hJDnz6hDVhCtQc6whfuyNiytwfFVgNym5NuXcsPmIz+7kLdM6FaKgMFhod2Trrnp
+ zKSOfIFKf8/tz/pmeihDv1kYMfDzDtRWlK3375hzqkZeZPTLsGdBhs9TF4j180fR8w5iLafccdU6Y
+ YkS4obrnIPlxlwD+/9O5yjbYqfc/dGdQUGKCmUHr/IrXlmlzsM8oLSF3XxMYfdu/4rj5RdKbd00ZM
+ FML0DFbw==;
 Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
  by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mWrnJ-0037Sc-Qe; Sun, 03 Oct 2021 03:04:05 +0000
+ id 1mWrnC-0037SG-2t; Sun, 03 Oct 2021 03:03:58 +0000
 From: Randy Dunlap <rdunlap@infradead.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: fsl: add COMPILE_TEST for SND_SOC_FSL_ASRC
-Date: Sat,  2 Oct 2021 20:04:04 -0700
-Message-Id: <20211003030404.32707-1-rdunlap@infradead.org>
+Subject: [PATCH] ASoC: atmel: add COMPILE_TEST for SND_ATMEL_SOC_PDC
+Date: Sat,  2 Oct 2021 20:03:57 -0700
+Message-Id: <20211003030357.32456-1-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>,
- Shengjiu Wang <shengjiu.wang@nxp.com>, Randy Dunlap <rdunlap@infradead.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
- Mark Brown <broonie@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
- Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>,
- Fabio Estevam <festevam@gmail.com>
+Cc: alsa-devel@alsa-project.org, Randy Dunlap <rdunlap@infradead.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,31 +85,26 @@ Geert pointed out that since sound/soc has the soc_dummy_driver for
 NO_DMA platforms, it is possible (desirable) to have drivers that
 depend on HAS_DMA to alternately depend on COMPILE_TEST.
 
-This means that SND_ATMEL_FSL_ASRC can depend on HAS_DMA || COMPIE_TEST.
+This means that SND_ATMEL_SOC_PDC can depend on HAS_DMA || COMPIE_TEST.
 
-Fixes: 121a01521b1e ("ASoC: fsl: fix build failure")
+Fixes: 6c5c659dfe3f ("ASoC: atmel: ATMEL drivers don't need HAS_DMA")
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Liam Girdwood <lgirdwood@gmail.com>
 Cc: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Xiubo Li <Xiubo.Lee@gmail.com>
-Cc: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-Cc: Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc: Fabio Estevam <festevam@gmail.com>
+Cc: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 ---
- sound/soc/fsl/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/atmel/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
---- linux-next-20211001.orig/sound/soc/fsl/Kconfig
-+++ linux-next-20211001/sound/soc/fsl/Kconfig
-@@ -5,7 +5,7 @@ comment "Common SoC Audio options for Fr
+--- linux-next-20211001.orig/sound/soc/atmel/Kconfig
++++ linux-next-20211001/sound/soc/atmel/Kconfig
+@@ -11,6 +11,7 @@ if SND_ATMEL_SOC
  
- config SND_SOC_FSL_ASRC
- 	tristate "Asynchronous Sample Rate Converter (ASRC) module support"
--	depends on HAS_DMA
+ config SND_ATMEL_SOC_PDC
+ 	bool
 +	depends on HAS_DMA || COMPILE_TEST
- 	select REGMAP_MMIO
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	help
+ 
+ config SND_ATMEL_SOC_DMA
+ 	bool
