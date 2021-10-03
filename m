@@ -2,82 +2,111 @@ Return-Path: <SRS0=D1rU=OX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC406C433EF
-	for <alsa-devel@archiver.kernel.org>; Sun,  3 Oct 2021 14:47:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79B6AC433F5
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 Oct 2021 16:33:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7A73F6124D
-	for <alsa-devel@archiver.kernel.org>; Sun,  3 Oct 2021 14:47:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7A73F6124D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id AB74E617E1
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 Oct 2021 16:33:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AB74E617E1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F3745167E;
-	Sun,  3 Oct 2021 16:46:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3745167E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29022167D;
+	Sun,  3 Oct 2021 18:32:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29022167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633272444;
-	bh=vnwEyWm6WKum8JUin2GaoA+cCXjEFFnWo2WXHpSD/pA=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1633278797;
+	bh=yHPjfgNMsdflwAFDOJJNmWoN1eSNc6ExXmyfFvcHjvo=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TAcA/hzC0vJBYaF9bvZxzEogcNjtSEJfDDgCsNxe3M2pOy/DPDCAEUuweWkGaSzPT
-	 8YTOaGeDDr82HVKNlV9AsGy1MOYLjFhK7bfJvRCebxRywRx6m0j2qWm5BUyLYQBNSH
-	 +GCEBJbZ2vIut1ph+BMdffc93lXR5cFO82rA2F1c=
+	b=ZTMTJwkacbqUKwKxfTlQfpLFconeGb25y54uTzF8lQrV+mjcLVIaAuPCi9LKlU4hv
+	 8e4hoSIhprMGOgPn1nLblaVv88n3LpJ1blKeDDqs87jCth4XvnEX6wtz7CmsR2+yj/
+	 MYyC6xtThipL3R351Do+dZ8fvDNq1XXhfmd8neRA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6A819F80259;
-	Sun,  3 Oct 2021 16:46:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A89B4F80259;
+	Sun,  3 Oct 2021 18:32:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1836F8027D; Sun,  3 Oct 2021 16:46:31 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 9ED4AF8027D; Sun,  3 Oct 2021 18:32:24 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1889BF800EF
- for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2021 16:46:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1889BF800EF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 998E7F800ED
+ for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2021 18:32:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 998E7F800ED
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="jJ9/cbb6"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="0ZKlHs4w"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 6B87D22232;
- Sun,  3 Oct 2021 14:46:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1633272381; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="UUuJ2Evr"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1633278737;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=4FKSJfh8aZCuJjapvhzXpZSBoEo6Kfm65JgcT+nUcJE=;
- b=jJ9/cbb6/UrOwaLjW3ZGMytrEUfWoxPtwgTZfMyozV8mHgiWk7t3nqbDlatp5/Oa71ic8J
- 3QOUPc1WABxv/hy4alv/dd0+k5AZ9kHb1iSYT/YsgCg+y18dEDiSDoS8o8qwEK3Weubio6
- 4C9JADVDlWSG+0Qw6wNOBQ/8yJ3ZK6U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1633272381;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=4FKSJfh8aZCuJjapvhzXpZSBoEo6Kfm65JgcT+nUcJE=;
- b=0ZKlHs4w6QucTQpclTPmZ/9Npr/Si5HD/nVCevyQzjbWxJVMBB0B5n5bx/gaERGXMmVPye
- yJCq2Pdzb1eMQRAQ==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 537A9A3B81;
- Sun,  3 Oct 2021 14:46:21 +0000 (UTC)
-Date: Sun, 03 Oct 2021 16:46:21 +0200
-Message-ID: <s5hv92ego8y.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Hans de Goede <hdegoede@redhat.com>
+ bh=KYMaZ3DbDBNVosFAwBUr+Rg45EcCrcRuK3md2pB5I1A=;
+ b=UUuJ2EvrQBT0ex3GtZEqQD8QvBYVJwDt1udEurhFn8Xeai0UpL+XzQGAaD/AVuRHGWTkco
+ EXOs7PoZJy5hRIw5/qAyHIM/WcBIHI0BSBWWxLEOzsVUjSv6rktsBOFUckuRt4UcVq1Xtb
+ 2+fpZjZZSfSr8Uu+9Dc6IBjKNEgYV8s=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-237-63ACRAMZPFakwTjpHevO8A-1; Sun, 03 Oct 2021 12:32:16 -0400
+X-MC-Unique: 63ACRAMZPFakwTjpHevO8A-1
+Received: by mail-ed1-f72.google.com with SMTP id
+ 14-20020a508e4e000000b003d84544f33eso14816484edx.2
+ for <alsa-devel@alsa-project.org>; Sun, 03 Oct 2021 09:32:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=KYMaZ3DbDBNVosFAwBUr+Rg45EcCrcRuK3md2pB5I1A=;
+ b=X+J1ukB0boC7RSxkmeNJN/OEqePMchxL9crMd0dnMeV1rn3AGL47dhV+bUkWkt3LAW
+ JdbXltdyFd7HvqQsnwvMHMPgRYyRsgOlM6FxHkZeUE0T5nSLwBferyZFXiLkVMNGzERC
+ PnXEUNjCB3YwbC0ufv7hn9GiSH1fVp77AnVSDNuUkhv9rr6S4GqM4XQfvphpQBuXCWuz
+ EAviETZYHixl2sojeOO2Quhsa8myfN+l7xU7okKarIv06ZSrepwgsJ7+LoPiBGUeL8wE
+ NC4J31JQ/1ETUm20J+pH32fCI4FHYEt4PmE5/pUBdoQy2m3VeB6wPUZAjIDBFWpgBy+d
+ mBQg==
+X-Gm-Message-State: AOAM533FpSkIqKjITzAHuu+bv975cKDhkaB1oK9QRCrZbif4AuQTBi90
+ QJ8ZFd41wyqwLfUxkl8kXWjtCUCXT4HAstQX9jZ+hSSuoVYTHn8fHF3wMKpeRHoM6oDxKAtEuBf
+ oT6l+twNvAmAtxj7gJIqGxbAQplZOuVYXwZa6/y50XvI1G8b4c3Do6TUbAGscuNARNc5QZ3/46z
+ A=
+X-Received: by 2002:a05:6402:16d9:: with SMTP id
+ r25mr12001696edx.80.1633278735099; 
+ Sun, 03 Oct 2021 09:32:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzAzmnTe/LRyjxXcLuTbjkudrqNL3E9ZFusxv3N1BPouceoOACbmI7ZE+zonOgWdSWhEApm2g==
+X-Received: by 2002:a05:6402:16d9:: with SMTP id
+ r25mr12001668edx.80.1633278734822; 
+ Sun, 03 Oct 2021 09:32:14 -0700 (PDT)
+Received: from x1.localdomain
+ (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl.
+ [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+ by smtp.gmail.com with ESMTPSA id r6sm552149edd.89.2021.10.03.09.32.14
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Sun, 03 Oct 2021 09:32:14 -0700 (PDT)
 Subject: Re: DAPM PIN switches do not update in alsamixer when changed through
  UCM profile
-In-Reply-To: <b8cf9bb0-bad1-26a0-0806-0a7c66b228d0@redhat.com>
+To: Takashi Iwai <tiwai@suse.de>
 References: <b8cf9bb0-bad1-26a0-0806-0a7c66b228d0@redhat.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
+ <s5hv92ego8y.wl-tiwai@suse.de>
+From: Hans de Goede <hdegoede@redhat.com>
+Message-ID: <8e0a6491-bc87-0f9a-099f-3baff1fc0e0d@redhat.com>
+Date: Sun, 3 Oct 2021 18:32:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <s5hv92ego8y.wl-tiwai@suse.de>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
  Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -95,89 +124,163 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 03 Oct 2021 15:12:57 +0200,
-Hans de Goede wrote:
-> 
-> Hi All,
-> 
-> I notice that DAPM PIN switches, such as e.g. the "Headphone"
-> SOC_DAPM_PIN_SWITCH defined in:
-> sound/soc/intel/boards/cht_bsw_nau8824.c:
-> 
-> static const struct snd_kcontrol_new cht_mc_controls[] = {
->         SOC_DAPM_PIN_SWITCH("Headphone"),
->         SOC_DAPM_PIN_SWITCH("Headset Mic"),
->         SOC_DAPM_PIN_SWITCH("Int Mic"),
->         SOC_DAPM_PIN_SWITCH("Ext Spk"),
-> };
-> 
-> Do not get updated to reflect state-changes when the output
-> is switched between e.g. Headphone / "Ext Spk" by
-> pulseaudio/pipewire through the UCM profile mechanism.
-> 
-> If I exit alsa-mixer after changing the output and
-> start it again then the control does show the expect
-> value. So it seems that we are failing to send a change
-> event about this somewhere?
+Hi Takashi,
 
-Does the patch below work?
+On 10/3/21 4:46 PM, Takashi Iwai wrote:
+> On Sun, 03 Oct 2021 15:12:57 +0200,
+> Hans de Goede wrote:
+>>
+>> Hi All,
+>>
+>> I notice that DAPM PIN switches, such as e.g. the "Headphone"
+>> SOC_DAPM_PIN_SWITCH defined in:
+>> sound/soc/intel/boards/cht_bsw_nau8824.c:
+>>
+>> static const struct snd_kcontrol_new cht_mc_controls[] = {
+>>         SOC_DAPM_PIN_SWITCH("Headphone"),
+>>         SOC_DAPM_PIN_SWITCH("Headset Mic"),
+>>         SOC_DAPM_PIN_SWITCH("Int Mic"),
+>>         SOC_DAPM_PIN_SWITCH("Ext Spk"),
+>> };
+>>
+>> Do not get updated to reflect state-changes when the output
+>> is switched between e.g. Headphone / "Ext Spk" by
+>> pulseaudio/pipewire through the UCM profile mechanism.
+>>
+>> If I exit alsa-mixer after changing the output and
+>> start it again then the control does show the expect
+>> value. So it seems that we are failing to send a change
+>> event about this somewhere?
+> 
+> Does the patch below work?
+
+Thank you for the quick response.
+
+This works for the "Speaker" DAPM PIN switch on a rt5640
+board:
 
 
-thanks,
+static const struct snd_kcontrol_new byt_rt5640_controls[] = {
+        SOC_DAPM_PIN_SWITCH("Headphone"),
+        SOC_DAPM_PIN_SWITCH("Headset Mic"),
+        SOC_DAPM_PIN_SWITCH("Headset Mic 2"),
+        SOC_DAPM_PIN_SWITCH("Internal Mic"),
+        SOC_DAPM_PIN_SWITCH("Speaker"),
+        SOC_DAPM_PIN_SWITCH("Line Out"),
+};
 
-Takashi
+But it does not work for the "Headphone" and "Line Out" switches,
+these are actually hooked up to jack-detect, so I guess that the
+jack-detection is already flipping them and then when the UCM
+profile changes them it is a no-op causing the UCM setting of
+the control to not cause an event because it is not a change.
 
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2561,6 +2561,7 @@ static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
- 				const char *pin, int status)
- {
- 	struct snd_soc_dapm_widget *w = dapm_find_widget(dapm, pin, true);
-+	int ret = 0;
- 
- 	dapm_assert_locked(dapm);
- 
-@@ -2573,13 +2574,14 @@ static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
- 		dapm_mark_dirty(w, "pin configuration");
- 		dapm_widget_invalidate_input_paths(w);
- 		dapm_widget_invalidate_output_paths(w);
-+		ret = 1;
- 	}
- 
- 	w->connected = status;
- 	if (status == 0)
- 		w->force = 0;
- 
--	return 0;
-+	return ret;
- }
- 
- /**
-@@ -3583,14 +3585,15 @@ int snd_soc_dapm_put_pin_switch(struct snd_kcontrol *kcontrol,
- {
- 	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
- 	const char *pin = (const char *)kcontrol->private_value;
-+	int ret;
- 
- 	if (ucontrol->value.integer.value[0])
--		snd_soc_dapm_enable_pin(&card->dapm, pin);
-+		ret = snd_soc_dapm_enable_pin(&card->dapm, pin);
- 	else
--		snd_soc_dapm_disable_pin(&card->dapm, pin);
-+		ret = snd_soc_dapm_disable_pin(&card->dapm, pin);
- 
- 	snd_soc_dapm_sync(&card->dapm);
--	return 0;
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(snd_soc_dapm_put_pin_switch);
- 
-@@ -4023,7 +4026,7 @@ static int snd_soc_dapm_dai_link_put(struct snd_kcontrol *kcontrol,
- 
- 	rtd->params_select = ucontrol->value.enumerated.item[0];
- 
--	return 0;
-+	return 1;
- }
- 
- static void
+Relevant jack-detect bits from sound/soc/intel/boards/bytcr_rt5640.c:
+
+
+static struct snd_soc_jack_pin rt5640_pins[] = {
+        {
+                .pin    = "Headphone",
+                .mask   = SND_JACK_HEADPHONE,
+        },
+        {
+                .pin    = "Headset Mic",
+                .mask   = SND_JACK_MICROPHONE,
+        },
+};
+
+static struct snd_soc_jack_pin rt5640_pins2[] = {
+        {
+                /* The 2nd headset jack uses lineout with an external HP-amp */
+                .pin    = "Line Out",
+                .mask   = SND_JACK_HEADPHONE,
+        },
+        {
+                .pin    = "Headset Mic 2",
+                .mask   = SND_JACK_MICROPHONE,
+        },
+};
+
+
+                ret = snd_soc_card_jack_new(card, "Headset",
+                                            SND_JACK_HEADSET | SND_JACK_BTN_0,
+                                            &priv->jack, rt5640_pins,
+                                            ARRAY_SIZE(rt5640_pins));
+
+                ret = snd_soc_card_jack_new(card, "Headset 2",
+                                            SND_JACK_HEADSET,
+                                            &priv->jack2, rt5640_pins2,
+                                            ARRAY_SIZE(rt5640_pins2));
+
+I tried both jacks a HP Elitepad 1000G2 with dock (one on the tablet
+and one on the dock).
+
+With your patch the SOC_DAPM_PIN_SWITCH("Speaker") control correctly
+updates (which it did not do before). But the "Line Out" (used for
+the second headset jack) and the "Headphone" controls do not update.
+
+(exiting alsa-mixer and starting it again does show the "Line Out"
+and "Headphone" controls have changed.
+
+Regards,
+
+Hans
+
+
+
+> --- a/sound/soc/soc-dapm.c
+> +++ b/sound/soc/soc-dapm.c
+> @@ -2561,6 +2561,7 @@ static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
+>  				const char *pin, int status)
+>  {
+>  	struct snd_soc_dapm_widget *w = dapm_find_widget(dapm, pin, true);
+> +	int ret = 0;
+>  
+>  	dapm_assert_locked(dapm);
+>  
+> @@ -2573,13 +2574,14 @@ static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
+>  		dapm_mark_dirty(w, "pin configuration");
+>  		dapm_widget_invalidate_input_paths(w);
+>  		dapm_widget_invalidate_output_paths(w);
+> +		ret = 1;
+>  	}
+>  
+>  	w->connected = status;
+>  	if (status == 0)
+>  		w->force = 0;
+>  
+> -	return 0;
+> +	return ret;
+>  }
+>  
+>  /**
+> @@ -3583,14 +3585,15 @@ int snd_soc_dapm_put_pin_switch(struct snd_kcontrol *kcontrol,
+>  {
+>  	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
+>  	const char *pin = (const char *)kcontrol->private_value;
+> +	int ret;
+>  
+>  	if (ucontrol->value.integer.value[0])
+> -		snd_soc_dapm_enable_pin(&card->dapm, pin);
+> +		ret = snd_soc_dapm_enable_pin(&card->dapm, pin);
+>  	else
+> -		snd_soc_dapm_disable_pin(&card->dapm, pin);
+> +		ret = snd_soc_dapm_disable_pin(&card->dapm, pin);
+>  
+>  	snd_soc_dapm_sync(&card->dapm);
+> -	return 0;
+> +	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(snd_soc_dapm_put_pin_switch);
+>  
+> @@ -4023,7 +4026,7 @@ static int snd_soc_dapm_dai_link_put(struct snd_kcontrol *kcontrol,
+>  
+>  	rtd->params_select = ucontrol->value.enumerated.item[0];
+>  
+> -	return 0;
+> +	return 1;
+>  }
+>  
+>  static void
+> 
+
