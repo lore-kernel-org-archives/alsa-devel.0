@@ -2,93 +2,89 @@ Return-Path: <SRS0=D1rU=OX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B68B8C433F5
-	for <alsa-devel@archiver.kernel.org>; Sun,  3 Oct 2021 16:35:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CAD81C433EF
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 Oct 2021 19:18:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D3639619F8
-	for <alsa-devel@archiver.kernel.org>; Sun,  3 Oct 2021 16:35:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D3639619F8
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+	by mail.kernel.org (Postfix) with ESMTPS id EF153611CB
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 Oct 2021 19:18:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EF153611CB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=googlemail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D036E1679;
-	Sun,  3 Oct 2021 18:34:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D036E1679
+	by alsa0.perex.cz (Postfix) with ESMTPS id A3BF41674;
+	Sun,  3 Oct 2021 21:18:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3BF41674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633278931;
-	bh=voXsS16jv1z84EgHpN9Q1wrsz0TBKoYfb/HUAijwF5k=;
-	h=References:From:To:Subject:Date:In-reply-to:Cc:List-Id:
+	s=default; t=1633288733;
+	bh=EAvk3eMwiX22T5ip54e2sPnrdEACQ84w/++ygMIqczM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AViNALL9CMOgDui68zqG+/+6qRLQlje39Qjidt+j5kquDeE/ttJ3c4gSwbWSn+/M1
-	 uQjUZrjipZnQltLgVnHaJPdClEntIlVYiW9GE6TUcjdXUwmQ2PGjajvKsYQxlOsZ4l
-	 TzGTObXx4tSQ7hM/iUwmvjLc69Yu6qrLTiw5gDUA=
+	b=lXwsCgBuO8MkJbFKk/juWmvk+dE7rLudsNZFpLlRIfKZptT394YthwHUSJ46dBAEt
+	 7EH+O8aB2lwAoJNW7/Epq6tVlh+gC0ceToCHF+Rl8buaizcLbVGvnP30GczLQWsGbL
+	 CTpuXEUGaha36OxFd1UT64X94dSf+kDuegk+VS7k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 22C7AF8028B;
-	Sun,  3 Oct 2021 18:34:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 170E3F80171;
+	Sun,  3 Oct 2021 21:18:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D97AAF804BB; Sun,  3 Oct 2021 18:34:39 +0200 (CEST)
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
- [IPv6:2a00:1450:4864:20::434])
+ id 6C1E5F8027D; Sun,  3 Oct 2021 21:18:01 +0200 (CEST)
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com
+ [IPv6:2a00:1450:4864:20::534])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1AACBF800ED
- for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2021 18:34:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AACBF800ED
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1FEA8F80171
+ for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2021 21:17:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FEA8F80171
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=baylibre-com.20210112.gappssmtp.com
- header.i=@baylibre-com.20210112.gappssmtp.com header.b="ZquaEFNQ"
-Received: by mail-wr1-x434.google.com with SMTP id d26so25782475wrb.6
- for <alsa-devel@alsa-project.org>; Sun, 03 Oct 2021 09:34:30 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com
+ header.b="XaEsVqDF"
+Received: by mail-ed1-x534.google.com with SMTP id l7so32606760edq.3
+ for <alsa-devel@alsa-project.org>; Sun, 03 Oct 2021 12:17:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20210112.gappssmtp.com; s=20210112;
- h=references:user-agent:from:to:cc:subject:date:in-reply-to
- :message-id:mime-version;
- bh=AfcjZljpnyi3x3inUnv1hf4IgNO1UtATkc18L3EpJlA=;
- b=ZquaEFNQQG+cc6p2QntDlwSZZ2TVIFbSQfAy4SKNNPT3whjpR1sAQoSozsJT1/kpKk
- I/cIcC8trxXuEg4ZeM5AhrwIf2NLSPOGhRfTI/DJdBPL6Nchev0dGnQ9OvgqWmEjEEyT
- gteCetHJowRpJaX6Bd+xJv6c5UlC9zuljd3Hp7jBtJKovnoC5OiFdrd8DX0BpSBdOP2A
- 21Ousy+rgBkf7EBKxztczs/owRHGApd2+xEIoPGN54LHA+gq4i+H6FjMfaLKIMqCK5rM
- zxjz1RH4+7GyocDb5OA388Z0T0dhnQ7s6lald6mdWOYmmS6h5N9Z+LvNRbo+GK5mxTT1
- IGrw==
+ d=googlemail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=v1AuAoJ09w7rZx0LoqvNgfkj4bYHfW7F7rrWOMcjHMc=;
+ b=XaEsVqDFSTa6962TijyFZ2fyq5Z9ZALuDegRoy6NJaL62ZvH7MrEG97rCkN1c4rwFS
+ X8Nm8/3Kwq2rsVN/lDXFgtSoSuKQVZ35Jplej1d0ZwYUe7WLVfK1Ay1dUu0pziOcv4LB
+ VaCYEFjqL+J8InFuse2jRCxQHIIdqeFpz5oAUnp9K6ybngH+UpYFMdo5ZnxGugaJAFHV
+ axKFlII72Vw+3bYl28bBu1u+6PRz4fipoqjhOr1cAFf5ntLSN4ynmgn7dpAZ5gkDJ6Gy
+ LIh5othJHJ5PpJW63/mKqDCybEuAzkgPpta/0qfhgb8Wu/Xf515DJnPaxJa2GIdEy476
+ Jukw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
- :in-reply-to:message-id:mime-version;
- bh=AfcjZljpnyi3x3inUnv1hf4IgNO1UtATkc18L3EpJlA=;
- b=M915TyGTloyM1cuGh3Z8neWxujKvzl7mFYZ68TWL2XQNV9ERhhfDdQdJtZ/n2eg/Rs
- ySpE34eCOY24HuTS5MseVmbvLz3DA0qkAOUtsAOCSLXxxvAtubj0ru5v9uqh6lNE262a
- AWzffCkwTawAy27e4gQyWKnAe0Lq4sKpfOn4SsivFiXy1+a+uWzuojgvpqt5m8Ko3UyA
- 28XcmTmpR04cEyXxxaKY3iZFdbmaGbQaisy73IYDFfL+7n9pYh3G7k0ou58mO2Jq1wVK
- VJ6RGHmYR5E7bl6oo79m7kh81m/53l2dsGGBuFqaM2xg6xmNO1gHe9/aYRr8U0cNPzZ1
- cEIQ==
-X-Gm-Message-State: AOAM531SisjGsO9kd+6/KqSoQOSxrVdVHTR7OV+dyhC7aQhi3FQFZ/3O
- agF1DibZTuBW1bodSvb5rr2a3w==
-X-Google-Smtp-Source: ABdhPJxDks6Yk+yh8WWF/R0E0aUU/uhv3pPrPdejRwi6v3WACZsH0mug7PHzZQbWOFqIdv6TAvuPYQ==
-X-Received: by 2002:adf:97d4:: with SMTP id t20mr3262138wrb.174.1633278868815; 
- Sun, 03 Oct 2021 09:34:28 -0700 (PDT)
-Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
- by smtp.gmail.com with ESMTPSA id o12sm12084828wms.15.2021.10.03.09.34.28
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 03 Oct 2021 09:34:28 -0700 (PDT)
-References: <20211002234313.3209294-1-martin.blumenstingl@googlemail.com>
-User-agent: mu4e 1.6.6; emacs 27.1
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- alsa-devel@alsa-project.org, linux-amlogic@lists.infradead.org
-Subject: Re: [RFC PATCH v1 0/1] ASoC: meson: aiu: HDMI codec control
- questions and issues
-Date: Sun, 03 Oct 2021 17:57:34 +0200
-In-reply-to: <20211002234313.3209294-1-martin.blumenstingl@googlemail.com>
-Message-ID: <1j35pivzho.fsf@starbuckisacylon.baylibre.com>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=v1AuAoJ09w7rZx0LoqvNgfkj4bYHfW7F7rrWOMcjHMc=;
+ b=H+RYP5OfioAqn7RyMgRM9Z27i5SW1SPOis1uxu8IyOYaGcetRl9HIbqS1aObzGRS8A
+ W0N26vmCNKEjIIjTysrTGoQ2bwauo+yxvz4QQmYmFzWV6luw+CG1JjmLqaV38EyvC/91
+ n8NQ/yU0O3i7kVB1novltV8H3GQ8TL2V1c6XlHDKuDUTN59lbnUHLrO2vp/t8bgMt/kn
+ AXv2jLOsJ8KCdsQaFm33LqWd0WmONzyuri3fiPyctTzd5TPBEikm3c22mXDXCgJYkbze
+ 3Fe77bQ8LYi03nBK7OYwhpifmBLlkLCTu7N4jFWdbzjHO6GGOtklPVpECPQMx5SoEUfH
+ 18iQ==
+X-Gm-Message-State: AOAM531oet5F5wunLd+iwpfRrPPur1abdes85RB6+Iu8mbAeLFSLZAYy
+ Ih5rRPdPSZytusudn1assNXH9CxwJYQwczKWOWQ+5gpG7xw=
+X-Google-Smtp-Source: ABdhPJxPn4IPMXuFMIIxl4e3Ysa4zn0K9LciYHf8mg3INPpCBfcDQdHxG1bp6bHR2mDopq2L8Cgvn2yvAsshbCzaORg=
+X-Received: by 2002:a17:906:1405:: with SMTP id
+ p5mr12382183ejc.197.1633288670478; 
+ Sun, 03 Oct 2021 12:17:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.com,
- broonie@kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20211002234313.3209294-1-martin.blumenstingl@googlemail.com>
+ <1j35pivzho.fsf@starbuckisacylon.baylibre.com>
+In-Reply-To: <1j35pivzho.fsf@starbuckisacylon.baylibre.com>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date: Sun, 3 Oct 2021 21:17:39 +0200
+Message-ID: <CAFBinCCCQebCEdLjYAfWkF4NDPdma8UzVMhHOhZPVreoV2qd2w@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 0/1] ASoC: meson: aiu: HDMI codec control questions
+ and issues
+To: Jerome Brunet <jbrunet@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ lgirdwood@gmail.com, broonie@kernel.org, linux-amlogic@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,159 +100,139 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Jerome,
 
-On Sun 03 Oct 2021 at 01:43, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
+first of all: thanks for taking the time to go through all of this!
 
-> Hello Jerome et al.,
->
-> on Amlogic Meson SoCs which use the AIU audio controller we have the
-> so-called "machine gun noise" (MGN) issue, reproducible for example in
-> Kodi. So far nobody was able to identify the cause of this issue. My
-> idea was to at least narrow down the issue so we can categorize it. For
-> that I wanted to get the SPDIF output from AIU to the HDMI controller
-> working.
-
-Ok, I'll clarify (again) about this issue.
-
-This issue is on AIU only (not the AXG series), on the i2s encoder
-regardless of the output (HDMI, internal and external codec)
-
-This encoder support either 2ch or 8ch mode, nothing else.
-As long as only 2ch was supported, there was no problem.
-In order to switch between 2ch and 8ch mode.  AIU_RST_SOFT_I2S_FAST and
-AIU_I2S_SYNC shall be "poked" (check iu-fifo-i2s.c and
-aiu-encoder-i2c.c). Without this, the switch is not done.
-
-What these do, how and when it should be done is unclear. I tried
-several combination. At the time I found something stable-ish but it was
-not perfect.
-
-At the time, It was completely new driver. Even if was not rock solid,
-it was still progress and I opted to upstream it with an imperfect 8ch
-support so people could help debug it. This was mentioned in the
-original submission.
-
-The other solution is to restrict to 2ch mode and remove
-AIU_RST_SOFT_I2S_FAST and AIU_I2S_SYNC pokes. There will be no noise
-anymore.
-
->
-> On Amlogic Meson GXBB/GXL/GXM SoCs a DesignWare HDMI TX controller is
-> used. This has an SPDIF input but there's currently not driver for it.
-> On Meson8/8b/8m2 SoCs I am working on a HDMI driver for the TransSwitch
-> HDMI controller which - just like DesignWare HDMI TX - supports SPDIF
-> and I2S inputs.
-> I decided to add SPDIF support to the latter since the code from the
-> vendor driver is much easier.
->
-> It took me a while to figure out why I would not get any audio output
-> from AIU SPDIF to the HDMI controller - or from there to the sink.
-> The "fix" for this issue is the RFC patch which is part of this series.
-> Any feedback would be great as I am still new to the ASoC subsystem.
->
-> Another part I am still struggling with is the audio "routing" (due to
-> lack of a better term - please correct me if this is not the right word
-> to use for this case). I have the following description in my .dts:
-> 	sound {
-> 		compatible = "amlogic,gx-sound-card";
-> 		model = "M8B-ODROID-C1";
->
-> 		assigned-clocks = <&clkc CLKID_MPLL0>,
-> 				  <&clkc CLKID_MPLL1>;
-> 		assigned-clock-rates = <294912000>,
-> 				       <270950400>;
-> 		dai-link-0 {
-> 			sound-dai = <&aiu AIU_CPU CPU_I2S_FIFO>;
-> 		};
->
-> 		dai-link-1 {
-> 			sound-dai = <&aiu AIU_CPU CPU_SPDIF_FIFO>;
-> 		};
->
-> 		dai-link-2 {
-> 			sound-dai = <&aiu AIU_CPU CPU_I2S_ENCODER>;
-> 			dai-format = "i2s";
-> 			mclk-fs = <256>;
->
-> 			codec-0 {
-> 				sound-dai = <&aiu AIU_HDMI CTRL_I2S>;
-> 			};
-> 		};
->
-> 		dai-link-3 {
-> 			sound-dai = <&aiu AIU_CPU CPU_SPDIF_ENCODER>;
->
-> 			codec-0 {
-> 				sound-dai = <&aiu AIU_HDMI CTRL_PCM>;
-
-Ok, the obove sums up the problem around this RFC.
-
-Here you describe a DAI link (think of it as wires) between the SPDIF
-encoder (output) and AIU_HDMI input PCM. This is not what the HW is and
-it is not possible.
-
-Let's start from the HDMI controller.
-The designware (on amlogic SoC) has 2 interface for audio input.
-1) PCM/I2S: a classic interface 2 clocks and N data line
-2) SPDIF: The Sony Philips 1 wire interface
-
-Whatever comes up on 1) has to be some sort of i2s signal. So SPDIF
-won't fly there.
-
-AIU_HDMI output is Hardwired to 1). It is just just a digital mux,
-implemented as an ASoC codec which allows to seleted one of 2 audio
-sources:
-A) the i2s output implemented as part of the AIU
-B) the PCM output, part the AUDIN (yes, an output in AUDIN) block. This
-is not implemented ATM.
-
-So trying to handle SPDIF through AIU_HDMI is wrong.
-
-> 			};
-> 		};
->
-> 		dai-link-4 {
-> 			sound-dai = <&aiu AIU_HDMI CTRL_OUT>;
->
-> 			codec-0 {
-> 				sound-dai = <&hdmi_tx>;
-
-your HDMI controller should have an argument to the phandle if it
-supported both I2S and SPDIF inputs
-
-> 			};
-> 		};
-> 	};
-> The driver for &hdmi_tx defines:
-> 	struct hdmi_codec_pdata pdata = {
-> 		.ops			= &txc_48352_hdmi_codec_ops,
-> 		.i2s			= 1,
-> 		.spdif			= 1,
-> 		.max_i2s_channels	= 8,
-> 		.data			= priv,
-> 	};
-> In hdmi_codec_ops.hw_params I always get fmt->fmt HDMI_I2S unless I
-> remove all I2S references from the .dts snipped above (only then
-> HDMI_SPDIF is detected). Based on the selection of the "HDMI Source"
-> enum in aiu-codec-ctrl I was expecting the format to update as well.
-> That unfortunately doesn't happen and I don't know how that can be
-> achieved.
-
-It is not meant to. The dai_link and the endpoint are i2s.
-Your HDMI controller should have 2 inputs and should have a way to
-select one or the other. The format at each of the (internal) input does
-not change
-
+On Sun, Oct 3, 2021 at 6:34 PM Jerome Brunet <jbrunet@baylibre.com> wrote:
 >
 >
-> Best regards,
-> Martin
+> On Sun 03 Oct 2021 at 01:43, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
 >
+> > Hello Jerome et al.,
+> >
+> > on Amlogic Meson SoCs which use the AIU audio controller we have the
+> > so-called "machine gun noise" (MGN) issue, reproducible for example in
+> > Kodi. So far nobody was able to identify the cause of this issue. My
+> > idea was to at least narrow down the issue so we can categorize it. For
+> > that I wanted to get the SPDIF output from AIU to the HDMI controller
+> > working.
 >
-> Martin Blumenstingl (1):
->   ASoC: meson: aiu: Fix HDMI codec control selection
+> Ok, I'll clarify (again) about this issue.
 >
->  sound/soc/meson/aiu-codec-ctrl.c  | 108 ++++++++++++++++++++++--------
->  sound/soc/meson/aiu-encoder-i2s.c |   6 --
->  2 files changed, 80 insertions(+), 34 deletions(-)
+> This issue is on AIU only (not the AXG series), on the i2s encoder
+> regardless of the output (HDMI, internal and external codec)
+Thanks for repeating this. It was clear to me that only AIU is
+affected but I didn't know that it only affects I2S
 
+> This encoder support either 2ch or 8ch mode, nothing else.
+> As long as only 2ch was supported, there was no problem.
+> In order to switch between 2ch and 8ch mode.  AIU_RST_SOFT_I2S_FAST and
+> AIU_I2S_SYNC shall be "poked" (check iu-fifo-i2s.c and
+> aiu-encoder-i2c.c). Without this, the switch is not done.
+>
+> What these do, how and when it should be done is unclear. I tried
+> several combination. At the time I found something stable-ish but it was
+> not perfect.
+old 32-bit u-boot sources from the Endless Mini do have some
+documentation on AIU_I2S_SYNC [0]:
+// 8'b0_000_1_1_10
+// A write to this register will cause the interface to repeat the current
+// sample. Can be used to regain synchronization.
+// A read from this register indicates that the next sample to be sent
+// out of the interface should go into the _left_ channel of the dac.
+
+There's also a note about AIU_I2S_MISC stating:
+// Bit 4 if true, force each audio data to left or right according to
+the bit attached with the audio data
+// This bit should be used with Register AIU_i2s_sync(0x511) together
+
+To be honest: to me this is not helpful since I don't understand
+how/why the left channel is of importance.
+
+> At the time, It was completely new driver. Even if was not rock solid,
+> it was still progress and I opted to upstream it with an imperfect 8ch
+> support so people could help debug it. This was mentioned in the
+> original submission.
+>
+> The other solution is to restrict to 2ch mode and remove
+> AIU_RST_SOFT_I2S_FAST and AIU_I2S_SYNC pokes. There will be no noise
+> anymore.
+I think Christian (Hewitt) agrees on this point as he mentioned that
+your earlier versions of the AIU code (before it got upstream) were
+not affected by the "machine gun noise" issue.
+Does the documentation from above give you any new ideas (assuming
+that it's correct since it's the best we have)? Should I try playing
+with AIU_RST_SOFT_I2S_FAST and AIU_I2S_SYNC to see if I can make a
+difference?
+
+[...]
+> Here you describe a DAI link (think of it as wires) between the SPDIF
+> encoder (output) and AIU_HDMI input PCM. This is not what the HW is and
+> it is not possible.
+>
+> Let's start from the HDMI controller.
+> The designware (on amlogic SoC) has 2 interface for audio input.
+> 1) PCM/I2S: a classic interface 2 clocks and N data line
+> 2) SPDIF: The Sony Philips 1 wire interface
+The Transwitch HDMI TX controller supports these two inputs so even
+though the IP is different the basic functionality (which we'll
+discuss below) is the same.
+
+> Whatever comes up on 1) has to be some sort of i2s signal. So SPDIF
+> won't fly there.
+I agree with this
+
+> AIU_HDMI output is Hardwired to 1). It is just just a digital mux,
+> implemented as an ASoC codec which allows to seleted one of 2 audio
+> sources:
+> A) the i2s output implemented as part of the AIU
+> B) the PCM output, part the AUDIN (yes, an output in AUDIN) block. This
+> is not implemented ATM.
+This is some interesting information, I thought that PCM was used
+because PCM audio can be transmitted over SPDIF.
+
+For A) my understanding is different though:
+- for AIU_HDMI_CLK_DATA_CTRL[5:4] (HDMI_DATA_SEL) your description
+matches my understanding. For me it makes sense that SPDIF data cannot
+be selected with this register since it's a one-wire protocol (and
+doesn't have separate data/clock lines). Value 0x2 selects the I2S
+data interface
+- for AIU_HDMI_CLK_DATA_CTRL[1:0] (HDMI_DATA_CLK_SEL) however I have a
+different understanding: 0x0 disables the clock signal to the HDMI TX
+controller, 0x1 selects the PCM clock (which now I have learned is
+related to the AUDIN block) and 0x2 selects the "AIU clock" (see
+below)
+- my understanding is that "AIU clock" comes from AIU_CLK_CTRL_MORE[6]
+(HDMITX_SEL_AOCLKX2) where 0x0 selects "cts_i958 as AIU clk to
+hdmi_tx_audio_master_clk" (SPDIF clock) and 0x1 selects
+"cts_aoclkx2_int as AIU clk to hdmi_tx_audio_master_clk" (I2S clock)
+
+So to me this means that there's three different muxes:
+- data mux to choose between 0x0 (all zeros), 0x1 (PCM) and 0x2 (I2S)
+- clock mux to choose between 0x0 (disabled), 0x1 (PCM) and 0x2
+(hdmi_tx_audio_master_clk)
+- hdmi_tx_audio_master_clk clock mux to choose between 0x0 (cts_i958)
+and 0x1 (cts_aoclkx2_int)
+
+Based on that I think that it's not possible to have AIU output the
+I2S and SPDIF signals at the same time to the HDMI TX controller and
+then letting the HDMI TX controller choose which one to use.
+Based on whichever signal (I2S or SPDIF) we want to use for HDMI we
+need to configure AIU accordingly (data and clock).
+
+[...]
+> It is not meant to. The dai_link and the endpoint are i2s.
+> Your HDMI controller should have 2 inputs and should have a way to
+> select one or the other. The format at each of the (internal) input does
+> not change
+ah, that makes sense.
+Let's say AIU has some internal muxing for the HDMI output then AIU
+would have two outputs as well (let's call them HDMI_OUT_I2S and
+HDMI_OUT_SPDIF).
+Then I'd wire up each of these to their corresponding inputs on the
+HDMI TX controller.
+
+
+Best regards,
+Martin
