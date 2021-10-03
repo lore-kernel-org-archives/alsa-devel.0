@@ -1,97 +1,72 @@
-Return-Path: <SRS0=qlOX=OW=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=D1rU=OX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E419C433EF
-	for <alsa-devel@archiver.kernel.org>; Sat,  2 Oct 2021 23:45:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24D2EC433F5
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 Oct 2021 03:05:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4A2B3619E9
-	for <alsa-devel@archiver.kernel.org>; Sat,  2 Oct 2021 23:45:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4A2B3619E9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=googlemail.com
+	by mail.kernel.org (Postfix) with ESMTPS id AA7CF6109F
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 Oct 2021 03:05:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AA7CF6109F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8CB23165D;
-	Sun,  3 Oct 2021 01:44:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CB23165D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8FD49167D;
+	Sun,  3 Oct 2021 05:04:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FD49167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633218318;
-	bh=HnEJsFs1ubWhbmAPJogmJgsBveQIsmjAfmo3f8hlxQo=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ZEe5Wz6/x+ng+NEFdO0wta6XW42mJ6O1n1RlEL4ZlwW7x7wCVpuNFHHinryA6hkWm
-	 0nOF3x18+rLNLnoDMu4EAcHoh4dUKr4haOnBstv7+6bz66vfQrsRo1FsguGNB+h1w6
-	 hXBMn49mGEuc40vC5EDWNwI/fE/pU4zQrNQMZKDw=
+	s=default; t=1633230310;
+	bh=/WRaeqQXW8Qr+OqzTHHwCPuWiB3wv8AaXMzk5fTKZHk=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=qg/noCxtZuUkqB1rm2zqpFd/X9Wo/5GCQ0iBkDLDM4DVgooh+rTVHZy/Vt+NOFG1x
+	 3PCQOzBwzAuurBbkUaeULaKXy0LWSbTNFEiX6Ktl7FgWPBzClRICZRo5BOUmRrDGVv
+	 0feLDiXeY0X+zDE/H8eFNht2g0ov2ysun4j7LJ+E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD543F804D1;
-	Sun,  3 Oct 2021 01:43:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9FCB1F80259;
+	Sun,  3 Oct 2021 05:04:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 49E7EF804D6; Sun,  3 Oct 2021 01:43:43 +0200 (CEST)
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
- [IPv6:2a00:1450:4864:20::331])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1AB1FF8027D; Sun,  3 Oct 2021 05:04:16 +0200 (CEST)
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 527F3F800EF
- for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2021 01:43:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 527F3F800EF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8F0C0F80259
+ for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2021 05:04:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F0C0F80259
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com
- header.b="icLjFAJ6"
-Received: by mail-wm1-x331.google.com with SMTP id j27so10064464wms.0
- for <alsa-devel@alsa-project.org>; Sat, 02 Oct 2021 16:43:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=googlemail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=hgtwgASIU2S9cTG1IYenshFLUzfZ9j3XLdKPZT+Vt+I=;
- b=icLjFAJ6wVHjLEjuWWJ/+yFvvcXnNmT8QEeBUojow7R7aVHlgNAsLsqIrdCn6QMNkj
- Nw13uFetu+cDHyvfHBoMSwhwIa0LwD+Iz/JBA1hsjhEYnvhrNmnQqzCyAjAaDM2ctgG3
- 5KjzbHm+bCXQSAaf0H09JEDElzPJhFi5blU89mFpoMkgucNpkWHsnqwZ81JiZ7mWDvlo
- mQjVRbh0upNSmAdye08I6KAK8FmnY66gFt8XYgEypPl8w0lpldceuEvGuo0RHSk9O9P3
- 9dfmr/sNaVUyxEI5zkQeySht0ODaFoyLO/LE93xpChlGbXnKqQRd4hDTIqt+vRKy4d0k
- x7zA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=hgtwgASIU2S9cTG1IYenshFLUzfZ9j3XLdKPZT+Vt+I=;
- b=E3fYEA0I1sTv9fN/WW+m63gJ76Ex8kguYMHm76nqjsn11+8qF7VwGl97MbvXbw7RyC
- ZJMige8dETyqF5a/djHMJzVMvWJj8ZMHV7ajRoun3vHLflbMcHRrUYLYp8YWai6kGTO/
- OE1zVcMvdxn6hug6NS147B1q5qr1IXPEFPqwV1wD+jWEUSe/ioeS3TabuxHAyfGL0X3Z
- 4UJi53pfiOR+mKxYDG5PoMxHH/OhmgKzxMBAkyb1bni8ggt7ZGmX+8jw7RIfw37N3DmP
- vwJLP0PF5A2V/Tw+pCPZao9CeCCFHMPxoO14qVA4LAJWyJw3qlpSAhW9Rq61d7qwz0ZC
- FXfQ==
-X-Gm-Message-State: AOAM5304lTLqlZeDIgmAJ3oaNQf1Tb/ywGvyroIem2Juytd31CKXMRrB
- 3kBXza00VdZGbwQGV9bXHSw=
-X-Google-Smtp-Source: ABdhPJyU0FswveQk5Bv5c/28BfiH8bNP4GmyUxp3rdpMUQGaardPEQJyXT6LqU+Kx0dASloRjZKwPg==
-X-Received: by 2002:a7b:cd82:: with SMTP id y2mr11079862wmj.106.1633218212387; 
- Sat, 02 Oct 2021 16:43:32 -0700 (PDT)
-Received: from localhost.localdomain
- (dynamic-2a01-0c22-7bbe-df00-f22f-74ff-fe21-0725.c22.pool.telefonica.de.
- [2a01:c22:7bbe:df00:f22f:74ff:fe21:725])
- by smtp.googlemail.com with ESMTPSA id z6sm13999463wmp.1.2021.10.02.16.43.31
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 02 Oct 2021 16:43:32 -0700 (PDT)
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To: jbrunet@baylibre.com, alsa-devel@alsa-project.org,
- linux-amlogic@lists.infradead.org
-Subject: [RFC PATCH v1 1/1] ASoC: meson: aiu: Fix HDMI codec control selection
-Date: Sun,  3 Oct 2021 01:43:13 +0200
-Message-Id: <20211002234313.3209294-2-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211002234313.3209294-1-martin.blumenstingl@googlemail.com>
-References: <20211002234313.3209294-1-martin.blumenstingl@googlemail.com>
+ dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
+ header.b="dsSyZPPI"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+ MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+ Content-ID:Content-Description:In-Reply-To:References;
+ bh=V2oLactPpE5eJWgOLN3Dhq4j/4VC1w7xQGXAdA2EUAA=; b=dsSyZPPISXb3VZpr7E4zsjPCYm
+ Rdwbph+1+lOthfEY7StkeMW/KId/D8kKDxpXjV/ogYGSBxj2js+NEUBfsaU2HU1UUAphnlTbwNpVu
+ g/SASSf37tG2LRI4uZqq1X48WVkWJZZR2dwbnnsyw7l7XojZtj7JGaEt4r2evyyw43wmi9iWSmLLj
+ qYdmcR5KQq+L0PnDsUA4SMF1JdtEMGDvNbpXu1gQRRAY8R4bQkiMftDj/hhQYLvITws+08P04+0p0
+ zTTZCWaw9YAWKD63qCLgipjHS2vEJiCwjWQjQpJ6KKyN8WN4d8Khd8azf7HKa6uFWEzlfO7MIBawr
+ OPZhwgXw==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+ by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mWrnJ-0037Sc-Qe; Sun, 03 Oct 2021 03:04:05 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl: add COMPILE_TEST for SND_SOC_FSL_ASRC
+Date: Sat,  2 Oct 2021 20:04:04 -0700
+Message-Id: <20211003030404.32707-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: lgirdwood@gmail.com,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- linux-kernel@vger.kernel.org, tiwai@suse.com, broonie@kernel.org,
- linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, Randy Dunlap <rdunlap@infradead.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>,
+ Fabio Estevam <festevam@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,230 +82,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The HDMI controllers on Amlogic Meson SoCs which use the AIU
-audio-controller have two different audio format inputs:
-- I2S which is also the only configuration supported on GXBB, GXL and
-  GXM SoCs since there's no SPDIF support in the DesignWare HDMI
-  controller driver (at the time of writing this)
-- SPDIF can be used optionally, including pass-through formats
+Geert pointed out that since sound/soc has the soc_dummy_driver for
+NO_DMA platforms, it is possible (desirable) to have drivers that
+depend on HAS_DMA to alternately depend on COMPILE_TEST.
 
-Switching between these requires us to set different registers:
-AIU_HDMI_CLK_DATA_CTRL[1:0] "HDMI_DATA_CLK_SEL":
-- 0x0 disables the HDMI output clock
-- 0x1 selects the PCM clock
-- 0x2 selects the AIU clock
-- 0x3 is reserved
+This means that SND_ATMEL_FSL_ASRC can depend on HAS_DMA || COMPIE_TEST.
 
-AIU_HDMI_CLK_DATA_CTRL[5:4] "HDMI_DATA_SEL":
-- 0x0 outputs constant zero, disables HDMI data
-- 0x1 selects PCM data
-- 0x2 selects AIU I2S data
-- 0x3 is reserved
-
-AIU_CLK_CTRL_MORE[6] "HDMITX_SEL_AOCLKX2":
-- 0x0 selects cts_i958 as AIU clk to hdmi_tx_audio_master_clk
-- 0x1 selects cts_aoclkx2_int as AIU clk to hdmi_tx_audio_master_clk
-
-The Meson8/8b/8m2 vendor driver uses the following settings:
-SPDIF output to the HDMI controller:
-- 0x2 (AIU clock) in AIU_HDMI_CLK_DATA_CTRL[1:0]
-- 0x0 (no HDMI data) in AIU_HDMI_CLK_DATA_CTRL[5:4]
-- 0x0 (using cts_i958 as AIU clk) in AIU_CLK_CTRL_MORE[6]
-I2S output to the HDMI controller:
-- 0x2 (AIU clock) in AIU_HDMI_CLK_DATA_CTRL[1:0]
-- 0x2 (I2S data) in AIU_HDMI_CLK_DATA_CTRL[5:4]
-- 0x0 (using cts_aoclkx2_int as AIU clk) in AIU_CLK_CTRL_MORE[6]
-
-The GXBB/GXL/GXM vendor driver uses the following settings:
-SPDIF output to the HDMI controller:
-- not setting AIU_HDMI_CLK_DATA_CTRL at all
-- 0x0 (using cts_i958 as AIU clk) in AIU_CLK_CTRL_MORE[6]
-I2S output to the HDMI controller:
-- 0x2 (AIU clock) in AIU_HDMI_CLK_DATA_CTRL[1:0]
-- 0x2 (I2S data) in AIU_HDMI_CLK_DATA_CTRL[5:4]
-- 0x0 (using cts_aoclkx2_int as AIU clk) in AIU_CLK_CTRL_MORE[6]
-
-Set the three registers at the same time following what the vendor
-driver does on Meson8/8b/8m2 SoCs. This makes the SPDIF output to the
-HDMI controller work. The entries and order of the entries in the enum
-is not changed on purpose to not break old configurations.
-
-Fixes: b82b734c0e9a7 ("ASoC: meson: aiu: add hdmi codec control support")
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Fixes: 121a01521b1e ("ASoC: fsl: fix build failure")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>
+Cc: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+Cc: Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc: Fabio Estevam <festevam@gmail.com>
 ---
- sound/soc/meson/aiu-codec-ctrl.c  | 108 ++++++++++++++++++++++--------
- sound/soc/meson/aiu-encoder-i2s.c |   6 --
- 2 files changed, 80 insertions(+), 34 deletions(-)
+ sound/soc/fsl/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/meson/aiu-codec-ctrl.c b/sound/soc/meson/aiu-codec-ctrl.c
-index c3ea733fce91..2b8575491aeb 100644
---- a/sound/soc/meson/aiu-codec-ctrl.c
-+++ b/sound/soc/meson/aiu-codec-ctrl.c
-@@ -12,14 +12,60 @@
- #include "aiu.h"
- #include "meson-codec-glue.h"
+--- linux-next-20211001.orig/sound/soc/fsl/Kconfig
++++ linux-next-20211001/sound/soc/fsl/Kconfig
+@@ -5,7 +5,7 @@ comment "Common SoC Audio options for Fr
  
--#define CTRL_CLK_SEL		GENMASK(1, 0)
--#define CTRL_DATA_SEL_SHIFT	4
--#define CTRL_DATA_SEL		(0x3 << CTRL_DATA_SEL_SHIFT)
--
--static const char * const aiu_codec_ctrl_mux_texts[] = {
--	"DISABLED", "PCM", "I2S",
-+#define AIU_HDMI_CLK_DATA_CTRL_CLK_SEL			GENMASK(1, 0)
-+#define AIU_HDMI_CLK_DATA_CTRL_CLK_SEL_DISABLE		0x0
-+#define AIU_HDMI_CLK_DATA_CTRL_CLK_SEL_PCM		0x1
-+#define AIU_HDMI_CLK_DATA_CTRL_CLK_SEL_AIU		0x2
-+#define AIU_HDMI_CLK_DATA_CTRL_DATA_SEL			GENMASK(5, 4)
-+#define AIU_HDMI_CLK_DATA_CTRL_DATA_SEL_OUTPUT_ZERO	0x0
-+#define AIU_HDMI_CLK_DATA_CTRL_DATA_SEL_PCM_DATA	0x1
-+#define AIU_HDMI_CLK_DATA_CTRL_DATA_SEL_I2S_DATA	0x2
-+
-+#define AIU_CLK_CTRL_MORE_AMCLK				BIT(6)
-+
-+#define AIU_HDMI_CTRL_MUX_DISABLED			0
-+#define AIU_HDMI_CTRL_MUX_PCM				1
-+#define AIU_HDMI_CTRL_MUX_I2S				2
-+
-+static const char * const aiu_codec_hdmi_ctrl_mux_texts[] = {
-+	[AIU_HDMI_CTRL_MUX_DISABLED] =  "DISABLED",
-+	[AIU_HDMI_CTRL_MUX_PCM] = "PCM",
-+	[AIU_HDMI_CTRL_MUX_I2S] = "I2S",
- };
- 
-+static int aiu_codec_ctrl_mux_get_enum(struct snd_kcontrol *kcontrol,
-+				       struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component =
-+		snd_soc_dapm_kcontrol_component(kcontrol);
-+	unsigned int ctrl, more, mux = AIU_HDMI_CTRL_MUX_DISABLED;
-+
-+	ctrl = snd_soc_component_read(component, AIU_HDMI_CLK_DATA_CTRL);
-+	if (FIELD_GET(AIU_HDMI_CLK_DATA_CTRL_CLK_SEL, ctrl) !=
-+	    AIU_HDMI_CLK_DATA_CTRL_CLK_SEL_AIU) {
-+		goto out;
-+	}
-+
-+	more = snd_soc_component_read(component, AIU_CLK_CTRL_MORE);
-+	if (FIELD_GET(AIU_HDMI_CLK_DATA_CTRL_DATA_SEL, ctrl) ==
-+	    AIU_HDMI_CLK_DATA_CTRL_DATA_SEL_I2S_DATA &&
-+	    !!(more & AIU_CLK_CTRL_MORE_AMCLK)) {
-+		mux = AIU_HDMI_CTRL_MUX_I2S;
-+		goto out;
-+	}
-+
-+	if (FIELD_GET(AIU_HDMI_CLK_DATA_CTRL_DATA_SEL, ctrl) ==
-+	    AIU_HDMI_CLK_DATA_CTRL_DATA_SEL_OUTPUT_ZERO &&
-+	    !(more & AIU_CLK_CTRL_MORE_AMCLK)) {
-+		mux = AIU_HDMI_CTRL_MUX_PCM;
-+		goto out;
-+	}
-+
-+out:
-+	ucontrol->value.enumerated.item[0] = mux;
-+	return 0;
-+}
-+
- static int aiu_codec_ctrl_mux_put_enum(struct snd_kcontrol *kcontrol,
- 				       struct snd_ctl_elem_value *ucontrol)
- {
-@@ -28,45 +74,51 @@ static int aiu_codec_ctrl_mux_put_enum(struct snd_kcontrol *kcontrol,
- 	struct snd_soc_dapm_context *dapm =
- 		snd_soc_dapm_kcontrol_dapm(kcontrol);
- 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
--	unsigned int mux, changed;
-+	unsigned int mux, ctrl, more;
- 
- 	mux = snd_soc_enum_item_to_val(e, ucontrol->value.enumerated.item[0]);
--	changed = snd_soc_component_test_bits(component, e->reg,
--					      CTRL_DATA_SEL,
--					      FIELD_PREP(CTRL_DATA_SEL, mux));
- 
--	if (!changed)
--		return 0;
-+	if (mux == AIU_HDMI_CTRL_MUX_I2S) {
-+		ctrl = FIELD_PREP(AIU_HDMI_CLK_DATA_CTRL_DATA_SEL,
-+				  AIU_HDMI_CLK_DATA_CTRL_DATA_SEL_I2S_DATA);
-+		more = AIU_CLK_CTRL_MORE_AMCLK;
-+	} else {
-+		ctrl = FIELD_PREP(AIU_HDMI_CLK_DATA_CTRL_DATA_SEL,
-+				  AIU_HDMI_CLK_DATA_CTRL_DATA_SEL_OUTPUT_ZERO);
-+		more = 0;
-+	}
-+
-+	if (mux == AIU_HDMI_CTRL_MUX_DISABLED) {
-+		ctrl |= FIELD_PREP(AIU_HDMI_CLK_DATA_CTRL_CLK_SEL,
-+				   AIU_HDMI_CLK_DATA_CTRL_CLK_SEL_DISABLE);
-+	} else {
-+		ctrl |= FIELD_PREP(AIU_HDMI_CLK_DATA_CTRL_CLK_SEL,
-+				   AIU_HDMI_CLK_DATA_CTRL_CLK_SEL_AIU);
-+	}
- 
- 	/* Force disconnect of the mux while updating */
- 	snd_soc_dapm_mux_update_power(dapm, kcontrol, 0, NULL, NULL);
- 
--	/* Reset the source first */
--	snd_soc_component_update_bits(component, e->reg,
--				      CTRL_CLK_SEL |
--				      CTRL_DATA_SEL,
--				      FIELD_PREP(CTRL_CLK_SEL, 0) |
--				      FIELD_PREP(CTRL_DATA_SEL, 0));
-+	snd_soc_component_update_bits(component, AIU_HDMI_CLK_DATA_CTRL,
-+				      AIU_HDMI_CLK_DATA_CTRL_CLK_SEL |
-+				      AIU_HDMI_CLK_DATA_CTRL_DATA_SEL,
-+				      ctrl);
- 
--	/* Set the appropriate source */
--	snd_soc_component_update_bits(component, e->reg,
--				      CTRL_CLK_SEL |
--				      CTRL_DATA_SEL,
--				      FIELD_PREP(CTRL_CLK_SEL, mux) |
--				      FIELD_PREP(CTRL_DATA_SEL, mux));
-+	snd_soc_component_update_bits(component, AIU_CLK_CTRL_MORE,
-+				      AIU_CLK_CTRL_MORE_AMCLK,
-+				      more);
- 
- 	snd_soc_dapm_mux_update_power(dapm, kcontrol, mux, e, NULL);
- 
- 	return 0;
- }
- 
--static SOC_ENUM_SINGLE_DECL(aiu_hdmi_ctrl_mux_enum, AIU_HDMI_CLK_DATA_CTRL,
--			    CTRL_DATA_SEL_SHIFT,
--			    aiu_codec_ctrl_mux_texts);
-+static SOC_ENUM_SINGLE_VIRT_DECL(aiu_hdmi_ctrl_mux_enum,
-+				 aiu_codec_hdmi_ctrl_mux_texts);
- 
- static const struct snd_kcontrol_new aiu_hdmi_ctrl_mux =
- 	SOC_DAPM_ENUM_EXT("HDMI Source", aiu_hdmi_ctrl_mux_enum,
--			  snd_soc_dapm_get_enum_double,
-+			  aiu_codec_ctrl_mux_get_enum,
- 			  aiu_codec_ctrl_mux_put_enum);
- 
- static const struct snd_soc_dapm_widget aiu_hdmi_ctrl_widgets[] = {
-diff --git a/sound/soc/meson/aiu-encoder-i2s.c b/sound/soc/meson/aiu-encoder-i2s.c
-index d6aea7797641..ba3dac987112 100644
---- a/sound/soc/meson/aiu-encoder-i2s.c
-+++ b/sound/soc/meson/aiu-encoder-i2s.c
-@@ -24,7 +24,6 @@
- #define AIU_CLK_CTRL_AOCLK_INVERT	BIT(6)
- #define AIU_CLK_CTRL_LRCLK_INVERT	BIT(7)
- #define AIU_CLK_CTRL_LRCLK_SKEW		GENMASK(9, 8)
--#define AIU_CLK_CTRL_MORE_HDMI_AMCLK	BIT(6)
- #define AIU_CLK_CTRL_MORE_I2S_DIV	GENMASK(5, 0)
- #define AIU_CODEC_DAC_LRCLK_CTRL_DIV	GENMASK(11, 0)
- 
-@@ -210,11 +209,6 @@ static int aiu_encoder_i2s_set_clocks(struct snd_soc_component *component,
- 	if (ret)
- 		return ret;
- 
--	/* Make sure amclk is used for HDMI i2s as well */
--	snd_soc_component_update_bits(component, AIU_CLK_CTRL_MORE,
--				      AIU_CLK_CTRL_MORE_HDMI_AMCLK,
--				      AIU_CLK_CTRL_MORE_HDMI_AMCLK);
--
- 	return 0;
- }
- 
--- 
-2.33.0
-
+ config SND_SOC_FSL_ASRC
+ 	tristate "Asynchronous Sample Rate Converter (ASRC) module support"
+-	depends on HAS_DMA
++	depends on HAS_DMA || COMPILE_TEST
+ 	select REGMAP_MMIO
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 	help
