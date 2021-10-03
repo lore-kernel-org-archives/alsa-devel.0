@@ -2,73 +2,77 @@ Return-Path: <SRS0=D1rU=OX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC00AC433F5
-	for <alsa-devel@archiver.kernel.org>; Sun,  3 Oct 2021 13:24:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C904FC433EF
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 Oct 2021 13:24:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9B88761B31
-	for <alsa-devel@archiver.kernel.org>; Sun,  3 Oct 2021 13:24:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9B88761B31
+	by mail.kernel.org (Postfix) with ESMTPS id F142761B30
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 Oct 2021 13:24:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F142761B30
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0AB05167E;
-	Sun,  3 Oct 2021 15:23:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0AB05167E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8FAE1166E;
+	Sun,  3 Oct 2021 15:23:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FAE1166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633267441;
-	bh=TGOUspDLqETl0Uk18LuUC/2SbL9m34+6b7J/4YKDMWU=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Lo/USZGQhY0KrKjTD/567vaeM8rpnJPJEnRCJ/wjPdptGheBsvQKVHQ5YeGTugRoY
-	 iHIGJIMMkJleyJykxIpuwQAubm1pJvLdei6ud9jcGOPQg/mdwYrabZiGWZ4duuwPbe
-	 ejfJLEoTr12IJlLZpFrV98d903PmAzNBDgHintN0=
+	s=default; t=1633267486;
+	bh=n3hmngqel1Te10LDUKqpc8m8uN5zGOMjAnEiFKUAn20=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=RG4vjw4GyOmtYFBhRHkDqe9bIVStOd75EXSi4k3TnK6BMp/lmCyTAOM1q93rSsfyB
+	 7W25iNLsUKJmmVTNbWQ4VsRuIS45HnCjCzjtrOEGUS9gI0+rwEo/P4FFBhDSpnNHHs
+	 F1dJy9/DwIbe6ivTLyOo5kLhrIspD8CYdJ3JAQv4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5F8AAF80259;
-	Sun,  3 Oct 2021 15:23:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 67978F800ED;
+	Sun,  3 Oct 2021 15:23:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8F455F8027D; Sun,  3 Oct 2021 15:23:08 +0200 (CEST)
+ id 8C723F804BB; Sun,  3 Oct 2021 15:23:13 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7AF3FF80171
- for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2021 15:23:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7AF3FF80171
+ by alsa1.perex.cz (Postfix) with ESMTPS id 68B54F800ED
+ for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2021 15:23:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68B54F800ED
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="i16peGzK"
+ header.b="DlTBSCp2"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1633267380;
+ s=mimecast20190719; t=1633267383;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=1DYbvmZEi6Q8SyIWSMI+zXm4wu4Qd5KPpGIMhPhCF0k=;
- b=i16peGzK57P/ymoYjEwkxCCN/B1vy5d4z4ca9MlbdASomYl6bf7veHz84w/B8A/VtTf4j9
- OEAcZy7KUtkQCGz5oaDhBa9TgDAtAm+UywrthMNKylQYjuTnw2RK4qxW46ezOTPAVtrNU/
- Cxa2qPyHVp1Hk1v6n4kxW/1Uiv5CuSE=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=yNCRNQP+uavnE1XmO1l+SsZtZq4/llL1p54XSzhoCO0=;
+ b=DlTBSCp2eQK3LQ88ncmqbNm0NL56L4POg4mOhLnO4tbw6UeSJAOX8tc7xlbFq4TdRq5yUP
+ BQwAGD4WgzH5I6/rZ/3h+F24knVX4bCl5JR6SYCSEgR3la4XlVkCW+gtGP0eeU/kyQ4EHQ
+ 6z6P53faJqzJepaTJ+3fT939iJg44uI=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-592-aJfioNijMKWjIanlYMeV1w-1; Sun, 03 Oct 2021 09:22:59 -0400
-X-MC-Unique: aJfioNijMKWjIanlYMeV1w-1
+ us-mta-393-tI79bbusMD6NauaB4bZtqQ-1; Sun, 03 Oct 2021 09:23:00 -0400
+X-MC-Unique: tI79bbusMD6NauaB4bZtqQ-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com
  [10.5.11.14])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E89D11084683;
- Sun,  3 Oct 2021 13:22:57 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2348F180830E;
+ Sun,  3 Oct 2021 13:22:59 +0000 (UTC)
 Received: from x1.localdomain (unknown [10.39.192.35])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 9C6B15D9D3;
- Sun,  3 Oct 2021 13:22:56 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 395B15D9DE;
+ Sun,  3 Oct 2021 13:22:58 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>
-Subject: [PATCH 1/2] ASoC: es8316: Use IRQF_NO_AUTOEN when requesting the IRQ
-Date: Sun,  3 Oct 2021 15:22:54 +0200
-Message-Id: <20211003132255.31743-1-hdegoede@redhat.com>
+Subject: [PATCH 2/2] ASoC: rt5651: Use IRQF_NO_AUTOEN when requesting the IRQ
+Date: Sun,  3 Oct 2021 15:22:55 +0200
+Message-Id: <20211003132255.31743-2-hdegoede@redhat.com>
+In-Reply-To: <20211003132255.31743-1-hdegoede@redhat.com>
+References: <20211003132255.31743-1-hdegoede@redhat.com>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Authentication-Results: relay.mimecast.com;
@@ -101,28 +105,27 @@ and disabling it; and this also leads to a small code cleanup.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/codecs/es8316.c | 7 ++-----
+ sound/soc/codecs/rt5651.c | 7 ++-----
  1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index 067757d1d70a..5fb02635c140 100644
---- a/sound/soc/codecs/es8316.c
-+++ b/sound/soc/codecs/es8316.c
-@@ -811,12 +811,9 @@ static int es8316_i2c_probe(struct i2c_client *i2c_client,
- 	mutex_init(&es8316->lock);
+diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
+index fc0c83b73f09..93820561b9f5 100644
+--- a/sound/soc/codecs/rt5651.c
++++ b/sound/soc/codecs/rt5651.c
+@@ -2261,11 +2261,8 @@ static int rt5651_i2c_probe(struct i2c_client *i2c,
  
- 	ret = devm_request_threaded_irq(dev, es8316->irq, NULL, es8316_irq,
--					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
-+					IRQF_TRIGGER_HIGH | IRQF_ONESHOT | IRQF_NO_AUTOEN,
- 					"es8316", es8316);
+ 	ret = devm_request_irq(&i2c->dev, rt5651->irq, rt5651_irq,
+ 			       IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING
+-			       | IRQF_ONESHOT, "rt5651", rt5651);
 -	if (ret == 0) {
--		/* Gets re-enabled by es8316_set_jack() */
--		disable_irq(es8316->irq);
+-		/* Gets re-enabled by rt5651_set_jack() */
+-		disable_irq(rt5651->irq);
 -	} else {
++			       | IRQF_ONESHOT | IRQF_NO_AUTOEN, "rt5651", rt5651);
 +	if (ret) {
- 		dev_warn(dev, "Failed to get IRQ %d: %d\n", es8316->irq, ret);
- 		es8316->irq = -ENXIO;
- 	}
+ 		dev_warn(&i2c->dev, "Failed to reguest IRQ %d: %d\n",
+ 			 rt5651->irq, ret);
+ 		rt5651->irq = -ENXIO;
 -- 
 2.31.1
 
