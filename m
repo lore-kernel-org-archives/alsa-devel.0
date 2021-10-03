@@ -2,70 +2,92 @@ Return-Path: <SRS0=D1rU=OX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E450C433F5
-	for <alsa-devel@archiver.kernel.org>; Sun,  3 Oct 2021 03:05:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B918AC433F5
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 Oct 2021 05:14:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C2F1461A05
-	for <alsa-devel@archiver.kernel.org>; Sun,  3 Oct 2021 03:05:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C2F1461A05
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	by mail.kernel.org (Postfix) with ESMTPS id 2831F61A4F
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 Oct 2021 05:14:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2831F61A4F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6292E1693;
-	Sun,  3 Oct 2021 05:05:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6292E1693
+	by alsa0.perex.cz (Postfix) with ESMTPS id BE79C167D;
+	Sun,  3 Oct 2021 07:13:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE79C167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633230356;
-	bh=FR+CLu0gl6DIXX8mgPY8RPSVgsj5A4EF3MsIkAEn1xU=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=BNspriILvQYA2yeZyG0TrAs+5vFXuINBjDBo1+1TIfvHV4+bGJgfMJZs58ixBEtBl
-	 ckHT9ACdSrC0/wREei5Mp30zswJTl8oQ3AyQl6Bz7n+LyWfAivHjeKdNrOlQguPCj+
-	 /3TP0qJVtdFHZpw5n6n07F4aaq5d67si3ttInG6s=
+	s=default; t=1633238061;
+	bh=SHbDwJMlXB35yqLghBhHp94edSb7QvIkzjL4qBJOrvc=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=dD03cUEpnc+d3FmIwhL/IrSeQjeRFDuW4mbdMGDIWmMfe2T/AKWVqxrspBd3E5aWz
+	 nKGt4X99s9njnvIpiReX9lA5m4Rb9MS+NJ0lUBqVmuhItsR0RuK8GRCDolJsUJYUcM
+	 b+O/y0kFSjH3PcMvIjLG2ysqmucZHDjzUklZHM4Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01E86F802A0;
-	Sun,  3 Oct 2021 05:04:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E6E85F80259;
+	Sun,  3 Oct 2021 07:13:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BA9F9F800ED; Sun,  3 Oct 2021 05:04:14 +0200 (CEST)
-Received: from bombadil.infradead.org (bombadil.infradead.org
- [IPv6:2607:7c80:54:e::133])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id D5EAAF8027D; Sun,  3 Oct 2021 07:13:28 +0200 (CEST)
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com
+ [IPv6:2607:f8b0:4864:20::82b])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 31AFCF800ED
- for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2021 05:04:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31AFCF800ED
+ by alsa1.perex.cz (Postfix) with ESMTPS id 15B67F800ED
+ for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2021 07:13:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15B67F800ED
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="wyjSaBqM"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
- Content-ID:Content-Description:In-Reply-To:References;
- bh=4YvURUzfuR+b0ciJbjJBoAaKlNBhJh9slT7j92oq2ws=; b=wyjSaBqMLdq3AWlScqXPahhc8+
- DJR3rBpOwDkvd5yGt614xQcqLNgeAtcYsuVU4dCWz1X38P/8USRS1P3OK/2lx8uvTUa3ONEjnNhFq
- J/7SefOAPKbf/hJDnz6hDVhCtQc6whfuyNiytwfFVgNym5NuXcsPmIz+7kLdM6FaKgMFhod2Trrnp
- zKSOfIFKf8/tz/pmeihDv1kYMfDzDtRWlK3375hzqkZeZPTLsGdBhs9TF4j180fR8w5iLafccdU6Y
- YkS4obrnIPlxlwD+/9O5yjbYqfc/dGdQUGKCmUHr/IrXlmlzsM8oLSF3XxMYfdu/4rj5RdKbd00ZM
- FML0DFbw==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
- by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mWrnC-0037SG-2t; Sun, 03 Oct 2021 03:03:58 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: atmel: add COMPILE_TEST for SND_ATMEL_SOC_PDC
-Date: Sat,  2 Oct 2021 20:03:57 -0700
-Message-Id: <20211003030357.32456-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="IPEybbj+"
+Received: by mail-qt1-x82b.google.com with SMTP id l13so13014892qtv.3
+ for <alsa-devel@alsa-project.org>; Sat, 02 Oct 2021 22:13:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=ulbTVNSJ2iNJZxZK00NR1PC8WsHr0mc+HEMbZmRuv3I=;
+ b=IPEybbj+ehfBzk/ZqtSTakokncT+6/v3I9sZ7U/Lq8nq+kmPdjczyC42Pf8HFViAv3
+ a/dbCxlfCvCOXsN40cX7ptcPd8/qRfnft22roUwExNnDBs2ACE2aTuNp0fWTqrEvAChF
+ 5zaeCMNt1Q5WCRy+RNwUoZL7XdZPWfGD8VYvnecINloko/xgVY8WSjjuLWC8GTb/7oer
+ GtyoFTT0j/WypuRNfLI8qlHpCmn5DnKPyG57VSCM/sBljNi6ZvtUCQPikyBdRvPMmbig
+ V1M0ZnSwB1mH6fc7ipKg/9KS5COMOv/0JRcrDig7oBf6NawBPH8cFN6/2Vbq7qmnog4K
+ 6Xog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=ulbTVNSJ2iNJZxZK00NR1PC8WsHr0mc+HEMbZmRuv3I=;
+ b=45ZLMaFz9aY6BOugjxEJwueplkMiXwxu1aZc/lMF14gxPKyImMeAnlyl6F5IphNGQP
+ 0Zte9WIs6w6mJin94OQN5TpL8xlRohQgwDgG1QEUOTinWXV+6sPF4KzV7PChBLigErGc
+ Kgj6WM+p7EpC6JvsIG7XRcOQfSwiyPmqy5is0WmCw1po5JSI4sVQJGScWGJQRmU5W/ia
+ EcN8adC3YcZyiNPQaCaGYhiS3C9odqrmscpRIdFL7UsHFeyV/bEqgasszohrjdlzmCcJ
+ twTRp1QdxdHAwXIMgrg6c/xfWVXAGVHTj3+ojSgg6ihC74taWuM/+x3zOuzqNQaV+jzx
+ +E5Q==
+X-Gm-Message-State: AOAM531iaSexnQN/r3ss55qLi124P5qMJ6aO+Yngyfe3kCt7LRiPNMky
+ TsGWaM5LvD+uqNxeOMx/Nig=
+X-Google-Smtp-Source: ABdhPJzioSuGzx0Q7e0kRaQ5WWNQA4BhFy7b5Z30W2SOkuqm96ro8a6xkF6I1iBN61fBfkX7h8zVOg==
+X-Received: by 2002:ac8:6b43:: with SMTP id x3mr6815822qts.190.1633238000236; 
+ Sat, 02 Oct 2021 22:13:20 -0700 (PDT)
+Received: from geday ([2804:7f2:8280:6c81:98f0:31ff:fe93:2dc7])
+ by smtp.gmail.com with ESMTPSA id p9sm5518208qkm.23.2021.10.02.22.13.17
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 02 Oct 2021 22:13:19 -0700 (PDT)
+Date: Sun, 3 Oct 2021 02:13:19 -0300
+From: Geraldo Nascimento <geraldogabriel@gmail.com>
+To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: Re: [RFC PATCH v1 0/1] ASoC: meson: aiu: HDMI codec control
+ questions and issues
+Message-ID: <YVk77/SIxr8Vt8TQ@geday>
+References: <20211002234313.3209294-1-martin.blumenstingl@googlemail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Randy Dunlap <rdunlap@infradead.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211002234313.3209294-1-martin.blumenstingl@googlemail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ lgirdwood@gmail.com, broonie@kernel.org, linux-amlogic@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, jbrunet@baylibre.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,30 +103,132 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Geert pointed out that since sound/soc has the soc_dummy_driver for
-NO_DMA platforms, it is possible (desirable) to have drivers that
-depend on HAS_DMA to alternately depend on COMPILE_TEST.
+On Sun, Oct 03, 2021 at 01:43:12AM +0200, Martin Blumenstingl wrote:
+> Hello Jerome et al.,
+> 
+> on Amlogic Meson SoCs which use the AIU audio controller we have the
+> so-called "machine gun noise" (MGN) issue, reproducible for example in
+> Kodi. So far nobody was able to identify the cause of this issue. My
+> idea was to at least narrow down the issue so we can categorize it. For
+> that I wanted to get the SPDIF output from AIU to the HDMI controller
+> working.
+>
 
-This means that SND_ATMEL_SOC_PDC can depend on HAS_DMA || COMPIE_TEST.
+Hi, Martin,
 
-Fixes: 6c5c659dfe3f ("ASoC: atmel: ATMEL drivers don't need HAS_DMA")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
-Cc: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
----
- sound/soc/atmel/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+The MGN issue surely must be that one when using ALSA directly
+(no dmix, no JACK, no Pulseaudio, no Pipewire, no nothing) and
+when the track changes or we pause it, when it resumes we get 
+noise instead of sound, correct?
 
---- linux-next-20211001.orig/sound/soc/atmel/Kconfig
-+++ linux-next-20211001/sound/soc/atmel/Kconfig
-@@ -11,6 +11,7 @@ if SND_ATMEL_SOC
- 
- config SND_ATMEL_SOC_PDC
- 	bool
-+	depends on HAS_DMA || COMPILE_TEST
- 
- config SND_ATMEL_SOC_DMA
- 	bool
+If so, thanks for trying to track this down!
+
+I bring it up because Googling it seems to head straight to a
+Neil Armstrong post to linux-amlogic about what works and what
+doesn't on linux-meson currently, and only if you dig deeper
+you find a couple of reports apparently by the same person
+about the "machine gun noise" thing.
+
+It doesn't sound like a machine gun noise to me :)
+
+More like brown noise, but anyway what I'd like to note to
+everyone involved is that this one is a major dealbreaker.
+Unless using JACK, Pulseaudio, Pipewire (?) or at least dmix
+audio will degrade at the second song or when the user first
+pauses and then resumes a stream, completely ruining the
+experience.
+
+> On Amlogic Meson GXBB/GXL/GXM SoCs a DesignWare HDMI TX controller is
+> used. This has an SPDIF input but there's currently not driver for it.
+> On Meson8/8b/8m2 SoCs I am working on a HDMI driver for the TransSwitch
+> HDMI controller which - just like DesignWare HDMI TX - supports SPDIF
+> and I2S inputs.
+> I decided to add SPDIF support to the latter since the code from the
+> vendor driver is much easier.
+> 
+> It took me a while to figure out why I would not get any audio output
+> from AIU SPDIF to the HDMI controller - or from there to the sink.
+> The "fix" for this issue is the RFC patch which is part of this series.
+> Any feedback would be great as I am still new to the ASoC subsystem.
+> 
+> Another part I am still struggling with is the audio "routing" (due to
+> lack of a better term - please correct me if this is not the right word
+> to use for this case). I have the following description in my .dts:
+> 	sound {
+> 		compatible = "amlogic,gx-sound-card";
+> 		model = "M8B-ODROID-C1";
+> 
+> 		assigned-clocks = <&clkc CLKID_MPLL0>,
+> 				  <&clkc CLKID_MPLL1>;
+> 		assigned-clock-rates = <294912000>,
+> 				       <270950400>;
+> 		dai-link-0 {
+> 			sound-dai = <&aiu AIU_CPU CPU_I2S_FIFO>;
+> 		};
+> 
+> 		dai-link-1 {
+> 			sound-dai = <&aiu AIU_CPU CPU_SPDIF_FIFO>;
+> 		};
+> 
+> 		dai-link-2 {
+> 			sound-dai = <&aiu AIU_CPU CPU_I2S_ENCODER>;
+> 			dai-format = "i2s";
+> 			mclk-fs = <256>;
+> 
+> 			codec-0 {
+> 				sound-dai = <&aiu AIU_HDMI CTRL_I2S>;
+> 			};
+> 		};
+> 
+> 		dai-link-3 {
+> 			sound-dai = <&aiu AIU_CPU CPU_SPDIF_ENCODER>;
+> 
+> 			codec-0 {
+> 				sound-dai = <&aiu AIU_HDMI CTRL_PCM>;
+> 			};
+> 		};
+> 
+> 		dai-link-4 {
+> 			sound-dai = <&aiu AIU_HDMI CTRL_OUT>;
+> 
+> 			codec-0 {
+> 				sound-dai = <&hdmi_tx>;
+> 			};
+> 		};
+> 	};
+> The driver for &hdmi_tx defines:
+> 	struct hdmi_codec_pdata pdata = {
+> 		.ops			= &txc_48352_hdmi_codec_ops,
+> 		.i2s			= 1,
+> 		.spdif			= 1,
+> 		.max_i2s_channels	= 8,
+> 		.data			= priv,
+> 	};
+> In hdmi_codec_ops.hw_params I always get fmt->fmt HDMI_I2S unless I
+> remove all I2S references from the .dts snipped above (only then
+> HDMI_SPDIF is detected). Based on the selection of the "HDMI Source"
+> enum in aiu-codec-ctrl I was expecting the format to update as well.
+> That unfortunately doesn't happen and I don't know how that can be
+> achieved.
+> 
+
+Hm, that sounds weird. I hope you get the answers you are looking for.
+
+Thanks,
+Geraldo Nascimento
+
+> 
+> Best regards,
+> Martin
+> 
+> 
+> Martin Blumenstingl (1):
+>   ASoC: meson: aiu: Fix HDMI codec control selection
+> 
+>  sound/soc/meson/aiu-codec-ctrl.c  | 108 ++++++++++++++++++++++--------
+>  sound/soc/meson/aiu-encoder-i2s.c |   6 --
+>  2 files changed, 80 insertions(+), 34 deletions(-)
+> 
+> -- 
+> 2.33.0
+> 
