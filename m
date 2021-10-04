@@ -2,76 +2,83 @@ Return-Path: <SRS0=RGWB=OY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44B07C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 07:18:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C38C5C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 07:36:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E79006126A
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 07:18:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E79006126A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	by mail.kernel.org (Postfix) with ESMTPS id 10A6C61186
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 07:36:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 10A6C61186
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D2F1D1688;
-	Mon,  4 Oct 2021 09:17:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2F1D1688
+	by alsa0.perex.cz (Postfix) with ESMTPS id 068B51688;
+	Mon,  4 Oct 2021 09:35:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 068B51688
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633331913;
-	bh=nyMh/CD6BaPxvp+dvxBXaGMKYHouD2jSxQ3s7Qqv67Y=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1633333008;
+	bh=p+XVjHCVvHg5sKGriiNCy9mcv0Db7kn+cyonZw2ft1E=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MYeDS1g0lqqVbsSujl0+s85YYSWaP3JwjzlQVWZxBqBNUb4qS9VACBa9mi7ULxFnV
-	 TtxlOAdMoBYIgO+sO0UlAJw+ZPwkYOFLjpN62162SM3TfQnWZ8vhn5T7kQ1MjPEC5p
-	 E6Ag4Q56f0rbxzl8qwzYb/Q+xmy3DiELBKYAfESg=
+	b=Mc4QIrr+Mo0fYSgZi2D0V2s36K2FYtrR8WqwXKhGlHRScrGB3z9wibufptLZGnVmr
+	 Jo5VFI/+VtyQNZtAEo5fYA8FRePz6SfC99g62+X9RTJUuZs0whgZ8UqRqrgXahIMxu
+	 Ss9eraYuC3i/zrM6YJDnUks+J4xEROsuFYxYSuSs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0BA34F80229;
-	Mon,  4 Oct 2021 09:17:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 805FBF80229;
+	Mon,  4 Oct 2021 09:35:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7D3B4F80240; Mon,  4 Oct 2021 09:17:41 +0200 (CEST)
-Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com
- [209.85.217.49])
+ id 0AC66F80240; Mon,  4 Oct 2021 09:35:56 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 23EADF800BA
- for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 09:17:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23EADF800BA
-Received: by mail-vs1-f49.google.com with SMTP id y141so2728416vsy.5
- for <alsa-devel@alsa-project.org>; Mon, 04 Oct 2021 00:17:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=Tq3r3SqIuxf7MSAP423+T3z19O8+N54Ab2Em8HAL104=;
- b=mxweQZ2fpsPIjodIwoqv5gfIxvf/MKFGzd0UoXnNy9QCDskEOannZZgNlk62EkC7Ff
- 1AuZb4TSzH+9vW90s7Z2dOgxou1r1tjfGe4XZljcKApMZSdWfHHbuqRS0N/YdgGoLgCu
- R45UbOS7qGVOHC1tFglnR46adn9bhKpgDEA4OoxK99GSAVWtUJw6nxMlFu7NTjypdl8q
- W/0qjFtJWZPEAteBR9mGP4KAeCuA75sTNuruVxaW1GbF4CR5+D5tkj77QK+9mxeknwuE
- qoatqb5AIlEA9TaxWO1iks0MOpO0tuj3L9v+zgGshy/JgsipuNvlfl4o8eewqYTWxI8g
- EamQ==
-X-Gm-Message-State: AOAM533DhjggLGDwhlrqxFR2fCtg0SkelX6MfkEFAwN9s8XKD/QpN3/r
- GPut9byb7VIwqyBGGWvSgezTAEVqPct4aupCe+w=
-X-Google-Smtp-Source: ABdhPJxlU5DOPg9j9M8lzJDp/gf8nfLm5tU4dSRqNvnBVD3Ar4MoASkpYleFMBnm+HvISxcTtu38S+NO9ww7xL7VdnI=
-X-Received: by 2002:a67:2c58:: with SMTP id s85mr11305419vss.35.1633331852971; 
- Mon, 04 Oct 2021 00:17:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211003030404.32707-1-rdunlap@infradead.org>
-In-Reply-To: <20211003030404.32707-1-rdunlap@infradead.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 4 Oct 2021 09:17:22 +0200
-Message-ID: <CAMuHMdVRJ4kY1vncgm3jn=p1gYzYQC7C9E3dv+KoYauJgjL=fw@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: fsl: add COMPILE_TEST for SND_SOC_FSL_ASRC
-To: Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>,
- Shengjiu Wang <shengjiu.wang@nxp.com>, linux-kernel@vger.kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
- Mark Brown <broonie@kernel.org>,
- Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>,
- Fabio Estevam <festevam@gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 10FC7F800BA
+ for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 09:35:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10FC7F800BA
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="r972eVnu"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="SBQtCGFL"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 64E961FFBE;
+ Mon,  4 Oct 2021 07:35:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1633332943; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=dZ3bOlyXPn5J3hauPDQs44vo/yVfK8G6NYr8I5PEWJs=;
+ b=r972eVnu+JJ4600hute5gHVJiHwhorPjnu9TOt9vZmmqqTHp68AeHDMTYEkcItv5/IJC9X
+ Q2XqGSKFTkaFj37TAbWegJDryBKjNuMjDv6WH82tWZ6mQrEjvcSvMhjo+uOvP9cH2sM3vP
+ tcUNvBSOAFTsb1P+kIXNwy4wmQND0XQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1633332943;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=dZ3bOlyXPn5J3hauPDQs44vo/yVfK8G6NYr8I5PEWJs=;
+ b=SBQtCGFLIkjDwvYHC1yVe5EeV58/MehlPP7xHD4r0bZ76K1Qwo90WYhrtrDS5KTppR8cxJ
+ QF0F6sgZZA35sgCg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 44583A3B81;
+ Mon,  4 Oct 2021 07:35:43 +0000 (UTC)
+Date: Mon, 04 Oct 2021 09:35:43 +0200
+Message-ID: <s5hilydgs34.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Werner Sembach <wse@tuxedocomputers.com>
+Subject: Re: [PATCH 0/2] ALSA: hda/realtek: Fix name and add quirk for new
+ Clevo
+In-Reply-To: <20211001133111.428249-1-wse@tuxedocomputers.com>
+References: <20211001133111.428249-1-wse@tuxedocomputers.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,46 +94,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Randy,
+On Fri, 01 Oct 2021 15:31:09 +0200,
+Werner Sembach wrote:
+> 
+> Add quirk for Clevo X170KM-G to fix internal speaker not working and rename
+> previously named "Clevo X170" into the more verbose "Clevo X170SM" to make
+> the devices differentiable.
+> 
+> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> Cc: <stable@vger.kernel.org>
 
-On Sun, Oct 3, 2021 at 5:04 AM Randy Dunlap <rdunlap@infradead.org> wrote:
-> Geert pointed out that since sound/soc has the soc_dummy_driver for
-> NO_DMA platforms, it is possible (desirable) to have drivers that
-> depend on HAS_DMA to alternately depend on COMPILE_TEST.
+Applied both patches now.  Thanks.
 
-Actually I had never heard about the soc_dummy_driver before ;-)
-I did know about the dummies in include/linux/dma-mapping.h.
 
-> This means that SND_ATMEL_FSL_ASRC can depend on HAS_DMA || COMPIE_TEST.
-
-COMPILE_TEST
-
-> Fixes: 121a01521b1e ("ASoC: fsl: fix build failure")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-> --- linux-next-20211001.orig/sound/soc/fsl/Kconfig
-> +++ linux-next-20211001/sound/soc/fsl/Kconfig
-> @@ -5,7 +5,7 @@ comment "Common SoC Audio options for Fr
->
->  config SND_SOC_FSL_ASRC
->         tristate "Asynchronous Sample Rate Converter (ASRC) module support"
-> -       depends on HAS_DMA
-> +       depends on HAS_DMA || COMPILE_TEST
->         select REGMAP_MMIO
->         select SND_SOC_GENERIC_DMAENGINE_PCM
->         help
-
-The actual change LGTM, so
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Takashi
