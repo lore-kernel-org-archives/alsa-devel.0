@@ -2,68 +2,67 @@ Return-Path: <SRS0=RGWB=OY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC407C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 17:04:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A819FC433FE
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 17:04:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1D81B61381
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 17:04:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1D81B61381
+	by mail.kernel.org (Postfix) with ESMTPS id 30A6F613AC
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 17:04:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 30A6F613AC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 96DE51689;
-	Mon,  4 Oct 2021 19:03:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96DE51689
+	by alsa0.perex.cz (Postfix) with ESMTPS id D97541693;
+	Mon,  4 Oct 2021 19:03:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D97541693
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633367050;
-	bh=xVUEytVF7BvBMDCxicfBtcFoqUV/5ACnkfGUhbNZDAE=;
+	s=default; t=1633367051;
+	bh=TCDmtxJg9+bbw+GPtAIBnLLG8h58Y+aBEyzOPC1Abp8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GEb/x3p+AtckI0IxdKY0Ph48OanPAMJph4tRSkPlS6AgjiggOs8kz0a5DlUeFAfsu
-	 Qk4hmjV5GEWJYtKVzLqdw43i+fCqOBTvvvanevORfM7sx/LpE78+hqWTx9efkvWht4
-	 qInt00zV7q28ipH62pUYoDP0aKNo9SQ20TbLUcjY=
+	b=onfea3WeiyQ5LBBEKLFwGRw5YRKUV5f1VbeTnghVC2Y5r5tglzCs8wPB5VsYkDc7x
+	 yh/mDL9I907BhDveATUA1n1u2iZh3HF0IToiYwJC65Akbsc37deQnBnC66anZr88V6
+	 7yPD1K+RJbfx0iHvOFhsHwYGxm2ieYm+twFL7p1w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E8C63F804E6;
-	Mon,  4 Oct 2021 19:02:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 15DA5F804EC;
+	Mon,  4 Oct 2021 19:02:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1DFE7F804E2; Mon,  4 Oct 2021 19:02:51 +0200 (CEST)
+ id F3D3FF804ED; Mon,  4 Oct 2021 19:02:57 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4BFD6F804E2
- for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 19:02:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4BFD6F804E2
+ by alsa1.perex.cz (Postfix) with ESMTPS id DB9F4F804E5
+ for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 19:02:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB9F4F804E5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="uCtY+8iO"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AC7C613AC;
- Mon,  4 Oct 2021 17:02:44 +0000 (UTC)
+ header.b="KM1m3J8g"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EAF761458;
+ Mon,  4 Oct 2021 17:02:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1633366965;
- bh=xVUEytVF7BvBMDCxicfBtcFoqUV/5ACnkfGUhbNZDAE=;
+ s=k20201202; t=1633366970;
+ bh=TCDmtxJg9+bbw+GPtAIBnLLG8h58Y+aBEyzOPC1Abp8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=uCtY+8iOzbjH4OUA8eThzqQ0tncmCsESmjn+cMPV0GNkPLy9qjmbUYOvBgkLDZhBy
- XQdKrLq9dvIvdcfYDg/VRCU0ZdlAYASozCxC2qnafvTBcyvQ3RdXkdHol/BijyFq2D
- mUTksXoBCjZeunoRWtCKOf5a1wAmly6Sh9onZVt3ijVN85Pa+QM3Y2neCUfCr4oWpk
- sxeasra0vw0S6Q/QmfP8OZ26rxEGNgKNhbFRz9wpChwelb47hzQpdedOU7szykFrGt
- 2xBiNVD9LxWrNfKb0FKqaxszpDqe0gpg3qZ0jaFCudRZpFL9D3zztiUye9pMYpxhgd
- ttzPUAQeiXmsA==
+ b=KM1m3J8g56jO2O4acNC9ne8DrtrS36Gk9MPC/AYcwKlOmhJTJBEIUT/cSwz3IlOmI
+ xl4BYgxC17SHjtqhxGlLIid3q6ql+g0ywBFIauqWJ+kPXgMAoJCbVbBhCYQu6qmRCH
+ 3GMOhPTXX+Jwj5WdEureXbhI7VSfZHBAgdMLZ4A7Qez4B1OAQ+Gc94Tv9tqCaid4NR
+ F2OVuwZGzHILVVw+krk3L3ZQZ99P/cM/zohakxwQUCJFiUVSnSULmpT8zOXIISYk1J
+ ij7BurRHzjKjc8O0BOh6b888QwWIelDOx4DyacE+0fCR+ocZYaGiFod3NQm87bjtGm
+ heQ6tiP0VpxBQ==
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 1/4] ASoC: nau8824: Fix NAU8824_JACK_LOGIC define
-Date: Mon,  4 Oct 2021 18:02:32 +0100
-Message-Id: <163336659969.3340210.10941611499751143840.b4-ty@kernel.org>
+To: Hans de Goede <hdegoede@redhat.com>,
+	Liam Girdwood <lgirdwood@gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: es8316: Use IRQF_NO_AUTOEN when requesting the
+ IRQ
+Date: Mon,  4 Oct 2021 18:02:34 +0100
+Message-Id: <163336659969.3340210.8499979221603399585.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211002211459.110124-1-hdegoede@redhat.com>
-References: <20211002211459.110124-1-hdegoede@redhat.com>
+In-Reply-To: <20211003132255.31743-1-hdegoede@redhat.com>
+References: <20211003132255.31743-1-hdegoede@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -83,12 +82,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 2 Oct 2021 23:14:56 +0200, Hans de Goede wrote:
-> The NAU8824_JACK_LOGIC define was wrong, for active high jack-detect
-> to work bit 1 needs to be set, rather then bit 0.
+On Sun, 3 Oct 2021 15:22:54 +0200, Hans de Goede wrote:
+> Use the new IRQF_NO_AUTOEN flag when requesting the IRQ, rather then
+> disabling it immediately after requesting it.
 > 
-> The correct bit was found in the Android kernel source dump for
-> a Cyberbook T116 tablet; and this was also tested on that same tablet.
+> This fixes a possible race where the IRQ might trigger between requesting
+> and disabling it; and this also leads to a small code cleanup.
 > 
 > 
 > [...]
@@ -99,14 +98,10 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: nau8824: Fix NAU8824_JACK_LOGIC define
-      commit: d316597c538abd110ff32761fc79f7adff8d619a
-[2/4] ASoC: nau8824: Add DMI quirk mechanism for active-high jack-detect
-      commit: 92d3360108f1839ca40451bad20ff67dd24a1964
-[3/4] ASoC: nau8824: Add a nau8824_components() helper
-      commit: efee0fca19cbc9a0946a2d7dab2d5546aee2098f
-[4/4] ASoC: Intel: cht_bsw_nau8824: Set card.components string
-      commit: 7924f1bc94041a3d512f2922065b196ca8e1210e
+[1/2] ASoC: es8316: Use IRQF_NO_AUTOEN when requesting the IRQ
+      commit: 1cf2aa665901054b140eb71748661ceae99b6b5a
+[2/2] ASoC: rt5651: Use IRQF_NO_AUTOEN when requesting the IRQ
+      commit: 6e037b72cf4ea6c28a131ea021d63ee4e7e6fa64
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
