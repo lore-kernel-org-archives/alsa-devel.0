@@ -2,71 +2,86 @@ Return-Path: <SRS0=RGWB=OY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95EB6C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 13:41:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAD6DC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 14:33:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9A0D260F59
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 13:41:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9A0D260F59
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 6C38961360
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 14:33:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6C38961360
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ivitera.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 65DE11685;
-	Mon,  4 Oct 2021 15:40:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65DE11685
+	by alsa0.perex.cz (Postfix) with ESMTPS id 38DB241;
+	Mon,  4 Oct 2021 16:33:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38DB241
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633354896;
-	bh=6SV1XQalifoPL2kk0zPpcv6WH1kLKR22yKicUq32jbI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1633358032;
+	bh=NwCSAhsFNkV2YspsEkRwMNcZUnQHx1dXUFTvpBvIk74=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GB0SgO25yAGI0ZYEHYQcvysFWvc15UzhZBnkJfLcltgVrfxX+YQJMHa2bAn5CfAm7
-	 L6WI7K+WNaQOVCxQJiGc6ZsnACFi2AB6YOf45EmqLmDPqp2ykcs9YRwCpfVXSUIvXM
-	 6QLWb/aasShix2o5K4zwGkLZsOZypqAAwsh2fRTE=
+	b=Lh/qJDOO6p4/iFZ14OmJuWswdktLwY7b1AHCrJc1Wcz4QkQhXMxLupo1FN3n/Hm8/
+	 NvETjjQAnV4bsXl5+O663snV2+RNJnUpWuiGtSajnL7TlSSDcnBv4zsQ+jPN7w6HuL
+	 dmpIdyEQH3BHFaIOc5uXaCPxWbphyYm9IBowCM/w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AB849F800BA;
-	Mon,  4 Oct 2021 15:40:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E54FF800BA;
+	Mon,  4 Oct 2021 16:33:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0141AF80240; Mon,  4 Oct 2021 15:40:42 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 79403F80240; Mon,  4 Oct 2021 16:32:59 +0200 (CEST)
+Received: from cable.insite.cz (cable.insite.cz [84.242.75.189])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E782AF800BA
- for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 15:40:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E782AF800BA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4AAC2F800BA
+ for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 16:32:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AAC2F800BA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="eNVLb7Ti"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E89D1611C0;
- Mon,  4 Oct 2021 13:40:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1633354833;
- bh=6SV1XQalifoPL2kk0zPpcv6WH1kLKR22yKicUq32jbI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=eNVLb7TiInFXnfy6StXzrOGI/Xz2XqBAepSOMWUSBnm+HP4QZg5rKI5abYqHrVjvj
- WU5o9YBNQfmIDB+SqLjVsinQgoXwZzC04ef45SXyuDiYeXwPlGHI3eYkx/xdT1W0dy
- eZksHqfOjjSaiwzErqkDtWMMyO19lwtZYoZ4tcUU/R9b6qLs8TmVGv+qhO2UX5mbJl
- J0CfsnKXaIz2i93qRm5RM0FUKMqqdhvG8L5fD7MW1/ze39YxTBRshJ2wZcMmiDWnxG
- o1KeOVp1CSfZ5uikw/sSuifH/OqzLKZr0gfQgjTyhYt6q2yRlfvHSKjXpyqPritM1E
- qu0aK/ZeS5v8g==
-Date: Mon, 4 Oct 2021 14:40:31 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Ricard Wanderlof <ricardw@axis.com>
-Subject: Re: [PATCH 2/2] ASoC: codec: tlv320adc3xxx: New codec driver
-Message-ID: <YVsETxqzhZI8Fb6D@sirena.org.uk>
-References: <alpine.DEB.2.21.2110041117540.14472@lnxricardw1.se.axis.com>
+ dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com
+ header.b="kbuSm7mT"; 
+ dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com
+ header.b="sAtfaqTj"
+Received: from localhost (localhost [127.0.0.1])
+ by cable.insite.cz (Postfix) with ESMTP id E4A0EA1A3D403;
+ Mon,  4 Oct 2021 16:32:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
+ t=1633357972; bh=NwCSAhsFNkV2YspsEkRwMNcZUnQHx1dXUFTvpBvIk74=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=kbuSm7mTQQF3jkAWqljI04gzyryevq7XIqN5Y7CLrVGeOGr0pWL9rVJ1+VQNicBkC
+ yGDfrGIP5LfFDOYAlcHy76gvGZXpOHT6HK/KhDvVaTunu2fsLagAffY6VBtTr6Z1Yn
+ 9rPF8c4FG7AlG6z1Ag8ATEnz7LCRph1HvMBxsDeE=
+Received: from cable.insite.cz ([84.242.75.189])
+ by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id uXZZDCcnuIY7; Mon,  4 Oct 2021 16:32:46 +0200 (CEST)
+Received: from [192.168.105.22] (ip28.insite.cz [81.0.237.28])
+ (Authenticated sender: pavel)
+ by cable.insite.cz (Postfix) with ESMTPSA id D4DDEA1A3D402;
+ Mon,  4 Oct 2021 16:32:45 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
+ t=1633357965; bh=NwCSAhsFNkV2YspsEkRwMNcZUnQHx1dXUFTvpBvIk74=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=sAtfaqTjdQnF9FNef4CxQXQEQixeSJuaIvdOR7eD6PjL37o4vDPy3TFX+e57Ue98l
+ tFO+SrUp5b38u/EkwpujZ1q9TG2gi1wa+sMEbG8vtgoyHjhaM9cw8aYMlSycLsPIvP
+ +Uaycy9yjUeDo9HmQbSzTlKVY1SO6rxkWgssNcpk=
+Subject: Re: Alsaloop: sync mode PLAYSHIFT + Loopback on playback side
+To: Jaroslav Kysela <perex@perex.cz>
+References: <a87670e2-302b-8408-cdc2-f0f010646fdc@ivitera.com>
+ <958623cd-7d0d-5329-567b-74edbbf0c16d@perex.cz>
+ <b18c5b00-e3a8-14d1-15aa-c7d7c577530d@ivitera.com>
+ <2ad744ed-5618-0ea0-e2a4-b919ee9dfeeb@perex.cz>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Message-ID: <c9804070-e520-24e5-d5a7-9ba7e2bb8abe@ivitera.com>
+Date: Mon, 4 Oct 2021 16:32:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="odvn+xLAW2jj4KRj"
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.2110041117540.14472@lnxricardw1.se.axis.com>
-X-Cookie: If it heals good, say it.
-Cc: alsa-devel <alsa-devel@alsa-project.org>,
- Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <2ad744ed-5618-0ea0-e2a4-b919ee9dfeeb@perex.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: ALSA development <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,283 +97,362 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
---odvn+xLAW2jj4KRj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Oct 04, 2021 at 11:19:21AM +0200, Ricard Wanderlof wrote:
-
-There's an awful lot of code in here that just doesn't really look like
-a normal Linux driver or follow conventions for ASoC, just from a quick
-visual overview without actually reading anything it's fairly clear the
-driver needs quite a bit of a refresh for mainline.
-
-> +config SND_SOC_TLV320ADC3XXX
-> +	tristate "Texas Instruments TLV320ADC3001/3101 audio ADC"
-> +        help
-> +	 Enable support for Texas Instruments TLV320ADC3001 and TLV320ADC3101
-> +	 ADCs.
-
-Indentation seems weird here?
-
-> +++ b/sound/soc/codecs/tlv320adc3xxx.c
-> @@ -0,0 +1,1239 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Based on sound/soc/codecs/tlv320aic3x.c by  Vladimir Barinov
-
-Please make the entire comment a C++ one so things look more
-intentional.
-
-> +/***************************** INCLUDES ************************************/
-> +
-
-These section markers aren't idiomatic.
-
-> +#define PLL_MODE_TEXT(mode) (mode == ADC3XXX_PLL_ENABLE ? "PLL enable" : \
-> +			     (mode == ADC3XXX_PLL_BYPASS ? "PLL bypass" : \
-> +							   "PLL auto"))
-
-If you need this please just write it as a function with normal
-conditional statements for better legibility and type safety.
-
-> +static bool adc3xxx_volatile_reg(struct device *dev, unsigned int reg)
-> +{
-> +	switch (reg) {
-> +	case PAGE_SELECT: /* required by regmap implementation */
-
-This is not required by regmap.
-
-> +
-> +/* The global Register Initialization sequence Array. During the Audio Driver
-> + * Initialization, this array will be utilized to perform the default
-> + * initialization of the audio Driver.
-> + */
-> +static const struct adc3xxx_configs adc3xxx_reg_init[] = {
-> +	/* The default (out-of-reset) values in the x_PGA_SEL_x registers
-> +	 * disable the inputs by default, but also set the input attenuation
-> +	 * to -6 dB by default, so we leave the inputs disabled but set
-> +	 * the attenuation to a more natural 0 dB.
-> +	 */
-
-These are all perfectly fine defaults, just leave them as they are and
-expose the configuration to userspace - what makes sense for one system
-may not make sense for another so we just leave things at the hardware
-defaults and let userspace configure what it needs.  All the code
-relating to setting new defaults should be removed.
-
-> + *----------------------------------------------------------------------------
-> + * Function : adc3xxx_get_divs
-> + * Purpose  : This function is to get required divisor from the "adc3xxx_divs"
-> + *            table.
-> + *
-> + *----------------------------------------------------------------------------
-> + */
-
-If you must include comments like this please follow the standard kernel
-documentation style, but I'm really struggling to see any value in them.
-
-> +	dev_info(dev, "mclk = %d, rate = %d, clock mode %u\n",
-> +		 mclk, rate, pll_mode);
-
-This is way too verbose, it should at most be dev_dbg().  Same for most
-dev_info() in the driver.
-
-> +static const char * const micbias_voltage[] = { "off", "2V", "2.5V", "AVDD" };
-
-This should be configured in the DT, it's going to be a property of the
-electrical design of the system.
-
-> +static const char * const linein_attenuation[] = { "0db", "-6dB" };
-
-This is a volume control, it should be a standard volume control with
-TLV information.
-
-> +static const char * const dither_dc_offset[] = {
-> +	"0mV", "15mV", "30mV", "45mV", "60mV", "75mV", "90mV", "105mV",
-> +	 "reserved", "-15mV", "-30mV", "-45mV", "-60mV", "-75mV", "-90mV", "-105mV"
-> +};
-
-Use a VALUE_ENUM to prevent the selection of invalid values.
-
-> +/* Creates an array of the Single Ended Widgets*/
-> +static const struct soc_enum adc3xxx_enum[] = {
-> +	SOC_ENUM_SINGLE(MICBIAS_CTRL, 5, 4, micbias_voltage),
-> +	SOC_ENUM_SINGLE(MICBIAS_CTRL, 3, 4, micbias_voltage),
-
-Putting all these into an array just makes everything more error prone
-and hard to maintain for no benefit.  Just declare them as variables.
-
-> +static const struct snd_kcontrol_new adc3xxx_snd_controls[] = {
-> +	SOC_DOUBLE_R_TLV("PGA Gain Volume", LEFT_APGA_CTRL, RIGHT_APGA_CTRL,
-> +			 0, 80, 0, pga_tlv),
-
-s/Gain //
-
-> +	SOC_DOUBLE_R("AGC Enable", LEFT_CHN_AGC_1,
-> +		     RIGHT_CHN_AGC_1, 7, 1, 0),
-
-On/off controls should use the standard ALSA naming - Switch.
-
-> +/* Left input selection, Single Ended inputs and Differential inputs */
-> +static const struct snd_kcontrol_new left_input_mixer_controls[] = {
-> +	SOC_DAPM_SINGLE("IN_1L switch", LEFT_PGA_SEL_1, 1, 0x1, 1),
-
-s/switch/Switch/
-
-> +/* Right input selection from switches */
-> +	{"Right Input Selection", "IN_1R switch", "IN_1R"},
-
-Indentation is weird here.
-
-> +/* GPIO control. These are only used when the corresponding GPIO pin is
-> + * configured accordingly.
-> + */
-> +static const struct snd_kcontrol_new adc3xxx_gpio1_out_control[] = {
-> +	SOC_SINGLE("GPIO1 Output", GPIO1_CTRL, GPIO_CTRL_OUTPUT_CTRL_SHIFT, 1, 0)
-> +};
-
-Remove these, if control is needed for the GPIO implement gpiolib support
-for it and let the system control it like any other GPIO.
-
-> +	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-> +	case SND_SOC_DAIFMT_CBM_CFM:
-> +		adc3xxx->master = 1;
-> +		clkdir = BCLK_MASTER | WCLK_MASTER;
-> +		break;
-> +	case SND_SOC_DAIFMT_CBS_CFS:
-
-Please use the modern _CBP_CFP and _CPC_CFC defines.
-
-> +	default:
-> +		dev_err(component->dev, "Invalid DAI master/slave interface\n");
-
-Provider/consumer.
-
-> +		/* Switch on NADC Divider */
-> +		snd_soc_component_update_bits(component, ADC_NADC,
-> +					      ENABLE_NADC, ENABLE_NADC);
-> +
-> +		/* Switch on MADC Divider */
-> +		snd_soc_component_update_bits(component, ADC_MADC,
-> +					      ENABLE_MADC, ENABLE_MADC);
-
-Why are these not managed through DAPM?
-
-> +struct snd_soc_dai_driver adc3xxx_dai = {
-> +	.name = "tlv320adc3xxx-hifi",
-> +	.capture = {
-> +		    .stream_name = "Capture",
-> +		    .channels_min = 1,
-> +		    .channels_max = 2,
-> +		    .rates = ADC3xxx_RATES,
-> +		    .formats = ADC3xxx_FORMATS,
-> +		    },
-> +	.ops = &adc3xxx_dai_ops,
-> +};
-> +EXPORT_SYMBOL_GPL(adc3xxx_dai);
-
-Why is this exported?
-
-> +#define REGISTER_INIT(CODEC, MAP) \
-> +	do { \
-> +		int i; \
-> +		for (i = 0; i < ARRAY_SIZE(MAP); i++) \
-> +			snd_soc_component_write(CODEC, MAP[i].reg_offset, \
-> +				      MAP[i].reg_val); \
-> +	} while (0)
-
-Like I said this code should be removed so it's moot but why s this not
-written as a normal function?
-
-> +	}
-> +
-> +	//adc3xxx_set_bias_level(component, SND_SOC_BIAS_STANDBY);
-> +
-
-Just remove commented out code.
-
-> +static int adc3xxx_probe(struct snd_soc_component *component)
-> +{
-> +	struct adc3xxx_priv *adc3xxx = snd_soc_component_get_drvdata(component);
-> +	int ret = 0;
-> +
-> +	ret = devm_gpio_request(component->dev, adc3xxx->rst_pin, "adc3xxx reset");
-> +	if (ret < 0) {
-
-Request resources that are needed at the I2C layer probe so that basic
-chip initialisation can happen sooner in boot and so that any probe
-deferral doesn't cause us to have to set up and tear down the card.
-
-> +static int adc3xxx_resume(struct snd_soc_component *component)
-> +{
-> +	snd_soc_component_cache_sync(component);
-> +	adc3xxx_set_bias_level(component, SND_SOC_BIAS_STANDBY);
-
-You need to mark the cache as dirty to get the cache sync to do
-anything.
-
-> +#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
-> +/*
-
-Why is this conditional?
-
-> +	adc3xxx->mclk = devm_clk_get(dev, NULL);
-> +	if (IS_ERR(adc3xxx->mclk)) {
-> +		if (PTR_ERR(adc3xxx->mclk) != -ENOENT)
-> +			return PTR_ERR(adc3xxx->mclk);
-> +		/* Make a note that there is no mclk specified. */
-> +		adc3xxx->mclk = NULL;
-
-Does the device work without a MCLK?
-
-> +static const struct i2c_device_id adc3xxx_i2c_id[] = {
-> +	{"tlv320adc3001", ADC3001},
-> +	{"tlv320adc3101", ADC3101},
-> +	{}
-> +};
-> +
-> +MODULE_DEVICE_TABLE(i2c, adc3xxx_i2c_id);
-
-Extra blank line here.
-
-> +static int __init tlv320adc3xxx_init(void)
-> +{
-> +	return i2c_add_driver(&adc3xxx_i2c_driver);
-> +}
-> +
-> +static void __exit tlv320adc3xxx_exit(void)
-> +{
-> +	i2c_del_driver(&adc3xxx_i2c_driver);
-> +}
-> +
-> +module_init(tlv320adc3xxx_init);
-> +module_exit(tlv320adc3xxx_exit);
-
-module_i2c_driver().
-
-> +/* Page select register */
-> +#define PAGE_SELECT			ADC3xxx_REG(0, 0)
-> +/* Software reset register */
-> +#define RESET				ADC3xxx_REG(0, 1)
-
-These defines pretty much all need namespacing, especially things like
-RESET are way too collision prone.
-
---odvn+xLAW2jj4KRj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFbBE4ACgkQJNaLcl1U
-h9AgLAf/VlG5PG2d3Im4ATHmQiiXVDunF/ekEAH6EZhpotMSl8vXPAgeViYiiA8T
-7Gs0Lmg3isGUCi6KKUjThtCZ/mDUTc+lRm6qg5xoSDAGIkgqbX/ZI53zbbkvN8pl
-lFGtOSk5E8Zjwf3jau4JuT9jsm+jeYQhV9/vbWdpTxuJg7+PIXNMoPqllFUZMfJD
-oKlmGRI1+sN2nBE4N+M3jhcx0dYLezC3ZPV4GYoTq6Y/gLCpiD922OuIHHikUXuQ
-9lR82Vk7M9NMyyNDOkcI8pkvwjSZoI9Lo92oI/BYp2QO3dbJcUQFm939psZsMzCP
-fzJEaALEesU8+cZQIDAbSWpX0l9jZQ==
-=XsoU
------END PGP SIGNATURE-----
-
---odvn+xLAW2jj4KRj--
+Dne 04. 10. 21 v 13:55 Jaroslav Kysela napsal(a):
+>>> Hi,
+>>>
+>>> I would not touch the controls associated to the capture PCM by default.
+>>> It would be possible to add another alsaloop option and code to
+>>> configure the rate shift control identifier separately for this use
+>>> case. The user should avoid the double pitch control (playback +
+>>> capture) for the loopback devices.
+>>
+>> Thanks for your input. I am not sure I understand correctly your 
+>> intention.
+>>
+>> The current code already avoids running playback and capture pitch
+>> control concurrently by one alsaloop as the loop->sync is either
+>> SYNC_TYPE_CAPTRATESHIFT or SYNC_TYPE_PLAYRATESHIFT. IMO the current code
+>> ignores SYNC_TYPE_PLAYRATESHIFT because the code jumps to
+>> set_rate_shift(loop->play, pitch)
+>> https://github.com/alsa-project/alsa-utils/blob/master/alsaloop/pcmjob.c#L1103 
+>>
+>> but the lhandle->ctl_rate_shift elem is never set for playback side in
+>> pcmjob.c:openctl
+>> https://github.com/alsa-project/alsa-utils/blob/master/alsaloop/pcmjob.c#L1208 
+>>
+>> (lhandle->loopback->play == lhandle). I confirmed it using the debug
+>> patch you accepted today (thanks! :-)).
+>>
+>> Therefore my patch of the openctl moves the "PCM Notify" and "PCM Rate
+>> Shift 100000" setup before the playback check, so that lhandles of both
+>> directions can have the two elems configured.
+>>
+>> But the loopback->play lhandle should configure elements for the capture
+>> side of the snd-aloop pipe which I do not know how to locate nicely. I
+>> can always use some hack "if device==0 then use device = 1" for the
+>> playback side etc. but that does not look nice.
+> 
+> Please, assume that the 'PCM Rate Shift 100000' control is for the 
+> capture PCM only by default. The applications should not handle those 
+> driver specific mapping.
+> 
+> If the user wants to use this control for the playback side, a new 
+> command line option may be added to cope with the alternate playback 
+> rate shift control indentifier (it may be parsed using 
+> snd_ctl_ascii_elem_id_parse() for example). So the user may specify the 
+> correct (different) device number there.
+
+Thanks, please can you comment on this patch? alsaloop.1 not updated 
+yet. Tested to work OK, while checking via amixer that the elem 'PCM 
+Rate Shift 100000',device=1 gets controlled:
+
+pavel@precision:~/work/rpi-gadget/alsa-utils/alsaloop$ ./alsaloop -vv -l 
+10000 v -c 2 -r 48000 -f S32_LE -C hw:Quartet -P hw:Loopback -S 
+playshift -x iface=PCM,name='PCM Rate Shift 100000',device=1
+
+!!!Scheduler set to Round Robin with priority 99 FAILED!
+Opened PCM element 'iface=PCM,name=PCM Rate Shift 100000,device=1' for 
+playback rate adjust of hw:10
+Hardware PCM card 10 'Loopback' device 0 subdevice 0
+Its setup is:
+   stream       : PLAYBACK
+   access       : RW_INTERLEAVED
+   format       : S32_LE
+   subformat    : STD
+   channels     : 2
+   rate         : 48000
+   exact rate   : 48000 (48000/1)
+   msbits       : 32
+   buffer_size  : 39992
+   period_size  : 4999
+   period_time  : 104145
+   tstamp_mode  : NONE
+   tstamp_type  : MONOTONIC
+   period_step  : 1
+   avail_min    : 32494
+   period_event : 0
+   start_threshold  : 2147483647
+   stop_threshold   : 39992
+   silence_threshold: 0
+   silence_size : 0
+   boundary     : 5628373634306277376
+   appl_ptr     : 0
+   hw_ptr       : 0
+Hardware PCM card 0 'Infrasonic Quartet' device 0 subdevice 0
+Its setup is:
+   stream       : CAPTURE
+   access       : RW_INTERLEAVED
+   format       : S32_LE
+   subformat    : STD
+   channels     : 2
+   rate         : 48000
+   exact rate   : 48000 (48000/1)
+   msbits       : 24
+   buffer_size  : 32768
+   period_size  : 4096
+   period_time  : 85333
+   tstamp_mode  : NONE
+   tstamp_type  : MONOTONIC
+   period_step  : 1
+   avail_min    : 4096
+   period_event : 0
+   start_threshold  : 2147483647
+   stop_threshold   : 32768
+   silence_threshold: 0
+   silence_size : 0
+   boundary     : 4611686018427387904
+   appl_ptr     : 0
+   hw_ptr       : 0
+Latency 9999 frames, 208312.500us, 208.312500ms (4.8005Hz)
+shared buffer!!!
+playback hw:Loopback/capture hw:Quartet sync type: PLAYRATESHIFT
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00000000 
+(min/max samples = 0/0)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00001042 
+(min/max samples = 0/35)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00001042 
+(min/max samples = 0/35)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00001042 
+(min/max samples = 0/35)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00002083 
+(min/max samples = 0/39)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00002083 
+(min/max samples = 0/39)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00002083 
+(min/max samples = 0/39)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00001042 
+(min/max samples = -14/39)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00000000 
+(min/max samples = -29/39)
+New pitch for playback hw:Loopback/capture hw:Quartet: 0.99998958 
+(min/max samples = -32/39)
+New pitch for playback hw:Loopback/capture hw:Quartet: 0.99998958 
+(min/max samples = -32/39)
+New pitch for playback hw:Loopback/capture hw:Quartet: 0.99998958 
+(min/max samples = -32/39)
+New pitch for playback hw:Loopback/capture hw:Quartet: 0.99998958 
+(min/max samples = -32/39)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00000000 
+(min/max samples = -32/39)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00001042 
+(min/max samples = -32/39)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00002083 
+(min/max samples = -32/39)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00003125 
+(min/max samples = -32/39)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00002083 
+(min/max samples = -32/39)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00001042 
+(min/max samples = -32/39)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00000000 
+(min/max samples = -38/39)
+New pitch for playback hw:Loopback/capture hw:Quartet: 0.99998958 
+(min/max samples = -41/39)
+New pitch for playback hw:Loopback/capture hw:Quartet: 0.99998958 
+(min/max samples = -41/39)
+New pitch for playback hw:Loopback/capture hw:Quartet: 0.99998958 
+(min/max samples = -41/39)
+New pitch for playback hw:Loopback/capture hw:Quartet: 0.99998958 
+(min/max samples = -41/39)
+New pitch for playback hw:Loopback/capture hw:Quartet: 0.99998958 
+(min/max samples = -41/39)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00000000 
+(min/max samples = -41/39)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00001042 
+(min/max samples = -41/39)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00002083 
+(min/max samples = -41/39)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00002083 
+(min/max samples = -41/39)
+
+
+Without specifying the -x CONTROL_NAME param (no rate control applied) 
+the pitch starts diverging:
+
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00000000 
+(min/max samples = 0/0)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00001042 
+(min/max samples = 0/14)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00002083 
+(min/max samples = 0/16)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00003125 
+(min/max samples = 0/17)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00004167 
+(min/max samples = 0/21)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00005208 
+(min/max samples = 0/23)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00006250 
+(min/max samples = 0/27)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00007292 
+(min/max samples = 0/29)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00008333 
+(min/max samples = 0/33)
+New pitch for playback hw:Loopback/capture hw:Quartet: 1.00009375 
+(min/max samples = 0/34)
+
+Thanks a lot,
+
+Pavel.
+
+
+=============================================================
+diff --git a/alsaloop/alsaloop.c b/alsaloop/alsaloop.c
+index 06ffadf..4358db0 100644
+--- a/alsaloop/alsaloop.c
++++ b/alsaloop/alsaloop.c
+@@ -175,6 +175,7 @@ void help(void)
+  "-C,--cdevice   capture device\n"
+  "-X,--pctl      playback ctl device\n"
+  "-Y,--cctl      capture ctl device\n"
++"-x,--prateshift playback 'PCM Rate Shift 100000' ascii ctl name\n"
+  "-l,--latency   requested latency in frames\n"
+  "-t,--tlatency  requested latency in usec (1/1000000sec)\n"
+  "-f,--format    sample format\n"
+@@ -362,6 +363,7 @@ static int parse_config(int argc, char *argv[], 
+snd_output_t *output,
+  		{"cdevice", 1, NULL, 'C'},
+  		{"pctl", 1, NULL, 'X'},
+  		{"cctl", 1, NULL, 'Y'},
++		{"prateshift", 1, NULL, 'x'},
+  		{"latency", 1, NULL, 'l'},
+  		{"tlatency", 1, NULL, 't'},
+  		{"format", 1, NULL, 'f'},
+@@ -391,6 +393,7 @@ static int parse_config(int argc, char *argv[], 
+snd_output_t *output,
+  	char *arg_cdevice = NULL;
+  	char *arg_pctl = NULL;
+  	char *arg_cctl = NULL;
++	char *arg_prateshift = NULL;
+  	unsigned int arg_latency_req = 0;
+  	unsigned int arg_latency_reqtime = 10000;
+  	snd_pcm_format_t arg_format = SND_PCM_FORMAT_S16_LE;
+@@ -420,7 +423,7 @@ static int parse_config(int argc, char *argv[], 
+snd_output_t *output,
+  	while (1) {
+  		int c;
+  		if ((c = getopt_long(argc, argv,
+-				"hdg:P:C:X:Y:l:t:F:f:c:r:s:benvA:S:a:m:T:O:w:UW:z",
++				"hdg:P:C:X:Y:x:l:t:F:f:c:r:s:benvA:S:a:m:T:O:w:UW:z",
+  				long_option, NULL)) < 0)
+  			break;
+  		switch (c) {
+@@ -446,6 +449,9 @@ static int parse_config(int argc, char *argv[], 
+snd_output_t *output,
+  		case 'Y':
+  			arg_cctl = strdup(optarg);
+  			break;
++		case 'x':
++			arg_prateshift = strdup(optarg);
++			break;
+  		case 'l':
+  			err = atoi(optarg);
+  			arg_latency_req = err >= 4 ? err : 4;
+@@ -627,6 +633,10 @@ static int parse_config(int argc, char *argv[], 
+snd_output_t *output,
+  			logit(LOG_CRIT, "Unable to add ossmixer controls.\n");
+  			exit(EXIT_FAILURE);
+  		}
++		if (arg_prateshift) {
++			play->prateshift_name = arg_prateshift;
++		}
++
+  #ifdef USE_SAMPLERATE
+  		loop->src_enable = arg_samplerate > 0;
+  		if (loop->src_enable)
+diff --git a/alsaloop/alsaloop.h b/alsaloop/alsaloop.h
+index 1dbcefe..7a98ef3 100644
+--- a/alsaloop/alsaloop.h
++++ b/alsaloop/alsaloop.h
+@@ -127,6 +127,7 @@ struct loopback_handle {
+  	snd_ctl_elem_value_t *ctl_format;
+  	snd_ctl_elem_value_t *ctl_rate;
+  	snd_ctl_elem_value_t *ctl_channels;
++	char *prateshift_name; /* ascii name for the playback rate shift ctl 
+elem */
+  };
+
+  struct loopback {
+diff --git a/alsaloop/pcmjob.c b/alsaloop/pcmjob.c
+index 845ab82..a4b28e3 100644
+--- a/alsaloop/pcmjob.c
++++ b/alsaloop/pcmjob.c
+@@ -1101,7 +1101,8 @@ void update_pitch(struct loopback *loop)
+  #endif
+  	}
+  	else if (loop->sync == SYNC_TYPE_PLAYRATESHIFT) {
+-		set_rate_shift(loop->play, pitch);
++		// pitch is capture-based, playback side requires reciprocal
++		set_rate_shift(loop->play, 1 / pitch);
+  #ifdef USE_SAMPLERATE
+  		if (loop->use_samplerate) {
+  			loop->src_data.src_ratio =
+@@ -1200,16 +1201,66 @@ static void openctl_elem(struct loopback_handle 
+*lhandle,
+  	}
+  }
+
++static int openctl_play_rateshift(struct loopback_handle *lhandle,
++			char *ascii_name) {
++	int err;
++	snd_ctl_elem_id_t *id;
++	snd_ctl_elem_value_t **elem;
++
++	elem = &lhandle->ctl_rate_shift;
++
++	if (snd_ctl_elem_value_malloc(elem) < 0) {
++		return -ENOMEM;
++	}
++
++	if (snd_ctl_elem_id_malloc(&id)) {
++		snd_ctl_elem_value_free(*elem);
++		return -ENOMEM;
++	}
++
++	if (snd_ctl_ascii_elem_id_parse(id, ascii_name)) {
++		snd_ctl_elem_id_free(id);
++		snd_ctl_elem_value_free(*elem);
++		fprintf(stderr, "Wrong control identifier: %s\n", ascii_name);
++		return -EINVAL;
++	}
++
++	snd_ctl_elem_value_set_id(*elem, id);
++	err = snd_ctl_elem_read(lhandle->ctl, *elem);
++	if (err < 0) {
++		snd_ctl_elem_id_free(id);
++		snd_ctl_elem_value_free(*elem);
++		return err;
++	} else {
++		snd_output_printf(lhandle->loopback->output,
++				"Opened PCM element '%s' for playback rate adjust of %s\n",
++				ascii_name, snd_ctl_name(lhandle->ctl));
++	}
++	return 0;
++}
++
++
+  static int openctl(struct loopback_handle *lhandle, int device, int 
+subdevice)
+  {
+  	int err;
+
+-	lhandle->ctl_rate_shift = NULL;
+  	if (lhandle->loopback->play == lhandle) {
++		// play only
++		if (lhandle->prateshift_name) {
++			err = openctl_play_rateshift(lhandle, lhandle->prateshift_name);
++			if (err < 0) {
++				logit(LOG_CRIT, "Unable to open playback PCM Rate Shift elem '%s'.\n",
++						lhandle->prateshift_name);
++				exit(EXIT_FAILURE);
++			}
++		}
++
+  		if (lhandle->loopback->controls)
+  			goto __events;
+  		return 0;
+  	}
++	// capture only
++	lhandle->ctl_rate_shift = NULL;
+  	openctl_elem(lhandle, device, subdevice, "PCM Notify",
+  			&lhandle->ctl_notify);
+  	openctl_elem(lhandle, device, subdevice, "PCM Rate Shift 100000",
